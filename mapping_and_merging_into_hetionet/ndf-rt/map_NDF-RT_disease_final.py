@@ -10,7 +10,7 @@ import datetime
 import MySQLdb as mdb
 import sys
 
-sys.path.append('../Aeolus/')
+sys.path.append('../ersatz_aeolus/')
 from synonyms_cuis import search_for_synonyms_cuis
 
 import xml.dom.minidom as dom
@@ -128,8 +128,6 @@ def load_ndf_rt_diseases_in():
                 umls_cuis.append(cui.split(':')[1])
         disease = DiseaseNDF_RT(code, name, properties, umls_cuis)
         dict_diseases_NDF_RT[code] = disease
-        #        if i>10:
-        #            break
         i += 1
     print('length of disease in ndf-rt:' + str(len(dict_diseases_NDF_RT)))
 
