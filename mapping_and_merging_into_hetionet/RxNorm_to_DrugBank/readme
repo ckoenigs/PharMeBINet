@@ -1,10 +1,21 @@
 The idea is from https://think-lab.github.io/d/40/ but it is only the basic idea.
 
+The results of the differnt progamms are in results
+
 First the file map_rxnorm_to_unii_final.py must be executed, therefore the database RxNorm in MySQL is needed. The User and the password need to be changed. 
 This file load all RxNorm Cui with unii in a file. 
 
 Second file which need to be execute is unii_to_rxnorm_cui_final.py. This use the FDA-SRS database (https://fdasis.nlm.nih.gov/srs/srs.jsp) to get
 further RxNorm Cuis and unii pairs.
 
-Third file is combine_rxnorm_and_fda_srs_to_a_rxnorm_unii_inchkey_file.py which combine the both files from before and get further inchikey from FDA-SRS for the different uniis.
+Third file is combine_rxnorm_and_fda_srs_to_a_rxnorm_unii_inchkey_file.py which combine the both files from before and get further inchikey from FDA-SRS for the different UNIIs.
+
+The fourth file is map_rxcui_to_drugbank_with_unii_inchikey_final.py. This use the InChIKey and UNIIs from DurgBank to map to the RxNorm CUI which are mapped to UNII and InChIKey.
+
+
+
+
+
+
+
 
