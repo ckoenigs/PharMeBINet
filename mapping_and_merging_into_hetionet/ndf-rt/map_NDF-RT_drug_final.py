@@ -205,7 +205,7 @@ def map_rxnorm_to_drugbank_use_rxnorm_database():
         i += 1
         cur = conRxNorm.cursor()
         query = ("Select RXCUI,LAT,CODE,SAB From RXNCONSO Where SAB = 'DRUGBANK' and RXCUI= %s ;")
-        rows_counter = cur.execute(query, rxnorm_cui)
+        rows_counter = cur.execute(query, (rxnorm_cui,))
         if rows_counter > 0:
             drugbank_ids = []
             for (rxcui, lat, code, sab,) in cur:
