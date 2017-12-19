@@ -120,7 +120,7 @@ has properties:
 
 
 def load_side_effects_aeolus_in_dictionary():
-    query = '''MATCH (n:AeolusOutcome) RETURN n '''
+    query = '''MATCH (n:AeolusOutcome) RETURN n'''
     results = g.run(query)
     for result, in results:
         sideEffect = SideEffect_Aeolus(result['snomed_outcome_concept_id'], result['vocabulary_id'], result['name'],
@@ -146,7 +146,7 @@ def find_cuis_for_aeolus_side_effects():
     for key, sideEffect in dict_side_effects_aeolus.items():
         cur = con.cursor()
         query = ("Select CUI,LAT,CODE,SAB From MRCONSO Where SAB = 'MDR' and CODE= %s ;")
-        rows_counter = cur.execute(query, sideEffect.concept_code)
+        rows_counter = cur.execute(query, (sideEffect.concept_code,))
         if rows_counter > 0:
             list_cuis = []
             for (cui, lat, code, sab) in cur:
