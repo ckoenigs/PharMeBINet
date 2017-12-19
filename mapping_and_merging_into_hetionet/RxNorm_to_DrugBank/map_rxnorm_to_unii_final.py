@@ -17,7 +17,7 @@ query = ("SELECT DISTINCT RXCUI, CODE FROM RXNCONSO WHERE SAB = 'MTHSPL' AND TTY
 cur.execute(query)
 
 # write all information into a file
-g = open('map_rxnorm_to_UNII.tsv', 'w')
+g = open('results/map_rxnorm_to_UNII.tsv', 'w')
 g.write('rxcui \t cuii\n')
 for (rxcui, code) in cur:
     g.write(rxcui + '\t' + code + '\n')

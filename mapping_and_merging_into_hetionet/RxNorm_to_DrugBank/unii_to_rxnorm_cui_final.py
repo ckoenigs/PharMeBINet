@@ -33,8 +33,8 @@ file has properties:
 
 
 def load_all_inchikey_and_rxnorm_in_dict():
-    f = open('Unii/UNIIs 28Apr2017 Records.txt', 'r')
-    g = open('Unii/UNIIs_with_RXCUI.tsv', 'w')
+    f = open('unii/UNIIs 28Apr2017 Records.txt', 'r')
+    g = open('results/UNIIs_with_RXCUI.tsv', 'w')
 
     print (datetime.datetime.utcnow())
     i = 0

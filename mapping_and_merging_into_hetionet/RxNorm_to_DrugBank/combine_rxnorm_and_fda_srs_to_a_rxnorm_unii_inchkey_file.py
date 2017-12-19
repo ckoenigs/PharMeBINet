@@ -29,7 +29,7 @@ load all rxnorm cui and unii from fda-srs in dictionaries
 15:UNII_TYPE
 '''
 
-g = open('Unii/UNIIs_with_RXCUI.tsv', 'r')
+g = open('results/UNIIs_with_RXCUI.tsv', 'r')
 next(g)
 for line in g:
     splitted = line.split('\t')
@@ -56,7 +56,7 @@ load all rxnorm cui and unii from rxnorm in dictionaries
 counter_rxcui = 0
 counter_unii = 0
 count_different_unii = 0
-f = open('data/map_rxnorm_to_UNII.tsv', 'r')
+f = open('results/map_rxnorm_to_UNII.tsv', 'r')
 next(f)
 for line in f:
     splitted = line.split('\t')
@@ -105,7 +105,7 @@ find for all unii a inchikey in fda-srs
 15:UNII_TYPE
 
 '''
-h = open('Unii/UNIIs 28Apr2017 Records.txt', 'r')
+h = open('unii/UNIIs 28Apr2017 Records.txt', 'r')
 next(h)
 for line in h:
     splitted = line.split('\t')
@@ -122,7 +122,7 @@ print(len(dict_unii_to_inchi_key))
 '''
 generate new file with rxcui, uniis, inchikeys
 '''
-g = open('Unii/new_rxcui_uniis_inchkeys.tsv', 'w')
+g = open('results/new_rxcui_uniis_inchkeys.tsv', 'w')
 g.write('rxcui \t uniis \t inchikeys \n')
 for rxcui, uniis in dict_rxcui_to_unii.items():
     uniis = list(set(uniis))
