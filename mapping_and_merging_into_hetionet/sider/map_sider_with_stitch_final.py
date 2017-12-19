@@ -1032,7 +1032,6 @@ def find_all_compound_SE_pairs_of_sider():
                         dict_compound_SE_connection_informations[(drugbank_id, umlsId)][5].append(placeboFreq)
                         dict_compound_SE_connection_informations[(drugbank_id, umlsId)][6].append(placeboUpperFreq)
 
-    print(dict_compound_SE_connection_informations[('DB00471', 'C0017160')][0])
 
 
 # list of compound side effect tuple which create a new connection
@@ -1323,7 +1322,7 @@ def main():
     '###########################################################################################################################')
 
     print (datetime.datetime.utcnow())
-    print('Map and cypher file for side effects')
+    print('Integrate sider side effects into hetionet')
 
     integrate_side_effects()
 
