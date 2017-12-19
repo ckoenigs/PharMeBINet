@@ -130,7 +130,8 @@ has properties:
 
 
 def load_drug_aeolus_in_dictionary():
-    query = '''MATCH (n:AeolusDrug) Where not exists(n.integrated) Set n.integrated='yes' RETURN n Limit 200'''
+    query = '''MATCH (n:AeolusDrug) Where not exists(n.integrated) Set n.integrated='yes' RETURN n'''
+
     results = g.run(query)
     for result, in results:
         if result['vocabulary_id'] != 'RxNorm':
@@ -158,7 +159,7 @@ def map_rxnorm_to_drugbank_use_rxnorm_database():
     for rxnorm_id, drug_concept_id in dict_rxnorm_to_drug_concept_id.items():
         cur = conRxNorm.cursor()
         query = ("Select RXCUI,LAT,CODE,SAB,STR From RXNCONSO Where SAB = 'DRUGBANK' and RXCUI= %s ;")
-        rows_counter = cur.execute(query, rxnorm_id)
+        rows_counter = cur.execute(query, (rxnorm_id,))
         name = dict_aeolus_drugs[drug_concept_id].name.lower()
         if rows_counter > 0:
             # list of all founded drugbank ids for the rxcui
@@ -757,7 +758,7 @@ def main():
 
         integrate_connection_from_aeolus_in_hetionet()
 
-    #all the cuases relationship which are not in aeolus get the property aeolus='no'
+    # all the cuases relationship which are not in aeolus get the property aeolus='no'
     h = open('cypher_map/map_connection_of_aeolus_in_hetionet_' + str(file_number - 1) + '.cypher', 'a')
     h.write('begin \n')
 
