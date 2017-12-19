@@ -86,7 +86,7 @@ load in all ctd phenotypes from neo4j in a dictionary
 
 
 def load_phenotpypes_CTD():
-    query = ''' MATCH (n:CTDphenotype) RETURN n '''
+    query = ''' MATCH (n:CTDphenotype) RETURN n'''
     results = g.run(query)
     for result, in results:
         go_id = 'GO:' + result['go_id']
@@ -114,7 +114,7 @@ def map_phenotype_to_cui():
         cur = con.cursor()
         #search for GO ID in umls
         query = ("Select CUI,LAT,CODE, STR,SAB From MRCONSO Where SAB = 'GO' and CODE= %s ;")
-        rows_counter = cur.execute(query, go_id)
+        rows_counter = cur.execute(query, (go_id,))
         name = phenotype.name.lower()
         if rows_counter > 0:
             list_cuis = []
@@ -167,7 +167,7 @@ def get_name(cui):
     pn = False
     cur = con.cursor()
     query = ("Select * From MRCONSO Where CUI = %s AND ts='P' AND stt='PF' AND ispref='Y' And LAT= 'ENG'")
-    rows_counter = cur.execute(query, cui)
+    rows_counter = cur.execute(query, (cui,))
     if rows_counter > 0:
         for name in cur:
             return name[14]
@@ -177,7 +177,7 @@ def get_name(cui):
     else:
         cur = con.cursor()
         query = ("Select * From MRCONSO Where CUI = %s And LAT= 'ENG'")
-        rows_counter = cur.execute(query, cui)
+        rows_counter = cur.execute(query, (cui,))
         print(cui)
         if rows_counter > 0:
             for name in cur:
@@ -192,7 +192,7 @@ def get_name(cui):
                     break
         else:
             query = ("Select * From MRCONSO Where CUI = %s")
-            rows_counter = cur.execute(query, cui)
+            rows_counter = cur.execute(query, (cui,))
             print('This %s has no english term' % (cui))
             for name in cur:
                 # position11 tty
