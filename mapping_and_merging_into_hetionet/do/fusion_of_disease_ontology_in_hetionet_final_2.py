@@ -119,7 +119,7 @@ DOID:9917 war nur als alternative id da
 
 
 def load_disease_ontologie_in_hetionet():
-    query = '''Match (n:DiseaseOntology) RETURN n '''
+    query = '''Match (n:DiseaseOntology) RETURN n'''
     results = g.run(query)
     for diseases, in results:
         alternateIDs = diseases['alternateIds'] if diseases['alternateIds'] != None else []
@@ -345,8 +345,8 @@ def main():
     print(datetime.datetime.utcnow())
     output.write(str(datetime.datetime.utcnow()))
 
-    print('generate cypher files')
-    output.write('generate cypher files')
+    print('integrate disease ontology into hetionet')
+    output.write('integrate disease ontology into hetionet')
 
     integrate_DO_information_into_hetionet()
 
