@@ -110,7 +110,7 @@ properties:
 
 
 def load_disease_CTD():
-    query = ''' MATCH ()-[r:Causes]->(n:CTDdisease) RETURN Distinct n '''
+    query = ''' MATCH ()-[r:Causes]->(n:CTDdisease) RETURN Distinct n Limit 10 '''
     results = g.run(query)
 
     # go through all results from the query
@@ -180,7 +180,7 @@ def map_disease_to_cui():
             cur = con.cursor()
             # if they do not mapped directly map with name in umls
             query = ("Select CUI,LAT,CODE,SAB From MRCONSO Where SAB in ('MSH','OMIM') and lower(STR)= %s ;")
-            rows_counter = cur.execute(query, disease.name.lower())
+            rows_counter = cur.execute(query, (disease.name.lower(),))
             if rows_counter > 0:
                 count_map_with_name += 1
                 dict_CTD_disease[disease_id].set_how_mapped('map with name to cui ')
@@ -217,7 +217,7 @@ def get_name(cui):
     pn = False
     cur = con.cursor()
     query = ("Select * From MRCONSO Where CUI = %s AND ts='P' AND stt='PF' AND ispref='Y' And LAT= 'ENG'")
-    rows_counter = cur.execute(query, cui)
+    rows_counter = cur.execute(query, (cui,))
     if rows_counter > 0:
         for name in cur:
             return name[14]
@@ -227,7 +227,7 @@ def get_name(cui):
     else:
         cur = con.cursor()
         query = ("Select * From MRCONSO Where CUI = %s And LAT= 'ENG'")
-        rows_counter = cur.execute(query, cui)
+        rows_counter = cur.execute(query, (cui,))
         print(cui)
         if rows_counter > 0:
             for name in cur:
@@ -242,7 +242,7 @@ def get_name(cui):
                     break
         else:
             query = ("Select * From MRCONSO Where CUI = %s")
-            rows_counter = cur.execute(query, cui)
+            rows_counter = cur.execute(query, (cui,))
             print('This %s has no english term' % (cui))
             for name in cur:
                 # position11 tty
