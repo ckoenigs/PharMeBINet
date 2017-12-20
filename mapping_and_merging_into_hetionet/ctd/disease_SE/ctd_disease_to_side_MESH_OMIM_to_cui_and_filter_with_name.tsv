@@ -1,0 +1,301 @@
+MESH/OMIM 	 type 	 cuis with | as seperator 	 cui names 
+D013964		C0040136	Thyroid Neoplasm
+D011660		C0034072	Cor pulmonale
+D010146		C0030193	Pain
+D000013		C0000768	Congenital Abnormality
+D000544		C0002395	Alzheimer's Disease
+D014571		C0042076	Urologic Neoplasms
+D009422		C0027765	nervous system disorder
+D016472		C0085084	Motor Neuron Disease
+D015140		C0011269	Dementia, Vascular
+D007637		C0022573	Keratoconjunctivitis
+D051436		C0403447	Chronic Kidney Insufficiency
+D002972		C0008925	Cleft Palate
+D009325		C0027497	Nausea
+D003968		C0011992	Infantile Diarrhea
+D034381		C1384666	hearing impairment
+D020886		C0752262	Somatosensory Disorders
+D002294		C0007137	Squamous cell carcinoma
+D012162		C0035304	Retinal Degeneration
+D009771		C0028768	Obsessive-Compulsive Disorder
+D013274		C0038356	Stomach Neoplasms
+D003967		C0011991	Diarrhea
+D005355		C0016059	Fibrosis
+D003371		C0010200	Coughing
+D006345		C0018818	Ventricular Septal Defects
+D007280		C0021508	Disorders of Environmental Origin
+D002561		C0007820	Cerebrovascular Disorders
+D009080		C0026691	Mucocutaneous Lymph Node Syndrome
+D006967		C0020517	Hypersensitivity
+D011666		C0034089	Pulmonary Valve Stenosis
+D000419		C0001925	Albuminuria
+D006689		C0019829	Hodgkin Disease
+D054198		C1961102	Precursor Cell Lymphoblastic Leukemia Lymphoma
+D011596		C0033922	Psychomotor Disorders
+D056784		C0270612	Leukoencephalopathies
+D011009		C0032273	Pneumoconiosis
+D008548		C0025209	Melanosis
+D003924		C0011860	Diabetes Mellitus, Non-Insulin-Dependent
+D010300		C0030567	Parkinson Disease
+D011248		C0032962	Pregnancy Complications
+D058226		C2936350	Plaque, Atherosclerotic
+D001714		C0005586	Bipolar Disorder
+D005126		C0015395	Eye Burns
+D003110		C0009375	Colonic Neoplasms
+D002971		C0008924	Cleft Lip
+D002583		C0007873	Uterine Cervical Neoplasm
+D065631		C2607914	Allergic rhinitis (disorder)
+D004604		C0013882	Elephantiasis
+D003920		C0011849	Diabetes Mellitus
+D007239		C3714514	Infection
+D008654		C0025500	Mesothelioma
+C562839		C0345967	Malignant mesothelioma
+D000230		C0001418	Adenocarcinoma
+D005878		C0017551	Gilbert Disease (disorder)
+D002292		C0007134	Renal Cell Carcinoma
+D014188		C0040761	Transposition of Great Vessels
+D006344		C0018817	Atrial Septal Defects
+D005322		C0015944	Fetal Membranes, Premature Rupture
+D001254		C0004114	Astrocytoma
+D012877		C0037285	Skin Manifestations
+D007037		C0020676	Hypothyroidism
+D002653		C0008066	Child Behavior Disorders
+D000782		C0002938	Aneuploidy
+D009436		C0027794	Neural Tube Defects
+D007333		C0021655	Insulin Resistance
+D002481		C0007642	Cellulitis
+D010302		C0030569	Secondary Parkinson Disease
+C538231		C0152013	Adenocarcinoma of lung (disorder)
+D009784		C0028797	Occupational Diseases
+D010259		C1456784	Paranoia
+D012871		C0037274	Dermatologic disorders
+608852		C3160731	Pulmonary function (finding)
+D011014		C0032285	Pneumonia
+D006980		C0020550	Hyperthyroidism
+D001247		C0004093	Asthenia
+D013001		C0037650	Somatoform Disorder
+D012141		C0035243	Respiratory Tract Infections
+D012140		C0035242	Respiratory Tract Diseases
+D018287		C0206704	Carcinoma, Large Cell
+D001988		C0006271	Bronchiolitis
+D001327		C0004364	Autoimmune Diseases
+D012120		C0035204	Respiration Disorders
+D001321		C0004352	Autistic Disorder
+D047928		C0151526	Premature Birth
+D014029		C0040336	Tobacco Use Disorder
+D001249		C0004096	Asthma
+D018876		C0282504	Environmental Illness
+D015209		C0008313	Cholangitis, Sclerosing
+D029481		C0008677	Bronchitis, Chronic
+D008113		C0023903	Liver neoplasms
+D005315		C0015929	Fetal Diseases
+D013313		C0038436	Post-Traumatic Stress Disorder
+D000208		C0001314	Acute Disease
+D009103		C0026769	Multiple Sclerosis
+D005234		C0015695	Fatty Liver
+D015470		C0023467	Leukemia, Myelocytic, Acute
+D008545		C0025202	melanoma
+D013568		C0039058	Pathological Conditions, Signs and Symptoms
+D011471		C0033578	Prostatic Neoplasms
+D005317		C0015934	Fetal Growth Retardation
+D007021		C0848558	Hypospadias
+C562729		C0279626	Squamous cell carcinoma of esophagus
+D001523		C0004936	Mental disorders
+D014591		C0042131	Uterine Diseases
+D014594		C0042138	Uterine Neoplasms
+D000382		C0001828	Agricultural Workers' Diseases
+D012868		C0037268	Skin Abnormalities
+D016388		C0080233	Tooth Loss
+D017495		C0162834	Hyperpigmentation
+D002051		C0006413	Burkitt Lymphoma
+D001749		C0005695	Bladder Neoplasm
+D009461		C0027854	Neurologic Manifestations
+D001932		C0006118	Brain Neoplasms
+D011618		C0033975	Psychotic Disorders
+D007251		C0021400	Influenza
+D048629		C1449861	Micronuclei, Chromosome-Defective
+D011041		C0032343	Poisoning
+D010024		C0029456	Osteoporosis
+D008180		C0024141	Lupus Erythematosus, Systemic
+D012883		C0037299	Skin Ulcer
+D009290		C0027404	Narcolepsy
+D001991		C0006277	Bronchitis
+D008630		C0025427	Mercury Poisoning
+D008599		C0025345	Menstruation Disturbances
+D002908		C0008679	Chronic disease
+D008107		C0023895	Liver diseases
+D006528		C2239176	Liver carcinoma
+D007889		C0023267	Fibroid Tumor
+D020233		C0751830	Gait Disorders, Neurologic
+D015212		C0021390	Inflammatory Bowel Diseases
+D005221		C0015672	Fatigue
+D016640		C0085207	Gestational Diabetes
+D009050		C0026618	Dental Fluorosis, Acquired
+D012817		C0037089	Signs and Symptoms, Digestive
+D012818		C0037090	Signs and Symptoms, Respiratory
+D009203		C0027051	Myocardial Infarction
+D007951		C0023470	Myeloid Leukemia
+D007938		C0023418	leukemia
+D003327		C0010068	Coronary heart disease
+D002340		C0007273	Carotid Artery Diseases
+D013398		C0038644	Sudden infant death syndrome
+D006130		C0018273	Growth Disorders
+D006333		C0018801	Heart failure
+D010051		C0919267	ovarian neoplasm
+D004374		C0013274	Patent ductus arteriosus
+D006965		C0020507	Hyperplasia
+D000757		C0002902	Anencephaly
+D010612		C0031350	Pharyngitis
+D018281		C0206698	Cholangiocarcinoma
+D007248		C0021364	Male infertility
+D007249		C0021368	Inflammation
+D000690		C0002736	Amyotrophic Lateral Sclerosis
+D002658		C0008073	Developmental Disabilities
+D005334		C0015967	Fever
+D013927		C0040053	Thrombosis
+D007247		C0021361	Female infertility
+D006255		C0018621	Hay fever
+D011297		C0033054	Prenatal Exposure Delayed Effects
+D007674		C0022658	Kidney Diseases
+D005767		C0017178	Gastrointestinal Diseases
+D020521		C0038454	Cerebrovascular accident
+D020329		C0270736	Essential Tremor
+D008607		C3714756	Intellectual Disability
+D046110		C0852036	Pregnancy associated hypertension
+D012004		C0034885	Rectal Neoplasms
+D008579		C0025286	Meningioma
+D017449		C0162820	Dermatitis, Allergic Contact
+D012128		C0035222	Respiratory Distress Syndrome, Adult
+D008175		C0024121	Lung Neoplasms
+D002545		C0007786	Brain Ischemia
+D018450		C0242656	Disease Progression
+D008171		C0024115	Lung diseases
+D012559		C0036341	Schizophrenia
+D009369		C0027651	Neoplasms
+D012509		C1261473	Sarcoma
+D008527		C0025149	Medulloblastoma
+D003231		C0009763	Conjunctivitis
+D024821		C0524620	Metabolic Syndrome X
+D001919		C0428977	Bradycardia
+D016403		C0079744	Diffuse Large B-Cell Lymphoma
+D019955		C0149654	Conduct Disorder
+D001859		C0005967	Bone neoplasms
+D019954		C0525041	Neurobehavioral Manifestations
+D004938		C0014859	Esophageal Neoplasms
+D000740		C0002871	Anemia
+D002318		C0007222	Cardiovascular Diseases
+D012983		C0037579	Soft Tissue Neoplasms
+D005076		C0015230	Exanthema
+D005203		C0015634	Farmer's Lung
+D002095		C0006542	Byssinosis
+D000067877		C1510586	Autism Spectrum Disorders
+D011225		C0032914	Pre-Eclampsia
+D006973		C0020538	Hypertensive disease
+D017202		C0151744	Myocardial Ischemia
+D006261		C0018681	Headache
+D014890		C3495801	Granulomatosis with polyangiitis
+D012130		C0035228	Respiratory Hypersensitivity
+D014652		C0042373	Vascular Diseases
+D016135		C0080178	Spina Bifida
+D017453		C0162823	Dermatitis, Irritant
+D002280		C0007117	Basal cell carcinoma
+D050171		C0242339	Dyslipidemias
+D044882		C1257958	Glucose Metabolism Disorders
+D050177		C0497406	Overweight
+D010190		C0030297	Pancreatic Neoplasm
+D054218		C1961099	Precursor T-Cell Lymphoblastic Leukemia-Lymphoma
+D020258		C0235032	Neurotoxicity Syndromes
+D001943		C1458155	Mammary Neoplasms
+D011507		C0033687	Proteinuria
+D012729		C0036868	Sex Chromosome Aberrations
+D004715		C0014175	Endometriosis
+D009373		C0027658	Neoplasms, Germ Cell and Embryonal
+D019337		C0376545	Hematologic Neoplasms
+D003731		C0011334	Dental caries
+D001195		C0003949	Asbestosis
+D012220		C0035455	Rhinitis
+D010698		C0349231	Phobic anxiety disorder
+D010468		C0030975	Perceptual Disorders
+D013921		C0040034	Thrombocytopenia
+D002249		C0007020	Carbon Monoxide Poisoning
+D055370		C0273115	Lung Injury
+D004844		C0014591	Epistaxis
+D015179		C0009404	Colorectal Neoplasms
+D012021		C0034933	Reflex, Abnormal
+D019966		C0236969	Substance-Related Disorders
+D014202		C0040822	Tremor
+D019965		C4041080	Neurocognitive Disorders
+D001449		C0004698	Balkan Nephropathy
+D003643		C0011065	Cessation of life
+D014397		C0041327	Tuberculosis, Pulmonary
+D002779		C0008370	Cholestasis
+D009101		C0026764	Multiple Myeloma
+D059366		C0264423	Asthma, Occupational
+D001281		C0004238	Atrial Fibrillation
+D018376		C0243050	Cardiovascular Abnormalities
+D003865		C1269683	Major Depressive Disorder
+D002386		C0086543	Cataract
+D001172		C0003873	Rheumatoid Arthritis
+D001289		C1263846	Attention deficit hyperactivity disorder
+D004244		C0012833	Dizziness
+D006461		C0019054	Hemolysis (disorder)
+D004417		C0013404	Dyspnea
+D014839		C0042963	Vomiting
+D036841		C0008775	Ciguatera Poisoning
+D021183		C0559470	Allergy to peanuts
+D018242		C0206663	Neuroectodermal Tumor, Primitive
+D006943		C0020456	Hyperglycemia
+D020261		C0311375	Arsenic Poisoning
+D001607		C0005138	Berylliosis
+D020263		C0751859	Lead Poisoning, Nervous System
+D020262		C0546127	Mercury Poisoning, Nervous System
+D020265		C0751863	Lead Poisoning, Nervous System, Adult
+C535464		C1857586	CONOTRUNCAL HEART MALFORMATIONS (disorder)
+D003093		C0009324	Ulcerative Colitis
+D010997		C0032229	Pleural Neoplasms
+D013959		C0040128	Thyroid Diseases
+D029424		C0024117	Chronic Obstructive Airway Disease
+D058729		C1704436	Peripheral Arterial Diseases
+D002544		C0007785	Cerebral Infarction
+D003704		C0497327	Dementia
+D002546		C0007787	Transient Ischemic Attack
+D008998		C0026470	Monoclonal Gammopathy of Undetermined Significance
+D001145		C0003811	Cardiac Arrhythmia
+D011655		C0034065	Pulmonary Embolism
+D005128		C0015397	Disorder of eye
+D003072		C0009241	Cognition Disorders
+D009396		C0027708	Nephroblastoma
+D008133		C0023976	Long QT Syndrome
+D005313		C0015927	Fetal Death
+D007642		C0022593	Keratosis
+D011658		C0034069	Pulmonary Fibrosis
+D013771		C0039685	Tetralogy of Fallot
+D012829		C0037116	Silicosis
+D007172		C0242350	Erectile dysfunction
+D008228		C0024305	Lymphoma, Non-Hodgkin
+D009765		C0028754	Obesity
+D056486		C0860207	Drug-Induced Liver Disease
+D008224		C0024301	Lymphoma, Follicular
+D008223		C0024299	Lymphoma
+D044342		C0162429	Malnutrition
+D001724		C0005612	Birth Weight
+D007676		C0022661	Kidney Failure, Chronic
+D001008		C0003469	Anxiety Disorders
+D005910		C0017638	Glioma
+D003456		C0010417	Cryptorchidism
+D012912		C0037383	Sneezing
+D008679		C0025568	Metaplasia
+D006331		C0018799	Heart Diseases
+D012135		C0035234	Respiratory Sounds
+D020264		C0751861	Lead Poisoning, Nervous System, Childhood
+D000022		C0000786	Spontaneous abortion
+D055752		C0149925	Small cell carcinoma of lung
+D002869		C0008625	Chromosome Aberrations
+D001835		C0005910	Body Weight
+D058447		C0151827	Eye pain
+D050197		C0004153	Atherosclerosis
+D007859		C0023186	Learning Disorders
+D003866		C0011581	Depressive disorder
+D007855		C0023176	Lead Poisoning
+D017563		C0206062	Lung Diseases, Interstitial
+C563733		C1836302	Carotid Intimal Medial Thickness 1
