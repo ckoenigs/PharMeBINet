@@ -1,0 +1,20 @@
+code in NDF-RT 	 name in NDF-RT 	 DO ids with | as seperator  
+C3454	hypokalemia [disease/finding]	DOID:4500
+C1928	crohn disease [disease/finding]	DOID:8778
+C7412	hypophosphatemia [disease/finding]	DOID:0050336
+C1574	cataract [disease/finding]	DOID:83
+C6102	tobacco use disorder [disease/finding]	DOID:0050742
+C5438	rheumatic heart disease [disease/finding]	DOID:0050827
+C7040	bronchial hyperreactivity [disease/finding]	DOID:2841
+C6050	thrombosis [disease/finding]	DOID:0060903
+C6354	urticaria [disease/finding]	DOID:1555
+C1698	cholelithiasis [disease/finding]	DOID:10211
+C5558	schizophrenia [disease/finding]	DOID:5419
+C6318	ureteral obstruction [disease/finding]	DOID:5199
+C2104	diarrhea [disease/finding]	DOID:13250
+C3176	hepatitis [disease/finding]	DOID:2237
+C4688	osteomalacia [disease/finding]	DOID:10573
+C884	alcoholism [disease/finding]	DOID:0050741
+C1890	coronary artery disease [disease/finding]	DOID:3393
+C5066	pneumothorax [disease/finding]	DOID:1673
+C6238	tuberculosis [disease/finding]	DOID:399
