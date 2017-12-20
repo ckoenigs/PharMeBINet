@@ -7,11 +7,12 @@ Created on Tue Aug 22 15:16:45 2017
 from py2neo import Graph, authenticate
 import datetime
 import sys
-import get_drugbank_information
 import json
 
 import xml.dom.minidom as dom
 
+sys.path.append('../aeolus/')
+import get_drugbank_information
 
 class SideEffect:
     """
@@ -200,8 +201,8 @@ def integrate_sider_side_effect_to_hetionet():
             Create (n)-[:equal_to_SE]->(o); \n'''
 
             query = query % (
-            key, value.license, value.identifier, value.name, value.source, value.url, value.conceptName,
-            value.meddraType, value.umls_label)
+                key, value.license, value.identifier, value.name, value.source, value.url, value.conceptName,
+                value.meddraType, value.umls_label)
             g.run(query)
 
 
@@ -230,7 +231,6 @@ def load_compounds_from_hetionet():
 
         drug = DrugHetionet(identifier, inchikey, inchi, name)
         dict_all_drug[identifier] = drug
-
 
 
 # list of all stitch stereo id
@@ -307,46 +307,46 @@ dict_flat_to_drugbank_same_stereo = {}
 dict_sider_drug_with_drugbank_ids = {}
 
 # files with all mapping for the different how_mapped mmethods
-map_stereo_id_to_drugbank_id = open('Sider_drug_map_stereo_id_to_drugbank.tsv', 'w')
+map_stereo_id_to_drugbank_id = open('drug/Sider_drug_map_stereo_id_to_drugbank.tsv', 'w')
 map_stereo_id_to_drugbank_id.write('stitch id flat \t stitch id stereo \t drugbank ids seperated with |\n')
 
-map_flat_id_same_as_stereo_to_drugbank_id = open('Sider_drug_map_flat_id_same_as_stereo_id_to_drugbank.tsv', 'w')
+map_flat_id_same_as_stereo_to_drugbank_id = open('drug/Sider_drug_map_flat_id_same_as_stereo_id_to_drugbank.tsv', 'w')
 map_flat_id_same_as_stereo_to_drugbank_id.write('stitch id flat \t stitch id stereo \t drugbank ids seperated with |\n')
 
-map_flat_id_to_drugbank_id = open('Sider_drug_map_flat_id_to_drugbank.tsv', 'w')
+map_flat_id_to_drugbank_id = open('drug/Sider_drug_map_flat_id_to_drugbank.tsv', 'w')
 map_flat_id_to_drugbank_id.write('stitch id flat \t stitch id stereo \t drugbank ids seperated with |\n')
 
-map_stereo_to_inchikey_to_drugbank_id = open('Sider_drug_map_stereo_to_inchikey_to_drugbank.tsv', 'w')
+map_stereo_to_inchikey_to_drugbank_id = open('drug/Sider_drug_map_stereo_to_inchikey_to_drugbank.tsv', 'w')
 map_stereo_to_inchikey_to_drugbank_id.write('stitch id flat \t stitch id stereo \t drugbank ids seperated with |\n')
 
 map_stereo_to_inchikey_to_drugbank_id_inchikey_alternative = open(
-    'Sider_drug_map_stereo_to_inchikey_to_drugbank_inchikeys_alternative.tsv', 'w')
+    'drug/Sider_drug_map_stereo_to_inchikey_to_drugbank_inchikeys_alternative.tsv', 'w')
 map_stereo_to_inchikey_to_drugbank_id_inchikey_alternative.write(
     'stitch id flat \t stitch id stereo \t drugbank ids seperated with |\n')
 
-map_stereo_name_to_drugbank_id_name = open('Sider_drug_map_stereo_name_to_drugbank_name.tsv', 'w')
+map_stereo_name_to_drugbank_id_name = open('drug/Sider_drug_map_stereo_name_to_drugbank_name.tsv', 'w')
 map_stereo_name_to_drugbank_id_name.write('stitch id flat \t stitch id stereo \t drugbank ids seperated with |\n')
 
-map_stereo_name_to_drugbank_id_synonym_name = open('Sider_drug_map_stereo_name_to_drugbank_synonym_name.tsv', 'w')
+map_stereo_name_to_drugbank_id_synonym_name = open('drug/Sider_drug_map_stereo_name_to_drugbank_synonym_name.tsv', 'w')
 map_stereo_name_to_drugbank_id_synonym_name.write(
     'stitch id flat \t stitch id stereo \t drugbank ids seperated with |\n')
 
-map_stereo_name_to_drugbank_id_brand_name = open('Sider_drug_map_stereo_name_to_drugbank_brand_name.tsv', 'w')
+map_stereo_name_to_drugbank_id_brand_name = open('drug/Sider_drug_map_stereo_name_to_drugbank_brand_name.tsv', 'w')
 map_stereo_name_to_drugbank_id_brand_name.write('stitch id flat \t stitch id stereo \t drugbank ids seperated with |\n')
 
-map_stereo_name_to_drugbank_id_extra_name = open('Sider_drug_map_stereo_name_to_drugbank_extra_name.tsv', 'w')
+map_stereo_name_to_drugbank_id_extra_name = open('drug/Sider_drug_map_stereo_name_to_drugbank_extra_name.tsv', 'w')
 map_stereo_name_to_drugbank_id_extra_name.write('stitch id flat \t stitch id stereo \t drugbank ids seperated with |\n')
 
 # dictionary with how_mapped as key and file as value
 dict_how_mapped_to_file = {'stitch stereo id to drugbank ids': map_stereo_id_to_drugbank_id,
-                      'stitch flat id (same as stereo is) to drugbank ids': map_flat_id_same_as_stereo_to_drugbank_id,
-                      'stitch flat id to drugbank ids': map_flat_id_to_drugbank_id,
-                      'stitch stereo id inchikey to drugbank ids': map_stereo_to_inchikey_to_drugbank_id,
-                      'stitch stereo id alternativ inchikey to drugbank ids': map_stereo_to_inchikey_to_drugbank_id_inchikey_alternative,
-                      'stitch stereo id name to drugbank ids name': map_stereo_name_to_drugbank_id_name,
-                      'stitch stereo id name to drugbank ids synonym names': map_stereo_name_to_drugbank_id_synonym_name,
-                      'stitch stereo id name to drugbank ids brand names': map_stereo_name_to_drugbank_id_brand_name,
-                      'stitch stereo id name to drugbank ids extra_name names': map_stereo_name_to_drugbank_id_extra_name}
+                           'stitch flat id (same as stereo is) to drugbank ids': map_flat_id_same_as_stereo_to_drugbank_id,
+                           'stitch flat id to drugbank ids': map_flat_id_to_drugbank_id,
+                           'stitch stereo id inchikey to drugbank ids': map_stereo_to_inchikey_to_drugbank_id,
+                           'stitch stereo id alternativ inchikey to drugbank ids': map_stereo_to_inchikey_to_drugbank_id_inchikey_alternative,
+                           'stitch stereo id name to drugbank ids name': map_stereo_name_to_drugbank_id_name,
+                           'stitch stereo id name to drugbank ids synonym names': map_stereo_name_to_drugbank_id_synonym_name,
+                           'stitch stereo id name to drugbank ids brand names': map_stereo_name_to_drugbank_id_brand_name,
+                           'stitch stereo id name to drugbank ids extra_name names': map_stereo_name_to_drugbank_id_extra_name}
 
 # list of all stitch stereo ids in pubchem form which are not mapped
 list_of_not_mapped_stitch_stereo = []
@@ -582,7 +582,7 @@ properties from durgbank_without_entries_which has_no_chemical_formular_or_seque
 
 
 def map_inchikeys_to_drugbank():
-    f = open('data/durgbank_without_entries_which has_no_chemical_formular_or_sequence.tsv', 'r')
+    f = open('../drugbank/data/durgbank_without_entries_which has_no_chemical_formular_or_sequence.tsv', 'r')
     next(f)
     # list of all index from in this step mapped stereo ids
     delete_index = []
@@ -665,7 +665,7 @@ properties from durgbank_without_entries_which has_no_chemical_formular_or_seque
 
 
 def map_name_to_drugbank():
-    f = open('data/durgbank_without_entries_which has_no_chemical_formular_or_sequence.tsv', 'r')
+    f = open('../drugbank/data/durgbank_without_entries_which has_no_chemical_formular_or_sequence.tsv', 'r')
     next(f)
     # list of all index from in this step mapped stereo ids
     delete_index = []
@@ -827,7 +827,6 @@ def map_name_to_drugbank():
     print('number not mapped stitch stereo:' + str(len(list_of_not_mapped_stitch_stereo)))
 
 
-
 '''
 integrate sider drugs into hetionet directly. For the compound which are already in hetionet only some properties 
 are add and a connection to the sider drug is generated. Further new compound for hetionet a gerneted which has also a
@@ -837,10 +836,10 @@ are add and a connection to the sider drug is generated. Further new compound fo
 
 def integrate_sider_drugs_into_hetionet():
     # a file with all sider drugs which has a drugbank id but this has no chemical information
-    without_chemical = open('durgbank_without_chemical_seq.tsv', 'w')
+    without_chemical = open('drug/durgbank_without_chemical_seq.tsv', 'w')
     without_chemical.write('DB \t pubchem \n')
 
-    get_drugbank_information.load_all_drugbank_ids_in_dictionary('data/')
+    get_drugbank_information.load_all_drugbank_ids_in_dictionary()
     # all possible mapped sider drug
     counter = 0
     # count all sider drug which are removed
@@ -875,8 +874,6 @@ def integrate_sider_drugs_into_hetionet():
 
         # generate the mapping files for the different mapping steps
         string_drugbank_ids = "|".join(drugbank_ids)
-        print(dict_sider_drug[pubchem_stereo].stitchIDflat + '\t' + dict_sider_drug[
-            pubchem_stereo].stitchIDstereo + '\t' + string_drugbank_ids + '\n')
         dict_how_mapped_to_file[how_mapped].write(dict_sider_drug[pubchem_stereo].stitchIDflat + '\t' + dict_sider_drug[
             pubchem_stereo].stitchIDstereo + '\t' + string_drugbank_ids + '\n')
 
@@ -1033,7 +1030,6 @@ def find_all_compound_SE_pairs_of_sider():
                         dict_compound_SE_connection_informations[(drugbank_id, umlsId)][6].append(placeboUpperFreq)
 
 
-
 # list of compound side effect tuple which create a new connection
 list_tuple_compound_SE = []
 
@@ -1099,7 +1095,7 @@ def integrate_relationship_from_sider_into_hetionet():
         else:
             freq = freqs_word
 
-        #maximal frequency
+        # maximal frequency
         upperFreq = str(max(list_of_information[3]))
 
         # placebo
@@ -1152,8 +1148,9 @@ def integrate_relationship_from_sider_into_hetionet():
                 query = '''Match (n:Compound{identifier:"%s"}),(r:SideEffect{identifier:"%s"}) 
                 Create (n)-[:CAUSES_CcSE{url:"%s", source:"%s", unbiased:"%s", license:"%s", upperFrequency:"%s", placebo:"%s", frequency:"%s", lowerFrequency:"%s",  placeboFrequency: "%s", placeboLowerFrequency: "%s", placeboUpperFrequency: "%s", hetionet:"no", sider:"yes", how_often_appears:"1"}]->(r);  \n'''
                 query = query % (
-                drugbank_id, umlsId, url, source, unbiased, licenses, upperFreq, placebo, freq, lowerFreq, placeboFreq,
-                placeboLowerFreq, placeboUpperFreq)
+                    drugbank_id, umlsId, url, source, unbiased, licenses, upperFreq, placebo, freq, lowerFreq,
+                    placeboFreq,
+                    placeboLowerFreq, placeboUpperFreq)
                 number_of_new_connection += 1
                 list_tuple_compound_SE.append((drugbank_id, umlsId))
             else:
@@ -1163,7 +1160,8 @@ def integrate_relationship_from_sider_into_hetionet():
             query = '''Match (n:Compound{identifier:"%s"})-[l:CAUSES_CcSE]->(r:SideEffect{identifier:"%s"}) 
             Set l.upperFrequency="%s", l.placebo="%s", l.frequency="%s", l.lowerFrequency="%s", l.placeboFrequency= "%s", l.placeboLowerFrequency= "%s", l.placeboUpperFrequency= "%s", l.hetionet="yes", l.sider="yes", l.how_often_appears="1"; \n'''
             query = query % (
-            drugbank_id, umlsId, upperFreq, placebo, freq, lowerFreq, placeboFreq, placeboLowerFreq, placeboUpperFreq)
+                drugbank_id, umlsId, upperFreq, placebo, freq, lowerFreq, placeboFreq, placeboLowerFreq,
+                placeboUpperFreq)
             number_of_update_connection += 1
 
         h.write(query)
@@ -1194,7 +1192,6 @@ def integrate_relationship_from_sider_into_hetionet():
     print(i)
 
 
-
 '''
 a fuction for all function that are used for drug integration
 '''
@@ -1202,7 +1199,7 @@ a fuction for all function that are used for drug integration
 
 def integration_drug():
     print(
-    '###########################################################################################################################')
+        '###########################################################################################################################')
 
     print (datetime.datetime.utcnow())
     print('Load in all compounds from hetionet in dictionary')
@@ -1210,7 +1207,7 @@ def integration_drug():
     load_compounds_from_hetionet()
 
     print(
-    '###########################################################################################################################')
+        '###########################################################################################################################')
 
     print (datetime.datetime.utcnow())
     print('Load in all drugs from sider in dictionary')
@@ -1225,11 +1222,11 @@ def integration_drug():
     #    generate_short_file_with_important_information_stitch()
 
     print(
-    '###########################################################################################################################')
+        '###########################################################################################################################')
 
     print (datetime.datetime.utcnow())
     print(
-    'Load in all important information from the short from of chemical.source.v4.0.tsv and app them in dictionary')
+        'Load in all important information from the short from of chemical.source.v4.0.tsv and app them in dictionary')
 
     give_drugbank_ids_with_use_of_stitch_information()
 
@@ -1241,7 +1238,7 @@ def integration_drug():
     #    make_a_smaller_file_of_stitch_inchikey_and_chemical()
 
     print(
-    '###########################################################################################################################')
+        '###########################################################################################################################')
 
     print (datetime.datetime.utcnow())
     print('Load in stitch name in a dictionary')
@@ -1249,7 +1246,7 @@ def integration_drug():
     load_in_stitch_name()
 
     print(
-    '###########################################################################################################################')
+        '###########################################################################################################################')
 
     print (datetime.datetime.utcnow())
     print('Load all for all stereo the inchikey in a dictionary')
@@ -1257,7 +1254,7 @@ def integration_drug():
     load_in_stitch_inchikeys()
 
     print(
-    '###########################################################################################################################')
+        '###########################################################################################################################')
 
     print (datetime.datetime.utcnow())
     print('Map the stitch inchikeys to the inchikeys (alternative inchikeys) from drugbank')
@@ -1265,7 +1262,7 @@ def integration_drug():
     map_inchikeys_to_drugbank()
 
     print(
-    '###########################################################################################################################')
+        '###########################################################################################################################')
 
     print (datetime.datetime.utcnow())
     print('Map the stitch name to the name, synonyms, product ingredients name and brand names from drugbank')
@@ -1273,7 +1270,7 @@ def integration_drug():
     map_name_to_drugbank()
 
     print(
-    '###########################################################################################################################')
+        '###########################################################################################################################')
 
     print (datetime.datetime.utcnow())
     print('Integrate sider drugs into hetionet')
@@ -1293,7 +1290,7 @@ def integrate_side_effects():
     load_side_effects_from_hetionet_in_dict()
 
     print(
-    '###########################################################################################################################')
+        '###########################################################################################################################')
 
     print (datetime.datetime.utcnow())
     print('Load in all side effect from sider in dictionary')
@@ -1301,7 +1298,7 @@ def integrate_side_effects():
     load_sider_in_dict()
 
     print(
-    '###########################################################################################################################')
+        '###########################################################################################################################')
 
     print (datetime.datetime.utcnow())
     print('map sider to hetionet per cypher')
@@ -1309,7 +1306,7 @@ def integrate_side_effects():
     integrate_sider_side_effect_to_hetionet()
 
     print(
-    '###########################################################################################################################')
+        '###########################################################################################################################')
 
 
 def main():
@@ -1319,7 +1316,7 @@ def main():
     create_connection_with_neo4j()
 
     print(
-    '###########################################################################################################################')
+        '###########################################################################################################################')
 
     print (datetime.datetime.utcnow())
     print('Integrate sider side effects into hetionet')
@@ -1327,7 +1324,7 @@ def main():
     integrate_side_effects()
 
     print(
-    '###########################################################################################################################')
+        '###########################################################################################################################')
 
     print (datetime.datetime.utcnow())
     print('Map drugs from sider to hetionet')
@@ -1335,7 +1332,7 @@ def main():
     integration_drug()
 
     print(
-    '###########################################################################################################################')
+        '###########################################################################################################################')
 
     print (datetime.datetime.utcnow())
     print('Merge the edge information')
@@ -1343,7 +1340,7 @@ def main():
     find_all_compound_SE_pairs_of_sider()
 
     print(
-    '###########################################################################################################################')
+        '###########################################################################################################################')
 
     print (datetime.datetime.utcnow())
     print('Integrate sider connection into hetionet')
@@ -1351,7 +1348,7 @@ def main():
     integrate_relationship_from_sider_into_hetionet()
 
     print(
-    '###########################################################################################################################')
+        '###########################################################################################################################')
     print (datetime.datetime.utcnow())
 
 
