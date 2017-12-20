@@ -1,20 +1,1826 @@
 drug_concept_id 	 rxcui 	 name 
-40042056	375514	Estradiol / norgestimate Oral Tablet
-1740226	20012	cadexomer iodine
-19059622	24513	ethyl cysteine
-19011097	121047	Propionate
-40139406	705167	Dextromethorphan / Phenylephrine Oral Strip
-42900529	1309212	grapefruit oil
-43012575	1366027	Carrot Juice
-19007693	11121	Vanadium
-40002781	373644	Acetaminophen / Propoxyphene Oral Tablet
-40046785	372919	Hydrocortisone / Miconazole Topical Ointment
-42899378	1307691	MENTHA ARVENSIS LEAF OIL
-1598493	259263	ESTROGENIC SUBSTANCES
-40227498	1020043	Coal Tar / Salicylic Acid / Sulfur Topical Ointment
-19023254	7629	Oleandomycin
-19094483	6686	Medigoxin
-19056037	236315	GUAIETOLIN
-19018406	17050	adipic acid
-40031407	239053	Colchicine / Probenecid Oral Tablet
-19056408	236614	BUTCHER'S BROOM Preparation
+40167838	876513	Amlodipine / telmisartan Oral Tablet
+19112632	477454	COLLAGEN, HYDROLYZED
+44507733	1441660	oxalate
+40017006	451356	Cyclamate / Saccharin Oral Tablet
+19022446	33055	pentaerythritol
+19080493	31475	naftazone
+42898420	1309498	Aesculus hippocastanum leaf extract
+40001314	372604	Lidocaine / tribenoside Rectal Suppository
+40146303	757229	Codeine / phenyltoloxamine Oral Solution
+19076785	55024	Potassium tartrate
+1352213	4257	Factor VIII
+40145363	757163	Ampicillin / Cloxacillin Oral Solution
+19113039	52103	Lithium acetate
+19061731	24940	ferrous chloride
+19051649	214525	doxorubicin liposome
+40229357	1045336	Benzocaine / Menthol Topical Cream
+42899432	1311061	Klebsiella pneumoniae
+19054693	435657	Olive Leaf Extract
+46221228	1607780	13-cis-12-(3'-carboxyphenyl)retinoic acid
+19071651	28486	lavender oil
+19056758	460	Alcuronium
+19097029	253189	Mixed vespid venom
+19091830	6465	Lofepramine
+1300751	105669	Polysaccharide iron complex
+19011094	117896	benzquercin
+40090601	376929	Thiamine / Vitamin B 12 Oral Tablet
+42899681	1310031	Nerium oleander leaf extract
+43012175	1362135	basil oil
+40007851	370835	Aluminum Hydroxide / magnesium trisilicate Oral Tablet
+19050375	21149	ciprofibrate
+42901041	1313982	Bupivacaine / Hydromorphone Prefilled Syringe
+45776270	1542389	Buprenorphine / Naloxone Buccal Film
+40244149	1192823	Bupivacaine / Sufentanil Injectable Solution
+46221338	1609071	BIS-PEG-PPG-14-14 dimethicone
+40044825	372853	Hydrochlorothiazide / Methyldopa Oral Tablet
+43532469	1426704	neurotrophin 4
+42900071	1311138	sodium bromide
+40145234	757151	Albuterol / Guaifenesin Oral Solution
+42904067	1344641	Convallaria majalis extract
+1314928	125921	ginger root
+42899427	1309328	Melissa officinalis leaf oil
+40010065	371024	Antipyrine / Benzocaine Otic Solution
+19082764	319866	meglumine antimoniate
+40147787	757282	isoniazid / Vitamin B6 Oral Solution
+44817996	1536930	Acetaminophen / Chlorpheniramine / Phenylephrine Effervescent Oral Tablet
+45775576	1546446	OMACETAXINE
+40018276	377319	Calamine / Diphenhydramine Topical Spray
+19011035	114202	Lactate
+42900068	1307966	Vitis vinifera seed extract
+42706042	1244515	Ascorbic Acid / Bioflavonoids Oral Capsule
+43532406	1427211	Hepatitis B Virus
+43531800	1425501	Cochineal
+40042021	439376	Estradiol / Estriol Oral Tablet
+19115055	56161	sennoside B
+43532434	1426414	lactobionate
+19051035	21842	cuprous oxide
+19055378	235776	Potassium hydroxyquinoline sulfate
+19032816	806626	Glycine zinc chelate
+40012869	451719	Ascorbic Acid / Sodium Fluoride Extended Release Oral Tablet
+44818463	1535222	glucuronolactone
+19043327	39468	veralipride
+42706184	1245382	Calcium Carbonate / Magnesium Chloride Delayed Release Oral Tablet
+43531797	1426448	Ceramide 2
+19122997	605061	Coral Calcium
+40029854	375719	Codeine / Promethazine Oral Solution
+44814337	1491502	Ketoprofen / Lidocaine Topical Cream
+43532084	1426405	POLYSORBATE 65
+40039683	374196	Furosemide / Triamterene Oral Tablet
+514834	124427	Honey bee venom
+19135839	90120	Magnesium salt
+19135781	8556	Polysaccharides
+40242566	1150094	Bifidobacterium lactis
+40003488	238137	Acetaminophen / Aspirin / Caffeine / salicylamide Oral Tablet
+40026558	438803	Clotrimazole / hexamidine Topical Cream
+19002230	27221	hydrotalcite
+43526455	1373352	calcium bicarbonate
+40149417	792121	Melatonin / theanine Oral Tablet
+1359143	477053	Cinnamon Bark
+40139751	707194	Acetaminophen / Guaifenesin Oral Capsule
+586413	221144	pneumococcal polysaccharides (23)
+43013156	1366921	sodium chlorate
+19091311	236340	Alexitol sodium
+drug_concept_id 	 rxcui 	 name 
+40167838	876513	Amlodipine / telmisartan Oral Tablet
+19112632	477454	COLLAGEN, HYDROLYZED
+44507733	1441660	oxalate
+40017006	451356	Cyclamate / Saccharin Oral Tablet
+19022446	33055	pentaerythritol
+19080493	31475	naftazone
+42898420	1309498	Aesculus hippocastanum leaf extract
+40001314	372604	Lidocaine / tribenoside Rectal Suppository
+40146303	757229	Codeine / phenyltoloxamine Oral Solution
+19076785	55024	Potassium tartrate
+1352213	4257	Factor VIII
+40145363	757163	Ampicillin / Cloxacillin Oral Solution
+19113039	52103	Lithium acetate
+19061731	24940	ferrous chloride
+19051649	214525	doxorubicin liposome
+40229357	1045336	Benzocaine / Menthol Topical Cream
+42899432	1311061	Klebsiella pneumoniae
+19054693	435657	Olive Leaf Extract
+46221228	1607780	13-cis-12-(3'-carboxyphenyl)retinoic acid
+19071651	28486	lavender oil
+19056758	460	Alcuronium
+19097029	253189	Mixed vespid venom
+19091830	6465	Lofepramine
+1300751	105669	Polysaccharide iron complex
+19011094	117896	benzquercin
+40090601	376929	Thiamine / Vitamin B 12 Oral Tablet
+42899681	1310031	Nerium oleander leaf extract
+43012175	1362135	basil oil
+40007851	370835	Aluminum Hydroxide / magnesium trisilicate Oral Tablet
+19050375	21149	ciprofibrate
+42901041	1313982	Bupivacaine / Hydromorphone Prefilled Syringe
+45776270	1542389	Buprenorphine / Naloxone Buccal Film
+40244149	1192823	Bupivacaine / Sufentanil Injectable Solution
+46221338	1609071	BIS-PEG-PPG-14-14 dimethicone
+40044825	372853	Hydrochlorothiazide / Methyldopa Oral Tablet
+43532469	1426704	neurotrophin 4
+42900071	1311138	sodium bromide
+40145234	757151	Albuterol / Guaifenesin Oral Solution
+42904067	1344641	Convallaria majalis extract
+1314928	125921	ginger root
+42899427	1309328	Melissa officinalis leaf oil
+40010065	371024	Antipyrine / Benzocaine Otic Solution
+19082764	319866	meglumine antimoniate
+40147787	757282	isoniazid / Vitamin B6 Oral Solution
+44817996	1536930	Acetaminophen / Chlorpheniramine / Phenylephrine Effervescent Oral Tablet
+45775576	1546446	OMACETAXINE
+40018276	377319	Calamine / Diphenhydramine Topical Spray
+19011035	114202	Lactate
+42900068	1307966	Vitis vinifera seed extract
+42706042	1244515	Ascorbic Acid / Bioflavonoids Oral Capsule
+43532406	1427211	Hepatitis B Virus
+43531800	1425501	Cochineal
+40042021	439376	Estradiol / Estriol Oral Tablet
+19115055	56161	sennoside B
+43532434	1426414	lactobionate
+19051035	21842	cuprous oxide
+19055378	235776	Potassium hydroxyquinoline sulfate
+19032816	806626	Glycine zinc chelate
+40012869	451719	Ascorbic Acid / Sodium Fluoride Extended Release Oral Tablet
+44818463	1535222	glucuronolactone
+19043327	39468	veralipride
+42706184	1245382	Calcium Carbonate / Magnesium Chloride Delayed Release Oral Tablet
+43531797	1426448	Ceramide 2
+19122997	605061	Coral Calcium
+40029854	375719	Codeine / Promethazine Oral Solution
+44814337	1491502	Ketoprofen / Lidocaine Topical Cream
+43532084	1426405	POLYSORBATE 65
+40039683	374196	Furosemide / Triamterene Oral Tablet
+514834	124427	Honey bee venom
+19135839	90120	Magnesium salt
+19135781	8556	Polysaccharides
+40242566	1150094	Bifidobacterium lactis
+40003488	238137	Acetaminophen / Aspirin / Caffeine / salicylamide Oral Tablet
+40026558	438803	Clotrimazole / hexamidine Topical Cream
+19002230	27221	hydrotalcite
+43526455	1373352	calcium bicarbonate
+40149417	792121	Melatonin / theanine Oral Tablet
+1359143	477053	Cinnamon Bark
+40139751	707194	Acetaminophen / Guaifenesin Oral Capsule
+586413	221144	pneumococcal polysaccharides (23)
+43013156	1366921	sodium chlorate
+19091311	236340	Alexitol sodium
+drug_concept_id 	 rxcui 	 name 
+40167838	876513	Amlodipine / telmisartan Oral Tablet
+19112632	477454	COLLAGEN, HYDROLYZED
+44507733	1441660	oxalate
+40017006	451356	Cyclamate / Saccharin Oral Tablet
+19022446	33055	pentaerythritol
+19080493	31475	naftazone
+42898420	1309498	Aesculus hippocastanum leaf extract
+40001314	372604	Lidocaine / tribenoside Rectal Suppository
+40146303	757229	Codeine / phenyltoloxamine Oral Solution
+19076785	55024	Potassium tartrate
+1352213	4257	Factor VIII
+40145363	757163	Ampicillin / Cloxacillin Oral Solution
+19113039	52103	Lithium acetate
+19061731	24940	ferrous chloride
+19051649	214525	doxorubicin liposome
+40229357	1045336	Benzocaine / Menthol Topical Cream
+42899432	1311061	Klebsiella pneumoniae
+19054693	435657	Olive Leaf Extract
+46221228	1607780	13-cis-12-(3'-carboxyphenyl)retinoic acid
+19071651	28486	lavender oil
+19056758	460	Alcuronium
+19097029	253189	Mixed vespid venom
+19091830	6465	Lofepramine
+1300751	105669	Polysaccharide iron complex
+19011094	117896	benzquercin
+40090601	376929	Thiamine / Vitamin B 12 Oral Tablet
+42899681	1310031	Nerium oleander leaf extract
+43012175	1362135	basil oil
+40007851	370835	Aluminum Hydroxide / magnesium trisilicate Oral Tablet
+19050375	21149	ciprofibrate
+42901041	1313982	Bupivacaine / Hydromorphone Prefilled Syringe
+45776270	1542389	Buprenorphine / Naloxone Buccal Film
+40244149	1192823	Bupivacaine / Sufentanil Injectable Solution
+46221338	1609071	BIS-PEG-PPG-14-14 dimethicone
+40044825	372853	Hydrochlorothiazide / Methyldopa Oral Tablet
+43532469	1426704	neurotrophin 4
+42900071	1311138	sodium bromide
+40145234	757151	Albuterol / Guaifenesin Oral Solution
+42904067	1344641	Convallaria majalis extract
+1314928	125921	ginger root
+42899427	1309328	Melissa officinalis leaf oil
+40010065	371024	Antipyrine / Benzocaine Otic Solution
+19082764	319866	meglumine antimoniate
+40147787	757282	isoniazid / Vitamin B6 Oral Solution
+44817996	1536930	Acetaminophen / Chlorpheniramine / Phenylephrine Effervescent Oral Tablet
+45775576	1546446	OMACETAXINE
+40018276	377319	Calamine / Diphenhydramine Topical Spray
+19011035	114202	Lactate
+42900068	1307966	Vitis vinifera seed extract
+42706042	1244515	Ascorbic Acid / Bioflavonoids Oral Capsule
+43532406	1427211	Hepatitis B Virus
+43531800	1425501	Cochineal
+40042021	439376	Estradiol / Estriol Oral Tablet
+19115055	56161	sennoside B
+43532434	1426414	lactobionate
+19051035	21842	cuprous oxide
+19055378	235776	Potassium hydroxyquinoline sulfate
+19032816	806626	Glycine zinc chelate
+40012869	451719	Ascorbic Acid / Sodium Fluoride Extended Release Oral Tablet
+44818463	1535222	glucuronolactone
+19043327	39468	veralipride
+42706184	1245382	Calcium Carbonate / Magnesium Chloride Delayed Release Oral Tablet
+43531797	1426448	Ceramide 2
+19122997	605061	Coral Calcium
+40029854	375719	Codeine / Promethazine Oral Solution
+44814337	1491502	Ketoprofen / Lidocaine Topical Cream
+43532084	1426405	POLYSORBATE 65
+40039683	374196	Furosemide / Triamterene Oral Tablet
+514834	124427	Honey bee venom
+19135839	90120	Magnesium salt
+19135781	8556	Polysaccharides
+40242566	1150094	Bifidobacterium lactis
+40003488	238137	Acetaminophen / Aspirin / Caffeine / salicylamide Oral Tablet
+40026558	438803	Clotrimazole / hexamidine Topical Cream
+19002230	27221	hydrotalcite
+43526455	1373352	calcium bicarbonate
+40149417	792121	Melatonin / theanine Oral Tablet
+1359143	477053	Cinnamon Bark
+40139751	707194	Acetaminophen / Guaifenesin Oral Capsule
+586413	221144	pneumococcal polysaccharides (23)
+43013156	1366921	sodium chlorate
+19091311	236340	Alexitol sodium
+drug_concept_id 	 rxcui 	 name 
+40167838	876513	Amlodipine / telmisartan Oral Tablet
+19112632	477454	COLLAGEN, HYDROLYZED
+44507733	1441660	oxalate
+40017006	451356	Cyclamate / Saccharin Oral Tablet
+19022446	33055	pentaerythritol
+19080493	31475	naftazone
+42898420	1309498	Aesculus hippocastanum leaf extract
+40001314	372604	Lidocaine / tribenoside Rectal Suppository
+40146303	757229	Codeine / phenyltoloxamine Oral Solution
+19076785	55024	Potassium tartrate
+1352213	4257	Factor VIII
+40145363	757163	Ampicillin / Cloxacillin Oral Solution
+19113039	52103	Lithium acetate
+19061731	24940	ferrous chloride
+19051649	214525	doxorubicin liposome
+40229357	1045336	Benzocaine / Menthol Topical Cream
+42899432	1311061	Klebsiella pneumoniae
+19054693	435657	Olive Leaf Extract
+46221228	1607780	13-cis-12-(3'-carboxyphenyl)retinoic acid
+19071651	28486	lavender oil
+19056758	460	Alcuronium
+19097029	253189	Mixed vespid venom
+19091830	6465	Lofepramine
+1300751	105669	Polysaccharide iron complex
+19011094	117896	benzquercin
+40090601	376929	Thiamine / Vitamin B 12 Oral Tablet
+42899681	1310031	Nerium oleander leaf extract
+43012175	1362135	basil oil
+40007851	370835	Aluminum Hydroxide / magnesium trisilicate Oral Tablet
+19050375	21149	ciprofibrate
+42901041	1313982	Bupivacaine / Hydromorphone Prefilled Syringe
+45776270	1542389	Buprenorphine / Naloxone Buccal Film
+40244149	1192823	Bupivacaine / Sufentanil Injectable Solution
+46221338	1609071	BIS-PEG-PPG-14-14 dimethicone
+40044825	372853	Hydrochlorothiazide / Methyldopa Oral Tablet
+43532469	1426704	neurotrophin 4
+42900071	1311138	sodium bromide
+40145234	757151	Albuterol / Guaifenesin Oral Solution
+42904067	1344641	Convallaria majalis extract
+1314928	125921	ginger root
+42899427	1309328	Melissa officinalis leaf oil
+40010065	371024	Antipyrine / Benzocaine Otic Solution
+19082764	319866	meglumine antimoniate
+40147787	757282	isoniazid / Vitamin B6 Oral Solution
+44817996	1536930	Acetaminophen / Chlorpheniramine / Phenylephrine Effervescent Oral Tablet
+45775576	1546446	OMACETAXINE
+40018276	377319	Calamine / Diphenhydramine Topical Spray
+19011035	114202	Lactate
+42900068	1307966	Vitis vinifera seed extract
+42706042	1244515	Ascorbic Acid / Bioflavonoids Oral Capsule
+43532406	1427211	Hepatitis B Virus
+43531800	1425501	Cochineal
+40042021	439376	Estradiol / Estriol Oral Tablet
+19115055	56161	sennoside B
+43532434	1426414	lactobionate
+19051035	21842	cuprous oxide
+19055378	235776	Potassium hydroxyquinoline sulfate
+19032816	806626	Glycine zinc chelate
+40012869	451719	Ascorbic Acid / Sodium Fluoride Extended Release Oral Tablet
+44818463	1535222	glucuronolactone
+19043327	39468	veralipride
+42706184	1245382	Calcium Carbonate / Magnesium Chloride Delayed Release Oral Tablet
+43531797	1426448	Ceramide 2
+19122997	605061	Coral Calcium
+40029854	375719	Codeine / Promethazine Oral Solution
+44814337	1491502	Ketoprofen / Lidocaine Topical Cream
+43532084	1426405	POLYSORBATE 65
+40039683	374196	Furosemide / Triamterene Oral Tablet
+514834	124427	Honey bee venom
+19135839	90120	Magnesium salt
+19135781	8556	Polysaccharides
+40242566	1150094	Bifidobacterium lactis
+40003488	238137	Acetaminophen / Aspirin / Caffeine / salicylamide Oral Tablet
+40026558	438803	Clotrimazole / hexamidine Topical Cream
+19002230	27221	hydrotalcite
+43526455	1373352	calcium bicarbonate
+40149417	792121	Melatonin / theanine Oral Tablet
+1359143	477053	Cinnamon Bark
+40139751	707194	Acetaminophen / Guaifenesin Oral Capsule
+586413	221144	pneumococcal polysaccharides (23)
+43013156	1366921	sodium chlorate
+19091311	236340	Alexitol sodium
+drug_concept_id 	 rxcui 	 name 
+40167838	876513	Amlodipine / telmisartan Oral Tablet
+19112632	477454	COLLAGEN, HYDROLYZED
+44507733	1441660	oxalate
+40017006	451356	Cyclamate / Saccharin Oral Tablet
+19022446	33055	pentaerythritol
+19080493	31475	naftazone
+42898420	1309498	Aesculus hippocastanum leaf extract
+40001314	372604	Lidocaine / tribenoside Rectal Suppository
+40146303	757229	Codeine / phenyltoloxamine Oral Solution
+19076785	55024	Potassium tartrate
+1352213	4257	Factor VIII
+40145363	757163	Ampicillin / Cloxacillin Oral Solution
+19113039	52103	Lithium acetate
+19061731	24940	ferrous chloride
+19051649	214525	doxorubicin liposome
+40229357	1045336	Benzocaine / Menthol Topical Cream
+42899432	1311061	Klebsiella pneumoniae
+19054693	435657	Olive Leaf Extract
+46221228	1607780	13-cis-12-(3'-carboxyphenyl)retinoic acid
+19071651	28486	lavender oil
+19056758	460	Alcuronium
+19097029	253189	Mixed vespid venom
+19091830	6465	Lofepramine
+1300751	105669	Polysaccharide iron complex
+19011094	117896	benzquercin
+40090601	376929	Thiamine / Vitamin B 12 Oral Tablet
+42899681	1310031	Nerium oleander leaf extract
+43012175	1362135	basil oil
+40007851	370835	Aluminum Hydroxide / magnesium trisilicate Oral Tablet
+19050375	21149	ciprofibrate
+42901041	1313982	Bupivacaine / Hydromorphone Prefilled Syringe
+45776270	1542389	Buprenorphine / Naloxone Buccal Film
+40244149	1192823	Bupivacaine / Sufentanil Injectable Solution
+46221338	1609071	BIS-PEG-PPG-14-14 dimethicone
+40044825	372853	Hydrochlorothiazide / Methyldopa Oral Tablet
+43532469	1426704	neurotrophin 4
+42900071	1311138	sodium bromide
+40145234	757151	Albuterol / Guaifenesin Oral Solution
+42904067	1344641	Convallaria majalis extract
+1314928	125921	ginger root
+42899427	1309328	Melissa officinalis leaf oil
+40010065	371024	Antipyrine / Benzocaine Otic Solution
+19082764	319866	meglumine antimoniate
+40147787	757282	isoniazid / Vitamin B6 Oral Solution
+44817996	1536930	Acetaminophen / Chlorpheniramine / Phenylephrine Effervescent Oral Tablet
+45775576	1546446	OMACETAXINE
+40018276	377319	Calamine / Diphenhydramine Topical Spray
+19011035	114202	Lactate
+42900068	1307966	Vitis vinifera seed extract
+42706042	1244515	Ascorbic Acid / Bioflavonoids Oral Capsule
+43532406	1427211	Hepatitis B Virus
+43531800	1425501	Cochineal
+40042021	439376	Estradiol / Estriol Oral Tablet
+19115055	56161	sennoside B
+43532434	1426414	lactobionate
+19051035	21842	cuprous oxide
+19055378	235776	Potassium hydroxyquinoline sulfate
+19032816	806626	Glycine zinc chelate
+40012869	451719	Ascorbic Acid / Sodium Fluoride Extended Release Oral Tablet
+44818463	1535222	glucuronolactone
+19043327	39468	veralipride
+42706184	1245382	Calcium Carbonate / Magnesium Chloride Delayed Release Oral Tablet
+43531797	1426448	Ceramide 2
+19122997	605061	Coral Calcium
+40029854	375719	Codeine / Promethazine Oral Solution
+44814337	1491502	Ketoprofen / Lidocaine Topical Cream
+43532084	1426405	POLYSORBATE 65
+40039683	374196	Furosemide / Triamterene Oral Tablet
+514834	124427	Honey bee venom
+19135839	90120	Magnesium salt
+19135781	8556	Polysaccharides
+40242566	1150094	Bifidobacterium lactis
+40003488	238137	Acetaminophen / Aspirin / Caffeine / salicylamide Oral Tablet
+40026558	438803	Clotrimazole / hexamidine Topical Cream
+19002230	27221	hydrotalcite
+43526455	1373352	calcium bicarbonate
+40149417	792121	Melatonin / theanine Oral Tablet
+1359143	477053	Cinnamon Bark
+40139751	707194	Acetaminophen / Guaifenesin Oral Capsule
+586413	221144	pneumococcal polysaccharides (23)
+43013156	1366921	sodium chlorate
+19091311	236340	Alexitol sodium
+drug_concept_id 	 rxcui 	 name 
+40167838	876513	Amlodipine / telmisartan Oral Tablet
+19112632	477454	COLLAGEN, HYDROLYZED
+44507733	1441660	oxalate
+40017006	451356	Cyclamate / Saccharin Oral Tablet
+19022446	33055	pentaerythritol
+19080493	31475	naftazone
+42898420	1309498	Aesculus hippocastanum leaf extract
+40001314	372604	Lidocaine / tribenoside Rectal Suppository
+40146303	757229	Codeine / phenyltoloxamine Oral Solution
+19076785	55024	Potassium tartrate
+1352213	4257	Factor VIII
+40145363	757163	Ampicillin / Cloxacillin Oral Solution
+19113039	52103	Lithium acetate
+19061731	24940	ferrous chloride
+19051649	214525	doxorubicin liposome
+40229357	1045336	Benzocaine / Menthol Topical Cream
+42899432	1311061	Klebsiella pneumoniae
+19054693	435657	Olive Leaf Extract
+46221228	1607780	13-cis-12-(3'-carboxyphenyl)retinoic acid
+19071651	28486	lavender oil
+19056758	460	Alcuronium
+19097029	253189	Mixed vespid venom
+19091830	6465	Lofepramine
+1300751	105669	Polysaccharide iron complex
+19011094	117896	benzquercin
+40090601	376929	Thiamine / Vitamin B 12 Oral Tablet
+42899681	1310031	Nerium oleander leaf extract
+43012175	1362135	basil oil
+40007851	370835	Aluminum Hydroxide / magnesium trisilicate Oral Tablet
+19050375	21149	ciprofibrate
+42901041	1313982	Bupivacaine / Hydromorphone Prefilled Syringe
+45776270	1542389	Buprenorphine / Naloxone Buccal Film
+40244149	1192823	Bupivacaine / Sufentanil Injectable Solution
+46221338	1609071	BIS-PEG-PPG-14-14 dimethicone
+40044825	372853	Hydrochlorothiazide / Methyldopa Oral Tablet
+43532469	1426704	neurotrophin 4
+42900071	1311138	sodium bromide
+40145234	757151	Albuterol / Guaifenesin Oral Solution
+42904067	1344641	Convallaria majalis extract
+1314928	125921	ginger root
+42899427	1309328	Melissa officinalis leaf oil
+40010065	371024	Antipyrine / Benzocaine Otic Solution
+19082764	319866	meglumine antimoniate
+40147787	757282	isoniazid / Vitamin B6 Oral Solution
+44817996	1536930	Acetaminophen / Chlorpheniramine / Phenylephrine Effervescent Oral Tablet
+45775576	1546446	OMACETAXINE
+40018276	377319	Calamine / Diphenhydramine Topical Spray
+19011035	114202	Lactate
+42900068	1307966	Vitis vinifera seed extract
+42706042	1244515	Ascorbic Acid / Bioflavonoids Oral Capsule
+43532406	1427211	Hepatitis B Virus
+43531800	1425501	Cochineal
+40042021	439376	Estradiol / Estriol Oral Tablet
+19115055	56161	sennoside B
+43532434	1426414	lactobionate
+19051035	21842	cuprous oxide
+19055378	235776	Potassium hydroxyquinoline sulfate
+19032816	806626	Glycine zinc chelate
+40012869	451719	Ascorbic Acid / Sodium Fluoride Extended Release Oral Tablet
+44818463	1535222	glucuronolactone
+19043327	39468	veralipride
+42706184	1245382	Calcium Carbonate / Magnesium Chloride Delayed Release Oral Tablet
+43531797	1426448	Ceramide 2
+19122997	605061	Coral Calcium
+40029854	375719	Codeine / Promethazine Oral Solution
+44814337	1491502	Ketoprofen / Lidocaine Topical Cream
+43532084	1426405	POLYSORBATE 65
+40039683	374196	Furosemide / Triamterene Oral Tablet
+514834	124427	Honey bee venom
+19135839	90120	Magnesium salt
+19135781	8556	Polysaccharides
+40242566	1150094	Bifidobacterium lactis
+40003488	238137	Acetaminophen / Aspirin / Caffeine / salicylamide Oral Tablet
+40026558	438803	Clotrimazole / hexamidine Topical Cream
+19002230	27221	hydrotalcite
+43526455	1373352	calcium bicarbonate
+40149417	792121	Melatonin / theanine Oral Tablet
+1359143	477053	Cinnamon Bark
+40139751	707194	Acetaminophen / Guaifenesin Oral Capsule
+586413	221144	pneumococcal polysaccharides (23)
+43013156	1366921	sodium chlorate
+19091311	236340	Alexitol sodium
+drug_concept_id 	 rxcui 	 name 
+40167838	876513	Amlodipine / telmisartan Oral Tablet
+19112632	477454	COLLAGEN, HYDROLYZED
+44507733	1441660	oxalate
+40017006	451356	Cyclamate / Saccharin Oral Tablet
+19022446	33055	pentaerythritol
+19080493	31475	naftazone
+42898420	1309498	Aesculus hippocastanum leaf extract
+40001314	372604	Lidocaine / tribenoside Rectal Suppository
+40146303	757229	Codeine / phenyltoloxamine Oral Solution
+19076785	55024	Potassium tartrate
+1352213	4257	Factor VIII
+40145363	757163	Ampicillin / Cloxacillin Oral Solution
+19113039	52103	Lithium acetate
+19061731	24940	ferrous chloride
+19051649	214525	doxorubicin liposome
+40229357	1045336	Benzocaine / Menthol Topical Cream
+42899432	1311061	Klebsiella pneumoniae
+19054693	435657	Olive Leaf Extract
+46221228	1607780	13-cis-12-(3'-carboxyphenyl)retinoic acid
+19071651	28486	lavender oil
+19056758	460	Alcuronium
+19097029	253189	Mixed vespid venom
+19091830	6465	Lofepramine
+1300751	105669	Polysaccharide iron complex
+19011094	117896	benzquercin
+40090601	376929	Thiamine / Vitamin B 12 Oral Tablet
+42899681	1310031	Nerium oleander leaf extract
+43012175	1362135	basil oil
+40007851	370835	Aluminum Hydroxide / magnesium trisilicate Oral Tablet
+19050375	21149	ciprofibrate
+42901041	1313982	Bupivacaine / Hydromorphone Prefilled Syringe
+45776270	1542389	Buprenorphine / Naloxone Buccal Film
+40244149	1192823	Bupivacaine / Sufentanil Injectable Solution
+46221338	1609071	BIS-PEG-PPG-14-14 dimethicone
+40044825	372853	Hydrochlorothiazide / Methyldopa Oral Tablet
+43532469	1426704	neurotrophin 4
+42900071	1311138	sodium bromide
+40145234	757151	Albuterol / Guaifenesin Oral Solution
+42904067	1344641	Convallaria majalis extract
+1314928	125921	ginger root
+42899427	1309328	Melissa officinalis leaf oil
+40010065	371024	Antipyrine / Benzocaine Otic Solution
+19082764	319866	meglumine antimoniate
+40147787	757282	isoniazid / Vitamin B6 Oral Solution
+44817996	1536930	Acetaminophen / Chlorpheniramine / Phenylephrine Effervescent Oral Tablet
+45775576	1546446	OMACETAXINE
+40018276	377319	Calamine / Diphenhydramine Topical Spray
+19011035	114202	Lactate
+42900068	1307966	Vitis vinifera seed extract
+42706042	1244515	Ascorbic Acid / Bioflavonoids Oral Capsule
+43532406	1427211	Hepatitis B Virus
+43531800	1425501	Cochineal
+40042021	439376	Estradiol / Estriol Oral Tablet
+19115055	56161	sennoside B
+43532434	1426414	lactobionate
+19051035	21842	cuprous oxide
+19055378	235776	Potassium hydroxyquinoline sulfate
+19032816	806626	Glycine zinc chelate
+40012869	451719	Ascorbic Acid / Sodium Fluoride Extended Release Oral Tablet
+44818463	1535222	glucuronolactone
+19043327	39468	veralipride
+42706184	1245382	Calcium Carbonate / Magnesium Chloride Delayed Release Oral Tablet
+43531797	1426448	Ceramide 2
+19122997	605061	Coral Calcium
+40029854	375719	Codeine / Promethazine Oral Solution
+44814337	1491502	Ketoprofen / Lidocaine Topical Cream
+43532084	1426405	POLYSORBATE 65
+40039683	374196	Furosemide / Triamterene Oral Tablet
+514834	124427	Honey bee venom
+19135839	90120	Magnesium salt
+19135781	8556	Polysaccharides
+40242566	1150094	Bifidobacterium lactis
+40003488	238137	Acetaminophen / Aspirin / Caffeine / salicylamide Oral Tablet
+40026558	438803	Clotrimazole / hexamidine Topical Cream
+19002230	27221	hydrotalcite
+43526455	1373352	calcium bicarbonate
+40149417	792121	Melatonin / theanine Oral Tablet
+1359143	477053	Cinnamon Bark
+40139751	707194	Acetaminophen / Guaifenesin Oral Capsule
+586413	221144	pneumococcal polysaccharides (23)
+43013156	1366921	sodium chlorate
+19091311	236340	Alexitol sodium
+drug_concept_id 	 rxcui 	 name 
+40167838	876513	Amlodipine / telmisartan Oral Tablet
+19112632	477454	COLLAGEN, HYDROLYZED
+44507733	1441660	oxalate
+40017006	451356	Cyclamate / Saccharin Oral Tablet
+19022446	33055	pentaerythritol
+19080493	31475	naftazone
+42898420	1309498	Aesculus hippocastanum leaf extract
+40001314	372604	Lidocaine / tribenoside Rectal Suppository
+40146303	757229	Codeine / phenyltoloxamine Oral Solution
+19076785	55024	Potassium tartrate
+1352213	4257	Factor VIII
+40145363	757163	Ampicillin / Cloxacillin Oral Solution
+19113039	52103	Lithium acetate
+19061731	24940	ferrous chloride
+19051649	214525	doxorubicin liposome
+40229357	1045336	Benzocaine / Menthol Topical Cream
+42899432	1311061	Klebsiella pneumoniae
+19054693	435657	Olive Leaf Extract
+46221228	1607780	13-cis-12-(3'-carboxyphenyl)retinoic acid
+19071651	28486	lavender oil
+19056758	460	Alcuronium
+19097029	253189	Mixed vespid venom
+19091830	6465	Lofepramine
+1300751	105669	Polysaccharide iron complex
+19011094	117896	benzquercin
+40090601	376929	Thiamine / Vitamin B 12 Oral Tablet
+42899681	1310031	Nerium oleander leaf extract
+43012175	1362135	basil oil
+40007851	370835	Aluminum Hydroxide / magnesium trisilicate Oral Tablet
+19050375	21149	ciprofibrate
+42901041	1313982	Bupivacaine / Hydromorphone Prefilled Syringe
+45776270	1542389	Buprenorphine / Naloxone Buccal Film
+40244149	1192823	Bupivacaine / Sufentanil Injectable Solution
+46221338	1609071	BIS-PEG-PPG-14-14 dimethicone
+40044825	372853	Hydrochlorothiazide / Methyldopa Oral Tablet
+43532469	1426704	neurotrophin 4
+42900071	1311138	sodium bromide
+40145234	757151	Albuterol / Guaifenesin Oral Solution
+42904067	1344641	Convallaria majalis extract
+1314928	125921	ginger root
+42899427	1309328	Melissa officinalis leaf oil
+40010065	371024	Antipyrine / Benzocaine Otic Solution
+19082764	319866	meglumine antimoniate
+40147787	757282	isoniazid / Vitamin B6 Oral Solution
+44817996	1536930	Acetaminophen / Chlorpheniramine / Phenylephrine Effervescent Oral Tablet
+45775576	1546446	OMACETAXINE
+40018276	377319	Calamine / Diphenhydramine Topical Spray
+19011035	114202	Lactate
+42900068	1307966	Vitis vinifera seed extract
+42706042	1244515	Ascorbic Acid / Bioflavonoids Oral Capsule
+43532406	1427211	Hepatitis B Virus
+43531800	1425501	Cochineal
+40042021	439376	Estradiol / Estriol Oral Tablet
+19115055	56161	sennoside B
+43532434	1426414	lactobionate
+19051035	21842	cuprous oxide
+19055378	235776	Potassium hydroxyquinoline sulfate
+19032816	806626	Glycine zinc chelate
+40012869	451719	Ascorbic Acid / Sodium Fluoride Extended Release Oral Tablet
+44818463	1535222	glucuronolactone
+19043327	39468	veralipride
+42706184	1245382	Calcium Carbonate / Magnesium Chloride Delayed Release Oral Tablet
+43531797	1426448	Ceramide 2
+19122997	605061	Coral Calcium
+40029854	375719	Codeine / Promethazine Oral Solution
+44814337	1491502	Ketoprofen / Lidocaine Topical Cream
+43532084	1426405	POLYSORBATE 65
+40039683	374196	Furosemide / Triamterene Oral Tablet
+514834	124427	Honey bee venom
+19135839	90120	Magnesium salt
+19135781	8556	Polysaccharides
+40242566	1150094	Bifidobacterium lactis
+40003488	238137	Acetaminophen / Aspirin / Caffeine / salicylamide Oral Tablet
+40026558	438803	Clotrimazole / hexamidine Topical Cream
+19002230	27221	hydrotalcite
+43526455	1373352	calcium bicarbonate
+40149417	792121	Melatonin / theanine Oral Tablet
+1359143	477053	Cinnamon Bark
+40139751	707194	Acetaminophen / Guaifenesin Oral Capsule
+586413	221144	pneumococcal polysaccharides (23)
+43013156	1366921	sodium chlorate
+19091311	236340	Alexitol sodium
+drug_concept_id 	 rxcui 	 name 
+40167838	876513	Amlodipine / telmisartan Oral Tablet
+19112632	477454	COLLAGEN, HYDROLYZED
+44507733	1441660	oxalate
+40017006	451356	Cyclamate / Saccharin Oral Tablet
+19022446	33055	pentaerythritol
+19080493	31475	naftazone
+42898420	1309498	Aesculus hippocastanum leaf extract
+40001314	372604	Lidocaine / tribenoside Rectal Suppository
+40146303	757229	Codeine / phenyltoloxamine Oral Solution
+19076785	55024	Potassium tartrate
+1352213	4257	Factor VIII
+40145363	757163	Ampicillin / Cloxacillin Oral Solution
+19113039	52103	Lithium acetate
+19061731	24940	ferrous chloride
+19051649	214525	doxorubicin liposome
+40229357	1045336	Benzocaine / Menthol Topical Cream
+42899432	1311061	Klebsiella pneumoniae
+19054693	435657	Olive Leaf Extract
+46221228	1607780	13-cis-12-(3'-carboxyphenyl)retinoic acid
+19071651	28486	lavender oil
+19056758	460	Alcuronium
+19097029	253189	Mixed vespid venom
+19091830	6465	Lofepramine
+1300751	105669	Polysaccharide iron complex
+19011094	117896	benzquercin
+40090601	376929	Thiamine / Vitamin B 12 Oral Tablet
+42899681	1310031	Nerium oleander leaf extract
+43012175	1362135	basil oil
+40007851	370835	Aluminum Hydroxide / magnesium trisilicate Oral Tablet
+19050375	21149	ciprofibrate
+42901041	1313982	Bupivacaine / Hydromorphone Prefilled Syringe
+45776270	1542389	Buprenorphine / Naloxone Buccal Film
+40244149	1192823	Bupivacaine / Sufentanil Injectable Solution
+46221338	1609071	BIS-PEG-PPG-14-14 dimethicone
+40044825	372853	Hydrochlorothiazide / Methyldopa Oral Tablet
+43532469	1426704	neurotrophin 4
+42900071	1311138	sodium bromide
+40145234	757151	Albuterol / Guaifenesin Oral Solution
+42904067	1344641	Convallaria majalis extract
+1314928	125921	ginger root
+42899427	1309328	Melissa officinalis leaf oil
+40010065	371024	Antipyrine / Benzocaine Otic Solution
+19082764	319866	meglumine antimoniate
+40147787	757282	isoniazid / Vitamin B6 Oral Solution
+44817996	1536930	Acetaminophen / Chlorpheniramine / Phenylephrine Effervescent Oral Tablet
+45775576	1546446	OMACETAXINE
+40018276	377319	Calamine / Diphenhydramine Topical Spray
+19011035	114202	Lactate
+42900068	1307966	Vitis vinifera seed extract
+42706042	1244515	Ascorbic Acid / Bioflavonoids Oral Capsule
+43532406	1427211	Hepatitis B Virus
+43531800	1425501	Cochineal
+40042021	439376	Estradiol / Estriol Oral Tablet
+19115055	56161	sennoside B
+43532434	1426414	lactobionate
+19051035	21842	cuprous oxide
+19055378	235776	Potassium hydroxyquinoline sulfate
+19032816	806626	Glycine zinc chelate
+40012869	451719	Ascorbic Acid / Sodium Fluoride Extended Release Oral Tablet
+44818463	1535222	glucuronolactone
+19043327	39468	veralipride
+42706184	1245382	Calcium Carbonate / Magnesium Chloride Delayed Release Oral Tablet
+43531797	1426448	Ceramide 2
+19122997	605061	Coral Calcium
+40029854	375719	Codeine / Promethazine Oral Solution
+44814337	1491502	Ketoprofen / Lidocaine Topical Cream
+43532084	1426405	POLYSORBATE 65
+40039683	374196	Furosemide / Triamterene Oral Tablet
+514834	124427	Honey bee venom
+19135839	90120	Magnesium salt
+19135781	8556	Polysaccharides
+40242566	1150094	Bifidobacterium lactis
+40003488	238137	Acetaminophen / Aspirin / Caffeine / salicylamide Oral Tablet
+40026558	438803	Clotrimazole / hexamidine Topical Cream
+19002230	27221	hydrotalcite
+43526455	1373352	calcium bicarbonate
+40149417	792121	Melatonin / theanine Oral Tablet
+1359143	477053	Cinnamon Bark
+40139751	707194	Acetaminophen / Guaifenesin Oral Capsule
+586413	221144	pneumococcal polysaccharides (23)
+43013156	1366921	sodium chlorate
+19091311	236340	Alexitol sodium
+drug_concept_id 	 rxcui 	 name 
+40167838	876513	Amlodipine / telmisartan Oral Tablet
+19112632	477454	COLLAGEN, HYDROLYZED
+44507733	1441660	oxalate
+40017006	451356	Cyclamate / Saccharin Oral Tablet
+19022446	33055	pentaerythritol
+19080493	31475	naftazone
+42898420	1309498	Aesculus hippocastanum leaf extract
+40001314	372604	Lidocaine / tribenoside Rectal Suppository
+40146303	757229	Codeine / phenyltoloxamine Oral Solution
+19076785	55024	Potassium tartrate
+1352213	4257	Factor VIII
+40145363	757163	Ampicillin / Cloxacillin Oral Solution
+19113039	52103	Lithium acetate
+19061731	24940	ferrous chloride
+19051649	214525	doxorubicin liposome
+40229357	1045336	Benzocaine / Menthol Topical Cream
+42899432	1311061	Klebsiella pneumoniae
+19054693	435657	Olive Leaf Extract
+46221228	1607780	13-cis-12-(3'-carboxyphenyl)retinoic acid
+19071651	28486	lavender oil
+19056758	460	Alcuronium
+19097029	253189	Mixed vespid venom
+19091830	6465	Lofepramine
+1300751	105669	Polysaccharide iron complex
+19011094	117896	benzquercin
+40090601	376929	Thiamine / Vitamin B 12 Oral Tablet
+42899681	1310031	Nerium oleander leaf extract
+43012175	1362135	basil oil
+40007851	370835	Aluminum Hydroxide / magnesium trisilicate Oral Tablet
+19050375	21149	ciprofibrate
+42901041	1313982	Bupivacaine / Hydromorphone Prefilled Syringe
+45776270	1542389	Buprenorphine / Naloxone Buccal Film
+40244149	1192823	Bupivacaine / Sufentanil Injectable Solution
+46221338	1609071	BIS-PEG-PPG-14-14 dimethicone
+40044825	372853	Hydrochlorothiazide / Methyldopa Oral Tablet
+43532469	1426704	neurotrophin 4
+42900071	1311138	sodium bromide
+40145234	757151	Albuterol / Guaifenesin Oral Solution
+42904067	1344641	Convallaria majalis extract
+1314928	125921	ginger root
+42899427	1309328	Melissa officinalis leaf oil
+40010065	371024	Antipyrine / Benzocaine Otic Solution
+19082764	319866	meglumine antimoniate
+40147787	757282	isoniazid / Vitamin B6 Oral Solution
+44817996	1536930	Acetaminophen / Chlorpheniramine / Phenylephrine Effervescent Oral Tablet
+45775576	1546446	OMACETAXINE
+40018276	377319	Calamine / Diphenhydramine Topical Spray
+19011035	114202	Lactate
+42900068	1307966	Vitis vinifera seed extract
+42706042	1244515	Ascorbic Acid / Bioflavonoids Oral Capsule
+43532406	1427211	Hepatitis B Virus
+43531800	1425501	Cochineal
+40042021	439376	Estradiol / Estriol Oral Tablet
+19115055	56161	sennoside B
+43532434	1426414	lactobionate
+19051035	21842	cuprous oxide
+19055378	235776	Potassium hydroxyquinoline sulfate
+19032816	806626	Glycine zinc chelate
+40012869	451719	Ascorbic Acid / Sodium Fluoride Extended Release Oral Tablet
+44818463	1535222	glucuronolactone
+19043327	39468	veralipride
+42706184	1245382	Calcium Carbonate / Magnesium Chloride Delayed Release Oral Tablet
+43531797	1426448	Ceramide 2
+19122997	605061	Coral Calcium
+40029854	375719	Codeine / Promethazine Oral Solution
+44814337	1491502	Ketoprofen / Lidocaine Topical Cream
+43532084	1426405	POLYSORBATE 65
+40039683	374196	Furosemide / Triamterene Oral Tablet
+514834	124427	Honey bee venom
+19135839	90120	Magnesium salt
+19135781	8556	Polysaccharides
+40242566	1150094	Bifidobacterium lactis
+40003488	238137	Acetaminophen / Aspirin / Caffeine / salicylamide Oral Tablet
+40026558	438803	Clotrimazole / hexamidine Topical Cream
+19002230	27221	hydrotalcite
+43526455	1373352	calcium bicarbonate
+40149417	792121	Melatonin / theanine Oral Tablet
+1359143	477053	Cinnamon Bark
+40139751	707194	Acetaminophen / Guaifenesin Oral Capsule
+586413	221144	pneumococcal polysaccharides (23)
+43013156	1366921	sodium chlorate
+19091311	236340	Alexitol sodium
+drug_concept_id 	 rxcui 	 name 
+40167838	876513	Amlodipine / telmisartan Oral Tablet
+19112632	477454	COLLAGEN, HYDROLYZED
+44507733	1441660	oxalate
+40017006	451356	Cyclamate / Saccharin Oral Tablet
+19022446	33055	pentaerythritol
+19080493	31475	naftazone
+42898420	1309498	Aesculus hippocastanum leaf extract
+40001314	372604	Lidocaine / tribenoside Rectal Suppository
+40146303	757229	Codeine / phenyltoloxamine Oral Solution
+19076785	55024	Potassium tartrate
+1352213	4257	Factor VIII
+40145363	757163	Ampicillin / Cloxacillin Oral Solution
+19113039	52103	Lithium acetate
+19061731	24940	ferrous chloride
+19051649	214525	doxorubicin liposome
+40229357	1045336	Benzocaine / Menthol Topical Cream
+42899432	1311061	Klebsiella pneumoniae
+19054693	435657	Olive Leaf Extract
+46221228	1607780	13-cis-12-(3'-carboxyphenyl)retinoic acid
+19071651	28486	lavender oil
+19056758	460	Alcuronium
+19097029	253189	Mixed vespid venom
+19091830	6465	Lofepramine
+1300751	105669	Polysaccharide iron complex
+19011094	117896	benzquercin
+40090601	376929	Thiamine / Vitamin B 12 Oral Tablet
+42899681	1310031	Nerium oleander leaf extract
+43012175	1362135	basil oil
+40007851	370835	Aluminum Hydroxide / magnesium trisilicate Oral Tablet
+19050375	21149	ciprofibrate
+42901041	1313982	Bupivacaine / Hydromorphone Prefilled Syringe
+45776270	1542389	Buprenorphine / Naloxone Buccal Film
+40244149	1192823	Bupivacaine / Sufentanil Injectable Solution
+46221338	1609071	BIS-PEG-PPG-14-14 dimethicone
+40044825	372853	Hydrochlorothiazide / Methyldopa Oral Tablet
+43532469	1426704	neurotrophin 4
+42900071	1311138	sodium bromide
+40145234	757151	Albuterol / Guaifenesin Oral Solution
+42904067	1344641	Convallaria majalis extract
+1314928	125921	ginger root
+42899427	1309328	Melissa officinalis leaf oil
+40010065	371024	Antipyrine / Benzocaine Otic Solution
+19082764	319866	meglumine antimoniate
+40147787	757282	isoniazid / Vitamin B6 Oral Solution
+44817996	1536930	Acetaminophen / Chlorpheniramine / Phenylephrine Effervescent Oral Tablet
+45775576	1546446	OMACETAXINE
+40018276	377319	Calamine / Diphenhydramine Topical Spray
+19011035	114202	Lactate
+42900068	1307966	Vitis vinifera seed extract
+42706042	1244515	Ascorbic Acid / Bioflavonoids Oral Capsule
+43532406	1427211	Hepatitis B Virus
+43531800	1425501	Cochineal
+40042021	439376	Estradiol / Estriol Oral Tablet
+19115055	56161	sennoside B
+43532434	1426414	lactobionate
+19051035	21842	cuprous oxide
+19055378	235776	Potassium hydroxyquinoline sulfate
+19032816	806626	Glycine zinc chelate
+40012869	451719	Ascorbic Acid / Sodium Fluoride Extended Release Oral Tablet
+44818463	1535222	glucuronolactone
+19043327	39468	veralipride
+42706184	1245382	Calcium Carbonate / Magnesium Chloride Delayed Release Oral Tablet
+43531797	1426448	Ceramide 2
+19122997	605061	Coral Calcium
+40029854	375719	Codeine / Promethazine Oral Solution
+44814337	1491502	Ketoprofen / Lidocaine Topical Cream
+43532084	1426405	POLYSORBATE 65
+40039683	374196	Furosemide / Triamterene Oral Tablet
+514834	124427	Honey bee venom
+19135839	90120	Magnesium salt
+19135781	8556	Polysaccharides
+40242566	1150094	Bifidobacterium lactis
+40003488	238137	Acetaminophen / Aspirin / Caffeine / salicylamide Oral Tablet
+40026558	438803	Clotrimazole / hexamidine Topical Cream
+19002230	27221	hydrotalcite
+43526455	1373352	calcium bicarbonate
+40149417	792121	Melatonin / theanine Oral Tablet
+1359143	477053	Cinnamon Bark
+40139751	707194	Acetaminophen / Guaifenesin Oral Capsule
+586413	221144	pneumococcal polysaccharides (23)
+43013156	1366921	sodium chlorate
+19091311	236340	Alexitol sodium
+drug_concept_id 	 rxcui 	 name 
+40167838	876513	Amlodipine / telmisartan Oral Tablet
+19112632	477454	COLLAGEN, HYDROLYZED
+44507733	1441660	oxalate
+40017006	451356	Cyclamate / Saccharin Oral Tablet
+19022446	33055	pentaerythritol
+19080493	31475	naftazone
+42898420	1309498	Aesculus hippocastanum leaf extract
+40001314	372604	Lidocaine / tribenoside Rectal Suppository
+40146303	757229	Codeine / phenyltoloxamine Oral Solution
+19076785	55024	Potassium tartrate
+1352213	4257	Factor VIII
+40145363	757163	Ampicillin / Cloxacillin Oral Solution
+19113039	52103	Lithium acetate
+19061731	24940	ferrous chloride
+19051649	214525	doxorubicin liposome
+40229357	1045336	Benzocaine / Menthol Topical Cream
+42899432	1311061	Klebsiella pneumoniae
+19054693	435657	Olive Leaf Extract
+46221228	1607780	13-cis-12-(3'-carboxyphenyl)retinoic acid
+19071651	28486	lavender oil
+19056758	460	Alcuronium
+19097029	253189	Mixed vespid venom
+19091830	6465	Lofepramine
+1300751	105669	Polysaccharide iron complex
+19011094	117896	benzquercin
+40090601	376929	Thiamine / Vitamin B 12 Oral Tablet
+42899681	1310031	Nerium oleander leaf extract
+43012175	1362135	basil oil
+40007851	370835	Aluminum Hydroxide / magnesium trisilicate Oral Tablet
+19050375	21149	ciprofibrate
+42901041	1313982	Bupivacaine / Hydromorphone Prefilled Syringe
+45776270	1542389	Buprenorphine / Naloxone Buccal Film
+40244149	1192823	Bupivacaine / Sufentanil Injectable Solution
+46221338	1609071	BIS-PEG-PPG-14-14 dimethicone
+40044825	372853	Hydrochlorothiazide / Methyldopa Oral Tablet
+43532469	1426704	neurotrophin 4
+42900071	1311138	sodium bromide
+40145234	757151	Albuterol / Guaifenesin Oral Solution
+42904067	1344641	Convallaria majalis extract
+1314928	125921	ginger root
+42899427	1309328	Melissa officinalis leaf oil
+40010065	371024	Antipyrine / Benzocaine Otic Solution
+19082764	319866	meglumine antimoniate
+40147787	757282	isoniazid / Vitamin B6 Oral Solution
+44817996	1536930	Acetaminophen / Chlorpheniramine / Phenylephrine Effervescent Oral Tablet
+45775576	1546446	OMACETAXINE
+40018276	377319	Calamine / Diphenhydramine Topical Spray
+19011035	114202	Lactate
+42900068	1307966	Vitis vinifera seed extract
+42706042	1244515	Ascorbic Acid / Bioflavonoids Oral Capsule
+43532406	1427211	Hepatitis B Virus
+43531800	1425501	Cochineal
+40042021	439376	Estradiol / Estriol Oral Tablet
+19115055	56161	sennoside B
+43532434	1426414	lactobionate
+19051035	21842	cuprous oxide
+19055378	235776	Potassium hydroxyquinoline sulfate
+19032816	806626	Glycine zinc chelate
+40012869	451719	Ascorbic Acid / Sodium Fluoride Extended Release Oral Tablet
+44818463	1535222	glucuronolactone
+19043327	39468	veralipride
+42706184	1245382	Calcium Carbonate / Magnesium Chloride Delayed Release Oral Tablet
+43531797	1426448	Ceramide 2
+19122997	605061	Coral Calcium
+40029854	375719	Codeine / Promethazine Oral Solution
+44814337	1491502	Ketoprofen / Lidocaine Topical Cream
+43532084	1426405	POLYSORBATE 65
+40039683	374196	Furosemide / Triamterene Oral Tablet
+514834	124427	Honey bee venom
+19135839	90120	Magnesium salt
+19135781	8556	Polysaccharides
+40242566	1150094	Bifidobacterium lactis
+40003488	238137	Acetaminophen / Aspirin / Caffeine / salicylamide Oral Tablet
+40026558	438803	Clotrimazole / hexamidine Topical Cream
+19002230	27221	hydrotalcite
+43526455	1373352	calcium bicarbonate
+40149417	792121	Melatonin / theanine Oral Tablet
+1359143	477053	Cinnamon Bark
+40139751	707194	Acetaminophen / Guaifenesin Oral Capsule
+586413	221144	pneumococcal polysaccharides (23)
+43013156	1366921	sodium chlorate
+19091311	236340	Alexitol sodium
+drug_concept_id 	 rxcui 	 name 
+40167838	876513	Amlodipine / telmisartan Oral Tablet
+19112632	477454	COLLAGEN, HYDROLYZED
+44507733	1441660	oxalate
+40017006	451356	Cyclamate / Saccharin Oral Tablet
+19022446	33055	pentaerythritol
+19080493	31475	naftazone
+42898420	1309498	Aesculus hippocastanum leaf extract
+40001314	372604	Lidocaine / tribenoside Rectal Suppository
+40146303	757229	Codeine / phenyltoloxamine Oral Solution
+19076785	55024	Potassium tartrate
+1352213	4257	Factor VIII
+40145363	757163	Ampicillin / Cloxacillin Oral Solution
+19113039	52103	Lithium acetate
+19061731	24940	ferrous chloride
+19051649	214525	doxorubicin liposome
+40229357	1045336	Benzocaine / Menthol Topical Cream
+42899432	1311061	Klebsiella pneumoniae
+19054693	435657	Olive Leaf Extract
+46221228	1607780	13-cis-12-(3'-carboxyphenyl)retinoic acid
+19071651	28486	lavender oil
+19056758	460	Alcuronium
+19097029	253189	Mixed vespid venom
+19091830	6465	Lofepramine
+1300751	105669	Polysaccharide iron complex
+19011094	117896	benzquercin
+40090601	376929	Thiamine / Vitamin B 12 Oral Tablet
+42899681	1310031	Nerium oleander leaf extract
+43012175	1362135	basil oil
+40007851	370835	Aluminum Hydroxide / magnesium trisilicate Oral Tablet
+19050375	21149	ciprofibrate
+42901041	1313982	Bupivacaine / Hydromorphone Prefilled Syringe
+45776270	1542389	Buprenorphine / Naloxone Buccal Film
+40244149	1192823	Bupivacaine / Sufentanil Injectable Solution
+46221338	1609071	BIS-PEG-PPG-14-14 dimethicone
+40044825	372853	Hydrochlorothiazide / Methyldopa Oral Tablet
+43532469	1426704	neurotrophin 4
+42900071	1311138	sodium bromide
+40145234	757151	Albuterol / Guaifenesin Oral Solution
+42904067	1344641	Convallaria majalis extract
+1314928	125921	ginger root
+42899427	1309328	Melissa officinalis leaf oil
+40010065	371024	Antipyrine / Benzocaine Otic Solution
+19082764	319866	meglumine antimoniate
+40147787	757282	isoniazid / Vitamin B6 Oral Solution
+44817996	1536930	Acetaminophen / Chlorpheniramine / Phenylephrine Effervescent Oral Tablet
+45775576	1546446	OMACETAXINE
+40018276	377319	Calamine / Diphenhydramine Topical Spray
+19011035	114202	Lactate
+42900068	1307966	Vitis vinifera seed extract
+42706042	1244515	Ascorbic Acid / Bioflavonoids Oral Capsule
+43532406	1427211	Hepatitis B Virus
+43531800	1425501	Cochineal
+40042021	439376	Estradiol / Estriol Oral Tablet
+19115055	56161	sennoside B
+43532434	1426414	lactobionate
+19051035	21842	cuprous oxide
+19055378	235776	Potassium hydroxyquinoline sulfate
+19032816	806626	Glycine zinc chelate
+40012869	451719	Ascorbic Acid / Sodium Fluoride Extended Release Oral Tablet
+44818463	1535222	glucuronolactone
+19043327	39468	veralipride
+42706184	1245382	Calcium Carbonate / Magnesium Chloride Delayed Release Oral Tablet
+43531797	1426448	Ceramide 2
+19122997	605061	Coral Calcium
+40029854	375719	Codeine / Promethazine Oral Solution
+44814337	1491502	Ketoprofen / Lidocaine Topical Cream
+43532084	1426405	POLYSORBATE 65
+40039683	374196	Furosemide / Triamterene Oral Tablet
+514834	124427	Honey bee venom
+19135839	90120	Magnesium salt
+19135781	8556	Polysaccharides
+40242566	1150094	Bifidobacterium lactis
+40003488	238137	Acetaminophen / Aspirin / Caffeine / salicylamide Oral Tablet
+40026558	438803	Clotrimazole / hexamidine Topical Cream
+19002230	27221	hydrotalcite
+43526455	1373352	calcium bicarbonate
+40149417	792121	Melatonin / theanine Oral Tablet
+1359143	477053	Cinnamon Bark
+40139751	707194	Acetaminophen / Guaifenesin Oral Capsule
+586413	221144	pneumococcal polysaccharides (23)
+43013156	1366921	sodium chlorate
+19091311	236340	Alexitol sodium
+drug_concept_id 	 rxcui 	 name 
+40167838	876513	Amlodipine / telmisartan Oral Tablet
+19112632	477454	COLLAGEN, HYDROLYZED
+44507733	1441660	oxalate
+40017006	451356	Cyclamate / Saccharin Oral Tablet
+19022446	33055	pentaerythritol
+19080493	31475	naftazone
+42898420	1309498	Aesculus hippocastanum leaf extract
+40001314	372604	Lidocaine / tribenoside Rectal Suppository
+40146303	757229	Codeine / phenyltoloxamine Oral Solution
+19076785	55024	Potassium tartrate
+1352213	4257	Factor VIII
+40145363	757163	Ampicillin / Cloxacillin Oral Solution
+19113039	52103	Lithium acetate
+19061731	24940	ferrous chloride
+19051649	214525	doxorubicin liposome
+40229357	1045336	Benzocaine / Menthol Topical Cream
+42899432	1311061	Klebsiella pneumoniae
+19054693	435657	Olive Leaf Extract
+46221228	1607780	13-cis-12-(3'-carboxyphenyl)retinoic acid
+19071651	28486	lavender oil
+19056758	460	Alcuronium
+19097029	253189	Mixed vespid venom
+19091830	6465	Lofepramine
+1300751	105669	Polysaccharide iron complex
+19011094	117896	benzquercin
+40090601	376929	Thiamine / Vitamin B 12 Oral Tablet
+42899681	1310031	Nerium oleander leaf extract
+43012175	1362135	basil oil
+40007851	370835	Aluminum Hydroxide / magnesium trisilicate Oral Tablet
+19050375	21149	ciprofibrate
+42901041	1313982	Bupivacaine / Hydromorphone Prefilled Syringe
+45776270	1542389	Buprenorphine / Naloxone Buccal Film
+40244149	1192823	Bupivacaine / Sufentanil Injectable Solution
+46221338	1609071	BIS-PEG-PPG-14-14 dimethicone
+40044825	372853	Hydrochlorothiazide / Methyldopa Oral Tablet
+43532469	1426704	neurotrophin 4
+42900071	1311138	sodium bromide
+40145234	757151	Albuterol / Guaifenesin Oral Solution
+42904067	1344641	Convallaria majalis extract
+1314928	125921	ginger root
+42899427	1309328	Melissa officinalis leaf oil
+40010065	371024	Antipyrine / Benzocaine Otic Solution
+19082764	319866	meglumine antimoniate
+40147787	757282	isoniazid / Vitamin B6 Oral Solution
+44817996	1536930	Acetaminophen / Chlorpheniramine / Phenylephrine Effervescent Oral Tablet
+45775576	1546446	OMACETAXINE
+40018276	377319	Calamine / Diphenhydramine Topical Spray
+19011035	114202	Lactate
+42900068	1307966	Vitis vinifera seed extract
+42706042	1244515	Ascorbic Acid / Bioflavonoids Oral Capsule
+43532406	1427211	Hepatitis B Virus
+43531800	1425501	Cochineal
+40042021	439376	Estradiol / Estriol Oral Tablet
+19115055	56161	sennoside B
+43532434	1426414	lactobionate
+19051035	21842	cuprous oxide
+19055378	235776	Potassium hydroxyquinoline sulfate
+19032816	806626	Glycine zinc chelate
+40012869	451719	Ascorbic Acid / Sodium Fluoride Extended Release Oral Tablet
+44818463	1535222	glucuronolactone
+19043327	39468	veralipride
+42706184	1245382	Calcium Carbonate / Magnesium Chloride Delayed Release Oral Tablet
+43531797	1426448	Ceramide 2
+19122997	605061	Coral Calcium
+40029854	375719	Codeine / Promethazine Oral Solution
+44814337	1491502	Ketoprofen / Lidocaine Topical Cream
+43532084	1426405	POLYSORBATE 65
+40039683	374196	Furosemide / Triamterene Oral Tablet
+514834	124427	Honey bee venom
+19135839	90120	Magnesium salt
+19135781	8556	Polysaccharides
+40242566	1150094	Bifidobacterium lactis
+40003488	238137	Acetaminophen / Aspirin / Caffeine / salicylamide Oral Tablet
+40026558	438803	Clotrimazole / hexamidine Topical Cream
+19002230	27221	hydrotalcite
+43526455	1373352	calcium bicarbonate
+40149417	792121	Melatonin / theanine Oral Tablet
+1359143	477053	Cinnamon Bark
+40139751	707194	Acetaminophen / Guaifenesin Oral Capsule
+586413	221144	pneumococcal polysaccharides (23)
+43013156	1366921	sodium chlorate
+19091311	236340	Alexitol sodium
+drug_concept_id 	 rxcui 	 name 
+40167838	876513	Amlodipine / telmisartan Oral Tablet
+19112632	477454	COLLAGEN, HYDROLYZED
+44507733	1441660	oxalate
+40017006	451356	Cyclamate / Saccharin Oral Tablet
+19022446	33055	pentaerythritol
+19080493	31475	naftazone
+42898420	1309498	Aesculus hippocastanum leaf extract
+40001314	372604	Lidocaine / tribenoside Rectal Suppository
+40146303	757229	Codeine / phenyltoloxamine Oral Solution
+19076785	55024	Potassium tartrate
+1352213	4257	Factor VIII
+40145363	757163	Ampicillin / Cloxacillin Oral Solution
+19113039	52103	Lithium acetate
+19061731	24940	ferrous chloride
+19051649	214525	doxorubicin liposome
+40229357	1045336	Benzocaine / Menthol Topical Cream
+42899432	1311061	Klebsiella pneumoniae
+19054693	435657	Olive Leaf Extract
+46221228	1607780	13-cis-12-(3'-carboxyphenyl)retinoic acid
+19071651	28486	lavender oil
+19056758	460	Alcuronium
+19097029	253189	Mixed vespid venom
+19091830	6465	Lofepramine
+1300751	105669	Polysaccharide iron complex
+19011094	117896	benzquercin
+40090601	376929	Thiamine / Vitamin B 12 Oral Tablet
+42899681	1310031	Nerium oleander leaf extract
+43012175	1362135	basil oil
+40007851	370835	Aluminum Hydroxide / magnesium trisilicate Oral Tablet
+19050375	21149	ciprofibrate
+42901041	1313982	Bupivacaine / Hydromorphone Prefilled Syringe
+45776270	1542389	Buprenorphine / Naloxone Buccal Film
+40244149	1192823	Bupivacaine / Sufentanil Injectable Solution
+46221338	1609071	BIS-PEG-PPG-14-14 dimethicone
+40044825	372853	Hydrochlorothiazide / Methyldopa Oral Tablet
+43532469	1426704	neurotrophin 4
+42900071	1311138	sodium bromide
+40145234	757151	Albuterol / Guaifenesin Oral Solution
+42904067	1344641	Convallaria majalis extract
+1314928	125921	ginger root
+42899427	1309328	Melissa officinalis leaf oil
+40010065	371024	Antipyrine / Benzocaine Otic Solution
+19082764	319866	meglumine antimoniate
+40147787	757282	isoniazid / Vitamin B6 Oral Solution
+44817996	1536930	Acetaminophen / Chlorpheniramine / Phenylephrine Effervescent Oral Tablet
+45775576	1546446	OMACETAXINE
+40018276	377319	Calamine / Diphenhydramine Topical Spray
+19011035	114202	Lactate
+42900068	1307966	Vitis vinifera seed extract
+42706042	1244515	Ascorbic Acid / Bioflavonoids Oral Capsule
+43532406	1427211	Hepatitis B Virus
+43531800	1425501	Cochineal
+40042021	439376	Estradiol / Estriol Oral Tablet
+19115055	56161	sennoside B
+43532434	1426414	lactobionate
+19051035	21842	cuprous oxide
+19055378	235776	Potassium hydroxyquinoline sulfate
+19032816	806626	Glycine zinc chelate
+40012869	451719	Ascorbic Acid / Sodium Fluoride Extended Release Oral Tablet
+44818463	1535222	glucuronolactone
+19043327	39468	veralipride
+42706184	1245382	Calcium Carbonate / Magnesium Chloride Delayed Release Oral Tablet
+43531797	1426448	Ceramide 2
+19122997	605061	Coral Calcium
+40029854	375719	Codeine / Promethazine Oral Solution
+44814337	1491502	Ketoprofen / Lidocaine Topical Cream
+43532084	1426405	POLYSORBATE 65
+40039683	374196	Furosemide / Triamterene Oral Tablet
+514834	124427	Honey bee venom
+19135839	90120	Magnesium salt
+19135781	8556	Polysaccharides
+40242566	1150094	Bifidobacterium lactis
+40003488	238137	Acetaminophen / Aspirin / Caffeine / salicylamide Oral Tablet
+40026558	438803	Clotrimazole / hexamidine Topical Cream
+19002230	27221	hydrotalcite
+43526455	1373352	calcium bicarbonate
+40149417	792121	Melatonin / theanine Oral Tablet
+1359143	477053	Cinnamon Bark
+40139751	707194	Acetaminophen / Guaifenesin Oral Capsule
+586413	221144	pneumococcal polysaccharides (23)
+43013156	1366921	sodium chlorate
+19091311	236340	Alexitol sodium
+drug_concept_id 	 rxcui 	 name 
+40167838	876513	Amlodipine / telmisartan Oral Tablet
+19112632	477454	COLLAGEN, HYDROLYZED
+44507733	1441660	oxalate
+40017006	451356	Cyclamate / Saccharin Oral Tablet
+19022446	33055	pentaerythritol
+19080493	31475	naftazone
+42898420	1309498	Aesculus hippocastanum leaf extract
+40001314	372604	Lidocaine / tribenoside Rectal Suppository
+40146303	757229	Codeine / phenyltoloxamine Oral Solution
+19076785	55024	Potassium tartrate
+1352213	4257	Factor VIII
+40145363	757163	Ampicillin / Cloxacillin Oral Solution
+19113039	52103	Lithium acetate
+19061731	24940	ferrous chloride
+19051649	214525	doxorubicin liposome
+40229357	1045336	Benzocaine / Menthol Topical Cream
+42899432	1311061	Klebsiella pneumoniae
+19054693	435657	Olive Leaf Extract
+46221228	1607780	13-cis-12-(3'-carboxyphenyl)retinoic acid
+19071651	28486	lavender oil
+19056758	460	Alcuronium
+19097029	253189	Mixed vespid venom
+19091830	6465	Lofepramine
+1300751	105669	Polysaccharide iron complex
+19011094	117896	benzquercin
+40090601	376929	Thiamine / Vitamin B 12 Oral Tablet
+42899681	1310031	Nerium oleander leaf extract
+43012175	1362135	basil oil
+40007851	370835	Aluminum Hydroxide / magnesium trisilicate Oral Tablet
+19050375	21149	ciprofibrate
+42901041	1313982	Bupivacaine / Hydromorphone Prefilled Syringe
+45776270	1542389	Buprenorphine / Naloxone Buccal Film
+40244149	1192823	Bupivacaine / Sufentanil Injectable Solution
+46221338	1609071	BIS-PEG-PPG-14-14 dimethicone
+40044825	372853	Hydrochlorothiazide / Methyldopa Oral Tablet
+43532469	1426704	neurotrophin 4
+42900071	1311138	sodium bromide
+40145234	757151	Albuterol / Guaifenesin Oral Solution
+42904067	1344641	Convallaria majalis extract
+1314928	125921	ginger root
+42899427	1309328	Melissa officinalis leaf oil
+40010065	371024	Antipyrine / Benzocaine Otic Solution
+19082764	319866	meglumine antimoniate
+40147787	757282	isoniazid / Vitamin B6 Oral Solution
+44817996	1536930	Acetaminophen / Chlorpheniramine / Phenylephrine Effervescent Oral Tablet
+45775576	1546446	OMACETAXINE
+40018276	377319	Calamine / Diphenhydramine Topical Spray
+19011035	114202	Lactate
+42900068	1307966	Vitis vinifera seed extract
+42706042	1244515	Ascorbic Acid / Bioflavonoids Oral Capsule
+43532406	1427211	Hepatitis B Virus
+43531800	1425501	Cochineal
+40042021	439376	Estradiol / Estriol Oral Tablet
+19115055	56161	sennoside B
+43532434	1426414	lactobionate
+19051035	21842	cuprous oxide
+19055378	235776	Potassium hydroxyquinoline sulfate
+19032816	806626	Glycine zinc chelate
+40012869	451719	Ascorbic Acid / Sodium Fluoride Extended Release Oral Tablet
+44818463	1535222	glucuronolactone
+19043327	39468	veralipride
+42706184	1245382	Calcium Carbonate / Magnesium Chloride Delayed Release Oral Tablet
+43531797	1426448	Ceramide 2
+19122997	605061	Coral Calcium
+40029854	375719	Codeine / Promethazine Oral Solution
+44814337	1491502	Ketoprofen / Lidocaine Topical Cream
+43532084	1426405	POLYSORBATE 65
+40039683	374196	Furosemide / Triamterene Oral Tablet
+514834	124427	Honey bee venom
+19135839	90120	Magnesium salt
+19135781	8556	Polysaccharides
+40242566	1150094	Bifidobacterium lactis
+40003488	238137	Acetaminophen / Aspirin / Caffeine / salicylamide Oral Tablet
+40026558	438803	Clotrimazole / hexamidine Topical Cream
+19002230	27221	hydrotalcite
+43526455	1373352	calcium bicarbonate
+40149417	792121	Melatonin / theanine Oral Tablet
+1359143	477053	Cinnamon Bark
+40139751	707194	Acetaminophen / Guaifenesin Oral Capsule
+586413	221144	pneumococcal polysaccharides (23)
+43013156	1366921	sodium chlorate
+19091311	236340	Alexitol sodium
+drug_concept_id 	 rxcui 	 name 
+40167838	876513	Amlodipine / telmisartan Oral Tablet
+19112632	477454	COLLAGEN, HYDROLYZED
+44507733	1441660	oxalate
+40017006	451356	Cyclamate / Saccharin Oral Tablet
+19022446	33055	pentaerythritol
+19080493	31475	naftazone
+42898420	1309498	Aesculus hippocastanum leaf extract
+40001314	372604	Lidocaine / tribenoside Rectal Suppository
+40146303	757229	Codeine / phenyltoloxamine Oral Solution
+19076785	55024	Potassium tartrate
+1352213	4257	Factor VIII
+40145363	757163	Ampicillin / Cloxacillin Oral Solution
+19113039	52103	Lithium acetate
+19061731	24940	ferrous chloride
+19051649	214525	doxorubicin liposome
+40229357	1045336	Benzocaine / Menthol Topical Cream
+42899432	1311061	Klebsiella pneumoniae
+19054693	435657	Olive Leaf Extract
+46221228	1607780	13-cis-12-(3'-carboxyphenyl)retinoic acid
+19071651	28486	lavender oil
+19056758	460	Alcuronium
+19097029	253189	Mixed vespid venom
+19091830	6465	Lofepramine
+1300751	105669	Polysaccharide iron complex
+19011094	117896	benzquercin
+40090601	376929	Thiamine / Vitamin B 12 Oral Tablet
+42899681	1310031	Nerium oleander leaf extract
+43012175	1362135	basil oil
+40007851	370835	Aluminum Hydroxide / magnesium trisilicate Oral Tablet
+19050375	21149	ciprofibrate
+42901041	1313982	Bupivacaine / Hydromorphone Prefilled Syringe
+45776270	1542389	Buprenorphine / Naloxone Buccal Film
+40244149	1192823	Bupivacaine / Sufentanil Injectable Solution
+46221338	1609071	BIS-PEG-PPG-14-14 dimethicone
+40044825	372853	Hydrochlorothiazide / Methyldopa Oral Tablet
+43532469	1426704	neurotrophin 4
+42900071	1311138	sodium bromide
+40145234	757151	Albuterol / Guaifenesin Oral Solution
+42904067	1344641	Convallaria majalis extract
+1314928	125921	ginger root
+42899427	1309328	Melissa officinalis leaf oil
+40010065	371024	Antipyrine / Benzocaine Otic Solution
+19082764	319866	meglumine antimoniate
+40147787	757282	isoniazid / Vitamin B6 Oral Solution
+44817996	1536930	Acetaminophen / Chlorpheniramine / Phenylephrine Effervescent Oral Tablet
+45775576	1546446	OMACETAXINE
+40018276	377319	Calamine / Diphenhydramine Topical Spray
+19011035	114202	Lactate
+42900068	1307966	Vitis vinifera seed extract
+42706042	1244515	Ascorbic Acid / Bioflavonoids Oral Capsule
+43532406	1427211	Hepatitis B Virus
+43531800	1425501	Cochineal
+40042021	439376	Estradiol / Estriol Oral Tablet
+19115055	56161	sennoside B
+43532434	1426414	lactobionate
+19051035	21842	cuprous oxide
+19055378	235776	Potassium hydroxyquinoline sulfate
+19032816	806626	Glycine zinc chelate
+40012869	451719	Ascorbic Acid / Sodium Fluoride Extended Release Oral Tablet
+44818463	1535222	glucuronolactone
+19043327	39468	veralipride
+42706184	1245382	Calcium Carbonate / Magnesium Chloride Delayed Release Oral Tablet
+43531797	1426448	Ceramide 2
+19122997	605061	Coral Calcium
+40029854	375719	Codeine / Promethazine Oral Solution
+44814337	1491502	Ketoprofen / Lidocaine Topical Cream
+43532084	1426405	POLYSORBATE 65
+40039683	374196	Furosemide / Triamterene Oral Tablet
+514834	124427	Honey bee venom
+19135839	90120	Magnesium salt
+19135781	8556	Polysaccharides
+40242566	1150094	Bifidobacterium lactis
+40003488	238137	Acetaminophen / Aspirin / Caffeine / salicylamide Oral Tablet
+40026558	438803	Clotrimazole / hexamidine Topical Cream
+19002230	27221	hydrotalcite
+43526455	1373352	calcium bicarbonate
+40149417	792121	Melatonin / theanine Oral Tablet
+1359143	477053	Cinnamon Bark
+40139751	707194	Acetaminophen / Guaifenesin Oral Capsule
+586413	221144	pneumococcal polysaccharides (23)
+43013156	1366921	sodium chlorate
+19091311	236340	Alexitol sodium
+drug_concept_id 	 rxcui 	 name 
+40167838	876513	Amlodipine / telmisartan Oral Tablet
+19112632	477454	COLLAGEN, HYDROLYZED
+44507733	1441660	oxalate
+40017006	451356	Cyclamate / Saccharin Oral Tablet
+19022446	33055	pentaerythritol
+19080493	31475	naftazone
+42898420	1309498	Aesculus hippocastanum leaf extract
+40001314	372604	Lidocaine / tribenoside Rectal Suppository
+40146303	757229	Codeine / phenyltoloxamine Oral Solution
+19076785	55024	Potassium tartrate
+1352213	4257	Factor VIII
+40145363	757163	Ampicillin / Cloxacillin Oral Solution
+19113039	52103	Lithium acetate
+19061731	24940	ferrous chloride
+19051649	214525	doxorubicin liposome
+40229357	1045336	Benzocaine / Menthol Topical Cream
+42899432	1311061	Klebsiella pneumoniae
+19054693	435657	Olive Leaf Extract
+46221228	1607780	13-cis-12-(3'-carboxyphenyl)retinoic acid
+19071651	28486	lavender oil
+19056758	460	Alcuronium
+19097029	253189	Mixed vespid venom
+19091830	6465	Lofepramine
+1300751	105669	Polysaccharide iron complex
+19011094	117896	benzquercin
+40090601	376929	Thiamine / Vitamin B 12 Oral Tablet
+42899681	1310031	Nerium oleander leaf extract
+43012175	1362135	basil oil
+40007851	370835	Aluminum Hydroxide / magnesium trisilicate Oral Tablet
+19050375	21149	ciprofibrate
+42901041	1313982	Bupivacaine / Hydromorphone Prefilled Syringe
+45776270	1542389	Buprenorphine / Naloxone Buccal Film
+40244149	1192823	Bupivacaine / Sufentanil Injectable Solution
+46221338	1609071	BIS-PEG-PPG-14-14 dimethicone
+40044825	372853	Hydrochlorothiazide / Methyldopa Oral Tablet
+43532469	1426704	neurotrophin 4
+42900071	1311138	sodium bromide
+40145234	757151	Albuterol / Guaifenesin Oral Solution
+42904067	1344641	Convallaria majalis extract
+1314928	125921	ginger root
+42899427	1309328	Melissa officinalis leaf oil
+40010065	371024	Antipyrine / Benzocaine Otic Solution
+19082764	319866	meglumine antimoniate
+40147787	757282	isoniazid / Vitamin B6 Oral Solution
+44817996	1536930	Acetaminophen / Chlorpheniramine / Phenylephrine Effervescent Oral Tablet
+45775576	1546446	OMACETAXINE
+40018276	377319	Calamine / Diphenhydramine Topical Spray
+19011035	114202	Lactate
+42900068	1307966	Vitis vinifera seed extract
+42706042	1244515	Ascorbic Acid / Bioflavonoids Oral Capsule
+43532406	1427211	Hepatitis B Virus
+43531800	1425501	Cochineal
+40042021	439376	Estradiol / Estriol Oral Tablet
+19115055	56161	sennoside B
+43532434	1426414	lactobionate
+19051035	21842	cuprous oxide
+19055378	235776	Potassium hydroxyquinoline sulfate
+19032816	806626	Glycine zinc chelate
+40012869	451719	Ascorbic Acid / Sodium Fluoride Extended Release Oral Tablet
+44818463	1535222	glucuronolactone
+19043327	39468	veralipride
+42706184	1245382	Calcium Carbonate / Magnesium Chloride Delayed Release Oral Tablet
+43531797	1426448	Ceramide 2
+19122997	605061	Coral Calcium
+40029854	375719	Codeine / Promethazine Oral Solution
+44814337	1491502	Ketoprofen / Lidocaine Topical Cream
+43532084	1426405	POLYSORBATE 65
+40039683	374196	Furosemide / Triamterene Oral Tablet
+514834	124427	Honey bee venom
+19135839	90120	Magnesium salt
+19135781	8556	Polysaccharides
+40242566	1150094	Bifidobacterium lactis
+40003488	238137	Acetaminophen / Aspirin / Caffeine / salicylamide Oral Tablet
+40026558	438803	Clotrimazole / hexamidine Topical Cream
+19002230	27221	hydrotalcite
+43526455	1373352	calcium bicarbonate
+40149417	792121	Melatonin / theanine Oral Tablet
+1359143	477053	Cinnamon Bark
+40139751	707194	Acetaminophen / Guaifenesin Oral Capsule
+586413	221144	pneumococcal polysaccharides (23)
+43013156	1366921	sodium chlorate
+19091311	236340	Alexitol sodium
+drug_concept_id 	 rxcui 	 name 
+40167838	876513	Amlodipine / telmisartan Oral Tablet
+19112632	477454	COLLAGEN, HYDROLYZED
+44507733	1441660	oxalate
+40017006	451356	Cyclamate / Saccharin Oral Tablet
+19022446	33055	pentaerythritol
+19080493	31475	naftazone
+42898420	1309498	Aesculus hippocastanum leaf extract
+40001314	372604	Lidocaine / tribenoside Rectal Suppository
+40146303	757229	Codeine / phenyltoloxamine Oral Solution
+19076785	55024	Potassium tartrate
+1352213	4257	Factor VIII
+40145363	757163	Ampicillin / Cloxacillin Oral Solution
+19113039	52103	Lithium acetate
+19061731	24940	ferrous chloride
+19051649	214525	doxorubicin liposome
+40229357	1045336	Benzocaine / Menthol Topical Cream
+42899432	1311061	Klebsiella pneumoniae
+19054693	435657	Olive Leaf Extract
+46221228	1607780	13-cis-12-(3'-carboxyphenyl)retinoic acid
+19071651	28486	lavender oil
+19056758	460	Alcuronium
+19097029	253189	Mixed vespid venom
+19091830	6465	Lofepramine
+1300751	105669	Polysaccharide iron complex
+19011094	117896	benzquercin
+40090601	376929	Thiamine / Vitamin B 12 Oral Tablet
+42899681	1310031	Nerium oleander leaf extract
+43012175	1362135	basil oil
+40007851	370835	Aluminum Hydroxide / magnesium trisilicate Oral Tablet
+19050375	21149	ciprofibrate
+42901041	1313982	Bupivacaine / Hydromorphone Prefilled Syringe
+45776270	1542389	Buprenorphine / Naloxone Buccal Film
+40244149	1192823	Bupivacaine / Sufentanil Injectable Solution
+46221338	1609071	BIS-PEG-PPG-14-14 dimethicone
+40044825	372853	Hydrochlorothiazide / Methyldopa Oral Tablet
+43532469	1426704	neurotrophin 4
+42900071	1311138	sodium bromide
+40145234	757151	Albuterol / Guaifenesin Oral Solution
+42904067	1344641	Convallaria majalis extract
+1314928	125921	ginger root
+42899427	1309328	Melissa officinalis leaf oil
+40010065	371024	Antipyrine / Benzocaine Otic Solution
+19082764	319866	meglumine antimoniate
+40147787	757282	isoniazid / Vitamin B6 Oral Solution
+44817996	1536930	Acetaminophen / Chlorpheniramine / Phenylephrine Effervescent Oral Tablet
+45775576	1546446	OMACETAXINE
+40018276	377319	Calamine / Diphenhydramine Topical Spray
+19011035	114202	Lactate
+42900068	1307966	Vitis vinifera seed extract
+42706042	1244515	Ascorbic Acid / Bioflavonoids Oral Capsule
+43532406	1427211	Hepatitis B Virus
+43531800	1425501	Cochineal
+40042021	439376	Estradiol / Estriol Oral Tablet
+19115055	56161	sennoside B
+43532434	1426414	lactobionate
+19051035	21842	cuprous oxide
+19055378	235776	Potassium hydroxyquinoline sulfate
+19032816	806626	Glycine zinc chelate
+40012869	451719	Ascorbic Acid / Sodium Fluoride Extended Release Oral Tablet
+44818463	1535222	glucuronolactone
+19043327	39468	veralipride
+42706184	1245382	Calcium Carbonate / Magnesium Chloride Delayed Release Oral Tablet
+43531797	1426448	Ceramide 2
+19122997	605061	Coral Calcium
+40029854	375719	Codeine / Promethazine Oral Solution
+44814337	1491502	Ketoprofen / Lidocaine Topical Cream
+43532084	1426405	POLYSORBATE 65
+40039683	374196	Furosemide / Triamterene Oral Tablet
+514834	124427	Honey bee venom
+19135839	90120	Magnesium salt
+19135781	8556	Polysaccharides
+40242566	1150094	Bifidobacterium lactis
+40003488	238137	Acetaminophen / Aspirin / Caffeine / salicylamide Oral Tablet
+40026558	438803	Clotrimazole / hexamidine Topical Cream
+19002230	27221	hydrotalcite
+43526455	1373352	calcium bicarbonate
+40149417	792121	Melatonin / theanine Oral Tablet
+1359143	477053	Cinnamon Bark
+40139751	707194	Acetaminophen / Guaifenesin Oral Capsule
+586413	221144	pneumococcal polysaccharides (23)
+43013156	1366921	sodium chlorate
+19091311	236340	Alexitol sodium
+drug_concept_id 	 rxcui 	 name 
+40167838	876513	Amlodipine / telmisartan Oral Tablet
+19112632	477454	COLLAGEN, HYDROLYZED
+44507733	1441660	oxalate
+40017006	451356	Cyclamate / Saccharin Oral Tablet
+19022446	33055	pentaerythritol
+19080493	31475	naftazone
+42898420	1309498	Aesculus hippocastanum leaf extract
+40001314	372604	Lidocaine / tribenoside Rectal Suppository
+40146303	757229	Codeine / phenyltoloxamine Oral Solution
+19076785	55024	Potassium tartrate
+1352213	4257	Factor VIII
+40145363	757163	Ampicillin / Cloxacillin Oral Solution
+19113039	52103	Lithium acetate
+19061731	24940	ferrous chloride
+19051649	214525	doxorubicin liposome
+40229357	1045336	Benzocaine / Menthol Topical Cream
+42899432	1311061	Klebsiella pneumoniae
+19054693	435657	Olive Leaf Extract
+46221228	1607780	13-cis-12-(3'-carboxyphenyl)retinoic acid
+19071651	28486	lavender oil
+19056758	460	Alcuronium
+19097029	253189	Mixed vespid venom
+19091830	6465	Lofepramine
+1300751	105669	Polysaccharide iron complex
+19011094	117896	benzquercin
+40090601	376929	Thiamine / Vitamin B 12 Oral Tablet
+42899681	1310031	Nerium oleander leaf extract
+43012175	1362135	basil oil
+40007851	370835	Aluminum Hydroxide / magnesium trisilicate Oral Tablet
+19050375	21149	ciprofibrate
+42901041	1313982	Bupivacaine / Hydromorphone Prefilled Syringe
+45776270	1542389	Buprenorphine / Naloxone Buccal Film
+40244149	1192823	Bupivacaine / Sufentanil Injectable Solution
+46221338	1609071	BIS-PEG-PPG-14-14 dimethicone
+40044825	372853	Hydrochlorothiazide / Methyldopa Oral Tablet
+43532469	1426704	neurotrophin 4
+42900071	1311138	sodium bromide
+40145234	757151	Albuterol / Guaifenesin Oral Solution
+42904067	1344641	Convallaria majalis extract
+1314928	125921	ginger root
+42899427	1309328	Melissa officinalis leaf oil
+40010065	371024	Antipyrine / Benzocaine Otic Solution
+19082764	319866	meglumine antimoniate
+40147787	757282	isoniazid / Vitamin B6 Oral Solution
+44817996	1536930	Acetaminophen / Chlorpheniramine / Phenylephrine Effervescent Oral Tablet
+45775576	1546446	OMACETAXINE
+40018276	377319	Calamine / Diphenhydramine Topical Spray
+19011035	114202	Lactate
+42900068	1307966	Vitis vinifera seed extract
+42706042	1244515	Ascorbic Acid / Bioflavonoids Oral Capsule
+43532406	1427211	Hepatitis B Virus
+43531800	1425501	Cochineal
+40042021	439376	Estradiol / Estriol Oral Tablet
+19115055	56161	sennoside B
+43532434	1426414	lactobionate
+19051035	21842	cuprous oxide
+19055378	235776	Potassium hydroxyquinoline sulfate
+19032816	806626	Glycine zinc chelate
+40012869	451719	Ascorbic Acid / Sodium Fluoride Extended Release Oral Tablet
+44818463	1535222	glucuronolactone
+19043327	39468	veralipride
+42706184	1245382	Calcium Carbonate / Magnesium Chloride Delayed Release Oral Tablet
+43531797	1426448	Ceramide 2
+19122997	605061	Coral Calcium
+40029854	375719	Codeine / Promethazine Oral Solution
+44814337	1491502	Ketoprofen / Lidocaine Topical Cream
+43532084	1426405	POLYSORBATE 65
+40039683	374196	Furosemide / Triamterene Oral Tablet
+514834	124427	Honey bee venom
+19135839	90120	Magnesium salt
+19135781	8556	Polysaccharides
+40242566	1150094	Bifidobacterium lactis
+40003488	238137	Acetaminophen / Aspirin / Caffeine / salicylamide Oral Tablet
+40026558	438803	Clotrimazole / hexamidine Topical Cream
+19002230	27221	hydrotalcite
+43526455	1373352	calcium bicarbonate
+40149417	792121	Melatonin / theanine Oral Tablet
+1359143	477053	Cinnamon Bark
+40139751	707194	Acetaminophen / Guaifenesin Oral Capsule
+586413	221144	pneumococcal polysaccharides (23)
+43013156	1366921	sodium chlorate
+19091311	236340	Alexitol sodium
+drug_concept_id 	 rxcui 	 name 
+40167838	876513	Amlodipine / telmisartan Oral Tablet
+19112632	477454	COLLAGEN, HYDROLYZED
+44507733	1441660	oxalate
+40017006	451356	Cyclamate / Saccharin Oral Tablet
+19022446	33055	pentaerythritol
+19080493	31475	naftazone
+42898420	1309498	Aesculus hippocastanum leaf extract
+40001314	372604	Lidocaine / tribenoside Rectal Suppository
+40146303	757229	Codeine / phenyltoloxamine Oral Solution
+19076785	55024	Potassium tartrate
+1352213	4257	Factor VIII
+40145363	757163	Ampicillin / Cloxacillin Oral Solution
+19113039	52103	Lithium acetate
+19061731	24940	ferrous chloride
+19051649	214525	doxorubicin liposome
+40229357	1045336	Benzocaine / Menthol Topical Cream
+42899432	1311061	Klebsiella pneumoniae
+19054693	435657	Olive Leaf Extract
+46221228	1607780	13-cis-12-(3'-carboxyphenyl)retinoic acid
+19071651	28486	lavender oil
+19056758	460	Alcuronium
+19097029	253189	Mixed vespid venom
+19091830	6465	Lofepramine
+1300751	105669	Polysaccharide iron complex
+19011094	117896	benzquercin
+40090601	376929	Thiamine / Vitamin B 12 Oral Tablet
+42899681	1310031	Nerium oleander leaf extract
+43012175	1362135	basil oil
+40007851	370835	Aluminum Hydroxide / magnesium trisilicate Oral Tablet
+19050375	21149	ciprofibrate
+42901041	1313982	Bupivacaine / Hydromorphone Prefilled Syringe
+45776270	1542389	Buprenorphine / Naloxone Buccal Film
+40244149	1192823	Bupivacaine / Sufentanil Injectable Solution
+46221338	1609071	BIS-PEG-PPG-14-14 dimethicone
+40044825	372853	Hydrochlorothiazide / Methyldopa Oral Tablet
+43532469	1426704	neurotrophin 4
+42900071	1311138	sodium bromide
+40145234	757151	Albuterol / Guaifenesin Oral Solution
+42904067	1344641	Convallaria majalis extract
+1314928	125921	ginger root
+42899427	1309328	Melissa officinalis leaf oil
+40010065	371024	Antipyrine / Benzocaine Otic Solution
+19082764	319866	meglumine antimoniate
+40147787	757282	isoniazid / Vitamin B6 Oral Solution
+44817996	1536930	Acetaminophen / Chlorpheniramine / Phenylephrine Effervescent Oral Tablet
+45775576	1546446	OMACETAXINE
+40018276	377319	Calamine / Diphenhydramine Topical Spray
+19011035	114202	Lactate
+42900068	1307966	Vitis vinifera seed extract
+42706042	1244515	Ascorbic Acid / Bioflavonoids Oral Capsule
+43532406	1427211	Hepatitis B Virus
+43531800	1425501	Cochineal
+40042021	439376	Estradiol / Estriol Oral Tablet
+19115055	56161	sennoside B
+43532434	1426414	lactobionate
+19051035	21842	cuprous oxide
+19055378	235776	Potassium hydroxyquinoline sulfate
+19032816	806626	Glycine zinc chelate
+40012869	451719	Ascorbic Acid / Sodium Fluoride Extended Release Oral Tablet
+44818463	1535222	glucuronolactone
+19043327	39468	veralipride
+42706184	1245382	Calcium Carbonate / Magnesium Chloride Delayed Release Oral Tablet
+43531797	1426448	Ceramide 2
+19122997	605061	Coral Calcium
+40029854	375719	Codeine / Promethazine Oral Solution
+44814337	1491502	Ketoprofen / Lidocaine Topical Cream
+43532084	1426405	POLYSORBATE 65
+40039683	374196	Furosemide / Triamterene Oral Tablet
+514834	124427	Honey bee venom
+19135839	90120	Magnesium salt
+19135781	8556	Polysaccharides
+40242566	1150094	Bifidobacterium lactis
+40003488	238137	Acetaminophen / Aspirin / Caffeine / salicylamide Oral Tablet
+40026558	438803	Clotrimazole / hexamidine Topical Cream
+19002230	27221	hydrotalcite
+43526455	1373352	calcium bicarbonate
+40149417	792121	Melatonin / theanine Oral Tablet
+1359143	477053	Cinnamon Bark
+40139751	707194	Acetaminophen / Guaifenesin Oral Capsule
+586413	221144	pneumococcal polysaccharides (23)
+43013156	1366921	sodium chlorate
+19091311	236340	Alexitol sodium
+drug_concept_id 	 rxcui 	 name 
+40167838	876513	Amlodipine / telmisartan Oral Tablet
+19112632	477454	COLLAGEN, HYDROLYZED
+44507733	1441660	oxalate
+40017006	451356	Cyclamate / Saccharin Oral Tablet
+19022446	33055	pentaerythritol
+19080493	31475	naftazone
+42898420	1309498	Aesculus hippocastanum leaf extract
+40001314	372604	Lidocaine / tribenoside Rectal Suppository
+40146303	757229	Codeine / phenyltoloxamine Oral Solution
+19076785	55024	Potassium tartrate
+1352213	4257	Factor VIII
+40145363	757163	Ampicillin / Cloxacillin Oral Solution
+19113039	52103	Lithium acetate
+19061731	24940	ferrous chloride
+19051649	214525	doxorubicin liposome
+40229357	1045336	Benzocaine / Menthol Topical Cream
+42899432	1311061	Klebsiella pneumoniae
+19054693	435657	Olive Leaf Extract
+46221228	1607780	13-cis-12-(3'-carboxyphenyl)retinoic acid
+19071651	28486	lavender oil
+19056758	460	Alcuronium
+19097029	253189	Mixed vespid venom
+19091830	6465	Lofepramine
+1300751	105669	Polysaccharide iron complex
+19011094	117896	benzquercin
+40090601	376929	Thiamine / Vitamin B 12 Oral Tablet
+42899681	1310031	Nerium oleander leaf extract
+43012175	1362135	basil oil
+40007851	370835	Aluminum Hydroxide / magnesium trisilicate Oral Tablet
+19050375	21149	ciprofibrate
+42901041	1313982	Bupivacaine / Hydromorphone Prefilled Syringe
+45776270	1542389	Buprenorphine / Naloxone Buccal Film
+40244149	1192823	Bupivacaine / Sufentanil Injectable Solution
+46221338	1609071	BIS-PEG-PPG-14-14 dimethicone
+40044825	372853	Hydrochlorothiazide / Methyldopa Oral Tablet
+43532469	1426704	neurotrophin 4
+42900071	1311138	sodium bromide
+40145234	757151	Albuterol / Guaifenesin Oral Solution
+42904067	1344641	Convallaria majalis extract
+1314928	125921	ginger root
+42899427	1309328	Melissa officinalis leaf oil
+40010065	371024	Antipyrine / Benzocaine Otic Solution
+19082764	319866	meglumine antimoniate
+40147787	757282	isoniazid / Vitamin B6 Oral Solution
+44817996	1536930	Acetaminophen / Chlorpheniramine / Phenylephrine Effervescent Oral Tablet
+45775576	1546446	OMACETAXINE
+40018276	377319	Calamine / Diphenhydramine Topical Spray
+19011035	114202	Lactate
+42900068	1307966	Vitis vinifera seed extract
+42706042	1244515	Ascorbic Acid / Bioflavonoids Oral Capsule
+43532406	1427211	Hepatitis B Virus
+43531800	1425501	Cochineal
+40042021	439376	Estradiol / Estriol Oral Tablet
+19115055	56161	sennoside B
+43532434	1426414	lactobionate
+19051035	21842	cuprous oxide
+19055378	235776	Potassium hydroxyquinoline sulfate
+19032816	806626	Glycine zinc chelate
+40012869	451719	Ascorbic Acid / Sodium Fluoride Extended Release Oral Tablet
+44818463	1535222	glucuronolactone
+19043327	39468	veralipride
+42706184	1245382	Calcium Carbonate / Magnesium Chloride Delayed Release Oral Tablet
+43531797	1426448	Ceramide 2
+19122997	605061	Coral Calcium
+40029854	375719	Codeine / Promethazine Oral Solution
+44814337	1491502	Ketoprofen / Lidocaine Topical Cream
+43532084	1426405	POLYSORBATE 65
+40039683	374196	Furosemide / Triamterene Oral Tablet
+514834	124427	Honey bee venom
+19135839	90120	Magnesium salt
+19135781	8556	Polysaccharides
+40242566	1150094	Bifidobacterium lactis
+40003488	238137	Acetaminophen / Aspirin / Caffeine / salicylamide Oral Tablet
+40026558	438803	Clotrimazole / hexamidine Topical Cream
+19002230	27221	hydrotalcite
+43526455	1373352	calcium bicarbonate
+40149417	792121	Melatonin / theanine Oral Tablet
+1359143	477053	Cinnamon Bark
+40139751	707194	Acetaminophen / Guaifenesin Oral Capsule
+586413	221144	pneumococcal polysaccharides (23)
+43013156	1366921	sodium chlorate
+19091311	236340	Alexitol sodium
