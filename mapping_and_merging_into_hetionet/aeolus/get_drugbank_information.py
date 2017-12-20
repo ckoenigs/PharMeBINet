@@ -35,8 +35,8 @@ properties:
 '''
 
 
-def load_all_drugbank_ids_in_dictionary(path):
-    f = open(path + '../drugbank/data/durgbank_without_entries_which has_no_chemical_formular_or_sequence.tsv', 'r')
+def load_all_drugbank_ids_in_dictionary():
+    f = open('../drugbank/data/durgbank_without_entries_which has_no_chemical_formular_or_sequence.tsv', 'r')
     for line in f:
         if line.split('\t')[0][0:2] == 'DB':
             drugbank_id = line.split('\t')[0]

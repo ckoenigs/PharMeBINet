@@ -352,7 +352,7 @@ def intigrate_aeolus_drugs_into_hetionet():
     counter = 0
     # count all qeolus which are only mapped to illegal drugbank ids
     counter_with_one_which_is_removed = 0
-    get_drugbank_information.load_all_drugbank_ids_in_dictionary('')
+    get_drugbank_information.load_all_drugbank_ids_in_dictionary()
 
     for drug_concept_id, drugbank_ids in dict_aeolus_drug_drugbank_ids.items():
         counter += 1
