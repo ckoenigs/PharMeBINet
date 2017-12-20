@@ -11,7 +11,7 @@ import MySQLdb as mdb
 import sys
 
 # sys.path.append('../Aeolus/')
-sys.path.append('../ersatz_aeolus/')
+sys.path.append('../aeolus/')
 
 from synonyms_cuis import search_for_synonyms_cuis
 import get_drugbank_information
@@ -239,7 +239,7 @@ properties:
 
 
 def map_use_dhimmel_rxnorm_drugbank_map_unii_inchikey():
-    f = open('../ersatz_aeolus/map_rxnorm_to_drugbank_with_use_of_unii_and_inchikey_4.tsv', 'r')
+    f = open('../RxNorm_to_DrugBank/results/map_rxnorm_to_drugbank_with_use_of_unii_and_inchikey_4.tsv', 'r')
     next(f)
     number_of_mapped = 0
     # list of all rxcuis which are mapped to drugbank id in this step
@@ -366,7 +366,7 @@ properties:
 
 
 def map_use_name_mapped_rxnorm_drugbank():
-    f = open('../ersatz_aeolus/name_map_drugbank_to_rxnorm_2.tsv', 'r')
+    f = open('../RxNorm_to_DrugBank/results/name_map_drugbank_to_rxnorm_2.tsv', 'r')
     next(f)
     # list of all rxcuis which are mapped to drugbank id in this step
     delete_list = []
@@ -487,39 +487,6 @@ def find_cuis_for_not_mapped_drugs():
     print('number of rxcuis which has no cui:' + str(len(list_rxnorm_without_cui)))
 
 
-# list of cuis which has no drugbank id
-list_cuis_without_drugbank_ids = []
-
-'''
-map cui to drugbank id with use of umls
-'''
-
-
-def map_cui_to_drugbank_with_umls():
-    delete_list = []
-    number_of_mapped = 0
-    for cui, codes in dict_cui_to_codes.items():
-        cur = con.cursor()
-        query = ("Select CUI,LAT,CODE,SAB From MRCONSO Where SAB = 'DRUGBANK' AND CUI='%s' ;")
-        query = query % (cui)
-        rows_counter = cur.execute(query)
-        if rows_counter > 0:
-            drugbank_ids = []
-            for (cui, lat, code, sab) in cur:
-                drugbank_ids.append(code)
-
-            drugbank_ids = list(set(drugbank_ids))
-            for code in codes:
-                dict_drug_NDF_RT[code].drugbank_ids.extend(drugbank_ids)
-                dict_drug_NDF_RT[code].set_how_mapped('use cui to drugbank ids with umls')
-                if not code in list_codes_with_drugbank_ids:
-                    number_of_mapped += 1
-                    list_codes_with_drugbank_ids.append(code)
-
-        else:
-            list_cuis_without_drugbank_ids.append(cui)
-
-
     print('number of new mapped:' + str(number_of_mapped))
     print('length of list of codes with all drugbank ids from rxnorm:' + str(len(list_codes_with_drugbank_ids)))
 
@@ -533,9 +500,6 @@ dict_map_cui_to_hetionet_drugbank_ids = {}
 list_not_map_to_hetionet_with_drugbank_ids = []
 
 # files for the different how_mapped typs
-map_cui = open('drug/ndf_rt_drugs_map_with_cui.tsv', 'w')
-map_cui.write('ndf-rt code \t drugbank_ids with | as seperator  \t name\n')
-
 map_rxcui = open('drug/ndf_rt_drugs_map_with_rxcui.tsv', 'w')
 map_rxcui.write('ndf-rt code \t drugbank_ids with | as seperator  \t name\n')
 
@@ -553,7 +517,6 @@ map_with_association_to_ingredient.write('ndf-rt code \t drugbank_ids with | as 
 
 # dictionary of how_mapped with file as value
 dict_how_mapped_file = {
-    'use cui to drugbank ids with umls': map_cui,
     'use rxcui to drugbank ids with rxnorm': map_rxcui,
     'use rxcui to drugbank ids with name mapping': map_with_name,
     'use rxcui to drugbank ids with unii and inchikey to drugbank': map_with_unii_inchikey,
@@ -618,7 +581,7 @@ a connection between compounds in hetionet and ndf-rt drug.
 
 
 def integration_of_ndf_rt_drugs_into_hetionet():
-    get_drugbank_information.load_all_drugbank_ids_in_dictionary('../ersatz_aeolus/')
+    get_drugbank_information.load_all_drugbank_ids_in_dictionary()
     # count all possible mapped ndf-rt codes
     counter = 0
     # count all ndf-rt codes which has illegal drugbank ids
