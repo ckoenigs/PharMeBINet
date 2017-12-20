@@ -10,7 +10,7 @@ import datetime
 import MySQLdb as mdb
 import sys
 
-sys.path.append('../ersatz_aeolus/')
+sys.path.append('../aeolus/')
 import get_drugbank_information
 
 
@@ -363,7 +363,7 @@ properties:
 
 
 def map_use_dhimmel_rxnorm_drugbank_map_unii_inchikey():
-    f = open('../ersatz_aeolus/map_rxnorm_to_drugbank_with_use_of_unii_and_inchikey_4.tsv', 'r')
+    f = open('../RxNorm_to_DrugBank/results/map_rxnorm_to_drugbank_with_use_of_unii_and_inchikey_4.tsv', 'r')
     next(f)
     delete_rxcui = []
     delete_cui = []
@@ -441,7 +441,7 @@ properties Drugbank:
 
 
 def map_ctd_chemical_to_drugbank_with_lable_map():
-    f = open('../ersatz_aeolus/drugbank/durgbank_without_entries_which has_no_chemical_formular_or_sequence.tsv', 'r')
+    f = open('../drugbank/data/durgbank_without_entries_which has_no_chemical_formular_or_sequence.tsv', 'r')
     next(f)
     delete_cui = []
     delete_mapped_mesh_ids = []
@@ -534,9 +534,6 @@ map_ctd.write('MESH \t drugbank_ids with | as seperator  \n')
 map_with_cui = open('chemical/ctd_chemical_to_compound_map_use_UMLS_cui.tsv', 'w')
 map_with_cui.write('MESH \t drugbank_ids with | as seperator  \n')
 
-map_synonym_cuis = open('chemical/ctd_chemical_to_compound_map_use_UMLS_cui_synonyms.tsv', 'w')
-map_synonym_cuis.write('MESH \t drugbank_ids with | as seperator  \n')
-
 map_with_rxcui = open('chemical/ctd_chemical_to_compound_map_use_rxnorm_rxcui.tsv', 'w')
 map_with_rxcui.write('MESH \t drugbank_ids with | as seperator  \n')
 
@@ -550,7 +547,6 @@ map_with_name.write('MESH \t drugbank_ids with | as seperator  \n')
 dict_how_mapped_file = {
     'drugbank ids from ctd': map_ctd,
     'use umls cui to map to drugbank ids': map_with_cui,
-    'use synonym umls cuis to map to drugbank ids': map_synonym_cuis,
     'use map table rxcui to map to drugbank ids': map_with_rxcui_table,
     'use rxnorm rxcui to map to drugbank ids': map_with_rxcui,
     'use  name to map to drugbank ids': map_with_name}
@@ -611,7 +607,7 @@ integration of ctd chemicals in hetionet
 
 
 def integration_of_ctd_chemicals_into_hetionet_compound():
-    get_drugbank_information.load_all_drugbank_ids_in_dictionary('../ersatz_aeolus/')
+    get_drugbank_information.load_all_drugbank_ids_in_dictionary()
     # count all mesh ids which are mapped to a drugbank id
     counter = 0
     # count mapped to drugbank id, but the drugbank id is old or has no chemical information

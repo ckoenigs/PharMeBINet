@@ -321,13 +321,6 @@ def map_with_name():
 map_mesh_omim_to_doid = open('disease_Disease/map_CTD_disease_mesh_omim_to_DO_DOID.tsv', 'w')
 map_mesh_omim_to_doid.write('CTD MESH/OMIM \t type  \t Disease ontology divided by | \t cui names \n')
 
-map_cui_to_doid = open('disease_Disease/map_CTD_disease_mesh_omim_to_cui_to_DO_DOID.tsv', 'w')
-map_cui_to_doid.write('CTD MESH/OMIM \t type \t Disease ontology divided by | \t cui names \n')
-
-map_synonym_cuis_to_doid = open('disease_Disease/map_CTD_disease_synonym_cuis_to_DO_DOID.tsv', 'w')
-map_synonym_cuis_to_doid.write(
-    'CTD MESH/OMIM \t type \t  Disease ontology divided by | \t cui names \n')
-
 map_cdt_doid = open('disease_Disease/map_CTD_DOID.tsv', 'w')
 map_cdt_doid.write('CTD MESH/OMIM \t type \t Disease ontology divided by | \t cui names \n')
 
@@ -342,8 +335,6 @@ map_mesh_omim_to_doid_with_name.write(
 # dictionary map how_mapped to a file
 dict_how_mapped_to_file = {
     'map with Mesh or OMIM to DO id': map_mesh_omim_to_doid,
-    'map ctd cui to DO cui': map_cui_to_doid,
-    'map ctd synonym cuis to DO cui': map_synonym_cuis_to_doid,
     'map with alternativ ctd id DOID': map_cdt_doid,
     'map with Mesh or OMIM to DO id with alternativ id': map_mesh_omim_to_doid_with_alt,
     'string match': map_mesh_omim_to_doid_with_name}
