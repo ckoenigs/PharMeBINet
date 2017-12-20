@@ -1,1 +1,9 @@
-Todo
+This integrate only the drug and outcome data from AEOLUS into Neo4j.
+
+The AEOLUS data can be download by http://datadryad.org/resource/doi:10.5061/dryad.8q0s4. 
+
+
+Banda JM, Evans L, Vanguri RS, Tatonetti NP, Ryan PB, Shah NH (2016) A curated and standardized adverse drug event resource to accelerate drug safety research. Scientific Data 3: 160026. https://doi.org/10.1038/sdata.2016.26
+
+Banda JM, Evans L, Vanguri RS, Tatonetti NP, Ryan PB, Shah NH (2016) Data from: A curated and standardized adverse drug event resource to accelerate drug safety research. Dryad Digital Repository. https://doi.org/10.5061/dryad.8q0s4
+
