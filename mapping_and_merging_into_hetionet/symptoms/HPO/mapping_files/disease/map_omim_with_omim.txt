@@ -1,0 +1,636 @@
+omim id 	 omim name 	 doids 
+101900	acrokeratosis verruciformis	DOID:0050606
+103285	#103285 adult syndrome;;acro-dermato-ungual-lacrimal-tooth syndrome	DOID:0050601
+103580	#103580 pseudohypoparathyroidism, type ia; php1a;;php ia;;albright hereditary osteodystrophy with multiple hormone resistance	DOID:0080053
+105120	amyloidosis, finnish type	DOID:0050637
+105200	amyloidosis, familial visceral	DOID:0050636
+105210	amyloidosis, hereditary, transthyretin-related	DOID:0050638
+105550	amyotrophic lateral sclerosis and/or frontotemporal dementia 1	DOID:0060213
+106190	anhidrosis, isolated, with normal sweat glands; anhd	DOID:0060603
+107000	%107000 nail disorder, nonsyndromic congenital, 6; ndnc6;;anonychia/hyponychia and onychodystrophy;;anonychia, partial	DOID:0080084
+107480	#107480 townes-brocks syndrome; tbs;;renal-ear-anal-radial syndrome;;rear syndrome;;anus, imperforate, with hand, foot, and ear anomalies;;deafness, sensorineural, with imperforate anus and thumb anomaliestownes-brocks-branchiootorenal-like syndrome, included	DOID:0050887
+108500	episodic ataxia, type 2	DOID:0050990
+108600	spastic ataxia 1, autosomal dominant; spax1	DOID:0050772
+108650	%108650 spastic ataxia 7, autosomal dominant; spax7;;spastic ataxia with congenital miosis;;miosis, congenital, with spastic ataxia	DOID:0050945
+112310	boomerang dysplasia	DOID:0050680
+112700	brachydactyly, type a3	DOID:0110966
+113000	#113000 brachydactyly, type b1; bdb1;;brachydactyly, type b; bdb	DOID:0110969
+113200	brachydactyly, type d	DOID:0110971
+113300	brachydactyly, type e	DOID:0110972
+113620	#113620 branchiooculofacial syndrome; bofs;;bof syndrome;;branchial clefts with characteristic facies, growth retardation, imperforatenasolacrimal duct, and premature aging;;hemangiomatous branchial clefts-lip pseudocleft syndrome;;lip pseudocleft-hemangiomatous branchial cyst syndrome	DOID:0050691
+113900	#113900 progressive familial heart block, type ia; pfhb1a;;pfhbia;;heart block, progressive familial, type i; pfhbi;;lenegre-lev disease;;cardiac conduction defect, progressive; pccd;;bundle branch block;;hereditary bundle branch system defect; hbbdheart block, nonprogressive, included;;cardiac conduction defect, nonprogressive, included	DOID:0111074
+115195	cardiomyopathy, familial hypertrophic, 2	DOID:0110308
+115196	cardiomyopathy, familial hypertrophic, 3	DOID:0110309
+115197	cardiomyopathy, familial hypertrophic, 4	DOID:0110310
+117210	spinocerebellar ataxia 31	DOID:0050980
+117360	#117360 spinocerebellar ataxia 29; sca29;;cerebellar ataxia, congenital nonprogressive, autosomal dominant;cnpca;;cerebellar vermis aplasia;;aplasia of cerebellar vermis; acv	DOID:0050978
+120970	#120970 cone-rod dystrophy 2; cord2;;cone-rod dystrophy; cord;;cone-rod retinal dystrophy; crd; crd2;;retinal cone-rod dystrophy; rcrd2	DOID:0111005
+123790	#123790 beare-stevenson cutis gyrata syndrome; bstvs;;beare-stevenson syndrome;;cutis gyrata syndrome of beare and stevenson	DOID:0050660
+124000	mitochondrial complex iii deficiency, nuclear type 1	DOID:0080111
+125850	maturity-onset diabetes of the young, type i	DOID:0111099
+125851	maturity-onset diabetes of the young, type ii	DOID:0111100
+130050	ehlers-danlos syndrome, type iv, autosomal dominant	DOID:14756
+133190	spinocerebellar ataxia 34	DOID:0050981
+135150	#135150 birt-hogg-dube syndrome; bhd;;hornstein-knickenberg syndrome;;fibrofolliculomas with trichodiscomas and acrochordons	DOID:0050676
+136570	#136570 chromosome 16p12.1 deletion syndrome, 520-kbfragile site 16p12, included	DOID:0060399
+136900	fundus dystrophy, pseudoinflammatory, of sorsby	DOID:0090114
+137200	neuromyotonia and axonal neuropathy, autosomal recessive	DOID:0050526
+137920	renal cysts and diabetes syndrome	DOID:0111101
+140400	%140400 progressive familial heart block, type ii; pfhb2;;pfhbii	DOID:0111075
+142945	#142945 holoprosencephaly 3; hpe3;;hlp3	DOID:0110875
+142946	holoprosencephaly 4	DOID:0110880
+143095	spondyloepiphyseal dysplasia with congenital joint dislocations	DOID:0050813
+144700	renal cell carcinoma, nonpapillary	DOID:0050387
+145900	hypertrophic neuropathy of dejerine-sottas	DOID:0050540
+146520	hypotrichosis simplex of scalp	DOID:0110699
+146550	marie unna hereditary hypotrichosis 1	DOID:0110701
+149200	knuckle pads, leukonychia, and sensorineural deafness	DOID:0050658
+149300	koilonychia, hereditary	DOID:0080080
+149730	#149730 lacrimoauriculodentodigital syndrome; ladd;;levy-hollister syndrome	DOID:0050331
+150250	#150250 larsen syndrome; lrs	DOID:14764
+151600	#151600 nail disorder, nonsyndromic congenital, 3; ndnc3;;leukonychia totalis and/or partialis;;porcelain nailsleukonychia striatus, included;;leukonychia punctata, included	DOID:0080081
+153480	bannayan-riley-ruvalcaba syndrome	DOID:0050657
+153670	#153670 bernard-soulier syndrome, type a2, autosomal dominant; bssa2	DOID:0111059
+153800	macular degeneration, age-related, 2	DOID:0110015
+155240	thyroid carcinoma, familial medullary	DOID:0050547
+156500	#156500 metaphyseal chondrodysplasia, schmid type; mcds;;spondylometaphyseal dysplasia, japanese type	DOID:0080021
+157170	holoprosencephaly 2	DOID:0110872
+158810	bethlem myopathy 1	DOID:0050663
+160120	#160120 episodic ataxia, type 1; ea1;;episodic ataxia with myokymia; eam;;ataxia, episodic, with myokymia; aem; aemk;;paroxysmal ataxia with neuromyotonia, hereditary;;myokymia with periodic ataxiamyokymia 1, included;;continuous muscle fiber activity, hereditary, included;;isaacs-mertens syndrome, included;;myokymia 1 with or without hypomagnesemia, included	DOID:0050989
+160990	myotonic myopathy with cylindrical spirals	DOID:0080103
+161050	%161050 nail disorder, nonsyndromic congenital, 1; ndnc1;;twenty-nail dystrophy;;onychodystrophy totalis, isolatednail growth, included	DOID:0080079
+161800	nemaline myopathy 3; nem3	DOID:0110927
+163500	night blindness, congenital stationary, autosomal dominant 2; csnbad2	DOID:0110863
+163950	#163950 noonan syndrome 1; ns1;;noonan syndrome;;male turner syndrome;;female pseudo-turner syndrome;;turner phenotype with normal karyotypepterygium colli syndrome, included	DOID:0060578
+164400	spinocerebellar ataxia 1	DOID:0050954
+164500	spinocerebellar ataxia 7 opca iii opca with retinal degeneration opca with macular degeneration and external ophthalmoplegia autosomal dominant cerebellar ataxia, type ii adca, type ii	DOID:0050958
+164800	%164800 nail disorder, nonsyndromic congenital, 5; ndnc5;;onycholysis, partial, with scleronychia;;onycholysis, hereditary distal	DOID:0080083
+168601	parkinson disease 1, autosomal dominant; park1	DOID:0060367
+169150	macular dystrophy, patterned, 1	DOID:0060866
+171300	pheochromocytoma	DOID:0050771
+173900	polycystic kidneys	DOID:0110858
+174050	polycystic liver disease	DOID:0050770
+174900	#174900 juvenile polyposis syndrome; jps;;polyposis, juvenile intestinal; pji;;juvenile intestinal polyposis; jip;;polyposis, familial, of entire gastrointestinal tractjuvenile polyposis of stomach, included;;juvenile polyposis coli, included	DOID:0050787
+177170	#177170 pseudoachondroplasia; psach;;pseudoachondroplastic dysplasia;;spondyloepiphyseal dysplasia, pseudoachondroplastic	DOID:0080047
+182170	anemia, sideroblastic, autosomal dominant	DOID:0060335
+182900	spherocytosis, hereditary	DOID:0110916
+182920	myopathy, spheroid body	DOID:0080091
+183086	#183086 spinocerebellar ataxia 6; sca6	DOID:0050956
+183090	spinocerebellar ataxia 2	DOID:0050955
+183900	spondyloepiphyseal dysplasia congenita	DOID:14789
+184250	#184250 spondyloepimetaphyseal dysplasia, strudwick type; semdstwk;;semd, strudwick type;;spondylometaepiphyseal dysplasia congenita, strudwick type;;smed, strudwick type;;smed, type i;;strudwick syndrome;;dappled metaphysis syndrome;;spondylometaphyseal dysplasia; smd;;semdc	DOID:0080028
+186570	#186570 tarsal-carpal coalition syndrome; tcc; synostosis of talus and calcaneus with short stature, included	DOID:0050789
+189960	tracheoesophageal fistula with or without esophageal atresia	DOID:0080171
+191390	inflammatory bowel disease 11	DOID:0110894
+191830	#191830 renal hypodysplasia/aplasia 1; rhda1;;renal adysplasia;;renal agenesis;;renal aplasia;;hereditary renal aplasia; hra	DOID:14766
+192600	#192600 cardiomyopathy, familial hypertrophic, 1; cmh1;;cmh;;ventricular hypertrophy, hereditary;;asymmetric septal hypertrophy; ash;;hypertrophic subaortic stenosis, idiopathic	DOID:0110307
+193100	hypophosphatemic rickets, autosomal dominant	DOID:0050948
+193510	#193510 waardenburg syndrome, type 2a; ws2a;;waardenburg syndrome, type iia;;waardenburg syndrome without dystopia canthorum;;ws2	DOID:0110950
+200500	acheiropody acheiropodia acheiropody, brazilian type	DOID:0050603
+200600	#200600 achondrogenesis, type ia; acg1a;;achondrogenesis, houston-harris type	DOID:0080054
+200610	#200610 achondrogenesis, type ii; acg2;;achondrogenesis, langer-saldino type;;chondrogenesis imperfecta;;achondrogenesis, type ib, formerlyhypochondrogenesis, included	DOID:0080056
+200700	#200700 chondrodysplasia, grebe type;;achondrogenesis, brazilian;;grebe chondrodysplasia;;grebe dysplasia;;acromesomelic dysplasia, grebe type; amdg;;achondrogenesis, type ii, formerly	DOID:0080052
+201100	acrodermatitis enteropathica, zinc-deficiency type	DOID:0050605
+201250	acromesomelic dysplasia, hunter-thompson type	DOID:0080051
+201400	#201400 acth deficiency, isolated; iad;;adrenocorticotropic hormone deficiency	DOID:0080150
+201450	acyl-coa dehydrogenase, medium-chain, deficiency of	DOID:0080153
+201470	acyl-coa dehydrogenase, short-chain, deficiency of	DOID:0080154
+201475	acyl-coa dehydrogenase, very long-chain, deficiency of	DOID:0080155
+203300	#203300 hermansky-pudlak syndrome 1; hps1;;albinism with hemorrhagic diathesis and pigmented reticuloendothelialcells;;delta storage pool disease	DOID:0060539
+203655	#203655 alopecia universalis congenita; alunc;;atrichia, generalized	DOID:0050634
+203700	mitochondrial dna depletion syndrome 4a (alpers type)	DOID:0080122
+205200	amyotrophic lateral sclerosis, juvenile, with dementia	DOID:0110067
+205950	anemia, sideroblastic, 2, pyridoxine-refractory	DOID:0060065
+206000	anemia, sideroblastic, pyridoxine-responsive, autosomal recessive	DOID:0060066
+206800	anonychia congenita	DOID:0050643|DOID:0080082
+208050	arterial tortuosity syndrome	DOID:0050645
+208920	ataxia, early-onset, with oculomotor apraxia and hypoalbuminemia	DOID:0050754
+209300	atransferrinemia	DOID:0050649
+210370	#210370 bietti crystalline corneoretinal dystrophy; bcd;;bietti crystalline dystrophy;;bietti tapetoretinal degeneration with marginal corneal dystrophy	DOID:0050664
+211180	bowen-conradi syndrome	DOID:0050684
+211530	brown-vialetto-van laere syndrome 1	DOID:0050694
+212350	sengers syndrome	DOID:0080132
+213200	spinocerebellar ataxia, autosomal recessive 2	DOID:0080061
+213300	joubert syndrome 1	DOID:0110980
+215050	chondrodysplasia calcificans metaphysealis	DOID:0080019
+215150	#215150 otospondylomegaepiphyseal dysplasia; osmed;;chondrodystrophy with sensorineural deafness;;nance-insley syndrome;;nance-sweeney chondrodysplasia	DOID:0080026
+216900	#216900 achromatopsia 2; achm2;;colorblindness, total;;rod monochromatism 2;;rod monochromacy 2; rmch2	DOID:0110007
+217700	corneal endothelial dystrophy 2	DOID:0060649
+227645	#227645 fanconi anemia, complementation group c; fancc;;facc; fac;;fanconi pancytopenia, type 3; fa3	DOID:0111087
+227646	#227646 fanconi anemia, complementation group d2; fancd2;;fad2;;fanconi anemia, complementation group d; fancd; facd;;fanconi pancytopenia, type 4; fa4	DOID:0111083
+227650	fanconi anemia, complementation group a	DOID:0111095
+227850	fanconi-like syndrome	DOID:0090066
+231550	#231550 achalasia-addisonianism-alacrima syndrome; aaas;;triple-a syndrome;;alacrima-achalasia-adrenal insufficiency neurologic disorder;;glucocorticoid deficiency and achalasia;;allgrove syndrome;;addisonian-achalasia syndrome;;hypoadrenalism with achalasia;;alacrima-achalasia-addisonianism;;acth-resistant adrenal insufficiency, achalasia and alacrimaachalasia-alacrima syndrome, included	DOID:0050602
+234050	trichothiodystrophy 4, nonphotosensitive	DOID:0050528
+236100	holoprosencephaly 1	DOID:0110881
+236792	#236792 l-2-hydroxyglutaric aciduria;;l-2-hydroxyglutaric acidemia	DOID:0050574
+238970	hyperornithinemia-hyperammonemia-homocitrullinuria syndrome	DOID:0050720
+239100	#239100 hyperostosis corticalis generalisata;;van buchem disease; vbch;;hyperphosphatasemia tarda;;endosteal hyperostosis, autosomal recessive	DOID:0080036
+240300	autoimmune polyendocrine syndrome, type i, with or without reversible metaphyseal dysplasia	DOID:0050167
+241530	hypophosphatemic rickets with hypercalciuria, hereditary	DOID:0050947
+241850	hypothyroidism, athyroidal, with spiky hair and cleft palate	DOID:0050655
+245400	#245400 mitochondrial dna depletion syndrome 9 (encephalomyopathic type withmethylmalonic aciduria); mtdps9;;lactic acidosis, fatal infantile, formerly	DOID:0080128
+248340	3mc syndrome 3	DOID:0060577
+248800	marinesco-sjogren syndrome	DOID:0080195
+251270	microcephaly and chorioretinopathy, autosomal recessive, 1; mccrp1	DOID:0080105
+251290	#251290 band-like calcification with simplified gyration and polymicrogyria;blcpmg;;pseudo-torch syndrome	DOID:0050656
+251880	mitochondrial dna depletion syndrome 3 (hepatocerebral type)	DOID:0080121
+252500	#252500 mucolipidosis ii alpha/beta;;mucolipidosis ii; ml ii;;ml ii alpha/beta;;i-cell disease; icd	DOID:0080070
+253550	spinal muscular atrophy, type ii	DOID:0050530
+254090	#254090 ullrich congenital muscular dystrophy; ucmd;;muscular dystrophy, scleroatonic;;ullrich disease;;ullrich scleroatonic muscular dystrophy	DOID:0050558
+254210	myasthenic syndrome, congenital, 6, presynaptic; cms6	DOID:0110671
+254300	#254300 myasthenia, limb-girdle, familial;;lgm;;congenital myasthenic syndrome type ib; cms1b;;cms ib;;myasthenic myopathy, formerly	DOID:0110668
+254940	carey-fineman-ziter syndrome	DOID:0080194
+255300	myopathy, congenital	DOID:0080100
+256030	nemaline myopathy 2; nem2	DOID:0110928
+256100	nephronophthisis 1	DOID:0111112
+256520	#256520 neu-laxova syndrome; nls	DOID:0080076
+256810	mitochondrial dna depletion syndrome 6 (hepatocerebral type)	DOID:0080125|DOID:0080126
+257270	#257270 night blindness, congenital stationary, type 1b; csnb1b;;night blindness, congenital stationary, complete, autosomal recessive;;csnb, complete, autosomal recessive	DOID:0110865
+257300	#257300 mosaic variegated aneuploidy syndrome 1; mva1;;mva syndrome	DOID:0080141
+257920	3mc syndrome 1	DOID:0060575
+258100	#258100 oguchi disease 1;;night blindness, congenital stationary, oguchi type 1; csnbo1	DOID:0110712
+258900	#258900 orotic aciduria;;orotic aciduria i;;orotate phosphoribosyltransferase and orotidylic decarboxylase deficiency;;oprt and odc deficiency;;orotidylic pyrophosphorylase and orotidylic decarboxylase deficiency;;uridine monophosphate synthase deficiency;;ump synthase deficiency;;umps deficiencyorotic aciduria without megaloblastic anemia, included; oawa, included	DOID:0050833
+259700	osteopetrosis, autosomal recessive 1; optb1	DOID:0110942
+259710	#259710 osteopetrosis, autosomal recessive 2; optb2;;osteopetrosis, osteoclast-poor;;osteopetrosis, mild autosomal recessive form	DOID:0110943
+259720	osteopetrosis, autosomal recessive 5; optb5	DOID:0110939
+259730	osteopetrosis, autosomal recessive 3	DOID:0110941
+260300	parkinson disease 15, autosomal recessive early-onset	DOID:0060372
+260370	#260370 pancreatic agenesis, congenital; pagen;;pancreatic hypoplasia, congenital	DOID:0050877
+261000	#261000 intrinsic factor deficiency; ifd;;pernicious anemia, congenital, due to defect of intrinsic factor	DOID:0050734
+262000	#262000 bjornstad syndrome; bjs;;pili torti and nerve deafness;;ptd	DOID:0050677
+262300	#262300 achromatopsia 3; achm3;;pingelapese blindness;;total colorblindness with myopia;;achromatopsia with myopia;;achm1, formerly;;rod monochromatism 1, formerly;;rod monochromacy 1, formerly; rmch1, formerly	DOID:0110008
+265050	3mc syndrome 2	DOID:0060576
+266280	#266280 rapadilino syndrome	DOID:0050774
+266600	#266600 inflammatory bowel disease 1; ibd1regional enteritis, included;;crohn disease, included;;ulcerative colitis, included;;crohn disease-associated growth failure, susceptibility to, included	DOID:0110892
+267700	hemophagocytic lymphohistiocytosis, familial, 1	DOID:0110921
+268100	#268100 enhanced s-cone syndrome; escsgoldmann-favre syndrome, included;;retinoschisis with early hemeralopia, included;;favre hyaloideoretinal degeneration, included	DOID:0090059
+268150	rh-null, regulator type	DOID:0050641
+269000	#269000 sc phocomelia syndrome;;sc pseudothalidomide syndrome	DOID:0050536
+269250	schneckenbecken dysplasia	DOID:0050775
+270550	spastic ataxia, charlevoix-saguenay type	DOID:0050946
+270970	spherocytosis, autosomal recessive	DOID:0110918
+271150	spinal muscular atrophy, type iv	DOID:0050529
+271245	mitochondrial dna depletion syndrome 7 (hepatocerebral type)	DOID:0050556
+272150	272150 sugarman brachydactyly;;brachydactyly with major proximal phalangeal shortening	DOID:0110979
+275350	#275350 transcobalamin ii deficiency;;tc ii deficiency;;tcn2 deficiency	DOID:0050818
+275630	chanarin-dorfman syndrome	DOID:0050729
+276600	tyrosine transaminase deficiency	DOID:0050725
+276700	tyrosinemia, type i; tyrsn1	DOID:0050726
+276710	#276710 tyrosinemia, type iii; tyrsn3;;4-@hydroxyphenylpyruvic acid oxidase deficiency;;4-@hydroxyphenylpyruvate dioxygenase deficiency	DOID:0050727
+277380	methylmalonic aciduria and homocystinuria, cblf type	DOID:0050717
+277400	methylmalonic aciduria and homocystinuria, cblc type	DOID:0050715
+277410	methylmalonic aciduria and homocystinuria, cbld type	DOID:0050716
+277580	waardenburg-shah syndrome	DOID:0110953
+278150	hypotrichosis 8	DOID:0110705
+300071	#300071 night blindness, congenital stationary, type 2a; csnb2a;;csnb, incomplete, x-linked;;night blindness, congenital stationary, type 2; csnb2	DOID:0110871
+300085	cone-rod dystrophy, x-linked, 2	DOID:0111006
+300200	adrenal hypoplasia, congenital	DOID:0080156
+300352	cerebral creatine deficiency syndrome 1	DOID:0050800
+300476	cone-rod dystrophy, x-linked, 3	DOID:0111007
+300500	albinism, ocular, type i	DOID:0050633
+300514	#300514 fanconi anemia, complementation group b; fancb;;facb;;fanconi pancytopenia, type 2; fa2	DOID:0111098
+300523	allan-herndon-dudley syndrome	DOID:0050631
+300600	aland island eye disease	DOID:0050630
+300623	#300623 fragile x tremor/ataxia syndrome; fxtas	DOID:0050879
+300751	#300751 anemia, sideroblastic, x-linked; xlsa;;anemia, hypochromic; anh1;;anemia, hereditary sideroblastic;;hereditary iron-loading anemia	DOID:0060063
+300804	joubert syndrome 10	DOID:0110981
+300855	ogden syndrome	DOID:0050781
+300857	amyotrophic lateral sclerosis 15 with or without frontotemporal dementia; als15	DOID:0060206
+300861	%300861 mental retardation, x-linked, syndromic, chudley-schwartz type; mrxscs;;mental retardation, x-linked, with seizures, hypogammaglobulinemia,and gait disturbance	DOID:0060819
+300868	multiple congenital anomalies-hypotonia-seizures syndrome 2	DOID:0080139
+301310	anemia, sideroblastic, and spinocerebellar ataxia	DOID:0050554
+303700	blue cone monochromacy; bcm	DOID:0050679
+304020	cone-rod dystrophy, x-linked, 1	DOID:0111008
+304700	#304700 mohr-tranebjaerg syndrome; mts;;dystonia-deafness syndrome; dds;;deafness-dystonia-optic atrophy syndrome; ddp;;deafness syndrome, progressive, with blindness, dystonia, fractures,and mental deficiency	DOID:0050757
+310500	#310500 night blindness, congenital stationary, type 1a; csnb1a;;csnb, complete, x-linked;;night blindness, congenital stationary, with myopia;;hemeralopia-myopia;;myopia-night blindness; nbm1nyctalopia, included	DOID:0110870
+557000	#557000 pearson marrow-pancreas syndrome;;sideroblastic anemia with marrow cell vacuolization and exocrine pancreaticdysfunction	DOID:0060067
+600080	myelocytic leukemia-like syndrome, familial, chronic	DOID:0060761
+600096	puerto rican infant hypotonia syndrome	DOID:0050740
+600116	#600116 parkinson disease 2, autosomal recessive juvenile; park2;;parkinson disease, juvenile, autosomal recessive; pdj;;parkinsonism, early-onset, with diurnal fluctuation; epdf	DOID:0060368
+600193	waardenburg syndrome, type iib	DOID:0110947
+600195	venous malformations, multiple cutaneous and mucosal	DOID:0050792
+600224	spinocerebellar ataxia 5	DOID:0050882
+600361	%600361 hereditary motor and sensory neuropathy v;;hmsn v;;hmsn5;;peroneal muscular atrophy with pyramidal features, autosomal dominant;;charcot-marie-tooth disease with pyramidal features, autosomal dominant;;charcot-marie-tooth neuropathy with pyramidal features, autosomaldominant;;cmt with pyramidal features	DOID:0080067
+600496	maturity-onset diabetes of the young, type iii	DOID:0111102
+600501	abcd syndrome	DOID:0050600
+600513	epilepsy, nocturnal frontal lobe, type 1	DOID:0060682
+600624	%600624 cone-rod dystrophy 1; cord1;;crd1	DOID:0111009
+600666	polycystic kidney disease 3	DOID:0110860
+600791	enlarged vestibular aqueduct	DOID:0050332
+600858	cardiomyopathy, familial hypertrophic, 6; cmh6	DOID:0110312
+600901	fanconi anemia, complementation group e	DOID:0111084
+600972	#600972 achondrogenesis, type ib; acg1b;;achondrogenesis, fraccaro type	DOID:0080055
+600977	cone-rod dystrophy 5	DOID:0111010
+601003	brody myopathy	DOID:0050692
+601186	microphthalmia, syndromic 9	DOID:0050819
+601198	hypocalcemia, autosomal dominant 1	DOID:0090107
+601419	#601419 myopathy, myofibrillar, 1; mfm1;;myopathy, myofibrillar, desmin-related;;desminopathy, primary;;desmin-related myopathy; drm;;inclusion body myopathy 1, autosomal dominant, formerly; ibm1, formerly;;cardiomyopathy, dilated, 1f and limb-girdle muscular dystrophy type1d, formerly;;cmd1f and lgmd1d, formerly;;cardiomyopathy, dilated, with conduction defect and muscular dystrophy;cdcd3, formerly	DOID:0080092
+601462	#601462 myasthenic syndrome, congenital, slow-channel; sccms;;myasthenic syndrome, congenital, postsynaptic slow-channel;;myasthenic syndrome, congenital, type iia; cms2a;;cms iia	DOID:0110663
+601492	mucopolysaccharidosis type ix	DOID:0050809
+601536	#601536 athabaskan brainstem dysgenesis syndrome; abds;;navajo brainstem syndromebosley-salih-alorainy syndrome, included; bsas, included	DOID:0050682
+601553	#601553 hypotrichosis, congenital, with juvenile macular dystrophy; hjmd;;hypotrichosis with cone-rod dystrophy	DOID:0110711
+601777	cone-rod dystrophy 6	DOID:0111011
+601815	phosphoglycerate dehydrogenase deficiency	DOID:0050722
+602088	#602088 nephronophthisis 2; nphp2;;nph2	DOID:0111113
+602099	#602099 amyotrophic lateral sclerosis 5, juvenile; als5	DOID:0060197
+602111	#602111 spondyloepimetaphyseal dysplasia, missouri type;;semd, missouri typemetaphyseal anadysplasia 1, included; mandp1, included	DOID:0080030
+602124	dystonia 7, torsion	DOID:0090040
+602390	hemochromatosis, type 2a	DOID:0111027
+602475	ossification of the posterior longitudinal ligament of spine	DOID:0060887
+602875	#602875 acromesomelic dysplasia, maroteaux type; amdmst. helena dysplasia, included	DOID:0080050
+603034	myasthenic syndrome, congenital, 5	DOID:0110667
+603041	#603041 mitochondrial dna depletion syndrome 1 (mngie type); mtdps1;;mitochondrial neurogastrointestinal encephalopathy syndrome, tymp-related;;mngie, tymp-related;;myoneurogastrointestinal encephalopathy syndrome;;polyneuropathy, ophthalmoplegia, leukoencephalopathy, and intestinalpseudoobstruction;;polip syndrome	DOID:0080119
+603075	macular degeneration, age-related, 1	DOID:0110014
+603204	epilepsy, nocturnal frontal lobe, 2; enfl2	DOID:0060683
+603467	#603467 fanconi anemia, complementation group f; fancf	DOID:0111088
+603516	#603516 spinocerebellar ataxia 10; sca10	DOID:0050960
+603552	hemophagocytic lymphohistiocytosis, familial, 4	DOID:0110924
+603553	hemophagocytic lymphohistiocytosis, familial, 2	DOID:0110922
+603649	#603649 cone-rod dystrophy 7; cord7	DOID:0111012
+603671	acromelic frontonasal dysostosis	DOID:0060342
+604116	#604116 cone-rod dystrophy 3; cord3	DOID:0111013
+604121	cerebellar ataxia, deafness, and narcolepsy, autosomal dominant; adcadn	DOID:0050968
+604218	encephalopathy, familial, with neuroserpin inclusion bodies; fenib	DOID:0050831
+604290	aceruloplasminemia	DOID:0050711
+604326	spinocerebellar ataxia 12	DOID:0050962
+604348	advanced sleep phase syndrome, familial, 1; fasps1	DOID:0110011
+604379	#604379 hypotrichosis 7; hypt7;;hypotrichosis, localized, autosomal recessive 2; lah2;;hypotrichosis, autosomal recessive; ah;;hypotrichosis, total, mari typewoolly hair, autosomal recessive 2, with or without hypotrichosis,included; arwh2, included;;wh/ht, included	DOID:0110704
+604387	#604387 nephronophthisis 3; nphp3;;nph3	DOID:0111114
+604432	#604432 spinocerebellar ataxia 11; sca11	DOID:0050961
+604519	inflammatory bowel disease 3	DOID:0110891
+604559	#604559 progressive familial heart block, type ib; pfhb1b;;pfhbib	DOID:0111076
+604571	#604571 bare lymphocyte syndrome, type i;;bls, type i;;hla class i deficiency	DOID:0060009
+605019	#605019 hypobetalipoproteinemia, familial, 2; fhbl2;;hypolipidemia, familial, combined	DOID:0111061
+605027	lymphoma, non-hodgkin, familial	DOID:0060060
+605041	brooke-spiegler syndrome; bss	DOID:0050693
+605259	spinocerebellar ataxia 13	DOID:0050963
+605282	temtamy preaxial brachydactyly syndrome; tpbs	DOID:0050814
+605355	#605355 nemaline myopathy 5; nem5;;nemaline myopathy, amish type; anm;;amish nemaline myopathy	DOID:0110936
+605361	spinocerebellar ataxia 14	DOID:0050964
+605375	#605375 epilepsy, nocturnal frontal lobe, 3; enfl3	DOID:0060684
+605389	#605389 hypotrichosis 1; hypt1;;hypotrichosis simplex, generalized, hereditary; hhs;;hts	DOID:0110698
+605549	%605549 cone-rod dystrophy 8; cord8	DOID:0111014
+605676	cardiomyopathy, dilated, with woolly hair and keratoderma; dcwhk	DOID:0090128
+605711	#605711 multiple mitochondrial dysfunctions syndrome 1; mmds1;;mmds	DOID:0080133
+605724	fanconi anemia, complementation group d1	DOID:0111089
+605735	%605735 bleeding disorder, platelet-type, 12; bdplt12;;prostaglandin-endoperoxide synthase 1 deficiency, platelet;;pghs1 deficiency;;platelet cyclooxygenase 1 deficiency;;platelet cox1 deficiency	DOID:0111058
+605779	nail disorder, nonsyndromic congenital, 7	DOID:0080085
+605809	myasthenic syndrome, congenital, 4a, slow-channel; cms4a	DOID:0110678
+605909	parkinson disease 6, autosomal recessive early-onset	DOID:0060369
+606070	#606070 amyotrophic lateral sclerosis 21; als21;;myopathy, distal, 2, formerly; mpd2, formerly;;vocal cord and pharyngeal dysfunction with distal myopathy, formerly;vcpdm, formerly	DOID:0060212
+606176	#606176 diabetes mellitus, permanent neonatal; pndm;;diabetes mellitus, permanent, of infancy; pdmidiabetes mellitus, permanent neonatal, with neurologic features, included;;developmental delay, epilepsy, and neonatal diabetes, included; dend,included	DOID:0060639
+606324	parkinson disease 7, autosomal recessive early-onset	DOID:0060370
+606369	#606369 epileptic encephalopathy, lennox-gastaut type;;encephalopathy of childhood	DOID:0050561
+606392	#606392 maturity-onset diabetes of the young, type 4; mody4;;mody, type 4	DOID:0111103
+606394	#606394 maturity-onset diabetes of the young, type 6; mody6;;mody, type 6	DOID:0111104
+606552	episodic ataxia, type 4	DOID:0050992
+606554	episodic ataxia, type 3	DOID:0050991
+606640	amyotrophic lateral sclerosis 3	DOID:0060195
+606658	spinocerebellar ataxia 15	DOID:0050965
+606889	alzheimer disease 4	DOID:0110040
+606966	nephronophthisis 4	DOID:0111115
+607004	%607004 brachydactyly, type a1, b; bda1b	DOID:0110974
+607060	parkinson disease 8, autosomal dominant; park8	DOID:0060371
+607095	#607095 anauxetic dysplasia;;spondylometaepiphyseal dysplasia, anauxetic type;;spondylometaepiphyseal dysplasia, menger type	DOID:0050640
+607136	#607136 spinocerebellar ataxia 17; sca17;;huntington disease-like 4; hdl4	DOID:0050967
+607208	#607208 dravet syndrome;;epileptic encephalopathy, early infantile, 6; eiee6;;severe myoclonic epilepsy of infancy; smei	DOID:0060171
+607346	#607346 spinocerebellar ataxia 19; sca19;;spinocerebellar ataxia 22; sca22	DOID:0050970
+607454	#607454 spinocerebellar ataxia 21; sca21	DOID:0050972
+607458	spinocerebellar ataxia 18	DOID:0050969
+607475	bothnia retinal dystrophy	DOID:0050683
+607476	#607476 newfoundland rod-cone dystrophy; nfrcd	DOID:0111015
+607483	#607483 thiamine metabolism dysfunction syndrome 2 (biotin- or thiamine-responsivetype); thmd2;;basal ganglia disease, biotin-responsive; bbgd;;encephalopathy, thiamine-responsive	DOID:0050659
+607487	#607487 cardiomyopathy, familial hypertrophic, 25; cmh25	DOID:0110328
+607636	van buchem disease, type 2	DOID:0080037
+607778	#607778 acrocapitofemoral dysplasia; acfd	DOID:0050604
+607822	alzheimer disease 3	DOID:0110042
+607903	#607903 hypotrichosis 6; hypt6;;hypotrichosis, localized, autosomal recessive 1; lah1;;hypotrichosis, localized, autosomal recessive; lah;;htl	DOID:0110703
+608030	#608030 amyotrophic lateral sclerosis 6, with or without frontotemporal dementia;als6amyotrophic lateral sclerosis 6, autosomal recessive, included	DOID:0060198
+608091	joubert syndrome 2	DOID:0110988
+608194	#608194 cone-rod dystrophy 13; cord13	DOID:0111016
+608233	#608233 hermansky-pudlak syndrome 2; hps2	DOID:0060540
+608404	#608404 platelet glycoprotein iv deficiency;;bleeding disorder, platelet-type, 10; bdplt10;;cd36 deficiency	DOID:0111046
+608627	#608627 amyotrophic lateral sclerosis 8; als8	DOID:0050752
+608629	joubert syndrome 3	DOID:0110998
+608687	spinocerebellar ataxia 20	DOID:0050971
+608703	%608703 spinocerebellar ataxia 25; sca25	DOID:0050974
+608751	cardiomyopathy, familial hypertrophic, 8	DOID:0110314
+608758	cardiomyopathy, familial hypertrophic, 10	DOID:0110316
+608768	#608768 spinocerebellar ataxia 8; sca8	DOID:0050959
+608810	#608810 myopathy, myofibrillar, 2, mfm2;;myopathy, myofibrillar, alpha-b crystallin-related;;myopathy, desmin-related, associated with mutation in the cryab gene;;alpha-b crystallinopathy	DOID:0080093
+608890	waardenburg syndrome, type 2d; ws2d	DOID:0110952
+608898	#608898 hemophagocytic lymphohistiocytosis, familial, 3; fhl3;;hplh3;;hlh3	DOID:0110923
+608930	myasthenic syndrome, congenital, 1b, fast-channel; cms1b	DOID:0110662
+608931	myasthenic syndrome, congenital, 4c, associated with acetylcholine receptor deficiency	DOID:0110679
+609053	#609053 fanconi anemia, complementation group i; fanci	DOID:0111091
+609054	#609054 fanconi anemia, complementation group j; fancj	DOID:0111097
+609200	myotilinopathy	DOID:0080094
+609270	#609270 spinocerebellar ataxia, autosomal recessive 7; scar7	DOID:0080059
+609273	nemaline myopathy 6	DOID:0110935
+609284	nemaline myopathy 1; nem1	DOID:0110926
+609285	nemaline myopathy 4	DOID:0110932
+609306	spinocerebellar ataxia 26	DOID:0050975
+609307	spinocerebellar ataxia 27; sca27	DOID:0050976
+609452	#609452 myopathy, myofibrillar, 4; mfm4;;myopathy, myofibrillar, zasp-related	DOID:0080095
+609456	muscular dystrophy, congenital, merosin-positive	DOID:0110638
+609524	filaminopathy, autosomal dominant	DOID:0080096
+609560	mitochondrial dna depletion syndrome 2 (myopathic type)	DOID:0080120
+609583	joubert syndrome 4	DOID:0110999
+609637	#609637 holoprosencephaly 5; hpe5	DOID:0110878
+609812	#609812 maturity-onset diabetes of the young, type 8, with exocrine dysfunction;mody8;;diabetes and pancreatic exocrine dysfunction; dped;;diabetes-pancreatic exocrine dysfunction syndrome	DOID:0111105
+609942	#609942 noonan syndrome 3; ns3	DOID:0060581
+610100	giant axonal neuropathy, autosomal dominant	DOID:0090069
+610188	joubert syndrome 5	DOID:0111000
+610244	spastic paraplegia 33, autosomal dominant	DOID:0110784
+610245	#610245 spinocerebellar ataxia 23; sca23	DOID:0050973
+610246	#610246 spinocerebellar ataxia 28; sca28	DOID:0050977
+610283	cone-rod dystrophy 10	DOID:0111017
+610353	epilepsy, nocturnal frontal lobe, 4; enfl4	DOID:0060685
+610381	#610381 cone-rod dystrophy 11; cord11	DOID:0111018
+610444	#610444 night blindness, congenital stationary, autosomal dominant 3; csnbad3;;night blindness, congenital stationary, nougaret type	DOID:0110715
+610445	night blindness, congenital stationary, autosomal dominant 1	DOID:0110862
+610455	tumoral calcinosis, normophosphatemic, familial	DOID:0080170
+610460	thiopurine s-methyltransferase deficiency	DOID:0080172
+610508	#610508 maturity-onset diabetes of the young, type 7; mody7	DOID:0111106
+610536	mandibulofacial dysostosis, guion-almeida type; mfdga	DOID:0080196
+610542	#610542 myasthenic syndrome, congenital, with tubular aggregates 1; cmsta1	DOID:0110660
+610687	nemaline myopathy 7	DOID:0110934
+610688	joubert syndrome 6	DOID:0111001
+610698	macular degeneration, age-related, 4	DOID:0110017
+610713	brachydactyly-syndactyly syndrome	DOID:0050689
+610733	#610733 noonan syndrome 4; ns4	DOID:0060582
+610755	#610755 multiple endocrine neoplasia, type iv; men4	DOID:0080137
+610828	holoprosencephaly 7	DOID:0110876
+610829	#610829 holoprosencephaly 9; hpe9;;pituitary anomalies with holoprosencephaly-like features;;holoprosencephaly with microphthalmia and first branchial arch anomalies	DOID:0110873
+610832	#610832 fanconi anemia, complementation group n; fancn	DOID:0111094
+610984	#610984 complement factor i deficiency; cfid;;complement component 3 inactivator deficiency;;c3 inactivator deficiency	DOID:0050419
+610992	phosphoserine aminotransferase deficiency	DOID:0050723
+611302	#611302 spastic ataxia 2, autosomal recessive; spax2	DOID:0050941
+611390	#611390 spastic ataxia 3, autosomal recessive; spax3;;autosomal recessive spastic ataxia with leukoencephalopathy; arsal	DOID:0050942
+611490	#611490 osteopetrosis,  autosomal recessive 4; optb4;;osteopetrosis, infantile malignant 2	DOID:0110944
+611497	#611497 osteopetrosis, autosomal recessive 6; optb6;;osteopetrosis, autosomal recessive, intermediate form	DOID:0110945
+611498	#611498 nephronophthisis 7; nphp7	DOID:0111116
+611553	#611553 noonan syndrome 5; ns5	DOID:0060583
+611560	joubert syndrome 7	DOID:0111002
+611584	#611584 waardenburg syndrome, type 2e; ws2e;;hypogonadotropic hypogonadism with anosmia and deafness, with or withouthypopigmentation;;waardenburg syndrome, type 2e, with or without neurologic involvement;;ws2e, with or without neurologic involvement;;waardenburg syndrome, type iie	DOID:0110956
+611809	#611809 bestrophinopathy, autosomal recessive; arb	DOID:0050662
+611895	#611895 amyotrophic lateral sclerosis 9; als9	DOID:0060200
+611907	episodic ataxia, type 7; ea7	DOID:0050995
+611953	#611953 macular degeneration, age-related, 11; armd11	DOID:0110023
+612069	#612069 amyotrophic lateral sclerosis 10, with or without frontotemporal dementia;als10frontotemporal lobar degeneration with tdp43 inclusions, tardbp-related,included;;frontotemporal dementia with tdp43 inclusions, tardbp-related, included;;ftld-tdp, tardbp-related, included	DOID:0060201
+612073	mitochondrial dna depletion syndrome 5 (encephalomyopathic with or without methylmalonic aciduria)	DOID:0080124
+612075	mitochondrial dna depletion syndrome 8a (encephalomyopathic type with renal tubulopathy)	DOID:0080127
+612098	cardiomyopathy, familial hypertrophic, 11; cmh11	DOID:0110317
+612124	cardiomyopathy, familial hypertrophic, 12	DOID:0110318
+612225	#612225 maturity-onset diabetes of the young, type 9; mody9	DOID:0111107
+612244	#612244 inflammatory bowel disease 13; ibd13	DOID:0110893
+612278	#612278 inflammatory bowel disease 19; ibd19	DOID:0110890
+612285	#612285 joubert syndrome 9; jbts9joubert syndrome 9/15, digenic, included	DOID:0111004
+612286	nephrolithiasis/osteoporosis, hypophosphatemic, 1	DOID:0080077
+612287	nephrolithiasis/osteoporosis, hypophosphatemic, 2	DOID:0080078
+612291	joubert syndrome 8	DOID:0111003
+612292	#612292 birk-barel mental retardation dysmorphism syndrome;;birk-barel syndrome;;mental retardation with hypotonia and facial dysmorphism	DOID:0050675
+612354	inflammatory bowel disease 21	DOID:0110906
+612540	myopathy, congenital, compton-north	DOID:0080101
+612567	#612567 inflammatory bowel disease 25, autosomal recessive; ibd25;;inflammatory bowel disease, early-onset, autosomal recessive	DOID:0110909
+612577	amyotrophic lateral sclerosis 11	DOID:0060202
+612653	#612653 spherocytosis, type 4; sph4;;spherocytosis, hereditary, 4; hs4	DOID:0110919
+612656	episodic ataxia, type 6	DOID:0050994
+612657	#612657 cone-rod dystrophy 12; cord12	DOID:0111019
+612690	#612690 spherocytosis, type 5; sph5;;spherocytosis, hereditary, 5; hs5	DOID:0110920
+612713	#612713 kahrizi syndrome; khrz;;mental retardation, cataract, coloboma, and kyphosis, autosomal recessive	DOID:0050807
+612718	#612718 cerebral creatine deficiency syndrome 3; ccds3;;arginine:glycine amidinotransferase deficiency agat deficiency;;gatm deficiency;;creatine deficiency syndrome due to agat deficiency	DOID:0050712
+612736	guanidinoacetate methyltransferase deficiency	DOID:0050799
+612775	#612775 cone-rod dystrophy 9; cord9	DOID:0111020
+612847	brachyolmia type 4 with mild epiphyseal and metaphyseal changes; bcym4	DOID:0050812
+612953	parkinson disease 14, autosomal recessive	DOID:0060900
+612954	#612954 myopathy, myofibrillar, 6; mfm6;;myopathy, myofibrillar, bag3-related	DOID:0080097
+613095	polycystic kidney disease 2	DOID:0110859
+613101	#613101 hemophagocytic lymphohistiocytosis, familial, 5; fhl5	DOID:0110925
+613148	#613148 inflammatory bowel disease 28, autosomal recessive; ibd28;;inflammatory bowel disease, early-onset, autosomal recessive	DOID:0110899
+613159	nephronophthisis-like nephropathy 1	DOID:0111117
+613163	gaba-transaminase deficiency	DOID:0060174
+613216	#613216 night blindness, congenital stationary, type 1c; csnb1c;;csnb, complete, autosomal recessive	DOID:0110867
+613224	#613224 noonan syndrome 6; ns6	DOID:0060584
+613229	trichotillomania; ttm	DOID:0050587
+613243	cardiomyopathy, familial hypertrophic, 13	DOID:0110319
+613251	cardiomyopathy, familial hypertrophic, 14	DOID:0110320
+613255	cardiomyopathy, familial hypertrophic, 15	DOID:0110321
+613265	waardenburg syndrome, type 4b; ws4b	DOID:0110954
+613266	#613266 waardenburg syndrome, type 4c; ws4c;;waardenburg syndrome with hirschsprung disease, type 4c;;waardenburg syndrome, type ivc	DOID:0110955
+613313	hemochromatosis, type 2b	DOID:0111032
+613370	#613370 maturity-onset diabetes of the young, type 10; mody10	DOID:0111108
+613371	spinocerebellar ataxia 30; sca30	DOID:0050979
+613375	maturity-onset diabetes of the young, type 11	DOID:0111109
+613382	brachydactyly, type e2; bde2	DOID:0110976
+613390	fanconi anemia, complementation group o	DOID:0111096
+613411	#613411 oguchi disease 2;;night blindness, congenital stationary, oguchi type 2	DOID:0110713
+613435	#613435 amyotrophic lateral sclerosis 12; als12	DOID:0060203
+613507	#613507 glycogen storage disease xv; gsd15;;gsd xv;;glycogenin deficiency;;gyg1 deficiency	DOID:0050579
+613544	chromosome 6q11-q14 deletion syndrome	DOID:0060423
+613550	#613550 nephronophthisis 11; nphp11	DOID:0111118
+613587	occult macular dystrophy	DOID:0050578
+613630	#613630 cocoon syndrome;;fetal encasement syndrome	DOID:0060647
+613638	chromosome 19p13.13 deletion syndrome	DOID:0060426
+613660	#613660 cone-rod dystrophy 15; cord15retinitis pigmentosa 65, included; rp65, included	DOID:0111021
+613662	mitochondrial dna depletion syndrome 4b (mngie type)	DOID:0080123
+613672	#613672 spastic ataxia 4, autosomal recessive; spax4	DOID:0050943
+613681	chromosome 2q31.1 duplication syndrome	DOID:0060458
+613690	cardiomyopathy, familial hypertrophic, 7; cmh7	DOID:0110313
+613706	noonan syndrome 7	DOID:0060585
+613728	#613728 spinocerebellar ataxia, autosomal recessive 10; scar10	DOID:0050999
+613743	#613743 adrenal insufficiency, congenital, with 46,xy sex reversal, partialor complete;;p450scc deficiency	DOID:0050546
+613757	#613757 macular degeneration, age-related, 6; armd6	DOID:0110018
+613765	cardiomyopathy, familial hypertrophic, 9	DOID:0110315
+613820	nephronophthisis 12	DOID:0111119
+613824	#613824 nephronophthisis 9; nphp9	DOID:0111120
+613830	#613830 night blindness, congenital stationary, type 1d; csnb1d;;csnb, complete, autosomal recessive	DOID:0110868
+613838	#613838 cardiomyopathy, familial hypertrophic, 16; cmh16	DOID:0110322
+613855	episodic ataxia, type 5	DOID:0050993
+613856	#613856 achromatopsia 4; achm4	DOID:0110010
+613869	#613869 myopathy, myofibrillar, fatal infantile hypertonic, alpha-b crystallin-related;;mfm, fatal infantile hypertonic, alpha-b crystallin-related	DOID:0080098
+613873	#613873 cardiomyopathy, familial hypertrophic, 17; cmh17	DOID:0110323
+613874	#613874 cardiomyopathy, familial hypertrophic, 18; cmh18	DOID:0110324
+613875	#613875 cardiomyopathy, familial hypertrophic, 19; cmh19	DOID:0110325
+613876	#613876 cardiomyopathy, familial hypertrophic, 20; cmh20	DOID:0110326
+613887	#613887 cataract, autosomal recessive congenital 4; catc4	DOID:0110247
+613908	#613908 spinocerebellar ataxia 35; sca35	DOID:0050982
+613951	fanconi anemia, complementation group p; fancp	DOID:0111092
+613954	#613954 amyotrophic lateral sclerosis 14, with or without frontotemporal dementia;als14	DOID:0060205
+613981	#613981 hypotrichosis 3; hypt3;;hypotrichosis simplex of the scalp 2; htss2	DOID:0110700
+614023	phosphoserine phosphatase deficiency; psphd	DOID:0050724
+614072	#614072 hermansky-pudlak syndrome 3; hps3	DOID:0060541
+614073	#614073 hermansky-pudlak syndrome 4; hps4	DOID:0060542
+614074	#614074 hermansky-pudlak syndrome 5; hps5	DOID:0060543
+614075	#614075 hermansky-pudlak syndrome 6; hps6	DOID:0060544
+614076	#614076 hermansky-pudlak syndrome 7; hps7	DOID:0060545
+614077	#614077 hermansky-pudlak syndrome 8; hps8	DOID:0060546
+614080	multiple congenital anomalies-hypotonia-seizures syndrome 1	DOID:0080138
+614082	#614082 fanconi anemia, complementation group g; fancg	DOID:0111086
+614083	fanconi anemia, complementation group l	DOID:0111082
+614114	mosaic variegated aneuploidy syndrome 2	DOID:0080142
+614149	%614149 nail disorder, nonsyndromic congenital, 9; ndnc9;;anonychia-onycholysis, isolated;;onychodystrophy;;nail dysplasia	DOID:0080087
+614153	#614153 spinocerebellar ataxia 36; sca36	DOID:0050983
+614157	nail disorder, nonsyndromic congenital, 10; ndnc10	DOID:0080088
+614158	614158 bleeding disorder, platelet-type, 14; bdplt14;;thromboxane synthetase deficiency	DOID:0111047
+614171	hermansky-pudlak syndrome 9	DOID:0060547
+614173	#614173 joubert syndrome 13; jbts13	DOID:0110982
+614198	myasthenic syndrome, congenital, 16; cms16	DOID:0110682
+614203	#614203 parkinson disease 17; park17	DOID:0060897
+614226	holoprosencephaly 11	DOID:0110877
+614229	spinocerebellar ataxia, autosomal recessive 11	DOID:0080063
+614294	chromosome 15q25 deletion syndrome	DOID:0060396
+614299	multiple mitochondrial dysfunctions syndrome 2 with hyperglycinemia	DOID:0080134
+614307	alpha-methylacyl-coa racemase deficiency; amacrd	DOID:0060602
+614322	#614322 spinocerebellar ataxia, autosomal recessive 12; scar12;;spinocerebellar ataxia with mental retardation and epilepsy	DOID:0080060
+614373	#614373 amyotrophic lateral sclerosis 16, juvenile; als16	DOID:0060207
+614377	nephronophthisis 13	DOID:0111121
+614424	joubert syndrome 14	DOID:0110983
+614464	joubert syndrome 15	DOID:0110984
+614465	#614465 joubert syndrome 16; jbts16	DOID:0110985
+614487	spastic ataxia 5, autosomal recessive	DOID:0050944
+614500	cone-rod dystrophy 16	DOID:0111022
+614541	chromosome 16q22 deletion syndrome	DOID:0060401
+614559	infantile cerebellar-retinal degeneration	DOID:0050883
+614565	night blindness, congenital stationary, type 1e	DOID:0110869
+614615	#614615 joubert syndrome 17; jbts17	DOID:0110986
+614676	%614676 cardiomyopathy, familial hypertrophic, 21; cmh21	DOID:0110311
+614696	#614696 amyotrophic lateral sclerosis 17; als17;;amyotrophic lateral sclerosis, chmp2b-related	DOID:0060208
+614732	#614732 intrauterine growth retardation, metaphyseal dysplasia, adrenal hypoplasiacongenita, and genital anomalies;;image syndrome	DOID:0050885
+614750	myasthenic syndrome, congenital, 13	DOID:0110676
+614756	cerebellar ataxia, nonprogressive, with mental retardation; canpmr	DOID:0050998
+614808	#614808 amyotrophic lateral sclerosis 18; als18	DOID:0060209
+614815	#614815 joubert syndrome 18; jbts18	DOID:0110987
+614831	spinocerebellar ataxia, autosomal recessive 13	DOID:0080062
+614844	#614844 nephronophthisis 14; nphp14joubert syndrome 19, included; jbts19, included	DOID:0111122
+614845	#614845 nephronophthisis 15; nphp15	DOID:0111123
+614970	#614970 joubert syndrome 20; jbts20	DOID:0110989
+615005	epilepsy, nocturnal frontal lobe, 5; enfl5	DOID:0060686
+615058	#615058 night blindness, congenital stationary, type 1f; csnb1f	DOID:0110864
+615059	#615059 hypotrichosis 11; hypt11	DOID:0110708
+615072	brachydactyly, type a1, c; bda1c	DOID:0110977
+615084	mitochondrial dna depletion syndrome 11	DOID:0080129
+615085	#615085 osteopetrosis, autosomal recessive 8; optb8	DOID:0110940
+615120	myasthenic syndrome, congenital, 8; cms8	DOID:0110657
+615157	mitochondrial complex iii deficiency, nuclear type 2; mc3dn2	DOID:0060351
+615158	#615158 mitochondrial complex iii deficiency, nuclear type 3; mc3dn3	DOID:0080112
+615159	mitochondrial complex iii deficiency, nuclear type 4	DOID:0080113
+615160	mitochondrial complex iii deficiency, nuclear type 5	DOID:0080114
+615163	%615163 cone-rod dystrophy 17; cord17	DOID:0111023
+615193	#615193 bleeding disorder, platelet-type, 15; bdplt15;;macrothrombocytopenia, autosomal dominant, actn1-related	DOID:0111053
+615217	ataxia-oculomotor apraxia 3; aoa3	DOID:0060557
+615272	#615272 fanconi anemia, complementation group q; fancq	DOID:0111093
+615282	cortical dysplasia, complex, with other brain malformations 2; cdcbm2	DOID:0090133
+615330	#615330 multiple mitochondrial dysfunctions syndrome 3; mmds3	DOID:0080135
+615348	#615348 nemaline myopathy 8; nem8	DOID:0110930
+615355	noonan syndrome 8	DOID:0060586
+615361	#615361 hypocalcemia, autosomal dominant 2; hypoc2	DOID:0090108
+615369	#615369 epileptic encephalopathy, childhood-onset; eeoc	DOID:0060475
+615374	cone-rod dystrophy 18	DOID:0111024
+615382	#615382 nephronophthisis 16; nphp16	DOID:0111124
+615386	spinocerebellar ataxia, autosomal recessive 14	DOID:0080058
+615398	multiple congenital anomalies-hypotonia-seizures syndrome 3	DOID:0080140
+615411	#615411 cortical dysplasia, complex, with other brain malformations 3; cdcbm3	DOID:0090134
+615412	#615412 cortical dysplasia, complex, with other brain malformations 4; cdcbm4	DOID:0090138
+615418	#615418 mitochondrial dna depletion syndrome 12 (cardiomyopathic type); mtdps12	DOID:0080130
+615426	amyotrophic lateral sclerosis 20; als20	DOID:0060211
+615439	macular degeneration, age-related, 13	DOID:0110025
+615453	mitochondrial complex iii deficiency, nuclear type 6; mc3dn6	DOID:0080115
+615471	mitochondrial dna depletion syndrome 13 (encephalomyopathic type)	DOID:0080131
+615512	triosephosphate isomerase deficiency	DOID:0050884
+615515	amyotrophic lateral sclerosis 19; als19	DOID:0060210
+615530	parkinson disease 20, early-onset	DOID:0060898
+615538	chromosome 22q13 duplication syndrome	DOID:0060437
+615558	#615558 hypobetalipoproteinemia, familial, 1; fhbl1;;hypobetalipoproteinemia, familial; fhbl;;acanthocytosis with hypobetalipoproteinemia;;hypobetalipoproteinemia, normotriglyceridemic	DOID:0111062
+615636	joubert syndrome 21	DOID:0110990
+615665	#615665 joubert syndrome 22; jbts22	DOID:0110991
+615668	chromosome 5q12 deletion syndrome	DOID:0060421
+615705	#615705 spinocerebellar ataxia, autosomal recessive 15; scar15;;salih ataxia	DOID:0080057
+615731	#615731 nemaline myopathy 9; nem9	DOID:0110929
+615763	cortical dysplasia, complex, with other brain malformations 5	DOID:0090135
+615768	spinocerebellar ataxia, autosomal recessive 16	DOID:0080029
+615771	cortical dysplasia, complex, with other brain malformations 6; cdcbm6	DOID:0090136
+615812	abdominal obesity-metabolic syndrome 3; aoms3	DOID:0060612
+615824	mitochondrial complex iii deficiency, nuclear type 7; mc3dn7	DOID:0080116
+615838	mitochondrial complex iii deficiency, nuclear type 8	DOID:0080117
+615851	pontocerebellar hypoplasia, type 2e; pch2e	DOID:0060271
+615860	cone-rod dystrophy 19; cord19	DOID:0111025
+615862	nephronophthisis 18; nphp18	DOID:0111125
+615885	hypotrichosis 12; hypt12	DOID:0110709
+615896	hypotrichosis 13; hypt13	DOID:0110710
+615911	frontotemporal dementia and/or amyotrophic lateral sclerosis 2; ftdals2	DOID:0060214
+615945	spinocerebellar ataxia 37; sca37	DOID:0050984
+615957	spinocerebellar ataxia 38; sca38	DOID:0050985
+615973	cone-rod dystrophy 20; cord20	DOID:0111026
+616038	neu-laxova syndrome 2; nls2	DOID:0080075
+616040	myasthenic syndrome, congenital, 7, presynaptic; cms7	DOID:0110659
+616053	spinocerebellar ataxia 40; sca40	DOID:0050986
+616055	episodic ataxia, type 8	DOID:0050996
+616111	mitochondrial complex iii deficiency, nuclear type 9	DOID:0080118
+616127	spinocerebellar ataxia, autosomal recessive 17	DOID:0080064
+616165	nemaline myopathy 10	DOID:0110931
+616171	microcephaly and chorioretinopathy, autosomal recessive, 2; mccrp2	DOID:0080106
+616201	chronic atrial and intestinal dysrhythmia; caid	DOID:0060339
+616204	spinocerebellar ataxia, autosomal recessive 18	DOID:0080042
+616208	amyotrophic lateral sclerosis 22 with or without frontotemporal dementia; als22	DOID:0060355
+616217	nephronophthisis 19; nphp19	DOID:0111126
+616227	myasthenic syndrome, congenital, without tubular aggregates; cmswta	DOID:0110658
+616228	myasthenic syndrome, congenital, 14	DOID:0110669
+616278	#616278 bile acid synthesis defect, congenital, 5; cbas5	DOID:0111066
+616291	lichtenstein-knorr syndrome; likns	DOID:0080065
+616304	myasthenic syndrome, congenital, 17; cms17	DOID:0110674
+616313	myasthenic syndrome, congenital, 2a, slow-channel; cms2a	DOID:0110681
+616314	myasthenic syndrome, congenital, 2c, associated with acetylcholine receptor deficiency; cms2c	DOID:0110680
+616321	myasthenic syndrome, congenital, 3a, slow-channel; cms3a	DOID:0110666
+616322	myasthenic syndrome, congenital, 3b, fast-channel; cms3b	DOID:0110665
+616323	myasthenic syndrome, congenital, 3c, associated with acetylcholine receptor deficiency	DOID:0110664
+616324	myasthenic syndrome, congenital, 4b, fast-channel; cms4b	DOID:0110677
+616325	myasthenic syndrome, congenital, 9, associated with acetylcholine receptor deficiency; cms9	DOID:0110670
+616326	myasthenic syndrome, congenital, 11, associated with acetylcholine receptor deficiency; cms11	DOID:0110675
+616329	maturity-onset diabetes of the young, type 13	DOID:0111110
+616330	myasthenic syndrome, congenital, 18; cms18	DOID:0110683
+616335	microcephaly and chorioretinopathy, autosomal recessive, 3; mccrp3	DOID:0080107
+616354	spinocerebellar ataxia, autosomal recessive 20	DOID:0080066
+616367	mandibulofacial dysostosis with alopecia	DOID:0060365
+616370	multiple mitochondrial dysfunctions syndrome 4; mmds4	DOID:0080136
+616389	#616389 night blindness, congenital stationary, type 1g; csnb1g	DOID:0110714
+616398	dystonia 26, myoclonic; dyt26	DOID:0090036
+616420	leukodystrophy, hypomyelinating, 10	DOID:0060788
+616435	fanconi anemia, complementation group t; fanct	DOID:0111081
+616437	frontotemporal dementia and/or amyotrophic lateral sclerosis 3; ftdals3	DOID:0110068
+616439	frontotemporal dementia and/or amyotrophic lateral sclerosis 4; ftdals4	DOID:0110069
+616462	acrofacial dysostosis, cincinnati type	DOID:0060353
+616490	joubert syndrome 23; jbts23	DOID:0110992
+616511	maturity-onset diabetes of the young, type 14; mody14	DOID:0111111
+616517	#616517 achromatopsia 7; achm7	DOID:0110009
+616559	noonan syndrome 9; ns9	DOID:0060587
+616564	noonan syndrome 10; ns10	DOID:0060588
+616625	charcot-marie-tooth disease, axonal, type 2w	DOID:0110162
+616649	spherocytosis, type 2	DOID:0110917
+616654	joubert syndrome 24	DOID:0110993
+616683	leukodystrophy, hypomyelinating, 12	DOID:0060796
+616720	myasthenic syndrome, congenital, 19	DOID:0110673
+616781	joubert syndrome 25	DOID:0110994
+616784	joubert syndrome 26	DOID:0110995
+616849	brachydactyly, type a1, d	DOID:0110978
+616881	leukodystrophy, hypomyelinating, 13	DOID:0060795
+616882	advanced sleep phase syndrome, familial, 3	DOID:0110013
+616907	spastic paraplegia 76, autosomal recessive	DOID:0110821
+616924	charcot-marie-tooth disease, axonal, type 2cc	DOID:0110180
+617024	night blindness, congenital stationary, type 1h	DOID:0110866
+617047	cardiomyopathy, familial hypertrophic, 26	DOID:0110327
+617092	ciliary dyskinesia, primary, 35	DOID:0110620
+617099	autoinflammation, panniculitis, and dermatosis syndrome	DOID:0080163
+617111	macular dystrophy, patterned, 3	DOID:0060865
+617120	joubert syndrome 27	DOID:0110996
+617121	joubert syndrome 28	DOID:0110997
+617143	myasthenic syndrome, congenital, 20, presynaptic	DOID:0110661
+617239	myasthenic syndrome, congenital, 21, presynaptic	DOID:0110672
+617243	fanconi anemia, complementation group v	DOID:0111080
+617244	fanconi anemia, complementation group r	DOID:0111090
+617247	fanconi anemia, complementation group u	DOID:0111085
+617271	nephronophthisis 20	DOID:0111127
+617308	bile acid synthesis defect, congenital, 6	DOID:0111067
+617336	nemaline myopathy 11, autosomal recessive	DOID:0110933
+617404	muscular dystrophy, congenital, with cataracts and intellectual disability	DOID:0080197

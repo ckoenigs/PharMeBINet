@@ -1,0 +1,13 @@
+decipher id 	 decipher name 	 doids 
+14	prader-willi syndrome (type 1)	
+16	22q11 deletion syndrome (velocardiofacial / digeorge syndrome)	
+21	miller-dieker syndrome (mds)	
+29	charcot-marie-tooth syndrome type 1a (cmt1a)	
+3	williams-beuren syndrome (wbs)	
+31	hereditary liability to pressure palsies (hnpp)	
+4	angelman syndrome (type 1)	
+46	split hand/foot malformation 1 (shfm1)	
+47	rcad (renal cysts and diabetes)	
+53	prader-willi syndrome (type 2)	
+54	angelman syndrome (type 2)	
+59	adult-onset autosomal dominant leukodystrophy (adld)	

@@ -1,0 +1,12 @@
+hpo id 	 hpo name 
+HP:0025066	decreased mean corpuscular volume
+HP:0025109	reduced red cell pyruvate kinase activity
+HP:0025115	civatte bodies
+HP:0025147	beaten bronze macular sheen
+HP:0025148	dark choroid
+HP:0025354	abnormal cellular phenotype
+HP:0025356	pschomotor retardation
+HP:0025514	morning glory anomaly
+HP:0030918	low 1-minute apgar score
+HP:0030997	atretic vas deferens
+HP:0031026	snail-like ilia

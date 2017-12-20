@@ -1,0 +1,49 @@
+hpo id 	 hpo name 	 umls cui 
+HP:0025010	foveal atrophy	C4293702
+HP:0025013	decerebrate rigidity	C0011103
+HP:0025019	arterial rupture	C0155760
+HP:0025023	rectal atresia	C0549173
+HP:0025027	osteoma cutis	C0334041
+HP:0025072	prominent u wave	C1969408
+HP:0025084	folliculitis	C0016436
+HP:0025092	epidermal acanthosis	C4230612
+HP:0025121	simple partial occipital seizures	C1850765
+HP:0025131	finger swelling	C0239598
+HP:0025143	chills	C0085593
+HP:0025230	tendonitis	C0039503
+HP:0025234	parasomnia	C0030508
+HP:0025252	geographic tongue	C0017677
+HP:0025312	esophoria	C0152216
+HP:0025318	ovarian carcinoma	C0029925
+HP:0025386	bitemporal hollowing	C1855488
+HP:0025401	staring gaze	C3809827
+HP:0025425	laryngospasm	C0023066
+HP:0025430	high-pitched cry	C0239154
+HP:0025478	atrial standstill	C0541782
+HP:0025498	aceruloplasminemia	C0878682
+HP:0025502	overweight	C0497406
+HP:0030889	congenital shortened small intestine	C4293687
+HP:0030895	abnormal gastrointestinal motility	C2749202
+HP:0030897	decreased intestinal transit time	C3805050
+HP:0030907	thunderclap headache	C0521668
+HP:0030914	abnormal peristalsis	C1291045
+HP:0030915	cerebellar edema	C0006114
+HP:0030955	alcoholism	C0001973
+HP:0030961	microspherophakia	C1562061
+HP:0031008	lingual dystonia	C2242579
+HP:0031009	ainhum	C0001860
+HP:0031020	bone marrow hypercellularity	C1860320
+HP:0031028	lactescent serum	C1096710
+HP:0031047	paraproteinemia	C0030489
+HP:0031160	myelokathexis	C0272173
+HP:0040278	prolactinoma	C0033375
+HP:0040289	cyclic neutropenia	C0221023
+HP:0040301	increased urinary glycerol	C2673558
+HP:0040303	decreased serum iron	C0235988
+HP:0040314	blind vagina	C1848182
+HP:0045074	thin eyebrow	C4281771
+HP:0045075	sparse eyebrow	C1832446
+HP:0045082	decreased body mass index	C0231255
+HP:0410018	recurrent ear infections	C0743360
+HP:0410019	epigastric pain	C0232493
+HP:0410030	cleft lip	C0008924
