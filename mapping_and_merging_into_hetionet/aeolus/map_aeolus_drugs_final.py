@@ -200,7 +200,7 @@ prioperties:
 
 
 def map_rxnorm_to_drugbank_with_use_inchikeys_and_unii():
-    f = open('map_rxnorm_to_drugbank_with_use_of_unii_and_inchikey_4.tsv', 'r')
+    f = open('../RxNorm_to_DrugBank/results/map_rxnorm_to_drugbank_with_use_of_unii_and_inchikey_4.tsv', 'r')
     next(f)
     # list with all positions of the rxcuis which are  mapped in this step
     delete_list_without_DB = []
@@ -236,7 +236,7 @@ used name mapping
 
 
 def map_name_rxnorm_to_drugbank():
-    f = open('name_map_drugbank_to_rxnorm_2.tsv', 'r')
+    f = open('../RxNorm_to_DrugBank/results/name_map_drugbank_to_rxnorm_2.tsv', 'r')
     next(f)
     # list with all positions of the rxcuis which are  mapped in this step
     delete_list_without_DB = []
@@ -273,36 +273,20 @@ list_map_to_hetionet = []
 list_not_mapped = []
 
 # genertate file for the different map methods
-map_cui = open('drug/aeolus_map_with_use_of_cui.tsv', 'w')
-map_cui.write('rxnorm_cui \t drugbank_ids with | as seperator  \n')
-
 map_rxcui = open('drug/aeolus_map_with_use_of_rxcui.tsv', 'w')
 map_rxcui.write('rxnorm_cui \t drugbank_ids with | as seperator  \n')
 
 map_name = open('drug/aeolus_map_with_use_of_table_of_name_mapping.tsv', 'w')
 map_name.write('rxnorm_cui \t drugbank_ids with | as seperator  \n')
 
-map_with_unii = open('drug/aeolus_map_with_use_of_unii.tsv', 'w')
-map_with_unii.write('rxnorm_cui \t drugbank_ids with | as seperator  \n')
-
-map_with_inchikey = open('drug/aeolus_map_with_use_of_inchikey.tsv', 'w')
-map_with_inchikey.write('rxnorm_cui \t drugbank_ids with | as seperator  \n')
-
 map_with_inchikey_unii = open('drug/aeolus_map_with_use_of_unii_and_inchikey.tsv', 'w')
 map_with_inchikey_unii.write('rxnorm_cui \t drugbank_ids with | as seperator  \n')
-
-map_with_direct_name = open('drug/aeolus_map_with_use_of_unii_and_inchikey.tsv', 'w')
-map_with_direct_name.write('rxnorm_cui \t drugbank_ids with | as seperator  \n')
 
 # dictionary with for every how_mapped has a different file
 dict_how_mapped_files = {
     'map rxnorm to drugbank with use of name mapping': map_name,
-    'cui map to drugbank': map_cui,
     'rxcui map to drugbank': map_rxcui,
-    'map rxnorm to drugbank with use of dhimmel inchikey': map_with_inchikey,
-    'map rxnorm to drugbank with use of dhimmel unii': map_with_unii,
-    'map rxnorm to drugbank with use of dhimmel inchikey and unii': map_with_inchikey_unii,
-    'use  name to map to drugbank ids': map_with_direct_name}
+    'map rxnorm to drugbank with use of dhimmel inchikey and unii': map_with_inchikey_unii}
 
 # generate file with rxnom and a list of drugbank ids and wheere there are from
 multiple_drugbankids = open('aeolus_multiple_drugbank_ids.tsv', 'w')
