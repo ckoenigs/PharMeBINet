@@ -712,7 +712,7 @@ def intigrate_connection_from_ctd_to_hetionet():
     number_of_update_connection_induce = 0
 
     i = 1
-    h = open('cypher/map_connection_of_cdt_in_hetionet_' + str(i) + '.cypher', 'w')
+    h = open('map_connection_of_cdt_in_hetionet_' + str(i) + '.cypher', 'w')
     h.write('begin \n')
     i += 1
 
