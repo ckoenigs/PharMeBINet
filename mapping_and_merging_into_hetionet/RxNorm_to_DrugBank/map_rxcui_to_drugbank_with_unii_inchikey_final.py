@@ -83,7 +83,7 @@ properties:
 
 
 def map_with_inchikeys_to_drugbank():
-    f = open('../drugbank/durgbank_without_entries_which has_no_chemical_formular_or_sequence.tsv', 'r')
+    f = open('../drugbank/data/durgbank_without_entries_which has_no_chemical_formular_or_sequence.tsv', 'r')
     i = 0
     count_map_with_unii = 0
     count_map_with_inchikey = 0
