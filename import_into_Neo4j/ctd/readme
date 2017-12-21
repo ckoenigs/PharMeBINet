@@ -1,4 +1,7 @@
 Only the part of the file chemical-disease association (with directEvidence: therapeutic or marker/mechanism) is integrated into neo4j and only a part of exposure-event association (only with positive correlation with outcome).
+It took further information from chemical vocabulary and disease vocabulary.
+This was executed with python 3.5.3 on windows. 
+Program need path to ctd data.
 
 I use the file from June 2017.
 The files can be downloaded by http://ctdbase.org/downloads/.
