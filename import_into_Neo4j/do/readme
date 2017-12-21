@@ -1,3 +1,4 @@
-todo
+The program is from Cesar Arze and can be downloaded by https://github.com/IGS/disease-ontology the script. Only some small changes was taken that the neo4j nodes has the label that is wanted and because some function works not on python 3.5.3.
+It was executed on windows.
 
-I down load from http://disease-ontology.org/downloads/ human disease ontology.
+Disease Ontology was downloaded from http://disease-ontology.org/downloads/ human disease ontology.
