@@ -58,12 +58,19 @@ dict_diseases = {}
 # list of codes of disease which are in a relation 'CI_with {NDFRT}' or 'induces {NDFRT}'
 list_disease = []
 
+# path to data for windows
+if len(sys.argv) > 1:
+    # filepath= "file:///"+sys.argv[1]
+    filepath = sys.argv[1]
+else:
+    filepath = "NDF-RT_XML_Inferred/NDFRT_Public_2017.06.05/"
+
 '''
 go through the ndf-rt xml file and gather all important information in dictionaries or lists.
 '''
 def load_ndf_rt_xml_inferred_in():
     print (datetime.datetime.utcnow())
-    tree = dom.parse("NDF-RT_XML_Inferred/NDFRT_Public_2017.06.05/NDFRT_Public_2017.06.05_TDE_inferred.xml")
+    tree = dom.parse(filepath+"NDFRT_Public_2017.06.05_TDE_inferred.xml")
     print (datetime.datetime.utcnow())
 
     terminology = tree.documentElement
