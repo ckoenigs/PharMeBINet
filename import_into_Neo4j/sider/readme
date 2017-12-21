@@ -1,2 +1,5 @@
-todo
+Not all data from SIDER are integrated, because some files have redundante data.
+It was executed on python 3.5.3 on windows.
+
  Can be downloaded by http://sideeffects.embl.de/download/.
+ I used version SIDER 4.1 from October 21, 2015.
