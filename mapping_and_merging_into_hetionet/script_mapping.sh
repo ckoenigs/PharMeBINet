@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #define path to neo4j bin
-path_neo4j=/home/cassandra/Dokumente/hetionet/neo4j-community-3.1.6/bin
+path_neo4j=$1
 
 cd drugbank
 now=$(date +"%F %T")
