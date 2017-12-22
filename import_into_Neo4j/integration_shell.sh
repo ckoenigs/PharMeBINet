@@ -14,7 +14,7 @@ ctd_path=$3
 ndf_rt_path=$4
 
 # aeolus path
-aeolus=$5
+aeolus_path=$5
 
 # DO PATH with obo file
 do_path=$6
