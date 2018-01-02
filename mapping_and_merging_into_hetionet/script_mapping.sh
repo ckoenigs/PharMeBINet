@@ -166,11 +166,10 @@ echo "Current time: $now"
 
 echo do
 cd Do
-python use_do_to_find_symptoms_final.py > Output/output_02_01_18.txt
+python use_do_to_find_symptoms_final.py > output_do_symptom.txt
 
-$path_neo4j/neo4j-shell -file cypher/#connection_symptoms_1.cypher > output_cypher_15_12.txt
+$path_neo4j/neo4j-shell -file cypher/#connection_symptoms_1.cypher > output_cypher_do.txt
 
-cp -r ../neo4j-community-3.1.6/data/databases/graph.db ../neo4j-community-3.1.6/data/databases/graph_15_12_symp_do.db
 sleep 180
 $path_neo4j/neo4j restart
 sleep 120
@@ -184,11 +183,10 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 
 echo HPO
-python get_symptoms_from_HPO_final.py > output/output_02_01_18.txt
+python get_symptoms_from_HPO_final.py > output_hpo_symptomes.txt
 
-$path_neo4j/neo4j-shell -file cypher/connection_symptoms_1.cypher > output_cypher_15_12.txt
+$path_neo4j/neo4j-shell -file cypher/connection_symptoms_1.cypher > output_cypher_hpo.txt
 
-cp -r ../../neo4j-community-3.1.6/data/databases/graph.db ../../neo4j-community-3.1.6/data/databases/graph_15_12_symp_do_2.db
 sleep 180
 $path_neo4j/neo4j restart
 sleep 120
@@ -201,7 +199,7 @@ echo "Current time: $now"
 echo umls algorithm
 
 cd umls/
-python importUMLSwithMYSQL_Filter_change_V_NEO4J_3.py > output_13_11.txt
+python get_symptomes_with_umls_final.py > output_symptomes_umls.txt
 
 cd ..
 cd ..
