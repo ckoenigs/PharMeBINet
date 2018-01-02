@@ -161,6 +161,38 @@ echo "Current time: $now"
 echo symptoms finding and integration
 cd symptoms
 
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+echo do
+cd Do
+python use_do_to_find_symptoms_final.py > Output/output_02_01_18.txt
+
+$path_neo4j/neo4j-shell -file cypher/#connection_symptoms_1.cypher > output_cypher_15_12.txt
+
+cp -r ../neo4j-community-3.1.6/data/databases/graph.db ../neo4j-community-3.1.6/data/databases/graph_15_12_symp_do.db
+sleep 180
+$path_neo4j/neo4j restart
+sleep 120
+
+cd ..
+
+
+cd HPO
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+echo HPO
+python get_symptoms_from_HPO_final.py > output/output_02_01_18.txt
+
+$path_neo4j/neo4j-shell -file cypher/connection_symptoms_1.cypher > output_cypher_15_12.txt
+
+cp -r ../../neo4j-community-3.1.6/data/databases/graph.db ../../neo4j-community-3.1.6/data/databases/graph_15_12_symp_do_2.db
+sleep 180
+$path_neo4j/neo4j restart
+sleep 120
+
 
 now=$(date +"%F %T")
 echo "Current time: $now"
