@@ -3,3 +3,12 @@ It was executed on python 3.5.3 on windows.
 
  Can be downloaded by http://sideeffects.embl.de/download/.
  I used version SIDER 4.1 from October 21, 2015.
+ 
+ 
+Kuhn M, Letunic I, Jensen LJ, Bork P.
+The SIDER database of drugs and side effects.
+Nucleic Acids Res. 2015 Oct 19. doi: 10.1093/nar/gkv1075
+
+Kuhn M, Campillos M, Letunic I, Jensen LJ, Bork P.
+A side effect resource to capture phenotypic effects of drugs.
+Mol Syst Biol. 2010;6:343. Epub 2010 Jan 19.
