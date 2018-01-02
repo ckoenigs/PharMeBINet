@@ -193,21 +193,24 @@ sleep 180
 $path_neo4j/neo4j restart
 sleep 120
 
+cd ..
+
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo umls algorithm
 
 cd umls/
-python importUMLSwithMYSQL_Filter_change_V_NEO4J_3.py > Output/output_13_11.txt
+python importUMLSwithMYSQL_Filter_change_V_NEO4J_3.py > output_13_11.txt
 
+cd ..
 cd ..
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo map symptoms to side effects
 cd Map_Symptome_to_SideEffects/
-python map_symptoms_to_sideEffects_2.py > output_symptoms_to_sideEffects.txt
+python map_symptoms_to_sideEffects_final.py > output_symptoms_to_sideEffects.txt
 
 echo end
 
