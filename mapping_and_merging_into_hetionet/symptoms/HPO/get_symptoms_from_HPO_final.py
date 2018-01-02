@@ -226,7 +226,6 @@ def gather_all_disease_symptom_information_from_HPO():
                 file_decipher_name.write(
                     db_disease_id + '\t' + db_disease_name + '\t' + doid + '\t' + db_disease + '\n')
                 dict_disease_id_to_doids[db_disease_id] = [doid]
-
             else:
                 # find doid with use of umls
                 #                print('Decipher not mapped:'+db_disease_name)
@@ -235,12 +234,12 @@ def gather_all_disease_symptom_information_from_HPO():
                 # this takes a lot of time
                 query = ('Select CUI From MRCONSO Where lower(STR)="%s";')
                 query = query % (db_disease_name)
-                rows_counter=cur.execute(query)
+                rows_counter = cur.execute(query)
                 # rows_counter = 0
                 found_a_map = False
                 doids = []
                 cuis = []
-                
+
                 if rows_counter > 0:
                     for (cui,) in cur:
                         if cui in dict_umls_cui_to_doid:
@@ -286,7 +285,7 @@ def gather_all_disease_symptom_information_from_HPO():
 
                     if has_found_one:
                         counter_decipher_orphanet_map_with_name_split += 1
-                        dict_disease_id_to_doids[db_disease_id] = doids
+                        dict_dict_disease_id_to_doids[db_disease_id] = doids
                         doids = '|'.join(doids)
                         file_decipher_name_split.write(
                             db_disease_id + '\t' + db_disease_name + '\t' + doids + '\t' + db_disease + '\n')
@@ -307,9 +306,9 @@ def gather_all_disease_symptom_information_from_HPO():
                     dict_disease_symptom_hpo_pair_to_information[(doid, hpo_id)] = [qualifier, reference_id,
                                                                                     evidence_code, frequency_modi]
                     doids.append(doid)
-                dict_disease_id_to_doids[db_disease_id] = doids
+                dict_dict_disease_id_to_doids[db_disease_id] = doids
                 doids = '|'.join(doids)
-                file_omim_omim.write(db_disease_id + '\t' + db_disease_name + '\t' + doids + '\n')
+                file_omim_omim.write(db_disease_id + 'erweitern\t' + db_disease_name + '\t' + doids + '\n')
 
             else:
                 # fined mapping with use of umls cuis
@@ -338,7 +337,7 @@ def gather_all_disease_symptom_information_from_HPO():
                                         doids.append(doid)
                 if found:
                     counter_omim_map_with_umls_cui += 1
-                    dict_disease_id_to_doids[db_disease_id] = doids
+                    dict_dict_disease_id_to_doids[db_disease_id] = doids
                     doids = '|'.join(doids)
                     cuis = '|'.join(cuis)
                     file_omim_umls_cui.write(db_disease_id + '\t' + db_disease_name + '\t' + cuis + '\t' + doids + '\n')
@@ -435,7 +434,7 @@ def get_hpo_information_and_map_to_umls():
                 use_full_hpo_id = True
                 # dictionary for all values
                 dict_all_info = {}
-                # go throug all properties of the hpo id 
+                # go throug all properties of the hpo id
                 for info in group:
                     (key_term, value) = [element.strip() for element in info.split(":", 1)]
                     # check if the id is part of at least one relationship
@@ -588,6 +587,16 @@ def generate_cypher_file_for_connection():
     count_update_connection = 0
 
     for (doid, hpo_id), information in dict_disease_symptom_hpo_pair_to_information.items():
+        try:
+            file_d_s = open('disease-symptoms/disease_' + doid + '.txt', 'a')
+        except:
+            file_d_s = open('disease-symptoms/disease_' + doid + '.txt', 'w')
+            query = ''' MATCH (n:Disease{identifier:"%s"}) Return n.name '''
+            query = query % (doid)
+            result = g.run(query)
+            file_d_s.write(result.evaluate()[0] + '\n')
+            file_d_s.write('\n symptomes: ID name hpo_id \n')
+
         #        print(dict_hpo_ID_to_information)
         #        print(hpo_id)
         #        print(dict_disease_symptom_hpo_pair_to_information.keys())
@@ -595,6 +604,11 @@ def generate_cypher_file_for_connection():
             continue
         # can be a umls cui or mesh id
         symptom_id = dict_hpo_ID_to_information[hpo_id][1]
+
+        query = ''' MATCH (n:Symptom{identifier:"%s"}) Return n.name '''
+        query = query % (symptom_id)
+        result = g.run(query)
+        file_d_s.write(symptom_id + ' ' + result.evaluate()[0] + ' ' + hpo_id + '\n')
 
         qualifier = information[0]
         reference_id = information[1]
@@ -622,7 +636,7 @@ def generate_cypher_file_for_connection():
             Set l.hpo='yes', l.version='phenotype_annotation.tab 2017-10-09 10:47', l.source='%s', l.qualifier='%s', l.efidence_code='%s', l.frequency_modifier='%s',l.resource=["%s"], l.url="%s"; \n'''
             count_update_connection += 1
             query = query % (
-            doid, symptom_id, reference_id, qualifier, evidence_code, frequency_modi, string_resource, url)
+                doid, symptom_id, reference_id, qualifier, evidence_code, frequency_modi, string_resource, url)
 
         counter_connection += 1
         cypher_file.write(query)
