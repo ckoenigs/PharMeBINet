@@ -1,3 +1,4 @@
 This was run with python 3.5.3 on windows.
 Only integrated side side effects into hetionet. For SIDER drugs a mapping is needed. Therefore part of STITCH is needed (http://stitch.embl.de/cgi/download.pl?UserId=ZWQi4fmEpU1A&sessionId=RYcTI5aM732M).
+chemicals.inchikeys.v5.0.tsv.gz, ...
 
