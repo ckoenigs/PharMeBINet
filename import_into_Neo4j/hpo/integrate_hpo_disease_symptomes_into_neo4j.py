@@ -165,6 +165,7 @@ def get_hpo_information_and_map_to_umls():
                 # only for useful hpo ids
                 if use_full_hpo_id:
                     create_text = 'Create (:HPOsymptom{'
+                    # add all properties to node which hpo has
                     for key, list_information in dict_all_info.items():
                         modify_list_informationan = []
                         for info in list_information:
