@@ -144,7 +144,7 @@ def map_hpo_disease_to_doid():
 
     i = 0
 
-    query = ''' Match (d:HPOdisease) Where d.source="OMIM" Return d.id, d.name, d.source Limit 100'''
+    query = ''' Match (d:HPOdisease) Return d.id, d.name, d.source '''
     results = g.run(query)
     for db_disease_id, db_disease_name, db_disease_source, in results:
 
@@ -182,7 +182,73 @@ def map_hpo_disease_to_doid():
                 # find doid with use of umls
                 #                print('Decipher not mapped:'+db_disease_name)
                 cur = con.cursor()
+                #                print(db_disease_name)if db_disease_source != 'OMIM':
+            counter_decipher_orphanet += 1
+            #            print('decipher')
+            #            print(counter_decipher_orphanet)
+            # test if name is directly in dictionary
+            if db_disease_name in dict_name_to_doid:
+                doid = dict_name_to_doid[db_disease_name]
+                counter_decipher_orphanet_map_with_name += 1
+                file_decipher_name.write(
+                    db_disease_id + '\t' + db_disease_name + '\t' + doid + '\t' + db_disease_source + '\n')
+                dict_disease_id_to_doids[db_disease_id] = [doid]
+            else:
+                # find doid with use of umls
+                #                print('Decipher not mapped:'+db_disease_name)
+                cur = con.cursor()
                 #                print(db_disease_name)
+                # this takes a lot of time
+                query = ('Select CUI From MRCONSO Where lower(STR)="%s";')
+                query = query % (db_disease_name)
+                rows_counter = cur.execute(query)
+                # rows_counter = 0
+                found_a_map = False
+                doids = []
+                cuis = []
+
+                if rows_counter > 0:
+                    for (cui,) in cur:
+                        if cui in dict_umls_cui_to_doid:
+                            if not cui in cuis:
+                                cuis.append(cui)
+                                for doid in dict_umls_cui_to_doid[cui]:
+                                    if not doid in doids:
+                                        doids.append(doid)
+                                        found_a_map = True
+                if found_a_map:
+                    counter_decipher_orphanet_map_with_mapped_umls_cui += 1
+                    dict_disease_id_to_doids[db_disease_id] = doids
+                    doids = '|'.join(doids)
+                    cuis = '|'.join(cuis)
+                    file_decipher_name_umls.write(
+                        db_disease_id + '\t' + db_disease_name + '\t' + cuis + '\t' + doids + '\t' + db_disease_source + '\n')
+                else:
+                    names = db_disease_name.split(' (')
+                    has_found_one = False
+                    doids = []
+                    if len(names) > 1:
+                        for name in names:
+                            name = name.replace(')', '')
+                            more_names = name.split(' / ')
+                            for more_name in more_names:
+                                if more_name in dict_name_to_doid:
+                                    doid = dict_name_to_doid[more_name]
+                                    doids.append(doid)
+                                    has_found_one = True
+
+                    if has_found_one:
+                        counter_decipher_orphanet_map_with_name_split += 1
+                        dict_disease_id_to_doids[db_disease_id] = doids
+                        doids = '|'.join(doids)
+                        file_decipher_name_split.write(
+                            db_disease_id + '\t' + db_disease_name + '\t' + doids + '\t' + db_disease_source + '\n')
+                    else:
+                        counter_decipher_orphanet_not_mapped += 1
+                        list_not_mapped_disease_ids_to_doid.append(db_disease_id)
+                        file_not_map_decipher.write(
+                            db_disease_id + '\t' + db_disease_name + '\t' + db_disease_source + '\n')
+                        continue
                 # this takes a lot of time
                 query = ('Select CUI From MRCONSO Where lower(STR)="%s";')
                 query = query % (db_disease_name)
@@ -365,7 +431,7 @@ def map_hpo_symptoms_and_integrate_into_hetionet():
     #  counter for the symptoms which are already in Hetionet
     counter_symptom_from_hetionet = 0
 
-    query = '''MATCH (n:HPOsymptom) RETURN n.id, n.name, n.xref Limit 100'''
+    query = '''MATCH (n:HPOsymptom) RETURN n.id, n.name, n.xref '''
     results = g.run(query)
 
     for hpo_id, name, xrefs, in results:
@@ -376,7 +442,7 @@ def map_hpo_symptoms_and_integrate_into_hetionet():
         has_at_least_one = False
 
         # try to find umls cui with external identifier from hpo
-        if xrefs != '':
+        if not xrefs == None:
             for xref in xrefs.split('|'):
                 if xref[0:4] == 'UMLS':
                     has_at_least_one = True
