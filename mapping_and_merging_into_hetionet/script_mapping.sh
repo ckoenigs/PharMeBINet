@@ -183,7 +183,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 
 echo HPO
-python get_symptoms_from_HPO_final.py > output_hpo_symptomes.txt
+python map_and_integrate_hpo_info_into_hetionet.py > output_hpo_symptomes.txt
 
 $path_neo4j/neo4j-shell -file cypher/connection_symptoms_1.cypher > output_cypher_hpo.txt
 
