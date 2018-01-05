@@ -116,6 +116,32 @@ cd ..
 now=$(date +"%F %T")
 echo "Current time: $now"
 
+
+cd  hpo
+echo hpo
+
+python integrate_hpo_disease_symptomes_into_neo4j.py  > output_integration_hpo.txt
+
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+echo integrate hpo into neo4j
+
+$path_neo4j/neo4j-shell -file integrate_hpo_into_neo4j_1.cypher > output_cypher_integration.txt
+
+sleep 180
+
+$path_neo4j/neo4j restart
+
+
+sleep 120
+
+cd ..
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
 cd aeolus
 echo aeolus
 
