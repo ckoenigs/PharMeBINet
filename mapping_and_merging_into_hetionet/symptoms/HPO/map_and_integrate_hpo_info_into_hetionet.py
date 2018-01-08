@@ -15,6 +15,7 @@ reload(sys)
 # set default encoding on utf-8
 sys.setdefaultencoding('utf-8')
 
+
 # class of thread
 class diseaseMapThread(threading.Thread):
     def __init__(self, threadID, name, db_disease_id, db_disease_name, db_disease_source):
@@ -23,7 +24,7 @@ class diseaseMapThread(threading.Thread):
         self.name = name
         self.db_disease_id = db_disease_id
         self.db_disease_name = db_disease_name
-        self.db_disease_source=db_disease_source
+        self.db_disease_source = db_disease_source
 
     def run(self):
         # print "Starting " + self.name
@@ -153,7 +154,7 @@ counter_omim_map_with_umls_cui = 0
 # counter of mapped omim diseases with name
 counter_omim_with_name = 0
 # counter
-counter=0
+counter = 0
 
 '''
 load all disease information from neo4j in and only remember the relationships where the disease 
@@ -166,9 +167,7 @@ def map_hpo_disease_to_doid(db_disease_id, db_disease_name, db_disease_source):
     global counter_decipher_orphanet, counter_omim, counter_decipher_orphanet_not_mapped
     global counter_decipher_orphanet_map_with_name, counter_decipher_orphanet_map_with_name_split
     global counter_decipher_orphanet_map_with_mapped_umls_cui, counter_omim_not_mapped, counter_omim_map_with_omim
-    global counter_omim_map_with_umls_cui,counter_omim_with_name, counter
-
-
+    global counter_omim_map_with_umls_cui, counter_omim_with_name, counter
 
     counter += 1
     if counter % 1000 == 0:
@@ -375,7 +374,6 @@ def map_hpo_disease_to_doid(db_disease_id, db_disease_name, db_disease_source):
                     counter_omim_not_mapped += 1
                     list_not_mapped_disease_ids_to_doid.append(db_disease_id)
                     file_not_map_omim.write(db_disease_id + '\t' + db_disease_name + '\n')
-
 
     # print('number of decipher:' + str(counter_decipher_orphanet))
     # print('number of not mapped decipher:' + str(counter_decipher_orphanet_not_mapped))
@@ -614,7 +612,8 @@ def generate_cypher_file_for_connection():
                             query = '''MATCH (n:Disease{identifier:"%s"}),(s:Symptom{identifier:"%s"}) 
                             Create (n)-[:PRESENTS_DpS{version:'phenotype_annotation.tab 2017-10-09 10:47',unbiased:'false',source:'%s',qualifier:'%s', efidence_code:'%s', frequency_modifier:'%s',  resource:['HPO'],hetionet:'no',do:'no', hpo:'yes', url:"%s"}]->(s); \n '''
                             count_new_connection += 1
-                            query = query % (doid, umls_cui_mesh, reference_id, qualifier, evidence_code, frequency_modi, url)
+                            query = query % (
+                            doid, umls_cui_mesh, reference_id, qualifier, evidence_code, frequency_modi, url)
 
 
                         else:
@@ -626,7 +625,8 @@ def generate_cypher_file_for_connection():
                             Set l.hpo='yes', l.version='phenotype_annotation.tab 2017-10-09 10:47', l.source='%s', l.qualifier='%s', l.efidence_code='%s', l.frequency_modifier='%s',l.resource=["%s"], l.url="%s"; \n'''
                             count_update_connection += 1
                             query = query % (
-                                doid, umls_cui_mesh, reference_id, qualifier, evidence_code, frequency_modi, string_resource,
+                                doid, umls_cui_mesh, reference_id, qualifier, evidence_code, frequency_modi,
+                                string_resource,
                                 url)
 
                         counter_connection += 1
@@ -687,7 +687,8 @@ def main():
     results = g.run(query)
     for db_disease_id, db_disease_name, db_disease_source, in results:
         # create thread
-        thread = diseaseMapThread(thread_id, 'thread_' + str(thread_id), db_disease_id, db_disease_name, db_disease_source)
+        thread = diseaseMapThread(thread_id, 'thread_' + str(thread_id), db_disease_id, db_disease_name,
+                                  db_disease_source)
         # start thread
         thread.start()
         # add to list
