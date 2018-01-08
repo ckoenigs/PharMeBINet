@@ -26,7 +26,7 @@ class diseaseMapThread(threading.Thread):
         self.db_disease_source=db_disease_source
 
     def run(self):
-        print "Starting " + self.name
+        # print "Starting " + self.name
         # Get lock to synchronize threads
         threadLock.acquire()
         map_hpo_disease_to_doid(self.db_disease_id, self.db_disease_name, self.db_disease_source)
