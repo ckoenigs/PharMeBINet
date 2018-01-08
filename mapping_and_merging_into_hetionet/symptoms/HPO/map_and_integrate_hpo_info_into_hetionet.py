@@ -9,11 +9,31 @@ from py2neo import Graph, authenticate
 import MySQLdb as mdb
 import sys
 import datetime
-from itertools import groupby
+import threading
 
 reload(sys)
 # set default encoding on utf-8
 sys.setdefaultencoding('utf-8')
+
+# class of thread
+class diseaseMapThread(threading.Thread):
+    def __init__(self, threadID, name, db_disease_id, db_disease_name, db_disease_source):
+        threading.Thread.__init__(self)
+        self.threadID = threadID
+        self.name = name
+        self.db_disease_id = db_disease_id
+        self.db_disease_name = db_disease_name
+        self.db_disease_source=db_disease_source
+
+    def run(self):
+        print "Starting " + self.name
+        # Get lock to synchronize threads
+        threadLock.acquire()
+        map_hpo_disease_to_doid(self.db_disease_id, self.db_disease_name, self.db_disease_source)
+        #      print "Ending " + self.name
+        #      print_time(self.name, self.counter, 3)
+        # Free lock to release next thread
+        threadLock.release()
 
 
 # connect with the neo4j database AND MYSQL
@@ -112,6 +132,29 @@ file_hpo_map_name_to_umls_cui.write('hpo id \t hpo name \t umls cui \n')
 file_not_map_hpo = open('mapping_files/symptom/not_map_hpo.txt', 'w')
 file_not_map_hpo.write('hpo id \t hpo name \n')
 
+# counter for decipher and orphanet diseases
+counter_decipher_orphanet = 0
+# counter for omim diseases
+counter_omim = 0
+# counter for not mapped decipher and orphanet diseases to doid
+counter_decipher_orphanet_not_mapped = 0
+# counter of mapped with name decipher and orphanet diseases
+counter_decipher_orphanet_map_with_name = 0
+# counter of mapped with splitted name decipher and orphanet diseases
+counter_decipher_orphanet_map_with_name_split = 0
+# counter of mapped with umls cui decipher and orphanet diseases
+counter_decipher_orphanet_map_with_mapped_umls_cui = 0
+# counter of not mapped omim disease
+counter_omim_not_mapped = 0
+# counter of mapped omim disease with omim
+counter_omim_map_with_omim = 0
+# counter of mapped omim diseases with umls cui
+counter_omim_map_with_umls_cui = 0
+# counter of mapped omim diseases with name
+counter_omim_with_name = 0
+# counter
+counter=0
+
 '''
 load all disease information from neo4j in and only remember the relationships where the disease 
 can be mapped to DOID with use of UMLS and DO.
@@ -119,252 +162,231 @@ can be mapped to DOID with use of UMLS and DO.
 '''
 
 
-def map_hpo_disease_to_doid():
-    global doids
-    # counter for decipher and orphanet diseases
-    counter_decipher_orphanet = 0
-    # counter for omim diseases
-    counter_omim = 0
-    # counter for not mapped decipher and orphanet diseases to doid
-    counter_decipher_orphanet_not_mapped = 0
-    # counter of mapped with name decipher and orphanet diseases
-    counter_decipher_orphanet_map_with_name = 0
-    # counter of mapped with splitted name decipher and orphanet diseases
-    counter_decipher_orphanet_map_with_name_split = 0
-    # counter of mapped with umls cui decipher and orphanet diseases
-    counter_decipher_orphanet_map_with_mapped_umls_cui = 0
-    # counter of not mapped omim disease
-    counter_omim_not_mapped = 0
-    # counter of mapped omim disease with omim
-    counter_omim_map_with_omim = 0
-    # counter of mapped omim diseases with umls cui
-    counter_omim_map_with_umls_cui = 0
-    # counter of mapped omim diseases with name
-    counter_omim_with_name = 0
+def map_hpo_disease_to_doid(db_disease_id, db_disease_name, db_disease_source):
+    global counter_decipher_orphanet, counter_omim, counter_decipher_orphanet_not_mapped
+    global counter_decipher_orphanet_map_with_name, counter_decipher_orphanet_map_with_name_split
+    global counter_decipher_orphanet_map_with_mapped_umls_cui, counter_omim_not_mapped, counter_omim_map_with_omim
+    global counter_omim_map_with_umls_cui,counter_omim_with_name, counter
 
-    i = 0
 
-    query = ''' Match (d:HPOdisease) Return d.id, d.name, d.source '''
-    results = g.run(query)
-    for db_disease_id, db_disease_name, db_disease_source, in results:
 
-        i += 1
-        if i % 1000 == 0:
-            print(datetime.datetime.utcnow())
-            print(i)
-            print('number of decipher:' + str(counter_decipher_orphanet))
-            print('number of not mapped decipher:' + str(counter_decipher_orphanet_not_mapped))
-            print('number of mapped decipher with name:' + str(counter_decipher_orphanet_map_with_name))
-            print('number of decipher with mapped umls cui:' + str(counter_decipher_orphanet_map_with_mapped_umls_cui))
-            print('number of mapped decipher with name splitted:' + str(counter_decipher_orphanet_map_with_name_split))
-            print('number of omim:' + str(counter_omim))
-            print('number of not mapped omim:' + str(counter_omim_not_mapped))
-            print('number of direct map omim:' + str(counter_omim_map_with_omim))
-            print('number of map omim with umls cui:' + str(counter_omim_map_with_umls_cui))
-            print('number of map omim with name:' + str(counter_omim_with_name))
-        # if i == 100:
-        #     break
-        db_disease_name = db_disease_name.lower()
+    counter += 1
+    if counter % 1000 == 0:
+        print(datetime.datetime.utcnow())
+        print(counter)
+        print('number of decipher:' + str(counter_decipher_orphanet))
+        print('number of not mapped decipher:' + str(counter_decipher_orphanet_not_mapped))
+        print('number of mapped decipher with name:' + str(counter_decipher_orphanet_map_with_name))
+        print('number of decipher with mapped umls cui:' + str(counter_decipher_orphanet_map_with_mapped_umls_cui))
+        print('number of mapped decipher with name splitted:' + str(counter_decipher_orphanet_map_with_name_split))
+        print('number of omim:' + str(counter_omim))
+        print('number of not mapped omim:' + str(counter_omim_not_mapped))
+        print('number of direct map omim:' + str(counter_omim_map_with_omim))
+        print('number of map omim with umls cui:' + str(counter_omim_map_with_umls_cui))
+        print('number of map omim with name:' + str(counter_omim_with_name))
+    # if i == 100:
+    #     break
+    db_disease_name = db_disease_name.lower()
 
-        # depending of the source of the diseases different mapping step's are used
-        if db_disease_source != 'OMIM':
-            counter_decipher_orphanet += 1
-            #            print('decipher')
-            #            print(counter_decipher_orphanet)
-            # test if name is directly in dictionary
-            if db_disease_name in dict_name_to_doid:
-                doid = dict_name_to_doid[db_disease_name]
-                counter_decipher_orphanet_map_with_name += 1
-                file_decipher_name.write(
-                    db_disease_id + '\t' + db_disease_name + '\t' + doid + '\t' + db_disease_source + '\n')
-                dict_disease_id_to_doids[db_disease_id] = [doid]
-            else:
-                # find doid with use of umls
-                #                print('Decipher not mapped:'+db_disease_name)
-                cur = con.cursor()
-                #                print(db_disease_name)if db_disease_source != 'OMIM':
-            counter_decipher_orphanet += 1
-            #            print('decipher')
-            #            print(counter_decipher_orphanet)
-            # test if name is directly in dictionary
-            if db_disease_name in dict_name_to_doid:
-                doid = dict_name_to_doid[db_disease_name]
-                counter_decipher_orphanet_map_with_name += 1
-                file_decipher_name.write(
-                    db_disease_id + '\t' + db_disease_name + '\t' + doid + '\t' + db_disease_source + '\n')
-                dict_disease_id_to_doids[db_disease_id] = [doid]
-            else:
-                # find doid with use of umls
-                #                print('Decipher not mapped:'+db_disease_name)
-                cur = con.cursor()
-                #                print(db_disease_name)
-                # this takes a lot of time
-                query = ('Select CUI From MRCONSO Where lower(STR)="%s";')
-                query = query % (db_disease_name)
-                rows_counter = cur.execute(query)
-                # rows_counter = 0
-                found_a_map = False
-                doids = []
-                cuis = []
-
-                if rows_counter > 0:
-                    for (cui,) in cur:
-                        if cui in dict_umls_cui_to_doid:
-                            if not cui in cuis:
-                                cuis.append(cui)
-                                for doid in dict_umls_cui_to_doid[cui]:
-                                    if not doid in doids:
-                                        doids.append(doid)
-                                        found_a_map = True
-                if found_a_map:
-                    counter_decipher_orphanet_map_with_mapped_umls_cui += 1
-                    dict_disease_id_to_doids[db_disease_id] = doids
-                    doids = '|'.join(doids)
-                    cuis = '|'.join(cuis)
-                    file_decipher_name_umls.write(
-                        db_disease_id + '\t' + db_disease_name + '\t' + cuis + '\t' + doids + '\t' + db_disease_source + '\n')
-                else:
-                    names = db_disease_name.split(' (')
-                    has_found_one = False
-                    doids = []
-                    if len(names) > 1:
-                        for name in names:
-                            name = name.replace(')', '')
-                            more_names = name.split(' / ')
-                            for more_name in more_names:
-                                if more_name in dict_name_to_doid:
-                                    doid = dict_name_to_doid[more_name]
-                                    doids.append(doid)
-                                    has_found_one = True
-
-                    if has_found_one:
-                        counter_decipher_orphanet_map_with_name_split += 1
-                        dict_disease_id_to_doids[db_disease_id] = doids
-                        doids = '|'.join(doids)
-                        file_decipher_name_split.write(
-                            db_disease_id + '\t' + db_disease_name + '\t' + doids + '\t' + db_disease_source + '\n')
-                    else:
-                        counter_decipher_orphanet_not_mapped += 1
-                        list_not_mapped_disease_ids_to_doid.append(db_disease_id)
-                        file_not_map_decipher.write(
-                            db_disease_id + '\t' + db_disease_name + '\t' + db_disease_source + '\n')
-                        continue
-                # this takes a lot of time
-                query = ('Select CUI From MRCONSO Where lower(STR)="%s";')
-                query = query % (db_disease_name)
-                rows_counter = cur.execute(query)
-                # rows_counter = 0
-                found_a_map = False
-                doids = []
-                cuis = []
-
-                if rows_counter > 0:
-                    for (cui,) in cur:
-                        if cui in dict_umls_cui_to_doid:
-                            if not cui in cuis:
-                                cuis.append(cui)
-                                for doid in dict_umls_cui_to_doid[cui]:
-                                    if not doid in doids:
-                                        doids.append(doid)
-                                        found_a_map = True
-                if found_a_map:
-                    counter_decipher_orphanet_map_with_mapped_umls_cui += 1
-                    dict_disease_id_to_doids[db_disease_id] = doids
-                    doids = '|'.join(doids)
-                    cuis = '|'.join(cuis)
-                    file_decipher_name_umls.write(
-                        db_disease_id + '\t' + db_disease_name + '\t' + cuis + '\t' + doids + '\t' + db_disease_source + '\n')
-                else:
-                    names = db_disease_name.split(' (')
-                    has_found_one = False
-                    doids = []
-                    if len(names) > 1:
-                        for name in names:
-                            name = name.replace(')', '')
-                            more_names = name.split(' / ')
-                            for more_name in more_names:
-                                if more_name in dict_name_to_doid:
-                                    doid = dict_name_to_doid[more_name]
-                                    doids.append(doid)
-                                    has_found_one = True
-
-                    if has_found_one:
-                        counter_decipher_orphanet_map_with_name_split += 1
-                        dict_disease_id_to_doids[db_disease_id] = doids
-                        doids = '|'.join(doids)
-                        file_decipher_name_split.write(
-                            db_disease_id + '\t' + db_disease_name + '\t' + doids + '\t' + db_disease_source + '\n')
-                    else:
-                        counter_decipher_orphanet_not_mapped += 1
-                        list_not_mapped_disease_ids_to_doid.append(db_disease_id)
-                        file_not_map_decipher.write(
-                            db_disease_id + '\t' + db_disease_name + '\t' + db_disease_source + '\n')
-                        continue
+    # depending of the source of the diseases different mapping step's are used
+    if db_disease_source != 'OMIM':
+        counter_decipher_orphanet += 1
+        #            print('decipher')
+        #            print(counter_decipher_orphanet)
+        # test if name is directly in dictionary
+        if db_disease_name in dict_name_to_doid:
+            doid = dict_name_to_doid[db_disease_name]
+            counter_decipher_orphanet_map_with_name += 1
+            file_decipher_name.write(
+                db_disease_id + '\t' + db_disease_name + '\t' + doid + '\t' + db_disease_source + '\n')
+            dict_disease_id_to_doids[db_disease_id] = [doid]
         else:
-            counter_omim += 1
-            #            print('omim')
-            # test if omim id is direct in DO
-            if db_disease_id in dict_omim_to_doid:
-                counter_omim_map_with_omim += 1
-                doids = []
-                for doid in dict_omim_to_doid[db_disease_id]:
-                    doids.append(doid)
+            # find doid with use of umls
+            #                print('Decipher not mapped:'+db_disease_name)
+            cur = con.cursor()
+            #                print(db_disease_name)if db_disease_source != 'OMIM':
+        counter_decipher_orphanet += 1
+        #            print('decipher')
+        #            print(counter_decipher_orphanet)
+        # test if name is directly in dictionary
+        if db_disease_name in dict_name_to_doid:
+            doid = dict_name_to_doid[db_disease_name]
+            counter_decipher_orphanet_map_with_name += 1
+            file_decipher_name.write(
+                db_disease_id + '\t' + db_disease_name + '\t' + doid + '\t' + db_disease_source + '\n')
+            dict_disease_id_to_doids[db_disease_id] = [doid]
+        else:
+            # find doid with use of umls
+            #                print('Decipher not mapped:'+db_disease_name)
+            cur = con.cursor()
+            #                print(db_disease_name)
+            # this takes a lot of time
+            query = ('Select CUI From MRCONSO Where lower(STR)="%s";')
+            query = query % (db_disease_name)
+            rows_counter = cur.execute(query)
+            # rows_counter = 0
+            found_a_map = False
+            doids = []
+            cuis = []
+
+            if rows_counter > 0:
+                for (cui,) in cur:
+                    if cui in dict_umls_cui_to_doid:
+                        if not cui in cuis:
+                            cuis.append(cui)
+                            for doid in dict_umls_cui_to_doid[cui]:
+                                if not doid in doids:
+                                    doids.append(doid)
+                                    found_a_map = True
+            if found_a_map:
+                counter_decipher_orphanet_map_with_mapped_umls_cui += 1
                 dict_disease_id_to_doids[db_disease_id] = doids
                 doids = '|'.join(doids)
-                file_omim_omim.write(db_disease_id + 'erweitern\t' + db_disease_name + '\t' + doids + '\n')
-
+                cuis = '|'.join(cuis)
+                file_decipher_name_umls.write(
+                    db_disease_id + '\t' + db_disease_name + '\t' + cuis + '\t' + doids + '\t' + db_disease_source + '\n')
             else:
-                # fined mapping with use of umls cuis
-                cur = con.cursor()
-                query = ('Select CUI From MRCONSO Where SAB="OMIM" and CODE= "%s" and lower(STR)="%s";')
-                query = query % (db_disease_id, db_disease_name)
-                rows_counter = cur.execute(query)
-                found = False
-                if rows_counter > 0:
+                names = db_disease_name.split(' (')
+                has_found_one = False
+                doids = []
+                if len(names) > 1:
+                    for name in names:
+                        name = name.replace(')', '')
+                        more_names = name.split(' / ')
+                        for more_name in more_names:
+                            if more_name in dict_name_to_doid:
+                                doid = dict_name_to_doid[more_name]
+                                doids.append(doid)
+                                has_found_one = True
 
-                    doids = []
-                    cuis = []
-                    for (cui,) in cur:
-                        #                        print(cui)
-                        if cui in dict_umls_cui_to_doid:
-                            if not cui in cuis:
-                                cuis.append(cui)
-                                for doid in dict_umls_cui_to_doid[cui]:
-                                    if not doid in doids:
-                                        found = True
-                                        doids.append(doid)
-                if found:
-                    counter_omim_map_with_umls_cui += 1
+                if has_found_one:
+                    counter_decipher_orphanet_map_with_name_split += 1
                     dict_disease_id_to_doids[db_disease_id] = doids
                     doids = '|'.join(doids)
-                    cuis = '|'.join(cuis)
-                    file_omim_umls_cui.write(db_disease_id + '\t' + db_disease_name + '\t' + cuis + '\t' + doids + '\n')
+                    file_decipher_name_split.write(
+                        db_disease_id + '\t' + db_disease_name + '\t' + doids + '\t' + db_disease_source + '\n')
+                else:
+                    counter_decipher_orphanet_not_mapped += 1
+                    list_not_mapped_disease_ids_to_doid.append(db_disease_id)
+                    file_not_map_decipher.write(
+                        db_disease_id + '\t' + db_disease_name + '\t' + db_disease_source + '\n')
+                    return
+            # this takes a lot of time
+            query = ('Select CUI From MRCONSO Where lower(STR)="%s";')
+            query = query % (db_disease_name)
+            rows_counter = cur.execute(query)
+            # rows_counter = 0
+            found_a_map = False
+            doids = []
+            cuis = []
+
+            if rows_counter > 0:
+                for (cui,) in cur:
+                    if cui in dict_umls_cui_to_doid:
+                        if not cui in cuis:
+                            cuis.append(cui)
+                            for doid in dict_umls_cui_to_doid[cui]:
+                                if not doid in doids:
+                                    doids.append(doid)
+                                    found_a_map = True
+            if found_a_map:
+                counter_decipher_orphanet_map_with_mapped_umls_cui += 1
+                dict_disease_id_to_doids[db_disease_id] = doids
+                doids = '|'.join(doids)
+                cuis = '|'.join(cuis)
+                file_decipher_name_umls.write(
+                    db_disease_id + '\t' + db_disease_name + '\t' + cuis + '\t' + doids + '\t' + db_disease_source + '\n')
+            else:
+                names = db_disease_name.split(' (')
+                has_found_one = False
+                doids = []
+                if len(names) > 1:
+                    for name in names:
+                        name = name.replace(')', '')
+                        more_names = name.split(' / ')
+                        for more_name in more_names:
+                            if more_name in dict_name_to_doid:
+                                doid = dict_name_to_doid[more_name]
+                                doids.append(doid)
+                                has_found_one = True
+
+                if has_found_one:
+                    counter_decipher_orphanet_map_with_name_split += 1
+                    dict_disease_id_to_doids[db_disease_id] = doids
+                    doids = '|'.join(doids)
+                    file_decipher_name_split.write(
+                        db_disease_id + '\t' + db_disease_name + '\t' + doids + '\t' + db_disease_source + '\n')
+                else:
+                    counter_decipher_orphanet_not_mapped += 1
+                    list_not_mapped_disease_ids_to_doid.append(db_disease_id)
+                    file_not_map_decipher.write(
+                        db_disease_id + '\t' + db_disease_name + '\t' + db_disease_source + '\n')
+
+    else:
+        counter_omim += 1
+        #            print('omim')
+        # test if omim id is direct in DO
+        if db_disease_id in dict_omim_to_doid:
+            counter_omim_map_with_omim += 1
+            doids = []
+            for doid in dict_omim_to_doid[db_disease_id]:
+                doids.append(doid)
+            dict_disease_id_to_doids[db_disease_id] = doids
+            doids = '|'.join(doids)
+            file_omim_omim.write(db_disease_id + 'erweitern\t' + db_disease_name + '\t' + doids + '\n')
+
+        else:
+            # fined mapping with use of umls cuis
+            cur = con.cursor()
+            query = ('Select CUI From MRCONSO Where SAB="OMIM" and CODE= "%s" and lower(STR)="%s";')
+            query = query % (db_disease_id, db_disease_name)
+            rows_counter = cur.execute(query)
+            found = False
+            if rows_counter > 0:
+
+                doids = []
+                cuis = []
+                for (cui,) in cur:
+                    #                        print(cui)
+                    if cui in dict_umls_cui_to_doid:
+                        if not cui in cuis:
+                            cuis.append(cui)
+                            for doid in dict_umls_cui_to_doid[cui]:
+                                if not doid in doids:
+                                    found = True
+                                    doids.append(doid)
+            if found:
+                counter_omim_map_with_umls_cui += 1
+                dict_disease_id_to_doids[db_disease_id] = doids
+                doids = '|'.join(doids)
+                cuis = '|'.join(cuis)
+                file_omim_umls_cui.write(db_disease_id + '\t' + db_disease_name + '\t' + cuis + '\t' + doids + '\n')
+
+            else:
+                # last step is name mapping
+                if db_disease_name in dict_name_to_doid:
+                    counter_omim_with_name += 1
+                    doid = dict_name_to_doid[db_disease_name]
+                    file_omim_name.write(db_disease_id + '\t' + db_disease_name + '\t' + doid + '\n')
+                    dict_disease_id_to_doids[db_disease_id] = [doid]
 
                 else:
-                    # last step is name mapping
-                    if db_disease_name in dict_name_to_doid:
-                        counter_omim_with_name += 1
-                        doid = dict_name_to_doid[db_disease_name]
-                        file_omim_name.write(db_disease_id + '\t' + db_disease_name + '\t' + doid + '\n')
-                        dict_disease_id_to_doids[db_disease_id] = [doid]
+                    #                        print('OMIM not mapped:'+db_disease_name)
+                    counter_omim_not_mapped += 1
+                    list_not_mapped_disease_ids_to_doid.append(db_disease_id)
+                    file_not_map_omim.write(db_disease_id + '\t' + db_disease_name + '\n')
 
-                    else:
-                        #                        print('OMIM not mapped:'+db_disease_name)
-                        counter_omim_not_mapped += 1
-                        list_not_mapped_disease_ids_to_doid.append(db_disease_id)
-                        file_not_map_omim.write(db_disease_id + '\t' + db_disease_name + '\n')
-                        continue
 
-    print('number of decipher:' + str(counter_decipher_orphanet))
-    print('number of not mapped decipher:' + str(counter_decipher_orphanet_not_mapped))
-    print('number of mapped decipher with name:' + str(counter_decipher_orphanet_map_with_name))
-    print('number of decipher with mapped umls cui:' + str(counter_decipher_orphanet_map_with_mapped_umls_cui))
-    print('number of mapped decipher with name splitted:' + str(counter_decipher_orphanet_map_with_name_split))
-    print('number of omim:' + str(counter_omim))
-    print('number of not mapped omim:' + str(counter_omim_not_mapped))
-    print('number of direct map omim:' + str(counter_omim_map_with_omim))
-    print('number of map omim with umls cui:' + str(counter_omim_map_with_umls_cui))
-    print('number of map omim with name:' + str(counter_omim_with_name))
+    # print('number of decipher:' + str(counter_decipher_orphanet))
+    # print('number of not mapped decipher:' + str(counter_decipher_orphanet_not_mapped))
+    # print('number of mapped decipher with name:' + str(counter_decipher_orphanet_map_with_name))
+    # print('number of decipher with mapped umls cui:' + str(counter_decipher_orphanet_map_with_mapped_umls_cui))
+    # print('number of mapped decipher with name splitted:' + str(counter_decipher_orphanet_map_with_name_split))
+    # print('number of omim:' + str(counter_omim))
+    # print('number of not mapped omim:' + str(counter_omim_not_mapped))
+    # print('number of direct map omim:' + str(counter_omim_map_with_omim))
+    # print('number of map omim with umls cui:' + str(counter_omim_map_with_umls_cui))
+    # print('number of map omim with name:' + str(counter_omim_with_name))
 
 
 # dictionary with doid as key and hpo ids as value
@@ -651,6 +673,31 @@ def main():
 
     print(datetime.datetime.utcnow())
     print('map hpo disease to doid')
+
+    # create a lock, is used to synchronized threads
+    global threadLock
+    threadLock = threading.Lock()
+
+    # all threads
+    threads_synonyms = []
+
+    thread_id = 1
+
+    query = ''' Match (d:HPOdisease) Return d.id, d.name, d.source '''
+    results = g.run(query)
+    for db_disease_id, db_disease_name, db_disease_source, in results:
+        # create thread
+        thread = diseaseMapThread(thread_id, 'thread_' + str(thread_id), db_disease_id, db_disease_name, db_disease_source)
+        # start thread
+        thread.start()
+        # add to list
+        threads_synonyms.append(thread)
+        # increase thread id
+        thread_id += 1
+
+    # wait for all threads
+    for t in threads_synonyms:
+        t.join()
 
     map_hpo_disease_to_doid()
 
