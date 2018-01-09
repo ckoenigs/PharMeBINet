@@ -1,0 +1,3 @@
+This program generate a connection between side effects and symptomes based on the mapping of MESH ID to UMLS CUI and UMLSC CUI symptom to UMLS CUI side effects.
+
+All connection are in map/.
