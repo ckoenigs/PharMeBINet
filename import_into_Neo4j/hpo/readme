@@ -1,0 +1,8 @@
+Integrated only the the disease-symptoms relationships where the disease are mapped to DOID and the symptoms to MESH or UMLS CUI.
+From HPO was th hp.obo file and phenotype_annotation.tab (from Hudson/Jenkins page) from 12.12.17 (http://human-phenotype-ontology.github.io/downloads.html)
+
+
+
+
+Sebastian Köhler, Nicole Vasilevsky, Mark Engelstad, Erin Foster, et al. The Human Phenotype Ontology in 2017
+Nucl. Acids Res. (2017) doi: 10.1093/nar/gkw1039
