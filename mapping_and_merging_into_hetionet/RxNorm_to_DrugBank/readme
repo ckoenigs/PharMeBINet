@@ -12,7 +12,7 @@ The third file is combine_rxnorm_and_fda_srs_to_a_rxnorm_unii_inchkey_file.py wh
 
 The fourth file is map_rxcui_to_drugbank_with_unii_inchikey_final.py. This uses the InChIKey and UNIIs from DurgBank to map to the RxNorm CUI which are mapped to UNII and InChIKey.
 
-Further, exist a mapping between RxCUI and DrugBank ID with use of the DrugBank names and search for them in the RxNorm database. This is in file ... .
+Further, exist a mapping between RxCUI and DrugBank ID with use of the DrugBank names and search for them in the RxNorm database. This is in file map_drugbank_to_rxnorm_with_name_final.py.
 
 All these files can be executed with the script. But at least the DrugBank file must be prepared.
 
