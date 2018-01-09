@@ -1,1 +1,1 @@
-integrate the DO information into Hetionet.
+Integrate the DO information into Hetionet. This meas all DOID which are already in Hetionet get only new properties and all the other generate new diseases.   
