@@ -2,15 +2,12 @@ Map and merge first the NDF-RT disease than the NDF-RT drugs.
 
 NDF-RT disease and Disease Ontology have UMLS cui as extern key.
 First step map the UMLS cui directly.
-Search for synonym UMLS cuis in UMLS am map then.
+Second search for synonym UMLS cuis in UMLS am map then.
 
-
-1) Map the rxcui of the NDF-RT to Drugbank by using rxnorm database
-(mapped:1381, not mapped: 10992)
-2) Map rxcui to drugbank by using rxnorm-drugbank table, which was generated with use of inchikey and unii (new mapped: 517)
-(mapped:1898, not mapped:10475)
-3) Use the unii from NDF-RT drugs and map with use of unii-drugbank table. Thic table was generate by using durgbank (new mapped: 340)
-(mapped:2138, not mapped:10235)
+For mapping NDF-RT drug to DrugBank different mwthodes are used:
+1) Map the RxNorm cui of the NDF-RT to DrugBank by using RxNorm
+2) Map RxNorm cui to DrugBank by using RxNorm-DrugBank table, which was generated with use of inchikey and unii 
+3) Use the unii from NDF-RT drugs and map with use of unii-drugbank table. This table was generate by using DrugBank. 
 4) Use rxcui to map to drugbank by using the table where drugbank name/synonyms/brands/products are mapped to rxcui in rxnorm(new mapped: 17)
 (mapped:2155, not mapped:10218)
 5) use association of ndf-rt drug to his ingredient and if the ingredient has a drugbank id then it gets the same. (new mapped: 9031)
