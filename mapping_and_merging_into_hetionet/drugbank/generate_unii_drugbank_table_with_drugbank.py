@@ -36,6 +36,7 @@ f = open('data/drugbank_with_synonyms_uniis_extern_ids_molecular_seq_formular.ts
 g = open('data/map_unii_to_drugbank_id.tsv', 'w')
 next(f)
 g.write('unii \t drugbank_id \n')
+# go through the whole file and add only the drugbanks with uniis
 for line in f:
     splitted = line.split('\t')
     if splitted[0][0:2] == 'DB':
