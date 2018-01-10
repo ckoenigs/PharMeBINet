@@ -5,10 +5,10 @@ First step map the UMLS cui directly.
 Second map with names.
 Third search for synonym UMLS cuis in UMLS am map then.
 
-For mapping NDF-RT drug to DrugBank different mwthodes are used:
+For mapping NDF-RT drug to DrugBank different methodes are used:
 1) Map the RxNorm cui of the NDF-RT to DrugBank by using RxNorm
 2) Map RxNorm cui to DrugBank by using RxNorm-DrugBank table, which was generated with use of inchikey and unii. 
 3) Use the unii from NDF-RT drugs and map with use of unii-drugbank table. This table was generate by using DrugBank. 
 4) Map RxNorm cui to DrugBank by using RxNorm-DrugBank table, which was generated with use of names.
-5) Use association of NDF-RT drug to his ingredient and if the ingredient has a DrugBank id then it gets the same. (
+5) Use association of NDF-RT drug to his ingredient and if the ingredient has a DrugBank id then it gets the same. 
 
