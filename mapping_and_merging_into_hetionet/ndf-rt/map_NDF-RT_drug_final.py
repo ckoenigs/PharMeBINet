@@ -13,7 +13,7 @@ import sys
 # sys.path.append('../Aeolus/')
 sys.path.append('../aeolus/')
 
-from synonyms_cuis import search_for_synonyms_cuis
+# from synonyms_cuis import search_for_synonyms_cuis
 import get_drugbank_information
 
 import xml.dom.minidom as dom
@@ -321,7 +321,7 @@ properties:
 
 
 def map_with_unii_to_drugbank():
-    f = open('map_unii_to_drugbank_id.tsv', 'r')
+    f = open('../drugbank/data/map_unii_to_drugbank_id.tsv', 'r')
     next(f)
     # list of all rxcuis which are mapped to drugbank id in this step
     delete_list = []
@@ -461,36 +461,6 @@ dict_cui_to_codes = {}
 
 # list of rxnorms without a cui
 list_rxnorm_without_cui = []
-
-'''
-generate dictionary for all not mapped drugs with key umls cui and value list of codes
-'''
-
-
-def find_cuis_for_not_mapped_drugs():
-    counter_map_cui_with_name = 0
-    for rxcui in list_rxcuis_without_drugbank_ids:
-        codes = dict_drug_NDF_RT_rxcui_to_code[rxcui]
-        #        print(codes)
-        for code in codes:
-            umls_cuis = dict_drug_NDF_RT[code].umls_cuis
-            if len(umls_cuis) > 0:
-                for umls_cui in umls_cuis:
-                    if not umls_cui in dict_cui_to_codes:
-                        dict_cui_to_codes[umls_cui] = [code]
-                    else:
-                        dict_cui_to_codes[umls_cui].append(code)
-            else:
-                list_rxnorm_without_cui.append(rxcui)
-    print('number of cuis which are mapped with name:' + str(counter_map_cui_with_name))
-    print('number of cuis:' + str(len(dict_cui_to_codes)))
-    print('number of rxcuis which has no cui:' + str(len(list_rxnorm_without_cui)))
-
-
-    print('number of new mapped:' + str(number_of_mapped))
-    print('length of list of codes with all drugbank ids from rxnorm:' + str(len(list_codes_with_drugbank_ids)))
-
-    print('length of list of cuis without drugbank ids from umls:' + str(len(list_cuis_without_drugbank_ids)))
 
 
 # dictionary umls cuis that are mapped to hetionet, as key umls cui and value is a list of drugbank ids
@@ -889,7 +859,7 @@ def main():
     print (datetime.datetime.utcnow())
     print('integrate ndf-rt drugs into hetionet')
 
-    integration_of_ndf_rt_drugs_into_hetionet()
+    # integration_of_ndf_rt_drugs_into_hetionet()
 
     print(
         '###########################################################################################################################')
@@ -897,7 +867,7 @@ def main():
     print (datetime.datetime.utcnow())
     print('integrate ndf-rt connection into hetionet')
 
-    integrate_connection_into_hetionet()
+    # integrate_connection_into_hetionet()
 
     print(
         '###########################################################################################################################')
