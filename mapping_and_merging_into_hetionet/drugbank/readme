@@ -2,7 +2,7 @@ The parser from XML to tsv is based on https://github.com/dhimmel/drugbank/blob/
 The DrugBank database can be download on https://www.drugbank.ca/releases/latest. It was used the version 5.0 from 20.09.17.
 This I did with python 3.5.3 on windows.
 
-The other programme separates the drugbank ids with chemical information and without into two files.
+The other programme separates the DrugBank ids with chemical information and without into two files.
 
 This can be executed with the shell.
 
