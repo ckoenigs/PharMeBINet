@@ -1,16 +1,16 @@
-First phenotype to side effect, which can be simple be mapped because UMLS contains GO identifier. Then the phenotypes are integratetd into Hetionet.
-Second disease to side effect, which can be simple be mapped because UMLS contains MESH and OMIM identifier. Then the disease are integratetd into Hetionet side effects.
+First phenotype to side effect, which can be simply be mapped because UMLS contains GO identifier. Then the phenotypes are integrated into Hetionet.
+Second disease to side effect, which can be simply be mapped because UMLS contains MESH and OMIM identifier. Then the disease is integrated into Hetionet side effects.
 
 Third CTD disease to disease.
-This need differnt mapping methods:
+This needs different mapping methods:
 First mapped through alternative DO ID in CTD.
 Seconded mapped with MESH and OMIM to Disease Ontology (DO) which contains MESH and OMIM identifier.
 Third use the alternative MESH and OMIM CTD identifier. 
 Last mapping possibility is mapping the CTD disease name to the DO names and synonyms.
 
 
-Last chemical to drugs and the different realtionships
-Their are different mapping methods used:
+Last chemical to drugs and the different relationships
+There are different mapping methods used:
 1. CTD chemicals have also Drugbank IDs as alternative ID in CTD
 2. Map the MESH ID to UMLS cui with UMLS, which contains MESH ID. Further UMLS contains DrugBank IDs, so the UMLS cui is mapped to DrugBank ID.
 3. Map the Mesh ID to RxNorm CUI with RxNorm, which contains MESH identifier. In RxNorm the RxNorm cui is mapped to DrugBank IDs, which are also in RxNorm.
