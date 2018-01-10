@@ -859,7 +859,7 @@ def main():
     print (datetime.datetime.utcnow())
     print('integrate ndf-rt drugs into hetionet')
 
-    # integration_of_ndf_rt_drugs_into_hetionet()
+    integration_of_ndf_rt_drugs_into_hetionet()
 
     print(
         '###########################################################################################################################')
@@ -867,7 +867,7 @@ def main():
     print (datetime.datetime.utcnow())
     print('integrate ndf-rt connection into hetionet')
 
-    # integrate_connection_into_hetionet()
+    integrate_connection_into_hetionet()
 
     print(
         '###########################################################################################################################')
