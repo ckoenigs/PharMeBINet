@@ -1,10 +1,10 @@
-Fist map and integrate the aeolus aoutcome and the the aeolus drugs and the connection.
-The outcome can be simple mapped to UMLS cui because AEOLUS coutcome has as identifier MedDRA and this is part of UMLS and is integratet into Hetionet.
+Fist map and integrate the AEOLUS outcome and the AEOLUS drugs and the connection.
+The outcome can be simply mapped to UMLS cui because AEOLUS outcome has as identifier MedDRA and this is part of UMLS and is integrated into Hetionet.
 
-The mapping of the AEOLUS drugs has many different methodes:
+The mapping of the AEOLUS drugs has many different methods:
 1. Mapped RXNORM cui to Drugbank ids with use of RXNORM database.
 2. Mapped RXNORM cui to Drugbank ids with a mapped table which used the unii and InChIKey
 3. Mapped RXNORM cui to Drugbank ids with a mapped table, which was generated with name mapping. 
 
-The it is integratet into Hetionet. Also for the relationship a cypher file is generated.
+It is integrated into Hetionet. Also for the relationship, a cypher file is generated.
 
