@@ -6,6 +6,7 @@ Created on Wed Sep 27 13:05:35 2017
 """
 
 '''
+generate af file with only drugbank and unii IDs
 0:drugbank_id	
 1:name	
 2:type	
@@ -21,30 +22,32 @@ Created on Wed Sep 27 13:05:35 2017
 12:external_identifiers	
 13:extra_names	
 14:brands	
-15:description
+15:molecular_forula	
+16:molecular_formular_experimental	
+17:gene_sequence	
+18:amino_acid_sequence	
+19:sequence	
+20:description
 '''
 
-f=open('../data/drugbank_with_synonyms_uniis_extern_ids.tsv','r')
-g=open('map_unii_to_drugbank_id.tsv','w')
+f = open('data/drugbank_with_synonyms_uniis_extern_ids_molecular_seq_formular.tsv', 'r')
+g = open('data/map_unii_to_drugbank_id.tsv', 'w')
 next(f)
 g.write('unii \t drugbank_id \n')
 for line in f:
-    splitted=line.split('\t')
-    if splitted[0][0:2]=='DB':
-        unii=splitted[10]
-        drugbank_id=splitted[0]
-        if not unii=='':
-            g.write(unii+'\t'+drugbank_id+'\n')
-        uniis=splitted[11]
-        if len(uniis)>2:
-            uniis=uniis.replace('[','').replace(']','')
-            uniis=uniis.replace("'","")
-            uniis=uniis.split('|')
+    splitted = line.split('\t')
+    if splitted[0][0:2] == 'DB':
+        unii = splitted[10]
+        drugbank_id = splitted[0]
+        if not unii == '':
+            g.write(unii + '\t' + drugbank_id + '\n')
+        uniis = splitted[11]
+        if len(uniis) > 2:
+            uniis = uniis.replace('[', '').replace(']', '')
+            uniis = uniis.replace("'", "")
+            uniis = uniis.split('|')
             for unii in uniis:
-                g.write(unii+'\t'+drugbank_id+'\n')
-            
+                g.write(unii + '\t' + drugbank_id + '\n')
+
 g.close()
 f.close()
-            
-        
-    
