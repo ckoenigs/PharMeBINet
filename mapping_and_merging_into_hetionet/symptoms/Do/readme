@@ -1,0 +1,2 @@
+These extract symptoms from the disease definition. In DO for all symptoms stands 'has_symptom'. All names which are extract are mapped per name to UMLS cui.
+The last step is to integrate the symptoms and the relationships into Hetionet.
