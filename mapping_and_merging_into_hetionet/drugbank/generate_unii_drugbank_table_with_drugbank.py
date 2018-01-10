@@ -30,7 +30,9 @@ generate af file with only drugbank and unii IDs
 20:description
 '''
 
+# file which was extracted from DrugBank xml
 f = open('data/drugbank_with_synonyms_uniis_extern_ids_molecular_seq_formular.tsv', 'r')
+# the new table for unii drugbank pairs
 g = open('data/map_unii_to_drugbank_id.tsv', 'w')
 next(f)
 g.write('unii \t drugbank_id \n')
