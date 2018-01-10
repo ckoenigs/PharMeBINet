@@ -2,7 +2,8 @@ Map and merge first the NDF-RT disease than the NDF-RT drugs.
 
 NDF-RT disease and Disease Ontology have UMLS cui as extern key.
 First step map the UMLS cui directly.
-Second search for synonym UMLS cuis in UMLS am map then.
+Second map with names.
+Third search for synonym UMLS cuis in UMLS am map then.
 
 For mapping NDF-RT drug to DrugBank different mwthodes are used:
 1) Map the RxNorm cui of the NDF-RT to DrugBank by using RxNorm
