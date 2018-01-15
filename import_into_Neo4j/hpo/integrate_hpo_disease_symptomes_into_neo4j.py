@@ -80,7 +80,7 @@ def gather_all_disease_symptom_information_from_HPO():
         # O stands for phenotypic abnormality
         if aspect != 'O':
             continue
-        dict_disease_symptom_hpo_pair_to_information[(db_disease_id, hpo_id)] = [qualifier, reference_id, evidence_code,
+        dict_disease_symptom_hpo_pair_to_information[(db_disease+':'+db_disease_id, hpo_id)] = [qualifier, reference_id, evidence_code,
                                                                                  frequency_modi]
         # remember the different frequency identifier
         if not frequency_modi in dict_hpo_frequency:
@@ -94,10 +94,10 @@ def gather_all_disease_symptom_information_from_HPO():
             continue
 
         create_text = 'Create (:HPOdisease{id: "%s" , name: "%s", source: "%s"});\n' % (
-            db_disease_id, db_disease_name, db_disease)
+            db_disease + ':' + db_disease_id, db_disease_name, db_disease)
 
         # add disease id to list
-        list_disease_ids.append(db_disease_id)
+        list_disease_ids.append(db_disease+':'+db_disease_id)
 
         counter_create += 1
         cypher_file.write(create_text)
