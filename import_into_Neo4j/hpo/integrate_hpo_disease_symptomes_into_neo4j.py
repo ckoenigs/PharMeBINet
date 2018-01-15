@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue Dec  5 12:14:27 2017
+Created olanguagec  5 12:14:27 2017
 
 @author: cassandra
 """
@@ -34,6 +34,9 @@ creation_max_in_file = 1000000
 # open cypher file
 cypher_file = open('integrate_hpo_into_neo4j_' + str(file_counter) + '.cypher', 'w')
 cypher_file.write('begin \n')
+
+# dictionary with all hpo identifier for frequency
+dict_hpo_frequency={}
 
 '''
 load all disease-symptom information in and remember the relationships 
@@ -79,6 +82,10 @@ def gather_all_disease_symptom_information_from_HPO():
             continue
         dict_disease_symptom_hpo_pair_to_information[(db_disease_id, hpo_id)] = [qualifier, reference_id, evidence_code,
                                                                                  frequency_modi]
+        # remember the different frequency identifier
+        if not frequency_modi in dict_hpo_frequency:
+            dict_hpo_frequency[frequency_modi]=''
+
         if not hpo_id in list_symptoms_ids:
             list_symptoms_ids.append((hpo_id))
 
@@ -144,6 +151,8 @@ def get_hpo_information_and_map_to_umls():
                     continue
 
                 use_full_hpo_id = True
+                # is a frequency information
+                is_a_frequency_information=False
                 # dictionary for all values
                 dict_all_info = {}
                 # go through all properties of the hpo id
@@ -151,9 +160,11 @@ def get_hpo_information_and_map_to_umls():
                     (key_term, value) = [element.strip() for element in info.split(":", 1)]
                     # check if the id is part of at least one relationship
                     if key_term == 'id':
-                        if not value in list_symptoms_ids:
+                        if not value in list_symptoms_ids or not value in dict_hpo_frequency:
                             use_full_hpo_id = False
                             break
+                        elif value in dict_hpo_frequency:
+                            is_a_frequency_information=True
                     # for som propperties more than one value appears
                     if not key_term in dict_all_info:
                         dict_all_info[key_term] = [value]
@@ -164,27 +175,33 @@ def get_hpo_information_and_map_to_umls():
 
                 # only for useful hpo ids
                 if use_full_hpo_id:
-                    create_text = 'Create (:HPOsymptom{'
-                    # add all properties to node which hpo has
-                    for key, list_information in dict_all_info.items():
-                        modify_list_informationan = []
-                        for info in list_information:
-                            info = info.replace('"', '').replace("'", "").replace("\\","")
-                            modify_list_informationan.append(info)
-                        create_text = create_text + key + ": '" + "|".join(modify_list_informationan) + "' ,"
-                    create_text = create_text[0:-1] + '});\n'
-                    counter_create += 1
-                    cypher_file.write(create_text)
-                    # test if a new commit block or new file need to be generated
-                    if counter_create % constrain_number == 0:
-                        cypher_file.write('commit \n')
-                        if counter_create % creation_max_in_file == 0:
-                            cypher_file.close()
-                            cypher_file = open('integrate_hpo_into_neo4j_' + str(file_counter) + '.cypher', 'w')
-                            cypher_file.write('begin \n')
-                            file_counter += 1
-                        else:
-                            cypher_file.write('begin \n')
+                    if not is_a_frequency_information:
+                        create_text = 'Create (:HPOsymptom{'
+                        # add all properties to node which hpo has
+                        for key, list_information in dict_all_info.items():
+                            modify_list_informationan = []
+                            for info in list_information:
+                                info = info.replace('"', '').replace("'", "").replace("\\","")
+                                modify_list_informationan.append(info)
+                            create_text = create_text + key + ": '" + "|".join(modify_list_informationan) + "' ,"
+                        create_text = create_text[0:-1] + '});\n'
+                        counter_create += 1
+                        cypher_file.write(create_text)
+                        # test if a new commit block or new file need to be generated
+                        if counter_create % constrain_number == 0:
+                            cypher_file.write('commit \n')
+                            if counter_create % creation_max_in_file == 0:
+                                cypher_file.close()
+                                cypher_file = open('integrate_hpo_into_neo4j_' + str(file_counter) + '.cypher', 'w')
+                                cypher_file.write('begin \n')
+                                file_counter += 1
+                            else:
+                                cypher_file.write('begin \n')
+                    else:
+                        id=dict_all_info['id']
+                        name=dict_all_info['name']
+                        definition=dict_all_info['def']
+                        dict_hpo_frequency[id]=[name, definition]
     print(counter_create)
     cypher_file.write('commit \n begin \n')
     cypher_file.write('Create Constraint On (node:HPOsymptom) Assert node.id Is Unique; \n')
@@ -209,11 +226,13 @@ def add_connection_to_cypher_file():
         reference_id = information[1]
         evidence_code = information[2]
         frequency_modi = information[3]
+        frequency_name= dict_hpo_frequency[frequency_modi][0] if frequency_modi !='' else ''
+        frequency_definition= dict_hpo_frequency[frequency_modi][1] if frequency_modi !='' else ''
         url = 'http://compbio.charite.de/hpoweb/showterm?disease=' + reference_id
 
         query = '''MATCH (n:HPOdisease{id:"%s"}),(s:HPOsymptom{id:"%s"}) 
-            Create (n)-[:present{version:'phenotype_annotation.tab 2017-10-09 10:47',unbiased:'false',source:'%s',qualifier:'%s', efidence_code:'%s', frequency_modifier:'%s', url:"%s"}]->(s); \n  '''
-        query = query % (disease_id, hpo_id, reference_id, qualifier, evidence_code, frequency_modi, url)
+            Create (n)-[:present{version:'phenotype_annotation.tab 2017-10-09 10:47',unbiased:'false',source:'%s',qualifier:'%s', efidence_code:'%s', frequency_modifier:'%s', frequency_definition:'%s', url:"%s"}]->(s); \n  '''
+        query = query % (disease_id, hpo_id, reference_id, qualifier, evidence_code, frequency_name, frequency_definition, url)
 
         counter_connection += 1
         cypher_file.write(query)
