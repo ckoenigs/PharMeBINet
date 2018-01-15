@@ -90,7 +90,7 @@ def gather_all_disease_symptom_information_from_HPO():
             list_symptoms_ids.append((hpo_id))
 
         # many diseases have more than one abnormal phenotype, but the disease need to be added only one time
-        if db_disease_id in list_disease_ids:
+        if db_disease+':'+db_disease_id in list_disease_ids:
             continue
 
         create_text = 'Create (:HPOdisease{id: "%s" , name: "%s", source: "%s"});\n' % (
