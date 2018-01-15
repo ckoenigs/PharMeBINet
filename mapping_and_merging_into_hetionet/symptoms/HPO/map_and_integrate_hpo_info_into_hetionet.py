@@ -258,10 +258,12 @@ def map_hpo_disease_to_doid(db_disease_id, db_disease_name, db_disease_source):
         counter_omim += 1
         #            print('omim')
         # test if omim id is direct in DO
-        if db_disease_id in dict_omim_to_doid:
+
+        omim_id=db_disease_id.split(':')[1]
+        if omim_id in dict_omim_to_doid:
             counter_omim_map_with_omim += 1
             doids = []
-            for doid in dict_omim_to_doid[db_disease_id]:
+            for doid in dict_omim_to_doid[omim_id]:
                 doids.append(doid)
             dict_disease_id_to_doids[db_disease_id] = doids
             doids = '|'.join(doids)
@@ -271,7 +273,7 @@ def map_hpo_disease_to_doid(db_disease_id, db_disease_name, db_disease_source):
             # fined mapping with use of umls cuis
             cur = con.cursor()
             query = ('Select CUI From MRCONSO Where SAB="OMIM" and CODE= "%s" and lower(STR)="%s";')
-            query = query % (db_disease_id, db_disease_name)
+            query = query % (omim_id, db_disease_name)
             rows_counter = cur.execute(query)
             found = False
             if rows_counter > 0:
@@ -616,7 +618,7 @@ def main():
 
     thread_id = 1
 
-    query = ''' Match (d:HPOdisease) Return d.id, d.name, d.source '''
+    query = ''' Match (d:HPOdisease) Return d.id, d.name, d.source'''
     results = g.run(query)
     for db_disease_id, db_disease_name, db_disease_source, in results:
         # create thread
@@ -633,7 +635,6 @@ def main():
     for t in threads_synonyms:
         t.join()
 
-    map_hpo_disease_to_doid()
 
     print('##########################################################################')
 
