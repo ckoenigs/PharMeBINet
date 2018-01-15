@@ -1,0 +1,1 @@
+This integrated DrugBank into Neo4j, but first the DrugBank data are formed into tsv file with use of (url:...)
