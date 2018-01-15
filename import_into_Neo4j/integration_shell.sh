@@ -173,5 +173,36 @@ cd ..
 now=$(date +"%F %T")
 echo "Current time: $now"
 
+cd  drugbank
+echo drugbank
+
+python transform_drugbank_to_tsv_version_3.py > output_generate_drubank_file.txt
+
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+python integrate_drugbank_into_neo4j.py  > output_integration_hpo.txt
+
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+echo integrate drugbank into neo4j
+
+$path_neo4j/neo4j-shell -file DrugBank_database_1.cypher > output_cypher_integration.txt
+
+sleep 180
+
+$path_neo4j/neo4j restart
+
+
+sleep 120
+
+cd ..
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
 
 
