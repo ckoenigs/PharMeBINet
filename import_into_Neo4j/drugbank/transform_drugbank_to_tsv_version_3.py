@@ -14,6 +14,7 @@ import io
 import json
 import xml.etree.ElementTree as ET
 import datetime
+import sys
 
 import requests
 import pandas
@@ -115,11 +116,14 @@ def collapse_list_values(row):
                 for j in list_delete:
                     del value[j]
                     
-            if len(value)>1:
+            if len(value)>0:
 #                if key=='inchikeys':
 #                    print(value)
                 string_value = '|'.join(value)
                 row[key]=string_value.replace('\t','').replace('\n','').replace('\r','')
+#                if key=='food_interaction':
+#                    print('blub')
+       
                 
     return row
 
