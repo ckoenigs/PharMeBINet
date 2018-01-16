@@ -14,6 +14,7 @@ dict_drug_info={}
 # dictionary for every drug interaction: with def as value
 dict_drug_interaction_info={}
 
+
 '''
 This takes all information from Drugbank and sort them in the different dictionaries 
 0: drugbank_id	
@@ -42,8 +43,11 @@ This takes all information from Drugbank and sort them in the different dictiona
 23:description
 '''
 def get_drugbank_information():
+    i=0
     f= open('data/drugbank_with_infos_and_interactions.tsv','r')
+    next(f)
     for line in f:
+        print(line)
         splitted=line.split('\t')
         drugbank_id=splitted[0]
         name=splitted[1]
@@ -51,7 +55,10 @@ def get_drugbank_information():
         inchi=splitted[7]
         drug_interaction=splitted[20]
         drug_interaction_describtion=splitted[21]
+
         food_interaction=splitted[22]
+        print(drugbank_id)
+        print(food_interaction)
         dict_drug_info[drugbank_id]=[name,inchikey, inchi, food_interaction]
         
         counter=0
@@ -61,7 +68,9 @@ def get_drugbank_information():
             if  ((drug, drugbank_id) not in dict_drug_interaction_info):
                 dict_drug_interaction_info[(drugbank_id,drug)]=splitted_definition[counter]
             counter+=1
-            
+        # if i==10:
+        #     break
+        i+=1
 '''
 Generate cypher file for drugbank information
 '''
@@ -74,7 +83,7 @@ def generate_cypher_file():
     creation_max_in_file=1000000
     
     
-    f= open('DrugBank_database_'+str(i)+'.cypher','w',encoding="utf-8")
+    f= open('DrugBank_database_'+str(i)+'.cypher','w')
     f.write('begin \n')
     i+=1
     
