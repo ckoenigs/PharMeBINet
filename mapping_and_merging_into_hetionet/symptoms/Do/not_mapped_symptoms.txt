@@ -15,7 +15,6 @@ paralysis of the legs due to thrombosis of spinal arteries
 distention from gas or fluid
 digestive disturbances
 stiff body
-difficulty in breathing
 chest pain and results_in_formation_of skin nodules
 anemia described as malaria-like symptoms caused by a protozoan of genus babesia
 bleeding into skin and other organs
@@ -27,8 +26,6 @@ deterioration of memory
 loss of reflexes
 sudden high fever
 red rash that occurs first on the trunk then spreading to legs and neck
-changes in personality
-disturbances in sleep
 stiffness in the spine
 stiffness in the neck
 stiffness in the hips
@@ -48,7 +45,6 @@ lesions which are flesh-colored with a pit in the center
 fluid-filled blister formation
 cough with mucus
 itching in groin
-tenderness of skin
 warmth of skin
 moist patches in the mouth
 lumps in long bones
@@ -126,7 +122,6 @@ loss of bladder sensation leading to urine retention
 maculopapular rash on the trunk
 internal and external bleeding
 regional adenopathy
-rash on extremities
 maculopapular rash progressing into papular or petechial rash
 sudden onset of headache
 bleeding from the oral and nasal mucosa
@@ -162,7 +157,6 @@ periosteal lesions
 dental deformities
 acute shock
 vascular leakage
-difficulty in breathing
 inflammatory infiltrations
 formation of tubercles
 caseation
