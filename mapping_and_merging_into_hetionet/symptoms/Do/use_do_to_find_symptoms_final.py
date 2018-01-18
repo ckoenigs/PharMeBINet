@@ -9,6 +9,27 @@ from py2neo import Graph, authenticate
 import MySQLdb as mdb
 import sys
 import datetime
+import threading
+
+
+# class of thread to find umls cuis for the symptoms
+class SymptomThread(threading.Thread):
+    def __init__(self, threadID, name, disease_id, disease_definition):
+        threading.Thread.__init__(self)
+        self.threadID = threadID
+        self.name = name
+        self.disease_id = disease_id
+        self.disease_definition = disease_definition
+
+    def run(self):
+        # print "Starting " + self.name
+        # Get lock to synchronize threads
+        threadLock.acquire()
+        load_in_hetionet_disease_in_dictionary(self.disease_id, self.disease_definition)
+        #      print "Ending " + self.name
+        #      print_time(self.name, self.counter, 3)
+        # Free lock to release next thread
+        threadLock.release()
 
 
 # connect with the neo4j database AND MYSQL
@@ -56,50 +77,53 @@ def find_cui_for_different_formas_of_string(symptom, split_word):
             return True
         else:
             return False
+    else:
+        return False
 
+
+# counter not mapped symptoms
+counter_not_mapped_symptoms = 0
+
+# counter with mapping with change the order of the name
+counter_map_with_changed_order = 0
 
 '''
-load all disease with symptoms in a dictionary
+disease in dictionary. Extract symptoms from definition and map symptoms to umls cui
 '''
 
 
-def load_in_hetionet_disease_in_dictionary():
-    # counter not mapped symptoms
-    counter_not_mapped_symptoms = 0
+def load_in_hetionet_disease_in_dictionary(doid, definition):
+    global counter_map_with_changed_order, counter_not_mapped_symptoms
 
-    # counter with mapping with change the order of the name
-    counter_map_with_changed_order = 0
+    splitted = definition.split('has_symptom ')
+    #        print(splitted)
+    list_symptoms = []
+    for symptom in splitted[1:]:
+        # excluded , and . and all after
+        symptom = symptom.split(',')[0].split('.')[0].lower()
+        #            print(symptom)
+        if symptom[-5:] == ' and ':
+            symptom = symptom[0:-5]
+        if symptom[-4:] == ' or ':
+            symptom = symptom[0:-4]
+        list_symptoms.append(symptom)
+        if not symptom in dict_symptom_to_umls_cui:
+            cur = con.cursor()
+            #                query=('Select CUI, count(AUI) From MRCONSO Where  lower(STR)= "%s" Group By CUI Order By count(AUI) DESC;')
+            query = ('Select CUI From MRCONSO Where  lower(STR)= "%s" Limit 1;')
+            query = query % (symptom)
+            rows_counter = cur.execute(query)
 
-    query = '''MATCH (n:Disease) Where n.definition contains 'has_symptom' RETURN n.identifier,n.definition '''
-    results = g.run(query)
-    for doid, definfiton, in results:
-        splitted = definfiton.split('has_symptom ')
-        #        print(splitted)
-        list_symptoms = []
-        for symptom in splitted[1:]:
-            # excluded , and . and all after
-            symptom = symptom.split(',')[0].split('.')[0].lower()
-            #            print(symptom)
-            if symptom[-5:] == ' and ':
-                symptom = symptom[0:-5]
-            if symptom[-4:] == ' or ':
-                symptom = symptom[0:-4]
-            list_symptoms.append(symptom)
-            if not symptom in dict_symptom_to_umls_cui:
-                cur = con.cursor()
-                #                query=('Select CUI, count(AUI) From MRCONSO Where  lower(STR)= "%s" Group By CUI Order By count(AUI) DESC;')
-                query = ('Select CUI From MRCONSO Where  lower(STR)= "%s" Limit 1;')
-                query = query % (symptom)
-                rows_counter = cur.execute(query)
+            if rows_counter > 0:
+                list_cuis = []
+                for cui, in cur:
+                    #                        print(cui)
+                    list_cuis.append(cui)
+                dict_symptom_to_umls_cui[symptom] = list_cuis[0]
 
-                if rows_counter > 0:
-                    list_cuis = []
-                    for cui, in cur:
-                        #                        print(cui)
-                        list_cuis.append(cui)
-                    dict_symptom_to_umls_cui[symptom] = list_cuis[0]
-
-                else:
+            else:
+                found_a_cui = False
+                if symptom.find(' the ') != -1:
                     cur.close()
                     cur = con.cursor()
                     # check if the symptom exist without 'the' in name
@@ -107,31 +131,26 @@ def load_in_hetionet_disease_in_dictionary():
                     query = query % (symptom.replace(' the ', ' '))
                     rows_counter = cur.execute(query)
                     if rows_counter > 0:
+                        found_a_cui = True
                         list_cuis = []
                         for cui, in cur:
                             #                        print(cui)
                             list_cuis.append(cui)
                         dict_symptom_to_umls_cui[symptom] = list_cuis[0]
-                    else:
-                        found_a_cui = False
-                        # if not found  search for the name with exclude preposition and use different orders
-                        for split_word in list_words_to_split:
-                            if find_cui_for_different_formas_of_string(symptom, split_word):
-                                found_a_cui = True
-                                counter_map_with_changed_order += 1
-                                sys.exit()
-                                break
+                if not found_a_cui:
+                    # if not found  search for the name with exclude preposition and use different orders
+                    for split_word in list_words_to_split:
+                        if find_cui_for_different_formas_of_string(symptom, split_word):
+                            found_a_cui = True
+                            counter_map_with_changed_order += 1
+                            # sys.exit()
+                            # break
 
-                        if found_a_cui == False:
-                            counter_not_mapped_symptoms += 1
-                            print('ohje')
-                            print(symptom)
+                    if found_a_cui == False:
+                        counter_not_mapped_symptoms += 1
+                        print('ohje')
+                        print(symptom)
         dict_doid_to_symptom[doid] = list_symptoms
-
-    print('number of mapped symptoms with change the order of the name:' + str(counter_map_with_changed_order))
-    print('number of disease which has symptoms in their definition:' + str(len(dict_doid_to_symptom)))
-    print('number of different symptoms which are mapped to umls cui:' + str(len(dict_symptom_to_umls_cui)))
-    print('number of not mapped symptoms to umls cuis:' + str(counter_not_mapped_symptoms))
 
 
 '''
@@ -323,9 +342,37 @@ def main():
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
-    print('load in cui diseases')
+    print('load in diseases with symptoms in and find for the symptoms umls cuis')
 
-    load_in_hetionet_disease_in_dictionary()
+    # create a lock, is used to synchronized threads
+    global threadLock
+    threadLock = threading.Lock()
+
+    # all threads
+    threads_list = []
+
+    thread_id = 1
+
+    query = '''MATCH (n:Disease) Where n.definition contains 'has_symptom' RETURN n.identifier,n.definition '''
+    results = g.run(query)
+    for doid, definition, in results:
+        # create thread
+        thread = SymptomThread(thread_id, 'thread_' + str(thread_id), doid, definition)
+        # start thread
+        thread.start()
+        # add to list
+        threads_list.append(thread)
+        # increase thread id
+        thread_id += 1
+
+        # wait for all threads
+    for t in threads_list:
+        t.join()
+
+    print('number of mapped symptoms with change the order of the name:' + str(counter_map_with_changed_order))
+    print('number of disease which has symptoms in their definition:' + str(len(dict_doid_to_symptom)))
+    print('number of different symptoms which are mapped to umls cui:' + str(len(dict_symptom_to_umls_cui)))
+    print('number of not mapped symptoms to umls cuis:' + str(counter_not_mapped_symptoms))
 
     print('##########################################################################')
 
