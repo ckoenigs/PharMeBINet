@@ -58,10 +58,11 @@ split and combined the symptom name and search for this symptom and return if a 
 
 
 def find_cui_for_different_formas_of_string(symptom, split_word):
+    symptom = symptom.replace(' the ', ' ')
     split_by_in = symptom.split(' ' + split_word + ' ')
     if len(split_by_in) == 2:
-        one_way = split_by_in[0].replace(' the ', ' ') + ' ' + split_by_in[1].replace(' the ', ' ')
-        another_way = split_by_in[1].replace(' the ', ' ') + ' ' + split_by_in[0].replace(' the ', ' ')
+        one_way = split_by_in[0] + ' ' + split_by_in[1]
+        another_way = split_by_in[1] + ' ' + split_by_in[0]
         #        cur.close()
         cur = con.cursor()
         query = ('Select CUI From MRCONSO Where  lower(STR)= "%s" or lower(STR)= "%s"  Limit 1;')
@@ -226,7 +227,7 @@ def integrate_infromation_into_hetionet():
             dict_cui_to_mesh[cui] = mesh
 
             counter_already_in_hetionet_symptoms += 1
-        g.run(query)
+        # g.run(query)
 
     # all symptoms which not appeare in DO get the information
     query = '''Match (s:Symptom) Where not exists(s.do) Set s.hetionet='yes', s.do='no', s.resource=['hetionet'] '''
