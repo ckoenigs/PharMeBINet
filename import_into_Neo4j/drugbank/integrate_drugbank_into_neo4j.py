@@ -8,7 +8,7 @@ from py2neo import Graph, authenticate
 import datetime
 import sys
 
-# dictionary for every drug with all information about this:name, inchikey, inchi, food interaction
+# dictionary for every drug with all information about this:name, inchikey, inchi, food interaction, alternative ids
 dict_drug_info = {}
 
 # dictionary for every drug interaction: with def as value
@@ -17,29 +17,30 @@ dict_drug_interaction_info = {}
 '''
 This takes all information from Drugbank and sort them in the different dictionaries 
 0: drugbank_id	
-1: name	
-2: type	
-3: groups	
-4: atc_codes	
-5: categories	
-6: inchikey	
-7: inchi	
-8: inchikeys	
-9: synonyms	
-10:unii	
-11:uniis	
-12:external_identifiers	
-13:extra_names	
-14:brands	
-15:molecular_forula	
-16:molecular_formular_experimental	
-17:gene_sequence	
-18:amino_acid_sequence	
-19:sequence	
-20:drug_interaction	
-21:drug_interaction_description	
-22:food_interaction	
-23:description
+1: alternative drugbank ids
+2: name	
+3: type	
+4: groups	
+5: atc_codes	
+6: categories	
+7: inchikey	
+8: inchi	
+9: inchikeys	
+10: synonyms	
+11:unii	
+12:uniis	
+13:external_identifiers	
+14:extra_names	
+15:brands	
+16:molecular_forula	
+17:molecular_formular_experimental	
+18:gene_sequence	
+19:amino_acid_sequence	
+20:sequence	
+21:drug_interaction	
+22:drug_interaction_description	
+23:food_interaction	
+24:description
 '''
 
 
@@ -51,16 +52,17 @@ def get_drugbank_information():
         # print(line)
         splitted = line.split('\t')
         drugbank_id = splitted[0]
-        name = splitted[1]
-        inchikey = splitted[6]
-        inchi = splitted[7]
-        drug_interaction = splitted[20]
-        drug_interaction_describtion = splitted[21]
+        alternative_ids = splitted[1]
+        name = splitted[2]
+        inchikey = splitted[7]
+        inchi = splitted[8]
+        drug_interaction = splitted[21]
+        drug_interaction_describtion = splitted[22]
 
-        food_interaction = splitted[22].replace('"', "'")
+        food_interaction = splitted[23].replace('"', "'")
         print(drugbank_id)
         print(food_interaction)
-        dict_drug_info[drugbank_id] = [name, inchikey, inchi, food_interaction]
+        dict_drug_info[drugbank_id] = [name, inchikey, inchi, food_interaction, alternative_ids]
 
         counter = 0
         splitted_definition = drug_interaction_describtion.split('|')
@@ -100,8 +102,8 @@ def generate_cypher_file():
     print (datetime.datetime.utcnow())
     for identifier, info_list in dict_drug_info.items():
         url = 'http://www.drugbank.ca/drugs/' + identifier
-        creat_text = 'Create (:DrugBankdrug{id: "%s" , name: "%s", inchikey: "%s", inchi: "%s",  food_interaction: "%s", url: "%s", license:"CC BY-NC 4.0"} ); \n' % (
-        identifier, info_list[0], info_list[1], info_list[2], info_list[3], url)
+        creat_text = 'Create (:DrugBankdrug{id: "%s" , name: "%s", inchikey: "%s", inchi: "%s",  food_interaction: "%s", url: "%s", license:"CC BY-NC 4.0", alternative_ids: "%s"} ); \n' % (
+            identifier, info_list[0], info_list[1], info_list[2], info_list[3], url, info_list[4])
         # print(creat_text)
         counter_create += 1
         f.write(creat_text)
@@ -130,7 +132,7 @@ def generate_cypher_file():
 
         creat_text = ''' Match (drug1:DrugBankdrug{id: "%s"}), (drug2:DrugBankdrug{id: "%s"})
         Create (drug1)-[:interacts{url: "%s" , describtion: "%s"}] ->(drug2); \n''' % (
-        drug_id1, drug_id2, url, describtion)
+            drug_id1, drug_id2, url, describtion)
         # print(creat_text)
         #        print(query)
         counter_create += 1
