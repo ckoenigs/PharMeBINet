@@ -41,6 +41,8 @@ for i, drug in enumerate(root):
     assert drug.tag == ns + 'drug'
     row['type'] = drug.get('type')
     row['drugbank_id'] = drug.findtext(ns + "drugbank-id[@primary='true']")
+    row['drugbank_ids'] = [group.text for group in
+        drug.findall("{ns}drugbank-id".format(ns = ns))]
     row['name'] = drug.findtext(ns + "name")
     row['description'] = drug.findtext(ns + "description").replace('\n','').replace('\r','')
     row['groups'] = [group.text for group in
@@ -132,7 +134,7 @@ rows = list(map(collapse_list_values, rows))
 
 print (datetime.datetime.utcnow())
 print('malsehen')
-columns = ['drugbank_id', 'name', 'type', 'groups', 'atc_codes', 'categories', 'inchikey', 'inchi','inchikeys', 'synonyms', 'unii','uniis', 'external_identifiers','extra_names', 'brands', 'molecular_forula','molecular_formular_experimental','gene_sequence','amino_acid_sequence','sequence','drug_interaction', 'drug_interaction_description','food_interaction', 'description']
+columns = ['drugbank_id', 'drugbank_ids' ,'name', 'type', 'groups', 'atc_codes', 'categories', 'inchikey', 'inchi','inchikeys', 'synonyms', 'unii','uniis', 'external_identifiers','extra_names', 'brands', 'molecular_forula','molecular_formular_experimental','gene_sequence','amino_acid_sequence','sequence','drug_interaction', 'drug_interaction_description','food_interaction', 'description']
 drugbank_df = pandas.DataFrame.from_dict(rows)[columns]
 drugbank_df.head()
 
@@ -147,10 +149,10 @@ drugbank_slim_df.head()
 
 
 # write drugbank tsv
-path = os.path.join('data', 'drugbank_with_infos_and_interactions.tsv')
+path = os.path.join('data', 'drugbank_with_infos_and_interactions_alternative_ids.tsv')
 drugbank_df.to_csv(path, sep='\t', index=False)
 
 # write slim drugbank tsv
-path = os.path.join('data', 'drugbank-slim2_with_infos_and_interactions.tsv')
+path = os.path.join('data', 'drugbank-slim2_with_infos_and_interactions_alternative_ids.tsv')
 drugbank_slim_df.to_csv(path, sep='\t', index=False)
 
