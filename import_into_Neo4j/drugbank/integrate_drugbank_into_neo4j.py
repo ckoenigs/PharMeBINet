@@ -46,13 +46,15 @@ This takes all information from Drugbank and sort them in the different dictiona
 
 def get_drugbank_information():
     i = 0
-    f = open('data/drugbank_with_infos_and_interactions.tsv', 'r')
+    f = open('data/drugbank_with_infos_and_interactions_alternative_ids.tsv', 'r')
     next(f)
     for line in f:
         # print(line)
         splitted = line.split('\t')
         drugbank_id = splitted[0]
-        alternative_ids = splitted[1]
+        alternative_ids = splitted[1].split('|') if splitted[1] != '' else []
+        alternative_ids.remove(drugbank_id)
+        alternative_ids = '|'.join(alternative_ids)
         name = splitted[2]
         inchikey = splitted[7]
         inchi = splitted[8]
@@ -60,8 +62,8 @@ def get_drugbank_information():
         drug_interaction_describtion = splitted[22]
 
         food_interaction = splitted[23].replace('"', "'")
-        print(drugbank_id)
-        print(food_interaction)
+        # print(drugbank_id)
+        # print(food_interaction)
         dict_drug_info[drugbank_id] = [name, inchikey, inchi, food_interaction, alternative_ids]
 
         counter = 0
