@@ -1,0 +1,16 @@
+2018-01-24 12:00:42.732493
+import drugbank information
+number of different drugbank ids:10562
+number of different interaction ids:365726
+#############################################################
+2018-01-24 12:00:43.627673
+generate cypher file
+drug Create
+2018-01-24 12:00:43.639132
+number of new nodes:10562
+edges Create
+2018-01-24 12:00:43.664811
+number of interaction edges:299146
+number of interaction where one drugbank id was removed from the database:66580
+#############################################################
+2018-01-24 12:00:44.523481
