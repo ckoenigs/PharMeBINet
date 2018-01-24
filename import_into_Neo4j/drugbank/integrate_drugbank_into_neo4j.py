@@ -59,7 +59,7 @@ def get_drugbank_information():
         inchikey = splitted[7]
         inchi = splitted[8]
         drug_interaction = splitted[21]
-        drug_interaction_describtion = splitted[22]
+        drug_interaction_description = splitted[22]
 
         food_interaction = splitted[23].replace('"', "'")
         # print(drugbank_id)
@@ -67,15 +67,18 @@ def get_drugbank_information():
         dict_drug_info[drugbank_id] = [name, inchikey, inchi, food_interaction, alternative_ids]
 
         counter = 0
-        splitted_definition = drug_interaction_describtion.split('|')
+        splitted_definition = drug_interaction_description.split('|')
         for drug in drug_interaction.split('|'):
             # it is enough to check on direction, because if it is already in the dictionary then this drug must be on position 2
             if ((drug, drugbank_id) not in dict_drug_interaction_info):
                 dict_drug_interaction_info[(drugbank_id, drug)] = splitted_definition[counter]
             counter += 1
-        # if i==10:
+        # if i==1000:
         #     break
         i += 1
+
+    print('number of different drugbank ids:' + str(len(dict_drug_info)))
+    print('number of different interaction ids:' + str(len(dict_drug_interaction_info)))
 
 
 '''
@@ -124,16 +127,24 @@ def generate_cypher_file():
     # set stitch stereo ID as key and unique
     f.write('Create Constraint On (node:DrugBankdrug) Assert node.id Is Unique; \n')
     f.write('commit \n schema await \n begin \n')
+    print('number of new nodes:' + str(counter_create))
+    number_of_new_nodes = counter_create
 
-    # make statistics and add querey for relationship to file
+    count_interaction_with_removed_drugbank_ids = 0
+    # i=0
     print('edges Create')
     print (datetime.datetime.utcnow())
-    # fileter out all frequecies with floats and compoute average, if no falues exist take a word
+
     for (drug_id1, drug_id2), describtion in dict_drug_interaction_info.items():
+        # i+=1
         url = 'http://www.drugbank.ca/drugs/' + drug_id1
 
+        if drug_id1 not in dict_drug_info or drug_id2 not in dict_drug_info:
+            count_interaction_with_removed_drugbank_ids += 1
+            continue
+
         creat_text = ''' Match (drug1:DrugBankdrug{id: "%s"}), (drug2:DrugBankdrug{id: "%s"})
-        Create (drug1)-[:interacts{url: "%s" , describtion: "%s"}] ->(drug2); \n''' % (
+        Create (drug1)-[:interacts{url: "%s" , description: "%s"}] ->(drug2); \n''' % (
             drug_id1, drug_id2, url, describtion)
         # print(creat_text)
         #        print(query)
@@ -150,7 +161,12 @@ def generate_cypher_file():
                 i += 1
             else:
                 f.write('begin \n')
+        # if i==5000:
+        #     break
     f.write('commit')
+    print('number of interaction edges:' + str(counter_create - number_of_new_nodes))
+    print('number of interaction where one drugbank id was removed from the database:' + str(
+        count_interaction_with_removed_drugbank_ids))
 
 
 def main():
