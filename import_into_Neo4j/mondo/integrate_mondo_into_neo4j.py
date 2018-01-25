@@ -101,7 +101,7 @@ def generate_cypher_file():
                 info = info.replace('"', '').replace("'", "").replace("\\", "")
                 modify_list_information.append(info)
             create_text = create_text + key + ": '" + "|".join(modify_list_information) + "' ,"
-        create_text = create_text[0:-1] + '});\n'
+        create_text = create_text + 'license:"CC BY 4.0"});\n'
         counter_create += 1
         cypher_file.write(create_text)
         # test if a new commit block or new file need to be generated
@@ -122,7 +122,7 @@ def generate_cypher_file():
 
     for (parent_id, child_id), source in dict_of_all_is_a_relationship.items():
         query = ''' Match (a:MonDOdisease{id:"%s"}), (b:MonDOdisease{id:"%s"}) 
-         Create (a)-[:is_a_mondo{source:"%s"}]->(b); \n'''
+         Create (a)-[:is_a_mondo{source:'%s'}]->(b); \n'''
         query = query % (child_id, parent_id, source)
         counter_create += 1
         cypher_file.write(query)
