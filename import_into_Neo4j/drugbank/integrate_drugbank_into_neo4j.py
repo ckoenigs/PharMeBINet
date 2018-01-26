@@ -14,6 +14,9 @@ dict_drug_info = {}
 # dictionary for every drug interaction: with def as value
 dict_drug_interaction_info = {}
 
+# dictionary alternative id to id
+dict_alternative_to_id = {}
+
 '''
 This takes all information from Drugbank and sort them in the different dictionaries 
 0: drugbank_id	
@@ -54,6 +57,10 @@ def get_drugbank_information():
         drugbank_id = splitted[0]
         alternative_ids = splitted[1].split('|') if splitted[1] != '' else []
         alternative_ids.remove(drugbank_id)
+        dict_alternative_to_id[drugbank_id] = drugbank_id
+        for alter_id in alternative_ids:
+            if alter_id[0:2] == 'DB':
+                dict_alternative_to_id[alter_id] = drugbank_id
         alternative_ids = '|'.join(alternative_ids)
         name = splitted[2]
         inchikey = splitted[7]
@@ -107,11 +114,11 @@ def generate_cypher_file():
     print (datetime.datetime.utcnow())
     for identifier, info_list in dict_drug_info.items():
         url = 'http://www.drugbank.ca/drugs/' + identifier
-        creat_text = 'Create (:DrugBankdrug{id: "%s" , name: "%s", inchikey: "%s", inchi: "%s",  food_interaction: "%s", url: "%s", license:"CC BY-NC 4.0", alternative_ids: "%s"} ); \n' % (
+        create_text = 'Create (:DrugBankdrug{id: "%s" , name: "%s", inchikey: "%s", inchi: "%s",  food_interaction: "%s", url: "%s", license:"CC BY-NC 4.0", alternative_ids: "%s"} ); \n' % (
             identifier, info_list[0], info_list[1], info_list[2], info_list[3], url, info_list[4])
-        # print(creat_text)
+        # print(create_text)
         counter_create += 1
-        f.write(creat_text)
+        f.write(create_text)
         #        if counter_create>2:
         #            break
         if counter_create % constrain_number == 0:
@@ -139,17 +146,18 @@ def generate_cypher_file():
         # i+=1
         url = 'http://www.drugbank.ca/drugs/' + drug_id1
 
-        if drug_id1 not in dict_drug_info or drug_id2 not in dict_drug_info:
+        if drug_id1 not in dict_alternative_to_id or drug_id2 not in dict_alternative_to_id:
             count_interaction_with_removed_drugbank_ids += 1
             continue
-
-        creat_text = ''' Match (drug1:DrugBankdrug{id: "%s"}), (drug2:DrugBankdrug{id: "%s"})
+        drug_id1 = dict_alternative_to_id[drug_id1]
+        drug_id2 = dict_alternative_to_id[drug_id2]
+        create_text = ''' Match (drug1:DrugBankdrug{id: "%s"}), (drug2:DrugBankdrug{id: "%s"})
         Create (drug1)-[:interacts{url: "%s" , description: "%s"}] ->(drug2); \n''' % (
             drug_id1, drug_id2, url, describtion)
-        # print(creat_text)
+        # print(create_text)
         #        print(query)
         counter_create += 1
-        f.write(creat_text)
+        f.write(create_text)
         #        if counter_create>2:
         #            break
         if counter_create % constrain_number == 0:
