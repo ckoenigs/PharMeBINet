@@ -150,7 +150,7 @@ def integrate_DB_information_into_hetionet():
                  Set n.food_interaction="%s" , n.resource=['%s'], n.drugbank="yes", n.alternative_drugbank_ids=["%s"]
                  Create (n)-[:equal_to_drugbank]->(b);'''
                 query = query % (drug_id, drugbank_id, food_interaction, resource, information[5].replace('|', '","'))
-                g.run(query)
+                # g.run(query)
         else:
             # create a new node
 
@@ -166,10 +166,14 @@ def integrate_DB_information_into_hetionet():
 
             query = query % (
             drugbank_id, drugbank_id, inchikey, inchi, url, name, food_interaction, information[5].replace('|', '","'))
-            g.run(query)
+            # g.run(query)
 
     # generate cypher file for interaction
     counter_connection = 0
+
+    counter_both_alternative=0
+    one_alternative=0
+    count_no_alternative=0
 
     h = open('map_connection_of_drugbank_in_hetionet_' + str(file_counter) + '.cypher', 'w')
     file_counter += 1
@@ -180,6 +184,7 @@ def integrate_DB_information_into_hetionet():
             query = ''' Match (c1:Compound{identifier:"%s"}), (c2:Compound{identifier:"%s"})
                         Create (c1)-[:INTERACTS_CiC{source:"DrugBank", unbiased:'false', resource:['DrugBank'], url:"%s", license:'CC BY-NC 4.0', description:"%s"}]->(c2); \n'''
             query = query % (compound1, compound2, url, description)
+            count_no_alternative+=1
             counter_connection += 1
             h.write(query)
             if counter_connection % constrain_number == 0:
@@ -193,8 +198,10 @@ def integrate_DB_information_into_hetionet():
                     h.write('begin \n')
         elif compound2 in dict_drugbank_to_alternatives:
             if compound1 in dict_drugbank_to_alternatives:
+                counter_both_alternative += 1
                 for drug2 in dict_drugbank_to_alternatives[compound2]:
                     for drug1 in dict_drugbank_to_alternatives[compound1]:
+
                         query = ''' Match (c1:Compound{identifier:"%s"}), (c2:Compound{identifier:"%s"})
                                 Create (c1)-[:INTERACTS_CiC{source:"DrugBank", unbiased:'false', resource:['DrugBank'], url:"%s", license:'CC BY-NC 4.0', description:"%s"}]->(c2); \n'''
                         query = query % (drug1, drug2, url, description)
@@ -211,7 +218,9 @@ def integrate_DB_information_into_hetionet():
                                 h.write('begin \n')
 
             else:
+                one_alternative += 1
                 for drug2 in dict_drugbank_to_alternatives[compound2]:
+
                     query = ''' Match (c1:Compound{identifier:"%s"}), (c2:Compound{identifier:"%s"})
                             Create (c1)-[:INTERACTS_CiC{source:"DrugBank", unbiased:'false', resource:['DrugBank'], url:"%s", license:'CC BY-NC 4.0', description:"%s"}]->(c2); \n'''
                     query = query % (compound1, drug2, url, description)
@@ -227,7 +236,9 @@ def integrate_DB_information_into_hetionet():
                         else:
                             h.write('begin \n')
         else:
+            one_alternative += 1
             for drug1 in dict_drugbank_to_alternatives[compound1]:
+
                 query = ''' Match (c1:Compound{identifier:"%s"}), (c2:Compound{identifier:"%s"})
                         Create (c1)-[:INTERACTS_CiC{source:"DrugBank", unbiased:'false', resource:['DrugBank'], url:"%s", license:'CC BY-NC 4.0', description:"%s"}]->(c2); \n'''
                 query = query % (drug1, drug2, url, description)
@@ -245,6 +256,10 @@ def integrate_DB_information_into_hetionet():
 
     h.write('commit')
     h.close()
+    print(counter_connection)
+    print('one is already in Hetionet'+str(one_alternative))
+    print('both are already in Hetionet'+str(counter_both_alternative))
+    print('both are new in Hetionet'+str(count_no_alternative))
 
 
 def main():
