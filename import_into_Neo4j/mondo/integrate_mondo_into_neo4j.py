@@ -61,7 +61,7 @@ def get_mondo_information_and_map_to_umls():
 
                         if (parent_id, dict_all_info['id'][0]) not in dict_of_all_is_a_relationship:
                             dict_of_all_is_a_relationship[(parent_id, dict_all_info['id'][0])] = \
-                            value.split('!')[0].split(' ')[1]
+                            value.split('!')[0].split(' ',1)[1]
 
                     # for som properties more than one value appears
                     if not key_term in dict_all_info:
