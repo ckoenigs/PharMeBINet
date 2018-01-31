@@ -1181,7 +1181,7 @@ def integrate_relationship_from_sider_into_hetionet():
     h.write('begin \n')
     # all connection in hetionet which are not in sider get the properties none
     query = '''Match ()-[l:CAUSES_CcSE]-() Where not exists(l.frequency)
-            Set l.upperFrequency="", l.placebo="", l.frequency="", l.lowerFrequency="", l.placeboFrequency= "", l.placeboLowerFrequency= "", l.placeboUpperFrequency= "", l.hetionet="yes", l.sider="no", l.how_often_appears="0"; \n'''
+            Set l.upperFrequency="", l.placebo="", l.frequency="", l.lowerFrequency="", l.placeboFrequency= "", l.placeboLowerFrequency= "", l.placeboUpperFrequency= "", l.hetionet="yes", l.sider="no", l.how_often_appears="0", l.resource:["hetionet"]; \n'''
     h.write(query)
     h.write('commit ')
 
