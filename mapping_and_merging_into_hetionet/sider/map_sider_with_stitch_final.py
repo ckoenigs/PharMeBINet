@@ -1146,7 +1146,7 @@ def integrate_relationship_from_sider_into_hetionet():
             number_of_in_new_connection += 1
             if not (drugbank_id, umlsId) in list_tuple_compound_SE:
                 query = '''Match (n:Compound{identifier:"%s"}),(r:SideEffect{identifier:"%s"}) 
-                Create (n)-[:CAUSES_CcSE{url:"%s", source:"%s", unbiased:"%s", license:"%s", upperFrequency:"%s", placebo:"%s", frequency:"%s", lowerFrequency:"%s",  placeboFrequency: "%s", placeboLowerFrequency: "%s", placeboUpperFrequency: "%s", hetionet:"no", sider:"yes", how_often_appears:"1"}]->(r);  \n'''
+                Create (n)-[:CAUSES_CcSE{url:"%s", source:"%s", unbiased:"%s", license:"%s", upperFrequency:"%s", resource:["SIDER"],  placebo:"%s", frequency:"%s", lowerFrequency:"%s",  placeboFrequency: "%s", placeboLowerFrequency: "%s", placeboUpperFrequency: "%s", hetionet:"no", sider:"yes", how_often_appears:"1"}]->(r);  \n'''
                 query = query % (
                     drugbank_id, umlsId, url, source, unbiased, licenses, upperFreq, placebo, freq, lowerFreq,
                     placeboFreq,
@@ -1158,7 +1158,7 @@ def integrate_relationship_from_sider_into_hetionet():
 
         else:
             query = '''Match (n:Compound{identifier:"%s"})-[l:CAUSES_CcSE]->(r:SideEffect{identifier:"%s"}) 
-            Set l.upperFrequency="%s", l.placebo="%s", l.frequency="%s", l.lowerFrequency="%s", l.placeboFrequency= "%s", l.placeboLowerFrequency= "%s", l.placeboUpperFrequency= "%s", l.hetionet="yes", l.sider="yes", l.how_often_appears="1"; \n'''
+            Set l.upperFrequency="%s", l.placebo="%s", l.frequency="%s", l.lowerFrequency="%s", l.placeboFrequency= "%s", l.resource:["SIDER","hetionet"], l.placeboLowerFrequency= "%s", l.placeboUpperFrequency= "%s", l.hetionet="yes", l.sider="yes", l.how_often_appears="1"; \n'''
             query = query % (
                 drugbank_id, umlsId, upperFreq, placebo, freq, lowerFreq, placeboFreq, placeboLowerFreq,
                 placeboUpperFreq)
