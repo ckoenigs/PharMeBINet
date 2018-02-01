@@ -846,7 +846,7 @@ def intigrate_connection_from_ctd_to_hetionet():
                                 if not (drugbank_id, doid) in list_treats_new_pairs:
                                     number_of_new_connection_association += 1
                                     query = '''Match (c:Compound{identifier:"%s"}), (s:Disease{identifier:"%s"}) 
-                                    Create(c)-[r:TREATS_CtD{how_often_appears:"1",inferenceScore:"%s", pubMedIDs:"%s",inferenceGeneSymbol:"%s",directEvidence:"%s", url_ctd:"%s"  ,unbiased:"false", resource:['CTD'], ctd:"yes", ndf_rt:"no", license:" Copyright 2002-2012 MDI Biological Laboratory. All rights reserved. Copyright 2012-2017 MDI Biological Laboratory & NC State University. All rights reserved."}]->(s);\n '''
+                                    Create(c)-[r:TREATS_CtD{how_often_appears:"1",inferenceScore:"%s", pubMedIDs:"%s",inferenceGeneSymbol:"%s",directEvidence:"%s", url_ctd:"%s"  ,unbiased:"false", resource:['CTD'], ctd:"yes", hetionet:"no", license:" Copyright 2002-2012 MDI Biological Laboratory. All rights reserved. Copyright 2012-2017 MDI Biological Laboratory & NC State University. All rights reserved."}]->(s);\n '''
                                     query = query % (
                                         drugbank_id, doid, inferenceScore, pubMedIDs, inferenceGeneSymbol,
                                         directEvidence,
@@ -859,10 +859,11 @@ def intigrate_connection_from_ctd_to_hetionet():
                                 number_of_update_connection_association += 1
                                 resource = first_entry['resource'] if first_entry['resource'] != None else []
                                 resource.append('CTD')
+                                resource.append('Hetionet')
                                 resource = '","'.join(resource)
                                 how_often = str(int(first_entry['how_often_appears']) + 1) if first_entry['how_often_appears'] != None else '1'
                                 query = '''Match (c:Compound{identifier:"%s"})-[l:TREATS_CtD]-(r:Disease{identifier:"%s"})
-                                Set  l.how_often_appears="%s", l.resource=["%s"], l.ctd="yes", l.hetionet="no", l.inferenceScore="%s", l.pubMedIDs="%s", l.inferenceGeneSymbol="%s", l.directEvidence="%s", l.url_ctd="%s";\n '''
+                                Set  l.how_often_appears="%s", l.resource=["%s"], l.ctd="yes", l.hetionet="yes", l.inferenceScore="%s", l.pubMedIDs="%s", l.inferenceGeneSymbol="%s", l.directEvidence="%s", l.url_ctd="%s";\n '''
                                 query = query % (
                                     drugbank_id, doid, how_often, resource, inferenceScore, pubMedIDs,
                                     inferenceGeneSymbol,
@@ -883,7 +884,7 @@ def intigrate_connection_from_ctd_to_hetionet():
     # all treat connection which are not in ctd get as property ctd='no'
     h.write('commit \n begin \n')
     query = ''' Match ()-[r:TREATS_CtD]-() Where not exists(r.ctd)
-                Set r.ctd="no", r.hetionet="yes"; \n '''
+                Set r.ctd="no", r.hetionet="yes", r.resource=['Hetionet']; \n '''
     h.write(query)
     h.write('commit \n begin \n')
     # all induces connection which are not in ctd get as property ctd='no'
