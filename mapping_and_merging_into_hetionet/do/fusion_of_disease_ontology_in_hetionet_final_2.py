@@ -74,7 +74,7 @@ list_diseases_in_hetionet = []
 
 '''
 load all disease in the dictionary
-has propeteries:
+has properties:
 name 
 identifier
 source
@@ -144,6 +144,7 @@ def load_disease_ontologie_in_hetionet():
                 print('is a alternative doid in disease ontology: ' + id_overlap[0])
                 output.write('is a alternative doid in disease ontology: ' + id_overlap[0] + '\n')
                 dict_all_doid_that_is_in_alternative[id_overlap[0]] = diseases['id']
+                alternateIDs.append(diseases['id'])
             else:
                 print('sad')
         # doid is already in hetionet
@@ -280,9 +281,11 @@ def integrate_DO_information_into_hetionet():
     # counter of all is_a connections
     count = 0
     for key, list_doid in dict_is_a_relationship.items():
+        key = key if key not in dict_all_doid_that_is_in_alternative else dict_all_doid_that_is_in_alternative[key]
 
         for is_a_doid in list_doid:
             count+=1
+            is_a_doid = is_a_doid if is_a_doid not in dict_all_doid_that_is_in_alternative else dict_all_doid_that_is_in_alternative[is_a_doid]
             query ='''Match (d:Disease {identifier:"%s"}), (d2:Disease {identifier:"%s"}) 
                 Create (d)-[:IS_A_DiD{license:"CC0", source:"Disease Ontology", unbiased:"false"}]->(d2) '''
             query= query %(key, is_a_doid)
