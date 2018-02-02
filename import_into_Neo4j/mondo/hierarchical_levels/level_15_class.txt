@@ -1,0 +1,7 @@
+MonDO_id 	 MonDO_name 	 parent_id 	 parent_name 
+MONDO:0018598	neonatal adrenoleukodystrophy	MONDO:0011101	peroxisome biogenesis disorder 1B
+MONDO:0019628	Rieger anomaly	MONDO:0011233	Axenfeld-Rieger syndrome type 3
+MONDO:0011233	Axenfeld-Rieger syndrome type 3	MONDO:0019187	Axenfeld-Rieger syndrome
+MONDO:0008681	WAGR syndrome	MONDO:0020148	syndromic aniridia
+MONDO:0012287	Stickler syndrome, type i, nonsyndromic ocular	MONDO:0007160	Stickler syndrome type 1
+MONDO:0010176	Joubert syndrome with orofaciodigital defect	MONDO:0018772	Joubert syndrome

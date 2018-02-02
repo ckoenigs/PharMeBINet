@@ -1,0 +1,2 @@
+MonDO_id 	 MonDO_name 	 parent_id 	 parent_name  
+MONDO:0007662	iridogoniodysgenesis, type 2	MONDO:0019628	Rieger anomaly

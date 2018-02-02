@@ -1,0 +1,73 @@
+MonDO_id 	 MonDO_name 	 parent_id 	 parent_name  
+MONDO:0013608	Joubert syndrome 13	MONDO:0018772	Joubert syndrome
+MONDO:0013117	progressive external ophthalmoplegia with mitochondrial Dna deletions, autosomal dominant 5	MONDO:0008003	autosomal dominant progressive external ophthalmoplegia
+MONDO:0012432	Joubert syndrome 5	MONDO:0018772|MONDO:0009480	Joubert syndrome|Joubert syndrome with oculorenal defect
+MONDO:0014771	Joubert syndrome 26	MONDO:0018772	Joubert syndrome
+MONDO:0014770	Joubert syndrome 25	MONDO:0018772	Joubert syndrome
+MONDO:0004051	aleukemic monocytic leukemia cutis	MONDO:0007896	acute monocytic leukemia
+MONDO:0014932	orofaciodigital syndrome XV	MONDO:0010176	Joubert syndrome with orofaciodigital defect
+MONDO:0012241	progressive external ophthalmoplegia with mitochondrial Dna deletions, autosomal dominant 3	MONDO:0008003	autosomal dominant progressive external ophthalmoplegia
+MONDO:0013590	Stickler syndrome, type 4	MONDO:0016647	autosomal recessive Stickler syndrome
+MONDO:0014288	Joubert syndrome 21	MONDO:0018772|MONDO:0018342	Joubert syndrome|Joubert syndrome with Jeune asphyxiating thoracic dystrophy
+MONDO:0012415	progressive external ophthalmoplegia with mitochondrial Dna deletions, autosomal dominant 4	MONDO:0008003	autosomal dominant progressive external ophthalmoplegia
+MONDO:0012539	Joubert syndrome 6	MONDO:0018772	Joubert syndrome
+MONDO:0016202	autosomal dominant rhegmatogenous retinal detachment	MONDO:0012287	Stickler syndrome, type i, nonsyndromic ocular
+MONDO:0013745	Joubert syndrome 14	MONDO:0009480	Joubert syndrome with oculorenal defect
+MONDO:0013764	Joubert syndrome 16	MONDO:0018772|MONDO:0009480	Joubert syndrome|Joubert syndrome with oculorenal defect
+MONDO:0014688	short-rib thoracic dysplasia 14 with polydactyly	MONDO:0018342	Joubert syndrome with Jeune asphyxiating thoracic dystrophy
+MONDO:0010208	Wrinkly skin syndrome	MONDO:0018163	autosomal recessive cutis laxa type 2A
+MONDO:0015199	aniridia-intellectual disability syndrome	MONDO:0020148	syndromic aniridia
+MONDO:0020368	Axenfeld anomaly	MONDO:0011233	Axenfeld-Rieger syndrome type 3
+MONDO:0008417	sclerocornea, autosomal dominant	MONDO:0019629	sclerocornea (disease)
+MONDO:0008944	Joubert syndrome 1	MONDO:0018772	Joubert syndrome
+MONDO:0014563	mitochondrial short-chain Enoyl-Coa hydratase 1 deficiency	MONDO:0016815	Leigh syndrome with leukodystrophy
+MONDO:0008796	aniridia-renal agenesis-psychomotor retardation syndrome	MONDO:0020148	syndromic aniridia
+MONDO:0013824	Joubert syndrome 17	MONDO:0018772	Joubert syndrome
+MONDO:0011963	Joubert syndrome 2	MONDO:0018772|MONDO:0009480	Joubert syndrome|Joubert syndrome with oculorenal defect
+MONDO:0013555	Hermansky-Pudlak syndrome 3	MONDO:0016502	Hermansky-Pudlak syndrome without pulmonary fibrosis
+MONDO:0013556	Hermansky-Pudlak syndrome 4	MONDO:0016501	Hermansky-Pudlak syndrome with pulmonary fibrosis
+MONDO:0012855	Joubert syndrome 8	MONDO:0018772	Joubert syndrome
+MONDO:0012913	wilms tumor, aniridia, genitourinary anomalies, mental retardation, and obesity syndrome	MONDO:0008681	WAGR syndrome
+MONDO:0013557	Hermansky-Pudlak syndrome 5	MONDO:0016502	Hermansky-Pudlak syndrome without pulmonary fibrosis
+MONDO:0013967	peroxisome biogenesis disorder 14B	MONDO:0019174|MONDO:0018598	infantile Refsum disease|neonatal adrenoleukodystrophy
+MONDO:0009558	Treacher Collins syndrome 3	MONDO:0007944	Treacher-Collins syndrome 1
+MONDO:0013763	Joubert syndrome 15	MONDO:0016364|MONDO:0018772	Joubert syndrome with ocular defect|Joubert syndrome
+MONDO:0012238	progressive external ophthalmoplegia with mitochondrial Dna deletions, autosomal dominant 2	MONDO:0008003	autosomal dominant progressive external ophthalmoplegia
+MONDO:0014927	Joubert syndrome 27	MONDO:0018772	Joubert syndrome
+MONDO:0014928	Joubert syndrome 28	MONDO:0016364|MONDO:0018772	Joubert syndrome with ocular defect|Joubert syndrome
+MONDO:0007662	iridogoniodysgenesis, type 2	MONDO:0019628	Rieger anomaly
+MONDO:0014724	Joubert syndrome 24	MONDO:0018772	Joubert syndrome
+MONDO:0012078	Joubert syndrome 3	MONDO:0016364|MONDO:0018772	Joubert syndrome with ocular defect|Joubert syndrome
+MONDO:0008386	Axenfeld-Rieger syndrome type 1	MONDO:0019187	Axenfeld-Rieger syndrome
+MONDO:0010431	Joubert syndrome 10	MONDO:0010176	Joubert syndrome with orofaciodigital defect
+MONDO:0007573	acute erythroleukemia, familial	MONDO:0017893	inherited acute myeloid leukemia
+MONDO:0015095	Peters anomaly-cataract syndrome	MONDO:0011414	Peters anomaly (disease)
+MONDO:0014664	Joubert syndrome 23	MONDO:0018772	Joubert syndrome
+MONDO:0013943	peroxisome biogenesis disorder 8B	MONDO:0019174|MONDO:0018598	infantile Refsum disease|neonatal adrenoleukodystrophy
+MONDO:0017691	erythrocyte galactose epimerase deficiency	MONDO:0009257	galactose epimerase deficiency
+MONDO:0013994	Joubert syndrome 20	MONDO:0016364|MONDO:0018772	Joubert syndrome with ocular defect|Joubert syndrome
+MONDO:0012308	Joubert syndrome 4	MONDO:0018772	Joubert syndrome
+MONDO:0013558	Hermansky-Pudlak syndrome 6	MONDO:0016502	Hermansky-Pudlak syndrome without pulmonary fibrosis
+MONDO:0014297	Joubert syndrome 22	MONDO:0010176	Joubert syndrome with orofaciodigital defect
+MONDO:0008736	peroxisome biogenesis disorder 2B	MONDO:0019174|MONDO:0018598	infantile Refsum disease|neonatal adrenoleukodystrophy
+MONDO:0020353	von Hippel anomaly	MONDO:0011414	Peters anomaly (disease)
+MONDO:0017692	generalized galactose epimerase deficiency	MONDO:0009257	galactose epimerase deficiency
+MONDO:0012694	Joubert syndrome 7	MONDO:0018772	Joubert syndrome
+MONDO:0013666	Stickler syndrome, type 5	MONDO:0016647	autosomal recessive Stickler syndrome
+MONDO:0013896	Joubert syndrome 18	MONDO:0010176	Joubert syndrome with orofaciodigital defect
+MONDO:0008748	Hermansky-Pudlak syndrome 1	MONDO:0016501	Hermansky-Pudlak syndrome with pulmonary fibrosis
+MONDO:0013385	Treacher Collins syndrome 2	MONDO:0007944	Treacher-Collins syndrome 1
+MONDO:0009054	autosomal recessive cutis laxa type 2, classic type	MONDO:0018163	autosomal recessive cutis laxa type 2A
+MONDO:0008795	aniridia-cerebellar ataxia-intellectual disability syndrome	MONDO:0020148	syndromic aniridia
+MONDO:0000817	corneal opacification and other ocular anomalies	MONDO:0019629	sclerocornea (disease)
+MONDO:0007120	aniridia-absent patella syndrome	MONDO:0020148	syndromic aniridia
+MONDO:0013933	peroxisome biogenesis disorder 5B	MONDO:0019174|MONDO:0018598	infantile Refsum disease|neonatal adrenoleukodystrophy
+MONDO:0013931	peroxisome biogenesis disorder 4B	MONDO:0019174|MONDO:0018598	infantile Refsum disease|neonatal adrenoleukodystrophy
+MONDO:0013950	peroxisome biogenesis disorder 11B	MONDO:0019174|MONDO:0018598	infantile Refsum disease|neonatal adrenoleukodystrophy
+MONDO:0013937	peroxisome biogenesis disorder 6B	MONDO:0019174|MONDO:0018598	infantile Refsum disease|neonatal adrenoleukodystrophy
+MONDO:0000875	adult acute monocytic leukemia	MONDO:0007896	acute monocytic leukemia
+MONDO:0015198	aniridia-ptosis-intellectual disability-familial obesity syndrome	MONDO:0020148	syndromic aniridia
+MONDO:0012849	Joubert syndrome 9	MONDO:0018772|MONDO:0009480	Joubert syndrome|Joubert syndrome with oculorenal defect
+MONDO:0011097	Axenfeld-Rieger syndrome type 2	MONDO:0019187	Axenfeld-Rieger syndrome
+MONDO:0009959	peroxisome biogenesis disorder type 3B	MONDO:0019174|MONDO:0018598	infantile Refsum disease|neonatal adrenoleukodystrophy
+MONDO:0013939	peroxisome biogenesis disorder 7B	MONDO:0019174|MONDO:0018598	infantile Refsum disease|neonatal adrenoleukodystrophy
