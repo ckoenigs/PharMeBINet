@@ -1,0 +1,33 @@
+doid 	 name 
+MONDO:0002651	anal Pagets disease
+MONDO:0002650	scrotal carcinoma
+MONDO:0002653	penis Pagets disease
+MONDO:0002652	anus adenocarcinoma
+MONDO:0002655	cutaneous Pagets disease
+MONDO:0002654	uterine disease
+MONDO:0002657	breast disease
+MONDO:0002656	skin carcinoma
+MONDO:0002659	uveal cancer
+MONDO:0002658	iris cancer
+DOID:0050875	small cell neuroendocrine carcinoma
+DOID:0080194	Carey-Fineman-Ziter syndrome
+DOID:0080195	Marinesco-Sjogren syndrome
+DOID:0080196	mandibulofacial dysostosis, Guion-Almeida type
+DOID:0080197	congenital muscular dystrophy with cataracts and intellectual disability
+DOID:0080193	superior semicircular canal dehiscence
+DOID:0080198	infantile histiocytoid cardiomyopathy
+DOID:2468	psychotic disorder
+DOID:9341	urethral diverticulum
+DOID:0060517	zebrafish allergy
+DOID:4556	lung large cell carcinoma
+DOID:1233	transvestism
+DOID:7571	malignant cystic nephroma
+DOID:0080125	mitochondrial DNA depletion syndrome 6
+DOID:1059	intellectual disability
+DOID:0050987	hypomyelinating leukoencephalopathy
+DOID:5469	biliary tract intraductal papillary mucinous neoplasm
+DOID:8150	pancreatic invasive intraductal papillary-mucinous carcinoma
+DOID:6126	anal canal carcinoma
+DOID:0050332	enlarged vestibular aqueduct
+DOID:946	dientamoebiasis
+DOID:9917	pleural cancer
