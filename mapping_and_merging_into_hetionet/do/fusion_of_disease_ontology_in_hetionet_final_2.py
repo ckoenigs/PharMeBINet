@@ -12,6 +12,7 @@ import datetime
 import sys
 
 
+
 class Disease:
     """
     source: string
@@ -195,7 +196,7 @@ def load_in_all_connection_from_diesease_ontology():
     results = g.run(query)
     for n, p, in results:
         if not n['id'] in dict_diseases_in_hetionet:
-            alternative_ids, = n['alternateIds']
+            alternative_ids = n['alternateIds']
             for alternative_id in alternative_ids:
                 if alternative_id in dict_diseases_in_hetionet:
                     n_id = alternative_id
@@ -203,7 +204,7 @@ def load_in_all_connection_from_diesease_ontology():
             n_id = n['id']
 
         if not p['id'] in dict_diseases_in_hetionet:
-            alternative_ids, = p['alternateIds']
+            alternative_ids = p['alternateIds']
             for alternative_id in alternative_ids:
                 if alternative_id in dict_diseases_in_hetionet:
                     p_id = alternative_id
@@ -258,11 +259,11 @@ def integrate_DO_information_into_hetionet():
                              dict_diseases_in_hetionet[disease_doid].subset,
                              dict_diseases_in_hetionet[disease_doid].resource)
 
-        g.run(query)
+        # g.run(query)
 
     # create new new hetionet diseases and add a connection to the do diseases
     print('Create the new nodes and connect them with the DiseaseOntology node')
-    output.write('Create the new nodes and connect tham with the DiseaseOntology node')
+    output.write('Create the new nodes and connect them with the DiseaseOntology node')
     for key, disease in dict_diseases_in_hetionet.items():
         if not key in list_diseases_in_hetionet:
             query = '''Match (o:DiseaseOntology) Where o.id="%s"
@@ -281,7 +282,9 @@ def integrate_DO_information_into_hetionet():
     # counter of all is_a connections
     count = 0
     for key, list_doid in dict_is_a_relationship.items():
-        key = key if key not in dict_all_doid_that_is_in_alternative else dict_all_doid_that_is_in_alternative[key]
+        # if key =='DOID:9917' or key =='DOID:5158':
+        #     print('blub')
+        # key = key if key not in dict_all_doid_that_is_in_alternative else dict_all_doid_that_is_in_alternative[key]
 
         for is_a_doid in list_doid:
             count+=1
