@@ -1,0 +1,399 @@
+2018-02-07 07:37:11.214772
+##########################################################################
+2018-02-07 07:37:11.214796
+connection to db
+##########################################################################
+2018-02-07 07:37:11.220403
+load in DO diseases 
+ Match (a:DiseaseOntology)-[:is_a]->(b:DiseaseOntology{id:'DOID:4'}) Where not ()-[:is_a]->(a) Return a.id, a.name, b.id, b.name 
+2018-02-07 07:37:11.255657
+1
+ Match (a:DiseaseOntology)-[:is_a]->(c)-[:is_a]->(b:DiseaseOntology{id:'DOID:4'}) Where not ()-[:is_a]->(a) Return a.id, a.name, c.id, c.name 
+2018-02-07 07:37:11.300659
+2
+ Match (a:DiseaseOntology)-[:is_a]->(c)-[:is_a]->(d)-[:is_a]->(b:DiseaseOntology{id:'DOID:4'}) Where not ()-[:is_a]->(a) Return a.id, a.name, c.id, c.name 
+2018-02-07 07:37:11.360174
+3
+ Match (a:DiseaseOntology)-[:is_a]->(c)-[:is_a]->(d)-[:is_a]->(e)-[:is_a]->(b:DiseaseOntology{id:'DOID:4'}) Where not ()-[:is_a]->(a) Return a.id, a.name, c.id, c.name 
+2018-02-07 07:37:11.472763
+4
+ Match (a:DiseaseOntology)-[:is_a]->(c)-[:is_a]->(d)-[:is_a]->(e)-[:is_a]->(f)-[:is_a]->(b:DiseaseOntology{id:'DOID:4'}) Where not ()-[:is_a]->(a) Return a.id, a.name, c.id, c.name 
+2018-02-07 07:37:11.657962
+5
+ Match (a:DiseaseOntology)-[:is_a]->(c)-[:is_a]->(d)-[:is_a]->(e)-[:is_a]->(f)-[:is_a]->(g)-[:is_a]->(b:DiseaseOntology{id:'DOID:4'}) Where not ()-[:is_a]->(a) Return a.id, a.name, c.id, c.name 
+2018-02-07 07:37:11.841203
+6
+ Match (a:DiseaseOntology)-[:is_a]->(c)-[:is_a]->(d)-[:is_a]->(e)-[:is_a]->(f)-[:is_a]->(g)-[:is_a]->(h)-[:is_a]->(b:DiseaseOntology{id:'DOID:4'}) Where not ()-[:is_a]->(a) Return a.id, a.name, c.id, c.name 
+2018-02-07 07:37:12.065160
+7
+ Match (a:DiseaseOntology)-[:is_a]->(c)-[:is_a]->(d)-[:is_a]->(e)-[:is_a]->(f)-[:is_a]->(g)-[:is_a]->(h)-[:is_a]->(i)-[:is_a]->(b:DiseaseOntology{id:'DOID:4'}) Where not ()-[:is_a]->(a) Return a.id, a.name, c.id, c.name 
+2018-02-07 07:37:12.221831
+8
+ Match (a:DiseaseOntology)-[:is_a]->(c)-[:is_a]->(d)-[:is_a]->(e)-[:is_a]->(f)-[:is_a]->(g)-[:is_a]->(h)-[:is_a]->(i)-[:is_a]->(j)-[:is_a]->(b:DiseaseOntology{id:'DOID:4'}) Where not ()-[:is_a]->(a) Return a.id, a.name, c.id, c.name 
+2018-02-07 07:37:12.352152
+9
+ Match (a:DiseaseOntology)-[:is_a]->(c)-[:is_a]->(d)-[:is_a]->(e)-[:is_a]->(f)-[:is_a]->(g)-[:is_a]->(h)-[:is_a]->(i)-[:is_a]->(j)-[:is_a]->(k)-[:is_a]->(b:DiseaseOntology{id:'DOID:4'}) Where not ()-[:is_a]->(a) Return a.id, a.name, c.id, c.name 
+2018-02-07 07:37:12.441993
+10
+ Match (a:DiseaseOntology)-[:is_a]->(c)-[:is_a]->(d)-[:is_a]->(e)-[:is_a]->(f)-[:is_a]->(g)-[:is_a]->(h)-[:is_a]->(i)-[:is_a]->(j)-[:is_a]->(k)-[:is_a]->(l)-[:is_a]->(b:DiseaseOntology{id:'DOID:4'}) Where not ()-[:is_a]->(a) Return a.id, a.name, c.id, c.name 
+2018-02-07 07:37:12.513549
+11
+ Match (a:DiseaseOntology)-[:is_a]->(c)-[:is_a]->(d)-[:is_a]->(e)-[:is_a]->(f)-[:is_a]->(g)-[:is_a]->(h)-[:is_a]->(i)-[:is_a]->(j)-[:is_a]->(k)-[:is_a]->(l)-[:is_a]->(m)-[:is_a]->(b:DiseaseOntology{id:'DOID:4'}) Where not ()-[:is_a]->(a) Return a.id, a.name, c.id, c.name 
+2018-02-07 07:37:12.576280
+12
+##########################################################################
+2018-02-07 07:37:12.576307
+load in MonDO diseases 
+((reproductive system disease-DOID_15,integumentary system disease-DOID_16,urinary system disease-DOID_18,musculoskeletal system disease-DOID_17,immune system disease-DOID_2914,thoracic disease-DOID_0060118,gastrointestinal system disease-DOID_77,endocrine system disease-DOID_28,cardiovascular system disease-DOID_1287,nervous system disease-DOID_863,respiratory system disease-DOID_1579,hematopoietic system disease-DOID_74)disease of anatomical entity-DOID_7,(benign neoplasm-DOID_0060072,pre-malignant neoplasm-DOID_0060071,cancer-DOID_162)disease of cellular proliferation-DOID_14566,(renal-hepatic-pancreatic dysplasia-DOID_0060259,omphalocele-DOID_0060327,Meckel's diverticulum-DOID_9487,Weaver syndrome-DOID_14731,gastroschisis-DOID_11044,cryptorchidism-DOID_11383,Pallister-Hall syndrome-DOID_9248,radioulnar synostosis-DOID_9827,imperforate anus-DOID_10488,Klippel-Feil syndrome-DOID_10426,agnathia-otocephaly complex-DOID_0060341,Proteus syndrome-DOID_13482,Poland syndrome-DOID_12961,polydactyly-DOID_1148,hypospadias-DOID_10892,neural tube defect-DOID_0080074,congenital nervous system abnormality-DOID_2490,visceral heterotaxy-DOID_0050545,orofacial cleft-DOID_0050567,bladder exstrophy-epispadias-cloacal exstrophy complex-DOID_0080173)physical disorder-DOID_0080015,(ocular albinism with sensorineural deafness-DOID_0090100,Cornelia de Lange syndrome-DOID_11725,Coffin-Siris syndrome-DOID_1925,multiple pterygium syndrome-DOID_0080110,malignant hyperthermia-DOID_8545,orofaciodigital syndrome-DOID_4501,ciliopathy-DOID_0060340,monogenic disease-DOID_0050177,chondrodysplasia punctata-DOID_2581,maturity-onset diabetes of the young-DOID_0050524,chromosomal disease-DOID_0080014)genetic disease-DOID_630,(parasitic infectious disease-DOID_1398,fungal infectious disease-DOID_1564,bacterial infectious disease-DOID_104,viral infectious disease-DOID_934)disease by infectious agent-DOID_0050117,(acquired metabolic disease-DOID_0060158,inherited metabolic disorder-DOID_655)disease of metabolism-DOID_0014667,(adjustment disorder-DOID_507,substance-related disorder-DOID_303,developmental disorder of mental health-DOID_0060037,gender identity disorder-DOID_1234,sleep disorder-DOID_535,cognitive disorder-DOID_1561,factitious disorder-DOID_1766,dissociative disorder-DOID_10935,impulse control disorder-DOID_10937,personality disorder-DOID_1510,somatoform disorder-DOID_4737,sexual disorder-DOID_0060043)disease of mental health-DOID_150,(ablepharon macrostomia syndrome-DOID_0060550,Barre-Lieou syndrome-DOID_6692,Van der Woude syndrome-DOID_0060239,Maffucci syndrome-DOID_0060221,SAPHO syndrome-DOID_13677,microcephaly with or without chorioretinopathy, lymphedema, or mental retardation-DOID_0060349,prune belly syndome-DOID_0060889,microcephaly and chorioretinopathy 2-DOID_0080106,Holzgreve-Wagner-Rehder Syndrome-DOID_0060566,Beemer-Langer syndrome-DOID_9249,multiple chemical sensitivity-DOID_4661,Lown-Ganong-Levine syndrome-DOID_13087,hypotonia-cystinuria syndrome-DOID_0060858,branchiootic syndrome-DOID_0060232,XFE progeroid syndrome-DOID_0060590,Van Maldergem syndrome-DOID_0060238,EAST syndrome-DOID_0060484,Klippel-Trenaunay syndrome-DOID_2926,Saldino-Noonan syndrome-DOID_0050549,inclusion body myopathy with Paget disease of bone and frontotemporal dementia-DOID_0050881,diffuse infiltrative lymphocytosis syndrome-DOID_6677,CHARGE syndrome-DOID_0050834,Felty's syndrome-DOID_11042,N syndrome-DOID_0050769,ARC syndrome-DOID_0050763,Beckwith-Wiedemann syndrome-DOID_5572,PTEN hamartoma tumor syndrome-DOID_0080191,KBG syndrome-DOID_14780,Ollier disease-DOID_4624,Bruck syndrome-DOID_0060231,palindromic rheumatism-DOID_1166,Yunis-Varon syndrome-DOID_0060589,Dubowitz syndrome-DOID_14796,acrorenal syndrome-DOID_0060347,chronic fatigue syndrome-DOID_8544,Fanconi-like syndrome-DOID_0090066,Adie syndrome-DOID_11549,Gamstorp-Wohlfart syndrome-DOID_0050526,Barber-Say syndrome-DOID_0060549,multiple congenital anomalies-hypotonia-seizures syndrome 3-DOID_0080140,psoriatic arthritis-DOID_9008,acrocallosal syndrome-DOID_9250,oculoauricular syndrome-DOID_0060482,Perlman syndrome-DOID_0060476,cocoon syndrome-DOID_0060647,Miller-Dieker lissencephaly syndrome-DOID_0060469,fibrogenesis imperfecta ossium-DOID_0080040,Perry syndrome-DOID_0060486,Reye syndrome-DOID_14525,Fuchs' heterochromic uveitis-DOID_9375,ulnar-mammary syndrome-DOID_0060614,microcephaly and chorioretinopathy 1-DOID_0080105,VACTERL association-DOID_14679,IMAGe syndrome-DOID_0050885,cardiofaciocutaneous syndrome-DOID_0060233,fetal valproate syndrome-DOID_0060471,Goldberg-Shprintzen syndrome-DOID_0060481,Zika virus congenital syndrome-DOID_0080180,Kabuki syndrome-DOID_0060473,Goldenhar syndrome-DOID_2907,megacystis-microcolon-intestinal hypoperistalsis syndrome-DOID_0060610,Jensen syndrome-DOID_0050867,sudden infant death syndrome-DOID_9007,microcephaly and chorioretinopathy 3-DOID_0080107,CREST syndrome-DOID_0060218,Kleefstra syndrome-DOID_0060352,Aicardi syndrome-DOID_8461,Wissler's syndrome-DOID_3047,multicentric reticulohistiocytosis-DOID_11824,tooth and nail syndrome-DOID_6678,Marshall-Smith syndrome-DOID_0050858,MEDNIK syndrome-DOID_0060483,Warsaw breakage syndrome-DOID_0060535,mosaic variegated aneuploidy syndrome 1-DOID_0080141,chronic atrial and intestinal dysrhythmia-DOID_0060339,Hallermann-Streiff syndrome-DOID_4534,Zollinger-Ellison syndrome-DOID_0050782,Takayasu's arteritis-DOID_2508,multiple congenital anomalies-hypotonia-seizures syndrome 2-DOID_0080139,mosaic variegated aneuploidy syndrome 2-DOID_0080142,Koolen de Vries syndrome-DOID_0050880,Pitt-Hopkins syndrome-DOID_0060488,primary hypertrophic osteoarthropathy-DOID_14283,Gorham's disease-DOID_4837,chondrodysplasia-pseudohermaphroditism syndrome-DOID_0060644,subclavian steal syndrome-DOID_13002,persian gulf syndrome-DOID_4491,Carey-Fineman-Ziter syndrome-DOID_0080194,oculodentodigital dysplasia-DOID_0060291,Mowat-Wilson syndrome-DOID_0060485,Qazi Markouizos syndrome-DOID_0050740,Achard syndrome-DOID_6686,Aagenaes syndrome-DOID_6691,polycystic ovary syndrome-DOID_11612,Shwachman-Diamond syndrome-DOID_0060479,multiple congenital anomalies-hypotonia-seizures syndrome 1-DOID_0080138,yellow nail syndrome-DOID_0050468,Adams-Oliver syndrome-DOID_0060227,endocrine-cerebro-osteodysplasia syndrome-DOID_0060641,Baraitser-Winter syndrome-DOID_0060229,irritable bowel syndrome-DOID_9778,mandibulofacial dysostosis with alopecia-DOID_0060365,Ohdo syndrome-DOID_0060289,lethal congenital contracture syndrome-DOID_0060558,Wolfram syndrome-DOID_10632,3MC syndrome-DOID_0060225,Noonan syndrome-DOID_3490,Ritscher-Schinzel syndrome-DOID_0060565,Robinow syndrome-DOID_0060254)syndrome-DOID_225)disease-DOID_4;
+
+                                                 /-reproductive system disease-DOID_15
+                                                |
+                                                |--integumentary system disease-DOID_16
+                                                |
+                                                |--urinary system disease-DOID_18
+                                                |
+                                                |--musculoskeletal system disease-DOID_17
+                                                |
+                                                |--immune system disease-DOID_2914
+                                                |
+                                                |--thoracic disease-DOID_0060118
+              /disease of anatomical entity-DOID_7
+             |                                  |--gastrointestinal system disease-DOID_77
+             |                                  |
+             |                                  |--endocrine system disease-DOID_28
+             |                                  |
+             |                                  |--cardiovascular system disease-DOID_1287
+             |                                  |
+             |                                  |--nervous system disease-DOID_863
+             |                                  |
+             |                                  |--respiratory system disease-DOID_1579
+             |                                  |
+             |                                   \-hematopoietic system disease-DOID_74
+             |
+             |                                            /-benign neoplasm-DOID_0060072
+             |                                           |
+             |-disease of cellular proliferation-DOID_14566-pre-malignant neoplasm-DOID_0060071
+             |                                           |
+             |                                            \-cancer-DOID_162
+             |
+             |                              /-renal-hepatic-pancreatic dysplasia-DOID_0060259
+             |                             |
+             |                             |--omphalocele-DOID_0060327
+             |                             |
+             |                             |--Meckel's diverticulum-DOID_9487
+             |                             |
+             |                             |--Weaver syndrome-DOID_14731
+             |                             |
+             |                             |--gastroschisis-DOID_11044
+             |                             |
+             |                             |--cryptorchidism-DOID_11383
+             |                             |
+             |                             |--Pallister-Hall syndrome-DOID_9248
+             |                             |
+             |                             |--radioulnar synostosis-DOID_9827
+             |                             |
+             |                             |--imperforate anus-DOID_10488
+             |                             |
+             |                             |--Klippel-Feil syndrome-DOID_10426
+             |-physical disorder-DOID_0080015
+             |                             |--agnathia-otocephaly complex-DOID_0060341
+             |                             |
+             |                             |--Proteus syndrome-DOID_13482
+             |                             |
+             |                             |--Poland syndrome-DOID_12961
+             |                             |
+             |                             |--polydactyly-DOID_1148
+             |                             |
+             |                             |--hypospadias-DOID_10892
+             |                             |
+             |                             |--neural tube defect-DOID_0080074
+             |                             |
+             |                             |--congenital nervous system abnormality-DOID_2490
+             |                             |
+             |                             |--visceral heterotaxy-DOID_0050545
+             |                             |
+             |                             |--orofacial cleft-DOID_0050567
+             |                             |
+             |                              \-bladder exstrophy-epispadias-cloacal exstrophy complex-DOID_0080173
+             |
+             |                        /-ocular albinism with sensorineural deafness-DOID_0090100
+             |                       |
+             |                       |--Cornelia de Lange syndrome-DOID_11725
+             |                       |
+             |                       |--Coffin-Siris syndrome-DOID_1925
+             |                       |
+             |                       |--multiple pterygium syndrome-DOID_0080110
+             |                       |
+             |                       |--malignant hyperthermia-DOID_8545
+             |                       |
+             |-genetic disease-DOID_630-orofaciodigital syndrome-DOID_4501
+             |                       |
+             |                       |--ciliopathy-DOID_0060340
+             |                       |
+             |                       |--monogenic disease-DOID_0050177
+             |                       |
+             |                       |--chondrodysplasia punctata-DOID_2581
+             |                       |
+             |                       |--maturity-onset diabetes of the young-DOID_0050524
+             |                       |
+             |                        \-chromosomal disease-DOID_0080014
+             |
+             |                                        /-parasitic infectious disease-DOID_1398
+             |                                       |
+             |                                       |--fungal infectious disease-DOID_1564
+             |-disease by infectious agent-DOID_0050117
+             |                                       |--bacterial infectious disease-DOID_104
+             |                                       |
+             |                                        \-viral infectious disease-DOID_934
+             |
+             |                                  /-acquired metabolic disease-DOID_0060158
+             |-disease of metabolism-DOID_0014667
+             |                                  \-inherited metabolic disorder-DOID_655
+             |
+             |                                 /-adjustment disorder-DOID_507
+             |                                |
+             |                                |--substance-related disorder-DOID_303
+             |                                |
+             |                                |--developmental disorder of mental health-DOID_0060037
+             |                                |
+             |                                |--gender identity disorder-DOID_1234
+             |                                |
+             |                                |--sleep disorder-DOID_535
+             |                                |
+             |                                |--cognitive disorder-DOID_1561
+             |-disease of mental health-DOID_150
+             |                                |--factitious disorder-DOID_1766
+             |                                |
+             |                                |--dissociative disorder-DOID_10935
+             |                                |
+             |                                |--impulse control disorder-DOID_10937
+             |                                |
+             |                                |--personality disorder-DOID_1510
+             |                                |
+-disease-DOID_4                               |--somatoform disorder-DOID_4737
+             |                                |
+             |                                 \-sexual disorder-DOID_0060043
+             |
+             |                 /-ablepharon macrostomia syndrome-DOID_0060550
+             |                |
+             |                |--Barre-Lieou syndrome-DOID_6692
+             |                |
+             |                |--Van der Woude syndrome-DOID_0060239
+             |                |
+             |                |--Maffucci syndrome-DOID_0060221
+             |                |
+             |                |--SAPHO syndrome-DOID_13677
+             |                |
+             |                |--microcephaly with or without chorioretinopathy
+             |                |
+             |                |--lymphedema
+             |                |
+             |                |--or mental retardation-DOID_0060349
+             |                |
+             |                |--prune belly syndome-DOID_0060889
+             |                |
+             |                |--microcephaly and chorioretinopathy 2-DOID_0080106
+             |                |
+             |                |--Holzgreve-Wagner-Rehder Syndrome-DOID_0060566
+             |                |
+             |                |--Beemer-Langer syndrome-DOID_9249
+             |                |
+             |                |--multiple chemical sensitivity-DOID_4661
+             |                |
+             |                |--Lown-Ganong-Levine syndrome-DOID_13087
+             |                |
+             |                |--hypotonia-cystinuria syndrome-DOID_0060858
+             |                |
+             |                |--branchiootic syndrome-DOID_0060232
+             |                |
+             |                |--XFE progeroid syndrome-DOID_0060590
+             |                |
+             |                |--Van Maldergem syndrome-DOID_0060238
+             |                |
+             |                |--EAST syndrome-DOID_0060484
+             |                |
+             |                |--Klippel-Trenaunay syndrome-DOID_2926
+             |                |
+             |                |--Saldino-Noonan syndrome-DOID_0050549
+             |                |
+             |                |--inclusion body myopathy with Paget disease of bone and frontotemporal dementia-DOID_0050881
+             |                |
+             |                |--diffuse infiltrative lymphocytosis syndrome-DOID_6677
+             |                |
+             |                |--CHARGE syndrome-DOID_0050834
+             |                |
+             |                |--Felty's syndrome-DOID_11042
+             |                |
+             |                |--N syndrome-DOID_0050769
+             |                |
+             |                |--ARC syndrome-DOID_0050763
+             |                |
+             |                |--Beckwith-Wiedemann syndrome-DOID_5572
+             |                |
+             |                |--PTEN hamartoma tumor syndrome-DOID_0080191
+             |                |
+             |                |--KBG syndrome-DOID_14780
+             |                |
+             |                |--Ollier disease-DOID_4624
+             |                |
+             |                |--Bruck syndrome-DOID_0060231
+             |                |
+             |                |--palindromic rheumatism-DOID_1166
+             |                |
+             |                |--Yunis-Varon syndrome-DOID_0060589
+             |                |
+             |                |--Dubowitz syndrome-DOID_14796
+             |                |
+             |                |--acrorenal syndrome-DOID_0060347
+             |                |
+             |                |--chronic fatigue syndrome-DOID_8544
+             |                |
+             |                |--Fanconi-like syndrome-DOID_0090066
+             |                |
+             |                |--Adie syndrome-DOID_11549
+             |                |
+             |                |--Gamstorp-Wohlfart syndrome-DOID_0050526
+             |                |
+             |                |--Barber-Say syndrome-DOID_0060549
+             |                |
+             |                |--multiple congenital anomalies-hypotonia-seizures syndrome 3-DOID_0080140
+             |                |
+             |                |--psoriatic arthritis-DOID_9008
+             |                |
+             |                |--acrocallosal syndrome-DOID_9250
+             |                |
+             |                |--oculoauricular syndrome-DOID_0060482
+             |                |
+             |                |--Perlman syndrome-DOID_0060476
+             |                |
+             |                |--cocoon syndrome-DOID_0060647
+             |                |
+             |                |--Miller-Dieker lissencephaly syndrome-DOID_0060469
+             |                |
+             |                |--fibrogenesis imperfecta ossium-DOID_0080040
+             |                |
+             |                |--Perry syndrome-DOID_0060486
+             |                |
+             |                |--Reye syndrome-DOID_14525
+             |                |
+             |                |--Fuchs' heterochromic uveitis-DOID_9375
+             |                |
+             |                |--ulnar-mammary syndrome-DOID_0060614
+             |                |
+             |                |--microcephaly and chorioretinopathy 1-DOID_0080105
+             |                |
+             |                |--VACTERL association-DOID_14679
+             |                |
+              \syndrome-DOID_225-IMAGe syndrome-DOID_0050885
+                              |
+                              |--cardiofaciocutaneous syndrome-DOID_0060233
+                              |
+                              |--fetal valproate syndrome-DOID_0060471
+                              |
+                              |--Goldberg-Shprintzen syndrome-DOID_0060481
+                              |
+                              |--Zika virus congenital syndrome-DOID_0080180
+                              |
+                              |--Kabuki syndrome-DOID_0060473
+                              |
+                              |--Goldenhar syndrome-DOID_2907
+                              |
+                              |--megacystis-microcolon-intestinal hypoperistalsis syndrome-DOID_0060610
+                              |
+                              |--Jensen syndrome-DOID_0050867
+                              |
+                              |--sudden infant death syndrome-DOID_9007
+                              |
+                              |--microcephaly and chorioretinopathy 3-DOID_0080107
+                              |
+                              |--CREST syndrome-DOID_0060218
+                              |
+                              |--Kleefstra syndrome-DOID_0060352
+                              |
+                              |--Aicardi syndrome-DOID_8461
+                              |
+                              |--Wissler's syndrome-DOID_3047
+                              |
+                              |--multicentric reticulohistiocytosis-DOID_11824
+                              |
+                              |--tooth and nail syndrome-DOID_6678
+                              |
+                              |--Marshall-Smith syndrome-DOID_0050858
+                              |
+                              |--MEDNIK syndrome-DOID_0060483
+                              |
+                              |--Warsaw breakage syndrome-DOID_0060535
+                              |
+                              |--mosaic variegated aneuploidy syndrome 1-DOID_0080141
+                              |
+                              |--chronic atrial and intestinal dysrhythmia-DOID_0060339
+                              |
+                              |--Hallermann-Streiff syndrome-DOID_4534
+                              |
+                              |--Zollinger-Ellison syndrome-DOID_0050782
+                              |
+                              |--Takayasu's arteritis-DOID_2508
+                              |
+                              |--multiple congenital anomalies-hypotonia-seizures syndrome 2-DOID_0080139
+                              |
+                              |--mosaic variegated aneuploidy syndrome 2-DOID_0080142
+                              |
+                              |--Koolen de Vries syndrome-DOID_0050880
+                              |
+                              |--Pitt-Hopkins syndrome-DOID_0060488
+                              |
+                              |--primary hypertrophic osteoarthropathy-DOID_14283
+                              |
+                              |--Gorham's disease-DOID_4837
+                              |
+                              |--chondrodysplasia-pseudohermaphroditism syndrome-DOID_0060644
+                              |
+                              |--subclavian steal syndrome-DOID_13002
+                              |
+                              |--persian gulf syndrome-DOID_4491
+                              |
+                              |--Carey-Fineman-Ziter syndrome-DOID_0080194
+                              |
+                              |--oculodentodigital dysplasia-DOID_0060291
+                              |
+                              |--Mowat-Wilson syndrome-DOID_0060485
+                              |
+                              |--Qazi Markouizos syndrome-DOID_0050740
+                              |
+                              |--Achard syndrome-DOID_6686
+                              |
+                              |--Aagenaes syndrome-DOID_6691
+                              |
+                              |--polycystic ovary syndrome-DOID_11612
+                              |
+                              |--Shwachman-Diamond syndrome-DOID_0060479
+                              |
+                              |--multiple congenital anomalies-hypotonia-seizures syndrome 1-DOID_0080138
+                              |
+                              |--yellow nail syndrome-DOID_0050468
+                              |
+                              |--Adams-Oliver syndrome-DOID_0060227
+                              |
+                              |--endocrine-cerebro-osteodysplasia syndrome-DOID_0060641
+                              |
+                              |--Baraitser-Winter syndrome-DOID_0060229
+                              |
+                              |--irritable bowel syndrome-DOID_9778
+                              |
+                              |--mandibulofacial dysostosis with alopecia-DOID_0060365
+                              |
+                              |--Ohdo syndrome-DOID_0060289
+                              |
+                              |--lethal congenital contracture syndrome-DOID_0060558
+                              |
+                              |--Wolfram syndrome-DOID_10632
+                              |
+                              |--3MC syndrome-DOID_0060225
+                              |
+                              |--Noonan syndrome-DOID_3490
+                              |
+                              |--Ritscher-Schinzel syndrome-DOID_0060565
+                              |
+                               \-Robinow syndrome-DOID_0060254
+##########################################################################
+2018-02-07 07:37:12.581836
