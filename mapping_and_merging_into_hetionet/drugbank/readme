@@ -6,3 +6,5 @@ The other programme separates the DrugBank ids with chemical information and wit
 
 This can be executed with the shell.
 
+Further is DrugBank integrated into Hetionet with the program integrate_DrugBank_with_interaction_into_hetionet.py.
+
