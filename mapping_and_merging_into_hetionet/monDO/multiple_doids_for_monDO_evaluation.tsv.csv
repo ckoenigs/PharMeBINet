@@ -1,0 +1,22 @@
+monDO	 monDO name	 doids 	 doid names		
+MONDO:0008346	pulmonary hemosiderosis	DOID:12118|DOID:10328	pulmonary hemosiderosis|siderosis		the  obsolete pulmonary siderosis (MONDO:0001002) is replaced by MONDO:0008346 → merged?
+MONDO:0010060	infantile onset spinocerebellar ataxia	DOID:0080126|DOID:0050556	mitochondrial DNA depletion syndrome 7|infantile onset spinocerebellar ataxia		not really
+MONDO:0001561	pyloric stenosis (disease)	DOID:12639|DOID:3122	pyloric stenosis|gastric outlet obstruction		the second is the upper class, but has in disease ontology only this subgroup → merge
+MONDO:0005484	colorectal adenoma	DOID:0050914|DOID:0050860	large intestine adenoma|colorectal adenoma		in DO are they in the same subclass
+MONDO:0010626	X-linked hyper-IgM syndrome	DOID:0060022|DOID:6620	CD40 ligand deficiency|X-linked hyper IgM syndrome		DO themself said that are synonyms
+MONDO:0000001	disease	DOID:4|DOID:7	disease|disease of anatomical entity		second to MONDO_0021199(disease affecting anatomical system)
+MONDO:0000902	agenesis of the corpus callosum with peripheral neuropathy	DOID:0090003|DOID:0060600	agenesis of the corpus callosum with peripheral neuropathy|hereditary motor and sensory neuropathy with agenesis of the corpus callosum		
+MONDO:0005559	neurodegenerative disease	DOID:1443|DOID:1289	cerebral degeneration|neurodegenerative disease		the obsolete cerebral degeneration disease ( MONDO:0001963) replaced by MONDO:0005559 → merged ?
+MONDO:0005008	colorectal adenocarcinoma	DOID:0050861|DOID:0050913	colorectal adenocarcinoma|large intestine adenocarcinoma		in umls they are synonyms, but in DO they are part of the same subclass but not synonyms
+MONDO:0010524	X-linked sideroblastic anemia with ataxia	DOID:0050554|DOID:0060064	X-linked sideroblastic anemia with ataxia|sideroblastic anemia with spinocerebellar ataxia		the obsolete sideroblastic anemia with spinocerebellar ataxia ( MONDO:0000609) is replaced by MONDO:0010524 → merged?
+MONDO:0016021	early infantile epileptic encephalopathy	DOID:2481|DOID:0050709	infantile epileptic encephalopathy|Ohtahara syndrome		Ohtahara is good mapping, the other one is an upper classification
+MONDO:0019046	leukodystrophy	DOID:0060786|DOID:10579	hypomyelinating leukodystrophy|leukodystrophy		the first is a sub group, but this specific classification is not in monDO → merge ?
+MONDO:0005575	colorectal cancer	DOID:5672|DOID:9256	large intestine cancer|colorectal cancer		the first one is an upper class so I think no merge
+MONDO:0004992	cancer	DOID:0050687|DOID:0050686|DOID:162	cell type cancer|organ system cancer|cancer		this classification ist not existing → merging?
+MONDO:0002299	glomangioma	DOID:8020|DOID:2436	glomangiomyoma|glomangioma		are related but the one is not existing in monDO
+MONDO:0006962	sebaceous adenocarcinoma	DOID:4840|DOID:4839	sebaceous carcinoma|sebaceous adenocarcinoma		the first one is an upper class , but has only one entry in DO so maybe merged ?
+MONDO:0005184	pancreatic ductal adenocarcinoma	DOID:3587|DOID:3498	pancreatic ductal carcinoma|pancreatic ductal adenocarcinoma		the first is a sub element so merge is ok ?
+MONDO:0016011	fetal alcohol syndrome	DOID:0050667|DOID:0050665	alcohol-related neurodevelopmental disorder|fetal alcohol syndrome		in are elemente of the same subclass but not the same, further the obsolete alcohol-related neurodevelopmental disorder( MONDO:0000394) is replaced by MONDO:0016011
+MONDO:0006639	adrenal cortex carcinoma	DOID:3959|DOID:660|DOID:3948	adrenal cortical adenocarcinoma|adrenal cortex cancer|adrenocortical carcinoma		adrenal cortex cancer is the upperst class then adrenocortical carcinoma and the leaf is the last one, this has evertime only one element → merging ok
+MONDO:0005165	benign neoplasm	DOID:0060084|DOID:0060085|DOID:0060072	cell type benign neoplasm|organ system benign neoplasm|benign neoplasm		 is the upper class of the to other classes and in DO this are the only subclasse → merge ok
+MONDO:0005380	osteonecrosis	DOID:10159|DOID:0080008	osteonecrosis|ischemic bone disease		the obsolete ischemic bone disease (MONDO:0000835) is replaced by MONDO:0005380 → combine ?
