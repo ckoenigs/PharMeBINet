@@ -1,0 +1,407 @@
+2018-01-19 09:00:23.316233
+##########################################################################
+2018-01-19 09:00:23.316253
+connection to db
+##########################################################################
+2018-01-19 09:00:23.350269
+load in diseases with symptoms in and find for the symptoms umls cuis
+ohje
+recurring periods of wheezing (a whistling sound while breathing)
+good
+stiffness in spine C1410087
+good
+stiffness in neck C0151315
+ohje
+stiffness in the hips
+good
+stiffness in jaw C0549250
+ohje
+stiffness in the rib cage
+ohje
+motor loss
+ohje
+eye damage
+ohje
+clay-colored bowel movements
+ohje
+congestion of ocular conjunctivae
+ohje
+reddening of lips
+ohje
+reddening of oral cavity
+ohje
+protuberance of tongue papillae
+ohje
+abrupt onset of dyspnea
+ohje
+falling blood pressure
+ohje
+blood-stained nasal discharge
+ohje
+perioral fissures
+good
+maculopapular rash on trunk C0241488
+ohje
+internal and external bleeding
+ohje
+passing blood in the feces
+ohje
+ecchymoses (caused by bleeding in the skin)
+ohje
+bleeding from the nose or gums
+ohje
+bleeding from venepuncture sites
+ohje
+nonfocal neurologic abnormalities
+ohje
+proteinuria (protein in the urine)
+ohje
+papules or nodules in the oral cavity
+ohje
+hemorrhagic features
+ohje
+at least one of the following: sbp of 160mm hg or higher or dpb of 110mm hg or higher on 2 occasions at least 6 hours apart
+ohje
+distention from gas or fluid
+ohje
+digestive disturbances
+ohje
+inflammatory kerion-like plaques
+ohje
+focal neurological signs
+ohje
+widespread abnormalities of social interactions and communication
+ohje
+severely restricted interests
+ohje
+highly repetitive behavior
+ohje
+hemorrhagic features
+ohje
+clay-colored bowel movements
+ohje
+sores
+good
+difficulty in breathing C0013404
+ohje
+inflammatory infiltrations
+ohje
+formation of tubercles
+ohje
+caseation
+ohje
+nodular lesions in the lungs
+good
+changes in personality C0240735
+good
+disturbances in sleep C0037317
+ohje
+soreness of the muscles of the legs and back
+ohje
+maculopapular or petechial rash
+ohje
+regional adenopathy
+good
+rash on extremities C1504535
+ohje
+maculopapular rash progressing into papular or petechial rash
+ohje
+large blisters
+ohje
+pain in the infected area
+ohje
+gas production
+ohje
+petechiae (red spots) on the palate
+ohje
+blood in the feces and urine
+ohje
+stiff body
+ohje
+watery blisters
+ohje
+prickling or itching sensation at the site of bite
+ohje
+acute shock
+ohje
+vascular leakage
+ohje
+asthma along with hay fever
+ohje
+red colored skin rash
+ohje
+lesions in the brain or meninges
+ohje
+ascending regional lymphadenopathy
+ohje
+gummatous ulcers
+ohje
+periosteal lesions
+ohje
+dental deformities
+ohje
+pain in lower and upper extremities
+ohje
+papulovesicular rash on the soft palate
+ohje
+conjunctival suffusion
+ohje
+blood in the sputum
+ohje
+swollen conjunctiva and eyelids
+ohje
+discharge of pus and mucus
+ohje
+descending muscle paralysis
+ohje
+skin rash called erythema migrans
+ohje
+lesions which are flesh-colored with a pit in the center
+ohje
+formation of fistulas
+ohje
+lymphadenopathy of the neck
+ohje
+increased vaginal discharge
+ohje
+vaginal bleeding between periods
+ohje
+abscesses in the groin area
+ohje
+severe pain behind the eyes
+ohje
+muscle and bone pain
+ohje
+mild bleeding
+ohje
+hemorrhagic lesions of the skin
+ohje
+reduction in the fluid part of the blood
+ohje
+pus filled lesions on the scalp
+ohje
+patches of hair loss
+ohje
+body aches
+good
+watering of eye C3257803
+ohje
+superficial punctate epithelial keratitis
+ohje
+rash which is followed by blisters
+ohje
+itching in groin
+ohje
+eschar (usually single)
+ohje
+regional adenopathy
+ohje
+maculopapular rash on extremities
+ohje
+sinus discharge and results_in_formation_of nodules
+ohje
+thickening of subungueal area
+ohje
+soft-tissue swelling
+ohje
+fever for 2-3 days
+ohje
+blood spots
+ohje
+severe frontal headaches
+ohje
+joint aches
+ohje
+respiratory signs
+ohje
+acute paralysis
+ohje
+sudden high fever
+ohje
+red rash that occurs first on the trunk then spreading to legs and neck
+ohje
+deterioration of memory
+ohje
+weakness and wasting of shoulder-girdle and arm muscles
+ohje
+slowly progressive leg weakness with urinary or fecal incontinence or both
+ohje
+paralysis of the legs due to thrombosis of spinal arteries
+good
+lesions on finger C0744025
+ohje
+clay-colored bowel movements
+ohje
+regional adenopathy
+ohje
+frightening thoughts
+ohje
+hyperarousal of ptsd occurring within one month of a traumatic experience as acute stress disorder or asd
+ohje
+cracking
+ohje
+painful and soft ulcers
+ohje
+lesions on the body
+ohje
+lesions that appear on the sole of the foot
+ohje
+behaviour disturbances
+ohje
+cognitive disturbances
+ohje
+neurologic disturbances
+ohje
+movement impairment
+ohje
+lacrimation in humans
+ohje
+twisting of head and neck
+ohje
+complete paralysis
+ohje
+reduced egg production in birds
+ohje
+skin lesion that eventually forms an ulcer with a black center
+ohje
+physical weakness
+ohje
+large joints
+ohje
+wide set eyes
+ohje
+round flat face
+ohje
+paralysis of arms and legs
+ohje
+marked leukocytosis
+ohje
+diffuse infiltrates on chest radiograph
+ohje
+cough with mucus
+ohje
+swollen and tender salivary glands under the ears or jaw on one or both sides of the face
+ohje
+painful sores in the mouth
+ohje
+skin rash on the palms of the hands and soles of the feet
+ohje
+lesions in the back area of the mouth
+ohje
+severe chest pain
+ohje
+regional adenopathy
+ohje
+maculopapular rash on extremities
+ohje
+myalgia in the legs and lumbosacral region
+ohje
+body aches
+ohje
+nasal flaring in infants
+ohje
+bluish skin due to lack of oxygen
+ohje
+raised wart with roughened surface
+ohje
+chest pain and results_in_formation_of skin nodules
+ohje
+painless genital ulcers
+ohje
+scaling of skin lesions
+ohje
+thickening of nails
+ohje
+swollen periungal tissue
+ohje
+scarring of the scalp
+ohje
+spastic weakness of both legs
+ohje
+clay-colored bowel movements
+ohje
+bleeding into skin and other organs
+ohje
+mild spotted fever
+ohje
+regional adenopathy
+ohje
+paralysis of arms and legs
+ohje
+loss of reflexes
+ohje
+regional adenopathy
+ohje
+maculopapular rash on extremities
+ohje
+eschar (usually single)
+ohje
+regional adenopathy
+ohje
+maculopapular rash on extremities
+ohje
+moist patches in the mouth
+ohje
+lumps in long bones
+ohje
+chills which rapidly progress to bilateral interstitial pulmonary infiltrates occurrence
+good
+tenderness of skin C0241164
+ohje
+warmth of skin
+ohje
+ulcer formation
+ohje
+vesicular rash of the ear or mouth
+ohje
+loss of bladder sensation leading to urine retention
+ohje
+formation of ulcers
+ohje
+abdominal pain in middle or lower right part
+ohje
+pruritic plaque
+ohje
+abdominal cramps and pain
+ohje
+crusty plaques
+ohje
+tumors and results_in_formation_of nodular lesions
+ohje
+rash on the face which spreads to the trunk and limbs
+ohje
+chest discomfort or pain
+ohje
+muscular hypotonia (weak muscle tone)
+ohje
+recurrent episodes of vomiting and diarrhea
+ohje
+eruption of rose-colored spots
+ohje
+rosy spots on the central body
+ohje
+non productive cough (in early stage of illness)
+ohje
+sudden onset of headache
+ohje
+rounded nose
+ohje
+fluid-filled blister formation
+ohje
+anemia described as malaria-like symptoms caused by a protozoan of genus babesia
+ohje
+lung lesions
+ohje
+bleeding from the oral and nasal mucosa
+ohje
+bleeding from the bronchopulmonary
+ohje
+hemorrhagic manifestations
+ohje
+bleeding under the skin
+ohje
+hemorrhagic manifestations
+number of mapped symptoms with change the order of the name:11
+number of disease which has symptoms in their definition:247
+number of different symptoms which are mapped to umls cui:320
+number of not mapped symptoms to umls cuis:187
