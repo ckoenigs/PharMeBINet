@@ -6,3 +6,5 @@ Disease Ontology was downloaded from http://disease-ontology.org/downloads/ huma
 Disease Ontology 2015 update: an expanded and updated database of human diseases for linking biomedical knowledge through disease data
 Kibbe WA, Arze C, Felix V, Mitraka E, Bolton E, Fu G, Mungall CJ, Binder JX, Malone J, Vasant D, Parkinson H, Schriml LM.
 Nucleic Acids Research 2014; Oct 27. pii: gku1011
+
+Further the program get_hierarchy_do.py extract for all hierarchical level the leaves (entities) and the parent nodes (classes).
