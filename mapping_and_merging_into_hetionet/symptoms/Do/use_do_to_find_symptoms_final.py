@@ -74,6 +74,7 @@ def find_cui_for_different_formas_of_string(symptom, split_word):
                 #                        print(cui)
                 list_cuis.append(cui)
             dict_symptom_to_umls_cui[symptom] = list_cuis[0]
+            print('good')
             print(symptom + ' ' + list_cuis[0])
             return True
         else:
@@ -151,6 +152,7 @@ def load_in_hetionet_disease_in_dictionary(doid, definition):
                         counter_not_mapped_symptoms += 1
                         print('ohje')
                         print(symptom)
+
         dict_doid_to_symptom[doid] = list_symptoms
 
 
@@ -189,7 +191,7 @@ Create (s:Symptom{identifier:"%s",type:'cui',license:'UMLS licence', name:"%s", 
 '''
 
 
-def integrate_infromation_into_hetionet():
+def integrate_information_into_hetionet():
     # count new symptoms
     counter_new_symptoms = 0
 
@@ -357,6 +359,8 @@ def main():
     query = '''MATCH (n:Disease) Where n.definition contains 'has_symptom' RETURN n.identifier,n.definition '''
     results = g.run(query)
     for doid, definition, in results:
+        # if thread_id>50:
+        #     break
         # create thread
         thread = SymptomThread(thread_id, 'thread_' + str(thread_id), doid, definition)
         # start thread
@@ -370,16 +374,18 @@ def main():
     for t in threads_list:
         t.join()
 
+
     print('number of mapped symptoms with change the order of the name:' + str(counter_map_with_changed_order))
     print('number of disease which has symptoms in their definition:' + str(len(dict_doid_to_symptom)))
     print('number of different symptoms which are mapped to umls cui:' + str(len(dict_symptom_to_umls_cui)))
     print('number of not mapped symptoms to umls cuis:' + str(counter_not_mapped_symptoms))
 
+    sys.exit()
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
     print('integrate new information into hetionet and cypher files')
-    integrate_infromation_into_hetionet()
+    integrate_information_into_hetionet()
 
     print('##########################################################################')
 
