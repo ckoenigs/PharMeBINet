@@ -182,7 +182,7 @@ python transform_drugbank_to_tsv_version_3.py > output_generate_drubank_file.txt
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-python integrate_drugbank_into_neo4j.py  > output_integration_hpo.txt
+python integrate_drugbank_into_neo4j.py  > output_integration_drugbank.txt
 
 
 now=$(date +"%F %T")
@@ -204,5 +204,74 @@ cd ..
 now=$(date +"%F %T")
 echo "Current time: $now"
 
+cd  EFO
+echo EFO
+
+python extract_information_from_efo_and_integrate_into_neo4j.py > output_generate_integration_file.txt
+
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+echo integrate efo into neo4j
+
+$path_neo4j/neo4j-shell -file integrate_efo_disease_into_neo4j_1.cypher > output_cypher_integration.txt
+
+sleep 180
+
+$path_neo4j/neo4j restart
+
+
+sleep 120
+
+cd ..
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+cd  MONDO
+echo mondo
+
+python integrate_mondo_into_neo4j.py > output_generate_integration_file.txt
+
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+echo integrate mondo into neo4j
+
+$path_neo4j/neo4j-shell -file integrate_mondo_disease_into_neo4j_1.cypher > output_cypher_integration.txt
+
+sleep 180
+
+$path_neo4j/neo4j restart
+
+
+sleep 120
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+python get_hierarchy_mondo_extract.py > output_get_hierarchy_and_cypher_file.txt
+
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+echo integrate level into mondo in neo4j
+
+$path_neo4j/neo4j-shell -file integrate_level.cypher > output_cypher_integration_level.txt
+
+sleep 180
+
+$path_neo4j/neo4j restart
+
+
+sleep 120
+
+cd ..
+
+now=$(date +"%F %T")
+echo "Current time: $now"
 
 
