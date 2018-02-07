@@ -1,0 +1,10 @@
+MonDO_id 	 MonDO_name 	 parent_id 	 parent_name  
+DOID:3604	ovarian mucinous cystadenocarcinoma	DOID:3605	ovarian cystadenocarcinoma
+DOID:3722	solitary osseous plasmacytoma	DOID:3721	plasmacytoma
+DOID:3720	extramedullary plasmacytoma	DOID:3721	plasmacytoma
+DOID:3723	solitary plasmacytoma of chest wall	DOID:3721	plasmacytoma
+DOID:7438	ovarian clear cell cystadenocarcinoma	DOID:3605	ovarian cystadenocarcinoma
+DOID:5208	malignant struma ovarii	DOID:2640	struma ovarii
+DOID:5209	benign struma ovarii	DOID:2640	struma ovarii
+DOID:10442	hypopyon ulcer	DOID:10443	hypopyon
+DOID:5746	ovarian serous cystadenocarcinoma	DOID:3605|DOID:5744	ovarian cystadenocarcinoma|ovary serous adenocarcinoma

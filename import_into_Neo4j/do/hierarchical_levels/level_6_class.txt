@@ -1,0 +1,421 @@
+MonDO_id 	 MonDO_name 	 parent_id 	 parent_name 
+DOID:2687	skin sarcoma	DOID:4159	skin cancer
+DOID:1441	autosomal dominant cerebellar ataxia	DOID:0050951	hereditary ataxia
+DOID:1114	esophagus sarcoma	DOID:5041	esophageal cancer
+DOID:3240	aspiration pneumonitis	DOID:552	pneumonia
+DOID:930	orbital disease	DOID:0050815	eye adnexa disease
+DOID:8007	Pancoast tumor	DOID:1324	lung cancer
+DOID:3121	gallbladder cancer	DOID:4607	biliary tract cancer
+DOID:8002	supraglottis neoplasm	DOID:2598	laryngeal benign neoplasm
+DOID:3083	chronic obstructive pulmonary disease	DOID:2320	obstructive lung disease
+DOID:1595	endogenous depression	DOID:1470	major depressive disorder
+DOID:270	liver sarcoma	DOID:3571	liver cancer
+DOID:5262	heart sarcoma	DOID:117	heart cancer
+DOID:11843	coronary artery anomaly	DOID:3393	coronary artery disease
+DOID:4765	pulmonary blastoma	DOID:1324	lung cancer
+DOID:11472	subglottis cancer	DOID:2596	larynx cancer
+DOID:439	neuromuscular junction disease	DOID:440	neuromuscular disease
+DOID:4901	peritoneal serous adenocarcinoma	DOID:1791	peritoneal carcinoma
+DOID:437	myasthenia gravis	DOID:438	autoimmune disease of the nervous system
+DOID:4843	subependymal glioma	DOID:4844	benign ependymoma
+DOID:4840	sebaceous carcinoma	DOID:4159	skin cancer
+DOID:8483	retinal artery occlusion	DOID:1729	retinal vascular occlusion
+DOID:4905	pancreatic carcinoma	DOID:1793	pancreatic cancer
+DOID:205	hyperostosis	DOID:0080005	bone remodeling disease
+DOID:10579	leukodystrophy	DOID:1443	cerebral degeneration
+DOID:3627	aortic aneurysm	DOID:520	aortic disease
+DOID:9352	type 2 diabetes mellitus	DOID:9351	diabetes mellitus
+DOID:4693	nerve plexus neoplasm	DOID:1192	peripheral nervous system neoplasm
+DOID:14330	Parkinson's disease	DOID:0050890	synucleinopathy
+DOID:0060114	vaginal benign neoplasm	DOID:0060086	female reproductive organ benign neoplasm
+DOID:0060112	ovarian benign neoplasm	DOID:0060086	female reproductive organ benign neoplasm
+DOID:0060110	cervical benign neoplasm	DOID:0060086	female reproductive organ benign neoplasm
+DOID:0060111	fallopian tube benign neoplasm	DOID:0060086	female reproductive organ benign neoplasm
+DOID:9742	pelvic varices	DOID:799	varicose veins
+DOID:9744	type 1 diabetes mellitus	DOID:9351	diabetes mellitus
+DOID:9988	tertiary neurosyphilis	DOID:8200	tertiary syphilis
+DOID:3905	lung carcinoma	DOID:1324	lung cancer
+DOID:4606	bile duct cancer	DOID:4607	biliary tract cancer
+DOID:4439	central nervous system germ cell tumor	DOID:3620	central nervous system cancer
+DOID:3192	neurilemmoma	DOID:2001	neuroma
+DOID:3193	peripheral nerve sheath neoplasm	DOID:1192	peripheral nervous system neoplasm
+DOID:11717	neonatal diabetes mellitus	DOID:9351	diabetes mellitus
+DOID:6944	vulvar seborrheic keratosis	DOID:6498	seborrheic keratosis
+DOID:6945	inverted follicular keratosis	DOID:6498	seborrheic keratosis
+DOID:6947	sphenoidal sinus neoplasm	DOID:1350	paranasal sinus neoplasm
+DOID:11060	placenta praevia	DOID:780	placenta disease
+DOID:3750	urethra squamous cell carcinoma	DOID:734	urethra cancer
+DOID:5511	dysgerminoma of ovary	DOID:4441	dysgerminoma
+DOID:4186	articulation disorder	DOID:92	speech disorder
+DOID:5517	stomach carcinoma	DOID:10534	stomach cancer
+DOID:502	central nervous system mesenchymal non-meningothelial tumor	DOID:3620	central nervous system cancer
+DOID:1625	breast adenoma	DOID:0060082	breast benign neoplasm
+DOID:1934	dysostosis	DOID:0080006	bone development disease
+DOID:10825	essential hypertension	DOID:10763	hypertension
+DOID:10824	malignant hypertension	DOID:10763	hypertension
+DOID:9182	pemphigus	DOID:8502	bullous skin disease
+DOID:4939	ureter carcinoma	DOID:11819	ureter cancer
+DOID:0060182	microscopic colitis	DOID:0060180	colitis
+DOID:4931	nasal cavity carcinoma	DOID:10811	nasal cavity cancer
+DOID:2377	multiple sclerosis	DOID:3213	demyelinating disease
+DOID:3284	thymic carcinoma	DOID:3277	thymus cancer
+DOID:1019	osteomyelitis	DOID:3342	bone inflammation disease
+DOID:10754	otitis media	DOID:5100	middle ear disease
+DOID:4230	smooth muscle cancer	DOID:4045	muscle cancer
+DOID:4231	histiocytoma	DOID:201	connective tissue cancer
+DOID:10619	lymph node cancer	DOID:0060073	lymphatic system cancer
+DOID:10354	breast fibrocystic disease	DOID:0060082	breast benign neoplasm
+DOID:0060249	scoliosis	DOID:0080010	bone structure disease
+DOID:1712	aortic valve stenosis	DOID:62	aortic valve disease
+DOID:10652	Alzheimer's disease	DOID:680	tauopathy
+DOID:3878	intestinal pseudo-obstruction	DOID:8440	ileus
+DOID:0060361	punctate palmoplantar keratoderma	DOID:3390	palmoplantar keratosis
+DOID:1657	ventricular septal defect	DOID:1681	heart septal defect
+DOID:6432	pulmonary hypertension	DOID:10763	hypertension
+DOID:3875	thrombophlebitis	DOID:864	phlebitis
+DOID:5639	rete testis neoplasm	DOID:3856	male reproductive organ cancer
+DOID:3371	chondrosarcoma	DOID:201	connective tissue cancer
+DOID:3275	thymoma	DOID:3277	thymus cancer
+DOID:476	breast hemangioma	DOID:0060082	breast benign neoplasm
+DOID:3178	skin papilloma	DOID:3165	skin benign neoplasm
+DOID:9835	refractive error	DOID:5614	eye disease
+DOID:471	skin hemangioma	DOID:3165	skin benign neoplasm
+DOID:9446	cholangitis	DOID:4138	bile duct disease
+DOID:1400	lacrimal apparatus disease	DOID:5614	eye disease
+DOID:1926	Gaucher's disease	DOID:1927	sphingolipidosis
+DOID:1882	atrial heart septal defect	DOID:1681	heart septal defect
+DOID:1884	viral hepatitis	DOID:2237	hepatitis
+DOID:712	refractory hematologic cancer	DOID:2531	hematologic cancer
+DOID:2095	sweat gland cancer	DOID:4159	skin cancer
+DOID:2621	autonomic nervous system neoplasm	DOID:1192	peripheral nervous system neoplasm
+DOID:2154	nephroblastoma	DOID:263	kidney cancer
+DOID:3308	embryonal carcinoma	DOID:688	embryonal cancer
+DOID:2256	osteochondrodysplasia	DOID:0080006	bone development disease
+DOID:12215	oligohydramnios	DOID:780	placenta disease
+DOID:0050753	cerebellar ataxia	DOID:2786	cerebellar disease
+DOID:2394	ovarian cancer	DOID:120	female reproductive organ cancer
+DOID:3307	teratoma	DOID:3095	germ cell and embryonal cancer
+DOID:0050599	abdominal tuberculosis	DOID:0050598	extrapulmonary tuberculosis
+DOID:5386	lung adenoma	DOID:3683	lung benign neoplasm
+DOID:1279	ocular motility disease	DOID:5656	cranial nerve disease
+DOID:0050616	malignant Leydig cell tumor	DOID:192	sex cord-gonadal stromal tumor
+DOID:7505	small intestine neoplasm	DOID:4610	intestinal benign neoplasm
+DOID:4895	rete ovarii neoplasm	DOID:0060086	female reproductive organ benign neoplasm
+DOID:0050594	glycogen storage disease IX	DOID:2747	glycogen storage disease
+DOID:1974	adenosarcoma	DOID:4236	carcinosarcoma
+DOID:5410	pulmonary neuroendocrine tumor	DOID:1324	lung cancer
+DOID:660	adrenal cortex cancer	DOID:3953	adrenal gland cancer
+DOID:10316	pneumoconiosis	DOID:3082	interstitial lung disease
+DOID:2021	placenta cancer	DOID:120	female reproductive organ cancer
+DOID:12326	chronic pulmonary heart disease	DOID:8515	Cor pulmonale
+DOID:8533	hypopharynx cancer	DOID:0060119	pharynx cancer
+DOID:1686	glaucoma	DOID:5614	eye disease
+DOID:2436	glomangioma	DOID:5238	benign perivascular tumor
+DOID:589	congenital hemolytic anemia	DOID:583	hemolytic anemia
+DOID:2438	dermis tumor	DOID:3165	skin benign neoplasm
+DOID:582	hemoglobinuria	DOID:583	hemolytic anemia
+DOID:8125	osteochondrosis	DOID:0080008	ischemic bone disease
+DOID:4377	egg allergy	DOID:3044	food allergy
+DOID:4376	milk allergy	DOID:3044	food allergy
+DOID:3004	breast myoepithelial neoplasm	DOID:1612	breast cancer
+DOID:4379	nut allergy	DOID:3044	food allergy
+DOID:1756	facial nerve disease	DOID:5656	cranial nerve disease
+DOID:1618	breast fibroadenoma	DOID:0060082	breast benign neoplasm
+DOID:10595	Charcot-Marie-Tooth disease	DOID:440	neuromuscular disease
+DOID:13240	tooth resorption	DOID:214	teeth hard tissue disease
+DOID:3480	uveal disease	DOID:5614	eye disease
+DOID:0060519	beta-lactam allergy	DOID:0060500	drug allergy
+DOID:0060513	fish allergy	DOID:3044	food allergy
+DOID:0050669	spastic cerebral palsy	DOID:1969	cerebral palsy
+DOID:14059	paraurethral gland cancer	DOID:120	female reproductive organ cancer
+DOID:2999	granulosa cell tumor	DOID:192	sex cord-gonadal stromal tumor
+DOID:2998	testicular cancer	DOID:3856	male reproductive organ cancer
+DOID:929	myopathy of extraocular muscle	DOID:423	myopathy
+DOID:530	eyelid disease	DOID:0050815	eye adnexa disease
+DOID:1358	maxillary sinus neoplasm	DOID:1350	paranasal sinus neoplasm
+DOID:363	uterine cancer	DOID:120	female reproductive organ cancer
+DOID:1727	retinal vein occlusion	DOID:1729	retinal vascular occlusion
+DOID:2843	long QT syndrome	DOID:0060036	intrinsic cardiomyopathy
+DOID:1357	maxillary sinus cancer	DOID:0050619	paranasal sinus cancer
+DOID:4752	multiple system atrophy	DOID:0050890	synucleinopathy
+DOID:1227	neutropenia	DOID:12987	agranulocytosis
+DOID:2664	sweat gland neoplasm	DOID:3165	skin benign neoplasm
+DOID:12252	Cushing's syndrome	DOID:3947	adrenal gland hyperfunction
+DOID:13636	Fanconi anemia	DOID:1342	congenital hypoplastic anemia
+DOID:0080100	congenital myopathy	DOID:423	myopathy
+DOID:0050127	sinusitis	DOID:1352	paranasal sinus disease
+DOID:14040	autoimmune polyendocrine syndrome	DOID:0060005	autoimmune disease of endocrine system
+DOID:0060046	aphasia	DOID:93	language disorder
+DOID:5672	large intestine cancer	DOID:10155	intestinal cancer
+DOID:5679	retinal disease	DOID:5614	eye disease
+DOID:216	dental caries	DOID:214	teeth hard tissue disease
+DOID:2696	Leydig cell tumor	DOID:4757	sex cord-stromal neoplasm
+DOID:3963	thyroid carcinoma	DOID:1781	thyroid cancer
+DOID:10544	pylorus cancer	DOID:10534	stomach cancer
+DOID:200	giant cell tumor	DOID:201	connective tissue cancer
+DOID:625	transient hypogammaglobulinemia	DOID:2583	agammaglobulinemia
+DOID:5759	sebaceous gland neoplasm	DOID:3165	skin benign neoplasm
+DOID:10350	breast cyst	DOID:0060082	breast benign neoplasm
+DOID:0060103	central nervous system primitive neuroectodermal neoplasm	DOID:3620	central nervous system cancer
+DOID:8578	soft palate cancer	DOID:8618	oral cavity cancer
+DOID:0060109	vulvar benign neoplasm	DOID:0060086	female reproductive organ benign neoplasm
+DOID:6293	central nervous system lipoma	DOID:0060090	central nervous system organ benign neoplasm
+DOID:0060088	vestibular gland benign neoplasm	DOID:0060086	female reproductive organ benign neoplasm
+DOID:6936	ureter urothelial papilloma	DOID:11885	ureteral benign neoplasm
+DOID:3042	allergic contact dermatitis	DOID:2773	contact dermatitis
+DOID:11702	dysgammaglobulinemia	DOID:6025	selective immunoglobulin deficiency disease
+DOID:5520	head and neck squamous cell carcinoma	DOID:1542	head and neck carcinoma
+DOID:1827	idiopathic generalized epilepsy	DOID:1826	epilepsy
+DOID:12171	radial neuropathy	DOID:1188	mononeuropathy
+DOID:10283	prostate cancer	DOID:3856	male reproductive organ cancer
+DOID:6204	follicular adenoma	DOID:2891	thyroid adenoma
+DOID:12377	spinal muscular atrophy	DOID:231	motor neuron disease
+DOID:1361	frontal sinus neoplasm	DOID:1350	paranasal sinus neoplasm
+DOID:1360	frontal sinus cancer	DOID:0050619	paranasal sinus cancer
+DOID:1363	ethmoid sinus cancer	DOID:0050619	paranasal sinus cancer
+DOID:1364	ethmoidal sinus neoplasm	DOID:1350	paranasal sinus neoplasm
+DOID:10973	acute salpingitis	DOID:5733	salpingitis
+DOID:10972	salpingo-oophoritis	DOID:10974|DOID:5733	oophoritis|salpingitis
+DOID:2368	gangliosidosis	DOID:1927	sphingolipidosis
+DOID:963	episodic ataxia	DOID:0050951	hereditary ataxia
+DOID:4242	kidney sarcoma	DOID:263	kidney cancer
+DOID:2568	cervicitis	DOID:2253	cervix disease
+DOID:4248	coronary stenosis	DOID:3393	coronary artery disease
+DOID:1483	gingival disease	DOID:3388	periodontal disease
+DOID:1319	brain cancer	DOID:3620	central nervous system cancer
+DOID:5143	large bowel leiomyoma	DOID:4610	intestinal benign neoplasm
+DOID:4691	malignant mediastinal neurogenic neoplasm	DOID:5559	mediastinal cancer
+DOID:2706	synovium cancer	DOID:201	connective tissue cancer
+DOID:0050169	cutaneous lupus erythematosus	DOID:8857	lupus erythematosus
+DOID:10591	pre-eclampsia	DOID:10763	hypertension
+DOID:446	hyperaldosteronism	DOID:3947	adrenal gland hyperfunction
+DOID:916	liver neoplasm	DOID:3117	hepatobiliary benign neoplasm
+DOID:561	trigeminal nerve disease	DOID:5656	cranial nerve disease
+DOID:562	third cranial nerve disease	DOID:5656	cranial nerve disease
+DOID:566	labyrinthine dysfunction	DOID:2952	inner ear disease
+DOID:10034	eye accommodation disease	DOID:5614	eye disease
+DOID:2498	tooth erosion	DOID:214	teeth hard tissue disease
+DOID:0060497	pollen allergy	DOID:0060496	respiratory allergy
+DOID:0060495	shellfish allergy	DOID:3044	food allergy
+DOID:2797	idiopathic interstitial pneumonia	DOID:552	pneumonia
+DOID:315	synovium neoplasm	DOID:0060123	connective tissue benign neoplasm
+DOID:5031	adult pineal parenchymal tumor	DOID:5032	pineal gland cancer
+DOID:5719	adrenal medulla cancer	DOID:3953	adrenal gland cancer
+DOID:5716	hormone producing pituitary cancer	DOID:1785	pituitary cancer
+DOID:4781	diffuse glomerulonephritis	DOID:2921	glomerulonephritis
+DOID:9799	eye degenerative disease	DOID:5614	eye disease
+DOID:3817	cranial nerve palsy	DOID:5656	cranial nerve disease
+DOID:2140	urethral urothelial papilloma	DOID:730	urethral benign neoplasm
+DOID:14546	sphenoidal sinus cancer	DOID:0050619	paranasal sinus cancer
+DOID:1187	tibial neuropathy	DOID:1188	mononeuropathy
+DOID:10154	small intestine cancer	DOID:10155	intestinal cancer
+DOID:5393	brain angioma	DOID:2517	intracranial structure hemangioma
+DOID:3316	perivascular tumor	DOID:175	vascular cancer
+DOID:5395	functioning pituitary adenoma	DOID:3829	pituitary adenoma
+DOID:0050564	autosomal dominant nonsyndromic deafness	DOID:0050563	nonsyndromic deafness
+DOID:0050565	autosomal recessive nonsyndromic deafness	DOID:0050563	nonsyndromic deafness
+DOID:4716	malignant gastric germ cell tumor	DOID:10534	stomach cancer
+DOID:5621	histiocytic and dendritic cell cancer	DOID:2531	hematologic cancer
+DOID:9368	keratoconjunctivitis	DOID:5614	eye disease
+DOID:824	periodontitis	DOID:3388	periodontal disease
+DOID:820	myocarditis	DOID:3978	extrinsic cardiomyopathy
+DOID:4772	mesoblastic nephroma	DOID:263	kidney cancer
+DOID:11239	appendix cancer	DOID:10155	intestinal cancer
+DOID:1984	rectal neoplasm	DOID:4610	intestinal benign neoplasm
+DOID:672	spleen cancer	DOID:0060073	lymphatic system cancer
+DOID:0060033	autoimmune disease of peripheral nervous system	DOID:438	autoimmune disease of the nervous system
+DOID:13089	intracranial arterial disease	DOID:6713	cerebrovascular disease
+DOID:6245	renal oncocytoma	DOID:3116	kidney benign neoplasm
+DOID:2133	central nervous system sarcoma	DOID:3620	central nervous system cancer
+DOID:4960	bone marrow cancer	DOID:2531	hematologic cancer
+DOID:0060135	apraxia	DOID:4090	agnosia
+DOID:3855	seminal vesicle tumor	DOID:0060087	male reproductive organ benign neoplasm
+DOID:3426	vestibular disease	DOID:2952	inner ear disease
+DOID:4362	cervical cancer	DOID:120	female reproductive organ cancer
+DOID:10609	rickets	DOID:0080005	bone remodeling disease
+DOID:4043	skeletal muscle cancer	DOID:4045	muscle cancer
+DOID:3003	nipple neoplasm	DOID:0060082	breast benign neoplasm
+DOID:4919	renal pelvis carcinoma	DOID:263	kidney cancer
+DOID:686	liver carcinoma	DOID:3571	liver cancer
+DOID:687	hepatoblastoma	DOID:3571	liver cancer
+DOID:683	motor neuritis	DOID:231	motor neuron disease
+DOID:4910	urethra adenocarcinoma	DOID:734	urethra cancer
+DOID:0060048	nosophobia	DOID:599	specific phobia
+DOID:4916	pituitary carcinoma	DOID:1785	pituitary cancer
+DOID:0060669	cerebral cavernous malformation	DOID:501	central nervous system hemangioma
+DOID:0060503	fruit allergy	DOID:3044	food allergy
+DOID:3459	breast carcinoma	DOID:1612	breast cancer
+DOID:483	cavernous hemangioma	DOID:484	vascular hemostatic disease
+DOID:3451	skin carcinoma	DOID:4159	skin cancer
+DOID:3454	brain infarction	DOID:6713	cerebrovascular disease
+DOID:2595	glottis cancer	DOID:2596	larynx cancer
+DOID:8411	kidney angiomyolipoma	DOID:3116	kidney benign neoplasm
+DOID:0060260	ptosis	DOID:5614	eye disease
+DOID:4637	cervical adenitis	DOID:1602	lymphadenitis
+DOID:5612	spinal cancer	DOID:3620	central nervous system cancer
+DOID:12859	choreatic disease	DOID:480	movement disease
+DOID:9396	acute laryngitis	DOID:3437	laryngitis
+DOID:2149	urogenital tuberculosis	DOID:0050598	extrapulmonary tuberculosis
+DOID:2772	irritant dermatitis	DOID:2773	contact dermatitis
+DOID:3355	fibrosarcoma	DOID:201	connective tissue cancer
+DOID:419	scleroderma	DOID:1575	rheumatic disease
+DOID:418	systemic scleroderma	DOID:419	scleroderma
+DOID:9463	otitis externa	DOID:379	external ear disease
+DOID:5844	myocardial infarction	DOID:3393	coronary artery disease
+DOID:224	transient cerebral ischemia	DOID:2316	brain ischemia
+DOID:4137	common bile duct disease	DOID:4138	bile duct disease
+DOID:738	female urethral cancer	DOID:734	urethra cancer
+DOID:10366	epididymis cancer	DOID:3856	male reproductive organ cancer
+DOID:0110826	Usher syndrome type 1	DOID:0050439	Usher syndrome
+DOID:0110827	Usher syndrome type 2	DOID:0050439	Usher syndrome
+DOID:736	male urethral cancer	DOID:734	urethra cancer
+DOID:2174	ocular cancer	DOID:0060116	sensory system cancer
+DOID:8564	lip cancer	DOID:8618	oral cavity cancer
+DOID:4876	trachea carcinoma	DOID:11920	tracheal cancer
+DOID:0080007	bone deterioration disease	DOID:0080010	bone structure disease
+DOID:3076	adult astrocytic tumour	DOID:3069	astrocytoma
+DOID:0060095	uterine benign neoplasm	DOID:0060086	female reproductive organ benign neoplasm
+DOID:0060094	bone benign neoplasm	DOID:0060123	connective tissue benign neoplasm
+DOID:3770	pulmonary fibrosis	DOID:3082	interstitial lung disease
+DOID:4007	bladder carcinoma	DOID:11054	urinary bladder cancer
+DOID:0050851	glomerulosclerosis	DOID:2921	glomerulonephritis
+DOID:3675	childhood kidney neoplasm	DOID:263	kidney cancer
+DOID:874	bacterial pneumonia	DOID:552	pneumonia
+DOID:5432	bladder papillary transitional cell neoplasm	DOID:5433	urinary tract papillary transitional cell benign neoplasm
+DOID:0060000	infective endocarditis	DOID:10314	endocarditis
+DOID:0060004	autoimmune disease of central nervous system	DOID:438	autoimmune disease of the nervous system
+DOID:4955	central nervous system melanocytic neoplasm	DOID:3620	central nervous system cancer
+DOID:4483	rhinitis	DOID:2163	nasal cavity disease
+DOID:0050822	second-degree atrioventricular block	DOID:0050820	atrioventricular block
+DOID:4959	epidermolysis bullosa dystrophica	DOID:2730	epidermolysis bullosa
+DOID:8514	acute pulmonary heart disease	DOID:8515	Cor pulmonale
+DOID:4254	osteosclerosis	DOID:0080005	bone remodeling disease
+DOID:4251	conjunctival disease	DOID:5614	eye disease
+DOID:3418	glossopharyngeal nerve disease	DOID:5656	cranial nerve disease
+DOID:397	restrictive cardiomyopathy	DOID:0060036	intrinsic cardiomyopathy
+DOID:2951	motion sickness	DOID:2952	inner ear disease
+DOID:0060309	syndromic X-linked intellectual disability	DOID:0050888	syndromic intellectual disability
+DOID:1517	cecal benign neoplasm	DOID:4610	intestinal benign neoplasm
+DOID:1107	esophageal carcinoma	DOID:5041	esophageal cancer
+DOID:13138	acute proliferative glomerulonephritis	DOID:2921	glomerulonephritis
+DOID:5158	pleural cancer	DOID:201	connective tissue cancer
+DOID:1453	atrophic glossitis	DOID:1456	glossitis
+DOID:0050431	arrhythmogenic right ventricular cardiomyopathy	DOID:0060036	intrinsic cardiomyopathy
+DOID:1588	thrombocytopenia	DOID:2218	blood platelet disease
+DOID:10024	migraine with aura	DOID:6364	migraine
+DOID:13476	supraglottis cancer	DOID:2596	larynx cancer
+DOID:518	scrotum neoplasm	DOID:3856	male reproductive organ cancer
+DOID:264	hemangiopericytoma	DOID:201	connective tissue cancer
+DOID:2784	lung sarcoma	DOID:1324	lung cancer
+DOID:1076	chronic pyelonephritis	DOID:11400	pyelonephritis
+DOID:5375	hair follicle neoplasm	DOID:3165	skin benign neoplasm
+DOID:5274	malignant dermis tumor	DOID:4159	skin cancer
+DOID:2609	adenomyoma	DOID:4236	carcinosarcoma
+DOID:10124	corneal disease	DOID:5614	eye disease
+DOID:2600	laryngeal carcinoma	DOID:2596	larynx cancer
+DOID:2234	focal epilepsy	DOID:1826	epilepsy
+DOID:11343	scleral disease	DOID:5614	eye disease
+DOID:9255	frontotemporal dementia	DOID:679	basal ganglia disease
+DOID:0050671	female breast cancer	DOID:1612	breast cancer
+DOID:422	congenital structural myopathy	DOID:423	myopathy
+DOID:5136	lung leiomyoma	DOID:3683	lung benign neoplasm
+DOID:9884	muscular dystrophy	DOID:423	myopathy
+DOID:5976	occlusion precerebral artery	DOID:6713	cerebrovascular disease
+DOID:5977	renal pelvis neoplasm	DOID:3116	kidney benign neoplasm
+DOID:5870	eosinophilic pneumonia	DOID:552	pneumonia
+DOID:4515	thyroid sarcoma	DOID:1781	thyroid cancer
+DOID:833	auditory system cancer	DOID:0060116	sensory system cancer
+DOID:10964	cholesteatoma of middle ear	DOID:869	cholesteatoma
+DOID:1393	visual pathway disease	DOID:5614	eye disease
+DOID:1002	endometritis	DOID:1005	endometrial disease
+DOID:6257	chromophil adenoma of the kidney	DOID:2697	renal adenoma
+DOID:8886	chorioretinitis	DOID:5614	eye disease
+DOID:8557	oropharynx cancer	DOID:0060119	pharynx cancer
+DOID:0050701	electroclinical syndrome	DOID:1826	epilepsy
+DOID:3939	lipomatous cancer	DOID:201	connective tissue cancer
+DOID:8925	primary thrombocytopenia	DOID:0060050	autoimmune disease of blood
+DOID:3930	otitis interna	DOID:2952	inner ear disease
+DOID:8923	skin melanoma	DOID:4159	skin cancer
+DOID:633	myositis	DOID:423	myopathy
+DOID:3840	craniopharyngioma	DOID:0060090	central nervous system organ benign neoplasm
+DOID:6420	pulmonary valve stenosis	DOID:5749	pulmonary valve disease
+DOID:4422	malignant adenofibroma	DOID:4236	carcinosarcoma
+DOID:4050	mediastinum sarcoma	DOID:5559	mediastinal cancer
+DOID:4193	intracranial thrombosis	DOID:6713	cerebrovascular disease
+DOID:110	lens disease	DOID:5614	eye disease
+DOID:116	pericardium cancer	DOID:117	heart cancer
+DOID:1634	breast papillomatosis	DOID:0060082	breast benign neoplasm
+DOID:0060699	familial hypocalciuric hypercalcemia	DOID:12678	hypercalcemia
+DOID:119	vaginal cancer	DOID:120	female reproductive organ cancer
+DOID:7492	central epithelioid sarcoma	DOID:6193	epithelioid sarcoma
+DOID:693	dental enamel hypoplasia	DOID:214	teeth hard tissue disease
+DOID:0050950	autosomal recessive cerebellar ataxia	DOID:0050951	hereditary ataxia
+DOID:0050953	X-linked hereditary ataxia	DOID:0050951	hereditary ataxia
+DOID:0050952	spastic ataxia	DOID:0050951	hereditary ataxia
+DOID:4451	renal carcinoma	DOID:263	kidney cancer
+DOID:699	mitochondrial myopathy	DOID:423	myopathy
+DOID:0060058	lymphoma	DOID:2531	hematologic cancer
+DOID:1795	tumor of exocrine pancreas	DOID:1793	pancreatic cancer
+DOID:2348	arteriosclerotic cardiovascular disease	DOID:2349	arteriosclerosis
+DOID:1799	islet cell tumor	DOID:1793	pancreatic cancer
+DOID:3565	meningioma	DOID:3620	central nervous system cancer
+DOID:11130	secondary hypertension	DOID:10763	hypertension
+DOID:3111	cystadenocarcinoma	DOID:299	adenocarcinoma
+DOID:3112	papillary adenocarcinoma	DOID:299	adenocarcinoma
+DOID:10908	hydrocephalus	DOID:1443	cerebral degeneration
+DOID:184	bone cancer	DOID:201	connective tissue cancer
+DOID:1245	vulva cancer	DOID:120	female reproductive organ cancer
+DOID:1242	globe disease	DOID:5614	eye disease
+DOID:1240	leukemia	DOID:2531	hematologic cancer
+DOID:1099	alpha thalassemia	DOID:10241	thalassemia
+DOID:543	dystonia	DOID:480	movement disease
+DOID:3209	junctional epidermolysis bullosa	DOID:2730	epidermolysis bullosa
+DOID:11984	hypertrophic cardiomyopathy	DOID:0060036	intrinsic cardiomyopathy
+DOID:338	cranial nerve neoplasm	DOID:3620	central nervous system cancer
+DOID:5834	spermatocytoma	DOID:4440	seminoma
+DOID:2877	larynx sarcoma	DOID:2596	larynx cancer
+DOID:235	colonic benign neoplasm	DOID:4610	intestinal benign neoplasm
+DOID:238	pupil disease	DOID:5614	eye disease
+DOID:332	amyotrophic lateral sclerosis	DOID:231	motor neuron disease
+DOID:4644	epidermolysis bullosa simplex	DOID:2730	epidermolysis bullosa
+DOID:12930	dilated cardiomyopathy	DOID:0060036	intrinsic cardiomyopathy
+DOID:10376	amblyopia	DOID:5614	eye disease
+DOID:1891	optic nerve disease	DOID:5656	cranial nerve disease
+DOID:5731	chronic salpingitis	DOID:5733	salpingitis
+DOID:0050625	biliary tract neoplasm	DOID:3117	hepatobiliary benign neoplasm
+DOID:8602	gum cancer	DOID:8618	oral cavity cancer
+DOID:0080011	bone resorption disease	DOID:0080005	bone remodeling disease
+DOID:0110828	Usher syndrome type 3	DOID:0050439	Usher syndrome
+DOID:10629	microphthalmia	DOID:5614	eye disease
+DOID:3068	glioblastoma multiforme	DOID:3069	astrocytoma
+DOID:0090020	split hand-foot malformation	DOID:0080006	bone development disease
+DOID:13580	cholestasis	DOID:4138	bile duct disease
+DOID:3664	mast cell neoplasm	DOID:2531	hematologic cancer
+DOID:841	extrinsic allergic alveolitis	DOID:3082	interstitial lung disease
+DOID:7696	lung hilum cancer	DOID:1324	lung cancer
+DOID:848	arthritis	DOID:3342	bone inflammation disease
+DOID:1964	fallopian tube cancer	DOID:120	female reproductive organ cancer
+DOID:1802	mononeuritis	DOID:1188|DOID:1803	mononeuropathy|neuritis
+DOID:5782	tympanic membrane disease	DOID:5100	middle ear disease
+DOID:790	ocular hypotension	DOID:5614	eye disease
+DOID:2668	mesenchymoma	DOID:201	connective tissue cancer
+DOID:4551	anus neoplasm	DOID:4610	intestinal benign neoplasm
+DOID:4085	trophoblastic neoplasm	DOID:3095	germ cell and embryonal cancer
+DOID:0060155	visual agnosia	DOID:4090	agnosia
+DOID:8501	fundus dystrophy	DOID:5614	eye disease
+DOID:8850	salivary gland cancer	DOID:8618	oral cavity cancer
+DOID:8504	impetigo	DOID:4223	pyoderma
+DOID:8505	dermatitis herpetiformis	DOID:8502|DOID:0060039	bullous skin disease|autoimmune disease of skin and connective tissue
+DOID:11615	penile cancer	DOID:3856	male reproductive organ cancer
+DOID:3407	carotid artery disease	DOID:6713	cerebrovascular disease
+DOID:3013	intraductal breast neoplasm	DOID:0060082	breast benign neoplasm
+DOID:3017	breast sarcoma	DOID:1612	breast cancer
+DOID:4307	polyradiculopathy	DOID:4308	polyradiculoneuropathy
+DOID:381	arthropathy	DOID:3342	bone inflammation disease
+DOID:6868	mediastinal malignant lymphoma	DOID:5559	mediastinal cancer
+DOID:1660	malignant pineal area germ cell neoplasm	DOID:5032	pineal gland cancer
+DOID:1664	pineoblastoma	DOID:5032	pineal gland cancer
+DOID:12657	vestibulocochlear nerve disease	DOID:2889|DOID:5656	retrocochlear disease|cranial nerve disease
+DOID:6460	large intestine lipoma	DOID:4610	intestinal benign neoplasm
+DOID:4851	pilocytic astrocytoma	DOID:3069	astrocytoma
+DOID:3491	Turner syndrome	DOID:14447	gonadal dysgenesis

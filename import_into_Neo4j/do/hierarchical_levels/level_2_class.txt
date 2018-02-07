@@ -1,0 +1,51 @@
+MonDO_id 	 MonDO_name 	 parent_id 	 parent_name 
+DOID:0060043	sexual disorder	DOID:150	disease of mental health
+DOID:1398	parasitic infectious disease	DOID:0050117	disease by infectious agent
+DOID:0080014	chromosomal disease	DOID:630	genetic disease
+DOID:18	urinary system disease	DOID:7	disease of anatomical entity
+DOID:4501	orofaciodigital syndrome	DOID:630	genetic disease
+DOID:16	integumentary system disease	DOID:7	disease of anatomical entity
+DOID:17	musculoskeletal system disease	DOID:7	disease of anatomical entity
+DOID:15	reproductive system disease	DOID:7	disease of anatomical entity
+DOID:74	hematopoietic system disease	DOID:7	disease of anatomical entity
+DOID:1561	cognitive disorder	DOID:150	disease of mental health
+DOID:77	gastrointestinal system disease	DOID:7	disease of anatomical entity
+DOID:0080074	neural tube defect	DOID:0080015	physical disorder
+DOID:934	viral infectious disease	DOID:0050117	disease by infectious agent
+DOID:10632	Wolfram syndrome	DOID:225	syndrome
+DOID:0060565	Ritscher-Schinzel syndrome	DOID:225	syndrome
+DOID:2490	congenital nervous system abnormality	DOID:0080015	physical disorder
+DOID:0060289	Ohdo syndrome	DOID:225	syndrome
+DOID:0060071	pre-malignant neoplasm	DOID:14566	disease of cellular proliferation
+DOID:0060118	thoracic disease	DOID:7	disease of anatomical entity
+DOID:0060072	benign neoplasm	DOID:14566	disease of cellular proliferation
+DOID:0050567	orofacial cleft	DOID:0080015	physical disorder
+DOID:0060558	lethal congenital contracture syndrome	DOID:225	syndrome
+DOID:0060225	3MC syndrome	DOID:225	syndrome
+DOID:0060158	acquired metabolic disease	DOID:0014667	disease of metabolism
+DOID:0060340	ciliopathy	DOID:630	genetic disease
+DOID:10935	dissociative disorder	DOID:150	disease of mental health
+DOID:10937	impulse control disorder	DOID:150	disease of mental health
+DOID:2914	immune system disease	DOID:7	disease of anatomical entity
+DOID:1510	personality disorder	DOID:150	disease of mental health
+DOID:1564	fungal infectious disease	DOID:0050117	disease by infectious agent
+DOID:1579	respiratory system disease	DOID:7	disease of anatomical entity
+DOID:1234	gender identity disorder	DOID:150	disease of mental health
+DOID:0080173	bladder exstrophy-epispadias-cloacal exstrophy complex	DOID:0080015	physical disorder
+DOID:28	endocrine system disease	DOID:7	disease of anatomical entity
+DOID:162	cancer	DOID:14566	disease of cellular proliferation
+DOID:0060037	developmental disorder of mental health	DOID:150	disease of mental health
+DOID:0050177	monogenic disease	DOID:630	genetic disease
+DOID:2581	chondrodysplasia punctata	DOID:630	genetic disease
+DOID:535	sleep disorder	DOID:150	disease of mental health
+DOID:655	inherited metabolic disorder	DOID:0014667	disease of metabolism
+DOID:104	bacterial infectious disease	DOID:0050117	disease by infectious agent
+DOID:1766	factitious disorder	DOID:150	disease of mental health
+DOID:0050524	maturity-onset diabetes of the young	DOID:630	genetic disease
+DOID:0060254	Robinow syndrome	DOID:225	syndrome
+DOID:303	substance-related disorder	DOID:150	disease of mental health
+DOID:863	nervous system disease	DOID:7	disease of anatomical entity
+DOID:1287	cardiovascular system disease	DOID:7	disease of anatomical entity
+DOID:0050545	visceral heterotaxy	DOID:0080015	physical disorder
+DOID:4737	somatoform disorder	DOID:150	disease of mental health
+DOID:3490	Noonan syndrome	DOID:225	syndrome

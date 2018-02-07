@@ -1,0 +1,393 @@
+MonDO_id 	 MonDO_name 	 parent_id 	 parent_name 
+DOID:1443	cerebral degeneration	DOID:936	brain disease
+DOID:6713	cerebrovascular disease	DOID:0050828	artery disease
+DOID:2722	acrodermatitis	DOID:2723	dermatitis
+DOID:13548	secondary Parkinson disease	DOID:1289	neurodegenerative disease
+DOID:9809	hypersensitivity vasculitis	DOID:1557	hypersensitivity reaction type III disease
+DOID:12531	von Willebrand's disease	DOID:2214	inherited blood coagulation disease
+DOID:11504	autonomic neuropathy	DOID:11465	autonomic nervous system disease
+DOID:14447	gonadal dysgenesis	DOID:1924	hypogonadism
+DOID:8295	scabies	DOID:7894	mite infestation
+DOID:0060870	isolated growth hormone deficiency	DOID:9406	hypopituitarism
+DOID:501	central nervous system hemangioma	DOID:255	hemangioma
+DOID:8439	postgastrectomy syndrome	DOID:1159	functional gastric disease
+DOID:3082	interstitial lung disease	DOID:850	lung disease
+DOID:14654	prostatitis	DOID:47	prostate disease
+DOID:3128	anus disease	DOID:1285	rectal disease
+DOID:2834	acquired polycythemia	DOID:8432	polycythemia
+DOID:1063	interstitial nephritis	DOID:10952	nephritis
+DOID:11920	tracheal cancer	DOID:0050615	respiratory system cancer
+DOID:12384	dysentery	DOID:100	intestinal infectious disease
+DOID:5082	liver cirrhosis	DOID:409	liver disease
+DOID:11372	megacolon	DOID:5353	colonic disease
+DOID:438	autoimmune disease of the nervous system	DOID:417	hypersensitivity reaction type II disease
+DOID:4844	benign ependymoma	DOID:0060101	benign glioma
+DOID:0110734	neurodegeneration with brain iron accumulation	DOID:1289	neurodegenerative disease
+DOID:201	connective tissue cancer	DOID:0060100	musculoskeletal system cancer
+DOID:0050548	hereditary sensory neuropathy	DOID:870	neuropathy
+DOID:214	teeth hard tissue disease	DOID:1091	tooth disease
+DOID:2786	cerebellar disease	DOID:936	brain disease
+DOID:3620	central nervous system cancer	DOID:3093	nervous system cancer
+DOID:5749	pulmonary valve disease	DOID:4079	heart valve disease
+DOID:614	lymphopenia	DOID:615	leukopenia
+DOID:10341	chronic meningitis	DOID:9471	meningitis
+DOID:0060116	sensory system cancer	DOID:3093	nervous system cancer
+DOID:0050480	epidemic typhus	DOID:11256	typhus
+DOID:0050890	synucleinopathy	DOID:1289	neurodegenerative disease
+DOID:0060119	pharynx cancer	DOID:3119	gastrointestinal system cancer
+DOID:3906	bronchial neoplasm	DOID:0050621	respiratory system benign neoplasm
+DOID:1382	miliaria	DOID:1383	sweat gland disease
+DOID:4607	biliary tract cancer	DOID:3119	gastrointestinal system cancer
+DOID:6285	heart lipoma	DOID:0060091	cardiovascular organ benign neoplasm
+DOID:10780	primary polycythemia	DOID:8432	polycythemia
+DOID:3753	Hermansky-Pudlak syndrome	DOID:0050737	autosomal recessive disease
+DOID:898	autosomal dominant polycystic kidney disease	DOID:0050736	autosomal dominant disease
+DOID:5041	esophageal cancer	DOID:3119	gastrointestinal system cancer
+DOID:1931	hypothalamic disease	DOID:936	brain disease
+DOID:1935	Bardet-Biedl syndrome	DOID:0050737	autosomal recessive disease
+DOID:0050824	sinoatrial node disease	DOID:10273	heart conduction disease
+DOID:0050439	Usher syndrome	DOID:0050737	autosomal recessive disease
+DOID:0060180	colitis	DOID:0050589	inflammatory bowel disease
+DOID:7327	pseudosarcomatous fibromatosis	DOID:9598	fasciitis
+DOID:6053	pediatric germ cell cancer	DOID:2994	germ cell cancer
+DOID:1390	hypobetalipoproteinemia	DOID:1387	hypolipoproteinemia
+DOID:2476	hereditary spastic paraplegia	DOID:607	paraplegia
+DOID:13413	hepatic encephalopathy	DOID:936	brain disease
+DOID:4236	carcinosarcoma	DOID:154	mixed cell type cancer
+DOID:3571	liver cancer	DOID:3119	gastrointestinal system cancer
+DOID:0060831	Griscelli syndrome	DOID:0050737	autosomal recessive disease
+DOID:4330	non-Langerhans-cell histiocytosis	DOID:3405	histiocytosis
+DOID:4337	tinea capitis	DOID:8913	dermatophytosis
+DOID:3877	functional colonic disease	DOID:5353	colonic disease
+DOID:1575	rheumatic disease	DOID:417	hypersensitivity reaction type II disease
+DOID:1470	major depressive disorder	DOID:1596	mental depression
+DOID:2712	phimosis	DOID:1529	penile disease
+DOID:2891	thyroid adenoma	DOID:0060089	endocrine organ benign neoplasm
+DOID:3277	thymus cancer	DOID:0060083	immune system cancer
+DOID:3179	inverted papilloma	DOID:2615	papilloma
+DOID:12466	secondary hyperparathyroidism	DOID:13543	hyperparathyroidism
+DOID:379	external ear disease	DOID:2742	auditory system disease
+DOID:8440	ileus	DOID:8437	intestinal obstruction
+DOID:0111073	progressive familial heart block	DOID:10273	heart conduction disease
+DOID:11819	ureter cancer	DOID:3996	urinary system cancer
+DOID:10241	thalassemia	DOID:0050737	autosomal recessive disease
+DOID:2253	cervix disease	DOID:345	uterine disease
+DOID:3306	mixed germ cell cancer	DOID:2994	germ cell cancer
+DOID:0050598	extrapulmonary tuberculosis	DOID:399	tuberculosis
+DOID:11885	ureteral benign neoplasm	DOID:731	urinary system benign neoplasm
+DOID:8618	oral cavity cancer	DOID:3119	gastrointestinal system cancer
+DOID:0050592	asphyxiating thoracic dystrophy	DOID:0050737	autosomal recessive disease
+DOID:5221	chronic polyneuropathy	DOID:1389	polyneuropathy
+DOID:4479	pseudohypoaldosteronism	DOID:447	renal tubular transport disease
+DOID:5559	mediastinal cancer	DOID:5093	thoracic cancer
+DOID:10310	viral meningitis	DOID:9471	meningitis
+DOID:10314	endocarditis	DOID:0050825	endocardium disease
+DOID:784	chronic kidney disease	DOID:1074	kidney failure
+DOID:780	placenta disease	DOID:345	uterine disease
+DOID:4159	skin cancer	DOID:0060122	integumentary system cancer
+DOID:3953	adrenal gland cancer	DOID:170	endocrine gland cancer
+DOID:2921	glomerulonephritis	DOID:10952	nephritis
+DOID:1680	chronic cystitis	DOID:1679	cystitis
+DOID:1681	heart septal defect	DOID:1682	congenital heart disease
+DOID:3829	pituitary adenoma	DOID:0060089	endocrine organ benign neoplasm
+DOID:2537	inflammatory and toxic neuropathy	DOID:870	neuropathy
+DOID:6873	skin tag	DOID:2053	reactive cutaneous fibrous lesion
+DOID:3437	laryngitis	DOID:786	laryngeal disease
+DOID:582	hemoglobinuria	DOID:576	proteinuria
+DOID:11132	prostatic hypertrophy	DOID:47	prostate disease
+DOID:1612	breast cancer	DOID:5093	thoracic cancer
+DOID:10811	nasal cavity cancer	DOID:0050615	respiratory system cancer
+DOID:2282	hidradenitis	DOID:1383	sweat gland disease
+DOID:5074	malignant ependymoma	DOID:3070	malignant glioma
+DOID:5076	mixed glioma	DOID:3070	malignant glioma
+DOID:2320	obstructive lung disease	DOID:850	lung disease
+DOID:2327	viral gastritis	DOID:4029	gastritis
+DOID:6498	seborrheic keratosis	DOID:161	keratosis
+DOID:9977	hallucinogen dependence	DOID:9974	drug dependence
+DOID:9970	obesity	DOID:654	overnutrition
+DOID:0050619	paranasal sinus cancer	DOID:0050615	respiratory system cancer
+DOID:9401	epididymo-orchitis	DOID:9402	epididymitis
+DOID:0111034	hemochromatosis type 2	DOID:2352	hemochromatosis
+DOID:10763	hypertension	DOID:0050828	artery disease
+DOID:1729	retinal vascular occlusion	DOID:341	peripheral vascular disease
+DOID:1352	paranasal sinus disease	DOID:2825	nose disease
+DOID:2841	asthma	DOID:1176	bronchial disease
+DOID:4757	sex cord-stromal neoplasm	DOID:0050622	reproductive organ benign neoplasm
+DOID:5214	demyelinating polyneuropathy	DOID:1389	polyneuropathy
+DOID:1542	head and neck carcinoma	DOID:11934	head and neck cancer
+DOID:9588	encephalitis	DOID:936	brain disease
+DOID:2218	blood platelet disease	DOID:2213	hemorrhagic disease
+DOID:13148	acute cystitis	DOID:1679	cystitis
+DOID:2217	Bernard-Soulier syndrome	DOID:2214	inherited blood coagulation disease
+DOID:2747	glycogen storage disease	DOID:0050728	glycogen metabolism disorder
+DOID:3345	xanthomatosis	DOID:9455	lipid storage disease
+DOID:11400	pyelonephritis	DOID:2744	pyelitis
+DOID:3342	bone inflammation disease	DOID:0080001	bone disease
+DOID:3223	complex regional pain syndrome	DOID:11465	autonomic nervous system disease
+DOID:9470	bacterial meningitis	DOID:9471	meningitis
+DOID:9477	pulmonary embolism	DOID:0050828	artery disease
+DOID:2697	renal adenoma	DOID:731	urinary system benign neoplasm
+DOID:9351	diabetes mellitus	DOID:4194	glucose metabolism disease
+DOID:3616	angiolipoma	DOID:3315	lipoma
+DOID:627	severe combined immunodeficiency	DOID:628	combined T cell and B cell immunodeficiency
+DOID:9965	toxoplasmosis	DOID:2113	coccidiosis
+DOID:461	muscle benign neoplasm	DOID:0060099	musculoskeletal system benign neoplasm
+DOID:0050889	non-syndromic intellectual disability	DOID:1059	intellectual disability
+DOID:0050888	syndromic intellectual disability	DOID:1059	intellectual disability
+DOID:12179	tinea corporis	DOID:8913	dermatophytosis
+DOID:3918	pancreatic cystadenoma	DOID:0050624	gastrointestinal system benign neoplasm
+DOID:4610	intestinal benign neoplasm	DOID:0050624	gastrointestinal system benign neoplasm
+DOID:0060082	breast benign neoplasm	DOID:0060097	thoracic benign neoplasm
+DOID:6688	autoimmune lymphoproliferative syndrome	DOID:2916	hypersensitivity reaction type IV disease
+DOID:0060086	female reproductive organ benign neoplasm	DOID:0050622	reproductive organ benign neoplasm
+DOID:0060087	male reproductive organ benign neoplasm	DOID:0050622	reproductive organ benign neoplasm
+DOID:13365	reading disorder	DOID:8927	learning disability
+DOID:3044	food allergy	DOID:1205	allergic hypersensitivity disease
+DOID:3767	vaginal discharge	DOID:121	vaginal disease
+DOID:3765	pseudohermaphroditism	DOID:1923	sex differentiation disease
+DOID:864	phlebitis	DOID:866	vein disease
+DOID:869	cholesteatoma	DOID:161	keratosis
+DOID:13564	aspergillosis	DOID:2473	opportunistic mycosis
+DOID:3683	lung benign neoplasm	DOID:0050621	respiratory system benign neoplasm
+DOID:1829	urethral stricture	DOID:12577	urethral obstruction
+DOID:10493	adrenal cortical hypofunction	DOID:3952	adrenal cortex disease
+DOID:0060770	dextro-looped transposition of the great arteries	DOID:1682	congenital heart disease
+DOID:1826	epilepsy	DOID:936	brain disease
+DOID:0060073	lymphatic system cancer	DOID:0060083	immune system cancer
+DOID:0050427	xeroderma pigmentosum	DOID:0050737	autosomal recessive disease
+DOID:13810	familial hypercholesterolemia	DOID:1168	familial hyperlipidemia
+DOID:9720	vitreous disease	DOID:1492	eye and adnexa disease
+DOID:0090131	complex cortical dysplasia with other brain malformations	DOID:936	brain disease
+DOID:10974	oophoritis	DOID:1100	ovarian disease
+DOID:14686	Axenfeld-Rieger syndrome	DOID:0050736	autosomal dominant disease
+DOID:1762	cheilitis	DOID:9297	lip disease
+DOID:0090007	immunodeficiency-centromeric instability-facial anomalies syndrome	DOID:0050737	autosomal recessive disease
+DOID:3159	photosensitivity disease	DOID:2723	dermatitis
+DOID:1508	candidiasis	DOID:2473	opportunistic mycosis
+DOID:4976	elephantiasis	DOID:4977	lymphedema
+DOID:2316	brain ischemia	DOID:326	ischemia
+DOID:3388	periodontal disease	DOID:1091	tooth disease
+DOID:440	neuromuscular disease	DOID:870	neuropathy
+DOID:445	Bartter disease	DOID:447	renal tubular transport disease
+DOID:2596	larynx cancer	DOID:0050615	respiratory system cancer
+DOID:0060496	respiratory allergy	DOID:1205	allergic hypersensitivity disease
+DOID:254	hemangioma of intra-abdominal structure	DOID:255	hemangioma
+DOID:251	alcohol-induced mental disorder	DOID:8646	substance-induced psychosis
+DOID:0060224	atrial fibrillation	DOID:10273	heart conduction disease
+DOID:4090	agnosia	DOID:2033	communication disorder
+DOID:5138	leiomyomatosis	DOID:127	leiomyoma
+DOID:1005	endometrial disease	DOID:345	uterine disease
+DOID:5032	pineal gland cancer	DOID:170	endocrine gland cancer
+DOID:62	aortic valve disease	DOID:4079	heart valve disease
+DOID:61	mitral valve disease	DOID:4079	heart valve disease
+DOID:5241	hemangioblastoma	DOID:255	hemangioma
+DOID:1188	mononeuropathy	DOID:870	neuropathy
+DOID:13033	balanitis	DOID:1529	penile disease
+DOID:1184	nephrotic syndrome	DOID:2527	nephrosis
+DOID:10155	intestinal cancer	DOID:3119	gastrointestinal system cancer
+DOID:2388	renal artery disease	DOID:0050828	artery disease
+DOID:0050765	neuroacanthocytosis	DOID:1289	neurodegenerative disease
+DOID:92	speech disorder	DOID:2033	communication disorder
+DOID:93	language disorder	DOID:2033	communication disorder
+DOID:2383	neonatal jaundice	DOID:10123	pigmentation disease
+DOID:3310	atopic dermatitis	DOID:2723	dermatitis
+DOID:9743	diabetic neuropathy	DOID:870	neuropathy
+DOID:4717	extragonadal germ cell cancer	DOID:2994	germ cell cancer
+DOID:0050563	nonsyndromic deafness	DOID:2742	auditory system disease
+DOID:5561	gastric teratoma	DOID:0050624	gastrointestinal system benign neoplasm
+DOID:679	basal ganglia disease	DOID:936	brain disease
+DOID:174	acanthoma	DOID:3168	squamous cell neoplasm
+DOID:175	vascular cancer	DOID:176	cardiovascular cancer
+DOID:0060031	autoimmune disease of gastrointestinal tract	DOID:417	hypersensitivity reaction type II disease
+DOID:2034	encephalomalacia	DOID:936	brain disease
+DOID:0060036	intrinsic cardiomyopathy	DOID:0050700	cardiomyopathy
+DOID:0060039	autoimmune disease of skin and connective tissue	DOID:417	hypersensitivity reaction type II disease
+DOID:6364	migraine	DOID:936	brain disease
+DOID:7608	parathyroid adenoma	DOID:0060089	endocrine organ benign neoplasm
+DOID:4148	gastrointestinal neuroendocrine benign tumor	DOID:0050624	gastrointestinal system benign neoplasm
+DOID:9310	nasal cavity neoplasm	DOID:0050621	respiratory system benign neoplasm
+DOID:3856	male reproductive organ cancer	DOID:193	reproductive organ cancer
+DOID:583	hemolytic anemia	DOID:720	normocytic anemia
+DOID:4271	microsporidiosis	DOID:2473	opportunistic mycosis
+DOID:0060611	abdominal obesity-metabolic syndrome	DOID:654	overnutrition
+DOID:4045	muscle cancer	DOID:0060100	musculoskeletal system cancer
+DOID:12678	hypercalcemia	DOID:10575	calcium metabolism disease
+DOID:1911	endodermal sinus tumor	DOID:2994	germ cell cancer
+DOID:1602	lymphadenitis	DOID:9942	lymph node disease
+DOID:0060047	writing disorder	DOID:8927	learning disability
+DOID:680	tauopathy	DOID:1289	neurodegenerative disease
+DOID:682	compartment syndrome	DOID:326	ischemia
+DOID:4441	dysgerminoma	DOID:2994	germ cell cancer
+DOID:4440	seminoma	DOID:2994	germ cell cancer
+DOID:688	embryonal cancer	DOID:2994	germ cell cancer
+DOID:0060049	autoimmune disease of urogenital tract	DOID:417	hypersensitivity reaction type II disease
+DOID:2531	hematologic cancer	DOID:0060083	immune system cancer
+DOID:0060500	drug allergy	DOID:1205	allergic hypersensitivity disease
+DOID:1785	pituitary cancer	DOID:170	endocrine gland cancer
+DOID:1781	thyroid cancer	DOID:170	endocrine gland cancer
+DOID:484	vascular hemostatic disease	DOID:2213	hemorrhagic disease
+DOID:2598	laryngeal benign neoplasm	DOID:0050621	respiratory system benign neoplasm
+DOID:480	movement disease	DOID:936	brain disease
+DOID:525	central nervous system vasculitis	DOID:865	vasculitis
+DOID:520	aortic disease	DOID:0050828	artery disease
+DOID:10773	bubonic plague	DOID:3482	plague
+DOID:299	adenocarcinoma	DOID:305	carcinoma
+DOID:1731	histoplasmosis	DOID:0050292	primary systemic mycosis
+DOID:0060264	pontocerebellar hypoplasia	DOID:1289	neurodegenerative disease
+DOID:1325	bronchus cancer	DOID:0050615	respiratory system cancer
+DOID:1324	lung cancer	DOID:0050615	respiratory system cancer
+DOID:192	sex cord-gonadal stromal tumor	DOID:193	reproductive organ cancer
+DOID:6025	selective immunoglobulin deficiency disease	DOID:2115	B cell deficiency
+DOID:5614	eye disease	DOID:1492	eye and adnexa disease
+DOID:2670	transitional papilloma	DOID:2615	papilloma
+DOID:2671	transitional cell carcinoma	DOID:305	carcinoma
+DOID:2773	contact dermatitis	DOID:2723	dermatitis
+DOID:419	scleroderma	DOID:854	collagen disease
+DOID:552	pneumonia	DOID:850	lung disease
+DOID:3213	demyelinating disease	DOID:1289	neurodegenerative disease
+DOID:1130	pituitary infarct	DOID:3646	necrosis of pituitary
+DOID:5100	middle ear disease	DOID:2742	auditory system disease
+DOID:14749	methylmalonic acidemia	DOID:0060159	organic acidemia
+DOID:3978	extrinsic cardiomyopathy	DOID:0050700	cardiomyopathy
+DOID:4138	bile duct disease	DOID:9741	biliary tract disease
+DOID:14213	hypophosphatasia	DOID:0050736	autosomal dominant disease
+DOID:734	urethra cancer	DOID:3996	urinary system cancer
+DOID:599	specific phobia	DOID:591	phobic disorder
+DOID:639	acute disseminated encephalomyelitis	DOID:640	encephalomyelitis
+DOID:2170	vaginitis	DOID:121	vaginal disease
+DOID:8200	tertiary syphilis	DOID:4166	syphilis
+DOID:0080006	bone development disease	DOID:0080001	bone disease
+DOID:0080005	bone remodeling disease	DOID:0080001	bone disease
+DOID:0060096	sensory organ benign neoplasm	DOID:0060115	nervous system benign neoplasm
+DOID:0080008	ischemic bone disease	DOID:0080001	bone disease
+DOID:12639	pyloric stenosis	DOID:3122	gastric outlet obstruction
+DOID:120	female reproductive organ cancer	DOID:193	reproductive organ cancer
+DOID:5433	urinary tract papillary transitional cell benign neoplasm	DOID:731	urinary system benign neoplasm
+DOID:11162	respiratory failure	DOID:850	lung disease
+DOID:6193	epithelioid sarcoma	DOID:3350	mesenchymal cell neoplasm
+DOID:11247	disseminated intravascular coagulation	DOID:2452	thrombophilia
+DOID:13359	Ehlers-Danlos syndrome	DOID:854	collagen disease
+DOID:2001	neuroma	DOID:0060115	nervous system benign neoplasm
+DOID:649	prion disease	DOID:936	brain disease
+DOID:0060005	autoimmune disease of endocrine system	DOID:417	hypersensitivity reaction type II disease
+DOID:0050451	Brugada syndrome	DOID:10273	heart conduction disease
+DOID:0050820	atrioventricular block	DOID:10273	heart conduction disease
+DOID:8515	Cor pulmonale	DOID:6000	congestive heart failure
+DOID:12341	retroperitoneal sarcoma	DOID:5875	retroperitoneal cancer
+DOID:0050827	rheumatic heart disease	DOID:4079	heart valve disease
+DOID:0050826	tricuspid valve disease	DOID:4079	heart valve disease
+DOID:3558	duodenal obstruction	DOID:4072|DOID:8437	duodenal disease|intestinal obstruction
+DOID:0060782	EEC syndrome	DOID:0050736	autosomal dominant disease
+DOID:11608	fungal meningitis	DOID:9471	meningitis
+DOID:2559	opiate dependence	DOID:9974	drug dependence
+DOID:12119	hemosiderosis	DOID:2351	iron metabolism disease
+DOID:2952	inner ear disease	DOID:2742	auditory system disease
+DOID:1673	pneumothorax	DOID:1532	pleural disease
+DOID:2959	hyperimmunoglobulin syndrome	DOID:2115	B cell deficiency
+DOID:1456	glossitis	DOID:10944	tongue disease
+DOID:2730	epidermolysis bullosa	DOID:2731	vesiculobullous skin disease
+DOID:3393	coronary artery disease	DOID:0050828	artery disease
+DOID:3390	palmoplantar keratosis	DOID:161	keratosis
+DOID:799	varicose veins	DOID:866	vein disease
+DOID:8741	seborrheic dermatitis	DOID:2723	dermatitis
+DOID:9428	intracranial hypertension	DOID:936	brain disease
+DOID:263	kidney cancer	DOID:3996	urinary system cancer
+DOID:3095	germ cell and embryonal cancer	DOID:2994	germ cell cancer
+DOID:0090109	autosomal dominant hypocalcemia	DOID:10575	calcium metabolism disease
+DOID:0060237	Warburg micro syndrome	DOID:0050737	autosomal recessive disease
+DOID:1203	drug-induced mental disorder	DOID:8646	substance-induced psychosis
+DOID:10247	pleurisy	DOID:1532	pleural disease
+DOID:10128	venous insufficiency	DOID:866	vein disease
+DOID:1192	peripheral nervous system neoplasm	DOID:3093	nervous system cancer
+DOID:2237	hepatitis	DOID:409	liver disease
+DOID:9258	Waardenburg's syndrome	DOID:0050736	autosomal dominant disease
+DOID:3326	purpura	DOID:2213	hemorrhagic disease
+DOID:423	myopathy	DOID:66	muscle tissue disease
+DOID:0050674	congenital bile acid synthesis defect	DOID:1701	steroid inherited metabolic disorder
+DOID:9498	pulmonary eosinophilia	DOID:999	hypereosinophilic syndrome
+DOID:5656	cranial nerve disease	DOID:870	neuropathy
+DOID:5330	dental pulp disease	DOID:1091	tooth disease
+DOID:0050815	eye adnexa disease	DOID:1492	eye and adnexa disease
+DOID:8955	sideroblastic anemia	DOID:12449	aplastic anemia
+DOID:7319	axonal neuropathy	DOID:870	neuropathy
+DOID:169	neuroendocrine tumor	DOID:170	endocrine gland cancer
+DOID:0060123	connective tissue benign neoplasm	DOID:0060099	musculoskeletal system benign neoplasm
+DOID:0060220	physical urticaria	DOID:1555	urticaria
+DOID:0060125	heavy chain disease	DOID:2916	hypersensitivity reaction type IV disease
+DOID:0001816	angiosarcoma	DOID:1115	sarcoma
+DOID:5482	cystadenofibroma	DOID:2683	adenofibroma
+DOID:9673	ulcerative stomatitis	DOID:9637	stomatitis
+DOID:4676	uremia	DOID:1074	kidney failure
+DOID:3181	oligodendroglioma	DOID:3070	malignant glioma
+DOID:2517	intracranial structure hemangioma	DOID:255	hemangioma
+DOID:3021	acute kidney failure	DOID:1074	kidney failure
+DOID:11054	urinary bladder cancer	DOID:3996	urinary system cancer
+DOID:4195	hyperglycemia	DOID:4194	glucose metabolism disease
+DOID:986	alopecia areata	DOID:417	hypersensitivity reaction type II disease
+DOID:0090070	hypogonadotropic hypogonadism	DOID:1924	hypogonadism
+DOID:117	heart cancer	DOID:176	cardiovascular cancer
+DOID:1927	sphingolipidosis	DOID:9455	lipid storage disease
+DOID:10207	paratesticular lipoma	DOID:0050622	reproductive organ benign neoplasm
+DOID:11294	arteriovenous malformation	DOID:255	hemangioma
+DOID:12987	agranulocytosis	DOID:615	leukopenia
+DOID:0060050	autoimmune disease of blood	DOID:417	hypersensitivity reaction type II disease
+DOID:0050951	hereditary ataxia	DOID:1289	neurodegenerative disease
+DOID:13832	patent ductus arteriosus	DOID:1682	congenital heart disease
+DOID:1791	peritoneal carcinoma	DOID:3119	gastrointestinal system cancer
+DOID:1793	pancreatic cancer	DOID:170	endocrine gland cancer
+DOID:2349	arteriosclerosis	DOID:0050828	artery disease
+DOID:490	hemangioma of lung	DOID:255	hemangioma
+DOID:0060674	catecholaminergic polymorphic ventricular tachycardia	DOID:10273	heart conduction disease
+DOID:495	sclerosing hemangioma	DOID:255	hemangioma
+DOID:1350	paranasal sinus neoplasm	DOID:0050621	respiratory system benign neoplasm
+DOID:9856	congenital syphilis	DOID:4166	syphilis
+DOID:3116	kidney benign neoplasm	DOID:731	urinary system benign neoplasm
+DOID:3117	hepatobiliary benign neoplasm	DOID:0050624	gastrointestinal system benign neoplasm
+DOID:4223	pyoderma	DOID:2723	dermatitis
+DOID:2583	agammaglobulinemia	DOID:2115	B cell deficiency
+DOID:349	systemic mastocytosis	DOID:350	mastocytosis
+DOID:14503	neuronal ceroid lipofuscinosis	DOID:9455	lipid storage disease
+DOID:182	calcinosis	DOID:10575	calcium metabolism disease
+DOID:13386	gastrointestinal anthrax	DOID:7427	anthrax disease
+DOID:2647	parachordoma	DOID:3350	mesenchymal cell neoplasm
+DOID:2889	retrocochlear disease	DOID:2742	auditory system disease
+DOID:8778	Crohn's disease	DOID:0050589	inflammatory bowel disease
+DOID:8672	viral exanthem	DOID:0050486	exanthem
+DOID:3165	skin benign neoplasm	DOID:0060121	integumentary system benign neoplasm
+DOID:469	deep angioma	DOID:255	hemangioma
+DOID:231	motor neuron disease	DOID:1289	neurodegenerative disease
+DOID:5119	ovarian cyst	DOID:1100	ovarian disease
+DOID:1414	ovarian dysfunction	DOID:1100	ovarian disease
+DOID:3947	adrenal gland hyperfunction	DOID:3952	adrenal cortex disease
+DOID:11801	protein-energy malnutrition	DOID:5113	nutritional deficiency disease
+DOID:10400	gonococcal seminal vesiculitis	DOID:9365	vesiculitis
+DOID:5733	salpingitis	DOID:1962	fallopian tube disease
+DOID:2089	constipation	DOID:9779	bowel dysfunction
+DOID:2163	nasal cavity disease	DOID:2825	nose disease
+DOID:11335	sarcoidosis	DOID:2916	hypersensitivity reaction type IV disease
+DOID:5238	benign perivascular tumor	DOID:0060091	cardiovascular organ benign neoplasm
+DOID:0050623	bladder benign neoplasm	DOID:731	urinary system benign neoplasm
+DOID:0050585	congenital generalized lipodystrophy	DOID:811	lipodystrophy
+DOID:0080010	bone structure disease	DOID:0080001	bone disease
+DOID:3069	astrocytoma	DOID:3070	malignant glioma
+DOID:3663	cutaneous mastocytosis	DOID:350	mastocytosis
+DOID:1969	cerebral palsy	DOID:936	brain disease
+DOID:0060090	central nervous system organ benign neoplasm	DOID:0060115	nervous system benign neoplasm
+DOID:10534	stomach cancer	DOID:3119	gastrointestinal system cancer
+DOID:11156	anhidrosis	DOID:1383	sweat gland disease
+DOID:10302	parotid disease	DOID:10854	salivary gland disease
+DOID:1803	neuritis	DOID:870	neuropathy
+DOID:656	adrenal adenoma	DOID:0060089	endocrine organ benign neoplasm
+DOID:6612	leukocyte adhesion deficiency	DOID:0050737	autosomal recessive disease
+DOID:8502	bullous skin disease	DOID:2723	dermatitis
+DOID:8857	lupus erythematosus	DOID:417	hypersensitivity reaction type II disease
+DOID:987	alopecia	DOID:4535	hypotrichosis
+DOID:1342	congenital hypoplastic anemia	DOID:12449	aplastic anemia
+DOID:4265	angiomyoma	DOID:127	leiomyoma
+DOID:4308	polyradiculoneuropathy	DOID:1389	polyneuropathy
+DOID:12712	nephronophthisis	DOID:0050737	autosomal recessive disease
+DOID:0060336	3-methylglutaconic aciduria	DOID:0060159	organic acidemia
+DOID:1749	squamous cell carcinoma	DOID:305	carcinoma
+DOID:3798	pleural empyema	DOID:1532	pleural disease
+DOID:3883	Lynch syndrome	DOID:0050736	autosomal dominant disease
+DOID:730	urethral benign neoplasm	DOID:731	urinary system benign neoplasm

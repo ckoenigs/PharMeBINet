@@ -1,0 +1,1180 @@
+MonDO_id 	 MonDO_name 	 parent_id 	 parent_name  
+DOID:0080169	tricuspid atresia	DOID:0050826	tricuspid valve disease
+DOID:1442	Alpers syndrome	DOID:1443	cerebral degeneration
+DOID:1638	central nervous system tuberculosis	DOID:0050598	extrapulmonary tuberculosis
+DOID:5162	arteriolosclerosis	DOID:2349	arteriosclerosis
+DOID:5161	Monckeberg arteriosclerosis	DOID:2349	arteriosclerosis
+DOID:5160	arteriosclerosis obliterans	DOID:2349	arteriosclerosis
+DOID:0080161	cutaneous candidiasis	DOID:1508	candidiasis
+DOID:0110721	neuronal ceroid lipofuscinosis 1	DOID:14503	neuronal ceroid lipofuscinosis
+DOID:0080162	lupus nephritis	DOID:2921	glomerulonephritis
+DOID:2689	lymphangiosarcoma	DOID:0060073	lymphatic system cancer
+DOID:0110720	neuronal ceroid lipofuscinosis 4B	DOID:14503	neuronal ceroid lipofuscinosis
+DOID:14184	polyneuropathy due to drug	DOID:2537	inflammatory and toxic neuropathy
+DOID:10199	breast lipoma	DOID:0060082	breast benign neoplasm
+DOID:5568	mediastinum teratoma	DOID:5559	mediastinal cancer
+DOID:0050068	pestis minor	DOID:10773	bubonic plague
+DOID:14183	alcoholic neuropathy	DOID:2537	inflammatory and toxic neuropathy
+DOID:3530	chronic wasting disease	DOID:649	prion disease
+DOID:13839	extrapyramidal and movement disease	DOID:480	movement disease
+DOID:11503	diabetic autonomic neuropathy	DOID:9743|DOID:11504	diabetic neuropathy|autonomic neuropathy
+DOID:11502	mitral valve insufficiency	DOID:61	mitral valve disease
+DOID:0060875	isolated growth hormone deficiency type III	DOID:0060870	isolated growth hormone deficiency
+DOID:0060874	isolated growth hormone deficiency type IB	DOID:0060870	isolated growth hormone deficiency
+DOID:0050116	tinea imbricata	DOID:12179	tinea corporis
+DOID:0060873	isolated growth hormone deficiency type IA	DOID:0060870	isolated growth hormone deficiency
+DOID:0060872	isolated growth hormone deficiency type II	DOID:0060870	isolated growth hormone deficiency
+DOID:0110145	Bartter disease type 4a	DOID:445	Bartter disease
+DOID:0110144	Bartter disease type 3	DOID:445	Bartter disease
+DOID:0110147	Bartter disease type 5	DOID:445	Bartter disease
+DOID:0110146	Bartter disease type 4b	DOID:445	Bartter disease
+DOID:271	hemangioma of liver	DOID:254	hemangioma of intra-abdominal structure
+DOID:0110140	Bardet-Biedl syndrome 18	DOID:1935	Bardet-Biedl syndrome
+DOID:0110143	Bartter disease type 2	DOID:445	Bartter disease
+DOID:0110142	Bartter disease type 1	DOID:445	Bartter disease
+DOID:2838	stress polycythemia	DOID:2834	acquired polycythemia
+DOID:2839	erythropoietin polycythemia	DOID:2834	acquired polycythemia
+DOID:0110844	xeroderma pigmentosum group C	DOID:0050427	xeroderma pigmentosum
+DOID:9360	intrinsic asthma	DOID:2841	asthma
+DOID:8020	glomangiomyoma	DOID:5238	benign perivascular tumor
+DOID:14559	anaerobic meningitis	DOID:9470	bacterial meningitis
+DOID:2833	dehydration polycythemia	DOID:2834	acquired polycythemia
+DOID:6760	lung lymphoma	DOID:1324	lung cancer
+DOID:2835	polycythemia due to hypoxia	DOID:2834	acquired polycythemia
+DOID:0090116	spondylocarpotarsal synostosis syndrome	DOID:0080006	bone development disease
+DOID:7095	pediatric epithelioid sarcoma	DOID:6193	epithelioid sarcoma
+DOID:11847	coronary thrombosis	DOID:3393	coronary artery disease
+DOID:6712	anterior spinal artery syndrome	DOID:6713	cerebrovascular disease
+DOID:4766	embryoma	DOID:688	embryonal cancer
+DOID:11840	coronary artery vasospasm	DOID:3393	coronary artery disease
+DOID:0060760	immunodeficiency with hyper-IgM type 4	DOID:2959	hyperimmunoglobulin syndrome
+DOID:11246	DIC in newborn	DOID:11247	disseminated intravascular coagulation
+DOID:3186	adult oligodendroglioma	DOID:3181	oligodendroglioma
+DOID:0110845	xeroderma pigmentosum group D	DOID:0050427	xeroderma pigmentosum
+DOID:5728	diffuse peritoneal leiomyomatosis	DOID:5138	leiomyomatosis
+DOID:277	chorioangioma	DOID:254	hemangioma of intra-abdominal structure
+DOID:2751	glycogen storage disease VIII	DOID:2747	glycogen storage disease
+DOID:0110772	hereditary spastic paraplegia 19	DOID:2476	hereditary spastic paraplegia
+DOID:2752	glycogen storage disease II	DOID:2747	glycogen storage disease
+DOID:11374	anal spasm	DOID:3128	anus disease
+DOID:2754	glycogen storage disease VI	DOID:2747	glycogen storage disease
+DOID:5769	verruciform xanthoma of skin	DOID:3345	xanthomatosis
+DOID:14111	median rhomboid glossitis	DOID:1456	glossitis
+DOID:1362	paranasal sinus sarcoma	DOID:0050619	paranasal sinus cancer
+DOID:7147	ankylosing spondylitis	DOID:3342	bone inflammation disease
+DOID:646	viral encephalitis	DOID:9588	encephalitis
+DOID:11572	Listeria meningitis	DOID:9470	bacterial meningitis
+DOID:431	myofascial pain syndrome	DOID:423	myopathy
+DOID:0110771	hereditary spastic paraplegia 18	DOID:2476	hereditary spastic paraplegia
+DOID:3234	central nervous system lymphoma	DOID:3620	central nervous system cancer
+DOID:11574	streptococcal meningitis	DOID:9470	bacterial meningitis
+DOID:0110846	xeroderma pigmentosum group E	DOID:0050427	xeroderma pigmentosum
+DOID:7907	mixed astrocytoma-ependymoma	DOID:5076	mixed glioma
+DOID:648	kuru	DOID:649	prion disease
+DOID:0090134	complex cortical dysplasia with other brain malformations 3	DOID:0090131	complex cortical dysplasia with other brain malformations
+DOID:8488	polyhydramnios	DOID:780	placenta disease
+DOID:0110736	neurodegeneration with brain iron accumulation 2b	DOID:0110734	neurodegeneration with brain iron accumulation
+DOID:0110737	neurodegeneration with brain iron accumulation 3	DOID:0110734	neurodegeneration with brain iron accumulation
+DOID:0111138	congenital generalized lipodystrophy type 4	DOID:0050585	congenital generalized lipodystrophy
+DOID:0111137	congenital generalized lipodystrophy type 3	DOID:0050585	congenital generalized lipodystrophy
+DOID:0111136	congenital generalized lipodystrophy type 2	DOID:0050585	congenital generalized lipodystrophy
+DOID:5644	tricuspid valve prolapse	DOID:0050826	tricuspid valve disease
+DOID:698	dentin sensitivity	DOID:214	teeth hard tissue disease
+DOID:14720	type I Ehlers-Danlos syndrome	DOID:13359	Ehlers-Danlos syndrome
+DOID:11797	chronic laryngitis	DOID:3437	laryngitis
+DOID:0050802	Ehlers-Danlos syndrome progeroid type	DOID:13359	Ehlers-Danlos syndrome
+DOID:0050801	androgenic alopecia	DOID:987	alopecia
+DOID:4505	pediatric angiosarcoma	DOID:0001816	angiosarcoma
+DOID:4119	intestinal neuroendocrine benign tumor	DOID:4610	intestinal benign neoplasm
+DOID:0110780	hereditary spastic paraplegia 29	DOID:2476	hereditary spastic paraplegia
+DOID:8941	seborrheic infantile dermatitis	DOID:8741	seborrheic dermatitis
+DOID:13348	laryngeal cartilage cancer	DOID:2596	larynx cancer
+DOID:10573	osteomalacia	DOID:0080005	bone remodeling disease
+DOID:0050059	oropharyngeal anthrax	DOID:13386	gastrointestinal anthrax
+DOID:14336	estrogen excess	DOID:1414	ovarian dysfunction
+DOID:5463	cochlear disease	DOID:2952	inner ear disease
+DOID:5748	rheumatic pulmonary valve disease	DOID:5749	pulmonary valve disease
+DOID:4698	nerve root neoplasm	DOID:1192	peripheral nervous system neoplasm
+DOID:0110800	hereditary spastic paraplegia 48	DOID:2476	hereditary spastic paraplegia
+DOID:0110801	hereditary spastic paraplegia 49	DOID:2476	hereditary spastic paraplegia
+DOID:0110802	hereditary spastic paraplegia 50	DOID:2476	hereditary spastic paraplegia
+DOID:0110803	hereditary spastic paraplegia 51	DOID:2476	hereditary spastic paraplegia
+DOID:0110804	hereditary spastic paraplegia 52	DOID:2476	hereditary spastic paraplegia
+DOID:0110805	hereditary spastic paraplegia 53	DOID:2476	hereditary spastic paraplegia
+DOID:0110806	hereditary spastic paraplegia 54	DOID:2476	hereditary spastic paraplegia
+DOID:0110807	hereditary spastic paraplegia 55	DOID:2476	hereditary spastic paraplegia
+DOID:0110808	hereditary spastic paraplegia 56	DOID:2476	hereditary spastic paraplegia
+DOID:0110809	hereditary spastic paraplegia 57	DOID:2476	hereditary spastic paraplegia
+DOID:10183	endobronchial lipoma	DOID:3906	bronchial neoplasm
+DOID:0060138	autotopagnosia	DOID:4090	agnosia
+DOID:7390	superior vena cava leiomyosarcoma	DOID:175	vascular cancer
+DOID:14022	algoneurodystrophy	DOID:3223	complex regional pain syndrome
+DOID:4322	pilar sheath acanthoma	DOID:174	acanthoma
+DOID:0090094	hypogonadotropic hypogonadism 1 with or without anosmia	DOID:0090070	hypogonadotropic hypogonadism
+DOID:0050715	methylmalonic aciduria and homocystinuria type cblC	DOID:14749	methylmalonic acidemia
+DOID:5348	adult endodermal sinus tumor	DOID:1911	endodermal sinus tumor
+DOID:9667	placental abruption	DOID:780	placenta disease
+DOID:5342	childhood endodermal sinus tumor	DOID:1911	endodermal sinus tumor
+DOID:5766	pulmonary sclerosing hemangioma	DOID:490|DOID:495	hemangioma of lung|sclerosing hemangioma
+DOID:0110219	Brugada syndrome 2	DOID:0050451	Brugada syndrome
+DOID:0110218	Brugada syndrome 1	DOID:0050451	Brugada syndrome
+DOID:11656	cicatricial pemphigoid	DOID:8502	bullous skin disease
+DOID:7439	polyp of middle ear	DOID:5100	middle ear disease
+DOID:8006	skin meningioma	DOID:3165	skin benign neoplasm
+DOID:11716	prediabetes syndrome	DOID:9351	diabetes mellitus
+DOID:10787	premature menopause	DOID:1414	ovarian dysfunction
+DOID:4430	somatostatinoma	DOID:169	neuroendocrine tumor
+DOID:6284	epicardium lipoma	DOID:6285	heart lipoma
+DOID:10782	mesenteric lymphadenitis	DOID:1602	lymphadenitis
+DOID:0050488	early congenital syphilis	DOID:9856	congenital syphilis
+DOID:3052	Balkan nephropathy	DOID:1063	interstitial nephritis
+DOID:4024	scirrhous adenocarcinoma	DOID:299	adenocarcinoma
+DOID:11254	Brill-Zinsser disease	DOID:0050480	epidemic typhus
+DOID:4189	mutism	DOID:92	speech disorder
+DOID:899	choledochal cyst	DOID:4138	bile duct disease
+DOID:0050823	third-degree atrioventricular block	DOID:0050820	atrioventricular block
+DOID:13378	Kawasaki disease	DOID:1602	lymphadenitis
+DOID:4527	ovarian angiosarcoma	DOID:0001816	angiosarcoma
+DOID:8438	afferent loop syndrome	DOID:8439	postgastrectomy syndrome
+DOID:0090067	Fuhrmann syndrome	DOID:0080006	bone development disease
+DOID:1623	breast leiomyoma	DOID:0060082	breast benign neoplasm
+DOID:0090069	giant axonal neuropathy 2	DOID:7319	axonal neuropathy
+DOID:12217	Lewy body dementia	DOID:0050890	synucleinopathy
+DOID:0060741	methylmalonic acidemia due to transcobalamin receptor defect	DOID:14749	methylmalonic acidemia
+DOID:5284	retroperitoneal leiomyosarcoma	DOID:12341	retroperitoneal sarcoma
+DOID:1629	breast myofibroblastoma	DOID:0060082	breast benign neoplasm
+DOID:13375	temporal arteritis	DOID:525	central nervous system vasculitis
+DOID:0060189	ileitis	DOID:8778	Crohn's disease
+DOID:0060188	jejunoileitis	DOID:8778	Crohn's disease
+DOID:12001	tracheal lymphoma	DOID:11920	tracheal cancer
+DOID:6547	heart lymphoma	DOID:117	heart cancer
+DOID:0060066	pyridoxine-responsive sideroblastic anemia	DOID:8955	sideroblastic anemia
+DOID:0060064	sideroblastic anemia with spinocerebellar ataxia	DOID:8955	sideroblastic anemia
+DOID:0060065	pyridoxine-refractory autosomal recessive sideroblastic anemia	DOID:8955	sideroblastic anemia
+DOID:0060181	ischemic colitis	DOID:0060180	colitis
+DOID:0050433	fatal familial insomnia	DOID:649	prion disease
+DOID:0060068	marantic endocarditis	DOID:10314	endocarditis
+DOID:12361	Graves' disease	DOID:0060005	autoimmune disease of endocrine system
+DOID:0060185	Clostridium difficile colitis	DOID:0060180	colitis
+DOID:7326	cranial pseudosarcomatous fasciitis	DOID:7327	pseudosarcomatous fibromatosis
+DOID:0060187	diversion colitis	DOID:0060180	colitis
+DOID:0060186	chemical colitis	DOID:0060180	colitis
+DOID:0060563	Char syndrome	DOID:13832	patent ductus arteriosus
+DOID:0090121	apparent mineralocorticoid excess	DOID:3947	adrenal gland hyperfunction
+DOID:10069	subglottis neoplasm	DOID:2598	laryngeal benign neoplasm
+DOID:0090089	hypogonadotropic hypogonadism 10 with or without anosmia	DOID:0090070	hypogonadotropic hypogonadism
+DOID:0090088	hypogonadotropic hypogonadism 24 without anosmia	DOID:0090070	hypogonadotropic hypogonadism
+DOID:0090087	hypogonadotropic hypogonadism 14 with or without anosmia	DOID:0090070	hypogonadotropic hypogonadism
+DOID:0090086	hypogonadotropic hypogonadism 6 with or without anosmia	DOID:0090070	hypogonadotropic hypogonadism
+DOID:0090085	hypogonadotropic hypogonadism 9 with or without anosmia	DOID:0090070	hypogonadotropic hypogonadism
+DOID:0090084	hypogonadotropic hypogonadism 5 with or without anosmia	DOID:0090070	hypogonadotropic hypogonadism
+DOID:10966	lipoid nephrosis	DOID:2921|DOID:1184	glomerulonephritis|nephrotic syndrome
+DOID:0090082	hypogonadotropic hypogonadism 20 with or without anosmia	DOID:0090070	hypogonadotropic hypogonadism
+DOID:0090081	hypogonadotropic hypogonadism 22 with or without anosmia	DOID:0090070	hypogonadotropic hypogonadism
+DOID:0090080	hypogonadotropic hypogonadism 16 with or without anosmia	DOID:0090070	hypogonadotropic hypogonadism
+DOID:8043	chest wall parachordoma	DOID:2647	parachordoma
+DOID:11623	dental pulp necrosis	DOID:5330	dental pulp disease
+DOID:9577	neonatal candidiasis	DOID:1508	candidiasis
+DOID:4962	pericardial tuberculosis	DOID:0050598	extrapulmonary tuberculosis
+DOID:11624	penile neoplasm	DOID:0060087	male reproductive organ benign neoplasm
+DOID:0050097	ectothrix infectious disease	DOID:4337	tinea capitis
+DOID:0060833	Griscelli syndrome type 2	DOID:0060831	Griscelli syndrome
+DOID:0060832	Griscelli syndrome type 1	DOID:0060831	Griscelli syndrome
+DOID:0060834	Griscelli syndrome type 3	DOID:0060831	Griscelli syndrome
+DOID:3579	testicular gonadoblastoma	DOID:0060087	male reproductive organ benign neoplasm
+DOID:0110101	atopic dermatitis 5	DOID:3310	atopic dermatitis
+DOID:0110100	atopic dermatitis 4	DOID:3310	atopic dermatitis
+DOID:0110103	atopic dermatitis 7	DOID:3310	atopic dermatitis
+DOID:0110102	atopic dermatitis 6	DOID:3310	atopic dermatitis
+DOID:0110105	atopic dermatitis 9	DOID:3310	atopic dermatitis
+DOID:0110104	atopic dermatitis 8	DOID:3310	atopic dermatitis
+DOID:7762	childhood multilocular cystic kidney neoplasm	DOID:3116	kidney benign neoplasm
+DOID:0060246	MASA syndrome	DOID:2476	hereditary spastic paraplegia
+DOID:14221	metabolic syndrome X	DOID:0060611	abdominal obesity-metabolic syndrome
+DOID:11821	bladder lymphoma	DOID:11054	urinary bladder cancer
+DOID:0060245	Mast syndrome	DOID:2476	hereditary spastic paraplegia
+DOID:14512	candidal paronychia	DOID:1508	candidiasis
+DOID:0090014	severe combined immunodeficiency, autosomal recessive, T cell-negative, B cell-positive, Nk cell-positive	DOID:627	severe combined immunodeficiency
+DOID:11811	urinary bladder posterior wall cancer	DOID:11054	urinary bladder cancer
+DOID:14499	Fabry disease	DOID:1927	sphingolipidosis
+DOID:0090010	immunodeficiency-centromeric instability-facial anomalies syndrome 3	DOID:0090007	immunodeficiency-centromeric instability-facial anomalies syndrome
+DOID:0060360	hereditary papulotranslucent acrokeratoderma	DOID:869	cholesteatoma
+DOID:0090012	severe combined immunodeficiency with sensitivity to ionizing radiation	DOID:627	severe combined immunodeficiency
+DOID:0090013	severe combined immunodeficiency, autosomal recessive, T cell-negative, B cell-negative, Nk cell-positive	DOID:627	severe combined immunodeficiency
+DOID:3876	colonic pseudo-obstruction	DOID:3877	functional colonic disease
+DOID:2972	renal artery obstruction	DOID:2388	renal artery disease
+DOID:0110813	hereditary spastic paraplegia 62	DOID:2476	hereditary spastic paraplegia
+DOID:4659	extracutaneous mastocytoma	DOID:349	systemic mastocytosis
+DOID:0110085	asphyxiating thoracic dystrophy 1	DOID:0050592	asphyxiating thoracic dystrophy
+DOID:0110086	asphyxiating thoracic dystrophy 2	DOID:0050592	asphyxiating thoracic dystrophy
+DOID:13050	corpus luteum cyst	DOID:5119	ovarian cyst
+DOID:0110141	Bardet-Biedl syndrome 19	DOID:1935	Bardet-Biedl syndrome
+DOID:4797	SM-AHNMD	DOID:349	systemic mastocytosis
+DOID:11968	postmenopausal atrophic vaginitis	DOID:2170	vaginitis
+DOID:13110	bladder squamous papilloma	DOID:0050623	bladder benign neoplasm
+DOID:11814	urinary bladder anterior wall cancer	DOID:11054	urinary bladder cancer
+DOID:0060102	cartilage cancer	DOID:201	connective tissue cancer
+DOID:13664	post-vaccinal encephalitis	DOID:9588	encephalitis
+DOID:11817	urachus cancer	DOID:11054	urinary bladder cancer
+DOID:0080156	X-linked adrenal hypoplasia congenita	DOID:10493	adrenal cortical hypofunction
+DOID:3924	main bronchus cancer	DOID:1324	lung cancer
+DOID:0080159	Cryptococcal meningitis	DOID:11608	fungal meningitis
+DOID:0110793	hereditary spastic paraplegia 41	DOID:2476	hereditary spastic paraplegia
+DOID:5700	gastric liposarcoma	DOID:10534	stomach cancer
+DOID:2718	hemopneumothorax	DOID:1673	pneumothorax
+DOID:0110816	hereditary spastic paraplegia 7	DOID:2476	hereditary spastic paraplegia
+DOID:0110776	hereditary spastic paraplegia 25	DOID:2476	hereditary spastic paraplegia
+DOID:0110777	hereditary spastic paraplegia 26	DOID:2476	hereditary spastic paraplegia
+DOID:0110774	hereditary spastic paraplegia 23	DOID:2476	hereditary spastic paraplegia
+DOID:0110775	hereditary spastic paraplegia 24	DOID:2476	hereditary spastic paraplegia
+DOID:12465	secondary hyperparathyroidism of renal origin	DOID:12466	secondary hyperparathyroidism
+DOID:0110773	hereditary spastic paraplegia 2	DOID:2476	hereditary spastic paraplegia
+DOID:0110770	hereditary spastic paraplegia 17	DOID:2476	hereditary spastic paraplegia
+DOID:4257	Caffey disease	DOID:3342	bone inflammation disease
+DOID:10003	sensorineural hearing loss	DOID:2952	inner ear disease
+DOID:7912	mixed oligodendroglioma-astrocytoma	DOID:5076	mixed glioma
+DOID:14018	alcoholic liver cirrhosis	DOID:5082	liver cirrhosis
+DOID:0110779	hereditary spastic paraplegia 28	DOID:2476	hereditary spastic paraplegia
+DOID:5826	breast lymphoma	DOID:1612	breast cancer
+DOID:0060480	left ventricular noncompaction	DOID:0060036	intrinsic cardiomyopathy
+DOID:5126	central nervous system leiomyoma	DOID:0060090	central nervous system organ benign neoplasm
+DOID:0110953	Waardenburg syndrome type 4A	DOID:9258	Waardenburg's syndrome
+DOID:5040	malignant granular cell esophageal tumor	DOID:5041	esophageal cancer
+DOID:10206	lipoma of spermatic cord	DOID:10207	paratesticular lipoma
+DOID:14495	dumping syndrome	DOID:8439	postgastrectomy syndrome
+DOID:0111076	progressive familial heart block type IB	DOID:0111073	progressive familial heart block
+DOID:0110950	Waardenburg syndrome type 2A	DOID:9258	Waardenburg's syndrome
+DOID:0111074	progressive familial heart block type IA	DOID:0111073	progressive familial heart block
+DOID:0111075	progressive familial heart block type II	DOID:0111073	progressive familial heart block
+DOID:0110092	short-rib thoracic dysplasia 6 with or without polydactyly	DOID:0050592	asphyxiating thoracic dystrophy
+DOID:11818	ureteric orifice cancer	DOID:11819|DOID:11054	ureter cancer|urinary bladder cancer
+DOID:4798	aggressive systemic mastocytosis	DOID:349	systemic mastocytosis
+DOID:0110798	hereditary spastic paraplegia 46	DOID:2476	hereditary spastic paraplegia
+DOID:0110799	hereditary spastic paraplegia 47	DOID:2476	hereditary spastic paraplegia
+DOID:7611	parathyroid oncocytic adenoma	DOID:7608	parathyroid adenoma
+DOID:7610	mixed cell type adenoma of parathyroid	DOID:7608	parathyroid adenoma
+DOID:0110794	hereditary spastic paraplegia 42	DOID:2476	hereditary spastic paraplegia
+DOID:0110795	hereditary spastic paraplegia 43	DOID:2476	hereditary spastic paraplegia
+DOID:0110796	hereditary spastic paraplegia 44	DOID:2476	hereditary spastic paraplegia
+DOID:0110797	hereditary spastic paraplegia 45	DOID:2476	hereditary spastic paraplegia
+DOID:0110790	hereditary spastic paraplegia 39	DOID:2476	hereditary spastic paraplegia
+DOID:0110791	hereditary spastic paraplegia 3A	DOID:2476	hereditary spastic paraplegia
+DOID:0110792	hereditary spastic paraplegia 4	DOID:2476	hereditary spastic paraplegia
+DOID:11816	vitreous syneresis	DOID:9720	vitreous disease
+DOID:4015	spindle cell carcinoma	DOID:1749	squamous cell carcinoma
+DOID:0050073	invasive aspergillosis	DOID:13564	aspergillosis
+DOID:718	autoimmune hemolytic anemia	DOID:0060050	autoimmune disease of blood
+DOID:0110955	Waardenburg syndrome type 4C	DOID:9258	Waardenburg's syndrome
+DOID:2251	hypertrophic elongation of cervix	DOID:2253	cervix disease
+DOID:10146	thymus lymphoma	DOID:3277	thymus cancer
+DOID:10141	asthenopia	DOID:5614	eye disease
+DOID:10039	late congenital syphilis	DOID:9856	congenital syphilis
+DOID:0110910	leukocyte adhesion deficiency 1	DOID:6612	leukocyte adhesion deficiency
+DOID:4313	epidermolysis bullosa acquisita	DOID:2730	epidermolysis bullosa
+DOID:8031	pineal region meningioma	DOID:5032	pineal gland cancer
+DOID:2392	glandular cystitis	DOID:1680	chronic cystitis
+DOID:3305	teratocarcinoma	DOID:3095|DOID:3306	germ cell and embryonal cancer|mixed germ cell cancer
+DOID:0050756	Batten disease	DOID:14503	neuronal ceroid lipofuscinosis
+DOID:0050776	non-syndromic X-linked intellectual disability	DOID:0050889	non-syndromic intellectual disability
+DOID:5387	middle ear adenoma	DOID:0060096	sensory organ benign neoplasm
+DOID:11887	ureter leiomyoma	DOID:11885	ureteral benign neoplasm
+DOID:5224	acute hemorrhagic encephalitis	DOID:9588	encephalitis
+DOID:5225	von Economo's disease	DOID:9588	encephalitis
+DOID:0050618	malignant Sertoli-Leydig cell tumor	DOID:192	sex cord-gonadal stromal tumor
+DOID:0060911	karyomegalic interstitial nephritis	DOID:1063	interstitial nephritis
+DOID:0110090	short-rib thoracic dysplasia 7 with or without polydactyly	DOID:0050592	asphyxiating thoracic dystrophy
+DOID:84	osteochondritis dissecans	DOID:0080008	ischemic bone disease
+DOID:5222	acute necrotizing encephalitis	DOID:9588	encephalitis
+DOID:6906	glomangiomatosis	DOID:5238	benign perivascular tumor
+DOID:6676	Froelich syndrome	DOID:1931	hypothalamic disease
+DOID:853	polymyalgia rheumatica	DOID:423	myopathy
+DOID:1339	Diamond-Blackfan anemia	DOID:1342	congenital hypoplastic anemia
+DOID:0050876	Caroli disease	DOID:4138	bile duct disease
+DOID:9880	cardiovascular syphilis	DOID:8200	tertiary syphilis
+DOID:14305	tuberculous empyema	DOID:3798	pleural empyema
+DOID:0060142	form agnosia	DOID:4090	agnosia
+DOID:0060279	pontocerebellar hypoplasia type 10	DOID:0060264	pontocerebellar hypoplasia
+DOID:3933	anterior compartment syndrome	DOID:682	compartment syndrome
+DOID:13336	congenital toxoplasmosis	DOID:9965	toxoplasmosis
+DOID:0060027	B cell linker protein deficiency	DOID:2583	agammaglobulinemia
+DOID:664	angiokeratoma of Fordyce	DOID:3165	skin benign neoplasm
+DOID:14262	oral candidiasis	DOID:1508	candidiasis
+DOID:14265	pulmonary valve insufficiency	DOID:5749	pulmonary valve disease
+DOID:262	kidney hemangiopericytoma	DOID:263	kidney cancer
+DOID:0060020	reticular dysgenesis	DOID:627	severe combined immunodeficiency
+DOID:0110858	polycystic kidney disease 1	DOID:898	autosomal dominant polycystic kidney disease
+DOID:0060145	pain agnosia	DOID:4090	agnosia
+DOID:0050105	endothrix infectious disease	DOID:4337	tinea capitis
+DOID:0060147	semantic agnosia	DOID:4090	agnosia
+DOID:0060146	phonagnosia	DOID:4090	agnosia
+DOID:12043	kernicterus due to isoimmunization	DOID:2383	neonatal jaundice
+DOID:0060140	cortical deafness	DOID:4090	agnosia
+DOID:0060028	Good syndrome	DOID:2583	agammaglobulinemia
+DOID:0110850	xeroderma pigmentosum group B	DOID:0050427	xeroderma pigmentosum
+DOID:4188	echolalia	DOID:92	speech disorder
+DOID:12323	cough variant asthma	DOID:2841	asthma
+DOID:8538	reticulosarcoma	DOID:0060073	lymphatic system cancer
+DOID:0110224	Brugada syndrome 7	DOID:0050451	Brugada syndrome
+DOID:0110225	Brugada syndrome 8	DOID:0050451	Brugada syndrome
+DOID:0110226	Brugada syndrome 9	DOID:0050451	Brugada syndrome
+DOID:0050579	glycogen storage disease XV	DOID:2747	glycogen storage disease
+DOID:0110220	Brugada syndrome 3	DOID:0050451	Brugada syndrome
+DOID:13687	chronic duodenal ileus	DOID:3558	duodenal obstruction
+DOID:0110222	Brugada syndrome 5	DOID:0050451	Brugada syndrome
+DOID:0110223	Brugada syndrome 6	DOID:0050451	Brugada syndrome
+DOID:2920	membranoproliferative glomerulonephritis	DOID:2921	glomerulonephritis
+DOID:3825	Shwartzman phenomenon	DOID:484	vascular hemostatic disease
+DOID:2433	epidermal appendage tumor	DOID:3165	skin benign neoplasm
+DOID:3828	chromophobe adenoma	DOID:3829	pituitary adenoma
+DOID:4266	intravascular angioleiomyoma	DOID:4265	angiomyoma
+DOID:2536	chronic inflammatory demyelinating polyneuritis	DOID:2537	inflammatory and toxic neuropathy
+DOID:4270	encephalitozoonosis	DOID:4271	microsporidiosis
+DOID:2649	chondroblastoma	DOID:201	connective tissue cancer
+DOID:11589	Riley-Day syndrome	DOID:0050548	hereditary sensory neuropathy
+DOID:0060136	associative agnosia	DOID:4090	agnosia
+DOID:4078	tricuspid valve stenosis	DOID:0050826	tricuspid valve disease
+DOID:3001	female reproductive endometrioid cancer	DOID:120	female reproductive organ cancer
+DOID:4372	intracranial embolism	DOID:6713	cerebrovascular disease
+DOID:7875	adult xanthogranuloma	DOID:4330	non-Langerhans-cell histiocytosis
+DOID:3009	breast neuroendocrine neoplasm	DOID:0060082	breast benign neoplasm
+DOID:11036	chronic rapidly progressive glomerulonephritis	DOID:2921	glomerulonephritis
+DOID:1754	mitral valve stenosis	DOID:61	mitral valve disease
+DOID:11133	prostatic cyst	DOID:11132	prostatic hypertrophy
+DOID:0060281	photosensitive epilepsy	DOID:1826	epilepsy
+DOID:0060284	paroxysmal nocturnal hemoglobinuria	DOID:582	hemoglobinuria
+DOID:1614	male breast cancer	DOID:1612	breast cancer
+DOID:0060322	mastoiditis	DOID:3342	bone inflammation disease
+DOID:0060325	cervical polyp	DOID:2253	cervix disease
+DOID:1759	American histoplasmosis	DOID:1731	histoplasmosis
+DOID:10812	nasal cavity olfactory neuroblastoma	DOID:10811	nasal cavity cancer
+DOID:10813	nasal cavity lymphoma	DOID:10811	nasal cavity cancer
+DOID:14397	protozoal dysentery	DOID:12384	dysentery
+DOID:3665	diffuse cutaneous mastocytosis	DOID:3663	cutaneous mastocytosis
+DOID:4385	papillary squamous carcinoma	DOID:1749	squamous cell carcinoma
+DOID:4386	myofibroma	DOID:201	connective tissue cancer
+DOID:0050617	malignant Sertoli cell tumor	DOID:192	sex cord-gonadal stromal tumor
+DOID:14489	ureteral lymphoma	DOID:11819	ureter cancer
+DOID:2280	hidradenitis suppurativa	DOID:2282	hidradenitis
+DOID:5075	myxopapillary ependymoma	DOID:4844	benign ependymoma
+DOID:0080193	superior semicircular canal dehiscence	DOID:2952	inner ear disease
+DOID:0080198	infantile histiocytoid cardiomyopathy	DOID:0060036	intrinsic cardiomyopathy
+DOID:1129	pituitary apoplexy	DOID:1130	pituitary infarct
+DOID:0050153	pulmonary aspergilloma	DOID:13564	aspergillosis
+DOID:0110738	neurodegeneration with brain iron accumulation 4	DOID:0110734	neurodegeneration with brain iron accumulation
+DOID:4201	peroneal neuropathy	DOID:1188	mononeuropathy
+DOID:8649	tongue cancer	DOID:8618	oral cavity cancer
+DOID:0090105	autosomal recessive hypercholesterolemia	DOID:13810	familial hypercholesterolemia
+DOID:5560	mediastinal mesenchymal tumor	DOID:5559	mediastinal cancer
+DOID:0110138	Bardet-Biedl syndrome 16	DOID:1935	Bardet-Biedl syndrome
+DOID:0110139	Bardet-Biedl syndrome 17	DOID:1935	Bardet-Biedl syndrome
+DOID:0060308	autosomal recessive non-syndromic intellectual disability	DOID:0050889	non-syndromic intellectual disability
+DOID:0110130	Bardet-Biedl syndrome 8	DOID:1935	Bardet-Biedl syndrome
+DOID:0110131	Bardet-Biedl syndrome 9	DOID:1935	Bardet-Biedl syndrome
+DOID:0110132	Bardet-Biedl syndrome 10	DOID:1935	Bardet-Biedl syndrome
+DOID:0110133	Bardet-Biedl syndrome 11	DOID:1935	Bardet-Biedl syndrome
+DOID:0110134	Bardet-Biedl syndrome 12	DOID:1935	Bardet-Biedl syndrome
+DOID:0110135	Bardet-Biedl syndrome 13	DOID:1935	Bardet-Biedl syndrome
+DOID:0110136	Bardet-Biedl syndrome 14	DOID:1935	Bardet-Biedl syndrome
+DOID:0110137	Bardet-Biedl syndrome 15	DOID:1935	Bardet-Biedl syndrome
+DOID:0060215	Balo concentric sclerosis	DOID:3213	demyelinating disease
+DOID:0060217	Cogan-Reese syndrome	DOID:5614	eye disease
+DOID:0060216	Cogan syndrome	DOID:5614	eye disease
+DOID:361	cervix endometriosis	DOID:2253	cervix disease
+DOID:0060354	Stormorken syndrome	DOID:2218	blood platelet disease
+DOID:11385	expressive language disorder	DOID:93	language disorder
+DOID:0060605	anterior segment mesenchymal dysgenesis	DOID:5614	eye disease
+DOID:0060603	isolated anhidrosis with normal sweat glands	DOID:11156	anhidrosis
+DOID:12275	cutaneous diphtheria	DOID:4223	pyoderma
+DOID:0050914	large intestine adenoma	DOID:4610	intestinal benign neoplasm
+DOID:5213	chronic inflammatory demyelinating polyradiculoneuropathy	DOID:4308|DOID:5214	polyradiculoneuropathy|demyelinating polyneuropathy
+DOID:5936	ovarian mixed germ cell neoplasm	DOID:3306	mixed germ cell cancer
+DOID:0111061	familial hypobetalipoproteinemia 2	DOID:1390	hypobetalipoproteinemia
+DOID:436	posterior mediastinum cancer	DOID:5559	mediastinal cancer
+DOID:2748	glycogen storage disease III	DOID:2747	glycogen storage disease
+DOID:2749	glycogen storage disease I	DOID:2747	glycogen storage disease
+DOID:2219	Glanzmann's thrombasthenia	DOID:2218	blood platelet disease
+DOID:0080109	infantile myofibromatosis	DOID:0060123	connective tissue benign neoplasm
+DOID:0080108	myoglobinuria	DOID:423	myopathy
+DOID:2746	glycogen storage disease V	DOID:2747	glycogen storage disease
+DOID:0060150	astereognosia	DOID:4090	agnosia
+DOID:4858	pineal gland astrocytoma	DOID:5032	pineal gland cancer
+DOID:12550	hepatic coma	DOID:13413	hepatic encephalopathy
+DOID:0110729	neuronal ceroid lipofuscinosis 6	DOID:14503	neuronal ceroid lipofuscinosis
+DOID:12554	hemolytic-uremic syndrome	DOID:583	hemolytic anemia
+DOID:0050650	familial atrial fibrillation	DOID:0060224	atrial fibrillation
+DOID:12556	acute kidney tubular necrosis	DOID:3021	acute kidney failure
+DOID:3222	causalgia	DOID:3223	complex regional pain syndrome
+DOID:0050554	X-linked sideroblastic anemia with ataxia	DOID:8955	sideroblastic anemia
+DOID:4852	pleomorphic xanthoastrocytoma	DOID:3069	astrocytoma
+DOID:5155	multiple mucosal neuroma	DOID:2001	neuroma
+DOID:9574	choanal atresia	DOID:2163	nasal cavity disease
+DOID:4845	pilomyxoid astrocytoma	DOID:3069	astrocytoma
+DOID:4856	gliofibroma	DOID:3069	astrocytoma
+DOID:0050659	biotin-responsive basal ganglia disease	DOID:679	basal ganglia disease
+DOID:2698	nephrogenic adenofibroma	DOID:3116	kidney benign neoplasm
+DOID:0060534	hepatoid adenocarcinoma	DOID:299	adenocarcinoma
+DOID:0110731	neuronal ceroid lipofuscinosis 3	DOID:14503	neuronal ceroid lipofuscinosis
+DOID:5677	extragonadal nonseminomatous germ cell tumor	DOID:4717	extragonadal germ cell cancer
+DOID:5521	keratinizing squamous cell carcinoma	DOID:1749	squamous cell carcinoma
+DOID:2691	myoma	DOID:461	muscle benign neoplasm
+DOID:8282	adult epithelioid sarcoma	DOID:6193	epithelioid sarcoma
+DOID:0050870	in situ pulmonary adenocarcinoma	DOID:1324	lung cancer
+DOID:7235	pancreatic mucinous cystadenoma	DOID:3918	pancreatic cystadenoma
+DOID:0110129	Bardet-Biedl syndrome 7	DOID:1935	Bardet-Biedl syndrome
+DOID:3617	epidural spinal canal angiolipoma	DOID:3616	angiolipoma
+DOID:3615	infiltrating angiolipoma	DOID:3616	angiolipoma
+DOID:3614	Kallmann syndrome	DOID:0090070	hypogonadotropic hypogonadism
+DOID:10548	cardia cancer	DOID:10534	stomach cancer
+DOID:0110735	neurodegeneration with brain iron accumulation 2a	DOID:0110734	neurodegeneration with brain iron accumulation
+DOID:5457	laryngeal neuroendocrine tumor	DOID:2598	laryngeal benign neoplasm
+DOID:0080170	normophosphatemic familial tumoral calcinosis	DOID:182	calcinosis
+DOID:13168	prepuce cancer	DOID:4159	skin cancer
+DOID:0060079	Her2-receptor positive breast cancer	DOID:1612	breast cancer
+DOID:743	dermatographia	DOID:0060220	physical urticaria
+DOID:745	epididymis adenomatoid tumor	DOID:0060087	male reproductive organ benign neoplasm
+DOID:0111135	congenital generalized lipodystrophy type 1	DOID:0050585	congenital generalized lipodystrophy
+DOID:10352	breast fibroadenosis	DOID:0060082	breast benign neoplasm
+DOID:13884	sick sinus syndrome	DOID:0050824	sinoatrial node disease
+DOID:0110812	hereditary spastic paraplegia 61	DOID:2476	hereditary spastic paraplegia
+DOID:0110811	hereditary spastic paraplegia 6	DOID:2476	hereditary spastic paraplegia
+DOID:0110810	hereditary spastic paraplegia 5A	DOID:2476	hereditary spastic paraplegia
+DOID:0110817	hereditary spastic paraplegia 72	DOID:2476	hereditary spastic paraplegia
+DOID:10991	basal ganglia cerebrovascular disease	DOID:6713	cerebrovascular disease
+DOID:0110815	hereditary spastic paraplegia 64	DOID:2476	hereditary spastic paraplegia
+DOID:0110814	hereditary spastic paraplegia 63	DOID:2476	hereditary spastic paraplegia
+DOID:0110952	Waardenburg syndrome type 2D	DOID:9258	Waardenburg's syndrome
+DOID:4587	benign meningioma	DOID:0060090	central nervous system organ benign neoplasm
+DOID:0110819	hereditary spastic paraplegia 74	DOID:2476	hereditary spastic paraplegia
+DOID:0110818	hereditary spastic paraplegia 73	DOID:2476	hereditary spastic paraplegia
+DOID:8577	ulcerative colitis	DOID:0060180	colitis
+DOID:0050886	Troyer syndrome	DOID:2476	hereditary spastic paraplegia
+DOID:0110954	Waardenburg syndrome type 4B	DOID:9258	Waardenburg's syndrome
+DOID:5643	urethral villous adenoma	DOID:730	urethral benign neoplasm
+DOID:0060149	social emotional agnosia	DOID:4090	agnosia
+DOID:0060075	estrogen-receptor positive breast cancer	DOID:1612	breast cancer
+DOID:3917	pancreatic serous cystadenoma	DOID:3918	pancreatic cystadenoma
+DOID:8274	synovial angioma	DOID:469	deep angioma
+DOID:57	aortic valve insufficiency	DOID:62	aortic valve disease
+DOID:0111027	hemochromatosis type 2A	DOID:0111034	hemochromatosis type 2
+DOID:4613	ulnar neuropathy	DOID:1188	mononeuropathy
+DOID:0060080	Her2-receptor negative breast cancer	DOID:1612	breast cancer
+DOID:0060081	triple-receptor negative breast cancer	DOID:1612	breast cancer
+DOID:10011	thyroid lymphoma	DOID:1781	thyroid cancer
+DOID:4407	phototoxic dermatitis	DOID:3159	photosensitivity disease
+DOID:6682	spondylolisthesis	DOID:0080010	bone structure disease
+DOID:0080031	fibrous dysplasia	DOID:0080005	bone remodeling disease
+DOID:4404	occupational dermatitis	DOID:2773	contact dermatitis
+DOID:0050906	conjunctival nevus	DOID:0060096	sensory organ benign neoplasm
+DOID:0050907	mixed extragonadal germ cell cancer	DOID:3306	mixed germ cell cancer
+DOID:3766	leukorrhea	DOID:3767	vaginal discharge
+DOID:5280	gastric leiomyosarcoma	DOID:10534	stomach cancer
+DOID:867	maxillary sinus cholesteatoma	DOID:869	cholesteatoma
+DOID:0060346	Native American myopathy	DOID:440	neuromuscular disease
+DOID:13565	neuroaspergillosis	DOID:13564	aspergillosis
+DOID:5524	adenoid squamous cell carcinoma	DOID:1749	squamous cell carcinoma
+DOID:5522	basaloid squamous cell carcinoma	DOID:1749	squamous cell carcinoma
+DOID:14450	46 XX gonadal dysgenesis	DOID:14447	gonadal dysgenesis
+DOID:13206	nodular prostate	DOID:11132	prostatic hypertrophy
+DOID:13368	tinea profunda	DOID:12179	tinea corporis
+DOID:0060772	dextro-looped transposition of the great arteries 3	DOID:0060770	dextro-looped transposition of the great arteries
+DOID:10992	acute hemorrhagic leukoencephalitis	DOID:639	acute disseminated encephalomyelitis
+DOID:1943	telogen effluvium	DOID:987	alopecia
+DOID:0060771	dextro-looped transposition of the great arteries 1	DOID:0060770	dextro-looped transposition of the great arteries
+DOID:12177	common variable immunodeficiency	DOID:2583	agammaglobulinemia
+DOID:0060077	progesterone-receptor positive breast cancer	DOID:1612	breast cancer
+DOID:0060076	estrogen-receptor negative breast cancer	DOID:1612	breast cancer
+DOID:1824	status epilepticus	DOID:1826	epilepsy
+DOID:13366	Stiff-Person syndrome	DOID:480	movement disease
+DOID:7334	nephrogenic adenoma	DOID:3116	kidney benign neoplasm
+DOID:4929	tubular adenocarcinoma	DOID:299	adenocarcinoma
+DOID:9723	vitreous abscess	DOID:9720	vitreous disease
+DOID:9722	ophthalmia nodosa	DOID:5614	eye disease
+DOID:12375	bronchopneumonia	DOID:552	pneumonia
+DOID:0050428	nonepidermolytic palmoplantar keratoderma	DOID:3390	palmoplantar keratosis
+DOID:11813	bladder trigone cancer	DOID:11054	urinary bladder cancer
+DOID:9726	vitreous detachment	DOID:9720	vitreous disease
+DOID:2364	post-thrombotic syndrome	DOID:10128	venous insufficiency
+DOID:3818	photoallergic dermatitis	DOID:3159	photosensitivity disease
+DOID:2367	neuroaxonal dystrophy	DOID:1443	cerebral degeneration
+DOID:0090137	complex cortical dysplasia with other brain malformations 1	DOID:0090131	complex cortical dysplasia with other brain malformations
+DOID:0090136	complex cortical dysplasia with other brain malformations 6	DOID:0090131	complex cortical dysplasia with other brain malformations
+DOID:0090135	complex cortical dysplasia with other brain malformations 5	DOID:0090131	complex cortical dysplasia with other brain malformations
+DOID:14099	acquired gastric outlet stenosis	DOID:12639	pyloric stenosis
+DOID:6065	urinary tract non-invasive transitional cell neoplasm	DOID:5433	urinary tract papillary transitional cell benign neoplasm
+DOID:0090138	complex cortical dysplasia with other brain malformations 4	DOID:0090131	complex cortical dysplasia with other brain malformations
+DOID:14092	renal artery atheroma	DOID:2388	renal artery disease
+DOID:3814	extraskeletal chondroma	DOID:0060123	connective tissue benign neoplasm
+DOID:10976	membranous glomerulonephritis	DOID:2921	glomerulonephritis
+DOID:10081	syphilitic encephalitis	DOID:9588	encephalitis
+DOID:2560	morphine dependence	DOID:2559	opiate dependence
+DOID:4329	Erdheim-Chester disease	DOID:4330	non-Langerhans-cell histiocytosis
+DOID:0060652	familial erythrocytosis 1	DOID:10780	primary polycythemia
+DOID:1811	reflex sympathetic dystrophy	DOID:3223	complex regional pain syndrome
+DOID:0110783	hereditary spastic paraplegia 32	DOID:2476	hereditary spastic paraplegia
+DOID:0080089	tubular aggregate myopathy	DOID:423	myopathy
+DOID:14683	Binder syndrome	DOID:2163	nasal cavity disease
+DOID:4323	epidermolytic acanthoma	DOID:174	acanthoma
+DOID:4321	large cell acanthoma	DOID:174	acanthoma
+DOID:4249	Gerstmann-Straussler-Scheinker syndrome	DOID:649	prion disease
+DOID:4324	acantholytic acanthoma	DOID:174	acanthoma
+DOID:9672	noma	DOID:9673	ulcerative stomatitis
+DOID:0090107	autosomal dominant hypocalcemia 1	DOID:0090109	autosomal dominant hypocalcemia
+DOID:0110859	polycystic kidney disease 2	DOID:898	autosomal dominant polycystic kidney disease
+DOID:12733	hypercementosis	DOID:214	teeth hard tissue disease
+DOID:1761	Melkersson-Rosenthal syndrome	DOID:1762	cheilitis
+DOID:13514	venous tributary occlusion of retina	DOID:1729	retinal vascular occlusion
+DOID:5838	extragonadal seminoma	DOID:4440	seminoma
+DOID:10742	cerebral lipidosis	DOID:1443	cerebral degeneration
+DOID:0060312	angular cheilitis	DOID:1762	cheilitis
+DOID:1641	benign breast adenomyoepithelioma	DOID:0060082	breast benign neoplasm
+DOID:12002	trachea sarcoma	DOID:11920	tracheal cancer
+DOID:0060144	mirror agnosia	DOID:4090	agnosia
+DOID:7333	nephrogenic adenoma of urinary bladder	DOID:0050623	bladder benign neoplasm
+DOID:0090009	immunodeficiency-centromeric instability-facial anomalies syndrome 2	DOID:0090007	immunodeficiency-centromeric instability-facial anomalies syndrome
+DOID:14332	postencephalitic Parkinson disease	DOID:13548	secondary Parkinson disease
+DOID:0110093	short-rib thoracic dysplasia 13 with or without polydactyly	DOID:0050592	asphyxiating thoracic dystrophy
+DOID:0090133	complex cortical dysplasia with other brain malformations 2	DOID:0090131	complex cortical dysplasia with other brain malformations
+DOID:0110091	short-rib thoracic dysplasia 10 with or without polydactyly	DOID:0050592	asphyxiating thoracic dystrophy
+DOID:11820	bladder dome cancer	DOID:11054	urinary bladder cancer
+DOID:13109	bladder leiomyoma	DOID:0050623	bladder benign neoplasm
+DOID:0110096	short-rib thoracic dysplasia 14 with polydactyly	DOID:0050592	asphyxiating thoracic dystrophy
+DOID:0110095	short-rib thoracic dysplasia 11 with or without polydactyly	DOID:0050592	asphyxiating thoracic dystrophy
+DOID:0090132	complex cortical dysplasia with other brain malformations 7	DOID:0090131	complex cortical dysplasia with other brain malformations
+DOID:0110781	hereditary spastic paraplegia 30	DOID:2476	hereditary spastic paraplegia
+DOID:0060141	finger agnosia	DOID:4090	agnosia
+DOID:0110099	atopic dermatitis 3	DOID:3310	atopic dermatitis
+DOID:0110098	atopic dermatitis 2	DOID:3310	atopic dermatitis
+DOID:13100	intracranial vasospasm	DOID:6713	cerebrovascular disease
+DOID:11809	bladder neck cancer	DOID:11054	urinary bladder cancer
+DOID:3385	bacterial vaginosis	DOID:2170	vaginitis
+DOID:783	end stage renal failure	DOID:784	chronic kidney disease
+DOID:0110723	neuronal ceroid lipofuscinosis 8	DOID:14503	neuronal ceroid lipofuscinosis
+DOID:2701	nodular tenosynovitis	DOID:0060123	connective tissue benign neoplasm
+DOID:3389	Papillon-Lefevre disease	DOID:3388|DOID:3390	periodontal disease|palmoplantar keratosis
+DOID:0060651	MYH-9 related disease	DOID:2218	blood platelet disease
+DOID:13774	Addison's disease	DOID:10493	adrenal cortical hypofunction
+DOID:913	atrophic muscular disease	DOID:440	neuromuscular disease
+DOID:0110716	Warburg micro syndrome 1	DOID:0060237	Warburg micro syndrome
+DOID:5877	endocardium cancer	DOID:117	heart cancer
+DOID:11315	African histoplasmosis	DOID:1731	histoplasmosis
+DOID:9534	tuberculous pneumothorax	DOID:1673	pneumothorax
+DOID:560	jaw-winking syndrome	DOID:5656	cranial nerve disease
+DOID:0110763	hereditary spastic paraplegia 10	DOID:2476	hereditary spastic paraplegia
+DOID:10073	syphilitic meningitis	DOID:9470	bacterial meningitis
+DOID:0110765	hereditary spastic paraplegia 12	DOID:2476	hereditary spastic paraplegia
+DOID:0110764	hereditary spastic paraplegia 11	DOID:2476	hereditary spastic paraplegia
+DOID:13477	balanitis xerotica obliterans	DOID:13033	balanitis
+DOID:3261	Job's syndrome	DOID:2959	hyperimmunoglobulin syndrome
+DOID:11684	melanoacanthoma	DOID:6498	seborrheic keratosis
+DOID:11685	inflamed seborrheic keratosis	DOID:6498	seborrheic keratosis
+DOID:0060855	autosomal dominant pseudohypoaldosteronism type 1	DOID:4479	pseudohypoaldosteronism
+DOID:5810	adenosine deaminase deficiency	DOID:627	severe combined immunodeficiency
+DOID:0110004	3-methylglutaconic aciduria type 3	DOID:0060336	3-methylglutaconic aciduria
+DOID:0110006	3-methylglutaconic aciduria type 4	DOID:0060336	3-methylglutaconic aciduria
+DOID:256	hemangioma of spleen	DOID:254	hemangioma of intra-abdominal structure
+DOID:0111067	congenital bile acid synthesis defect 6	DOID:0050674	congenital bile acid synthesis defect
+DOID:0111066	congenital bile acid synthesis defect 5	DOID:0050674	congenital bile acid synthesis defect
+DOID:2799	bronchiolitis obliterans	DOID:3082	interstitial lung disease
+DOID:0110120	Axenfeld-Rieger syndrome type 1	DOID:14686	Axenfeld-Rieger syndrome
+DOID:318	progressive muscular atrophy	DOID:231	motor neuron disease
+DOID:0111062	familial hypobetalipoproteinemia 1	DOID:1390	hypobetalipoproteinemia
+DOID:0111063	hyperphosphatemic familial tumoral calcinosis	DOID:182	calcinosis
+DOID:3456	cervix erosion	DOID:2253	cervix disease
+DOID:0111069	congenital bile acid synthesis defect 2	DOID:0050674	congenital bile acid synthesis defect
+DOID:0111068	congenital bile acid synthesis defect 4	DOID:0050674	congenital bile acid synthesis defect
+DOID:0060223	agraphia	DOID:0060047	writing disorder
+DOID:5364	pulmonary coin lesion	DOID:3683	lung benign neoplasm
+DOID:5718	adrenal neuroblastoma	DOID:3953	adrenal gland cancer
+DOID:0060139	color agnosia	DOID:4090	agnosia
+DOID:0110789	hereditary spastic paraplegia 38	DOID:2476	hereditary spastic paraplegia
+DOID:0110788	hereditary spastic paraplegia 37	DOID:2476	hereditary spastic paraplegia
+DOID:4784	immune-complex glomerulonephritis	DOID:2921	glomerulonephritis
+DOID:0110786	hereditary spastic paraplegia 35	DOID:2476	hereditary spastic paraplegia
+DOID:0110785	hereditary spastic paraplegia 34	DOID:2476	hereditary spastic paraplegia
+DOID:0110784	hereditary spastic paraplegia 33	DOID:2476	hereditary spastic paraplegia
+DOID:4780	anti-basement membrane glomerulonephritis	DOID:2921	glomerulonephritis
+DOID:0110782	hereditary spastic paraplegia 31	DOID:2476	hereditary spastic paraplegia
+DOID:4782	subacute glomerulonephritis	DOID:2921	glomerulonephritis
+DOID:11823	hepatorenal syndrome	DOID:3021	acute kidney failure
+DOID:3950	adrenal carcinoma	DOID:3953	adrenal gland cancer
+DOID:10159	osteonecrosis	DOID:0080008	ischemic bone disease
+DOID:0111118	nephronophthisis 11	DOID:12712	nephronophthisis
+DOID:701	dentin dysplasia	DOID:214	teeth hard tissue disease
+DOID:9719	proliferative vitreoretinopathy	DOID:9720	vitreous disease
+DOID:0110914	infantile hypophosphatasia	DOID:14213	hypophosphatasia
+DOID:0090103	Huntington disease-like 1	DOID:649	prion disease
+DOID:0110912	leukocyte adhesion deficiency 3	DOID:6612	leukocyte adhesion deficiency
+DOID:0110913	adult hypophosphatasia	DOID:14213	hypophosphatasia
+DOID:2142	urethra leiomyoma	DOID:730	urethral benign neoplasm
+DOID:11459	pseudotumor cerebri	DOID:6713|DOID:9428	cerebrovascular disease|intracranial hypertension
+DOID:0060542	Hermansky-Pudlak syndrome 4	DOID:3753	Hermansky-Pudlak syndrome
+DOID:0050760	X-linked myopathy with excessive autophagy	DOID:423	myopathy
+DOID:8352	aortic malignant tumor	DOID:175	vascular cancer
+DOID:11450	allergic cutaneous vasculitis	DOID:9809	hypersensitivity vasculitis
+DOID:5392	acidophil adenoma	DOID:3829	pituitary adenoma
+DOID:11452	perinatal jaundice due to hepatocellular damage	DOID:2383	neonatal jaundice
+DOID:2228	thrombocytosis	DOID:2218	blood platelet disease
+DOID:0110221	Brugada syndrome 4	DOID:0050451	Brugada syndrome
+DOID:0050566	X-linked nonsyndromic deafness	DOID:0050563	nonsyndromic deafness
+DOID:0110717	Warburg micro syndrome 2	DOID:0060237	Warburg micro syndrome
+DOID:8331	perineural angioma	DOID:469	deep angioma
+DOID:12328	marasmus	DOID:11801	protein-energy malnutrition
+DOID:4715	gastric neuroendocrine neoplasm	DOID:4148	gastrointestinal neuroendocrine benign tumor
+DOID:0050891	adrenal cortical adenoma	DOID:656	adrenal adenoma
+DOID:0060546	Hermansky-Pudlak syndrome 8	DOID:3753	Hermansky-Pudlak syndrome
+DOID:0110718	Warburg micro syndrome 3	DOID:0060237	Warburg micro syndrome
+DOID:0110719	Warburg micro syndrome 4	DOID:0060237	Warburg micro syndrome
+DOID:8118	mature gastric teratoma	DOID:5561	gastric teratoma
+DOID:7305	astroblastoma	DOID:3069	astrocytoma
+DOID:4524	prostate angiosarcoma	DOID:0001816	angiosarcoma
+DOID:0050866	oral squamous cell carcinoma	DOID:8618	oral cavity cancer
+DOID:0050860	colorectal adenoma	DOID:4610	intestinal benign neoplasm
+DOID:7263	selective IgD deficiency disease	DOID:6025	selective immunoglobulin deficiency disease
+DOID:8805	intermediate coronary syndrome	DOID:3393	coronary artery disease
+DOID:9362	status asthmaticus	DOID:2841	asthma
+DOID:172	clear cell acanthoma	DOID:3165	skin benign neoplasm
+DOID:678	progressive supranuclear palsy	DOID:480	movement disease
+DOID:7571	malignant cystic nephroma	DOID:263	kidney cancer
+DOID:14319	pleuropneumonia	DOID:10247|DOID:552	pleurisy|pneumonia
+DOID:0110125	Bardet-Biedl syndrome 3	DOID:1935	Bardet-Biedl syndrome
+DOID:12309	urticaria pigmentosa	DOID:3663	cutaneous mastocytosis
+DOID:4970	prosopagnosia	DOID:4090	agnosia
+DOID:5763	lung clear cell-sugar-tumor	DOID:3683	lung benign neoplasm
+DOID:8632	Kaposi's sarcoma	DOID:201	connective tissue cancer
+DOID:5764	lung meningioma	DOID:1324	lung cancer
+DOID:5767	hilar lung neoplasm	DOID:3683	lung benign neoplasm
+DOID:6404	metanephric adenoma	DOID:2697	renal adenoma
+DOID:2139	paraurethral gland neoplasm	DOID:730	urethral benign neoplasm
+DOID:0050717	methylmalonic aciduria and homocystinuria type cblF	DOID:14749	methylmalonic acidemia
+DOID:0090101	lethal congenital glycogen storage disease of heart	DOID:2747	glycogen storage disease
+DOID:13088	periventricular leukomalacia	DOID:2034	encephalomalacia
+DOID:0050716	methylmalonic aciduria and homocystinuria type cblD	DOID:14749	methylmalonic acidemia
+DOID:0060130	akinetopsia	DOID:4090	agnosia
+DOID:0060131	alexithymia	DOID:4090	agnosia
+DOID:6249	mediastinum seminoma	DOID:5559	mediastinal cancer
+DOID:0060133	anosognosia	DOID:4090	agnosia
+DOID:0050465	Muir-Torre syndrome	DOID:3883	Lynch syndrome
+DOID:9854	lingual-facial-buccal dyskinesia	DOID:480	movement disease
+DOID:0060137	auditory agnosia	DOID:4090	agnosia
+DOID:6726	fibrillary astrocytoma	DOID:3069	astrocytoma
+DOID:0110768	hereditary spastic paraplegia 15	DOID:2476	hereditary spastic paraplegia
+DOID:12969	central nervous system leukemia	DOID:3620	central nervous system cancer
+DOID:13690	acute gonococcal cystitis	DOID:13148	acute cystitis
+DOID:8930	retromolar area cancer	DOID:8618	oral cavity cancer
+DOID:7607	chief cell adenoma	DOID:7608	parathyroid adenoma
+DOID:1849	cannabis dependence	DOID:9977	hallucinogen dependence
+DOID:3904	bronchus carcinoma	DOID:1325	bronchus cancer
+DOID:4364	malignant breast melanoma	DOID:1612	breast cancer
+DOID:10608	celiac disease	DOID:0060031	autoimmune disease of gastrointestinal tract
+DOID:4044	skeletal muscle neoplasm	DOID:461	muscle benign neoplasm
+DOID:10603	glucose intolerance	DOID:4195	hyperglycemia
+DOID:11121	pulpitis	DOID:5330	dental pulp disease
+DOID:11123	Henoch-Schoenlein purpura	DOID:9809	hypersensitivity vasculitis
+DOID:14402	critical illness polyneuropathy	DOID:2537	inflammatory and toxic neuropathy
+DOID:11125	qualitative platelet defect	DOID:2218	blood platelet disease
+DOID:12679	nephrocalcinosis	DOID:182	calcinosis
+DOID:0060680	pigment dispersion syndrome	DOID:5614	eye disease
+DOID:1106	esophagus lymphoma	DOID:5041	esophageal cancer
+DOID:0060688	arteriovenous malformations of the brain	DOID:11294	arteriovenous malformation
+DOID:0060689	atrichia with papular lesions	DOID:987	alopecia
+DOID:0060148	simultanagnosia	DOID:4090	agnosia
+DOID:12028	Conn's syndrome	DOID:656	adrenal adenoma
+DOID:10802	acute gonococcal epididymo-orchitis	DOID:9401	epididymo-orchitis
+DOID:681	progressive bulbar palsy	DOID:231	motor neuron disease
+DOID:4917	villous adenocarcinoma	DOID:299	adenocarcinoma
+DOID:11486	Horner's syndrome	DOID:11504	autonomic neuropathy
+DOID:0060784	ectrodactyly, ectodermal dysplasia, and cleft lip-palate syndrome 1	DOID:0060782	EEC syndrome
+DOID:13579	kwashiorkor	DOID:11801	protein-energy malnutrition
+DOID:5784	esophageal neuroendocrine tumor	DOID:5041	esophageal cancer
+DOID:3109	idiopathic CD4-positive T-lymphocytopenia	DOID:614	lymphopenia
+DOID:0110000	3-methylglutaconic aciduria type 5	DOID:0060336	3-methylglutaconic aciduria
+DOID:0110860	polycystic kidney disease 3	DOID:898	autosomal dominant polycystic kidney disease
+DOID:2986	IgA glomerulonephritis	DOID:2921	glomerulonephritis
+DOID:10070	larynx leiomyoma	DOID:2598	laryngeal benign neoplasm
+DOID:10071	larynx squamous papilloma	DOID:2598	laryngeal benign neoplasm
+DOID:2590	familial nephrotic syndrome	DOID:1184	nephrotic syndrome
+DOID:2597	glottis neoplasm	DOID:2598	laryngeal benign neoplasm
+DOID:5547	pulmonary artery choriocarcinoma	DOID:175	vascular cancer
+DOID:0050004	seminal vesicle acute gonorrhea	DOID:10400	gonococcal seminal vesiculitis
+DOID:8140	adrenal gland ganglioneuroblastoma	DOID:3953	adrenal gland cancer
+DOID:0110128	Bardet-Biedl syndrome 6	DOID:1935	Bardet-Biedl syndrome
+DOID:9861	miliary tuberculosis	DOID:0050598	extrapulmonary tuberculosis
+DOID:0110123	Bardet-Biedl syndrome 1	DOID:1935	Bardet-Biedl syndrome
+DOID:0110122	Axenfeld-Rieger syndrome type 3	DOID:14686	Axenfeld-Rieger syndrome
+DOID:0110121	Axenfeld-Rieger syndrome type 2	DOID:14686	Axenfeld-Rieger syndrome
+DOID:8149	malignant childhood germ cell neoplasm	DOID:6053	pediatric germ cell cancer
+DOID:0110127	Bardet-Biedl syndrome 5	DOID:1935	Bardet-Biedl syndrome
+DOID:0110126	Bardet-Biedl syndrome 4	DOID:1935	Bardet-Biedl syndrome
+DOID:8481	rheumatic myocarditis	DOID:0050827	rheumatic heart disease
+DOID:0110124	Bardet-Biedl syndrome 2	DOID:1935	Bardet-Biedl syndrome
+DOID:14535	malignant cardiac germ cell tumor	DOID:117	heart cancer
+DOID:0110001	3-methylglutaconic aciduria with deafness, encephalopathy, and Leigh-like syndrome	DOID:0060336	3-methylglutaconic aciduria
+DOID:0060265	pontocerebellar hypoplasia type 1A	DOID:0060264	pontocerebellar hypoplasia
+DOID:0060266	pontocerebellar hypoplasia type 1B	DOID:0060264	pontocerebellar hypoplasia
+DOID:0060267	pontocerebellar hypoplasia type 2A	DOID:0060264	pontocerebellar hypoplasia
+DOID:0060268	pontocerebellar hypoplasia type 2B	DOID:0060264	pontocerebellar hypoplasia
+DOID:0060269	pontocerebellar hypoplasia type 2C	DOID:0060264	pontocerebellar hypoplasia
+DOID:0060344	acrodermatitis chronica atrophicans	DOID:2722	acrodermatitis
+DOID:11714	gestational diabetes	DOID:9351	diabetes mellitus
+DOID:0110088	asphyxiating thoracic dystrophy 4	DOID:0050592	asphyxiating thoracic dystrophy
+DOID:0060282	persistent hyperplastic primary vitreous	DOID:9720	vitreous disease
+DOID:0050773	paraganglioma	DOID:169	neuroendocrine tumor
+DOID:1554	vibratory urticaria	DOID:0060220	physical urticaria
+DOID:0110002	3-methylglutaconic aciduria type 1	DOID:0060336	3-methylglutaconic aciduria
+DOID:11390	cerebral arteritis	DOID:6713	cerebrovascular disease
+DOID:0060132	amusia	DOID:4090	agnosia
+DOID:11396	pulmonary edema	DOID:11162	respiratory failure
+DOID:2673	cystic nephroma	DOID:3116	kidney benign neoplasm
+DOID:11394	adult respiratory distress syndrome	DOID:11162	respiratory failure
+DOID:4734	calciphylaxis	DOID:182	calcinosis
+DOID:12246	histoplasmosis meningitis	DOID:11608	fungal meningitis
+DOID:10540	gastric lymphoma	DOID:10534	stomach cancer
+DOID:2679	dysembryoplastic neuroepithelial tumor	DOID:0060090	central nervous system organ benign neoplasm
+DOID:0110739	neurodegeneration with brain iron accumulation 5	DOID:0110734	neurodegeneration with brain iron accumulation
+DOID:559	acute pyelonephritis	DOID:11400	pyelonephritis
+DOID:9261	nasopharynx carcinoma	DOID:0060119	pharynx cancer
+DOID:7008	protoplasmic astrocytoma	DOID:3069	astrocytoma
+DOID:0110951	Waardenburg syndrome type 2C	DOID:9258	Waardenburg's syndrome
+DOID:551	toxic pneumonitis	DOID:552	pneumonia
+DOID:8702	cheek mucosa cancer	DOID:8618	oral cavity cancer
+DOID:7005	gemistocytic astrocytoma	DOID:3069	astrocytoma
+DOID:14179	Bruton-type agammaglobulinemia	DOID:2583	agammaglobulinemia
+DOID:0110003	3-methylglutaconic aciduria with cataracts, neurologic involvement and neutropenia	DOID:0060336	3-methylglutaconic aciduria
+DOID:9503	Loeffler syndrome	DOID:9498	pulmonary eosinophilia
+DOID:0050138	podoconiosis	DOID:4976	elephantiasis
+DOID:9462	cholesteatoma of external ear	DOID:869	cholesteatoma
+DOID:0111114	nephronophthisis 3	DOID:12712	nephronophthisis
+DOID:0111117	nephronophthisis-like nephropathy 1	DOID:12712	nephronophthisis
+DOID:0111116	nephronophthisis 7	DOID:12712	nephronophthisis
+DOID:0111059	Bernard-Soulier syndrome type A2	DOID:2217	Bernard-Soulier syndrome
+DOID:0111113	nephronophthisis 2	DOID:12712	nephronophthisis
+DOID:0111112	nephronophthisis 1	DOID:12712	nephronophthisis
+DOID:0111054	von Willebrand's disease 3	DOID:12531	von Willebrand's disease
+DOID:0090008	immunodeficiency-centromeric instability-facial anomalies syndrome 1	DOID:0090007	immunodeficiency-centromeric instability-facial anomalies syndrome
+DOID:0111119	nephronophthisis 12	DOID:12712	nephronophthisis
+DOID:3325	hyperglobulinemic purpura	DOID:3326	purpura
+DOID:4136	myxosarcoma	DOID:201	connective tissue cancer
+DOID:0050441	mucosulfatidosis	DOID:1927	sphingolipidosis
+DOID:1616	benign eccrine breast spiradenoma	DOID:0060082	breast benign neoplasm
+DOID:0110956	Waardenburg syndrome type 2E	DOID:9258	Waardenburg's syndrome
+DOID:4131	erythrasma	DOID:4223	pyoderma
+DOID:7188	autoimmune thyroiditis	DOID:0060005	autoimmune disease of endocrine system
+DOID:9282	ocular hypertension	DOID:5614	eye disease
+DOID:8683	myeloid sarcoma	DOID:2531	hematologic cancer
+DOID:252	alcoholic psychosis	DOID:251	alcohol-induced mental disorder
+DOID:12680	pseudobulbar palsy	DOID:231	motor neuron disease
+DOID:5334	paraphimosis	DOID:2712	phimosis
+DOID:0060134	apperceptive agnosia	DOID:4090	agnosia
+DOID:10361	eosinophilic meningitis	DOID:10341	chronic meningitis
+DOID:636	central pontine myelinolysis	DOID:3213	demyelinating disease
+DOID:0110829	retinitis pigmentosa-deafness syndrome	DOID:0050439	Usher syndrome
+DOID:10203	external auditory meatus lipoma	DOID:0060096	sensory organ benign neoplasm
+DOID:0110097	short-rib thoracic dysplasia 9 with or without polydactyly	DOID:0050592	asphyxiating thoracic dystrophy
+DOID:0110824	hereditary spastic paraplegia 9A	DOID:2476	hereditary spastic paraplegia
+DOID:0110825	hereditary spastic paraplegia 9B	DOID:2476	hereditary spastic paraplegia
+DOID:0110822	hereditary spastic paraplegia 77	DOID:2476	hereditary spastic paraplegia
+DOID:0110823	hereditary spastic paraplegia 8	DOID:2476	hereditary spastic paraplegia
+DOID:0110820	hereditary spastic paraplegia 75	DOID:2476	hereditary spastic paraplegia
+DOID:0110821	hereditary spastic paraplegia 76	DOID:2476	hereditary spastic paraplegia
+DOID:9299	myocardium cancer	DOID:117	heart cancer
+DOID:8731	carotid body cancer	DOID:175	vascular cancer
+DOID:0110947	Waardenburg syndrome type 2B	DOID:9258	Waardenburg's syndrome
+DOID:2176	carbuncle	DOID:4223	pyoderma
+DOID:2173	eyelid neoplasm	DOID:3165	skin benign neoplasm
+DOID:2272	vulvovaginal candidiasis	DOID:1508	candidiasis
+DOID:12241	beta thalassemia	DOID:10241	thalassemia
+DOID:0050924	striated muscle rhabdoid tumor	DOID:4045	muscle cancer
+DOID:0110094	short-rib thoracic dysplasia 8 with or without polydactyly	DOID:0050592	asphyxiating thoracic dystrophy
+DOID:0110949	Waardenburg syndrome type 3	DOID:9258	Waardenburg's syndrome
+DOID:0110948	Waardenburg syndrome type 1	DOID:9258	Waardenburg's syndrome
+DOID:0050733	methylmalonic aciduria and homocystinuria type cblG	DOID:14749	methylmalonic acidemia
+DOID:0050732	methylmalonic aciduria and homocystinuria type cblE	DOID:14749	methylmalonic acidemia
+DOID:0050634	alopecia universalis	DOID:987	alopecia
+DOID:4014	sarcomatoid transitional cell carcinoma	DOID:2671	transitional cell carcinoma
+DOID:0050630	Aland Island eye disease	DOID:5614	eye disease
+DOID:9603	intravascular fasciitis	DOID:7327	pseudosarcomatous fibromatosis
+DOID:0050633	ocular albinism	DOID:5614	eye disease
+DOID:4744	placenta accreta	DOID:780	placenta disease
+DOID:0050641	Rh deficiency syndrome	DOID:583	hemolytic anemia
+DOID:0050916	bronchus mucoepidermoid carcinoma	DOID:1325	bronchus cancer
+DOID:7983	breast malignant eccrine spiradenoma	DOID:1612	breast cancer
+DOID:7825	chronic toxic polyneuropathy	DOID:5221	chronic polyneuropathy
+DOID:3079	juvenile astrocytoma	DOID:3069	astrocytoma
+DOID:3078	grade III astrocytoma	DOID:3069	astrocytoma
+DOID:0050853	chronic venous insufficiency	DOID:10128	venous insufficiency
+DOID:12638	hypertrophic pyloric stenosis	DOID:12639	pyloric stenosis
+DOID:14448	46 XY gonadal dysgenesis	DOID:14447	gonadal dysgenesis
+DOID:0111125	nephronophthisis 18	DOID:12712	nephronophthisis
+DOID:3030	mucinous adenocarcinoma	DOID:299	adenocarcinoma
+DOID:5435	variant Creutzfeldt-Jakob disease	DOID:649	prion disease
+DOID:5434	scrapie	DOID:649	prion disease
+DOID:14443	cholinergic urticaria	DOID:0060220	physical urticaria
+DOID:106	pleural tuberculosis	DOID:0050598	extrapulmonary tuberculosis
+DOID:0060008	janus kinase-3 deficiency	DOID:627	severe combined immunodeficiency
+DOID:0060009	MHC class I deficiency	DOID:627	severe combined immunodeficiency
+DOID:10487	Hirschsprung's disease	DOID:11372	megacolon
+DOID:11240	appendiceal neoplasm	DOID:4610	intestinal benign neoplasm
+DOID:14289	Ebstein anomaly	DOID:0050826	tricuspid valve disease
+DOID:12185	otosclerosis	DOID:2952	inner ear disease
+DOID:0060769	T-cell immunodeficiency, congenital alopecia, and nail dystrophy	DOID:627	severe combined immunodeficiency
+DOID:10533	viral pneumonia	DOID:552	pneumonia
+DOID:0060006	artemis deficiency	DOID:627	severe combined immunodeficiency
+DOID:0060007	CD3zeta deficiency	DOID:627	severe combined immunodeficiency
+DOID:0060743	methylmalonic acidemia cb1B type	DOID:14749	methylmalonic acidemia
+DOID:13864	trochlear nerve disease	DOID:5656	cranial nerve disease
+DOID:5429	bladder flat intraepithelial lesion	DOID:0050623	bladder benign neoplasm
+DOID:0060078	progesterone-receptor negative breast cancer	DOID:1612	breast cancer
+DOID:0090068	giant axonal neuropathy 1	DOID:7319	axonal neuropathy
+DOID:0050821	first-degree atrioventricular block	DOID:0050820	atrioventricular block
+DOID:4525	mediastinum angiosarcoma	DOID:0001816	angiosarcoma
+DOID:13943	acute gonococcal prostatitis	DOID:14654	prostatitis
+DOID:8512	puerperal pulmonary embolism	DOID:9477	pulmonary embolism
+DOID:7735	pancreatic colloid cystadenoma	DOID:3918	pancreatic cystadenoma
+DOID:4522	superior vena cava angiosarcoma	DOID:0001816	angiosarcoma
+DOID:9043	uterine cervix leukoplakia	DOID:2253	cervix disease
+DOID:990	congenital heart block	DOID:0050820	atrioventricular block
+DOID:0110722	neuronal ceroid lipofuscinosis 7	DOID:14503	neuronal ceroid lipofuscinosis
+DOID:0060740	methylmalonic aciduria due to methylmalonyl-CoA mutase deficiency	DOID:14749	methylmalonic acidemia
+DOID:0060540	Hermansky-Pudlak syndrome 2	DOID:3753	Hermansky-Pudlak syndrome
+DOID:14087	epicondylitis	DOID:3342	bone inflammation disease
+DOID:3557	superior mesenteric artery syndrome	DOID:3558	duodenal obstruction
+DOID:0060783	ectrodactyly, ectodermal dysplasia, and cleft lip-palate syndrome 3	DOID:0060782	EEC syndrome
+DOID:2410	skin granular cell tumor	DOID:3165	skin benign neoplasm
+DOID:2411	granular cell tumor	DOID:3165	skin benign neoplasm
+DOID:0080099	myopathy, lactic acidosis, and sideroblastic anemia	DOID:423	myopathy
+DOID:0080098	myofibrillar myopathy 7	DOID:423	myopathy
+DOID:9415	allergic asthma	DOID:2841	asthma
+DOID:5890	malignant adult ependymoma	DOID:5074	malignant ependymoma
+DOID:8108	fibroepithelial polyp of urethra	DOID:6873	skin tag
+DOID:8109	nephrogenic adenoma of the urethra	DOID:730	urethral benign neoplasm
+DOID:0080091	spheroid body myopathy	DOID:423	myopathy
+DOID:0080090	reducing body myopathy	DOID:423	myopathy
+DOID:0080093	myofibrillar myopathy 2	DOID:423	myopathy
+DOID:0080092	myofibrillar myopathy 1	DOID:423	myopathy
+DOID:0080095	myofibrillar myopathy 4	DOID:423	myopathy
+DOID:0080094	myofibrillar myopathy 3	DOID:423	myopathy
+DOID:0080097	myofibrillar myopathy 6	DOID:423	myopathy
+DOID:0080096	myofibrillar myopathy 5	DOID:423	myopathy
+DOID:0111115	nephronophthisis 4	DOID:12712	nephronophthisis
+DOID:11014	anorectal stricture	DOID:3128	anus disease
+DOID:0060063	X-linked sideroblastic anemia	DOID:8955	sideroblastic anemia
+DOID:4512	conventional angiosarcoma	DOID:0001816	angiosarcoma
+DOID:1770	toxic megacolon	DOID:11372	megacolon
+DOID:3891	placental insufficiency	DOID:780	placenta disease
+DOID:12118	pulmonary hemosiderosis	DOID:12119	hemosiderosis
+DOID:0060307	autosomal dominant non-syndromic intellectual disability	DOID:0050889	non-syndromic intellectual disability
+DOID:1672	spontaneous tension pneumothorax	DOID:1673	pneumothorax
+DOID:9504	benign mammary dysplasia	DOID:0060082	breast benign neoplasm
+DOID:3981	pantothenate kinase-associated neurodegeneration	DOID:0110734	neurodegeneration with brain iron accumulation
+DOID:6102	herpetic gastritis	DOID:2327	viral gastritis
+DOID:1678	chronic interstitial cystitis	DOID:1680	chronic cystitis
+DOID:2058	chronic mucocutaneous candidiasis	DOID:1508	candidiasis
+DOID:0060538	purpura fulminans	DOID:3326	purpura
+DOID:0060539	Hermansky-Pudlak syndrome 1	DOID:3753	Hermansky-Pudlak syndrome
+DOID:0080179	haemophilus meningitis	DOID:9470	bacterial meningitis
+DOID:0080176	meningococcal meningitis	DOID:9470	bacterial meningitis
+DOID:1108	esophagus melanoma	DOID:5041	esophageal cancer
+DOID:10194	kidney lipoma	DOID:3116	kidney benign neoplasm
+DOID:4510	aorta angiosarcoma	DOID:175	vascular cancer
+DOID:2300	spondylolysis	DOID:0080010	bone structure disease
+DOID:10301	parotitis	DOID:10302	parotid disease
+DOID:0110847	xeroderma pigmentosum variant type	DOID:0050427	xeroderma pigmentosum
+DOID:9188	vestibule of mouth cancer	DOID:8618	oral cavity cancer
+DOID:4810	cerebrotendinous xanthomatosis	DOID:3345	xanthomatosis
+DOID:901	liver lymphoma	DOID:3571	liver cancer
+DOID:5042	malignant granular cell myoblastoma	DOID:4159	skin cancer
+DOID:14037	aorta atresia	DOID:520	aortic disease
+DOID:3098	small cell sarcoma	DOID:201	connective tissue cancer
+DOID:268	liver angiosarcoma	DOID:0001816	angiosarcoma
+DOID:7489	Osgood-Schlatter's disease	DOID:3342	bone inflammation disease
+DOID:0110767	hereditary spastic paraplegia 14	DOID:2476	hereditary spastic paraplegia
+DOID:8743	erythema infectiosum	DOID:8672	viral exanthem
+DOID:0060862	mal de Meleda	DOID:3390	palmoplantar keratosis
+DOID:9427	hypertensive encephalopathy	DOID:9428	intracranial hypertension
+DOID:0110766	hereditary spastic paraplegia 13	DOID:2476	hereditary spastic paraplegia
+DOID:519	aortitis	DOID:520	aortic disease
+DOID:1583	laryngeal tuberculosis	DOID:3437	laryngitis
+DOID:6620	X-linked hyper IgM syndrome	DOID:2959	hyperimmunoglobulin syndrome
+DOID:0110769	hereditary spastic paraplegia 16	DOID:2476	hereditary spastic paraplegia
+DOID:0090108	autosomal dominant hypocalcemia 2	DOID:0090109	autosomal dominant hypocalcemia
+DOID:5812	MHC class II deficiency	DOID:627	severe combined immunodeficiency
+DOID:0060541	Hermansky-Pudlak syndrome 3	DOID:3753	Hermansky-Pudlak syndrome
+DOID:14545	seminal vesicle adenocarcinoma	DOID:3856	male reproductive organ cancer
+DOID:0060543	Hermansky-Pudlak syndrome 5	DOID:3753	Hermansky-Pudlak syndrome
+DOID:2785	Dandy-Walker syndrome	DOID:2786	cerebellar disease
+DOID:0060545	Hermansky-Pudlak syndrome 7	DOID:3753	Hermansky-Pudlak syndrome
+DOID:14775	brittle cornea syndrome	DOID:13359	Ehlers-Danlos syndrome
+DOID:0060547	Hermansky-Pudlak syndrome 9	DOID:3753	Hermansky-Pudlak syndrome
+DOID:0060230	basal ganglia calcification	DOID:679	basal ganglia disease
+DOID:11832	visual epilepsy	DOID:1826	epilepsy
+DOID:0060854	autosomal recessive pseudohypoaldosteronism type 1	DOID:4479	pseudohypoaldosteronism
+DOID:11836	clubfoot	DOID:0080006	bone development disease
+DOID:4777	exudative glomerulonephritis	DOID:2921	glomerulonephritis
+DOID:4776	rapidly progressive glomerulonephritis	DOID:2921	glomerulonephritis
+DOID:4779	focal embolic glomerulonephritis	DOID:2921	glomerulonephritis
+DOID:4778	proliferative glomerulonephritis	DOID:2921	glomerulonephritis
+DOID:0060016	CD3delta deficiency	DOID:627	severe combined immunodeficiency
+DOID:2997	Sertoli-Leydig cell tumor	DOID:4757	sex cord-stromal neoplasm
+DOID:7632	Cowper gland carcinoma	DOID:3856	male reproductive organ cancer
+DOID:0060244	specific language impairment	DOID:93	language disorder
+DOID:605	flying phobia	DOID:599	specific phobia
+DOID:10127	cerebral artery occlusion	DOID:6713	cerebrovascular disease
+DOID:0110843	xeroderma pigmentosum group A	DOID:0050427	xeroderma pigmentosum
+DOID:0060152	time agnosia	DOID:4090	agnosia
+DOID:12236	primary biliary cirrhosis	DOID:0060049|DOID:5082	autoimmune disease of urogenital tract|liver cirrhosis
+DOID:0110726	neuronal ceroid lipofuscinosis 2	DOID:14503	neuronal ceroid lipofuscinosis
+DOID:7179	mixed eosinophil-basophil adenoma	DOID:3829	pituitary adenoma
+DOID:0050670	ataxic cerebral palsy	DOID:1969	cerebral palsy
+DOID:0050672	dyskinetic cerebral palsy	DOID:1969	cerebral palsy
+DOID:0050673	mixed cerebral palsy	DOID:1969	cerebral palsy
+DOID:8508	subcorneal pustular dermatosis	DOID:8502	bullous skin disease
+DOID:2239	granulomatous hepatitis	DOID:2237	hepatitis
+DOID:7077	malignant melanocytic peripheral nerve sheath tumor of mediastinum	DOID:5559	mediastinal cancer
+DOID:8681	paraneoplastic polyneuropathy	DOID:2537	inflammatory and toxic neuropathy
+DOID:0060151	tactile agnosia	DOID:4090	agnosia
+DOID:11949	Creutzfeldt-Jakob disease	DOID:649	prion disease
+DOID:0111124	nephronophthisis 16	DOID:12712	nephronophthisis
+DOID:5039	myoblastoma	DOID:461	muscle benign neoplasm
+DOID:0111126	nephronophthisis 19	DOID:12712	nephronophthisis
+DOID:0111127	nephronophthisis 20	DOID:12712	nephronophthisis
+DOID:0111120	nephronophthisis 9	DOID:12712	nephronophthisis
+DOID:0111121	nephronophthisis 13	DOID:12712	nephronophthisis
+DOID:14717	centronuclear myopathy	DOID:423	myopathy
+DOID:0111123	nephronophthisis 15	DOID:12712	nephronophthisis
+DOID:9074	systemic lupus erythematosus	DOID:8857	lupus erythematosus
+DOID:3737	verrucous carcinoma	DOID:1749	squamous cell carcinoma
+DOID:5579	gastric gastrinoma	DOID:10534	stomach cancer
+DOID:4513	gallbladder angiosarcoma	DOID:0001816	angiosarcoma
+DOID:4990	essential tremor	DOID:480	movement disease
+DOID:5574	VIPoma	DOID:169	neuroendocrine tumor
+DOID:0090083	hypogonadotropic hypogonadism 2 with or without anosmia	DOID:0090070	hypogonadotropic hypogonadism
+DOID:9370	exophthalmos	DOID:5614	eye disease
+DOID:5577	gastrinoma	DOID:169	neuroendocrine tumor
+DOID:0050791	persistent Mullerian duct syndrome	DOID:3765	pseudohermaphroditism
+DOID:7609	parathyroid transitional clear cell adenoma	DOID:7608	parathyroid adenoma
+DOID:13417	alexia	DOID:4090	agnosia
+DOID:7181	benign dermal neurilemmoma	DOID:3165	skin benign neoplasm
+DOID:4683	cutaneous mucoepidermoid carcinoma	DOID:3165	skin benign neoplasm
+DOID:5772	central nervous system hematologic cancer	DOID:3620	central nervous system cancer
+DOID:13097	intracranial arteriosclerosis	DOID:2349	arteriosclerosis
+DOID:0060544	Hermansky-Pudlak syndrome 6	DOID:3753	Hermansky-Pudlak syndrome
+DOID:600	animal phobia	DOID:599	specific phobia
+DOID:6657	breast large cell neuroendocrine carcinoma	DOID:1612	breast cancer
+DOID:2044	drug-induced hepatitis	DOID:2237	hepatitis
+DOID:0060129	delta chain disease	DOID:0060125	heavy chain disease
+DOID:0060128	mu chain disease	DOID:0060125	heavy chain disease
+DOID:767	muscular atrophy	DOID:423	myopathy
+DOID:7388	pulmonary vein leiomyosarcoma	DOID:175	vascular cancer
+DOID:3577	Sertoli cell tumor	DOID:4757	sex cord-stromal neoplasm
+DOID:7402	L-cell glucagon-like peptide producing tumor	DOID:4148	gastrointestinal neuroendocrine benign tumor
+DOID:0060127	gamma heavy chain disease	DOID:0060125	heavy chain disease
+DOID:2048	autoimmune hepatitis	DOID:0060031	autoimmune disease of gastrointestinal tract
+DOID:0110732	neuronal ceroid lipofuscinosis 11	DOID:14503	neuronal ceroid lipofuscinosis
+DOID:8553	pyoderma gangrenosum	DOID:4223	pyoderma
+DOID:7675	testicular fibroma	DOID:4757	sex cord-stromal neoplasm
+DOID:7676	testicular thecoma	DOID:4757	sex cord-stromal neoplasm
+DOID:4675	uremic neuropathy	DOID:4676	uremia
+DOID:8255	vulva fibroepithelial polyp	DOID:6873	skin tag
+DOID:3183	childhood oligodendroglioma	DOID:3181	oligodendroglioma
+DOID:4428	dyslexia	DOID:13365	reading disorder
+DOID:2516	intracranial cavernous angioma	DOID:2517	intracranial structure hemangioma
+DOID:11161	neonatal respiratory failure	DOID:11162	respiratory failure
+DOID:0111032	hemochromatosis type 2B	DOID:0111034	hemochromatosis type 2
+DOID:4423	sea-blue histiocyte syndrome	DOID:1927|DOID:4330	sphingolipidosis|non-Langerhans-cell histiocytosis
+DOID:4424	juvenile xanthogranuloma	DOID:4330	non-Langerhans-cell histiocytosis
+DOID:0060126	alpha chain disease	DOID:0060125	heavy chain disease
+DOID:5509	pediatric ependymoma	DOID:5074	malignant ependymoma
+DOID:7817	mixed astrocytoma-ependymoma-oligodendroglioma	DOID:5076	mixed glioma
+DOID:5500	cellular ependymoma	DOID:4844	benign ependymoma
+DOID:5505	papillary ependymoma	DOID:4844	benign ependymoma
+DOID:5504	tanycytic ependymoma	DOID:4844	benign ependymoma
+DOID:5507	clear cell ependymoma	DOID:4844	benign ependymoma
+DOID:4196	femoral neuropathy	DOID:1188	mononeuropathy
+DOID:0060758	immunodeficiency with hyper-IgM type 2	DOID:2959	hyperimmunoglobulin syndrome
+DOID:0060759	immunodeficiency with hyper IgM type 5	DOID:2959	hyperimmunoglobulin syndrome
+DOID:12661	tooth ankylosis	DOID:214	teeth hard tissue disease
+DOID:0090075	hypogonadotropic hypogonadism 15 with or without anosmia	DOID:0090070	hypogonadotropic hypogonadism
+DOID:0090072	hypogonadotropic hypogonadism 12 with or without anosmia	DOID:0090070	hypogonadotropic hypogonadism
+DOID:0090073	hypogonadotropic hypogonadism 13 with or without anosmia	DOID:0090070	hypogonadotropic hypogonadism
+DOID:0090071	hypogonadotropic hypogonadism 11 with or without anosmia	DOID:0090070	hypogonadotropic hypogonadism
+DOID:5729	intravenous leiomyomatosis	DOID:5138	leiomyomatosis
+DOID:1639	skeletal tuberculosis	DOID:0050598	extrapulmonary tuberculosis
+DOID:4660	indolent systemic mastocytosis	DOID:349	systemic mastocytosis
+DOID:1796	pancreas sarcoma	DOID:1793	pancreatic cancer
+DOID:14524	senile degeneration of brain	DOID:1443	cerebral degeneration
+DOID:0090078	hypogonadotropic hypogonadism 7 with or without anosmia	DOID:0090070	hypogonadotropic hypogonadism
+DOID:0090079	hypogonadotropic hypogonadism 17 with or without anosmia	DOID:0090070	hypogonadotropic hypogonadism
+DOID:0060057	gluten allergy	DOID:3044	food allergy
+DOID:0110787	hereditary spastic paraplegia 36	DOID:2476	hereditary spastic paraplegia
+DOID:12157	aseptic meningitis	DOID:10310	viral meningitis
+DOID:1631	benign breast phyllodes tumor	DOID:0060082	breast benign neoplasm
+DOID:5715	functionless pituitary adenoma	DOID:3829	pituitary adenoma
+DOID:6652	diffuse idiopathic skeletal hyperostosis	DOID:182	calcinosis
+DOID:4336	tinea favosa	DOID:4337	tinea capitis
+DOID:0060192	Crohn's colitis	DOID:8778	Crohn's disease
+DOID:5240	retinal hemangioblastoma	DOID:5241	hemangioblastoma
+DOID:0060190	ileocolitis	DOID:8778	Crohn's disease
+DOID:0060191	gastroduodenal Crohn's disease	DOID:8778	Crohn's disease
+DOID:6721	Littre gland carcinoma	DOID:3856	male reproductive organ cancer
+DOID:1792	pancreas lymphoma	DOID:1793	pancreatic cancer
+DOID:0060573	von Willebrand's disease 1	DOID:12531	von Willebrand's disease
+DOID:0060574	von Willebrand's disease 2	DOID:12531	von Willebrand's disease
+DOID:0060679	catecholaminergic polymorphic ventricular tachycardia 5	DOID:0060674	catecholaminergic polymorphic ventricular tachycardia
+DOID:0060678	catecholaminergic polymorphic ventricular tachycardia 4	DOID:0060674	catecholaminergic polymorphic ventricular tachycardia
+DOID:0060677	catecholaminergic polymorphic ventricular tachycardia 3	DOID:0060674	catecholaminergic polymorphic ventricular tachycardia
+DOID:0060676	catecholaminergic polymorphic ventricular tachycardia 2	DOID:0060674	catecholaminergic polymorphic ventricular tachycardia
+DOID:0060675	catecholaminergic polymorphic ventricular tachycardia 1	DOID:0060674	catecholaminergic polymorphic ventricular tachycardia
+DOID:0090090	hypogonadotropic hypogonadism 19 with or without anosmia	DOID:0090070	hypogonadotropic hypogonadism
+DOID:0090091	hypogonadotropic hypogonadism 23 with or without anosmia	DOID:0090070	hypogonadotropic hypogonadism
+DOID:0090092	hypogonadotropic hypogonadism 3 with or without anosmia	DOID:0090070	hypogonadotropic hypogonadism
+DOID:0090093	hypogonadotropic hypogonadism 21 with or without anosmia	DOID:0090070	hypogonadotropic hypogonadism
+DOID:13402	skin sarcoidosis	DOID:11335	sarcoidosis
+DOID:13403	cerebral sarcoidosis	DOID:11335	sarcoidosis
+DOID:13404	uveoparotid fever	DOID:11335	sarcoidosis
+DOID:13405	cardiac sarcoidosis	DOID:11335	sarcoidosis
+DOID:13406	pulmonary sarcoidosis	DOID:3082|DOID:11335	interstitial lung disease|sarcoidosis
+DOID:13407	hypercalcemic sarcoidosis	DOID:11335	sarcoidosis
+DOID:4783	mesangial proliferative glomerulonephritis	DOID:2921	glomerulonephritis
+DOID:0110116	autoimmune lymphoproliferative syndrome type 2B	DOID:6688	autoimmune lymphoproliferative syndrome
+DOID:0110117	autoimmune lymphoproliferative syndrome type 4	DOID:6688	autoimmune lymphoproliferative syndrome
+DOID:0110115	autoimmune lymphoproliferative syndrome type 2A	DOID:6688	autoimmune lymphoproliferative syndrome
+DOID:8170	fibroepithelial polyp of the anus	DOID:6873	skin tag
+DOID:14504	Niemann-Pick disease	DOID:1927|DOID:4330	sphingolipidosis|non-Langerhans-cell histiocytosis
+DOID:1355	paranasal sinus lymphoma	DOID:0050619	paranasal sinus cancer
+DOID:0110119	autoimmune lymphoproliferative syndrome type 3	DOID:6688	autoimmune lymphoproliferative syndrome
+DOID:0060273	pontocerebellar hypoplasia type 4	DOID:0060264	pontocerebellar hypoplasia
+DOID:0060272	pontocerebellar hypoplasia type 3	DOID:0060264	pontocerebellar hypoplasia
+DOID:0060271	pontocerebellar hypoplasia type 2E	DOID:0060264	pontocerebellar hypoplasia
+DOID:0060270	pontocerebellar hypoplasia type 2D	DOID:0060264	pontocerebellar hypoplasia
+DOID:0060277	pontocerebellar hypoplasia type 8	DOID:0060264	pontocerebellar hypoplasia
+DOID:0060276	pontocerebellar hypoplasia type 7	DOID:0060264	pontocerebellar hypoplasia
+DOID:0060275	pontocerebellar hypoplasia type 6	DOID:0060264	pontocerebellar hypoplasia
+DOID:0060274	pontocerebellar hypoplasia type 5	DOID:0060264	pontocerebellar hypoplasia
+DOID:11189	pulp degeneration	DOID:5330	dental pulp disease
+DOID:0060278	pontocerebellar hypoplasia type 9	DOID:0060264	pontocerebellar hypoplasia
+DOID:2495	senile angioma	DOID:3165	skin benign neoplasm
+DOID:13169	spermatic cord cancer	DOID:3856	male reproductive organ cancer
+DOID:1713	benign shuddering attacks	DOID:480	movement disease
+DOID:0110733	neuronal ceroid lipofuscinosis 9	DOID:14503	neuronal ceroid lipofuscinosis
+DOID:5608	dental pulp calcification	DOID:5330	dental pulp disease
+DOID:3016	breast malignant phyllodes tumor	DOID:1612	breast cancer
+DOID:13166	allergic bronchopulmonary aspergillosis	DOID:13564	aspergillosis
+DOID:10587	Krabbe disease	DOID:1927	sphingolipidosis
+DOID:12270	coloboma	DOID:5614	eye disease
+DOID:4310	smooth muscle tumor	DOID:461	muscle benign neoplasm
+DOID:13658	infective urethral stricture	DOID:1829	urethral stricture
+DOID:2883	prostatic adenoma	DOID:0060087	male reproductive organ benign neoplasm
+DOID:2885	benign prostate phyllodes tumor	DOID:0060087	male reproductive organ benign neoplasm
+DOID:0111070	congenital bile acid synthesis defect 3	DOID:0050674	congenital bile acid synthesis defect
+DOID:2887	prostate leiomyoma	DOID:0060087	male reproductive organ benign neoplasm
+DOID:9681	cervical incompetence	DOID:2253	cervix disease
+DOID:8675	lymphosarcoma	DOID:0060073	lymphatic system cancer
+DOID:0110915	childhood hypophosphatasia	DOID:14213	hypophosphatasia
+DOID:6333	adult intracranial malignant hemangiopericytoma	DOID:201	connective tissue cancer
+DOID:14064	acute poststreptococcal glomerulonephritis	DOID:2921	glomerulonephritis
+DOID:275	gastric hemangioma	DOID:254	hemangioma of intra-abdominal structure
+DOID:0110740	neurodegeneration with brain iron accumulation 6	DOID:0110734	neurodegeneration with brain iron accumulation
+DOID:468	intramuscular hemangioma	DOID:469	deep angioma
+DOID:4830	adenosquamous carcinoma	DOID:1749	squamous cell carcinoma
+DOID:8472	localized scleroderma	DOID:419	scleroderma
+DOID:230	lateral sclerosis	DOID:231	motor neuron disease
+DOID:14757	type III Ehlers-Danlos syndrome	DOID:13359	Ehlers-Danlos syndrome
+DOID:14756	autosomal dominant type IV Ehlers-Danlos syndrome	DOID:13359	Ehlers-Danlos syndrome
+DOID:0110778	hereditary spastic paraplegia 27	DOID:2476	hereditary spastic paraplegia
+DOID:5895	clear cell cystadenofibroma	DOID:5482	cystadenofibroma
+DOID:0111071	congenital bile acid synthesis defect 1	DOID:0050674	congenital bile acid synthesis defect
+DOID:14759	autosomal recessive type IV Ehlers-Danlos syndrome	DOID:13359	Ehlers-Danlos syndrome
+DOID:0060474	Chuvash polycythemia	DOID:10780	primary polycythemia
+DOID:0090011	immunodeficiency-centromeric instability-facial anomalies syndrome 4	DOID:0090007	immunodeficiency-centromeric instability-facial anomalies syndrome
+DOID:4640	axillary adenitis	DOID:1602	lymphadenitis
+DOID:9335	scotoma	DOID:5614	eye disease
+DOID:1742	drug psychosis	DOID:1203	drug-induced mental disorder
+DOID:0050692	Brody myopathy	DOID:440	neuromuscular disease
+DOID:0050697	chorioamnionitis	DOID:780	placenta disease
+DOID:12935	alcoholic cardiomyopathy	DOID:3978	extrinsic cardiomyopathy
+DOID:0050921	pharynx squamous cell carcinoma	DOID:0060119	pharynx cancer
+DOID:5732	pyosalpinx	DOID:5733	salpingitis
+DOID:0060612	abdominal obesity-metabolic syndrome 3	DOID:0060611	abdominal obesity-metabolic syndrome
+DOID:2088	outlet dysfunction constipation	DOID:2089	constipation
+DOID:12716	newborn respiratory distress syndrome	DOID:11162	respiratory failure
+DOID:2223	platelet storage pool deficiency	DOID:2218	blood platelet disease
+DOID:10176	neuroretinitis	DOID:5614	eye disease
+DOID:2247	spondylosis	DOID:0080010	bone structure disease
+DOID:11981	morbid obesity	DOID:9970	obesity
+DOID:5949	angiokeratoma circumscriptum	DOID:3165	skin benign neoplasm
+DOID:4889	lymph node tuberculosis	DOID:0050598	extrapulmonary tuberculosis
+DOID:4630	inverted transitional papilloma	DOID:3179|DOID:2670	inverted papilloma|transitional papilloma
+DOID:11812	bladder sarcoma	DOID:11054	urinary bladder cancer
+DOID:4633	nasal cavity inverting papilloma	DOID:9310	nasal cavity neoplasm
+DOID:5232	aortic valve prolapse	DOID:62	aortic valve disease
+DOID:0050584	gummatous syphilis	DOID:8200	tertiary syphilis
+DOID:4638	postauricular lymphadenitis	DOID:1602	lymphadenitis
+DOID:4639	suppurative lymphadenitis	DOID:1602	lymphadenitis
+DOID:14175	von Hippel-Lindau disease	DOID:5241	hemangioblastoma
+DOID:0060335	autosomal dominant sideroblastic anemia	DOID:8955	sideroblastic anemia
+DOID:0110087	asphyxiating thoracic dystrophy 3	DOID:0050592	asphyxiating thoracic dystrophy
+DOID:11721	glycogen storage disease VII	DOID:2747	glycogen storage disease
+DOID:7441	chronic metabolic polyneuropathy	DOID:5221	chronic polyneuropathy
+DOID:4542	basophil adenoma	DOID:3829	pituitary adenoma
+DOID:0080018	dysbaric osteonecrosis	DOID:0080008	ischemic bone disease
+DOID:4540	dysgraphia	DOID:0060047	writing disorder
+DOID:13146	esophageal candidiasis	DOID:1508	candidiasis
+DOID:9149	hard palate cancer	DOID:8618	oral cavity cancer
+DOID:4468	clear cell adenocarcinoma	DOID:299	adenocarcinoma
+DOID:4012	papillary transitional carcinoma	DOID:2671	transitional cell carcinoma
+DOID:4013	urethra transitional cell carcinoma	DOID:734	urethra cancer
+DOID:12785	diabetic polyneuropathy	DOID:9743	diabetic neuropathy
+DOID:3660	wheat allergy	DOID:3044	food allergy
+DOID:11153	miliaria rubra	DOID:1382	miliaria
+DOID:12783	migraine without aura	DOID:6364	migraine
+DOID:10538	gastric fundus cancer	DOID:10534	stomach cancer
+DOID:0110730	neuronal ceroid lipofuscinosis 4A	DOID:14503	neuronal ceroid lipofuscinosis
+DOID:3669	intermittent claudication	DOID:2349	arteriosclerosis
+DOID:5427	urinary bladder villous adenoma	DOID:11054	urinary bladder cancer
+DOID:14374	norwegian scabies	DOID:8295	scabies
+DOID:0060019	coronin-1A deficiency	DOID:627	severe combined immunodeficiency
+DOID:0060018	CD3gamma deficiency	DOID:627	severe combined immunodeficiency
+DOID:0110848	xeroderma pigmentosum group F	DOID:0050427	xeroderma pigmentosum
+DOID:0110849	xeroderma pigmentosum group G	DOID:0050427	xeroderma pigmentosum
+DOID:0060013	gamma chain deficiency	DOID:627	severe combined immunodeficiency
+DOID:0060012	recombinase activating gene 2 deficiency	DOID:627	severe combined immunodeficiency
+DOID:0060011	recombinase activating gene 1 deficiency	DOID:627	severe combined immunodeficiency
+DOID:0060010	Omenn syndrome	DOID:627	severe combined immunodeficiency
+DOID:0060017	CD3epsilon deficiency	DOID:627	severe combined immunodeficiency
+DOID:12055	sarcoid meningitis	DOID:11335	sarcoidosis
+DOID:0060015	interleukin-7 receptor alpha deficiency	DOID:627	severe combined immunodeficiency
+DOID:0060014	CD45 deficiency	DOID:627	severe combined immunodeficiency
+DOID:10188	skin lipoma	DOID:3165	skin benign neoplasm
+DOID:7389	pulmonary artery leiomyosarcoma	DOID:175	vascular cancer
+DOID:12351	alcoholic hepatitis	DOID:2237	hepatitis
+DOID:4080	tricuspid valve insufficiency	DOID:0050826	tricuspid valve disease
+DOID:0060157	diffuse alopecia areata	DOID:986	alopecia areata
+DOID:0060154	verbal auditory agnosia	DOID:4090	agnosia
+DOID:0110089	asphyxiating thoracic dystrophy 5	DOID:0050592	asphyxiating thoracic dystrophy
+DOID:0060143	integrative agnosia	DOID:4090	agnosia
+DOID:8506	bullous pemphigoid	DOID:0060039	autoimmune disease of skin and connective tissue
+DOID:0090076	hypogonadotropic hypogonadism 18 with or without anosmia	DOID:0090070	hypogonadotropic hypogonadism
+DOID:11593	bladder lateral wall cancer	DOID:11054	urinary bladder cancer
+DOID:2425	cutaneous ganglioneuroma	DOID:3165	skin benign neoplasm
+DOID:0090077	hypogonadotropic hypogonadism 4 with or without anosmia	DOID:0090070	hypogonadotropic hypogonadism
+DOID:988	mitral valve prolapse	DOID:61	mitral valve disease
+DOID:2544	extratemporal epilepsy	DOID:1826	epilepsy
+DOID:0090074	hypogonadotropic hypogonadism 8 with or without anosmia	DOID:0090070	hypogonadotropic hypogonadism
+DOID:3011	breast granular cell tumor	DOID:1612	breast cancer
+DOID:6988	peripheral epithelioid sarcoma	DOID:6193	epithelioid sarcoma
+DOID:10536	malignant gastric granular cell tumor	DOID:10534	stomach cancer
+DOID:7962	tamoxifen-related endometrial lesion	DOID:1005	endometrial disease
+DOID:0060742	methylmalonic acidemia cb1A type	DOID:14749	methylmalonic acidemia
+DOID:0110728	neuronal ceroid lipofuscinosis 5	DOID:14503	neuronal ceroid lipofuscinosis
+DOID:2750	glycogen storage disease IV	DOID:2747	glycogen storage disease
+DOID:0050766	chorea-acanthocytosis	DOID:0050765	neuroacanthocytosis
+DOID:0050651	atrioventricular septal defect	DOID:1681	heart septal defect
+DOID:10581	metachromatic leukodystrophy	DOID:1927	sphingolipidosis
+DOID:10399	seminal vesicle chronic gonorrhea	DOID:10400	gonococcal seminal vesiculitis
+DOID:0110725	neuronal ceroid lipofuscinosis 10	DOID:14503	neuronal ceroid lipofuscinosis
+DOID:0111122	nephronophthisis 14	DOID:12712	nephronophthisis
+DOID:9976	heroin dependence	DOID:2559	opiate dependence
+DOID:0110724	neuronal ceroid lipofuscinosis 8 northern epilepsy variant	DOID:14503	neuronal ceroid lipofuscinosis
+DOID:6468	mucinous cystadenofibroma	DOID:5482	cystadenofibroma
+DOID:0110727	neuronal ceroid lipofuscinosis 13	DOID:14503	neuronal ceroid lipofuscinosis
+DOID:3493	signet ring cell adenocarcinoma	DOID:299	adenocarcinoma

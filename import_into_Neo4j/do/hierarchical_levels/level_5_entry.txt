@@ -1,0 +1,1102 @@
+MonDO_id 	 MonDO_name 	 parent_id 	 parent_name  
+DOID:2685	ossifying fibromyxoid tumor	DOID:3350	mesenchymal cell neoplasm
+DOID:9278	hyperargininemia	DOID:9267	urea cycle disorder
+DOID:5088	mixed epithelial stromal tumour	DOID:154	mixed cell type cancer
+DOID:2682	intracystic papillary adenoma	DOID:2615	papilloma
+DOID:13120	protein-deficiency anemia	DOID:13121	deficiency anemia
+DOID:0080181	PHARC syndrome	DOID:0050737	autosomal recessive disease
+DOID:11257	social phobia	DOID:591	phobic disorder
+DOID:14457	Brucella abortus brucellosis	DOID:11077	brucellosis
+DOID:5083	iodine hypothyroidism	DOID:1459	hypothyroidism
+DOID:9808	Goodpasture syndrome	DOID:417	hypersensitivity reaction type II disease
+DOID:2382	kernicterus	DOID:936	brain disease
+DOID:0050141	intestinal botulism	DOID:11976	botulism
+DOID:11507	rumination disorder	DOID:8670	eating disorder
+DOID:14026	folic acid deficiency anemia	DOID:5113	nutritional deficiency disease
+DOID:13450	coccidioidomycosis	DOID:0050292	primary systemic mycosis
+DOID:3534	Lafora disease	DOID:1289	neurodegenerative disease
+DOID:13454	gonococcal synovitis	DOID:2703	synovitis
+DOID:0050083	Keshan disease	DOID:5113	nutritional deficiency disease
+DOID:3127	proctitis	DOID:1285	rectal disease
+DOID:3089	granulomatous orchitis	DOID:2519	testicular disease
+DOID:0060871	autosomal dominant keratitis-ichthyosis-deafness syndrome	DOID:0050736	autosomal dominant disease
+DOID:8438	afferent loop syndrome	DOID:8439	postgastrectomy syndrome
+DOID:3081	cystic lymphangioma	DOID:1475	lymphangioma
+DOID:8431	physiological polycythemia	DOID:8432	polycythemia
+DOID:0090119	ankyloblepharon-ectodermal defects-cleft lip/palate syndrome	DOID:0050736	autosomal dominant disease
+DOID:0060054	autonomic peripheral neuropathy	DOID:870	neuropathy
+DOID:0090111	PCWH syndrome	DOID:0050736	autosomal dominant disease
+DOID:0090113	RIDDLE syndrome	DOID:0050737	autosomal recessive disease
+DOID:0090112	Nasu-Hakola disease	DOID:0050737	autosomal recessive disease
+DOID:1062	Fanconi syndrome	DOID:447	renal tubular transport disease
+DOID:14497	Wolman disease	DOID:9455	lipid storage disease
+DOID:0090117	thiamine-responsive megaloblastic anemia syndrome	DOID:0050737	autosomal recessive disease
+DOID:14495	dumping syndrome	DOID:8439	postgastrectomy syndrome
+DOID:4762	vasculogenic impotence	DOID:1875	impotence
+DOID:0050382	glandular tularemia	DOID:2123	tularemia
+DOID:1233	transvestism	DOID:1235	fetishism
+DOID:12978	Plasmodium vivax malaria	DOID:12365	malaria
+DOID:0060731	congenital central hypoventilation syndrome	DOID:11465	autonomic nervous system disease
+DOID:474	histiocytoid hemangioma	DOID:255	hemangioma
+DOID:2614	serous surface papilloma	DOID:2615	papilloma
+DOID:2616	Wolffian duct adenoma	DOID:0050622	reproductive organ benign neoplasm
+DOID:12387	nephrogenic diabetes insipidus	DOID:11705	impaired renal function disease
+DOID:11371	functional diarrhea	DOID:5353	colonic disease
+DOID:9146	visceral leishmaniasis	DOID:9065	leishmaniasis
+DOID:0060849	osteoporosis-pseudoglioma syndrome	DOID:0050737	autosomal recessive disease
+DOID:12926	hypodermyiasis	DOID:11080	myiasis
+DOID:0050668	alcohol-related birth defect	DOID:0050696	fetal alcohol spectrum disorder
+DOID:14116	multiple symmetric lipomatosis	DOID:3153	lipomatosis
+DOID:0060222	Scheie syndrome	DOID:12798	mucopolysaccharidosis
+DOID:8310	sclerosing adenosis of breast	DOID:5998	microglandular adenosis
+DOID:12919	Plasmodium ovale malaria	DOID:12365	malaria
+DOID:0050666	partial fetal alcohol syndrome	DOID:0050696	fetal alcohol spectrum disorder
+DOID:9240	erythromelalgia	DOID:341	peripheral vascular disease
+DOID:1283	enterocele	DOID:1284|DOID:1285	prolapse of female genital organ|rectal disease
+DOID:9565	dextrocardia	DOID:1682	congenital heart disease
+DOID:171	neuroectodermal tumor	DOID:3093	nervous system cancer
+DOID:9563	bronchiectasis	DOID:1176	bronchial disease
+DOID:0050096	tinea barbae	DOID:8913	dermatophytosis
+DOID:4346	variegate porphyria	DOID:3133	acute porphyria
+DOID:14725	autosomal dominant microcephaly	DOID:0050736	autosomal dominant disease
+DOID:1525	nodular nonsuppurative panniculitis	DOID:1526	panniculitis
+DOID:14723	beta-ketothiolase deficiency	DOID:0050737	autosomal recessive disease
+DOID:0050800	creatine transporter deficiency	DOID:0050798	cerebral creatine deficiency syndrome
+DOID:0050807	Kahrizi syndrome	DOID:0050737	autosomal recessive disease
+DOID:1023	borderline leprosy	DOID:1024	leprosy
+DOID:9346	Taylor's syndrome	DOID:345	uterine disease
+DOID:0050809	mucopolysaccharidosis IX	DOID:12798	mucopolysaccharidosis
+DOID:11249	vitamin K deficiency hemorrhagic disease	DOID:5113	nutritional deficiency disease
+DOID:12900	Mikulicz disease	DOID:417	hypersensitivity reaction type II disease
+DOID:12901	necrotizing sialometaplasia	DOID:10854	salivary gland disease
+DOID:12904	mucocele of salivary gland	DOID:10854	salivary gland disease
+DOID:12905	sialolithiasis	DOID:10854	salivary gland disease
+DOID:13306	diphtheritic cystitis	DOID:1679	cystitis
+DOID:14019	Brucella canis brucellosis	DOID:11077	brucellosis
+DOID:613	T lymphocyte deficiency	DOID:11200	T cell deficiency
+DOID:0050487	bacterial exanthem	DOID:0050486	exanthem
+DOID:0050450	Gitelman syndrome	DOID:447	renal tubular transport disease
+DOID:0050484	aneruptive fever	DOID:11104	spotted fever
+DOID:0050328	congenital hypothyroidism	DOID:1459	hypothyroidism
+DOID:0060166	bipolar ll disorder	DOID:3312	bipolar disorder
+DOID:6307	ectopic thymus	DOID:533	thymus gland disease
+DOID:8892	pityriasis rosea	DOID:8893	psoriasis
+DOID:9740	postcholecystectomy syndrome	DOID:9741	biliary tract disease
+DOID:10184	spindle cell lipoma	DOID:3315	lipoma
+DOID:2112	cystoisosporiasis	DOID:2113	coccidiosis
+DOID:12311	stromal corneal pigmentation	DOID:10123	pigmentation disease
+DOID:10187	esophageal lipoma	DOID:0050624	gastrointestinal system benign neoplasm
+DOID:0050574	L-2-hydroxyglutaric aciduria	DOID:0050573	2-hydroxyglutaric aciduria
+DOID:3901	vulvitis	DOID:2059	vulvar disease
+DOID:9663	aphthous stomatitis	DOID:9637	stomatitis
+DOID:0050712	AGAT deficiency	DOID:0050798	cerebral creatine deficiency syndrome
+DOID:0050711	aceruloplasminemia	DOID:2351	iron metabolism disease
+DOID:5127	bizarre leiomyoma	DOID:127	leiomyoma
+DOID:5390	clear cell adenoma	DOID:657	adenoma
+DOID:0050629	Aicardi-Goutieres syndrome	DOID:0050737	autosomal recessive disease
+DOID:0050937	retroperitoneal neuroblastoma	DOID:5875	retroperitoneal cancer
+DOID:5044	cardiac granular cell neoplasm	DOID:0060091	cardiovascular organ benign neoplasm
+DOID:9111	cutaneous leishmaniasis	DOID:9065	leishmaniasis
+DOID:0060877	ichthyosis bullosa of Siemens	DOID:1697	ichthyosis
+DOID:11457	brain compression	DOID:936	brain disease
+DOID:9410	panhypopituitarism	DOID:9406	hypopituitarism
+DOID:3756	protein C deficiency	DOID:2214	inherited blood coagulation disease
+DOID:3755	antithrombin III deficiency	DOID:2214	inherited blood coagulation disease
+DOID:0060773	cleft lip-palate-ectodermal dysplasia syndrome	DOID:0050737	autosomal recessive disease
+DOID:5513	Pediculus humanus corporis infestation	DOID:5502	lice infestation
+DOID:11101	trench fever	DOID:11102	bartonellosis
+DOID:14427	abnormality of glucagon secretion	DOID:1428	endocrine pancreas disease
+DOID:13575	non-renal secondary hyperparathyroidism	DOID:13543	hyperparathyroidism
+DOID:893	Wilson disease	DOID:409	liver disease
+DOID:12750	cyclosporiasis	DOID:2113	coccidiosis
+DOID:1930	Laurence-Moon syndrome	DOID:0050737	autosomal recessive disease
+DOID:12169	carpal tunnel syndrome	DOID:573	nerve compression syndrome
+DOID:0090063	familial cold autoinflammatory syndrome 2	DOID:0090061	familial cold autoinflammatory syndrome
+DOID:0090062	familial cold autoinflammatory syndrome 1	DOID:0090061	familial cold autoinflammatory syndrome
+DOID:0090065	familial cold autoinflammatory syndrome 4	DOID:0090061	familial cold autoinflammatory syndrome
+DOID:0090064	familial cold autoinflammatory syndrome 3	DOID:0090061	familial cold autoinflammatory syndrome
+DOID:248	trachea leiomyoma	DOID:0050621	respiratory system benign neoplasm
+DOID:13371	scrub typhus	DOID:11256	typhus
+DOID:0060747	Duane-radial ray syndrome	DOID:0050736	autosomal dominant disease
+DOID:0060744	Pendred Syndrome	DOID:0050737	autosomal recessive disease
+DOID:0050438	Frasier syndrome	DOID:0050736	autosomal dominant disease
+DOID:12369	prolapse of urethra	DOID:1284	prolapse of female genital organ
+DOID:4489	malignant epithelial mesothelioma	DOID:1790	malignant mesothelioma
+DOID:6543	acne	DOID:9098	sebaceous gland disease
+DOID:0050432	Asperger syndrome	DOID:0060041	autism spectrum disorder
+DOID:0050430	multiple endocrine neoplasia type 2A	DOID:0050736	autosomal dominant disease
+DOID:0060168	histidinemia	DOID:9265	histidine metabolism disease
+DOID:0050436	mulibrey nanism	DOID:0050737	autosomal recessive disease
+DOID:6755	amyloid tumor	DOID:3350	mesenchymal cell neoplasm
+DOID:2479	central nervous system origin vertigo	DOID:936	brain disease
+DOID:6059	nasal vestibule papilloma	DOID:0050621	respiratory system benign neoplasm
+DOID:0060567	erythema elevatum diutinum	DOID:865	vasculitis
+DOID:0090125	COL4A1-related familial vascular leukoencephalopathy	DOID:936	brain disease
+DOID:0090126	branched-chain keto acid dehydrogenase kinase deficiency	DOID:0050737	autosomal recessive disease
+DOID:0090127	camptodactyly-arthropathy-coxa vara-pericarditis syndrome	DOID:0050737	autosomal recessive disease
+DOID:0090128	dilated cardiomyopathy with woolly hair and keratoderma	DOID:0050737	autosomal recessive disease
+DOID:0050571	congenital disorder of glycosylation type II	DOID:5212	congenital disorder of glycosylation
+DOID:0060646	congenital chylothorax	DOID:1532	pleural disease
+DOID:6758	chest wall lymphoma	DOID:5093	thoracic cancer
+DOID:2477	motor peripheral neuropathy	DOID:870	neuropathy
+DOID:2571	Langerhans-cell histiocytosis	DOID:3405	histiocytosis
+DOID:2570	malignant histiocytic disease	DOID:3405	histiocytosis
+DOID:4233	clear cell sarcoma	DOID:1115	sarcoma
+DOID:0050025	human granulocytic anaplasmosis	DOID:10242	ehrlichiosis
+DOID:4235	spindle cell sarcoma	DOID:1115	sarcoma
+DOID:14224	tracheal calcification	DOID:3225	tracheal disease
+DOID:11629	pelvic muscle wasting	DOID:1284	prolapse of female genital organ
+DOID:401	multidrug-resistant tuberculosis	DOID:399	tuberculosis
+DOID:14694	Johanson-Blizzard syndrome	DOID:0050737	autosomal recessive disease
+DOID:14695	galactokinase deficiency	DOID:9870	galactosemia
+DOID:11787	chronic congestive splenomegaly	DOID:2529	splenic disease
+DOID:11786	splenic sequestration	DOID:2529	splenic disease
+DOID:11783	necrosis of ear ossicle	DOID:2742	auditory system disease
+DOID:14693	Clouston syndrome	DOID:0050736	autosomal dominant disease
+DOID:0050570	congenital disorder of glycosylation type I	DOID:5212	congenital disorder of glycosylation
+DOID:10719	toxic diffuse goiter	DOID:7998	hyperthyroidism
+DOID:0060240	UV-sensitive syndrome	DOID:0050737	autosomal recessive disease
+DOID:0060241	3-M syndrome	DOID:0050737	autosomal recessive disease
+DOID:0060364	Galloway-Mowat syndrome	DOID:0050737	autosomal recessive disease
+DOID:0090016	chromosome 5q deletion syndrome	DOID:2361	macrocytic anemia
+DOID:0090017	epidermolysis bullosa simplex with muscular dystrophy	DOID:0050737	autosomal recessive disease
+DOID:12342	retroperitoneum carcinoma	DOID:5875	retroperitoneal cancer
+DOID:10915	Wernicke-Korsakoff syndrome	DOID:5113	nutritional deficiency disease
+DOID:0090018	autosomal dominant familial periodic fever	DOID:417	hypersensitivity reaction type II disease
+DOID:2653	benign fibrous mesothelioma	DOID:2645	benign mesothelioma
+DOID:0080150	adrenocorticotropic hormone deficiency	DOID:9406	hypopituitarism
+DOID:1081	mansonelliasis	DOID:1080	filariasis
+DOID:13662	ulcer of anus and rectum	DOID:1285	rectal disease
+DOID:0050290	trichosporonosis	DOID:2473	opportunistic mycosis
+DOID:4147	gastrointestinal adenoma	DOID:3119	gastrointestinal system cancer
+DOID:1089	tethered spinal cord syndrome	DOID:319	spinal cord disease
+DOID:3805	porokeratosis	DOID:161	keratosis
+DOID:11432	endometriosis of ovary	DOID:289	endometriosis
+DOID:11431	endometriosis of rectovaginal septum and vagina	DOID:289	endometriosis
+DOID:11430	endometriosis in scar of skin	DOID:289	endometriosis
+DOID:9521	Laron syndrome	DOID:0050737	autosomal recessive disease
+DOID:1627	intraductal papilloma	DOID:2615	papilloma
+DOID:12465	secondary hyperparathyroidism of renal origin	DOID:11705	impaired renal function disease
+DOID:472	subglottic angioma	DOID:255	hemangioma
+DOID:0050052	Rocky Mountain spotted fever	DOID:11104	spotted fever
+DOID:3172	papillary adenoma	DOID:2615	papilloma
+DOID:1394	urinary schistosomiasis	DOID:1395	schistosomiasis
+DOID:14764	Larsen syndrome	DOID:0050736	autosomal dominant disease
+DOID:3177	verrucous papilloma	DOID:2615	papilloma
+DOID:0060843	hereditary neuropathy with liability to pressure palsies	DOID:870	neuropathy
+DOID:5123	mediastinum leiomyoma	DOID:127	leiomyoma
+DOID:8446	intussusception	DOID:8437	intestinal obstruction
+DOID:8445	intestinal volvulus	DOID:8437	intestinal obstruction
+DOID:8443	brachial plexus lesion	DOID:3690	brachial plexus neuropathy
+DOID:8442	paralytic ileus	DOID:8437	intestinal obstruction
+DOID:5125	extrahepatic bile duct leiomyoma	DOID:0050624	gastrointestinal system benign neoplasm
+DOID:14501	Sjogren-Larsson syndrome	DOID:0050737	autosomal recessive disease
+DOID:0111072	myostatin-related muscle hypertrophy	DOID:66	muscle tissue disease
+DOID:322	myelitis	DOID:319	spinal cord disease
+DOID:320	vascular myelopathy	DOID:319	spinal cord disease
+DOID:327	syringomyelia	DOID:319	spinal cord disease
+DOID:8448	intestinal impaction	DOID:8437	intestinal obstruction
+DOID:0050685	small cell carcinoma	DOID:305	carcinoma
+DOID:0050684	Bowen-Conradi syndrome	DOID:0050737	autosomal recessive disease
+DOID:7615	sarcomatosis	DOID:1115	sarcoma
+DOID:505	hobnail hemangioma	DOID:255	hemangioma
+DOID:0050682	Athabaskan brainstem dysgenesis syndrome	DOID:0050737	autosomal recessive disease
+DOID:0050887	Townes-Brocks syndrome	DOID:0050736	autosomal dominant disease
+DOID:10192	pleomorphic lipoma	DOID:3315	lipoma
+DOID:10567	late yaws	DOID:10371	yaws
+DOID:0050536	SC phocomelia syndrome	DOID:0050737	autosomal recessive disease
+DOID:13026	lobomycosis	DOID:1563	dermatomycosis
+DOID:0050336	hypophosphatemia	DOID:2485	phosphorus metabolism disease
+DOID:10261	discharging ear	DOID:2742	auditory system disease
+DOID:0050026	human monocytic ehrlichiosis	DOID:10242	ehrlichiosis
+DOID:2626	choroid plexus papilloma	DOID:2615	papilloma
+DOID:3309	neurodermatitis	DOID:2723	dermatitis
+DOID:0110922	familial hemophagocytic lymphohistiocytosis 2	DOID:0050120	hemophagocytic lymphohistiocytosis
+DOID:8580	malignant histiocytosis	DOID:3405	histiocytosis
+DOID:12211	filarial elephantiasis	DOID:1080	filariasis
+DOID:0110925	familial hemophagocytic lymphohistiocytosis 5	DOID:0050120	hemophagocytic lymphohistiocytosis
+DOID:0110924	familial hemophagocytic lymphohistiocytosis 4	DOID:0050120	hemophagocytic lymphohistiocytosis
+DOID:8997	polycythemia vera	DOID:8432	polycythemia
+DOID:14121	blue toe syndrome	DOID:1461	cholesterol embolism
+DOID:9621	non-congenital cyst of kidney	DOID:2975	cystic kidney disease
+DOID:3890	acute intermittent porphyria	DOID:3133	acute porphyria
+DOID:5385	mixed cell adenoma	DOID:657	adenoma
+DOID:8616	Peyronie's disease	DOID:1529	penile disease
+DOID:9230	pompholyx	DOID:1383	sweat gland disease
+DOID:0050591	tooth agenesis	DOID:1091	tooth disease
+DOID:1272	telangiectasis	DOID:341	peripheral vascular disease
+DOID:4724	brain edema	DOID:936	brain disease
+DOID:1270	hereditary hemorrhagic telangiectasia	DOID:0050736	autosomal dominant disease
+DOID:4723	intracranial hypotension	DOID:936	brain disease
+DOID:5389	oxyphilic adenoma	DOID:0060089	endocrine organ benign neoplasm
+DOID:11186	allescheriosis	DOID:0050292	primary systemic mycosis
+DOID:859	holocarboxylase synthetase deficiency	DOID:857	multiple carboxylase deficiency
+DOID:0110923	familial hemophagocytic lymphohistiocytosis 3	DOID:0050120	hemophagocytic lymphohistiocytosis
+DOID:12799	mucopolysaccharidosis II	DOID:12798	mucopolysaccharidosis
+DOID:9155	mucocutaneous leishmaniasis	DOID:9065	leishmaniasis
+DOID:0050724	PSPH deficiency	DOID:0050721	serine deficiency
+DOID:9786	bulbar polio	DOID:0050515	paralytic poliomyelitis
+DOID:0060884	renal hypomagnesemia 6	DOID:0060879	primary hypomagnesemia
+DOID:853	polymyalgia rheumatica	DOID:854	collagen disease
+DOID:0050725	tyrosinemia type II	DOID:9275	tyrosinemia
+DOID:0110921	familial hemophagocytic lymphohistiocytosis 1	DOID:0050120	hemophagocytic lymphohistiocytosis
+DOID:856	biotinidase deficiency	DOID:857	multiple carboxylase deficiency
+DOID:10507	Dressler's syndrome	DOID:1787	pericarditis
+DOID:1975	thymus lipoma	DOID:0060092	immune system organ benign neoplasm
+DOID:0060026	immunoglobulin beta deficiency	DOID:2115	B cell deficiency
+DOID:0060024	lambda 5 deficiency	DOID:2115	B cell deficiency
+DOID:0060025	immunoglobulin alpha deficiency	DOID:2115	B cell deficiency
+DOID:0060022	CD40 ligand deficiency	DOID:628	combined T cell and B cell immunodeficiency
+DOID:12899	benign lymphoepithelial lesion of salivary gland	DOID:10854	salivary gland disease
+DOID:0060021	DNA ligase IV deficiency	DOID:628	combined T cell and B cell immunodeficiency
+DOID:12894	Sjogren's syndrome	DOID:417	hypersensitivity reaction type II disease
+DOID:0050477	Liddle syndrome	DOID:447	renal tubular transport disease
+DOID:0050474	Netherton syndrome	DOID:0050737	autosomal recessive disease
+DOID:12897	submandibular gland disease	DOID:10854	salivary gland disease
+DOID:12043	kernicterus due to isoimmunization	DOID:11244	neonatal anemia
+DOID:0050473	Alstrom syndrome	DOID:0050737	autosomal recessive disease
+DOID:0050470	Donohue syndrome	DOID:0050737	autosomal recessive disease
+DOID:0060029	autoimmune disease of exocrine system	DOID:417	hypersensitivity reaction type II disease
+DOID:0111039	hypermethioninemia with deficiency of S-adenosylhomocysteine hydrolase	DOID:0050544	hypermethioninemia
+DOID:6376	hypersplenism	DOID:2529	splenic disease
+DOID:0050398	Carrion's disease	DOID:11102	bartonellosis
+DOID:9651	systolic heart failure	DOID:6000	congestive heart failure
+DOID:4154	dentinogenesis imperfecta	DOID:1091	tooth disease
+DOID:7206	melanomatosis	DOID:1909	melanoma
+DOID:4156	primary syphilis	DOID:4166	syphilis
+DOID:9307	rectal prolapse	DOID:1285	rectal disease
+DOID:3825	Shwartzman phenomenon	DOID:865	vasculitis
+DOID:11668	hypopigmentation of eyelid	DOID:10123	pigmentation disease
+DOID:11669	hypertrichosis of eyelid	DOID:420	hypertrichosis
+DOID:3431	cerebritis	DOID:936	brain disease
+DOID:2530	splenic abscess	DOID:2529	splenic disease
+DOID:2533	splenic infarction	DOID:2529	splenic disease
+DOID:3304	germinoma	DOID:2994	germ cell cancer
+DOID:0080077	hypophosphatemic nephrolithiasis/osteoporosis 1	DOID:11705	impaired renal function disease
+DOID:4374	silo filler's disease	DOID:850	lung disease
+DOID:0080075	Neu-Laxova syndrome 2	DOID:0050721	serine deficiency
+DOID:4371	Schnitzler syndrome	DOID:2916	hypersensitivity reaction type IV disease
+DOID:0080072	neuronal intestinal dysplasia	DOID:5353	colonic disease
+DOID:6977	pancreatic cholera	DOID:1428	endocrine pancreas disease
+DOID:11748	round ligament malignant neoplasm	DOID:1725	peritoneum cancer
+DOID:10612	allergic urticaria	DOID:1555	urticaria
+DOID:4071	duodenogastric reflux	DOID:4072	duodenal disease
+DOID:0080078	hypophosphatemic nephrolithiasis/osteoporosis 2	DOID:11705	impaired renal function disease
+DOID:10593	idiopathic progressive polyneuropathy	DOID:1389	polyneuropathy
+DOID:0060714	autosomal recessive congenital ichthyosis 5	DOID:0060655	autosomal recessive congenital ichthyosis
+DOID:0060280	primary pigmented nodular adrenocortical disease	DOID:3952	adrenal cortex disease
+DOID:13520	neonatal infective mastitis	DOID:10690	mastitis
+DOID:11917	tinea cruris	DOID:8913	dermatophytosis
+DOID:7426	cutaneous anthrax	DOID:7427	anthrax disease
+DOID:0060715	autosomal recessive congenital ichthyosis 6	DOID:0060655	autosomal recessive congenital ichthyosis
+DOID:12641	displacement of cardia through esophageal hiatus	DOID:12642	hiatus hernia
+DOID:13241	Behcet's disease	DOID:865	vasculitis
+DOID:0060324	dental abscess	DOID:1091	tooth disease
+DOID:12132	Wegener's granulomatosis	DOID:417	hypersensitivity reaction type II disease
+DOID:0060717	autosomal recessive congenital ichthyosis 8	DOID:0060655	autosomal recessive congenital ichthyosis
+DOID:2957	pulmonary tuberculosis	DOID:399	tuberculosis
+DOID:0060739	hand-foot-genital syndrome	DOID:0050736	autosomal dominant disease
+DOID:0060306	Meier-Gorlin syndrome	DOID:0050737	autosomal recessive disease
+DOID:14049	phaeohyphomycosis	DOID:0050292	primary systemic mycosis
+DOID:0080195	Marinesco-Sjogren syndrome	DOID:0050737	autosomal recessive disease
+DOID:0080196	mandibulofacial dysostosis, Guion-Almeida type	DOID:0050736	autosomal dominant disease
+DOID:0080190	malignant epithelioid hemangioendothelioma	DOID:0080189	malignant hemangioma
+DOID:2286	capillary lymphangioma	DOID:1475	lymphangioma
+DOID:2321	dyspepsia	DOID:1159	functional gastric disease
+DOID:0060304	dyschromatosis universalis hereditaria	DOID:10123	pigmentation disease
+DOID:3332	haemonchiasis	DOID:1255	trichostrongyloidiasis
+DOID:0050150	Pontiac fever	DOID:10458	legionellosis
+DOID:9971	hypervitaminosis D	DOID:654	overnutrition
+DOID:9972	hypervitaminosis A	DOID:654	overnutrition
+DOID:6457	Cowden disease	DOID:0050736	autosomal dominant disease
+DOID:2449	acromegaly	DOID:2444	hyperpituitarism
+DOID:2996	mixed germ cell-sex cord neoplasm	DOID:154	mixed cell type cancer
+DOID:8012	benign pericardial teratoma	DOID:0060091	cardiovascular organ benign neoplasm
+DOID:0050905	inflammatory myofibroblastic tumor	DOID:3350	mesenchymal cell neoplasm
+DOID:9978	acute female pelvic peritonitis	DOID:1003	pelvic inflammatory disease
+DOID:3132	porphyria cutanea tarda	DOID:3133|DOID:2723	acute porphyria|dermatitis
+DOID:0111038	hypermethioninemia due to adenosine kinase deficiency	DOID:0050544	hypermethioninemia
+DOID:11076	Brucella suis brucellosis	DOID:11077	brucellosis
+DOID:288	endometriosis of uterus	DOID:345	uterine disease
+DOID:8158	complement component 5 deficiency	DOID:626	complement deficiency
+DOID:8408	Meckel's diverticulitis	DOID:7475	diverticulitis
+DOID:0111033	African iron overload	DOID:2352	hemochromatosis
+DOID:3138	acanthosis nigricans	DOID:10123	pigmentation disease
+DOID:0111031	hemochromatosis type 5	DOID:2352	hemochromatosis
+DOID:367	olfactory nerve disease	DOID:936	brain disease
+DOID:8645	subacute delirium	DOID:8646	substance-induced psychosis
+DOID:3764	Denys-Drash syndrome	DOID:0050736	autosomal dominant disease
+DOID:0050513	spinal polio	DOID:0050515	paralytic poliomyelitis
+DOID:0050597	intestinal schistosomiasis	DOID:1395	schistosomiasis
+DOID:5003	eunuchism	DOID:1924	hypogonadism
+DOID:3688	plexopathy	DOID:1289	neurodegenerative disease
+DOID:0060604	ankyloglossia	DOID:10944	tongue disease
+DOID:14482	herpes gestationis	DOID:2731	vesiculobullous skin disease
+DOID:14484	sporotrichosis	DOID:0050292	primary systemic mycosis
+DOID:0060600	hereditary motor and sensory neuropathy with agenesis of the corpus callosum	DOID:870	neuropathy
+DOID:3689	brachial plexus neuritis	DOID:3690	brachial plexus neuropathy
+DOID:0110888	inflammatory bowel disease 18	DOID:0050589	inflammatory bowel disease
+DOID:0110889	inflammatory bowel disease 5	DOID:0050589	inflammatory bowel disease
+DOID:9245	Alagille syndrome	DOID:409	liver disease
+DOID:11851	indeterminate leprosy	DOID:1024	leprosy
+DOID:13382	megaloblastic anemia	DOID:2361	macrocytic anemia
+DOID:13068	renal osteodystrophy	DOID:11705	impaired renal function disease
+DOID:11914	gastroparesis	DOID:1159	functional gastric disease
+DOID:1540	parathyroid carcinoma	DOID:170	endocrine gland cancer
+DOID:0110882	inflammatory bowel disease 7	DOID:0050589	inflammatory bowel disease
+DOID:0110883	inflammatory bowel disease 17	DOID:0050589	inflammatory bowel disease
+DOID:0110884	inflammatory bowel disease 23	DOID:0050589	inflammatory bowel disease
+DOID:0110885	inflammatory bowel disease 10	DOID:0050589	inflammatory bowel disease
+DOID:0110886	inflammatory bowel disease 9	DOID:0050589	inflammatory bowel disease
+DOID:0110887	inflammatory bowel disease 12	DOID:0050589	inflammatory bowel disease
+DOID:2768	transient tic disorder	DOID:2769	tic disorder
+DOID:2219	Glanzmann's thrombasthenia	DOID:2214	inherited blood coagulation disease
+DOID:13147	fungal esophagitis	DOID:11963	esophagitis
+DOID:12259	hemophilia B	DOID:2214	inherited blood coagulation disease
+DOID:2743	pyeloureteritis cystica	DOID:2744	pyelitis
+DOID:2216	factor V deficiency	DOID:2214	inherited blood coagulation disease
+DOID:2211	factor XIII deficiency	DOID:2214	inherited blood coagulation disease
+DOID:0050656	pseudo-TORCH syndrome 1	DOID:0050737	autosomal recessive disease
+DOID:0050657	Bannayan-Riley-Ruvalcaba syndrome	DOID:0050736	autosomal dominant disease
+DOID:9271	ornithine carbamoyltransferase deficiency	DOID:9267	urea cycle disorder
+DOID:0050655	Bamforth-Lazarus syndrome	DOID:1459	hypothyroidism
+DOID:13736	uterine inflammatory disease	DOID:345	uterine disease
+DOID:7014	infiltrating lipoma	DOID:3315	lipoma
+DOID:13738	hepatic infarction	DOID:272	hepatic vascular disease
+DOID:13739	nutmeg liver	DOID:272	hepatic vascular disease
+DOID:3227	tracheal stenosis	DOID:3225	tracheal disease
+DOID:0050658	Bart-Pumphrey syndrome	DOID:0050736	autosomal dominant disease
+DOID:8303	congenital granular cell tumor	DOID:3350	mesenchymal cell neoplasm
+DOID:8717	decubitus ulcer	DOID:8549	chronic ulcer of skin
+DOID:5670	comedo carcinoma	DOID:8791	breast carcinoma in situ
+DOID:8712	neurofibromatosis	DOID:0050736	autosomal dominant disease
+DOID:14735	hereditary angioedema	DOID:1558	angioedema
+DOID:9476	Sheehan syndrome	DOID:9406	hypopituitarism
+DOID:14351	Riedel's fibrosing thyroiditis	DOID:7166	thyroiditis
+DOID:817	interstitial myocarditis	DOID:819	mediastinitis
+DOID:0060042	atypical autism	DOID:0060041	autism spectrum disorder
+DOID:12698	gynecomastia	DOID:1923	sex differentiation disease
+DOID:14350	suppurative thyroiditis	DOID:7166	thyroiditis
+DOID:9358	fibular collateral ligament bursitis	DOID:204	enthesopathy
+DOID:10460	nasopharyngitis	DOID:9561	nasopharyngeal disease
+DOID:5325	Roberts syndrome	DOID:0050737	autosomal recessive disease
+DOID:2736	Hajdu-Cheney syndrome	DOID:0050736	autosomal dominant disease
+DOID:0050553	JMP syndrome	DOID:0050737	autosomal recessive disease
+DOID:14228	oligospermia	DOID:12336	male infertility
+DOID:3774	chordoid glioma	DOID:3070	malignant glioma
+DOID:12918	thromboangiitis obliterans	DOID:341	peripheral vascular disease
+DOID:14227	azoospermia	DOID:12336	male infertility
+DOID:0060348	hypoparathyroidism-retardation-dysmorphism syndrome	DOID:0050737	autosomal recessive disease
+DOID:746	adenomatoid tumor	DOID:2645	benign mesothelioma
+DOID:13270	erythropoietic protoporphyria	DOID:3133	acute porphyria
+DOID:11277	Plummer's disease	DOID:7998	hyperthyroidism
+DOID:2106	myotonia congenita	DOID:66	muscle tissue disease
+DOID:8573	lichen nitidus	DOID:8574	lichen disease
+DOID:10195	pleural lipoma	DOID:0050621	respiratory system benign neoplasm
+DOID:10193	classic type lipoma	DOID:3315	lipoma
+DOID:13922	eosinophilic esophagitis	DOID:11963	esophagitis
+DOID:13921	bacterial esophagitis	DOID:11963	esophagitis
+DOID:0050884	triosephosphate isomerase deficiency	DOID:4194	glucose metabolism disease
+DOID:0050722	PHGDH deficiency	DOID:0050721	serine deficiency
+DOID:0050723	PSAT deficiency	DOID:0050721	serine deficiency
+DOID:0050726	tyrosinemia type I	DOID:9275	tyrosinemia
+DOID:3911	progeria	DOID:0050737	autosomal recessive disease
+DOID:7127	radiation cystitis	DOID:1679	cystitis
+DOID:14291	LEOPARD syndrome	DOID:0050736	autosomal dominant disease
+DOID:9993	hypoglycemia	DOID:4194|DOID:1428	glucose metabolism disease|endocrine pancreas disease
+DOID:8484	maple bark strippers' lung	DOID:2473	opportunistic mycosis
+DOID:12175	dyshormonogenic goiter	DOID:12176	goiter
+DOID:14068	blackwater fever	DOID:12365	malaria
+DOID:12802	mucopolysaccharidosis I	DOID:12798	mucopolysaccharidosis
+DOID:11990	ulceroglandular tularemia	DOID:2123	tularemia
+DOID:4409	folliculitis	DOID:2723	dermatitis
+DOID:6297	viral esophagitis	DOID:11963	esophagitis
+DOID:6683	Aarskog syndrome	DOID:0050736	autosomal dominant disease
+DOID:4406	spongiotic dermatitis	DOID:2723	dermatitis
+DOID:6680	Capgras syndrome	DOID:778	delusional disorder
+DOID:7347	ovarian stromal hyperthecosis	DOID:1100	ovarian disease
+DOID:4400	dermatosis papulosa nigra	DOID:2723	dermatitis
+DOID:13760	Pthirus pubis infestation	DOID:5502	lice infestation
+DOID:4037	necrotizing gastritis	DOID:4029	gastritis
+DOID:4034	fungal gastritis	DOID:4029	gastritis
+DOID:4035	lymphocytic gastritis	DOID:4029	gastritis
+DOID:3763	hermaphroditism	DOID:1923	sex differentiation disease
+DOID:4033	bacterial gastritis	DOID:4029	gastritis
+DOID:4030	eosinophilic gastritis	DOID:4029	gastritis
+DOID:14459	hemangioma of orbit	DOID:255	hemangioma
+DOID:14456	Brucella melitensis brucellosis	DOID:11077	brucellosis
+DOID:13566	tibial collateral ligament bursitis	DOID:204	enthesopathy
+DOID:13209	right bundle branch block	DOID:10273	heart conduction disease
+DOID:14452	hypokalemic periodic paralysis	DOID:1029	familial periodic paralysis
+DOID:4038	granulomatous gastritis	DOID:4029	gastritis
+DOID:14451	hyperkalemic periodic paralysis	DOID:1029	familial periodic paralysis
+DOID:0060776	congenital diarrhea 5 with tufting enteropathy	DOID:0060774	congenital diarrhea
+DOID:0060777	congenital secretory sodium diarrhea 8	DOID:0050129	secretory diarrhea
+DOID:14353	acute thyroiditis	DOID:7166	thyroiditis
+DOID:0060775	microvillus inclusion disease	DOID:0060774	congenital diarrhea
+DOID:1789	benign peritoneal mesothelioma	DOID:0060117	peritoneal benign neoplasm
+DOID:13200	substernal goiter	DOID:12176	goiter
+DOID:0050424	familial adenomatous polyposis	DOID:0050736	autosomal dominant disease
+DOID:10921	Siberian tick typhus	DOID:11104	spotted fever
+DOID:0060074	ductal carcinoma in situ	DOID:8791	breast carcinoma in situ
+DOID:14292	vulvar dystrophy	DOID:2059	vulvar disease
+DOID:1788	peritoneal mesothelioma	DOID:1790|DOID:1725	malignant mesothelioma|peritoneum cancer
+DOID:0060778	congenital diarrhea 7 with exudative enteropathy	DOID:0060774	congenital diarrhea
+DOID:0060779	congenital malabsorptive diarrhea 4	DOID:0060774	congenital diarrhea
+DOID:0060174	GABA aminotransferase deficiency	DOID:0060176	gamma-amino butyric acid metabolism disorder
+DOID:13812	adhesions of uterus	DOID:345	uterine disease
+DOID:13811	chronic subinvolution of uterus	DOID:345	uterine disease
+DOID:0060177	homocarnosinosis	DOID:0060176	gamma-amino butyric acid metabolism disorder
+DOID:1786	adrenal rest tumor	DOID:0060089	endocrine organ benign neoplasm
+DOID:4183	pseudopseudohypoparathyroidism	DOID:4184	pseudohypoparathyroidism
+DOID:7880	luteoma	DOID:1100	ovarian disease
+DOID:0050831	familial encephalopathy with neuroserpin inclusion bodies	DOID:1289	neurodegenerative disease
+DOID:2810	middle lobe syndrome	DOID:850	lung disease
+DOID:0060656	autosomal recessive congenital ichthyosis 1	DOID:0060655	autosomal recessive congenital ichthyosis
+DOID:14753	isovaleric acidemia	DOID:0060159	organic acidemia
+DOID:14096	infertility due to extratesticular cause	DOID:12336	male infertility
+DOID:0060173	Timothy syndrome	DOID:0050736	autosomal dominant disease
+DOID:960	esophagus leiomyoma	DOID:0050624	gastrointestinal system benign neoplasm
+DOID:10041	dysplastic nevus syndrome	DOID:0050736	autosomal dominant disease
+DOID:11633	thyroid hormone resistance syndrome	DOID:1459	hypothyroidism
+DOID:11634	myxedema	DOID:1459	hypothyroidism
+DOID:10087	gastric leiomyoma	DOID:0050624	gastrointestinal system benign neoplasm
+DOID:6846	familial melanoma	DOID:1909	melanoma
+DOID:13333	hypertrophy of tongue papillae	DOID:10944	tongue disease
+DOID:0060258	reticulate acropigmentation of Kitamura	DOID:10123	pigmentation disease
+DOID:2575	barbiturate dependence	DOID:9974	drug dependence
+DOID:14784	olivopontocerebellar atrophy	DOID:1289	neurodegenerative disease
+DOID:10079	cysticercosis	DOID:0050596	taeniasis
+DOID:0060255	rippling muscle disease 2	DOID:66	muscle tissue disease
+DOID:0060257	dyschromatosis symmetrica hereditaria	DOID:10123	pigmentation disease
+DOID:0060256	Dowling-Degos disease	DOID:10123	pigmentation disease
+DOID:0090006	renal coloboma syndrome	DOID:0050736	autosomal dominant disease
+DOID:0090005	Schwartz-Jampel syndrome 1	DOID:0050737	autosomal recessive disease
+DOID:0060313	tracheomalacia	DOID:3225	tracheal disease
+DOID:0060314	persistent generalized lymphadenopathy	DOID:9942	lymph node disease
+DOID:0050830	peripheral artery disease	DOID:0050828	artery disease
+DOID:0090001	Fraser syndrome	DOID:0050737	autosomal recessive disease
+DOID:0060317	lung abscess	DOID:850	lung disease
+DOID:3263	piebaldism	DOID:0050736	autosomal dominant disease
+DOID:0060319	cardiac arrest	DOID:6000	congestive heart failure
+DOID:2962	Cockayne syndrome	DOID:0050737	autosomal recessive disease
+DOID:2960	photosensitive trichothiodystrophy	DOID:0050736	autosomal dominant disease
+DOID:5140	gallbladder leiomyoma	DOID:127	leiomyoma
+DOID:0060861	microphthalmia with limb anomalies	DOID:0050737	autosomal recessive disease
+DOID:5147	dartoic leiomyoma	DOID:0050622	reproductive organ benign neoplasm
+DOID:5146	appendix leiomyoma	DOID:127	leiomyoma
+DOID:0050472	monilethrix	DOID:0050736	autosomal dominant disease
+DOID:1460	atheroembolism of kidney	DOID:1461	cholesterol embolism
+DOID:14239	gastrointestinal tularemia	DOID:2123	tularemia
+DOID:0060867	macrocephaly-autism syndrome	DOID:0050736	autosomal dominant disease
+DOID:918	liver inflammatory pseudotumor	DOID:409	liver disease
+DOID:5996	blunt duct adenosis of breast	DOID:5998	microglandular adenosis
+DOID:0090130	cortical dysplasia-focal epilepsy syndrome	DOID:936	brain disease
+DOID:2702	pigmented villonodular synovitis	DOID:2703	synovitis
+DOID:2700	mucinous adenofibroma	DOID:2683	adenofibroma
+DOID:0050289	fusariosis	DOID:2473	opportunistic mycosis
+DOID:13777	epidermodysplasia verruciformis	DOID:0050737	autosomal recessive disease
+DOID:0050471	Carney complex	DOID:0050736	autosomal dominant disease
+DOID:914	peliosis hepatis	DOID:272	hepatic vascular disease
+DOID:12685	mixed receptive-expressive language disorder	DOID:2033	communication disorder
+DOID:0050047	Flinders Island spotted fever	DOID:11104	spotted fever
+DOID:0050046	Far Eastern spotted fever	DOID:11104	spotted fever
+DOID:11527	laryngostenosis	DOID:786	laryngeal disease
+DOID:3265	chronic granulomatous disease	DOID:3262	phagocyte bactericidal dysfunction
+DOID:8757	gastric mucosal hypertrophy	DOID:4029	gastritis
+DOID:2493	gastric antral vascular ectasia	DOID:1271	capillary disease
+DOID:0050041	Astrakhan spotted fever	DOID:11104	spotted fever
+DOID:2491	sensory peripheral neuropathy	DOID:870	neuropathy
+DOID:5813	purine nucleoside phosphorylase deficiency	DOID:628	combined T cell and B cell immunodeficiency
+DOID:3145	hyperlipoproteinemia type III	DOID:1168	familial hyperlipidemia
+DOID:14773	cartilage-hair hypoplasia	DOID:0050737	autosomal recessive disease
+DOID:0060852	Pierson syndrome	DOID:0050737	autosomal recessive disease
+DOID:8456	choline deficiency disease	DOID:5113	nutritional deficiency disease
+DOID:3140	scleredema adultorum	DOID:3141	mucinoses
+DOID:5134	anus leiomyoma	DOID:0050624	gastrointestinal system benign neoplasm
+DOID:0110861	autosomal recessive polycystic kidney disease	DOID:0050737	autosomal recessive disease
+DOID:11285	tick paralysis	DOID:4109	tick infestation
+DOID:5137	pericardium leiomyoma	DOID:127	leiomyoma
+DOID:0111060	Ambras type hypertrichosis universalis congenita	DOID:420	hypertrichosis
+DOID:0060491	SPOAN syndrome	DOID:1289	neurodegenerative disease
+DOID:14671	multiple intestinal atresia	DOID:0050737	autosomal recessive disease
+DOID:12804	mucopolysaccharidosis IV	DOID:12798	mucopolysaccharidosis
+DOID:5139	cellular leiomyoma	DOID:127	leiomyoma
+DOID:13523	loiasis	DOID:1080	filariasis
+DOID:1171	hyperlipoproteinemia type V	DOID:1168	familial hyperlipidemia
+DOID:14095	boutonneuse fever	DOID:11104	spotted fever
+DOID:4662	thalamic disease	DOID:936	brain disease
+DOID:0111028	hemochromatosis type 4	DOID:2352	hemochromatosis
+DOID:845	cyclothymic disorder	DOID:3312	bipolar disorder
+DOID:11823	hepatorenal syndrome	DOID:409	liver disease
+DOID:13031	balanoposthitis	DOID:1529	penile disease
+DOID:13035	louse-borne relapsing fever	DOID:13034	relapsing fever
+DOID:0050042	Indian tick typhus	DOID:11104	spotted fever
+DOID:13036	tick-borne relapsing fever	DOID:13034	relapsing fever
+DOID:4157	secondary syphilis	DOID:4166	syphilis
+DOID:2634	cystadenoma	DOID:657	adenoma
+DOID:5398	lipoadenoma	DOID:657	adenoma
+DOID:11354	stone in bladder diverticulum	DOID:11355|DOID:11353	bladder calculus|bladder diverticulum
+DOID:3319	lymphangioleiomyomatosis	DOID:850	lung disease
+DOID:0050481	endemic typhus	DOID:11256	typhus
+DOID:2222	factor X deficiency	DOID:2214	inherited blood coagulation disease
+DOID:14131	midline cystocele	DOID:1284	prolapse of female genital organ
+DOID:14130	lateral cystocele	DOID:1284	prolapse of female genital organ
+DOID:0050606	acrokeratosis verruciformis	DOID:161	keratosis
+DOID:0050601	ADULT syndrome	DOID:0050736	autosomal dominant disease
+DOID:0050600	ABCD syndrome	DOID:0050737	autosomal recessive disease
+DOID:2384	Wernicke encephalopathy	DOID:936	brain disease
+DOID:0050602	triple-A syndrome	DOID:0050737	autosomal recessive disease
+DOID:8335	microglandular adenosis of breast	DOID:5998	microglandular adenosis
+DOID:8337	appendicitis	DOID:1518	cecal disease
+DOID:0110710	hypotrichosis 13	DOID:4535	hypotrichosis
+DOID:0110711	congenital hypotrichosis with juvenile macular dystrophy	DOID:4535	hypotrichosis
+DOID:7512	localized intraductal papillomatosis	DOID:2615	papilloma
+DOID:14702	branchiootorenal syndrome	DOID:0050736	autosomal dominant disease
+DOID:14701	propionic acidemia	DOID:0060159	organic acidemia
+DOID:9893	periodontosis	DOID:1091	tooth disease
+DOID:4988	alcoholic pancreatitis	DOID:4989	pancreatitis
+DOID:0050788	proximal symphalangism	DOID:0050736	autosomal dominant disease
+DOID:0050789	tarsal-carpal coalition syndrome	DOID:0050736	autosomal dominant disease
+DOID:0050862	pyometritis	DOID:345	uterine disease
+DOID:1172	hyperlipoproteinemia type IV	DOID:1168	familial hyperlipidemia
+DOID:0050786	iridogoniodysgenesis syndrome	DOID:0050736	autosomal dominant disease
+DOID:0050787	juvenile polyposis syndrome	DOID:0050736	autosomal dominant disease
+DOID:0050869	villous adenoma	DOID:657	adenoma
+DOID:0050868	hepatocellular adenoma	DOID:657	adenoma
+DOID:5401	water-clear cell adenoma	DOID:657	adenoma
+DOID:5403	microcystic adenoma	DOID:657	adenoma
+DOID:0050489	multinodular goiter	DOID:12176	goiter
+DOID:11235	adhesive otitis media	DOID:2742	auditory system disease
+DOID:11231	orbital periostitis	DOID:9957	periostitis
+DOID:10923	sickle cell anemia	DOID:0050737	autosomal recessive disease
+DOID:0050469	Costello syndrome	DOID:0050736	autosomal dominant disease
+DOID:0060030	autoimmune disease of eyes, ear, nose and throat	DOID:417	hypersensitivity reaction type II disease
+DOID:0060032	autoimmune disease of musculoskeletal system	DOID:417	hypersensitivity reaction type II disease
+DOID:4968	Nelson syndrome	DOID:3952	adrenal cortex disease
+DOID:1733	cryptosporidiosis	DOID:2113	coccidiosis
+DOID:3827	congenital diaphragmatic hernia	DOID:10481	diaphragm disease
+DOID:13080	Jaccoud's syndrome	DOID:417	hypersensitivity reaction type II disease
+DOID:13081	hemangioma of subcutaneous tissue	DOID:255	hemangioma
+DOID:9599	proliferative fasciitis	DOID:9598	fasciitis
+DOID:1869	chronic rheumatic pericarditis	DOID:1787	pericarditis
+DOID:3049	Churg-Strauss syndrome	DOID:865	vasculitis
+DOID:13628	favism	DOID:2862	glucosephosphate dehydrogenase deficiency
+DOID:3928	adiposis dolorosa	DOID:3153	lipomatosis
+DOID:0050514	bulbospinal polio	DOID:0050515	paralytic poliomyelitis
+DOID:0050268	ophthalmomyiasis	DOID:11080	myiasis
+DOID:3925	steroid lipomatosis	DOID:3153	lipomatosis
+DOID:8529	ulcer of lower limbs	DOID:8549	chronic ulcer of skin
+DOID:3927	pelvic lipomatosis	DOID:3153	lipomatosis
+DOID:3926	mediastinal lipomatosis	DOID:3153	lipomatosis
+DOID:12339	retroperitoneal lymphoma	DOID:5875	retroperitoneal cancer
+DOID:12801	mucopolysaccharidosis III	DOID:12798	mucopolysaccharidosis
+DOID:3923	diffuse lipomatosis	DOID:3153	lipomatosis
+DOID:2917	cryoglobulinemia	DOID:2916	hypersensitivity reaction type IV disease
+DOID:2913	acute pancreatitis	DOID:4989	pancreatitis
+DOID:11678	onchocerciasis	DOID:1080	filariasis
+DOID:1485	cystic fibrosis	DOID:0050737	autosomal recessive disease
+DOID:0060880	renal hypomagnesemia 3	DOID:0060879	primary hypomagnesemia
+DOID:0060881	renal hypomagnesemia 5 with ocular involvement	DOID:0060879	primary hypomagnesemia
+DOID:0060882	renal hypomagnesemia 4	DOID:0060879	primary hypomagnesemia
+DOID:6419	tetralogy of Fallot	DOID:1682	congenital heart disease
+DOID:11671	hypotrichosis of eyelid	DOID:4535	hypotrichosis
+DOID:0060885	renal hypomagnesemia 2	DOID:0060879	primary hypomagnesemia
+DOID:4367	apparent mineralocorticoid excess syndrome	DOID:1701	steroid inherited metabolic disorder
+DOID:0060299	complement component 6 deficiency	DOID:626	complement deficiency
+DOID:0060298	complement component 4b deficiency	DOID:626	complement deficiency
+DOID:4360	epithelioid cell melanoma	DOID:1909	melanoma
+DOID:11049	meconium aspiration syndrome	DOID:850	lung disease
+DOID:0060295	complement component 2 deficiency	DOID:626	complement deficiency
+DOID:0060294	cold-induced sweating syndrome	DOID:0050736	autosomal dominant disease
+DOID:0060297	complement component 4a deficiency	DOID:626	complement deficiency
+DOID:0060296	congenital secretory chloride diarrhea 1	DOID:0050129	secretory diarrhea
+DOID:10600	chronic tic disorder	DOID:2769	tic disorder
+DOID:14400	capillary leak syndrome	DOID:1271	capillary disease
+DOID:0080076	Neu-Laxova syndrome 1	DOID:0050721	serine deficiency
+DOID:11129	dislocation of ear ossicle	DOID:2742	auditory system disease
+DOID:1607	hypoglycemic coma	DOID:936|DOID:1428	brain disease|endocrine pancreas disease
+DOID:13252	mesenteric vascular occlusion	DOID:341	peripheral vascular disease
+DOID:0060720	autosomal recessive congenital ichthyosis 11	DOID:0060655	autosomal recessive congenital ichthyosis
+DOID:13254	diverticulitis of colon	DOID:5353	colonic disease
+DOID:12029	sympathetic ophthalmia	DOID:417	hypersensitivity reaction type II disease
+DOID:0050419	complement factor I deficiency	DOID:626	complement deficiency
+DOID:12140	Chagas disease	DOID:10113	trypanosomiasis
+DOID:14670	hypertelorism, microtia, facial clefting syndrome	DOID:0050737	autosomal recessive disease
+DOID:7465	chronic NK-cell lymphocytosis	DOID:2916	hypersensitivity reaction type IV disease
+DOID:10887	lepromatous leprosy	DOID:1024	leprosy
+DOID:12849	autistic disorder	DOID:0060041	autism spectrum disorder
+DOID:14006	splenic artery aneurysm	DOID:0050828	artery disease
+DOID:9165	neurotic excoriation	DOID:2723	dermatitis
+DOID:0080046	Stickler syndrome	DOID:0050736	autosomal dominant disease
+DOID:0060501	metal allergy	DOID:1205	allergic hypersensitivity disease
+DOID:11488	idiopathic peripheral autonomic neuropathy	DOID:11465	autonomic nervous system disease
+DOID:0060502	gastrointestinal allergy	DOID:1205	allergic hypersensitivity disease
+DOID:2354	myelophthisic anemia	DOID:12449	aplastic anemia
+DOID:11482	hemopericardium	DOID:118	pericardial effusion
+DOID:0090144	Donnai-Barrow syndrome	DOID:0050737	autosomal recessive disease
+DOID:11481	constrictive pericarditis	DOID:1787	pericarditis
+DOID:486	glomeruloid hemangioma	DOID:255	hemangioma
+DOID:2235	prothrombin deficiency	DOID:0050737	autosomal recessive disease
+DOID:2451	protein S deficiency	DOID:2452	thrombophilia
+DOID:482	hemangioma of peripheral nerve	DOID:255	hemangioma
+DOID:2987	familial Mediterranean fever	DOID:417	hypersensitivity reaction type II disease
+DOID:2988	antiphospholipid syndrome	DOID:417	hypersensitivity reaction type II disease
+DOID:13515	tuberous sclerosis	DOID:0050736	autosomal dominant disease
+DOID:0050569	Seckel syndrome	DOID:0050737	autosomal recessive disease
+DOID:959	esophagus squamous cell papilloma	DOID:0050624	gastrointestinal system benign neoplasm
+DOID:0111029	hemochromatosis type 1	DOID:2352	hemochromatosis
+DOID:10772	thrombotic thrombocytopenic purpura	DOID:2452	thrombophilia
+DOID:0050383	typhoidal tularemia	DOID:2123	tularemia
+DOID:1254	trichostrongylosis	DOID:1255	trichostrongyloidiasis
+DOID:0050626	gastrointestinal neuroendocrine tumor	DOID:3119	gastrointestinal system cancer
+DOID:0110905	inflammatory bowel disease 22	DOID:0050589	inflammatory bowel disease
+DOID:0060470	salt and pepper syndrome	DOID:0050737	autosomal recessive disease
+DOID:355	mast-cell sarcoma	DOID:1115	sarcoma
+DOID:12858	Huntington's disease	DOID:1289	neurodegenerative disease
+DOID:10457	Legionnaires' disease	DOID:10458	legionellosis
+DOID:0060263	porencephaly	DOID:936	brain disease
+DOID:2601	juxtacortical chondroma	DOID:2602	chondroma
+DOID:2181	post-surgical hypoinsulinemia	DOID:1428	endocrine pancreas disease
+DOID:0090003	agenesis of the corpus callosum with peripheral neuropathy	DOID:1289	neurodegenerative disease
+DOID:0060345	bacillary angiomatosis	DOID:11102	bartonellosis
+DOID:1195	ischemic neuropathy	DOID:870	neuropathy
+DOID:10784	Queensland tick typhus	DOID:11104	spotted fever
+DOID:0050678	Blau syndrome	DOID:0050736	autosomal dominant disease
+DOID:0110899	inflammatory bowel disease 28	DOID:0050589	inflammatory bowel disease
+DOID:0110898	inflammatory bowel disease 20	DOID:0050589	inflammatory bowel disease
+DOID:13078	eumycotic mycetoma	DOID:1563	dermatomycosis
+DOID:0060328	anal fistula	DOID:1285	rectal disease
+DOID:0110893	inflammatory bowel disease 13	DOID:0050589	inflammatory bowel disease
+DOID:0110892	inflammatory bowel disease 1	DOID:0050589	inflammatory bowel disease
+DOID:0110891	inflammatory bowel disease 3	DOID:0050589	inflammatory bowel disease
+DOID:0110890	inflammatory bowel disease 19	DOID:0050589	inflammatory bowel disease
+DOID:0110897	inflammatory bowel disease 15	DOID:0050589	inflammatory bowel disease
+DOID:0110896	inflammatory bowel disease 16	DOID:0050589	inflammatory bowel disease
+DOID:0110895	inflammatory bowel disease 14	DOID:0050589	inflammatory bowel disease
+DOID:0110894	inflammatory bowel disease 11	DOID:0050589	inflammatory bowel disease
+DOID:0050929	mucosal melanoma	DOID:1909	melanoma
+DOID:0060167	seasonal affective disorder	DOID:1596	mental depression
+DOID:0050660	Beare-Stevenson cutis gyrata syndrome	DOID:0050736	autosomal dominant disease
+DOID:10112	sleeping sickness	DOID:10113	trypanosomiasis
+DOID:13649	polyneuropathy in collagen vascular disease	DOID:1389	polyneuropathy
+DOID:13072	acquired hyperkeratosis	DOID:161	keratosis
+DOID:0080137	multiple endocrine neoplasia type 4	DOID:0050736	autosomal dominant disease
+DOID:2678	adult mesoblastic nephroma	DOID:154	mixed cell type cancer
+DOID:0050528	nonphotosensitive trichothiodystrophy	DOID:0050737	autosomal recessive disease
+DOID:4025	steatitis	DOID:5113	nutritional deficiency disease
+DOID:12566	ulceration of vulva	DOID:2059	vulvar disease
+DOID:9911	infected hydrocele	DOID:9912	hydrocele
+DOID:13725	beriberi	DOID:5113	nutritional deficiency disease
+DOID:13724	scurvy	DOID:5113	nutritional deficiency disease
+DOID:0050646	distal arthrogryposis	DOID:66	muscle tissue disease
+DOID:0110699	hypotrichosis 2	DOID:4535	hypotrichosis
+DOID:0110698	hypotrichosis 1	DOID:4535	hypotrichosis
+DOID:0050799	guanidinoacetate methyltransferase deficiency	DOID:0050798	cerebral creatine deficiency syndrome
+DOID:9269	maple syrup urine disease	DOID:0060159	organic acidemia
+DOID:11994	atrophy of testis	DOID:2519	testicular disease
+DOID:0050667	alcohol-related neurodevelopmental disorder	DOID:0050696	fetal alcohol spectrum disorder
+DOID:11996	spermatic cord torsion	DOID:2519	testicular disease
+DOID:0111058	platelet-type bleeding disorder 12	DOID:2214	inherited blood coagulation disease
+DOID:9467	nail-patella syndrome	DOID:0050736	autosomal dominant disease
+DOID:5662	pleomorphic carcinoma	DOID:305	carcinoma
+DOID:0050462	Antley-Bixler syndrome	DOID:0050737	autosomal recessive disease
+DOID:5104	testicular infarct	DOID:2519	testicular disease
+DOID:0111056	platelet-type bleeding disorder 3	DOID:2214	inherited blood coagulation disease
+DOID:0111057	platelet-type bleeding disorder 11	DOID:2214	inherited blood coagulation disease
+DOID:0111050	Quebec platelet disorder	DOID:2214	inherited blood coagulation disease
+DOID:0111051	platelet-type bleeding disorder 18	DOID:2214	inherited blood coagulation disease
+DOID:0111052	Scott syndrome	DOID:2214	inherited blood coagulation disease
+DOID:0111053	platelet-type bleeding disorder 15	DOID:2214	inherited blood coagulation disease
+DOID:8689	anorexia nervosa	DOID:8670	eating disorder
+DOID:7187	subacute lymphocytic thyroiditis	DOID:7166	thyroiditis
+DOID:8680	alcoholic gastritis	DOID:4029	gastritis
+DOID:9286	priapism	DOID:341	peripheral vascular disease
+DOID:12680	pseudobulbar palsy	DOID:936	brain disease
+DOID:0060716	autosomal recessive congenital ichthyosis 7	DOID:0060655	autosomal recessive congenital ichthyosis
+DOID:11103	rickettsialpox	DOID:11104	spotted fever
+DOID:5688	Werner syndrome	DOID:0050737	autosomal recessive disease
+DOID:10208	chondroid lipoma	DOID:3315	lipoma
+DOID:0050676	Birt-Hogg-Dube syndrome	DOID:0050736	autosomal dominant disease
+DOID:14422	dipetalonemiasis	DOID:1080	filariasis
+DOID:14219	renal tubular acidosis	DOID:447	renal tubular transport disease
+DOID:10200	chest wall lipoma	DOID:0060097	thoracic benign neoplasm
+DOID:12929	endocardial fibroelastosis	DOID:0050825	endocardium disease
+DOID:10205	axillary lipoma	DOID:0060097	thoracic benign neoplasm
+DOID:2073	perinatal intestinal perforation	DOID:2074	intestinal perforation
+DOID:0050577	Sensenbrenner syndrome	DOID:0050737	autosomal recessive disease
+DOID:0050464	Farber lipogranulomatosis	DOID:9455	lipid storage disease
+DOID:0050576	Senior-Loken syndrome	DOID:0050737	autosomal recessive disease
+DOID:0050734	congenital intrinsic factor deficiency	DOID:0050731	vitamin B12 deficiency
+DOID:11302	cercarial dermatitis	DOID:1395	schistosomiasis
+DOID:9499	disseminated eosinophilic collagen disease	DOID:999|DOID:854	hypereosinophilic syndrome|collagen disease
+DOID:0050635	alternating hemiplegia of childhood	DOID:10969	hemiplegia
+DOID:9212	pityriasis rubra pilaris	DOID:8893	psoriasis
+DOID:9602	necrotizing fasciitis	DOID:9598	fasciitis
+DOID:13576	twin-to-twin transfusion syndrome	DOID:11244	neonatal anemia
+DOID:9600	plantar fasciitis	DOID:9598	fasciitis
+DOID:9601	ischemic fasciitis	DOID:9598	fasciitis
+DOID:7138	cystitis cystica	DOID:1679	cystitis
+DOID:0050050	Japanese spotted fever	DOID:11104	spotted fever
+DOID:5660	lymphoepithelioma-like carcinoma	DOID:305	carcinoma
+DOID:0050729	neutral lipid storage disease	DOID:9455	lipid storage disease
+DOID:4558	Ludwig's angina	DOID:3488	cellulitis
+DOID:14118	familial lipoprotein lipase deficiency	DOID:1168	familial hyperlipidemia
+DOID:0050859	hemorrhagic cystitis	DOID:1679	cystitis
+DOID:0090060	Wolcott-Rallison syndrome	DOID:0050737	autosomal recessive disease
+DOID:0050854	Muckle-Wells syndrome	DOID:0050736	autosomal dominant disease
+DOID:4419	benign deep fibrous histiocytoma	DOID:0060092	immune system organ benign neoplasm
+DOID:7350	thymic dysplasia	DOID:533	thymus gland disease
+DOID:4552	large cell carcinoma	DOID:305	carcinoma
+DOID:0050850	diabetic encephalopathy	DOID:936	brain disease
+DOID:14177	congenital hypogammaglobulinemia	DOID:2115	B cell deficiency
+DOID:0050852	limb ischemia	DOID:326	ischemia
+DOID:3777	granuloma annulare	DOID:2723	dermatitis
+DOID:0050642	hypochromic microcytic anemia	DOID:11252	microcytic anemia
+DOID:3677	pulmonary plasma cell granuloma	DOID:850	lung disease
+DOID:12637	perineocele	DOID:1284	prolapse of female genital organ
+DOID:14042	bipolar I disorder	DOID:3312	bipolar disorder
+DOID:10480	diaphragmatic eventration	DOID:10481	diaphragm disease
+DOID:11242	plethora of newborn	DOID:8432	polycythemia
+DOID:11243	anemia of prematurity	DOID:11244	neonatal anemia
+DOID:12927	screw worm infectious disease	DOID:11080	myiasis
+DOID:0060002	C1 inhibitor deficiency	DOID:626	complement deficiency
+DOID:14172	rheumatic congestive heart failure	DOID:6000	congestive heart failure
+DOID:3892	insulinoma	DOID:657	adenoma
+DOID:13353	diffuse interstitial keratitis	DOID:9857	interstitial keratitis
+DOID:13949	interstitial cystitis	DOID:1679	cystitis
+DOID:4486	malignant biphasic mesothelioma	DOID:1790	malignant mesothelioma
+DOID:9640	sarcocystosis	DOID:2113	coccidiosis
+DOID:6607	nervous system hibernoma	DOID:3093	nervous system cancer
+DOID:0050457	Sertoli cell-only syndrome	DOID:12336	male infertility
+DOID:0050459	hyperphosphatemia	DOID:2485	phosphorus metabolism disease
+DOID:13074	tinea unguium	DOID:8913	dermatophytosis
+DOID:5128	deep leiomyoma	DOID:127	leiomyoma
+DOID:0050353	wound botulism	DOID:11976	botulism
+DOID:0050352	foodborne botulism	DOID:11976	botulism
+DOID:9042	polyp of corpus uteri	DOID:345	uterine disease
+DOID:4488	sarcomatoid mesothelioma	DOID:1790	malignant mesothelioma
+DOID:10398	pneumonic plague	DOID:3482	plague
+DOID:997	uterine inversion	DOID:345	uterine disease
+DOID:998	eosinophilia-myalgia syndrome	DOID:999	hypereosinophilic syndrome
+DOID:12568	dyscalculia	DOID:8927	learning disability
+DOID:0060781	congenital secretory sodium diarrhea 3	DOID:0050129	secretory diarrhea
+DOID:0060780	congenital diarrhea 6	DOID:0060774	congenital diarrhea
+DOID:0050160	inhalation anthrax	DOID:7427	anthrax disease
+DOID:2555	granulomatous angiitis	DOID:865	vasculitis
+DOID:12148	alveolar echinococcosis	DOID:1496	echinococcosis
+DOID:0050288	penicilliosis	DOID:2473	opportunistic mycosis
+DOID:0050814	temtamy preaxial brachydactyly syndrome	DOID:0050737	autosomal recessive disease
+DOID:3781	anovulation	DOID:1100	ovarian disease
+DOID:10568	early yaws	DOID:10371	yaws
+DOID:13500	hairy tongue	DOID:10944	tongue disease
+DOID:12707	myoclonic cerebellar dyssynergia	DOID:1289	neurodegenerative disease
+DOID:13507	trigonitis	DOID:1679	cystitis
+DOID:0060303	complement component 9 deficiency	DOID:626	complement deficiency
+DOID:0060302	type II complement component 8 deficiency	DOID:626	complement deficiency
+DOID:0060301	type I complement component 8 deficiency	DOID:626	complement deficiency
+DOID:0060300	complement component 7 deficiency	DOID:626	complement deficiency
+DOID:0060710	autosomal recessive congenital ichthyosis 2	DOID:0060655	autosomal recessive congenital ichthyosis
+DOID:0060711	autosomal recessive congenital ichthyosis 3	DOID:0060655	autosomal recessive congenital ichthyosis
+DOID:0060712	autosomal recessive congenital ichthyosis 4A	DOID:0060655	autosomal recessive congenital ichthyosis
+DOID:0060713	autosomal recessive congenital ichthyosis 4B	DOID:0060655	autosomal recessive congenital ichthyosis
+DOID:10383	amyotrophic neuralgia	DOID:3690	brachial plexus neuropathy
+DOID:849	rheumatoid lung disease	DOID:850|DOID:417	lung disease|hypersensitivity reaction type II disease
+DOID:0060718	autosomal recessive congenital ichthyosis 9	DOID:0060655	autosomal recessive congenital ichthyosis
+DOID:0060719	autosomal recessive congenital ichthyosis 10	DOID:0060655	autosomal recessive congenital ichthyosis
+DOID:12117	pulmonary alveolar microlithiasis	DOID:850	lung disease
+DOID:14743	trichorhinophalangeal syndrome type I	DOID:0050736	autosomal dominant disease
+DOID:2738	pseudoxanthoma elasticum	DOID:0050737	autosomal recessive disease
+DOID:5157	benign pleural mesothelioma	DOID:2645	benign mesothelioma
+DOID:13369	tinea manuum	DOID:8913	dermatophytosis
+DOID:1458	postsurgical hypothyroidism	DOID:1459	hypothyroidism
+DOID:0080177	hepatic veno-occlusive disease	DOID:272	hepatic vascular disease
+DOID:10300	Raynaud disease	DOID:341	peripheral vascular disease
+DOID:0060532	latex allergy	DOID:1205	allergic hypersensitivity disease
+DOID:2734	keratosis follicularis	DOID:161	keratosis
+DOID:14039	POEMS syndrome	DOID:2916	hypersensitivity reaction type IV disease
+DOID:2301	atrophy of prostate	DOID:47	prostate disease
+DOID:1556	arthus reaction	DOID:1557	hypersensitivity reaction type III disease
+DOID:0050575	D-2-hydroxyglutaric aciduria	DOID:0050573	2-hydroxyglutaric aciduria
+DOID:9958	hemometra	DOID:345	uterine disease
+DOID:0111055	platelet-type bleeding disorder 20	DOID:2214	inherited blood coagulation disease
+DOID:903	gastrointestinal lymphoma	DOID:3119	gastrointestinal system cancer
+DOID:0050043	Israeli tick typhus	DOID:11104	spotted fever
+DOID:11512	Budd-Chiari syndrome	DOID:272	hepatic vascular disease
+DOID:900	hepatopulmonary syndrome	DOID:409	liver disease
+DOID:11514	fissured tongue	DOID:10944	tongue disease
+DOID:0060464	Feingold syndrome	DOID:0050736	autosomal dominant disease
+DOID:9955	hypoplastic left heart syndrome	DOID:1682	congenital heart disease
+DOID:452	pleomorphic adenoma	DOID:0050624	gastrointestinal system benign neoplasm
+DOID:0050072	adiaspiromycosis	DOID:0050292	primary systemic mycosis
+DOID:8428	breast apocrine carcinoma in situ	DOID:8791	breast carcinoma in situ
+DOID:11695	portal vein thrombosis	DOID:866|DOID:272	vein disease|hepatic vascular disease
+DOID:9810	polyarteritis nodosa	DOID:865	vasculitis
+DOID:1584	acute chest syndrome	DOID:850	lung disease
+DOID:14778	blepharophimosis, ptosis, and epicanthus inversus syndrome	DOID:0050736	autosomal dominant disease
+DOID:5477	clear cell adenofibroma	DOID:2683	adenofibroma
+DOID:0060463	NUT midline carcinoma	DOID:305	carcinoma
+DOID:4490	malignant peritoneal solitary fibrous tumor	DOID:1725	peritoneum cancer
+DOID:14323	Marfan syndrome	DOID:0050736	autosomal dominant disease
+DOID:1079	setariasis	DOID:1080	filariasis
+DOID:14748	Sotos syndrome	DOID:0050737	autosomal recessive disease
+DOID:3481	septicemic plague	DOID:3482	plague
+DOID:9531	latent syphilis	DOID:4166	syphilis
+DOID:0090104	Huntington disease-like 2	DOID:1289	neurodegenerative disease
+DOID:12803	Sly syndrome	DOID:12798	mucopolysaccharidosis
+DOID:8454	ariboflavinosis	DOID:5113	nutritional deficiency disease
+DOID:0111030	hemochromatosis type 3	DOID:2352	hemochromatosis
+DOID:12800	mucopolysaccharidosis VI	DOID:12798	mucopolysaccharidosis
+DOID:0050331	LADD syndrome	DOID:0050736	autosomal dominant disease
+DOID:8455	pyridoxine deficiency anemia	DOID:5113	nutritional deficiency disease
+DOID:0110909	inflammatory bowel disease 25	DOID:0050589	inflammatory bowel disease
+DOID:0110908	inflammatory bowel disease 24	DOID:0050589	inflammatory bowel disease
+DOID:139	squamous cell papilloma	DOID:2615	papilloma
+DOID:0110901	inflammatory bowel disease 26	DOID:0050589	inflammatory bowel disease
+DOID:0110900	inflammatory bowel disease 2	DOID:0050589	inflammatory bowel disease
+DOID:0110903	inflammatory bowel disease 4	DOID:0050589	inflammatory bowel disease
+DOID:0110902	inflammatory bowel disease 27	DOID:0050589	inflammatory bowel disease
+DOID:10122	hyperpigmentation of eyelid	DOID:10123	pigmentation disease
+DOID:0110904	inflammatory bowel disease 8	DOID:0050589	inflammatory bowel disease
+DOID:0110907	inflammatory bowel disease 6	DOID:0050589	inflammatory bowel disease
+DOID:0110906	inflammatory bowel disease 21	DOID:0050589	inflammatory bowel disease
+DOID:2236	congenital afibrinogenemia	DOID:2214	inherited blood coagulation disease
+DOID:0050770	polycystic liver disease	DOID:0050736	autosomal dominant disease
+DOID:12237	bile reflux	DOID:9741	biliary tract disease
+DOID:0050774	rapadilino syndrome	DOID:0050737	autosomal recessive disease
+DOID:9392	tracheitis	DOID:3225	tracheal disease
+DOID:0050779	hydrolethalus syndrome	DOID:0050737	autosomal recessive disease
+DOID:0060023	CD40 deficiency	DOID:628	combined T cell and B cell immunodeficiency
+DOID:424	pulmonary immaturity	DOID:850	lung disease
+DOID:0050675	Birk-Barel syndrome	DOID:0050736	autosomal dominant disease
+DOID:9253	gastrointestinal stromal tumor	DOID:3119	gastrointestinal system cancer
+DOID:0050677	Bjornstad syndrome	DOID:0050737	autosomal recessive disease
+DOID:0110707	hypotrichosis 10	DOID:4535	hypotrichosis
+DOID:0110706	hypotrichosis 9	DOID:4535	hypotrichosis
+DOID:0110705	hypotrichosis 8	DOID:4535	hypotrichosis
+DOID:0110704	hypotrichosis 7	DOID:4535	hypotrichosis
+DOID:0110703	hypotrichosis 6	DOID:4535	hypotrichosis
+DOID:0110702	hypotrichosis 5	DOID:4535	hypotrichosis
+DOID:0110701	hypotrichosis 4	DOID:4535	hypotrichosis
+DOID:0110700	hypotrichosis 3	DOID:4535	hypotrichosis
+DOID:8738	leukoplakia of penis	DOID:1529	penile disease
+DOID:5874	retroperitoneal germ cell neoplasm	DOID:5875	retroperitoneal cancer
+DOID:0110709	hypotrichosis 12	DOID:4535	hypotrichosis
+DOID:0110708	hypotrichosis 11	DOID:4535	hypotrichosis
+DOID:0050810	biotin deficiency	DOID:5113	nutritional deficiency disease
+DOID:0050811	congenital adrenal hyperplasia	DOID:1701	steroid inherited metabolic disorder
+DOID:13809	familial combined hyperlipidemia	DOID:1168	familial hyperlipidemia
+DOID:7312	breast adenomyoepithelial adenosis	DOID:5998	microglandular adenosis
+DOID:318	progressive muscular atrophy	DOID:319	spinal cord disease
+DOID:0050816	urofacial syndrome	DOID:0050737	autosomal recessive disease
+DOID:9072	lethal midline granuloma	DOID:2825	nose disease
+DOID:0050818	transcobalamin II deficiency	DOID:0050731	vitamin B12 deficiency
+DOID:0050796	achalasia microcephaly syndrome	DOID:0050737	autosomal recessive disease
+DOID:0050793	short QT syndrome	DOID:10273	heart conduction disease
+DOID:0050792	multiple cutaneous and mucosal venous malformations	DOID:0050736	autosomal dominant disease
+DOID:3985	ostertagiasis	DOID:1255	trichostrongyloidiasis
+DOID:0050790	fibular hypoplasia and complex brachydactyly	DOID:0050737	autosomal recessive disease
+DOID:11202	primary hyperparathyroidism	DOID:13543	hyperparathyroidism
+DOID:1858	McCune Albright syndrome	DOID:0050736	autosomal dominant disease
+DOID:14324	Plasmodium malariae malaria	DOID:12365	malaria
+DOID:14325	mixed malaria	DOID:12365	malaria
+DOID:0050883	infantile cerebellar-retinal degeneration	DOID:1289	neurodegenerative disease
+DOID:1852	intrahepatic cholestasis	DOID:409	liver disease
+DOID:606	Brown-Sequard syndrome	DOID:607	paraplegia
+DOID:5479	papillary adenofibroma	DOID:2683	adenofibroma
+DOID:1856	cherubism	DOID:0050736	autosomal dominant disease
+DOID:9088	parapsoriasis	DOID:8893	psoriasis
+DOID:13096	Sneddon syndrome	DOID:0050828	artery disease
+DOID:10234	histoplasmosis pericarditis	DOID:1787	pericarditis
+DOID:1933	Rubinstein-Taybi syndrome	DOID:0050736	autosomal dominant disease
+DOID:2122	pneumonic tularemia	DOID:2123	tularemia
+DOID:4998	trichorhinophalangeal syndrome type II	DOID:0050736	autosomal dominant disease
+DOID:0050449	pachyonychia congenita	DOID:0050736	autosomal dominant disease
+DOID:12304	conjunctival pigmentation	DOID:10123	pigmentation disease
+DOID:12305	Bloch-Sulzberger syndrome	DOID:10123	pigmentation disease
+DOID:12306	vitiligo	DOID:417	hypersensitivity reaction type II disease
+DOID:0060883	intestinal hypomagnesemia 1	DOID:0060879	primary hypomagnesemia
+DOID:9775	diastolic heart failure	DOID:6000	congestive heart failure
+DOID:8929	atrophic gastritis	DOID:4029	gastritis
+DOID:0111037	glycine N-methyltransferase deficiency	DOID:0050544	hypermethioninemia
+DOID:4671	freemartinism	DOID:1923	sex differentiation disease
+DOID:0050727	tyrosinemia type III	DOID:9275	tyrosinemia
+DOID:8920	leukoplakia of vagina	DOID:121	vaginal disease
+DOID:1391	Norum disease	DOID:1387	hypolipoproteinemia
+DOID:2512	nevoid basal cell carcinoma syndrome	DOID:0050736	autosomal dominant disease
+DOID:4359	amelanotic melanoma	DOID:1909	melanoma
+DOID:4297	scimitar syndrome	DOID:1682	congenital heart disease
+DOID:6132	bronchitis	DOID:1176	bronchial disease
+DOID:7400	Nijmegen breakage syndrome	DOID:0050737	autosomal recessive disease
+DOID:2518	orchitis	DOID:2519	testicular disease
+DOID:3025	acinar cell carcinoma	DOID:305	carcinoma
+DOID:0050922	gastrointestinal carcinoma	DOID:3119	gastrointestinal system cancer
+DOID:10762	portal hypertension	DOID:272	hepatic vascular disease
+DOID:5683	hereditary breast ovarian cancer	DOID:0050736	autosomal dominant disease
+DOID:5501	Pediculus humanus capitis infestation	DOID:5502	lice infestation
+DOID:9273	citrullinemia	DOID:9267	urea cycle disorder
+DOID:0060691	platelet-type bleeding disorder 16	DOID:2214	inherited blood coagulation disease
+DOID:12662	paracoccidioidomycosis	DOID:0050292	primary systemic mycosis
+DOID:112	esophageal varix	DOID:866	vein disease
+DOID:0060692	platelet-type bleeding disorder 8	DOID:2214	inherited blood coagulation disease
+DOID:1637	breast angiomatosis	DOID:1271	capillary disease
+DOID:115	cardiac tamponade	DOID:118	pericardial effusion
+DOID:1082	dirofilariasis	DOID:1080	filariasis
+DOID:11119	Gilles de la Tourette syndrome	DOID:2769	tic disorder
+DOID:0060055	popliteal pterygium syndrome	DOID:0050736	autosomal dominant disease
+DOID:12156	arachnoiditis	DOID:9471	meningitis
+DOID:0060051	autoimmune disease of cardiovascular system	DOID:417	hypersensitivity reaction type II disease
+DOID:4903	granular cell carcinoma	DOID:305	carcinoma
+DOID:8457	pellagra	DOID:5113	nutritional deficiency disease
+DOID:2848	melancholia	DOID:1596	mental depression
+DOID:0060570	cardiac tuberculosis	DOID:399	tuberculosis
+DOID:0060468	Holt-Oram syndrome	DOID:0050736	autosomal dominant disease
+DOID:1388	Tangier disease	DOID:1387	hypolipoproteinemia
+DOID:13722	neuroschistosomiasis	DOID:1395	schistosomiasis
+DOID:1699	congenital ichthyosiform erythroderma	DOID:0050737	autosomal recessive disease
+DOID:1381	Fox-Fordyce disease	DOID:1383	sweat gland disease
+DOID:492	acquired hemangioma	DOID:255	hemangioma
+DOID:11491	acquired night blindness	DOID:5113	nutritional deficiency disease
+DOID:1386	abetalipoproteinemia	DOID:1387	hypolipoproteinemia
+DOID:1025	tuberculoid leprosy	DOID:1024	leprosy
+DOID:496	spindle cell hemangioma	DOID:255	hemangioma
+DOID:2832	geotrichosis	DOID:2473	opportunistic mycosis
+DOID:12403	tinea pedis	DOID:8913	dermatophytosis
+DOID:13409	perforation of bile duct	DOID:9741	biliary tract disease
+DOID:0050354	infant botulism	DOID:11976	botulism
+DOID:0060356	Vici syndrome	DOID:0050737	autosomal recessive disease
+DOID:3113	papillary carcinoma	DOID:305	carcinoma
+DOID:1495	cystic echinococcosis	DOID:1496	echinococcosis
+DOID:0050051	Rickettsia parkeri spotted fever	DOID:11104	spotted fever
+DOID:4674	androgen insensitivity syndrome	DOID:1923	sex differentiation disease
+DOID:14502	cholesterol ester storage disease	DOID:9455	lipid storage disease
+DOID:342	subclavian artery aneurysm	DOID:0050828	artery disease
+DOID:2908	Treacher Collins syndrome	DOID:0050736	autosomal dominant disease
+DOID:1702	ichthyosis vulgaris	DOID:0050736	autosomal dominant disease
+DOID:0060601	alpha-2-plasmin inhibitor deficiency	DOID:2213	hemorrhagic disease
+DOID:13381	pernicious anemia	DOID:5113	nutritional deficiency disease
+DOID:11428	endometriosis of intestine	DOID:289	endometriosis
+DOID:11429	endometriosis of pelvic peritoneum	DOID:289	endometriosis
+DOID:9277	primary cerebellar degeneration	DOID:1289	neurodegenerative disease
+DOID:1098	fetal erythroblastosis	DOID:11252	microcytic anemia
+DOID:12573	neonatal thyrotoxicosis	DOID:7997	thyrotoxicosis
+DOID:3362	coronary aneurysm	DOID:9768	heart aneurysm
+DOID:13656	gastrin secretion abnormality	DOID:1428	endocrine pancreas disease
+DOID:11424	fallopian tube endometriosis	DOID:289	endometriosis
+DOID:11427	endosalpingiosis	DOID:289	endometriosis
+DOID:13714	anodontia	DOID:1091	tooth disease
+DOID:467	venous hemangioma	DOID:255	hemangioma
+DOID:14067	Plasmodium falciparum malaria	DOID:12365	malaria
+DOID:13711	dental fluorosis	DOID:1091	tooth disease
+DOID:4838	myoepithelial carcinoma	DOID:305	carcinoma
+DOID:12475	pes anserinus tendinitis or bursitis	DOID:204	enthesopathy
+DOID:14069	cerebral malaria	DOID:12365	malaria
+DOID:3162	malignant spindle cell melanoma	DOID:1909	melanoma
+DOID:10016	multiple endocrine neoplasia type 2B	DOID:0050736	autosomal dominant disease
+DOID:10017	multiple endocrine neoplasia type 1	DOID:0050736	autosomal dominant disease
+DOID:5230	hepatoerythropoietic porphyria	DOID:3133	acute porphyria
+DOID:9452	fatty liver disease	DOID:9455	lipid storage disease
+DOID:0111049	platelet-type bleeding disorder 17	DOID:2214	inherited blood coagulation disease
+DOID:0111048	platelet-type bleeding disorder 19	DOID:2214	inherited blood coagulation disease
+DOID:0111047	platelet-type bleeding disorder 14	DOID:2214	inherited blood coagulation disease
+DOID:0111046	platelet-type bleeding disorder 10	DOID:2214	inherited blood coagulation disease
+DOID:0111045	platelet-type bleeding disorder 9	DOID:2214	inherited blood coagulation disease
+DOID:0111044	gray platelet syndrome	DOID:2214	inherited blood coagulation disease
+DOID:5112	swayback	DOID:5113	nutritional deficiency disease
+DOID:3946	pituitary-dependent Cushing's disease	DOID:2444	hyperpituitarism
+DOID:0050699	Dent disease	DOID:447	renal tubular transport disease
+DOID:0050632	oculocutaneous albinism	DOID:0050737	autosomal recessive disease
+DOID:0050693	Brooke-Spiegler syndrome	DOID:0050736	autosomal dominant disease
+DOID:0050691	branchiooculofacial syndrome	DOID:0050736	autosomal dominant disease
+DOID:3318	epithelioid type angiomyolipoma	DOID:3314	angiomyolipoma
+DOID:0050694	Brown-Vialetto-Van Laere syndrome	DOID:0050736	autosomal dominant disease
+DOID:0050466	Loeys-Dietz syndrome	DOID:0050736	autosomal dominant disease
+DOID:1897	sigmoid disease	DOID:5353	colonic disease
+DOID:11713	diabetic angiopathy	DOID:341	peripheral vascular disease
+DOID:8399	trombiculiasis	DOID:7894	mite infestation
+DOID:10272	left bundle branch hemiblock	DOID:10273	heart conduction disease
+DOID:0060175	succinic semialdehyde dehydrogenase deficiency	DOID:0060176	gamma-amino butyric acid metabolism disorder
+DOID:13196	lingual goiter	DOID:12176	goiter
+DOID:13197	nodular goiter	DOID:12176	goiter
+DOID:13195	nontoxic goiter	DOID:12176	goiter
+DOID:0050665	fetal alcohol syndrome	DOID:0050696	fetal alcohol spectrum disorder
+DOID:11339	pneumocystosis	DOID:2473	opportunistic mycosis
+DOID:0050218	polycystic echinococcosis	DOID:1496	echinococcosis
+DOID:1229	paranoid schizophrenia	DOID:5419	schizophrenia
+DOID:9631	Pelger-Huet anomaly	DOID:0050736	autosomal dominant disease
+DOID:11330	erysipelas	DOID:2723	dermatitis
+DOID:13198	endemic goiter	DOID:12176|DOID:5113	goiter|nutritional deficiency disease
+DOID:7165	subacute thyroiditis	DOID:7166	thyroiditis
+DOID:9201	lichen planus	DOID:8574	lichen disease
+DOID:12581	olecranon bursitis	DOID:204	enthesopathy
+DOID:11875	denture stomatitis	DOID:9637	stomatitis
+DOID:8354	complement component 3 deficiency	DOID:626	complement deficiency
+DOID:7532	squamous papillomatosis	DOID:0050624	gastrointestinal system benign neoplasm
+DOID:0050580	hereditary lymphedema	DOID:4977	lymphedema
+DOID:11870	Pick's disease	DOID:1289	neurodegenerative disease
+DOID:4397	granulomatous dermatitis	DOID:2723	dermatitis
+DOID:7444	diffuse intraductal papillomatosis	DOID:2615	papilloma
+DOID:4394	reticulohistiocytic granuloma	DOID:3405	histiocytosis
+DOID:13521	tetanus neonatorum	DOID:11338	tetanus
+DOID:6950	combat disorder	DOID:6088	acute stress disorder
+DOID:4399	acneiform dermatitis	DOID:2723	dermatitis
+DOID:4398	pustulosis of palm and sole	DOID:2723	dermatitis
+DOID:11258	cat-scratch disease	DOID:11102	bartonellosis
+DOID:13585	alveolar periostitis	DOID:9957	periostitis
+DOID:11155	hypohidrosis	DOID:1383	sweat gland disease
+DOID:2215	factor VII deficiency	DOID:2214	inherited blood coagulation disease
+DOID:13589	female infertility of uterine origin	DOID:345	uterine disease
+DOID:0050035	African tick-bite fever	DOID:11104	spotted fever
+DOID:5426	premature ovarian failure	DOID:1100	ovarian disease
+DOID:13226	oculoglandular tularemia	DOID:2123	tularemia
+DOID:5425	ovarian hyperstimulation syndrome	DOID:1100	ovarian disease
+DOID:1800	neuroendocrine carcinoma	DOID:305	carcinoma
+DOID:10303	sialadenitis	DOID:10854	salivary gland disease
+DOID:2018	hyperinsulinism	DOID:4194|DOID:1428	glucose metabolism disease|endocrine pancreas disease
+DOID:9432	renal glycosuria	DOID:447	renal tubular transport disease
+DOID:14275	atrophic vulva	DOID:2059	vulvar disease
+DOID:2012	Nezelof syndrome	DOID:11200	T cell deficiency
+DOID:12053	cryptococcosis	DOID:2473	opportunistic mycosis
+DOID:12055	sarcoid meningitis	DOID:9471	meningitis
+DOID:4944	gastroesophageal junction adenocarcinoma	DOID:3119	gastrointestinal system cancer
+DOID:0050440	familial partial lipodystrophy	DOID:811	lipodystrophy
+DOID:12355	prostatocystitis	DOID:1679	cystitis
+DOID:13976	peptic esophagitis	DOID:11963	esophagitis
+DOID:12297	Vogt-Koyanagi-Harada disease	DOID:417	hypersensitivity reaction type II disease
+DOID:0060337	CEDNIK syndrome	DOID:0050737	autosomal recessive disease
+DOID:12663	blastomycosis	DOID:0050292	primary systemic mycosis
+DOID:0080053	Albright's hereditary osteodystrophy	DOID:4184	pseudohypoparathyroidism
+DOID:0050857	Perrault syndrome	DOID:0050737	autosomal recessive disease
+DOID:2935	Chediak-Higashi syndrome	DOID:0050737	autosomal recessive disease
+DOID:1340	pure red-cell aplasia	DOID:12449	aplastic anemia
+DOID:11613	hyperandrogenism	DOID:1923	sex differentiation disease
+DOID:11599	Frey syndrome	DOID:11465	autonomic nervous system disease
+DOID:4267	akinetic mutism	DOID:936	brain disease
+DOID:593	agoraphobia	DOID:591	phobic disorder
+DOID:5884	benign intermediate mesothelioma	DOID:2645	benign mesothelioma
+DOID:3010	lobular neoplasia	DOID:8791	breast carcinoma in situ
+DOID:11750	Bordetella parapertussis whooping cough	DOID:1116	pertussis
+DOID:3012	Li-Fraumeni syndrome	DOID:0050736	autosomal dominant disease
+DOID:9975	cocaine dependence	DOID:9974	drug dependence
+DOID:9905	follicular mucinosis	DOID:9098	sebaceous gland disease
+DOID:11758	iron deficiency anemia	DOID:11252|DOID:5113	microcytic anemia|nutritional deficiency disease
+DOID:384	Wolff-Parkinson-White syndrome	DOID:10273	heart conduction disease
+DOID:13269	hereditary coproporphyria	DOID:3133	acute porphyria
+DOID:0090029	CINCA Syndrome	DOID:417	hypersensitivity reaction type II disease
+DOID:12714	Ellis-Van Creveld syndrome	DOID:0050737	autosomal recessive disease
+DOID:1260	parametritis	DOID:1003	pelvic inflammatory disease
+DOID:2717	Bloom syndrome	DOID:0050737	autosomal recessive disease
+DOID:0060330	Rapp-Hodgkin syndrome	DOID:0050736	autosomal dominant disease
+DOID:9892	median arcuate ligament syndrome	DOID:0050828	artery disease
+DOID:0060707	lymphoproliferative syndrome 1	DOID:0060704	lymphoproliferative syndrome
+DOID:0060706	X-linked lymphoproliferative syndrome 2	DOID:0060704	lymphoproliferative syndrome
+DOID:0060705	X-linked lymphoproliferative syndrome 1	DOID:0060704	lymphoproliferative syndrome
+DOID:12128	pica disease	DOID:8670	eating disorder
+DOID:12129	bulimia nervosa	DOID:8670	eating disorder
+DOID:2942	bronchiolitis	DOID:850	lung disease
+DOID:8305	nonossifying fibromyxoid tumor	DOID:3350	mesenchymal cell neoplasm
+DOID:0090143	brachyolmia-amelogenesis imperfecta syndrome	DOID:0050737	autosomal recessive disease
+DOID:3492	mixed connective tissue disease	DOID:854	collagen disease
+DOID:12120	pulmonary alveolar proteinosis	DOID:850	lung disease
+DOID:11563	retinal vasculitis	DOID:865	vasculitis
+DOID:0060708	lymphoproliferative syndrome 2	DOID:0060704	lymphoproliferative syndrome

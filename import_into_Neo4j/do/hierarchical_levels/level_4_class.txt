@@ -1,0 +1,302 @@
+MonDO_id 	 MonDO_name 	 parent_id 	 parent_name 
+DOID:10690	mastitis	DOID:3463	breast disease
+DOID:1924	hypogonadism	DOID:2277	gonadal disease
+DOID:1682	congenital heart disease	DOID:114	heart disease
+DOID:13121	deficiency anemia	DOID:2355	anemia
+DOID:1115	sarcoma	DOID:0050687	cell type cancer
+DOID:2113	coccidiosis	DOID:2789	parasitic protozoa infectious disease
+DOID:591	phobic disorder	DOID:2030	anxiety disorder
+DOID:9365	vesiculitis	DOID:48	male reproductive system disease
+DOID:3646	necrosis of pituitary	DOID:53	pituitary gland disease
+DOID:2723	dermatitis	DOID:37	skin disease
+DOID:170	endocrine gland cancer	DOID:0050686	organ system cancer
+DOID:4079	heart valve disease	DOID:114	heart disease
+DOID:176	cardiovascular cancer	DOID:0050686	organ system cancer
+DOID:10242	ehrlichiosis	DOID:0050338	primary bacterial infectious disease
+DOID:4072	duodenal disease	DOID:5295	intestinal disease
+DOID:2683	adenofibroma	DOID:0060084	cell type benign neoplasm
+DOID:10458	legionellosis	DOID:0050338	primary bacterial infectious disease
+DOID:3225	tracheal disease	DOID:974	upper respiratory tract disease
+DOID:10123	pigmentation disease	DOID:37	skin disease
+DOID:1909	melanoma	DOID:0050687	cell type cancer
+DOID:9455	lipid storage disease	DOID:3211	lysosomal storage disease
+DOID:1596	mental depression	DOID:3324	mood disorder
+DOID:607	paraplegia	DOID:331	central nervous system disease
+DOID:6088	acute stress disorder	DOID:2030	anxiety disorder
+DOID:3122	gastric outlet obstruction	DOID:76	stomach disease
+DOID:420	hypertrichosis	DOID:421	hair disease
+DOID:8437	intestinal obstruction	DOID:5295	intestinal disease
+DOID:12642	hiatus hernia	DOID:76	stomach disease
+DOID:8432	polycythemia	DOID:4961	bone marrow disease
+DOID:4166	syphilis	DOID:0050338	primary bacterial infectious disease
+DOID:272	hepatic vascular disease	DOID:178	vascular disease
+DOID:12336	male infertility	DOID:48	male reproductive system disease
+DOID:0050573	2-hydroxyglutaric aciduria	DOID:9252	amino acid metabolic disorder
+DOID:3488	cellulitis	DOID:37	skin disease
+DOID:1395	schistosomiasis	DOID:883	parasitic helminthiasis infectious disease
+DOID:857	multiple carboxylase deficiency	DOID:2978|DOID:9252	carbohydrate metabolic disorder|amino acid metabolic disorder
+DOID:9267	urea cycle disorder	DOID:9252	amino acid metabolic disorder
+DOID:5875	retroperitoneal cancer	DOID:0050686	organ system cancer
+DOID:9768	heart aneurysm	DOID:114	heart disease
+DOID:7475	diverticulitis	DOID:5295	intestinal disease
+DOID:9098	sebaceous gland disease	DOID:37	skin disease
+DOID:2916	hypersensitivity reaction type IV disease	DOID:0060056	hypersensitivity reaction disease
+DOID:2529	splenic disease	DOID:75	lymphatic system disease
+DOID:2527	nephrosis	DOID:557	kidney disease
+DOID:1235	fetishism	DOID:0060044	paraphilia disorder
+DOID:0050615	respiratory system cancer	DOID:0050686	organ system cancer
+DOID:8791	breast carcinoma in situ	DOID:8719	in situ carcinoma
+DOID:11200	T cell deficiency	DOID:612	primary immunodeficiency disease
+DOID:161	keratosis	DOID:37	skin disease
+DOID:2444	hyperpituitarism	DOID:53	pituitary gland disease
+DOID:2862	glucosephosphate dehydrogenase deficiency	DOID:2978	carbohydrate metabolic disorder
+DOID:533	thymus gland disease	DOID:75	lymphatic system disease
+DOID:1205	allergic hypersensitivity disease	DOID:0060056	hypersensitivity reaction disease
+DOID:0060101	benign glioma	DOID:0060084	cell type benign neoplasm
+DOID:9265	histidine metabolism disease	DOID:9252	amino acid metabolic disorder
+DOID:9406	hypopituitarism	DOID:53	pituitary gland disease
+DOID:1168	familial hyperlipidemia	DOID:3146	lipid metabolism disorder
+DOID:3133	acute porphyria	DOID:13268	porphyria
+DOID:9402	epididymitis	DOID:48	male reproductive system disease
+DOID:0050696	fetal alcohol spectrum disorder	DOID:0060038	specific developmental disorder
+DOID:289	endometriosis	DOID:229	female reproductive system disease
+DOID:0060121	integumentary system benign neoplasm	DOID:0060085	organ system benign neoplasm
+DOID:8646	substance-induced psychosis	DOID:2468	psychotic disorder
+DOID:1529	penile disease	DOID:48	male reproductive system disease
+DOID:0050700	cardiomyopathy	DOID:114	heart disease
+DOID:0060041	autism spectrum disorder	DOID:0060040	pervasive developmental disorder
+DOID:1284	prolapse of female genital organ	DOID:229	female reproductive system disease
+DOID:1285	rectal disease	DOID:5295	intestinal disease
+DOID:1059	intellectual disability	DOID:0060038	specific developmental disorder
+DOID:1289	neurodegenerative disease	DOID:331	central nervous system disease
+DOID:204	enthesopathy	DOID:65	connective tissue disease
+DOID:1526	panniculitis	DOID:37	skin disease
+DOID:9779	bowel dysfunction	DOID:5295	intestinal disease
+DOID:1255	trichostrongyloidiasis	DOID:883	parasitic helminthiasis infectious disease
+DOID:9065	leishmaniasis	DOID:2789	parasitic protozoa infectious disease
+DOID:10113	trypanosomiasis	DOID:2789	parasitic protozoa infectious disease
+DOID:13034	relapsing fever	DOID:0050338	primary bacterial infectious disease
+DOID:1100	ovarian disease	DOID:229	female reproductive system disease
+DOID:1787	pericarditis	DOID:0050829	pericardium disease
+DOID:2519	testicular disease	DOID:48	male reproductive system disease
+DOID:2351	iron metabolism disease	DOID:0050032	mineral metabolism disease
+DOID:1389	polyneuropathy	DOID:574	peripheral nervous system disease
+DOID:1428	endocrine pancreas disease	DOID:26	pancreas disease
+DOID:2123	tularemia	DOID:0050338	primary bacterial infectious disease
+DOID:2452	thrombophilia	DOID:1247	blood coagulation disease
+DOID:936	brain disease	DOID:331	central nervous system disease
+DOID:5998	microglandular adenosis	DOID:3463	breast disease
+DOID:0050731	vitamin B12 deficiency	DOID:0050718	vitamin metabolic disorder
+DOID:2742	auditory system disease	DOID:0050155	sensory system disease
+DOID:615	leukopenia	DOID:9500	leukocyte disease
+DOID:5502	lice infestation	DOID:4110	parasitic ectoparasitic infectious disease
+DOID:4194	glucose metabolism disease	DOID:0050013	carbohydrate metabolism disease
+DOID:2744	pyelitis	DOID:557	kidney disease
+DOID:2213	hemorrhagic disease	DOID:1247	blood coagulation disease
+DOID:0050486	exanthem	DOID:37	skin disease
+DOID:0060115	nervous system benign neoplasm	DOID:0060085	organ system benign neoplasm
+DOID:0050120	hemophagocytic lymphohistiocytosis	DOID:75	lymphatic system disease
+DOID:2053	reactive cutaneous fibrous lesion	DOID:37	skin disease
+DOID:13543	hyperparathyroidism	DOID:11201	parathyroid gland disease
+DOID:409	liver disease	DOID:3118	hepatobiliary disease
+DOID:118	pericardial effusion	DOID:0050829	pericardium disease
+DOID:2115	B cell deficiency	DOID:612	primary immunodeficiency disease
+DOID:8893	psoriasis	DOID:37	skin disease
+DOID:1923	sex differentiation disease	DOID:2277	gonadal disease
+DOID:0050129	secretory diarrhea	DOID:13250	diarrhea
+DOID:2059	vulvar disease	DOID:229	female reproductive system disease
+DOID:9471	meningitis	DOID:331	central nervous system disease
+DOID:47	prostate disease	DOID:48	male reproductive system disease
+DOID:1725	peritoneum cancer	DOID:0050686	organ system cancer
+DOID:193	reproductive organ cancer	DOID:0050686	organ system cancer
+DOID:1532	pleural disease	DOID:0050161	lower respiratory tract disease
+DOID:8549	chronic ulcer of skin	DOID:37	skin disease
+DOID:1790	malignant mesothelioma	DOID:0050687	cell type cancer
+DOID:1558	angioedema	DOID:37	skin disease
+DOID:4109	tick infestation	DOID:4110	parasitic ectoparasitic infectious disease
+DOID:811	lipodystrophy	DOID:37	skin disease
+DOID:9561	nasopharyngeal disease	DOID:974	upper respiratory tract disease
+DOID:1024	leprosy	DOID:0050338	primary bacterial infectious disease
+DOID:3168	squamous cell neoplasm	DOID:0060084	cell type benign neoplasm
+DOID:1383	sweat gland disease	DOID:37	skin disease
+DOID:1387	hypolipoproteinemia	DOID:3146	lipid metabolism disorder
+DOID:0050589	inflammatory bowel disease	DOID:5295	intestinal disease
+DOID:819	mediastinitis	DOID:65	connective tissue disease
+DOID:1557	hypersensitivity reaction type III disease	DOID:0060056	hypersensitivity reaction disease
+DOID:9598	fasciitis	DOID:65	connective tissue disease
+DOID:1555	urticaria	DOID:37	skin disease
+DOID:2033	communication disorder	DOID:0060038	specific developmental disorder
+DOID:9857	interstitial keratitis	DOID:65	connective tissue disease
+DOID:9297	lip disease	DOID:403	mouth disease
+DOID:11102	bartonellosis	DOID:0050338	primary bacterial infectious disease
+DOID:628	combined T cell and B cell immunodeficiency	DOID:612	primary immunodeficiency disease
+DOID:3690	brachial plexus neuropathy	DOID:574	peripheral nervous system disease
+DOID:4029	gastritis	DOID:76	stomach disease
+DOID:4184	pseudohypoparathyroidism	DOID:896	metal metabolism disorder
+DOID:11104	spotted fever	DOID:0050338	primary bacterial infectious disease
+DOID:0090061	familial cold autoinflammatory syndrome	DOID:612	primary immunodeficiency disease
+DOID:0060100	musculoskeletal system cancer	DOID:0050686	organ system cancer
+DOID:100	intestinal infectious disease	DOID:5295	intestinal disease
+DOID:417	hypersensitivity reaction type II disease	DOID:0060056	hypersensitivity reaction disease
+DOID:345	uterine disease	DOID:229	female reproductive system disease
+DOID:1116	pertussis	DOID:0050339	commensal bacterial infectious disease
+DOID:8439	postgastrectomy syndrome	DOID:5295	intestinal disease
+DOID:341	peripheral vascular disease	DOID:178	vascular disease
+DOID:8574	lichen disease	DOID:37	skin disease
+DOID:11244	neonatal anemia	DOID:2355	anemia
+DOID:2994	germ cell cancer	DOID:0050687	cell type cancer
+DOID:0050721	serine deficiency	DOID:9252	amino acid metabolic disorder
+DOID:1701	steroid inherited metabolic disorder	DOID:3146	lipid metabolism disorder
+DOID:11465	autonomic nervous system disease	DOID:574	peripheral nervous system disease
+DOID:0060083	immune system cancer	DOID:0050686	organ system cancer
+DOID:626	complement deficiency	DOID:612	primary immunodeficiency disease
+DOID:0050728	glycogen metabolism disorder	DOID:2978	carbohydrate metabolic disorder
+DOID:657	adenoma	DOID:0060084	cell type benign neoplasm
+DOID:0050737	autosomal recessive disease	DOID:0050739	autosomal genetic disease
+DOID:5353	colonic disease	DOID:5295	intestinal disease
+DOID:11976	botulism	DOID:0050338	primary bacterial infectious disease
+DOID:10969	hemiplegia	DOID:331	central nervous system disease
+DOID:7427	anthrax disease	DOID:0050338	primary bacterial infectious disease
+DOID:11705	impaired renal function disease	DOID:557	kidney disease
+DOID:0060089	endocrine organ benign neoplasm	DOID:0060085	organ system benign neoplasm
+DOID:2473	opportunistic mycosis	DOID:0050136	systemic mycosis
+DOID:1563	dermatomycosis	DOID:0050134	cutaneous mycosis
+DOID:2645	benign mesothelioma	DOID:0060084	cell type benign neoplasm
+DOID:11077	brucellosis	DOID:0050338	primary bacterial infectious disease
+DOID:2485	phosphorus metabolism disease	DOID:0050032	mineral metabolism disease
+DOID:865	vasculitis	DOID:178	vascular disease
+DOID:866	vein disease	DOID:178	vascular disease
+DOID:778	delusional disorder	DOID:2468	psychotic disorder
+DOID:2074	intestinal perforation	DOID:5295	intestinal disease
+DOID:2769	tic disorder	DOID:0060038	specific developmental disorder
+DOID:9870	galactosemia	DOID:2978	carbohydrate metabolic disorder
+DOID:12577	urethral obstruction	DOID:732	urethral disease
+DOID:731	urinary system benign neoplasm	DOID:0060085	organ system benign neoplasm
+DOID:1091	tooth disease	DOID:403	mouth disease
+DOID:1492	eye and adnexa disease	DOID:0050155	sensory system disease
+DOID:0060774	congenital diarrhea	DOID:13250	diarrhea
+DOID:8670	eating disorder	DOID:0060038	specific developmental disorder
+DOID:1496	echinococcosis	DOID:883	parasitic helminthiasis infectious disease
+DOID:12176	goiter	DOID:50	thyroid gland disease
+DOID:10854	salivary gland disease	DOID:403	mouth disease
+DOID:0050736	autosomal dominant disease	DOID:0050739	autosomal genetic disease
+DOID:5212	congenital disorder of glycosylation	DOID:2978	carbohydrate metabolic disorder
+DOID:1029	familial periodic paralysis	DOID:896	metal metabolism disorder
+DOID:10575	calcium metabolism disease	DOID:0050032	mineral metabolism disease
+DOID:3119	gastrointestinal system cancer	DOID:0050686	organ system cancer
+DOID:0060122	integumentary system cancer	DOID:0050686	organ system cancer
+DOID:2975	cystic kidney disease	DOID:557	kidney disease
+DOID:3996	urinary system cancer	DOID:0050686	organ system cancer
+DOID:4535	hypotrichosis	DOID:421	hair disease
+DOID:0060655	autosomal recessive congenital ichthyosis	DOID:37	skin disease
+DOID:9912	hydrocele	DOID:48	male reproductive system disease
+DOID:0060091	cardiovascular organ benign neoplasm	DOID:0060085	organ system benign neoplasm
+DOID:3070	malignant glioma	DOID:0050687	cell type cancer
+DOID:0060097	thoracic benign neoplasm	DOID:0060085	organ system benign neoplasm
+DOID:2361	macrocytic anemia	DOID:2355	anemia
+DOID:11963	esophagitis	DOID:6050	esophageal disease
+DOID:0080001	bone disease	DOID:65	connective tissue disease
+DOID:0060099	musculoskeletal system benign neoplasm	DOID:0060085	organ system benign neoplasm
+DOID:1475	lymphangioma	DOID:0060084	cell type benign neoplasm
+DOID:9275	tyrosinemia	DOID:9252	amino acid metabolic disorder
+DOID:1080	filariasis	DOID:883	parasitic helminthiasis infectious disease
+DOID:3153	lipomatosis	DOID:37	skin disease
+DOID:0050292	primary systemic mycosis	DOID:0050136	systemic mycosis
+DOID:0080189	malignant hemangioma	DOID:0050687	cell type cancer
+DOID:10371	yaws	DOID:0050338	primary bacterial infectious disease
+DOID:350	mastocytosis	DOID:9500	leukocyte disease
+DOID:121	vaginal disease	DOID:229	female reproductive system disease
+DOID:11934	head and neck cancer	DOID:0050686	organ system cancer
+DOID:2352	hemochromatosis	DOID:896	metal metabolism disorder
+DOID:2602	chondroma	DOID:0060084	cell type benign neoplasm
+DOID:10273	heart conduction disease	DOID:114	heart disease
+DOID:127	leiomyoma	DOID:0060084	cell type benign neoplasm
+DOID:720	normocytic anemia	DOID:2355	anemia
+DOID:640	encephalomyelitis	DOID:331	central nervous system disease
+DOID:10481	diaphragm disease	DOID:0080000	muscular disease
+DOID:3350	mesenchymal cell neoplasm	DOID:0050687	cell type cancer
+DOID:576	proteinuria	DOID:557	kidney disease
+DOID:3482	plague	DOID:0050338	primary bacterial infectious disease
+DOID:9637	stomatitis	DOID:403	mouth disease
+DOID:573	nerve compression syndrome	DOID:574	peripheral nervous system disease
+DOID:5113	nutritional deficiency disease	DOID:374	nutrition disease
+DOID:0050828	artery disease	DOID:178	vascular disease
+DOID:0050624	gastrointestinal system benign neoplasm	DOID:0060085	organ system benign neoplasm
+DOID:0050622	reproductive organ benign neoplasm	DOID:0060085	organ system benign neoplasm
+DOID:0050621	respiratory system benign neoplasm	DOID:0060085	organ system benign neoplasm
+DOID:1159	functional gastric disease	DOID:76	stomach disease
+DOID:11338	tetanus	DOID:0050338	primary bacterial infectious disease
+DOID:11080	myiasis	DOID:4110	parasitic ectoparasitic infectious disease
+DOID:0060176	gamma-amino butyric acid metabolism disorder	DOID:9252	amino acid metabolic disorder
+DOID:0050825	endocardium disease	DOID:114	heart disease
+DOID:326	ischemia	DOID:178	vascular disease
+DOID:2825	nose disease	DOID:974	upper respiratory tract disease
+DOID:786	laryngeal disease	DOID:974	upper respiratory tract disease
+DOID:0060092	immune system organ benign neoplasm	DOID:0060085	organ system benign neoplasm
+DOID:10944	tongue disease	DOID:403	mouth disease
+DOID:999	hypereosinophilic syndrome	DOID:9500	leukocyte disease
+DOID:1461	cholesterol embolism	DOID:178	vascular disease
+DOID:2214	inherited blood coagulation disease	DOID:1247	blood coagulation disease
+DOID:2703	synovitis	DOID:65	connective tissue disease
+DOID:11252	microcytic anemia	DOID:2355	anemia
+DOID:154	mixed cell type cancer	DOID:0050687	cell type cancer
+DOID:1962	fallopian tube disease	DOID:229	female reproductive system disease
+DOID:447	renal tubular transport disease	DOID:557	kidney disease
+DOID:9942	lymph node disease	DOID:75	lymphatic system disease
+DOID:0050515	paralytic poliomyelitis	DOID:4953	poliomyelitis
+DOID:3262	phagocyte bactericidal dysfunction	DOID:612	primary immunodeficiency disease
+DOID:8913	dermatophytosis	DOID:0050134	cutaneous mycosis
+DOID:11256	typhus	DOID:0050338	primary bacterial infectious disease
+DOID:654	overnutrition	DOID:374	nutrition disease
+DOID:870	neuropathy	DOID:574	peripheral nervous system disease
+DOID:0050798	cerebral creatine deficiency syndrome	DOID:9252	amino acid metabolic disorder
+DOID:0060159	organic acidemia	DOID:9252	amino acid metabolic disorder
+DOID:3141	mucinoses	DOID:65	connective tissue disease
+DOID:399	tuberculosis	DOID:0050338	primary bacterial infectious disease
+DOID:8927	learning disability	DOID:0060038	specific developmental disorder
+DOID:255	hemangioma	DOID:0060084	cell type benign neoplasm
+DOID:319	spinal cord disease	DOID:331	central nervous system disease
+DOID:9974	drug dependence	DOID:9973	substance dependence
+DOID:1271	capillary disease	DOID:178	vascular disease
+DOID:1003	pelvic inflammatory disease	DOID:229	female reproductive system disease
+DOID:1679	cystitis	DOID:365	bladder disease
+DOID:0050596	taeniasis	DOID:883	parasitic helminthiasis infectious disease
+DOID:10952	nephritis	DOID:557	kidney disease
+DOID:1697	ichthyosis	DOID:37	skin disease
+DOID:12798	mucopolysaccharidosis	DOID:3211	lysosomal storage disease
+DOID:0060879	primary hypomagnesemia	DOID:896	metal metabolism disorder
+DOID:6000	congestive heart failure	DOID:114	heart disease
+DOID:1459	hypothyroidism	DOID:50	thyroid gland disease
+DOID:0060117	peritoneal benign neoplasm	DOID:0060085	organ system benign neoplasm
+DOID:5093	thoracic cancer	DOID:0050686	organ system cancer
+DOID:850	lung disease	DOID:0050161	lower respiratory tract disease
+DOID:2731	vesiculobullous skin disease	DOID:37	skin disease
+DOID:854	collagen disease	DOID:65	connective tissue disease
+DOID:1518	cecal disease	DOID:5295	intestinal disease
+DOID:12449	aplastic anemia	DOID:2355	anemia
+DOID:3405	histiocytosis	DOID:75	lymphatic system disease
+DOID:4989	pancreatitis	DOID:26	pancreas disease
+DOID:5419	schizophrenia	DOID:2468	psychotic disorder
+DOID:7894	mite infestation	DOID:4110	parasitic ectoparasitic infectious disease
+DOID:0050544	hypermethioninemia	DOID:9252	amino acid metabolic disorder
+DOID:9957	periostitis	DOID:65	connective tissue disease
+DOID:1875	impotence	DOID:1876	sexual dysfunction
+DOID:3093	nervous system cancer	DOID:0050686	organ system cancer
+DOID:11355	bladder calculus	DOID:9590	lower urinary tract calculus
+DOID:11353	bladder diverticulum	DOID:365	bladder disease
+DOID:3312	bipolar disorder	DOID:3324	mood disorder
+DOID:66	muscle tissue disease	DOID:0080000	muscular disease
+DOID:7166	thyroiditis	DOID:50	thyroid gland disease
+DOID:4977	lymphedema	DOID:75	lymphatic system disease
+DOID:3314	angiomyolipoma	DOID:0060084	cell type benign neoplasm
+DOID:3315	lipoma	DOID:0060084	cell type benign neoplasm
+DOID:7998	hyperthyroidism	DOID:50	thyroid gland disease
+DOID:1176	bronchial disease	DOID:0050161	lower respiratory tract disease
+DOID:0060704	lymphoproliferative syndrome	DOID:612	primary immunodeficiency disease
+DOID:305	carcinoma	DOID:0050687	cell type cancer
+DOID:1074	kidney failure	DOID:557	kidney disease
+DOID:3952	adrenal cortex disease	DOID:9553	adrenal gland disease
+DOID:12365	malaria	DOID:2789	parasitic protozoa infectious disease
+DOID:9741	biliary tract disease	DOID:3118	hepatobiliary disease
+DOID:2615	papilloma	DOID:0060084	cell type benign neoplasm
+DOID:7997	thyrotoxicosis	DOID:50	thyroid gland disease

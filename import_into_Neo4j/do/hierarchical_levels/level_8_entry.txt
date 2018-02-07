@@ -1,0 +1,1048 @@
+MonDO_id 	 MonDO_name 	 parent_id 	 parent_name  
+DOID:11748	round ligament malignant neoplasm	DOID:11747	uterine adnexa cancer
+DOID:0060529	white shrimp allergy	DOID:0060524	crustacean allergy
+DOID:0060528	tiger prawn allergy	DOID:0060524	crustacean allergy
+DOID:0060527	Indian prawn allergy	DOID:0060524	crustacean allergy
+DOID:0060526	green mud crab allergy	DOID:0060524	crustacean allergy
+DOID:0060525	brown shrimp allergy	DOID:0060524	crustacean allergy
+DOID:5537	squamous cell bile duct carcinoma	DOID:4897	bile duct carcinoma
+DOID:5569	malignant syringoma	DOID:4921	eccrine sweat gland cancer
+DOID:5169	ovarian endometrioid stromal sarcoma	DOID:2146	ovary sarcoma
+DOID:12537	hypermobility of coccyx	DOID:1123	spondyloarthropathy
+DOID:12506	Bell's palsy	DOID:13934	facial paralysis
+DOID:14181	calcific tendinitis	DOID:971	tendinitis
+DOID:13756	epiphora due to insufficient drainage	DOID:13757	excessive tearing
+DOID:13453	gonococcal bursitis	DOID:2965	bursitis
+DOID:0050861	colorectal adenocarcinoma	DOID:9256	colorectal cancer
+DOID:8651	Hodgkin's granuloma	DOID:8567	Hodgkin's lymphoma
+DOID:6484	mediastinal melanocytic neurilemmoma	DOID:6175|DOID:3205	mediastinal neurilemmoma|melanotic neurilemmoma
+DOID:3352	malignant fibrous histiocytoma of bone	DOID:3347|DOID:1907	osteosarcoma|malignant fibroxanthoma
+DOID:0110149	Charcot-Marie-Tooth disease type 1F	DOID:0050538	Charcot-Marie-Tooth disease type 1
+DOID:0110148	Charcot-Marie-Tooth disease type 1A	DOID:0050538	Charcot-Marie-Tooth disease type 1
+DOID:5632	optic nerve sheath meningioma	DOID:3419	optic nerve neoplasm
+DOID:3752	larynx verrucous carcinoma	DOID:2876	laryngeal squamous cell carcinoma
+DOID:1591	renovascular hypertension	DOID:1073	renal hypertension
+DOID:5016	hepatocellular clear cell carcinoma	DOID:684	hepatocellular carcinoma
+DOID:1068	juvenile glaucoma	DOID:1067	open-angle glaucoma
+DOID:0080160	Cytomegalovirus retinitis	DOID:3612	retinitis
+DOID:1066	residual stage of open angle glaucoma	DOID:1067	open-angle glaucoma
+DOID:8628	Hodgkin's lymphoma, lymphocytic depletion	DOID:8567	Hodgkin's lymphoma
+DOID:0090114	Sorsby's fundus dystrophy	DOID:8500	hereditary retinal dystrophy
+DOID:6762	sternum lymphoma	DOID:5090	sternum cancer
+DOID:5263	ovary leiomyosarcoma	DOID:2146	ovary sarcoma
+DOID:5264	epithelioid leiomyosarcoma	DOID:1967	leiomyosarcoma
+DOID:7177	anal canal squamous cell carcinoma	DOID:0050688	anal canal cancer
+DOID:7541	mixed epithelial/mesenchymal metaplastic breast carcinoma	DOID:4680	breast metaplastic carcinoma
+DOID:5268	myxoid leiomyosarcoma	DOID:1967	leiomyosarcoma
+DOID:7266	familiar fallopian tube carcinoma	DOID:1963	fallopian tube carcinoma
+DOID:7549	ceruminoma	DOID:5876	apocrine sweat gland neoplasm
+DOID:10138	xerophthalmia	DOID:10140	dry eye syndrome
+DOID:0060848	early infantile epileptic encephalopathy 9	DOID:2481	infantile epileptic encephalopathy
+DOID:13159	scrotum squamous cell carcinoma	DOID:3445	scrotal carcinoma
+DOID:0110329	Leber congenital amaurosis 6	DOID:14791	Leber congenital amaurosis
+DOID:13626	photokeratitis	DOID:4677	keratitis
+DOID:0050663	Bethlem myopathy	DOID:0050557	congenital muscular dystrophy
+DOID:3968	papillary follicular thyroid adenocarcinoma	DOID:3969	papillary thyroid carcinoma
+DOID:8310	sclerosing adenosis of breast	DOID:3274	proliferative type fibrocystic change of breast
+DOID:0050664	Bietti crystalline corneoretinal dystrophy	DOID:8466	retinal degeneration
+DOID:4846	cauda equina intradural extramedullary astrocytoma	DOID:4847	cauda equina neoplasm
+DOID:8096	bladder mixed adenocarcinoma	DOID:3711	bladder adenocarcinoma
+DOID:8097	bladder hepatoid adenocarcinoma	DOID:3711	bladder adenocarcinoma
+DOID:5379	hemoglobin E disease	DOID:2860	hemoglobinopathy
+DOID:1522	cecum lymphoma	DOID:1521	cecum cancer
+DOID:0111134	focal segmental glomerulosclerosis 9	DOID:1312	focal segmental glomerulosclerosis
+DOID:0111133	focal segmental glomerulosclerosis 8	DOID:1312	focal segmental glomerulosclerosis
+DOID:0111132	focal segmental glomerulosclerosis 7	DOID:1312	focal segmental glomerulosclerosis
+DOID:0111131	focal segmental glomerulosclerosis 6	DOID:1312	focal segmental glomerulosclerosis
+DOID:0111130	focal segmental glomerulosclerosis 5	DOID:1312	focal segmental glomerulosclerosis
+DOID:4111	cervical adenosarcoma	DOID:4112	cervical carcinosarcoma
+DOID:7241	uterine corpus apoplectic leiomyoma	DOID:7242	uterine corpus cellular leiomyoma
+DOID:7244	bladder urachal urothelial carcinoma	DOID:5958	bladder urachal carcinoma
+DOID:10541	microinvasive gastric cancer	DOID:3717	gastric adenocarcinoma
+DOID:7725	epilepsy with generalized tonic-clonic seizures	DOID:0050705	adolescence-adult electroclinical syndrome
+DOID:4696	intraneural perineurioma	DOID:4697	perineurioma
+DOID:6639	pediatric CNS choriocarcinoma	DOID:6052	central nervous system childhood germ cell tumor
+DOID:10471	patellar tendinitis	DOID:971	tendinitis
+DOID:9801	tuberculous peritonitis	DOID:404	gastrointestinal tuberculosis
+DOID:1844	mononeuritis of upper limb	DOID:572	mononeuritis of upper limb and mononeuritis multiplex
+DOID:3617	epidural spinal canal angiolipoma	DOID:3618	epidural neoplasm
+DOID:5743	acinic cell breast carcinoma	DOID:3458	breast adenocarcinoma
+DOID:5742	pancreatic acinar cell adenocarcinoma	DOID:4074	pancreatic adenocarcinoma
+DOID:3964	trabecular follicular adenocarcinoma	DOID:3962	follicular thyroid carcinoma
+DOID:6496	extraskeletal myxoid chondrosarcoma	DOID:4549	extraosseous chondrosarcoma
+DOID:7381	lymphohistiocytoid mesothelioma	DOID:7474	malignant pleural mesothelioma
+DOID:9749	internal hemorrhoid	DOID:9746	hemorrhoid
+DOID:0110969	brachydactyly type B1	DOID:0050581	brachydactyly
+DOID:0110968	brachydactyly type A6	DOID:0050581	brachydactyly
+DOID:0110967	brachydactyly type A4	DOID:0050581	brachydactyly
+DOID:0110966	brachydactyly type A3	DOID:0050581	brachydactyly
+DOID:0110965	brachydactyly type A2	DOID:0050581	brachydactyly
+DOID:0110963	Ballard syndrome	DOID:0050581	brachydactyly
+DOID:0110962	brachydactyly-preaxial hallux varus syndrome	DOID:0050581	brachydactyly
+DOID:12311	stromal corneal pigmentation	DOID:11547	corneal deposit
+DOID:0110215	Leber congenital amaurosis 5	DOID:14791	Leber congenital amaurosis
+DOID:0110217	Leber congenital amaurosis 17	DOID:14791	Leber congenital amaurosis
+DOID:0110216	Leber congenital amaurosis 11	DOID:14791	Leber congenital amaurosis
+DOID:0110211	Charcot-Marie-Tooth disease X-linked recessive 3	DOID:0050542	Charcot-Marie-Tooth disease type X
+DOID:0110210	Charcot-Marie-Tooth disease X-linked recessive 5	DOID:0050542	Charcot-Marie-Tooth disease type X
+DOID:0110212	Charcot-Marie-Tooth disease X-linked recessive 4	DOID:0050542	Charcot-Marie-Tooth disease type X
+DOID:6740	cervix small cell carcinoma	DOID:2893	cervix carcinoma
+DOID:11232	orbital osteomyelitis	DOID:11230	acute orbital inflammation
+DOID:0110350	osteogenesis imperfecta type 6	DOID:12347	osteogenesis imperfecta
+DOID:0110351	osteogenesis imperfecta type 11	DOID:12347	osteogenesis imperfecta
+DOID:6858	pineal region immature teratoma	DOID:6856	pineal region teratoma
+DOID:9986	orbit lymphoma	DOID:4143	orbital cancer
+DOID:0080028	spondyloepimetaphyseal dysplasia, Strudwick type	DOID:0080027	spondyloepimetaphyseal dysplasia
+DOID:6530	cortical thymoma	DOID:3282	dendritic cell thymoma
+DOID:3197	schwannoma of twelfth cranial nerve	DOID:3198	hypoglossal nerve neoplasm
+DOID:0050939	uterine corpus endometrial carcinoma	DOID:9460	uterine corpus cancer
+DOID:0080020	Jansen's metaphyseal chondrodysplasia	DOID:0080019	metaphyseal dysplasia
+DOID:0080021	Schmid metaphyseal chondrodysplasia	DOID:0080019	metaphyseal dysplasia
+DOID:0080023	Shwachman-Diamond type metaphyseal dysplasia	DOID:0080019	metaphyseal dysplasia
+DOID:10783	methemoglobinemia	DOID:2860	hemoglobinopathy
+DOID:0050931	parotid gland adenoid cystic carcinoma	DOID:9036	parotid gland cancer
+DOID:7430	childhood germ cell brain tumor	DOID:6052	central nervous system childhood germ cell tumor
+DOID:7806	adult spinal cord glioblastoma multiforme	DOID:3185	spinal cord glioma
+DOID:4524	prostate angiosarcoma	DOID:4054	prostate sarcoma
+DOID:3751	plantar verrucous skin carcinoma	DOID:3151	skin squamous cell carcinoma
+DOID:12756	lacrimal duct cancer	DOID:292	lacrimal system cancer
+DOID:5271	small intestine leiomyosarcoma	DOID:5272	small intestinal sarcoma
+DOID:12168	ulnar nerve lesion	DOID:572	mononeuritis of upper limb and mononeuritis multiplex
+DOID:12170	radial nerve lesion	DOID:572	mononeuritis of upper limb and mononeuritis multiplex
+DOID:0060749	familial temporal lobe epilepsy 6	DOID:3328	temporal lobe epilepsy
+DOID:0060748	familial temporal lobe epilepsy 1	DOID:3328	temporal lobe epilepsy
+DOID:11267	keratomalacia	DOID:1237	corneal degeneration
+DOID:11269	chronic apical periodontitis	DOID:823	periapical periodontitis
+DOID:1835	mononeuritis multiplex	DOID:572	mononeuritis of upper limb and mononeuritis multiplex
+DOID:0111077	pyruvate kinase deficiency of red cells	DOID:2861	congenital nonspherocytic hemolytic anemia
+DOID:5484	fibrous synovial sarcoma	DOID:5485	synovial sarcoma
+DOID:12362	thyrotoxic exophthalmos	DOID:12359	endocrine exophthalmos
+DOID:7320	ovarian serous cystadenofibroma	DOID:5474	ovarian serous adenofibroma
+DOID:7927	malignant type A thymoma	DOID:3279	spindle cell thymoma
+DOID:0060648	corneal opacification and other ocular anomalies	DOID:0060252	sclerocornea
+DOID:979	angioid streaks of choroid	DOID:980	choroidal sclerosis
+DOID:5258	granular cell leiomyosarcoma	DOID:1967	leiomyosarcoma
+DOID:0060643	primary sclerosing cholangitis	DOID:14268	sclerosing cholangitis
+DOID:4160	differentiating neuroblastoma	DOID:769	neuroblastoma
+DOID:5709	mixed-type liposarcoma	DOID:3382	liposarcoma
+DOID:3576	sagittal sinus thrombosis	DOID:3572	intracranial sinus thrombosis
+DOID:7437	uterus perivascular epithelioid cell tumor	DOID:9460	uterine corpus cancer
+DOID:3574	lateral sinus thrombosis	DOID:3572	intracranial sinus thrombosis
+DOID:3575	cavernous sinus thrombosis	DOID:3572	intracranial sinus thrombosis
+DOID:7231	pediatric CNS embryonal cell carcinoma	DOID:6052	central nervous system childhood germ cell tumor
+DOID:9841	hypotropia	DOID:540	strabismus
+DOID:9843	monofixation syndrome	DOID:540	strabismus
+DOID:4334	splenic manifestation of prolymphocytic leukemia	DOID:710	splenic manifestation of leukemia
+DOID:0110207	Charcot-Marie-Tooth disease X-linked dominant 6	DOID:0050542	Charcot-Marie-Tooth disease type X
+DOID:11781	regular astigmatism	DOID:11782	astigmatism
+DOID:5282	prostate leiomyosarcoma	DOID:4054	prostate sarcoma
+DOID:2338	mandibular cancer	DOID:1862	jaw cancer
+DOID:4473	sarcomatoid renal cell carcinoma	DOID:4450	renal cell carcinoma
+DOID:12720	cerebral atherosclerosis	DOID:1936	atherosclerosis
+DOID:10651	acute anterolateral myocardial infarction	DOID:9408	acute myocardial infarction
+DOID:5251	inflammatory leiomyosarcoma	DOID:1967	leiomyosarcoma
+DOID:0060367	autosomal dominant Parkinson disease 1	DOID:0060892	late onset Parkinson disease
+DOID:9649	congenital nystagmus	DOID:9650	pathologic nystagmus
+DOID:3444	scrotum Paget's disease	DOID:3445	scrotal carcinoma
+DOID:5696	larynx liposarcoma	DOID:3382	liposarcoma
+DOID:0060369	autosomal recessive early-onset Parkinson disease 6	DOID:0060894	early-onset Parkinson disease
+DOID:2879	nodular degeneration of cornea	DOID:1237	corneal degeneration
+DOID:8178	endometrial type cervical adenomyoma	DOID:4995	cervical adenomyoma
+DOID:0110080	Leber congenital amaurosis 12	DOID:14791	Leber congenital amaurosis
+DOID:1571	spastic ectropion	DOID:1570	ectropion
+DOID:1572	normal pressure hydrocephalus	DOID:1573	communicating hydrocephalus
+DOID:5634	adenosquamous prostate carcinoma	DOID:10286	prostate carcinoma
+DOID:14555	Foster-Kennedy syndrome	DOID:146	papilledema
+DOID:1577	limited scleroderma	DOID:418	systemic scleroderma
+DOID:1578	pulmonary systemic sclerosis	DOID:418	systemic scleroderma
+DOID:13112	mechanical entropion	DOID:12397	entropion
+DOID:13113	cicatricial entropion	DOID:12397	entropion
+DOID:5638	malignant giant cell tumor of soft parts	DOID:1907	malignant fibroxanthoma
+DOID:9939	dacryocystocele	DOID:9935	chronic inflammation of lacrimal passage
+DOID:3379	metachronous osteosarcoma of the bone	DOID:3347	osteosarcoma
+DOID:4278	scrotum basal cell carcinoma	DOID:3445	scrotal carcinoma
+DOID:0080158	herpes simplex virus keratitis	DOID:4677	keratitis
+DOID:14155	acute retrobulbar neuritis	DOID:1210	optic neuritis
+DOID:9936	chronic canaliculitis	DOID:9935	chronic inflammation of lacrimal passage
+DOID:9937	chronic dacryocystitis	DOID:9935	chronic inflammation of lacrimal passage
+DOID:0110079	Leber congenital amaurosis 8	DOID:14791	Leber congenital amaurosis
+DOID:0110078	Leber congenital amaurosis 1	DOID:14791	Leber congenital amaurosis
+DOID:9837	hypertropia	DOID:540	strabismus
+DOID:9838	cyclotropia	DOID:540	strabismus
+DOID:14762	calcaneonavicular coalition	DOID:11971	synostosis
+DOID:571	median neuropathy	DOID:572	mononeuritis of upper limb and mononeuritis multiplex
+DOID:0110174	Charcot-Marie-Tooth disease axonal type 2L	DOID:0050539	Charcot-Marie-Tooth disease type 2
+DOID:0110175	Charcot-Marie-Tooth disease axonal type 20	DOID:0050539	Charcot-Marie-Tooth disease type 2
+DOID:0111078	tibial muscular dystrophy	DOID:11720	distal muscular dystrophy
+DOID:0110177	Charcot-Marie-Tooth disease axonal type 2N	DOID:0050539	Charcot-Marie-Tooth disease type 2
+DOID:0110170	Charcot-Marie-Tooth disease axonal type 2Q	DOID:0050539	Charcot-Marie-Tooth disease type 2
+DOID:0110171	Charcot-Marie-Tooth disease axonal type 2S	DOID:0050539	Charcot-Marie-Tooth disease type 2
+DOID:0110173	Charcot-Marie-Tooth disease axonal type 2U	DOID:0050539	Charcot-Marie-Tooth disease type 2
+DOID:1406	iritis	DOID:240	iris disease
+DOID:0110230	cataract 34 multiple types	DOID:83	cataract
+DOID:0110178	Charcot-Marie-Tooth disease axonal type 2V	DOID:0050539	Charcot-Marie-Tooth disease type 2
+DOID:0110179	Charcot-Marie-Tooth disease type 2B2	DOID:0050539	Charcot-Marie-Tooth disease type 2
+DOID:6857	pineal region mature teratoma	DOID:6856|DOID:5566	pineal region teratoma|mature teratoma
+DOID:5310	glycogen-rich clear cell breast carcinoma	DOID:3458	breast adenocarcinoma
+DOID:4281	metatypical basal cell carcinoma	DOID:2513	basal cell carcinoma
+DOID:0110657	congenital myasthenic syndrome 8	DOID:3635	congenital myasthenic syndrome
+DOID:5313	vulvar alveolar soft part sarcoma	DOID:2096	vulvar sarcoma
+DOID:7613	sarcomatosis of the meninges	DOID:7614	meninges sarcoma
+DOID:10435	purulent acute otitis media	DOID:11506	suppurative otitis media
+DOID:8654	Hodgkin's lymphoma, mixed cellularity	DOID:8567	Hodgkin's lymphoma
+DOID:5703	mixed liposarcoma	DOID:3382	liposarcoma
+DOID:5702	pleomorphic liposarcoma	DOID:3382	liposarcoma
+DOID:4791	supratentorial primitive neuroectodermal tumor	DOID:1659	supratentorial cancer
+DOID:5894	adult malignant mesenchymoma	DOID:5758	malignant mesenchymoma
+DOID:0110659	congenital myasthenic syndrome 7	DOID:3635	congenital myasthenic syndrome
+DOID:0110658	congenital myasthenic syndrome 15	DOID:3635	congenital myasthenic syndrome
+DOID:4795	Tay-Sachs disease AB variant	DOID:3321	gangliosidosis GM2
+DOID:8179	cervical atypical polypoid adenomyoma	DOID:4995	cervical adenomyoma
+DOID:10266	subendocardial infarction acute myocardial infarction	DOID:9408	acute myocardial infarction
+DOID:8104	vaginal tubulovillous adenoma	DOID:5402	vaginal adenoma
+DOID:0110259	cataract 43	DOID:83	cataract
+DOID:0110258	cataract 10 multiple types	DOID:83	cataract
+DOID:0050759	myotonic dystrophy type 2	DOID:450	myotonic disease
+DOID:0110920	hereditary spherocytosis type 5	DOID:12971	hereditary spherocytosis
+DOID:0110927	nemaline myopathy 3	DOID:3191	nemaline myopathy
+DOID:0110926	nemaline myopathy 1	DOID:3191	nemaline myopathy
+DOID:0110251	cataract 15 multiple types	DOID:83	cataract
+DOID:0110250	cataract 16 multiple types	DOID:83	cataract
+DOID:0110253	cataract 14 multiple types	DOID:83	cataract
+DOID:0110252	cataract 37	DOID:83	cataract
+DOID:0110255	cataract 5 multiple types	DOID:83	cataract
+DOID:0110254	cataract 25	DOID:83	cataract
+DOID:0110257	cataract 24	DOID:83	cataract
+DOID:0110256	cataract 21 multiple types	DOID:83	cataract
+DOID:7051	esophageal basaloid squamous cell carcinoma	DOID:3748	esophagus squamous cell carcinoma
+DOID:7502	pediatric supratentorial ependymoma	DOID:1659	supratentorial cancer
+DOID:7501	pediatric infratentorial ependymoma	DOID:4706	infratentorial cancer
+DOID:5382	Bartholin's gland adenoma	DOID:2068	Bartholin's gland benign neoplasm
+DOID:11888	schwannoma of ureter	DOID:956	peripheral nerve schwannoma
+DOID:82	myotonic cataract	DOID:83	cataract
+DOID:4890	juvenile myoclonic epilepsy	DOID:0050705	adolescence-adult electroclinical syndrome
+DOID:5957	bladder urachal squamous cell carcinoma	DOID:5958	bladder urachal carcinoma
+DOID:0110265	cataract 31 multiple types	DOID:83	cataract
+DOID:8838	Hodgkin's lymphoma, nodular sclerosis	DOID:8567	Hodgkin's lymphoma
+DOID:4472	mucinous tubular and spindle renal cell carcinoma	DOID:4450	renal cell carcinoma
+DOID:0110266	cataract 9 multiple types	DOID:83	cataract
+DOID:0110267	cataract 44	DOID:83	cataract
+DOID:3710	bladder colloid adenocarcinoma	DOID:3711	bladder adenocarcinoma
+DOID:0050875	small cell neuroendocrine carcinoma	DOID:5409	lung small cell carcinoma
+DOID:0110347	osteogenesis imperfecta type 15	DOID:12347	osteogenesis imperfecta
+DOID:3372	chondroblastic osteosarcoma	DOID:3347	osteosarcoma
+DOID:0110682	congenital myasthenic syndrome 16	DOID:3635	congenital myasthenic syndrome
+DOID:4617	periapical granuloma	DOID:823	periapical periodontitis
+DOID:7689	leptomeninges sarcoma	DOID:6086	malignant leptomeningeal tumor
+DOID:5414	lung occult small cell carcinoma	DOID:5409	lung small cell carcinoma
+DOID:5411	lung oat cell carcinoma	DOID:5409	lung small cell carcinoma
+DOID:0050709	Ohtahara syndrome	DOID:0050702	neonatal period electroclinical syndrome
+DOID:14264	benign neonatal seizures	DOID:0050702	neonatal period electroclinical syndrome
+DOID:12895	keratoconjunctivitis sicca	DOID:10140	dry eye syndrome
+DOID:9312	chronic ethmoiditis	DOID:9507	ethmoid sinusitis
+DOID:4279	infundibulocystic basal cell carcinoma	DOID:2513	basal cell carcinoma
+DOID:6271	gastric cardia adenocarcinoma	DOID:3717|DOID:6270	gastric adenocarcinoma|gastric cardia carcinoma
+DOID:3959	adrenal cortical adenocarcinoma	DOID:3948	adrenocortical carcinoma
+DOID:0110228	cataract 8 multiple types	DOID:83	cataract
+DOID:0110229	cataract 6 multiple types	DOID:83	cataract
+DOID:7756	neonatal leukemia	DOID:7757	childhood leukemia
+DOID:3809	epidural spinal canal meningioma	DOID:1140	spinal canal and spinal cord meningioma
+DOID:0110227	cataract 32 multiple types	DOID:83	cataract
+DOID:7752	extrahepatic biliary papillomatosis	DOID:5468	biliary papillomatosis
+DOID:0110929	nemaline myopathy 9	DOID:3191	nemaline myopathy
+DOID:7202	intermediate malignant teratoma	DOID:5563	malignant teratoma
+DOID:3821	posterior cerebral artery infarction	DOID:3527|DOID:3526	cerebral arterial disease|cerebral infarction
+DOID:0110928	nemaline myopathy 2	DOID:3191	nemaline myopathy
+DOID:6405	ovarian papillary cystadenoma	DOID:3269	ovarian cystadenoma
+DOID:2538	Landau-Kleffner syndrome	DOID:0050704	childhood electroclinical syndrome
+DOID:11668	hypopigmentation of eyelid	DOID:10120	eyelid degenerative disease
+DOID:11669	hypertrichosis of eyelid	DOID:10120	eyelid degenerative disease
+DOID:4011	prostate transitional cell carcinoma	DOID:10286	prostate carcinoma
+DOID:6871	spinal cord neuroblastoma	DOID:6872	spinal cord primitive neuroectodermal neoplasm
+DOID:11664	nephrosclerosis	DOID:1073	renal hypertension
+DOID:4277	penis basal cell carcinoma	DOID:3449	penis carcinoma
+DOID:7577	pancreatic foamy gland adenocarcinoma	DOID:4074	pancreatic adenocarcinoma
+DOID:6975	bladder urothelial papillary carcinoma	DOID:4006	bladder urothelial carcinoma
+DOID:8122	pseudovascular skin squamous cell carcinoma	DOID:3151	skin squamous cell carcinoma
+DOID:7878	uterine corpus atypical polypoid adenomyoma	DOID:4994	adenomyoma of uterine corpus
+DOID:11033	idiopathic corneal edema	DOID:11030	corneal edema
+DOID:11032	secondary corneal edema	DOID:11030	corneal edema
+DOID:11031	bullous keratopathy	DOID:11030	corneal edema
+DOID:10615	acute gonococcal cervicitis	DOID:10616	acute cervicitis
+DOID:11034	contact lens corneal edema	DOID:11030	corneal edema
+DOID:0090058	torsion dystonia with onset in infancy	DOID:0050835	generalized dystonia
+DOID:13046	acute sphenoidal sinusitis	DOID:10794	sphenoid sinusitis
+DOID:7050	thymus basaloid carcinoma	DOID:5530	thymus squamous cell carcinoma
+DOID:0090050	dystonia 27	DOID:0050838	segmental dystonia
+DOID:0090051	dystonia 23	DOID:0050836	focal dystonia
+DOID:0090052	dystonia 24	DOID:0050836	focal dystonia
+DOID:5605	breast medullary carcinoma	DOID:3458	breast adenocarcinoma
+DOID:0090055	dystonia 25	DOID:0050837	multifocal dystonia
+DOID:0090057	X-linked dystonia-parkinsonism	DOID:0050836	focal dystonia
+DOID:4618	maxillary neoplasm	DOID:1862	jaw cancer
+DOID:10810	tibialis tendinitis	DOID:971	tendinitis
+DOID:10816	duodenum adenocarcinoma	DOID:10021	duodenum cancer
+DOID:3895	apocrine adenoma	DOID:5876	apocrine sweat gland neoplasm
+DOID:6571	non-invasive bladder urothelial carcinoma	DOID:4006	bladder urothelial carcinoma
+DOID:0080197	congenital muscular dystrophy with cataracts and intellectual disability	DOID:0050557	congenital muscular dystrophy
+DOID:14192	bicipital tenosynovitis	DOID:970	tenosynovitis
+DOID:6707	malignant triton tumor	DOID:5940	malignant peripheral nerve sheath tumor
+DOID:4209	brainstem intraparenchymal clear cell meningioma	DOID:4210	clear cell meningioma
+DOID:538	internuclear ophthalmoplegia	DOID:540|DOID:539	strabismus|ophthalmoplegia
+DOID:13742	neurofibroma of spinal cord	DOID:962	neurofibroma
+DOID:8394	adult type testicular granulosa cell tumor	DOID:5331	testicular granulosa cell tumor
+DOID:6932	urinary bladder inverted papilloma	DOID:6933	bladder transitional cell papilloma
+DOID:3503	breast signet ring cell adenocarcinoma	DOID:3458	breast adenocarcinoma
+DOID:6494	pediatric myxoid chondrosarcoma	DOID:5861	myxoid chondrosarcoma
+DOID:6495	adult myxoid chondrosarcoma	DOID:5861	myxoid chondrosarcoma
+DOID:9407	strictly posterior acute myocardial infarction	DOID:9408	acute myocardial infarction
+DOID:1751	malignant conjunctival melanoma	DOID:5467	conjunctival cancer
+DOID:6880	small bowel fibrosarcoma	DOID:5272	small intestinal sarcoma
+DOID:0111036	CADASIL 2	DOID:13945	CADASIL
+DOID:0111035	CADASIL 1	DOID:13945	CADASIL
+DOID:4295	follicular basal cell carcinoma	DOID:2513	basal cell carcinoma
+DOID:14523	Argyll Robertson pupil	DOID:11518	abnormal pupillary function
+DOID:0060353	acrofacial dysostosis Cincinnati type	DOID:0060379	acrofacial dysostosis
+DOID:7086	multicentric papillary thyroid carcinoma	DOID:3969	papillary thyroid carcinoma
+DOID:0090040	torsion dystonia 7	DOID:0050836	focal dystonia
+DOID:4299	infiltrative basal cell carcinoma	DOID:2513	basal cell carcinoma
+DOID:9513	plasmacytic leukemia	DOID:1037	lymphoblastic leukemia
+DOID:7088	columnar cell variant papillary carcinoma	DOID:3969	papillary thyroid carcinoma
+DOID:7089	tall cell variant papillary carcinoma	DOID:3969	papillary thyroid carcinoma
+DOID:13140	suppurative uveitis	DOID:13141	uveitis
+DOID:12395	spastic entropion	DOID:12397	entropion
+DOID:5151	plexiform neurofibroma	DOID:962	neurofibroma
+DOID:13145	benign renovascular hypertension	DOID:13143	benign secondary hypertension
+DOID:6481	bladder signet ring cell adenocarcinoma	DOID:3711	bladder adenocarcinoma
+DOID:13134	hordeolum externum	DOID:9423	blepharitis
+DOID:8642	Hodgkin's paragranuloma	DOID:8567	Hodgkin's lymphoma
+DOID:0110291	Leber congenital amaurosis 10	DOID:14791	Leber congenital amaurosis
+DOID:6901	familiar ovarian carcinoma	DOID:2152	ovary epithelial cancer
+DOID:11406	choroiditis	DOID:1417	choroid disease
+DOID:0050654	Baller-Gerold syndrome	DOID:11971	synostosis
+DOID:0050559	Fukuyama congenital muscular dystrophy	DOID:0050557	congenital muscular dystrophy
+DOID:0050558	Ullrich congenital muscular dystrophy	DOID:0050557	congenital muscular dystrophy
+DOID:12557	Duane retraction syndrome	DOID:540	strabismus
+DOID:0110681	congenital myasthenic syndrome 2A	DOID:3635	congenital myasthenic syndrome
+DOID:12559	idiopathic juvenile osteoporosis	DOID:11476	osteoporosis
+DOID:9908	internal hordeolum	DOID:9909	hordeolum
+DOID:4353	ciliary body disease	DOID:240	iris disease
+DOID:402	oral tuberculosis	DOID:404	gastrointestinal tuberculosis
+DOID:7013	ovarian mucinous cystadenofibroma	DOID:6469	ovarian mucinous adenofibroma
+DOID:14145	malignant anus melanoma	DOID:14110	anus cancer
+DOID:5917	uterine corpus diffuse leiomyomatosis	DOID:5916	uterine corpus leiomyomatosis
+DOID:5914	nonencapsulated sclerosing carcinoma	DOID:3969	papillary thyroid carcinoma
+DOID:5915	uterus intravascular leiomyomatosis	DOID:5916	uterine corpus leiomyomatosis
+DOID:5170	vaginal endometrial stromal sarcoma	DOID:1901	vagina sarcoma
+DOID:210	heel spur	DOID:203	exostosis
+DOID:5593	gastric papillary adenocarcinoma	DOID:3717	gastric adenocarcinoma
+DOID:3611	acute retinal necrosis syndrome	DOID:3612	retinitis
+DOID:0110668	congenital myasthenic syndrome 10	DOID:3635	congenital myasthenic syndrome
+DOID:0110669	congenital myasthenic syndrome 14	DOID:3635	congenital myasthenic syndrome
+DOID:7233	adult central nervous system embryonal carcinoma	DOID:5349	central nervous system adult germ cell tumor
+DOID:5595	papillary thymic adenocarcinoma	DOID:4923	thymus adenocarcinoma
+DOID:0110664	congenital myasthenic syndrome 3C	DOID:3635	congenital myasthenic syndrome
+DOID:0110665	congenital myasthenic syndrome 3B	DOID:3635	congenital myasthenic syndrome
+DOID:0110666	congenital myasthenic syndrome 3A	DOID:3635	congenital myasthenic syndrome
+DOID:0110667	congenital myasthenic syndrome 5	DOID:3635	congenital myasthenic syndrome
+DOID:0110660	congenital myasthenic syndrome 12	DOID:3635	congenital myasthenic syndrome
+DOID:0110661	congenital myasthenic syndrome 20	DOID:3635	congenital myasthenic syndrome
+DOID:0110662	congenital myasthenic syndrome 1B	DOID:3635	congenital myasthenic syndrome
+DOID:0110663	congenital myasthenic syndrome 1A	DOID:3635	congenital myasthenic syndrome
+DOID:5750	uterine corpus serous adenocarcinoma	DOID:9460	uterine corpus cancer
+DOID:5698	fibroblastic liposarcoma	DOID:3382	liposarcoma
+DOID:7030	bronchial mucus gland adenoma	DOID:5391	bronchus adenoma
+DOID:9903	meibomian cyst	DOID:9423	blepharitis
+DOID:14225	acute frontal sinusitis	DOID:10791	frontal sinusitis
+DOID:2061	nodular hidradenoma	DOID:3896	hidradenoma
+DOID:5692	cellular myxoid liposarcoma	DOID:3382	liposarcoma
+DOID:5695	pediatric liposarcoma	DOID:3382	liposarcoma
+DOID:5694	esophagus liposarcoma	DOID:3382	liposarcoma
+DOID:10353	fibrosclerosis of breast	DOID:5997	non-proliferative fibrocystic change of the breast
+DOID:12084	transient arthropathy	DOID:2092	transient arthritis
+DOID:6335	bilateral meningioma of optic nerve	DOID:3419	optic nerve neoplasm
+DOID:6334	anterior optic tract meningioma	DOID:3419	optic nerve neoplasm
+DOID:5693	adult liposarcoma	DOID:3382	liposarcoma
+DOID:13924	necrotizing ulcerative gingivitis	DOID:3087	gingivitis
+DOID:11316	histoplasmosis retinitis	DOID:3612	retinitis
+DOID:0110260	cataract 7	DOID:83	cataract
+DOID:0110261	cataract 35	DOID:83	cataract
+DOID:0110262	cataract 45	DOID:83	cataract
+DOID:0110263	cataract 19 multiple types	DOID:83	cataract
+DOID:0110264	cataract 33	DOID:83	cataract
+DOID:206	hereditary multiple exostoses	DOID:203	exostosis
+DOID:0110349	osteogenesis imperfecta type 9	DOID:12347	osteogenesis imperfecta
+DOID:0110348	osteogenesis imperfecta type 12	DOID:12347	osteogenesis imperfecta
+DOID:0110268	cataract 22 multiple types	DOID:83	cataract
+DOID:0110346	osteogenesis imperfecta type 10	DOID:12347	osteogenesis imperfecta
+DOID:0110345	osteogenesis imperfecta type 16	DOID:12347	osteogenesis imperfecta
+DOID:0110344	osteogenesis imperfecta type 5	DOID:12347	osteogenesis imperfecta
+DOID:0110343	osteogenesis imperfecta type 14	DOID:12347	osteogenesis imperfecta
+DOID:0110342	osteogenesis imperfecta type 13	DOID:12347	osteogenesis imperfecta
+DOID:0110341	osteogenesis imperfecta type 2	DOID:12347	osteogenesis imperfecta
+DOID:0110340	osteogenesis imperfecta type 4	DOID:12347	osteogenesis imperfecta
+DOID:0050909	MALT lymphoma	DOID:0060060	non-Hodgkin lymphoma
+DOID:6939	childhood brain meningioma	DOID:0060106	brain meningioma
+DOID:5063	basosquamous carcinoma	DOID:2513	basal cell carcinoma
+DOID:7429	childhood brain germinoma	DOID:2127	brain germinoma
+DOID:0080030	spondyloepimetaphyseal dysplasia, Missouri type	DOID:0080027	spondyloepimetaphyseal dysplasia
+DOID:10790	chronic frontal sinusitis	DOID:10791	frontal sinusitis
+DOID:10793	chronic sphenoidal sinusitis	DOID:10794	sphenoid sinusitis
+DOID:10792	chronic maxillary sinusitis	DOID:2051	maxillary sinusitis
+DOID:3687	MELAS syndrome	DOID:890	mitochondrial encephalomyopathy
+DOID:13560	subserous uterine fibroid	DOID:13223	uterine fibroid
+DOID:0110062	amelogenesis imperfecta hypomaturation type 2A4	DOID:2187	amelogenesis imperfecta
+DOID:133	vaginal Mullerian papilloma	DOID:134	vaginal glandular tumor
+DOID:0110188	Leber congenital amaurosis 14	DOID:14791	Leber congenital amaurosis
+DOID:10499	orbital granuloma	DOID:1397	chronic orbital inflammation
+DOID:10287	prostate squamous cell carcinoma	DOID:10286	prostate carcinoma
+DOID:0060171	Dravet syndrome	DOID:0050703	infancy electroclinical syndrome
+DOID:0060172	juvenile absence epilepsy	DOID:0050705	adolescence-adult electroclinical syndrome
+DOID:0050839	anismus	DOID:0050836	focal dystonia
+DOID:13953	uterine corpus dissecting leiomyoma	DOID:13223	uterine fibroid
+DOID:4531	mucoepidermoid carcinoma	DOID:0050904	salivary gland carcinoma
+DOID:13951	uterine corpus epithelioid leiomyoma	DOID:13223	uterine fibroid
+DOID:13956	uterine corpus myxoid leiomyoma	DOID:13223	uterine fibroid
+DOID:13957	uterine corpus lipoleiomyoma	DOID:13223	uterine fibroid
+DOID:7332	esophageal tuberculosis	DOID:404	gastrointestinal tuberculosis
+DOID:12376	juvenile spinal muscular atrophy	DOID:0060160	survival motor neuron spinal muscular atrophy
+DOID:0060798	hypomyelinating leukodystrophy 6	DOID:0060786	hypomyelinating leukodystrophy
+DOID:5118	ovarian cystic teratoma	DOID:2660	cystic teratoma
+DOID:2814	malignant neoplasm of acoustic nerve	DOID:2815	cranial nerve malignant neoplasm
+DOID:3596	placental site trophoblastic tumor	DOID:3594	choriocarcinoma
+DOID:0060794	hypomyelinating leukodystrophy 7 with or without oligodontia and-or hypogonadotropic hypogonadism	DOID:0060786	hypomyelinating leukodystrophy
+DOID:0060795	hypomyelinating leukodystrophy 13	DOID:0060786	hypomyelinating leukodystrophy
+DOID:0060796	hypomyelinating leukodystrophy 12	DOID:0060786	hypomyelinating leukodystrophy
+DOID:0110065	amelogenesis imperfecta type 1F	DOID:2187	amelogenesis imperfecta
+DOID:0060790	hypomyelinating leukodystrophy 3	DOID:0060786	hypomyelinating leukodystrophy
+DOID:0060791	hypomyelinating leukodystrophy 9	DOID:0060786	hypomyelinating leukodystrophy
+DOID:0060792	hypomyelinating leukodystrophy 11	DOID:0060786	hypomyelinating leukodystrophy
+DOID:0060793	hypomyelinating leukodystrophy 5	DOID:0060786	hypomyelinating leukodystrophy
+DOID:2562	suppurative periapical periodontitis	DOID:823	periapical periodontitis
+DOID:8057	olfactory groove meningioma	DOID:4436	anterior cranial fossa meningioma
+DOID:6845	infiltrating ureter transitional cell carcinoma	DOID:6888	ureter transitional cell carcinoma
+DOID:8118	mature gastric teratoma	DOID:5566	mature teratoma
+DOID:6595	gastric tubular adenocarcinoma	DOID:3717	gastric adenocarcinoma
+DOID:6594	bladder colonic type adenocarcinoma	DOID:3711	bladder adenocarcinoma
+DOID:7903	intracranial chondrosarcoma	DOID:4549	extraosseous chondrosarcoma
+DOID:6634	adult central nervous system choriocarcinoma	DOID:3594	choriocarcinoma
+DOID:1942	intermittent squint	DOID:540	strabismus
+DOID:10649	acute inferolateral myocardial infarction	DOID:9408	acute myocardial infarction
+DOID:10648	acute inferoposterior infarction	DOID:9408	acute myocardial infarction
+DOID:0110187	Charcot-Marie-Tooth disease type 4K	DOID:0050541	Charcot-Marie-Tooth disease type 4
+DOID:2964	periarthritis	DOID:2965	bursitis
+DOID:13955	uterus interstitial leiomyoma	DOID:13223	uterine fibroid
+DOID:8427	retinal melanoma	DOID:4645	retinal cancer
+DOID:6115	lateral ventricle meningioma	DOID:3772	intraventricular meningioma
+DOID:5149	epithelioid neurofibroma	DOID:962	neurofibroma
+DOID:1467	serous labyrinthitis	DOID:1468	labyrinthitis
+DOID:7953	nipple duct carcinoma	DOID:6629	nipple carcinoma
+DOID:1580	diffuse scleroderma	DOID:418	systemic scleroderma
+DOID:3381	liposarcoma of bone	DOID:3347|DOID:3382	osteosarcoma|liposarcoma
+DOID:13676	posterior scleritis	DOID:13452	scleritis
+DOID:9948	residual stage corticosteroid-induced glaucoma	DOID:9946	steroid-induced glaucoma
+DOID:12514	retinal perforation	DOID:5327	retinal detachment
+DOID:0080148	T-cell childhood lymphoblastic lymphoma	DOID:0080147	lymphoblastic lymphoma
+DOID:2892	exocervical carcinoma	DOID:2893	cervix carcinoma
+DOID:3267	mucinous ovarian cystadenoma	DOID:3269	ovarian cystadenoma
+DOID:9821	choroideremia	DOID:1417|DOID:8466	choroid disease|retinal degeneration
+DOID:11520	benign hypertensive renal disease	DOID:1073	renal hypertension
+DOID:14777	benign familial neonatal epilepsy	DOID:0050702	neonatal period electroclinical syndrome
+DOID:10030	interstitial emphysema	DOID:9675	pulmonary emphysema
+DOID:0110005	Leber congenital amaurosis 9	DOID:14791	Leber congenital amaurosis
+DOID:10032	hyperlucent lung	DOID:9675	pulmonary emphysema
+DOID:0110167	Charcot-Marie-Tooth disease axonal type 2K	DOID:0050539	Charcot-Marie-Tooth disease type 2
+DOID:0110166	Charcot-Marie-Tooth disease axonal type 2H	DOID:0050539	Charcot-Marie-Tooth disease type 2
+DOID:0110165	Charcot-Marie-Tooth disease type 2E	DOID:0050539	Charcot-Marie-Tooth disease type 2
+DOID:0110164	Charcot-Marie-Tooth disease type 2D	DOID:0050539	Charcot-Marie-Tooth disease type 2
+DOID:0110163	Charcot-Marie-Tooth disease axonal type 2F	DOID:0050539	Charcot-Marie-Tooth disease type 2
+DOID:0110162	Charcot-Marie-Tooth disease, axonal type 2W	DOID:0050539	Charcot-Marie-Tooth disease type 2
+DOID:0110161	Charcot-Marie-Tooth disease type 2R	DOID:0050539	Charcot-Marie-Tooth disease type 2
+DOID:0060490	Schimke immuno-osseous dysplasia	DOID:0080027	spondyloepimetaphyseal dysplasia
+DOID:0060556	Kufor-Rakeb syndrome	DOID:0060893	juvenile-onset Parkinson disease
+DOID:0110156	Charcot-Marie-Tooth disease type 2B1	DOID:0050539	Charcot-Marie-Tooth disease type 2
+DOID:312	tenosynovitis of foot and ankle	DOID:970	tenosynovitis
+DOID:310	MERRF syndrome	DOID:890	mitochondrial encephalomyopathy
+DOID:0110168	Charcot-Marie-Tooth disease type 2Y	DOID:0050539	Charcot-Marie-Tooth disease type 2
+DOID:5495	monophasic synovial sarcoma	DOID:5485	synovial sarcoma
+DOID:4664	filamentary keratitis	DOID:4677	keratitis
+DOID:7565	vulvar eccrine porocarcinoma	DOID:1294	vulva carcinoma
+DOID:11829	degenerative myopia	DOID:11830	myopia
+DOID:7567	vulvar clear cell hidradenocarcinoma	DOID:1294	vulva carcinoma
+DOID:7566	eccrine porocarcinoma	DOID:4921	eccrine sweat gland cancer
+DOID:5714	intracranial liposarcoma	DOID:3382	liposarcoma
+DOID:961	neurofibroma of the esophagus	DOID:962	neurofibroma
+DOID:5240	retinal hemangioblastoma	DOID:4645	retinal cancer
+DOID:0110269	cataract 3 multiple types	DOID:83	cataract
+DOID:5711	vulvar liposarcoma	DOID:3382|DOID:2096	liposarcoma|vulvar sarcoma
+DOID:5712	cutaneous liposarcoma	DOID:3382	liposarcoma
+DOID:10428	stable condition keratoconus	DOID:10126	keratoconus
+DOID:13037	mechanical lagophthalmos	DOID:12959	lagophthalmos
+DOID:0110919	hereditary spherocytosis type 4	DOID:12971	hereditary spherocytosis
+DOID:0110916	hereditary spherocytosis type 1	DOID:12971	hereditary spherocytosis
+DOID:13038	cicatricial lagophthalmos	DOID:12959	lagophthalmos
+DOID:10151	malignant neoplasm of short bones of lower limb	DOID:10149	long bones of lower limb cancer
+DOID:709	splenic manifestation of hairy cell leukemia	DOID:710	splenic manifestation of leukemia
+DOID:14139	anus lymphoma	DOID:14110	anus cancer
+DOID:6841	flat ductal epithelial atypia	DOID:6839	breast intraductal proliferative lesion
+DOID:0110159	Charcot-Marie-Tooth disease type 2B	DOID:0050539	Charcot-Marie-Tooth disease type 2
+DOID:2050	acute maxillary sinusitis	DOID:2051	maxillary sinusitis
+DOID:8230	intrahepatic biliary papillomatosis	DOID:5468	biliary papillomatosis
+DOID:7514	Wolffian adnexal neoplasm	DOID:5727	uterine ligament cancer
+DOID:7515	lumbar spinal canal and spinal cord meningioma	DOID:1140	spinal canal and spinal cord meningioma
+DOID:4863	spinal cord astrocytoma	DOID:3185	spinal cord glioma
+DOID:0050560	Walker-Warburg syndrome	DOID:0050557	congenital muscular dystrophy
+DOID:0050561	Lennox-Gastaut syndrome	DOID:0050704	childhood electroclinical syndrome
+DOID:0050562	West syndrome	DOID:0050703	infancy electroclinical syndrome
+DOID:4866	salivary gland adenoid cystic carcinoma	DOID:0050904	salivary gland carcinoma
+DOID:12836	senile entropion	DOID:12397	entropion
+DOID:4719	bone giant cell sarcoma	DOID:2705	malignant giant cell tumor
+DOID:5623	adenosquamous breast carcinoma	DOID:4680	breast metaplastic carcinoma
+DOID:5624	adenosquamous bile duct carcinoma	DOID:4897	bile duct carcinoma
+DOID:9300	neurofibroma of the heart	DOID:962	neurofibroma
+DOID:9369	orbital plasma cell granuloma	DOID:1397	chronic orbital inflammation
+DOID:0050864	non-arteritic anterior ischemic optic neuropathy	DOID:12010	anterior ischemic optic neuropathy
+DOID:10519	chronic fungal otitis externa	DOID:0050147	otomycosis
+DOID:6643	Baastrup's syndrome	DOID:1123	spondyloarthropathy
+DOID:0050863	arteritic anterior ischemic optic neuropathy	DOID:12010	anterior ischemic optic neuropathy
+DOID:11832	visual epilepsy	DOID:5691	visual cortex disease
+DOID:3644	hypothalamic neoplasm	DOID:1659	supratentorial cancer
+DOID:11831	cortical blindness	DOID:5691	visual cortex disease
+DOID:5564	fallopian tube teratoma	DOID:5324	fallopian tube germ cell cancer
+DOID:5768	Nager acrofacial dysostosis	DOID:0060379	acrofacial dysostosis
+DOID:9745	perianal hematoma	DOID:9746	hemorrhoid
+DOID:5761	vulvar sebaceous carcinoma	DOID:1294	vulva carcinoma
+DOID:11234	orbital cellulitis	DOID:11230	acute orbital inflammation
+DOID:11231	orbital periostitis	DOID:11230	acute orbital inflammation
+DOID:4320	non-gestational choriocarcinoma	DOID:3594	choriocarcinoma
+DOID:11233	orbital tenonitis	DOID:11230	acute orbital inflammation
+DOID:676	juvenile rheumatoid arthritis	DOID:7148	rheumatoid arthritis
+DOID:1866	giant cell reparative granuloma	DOID:4305	bone giant cell tumor
+DOID:13327	anatomical narrow angle borderline glaucoma	DOID:9283	borderline glaucoma
+DOID:774	retina lymphoma	DOID:4645	retinal cancer
+DOID:775	intraocular lymphoma	DOID:6903	eye lymphoma
+DOID:7152	prostate stromal sarcoma	DOID:4054	prostate sarcoma
+DOID:12889	Miller Fisher syndrome	DOID:12842	Guillain-Barre syndrome
+DOID:13329	toxic optic neuropathy	DOID:1210	optic neuritis
+DOID:13328	diabetic cataract	DOID:83	cataract
+DOID:7902	adult extraosseous chondrosarcoma	DOID:4549	extraosseous chondrosarcoma
+DOID:9765	emphysematous cholecystitis	DOID:1949	cholecystitis
+DOID:9766	xanthogranulomatous cholecystitis	DOID:1949	cholecystitis
+DOID:0110239	cataract 12 multiple types	DOID:83	cataract
+DOID:0110238	cataract 18	DOID:83	cataract
+DOID:0110237	cataract 42	DOID:83	cataract
+DOID:0110236	cataract 39 multiple types	DOID:83	cataract
+DOID:0110235	cataract 2 multiple types	DOID:83	cataract
+DOID:0110234	cataract 4 multiple types	DOID:83	cataract
+DOID:0110233	cataract 27	DOID:83	cataract
+DOID:0110232	cataract 29	DOID:83	cataract
+DOID:0110231	cataract 1 multiple types	DOID:83	cataract
+DOID:13919	irregular astigmatism	DOID:11782	astigmatism
+DOID:0060896	autosomal recessive early-onset Parksinson disease 23	DOID:0060894	early-onset Parkinson disease
+DOID:4280	nodular basal cell carcinoma	DOID:2513	basal cell carcinoma
+DOID:4282	pigmented basal cell carcinoma	DOID:2513	basal cell carcinoma
+DOID:6809	vaginal tubular adenoma	DOID:5402	vaginal adenoma
+DOID:4286	sebaceous basal cell carcinoma	DOID:2513	basal cell carcinoma
+DOID:7411	ovarian endometrioid cystadenofibroma	DOID:5480	ovarian endometrioid adenofibroma
+DOID:7941	Barrett's adenocarcinoma	DOID:4914	esophagus adenocarcinoma
+DOID:11671	hypotrichosis of eyelid	DOID:10120	eyelid degenerative disease
+DOID:7945	adult central nervous system mixed germ cell tumor	DOID:5349	central nervous system adult germ cell tumor
+DOID:11771	spontaneous ocular nystagmus	DOID:9650	pathologic nystagmus
+DOID:7867	adult central nervous system germinoma	DOID:4438	central nervous system germinoma
+DOID:10175	optic papillitis	DOID:1210	optic neuritis
+DOID:6969	acute canaliculitis	DOID:6970	acute inflammation of lacrimal passage
+DOID:0090048	dystonia 16	DOID:0050837	multifocal dystonia
+DOID:10177	malignant hypertensive renal disease	DOID:1073	renal hypertension
+DOID:11282	solar retinopathy	DOID:11086	chorioretinal scar
+DOID:11283	peripheral scars of retina	DOID:11086	chorioretinal scar
+DOID:0110938	autosomal dominant osteopetrosis 2	DOID:13533	osteopetrosis
+DOID:0110939	autosomal recessive osteopetrosis 5	DOID:13533	osteopetrosis
+DOID:13822	tetanic cataract	DOID:83	cataract
+DOID:13823	parasitic eyelid infestation	DOID:9423	blepharitis
+DOID:6564	neurilemmoma of the pleura	DOID:956	peripheral nerve schwannoma
+DOID:13825	squamous blepharitis	DOID:9423	blepharitis
+DOID:0080187	chronic neutrophilic leukemia	DOID:1036	chronic leukemia
+DOID:6126	anal canal carcinoma	DOID:0050688	anal canal cancer
+DOID:1035	natural killer cell leukemia	DOID:1037	lymphoblastic leukemia
+DOID:0050744	anaplastic large cell lymphoma	DOID:0060060	non-Hodgkin lymphoma
+DOID:6735	schwannoma of jugular foramen	DOID:956	peripheral nerve schwannoma
+DOID:11746	parametrium malignant neoplasm	DOID:11747	uterine adnexa cancer
+DOID:6733	intrahepatic bile duct cystadenoma	DOID:5384	bile duct cystadenoma
+DOID:0080188	chronic myelomonocytic leukemia	DOID:1036	chronic leukemia
+DOID:3512	neurofibrosarcoma	DOID:962	neurofibroma
+DOID:529	blepharospasm	DOID:0050836	focal dystonia
+DOID:8068	intraductal breast myoepitheliosis	DOID:7521	breast myoepitheliosis
+DOID:952	acute dacryoadenitis	DOID:950	dacryoadenitis
+DOID:5999	apocrine adenosis of breast	DOID:5997	non-proliferative fibrocystic change of the breast
+DOID:4289	micronodular basal cell carcinoma	DOID:2513	basal cell carcinoma
+DOID:3008	invasive ductal carcinoma	DOID:3007	breast ductal carcinoma
+DOID:3457	invasive lobular carcinoma	DOID:0050938	breast lobular carcinoma
+DOID:8543	Hodgkin's lymphoma, lymphocytic-histiocytic predominance	DOID:8567	Hodgkin's lymphoma
+DOID:5283	vagina leiomyosarcoma	DOID:1901	vagina sarcoma
+DOID:10779	septic myocarditis	DOID:3951	acute myocarditis
+DOID:10778	fiedler's myocarditis	DOID:3951	acute myocarditis
+DOID:8418	congenital fibrosarcoma	DOID:3520	pediatric fibrosarcoma
+DOID:6899	malignant ovarian mixed epithelial neoplasm	DOID:6211	mixed epithelial tumor of ovary
+DOID:14534	malignant cardiac peripheral nerve sheath neoplasm	DOID:5940	malignant peripheral nerve sheath tumor
+DOID:2859	hemoglobin C disease	DOID:2860	hemoglobinopathy
+DOID:6789	vulvar childhood botryoid-type embryonal rhabdomyosarcoma	DOID:2096	vulvar sarcoma
+DOID:0060343	glucocorticoid-induced osteoporosis	DOID:11476	osteoporosis
+DOID:4548	extraskeletal mesenchymal chondrosarcoma	DOID:4549	extraosseous chondrosarcoma
+DOID:9597	Krukenberg carcinoma	DOID:2152	ovary epithelial cancer
+DOID:12857	Achilles bursitis	DOID:2965	bursitis
+DOID:13174	dissociated nystagmus	DOID:9650	pathologic nystagmus
+DOID:10152	Meckel's diverticulum cancer	DOID:10153	ileum cancer
+DOID:0110249	cataract 11 multiple types	DOID:83	cataract
+DOID:9698	gonococcal endophthalmia	DOID:4692	endophthalmitis
+DOID:5190	cervical Wilms' tumor	DOID:4112	cervical carcinosarcoma
+DOID:9694	toxic myocarditis	DOID:3951	acute myocarditis
+DOID:9697	gonococcal keratitis	DOID:4677	keratitis
+DOID:0050930	sublingual gland adenoid cystic carcinoma	DOID:8849	sublingual gland cancer
+DOID:13641	exfoliation syndrome	DOID:12571|DOID:240	phacogenic glaucoma|iris disease
+DOID:3356	localized osteosarcoma	DOID:3347	osteosarcoma
+DOID:0050640	anauxetic dysplasia 1	DOID:0080027	spondyloepimetaphyseal dysplasia
+DOID:3354	fibrosarcoma of bone	DOID:3347	osteosarcoma
+DOID:13788	equatorial staphyloma	DOID:11595	scleral staphyloma
+DOID:4829	adenosquamous cell lung carcinoma	DOID:3908	non-small cell lung carcinoma
+DOID:3329	benign epilepsy with centrotemporal spikes	DOID:0050704	childhood electroclinical syndrome
+DOID:3351	bone angioendothelial sarcoma	DOID:3347	osteosarcoma
+DOID:11554	Chandler syndrome	DOID:2566	corneal dystrophy
+DOID:3216	jejunal somatostatinoma	DOID:13499	jejunal cancer
+DOID:11342	arcus senilis	DOID:1237	corneal degeneration
+DOID:5293	extrahepatic bile duct leiomyosarcoma	DOID:4064	bile duct sarcoma
+DOID:3210	Pelizaeus-Merzbacher disease	DOID:0060786	hypomyelinating leukodystrophy
+DOID:0110057	amelogenesis imperfecta type 2A1	DOID:2187	amelogenesis imperfecta
+DOID:0110056	amelogenesis imperfecta type 1C	DOID:2187	amelogenesis imperfecta
+DOID:0110055	amelogenesis imperfecta type 3	DOID:2187	amelogenesis imperfecta
+DOID:0110054	amelogenesis imperfecta type 1A	DOID:2187	amelogenesis imperfecta
+DOID:0110053	amelogenesis imperfecta type 4	DOID:2187	amelogenesis imperfecta
+DOID:0110052	amelogenesis imperfecta type 1B	DOID:2187	amelogenesis imperfecta
+DOID:0110198	Charcot-Marie-Tooth disease recessive intermediate C	DOID:0050543	Charcot-Marie-Tooth disease intermediate type
+DOID:0110199	Charcot-Marie-Tooth disease dominant intermediate C	DOID:0050543	Charcot-Marie-Tooth disease intermediate type
+DOID:0060466	gingival fibromatosis	DOID:3086	gingival overgrowth
+DOID:0060467	humeroradial synostosis	DOID:11971	synostosis
+DOID:0110194	Charcot-Marie-Tooth disease type 4B3	DOID:0050541	Charcot-Marie-Tooth disease type 4
+DOID:0110195	Charcot-Marie-Tooth disease type 4E	DOID:0050541	Charcot-Marie-Tooth disease type 4
+DOID:0110192	Charcot-Marie-Tooth disease type 4H	DOID:0050541	Charcot-Marie-Tooth disease type 4
+DOID:0110193	Charcot-Marie-Tooth disease type 4F	DOID:0050541	Charcot-Marie-Tooth disease type 4
+DOID:0110059	X-linked amelogenesis imperfecta hypoplastic/hypomaturation 2	DOID:2187	amelogenesis imperfecta
+DOID:221	acute perichondritis of pinna	DOID:222	perichondritis of auricle
+DOID:7631	adult ependymoblastoma	DOID:4794	ependymoblastoma
+DOID:5338	gingival hypertrophy	DOID:3086	gingival overgrowth
+DOID:7141	prostate small cell carcinoma	DOID:10286	prostate carcinoma
+DOID:0110679	congenital myasthenic syndrome 4C	DOID:3635	congenital myasthenic syndrome
+DOID:0110678	congenital myasthenic syndrome 4A	DOID:3635	congenital myasthenic syndrome
+DOID:0110677	congenital myasthenic syndrome 4B	DOID:3635	congenital myasthenic syndrome
+DOID:0110676	congenital myasthenic syndrome 13	DOID:3635	congenital myasthenic syndrome
+DOID:0110675	congenital myasthenic syndrome 11	DOID:3635	congenital myasthenic syndrome
+DOID:0110674	congenital myasthenic syndrome 17	DOID:3635	congenital myasthenic syndrome
+DOID:0110673	congenital myasthenic syndrome 19	DOID:3635	congenital myasthenic syndrome
+DOID:0110672	congenital myasthenic syndrome 21	DOID:3635	congenital myasthenic syndrome
+DOID:0110671	congenital myasthenic syndrome 6	DOID:3635	congenital myasthenic syndrome
+DOID:0110670	congenital myasthenic syndrome 9	DOID:3635	congenital myasthenic syndrome
+DOID:5725	rete ovarii cystadenoma	DOID:6837	rete ovarii adenoma
+DOID:5726	uterine ligament papillary cystadenoma	DOID:5727	uterine ligament cancer
+DOID:8747	subacute myeloid leukemia	DOID:8692	myeloid leukemia
+DOID:2075	minor vestibular glands adenoma	DOID:2076	vulvar glandular tumor
+DOID:6082	pediatric testicular germ cell tumor	DOID:5557	testicular germ cell cancer
+DOID:8082	cellular congenital mesoblastic nephroma	DOID:4773	congenital mesoblastic nephroma
+DOID:5684	spondyloepimetaphyseal dysplasia, Sponastrime type	DOID:0080027	spondyloepimetaphyseal dysplasia
+DOID:0110945	autosomal recessive osteopetrosis 6	DOID:13533	osteopetrosis
+DOID:0110944	autosomal recessive osteopetrosis 4	DOID:13533	osteopetrosis
+DOID:0110946	autosomal recessive osteopetrosis 7	DOID:13533	osteopetrosis
+DOID:0110941	autosomal recessive osteopetrosis 3	DOID:13533	osteopetrosis
+DOID:0110940	autosomal recessive osteopetrosis 8	DOID:13533	osteopetrosis
+DOID:0110943	autosomal recessive osteopetrosis 2	DOID:13533	osteopetrosis
+DOID:0110942	autosomal recessive osteopetrosis 1	DOID:13533	osteopetrosis
+DOID:8369	adult malignant schwannoma	DOID:5940	malignant peripheral nerve sheath tumor
+DOID:0060730	torsion dystonia 1	DOID:0050835	generalized dystonia
+DOID:0050896	bone squamous cell carcinoma	DOID:2762	bone carcinoma
+DOID:0110272	cataract 40	DOID:83	cataract
+DOID:0110271	cataract 23	DOID:83	cataract
+DOID:0110270	cataract 17 multiple types	DOID:83	cataract
+DOID:8203	sacral spinal canal and spinal cord meningioma	DOID:1140	spinal canal and spinal cord meningioma
+DOID:7643	acantholytic squamous cell skin carcinoma	DOID:3151	skin squamous cell carcinoma
+DOID:7527	acute gonococcal endometritis	DOID:7528	acute endometritis
+DOID:3202	neurilemmoma of the fifth cranial nerve	DOID:1201	trigeminal nerve neoplasm
+DOID:11864	peripheral focal chorioretinitis	DOID:1979	focal chorioretinitis
+DOID:7520	periductal breast myoepitheliosis	DOID:7521	breast myoepitheliosis
+DOID:5253	conventional leiomyosarcoma	DOID:1967	leiomyosarcoma
+DOID:7522	pediatric infratentorial ependymoblastoma	DOID:4794	ependymoblastoma
+DOID:3073	brain glioblastoma multiforme	DOID:0060108	brain glioma
+DOID:7986	cerebral falx meningioma	DOID:4436	anterior cranial fossa meningioma
+DOID:4008	fallopian tube transitional cell carcinoma	DOID:1963	fallopian tube carcinoma
+DOID:0050529	adult spinal muscular atrophy	DOID:0060160	survival motor neuron spinal muscular atrophy
+DOID:7824	spinal multifocal clear cell meningioma	DOID:1140	spinal canal and spinal cord meningioma
+DOID:4546	pediatric mesenchymal chondrosarcoma	DOID:4545	mesenchymal chondrosarcoma
+DOID:7826	adult papillary meningioma	DOID:5058	rhabdoid meningioma
+DOID:4000	ovary transitional cell carcinoma	DOID:2152	ovary epithelial cancer
+DOID:6518	Bartholin's gland adenomyoma	DOID:2068	Bartholin's gland benign neoplasm
+DOID:873	anaerobic pneumonia	DOID:0050152	aspiration pneumonia
+DOID:5532	ovarian squamous cell neoplasm	DOID:2152	ovary epithelial cancer
+DOID:5535	gallbladder squamous cell carcinoma	DOID:4948	gallbladder carcinoma
+DOID:5536	sarcomatoid squamous cell skin carcinoma	DOID:3151	skin squamous cell carcinoma
+DOID:10525	double pterygium	DOID:0002116	pterygium
+DOID:11164	band keratopathy	DOID:1237	corneal degeneration
+DOID:5437	intrahepatic bile duct adenoma	DOID:5381	bile duct adenoma
+DOID:6192	inflammatory MFH	DOID:1907	malignant fibroxanthoma
+DOID:0050926	jejunal adenocarcinoma	DOID:13499	jejunal cancer
+DOID:13356	senile ectropion	DOID:1570	ectropion
+DOID:9459	isthmus cancer	DOID:9460	uterine corpus cancer
+DOID:6603	Kummell's disease	DOID:1123	spondyloarthropathy
+DOID:13867	focal labyrinthitis	DOID:1468	labyrinthitis
+DOID:13861	scleroperikeratitis	DOID:13452	scleritis
+DOID:13941	benign paroxysmal positional nystagmus	DOID:9847	peripheral vertigo
+DOID:7732	childhood malignant schwannoma	DOID:5940	malignant peripheral nerve sheath tumor
+DOID:4527	ovarian angiosarcoma	DOID:2146	ovary sarcoma
+DOID:4520	cervical endometrial stromal sarcoma	DOID:4521	cervix endometrial stromal tumor
+DOID:0060169	benign familial infantile epilepsy	DOID:0050703	infancy electroclinical syndrome
+DOID:9506	acute ethmoiditis	DOID:9507	ethmoid sinusitis
+DOID:0060789	hypomyelinating leukodystrophy 4	DOID:0060786	hypomyelinating leukodystrophy
+DOID:0060788	hypomyelinating leukodystrophy 10	DOID:0060786	hypomyelinating leukodystrophy
+DOID:0060787	hypomyelinating leukodystrophy 2	DOID:0060786	hypomyelinating leukodystrophy
+DOID:14081	toxic labyrinthitis	DOID:1468	labyrinthitis
+DOID:2828	acalculous cholecystitis	DOID:1949	cholecystitis
+DOID:5893	childhood malignant mesenchymoma	DOID:5758	malignant mesenchymoma
+DOID:6581	breast apocrine carcinoma	DOID:3458	breast adenocarcinoma
+DOID:5896	ovarian clear cell cystadenofibroma	DOID:5897	ovarian clear cell adenofibroma
+DOID:6587	invasive tubular breast carcinoma	DOID:3458	breast adenocarcinoma
+DOID:7851	pancreatic intraductal papillary-mucinous adenoma	DOID:7575	pancreatic intraductal papillary-mucinous neoplasm
+DOID:5446	eccrine papillary adenoma	DOID:173	eccrine sweat gland neoplasm
+DOID:8105	extrahepatic bile duct cystadenoma	DOID:5384	bile duct cystadenoma
+DOID:1138	spinal meningioma	DOID:1140	spinal canal and spinal cord meningioma
+DOID:0050920	tonsil squamous cell carcinoma	DOID:8858	tonsil cancer
+DOID:10631	partial optic atrophy	DOID:5723	optic atrophy
+DOID:7915	cervical spinal canal and spinal cord meningioma	DOID:1140	spinal canal and spinal cord meningioma
+DOID:9483	ulcerative blepharitis	DOID:9423	blepharitis
+DOID:1973	fallopian tube adenosarcoma	DOID:1970	fallopian tube carcinosarcoma
+DOID:3893	hidrocystoma	DOID:5876	apocrine sweat gland neoplasm
+DOID:0090036	myoclonic dystonia 26	DOID:0090033	myoclonic dystonia
+DOID:0090034	myoclonic dystonia 11	DOID:0090033	myoclonic dystonia
+DOID:0090035	myoclonic dystonia 15	DOID:0090033	myoclonic dystonia
+DOID:5492	biphasic synovial sarcoma	DOID:5485	synovial sarcoma
+DOID:0090039	torsion dystonia 6	DOID:0050835	generalized dystonia
+DOID:6103	thoracic spinal canal and spinal cord meningioma	DOID:1140	spinal canal and spinal cord meningioma
+DOID:5152	cellular neurofibroma	DOID:962	neurofibroma
+DOID:5153	atypical neurofibroma	DOID:962	neurofibroma
+DOID:5150	neurofibroma of gallbladder	DOID:962	neurofibroma
+DOID:13133	HELLP syndrome	DOID:13129	severe pre-eclampsia
+DOID:1512	chronic gonorrhea of cervix	DOID:1513	chronic cervicitis
+DOID:13135	exophthalmic ophthalmoplegia	DOID:12359|DOID:539	endocrine exophthalmos|ophthalmoplegia
+DOID:13137	Werdnig-Hoffmann disease	DOID:0060160	survival motor neuron spinal muscular atrophy
+DOID:0110176	Charcot-Marie-Tooth disease axonal type 2X	DOID:0050539	Charcot-Marie-Tooth disease type 2
+DOID:0060438	Cole-Carpenter syndrome	DOID:12347	osteogenesis imperfecta
+DOID:3323	Sandhoff disease	DOID:3321	gangliosidosis GM2
+DOID:6428	cervical adenoid basal carcinoma	DOID:2893	cervix carcinoma
+DOID:3528	anterior cerebral artery infarction	DOID:3526	cerebral infarction
+DOID:12524	plantar nerve lesion	DOID:9473	mononeuritis of lower limb
+DOID:12527	common peroneal nerve lesion	DOID:9473	mononeuritis of lower limb
+DOID:2816	malignant oculomotor nerve tumor	DOID:2817|DOID:2815	cranial nerve III tumor|cranial nerve malignant neoplasm
+DOID:12529	tibial nerve palsy	DOID:9473	mononeuritis of lower limb
+DOID:3522	lateral medullary syndrome	DOID:3523	brain stem infarction
+DOID:3525	middle cerebral artery infarction	DOID:3527|DOID:3526	cerebral arterial disease|cerebral infarction
+DOID:12445	conjugate gaze palsy	DOID:540	strabismus
+DOID:11693	acute apical periodontitis	DOID:823	periapical periodontitis
+DOID:1825	childhood absence epilepsy	DOID:0050704	childhood electroclinical syndrome
+DOID:0060869	late-onset retinal degenration	DOID:8466	retinal degeneration
+DOID:8036	childhood ovarian embryonal carcinoma	DOID:5681	ovarian embryonal carcinoma
+DOID:5804	discrete subaortic stenosis	DOID:5805	subvalvular aortic stenosis
+DOID:5806	stork bite	DOID:2725	capillary hemangioma
+DOID:14789	spondyloepiphyseal dysplasia congenita	DOID:0080027	spondyloepimetaphyseal dysplasia
+DOID:13448	posterior corneal pigmentation	DOID:11547	corneal deposit
+DOID:0110016	Leber congenital amaurosis 2	DOID:14791	Leber congenital amaurosis
+DOID:10744	broad ligament malignant neoplasm	DOID:11747	uterine adnexa cancer
+DOID:0110152	Charcot-Marie-Tooth disease type 1B	DOID:0050538	Charcot-Marie-Tooth disease type 1
+DOID:0110153	Charcot-Marie-Tooth disease type 1E	DOID:0050538	Charcot-Marie-Tooth disease type 1
+DOID:0110150	Charcot-Marie-Tooth disease type 1D	DOID:0050538	Charcot-Marie-Tooth disease type 1
+DOID:0110151	Charcot-Marie-Tooth disease type 1C	DOID:0050538	Charcot-Marie-Tooth disease type 1
+DOID:14548	steroid-induced glaucoma - borderline	DOID:9283	borderline glaucoma
+DOID:0110157	Charcot-Marie-Tooth disease type 2J	DOID:0050539	Charcot-Marie-Tooth disease type 2
+DOID:0110154	Charcot-Marie-Tooth disease type 2A1	DOID:0050539	Charcot-Marie-Tooth disease type 2
+DOID:0110155	Charcot-Marie-Tooth disease type 2A2	DOID:0050539	Charcot-Marie-Tooth disease type 2
+DOID:5026	sclerosing hepatic carcinoma	DOID:684	hepatocellular carcinoma
+DOID:308	early myoclonic encephalopathy	DOID:0050702	neonatal period electroclinical syndrome
+DOID:0110158	Charcot-Marie-Tooth disease type 2I	DOID:0050539	Charcot-Marie-Tooth disease type 2
+DOID:0110058	amelogenesis imperfecta type 1E	DOID:2187	amelogenesis imperfecta
+DOID:5022	aflatoxins-related hepatocellular carcinoma	DOID:684	hepatocellular carcinoma
+DOID:1070	primary open angle glaucoma	DOID:1067	open-angle glaucoma
+DOID:2780	rectosigmoid junction neoplasm	DOID:1896	sigmoid neoplasm
+DOID:8302	mixed endometrial stromal and smooth muscle tumor	DOID:9460	uterine corpus cancer
+DOID:0110633	rigid spine muscular dystrophy 1	DOID:0050557	congenital muscular dystrophy
+DOID:0110632	megaconial type congenital muscular dystrophy	DOID:0050557	congenital muscular dystrophy
+DOID:0110631	arthrogryposis due to muscular dystrophy	DOID:0050557	congenital muscular dystrophy
+DOID:1209	nutritional optic neuropathy	DOID:1210	optic neuritis
+DOID:0110637	muscular dystrophy-dystroglycanopathy type B6	DOID:0050557	congenital muscular dystrophy
+DOID:0110636	congenital merosin-deficient muscular dystrophy 1A	DOID:0050557	congenital muscular dystrophy
+DOID:0110635	muscular dystrophy-dystroglycanopathy type B5	DOID:0050557	congenital muscular dystrophy
+DOID:0110634	congenital muscular dystrophy 1B	DOID:0050557	congenital muscular dystrophy
+DOID:4547	adult mesenchymal chondrosarcoma	DOID:4545	mesenchymal chondrosarcoma
+DOID:0110639	congenital muscular dystrophy due to integrin alpha-7 deficiency	DOID:0050557	congenital muscular dystrophy
+DOID:0110638	congenital muscular dystrophy merosin-positive	DOID:0050557	congenital muscular dystrophy
+DOID:5378	hemoglobin D disease	DOID:2860	hemoglobinopathy
+DOID:10031	compensatory emphysema	DOID:9675	pulmonary emphysema
+DOID:10125	acute hydrops keratoconus	DOID:10126	keratoconus
+DOID:8186	fallopian tube gestational choriocarcinoma	DOID:1963	fallopian tube carcinoma
+DOID:0110338	osteogenesis imperfecta type 17	DOID:12347	osteogenesis imperfecta
+DOID:0110339	osteogenesis imperfecta type 3	DOID:12347	osteogenesis imperfecta
+DOID:0110336	osteogenesis imperfecta type 8	DOID:12347	osteogenesis imperfecta
+DOID:0110337	osteogenesis imperfecta type 7	DOID:12347	osteogenesis imperfecta
+DOID:0110334	osteogenesis imperfecta type 1	DOID:12347	osteogenesis imperfecta
+DOID:0110335	osteogenesis imperfecta with opalescent teeth, blue sclerae and wormian bones but without fractures	DOID:12347	osteogenesis imperfecta
+DOID:0110332	Leber congenital amaurosis 4	DOID:14791	Leber congenital amaurosis
+DOID:0110333	Leber congenital amaurosis 7	DOID:14791	Leber congenital amaurosis
+DOID:0110330	Leber congenital amaurosis 13	DOID:14791	Leber congenital amaurosis
+DOID:0110331	Leber congenital amaurosis 3	DOID:14791	Leber congenital amaurosis
+DOID:5443	clear cell hidradenoma	DOID:3896	hidradenoma
+DOID:5444	spiradenoma	DOID:5876	apocrine sweat gland neoplasm
+DOID:1293	labia minora carcinoma	DOID:1294|DOID:1243	vulva carcinoma|labia minora cancer
+DOID:4707	cervicomedullary junction neoplasm	DOID:4706	infratentorial cancer
+DOID:0111128	focal segmental glomerulosclerosis 1	DOID:1312	focal segmental glomerulosclerosis
+DOID:0111129	focal segmental glomerulosclerosis 2	DOID:1312	focal segmental glomerulosclerosis
+DOID:5445	syringocystadenoma papilliferum	DOID:5876	apocrine sweat gland neoplasm
+DOID:4087	testicular pure germ cell tumor	DOID:5557	testicular germ cell cancer
+DOID:8083	classic congenital mesoblastic nephroma	DOID:4773	congenital mesoblastic nephroma
+DOID:0110196	Charcot-Marie-Tooth disease type 4G	DOID:0050541	Charcot-Marie-Tooth disease type 4
+DOID:7079	adult cystic teratoma	DOID:2660	cystic teratoma
+DOID:0050812	spondyloepimetaphyseal dysplasia, Pakistani type	DOID:0080027	spondyloepimetaphyseal dysplasia
+DOID:0050813	spondyloepiphyseal dysplasia with congenital joint dislocations	DOID:0080027	spondyloepimetaphyseal dysplasia
+DOID:5275	gallbladder leiomyosarcoma	DOID:4058	gallbladder sarcoma
+DOID:13282	intestinal tuberculosis	DOID:404	gastrointestinal tuberculosis
+DOID:0110160	Charcot-Marie-Tooth disease axonal type 2T	DOID:0050539	Charcot-Marie-Tooth disease type 2
+DOID:8400	malignant cornea melanoma	DOID:6199	cornea cancer
+DOID:4681	bile duct mucoepidermoid carcinoma	DOID:4897	bile duct carcinoma
+DOID:5442	eccrine acrospiroma	DOID:173	eccrine sweat gland neoplasm
+DOID:14243	chronic perichondritis of pinna	DOID:222	perichondritis of auricle
+DOID:0110197	Charcot-Marie-Tooth disease dominant intermediate B	DOID:0050543	Charcot-Marie-Tooth disease intermediate type
+DOID:10337	glaucomatous atrophy of optic disc	DOID:5723	optic atrophy
+DOID:14244	epiphora due to excess lacrimation	DOID:13757	excessive tearing
+DOID:10230	aortic atherosclerosis	DOID:1936	atherosclerosis
+DOID:0110979	Sugarman brachydactyly	DOID:0050581	brachydactyly
+DOID:6212	ovarian endometrial cancer	DOID:2152	ovary epithelial cancer
+DOID:0110975	brachydactyly type B2	DOID:0050581	brachydactyly
+DOID:0110976	brachydactyly type E2	DOID:0050581	brachydactyly
+DOID:12304	conjunctival pigmentation	DOID:11653	conjunctival deposit
+DOID:0110971	brachydactyly type D	DOID:0050581	brachydactyly
+DOID:0110972	brachydactyly type E1	DOID:0050581	brachydactyly
+DOID:0110973	Mononen-Karnes-Senac syndrome	DOID:0050581	brachydactyly
+DOID:9776	Senile atrophy of choroid	DOID:980	choroidal sclerosis
+DOID:4679	breast mucoepidermoid carcinoma	DOID:4680	breast metaplastic carcinoma
+DOID:0110208	Charcot-Marie-Tooth disease X-linked recessive 2	DOID:0050542	Charcot-Marie-Tooth disease type X
+DOID:0110209	Charcot-Marie-Tooth disease X-linked dominant 1	DOID:0050542	Charcot-Marie-Tooth disease type X
+DOID:0110169	Charcot-Marie-Tooth disease axonal type 2P	DOID:0050539	Charcot-Marie-Tooth disease type 2
+DOID:9771	transient neonatal thrombocytopenia	DOID:11245	transient neonatal neutropenia
+DOID:0110202	Charcot-Marie-Tooth disease dominant intermediate A	DOID:0050543	Charcot-Marie-Tooth disease intermediate type
+DOID:0110203	Charcot-Marie-Tooth disease recessive intermediate D	DOID:0050543	Charcot-Marie-Tooth disease intermediate type
+DOID:0110200	Charcot-Marie-Tooth disease dominant intermediate D	DOID:0050543	Charcot-Marie-Tooth disease intermediate type
+DOID:0110201	Charcot-Marie-Tooth disease recessive intermediate A	DOID:0050543	Charcot-Marie-Tooth disease intermediate type
+DOID:0050708	early onset absence epilepsy	DOID:0050704	childhood electroclinical syndrome
+DOID:13099	Moyamoya disease	DOID:3527	cerebral arterial disease
+DOID:0110204	Charcot-Marie-Tooth disease recessive intermediate B	DOID:0050543	Charcot-Marie-Tooth disease intermediate type
+DOID:0110205	Charcot-Marie-Tooth disease dominant intermediate E	DOID:0050543	Charcot-Marie-Tooth disease intermediate type
+DOID:4292	morpheaform basal cell carcinoma	DOID:2513	basal cell carcinoma
+DOID:4293	clear cell basal cell carcinoma	DOID:2513	basal cell carcinoma
+DOID:4290	adamantinoid basal cell epithelioma	DOID:2513	basal cell carcinoma
+DOID:0060898	early-onset Parkinson disease 20	DOID:0060894	early-onset Parkinson disease
+DOID:7959	duodenal gastrinoma	DOID:10021	duodenum cancer
+DOID:4294	adenoid basal cell carcinoma	DOID:2513	basal cell carcinoma
+DOID:3184	spinal cord oligodendroglioma	DOID:3185	spinal cord glioma
+DOID:0080055	achondrogenesis type IB	DOID:0080043	achondrogenesis
+DOID:0110970	brachydactyly type C	DOID:0050581	brachydactyly
+DOID:0060891	juvenile onset Parkinson disease 19A	DOID:0060893	juvenile-onset Parkinson disease
+DOID:0080056	achondrogenesis type II	DOID:0080043	achondrogenesis
+DOID:0080051	acromesomelic dysplasia, Hunter-Thompson type	DOID:0080049	acromesomelic dysplasia
+DOID:0080050	acromesomelic dysplasia, Maroteaux type	DOID:0080049	acromesomelic dysplasia
+DOID:0060895	autosomal dominant Parkinson disease 4	DOID:0060892	late onset Parkinson disease
+DOID:0080052	acromesomelic dysplasia, Grebe type	DOID:0080049	acromesomelic dysplasia
+DOID:3741	bladder verrucous squamous cell carcinoma	DOID:3742	bladder squamous cell carcinoma
+DOID:4051	alveolar rhabdomyosarcoma	DOID:3247	rhabdomyosarcoma
+DOID:0060797	hypomyelinating leukodystrophy 8 with or without oligodontia and-or hypogonadotropic hypogonadism	DOID:0060786	hypomyelinating leukodystrophy
+DOID:5494	epithelioid cell synovial sarcoma	DOID:5485	synovial sarcoma
+DOID:3747	esophagus verrucous carcinoma	DOID:3748	esophagus squamous cell carcinoma
+DOID:4057	gallbladder rhabdomyosarcoma	DOID:4058	gallbladder sarcoma
+DOID:4059	ovary rhabdomyosarcoma	DOID:2146	ovary sarcoma
+DOID:12307	anterior corneal pigmentation	DOID:11547	corneal deposit
+DOID:12958	paralytic lagophthalmos	DOID:12959	lagophthalmos
+DOID:14435	chronic tubotympanic suppurative otitis media	DOID:11506	suppurative otitis media
+DOID:5363	myxoid liposarcoma	DOID:3382	liposarcoma
+DOID:0060750	familial temporal lobe epilepsy 3	DOID:3328	temporal lobe epilepsy
+DOID:0060751	familial temporal lobe epilepsy 7	DOID:3328	temporal lobe epilepsy
+DOID:11295	retinal microaneurysm	DOID:2462	retinal vascular disease
+DOID:0060753	familial temporal lobe epilepsy 4	DOID:3328	temporal lobe epilepsy
+DOID:0060754	familial temporal lobe epilepsy 8	DOID:3328	temporal lobe epilepsy
+DOID:0060755	familial temporal lobe epilepsy 2	DOID:3328	temporal lobe epilepsy
+DOID:0060756	sclerosteosis 1	DOID:0060251	sclerosteosis
+DOID:0060757	sclerosteosis 2	DOID:0060251	sclerosteosis
+DOID:7491	vulvar proximal-type epithelioid sarcoma	DOID:2096	vulvar sarcoma
+DOID:6659	cervical large cell neuroendocrine carcinoma	DOID:2893	cervix carcinoma
+DOID:7479	duodenal somatostatinoma	DOID:10021	duodenum cancer
+DOID:0060368	autosomal recessive juvenile Parkinson disease 2	DOID:0060893	juvenile-onset Parkinson disease
+DOID:4454	childhood kidney cell carcinoma	DOID:4450	renal cell carcinoma
+DOID:8420	malignant glandular tumor of peripheral nerve sheath	DOID:5940	malignant peripheral nerve sheath tumor
+DOID:4906	small intestine adenocarcinoma	DOID:4907	small intestine carcinoma
+DOID:5057	papillary meningioma of the cerebellum	DOID:5058	rhabdoid meningioma
+DOID:6048	telangiectatic glomangioma	DOID:2435	skin glomangioma
+DOID:6723	malignant type AB thymoma	DOID:3280	mixed type thymoma
+DOID:2347	generalized atherosclerosis	DOID:1936	atherosclerosis
+DOID:3448	penis Paget's disease	DOID:3449	penis carcinoma
+DOID:8078	childhood central nervous system germinoma	DOID:4438	central nervous system germinoma
+DOID:3443	mammary Paget's disease	DOID:3458	breast adenocarcinoma
+DOID:5713	mediastinum liposarcoma	DOID:3382	liposarcoma
+DOID:949	chronic dacryoadenitis	DOID:950	dacryoadenitis
+DOID:7926	epithelial malignant thymoma	DOID:3282	dendritic cell thymoma
+DOID:8177	endocervical type cervical adenomyoma	DOID:4995	cervical adenomyoma
+DOID:4300	superficial basal cell carcinoma	DOID:2513	basal cell carcinoma
+DOID:11793	phthisical cornea	DOID:1237	corneal degeneration
+DOID:0110206	Charcot-Marie-Tooth disease dominant intermediate F	DOID:0050543	Charcot-Marie-Tooth disease intermediate type
+DOID:0110118	Leber congenital amaurosis 16	DOID:14791	Leber congenital amaurosis
+DOID:14507	peripheral degeneration of cornea	DOID:1237	corneal degeneration
+DOID:0110190	Charcot-Marie-Tooth disease type 4B2	DOID:0050541	Charcot-Marie-Tooth disease type 4
+DOID:11181	serous glue ear	DOID:11180	non-suppurative otitis media
+DOID:6585	oncocytic breast carcinoma	DOID:3458	breast adenocarcinoma
+DOID:0060372	autosomal recessive early-onset Parkinson disease 15	DOID:0060894	early-onset Parkinson disease
+DOID:0060370	autosomal recessive early-onset Parkinson disease 7	DOID:0060894	early-onset Parkinson disease
+DOID:0060371	autosomal dominant Parkinson disease 8	DOID:0060892	late onset Parkinson disease
+DOID:6032	juvenile type testicular granulosa cell tumor	DOID:5331	testicular granulosa cell tumor
+DOID:0110918	hereditary spherocytosis type 3	DOID:12971	hereditary spherocytosis
+DOID:1569	mechanical ectropion	DOID:1570	ectropion
+DOID:14043	neonatal myasthenia gravis	DOID:437	myasthenia gravis
+DOID:7076	lipid-rich breast carcinoma	DOID:6741	bilateral breast cancer
+DOID:7646	multiple spinal canal and spinal cord meningioma	DOID:1140	spinal canal and spinal cord meningioma
+DOID:0110191	Charcot-Marie-Tooth disease type 4B1	DOID:0050541	Charcot-Marie-Tooth disease type 4
+DOID:12271	aniridia	DOID:240	iris disease
+DOID:4291	fibroepithelial basal cell carcinoma	DOID:2513	basal cell carcinoma
+DOID:8288	clear cell squamous cell skin carcinoma	DOID:3151	skin squamous cell carcinoma
+DOID:0110917	hereditary spherocytosis type 2	DOID:12971	hereditary spherocytosis
+DOID:6742	synchronous bilateral breast carcinoma	DOID:6741	bilateral breast cancer
+DOID:3361	pediatric osteosarcoma	DOID:3347	osteosarcoma
+DOID:12570	phacolytic glaucoma	DOID:12571	phacogenic glaucoma
+DOID:3367	bone leiomyosarcoma	DOID:3347	osteosarcoma
+DOID:5923	distal biliary tract carcinoma	DOID:4897	bile duct carcinoma
+DOID:11541	recurrent corneal erosion	DOID:1237	corneal degeneration
+DOID:11988	conjunctival concretion	DOID:11653	conjunctival deposit
+DOID:7133	gallbladder small cell carcinoma	DOID:4948	gallbladder carcinoma
+DOID:5286	vulvar leiomyosarcoma	DOID:2096	vulvar sarcoma
+DOID:0050530	intermediate spinal muscular atrophy	DOID:0060160	survival motor neuron spinal muscular atrophy
+DOID:0050537	posterior polar cataract	DOID:83	cataract
+DOID:8368	chordoid meningioma	DOID:4210	clear cell meningioma
+DOID:0050535	exudative vitreoretinopathy	DOID:2462	retinal vascular disease
+DOID:0110189	Leber congenital amaurosis 15	DOID:14791	Leber congenital amaurosis
+DOID:0110063	amelogenesis imperfecta hypomaturation type 2A5	DOID:2187	amelogenesis imperfecta
+DOID:0110060	amelogenesis imperfecta hypomaturation type 2A2	DOID:2187	amelogenesis imperfecta
+DOID:0110061	amelogenesis imperfecta hypomaturation type 2A3	DOID:2187	amelogenesis imperfecta
+DOID:0110066	amelogenesis imperfecta type 1G	DOID:2187	amelogenesis imperfecta
+DOID:0110064	amelogenesis imperfecta type 1H	DOID:2187	amelogenesis imperfecta
+DOID:0080054	achondrogenesis type IA	DOID:0080043	achondrogenesis
+DOID:0110181	Charcot-Marie-Tooth disease axonal type 2Z	DOID:0050539	Charcot-Marie-Tooth disease type 2
+DOID:0110180	Charcot-Marie-Tooth disease axonal type 2CC	DOID:0050539	Charcot-Marie-Tooth disease type 2
+DOID:0110183	Charcot-Marie-Tooth disease type 4C	DOID:0050541	Charcot-Marie-Tooth disease type 4
+DOID:0110182	Charcot-Marie-Tooth disease axonal type 2C	DOID:0050539	Charcot-Marie-Tooth disease type 2
+DOID:0110185	Charcot-Marie-Tooth disease type 4A	DOID:0050541	Charcot-Marie-Tooth disease type 4
+DOID:0110184	Charcot-Marie-Tooth disease type 4J	DOID:0050541	Charcot-Marie-Tooth disease type 4
+DOID:1415	gyrate atrophy	DOID:1417	choroid disease
+DOID:0110186	Charcot-Marie-Tooth disease type 4D	DOID:0050541	Charcot-Marie-Tooth disease type 4
+DOID:7191	ovarian endometrioid cystadenoma	DOID:3269	ovarian cystadenoma
+DOID:0050927	duodenum adenoma	DOID:1737	duodenal benign neoplasm
+DOID:0060897	Parkinson disease 17	DOID:0060892	late onset Parkinson disease
+DOID:0110640	congenital muscular dystrophy due to LMNA mutation	DOID:0050557	congenital muscular dystrophy
+DOID:12934	Kearns-Sayre syndrome	DOID:12558	chronic progressive external ophthalmoplegia
+DOID:8275	intratubular embryonal carcinoma	DOID:5680	embryonal testis carcinoma
+DOID:14203	childhood type dermatomyositis	DOID:10223	dermatomyositis
+DOID:14202	adult dermatomyositis	DOID:10223	dermatomyositis
+DOID:6811	juvenile pilocytic astrocytoma	DOID:6812	childhood pilocytic astrocytoma
+DOID:0050608	Askin's tumor	DOID:3369	Ewing sarcoma
+DOID:0110930	nemaline myopathy 8	DOID:3191	nemaline myopathy
+DOID:0110931	nemaline myopathy 10	DOID:3191	nemaline myopathy
+DOID:0110932	nemaline myopathy 4	DOID:3191	nemaline myopathy
+DOID:0110933	nemaline myopathy 11	DOID:3191	nemaline myopathy
+DOID:0110934	nemaline myopathy 7	DOID:3191	nemaline myopathy
+DOID:0110935	nemaline myopathy 6	DOID:3191	nemaline myopathy
+DOID:0110248	cataract 30	DOID:83	cataract
+DOID:0110937	autosomal dominant osteopetrosis 1	DOID:13533	osteopetrosis
+DOID:0110246	cataract 26 multiple types	DOID:83	cataract
+DOID:0110247	cataract 36	DOID:83	cataract
+DOID:0110244	cataract 28	DOID:83	cataract
+DOID:0110245	cataract 38	DOID:83	cataract
+DOID:0110242	cataract 13 with adult i phenotype	DOID:83	cataract
+DOID:0110243	cataract 46 juvenile-onset	DOID:83	cataract
+DOID:0110240	cataract 20 multiple types	DOID:83	cataract
+DOID:0110241	cataract 41	DOID:83	cataract
+DOID:5948	angiokeratoma of mibelli	DOID:479	angiokeratoma
+DOID:13787	localized anterior staphyloma	DOID:11595	scleral staphyloma
+DOID:0110936	nemaline myopathy 5	DOID:3191	nemaline myopathy
+DOID:0050588	muscular dystrophy-dystroglycanopathy	DOID:0050557	congenital muscular dystrophy
+DOID:8211	fallopian tube cystadenofibroma	DOID:5478	fallopian tube adenofibroma
+DOID:13789	staphyloma posticum	DOID:11595	scleral staphyloma
+DOID:11874	abnormal threshold of rods	DOID:8499	night blindness
+DOID:8353	epithelioid malignant peripheral nerve sheath tumor	DOID:5940	malignant peripheral nerve sheath tumor
+DOID:5487	spindle cell synovial sarcoma	DOID:5485	synovial sarcoma
+DOID:11871	macular keratitis	DOID:4677	keratitis
+DOID:4465	papillary renal cell carcinoma	DOID:4450	renal cell carcinoma
+DOID:4464	collecting duct carcinoma	DOID:4450	renal cell carcinoma
+DOID:4467	renal clear cell carcinoma	DOID:4450	renal cell carcinoma
+DOID:6917	predominantly cortical thymoma	DOID:3282	dendritic cell thymoma
+DOID:11722	myotonic dystrophy type 1	DOID:450	myotonic disease
+DOID:4463	multilocular clear cell renal cell carcinoma	DOID:4450	renal cell carcinoma
+DOID:12809	chronic lacrimal gland enlargement	DOID:950	dacryoadenitis
+DOID:0050846	hemidystonia	DOID:0050837	multifocal dystonia
+DOID:0050844	spasmodic dystonia	DOID:0050836	focal dystonia
+DOID:0050843	oromandibular dystonia	DOID:0050836	focal dystonia
+DOID:0050842	oculogyric crisis	DOID:0050836	focal dystonia
+DOID:0050841	focal hand dystonia	DOID:0050836	focal dystonia
+DOID:0050840	cervical dystonia	DOID:0050836	focal dystonia
+DOID:3320	Tay-Sachs disease	DOID:3321	gangliosidosis GM2
+DOID:5540	fallopian tube squamous cell carcinoma	DOID:1963	fallopian tube carcinoma
+DOID:12782	cicatricial ectropion	DOID:1570	ectropion
+DOID:5699	kidney liposarcoma	DOID:3382	liposarcoma
+DOID:0060383	acrofacial dysostosis Rodriguez type	DOID:0060379	acrofacial dysostosis
+DOID:13222	submucous uterine fibroid	DOID:13223	uterine fibroid
+DOID:7694	bladder urachal adenocarcinoma	DOID:5958	bladder urachal carcinoma
+DOID:0060385	acrofacial dysostosis, Patagonia type	DOID:0060379	acrofacial dysostosis
+DOID:0060384	acrofacial dysostosis, Catania type	DOID:0060379	acrofacial dysostosis
+DOID:5488	mediastinum synovial sarcoma	DOID:5485	synovial sarcoma
+DOID:2669	Pacinian tumor	DOID:962	neurofibroma
+DOID:7516	childhood central nervous system mixed germ cell tumor	DOID:6052	central nervous system childhood germ cell tumor
+DOID:6263	inflammatory breast carcinoma	DOID:3458	breast adenocarcinoma
+DOID:6262	follicular dendritic cell sarcoma	DOID:7849	dendritic cell sarcoma
+DOID:5973	kidney pelvis papillary carcinoma	DOID:5974	renal pelvis transitional cell carcinoma
+DOID:12357	viral labyrinthitis	DOID:1468	labyrinthitis
+DOID:4086	testicular germ cell tumor non-seminomatous	DOID:5557	testicular germ cell cancer
+DOID:9709	rosacea conjunctivitis	DOID:6195	conjunctivitis
+DOID:6613	vaginal villous adenoma	DOID:5402	vaginal adenoma
+DOID:13732	panophthalmitis	DOID:13452	scleritis
+DOID:981	diffuse secondary choroid atrophy	DOID:980	choroidal sclerosis
+DOID:4141	intraorbital meningioma	DOID:4143	orbital cancer
+DOID:11594	ring staphyloma	DOID:11595	scleral staphyloma
+DOID:4867	cervical adenoid cystic carcinoma	DOID:2893	cervix carcinoma
+DOID:13544	low tension glaucoma	DOID:1067	open-angle glaucoma
+DOID:6162	childhood embryonal testis carcinoma	DOID:5680	embryonal testis carcinoma
+DOID:6166	prostatic urethra urothelial carcinoma	DOID:6167	prostatic urethral cancer
+DOID:13730	malignant renovascular hypertension	DOID:13731	malignant secondary hypertension
+DOID:6867	mediastinal gray zone lymphoma	DOID:5822	gray zone lymphoma
+DOID:4301	vulva basal cell carcinoma	DOID:1294	vulva carcinoma
+DOID:4302	cystic basal cell carcinoma	DOID:2513	basal cell carcinoma
+DOID:4303	sarcomatoid basal cell carcinoma	DOID:2513	basal cell carcinoma
+DOID:4304	signet ring basal cell carcinoma	DOID:2513	basal cell carcinoma
+DOID:7960	malignant spiradenoma	DOID:4921	eccrine sweat gland cancer
+DOID:4868	prostate adenoid cystic carcinoma	DOID:10286	prostate carcinoma
+DOID:4061	testis rhabdomyosarcoma	DOID:4062	testis sarcoma
+DOID:0060900	autosomal recessive Parkinson disease 14	DOID:0060892	late onset Parkinson disease
+DOID:7840	pancreatic non-functioning delta cell tumor	DOID:4433|DOID:7698	pancreatic delta cell neoplasm|non-functioning pancreatic endocrine tumor
+DOID:7841	pediatric cerebral ependymoblastoma	DOID:4794	ependymoblastoma
+DOID:4065	mixed type rhabdomyosarcoma	DOID:3247	rhabdomyosarcoma
+DOID:0110683	congenital myasthenic syndrome 18	DOID:3635	congenital myasthenic syndrome
+DOID:5439	papillary hidradenoma	DOID:3896	hidradenoma
+DOID:10627	primary optic atrophy	DOID:5723	optic atrophy
+DOID:7049	basaloid squamous cell skin carcinoma	DOID:3151	skin squamous cell carcinoma
+DOID:13538	cornea squamous cell carcinoma	DOID:6199	cornea cancer
+DOID:0110680	congenital myasthenic syndrome 2C	DOID:3635	congenital myasthenic syndrome
+DOID:13534	purulent labyrinthitis	DOID:1468	labyrinthitis
+DOID:1748	conjunctival squamous cell carcinoma	DOID:5467	conjunctival cancer
+DOID:11028	pseudopterygium	DOID:10139	conjunctival degeneration
+DOID:11029	pinguecula	DOID:10139	conjunctival degeneration
+DOID:6505	vaginal spindle cell epithelioma	DOID:135	benign vaginal carcinosarcoma
+DOID:407	hepatic tuberculosis	DOID:404	gastrointestinal tuberculosis
+DOID:3494	bile duct signet ring cell carcinoma	DOID:4897	bile duct carcinoma
+DOID:5627	adenosquamous gallbladder carcinoma	DOID:4948	gallbladder carcinoma
+DOID:0060752	familial temporal lobe epilepsy 5	DOID:3328	temporal lobe epilepsy
+DOID:13389	labia majora carcinoma	DOID:1294|DOID:11905	vulva carcinoma|labium majus cancer
+DOID:3674	kidney rhabdoid cancer	DOID:3672	rhabdoid cancer

@@ -1,0 +1,177 @@
+MonDO_id 	 MonDO_name 	 parent_id 	 parent_name  
+DOID:4853	pilocytic astrocytoma of cerebellum	DOID:4848	cerebellar astrocytoma
+DOID:5603	acute T cell leukemia	DOID:715	T-cell leukemia
+DOID:3728	acute allergic sanguinous otitis media	DOID:3696	acute sanguinous otitis media
+DOID:711	refractory hairy cell leukemia	DOID:285	hairy cell leukemia
+DOID:6489	periosteal osteogenic sarcoma	DOID:3374	peripheral osteosarcoma
+DOID:7269	cribriform variant testicular seminoma	DOID:5842	testis seminoma
+DOID:0050679	blue cone monochromacy	DOID:13911	achromatopsia
+DOID:7174	anus basaloid carcinoma	DOID:5525	anal squamous cell carcinoma
+DOID:6525	choroid mixed cell melanoma	DOID:6438	malignant choroid melanoma
+DOID:12239	anal margin squamous cell carcinoma	DOID:4284	anal margin carcinoma
+DOID:6575	childhood optic tract astrocytoma	DOID:4991	optic nerve astrocytoma
+DOID:7603	fibrosarcomatous osteosarcoma	DOID:3378	conventional central osteosarcoma
+DOID:4384	orbit alveolar rhabdomyosarcoma	DOID:3259	orbit rhabdomyosarcoma
+DOID:7949	stroma-dominant and stroma-poor composite ganglioneuroblastoma	DOID:5193	nodular ganglioneuroblastoma
+DOID:5628	ampulla of Vater adenosquamous carcinoma	DOID:4932	ampulla of Vater carcinoma
+DOID:7707	rectum signet ring adenocarcinoma	DOID:1996	rectum adenocarcinoma
+DOID:6804	colon Kaposi sarcoma	DOID:5260	colon sarcoma
+DOID:6706	tubular variant testicular seminoma	DOID:5842	testis seminoma
+DOID:4685	lacrimal gland mucoepidermoid carcinoma	DOID:293	lacrimal gland carcinoma
+DOID:11203	Angelucci's syndrome	DOID:11204	allergic conjunctivitis
+DOID:1999	chronic eustachian salpingitis	DOID:2000	otosalpingitis
+DOID:14245	cystoid macular retinal degeneration	DOID:2007	degeneration of macula and posterior pole
+DOID:10235	Brown's tendon sheath syndrome	DOID:9306	mechanical strabismus
+DOID:5907	penis non-invasive verrucous carcinoma	DOID:5908	penis verrucous carcinoma
+DOID:6567	uterine corpus myxoid leiomyosarcoma	DOID:5289	uterus leiomyosarcoma
+DOID:0080186	nonmucinous bronchioloalveolar adenocarcinoma	DOID:4926	bronchiolo-alveolar adenocarcinoma
+DOID:0080185	mucinous bronchioloalveolar adenocarcinoma	DOID:4926	bronchiolo-alveolar adenocarcinoma
+DOID:0080184	mixed mucinous and nonmucinous bronchioloalveolar adenocarcinoma	DOID:4926	bronchiolo-alveolar adenocarcinoma
+DOID:0080183	medullary colon carcinoma	DOID:1520	colon carcinoma
+DOID:11853	monocular exotropia	DOID:1143	exotropia
+DOID:6139	uterine corpus epithelioid leiomyosarcoma	DOID:5289	uterus leiomyosarcoma
+DOID:7951	Schwannian stroma-rich and stroma-poor composite ganglioneuroblastoma	DOID:5193	nodular ganglioneuroblastoma
+DOID:5508	brain stem ependymoma	DOID:4202	brain stem glioma
+DOID:4053	rectum rhabdomyosarcoma	DOID:1995	rectum sarcoma
+DOID:6951	telangiectatic osteogenic sarcoma	DOID:3378	conventional central osteosarcoma
+DOID:7933	childhood precursor T-lymphoblastic lymphoma/leukemia	DOID:5599	precursor T-lymphoblastic lymphoma/leukemia
+DOID:9867	toxic maculopathy	DOID:2007	degeneration of macula and posterior pole
+DOID:13353	diffuse interstitial keratitis	DOID:9857	interstitial keratitis
+DOID:7819	sphenoorbital meningioma	DOID:4437	skull base meningioma
+DOID:7818	petroclival meningioma	DOID:4437	skull base meningioma
+DOID:6959	rectal cloacogenic carcinoma	DOID:5528	rectum squamous cell carcinoma
+DOID:5299	endometrial clear cell adenocarcinoma	DOID:2870	endometrial adenocarcinoma
+DOID:8144	pregerminal center chronic lymphocytic leukemia/small lymphocytic lymphoma	DOID:6354	CLL/SLL
+DOID:12668	abnormal retinal correspondence	DOID:12667	binocular vision disease
+DOID:6898	ovary mixed epithelial carcinoma	DOID:4001	ovarian carcinoma
+DOID:0060592	B-cell adult acute lymphocytic leukemia	DOID:5604	adult acute lymphocytic leukemia
+DOID:6445	ovarian endometrioid malignant adenofibroma	DOID:6170	ovarian carcinosarcoma
+DOID:6786	childhood botryoid rhabdomyosarcoma	DOID:3255	botryoid rhabdomyosarcoma
+DOID:7436	sarcomatoid uterine corpus endometrioid adenocarcinoma	DOID:2870	endometrial adenocarcinoma
+DOID:7664	endometrial mixed adenocarcinoma	DOID:2870	endometrial adenocarcinoma
+DOID:7665	non-gestational ovarian choriocarcinoma	DOID:5351|DOID:5550	ovarian primitive germ cell tumor|choriocarcinoma of ovary
+DOID:6777	villoglandular endometrial endometrioid adenocarcinoma	DOID:2870	endometrial adenocarcinoma
+DOID:7237	pancreatic non-invasive mucinous cystadenocarcinoma	DOID:7234	pancreatic colloid cystadenocarcinoma
+DOID:7236	pancreatic invasive mucinous cystadenocarcinoma	DOID:7234	pancreatic colloid cystadenocarcinoma
+DOID:7230	postgerminal center chronic lymphocytic leukemia/small lymphocytic lymphoma	DOID:6354	CLL/SLL
+DOID:6727	colon small cell carcinoma	DOID:1520	colon carcinoma
+DOID:6041	choroid spindle cell melanoma	DOID:6438	malignant choroid melanoma
+DOID:6286	childhood cerebellar astrocytic neoplasm	DOID:4848	cerebellar astrocytoma
+DOID:0050934	ovarian clear cell carcinoma	DOID:4001	ovarian carcinoma
+DOID:0050933	ovarian serous carcinoma	DOID:4001	ovarian carcinoma
+DOID:3199	C-P angle neurinoma	DOID:3200	cerebellopontine angle tumor
+DOID:7807	choroid necrotic melanoma	DOID:6438|DOID:7808	malignant choroid melanoma|necrotic uveal melanoma
+DOID:5519	colon squamous cell carcinoma	DOID:1520	colon carcinoma
+DOID:3691	anal colloid adenocarcinoma	DOID:3447	anus adenocarcinoma
+DOID:3446	anal Paget's disease	DOID:3447	anus adenocarcinoma
+DOID:14174	central neurocytoma	DOID:3541	cerebral ventricle cancer
+DOID:6337	cerebellopontine angle meningioma	DOID:3200	cerebellopontine angle tumor
+DOID:5297	rectum leiomyosarcoma	DOID:1995	rectum sarcoma
+DOID:0050523	adult T-cell leukemia	DOID:715	T-cell leukemia
+DOID:5926	extrahepatic bile duct small cell adenocarcinoma	DOID:3495	extrahepatic bile duct adenocarcinoma
+DOID:7328	iris spindle cell melanoma	DOID:6994	malignant iris melanoma
+DOID:6627	cervical adenoma malignum	DOID:3701	cervical mucinous adenocarcinoma
+DOID:7531	anal gland adenocarcinoma	DOID:3447	anus adenocarcinoma
+DOID:7891	testicular spermatocytic seminoma	DOID:5842	testis seminoma
+DOID:10293	monocular esotropia	DOID:9840	esotropia
+DOID:5602	T-cell adult acute lymphocytic leukemia	DOID:5604	adult acute lymphocytic leukemia
+DOID:6523	ciliary body mixed cell melanoma	DOID:6522|DOID:6524	mixed cell uveal melanoma|malignant ciliary body melanoma
+DOID:7175	anal Buschke-Lowenstein tumor	DOID:5525	anal squamous cell carcinoma
+DOID:6294	corpus callosum lipoma	DOID:6291	cerebral hemisphere lipoma
+DOID:10550	acute eustachian salpingitis	DOID:2000	otosalpingitis
+DOID:0050903	parietal lobe ependymoma	DOID:14384	parietal lobe neoplasm
+DOID:0050900	sacrum chordoma	DOID:4153	spinal chordoma
+DOID:6931	papillary extrahepatic bile duct adenocarcinoma	DOID:3495	extrahepatic bile duct adenocarcinoma
+DOID:7173	cloacogenic carcinoma	DOID:5525	anal squamous cell carcinoma
+DOID:5529	lacrimal gland squamous cell carcinoma	DOID:293	lacrimal gland carcinoma
+DOID:5527	ampulla of Vater squamous cell carcinoma	DOID:4932	ampulla of Vater carcinoma
+DOID:4115	ovarian mesodermal adenosarcoma	DOID:6170	ovarian carcinosarcoma
+DOID:7936	precursor T-lymphoblastic lymphoma/leukemia refractory	DOID:5599	precursor T-lymphoblastic lymphoma/leukemia
+DOID:7037	childhood immature teratoma of ovary	DOID:6331	immature teratoma of ovary
+DOID:7713	tuberculum sellae meningioma	DOID:3643	sella turcica neoplasm
+DOID:5936	ovarian mixed germ cell neoplasm	DOID:5351	ovarian primitive germ cell tumor
+DOID:13492	active cochlear Meniere's disease	DOID:9849	Meniere's disease
+DOID:13491	active vestibular Meniere's disease	DOID:9849	Meniere's disease
+DOID:13490	active cochleovestibular Meniere's disease	DOID:9849	Meniere's disease
+DOID:7136	ampulla of Vater small cell carcinoma	DOID:4932	ampulla of Vater carcinoma
+DOID:8361	glassy cell variant cervical adenosquamous carcinoma	DOID:5636	cervical adenosquamous carcinoma
+DOID:7522	pediatric infratentorial ependymoblastoma	DOID:4207	childhood infratentorial neoplasm
+DOID:4647	trilateral retinoblastoma	DOID:768	retinoblastoma
+DOID:4648	familial retinoblastoma	DOID:768	retinoblastoma
+DOID:3773	third ventricle chordoid glioma	DOID:3541	cerebral ventricle cancer
+DOID:4555	ovarian large-cell neuroendocrine carcinoma	DOID:4001	ovarian carcinoma
+DOID:7591	gestational ovarian choriocarcinoma	DOID:5550	choriocarcinoma of ovary
+DOID:9888	alternating esotropia	DOID:9840	esotropia
+DOID:6847	adult botryoid rhabdomyosarcoma	DOID:3255	botryoid rhabdomyosarcoma
+DOID:0080146	B-cell childhood acute lymphoblastic leukemia	DOID:0080144	childhood acute lymphocytic leukemia
+DOID:11558	acute allergic serous otitis media	DOID:11557	acute serous otitis media
+DOID:3377	small cell osteogenic sarcoma	DOID:3378	conventional central osteosarcoma
+DOID:8058	pituitary stalk meningioma	DOID:3643	sella turcica neoplasm
+DOID:13214	hole retinal cyst	DOID:2007	degeneration of macula and posterior pole
+DOID:6190	rectum Kaposi's sarcoma	DOID:1995	rectum sarcoma
+DOID:9839	accommodative esotropia	DOID:9840	esotropia
+DOID:2006	preretinal fibrosis	DOID:2007	degeneration of macula and posterior pole
+DOID:0111079	birdshot chorioretinopathy	DOID:12574	posterior uveitis
+DOID:7103	diaphragma sellae meningioma	DOID:3643|DOID:4437	sella turcica neoplasm|skull base meningioma
+DOID:8358	pseudoglandular variant testicular seminoma	DOID:5842	testis seminoma
+DOID:6113	intracerebral cystic meningioma	DOID:6112	cerebral meningioma
+DOID:1142	alternating exotropia	DOID:1143	exotropia
+DOID:3860	cerebellar vermis medulloblastoma	DOID:0060104	cerebellar medulloblastoma
+DOID:260	hepatic flexure cancer	DOID:218	ascending colon cancer
+DOID:6115	lateral ventricle meningioma	DOID:6112	cerebral meningioma
+DOID:9735	acute allergic mucoid otitis media	DOID:9736	blue drum syndrome
+DOID:5259	colon leiomyosarcoma	DOID:5260	colon sarcoma
+DOID:4650	bilateral retinoblastoma	DOID:768	retinoblastoma
+DOID:4651	unilateral retinoblastoma	DOID:768	retinoblastoma
+DOID:3709	rectum mucinous adenocarcinoma	DOID:1996	rectum adenocarcinoma
+DOID:3707	endometrial mucinous adenocarcinoma	DOID:2870	endometrial adenocarcinoma
+DOID:4283	anal margin basal cell carcinoma	DOID:4284	anal margin carcinoma
+DOID:713	HCL-V	DOID:285	hairy cell leukemia
+DOID:7293	mucin-rich endometrial endometrioid adenocarcinoma	DOID:2870	endometrial adenocarcinoma
+DOID:0060864	patterned macular dystrophy 2	DOID:0060863	patterned macular dystrophy
+DOID:0080145	T-cell childhood acute lymphocytic leukemia	DOID:0080144	childhood acute lymphocytic leukemia
+DOID:6993	iris mixed cell melanoma	DOID:6994	malignant iris melanoma
+DOID:0080149	adult acute monocytic leukemia	DOID:8864	acute monocytic leukemia
+DOID:6997	intermediate cell type ciliary body melanoma	DOID:6524	malignant ciliary body melanoma
+DOID:6996	intermediate cell type choroid melanoma	DOID:6438	malignant choroid melanoma
+DOID:12972	intrapelvic lymph node leukemic reticuloendotheliosis	DOID:285	hairy cell leukemia
+DOID:0110008	achromatopsia 3	DOID:13911	achromatopsia
+DOID:0110009	achromatopsia 7	DOID:13911	achromatopsia
+DOID:13473	central pterygium	DOID:13474	progressive peripheral pterygium
+DOID:10873	Kuhnt-Junius degeneration	DOID:2007	degeneration of macula and posterior pole
+DOID:0080192	relapsed/refractory diffuse large B-cell lymphoma	DOID:0050745	diffuse large B-cell lymphoma
+DOID:8584	Burkitt lymphoma	DOID:706	mature B-cell neoplasm
+DOID:5629	adenosquamous colon carcinoma	DOID:1520	colon carcinoma
+DOID:0050750	splenic marginal zone lymphoma	DOID:0050748	marginal zone B-cell lymphoma
+DOID:0110007	achromatopsia 2	DOID:13911	achromatopsia
+DOID:8340	endocervical type cervical mucinous adenocarcinoma	DOID:3701	cervical mucinous adenocarcinoma
+DOID:8336	childhood choriocarcinoma of the ovary	DOID:5550	choriocarcinoma of ovary
+DOID:7054	multiple skull base meningioma	DOID:4437	skull base meningioma
+DOID:7708	perianal skin Paget's disease	DOID:4284	anal margin carcinoma
+DOID:6101	signet ring cell variant cervical mucinous adenocarcinoma	DOID:3701	cervical mucinous adenocarcinoma
+DOID:12191	splenic flexure cancer	DOID:12190	descending colon cancer
+DOID:7820	sphenocavernous meningioma	DOID:4437	skull base meningioma
+DOID:4787	cerebellopontine angle primitive neuroectodermal	DOID:3200	cerebellopontine angle tumor
+DOID:5246	hilar cholangiocellular carcinoma	DOID:4947	cholangiocarcinoma
+DOID:9820	central gyrate choroidal dystrophy	DOID:9822	partial central choroid dystrophy
+DOID:6865	oxyphilic endometrial endometrioid adenocarcinoma	DOID:2870	endometrial adenocarcinoma
+DOID:3258	orbit embryonal rhabdomyosarcoma	DOID:3259	orbit rhabdomyosarcoma
+DOID:0060901	Waldenstroem's macroglobulinemia	DOID:0050747	lymphoplasmacytic lymphoma
+DOID:10866	total third-nerve palsy	DOID:10863	paralytic squint
+DOID:10864	partial third-nerve palsy	DOID:10863	paralytic squint
+DOID:5531	ovarian squamous cell carcinoma	DOID:4001	ovarian carcinoma
+DOID:0110857	posterior polymorphous corneal dystrophy 3	DOID:0060457	posterior polymorphous corneal dystrophy
+DOID:0110856	posterior polymorphous corneal dystrophy 2	DOID:0060457	posterior polymorphous corneal dystrophy
+DOID:0110855	posterior polymorphous corneal dystrophy 1	DOID:0060457	posterior polymorphous corneal dystrophy
+DOID:0110010	achromatopsia 4	DOID:13911	achromatopsia
+DOID:0060866	patterned macular dystrophy 1	DOID:0060863	patterned macular dystrophy
+DOID:7289	secretory uterine corpus endometrioid adenocarcinoma	DOID:2870	endometrial adenocarcinoma
+DOID:10869	fourth cranial nerve palsy	DOID:10863	paralytic squint
+DOID:0060865	patterned macular dystrophy 3	DOID:0060863	patterned macular dystrophy
+DOID:7042	ciliary body epithelioid cell melanoma	DOID:7040|DOID:6524	uveal epithelioid cell melanoma|malignant ciliary body melanoma
+DOID:4860	brain stem astrocytic neoplasm	DOID:4202	brain stem glioma
+DOID:7041	choroid epithelioid cell melanoma	DOID:6438	malignant choroid melanoma
+DOID:7207	lung combined large cell neuroendocrine carcinoma	DOID:6658	pulmonary large cell neuroendocrine carcinoma
+DOID:8339	intestinal variant cervical mucinous adenocarcinoma	DOID:3701	cervical mucinous adenocarcinoma
+DOID:8338	villoglandular variant cervical mucinous adenocarcinoma	DOID:3701	cervical mucinous adenocarcinoma
+DOID:6774	polyembryoma of the ovary	DOID:5351	ovarian primitive germ cell tumor
