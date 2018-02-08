@@ -478,26 +478,6 @@ def main():
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
-    print('Map DO to monDO ')
-
-    map_DO_to_monDO_with_DO_and_xrefs()
-
-    print('##########################################################################')
-
-    print(datetime.datetime.utcnow())
-    print('generate the mapping files ')
-
-    mapping_files()
-
-    print('##########################################################################')
-
-    print(datetime.datetime.utcnow())
-    print('integrate and switch the nodes but ignore the multiple mapped monDO ids ')
-
-    integrate_mondo_change_identifier()
-    print('##########################################################################')
-
-    print(datetime.datetime.utcnow())
 
 
 
