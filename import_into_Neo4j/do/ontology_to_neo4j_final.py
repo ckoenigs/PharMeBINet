@@ -11,6 +11,7 @@ import oboparser
 from twiggy import add_emitters, outputs, levels, filters, formats, emitters, log
 from neo4jrestclient import options
 from neo4jrestclient.client import GraphDatabase
+from neo4jrestclient import query
 
 __author__ = "Cesar Arze"
 __copyyright__ = "Institute for Genome Science - University of Maryland School of Medicine"
@@ -174,6 +175,9 @@ def main(parser):
     print('rel')
 
     create_root_node_index(parser.root_node, gdb)
+
+    query='''Create CONSTRAINT ON ( diseaseontology:DiseaseOntology ) ASSERT diseaseontology.id IS UNIQUE'''
+    gdb.query(q=query)
 
 
 if __name__ == "__main__":
