@@ -259,7 +259,7 @@ def integrate_DO_information_into_hetionet():
                              dict_diseases_in_hetionet[disease_doid].subset,
                              dict_diseases_in_hetionet[disease_doid].resource)
 
-        # g.run(query)
+        g.run(query)
 
     # create new new hetionet diseases and add a connection to the do diseases
     print('Create the new nodes and connect them with the DiseaseOntology node')
@@ -288,7 +288,7 @@ def integrate_DO_information_into_hetionet():
 
         for is_a_doid in list_doid:
             count+=1
-            is_a_doid = is_a_doid if is_a_doid not in dict_all_doid_that_is_in_alternative else dict_all_doid_that_is_in_alternative[is_a_doid]
+            # is_a_doid = is_a_doid if is_a_doid not in dict_all_doid_that_is_in_alternative else dict_all_doid_that_is_in_alternative[is_a_doid]
             query ='''Match (d:Disease {identifier:"%s"}), (d2:Disease {identifier:"%s"}) 
                 Create (d)-[:IS_A_DiD{license:"CC0", source:"Disease Ontology", unbiased:"false"}]->(d2) '''
             query= query %(key, is_a_doid)
