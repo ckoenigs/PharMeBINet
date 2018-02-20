@@ -10,7 +10,7 @@ import datetime
 import MySQLdb as mdb
 import sys
 
-sys.path.append('../ersatz_aeolus/')
+sys.path.append('../aeolus/')
 from synonyms_cuis import search_for_synonyms_cuis
 
 import xml.dom.minidom as dom
@@ -383,7 +383,7 @@ def main():
     print (datetime.datetime.utcnow())
     print('integrate ndf-rt into hetionet')
 
-    integrate_ndf_rt_disease_into_hetionet()
+    # integrate_ndf_rt_disease_into_hetionet()
 
     print(
     '###########################################################################################################################')
