@@ -266,7 +266,7 @@ delete the merged node
 def delete_merged_node(identifier, label):
     query = ''' Match (n:%s{identifier:"%s"}) Detach Delete n'''
     query = query % (label, identifier)
-    # g.run(query)
+    g.run(query)
 
 
 '''
