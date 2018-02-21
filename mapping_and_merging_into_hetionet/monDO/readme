@@ -1,1 +1,23 @@
 This program integrate MonDO to Hetionet and change the identifier from DOID to MONDO.
+
+The identifier MONDO:0013239 has no connection.
+
+The DOIDs which are not mapped to any MONDO with the xrefs from MONDO are:
+    deleted: 'DOID:7267', 'DOID:0060017', 'DOID:946', 'DOID:6823', 'DOID:0050332', 'DOID:8150', 'DOID:5469',
+                          'DOID:0080125', 'DOID:7571', 'DOID:0060517', 'DOID:9341', 'DOID:0080193', 'DOID:0080197',
+                          'DOID:0080196', 'DOID:0050875','DOID:0050987', 'DOID:2468', 'DOID:854'
+    mapped manual:
+    DOID:0080194	Carey-Fineman-Ziter syndrome    MONDO:0009700 same OMIM:254940
+    DOID:0080195	Marinesco-Sjogren syndrome  MONDO:0009567 same OMIM:248800
+    DOID:0080198	infantile histiocytoid cardiomyopathy   MONDO:0010771 same OMIM:500000
+    DOID:4556	lung large cell carcinoma   MONDO:0003050 same UMLS:C0345958
+    DOID:1059	intellectual disability MONDO:0001071  same UMLS:C0025362
+
+    mapped manual and merged to parent, because it has relationships to other nodes than Disease
+    DOID:1233	transvestism    parent:MONDO:0001504(fetishism)
+
+All MONDOs which are mapped to multiple DOIDs will generate on node which contains all nodes from all DOIDs.
+Only exception is MONDO:0000001 (disease) this map to DOID:4 (disease) and DOID:7 (disease of anatomical entity).
+DOID:7 fit's better to MONDO:0021199 (disease affecting anatomical system), which map not to any DOID.
+So MONDO:0021199 is merged into DOID:7. Further is DOID:7 excluded from MONDO:0000001 xref.
+
