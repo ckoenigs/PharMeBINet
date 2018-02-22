@@ -579,6 +579,7 @@ def integrate_mondo_change_identifier():
                 else:
                     if key == 'http://www.geneontology.org/formats/oboInOwl#id':
                         continue
+                    key = 'name' if key=='label' else key
                     key = '`' + key + '`' if key[0:5] == 'http:' else key
                     if type(property) == int:
                         add_query = ''' %s:%s,''' % (key, property)
