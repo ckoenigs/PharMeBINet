@@ -376,18 +376,7 @@ def integrate_mondo_change_identifier():
     counter_new_nodes = 0
     counter_switched_nodes = 0
     counter_merge_nodes = 0
-    # file counter
-    file_counter = 1
-    # maximal number of queries for a commit block
-    constrain_number = 20000
-    # maximal number of queries in a file
-    creation_max_in_file = 1000000
 
-    h = open('integrate_and_transformed_disease' + str(file_counter) + '.cypher', 'w')
-    file_counter += 1
-    h.write('begin \n')
-    # count the number of queries
-    counter_connection = 0
     for monDo, info in dict_monDO_info.items():
         # if monDo == 'MONDO:0003059':
         #     print('ohje')
@@ -572,7 +561,7 @@ def integrate_mondo_change_identifier():
             query = query + add_query
         else:
             counter_new_nodes += 1
-            query = ''' Match  (a:disease{id:"%s"})
+            query = ''' Match  (a:disease{`http://www.geneontology.org/formats/oboInOwl#id`:"%s"})
                         Create (n:Disease{identifier:"%s", '''
             query = query % (monDo, monDo)
             for key, property in dict_monDO_info[monDo].items():
@@ -605,20 +594,11 @@ def integrate_mondo_change_identifier():
         # print(query)
         # sys.exit()
         g.run(query)
-    #     h.write(query)
-    #     counter_connection += 1
-    #     if counter_connection % constrain_number == 0:
-    #         h.write('commit \n')
-    #         if counter_connection % creation_max_in_file == 0:
-    #             h.close()
-    #             h = open('integrate_and_transformed_disease' + str(file_counter) + '.cypher', 'w')
-    #             h.write('begin \n')
-    #             file_counter += 1
-    #         else:
-    #             h.write('begin \n')
-    # h.write('commit \n begin \n')
-    # print('number of new nodes:' + str(counter_new_nodes))
-    # print('number of switched nodes:' + str(counter_switched_nodes))
+
+
+    print('number of new nodes:'+str(counter_new_nodes))
+    print('number of switched nodes:'+str(counter_switched_nodes))
+    print(datetime.datetime.utcnow())
 
     print(dict_merged_nodes)
     print(len(dict_merged_nodes))
@@ -631,20 +611,34 @@ def integrate_mondo_change_identifier():
 
             merge_information_from_one_node_to_another(delete_node, merge_id, 'Disease')
 
-
     print('delete doid nodes without mapping to mondo')
     print(datetime.datetime.utcnow())
-    count_removed_nodes=0
+    count_removed_nodes = 0
     for doid in list_removed_doids:
-        count_removed_nodes+=1
-        query='''Match (r:Disease{identifier:"%s"}) Detach Delete r''' %(doid)
+        count_removed_nodes += 1
+        query = '''Match (r:Disease{identifier:"%s"}) Detach Delete r''' % (doid)
         print(query)
         g.run(query)
 
-    print('number of removed nodes with doid:'+str(count_removed_nodes))
-    print(datetime.datetime.utcnow())
-    counte_new_relationships = 0
-    counter_already_existing_relationships = 0
+    print('number of removed nodes with doid:' + str(count_removed_nodes))
+
+'''
+generate cypher file for subClassOf relationship
+'''
+def generate_cypher_file_for_relationship():
+    # file counter
+    file_counter = 1
+    # maximal number of queries for a commit block
+    constrain_number = 20000
+    # maximal number of queries in a file
+    creation_max_in_file = 1000000
+
+    h = open('integrate_and_transformed_disease' + str(file_counter) + '.cypher', 'w')
+    file_counter += 1
+    h.write('begin \n')
+    # count the number of queries
+    counter_connection = 0
+
 
     query = ''' Match (a)-[r:subClassOf]->(b) Return a.`http://www.geneontology.org/formats/oboInOwl#id`, b.`http://www.geneontology.org/formats/oboInOwl#id`, r'''
     results = g.run(query)
@@ -652,16 +646,19 @@ def integrate_mondo_change_identifier():
         url = 'http://bioportal.bioontology.org/ontologies/MONDO/' + child_id
         dict_rela = dict(rela)
         query = ''' Match (a:Disease{identifier:"%s"}), (b:Disease{identifier:"%s"})
-        Create (a)-[:SUBCLASS_OF_DsoD{license:"CC BY 4.0",unbiased:"false", source:"Monarch Disease Ontology", resource:['MonDO'] , mondo='yes', mondo_source="%s",'''
+        Create (a)-[:SUBCLASS_OF_DsoD{license:"CC BY 4.0",unbiased:"false", source:"Monarch Disease Ontology", resource:['MonDO'] , mondo:'yes', mondo_source:"%s",'''
         query = query % (child_id, parent_id, url)
         for key, property in dict_rela.items():
+            if key[0:4]=='http':
+                key='`'+key+'`'
             if type(property) == list:
-                add_query = '''%s:%s ''' % (key, property)
+                property= '","'.join(property)
+                add_query = '''%s:["%s"],''' % (key, property)
             else:
-                add_query = '''%s:"%s"''' % (key, property)
+                add_query = '''%s:"%s",''' % (key, property)
             query += add_query
 
-        query += ''' }]->(b)'''
+        query = query[0:-1]+''' }]->(b);\n'''
 
         h.write(query)
         counter_connection += 1
@@ -677,8 +674,7 @@ def integrate_mondo_change_identifier():
 
     h.write('commit \n')
     h.close()
-    print('number of new relationships:' + str(counter_new_nodes))
-    print('number of already existing relationships:' + str(counter_already_existing_relationships))
+    print('number of relationships:' + str(counter_connection))
 
 
 def main():
@@ -711,9 +707,6 @@ def main():
 
     map_DO_to_monDO_with_DO_and_xrefs()
 
-    if 'DOID:6126' in dict_DO_to_monDOs_only_DO:
-        print('in it')
-
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
@@ -727,6 +720,13 @@ def main():
     print('integrate and switch the nodes but ignore the multiple mapped monDO ids ')
 
     integrate_mondo_change_identifier()
+
+    print('##########################################################################')
+
+    print(datetime.datetime.utcnow())
+    print('generate cypher file for subclassof relationship  ')
+
+    generate_cypher_file_for_relationship()
 
     print('##########################################################################')
 
