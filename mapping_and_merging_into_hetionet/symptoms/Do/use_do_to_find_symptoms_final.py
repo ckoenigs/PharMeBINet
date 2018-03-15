@@ -14,7 +14,7 @@ import threading
 
 # class of thread to find umls cuis for the symptoms
 class SymptomThread(threading.Thread):
-    def __init__(self, threadID, name, disease_id, disease_definition):
+    def __init__(self, threadID, name, disease_id,  disease_definition):
         threading.Thread.__init__(self)
         self.threadID = threadID
         self.name = name
@@ -25,7 +25,7 @@ class SymptomThread(threading.Thread):
         # print "Starting " + self.name
         # Get lock to synchronize threads
         threadLock.acquire()
-        load_in_hetionet_disease_in_dictionary(self.disease_id, self.disease_definition)
+        load_in_hetionet_disease_in_dictionary(self.disease_id,  self.disease_definition)
         #      print "Ending " + self.name
         #      print_time(self.name, self.counter, 3)
         # Free lock to release next thread
@@ -51,6 +51,9 @@ dict_symptom_to_umls_cui = {}
 
 # list of word to split the symptoms
 list_words_to_split = ['in', 'of', 'from', 'on']
+
+# dictionary mondo to name
+dict_mondo_to_name={}
 
 '''
 split and combined the symptom name and search for this symptom and return if a cui is found or not
@@ -94,7 +97,7 @@ disease in dictionary. Extract symptoms from definition and map symptoms to umls
 '''
 
 
-def load_in_hetionet_disease_in_dictionary(mondo, definition):
+def load_in_hetionet_disease_in_dictionary(mondo,  definition):
     global counter_map_with_changed_order, counter_not_mapped_symptoms
 
     splitted = definition.split('has_symptom ')
@@ -272,6 +275,7 @@ def integrate_information_into_hetionet():
     for mondo, symptom_terms in dict_mondo_to_symptom.items():
         # generate for every disease which symptoms are mapped and which not
         f = open('Disease_symptoms/' + mondo + '_symptoms.txt', 'w')
+        f.write(dict_mondo_to_name[mondo]+'\n')
         f.write('name \t cui \t mesh\n')
         h = open('Disease_symptoms/' + mondo + '_not_mapped.txt', 'w')
         h.write('name \n')
@@ -356,13 +360,14 @@ def main():
 
     thread_id = 1
 
-    query = '''MATCH (n:Disease) Where n.definition contains 'has_symptom' RETURN n.identifier,n.definition '''
+    query = '''MATCH (n:Disease) Where n.definition contains 'has_symptom' RETURN n.identifier, n.name ,n.definition '''
     results = g.run(query)
-    for mondo, definition, in results:
+    for mondo, name, definition, in results:
+        dict_mondo_to_name[mondo]=name
         # if thread_id>50:
         #     break
         # create thread
-        thread = SymptomThread(thread_id, 'thread_' + str(thread_id), mondo, definition)
+        thread = SymptomThread(thread_id, 'thread_' + str(thread_id), mondo,  definition)
         # start thread
         thread.start()
         # add to list
@@ -380,7 +385,7 @@ def main():
     print('number of different symptoms which are mapped to umls cui:' + str(len(dict_symptom_to_umls_cui)))
     print('number of not mapped symptoms to umls cuis:' + str(counter_not_mapped_symptoms))
 
-    sys.exit()
+    # sys.exit()
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
