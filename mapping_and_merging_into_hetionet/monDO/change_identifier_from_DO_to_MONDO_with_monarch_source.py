@@ -43,15 +43,15 @@ def load_in_all_monDO_in_dictionary():
     results = g.run(query)
     for disease, in results:
         monDo_id = disease['http://www.geneontology.org/formats/oboInOwl#id']
-        # if monDo_id == 'MONDO:0007108':
+        # if monDo_id == 'MONDO:0007062':
         #     print('blub')
         dict_monDO_info[monDo_id] = dict(disease)
         xrefs = disease[
             'http://www.geneontology.org/formats/oboInOwl#hasDbXref'] if 'http://www.geneontology.org/formats/oboInOwl#hasDbXref' in disease else []
         # the DOID:7 mapped better to MONDO:0021199
-        if monDo_id=='MONDO:0000001':
+        if monDo_id == 'MONDO:0000001':
             xrefs.remove('DOID:7')
-            dict_monDO_info[monDo_id]['http://www.geneontology.org/formats/oboInOwl#hasDbXref']= xrefs
+            dict_monDO_info[monDo_id]['http://www.geneontology.org/formats/oboInOwl#hasDbXref'] = xrefs
         if type(xrefs) == list:
             for external_id in xrefs:
                 if external_id in dict_external_ids_monDO:
@@ -134,7 +134,7 @@ def load_in_all_DO_in_dictionary():
         alternative_id = disease['alternateIds'] if 'alternateIds' in disease else []
         dict_do_to_alternative_do[Do_id] = alternative_id
         xrefs = disease['xrefs'] if 'xrefs' in disease else []
-        xrefs = xrefs[0].split(',')
+        xrefs = xrefs[0].replace("'","").split(',')
         dict_DO_to_xref[Do_id] = xrefs
 
     print('Number of DOIDs:' + str(len(dict_DO_to_xref)))
@@ -234,35 +234,35 @@ def map_DO_to_monDO_with_DO_and_xrefs():
                             dict_DO_to_monDOs_only_DO[doid] = set([monDO])
             if not found_with_alternative:
                 list_of_not_mapped_doids.append(doid)
-        for xref in xrefs:
-            xref = xref.replace("'", "")
-            if xref in dict_external_ids_monDO:
-                for monDO in dict_external_ids_monDO[xref]:
-                    if monDO in dict_monDo_to_DO:
-                        dict_monDo_to_DO[monDO].add(doid)
-                    else:
-                        dict_monDo_to_DO[monDO] = set([doid])
-                    if doid in dict_DO_to_monDOs:
-                        # if monDO not in dict_DO_to_monDOs[doid]:
-                        # print(xref)
-                        dict_DO_to_monDOs[doid].add(monDO)
-                    else:
-                        dict_DO_to_monDOs[doid] = set([monDO])
+        # for xref in xrefs:
+        #     xref = xref.replace("'", "")
+        #     if xref in dict_external_ids_monDO:
+        #         for monDO in dict_external_ids_monDO[xref]:
+        #             if monDO in dict_monDo_to_DO:
+        #                 dict_monDo_to_DO[monDO].add(doid)
+        #             else:
+        #                 dict_monDo_to_DO[monDO] = set([doid])
+        #             if doid in dict_DO_to_monDOs:
+        #                 # if monDO not in dict_DO_to_monDOs[doid]:
+        #                 # print(xref)
+        #                 dict_DO_to_monDOs[doid].add(monDO)
+        #             else:
+        #                 dict_DO_to_monDOs[doid] = set([monDO])
 
     print('number of not name matching mappes:' + str(counter_name_not_matching))
     print('number of mapped doids with only doids:' + str(len(dict_DO_to_monDOs_only_DO)))
-    print('number of mapped doids:' + str(len(dict_DO_to_monDOs_only_DO)))
+    # print('number of mapped doids:' + str(len(dict_DO_to_monDOs_only_DO)))
 
     print('number of mapped monDO with only doids:' + str(len(dict_monDo_to_DO_only_doid)))
-    print('number of mapped monDO:' + str(len(dict_monDo_to_DO)))
+    # print('number of mapped monDO:' + str(len(dict_monDo_to_DO)))
 
-    counter_more_than_one_monDO_ID = 0
-
-    for doid, mondos in dict_DO_to_monDOs.items():
-        if len(mondos) > 1:
-            counter_more_than_one_monDO_ID += 1
-
-    print('number of multiple monDO IDs:' + str(counter_more_than_one_monDO_ID))
+    # counter_more_than_one_monDO_ID = 0
+    #
+    # for doid, mondos in dict_DO_to_monDOs.items():
+    #     if len(mondos) > 1:
+    #         counter_more_than_one_monDO_ID += 1
+    #
+    # print('number of multiple monDO IDs:' + str(counter_more_than_one_monDO_ID))
 
     print(list_of_not_mapped_doids)
 
@@ -318,13 +318,13 @@ def mapping_files():
             f.write(mondo + '\t' + dict_monDO_info[mondo]['label'] + '\n')
         f.close()
 
-    for monDo, doids in dict_monDo_to_DO.items():
-        g = open('mapping/monDO_to_DO/with_xref/' + monDo + '.txt', 'w')
-        g.write(monDo + '\t' + dict_monDO_info[monDo]['label'] + '\n')
-        g.write('DOID \t name \n')
-        for doid in doids:
-            g.write(doid + '\t' + dict_DO_to_info[doid]['name'] + '\n')
-        g.close()
+    # for monDo, doids in dict_monDo_to_DO.items():
+    #     g = open('mapping/monDO_to_DO/with_xref/' + monDo + '.txt', 'w')
+    #     g.write(monDo + '\t' + dict_monDO_info[monDo]['label'] + '\n')
+    #     g.write('DOID \t name \n')
+    #     for doid in doids:
+    #         g.write(doid + '\t' + dict_DO_to_info[doid]['name'] + '\n')
+    #     g.close()
 
     for monDo, doids in dict_monDo_to_DO_only_doid.items():
         g = open('mapping/monDO_to_DO/without_xref/' + monDo + '.txt', 'w')
@@ -338,7 +338,8 @@ def mapping_files():
 # dictionary of the doids which are merged  into one, key is the merged id and value are the nodes which are integrated
 # into the merged node
 dict_merged_nodes = {
-    'MONDO:0001504':['DOID:1233'] # DOID:1233 (transvestism) is sub class of  fetishism and contains relationships -> merged together
+    'MONDO:0001504': ['DOID:1233']
+# DOID:1233 (transvestism) is sub class of  fetishism and contains relationships -> merged together
 }
 
 # dictionary of self decision which doid is the merged node
@@ -359,13 +360,14 @@ dict_mondo_xref_doid_mapping = {
     'MONDO:0010771': 'DOID:0080198',
     'MONDO:0003050': 'DOID:4556',
     'MONDO:0001071': 'DOID:1059',
-    'MONDO:0021199': 'DOID:7' # disease affecting anatomical system (mondo) is more  similar to disease of anatomical entity (DOID:7) than disease (DOID:4) also same subclasses like DOID:7
+    'MONDO:0021199': 'DOID:7'
+# disease affecting anatomical system (mondo) is more  similar to disease of anatomical entity (DOID:7) than disease (DOID:4) also same subclasses like DOID:7
 }
 
 # list of doids which are not part of mondo and are removed
 list_removed_doids = ['DOID:7267', 'DOID:0060017', 'DOID:946', 'DOID:6823', 'DOID:0050332', 'DOID:8150', 'DOID:5469',
                       'DOID:0080125', 'DOID:7571', 'DOID:0060517', 'DOID:9341', 'DOID:0080193', 'DOID:0080197',
-                      'DOID:0080196', 'DOID:0050875','DOID:0050987', 'DOID:2468', 'DOID:854' ]
+                      'DOID:0080196', 'DOID:0050875', 'DOID:0050987', 'DOID:2468', 'DOID:854']
 
 '''
 integrate mondo into hetionet and change identifier
@@ -378,52 +380,66 @@ def integrate_mondo_change_identifier():
     counter_merge_nodes = 0
 
     for monDo, info in dict_monDO_info.items():
-        # if monDo == 'MONDO:0003059':
-        #     print('ohje')
-        if (monDo in dict_monDo_to_DO_only_doid and len(dict_monDo_to_DO_only_doid[monDo]) == 1) or monDo in dict_mondo_xref_doid_mapping:
+        if monDo == 'MONDO:0000612':
+            print('ohje')
+        if (monDo in dict_monDo_to_DO_only_doid and len(
+                dict_monDo_to_DO_only_doid[monDo]) == 1) or monDo in dict_mondo_xref_doid_mapping:
             counter_switched_nodes += 1
 
             # get the different information from monDO which will be combined
             if not monDo in dict_mondo_xref_doid_mapping:
                 doid = list(dict_monDo_to_DO_only_doid[monDo])[0]
             else:
-                doid=dict_mondo_xref_doid_mapping[monDo]
-            monDO_synonyms = dict_monDO_info[monDo]['synonym'] if 'synonym' in dict_monDO_info else []
-            monDo_def = dict_monDO_info[monDo]['definition'] if 'definition' in dict_monDO_info else ''
-            monDO_xref = dict_monDO_info[monDo][
-                'http://www.geneontology.org/formats/oboInOwl#hasDbXref'] if 'http://www.geneontology.org/formats/oboInOwl#hasDbXref' in dict_monDO_info else []
+                doid = dict_mondo_xref_doid_mapping[monDo]
+            monDO_synonyms = info['synonym'] if 'synonym' in info else []
+            monDo_def = info['definition'] if 'definition' in info else ''
+            monDO_xref = info[
+                'http://www.geneontology.org/formats/oboInOwl#hasDbXref'] if 'http://www.geneontology.org/formats/oboInOwl#hasDbXref' in info else []
 
             umls_cuis_monDO = []
             other_xrefs_monDO = []
-            for ref in monDO_xref:
-                if ref[0:4] == 'UMLS':
-                    umls_cuis_monDO.append(ref)
+            if type(monDO_xref)==list:
+                for ref in monDO_xref:
+                    if monDO_xref[0:4] == 'UMLS':
+                        umls_cuis_monDO.append(ref)
+                    else:
+                        other_xrefs_monDO.append(ref)
+            else:
+                if monDO_xref[0:4] == 'UMLS':
+                    umls_cuis_monDO.append(monDO_xref)
                 else:
-                    other_xrefs_monDO.append(ref)
+                    other_xrefs_monDO.append(monDO_xref)
 
             monDO_subset = []
 
             # combined information from monDO and DO
-            monDO_synonyms.extend(dict_DO_to_info[doid]['synonyms'])
-            dict_monDO_info[monDo]['synonym'] = monDO_synonyms
+            if type(monDO_synonyms) == list:
+                monDO_synonyms.extend(dict_DO_to_info[doid]['synonyms'])
+            else:
+                dict_DO_to_info[doid]['synonyms'].append(monDO_synonyms)
+                monDO_synonyms = dict_DO_to_info[doid]['synonyms']
+            info['synonym'] = monDO_synonyms
 
-            dict_monDO_info[monDo]['definition'] = dict_DO_to_info[doid]['definition'] + '[FROM DOID]. ' + monDo_def
+            info['definition'] = dict_DO_to_info[doid]['definition'] + '[FROM DOID]. ' + monDo_def
 
             dict_DO_to_info[doid]['alternateIds'].append(doid)
             # the alternative id get at least a ''  if their exist no alternative id, that's why they had to be
             # removed from the list
             if dict_DO_to_info[doid]['alternateIds'][0] == '':
                 dict_DO_to_info[doid]['alternateIds'].remove('')
-            dict_monDO_info[monDo]['doids'] = dict_DO_to_info[doid]['alternateIds']
+            info['doids'] = dict_DO_to_info[doid]['alternateIds']
 
-            other_xrefs_monDO.extend(dict_DO_to_info[doid]['xrefs'])
-            dict_monDO_info[monDo]['http://www.geneontology.org/formats/oboInOwl#hasDbXref'] = other_xrefs_monDO
+
+            other_xrefs_monDO.extend(dict_DO_to_xref[doid])
+            other_xrefs_monDO.remove('') if '' in other_xrefs_monDO else other_xrefs_monDO
+            info['http://www.geneontology.org/formats/oboInOwl#hasDbXref'] = other_xrefs_monDO
 
             umls_cuis_monDO.extend(dict_DO_to_info[doid]['umls_cuis'])
-            dict_monDO_info[monDo]['umls_cuis'] = umls_cuis_monDO
+            umls_cuis_monDO.remove('') if '' in umls_cuis_monDO else umls_cuis_monDO
+            info['umls_cuis'] =list(set(umls_cuis_monDO))
 
             monDO_subset.extend(dict_DO_to_info[doid]['subset'])
-            dict_monDO_info[monDo]['subset'] = monDO_subset
+            info['subset'] = monDO_subset
 
             dict_DO_to_info[doid]['resource'].append('MonDO')
             string_resources = '","'.join(dict_DO_to_info[doid]['resource'])
@@ -433,17 +449,21 @@ def integrate_mondo_change_identifier():
             Set n.identifier="%s",'''
             query = query % (doid, monDo, monDo)
 
-            for key, property in dict_monDO_info[monDo].items():
+            for key, property in info.items():
                 # if key in list_properties_which_should_be_an_array:
                 if type(property) == list:
                     if key == 'http://www.geneontology.org/formats/oboInOwl#hasDbXref':
                         key = 'xrefs'
-                    key = '`' + key + '`' if key[0:5] == 'http:' else key
+                    elif key == 'synonym':
+                        key = 'synonyms'
+                    elif key[0:5] == 'http:':
+                        key = '`' + key + '`'
                     if len(property) > 0 and type(property[0]) == int:
                         add_query = ''' n.%s=%s,''' % (key, property)
                     else:
-                        property_string = '","'.join(property)
-                        add_query = ''' n.%s=["%s"],''' % (key, property_string.replace('"', "'"))
+                        property_string = '|'.join(property)
+                        property=property_string.replace('"', "'")
+                        add_query = ''' n.%s=["%s"],''' % (key, property.replace('|', '","'))
                     query = query + add_query
                 else:
                     if key == 'http://www.geneontology.org/formats/oboInOwl#id':
@@ -460,7 +480,7 @@ def integrate_mondo_change_identifier():
                     query = query + add_query
 
             url = 'http://bioportal.bioontology.org/ontologies/MONDO/' + monDo
-            add_query = ''' n.url="%s" , n.resource=["%s"]; \n ''' % (url, string_resources)
+            add_query = ''' n.url="%s" , n.resource=["%s"], n.mondo="yes"; \n ''' % (url, string_resources)
             query = query + add_query
         # if has more than one doid than they have to be merge into one node
         elif monDo in dict_monDo_to_DO_only_doid:
@@ -474,36 +494,46 @@ def integrate_mondo_change_identifier():
             doids = list(dict_monDo_to_DO_only_doid[monDo])
             for doid in doids:
                 dict_merged_nodes[monDo].append(doid)
-                if dict_DO_to_info[doid]['name'] == dict_monDO_info[monDo]['label']:
+                if dict_DO_to_info[doid]['name'] == info['label']:
                     doid_with_same_name = doid
                 elif monDo in dict_self_decision_mondo_multiple_doid:
                     doid_with_same_name = dict_self_decision_mondo_multiple_doid[monDo]
             if doid_with_same_name == '':
                 print(monDo)
-                print(dict_monDO_info[monDo]['label'])
+                print(info['label'])
                 print(doids)
                 continue
 
-            monDO_synonyms = dict_monDO_info[monDo]['synonym'] if 'synonym' in dict_monDO_info else []
-            monDo_def = dict_monDO_info[monDo]['definition'] if 'definition' in dict_monDO_info else ''
-            monDO_xref = dict_monDO_info[monDo][
-                'http://www.geneontology.org/formats/oboInOwl#hasDbXref'] if 'http://www.geneontology.org/formats/oboInOwl#hasDbXref' in dict_monDO_info else []
+            monDO_synonyms = info['synonym'] if 'synonym' in info else []
+            monDo_def = info['definition'] if 'definition' in info else ''
+            monDO_xref = info[
+                'http://www.geneontology.org/formats/oboInOwl#hasDbXref'] if 'http://www.geneontology.org/formats/oboInOwl#hasDbXref' in info else []
 
             umls_cuis_monDO = []
             other_xrefs_monDO = []
-            for ref in monDO_xref:
-                if ref[0:4] == 'UMLS':
-                    umls_cuis_monDO.append(ref)
+            if type(monDO_xref)==list:
+                for ref in monDO_xref:
+                    if ref[0:4] == 'UMLS':
+                        umls_cuis_monDO.append(ref)
+                    else:
+                        other_xrefs_monDO.append(ref)
+            else:
+                if monDO_xref[0:4] == 'UMLS':
+                    umls_cuis_monDO.append(monDO_xref)
                 else:
-                    other_xrefs_monDO.append(ref)
+                    other_xrefs_monDO.append(monDO_xref)
 
             monDO_subset = []
 
             # combined information from monDO and DO
-            monDO_synonyms.extend(dict_DO_to_info[doid_with_same_name]['synonyms'])
-            dict_monDO_info[monDo]['synonym'] = monDO_synonyms
+            if type(monDO_synonyms) == list:
+                monDO_synonyms.extend(dict_DO_to_info[doid_with_same_name]['synonyms'])
+            else:
+                dict_DO_to_info[doid_with_same_name]['synonyms'].append(monDO_synonyms)
+                monDO_synonyms = dict_DO_to_info[doid]['synonyms']
+            info['synonym'] = monDO_synonyms
 
-            dict_monDO_info[monDo]['definition'] = dict_DO_to_info[doid_with_same_name][
+            info['definition'] = dict_DO_to_info[doid_with_same_name][
                                                        'definition'] + '[FROM DOID]. ' + monDo_def
 
             dict_DO_to_info[doid]['alternateIds'].append(doid_with_same_name)
@@ -511,16 +541,18 @@ def integrate_mondo_change_identifier():
             # removed from the list
             if dict_DO_to_info[doid_with_same_name]['alternateIds'][0] == '':
                 dict_DO_to_info[doid_with_same_name]['alternateIds'].remove('')
-            dict_monDO_info[monDo]['doids'] = dict_DO_to_info[doid_with_same_name]['alternateIds']
+            info['doids'] = dict_DO_to_info[doid_with_same_name]['alternateIds']
 
-            other_xrefs_monDO.extend(dict_DO_to_info[doid_with_same_name]['xrefs'])
-            dict_monDO_info[monDo]['http://www.geneontology.org/formats/oboInOwl#hasDbXref'] = other_xrefs_monDO
+            other_xrefs_monDO.extend(dict_DO_to_xref[doid])
+            other_xrefs_monDO.remove('') if '' in other_xrefs_monDO else other_xrefs_monDO
+            info['http://www.geneontology.org/formats/oboInOwl#hasDbXref'] = other_xrefs_monDO
 
             umls_cuis_monDO.extend(dict_DO_to_info[doid_with_same_name]['umls_cuis'])
-            dict_monDO_info[monDo]['umls_cuis'] = umls_cuis_monDO
+            umls_cuis_monDO.remove('') if '' in umls_cuis_monDO else umls_cuis_monDO
+            info['umls_cuis'] = umls_cuis_monDO
 
             monDO_subset.extend(dict_DO_to_info[doid_with_same_name]['subset'])
-            dict_monDO_info[monDo]['subset'] = monDO_subset
+            info['subset'] = monDO_subset
 
             dict_DO_to_info[doid_with_same_name]['resource'].append('MonDO')
             string_resources = '","'.join(dict_DO_to_info[doid_with_same_name]['resource'])
@@ -530,24 +562,31 @@ def integrate_mondo_change_identifier():
                         Set n.identifier="%s",'''
             query = query % (doid, monDo, monDo)
 
-            for key, property in dict_monDO_info[monDo].items():
+            for key, property in info.items():
                 # if key in list_properties_which_should_be_an_array:
                 if type(property) == list:
                     if key == 'http://www.geneontology.org/formats/oboInOwl#hasDbXref':
                         key = 'xrefs'
+                    elif key == 'synonym':
+                        key = 'synonyms'
+
                     key = '`' + key + '`' if key[0:5] == 'http:' else key
                     if len(property) > 0 and type(property[0]) == int:
                         add_query = ''' n.%s=%s,''' % (key, property)
                     else:
-                        property_string = '","'.join(property)
-                        add_query = ''' n.%s=["%s"],''' % (key, property_string.replace('"', "'"))
+                        property_string = '|'.join(property)
+                        property_string = property_string.replace('"', "'")
+                        add_query = ''' n.%s=["%s"],''' % (key, property_string.replace('|', '","'))
                     query = query + add_query
                 else:
                     if key == 'http://www.geneontology.org/formats/oboInOwl#id':
                         continue
                     elif key == 'label':
                         continue
-                    key = '`' + key + '`' if key[0:5] == 'http:' else key
+                    elif key == 'synonym':
+                        key = 'synonyms'
+                    elif key[0:5] == 'http:':
+                        key = '`' + key + '`'
                     # query = query + ''' n.%s="%s",'''
                     # query = query % (key, property)
                     if type(property) == int:
@@ -557,30 +596,60 @@ def integrate_mondo_change_identifier():
                     query = query + add_query
 
             url = 'http://bioportal.bioontology.org/ontologies/MONDO/' + monDo
-            add_query = ''' n.url="%s" , n.resource=["%s"]; \n ''' % (url, string_resources)
+            add_query = ''' n.url="%s" , n.resource=["%s"],  n.mondo="yes"; \n ''' % (url, string_resources)
             query = query + add_query
         else:
             counter_new_nodes += 1
+            monDO_xref = info[
+                'http://www.geneontology.org/formats/oboInOwl#hasDbXref'] if 'http://www.geneontology.org/formats/oboInOwl#hasDbXref' in info else []
+
+            umls_cuis_monDO = []
+            other_xrefs_monDO = []
+            if type(monDO_xref)==list:
+                for ref in monDO_xref:
+                    if ref[0:4] == 'UMLS':
+                        umls_cuis_monDO.append(ref)
+                    else:
+                        other_xrefs_monDO.append(ref)
+            else:
+                if monDO_xref[0:4] == 'UMLS':
+                    umls_cuis_monDO.append(monDO_xref)
+                else:
+                    other_xrefs_monDO.append(monDO_xref)
+
+            umls_cuis_monDO.remove('') if '' in umls_cuis_monDO else umls_cuis_monDO
+            info['umls_cuis'] = umls_cuis_monDO
+            other_xrefs_monDO.remove('') if '' in other_xrefs_monDO else other_xrefs_monDO
+            info['http://www.geneontology.org/formats/oboInOwl#hasDbXref'] = other_xrefs_monDO
+
             query = ''' Match  (a:disease{`http://www.geneontology.org/formats/oboInOwl#id`:"%s"})
                         Create (n:Disease{identifier:"%s", '''
             query = query % (monDo, monDo)
-            for key, property in dict_monDO_info[monDo].items():
+            for key, property in info.items():
                 # if key in list_properties_which_should_be_an_array:
                 if type(property) == list:
                     if key == 'http://www.geneontology.org/formats/oboInOwl#hasDbXref':
                         key = 'xrefs'
-                    key = '`' + key + '`' if key[0:5] == 'http:' else key
+                    elif key[0:5] == 'http:':
+                        key = '`' + key + '`'
+                    elif key == 'synonym':
+                        key = 'synonyms'
                     if len(property) > 0 and type(property[0]) == int:
                         add_query = ''' %s:%s,''' % (key, property)
                     else:
-                        property_string = '","'.join(property)
-                        add_query = ''' %s:["%s"],''' % (key, property_string.replace('"', "'"))
+                        property_string = '|'.join(property)
+                        property_string = property_string.replace('"', "'")
+                        add_query = ''' %s:["%s"],''' % (key, property_string.replace('|', '","'))
                     query = query + add_query
                 else:
                     if key == 'http://www.geneontology.org/formats/oboInOwl#id':
                         continue
-                    key = 'name' if key=='label' else key
-                    key = '`' + key + '`' if key[0:5] == 'http:' else key
+                    elif key == 'synonym':
+                        key = 'synonyms'
+                    elif key == 'label':
+                        key = 'name'
+                    elif key[0:5] == 'http:':
+                        key = '`' + key + '`'
                     if type(property) == int:
                         add_query = ''' %s:%s,''' % (key, property)
                     else:
@@ -588,7 +657,7 @@ def integrate_mondo_change_identifier():
                     query = query + add_query
 
             url = 'http://bioportal.bioontology.org/ontologies/MONDO/' + monDo
-            add_query = '''ctd:"no", ndf_rt:"no", resource:['MonDO'], diseaseOntology:"no", hetionet:"no", source:"Monarch Disease Ontology", url:"%s"})
+            add_query = '''ctd:"no", ndf_rt:"no", resource:['MonDO'], diseaseOntology:"no", hetionet:"no", mondo:"yes", source:"Monarch Disease Ontology", url:"%s"})
                         Create (n)-[:equal_to_monDO]->(a); \n''' % (url)
             query = query + add_query
 
@@ -596,9 +665,9 @@ def integrate_mondo_change_identifier():
         # sys.exit()
         g.run(query)
 
-
-    print('number of new nodes:'+str(counter_new_nodes))
-    print('number of switched nodes:'+str(counter_switched_nodes))
+    # sys.exit()
+    print('number of new nodes:' + str(counter_new_nodes))
+    print('number of switched nodes:' + str(counter_switched_nodes))
     print(datetime.datetime.utcnow())
 
     print(dict_merged_nodes)
@@ -607,7 +676,7 @@ def integrate_mondo_change_identifier():
 
         for delete_node in list_delete_nodes:
             # one mapping is not ok from disease to disease of anatomical entity (DOID:7)
-            if merge_id == 'MONDO:0000001' and delete_node=='DOID:7':
+            if merge_id == 'MONDO:0000001' and delete_node == 'DOID:7':
                 continue
 
             merge_information_from_one_node_to_another(delete_node, merge_id, 'Disease')
@@ -623,9 +692,12 @@ def integrate_mondo_change_identifier():
 
     print('number of removed nodes with doid:' + str(count_removed_nodes))
 
+
 '''
 generate cypher file for subClassOf relationship
 '''
+
+
 def generate_cypher_file_for_relationship():
     # file counter
     file_counter = 1
@@ -640,7 +712,6 @@ def generate_cypher_file_for_relationship():
     # count the number of queries
     counter_connection = 0
 
-
     query = ''' Match (a)-[r:subClassOf]->(b) Return a.`http://www.geneontology.org/formats/oboInOwl#id`, b.`http://www.geneontology.org/formats/oboInOwl#id`, r'''
     results = g.run(query)
     for child_id, parent_id, rela, in results:
@@ -650,16 +721,16 @@ def generate_cypher_file_for_relationship():
         Create (a)-[:SUBCLASS_OF_DsoD{license:"CC BY 4.0",unbiased:"false", source:"Monarch Disease Ontology", resource:['MonDO'] , mondo:'yes', mondo_source:"%s",'''
         query = query % (child_id, parent_id, url)
         for key, property in dict_rela.items():
-            if key[0:4]=='http':
-                key='`'+key+'`'
+            if key[0:4] == 'http':
+                key = '`' + key + '`'
             if type(property) == list:
-                property= '","'.join(property)
+                property = '","'.join(property)
                 add_query = '''%s:["%s"],''' % (key, property)
             else:
                 add_query = '''%s:"%s",''' % (key, property)
             query += add_query
 
-        query = query[0:-1]+''' }]->(b);\n'''
+        query = query[0:-1] + ''' }]->(b);\n'''
 
         h.write(query)
         counter_connection += 1
