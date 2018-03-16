@@ -115,7 +115,7 @@ Where n.identifier='DOID:6898' or n.identifier='DOID:0050879'
 
 
 def load_in_hetionet_disease_in_dictionary():
-    query = '''MATCH (n:Disease)  RETURN n.identifier,n.umls_cuis , n.xrefs Limit 8000'''
+    query = '''MATCH (n:Disease)  RETURN n.identifier,n.umls_cuis , n.xrefs Limit 15000'''
     results = g.run(query)
     counter = 0
     count_cuis_double = 0
@@ -544,6 +544,9 @@ dict_rela_of_possible_symptoms_to_cuis = {}
 # dictionary for the files
 # dict_files_with_path={}
 
+# list OF REL NOT FOR SYMPTOMS
+list_not_rel_symptoms = ['AQ', 'QB', 'SY']
+
 '''
 search for symptomes for every diseas.
 For every diseas cui and all his synonyms it search in mysql MRREL for all 
@@ -576,12 +579,15 @@ def find_symptoms(key, synonym):
 
     symptomes = set()
     cur = con.cursor(mdb.cursors.SSCursor)
+    # query = (
+    #     "SELECT cui1, rel, cui2,rela, sab FROM MRREL WHERE (cui2 in (%s) OR cui1 in (%s)) and (rela<>'inverse_isa' or rela IS NULL); ")
     query = (
-        "SELECT cui1, rel, cui2,rela, sab FROM MRREL WHERE (cui2 in (%s) OR cui1 in (%s)) and (rela<>'inverse_isa' or rela IS NULL); ")
+        "SELECT cui1, rel, cui2,rela, sab FROM MRREL WHERE (cui2 in (%s) XOR cui1 in (%s)) and rel not in (%s); ")
     in_cui = ','.join(map(lambda x: '%s', synonym))
+    not_rel = ','.join(map(lambda x: '%s', list_not_rel_symptoms))
     # in_rel= ','.join(map(lambda x: '%s', list_rel ))
     # in_rela= ','.join(map(lambda x: '%s', list_rela ))
-    query = query % (in_cui, in_cui)
+    query = query % (in_cui, in_cui, not_rel)
     # print(query)
     allValues = []
     allValues.extend(synonym)
@@ -610,12 +616,16 @@ def find_symptoms(key, synonym):
             #            name2=get_name(cui2)
             name2 = 'such selber'
         # print('------------------------------------------------------------------------------------------')
+        disease_cui1=False
         if not cui1 in synonym:
             cui = cui1
             name = name1
+            synonym_cui = cui2
         else:
             cui = cui2
             name = name2
+            synonym_cui = cui1
+            disease_cui1=True
 
         if rela == None:
             text = cui1 + ';' + name1 + ';' + cui2 + ';' + name2 + ';' + rel + ';;' + sab + ' \n'
@@ -655,6 +665,11 @@ def find_symptoms(key, synonym):
         good = False
         # print(rel, rela)
         if cui in list_all_possible_symtomes_from_filter:
+
+            if rel=='PAR' and disease_cui1:
+                continue
+            elif rel=='CHD' and not disease_cui1 :
+                continue
 
             if not key in dict_all_info_rel:
                 dict_all_info_rel[key] = {cui: information}
