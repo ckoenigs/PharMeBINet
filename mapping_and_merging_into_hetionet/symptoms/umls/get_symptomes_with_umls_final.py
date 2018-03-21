@@ -115,7 +115,7 @@ Where n.identifier='DOID:6898' or n.identifier='DOID:0050879'
 
 
 def load_in_hetionet_disease_in_dictionary():
-    query = '''MATCH (n:Disease)  RETURN n.identifier,n.umls_cuis , n.xrefs Limit 15000'''
+    query = '''MATCH (n:Disease)  RETURN n.identifier,n.umls_cuis , n.xrefs Limit 7000'''
     results = g.run(query)
     counter = 0
     count_cuis_double = 0
@@ -545,7 +545,29 @@ dict_rela_of_possible_symptoms_to_cuis = {}
 # dict_files_with_path={}
 
 # list OF REL NOT FOR SYMPTOMS
-list_not_rel_symptoms = ['AQ', 'QB', 'SY']
+list_not_rel_symptoms = ['AQ', 'QB', 'SIB', 'SY']
+
+# good rela from RQ where symptom can be cui 1 or 2
+list_rela_rq_symptoms = [None, 'clinically_similar', 'inverse_isa', 'mapped_from', 'classified_as',
+                         'primary_mapped_from', 'mapped_from', 'classifies', 'primary_mapped_to']
+
+# all rela rq for symptoms where the symptom is cui1
+list_rela_rq_symptoms_cui1 = ['inverse_isa', 'mapped_from', 'classified_as', 'primary_mapped_from']
+# all rela rq for symptoms where the symptom is cui2
+list_rela_rq_symptoms_cui2 = ['mapped_from', 'classifies', 'primary_mapped_to']
+
+# list rela of RO for symptoms
+list_rela_ro_symptoms = ['sign_or_symptom_of', 'may_be_finding_of_disease', 'mapped_from', 'mapped_to',
+                         'is_associated_disease_of', 'has_sign_or_symptom', 'has_location', 'has_finding_site',
+                         'has_associated_finding', 'disease_may_have_finding', 'disease_has_finding',
+                         'characterized_by', 'characterizes', 'associated_with', 'associated_finding_of',
+                         'associated_finding_of_excluded', ' associated_finding_of_possibly_included',
+                         'associated_disease']
+# list all rela of ro where cui 1 is symptom
+list_rela_ro_symptoms_cui1=['mapped_from','is_associated_disease_of','has_sign_or_symptom','has_associated_finding','disease_may_have_finding','disease_has_finding','characterizes']
+
+# list all rela of ro where cui 2 is symptom
+list_rela_ro_symptoms_cui2=['sign_or_symptom_of','may_be_finding_of_disease','mapped_to','has_location' 'has_finding_site','characterized_by','associated_with','associated_finding_of','associated_finding_of_excluded', ' associated_finding_of_possibly_included']
 
 '''
 search for symptomes for every diseas.
@@ -572,7 +594,6 @@ def find_symptoms(key, synonym):
     mondos_string = '|'.join(mondos)
     f.write(name_key + ';' + mondos_string + '\n')
     f.write('cui1;name1;cui2;name2;rel;rela \n')
-    #
     g = open('symptomes/ready/symptoms_' + key + '.csv', 'w')
     g.write(name_key + ';' + mondos_string + '\n')
     g.write('cui;name;rel;rela;sab; \n')
@@ -592,6 +613,7 @@ def find_symptoms(key, synonym):
     allValues = []
     allValues.extend(synonym)
     allValues.extend(synonym)
+    allValues.extend(list_not_rel_symptoms)
     # allValues.extend(list_rel)
     # allValues.extend(list_rela)
 
@@ -601,6 +623,7 @@ def find_symptoms(key, synonym):
     count_symptom = 0
 
     rows_counter = cur.execute(query, tuple(allValues))
+    start = time.time()
 
     for (cui1, rel, cui2, rela, sab,) in cur:
         #            print('huhu')
@@ -616,7 +639,7 @@ def find_symptoms(key, synonym):
             #            name2=get_name(cui2)
             name2 = 'such selber'
         # print('------------------------------------------------------------------------------------------')
-        disease_cui1=False
+        disease_cui1 = False
         if not cui1 in synonym:
             cui = cui1
             name = name1
@@ -625,7 +648,7 @@ def find_symptoms(key, synonym):
             cui = cui2
             name = name2
             synonym_cui = cui1
-            disease_cui1=True
+            disease_cui1 = True
 
         if rela == None:
             text = cui1 + ';' + name1 + ';' + cui2 + ';' + name2 + ';' + rel + ';;' + sab + ' \n'
@@ -666,9 +689,23 @@ def find_symptoms(key, synonym):
         # print(rel, rela)
         if cui in list_all_possible_symtomes_from_filter:
 
-            if rel=='PAR' and disease_cui1:
+            if rel == 'PAR' and disease_cui1:
                 continue
-            elif rel=='CHD' and not disease_cui1 :
+            elif rel == 'CHD' and not disease_cui1:
+                continue
+            elif rel == 'RN' and rela in ['mapped_to', 'was_a', 'has_alternative']:
+                continue
+            elif rel == 'RB' and rela in ['mapped_from', 'inverse_was_a', 'alternative_of']:
+                continue
+            elif rel == 'RL' and dict_all_possible_symptoms_from_filter[cui] != 'Sign or Symptom':
+                continue
+            elif rel == 'RQ' and (
+                    rela not in list_rela_rq_symptoms or (rela in list_rela_rq_symptoms_cui1 and disease_cui1) or (
+                    rela in list_rela_rq_symptoms_cui2 and not disease_cui1)):
+                continue
+            elif rel == 'RO' and (
+                    rela not in list_rela_ro_symptoms or (rela in list_rela_ro_symptoms_cui1 and disease_cui1) or (
+                    rela in list_rela_ro_symptoms_cui2 and not disease_cui1)):
                 continue
 
             if not key in dict_all_info_rel:
@@ -700,6 +737,7 @@ def find_symptoms(key, synonym):
                 g.write(text)
                 symptomes.add(cui)
 
+    print('\t Query anfrage: %.4f seconds' % (time.time() - start))
     dict_disease_symptomes[key] = list(symptomes)
     cur.close()
     f.close()
@@ -912,6 +950,7 @@ def filter_one_find_symptomes():
             name = get_name(cui)
             dictionary_umls_cui_to_name[cui] = name
         # print(name)
+        name = name.replace(';', ',')
         text = cui + ';' + name + ';' + sty + ' \n'
         f.write(text)
         bad_in = False
@@ -1129,8 +1168,8 @@ def main():
 
     print(datetime.datetime.utcnow())
     print('first filter of a list of all possible symptoms')
-    # filter_one_find_symptomes()
-    i = 0
+    filter_one_find_symptomes()
+    # i = 0
 
     #    for key,value in dict_symptomes_filter_one.items():
     #        print(key,value)
@@ -1141,13 +1180,13 @@ def main():
 
     print(datetime.datetime.utcnow())
     print('second filter of a list of all possible symptoms')
-    # filter_second_find_symptomes()
+    filter_second_find_symptomes()
 
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
     print('third filter of a list of all possible symptoms')
-    # filter_third_find_symptomes()
+    filter_third_find_symptomes()
 
     print('##########################################################################')
 
@@ -1192,7 +1231,7 @@ def main():
 
     for rel, list_set_cuis in dict_rel_of_possible_symptoms_to_cuis.items():
         file_rel = open('rel/' + rel + '.txt', 'w')
-        file_rel.write(','.join(list(list_set_cuis)) + '\n')
+        file_rel.write('\n'.join(list(list_set_cuis)) + '\n')
 
     print('rela')
 
@@ -1201,7 +1240,7 @@ def main():
 
     for rela, list_set_cuis in dict_rela_of_possible_symptoms_to_cuis.items():
         file_rela = open('rel/rela/' + rela + '.txt', 'w')
-        file_rela.write(','.join(list(list_set_cuis)) + '\n')
+        file_rela.write('\n'.join(list(list_set_cuis)) + '\n')
 
     #    find_symptoms()
 
