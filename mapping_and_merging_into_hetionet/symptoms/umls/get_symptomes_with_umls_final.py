@@ -115,7 +115,7 @@ Where n.identifier='DOID:6898' or n.identifier='DOID:0050879'
 
 
 def load_in_hetionet_disease_in_dictionary():
-    query = '''MATCH (n:Disease)  RETURN n.identifier,n.umls_cuis , n.xrefs Limit 7000'''
+    query = '''MATCH (n:Disease) Where not n.identifier in ['MONDO:0000001','MONDO:0002254'] RETURN n.identifier,n.umls_cuis , n.xrefs Limit 10'''
     results = g.run(query)
     counter = 0
     count_cuis_double = 0
@@ -597,7 +597,8 @@ def find_symptoms(key, synonym):
     g = open('symptomes/ready/symptoms_' + key + '.csv', 'w')
     g.write(name_key + ';' + mondos_string + '\n')
     g.write('cui;name;rel;rela;sab; \n')
-
+    print(key)
+    start = time.time()
     symptomes = set()
     cur = con.cursor(mdb.cursors.SSCursor)
     # query = (
@@ -621,11 +622,15 @@ def find_symptoms(key, synonym):
 
     count_finding = 0
     count_symptom = 0
-
+    print('\t Query anfrage: %.4f seconds' % (time.time() - start))
     rows_counter = cur.execute(query, tuple(allValues))
     start = time.time()
+    time_ifs=0.000
+    start_filter = time.time()
+
 
     for (cui1, rel, cui2, rela, sab,) in cur:
+        time_ifs+= (time.time()-start_filter)
         #            print('huhu')
 
         if cui1 in dictionary_umls_cui_to_name:
@@ -687,40 +692,52 @@ def find_symptoms(key, synonym):
         f.write(text)
         good = False
         # print(rel, rela)
+
+        start_filter = time.time()
         if cui in list_all_possible_symtomes_from_filter:
+            if cui not in symptomes:
+                if disease_cui1 and rel in ['PAR', 'RB', 'RO', 'RL','RQ']:
+                    if rel == 'RO' and ( rela not in list_rela_ro_symptoms or rela in list_rela_ro_symptoms_cui1):
+                        continue
+                    elif rel == 'PAR':
+                        continue
+                    elif rel == 'RB' and rela in ['mapped_from', 'inverse_was_a', 'alternative_of']:
+                        continue
+                    elif rel == 'RL' and dict_all_possible_symptoms_from_filter[cui] != 'Sign or Symptom':
+                        continue
+                    elif rel == 'RQ' and (
+                            rela not in list_rela_rq_symptoms or rela in list_rela_rq_symptoms_cui1):
+                        continue
 
-            if rel == 'PAR' and disease_cui1:
-                continue
-            elif rel == 'CHD' and not disease_cui1:
-                continue
-            elif rel == 'RN' and rela in ['mapped_to', 'was_a', 'has_alternative']:
-                continue
-            elif rel == 'RB' and rela in ['mapped_from', 'inverse_was_a', 'alternative_of']:
-                continue
-            elif rel == 'RL' and dict_all_possible_symptoms_from_filter[cui] != 'Sign or Symptom':
-                continue
-            elif rel == 'RQ' and (
-                    rela not in list_rela_rq_symptoms or (rela in list_rela_rq_symptoms_cui1 and disease_cui1) or (
-                    rela in list_rela_rq_symptoms_cui2 and not disease_cui1)):
-                continue
-            elif rel == 'RO' and (
-                    rela not in list_rela_ro_symptoms or (rela in list_rela_ro_symptoms_cui1 and disease_cui1) or (
-                    rela in list_rela_ro_symptoms_cui2 and not disease_cui1)):
-                continue
+                elif not  disease_cui1 and rel in ['CHD', 'RO', 'RN', 'RL', 'RQ']:
+                    if rel == 'RO' and ( rela not in list_rela_ro_symptoms or rela in list_rela_ro_symptoms_cui2):
+                        continue
+                    elif rel == 'CHD':
+                        continue
+                    elif rel == 'RN' and rela in ['mapped_to', 'was_a', 'has_alternative']:
+                        continue
+                    elif rel == 'RL' and dict_all_possible_symptoms_from_filter[cui] != 'Sign or Symptom':
+                        continue
+                    elif rel == 'RQ' and (
+                            rela not in list_rela_rq_symptoms or
+                                    rela in list_rela_rq_symptoms_cui2 and not disease_cui1):
+                        continue
 
-            if not key in dict_all_info_rel:
-                dict_all_info_rel[key] = {cui: information}
-            elif not cui in dict_all_info_rel[key]:
-                dict_all_info_rel[key][cui] = information
-                # print(rel)
-                # print(rela)
-                # print(dict_all_possible_symptoms_from_filter[cui[0]])
 
-            #                symptomes.add(cui)
-            #            symptomes=combin(symptomes,cui)
-            count_symptom += 1
 
-            if not cui in symptomes:
+                # if not key in dict_all_info_rel:
+                #     dict_all_info_rel[key] = {cui: information}
+                # elif not cui in dict_all_info_rel[key]:
+                #     dict_all_info_rel[key][cui] = information
+                    # print(rel)
+                    # print(rela)
+                    # print(dict_all_possible_symptoms_from_filter[cui[0]])
+
+                #                symptomes.add(cui)
+                #            symptomes=combin(symptomes,cui)
+                count_symptom += 1
+
+
                 list_rel_of_possible_symptoms.add(rel)
                 if rel in dict_rel_of_possible_symptoms_to_cuis:
                     dict_rel_of_possible_symptoms_to_cuis[rel].add(key)
@@ -737,7 +754,9 @@ def find_symptoms(key, synonym):
                 g.write(text)
                 symptomes.add(cui)
 
-    print('\t Query anfrage: %.4f seconds' % (time.time() - start))
+    time_ifs += (time.time() - start_filter)
+    print('\t Ifs filter: %.4f seconds' % (time_ifs))
+    print('\t Python filter: %.4f seconds' % (time.time() - start))
     dict_disease_symptomes[key] = list(symptomes)
     cur.close()
     f.close()
@@ -1168,7 +1187,7 @@ def main():
 
     print(datetime.datetime.utcnow())
     print('first filter of a list of all possible symptoms')
-    filter_one_find_symptomes()
+    # filter_one_find_symptomes()
     # i = 0
 
     #    for key,value in dict_symptomes_filter_one.items():
@@ -1180,13 +1199,13 @@ def main():
 
     print(datetime.datetime.utcnow())
     print('second filter of a list of all possible symptoms')
-    filter_second_find_symptomes()
+    # filter_second_find_symptomes()
 
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
     print('third filter of a list of all possible symptoms')
-    filter_third_find_symptomes()
+    # filter_third_find_symptomes()
 
     print('##########################################################################')
 
