@@ -115,12 +115,14 @@ Where n.identifier='DOID:6898' or n.identifier='DOID:0050879'
 
 
 def load_in_hetionet_disease_in_dictionary():
-    query = '''MATCH (n:Disease) Where not n.identifier in ['MONDO:0000001','MONDO:0002254'] RETURN n.identifier,n.umls_cuis , n.xrefs Limit 10'''
+    query = '''MATCH (n:Disease) Where not n.identifier in ['MONDO:0000001','MONDO:0002254'] RETURN n.identifier,n.umls_cuis , n.xrefs Limit 10000'''
     results = g.run(query)
     counter = 0
     count_cuis_double = 0
     file_types = open('cui_types_of_disease.txt', 'w')
     file_types.write('cui\tsty\n')
+    start = time.time()
+    time_sty=0.0
     for mondo, umls_cuis, xrefs, in results:
         #        print(mondo)
         #        print(umls_cuis)
@@ -137,6 +139,7 @@ def load_in_hetionet_disease_in_dictionary():
 
             dict_mondo_to_umls_cuis[mondo] = list(list_umls_set_cuis)
             cui = umls_cuis[0].split(':')[1]
+            start_sty = time.time()
             cur = con.cursor()
             query = ("SELECT sty FROM MRSTY WHERE cui='%s' ; ") % (cui)
             rows_counter = cur.execute(query)
@@ -151,6 +154,7 @@ def load_in_hetionet_disease_in_dictionary():
                         dict_cui_to_sty[cui].add(sty)
                     else:
                         dict_cui_to_sty[cui] = set([sty])
+            time_sty+= time.time()-start_sty
             if not cui in dict_of_all_diseases:
                 dict_of_all_diseases[cui] = [mondo]
             else:
@@ -170,12 +174,15 @@ def load_in_hetionet_disease_in_dictionary():
     print('length of dict with cui and list of mondos:' + str(len(dict_of_all_diseases)))
     print('length of dict wit mondo and xref list:' + str(len(dict_mondo_to_xrefs)))
     print('length of disease ontology without a ref:' + str(len(list_mondo_without_refs)))
+    print('\t neo4j with sty : %.4f seconds' % (time.time() - start))
+    print('\t neo4j only sty : %.4f seconds' % (time_sty))
 
     # get umls cui with use of other external ids
     i = 0
     list_doi = dict_mondo_to_xrefs.keys()
     print(list_doi[0:5])
     j = 0
+    start = time.time()
     for mondo, xrefs in dict_mondo_to_xrefs.items():
         has_found_a_cui = False
         for xref in xrefs:
@@ -219,7 +226,7 @@ def load_in_hetionet_disease_in_dictionary():
                                     dict_cui_to_sty[cui].add(sty)
                                 else:
                                     dict_cui_to_sty[cui] = set([sty])
-                        if not cui is dict_of_all_diseases:
+                        if not cui in dict_of_all_diseases:
                             dict_of_all_diseases[cui] = [mondo]
 
                             has_found_a_cui = True
@@ -280,6 +287,7 @@ def load_in_hetionet_disease_in_dictionary():
     print('length of disease ontology without a ref:' + str(len(list_mondo_without_refs)))
     print('length of dict with cui and list of mondos after use of xref:' + str(len(dict_of_all_diseases)))
     print(dict_sty_counter)
+    print('\t xref with sty : %.4f seconds' % (time.time() - start))
 
 
 #    print(i)
@@ -368,6 +376,10 @@ list_rela_rn_synonym = ['contains', 'has_precise_ingredient']
 # list of all rela of RN where key must be cui2
 list_rela_rb_synonym = ['contained_in', 'precise_ingredient_of']
 
+# the string version of the rela list for the synonyms
+list_rela_rn_synonym_string = "','".join(list_rela_rn_synonym)
+list_rela_rb_synonym_string = "','".join(list_rela_rb_synonym)
+
 ''' 
 search for all synonyms of all diseases of hetionet. 
 it generate for every disease a csv file with all synonyms,with form cui1;name1;cui2;name2;rel;rela;mondo \n   
@@ -417,19 +429,16 @@ def find_synonyms(key):
     synonym = set([])
     # synonym.add(key)
     cur = con.cursor()
-    # print(key)
-    query = ("SELECT cui1, rel, cui2,rela FROM MRREL WHERE (cui2 = %s OR cui1 = %s) AND rel in (%s) ; ")
 
-    in_rel = ','.join(map(lambda x: '%s', list_rel))
-    query = query % ('%s', '%s', in_rel)
+
+    query = (
+        "SELECT cui1, rel, cui2,rela FROM MRREL WHERE ( cui1= '%s' and ( REL in ('SY','CHD') or (rel = 'RL' and rela = 'mapped_to') or (rel = 'RN' and ((not rela in ('%s') and not rela = 'has_alternative') or rela is Null)) or ( rel = 'RB' and rela in ('%s') ) ) ) or ( cui2='%s' and ( rel in ('PAR','SY') or (rel = 'RL' and rela = 'mapped_from') or (rel = 'RN' and rela in ('%s') ) or (rel = 'RB' and ((not rela in ('%s') and not rela = 'alternative_of' ) or rela is Null  )) ) );")
+
+    query = query % (key, list_rela_rn_synonym_string, list_rela_rb_synonym_string, key, list_rela_rn_synonym_string,
+                     list_rela_rb_synonym_string)
     # print(query)
-    allValues = [key, key]
-    allValues.extend(list_rel)
-    # print(allValues)
-    # query=("SELECT cui1, rel, cui2,rela FROM MRREL WHERE cui2 = 'C1800706';")
-    cur.execute(query, tuple(allValues))
-    # cur.execute(query)
-    # print('\t Query anfrage: %.4f seconds' % (time.time() - start))
+    cur.execute(query)
+
     start = time.time()
 
     # go through all results and add them to the synonoyms if they fullfill the condition
@@ -457,31 +466,14 @@ def find_synonyms(key):
         #     mondo = dict_of_all_diseases[cui2]
         mondo = '|'.join(mondo_ids)
 
-        is_synonym = False
+        synonym_cui = cui2 if cui1==key else cui1
 
-        if cui1 == key:
-            synonym_cui = cui2
-            if rel in ['SY', 'CHD'] or (
-                    rel == 'RN' and not rela in list_rela_rn_synonym and not rela == 'has_alternative') or (
-                    rel == 'RB' and rela in list_rela_rb_synonym) or (rel == 'RL' and rela == 'mapped_to'):
-                # synonym.add(cui2)
-                is_synonym = True
+        synonym.add(synonym_cui)
+        if rela is None:
+            text = cui1 + ';' + name1 + ';' + cui2 + ';' + name2 + ';' + rel + ';;' + mondo + ' \n'
         else:
-            synonym_cui = cui1
-
-            if (rel == 'RB' and not rela in list_rela_rb_synonym and rela != 'alternative_of') or rel in ['PAR',
-                                                                                                          'SY'] or (
-                    rel == 'RN' and rela in list_rela_rn_synonym) or (rel == 'RL' and rela == 'mapped_from'):
-                # synonym.add(cui1)
-                is_synonym = True
-
-        if is_synonym and synonym_cui not in synonym:
-            synonym.add(synonym_cui)
-            if rela is None:
-                text = cui1 + ';' + name1 + ';' + cui2 + ';' + name2 + ';' + rel + ';;' + mondo + ' \n'
-            else:
-                text = cui1 + ';' + name1 + ';' + cui2 + ';' + name2 + ';' + rel + ';' + rela + ';' + mondo + ' \n'
-            f.write(text)
+            text = cui1 + ';' + name1 + ';' + cui2 + ';' + name2 + ';' + rel + ';' + rela + ';' + mondo + ' \n'
+        f.write(text)
 
     cur.close()
 
@@ -548,13 +540,13 @@ dict_rela_of_possible_symptoms_to_cuis = {}
 list_not_rel_symptoms = ['AQ', 'QB', 'SIB', 'SY']
 
 # good rela from RQ where symptom can be cui 1 or 2
-list_rela_rq_symptoms = [None, 'clinically_similar', 'inverse_isa', 'mapped_from', 'classified_as',
-                         'primary_mapped_from', 'mapped_from', 'classifies', 'primary_mapped_to']
+list_rela_rq_symptoms = ['clinically_similar', 'inverse_isa', 'mapped_from', 'classified_as',
+                         'primary_mapped_from', 'mapped_to', 'classifies', 'primary_mapped_to']
 
 # all rela rq for symptoms where the symptom is cui1
-list_rela_rq_symptoms_cui1 = ['inverse_isa', 'mapped_from', 'classified_as', 'primary_mapped_from']
+list_rela_rq_symptoms_cui1 = ['mapped_from', 'classified_as', 'primary_mapped_from']
 # all rela rq for symptoms where the symptom is cui2
-list_rela_rq_symptoms_cui2 = ['mapped_from', 'classifies', 'primary_mapped_to']
+list_rela_rq_symptoms_cui2 = ['mapped_to', 'classifies', 'primary_mapped_to']
 
 # list rela of RO for symptoms
 list_rela_ro_symptoms = ['sign_or_symptom_of', 'may_be_finding_of_disease', 'mapped_from', 'mapped_to',
@@ -564,10 +556,15 @@ list_rela_ro_symptoms = ['sign_or_symptom_of', 'may_be_finding_of_disease', 'map
                          'associated_finding_of_excluded', ' associated_finding_of_possibly_included',
                          'associated_disease']
 # list all rela of ro where cui 1 is symptom
-list_rela_ro_symptoms_cui1=['mapped_from','is_associated_disease_of','has_sign_or_symptom','has_associated_finding','disease_may_have_finding','disease_has_finding','characterizes']
+list_rela_ro_symptoms_cui1 = ['mapped_from', 'is_associated_disease_of', 'has_sign_or_symptom',
+                              'has_associated_finding', 'disease_may_have_finding', 'disease_has_finding',
+                              'characterizes']
 
 # list all rela of ro where cui 2 is symptom
-list_rela_ro_symptoms_cui2=['sign_or_symptom_of','may_be_finding_of_disease','mapped_to','has_location' 'has_finding_site','characterized_by','associated_with','associated_finding_of','associated_finding_of_excluded', ' associated_finding_of_possibly_included']
+list_rela_ro_symptoms_cui2 = ['sign_or_symptom_of', 'may_be_finding_of_disease', 'mapped_to',
+                              'has_location' 'has_finding_site', 'characterized_by', 'associated_with',
+                              'associated_finding_of', 'associated_finding_of_excluded',
+                              ' associated_finding_of_possibly_included']
 
 '''
 search for symptomes for every diseas.
@@ -601,36 +598,41 @@ def find_symptoms(key, synonym):
     start = time.time()
     symptomes = set()
     cur = con.cursor(mdb.cursors.SSCursor)
+
     # query = (
     #     "SELECT cui1, rel, cui2,rela, sab FROM MRREL WHERE (cui2 in (%s) OR cui1 in (%s)) and (rela<>'inverse_isa' or rela IS NULL); ")
+
     query = (
-        "SELECT cui1, rel, cui2,rela, sab FROM MRREL WHERE (cui2 in (%s) XOR cui1 in (%s)) and rel not in (%s); ")
-    in_cui = ','.join(map(lambda x: '%s', synonym))
-    not_rel = ','.join(map(lambda x: '%s', list_not_rel_symptoms))
-    # in_rel= ','.join(map(lambda x: '%s', list_rel ))
-    # in_rela= ','.join(map(lambda x: '%s', list_rela ))
-    query = query % (in_cui, in_cui, not_rel)
+        "SELECT cui1, rel, cui2,rela, sab FROM MRREL WHERE (cui2 in ('%s') and (  (rel = 'RO' and ( rela ='associated_disease'  or rela in ('%s'))) or rel = 'RL' or rel = 'PAR' or (rel = 'RB' and (not rela in ('mapped_from', 'inverse_was_a', 'alternative_of') or rela is Null))  or (rel = 'RQ' and (rela='clinically_similar' or rela is Null or rela in ('%s')))  ) )  or ( cui1 in ('%s') and ( (rel = 'RO' and (rela ='associated_disease' or rela in ('%s') ))  or rel = 'RL or rel = 'CHD' or (rel = 'RN' and (not rela in ('mapped_to', 'was_a', 'has_alternative') or rela is Null)) or (rel = 'RQ' and ( rela='clinically_similar' or rela is Null or rela in ('%s') ))   )  )  ; ")
+    # query = (
+    #     "SELECT cui1, rel, cui2,rela, sab FROM MRREL WHERE (cui2 in ('%s') and ( (rel = 'RO' and (rela not in ('%s') or rela in ('%s') )) or rel = 'CHD' or (rel = 'RN' and rela in ('mapped_to', 'was_a', 'has_alternative')) or (rel = 'RQ' and ( rela not in ('%s') or rela in ('%s') ))  ) ) or ( cui1 in ('%s') and  ( (rel = 'RO' and ( rela not in ('%s')  or rela in ('%s'))) or rel = 'PAR' or (rel = 'RB' and rela in ('mapped_from', 'inverse_was_a', 'alternative_of')) or (rel = 'RQ' and (rela not in ('%s') or not rela is Null or rela in ('%s')))  ) ) ; ")
+
+    synonyms_string = "','".join(synonym)
+    list_rela_ro_symptoms_string = "','".join(list_rela_ro_symptoms)
+    list_rela_ro_symptoms_cui1_string = "','".join(list_rela_ro_symptoms_cui1)
+    list_rela_rq_symptoms_string = "','".join(list_rela_rq_symptoms)
+    list_rela_rq_symptoms_cui1_string = "','".join(list_rela_rq_symptoms_cui1)
+    list_rela_ro_symptoms_cui2_string = "','".join(list_rela_ro_symptoms_cui2)
+    list_rela_rq_symptoms_cui2_string = "','".join(list_rela_rq_symptoms_cui2)
+
+    query = query % (
+    synonyms_string, list_rela_ro_symptoms_cui1_string, list_rela_rq_symptoms_cui1_string, synonyms_string,
+    list_rela_ro_symptoms_cui2_string, list_rela_rq_symptoms_cui2_string)
+
     # print(query)
-    allValues = []
-    allValues.extend(synonym)
-    allValues.extend(synonym)
-    allValues.extend(list_not_rel_symptoms)
-    # allValues.extend(list_rel)
-    # allValues.extend(list_rela)
 
     # print(len(list_all_possible_symtomes_from_filter))
 
     count_finding = 0
     count_symptom = 0
     print('\t Query anfrage: %.4f seconds' % (time.time() - start))
-    rows_counter = cur.execute(query, tuple(allValues))
+    rows_counter = cur.execute(query)
     start = time.time()
-    time_ifs=0.000
+    time_ifs = 0.000
     start_filter = time.time()
 
-
     for (cui1, rel, cui2, rela, sab,) in cur:
-        time_ifs+= (time.time()-start_filter)
+        time_ifs += (time.time() - start_filter)
         #            print('huhu')
 
         if cui1 in dictionary_umls_cui_to_name:
@@ -696,47 +698,20 @@ def find_symptoms(key, synonym):
         start_filter = time.time()
         if cui in list_all_possible_symtomes_from_filter:
             if cui not in symptomes:
-                if disease_cui1 and rel in ['PAR', 'RB', 'RO', 'RL','RQ']:
-                    if rel == 'RO' and ( rela not in list_rela_ro_symptoms or rela in list_rela_ro_symptoms_cui1):
-                        continue
-                    elif rel == 'PAR':
-                        continue
-                    elif rel == 'RB' and rela in ['mapped_from', 'inverse_was_a', 'alternative_of']:
-                        continue
-                    elif rel == 'RL' and dict_all_possible_symptoms_from_filter[cui] != 'Sign or Symptom':
-                        continue
-                    elif rel == 'RQ' and (
-                            rela not in list_rela_rq_symptoms or rela in list_rela_rq_symptoms_cui1):
-                        continue
-
-                elif not  disease_cui1 and rel in ['CHD', 'RO', 'RN', 'RL', 'RQ']:
-                    if rel == 'RO' and ( rela not in list_rela_ro_symptoms or rela in list_rela_ro_symptoms_cui2):
-                        continue
-                    elif rel == 'CHD':
-                        continue
-                    elif rel == 'RN' and rela in ['mapped_to', 'was_a', 'has_alternative']:
-                        continue
-                    elif rel == 'RL' and dict_all_possible_symptoms_from_filter[cui] != 'Sign or Symptom':
-                        continue
-                    elif rel == 'RQ' and (
-                            rela not in list_rela_rq_symptoms or
-                                    rela in list_rela_rq_symptoms_cui2 and not disease_cui1):
-                        continue
-
-
+                if rel == 'RL' and dict_all_possible_symptoms_from_filter[cui] != 'Sign or Symptom':
+                    continue
 
                 # if not key in dict_all_info_rel:
                 #     dict_all_info_rel[key] = {cui: information}
                 # elif not cui in dict_all_info_rel[key]:
                 #     dict_all_info_rel[key][cui] = information
-                    # print(rel)
-                    # print(rela)
-                    # print(dict_all_possible_symptoms_from_filter[cui[0]])
+                # print(rel)
+                # print(rela)
+                # print(dict_all_possible_symptoms_from_filter[cui[0]])
 
                 #                symptomes.add(cui)
                 #            symptomes=combin(symptomes,cui)
                 count_symptom += 1
-
 
                 list_rel_of_possible_symptoms.add(rel)
                 if rel in dict_rel_of_possible_symptoms_to_cuis:
@@ -1110,6 +1085,7 @@ def main():
     print('connection to db')
     database_connection()
 
+
     print(get_name('C0005396'))
 
     print('##########################################################################')
@@ -1119,7 +1095,6 @@ def main():
 
     load_in_hetionet_disease_in_dictionary()
 
-    # sys.exit()
 
     print('##########################################################################')
     #
