@@ -127,6 +127,9 @@ dict_sty_counter = {}
 # dictionary cui to sty
 dict_cui_to_sty = {}
 
+#dictinonary of mond to name
+dict_mondo_to_name={}
+
 '''
 take one umls for every disease but remember all the other cuis
 the for the umls cui find the semantic type and write this infromation into a file
@@ -188,7 +191,7 @@ Where n.identifier='DOID:6898' or n.identifier='DOID:0050879'
 
 def load_in_hetionet_disease_in_dictionary():
     # get all disease from neo4j with exception disease (MONDO:0000001) and synodrome (MONDO:0002254)
-    query = '''MATCH (n:Disease) Where not n.identifier in ['MONDO:0000001','MONDO:0002254'] RETURN n.identifier,n.umls_cuis , n.xrefs Limit 10000'''
+    query = '''MATCH (n:Disease) Where not n.identifier in ['MONDO:0000001','MONDO:0002254'] RETURN n.identifier,n.umls_cuis , n.xrefs, n.name '''
     results = g.run(query)
 
     global counter, count_cuis_double, time_sty, file_types
@@ -211,7 +214,7 @@ def load_in_hetionet_disease_in_dictionary():
     thread_id = 1
 
     #go through all results from the neo4j query
-    for mondo, umls_cuis, xrefs, in results:
+    for mondo, umls_cuis, xrefs, name, in results:
         #        print(mondo)
         #        print(umls_cuis)
 
@@ -225,6 +228,12 @@ def load_in_hetionet_disease_in_dictionary():
             threads_sty.append(thread)
             # increase thread id
             thread_id += 1
+            if thread_id%8000==0:
+                # wait for all threads
+                for t in threads_sty:
+                    t.join()
+                print(thread_id)
+                print('waited')
         # if not remember the xref
         else:
             #            print('ne')
@@ -234,6 +243,7 @@ def load_in_hetionet_disease_in_dictionary():
                 dict_mondo_to_xrefs[mondo] = xrefs
             else:
                 list_mondo_without_refs.append(mondo)
+            dict_mondo_to_name[mondo]=name
 
     # wait for all threads
     for t in threads_sty:
@@ -253,6 +263,12 @@ def load_in_hetionet_disease_in_dictionary():
     print(list_doi[0:5])
     j = 0
     start = time.time()
+    # variable which shows if something was founded with xref
+    found_cui_with_xref=False
+    # count name mapping
+    count_name_mapping=0
+    #count not name mapped
+    count_not_name_mapped=0
     # go through all mondos without umls cui  and try to get umls cui with the xrefs
     for mondo, xrefs in dict_mondo_to_xrefs.items():
         for xref in xrefs:
@@ -278,78 +294,53 @@ def load_in_hetionet_disease_in_dictionary():
                 rows_counter = cur.execute(query)
                 if rows_counter > 0:
                     umls_cui = []
+                    found_cui_with_xref=True
                     for cui, in cur:
                         umls_cui.append(cui)
 
-                        thread = styThread(thread_id, mondo, umls_cuis, True)
+                    thread = styThread(thread_id, mondo, umls_cuis, False)
+                    # start thread
+                    thread.start()
+                    # add to list
+                    threads_sty.append(thread)
+                    # increase thread id
+                    thread_id += 1
+                    if thread_id % 8000 == 0:
+                        # wait for all threads
+                        for t in threads_sty:
+                            t.join()
+                        print(thread_id)
+                        print('waited')
+
+            if not found_cui_with_xref:
+                for mondo, name in dict_mondo_to_name.items():
+                    query= ('Select CUI FROM MRCONSO WHERE STR="%s";')
+                    query=query %(name)
+                    cur = con.cursor()
+                    rows_counter=cur.execute(query)
+                    if rows_counter>0:
+                        count_name_mapping+=1
+                        umls_cui = []
+                        found_cui_with_xref = True
+                        for cui, in cur:
+                            umls_cui.append(cui)
+
+                        thread = styThread(thread_id, mondo, umls_cuis, False)
                         # start thread
                         thread.start()
                         # add to list
                         threads_sty.append(thread)
                         # increase thread id
                         thread_id += 1
-                #                        i += 1
-                #                        dict_mondo_to_umls_cuis[mondo] = [cui]
-                #                        cur = con.cursor()
-                #                        query = ("SELECT sty FROM MRSTY WHERE cui='%s' ; ") % (cui)
-                #                        rows_counter = cur.execute(query)
-                #                        if rows_counter > 0:
-                #                            for sty, in cur:
-                #                                file_types.write(cui + '\t' + sty + '\n')
-                #                                if sty in dict_sty_counter:
-                #                                    dict_sty_counter[sty] += 1
-                #                                else:
-                #                                    dict_sty_counter[sty] = 1
-                #                                if cui in dict_cui_to_sty:
-                #                                    dict_cui_to_sty[cui].add(sty)
-                #                                else:
-                #                                    dict_cui_to_sty[cui] = set([sty])
-                #                        if not cui in dict_of_all_diseases:
-                #                            dict_of_all_diseases[cui] = [mondo]
-                #                            break
-                #                        else:
-                #                            dict_of_all_diseases[cui].append(mondo)
-                #                            break
-                else:
-                    print('nicht bedacht')
-            else:
-                #                 print(xref)
-                # some of the xref has a strange form and have to be changed
-                xref = xref.replace("'", "")
-                refs = xref.split(',')
-                for ref in refs:
-                    #                    print(ref)
-                    if len(ref.split(':')) == 2:
-                        sab = ref.split(':')[0]
-                        code = ref.split(':')[1]
-                        cur = con.cursor()
-                        if sab in dict_type_name_in_mrconso:
+                        if thread_id % 8000 == 0:
+                            # wait for all threads
+                            for t in threads_sty:
+                                t.join()
+                            print(thread_id)
+                            print('waited')
+                    else:
+                        count_not_name_mapped+=1
 
-                            types = dict_type_name_in_mrconso[sab]
-                            typstring = '","'.join(types)
-                            query = ('Select CUI From MRCONSO Where SAB in ("%s") AND CODE= "%s" ')
-                            query = query % (typstring, code)
-                        else:
-                            if len(sab.split(',')) > 1:
-                                sab = sab.split(',')[len(sab.split(',')) - 1].split("'")[1]
-                            query = ("Select CUI From MRCONSO Where SAB= '%s' AND CODE= '%s' ")
-                            query = query % (sab, code)
-                        #                            print(mondo)
-                        #                            print(code)
-                        #                            print(query)
-                        #                            print('blub')
-                        rows_counter = cur.execute(query)
-                        if rows_counter > 0:
-                            print('is in the xref.replace part')
-                            for cui, in cur:
-                                i += 1
-                                dict_mondo_to_umls_cuis[mondo] = [cui]
-                                if not cui is dict_of_all_diseases:
-                                    dict_of_all_diseases[cui] = [mondo]
-                                    break
-                                else:
-                                    dict_of_all_diseases[cui].append(mondo)
-                                    break
         j += 1
     global list_diseases_cuis
     list_diseases_cuis = dict_of_all_diseases.keys()
@@ -361,6 +352,8 @@ def load_in_hetionet_disease_in_dictionary():
     print('length of disease ontology without a ref:' + str(len(list_mondo_without_refs)))
     print('length of dict with cui and list of mondos after use of xref:' + str(len(dict_of_all_diseases)))
     print(dict_sty_counter)
+    print('number of mapped with name:'+str(count_name_mapping))
+    print('number of not name mapped:'+ str(count_not_name_mapped))
     print('\t xref with sty : %.4f seconds' % (time.time() - start))
 
 
@@ -1197,6 +1190,7 @@ def main():
 
     print(datetime.datetime.utcnow())
     print('find synonyms for the diseases')
+    sys.exit()
 
     # create a lock, is used to synchronized threads
     global threadLock1
@@ -1216,6 +1210,10 @@ def main():
         threads_synonyms.append(thread)
         # increase thread id
         thread_id += 1
+        if thread_id % 8000 == 0:
+            # wait for all threads
+            for t in threads_synonyms:
+                t.join()
 
     # wait for all threads
     for t in threads_synonyms:
@@ -1286,6 +1284,10 @@ def main():
         threads.append(thread)
         # increase thread id
         thread_id += 1
+        if thread_id % 8000 == 0:
+            # wait for all threads
+            for t in threads:
+                t.join()
 
     # wait for all threads
     for t in threads:
