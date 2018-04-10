@@ -21,3 +21,9 @@ Only exception is MONDO:0000001 (disease) this map to DOID:4 (disease) and DOID:
 DOID:7 fit's better to MONDO:0021199 (disease affecting anatomical system), which map not to any DOID.
 So MONDO:0021199 is merged into DOID:7. Further is DOID:7 excluded from MONDO:0000001 xref.
 
+This queries must be done
+CREATE CONSTRAINT ON (n:DiseaseOntology) Assert n.id is unique
+#the rest program is changed before so if this is not needed anymore
+MATCH (n:Disease) Where n.identifier='DOID:9917'  Set n.alternateIds= n.alternateIds+ 'DOID:5158'
+
+
