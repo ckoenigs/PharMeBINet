@@ -35,6 +35,7 @@ dict_source_mapped_to_multiple_monDOs = {}
 
 '''
 Load MonDO disease in dictionary
+Where n.`http://www.geneontology.org/formats/oboInOwl#id` ='MONDO:0010168'
 '''
 
 
@@ -170,6 +171,7 @@ def map_DO_to_monDO_with_DO_and_xrefs():
         if doid in dict_external_ids_monDO:
 
             for monDO in dict_external_ids_monDO[doid]:
+                # check if they have the same names
                 monDOname = dict_monDO_info[monDO]['label'].lower()
                 do_name = dict_DO_to_info[doid]['name'].lower().replace("'", '')
                 if monDOname != do_name:
@@ -181,6 +183,8 @@ def map_DO_to_monDO_with_DO_and_xrefs():
                     # print(doid)
                     # print(dict_monDO_info[monDO][0])
                     # print(dict_DO_to_info[doid][0])
+
+                # fill the dictionary monDo to DO
                 if monDO in dict_monDo_to_DO:
                     dict_monDo_to_DO[monDO].add(doid)
                     if monDO in dict_monDo_to_DO_only_doid:
@@ -197,6 +201,7 @@ def map_DO_to_monDO_with_DO_and_xrefs():
                 else:
                     dict_DO_to_monDOs[doid] = set([monDO])
                     dict_DO_to_monDOs_only_DO[doid] = set([monDO])
+        # use of the alternative doids to mapp monDo and DO
         else:
             found_with_alternative = False
             for alternativ_doid in dict_do_to_alternative_do[doid]:
@@ -382,8 +387,10 @@ def integrate_mondo_change_identifier():
     for monDo, info in dict_monDO_info.items():
         if monDo == 'MONDO:0000612':
             print('ohje')
+        # one to one mapping of mondo and do or specific mapped one-to-one from me
         if (monDo in dict_monDo_to_DO_only_doid and len(
                 dict_monDo_to_DO_only_doid[monDo]) == 1) or monDo in dict_mondo_xref_doid_mapping:
+            # print('one to one')
             counter_switched_nodes += 1
 
             # get the different information from monDO which will be combined
@@ -400,7 +407,7 @@ def integrate_mondo_change_identifier():
             other_xrefs_monDO = []
             if type(monDO_xref)==list:
                 for ref in monDO_xref:
-                    if monDO_xref[0:4] == 'UMLS':
+                    if ref[0:4] == 'UMLS':
                         umls_cuis_monDO.append(ref)
                     else:
                         other_xrefs_monDO.append(ref)
@@ -484,6 +491,7 @@ def integrate_mondo_change_identifier():
             query = query + add_query
         # if has more than one doid than they have to be merge into one node
         elif monDo in dict_monDo_to_DO_only_doid:
+            # print('one to many')
             counter_switched_nodes += 1
             counter_merge_nodes += 1
 
@@ -492,12 +500,15 @@ def integrate_mondo_change_identifier():
             doid_with_same_name = ''
             # get the different information from monDO which will be combined
             doids = list(dict_monDo_to_DO_only_doid[monDo])
+            found_doid_with_same_name=False
             for doid in doids:
                 dict_merged_nodes[monDo].append(doid)
                 if dict_DO_to_info[doid]['name'] == info['label']:
                     doid_with_same_name = doid
+                    found_doid_with_same_name=True
                 elif monDo in dict_self_decision_mondo_multiple_doid:
-                    doid_with_same_name = dict_self_decision_mondo_multiple_doid[monDo]
+                    if not found_doid_with_same_name:
+                        doid_with_same_name = dict_self_decision_mondo_multiple_doid[monDo]
             if doid_with_same_name == '':
                 print(monDo)
                 print(info['label'])
@@ -598,7 +609,9 @@ def integrate_mondo_change_identifier():
             url = 'http://bioportal.bioontology.org/ontologies/MONDO/' + monDo
             add_query = ''' n.url="%s" , n.resource=["%s"],  n.mondo="yes"; \n ''' % (url, string_resources)
             query = query + add_query
+        # this is when a new node is generated
         else:
+            # print('new')
             counter_new_nodes += 1
             monDO_xref = info[
                 'http://www.geneontology.org/formats/oboInOwl#hasDbXref'] if 'http://www.geneontology.org/formats/oboInOwl#hasDbXref' in info else []
