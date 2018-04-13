@@ -34,7 +34,7 @@ counter_edges_queries = 0
 # number of queries in a commit block
 constraint_number = 20000
 # number of queries in a cypher file
-max_queries_for_a_file = 500000
+max_queries_for_a_file = 300000
 
 
 def check_for_commit_or_file_break(cypher_file_nodes, node_file_number, file_start, counter_nodes_queries):
@@ -79,6 +79,11 @@ def load_chemicals_and_add_to_cypher_file():
     if not result is None:
         exists_ctd_chemicals_already_in_neo4j = True
         action_value = 'Merge'
+        query = ''' Match (c:CTDchemical) Set c.old_version=True; '''
+        cypher_file_nodes.write(query)
+        counter_nodes_queries += 1
+        cypher_file_nodes, node_file_number = check_for_commit_or_file_break(cypher_file_nodes, node_file_number,
+                                                                             'nodes_', counter_nodes_queries)
     else:
         action_value = 'Create'
 
@@ -161,6 +166,11 @@ def load_disease_and_add_to_cypher_file():
     if not result is None:
         exists_ctd_disease_already_in_neo4j = True
         action_value = 'Merge'
+        query = ''' Match (c:CTDdisease) Set c.old_version=True; '''
+        cypher_file_nodes.write(query)
+        counter_nodes_queries += 1
+        cypher_file_nodes, node_file_number = check_for_commit_or_file_break(cypher_file_nodes, node_file_number,
+                                                                             'nodes_', counter_nodes_queries)
     else:
         action_value = 'Create'
 
