@@ -652,6 +652,19 @@ def load_gene_disease():
 
     cypher_file_edges.write(query)
 
+# delete node file
+delet_node_file=open('cypher/nodes_delete.cypher','w')
+
+'''
+ad node deleter for all nodes which have no relationship to other nodes
+'''
+def delete_nodes_with_no_relationship(label):
+    delet_node_file.write('begin\n')
+    query='''MATCH (n:%s) Where not (n)--() Delete n;\n'''
+    query=query %(label)
+    delet_node_file.write(query)
+    delet_node_file.write('commit\n')
+
 
 def main():
     print(datetime.datetime.utcnow())
@@ -760,6 +773,17 @@ def main():
     print('add chemical-disease relationship to cypher file')
 
     load_gene_disease()
+
+    print('##########################################################################')
+
+    print(datetime.datetime.utcnow())
+    print('delete nodes with no realtionships')
+
+    delete_nodes_with_no_relationship('CTDGO')
+    delete_nodes_with_no_relationship('CTDchemical')
+    delete_nodes_with_no_relationship('CTDdisease')
+    delete_nodes_with_no_relationship('CTDgene')
+    delete_nodes_with_no_relationship('CTDpathway')
 
     print('##########################################################################')
 
