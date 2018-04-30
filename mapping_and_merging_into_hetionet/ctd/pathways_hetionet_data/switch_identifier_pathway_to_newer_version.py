@@ -190,7 +190,7 @@ def switch_id_for_pathways():
             #         continue
             # if identifier != identifiers:
 
-            xrefs=own+','+identifier if own != '' else identifier
+            xrefs=own+'","'+identifier if own != '' else identifier
             query='''Match (c:Pathway{ identifier:"%s"}) Set c.identifier="%s", c.xrefs=["%s"];'''
             query= query %(identifier, identifiers,xrefs)
             g.run(query)
