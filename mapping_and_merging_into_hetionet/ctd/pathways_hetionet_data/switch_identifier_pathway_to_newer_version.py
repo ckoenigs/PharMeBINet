@@ -167,17 +167,17 @@ def switch_id_for_pathways():
             if identifiers=='PC9_2504':
                 print('blub')
             if identifiers in list_mapped_to:
-                if identifiers[0:2]==identifier[0:2] or identifiers[0:2]=='WP':
-                    print('multiple mapped new identifier')
-                    print(identifiers)
-                    print(identifier)
-                    dict_old_id_to_multiple_new_id[identifier]=identifiers
+            #     if identifiers[0:2]==identifier[0:2] or identifiers[0:2]=='WP':
+                print('multiple mapped new identifier')
+                print(identifiers)
+                print(identifier)
+                dict_old_id_to_multiple_new_id[identifier]=identifiers
                 continue
             else:
-                if identifiers[0:2] == identifier[0:2] or identifiers[0:2] == 'WP':
-                    list_mapped_to.append(identifiers)
-                else:
-                    continue
+                # if identifiers[0:2] == identifier[0:2] or identifiers[0:2] == 'WP':
+                list_mapped_to.append(identifiers)
+            #     else:
+            #         continue
             own_ids = [x[2] for x in dict_name_to_pc_or_wp_identifier[name]]
             own_source= [x[1] for x in dict_name_to_pc_or_wp_identifier[name]]
             own_ids= [x for x in own_ids if x]
@@ -186,14 +186,14 @@ def switch_id_for_pathways():
             counter_exists+=1
             if identifier[0:2]=='WP':
                 counter_wp+=1
-                if identifiers==identifier or identifiers[0:2]=='PC':
-                    continue
-            if identifier != identifiers:
+            #     if identifiers==identifier or identifiers[0:2]=='PC':
+            #         continue
+            # if identifier != identifiers:
 
-                xrefs=own+','+identifier if own != '' else identifier
-                query='''Match (c:Pathway{ identifier:"%s"}) Set c.identifier="%s", c.xrefs=["%s"];'''
-                query= query %(identifier, identifiers,xrefs)
-                g.run(query)
+            xrefs=own+','+identifier if own != '' else identifier
+            query='''Match (c:Pathway{ identifier:"%s"}) Set c.identifier="%s", c.xrefs=["%s"];'''
+            query= query %(identifier, identifiers,xrefs)
+            g.run(query)
 
 
         else:
@@ -206,16 +206,20 @@ def switch_id_for_pathways():
             query = query % (identifier, new_identifier)
             g.run(query)
     #
+    print('number of mapped:' + str(counter_exists))
+    print('number not exists:' + str(counter_not_exists))
+    print(counter_not_mapped_wp)
+    print(counter_wp)
+    print('xrefs for all')
     query='''  Match (c:Pathway) Where not exists(c.xrefs) Set c.xrefs=[];'''
     g.run(query)
 
+    print('merge')
     for old_id, multiple_new_id in dict_old_id_to_multiple_new_id.items():
+        print(old_id, multiple_new_id)
         merge_information_from_one_node_to_another(old_id, multiple_new_id, 'Pathway')
 
-    print('number of mapped:'+str(counter_exists))
-    print('number not exists:'+str(counter_not_exists))
-    print(counter_not_mapped_wp)
-    print(counter_wp)
+
     
     
 def main():
