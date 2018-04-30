@@ -108,11 +108,7 @@ def merge_resource_to_node(delete_node, label, merged_node):
         g.run(query[0:-1])
 
 
-# list from the specific node to the other with (rela_type,dict_rela,node_labels,dict_node)
-list_node_to_other = []
 
-# list from  the other with to the specific node  (rela_type,dict_rela,node_labels,dict_node)
-list_other_to_node = []
 
 '''
 The DB13390 is revoked but DB06723 has this as ingredient and fit for the mapping of NDF-RT
@@ -158,6 +154,7 @@ def get_the_information_and_the_direction(identifier, label, merged_node_id):
         list_other_to_node.append([rela_type, dict_rela, node_labels, node])
 
 
+
 '''
 The node that get the information 
 '''
@@ -178,6 +175,7 @@ def add_this_information_to_the_merged_node(identifier, label, delete_node_id):
 
     # integrate the new relationships from this node to the other nodes into for this node into Hetionet
     count_new_relationships_from_this_node = 0
+    length_list_node_other=len(list_node_to_other)
     for [rela_type, dict_rela, node_labels, node] in list_node_to_other:
         # test if not a relationship already exists
         if type(node[dict_label_to_unique_prop[node_labels[0]]]) == int:
@@ -214,6 +212,7 @@ def add_this_information_to_the_merged_node(identifier, label, delete_node_id):
             count_new_relationships_from_this_node += 1
             g.run(query)
 
+    length_list_other_node = len(list_other_to_node)
     # integrate the new relationships from other nodes to this nodes into for this node into Hetionet
     count_new_relationships_to_this_node = 0
     for [rela_type, dict_rela, node_labels, node] in list_other_to_node:
@@ -275,6 +274,13 @@ function that start the right programs in the right order to merge information f
 
 
 def merge_information_from_one_node_to_another(delete_node_id, merged_node_id, node_label):
+    global list_other_to_node, list_node_to_other
+    # list from the specific node to the other with (rela_type,dict_rela,node_labels,dict_node)
+    list_node_to_other = []
+
+    # list from  the other with to the specific node  (rela_type,dict_rela,node_labels,dict_node)
+    list_other_to_node = []
+
     print(datetime.datetime.utcnow())
     print('connection to db')
     database_connection()
