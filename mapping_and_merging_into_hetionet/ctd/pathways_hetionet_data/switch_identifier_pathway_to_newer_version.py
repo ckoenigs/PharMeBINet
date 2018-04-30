@@ -10,6 +10,9 @@ import datetime
 import csv
 import sys
 
+sys.path.append('../../drugbank/')
+from add_information_from_a_not_existing_node_to_existing_node import merge_information_from_one_node_to_another
+
 '''
 create connection to neo4j 
 '''
@@ -74,7 +77,7 @@ all with / is the second for pathwaycommons version9
 
 
 def load_in_all_pathways_from_himmelsteins_construction():
-    with open('pathways_hetionet_data/pathways.tsv') as tsvfile:
+    with open('pathways.tsv') as tsvfile:
         print()
         reader = csv.reader(tsvfile, delimiter='\t')
         next(reader)
@@ -96,7 +99,7 @@ def load_in_all_pathways_from_himmelsteins_construction():
 dict_own_id_to_pcid_and_other={}
 
 # pc maximal number for pc id
-pc_maximal_number_for_id=999
+pc_maximal_number_for_id=0
 
 '''
 load in all pathway with the way himmelstein construct of the identifier but for version 9
@@ -116,19 +119,22 @@ properties:
 
 
 def load_in_all_pathways_from_himmelsteins_construction_version9():
-    with open('pathways_hetionet_data/pathways_v9.tsv') as tsvfile:
+    global pc_maximal_number_for_id
+    with open('pathways_v9.tsv') as tsvfile:
         print()
         reader = csv.reader(tsvfile, delimiter='\t')
         next(reader)
         for row in reader:
             identifier = row[0]
+            if identifier[0:2]=='PC' and int(identifier.split('_')[1])> pc_maximal_number_for_id  :
+                pc_maximal_number_for_id=int(identifier.split('_')[1])
             name = row[1]
             source = row[5]
             own_id=row[8]
             if name in dict_name_to_pc_or_wp_identifier:
-                dict_name_to_pc_or_wp_identifier[name].append([identifier, source])
+                dict_name_to_pc_or_wp_identifier[name].append([identifier, source, own_id])
             else:
-                dict_name_to_pc_or_wp_identifier[name] = [[identifier, source]]
+                dict_name_to_pc_or_wp_identifier[name] = [[identifier, source, own_id]]
             if own_id in dict_own_id_to_pcid_and_other and own_id!="":
                 dict_own_id_to_pcid_and_other[own_id].append([identifier,source, name])
             elif own_id in dict_own_id_to_pcid_and_other :
@@ -138,43 +144,118 @@ def load_in_all_pathways_from_himmelsteins_construction_version9():
     print('number of different pathway names:' + str(len(dict_name_to_pc_or_wp_identifier)))
     print('number of different pathway ids:'+str(len(dict_own_id_to_pcid_and_other)))
 
+#list of all new identifier which are mapped
+list_mapped_to=[]
 
-# csv to switch the old hetionet identifier
-csv_switch_old_identifier=open('pathways_hetionet_data/switch_identifier.csv','w')
-writer = csv.writer(csv_switch_old_identifier, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-writer.writerow(['oldID', 'newID'])
-
+# dictionary with multiple mapped new identifier
+dict_old_id_to_multiple_new_id={}
 
 '''
 che old version pathway from hetionet map to new version
 '''
-def check_old_to_new_version():
+def switch_id_for_pathways():
     global pc_maximal_number_for_id
     counter_exists=0
     counter_not_exists=0
     counter_wp=0
     counter_not_mapped_wp=0
     for identifier, name in dict_pathway_hetionet.items():
+
+
         if name in dict_name_to_pc_or_wp_identifier:
-            identifiers=dict_name_to_pc_or_wp_identifier[name][0][0]
+            identifiers = dict_name_to_pc_or_wp_identifier[name][0][0]
+            if identifiers=='PC9_2504':
+                print('blub')
+            if identifiers in list_mapped_to:
+                if identifiers[0:2]==identifier[0:2] or identifiers[0:2]=='WP':
+                    print('multiple mapped new identifier')
+                    print(identifiers)
+                    print(identifier)
+                    dict_old_id_to_multiple_new_id[identifier]=identifiers
+                continue
+            else:
+                if identifiers[0:2] == identifier[0:2] or identifiers[0:2] == 'WP':
+                    list_mapped_to.append(identifiers)
+                else:
+                    continue
+            own_ids = [x[2] for x in dict_name_to_pc_or_wp_identifier[name]]
+            own_source= [x[1] for x in dict_name_to_pc_or_wp_identifier[name]]
+            own_ids= [x for x in own_ids if x]
+            own=[i+':'+j for i,j in zip(own_source,own_ids)]
+            own = ','.join(own)
             counter_exists+=1
             if identifier[0:2]=='WP':
                 counter_wp+=1
-                if identifiers==identifier:
+                if identifiers==identifier or identifiers[0:2]=='PC':
                     continue
-            writer.writerow([ identifier, identifiers])
+            if identifier != identifiers:
+
+                xrefs=own+','+identifier if own != '' else identifier
+                query='''Match (c:Pathway{ identifier:"%s"}) Set c.identifier="%s", c.xrefs=["%s"];'''
+                query= query %(identifier, identifiers,xrefs)
+                g.run(query)
 
 
         else:
+            counter_not_exists += 1
             if identifier[0:2] == 'WP':
                 continue
             pc_maximal_number_for_id += 1
-            writer.writerow([identifier, 'PC9_' + str(pc_maximal_number_for_id)])
-            counter_not_exists+=1
+            new_identifier='PC9_' + str(pc_maximal_number_for_id)
+            query = '''Match (c:Pathway{ identifier:"%s"}) Set c.identifier="%s" , c.xrefs=[];'''
+            query = query % (identifier, new_identifier)
+            g.run(query)
+    #
+    query='''  Match (c:Pathway) Where not exists(c.xrefs) Set c.xrefs=[];'''
+    g.run(query)
 
-    csv_switch_old_identifier.close()
+    for old_id, multiple_new_id in dict_old_id_to_multiple_new_id.items():
+        merge_information_from_one_node_to_another(old_id, multiple_new_id, 'Pathway')
 
     print('number of mapped:'+str(counter_exists))
     print('number not exists:'+str(counter_not_exists))
     print(counter_not_mapped_wp)
     print(counter_wp)
+    
+    
+def main():
+    print (datetime.datetime.utcnow())
+    print('Generate connection with neo4j and mysql')
+
+    create_connection_with_neo4j_mysql()
+
+    print(
+        '###########################################################################################################################')
+
+    print (datetime.datetime.utcnow())
+    print('Load all pathways from hetionet into a dictionary')
+
+    load_hetionet_pathways_in()
+
+    print(
+        '###########################################################################################################################')
+
+    print (datetime.datetime.utcnow())
+    print('Load all pathways from d. himmelstein into a dictionary')
+
+    # load_in_all_pathways_from_himmelsteins_construction()
+    load_in_all_pathways_from_himmelsteins_construction_version9()
+
+    print(
+        '###########################################################################################################################')
+
+    print (datetime.datetime.utcnow())
+    print('Generate csv for switch identifier and ')
+
+    switch_id_for_pathways()
+
+
+    print(
+        '###########################################################################################################################')
+
+    print (datetime.datetime.utcnow())
+
+
+if __name__ == "__main__":
+    # execute only if run as a script
+    main()
