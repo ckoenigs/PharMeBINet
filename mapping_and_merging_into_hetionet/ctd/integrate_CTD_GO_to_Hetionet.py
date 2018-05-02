@@ -64,23 +64,22 @@ check if go is in hetionet or not
 '''
 
 
-def check_if_new_or_part_of_hetionet(hetionet_label, go_id, go_name):
-    #this line can be deleted after the new integration
-    if hetionet_label in dict_processe:
-        [dict_hetionet, dict_ctd_not_in_hetionet, dict_ctd_in_hetionet] = dict_processe[hetionet_label]
-    else:
-        return ''
+def check_if_new_or_part_of_hetionet(hetionet_label, go_id, go_name,highestGOLevel):
+
+
+    [dict_hetionet, dict_ctd_not_in_hetionet, dict_ctd_in_hetionet] = dict_processe[hetionet_label]
+
 
     if go_id in dict_hetionet:
         if go_name == dict_hetionet[go_id]:
-            dict_ctd_in_hetionet[go_id] = go_name
+            dict_ctd_in_hetionet[go_id] = [go_name, highestGOLevel]
         else:
             print('same id but different names')
             print(go_name)
             print(dict_hetionet[go_id])
-            dict_ctd_in_hetionet[go_id] = go_name
+            dict_ctd_in_hetionet[go_id] = [go_name, highestGOLevel]
     else:
-        dict_ctd_not_in_hetionet[go_id] = go_name
+        dict_ctd_not_in_hetionet[go_id] = [go_name, highestGOLevel]
 
 
 # dictionary of biological_process which are not in hetionet with they properties: name
@@ -124,7 +123,8 @@ def load_ctd_go_in():
         go_id = go_node['go_id']
         go_name = go_node['name']
         ontology = go_node['ontology']
-        check_if_new_or_part_of_hetionet(ontology,go_id,go_name)
+        highestGOLevel= go_node['highestGOLevel']
+        check_if_new_or_part_of_hetionet(ontology,go_id,go_name,highestGOLevel)
 
     print('number of existing biological process nodes:' + str(len(dict_ctd_biological_process_in_hetionet)))
     print('number of not existing biological process nodes:' + str(len(dict_ctd_biological_process_not_in_hetionet)))
@@ -149,21 +149,21 @@ def generate_files(file_name_addition, ontology, dict_not_in_hetionet, dict_ctd_
     with open('GO/new_' + file_name_addition + '.csv', 'wb') as csvfile:
         writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
         writer.writerow(
-            ['GOID', 'GOName'])
+            ['GOID', 'GOName','highestGOLevel'])
         # add the go nodes to cypher file
-        for gene_id, name in dict_not_in_hetionet.items():
-            writer.writerow([gene_id, name])
+        for gene_id, [name, highestGOLevel] in dict_not_in_hetionet.items():
+            writer.writerow([gene_id, name,highestGOLevel])
 
     cypher_file.write('begin\n')
     cypher_file.write('Match (c:' + ontology + ') Set c.hetionet="yes", c.resource=["Hetionet"];\n')
     cypher_file.write('commit\n')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/GO/new_%s.csv" As line Create (c:%s{ identifier:line.GOID, name:line.GOName, url_ctd:" http://ctdbase.org/detail.go?type=go&acc="+line.GOID ,url: "http://purl.obolibrary.org/obo/"+split(line.GeneID,':')[0]+"_"+split(line.GeneID,':')[1], source:"Gene Ontology" , license:"CC BY 4.0", hetionet:"no", ctd:"yes", resource:["CTD"]});\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/GO/new_%s.csv" As line Create (c:%s{ identifier:line.GOID, name:line.GOName, url_ctd:" http://ctdbase.org/detail.go?type=go&acc="+line.GOID ,url: "http://purl.obolibrary.org/obo/"+split(line.GeneID,':')[0]+"_"+split(line.GeneID,':')[1], highestGOLevel:line.highestGOLevel , source:"Gene Ontology" , license:"CC BY 4.0", hetionet:"no", ctd:"yes", resource:["CTD"]});\n'''
     query = query % (file_name_addition, ontology)
     cypher_file.write(query)
 
     with open('GO/mapping_' + file_name_addition + '.csv', 'wb') as csvfile:
         writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-        writer.writerow(['GOIDCTD', 'GOIDHetionet'])
+        writer.writerow(['GOIDCTD', 'GOIDHetionet', 'highestGOLevel'])
         # add the go nodes to cypher file
 
         for gene_id, name in dict_ctd_in_hetionet.items():
@@ -172,7 +172,7 @@ def generate_files(file_name_addition, ontology, dict_not_in_hetionet, dict_ctd_
         for gene_id, name in dict_not_in_hetionet.items():
             writer.writerow([gene_id, gene_id])
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/GO/mapping_%s.csv" As line Match (c:%s{ identifier:line.GOIDHetionet}), (n:CTDGO{go_id:line.GOIDCTD}) Create (c)-[:equal_to_CTD_go]->(n) With c,n Where c.hetionet="yes" Set c.ctd="yes", c.resource=c.resource+"CTD";\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/GO/mapping_%s.csv" As line Match (c:%s{ identifier:line.GOIDHetionet}), (n:CTDGO{go_id:line.GOIDCTD}) Create (c)-[:equal_to_CTD_go]->(n) With c, n, line Where c.hetionet='yes' Set c.resource=c.resource+"CTD", c.ctd="yes", c.highestGOLevel=line.highestGOLevel;\n'''
     query = query % (file_name_addition, ontology)
     cypher_file.write(query)
     cypher_file.write('begin\n')
