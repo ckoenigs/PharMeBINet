@@ -51,7 +51,7 @@ load all ctd genes and check if they are in hetionet or not
 
 
 def load_ctd_genes_in():
-    query = '''MATCH (n:CTDgene) RETURN n'''
+    query = '''MATCH (n:CTDgene) Where ()-[:associates_CG{organism_id:'9606'}]->(n)  RETURN n'''
     results = g.run(query)
 
     for gene_node, in results:
@@ -118,7 +118,7 @@ def generate_files():
                       uniProtIDs] in dict_ctd_gene_not_in_hetionet.items():
             writer.writerow([gene_id, gene_id, altGeneIDs, pharmGKBIDs, bioGRIDIDs, geneSymbol, synonyms, uniProtIDs])
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/gene/mapping.csv" As line Match (c:Gene{ identifier:toInteger(line.GeneIDHetionet)}), (n:CTDgene{gene_id:line.GeneIDCTD}) Create (c)-[:equal_to_CTD_gene]->(n) Where c.hetionet="yes" Set c.ctd="yes", c.resource=c.resource+"CTD", c.altGeneIDs=split(line.altGeneIDs,'|'),c.pharmGKBIDs=split(line.pharmGKBIDs,'|'),c.bioGRIDIDs=split(line.bioGRIDIDs,'|'),c.geneSymbol=split(line.geneSymbol,'|'),c.synonyms=split(line.synonyms,'|'),c.uniProtIDs=split(line.uniProtIDs,'|') , c.url_ctd=" http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/gene/mapping.csv" As line Match (c:Gene{ identifier:toInteger(line.GeneIDHetionet)}), (n:CTDgene{gene_id:line.GeneIDCTD}) Create (c)-[:equal_to_CTD_gene]->(n) With c,n, line Where c.hetionet="yes" Set c.ctd="yes", c.resource=c.resource+"CTD", c.altGeneIDs=split(line.altGeneIDs,'|'),c.pharmGKBIDs=split(line.pharmGKBIDs,'|'),c.bioGRIDIDs=split(line.bioGRIDIDs,'|'),c.geneSymbol=split(line.geneSymbol,'|'),c.synonyms=split(line.synonyms,'|'),c.uniProtIDs=split(line.uniProtIDs,'|') , c.url_ctd=" http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID;\n'''
     cypher_file.write(query)
     cypher_file.close()
 
