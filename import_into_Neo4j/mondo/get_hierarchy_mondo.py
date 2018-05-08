@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Fri Feb 2 07:23:43 2018
-
 @author: ckoenigs
 """
 
@@ -9,6 +8,7 @@ from py2neo import Graph, authenticate
 import datetime
 import string
 import sys
+import csv
 from ete3 import Tree
 
 reload(sys)
@@ -64,7 +64,7 @@ def prepare_subClassOf_relationships():
         query = query % (mondo_id_a, mondo_id_b, rela['lbl'], rela['isDefinedBy'], '","'.join(dict_orginal_source_target))
 
         g.run(query)
-        if counter_pairs_with_multiple_sub_class_rela % 1000:
+        if counter_pairs_with_multiple_sub_class_rela % 1000==0:
             print(counter_pairs_with_multiple_sub_class_rela)
             print(datetime.datetime.utcnow())
     print('total number of pairs with multiple connection:'+str(counter_pairs_with_multiple_sub_class_rela))
@@ -91,7 +91,7 @@ def generate_files():
     count_level = 1
     letter_of_parent = 0
 
-    while count_level <= 16:
+    while count_level <= 25:
         class_file = open('hierarchical_levels/level_' + str(count_level) + '_class.txt', 'w')
         class_file.write('MonDO_id \t MonDO_name \t parent_id \t parent_name \n')
         entry_file = open('hierarchical_levels/level_' + str(count_level) + '_entry.txt', 'w')
@@ -213,14 +213,18 @@ generate cypher file for integration of levels in nodes
 
 def generate_cypher_file():
     cypher_file_to_integrate_level = open('integrate_level.cypher', 'w')
-    cypher_file_to_integrate_level.write('begin \n')
-
-    for id, levels in dict_disease_levels.items():
-        query = ''' MATCH (n:disease{`http://www.geneontology.org/formats/oboInOwl#id`:"%s"})
-                                Set n.level=[%s]; \n'''
-        query = query % (id, ','.join(map(str, list(levels))))
-        cypher_file_to_integrate_level.write(query)
-    cypher_file_to_integrate_level.write('commit')
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/mondo/levels.csv" As line Match (n:disease{`http://www.geneontology.org/formats/oboInOwl#id`:line.ID}) Set n.level=split(line.level,'|');\n'''
+    cypher_file_to_integrate_level.write(query)
+    with open('levels.csv', 'wb') as csvfile:
+        writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        writer.writerow(['ID', 'level'])
+        for id, levels in dict_disease_levels.items():
+            writer.writerow([id, '|'.join(map(str, list(levels)))])
+            # query = ''' MATCH (n:disease{`http://www.geneontology.org/formats/oboInOwl#id`:"%s"})
+            #                         Set n.level=[%s]; \n'''
+            # query = query % (id, ','.join(map(str, list(levels))))
+            # cypher_file_to_integrate_level.write(query)
+    #cypher_file_to_integrate_level.write('commit')
 
 
 '''
@@ -334,7 +338,7 @@ def main():
     print(datetime.datetime.utcnow())
     print('load in MonDO diseases ')
 
-    generate_tree()
+    # generate_tree()
 
     print('##########################################################################')
 
