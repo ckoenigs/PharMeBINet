@@ -48,6 +48,13 @@ def load_in_all_DO_in_dictionary():
 
     print('Number of old mondo disease:' + str(len(dict_old_mondo_to_info)))
 
+'''
+delete all subclass od Disease
+'''
+def delete_all_subclass_relationships():
+    query='''MATCH p=()-[r:SUBCLASS_OF_DsoD]->() Delete r '''
+    g.run(query)
+
 
 # dictionary monarch DO to information: name
 dict_monDO_info = {}
@@ -257,6 +264,22 @@ def integrate_newer_version_mondo():
         # sys.exit()
         g.run(query)
 
+'''
+delete all Disease nodes which has no relationship to a disease node
+in this update the node MONDO:0006020 is merged with node MONDO:0019610, because it seems like 
+'''
+def delete_not_existing_nodes_and_merge_nodes():
+    # first merge if needed
+    print('merge')
+    print('##################################################################################################')
+    merge_information_from_one_node_to_another('MONDO:0006020', 'MONDO:0019610', 'Disease')
+    print('merge end')
+    print('##################################################################################################')
+
+    # delete all nodes without realtionship to mondo disease nodes
+    query='''Match (n:Disease) Where not (n)-[]-(:disease) Detach Delete n'''
+    g.run(query)
+
 
 '''
 generate cypher file for subClassOf relationship
@@ -325,6 +348,14 @@ def main():
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
+    print('delete all subclass relationships in Disease')
+
+    delete_all_subclass_relationships()
+
+
+    print('##########################################################################')
+
+    print(datetime.datetime.utcnow())
     print('load in DO diseases ')
 
     load_in_all_DO_in_dictionary()
@@ -343,7 +374,15 @@ def main():
     print(datetime.datetime.utcnow())
     print('integrate the newer node version and add new nodes into Hetionet ')
 
-    # integrate_newer_version_mondo()
+    integrate_newer_version_mondo()
+
+
+    print('##########################################################################')
+
+    print(datetime.datetime.utcnow())
+    print('delete not existing nodes and merge if another node with same name')
+
+    delete_not_existing_nodes_and_merge_nodes()
 
 
     print('##########################################################################')
