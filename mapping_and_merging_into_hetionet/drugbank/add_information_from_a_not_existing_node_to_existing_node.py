@@ -21,7 +21,8 @@ dict_resources = {
     'Hetionet': 'hetionet',
     'hetionet': 'hetionet',
     'NDF-RT': 'ndf_rt',
-    'SIDER': 'sider'
+    'SIDER': 'sider',
+    'MonDO':'mondo'
 }
 
 
