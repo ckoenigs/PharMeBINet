@@ -9,7 +9,7 @@ import datetime
 import string
 import sys
 import csv
-from ete3 import Tree
+#from ete3 import Tree
 
 reload(sys)
 sys.setdefaultencoding("utf-8")
@@ -37,7 +37,7 @@ def prepare_subClassOf_relationships():
     counter_pairs_with_multiple_sub_class_rela=0
     for mondo_id_a, mondo_id_b, in result:
         counter_pairs_with_multiple_sub_class_rela+=1
-        query = '''Match p=(a:disease{`http://www.geneontology.org/formats/oboInOwl#id`:"%s"})-[r:subClassOf]->(b:disease{`http://www.geneontology.org/formats/oboInOwl#id`:'%s'}) Return r '''
+        query = '''Match p=(a:disease{`http://www.geneontology.org/formats/oboInOwl#id`:"%s"})-[r:subClassOf]->(b:disease{`http://www.geneontology.org/formats/oboInOwl#id`:'%s'})  Return r '''
         query= query %(mondo_id_a,mondo_id_b)
         defined = 'http://purl.obolibrary.org/obo/upheno/monarch.owl'
         result = g.run(query)
@@ -61,8 +61,9 @@ def prepare_subClassOf_relationships():
         query= query%(mondo_id_a,mondo_id_b)
         g.run(query)
         query = '''Match (a:disease{`http://www.geneontology.org/formats/oboInOwl#id`:"%s"}),(b:disease{`http://www.geneontology.org/formats/oboInOwl#id`:'%s'}) Create (a)-[:subClassOf{lbl:'%s', isDefinedBy:"%s", equivalentOriginalNodeSourceTarget:["%s"]  }]->(b)  '''
-        query = query % (mondo_id_a, mondo_id_b, rela['lbl'], rela['isDefinedBy'], '","'.join(dict_orginal_source_target))
-
+        original_source_target='","'.join(dict_orginal_source_target)
+        query = query % (mondo_id_a, mondo_id_b, rela['lbl'], rela['isDefinedBy'], original_source_target)
+        # print(query)
         g.run(query)
         if counter_pairs_with_multiple_sub_class_rela % 1000==0:
             print(counter_pairs_with_multiple_sub_class_rela)
