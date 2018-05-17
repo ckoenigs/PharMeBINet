@@ -24,7 +24,6 @@ def database_connection():
     g = Graph("http://localhost:7474/db/data/")
 
 
-
 # dictionary do to information: name
 dict_old_mondo_to_info = {}
 
@@ -45,14 +44,16 @@ def load_in_all_DO_in_dictionary():
         #     print('ok')
         dict_old_mondo_to_info[mondo_id] = dict(disease)
 
-
     print('Number of old mondo disease:' + str(len(dict_old_mondo_to_info)))
+
 
 '''
 delete all subclass od Disease
 '''
+
+
 def delete_all_subclass_relationships():
-    query='''MATCH p=()-[r:SUBCLASS_OF_DsoD]->() Delete r '''
+    query = '''MATCH p=()-[r:SUBCLASS_OF_DsoD]->() Delete r '''
     g.run(query)
 
 
@@ -61,47 +62,48 @@ dict_monDO_info = {}
 
 '''
 Load MonDO disease in dictionary
-Where n.`http://www.geneontology.org/formats/oboInOwl#id` ='MONDO:0010168'
+Where n.`http://www.geneontology.org/formats/oboInOwl#id` ='MONDO:0016682'
 '''
 
 
 def load_in_all_monDO_in_dictionary():
-    query = ''' MATCH (n:disease)  RETURN n'''
+    query = ''' MATCH (n:disease) RETURN n'''
     results = g.run(query)
-    counter_mapped=0
-    counter_not_mapped=0
+    counter_mapped = 0
+    counter_not_mapped = 0
     for disease, in results:
         monDo_id = disease['http://www.geneontology.org/formats/oboInOwl#id']
         # if monDo_id == 'MONDO:0007062':
         #     print('blub')
         dict_monDO_info[monDo_id] = dict(disease)
-        name= disease['name']
-        synonyms= disease['synonym'] if 'synonym' in disease else []
+        name = disease['name']
+        synonyms = disease['synonym'] if 'synonym' in disease else []
         dict_name_to_mondo[name] = monDo_id
         for synonym in synonyms:
             if not synonym == '':
                 dict_name_to_mondo[synonym] = monDo_id
         if monDo_id in dict_old_mondo_to_info:
-            counter_mapped+=1
+            counter_mapped += 1
         else:
-            counter_not_mapped+=1
+            counter_not_mapped += 1
 
-    print('number of mapped ones:'+ str(counter_mapped))
-    print('number of not mapped:'+str(counter_not_mapped))
-    print('number of new version mondo disease:'+str(len(dict_monDO_info)))
+    print('number of mapped ones:' + str(counter_mapped))
+    print('number of not mapped:' + str(counter_not_mapped))
+    print('number of new version mondo disease:' + str(len(dict_monDO_info)))
 
-    dict_not_mapped_old_nodes={}
-    for old_mondo_id,disease in dict_old_mondo_to_info.items():
+    dict_not_mapped_old_nodes = {}
+    for old_mondo_id, disease in dict_old_mondo_to_info.items():
         if not old_mondo_id in dict_monDO_info:
-            name=disease['name']
+            name = disease['name']
             if name in dict_name_to_mondo:
                 print('map with name')
                 print(dict_name_to_mondo[name])
             print(old_mondo_id)
-            dict_not_mapped_old_nodes[old_mondo_id]=name
+            dict_not_mapped_old_nodes[old_mondo_id] = name
 
     print('old not mapped ids')
     print(dict_not_mapped_old_nodes)
+
 
 '''
 integrate mondo into hetionet and change identifier
@@ -114,6 +116,8 @@ def integrate_newer_version_mondo():
     counter_merge_nodes = 0
 
     for monDo, disease_new in dict_monDO_info.items():
+        if monDo=='MONDO:0016682':
+            print('blub')
 
         # sort the xrefs in umls and other xrefs
         monDO_xref = disease_new[
@@ -133,45 +137,53 @@ def integrate_newer_version_mondo():
             else:
                 other_xrefs_monDO.append(monDO_xref)
 
-
-
         # one to one mapping of mondo and do or specific mapped one-to-one from me
-        if monDo in dict_old_mondo_to_info :
+        if monDo in dict_old_mondo_to_info:
             # print('one to one')
             counter_switched_nodes += 1
 
             monDO_synonyms = disease_new['synonym'] if 'synonym' in disease_new else []
+            if type(monDO_synonyms)!=list:
+                monDO_synonyms=[monDO_synonyms]
             monDo_def = disease_new['definition'] if 'definition' in disease_new else ''
 
-            # combine the old xrefs with the new ones
-            old_other_xrefs = dict_old_mondo_to_info[monDo]['xrefs']
-            combination_xrefs = list(set(other_xrefs_monDO).union(set(old_other_xrefs)))
-            combination_xrefs.remove('') if '' in combination_xrefs else combination_xrefs
-            disease_new['http://www.geneontology.org/formats/oboInOwl#hasDbXref'] = combination_xrefs
+            if dict_old_mondo_to_info[monDo]['diseaseOntology']=='yes':
+                # combine the old xrefs with the new ones
+                old_other_xrefs = dict_old_mondo_to_info[monDo]['xrefs']
+                combination_xrefs = list(set(other_xrefs_monDO).union(set(old_other_xrefs)))
+                combination_xrefs.remove('') if '' in combination_xrefs else combination_xrefs
+                disease_new['http://www.geneontology.org/formats/oboInOwl#hasDbXref'] = combination_xrefs
 
-            # combined the old umls with the new ones
-            old_umls_cui = dict_old_mondo_to_info[monDo]['umls_cuis']
-            combination_umls = list(set(umls_cuis_monDO).union(set(old_umls_cui)))
-            combination_umls.remove('') if '' in combination_umls else combination_umls
-            disease_new['umls_cuis'] = list(set(combination_umls))
+                # combined the old umls with the new ones
+                old_umls_cui = dict_old_mondo_to_info[monDo]['umls_cuis']
+                combination_umls = list(set(umls_cuis_monDO).union(set(old_umls_cui)))
+                combination_umls.remove('') if '' in combination_umls else combination_umls
+                disease_new['umls_cuis'] = list(set(combination_umls))
 
-            monDO_subset = []
+                monDO_subset = []
 
-            old_synonyms=dict_old_mondo_to_info[monDo]['synonyms'] if 'synonyms' in dict_old_mondo_to_info[monDo] else []
-            combination_synonyms=list(set(monDO_synonyms).union(set(old_synonyms)))
-            combination_synonyms.remove('') if '' in combination_synonyms else combination_synonyms
-            disease_new['synonym']=combination_synonyms
+                old_synonyms = dict_old_mondo_to_info[monDo]['synonyms'] if 'synonyms' in dict_old_mondo_to_info[
+                    monDo] else []
+                combination_synonyms = list(set(monDO_synonyms).union(set(old_synonyms)))
+                combination_synonyms.remove('') if '' in combination_synonyms else combination_synonyms
+                disease_new['synonym'] = combination_synonyms
 
-            print(monDo)
-            old_definition=dict_old_mondo_to_info[monDo]['definition'] if 'definition' in dict_old_mondo_to_info[monDo] else ''
-            if old_definition.find("[FROM DOID]")==-1:
-                disease_new['definition']=monDo_def
+                print(monDo)
+                old_definition = dict_old_mondo_to_info[monDo]['definition'] if 'definition' in dict_old_mondo_to_info[
+                    monDo] else ''
+                if old_definition.find("[FROM DOID]") == -1:
+                    disease_new['definition'] = monDo_def
+                else:
+                    disease_new['definition'] = old_definition.split('[FROM DOID]')[0] + '[FROM DOID]. ' + monDo_def
+
+                old_subset = dict_old_mondo_to_info[monDo]['subset'] if 'subset' in dict_old_mondo_to_info[monDo] else []
+                disease_new['subset'] = old_subset
+
             else:
-                disease_new['definition']= old_definition.split('[FROM DOID]')[0]+ '[FROM DOID]. '+monDo_def
-
-            old_subset = dict_old_mondo_to_info[monDo]['subset'] if  'subset' in dict_old_mondo_to_info[monDo] else []
-            disease_new['subset'] = old_subset
-
+                disease_new['http://www.geneontology.org/formats/oboInOwl#hasDbXref'] = other_xrefs_monDO
+                disease_new['umls_cuis'] = umls_cuis_monDO
+                disease_new['definition'] = monDo_def
+                disease_new['synonym'] = monDO_synonyms
 
             query = ''' Match (n:Disease{identifier:"%s"}), (a:disease{`http://www.geneontology.org/formats/oboInOwl#id`:"%s"})
             Create (n)-[:equal_to_monDO]->(a)
@@ -191,14 +203,14 @@ def integrate_newer_version_mondo():
                         add_query = ''' n.%s=%s,''' % (key, property)
                     else:
                         property_string = '|'.join(property)
-                        property=property_string.replace('"', "'")
+                        property = property_string.replace('"', "'")
                         add_query = ''' n.%s=["%s"],''' % (key, property.replace('|', '","'))
                     query = query + add_query
                 else:
                     if key == 'http://www.geneontology.org/formats/oboInOwl#id':
                         continue
                     elif key == 'label':
-                        continue
+                        key = 'name'
                     key = '`' + key + '`' if key[0:5] == 'http:' else key
                     # query = query + ''' n.%s="%s",'''
                     # query = query % (key, property)
@@ -209,7 +221,7 @@ def integrate_newer_version_mondo():
                     query = query + add_query
 
             url = 'http://bioportal.bioontology.org/ontologies/MONDO/' + monDo
-            string_resources='","'.join(dict_old_mondo_to_info[monDo]['resource'])
+            string_resources = '","'.join(dict_old_mondo_to_info[monDo]['resource'])
             add_query = ''' n.url="%s" , n.resource=["%s"], n.mondo="yes"; \n ''' % (url, string_resources)
             query = query + add_query
 
@@ -264,10 +276,13 @@ def integrate_newer_version_mondo():
         # sys.exit()
         g.run(query)
 
+
 '''
 delete all Disease nodes which has no relationship to a disease node
 in this update the node MONDO:0006020 is merged with node MONDO:0019610, because it seems like 
 '''
+
+
 def delete_not_existing_nodes_and_merge_nodes():
     # first merge if needed
     print('merge')
@@ -277,7 +292,7 @@ def delete_not_existing_nodes_and_merge_nodes():
     print('##################################################################################################')
 
     # delete all nodes without realtionship to mondo disease nodes
-    query='''Match (n:Disease) Where not (n)-[]-(:disease) Detach Delete n'''
+    query = '''Match (n:Disease) Where not (n)-[]-(:disease) Detach Delete n'''
     g.run(query)
 
 
@@ -335,6 +350,7 @@ def generate_cypher_file_for_relationship():
     h.close()
     print('number of relationships:' + str(counter_connection))
 
+
 def main():
     print(datetime.datetime.utcnow())
 
@@ -344,14 +360,12 @@ def main():
     print('connection to db')
     database_connection()
 
-
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
     print('delete all subclass relationships in Disease')
 
     delete_all_subclass_relationships()
-
 
     print('##########################################################################')
 
@@ -360,14 +374,12 @@ def main():
 
     load_in_all_DO_in_dictionary()
 
-
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
     print('load in MonDO diseases ')
 
     load_in_all_monDO_in_dictionary()
-
 
     print('##########################################################################')
 
@@ -376,14 +388,12 @@ def main():
 
     integrate_newer_version_mondo()
 
-
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
     print('delete not existing nodes and merge if another node with same name')
 
     delete_not_existing_nodes_and_merge_nodes()
-
 
     print('##########################################################################')
 
@@ -392,9 +402,7 @@ def main():
 
     generate_cypher_file_for_relationship()
 
-
     print('##########################################################################')
-
 
     print(datetime.datetime.utcnow())
 
