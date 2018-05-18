@@ -57,12 +57,24 @@ def load_ctd_genes_in():
     for gene_node, in results:
         gene_id = int(gene_node['gene_id'])
         gene_name = gene_node['name']
-        altGeneIDs = '|'.join(gene_node['altGeneIDs']) if 'altGeneIDs' in gene_node else ''
-        pharmGKBIDs = '|'.join(gene_node['pharmGKBIDs']) if 'pharmGKBIDs' in gene_node else ''
-        bioGRIDIDs = '|'.join(gene_node['bioGRIDIDs']) if '' in gene_node else ''
-        geneSymbol = '|'.join(gene_node['geneSymbol']) if '' in gene_node else ''
-        synonyms = '|'.join(gene_node['synonyms']) if '' in gene_node else ''
-        uniProtIDs = '|'.join(gene_node['uniProtIDs']) if '' in gene_node else ''
+        altGeneIDs = gene_node['altGeneIDs'] if 'altGeneIDs' in gene_node else ''
+        if type(altGeneIDs)==list:
+            altGeneIDs= '|'.join(altGeneIDs)
+        pharmGKBIDs = gene_node['pharmGKBIDs'] if 'pharmGKBIDs' in gene_node else ''
+        if type(pharmGKBIDs)==list:
+            pharmGKBIDs= '|'.join(pharmGKBIDs)
+        bioGRIDIDs = gene_node['bioGRIDIDs'] if 'bioGRIDIDs' in gene_node else ''
+        if type(bioGRIDIDs)==list:
+            bioGRIDIDs= '|'.join(bioGRIDIDs)
+        geneSymbol = gene_node['geneSymbol'] if 'geneSymbol' in gene_node else ''
+        if type(geneSymbol)==list:
+            geneSymbol= '|'.join(geneSymbol)
+        synonyms = gene_node['synonyms'] if 'synonyms' in gene_node else ''
+        if type(synonyms)==list:
+            synonyms= '|'.join(synonyms)
+        uniProtIDs = gene_node['uniProtIDs'] if 'uniProtIDs' in gene_node else ''
+        if type(uniProtIDs)==list:
+            uniProtIDs= '|'.join(uniProtIDs)
 
         if gene_id in dict_genes_hetionet:
             if gene_name == dict_genes_hetionet[gene_id]:
@@ -83,7 +95,7 @@ def load_ctd_genes_in():
 
 
 '''
-Generate cypher and csv for generating the new nodes and the realtionships
+Generate cypher and csv for generating the new nodes and the relationships
 '''
 
 
@@ -107,7 +119,7 @@ def generate_files():
 
     with open('gene/mapping.csv', 'wb') as csvfile:
         writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-        writer.writerow(['GeneIDCTD', 'GeneIDHetionet'])
+        writer.writerow(['GeneIDCTD', 'GeneIDHetionet','altGeneIDs', 'pharmGKBIDs', 'bioGRIDIDs', 'geneSymbol', 'synonyms', 'uniProtIDs'])
         # add the go nodes to cypher file
 
         for gene_id, [name, altGeneIDs, pharmGKBIDs, bioGRIDIDs, geneSymbol, synonyms,
@@ -120,6 +132,9 @@ def generate_files():
 
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/gene/mapping.csv" As line Match (c:Gene{ identifier:toInteger(line.GeneIDHetionet)}), (n:CTDgene{gene_id:line.GeneIDCTD}) Create (c)-[:equal_to_CTD_gene]->(n) With c,n, line Where c.hetionet="yes" Set c.ctd="yes", c.resource=c.resource+"CTD", c.altGeneIDs=split(line.altGeneIDs,'|'),c.pharmGKBIDs=split(line.pharmGKBIDs,'|'),c.bioGRIDIDs=split(line.bioGRIDIDs,'|'),c.geneSymbol=split(line.geneSymbol,'|'),c.synonyms=split(line.synonyms,'|'),c.uniProtIDs=split(line.uniProtIDs,'|') , c.url_ctd=" http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID;\n'''
     cypher_file.write(query)
+    cypher_file.write('begin\n')
+    cypher_file.write('MATCH (n:Gene) Where not exists(n.ctd) Set n.ctd="no";\n')
+    cypher_file.write('commit')
     cypher_file.close()
 
 
