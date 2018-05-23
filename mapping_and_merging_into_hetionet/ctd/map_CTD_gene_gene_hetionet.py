@@ -7,7 +7,7 @@ Created on Thu Apr 17 12:41:20 2018
 
 from py2neo import Graph, authenticate
 import datetime
-import csv
+import csv, sys
 
 '''
 create connection to neo4j and mysql
@@ -51,6 +51,38 @@ load all ctd genes and check if they are in hetionet or not
 
 
 def load_ctd_genes_in():
+    query = '''MATCH (n:CTDgene) Where not ()-[:associates_CG{organism_id:'9606'}]->(n)  RETURN n'''
+    results = g.run(query)
+
+    counter = 0
+    for gene_node, in results:
+        gene_id = int(gene_node['gene_id'])
+        if gene_id in dict_genes_hetionet:
+            gene_name = gene_node['name']
+            altGeneIDs = gene_node['altGeneIDs'] if 'altGeneIDs' in gene_node else ''
+            if type(altGeneIDs) == list:
+                altGeneIDs = '|'.join(altGeneIDs)
+            pharmGKBIDs = gene_node['pharmGKBIDs'] if 'pharmGKBIDs' in gene_node else ''
+            if type(pharmGKBIDs) == list:
+                pharmGKBIDs = '|'.join(pharmGKBIDs)
+            bioGRIDIDs = gene_node['bioGRIDIDs'] if 'bioGRIDIDs' in gene_node else ''
+            if type(bioGRIDIDs) == list:
+                bioGRIDIDs = '|'.join(bioGRIDIDs)
+            geneSymbol = gene_node['geneSymbol'] if 'geneSymbol' in gene_node else ''
+            if type(geneSymbol) == list:
+                geneSymbol = '|'.join(geneSymbol)
+            synonyms = gene_node['synonyms'] if 'synonyms' in gene_node else ''
+            if type(synonyms) == list:
+                synonyms = '|'.join(synonyms)
+            uniProtIDs = gene_node['uniProtIDs'] if 'uniProtIDs' in gene_node else ''
+            if type(uniProtIDs) == list:
+                uniProtIDs = '|'.join(uniProtIDs)
+            counter += 1
+            dict_ctd_gene_in_hetionet[gene_id] = [gene_name, altGeneIDs, pharmGKBIDs, bioGRIDIDs, geneSymbol,
+                                                  synonyms, uniProtIDs]
+
+    print('number of ctds which are already in hetionet, but has no relationship to ctd chemicals with organism: '+str(counter))
+
     query = '''MATCH (n:CTDgene) Where ()-[:associates_CG{organism_id:'9606'}]->(n)  RETURN n'''
     results = g.run(query)
 
@@ -81,14 +113,16 @@ def load_ctd_genes_in():
                 dict_ctd_gene_in_hetionet[gene_id] = [gene_name, altGeneIDs, pharmGKBIDs, bioGRIDIDs, geneSymbol,
                                                       synonyms, uniProtIDs]
             else:
-                print('same id but different names')
-                print(gene_name)
-                print(dict_genes_hetionet[gene_id])
+                # print('same id but different names')
+                # print(gene_name)
+                # print(dict_genes_hetionet[gene_id])
                 dict_ctd_gene_in_hetionet[gene_id] = [gene_name, altGeneIDs, pharmGKBIDs, bioGRIDIDs, geneSymbol,
                                                       synonyms, uniProtIDs]
         else:
             dict_ctd_gene_not_in_hetionet[gene_id] = [gene_name, altGeneIDs, pharmGKBIDs, bioGRIDIDs, geneSymbol,
                                                       synonyms, uniProtIDs]
+
+
 
     print('number of existing nodes:' + str(len(dict_ctd_gene_in_hetionet)))
     print('number of not existing nodes:' + str(len(dict_ctd_gene_not_in_hetionet)))
