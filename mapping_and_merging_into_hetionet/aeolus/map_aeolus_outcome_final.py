@@ -240,7 +240,7 @@ def integrate_aeolus_into_hetionet():
             dict_side_effects_aeolus[outcome_concept].name, url)
         else:
             query = '''Match (a:AeolusOutcome),(n:SideEffect)  Where a.outcome_concept_id="%s" and n.identifier="%s"
-            Set a.cui="%s"
+            Set a.cui="%s", n.resource=n.resource+"AEOLUS"
             Create (n)-[:equal_to_Aeolus_SE]->(a); \n'''
             query = query % (
             outcome_concept, dict_aeolus_SE_with_CUIs[outcome_concept][0], dict_aeolus_SE_with_CUIs[outcome_concept][0])
@@ -248,13 +248,13 @@ def integrate_aeolus_into_hetionet():
         g.run(query)
 
     # search for all side effect that did not mapped with aeolus and give them the property aeolus:'no'
-    query = '''MATCH (n:SideEffect) Where Not Exists(n.aeolus) RETURN n.identifier '''
+    query = '''MATCH (n:SideEffect) Where Not Exists(n.aeolus) Set n.aeolus='no' RETURN n.identifier '''
     results = g.run(query)
-    for cui, in results:
-        query = '''MATCH (n:SideEffect{identifier:"%s"}) 
-        Set n.aeolus='no' '''
-        query = query % (cui)
-        g.run(query)
+    # for cui, in results:
+    #     query = '''MATCH (n:SideEffect{identifier:"%s"})
+    #     Set n.aeolus='no' '''
+    #     query = query % (cui)
+    #     g.run(query)
 
 
 
