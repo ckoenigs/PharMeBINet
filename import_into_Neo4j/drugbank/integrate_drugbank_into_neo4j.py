@@ -6,7 +6,8 @@ Created on Mon Jan 15 12:49:17 2018
 """
 from py2neo import Graph, authenticate
 import datetime
-import sys
+import sys, csv
+import pandas as pd
 
 # dictionary for every drug with all information about this:name, inchikey, inchi, food interaction, alternative ids
 dict_drug_info = {}
@@ -23,66 +24,73 @@ This takes all information from Drugbank and sort them in the different dictiona
 1: alternative drugbank ids
 2: name	
 3: type	
-4: groups	
-5: atc_codes	
-6: categories	
-7: inchikey	
-8: inchi	
-9: inchikeys	
-10: synonyms	
-11:unii	
-12:uniis	
-13:external_identifiers	
-14:extra_names	
-15:brands	
-16:molecular_forula	
-17:molecular_formular_experimental	
-18:gene_sequence	
-19:amino_acid_sequence	
-20:sequence	
-21:drug_interaction	
-22:drug_interaction_description	
-23:food_interaction	
-24:description
+4: cas_number
+5: groups	
+6: atc_codes	
+7: categories	
+8: inchikey	
+9: inchi	
+10: inchikeys	
+11: synonyms	
+12:unii	
+13:uniis	
+14:external_identifiers	
+15:extra_names	
+16:brands	
+17:molecular_forula	
+18:molecular_formular_experimental	
+/19:gene_sequence	
+/20:amino_acid_sequence	
+19:sequence	
+20:drug_interaction	
+21:drug_interaction_description	
+22:food_interaction
+23:toxicty
+24:targets
+25:transporter
+26:pathways
+27:dosages
+28:snps
+29:enzymes
+30:carriers
+31:description
 '''
 
 
-def get_drugbank_information():
-    i = 0
-    f = open('data/drugbank_with_infos_and_interactions_alternative_ids.tsv', 'r')
-    next(f)
-    for line in f:
+def get_drugbank_information(drugbank_file):
+    node_cypher=open('node_cypher.cypher','w')
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/drugbank/'''+drugbank_file+ '''" As line FIELDTERMINATOR '\\t' Create (c:DrugBankdrug{ id:line.drugbank_id, name: line.name, inchikey:line.inchikey , inchi: line.inchi,  food_interaction: line.food_interaction, url: 'http://www.drugbank.ca/drugs/'+line.drugbank_id, license:"CC BY-NC 4.0", alternative_ids:split(line.drugbank_ids,'|') ,type:line.type, cas_number:line.cas_number, groups:split(line.groups,'|'), atc_codes:split(line.atc_codes,'|'), categories:split(line.categories,'|'), salt_inchikeys:split(line.inchikeys,'|'), synonyms:split(line.synonyms,'|'), unii:line.unii, salt_uniis:split(line.uniis,'|') , xrefs:split(line.external_identifiers,'|'), brands:split(line.brands,'|'), salt_names:split(line.extra_names,'|'), molecular_formula:line.molecular_formula, sequences:split(line.sequences,'|')}) ;\n'''
+    node_cypher.write(query)
+    edge_cypher = open('edge_cypher.cypher', 'w')
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/drugbank/csv_drug_interaction.csv" As line Match (drug1:DrugBankdrug{id: line.Drug1}), (drug2:DrugBankdrug{id: line.Drug2}) Create (drug1)-[:interacts{url: 'http://www.drugbank.ca/drugs/' + line.Drug1 , description: line.description}] ->(drug2); \n'''
+    edge_cypher.write(query)
+
+    # drugbank tsv
+    f = open(drugbank_file, 'r')
+    tsv_reader= pd.read_csv(f, sep='\t')
+
+    # new file for drug interaction
+    csvfile= open('csv_drug_interaction.csv','w')
+    writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+    writer.writerow(['Drug1', 'Drug2', 'description'])
+    for index, line in tsv_reader.iterrows():
         # print(line)
-        splitted = line.split('\t')
-        drugbank_id = splitted[0]
-        alternative_ids = splitted[1].split('|') if splitted[1] != '' else []
-        alternative_ids.remove(drugbank_id)
-        dict_alternative_to_id[drugbank_id] = drugbank_id
-        for alter_id in alternative_ids:
-            if alter_id[0:2] == 'DB':
-                dict_alternative_to_id[alter_id] = drugbank_id
-        alternative_ids = '|'.join(alternative_ids)
-        name = splitted[2]
-        inchikey = splitted[7]
-        inchi = splitted[8]
-        drug_interaction = splitted[21]
-        drug_interaction_description = splitted[22]
+        drugbank_id = line['drugbank_id']
+        # print(line)
+        # print('blub')
+        # print(line['drug_interaction'])
+        if type(line['drug_interaction'])==float:
+            continue
+        drug_interaction = line['drug_interaction'].split('|')
+        drug_interaction_description = line['drug_interaction_description'].split('|')
 
-        food_interaction = splitted[23].replace('"', "'")
-        # print(drugbank_id)
-        # print(food_interaction)
-        dict_drug_info[drugbank_id] = [name, inchikey, inchi, food_interaction, alternative_ids]
+        i=0
+        for interaction in drug_interaction:
+            writer.writerow([drugbank_id,interaction,drug_interaction_description[i]])
+            i+=1
 
-        counter = 0
-        splitted_definition = drug_interaction_description.split('|')
-        for drug in drug_interaction.split('|'):
-            # it is enough to check on direction, because if it is already in the dictionary then this drug must be on position 2
-            if ((drug, drugbank_id) not in dict_drug_interaction_info):
-                dict_drug_interaction_info[(drugbank_id, drug)] = splitted_definition[counter]
-            counter += 1
-        # if i==1000:
-        #     break
-        i += 1
+
+
 
     print('number of different drugbank ids:' + str(len(dict_drug_info)))
     print('number of different interaction ids:' + str(len(dict_drug_interaction_info)))
@@ -180,16 +188,16 @@ def generate_cypher_file():
 def main():
     print (datetime.datetime.utcnow())
     print('import drugbank information')
-
-    #    create_connection_with_neo4j()
-
-    get_drugbank_information()
+    if len(sys.argv)< 2:
+        print('need drugbank file')
+        sys.exit()
+    get_drugbank_information(sys.argv[1])
 
     print('#############################################################')
     print (datetime.datetime.utcnow())
     print('generate cypher file')
 
-    generate_cypher_file()
+    #generate_cypher_file()
 
     print('#############################################################')
     print (datetime.datetime.utcnow())
