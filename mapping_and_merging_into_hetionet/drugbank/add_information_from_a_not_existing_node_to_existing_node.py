@@ -106,7 +106,7 @@ def merge_resource_to_node(delete_node, label, merged_node):
             if ctd_url_merged == '':
                 add_query = ''' s.url_ctd="%s" ''' % (url_ctd)
                 query += add_query
-        g.run(query[0:-1])
+        # g.run(query[0:-1])
 
 
 
@@ -136,6 +136,8 @@ def get_the_information_and_the_direction(identifier, label, merged_node_id):
 
         list_node_to_other.append([rela_type, dict_rela, node_labels, node])
 
+    print('number of rela from node to other:'+str(len(list_node_to_other)))
+
     query = '''Match (c:%s{identifier:"%s"})<-[r]-(a) Return Type(r), r, labels(a), a '''
     query = query % (label, identifier)
     # print(query)
@@ -153,6 +155,8 @@ def get_the_information_and_the_direction(identifier, label, merged_node_id):
             dict_node[key] = property
 
         list_other_to_node.append([rela_type, dict_rela, node_labels, node])
+
+    print('number of rela from other to node:' + str(len(list_other_to_node)))
 
 
 
@@ -179,6 +183,12 @@ def add_this_information_to_the_merged_node(identifier, label, delete_node_id):
     length_list_node_other=len(list_node_to_other)
     for [rela_type, dict_rela, node_labels, node] in list_node_to_other:
         # test if not a relationship already exists
+        if not node_labels[0] in dict_label_to_unique_prop:
+            print('The label the has to be manual changed:'+ node_labels[0])
+            print(node)
+            print('Rela type:'+rela_type)
+            print(dict_rela)
+            continue
         if type(node[dict_label_to_unique_prop[node_labels[0]]]) == int:
             query = ''' Match (a:%s{identifier:"%s"})-[r:%s]->(b:%s{%s:%s})  Return r'''
         else:
@@ -326,8 +336,32 @@ def merge_information_from_one_node_to_another(delete_node_id, merged_node_id, n
     print(datetime.datetime.utcnow())
 
     con.close()
-
+#
 # def main():
+#     label='Compound'
+#     # alternativ ids
+#     # old_id = 'DB12546'
+#     # into = 'DB09498'
+#     # old_id='DB01398'
+#     # into='DB00936'
+#     # old_id = 'DB00667'
+#     # into = 'DB05381'
+#
+#     # not mapped
+#     old_id='DB08866'
+#     into='DB09123'
+#     old_id = 'DB13390'
+#     into = 'DB06723'
+#     old_id = 'DB09162'
+#     into = 'DB13949'
+#
+#     global list_other_to_node, list_node_to_other
+#     # list from the specific node to the other with (rela_type,dict_rela,node_labels,dict_node)
+#     list_node_to_other = []
+#
+#     # list from  the other with to the specific node  (rela_type,dict_rela,node_labels,dict_node)
+#     list_other_to_node = []
+#
 #     print(datetime.datetime.utcnow())
 #
 #     print('##########################################################################')
@@ -340,7 +374,7 @@ def merge_information_from_one_node_to_another(delete_node_id, merged_node_id, n
 #     print(datetime.datetime.utcnow())
 #     print('add resources to merged node')
 #
-#     merge_resource_to_node('DOID:8778', 'Disease', 'DOID:5099')
+#     merge_resource_to_node(old_id, label, into)
 #
 #     print('##########################################################################')
 #
@@ -355,7 +389,7 @@ def merge_information_from_one_node_to_another(delete_node_id, merged_node_id, n
 #     print('get all information for the node that is merged into another node ')
 #
 #     # get_the_information_and_the_direction('DB13390', 'Compound')
-#     get_the_information_and_the_direction('DOID:8778', 'Disease', 'DOID:5099')
+#     get_the_information_and_the_direction(old_id, label, into)
 #
 #     print('##########################################################################')
 #
@@ -363,7 +397,7 @@ def merge_information_from_one_node_to_another(delete_node_id, merged_node_id, n
 #     print('integrate this into Hetionet')
 #
 #     # add_this_information_to_the_merged_node('DB06723', 'Compound','DB13390')
-#     add_this_information_to_the_merged_node('DOID:5099', 'Disease', 'DOID:8778')
+#     add_this_information_to_the_merged_node(into , label, old_id)
 #
 #     print('##########################################################################')
 #
@@ -371,7 +405,7 @@ def merge_information_from_one_node_to_another(delete_node_id, merged_node_id, n
 #     print('delete merged node')
 #
 #     # delete_merged_node('DB13390', 'Compound')
-#     delete_merged_node('DOID:8778', 'Disease')
+#     delete_merged_node(old_id, label)
 #
 #     print('##########################################################################')
 #
