@@ -79,14 +79,15 @@ def load_all_DrugBank_compound_in_dictionary():
     query = '''Match (n:DrugBankdrug) RETURN n '''
     results = g.run(query)
     for compound, in results:
-        food_interaction = compound['food_interaction']
-        inchikey = compound['inchikey']
-        inchi = compound['inchi']
-        name = compound['name']
-        alternative_ids = compound['alternative_ids']
+        # food_interaction = compound['food_interaction']
+        # inchikey = compound['inchikey']
+        # inchi = compound['inchi']
+        # name = compound['name']
+        all_information=dict(compound)
+        # alternative_ids = compound['alternative_ids']
         id = compound['id']
-        url = compound['url']
-        dict_compounds[id] = [url, name, inchi, inchikey, food_interaction, alternative_ids]
+        # url = compound['url']
+        dict_compounds[id] = all_information
     print('size of drugbank: ' + str(len(dict_compounds)))
 
 
@@ -127,13 +128,14 @@ def integrate_DB_information_into_hetionet():
 
     # integrate or add Hetionet compounds
     for drugbank_id, information in dict_compounds.items():
-        food_interaction = information[4]
-        inchikey = information[3]
-        inchi = information[2]
-        name = information[1]
-        alternative_ids = information[5].split('|')
-        url = information[0]
+        # food_interaction = information[4]
+        # inchikey = information[3]
+        # inchi = information[2]
+        # name = information[1]
+        # alternative_ids = information[5].split('|')
+        # url = information[0]
         # alternative ids
+        alternative_ids=information['alternative_ids']
         alternative_ids.append(drugbank_id)
         intersection = list(set(alternative_ids).intersection(list_compounds_in_hetionet))
         if len(intersection) > 0:
@@ -147,26 +149,51 @@ def integrate_DB_information_into_hetionet():
                 resource = list(set(resource))
                 resource = "','".join(resource)
                 query = ''' Match (n:Compound{identifier:"%s"}), (b:DrugBankdrug{id:"%s"})
-                 Set n.food_interaction="%s" , n.resource=['%s'], n.drugbank="yes", n.alternative_drugbank_ids=["%s"]
-                 Create (n)-[:equal_to_drugbank]->(b);'''
-                query = query % (drug_id, drugbank_id, food_interaction, resource, information[5].replace('|', '","'))
-                # g.run(query)
+                 Set  n.drugbank="yes",'''
+                query=query %(drug_id,drugbank_id)
+                for key, property in information.items():
+                    part=''
+                    if type(property)==list:
+                        if key=='alternative_ids':
+                            property.append(drugbank_id)
+                            property=list(set(property))
+                        property = [ x.replace('"',"'") for x in property]
+                        list_string='","'.join(property)
+                        part=''' n.%s=["%s"],'''
+                        part=part %(key, list_string)
+                    else:
+                        if key=='id':
+                            continue
+                        part=''' n.%s="%s",'''
+                        part = part % (key, property)
+                    query+=part
+                query= query[0:-1]+''' Create (n)-[:equal_to_drugbank]->(b);'''
+                g.run(query)
         else:
             # create a new node
+            query = '''Match  (b:DrugBankdrug{id:"%s"})
+                                                Create (n:Compound{identifier:"%s", resource:['DrugBank'], source:"DrugBank", license:"CC BY-NC 4.0", ctd:'no', aeolus:'no', ndf_rt:'no', hetionet:'no', drugbank:'yes', sider:'no', '''
 
-            [name2, inchi2, inchikey2] = get_drugbank_information.get_drugbank_information(drugbank_id)
-            if name2 == '':
-                query = '''Match  (b:DrugBankdrug{id:"%s"})
-                                                Create (n:Compound{identifier:"%s", inchikey:"%s",  inchi:"%s", resource:['DrugBank'], source:"DrugBank", url:"%s",  name:"%s", food_interaction:"%s", alternative_drugbank_ids:["%s"],license:"CC BY-NC 4.0", ctd:'no', aeolus:'no', ndf_rt:'no', hetionet:'no', drugbank:'yes', sider:'no', no_further_chemical_information:'yes'})
-                                                Create (n)-[:equal_to_drugbank]->(b);'''
-            else:
-                query = '''Match  (b:DrugBankdrug{id:"%s"})
-                                Create (n:Compound{identifier:"%s", inchikey:"%s", inchi:"%s", resource:['DrugBank'], source:"DrugBank", url:"%s", name:"%s", food_interaction:"%s", alternative_drugbank_ids:["%s"],  license:"CC BY-NC 4.0", ctd:'no', aeolus:'no', ndf_rt:'no', hetionet:'no', drugbank:'yes', sider:'no'})
-                                Create (n)-[:equal_to_drugbank]->(b);'''
+            query= query %(drugbank_id,drugbank_id)
+            for key, property in information.items():
+                if type(property) == list:
+                    if key == 'alternative_ids':
+                            property=list(set(property))
 
-            query = query % (
-            drugbank_id, drugbank_id, inchikey, inchi, url, name, food_interaction, information[5].replace('|', '","'))
-            # g.run(query)
+                    property = [x.replace('"', "'") for x in property]
+                    list_string = '","'.join(property)
+                    part = ''' %s:["%s"],'''
+                    part = part % (key, list_string)
+                else:
+                    if key == 'id':
+                        continue
+                    part = ''' %s:"%s",'''
+                    part= part %(key, property)
+                query += part
+
+            query = query[0:-1] + '''})  Create (n)-[:equal_to_drugbank]->(b);'''
+
+            g.run(query)
 
     # generate cypher file for interaction
     counter_connection = 0
