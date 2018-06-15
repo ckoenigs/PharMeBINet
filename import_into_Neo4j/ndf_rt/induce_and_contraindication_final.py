@@ -8,6 +8,7 @@ Created on Fri Jul 14 10:34:41 2017
 import xml.dom.minidom as dom
 
 import datetime
+import sys
 
 
 # all different kinds has the same form, so both drug and disease can defind as on class
