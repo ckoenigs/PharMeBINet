@@ -86,8 +86,11 @@ def get_drugbank_information(drugbank_file):
 
         i=0
         for interaction in drug_interaction:
-            writer.writerow([drugbank_id,interaction,drug_interaction_description[i]])
+            if not (interaction,drugbank_id) in dict_drug_interaction_info:
+                writer.writerow([drugbank_id,interaction,drug_interaction_description[i]])
+                dict_drug_interaction_info[(drugbank_id,interaction)]=drug_interaction_description[i]
             i+=1
+
 
 
 
