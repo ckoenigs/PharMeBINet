@@ -851,7 +851,7 @@ def integration_of_ctd_chemicals_into_hetionet_compound():
     counter_illegal_drugbank_ids = 0
 
     #delete all equal_chemical_CTD relationships
-    query='''Match ()-[r:equal_chemical_CTD]->() Delete r'''
+    query='''Match ()-[r:equal_chemichal_CTD]->() Delete r'''
     g.run(query)
 
 
@@ -917,12 +917,13 @@ def integration_of_ctd_chemicals_into_hetionet_compound():
             resource.append("CTD")
             resource = list(set(resource))
             string_resource = '","'.join(resource)
+            string_dbs='","'.join(drugbank_ids)
             url = 'http://ctdbase.org/detail.go?type=chem&acc=' + mesh_id
             query = ''' MATCH (n:CTDchemical{chemical_id:"%s"}), (c:Compound{identifier:"%s"})
-            Set c.ctd="yes", c.ctd_url="%s", c.resource=["%s"]
+            Set c.ctd="yes", c.ctd_url="%s", c.resource=["%s"], n.drugBankIDs=["%s"]
             Create (c)-[:equal_chemical_CTD]->(n)
             '''
-            query = query % (mesh_id, drugbank_id, url, string_resource)
+            query = query % (mesh_id, drugbank_id, url, string_resource,string_dbs)
 
             g.run(query)
 
