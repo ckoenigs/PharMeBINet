@@ -51,6 +51,7 @@ load all ctd genes and check if they are in hetionet or not
 
 
 def load_ctd_genes_in():
+    # take only human genes
     query = '''MATCH (n:CTDgene) Where not ()-[:associates_CG{organism_id:'9606'}]->(n)  RETURN n'''
     results = g.run(query)
 
