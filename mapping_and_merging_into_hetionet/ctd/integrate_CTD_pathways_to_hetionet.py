@@ -331,7 +331,7 @@ def map_with_relationship_pathway_gene_chemical():
     delete_map_pathway = []
     for identifier in list_not_mapped_ctd_pathway_ids:
         [name, source] = dict_ctd_pathways_not_mapped[identifier]
-        query = '''Match p=(c:CTDpathway{pathway_id:"%s"})-[:participates_GP]-(:CTDgene)-[:associates_CG{organism_id:'9606'}]-(:CTDchemical) Return p Limit 1'''
+        query = '''Match p=(c:CTDpathway{pathway_id:"%s"})-[:participates_GP]-(:CTDgene)-[:associates_CG{organism_id:'9606'}]-(:CTDchemical) Return p '''
         query = query % (identifier)
         results = g.run(query)
         result = results.evaluate()
@@ -395,8 +395,11 @@ def integration_into_hetionet():
                 xrefs = set(dict_pathway_hetionet_xrefs[ctd_identifier])
                 xrefs.add(dict_source_ctd_to_full_name[ctd_source] + ':' + ctd_identifier)
                 xrefs = list(xrefs)
+                dict_pathway_hetionet_xrefs[ctd_identifier]=xrefs
             else:
+
                 xrefs = [dict_source_ctd_to_full_name[ctd_source] + ':' + ctd_identifier]
+                dict_pathway_hetionet_xrefs[ctd_identifier] = xrefs
             xrefs = '","'.join(xrefs)
 
             query = '''Match (d:Pathway{identifier:"%s"}),(c:CTDpathway{pathway_id:"%s"}) Create (d)-[:equal_to_CTD_pathway]->(c) Set c.hetionet_id="%s", d.xrefs= ["%s"], d.ctd="yes", d.ctd_url="http://ctdbase.org/detail.go?type=pathway&acc=%s" '''

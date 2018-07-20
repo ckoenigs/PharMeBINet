@@ -119,15 +119,15 @@ def take_all_relationships_of_gene_pathway():
     list_time_dict_association=[]
     list_time_add_to_file=[]
 
-    query = '''Match (n:Chemical) Return count(n)'''
+    query = '''Match (n:Chemical) Where (n)-[:equal_chemical_CTD]-() or (n)-[:equal_to_CTD_chemical]-() Return count(n)'''
     results = g.run(query)
-    number_of_disease = int(results.evaluate())
+    number_of_chemical = int(results.evaluate())
     
     # query='''MATCH p=(a)-[r:equal_chemichal_CTD]->(b) Create (a)-[:equal_chemical_CTD]->(b) Delete r'''
     # g.run(query)
 
     
-    # number_of_disease=100
+    # number_of_chemical=100
 
     # counter directEvidence
     counter_direct_evidence = 0
@@ -140,17 +140,15 @@ def take_all_relationships_of_gene_pathway():
     list_mesh=[]
 
 
-    print(int(number_of_disease))
+    print(int(number_of_chemical))
     # sys.exit()
     number_of_compound_to_work_with = 10
 
     counter = 0
     counter_of_used_chemical=0
 
-    old_number=100000000000000
 
-    while counter_of_used_chemical != old_number:
-        old_number=counter_of_used_chemical
+    while counter_of_used_chemical <number_of_chemical:
         all_chemicals_id = []
         dict_chemical_id_chemical = {}
 
@@ -165,6 +163,8 @@ def take_all_relationships_of_gene_pathway():
         print('\tTake ' + str(number_of_compound_to_work_with) + ' compound: %.4f seconds' % (time_measurement))
         list_time_all_finding_chemical.append(time_measurement)
 
+        dict_chemical_to_drugbank={}
+
         start = time.time()
         # counter chemicals with drugbank ids
         count_chemicals_drugbank=0
@@ -173,6 +173,10 @@ def take_all_relationships_of_gene_pathway():
             count_chemicals_drugbank+=1
             all_chemicals_id.extend(ctd_chemicals)
             for chemical in ctd_chemicals:
+                if chemical in dict_chemical_to_drugbank:
+                    dict_chemical_to_drugbank[chemical].append(chemical_id)
+                else:
+                    dict_chemical_to_drugbank[chemical]=[chemical_id]
                 if not chemical in list_durgbank_mesh:
                     list_durgbank_mesh.append(chemical)
                 if chemical in dict_chemical_id_chemical:
@@ -232,16 +236,21 @@ def take_all_relationships_of_gene_pathway():
 
         for chemical_id, drugbank_ids, rela, mondos, disease_id, in results:
             counter += 1
-            if disease_id=='605552':
-                print('blub')
+            # if disease_id=='605552':
+            #     print('blub')
             rela = dict(rela)
             omimIDs = rela['omimIDs'] if 'omimIDs' in rela else []
             directEvidence = rela['directEvidence'] if 'directEvidence' in rela else ''
             pubMedIDs = rela['pubMedIDs'] if 'pubMedIDs' in rela else []
             inferenceScore = rela['inferenceScore'] if 'inferenceScore' in rela else ''
+
+            # take only the relationships with directEvidence and inference score over 100
+            if inferenceScore!='' and float(inferenceScore)>=100 and directEvidence=='':
+                continue
+
             inferenceGeneSymbol = rela['inferenceGeneSymbol'] if 'inferenceGeneSymbol' in rela else ''
             drugbank_ids= drugbank_ids if not drugbank_ids is None else []
-            if len(drugbank_ids) == 0 and len(mondos) > 0:
+            if chemical_id not in dict_chemical_to_drugbank and len(mondos) > 0:
                 for mondo in mondos:
                     if (chemical_id, mondo) in dict_chemical_disaese:
                         dict_chemical_disaese[(chemical_id, mondo)][0].extend(omimIDs)
@@ -264,8 +273,8 @@ def take_all_relationships_of_gene_pathway():
                     else:
                         dict_chemical_disaese[(chemical_id, mondo)] = [omimIDs,[directEvidence], pubMedIDs,
                                                                        [inferenceScore], [inferenceGeneSymbol], [disease_id],[]]
-            elif len(drugbank_ids) > 0 and len(mondos) > 0:
-                for drugbank_id in drugbank_ids:
+            elif chemical_id in dict_chemical_to_drugbank and len(mondos) > 0:
+                for drugbank_id in dict_chemical_to_drugbank[chemical_id]:
                     for mondo in mondos:
                         if (drugbank_id, mondo) in dict_chemical_disaese:
                             dict_chemical_disaese[(drugbank_id, mondo)][0].extend(omimIDs)
@@ -293,8 +302,8 @@ def take_all_relationships_of_gene_pathway():
                             dict_chemical_disaese[(drugbank_id, mondo)] = [omimIDs, [directEvidence], pubMedIDs,
                                                                            [inferenceScore], [inferenceGeneSymbol],
                                                                            [disease_id],[chemical_id]]
-                            if ('DB00649','MONDO:0011565') in dict_chemical_disaese:
-                                print('blub')
+                            # if ('DB00649','MONDO:0011565') in dict_chemical_disaese:
+                            #     print('blub')
 
             if counter % 10000 == 0:
                 print(counter)
@@ -345,7 +354,7 @@ def take_all_relationships_of_gene_pathway():
     print('number of chemicals with db:'+str(len(list_durgbank_mesh)))
 
     query = '''MATCH (n:Chemical) REMOVE n.integrated, n.integrated_drugbank'''
-    g.run(query)
+    # g.run(query)
 
     print('Average finding disease:' + str(np.mean(list_time_all_finding_chemical)))
     print('Average dict monde:' + str(np.mean(list_time_dict_chemical)))

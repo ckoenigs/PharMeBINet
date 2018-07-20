@@ -123,7 +123,7 @@ def take_all_relationships_of_gene_disease():
         print(dict_disease_id_mondo)
 
         all_disease_id='","'.join(all_disease_id)
-        query = '''MATCH (disease)<-[r:associates_GD]-(gene) Where ()-[:equal_to_CTD_gene]->(gene) and disease.disease_id in ["''' + all_disease_id+ '''"] RETURN gene.gene_id, r, disease.mondos Order by disease.disease_id '''
+        query = '''MATCH (disease)<-[r:associates_GD]-(gene) Where ()-[:equal_to_CTD_gene]->(gene) and disease.disease_id in ["''' + all_disease_id+ '''"] RETURN gene.gene_id, r, disease.mondos, disease.disease_id Order by disease.disease_id '''
         results = g.run(query)
 
         time_measurement = time.time() - start
@@ -133,7 +133,7 @@ def take_all_relationships_of_gene_disease():
         # dictionary with all pairs and properties as value
         dict_disease_gene = {}
 
-        for gene_id, rela, disease_mondos, in results:
+        for gene_id, rela, disease_mondos, disease_id, in results:
             counter_all+=1
             rela = dict(rela)
             inferenceChemicalName = rela['inferenceChemicalName'] if 'inferenceChemicalName' in rela else ''
@@ -141,8 +141,15 @@ def take_all_relationships_of_gene_disease():
             directEvidence = rela['directEvidence'] if 'directEvidence' in rela else ''
             pubMedIDs = '|'.join(rela['pubMedIDs']) if 'pubMedIDs' in rela else ''
             omimIDs='|'.join(rela['omimIDs']) if 'omimIDs' in rela else ''
+
+            if inferenceScore!='' and float(inferenceScore)>=100:
+                if directEvidence!='':
+                    print('ohje direct evidence')
+                if pubMedIDs=='':
+                    print('some has not a pubmed id')
+                continue
             blu=False
-            for mondo in disease_mondos:
+            for mondo in dict_disease_id_mondo[disease_id]:
                 if not blu:
                     count_blu+=1
                 if not (gene_id, mondo) in dict_disease_gene:
