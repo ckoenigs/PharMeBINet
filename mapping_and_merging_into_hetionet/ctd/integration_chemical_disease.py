@@ -322,8 +322,8 @@ def take_all_relationships_of_gene_pathway():
 
         for (chemical_id, disease_id), information in dict_chemical_disaese.items():
             directEvidences = filter(bool, information[1])
-            if (chemical_id,disease_id)==('DB00649','MONDO:0011565'):
-                print('blub')
+            # if (chemical_id,disease_id)==('DB00649','MONDO:0011565'):
+            #     print('blub')
             if len(directEvidences) > 0:
 
                 for directEvidence in directEvidences:
