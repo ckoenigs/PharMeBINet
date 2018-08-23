@@ -48,6 +48,9 @@ def add_information_into_te_different_csv_files( (chemical_id,disease_id), infor
     inferenceGeneSymbols ='|'.join(filter(bool, information[4]))
     csvfile.writerow([chemical_id, disease_id,omimIDs,directEvidences,pubMedIDs, inferenceScores,inferenceGeneSymbols])
 
+# csvfile_inf= open('chemical_disease/inf.csv', 'wb')
+# writer_inf = csv.writer(csvfile_inf, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+# writer_inf.writerow(['ChemicalID', 'DiseaseID', 'inferenceScores'])
 
 '''
 get all relationships between gene and pathway, take the hetionet identifier an save all important information in a csv
@@ -86,31 +89,31 @@ def take_all_relationships_of_gene_pathway():
 
     cypherfile.write('begin\n')
     cypherfile.write('Match (n:Chemical)-[r:TREATS_CtD]->(b:Disease) Where not exists(r.ctd) Set r.ctd="no";\n')
-    cypherfile.write('commit')
+    cypherfile.write('commit\n')
     cypherfile.write('begin\n')
     cypherfile.write('Match (n:Chemical)-[r:TREATS_CtD]->(b:Disease) Where not exists(r.new) and r.hetionet="no" Delete r;\n')
-    cypherfile.write('commit')
+    cypherfile.write('commit\n')
     cypherfile.write('begin\n')
     cypherfile.write('Match (n:Chemical)-[r:TREATS_CtD]->(b:Disease) Remove r.new;\n')
-    cypherfile.write('commit')
+    cypherfile.write('commit\n')
     cypherfile.write('begin\n')
     cypherfile.write('Match (n:Chemical)-[r:INDUCES_CiD]->(b:Disease) Where not exists(r.ctd) Set r.ctd="no";\n')
-    cypherfile.write('commit')
+    cypherfile.write('commit\n')
     cypherfile.write('begin\n')
     cypherfile.write('Match (n:Chemical)-[r:INDUCES_CiD]->(b:Disease) Where not exists(r.new) and r.hetionet="no" Delete r;\n')
-    cypherfile.write('commit')
+    cypherfile.write('commit\n')
     cypherfile.write('begin\n')
     cypherfile.write('Match (n:Chemical)-[r:INDUCES_CiD]->(b:Disease) Remove r.new;\n')
-    cypherfile.write('commit')
+    cypherfile.write('commit\n')
     cypherfile.write('begin\n')
     cypherfile.write('Match (n:Chemical)-[r:ASSOCIATES_CaD]->(b:Disease) Where not exists(r.ctd) Set r.ctd="no";\n')
-    cypherfile.write('commit')
+    cypherfile.write('commit\n')
     cypherfile.write('begin\n')
     cypherfile.write('Match (n:Chemical)-[r:ASSOCIATES_CaD]->(b:Disease) Where not exists(r.new) and r.hetionet="no" Delete r;\n')
-    cypherfile.write('commit')
+    cypherfile.write('commit\n')
     cypherfile.write('begin\n')
     cypherfile.write('Match (n:Chemical)-[r:ASSOCIATES_CaD]->(b:Disease) Remove r.new;\n')
-    cypherfile.write('commit')
+    cypherfile.write('commit\n')
 
     # to make time statistics
     list_time_all_finding_chemical=[]
@@ -127,7 +130,7 @@ def take_all_relationships_of_gene_pathway():
     # g.run(query)
 
     
-    # number_of_chemical=100
+    # number_of_chemical=500
 
     # counter directEvidence
     counter_direct_evidence = 0
@@ -145,7 +148,12 @@ def take_all_relationships_of_gene_pathway():
     number_of_compound_to_work_with = 10
 
     counter = 0
+    counter_of_used_rela=0
     counter_of_used_chemical=0
+    counter_no_change=0
+    counter_over_100=0
+    counter_integrated_in_file_rela=0
+    counter_multi_direct_evidence=0
 
 
     while counter_of_used_chemical <number_of_chemical:
@@ -155,7 +163,6 @@ def take_all_relationships_of_gene_pathway():
         start = time.time()
         query = '''MATCH p=(a)-[r:equal_chemical_CTD]->(b)  Where not exists(a.integrated_drugbank)  With  a, collect(b.chemical_id) As ctd Limit ''' + str(
             number_of_compound_to_work_with) + ''' Set a.integrated_drugbank='yes'  RETURN a.identifier , ctd '''
-
         # print(query)
         # sys.exit()
         results = g.run(query)
@@ -164,6 +171,36 @@ def take_all_relationships_of_gene_pathway():
         list_time_all_finding_chemical.append(time_measurement)
 
         dict_chemical_to_drugbank={}
+
+        '''
+        sort all information into dict_chemical_disease
+        '''
+
+        def sort_into_dictionary(chemical_id, mondo, omimIDs, directEvidence, pubMedIDs, inferenceScore,
+                                 inferenceGeneSymbol, disease_id):
+            if (chemical_id, mondo) in dict_chemical_disease:
+                dict_chemical_disease[(chemical_id, mondo)][0].extend(omimIDs)
+                dict_chemical_disease[(chemical_id, mondo)][0] = list(
+                    set(dict_chemical_disease[(chemical_id, mondo)][0]))
+                dict_chemical_disease[(chemical_id, mondo)][1].append(directEvidence)
+                dict_chemical_disease[(chemical_id, mondo)][1] = list(
+                    set(dict_chemical_disease[(chemical_id, mondo)][1]))
+                dict_chemical_disease[(chemical_id, mondo)][2].extend(pubMedIDs)
+                dict_chemical_disease[(chemical_id, mondo)][2] = list(
+                    set(dict_chemical_disease[(chemical_id, mondo)][2]))
+                dict_chemical_disease[(chemical_id, mondo)][3].append(inferenceScore)
+                dict_chemical_disease[(chemical_id, mondo)][3] = list(
+                    set(dict_chemical_disease[(chemical_id, mondo)][3]))
+                dict_chemical_disease[(chemical_id, mondo)][4].append(inferenceGeneSymbol)
+                dict_chemical_disease[(chemical_id, mondo)][4] = list(
+                    set(dict_chemical_disease[(chemical_id, mondo)][4]))
+                dict_chemical_disease[(chemical_id, mondo)][5].append(disease_id)
+                dict_chemical_disease[(chemical_id, mondo)][5] = list(
+                    set(dict_chemical_disease[(chemical_id, mondo)][5]))
+            else:
+                dict_chemical_disease[(chemical_id, mondo)] = [omimIDs, [directEvidence], pubMedIDs,
+                                                               [inferenceScore], [inferenceGeneSymbol], [disease_id],
+                                                               []]
 
         start = time.time()
         # counter chemicals with drugbank ids
@@ -183,7 +220,11 @@ def take_all_relationships_of_gene_pathway():
                     dict_chemical_id_chemical[chemical].append(chemical_id)
                 else:
                     dict_chemical_id_chemical[chemical] = [chemical_id]
-        counter_of_used_chemical+=count_chemicals_drugbank
+        # counter_of_used_chemical+=count_chemicals_drugbank
+
+
+
+
 
 
         query = '''MATCH p=(a)-[r:equal_to_CTD_chemical]->(b)  Where not exists(a.integrated) With  a, collect(b.chemical_id) As ctd Limit ''' + str(
@@ -210,7 +251,14 @@ def take_all_relationships_of_gene_pathway():
                 else:
                     dict_chemical_id_chemical[chemical] = [chemical_id]
 
-        counter_of_used_chemical += counter_chemicals_without_db
+        if counter_of_used_chemical ==counter_of_used_chemical+count_chemicals_drugbank+counter_chemicals_without_db:
+            counter_no_change+=1
+            if counter_no_change==10:
+                print('error by take all chemical')
+                sys.exit()
+
+        counter_of_used_chemical += counter_chemicals_without_db+count_chemicals_drugbank
+        print(str(counter_of_used_chemical)+'/'+str(number_of_chemical))
 
 
         # print(dict_chemical_id_chemical)
@@ -222,7 +270,7 @@ def take_all_relationships_of_gene_pathway():
         # print(dict_chemical_id_chemical)
 
         all_chemicals_id = '","'.join(all_chemicals_id)
-        query = '''MATCH (chemical:CTDchemical)-[r:associates_CD]->(disease:CTDdisease) Where not disease.mondos=[] and chemical.chemical_id in ["''' + all_chemicals_id + '''"] RETURN chemical.chemical_id, chemical.drugBankIDs,  r, disease.mondos, disease.disease_id '''
+        query = '''MATCH (chemical:CTDchemical)-[r:associates_CD]->(disease:CTDdisease) Where (disease)-[:equal_to_D_Disease_CTD]-() and chemical.chemical_id in ["''' + all_chemicals_id + '''"] RETURN chemical.chemical_id, chemical.drugBankIDs,  r, disease.mondos, disease.disease_id '''
         results = g.run(query)
 
         time_measurement = time.time() - start
@@ -232,7 +280,7 @@ def take_all_relationships_of_gene_pathway():
         start = time.time()
 
         # dictionary with all pairs and properties as value
-        dict_chemical_disaese = {}
+        dict_chemical_disease = {}
 
         for chemical_id, drugbank_ids, rela, mondos, disease_id, in results:
             counter += 1
@@ -245,64 +293,78 @@ def take_all_relationships_of_gene_pathway():
             inferenceScore = rela['inferenceScore'] if 'inferenceScore' in rela else ''
 
             # take only the relationships with directEvidence and inference score over 100
-            if inferenceScore!='' and float(inferenceScore)>=100 and directEvidence=='':
+            if inferenceScore!='' and float(inferenceScore)<100 :
+                if directEvidence!='':
+                    print('ohje direct evidence')
                 continue
+            elif inferenceScore!='' and float(inferenceScore)>=100 :
+                counter_over_100+=1
+
+            counter_of_used_rela+=1
 
             inferenceGeneSymbol = rela['inferenceGeneSymbol'] if 'inferenceGeneSymbol' in rela else ''
             drugbank_ids= drugbank_ids if not drugbank_ids is None else []
             if chemical_id not in dict_chemical_to_drugbank and len(mondos) > 0:
                 for mondo in mondos:
-                    if (chemical_id, mondo) in dict_chemical_disaese:
-                        dict_chemical_disaese[(chemical_id, mondo)][0].extend(omimIDs)
-                        dict_chemical_disaese[(chemical_id, mondo)][0] = list(
-                            set(dict_chemical_disaese[(chemical_id, mondo)][0]))
-                        dict_chemical_disaese[(chemical_id, mondo)][1].append(directEvidence)
-                        dict_chemical_disaese[(chemical_id, mondo)][1] = list(
-                            set(dict_chemical_disaese[(chemical_id, mondo)][1]))
-                        dict_chemical_disaese[(chemical_id, mondo)][2].extend(pubMedIDs)
-                        dict_chemical_disaese[(chemical_id, mondo)][2] = list(
-                            set(dict_chemical_disaese[(chemical_id, mondo)][2]))
-                        dict_chemical_disaese[(chemical_id, mondo)][3].append(inferenceScore)
-                        dict_chemical_disaese[(chemical_id, mondo)][3] = list(
-                            set(dict_chemical_disaese[(chemical_id, mondo)][3]))
-                        dict_chemical_disaese[(chemical_id, mondo)][4].append(inferenceGeneSymbol)
-                        dict_chemical_disaese[(chemical_id, mondo)][4] = list(
-                            set(dict_chemical_disaese[(chemical_id, mondo)][4]))
-                        dict_chemical_disaese[(chemical_id, mondo)][5].append(disease_id)
-                        dict_chemical_disaese[(chemical_id, mondo)][5]=list(set(dict_chemical_disaese[(chemical_id, mondo)][5]))
-                    else:
-                        dict_chemical_disaese[(chemical_id, mondo)] = [omimIDs,[directEvidence], pubMedIDs,
-                                                                       [inferenceScore], [inferenceGeneSymbol], [disease_id],[]]
+                    sort_into_dictionary(chemical_id, mondo, omimIDs, directEvidence, pubMedIDs, inferenceScore,
+                                         inferenceGeneSymbol, disease_id)
+                    # if inferenceScore != '' and float(inferenceScore) >= 100:
+                    #     writer_inf.writerow([chemical_id,mondo, inferenceScore])
+                    # if (chemical_id, mondo) in dict_chemical_disease:
+                    #     dict_chemical_disease[(chemical_id, mondo)][0].extend(omimIDs)
+                    #     dict_chemical_disease[(chemical_id, mondo)][0] = list(
+                    #         set(dict_chemical_disease[(chemical_id, mondo)][0]))
+                    #     dict_chemical_disease[(chemical_id, mondo)][1].append(directEvidence)
+                    #     dict_chemical_disease[(chemical_id, mondo)][1] = list(
+                    #         set(dict_chemical_disease[(chemical_id, mondo)][1]))
+                    #     dict_chemical_disease[(chemical_id, mondo)][2].extend(pubMedIDs)
+                    #     dict_chemical_disease[(chemical_id, mondo)][2] = list(
+                    #         set(dict_chemical_disease[(chemical_id, mondo)][2]))
+                    #     dict_chemical_disease[(chemical_id, mondo)][3].append(inferenceScore)
+                    #     dict_chemical_disease[(chemical_id, mondo)][3] = list(
+                    #         set(dict_chemical_disease[(chemical_id, mondo)][3]))
+                    #     dict_chemical_disease[(chemical_id, mondo)][4].append(inferenceGeneSymbol)
+                    #     dict_chemical_disease[(chemical_id, mondo)][4] = list(
+                    #         set(dict_chemical_disease[(chemical_id, mondo)][4]))
+                    #     dict_chemical_disease[(chemical_id, mondo)][5].append(disease_id)
+                    #     dict_chemical_disease[(chemical_id, mondo)][5]=list(set(dict_chemical_disease[(chemical_id, mondo)][5]))
+                    # else:
+                    #     dict_chemical_disease[(chemical_id, mondo)] = [omimIDs,[directEvidence], pubMedIDs,
+                    #                                                    [inferenceScore], [inferenceGeneSymbol], [disease_id],[]]
             elif chemical_id in dict_chemical_to_drugbank and len(mondos) > 0:
                 for drugbank_id in dict_chemical_to_drugbank[chemical_id]:
                     for mondo in mondos:
-                        if (drugbank_id, mondo) in dict_chemical_disaese:
-                            dict_chemical_disaese[(drugbank_id, mondo)][0].extend(omimIDs)
-                            dict_chemical_disaese[(drugbank_id, mondo)][0] = list(
-                                set(dict_chemical_disaese[(drugbank_id, mondo)][0]))
-                            dict_chemical_disaese[(drugbank_id, mondo)][1].append(directEvidence)
-                            dict_chemical_disaese[(drugbank_id, mondo)][1] = list(
-                                set(dict_chemical_disaese[(drugbank_id, mondo)][1]))
-                            dict_chemical_disaese[(drugbank_id, mondo)][2].extend(pubMedIDs)
-                            dict_chemical_disaese[(drugbank_id, mondo)][2] = list(
-                                set(dict_chemical_disaese[(drugbank_id, mondo)][2]))
-                            dict_chemical_disaese[(drugbank_id, mondo)][3].append(inferenceScore)
-                            dict_chemical_disaese[(drugbank_id, mondo)][3] = list(
-                                set(dict_chemical_disaese[(drugbank_id, mondo)][3]))
-                            dict_chemical_disaese[(drugbank_id, mondo)][4].append(inferenceGeneSymbol)
-                            dict_chemical_disaese[(drugbank_id, mondo)][4] = list(
-                                set(dict_chemical_disaese[(drugbank_id, mondo)][4]))
-                            dict_chemical_disaese[(drugbank_id, mondo)][5].append(disease_id)
-                            dict_chemical_disaese[(drugbank_id, mondo)][5] = list(
-                                set(dict_chemical_disaese[(drugbank_id, mondo)][5]))
-                            dict_chemical_disaese[(drugbank_id, mondo)][6].append(chemical_id)
-                            dict_chemical_disaese[(drugbank_id, mondo)][6] = list(
-                                set(dict_chemical_disaese[(drugbank_id, mondo)][6]))
-                        else:
-                            dict_chemical_disaese[(drugbank_id, mondo)] = [omimIDs, [directEvidence], pubMedIDs,
-                                                                           [inferenceScore], [inferenceGeneSymbol],
-                                                                           [disease_id],[chemical_id]]
-                            # if ('DB00649','MONDO:0011565') in dict_chemical_disaese:
+                        sort_into_dictionary(drugbank_id, mondo, omimIDs, directEvidence, pubMedIDs, inferenceScore,
+                                             inferenceGeneSymbol, disease_id)
+                        # if inferenceScore != '' and float(inferenceScore) >= 100:
+                        #     writer_inf.writerow([chemical_id, mondo, inferenceScore])
+                        # if (drugbank_id, mondo) in dict_chemical_disease:
+                        #     dict_chemical_disease[(drugbank_id, mondo)][0].extend(omimIDs)
+                        #     dict_chemical_disease[(drugbank_id, mondo)][0] = list(
+                        #         set(dict_chemical_disease[(drugbank_id, mondo)][0]))
+                        #     dict_chemical_disease[(drugbank_id, mondo)][1].append(directEvidence)
+                        #     dict_chemical_disease[(drugbank_id, mondo)][1] = list(
+                        #         set(dict_chemical_disease[(drugbank_id, mondo)][1]))
+                        #     dict_chemical_disease[(drugbank_id, mondo)][2].extend(pubMedIDs)
+                        #     dict_chemical_disease[(drugbank_id, mondo)][2] = list(
+                        #         set(dict_chemical_disease[(drugbank_id, mondo)][2]))
+                        #     dict_chemical_disease[(drugbank_id, mondo)][3].append(inferenceScore)
+                        #     dict_chemical_disease[(drugbank_id, mondo)][3] = list(
+                        #         set(dict_chemical_disease[(drugbank_id, mondo)][3]))
+                        #     dict_chemical_disease[(drugbank_id, mondo)][4].append(inferenceGeneSymbol)
+                        #     dict_chemical_disease[(drugbank_id, mondo)][4] = list(
+                        #         set(dict_chemical_disease[(drugbank_id, mondo)][4]))
+                        #     dict_chemical_disease[(drugbank_id, mondo)][5].append(disease_id)
+                        #     dict_chemical_disease[(drugbank_id, mondo)][5] = list(
+                        #         set(dict_chemical_disease[(drugbank_id, mondo)][5]))
+                        #     dict_chemical_disease[(drugbank_id, mondo)][6].append(chemical_id)
+                        #     dict_chemical_disease[(drugbank_id, mondo)][6] = list(
+                        #         set(dict_chemical_disease[(drugbank_id, mondo)][6]))
+                        # else:
+                        #     dict_chemical_disease[(drugbank_id, mondo)] = [omimIDs, [directEvidence], pubMedIDs,
+                        #                                                    [inferenceScore], [inferenceGeneSymbol],
+                        #                                                    [disease_id],[chemical_id]]
+                            # if ('DB00649','MONDO:0011565') in dict_chemical_disease:
                             #     print('blub')
 
             if counter % 10000 == 0:
@@ -312,22 +374,27 @@ def take_all_relationships_of_gene_pathway():
                 print('\tTake 1000 pairs: %.4f seconds' % (time_measurement))
                 start = time.time()
 
+
         print('number of relationships:'+str(counter))
+        print('number of used rela:'+str(counter_of_used_rela))
+        print('number of relas over 100:'+str(counter_over_100))
         time_measurement = time.time() - start
         # print('\t Generate dictionary disease chemical: %.4f seconds' % (time_measurement))
         list_time_dict_association.append(time_measurement)
         start = time.time()
 
-        print(len(dict_chemical_disaese))
+        print(len(dict_chemical_disease))
 
-        for (chemical_id, disease_id), information in dict_chemical_disaese.items():
+        for (chemical_id, disease_id), information in dict_chemical_disease.items():
             directEvidences = filter(bool, information[1])
+            counter_integrated_in_file_rela+=1
             # if (chemical_id,disease_id)==('DB00649','MONDO:0011565'):
             #     print('blub')
-            if len(directEvidences) > 0:
+            if len(directEvidences) > 0 and directEvidences[0]!='':
+                counter_direct_evidence += 1
 
                 for directEvidence in directEvidences:
-                    counter_direct_evidence += 1
+                    counter_multi_direct_evidence+=1
                     if directEvidence=='marker/mechanism':
                         counter_marker+=1
                         add_information_into_te_different_csv_files((chemical_id,disease_id),information,writer_induces)
@@ -344,17 +411,17 @@ def take_all_relationships_of_gene_pathway():
         # print('\t Add information to file: %.4f seconds' % (time_measurement))
         list_time_add_to_file.append(time_measurement)
 
-
+    print('integrated relas:'+str(counter_integrated_in_file_rela))
     print('Number of directEvidence:'+str(counter_direct_evidence))
     print('Number of marker/mechanism:'+str(counter_marker))
-    print('Number of  therapeutic:'+str(counter_direct_evidence-counter_marker))
+    print('Number of  therapeutic:'+str(counter_multi_direct_evidence-counter_marker))
     print('Number of association:'+str(counter_association))
 
     print('number of chemicals:'+str(len(list_mesh)))
     print('number of chemicals with db:'+str(len(list_durgbank_mesh)))
 
     query = '''MATCH (n:Chemical) REMOVE n.integrated, n.integrated_drugbank'''
-    # g.run(query)
+    g.run(query)
 
     print('Average finding disease:' + str(np.mean(list_time_all_finding_chemical)))
     print('Average dict monde:' + str(np.mean(list_time_dict_chemical)))
