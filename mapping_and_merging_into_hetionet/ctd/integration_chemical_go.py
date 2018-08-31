@@ -119,6 +119,8 @@ def take_all_relationships_of_gene_pathway():
 
     counter = 0
     counter_of_used_chemical = 0
+    dict_rela_ontology = {}
+    counter_rela = 0
 
     old_number = 100000000000000
 
@@ -264,12 +266,19 @@ def take_all_relationships_of_gene_pathway():
 
         print(len(dict_chemical_go))
 
+
         for (chemical_id, go_id), information in dict_chemical_go.items():
             ontologys=list(information[6])
             # directEvidences = filter(bool, list(information[1]))
             for ontology in ontologys:
+                counter_rela+=1
+                if ontology in dict_rela_ontology:
+                    dict_rela_ontology[ontology]+=1
+                else:
+                    dict_rela_ontology[ontology]=1
                 add_information_into_te_different_csv_files((chemical_id,go_id),information,dict_processe[ontology])
 
+        print('new relas:'+str(counter_rela))
 
         time_measurement = time.time() - start
         print('\t Add information to file: %.4f seconds' % (time_measurement))
@@ -278,12 +287,14 @@ def take_all_relationships_of_gene_pathway():
 
     print('number of chemicals:' + str(len(list_mesh)))
     print('number of chemicals with db:' + str(len(list_durgbank_mesh)))
+    print(dict_rela_ontology)
+
 
     query = '''MATCH (n:Chemical) REMOVE n.integrated, n.integrated_drugbank'''
     g.run(query)
 
-    print('Average finding disease:' + str(np.mean(list_time_all_finding_chemical)))
-    print('Average dict monde:' + str(np.mean(list_time_dict_chemical)))
+    print('Average finding chemical:' + str(np.mean(list_time_all_finding_chemical)))
+    print('Average dict chemical:' + str(np.mean(list_time_dict_chemical)))
     print('Average finding association:' + str(np.mean(list_time_find_association)))
     print('Min finding association:' + str(min(list_time_find_association)))
     print('Max finding association:' + str(max(list_time_find_association)))
