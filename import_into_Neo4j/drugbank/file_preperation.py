@@ -789,7 +789,7 @@ def drugs_combination_and_check(neo4j_label):
                                         property_name + '::' + part_value_dict['value'] + '::' + part_value_dict[
                                             'tool'])
 
-                        string_calculated_update = '|'.join(new_calculated_property_list)
+                        string_calculated_update = '||'.join(new_calculated_property_list)
                         import_tool_string=''
                         for part_of_calculated in new_calculated_property_list:
                             part_of_calculated=part_of_calculated.replace(';',',')
