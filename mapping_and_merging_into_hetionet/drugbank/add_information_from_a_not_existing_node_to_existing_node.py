@@ -336,25 +336,31 @@ def merge_information_from_one_node_to_another(delete_node_id, merged_node_id, n
     print(datetime.datetime.utcnow())
 
     con.close()
-#
+# #
 # def main():
 #     label='Compound'
-#     # alternativ ids
-#     # old_id = 'DB12546'
-#     # into = 'DB09498'
-#     # old_id='DB01398'
-#     # into='DB00936'
-#     # old_id = 'DB00667'
-#     # into = 'DB05381'
+# #     # alternativ ids
+# #     # old_id = 'DB12546'
+# #     # into = 'DB09498'
+# #     # old_id='DB01398'
+# #     # into='DB00936'
+# #     # old_id = 'DB00667'
+# #     # into = 'DB05381'
+# #
+# #     # not mapped
+# #     old_id='DB08866'
+# #     into='DB09123'
+# #     old_id = 'DB13390'
+# #     into = 'DB06723'
+# #     old_id = 'DB09162'
+# #     into = 'DB13949'
 #
-#     # not mapped
-#     old_id='DB08866'
-#     into='DB09123'
-#     old_id = 'DB13390'
-#     into = 'DB06723'
-#     old_id = 'DB09162'
-#     into = 'DB13949'
-#
+# #      Version drugbank 07-18
+# #     old_id = 'DB05872'
+# #     into='DB08902'
+# #     old_id = 'DB11728'
+# #     into='DB00569'
+# #
 #     global list_other_to_node, list_node_to_other
 #     # list from the specific node to the other with (rela_type,dict_rela,node_labels,dict_node)
 #     list_node_to_other = []
