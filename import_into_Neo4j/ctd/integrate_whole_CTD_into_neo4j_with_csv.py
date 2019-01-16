@@ -240,9 +240,11 @@ def load_chemical_go_enriched():
 
     cypher_file_edges.write(query)
 
+    dict_counter_go={}
+
     # gather information from CTD chemical-go enriched
     with open('ctd_data/CTD_chem_go_enriched.csv') as csvfile:
-        reader = csv.reader(csvfile)
+        reader = csv.reader(csvfile,  quotechar='"')
         i = 0
         for row in reader:
 
@@ -251,6 +253,11 @@ def load_chemical_go_enriched():
                 goTermName = row[4]
                 goTermId = row[5]
                 highestGOLevel = row[6]
+                # if ontology in ['Molecular Function','Biological Process','Cellular Component']:
+                if ontology in dict_counter_go:
+                    dict_counter_go[ontology]+=1
+                else:
+                    dict_counter_go[ontology] = 1
 
                 if not goTermId in dict_Go_properties:
                     dict_Go_properties[goTermId] = [goTermName, ontology, highestGOLevel]
@@ -258,6 +265,11 @@ def load_chemical_go_enriched():
             i += 1
 
     print(len(dict_Go_properties))
+    print(dict_counter_go)
+    result=sum(dict_counter_go[x] for x in dict_counter_go.keys())
+    print(result)
+
+    sys.exit()
 
 
 # dictionary with (disease_id, go_id) and properties as value inferenceGeneSymbol, inference GeneQty
