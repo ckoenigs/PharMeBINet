@@ -328,7 +328,7 @@ def extract_information():
                 property = two_split[1].split('=')
 
                 if property[0] == 'Name':
-                    dict_protein['gene_name'] = property[1].split(';')[0]
+                    dict_protein['gene_name'] = set([property[1].split(';')[0]])
                     if ',\n' in two_split[1]:
                         in_multiple_lines = True
                         in_multiple_line_string = property[1].split(';')[0]
@@ -340,10 +340,11 @@ def extract_information():
                         synonyms = property[1].split(';')[1].split('=')
                         if synonyms[0] == ' Synonyms':
                             for synonym in property[2].split(', '):
-                                if not 'synonyms' in dict_protein:
-                                    dict_protein['synonyms'] = set([synonym.replace(';\n', '')])
-                                else:
-                                    dict_protein['synonyms'].add(synonym.replace(';\n', ''))
+                                dict_protein['gene_name'].add(synonym.replace(';\n', ''))
+                                # if not 'synonyms' in dict_protein:
+                                #     dict_protein['synonyms'] = set([synonym.replace(';\n', '')])
+                                # else:
+                                #     dict_protein['synonyms'].add(synonym.replace(';\n', ''))
             # database cross-references (optional)
             elif two_first_letter == 'DR':
                 xref_infos = two_split[1].split('; ')
