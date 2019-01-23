@@ -191,6 +191,7 @@ def extract_information():
                 for counter,ac_number in enumerate(all_access_number):
                     if counter==0:
                         dict_protein['identifier']=ac_number
+
                     else:
                         ac_list.append(ac_number)
                 dict_protein['second_ac_numbers'] = ac_list
@@ -326,14 +327,18 @@ def extract_information():
             # only the one with name
             elif two_first_letter == 'GN':
                 property = two_split[1].split('=')
-
                 if property[0] == 'Name':
-                    dict_protein['gene_name'] = set([property[1].split(';')[0]])
+
                     if ',\n' in two_split[1]:
                         in_multiple_lines = True
-                        in_multiple_line_string = property[1].split(';')[0]
+                        in_multiple_line_string = property[1].split(';')[0].replace('\n','')
                         in_multiple_line_property = 'gene_name'
+                        in_multiple_line_property_type_list=True
                     else:
+                        if not 'gene_name' in dict_protein:
+                            dict_protein['gene_name'] = set([property[1].split(';')[0].replace('\n', '')])
+                        else:
+                            dict_protein['gene_name'].add(property[1].split(';')[0].replace('\n', ''))
                         # print(property)
                         # print(line)
                         # print(property[1].split(';'))
