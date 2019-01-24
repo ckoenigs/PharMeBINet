@@ -15,15 +15,19 @@ other_file= open(write_file,'w')
 dict_scores={}
 csv_reader= csv.DictReader(file)
 counter=0
+counter_direct_evidence=0
 for line in csv_reader:
     counter += 1
     score=line['InferenceScore']
+    direct_evidence=line['DirectEvidence']
     if score!='':
         score=float(score)
         if score in dict_scores:
             dict_scores[score]+=1
         else:
             dict_scores[score]=1
+    elif direct_evidence!='':
+        counter_direct_evidence+=1
     # if counter%1000000==0:
     #     print(counter)
     #     print (datetime.datetime.utcnow())
@@ -49,6 +53,7 @@ print('mean:'+str(mean))
 print('number of inference scores:'+str(number_of_scores))
 print('number of inference scores over '+str(minimum_score)+':'+str(number_of_is_over_special_number))
 print('number of inference scores over '+str(minimum_score)+':'+str(float(number_of_is_over_special_number)/float(number_of_scores)*100)+'%')
+print('number of direct evidence:'+str(counter_direct_evidence))
 # lists=sorted(dict_scores.items())
 # x,y= zip(*lists)
 # plt.plot(x,y)
