@@ -1,0 +1,3 @@
+DOID:4447	cystoid macular edema
+monDO ID 	 name 
+MONDO:0007935	cystoid macular edema

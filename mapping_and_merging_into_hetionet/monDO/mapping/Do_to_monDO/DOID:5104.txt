@@ -1,0 +1,3 @@
+DOID:5104	testicular infarct
+monDO ID 	 name 
+MONDO:0003279	testicular infarct

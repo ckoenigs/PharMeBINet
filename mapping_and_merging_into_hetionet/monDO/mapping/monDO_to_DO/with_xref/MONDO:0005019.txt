@@ -1,0 +1,3 @@
+MONDO:0005019	diffuse scleroderma
+DOID 	 name 
+DOID:1580	diffuse scleroderma

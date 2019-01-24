@@ -1,0 +1,3 @@
+DOID:4674	androgen insensitivity syndrome
+monDO ID 	 name 
+MONDO:0019154	androgen insensitivity syndrome

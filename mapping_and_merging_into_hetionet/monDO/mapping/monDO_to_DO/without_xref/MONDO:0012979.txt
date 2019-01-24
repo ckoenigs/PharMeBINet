@@ -1,0 +1,3 @@
+MONDO:0012979	primary ciliary dyskinesia 12
+DOID 	 name 
+DOID:0110601	primary ciliary dyskinesia 12

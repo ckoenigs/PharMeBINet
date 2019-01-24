@@ -1,0 +1,3 @@
+MONDO:0006745	endometrioid stromal sarcoma
+DOID 	 name 
+DOID:4226	endometrial stromal sarcoma

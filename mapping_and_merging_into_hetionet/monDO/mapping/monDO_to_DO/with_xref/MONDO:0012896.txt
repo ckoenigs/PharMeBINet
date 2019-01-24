@@ -1,0 +1,3 @@
+MONDO:0012896	PSORS10
+DOID 	 name 
+DOID:8893	psoriasis

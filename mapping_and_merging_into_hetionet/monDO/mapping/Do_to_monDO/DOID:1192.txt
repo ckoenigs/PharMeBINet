@@ -1,0 +1,3 @@
+DOID:1192	peripheral nervous system neoplasm
+monDO ID 	 name 
+MONDO:0001406	peripheral nervous system neoplasm

@@ -1,0 +1,3 @@
+DOID:913	atrophic muscular disease
+monDO ID 	 name 
+MONDO:0004714	atrophic muscular disease

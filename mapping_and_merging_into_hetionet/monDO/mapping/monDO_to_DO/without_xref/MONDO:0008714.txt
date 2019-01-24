@@ -1,0 +1,3 @@
+MONDO:0008714	acrofacial dysostosis Rodriguez type
+DOID 	 name 
+DOID:0060383	acrofacial dysostosis Rodriguez type

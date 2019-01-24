@@ -1,0 +1,3 @@
+DOID:0050467	erythrokeratodermia variabilis
+monDO ID 	 name 
+MONDO:0017851	erythrokeratodermia variabilis

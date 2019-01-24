@@ -1,0 +1,3 @@
+DOID:12297	Vogt-Koyanagi-Harada disease
+monDO ID 	 name 
+MONDO:0018092	Vogt-Koyanagi-Harada disease

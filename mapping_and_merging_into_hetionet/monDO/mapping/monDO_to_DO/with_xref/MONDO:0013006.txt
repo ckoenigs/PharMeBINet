@@ -1,0 +1,3 @@
+MONDO:0013006	isolated growth hormone deficiency type ib
+DOID 	 name 
+DOID:0060874	isolated growth hormone deficiency type IB

@@ -1,0 +1,3 @@
+MONDO:0002863	mixed type rhabdomyosarcoma
+DOID 	 name 
+DOID:4065	mixed type rhabdomyosarcoma

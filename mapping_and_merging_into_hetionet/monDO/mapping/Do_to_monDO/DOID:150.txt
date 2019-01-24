@@ -1,0 +1,3 @@
+DOID:150	disease of mental health
+monDO ID 	 name 
+MONDO:0002025	disease of mental health

@@ -1,0 +1,3 @@
+DOID:0060898	early-onset Parkinson disease 20
+monDO ID 	 name 
+MONDO:0014233	early-onset Parkinson disease 20

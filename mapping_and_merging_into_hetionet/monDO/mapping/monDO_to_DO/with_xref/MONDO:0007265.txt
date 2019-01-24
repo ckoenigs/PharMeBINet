@@ -1,0 +1,3 @@
+MONDO:0007265	cardiofaciocutaneous syndrome 1
+DOID 	 name 
+DOID:0060233	cardiofaciocutaneous syndrome

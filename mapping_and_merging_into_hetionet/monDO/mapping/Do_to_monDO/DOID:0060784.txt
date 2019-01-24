@@ -1,0 +1,3 @@
+DOID:0060784	ectrodactyly, ectodermal dysplasia, and cleft lip-palate syndrome 1
+monDO ID 	 name 
+MONDO:0007520	ectrodactyly, ectodermal dysplasia, and cleft lip-palate syndrome 1

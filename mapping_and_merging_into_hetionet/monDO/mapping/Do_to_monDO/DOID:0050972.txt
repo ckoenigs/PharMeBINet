@@ -1,0 +1,3 @@
+DOID:0050972	spinocerebellar ataxia type 21
+monDO ID 	 name 
+MONDO:0011833	spinocerebellar ataxia type 21

@@ -1,0 +1,3 @@
+DOID:9905	follicular mucinosis
+monDO ID 	 name 
+MONDO:0006551	alopecia mucinosa

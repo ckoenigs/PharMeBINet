@@ -1,0 +1,3 @@
+MONDO:0019618	Sheehan syndrome
+DOID 	 name 
+DOID:9476	Sheehan syndrome

@@ -1,0 +1,3 @@
+DOID:4235	spindle cell sarcoma
+monDO ID 	 name 
+MONDO:0002927	spindle cell sarcoma

@@ -1,0 +1,3 @@
+MONDO:0013429	retinitis pigmentosa 40
+DOID 	 name 
+DOID:0110375	retinitis pigmentosa 40

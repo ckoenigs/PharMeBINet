@@ -1,0 +1,3 @@
+DOID:0060335	autosomal dominant sideroblastic anemia
+monDO ID 	 name 
+MONDO:0008422	autosomal dominant sideroblastic anemia

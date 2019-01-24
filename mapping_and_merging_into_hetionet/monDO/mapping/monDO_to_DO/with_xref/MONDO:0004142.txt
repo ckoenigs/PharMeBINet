@@ -1,0 +1,3 @@
+MONDO:0004142	lung combined large cell neuroendocrine carcinoma
+DOID 	 name 
+DOID:7207	lung combined large cell neuroendocrine carcinoma

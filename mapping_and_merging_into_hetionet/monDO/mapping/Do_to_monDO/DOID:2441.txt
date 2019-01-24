@@ -1,0 +1,3 @@
+DOID:2441	frontal sinus squamous cell carcinoma
+monDO ID 	 name 
+MONDO:0002301	frontal sinus squamous cell carcinoma

@@ -1,0 +1,3 @@
+MONDO:0011195	Usher syndrome type 1E
+DOID 	 name 
+DOID:0110833	Usher syndrome type 1E

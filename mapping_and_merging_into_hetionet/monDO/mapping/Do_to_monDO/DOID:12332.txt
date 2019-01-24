@@ -1,0 +1,3 @@
+DOID:12332	hematocele of tunica vaginalis testis
+monDO ID 	 name 
+MONDO:0001495	hematocele of tunica vaginalis testis

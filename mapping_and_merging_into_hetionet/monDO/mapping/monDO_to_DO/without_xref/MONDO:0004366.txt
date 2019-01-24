@@ -1,0 +1,3 @@
+MONDO:0004366	mixed astrocytoma-ependymoma-oligodendroglioma
+DOID 	 name 
+DOID:7817	mixed astrocytoma-ependymoma-oligodendroglioma

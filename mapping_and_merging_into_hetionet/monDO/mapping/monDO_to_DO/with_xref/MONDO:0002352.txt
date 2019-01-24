@@ -1,0 +1,4 @@
+MONDO:0002352	larynx cancer
+DOID 	 name 
+DOID:2598	laryngeal benign neoplasm
+DOID:2596	larynx cancer

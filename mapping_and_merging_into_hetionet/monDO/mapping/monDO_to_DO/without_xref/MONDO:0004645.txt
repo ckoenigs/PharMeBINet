@@ -1,0 +1,3 @@
+MONDO:0004645	cheek mucosa cancer
+DOID 	 name 
+DOID:8702	cheek mucosa cancer

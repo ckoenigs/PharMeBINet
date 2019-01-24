@@ -1,0 +1,4 @@
+MONDO:0007655	fissured tongue
+DOID 	 name 
+DOID:1455	geographic tongue
+DOID:11514	fissured tongue

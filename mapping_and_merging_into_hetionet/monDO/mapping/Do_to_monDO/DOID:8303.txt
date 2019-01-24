@@ -1,0 +1,3 @@
+DOID:8303	congenital granular cell tumor
+monDO ID 	 name 
+MONDO:0004527	congenital granular cell tumor

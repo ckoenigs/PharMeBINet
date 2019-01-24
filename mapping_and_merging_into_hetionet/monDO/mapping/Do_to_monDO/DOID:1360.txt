@@ -1,0 +1,3 @@
+DOID:1360	frontal sinus cancer
+monDO ID 	 name 
+MONDO:0001756	frontal sinus cancer

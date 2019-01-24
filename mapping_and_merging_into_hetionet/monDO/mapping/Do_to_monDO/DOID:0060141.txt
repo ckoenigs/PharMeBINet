@@ -1,0 +1,3 @@
+DOID:0060141	finger agnosia
+monDO ID 	 name 
+MONDO:0000671	finger agnosia (disease)

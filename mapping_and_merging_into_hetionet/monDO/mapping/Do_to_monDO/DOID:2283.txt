@@ -1,0 +1,3 @@
+DOID:2283	keratopathy
+monDO ID 	 name 
+MONDO:0002261	keratopathy

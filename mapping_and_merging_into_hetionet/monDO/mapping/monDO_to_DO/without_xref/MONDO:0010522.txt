@@ -1,0 +1,3 @@
+MONDO:0010522	X-linked amelogenesis imperfecta hypoplastic/hypomaturation 2
+DOID 	 name 
+DOID:0110059	X-linked amelogenesis imperfecta hypoplastic/hypomaturation 2

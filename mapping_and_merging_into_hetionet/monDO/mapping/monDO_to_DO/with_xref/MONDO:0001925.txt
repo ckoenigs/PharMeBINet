@@ -1,0 +1,3 @@
+MONDO:0001925	retinal dystrophy in systemic or cerebroretinal lipidoses
+DOID 	 name 
+DOID:14253	retinal dystrophy in systemic or cerebroretinal lipidoses

@@ -1,0 +1,3 @@
+MONDO:0002057	breast leiomyoma
+DOID 	 name 
+DOID:1623	breast leiomyoma

@@ -1,0 +1,3 @@
+MONDO:0010911	prolactin-producing pituitary gland adenoma
+DOID 	 name 
+DOID:5394	prolactinoma

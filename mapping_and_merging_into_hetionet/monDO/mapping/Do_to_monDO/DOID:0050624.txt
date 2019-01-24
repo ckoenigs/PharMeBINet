@@ -1,0 +1,3 @@
+DOID:0050624	gastrointestinal system benign neoplasm
+monDO ID 	 name 
+MONDO:0000385	benign digestive system neoplasm

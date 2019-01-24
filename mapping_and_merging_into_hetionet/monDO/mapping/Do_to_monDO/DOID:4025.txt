@@ -1,0 +1,3 @@
+DOID:4025	steatitis
+monDO ID 	 name 
+MONDO:0006979	steatitis

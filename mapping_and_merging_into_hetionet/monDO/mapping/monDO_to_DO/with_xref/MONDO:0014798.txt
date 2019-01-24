@@ -1,0 +1,3 @@
+MONDO:0014798	brachydactyly type A1D
+DOID 	 name 
+DOID:0110978	brachydactyly type A1D

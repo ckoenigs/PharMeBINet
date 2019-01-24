@@ -1,0 +1,3 @@
+DOID:10368	epididymis adenocarcinoma
+monDO ID 	 name 
+MONDO:0001017	epididymis adenocarcinoma

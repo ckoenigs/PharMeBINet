@@ -1,0 +1,3 @@
+MONDO:0012613	mental retardation, autosomal recessive 5
+DOID 	 name 
+DOID:0060308	autosomal recessive non-syndromic intellectual disability

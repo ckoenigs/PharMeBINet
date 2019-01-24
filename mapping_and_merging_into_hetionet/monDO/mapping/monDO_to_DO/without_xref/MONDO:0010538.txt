@@ -1,0 +1,3 @@
+MONDO:0010538	Mononen-Karnes-Senac syndrome
+DOID 	 name 
+DOID:0110973	Mononen-Karnes-Senac syndrome

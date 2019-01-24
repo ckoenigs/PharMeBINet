@@ -1,0 +1,3 @@
+MONDO:0010979	Timothy syndrome
+DOID 	 name 
+DOID:0060173	Timothy syndrome

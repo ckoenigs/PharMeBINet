@@ -1,0 +1,3 @@
+MONDO:0004900	peripheral vertigo
+DOID 	 name 
+DOID:9847	peripheral vertigo

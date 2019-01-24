@@ -1,0 +1,3 @@
+MONDO:0012847	autosomal recessive congenital ichthyosis 6
+DOID 	 name 
+DOID:0060715	autosomal recessive congenital ichthyosis 6

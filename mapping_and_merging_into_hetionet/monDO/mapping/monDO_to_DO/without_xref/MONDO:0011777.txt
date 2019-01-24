@@ -1,0 +1,3 @@
+MONDO:0011777	Alzheimer's disease 8
+DOID 	 name 
+DOID:0110041	Alzheimer's disease 8

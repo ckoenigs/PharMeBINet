@@ -1,0 +1,3 @@
+MONDO:0008538	temporal arteritis
+DOID 	 name 
+DOID:13375	temporal arteritis

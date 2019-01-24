@@ -1,0 +1,3 @@
+DOID:1074	kidney failure
+monDO ID 	 name 
+MONDO:0001106	kidney failure

@@ -1,0 +1,3 @@
+DOID:3964	trabecular follicular adenocarcinoma
+monDO ID 	 name 
+MONDO:0002821	trabecular follicular adenocarcinoma

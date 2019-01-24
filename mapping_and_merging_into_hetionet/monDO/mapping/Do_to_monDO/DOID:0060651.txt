@@ -1,0 +1,3 @@
+DOID:0060651	MYH-9 related disease
+monDO ID 	 name 
+MONDO:0015912	MYH-9 related disease

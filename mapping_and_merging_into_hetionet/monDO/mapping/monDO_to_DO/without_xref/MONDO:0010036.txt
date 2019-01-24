@@ -1,0 +1,3 @@
+MONDO:0010036	congenital secretory sodium diarrhea 3
+DOID 	 name 
+DOID:0060781	congenital secretory sodium diarrhea 3

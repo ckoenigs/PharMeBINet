@@ -1,0 +1,3 @@
+MONDO:0011766	46,XY gonadal dysgenesis-motor and sensory neuropathy syndrome
+DOID 	 name 
+DOID:14448	46 XY gonadal dysgenesis

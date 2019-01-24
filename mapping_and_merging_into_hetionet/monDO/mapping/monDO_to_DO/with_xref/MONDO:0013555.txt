@@ -1,0 +1,3 @@
+MONDO:0013555	Hermansky-Pudlak syndrome 3
+DOID 	 name 
+DOID:0060541	Hermansky-Pudlak syndrome 3

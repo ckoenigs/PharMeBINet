@@ -1,0 +1,3 @@
+DOID:0060114	vaginal benign neoplasm
+monDO ID 	 name 
+MONDO:0000647	benign vaginal neoplasm

@@ -1,0 +1,3 @@
+MONDO:0001458	ulnar nerve lesion
+DOID 	 name 
+DOID:12168	ulnar nerve lesion

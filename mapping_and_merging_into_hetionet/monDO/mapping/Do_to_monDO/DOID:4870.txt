@@ -1,0 +1,3 @@
+DOID:4870	lacrimal gland adenoid cystic carcinoma
+monDO ID 	 name 
+MONDO:0006262	lacrimal gland adenoid cystic carcinoma

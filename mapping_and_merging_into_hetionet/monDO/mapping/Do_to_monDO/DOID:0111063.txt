@@ -1,0 +1,3 @@
+DOID:0111063	hyperphosphatemic familial tumoral calcinosis
+monDO ID 	 name 
+MONDO:0008897	hyperphosphatemic familial tumoral calcinosis

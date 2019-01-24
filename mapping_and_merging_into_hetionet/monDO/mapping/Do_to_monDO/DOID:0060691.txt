@@ -1,0 +1,3 @@
+DOID:0060691	platelet-type bleeding disorder 16
+monDO ID 	 name 
+MONDO:0008552	platelet-type bleeding disorder 16

@@ -1,0 +1,3 @@
+MONDO:0001938	vulvar dystrophy
+DOID 	 name 
+DOID:14292	vulvar dystrophy

@@ -1,0 +1,3 @@
+MONDO:0006894	patellofemoral pain syndrome
+DOID 	 name 
+DOID:14284	patellofemoral pain syndrome

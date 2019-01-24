@@ -1,0 +1,3 @@
+MONDO:0008192	paragangliomas 1
+DOID 	 name 
+DOID:0050773	paraganglioma

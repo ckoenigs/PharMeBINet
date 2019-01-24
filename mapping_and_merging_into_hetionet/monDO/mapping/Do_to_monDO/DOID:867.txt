@@ -1,0 +1,3 @@
+DOID:867	maxillary sinus cholesteatoma
+monDO ID 	 name 
+MONDO:0006577	maxillary sinus cholesteatoma

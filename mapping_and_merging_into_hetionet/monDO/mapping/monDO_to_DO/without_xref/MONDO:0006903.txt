@@ -1,0 +1,3 @@
+MONDO:0006903	peroneal nerve paralysis
+DOID 	 name 
+DOID:6925	peroneal nerve paralysis

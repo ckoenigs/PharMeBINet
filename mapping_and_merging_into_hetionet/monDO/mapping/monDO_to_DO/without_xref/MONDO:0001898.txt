@@ -1,0 +1,3 @@
+MONDO:0001898	choroid disease
+DOID 	 name 
+DOID:1417	choroid disease

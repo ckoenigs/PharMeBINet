@@ -1,0 +1,3 @@
+DOID:0090110	immune dysregulation-polyendocrinopathy-enteropathy-X-linked syndrome
+monDO ID 	 name 
+MONDO:0010580	immune dysregulation-polyendocrinopathy-enteropathy-X-linked syndrome

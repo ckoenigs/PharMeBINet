@@ -1,0 +1,3 @@
+MONDO:0004593	Bartholin's duct cyst
+DOID 	 name 
+DOID:851	Bartholin's duct cyst

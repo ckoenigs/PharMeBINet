@@ -1,0 +1,3 @@
+MONDO:0020120	skeletal muscle disease
+DOID 	 name 
+DOID:423	myopathy

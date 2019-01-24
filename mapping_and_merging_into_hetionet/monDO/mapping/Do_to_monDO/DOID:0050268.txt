@@ -1,0 +1,3 @@
+DOID:0050268	ophthalmomyiasis
+monDO ID 	 name 
+MONDO:0000301	ophthalmomyiasis

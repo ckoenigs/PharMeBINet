@@ -1,0 +1,3 @@
+DOID:9283	borderline glaucoma
+monDO ID 	 name 
+MONDO:0004744	borderline glaucoma

@@ -1,0 +1,3 @@
+DOID:5895	clear cell cystadenofibroma
+monDO ID 	 name 
+MONDO:0003693	clear cell cystadenofibroma

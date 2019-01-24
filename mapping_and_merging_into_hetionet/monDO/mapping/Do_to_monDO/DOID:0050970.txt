@@ -1,0 +1,3 @@
+DOID:0050970	spinocerebellar ataxia type 19/22
+monDO ID 	 name 
+MONDO:0011819	spinocerebellar ataxia type 19/22

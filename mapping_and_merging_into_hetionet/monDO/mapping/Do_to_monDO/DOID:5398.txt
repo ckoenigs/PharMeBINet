@@ -1,0 +1,3 @@
+DOID:5398	lipoadenoma
+monDO ID 	 name 
+MONDO:0003431	lipoadenoma

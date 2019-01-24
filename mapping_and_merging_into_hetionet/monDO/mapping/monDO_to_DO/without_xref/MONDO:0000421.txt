@@ -1,0 +1,3 @@
+MONDO:0000421	inborn serine deficiency
+DOID 	 name 
+DOID:0050721	serine deficiency

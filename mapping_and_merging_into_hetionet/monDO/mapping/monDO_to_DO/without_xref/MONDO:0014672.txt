@@ -1,0 +1,3 @@
+MONDO:0014672	osteogenesis imperfecta type 17
+DOID 	 name 
+DOID:0110338	osteogenesis imperfecta type 17

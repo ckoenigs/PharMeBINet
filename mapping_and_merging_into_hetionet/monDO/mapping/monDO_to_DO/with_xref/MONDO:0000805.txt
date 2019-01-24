@@ -1,0 +1,3 @@
+MONDO:0000805	snail allergy
+DOID 	 name 
+DOID:0060530	snail allergy

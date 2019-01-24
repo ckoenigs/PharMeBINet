@@ -1,0 +1,3 @@
+MONDO:0003197	granular cell carcinoma
+DOID 	 name 
+DOID:4903	granular cell carcinoma

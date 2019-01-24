@@ -1,0 +1,3 @@
+MONDO:0005887	oral tuberculosis
+DOID 	 name 
+DOID:402	oral tuberculosis

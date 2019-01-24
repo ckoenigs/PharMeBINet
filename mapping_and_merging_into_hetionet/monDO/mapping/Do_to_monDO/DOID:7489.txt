@@ -1,0 +1,3 @@
+DOID:7489	Osgood-Schlatter's disease
+monDO ID 	 name 
+MONDO:0004241	Osgood-Schlatter's disease

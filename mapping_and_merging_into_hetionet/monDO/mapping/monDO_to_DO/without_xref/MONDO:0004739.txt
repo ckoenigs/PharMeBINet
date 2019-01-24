@@ -1,0 +1,3 @@
+MONDO:0004739	urea cycle disorder
+DOID 	 name 
+DOID:9267	urea cycle disorder

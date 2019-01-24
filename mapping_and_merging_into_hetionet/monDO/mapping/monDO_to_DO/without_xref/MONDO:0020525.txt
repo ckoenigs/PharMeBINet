@@ -1,0 +1,3 @@
+MONDO:0020525	transient neonatal diabetes mellitus (disease)
+DOID 	 name 
+DOID:0060334	transient neonatal diabetes mellitus

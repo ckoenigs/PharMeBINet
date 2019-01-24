@@ -1,0 +1,3 @@
+MONDO:0019349	Sotos syndrome
+DOID 	 name 
+DOID:14748	Sotos syndrome

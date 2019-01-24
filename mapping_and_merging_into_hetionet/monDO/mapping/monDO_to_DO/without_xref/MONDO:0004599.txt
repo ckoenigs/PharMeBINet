@@ -1,0 +1,3 @@
+MONDO:0004599	barbiturate abuse
+DOID 	 name 
+DOID:8519	barbiturate abuse

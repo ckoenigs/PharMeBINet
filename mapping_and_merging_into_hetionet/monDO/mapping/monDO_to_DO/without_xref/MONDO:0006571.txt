@@ -1,0 +1,3 @@
+MONDO:0006571	lichen nitidus
+DOID 	 name 
+DOID:8573	lichen nitidus

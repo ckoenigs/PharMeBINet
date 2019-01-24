@@ -1,0 +1,3 @@
+DOID:0060447	epithelial basement membrane dystrophy
+monDO ID 	 name 
+MONDO:0007375	epithelial basement membrane dystrophy

@@ -1,0 +1,3 @@
+DOID:4195	hyperglycemia
+monDO ID 	 name 
+MONDO:0002909	hyperglycemia

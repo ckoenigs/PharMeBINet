@@ -1,0 +1,3 @@
+DOID:2734	keratosis follicularis
+monDO ID 	 name 
+MONDO:0007417	Darier's disease

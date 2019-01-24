@@ -1,0 +1,3 @@
+DOID:1766	factitious disorder
+monDO ID 	 name 
+MONDO:0002103	factitious disorder

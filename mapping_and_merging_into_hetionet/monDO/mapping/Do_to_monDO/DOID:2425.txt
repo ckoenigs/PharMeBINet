@@ -1,0 +1,3 @@
+DOID:2425	cutaneous ganglioneuroma
+monDO ID 	 name 
+MONDO:0002293	cutaneous ganglioneuroma

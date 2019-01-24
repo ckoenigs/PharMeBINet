@@ -1,0 +1,3 @@
+MONDO:0001233	orbital tenonitis
+DOID 	 name 
+DOID:11233	orbital tenonitis

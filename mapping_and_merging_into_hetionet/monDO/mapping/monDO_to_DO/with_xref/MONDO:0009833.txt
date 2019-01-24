@@ -1,0 +1,3 @@
+MONDO:0009833	Shwachman-Diamond syndrome
+DOID 	 name 
+DOID:0060479	Shwachman-Diamond syndrome

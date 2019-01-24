@@ -1,0 +1,3 @@
+DOID:5160	arteriosclerosis obliterans
+monDO ID 	 name 
+MONDO:0006659	arteriosclerosis obliterans

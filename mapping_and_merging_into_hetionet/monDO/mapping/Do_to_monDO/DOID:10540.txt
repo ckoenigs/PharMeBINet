@@ -1,0 +1,3 @@
+DOID:10540	gastric lymphoma
+monDO ID 	 name 
+MONDO:0001059	gastric lymphoma

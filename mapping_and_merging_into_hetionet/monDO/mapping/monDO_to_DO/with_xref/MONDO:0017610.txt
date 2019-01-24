@@ -1,0 +1,3 @@
+MONDO:0017610	epidermolysis bullosa simplex
+DOID 	 name 
+DOID:4644	epidermolysis bullosa simplex

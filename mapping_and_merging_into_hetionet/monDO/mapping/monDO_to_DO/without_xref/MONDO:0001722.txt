@@ -1,0 +1,3 @@
+MONDO:0001722	central pterygium
+DOID 	 name 
+DOID:13473	central pterygium

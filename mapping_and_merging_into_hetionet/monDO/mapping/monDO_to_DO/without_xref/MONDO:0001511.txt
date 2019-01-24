@@ -1,0 +1,3 @@
+MONDO:0001511	thyrotoxic exophthalmos
+DOID 	 name 
+DOID:12362	thyrotoxic exophthalmos

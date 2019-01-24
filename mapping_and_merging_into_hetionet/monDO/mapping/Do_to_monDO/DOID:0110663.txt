@@ -1,0 +1,3 @@
+DOID:0110663	congenital myasthenic syndrome 1A
+monDO ID 	 name 
+MONDO:0011088	congenital myasthenic syndrome 1A

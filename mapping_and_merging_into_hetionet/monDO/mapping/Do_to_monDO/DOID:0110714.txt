@@ -1,0 +1,3 @@
+DOID:0110714	congenital stationary night blindness 1G
+monDO ID 	 name 
+MONDO:0014614	congenital stationary night blindness 1G

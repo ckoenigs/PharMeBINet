@@ -1,0 +1,3 @@
+DOID:585	nephrolithiasis
+monDO ID 	 name 
+MONDO:0008171	nephrolithiasis

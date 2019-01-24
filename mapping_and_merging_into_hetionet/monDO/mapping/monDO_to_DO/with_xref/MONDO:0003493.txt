@@ -1,0 +1,3 @@
+MONDO:0003493	thymus squamous cell carcinoma
+DOID 	 name 
+DOID:5530	thymus squamous cell carcinoma

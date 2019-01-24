@@ -1,0 +1,3 @@
+MONDO:0003313	endometrioid stromal sarcoma of the vagina
+DOID 	 name 
+DOID:5170	vaginal endometrial stromal sarcoma

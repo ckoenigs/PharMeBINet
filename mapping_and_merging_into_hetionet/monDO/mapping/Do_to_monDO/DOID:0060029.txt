@@ -1,0 +1,3 @@
+DOID:0060029	autoimmune disease of exocrine system
+monDO ID 	 name 
+MONDO:0000586	autoimmune disease of exocrine system

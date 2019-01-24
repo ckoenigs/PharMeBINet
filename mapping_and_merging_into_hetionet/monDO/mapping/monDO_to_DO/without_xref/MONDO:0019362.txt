@@ -1,0 +1,3 @@
+MONDO:0019362	epidemic typhus
+DOID 	 name 
+DOID:0050480	epidemic typhus

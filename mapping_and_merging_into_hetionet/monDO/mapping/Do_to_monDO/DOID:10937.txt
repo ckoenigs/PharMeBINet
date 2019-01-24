@@ -1,0 +1,3 @@
+DOID:10937	impulse control disorder
+monDO ID 	 name 
+MONDO:0001162	impulse control disorder

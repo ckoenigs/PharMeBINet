@@ -1,0 +1,3 @@
+MONDO:0010622	recessive X-linked ichthyosis
+DOID 	 name 
+DOID:1700	X-linked ichthyosis

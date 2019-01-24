@@ -1,0 +1,3 @@
+MONDO:0011596	atopic dermatitis 2
+DOID 	 name 
+DOID:0110098	atopic dermatitis 2

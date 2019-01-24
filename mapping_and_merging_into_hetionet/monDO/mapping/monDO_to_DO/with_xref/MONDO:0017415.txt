@@ -1,0 +1,3 @@
+MONDO:0017415	multiple pterygium syndrome
+DOID 	 name 
+DOID:0080110	multiple pterygium syndrome

@@ -1,0 +1,3 @@
+MONDO:0002037	pleural disease
+DOID 	 name 
+DOID:1532	pleural disease

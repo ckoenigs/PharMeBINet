@@ -1,0 +1,3 @@
+DOID:11685	inflamed seborrheic keratosis
+monDO ID 	 name 
+MONDO:0001337	inflamed seborrheic keratosis

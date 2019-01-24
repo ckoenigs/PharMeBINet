@@ -1,0 +1,3 @@
+MONDO:0006502	acute respiratory distress syndrome
+DOID 	 name 
+DOID:11394	adult respiratory distress syndrome

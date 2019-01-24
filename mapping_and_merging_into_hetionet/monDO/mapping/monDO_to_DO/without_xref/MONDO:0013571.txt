@@ -1,0 +1,3 @@
+MONDO:0013571	acatalasia
+DOID 	 name 
+DOID:2582	acatalasia

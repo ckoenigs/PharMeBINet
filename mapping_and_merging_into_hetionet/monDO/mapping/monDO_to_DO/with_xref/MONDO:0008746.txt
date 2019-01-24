@@ -1,0 +1,3 @@
+MONDO:0008746	oculocutaneous albinism type 2
+DOID 	 name 
+DOID:0050632	oculocutaneous albinism

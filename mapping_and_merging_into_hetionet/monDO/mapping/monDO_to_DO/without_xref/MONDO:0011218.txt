@@ -1,0 +1,3 @@
+MONDO:0011218	autosomal recessive congenital ichthyosis 11
+DOID 	 name 
+DOID:0060720	autosomal recessive congenital ichthyosis 11

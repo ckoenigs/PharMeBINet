@@ -1,0 +1,3 @@
+DOID:5568	mediastinum teratoma
+monDO ID 	 name 
+MONDO:0003518	mediastinum teratoma

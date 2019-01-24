@@ -1,0 +1,3 @@
+MONDO:0005959	sick building syndrome
+DOID 	 name 
+DOID:2710	sick building syndrome

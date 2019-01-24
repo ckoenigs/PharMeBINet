@@ -1,0 +1,3 @@
+DOID:13121	deficiency anemia
+monDO ID 	 name 
+MONDO:0001639	deficiency anemia

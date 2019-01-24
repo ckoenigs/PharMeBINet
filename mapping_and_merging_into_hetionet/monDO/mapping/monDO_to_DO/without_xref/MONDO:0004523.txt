@@ -1,0 +1,3 @@
+MONDO:0004523	clear cell squamous cell skin carcinoma
+DOID 	 name 
+DOID:8288	clear cell squamous cell skin carcinoma

@@ -1,0 +1,3 @@
+MONDO:0010056	adult spinal muscular atrophy
+DOID 	 name 
+DOID:0050529	adult spinal muscular atrophy

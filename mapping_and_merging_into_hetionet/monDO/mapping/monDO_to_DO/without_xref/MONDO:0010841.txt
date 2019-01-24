@@ -1,0 +1,3 @@
+MONDO:0010841	Waardenburg syndrome type 2B
+DOID 	 name 
+DOID:0110947	Waardenburg syndrome type 2B

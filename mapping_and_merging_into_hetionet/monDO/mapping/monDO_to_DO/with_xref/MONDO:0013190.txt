@@ -1,0 +1,3 @@
+MONDO:0013190	factor Xiii, b subunit, deficiency of
+DOID 	 name 
+DOID:2211	factor XIII deficiency

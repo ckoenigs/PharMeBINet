@@ -1,0 +1,3 @@
+MONDO:0004220	endometrial endometrioid adenocarcinoma with spindled epithelial cells
+DOID 	 name 
+DOID:7436	sarcomatoid uterine corpus endometrioid adenocarcinoma

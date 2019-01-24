@@ -1,0 +1,3 @@
+MONDO:0011027	diabetes mellitus, Noninsulin-dependent, 1
+DOID 	 name 
+DOID:9352	type 2 diabetes mellitus

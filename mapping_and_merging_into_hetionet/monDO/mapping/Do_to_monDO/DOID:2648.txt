@@ -1,0 +1,3 @@
+DOID:2648	sebaceous adenoma
+monDO ID 	 name 
+MONDO:0002375	sebaceous adenoma

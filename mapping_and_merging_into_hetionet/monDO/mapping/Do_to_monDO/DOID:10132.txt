@@ -1,0 +1,3 @@
+DOID:10132	psychosexual disorder
+monDO ID 	 name 
+MONDO:0000947	psychosexual disorder

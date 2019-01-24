@@ -1,0 +1,3 @@
+MONDO:0001269	scleral disease
+DOID 	 name 
+DOID:11343	scleral disease

@@ -1,0 +1,3 @@
+DOID:8304	lymph node palisaded myofibroblastoma
+monDO ID 	 name 
+MONDO:0004528	lymph node palisaded myofibroblastoma

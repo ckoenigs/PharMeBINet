@@ -1,0 +1,3 @@
+MONDO:0005461	endometrium adenocarcinoma
+DOID 	 name 
+DOID:2870	endometrial adenocarcinoma

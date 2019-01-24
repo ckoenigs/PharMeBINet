@@ -1,0 +1,3 @@
+MONDO:0019266	SAPHO syndrome
+DOID 	 name 
+DOID:13677	SAPHO syndrome

@@ -1,0 +1,3 @@
+DOID:11722	myotonic dystrophy type 1
+monDO ID 	 name 
+MONDO:0008056	myotonic dystrophy type 1

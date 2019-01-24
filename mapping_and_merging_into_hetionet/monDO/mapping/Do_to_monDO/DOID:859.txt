@@ -1,0 +1,3 @@
+DOID:859	holocarboxylase synthetase deficiency
+monDO ID 	 name 
+MONDO:0009666	holocarboxylase synthetase deficiency

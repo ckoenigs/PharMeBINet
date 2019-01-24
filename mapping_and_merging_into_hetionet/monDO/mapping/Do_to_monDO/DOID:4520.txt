@@ -1,0 +1,3 @@
+DOID:4520	cervical endometrial stromal sarcoma
+monDO ID 	 name 
+MONDO:0003030	cervical endometrial stromal sarcoma

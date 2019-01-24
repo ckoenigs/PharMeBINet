@@ -1,0 +1,3 @@
+DOID:7460	spindle cell variant squamous cell breast carcinoma
+monDO ID 	 name 
+MONDO:0004231	spindle cell variant squamous cell breast carcinoma

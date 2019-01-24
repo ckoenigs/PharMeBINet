@@ -1,0 +1,3 @@
+DOID:0060516	carp allergy
+monDO ID 	 name 
+MONDO:0000791	carp allergy

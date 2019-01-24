@@ -1,0 +1,3 @@
+DOID:0050658	Bart-Pumphrey syndrome
+monDO ID 	 name 
+MONDO:0007866	Bart-Pumphrey syndrome

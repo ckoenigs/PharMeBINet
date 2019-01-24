@@ -1,0 +1,3 @@
+DOID:6693	testicular monophasic choriocarcinoma
+monDO ID 	 name 
+MONDO:0003966	testicular monophasic choriocarcinoma

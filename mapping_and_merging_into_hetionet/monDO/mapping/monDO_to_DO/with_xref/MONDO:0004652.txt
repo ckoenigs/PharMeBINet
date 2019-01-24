@@ -1,0 +1,3 @@
+MONDO:0004652	bacterial pneumonia
+DOID 	 name 
+DOID:874	bacterial pneumonia

@@ -1,0 +1,3 @@
+MONDO:0004613	acute vascular insufficiency of intestine
+DOID 	 name 
+DOID:8590	acute vascular insufficiency of intestine

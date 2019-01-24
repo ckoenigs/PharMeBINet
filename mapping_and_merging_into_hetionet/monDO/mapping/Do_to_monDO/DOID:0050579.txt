@@ -1,0 +1,3 @@
+DOID:0050579	glycogen storage disease XV
+monDO ID 	 name 
+MONDO:0013291	glycogen storage disease XV

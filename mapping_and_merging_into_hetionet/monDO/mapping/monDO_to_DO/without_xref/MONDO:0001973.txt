@@ -1,0 +1,3 @@
+MONDO:0001973	Brucella abortus brucellosis
+DOID 	 name 
+DOID:14457	Brucella abortus brucellosis

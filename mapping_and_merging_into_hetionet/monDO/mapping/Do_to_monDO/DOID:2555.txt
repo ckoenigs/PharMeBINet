@@ -1,0 +1,3 @@
+DOID:2555	granulomatous angiitis
+monDO ID 	 name 
+MONDO:0002341	granulomatous angiitis

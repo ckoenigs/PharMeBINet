@@ -1,0 +1,3 @@
+DOID:0050742	nicotine dependence
+monDO ID 	 name 
+MONDO:0008575	nicotine dependence

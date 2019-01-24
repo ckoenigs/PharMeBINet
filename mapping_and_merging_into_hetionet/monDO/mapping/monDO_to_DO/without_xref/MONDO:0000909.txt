@@ -1,0 +1,3 @@
+MONDO:0000909	Bartter disease type 4b
+DOID 	 name 
+DOID:0110146	Bartter disease type 4b

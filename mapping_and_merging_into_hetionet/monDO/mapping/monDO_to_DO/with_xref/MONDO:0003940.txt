@@ -1,0 +1,3 @@
+MONDO:0003940	Kummell's disease
+DOID 	 name 
+DOID:6603	Kummell's disease

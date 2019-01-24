@@ -1,0 +1,3 @@
+MONDO:0013852	hypertrophic cardiomyopathy 21
+DOID 	 name 
+DOID:0110311	hypertrophic cardiomyopathy 21

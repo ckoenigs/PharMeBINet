@@ -1,0 +1,3 @@
+DOID:0050683	Bothnia retinal dystrophy
+monDO ID 	 name 
+MONDO:0011838	Bothnia retinal dystrophy

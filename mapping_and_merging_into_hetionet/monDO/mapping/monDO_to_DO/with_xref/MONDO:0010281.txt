@@ -1,0 +1,3 @@
+MONDO:0010281	Danon disease
+DOID 	 name 
+DOID:0050437	Danon disease

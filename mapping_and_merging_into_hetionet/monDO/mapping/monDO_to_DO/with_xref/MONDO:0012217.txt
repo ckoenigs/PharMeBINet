@@ -1,0 +1,3 @@
+MONDO:0012217	Bruck syndrome 2
+DOID 	 name 
+DOID:0060231	Bruck syndrome

@@ -1,0 +1,3 @@
+DOID:627	severe combined immunodeficiency
+monDO ID 	 name 
+MONDO:0015974	severe combined immunodeficiency (disease)

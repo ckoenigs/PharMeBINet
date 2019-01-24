@@ -1,0 +1,3 @@
+DOID:11781	regular astigmatism
+monDO ID 	 name 
+MONDO:0001364	regular astigmatism

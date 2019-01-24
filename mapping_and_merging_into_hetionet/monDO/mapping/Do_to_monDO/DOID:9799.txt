@@ -1,0 +1,3 @@
+DOID:9799	eye degenerative disease
+monDO ID 	 name 
+MONDO:0004884	eye degenerative disease

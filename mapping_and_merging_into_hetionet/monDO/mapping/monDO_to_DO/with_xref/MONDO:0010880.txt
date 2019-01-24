@@ -1,0 +1,3 @@
+MONDO:0010880	telangiectasia, hereditary hemorrhagic, type 2
+DOID 	 name 
+DOID:1270	hereditary hemorrhagic telangiectasia

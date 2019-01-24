@@ -1,0 +1,3 @@
+DOID:11104	spotted fever
+monDO ID 	 name 
+MONDO:0001195	spotted fever

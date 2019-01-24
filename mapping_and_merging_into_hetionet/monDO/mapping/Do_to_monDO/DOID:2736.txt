@@ -1,0 +1,3 @@
+DOID:2736	Hajdu-Cheney syndrome
+monDO ID 	 name 
+MONDO:0007057	acroosteolysis dominant type

@@ -1,0 +1,3 @@
+MONDO:0014819	autosomal dominant Robinow syndrome 3
+DOID 	 name 
+DOID:0060767	autosomal dominant Robinow syndrome 3

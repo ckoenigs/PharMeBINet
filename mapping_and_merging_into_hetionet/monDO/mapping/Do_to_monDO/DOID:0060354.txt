@@ -1,0 +1,3 @@
+DOID:0060354	Stormorken syndrome
+monDO ID 	 name 
+MONDO:0008497	Stormorken syndrome

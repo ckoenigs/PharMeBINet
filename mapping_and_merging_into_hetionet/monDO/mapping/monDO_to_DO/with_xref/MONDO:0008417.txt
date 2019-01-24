@@ -1,0 +1,3 @@
+MONDO:0008417	sclerocornea, autosomal dominant
+DOID 	 name 
+DOID:0060252	sclerocornea

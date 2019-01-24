@@ -1,0 +1,3 @@
+DOID:11824	multicentric reticulohistiocytosis
+monDO ID 	 name 
+MONDO:0015347	multicentric reticulohistiocytosis

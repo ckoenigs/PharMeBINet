@@ -1,0 +1,3 @@
+MONDO:0011600	congenital myasthenic syndrome 4A
+DOID 	 name 
+DOID:0110678	congenital myasthenic syndrome 4A

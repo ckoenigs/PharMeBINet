@@ -1,0 +1,3 @@
+DOID:0110924	familial hemophagocytic lymphohistiocytosis 4
+monDO ID 	 name 
+MONDO:0011336	familial hemophagocytic lymphohistiocytosis 4

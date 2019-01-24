@@ -1,0 +1,3 @@
+MONDO:0005627	head and neck malignant neoplasia
+DOID 	 name 
+DOID:11934	head and neck cancer

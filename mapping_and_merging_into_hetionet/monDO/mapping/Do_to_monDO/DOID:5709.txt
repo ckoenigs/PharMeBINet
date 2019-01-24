@@ -1,0 +1,3 @@
+DOID:5709	mixed-type liposarcoma
+monDO ID 	 name 
+MONDO:0003597	mixed-type liposarcoma

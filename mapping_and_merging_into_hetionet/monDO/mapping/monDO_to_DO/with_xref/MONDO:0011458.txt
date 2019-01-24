@@ -1,0 +1,3 @@
+MONDO:0011458	Leber congenital amaurosis 4
+DOID 	 name 
+DOID:0110332	Leber congenital amaurosis 4

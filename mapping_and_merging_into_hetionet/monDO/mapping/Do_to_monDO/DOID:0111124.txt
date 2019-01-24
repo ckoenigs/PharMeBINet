@@ -1,0 +1,3 @@
+DOID:0111124	nephronophthisis 16
+monDO ID 	 name 
+MONDO:0014158	nephronophthisis 16

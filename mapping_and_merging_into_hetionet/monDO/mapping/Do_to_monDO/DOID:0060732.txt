@@ -1,0 +1,3 @@
+DOID:0060732	chromosome 9p deletion syndrome
+monDO ID 	 name 
+MONDO:0008013	chromosome 9p deletion syndrome

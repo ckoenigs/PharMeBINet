@@ -1,0 +1,3 @@
+MONDO:0015802	autosomal dominant non-syndromic intellectual disability
+DOID 	 name 
+DOID:0060307	autosomal dominant non-syndromic intellectual disability

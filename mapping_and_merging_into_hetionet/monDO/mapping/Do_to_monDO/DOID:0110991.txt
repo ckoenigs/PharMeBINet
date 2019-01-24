@@ -1,0 +1,3 @@
+DOID:0110991	Joubert syndrome 22
+monDO ID 	 name 
+MONDO:0014297	Joubert syndrome 22

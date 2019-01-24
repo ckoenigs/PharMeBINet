@@ -1,0 +1,3 @@
+MONDO:0003044	extraosseous chondrosarcoma
+DOID 	 name 
+DOID:4549	extraosseous chondrosarcoma

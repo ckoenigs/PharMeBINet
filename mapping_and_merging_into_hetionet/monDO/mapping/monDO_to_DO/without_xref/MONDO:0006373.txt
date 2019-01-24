@@ -1,0 +1,3 @@
+MONDO:0006373	pituitary gland adenoma
+DOID 	 name 
+DOID:3829	pituitary adenoma

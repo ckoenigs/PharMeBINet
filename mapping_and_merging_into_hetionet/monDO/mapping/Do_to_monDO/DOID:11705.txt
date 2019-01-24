@@ -1,0 +1,3 @@
+DOID:11705	impaired renal function disease
+monDO ID 	 name 
+MONDO:0001343	impaired renal function disease

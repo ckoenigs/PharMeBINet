@@ -1,0 +1,3 @@
+MONDO:0008050	Laing early-onset distal myopathy
+DOID 	 name 
+DOID:11720	distal muscular dystrophy

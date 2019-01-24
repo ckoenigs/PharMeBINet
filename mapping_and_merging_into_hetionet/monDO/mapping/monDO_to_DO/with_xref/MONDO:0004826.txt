@@ -1,0 +1,3 @@
+MONDO:0004826	urethral calculus
+DOID 	 name 
+DOID:9589	urethral calculus

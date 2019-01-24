@@ -1,0 +1,3 @@
+DOID:2997	Sertoli-Leydig cell tumor
+monDO ID 	 name 
+MONDO:0002479	Sertoli-leydig cell tumor

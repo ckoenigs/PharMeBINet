@@ -1,0 +1,3 @@
+MONDO:0014351	pontocerebellar hypoplasia type 9
+DOID 	 name 
+DOID:0060278	pontocerebellar hypoplasia type 9

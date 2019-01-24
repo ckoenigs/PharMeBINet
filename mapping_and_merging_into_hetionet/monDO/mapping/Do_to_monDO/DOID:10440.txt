@@ -1,0 +1,3 @@
+DOID:10440	mycotic corneal ulcer
+monDO ID 	 name 
+MONDO:0001033	mycotic corneal ulcer

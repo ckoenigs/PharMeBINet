@@ -1,0 +1,3 @@
+MONDO:0001924	dystrophies primarily involving the retinal pigment epithelium
+DOID 	 name 
+DOID:14252	dystrophies primarily involving the retinal pigment epithelium

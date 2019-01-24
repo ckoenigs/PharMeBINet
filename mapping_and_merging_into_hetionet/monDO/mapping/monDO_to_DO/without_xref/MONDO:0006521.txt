@@ -1,0 +1,3 @@
+MONDO:0006521	acneiform dermatitis
+DOID 	 name 
+DOID:4399	acneiform dermatitis

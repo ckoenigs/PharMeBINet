@@ -1,0 +1,3 @@
+DOID:11400	pyelonephritis
+monDO ID 	 name 
+MONDO:0006939	pyelonephritis

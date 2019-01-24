@@ -1,0 +1,3 @@
+DOID:0060060	non-Hodgkin lymphoma
+monDO ID 	 name 
+MONDO:0018908	non-Hodgkin lymphoma

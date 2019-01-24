@@ -1,0 +1,3 @@
+MONDO:0004063	intermediate cell type iris melanoma
+DOID 	 name 
+DOID:6993	iris mixed cell melanoma

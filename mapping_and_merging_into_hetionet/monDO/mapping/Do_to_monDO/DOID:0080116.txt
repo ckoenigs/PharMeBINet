@@ -1,0 +1,3 @@
+DOID:0080116	mitochondrial complex III deficiency nuclear type 7
+monDO ID 	 name 
+MONDO:0014356	mitochondrial complex III deficiency nuclear type 7

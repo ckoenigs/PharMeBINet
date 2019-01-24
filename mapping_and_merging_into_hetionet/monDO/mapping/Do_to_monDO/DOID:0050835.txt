@@ -1,0 +1,3 @@
+DOID:0050835	generalized dystonia
+monDO ID 	 name 
+MONDO:0000476	generalized dystonia

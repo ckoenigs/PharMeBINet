@@ -1,0 +1,3 @@
+DOID:0050648	atelosteogenesis
+monDO ID 	 name 
+MONDO:0000389	atelosteogenesis

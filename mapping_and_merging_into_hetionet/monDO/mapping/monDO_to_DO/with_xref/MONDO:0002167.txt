@@ -1,0 +1,3 @@
+MONDO:0002167	rectum malignant melanoma
+DOID 	 name 
+DOID:1992	rectum malignant melanoma

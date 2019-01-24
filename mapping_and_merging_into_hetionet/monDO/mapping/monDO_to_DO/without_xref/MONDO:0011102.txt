@@ -1,0 +1,3 @@
+MONDO:0011102	autosomal dominant nonsyndromic deafness 12
+DOID 	 name 
+DOID:0110544	autosomal dominant nonsyndromic deafness 12

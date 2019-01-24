@@ -1,0 +1,3 @@
+MONDO:0010319	syndromic X-linked intellectual disability Hedera type
+DOID 	 name 
+DOID:0060806	syndromic X-linked intellectual disability Hedera type

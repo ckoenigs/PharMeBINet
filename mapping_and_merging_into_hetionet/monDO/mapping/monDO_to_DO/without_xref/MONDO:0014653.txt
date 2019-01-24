@@ -1,0 +1,3 @@
+MONDO:0014653	retinitis pigmentosa 72
+DOID 	 name 
+DOID:0110395	retinitis pigmentosa 72

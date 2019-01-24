@@ -1,0 +1,3 @@
+DOID:0060002	C1 inhibitor deficiency
+monDO ID 	 name 
+MONDO:0007361	C1 inhibitor deficiency

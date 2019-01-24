@@ -1,0 +1,3 @@
+MONDO:0001969	mixed gonadal dysgenesis
+DOID 	 name 
+DOID:14449	mixed gonadal dysgenesis

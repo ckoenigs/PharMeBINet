@@ -1,0 +1,3 @@
+DOID:10927	gastrojejunal ulcer
+monDO ID 	 name 
+MONDO:0001155	gastrojejunal ulcer

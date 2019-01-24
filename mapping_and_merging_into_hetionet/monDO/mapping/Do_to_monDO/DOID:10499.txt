@@ -1,0 +1,3 @@
+DOID:10499	orbital granuloma
+monDO ID 	 name 
+MONDO:0001048	orbital granuloma

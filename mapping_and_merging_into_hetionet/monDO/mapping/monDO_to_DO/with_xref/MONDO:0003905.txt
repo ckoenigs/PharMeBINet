@@ -1,0 +1,3 @@
+MONDO:0003905	ovarian yolk sac tumor, glandular pattern
+DOID 	 name 
+DOID:6511	glandular pattern ovarian yolk sac tumor

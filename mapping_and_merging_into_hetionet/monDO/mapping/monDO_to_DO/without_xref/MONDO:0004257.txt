@@ -1,0 +1,3 @@
+MONDO:0004257	childhood central nervous system mixed germ cell tumor
+DOID 	 name 
+DOID:7516	childhood central nervous system mixed germ cell tumor

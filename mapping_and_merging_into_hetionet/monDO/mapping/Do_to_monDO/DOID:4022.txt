@@ -1,0 +1,3 @@
+DOID:4022	ureterocele
+monDO ID 	 name 
+MONDO:0008628	ureterocele (disease)

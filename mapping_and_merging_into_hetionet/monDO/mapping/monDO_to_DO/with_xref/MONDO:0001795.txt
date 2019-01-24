@@ -1,0 +1,3 @@
+MONDO:0001795	plantar wart
+DOID 	 name 
+DOID:13775	plantar wart

@@ -1,0 +1,3 @@
+DOID:0110328	hypertrophic cardiomyopathy 25
+monDO ID 	 name 
+MONDO:0011843	hypertrophic cardiomyopathy 25

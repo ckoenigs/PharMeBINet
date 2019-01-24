@@ -1,0 +1,6 @@
+MONDO:0004972	adenoma
+DOID 	 name 
+DOID:3172	papillary adenoma
+DOID:6204	follicular adenoma
+DOID:5403	microcystic adenoma
+DOID:657	adenoma

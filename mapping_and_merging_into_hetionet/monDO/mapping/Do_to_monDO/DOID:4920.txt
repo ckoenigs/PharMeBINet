@@ -1,0 +1,3 @@
+DOID:4920	eccrine adenocarcinoma
+monDO ID 	 name 
+MONDO:0003207	eccrine adenocarcinoma

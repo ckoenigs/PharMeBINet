@@ -1,0 +1,3 @@
+MONDO:0014051	cardioencephalomyopathy, fatal infantile, due to cytochrome c oxidase deficiency 2
+DOID 	 name 
+DOID:0050713	fatal infantile encephalocardiomyopathy

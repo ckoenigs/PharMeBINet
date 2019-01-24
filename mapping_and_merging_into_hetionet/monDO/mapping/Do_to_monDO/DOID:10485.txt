@@ -1,0 +1,3 @@
+DOID:10485	esophageal atresia
+monDO ID 	 name 
+MONDO:0001044	esophageal atresia (disease)

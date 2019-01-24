@@ -1,0 +1,3 @@
+MONDO:0006990	suppurative uveitis
+DOID 	 name 
+DOID:13140	suppurative uveitis

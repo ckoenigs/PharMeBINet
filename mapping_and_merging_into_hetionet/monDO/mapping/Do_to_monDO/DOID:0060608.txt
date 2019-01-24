@@ -1,0 +1,3 @@
+DOID:0060608	microcephalic osteodysplastic primordial dwarfism type I
+monDO ID 	 name 
+MONDO:0008871	microcephalic osteodysplastic primordial dwarfism type i

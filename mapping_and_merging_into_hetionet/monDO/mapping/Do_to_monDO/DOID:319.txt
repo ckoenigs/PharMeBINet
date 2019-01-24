@@ -1,0 +1,3 @@
+DOID:319	spinal cord disease
+monDO ID 	 name 
+MONDO:0002545	spinal cord disease

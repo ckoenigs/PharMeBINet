@@ -1,0 +1,3 @@
+DOID:607	paraplegia
+monDO ID 	 name 
+MONDO:0003757	paraplegia

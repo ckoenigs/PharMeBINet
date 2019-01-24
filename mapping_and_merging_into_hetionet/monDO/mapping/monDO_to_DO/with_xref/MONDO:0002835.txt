@@ -1,0 +1,3 @@
+MONDO:0002835	papillary transitional carcinoma
+DOID 	 name 
+DOID:4012	papillary transitional carcinoma

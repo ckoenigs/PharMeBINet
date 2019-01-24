@@ -1,0 +1,3 @@
+MONDO:0003541	adult acute lymphocytic leukemia
+DOID 	 name 
+DOID:5604	adult acute lymphocytic leukemia

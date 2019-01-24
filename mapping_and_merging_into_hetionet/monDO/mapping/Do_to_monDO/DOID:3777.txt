@@ -1,0 +1,3 @@
+DOID:3777	granuloma annulare
+monDO ID 	 name 
+MONDO:0006554	granuloma annulare

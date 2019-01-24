@@ -1,0 +1,3 @@
+MONDO:0000797	goat milk allergy
+DOID 	 name 
+DOID:0060522	goat milk allergy

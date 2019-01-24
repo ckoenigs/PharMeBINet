@@ -1,0 +1,3 @@
+MONDO:0006049	papillary lung adenocarcinoma
+DOID 	 name 
+DOID:5588	lung papillary adenocarcinoma

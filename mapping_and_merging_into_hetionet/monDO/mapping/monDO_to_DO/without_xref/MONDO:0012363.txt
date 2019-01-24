@@ -1,0 +1,3 @@
+MONDO:0012363	retinitis pigmentosa 32
+DOID 	 name 
+DOID:0110355	retinitis pigmentosa 32

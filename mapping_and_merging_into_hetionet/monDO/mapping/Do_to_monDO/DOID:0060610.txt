@@ -1,0 +1,3 @@
+DOID:0060610	megacystis-microcolon-intestinal hypoperistalsis syndrome
+monDO ID 	 name 
+MONDO:0007960	megacystis-microcolon-intestinal hypoperistalsis syndrome

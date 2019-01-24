@@ -1,0 +1,3 @@
+DOID:1510	personality disorder
+monDO ID 	 name 
+MONDO:0002028	personality disorder (disease)

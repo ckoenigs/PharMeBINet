@@ -1,0 +1,3 @@
+MONDO:0009213	Fanconi anemia complementation group C
+DOID 	 name 
+DOID:0111087	Fanconi anemia complementation group C

@@ -1,0 +1,3 @@
+DOID:9521	Laron syndrome
+monDO ID 	 name 
+MONDO:0009877	Laron syndrome

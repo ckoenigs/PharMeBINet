@@ -1,0 +1,3 @@
+MONDO:0011438	acne (disease)
+DOID 	 name 
+DOID:6543	acne

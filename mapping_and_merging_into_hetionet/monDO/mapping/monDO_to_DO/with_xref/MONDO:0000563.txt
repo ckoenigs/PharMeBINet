@@ -1,0 +1,3 @@
+MONDO:0000563	GRID2-related autosomal dominant spinocerebellar ataxia
+DOID 	 name 
+DOID:0050988	GRID2-related spinocerebellar ataxia

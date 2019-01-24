@@ -1,0 +1,3 @@
+DOID:0090063	familial cold autoinflammatory syndrome 2
+monDO ID 	 name 
+MONDO:0012724	familial cold autoinflammatory syndrome 2

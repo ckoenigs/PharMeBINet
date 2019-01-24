@@ -1,0 +1,3 @@
+DOID:4893	middle ear carcinoma
+monDO ID 	 name 
+MONDO:0003190	middle ear carcinoma

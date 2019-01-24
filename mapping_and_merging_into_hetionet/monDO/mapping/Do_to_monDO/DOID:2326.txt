@@ -1,0 +1,3 @@
+DOID:2326	gastroenteritis
+monDO ID 	 name 
+MONDO:0002269	gastroenteritis

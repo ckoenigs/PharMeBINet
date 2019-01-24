@@ -1,0 +1,3 @@
+MONDO:0019464	heavy chain disease
+DOID 	 name 
+DOID:0060125	heavy chain disease

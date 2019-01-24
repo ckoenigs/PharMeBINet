@@ -1,0 +1,3 @@
+MONDO:0002274	monoclonal paraproteinemia
+DOID 	 name 
+DOID:2346	monoclonal paraproteinemia

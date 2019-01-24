@@ -1,0 +1,3 @@
+DOID:0110121	Axenfeld-Rieger syndrome type 2
+monDO ID 	 name 
+MONDO:0011097	Axenfeld-Rieger syndrome type 2

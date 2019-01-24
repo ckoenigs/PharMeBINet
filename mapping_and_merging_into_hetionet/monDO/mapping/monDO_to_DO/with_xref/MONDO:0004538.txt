@@ -1,0 +1,3 @@
+MONDO:0004538	endocervical type cervical mucinous adenocarcinoma
+DOID 	 name 
+DOID:8340	endocervical type cervical mucinous adenocarcinoma

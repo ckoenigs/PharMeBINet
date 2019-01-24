@@ -1,0 +1,3 @@
+MONDO:0014050	isolated microphthalmia 8
+DOID 	 name 
+DOID:0060841	isolated microphthalmia 8

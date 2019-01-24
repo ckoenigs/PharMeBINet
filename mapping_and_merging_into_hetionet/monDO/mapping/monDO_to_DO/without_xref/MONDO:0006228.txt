@@ -1,0 +1,3 @@
+MONDO:0006228	gastric papillary adenocarcinoma
+DOID 	 name 
+DOID:5593	gastric papillary adenocarcinoma

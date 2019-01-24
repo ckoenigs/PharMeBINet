@@ -1,0 +1,3 @@
+MONDO:0012630	Alzheimer's disease 13
+DOID 	 name 
+DOID:0110046	Alzheimer's disease 13

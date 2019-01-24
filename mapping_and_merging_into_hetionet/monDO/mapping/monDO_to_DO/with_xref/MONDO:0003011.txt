@@ -1,0 +1,3 @@
+MONDO:0003011	mucinous tubular and spindle renal cell carcinoma
+DOID 	 name 
+DOID:4472	mucinous tubular and spindle renal cell carcinoma

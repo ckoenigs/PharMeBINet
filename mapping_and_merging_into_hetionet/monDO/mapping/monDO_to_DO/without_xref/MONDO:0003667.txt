@@ -1,0 +1,3 @@
+MONDO:0003667	spermatocytoma
+DOID 	 name 
+DOID:5834	spermatocytoma

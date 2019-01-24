@@ -1,0 +1,3 @@
+DOID:12377	spinal muscular atrophy
+monDO ID 	 name 
+MONDO:0001516	spinal muscular atrophy

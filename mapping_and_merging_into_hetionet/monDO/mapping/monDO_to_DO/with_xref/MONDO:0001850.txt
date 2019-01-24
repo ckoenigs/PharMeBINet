@@ -1,0 +1,3 @@
+MONDO:0001850	female breast lower-outer quadrant cancer
+DOID 	 name 
+DOID:13972	female breast lower-outer quadrant cancer

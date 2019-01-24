@@ -1,0 +1,3 @@
+DOID:4656	extraocular retinoblastoma
+monDO ID 	 name 
+MONDO:0003078	extraocular retinoblastoma

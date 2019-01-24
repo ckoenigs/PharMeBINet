@@ -1,0 +1,3 @@
+DOID:8411	kidney angiomyolipoma
+monDO ID 	 name 
+MONDO:0004555	kidney angiomyolipoma

@@ -1,0 +1,3 @@
+MONDO:0005712	congenital nystagmus
+DOID 	 name 
+DOID:9649	congenital nystagmus

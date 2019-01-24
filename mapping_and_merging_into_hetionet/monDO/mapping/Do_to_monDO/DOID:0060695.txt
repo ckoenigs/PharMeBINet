@@ -1,0 +1,3 @@
+DOID:0060695	hyperekplexia
+monDO ID 	 name 
+MONDO:0021022	hereditary hyperekplexia

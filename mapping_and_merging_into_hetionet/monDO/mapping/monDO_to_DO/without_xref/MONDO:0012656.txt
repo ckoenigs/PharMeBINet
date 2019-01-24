@@ -1,0 +1,3 @@
+MONDO:0012656	lethal congenital contracture syndrome 3
+DOID 	 name 
+DOID:0060653	lethal congenital contracture syndrome 3

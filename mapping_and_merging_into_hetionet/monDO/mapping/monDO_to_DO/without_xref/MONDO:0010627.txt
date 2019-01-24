@@ -1,0 +1,3 @@
+MONDO:0010627	X-linked lymphoproliferative syndrome
+DOID 	 name 
+DOID:0060705	X-linked lymphoproliferative syndrome 1

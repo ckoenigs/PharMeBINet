@@ -1,0 +1,3 @@
+MONDO:0010830	neuronal ceroid lipofuscinosis 8
+DOID 	 name 
+DOID:0110723	neuronal ceroid lipofuscinosis 8

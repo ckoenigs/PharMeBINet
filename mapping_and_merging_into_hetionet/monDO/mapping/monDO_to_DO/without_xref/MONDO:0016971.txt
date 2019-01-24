@@ -1,0 +1,3 @@
+MONDO:0016971	limb-girdle muscular dystrophy
+DOID 	 name 
+DOID:11724	limb-girdle muscular dystrophy

@@ -1,0 +1,3 @@
+DOID:0110585	autosomal dominant nonsyndromic deafness 64
+monDO ID 	 name 
+MONDO:0013593	autosomal dominant nonsyndromic deafness 64

@@ -1,0 +1,3 @@
+DOID:13626	photokeratitis
+monDO ID 	 name 
+MONDO:0001760	photokeratitis

@@ -1,0 +1,3 @@
+DOID:8208	lung superior sulcus carcinoma
+monDO ID 	 name 
+MONDO:0004500	lung superior sulcus carcinoma

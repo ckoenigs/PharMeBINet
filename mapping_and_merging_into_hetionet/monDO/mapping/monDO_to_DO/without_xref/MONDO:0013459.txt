@@ -1,0 +1,3 @@
+MONDO:0013459	osteogenesis imperfecta type 10
+DOID 	 name 
+DOID:0110346	osteogenesis imperfecta type 10

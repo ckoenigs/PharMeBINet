@@ -1,0 +1,3 @@
+MONDO:0005677	boutonneuse fever
+DOID 	 name 
+DOID:14095	boutonneuse fever

@@ -1,0 +1,3 @@
+MONDO:0018102	corneal dystrophy (disease)
+DOID 	 name 
+DOID:2566	corneal dystrophy

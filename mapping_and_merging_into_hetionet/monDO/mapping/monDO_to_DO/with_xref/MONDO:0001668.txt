@@ -1,0 +1,3 @@
+MONDO:0001668	internal pathological resorption
+DOID 	 name 
+DOID:13239	internal pathological resorption

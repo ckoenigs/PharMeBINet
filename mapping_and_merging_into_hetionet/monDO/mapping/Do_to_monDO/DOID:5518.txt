@@ -1,0 +1,3 @@
+DOID:5518	penis squamous cell carcinoma
+monDO ID 	 name 
+MONDO:0018352	squamous cell carcinoma of penis

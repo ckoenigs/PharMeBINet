@@ -1,0 +1,3 @@
+MONDO:0008700	acheiropody
+DOID 	 name 
+DOID:0050603	acheiropody

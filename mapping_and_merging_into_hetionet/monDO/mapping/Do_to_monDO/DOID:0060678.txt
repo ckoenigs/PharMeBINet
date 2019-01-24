@@ -1,0 +1,3 @@
+DOID:0060678	catecholaminergic polymorphic ventricular tachycardia 4
+monDO ID 	 name 
+MONDO:0013966	catecholaminergic polymorphic ventricular tachycardia 4

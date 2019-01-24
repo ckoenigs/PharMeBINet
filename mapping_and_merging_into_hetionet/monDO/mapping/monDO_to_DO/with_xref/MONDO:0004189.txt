@@ -1,0 +1,3 @@
+MONDO:0004189	esophageal tuberculosis
+DOID 	 name 
+DOID:7332	esophageal tuberculosis

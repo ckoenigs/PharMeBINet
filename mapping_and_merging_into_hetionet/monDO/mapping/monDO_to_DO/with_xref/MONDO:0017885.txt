@@ -1,0 +1,8 @@
+MONDO:0017885	chromophobe renal cell carcinoma
+DOID 	 name 
+DOID:4465	papillary renal cell carcinoma
+DOID:4464	collecting duct carcinoma
+DOID:4467	renal clear cell carcinoma
+DOID:4473	sarcomatoid renal cell carcinoma
+DOID:4471	chromophobe renal cell carcinoma
+DOID:4450	renal cell carcinoma

@@ -1,0 +1,3 @@
+DOID:8644	gastroduodenitis
+monDO ID 	 name 
+MONDO:0004628	peptic ulcer gastroduodenitis

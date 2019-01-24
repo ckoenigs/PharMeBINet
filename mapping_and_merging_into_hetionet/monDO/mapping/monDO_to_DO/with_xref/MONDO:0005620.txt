@@ -1,0 +1,3 @@
+MONDO:0005620	cerebral amyloid angiopathy
+DOID 	 name 
+DOID:9246	cerebral amyloid angiopathy

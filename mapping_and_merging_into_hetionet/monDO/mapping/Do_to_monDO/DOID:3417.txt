@@ -1,0 +1,3 @@
+DOID:3417	glossopharyngeal nerve neoplasm
+monDO ID 	 name 
+MONDO:0002638	glossopharyngeal nerve neoplasm

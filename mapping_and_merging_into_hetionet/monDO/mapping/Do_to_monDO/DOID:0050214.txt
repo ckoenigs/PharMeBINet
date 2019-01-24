@@ -1,0 +1,3 @@
+DOID:0050214	Lambert-Eaton myasthenic syndrome
+monDO ID 	 name 
+MONDO:0018556	Lambert-Eaton myasthenic syndrome

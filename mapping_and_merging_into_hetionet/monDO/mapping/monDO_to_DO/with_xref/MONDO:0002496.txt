@@ -1,0 +1,3 @@
+MONDO:0002496	submucosal invasive colon adenocarcinoma
+DOID 	 name 
+DOID:3038	submucosal invasive colon adenocarcinoma

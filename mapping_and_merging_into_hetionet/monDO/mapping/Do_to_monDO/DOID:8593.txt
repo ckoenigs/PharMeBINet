@@ -1,0 +1,3 @@
+DOID:8593	chronic monocytic leukemia
+monDO ID 	 name 
+MONDO:0004614	chronic monocytic leukemia

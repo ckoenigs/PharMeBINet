@@ -1,0 +1,3 @@
+DOID:2706	synovium cancer
+monDO ID 	 name 
+MONDO:0002403	synovium cancer

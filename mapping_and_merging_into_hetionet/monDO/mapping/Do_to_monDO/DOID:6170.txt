@@ -1,0 +1,3 @@
+DOID:6170	ovarian carcinosarcoma
+monDO ID 	 name 
+MONDO:0003792	ovarian carcinosarcoma

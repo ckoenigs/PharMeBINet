@@ -1,0 +1,3 @@
+MONDO:0002950	skin clear cell basal cell carcinoma
+DOID 	 name 
+DOID:4293	clear cell basal cell carcinoma

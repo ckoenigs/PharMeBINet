@@ -1,0 +1,3 @@
+MONDO:0006015	Waterhouse-Friderichsen syndrome
+DOID 	 name 
+DOID:9931	Waterhouse-Friderichsen syndrome

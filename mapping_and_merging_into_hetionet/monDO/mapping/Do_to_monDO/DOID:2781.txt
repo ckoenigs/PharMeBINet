@@ -1,0 +1,3 @@
+DOID:2781	rectosigmoid cancer
+monDO ID 	 name 
+MONDO:0002424	rectosigmoid carcinoma

@@ -1,0 +1,3 @@
+MONDO:0000780	apricot allergy
+DOID 	 name 
+DOID:0060505	apricot allergy

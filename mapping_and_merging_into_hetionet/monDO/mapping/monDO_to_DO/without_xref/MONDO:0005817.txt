@@ -1,0 +1,3 @@
+MONDO:0005817	Kluver-Bucy syndrome
+DOID 	 name 
+DOID:2510	Kluver-Bucy syndrome

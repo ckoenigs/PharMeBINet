@@ -1,0 +1,3 @@
+MONDO:0002029	chronic gonorrhea of cervix
+DOID 	 name 
+DOID:1512	chronic gonorrhea of cervix

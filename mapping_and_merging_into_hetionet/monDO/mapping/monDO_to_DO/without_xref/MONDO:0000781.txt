@@ -1,0 +1,3 @@
+MONDO:0000781	cherry allergy
+DOID 	 name 
+DOID:0060506	cherry allergy

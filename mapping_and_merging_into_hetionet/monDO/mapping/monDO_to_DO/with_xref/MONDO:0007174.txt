@@ -1,0 +1,3 @@
+MONDO:0007174	Lown-Ganong-Levine syndrome
+DOID 	 name 
+DOID:13087	Lown-Ganong-Levine syndrome

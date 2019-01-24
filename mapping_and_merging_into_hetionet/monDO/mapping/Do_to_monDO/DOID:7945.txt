@@ -1,0 +1,3 @@
+DOID:7945	adult central nervous system mixed germ cell tumor
+monDO ID 	 name 
+MONDO:0004406	adult central nervous system mixed germ cell tumor

@@ -1,0 +1,3 @@
+MONDO:0004183	axonal neuropathy
+DOID 	 name 
+DOID:7319	axonal neuropathy

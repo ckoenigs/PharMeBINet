@@ -1,0 +1,3 @@
+DOID:8781	rubella
+monDO ID 	 name 
+MONDO:0004656	rubella

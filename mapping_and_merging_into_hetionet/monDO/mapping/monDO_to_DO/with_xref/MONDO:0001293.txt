@@ -1,0 +1,3 @@
+MONDO:0001293	subglottis cancer
+DOID 	 name 
+DOID:11472	subglottis cancer

@@ -1,0 +1,3 @@
+DOID:10742	cerebral lipidosis
+monDO ID 	 name 
+MONDO:0020143	cerebral lipidosis with dementia

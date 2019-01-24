@@ -1,0 +1,3 @@
+MONDO:0008148	osteogenesis imperfecta type 4
+DOID 	 name 
+DOID:0110340	osteogenesis imperfecta type 4

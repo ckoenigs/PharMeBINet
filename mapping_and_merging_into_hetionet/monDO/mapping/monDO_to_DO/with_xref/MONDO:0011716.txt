@@ -1,0 +1,4 @@
+MONDO:0011716	acute hemorrhagic leukoencephalitis
+DOID 	 name 
+DOID:10992	acute hemorrhagic leukoencephalitis
+DOID:5222	acute necrotizing encephalitis

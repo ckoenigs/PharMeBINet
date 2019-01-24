@@ -1,0 +1,3 @@
+DOID:310	MERRF syndrome
+monDO ID 	 name 
+MONDO:0010790	MERRF syndrome

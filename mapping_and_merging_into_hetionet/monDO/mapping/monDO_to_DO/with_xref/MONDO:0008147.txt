@@ -1,0 +1,3 @@
+MONDO:0008147	osteogenesis imperfecta type 2
+DOID 	 name 
+DOID:0110341	osteogenesis imperfecta type 2

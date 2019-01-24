@@ -1,0 +1,3 @@
+MONDO:0012235	autosomal recessive spinocerebellar ataxia 7
+DOID 	 name 
+DOID:0080059	autosomal recessive spinocerebellar ataxia 7

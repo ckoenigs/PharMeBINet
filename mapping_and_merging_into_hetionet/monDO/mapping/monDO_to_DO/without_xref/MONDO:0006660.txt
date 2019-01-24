@@ -1,0 +1,3 @@
+MONDO:0006660	arthus reaction
+DOID 	 name 
+DOID:1556	arthus reaction

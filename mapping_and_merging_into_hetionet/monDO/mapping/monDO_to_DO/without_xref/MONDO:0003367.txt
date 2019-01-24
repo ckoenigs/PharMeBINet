@@ -1,0 +1,3 @@
+MONDO:0003367	gastric leiomyosarcoma (disease)
+DOID 	 name 
+DOID:5280	gastric leiomyosarcoma

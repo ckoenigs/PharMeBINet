@@ -1,0 +1,3 @@
+DOID:3436	viral laryngitis
+monDO ID 	 name 
+MONDO:0002646	viral laryngitis

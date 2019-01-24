@@ -1,0 +1,3 @@
+DOID:0050703	infancy electroclinical syndrome
+monDO ID 	 name 
+MONDO:0000413	infancy electroclinical syndrome

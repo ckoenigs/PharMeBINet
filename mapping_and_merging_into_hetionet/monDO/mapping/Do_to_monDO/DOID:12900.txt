@@ -1,0 +1,3 @@
+DOID:12900	Mikulicz disease
+monDO ID 	 name 
+MONDO:0019191	IgG4-related dacryoadenitis and sialadenitis

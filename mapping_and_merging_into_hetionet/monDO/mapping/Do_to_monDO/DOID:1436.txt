@@ -1,0 +1,3 @@
+DOID:1436	corneal ectasia
+monDO ID 	 name 
+MONDO:0001950	corneal ectasia

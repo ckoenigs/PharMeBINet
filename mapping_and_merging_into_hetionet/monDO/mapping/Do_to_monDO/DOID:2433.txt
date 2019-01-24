@@ -1,0 +1,3 @@
+DOID:2433	epidermal appendage tumor
+monDO ID 	 name 
+MONDO:0002297	epidermal appendage tumor

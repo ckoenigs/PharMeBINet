@@ -1,0 +1,3 @@
+DOID:0050939	uterine corpus endometrial carcinoma
+monDO ID 	 name 
+MONDO:0000553	uterine corpus endometrial carcinoma

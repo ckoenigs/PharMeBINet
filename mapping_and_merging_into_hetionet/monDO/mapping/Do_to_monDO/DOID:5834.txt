@@ -1,0 +1,3 @@
+DOID:5834	spermatocytoma
+monDO ID 	 name 
+MONDO:0003667	spermatocytoma

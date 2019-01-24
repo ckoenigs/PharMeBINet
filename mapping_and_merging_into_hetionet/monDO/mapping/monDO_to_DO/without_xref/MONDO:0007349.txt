@@ -1,0 +1,3 @@
+MONDO:0007349	familial cold autoinflammatory syndrome 1
+DOID 	 name 
+DOID:0090062	familial cold autoinflammatory syndrome 1

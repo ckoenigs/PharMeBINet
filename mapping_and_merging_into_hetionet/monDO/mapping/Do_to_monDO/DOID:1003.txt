@@ -1,0 +1,3 @@
+DOID:1003	pelvic inflammatory disease
+monDO ID 	 name 
+MONDO:0000922	pelvic inflammatory disease

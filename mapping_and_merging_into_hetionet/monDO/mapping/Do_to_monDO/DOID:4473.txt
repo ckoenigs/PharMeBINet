@@ -1,0 +1,3 @@
+DOID:4473	sarcomatoid renal cell carcinoma
+monDO ID 	 name 
+MONDO:0003012	sarcomatoid renal cell carcinoma

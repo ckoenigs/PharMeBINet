@@ -1,0 +1,3 @@
+MONDO:0002249	thrombocytosis
+DOID 	 name 
+DOID:2228	thrombocytosis

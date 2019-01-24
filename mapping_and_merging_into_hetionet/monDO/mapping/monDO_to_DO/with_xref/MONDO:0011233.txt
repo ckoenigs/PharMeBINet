@@ -1,0 +1,3 @@
+MONDO:0011233	Axenfeld-Rieger syndrome type 3
+DOID 	 name 
+DOID:0110122	Axenfeld-Rieger syndrome type 3

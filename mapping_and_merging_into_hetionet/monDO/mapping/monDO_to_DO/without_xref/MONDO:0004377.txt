@@ -1,0 +1,3 @@
+MONDO:0004377	pancreatic non-functioning delta cell tumor
+DOID 	 name 
+DOID:7840	pancreatic non-functioning delta cell tumor

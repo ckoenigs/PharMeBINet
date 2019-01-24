@@ -1,0 +1,3 @@
+DOID:3890	acute intermittent porphyria
+monDO ID 	 name 
+MONDO:0008294	acute intermittent porphyria

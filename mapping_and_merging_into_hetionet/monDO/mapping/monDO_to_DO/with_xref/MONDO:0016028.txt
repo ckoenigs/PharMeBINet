@@ -1,0 +1,3 @@
+MONDO:0016028	erythromelalgia
+DOID 	 name 
+DOID:9240	erythromelalgia

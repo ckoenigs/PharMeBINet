@@ -1,0 +1,3 @@
+MONDO:0007416	Balkan nephropathy
+DOID 	 name 
+DOID:3052	Balkan nephropathy

@@ -1,0 +1,3 @@
+DOID:0110067	juvenile amyotrophic lateral sclerosis with dementia
+monDO ID 	 name 
+MONDO:0008781	juvenile amyotrophic lateral sclerosis with dementia

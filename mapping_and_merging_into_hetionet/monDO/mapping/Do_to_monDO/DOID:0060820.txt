@@ -1,0 +1,3 @@
+DOID:0060820	syndromic X-linked intellectual disability Nascimento type
+monDO ID 	 name 
+MONDO:0010461	syndromic X-linked intellectual disability Nascimento type

@@ -1,0 +1,3 @@
+MONDO:0003709	CD45 deficiency
+DOID 	 name 
+DOID:0060014	CD45 deficiency

@@ -1,0 +1,3 @@
+DOID:9512	simple chronic conjunctivitis
+monDO ID 	 name 
+MONDO:0004811	simple chronic conjunctivitis

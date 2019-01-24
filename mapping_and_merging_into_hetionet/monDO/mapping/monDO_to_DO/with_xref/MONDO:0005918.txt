@@ -1,0 +1,3 @@
+MONDO:0005918	placenta praevia
+DOID 	 name 
+DOID:11060	placenta praevia

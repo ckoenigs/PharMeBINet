@@ -1,0 +1,3 @@
+DOID:0110537	autosomal recessive nonsyndromic deafness 93
+monDO ID 	 name 
+MONDO:0013963	autosomal recessive nonsyndromic deafness 93

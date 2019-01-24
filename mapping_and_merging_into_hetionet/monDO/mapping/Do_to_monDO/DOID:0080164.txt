@@ -1,0 +1,3 @@
+DOID:0080164	myeloid and lymphoid neoplasms with eosinophilia and abnormalities of PDGFRA, PDGFRB, and FGFR1
+monDO ID 	 name 
+MONDO:0000881	myeloid and lymphoid neoplasms with eosinophilia and abnormalities of PDGFRA, PDGFRB, and FGFR1

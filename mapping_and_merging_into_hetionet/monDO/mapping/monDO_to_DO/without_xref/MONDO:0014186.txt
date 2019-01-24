@@ -1,0 +1,3 @@
+MONDO:0014186	retinitis pigmentosa with or without situs inversus
+DOID 	 name 
+DOID:0110419	retinitis pigmentosa with or without situs inversus

@@ -1,0 +1,3 @@
+DOID:0111079	birdshot chorioretinopathy
+monDO ID 	 name 
+MONDO:0011599	birdshot chorioretinopathy

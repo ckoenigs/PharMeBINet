@@ -1,0 +1,3 @@
+DOID:6706	tubular variant testicular seminoma
+monDO ID 	 name 
+MONDO:0003973	tubular variant testicular seminoma

@@ -1,0 +1,3 @@
+DOID:12105	inflammatory spondylopathy
+monDO ID 	 name 
+MONDO:0001434	inflammatory spondylopathy

@@ -1,0 +1,3 @@
+DOID:9776	Senile atrophy of choroid
+monDO ID 	 name 
+MONDO:0004879	senile atrophy of choroid

@@ -1,0 +1,3 @@
+DOID:0110016	Leber congenital amaurosis 2
+monDO ID 	 name 
+MONDO:0008765	Leber congenital amaurosis 2

@@ -1,0 +1,3 @@
+DOID:7402	L-cell glucagon-like peptide producing tumor
+monDO ID 	 name 
+MONDO:0004211	L-cell glucagon-like peptide producing tumor

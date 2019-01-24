@@ -1,0 +1,3 @@
+MONDO:0005295	intermittent vascular claudication
+DOID 	 name 
+DOID:3669	intermittent claudication

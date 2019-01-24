@@ -1,0 +1,3 @@
+DOID:0050598	extrapulmonary tuberculosis
+monDO ID 	 name 
+MONDO:0000368	extrapulmonary tuberculosis

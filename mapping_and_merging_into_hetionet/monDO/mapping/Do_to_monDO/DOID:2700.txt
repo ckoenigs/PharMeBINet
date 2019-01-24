@@ -1,0 +1,3 @@
+DOID:2700	mucinous adenofibroma
+monDO ID 	 name 
+MONDO:0002398	mucinous adenofibroma

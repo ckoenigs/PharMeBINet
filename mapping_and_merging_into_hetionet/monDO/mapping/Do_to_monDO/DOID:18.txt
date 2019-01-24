@@ -1,0 +1,3 @@
+DOID:18	urinary system disease
+monDO ID 	 name 
+MONDO:0002118	urinary system disease

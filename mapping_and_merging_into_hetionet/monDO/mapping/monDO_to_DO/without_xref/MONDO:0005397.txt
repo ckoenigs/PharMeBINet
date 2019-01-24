@@ -1,0 +1,3 @@
+MONDO:0005397	goiter (disease)
+DOID 	 name 
+DOID:12176	goiter

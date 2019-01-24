@@ -1,0 +1,3 @@
+DOID:0060488	Pitt-Hopkins syndrome
+monDO ID 	 name 
+MONDO:0012589	Pitt-Hopkins syndrome

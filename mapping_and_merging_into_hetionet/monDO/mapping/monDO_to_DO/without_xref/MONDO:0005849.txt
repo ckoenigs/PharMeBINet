@@ -1,0 +1,3 @@
+MONDO:0005849	milk allergic reaction
+DOID 	 name 
+DOID:4376	milk allergy

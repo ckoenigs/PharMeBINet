@@ -1,0 +1,3 @@
+MONDO:0008599	trigeminal neuralgia
+DOID 	 name 
+DOID:12098	trigeminal neuralgia

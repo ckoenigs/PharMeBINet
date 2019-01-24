@@ -1,0 +1,3 @@
+MONDO:0007077	Tietz syndrome
+DOID 	 name 
+DOID:0090002	Tietz syndrome

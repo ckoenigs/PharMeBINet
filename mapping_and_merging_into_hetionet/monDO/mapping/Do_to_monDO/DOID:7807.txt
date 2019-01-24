@@ -1,0 +1,3 @@
+DOID:7807	choroid necrotic melanoma
+monDO ID 	 name 
+MONDO:0004364	choroid necrotic melanoma

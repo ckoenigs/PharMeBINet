@@ -1,0 +1,3 @@
+MONDO:0000231	Far eastern spotted fever
+DOID 	 name 
+DOID:0050046	Far Eastern spotted fever

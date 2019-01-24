@@ -1,0 +1,3 @@
+MONDO:0000255	subcutaneous mycosis
+DOID 	 name 
+DOID:0050135	subcutaneous mycosis

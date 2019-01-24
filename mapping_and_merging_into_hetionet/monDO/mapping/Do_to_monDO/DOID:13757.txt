@@ -1,0 +1,3 @@
+DOID:13757	excessive tearing
+monDO ID 	 name 
+MONDO:0001793	excessive tearing

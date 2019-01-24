@@ -1,0 +1,3 @@
+DOID:4304	signet ring basal cell carcinoma
+monDO ID 	 name 
+MONDO:0002958	signet ring basal cell carcinoma

@@ -1,0 +1,3 @@
+MONDO:0013455	hypertrophic cardiomyopathy 16
+DOID 	 name 
+DOID:0110322	hypertrophic cardiomyopathy 16

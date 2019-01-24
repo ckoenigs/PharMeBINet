@@ -1,0 +1,3 @@
+MONDO:0014103	hypogonadotropic hypogonadism 18 with or without anosmia
+DOID 	 name 
+DOID:0090076	hypogonadotropic hypogonadism 18 with or without anosmia

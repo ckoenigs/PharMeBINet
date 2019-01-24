@@ -1,0 +1,3 @@
+MONDO:0002897	secondary syphilis
+DOID 	 name 
+DOID:4157	secondary syphilis

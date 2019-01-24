@@ -1,0 +1,3 @@
+DOID:664	angiokeratoma of Fordyce
+monDO ID 	 name 
+MONDO:0003954	angiokeratoma of Fordyce

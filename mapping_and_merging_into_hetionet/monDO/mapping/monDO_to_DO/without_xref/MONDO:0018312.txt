@@ -1,0 +1,3 @@
+MONDO:0018312	histoplasmosis
+DOID 	 name 
+DOID:1731	histoplasmosis

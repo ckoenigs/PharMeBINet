@@ -1,0 +1,3 @@
+DOID:0111055	platelet-type bleeding disorder 20
+monDO ID 	 name 
+MONDO:0014830	platelet-type bleeding disorder 20

@@ -1,0 +1,3 @@
+DOID:5297	rectum leiomyosarcoma
+monDO ID 	 name 
+MONDO:0003379	rectum leiomyosarcoma

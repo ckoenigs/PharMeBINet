@@ -1,0 +1,3 @@
+MONDO:0001673	diarrhea (disease)
+DOID 	 name 
+DOID:13250	diarrhea

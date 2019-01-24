@@ -1,0 +1,3 @@
+DOID:0080194	Carey-Fineman-Ziter syndrome
+monDO ID 	 name 
+MONDO:0009700	Carey-Fineman-Ziter  syndrome

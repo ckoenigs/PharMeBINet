@@ -1,0 +1,3 @@
+DOID:0060868	leukoencephalopathy with vanishing white matter
+monDO ID 	 name 
+MONDO:0011380	leukoencephalopathy with vanishing white matter

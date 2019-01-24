@@ -1,0 +1,3 @@
+MONDO:0007164	spastic ataxia 1
+DOID 	 name 
+DOID:0050772	spastic ataxia 1

@@ -1,0 +1,3 @@
+DOID:0080131	mitochondrial DNA depletion syndrome 13
+monDO ID 	 name 
+MONDO:0014198	mitochondrial DNA depletion syndrome 13

@@ -1,0 +1,3 @@
+MONDO:0003952	adult central nervous system choriocarcinoma
+DOID 	 name 
+DOID:6634	adult central nervous system choriocarcinoma

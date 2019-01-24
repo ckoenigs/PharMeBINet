@@ -1,0 +1,4 @@
+MONDO:0002985	pustulosis of palm and sole
+DOID 	 name 
+DOID:8893	psoriasis
+DOID:4398	pustulosis of palm and sole

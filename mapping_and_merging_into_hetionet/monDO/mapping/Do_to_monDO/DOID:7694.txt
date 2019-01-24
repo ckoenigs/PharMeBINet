@@ -1,0 +1,3 @@
+DOID:7694	bladder urachal adenocarcinoma
+monDO ID 	 name 
+MONDO:0004331	bladder urachal adenocarcinoma

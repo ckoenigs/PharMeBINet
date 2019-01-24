@@ -1,0 +1,3 @@
+DOID:8651	Hodgkin's granuloma
+monDO ID 	 name 
+MONDO:0004632	Hodgkin's granuloma

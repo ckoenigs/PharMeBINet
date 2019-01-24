@@ -1,0 +1,3 @@
+DOID:0050679	blue cone monochromacy
+monDO ID 	 name 
+MONDO:0010563	blue cone monochromacy

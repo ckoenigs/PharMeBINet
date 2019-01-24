@@ -1,0 +1,3 @@
+MONDO:0000376	respiratory system cancer
+DOID 	 name 
+DOID:0050615	respiratory system cancer

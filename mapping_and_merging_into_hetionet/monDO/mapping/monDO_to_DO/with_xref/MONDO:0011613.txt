@@ -1,0 +1,3 @@
+MONDO:0011613	autosomal recessive early-onset Parkinson disease 6
+DOID 	 name 
+DOID:0060369	autosomal recessive early-onset Parkinson disease 6

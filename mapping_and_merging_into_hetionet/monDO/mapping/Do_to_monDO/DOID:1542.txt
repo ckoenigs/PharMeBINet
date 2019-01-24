@@ -1,0 +1,3 @@
+DOID:1542	head and neck carcinoma
+monDO ID 	 name 
+MONDO:0002038	head and neck carcinoma

@@ -1,0 +1,3 @@
+DOID:0060855	autosomal dominant pseudohypoaldosteronism type 1
+monDO ID 	 name 
+MONDO:0008329	autosomal dominant pseudohypoaldosteronism type 1

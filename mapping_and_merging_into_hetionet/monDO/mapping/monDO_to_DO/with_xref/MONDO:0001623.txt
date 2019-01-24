@@ -1,0 +1,3 @@
+MONDO:0001623	cicatricial lagophthalmos (disease)
+DOID 	 name 
+DOID:13038	cicatricial lagophthalmos

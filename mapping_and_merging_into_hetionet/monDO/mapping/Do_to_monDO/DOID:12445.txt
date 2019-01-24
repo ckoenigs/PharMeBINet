@@ -1,0 +1,3 @@
+DOID:12445	conjugate gaze palsy
+monDO ID 	 name 
+MONDO:0001527	conjugate gaze palsy

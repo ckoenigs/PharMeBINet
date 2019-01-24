@@ -1,0 +1,3 @@
+DOID:1056	oculocerebrorenal syndrome
+monDO ID 	 name 
+MONDO:0010645	oculocerebrorenal syndrome

@@ -1,0 +1,3 @@
+MONDO:0001884	abducens nerve neoplasm
+DOID 	 name 
+DOID:14125	abducens nerve neoplasm

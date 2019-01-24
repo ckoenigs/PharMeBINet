@@ -1,0 +1,3 @@
+DOID:0060883	intestinal hypomagnesemia 1
+monDO ID 	 name 
+MONDO:0011176	intestinal hypomagnesemia 1

@@ -1,0 +1,3 @@
+MONDO:0004552	microinvasive cervical squamous cell carcinoma
+DOID 	 name 
+DOID:8409	microinvasive cervical squamous cell carcinoma

@@ -1,0 +1,3 @@
+DOID:0050940	endocervical adenocarcinoma
+monDO ID 	 name 
+MONDO:0000554	endocervical adenocarcinoma

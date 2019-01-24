@@ -1,0 +1,3 @@
+MONDO:0001846	uterine corpus bizarre leiomyoma
+DOID 	 name 
+DOID:13958	uterine corpus bizarre leiomyoma

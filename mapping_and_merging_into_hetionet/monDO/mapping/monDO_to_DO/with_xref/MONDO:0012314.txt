@@ -1,0 +1,3 @@
+MONDO:0012314	short Qt syndrome type 3
+DOID 	 name 
+DOID:0050793	short QT syndrome

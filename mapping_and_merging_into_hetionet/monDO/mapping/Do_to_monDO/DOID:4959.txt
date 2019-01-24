@@ -1,0 +1,3 @@
+DOID:4959	epidermolysis bullosa dystrophica
+monDO ID 	 name 
+MONDO:0006543	epidermolysis bullosa dystrophica

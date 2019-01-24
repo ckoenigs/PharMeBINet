@@ -1,0 +1,3 @@
+MONDO:0005420	hypothyroidism
+DOID 	 name 
+DOID:1459	hypothyroidism

@@ -1,0 +1,4 @@
+MONDO:0009428	childhood hypophosphatasia
+DOID 	 name 
+DOID:14213	hypophosphatasia
+DOID:0110915	childhood hypophosphatasia

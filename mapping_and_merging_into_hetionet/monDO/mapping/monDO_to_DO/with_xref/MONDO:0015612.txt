@@ -1,0 +1,3 @@
+MONDO:0015612	Dent disease
+DOID 	 name 
+DOID:0050699	Dent disease

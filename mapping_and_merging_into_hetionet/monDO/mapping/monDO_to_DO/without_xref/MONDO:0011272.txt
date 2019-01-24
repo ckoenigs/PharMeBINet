@@ -1,0 +1,3 @@
+MONDO:0011272	retinitis pigmentosa 25
+DOID 	 name 
+DOID:0110384	retinitis pigmentosa 25

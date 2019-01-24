@@ -1,0 +1,3 @@
+DOID:624	transient hypogammaglobulinemia of infancy
+monDO ID 	 name 
+MONDO:0015698	transient hypogammaglobulinemia of infancy

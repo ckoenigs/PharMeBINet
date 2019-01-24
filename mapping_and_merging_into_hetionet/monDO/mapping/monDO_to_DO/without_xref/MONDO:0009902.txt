@@ -1,0 +1,3 @@
+MONDO:0009902	cutaneous porphyria
+DOID 	 name 
+DOID:13271	cutaneous porphyria

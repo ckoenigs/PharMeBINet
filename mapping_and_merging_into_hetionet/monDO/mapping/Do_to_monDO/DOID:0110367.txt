@@ -1,0 +1,3 @@
+DOID:0110367	retinitis pigmentosa 38
+monDO ID 	 name 
+MONDO:0013469	retinitis pigmentosa 38

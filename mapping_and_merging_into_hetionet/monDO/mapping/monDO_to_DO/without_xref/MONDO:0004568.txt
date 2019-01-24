@@ -1,0 +1,3 @@
+MONDO:0004568	paralytic ileus (disease)
+DOID 	 name 
+DOID:8442	paralytic ileus

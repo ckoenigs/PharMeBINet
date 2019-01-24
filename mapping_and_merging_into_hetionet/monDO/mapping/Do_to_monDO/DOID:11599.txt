@@ -1,0 +1,3 @@
+DOID:11599	Frey syndrome
+monDO ID 	 name 
+MONDO:0007753	Frey syndrome

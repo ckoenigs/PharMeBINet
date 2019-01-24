@@ -1,0 +1,3 @@
+MONDO:0000755	ectopic pregnancy
+DOID 	 name 
+DOID:0060329	ectopic pregnancy

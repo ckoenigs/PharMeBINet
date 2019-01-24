@@ -1,0 +1,3 @@
+DOID:0110743	type 1 diabetes mellitus 4
+monDO ID 	 name 
+MONDO:0010862	type 1 diabetes mellitus 4

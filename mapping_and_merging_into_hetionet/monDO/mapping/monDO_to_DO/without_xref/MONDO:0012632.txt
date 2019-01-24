@@ -1,0 +1,3 @@
+MONDO:0012632	Alzheimer's disease 15
+DOID 	 name 
+DOID:0110048	Alzheimer's disease 15

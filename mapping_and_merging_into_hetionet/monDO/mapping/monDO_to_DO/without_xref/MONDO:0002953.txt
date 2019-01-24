@@ -1,0 +1,3 @@
+MONDO:0002953	skin infiltrative basal cell carcinoma
+DOID 	 name 
+DOID:4299	infiltrative basal cell carcinoma

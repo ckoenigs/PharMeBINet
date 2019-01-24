@@ -1,0 +1,3 @@
+DOID:0110977	brachydactyly type A1C
+monDO ID 	 name 
+MONDO:0014032	brachydactyly type A1C

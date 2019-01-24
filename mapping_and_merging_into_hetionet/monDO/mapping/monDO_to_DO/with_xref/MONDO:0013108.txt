@@ -1,0 +1,3 @@
+MONDO:0013108	leukemia, acute lymphocytic, susceptibility to, 1
+DOID 	 name 
+DOID:9952	acute lymphocytic leukemia

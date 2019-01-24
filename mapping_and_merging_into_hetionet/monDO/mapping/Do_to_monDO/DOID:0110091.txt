@@ -1,0 +1,3 @@
+DOID:0110091	short-rib thoracic dysplasia 10 with or without polydactyly
+monDO ID 	 name 
+MONDO:0014284	short-rib thoracic dysplasia 10 with or without polydactyly

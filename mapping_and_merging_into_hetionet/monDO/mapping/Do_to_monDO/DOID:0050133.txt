@@ -1,0 +1,3 @@
+DOID:0050133	superficial mycosis
+monDO ID 	 name 
+MONDO:0000253	superficial mycosis

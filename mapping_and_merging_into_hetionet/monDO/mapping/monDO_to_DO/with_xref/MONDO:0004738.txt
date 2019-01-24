@@ -1,0 +1,3 @@
+MONDO:0004738	histidine metabolism disease
+DOID 	 name 
+DOID:9265	histidine metabolism disease

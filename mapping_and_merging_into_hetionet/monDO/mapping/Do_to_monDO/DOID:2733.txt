@@ -1,0 +1,3 @@
+DOID:2733	skin atrophy
+monDO ID 	 name 
+MONDO:0006610	skin atrophy

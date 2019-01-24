@@ -1,0 +1,3 @@
+DOID:917	liver leiomyoma
+monDO ID 	 name 
+MONDO:0004723	liver leiomyoma

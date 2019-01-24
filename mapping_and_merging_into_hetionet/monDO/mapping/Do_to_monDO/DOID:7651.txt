@@ -1,0 +1,3 @@
+DOID:7651	hypercalcemic type ovarian small cell carcinoma
+monDO ID 	 name 
+MONDO:0004319	hypercalcemic type ovarian small cell carcinoma

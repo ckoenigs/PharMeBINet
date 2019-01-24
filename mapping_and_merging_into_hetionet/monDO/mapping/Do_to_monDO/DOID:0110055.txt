@@ -1,0 +1,3 @@
+DOID:0110055	amelogenesis imperfecta type 3
+monDO ID 	 name 
+MONDO:0007538	hypocalcified amelogenesis imperfecta

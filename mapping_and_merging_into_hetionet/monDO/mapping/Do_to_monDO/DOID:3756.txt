@@ -1,0 +1,3 @@
+DOID:3756	protein C deficiency
+monDO ID 	 name 
+MONDO:0019145	hereditary thrombophilia due to congenital protein C deficiency

@@ -1,0 +1,3 @@
+MONDO:0009965	Perlman syndrome
+DOID 	 name 
+DOID:0060476	Perlman syndrome

@@ -1,0 +1,3 @@
+MONDO:0009231	fibular hypoplasia and complex brachydactyly
+DOID 	 name 
+DOID:0050790	fibular hypoplasia and complex brachydactyly

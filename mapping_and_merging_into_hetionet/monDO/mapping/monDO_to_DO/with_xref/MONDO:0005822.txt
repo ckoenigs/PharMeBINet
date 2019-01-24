@@ -1,0 +1,3 @@
+MONDO:0005822	latent syphilis
+DOID 	 name 
+DOID:9531	latent syphilis

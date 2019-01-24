@@ -1,0 +1,3 @@
+MONDO:0002046	alcohol abuse
+DOID 	 name 
+DOID:1574	alcohol abuse

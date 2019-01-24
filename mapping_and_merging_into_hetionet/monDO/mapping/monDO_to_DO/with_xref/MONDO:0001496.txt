@@ -1,0 +1,3 @@
+MONDO:0001496	male genital organ stricture
+DOID 	 name 
+DOID:12333	male genital organ stricture

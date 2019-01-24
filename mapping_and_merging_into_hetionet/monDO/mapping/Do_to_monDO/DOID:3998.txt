@@ -1,0 +1,3 @@
+DOID:3998	Bartholin's gland transitional cell carcinoma
+monDO ID 	 name 
+MONDO:0002828	Bartholin's gland transitional cell carcinoma

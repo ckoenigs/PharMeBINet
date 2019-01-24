@@ -1,0 +1,3 @@
+MONDO:0003429	functioning pituitary gland adenoma
+DOID 	 name 
+DOID:5395	functioning pituitary adenoma

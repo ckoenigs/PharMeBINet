@@ -1,0 +1,3 @@
+MONDO:0003885	large intestine lipoma
+DOID 	 name 
+DOID:6460	large intestine lipoma

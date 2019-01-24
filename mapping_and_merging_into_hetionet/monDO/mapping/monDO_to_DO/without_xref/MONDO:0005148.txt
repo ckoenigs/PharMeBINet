@@ -1,0 +1,3 @@
+MONDO:0005148	type 2 diabetes mellitus
+DOID 	 name 
+DOID:9352	type 2 diabetes mellitus

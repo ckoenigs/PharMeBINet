@@ -1,0 +1,3 @@
+MONDO:0007296	spinocerebellar ataxia type 31
+DOID 	 name 
+DOID:0050980	spinocerebellar ataxia type 31

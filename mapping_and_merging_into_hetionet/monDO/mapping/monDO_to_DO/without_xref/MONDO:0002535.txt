@@ -1,0 +1,3 @@
+MONDO:0002535	verrucous papilloma
+DOID 	 name 
+DOID:3177	verrucous papilloma

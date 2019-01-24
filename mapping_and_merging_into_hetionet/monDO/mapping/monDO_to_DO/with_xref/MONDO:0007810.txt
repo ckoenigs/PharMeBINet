@@ -1,0 +1,3 @@
+MONDO:0007810	ichthyosis vulgaris
+DOID 	 name 
+DOID:1702	ichthyosis vulgaris

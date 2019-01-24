@@ -1,0 +1,3 @@
+MONDO:0013788	Usher syndrome type 3B
+DOID 	 name 
+DOID:0110842	Usher syndrome type 3B

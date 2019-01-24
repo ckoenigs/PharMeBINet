@@ -1,0 +1,3 @@
+DOID:0050740	Qazi Markouizos syndrome
+monDO ID 	 name 
+MONDO:0010816	Qazi Markouizos syndrome

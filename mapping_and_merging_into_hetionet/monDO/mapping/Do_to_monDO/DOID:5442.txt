@@ -1,0 +1,3 @@
+DOID:5442	eccrine acrospiroma
+monDO ID 	 name 
+MONDO:0006738	eccrine acrospiroma

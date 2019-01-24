@@ -1,0 +1,3 @@
+MONDO:0006111	bladder flat intraepithelial lesion
+DOID 	 name 
+DOID:5429	bladder flat intraepithelial lesion

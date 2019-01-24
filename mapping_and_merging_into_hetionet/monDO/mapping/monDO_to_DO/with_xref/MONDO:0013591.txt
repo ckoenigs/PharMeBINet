@@ -1,0 +1,3 @@
+MONDO:0013591	epiphyseal dysplasia, multiple, 6
+DOID 	 name 
+DOID:12721	multiple epiphyseal dysplasia

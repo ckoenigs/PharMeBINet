@@ -1,0 +1,3 @@
+DOID:5128	deep leiomyoma
+monDO ID 	 name 
+MONDO:0003289	deep leiomyoma

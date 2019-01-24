@@ -1,0 +1,3 @@
+DOID:0060536	mitochondrial complex I deficiency
+monDO ID 	 name 
+MONDO:0009640	mitochondrial complex I deficiency

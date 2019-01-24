@@ -1,0 +1,3 @@
+DOID:14032	malignant parietal pleura tumor
+monDO ID 	 name 
+MONDO:0001861	malignant parietal pleura tumor

@@ -1,0 +1,3 @@
+MONDO:0004876	myocardial stunning
+DOID 	 name 
+DOID:9767	myocardial stunning

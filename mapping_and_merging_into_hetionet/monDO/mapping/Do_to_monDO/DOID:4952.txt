@@ -1,0 +1,3 @@
+DOID:4952	postpoliomyelitis syndrome
+monDO ID 	 name 
+MONDO:0017416	postpoliomyelitis syndrome

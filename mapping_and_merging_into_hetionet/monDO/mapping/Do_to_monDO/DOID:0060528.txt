@@ -1,0 +1,3 @@
+DOID:0060528	tiger prawn allergy
+monDO ID 	 name 
+MONDO:0000803	tiger prawn allergy

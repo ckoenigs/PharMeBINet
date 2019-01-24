@@ -1,0 +1,3 @@
+DOID:10287	prostate squamous cell carcinoma
+monDO ID 	 name 
+MONDO:0000993	prostate squamous cell carcinoma

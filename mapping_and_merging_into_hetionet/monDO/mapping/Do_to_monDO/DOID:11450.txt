@@ -1,0 +1,3 @@
+DOID:11450	allergic cutaneous vasculitis
+monDO ID 	 name 
+MONDO:0001290	allergic cutaneous vasculitis

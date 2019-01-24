@@ -1,0 +1,3 @@
+DOID:5590	aggressive digital papillary adenocarcinoma
+monDO ID 	 name 
+MONDO:0003530	aggressive digital papillary adenocarcinoma

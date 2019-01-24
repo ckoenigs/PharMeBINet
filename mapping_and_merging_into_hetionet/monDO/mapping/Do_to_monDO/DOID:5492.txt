@@ -1,0 +1,3 @@
+DOID:5492	biphasic synovial sarcoma
+monDO ID 	 name 
+MONDO:0003468	biphasic synovial sarcoma

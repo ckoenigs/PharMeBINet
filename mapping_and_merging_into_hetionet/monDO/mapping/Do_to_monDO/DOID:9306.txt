@@ -1,0 +1,3 @@
+DOID:9306	mechanical strabismus
+monDO ID 	 name 
+MONDO:0004753	mechanical strabismus

@@ -1,0 +1,3 @@
+DOID:0050156	idiopathic pulmonary fibrosis
+monDO ID 	 name 
+MONDO:0008345	idiopathic pulmonary fibrosis

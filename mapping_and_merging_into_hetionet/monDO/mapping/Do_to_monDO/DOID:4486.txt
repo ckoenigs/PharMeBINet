@@ -1,0 +1,3 @@
+DOID:4486	malignant biphasic mesothelioma
+monDO ID 	 name 
+MONDO:0006109	malignant biphasic mesothelioma

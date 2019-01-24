@@ -1,0 +1,3 @@
+MONDO:0001008	blepharophimosis (disease)
+DOID 	 name 
+DOID:10348	blepharophimosis

@@ -1,0 +1,3 @@
+MONDO:0012502	normophosphatemic familial tumoral calcinosis
+DOID 	 name 
+DOID:0080170	normophosphatemic familial tumoral calcinosis

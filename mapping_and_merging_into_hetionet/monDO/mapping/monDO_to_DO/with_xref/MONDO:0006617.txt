@@ -1,0 +1,4 @@
+MONDO:0006617	vesiculobullous skin disease
+DOID 	 name 
+DOID:2731	vesiculobullous skin disease
+DOID:8508	subcorneal pustular dermatosis

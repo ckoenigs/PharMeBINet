@@ -1,0 +1,3 @@
+DOID:0110704	hypotrichosis 7
+monDO ID 	 name 
+MONDO:0011452	hypotrichosis 7

@@ -1,0 +1,3 @@
+MONDO:0008728	classic congenital adrenal hyperplasia due to 21-hydroxylase deficiency
+DOID 	 name 
+DOID:0050811	congenital adrenal hyperplasia

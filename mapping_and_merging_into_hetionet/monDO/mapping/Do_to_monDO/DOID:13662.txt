@@ -1,0 +1,3 @@
+DOID:13662	ulcer of anus and rectum
+monDO ID 	 name 
+MONDO:0001772	ulcer of anus and rectum

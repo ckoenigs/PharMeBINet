@@ -1,0 +1,3 @@
+MONDO:0003629	uterine corpus serous adenocarcinoma
+DOID 	 name 
+DOID:5750	uterine corpus serous adenocarcinoma

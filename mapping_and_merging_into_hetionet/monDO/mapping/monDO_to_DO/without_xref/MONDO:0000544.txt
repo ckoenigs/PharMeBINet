@@ -1,0 +1,3 @@
+MONDO:0000544	mucosal melanoma
+DOID 	 name 
+DOID:0050929	mucosal melanoma

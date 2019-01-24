@@ -1,0 +1,3 @@
+MONDO:0005300	chronic kidney disease
+DOID 	 name 
+DOID:784	chronic kidney failure

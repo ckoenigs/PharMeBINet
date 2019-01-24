@@ -1,0 +1,3 @@
+MONDO:0012033	bradyopsia
+DOID 	 name 
+DOID:0050335	bradyopsia

@@ -1,0 +1,3 @@
+DOID:5293	extrahepatic bile duct leiomyosarcoma
+monDO ID 	 name 
+MONDO:0003377	extrahepatic bile duct leiomyosarcoma

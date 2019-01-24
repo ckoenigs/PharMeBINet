@@ -1,0 +1,3 @@
+MONDO:0003520	malignant acrospiroma
+DOID 	 name 
+DOID:5570	malignant acrospiroma

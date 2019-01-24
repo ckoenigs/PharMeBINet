@@ -1,0 +1,3 @@
+MONDO:0003237	adenomyoma of uterine corpus
+DOID 	 name 
+DOID:4994	adenomyoma of uterine corpus

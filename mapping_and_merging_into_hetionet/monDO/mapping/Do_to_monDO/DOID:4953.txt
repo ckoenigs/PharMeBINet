@@ -1,0 +1,3 @@
+DOID:4953	poliomyelitis
+monDO ID 	 name 
+MONDO:0017373	poliomyelitis

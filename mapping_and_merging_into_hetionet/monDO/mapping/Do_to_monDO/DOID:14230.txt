@@ -1,0 +1,3 @@
+DOID:14230	scleromalacia perforans
+monDO ID 	 name 
+MONDO:0001914	scleromalacia perforans

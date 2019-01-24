@@ -1,0 +1,3 @@
+DOID:0110817	hereditary spastic paraplegia 72
+monDO ID 	 name 
+MONDO:0014282	hereditary spastic paraplegia 72

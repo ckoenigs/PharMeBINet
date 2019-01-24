@@ -1,0 +1,3 @@
+DOID:0050585	congenital generalized lipodystrophy
+monDO ID 	 name 
+MONDO:0006536	congenital generalized lipodystrophy (disease)

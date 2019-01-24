@@ -1,0 +1,3 @@
+MONDO:0000936	syphilitic meningitis
+DOID 	 name 
+DOID:10073	syphilitic meningitis

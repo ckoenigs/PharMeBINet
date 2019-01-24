@@ -1,0 +1,3 @@
+DOID:3798	pleural empyema
+monDO ID 	 name 
+MONDO:0018667	pleural empyema (disease)

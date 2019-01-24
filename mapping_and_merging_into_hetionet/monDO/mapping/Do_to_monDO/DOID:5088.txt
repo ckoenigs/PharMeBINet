@@ -1,0 +1,3 @@
+DOID:5088	mixed epithelial stromal tumour
+monDO ID 	 name 
+MONDO:0003272	mixed epithelial stromal tumour

@@ -1,0 +1,3 @@
+MONDO:0004296	cervical lymphoepithelioma-like carcinoma
+DOID 	 name 
+DOID:7598	cervical lymphoepithelioma-like carcinoma

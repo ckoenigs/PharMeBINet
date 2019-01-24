@@ -1,0 +1,3 @@
+DOID:9810	polyarteritis nodosa
+monDO ID 	 name 
+MONDO:0019170	polyarteritis nodosa

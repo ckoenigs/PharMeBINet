@@ -1,0 +1,3 @@
+MONDO:0013977	combined oxidative phosphorylation defect type 13
+DOID 	 name 
+DOID:0060286	combined oxidative phosphorylation deficiency

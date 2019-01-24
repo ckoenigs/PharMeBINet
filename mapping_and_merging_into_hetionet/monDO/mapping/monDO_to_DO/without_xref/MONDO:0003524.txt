@@ -1,0 +1,3 @@
+MONDO:0003524	gastric gastrinoma
+DOID 	 name 
+DOID:5579	gastric gastrinoma

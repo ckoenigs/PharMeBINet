@@ -1,0 +1,3 @@
+MONDO:0000458	proneural glioblastoma
+DOID 	 name 
+DOID:0050804	glioblastoma proneural subtype

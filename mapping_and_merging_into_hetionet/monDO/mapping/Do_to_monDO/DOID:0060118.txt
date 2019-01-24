@@ -1,0 +1,3 @@
+DOID:0060118	thoracic disease
+monDO ID 	 name 
+MONDO:0000651	thoracic disease

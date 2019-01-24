@@ -1,0 +1,3 @@
+DOID:0050822	second-degree atrioventricular block
+monDO ID 	 name 
+MONDO:0000467	second-degree atrioventricular block

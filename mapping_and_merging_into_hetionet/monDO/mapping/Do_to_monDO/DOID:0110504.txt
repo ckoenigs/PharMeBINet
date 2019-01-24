@@ -1,0 +1,3 @@
+DOID:0110504	autosomal recessive nonsyndromic deafness 47
+monDO ID 	 name 
+MONDO:0012375	autosomal recessive nonsyndromic deafness 47

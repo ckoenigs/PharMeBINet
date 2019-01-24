@@ -1,0 +1,3 @@
+DOID:14559	anaerobic meningitis
+monDO ID 	 name 
+MONDO:0002000	anaerobic meningitis

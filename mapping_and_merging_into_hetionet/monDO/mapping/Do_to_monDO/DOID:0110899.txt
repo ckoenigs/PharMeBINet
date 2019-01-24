@@ -1,0 +1,3 @@
+DOID:0110899	inflammatory bowel disease 28
+monDO ID 	 name 
+MONDO:0013153	inflammatory bowel disease 28

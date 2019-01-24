@@ -1,0 +1,3 @@
+DOID:4873	anterior horn cell disease
+monDO ID 	 name 
+MONDO:0003182	anterior horn disease

@@ -1,0 +1,3 @@
+DOID:2229	factor XI deficiency
+monDO ID 	 name 
+MONDO:0012897	congenital factor XI deficiency

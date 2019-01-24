@@ -1,0 +1,3 @@
+MONDO:0011399	alpha thalassemia
+DOID 	 name 
+DOID:1099	alpha thalassemia

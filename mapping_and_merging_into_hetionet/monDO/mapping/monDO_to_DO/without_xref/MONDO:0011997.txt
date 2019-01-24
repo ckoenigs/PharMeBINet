@@ -1,0 +1,3 @@
+MONDO:0011997	Hermansky-Pudlak syndrome 2
+DOID 	 name 
+DOID:0060540	Hermansky-Pudlak syndrome 2

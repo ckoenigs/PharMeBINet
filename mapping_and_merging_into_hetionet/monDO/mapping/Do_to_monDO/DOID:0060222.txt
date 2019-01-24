@@ -1,0 +1,3 @@
+DOID:0060222	Scheie syndrome
+monDO ID 	 name 
+MONDO:0011760	Scheie syndrome

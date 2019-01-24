@@ -1,0 +1,3 @@
+DOID:4659	extracutaneous mastocytoma
+monDO ID 	 name 
+MONDO:0019025	extracutaneous mastocytoma

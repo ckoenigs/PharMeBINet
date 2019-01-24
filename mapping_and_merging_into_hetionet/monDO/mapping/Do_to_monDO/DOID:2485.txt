@@ -1,0 +1,3 @@
+DOID:2485	phosphorus metabolism disease
+monDO ID 	 name 
+MONDO:0002319	phosphorus metabolism disease

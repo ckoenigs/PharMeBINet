@@ -1,0 +1,3 @@
+DOID:5303	cervical clear cell adenocarcinoma
+monDO ID 	 name 
+MONDO:0006135	cervical clear cell adenocarcinoma

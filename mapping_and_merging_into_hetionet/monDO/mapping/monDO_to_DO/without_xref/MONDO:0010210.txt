@@ -1,0 +1,3 @@
+MONDO:0010210	xeroderma pigmentosum group A
+DOID 	 name 
+DOID:0110843	xeroderma pigmentosum group A

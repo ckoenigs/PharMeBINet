@@ -1,0 +1,3 @@
+DOID:12351	alcoholic hepatitis
+monDO ID 	 name 
+MONDO:0001505	alcoholic hepatitis

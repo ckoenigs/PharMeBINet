@@ -1,0 +1,3 @@
+DOID:0110565	autosomal dominant nonsyndromic deafness 3B
+monDO ID 	 name 
+MONDO:0012975	autosomal dominant nonsyndromic deafness 3B

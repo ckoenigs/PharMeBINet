@@ -1,0 +1,3 @@
+MONDO:0011167	type 1 diabetes mellitus 6
+DOID 	 name 
+DOID:0110745	type 1 diabetes mellitus 6

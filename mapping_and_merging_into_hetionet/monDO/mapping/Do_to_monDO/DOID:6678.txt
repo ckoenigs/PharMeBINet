@@ -1,0 +1,3 @@
+DOID:6678	tooth and nail syndrome
+monDO ID 	 name 
+MONDO:0008582	tooth and nail syndrome

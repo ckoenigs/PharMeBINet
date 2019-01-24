@@ -1,0 +1,3 @@
+MONDO:0007524	autosomal dominant Ehlers-Danlos syndrome, vascular type
+DOID 	 name 
+DOID:14756	autosomal dominant type IV Ehlers-Danlos syndrome

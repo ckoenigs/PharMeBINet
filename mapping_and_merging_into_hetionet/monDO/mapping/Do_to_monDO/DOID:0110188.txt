@@ -1,0 +1,3 @@
+DOID:0110188	Leber congenital amaurosis 14
+monDO ID 	 name 
+MONDO:0013231	Leber congenital amaurosis 14

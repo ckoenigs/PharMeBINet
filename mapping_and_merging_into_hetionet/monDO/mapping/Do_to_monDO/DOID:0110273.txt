@@ -1,0 +1,3 @@
+DOID:0110273	autosomal dominant limb-girdle muscular dystrophy
+monDO ID 	 name 
+MONDO:0015151	autosomal dominant limb-girdle muscular dystrophy

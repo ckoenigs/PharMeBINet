@@ -1,0 +1,3 @@
+DOID:7048	vulvar basaloid squamous cell carcinoma
+monDO ID 	 name 
+MONDO:0004090	vulvar basaloid squamous cell carcinoma

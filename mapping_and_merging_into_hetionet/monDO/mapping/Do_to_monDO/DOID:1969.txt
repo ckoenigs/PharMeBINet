@@ -1,0 +1,3 @@
+DOID:1969	cerebral palsy
+monDO ID 	 name 
+MONDO:0006497	cerebral palsy

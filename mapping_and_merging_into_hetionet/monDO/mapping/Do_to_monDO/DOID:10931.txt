@@ -1,0 +1,3 @@
+DOID:10931	dependent personality disorder
+monDO ID 	 name 
+MONDO:0001157	dependent personality disorder

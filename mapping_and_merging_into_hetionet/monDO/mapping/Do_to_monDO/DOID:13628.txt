@@ -1,0 +1,3 @@
+DOID:13628	favism
+monDO ID 	 name 
+MONDO:0001761	favism

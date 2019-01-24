@@ -1,0 +1,3 @@
+MONDO:0001219	serous conjunctivitis except viral
+DOID 	 name 
+DOID:11197	serous conjunctivitis except viral

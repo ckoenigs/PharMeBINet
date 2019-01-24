@@ -1,0 +1,3 @@
+DOID:2058	chronic mucocutaneous candidiasis
+monDO ID 	 name 
+MONDO:0015279	chronic mucocutaneous candidiasis (disease)

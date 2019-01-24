@@ -1,0 +1,3 @@
+DOID:0060788	hypomyelinating leukodystrophy 10
+monDO ID 	 name 
+MONDO:0014632	hypomyelinating leukodystrophy 10

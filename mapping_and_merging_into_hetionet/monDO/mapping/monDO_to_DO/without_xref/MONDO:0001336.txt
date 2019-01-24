@@ -1,0 +1,3 @@
+MONDO:0001336	familial hyperlipidemia
+DOID 	 name 
+DOID:1168	familial hyperlipidemia

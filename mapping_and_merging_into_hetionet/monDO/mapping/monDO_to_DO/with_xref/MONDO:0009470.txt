@@ -1,0 +1,3 @@
+MONDO:0009470	Baraitser-Winter syndrome 1
+DOID 	 name 
+DOID:0060229	Baraitser-Winter syndrome

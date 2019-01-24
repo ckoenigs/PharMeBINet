@@ -1,0 +1,3 @@
+MONDO:0005498	botulism
+DOID 	 name 
+DOID:11976	botulism

@@ -1,0 +1,3 @@
+MONDO:0002813	lipomatous cancer
+DOID 	 name 
+DOID:3939	lipomatous cancer

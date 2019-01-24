@@ -1,0 +1,3 @@
+MONDO:0001190	Brucella suis brucellosis
+DOID 	 name 
+DOID:11076	Brucella suis brucellosis

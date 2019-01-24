@@ -1,0 +1,3 @@
+DOID:0060689	atrichia with papular lesions
+monDO ID 	 name 
+MONDO:0008847	atrichia with papular lesions

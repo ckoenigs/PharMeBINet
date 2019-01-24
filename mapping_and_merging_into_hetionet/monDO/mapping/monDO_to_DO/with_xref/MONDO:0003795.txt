@@ -1,0 +1,3 @@
+MONDO:0003795	ovarian small cell carcinoma
+DOID 	 name 
+DOID:6179	ovarian small cell carcinoma

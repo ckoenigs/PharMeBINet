@@ -1,0 +1,3 @@
+MONDO:0012051	periodontitis, aggressive, 2
+DOID 	 name 
+DOID:1474	aggressive periodontitis

@@ -1,0 +1,3 @@
+DOID:6562	ethmoid sinus inverted papilloma
+monDO ID 	 name 
+MONDO:0003925	ethmoid sinus inverted papilloma

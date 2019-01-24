@@ -1,0 +1,3 @@
+MONDO:0003437	occult small cell lung carcinoma
+DOID 	 name 
+DOID:5414	lung occult small cell carcinoma

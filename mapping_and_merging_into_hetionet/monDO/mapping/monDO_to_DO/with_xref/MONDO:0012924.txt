@@ -1,0 +1,3 @@
+MONDO:0012924	Diamond-Blackfan anemia 4
+DOID 	 name 
+DOID:1339	Diamond-Blackfan anemia

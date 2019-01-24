@@ -1,0 +1,3 @@
+DOID:0060174	GABA aminotransferase deficiency
+monDO ID 	 name 
+MONDO:0013166	GABA aminotransferase deficiency

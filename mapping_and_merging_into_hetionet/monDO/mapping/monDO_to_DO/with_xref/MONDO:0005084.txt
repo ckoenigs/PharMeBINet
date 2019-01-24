@@ -1,0 +1,6 @@
+MONDO:0005084	mental or behavioural disorder
+DOID 	 name 
+DOID:2468	psychotic disorder
+DOID:150	disease of mental health
+DOID:11328	schizophreniform disorder
+DOID:5418	schizoaffective disorder

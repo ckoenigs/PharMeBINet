@@ -1,0 +1,3 @@
+MONDO:0018998	Leber congenital amaurosis
+DOID 	 name 
+DOID:14791	Leber congenital amaurosis

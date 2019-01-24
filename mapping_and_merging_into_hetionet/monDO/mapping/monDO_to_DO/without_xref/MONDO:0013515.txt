@@ -1,0 +1,3 @@
+MONDO:0013515	osteogenesis imperfecta type 6
+DOID 	 name 
+DOID:0110350	osteogenesis imperfecta type 6

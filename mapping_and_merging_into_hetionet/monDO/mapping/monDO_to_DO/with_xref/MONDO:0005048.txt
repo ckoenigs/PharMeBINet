@@ -1,0 +1,4 @@
+MONDO:0005048	insulinoma (disease)
+DOID 	 name 
+DOID:1799	islet cell tumor
+DOID:3892	insulinoma

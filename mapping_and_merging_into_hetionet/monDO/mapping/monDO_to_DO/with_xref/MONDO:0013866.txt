@@ -1,0 +1,3 @@
+MONDO:0013866	neuronal ceroid lipofuscinosis 11
+DOID 	 name 
+DOID:0110732	neuronal ceroid lipofuscinosis 11

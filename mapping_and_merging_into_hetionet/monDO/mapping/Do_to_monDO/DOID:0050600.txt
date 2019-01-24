@@ -1,0 +1,3 @@
+DOID:0050600	ABCD syndrome
+monDO ID 	 name 
+MONDO:0010895	ABCD syndrome

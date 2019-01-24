@@ -1,0 +1,3 @@
+MONDO:0001707	cardiac sarcoidosis
+DOID 	 name 
+DOID:13405	cardiac sarcoidosis

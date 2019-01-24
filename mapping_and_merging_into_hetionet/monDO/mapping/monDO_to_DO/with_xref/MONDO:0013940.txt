@@ -1,0 +1,3 @@
+MONDO:0013940	primary ciliary dyskinesia 18
+DOID 	 name 
+DOID:0110604	primary ciliary dyskinesia 18

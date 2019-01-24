@@ -1,0 +1,3 @@
+MONDO:0019350	hereditary spherocytosis
+DOID 	 name 
+DOID:12971	hereditary spherocytosis

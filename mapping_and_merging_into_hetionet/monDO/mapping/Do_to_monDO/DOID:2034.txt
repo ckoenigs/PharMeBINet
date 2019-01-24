@@ -1,0 +1,3 @@
+DOID:2034	encephalomalacia
+monDO ID 	 name 
+MONDO:0006741	encephalomalacia

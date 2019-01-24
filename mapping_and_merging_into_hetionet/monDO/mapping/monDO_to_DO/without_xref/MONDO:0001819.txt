@@ -1,0 +1,3 @@
+MONDO:0001819	multiple cranial nerve palsy
+DOID 	 name 
+DOID:13866	multiple cranial nerve palsy

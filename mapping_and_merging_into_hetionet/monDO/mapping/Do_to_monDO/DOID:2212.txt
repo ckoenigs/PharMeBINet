@@ -1,0 +1,3 @@
+DOID:2212	coagulation protein disease
+monDO ID 	 name 
+MONDO:0002242	coagulation protein disease

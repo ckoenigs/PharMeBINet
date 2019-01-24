@@ -1,0 +1,3 @@
+MONDO:0014446	Bardet-Biedl syndrome 18
+DOID 	 name 
+DOID:0110140	Bardet-Biedl syndrome 18

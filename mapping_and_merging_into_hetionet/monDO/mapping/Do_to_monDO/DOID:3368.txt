@@ -1,0 +1,3 @@
+DOID:3368	bone Ewing's sarcoma
+monDO ID 	 name 
+MONDO:0002625	Ewing sarcoma of bone

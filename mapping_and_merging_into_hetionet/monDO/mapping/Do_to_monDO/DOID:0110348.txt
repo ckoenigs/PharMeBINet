@@ -1,0 +1,3 @@
+DOID:0110348	osteogenesis imperfecta type 12
+monDO ID 	 name 
+MONDO:0013460	osteogenesis imperfecta type 12

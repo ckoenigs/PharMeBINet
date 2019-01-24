@@ -1,0 +1,3 @@
+MONDO:0000789	Atlantic cod allergy
+DOID 	 name 
+DOID:0060514	Atlantic cod allergy

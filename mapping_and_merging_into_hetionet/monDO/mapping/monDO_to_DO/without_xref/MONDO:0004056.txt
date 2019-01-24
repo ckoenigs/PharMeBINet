@@ -1,0 +1,3 @@
+MONDO:0004056	bladder papillary urothelial carcinoma
+DOID 	 name 
+DOID:6975	bladder urothelial papillary carcinoma

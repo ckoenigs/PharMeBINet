@@ -1,0 +1,3 @@
+DOID:0060315	oral hairy leukoplakia
+monDO ID 	 name 
+MONDO:0000743	oral hairy leukoplakia

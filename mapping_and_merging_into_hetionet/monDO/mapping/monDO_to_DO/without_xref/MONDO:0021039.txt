@@ -1,0 +1,3 @@
+MONDO:0021039	extraskeletal Ewing sarcoma/peripheral primitive neuroectodermal tumor
+DOID 	 name 
+DOID:4985	extraosseous Ewings sarcoma-primitive neuroepithelial tumor

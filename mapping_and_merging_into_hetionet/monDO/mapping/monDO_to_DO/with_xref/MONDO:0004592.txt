@@ -1,0 +1,3 @@
+MONDO:0004592	impetigo
+DOID 	 name 
+DOID:8504	impetigo

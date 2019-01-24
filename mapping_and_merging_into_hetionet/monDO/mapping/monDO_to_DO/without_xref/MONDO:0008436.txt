@@ -1,0 +1,3 @@
+MONDO:0008436	Sneddon syndrome
+DOID 	 name 
+DOID:13096	Sneddon syndrome

@@ -1,0 +1,3 @@
+MONDO:0001727	active cochleovestibular Meniere's disease
+DOID 	 name 
+DOID:13490	active cochleovestibular Meniere's disease

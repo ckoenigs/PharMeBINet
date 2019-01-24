@@ -1,0 +1,3 @@
+MONDO:0000691	pain disorder
+DOID 	 name 
+DOID:0060164	pain disorder

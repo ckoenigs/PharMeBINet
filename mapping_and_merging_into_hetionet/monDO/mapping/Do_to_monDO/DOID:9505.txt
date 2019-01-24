@@ -1,0 +1,3 @@
+DOID:9505	cannabis abuse
+monDO ID 	 name 
+MONDO:0004809	cannabis abuse

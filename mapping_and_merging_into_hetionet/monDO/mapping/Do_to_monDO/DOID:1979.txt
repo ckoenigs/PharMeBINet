@@ -1,0 +1,3 @@
+DOID:1979	focal chorioretinitis
+monDO ID 	 name 
+MONDO:0002164	focal chorioretinitis

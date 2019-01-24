@@ -1,0 +1,3 @@
+MONDO:0002282	West nile fever
+DOID 	 name 
+DOID:2366	West Nile fever

@@ -1,0 +1,3 @@
+DOID:5155	multiple mucosal neuroma
+monDO ID 	 name 
+MONDO:0003307	multiple mucosal neuroma

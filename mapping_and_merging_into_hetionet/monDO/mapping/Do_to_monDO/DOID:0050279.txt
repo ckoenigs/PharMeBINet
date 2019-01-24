@@ -1,0 +1,3 @@
+DOID:0050279	conidiobolomycosis
+monDO ID 	 name 
+MONDO:0000303	conidiobolomycosis

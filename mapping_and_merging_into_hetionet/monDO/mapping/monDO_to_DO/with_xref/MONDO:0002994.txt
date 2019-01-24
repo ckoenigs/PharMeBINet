@@ -1,0 +1,3 @@
+MONDO:0002994	pancreatic delta cell neuroendocrine tumor
+DOID 	 name 
+DOID:4433	pancreatic delta cell neoplasm

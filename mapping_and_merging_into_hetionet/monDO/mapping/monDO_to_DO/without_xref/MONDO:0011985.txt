@@ -1,0 +1,3 @@
+MONDO:0011985	hyper-IgM syndrome type 4
+DOID 	 name 
+DOID:0060760	immunodeficiency with hyper-IgM type 4

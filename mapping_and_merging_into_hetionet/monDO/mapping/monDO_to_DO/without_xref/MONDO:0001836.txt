@@ -1,0 +1,3 @@
+MONDO:0001836	amenorrhea (disease)
+DOID 	 name 
+DOID:13938	amenorrhea

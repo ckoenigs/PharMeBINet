@@ -1,0 +1,3 @@
+MONDO:0019173	rabies
+DOID 	 name 
+DOID:11260	rabies

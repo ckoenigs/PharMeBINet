@@ -1,0 +1,3 @@
+DOID:10399	seminal vesicle chronic gonorrhea
+monDO ID 	 name 
+MONDO:0001025	seminal vesicle chronic gonorrhea

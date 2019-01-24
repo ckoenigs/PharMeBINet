@@ -1,0 +1,3 @@
+DOID:0110716	Warburg micro syndrome 1
+monDO ID 	 name 
+MONDO:0010822	Warburg micro syndrome 1

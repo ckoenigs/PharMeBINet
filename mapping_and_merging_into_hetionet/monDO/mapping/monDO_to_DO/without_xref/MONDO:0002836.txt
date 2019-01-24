@@ -1,0 +1,3 @@
+MONDO:0002836	urethra transitional cell carcinoma
+DOID 	 name 
+DOID:4013	urethra transitional cell carcinoma

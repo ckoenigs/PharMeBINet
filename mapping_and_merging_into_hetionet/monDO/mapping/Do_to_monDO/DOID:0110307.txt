@@ -1,0 +1,3 @@
+DOID:0110307	hypertrophic cardiomyopathy 1
+monDO ID 	 name 
+MONDO:0008647	hypertrophic cardiomyopathy 1

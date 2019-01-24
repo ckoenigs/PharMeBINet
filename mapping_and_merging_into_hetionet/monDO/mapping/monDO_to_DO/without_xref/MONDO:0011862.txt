@@ -1,0 +1,3 @@
+MONDO:0011862	hereditary spastic paraplegia 24
+DOID 	 name 
+DOID:0110775	hereditary spastic paraplegia 24

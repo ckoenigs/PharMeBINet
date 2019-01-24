@@ -1,0 +1,3 @@
+DOID:0090006	renal coloboma syndrome
+monDO ID 	 name 
+MONDO:0007352	renal coloboma syndrome

@@ -1,0 +1,3 @@
+MONDO:0009655	Sanfilippo syndrome type A
+DOID 	 name 
+DOID:12801	mucopolysaccharidosis III

@@ -1,0 +1,3 @@
+MONDO:0001274	anal spasm
+DOID 	 name 
+DOID:11374	anal spasm

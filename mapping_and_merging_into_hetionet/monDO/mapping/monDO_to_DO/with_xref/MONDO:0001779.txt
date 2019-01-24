@@ -1,0 +1,3 @@
+MONDO:0001779	vaginal squamous papilloma
+DOID 	 name 
+DOID:137	vaginal squamous papilloma

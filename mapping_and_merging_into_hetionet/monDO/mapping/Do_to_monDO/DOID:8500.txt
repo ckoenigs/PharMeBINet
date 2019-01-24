@@ -1,0 +1,3 @@
+DOID:8500	hereditary retinal dystrophy
+monDO ID 	 name 
+MONDO:0004589	hereditary retinal dystrophy

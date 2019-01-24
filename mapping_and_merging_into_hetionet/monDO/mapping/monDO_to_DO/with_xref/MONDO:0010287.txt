@@ -1,0 +1,3 @@
+MONDO:0010287	hereditary spastic paraplegia 16
+DOID 	 name 
+DOID:0110769	hereditary spastic paraplegia 16

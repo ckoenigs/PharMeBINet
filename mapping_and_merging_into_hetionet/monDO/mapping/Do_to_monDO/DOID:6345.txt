@@ -1,0 +1,3 @@
+DOID:6345	malignant melanocytic neoplasm of the peripheral nerve sheath
+monDO ID 	 name 
+MONDO:0003863	malignant melanocytic neoplasm of the peripheral nerve sheath

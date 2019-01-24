@@ -1,0 +1,3 @@
+MONDO:0013357	chromosome 17q11.2 deletion syndrome, 1.4Mb
+DOID 	 name 
+DOID:0060403	chromosome 17q11.2 deletion syndrome, 1.4Mb

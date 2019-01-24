@@ -1,0 +1,3 @@
+DOID:0110315	hypertrophic cardiomyopathy 9
+monDO ID 	 name 
+MONDO:0013412	hypertrophic cardiomyopathy 9

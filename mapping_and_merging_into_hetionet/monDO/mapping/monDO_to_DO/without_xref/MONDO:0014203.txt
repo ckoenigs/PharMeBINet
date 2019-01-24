@@ -1,0 +1,3 @@
+MONDO:0014203	primary ciliary dyskinesia 25
+DOID 	 name 
+DOID:0110615	primary ciliary dyskinesia 25

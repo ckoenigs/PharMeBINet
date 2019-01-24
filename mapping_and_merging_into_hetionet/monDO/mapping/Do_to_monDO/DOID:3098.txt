@@ -1,0 +1,3 @@
+DOID:3098	small cell sarcoma
+monDO ID 	 name 
+MONDO:0006974	small cell sarcoma

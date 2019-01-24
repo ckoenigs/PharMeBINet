@@ -1,0 +1,3 @@
+DOID:873	anaerobic pneumonia
+monDO ID 	 name 
+MONDO:0004649	anaerobic pneumonia

@@ -1,0 +1,4 @@
+MONDO:0002697	ovarian gonadoblastoma (disease)
+DOID 	 name 
+DOID:3301	gonadoblastoma
+DOID:3578	ovarian gonadoblastoma

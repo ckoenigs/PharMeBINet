@@ -1,0 +1,3 @@
+MONDO:0003137	diffuse glomerulonephritis
+DOID 	 name 
+DOID:4781	diffuse glomerulonephritis

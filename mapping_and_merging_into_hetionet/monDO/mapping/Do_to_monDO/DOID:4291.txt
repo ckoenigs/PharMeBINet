@@ -1,0 +1,3 @@
+DOID:4291	fibroepithelial basal cell carcinoma
+monDO ID 	 name 
+MONDO:0002948	skin fibroepithelial basal cell carcinoma

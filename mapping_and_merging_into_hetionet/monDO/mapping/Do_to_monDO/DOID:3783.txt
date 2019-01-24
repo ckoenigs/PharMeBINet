@@ -1,0 +1,3 @@
+DOID:3783	Coffin-Lowry syndrome
+monDO ID 	 name 
+MONDO:0010561	Coffin-Lowry syndrome

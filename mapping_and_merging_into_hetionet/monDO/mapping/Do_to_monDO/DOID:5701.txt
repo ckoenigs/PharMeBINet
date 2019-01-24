@@ -1,0 +1,3 @@
+DOID:5701	breast liposarcoma
+monDO ID 	 name 
+MONDO:0003593	breast liposarcoma

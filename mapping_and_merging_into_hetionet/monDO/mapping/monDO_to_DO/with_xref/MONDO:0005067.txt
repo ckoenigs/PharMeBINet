@@ -1,0 +1,3 @@
+MONDO:0005067	monophasic synovial sarcoma
+DOID 	 name 
+DOID:5495	monophasic synovial sarcoma

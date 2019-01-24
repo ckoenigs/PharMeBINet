@@ -1,0 +1,3 @@
+DOID:6331	immature teratoma of ovary
+monDO ID 	 name 
+MONDO:0003855	immature teratoma of ovary

@@ -1,0 +1,3 @@
+DOID:12450	pancytopenia
+monDO ID 	 name 
+MONDO:0001529	pancytopenia

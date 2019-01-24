@@ -1,0 +1,3 @@
+MONDO:0009413	immunodeficiency, common variable, 2
+DOID 	 name 
+DOID:12177	common variable immunodeficiency

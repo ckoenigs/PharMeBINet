@@ -1,0 +1,3 @@
+MONDO:0004012	adult botryoid rhabdomyosarcoma
+DOID 	 name 
+DOID:6847	adult botryoid rhabdomyosarcoma

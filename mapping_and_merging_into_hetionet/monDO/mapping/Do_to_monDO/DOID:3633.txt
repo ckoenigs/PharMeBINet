@@ -1,0 +1,3 @@
+DOID:3633	beta-mannosidosis
+monDO ID 	 name 
+MONDO:0009562	beta-mannosidosis

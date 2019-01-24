@@ -1,0 +1,3 @@
+DOID:11716	prediabetes syndrome
+monDO ID 	 name 
+MONDO:0006920	prediabetes syndrome

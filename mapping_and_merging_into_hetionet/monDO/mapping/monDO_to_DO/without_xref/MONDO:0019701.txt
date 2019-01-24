@@ -1,0 +1,3 @@
+MONDO:0019701	chondrodysplasia punctata
+DOID 	 name 
+DOID:2581	chondrodysplasia punctata

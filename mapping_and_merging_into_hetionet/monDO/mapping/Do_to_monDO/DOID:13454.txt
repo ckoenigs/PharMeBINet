@@ -1,0 +1,3 @@
+DOID:13454	gonococcal synovitis
+monDO ID 	 name 
+MONDO:0001720	gonococcal synovitis

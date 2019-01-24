@@ -1,0 +1,3 @@
+DOID:3491	Turner syndrome
+monDO ID 	 name 
+MONDO:0019499	Turner syndrome

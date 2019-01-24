@@ -1,0 +1,3 @@
+MONDO:0010847	spinocerebellar ataxia type 4
+DOID 	 name 
+DOID:0050957	spinocerebellar ataxia type 4

@@ -1,0 +1,3 @@
+MONDO:0008753	alkaptonuria
+DOID 	 name 
+DOID:9270	alkaptonuria

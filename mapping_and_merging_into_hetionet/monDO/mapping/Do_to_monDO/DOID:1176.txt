@@ -1,0 +1,3 @@
+DOID:1176	bronchial disease
+monDO ID 	 name 
+MONDO:0001358	bronchial disease

@@ -1,0 +1,3 @@
+MONDO:0001512	intermittent proptosis
+DOID 	 name 
+DOID:12363	intermittent proptosis

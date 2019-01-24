@@ -1,0 +1,3 @@
+MONDO:0011469	congenital amegakaryocytic thrombocytopenia
+DOID 	 name 
+DOID:0090118	congenital amegakaryocytic thrombocytopenia

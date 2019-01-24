@@ -1,0 +1,3 @@
+DOID:6950	combat disorder
+monDO ID 	 name 
+MONDO:0004049	combat disorder

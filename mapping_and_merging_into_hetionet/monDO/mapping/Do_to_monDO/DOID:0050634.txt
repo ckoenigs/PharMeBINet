@@ -1,0 +1,3 @@
+DOID:0050634	alopecia universalis
+monDO ID 	 name 
+MONDO:0008757	alopecia universalis

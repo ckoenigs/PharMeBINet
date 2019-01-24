@@ -1,0 +1,3 @@
+DOID:115	cardiac tamponade
+monDO ID 	 name 
+MONDO:0001297	cardiac tamponade

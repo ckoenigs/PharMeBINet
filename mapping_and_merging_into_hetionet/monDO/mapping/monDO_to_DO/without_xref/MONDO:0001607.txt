@@ -1,0 +1,3 @@
+MONDO:0001607	intrapelvic lymph node leukemic reticuloendotheliosis
+DOID 	 name 
+DOID:12972	intrapelvic lymph node leukemic reticuloendotheliosis

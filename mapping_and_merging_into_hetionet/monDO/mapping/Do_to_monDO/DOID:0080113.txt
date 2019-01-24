@@ -1,0 +1,3 @@
+DOID:0080113	mitochondrial complex III deficiency nuclear type 4
+monDO ID 	 name 
+MONDO:0014065	mitochondrial complex III deficiency nuclear type 4

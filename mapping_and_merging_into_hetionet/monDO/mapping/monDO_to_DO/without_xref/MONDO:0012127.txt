@@ -1,0 +1,3 @@
+MONDO:0012127	autosomal recessive limb-girdle muscular dystrophy type 2J
+DOID 	 name 
+DOID:0110283	autosomal recessive limb-girdle muscular dystrophy type 2J

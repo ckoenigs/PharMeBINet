@@ -1,0 +1,3 @@
+MONDO:0014644	hereditary spastic paraplegia 74
+DOID 	 name 
+DOID:0110819	hereditary spastic paraplegia 74

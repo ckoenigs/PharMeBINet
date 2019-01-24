@@ -1,0 +1,3 @@
+DOID:3950	adrenal carcinoma
+monDO ID 	 name 
+MONDO:0002814	adrenal carcinoma

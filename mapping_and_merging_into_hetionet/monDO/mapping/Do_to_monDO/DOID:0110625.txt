@@ -1,0 +1,3 @@
+DOID:0110625	primary ciliary dyskinesia 20
+monDO ID 	 name 
+MONDO:0014030	primary ciliary dyskinesia 20

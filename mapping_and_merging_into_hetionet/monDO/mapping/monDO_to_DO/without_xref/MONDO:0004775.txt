@@ -1,0 +1,3 @@
+MONDO:0004775	lens-induced iridocyclitis
+DOID 	 name 
+DOID:9388	lens-induced iridocyclitis

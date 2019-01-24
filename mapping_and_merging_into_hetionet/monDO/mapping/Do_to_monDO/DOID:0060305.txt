@@ -1,0 +1,3 @@
+DOID:0060305	megalocornea
+monDO ID 	 name 
+MONDO:0009576	megalocornea (disease)

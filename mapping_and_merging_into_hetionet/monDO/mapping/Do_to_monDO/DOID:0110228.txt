@@ -1,0 +1,3 @@
+DOID:0110228	cataract 8 multiple types
+monDO ID 	 name 
+MONDO:0007280	cataract 8 multiple types

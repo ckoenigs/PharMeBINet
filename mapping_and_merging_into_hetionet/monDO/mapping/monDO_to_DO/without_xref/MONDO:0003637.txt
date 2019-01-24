@@ -1,0 +1,3 @@
+MONDO:0003637	lung clear cell-sugar-tumor
+DOID 	 name 
+DOID:5763	lung clear cell-sugar-tumor

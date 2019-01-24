@@ -1,0 +1,3 @@
+MONDO:0000782	indian plum allergy
+DOID 	 name 
+DOID:0060507	Indian plum allergy

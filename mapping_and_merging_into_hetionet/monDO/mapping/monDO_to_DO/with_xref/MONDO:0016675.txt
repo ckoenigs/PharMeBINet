@@ -1,0 +1,3 @@
+MONDO:0016675	distal arthrogryposis type 10
+DOID 	 name 
+DOID:0050646	distal arthrogryposis

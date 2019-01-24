@@ -1,0 +1,3 @@
+DOID:3650	lactic acidosis
+monDO ID 	 name 
+MONDO:0006040	lactic acidosis

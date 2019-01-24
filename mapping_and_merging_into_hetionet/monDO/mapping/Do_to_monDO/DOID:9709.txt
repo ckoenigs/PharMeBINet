@@ -1,0 +1,3 @@
+DOID:9709	rosacea conjunctivitis
+monDO ID 	 name 
+MONDO:0004856	rosacea conjunctivitis

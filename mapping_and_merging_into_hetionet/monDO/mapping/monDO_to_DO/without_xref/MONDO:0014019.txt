@@ -1,0 +1,3 @@
+MONDO:0014019	dystonia 24
+DOID 	 name 
+DOID:0090052	dystonia 24

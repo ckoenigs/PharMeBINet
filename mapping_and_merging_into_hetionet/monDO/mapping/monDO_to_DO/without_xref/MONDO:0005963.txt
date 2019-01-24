@@ -1,0 +1,3 @@
+MONDO:0005963	sparganosis
+DOID 	 name 
+DOID:10080	sparganosis

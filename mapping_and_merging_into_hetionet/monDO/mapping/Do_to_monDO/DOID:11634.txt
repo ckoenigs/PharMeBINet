@@ -1,0 +1,3 @@
+DOID:11634	myxedema
+monDO ID 	 name 
+MONDO:0009718	myxedema

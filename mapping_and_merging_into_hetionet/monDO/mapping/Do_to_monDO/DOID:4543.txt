@@ -1,0 +1,3 @@
+DOID:4543	retrograde amnesia
+monDO ID 	 name 
+MONDO:0003040	retrograde amnesia

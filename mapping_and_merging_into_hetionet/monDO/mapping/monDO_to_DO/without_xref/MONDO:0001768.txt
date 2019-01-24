@@ -1,0 +1,3 @@
+MONDO:0001768	stenosis of lacrimal passage
+DOID 	 name 
+DOID:13654	stenosis of lacrimal passage

@@ -1,0 +1,3 @@
+DOID:0110225	Brugada syndrome 8
+monDO ID 	 name 
+MONDO:0013148	Brugada syndrome 8

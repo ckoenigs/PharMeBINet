@@ -1,0 +1,3 @@
+DOID:0110856	posterior polymorphous corneal dystrophy 2
+monDO ID 	 name 
+MONDO:0012199	posterior polymorphous corneal dystrophy 2

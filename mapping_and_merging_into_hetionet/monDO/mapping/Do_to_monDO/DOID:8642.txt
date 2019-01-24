@@ -1,0 +1,3 @@
+DOID:8642	Hodgkin's paragranuloma
+monDO ID 	 name 
+MONDO:0004626	Hodgkin's paragranuloma

@@ -1,0 +1,4 @@
+MONDO:0005517	pharynx cancer
+DOID 	 name 
+DOID:0050741	alcohol dependence
+DOID:0060119	pharynx cancer

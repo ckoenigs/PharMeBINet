@@ -1,0 +1,3 @@
+MONDO:0013100	ATFB8
+DOID 	 name 
+DOID:0050650	familial atrial fibrillation

@@ -1,0 +1,3 @@
+DOID:0110727	neuronal ceroid lipofuscinosis 13
+monDO ID 	 name 
+MONDO:0014147	neuronal ceroid lipofuscinosis 13

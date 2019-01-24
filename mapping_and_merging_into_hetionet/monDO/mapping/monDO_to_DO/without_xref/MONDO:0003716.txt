@@ -1,0 +1,3 @@
+MONDO:0003716	kidney pelvis papillary carcinoma
+DOID 	 name 
+DOID:5973	kidney pelvis papillary carcinoma

@@ -1,0 +1,3 @@
+DOID:403	mouth disease
+monDO ID 	 name 
+MONDO:0006858	mouth disease

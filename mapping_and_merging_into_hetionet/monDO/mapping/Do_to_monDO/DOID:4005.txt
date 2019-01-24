@@ -1,0 +1,3 @@
+DOID:4005	endometrial transitional cell carcinoma
+monDO ID 	 name 
+MONDO:0002832	endometrial transitional cell carcinoma

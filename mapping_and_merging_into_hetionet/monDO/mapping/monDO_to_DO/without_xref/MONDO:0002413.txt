@@ -1,0 +1,3 @@
+MONDO:0002413	glycogen storage disease I
+DOID 	 name 
+DOID:2749	glycogen storage disease I

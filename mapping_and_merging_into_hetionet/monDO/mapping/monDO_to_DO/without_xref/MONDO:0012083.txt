@@ -1,0 +1,3 @@
+MONDO:0012083	autosomal dominant nonsyndromic deafness 28
+DOID 	 name 
+DOID:0110557	autosomal dominant nonsyndromic deafness 28

@@ -1,0 +1,3 @@
+MONDO:0009477	Stromme syndrome
+DOID 	 name 
+DOID:0110595	Stromme syndrome

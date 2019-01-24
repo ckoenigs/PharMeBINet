@@ -1,0 +1,5 @@
+MONDO:0006639	adrenal cortex carcinoma
+DOID 	 name 
+DOID:3959	adrenal cortical adenocarcinoma
+DOID:660	adrenal cortex cancer
+DOID:3948	adrenocortical carcinoma

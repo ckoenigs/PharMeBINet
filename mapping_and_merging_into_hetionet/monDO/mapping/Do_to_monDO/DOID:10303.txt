@@ -1,0 +1,3 @@
+DOID:10303	sialadenitis
+monDO ID 	 name 
+MONDO:0006969	sialadenitis

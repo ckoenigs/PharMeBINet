@@ -1,0 +1,3 @@
+MONDO:0008854	Bardet-Biedl syndrome 1
+DOID 	 name 
+DOID:0110123	Bardet-Biedl syndrome 1

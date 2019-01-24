@@ -1,0 +1,3 @@
+MONDO:0010877	Charcot-Marie-tooth disease type 5
+DOID 	 name 
+DOID:0080067	Charcot-Marie-Tooth disease type 5

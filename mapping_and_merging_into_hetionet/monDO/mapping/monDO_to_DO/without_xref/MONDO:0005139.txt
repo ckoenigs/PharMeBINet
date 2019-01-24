@@ -1,0 +1,3 @@
+MONDO:0005139	morbid obesity
+DOID 	 name 
+DOID:11981	morbid obesity

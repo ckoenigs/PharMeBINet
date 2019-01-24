@@ -1,0 +1,3 @@
+MONDO:0008051	tubular aggregate myopathy
+DOID 	 name 
+DOID:0080089	tubular aggregate myopathy

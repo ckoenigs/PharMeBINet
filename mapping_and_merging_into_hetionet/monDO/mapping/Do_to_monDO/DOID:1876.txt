@@ -1,0 +1,3 @@
+DOID:1876	sexual dysfunction
+monDO ID 	 name 
+MONDO:0002134	sexual dysfunction

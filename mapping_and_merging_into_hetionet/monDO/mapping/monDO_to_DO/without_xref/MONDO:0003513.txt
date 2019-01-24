@@ -1,0 +1,3 @@
+MONDO:0003513	gastric teratoma
+DOID 	 name 
+DOID:5561	gastric teratoma

@@ -1,0 +1,3 @@
+DOID:0090067	Fuhrmann syndrome
+monDO ID 	 name 
+MONDO:0009232	Fuhrmann syndrome

@@ -1,0 +1,3 @@
+MONDO:0010229	alopecia, congenital
+DOID 	 name 
+DOID:987	alopecia

@@ -1,0 +1,3 @@
+DOID:0110316	hypertrophic cardiomyopathy 10
+monDO ID 	 name 
+MONDO:0012112	hypertrophic cardiomyopathy 10

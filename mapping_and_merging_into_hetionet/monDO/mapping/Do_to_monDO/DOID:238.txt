@@ -1,0 +1,3 @@
+DOID:238	pupil disease
+monDO ID 	 name 
+MONDO:0002285	pupil disease

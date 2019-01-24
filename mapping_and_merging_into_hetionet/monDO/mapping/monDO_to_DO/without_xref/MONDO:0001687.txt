@@ -1,0 +1,3 @@
+MONDO:0001687	diabetic cataract
+DOID 	 name 
+DOID:13328	diabetic cataract

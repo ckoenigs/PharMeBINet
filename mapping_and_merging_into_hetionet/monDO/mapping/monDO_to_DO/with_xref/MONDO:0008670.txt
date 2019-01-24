@@ -1,0 +1,3 @@
+MONDO:0008670	Waardenburg syndrome type 1
+DOID 	 name 
+DOID:0110948	Waardenburg syndrome type 1

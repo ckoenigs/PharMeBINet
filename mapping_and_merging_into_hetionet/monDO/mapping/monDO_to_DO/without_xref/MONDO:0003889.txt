@@ -1,0 +1,3 @@
+MONDO:0003889	infiltrating bladder urothelial carcinoma, clear cell variant
+DOID 	 name 
+DOID:6476	clear cell variant infiltrating bladder urothelial carcinoma

@@ -1,0 +1,3 @@
+MONDO:0005609	herpes zoster
+DOID 	 name 
+DOID:8536	herpes zoster

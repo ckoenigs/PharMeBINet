@@ -1,0 +1,3 @@
+DOID:0060203	amyotrophic lateral sclerosis type 12
+monDO ID 	 name 
+MONDO:0013264	amyotrophic lateral sclerosis type 12

@@ -1,0 +1,3 @@
+DOID:2687	skin sarcoma
+monDO ID 	 name 
+MONDO:0006414	skin sarcoma

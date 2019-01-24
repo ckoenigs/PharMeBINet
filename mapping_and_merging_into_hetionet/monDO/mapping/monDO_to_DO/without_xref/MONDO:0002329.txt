@@ -1,0 +1,3 @@
+MONDO:0002329	testicular disease
+DOID 	 name 
+DOID:2519	testicular disease

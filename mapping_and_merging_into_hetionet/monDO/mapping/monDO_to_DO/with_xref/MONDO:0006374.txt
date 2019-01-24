@@ -1,0 +1,3 @@
+MONDO:0006374	placental choriocarcinoma
+DOID 	 name 
+DOID:2024	placental choriocarcinoma

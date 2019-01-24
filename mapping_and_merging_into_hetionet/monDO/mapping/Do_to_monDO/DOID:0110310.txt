@@ -1,0 +1,3 @@
+DOID:0110310	hypertrophic cardiomyopathy 4
+monDO ID 	 name 
+MONDO:0007268	hypertrophic cardiomyopathy 4

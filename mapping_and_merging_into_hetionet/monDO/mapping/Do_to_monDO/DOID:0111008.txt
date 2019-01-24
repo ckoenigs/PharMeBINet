@@ -1,0 +1,3 @@
+DOID:0111008	X-linked cone-rod dystrophy 1
+monDO ID 	 name 
+MONDO:0010566	X-linked cone-rod dystrophy 1

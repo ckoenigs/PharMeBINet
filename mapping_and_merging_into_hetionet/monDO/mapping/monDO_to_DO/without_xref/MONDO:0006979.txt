@@ -1,0 +1,3 @@
+MONDO:0006979	steatitis
+DOID 	 name 
+DOID:4025	steatitis

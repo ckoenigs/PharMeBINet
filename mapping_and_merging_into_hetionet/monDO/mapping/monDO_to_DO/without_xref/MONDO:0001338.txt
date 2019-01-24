@@ -1,0 +1,3 @@
+MONDO:0001338	acute apical periodontitis
+DOID 	 name 
+DOID:11693	acute apical periodontitis

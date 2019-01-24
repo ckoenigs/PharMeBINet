@@ -1,0 +1,3 @@
+MONDO:0010674	mucopolysaccharidosis type 2
+DOID 	 name 
+DOID:12799	mucopolysaccharidosis II

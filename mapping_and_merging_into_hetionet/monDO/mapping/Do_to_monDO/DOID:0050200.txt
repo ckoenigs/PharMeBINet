@@ -1,0 +1,3 @@
+DOID:0050200	Korean hemorrhagic fever
+monDO ID 	 name 
+MONDO:0000283	Korean hemorrhagic fever

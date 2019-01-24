@@ -1,0 +1,3 @@
+DOID:0050688	anal canal cancer
+monDO ID 	 name 
+MONDO:0000405	anal canal cancer

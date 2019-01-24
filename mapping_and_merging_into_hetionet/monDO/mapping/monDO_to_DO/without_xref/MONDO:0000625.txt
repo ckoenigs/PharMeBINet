@@ -1,0 +1,3 @@
+MONDO:0000625	male reproductive organ benign neoplasm
+DOID 	 name 
+DOID:0060087	male reproductive organ benign neoplasm

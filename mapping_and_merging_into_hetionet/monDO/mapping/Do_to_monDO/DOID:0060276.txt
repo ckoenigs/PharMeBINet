@@ -1,0 +1,3 @@
+DOID:0060276	pontocerebellar hypoplasia type 7
+monDO ID 	 name 
+MONDO:0013993	pontocerebellar hypoplasia type 7

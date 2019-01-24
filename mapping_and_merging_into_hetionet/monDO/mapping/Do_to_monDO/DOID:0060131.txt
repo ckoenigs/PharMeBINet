@@ -1,0 +1,3 @@
+DOID:0060131	alexithymia
+monDO ID 	 name 
+MONDO:0000661	alexithymia

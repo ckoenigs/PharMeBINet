@@ -1,0 +1,3 @@
+DOID:4664	filamentary keratitis
+monDO ID 	 name 
+MONDO:0003082	filamentary keratitis

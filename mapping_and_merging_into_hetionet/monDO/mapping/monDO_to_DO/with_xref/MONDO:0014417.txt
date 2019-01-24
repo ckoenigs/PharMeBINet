@@ -1,0 +1,3 @@
+MONDO:0014417	spinocerebellar ataxia type 38
+DOID 	 name 
+DOID:0050985	spinocerebellar ataxia type 38

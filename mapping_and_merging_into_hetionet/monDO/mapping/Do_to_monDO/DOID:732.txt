@@ -1,0 +1,3 @@
+DOID:732	urethral disease
+monDO ID 	 name 
+MONDO:0004184	urethral disease

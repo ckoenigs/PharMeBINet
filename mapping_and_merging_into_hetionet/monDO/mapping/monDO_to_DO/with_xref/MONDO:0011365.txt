@@ -1,0 +1,3 @@
+MONDO:0011365	blepharophimosis-intellectual disability syndrome, SBBYS type
+DOID 	 name 
+DOID:0060290	blepharophimosis-intellectual disability syndrome, SBBYS type

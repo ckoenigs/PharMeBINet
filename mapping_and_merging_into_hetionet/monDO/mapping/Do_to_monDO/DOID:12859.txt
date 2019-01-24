@@ -1,0 +1,3 @@
+DOID:12859	choreatic disease
+monDO ID 	 name 
+MONDO:0001595	choreatic disease

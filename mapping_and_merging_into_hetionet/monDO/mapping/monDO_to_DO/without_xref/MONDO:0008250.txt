@@ -1,0 +1,3 @@
+MONDO:0008250	isolated growth hormone deficiency type II
+DOID 	 name 
+DOID:0060872	isolated growth hormone deficiency type II

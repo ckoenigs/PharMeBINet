@@ -1,0 +1,3 @@
+MONDO:0002353	glottis neoplasm
+DOID 	 name 
+DOID:2597	glottis neoplasm

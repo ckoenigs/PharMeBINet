@@ -1,0 +1,3 @@
+DOID:0110766	hereditary spastic paraplegia 13
+monDO ID 	 name 
+MONDO:0011532	hereditary spastic paraplegia 13

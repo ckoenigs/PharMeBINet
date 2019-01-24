@@ -1,0 +1,3 @@
+MONDO:0019050	hemoglobinopathy
+DOID 	 name 
+DOID:2860	hemoglobinopathy

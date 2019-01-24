@@ -1,0 +1,3 @@
+MONDO:0006871	non-gestational choriocarcinoma
+DOID 	 name 
+DOID:4320	non-gestational choriocarcinoma

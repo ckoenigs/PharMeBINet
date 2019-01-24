@@ -1,0 +1,3 @@
+MONDO:0001312	acute serous otitis media
+DOID 	 name 
+DOID:11557	acute serous otitis media

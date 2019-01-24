@@ -1,0 +1,3 @@
+MONDO:0001437	pulmonary alveolar proteinosis
+DOID 	 name 
+DOID:12120	pulmonary alveolar proteinosis

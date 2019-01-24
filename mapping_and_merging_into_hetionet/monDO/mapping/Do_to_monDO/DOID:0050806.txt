@@ -1,0 +1,3 @@
+DOID:0050806	glioblastoma neural subtype
+monDO ID 	 name 
+MONDO:0000460	neural glioblastoma

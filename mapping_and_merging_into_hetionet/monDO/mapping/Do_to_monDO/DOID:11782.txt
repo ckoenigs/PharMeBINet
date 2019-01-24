@@ -1,0 +1,3 @@
+DOID:11782	astigmatism
+monDO ID 	 name 
+MONDO:0011284	astigmatism (disease)

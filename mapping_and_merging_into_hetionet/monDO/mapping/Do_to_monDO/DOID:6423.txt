@@ -1,0 +1,3 @@
+DOID:6423	childhood central nervous system mature teratoma
+monDO ID 	 name 
+MONDO:0003875	childhood central nervous system mature teratoma

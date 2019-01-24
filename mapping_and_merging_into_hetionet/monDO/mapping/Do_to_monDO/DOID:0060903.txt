@@ -1,0 +1,3 @@
+DOID:0060903	thrombosis
+monDO ID 	 name 
+MONDO:0000831	thrombotic disease

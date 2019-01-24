@@ -1,0 +1,3 @@
+DOID:2569	retinal drusen
+monDO ID 	 name 
+MONDO:0006949	retinal drusen

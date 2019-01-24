@@ -1,0 +1,3 @@
+DOID:9840	esotropia
+monDO ID 	 name 
+MONDO:0004896	esotropia

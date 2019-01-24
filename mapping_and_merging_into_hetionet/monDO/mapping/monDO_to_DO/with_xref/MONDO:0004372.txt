@@ -1,0 +1,3 @@
+MONDO:0004372	chronic toxic polyneuropathy
+DOID 	 name 
+DOID:7825	chronic toxic polyneuropathy

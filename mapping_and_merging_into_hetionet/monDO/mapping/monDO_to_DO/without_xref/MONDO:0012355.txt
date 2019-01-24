@@ -1,0 +1,3 @@
+MONDO:0012355	autosomal recessive nonsyndromic deafness 28
+DOID 	 name 
+DOID:0110486	autosomal recessive nonsyndromic deafness 28

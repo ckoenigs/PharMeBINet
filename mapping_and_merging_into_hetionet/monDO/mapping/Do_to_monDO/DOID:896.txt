@@ -1,0 +1,3 @@
+DOID:896	metal metabolism disorder
+monDO ID 	 name 
+MONDO:0004689	metal metabolism disorder

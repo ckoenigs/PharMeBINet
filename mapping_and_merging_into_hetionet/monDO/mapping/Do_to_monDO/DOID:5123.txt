@@ -1,0 +1,3 @@
+DOID:5123	mediastinum leiomyoma
+monDO ID 	 name 
+MONDO:0003284	mediastinum leiomyoma

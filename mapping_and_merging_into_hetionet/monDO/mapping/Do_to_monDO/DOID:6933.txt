@@ -1,0 +1,3 @@
+DOID:6933	bladder transitional cell papilloma
+monDO ID 	 name 
+MONDO:0004041	urothelial papilloma

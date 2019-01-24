@@ -1,0 +1,3 @@
+MONDO:0002143	vaginal yolk sac tumor
+DOID 	 name 
+DOID:1910	vaginal yolk sac tumor

@@ -1,0 +1,3 @@
+DOID:0080124	mitochondrial DNA depletion syndrome 5
+monDO ID 	 name 
+MONDO:0012791	mitochondrial DNA depletion syndrome, encephalomyopathic form with methylmalonic aciduria

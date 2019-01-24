@@ -1,0 +1,3 @@
+DOID:813	septic arthritis
+monDO ID 	 name 
+MONDO:0004471	septic arthritis

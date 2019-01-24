@@ -1,0 +1,3 @@
+MONDO:0004342	osteoclast-like giant cell neoplasm of the pancreas
+DOID 	 name 
+DOID:7718	osteoclast-like giant cell neoplasm of the pancreas

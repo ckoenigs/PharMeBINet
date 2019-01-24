@@ -1,0 +1,3 @@
+MONDO:0017881	Kyasanur forest disease
+DOID 	 name 
+DOID:11320	Kyasanur forest disease

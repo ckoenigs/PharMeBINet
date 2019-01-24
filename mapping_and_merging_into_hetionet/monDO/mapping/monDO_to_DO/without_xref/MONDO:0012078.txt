@@ -1,0 +1,3 @@
+MONDO:0012078	Joubert syndrome 3
+DOID 	 name 
+DOID:0110998	Joubert syndrome 3

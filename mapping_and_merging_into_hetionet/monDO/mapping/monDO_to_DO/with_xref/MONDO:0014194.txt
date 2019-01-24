@@ -1,0 +1,3 @@
+MONDO:0014194	mitochondrial complex III deficiency nuclear type 6
+DOID 	 name 
+DOID:0080115	mitochondrial complex III deficiency nuclear type 6

@@ -1,0 +1,3 @@
+MONDO:0000238	pestis minor
+DOID 	 name 
+DOID:0050068	pestis minor

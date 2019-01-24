@@ -1,0 +1,3 @@
+DOID:0050459	hyperphosphatemia
+monDO ID 	 name 
+MONDO:0000328	hyperphosphatemia (disease)

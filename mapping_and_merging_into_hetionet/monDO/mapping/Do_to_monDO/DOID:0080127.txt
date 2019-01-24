@@ -1,0 +1,3 @@
+DOID:0080127	mitochondrial DNA depletion syndrome 8a
+monDO ID 	 name 
+MONDO:0012792	mitochondrial DNA depletion syndrome 8a

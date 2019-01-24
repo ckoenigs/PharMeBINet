@@ -1,0 +1,3 @@
+DOID:0060004	autoimmune disease of central nervous system
+monDO ID 	 name 
+MONDO:0000568	autoimmune disease of central nervous system

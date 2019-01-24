@@ -1,0 +1,3 @@
+MONDO:0012015	NYS3
+DOID 	 name 
+DOID:9649	congenital nystagmus

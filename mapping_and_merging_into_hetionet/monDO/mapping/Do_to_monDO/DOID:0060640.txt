@@ -1,0 +1,3 @@
+DOID:0060640	ethylmalonic encephalopathy
+monDO ID 	 name 
+MONDO:0011229	ethylmalonic encephalopathy

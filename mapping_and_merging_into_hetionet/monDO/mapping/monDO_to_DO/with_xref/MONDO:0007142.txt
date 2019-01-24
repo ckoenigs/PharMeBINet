@@ -1,0 +1,3 @@
+MONDO:0007142	Townes-Brocks syndrome
+DOID 	 name 
+DOID:0050887	Townes-Brocks syndrome

@@ -1,0 +1,3 @@
+MONDO:0013985	autosomal recessive nonsyndromic deafness 18B
+DOID 	 name 
+DOID:0110474	autosomal recessive nonsyndromic deafness 18B

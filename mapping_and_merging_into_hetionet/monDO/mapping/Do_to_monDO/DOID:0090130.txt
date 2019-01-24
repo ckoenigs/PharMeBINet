@@ -1,0 +1,3 @@
+DOID:0090130	cortical dysplasia-focal epilepsy syndrome
+monDO ID 	 name 
+MONDO:0012400	cortical dysplasia-focal epilepsy syndrome

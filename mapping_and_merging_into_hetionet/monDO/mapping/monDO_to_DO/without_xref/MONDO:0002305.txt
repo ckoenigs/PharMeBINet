@@ -1,0 +1,3 @@
+MONDO:0002305	thrombophilia
+DOID 	 name 
+DOID:2452	thrombophilia

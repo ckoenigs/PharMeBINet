@@ -1,0 +1,3 @@
+DOID:10719	toxic diffuse goiter
+monDO ID 	 name 
+MONDO:0001104	toxic diffuse goiter

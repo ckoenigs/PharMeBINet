@@ -1,0 +1,3 @@
+DOID:0060563	Char syndrome
+monDO ID 	 name 
+MONDO:0008209	Char syndrome

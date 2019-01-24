@@ -1,0 +1,3 @@
+DOID:3325	hyperglobulinemic purpura
+monDO ID 	 name 
+MONDO:0006792	hyperglobulinemic purpura

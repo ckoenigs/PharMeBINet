@@ -1,0 +1,3 @@
+DOID:8394	adult type testicular granulosa cell tumor
+monDO ID 	 name 
+MONDO:0004548	adult type testicular granulosa cell tumor

@@ -1,0 +1,3 @@
+DOID:13359	Ehlers-Danlos syndrome
+monDO ID 	 name 
+MONDO:0020066	Ehlers-Danlos syndrome

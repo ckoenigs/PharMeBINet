@@ -1,0 +1,3 @@
+MONDO:0005700	chickenpox
+DOID 	 name 
+DOID:8659	chickenpox

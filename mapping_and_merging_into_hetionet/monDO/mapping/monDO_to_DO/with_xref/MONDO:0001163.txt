@@ -1,0 +1,3 @@
+MONDO:0001163	paranoid personality disorder
+DOID 	 name 
+DOID:10938	paranoid personality disorder

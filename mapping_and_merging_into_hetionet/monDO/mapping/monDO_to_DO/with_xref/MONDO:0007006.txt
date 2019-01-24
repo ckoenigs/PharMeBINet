@@ -1,0 +1,3 @@
+MONDO:0007006	ulnar neuropathy
+DOID 	 name 
+DOID:4613	ulnar neuropathy

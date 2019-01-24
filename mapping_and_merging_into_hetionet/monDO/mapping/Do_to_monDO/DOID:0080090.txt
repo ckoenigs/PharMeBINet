@@ -1,0 +1,3 @@
+DOID:0080090	reducing body myopathy
+monDO ID 	 name 
+MONDO:0019948	reducing body myopathy

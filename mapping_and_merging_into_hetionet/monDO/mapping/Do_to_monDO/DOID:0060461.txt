@@ -1,0 +1,3 @@
+DOID:0060461	chromosome Xp11.23-p11.22 duplication syndrome
+monDO ID 	 name 
+MONDO:0010428	chromosome Xp11.23-p11.22 duplication syndrome

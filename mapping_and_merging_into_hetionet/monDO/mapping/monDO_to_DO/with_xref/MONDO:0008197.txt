@@ -1,0 +1,3 @@
+MONDO:0008197	parietal foramina 1
+DOID 	 name 
+DOID:0060285	parietal foramina

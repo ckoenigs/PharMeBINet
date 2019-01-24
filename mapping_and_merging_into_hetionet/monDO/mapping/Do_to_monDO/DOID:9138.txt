@@ -1,0 +1,3 @@
+DOID:9138	stomach carcinoma in situ
+monDO ID 	 name 
+MONDO:0004716	stomach carcinoma in situ

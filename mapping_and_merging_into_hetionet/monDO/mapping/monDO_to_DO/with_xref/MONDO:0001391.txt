@@ -1,0 +1,3 @@
+MONDO:0001391	indeterminate leprosy
+DOID 	 name 
+DOID:11851	indeterminate leprosy

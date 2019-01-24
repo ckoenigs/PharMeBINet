@@ -1,0 +1,3 @@
+MONDO:0009744	neuronal ceroid lipofuscinosis 1
+DOID 	 name 
+DOID:0110721	neuronal ceroid lipofuscinosis 1

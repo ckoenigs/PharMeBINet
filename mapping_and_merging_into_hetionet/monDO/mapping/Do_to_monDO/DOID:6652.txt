@@ -1,0 +1,3 @@
+DOID:6652	diffuse idiopathic skeletal hyperostosis
+monDO ID 	 name 
+MONDO:0007127	diffuse idiopathic skeletal hyperostosis

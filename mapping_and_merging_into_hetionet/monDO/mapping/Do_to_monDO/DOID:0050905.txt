@@ -1,0 +1,3 @@
+DOID:0050905	inflammatory myofibroblastic tumor
+monDO ID 	 name 
+MONDO:0015798	inflammatory myofibroblastic tumor

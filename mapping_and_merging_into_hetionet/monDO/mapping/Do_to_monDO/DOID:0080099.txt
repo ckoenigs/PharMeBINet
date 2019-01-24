@@ -1,0 +1,3 @@
+DOID:0080099	myopathy, lactic acidosis, and sideroblastic anemia
+monDO ID 	 name 
+MONDO:0000863	myopathy, lactic acidosis, and sideroblastic anemia

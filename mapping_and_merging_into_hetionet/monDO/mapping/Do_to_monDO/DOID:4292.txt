@@ -1,0 +1,3 @@
+DOID:4292	morpheaform basal cell carcinoma
+monDO ID 	 name 
+MONDO:0002949	morpheaform basal cell carcinoma

@@ -1,0 +1,3 @@
+DOID:14451	hyperkalemic periodic paralysis
+monDO ID 	 name 
+MONDO:0008224	hyperkalemic periodic paralysis

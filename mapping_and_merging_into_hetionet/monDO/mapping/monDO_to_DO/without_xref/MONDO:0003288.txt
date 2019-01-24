@@ -1,0 +1,3 @@
+MONDO:0003288	bizarre leiomyoma
+DOID 	 name 
+DOID:5127	bizarre leiomyoma

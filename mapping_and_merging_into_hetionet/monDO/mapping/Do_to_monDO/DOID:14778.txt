@@ -1,0 +1,3 @@
+DOID:14778	blepharophimosis, ptosis, and epicanthus inversus syndrome
+monDO ID 	 name 
+MONDO:0007201	blepharophimosis, ptosis, and epicanthus inversus syndrome

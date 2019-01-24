@@ -1,0 +1,3 @@
+MONDO:0003920	gastric small cell carcinoma
+DOID 	 name 
+DOID:6552	gastric small cell carcinoma

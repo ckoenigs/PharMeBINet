@@ -1,0 +1,3 @@
+MONDO:0003265	adjustment disorder
+DOID 	 name 
+DOID:507	adjustment disorder

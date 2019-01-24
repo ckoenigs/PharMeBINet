@@ -1,0 +1,3 @@
+MONDO:0010559	MASA syndrome
+DOID 	 name 
+DOID:0060246	MASA syndrome

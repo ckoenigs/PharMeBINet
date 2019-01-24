@@ -1,0 +1,3 @@
+MONDO:0001907	adult dermatomyositis
+DOID 	 name 
+DOID:14202	adult dermatomyositis

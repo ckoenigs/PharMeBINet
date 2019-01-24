@@ -1,0 +1,3 @@
+MONDO:0006573	lipodystrophy (disease)
+DOID 	 name 
+DOID:811	lipodystrophy

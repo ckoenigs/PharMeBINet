@@ -1,0 +1,3 @@
+MONDO:0004486	endocervical type cervical adenomyoma
+DOID 	 name 
+DOID:8177	endocervical type cervical adenomyoma

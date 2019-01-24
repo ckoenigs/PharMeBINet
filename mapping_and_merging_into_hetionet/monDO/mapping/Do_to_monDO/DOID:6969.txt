@@ -1,0 +1,3 @@
+DOID:6969	acute canaliculitis
+monDO ID 	 name 
+MONDO:0004054	acute canaliculitis

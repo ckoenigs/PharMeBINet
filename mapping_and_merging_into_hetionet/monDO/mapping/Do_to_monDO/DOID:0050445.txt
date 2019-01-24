@@ -1,0 +1,3 @@
+DOID:0050445	X-linked hypophosphatemic rickets
+monDO ID 	 name 
+MONDO:0010619	X-linked hypophosphatemic rickets

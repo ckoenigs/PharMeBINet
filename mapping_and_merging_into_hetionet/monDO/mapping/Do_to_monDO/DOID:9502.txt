@@ -1,0 +1,3 @@
+DOID:9502	chronic eosinophilic pneumonia
+monDO ID 	 name 
+MONDO:0004806	chronic eosinophilic pneumonia

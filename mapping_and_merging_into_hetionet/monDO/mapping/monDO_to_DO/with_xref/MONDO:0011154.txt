@@ -1,0 +1,3 @@
+MONDO:0011154	acrofacial dysostosis, Palagonia type
+DOID 	 name 
+DOID:0060385	acrofacial dysostosis, Patagonia type

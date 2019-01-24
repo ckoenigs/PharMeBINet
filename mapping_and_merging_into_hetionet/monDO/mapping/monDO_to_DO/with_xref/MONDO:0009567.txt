@@ -1,0 +1,3 @@
+MONDO:0009567	Marinesco-SjC6gren syndrome
+DOID 	 name 
+DOID:0080195	Marinesco-Sjogren syndrome

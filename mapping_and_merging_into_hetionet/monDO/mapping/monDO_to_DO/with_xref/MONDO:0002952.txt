@@ -1,0 +1,3 @@
+MONDO:0002952	follicular basal cell carcinoma
+DOID 	 name 
+DOID:4295	follicular basal cell carcinoma

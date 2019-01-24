@@ -1,0 +1,3 @@
+MONDO:0003448	spiradenoma
+DOID 	 name 
+DOID:5444	spiradenoma

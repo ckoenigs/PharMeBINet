@@ -1,0 +1,3 @@
+DOID:0110737	neurodegeneration with brain iron accumulation 3
+monDO ID 	 name 
+MONDO:0011638	neuroferritinopathy

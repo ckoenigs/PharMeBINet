@@ -1,0 +1,3 @@
+DOID:0050578	occult macular dystrophy
+monDO ID 	 name 
+MONDO:0013316	occult macular dystrophy

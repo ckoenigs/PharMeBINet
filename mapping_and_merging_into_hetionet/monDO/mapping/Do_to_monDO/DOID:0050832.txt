@@ -1,0 +1,3 @@
+DOID:0050832	pyrimidine metabolic disorder
+monDO ID 	 name 
+MONDO:0019238	inborn disorder of pyrimidine metabolism

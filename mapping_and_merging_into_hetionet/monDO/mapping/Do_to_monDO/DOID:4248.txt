@@ -1,0 +1,3 @@
+DOID:4248	coronary stenosis
+monDO ID 	 name 
+MONDO:0006715	coronary stenosis

@@ -1,0 +1,3 @@
+DOID:3877	functional colonic disease
+monDO ID 	 name 
+MONDO:0002802	functional colonic disease

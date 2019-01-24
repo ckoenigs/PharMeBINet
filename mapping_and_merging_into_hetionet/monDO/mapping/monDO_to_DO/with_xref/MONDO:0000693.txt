@@ -1,0 +1,3 @@
+MONDO:0000693	bipolar ll disorder
+DOID 	 name 
+DOID:0060166	bipolar ll disorder

@@ -1,0 +1,3 @@
+MONDO:0011181	fibrosis of extraocular muscles, congenital, 2
+DOID 	 name 
+DOID:0080143	congenital fibrosis of the extraocular muscles

@@ -1,0 +1,3 @@
+DOID:0110956	Waardenburg syndrome type 2E
+monDO ID 	 name 
+MONDO:0012698	Waardenburg syndrome type 2E

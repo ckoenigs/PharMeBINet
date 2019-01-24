@@ -1,0 +1,3 @@
+MONDO:0004577	corneal ulcer
+DOID 	 name 
+DOID:8463	corneal ulcer

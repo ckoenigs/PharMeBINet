@@ -1,0 +1,3 @@
+MONDO:0014345	retinitis pigmentosa 69
+DOID 	 name 
+DOID:0110410	retinitis pigmentosa 69

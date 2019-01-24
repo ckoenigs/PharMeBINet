@@ -1,0 +1,3 @@
+MONDO:0011099	Athabaskan brainstem dysgenesis syndrome
+DOID 	 name 
+DOID:0050682	Athabaskan brainstem dysgenesis syndrome

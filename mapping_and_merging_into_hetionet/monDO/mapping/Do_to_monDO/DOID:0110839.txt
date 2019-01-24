@@ -1,0 +1,3 @@
+DOID:0110839	Usher syndrome type 2C
+monDO ID 	 name 
+MONDO:0011558	Usher syndrome type 2C

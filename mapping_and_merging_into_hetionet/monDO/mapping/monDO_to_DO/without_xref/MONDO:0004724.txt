@@ -1,0 +1,3 @@
+MONDO:0004724	submandibular gland cancer
+DOID 	 name 
+DOID:9173	submandibular gland cancer

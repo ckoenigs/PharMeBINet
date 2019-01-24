@@ -1,0 +1,3 @@
+MONDO:0013687	autosomal recessive spinocerebellar ataxia 12
+DOID 	 name 
+DOID:0080060	autosomal recessive spinocerebellar ataxia 12

@@ -1,0 +1,3 @@
+DOID:0090031	D-bifunctional protein deficiency
+monDO ID 	 name 
+MONDO:0009855	d-bifunctional protein deficiency

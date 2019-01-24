@@ -1,0 +1,3 @@
+MONDO:0002009	major depressive disorder
+DOID 	 name 
+DOID:1470	major depressive disorder

@@ -1,0 +1,3 @@
+MONDO:0012297	SPOAN syndrome
+DOID 	 name 
+DOID:0060491	SPOAN syndrome

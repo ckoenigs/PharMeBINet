@@ -1,0 +1,3 @@
+MONDO:0004105	childhood epithelioid sarcoma
+DOID 	 name 
+DOID:7095	pediatric epithelioid sarcoma

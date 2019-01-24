@@ -1,0 +1,3 @@
+MONDO:0002240	acute perichondritis of pinna
+DOID 	 name 
+DOID:221	acute perichondritis of pinna

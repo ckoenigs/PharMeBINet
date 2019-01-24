@@ -1,0 +1,3 @@
+MONDO:0005096	squamous cell carcinoma
+DOID 	 name 
+DOID:1749	squamous cell carcinoma

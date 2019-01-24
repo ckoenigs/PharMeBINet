@@ -1,0 +1,3 @@
+DOID:3142	leg dermatosis
+monDO ID 	 name 
+MONDO:0006569	leg dermatosis

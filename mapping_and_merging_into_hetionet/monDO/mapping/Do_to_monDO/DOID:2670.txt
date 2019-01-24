@@ -1,0 +1,3 @@
+DOID:2670	transitional papilloma
+monDO ID 	 name 
+MONDO:0005605	transitional cell papilloma

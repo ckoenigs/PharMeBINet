@@ -1,0 +1,3 @@
+MONDO:0019623	hereditary angioedema
+DOID 	 name 
+DOID:14735	hereditary angioedema

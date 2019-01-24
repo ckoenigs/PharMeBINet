@@ -1,0 +1,3 @@
+MONDO:0012336	cataract 22 multiple types
+DOID 	 name 
+DOID:0110268	cataract 22 multiple types

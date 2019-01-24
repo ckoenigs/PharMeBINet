@@ -1,0 +1,3 @@
+DOID:11864	peripheral focal chorioretinitis
+monDO ID 	 name 
+MONDO:0001393	peripheral focal chorioretinitis

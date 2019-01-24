@@ -1,0 +1,3 @@
+MONDO:0014733	Charcot-Marie-tooth disease type 4K
+DOID 	 name 
+DOID:0110187	Charcot-Marie-Tooth disease type 4K

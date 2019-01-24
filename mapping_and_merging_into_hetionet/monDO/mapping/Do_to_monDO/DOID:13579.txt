@@ -1,0 +1,3 @@
+DOID:13579	kwashiorkor
+monDO ID 	 name 
+MONDO:0006826	kwashiorkor

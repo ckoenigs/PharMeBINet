@@ -1,0 +1,3 @@
+MONDO:0012159	LNCR1
+DOID 	 name 
+DOID:1324	lung cancer

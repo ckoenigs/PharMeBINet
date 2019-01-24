@@ -1,0 +1,3 @@
+DOID:0110581	autosomal dominant nonsyndromic deafness 56
+monDO ID 	 name 
+MONDO:0014283	autosomal dominant nonsyndromic deafness 56

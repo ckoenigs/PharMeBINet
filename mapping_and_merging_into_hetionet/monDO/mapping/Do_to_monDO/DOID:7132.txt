@@ -1,0 +1,3 @@
+DOID:7132	urinary bladder small cell neuroendocrine carcinoma
+monDO ID 	 name 
+MONDO:0004114	urinary bladder small cell neuroendocrine carcinoma

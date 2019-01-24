@@ -1,0 +1,3 @@
+MONDO:0009479	Johanson-Blizzard syndrome
+DOID 	 name 
+DOID:14694	Johanson-Blizzard syndrome

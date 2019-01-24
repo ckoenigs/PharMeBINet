@@ -1,0 +1,3 @@
+DOID:0060126	alpha chain disease
+monDO ID 	 name 
+MONDO:0015045	alpha-heavy chain disease

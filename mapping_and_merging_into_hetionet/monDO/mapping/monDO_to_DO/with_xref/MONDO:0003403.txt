@@ -1,0 +1,3 @@
+MONDO:0003403	testicular non-seminomatous germ cell cancer
+DOID 	 name 
+DOID:5345	testicular non-seminomatous germ cell cancer

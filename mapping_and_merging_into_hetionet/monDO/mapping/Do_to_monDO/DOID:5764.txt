@@ -1,0 +1,3 @@
+DOID:5764	lung meningioma
+monDO ID 	 name 
+MONDO:0003638	lung meningioma

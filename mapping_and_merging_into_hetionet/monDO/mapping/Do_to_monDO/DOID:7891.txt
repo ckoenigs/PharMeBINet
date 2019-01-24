@@ -1,0 +1,3 @@
+DOID:7891	testicular spermatocytic seminoma
+monDO ID 	 name 
+MONDO:0020513	spermatocytic seminoma

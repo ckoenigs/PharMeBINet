@@ -1,0 +1,4 @@
+MONDO:0002363	papilloma
+DOID 	 name 
+DOID:2615	papilloma
+DOID:139	squamous cell papilloma

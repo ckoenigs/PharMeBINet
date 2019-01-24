@@ -1,0 +1,3 @@
+DOID:0050534	congenital stationary night blindness
+monDO ID 	 name 
+MONDO:0016293	congenital stationary night blindness

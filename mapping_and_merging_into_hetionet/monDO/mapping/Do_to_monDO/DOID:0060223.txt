@@ -1,0 +1,3 @@
+DOID:0060223	agraphia
+monDO ID 	 name 
+MONDO:0000716	agraphia

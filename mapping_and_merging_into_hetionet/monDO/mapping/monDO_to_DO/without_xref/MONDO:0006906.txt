@@ -1,0 +1,3 @@
+MONDO:0006906	pigmented villonodular synovitis
+DOID 	 name 
+DOID:2702	pigmented villonodular synovitis

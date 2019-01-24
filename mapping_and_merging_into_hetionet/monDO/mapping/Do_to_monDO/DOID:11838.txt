@@ -1,0 +1,3 @@
+DOID:11838	penis sarcoma
+monDO ID 	 name 
+MONDO:0001387	penis sarcoma

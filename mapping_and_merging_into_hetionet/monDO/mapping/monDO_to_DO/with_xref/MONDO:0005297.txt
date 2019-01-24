@@ -1,0 +1,3 @@
+MONDO:0005297	urethritis (disease)
+DOID 	 name 
+DOID:1343	urethritis

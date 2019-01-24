@@ -1,0 +1,3 @@
+MONDO:0007181	axial osteomalacia
+DOID 	 name 
+DOID:0080039	axial osteomalacia

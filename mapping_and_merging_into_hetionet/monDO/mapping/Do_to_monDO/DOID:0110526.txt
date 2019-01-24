@@ -1,0 +1,3 @@
+DOID:0110526	autosomal recessive nonsyndromic deafness 79
+monDO ID 	 name 
+MONDO:0013215	autosomal recessive nonsyndromic deafness 79

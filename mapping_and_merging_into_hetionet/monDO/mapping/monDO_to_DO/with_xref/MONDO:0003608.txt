@@ -1,0 +1,3 @@
+MONDO:0003608	optic atrophy
+DOID 	 name 
+DOID:5723	optic atrophy

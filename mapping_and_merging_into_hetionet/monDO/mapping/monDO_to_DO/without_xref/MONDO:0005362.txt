@@ -1,0 +1,3 @@
+MONDO:0005362	erectile dysfunction (disease)
+DOID 	 name 
+DOID:1875	impotence

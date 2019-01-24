@@ -1,0 +1,3 @@
+DOID:0110213	isolated cleft palate
+monDO ID 	 name 
+MONDO:0007336	isolated cleft palate

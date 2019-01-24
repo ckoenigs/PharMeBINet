@@ -1,0 +1,3 @@
+DOID:7930	glandular-alveolar pattern testicular yolk sac tumor
+monDO ID 	 name 
+MONDO:0004402	testicular yolk sac tumor, glandular-alveolar pattern

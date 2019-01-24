@@ -1,0 +1,3 @@
+MONDO:0014379	ADNP-related multiple congenital anomalies-intellectual disability-autism spectrum disorder
+DOID 	 name 
+DOID:0060307	autosomal dominant non-syndromic intellectual disability

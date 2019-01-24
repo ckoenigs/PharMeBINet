@@ -1,0 +1,3 @@
+MONDO:0003666	fallopian tube endometrioid adenocarcinoma
+DOID 	 name 
+DOID:5831	fallopian tube endometrioid adenocarcinoma

@@ -1,0 +1,3 @@
+MONDO:0000763	epithelial and subepithelial dystrophy
+DOID 	 name 
+DOID:0060440	epithelial and subepithelial dystrophy

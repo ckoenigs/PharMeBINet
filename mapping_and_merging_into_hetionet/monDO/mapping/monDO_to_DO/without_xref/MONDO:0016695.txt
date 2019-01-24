@@ -1,0 +1,3 @@
+MONDO:0016695	oligodendroglioma
+DOID 	 name 
+DOID:3181	oligodendroglioma

@@ -1,0 +1,3 @@
+DOID:133	vaginal Mullerian papilloma
+monDO ID 	 name 
+MONDO:0001680	vaginal mullerian papilloma

@@ -1,0 +1,3 @@
+MONDO:0013027	posterior amorphous corneal dystrophy
+DOID 	 name 
+DOID:0060452	posterior amorphous corneal dystrophy

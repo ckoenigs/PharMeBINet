@@ -1,0 +1,3 @@
+DOID:4829	adenosquamous cell lung carcinoma
+monDO ID 	 name 
+MONDO:0004973	adenosquamous lung carcinoma

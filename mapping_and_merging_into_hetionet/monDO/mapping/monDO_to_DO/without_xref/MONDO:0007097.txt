@@ -1,0 +1,3 @@
+MONDO:0007097	Finnish type amyloidosis
+DOID 	 name 
+DOID:0050637	Finnish type amyloidosis

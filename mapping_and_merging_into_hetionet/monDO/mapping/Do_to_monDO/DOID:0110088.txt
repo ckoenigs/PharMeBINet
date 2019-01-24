@@ -1,0 +1,3 @@
+DOID:0110088	asphyxiating thoracic dystrophy 4
+monDO ID 	 name 
+MONDO:0013441	asphyxiating thoracic dystrophy 4

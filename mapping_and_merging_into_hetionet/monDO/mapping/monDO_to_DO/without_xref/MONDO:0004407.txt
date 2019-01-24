@@ -1,0 +1,3 @@
+MONDO:0004407	stroma-dominant and stroma-poor composite ganglioneuroblastoma
+DOID 	 name 
+DOID:7949	stroma-dominant and stroma-poor composite ganglioneuroblastoma

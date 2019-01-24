@@ -1,0 +1,3 @@
+DOID:7600	infiltrating bladder lymphoepithelioma-like carcinoma
+monDO ID 	 name 
+MONDO:0004299	infiltrating bladder lymphoepithelioma-like carcinoma

@@ -1,0 +1,3 @@
+MONDO:0018307	neurodegeneration with brain iron accumulation
+DOID 	 name 
+DOID:0110734	neurodegeneration with brain iron accumulation

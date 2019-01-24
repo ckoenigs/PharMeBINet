@@ -1,0 +1,3 @@
+MONDO:0003929	micropapillomatosis labialis
+DOID 	 name 
+DOID:6569	micropapillomatosis labialis

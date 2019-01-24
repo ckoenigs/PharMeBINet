@@ -1,0 +1,3 @@
+DOID:7160	rectum leiomyoma
+monDO ID 	 name 
+MONDO:0004125	rectum leiomyoma

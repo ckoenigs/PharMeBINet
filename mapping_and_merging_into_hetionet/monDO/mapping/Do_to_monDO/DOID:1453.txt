@@ -1,0 +1,3 @@
+DOID:1453	atrophic glossitis
+monDO ID 	 name 
+MONDO:0001989	atrophic glossitis

@@ -1,0 +1,3 @@
+MONDO:0001498	varicocele
+DOID 	 name 
+DOID:12337	varicocele

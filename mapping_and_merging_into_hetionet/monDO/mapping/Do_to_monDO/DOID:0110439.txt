@@ -1,0 +1,3 @@
+DOID:0110439	dilated cardiomyopathy 1P
+monDO ID 	 name 
+MONDO:0012362	dilated cardiomyopathy 1P

@@ -1,0 +1,3 @@
+DOID:2731	vesiculobullous skin disease
+monDO ID 	 name 
+MONDO:0006617	vesiculobullous skin disease

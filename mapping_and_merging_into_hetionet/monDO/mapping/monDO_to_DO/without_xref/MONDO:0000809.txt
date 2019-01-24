@@ -1,0 +1,3 @@
+MONDO:0000809	purpura fulminans
+DOID 	 name 
+DOID:0060538	purpura fulminans

@@ -1,0 +1,3 @@
+MONDO:0019056	neuromuscular disease
+DOID 	 name 
+DOID:440	neuromuscular disease

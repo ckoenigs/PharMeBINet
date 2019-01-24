@@ -1,0 +1,3 @@
+DOID:5634	adenosquamous prostate carcinoma
+monDO ID 	 name 
+MONDO:0003558	adenosquamous prostate carcinoma

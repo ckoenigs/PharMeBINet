@@ -1,0 +1,3 @@
+MONDO:0012840	inflammatory bowel disease 17
+DOID 	 name 
+DOID:0110883	inflammatory bowel disease 17

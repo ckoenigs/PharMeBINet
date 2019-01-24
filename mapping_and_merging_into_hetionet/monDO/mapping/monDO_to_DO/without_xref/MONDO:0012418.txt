@@ -1,0 +1,3 @@
+MONDO:0012418	autosomal recessive nonsyndromic deafness 62
+DOID 	 name 
+DOID:0110514	autosomal recessive nonsyndromic deafness 62

@@ -1,0 +1,3 @@
+MONDO:0002209	heel spur
+DOID 	 name 
+DOID:210	heel spur

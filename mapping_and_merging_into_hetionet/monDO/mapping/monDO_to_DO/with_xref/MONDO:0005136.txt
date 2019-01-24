@@ -1,0 +1,3 @@
+MONDO:0005136	malaria
+DOID 	 name 
+DOID:12365	malaria

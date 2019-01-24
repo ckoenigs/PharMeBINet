@@ -1,0 +1,3 @@
+DOID:2088	outlet dysfunction constipation
+monDO ID 	 name 
+MONDO:0002202	outlet dysfunction constipation

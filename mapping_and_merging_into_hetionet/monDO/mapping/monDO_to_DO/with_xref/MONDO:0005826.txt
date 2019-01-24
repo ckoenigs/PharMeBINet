@@ -1,0 +1,3 @@
+MONDO:0005826	lipid pneumonia
+DOID 	 name 
+DOID:3241	lipid pneumonia

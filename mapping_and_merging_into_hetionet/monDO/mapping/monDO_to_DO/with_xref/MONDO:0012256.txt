@@ -1,0 +1,3 @@
+MONDO:0012256	hereditary spastic paraplegia 28
+DOID 	 name 
+DOID:0110779	hereditary spastic paraplegia 28

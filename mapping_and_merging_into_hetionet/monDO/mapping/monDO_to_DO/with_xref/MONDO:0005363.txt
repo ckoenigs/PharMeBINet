@@ -1,0 +1,3 @@
+MONDO:0005363	focal segmental glomerulosclerosis
+DOID 	 name 
+DOID:1312	focal segmental glomerulosclerosis

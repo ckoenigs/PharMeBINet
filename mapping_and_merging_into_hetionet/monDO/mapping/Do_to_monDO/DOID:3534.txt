@@ -1,0 +1,3 @@
+DOID:3534	Lafora disease
+monDO ID 	 name 
+MONDO:0009697	Lafora disease

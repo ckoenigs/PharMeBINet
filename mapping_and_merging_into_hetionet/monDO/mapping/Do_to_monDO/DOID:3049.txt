@@ -1,0 +1,3 @@
+DOID:3049	Churg-Strauss syndrome
+monDO ID 	 name 
+MONDO:0015943	eosinophilic granulomatosis with polyangiitis

@@ -1,0 +1,3 @@
+MONDO:0004290	subglottis verrucous carcinoma
+DOID 	 name 
+DOID:7584	subglottis verrucous carcinoma

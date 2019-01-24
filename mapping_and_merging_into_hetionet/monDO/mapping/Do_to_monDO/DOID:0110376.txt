@@ -1,0 +1,3 @@
+DOID:0110376	retinitis pigmentosa 41
+monDO ID 	 name 
+MONDO:0012796	retinitis pigmentosa 41

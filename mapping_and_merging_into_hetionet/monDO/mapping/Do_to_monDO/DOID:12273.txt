@@ -1,0 +1,3 @@
+DOID:12273	anisometropia
+monDO ID 	 name 
+MONDO:0001478	anisometropia (disease)

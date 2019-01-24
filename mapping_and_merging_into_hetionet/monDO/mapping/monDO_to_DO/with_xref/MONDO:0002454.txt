@@ -1,0 +1,5 @@
+MONDO:0002454	thyroid adenoma (disease)
+DOID 	 name 
+DOID:3963	thyroid carcinoma
+DOID:2891	thyroid adenoma
+DOID:1781	thyroid cancer

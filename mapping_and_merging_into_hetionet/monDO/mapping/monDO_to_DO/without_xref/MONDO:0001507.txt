@@ -1,0 +1,3 @@
+MONDO:0001507	viral labyrinthitis
+DOID 	 name 
+DOID:12357	viral labyrinthitis

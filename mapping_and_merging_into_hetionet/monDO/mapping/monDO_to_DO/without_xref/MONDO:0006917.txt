@@ -1,0 +1,3 @@
+MONDO:0006917	posterior cerebral artery infarction
+DOID 	 name 
+DOID:3821	posterior cerebral artery infarction

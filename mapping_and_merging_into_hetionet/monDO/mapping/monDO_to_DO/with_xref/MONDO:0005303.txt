@@ -1,0 +1,5 @@
+MONDO:0005303	drug dependence
+DOID 	 name 
+DOID:9974	drug dependence
+DOID:303	substance-related disorder
+DOID:302	substance abuse

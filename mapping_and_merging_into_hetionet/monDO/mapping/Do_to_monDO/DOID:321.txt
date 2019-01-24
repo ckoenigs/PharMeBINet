@@ -1,0 +1,3 @@
+DOID:321	tropical spastic paraparesis
+monDO ID 	 name 
+MONDO:0008039	tropical spastic paraparesis

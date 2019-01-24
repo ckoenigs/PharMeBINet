@@ -1,0 +1,3 @@
+MONDO:0009107	diastrophic dysplasia
+DOID 	 name 
+DOID:14687	diastrophic dysplasia

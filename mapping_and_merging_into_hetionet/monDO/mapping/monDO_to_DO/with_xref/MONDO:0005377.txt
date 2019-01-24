@@ -1,0 +1,3 @@
+MONDO:0005377	nephrotic syndrome
+DOID 	 name 
+DOID:1184	nephrotic syndrome

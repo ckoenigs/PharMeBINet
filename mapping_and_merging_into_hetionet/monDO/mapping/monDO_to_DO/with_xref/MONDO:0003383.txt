@@ -1,0 +1,3 @@
+MONDO:0003383	fallopian tube clear cell adenocarcinoma
+DOID 	 name 
+DOID:5301	fallopian tube clear cell adenocarcinoma

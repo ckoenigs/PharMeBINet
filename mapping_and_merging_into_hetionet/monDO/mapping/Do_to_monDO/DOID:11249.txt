@@ -1,0 +1,3 @@
+DOID:11249	vitamin K deficiency hemorrhagic disease
+monDO ID 	 name 
+MONDO:0001244	vitamin K deficiency hemorrhagic disease

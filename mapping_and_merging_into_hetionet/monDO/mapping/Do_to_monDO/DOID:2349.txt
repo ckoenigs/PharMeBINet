@@ -1,0 +1,3 @@
+DOID:2349	arteriosclerosis
+monDO ID 	 name 
+MONDO:0002277	arteriosclerosis (disease)

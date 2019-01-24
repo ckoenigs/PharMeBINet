@@ -1,0 +1,3 @@
+DOID:3480	uveal disease
+monDO ID 	 name 
+MONDO:0002661	uveal disease

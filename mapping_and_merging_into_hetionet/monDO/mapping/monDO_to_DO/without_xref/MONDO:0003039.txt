@@ -1,0 +1,3 @@
+MONDO:0003039	nominal aphasia
+DOID 	 name 
+DOID:4541	nominal aphasia

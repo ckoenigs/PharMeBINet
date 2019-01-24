@@ -1,0 +1,3 @@
+DOID:3683	lung benign neoplasm
+monDO ID 	 name 
+MONDO:0002732	lung benign neoplasm

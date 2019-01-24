@@ -1,0 +1,3 @@
+DOID:562	third cranial nerve disease
+monDO ID 	 name 
+MONDO:0003546	third cranial nerve disease

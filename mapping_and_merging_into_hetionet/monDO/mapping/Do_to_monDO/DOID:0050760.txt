@@ -1,0 +1,3 @@
+DOID:0050760	X-linked myopathy with excessive autophagy
+monDO ID 	 name 
+MONDO:0010684	X-linked myopathy with excessive autophagy

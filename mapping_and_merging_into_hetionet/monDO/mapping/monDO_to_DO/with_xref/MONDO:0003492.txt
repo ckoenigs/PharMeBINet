@@ -1,0 +1,3 @@
+MONDO:0003492	lacrimal gland squamous cell carcinoma
+DOID 	 name 
+DOID:5529	lacrimal gland squamous cell carcinoma

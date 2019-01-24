@@ -1,0 +1,3 @@
+MONDO:0004872	hemorrhoid
+DOID 	 name 
+DOID:9746	hemorrhoid

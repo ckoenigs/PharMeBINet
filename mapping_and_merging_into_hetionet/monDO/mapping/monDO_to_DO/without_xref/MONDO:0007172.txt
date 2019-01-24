@@ -1,0 +1,3 @@
+MONDO:0007172	atrial heart septal defect 1
+DOID 	 name 
+DOID:0110106	atrial heart septal defect 1

@@ -1,0 +1,3 @@
+MONDO:0005388	primary biliary cholangitis
+DOID 	 name 
+DOID:12236	primary biliary cirrhosis

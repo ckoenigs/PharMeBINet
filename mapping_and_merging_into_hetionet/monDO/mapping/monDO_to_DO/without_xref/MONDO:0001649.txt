@@ -1,0 +1,3 @@
+MONDO:0001649	fungal esophagitis
+DOID 	 name 
+DOID:13147	fungal esophagitis

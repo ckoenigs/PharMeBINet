@@ -1,0 +1,3 @@
+MONDO:0001288	endometriosis of rectovaginal septum and vagina
+DOID 	 name 
+DOID:11431	endometriosis of rectovaginal septum and vagina

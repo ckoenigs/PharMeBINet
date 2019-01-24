@@ -1,0 +1,3 @@
+MONDO:0013201	Waardenburg syndrome type 4B
+DOID 	 name 
+DOID:0110954	Waardenburg syndrome type 4B

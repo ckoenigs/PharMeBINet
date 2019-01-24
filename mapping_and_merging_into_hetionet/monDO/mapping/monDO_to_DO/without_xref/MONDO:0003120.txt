@@ -1,0 +1,3 @@
+MONDO:0003120	mixed testicular germ cell tumor
+DOID 	 name 
+DOID:4743	mixed testicular germ cell tumor

@@ -1,0 +1,3 @@
+MONDO:0004997	chondroblastoma (disease)
+DOID 	 name 
+DOID:2649	chondroblastoma

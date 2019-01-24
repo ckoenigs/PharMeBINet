@@ -1,0 +1,4 @@
+MONDO:0001873	geniculate ganglionitis
+DOID 	 name 
+DOID:14075	geniculate ganglionitis
+DOID:1756	facial nerve disease

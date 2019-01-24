@@ -1,0 +1,3 @@
+MONDO:0004780	strictly posterior acute myocardial infarction
+DOID 	 name 
+DOID:9407	strictly posterior acute myocardial infarction

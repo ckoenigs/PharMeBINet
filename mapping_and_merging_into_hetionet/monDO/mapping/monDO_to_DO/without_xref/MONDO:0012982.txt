@@ -1,0 +1,3 @@
+MONDO:0012982	episodic ataxia type 6
+DOID 	 name 
+DOID:0050994	episodic ataxia type 6

@@ -1,0 +1,3 @@
+DOID:3211	lysosomal storage disease
+monDO ID 	 name 
+MONDO:0002561	lysosomal storage disease

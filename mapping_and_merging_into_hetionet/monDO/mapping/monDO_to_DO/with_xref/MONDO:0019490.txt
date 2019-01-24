@@ -1,0 +1,3 @@
+MONDO:0019490	progressive familial heart block
+DOID 	 name 
+DOID:0111073	progressive familial heart block

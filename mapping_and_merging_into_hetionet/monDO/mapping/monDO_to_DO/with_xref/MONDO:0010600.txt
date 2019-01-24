@@ -1,0 +1,3 @@
+MONDO:0010600	granulomatous disease, chronic, X-linked
+DOID 	 name 
+DOID:3265	chronic granulomatous disease

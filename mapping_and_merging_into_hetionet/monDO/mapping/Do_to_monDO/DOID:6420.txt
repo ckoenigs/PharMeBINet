@@ -1,0 +1,3 @@
+DOID:6420	pulmonary valve stenosis
+monDO ID 	 name 
+MONDO:0006936	pulmonary valve stenosis

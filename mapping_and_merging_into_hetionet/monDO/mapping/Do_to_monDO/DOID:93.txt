@@ -1,0 +1,3 @@
+DOID:93	language disorder
+monDO ID 	 name 
+MONDO:0004750	language disorder

@@ -1,0 +1,3 @@
+MONDO:0000602	autoimmune disease of blood
+DOID 	 name 
+DOID:0060050	autoimmune disease of blood

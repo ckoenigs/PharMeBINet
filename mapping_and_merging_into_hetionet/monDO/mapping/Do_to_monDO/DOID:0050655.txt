@@ -1,0 +1,3 @@
+DOID:0050655	Bamforth-Lazarus syndrome
+monDO ID 	 name 
+MONDO:0009437	Bamforth-Lazarus syndrome

@@ -1,0 +1,3 @@
+MONDO:0014341	complex cortical dysplasia with other brain malformations 6
+DOID 	 name 
+DOID:0090136	complex cortical dysplasia with other brain malformations 6

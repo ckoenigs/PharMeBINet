@@ -1,0 +1,3 @@
+MONDO:0005614	pancreatic adenosquamous carcinoma
+DOID 	 name 
+DOID:5637	adenosquamous pancreas carcinoma

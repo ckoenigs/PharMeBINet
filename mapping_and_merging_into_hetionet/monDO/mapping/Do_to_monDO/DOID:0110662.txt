@@ -1,0 +1,3 @@
+DOID:0110662	congenital myasthenic syndrome 1B
+monDO ID 	 name 
+MONDO:0012156	myasthenic syndrome, congenital, 1B, fast-channel

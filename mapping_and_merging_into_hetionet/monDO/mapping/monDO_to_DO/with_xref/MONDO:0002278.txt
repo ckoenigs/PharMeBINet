@@ -1,0 +1,4 @@
+MONDO:0002278	benign colon neoplasm
+DOID 	 name 
+DOID:219	colon cancer
+DOID:235	colonic benign neoplasm

@@ -1,0 +1,3 @@
+DOID:248	trachea leiomyoma
+monDO ID 	 name 
+MONDO:0002318	trachea leiomyoma

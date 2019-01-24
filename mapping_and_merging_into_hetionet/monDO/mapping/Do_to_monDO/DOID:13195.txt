@@ -1,0 +1,3 @@
+DOID:13195	nontoxic goiter
+monDO ID 	 name 
+MONDO:0001658	nontoxic goiter

@@ -1,0 +1,4 @@
+MONDO:0005265	inflammatory bowel disease
+DOID 	 name 
+DOID:9778	irritable bowel syndrome
+DOID:0050589	inflammatory bowel disease

@@ -1,0 +1,3 @@
+MONDO:0003084	uremic neuropathy
+DOID 	 name 
+DOID:4675	uremic neuropathy

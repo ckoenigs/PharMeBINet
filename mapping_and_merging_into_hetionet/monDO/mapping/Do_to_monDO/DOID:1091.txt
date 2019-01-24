@@ -1,0 +1,3 @@
+DOID:1091	tooth disease
+monDO ID 	 name 
+MONDO:0006999	tooth disease

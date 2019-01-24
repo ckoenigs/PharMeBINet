@@ -1,0 +1,3 @@
+MONDO:0007988	autosomal dominant microcephaly
+DOID 	 name 
+DOID:14725	autosomal dominant microcephaly

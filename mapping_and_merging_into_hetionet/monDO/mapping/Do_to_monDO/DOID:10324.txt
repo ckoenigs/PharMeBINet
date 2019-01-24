@@ -1,0 +1,3 @@
+DOID:10324	anthracosilicosis
+monDO ID 	 name 
+MONDO:0006653	anthracosilicosis

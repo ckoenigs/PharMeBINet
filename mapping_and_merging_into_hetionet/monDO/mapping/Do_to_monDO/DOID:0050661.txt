@@ -1,0 +1,3 @@
+DOID:0050661	vitelliform macular dystrophy
+monDO ID 	 name 
+MONDO:0000390	vitelliform macular dystrophy

@@ -1,0 +1,3 @@
+DOID:1697	ichthyosis
+monDO ID 	 name 
+MONDO:0019269	ichthyosis (disease)

@@ -1,0 +1,3 @@
+MONDO:0009885	Scott syndrome
+DOID 	 name 
+DOID:0111052	Scott syndrome

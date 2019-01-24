@@ -1,0 +1,3 @@
+MONDO:0002800	thrombophlebitis
+DOID 	 name 
+DOID:3875	thrombophlebitis

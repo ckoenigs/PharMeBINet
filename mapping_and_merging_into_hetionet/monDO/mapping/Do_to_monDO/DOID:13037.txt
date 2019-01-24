@@ -1,0 +1,3 @@
+DOID:13037	mechanical lagophthalmos
+monDO ID 	 name 
+MONDO:0001622	mechanical lagophthalmos

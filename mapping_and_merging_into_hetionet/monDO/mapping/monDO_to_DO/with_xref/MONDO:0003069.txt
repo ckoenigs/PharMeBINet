@@ -1,0 +1,3 @@
+MONDO:0003069	suppurative lymphadenitis
+DOID 	 name 
+DOID:4639	suppurative lymphadenitis

@@ -1,0 +1,3 @@
+MONDO:0003330	urinary tract obstruction
+DOID 	 name 
+DOID:5200	urinary tract obstruction

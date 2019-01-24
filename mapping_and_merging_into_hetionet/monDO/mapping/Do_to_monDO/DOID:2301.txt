@@ -1,0 +1,3 @@
+DOID:2301	atrophy of prostate
+monDO ID 	 name 
+MONDO:0002264	atrophy of prostate

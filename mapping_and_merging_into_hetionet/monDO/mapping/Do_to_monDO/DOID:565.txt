@@ -1,0 +1,3 @@
+DOID:565	bilateral hypoactive labyrinth
+monDO ID 	 name 
+MONDO:0003567	bilateral hypoactive labyrinth

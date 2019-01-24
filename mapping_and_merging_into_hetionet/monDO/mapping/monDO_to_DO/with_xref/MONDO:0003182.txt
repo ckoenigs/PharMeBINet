@@ -1,0 +1,5 @@
+MONDO:0003182	anterior horn disease
+DOID 	 name 
+DOID:231	motor neuron disease
+DOID:4873	anterior horn cell disease
+DOID:230	lateral sclerosis

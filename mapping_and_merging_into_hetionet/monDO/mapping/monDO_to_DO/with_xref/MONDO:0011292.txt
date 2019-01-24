@@ -1,0 +1,3 @@
+MONDO:0011292	dermatitis, atopic
+DOID 	 name 
+DOID:3310	atopic dermatitis

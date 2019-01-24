@@ -1,0 +1,3 @@
+MONDO:0002155	cholecystitis
+DOID 	 name 
+DOID:1949	cholecystitis

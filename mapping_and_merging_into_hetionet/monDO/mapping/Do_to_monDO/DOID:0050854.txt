@@ -1,0 +1,3 @@
+DOID:0050854	Muckle-Wells syndrome
+monDO ID 	 name 
+MONDO:0008633	Muckle-Wells syndrome

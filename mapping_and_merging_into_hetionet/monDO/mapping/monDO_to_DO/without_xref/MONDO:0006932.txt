@@ -1,0 +1,3 @@
+MONDO:0006932	pulmonary edema
+DOID 	 name 
+DOID:11396	pulmonary edema

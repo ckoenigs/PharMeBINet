@@ -1,0 +1,3 @@
+MONDO:0014180	epidermolysis bullosa simplex due to BP230 deficiency
+DOID 	 name 
+DOID:4644	epidermolysis bullosa simplex

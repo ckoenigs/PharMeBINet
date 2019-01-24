@@ -1,0 +1,3 @@
+DOID:3127	proctitis
+monDO ID 	 name 
+MONDO:0005538	proctitis

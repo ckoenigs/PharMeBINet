@@ -1,0 +1,3 @@
+DOID:4778	proliferative glomerulonephritis
+monDO ID 	 name 
+MONDO:0003134	proliferative glomerulonephritis

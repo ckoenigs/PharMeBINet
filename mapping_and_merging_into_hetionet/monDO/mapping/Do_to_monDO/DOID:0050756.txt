@@ -1,0 +1,3 @@
+DOID:0050756	Batten disease
+monDO ID 	 name 
+MONDO:0019262	juvenile neuronal ceroid lipofuscinosis

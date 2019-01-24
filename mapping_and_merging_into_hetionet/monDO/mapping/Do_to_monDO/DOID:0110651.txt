@@ -1,0 +1,3 @@
+DOID:0110651	long QT syndrome 10
+monDO ID 	 name 
+MONDO:0012737	long QT syndrome 10

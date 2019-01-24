@@ -1,0 +1,3 @@
+DOID:13001	carotid stenosis
+monDO ID 	 name 
+MONDO:0001612	carotid stenosis

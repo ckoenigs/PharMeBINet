@@ -1,0 +1,3 @@
+DOID:3494	bile duct signet ring cell carcinoma
+monDO ID 	 name 
+MONDO:0002664	bile duct signet ring cell carcinoma

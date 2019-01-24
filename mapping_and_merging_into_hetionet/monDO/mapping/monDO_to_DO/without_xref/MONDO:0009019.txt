@@ -1,0 +1,3 @@
+MONDO:0009019	congenital hereditary endothelial dystrophy of cornea
+DOID 	 name 
+DOID:0060649	congenital hereditary endothelial dystrophy of cornea

@@ -1,0 +1,3 @@
+MONDO:0010598	glycogen storage disease IXa
+DOID 	 name 
+DOID:0111042	glycogen storage disease IXa

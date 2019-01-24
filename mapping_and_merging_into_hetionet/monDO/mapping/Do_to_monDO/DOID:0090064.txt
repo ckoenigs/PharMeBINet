@@ -1,0 +1,3 @@
+DOID:0090064	familial cold autoinflammatory syndrome 3
+monDO ID 	 name 
+MONDO:0013766	familial cold autoinflammatory syndrome 3

@@ -1,0 +1,3 @@
+DOID:5704	sclerosing liposarcoma
+monDO ID 	 name 
+MONDO:0003595	sclerosing liposarcoma

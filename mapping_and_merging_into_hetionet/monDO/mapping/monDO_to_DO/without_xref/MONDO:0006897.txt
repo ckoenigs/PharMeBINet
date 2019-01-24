@@ -1,0 +1,3 @@
+MONDO:0006897	periapical granuloma
+DOID 	 name 
+DOID:4617	periapical granuloma

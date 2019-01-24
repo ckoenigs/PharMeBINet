@@ -1,0 +1,3 @@
+MONDO:0012149	attention deficit-hyperactivity disorder, susceptibility to, 1
+DOID 	 name 
+DOID:1094	attention deficit hyperactivity disorder

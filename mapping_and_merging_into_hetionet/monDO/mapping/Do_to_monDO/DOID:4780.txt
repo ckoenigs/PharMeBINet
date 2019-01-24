@@ -1,0 +1,3 @@
+DOID:4780	anti-basement membrane glomerulonephritis
+monDO ID 	 name 
+MONDO:0003136	anti-basement membrane glomerulonephritis

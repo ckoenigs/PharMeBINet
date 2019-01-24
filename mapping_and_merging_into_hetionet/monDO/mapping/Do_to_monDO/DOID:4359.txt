@@ -1,0 +1,3 @@
+DOID:4359	amelanotic melanoma
+monDO ID 	 name 
+MONDO:0002971	amelanotic melanoma

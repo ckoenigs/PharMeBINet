@@ -1,0 +1,3 @@
+MONDO:0002325	tooth erosion
+DOID 	 name 
+DOID:2498	tooth erosion

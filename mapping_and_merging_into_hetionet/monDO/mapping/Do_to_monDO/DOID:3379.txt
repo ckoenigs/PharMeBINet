@@ -1,0 +1,3 @@
+DOID:3379	metachronous osteosarcoma of the bone
+monDO ID 	 name 
+MONDO:0002632	metachronous osteosarcoma of the bone

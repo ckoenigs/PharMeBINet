@@ -1,0 +1,3 @@
+DOID:9281	phenylketonuria
+monDO ID 	 name 
+MONDO:0009861	phenylketonuria

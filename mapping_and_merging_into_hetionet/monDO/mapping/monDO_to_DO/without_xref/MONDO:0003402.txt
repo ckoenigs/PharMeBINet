@@ -1,0 +1,3 @@
+MONDO:0003402	testicular yolk sac tumor
+DOID 	 name 
+DOID:5344	testicular yolk sac tumor

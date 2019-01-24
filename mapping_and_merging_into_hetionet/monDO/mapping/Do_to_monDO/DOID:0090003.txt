@@ -1,0 +1,3 @@
+DOID:0090003	agenesis of the corpus callosum with peripheral neuropathy
+monDO ID 	 name 
+MONDO:0000902	agenesis of the corpus callosum with peripheral neuropathy

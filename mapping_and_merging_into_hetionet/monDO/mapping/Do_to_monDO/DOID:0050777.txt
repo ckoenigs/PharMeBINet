@@ -1,0 +1,3 @@
+DOID:0050777	Joubert syndrome
+monDO ID 	 name 
+MONDO:0018772	Joubert syndrome

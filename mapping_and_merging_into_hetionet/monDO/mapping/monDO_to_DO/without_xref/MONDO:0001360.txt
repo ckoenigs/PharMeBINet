@@ -1,0 +1,3 @@
+MONDO:0001360	blind hypotensive eye
+DOID 	 name 
+DOID:11766	blind hypotensive eye

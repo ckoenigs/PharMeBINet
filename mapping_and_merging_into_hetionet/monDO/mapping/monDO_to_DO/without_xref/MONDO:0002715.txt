@@ -1,0 +1,3 @@
+MONDO:0002715	uterine cancer
+DOID 	 name 
+DOID:363	uterine cancer

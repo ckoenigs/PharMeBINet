@@ -1,0 +1,3 @@
+MONDO:0004277	gonorrhea
+DOID 	 name 
+DOID:7551	gonorrhea

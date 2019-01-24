@@ -1,0 +1,3 @@
+MONDO:0000771	allergic respiratory disease
+DOID 	 name 
+DOID:0060496	respiratory allergy

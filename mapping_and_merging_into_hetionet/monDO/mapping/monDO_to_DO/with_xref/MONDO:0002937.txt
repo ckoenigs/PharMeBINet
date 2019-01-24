@@ -1,0 +1,3 @@
+MONDO:0002937	nodular basal cell carcinoma
+DOID 	 name 
+DOID:4280	nodular basal cell carcinoma

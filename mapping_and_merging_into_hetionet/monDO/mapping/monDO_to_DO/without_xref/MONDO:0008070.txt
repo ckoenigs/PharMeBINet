@@ -1,0 +1,3 @@
+MONDO:0008070	nemaline myopathy 3
+DOID 	 name 
+DOID:0110927	nemaline myopathy 3

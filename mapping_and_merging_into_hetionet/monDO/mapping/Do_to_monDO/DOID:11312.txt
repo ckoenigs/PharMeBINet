@@ -1,0 +1,3 @@
+DOID:11312	Mobitz type II atrioventricular block
+monDO ID 	 name 
+MONDO:0001261	Mobitz type II atrioventricular block

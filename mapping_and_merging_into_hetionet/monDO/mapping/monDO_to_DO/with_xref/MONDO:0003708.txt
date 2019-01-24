@@ -1,0 +1,3 @@
+MONDO:0003708	extrahepatic bile duct small cell adenocarcinoma
+DOID 	 name 
+DOID:5926	extrahepatic bile duct small cell adenocarcinoma

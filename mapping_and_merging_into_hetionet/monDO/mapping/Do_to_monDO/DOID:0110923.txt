@@ -1,0 +1,3 @@
+DOID:0110923	familial hemophagocytic lymphohistiocytosis 3
+monDO ID 	 name 
+MONDO:0012146	familial hemophagocytic lymphohistiocytosis 3

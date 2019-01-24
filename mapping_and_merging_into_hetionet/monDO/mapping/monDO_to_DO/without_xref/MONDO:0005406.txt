@@ -1,0 +1,3 @@
+MONDO:0005406	gestational diabetes
+DOID 	 name 
+DOID:11714	gestational diabetes

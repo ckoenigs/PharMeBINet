@@ -1,0 +1,3 @@
+DOID:0060741	methylmalonic acidemia due to transcobalamin receptor defect
+monDO ID 	 name 
+MONDO:0013341	methylmalonic acidemia due to transcobalamin receptor defect

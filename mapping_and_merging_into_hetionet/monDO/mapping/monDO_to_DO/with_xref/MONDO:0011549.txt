@@ -1,0 +1,3 @@
+MONDO:0011549	hypotrichosis 1
+DOID 	 name 
+DOID:0110698	hypotrichosis 1

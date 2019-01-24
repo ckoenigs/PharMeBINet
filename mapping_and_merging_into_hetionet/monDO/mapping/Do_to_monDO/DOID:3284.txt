@@ -1,0 +1,3 @@
+DOID:3284	thymic carcinoma
+monDO ID 	 name 
+MONDO:0006451	thymic carcinoma

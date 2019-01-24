@@ -1,0 +1,3 @@
+DOID:10486	intestinal atresia
+monDO ID 	 name 
+MONDO:0001045	intestinal atresia (disease)

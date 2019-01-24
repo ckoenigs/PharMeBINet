@@ -1,0 +1,3 @@
+MONDO:0003198	small intestine adenocarcinoma
+DOID 	 name 
+DOID:4906	small intestine adenocarcinoma

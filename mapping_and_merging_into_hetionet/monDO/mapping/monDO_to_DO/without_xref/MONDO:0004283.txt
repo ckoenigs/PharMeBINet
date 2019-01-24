@@ -1,0 +1,3 @@
+MONDO:0004283	vulvar clear cell hidradenocarcinoma
+DOID 	 name 
+DOID:7567	vulvar clear cell hidradenocarcinoma

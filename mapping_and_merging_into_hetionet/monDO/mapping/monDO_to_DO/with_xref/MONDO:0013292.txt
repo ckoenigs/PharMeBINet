@@ -1,0 +1,3 @@
+MONDO:0013292	chromosome 4q21 deletion syndrome
+DOID 	 name 
+DOID:0060420	chromosome 4q21 deletion syndrome

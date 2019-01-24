@@ -1,0 +1,3 @@
+MONDO:0008558	autoimmune thrombocytopenic purpura
+DOID 	 name 
+DOID:8924	autoimmune thrombocytopenic purpura

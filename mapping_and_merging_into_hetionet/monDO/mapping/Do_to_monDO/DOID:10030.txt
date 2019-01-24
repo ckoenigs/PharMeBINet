@@ -1,0 +1,3 @@
+DOID:10030	interstitial emphysema
+monDO ID 	 name 
+MONDO:0000923	interstitial emphysema

@@ -1,0 +1,3 @@
+DOID:0110895	inflammatory bowel disease 14
+monDO ID 	 name 
+MONDO:0012832	inflammatory bowel disease 14

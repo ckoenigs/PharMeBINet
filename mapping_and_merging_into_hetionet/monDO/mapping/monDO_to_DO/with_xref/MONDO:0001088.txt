@@ -1,0 +1,3 @@
+MONDO:0001088	acute inferoposterior infarction
+DOID 	 name 
+DOID:10648	acute inferoposterior infarction

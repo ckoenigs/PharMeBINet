@@ -1,0 +1,3 @@
+DOID:8618	oral cavity cancer
+monDO ID 	 name 
+MONDO:0005515	oral cavity cancer

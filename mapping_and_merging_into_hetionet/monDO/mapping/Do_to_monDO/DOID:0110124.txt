@@ -1,0 +1,3 @@
+DOID:0110124	Bardet-Biedl syndrome 2
+monDO ID 	 name 
+MONDO:0014432	Bardet-Biedl syndrome 2

@@ -1,0 +1,3 @@
+DOID:0110347	osteogenesis imperfecta type 15
+monDO ID 	 name 
+MONDO:0014086	osteogenesis imperfecta type 15

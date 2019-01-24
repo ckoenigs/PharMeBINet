@@ -1,0 +1,3 @@
+DOID:11518	abnormal pupillary function
+monDO ID 	 name 
+MONDO:0001303	abnormal pupillary function (disease)

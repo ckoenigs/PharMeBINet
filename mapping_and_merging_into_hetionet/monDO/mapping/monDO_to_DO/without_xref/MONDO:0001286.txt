@@ -1,0 +1,3 @@
+MONDO:0001286	exotropia
+DOID 	 name 
+DOID:1143	exotropia

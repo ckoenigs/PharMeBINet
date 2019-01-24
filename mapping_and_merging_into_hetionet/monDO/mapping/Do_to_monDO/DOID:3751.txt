@@ -1,0 +1,3 @@
+DOID:3751	plantar verrucous skin carcinoma
+monDO ID 	 name 
+MONDO:0002765	plantar verrucous skin carcinoma

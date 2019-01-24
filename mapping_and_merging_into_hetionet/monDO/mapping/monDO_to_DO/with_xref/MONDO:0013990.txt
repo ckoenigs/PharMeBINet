@@ -1,0 +1,3 @@
+MONDO:0013990	pontocerebellar hypoplasia type 8
+DOID 	 name 
+DOID:0060277	pontocerebellar hypoplasia type 8

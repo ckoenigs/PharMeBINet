@@ -1,0 +1,3 @@
+DOID:0060229	Baraitser-Winter syndrome
+monDO ID 	 name 
+MONDO:0017579	Baraitser-winter cerebrofrontofacial syndrome

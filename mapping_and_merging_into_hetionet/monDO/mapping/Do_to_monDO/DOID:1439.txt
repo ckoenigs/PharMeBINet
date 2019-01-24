@@ -1,0 +1,3 @@
+DOID:1439	pyuria
+monDO ID 	 name 
+MONDO:0001953	pyuria (disease)

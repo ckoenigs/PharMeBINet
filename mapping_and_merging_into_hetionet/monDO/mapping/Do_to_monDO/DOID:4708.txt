@@ -1,0 +1,3 @@
+DOID:4708	foramen magnum meningioma
+monDO ID 	 name 
+MONDO:0003109	foramen magnum meningioma

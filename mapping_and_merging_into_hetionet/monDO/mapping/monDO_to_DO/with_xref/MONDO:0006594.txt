@@ -1,0 +1,3 @@
+MONDO:0006594	pemphigus
+DOID 	 name 
+DOID:9182	pemphigus

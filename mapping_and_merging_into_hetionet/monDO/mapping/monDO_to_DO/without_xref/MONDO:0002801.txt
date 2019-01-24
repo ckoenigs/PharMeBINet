@@ -1,0 +1,3 @@
+MONDO:0002801	colonic pseudo-obstruction
+DOID 	 name 
+DOID:3876	colonic pseudo-obstruction

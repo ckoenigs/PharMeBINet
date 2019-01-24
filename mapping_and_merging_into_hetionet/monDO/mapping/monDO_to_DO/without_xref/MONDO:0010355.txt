@@ -1,0 +1,3 @@
+MONDO:0010355	syndromic X-linked intellectual disability Claes-Jensen type
+DOID 	 name 
+DOID:0060809	syndromic X-linked intellectual disability Claes-Jensen type

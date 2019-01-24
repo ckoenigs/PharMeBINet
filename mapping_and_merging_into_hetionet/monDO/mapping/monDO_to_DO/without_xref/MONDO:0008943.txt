@@ -1,0 +1,3 @@
+MONDO:0008943	autosomal recessive spinocerebellar ataxia 2
+DOID 	 name 
+DOID:0080061	autosomal recessive spinocerebellar ataxia 2

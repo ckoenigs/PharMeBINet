@@ -1,0 +1,3 @@
+DOID:0050665	fetal alcohol syndrome
+monDO ID 	 name 
+MONDO:0016011	fetal alcohol syndrome

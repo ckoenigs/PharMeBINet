@@ -1,0 +1,3 @@
+MONDO:0005803	hyperinsulinemic hypoglycemia (disease)
+DOID 	 name 
+DOID:13317	hyperinsulinemic hypoglycemia

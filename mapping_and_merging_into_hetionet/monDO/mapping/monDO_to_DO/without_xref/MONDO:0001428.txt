@@ -1,0 +1,3 @@
+MONDO:0001428	pylorospasm
+DOID 	 name 
+DOID:12072	pylorospasm

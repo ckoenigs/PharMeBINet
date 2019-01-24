@@ -1,0 +1,3 @@
+DOID:0080011	bone resorption disease
+monDO ID 	 name 
+MONDO:0000837	bone resorption disease

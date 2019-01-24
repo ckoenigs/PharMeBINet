@@ -1,0 +1,3 @@
+DOID:7684	maxillary sinus adenocarcinoma
+monDO ID 	 name 
+MONDO:0004328	maxillary sinus adenocarcinoma

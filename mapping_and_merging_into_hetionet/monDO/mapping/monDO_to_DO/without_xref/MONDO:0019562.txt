@@ -1,0 +1,3 @@
+MONDO:0019562	localized scleroderma
+DOID 	 name 
+DOID:8472	localized scleroderma

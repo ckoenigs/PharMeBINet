@@ -1,0 +1,3 @@
+DOID:3310	atopic dermatitis
+monDO ID 	 name 
+MONDO:0004980	atopic eczema

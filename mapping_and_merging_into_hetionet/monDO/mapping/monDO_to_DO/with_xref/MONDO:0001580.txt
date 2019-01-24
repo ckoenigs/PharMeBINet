@@ -1,0 +1,3 @@
+MONDO:0001580	lacrimal duct cancer
+DOID 	 name 
+DOID:12756	lacrimal duct cancer

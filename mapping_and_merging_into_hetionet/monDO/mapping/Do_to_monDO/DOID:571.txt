@@ -1,0 +1,3 @@
+DOID:571	median neuropathy
+monDO ID 	 name 
+MONDO:0003598	median neuropathy

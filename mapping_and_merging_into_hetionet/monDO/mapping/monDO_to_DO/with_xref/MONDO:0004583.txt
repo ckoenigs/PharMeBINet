@@ -1,0 +1,3 @@
+MONDO:0004583	transient retinal arterial occlusion
+DOID 	 name 
+DOID:8482	transient retinal arterial occlusion

@@ -1,0 +1,3 @@
+DOID:0090028	familial isolated deficiency of vitamin E
+monDO ID 	 name 
+MONDO:0010188	familial isolated deficiency of vitamin E

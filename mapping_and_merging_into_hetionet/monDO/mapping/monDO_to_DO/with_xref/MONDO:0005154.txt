@@ -1,0 +1,3 @@
+MONDO:0005154	liver disease
+DOID 	 name 
+DOID:409	liver disease

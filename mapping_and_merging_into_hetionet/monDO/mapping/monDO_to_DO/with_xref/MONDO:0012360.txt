@@ -1,0 +1,3 @@
+MONDO:0012360	CHNG3
+DOID 	 name 
+DOID:0050328	congenital hypothyroidism

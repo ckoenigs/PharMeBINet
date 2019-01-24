@@ -1,0 +1,3 @@
+DOID:14243	chronic perichondritis of pinna
+monDO ID 	 name 
+MONDO:0001917	chronic perichondritis of pinna

@@ -1,0 +1,3 @@
+DOID:9858	deep keratitis
+monDO ID 	 name 
+MONDO:0004903	deep keratitis

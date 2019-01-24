@@ -1,0 +1,3 @@
+MONDO:0012846	GEFSP6
+DOID 	 name 
+DOID:0060170	generalized epilepsy with febrile seizures plus

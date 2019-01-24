@@ -1,0 +1,3 @@
+MONDO:0011075	retinitis pigmentosa 18
+DOID 	 name 
+DOID:0110356	retinitis pigmentosa 18

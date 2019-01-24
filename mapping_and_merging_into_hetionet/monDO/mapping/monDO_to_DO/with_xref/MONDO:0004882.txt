@@ -1,0 +1,3 @@
+MONDO:0004882	angioid streaks of choroid
+DOID 	 name 
+DOID:979	angioid streaks of choroid

@@ -1,0 +1,3 @@
+MONDO:0012470	HPC7
+DOID 	 name 
+DOID:10283	prostate cancer

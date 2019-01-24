@@ -1,0 +1,3 @@
+DOID:5974	renal pelvis transitional cell carcinoma
+monDO ID 	 name 
+MONDO:0005221	transitional cell carcinoma of kidney

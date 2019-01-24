@@ -1,0 +1,3 @@
+DOID:0060260	ptosis
+monDO ID 	 name 
+MONDO:0000728	ptosis (disease)

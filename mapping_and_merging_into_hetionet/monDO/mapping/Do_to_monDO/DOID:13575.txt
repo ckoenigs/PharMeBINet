@@ -1,0 +1,3 @@
+DOID:13575	non-renal secondary hyperparathyroidism
+monDO ID 	 name 
+MONDO:0001750	non-renal secondary hyperparathyroidism

@@ -1,0 +1,3 @@
+DOID:0050705	adolescence-adult electroclinical syndrome
+monDO ID 	 name 
+MONDO:0000415	adolescence-adult electroclinical syndrome

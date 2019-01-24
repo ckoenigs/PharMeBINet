@@ -1,0 +1,3 @@
+MONDO:0016485	Usher syndrome type 3
+DOID 	 name 
+DOID:0110828	Usher syndrome type 3

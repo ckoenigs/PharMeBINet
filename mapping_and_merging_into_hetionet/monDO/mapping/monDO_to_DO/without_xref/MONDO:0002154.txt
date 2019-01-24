@@ -1,0 +1,3 @@
+MONDO:0002154	trichomoniasis
+DOID 	 name 
+DOID:1947	trichomoniasis

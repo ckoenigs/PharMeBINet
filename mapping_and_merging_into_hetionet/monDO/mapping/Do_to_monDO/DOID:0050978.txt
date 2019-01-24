@@ -1,0 +1,3 @@
+DOID:0050978	spinocerebellar ataxia type 29
+monDO ID 	 name 
+MONDO:0007298	spinocerebellar ataxia type 29

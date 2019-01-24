@@ -1,0 +1,3 @@
+MONDO:0017615	benign familial infantile epilepsy
+DOID 	 name 
+DOID:0060169	benign familial infantile epilepsy

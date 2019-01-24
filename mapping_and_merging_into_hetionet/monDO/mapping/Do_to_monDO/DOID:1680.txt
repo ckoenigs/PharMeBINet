@@ -1,0 +1,3 @@
+DOID:1680	chronic cystitis
+monDO ID 	 name 
+MONDO:0006030	chronic cystitis

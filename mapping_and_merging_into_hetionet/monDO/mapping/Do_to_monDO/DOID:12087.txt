@@ -1,0 +1,3 @@
+DOID:12087	deep corneal vascularisation
+monDO ID 	 name 
+MONDO:0001430	deep corneal vascularisation

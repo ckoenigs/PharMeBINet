@@ -1,0 +1,3 @@
+DOID:5623	adenosquamous breast carcinoma
+monDO ID 	 name 
+MONDO:0003548	adenosquamous breast carcinoma

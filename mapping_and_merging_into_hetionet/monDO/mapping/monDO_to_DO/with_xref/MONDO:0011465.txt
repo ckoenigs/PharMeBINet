@@ -1,0 +1,3 @@
+MONDO:0011465	infundibulocystic basal cell carcinoma
+DOID 	 name 
+DOID:4279	infundibulocystic basal cell carcinoma

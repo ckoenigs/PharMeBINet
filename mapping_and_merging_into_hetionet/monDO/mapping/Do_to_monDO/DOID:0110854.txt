@@ -1,0 +1,3 @@
+DOID:0110854	rhizomelic chondrodysplasia punctata type 5
+monDO ID 	 name 
+MONDO:0014743	rhizomelic chondrodysplasia punctata type 5

@@ -1,0 +1,3 @@
+DOID:0050942	spastic ataxia 3
+monDO ID 	 name 
+MONDO:0012664	spastic ataxia 3

@@ -1,0 +1,3 @@
+MONDO:0018151	coenzyme Q10 deficiency
+DOID 	 name 
+DOID:0050730	coenzyme Q10 deficiency disease

@@ -1,0 +1,3 @@
+MONDO:0004861	ophthalmia nodosa
+DOID 	 name 
+DOID:9722	ophthalmia nodosa

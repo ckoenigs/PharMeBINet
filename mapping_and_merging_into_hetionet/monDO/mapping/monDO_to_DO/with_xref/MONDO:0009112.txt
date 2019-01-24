@@ -1,0 +1,3 @@
+MONDO:0009112	rhizomelic chondrodysplasia punctata type 2
+DOID 	 name 
+DOID:0110852	rhizomelic chondrodysplasia punctata type 2

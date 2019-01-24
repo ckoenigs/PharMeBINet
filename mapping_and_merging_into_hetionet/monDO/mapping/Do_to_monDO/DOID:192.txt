@@ -1,0 +1,3 @@
+DOID:192	sex cord-gonadal stromal tumor
+monDO ID 	 name 
+MONDO:0006055	sex cord-stromal tumor

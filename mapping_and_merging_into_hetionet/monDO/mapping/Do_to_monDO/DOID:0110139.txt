@@ -1,0 +1,3 @@
+DOID:0110139	Bardet-Biedl syndrome 17
+monDO ID 	 name 
+MONDO:0014445	Bardet-Biedl syndrome 17

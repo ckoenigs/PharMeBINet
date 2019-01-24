@@ -1,0 +1,3 @@
+MONDO:0008656	benign paroxysmal positional nystagmus
+DOID 	 name 
+DOID:13941	benign paroxysmal positional nystagmus

@@ -1,0 +1,3 @@
+MONDO:0002027	avoidant personality disorder
+DOID 	 name 
+DOID:1509	avoidant personality disorder

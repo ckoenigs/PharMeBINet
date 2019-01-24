@@ -1,0 +1,3 @@
+DOID:13777	epidermodysplasia verruciformis
+monDO ID 	 name 
+MONDO:0009176	epidermodysplasia verruciformis

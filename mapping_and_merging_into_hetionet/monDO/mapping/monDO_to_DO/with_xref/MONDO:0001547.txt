@@ -1,0 +1,3 @@
+MONDO:0001547	atrophic nonflaccid tympanic membrane
+DOID 	 name 
+DOID:12546	atrophic nonflaccid tympanic membrane

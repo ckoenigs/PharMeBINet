@@ -1,0 +1,3 @@
+DOID:636	central pontine myelinolysis
+monDO ID 	 name 
+MONDO:0006692	central pontine myelinolysis

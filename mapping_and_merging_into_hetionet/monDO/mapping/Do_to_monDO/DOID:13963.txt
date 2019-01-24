@@ -1,0 +1,3 @@
+DOID:13963	nuclear senile cataract
+monDO ID 	 name 
+MONDO:0001847	nuclear senile cataract

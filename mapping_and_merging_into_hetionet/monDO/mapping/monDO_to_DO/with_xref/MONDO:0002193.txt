@@ -1,0 +1,3 @@
+MONDO:0002193	Bartholin's gland benign neoplasm
+DOID 	 name 
+DOID:2068	Bartholin's gland benign neoplasm

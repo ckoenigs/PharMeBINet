@@ -1,0 +1,3 @@
+DOID:10426	Klippel-Feil syndrome
+monDO ID 	 name 
+MONDO:0001029	Klippel-Feil syndrome

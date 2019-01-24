@@ -1,0 +1,3 @@
+MONDO:0010861	type 1 diabetes mellitus 3
+DOID 	 name 
+DOID:0110742	type 1 diabetes mellitus 3

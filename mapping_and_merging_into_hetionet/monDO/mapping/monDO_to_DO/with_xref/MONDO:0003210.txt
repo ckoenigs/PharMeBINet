@@ -1,0 +1,4 @@
+MONDO:0003210	intrahepatic cholangiocarcinoma
+DOID 	 name 
+DOID:4928	intrahepatic cholangiocarcinoma
+DOID:4947	cholangiocarcinoma

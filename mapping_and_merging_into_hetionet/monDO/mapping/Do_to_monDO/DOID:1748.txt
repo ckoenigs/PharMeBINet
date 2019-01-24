@@ -1,0 +1,3 @@
+DOID:1748	conjunctival squamous cell carcinoma
+monDO ID 	 name 
+MONDO:0006173	conjunctival squamous cell carcinoma

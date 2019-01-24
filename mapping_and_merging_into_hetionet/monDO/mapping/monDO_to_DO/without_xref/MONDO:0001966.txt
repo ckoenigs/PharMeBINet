@@ -1,0 +1,3 @@
+MONDO:0001966	chronic closed-angle glaucoma
+DOID 	 name 
+DOID:14445	chronic closed-angle glaucoma

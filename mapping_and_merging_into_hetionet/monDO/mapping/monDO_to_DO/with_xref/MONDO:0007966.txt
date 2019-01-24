@@ -1,0 +1,3 @@
+MONDO:0007966	susceptibility to uveal melanoma
+DOID 	 name 
+DOID:6039	uveal melanoma

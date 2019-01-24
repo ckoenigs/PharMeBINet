@@ -1,0 +1,3 @@
+MONDO:0014587	congenital myasthenic syndrome 9
+DOID 	 name 
+DOID:0110670	congenital myasthenic syndrome 9

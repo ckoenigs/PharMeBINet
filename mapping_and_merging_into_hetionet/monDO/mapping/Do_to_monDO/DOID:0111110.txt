@@ -1,0 +1,3 @@
+DOID:0111110	maturity-onset diabetes of the young type 13
+monDO ID 	 name 
+MONDO:0014589	maturity-onset diabetes of the young type 13

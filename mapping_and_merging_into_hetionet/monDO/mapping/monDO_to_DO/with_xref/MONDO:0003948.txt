@@ -1,0 +1,3 @@
+MONDO:0003948	cerebral hemangioma
+DOID 	 name 
+DOID:6621	cerebral angioma

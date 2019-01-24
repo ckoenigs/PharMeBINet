@@ -1,0 +1,3 @@
+MONDO:0003913	choroid mixed cell melanoma
+DOID 	 name 
+DOID:6525	choroid mixed cell melanoma

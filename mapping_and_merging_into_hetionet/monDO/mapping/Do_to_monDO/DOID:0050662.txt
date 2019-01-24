@@ -1,0 +1,3 @@
+DOID:0050662	bestrophinopathy
+monDO ID 	 name 
+MONDO:0012733	bestrophinopathy

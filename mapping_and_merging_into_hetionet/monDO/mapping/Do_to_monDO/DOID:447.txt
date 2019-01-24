@@ -1,0 +1,3 @@
+DOID:447	renal tubular transport disease
+monDO ID 	 name 
+MONDO:0006510	renal tubular transport disease

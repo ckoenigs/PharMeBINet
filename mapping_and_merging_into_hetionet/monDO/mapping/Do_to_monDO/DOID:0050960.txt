@@ -1,0 +1,3 @@
+DOID:0050960	spinocerebellar ataxia type 10
+monDO ID 	 name 
+MONDO:0011330	spinocerebellar ataxia type 10

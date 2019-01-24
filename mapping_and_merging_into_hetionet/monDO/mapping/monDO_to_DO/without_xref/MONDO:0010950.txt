@@ -1,0 +1,3 @@
+MONDO:0010950	type 1 diabetes mellitus 8
+DOID 	 name 
+DOID:0110747	type 1 diabetes mellitus 8

@@ -1,0 +1,3 @@
+DOID:0110702	hypotrichosis 5
+monDO ID 	 name 
+MONDO:0013017	hypotrichosis 5

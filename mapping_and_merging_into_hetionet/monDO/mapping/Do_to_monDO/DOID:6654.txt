@@ -1,0 +1,3 @@
+DOID:6654	childhood central nervous system immature teratoma
+monDO ID 	 name 
+MONDO:0003958	childhood central nervous system immature teratoma

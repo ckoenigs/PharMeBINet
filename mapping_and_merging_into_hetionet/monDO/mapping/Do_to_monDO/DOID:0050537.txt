@@ -1,0 +1,3 @@
+DOID:0050537	posterior polar cataract
+monDO ID 	 name 
+MONDO:0000348	posterior polar cataract (disease)

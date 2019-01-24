@@ -1,0 +1,3 @@
+DOID:0060501	metal allergy
+monDO ID 	 name 
+MONDO:0000776	metal allergy

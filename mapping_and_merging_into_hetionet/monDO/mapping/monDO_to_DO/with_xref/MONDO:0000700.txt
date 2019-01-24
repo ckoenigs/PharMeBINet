@@ -1,0 +1,3 @@
+MONDO:0000700	familial hemiplegic migraine
+DOID 	 name 
+DOID:0060178	familial hemiplegic migraine

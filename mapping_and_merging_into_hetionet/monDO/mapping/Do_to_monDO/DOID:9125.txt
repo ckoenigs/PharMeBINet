@@ -1,0 +1,3 @@
+DOID:9125	lower gum cancer
+monDO ID 	 name 
+MONDO:0004713	lower gum cancer

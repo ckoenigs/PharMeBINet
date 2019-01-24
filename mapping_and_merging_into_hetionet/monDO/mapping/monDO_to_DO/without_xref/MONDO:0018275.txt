@@ -1,0 +1,3 @@
+MONDO:0018275	salt and pepper syndrome
+DOID 	 name 
+DOID:0060470	salt and pepper syndrome

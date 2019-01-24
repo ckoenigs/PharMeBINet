@@ -1,0 +1,3 @@
+MONDO:0002839	linitis plastica
+DOID 	 name 
+DOID:4023	linitis plastica

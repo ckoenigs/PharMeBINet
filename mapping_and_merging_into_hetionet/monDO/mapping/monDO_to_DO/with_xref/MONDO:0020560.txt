@@ -1,0 +1,3 @@
+MONDO:0020560	atypical teratoid rhabdoid tumor
+DOID 	 name 
+DOID:2129	atypical teratoid rhabdoid tumor

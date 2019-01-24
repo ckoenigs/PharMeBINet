@@ -1,0 +1,3 @@
+MONDO:0002336	inflammatory and toxic neuropathy
+DOID 	 name 
+DOID:2537	inflammatory and toxic neuropathy

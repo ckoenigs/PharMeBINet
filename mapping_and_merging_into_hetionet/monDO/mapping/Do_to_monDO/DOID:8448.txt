@@ -1,0 +1,3 @@
+DOID:8448	intestinal impaction
+monDO ID 	 name 
+MONDO:0004571	intestinal impaction

@@ -1,0 +1,3 @@
+MONDO:0002275	generalized atherosclerosis
+DOID 	 name 
+DOID:2347	generalized atherosclerosis

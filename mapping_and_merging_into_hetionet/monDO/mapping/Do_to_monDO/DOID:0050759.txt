@@ -1,0 +1,3 @@
+DOID:0050759	myotonic dystrophy type 2
+monDO ID 	 name 
+MONDO:0011266	myotonic dystrophy type 2

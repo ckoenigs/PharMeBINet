@@ -1,0 +1,3 @@
+DOID:0060882	renal hypomagnesemia 4
+monDO ID 	 name 
+MONDO:0012717	renal hypomagnesemia 4

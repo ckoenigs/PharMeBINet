@@ -1,0 +1,3 @@
+MONDO:0015799	Smith-McCort dysplasia
+DOID 	 name 
+DOID:0060247	Smith-McCort dysplasia

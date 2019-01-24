@@ -1,0 +1,3 @@
+MONDO:0015797	UV-sensitive syndrome
+DOID 	 name 
+DOID:0060240	UV-sensitive syndrome

@@ -1,0 +1,3 @@
+MONDO:0009319	pantothenate kinase-associated neurodegeneration
+DOID 	 name 
+DOID:3981	pantothenate kinase-associated neurodegeneration

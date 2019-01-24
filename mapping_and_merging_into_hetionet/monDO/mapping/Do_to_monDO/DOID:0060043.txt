@@ -1,0 +1,3 @@
+DOID:0060043	sexual disorder
+monDO ID 	 name 
+MONDO:0000595	sexual disorder

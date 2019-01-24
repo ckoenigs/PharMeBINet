@@ -1,0 +1,3 @@
+DOID:0111027	hemochromatosis type 2A
+monDO ID 	 name 
+MONDO:0011216	hemochromatosis type 2A

@@ -1,0 +1,3 @@
+DOID:0050850	diabetic encephalopathy
+monDO ID 	 name 
+MONDO:0000489	diabetic encephalopathy

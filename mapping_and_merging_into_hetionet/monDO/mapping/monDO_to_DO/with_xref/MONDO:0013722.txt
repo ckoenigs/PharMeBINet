@@ -1,0 +1,3 @@
+MONDO:0013722	hypomyelinating leukodystrophy 8 with or without oligodontia and-or hypogonadotropic hypogonadism
+DOID 	 name 
+DOID:0060797	hypomyelinating leukodystrophy 8 with or without oligodontia and-or hypogonadotropic hypogonadism

@@ -1,0 +1,3 @@
+DOID:0060763	X-linked juvenile retinoschisis 1
+monDO ID 	 name 
+MONDO:0010725	X-linked retinoschisis

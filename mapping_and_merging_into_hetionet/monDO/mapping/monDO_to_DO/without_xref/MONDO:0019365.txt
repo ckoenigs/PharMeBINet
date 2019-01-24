@@ -1,0 +1,3 @@
+MONDO:0019365	scrub typhus
+DOID 	 name 
+DOID:13371	scrub typhus

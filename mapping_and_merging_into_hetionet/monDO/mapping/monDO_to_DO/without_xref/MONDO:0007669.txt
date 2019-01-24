@@ -1,0 +1,3 @@
+MONDO:0007669	renal cysts and diabetes syndrome
+DOID 	 name 
+DOID:0111101	maturity-onset diabetes of the young type 5

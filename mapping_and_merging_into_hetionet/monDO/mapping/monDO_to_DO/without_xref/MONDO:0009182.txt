@@ -1,0 +1,3 @@
+MONDO:0009182	junctional epidermolysis bullosa Herlitz type
+DOID 	 name 
+DOID:0060737	junctional epidermolysis bullosa Herlitz type

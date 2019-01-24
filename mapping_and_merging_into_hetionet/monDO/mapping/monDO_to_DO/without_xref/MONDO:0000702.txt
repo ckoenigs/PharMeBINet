@@ -1,0 +1,3 @@
+MONDO:0000702	microscopic colitis
+DOID 	 name 
+DOID:0060182	microscopic colitis

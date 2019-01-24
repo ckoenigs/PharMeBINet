@@ -1,0 +1,3 @@
+MONDO:0015780	dyskeratosis congenita
+DOID 	 name 
+DOID:2729	dyskeratosis congenita

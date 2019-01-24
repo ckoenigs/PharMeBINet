@@ -1,0 +1,3 @@
+MONDO:0005777	granuloma inguinale
+DOID 	 name 
+DOID:9113	granuloma inguinale

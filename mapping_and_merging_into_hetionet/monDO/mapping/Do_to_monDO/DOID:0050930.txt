@@ -1,0 +1,3 @@
+DOID:0050930	sublingual gland adenoid cystic carcinoma
+monDO ID 	 name 
+MONDO:0000545	sublingual gland adenoid cystic carcinoma

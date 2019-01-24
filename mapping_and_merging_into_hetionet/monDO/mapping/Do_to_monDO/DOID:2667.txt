@@ -1,0 +1,3 @@
+DOID:2667	benign mesenchymoma
+monDO ID 	 name 
+MONDO:0002382	benign mesenchymoma

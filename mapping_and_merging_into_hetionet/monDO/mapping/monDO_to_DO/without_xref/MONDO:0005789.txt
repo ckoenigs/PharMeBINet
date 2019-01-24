@@ -1,0 +1,3 @@
+MONDO:0005789	hepatitis D
+DOID 	 name 
+DOID:2047	hepatitis D

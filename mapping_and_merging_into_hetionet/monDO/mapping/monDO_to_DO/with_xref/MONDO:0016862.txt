@@ -1,0 +1,3 @@
+MONDO:0016862	Alagille syndrome due to a JAG1 point mutation
+DOID 	 name 
+DOID:9245	Alagille syndrome

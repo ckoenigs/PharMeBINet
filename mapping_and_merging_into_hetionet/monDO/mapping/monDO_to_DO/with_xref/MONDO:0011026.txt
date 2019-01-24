@@ -1,0 +1,3 @@
+MONDO:0011026	autosomal recessive congenital ichthyosis 4A
+DOID 	 name 
+DOID:0060712	autosomal recessive congenital ichthyosis 4A

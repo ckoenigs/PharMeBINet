@@ -1,0 +1,3 @@
+DOID:5139	cellular leiomyoma
+monDO ID 	 name 
+MONDO:0003296	cellular leiomyoma

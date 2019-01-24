@@ -1,0 +1,3 @@
+MONDO:0014385	amelogenesis imperfecta hypomaturation type 2A5
+DOID 	 name 
+DOID:0110063	amelogenesis imperfecta hypomaturation type 2A5

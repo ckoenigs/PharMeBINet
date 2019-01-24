@@ -1,0 +1,3 @@
+MONDO:0005091	severe acute respiratory syndrome
+DOID 	 name 
+DOID:2945	severe acute respiratory syndrome

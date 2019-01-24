@@ -1,0 +1,3 @@
+MONDO:0001842	uterine corpus dissecting leiomyoma
+DOID 	 name 
+DOID:13953	uterine corpus dissecting leiomyoma

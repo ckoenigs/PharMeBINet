@@ -1,0 +1,3 @@
+DOID:0111061	familial hypobetalipoproteinemia 2
+monDO ID 	 name 
+MONDO:0011505	familial hypobetalipoproteinemia 2

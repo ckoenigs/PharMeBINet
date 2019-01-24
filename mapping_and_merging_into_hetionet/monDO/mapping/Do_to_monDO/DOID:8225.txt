@@ -1,0 +1,3 @@
+DOID:8225	microscopic breast papilloma
+monDO ID 	 name 
+MONDO:0004506	microscopic breast papilloma

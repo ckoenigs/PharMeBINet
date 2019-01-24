@@ -1,0 +1,3 @@
+DOID:6255	growth hormone secreting pituitary adenoma
+monDO ID 	 name 
+MONDO:0007052	growth hormone secreting pituitary adenoma

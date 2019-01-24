@@ -1,0 +1,3 @@
+MONDO:0013298	chromosome 17q21.31 duplication syndrome
+DOID 	 name 
+DOID:0060434	chromosome 17q21.31 duplication syndrome

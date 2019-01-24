@@ -1,0 +1,3 @@
+MONDO:0014620	myoclonic dystonia 26
+DOID 	 name 
+DOID:0090036	myoclonic dystonia 26

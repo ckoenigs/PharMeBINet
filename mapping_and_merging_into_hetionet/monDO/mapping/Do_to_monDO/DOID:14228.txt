@@ -1,0 +1,3 @@
+DOID:14228	oligospermia
+monDO ID 	 name 
+MONDO:0001913	oligospermia

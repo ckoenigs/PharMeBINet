@@ -1,0 +1,3 @@
+DOID:2355	anemia
+monDO ID 	 name 
+MONDO:0002280	anemia (disease)

@@ -1,0 +1,3 @@
+MONDO:0011948	pontocerebellar hypoplasia type 3
+DOID 	 name 
+DOID:0060272	pontocerebellar hypoplasia type 3

@@ -1,0 +1,3 @@
+MONDO:0009661	mucopolysaccharidosis type 6
+DOID 	 name 
+DOID:12800	mucopolysaccharidosis VI

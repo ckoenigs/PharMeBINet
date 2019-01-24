@@ -1,0 +1,3 @@
+MONDO:0020501	Crimean-Congo hemorrhagic fever
+DOID 	 name 
+DOID:12287	Crimean-Congo hemorrhagic fever

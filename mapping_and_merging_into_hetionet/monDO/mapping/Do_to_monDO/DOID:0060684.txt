@@ -1,0 +1,3 @@
+DOID:0060684	autosomal dominant nocturnal frontal lobe epilepsy 3
+monDO ID 	 name 
+MONDO:0011545	autosomal dominant nocturnal frontal lobe epilepsy 3

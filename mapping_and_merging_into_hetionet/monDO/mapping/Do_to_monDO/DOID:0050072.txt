@@ -1,0 +1,3 @@
+DOID:0050072	adiaspiromycosis
+monDO ID 	 name 
+MONDO:0000239	adiaspiromycosis

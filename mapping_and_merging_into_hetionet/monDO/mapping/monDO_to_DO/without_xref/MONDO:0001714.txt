@@ -1,0 +1,3 @@
+MONDO:0001714	bejel
+DOID 	 name 
+DOID:13431	bejel

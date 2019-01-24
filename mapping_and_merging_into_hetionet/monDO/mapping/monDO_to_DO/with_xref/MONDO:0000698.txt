@@ -1,0 +1,3 @@
+MONDO:0000698	gamma-amino butyric acid metabolism disorder
+DOID 	 name 
+DOID:0060176	gamma-amino butyric acid metabolism disorder

@@ -1,0 +1,3 @@
+DOID:3939	lipomatous cancer
+monDO ID 	 name 
+MONDO:0002813	lipomatous cancer

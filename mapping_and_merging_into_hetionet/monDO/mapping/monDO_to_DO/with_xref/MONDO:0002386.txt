@@ -1,0 +1,3 @@
+MONDO:0002386	mixed epithelial stromal tumor of the kidney
+DOID 	 name 
+DOID:2678	adult mesoblastic nephroma

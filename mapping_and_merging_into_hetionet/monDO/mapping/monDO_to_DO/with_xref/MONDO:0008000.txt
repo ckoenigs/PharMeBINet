@@ -1,0 +1,3 @@
+MONDO:0008000	migraine with or without aura, susceptibility to, 1
+DOID 	 name 
+DOID:6364	migraine

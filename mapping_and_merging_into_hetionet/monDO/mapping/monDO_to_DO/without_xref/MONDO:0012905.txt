@@ -1,0 +1,3 @@
+MONDO:0012905	hypomyelinating leukodystrophy 6
+DOID 	 name 
+DOID:0060798	hypomyelinating leukodystrophy 6

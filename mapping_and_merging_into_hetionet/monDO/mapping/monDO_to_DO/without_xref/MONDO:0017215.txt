@@ -1,0 +1,3 @@
+MONDO:0017215	calciphylaxis
+DOID 	 name 
+DOID:4734	calciphylaxis

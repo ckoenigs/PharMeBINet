@@ -1,0 +1,3 @@
+MONDO:0013238	chromosome 17q23.1-q23.2 deletion syndrome
+DOID 	 name 
+DOID:0060405	chromosome 17q23.1-q23.2 deletion syndrome

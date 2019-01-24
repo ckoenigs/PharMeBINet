@@ -1,0 +1,3 @@
+DOID:2512	nevoid basal cell carcinoma syndrome
+monDO ID 	 name 
+MONDO:0007187	nevoid basal cell carcinoma syndrome

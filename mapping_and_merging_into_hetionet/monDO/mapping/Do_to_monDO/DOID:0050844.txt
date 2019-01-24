@@ -1,0 +1,3 @@
+DOID:0050844	spasmodic dystonia
+monDO ID 	 name 
+MONDO:0000485	spasmodic dystonia

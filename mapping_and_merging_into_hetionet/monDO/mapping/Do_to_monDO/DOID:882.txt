@@ -1,0 +1,3 @@
+DOID:882	heterophyiasis
+monDO ID 	 name 
+MONDO:0004662	heterophyiasis

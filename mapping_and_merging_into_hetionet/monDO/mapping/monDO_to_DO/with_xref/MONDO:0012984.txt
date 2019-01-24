@@ -1,0 +1,3 @@
+MONDO:0012984	PHARC syndrome
+DOID 	 name 
+DOID:0080181	PHARC syndrome

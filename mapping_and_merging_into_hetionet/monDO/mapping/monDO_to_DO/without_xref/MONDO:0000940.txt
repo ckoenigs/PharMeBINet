@@ -1,0 +1,3 @@
+MONDO:0000940	trypanosomiasis
+DOID 	 name 
+DOID:10113	trypanosomiasis

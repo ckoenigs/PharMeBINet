@@ -1,0 +1,4 @@
+MONDO:0009710	myotonia congenita
+DOID 	 name 
+DOID:2106	myotonia congenita
+DOID:0080100	congenital myopathy

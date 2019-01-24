@@ -1,0 +1,3 @@
+MONDO:0009973	reticular dysgenesis
+DOID 	 name 
+DOID:0060020	reticular dysgenesis

@@ -1,0 +1,3 @@
+MONDO:0003787	childhood testicular mixed germ cell tumor
+DOID 	 name 
+DOID:6161	childhood testicular mixed germ cell tumor

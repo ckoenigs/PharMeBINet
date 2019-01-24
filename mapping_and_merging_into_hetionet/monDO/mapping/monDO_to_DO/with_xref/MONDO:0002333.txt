@@ -1,0 +1,3 @@
+MONDO:0002333	splenic abscess (disease)
+DOID 	 name 
+DOID:2530	splenic abscess

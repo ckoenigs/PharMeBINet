@@ -1,0 +1,3 @@
+DOID:13026	lobomycosis
+monDO ID 	 name 
+MONDO:0001616	lobomycosis

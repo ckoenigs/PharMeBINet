@@ -1,0 +1,3 @@
+DOID:3646	necrosis of pituitary
+monDO ID 	 name 
+MONDO:0002721	necrosis of pituitary

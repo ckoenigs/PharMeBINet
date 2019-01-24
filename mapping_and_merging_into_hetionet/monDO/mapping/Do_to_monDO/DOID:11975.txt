@@ -1,0 +1,3 @@
+DOID:11975	coloboma of optic nerve
+monDO ID 	 name 
+MONDO:0007354	coloboma of optic nerve (disease)

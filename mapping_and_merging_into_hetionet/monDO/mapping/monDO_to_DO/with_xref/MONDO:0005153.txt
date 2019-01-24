@@ -1,0 +1,4 @@
+MONDO:0005153	cervical adenocarcinoma
+DOID 	 name 
+DOID:4362	cervical cancer
+DOID:3702	cervical adenocarcinoma

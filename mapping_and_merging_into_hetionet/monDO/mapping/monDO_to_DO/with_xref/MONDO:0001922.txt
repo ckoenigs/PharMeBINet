@@ -1,0 +1,3 @@
+MONDO:0001922	pyoureter
+DOID 	 name 
+DOID:1425	pyoureter

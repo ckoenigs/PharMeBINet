@@ -1,0 +1,3 @@
+MONDO:0001726	childhood disintegrative disease
+DOID 	 name 
+DOID:13487	childhood disintegrative disease

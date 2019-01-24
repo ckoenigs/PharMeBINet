@@ -1,0 +1,3 @@
+DOID:602	cancerophobia
+monDO ID 	 name 
+MONDO:0003736	cancerophobia

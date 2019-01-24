@@ -1,0 +1,3 @@
+DOID:0060387	chondrodysplasia Blomstrand type
+monDO ID 	 name 
+MONDO:0008970	chondrodysplasia blomstrand type

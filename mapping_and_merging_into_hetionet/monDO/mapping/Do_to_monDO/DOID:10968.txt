@@ -1,0 +1,3 @@
+DOID:10968	spastic monoplegia
+monDO ID 	 name 
+MONDO:0001169	spastic monoplegia

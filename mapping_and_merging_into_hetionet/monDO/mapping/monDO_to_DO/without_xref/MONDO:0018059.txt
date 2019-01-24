@@ -1,0 +1,3 @@
+MONDO:0018059	meningococcal meningitis
+DOID 	 name 
+DOID:0080176	meningococcal meningitis

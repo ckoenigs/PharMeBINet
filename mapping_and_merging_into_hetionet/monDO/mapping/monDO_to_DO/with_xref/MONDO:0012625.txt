@@ -1,0 +1,3 @@
+MONDO:0012625	retinitis pigmentosa 37
+DOID 	 name 
+DOID:0110399	retinitis pigmentosa 37

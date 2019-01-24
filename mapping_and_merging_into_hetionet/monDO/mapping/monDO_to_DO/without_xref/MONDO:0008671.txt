@@ -1,0 +1,3 @@
+MONDO:0008671	Waardenburg syndrome type 2A
+DOID 	 name 
+DOID:0110950	Waardenburg syndrome type 2A

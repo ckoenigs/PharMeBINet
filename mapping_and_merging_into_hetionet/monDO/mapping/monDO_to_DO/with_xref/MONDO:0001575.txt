@@ -1,0 +1,3 @@
+MONDO:0001575	chronic gonococcal salpingitis
+DOID 	 name 
+DOID:12718	chronic gonococcal salpingitis

@@ -1,0 +1,3 @@
+DOID:2556	relapsing polychondritis
+monDO ID 	 name 
+MONDO:0019125	relapsing polychondritis

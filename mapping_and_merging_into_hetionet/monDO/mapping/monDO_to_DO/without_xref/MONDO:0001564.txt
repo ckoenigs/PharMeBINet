@@ -1,0 +1,3 @@
+MONDO:0001564	binocular vision disease
+DOID 	 name 
+DOID:12667	binocular vision disease

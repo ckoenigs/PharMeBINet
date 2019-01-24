@@ -1,0 +1,3 @@
+MONDO:0005835	Lynch syndrome
+DOID 	 name 
+DOID:3883	Lynch syndrome

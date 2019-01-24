@@ -1,0 +1,3 @@
+MONDO:0008125	nonsyndromic congenital nail disorder 5
+DOID 	 name 
+DOID:0080083	nonsyndromic congenital nail disorder 5

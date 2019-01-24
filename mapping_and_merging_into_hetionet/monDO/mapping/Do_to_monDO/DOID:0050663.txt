@@ -1,0 +1,3 @@
+DOID:0050663	Bethlem myopathy
+monDO ID 	 name 
+MONDO:0008029	Bethlem myopathy

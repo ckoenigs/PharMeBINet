@@ -1,0 +1,3 @@
+MONDO:0013364	Rubinstein-Taybi syndrome due to EP300 haploinsufficiency
+DOID 	 name 
+DOID:1933	Rubinstein-Taybi syndrome

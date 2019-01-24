@@ -1,0 +1,3 @@
+MONDO:0003709	chondroid chordoma
+DOID 	 name 
+DOID:4152	chondroid chordoma

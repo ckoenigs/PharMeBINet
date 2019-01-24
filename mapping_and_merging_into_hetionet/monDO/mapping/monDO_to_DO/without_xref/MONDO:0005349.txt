@@ -1,0 +1,3 @@
+MONDO:0005349	otosclerosis (disease)
+DOID 	 name 
+DOID:12185	otosclerosis

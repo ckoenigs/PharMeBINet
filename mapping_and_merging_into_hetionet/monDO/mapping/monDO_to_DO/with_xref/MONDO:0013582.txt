@@ -1,0 +1,3 @@
+MONDO:0013582	mosaic variegated aneuploidy syndrome 2
+DOID 	 name 
+DOID:0080142	mosaic variegated aneuploidy syndrome 2

@@ -1,0 +1,3 @@
+DOID:11888	schwannoma of ureter
+monDO ID 	 name 
+MONDO:0001400	schwannoma of ureter

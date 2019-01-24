@@ -1,0 +1,3 @@
+MONDO:0002351	glottis cancer
+DOID 	 name 
+DOID:2595	glottis cancer

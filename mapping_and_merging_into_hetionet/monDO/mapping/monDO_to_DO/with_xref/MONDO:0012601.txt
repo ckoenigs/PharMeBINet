@@ -1,0 +1,3 @@
+MONDO:0012601	AUTS10
+DOID 	 name 
+DOID:12849	autistic disorder

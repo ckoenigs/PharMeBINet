@@ -1,0 +1,3 @@
+DOID:11718	antidepressant type abuse
+monDO ID 	 name 
+MONDO:0001345	antidepressant type abuse

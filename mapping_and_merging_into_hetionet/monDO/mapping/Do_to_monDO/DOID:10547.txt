@@ -1,0 +1,3 @@
+DOID:10547	pyloric antrum cancer
+monDO ID 	 name 
+MONDO:0001062	pyloric antrum cancer

@@ -1,0 +1,3 @@
+MONDO:0001398	ureter benign neoplasm
+DOID 	 name 
+DOID:11885	ureteral benign neoplasm

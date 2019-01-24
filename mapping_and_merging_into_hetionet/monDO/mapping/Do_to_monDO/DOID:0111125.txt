@@ -1,0 +1,3 @@
+DOID:0111125	nephronophthisis 18
+monDO ID 	 name 
+MONDO:0014374	nephronophthisis 18

@@ -1,0 +1,3 @@
+DOID:0050152	aspiration pneumonia
+monDO ID 	 name 
+MONDO:0000265	aspiration pneumonia (disease)

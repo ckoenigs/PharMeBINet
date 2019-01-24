@@ -1,0 +1,3 @@
+DOID:7340	pediatric ovarian dysgerminoma
+monDO ID 	 name 
+MONDO:0004193	pediatric ovarian dysgerminoma

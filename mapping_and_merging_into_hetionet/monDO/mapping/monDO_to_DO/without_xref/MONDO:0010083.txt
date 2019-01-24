@@ -1,0 +1,3 @@
+MONDO:0010083	succinic semialdehyde dehydrogenase deficiency
+DOID 	 name 
+DOID:0060175	succinic semialdehyde dehydrogenase deficiency

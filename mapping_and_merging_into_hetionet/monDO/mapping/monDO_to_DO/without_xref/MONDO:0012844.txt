@@ -1,0 +1,3 @@
+MONDO:0012844	primary ciliary dyskinesia 8
+DOID 	 name 
+DOID:0110616	primary ciliary dyskinesia 8

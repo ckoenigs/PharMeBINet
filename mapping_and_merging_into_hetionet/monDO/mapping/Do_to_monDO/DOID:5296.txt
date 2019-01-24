@@ -1,0 +1,3 @@
+DOID:5296	liver leiomyosarcoma
+monDO ID 	 name 
+MONDO:0003378	liver leiomyosarcoma

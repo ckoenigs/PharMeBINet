@@ -1,0 +1,4 @@
+MONDO:0001824	polyneuropathy
+DOID 	 name 
+DOID:1389	polyneuropathy
+DOID:14402	critical illness polyneuropathy

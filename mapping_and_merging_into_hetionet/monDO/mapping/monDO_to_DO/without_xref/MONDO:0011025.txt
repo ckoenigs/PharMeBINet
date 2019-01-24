@@ -1,0 +1,3 @@
+MONDO:0011025	Cayman type cerebellar ataxia
+DOID 	 name 
+DOID:0060694	Cayman type cerebellar ataxia

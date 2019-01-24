@@ -1,0 +1,3 @@
+MONDO:0007850	autosomal dominant keratitis-ichthyosis-deafness syndrome
+DOID 	 name 
+DOID:0060871	autosomal dominant keratitis-ichthyosis-deafness syndrome

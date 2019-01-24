@@ -1,0 +1,3 @@
+MONDO:0000603	autoimmune disease of cardiovascular system
+DOID 	 name 
+DOID:0060051	autoimmune disease of cardiovascular system

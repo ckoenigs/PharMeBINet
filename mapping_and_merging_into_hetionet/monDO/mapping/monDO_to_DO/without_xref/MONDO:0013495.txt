@@ -1,0 +1,3 @@
+MONDO:0013495	autosomal recessive congenital ichthyosis 8
+DOID 	 name 
+DOID:0060717	autosomal recessive congenital ichthyosis 8

@@ -1,0 +1,3 @@
+MONDO:0008961	Charcot-Marie-tooth disease type 4A
+DOID 	 name 
+DOID:0110185	Charcot-Marie-Tooth disease type 4A

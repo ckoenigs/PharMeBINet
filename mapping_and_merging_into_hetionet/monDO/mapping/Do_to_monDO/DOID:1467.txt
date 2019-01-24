@@ -1,0 +1,3 @@
+DOID:1467	serous labyrinthitis
+monDO ID 	 name 
+MONDO:0002006	serous labyrinthitis

@@ -1,0 +1,3 @@
+MONDO:0005976	syphilis
+DOID 	 name 
+DOID:4166	syphilis

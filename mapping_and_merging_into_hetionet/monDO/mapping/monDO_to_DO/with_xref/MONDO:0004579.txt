@@ -1,0 +1,3 @@
+MONDO:0004579	retinoschisis
+DOID 	 name 
+DOID:8465	retinoschisis

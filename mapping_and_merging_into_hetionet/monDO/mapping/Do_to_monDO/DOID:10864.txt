@@ -1,0 +1,3 @@
+DOID:10864	partial third-nerve palsy
+monDO ID 	 name 
+MONDO:0001144	partial third-nerve palsy

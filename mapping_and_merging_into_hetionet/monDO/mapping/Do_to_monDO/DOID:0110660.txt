@@ -1,0 +1,3 @@
+DOID:0110660	congenital myasthenic syndrome 12
+monDO ID 	 name 
+MONDO:0012518	congenital myasthenic syndrome 12

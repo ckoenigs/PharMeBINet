@@ -1,0 +1,3 @@
+MONDO:0001218	acute laryngopharyngitis
+DOID 	 name 
+DOID:11195	acute laryngopharyngitis

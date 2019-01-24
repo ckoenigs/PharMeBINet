@@ -1,0 +1,3 @@
+MONDO:0003398	anterograde amnesia
+DOID 	 name 
+DOID:5340	anterograde amnesia

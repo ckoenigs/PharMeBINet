@@ -1,0 +1,3 @@
+DOID:0050449	pachyonychia congenita
+monDO ID 	 name 
+MONDO:0016471	pachyonychia congenita

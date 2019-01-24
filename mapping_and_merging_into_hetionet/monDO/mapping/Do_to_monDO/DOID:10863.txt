@@ -1,0 +1,3 @@
+DOID:10863	paralytic squint
+monDO ID 	 name 
+MONDO:0001143	paralytic squint

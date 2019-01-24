@@ -1,0 +1,3 @@
+MONDO:0018276	muscular dystrophy-dystroglycanopathy
+DOID 	 name 
+DOID:0050588	muscular dystrophy-dystroglycanopathy

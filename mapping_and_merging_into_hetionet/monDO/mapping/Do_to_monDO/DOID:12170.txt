@@ -1,0 +1,3 @@
+DOID:12170	radial nerve lesion
+monDO ID 	 name 
+MONDO:0006940	radial nerve lesion

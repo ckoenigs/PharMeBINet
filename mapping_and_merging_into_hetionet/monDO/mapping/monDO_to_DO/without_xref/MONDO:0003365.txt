@@ -1,0 +1,3 @@
+MONDO:0003365	esophagus leiomyosarcoma
+DOID 	 name 
+DOID:5276	esophagus leiomyosarcoma

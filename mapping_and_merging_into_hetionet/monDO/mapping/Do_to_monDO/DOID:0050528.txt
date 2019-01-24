@@ -1,0 +1,3 @@
+DOID:0050528	nonphotosensitive trichothiodystrophy
+monDO ID 	 name 
+MONDO:0021013	trichothiodystrophy 4, nonphotosensitive

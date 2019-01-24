@@ -1,0 +1,3 @@
+DOID:1375	neonatal urinary tract infectious disease
+monDO ID 	 name 
+MONDO:0001791	neonatal urinary tract infectious disease

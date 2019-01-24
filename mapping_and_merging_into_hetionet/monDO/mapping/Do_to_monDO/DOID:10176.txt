@@ -1,0 +1,3 @@
+DOID:10176	neuroretinitis
+monDO ID 	 name 
+MONDO:0000958	neuroretinitis

@@ -1,0 +1,3 @@
+DOID:0050793	short QT syndrome
+monDO ID 	 name 
+MONDO:0000453	short QT syndrome

@@ -1,0 +1,3 @@
+MONDO:0009627	Galloway-Mowat syndrome
+DOID 	 name 
+DOID:0060364	Galloway-Mowat syndrome

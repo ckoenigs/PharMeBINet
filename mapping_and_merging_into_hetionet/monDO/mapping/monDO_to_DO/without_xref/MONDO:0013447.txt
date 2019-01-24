@@ -1,0 +1,3 @@
+MONDO:0013447	retinitis pigmentosa 48
+DOID 	 name 
+DOID:0110382	retinitis pigmentosa 48

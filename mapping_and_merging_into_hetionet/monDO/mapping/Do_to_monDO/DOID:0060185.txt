@@ -1,0 +1,3 @@
+DOID:0060185	Clostridium difficile colitis
+monDO ID 	 name 
+MONDO:0000705	clostridium difficile colitis

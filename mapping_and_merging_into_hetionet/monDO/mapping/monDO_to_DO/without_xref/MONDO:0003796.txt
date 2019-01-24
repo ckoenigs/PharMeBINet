@@ -1,0 +1,3 @@
+MONDO:0003796	rectum Kaposi sarcoma
+DOID 	 name 
+DOID:6190	rectum Kaposi's sarcoma

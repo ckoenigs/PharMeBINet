@@ -1,0 +1,3 @@
+MONDO:0011426	aceruloplasminemia
+DOID 	 name 
+DOID:0050711	aceruloplasminemia

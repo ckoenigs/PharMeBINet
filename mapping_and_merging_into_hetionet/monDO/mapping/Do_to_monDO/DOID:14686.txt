@@ -1,0 +1,3 @@
+DOID:14686	Axenfeld-Rieger syndrome
+monDO ID 	 name 
+MONDO:0019187	Axenfeld-Rieger syndrome

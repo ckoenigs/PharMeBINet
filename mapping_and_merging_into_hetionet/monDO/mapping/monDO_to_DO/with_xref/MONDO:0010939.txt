@@ -1,0 +1,3 @@
+MONDO:0010939	low phospholipid associated cholelithiasis
+DOID 	 name 
+DOID:1949	cholecystitis

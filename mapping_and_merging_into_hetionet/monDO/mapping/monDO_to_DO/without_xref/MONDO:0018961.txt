@@ -1,0 +1,3 @@
+MONDO:0018961	familial melanoma
+DOID 	 name 
+DOID:6846	familial melanoma

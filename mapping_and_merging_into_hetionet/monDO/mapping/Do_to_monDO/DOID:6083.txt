@@ -1,0 +1,3 @@
+DOID:6083	childhood ovarian endodermal sinus tumor
+monDO ID 	 name 
+MONDO:0003759	childhood ovarian yolk sac tumor

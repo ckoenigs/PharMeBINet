@@ -1,0 +1,3 @@
+MONDO:0002039	cognitive disorder
+DOID 	 name 
+DOID:1561	cognitive disorder

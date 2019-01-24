@@ -1,0 +1,3 @@
+MONDO:0004280	asymmetric motor neuropathy
+DOID 	 name 
+DOID:7559	asymmetric motor neuropathy

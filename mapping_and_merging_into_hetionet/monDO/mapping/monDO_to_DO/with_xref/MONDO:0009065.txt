@@ -1,0 +1,3 @@
+MONDO:0009065	cystinosis, nephropathic
+DOID 	 name 
+DOID:1064	cystinosis

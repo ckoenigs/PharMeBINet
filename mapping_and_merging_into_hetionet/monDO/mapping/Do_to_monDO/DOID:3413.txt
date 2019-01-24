@@ -1,0 +1,3 @@
+DOID:3413	alpha-mannosidosis
+monDO ID 	 name 
+MONDO:0009561	alpha-mannosidosis

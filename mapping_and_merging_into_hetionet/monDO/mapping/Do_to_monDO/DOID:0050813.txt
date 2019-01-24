@@ -1,0 +1,3 @@
+DOID:0050813	spondyloepiphyseal dysplasia with congenital joint dislocations
+monDO ID 	 name 
+MONDO:0007738	spondyloepiphyseal dysplasia with congenital joint dislocations

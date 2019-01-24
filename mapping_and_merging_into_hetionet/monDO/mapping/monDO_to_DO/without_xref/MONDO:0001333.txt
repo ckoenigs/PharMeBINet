@@ -1,0 +1,3 @@
+MONDO:0001333	Patau syndrome
+DOID 	 name 
+DOID:11665	Patau syndrome

@@ -1,0 +1,3 @@
+MONDO:0010998	ALG3-CDG
+DOID 	 name 
+DOID:0050570	congenital disorder of glycosylation type I

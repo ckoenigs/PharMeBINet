@@ -1,0 +1,3 @@
+DOID:6257	chromophil adenoma of the kidney
+monDO ID 	 name 
+MONDO:0003829	chromophil adenoma of the kidney

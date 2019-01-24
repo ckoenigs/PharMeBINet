@@ -1,0 +1,3 @@
+MONDO:0005076	periodontitis
+DOID 	 name 
+DOID:824	periodontitis

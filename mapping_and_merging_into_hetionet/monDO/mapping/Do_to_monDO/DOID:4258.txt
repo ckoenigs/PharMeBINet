@@ -1,0 +1,3 @@
+DOID:4258	Weissenbacher-Zweymuller syndrome
+monDO ID 	 name 
+MONDO:0009869	Weissenbacher-Zweymuller syndrome

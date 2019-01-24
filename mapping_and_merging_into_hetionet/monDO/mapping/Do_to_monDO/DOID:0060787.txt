@@ -1,0 +1,3 @@
+DOID:0060787	hypomyelinating leukodystrophy 2
+monDO ID 	 name 
+MONDO:0012125	hypomyelinating leukodystrophy 2

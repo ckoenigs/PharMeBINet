@@ -1,0 +1,3 @@
+DOID:4908	anal carcinoma
+monDO ID 	 name 
+MONDO:0003199	anal carcinoma

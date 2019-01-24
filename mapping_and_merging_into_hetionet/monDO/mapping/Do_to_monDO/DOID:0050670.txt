@@ -1,0 +1,3 @@
+DOID:0050670	ataxic cerebral palsy
+monDO ID 	 name 
+MONDO:0000397	ataxic cerebral palsy

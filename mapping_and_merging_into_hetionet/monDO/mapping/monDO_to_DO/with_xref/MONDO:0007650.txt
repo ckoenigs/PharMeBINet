@@ -1,0 +1,3 @@
+MONDO:0007650	MALT lymphoma
+DOID 	 name 
+DOID:0050909	MALT lymphoma

@@ -1,0 +1,4 @@
+MONDO:0005308	ciliopathy
+DOID 	 name 
+DOID:9562	primary ciliary dyskinesia
+DOID:0060340	ciliopathy

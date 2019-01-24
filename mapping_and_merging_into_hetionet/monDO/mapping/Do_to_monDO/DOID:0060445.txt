@@ -1,0 +1,3 @@
+DOID:0060445	congenital stromal corneal dystrophy
+monDO ID 	 name 
+MONDO:0012401	congenital stromal corneal dystrophy

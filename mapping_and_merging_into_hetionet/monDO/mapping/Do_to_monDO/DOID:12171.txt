@@ -1,0 +1,3 @@
+DOID:12171	radial neuropathy
+monDO ID 	 name 
+MONDO:0001459	radial neuropathy

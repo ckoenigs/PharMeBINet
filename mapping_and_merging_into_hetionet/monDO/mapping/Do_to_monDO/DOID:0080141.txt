@@ -1,0 +1,3 @@
+DOID:0080141	mosaic variegated aneuploidy syndrome 1
+monDO ID 	 name 
+MONDO:0009759	mosaic variegated aneuploidy syndrome 1

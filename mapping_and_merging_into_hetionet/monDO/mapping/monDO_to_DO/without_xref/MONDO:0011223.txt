@@ -1,0 +1,3 @@
+MONDO:0011223	amyotrophic lateral sclerosis type 4
+DOID 	 name 
+DOID:0060196	amyotrophic lateral sclerosis type 4

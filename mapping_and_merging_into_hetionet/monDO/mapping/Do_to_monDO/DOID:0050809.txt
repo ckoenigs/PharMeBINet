@@ -1,0 +1,3 @@
+DOID:0050809	mucopolysaccharidosis IX
+monDO ID 	 name 
+MONDO:0011093	mucopolysaccharidosis type 9

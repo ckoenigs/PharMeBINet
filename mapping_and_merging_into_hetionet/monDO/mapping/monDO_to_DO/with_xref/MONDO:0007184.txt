@@ -1,0 +1,3 @@
+MONDO:0007184	AGA1
+DOID 	 name 
+DOID:0050801	androgenic alopecia

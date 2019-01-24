@@ -1,0 +1,3 @@
+MONDO:0005975	suppurative otitis media
+DOID 	 name 
+DOID:11506	suppurative otitis media

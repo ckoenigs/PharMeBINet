@@ -1,0 +1,3 @@
+MONDO:0004902	interstitial keratitis
+DOID 	 name 
+DOID:9857	interstitial keratitis

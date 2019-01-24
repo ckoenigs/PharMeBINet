@@ -1,0 +1,3 @@
+MONDO:0008448	spheroid body myopathy
+DOID 	 name 
+DOID:0080091	spheroid body myopathy

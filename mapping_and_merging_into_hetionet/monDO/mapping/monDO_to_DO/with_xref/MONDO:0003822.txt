@@ -1,0 +1,3 @@
+MONDO:0003822	non-invasive bladder papillary urothelial neoplasm
+DOID 	 name 
+DOID:6239	non-invasive bladder papillary urothelial neoplasm

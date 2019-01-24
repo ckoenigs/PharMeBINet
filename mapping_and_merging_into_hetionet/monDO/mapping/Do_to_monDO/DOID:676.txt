@@ -1,0 +1,3 @@
+DOID:676	juvenile rheumatoid arthritis
+monDO ID 	 name 
+MONDO:0011429	juvenile rheumatoid arthritis

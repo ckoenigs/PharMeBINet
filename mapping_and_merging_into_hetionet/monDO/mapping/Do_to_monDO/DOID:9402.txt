@@ -1,0 +1,3 @@
+DOID:9402	epididymitis
+monDO ID 	 name 
+MONDO:0004779	epididymitis (disease)

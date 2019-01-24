@@ -1,0 +1,3 @@
+MONDO:0012900	cardiomyopathy, familial restrictive, 3
+DOID 	 name 
+DOID:397	restrictive cardiomyopathy

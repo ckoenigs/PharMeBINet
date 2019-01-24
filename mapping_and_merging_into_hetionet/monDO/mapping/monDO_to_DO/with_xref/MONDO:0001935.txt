@@ -1,0 +1,3 @@
+MONDO:0001935	neurogenic arthropathy
+DOID 	 name 
+DOID:14286	neurogenic arthropathy

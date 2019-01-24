@@ -1,0 +1,3 @@
+DOID:0050129	secretory diarrhea
+monDO ID 	 name 
+MONDO:0000249	secretory diarrhea

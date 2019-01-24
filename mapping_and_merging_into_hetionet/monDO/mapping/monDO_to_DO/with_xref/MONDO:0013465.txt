@@ -1,0 +1,3 @@
+MONDO:0013465	achromatopsia 4
+DOID 	 name 
+DOID:0110010	achromatopsia 4

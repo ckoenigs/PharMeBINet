@@ -1,0 +1,3 @@
+DOID:0060682	autosomal dominant nocturnal frontal lobe epilepsy 1
+monDO ID 	 name 
+MONDO:0010899	autosomal dominant nocturnal frontal lobe epilepsy 1

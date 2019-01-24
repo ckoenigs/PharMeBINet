@@ -1,0 +1,3 @@
+DOID:4303	sarcomatoid basal cell carcinoma
+monDO ID 	 name 
+MONDO:0002957	sarcomatoid basal cell carcinoma

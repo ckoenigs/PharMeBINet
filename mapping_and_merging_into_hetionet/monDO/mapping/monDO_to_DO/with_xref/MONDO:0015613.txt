@@ -1,0 +1,3 @@
+MONDO:0015613	dentin dysplasia
+DOID 	 name 
+DOID:701	dentin dysplasia

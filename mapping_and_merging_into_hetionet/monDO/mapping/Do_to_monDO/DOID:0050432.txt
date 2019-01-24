@@ -1,0 +1,3 @@
+DOID:0050432	Asperger syndrome
+monDO ID 	 name 
+MONDO:0005259	Asperger syndrome

@@ -1,0 +1,3 @@
+DOID:1206	Rett syndrome
+monDO ID 	 name 
+MONDO:0010726	Rett syndrome

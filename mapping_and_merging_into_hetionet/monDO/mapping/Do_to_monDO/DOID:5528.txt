@@ -1,0 +1,3 @@
+DOID:5528	rectum squamous cell carcinoma
+monDO ID 	 name 
+MONDO:0018515	squamous cell carcinoma of rectum

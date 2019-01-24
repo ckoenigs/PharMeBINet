@@ -1,0 +1,3 @@
+DOID:12697	locked-in syndrome
+monDO ID 	 name 
+MONDO:0016567	Locked-in syndrome

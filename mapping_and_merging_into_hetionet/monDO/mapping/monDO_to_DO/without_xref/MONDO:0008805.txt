@@ -1,0 +1,3 @@
+MONDO:0003709	Takayasus arteritis
+DOID 	 name 
+DOID:2508	Takayasu's arteritis

@@ -1,0 +1,3 @@
+MONDO:0006864	necrotizing sialometaplasia
+DOID 	 name 
+DOID:12901	necrotizing sialometaplasia

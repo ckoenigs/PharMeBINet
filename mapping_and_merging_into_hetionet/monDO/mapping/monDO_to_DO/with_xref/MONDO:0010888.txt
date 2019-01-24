@@ -1,0 +1,3 @@
+MONDO:0010888	endometriosis of uterus
+DOID 	 name 
+DOID:288	endometriosis of uterus

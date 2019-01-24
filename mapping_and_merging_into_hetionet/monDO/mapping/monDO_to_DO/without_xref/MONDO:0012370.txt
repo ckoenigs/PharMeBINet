@@ -1,0 +1,3 @@
+MONDO:0012370	autosomal recessive nonsyndromic deafness 51
+DOID 	 name 
+DOID:0110508	autosomal recessive nonsyndromic deafness 51

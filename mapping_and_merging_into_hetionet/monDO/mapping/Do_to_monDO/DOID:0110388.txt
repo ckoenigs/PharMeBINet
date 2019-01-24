@@ -1,0 +1,3 @@
+DOID:0110388	retinitis pigmentosa 10
+monDO ID 	 name 
+MONDO:0008379	retinitis pigmentosa 10

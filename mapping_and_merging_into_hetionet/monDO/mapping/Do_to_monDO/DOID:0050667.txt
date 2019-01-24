@@ -1,0 +1,3 @@
+DOID:0050667	alcohol-related neurodevelopmental disorder
+monDO ID 	 name 
+MONDO:0016011	fetal alcohol syndrome

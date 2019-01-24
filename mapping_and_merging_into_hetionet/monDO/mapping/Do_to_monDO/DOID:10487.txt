@@ -1,0 +1,3 @@
+DOID:10487	Hirschsprung's disease
+monDO ID 	 name 
+MONDO:0018309	Hirschsprung's disease

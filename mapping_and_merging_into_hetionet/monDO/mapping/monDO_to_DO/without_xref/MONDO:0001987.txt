@@ -1,0 +1,3 @@
+MONDO:0001987	senile degeneration of brain
+DOID 	 name 
+DOID:14524	senile degeneration of brain

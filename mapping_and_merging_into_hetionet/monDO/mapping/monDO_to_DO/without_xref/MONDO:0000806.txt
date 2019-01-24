@@ -1,0 +1,3 @@
+MONDO:0000806	horned turban snail allergy
+DOID 	 name 
+DOID:0060531	horned turban snail allergy

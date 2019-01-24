@@ -1,0 +1,3 @@
+DOID:11156	anhidrosis
+monDO ID 	 name 
+MONDO:0006527	anhidrosis

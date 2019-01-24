@@ -1,0 +1,3 @@
+MONDO:0004792	isthmus cancer
+DOID 	 name 
+DOID:9459	isthmus cancer

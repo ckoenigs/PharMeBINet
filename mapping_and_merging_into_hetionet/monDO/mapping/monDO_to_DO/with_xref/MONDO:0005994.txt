@@ -1,0 +1,3 @@
+MONDO:0005994	trichostrongyloidiasis
+DOID 	 name 
+DOID:1255	trichostrongyloidiasis

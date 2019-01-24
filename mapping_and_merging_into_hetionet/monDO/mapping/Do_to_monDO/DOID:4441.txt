@@ -1,0 +1,3 @@
+DOID:4441	dysgerminoma
+monDO ID 	 name 
+MONDO:0003002	dysgerminoma (disease)

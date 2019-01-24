@@ -1,0 +1,3 @@
+MONDO:0000581	lambda 5 deficiency
+DOID 	 name 
+DOID:0060024	lambda 5 deficiency

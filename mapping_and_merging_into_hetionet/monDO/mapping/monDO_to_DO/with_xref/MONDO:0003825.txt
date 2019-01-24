@@ -1,0 +1,3 @@
+MONDO:0003825	kidney oncocytoma
+DOID 	 name 
+DOID:6245	renal oncocytoma

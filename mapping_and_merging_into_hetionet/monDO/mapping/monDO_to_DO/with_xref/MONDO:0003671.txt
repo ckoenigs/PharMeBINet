@@ -1,0 +1,3 @@
+MONDO:0003671	septal myocardial infarction
+DOID 	 name 
+DOID:5846	septal myocardial infarction

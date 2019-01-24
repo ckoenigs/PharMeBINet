@@ -1,0 +1,3 @@
+DOID:0060829	Brooks-Wisniewski-Brown syndrome
+monDO ID 	 name 
+MONDO:0010376	Brooks-Wisniewski-brown syndrome

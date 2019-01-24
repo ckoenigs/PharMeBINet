@@ -1,0 +1,3 @@
+MONDO:0012474	autosomal dominant nocturnal frontal lobe epilepsy 4
+DOID 	 name 
+DOID:0060685	autosomal dominant nocturnal frontal lobe epilepsy 4

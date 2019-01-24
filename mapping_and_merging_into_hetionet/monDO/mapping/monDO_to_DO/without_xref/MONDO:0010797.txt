@@ -1,0 +1,3 @@
+MONDO:0010797	Pearson syndrome
+DOID 	 name 
+DOID:0060067	Pearson syndrome

@@ -1,0 +1,3 @@
+MONDO:0003338	von Economo's disease
+DOID 	 name 
+DOID:5225	von Economo's disease

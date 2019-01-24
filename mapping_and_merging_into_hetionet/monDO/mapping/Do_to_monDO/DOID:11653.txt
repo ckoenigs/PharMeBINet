@@ -1,0 +1,3 @@
+DOID:11653	conjunctival deposit
+monDO ID 	 name 
+MONDO:0001331	conjunctival deposit

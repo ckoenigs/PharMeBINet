@@ -1,0 +1,3 @@
+DOID:0060133	anosognosia
+monDO ID 	 name 
+MONDO:0000663	anosognosia

@@ -1,0 +1,3 @@
+MONDO:0010306	X-linked intellectual disability, Cabezas type
+DOID 	 name 
+DOID:0060822	syndromic X-linked intellectual disability Cabezas type

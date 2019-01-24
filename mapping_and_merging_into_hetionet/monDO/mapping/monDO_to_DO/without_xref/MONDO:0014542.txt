@@ -1,0 +1,3 @@
+MONDO:0014542	congenital myasthenic syndrome 15
+DOID 	 name 
+DOID:0110658	congenital myasthenic syndrome 15

@@ -1,0 +1,3 @@
+DOID:12842	Guillain-Barre syndrome
+monDO ID 	 name 
+MONDO:0007691	Guillain-Barre syndrome

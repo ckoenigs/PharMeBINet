@@ -1,0 +1,3 @@
+MONDO:0010480	anemia, nonspherocytic hemolytic, due to G6Pd deficiency
+DOID 	 name 
+DOID:2861	congenital nonspherocytic hemolytic anemia

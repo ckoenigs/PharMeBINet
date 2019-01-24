@@ -1,0 +1,3 @@
+MONDO:0002035	colon lymphoma
+DOID 	 name 
+DOID:1523	colon lymphoma

@@ -1,0 +1,3 @@
+MONDO:0002917	disease of pilosebaceous unit
+DOID 	 name 
+DOID:421	hair disease

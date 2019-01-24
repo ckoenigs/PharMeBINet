@@ -1,0 +1,3 @@
+MONDO:0003984	internal auditory canal lipoma
+DOID 	 name 
+DOID:6752	internal auditory canal lipoma

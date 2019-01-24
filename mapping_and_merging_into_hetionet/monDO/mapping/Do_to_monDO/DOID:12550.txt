@@ -1,0 +1,3 @@
+DOID:12550	hepatic coma
+monDO ID 	 name 
+MONDO:0001548	hepatic coma

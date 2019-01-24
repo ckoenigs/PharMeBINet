@@ -1,0 +1,3 @@
+DOID:1040	chronic lymphocytic leukemia
+monDO ID 	 name 
+MONDO:0004948	B-cell chronic lymphocytic leukemia

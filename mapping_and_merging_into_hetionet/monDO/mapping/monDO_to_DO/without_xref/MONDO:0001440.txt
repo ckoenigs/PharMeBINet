@@ -1,0 +1,3 @@
+MONDO:0001440	neurotrophic keratoconjunctivitis
+DOID 	 name 
+DOID:12125	neurotrophic keratoconjunctivitis

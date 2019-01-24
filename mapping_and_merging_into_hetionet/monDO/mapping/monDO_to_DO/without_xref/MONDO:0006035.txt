@@ -1,0 +1,3 @@
+MONDO:0006035	gastric tubular adenocarcinoma
+DOID 	 name 
+DOID:6595	gastric tubular adenocarcinoma

@@ -1,0 +1,3 @@
+MONDO:0013475	hypertrophic cardiomyopathy 18
+DOID 	 name 
+DOID:0110324	hypertrophic cardiomyopathy 18

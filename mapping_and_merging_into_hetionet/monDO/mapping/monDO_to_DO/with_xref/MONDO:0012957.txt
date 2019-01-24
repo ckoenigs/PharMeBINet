@@ -1,0 +1,3 @@
+MONDO:0012957	MS3
+DOID 	 name 
+DOID:2377	multiple sclerosis

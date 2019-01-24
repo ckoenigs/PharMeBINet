@@ -1,0 +1,3 @@
+DOID:0050780	Opitz-GBBB syndrome
+monDO ID 	 name 
+MONDO:0017138	Opitz G/BBB syndrome

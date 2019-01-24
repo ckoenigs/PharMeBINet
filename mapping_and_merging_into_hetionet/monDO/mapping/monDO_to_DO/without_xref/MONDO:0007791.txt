@@ -1,0 +1,3 @@
+MONDO:0007791	familial hypocalciuric hypercalcemia 1
+DOID 	 name 
+DOID:0060700	familial hypocalciuric hypercalcemia 1

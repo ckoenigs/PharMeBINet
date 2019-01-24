@@ -1,0 +1,3 @@
+DOID:0050964	spinocerebellar ataxia type 14
+monDO ID 	 name 
+MONDO:0011540	spinocerebellar ataxia type 14

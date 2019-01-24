@@ -1,0 +1,3 @@
+MONDO:0004891	hyperopia
+DOID 	 name 
+DOID:9834	hyperopia

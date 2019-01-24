@@ -1,0 +1,3 @@
+MONDO:0001273	megacolon
+DOID 	 name 
+DOID:11372	megacolon

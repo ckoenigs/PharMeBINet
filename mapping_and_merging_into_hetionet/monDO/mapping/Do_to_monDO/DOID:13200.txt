@@ -1,0 +1,3 @@
+DOID:13200	substernal goiter
+monDO ID 	 name 
+MONDO:0006986	substernal goiter

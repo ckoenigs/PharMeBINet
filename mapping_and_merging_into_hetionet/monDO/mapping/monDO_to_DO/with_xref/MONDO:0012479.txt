@@ -1,0 +1,3 @@
+MONDO:0012479	congenital malabsorptive diarrhea 4
+DOID 	 name 
+DOID:0060779	congenital malabsorptive diarrhea 4

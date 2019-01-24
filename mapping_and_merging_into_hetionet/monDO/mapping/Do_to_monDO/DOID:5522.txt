@@ -1,0 +1,3 @@
+DOID:5522	basaloid squamous cell carcinoma
+monDO ID 	 name 
+MONDO:0003486	basaloid squamous cell carcinoma

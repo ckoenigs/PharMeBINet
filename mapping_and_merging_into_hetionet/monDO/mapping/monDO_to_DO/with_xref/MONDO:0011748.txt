@@ -1,0 +1,3 @@
+MONDO:0011748	Usher syndrome type 1G
+DOID 	 name 
+DOID:0110834	Usher syndrome type 1G

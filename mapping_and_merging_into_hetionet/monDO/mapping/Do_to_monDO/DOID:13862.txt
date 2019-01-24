@@ -1,0 +1,3 @@
+DOID:13862	acute closed-angle glaucoma
+monDO ID 	 name 
+MONDO:0001817	acute closed-angle glaucoma

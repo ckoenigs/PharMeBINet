@@ -1,0 +1,3 @@
+MONDO:0003640	verruciform xanthoma of skin
+DOID 	 name 
+DOID:5769	verruciform xanthoma of skin

@@ -1,0 +1,3 @@
+MONDO:0017364	POEMS syndrome
+DOID 	 name 
+DOID:14039	POEMS syndrome

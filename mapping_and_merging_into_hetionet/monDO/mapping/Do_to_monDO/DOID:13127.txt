@@ -1,0 +1,3 @@
+DOID:13127	gonococcal spondylitis
+monDO ID 	 name 
+MONDO:0001640	gonococcal spondylitis

@@ -1,0 +1,3 @@
+MONDO:0003709	gastric diffuse adenocarcinoma
+DOID 	 name 
+DOID:6217	gastric diffuse adenocarcinoma

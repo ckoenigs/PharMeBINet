@@ -1,0 +1,3 @@
+MONDO:0006933	pulmonary plasma cell granuloma
+DOID 	 name 
+DOID:3677	pulmonary plasma cell granuloma

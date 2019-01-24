@@ -1,0 +1,3 @@
+DOID:12802	mucopolysaccharidosis I
+monDO ID 	 name 
+MONDO:0001586	mucopolysaccharidosis type 1

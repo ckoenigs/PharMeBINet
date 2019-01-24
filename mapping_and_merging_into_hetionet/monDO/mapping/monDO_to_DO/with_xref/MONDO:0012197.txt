@@ -1,0 +1,3 @@
+MONDO:0012197	idiopathic aplastic anemia
+DOID 	 name 
+DOID:12449	aplastic anemia

@@ -1,0 +1,3 @@
+DOID:7610	mixed cell type adenoma of parathyroid
+monDO ID 	 name 
+MONDO:0004304	mixed cell type adenoma of parathyroid

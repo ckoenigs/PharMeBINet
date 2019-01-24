@@ -1,0 +1,3 @@
+DOID:5289	uterus leiomyosarcoma
+monDO ID 	 name 
+MONDO:0016262	leiomyosarcoma of the corpus uteri

@@ -1,0 +1,3 @@
+DOID:3216	jejunal somatostatinoma
+monDO ID 	 name 
+MONDO:0002563	jejunal somatostatinoma

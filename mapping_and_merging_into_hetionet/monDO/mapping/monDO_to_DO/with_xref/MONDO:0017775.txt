@@ -1,0 +1,3 @@
+MONDO:0017775	melioidosis
+DOID 	 name 
+DOID:5052	melioidosis

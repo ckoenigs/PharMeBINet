@@ -1,0 +1,3 @@
+MONDO:0013385	Treacher Collins syndrome 2
+DOID 	 name 
+DOID:2908	Treacher Collins syndrome

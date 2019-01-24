@@ -1,0 +1,3 @@
+DOID:12401	intermittent explosive disorder
+monDO ID 	 name 
+MONDO:0001521	intermittent explosive disorder

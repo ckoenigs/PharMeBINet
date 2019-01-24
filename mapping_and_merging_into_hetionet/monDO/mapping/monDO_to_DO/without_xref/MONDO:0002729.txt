@@ -1,0 +1,3 @@
+MONDO:0002729	kidney rhabdoid cancer
+DOID 	 name 
+DOID:3674	kidney rhabdoid cancer

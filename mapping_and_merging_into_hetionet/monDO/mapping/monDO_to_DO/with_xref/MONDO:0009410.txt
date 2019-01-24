@@ -1,0 +1,3 @@
+MONDO:0009410	Addison's disease
+DOID 	 name 
+DOID:13774	Addison's disease

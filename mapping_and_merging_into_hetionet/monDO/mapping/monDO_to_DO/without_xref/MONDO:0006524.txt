@@ -1,0 +1,3 @@
+MONDO:0006524	acrodermatitis chronica atrophicans
+DOID 	 name 
+DOID:0060344	acrodermatitis chronica atrophicans

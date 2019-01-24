@@ -1,0 +1,3 @@
+DOID:0050879	fragile X-associated tremor/ataxia syndrome
+monDO ID 	 name 
+MONDO:0010382	fragile X-associated tremor/ataxia syndrome

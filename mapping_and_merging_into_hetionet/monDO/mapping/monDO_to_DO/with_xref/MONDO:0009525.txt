@@ -1,0 +1,3 @@
+MONDO:0009525	split hand-foot malformation 3
+DOID 	 name 
+DOID:0090025	split hand-foot malformation 3

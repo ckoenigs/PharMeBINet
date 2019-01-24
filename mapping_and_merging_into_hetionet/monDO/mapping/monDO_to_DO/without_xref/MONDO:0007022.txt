@@ -1,0 +1,3 @@
+MONDO:0007022	xanthogranulomatous pyelonephritis
+DOID 	 name 
+DOID:11401	xanthogranulomatous pyelonephritis

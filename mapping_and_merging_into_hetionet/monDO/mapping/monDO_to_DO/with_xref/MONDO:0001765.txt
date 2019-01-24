@@ -1,0 +1,3 @@
+MONDO:0001765	polyneuropathy in collagen vascular disease
+DOID 	 name 
+DOID:13649	polyneuropathy in collagen vascular disease

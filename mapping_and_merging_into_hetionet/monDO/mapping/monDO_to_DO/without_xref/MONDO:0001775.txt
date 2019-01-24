@@ -1,0 +1,3 @@
+MONDO:0001775	chronic duodenal ileus
+DOID 	 name 
+DOID:13687	chronic duodenal ileus

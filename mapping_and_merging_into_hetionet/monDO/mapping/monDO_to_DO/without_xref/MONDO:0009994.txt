@@ -1,0 +1,3 @@
+MONDO:0009994	alveolar rhabdomyosarcoma (disease)
+DOID 	 name 
+DOID:4051	alveolar rhabdomyosarcoma

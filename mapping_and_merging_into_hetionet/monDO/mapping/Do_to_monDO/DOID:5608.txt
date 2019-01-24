@@ -1,0 +1,3 @@
+DOID:5608	dental pulp calcification
+monDO ID 	 name 
+MONDO:0003542	dental pulp calcification

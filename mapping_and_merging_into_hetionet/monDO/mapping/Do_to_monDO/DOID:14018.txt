@@ -1,0 +1,3 @@
+DOID:14018	alcoholic liver cirrhosis
+monDO ID 	 name 
+MONDO:0006644	alcoholic liver cirrhosis

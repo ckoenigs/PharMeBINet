@@ -1,0 +1,3 @@
+MONDO:0002171	giant cell tumor
+DOID 	 name 
+DOID:200	giant cell tumor

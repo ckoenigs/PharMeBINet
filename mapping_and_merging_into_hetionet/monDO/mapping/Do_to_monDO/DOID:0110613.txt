@@ -1,0 +1,3 @@
+DOID:0110613	primary ciliary dyskinesia 16
+monDO ID 	 name 
+MONDO:0013525	primary ciliary dyskinesia 16

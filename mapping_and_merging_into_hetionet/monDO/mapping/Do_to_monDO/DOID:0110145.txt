@@ -1,0 +1,3 @@
+DOID:0110145	Bartter disease type 4a
+monDO ID 	 name 
+MONDO:0011242	Bartter disease type 4a

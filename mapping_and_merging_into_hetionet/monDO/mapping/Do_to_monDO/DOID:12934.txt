@@ -1,0 +1,3 @@
+DOID:12934	Kearns-Sayre syndrome
+monDO ID 	 name 
+MONDO:0010787	Kearns-Sayre syndrome

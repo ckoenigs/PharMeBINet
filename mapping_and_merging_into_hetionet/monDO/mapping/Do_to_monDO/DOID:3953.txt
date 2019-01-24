@@ -1,0 +1,3 @@
+DOID:3953	adrenal gland cancer
+monDO ID 	 name 
+MONDO:0002817	adrenal gland cancer

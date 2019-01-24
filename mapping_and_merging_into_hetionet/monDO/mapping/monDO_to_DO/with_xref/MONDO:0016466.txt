@@ -1,0 +1,4 @@
+MONDO:0016466	asbestosis
+DOID 	 name 
+DOID:10324	anthracosilicosis
+DOID:10320	asbestosis

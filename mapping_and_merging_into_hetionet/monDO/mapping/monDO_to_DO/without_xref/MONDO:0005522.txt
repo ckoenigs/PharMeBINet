@@ -1,0 +1,3 @@
+MONDO:0005522	small intestine carcinoma
+DOID 	 name 
+DOID:4907	small intestine carcinoma

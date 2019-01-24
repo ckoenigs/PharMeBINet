@@ -1,0 +1,3 @@
+DOID:0060238	Van Maldergem syndrome
+monDO ID 	 name 
+MONDO:0017813	van Maldergem syndrome

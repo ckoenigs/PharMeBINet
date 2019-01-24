@@ -1,0 +1,3 @@
+MONDO:0012651	spastic ataxia 2
+DOID 	 name 
+DOID:0050941	spastic ataxia 2

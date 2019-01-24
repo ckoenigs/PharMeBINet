@@ -1,0 +1,3 @@
+DOID:11086	chorioretinal scar
+monDO ID 	 name 
+MONDO:0001193	chorioretinal scar

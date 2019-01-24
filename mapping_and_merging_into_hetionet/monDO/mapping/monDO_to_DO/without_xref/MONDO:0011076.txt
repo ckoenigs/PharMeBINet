@@ -1,0 +1,3 @@
+MONDO:0011076	myofibrillar myopathy 1
+DOID 	 name 
+DOID:0080092	myofibrillar myopathy 1

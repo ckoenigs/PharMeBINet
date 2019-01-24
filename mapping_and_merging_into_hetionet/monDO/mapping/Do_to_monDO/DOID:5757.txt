@@ -1,0 +1,3 @@
+DOID:5757	endocervicitis
+monDO ID 	 name 
+MONDO:0003632	endocervicitis

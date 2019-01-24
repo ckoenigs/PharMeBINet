@@ -1,0 +1,3 @@
+DOID:0050836	focal dystonia
+monDO ID 	 name 
+MONDO:0000477	focal dystonia

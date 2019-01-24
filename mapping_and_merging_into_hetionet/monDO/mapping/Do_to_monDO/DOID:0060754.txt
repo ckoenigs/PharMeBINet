@@ -1,0 +1,3 @@
+DOID:0060754	familial temporal lobe epilepsy 8
+monDO ID 	 name 
+MONDO:0014650	familial temporal lobe epilepsy 8

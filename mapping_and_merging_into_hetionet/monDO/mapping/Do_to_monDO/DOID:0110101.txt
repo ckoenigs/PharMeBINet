@@ -1,0 +1,3 @@
+DOID:0110101	atopic dermatitis 5
+monDO ID 	 name 
+MONDO:0011608	atopic dermatitis 5

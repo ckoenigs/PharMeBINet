@@ -1,0 +1,3 @@
+DOID:0111070	congenital bile acid synthesis defect 3
+monDO ID 	 name 
+MONDO:0013439	congenital bile acid synthesis defect 3

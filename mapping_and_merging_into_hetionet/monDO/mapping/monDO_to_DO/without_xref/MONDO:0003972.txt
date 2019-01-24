@@ -1,0 +1,3 @@
+MONDO:0003972	gastric body carcinoma
+DOID 	 name 
+DOID:6705	gastric body carcinoma

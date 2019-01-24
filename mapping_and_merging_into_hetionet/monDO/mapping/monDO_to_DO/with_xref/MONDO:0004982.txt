@@ -1,0 +1,3 @@
+MONDO:0004982	pancreatitis
+DOID 	 name 
+DOID:4989	pancreatitis

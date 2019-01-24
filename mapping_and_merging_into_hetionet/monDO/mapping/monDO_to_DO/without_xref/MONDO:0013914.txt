@@ -1,0 +1,3 @@
+MONDO:0013914	hypogonadotropic hypogonadism 12 with or without anosmia
+DOID 	 name 
+DOID:0090072	hypogonadotropic hypogonadism 12 with or without anosmia

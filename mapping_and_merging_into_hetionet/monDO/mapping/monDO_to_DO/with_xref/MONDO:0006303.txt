@@ -1,0 +1,3 @@
+MONDO:0006303	middle ear squamous cell carcinoma
+DOID 	 name 
+DOID:5526	middle ear squamous cell carcinoma

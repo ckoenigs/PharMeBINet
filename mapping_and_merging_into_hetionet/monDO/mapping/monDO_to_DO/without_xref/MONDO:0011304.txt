@@ -1,0 +1,3 @@
+MONDO:0011304	cerebral cavernous malformation 2
+DOID 	 name 
+DOID:0060670	cerebral cavernous malformation 2

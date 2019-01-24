@@ -1,0 +1,3 @@
+DOID:11755	choledocholithiasis
+monDO ID 	 name 
+MONDO:0006699	choledocholithiasis

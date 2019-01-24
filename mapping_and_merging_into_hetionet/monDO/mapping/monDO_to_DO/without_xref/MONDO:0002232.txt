@@ -1,0 +1,3 @@
+MONDO:0002232	nasal cavity disease
+DOID 	 name 
+DOID:2163	nasal cavity disease

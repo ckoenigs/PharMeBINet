@@ -1,0 +1,3 @@
+DOID:5196	fallopian tube adenomatoid tumor
+monDO ID 	 name 
+MONDO:0003328	fallopian tube adenomatoid tumor

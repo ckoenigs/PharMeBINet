@@ -1,0 +1,3 @@
+MONDO:0014370	pontocerebellar hypoplasia type 2E
+DOID 	 name 
+DOID:0060271	pontocerebellar hypoplasia type 2E

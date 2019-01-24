@@ -1,0 +1,3 @@
+MONDO:0005705	clonorchiasis
+DOID 	 name 
+DOID:13767	clonorchiasis

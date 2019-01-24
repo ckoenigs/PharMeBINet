@@ -1,0 +1,3 @@
+DOID:3578	ovarian gonadoblastoma
+monDO ID 	 name 
+MONDO:0002697	ovarian gonadoblastoma (disease)

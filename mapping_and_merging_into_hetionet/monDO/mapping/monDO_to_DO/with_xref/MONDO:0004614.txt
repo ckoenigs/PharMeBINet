@@ -1,0 +1,4 @@
+MONDO:0004614	chronic monocytic leukemia
+DOID 	 name 
+DOID:8692	myeloid leukemia
+DOID:8593	chronic monocytic leukemia

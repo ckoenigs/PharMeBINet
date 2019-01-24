@@ -1,0 +1,3 @@
+MONDO:0012514	hypomyelinating leukodystrophy 5
+DOID 	 name 
+DOID:0060793	hypomyelinating leukodystrophy 5

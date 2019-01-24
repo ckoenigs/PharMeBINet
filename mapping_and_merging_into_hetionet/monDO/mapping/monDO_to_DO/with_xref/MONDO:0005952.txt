@@ -1,0 +1,3 @@
+MONDO:0005952	scarlet fever
+DOID 	 name 
+DOID:8596	scarlet fever

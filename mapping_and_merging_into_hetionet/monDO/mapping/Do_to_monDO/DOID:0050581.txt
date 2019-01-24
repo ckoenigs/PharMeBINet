@@ -1,0 +1,3 @@
+DOID:0050581	brachydactyly
+monDO ID 	 name 
+MONDO:0021004	brachydactyly (disease)

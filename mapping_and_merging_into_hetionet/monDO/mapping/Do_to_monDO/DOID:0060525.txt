@@ -1,0 +1,3 @@
+DOID:0060525	brown shrimp allergy
+monDO ID 	 name 
+MONDO:0000800	brown shrimp allergy

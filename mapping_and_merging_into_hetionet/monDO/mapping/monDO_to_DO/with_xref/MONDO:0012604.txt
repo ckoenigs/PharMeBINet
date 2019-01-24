@@ -1,0 +1,4 @@
+MONDO:0012604	isolated microphthalmia 3
+DOID 	 name 
+DOID:10629	microphthalmia
+DOID:0060842	isolated microphthalmia 3

@@ -1,0 +1,3 @@
+MONDO:0003768	signet ring cell variant cervical mucinous adenocarcinoma
+DOID 	 name 
+DOID:6101	signet ring cell variant cervical mucinous adenocarcinoma

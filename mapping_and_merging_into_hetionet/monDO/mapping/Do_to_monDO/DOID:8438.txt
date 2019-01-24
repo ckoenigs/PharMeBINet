@@ -1,0 +1,3 @@
+DOID:8438	afferent loop syndrome
+monDO ID 	 name 
+MONDO:0006641	afferent loop syndrome

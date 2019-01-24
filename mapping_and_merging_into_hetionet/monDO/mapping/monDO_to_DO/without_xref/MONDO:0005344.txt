@@ -1,0 +1,3 @@
+MONDO:0005344	hepatitis B
+DOID 	 name 
+DOID:2043	hepatitis B

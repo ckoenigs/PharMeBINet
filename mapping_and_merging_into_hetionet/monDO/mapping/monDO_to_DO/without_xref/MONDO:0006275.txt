@@ -1,0 +1,3 @@
+MONDO:0006275	lung giant cell carcinoma
+DOID 	 name 
+DOID:5583	lung giant cell carcinoma

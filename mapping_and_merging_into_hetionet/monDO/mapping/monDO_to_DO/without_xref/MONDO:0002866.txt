@@ -1,0 +1,3 @@
+MONDO:0002866	duodenal disease
+DOID 	 name 
+DOID:4072	duodenal disease

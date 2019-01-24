@@ -1,0 +1,3 @@
+MONDO:0001643	exophthalmic ophthalmoplegia
+DOID 	 name 
+DOID:13135	exophthalmic ophthalmoplegia

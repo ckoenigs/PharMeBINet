@@ -1,0 +1,4 @@
+MONDO:0019046	leukodystrophy
+DOID 	 name 
+DOID:0060786	hypomyelinating leukodystrophy
+DOID:10579	leukodystrophy

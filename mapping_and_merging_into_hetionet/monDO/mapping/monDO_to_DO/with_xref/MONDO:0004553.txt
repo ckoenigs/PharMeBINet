@@ -1,0 +1,3 @@
+MONDO:0004553	extrinsic allergic alveolitis
+DOID 	 name 
+DOID:841	extrinsic allergic alveolitis

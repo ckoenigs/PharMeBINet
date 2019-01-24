@@ -1,0 +1,3 @@
+DOID:1390	hypobetalipoproteinemia
+monDO ID 	 name 
+MONDO:0017774	hypobetalipoproteinemia

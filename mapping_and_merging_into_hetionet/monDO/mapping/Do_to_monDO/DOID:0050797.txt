@@ -1,0 +1,3 @@
+DOID:0050797	peroxisomal acyl-CoA oxidase deficiency
+monDO ID 	 name 
+MONDO:0009919	peroxisomal acyl-CoA oxidase deficiency

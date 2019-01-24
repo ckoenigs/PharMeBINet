@@ -1,0 +1,3 @@
+MONDO:0009509	Landau-Kleffner syndrome
+DOID 	 name 
+DOID:2538	Landau-Kleffner syndrome

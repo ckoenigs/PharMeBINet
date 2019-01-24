@@ -1,0 +1,3 @@
+DOID:11232	orbital osteomyelitis
+monDO ID 	 name 
+MONDO:0001232	orbital osteomyelitis

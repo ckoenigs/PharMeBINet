@@ -1,0 +1,3 @@
+DOID:8886	chorioretinitis
+monDO ID 	 name 
+MONDO:0004674	chorioretinitis (disease)

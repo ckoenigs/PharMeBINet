@@ -1,0 +1,3 @@
+MONDO:0002845	necrotizing gastritis
+DOID 	 name 
+DOID:4037	necrotizing gastritis

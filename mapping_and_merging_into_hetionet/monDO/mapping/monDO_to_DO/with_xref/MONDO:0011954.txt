@@ -1,0 +1,3 @@
+MONDO:0011954	CMM4
+DOID 	 name 
+DOID:8923	skin melanoma

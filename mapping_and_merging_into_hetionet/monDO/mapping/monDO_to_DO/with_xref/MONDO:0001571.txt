@@ -1,0 +1,4 @@
+MONDO:0001571	gynecomastia
+DOID 	 name 
+DOID:12698	gynecomastia
+DOID:11603	infant gynecomastia

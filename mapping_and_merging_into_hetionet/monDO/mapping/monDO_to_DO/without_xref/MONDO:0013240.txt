@@ -1,0 +1,3 @@
+MONDO:0013240	maturity-onset diabetes of the young type 10
+DOID 	 name 
+DOID:0111108	maturity-onset diabetes of the young type 10

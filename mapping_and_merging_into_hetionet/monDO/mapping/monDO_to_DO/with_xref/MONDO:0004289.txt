@@ -1,0 +1,3 @@
+MONDO:0004289	glottis verrucous carcinoma
+DOID 	 name 
+DOID:7583	glottis verrucous carcinoma

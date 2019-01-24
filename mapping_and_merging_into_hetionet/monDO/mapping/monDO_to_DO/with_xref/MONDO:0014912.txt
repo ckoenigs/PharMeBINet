@@ -1,0 +1,3 @@
+MONDO:0014912	otulipenia
+DOID 	 name 
+DOID:0080163	otulipenia

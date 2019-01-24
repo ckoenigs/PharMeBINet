@@ -1,0 +1,3 @@
+DOID:3522	lateral medullary syndrome
+monDO ID 	 name 
+MONDO:0006827	lateral medullary syndrome

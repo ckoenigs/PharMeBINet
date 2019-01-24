@@ -1,0 +1,3 @@
+MONDO:0001487	intrahepatic gall duct cancer
+DOID 	 name 
+DOID:12298	intrahepatic gall duct cancer

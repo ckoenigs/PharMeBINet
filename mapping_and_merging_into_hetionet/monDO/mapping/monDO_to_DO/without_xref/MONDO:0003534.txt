@@ -1,0 +1,3 @@
+MONDO:0003534	papillary thymic adenocarcinoma
+DOID 	 name 
+DOID:5595	papillary thymic adenocarcinoma

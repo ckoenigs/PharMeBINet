@@ -1,0 +1,3 @@
+MONDO:0012883	acute promyelocytic leukemia
+DOID 	 name 
+DOID:0060318	acute promyelocytic leukemia

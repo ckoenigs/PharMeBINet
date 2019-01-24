@@ -1,0 +1,3 @@
+DOID:11813	bladder trigone cancer
+monDO ID 	 name 
+MONDO:0001375	bladder trigone cancer

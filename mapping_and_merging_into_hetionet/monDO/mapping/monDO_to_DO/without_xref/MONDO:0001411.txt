@@ -1,0 +1,3 @@
+MONDO:0001411	synostosis
+DOID 	 name 
+DOID:11971	synostosis

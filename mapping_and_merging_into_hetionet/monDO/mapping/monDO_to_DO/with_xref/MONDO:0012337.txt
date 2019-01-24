@@ -1,0 +1,3 @@
+MONDO:0012337	GLC1I
+DOID 	 name 
+DOID:1067	open-angle glaucoma

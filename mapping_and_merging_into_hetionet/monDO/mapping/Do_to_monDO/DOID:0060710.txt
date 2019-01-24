@@ -1,0 +1,3 @@
+DOID:0060710	autosomal recessive congenital ichthyosis 2
+monDO ID 	 name 
+MONDO:0009439	autosomal recessive congenital ichthyosis 2

@@ -1,0 +1,3 @@
+MONDO:0012943	retinitis pigmentosa 46
+DOID 	 name 
+DOID:0110409	retinitis pigmentosa 46

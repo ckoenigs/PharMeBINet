@@ -1,0 +1,3 @@
+DOID:0050906	conjunctival nevus
+monDO ID 	 name 
+MONDO:0006172	conjunctival nevus

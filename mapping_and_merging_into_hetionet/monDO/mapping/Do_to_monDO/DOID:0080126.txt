@@ -1,0 +1,3 @@
+DOID:0080126	mitochondrial DNA depletion syndrome 7
+monDO ID 	 name 
+MONDO:0010060	infantile onset spinocerebellar ataxia

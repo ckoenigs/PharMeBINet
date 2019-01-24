@@ -1,0 +1,3 @@
+DOID:0110374	retinitis pigmentosa 68
+monDO ID 	 name 
+MONDO:0014323	retinitis pigmentosa 68

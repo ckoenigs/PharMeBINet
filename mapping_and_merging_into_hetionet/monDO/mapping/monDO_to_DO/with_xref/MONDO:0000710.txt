@@ -1,0 +1,3 @@
+MONDO:0000710	gastroduodenal Crohn's disease
+DOID 	 name 
+DOID:0060191	gastroduodenal Crohn's disease

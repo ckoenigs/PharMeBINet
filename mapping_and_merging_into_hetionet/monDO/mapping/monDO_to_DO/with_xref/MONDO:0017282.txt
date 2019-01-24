@@ -1,0 +1,3 @@
+MONDO:0017282	alveolar echinococcosis
+DOID 	 name 
+DOID:12148	alveolar echinococcosis

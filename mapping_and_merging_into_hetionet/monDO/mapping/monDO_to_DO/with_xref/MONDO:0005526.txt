@@ -1,0 +1,3 @@
+MONDO:0005526	tetanus
+DOID 	 name 
+DOID:11338	tetanus

@@ -1,0 +1,3 @@
+MONDO:0007070	adiposis dolorosa
+DOID 	 name 
+DOID:3928	adiposis dolorosa

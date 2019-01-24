@@ -1,0 +1,3 @@
+MONDO:0015044	mu-heavy chain disease
+DOID 	 name 
+DOID:0060128	mu chain disease

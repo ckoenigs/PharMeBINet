@@ -1,0 +1,3 @@
+DOID:7926	epithelial malignant thymoma
+monDO ID 	 name 
+MONDO:0006458	thymoma type B3

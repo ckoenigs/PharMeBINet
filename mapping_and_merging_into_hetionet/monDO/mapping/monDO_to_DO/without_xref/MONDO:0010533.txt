@@ -1,0 +1,3 @@
+MONDO:0010533	Arts syndrome
+DOID 	 name 
+DOID:0050647	Arts syndrome

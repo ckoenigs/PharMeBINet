@@ -1,0 +1,3 @@
+DOID:6039	uveal melanoma
+monDO ID 	 name 
+MONDO:0006486	uveal melanoma

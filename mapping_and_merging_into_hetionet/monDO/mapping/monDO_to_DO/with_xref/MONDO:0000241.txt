@@ -1,0 +1,3 @@
+MONDO:0000241	Keshan disease
+DOID 	 name 
+DOID:0050083	Keshan disease

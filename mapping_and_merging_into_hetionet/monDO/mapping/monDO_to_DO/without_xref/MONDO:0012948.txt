@@ -1,0 +1,3 @@
+MONDO:0012948	chromosome 6pter-p24 deletion syndrome
+DOID 	 name 
+DOID:0060422	chromosome 6pter-p24 deletion syndrome

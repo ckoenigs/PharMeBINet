@@ -1,0 +1,3 @@
+MONDO:0004762	Taylor syndrome
+DOID 	 name 
+DOID:9346	Taylor's syndrome

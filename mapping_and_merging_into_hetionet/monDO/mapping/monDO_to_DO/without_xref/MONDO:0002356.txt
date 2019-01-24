@@ -1,0 +1,3 @@
+MONDO:0002356	pancreas disease
+DOID 	 name 
+DOID:26	pancreas disease

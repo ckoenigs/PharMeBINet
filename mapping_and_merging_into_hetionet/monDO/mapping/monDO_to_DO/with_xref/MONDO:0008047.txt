@@ -1,0 +1,3 @@
+MONDO:0008047	episodic ataxia type 1
+DOID 	 name 
+DOID:0050989	episodic ataxia type 1

@@ -1,0 +1,3 @@
+MONDO:0008692	abetalipoproteinemia
+DOID 	 name 
+DOID:1386	abetalipoproteinemia

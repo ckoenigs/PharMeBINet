@@ -1,0 +1,3 @@
+MONDO:0012752	ANIB6
+DOID 	 name 
+DOID:0060228	intracranial berry aneurysm

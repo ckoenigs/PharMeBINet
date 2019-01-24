@@ -1,0 +1,4 @@
+MONDO:0006694	cerebral atherosclerosis
+DOID 	 name 
+DOID:12720	cerebral atherosclerosis
+DOID:13097	intracranial arteriosclerosis

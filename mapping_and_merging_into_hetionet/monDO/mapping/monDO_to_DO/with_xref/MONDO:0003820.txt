@@ -1,0 +1,3 @@
+MONDO:0003820	mature ovarian teratoma
+DOID 	 name 
+DOID:6231	mature teratoma of the ovary

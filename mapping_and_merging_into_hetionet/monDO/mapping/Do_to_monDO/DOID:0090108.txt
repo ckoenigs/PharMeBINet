@@ -1,0 +1,3 @@
+DOID:0090108	autosomal dominant hypocalcemia 2
+monDO ID 	 name 
+MONDO:0014146	autosomal dominant hypocalcemia 2

@@ -1,0 +1,3 @@
+MONDO:0001904	polyneuropathy due to drug
+DOID 	 name 
+DOID:14184	polyneuropathy due to drug

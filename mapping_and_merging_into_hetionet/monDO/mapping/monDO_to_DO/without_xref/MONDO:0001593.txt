@@ -1,0 +1,3 @@
+MONDO:0001593	rectal disease
+DOID 	 name 
+DOID:1285	rectal disease

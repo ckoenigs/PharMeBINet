@@ -1,0 +1,3 @@
+DOID:12935	alcoholic cardiomyopathy
+monDO ID 	 name 
+MONDO:0006643	alcoholic cardiomyopathy

@@ -1,0 +1,3 @@
+DOID:1218	echinostomiasis
+monDO ID 	 name 
+MONDO:0005739	echinostomiasis

@@ -1,0 +1,3 @@
+MONDO:0005827	lipoatrophic diabetes
+DOID 	 name 
+DOID:11712	lipoatrophic diabetes

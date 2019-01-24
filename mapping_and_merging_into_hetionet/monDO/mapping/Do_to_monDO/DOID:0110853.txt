@@ -1,0 +1,3 @@
+DOID:0110853	rhizomelic chondrodysplasia punctata type 3
+monDO ID 	 name 
+MONDO:0010823	rhizomelic chondrodysplasia punctata type 3

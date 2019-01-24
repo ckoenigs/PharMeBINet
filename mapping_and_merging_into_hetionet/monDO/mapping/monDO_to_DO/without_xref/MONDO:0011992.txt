@@ -1,0 +1,3 @@
+MONDO:0011992	hereditary spastic paraplegia 25
+DOID 	 name 
+DOID:0110776	hereditary spastic paraplegia 25

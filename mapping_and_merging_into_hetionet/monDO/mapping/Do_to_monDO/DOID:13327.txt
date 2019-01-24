@@ -1,0 +1,3 @@
+DOID:13327	anatomical narrow angle borderline glaucoma
+monDO ID 	 name 
+MONDO:0001686	anatomical narrow angle borderline glaucoma

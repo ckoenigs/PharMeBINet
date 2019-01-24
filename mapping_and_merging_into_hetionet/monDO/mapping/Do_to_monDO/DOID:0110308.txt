@@ -1,0 +1,3 @@
+DOID:0110308	hypertrophic cardiomyopathy 2
+monDO ID 	 name 
+MONDO:0007266	hypertrophic cardiomyopathy 2

@@ -1,0 +1,3 @@
+MONDO:0014091	mitochondrial complex v (ATP synthase) deficiency nuclear type 4
+DOID 	 name 
+DOID:0060333	mitochondrial complex V (ATP synthase) deficiency nuclear type 4

@@ -1,0 +1,3 @@
+MONDO:0001718	scleritis (disease)
+DOID 	 name 
+DOID:13452	scleritis

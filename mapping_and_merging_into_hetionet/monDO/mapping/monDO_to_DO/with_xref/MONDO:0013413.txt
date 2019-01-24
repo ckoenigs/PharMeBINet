@@ -1,0 +1,3 @@
+MONDO:0013413	retinitis pigmentosa 45
+DOID 	 name 
+DOID:0110402	retinitis pigmentosa 45

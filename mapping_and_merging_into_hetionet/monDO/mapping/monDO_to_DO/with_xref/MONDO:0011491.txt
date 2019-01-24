@@ -1,0 +1,3 @@
+MONDO:0011491	EIG7
+DOID 	 name 
+DOID:1827	idiopathic generalized epilepsy

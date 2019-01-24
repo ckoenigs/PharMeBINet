@@ -1,0 +1,3 @@
+MONDO:0011502	Wolfram syndrome 2
+DOID 	 name 
+DOID:0110630	Wolfram syndrome 2

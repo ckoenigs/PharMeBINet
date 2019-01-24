@@ -1,0 +1,3 @@
+MONDO:0007040	Sakati-Nyhan syndrome
+DOID 	 name 
+DOID:0060359	Sakati-Nyhan syndrome

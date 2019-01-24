@@ -1,0 +1,3 @@
+DOID:12554	hemolytic-uremic syndrome
+monDO ID 	 name 
+MONDO:0001549	hemolytic-uremic syndrome

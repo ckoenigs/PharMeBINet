@@ -1,0 +1,3 @@
+DOID:10790	chronic frontal sinusitis
+monDO ID 	 name 
+MONDO:0001120	chronic frontal sinusitis

@@ -1,0 +1,3 @@
+MONDO:0003618	pyosalpinx
+DOID 	 name 
+DOID:5732	pyosalpinx

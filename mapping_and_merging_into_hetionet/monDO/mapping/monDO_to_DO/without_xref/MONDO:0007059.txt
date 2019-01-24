@@ -1,0 +1,3 @@
+MONDO:0007059	acrorenal syndrome
+DOID 	 name 
+DOID:0060347	acrorenal syndrome

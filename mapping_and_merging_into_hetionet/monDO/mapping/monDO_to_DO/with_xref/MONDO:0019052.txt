@@ -1,0 +1,4 @@
+MONDO:0019052	inborn errors of metabolism
+DOID 	 name 
+DOID:0014667	disease of metabolism
+DOID:655	inherited metabolic disorder

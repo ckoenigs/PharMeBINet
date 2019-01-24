@@ -1,0 +1,3 @@
+DOID:1965	fallopian tube leiomyosarcoma
+monDO ID 	 name 
+MONDO:0002159	fallopian tube leiomyosarcoma

@@ -1,0 +1,3 @@
+DOID:0111104	maturity-onset diabetes of the young type 6
+monDO ID 	 name 
+MONDO:0011668	maturity-onset diabetes of the young type 6

@@ -1,0 +1,3 @@
+DOID:11820	bladder dome cancer
+monDO ID 	 name 
+MONDO:0001380	bladder dome cancer

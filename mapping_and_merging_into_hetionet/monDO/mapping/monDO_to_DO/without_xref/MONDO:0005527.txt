@@ -1,0 +1,3 @@
+MONDO:0005527	toxic encephalopathy
+DOID 	 name 
+DOID:3602	toxic encephalopathy

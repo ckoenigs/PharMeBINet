@@ -1,0 +1,3 @@
+DOID:4557	oral leukoedema
+monDO ID 	 name 
+MONDO:0006880	oral leukoedema

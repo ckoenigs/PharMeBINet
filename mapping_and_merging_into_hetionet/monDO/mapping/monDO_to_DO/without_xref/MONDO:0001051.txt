@@ -1,0 +1,3 @@
+MONDO:0001051	beach ear
+DOID 	 name 
+DOID:10518	beach ear

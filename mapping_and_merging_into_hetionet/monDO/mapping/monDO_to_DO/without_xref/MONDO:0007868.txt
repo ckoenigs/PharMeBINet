@@ -1,0 +1,3 @@
+MONDO:0007868	hyperekplexia 1
+DOID 	 name 
+DOID:0060696	hyperekplexia 1

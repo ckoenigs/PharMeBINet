@@ -1,0 +1,3 @@
+MONDO:0007906	familial partial lipodystrophy, Dunnigan type
+DOID 	 name 
+DOID:0050440	familial partial lipodystrophy

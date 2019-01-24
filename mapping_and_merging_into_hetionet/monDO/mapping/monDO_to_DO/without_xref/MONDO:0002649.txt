@@ -1,0 +1,3 @@
+MONDO:0002649	scrotum Paget's disease
+DOID 	 name 
+DOID:3444	scrotum Paget's disease

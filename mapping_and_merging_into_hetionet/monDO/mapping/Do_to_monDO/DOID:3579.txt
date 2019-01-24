@@ -1,0 +1,3 @@
+DOID:3579	testicular gonadoblastoma
+monDO ID 	 name 
+MONDO:0002698	testicular gonadoblastoma (disease)

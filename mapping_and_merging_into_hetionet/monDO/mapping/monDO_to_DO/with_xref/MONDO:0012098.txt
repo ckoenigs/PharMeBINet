@@ -1,0 +1,3 @@
+MONDO:0012098	spinocerebellar ataxia type 20
+DOID 	 name 
+DOID:0050971	spinocerebellar ataxia type 20

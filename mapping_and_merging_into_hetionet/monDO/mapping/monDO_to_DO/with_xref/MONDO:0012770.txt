@@ -1,0 +1,3 @@
+MONDO:0012770	HPC15
+DOID 	 name 
+DOID:10283	prostate cancer

@@ -1,0 +1,3 @@
+MONDO:0014252	familial hypobetalipoproteinemia 1
+DOID 	 name 
+DOID:0111062	familial hypobetalipoproteinemia 1

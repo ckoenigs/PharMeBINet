@@ -1,0 +1,3 @@
+DOID:1677	low implantation of placenta
+monDO ID 	 name 
+MONDO:0002077	low implantation of placenta

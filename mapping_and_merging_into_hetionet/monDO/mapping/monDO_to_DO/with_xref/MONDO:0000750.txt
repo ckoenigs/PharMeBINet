@@ -1,0 +1,3 @@
+MONDO:0000750	dental abscess
+DOID 	 name 
+DOID:0060324	dental abscess

@@ -1,0 +1,3 @@
+DOID:361	cervix endometriosis
+monDO ID 	 name 
+MONDO:0002706	cervix endometriosis

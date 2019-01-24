@@ -1,0 +1,3 @@
+MONDO:0006581	miliaria rubra
+DOID 	 name 
+DOID:11153	miliaria rubra

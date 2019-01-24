@@ -1,0 +1,3 @@
+MONDO:0004497	tertiary syphilis
+DOID 	 name 
+DOID:8200	tertiary syphilis

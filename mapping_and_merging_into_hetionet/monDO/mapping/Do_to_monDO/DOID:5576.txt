@@ -1,0 +1,3 @@
+DOID:5576	inhibited male orgasm
+monDO ID 	 name 
+MONDO:0003522	inhibited male orgasm

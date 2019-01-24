@@ -1,0 +1,3 @@
+MONDO:0005825	leptospirosis
+DOID 	 name 
+DOID:2297	leptospirosis

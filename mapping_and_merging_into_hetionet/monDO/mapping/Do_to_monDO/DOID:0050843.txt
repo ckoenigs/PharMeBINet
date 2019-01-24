@@ -1,0 +1,3 @@
+DOID:0050843	oromandibular dystonia
+monDO ID 	 name 
+MONDO:0019771	oromandibular dystonia

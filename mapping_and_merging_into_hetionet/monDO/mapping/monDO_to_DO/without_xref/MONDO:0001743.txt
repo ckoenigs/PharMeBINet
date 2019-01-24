@@ -1,0 +1,3 @@
+MONDO:0001743	paranasal sinus lymphoma
+DOID 	 name 
+DOID:1355	paranasal sinus lymphoma

@@ -1,0 +1,3 @@
+MONDO:0005124	leprosy
+DOID 	 name 
+DOID:1024	leprosy

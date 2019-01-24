@@ -1,0 +1,3 @@
+DOID:1407	anterior uveitis
+monDO ID 	 name 
+MONDO:0006651	anterior uveitis (disease)

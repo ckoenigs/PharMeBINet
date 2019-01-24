@@ -1,0 +1,3 @@
+DOID:0050785	progressive relapsing multiple sclerosis
+monDO ID 	 name 
+MONDO:0000452	progressive relapsing multiple sclerosis

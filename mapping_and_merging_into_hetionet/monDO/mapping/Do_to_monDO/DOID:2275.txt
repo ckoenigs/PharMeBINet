@@ -1,0 +1,3 @@
+DOID:2275	pharyngitis
+monDO ID 	 name 
+MONDO:0002258	pharyngitis

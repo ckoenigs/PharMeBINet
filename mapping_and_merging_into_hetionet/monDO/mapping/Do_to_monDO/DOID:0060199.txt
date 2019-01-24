@@ -1,0 +1,3 @@
+DOID:0060199	amyotrophic lateral sclerosis type 7
+monDO ID 	 name 
+MONDO:0011952	amyotrophic lateral sclerosis type 7

@@ -1,0 +1,3 @@
+MONDO:0001560	hypertrophic pyloric stenosis
+DOID 	 name 
+DOID:12638	hypertrophic pyloric stenosis

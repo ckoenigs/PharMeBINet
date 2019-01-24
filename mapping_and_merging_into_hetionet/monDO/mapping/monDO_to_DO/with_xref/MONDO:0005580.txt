@@ -1,0 +1,3 @@
+MONDO:0005580	esophageal squamous cell carcinoma
+DOID 	 name 
+DOID:3748	esophagus squamous cell carcinoma

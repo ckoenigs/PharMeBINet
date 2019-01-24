@@ -1,0 +1,3 @@
+MONDO:0007045	acrofacial dysostosis, Catania type
+DOID 	 name 
+DOID:0060384	acrofacial dysostosis, Catania type

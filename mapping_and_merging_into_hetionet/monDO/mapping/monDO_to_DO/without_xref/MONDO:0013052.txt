@@ -1,0 +1,3 @@
+MONDO:0013052	retinitis pigmentosa 42
+DOID 	 name 
+DOID:0110386	retinitis pigmentosa 42

@@ -1,0 +1,3 @@
+DOID:5874	retroperitoneal germ cell neoplasm
+monDO ID 	 name 
+MONDO:0003685	retroperitoneal germ cell neoplasm

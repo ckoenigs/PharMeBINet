@@ -1,0 +1,3 @@
+MONDO:0000793	rainbow trout allergy
+DOID 	 name 
+DOID:0060518	rainbow trout allergy

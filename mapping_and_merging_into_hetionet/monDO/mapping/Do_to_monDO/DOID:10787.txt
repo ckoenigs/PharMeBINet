@@ -1,0 +1,3 @@
+DOID:10787	premature menopause
+monDO ID 	 name 
+MONDO:0001119	premature menopause

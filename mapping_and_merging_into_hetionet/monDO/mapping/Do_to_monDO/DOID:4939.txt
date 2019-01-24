@@ -1,0 +1,3 @@
+DOID:4939	ureter carcinoma
+monDO ID 	 name 
+MONDO:0006481	ureter carcinoma

@@ -1,0 +1,3 @@
+MONDO:0001740	cornea squamous cell carcinoma
+DOID 	 name 
+DOID:13538	cornea squamous cell carcinoma

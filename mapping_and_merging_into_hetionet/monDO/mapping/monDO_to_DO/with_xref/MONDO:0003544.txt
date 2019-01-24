@@ -1,0 +1,3 @@
+MONDO:0003544	spinal cord cancer
+DOID 	 name 
+DOID:5612	spinal cancer

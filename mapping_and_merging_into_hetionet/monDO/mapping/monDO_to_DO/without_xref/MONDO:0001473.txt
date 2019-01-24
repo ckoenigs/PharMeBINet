@@ -1,0 +1,3 @@
+MONDO:0001473	medulloadrenal hyperfunction
+DOID 	 name 
+DOID:12257	medulloadrenal hyperfunction

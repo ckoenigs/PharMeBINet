@@ -1,0 +1,3 @@
+DOID:0110267	cataract 44
+monDO ID 	 name 
+MONDO:0014673	cataract 44

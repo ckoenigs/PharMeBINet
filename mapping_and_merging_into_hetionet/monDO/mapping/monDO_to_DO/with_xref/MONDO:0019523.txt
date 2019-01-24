@@ -1,0 +1,3 @@
+MONDO:0019523	Walker-Warburg syndrome
+DOID 	 name 
+DOID:0050560	Walker-Warburg syndrome

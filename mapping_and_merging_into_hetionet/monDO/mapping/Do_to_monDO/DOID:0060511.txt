@@ -1,0 +1,3 @@
+DOID:0060511	plum allergy
+monDO ID 	 name 
+MONDO:0000786	plum allergy

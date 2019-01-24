@@ -1,0 +1,3 @@
+DOID:9942	lymph node disease
+monDO ID 	 name 
+MONDO:0004928	lymph node disease

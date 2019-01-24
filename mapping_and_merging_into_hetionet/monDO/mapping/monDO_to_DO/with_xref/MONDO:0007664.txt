@@ -1,0 +1,3 @@
+MONDO:0007664	glaucoma 1, open angle, a
+DOID 	 name 
+DOID:1067	open-angle glaucoma

@@ -1,0 +1,3 @@
+MONDO:0016063	Cowden disease
+DOID 	 name 
+DOID:6457	Cowden disease

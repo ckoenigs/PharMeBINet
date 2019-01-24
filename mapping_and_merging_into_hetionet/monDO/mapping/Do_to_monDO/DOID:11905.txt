@@ -1,0 +1,3 @@
+DOID:11905	labium majus cancer
+monDO ID 	 name 
+MONDO:0001403	labium majus cancer

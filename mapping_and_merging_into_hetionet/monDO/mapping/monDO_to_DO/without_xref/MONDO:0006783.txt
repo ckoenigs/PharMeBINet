@@ -1,0 +1,3 @@
+MONDO:0006783	hemopneumothorax
+DOID 	 name 
+DOID:2718	hemopneumothorax

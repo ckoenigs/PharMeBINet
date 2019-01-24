@@ -1,0 +1,3 @@
+DOID:7086	multicentric papillary thyroid carcinoma
+monDO ID 	 name 
+MONDO:0004101	multicentric papillary thyroid carcinoma

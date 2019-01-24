@@ -1,0 +1,3 @@
+DOID:11554	Chandler syndrome
+monDO ID 	 name 
+MONDO:0020369	Chandler syndrome

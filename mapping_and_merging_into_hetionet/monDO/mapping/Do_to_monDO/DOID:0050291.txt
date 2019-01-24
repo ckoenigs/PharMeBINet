@@ -1,0 +1,3 @@
+DOID:0050291	parasitic Ichthyosporea infectious disease
+monDO ID 	 name 
+MONDO:0000307	parasitic Ichthyosporea infectious disease

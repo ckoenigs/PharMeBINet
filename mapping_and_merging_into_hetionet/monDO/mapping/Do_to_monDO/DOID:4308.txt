@@ -1,0 +1,3 @@
+DOID:4308	polyradiculoneuropathy
+monDO ID 	 name 
+MONDO:0006915	polyradiculoneuropathy

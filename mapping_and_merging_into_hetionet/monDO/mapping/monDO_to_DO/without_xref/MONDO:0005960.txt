@@ -1,0 +1,3 @@
+MONDO:0005960	silicosis
+DOID 	 name 
+DOID:10325	silicosis

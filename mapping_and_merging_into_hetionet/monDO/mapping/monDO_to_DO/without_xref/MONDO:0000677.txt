@@ -1,0 +1,3 @@
+MONDO:0000677	semantic agnosia
+DOID 	 name 
+DOID:0060147	semantic agnosia

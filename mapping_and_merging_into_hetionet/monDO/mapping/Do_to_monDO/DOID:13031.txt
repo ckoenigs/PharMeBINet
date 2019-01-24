@@ -1,0 +1,3 @@
+DOID:13031	balanoposthitis
+monDO ID 	 name 
+MONDO:0001618	balanoposthitis

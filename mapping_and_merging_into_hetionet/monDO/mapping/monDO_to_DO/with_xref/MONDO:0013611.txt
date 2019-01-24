@@ -1,0 +1,3 @@
+MONDO:0013611	retinitis pigmentosa 62
+DOID 	 name 
+DOID:0110380	retinitis pigmentosa 62

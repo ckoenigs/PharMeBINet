@@ -1,0 +1,3 @@
+MONDO:0011096	autosomal agammaglobulinemia
+DOID 	 name 
+DOID:2583	agammaglobulinemia

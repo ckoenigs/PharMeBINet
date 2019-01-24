@@ -1,0 +1,3 @@
+DOID:14000	rubeosis iridis
+monDO ID 	 name 
+MONDO:0001855	rubeosis iridis

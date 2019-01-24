@@ -1,0 +1,3 @@
+MONDO:0000979	pinta disease
+DOID 	 name 
+DOID:1022	pinta disease

@@ -1,0 +1,3 @@
+DOID:3275	thymoma
+monDO ID 	 name 
+MONDO:0006456	thymoma (disease)

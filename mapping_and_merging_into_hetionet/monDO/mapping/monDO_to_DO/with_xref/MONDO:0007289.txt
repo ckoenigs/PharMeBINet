@@ -1,0 +1,3 @@
+MONDO:0007289	cataract 13 with adult I phenotype
+DOID 	 name 
+DOID:0110242	cataract 13 with adult i phenotype

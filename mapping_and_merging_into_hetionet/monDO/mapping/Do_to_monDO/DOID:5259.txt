@@ -1,0 +1,3 @@
+DOID:5259	colon leiomyosarcoma
+monDO ID 	 name 
+MONDO:0003351	colon leiomyosarcoma

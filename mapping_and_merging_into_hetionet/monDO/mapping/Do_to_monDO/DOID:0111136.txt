@@ -1,0 +1,3 @@
+DOID:0111136	congenital generalized lipodystrophy type 2
+monDO ID 	 name 
+MONDO:0010020	congenital generalized lipodystrophy type 2

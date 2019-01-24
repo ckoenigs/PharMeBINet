@@ -1,0 +1,3 @@
+MONDO:0003780	T-cell immunodeficiency
+DOID 	 name 
+DOID:613	T lymphocyte deficiency

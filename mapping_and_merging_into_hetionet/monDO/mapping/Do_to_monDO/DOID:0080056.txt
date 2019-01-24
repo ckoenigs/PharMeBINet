@@ -1,0 +1,3 @@
+DOID:0080056	achondrogenesis type II
+monDO ID 	 name 
+MONDO:0008702	achondrogenesis type II

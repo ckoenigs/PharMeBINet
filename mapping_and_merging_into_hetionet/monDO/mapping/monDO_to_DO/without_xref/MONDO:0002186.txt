@@ -1,0 +1,3 @@
+MONDO:0002186	acute maxillary sinusitis
+DOID 	 name 
+DOID:2050	acute maxillary sinusitis

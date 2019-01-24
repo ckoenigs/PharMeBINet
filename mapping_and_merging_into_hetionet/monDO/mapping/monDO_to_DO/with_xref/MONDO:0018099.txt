@@ -1,0 +1,3 @@
+MONDO:0018099	Whipple disease
+DOID 	 name 
+DOID:8476	Whipple disease

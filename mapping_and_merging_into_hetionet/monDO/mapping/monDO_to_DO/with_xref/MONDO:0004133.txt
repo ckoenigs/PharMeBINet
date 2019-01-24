@@ -1,0 +1,3 @@
+MONDO:0004133	pituitary gland mixed eosinophil-basophil adenoma
+DOID 	 name 
+DOID:7179	mixed eosinophil-basophil adenoma
