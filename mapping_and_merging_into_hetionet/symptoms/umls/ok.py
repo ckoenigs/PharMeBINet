@@ -100,6 +100,10 @@ def database_connection():
     global g
     g = Graph("http://localhost:7474/db/data/")
 
+    # authenticate("bimi:7475", "ckoenigs", "test")
+    # global g
+    # g = Graph("http://bimi:7475/db/data/",bolt=False)
+
 
 # dictionary of all diseases in hetionet with cui as key and mondo as value
 '''
@@ -191,7 +195,7 @@ Where n.identifier='DOID:6898' or n.identifier='DOID:0050879'
 
 def load_in_hetionet_disease_in_dictionary():
     # get all disease from neo4j with exception disease (MONDO:0000001) and synodrome (MONDO:0002254)
-    query = '''MATCH (n:Disease) Where not n.identifier in ['MONDO:0000001','MONDO:0002254'] RETURN n.identifier,n.umls_cuis , n.xrefs, n.name '''
+    query = '''MATCH (n:Disease) Where not n.identifier in ['MONDO:0000001','MONDO:0002254'] RETURN n.identifier,n.umls_cuis , n.xrefs, n.name Limit 2'''
     results = g.run(query)
 
     global counter, count_cuis_double, time_sty, file_types
@@ -281,12 +285,12 @@ def load_in_hetionet_disease_in_dictionary():
 
                     types = dict_type_name_in_mrconso[sab]
                     typstring = '","'.join(types)
-                    query = ('Select CUI From MRCONSO Where SAB in ("%s") AND CODE= "%s" ')
+                    query = ('Select CUI From MRCONSO Where SAB in ("%s") AND CODE= "%s"; ')
                     query = query % (typstring, code)
                 else:
                     if len(sab.split(',')) > 1:
                         sab = sab.split(',')[len(sab.split(',')) - 1].split("'")[1]
-                    query = ('Select CUI From MRCONSO Where SAB= "%s" AND CODE= "%s" ')
+                    query = ('Select CUI From MRCONSO Where SAB= "%s" AND CODE= "%s"; ')
                     query = query % (sab, code)
                 #                    print(mondo)
                 #                    print(code)
@@ -1190,7 +1194,6 @@ def main():
 
     print(datetime.datetime.utcnow())
     print('find synonyms for the diseases')
-    sys.exit()
 
     # create a lock, is used to synchronized threads
     global threadLock1

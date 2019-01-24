@@ -1,1 +1,0 @@
-decipher id 	 decipher name 	 umls cuis 	 doids 	 db_type 
