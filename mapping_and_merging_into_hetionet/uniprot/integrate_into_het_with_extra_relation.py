@@ -52,6 +52,7 @@ dict_uniprot_count_genes={}
 dict_gene_to_name={}
 
 # dictionary of the uniprot ids which mapped wrong to the correct ncbi gene id
+# Q96NJ1 (Uncharacterized protein FLJ30774) mapped to 158055 (c9orf163) and with tblastn I found out that the protein is part of the orf
 dict_wrong_uniprot_to_correct_gene_id={
     'Q8N8H1':'399669',
     'A2RUG3':'353515',
@@ -275,8 +276,6 @@ def get_gather_protein_info_and_generate_relas():
 
         #first check out the identifier
         # also check if it has multiple genes or not
-        if identifier=='P30042':
-            print('huhu')
         in_list,genes=check_and_write_uniprot_ids(identifier,name,identifier,'',geneSymbols)
         if in_list:
             found_at_least_on = True
