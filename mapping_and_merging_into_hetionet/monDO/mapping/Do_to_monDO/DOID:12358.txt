@@ -1,0 +1,3 @@
+DOID:12358	patulous eustachian tube
+monDO ID 	 name 
+MONDO:0001508	patulous eustachian tube

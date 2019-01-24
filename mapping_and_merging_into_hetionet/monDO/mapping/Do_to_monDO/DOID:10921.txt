@@ -1,0 +1,3 @@
+DOID:10921	Siberian tick typhus
+monDO ID 	 name 
+MONDO:0001154	Siberian tick typhus

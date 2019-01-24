@@ -1,0 +1,3 @@
+MONDO:0007909	familial multiple lipomatosis
+DOID 	 name 
+DOID:3315	lipoma

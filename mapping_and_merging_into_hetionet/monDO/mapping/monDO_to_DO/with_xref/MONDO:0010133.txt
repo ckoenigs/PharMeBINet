@@ -1,0 +1,3 @@
+MONDO:0010133	thyroid dyshormonogenesis 2A
+DOID 	 name 
+DOID:0050328	congenital hypothyroidism

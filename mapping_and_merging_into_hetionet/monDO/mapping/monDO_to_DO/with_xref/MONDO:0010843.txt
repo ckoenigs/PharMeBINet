@@ -1,0 +1,3 @@
+MONDO:0010843	DYX2
+DOID 	 name 
+DOID:4428	dyslexia

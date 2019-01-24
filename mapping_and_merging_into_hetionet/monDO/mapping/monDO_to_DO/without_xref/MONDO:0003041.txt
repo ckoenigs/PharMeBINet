@@ -1,0 +1,3 @@
+MONDO:0003041	pediatric mesenchymal chondrosarcoma
+DOID 	 name 
+DOID:4546	pediatric mesenchymal chondrosarcoma

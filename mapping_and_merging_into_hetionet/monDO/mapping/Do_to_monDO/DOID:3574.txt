@@ -1,0 +1,3 @@
+DOID:3574	lateral sinus thrombosis
+monDO ID 	 name 
+MONDO:0002693	lateral sinus thrombosis

@@ -1,0 +1,3 @@
+MONDO:0013250	autosomal recessive nonsyndromic deafness 85
+DOID 	 name 
+DOID:0110531	autosomal recessive nonsyndromic deafness 85

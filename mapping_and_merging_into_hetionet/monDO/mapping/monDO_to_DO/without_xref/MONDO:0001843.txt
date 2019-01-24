@@ -1,0 +1,3 @@
+MONDO:0001843	uterus interstitial leiomyoma
+DOID 	 name 
+DOID:13955	uterus interstitial leiomyoma

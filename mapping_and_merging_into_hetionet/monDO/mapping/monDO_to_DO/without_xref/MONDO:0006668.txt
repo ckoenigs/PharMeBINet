@@ -1,0 +1,3 @@
+MONDO:0006668	bacterial conjunctivitis
+DOID 	 name 
+DOID:9700	bacterial conjunctivitis

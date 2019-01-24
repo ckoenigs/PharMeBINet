@@ -1,0 +1,3 @@
+DOID:0110051	Alzheimer's disease 19
+monDO ID 	 name 
+MONDO:0014316	Alzheimer's disease 19

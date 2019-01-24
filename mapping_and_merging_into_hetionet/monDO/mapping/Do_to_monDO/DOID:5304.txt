@@ -1,0 +1,3 @@
+DOID:5304	ovarian clear cell adenocarcinoma
+monDO ID 	 name 
+MONDO:0006045	ovarian clear cell adenocarcinoma

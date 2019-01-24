@@ -1,0 +1,3 @@
+MONDO:0001366	splenic sequestration
+DOID 	 name 
+DOID:11786	splenic sequestration

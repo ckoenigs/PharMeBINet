@@ -1,0 +1,3 @@
+MONDO:0001365	necrosis of ear ossicle
+DOID 	 name 
+DOID:11783	necrosis of ear ossicle

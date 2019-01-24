@@ -1,0 +1,3 @@
+DOID:0110385	retinitis pigmentosa 63
+monDO ID 	 name 
+MONDO:0013780	retinitis pigmentosa 63

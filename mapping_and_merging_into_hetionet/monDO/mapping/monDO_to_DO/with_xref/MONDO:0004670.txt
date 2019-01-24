@@ -1,0 +1,3 @@
+MONDO:0004670	lupus erythematosus
+DOID 	 name 
+DOID:8857	lupus erythematosus

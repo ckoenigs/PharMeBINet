@@ -1,0 +1,3 @@
+DOID:0110404	retinitis pigmentosa 17
+monDO ID 	 name 
+MONDO:0010945	retinitis pigmentosa 17

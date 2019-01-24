@@ -1,0 +1,3 @@
+MONDO:0007365	seizures, benign familial neonatal, 1
+DOID 	 name 
+DOID:14264	benign neonatal seizures

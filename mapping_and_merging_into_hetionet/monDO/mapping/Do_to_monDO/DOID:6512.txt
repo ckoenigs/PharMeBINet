@@ -1,0 +1,3 @@
+DOID:6512	hepatoid pattern ovarian yolk sac tumor
+monDO ID 	 name 
+MONDO:0003906	ovarian yolk sac tumor, hepatoid pattern

@@ -1,0 +1,3 @@
+DOID:9252	amino acid metabolic disorder
+monDO ID 	 name 
+MONDO:0004736	amino acid metabolic disorder

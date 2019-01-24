@@ -1,0 +1,3 @@
+DOID:8137	thymus clear cell carcinoma
+monDO ID 	 name 
+MONDO:0004475	thymus clear cell carcinoma

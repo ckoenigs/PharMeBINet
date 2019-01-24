@@ -1,0 +1,3 @@
+DOID:906	peroxisomal disease
+monDO ID 	 name 
+MONDO:0019053	peroxisomal disease

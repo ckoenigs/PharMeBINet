@@ -1,0 +1,3 @@
+MONDO:0006980	struma ovarii
+DOID 	 name 
+DOID:2640	struma ovarii

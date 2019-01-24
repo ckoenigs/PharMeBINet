@@ -1,0 +1,3 @@
+MONDO:0012702	CELIAC6
+DOID 	 name 
+DOID:10608	celiac disease

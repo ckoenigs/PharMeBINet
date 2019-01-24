@@ -1,0 +1,3 @@
+DOID:9248	Pallister-Hall syndrome
+monDO ID 	 name 
+MONDO:0007804	Pallister-hall syndrome

@@ -1,0 +1,3 @@
+DOID:12157	aseptic meningitis
+monDO ID 	 name 
+MONDO:0006662	aseptic meningitis

@@ -1,0 +1,3 @@
+DOID:0080047	pseudoachondroplasia
+monDO ID 	 name 
+MONDO:0008322	pseudoachondroplasia

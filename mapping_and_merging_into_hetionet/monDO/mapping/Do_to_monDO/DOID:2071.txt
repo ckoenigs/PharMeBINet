@@ -1,0 +1,3 @@
+DOID:2071	vulvar squamous papilloma
+monDO ID 	 name 
+MONDO:0002194	vestibular papilloma

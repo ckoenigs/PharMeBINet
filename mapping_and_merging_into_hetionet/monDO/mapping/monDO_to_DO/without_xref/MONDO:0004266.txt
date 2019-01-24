@@ -1,0 +1,3 @@
+MONDO:0004266	anal gland adenocarcinoma
+DOID 	 name 
+DOID:7531	anal gland adenocarcinoma

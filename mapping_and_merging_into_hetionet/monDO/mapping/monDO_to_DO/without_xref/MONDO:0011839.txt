@@ -1,0 +1,3 @@
+MONDO:0011839	Newfoundland cone-rod dystrophy
+DOID 	 name 
+DOID:0111015	Newfoundland cone-rod dystrophy

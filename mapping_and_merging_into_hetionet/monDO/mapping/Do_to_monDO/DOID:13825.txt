@@ -1,0 +1,3 @@
+DOID:13825	squamous blepharitis
+monDO ID 	 name 
+MONDO:0001813	squamous blepharitis

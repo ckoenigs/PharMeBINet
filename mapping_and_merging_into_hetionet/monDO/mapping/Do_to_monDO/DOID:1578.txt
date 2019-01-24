@@ -1,0 +1,3 @@
+DOID:1578	pulmonary systemic sclerosis
+monDO ID 	 name 
+MONDO:0002047	pulmonary systemic sclerosis

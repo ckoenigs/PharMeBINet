@@ -1,0 +1,3 @@
+DOID:0060900	autosomal recessive Parkinson disease 14
+monDO ID 	 name 
+MONDO:0013060	autosomal recessive Parkinson disease 14

@@ -1,0 +1,3 @@
+MONDO:0000572	recombinase activating gene 1 deficiency
+DOID 	 name 
+DOID:0060011	recombinase activating gene 1 deficiency

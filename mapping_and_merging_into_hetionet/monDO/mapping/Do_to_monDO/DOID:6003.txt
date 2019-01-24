@@ -1,0 +1,3 @@
+DOID:6003	aleukemic leukemia cutis
+monDO ID 	 name 
+MONDO:0003729	aleukemic leukemia cutis

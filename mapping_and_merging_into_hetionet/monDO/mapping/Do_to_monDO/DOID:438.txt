@@ -1,0 +1,3 @@
+DOID:438	autoimmune disease of the nervous system
+monDO ID 	 name 
+MONDO:0002977	autoimmune disease of the nervous system

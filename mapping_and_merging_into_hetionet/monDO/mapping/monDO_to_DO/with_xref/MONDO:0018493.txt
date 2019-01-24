@@ -1,0 +1,3 @@
+MONDO:0018493	malignant hyperthermia (disease)
+DOID 	 name 
+DOID:8545	malignant hyperthermia

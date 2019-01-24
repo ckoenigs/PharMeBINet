@@ -1,0 +1,3 @@
+DOID:4305	bone giant cell tumor
+monDO ID 	 name 
+MONDO:0005674	bone giant cell tumor

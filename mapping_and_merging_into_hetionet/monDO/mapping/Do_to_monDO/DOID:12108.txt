@@ -1,0 +1,3 @@
+DOID:12108	bullous retinoschisis
+monDO ID 	 name 
+MONDO:0001435	bullous retinoschisis

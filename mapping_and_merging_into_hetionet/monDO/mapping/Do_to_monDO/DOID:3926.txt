@@ -1,0 +1,3 @@
+DOID:3926	mediastinal lipomatosis
+monDO ID 	 name 
+MONDO:0006578	mediastinal lipomatosis

@@ -1,0 +1,3 @@
+DOID:2066	vulvar angiokeratoma
+monDO ID 	 name 
+MONDO:0002192	vulvar angiokeratoma

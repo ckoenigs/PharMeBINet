@@ -1,0 +1,3 @@
+MONDO:0003633	malignant mesenchymoma
+DOID 	 name 
+DOID:5758	malignant mesenchymoma

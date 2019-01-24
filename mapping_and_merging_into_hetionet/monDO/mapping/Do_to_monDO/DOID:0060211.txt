@@ -1,0 +1,3 @@
+DOID:0060211	amyotrophic lateral sclerosis type 20
+monDO ID 	 name 
+MONDO:0014181	amyotrophic lateral sclerosis type 20

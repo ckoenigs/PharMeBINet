@@ -1,0 +1,3 @@
+DOID:1737	duodenal benign neoplasm
+monDO ID 	 name 
+MONDO:0006734	benign duodenal neoplasm

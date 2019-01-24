@@ -1,0 +1,3 @@
+MONDO:0018906	follicular lymphoma
+DOID 	 name 
+DOID:0050873	follicular lymphoma

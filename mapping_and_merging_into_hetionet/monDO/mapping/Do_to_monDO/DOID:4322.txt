@@ -1,0 +1,3 @@
+DOID:4322	pilar sheath acanthoma
+monDO ID 	 name 
+MONDO:0006907	pilar sheath acanthoma

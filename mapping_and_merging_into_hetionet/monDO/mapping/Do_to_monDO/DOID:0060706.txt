@@ -1,0 +1,3 @@
+DOID:0060706	X-linked lymphoproliferative syndrome 2
+monDO ID 	 name 
+MONDO:0010385	X-linked lymphoproliferative syndrome 2

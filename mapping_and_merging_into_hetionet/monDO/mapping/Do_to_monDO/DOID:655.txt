@@ -1,0 +1,3 @@
+DOID:655	inherited metabolic disorder
+monDO ID 	 name 
+MONDO:0019052	inborn errors of metabolism

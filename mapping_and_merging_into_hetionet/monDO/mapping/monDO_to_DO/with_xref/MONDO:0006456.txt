@@ -1,0 +1,4 @@
+MONDO:0006456	thymoma (disease)
+DOID 	 name 
+DOID:3275	thymoma
+DOID:3284	thymic carcinoma

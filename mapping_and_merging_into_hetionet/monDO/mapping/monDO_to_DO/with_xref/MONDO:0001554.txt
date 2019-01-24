@@ -1,0 +1,3 @@
+MONDO:0001554	phacogenic glaucoma
+DOID 	 name 
+DOID:12571	phacogenic glaucoma

@@ -1,0 +1,3 @@
+MONDO:0011987	cone-rod dystrophy 13
+DOID 	 name 
+DOID:0111016	cone-rod dystrophy 13

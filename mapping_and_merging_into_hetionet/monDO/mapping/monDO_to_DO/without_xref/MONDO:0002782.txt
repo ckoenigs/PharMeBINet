@@ -1,0 +1,3 @@
+MONDO:0002782	cranial nerve palsy
+DOID 	 name 
+DOID:3817	cranial nerve palsy

@@ -1,0 +1,3 @@
+MONDO:0003390	glycogen-rich clear cell breast carcinoma
+DOID 	 name 
+DOID:5310	glycogen-rich clear cell breast carcinoma

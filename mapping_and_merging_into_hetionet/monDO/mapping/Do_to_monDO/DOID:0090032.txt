@@ -1,0 +1,3 @@
+DOID:0090032	Silverman-Handmaker type dyssegmental dysplasia
+monDO ID 	 name 
+MONDO:0009140	Silverman-Handmaker type dyssegmental dysplasia

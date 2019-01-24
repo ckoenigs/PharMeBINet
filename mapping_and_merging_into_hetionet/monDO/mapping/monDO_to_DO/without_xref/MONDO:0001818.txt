@@ -1,0 +1,3 @@
+MONDO:0001818	facial neuralgia
+DOID 	 name 
+DOID:13865	facial neuralgia

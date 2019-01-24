@@ -1,0 +1,3 @@
+MONDO:0013798	chromosome 16q22 deletion syndrome
+DOID 	 name 
+DOID:0060401	chromosome 16q22 deletion syndrome

@@ -1,0 +1,3 @@
+MONDO:0003554	adenosquamous colon carcinoma
+DOID 	 name 
+DOID:5629	adenosquamous colon carcinoma

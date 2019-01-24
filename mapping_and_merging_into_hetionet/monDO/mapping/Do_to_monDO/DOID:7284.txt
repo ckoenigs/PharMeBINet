@@ -1,0 +1,3 @@
+DOID:7284	Skene gland carcinoma
+monDO ID 	 name 
+MONDO:0004173	adenocarcinoma of skene gland origin

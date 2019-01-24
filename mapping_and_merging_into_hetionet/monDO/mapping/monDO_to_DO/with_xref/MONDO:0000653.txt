@@ -1,0 +1,3 @@
+MONDO:0000653	integumentary system cancer
+DOID 	 name 
+DOID:0060122	integumentary system cancer

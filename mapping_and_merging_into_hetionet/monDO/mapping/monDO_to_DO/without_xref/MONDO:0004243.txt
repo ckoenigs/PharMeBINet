@@ -1,0 +1,3 @@
+MONDO:0004243	vulvar proximal-type epithelioid sarcoma
+DOID 	 name 
+DOID:7491	vulvar proximal-type epithelioid sarcoma

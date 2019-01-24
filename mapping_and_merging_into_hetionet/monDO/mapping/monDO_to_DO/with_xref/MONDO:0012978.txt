@@ -1,0 +1,3 @@
+MONDO:0012978	primary ciliary dyskinesia 11
+DOID 	 name 
+DOID:0110602	primary ciliary dyskinesia 11

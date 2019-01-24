@@ -1,0 +1,3 @@
+MONDO:0001830	somatization disorder
+DOID 	 name 
+DOID:13918	somatization disorder

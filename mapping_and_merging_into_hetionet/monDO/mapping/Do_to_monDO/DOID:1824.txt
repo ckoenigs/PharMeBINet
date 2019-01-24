@@ -1,0 +1,3 @@
+DOID:1824	status epilepticus
+monDO ID 	 name 
+MONDO:0002125	status epilepticus

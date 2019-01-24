@@ -1,0 +1,5 @@
+MONDO:0002109	pituitary cancer
+DOID 	 name 
+DOID:3829	pituitary adenoma
+DOID:1785	pituitary cancer
+DOID:4916	pituitary carcinoma

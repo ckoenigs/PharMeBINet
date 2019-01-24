@@ -1,0 +1,3 @@
+DOID:0060562	anomalous left coronary artery from the pulmonary artery
+monDO ID 	 name 
+MONDO:0000811	anomalous left coronary artery from the pulmonary artery

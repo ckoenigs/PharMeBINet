@@ -1,0 +1,3 @@
+MONDO:0001810	hypoglossal nerve disease
+DOID 	 name 
+DOID:13814	hypoglossal nerve disease

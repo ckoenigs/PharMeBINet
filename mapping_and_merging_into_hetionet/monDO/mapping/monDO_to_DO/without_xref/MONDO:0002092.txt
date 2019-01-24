@@ -1,0 +1,3 @@
+MONDO:0002092	small intestine leiomyoma
+DOID 	 name 
+DOID:1738	small intestine leiomyoma

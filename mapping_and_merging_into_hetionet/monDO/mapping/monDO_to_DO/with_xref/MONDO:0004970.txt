@@ -1,0 +1,6 @@
+MONDO:0004970	adenocarcinoma
+DOID 	 name 
+DOID:4929	tubular adenocarcinoma
+DOID:299	adenocarcinoma
+DOID:5675	cribriform carcinoma
+DOID:4903	granular cell carcinoma

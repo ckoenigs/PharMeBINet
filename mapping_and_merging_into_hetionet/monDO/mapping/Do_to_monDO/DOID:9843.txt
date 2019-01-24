@@ -1,0 +1,3 @@
+DOID:9843	monofixation syndrome
+monDO ID 	 name 
+MONDO:0004899	monofixation syndrome

@@ -1,0 +1,3 @@
+DOID:5655	chiasmal syndrome
+monDO ID 	 name 
+MONDO:0003568	chiasmal syndrome

@@ -1,0 +1,3 @@
+DOID:0110127	Bardet-Biedl syndrome 5
+monDO ID 	 name 
+MONDO:0014434	Bardet-Biedl syndrome 5

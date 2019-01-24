@@ -1,0 +1,3 @@
+MONDO:0006887	parametritis
+DOID 	 name 
+DOID:1260	parametritis

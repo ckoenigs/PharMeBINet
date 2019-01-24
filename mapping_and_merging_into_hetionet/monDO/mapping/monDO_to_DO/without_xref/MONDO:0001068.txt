@@ -1,0 +1,3 @@
+MONDO:0001068	osteomalacia (disease)
+DOID 	 name 
+DOID:10573	osteomalacia

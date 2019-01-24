@@ -1,0 +1,3 @@
+MONDO:0005555	cycloplegia
+DOID 	 name 
+DOID:10033	cycloplegia

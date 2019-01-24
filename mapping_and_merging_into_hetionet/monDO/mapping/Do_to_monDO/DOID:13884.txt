@@ -1,0 +1,3 @@
+DOID:13884	sick sinus syndrome
+monDO ID 	 name 
+MONDO:0001823	sick sinus syndrome

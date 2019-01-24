@@ -1,0 +1,3 @@
+DOID:0090113	RIDDLE syndrome
+monDO ID 	 name 
+MONDO:0012764	RIDDLE syndrome

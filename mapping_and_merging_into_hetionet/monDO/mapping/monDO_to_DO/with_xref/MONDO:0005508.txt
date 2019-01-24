@@ -1,0 +1,3 @@
+MONDO:0005508	hereditary multiple exostoses
+DOID 	 name 
+DOID:206	hereditary multiple exostoses

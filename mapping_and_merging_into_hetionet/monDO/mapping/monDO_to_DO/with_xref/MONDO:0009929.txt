@@ -1,0 +1,3 @@
+MONDO:0009929	neonatal acute respiratory distress due to SP-b deficiency
+DOID 	 name 
+DOID:12120	pulmonary alveolar proteinosis

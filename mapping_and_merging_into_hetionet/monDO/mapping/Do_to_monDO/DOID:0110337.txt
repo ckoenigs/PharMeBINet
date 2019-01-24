@@ -1,0 +1,3 @@
+DOID:0110337	osteogenesis imperfecta type 7
+monDO ID 	 name 
+MONDO:0012536	osteogenesis imperfecta type 7

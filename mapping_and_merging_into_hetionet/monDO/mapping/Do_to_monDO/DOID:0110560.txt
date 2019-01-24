@@ -1,0 +1,3 @@
+DOID:0110560	autosomal dominant nonsyndromic deafness 30
+monDO ID 	 name 
+MONDO:0011673	autosomal dominant nonsyndromic deafness 30

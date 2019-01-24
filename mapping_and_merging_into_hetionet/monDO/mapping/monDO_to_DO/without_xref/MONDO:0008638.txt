@@ -1,0 +1,3 @@
+MONDO:0008638	varicose disease
+DOID 	 name 
+DOID:799	varicose veins

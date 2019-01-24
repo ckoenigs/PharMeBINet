@@ -1,0 +1,3 @@
+DOID:625	transient hypogammaglobulinemia
+monDO ID 	 name 
+MONDO:0003827	transient hypogammaglobulinemia

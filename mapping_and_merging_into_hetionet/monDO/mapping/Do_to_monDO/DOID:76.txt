@@ -1,0 +1,3 @@
+DOID:76	stomach disease
+monDO ID 	 name 
+MONDO:0004298	stomach disease

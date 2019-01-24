@@ -1,0 +1,3 @@
+DOID:10331	kaolin pneumoconiosis
+monDO ID 	 name 
+MONDO:0001005	kaolin pneumoconiosis

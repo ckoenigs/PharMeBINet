@@ -1,0 +1,3 @@
+MONDO:0013970	branched-chain keto acid dehydrogenase kinase deficiency
+DOID 	 name 
+DOID:0090126	branched-chain keto acid dehydrogenase kinase deficiency

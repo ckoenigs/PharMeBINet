@@ -1,0 +1,5 @@
+MONDO:0006626	diabetic neuropathy
+DOID 	 name 
+DOID:9743	diabetic neuropathy
+DOID:12785	diabetic polyneuropathy
+DOID:11503	diabetic autonomic neuropathy

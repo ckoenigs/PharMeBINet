@@ -1,0 +1,3 @@
+DOID:0090041	torsion dystonia 4
+monDO ID 	 name 
+MONDO:0007493	torsion dystonia 4

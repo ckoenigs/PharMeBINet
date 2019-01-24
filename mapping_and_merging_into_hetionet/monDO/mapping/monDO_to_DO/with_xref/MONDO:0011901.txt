@@ -1,0 +1,3 @@
+MONDO:0011901	Charcot-Marie-tooth disease axonal type 2H
+DOID 	 name 
+DOID:0110166	Charcot-Marie-Tooth disease axonal type 2H

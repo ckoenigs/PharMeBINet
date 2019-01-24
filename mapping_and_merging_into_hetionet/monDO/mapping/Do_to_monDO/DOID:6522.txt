@@ -1,0 +1,3 @@
+DOID:6522	mixed cell uveal melanoma
+monDO ID 	 name 
+MONDO:0003910	mixed cell uveal melanoma

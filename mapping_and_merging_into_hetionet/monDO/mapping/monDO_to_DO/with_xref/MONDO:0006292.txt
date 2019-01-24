@@ -1,0 +1,4 @@
+MONDO:0006292	malignant mesothelioma (disease)
+DOID 	 name 
+DOID:1790	malignant mesothelioma
+DOID:2645	benign mesothelioma

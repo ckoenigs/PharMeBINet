@@ -1,0 +1,3 @@
+MONDO:0000400	mixed cerebral palsy
+DOID 	 name 
+DOID:0050673	mixed cerebral palsy

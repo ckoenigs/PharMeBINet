@@ -1,0 +1,3 @@
+MONDO:0012940	inflammatory bowel disease 24
+DOID 	 name 
+DOID:0110908	inflammatory bowel disease 24

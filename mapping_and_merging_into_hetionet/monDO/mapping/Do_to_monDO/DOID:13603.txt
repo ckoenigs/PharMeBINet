@@ -1,0 +1,3 @@
+DOID:13603	obstructive jaundice
+monDO ID 	 name 
+MONDO:0006874	obstructive jaundice

@@ -1,0 +1,3 @@
+MONDO:0013501	amyotrophic lateral sclerosis type 14
+DOID 	 name 
+DOID:0060205	amyotrophic lateral sclerosis type 14

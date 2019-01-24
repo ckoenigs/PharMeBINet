@@ -1,0 +1,3 @@
+MONDO:0004766	status asthmaticus
+DOID 	 name 
+DOID:9362	status asthmaticus

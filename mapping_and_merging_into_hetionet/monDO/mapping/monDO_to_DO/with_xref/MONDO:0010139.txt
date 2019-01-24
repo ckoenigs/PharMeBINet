@@ -1,0 +1,3 @@
+MONDO:0010139	isolated thyroid-stimulating hormone deficiency
+DOID 	 name 
+DOID:0050328	congenital hypothyroidism

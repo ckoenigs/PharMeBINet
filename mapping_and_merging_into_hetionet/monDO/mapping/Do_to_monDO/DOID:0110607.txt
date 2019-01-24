@@ -1,0 +1,3 @@
+DOID:0110607	primary ciliary dyskinesia 28
+monDO ID 	 name 
+MONDO:0014216	primary ciliary dyskinesia 28

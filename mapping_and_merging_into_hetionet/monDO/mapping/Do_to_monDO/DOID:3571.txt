@@ -1,0 +1,3 @@
+DOID:3571	liver cancer
+monDO ID 	 name 
+MONDO:0002691	liver cancer

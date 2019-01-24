@@ -1,0 +1,6 @@
+MONDO:0003119	histiocytoid hemangioma
+DOID 	 name 
+DOID:255	hemangioma
+DOID:474	histiocytoid hemangioma
+DOID:468	intramuscular hemangioma
+DOID:277	chorioangioma

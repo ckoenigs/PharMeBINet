@@ -1,0 +1,3 @@
+MONDO:0006613	stromal corneal pigmentation
+DOID 	 name 
+DOID:12311	stromal corneal pigmentation

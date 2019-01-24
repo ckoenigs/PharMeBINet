@@ -1,0 +1,3 @@
+MONDO:0016070	gingival fibromatosis
+DOID 	 name 
+DOID:0060466	gingival fibromatosis

@@ -1,0 +1,5 @@
+MONDO:0001074	chronic tic disorder
+DOID 	 name 
+DOID:2768	transient tic disorder
+DOID:2769	tic disorder
+DOID:10600	chronic tic disorder

@@ -1,0 +1,3 @@
+MONDO:0013417	complement component 3 deficiency
+DOID 	 name 
+DOID:8354	complement component 3 deficiency

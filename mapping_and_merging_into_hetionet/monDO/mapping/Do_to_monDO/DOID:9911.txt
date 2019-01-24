@@ -1,0 +1,3 @@
+DOID:9911	infected hydrocele
+monDO ID 	 name 
+MONDO:0004919	infected hydrocele

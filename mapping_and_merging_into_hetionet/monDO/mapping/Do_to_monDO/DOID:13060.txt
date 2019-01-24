@@ -1,0 +1,3 @@
+DOID:13060	traumatic glaucoma
+monDO ID 	 name 
+MONDO:0001626	traumatic glaucoma

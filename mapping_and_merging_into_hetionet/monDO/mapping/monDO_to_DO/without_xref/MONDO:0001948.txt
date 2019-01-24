@@ -1,0 +1,3 @@
+MONDO:0001948	Riedel's fibrosing thyroiditis
+DOID 	 name 
+DOID:14351	Riedel's fibrosing thyroiditis

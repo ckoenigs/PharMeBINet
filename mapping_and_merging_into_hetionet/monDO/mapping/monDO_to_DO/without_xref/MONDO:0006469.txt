@@ -1,0 +1,3 @@
+MONDO:0006469	tibial adamantinoma
+DOID 	 name 
+DOID:6322	tibial adamantinoma

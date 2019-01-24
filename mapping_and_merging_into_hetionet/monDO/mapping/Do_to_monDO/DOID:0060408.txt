@@ -1,0 +1,3 @@
+DOID:0060408	chromosome 19q13.11 deletion syndrome
+monDO ID 	 name 
+MONDO:0013090	chromosome 19q13.11 deletion syndrome

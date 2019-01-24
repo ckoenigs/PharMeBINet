@@ -1,0 +1,3 @@
+DOID:3615	infiltrating angiolipoma
+monDO ID 	 name 
+MONDO:0002710	infiltrating angiolipoma

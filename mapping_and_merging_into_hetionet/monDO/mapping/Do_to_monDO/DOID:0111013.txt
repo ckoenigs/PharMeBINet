@@ -1,0 +1,3 @@
+DOID:0111013	cone-rod dystrophy 3
+monDO ID 	 name 
+MONDO:0011395	cone-rod dystrophy 3

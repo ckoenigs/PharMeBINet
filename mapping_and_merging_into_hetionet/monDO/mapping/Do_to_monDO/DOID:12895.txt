@@ -1,0 +1,3 @@
+DOID:12895	keratoconjunctivitis sicca
+monDO ID 	 name 
+MONDO:0006818	keratoconjunctivitis sicca

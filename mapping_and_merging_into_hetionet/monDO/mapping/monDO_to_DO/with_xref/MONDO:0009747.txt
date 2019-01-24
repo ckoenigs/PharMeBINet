@@ -1,0 +1,4 @@
+MONDO:0009747	Navajo neurohepatopathy
+DOID 	 name 
+DOID:0080125	mitochondrial DNA depletion syndrome 6
+DOID:0080126	mitochondrial DNA depletion syndrome 7

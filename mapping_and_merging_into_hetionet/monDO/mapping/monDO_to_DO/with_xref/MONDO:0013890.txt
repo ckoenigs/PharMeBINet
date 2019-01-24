@@ -1,0 +1,3 @@
+MONDO:0013890	congenital myopathy with internal nuclei and atypical cores
+DOID 	 name 
+DOID:14717	centronuclear myopathy

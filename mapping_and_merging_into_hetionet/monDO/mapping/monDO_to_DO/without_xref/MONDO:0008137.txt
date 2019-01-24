@@ -1,0 +1,3 @@
+MONDO:0008137	orofaciodigital syndrome X
+DOID 	 name 
+DOID:0060380	orofaciodigital syndrome X

@@ -1,0 +1,3 @@
+MONDO:0001522	pyromania
+DOID 	 name 
+DOID:12402	pyromania

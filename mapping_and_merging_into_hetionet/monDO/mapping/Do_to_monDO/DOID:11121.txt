@@ -1,0 +1,3 @@
+DOID:11121	pulpitis
+monDO ID 	 name 
+MONDO:0006937	pulpitis

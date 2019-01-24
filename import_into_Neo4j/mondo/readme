@@ -1,7 +1,4 @@
+The program integrate_mondo_into_neo4j.py integrate MONDO (https://github.com/monarch-initiative/monarch-disease-ontology) into Neo4j.
+The obo file of MONDO was downloaded from http://www.obofoundry.org/ontology/mondo.html.
 
 
-
-
-download from http://www.obofoundry.org/ontology/mondo.html
-
-generate ontology with https://github.com/monarch-initiative/monarch-disease-ontology

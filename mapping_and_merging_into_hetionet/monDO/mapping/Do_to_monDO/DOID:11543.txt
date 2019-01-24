@@ -1,0 +1,3 @@
+DOID:11543	corneal abscess
+monDO ID 	 name 
+MONDO:0001307	corneal abscess

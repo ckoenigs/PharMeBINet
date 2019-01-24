@@ -1,0 +1,3 @@
+DOID:0060851	pemphigus vulgaris
+monDO ID 	 name 
+MONDO:0008219	pemphigus vulgaris

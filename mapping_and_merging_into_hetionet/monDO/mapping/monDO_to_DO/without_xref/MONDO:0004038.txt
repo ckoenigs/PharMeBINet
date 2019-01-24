@@ -1,0 +1,3 @@
+MONDO:0004038	dental enamel hypoplasia
+DOID 	 name 
+DOID:693	dental enamel hypoplasia

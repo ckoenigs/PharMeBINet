@@ -1,0 +1,3 @@
+DOID:12524	plantar nerve lesion
+monDO ID 	 name 
+MONDO:0001541	plantar nerve lesion

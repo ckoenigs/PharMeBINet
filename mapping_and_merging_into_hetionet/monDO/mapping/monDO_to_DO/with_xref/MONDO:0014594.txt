@@ -1,0 +1,3 @@
+MONDO:0014594	autosomal dominant nonsyndromic deafness 67
+DOID 	 name 
+DOID:0110588	autosomal dominant nonsyndromic deafness 67

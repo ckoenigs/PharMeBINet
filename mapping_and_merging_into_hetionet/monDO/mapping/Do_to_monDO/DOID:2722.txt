@@ -1,0 +1,3 @@
+DOID:2722	acrodermatitis
+monDO ID 	 name 
+MONDO:0006523	acrodermatitis

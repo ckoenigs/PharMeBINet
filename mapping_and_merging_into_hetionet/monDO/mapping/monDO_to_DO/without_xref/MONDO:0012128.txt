@@ -1,0 +1,3 @@
+MONDO:0012128	dextro-looped transposition of the great arteries 1
+DOID 	 name 
+DOID:0060771	dextro-looped transposition of the great arteries 1

@@ -1,0 +1,3 @@
+DOID:1562	chromoblastomycosis
+monDO ID 	 name 
+MONDO:0005702	chromoblastomycosis

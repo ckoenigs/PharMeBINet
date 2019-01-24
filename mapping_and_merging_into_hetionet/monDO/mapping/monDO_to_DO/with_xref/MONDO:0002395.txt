@@ -1,0 +1,3 @@
+MONDO:0002395	renal adenoma
+DOID 	 name 
+DOID:2697	renal adenoma

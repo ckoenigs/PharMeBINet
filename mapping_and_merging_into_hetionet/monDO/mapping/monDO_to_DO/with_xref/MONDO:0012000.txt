@@ -1,0 +1,3 @@
+MONDO:0012000	specific phobia
+DOID 	 name 
+DOID:599	specific phobia

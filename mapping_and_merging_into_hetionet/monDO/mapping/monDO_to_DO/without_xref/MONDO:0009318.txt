@@ -1,0 +1,3 @@
+MONDO:0009318	Hallermann-Streiff syndrome
+DOID 	 name 
+DOID:4534	Hallermann-Streiff syndrome

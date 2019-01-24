@@ -1,0 +1,3 @@
+MONDO:0002601	teratoma
+DOID 	 name 
+DOID:3307	teratoma

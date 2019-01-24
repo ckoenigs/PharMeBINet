@@ -1,0 +1,3 @@
+DOID:0110722	neuronal ceroid lipofuscinosis 7
+monDO ID 	 name 
+MONDO:0012588	neuronal ceroid lipofuscinosis 7

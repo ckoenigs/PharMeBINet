@@ -1,0 +1,3 @@
+MONDO:0003531	eccrine papillary adenocarcinoma
+DOID 	 name 
+DOID:5591	eccrine papillary adenocarcinoma

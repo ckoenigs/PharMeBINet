@@ -1,0 +1,3 @@
+DOID:0060873	isolated growth hormone deficiency type IA
+monDO ID 	 name 
+MONDO:0009876	isolated growth hormone deficiency type IA

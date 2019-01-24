@@ -1,0 +1,3 @@
+MONDO:0004936	uterine inversion
+DOID 	 name 
+DOID:997	uterine inversion

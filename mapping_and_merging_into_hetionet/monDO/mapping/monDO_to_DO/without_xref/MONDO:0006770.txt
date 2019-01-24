@@ -1,0 +1,3 @@
+MONDO:0006770	giant cell reparative granuloma
+DOID 	 name 
+DOID:1866	giant cell reparative granuloma

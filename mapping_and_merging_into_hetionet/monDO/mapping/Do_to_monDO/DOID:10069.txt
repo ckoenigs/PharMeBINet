@@ -1,0 +1,3 @@
+DOID:10069	subglottis neoplasm
+monDO ID 	 name 
+MONDO:0000933	subglottis neoplasm

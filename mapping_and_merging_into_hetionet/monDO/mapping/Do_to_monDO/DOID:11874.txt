@@ -1,0 +1,3 @@
+DOID:11874	abnormal threshold of rods
+monDO ID 	 name 
+MONDO:0001396	abnormal threshold of rods

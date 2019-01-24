@@ -1,0 +1,3 @@
+MONDO:0012543	OPA5
+DOID 	 name 
+DOID:5723	optic atrophy

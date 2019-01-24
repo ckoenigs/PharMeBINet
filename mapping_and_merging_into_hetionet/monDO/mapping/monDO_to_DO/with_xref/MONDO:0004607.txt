@@ -1,0 +1,3 @@
+MONDO:0004607	vallecula cancer
+DOID 	 name 
+DOID:8556	vallecula cancer

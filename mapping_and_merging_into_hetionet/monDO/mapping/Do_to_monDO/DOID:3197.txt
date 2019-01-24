@@ -1,0 +1,3 @@
+DOID:3197	schwannoma of twelfth cranial nerve
+monDO ID 	 name 
+MONDO:0002549	schwannoma of twelfth cranial nerve

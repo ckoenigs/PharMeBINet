@@ -1,0 +1,3 @@
+MONDO:0021101	appendix L-cell glucagon-like peptide-producing neuroendocrine tumor
+DOID 	 name 
+DOID:8151	appendiceal L-cell glucagon-like peptide producing tumor

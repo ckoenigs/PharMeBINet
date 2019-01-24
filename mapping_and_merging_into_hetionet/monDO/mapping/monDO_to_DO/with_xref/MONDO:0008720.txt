@@ -1,0 +1,3 @@
+MONDO:0008720	adrenocorticotropic hormone deficiency (disease)
+DOID 	 name 
+DOID:0080150	adrenocorticotropic hormone deficiency

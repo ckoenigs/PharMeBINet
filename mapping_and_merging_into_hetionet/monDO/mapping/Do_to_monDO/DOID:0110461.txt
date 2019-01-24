@@ -1,0 +1,3 @@
+DOID:0110461	dilated cardiomyopathy 3B
+monDO ID 	 name 
+MONDO:0010542	dilated cardiomyopathy 3B

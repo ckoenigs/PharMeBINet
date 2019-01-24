@@ -1,0 +1,3 @@
+MONDO:0004504	penile urethral cancer
+DOID 	 name 
+DOID:8223	penile urethral cancer

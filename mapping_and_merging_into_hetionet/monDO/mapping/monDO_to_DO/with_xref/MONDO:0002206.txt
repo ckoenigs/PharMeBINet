@@ -1,0 +1,3 @@
+MONDO:0002206	sweat gland cancer
+DOID 	 name 
+DOID:2095	sweat gland cancer

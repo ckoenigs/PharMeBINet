@@ -1,0 +1,3 @@
+MONDO:0001811	tetanic cataract
+DOID 	 name 
+DOID:13822	tetanic cataract

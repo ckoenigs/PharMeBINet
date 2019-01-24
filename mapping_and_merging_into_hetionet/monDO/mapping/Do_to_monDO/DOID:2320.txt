@@ -1,0 +1,3 @@
+DOID:2320	obstructive lung disease
+monDO ID 	 name 
+MONDO:0002267	obstructive lung disease

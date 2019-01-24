@@ -1,0 +1,3 @@
+DOID:1930	Laurence-Moon syndrome
+monDO ID 	 name 
+MONDO:0009514	Laurence-Moon syndrome

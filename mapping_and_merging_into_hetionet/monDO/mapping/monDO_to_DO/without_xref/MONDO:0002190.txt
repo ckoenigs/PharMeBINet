@@ -1,0 +1,3 @@
+MONDO:0002190	vulvar syringoma
+DOID 	 name 
+DOID:2064	vulvar syringoma

@@ -1,0 +1,3 @@
+DOID:13254	diverticulitis of colon
+monDO ID 	 name 
+MONDO:0001674	diverticulitis of colon

@@ -1,0 +1,3 @@
+DOID:13098	central retinal artery occlusion
+monDO ID 	 name 
+MONDO:0001633	central retinal artery occlusion

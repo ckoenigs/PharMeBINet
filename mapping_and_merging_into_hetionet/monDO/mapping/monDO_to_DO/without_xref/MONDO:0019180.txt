@@ -1,0 +1,3 @@
+MONDO:0019180	hereditary hemorrhagic telangiectasia
+DOID 	 name 
+DOID:1270	hereditary hemorrhagic telangiectasia

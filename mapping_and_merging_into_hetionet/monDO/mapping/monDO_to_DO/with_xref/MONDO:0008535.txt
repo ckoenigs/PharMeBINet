@@ -1,0 +1,3 @@
+MONDO:0008535	telangiectasia, hereditary hemorrhagic, of Rendu, Osler, and Weber
+DOID 	 name 
+DOID:1270	hereditary hemorrhagic telangiectasia

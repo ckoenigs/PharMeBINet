@@ -1,0 +1,3 @@
+DOID:0060197	amyotrophic lateral sclerosis type 5
+monDO ID 	 name 
+MONDO:0011196	amyotrophic lateral sclerosis type 5

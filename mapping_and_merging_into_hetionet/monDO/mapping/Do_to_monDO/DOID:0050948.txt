@@ -1,0 +1,3 @@
+DOID:0050948	autosomal dominant hypophosphatemic rickets
+monDO ID 	 name 
+MONDO:0008660	autosomal dominant hypophosphatemic rickets

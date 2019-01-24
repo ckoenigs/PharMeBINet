@@ -1,0 +1,3 @@
+DOID:1835	mononeuritis multiplex
+monDO ID 	 name 
+MONDO:0002128	mononeuritis multiplex

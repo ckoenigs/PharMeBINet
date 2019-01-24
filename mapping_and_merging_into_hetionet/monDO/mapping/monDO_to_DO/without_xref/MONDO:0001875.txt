@@ -1,0 +1,3 @@
+MONDO:0001875	epicondylitis
+DOID 	 name 
+DOID:14087	epicondylitis

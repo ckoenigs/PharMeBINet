@@ -1,0 +1,3 @@
+DOID:4707	cervicomedullary junction neoplasm
+monDO ID 	 name 
+MONDO:0003108	cervicomedullary junction neoplasm

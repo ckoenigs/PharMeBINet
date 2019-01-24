@@ -1,0 +1,3 @@
+DOID:0060673	Peters anomaly
+monDO ID 	 name 
+MONDO:0011414	Peters anomaly (disease)

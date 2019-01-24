@@ -1,0 +1,3 @@
+DOID:8125	osteochondrosis
+monDO ID 	 name 
+MONDO:0018381	osteochondrosis

@@ -1,0 +1,3 @@
+MONDO:0013065	premature ovarian failure 7
+DOID 	 name 
+DOID:5426	premature ovarian failure

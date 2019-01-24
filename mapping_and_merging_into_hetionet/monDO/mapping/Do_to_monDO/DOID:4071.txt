@@ -1,0 +1,3 @@
+DOID:4071	duodenogastric reflux
+monDO ID 	 name 
+MONDO:0006735	duodenogastric reflux

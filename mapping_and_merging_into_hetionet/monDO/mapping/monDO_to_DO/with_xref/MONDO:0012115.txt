@@ -1,0 +1,3 @@
+MONDO:0012115	IS3
+DOID 	 name 
+DOID:0060250	idiopathic scoliosis

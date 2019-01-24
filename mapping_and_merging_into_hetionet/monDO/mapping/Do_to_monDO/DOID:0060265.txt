@@ -1,0 +1,3 @@
+DOID:0060265	pontocerebellar hypoplasia type 1A
+monDO ID 	 name 
+MONDO:0011866	pontocerebellar hypoplasia type 1A

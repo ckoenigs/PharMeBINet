@@ -1,0 +1,4 @@
+MONDO:0005289	paranasal sinus neoplasm (disease)
+DOID 	 name 
+DOID:1350	paranasal sinus neoplasm
+DOID:0050619	paranasal sinus cancer

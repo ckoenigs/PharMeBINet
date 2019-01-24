@@ -1,0 +1,4 @@
+MONDO:0019152	Oguchi disease
+DOID 	 name 
+DOID:8498	hereditary night blindness
+DOID:0050534	congenital stationary night blindness

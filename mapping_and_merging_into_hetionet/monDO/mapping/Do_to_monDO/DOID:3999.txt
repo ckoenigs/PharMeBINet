@@ -1,0 +1,3 @@
+DOID:3999	Bartholin's gland carcinoma
+monDO ID 	 name 
+MONDO:0002829	Bartholin's gland carcinoma

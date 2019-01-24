@@ -1,0 +1,3 @@
+DOID:0111029	hemochromatosis type 1
+monDO ID 	 name 
+MONDO:0021001	hemochromatosis type 1

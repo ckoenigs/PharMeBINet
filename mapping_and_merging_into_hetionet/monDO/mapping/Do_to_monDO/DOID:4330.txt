@@ -1,0 +1,3 @@
+DOID:4330	non-Langerhans-cell histiocytosis
+monDO ID 	 name 
+MONDO:0015531	non-Langerhans cell histiocytosis

@@ -1,0 +1,3 @@
+MONDO:0001397	mononeuropathy
+DOID 	 name 
+DOID:1188	mononeuropathy

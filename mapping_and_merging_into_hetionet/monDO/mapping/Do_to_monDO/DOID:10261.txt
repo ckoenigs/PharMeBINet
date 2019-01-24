@@ -1,0 +1,3 @@
+DOID:10261	discharging ear
+monDO ID 	 name 
+MONDO:0000988	discharging ear

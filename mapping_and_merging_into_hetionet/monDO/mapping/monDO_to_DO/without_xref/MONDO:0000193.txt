@@ -1,0 +1,3 @@
+MONDO:0000193	cortisone reductase deficiency
+DOID 	 name 
+DOID:0090139	cortisone reductase deficiency

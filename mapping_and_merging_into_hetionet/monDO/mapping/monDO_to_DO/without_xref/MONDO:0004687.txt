@@ -1,0 +1,3 @@
+MONDO:0004687	severe nonproliferative diabetic retinopathy
+DOID 	 name 
+DOID:8946	severe nonproliferative diabetic retinopathy

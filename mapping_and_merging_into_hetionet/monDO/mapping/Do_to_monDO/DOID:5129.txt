@@ -1,0 +1,3 @@
+DOID:5129	simple partial epilepsy
+monDO ID 	 name 
+MONDO:0003290	simple partial epilepsy

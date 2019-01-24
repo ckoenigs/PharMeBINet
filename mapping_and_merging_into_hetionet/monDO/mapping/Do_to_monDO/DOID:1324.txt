@@ -1,0 +1,3 @@
+DOID:1324	lung cancer
+monDO ID 	 name 
+MONDO:0008903	lung cancer

@@ -1,0 +1,3 @@
+DOID:4636	submandibular adenitis
+monDO ID 	 name 
+MONDO:0003066	submandibular adenitis

@@ -1,0 +1,3 @@
+DOID:0050605	acrodermatitis enteropathica
+monDO ID 	 name 
+MONDO:0008713	acrodermatitis enteropathica

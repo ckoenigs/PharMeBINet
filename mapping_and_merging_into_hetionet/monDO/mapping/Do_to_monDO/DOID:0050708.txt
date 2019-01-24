@@ -1,0 +1,3 @@
+DOID:0050708	early onset absence epilepsy
+monDO ID 	 name 
+MONDO:0000417	early onset absence epilepsy

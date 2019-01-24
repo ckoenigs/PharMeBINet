@@ -1,0 +1,3 @@
+DOID:8108	fibroepithelial polyp of urethra
+monDO ID 	 name 
+MONDO:0006550	fibroepithelial polyp of urethra

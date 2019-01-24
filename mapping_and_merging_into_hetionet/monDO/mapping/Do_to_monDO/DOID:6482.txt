@@ -1,0 +1,3 @@
+DOID:6482	lung acinar adenocarcinoma
+monDO ID 	 name 
+MONDO:0003892	acinar lung adenocarcinoma

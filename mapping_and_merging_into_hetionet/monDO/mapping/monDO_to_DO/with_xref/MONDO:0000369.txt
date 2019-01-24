@@ -1,0 +1,3 @@
+MONDO:0000369	abdominal tuberculosis
+DOID 	 name 
+DOID:0050599	abdominal tuberculosis

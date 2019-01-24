@@ -1,0 +1,3 @@
+DOID:0090102	autosomal dominant macrothrombocytopenia TUBB1-related
+monDO ID 	 name 
+MONDO:0013141	autosomal dominant macrothrombocytopenia TUBB1-related

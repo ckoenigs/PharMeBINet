@@ -1,0 +1,3 @@
+MONDO:0002746	fallopian tube adenocarcinoma
+DOID 	 name 
+DOID:3706	fallopian tube adenocarcinoma

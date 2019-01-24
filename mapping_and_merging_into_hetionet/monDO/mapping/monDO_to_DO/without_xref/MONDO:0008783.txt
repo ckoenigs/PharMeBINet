@@ -1,0 +1,3 @@
+MONDO:0008783	Tangier disease
+DOID 	 name 
+DOID:1388	Tangier disease

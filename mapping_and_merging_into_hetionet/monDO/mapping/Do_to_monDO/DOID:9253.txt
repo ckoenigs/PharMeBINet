@@ -1,0 +1,3 @@
+DOID:9253	gastrointestinal stromal tumor
+monDO ID 	 name 
+MONDO:0011719	gastrointestinal stromal tumor

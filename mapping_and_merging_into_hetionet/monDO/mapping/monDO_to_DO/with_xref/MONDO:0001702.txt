@@ -1,0 +1,3 @@
+MONDO:0001702	labia majora carcinoma
+DOID 	 name 
+DOID:13389	labia majora carcinoma

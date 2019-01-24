@@ -1,0 +1,4 @@
+MONDO:0003460	clear cell adenofibroma
+DOID 	 name 
+DOID:5477	clear cell adenofibroma
+DOID:5482	cystadenofibroma

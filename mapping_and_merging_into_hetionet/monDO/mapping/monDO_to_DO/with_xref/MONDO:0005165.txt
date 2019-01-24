@@ -1,0 +1,5 @@
+MONDO:0005165	benign neoplasm
+DOID 	 name 
+DOID:0060084	cell type benign neoplasm
+DOID:0060085	organ system benign neoplasm
+DOID:0060072	benign neoplasm

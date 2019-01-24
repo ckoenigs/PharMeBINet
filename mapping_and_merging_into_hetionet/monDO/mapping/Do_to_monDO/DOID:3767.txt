@@ -1,0 +1,3 @@
+DOID:3767	vaginal discharge
+monDO ID 	 name 
+MONDO:0002770	vaginal discharge

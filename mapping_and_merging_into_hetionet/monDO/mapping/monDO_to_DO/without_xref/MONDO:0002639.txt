@@ -1,0 +1,3 @@
+MONDO:0002639	glossopharyngeal nerve disease
+DOID 	 name 
+DOID:3418	glossopharyngeal nerve disease

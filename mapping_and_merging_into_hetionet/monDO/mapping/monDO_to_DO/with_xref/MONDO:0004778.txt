@@ -1,0 +1,3 @@
+MONDO:0004778	epididymo-orchitis
+DOID 	 name 
+DOID:9401	epididymo-orchitis

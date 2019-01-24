@@ -1,0 +1,3 @@
+DOID:13368	tinea profunda
+monDO ID 	 name 
+MONDO:0001698	tinea profunda

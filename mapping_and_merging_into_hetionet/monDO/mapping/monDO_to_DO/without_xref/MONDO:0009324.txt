@@ -1,0 +1,3 @@
+MONDO:0009324	Hartnup disease
+DOID 	 name 
+DOID:1060	Hartnup disease

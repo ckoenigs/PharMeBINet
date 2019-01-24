@@ -1,0 +1,3 @@
+MONDO:0010459	amyotrophic lateral sclerosis type 15
+DOID 	 name 
+DOID:0060206	amyotrophic lateral sclerosis type 15

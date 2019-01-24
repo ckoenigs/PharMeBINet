@@ -1,0 +1,3 @@
+MONDO:0012268	AIDS
+DOID 	 name 
+DOID:635	acquired immunodeficiency syndrome

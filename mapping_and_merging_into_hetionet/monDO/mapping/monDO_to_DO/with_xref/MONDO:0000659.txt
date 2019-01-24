@@ -1,0 +1,3 @@
+MONDO:0000659	delta chain disease
+DOID 	 name 
+DOID:0060129	delta chain disease

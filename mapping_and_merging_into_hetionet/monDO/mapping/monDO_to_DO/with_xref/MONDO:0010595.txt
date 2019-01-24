@@ -1,0 +1,3 @@
+MONDO:0010595	Sertoli cell-only syndrome
+DOID 	 name 
+DOID:0050457	Sertoli cell-only syndrome

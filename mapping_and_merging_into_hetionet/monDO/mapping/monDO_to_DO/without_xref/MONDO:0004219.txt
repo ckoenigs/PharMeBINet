@@ -1,0 +1,3 @@
+MONDO:0004219	polyvesicular vitelline pattern testicular yolk sac tumor
+DOID 	 name 
+DOID:7435	polyvesicular vitelline pattern testicular yolk sac tumor

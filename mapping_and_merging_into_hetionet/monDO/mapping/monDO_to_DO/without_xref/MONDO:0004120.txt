@@ -1,0 +1,3 @@
+MONDO:0004120	Bartholin's gland small cell carcinoma
+DOID 	 name 
+DOID:7140	Bartholin's gland small cell carcinoma

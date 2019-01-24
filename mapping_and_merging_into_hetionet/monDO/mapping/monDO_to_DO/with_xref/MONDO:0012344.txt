@@ -1,0 +1,3 @@
+MONDO:0012344	Alzheimer's disease 11
+DOID 	 name 
+DOID:0110044	Alzheimer's disease 11

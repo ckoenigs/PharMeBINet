@@ -1,0 +1,3 @@
+DOID:1138	spinal meningioma
+monDO ID 	 name 
+MONDO:0001275	spinal meningioma

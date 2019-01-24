@@ -1,0 +1,3 @@
+MONDO:0008228	pernicious anemia
+DOID 	 name 
+DOID:13381	pernicious anemia

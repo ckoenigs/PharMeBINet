@@ -1,0 +1,3 @@
+DOID:0111044	gray platelet syndrome
+monDO ID 	 name 
+MONDO:0007686	gray platelet syndrome

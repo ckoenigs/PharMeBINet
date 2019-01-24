@@ -1,0 +1,3 @@
+DOID:0050643	anonychia congenita
+monDO ID 	 name 
+MONDO:0008798	nonsyndromic congenital nail disorder 4

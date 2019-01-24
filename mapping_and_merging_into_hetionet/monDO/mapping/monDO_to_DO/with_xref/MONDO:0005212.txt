@@ -1,0 +1,3 @@
+MONDO:0005212	rhabdomyosarcoma (disease)
+DOID 	 name 
+DOID:3247	rhabdomyosarcoma

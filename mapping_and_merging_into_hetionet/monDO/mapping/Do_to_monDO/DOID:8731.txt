@@ -1,0 +1,3 @@
+DOID:8731	carotid body cancer
+monDO ID 	 name 
+MONDO:0004650	malignant carotid body paraganglioma

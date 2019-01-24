@@ -1,0 +1,3 @@
+MONDO:0004836	intravascular fasciitis
+DOID 	 name 
+DOID:9603	intravascular fasciitis

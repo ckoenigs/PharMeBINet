@@ -1,0 +1,3 @@
+DOID:5385	mixed cell adenoma
+monDO ID 	 name 
+MONDO:0003421	mixed cell adenoma

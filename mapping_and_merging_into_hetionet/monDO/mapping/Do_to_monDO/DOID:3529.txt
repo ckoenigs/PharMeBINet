@@ -1,0 +1,3 @@
+DOID:3529	central core myopathy
+monDO ID 	 name 
+MONDO:0007294	central core myopathy

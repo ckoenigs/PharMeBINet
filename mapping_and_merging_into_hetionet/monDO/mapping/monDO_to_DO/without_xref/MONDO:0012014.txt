@@ -1,0 +1,3 @@
+MONDO:0012014	Charcot-Marie-tooth disease recessive intermediate a
+DOID 	 name 
+DOID:0110201	Charcot-Marie-Tooth disease recessive intermediate A

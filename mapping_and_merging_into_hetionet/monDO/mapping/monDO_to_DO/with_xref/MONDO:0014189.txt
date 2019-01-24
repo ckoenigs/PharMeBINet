@@ -1,0 +1,3 @@
+MONDO:0014189	age related macular degeneration 13
+DOID 	 name 
+DOID:0110025	age related macular degeneration 13

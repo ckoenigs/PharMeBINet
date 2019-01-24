@@ -1,0 +1,3 @@
+DOID:0060474	Chuvash polycythemia
+monDO ID 	 name 
+MONDO:0009892	Chuvash polycythemia

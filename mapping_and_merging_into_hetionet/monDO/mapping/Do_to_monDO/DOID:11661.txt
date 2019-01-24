@@ -1,0 +1,3 @@
+DOID:11661	blue color blindness
+monDO ID 	 name 
+MONDO:0008610	blue color blindness

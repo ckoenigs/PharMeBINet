@@ -1,0 +1,3 @@
+MONDO:0005090	schizophrenia (disease)
+DOID 	 name 
+DOID:5419	schizophrenia

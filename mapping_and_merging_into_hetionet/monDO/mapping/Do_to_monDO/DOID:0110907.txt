@@ -1,0 +1,3 @@
+DOID:0110907	inflammatory bowel disease 6
+monDO ID 	 name 
+MONDO:0011700	inflammatory bowel disease 6

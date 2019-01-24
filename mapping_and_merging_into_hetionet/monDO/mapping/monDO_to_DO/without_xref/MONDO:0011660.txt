@@ -1,0 +1,3 @@
+MONDO:0011660	autosomal dominant nonsyndromic deafness 22
+DOID 	 name 
+DOID:0110552	autosomal dominant nonsyndromic deafness 22

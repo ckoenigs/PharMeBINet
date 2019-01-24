@@ -1,0 +1,3 @@
+DOID:11120	psychologic dyspareunia
+monDO ID 	 name 
+MONDO:0001196	psychologic dyspareunia

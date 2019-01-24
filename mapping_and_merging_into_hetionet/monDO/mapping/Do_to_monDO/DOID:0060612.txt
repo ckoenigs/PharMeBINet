@@ -1,0 +1,3 @@
+DOID:0060612	abdominal obesity-metabolic syndrome 3
+monDO ID 	 name 
+MONDO:0014352	abdominal obesity-metabolic syndrome 3

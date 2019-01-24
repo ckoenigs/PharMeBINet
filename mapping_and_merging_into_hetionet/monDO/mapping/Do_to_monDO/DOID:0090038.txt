@@ -1,0 +1,3 @@
+DOID:0090038	torsion dystonia 2
+monDO ID 	 name 
+MONDO:0009141	torsion dystonia 2

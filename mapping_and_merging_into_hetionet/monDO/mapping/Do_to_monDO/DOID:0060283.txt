@@ -1,0 +1,3 @@
+DOID:0060283	peeling skin syndrome
+monDO ID 	 name 
+MONDO:0019347	peeling skin syndrome

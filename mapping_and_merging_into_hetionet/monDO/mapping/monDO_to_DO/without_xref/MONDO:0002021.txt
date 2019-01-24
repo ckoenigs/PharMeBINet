@@ -1,0 +1,3 @@
+MONDO:0002021	gingival disease
+DOID 	 name 
+DOID:1483	gingival disease

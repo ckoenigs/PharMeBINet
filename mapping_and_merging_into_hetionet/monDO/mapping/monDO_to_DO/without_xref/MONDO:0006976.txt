@@ -1,0 +1,3 @@
+MONDO:0006976	somatostatinoma
+DOID 	 name 
+DOID:4430	somatostatinoma

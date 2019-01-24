@@ -1,0 +1,3 @@
+DOID:0060469	Miller-Dieker lissencephaly syndrome
+monDO ID 	 name 
+MONDO:0009532	Miller-Dieker lissencephaly syndrome

@@ -1,0 +1,3 @@
+DOID:14287	brawny scleritis
+monDO ID 	 name 
+MONDO:0001936	brawny scleritis

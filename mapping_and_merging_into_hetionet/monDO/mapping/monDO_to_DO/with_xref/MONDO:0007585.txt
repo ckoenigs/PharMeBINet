@@ -1,0 +1,3 @@
+MONDO:0007585	exostoses, multiple, type 1
+DOID 	 name 
+DOID:206	hereditary multiple exostoses

@@ -1,0 +1,3 @@
+DOID:0060831	Griscelli syndrome
+monDO ID 	 name 
+MONDO:0018306	Griscelli syndrome

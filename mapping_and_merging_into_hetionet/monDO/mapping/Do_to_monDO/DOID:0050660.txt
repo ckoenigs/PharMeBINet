@@ -1,0 +1,3 @@
+DOID:0050660	Beare-Stevenson cutis gyrata syndrome
+monDO ID 	 name 
+MONDO:0007412	Beare-Stevenson cutis gyrata syndrome

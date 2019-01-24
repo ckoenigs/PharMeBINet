@@ -1,0 +1,3 @@
+DOID:0080183	medullary colon carcinoma
+monDO ID 	 name 
+MONDO:0000892	colon medullary carcinoma

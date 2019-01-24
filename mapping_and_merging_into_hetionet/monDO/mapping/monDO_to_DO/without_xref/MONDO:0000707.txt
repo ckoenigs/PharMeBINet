@@ -1,0 +1,3 @@
+MONDO:0000707	diversion colitis
+DOID 	 name 
+DOID:0060187	diversion colitis

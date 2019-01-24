@@ -1,0 +1,3 @@
+MONDO:0014677	achromatopsia 7
+DOID 	 name 
+DOID:0110009	achromatopsia 7

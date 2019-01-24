@@ -1,0 +1,3 @@
+DOID:3711	bladder adenocarcinoma
+monDO ID 	 name 
+MONDO:0002751	bladder adenocarcinoma

@@ -1,0 +1,3 @@
+DOID:0060007	CD3zeta deficiency
+monDO ID 	 name 
+MONDO:0012426	immunodeficiency 25

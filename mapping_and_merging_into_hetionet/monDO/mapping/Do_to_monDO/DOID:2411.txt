@@ -1,0 +1,3 @@
+DOID:2411	granular cell tumor
+monDO ID 	 name 
+MONDO:0006235	granular cell tumor

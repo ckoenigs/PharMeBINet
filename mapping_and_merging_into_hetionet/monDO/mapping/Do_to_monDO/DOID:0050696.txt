@@ -1,0 +1,3 @@
+DOID:0050696	fetal alcohol spectrum disorder
+monDO ID 	 name 
+MONDO:0000408	fetal alcohol spectrum disorder

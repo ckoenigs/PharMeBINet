@@ -1,0 +1,3 @@
+MONDO:0012996	AGAT deficiency
+DOID 	 name 
+DOID:0050712	AGAT deficiency

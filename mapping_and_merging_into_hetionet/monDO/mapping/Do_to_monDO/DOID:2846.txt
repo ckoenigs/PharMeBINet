@@ -1,0 +1,3 @@
+DOID:2846	bruxism
+monDO ID 	 name 
+MONDO:0002443	bruxism (disease)

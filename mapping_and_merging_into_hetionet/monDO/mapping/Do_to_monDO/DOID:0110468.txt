@@ -1,0 +1,3 @@
+DOID:0110468	autosomal recessive nonsyndromic deafness 13
+monDO ID 	 name 
+MONDO:0011286	autosomal recessive nonsyndromic deafness 13

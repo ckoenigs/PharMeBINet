@@ -1,0 +1,3 @@
+DOID:4188	echolalia
+monDO ID 	 name 
+MONDO:0002904	echolalia (disease)

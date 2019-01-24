@@ -1,0 +1,3 @@
+DOID:0110047	Alzheimer's disease 14
+monDO ID 	 name 
+MONDO:0012631	Alzheimer's disease 14

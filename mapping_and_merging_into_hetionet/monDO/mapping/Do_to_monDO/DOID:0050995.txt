@@ -1,0 +1,3 @@
+DOID:0050995	episodic ataxia type 7
+monDO ID 	 name 
+MONDO:0012755	episodic ataxia type 7

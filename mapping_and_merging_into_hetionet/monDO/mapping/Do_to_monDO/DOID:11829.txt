@@ -1,0 +1,3 @@
+DOID:11829	degenerative myopia
+monDO ID 	 name 
+MONDO:0001383	degenerative myopia

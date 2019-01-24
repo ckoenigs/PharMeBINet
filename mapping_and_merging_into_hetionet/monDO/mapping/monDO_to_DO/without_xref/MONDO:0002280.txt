@@ -1,0 +1,3 @@
+MONDO:0002280	anemia (disease)
+DOID 	 name 
+DOID:2355	anemia

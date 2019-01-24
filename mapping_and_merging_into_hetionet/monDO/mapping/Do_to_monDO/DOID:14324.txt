@@ -1,0 +1,3 @@
+DOID:14324	Plasmodium malariae malaria
+monDO ID 	 name 
+MONDO:0001943	Plasmodium malariae malaria

@@ -1,0 +1,3 @@
+DOID:0111038	hypermethioninemia due to adenosine kinase deficiency
+monDO ID 	 name 
+MONDO:0013676	hypermethioninemia due to adenosine kinase deficiency

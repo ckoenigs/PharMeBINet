@@ -1,0 +1,3 @@
+DOID:0110085	asphyxiating thoracic dystrophy 1
+monDO ID 	 name 
+MONDO:0008831	asphyxiating thoracic dystrophy 1

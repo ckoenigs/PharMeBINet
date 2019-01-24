@@ -1,0 +1,3 @@
+MONDO:0005459	human african trypanosomiasis
+DOID 	 name 
+DOID:10112	sleeping sickness

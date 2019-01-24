@@ -1,0 +1,3 @@
+MONDO:0003709	colon squamous cell carcinoma
+DOID 	 name 
+DOID:5519	colon squamous cell carcinoma

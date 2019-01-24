@@ -1,0 +1,3 @@
+MONDO:0003663	uterine ligament endometrioid adenocarcinoma
+DOID 	 name 
+DOID:5829	uterine ligament endometrioid adenocarcinoma

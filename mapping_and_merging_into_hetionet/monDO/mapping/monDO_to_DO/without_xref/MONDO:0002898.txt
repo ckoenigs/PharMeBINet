@@ -1,0 +1,3 @@
+MONDO:0002898	skin cancer
+DOID 	 name 
+DOID:4159	skin cancer

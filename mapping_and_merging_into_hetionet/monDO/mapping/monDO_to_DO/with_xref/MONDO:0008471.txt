@@ -1,0 +1,3 @@
+MONDO:0008471	spondyloepiphyseal dysplasia congenita
+DOID 	 name 
+DOID:14789	spondyloepiphyseal dysplasia congenita

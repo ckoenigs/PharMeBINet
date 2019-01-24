@@ -1,0 +1,3 @@
+MONDO:0003300	appendix leiomyoma
+DOID 	 name 
+DOID:5146	appendix leiomyoma

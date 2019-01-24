@@ -1,0 +1,3 @@
+MONDO:0008458	spinocerebellar ataxia type 2
+DOID 	 name 
+DOID:0050955	spinocerebellar ataxia type 2

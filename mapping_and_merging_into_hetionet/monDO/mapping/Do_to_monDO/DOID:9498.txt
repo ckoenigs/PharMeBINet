@@ -1,0 +1,3 @@
+DOID:9498	pulmonary eosinophilia
+monDO ID 	 name 
+MONDO:0004802	pulmonary eosinophilia

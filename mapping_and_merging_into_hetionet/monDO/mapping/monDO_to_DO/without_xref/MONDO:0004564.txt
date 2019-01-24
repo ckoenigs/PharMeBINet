@@ -1,0 +1,3 @@
+MONDO:0004564	thyroid malformation
+DOID 	 name 
+DOID:8433	thyroid malformation

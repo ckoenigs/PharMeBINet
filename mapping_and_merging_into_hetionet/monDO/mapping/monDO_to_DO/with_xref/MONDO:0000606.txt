@@ -1,0 +1,3 @@
+MONDO:0000606	gluten allergy
+DOID 	 name 
+DOID:0060057	gluten allergy

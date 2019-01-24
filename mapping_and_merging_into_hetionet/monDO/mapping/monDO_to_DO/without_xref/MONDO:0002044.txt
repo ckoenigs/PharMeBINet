@@ -1,0 +1,3 @@
+MONDO:0002044	spastic ectropion
+DOID 	 name 
+DOID:1571	spastic ectropion

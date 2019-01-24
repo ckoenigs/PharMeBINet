@@ -1,0 +1,3 @@
+MONDO:0003200	urethra adenocarcinoma
+DOID 	 name 
+DOID:4910	urethra adenocarcinoma

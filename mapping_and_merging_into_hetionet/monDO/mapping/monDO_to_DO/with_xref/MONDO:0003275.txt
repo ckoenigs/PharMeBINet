@@ -1,0 +1,3 @@
+MONDO:0003275	middle ear cancer
+DOID 	 name 
+DOID:5099	middle ear cancer

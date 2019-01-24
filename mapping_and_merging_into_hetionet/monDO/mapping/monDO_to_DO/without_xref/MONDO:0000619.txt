@@ -1,0 +1,3 @@
+MONDO:0000619	triple-receptor negative breast cancer
+DOID 	 name 
+DOID:0060081	triple-receptor negative breast cancer

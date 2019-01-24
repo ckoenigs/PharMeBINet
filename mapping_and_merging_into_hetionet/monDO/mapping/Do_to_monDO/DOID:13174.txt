@@ -1,0 +1,3 @@
+DOID:13174	dissociated nystagmus
+monDO ID 	 name 
+MONDO:0001655	dissociated nystagmus

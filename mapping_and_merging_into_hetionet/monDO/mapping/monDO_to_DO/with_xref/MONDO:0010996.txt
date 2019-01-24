@@ -1,0 +1,3 @@
+MONDO:0010996	HHT3
+DOID 	 name 
+DOID:1270	hereditary hemorrhagic telangiectasia

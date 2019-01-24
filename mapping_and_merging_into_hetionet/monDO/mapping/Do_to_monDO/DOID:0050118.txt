@@ -1,0 +1,3 @@
+DOID:0050118	La Crosse encephalitis
+monDO ID 	 name 
+MONDO:0019378	la Crosse encephalitis

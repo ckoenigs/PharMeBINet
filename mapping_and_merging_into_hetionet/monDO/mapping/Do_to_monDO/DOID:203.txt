@@ -1,0 +1,3 @@
+DOID:203	exostosis
+monDO ID 	 name 
+MONDO:0002181	exostosis

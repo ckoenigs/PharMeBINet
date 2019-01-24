@@ -1,0 +1,3 @@
+DOID:5015	fibrolamellar carcinoma
+monDO ID 	 name 
+MONDO:0006210	fibrolamellar carcinoma

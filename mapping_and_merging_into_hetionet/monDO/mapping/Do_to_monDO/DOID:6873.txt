@@ -1,0 +1,3 @@
+DOID:6873	skin tag
+monDO ID 	 name 
+MONDO:0004026	skin tag

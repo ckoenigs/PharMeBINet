@@ -1,0 +1,3 @@
+MONDO:0008964	congenital secretory chloride diarrhea 1
+DOID 	 name 
+DOID:0060296	congenital secretory chloride diarrhea 1

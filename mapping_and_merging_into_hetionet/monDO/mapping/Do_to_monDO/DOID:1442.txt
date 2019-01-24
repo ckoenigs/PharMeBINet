@@ -1,0 +1,3 @@
+DOID:1442	Alpers syndrome
+monDO ID 	 name 
+MONDO:0008758	mitochondrial DNA depletion syndrome 4a

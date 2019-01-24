@@ -1,0 +1,3 @@
+DOID:0110244	cataract 28
+monDO ID 	 name 
+MONDO:0012175	cataract 28

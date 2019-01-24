@@ -1,0 +1,3 @@
+MONDO:0003466	spindle cell synovial sarcoma
+DOID 	 name 
+DOID:5487	spindle cell synovial sarcoma

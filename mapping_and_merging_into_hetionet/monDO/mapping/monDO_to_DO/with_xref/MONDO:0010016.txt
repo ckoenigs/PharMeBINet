@@ -1,0 +1,3 @@
+MONDO:0010016	sclerosteosis 1
+DOID 	 name 
+DOID:0060756	sclerosteosis 1

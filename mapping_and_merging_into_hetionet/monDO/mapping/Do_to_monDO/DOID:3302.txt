@@ -1,0 +1,3 @@
+DOID:3302	chordoma
+monDO ID 	 name 
+MONDO:0008978	chordoma (disease)

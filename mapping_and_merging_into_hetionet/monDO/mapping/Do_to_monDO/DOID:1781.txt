@@ -1,0 +1,3 @@
+DOID:1781	thyroid cancer
+monDO ID 	 name 
+MONDO:0002108	thyroid cancer

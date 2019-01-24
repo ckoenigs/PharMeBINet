@@ -1,0 +1,3 @@
+DOID:9838	cyclotropia
+monDO ID 	 name 
+MONDO:0004894	cyclotropia

@@ -1,0 +1,3 @@
+DOID:0110064	amelogenesis imperfecta type 1H
+monDO ID 	 name 
+MONDO:0014540	amelogenesis imperfecta type 1H

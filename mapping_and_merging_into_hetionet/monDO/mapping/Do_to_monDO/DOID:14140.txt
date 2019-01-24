@@ -1,0 +1,3 @@
+DOID:14140	pulp erosion
+monDO ID 	 name 
+MONDO:0001890	pulp erosion

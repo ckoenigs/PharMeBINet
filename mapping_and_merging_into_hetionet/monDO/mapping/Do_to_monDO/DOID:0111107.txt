@@ -1,0 +1,3 @@
+DOID:0111107	maturity-onset diabetes of the young type 9
+monDO ID 	 name 
+MONDO:0012818	maturity-onset diabetes of the young type 9

@@ -1,0 +1,3 @@
+MONDO:0011523	Bardet-Biedl syndrome 6
+DOID 	 name 
+DOID:0110128	Bardet-Biedl syndrome 6

@@ -1,0 +1,3 @@
+MONDO:0011364	autosomal recessive nonsyndromic deafness 16
+DOID 	 name 
+DOID:0110471	autosomal recessive nonsyndromic deafness 16

@@ -1,0 +1,3 @@
+MONDO:0006688	byssinosis
+DOID 	 name 
+DOID:10323	byssinosis

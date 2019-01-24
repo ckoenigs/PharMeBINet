@@ -1,0 +1,3 @@
+DOID:12573	neonatal thyrotoxicosis
+monDO ID 	 name 
+MONDO:0001555	neonatal thyrotoxicosis

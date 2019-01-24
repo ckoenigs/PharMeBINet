@@ -1,0 +1,3 @@
+MONDO:0006515	acute pancreatitis
+DOID 	 name 
+DOID:2913	acute pancreatitis

@@ -1,0 +1,3 @@
+MONDO:0008830	aspartylglucosaminuria
+DOID 	 name 
+DOID:0050461	aspartylglucosaminuria

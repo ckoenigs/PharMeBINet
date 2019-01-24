@@ -1,0 +1,3 @@
+MONDO:0011822	Bartter disease type 3
+DOID 	 name 
+DOID:0110144	Bartter disease type 3

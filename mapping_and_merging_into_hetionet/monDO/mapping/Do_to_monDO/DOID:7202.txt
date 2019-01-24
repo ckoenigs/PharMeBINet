@@ -1,0 +1,3 @@
+DOID:7202	intermediate malignant teratoma
+monDO ID 	 name 
+MONDO:0004140	intermediate malignant teratoma

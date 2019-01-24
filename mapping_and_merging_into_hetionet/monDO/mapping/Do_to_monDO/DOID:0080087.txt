@@ -1,0 +1,3 @@
+DOID:0080087	nonsyndromic congenital nail disorder 9
+monDO ID 	 name 
+MONDO:0013592	nonsyndromic congenital nail disorder 9

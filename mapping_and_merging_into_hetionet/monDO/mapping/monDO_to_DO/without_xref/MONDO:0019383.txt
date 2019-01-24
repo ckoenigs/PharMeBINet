@@ -1,0 +1,3 @@
+MONDO:0019383	acute disseminated encephalomyelitis
+DOID 	 name 
+DOID:639	acute disseminated encephalomyelitis

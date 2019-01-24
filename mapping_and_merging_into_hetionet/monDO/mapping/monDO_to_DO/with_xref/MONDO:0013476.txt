@@ -1,0 +1,3 @@
+MONDO:0013476	hypertrophic cardiomyopathy 19
+DOID 	 name 
+DOID:0110325	hypertrophic cardiomyopathy 19

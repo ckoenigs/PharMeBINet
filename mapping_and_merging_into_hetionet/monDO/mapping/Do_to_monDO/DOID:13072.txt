@@ -1,0 +1,3 @@
+DOID:13072	acquired hyperkeratosis
+monDO ID 	 name 
+MONDO:0006522	acquired keratosis

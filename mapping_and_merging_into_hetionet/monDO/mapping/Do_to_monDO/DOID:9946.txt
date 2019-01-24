@@ -1,0 +1,3 @@
+DOID:9946	steroid-induced glaucoma
+monDO ID 	 name 
+MONDO:0004930	steroid-induced glaucoma

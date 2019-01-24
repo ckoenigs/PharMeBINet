@@ -1,0 +1,3 @@
+DOID:0060012	recombinase activating gene 2 deficiency
+monDO ID 	 name 
+MONDO:0000573	recombinase activating gene 2 deficiency

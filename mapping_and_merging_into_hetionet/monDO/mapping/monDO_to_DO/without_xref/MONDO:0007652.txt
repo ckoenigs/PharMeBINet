@@ -1,0 +1,3 @@
+MONDO:0007652	gastric mucosal hypertrophy
+DOID 	 name 
+DOID:8757	gastric mucosal hypertrophy

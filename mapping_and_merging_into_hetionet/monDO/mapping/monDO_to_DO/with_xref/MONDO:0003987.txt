@@ -1,0 +1,3 @@
+MONDO:0003987	lung lymphoma
+DOID 	 name 
+DOID:6760	lung lymphoma

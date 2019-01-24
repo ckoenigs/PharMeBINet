@@ -1,0 +1,3 @@
+MONDO:0000751	cervical polyp (disease)
+DOID 	 name 
+DOID:0060325	cervical polyp

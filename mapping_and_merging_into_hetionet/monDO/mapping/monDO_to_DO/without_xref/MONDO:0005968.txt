@@ -1,0 +1,3 @@
+MONDO:0005968	sporotrichosis
+DOID 	 name 
+DOID:14484	sporotrichosis

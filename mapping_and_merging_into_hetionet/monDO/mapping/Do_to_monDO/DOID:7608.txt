@@ -1,0 +1,3 @@
+DOID:7608	parathyroid adenoma
+monDO ID 	 name 
+MONDO:0006890	parathyroid gland adenoma

@@ -1,0 +1,3 @@
+MONDO:0013537	autosomal recessive nonsyndromic deafness 29
+DOID 	 name 
+DOID:0110487	autosomal recessive nonsyndromic deafness 29

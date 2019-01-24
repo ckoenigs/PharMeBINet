@@ -1,0 +1,3 @@
+MONDO:0019735	polymyalgia rheumatica
+DOID 	 name 
+DOID:853	polymyalgia rheumatica

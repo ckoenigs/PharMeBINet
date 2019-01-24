@@ -1,0 +1,3 @@
+MONDO:0004235	diverticulitis
+DOID 	 name 
+DOID:7475	diverticulitis

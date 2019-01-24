@@ -1,0 +1,3 @@
+DOID:0110397	retinitis pigmentosa 27
+monDO ID 	 name 
+MONDO:0013402	retinitis pigmentosa 27

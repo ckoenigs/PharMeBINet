@@ -1,0 +1,3 @@
+MONDO:0011625	autosomal dominant nonsyndromic deafness 18
+DOID 	 name 
+DOID:0110549	autosomal dominant nonsyndromic deafness 18

@@ -1,0 +1,3 @@
+MONDO:0010857	semantic dementia
+DOID 	 name 
+DOID:9255	frontotemporal dementia

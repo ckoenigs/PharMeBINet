@@ -1,0 +1,3 @@
+MONDO:0004400	malignant type A thymoma
+DOID 	 name 
+DOID:7927	malignant type A thymoma

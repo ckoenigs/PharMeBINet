@@ -1,0 +1,3 @@
+MONDO:0004390	ocular hypotension
+DOID 	 name 
+DOID:790	ocular hypotension

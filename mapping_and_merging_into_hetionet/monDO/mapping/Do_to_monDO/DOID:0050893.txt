@@ -1,0 +1,3 @@
+DOID:0050893	gallbladder adenoma
+monDO ID 	 name 
+MONDO:0006216	gallbladder adenoma

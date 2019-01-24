@@ -1,0 +1,3 @@
+MONDO:0008772	amelogenesis imperfecta type 2A1
+DOID 	 name 
+DOID:0110057	amelogenesis imperfecta type 2A1

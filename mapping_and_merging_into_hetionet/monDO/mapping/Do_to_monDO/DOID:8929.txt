@@ -1,0 +1,3 @@
+DOID:8929	atrophic gastritis
+monDO ID 	 name 
+MONDO:0006665	chronic atrophic gastritis

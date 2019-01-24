@@ -1,0 +1,3 @@
+MONDO:0018071	trisomy 18
+DOID 	 name 
+DOID:1085	Edwards syndrome

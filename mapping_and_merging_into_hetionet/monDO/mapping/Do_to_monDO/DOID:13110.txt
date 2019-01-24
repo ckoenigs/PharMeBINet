@@ -1,0 +1,3 @@
+DOID:13110	bladder squamous papilloma
+monDO ID 	 name 
+MONDO:0001635	bladder squamous papilloma

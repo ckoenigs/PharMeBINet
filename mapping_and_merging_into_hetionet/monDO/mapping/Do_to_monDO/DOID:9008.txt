@@ -1,0 +1,3 @@
+DOID:9008	psoriatic arthritis
+monDO ID 	 name 
+MONDO:0011849	psoriatic arthritis

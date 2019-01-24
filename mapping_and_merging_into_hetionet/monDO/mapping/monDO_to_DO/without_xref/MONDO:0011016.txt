@@ -1,0 +1,3 @@
+MONDO:0011016	type 1 diabetes mellitus 11
+DOID 	 name 
+DOID:0110750	type 1 diabetes mellitus 11

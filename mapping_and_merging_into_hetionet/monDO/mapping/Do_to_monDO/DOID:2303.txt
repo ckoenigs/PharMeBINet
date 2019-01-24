@@ -1,0 +1,3 @@
+DOID:2303	stereotypic movement disorder
+monDO ID 	 name 
+MONDO:0002265	stereotypic movement disorder

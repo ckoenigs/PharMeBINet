@@ -1,0 +1,3 @@
+DOID:14415	Legg-Calve-Perthes disease
+monDO ID 	 name 
+MONDO:0007885	Legg-Calve-Perthes disease

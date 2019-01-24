@@ -1,0 +1,3 @@
+DOID:5600	precursor lymphoblastic lymphoma/leukemia
+monDO ID 	 name 
+MONDO:0003538	precursor lymphoblastic lymphoma/leukemia

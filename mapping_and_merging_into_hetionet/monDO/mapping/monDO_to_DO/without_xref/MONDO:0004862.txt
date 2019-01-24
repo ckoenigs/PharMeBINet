@@ -1,0 +1,3 @@
+MONDO:0004862	vitreous abscess
+DOID 	 name 
+DOID:9723	vitreous abscess

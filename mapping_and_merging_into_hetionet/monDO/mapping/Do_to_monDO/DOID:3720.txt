@@ -1,0 +1,3 @@
+DOID:3720	extramedullary plasmacytoma
+monDO ID 	 name 
+MONDO:0002754	extramedullary plasmacytoma

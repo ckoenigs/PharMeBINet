@@ -1,0 +1,3 @@
+MONDO:0014939	congenital myasthenic syndrome 20
+DOID 	 name 
+DOID:0110661	congenital myasthenic syndrome 20

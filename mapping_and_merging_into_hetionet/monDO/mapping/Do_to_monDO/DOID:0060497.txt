@@ -1,0 +1,3 @@
+DOID:0060497	pollen allergy
+monDO ID 	 name 
+MONDO:0000772	pollen allergy

@@ -1,0 +1,3 @@
+DOID:0090093	hypogonadotropic hypogonadism 21 with or without anosmia
+monDO ID 	 name 
+MONDO:0014107	hypogonadotropic hypogonadism 21 with or without anosmia

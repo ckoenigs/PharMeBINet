@@ -1,0 +1,3 @@
+MONDO:0012610	inflammatory bowel disease 10
+DOID 	 name 
+DOID:0110885	inflammatory bowel disease 10

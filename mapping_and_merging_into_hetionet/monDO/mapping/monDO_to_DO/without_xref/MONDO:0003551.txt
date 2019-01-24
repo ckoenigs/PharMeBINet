@@ -1,0 +1,3 @@
+MONDO:0003551	thymus adenosquamous carcinoma
+DOID 	 name 
+DOID:5626	thymus adenosquamous carcinoma

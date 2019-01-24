@@ -1,0 +1,3 @@
+DOID:0050632	oculocutaneous albinism
+monDO ID 	 name 
+MONDO:0018910	oculocutaneous albinism

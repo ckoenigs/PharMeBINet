@@ -1,0 +1,3 @@
+MONDO:0006531	cholesteatoma of attic
+DOID 	 name 
+DOID:10963	cholesteatoma of attic

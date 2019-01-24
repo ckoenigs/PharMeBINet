@@ -1,0 +1,3 @@
+DOID:12275	cutaneous diphtheria
+monDO ID 	 name 
+MONDO:0001479	cutaneous diphtheria

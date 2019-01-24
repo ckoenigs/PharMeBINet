@@ -1,0 +1,4 @@
+MONDO:0003001	seminoma
+DOID 	 name 
+DOID:5842	testis seminoma
+DOID:4440	seminoma

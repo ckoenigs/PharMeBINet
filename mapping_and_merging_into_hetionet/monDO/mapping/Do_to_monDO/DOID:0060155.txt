@@ -1,0 +1,3 @@
+DOID:0060155	visual agnosia
+monDO ID 	 name 
+MONDO:0000685	visual agnosia (disease)

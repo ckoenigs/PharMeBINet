@@ -1,0 +1,3 @@
+MONDO:0019942	distal arthrogryposis
+DOID 	 name 
+DOID:0050646	distal arthrogryposis

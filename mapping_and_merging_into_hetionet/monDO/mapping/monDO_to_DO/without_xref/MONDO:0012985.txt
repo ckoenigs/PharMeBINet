@@ -1,0 +1,3 @@
+MONDO:0012985	hereditary spherocytosis type 5
+DOID 	 name 
+DOID:0110920	hereditary spherocytosis type 5

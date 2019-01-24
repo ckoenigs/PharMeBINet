@@ -1,0 +1,3 @@
+MONDO:0003978	colon small cell carcinoma
+DOID 	 name 
+DOID:6727	colon small cell carcinoma

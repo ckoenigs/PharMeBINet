@@ -1,0 +1,3 @@
+MONDO:0003019	hypokalemia (disease)
+DOID 	 name 
+DOID:4500	hypokalemia

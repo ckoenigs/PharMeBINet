@@ -1,0 +1,3 @@
+MONDO:0005776	gnathomiasis
+DOID 	 name 
+DOID:11379	gnathomiasis

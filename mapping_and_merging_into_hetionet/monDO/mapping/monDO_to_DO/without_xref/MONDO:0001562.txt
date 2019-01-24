@@ -1,0 +1,3 @@
+MONDO:0001562	displacement of cardia through esophageal hiatus
+DOID 	 name 
+DOID:12641	displacement of cardia through esophageal hiatus

@@ -1,0 +1,3 @@
+DOID:14181	calcific tendinitis
+monDO ID 	 name 
+MONDO:0001903	calcific tendinitis

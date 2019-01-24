@@ -1,0 +1,3 @@
+MONDO:0005808	inclusion conjunctivitis
+DOID 	 name 
+DOID:13800	inclusion conjunctivitis

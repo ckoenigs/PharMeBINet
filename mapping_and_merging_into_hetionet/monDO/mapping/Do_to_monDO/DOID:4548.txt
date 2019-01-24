@@ -1,0 +1,3 @@
+DOID:4548	extraskeletal mesenchymal chondrosarcoma
+monDO ID 	 name 
+MONDO:0003043	extraskeletal mesenchymal chondrosarcoma

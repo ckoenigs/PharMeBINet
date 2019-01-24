@@ -1,0 +1,3 @@
+MONDO:0000660	akinetopsia
+DOID 	 name 
+DOID:0060130	akinetopsia

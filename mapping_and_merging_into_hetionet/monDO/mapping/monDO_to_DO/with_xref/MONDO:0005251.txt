@@ -1,0 +1,3 @@
+MONDO:0005251	pauciarticular juvenile rheumatoid arthritis
+DOID 	 name 
+DOID:6755	amyloid tumor

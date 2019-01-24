@@ -1,0 +1,3 @@
+MONDO:0014692	retinitis pigmentosa 74
+DOID 	 name 
+DOID:0110401	retinitis pigmentosa 74

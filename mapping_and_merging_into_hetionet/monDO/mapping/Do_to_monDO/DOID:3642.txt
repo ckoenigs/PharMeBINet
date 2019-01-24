@@ -1,0 +1,3 @@
+DOID:3642	empty sella syndrome
+monDO ID 	 name 
+MONDO:0006740	empty sella syndrome

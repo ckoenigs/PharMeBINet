@@ -1,0 +1,4 @@
+MONDO:0004720	variola minor infection
+DOID 	 name 
+DOID:9153	variola minor
+DOID:8736	smallpox

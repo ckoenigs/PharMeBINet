@@ -1,0 +1,3 @@
+DOID:12678	hypercalcemia
+monDO ID 	 name 
+MONDO:0001566	hypercalcemia (disease)

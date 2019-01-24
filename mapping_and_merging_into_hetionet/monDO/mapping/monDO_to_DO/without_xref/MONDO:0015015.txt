@@ -1,0 +1,3 @@
+MONDO:0015015	congenital bile acid synthesis defect 6
+DOID 	 name 
+DOID:0111067	congenital bile acid synthesis defect 6

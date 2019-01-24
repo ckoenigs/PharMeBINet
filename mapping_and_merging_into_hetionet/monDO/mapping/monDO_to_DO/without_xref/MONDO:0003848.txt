@@ -1,0 +1,3 @@
+MONDO:0003848	ectopic thymus
+DOID 	 name 
+DOID:6307	ectopic thymus

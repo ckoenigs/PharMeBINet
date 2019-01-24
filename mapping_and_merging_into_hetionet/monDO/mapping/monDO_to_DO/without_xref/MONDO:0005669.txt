@@ -1,0 +1,3 @@
+MONDO:0005669	black piedra
+DOID 	 name 
+DOID:12711	black piedra

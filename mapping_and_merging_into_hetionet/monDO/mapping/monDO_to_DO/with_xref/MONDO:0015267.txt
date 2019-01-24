@@ -1,0 +1,3 @@
+MONDO:0015267	Feingold syndrome
+DOID 	 name 
+DOID:0060464	Feingold syndrome

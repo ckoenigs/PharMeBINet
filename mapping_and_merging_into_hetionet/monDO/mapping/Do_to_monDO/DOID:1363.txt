@@ -1,0 +1,3 @@
+DOID:1363	ethmoid sinus cancer
+monDO ID 	 name 
+MONDO:0001763	ethmoid sinus cancer

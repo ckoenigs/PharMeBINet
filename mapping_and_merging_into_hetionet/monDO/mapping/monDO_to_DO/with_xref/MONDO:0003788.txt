@@ -1,0 +1,3 @@
+MONDO:0003788	childhood embryonal testis carcinoma
+DOID 	 name 
+DOID:6162	childhood embryonal testis carcinoma

@@ -1,0 +1,3 @@
+MONDO:0002959	radiculopathy
+DOID 	 name 
+DOID:4306	radiculopathy

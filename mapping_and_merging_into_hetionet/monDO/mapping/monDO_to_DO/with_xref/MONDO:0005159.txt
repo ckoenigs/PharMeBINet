@@ -1,0 +1,4 @@
+MONDO:0005159	prostate carcinoma
+DOID 	 name 
+DOID:10283	prostate cancer
+DOID:10286	prostate carcinoma

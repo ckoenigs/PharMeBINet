@@ -1,0 +1,3 @@
+DOID:1907	malignant fibroxanthoma
+monDO ID 	 name 
+MONDO:0002142	malignant fibroxanthoma

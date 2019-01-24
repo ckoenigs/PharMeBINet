@@ -1,0 +1,3 @@
+MONDO:0001168	spastic hemiplegia
+DOID 	 name 
+DOID:10967	spastic hemiplegia

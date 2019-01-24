@@ -1,0 +1,3 @@
+DOID:0110940	autosomal recessive osteopetrosis 8
+monDO ID 	 name 
+MONDO:0014040	autosomal recessive osteopetrosis 8

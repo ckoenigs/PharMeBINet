@@ -1,0 +1,3 @@
+MONDO:0005672	blastomycosis
+DOID 	 name 
+DOID:12663	blastomycosis

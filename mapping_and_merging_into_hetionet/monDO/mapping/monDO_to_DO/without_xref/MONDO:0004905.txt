@@ -1,0 +1,3 @@
+MONDO:0004905	intestinal disaccharidase deficiency
+DOID 	 name 
+DOID:9868	intestinal disaccharidase deficiency

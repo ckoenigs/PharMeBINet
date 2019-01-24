@@ -1,0 +1,3 @@
+DOID:0110010	achromatopsia 4
+monDO ID 	 name 
+MONDO:0013465	achromatopsia 4

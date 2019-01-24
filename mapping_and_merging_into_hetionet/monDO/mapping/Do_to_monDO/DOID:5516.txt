@@ -1,0 +1,3 @@
+DOID:5516	gastric squamous cell carcinoma
+monDO ID 	 name 
+MONDO:0006230	gastric squamous cell carcinoma

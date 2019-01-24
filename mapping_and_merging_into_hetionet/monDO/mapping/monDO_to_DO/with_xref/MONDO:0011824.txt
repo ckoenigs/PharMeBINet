@@ -1,0 +1,3 @@
+MONDO:0011824	AUTS8
+DOID 	 name 
+DOID:12849	autistic disorder

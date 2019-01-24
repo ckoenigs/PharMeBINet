@@ -1,0 +1,3 @@
+DOID:3740	vulva verrucous carcinoma
+monDO ID 	 name 
+MONDO:0002758	vulva verrucous carcinoma

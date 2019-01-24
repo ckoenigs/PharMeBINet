@@ -1,0 +1,3 @@
+DOID:13326	chronic follicular conjunctivitis
+monDO ID 	 name 
+MONDO:0001685	chronic follicular conjunctivitis

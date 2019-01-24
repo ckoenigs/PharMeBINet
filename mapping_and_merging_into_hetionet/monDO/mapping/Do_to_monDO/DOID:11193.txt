@@ -1,0 +1,3 @@
+DOID:11193	syndactyly
+monDO ID 	 name 
+MONDO:0021002	syndactyly (disease)

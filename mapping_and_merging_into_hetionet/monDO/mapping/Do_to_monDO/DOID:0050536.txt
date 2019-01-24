@@ -1,0 +1,3 @@
+DOID:0050536	SC phocomelia syndrome
+monDO ID 	 name 
+MONDO:0010009	SC phocomelia syndrome

@@ -1,0 +1,3 @@
+MONDO:0013012	inflammatory bowel disease 27
+DOID 	 name 
+DOID:0110902	inflammatory bowel disease 27

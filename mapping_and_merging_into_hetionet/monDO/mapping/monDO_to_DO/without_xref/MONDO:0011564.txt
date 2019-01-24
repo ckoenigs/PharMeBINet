@@ -1,0 +1,3 @@
+MONDO:0011564	cone-rod dystrophy 8
+DOID 	 name 
+DOID:0111014	cone-rod dystrophy 8

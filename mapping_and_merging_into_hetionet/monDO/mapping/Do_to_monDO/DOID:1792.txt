@@ -1,0 +1,3 @@
+DOID:1792	pancreas lymphoma
+monDO ID 	 name 
+MONDO:0002114	pancreas lymphoma

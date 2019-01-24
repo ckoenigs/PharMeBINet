@@ -1,0 +1,3 @@
+DOID:0111059	Bernard-Soulier syndrome type A2
+monDO ID 	 name 
+MONDO:0000915	Bernard-Soulier syndrome type A2

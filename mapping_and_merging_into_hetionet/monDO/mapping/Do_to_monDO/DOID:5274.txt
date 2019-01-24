@@ -1,0 +1,3 @@
+DOID:5274	malignant dermis tumor
+monDO ID 	 name 
+MONDO:0003363	malignant dermis tumor

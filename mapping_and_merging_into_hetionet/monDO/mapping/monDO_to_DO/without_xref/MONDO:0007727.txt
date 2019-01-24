@@ -1,0 +1,3 @@
+MONDO:0007727	autosomal dominant familial periodic fever
+DOID 	 name 
+DOID:0090018	autosomal dominant familial periodic fever

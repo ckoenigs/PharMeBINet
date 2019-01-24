@@ -1,0 +1,3 @@
+MONDO:0013738	autosomal recessive nonsyndromic deafness 96
+DOID 	 name 
+DOID:0110538	autosomal recessive nonsyndromic deafness 96

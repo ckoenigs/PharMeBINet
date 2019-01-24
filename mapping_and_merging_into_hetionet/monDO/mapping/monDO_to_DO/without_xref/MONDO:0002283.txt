@@ -1,0 +1,3 @@
+MONDO:0002283	neuroaxonal dystrophy
+DOID 	 name 
+DOID:2367	neuroaxonal dystrophy

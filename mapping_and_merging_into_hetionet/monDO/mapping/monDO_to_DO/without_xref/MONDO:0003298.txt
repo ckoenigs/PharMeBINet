@@ -1,0 +1,3 @@
+MONDO:0003298	vulvar leiomyoma
+DOID 	 name 
+DOID:5142	vulvar leiomyoma

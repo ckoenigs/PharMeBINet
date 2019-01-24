@@ -1,0 +1,3 @@
+MONDO:0003714	bladder urachal squamous cell carcinoma
+DOID 	 name 
+DOID:5957	bladder urachal squamous cell carcinoma

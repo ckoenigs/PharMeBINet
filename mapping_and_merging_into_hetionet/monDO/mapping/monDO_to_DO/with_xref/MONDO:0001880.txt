@@ -1,0 +1,3 @@
+MONDO:0001880	median rhomboid glossitis
+DOID 	 name 
+DOID:14111	median rhomboid glossitis

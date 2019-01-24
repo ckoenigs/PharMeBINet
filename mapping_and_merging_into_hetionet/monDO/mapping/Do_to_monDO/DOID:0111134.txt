@@ -1,0 +1,3 @@
+DOID:0111134	focal segmental glomerulosclerosis 9
+monDO ID 	 name 
+MONDO:0014539	focal segmental glomerulosclerosis 9

@@ -1,0 +1,4 @@
+MONDO:0005489	dyslexia (disease)
+DOID 	 name 
+DOID:13417	alexia
+DOID:4428	dyslexia

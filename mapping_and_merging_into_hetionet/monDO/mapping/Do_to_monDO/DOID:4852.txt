@@ -1,0 +1,3 @@
+DOID:4852	pleomorphic xanthoastrocytoma
+monDO ID 	 name 
+MONDO:0016690	pleomorphic xanthoastrocytoma

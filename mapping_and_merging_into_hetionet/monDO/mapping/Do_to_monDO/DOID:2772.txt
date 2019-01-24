@@ -1,0 +1,3 @@
+DOID:2772	irritant dermatitis
+monDO ID 	 name 
+MONDO:0006564	irritant dermatitis

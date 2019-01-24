@@ -1,0 +1,3 @@
+DOID:5598	fallopian tube serous adenocarcinoma
+monDO ID 	 name 
+MONDO:0006208	fallopian tube serous adenocarcinoma

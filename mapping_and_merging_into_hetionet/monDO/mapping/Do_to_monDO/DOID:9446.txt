@@ -1,0 +1,3 @@
+DOID:9446	cholangitis
+monDO ID 	 name 
+MONDO:0004789	cholangitis

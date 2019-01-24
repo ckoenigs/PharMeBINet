@@ -1,0 +1,3 @@
+DOID:0110007	achromatopsia 2
+monDO ID 	 name 
+MONDO:0009003	achromatopsia 2

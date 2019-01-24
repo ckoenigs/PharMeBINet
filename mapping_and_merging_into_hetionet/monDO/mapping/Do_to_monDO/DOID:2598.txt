@@ -1,0 +1,3 @@
+DOID:2598	laryngeal benign neoplasm
+monDO ID 	 name 
+MONDO:0002354	benign laryngeal neoplasm

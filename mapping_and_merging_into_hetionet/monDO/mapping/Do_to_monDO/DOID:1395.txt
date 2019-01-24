@@ -1,0 +1,3 @@
+DOID:1395	schistosomiasis
+monDO ID 	 name 
+MONDO:0015254	schistosomiasis

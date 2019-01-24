@@ -1,0 +1,3 @@
+MONDO:0002951	skin adenoid basal cell carcinoma
+DOID 	 name 
+DOID:4294	adenoid basal cell carcinoma

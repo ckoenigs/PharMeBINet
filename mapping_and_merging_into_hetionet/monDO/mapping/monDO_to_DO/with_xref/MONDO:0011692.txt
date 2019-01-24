@@ -1,0 +1,3 @@
+MONDO:0011692	IBGC2
+DOID 	 name 
+DOID:0060230	basal ganglia calcification

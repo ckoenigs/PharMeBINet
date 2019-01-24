@@ -1,0 +1,3 @@
+DOID:6419	tetralogy of Fallot
+monDO ID 	 name 
+MONDO:0008542	tetralogy of fallot

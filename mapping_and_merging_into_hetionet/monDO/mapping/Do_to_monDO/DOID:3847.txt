@@ -1,0 +1,3 @@
+DOID:3847	papillary craniopharyngioma
+monDO ID 	 name 
+MONDO:0002788	papillary craniopharyngioma

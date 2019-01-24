@@ -1,0 +1,3 @@
+MONDO:0004832	esophagus leiomyoma
+DOID 	 name 
+DOID:960	esophagus leiomyoma

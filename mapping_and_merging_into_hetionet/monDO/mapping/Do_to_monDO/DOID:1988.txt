@@ -1,0 +1,3 @@
+DOID:1988	rectum lymphoma
+monDO ID 	 name 
+MONDO:0002166	rectum lymphoma

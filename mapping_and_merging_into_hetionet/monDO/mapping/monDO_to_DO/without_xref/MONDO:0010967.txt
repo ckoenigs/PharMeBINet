@@ -1,0 +1,3 @@
+MONDO:0010967	autosomal recessive nonsyndromic deafness 7
+DOID 	 name 
+DOID:0110520	autosomal recessive nonsyndromic deafness 7

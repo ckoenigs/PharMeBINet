@@ -1,0 +1,3 @@
+MONDO:0003709	chronic interstitial cystitis
+DOID 	 name 
+DOID:1678	chronic interstitial cystitis

@@ -1,0 +1,3 @@
+MONDO:0004213	vulvar non-keratinizing squamous cell carcinoma
+DOID 	 name 
+DOID:7409	vulvar non-keratinizing squamous cell carcinoma

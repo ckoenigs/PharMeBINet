@@ -1,0 +1,4 @@
+MONDO:0003345	hilar cholangiocarcinoma
+DOID 	 name 
+DOID:5246	hilar cholangiocellular carcinoma
+DOID:4927	Klatskin's tumor

@@ -1,0 +1,3 @@
+DOID:2920	membranoproliferative glomerulonephritis
+monDO ID 	 name 
+MONDO:0002461	membranoproliferative glomerulonephritis (disease)

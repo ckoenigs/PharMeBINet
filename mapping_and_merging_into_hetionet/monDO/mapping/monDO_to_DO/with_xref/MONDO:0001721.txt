@@ -1,0 +1,3 @@
+MONDO:0001721	urethral intrinsic sphincter deficiency
+DOID 	 name 
+DOID:13461	urethral intrinsic sphincter deficiency

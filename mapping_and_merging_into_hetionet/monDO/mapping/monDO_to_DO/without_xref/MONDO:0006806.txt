@@ -1,0 +1,3 @@
+MONDO:0006806	intermediate uveitis (disease)
+DOID 	 name 
+DOID:12732	intermediate uveitis

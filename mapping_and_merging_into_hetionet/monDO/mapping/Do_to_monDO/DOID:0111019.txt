@@ -1,0 +1,3 @@
+DOID:0111019	cone-rod dystrophy 12
+monDO ID 	 name 
+MONDO:0012983	cone-rod dystrophy 12

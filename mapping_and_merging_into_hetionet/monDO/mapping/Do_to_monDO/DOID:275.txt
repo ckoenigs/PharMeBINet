@@ -1,0 +1,3 @@
+DOID:275	gastric hemangioma
+monDO ID 	 name 
+MONDO:0002414	gastric hemangioma

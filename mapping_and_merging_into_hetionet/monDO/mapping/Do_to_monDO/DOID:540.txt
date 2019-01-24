@@ -1,0 +1,3 @@
+DOID:540	strabismus
+monDO ID 	 name 
+MONDO:0003432	strabismus

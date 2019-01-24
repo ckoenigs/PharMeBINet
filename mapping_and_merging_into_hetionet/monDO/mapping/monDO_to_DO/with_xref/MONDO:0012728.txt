@@ -1,0 +1,3 @@
+MONDO:0012728	Brugada syndrome 2
+DOID 	 name 
+DOID:0110219	Brugada syndrome 2

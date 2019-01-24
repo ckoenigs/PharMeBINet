@@ -1,0 +1,3 @@
+MONDO:0003093	mucoepidermoid esophageal carcinoma
+DOID 	 name 
+DOID:4686	mucoepidermoid esophageal carcinoma

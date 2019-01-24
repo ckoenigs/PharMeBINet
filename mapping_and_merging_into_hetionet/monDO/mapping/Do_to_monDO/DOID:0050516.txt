@@ -1,0 +1,3 @@
+DOID:0050516	O'nyong'nyong fever
+monDO ID 	 name 
+MONDO:0000342	O'nyong'nyong fever

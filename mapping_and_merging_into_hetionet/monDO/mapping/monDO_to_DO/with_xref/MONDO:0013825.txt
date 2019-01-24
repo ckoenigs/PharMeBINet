@@ -1,0 +1,3 @@
+MONDO:0013825	congenital diarrhea 6
+DOID 	 name 
+DOID:0060780	congenital diarrhea 6

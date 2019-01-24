@@ -1,0 +1,3 @@
+MONDO:0013754	cutis laxa, autosomal recessive, type 1B
+DOID 	 name 
+DOID:3144	cutis laxa

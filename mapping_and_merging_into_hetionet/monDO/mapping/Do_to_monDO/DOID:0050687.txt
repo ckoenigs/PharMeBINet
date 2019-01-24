@@ -1,0 +1,3 @@
+DOID:0050687	cell type cancer
+monDO ID 	 name 
+MONDO:0004992	cancer

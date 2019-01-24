@@ -1,0 +1,3 @@
+DOID:4986	nonparalytic poliomyelitis
+monDO ID 	 name 
+MONDO:0003231	nonparalytic poliomyelitis

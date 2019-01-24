@@ -1,0 +1,3 @@
+DOID:13641	exfoliation syndrome
+monDO ID 	 name 
+MONDO:0008327	exfoliation syndrome

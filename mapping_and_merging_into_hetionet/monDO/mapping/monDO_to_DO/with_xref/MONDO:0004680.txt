@@ -1,0 +1,3 @@
+MONDO:0004680	primary thrombocytopenia
+DOID 	 name 
+DOID:8925	primary thrombocytopenia

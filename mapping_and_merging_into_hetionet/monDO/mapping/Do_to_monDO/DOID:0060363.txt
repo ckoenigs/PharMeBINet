@@ -1,0 +1,3 @@
+DOID:0060363	glycerol kinase deficiency
+monDO ID 	 name 
+MONDO:0010613	glycerol kinase deficiency

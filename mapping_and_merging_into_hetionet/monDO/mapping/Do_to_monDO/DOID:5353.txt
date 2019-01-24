@@ -1,0 +1,3 @@
+DOID:5353	colonic disease
+monDO ID 	 name 
+MONDO:0003409	colonic disease

@@ -1,0 +1,3 @@
+MONDO:0001965	sclerosing keratitis
+DOID 	 name 
+DOID:14444	sclerosing keratitis

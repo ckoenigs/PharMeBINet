@@ -1,0 +1,3 @@
+DOID:3162	malignant spindle cell melanoma
+monDO ID 	 name 
+MONDO:0006427	spindle cell melanoma

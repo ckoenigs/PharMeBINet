@@ -1,0 +1,3 @@
+DOID:0110673	congenital myasthenic syndrome 19
+monDO ID 	 name 
+MONDO:0014745	congenital myasthenic syndrome 19

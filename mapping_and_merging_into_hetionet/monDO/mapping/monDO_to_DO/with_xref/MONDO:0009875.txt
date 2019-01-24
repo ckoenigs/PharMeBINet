@@ -1,0 +1,3 @@
+MONDO:0009875	achromatopsia 3
+DOID 	 name 
+DOID:0110008	achromatopsia 3

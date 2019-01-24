@@ -1,0 +1,3 @@
+MONDO:0012674	age related macular degeneration 10
+DOID 	 name 
+DOID:0110022	age related macular degeneration 10

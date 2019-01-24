@@ -1,0 +1,3 @@
+DOID:0050668	alcohol-related birth defect
+monDO ID 	 name 
+MONDO:0000395	alcohol-related birth defect

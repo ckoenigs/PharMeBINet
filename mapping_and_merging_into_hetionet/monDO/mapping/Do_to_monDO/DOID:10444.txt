@@ -1,0 +1,3 @@
+DOID:10444	ring corneal ulcer
+monDO ID 	 name 
+MONDO:0001037	ring corneal ulcer

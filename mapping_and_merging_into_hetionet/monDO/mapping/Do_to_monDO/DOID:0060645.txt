@@ -1,0 +1,3 @@
+DOID:0060645	chronic recurrent multifocal osteomyelitis
+monDO ID 	 name 
+MONDO:0009813	chronic recurrent multifocal osteomyelitis (disease)

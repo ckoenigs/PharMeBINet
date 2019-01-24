@@ -1,0 +1,3 @@
+DOID:3895	apocrine adenoma
+monDO ID 	 name 
+MONDO:0002804	apocrine adenoma

@@ -1,0 +1,3 @@
+DOID:7017	lumbosacral lipoma
+monDO ID 	 name 
+MONDO:0004077	lumbosacral lipoma

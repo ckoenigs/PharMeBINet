@@ -1,0 +1,3 @@
+DOID:0111106	maturity-onset diabetes of the young type 7
+monDO ID 	 name 
+MONDO:0012513	maturity-onset diabetes of the young type 7

@@ -1,0 +1,3 @@
+DOID:1838	Menkes disease
+monDO ID 	 name 
+MONDO:0010651	Menkes disease

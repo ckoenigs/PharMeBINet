@@ -1,0 +1,3 @@
+DOID:5099	middle ear cancer
+monDO ID 	 name 
+MONDO:0003275	middle ear cancer

@@ -1,0 +1,3 @@
+DOID:0060152	time agnosia
+monDO ID 	 name 
+MONDO:0000682	time agnosia

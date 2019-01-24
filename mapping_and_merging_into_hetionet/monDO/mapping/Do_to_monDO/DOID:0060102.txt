@@ -1,0 +1,3 @@
+DOID:0060102	cartilage cancer
+monDO ID 	 name 
+MONDO:0000639	cartilage cancer

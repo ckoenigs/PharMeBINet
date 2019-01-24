@@ -1,0 +1,3 @@
+DOID:4000	ovary transitional cell carcinoma
+monDO ID 	 name 
+MONDO:0002830	ovary transitional cell carcinoma

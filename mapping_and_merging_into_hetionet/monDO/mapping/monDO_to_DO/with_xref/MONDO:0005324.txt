@@ -1,0 +1,3 @@
+MONDO:0005324	seasonal allergic rhinitis
+DOID 	 name 
+DOID:4481	allergic rhinitis

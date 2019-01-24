@@ -1,0 +1,3 @@
+DOID:14033	malignant visceral pleura tumor
+monDO ID 	 name 
+MONDO:0001862	malignant visceral pleura tumor

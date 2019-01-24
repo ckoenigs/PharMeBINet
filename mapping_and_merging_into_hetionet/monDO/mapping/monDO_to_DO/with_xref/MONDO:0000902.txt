@@ -1,0 +1,4 @@
+MONDO:0000902	agenesis of the corpus callosum with peripheral neuropathy
+DOID 	 name 
+DOID:0090003	agenesis of the corpus callosum with peripheral neuropathy
+DOID:0060600	hereditary motor and sensory neuropathy with agenesis of the corpus callosum

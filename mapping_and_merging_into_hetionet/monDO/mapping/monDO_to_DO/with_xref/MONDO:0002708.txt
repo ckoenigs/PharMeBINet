@@ -1,0 +1,4 @@
+MONDO:0002708	retinitis
+DOID 	 name 
+DOID:3612	retinitis
+DOID:10176	neuroretinitis

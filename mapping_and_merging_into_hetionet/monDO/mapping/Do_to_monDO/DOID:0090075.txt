@@ -1,0 +1,3 @@
+DOID:0090075	hypogonadotropic hypogonadism 15 with or without anosmia
+monDO ID 	 name 
+MONDO:0013946	hypogonadotropic hypogonadism 15 with or without anosmia

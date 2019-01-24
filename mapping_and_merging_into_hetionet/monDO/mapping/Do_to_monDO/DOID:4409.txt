@@ -1,0 +1,3 @@
+DOID:4409	folliculitis
+monDO ID 	 name 
+MONDO:0006552	folliculitis

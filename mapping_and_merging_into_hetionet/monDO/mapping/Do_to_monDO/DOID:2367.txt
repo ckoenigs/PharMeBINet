@@ -1,0 +1,3 @@
+DOID:2367	neuroaxonal dystrophy
+monDO ID 	 name 
+MONDO:0002283	neuroaxonal dystrophy

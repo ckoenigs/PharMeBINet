@@ -8,7 +8,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo 'transformation of drugbank db in tsv and sort drugbank to with chemichal information and not'
 
-execution_formatting_of_drugbank_db.sh > output_srugbank_shell.txt
+execution_formatting_of_drugbank_db.sh > output_drugbank_shell.txt
 
 cd ..
 
@@ -155,6 +155,55 @@ sleep 120
 
 cd ..
 
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+cd drugbank
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo 'integrate Drugbank with interaction into Hetionet'
+
+python integrate_DrugBank_with_interaction_into_hetionet.py > output_integration_file_generation.txt
+
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+$path_neo4j/neo4j-shell -file map_connection_of_drugbank_in_hetionet_1.cypher > output_cypher.txt
+
+sleep 180
+$path_neo4j/neo4j restart
+sleep 120
+
+
+cd ..
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+cd monDO
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo 'change disease identifier to monDO identifier'
+
+python change_identifier_form_DO_to_monDO.py > output_integration_file_generation.txt
+
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+$path_neo4j/neo4j-shell -file integrate_and_transformed_disease1.cypher > output_cypher.txt
+
+sleep 180
+$path_neo4j/neo4j restart
+sleep 120
+
+
+cd ..
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
 # not ready ...
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -210,7 +259,4 @@ echo map symptoms to side effects
 cd Map_Symptome_to_SideEffects/
 python map_symptoms_to_sideEffects_final.py > output_symptoms_to_sideEffects.txt
 
-echo end
 
-now=$(date +"%F %T")
-echo "Current time: $now"

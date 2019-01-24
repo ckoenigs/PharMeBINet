@@ -1,0 +1,3 @@
+MONDO:0010121	thrombocytopenia-absent radius syndrome
+DOID 	 name 
+DOID:14699	thrombocytopenia-absent radius syndrome

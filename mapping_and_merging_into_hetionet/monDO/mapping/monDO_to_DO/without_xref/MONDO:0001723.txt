@@ -1,0 +1,3 @@
+MONDO:0001723	progressive peripheral pterygium
+DOID 	 name 
+DOID:13474	progressive peripheral pterygium

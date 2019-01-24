@@ -1,0 +1,3 @@
+DOID:0060591	WHIM syndrome
+monDO ID 	 name 
+MONDO:0008674	WHIM syndrome

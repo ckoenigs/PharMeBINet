@@ -1,0 +1,3 @@
+DOID:14793	hypohidrotic ectodermal dysplasia
+monDO ID 	 name 
+MONDO:0016535	hypohidrotic ectodermal dysplasia

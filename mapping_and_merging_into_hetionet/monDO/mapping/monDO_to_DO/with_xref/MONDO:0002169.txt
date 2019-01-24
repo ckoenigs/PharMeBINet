@@ -1,0 +1,3 @@
+MONDO:0002169	rectum adenocarcinoma
+DOID 	 name 
+DOID:1996	rectum adenocarcinoma

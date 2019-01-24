@@ -1,0 +1,3 @@
+DOID:0050769	N syndrome
+monDO ID 	 name 
+MONDO:0010686	N syndrome

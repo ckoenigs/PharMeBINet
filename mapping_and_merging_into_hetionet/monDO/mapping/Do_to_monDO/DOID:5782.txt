@@ -1,0 +1,3 @@
+DOID:5782	tympanic membrane disease
+monDO ID 	 name 
+MONDO:0003648	tympanic membrane disease

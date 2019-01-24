@@ -1,0 +1,3 @@
+DOID:6996	intermediate cell type choroid melanoma
+monDO ID 	 name 
+MONDO:0004065	intermediate cell type choroid melanoma

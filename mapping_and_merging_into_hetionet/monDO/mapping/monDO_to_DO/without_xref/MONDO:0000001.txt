@@ -1,0 +1,3 @@
+MONDO:0000001	disease
+DOID 	 name 
+DOID:4	disease

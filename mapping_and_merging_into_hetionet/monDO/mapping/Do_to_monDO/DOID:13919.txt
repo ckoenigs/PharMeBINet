@@ -1,0 +1,3 @@
+DOID:13919	irregular astigmatism
+monDO ID 	 name 
+MONDO:0001831	irregular astigmatism

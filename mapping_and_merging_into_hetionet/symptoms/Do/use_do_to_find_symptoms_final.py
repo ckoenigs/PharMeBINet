@@ -14,7 +14,7 @@ import threading
 
 # class of thread to find umls cuis for the symptoms
 class SymptomThread(threading.Thread):
-    def __init__(self, threadID, name, disease_id, disease_definition):
+    def __init__(self, threadID, name, disease_id,  disease_definition):
         threading.Thread.__init__(self)
         self.threadID = threadID
         self.name = name
@@ -25,7 +25,7 @@ class SymptomThread(threading.Thread):
         # print "Starting " + self.name
         # Get lock to synchronize threads
         threadLock.acquire()
-        load_in_hetionet_disease_in_dictionary(self.disease_id, self.disease_definition)
+        load_in_hetionet_disease_in_dictionary(self.disease_id,  self.disease_definition)
         #      print "Ending " + self.name
         #      print_time(self.name, self.counter, 3)
         # Free lock to release next thread
@@ -43,14 +43,17 @@ def database_connection():
     g = Graph("http://localhost:7474/db/data/")
 
 
-# dictionary with DOID as key and symptoms terms as list
-dict_doid_to_symptom = {}
+# dictionary with mondo as key and symptoms terms as list
+dict_mondo_to_symptom = {}
 
 # dictionary with symptom term (name) as key and umls cui as value
 dict_symptom_to_umls_cui = {}
 
 # list of word to split the symptoms
 list_words_to_split = ['in', 'of', 'from', 'on']
+
+# dictionary mondo to name
+dict_mondo_to_name={}
 
 '''
 split and combined the symptom name and search for this symptom and return if a cui is found or not
@@ -94,7 +97,7 @@ disease in dictionary. Extract symptoms from definition and map symptoms to umls
 '''
 
 
-def load_in_hetionet_disease_in_dictionary(doid, definition):
+def load_in_hetionet_disease_in_dictionary(mondo,  definition):
     global counter_map_with_changed_order, counter_not_mapped_symptoms
 
     splitted = definition.split('has_symptom ')
@@ -153,7 +156,7 @@ def load_in_hetionet_disease_in_dictionary(doid, definition):
                         print('ohje')
                         print(symptom)
 
-        dict_doid_to_symptom[doid] = list_symptoms
+        dict_mondo_to_symptom[mondo] = list_symptoms
 
 
 '''
@@ -269,11 +272,12 @@ def integrate_information_into_hetionet():
     # counter_update connection
     count_update_connection = 0
 
-    for doid, symptom_terms in dict_doid_to_symptom.items():
+    for mondo, symptom_terms in dict_mondo_to_symptom.items():
         # generate for every disease which symptoms are mapped and which not
-        f = open('Disease_symptoms/' + doid + '_symptoms.txt', 'w')
+        f = open('Disease_symptoms/' + mondo + '_symptoms.txt', 'w')
+        f.write(dict_mondo_to_name[mondo]+'\n')
         f.write('name \t cui \t mesh\n')
-        h = open('Disease_symptoms/' + doid + '_not_mapped.txt', 'w')
+        h = open('Disease_symptoms/' + mondo + '_not_mapped.txt', 'w')
         h.write('name \n')
         for symptom_term in symptom_terms:
             if not symptom_term in dict_symptom_to_umls_cui:
@@ -285,13 +289,13 @@ def integrate_information_into_hetionet():
                     f.write(symptom_term + '\t' + cui + '\t' + '\n')
                     query = ''' MATCH (n:Disease{identifier:"%s"}),(s:Symptom{identifier:"%s"}) 
                     Create (n)-[:PRESENTS_DpS{license:'CC BY 3.0',unbiased:'false',source:'DO', source_id:'%s',hetionet:'no',do:'yes', resource:['Disease Ontology']}]->(s); \n '''
-                    query = query % (doid, cui, doid)
+                    query = query % (mondo, cui, mondo)
                     count_new_connection += 1
 
                 else:
                     mesh_id = dict_cui_to_mesh[cui]
                     query = '''MATCH (n:Disease{identifier:"%s"})-[l:PRESENTS_DpS]->(s:Symptom{identifier:"%s"}) Return l  '''
-                    query = query % (doid, mesh_id)
+                    query = query % (mondo, mesh_id)
                     result = g.run(query)
                     first_entry = result.evaluate()
                     if first_entry == None:
@@ -303,7 +307,7 @@ def integrate_information_into_hetionet():
                         query = '''MATCH (n:Disease{identifier:"%s"})-[l:PRESENTS_DpS]->(s:Symptom{identifier:"%s"})
                         Set l.do='yes', l.hetionet="yes", l.resource=['Disease Ontology','Hetionet'], l.source_id='%s'; \n'''
                         count_update_connection += 1
-                    query = query % (doid, mesh_id, doid)
+                    query = query % (mondo, mesh_id, mondo)
 
                     f.write(symptom_term + '\t' + cui + '\t' + mesh_id + '\n')
 
@@ -356,13 +360,14 @@ def main():
 
     thread_id = 1
 
-    query = '''MATCH (n:Disease) Where n.definition contains 'has_symptom' RETURN n.identifier,n.definition '''
+    query = '''MATCH (n:Disease) Where n.definition contains 'has_symptom' RETURN n.identifier, n.name ,n.definition '''
     results = g.run(query)
-    for doid, definition, in results:
+    for mondo, name, definition, in results:
+        dict_mondo_to_name[mondo]=name
         # if thread_id>50:
         #     break
         # create thread
-        thread = SymptomThread(thread_id, 'thread_' + str(thread_id), doid, definition)
+        thread = SymptomThread(thread_id, 'thread_' + str(thread_id), mondo,  definition)
         # start thread
         thread.start()
         # add to list
@@ -376,11 +381,11 @@ def main():
 
 
     print('number of mapped symptoms with change the order of the name:' + str(counter_map_with_changed_order))
-    print('number of disease which has symptoms in their definition:' + str(len(dict_doid_to_symptom)))
+    print('number of disease which has symptoms in their definition:' + str(len(dict_mondo_to_symptom)))
     print('number of different symptoms which are mapped to umls cui:' + str(len(dict_symptom_to_umls_cui)))
     print('number of not mapped symptoms to umls cuis:' + str(counter_not_mapped_symptoms))
 
-    sys.exit()
+    # sys.exit()
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())

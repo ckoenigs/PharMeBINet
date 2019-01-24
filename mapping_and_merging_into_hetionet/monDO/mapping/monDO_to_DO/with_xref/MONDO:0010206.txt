@@ -1,0 +1,3 @@
+MONDO:0010206	hypotrichosis 8
+DOID 	 name 
+DOID:0110705	hypotrichosis 8

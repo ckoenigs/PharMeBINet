@@ -1,0 +1,3 @@
+DOID:3635	congenital myasthenic syndrome
+monDO ID 	 name 
+MONDO:0018940	congenital myasthenic syndrome

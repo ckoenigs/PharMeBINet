@@ -1,0 +1,3 @@
+DOID:743	dermatographia
+monDO ID 	 name 
+MONDO:0007448	dermatographia

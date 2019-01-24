@@ -1,0 +1,3 @@
+DOID:0060889	prune belly syndome
+monDO ID 	 name 
+MONDO:0007032	prune belly syndome

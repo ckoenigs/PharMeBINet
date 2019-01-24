@@ -1,0 +1,3 @@
+MONDO:0001531	blood coagulation disease
+DOID 	 name 
+DOID:1247	blood coagulation disease

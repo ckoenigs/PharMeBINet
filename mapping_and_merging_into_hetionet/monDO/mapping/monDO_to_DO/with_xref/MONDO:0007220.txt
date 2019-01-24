@@ -1,0 +1,3 @@
+MONDO:0007220	brachydactyly type B1
+DOID 	 name 
+DOID:0110969	brachydactyly type B1

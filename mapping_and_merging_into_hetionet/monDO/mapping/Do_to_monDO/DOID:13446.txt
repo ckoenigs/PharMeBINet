@@ -1,0 +1,3 @@
+DOID:13446	basilar artery occlusion
+monDO ID 	 name 
+MONDO:0001715	basilar artery occlusion

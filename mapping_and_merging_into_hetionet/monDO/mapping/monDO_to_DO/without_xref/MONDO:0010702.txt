@@ -1,0 +1,3 @@
+MONDO:0010702	orofaciodigital syndrome I
+DOID 	 name 
+DOID:0060316	orofaciodigital syndrome I

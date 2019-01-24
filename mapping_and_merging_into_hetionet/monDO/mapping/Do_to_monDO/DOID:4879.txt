@@ -1,0 +1,3 @@
+DOID:4879	Bartholin's gland adenoid cystic carcinoma
+monDO ID 	 name 
+MONDO:0003187	Bartholin's gland adenoid cystic carcinoma

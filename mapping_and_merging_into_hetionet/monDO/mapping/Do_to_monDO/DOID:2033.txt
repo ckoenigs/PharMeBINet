@@ -1,0 +1,3 @@
+DOID:2033	communication disorder
+monDO ID 	 name 
+MONDO:0002182	communication disorder

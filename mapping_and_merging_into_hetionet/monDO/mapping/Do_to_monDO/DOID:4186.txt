@@ -1,0 +1,3 @@
+DOID:4186	articulation disorder
+monDO ID 	 name 
+MONDO:0002903	articulation disorder

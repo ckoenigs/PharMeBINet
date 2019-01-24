@@ -1,0 +1,3 @@
+MONDO:0010775	retinitis pigmentosa-deafness syndrome
+DOID 	 name 
+DOID:0110829	retinitis pigmentosa-deafness syndrome

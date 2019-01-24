@@ -1,0 +1,3 @@
+MONDO:0008832	right atrial isomerism (disease)
+DOID 	 name 
+DOID:0060856	right atrial isomerism

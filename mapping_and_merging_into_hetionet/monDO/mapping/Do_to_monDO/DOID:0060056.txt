@@ -1,0 +1,3 @@
+DOID:0060056	hypersensitivity reaction disease
+monDO ID 	 name 
+MONDO:0000605	hypersensitivity reaction disease

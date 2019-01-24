@@ -1,0 +1,3 @@
+MONDO:0008789	anemia, nonspherocytic hemolytic, associated with abnormality of red cell membrane
+DOID 	 name 
+DOID:2861	congenital nonspherocytic hemolytic anemia

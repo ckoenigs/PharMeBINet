@@ -1,0 +1,4 @@
+MONDO:0005402	lymphoid leukemia (disease)
+DOID 	 name 
+DOID:10747	lymphoid leukemia
+DOID:1037	lymphoblastic leukemia

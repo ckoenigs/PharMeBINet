@@ -1,0 +1,3 @@
+MONDO:0000858	neuronal intestinal dysplasia
+DOID 	 name 
+DOID:0080072	neuronal intestinal dysplasia

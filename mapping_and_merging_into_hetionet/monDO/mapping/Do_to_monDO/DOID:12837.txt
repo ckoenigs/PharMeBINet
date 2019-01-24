@@ -1,0 +1,3 @@
+DOID:12837	thyroid crisis
+monDO ID 	 name 
+MONDO:0006996	thyroid crisis (disease)

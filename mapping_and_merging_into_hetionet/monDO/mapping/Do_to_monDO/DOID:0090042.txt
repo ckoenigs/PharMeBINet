@@ -1,0 +1,3 @@
+DOID:0090042	torsion dystonia 17
+monDO ID 	 name 
+MONDO:0012895	torsion dystonia 17

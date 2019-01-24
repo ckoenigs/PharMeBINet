@@ -1,0 +1,3 @@
+DOID:1380	endometrial cancer
+monDO ID 	 name 
+MONDO:0011962	endometrial cancer

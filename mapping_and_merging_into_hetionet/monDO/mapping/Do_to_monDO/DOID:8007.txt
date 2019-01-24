@@ -1,0 +1,3 @@
+DOID:8007	Pancoast tumor
+monDO ID 	 name 
+MONDO:0006883	Pancoast tumor

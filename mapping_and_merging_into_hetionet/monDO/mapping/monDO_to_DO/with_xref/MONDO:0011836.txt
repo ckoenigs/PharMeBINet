@@ -1,0 +1,3 @@
+MONDO:0011836	thyroid Hurthle cell carcinoma
+DOID 	 name 
+DOID:8161	thyroid Hurthle cell carcinoma

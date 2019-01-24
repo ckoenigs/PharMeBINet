@@ -1,0 +1,3 @@
+MONDO:0002960	polyradiculopathy
+DOID 	 name 
+DOID:4307	polyradiculopathy

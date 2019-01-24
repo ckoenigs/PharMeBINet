@@ -1,0 +1,3 @@
+MONDO:0001263	histoplasmosis retinitis
+DOID 	 name 
+DOID:11316	histoplasmosis retinitis

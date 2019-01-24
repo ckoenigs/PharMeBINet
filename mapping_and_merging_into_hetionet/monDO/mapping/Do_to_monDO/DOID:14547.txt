@@ -1,0 +1,3 @@
+DOID:14547	sphenoid sinus squamous cell carcinoma
+monDO ID 	 name 
+MONDO:0001995	sphenoid sinus squamous cell carcinoma

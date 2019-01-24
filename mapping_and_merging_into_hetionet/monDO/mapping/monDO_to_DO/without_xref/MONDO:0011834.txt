@@ -1,0 +1,3 @@
+MONDO:0011834	spinocerebellar ataxia type 18
+DOID 	 name 
+DOID:0050969	spinocerebellar ataxia type 18

@@ -1,0 +1,3 @@
+MONDO:0003472	lice infestation
+DOID 	 name 
+DOID:5502	lice infestation

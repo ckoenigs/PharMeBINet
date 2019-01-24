@@ -1,0 +1,3 @@
+MONDO:0000294	mesocestoidiasis
+DOID 	 name 
+DOID:0050253	mesocestoidiasis

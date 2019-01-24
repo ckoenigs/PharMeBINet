@@ -1,0 +1,3 @@
+DOID:0060026	immunoglobulin beta deficiency
+monDO ID 	 name 
+MONDO:0000583	immunoglobulin beta deficiency

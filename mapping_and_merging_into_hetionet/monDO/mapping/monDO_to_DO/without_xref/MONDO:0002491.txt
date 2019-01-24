@@ -1,0 +1,3 @@
+MONDO:0002491	substance abuse
+DOID 	 name 
+DOID:302	substance abuse

@@ -1,0 +1,3 @@
+MONDO:0001762	dentine erosion
+DOID 	 name 
+DOID:13629	dentine erosion

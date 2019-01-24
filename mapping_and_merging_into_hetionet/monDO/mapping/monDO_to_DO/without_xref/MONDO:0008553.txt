@@ -1,0 +1,3 @@
+MONDO:0008553	platelet-type bleeding disorder 17
+DOID 	 name 
+DOID:0111049	platelet-type bleeding disorder 17

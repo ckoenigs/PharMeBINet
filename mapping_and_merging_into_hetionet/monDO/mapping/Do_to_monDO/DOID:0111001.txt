@@ -1,0 +1,3 @@
+DOID:0111001	Joubert syndrome 6
+monDO ID 	 name 
+MONDO:0012539	Joubert syndrome 6

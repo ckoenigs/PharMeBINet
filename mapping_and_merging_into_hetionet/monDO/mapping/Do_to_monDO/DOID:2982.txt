@@ -1,0 +1,3 @@
+DOID:2982	perinephritis
+monDO ID 	 name 
+MONDO:0006900	perinephritis

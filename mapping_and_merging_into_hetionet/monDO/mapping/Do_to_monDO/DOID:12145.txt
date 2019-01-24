@@ -1,0 +1,3 @@
+DOID:12145	detrusor sphincter dyssynergia
+monDO ID 	 name 
+MONDO:0001447	detrusor sphincter dyssynergia (disease)

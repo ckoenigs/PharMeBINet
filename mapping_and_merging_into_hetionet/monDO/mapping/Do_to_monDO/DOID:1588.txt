@@ -1,0 +1,3 @@
+DOID:1588	thrombocytopenia
+monDO ID 	 name 
+MONDO:0002049	thrombocytopenia

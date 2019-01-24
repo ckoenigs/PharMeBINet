@@ -1,0 +1,3 @@
+MONDO:0018570	hypophosphatasia
+DOID 	 name 
+DOID:14213	hypophosphatasia

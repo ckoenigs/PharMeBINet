@@ -1,0 +1,3 @@
+DOID:7639	malignant granular cell skin tumor
+monDO ID 	 name 
+MONDO:0004314	malignant cutaneous granular cell skin tumor

@@ -1,0 +1,3 @@
+MONDO:0001964	chronic tubotympanic suppurative otitis media
+DOID 	 name 
+DOID:14435	chronic tubotympanic suppurative otitis media

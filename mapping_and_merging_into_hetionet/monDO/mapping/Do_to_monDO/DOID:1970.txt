@@ -1,0 +1,3 @@
+DOID:1970	fallopian tube carcinosarcoma
+monDO ID 	 name 
+MONDO:0006207	fallopian tube carcinosarcoma

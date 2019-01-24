@@ -1,0 +1,3 @@
+DOID:134	vaginal glandular tumor
+monDO ID 	 name 
+MONDO:0001704	vaginal glandular neoplasm

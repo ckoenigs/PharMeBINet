@@ -1,0 +1,3 @@
+MONDO:0003271	iodine hypothyroidism
+DOID 	 name 
+DOID:5083	iodine hypothyroidism

@@ -1,0 +1,3 @@
+DOID:0060506	cherry allergy
+monDO ID 	 name 
+MONDO:0000781	cherry allergy

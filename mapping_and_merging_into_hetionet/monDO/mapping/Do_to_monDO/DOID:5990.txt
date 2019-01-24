@@ -1,0 +1,3 @@
+DOID:5990	internal auditory canal meningioma
+monDO ID 	 name 
+MONDO:0003722	internal auditory canal meningioma

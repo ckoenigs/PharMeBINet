@@ -1,0 +1,3 @@
+DOID:14107	De Quervain disease
+monDO ID 	 name 
+MONDO:0006721	de Quervain disease

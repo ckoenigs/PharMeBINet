@@ -1,0 +1,3 @@
+MONDO:0008410	Scheuermann's disease
+DOID 	 name 
+DOID:13300	Scheuermann's disease

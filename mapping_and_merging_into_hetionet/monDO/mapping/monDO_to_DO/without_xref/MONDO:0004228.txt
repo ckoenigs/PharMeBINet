@@ -1,0 +1,3 @@
+MONDO:0004228	hypogonadotropism
+DOID 	 name 
+DOID:7455	hypogonadotropism

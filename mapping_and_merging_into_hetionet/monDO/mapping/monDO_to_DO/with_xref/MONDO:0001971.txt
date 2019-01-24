@@ -1,0 +1,4 @@
+MONDO:0001971	farmer's lung disease
+DOID 	 name 
+DOID:14453	farmer's lung
+DOID:2708	mushroom workers' lung

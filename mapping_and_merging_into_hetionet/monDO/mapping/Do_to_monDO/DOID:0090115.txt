@@ -1,0 +1,3 @@
+DOID:0090115	spinocerebellar ataxia type 1 with axonal neuropathy
+monDO ID 	 name 
+MONDO:0011801	spinocerebellar ataxia type 1 with axonal neuropathy

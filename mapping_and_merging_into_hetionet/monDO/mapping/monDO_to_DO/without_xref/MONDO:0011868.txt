@@ -1,0 +1,3 @@
+MONDO:0011868	lethal congenital contracture syndrome 2
+DOID 	 name 
+DOID:0060560	lethal congenital contracture syndrome 2

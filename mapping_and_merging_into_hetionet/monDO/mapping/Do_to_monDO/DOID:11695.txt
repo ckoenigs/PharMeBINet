@@ -1,0 +1,3 @@
+DOID:11695	portal vein thrombosis
+monDO ID 	 name 
+MONDO:0001339	portal vein thrombosis

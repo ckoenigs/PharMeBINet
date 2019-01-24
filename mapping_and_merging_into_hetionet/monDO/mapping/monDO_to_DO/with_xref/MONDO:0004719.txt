@@ -1,0 +1,3 @@
+MONDO:0004719	hard palate cancer
+DOID 	 name 
+DOID:9149	hard palate cancer

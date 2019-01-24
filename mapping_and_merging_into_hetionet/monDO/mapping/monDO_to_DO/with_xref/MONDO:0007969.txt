@@ -1,0 +1,3 @@
+MONDO:0007969	Melkersson-Rosenthal syndrome
+DOID 	 name 
+DOID:1761	Melkersson-Rosenthal syndrome

@@ -1,0 +1,3 @@
+MONDO:0013220	hemochromatosis type 2B
+DOID 	 name 
+DOID:0111032	hemochromatosis type 2B

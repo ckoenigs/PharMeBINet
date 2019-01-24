@@ -1,0 +1,3 @@
+DOID:2518	orchitis
+monDO ID 	 name 
+MONDO:0006882	orchitis (disease)

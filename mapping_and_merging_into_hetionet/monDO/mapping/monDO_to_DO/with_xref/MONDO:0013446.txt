@@ -1,0 +1,3 @@
+MONDO:0013446	Leber congenital amaurosis 6
+DOID 	 name 
+DOID:0110329	Leber congenital amaurosis 6

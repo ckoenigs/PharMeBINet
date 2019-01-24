@@ -1,0 +1,3 @@
+DOID:0110463	autosomal recessive nonsyndromic deafness 102
+monDO ID 	 name 
+MONDO:0014428	autosomal recessive nonsyndromic deafness 102

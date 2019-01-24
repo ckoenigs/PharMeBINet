@@ -1,0 +1,3 @@
+MONDO:0018270	extraskeletal Ewing sarcoma
+DOID 	 name 
+DOID:4232	extraosseous Ewing's sarcoma

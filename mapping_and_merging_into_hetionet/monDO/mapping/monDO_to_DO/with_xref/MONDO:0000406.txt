@@ -1,0 +1,3 @@
+MONDO:0000406	brown-Vialetto-van Laere syndrome
+DOID 	 name 
+DOID:0050694	Brown-Vialetto-Van Laere syndrome

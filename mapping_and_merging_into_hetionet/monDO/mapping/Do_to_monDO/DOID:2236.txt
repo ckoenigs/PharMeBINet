@@ -1,0 +1,3 @@
+DOID:2236	congenital afibrinogenemia
+monDO ID 	 name 
+MONDO:0008737	congenital afibrinogenemia

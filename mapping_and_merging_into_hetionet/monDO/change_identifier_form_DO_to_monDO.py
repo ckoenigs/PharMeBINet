@@ -42,6 +42,8 @@ def load_in_all_monDO_in_dictionary():
     results = g.run(query)
     for disease, in results:
         monDo_id = disease['id']
+        if monDo_id=='MONDO:0007108':
+            print('blub')
         xrefs = disease['xref'] if 'xref' in disease else ''
         dict_monDO_info[monDo_id] = dict(disease)
         xrefs = disease['xref'] if 'xref' in disease else ''
@@ -113,6 +115,8 @@ def map_DO_to_monDO_with_DO_and_xrefs():
     not_direct_name_matching_file.write('monDO \t DOID \t name monDO \t name DOID \n')
     counter_name_not_matching = 0
     for doid, xrefs in dict_DO_to_xref.items():
+        if doid=='DOID:6126':
+            print('ok')
         if doid in dict_external_ids_monDO:
 
             for monDO in dict_external_ids_monDO[doid]:
@@ -221,7 +225,7 @@ def mapping_files():
 
     for monDo, doids in dict_monDo_to_DO.items():
         g = open('mapping/monDO_to_DO/with_xref/' + monDo + '.txt', 'w')
-        g.write(mondo + '\t' + dict_monDO_info[monDo]['name'] + '\n')
+        g.write(monDo + '\t' + dict_monDO_info[monDo]['name'] + '\n')
         g.write('DOID \t name \n')
         for doid in doids:
             g.write(doid + '\t' + dict_DO_to_info[doid]['name'] + '\n')
@@ -229,7 +233,7 @@ def mapping_files():
 
     for monDo, doids in dict_monDo_to_DO_only_doid.items():
         g = open('mapping/monDO_to_DO/without_xref/' + monDo + '.txt', 'w')
-        g.write(mondo + '\t' + dict_monDO_info[monDo]['name'] + '\n')
+        g.write(monDo + '\t' + dict_monDO_info[monDo]['name'] + '\n')
         g.write('DOID \t name \n')
         for doid in doids:
             g.write(doid + '\t' + dict_DO_to_info[doid]['name'] + '\n')
@@ -460,27 +464,8 @@ def main():
 
     map_DO_to_monDO_with_DO_and_xrefs()
 
-    print('##########################################################################')
-
-    print(datetime.datetime.utcnow())
-    print('generate the mapping files ')
-
-    mapping_files()
-
-    print('##########################################################################')
-
-    print(datetime.datetime.utcnow())
-    print('integrate and switch the nodes but ignore the multiple mapped monDO ids ')
-
-    integrate_mondo_change_identifier()
-
-
-    print('##########################################################################')
-
-    print(datetime.datetime.utcnow())
-    print('Map DO to monDO ')
-
-    map_DO_to_monDO_with_DO_and_xrefs()
+    if 'DOID:6126' in dict_DO_to_monDOs_only_DO:
+        print('in it')
 
     print('##########################################################################')
 
@@ -495,6 +480,8 @@ def main():
     print('integrate and switch the nodes but ignore the multiple mapped monDO ids ')
 
     integrate_mondo_change_identifier()
+
+
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())

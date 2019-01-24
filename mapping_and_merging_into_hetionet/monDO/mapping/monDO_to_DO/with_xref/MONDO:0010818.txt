@@ -1,0 +1,3 @@
+MONDO:0010818	retinitis pigmentosa 12
+DOID 	 name 
+DOID:0110358	retinitis pigmentosa 12

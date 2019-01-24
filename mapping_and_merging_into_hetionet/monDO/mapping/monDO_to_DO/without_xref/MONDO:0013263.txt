@@ -1,0 +1,3 @@
+MONDO:0013263	retinitis pigmentosa 54
+DOID 	 name 
+DOID:0110364	retinitis pigmentosa 54

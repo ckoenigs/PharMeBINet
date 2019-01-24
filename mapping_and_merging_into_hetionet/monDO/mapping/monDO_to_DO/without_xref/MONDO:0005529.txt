@@ -1,0 +1,3 @@
+MONDO:0005529	methylmalonic aciduria and homocystinuria type cblG
+DOID 	 name 
+DOID:0050733	methylmalonic aciduria and homocystinuria type cblG

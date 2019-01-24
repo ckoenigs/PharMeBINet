@@ -1,0 +1,3 @@
+DOID:13402	skin sarcoidosis
+monDO ID 	 name 
+MONDO:0006611	skin sarcoidosis

@@ -1,0 +1,3 @@
+MONDO:0004526	mixed endometrial stromal and smooth muscle tumor
+DOID 	 name 
+DOID:8302	mixed endometrial stromal and smooth muscle tumor

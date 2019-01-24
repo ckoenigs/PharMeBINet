@@ -1,0 +1,3 @@
+DOID:876	pyomyositis
+monDO ID 	 name 
+MONDO:0019168	pyomyositis

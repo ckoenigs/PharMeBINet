@@ -1,0 +1,3 @@
+MONDO:0000332	sennetsu fever
+DOID 	 name 
+DOID:0050485	sennetsu fever

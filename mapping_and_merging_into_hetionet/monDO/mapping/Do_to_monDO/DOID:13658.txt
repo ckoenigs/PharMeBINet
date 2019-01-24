@@ -1,0 +1,3 @@
+DOID:13658	infective urethral stricture
+monDO ID 	 name 
+MONDO:0001771	infective urethral stricture

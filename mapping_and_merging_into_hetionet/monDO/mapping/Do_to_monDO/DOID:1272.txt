@@ -1,0 +1,3 @@
+DOID:1272	telangiectasis
+monDO ID 	 name 
+MONDO:0001576	telangiectasis

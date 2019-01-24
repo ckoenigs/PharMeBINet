@@ -1,0 +1,3 @@
+DOID:3523	brain stem infarction
+monDO ID 	 name 
+MONDO:0006686	brain stem infarction

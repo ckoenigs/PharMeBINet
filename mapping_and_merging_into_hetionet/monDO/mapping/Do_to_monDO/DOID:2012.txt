@@ -1,0 +1,3 @@
+DOID:2012	Nezelof syndrome
+monDO ID 	 name 
+MONDO:0009451	Nezelof syndrome

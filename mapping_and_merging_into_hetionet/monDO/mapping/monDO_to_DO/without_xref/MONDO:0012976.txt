@@ -1,0 +1,3 @@
+MONDO:0012976	autosomal dominant nonsyndromic deafness 2B
+DOID 	 name 
+DOID:0110559	autosomal dominant nonsyndromic deafness 2B

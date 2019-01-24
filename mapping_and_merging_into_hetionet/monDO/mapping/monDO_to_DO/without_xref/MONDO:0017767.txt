@@ -1,0 +1,3 @@
+MONDO:0017767	rheumatic fever
+DOID 	 name 
+DOID:1586	rheumatic fever

@@ -1,0 +1,4 @@
+MONDO:0003679	anteroseptal myocardial infarction
+DOID 	 name 
+DOID:5855	anteroseptal myocardial infarction
+DOID:5845	anterolateral myocardial infarction

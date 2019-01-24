@@ -1,0 +1,3 @@
+MONDO:0019351	isolated spina bifida
+DOID 	 name 
+DOID:1089	tethered spinal cord syndrome

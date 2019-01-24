@@ -1,0 +1,3 @@
+DOID:6291	cerebral hemisphere lipoma
+monDO ID 	 name 
+MONDO:0003843	cerebral hemisphere lipoma

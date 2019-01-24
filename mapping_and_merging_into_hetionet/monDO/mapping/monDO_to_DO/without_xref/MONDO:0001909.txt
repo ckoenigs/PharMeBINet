@@ -1,0 +1,3 @@
+MONDO:0001909	renal tubular acidosis
+DOID 	 name 
+DOID:14219	renal tubular acidosis

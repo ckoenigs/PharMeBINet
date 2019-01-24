@@ -1,0 +1,3 @@
+DOID:10952	nephritis
+monDO ID 	 name 
+MONDO:0001166	nephritis

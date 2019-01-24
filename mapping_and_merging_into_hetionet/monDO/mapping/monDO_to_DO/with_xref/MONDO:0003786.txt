@@ -1,0 +1,3 @@
+MONDO:0003786	childhood testicular choriocarcinoma
+DOID 	 name 
+DOID:6160	childhood choriocarcinoma of the testis

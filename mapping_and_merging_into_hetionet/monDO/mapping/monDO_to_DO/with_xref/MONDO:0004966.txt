@@ -1,0 +1,3 @@
+MONDO:0004966	gastritis (disease)
+DOID 	 name 
+DOID:4029	gastritis

@@ -1,0 +1,3 @@
+MONDO:0004489	fallopian tube gestational choriocarcinoma
+DOID 	 name 
+DOID:8186	fallopian tube gestational choriocarcinoma

@@ -1,0 +1,5 @@
+MONDO:0006907	pilar sheath acanthoma
+DOID 	 name 
+DOID:4322	pilar sheath acanthoma
+DOID:172	clear cell acanthoma
+DOID:174	acanthoma

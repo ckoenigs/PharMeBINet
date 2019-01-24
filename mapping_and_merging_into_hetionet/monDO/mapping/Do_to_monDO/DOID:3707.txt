@@ -1,0 +1,3 @@
+DOID:3707	endometrial mucinous adenocarcinoma
+monDO ID 	 name 
+MONDO:0002747	endometrial mucinous adenocarcinoma

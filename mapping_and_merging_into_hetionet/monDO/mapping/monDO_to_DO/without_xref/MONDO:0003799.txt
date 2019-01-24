@@ -1,0 +1,3 @@
+MONDO:0003799	conjunctivitis (disease)
+DOID 	 name 
+DOID:6195	conjunctivitis

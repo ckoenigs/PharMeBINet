@@ -1,0 +1,3 @@
+DOID:7014	infiltrating lipoma
+monDO ID 	 name 
+MONDO:0004075	infiltrating lipoma

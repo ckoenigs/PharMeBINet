@@ -1,0 +1,3 @@
+DOID:472	subglottic angioma
+monDO ID 	 name 
+MONDO:0003115	subglottic hemangioma

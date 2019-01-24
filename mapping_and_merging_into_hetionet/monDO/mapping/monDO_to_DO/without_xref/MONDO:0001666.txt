@@ -1,0 +1,3 @@
+MONDO:0001666	retinal dystrophies primarily involving bruch's membrane
+DOID 	 name 
+DOID:13227	retinal dystrophies primarily involving Bruch's membrane

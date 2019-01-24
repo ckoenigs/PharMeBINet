@@ -1,0 +1,3 @@
+DOID:9312	chronic ethmoiditis
+monDO ID 	 name 
+MONDO:0004757	chronic ethmoidal sinusitis

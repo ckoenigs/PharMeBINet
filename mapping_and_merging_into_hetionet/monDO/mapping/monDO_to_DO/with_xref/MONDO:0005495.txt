@@ -1,0 +1,3 @@
+MONDO:0005495	adrenal gland disease
+DOID 	 name 
+DOID:9553	adrenal gland disease

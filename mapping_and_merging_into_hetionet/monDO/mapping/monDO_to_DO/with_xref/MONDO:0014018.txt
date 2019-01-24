@@ -1,0 +1,3 @@
+MONDO:0014018	hereditary spastic paraplegia 54
+DOID 	 name 
+DOID:0110806	hereditary spastic paraplegia 54

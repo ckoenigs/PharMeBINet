@@ -1,0 +1,3 @@
+DOID:5585	Ferguson-Smith tumor
+monDO ID 	 name 
+MONDO:0003527	Ferguson-Smith tumor

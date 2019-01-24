@@ -1,0 +1,3 @@
+MONDO:0006601	pityriasis rosea
+DOID 	 name 
+DOID:8892	pityriasis rosea

@@ -1,0 +1,3 @@
+MONDO:0000727	scapuloperoneal myopathy
+DOID 	 name 
+DOID:0060253	scapuloperoneal myopathy

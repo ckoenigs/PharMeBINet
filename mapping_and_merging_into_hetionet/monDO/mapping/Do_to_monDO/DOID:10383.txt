@@ -1,0 +1,3 @@
+DOID:10383	amyotrophic neuralgia
+monDO ID 	 name 
+MONDO:0008076	amyotrophic neuralgia

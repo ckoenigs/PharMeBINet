@@ -1,0 +1,3 @@
+MONDO:0012054	schizophrenia 12
+DOID 	 name 
+DOID:5419	schizophrenia

@@ -1,0 +1,3 @@
+DOID:0060854	autosomal recessive pseudohypoaldosteronism type 1
+monDO ID 	 name 
+MONDO:0009917	autosomal recessive pseudohypoaldosteronism type 1

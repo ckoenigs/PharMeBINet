@@ -1,0 +1,3 @@
+MONDO:0003329	ureteral obstruction (disease)
+DOID 	 name 
+DOID:5199	ureteral obstruction

@@ -1,0 +1,3 @@
+MONDO:0018612	congenital hypothyroidism
+DOID 	 name 
+DOID:0050328	congenital hypothyroidism

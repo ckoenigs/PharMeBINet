@@ -1,0 +1,3 @@
+DOID:0090009	immunodeficiency-centromeric instability-facial anomalies syndrome 2
+monDO ID 	 name 
+MONDO:0013553	immunodeficiency-centromeric instability-facial anomalies syndrome 2

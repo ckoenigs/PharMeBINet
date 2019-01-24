@@ -1,0 +1,3 @@
+DOID:0111114	nephronophthisis 3
+monDO ID 	 name 
+MONDO:0011456	nephronophthisis 3

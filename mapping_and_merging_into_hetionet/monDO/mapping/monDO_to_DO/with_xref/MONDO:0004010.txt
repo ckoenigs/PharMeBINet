@@ -1,0 +1,3 @@
+MONDO:0004010	infiltrating ureter transitional cell carcinoma
+DOID 	 name 
+DOID:6845	infiltrating ureter transitional cell carcinoma

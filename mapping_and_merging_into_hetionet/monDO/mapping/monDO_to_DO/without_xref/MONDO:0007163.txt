@@ -1,0 +1,3 @@
+MONDO:0007163	episodic ataxia type 2
+DOID 	 name 
+DOID:0050990	episodic ataxia type 2

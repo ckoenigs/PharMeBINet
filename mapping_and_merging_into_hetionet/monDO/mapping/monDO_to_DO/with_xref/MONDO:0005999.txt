@@ -1,0 +1,3 @@
+MONDO:0005999	tuberculous empyema
+DOID 	 name 
+DOID:14305	tuberculous empyema

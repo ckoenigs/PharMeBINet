@@ -1,0 +1,3 @@
+DOID:2527	nephrosis
+monDO ID 	 name 
+MONDO:0002331	nephrosis

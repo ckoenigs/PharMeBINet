@@ -1,0 +1,3 @@
+MONDO:0011920	autosomal dominant nonsyndromic deafness 48
+DOID 	 name 
+DOID:0110571	autosomal dominant nonsyndromic deafness 48

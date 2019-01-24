@@ -1,0 +1,3 @@
+MONDO:0000509	non-syndromic intellectual disability
+DOID 	 name 
+DOID:0050889	non-syndromic intellectual disability

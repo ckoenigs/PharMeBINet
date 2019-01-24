@@ -1,0 +1,3 @@
+DOID:10047	nodular malignant melanoma
+monDO ID 	 name 
+MONDO:0000930	nodular malignant melanoma

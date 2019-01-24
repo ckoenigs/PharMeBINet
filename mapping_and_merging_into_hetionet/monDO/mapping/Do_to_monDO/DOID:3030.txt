@@ -1,0 +1,3 @@
+DOID:3030	mucinous adenocarcinoma
+monDO ID 	 name 
+MONDO:0004957	mucinous adenocarcinoma

@@ -1,0 +1,3 @@
+DOID:0050460	Wolf-Hirschhorn syndrome
+monDO ID 	 name 
+MONDO:0008684	wolf-Hirschhorn syndrome

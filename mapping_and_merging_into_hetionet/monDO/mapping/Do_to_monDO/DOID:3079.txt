@@ -1,0 +1,3 @@
+DOID:3079	juvenile astrocytoma
+monDO ID 	 name 
+MONDO:0002505	juvenile astrocytoma

@@ -1,0 +1,3 @@
+DOID:4250	conjunctivochalasis
+monDO ID 	 name 
+MONDO:0002931	conjunctivochalasis

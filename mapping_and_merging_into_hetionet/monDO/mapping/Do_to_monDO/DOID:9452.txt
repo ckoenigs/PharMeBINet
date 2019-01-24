@@ -1,0 +1,3 @@
+DOID:9452	fatty liver disease
+monDO ID 	 name 
+MONDO:0004790	fatty liver disease

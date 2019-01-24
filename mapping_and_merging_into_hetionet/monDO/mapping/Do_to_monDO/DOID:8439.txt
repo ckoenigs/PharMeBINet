@@ -1,0 +1,3 @@
+DOID:8439	postgastrectomy syndrome
+monDO ID 	 name 
+MONDO:0004566	postgastrectomy syndrome

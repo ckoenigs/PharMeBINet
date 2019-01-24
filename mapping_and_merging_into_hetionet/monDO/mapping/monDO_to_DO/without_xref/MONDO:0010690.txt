@@ -1,0 +1,3 @@
+MONDO:0010690	congenital stationary night blindness 1A
+DOID 	 name 
+DOID:0110870	congenital stationary night blindness 1A

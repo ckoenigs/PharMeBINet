@@ -1,0 +1,3 @@
+DOID:0060455	Thiel-Behnke corneal dystrophy
+monDO ID 	 name 
+MONDO:0011185	Thiel-Behnke corneal dystrophy

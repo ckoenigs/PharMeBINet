@@ -1,0 +1,3 @@
+DOID:10595	Charcot-Marie-Tooth disease
+monDO ID 	 name 
+MONDO:0015626	Charcot-Marie-tooth disease

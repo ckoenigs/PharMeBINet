@@ -1,0 +1,3 @@
+DOID:3665	diffuse cutaneous mastocytosis
+monDO ID 	 name 
+MONDO:0019315	diffuse cutaneous mastocytosis

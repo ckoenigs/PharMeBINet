@@ -1,0 +1,4 @@
+MONDO:0008627	ureter cancer
+DOID 	 name 
+DOID:11819	ureter cancer
+DOID:11885	ureteral benign neoplasm

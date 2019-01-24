@@ -1,0 +1,3 @@
+MONDO:0011295	SCZD7
+DOID 	 name 
+DOID:5419	schizophrenia

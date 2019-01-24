@@ -1,0 +1,3 @@
+DOID:0050729	neutral lipid storage disease
+monDO ID 	 name 
+MONDO:0015611	neutral lipid storage disease

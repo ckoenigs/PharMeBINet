@@ -1,0 +1,3 @@
+MONDO:0004239	cervical keratinizing squamous cell carcinoma
+DOID 	 name 
+DOID:7483	cervical keratinizing squamous cell carcinoma

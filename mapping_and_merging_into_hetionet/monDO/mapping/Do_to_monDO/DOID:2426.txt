@@ -1,0 +1,3 @@
+DOID:2426	gangliocytoma
+monDO ID 	 name 
+MONDO:0016730	gangliocytoma

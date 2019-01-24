@@ -1,0 +1,3 @@
+MONDO:0000678	simultanagnosia
+DOID 	 name 
+DOID:0060148	simultanagnosia

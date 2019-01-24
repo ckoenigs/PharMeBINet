@@ -1,0 +1,3 @@
+DOID:8118	mature gastric teratoma
+monDO ID 	 name 
+MONDO:0004467	mature gastric teratoma

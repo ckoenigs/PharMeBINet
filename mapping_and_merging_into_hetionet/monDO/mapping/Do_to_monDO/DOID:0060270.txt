@@ -1,0 +1,3 @@
+DOID:0060270	pontocerebellar hypoplasia type 2D
+monDO ID 	 name 
+MONDO:0013438	pontocerebellar hypoplasia type 2D

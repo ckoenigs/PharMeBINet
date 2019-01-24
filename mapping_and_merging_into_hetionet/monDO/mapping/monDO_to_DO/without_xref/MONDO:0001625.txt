@@ -1,0 +1,3 @@
+MONDO:0001625	corpus luteum cyst
+DOID 	 name 
+DOID:13050	corpus luteum cyst

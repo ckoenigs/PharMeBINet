@@ -1,0 +1,3 @@
+DOID:648	kuru
+monDO ID 	 name 
+MONDO:0006825	kuru

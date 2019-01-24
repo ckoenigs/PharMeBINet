@@ -1,0 +1,3 @@
+MONDO:0012449	spinocerebellar ataxia type 23
+DOID 	 name 
+DOID:0050973	spinocerebellar ataxia type 23

@@ -1,0 +1,3 @@
+DOID:12395	spastic entropion
+monDO ID 	 name 
+MONDO:0001518	spastic entropion

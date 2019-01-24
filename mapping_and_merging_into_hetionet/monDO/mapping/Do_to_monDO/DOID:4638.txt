@@ -1,0 +1,3 @@
+DOID:4638	postauricular lymphadenitis
+monDO ID 	 name 
+MONDO:0003068	postauricular lymphadenitis

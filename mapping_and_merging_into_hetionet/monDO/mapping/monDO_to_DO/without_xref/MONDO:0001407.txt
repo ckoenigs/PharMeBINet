@@ -1,0 +1,3 @@
+MONDO:0001407	tracheal cancer
+DOID 	 name 
+DOID:11920	tracheal cancer

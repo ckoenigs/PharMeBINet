@@ -1,0 +1,3 @@
+MONDO:0004646	decubitus ulcer
+DOID 	 name 
+DOID:8717	decubitus ulcer

@@ -1,0 +1,4 @@
+MONDO:0009255	galactokinase deficiency
+DOID 	 name 
+DOID:14695	galactokinase deficiency
+DOID:9870	galactosemia

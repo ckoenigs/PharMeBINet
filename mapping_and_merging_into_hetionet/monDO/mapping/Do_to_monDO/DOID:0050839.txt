@@ -1,0 +1,3 @@
+DOID:0050839	anismus
+monDO ID 	 name 
+MONDO:0000480	anismus

@@ -1,0 +1,3 @@
+DOID:0080097	myofibrillar myopathy 6
+monDO ID 	 name 
+MONDO:0013061	myofibrillar myopathy 6

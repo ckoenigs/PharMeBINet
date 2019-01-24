@@ -1,0 +1,3 @@
+MONDO:0015070	laryngeal neuroendocrine neoplasm
+DOID 	 name 
+DOID:5457	laryngeal neuroendocrine tumor

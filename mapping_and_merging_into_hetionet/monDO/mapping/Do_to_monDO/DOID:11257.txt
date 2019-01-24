@@ -1,0 +1,3 @@
+DOID:11257	social phobia
+monDO ID 	 name 
+MONDO:0001247	social phobia

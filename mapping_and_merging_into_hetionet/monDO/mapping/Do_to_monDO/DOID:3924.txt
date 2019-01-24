@@ -1,0 +1,3 @@
+DOID:3924	main bronchus cancer
+monDO ID 	 name 
+MONDO:0002811	main bronchus cancer

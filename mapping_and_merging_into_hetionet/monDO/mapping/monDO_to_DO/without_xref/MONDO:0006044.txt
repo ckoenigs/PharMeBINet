@@ -1,0 +1,3 @@
+MONDO:0006044	nephrosclerosis
+DOID 	 name 
+DOID:11664	nephrosclerosis

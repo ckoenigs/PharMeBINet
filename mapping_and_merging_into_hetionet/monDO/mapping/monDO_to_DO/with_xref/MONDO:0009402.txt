@@ -1,0 +1,3 @@
+MONDO:0009402	hypertelorism-hypospadias-polysyndactyly syndrome
+DOID 	 name 
+DOID:0060226	acrofrontofacionasal dysostosis

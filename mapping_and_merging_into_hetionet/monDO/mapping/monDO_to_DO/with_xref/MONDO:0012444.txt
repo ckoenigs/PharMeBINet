@@ -1,0 +1,3 @@
+MONDO:0012444	neurodegeneration with brain iron accumulation 2b
+DOID 	 name 
+DOID:0110736	neurodegeneration with brain iron accumulation 2b

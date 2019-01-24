@@ -1,0 +1,3 @@
+DOID:0110667	congenital myasthenic syndrome 5
+monDO ID 	 name 
+MONDO:0011281	congenital myasthenic syndrome 5

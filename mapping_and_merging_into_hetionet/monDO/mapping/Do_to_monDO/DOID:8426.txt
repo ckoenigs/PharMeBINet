@@ -1,0 +1,3 @@
+DOID:8426	follicular infundibulum tumor
+monDO ID 	 name 
+MONDO:0004560	follicular infundibulum tumor

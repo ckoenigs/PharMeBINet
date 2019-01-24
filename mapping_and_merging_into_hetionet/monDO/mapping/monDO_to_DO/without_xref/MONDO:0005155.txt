@@ -1,0 +1,3 @@
+MONDO:0005155	cirrhosis of liver
+DOID 	 name 
+DOID:5082	liver cirrhosis

@@ -1,0 +1,3 @@
+MONDO:0010703	ornithine carbamoyltransferase deficiency
+DOID 	 name 
+DOID:9271	ornithine carbamoyltransferase deficiency

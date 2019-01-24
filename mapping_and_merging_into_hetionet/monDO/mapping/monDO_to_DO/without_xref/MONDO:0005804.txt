@@ -1,0 +1,3 @@
+MONDO:0005804	hyperprolactinemia (disease)
+DOID 	 name 
+DOID:12700	hyperprolactinemia

@@ -1,0 +1,3 @@
+MONDO:0003652	acute urate nephropathy
+DOID 	 name 
+DOID:580	acute urate nephropathy

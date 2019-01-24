@@ -1,0 +1,3 @@
+MONDO:0015643	photosensitive epilepsy
+DOID 	 name 
+DOID:0060281	photosensitive epilepsy

@@ -1,0 +1,3 @@
+MONDO:0008378	retinitis pigmentosa 9
+DOID 	 name 
+DOID:0110387	retinitis pigmentosa 9

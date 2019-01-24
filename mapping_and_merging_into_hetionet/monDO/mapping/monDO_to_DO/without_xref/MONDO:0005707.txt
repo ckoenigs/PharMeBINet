@@ -1,0 +1,3 @@
+MONDO:0005707	coccidiosis
+DOID 	 name 
+DOID:2113	coccidiosis

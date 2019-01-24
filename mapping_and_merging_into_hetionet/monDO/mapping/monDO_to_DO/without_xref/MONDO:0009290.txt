@@ -1,0 +1,3 @@
+MONDO:0009290	glycogen storage disease II
+DOID 	 name 
+DOID:2752	glycogen storage disease II

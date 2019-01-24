@@ -1,0 +1,3 @@
+MONDO:0014261	growth and developmental delay-hypotonia-vision impairment-lactic acidosis syndrome
+DOID 	 name 
+DOID:0060286	combined oxidative phosphorylation deficiency

@@ -1,0 +1,3 @@
+MONDO:0012024	retinitis pigmentosa 26
+DOID 	 name 
+DOID:0110368	retinitis pigmentosa 26

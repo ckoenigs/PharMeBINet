@@ -1,0 +1,3 @@
+MONDO:0005688	campylobacteriosis
+DOID 	 name 
+DOID:13622	campylobacteriosis

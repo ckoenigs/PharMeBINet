@@ -1,0 +1,3 @@
+DOID:2748	glycogen storage disease III
+monDO ID 	 name 
+MONDO:0009291	glycogen storage disease III

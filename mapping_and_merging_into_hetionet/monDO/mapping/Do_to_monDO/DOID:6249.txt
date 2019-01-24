@@ -1,0 +1,3 @@
+DOID:6249	mediastinum seminoma
+monDO ID 	 name 
+MONDO:0003826	mediastinum seminoma

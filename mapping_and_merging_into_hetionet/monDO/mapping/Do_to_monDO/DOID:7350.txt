@@ -1,0 +1,3 @@
+DOID:7350	thymic dysplasia
+monDO ID 	 name 
+MONDO:0004195	thymic dysplasia

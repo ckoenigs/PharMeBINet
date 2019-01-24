@@ -1,0 +1,3 @@
+DOID:0090048	dystonia 16
+monDO ID 	 name 
+MONDO:0012789	dystonia 16

@@ -1,0 +1,3 @@
+MONDO:0006670	bacterial meningitis
+DOID 	 name 
+DOID:9470	bacterial meningitis

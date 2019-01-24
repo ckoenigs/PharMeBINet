@@ -1,0 +1,3 @@
+MONDO:0007012	variant Creutzfeldt-Jakob disease
+DOID 	 name 
+DOID:5435	variant Creutzfeldt-Jakob disease

@@ -1,0 +1,3 @@
+MONDO:0009831	malignant pancreatic neoplasm
+DOID 	 name 
+DOID:1793	pancreatic cancer

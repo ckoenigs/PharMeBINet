@@ -1,0 +1,3 @@
+DOID:0110478	autosomal recessive nonsyndromic deafness 20
+monDO ID 	 name 
+MONDO:0011392	autosomal recessive nonsyndromic deafness 20

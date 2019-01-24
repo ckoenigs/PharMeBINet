@@ -1,0 +1,3 @@
+MONDO:0001213	serous glue ear
+DOID 	 name 
+DOID:11181	serous glue ear

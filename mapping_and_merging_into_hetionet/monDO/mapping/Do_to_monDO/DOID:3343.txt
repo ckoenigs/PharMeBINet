@@ -1,0 +1,3 @@
+DOID:3343	glycoproteinosis
+monDO ID 	 name 
+MONDO:0009738	sialidosis type 2

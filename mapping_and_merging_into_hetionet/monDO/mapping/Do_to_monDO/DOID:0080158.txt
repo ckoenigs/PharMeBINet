@@ -1,0 +1,3 @@
+DOID:0080158	herpes simplex virus keratitis
+monDO ID 	 name 
+MONDO:0015288	herpes simplex virus keratitis

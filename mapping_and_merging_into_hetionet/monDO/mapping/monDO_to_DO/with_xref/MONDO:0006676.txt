@@ -1,0 +1,3 @@
+MONDO:0006676	beriberi
+DOID 	 name 
+DOID:13725	beriberi

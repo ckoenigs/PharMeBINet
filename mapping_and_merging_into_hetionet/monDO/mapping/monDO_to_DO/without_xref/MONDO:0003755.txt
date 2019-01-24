@@ -1,0 +1,3 @@
+MONDO:0003755	urinary tract non-invasive transitional cell neoplasm
+DOID 	 name 
+DOID:6065	urinary tract non-invasive transitional cell neoplasm

@@ -1,0 +1,3 @@
+MONDO:0005558	ovarian disease
+DOID 	 name 
+DOID:1100	ovarian disease

@@ -1,0 +1,3 @@
+MONDO:0010837	primary hyperparathyroidism (disease)
+DOID 	 name 
+DOID:11202	primary hyperparathyroidism

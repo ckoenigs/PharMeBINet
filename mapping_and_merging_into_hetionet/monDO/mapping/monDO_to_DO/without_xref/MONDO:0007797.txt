@@ -1,0 +1,3 @@
+MONDO:0007797	hypoparathyroidism-deafness-renal disease syndrome
+DOID 	 name 
+DOID:0060878	hypoparathyroidism-deafness-renal disease syndrome

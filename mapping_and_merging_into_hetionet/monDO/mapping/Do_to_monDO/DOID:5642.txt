@@ -1,0 +1,3 @@
+DOID:5642	localized pulmonary fibrosis
+monDO ID 	 name 
+MONDO:0003564	localized pulmonary fibrosis

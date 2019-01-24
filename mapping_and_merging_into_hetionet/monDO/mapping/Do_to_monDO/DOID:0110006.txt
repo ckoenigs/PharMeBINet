@@ -1,0 +1,3 @@
+DOID:0110006	3-methylglutaconic aciduria type 4
+monDO ID 	 name 
+MONDO:0009611	3-methylglutaconic aciduria type 4

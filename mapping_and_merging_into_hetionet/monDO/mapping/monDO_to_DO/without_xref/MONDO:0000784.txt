@@ -1,0 +1,3 @@
+MONDO:0000784	melon allergy
+DOID 	 name 
+DOID:0060509	melon allergy

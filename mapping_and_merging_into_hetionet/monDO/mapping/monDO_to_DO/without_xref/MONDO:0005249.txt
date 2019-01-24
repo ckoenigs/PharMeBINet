@@ -1,0 +1,3 @@
+MONDO:0005249	pneumonia
+DOID 	 name 
+DOID:552	pneumonia

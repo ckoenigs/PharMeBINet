@@ -1,0 +1,3 @@
+DOID:2712	phimosis
+monDO ID 	 name 
+MONDO:0006904	phimosis

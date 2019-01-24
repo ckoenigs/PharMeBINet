@@ -1,0 +1,3 @@
+DOID:5850	inferior myocardial infarction
+monDO ID 	 name 
+MONDO:0006803	inferior myocardial infarction

@@ -1,0 +1,3 @@
+MONDO:0005167	fibroma
+DOID 	 name 
+DOID:0050871	fibroma

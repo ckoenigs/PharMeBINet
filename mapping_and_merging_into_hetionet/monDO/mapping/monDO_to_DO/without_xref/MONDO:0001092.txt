@@ -1,0 +1,3 @@
+MONDO:0001092	colon leiomyoma
+DOID 	 name 
+DOID:10656	colon leiomyoma

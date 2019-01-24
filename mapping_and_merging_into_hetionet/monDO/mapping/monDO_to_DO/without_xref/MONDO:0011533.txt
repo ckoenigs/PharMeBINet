@@ -1,0 +1,3 @@
+MONDO:0011533	temtamy preaxial brachydactyly syndrome
+DOID 	 name 
+DOID:0050814	temtamy preaxial brachydactyly syndrome

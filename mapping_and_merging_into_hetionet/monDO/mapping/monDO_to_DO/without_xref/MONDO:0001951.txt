@@ -1,0 +1,3 @@
+MONDO:0001951	norwegian scabies
+DOID 	 name 
+DOID:14374	norwegian scabies

@@ -1,0 +1,3 @@
+DOID:0080077	hypophosphatemic nephrolithiasis/osteoporosis 1
+monDO ID 	 name 
+MONDO:0012850	hypophosphatemic nephrolithiasis/osteoporosis 1

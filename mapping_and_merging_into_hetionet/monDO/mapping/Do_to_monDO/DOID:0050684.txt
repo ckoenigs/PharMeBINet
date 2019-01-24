@@ -1,0 +1,3 @@
+DOID:0050684	Bowen-Conradi syndrome
+monDO ID 	 name 
+MONDO:0008879	Bowen-Conradi syndrome

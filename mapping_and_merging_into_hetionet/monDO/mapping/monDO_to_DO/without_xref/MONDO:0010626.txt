@@ -1,0 +1,4 @@
+MONDO:0010626	X-linked hyper-IgM syndrome
+DOID 	 name 
+DOID:0060022	CD40 ligand deficiency
+DOID:6620	X-linked hyper IgM syndrome

@@ -1,0 +1,3 @@
+DOID:9957	periostitis
+monDO ID 	 name 
+MONDO:0004934	periostitis (disease)

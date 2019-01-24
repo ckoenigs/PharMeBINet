@@ -1,0 +1,3 @@
+DOID:2253	cervix disease
+monDO ID 	 name 
+MONDO:0002256	cervix disease

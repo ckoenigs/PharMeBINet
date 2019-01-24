@@ -1,0 +1,3 @@
+DOID:11623	dental pulp necrosis
+monDO ID 	 name 
+MONDO:0001326	dental pulp necrosis

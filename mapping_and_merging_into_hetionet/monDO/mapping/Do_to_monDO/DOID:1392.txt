@@ -1,0 +1,3 @@
+DOID:1392	pseudopapilledema
+monDO ID 	 name 
+MONDO:0008331	pseudopapilledema (disease)

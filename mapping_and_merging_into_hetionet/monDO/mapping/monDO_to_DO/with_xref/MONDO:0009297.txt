@@ -1,0 +1,3 @@
+MONDO:0009297	renal glycosuria
+DOID 	 name 
+DOID:9432	renal glycosuria

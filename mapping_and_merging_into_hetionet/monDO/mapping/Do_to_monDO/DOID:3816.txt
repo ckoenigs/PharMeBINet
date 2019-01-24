@@ -1,0 +1,3 @@
+DOID:3816	glossopharyngeal nerve paralysis
+monDO ID 	 name 
+MONDO:0002781	glossopharyngeal nerve paralysis

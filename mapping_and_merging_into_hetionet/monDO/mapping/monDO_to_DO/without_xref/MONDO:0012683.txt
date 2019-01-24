@@ -1,0 +1,3 @@
+MONDO:0012683	pontocerebellar hypoplasia type 6
+DOID 	 name 
+DOID:0060275	pontocerebellar hypoplasia type 6

@@ -1,0 +1,3 @@
+MONDO:0001145	total third-nerve palsy
+DOID 	 name 
+DOID:10866	total third-nerve palsy

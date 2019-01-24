@@ -1,0 +1,3 @@
+DOID:8025	gastric signet ring cell adenocarcinoma
+monDO ID 	 name 
+MONDO:0006409	signet ring cell gastric adenocarcinoma

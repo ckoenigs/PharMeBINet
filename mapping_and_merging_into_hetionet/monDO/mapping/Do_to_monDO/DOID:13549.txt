@@ -1,0 +1,3 @@
+DOID:13549	interval angle-closure glaucoma
+monDO ID 	 name 
+MONDO:0001742	interval angle-closure glaucoma

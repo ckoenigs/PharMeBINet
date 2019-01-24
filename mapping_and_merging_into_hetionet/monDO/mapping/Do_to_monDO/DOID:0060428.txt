@@ -1,0 +1,3 @@
+DOID:0060428	chromosome 2q32-q33 deletion syndrome
+monDO ID 	 name 
+MONDO:0012864	chromosome 2q32-q33 deletion syndrome

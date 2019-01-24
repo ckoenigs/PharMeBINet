@@ -1,0 +1,4 @@
+MONDO:0001590	quadriplegia
+DOID 	 name 
+DOID:12697	locked-in syndrome
+DOID:12835	quadriplegia

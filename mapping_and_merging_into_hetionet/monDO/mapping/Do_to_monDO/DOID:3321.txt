@@ -1,0 +1,3 @@
+DOID:3321	gangliosidosis GM2
+monDO ID 	 name 
+MONDO:0017720	GM2 gangliosidosis

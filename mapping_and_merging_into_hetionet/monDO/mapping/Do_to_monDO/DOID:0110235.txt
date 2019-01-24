@@ -1,0 +1,3 @@
+DOID:0110235	cataract 2 multiple types
+monDO ID 	 name 
+MONDO:0011430	cataract 2 multiple types

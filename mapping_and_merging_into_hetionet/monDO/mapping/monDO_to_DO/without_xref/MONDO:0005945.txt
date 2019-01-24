@@ -1,0 +1,3 @@
+MONDO:0005945	rhinoscleroma
+DOID 	 name 
+DOID:11336	rhinoscleroma

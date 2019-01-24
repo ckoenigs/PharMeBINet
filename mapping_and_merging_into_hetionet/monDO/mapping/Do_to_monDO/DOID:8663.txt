@@ -1,0 +1,3 @@
+DOID:8663	aryepiglottic fold cancer
+monDO ID 	 name 
+MONDO:0004637	aryepiglottic fold cancer

@@ -1,0 +1,3 @@
+MONDO:0012927	chromosome 1q41-q42 deletion syndrome
+DOID 	 name 
+DOID:0060412	chromosome 1q41-q42 deletion syndrome

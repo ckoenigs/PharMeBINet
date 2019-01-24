@@ -1,0 +1,3 @@
+DOID:0110180	Charcot-Marie-Tooth disease axonal type 2CC
+monDO ID 	 name 
+MONDO:0014836	Charcot-Marie-tooth disease axonal type 2CC

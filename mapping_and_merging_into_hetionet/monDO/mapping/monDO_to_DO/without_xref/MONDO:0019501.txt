@@ -1,0 +1,3 @@
+MONDO:0019501	Usher syndrome
+DOID 	 name 
+DOID:0050439	Usher syndrome

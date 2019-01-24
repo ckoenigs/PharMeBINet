@@ -1,0 +1,3 @@
+MONDO:0006572	lichen planus
+DOID 	 name 
+DOID:9201	lichen planus

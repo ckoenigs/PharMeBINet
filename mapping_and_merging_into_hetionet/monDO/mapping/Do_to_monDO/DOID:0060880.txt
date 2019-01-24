@@ -1,0 +1,3 @@
+DOID:0060880	renal hypomagnesemia 3
+monDO ID 	 name 
+MONDO:0009550	renal hypomagnesemia 3

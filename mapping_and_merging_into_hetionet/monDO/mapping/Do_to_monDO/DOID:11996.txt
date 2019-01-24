@@ -1,0 +1,3 @@
+DOID:11996	spermatic cord torsion
+monDO ID 	 name 
+MONDO:0008541	spermatic cord torsion

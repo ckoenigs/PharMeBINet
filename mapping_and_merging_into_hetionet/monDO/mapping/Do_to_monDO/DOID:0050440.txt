@@ -1,0 +1,3 @@
+DOID:0050440	familial partial lipodystrophy
+monDO ID 	 name 
+MONDO:0020088	familial partial lipodystrophy

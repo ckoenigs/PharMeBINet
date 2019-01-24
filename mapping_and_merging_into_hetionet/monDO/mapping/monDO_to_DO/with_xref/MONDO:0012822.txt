@@ -1,0 +1,3 @@
+MONDO:0012822	CRCS6
+DOID 	 name 
+DOID:9256	colorectal cancer

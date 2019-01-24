@@ -1,0 +1,3 @@
+DOID:14472	hantavirus pulmonary syndrome
+monDO ID 	 name 
+MONDO:0017879	hantavirus pulmonary syndrome

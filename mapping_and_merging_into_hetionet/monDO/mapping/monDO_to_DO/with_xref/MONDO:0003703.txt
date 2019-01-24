@@ -1,0 +1,3 @@
+MONDO:0003703	uterine corpus leiomyomatosis
+DOID 	 name 
+DOID:5916	uterine corpus leiomyomatosis

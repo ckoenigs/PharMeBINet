@@ -1,0 +1,3 @@
+MONDO:0001874	toxic labyrinthitis
+DOID 	 name 
+DOID:14081	toxic labyrinthitis

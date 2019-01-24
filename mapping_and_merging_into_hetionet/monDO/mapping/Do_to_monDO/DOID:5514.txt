@@ -1,0 +1,3 @@
+DOID:5514	breast squamous cell carcinoma
+monDO ID 	 name 
+MONDO:0006056	squamous cell breast carcinoma

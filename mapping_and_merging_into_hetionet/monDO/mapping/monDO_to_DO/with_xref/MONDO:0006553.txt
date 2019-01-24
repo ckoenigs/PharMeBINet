@@ -1,0 +1,3 @@
+MONDO:0006553	fox fordyce disease
+DOID 	 name 
+DOID:1381	Fox-Fordyce disease

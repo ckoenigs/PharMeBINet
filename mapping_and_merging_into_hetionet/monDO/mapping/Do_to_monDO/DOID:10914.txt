@@ -1,0 +1,3 @@
+DOID:10914	amnestic disorder
+monDO ID 	 name 
+MONDO:0001152	amnestic disorder

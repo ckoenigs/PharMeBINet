@@ -1,0 +1,3 @@
+MONDO:0003837	TSH producing pituitary tumor
+DOID 	 name 
+DOID:6275	TSH producing pituitary tumor

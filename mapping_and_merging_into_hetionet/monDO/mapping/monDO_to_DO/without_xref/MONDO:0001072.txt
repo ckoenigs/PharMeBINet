@@ -1,0 +1,3 @@
+MONDO:0001072	mild pre-eclampsia
+DOID 	 name 
+DOID:10590	mild pre-eclampsia

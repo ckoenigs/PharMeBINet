@@ -1,0 +1,3 @@
+MONDO:0019947	rippling muscle disease 2
+DOID 	 name 
+DOID:0060255	rippling muscle disease 2

@@ -1,0 +1,3 @@
+DOID:10021	duodenum cancer
+monDO ID 	 name 
+MONDO:0000920	duodenum cancer

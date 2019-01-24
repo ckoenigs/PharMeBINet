@@ -1,0 +1,3 @@
+MONDO:0011283	mitochondrial DNA depletion syndrome 1
+DOID 	 name 
+DOID:0080119	mitochondrial DNA depletion syndrome 1

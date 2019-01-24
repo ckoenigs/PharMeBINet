@@ -1,0 +1,3 @@
+DOID:0110079	Leber congenital amaurosis 8
+monDO ID 	 name 
+MONDO:0013453	Leber congenital amaurosis 8

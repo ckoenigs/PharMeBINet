@@ -1,0 +1,3 @@
+MONDO:0008644	velocardiofacial syndrome
+DOID 	 name 
+DOID:12583	velocardiofacial syndrome

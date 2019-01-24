@@ -1,0 +1,3 @@
+MONDO:0011359	acromelic frontonasal dysostosis
+DOID 	 name 
+DOID:0060342	acromelic frontonasal dysostosis

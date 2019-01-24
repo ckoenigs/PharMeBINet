@@ -1,0 +1,3 @@
+DOID:6961	Bartholin's gland squamous cell carcinoma
+monDO ID 	 name 
+MONDO:0004053	Bartholin's gland squamous cell carcinoma

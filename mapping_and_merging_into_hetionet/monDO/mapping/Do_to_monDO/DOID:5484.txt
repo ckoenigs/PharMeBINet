@@ -1,0 +1,3 @@
+DOID:5484	fibrous synovial sarcoma
+monDO ID 	 name 
+MONDO:0003465	fibrous synovial sarcoma

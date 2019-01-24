@@ -1,0 +1,3 @@
+DOID:5547	pulmonary artery choriocarcinoma
+monDO ID 	 name 
+MONDO:0003506	pulmonary artery choriocarcinoma

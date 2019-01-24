@@ -1,0 +1,3 @@
+DOID:5810	adenosine deaminase deficiency
+monDO ID 	 name 
+MONDO:0007064	adenosine deaminase deficiency

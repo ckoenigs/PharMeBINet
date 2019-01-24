@@ -1,0 +1,3 @@
+MONDO:0000402	small cell carcinoma
+DOID 	 name 
+DOID:0050685	small cell carcinoma

@@ -1,0 +1,5 @@
+MONDO:0006948	retinal artery occlusion
+DOID 	 name 
+DOID:8483	retinal artery occlusion
+DOID:13098	central retinal artery occlusion
+DOID:13094	branch retinal artery occlusion

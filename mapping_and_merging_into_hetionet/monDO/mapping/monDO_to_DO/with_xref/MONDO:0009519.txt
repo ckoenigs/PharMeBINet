@@ -1,0 +1,3 @@
+MONDO:0009519	Letterer-Siwe disease
+DOID 	 name 
+DOID:2571	Langerhans-cell histiocytosis

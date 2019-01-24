@@ -1,0 +1,3 @@
+DOID:5845	anterolateral myocardial infarction
+monDO ID 	 name 
+MONDO:0006652	anterolateral myocardial infarction

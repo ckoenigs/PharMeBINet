@@ -1,0 +1,3 @@
+MONDO:0012921	type 1 diabetes mellitus 22
+DOID 	 name 
+DOID:0110759	type 1 diabetes mellitus 22

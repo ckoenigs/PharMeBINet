@@ -1,0 +1,3 @@
+DOID:429	gynatresia
+monDO ID 	 name 
+MONDO:0002946	gynatresia

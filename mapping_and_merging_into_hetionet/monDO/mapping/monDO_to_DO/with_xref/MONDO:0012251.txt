@@ -1,0 +1,3 @@
+MONDO:0012251	MEDNIK syndrome
+DOID 	 name 
+DOID:0060483	MEDNIK syndrome

@@ -1,0 +1,3 @@
+MONDO:0010691	Norrie disease
+DOID 	 name 
+DOID:0060844	Norrie disease

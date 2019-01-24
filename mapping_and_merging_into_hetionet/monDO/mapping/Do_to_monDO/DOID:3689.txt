@@ -1,0 +1,3 @@
+DOID:3689	brachial plexus neuritis
+monDO ID 	 name 
+MONDO:0006682	brachial plexus neuritis

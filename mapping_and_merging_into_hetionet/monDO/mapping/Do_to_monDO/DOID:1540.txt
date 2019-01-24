@@ -1,0 +1,3 @@
+DOID:1540	parathyroid carcinoma
+monDO ID 	 name 
+MONDO:0012004	parathyroid gland carcinoma

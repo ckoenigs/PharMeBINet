@@ -1,0 +1,3 @@
+MONDO:0000884	myeloid and lymphoid neoplasms associated with FGFR1 abnormalities
+DOID 	 name 
+DOID:0080167	myeloid and lymphoid neoplasms associated with FGFR1 abnormalities

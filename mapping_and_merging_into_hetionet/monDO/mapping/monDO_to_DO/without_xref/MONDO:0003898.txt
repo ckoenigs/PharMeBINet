@@ -1,0 +1,3 @@
+MONDO:0003898	pediatric myxoid chondrosarcoma
+DOID 	 name 
+DOID:6494	pediatric myxoid chondrosarcoma

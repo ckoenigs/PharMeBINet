@@ -1,0 +1,3 @@
+MONDO:0003510	malignant testicular germ cell tumor
+DOID 	 name 
+DOID:5556	testicular malignant germ cell cancer

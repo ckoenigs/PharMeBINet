@@ -1,0 +1,3 @@
+DOID:11189	pulp degeneration
+monDO ID 	 name 
+MONDO:0001216	pulp degeneration

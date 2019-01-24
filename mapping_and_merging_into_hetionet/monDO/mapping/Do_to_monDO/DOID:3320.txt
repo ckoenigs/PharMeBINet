@@ -1,0 +1,3 @@
+DOID:3320	Tay-Sachs disease
+monDO ID 	 name 
+MONDO:0010100	Tay-Sachs disease

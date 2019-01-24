@@ -1,0 +1,3 @@
+DOID:10932	obsessive-compulsive personality disorder
+monDO ID 	 name 
+MONDO:0001158	obsessive-compulsive personality disorder

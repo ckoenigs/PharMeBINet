@@ -1,0 +1,3 @@
+DOID:8941	seborrheic infantile dermatitis
+monDO ID 	 name 
+MONDO:0006609	seborrheic infantile dermatitis

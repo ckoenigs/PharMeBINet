@@ -1,0 +1,3 @@
+MONDO:0004517	ureter tuberculosis
+DOID 	 name 
+DOID:827	ureter tuberculosis

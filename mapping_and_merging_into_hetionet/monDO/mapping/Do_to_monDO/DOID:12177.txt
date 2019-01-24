@@ -1,0 +1,3 @@
+DOID:12177	common variable immunodeficiency
+monDO ID 	 name 
+MONDO:0015517	common variable immunodeficiency

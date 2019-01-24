@@ -1,0 +1,3 @@
+MONDO:0010235	X-linked intellectual disability-psychosis-macroorchidism syndrome
+DOID 	 name 
+DOID:0060827	X-linked intellectual disability-psychosis-macroorchidism syndrome

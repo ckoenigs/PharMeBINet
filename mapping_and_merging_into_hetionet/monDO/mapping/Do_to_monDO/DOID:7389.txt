@@ -1,0 +1,3 @@
+DOID:7389	pulmonary artery leiomyosarcoma
+monDO ID 	 name 
+MONDO:0004207	pulmonary artery leiomyosarcoma

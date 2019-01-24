@@ -1,0 +1,3 @@
+DOID:1234	gender identity disorder
+monDO ID 	 name 
+MONDO:0001500	gender identity disorder

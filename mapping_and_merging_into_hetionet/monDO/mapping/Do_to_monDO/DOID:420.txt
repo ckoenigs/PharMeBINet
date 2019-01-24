@@ -1,0 +1,3 @@
+DOID:420	hypertrichosis
+monDO ID 	 name 
+MONDO:0019280	hypertrichosis (disease)

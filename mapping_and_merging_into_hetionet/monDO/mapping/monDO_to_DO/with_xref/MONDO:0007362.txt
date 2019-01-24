@@ -1,0 +1,3 @@
+MONDO:0007362	cone-rod dystrophy 2
+DOID 	 name 
+DOID:0111005	cone-rod dystrophy 2

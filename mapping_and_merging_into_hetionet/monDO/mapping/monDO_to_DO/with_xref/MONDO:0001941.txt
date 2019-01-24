@@ -1,0 +1,3 @@
+MONDO:0001941	blindness
+DOID 	 name 
+DOID:1432	blindness

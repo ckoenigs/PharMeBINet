@@ -1,0 +1,3 @@
+DOID:12958	paralytic lagophthalmos
+monDO ID 	 name 
+MONDO:0001603	paralytic lagophthalmos (disease)

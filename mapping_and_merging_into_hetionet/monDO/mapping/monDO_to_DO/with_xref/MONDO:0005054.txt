@@ -1,0 +1,4 @@
+MONDO:0003709	juvenile dermatomyositis
+DOID 	 name 
+DOID:10223	dermatomyositis
+DOID:14203	childhood type dermatomyositis

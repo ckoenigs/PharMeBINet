@@ -1,0 +1,4 @@
+MONDO:0002532	squamous cell neoplasm
+DOID 	 name 
+DOID:3168	squamous cell neoplasm
+DOID:1749	squamous cell carcinoma

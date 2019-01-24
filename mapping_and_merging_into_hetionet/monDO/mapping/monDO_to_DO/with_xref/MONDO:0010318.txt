@@ -1,0 +1,3 @@
+MONDO:0010318	FG syndrome 4
+DOID 	 name 
+DOID:14711	FG syndrome

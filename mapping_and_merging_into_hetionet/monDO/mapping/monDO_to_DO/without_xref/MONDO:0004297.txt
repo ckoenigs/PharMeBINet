@@ -1,0 +1,3 @@
+MONDO:0004297	lymphoepithelioma-like thymic carcinoma
+DOID 	 name 
+DOID:7599	lymphoepithelioma-like thymic carcinoma

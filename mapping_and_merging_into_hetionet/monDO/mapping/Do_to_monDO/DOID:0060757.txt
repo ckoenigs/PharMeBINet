@@ -1,0 +1,3 @@
+DOID:0060757	sclerosteosis 2
+monDO ID 	 name 
+MONDO:0013679	sclerosteosis 2

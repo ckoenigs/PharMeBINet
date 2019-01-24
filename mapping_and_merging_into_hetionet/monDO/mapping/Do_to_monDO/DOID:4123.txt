@@ -1,0 +1,3 @@
+DOID:4123	nail disease
+monDO ID 	 name 
+MONDO:0002884	nail disease

@@ -1,0 +1,3 @@
+MONDO:0009267	Gaucher's disease type III
+DOID 	 name 
+DOID:0110959	Gaucher's disease type III

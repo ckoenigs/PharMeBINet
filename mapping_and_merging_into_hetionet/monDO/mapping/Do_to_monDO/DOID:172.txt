@@ -1,0 +1,3 @@
+DOID:172	clear cell acanthoma
+monDO ID 	 name 
+MONDO:0002086	clear cell acanthoma

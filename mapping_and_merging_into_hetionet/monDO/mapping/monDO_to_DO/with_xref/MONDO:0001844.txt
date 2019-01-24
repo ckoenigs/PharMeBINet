@@ -1,0 +1,3 @@
+MONDO:0001844	uterine corpus myxoid leiomyoma
+DOID 	 name 
+DOID:13956	uterine corpus myxoid leiomyoma

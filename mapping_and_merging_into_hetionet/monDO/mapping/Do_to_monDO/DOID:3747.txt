@@ -1,0 +1,3 @@
+DOID:3747	esophagus verrucous carcinoma
+monDO ID 	 name 
+MONDO:0002762	esophagus verrucous carcinoma

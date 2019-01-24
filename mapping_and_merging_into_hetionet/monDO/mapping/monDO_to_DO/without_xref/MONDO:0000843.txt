@@ -1,0 +1,3 @@
+MONDO:0000843	Shwachman-Diamond type metaphyseal dysplasia
+DOID 	 name 
+DOID:0080023	Shwachman-Diamond type metaphyseal dysplasia

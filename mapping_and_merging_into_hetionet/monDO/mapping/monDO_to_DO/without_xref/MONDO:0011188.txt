@@ -1,0 +1,3 @@
+MONDO:0011188	arrhythmogenic right ventricular dysplasia 3
+DOID 	 name 
+DOID:0110072	arrhythmogenic right ventricular dysplasia 3

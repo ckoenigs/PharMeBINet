@@ -1,0 +1,3 @@
+MONDO:0000857	Charcot-Marie-tooth disease type 7
+DOID 	 name 
+DOID:0080069	Charcot-Marie-Tooth disease type 7

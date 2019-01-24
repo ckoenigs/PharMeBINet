@@ -1,0 +1,3 @@
+DOID:10992	acute hemorrhagic leukoencephalitis
+monDO ID 	 name 
+MONDO:0011716	acute hemorrhagic leukoencephalitis

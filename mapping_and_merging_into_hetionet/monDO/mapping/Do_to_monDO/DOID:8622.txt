@@ -1,0 +1,3 @@
+DOID:8622	measles
+monDO ID 	 name 
+MONDO:0004619	measles

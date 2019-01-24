@@ -1,0 +1,3 @@
+MONDO:0012824	hypomyelinating leukodystrophy 4
+DOID 	 name 
+DOID:0060789	hypomyelinating leukodystrophy 4

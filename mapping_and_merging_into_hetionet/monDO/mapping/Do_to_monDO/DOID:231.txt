@@ -1,0 +1,3 @@
+DOID:231	motor neuron disease
+monDO ID 	 name 
+MONDO:0020128	motor neuron disease

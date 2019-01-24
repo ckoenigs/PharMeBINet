@@ -1,0 +1,3 @@
+MONDO:0005625	cerebral malaria
+DOID 	 name 
+DOID:14069	cerebral malaria

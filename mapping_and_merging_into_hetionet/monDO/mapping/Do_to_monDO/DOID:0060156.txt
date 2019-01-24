@@ -1,0 +1,3 @@
+DOID:0060156	visual verbal agnosia
+monDO ID 	 name 
+MONDO:0000686	visual verbal agnosia

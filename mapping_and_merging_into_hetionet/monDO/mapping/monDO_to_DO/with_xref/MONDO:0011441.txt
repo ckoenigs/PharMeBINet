@@ -1,0 +1,3 @@
+MONDO:0011441	reflex sympathetic dystrophy
+DOID 	 name 
+DOID:1811	reflex sympathetic dystrophy

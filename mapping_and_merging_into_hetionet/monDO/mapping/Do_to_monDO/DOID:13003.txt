@@ -1,0 +1,3 @@
+DOID:13003	vertebrobasilar insufficiency
+monDO ID 	 name 
+MONDO:0001613	vertebrobasilar insufficiency

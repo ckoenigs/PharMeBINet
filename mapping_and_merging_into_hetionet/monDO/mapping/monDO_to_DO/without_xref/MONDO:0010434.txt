@@ -1,0 +1,3 @@
+MONDO:0010434	synovial sarcoma (disease)
+DOID 	 name 
+DOID:5485	synovial sarcoma

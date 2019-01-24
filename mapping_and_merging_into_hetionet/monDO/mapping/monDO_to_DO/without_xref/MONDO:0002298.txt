@@ -1,0 +1,3 @@
+MONDO:0002298	skin glomangioma
+DOID 	 name 
+DOID:2435	skin glomangioma

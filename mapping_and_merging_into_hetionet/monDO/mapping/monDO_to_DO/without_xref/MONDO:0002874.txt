@@ -1,0 +1,3 @@
+MONDO:0002874	testicular pure germ cell tumor
+DOID 	 name 
+DOID:4087	testicular pure germ cell tumor

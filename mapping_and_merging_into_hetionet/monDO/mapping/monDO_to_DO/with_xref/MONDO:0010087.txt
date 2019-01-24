@@ -1,0 +1,3 @@
+MONDO:0010087	Sugarman brachydactyly
+DOID 	 name 
+DOID:0110979	Sugarman brachydactyly

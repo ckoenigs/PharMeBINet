@@ -1,0 +1,3 @@
+MONDO:0013178	congenital muscular dystrophy due to LMNA mutation
+DOID 	 name 
+DOID:0110640	congenital muscular dystrophy due to LMNA mutation

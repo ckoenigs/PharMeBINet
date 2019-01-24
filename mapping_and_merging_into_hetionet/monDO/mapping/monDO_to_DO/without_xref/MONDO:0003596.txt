@@ -1,0 +1,3 @@
+MONDO:0003596	spindle cell liposarcoma
+DOID 	 name 
+DOID:5705	spindle cell liposarcoma

@@ -1,0 +1,3 @@
+DOID:3968	papillary follicular thyroid adenocarcinoma
+monDO ID 	 name 
+MONDO:0006886	papillary follicular thyroid adenocarcinoma

@@ -1,0 +1,3 @@
+MONDO:0010969	cone-rod dystrophy 5
+DOID 	 name 
+DOID:0111010	cone-rod dystrophy 5

@@ -1,0 +1,3 @@
+DOID:0050916	bronchus mucoepidermoid carcinoma
+monDO ID 	 name 
+MONDO:0000531	bronchus mucoepidermoid carcinoma

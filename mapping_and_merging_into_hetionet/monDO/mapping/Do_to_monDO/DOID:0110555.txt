@@ -1,0 +1,3 @@
+DOID:0110555	autosomal dominant nonsyndromic deafness 25
+monDO ID 	 name 
+MONDO:0011568	autosomal dominant nonsyndromic deafness 25

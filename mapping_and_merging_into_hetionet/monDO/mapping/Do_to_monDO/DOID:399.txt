@@ -1,0 +1,3 @@
+DOID:399	tuberculosis
+monDO ID 	 name 
+MONDO:0018076	tuberculosis

@@ -1,0 +1,3 @@
+MONDO:0009116	lactose intolerance (disease)
+DOID 	 name 
+DOID:10604	lactose intolerance

@@ -1,0 +1,3 @@
+MONDO:0010503	Bartter disease type 5
+DOID 	 name 
+DOID:0110147	Bartter disease type 5

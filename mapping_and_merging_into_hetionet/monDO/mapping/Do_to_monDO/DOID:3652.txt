@@ -1,0 +1,3 @@
+DOID:3652	Leigh disease
+monDO ID 	 name 
+MONDO:0018859	Leigh disease

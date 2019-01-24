@@ -1,0 +1,3 @@
+DOID:9739	eustachian tube disease
+monDO ID 	 name 
+MONDO:0004866	eustachian tube disease

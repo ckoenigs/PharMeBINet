@@ -1,0 +1,3 @@
+DOID:12735	hernia of ovary and fallopian tube
+monDO ID 	 name 
+MONDO:0001578	hernia of ovary and fallopian tube

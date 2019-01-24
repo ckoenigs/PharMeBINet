@@ -1,0 +1,3 @@
+MONDO:0006851	meconium aspiration syndrome
+DOID 	 name 
+DOID:11049	meconium aspiration syndrome

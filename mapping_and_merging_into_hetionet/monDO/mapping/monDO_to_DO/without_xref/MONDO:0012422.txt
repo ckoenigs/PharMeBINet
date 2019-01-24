@@ -1,0 +1,3 @@
+MONDO:0012422	type 1 diabetes mellitus 19
+DOID 	 name 
+DOID:0110756	type 1 diabetes mellitus 19

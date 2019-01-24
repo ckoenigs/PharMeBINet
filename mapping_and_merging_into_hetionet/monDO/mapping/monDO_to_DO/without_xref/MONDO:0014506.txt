@@ -1,0 +1,3 @@
+MONDO:0014506	hypomyelinating leukodystrophy 9
+DOID 	 name 
+DOID:0060791	hypomyelinating leukodystrophy 9

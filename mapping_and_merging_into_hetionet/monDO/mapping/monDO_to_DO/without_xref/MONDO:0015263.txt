@@ -1,0 +1,3 @@
+MONDO:0015263	Brugada syndrome
+DOID 	 name 
+DOID:0050451	Brugada syndrome

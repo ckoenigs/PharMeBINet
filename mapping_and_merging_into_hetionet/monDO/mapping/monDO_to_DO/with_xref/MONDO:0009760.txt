@@ -1,0 +1,3 @@
+MONDO:0009760	Norman-Roberts syndrome
+DOID 	 name 
+DOID:0060902	Norman-Roberts syndrome

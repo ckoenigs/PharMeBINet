@@ -1,0 +1,3 @@
+DOID:5221	chronic polyneuropathy
+monDO ID 	 name 
+MONDO:0003335	chronic polyneuropathy

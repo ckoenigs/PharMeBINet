@@ -1,0 +1,3 @@
+DOID:0050487	bacterial exanthem
+monDO ID 	 name 
+MONDO:0006528	bacterial exanthem

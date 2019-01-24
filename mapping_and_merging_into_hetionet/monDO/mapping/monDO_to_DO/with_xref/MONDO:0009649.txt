@@ -1,0 +1,3 @@
+MONDO:0009649	MYMY1
+DOID 	 name 
+DOID:13099	Moyamoya disease

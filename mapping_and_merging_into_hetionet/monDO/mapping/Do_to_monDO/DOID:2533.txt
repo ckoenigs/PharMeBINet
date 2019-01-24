@@ -1,0 +1,3 @@
+DOID:2533	splenic infarction
+monDO ID 	 name 
+MONDO:0006978	splenic infarction

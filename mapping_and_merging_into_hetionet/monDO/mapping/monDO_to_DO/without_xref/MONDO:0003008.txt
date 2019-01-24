@@ -1,0 +1,3 @@
+MONDO:0003008	hereditary renal cell carcinoma
+DOID 	 name 
+DOID:4455	hereditary renal cell carcinoma

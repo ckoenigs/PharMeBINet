@@ -1,0 +1,3 @@
+DOID:0050568	spondylocostal dysostosis
+monDO ID 	 name 
+MONDO:0000359	spondylocostal dysostosis

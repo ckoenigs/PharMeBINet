@@ -1,0 +1,3 @@
+DOID:6113	intracerebral cystic meningioma
+monDO ID 	 name 
+MONDO:0003773	intracerebral cystic meningioma

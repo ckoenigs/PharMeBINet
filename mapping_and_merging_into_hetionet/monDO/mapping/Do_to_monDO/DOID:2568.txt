@@ -1,0 +1,3 @@
+DOID:2568	cervicitis
+monDO ID 	 name 
+MONDO:0002345	cervicitis (disease)

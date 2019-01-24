@@ -1,0 +1,3 @@
+MONDO:0010017	sea-blue histiocyte syndrome
+DOID 	 name 
+DOID:4423	sea-blue histiocyte syndrome

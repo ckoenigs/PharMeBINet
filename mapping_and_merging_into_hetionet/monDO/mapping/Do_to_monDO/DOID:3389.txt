@@ -1,0 +1,3 @@
+DOID:3389	Papillon-Lefevre disease
+monDO ID 	 name 
+MONDO:0009490	Papillon-Lefevre disease

@@ -1,0 +1,3 @@
+MONDO:0001262	african histoplasmosis
+DOID 	 name 
+DOID:11315	African histoplasmosis

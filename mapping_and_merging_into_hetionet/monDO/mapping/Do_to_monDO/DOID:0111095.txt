@@ -1,0 +1,3 @@
+DOID:0111095	Fanconi anemia complementation group A
+monDO ID 	 name 
+MONDO:0009215	Fanconi anemia complementation group a

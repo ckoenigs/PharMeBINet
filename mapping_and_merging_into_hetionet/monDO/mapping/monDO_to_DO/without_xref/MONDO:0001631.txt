@@ -1,0 +1,3 @@
+MONDO:0001631	vertebral artery insufficiency
+DOID 	 name 
+DOID:13095	vertebral artery insufficiency

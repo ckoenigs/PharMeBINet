@@ -1,0 +1,3 @@
+DOID:0060543	Hermansky-Pudlak syndrome 5
+monDO ID 	 name 
+MONDO:0013557	Hermansky-Pudlak syndrome 5

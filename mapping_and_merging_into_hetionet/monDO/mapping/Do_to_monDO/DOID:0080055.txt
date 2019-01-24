@@ -1,0 +1,3 @@
+DOID:0080055	achondrogenesis type IB
+monDO ID 	 name 
+MONDO:0010966	achondrogenesis type ib

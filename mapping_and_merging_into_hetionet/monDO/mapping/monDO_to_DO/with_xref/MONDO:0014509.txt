@@ -1,0 +1,3 @@
+MONDO:0014509	macular dystrophy, vitelliform, 5
+DOID 	 name 
+DOID:0050661	vitelliform macular dystrophy

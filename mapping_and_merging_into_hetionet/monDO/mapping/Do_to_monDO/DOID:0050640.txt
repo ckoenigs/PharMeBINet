@@ -1,0 +1,3 @@
+DOID:0050640	anauxetic dysplasia 1
+monDO ID 	 name 
+MONDO:0011773	anauxetic dysplasia

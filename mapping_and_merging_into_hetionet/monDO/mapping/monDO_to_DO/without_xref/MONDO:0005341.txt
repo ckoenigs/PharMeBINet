@@ -1,0 +1,3 @@
+MONDO:0005341	skin basal cell carcinoma
+DOID 	 name 
+DOID:2513	basal cell carcinoma

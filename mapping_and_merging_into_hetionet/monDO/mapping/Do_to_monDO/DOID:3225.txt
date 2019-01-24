@@ -1,0 +1,3 @@
+DOID:3225	tracheal disease
+monDO ID 	 name 
+MONDO:0002567	tracheal disease

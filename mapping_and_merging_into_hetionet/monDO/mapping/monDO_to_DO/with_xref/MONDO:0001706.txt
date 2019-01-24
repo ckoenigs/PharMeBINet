@@ -1,0 +1,3 @@
+MONDO:0001706	cerebral sarcoidosis
+DOID 	 name 
+DOID:13403	cerebral sarcoidosis

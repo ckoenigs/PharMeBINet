@@ -1,0 +1,3 @@
+MONDO:0001419	trachea squamous cell carcinoma
+DOID 	 name 
+DOID:12003	trachea squamous cell carcinoma

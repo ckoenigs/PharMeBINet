@@ -1,0 +1,3 @@
+MONDO:0013177	congenital muscular dystrophy due to integrin alpha-7 deficiency
+DOID 	 name 
+DOID:0110639	congenital muscular dystrophy due to integrin alpha-7 deficiency

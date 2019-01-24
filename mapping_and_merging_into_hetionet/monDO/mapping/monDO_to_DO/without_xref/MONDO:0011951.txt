@@ -1,0 +1,3 @@
+MONDO:0011951	amyotrophic lateral sclerosis type 6
+DOID 	 name 
+DOID:0060198	amyotrophic lateral sclerosis type 6

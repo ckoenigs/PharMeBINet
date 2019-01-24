@@ -1,0 +1,3 @@
+MONDO:0003709	benign epilepsy with centrotemporal spikes
+DOID 	 name 
+DOID:3329	benign epilepsy with centrotemporal spikes

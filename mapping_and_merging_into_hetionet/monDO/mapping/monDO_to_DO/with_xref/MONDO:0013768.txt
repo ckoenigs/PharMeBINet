@@ -1,0 +1,4 @@
+MONDO:0013768	arterial calcification, generalized, of infancy, 2
+DOID 	 name 
+DOID:0050644	arterial calcification of infancy
+DOID:0050632	oculocutaneous albinism

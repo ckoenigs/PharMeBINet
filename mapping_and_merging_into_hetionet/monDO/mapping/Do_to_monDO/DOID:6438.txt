@@ -1,0 +1,3 @@
+DOID:6438	malignant choroid melanoma
+monDO ID 	 name 
+MONDO:0003878	malignant choroid melanoma

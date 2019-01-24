@@ -1,0 +1,3 @@
+MONDO:0018746	mucous membrane pemphigoid
+DOID 	 name 
+DOID:11656	cicatricial pemphigoid

@@ -1,0 +1,3 @@
+MONDO:0002195	vulvar squamous neoplasm
+DOID 	 name 
+DOID:2072	vulvar squamous tumor

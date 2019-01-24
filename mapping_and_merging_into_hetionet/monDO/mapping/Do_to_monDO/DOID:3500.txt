@@ -1,0 +1,3 @@
+DOID:3500	gallbladder adenocarcinoma
+monDO ID 	 name 
+MONDO:0006215	gallbladder adenocarcinoma

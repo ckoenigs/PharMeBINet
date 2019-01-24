@@ -1,0 +1,3 @@
+MONDO:0005664	bartonellosis
+DOID 	 name 
+DOID:11102	bartonellosis

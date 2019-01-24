@@ -1,0 +1,3 @@
+MONDO:0004428	alveoli adenoma
+DOID 	 name 
+DOID:8003	alveoli adenoma

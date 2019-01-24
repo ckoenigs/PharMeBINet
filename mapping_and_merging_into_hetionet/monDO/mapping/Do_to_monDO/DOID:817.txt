@@ -1,0 +1,3 @@
+DOID:817	interstitial myocarditis
+monDO ID 	 name 
+MONDO:0004485	interstitial myocarditis

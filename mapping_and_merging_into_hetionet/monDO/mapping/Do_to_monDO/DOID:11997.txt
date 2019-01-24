@@ -1,0 +1,3 @@
+DOID:11997	spermatocele
+monDO ID 	 name 
+MONDO:0006977	spermatocele

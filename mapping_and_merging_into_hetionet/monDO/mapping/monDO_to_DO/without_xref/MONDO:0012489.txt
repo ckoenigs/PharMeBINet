@@ -1,0 +1,3 @@
+MONDO:0012489	cataract 23
+DOID 	 name 
+DOID:0110271	cataract 23

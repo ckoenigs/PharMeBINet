@@ -1,0 +1,3 @@
+MONDO:0002350	familial nephrotic syndrome
+DOID 	 name 
+DOID:2590	familial nephrotic syndrome

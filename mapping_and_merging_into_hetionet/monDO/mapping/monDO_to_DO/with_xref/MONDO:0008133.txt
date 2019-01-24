@@ -1,0 +1,3 @@
+MONDO:0008133	autosomal dominant optic atrophy and cataract
+DOID 	 name 
+DOID:5723	optic atrophy

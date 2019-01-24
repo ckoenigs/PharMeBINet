@@ -1,0 +1,3 @@
+DOID:0060258	reticulate acropigmentation of Kitamura
+monDO ID 	 name 
+MONDO:0014234	reticulate acropigmentation of Kitamura

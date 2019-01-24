@@ -1,0 +1,3 @@
+DOID:0110352	retinitis pigmentosa 59
+monDO ID 	 name 
+MONDO:0013468	retinitis pigmentosa 59

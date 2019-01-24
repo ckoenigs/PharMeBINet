@@ -1,0 +1,3 @@
+DOID:0110422	autosomal recessive pericentral pigmentary retinopathy
+monDO ID 	 name 
+MONDO:0009987	autosomal recessive pericentral pigmentary retinopathy

@@ -1,0 +1,3 @@
+MONDO:0011803	hereditary spastic paraplegia 7
+DOID 	 name 
+DOID:0110816	hereditary spastic paraplegia 7

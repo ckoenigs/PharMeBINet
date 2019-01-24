@@ -1,0 +1,3 @@
+MONDO:0001423	drug-induced mental disorder
+DOID 	 name 
+DOID:1203	drug-induced mental disorder

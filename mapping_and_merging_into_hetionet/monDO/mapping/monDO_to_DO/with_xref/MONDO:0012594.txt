@@ -1,0 +1,3 @@
+MONDO:0012594	complement factor I deficiency
+DOID 	 name 
+DOID:0050419	complement factor I deficiency

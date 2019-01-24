@@ -1,0 +1,3 @@
+MONDO:0004672	fasciolopsiasis
+DOID 	 name 
+DOID:888	fasciolopsiasis

@@ -1,0 +1,3 @@
+MONDO:0005282	cutaneous lupus erythematosus
+DOID 	 name 
+DOID:0050169	cutaneous lupus erythematosus

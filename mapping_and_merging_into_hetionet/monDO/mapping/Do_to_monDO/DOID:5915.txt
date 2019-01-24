@@ -1,0 +1,3 @@
+DOID:5915	uterus intravascular leiomyomatosis
+monDO ID 	 name 
+MONDO:0003702	uterus intravascular leiomyomatosis

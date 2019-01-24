@@ -1,0 +1,3 @@
+MONDO:0018911	maturity-onset diabetes of the young (disease)
+DOID 	 name 
+DOID:0050524	maturity-onset diabetes of the young

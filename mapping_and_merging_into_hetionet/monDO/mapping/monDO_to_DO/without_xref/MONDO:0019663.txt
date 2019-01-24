@@ -1,0 +1,3 @@
+MONDO:0019663	short rib-polydactyly syndrome, Saldino-Noonan type
+DOID 	 name 
+DOID:0050549	Saldino-Noonan syndrome

@@ -1,0 +1,3 @@
+DOID:10843	Western equine encephalitis
+monDO ID 	 name 
+MONDO:0019380	western equine encephalitis

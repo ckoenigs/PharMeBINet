@@ -1,0 +1,3 @@
+DOID:0060769	T-cell immunodeficiency, congenital alopecia, and nail dystrophy
+monDO ID 	 name 
+MONDO:0011132	T-cell immunodeficiency, congenital alopecia, and nail dystrophy

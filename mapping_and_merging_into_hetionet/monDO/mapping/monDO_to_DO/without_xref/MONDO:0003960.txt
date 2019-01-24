@@ -1,0 +1,3 @@
+MONDO:0003960	pulmonary large cell neuroendocrine carcinoma
+DOID 	 name 
+DOID:6658	pulmonary large cell neuroendocrine carcinoma

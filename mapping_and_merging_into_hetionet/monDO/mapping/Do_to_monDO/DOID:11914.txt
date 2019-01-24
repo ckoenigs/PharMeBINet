@@ -1,0 +1,3 @@
+DOID:11914	gastroparesis
+monDO ID 	 name 
+MONDO:0006769	gastroparesis (disease)

@@ -1,0 +1,3 @@
+DOID:9801	tuberculous peritonitis
+monDO ID 	 name 
+MONDO:0006000	tuberculous peritonitis

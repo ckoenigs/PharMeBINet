@@ -1,0 +1,3 @@
+MONDO:0001967	gonadal dysgenesis
+DOID 	 name 
+DOID:14447	gonadal dysgenesis

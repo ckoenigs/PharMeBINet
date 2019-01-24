@@ -1,0 +1,5 @@
+MONDO:0016107	myotonic dystrophy
+DOID 	 name 
+DOID:0050759	myotonic dystrophy type 2
+DOID:11722	myotonic dystrophy type 1
+DOID:450	myotonic disease

@@ -1,0 +1,3 @@
+DOID:4678	thymus mucoepidermoid carcinoma
+monDO ID 	 name 
+MONDO:0003086	thymus mucoepidermoid carcinoma

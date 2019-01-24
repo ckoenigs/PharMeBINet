@@ -1,0 +1,3 @@
+DOID:4210	clear cell meningioma
+monDO ID 	 name 
+MONDO:0002918	clear cell meningioma

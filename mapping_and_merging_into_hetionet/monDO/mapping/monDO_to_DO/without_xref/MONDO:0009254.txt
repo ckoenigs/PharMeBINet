@@ -1,0 +1,3 @@
+MONDO:0009254	fucosidosis
+DOID 	 name 
+DOID:14500	fucosidosis

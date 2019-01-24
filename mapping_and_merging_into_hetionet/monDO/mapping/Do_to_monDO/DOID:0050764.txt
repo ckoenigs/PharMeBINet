@@ -1,0 +1,3 @@
+DOID:0050764	Armfield syndrome
+monDO ID 	 name 
+MONDO:0010284	Armfield syndrome

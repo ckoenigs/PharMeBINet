@@ -1,0 +1,3 @@
+DOID:1172	hyperlipoproteinemia type IV
+monDO ID 	 name 
+MONDO:0007761	hyperlipoproteinemia type IV

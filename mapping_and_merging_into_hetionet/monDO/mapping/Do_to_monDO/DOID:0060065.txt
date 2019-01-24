@@ -1,0 +1,3 @@
+DOID:0060065	pyridoxine-refractory autosomal recessive sideroblastic anemia
+monDO ID 	 name 
+MONDO:0008785	pyridoxine-refractory autosomal recessive sideroblastic anemia

@@ -1,0 +1,3 @@
+DOID:4196	femoral neuropathy
+monDO ID 	 name 
+MONDO:0006759	femoral neuropathy

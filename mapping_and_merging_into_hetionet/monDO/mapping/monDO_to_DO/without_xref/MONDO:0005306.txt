@@ -1,0 +1,3 @@
+MONDO:0005306	ankylosing spondylitis
+DOID 	 name 
+DOID:7147	ankylosing spondylitis

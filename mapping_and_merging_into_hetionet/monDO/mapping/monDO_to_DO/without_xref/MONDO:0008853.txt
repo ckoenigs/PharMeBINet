@@ -1,0 +1,3 @@
+MONDO:0008853	Barber-Say syndrome
+DOID 	 name 
+DOID:0060549	Barber-Say syndrome

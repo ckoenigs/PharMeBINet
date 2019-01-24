@@ -1,0 +1,3 @@
+DOID:2455	angular blepharoconjunctivitis
+monDO ID 	 name 
+MONDO:0002306	angular blepharoconjunctivitis

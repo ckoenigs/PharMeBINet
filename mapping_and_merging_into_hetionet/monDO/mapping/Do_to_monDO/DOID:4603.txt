@@ -1,0 +1,3 @@
+DOID:4603	epidermolytic hyperkeratosis
+monDO ID 	 name 
+MONDO:0007239	epidermolytic hyperkeratosis

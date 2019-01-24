@@ -1,0 +1,3 @@
+DOID:0050543	Charcot-Marie-Tooth disease intermediate type
+monDO ID 	 name 
+MONDO:0018778	intermediate Charcot-Marie-tooth disease

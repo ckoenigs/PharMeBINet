@@ -1,0 +1,3 @@
+DOID:2247	spondylosis
+monDO ID 	 name 
+MONDO:0002253	spondylosis

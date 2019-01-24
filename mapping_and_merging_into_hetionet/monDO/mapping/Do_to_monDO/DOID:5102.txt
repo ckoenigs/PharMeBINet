@@ -1,0 +1,3 @@
+DOID:5102	inner ear cancer
+monDO ID 	 name 
+MONDO:0003278	inner ear cancer

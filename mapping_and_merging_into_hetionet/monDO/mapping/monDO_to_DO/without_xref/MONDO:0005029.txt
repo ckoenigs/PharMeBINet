@@ -1,0 +1,3 @@
+MONDO:0005029	essential thrombocythemia
+DOID 	 name 
+DOID:2224	essential thrombocythemia

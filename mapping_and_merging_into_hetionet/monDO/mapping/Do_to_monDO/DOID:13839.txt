@@ -1,0 +1,3 @@
+DOID:13839	extrapyramidal and movement disease
+monDO ID 	 name 
+MONDO:0001815	extrapyramidal and movement disease

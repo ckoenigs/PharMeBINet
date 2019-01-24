@@ -1,0 +1,3 @@
+MONDO:0001979	dumping syndrome
+DOID 	 name 
+DOID:14495	dumping syndrome

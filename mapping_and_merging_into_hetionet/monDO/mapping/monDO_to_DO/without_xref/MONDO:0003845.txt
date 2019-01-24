@@ -1,0 +1,3 @@
+MONDO:0003845	corpus callosum lipoma
+DOID 	 name 
+DOID:6294	corpus callosum lipoma

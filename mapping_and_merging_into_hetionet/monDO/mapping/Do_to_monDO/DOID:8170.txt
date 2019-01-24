@@ -1,0 +1,3 @@
+DOID:8170	fibroepithelial polyp of the anus
+monDO ID 	 name 
+MONDO:0006549	fibroepithelial polyp of the anus

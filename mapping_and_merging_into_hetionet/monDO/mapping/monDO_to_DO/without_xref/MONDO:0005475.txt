@@ -1,0 +1,3 @@
+MONDO:0005475	migraine with aura
+DOID 	 name 
+DOID:10024	migraine with aura

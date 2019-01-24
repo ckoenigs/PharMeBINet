@@ -1,0 +1,3 @@
+MONDO:0005967	splenic tuberculosis
+DOID 	 name 
+DOID:9305	splenic tuberculosis

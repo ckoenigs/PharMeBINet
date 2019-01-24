@@ -1,0 +1,3 @@
+DOID:0080165	myeloid and lymphoid neoplasms associated with PDGFRA rearrangement
+monDO ID 	 name 
+MONDO:0000882	myeloid and lymphoid neoplasms associated with PDGFRA rearrangement

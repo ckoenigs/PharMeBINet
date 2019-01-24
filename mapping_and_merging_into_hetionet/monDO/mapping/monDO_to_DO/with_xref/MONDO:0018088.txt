@@ -1,0 +1,3 @@
+MONDO:0018088	familial Mediterranean fever
+DOID 	 name 
+DOID:2987	familial Mediterranean fever

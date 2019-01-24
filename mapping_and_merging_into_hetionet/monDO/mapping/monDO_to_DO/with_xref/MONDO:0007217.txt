@@ -1,0 +1,3 @@
+MONDO:0007217	brachydactyly type A3
+DOID 	 name 
+DOID:0110966	brachydactyly type A3

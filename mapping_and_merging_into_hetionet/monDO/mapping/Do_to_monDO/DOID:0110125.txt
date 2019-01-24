@@ -1,0 +1,3 @@
+DOID:0110125	Bardet-Biedl syndrome 3
+monDO ID 	 name 
+MONDO:0010832	Bardet-Biedl syndrome 3

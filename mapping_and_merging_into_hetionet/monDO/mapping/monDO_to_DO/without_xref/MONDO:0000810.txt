@@ -1,0 +1,3 @@
+MONDO:0000810	DMD-related dilated cardiomyopathy
+DOID 	 name 
+DOID:0060561	DMD-related dilated cardiomyopathy

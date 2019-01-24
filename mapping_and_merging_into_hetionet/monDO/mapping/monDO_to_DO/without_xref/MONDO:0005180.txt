@@ -1,0 +1,3 @@
+MONDO:0005180	Parkinson disease
+DOID 	 name 
+DOID:14330	Parkinson's disease

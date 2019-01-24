@@ -1,0 +1,3 @@
+MONDO:0007011	uveoparotid fever
+DOID 	 name 
+DOID:13404	uveoparotid fever

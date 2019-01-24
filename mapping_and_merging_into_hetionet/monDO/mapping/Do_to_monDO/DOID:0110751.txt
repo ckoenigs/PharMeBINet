@@ -1,0 +1,3 @@
+DOID:0110751	type 1 diabetes mellitus 12
+monDO ID 	 name 
+MONDO:0011068	type 1 diabetes mellitus 12

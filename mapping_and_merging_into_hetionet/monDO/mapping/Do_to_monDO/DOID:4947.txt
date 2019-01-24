@@ -1,0 +1,3 @@
+DOID:4947	cholangiocarcinoma
+monDO ID 	 name 
+MONDO:0019087	cholangiocarcinoma

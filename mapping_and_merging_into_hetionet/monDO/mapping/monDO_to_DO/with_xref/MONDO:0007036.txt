@@ -1,0 +1,3 @@
+MONDO:0007036	Achard syndrome
+DOID 	 name 
+DOID:6686	Achard syndrome

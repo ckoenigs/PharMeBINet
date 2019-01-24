@@ -1,0 +1,3 @@
+DOID:1522	cecum lymphoma
+monDO ID 	 name 
+MONDO:0002034	cecum lymphoma

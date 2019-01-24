@@ -1,0 +1,3 @@
+MONDO:0005264	transient ischemic attack (disease)
+DOID 	 name 
+DOID:224	transient cerebral ischemia

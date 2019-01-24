@@ -1,0 +1,3 @@
+MONDO:0005058	leiomyosarcoma
+DOID 	 name 
+DOID:1967	leiomyosarcoma

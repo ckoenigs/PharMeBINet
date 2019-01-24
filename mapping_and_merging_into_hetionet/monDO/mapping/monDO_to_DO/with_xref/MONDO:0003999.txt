@@ -1,0 +1,11 @@
+MONDO:0003999	juvenile pilocytic astrocytoma
+DOID 	 name 
+DOID:3078	grade III astrocytoma
+DOID:6726	fibrillary astrocytoma
+DOID:7008	protoplasmic astrocytoma
+DOID:7007	childhood cerebral astrocytoma
+DOID:7005	gemistocytic astrocytoma
+DOID:5077	subependymal giant cell astrocytoma
+DOID:3069	astrocytoma
+DOID:6811	juvenile pilocytic astrocytoma
+DOID:4851	pilocytic astrocytoma

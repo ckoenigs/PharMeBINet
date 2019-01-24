@@ -1,0 +1,3 @@
+MONDO:0011325	Fanconi anemia complementation group f
+DOID 	 name 
+DOID:0111088	Fanconi anemia complementation group F

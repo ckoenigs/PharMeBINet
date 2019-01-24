@@ -1,0 +1,3 @@
+DOID:11355	bladder calculus
+monDO ID 	 name 
+MONDO:0006678	bladder calculus

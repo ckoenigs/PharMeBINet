@@ -1,0 +1,3 @@
+MONDO:0000240	invasive aspergillosis
+DOID 	 name 
+DOID:0050073	invasive aspergillosis

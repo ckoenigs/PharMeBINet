@@ -1,0 +1,3 @@
+MONDO:0003105	prostate disease
+DOID 	 name 
+DOID:47	prostate disease

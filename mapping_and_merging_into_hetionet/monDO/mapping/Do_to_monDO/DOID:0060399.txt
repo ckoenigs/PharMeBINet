@@ -1,0 +1,3 @@
+DOID:0060399	chromosome 16p12.1 deletion syndrome, 520kb
+monDO ID 	 name 
+MONDO:0007631	chromosome 16p12.1 deletion syndrome, 520kb

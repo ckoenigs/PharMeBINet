@@ -1,0 +1,3 @@
+DOID:0060095	uterine benign neoplasm
+monDO ID 	 name 
+MONDO:0000632	uterine benign neoplasm

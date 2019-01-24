@@ -1,0 +1,3 @@
+MONDO:0006011	viral hepatitis
+DOID 	 name 
+DOID:1884	viral hepatitis

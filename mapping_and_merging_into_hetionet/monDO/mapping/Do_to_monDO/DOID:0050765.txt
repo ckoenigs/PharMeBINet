@@ -1,0 +1,3 @@
+DOID:0050765	neuroacanthocytosis
+monDO ID 	 name 
+MONDO:0016987	neuroacanthocytosis

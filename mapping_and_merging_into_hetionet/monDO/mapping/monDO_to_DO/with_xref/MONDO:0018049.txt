@@ -1,0 +1,3 @@
+MONDO:0018049	Kaposi sarcoma
+DOID 	 name 
+DOID:8632	Kaposi's sarcoma

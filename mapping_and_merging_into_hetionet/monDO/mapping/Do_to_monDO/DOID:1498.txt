@@ -1,0 +1,3 @@
+DOID:1498	cholera
+monDO ID 	 name 
+MONDO:0015766	cholera

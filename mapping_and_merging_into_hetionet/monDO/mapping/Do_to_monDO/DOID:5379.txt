@@ -1,0 +1,3 @@
+DOID:5379	hemoglobin E disease
+monDO ID 	 name 
+MONDO:0016243	hemoglobin E disease

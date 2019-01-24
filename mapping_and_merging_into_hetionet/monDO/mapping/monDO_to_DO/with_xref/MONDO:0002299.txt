@@ -1,0 +1,5 @@
+MONDO:0002299	glomangioma
+DOID 	 name 
+DOID:8020	glomangiomyoma
+DOID:2436	glomangioma
+DOID:2431	glomus tumor

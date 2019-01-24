@@ -1,0 +1,3 @@
+DOID:13957	uterine corpus lipoleiomyoma
+monDO ID 	 name 
+MONDO:0001845	uterine corpus lipoleiomyoma

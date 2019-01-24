@@ -1,0 +1,3 @@
+DOID:2080	vulvar trichoepithelioma
+monDO ID 	 name 
+MONDO:0002201	vulvar trichoepithelioma

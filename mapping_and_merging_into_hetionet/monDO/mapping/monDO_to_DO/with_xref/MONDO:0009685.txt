@@ -1,0 +1,3 @@
+MONDO:0009685	Miyoshi myopathy
+DOID 	 name 
+DOID:11720	distal muscular dystrophy

@@ -1,0 +1,3 @@
+DOID:713	HCL-V
+monDO ID 	 name 
+MONDO:0017600	hairy cell leukemia variant

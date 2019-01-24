@@ -1,0 +1,3 @@
+MONDO:0014288	Joubert syndrome 21
+DOID 	 name 
+DOID:0110990	Joubert syndrome 21

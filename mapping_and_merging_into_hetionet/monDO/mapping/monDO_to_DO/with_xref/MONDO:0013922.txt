@@ -1,0 +1,3 @@
+MONDO:0013922	microcephalic primordial dwarfism, Dauber type
+DOID 	 name 
+DOID:0050569	Seckel syndrome

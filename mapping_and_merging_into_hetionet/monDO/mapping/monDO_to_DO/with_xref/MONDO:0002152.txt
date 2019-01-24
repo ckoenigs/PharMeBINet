@@ -1,0 +1,3 @@
+MONDO:0002152	intermittent squint
+DOID 	 name 
+DOID:1942	intermittent squint

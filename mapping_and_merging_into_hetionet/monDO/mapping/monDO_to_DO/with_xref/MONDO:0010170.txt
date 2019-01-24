@@ -1,0 +1,3 @@
+MONDO:0010170	Usher syndrome type 3A
+DOID 	 name 
+DOID:0110841	Usher syndrome type 3A

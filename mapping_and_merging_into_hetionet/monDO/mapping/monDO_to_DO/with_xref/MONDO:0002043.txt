@@ -1,0 +1,3 @@
+MONDO:0002043	ectropion (disease)
+DOID 	 name 
+DOID:1570	ectropion

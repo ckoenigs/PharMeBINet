@@ -1,0 +1,3 @@
+MONDO:0014444	Bardet-Biedl syndrome 16
+DOID 	 name 
+DOID:0110138	Bardet-Biedl syndrome 16

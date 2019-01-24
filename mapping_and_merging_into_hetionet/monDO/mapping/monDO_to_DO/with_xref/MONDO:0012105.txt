@@ -1,0 +1,3 @@
+MONDO:0012105	Wegener's granulomatosis
+DOID 	 name 
+DOID:12132	Wegener's granulomatosis

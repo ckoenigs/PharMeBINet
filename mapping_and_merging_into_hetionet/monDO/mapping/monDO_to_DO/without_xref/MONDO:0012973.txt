@@ -1,0 +1,3 @@
+MONDO:0012973	inflammatory bowel disease 26
+DOID 	 name 
+DOID:0110901	inflammatory bowel disease 26

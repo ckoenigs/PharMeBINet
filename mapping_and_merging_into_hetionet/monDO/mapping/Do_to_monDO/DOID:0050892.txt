@@ -1,0 +1,3 @@
+DOID:0050892	adrenal gland pheochromocytoma
+monDO ID 	 name 
+MONDO:0004974	adrenal gland pheochromocytoma

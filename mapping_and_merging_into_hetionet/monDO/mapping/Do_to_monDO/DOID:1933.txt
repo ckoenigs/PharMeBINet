@@ -1,0 +1,3 @@
+DOID:1933	Rubinstein-Taybi syndrome
+monDO ID 	 name 
+MONDO:0019188	Rubinstein-Taybi syndrome

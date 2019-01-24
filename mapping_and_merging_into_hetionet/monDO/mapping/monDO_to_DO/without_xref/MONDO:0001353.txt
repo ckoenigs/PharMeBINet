@@ -1,0 +1,3 @@
+MONDO:0001353	bordetella parapertussis whooping cough
+DOID 	 name 
+DOID:11750	Bordetella parapertussis whooping cough

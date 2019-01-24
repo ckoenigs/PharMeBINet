@@ -1,0 +1,3 @@
+DOID:3742	bladder squamous cell carcinoma
+monDO ID 	 name 
+MONDO:0002760	bladder squamous cell carcinoma

@@ -1,0 +1,3 @@
+DOID:0060435	chromosome 1q21.1 duplication syndrome
+monDO ID 	 name 
+MONDO:0012915	chromosome 1q21.1 duplication syndrome

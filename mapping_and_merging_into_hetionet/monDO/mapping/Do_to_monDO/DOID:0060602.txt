@@ -1,0 +1,3 @@
+DOID:0060602	alpha-methylacyl-CoA racemase deficiency
+monDO ID 	 name 
+MONDO:0013681	alpha-methylacyl-CoA racemase deficiency

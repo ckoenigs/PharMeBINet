@@ -1,0 +1,4 @@
+MONDO:0001020	amblyopia (disease)
+DOID 	 name 
+DOID:10376	amblyopia
+DOID:10375	suppression amblyopia

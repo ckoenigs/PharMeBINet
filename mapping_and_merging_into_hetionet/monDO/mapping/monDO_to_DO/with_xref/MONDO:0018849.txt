@@ -1,0 +1,3 @@
+MONDO:0018849	dentinogenesis imperfecta (disease)
+DOID 	 name 
+DOID:4154	dentinogenesis imperfecta

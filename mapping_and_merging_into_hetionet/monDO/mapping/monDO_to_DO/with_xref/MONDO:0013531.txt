@@ -1,0 +1,3 @@
+MONDO:0013531	PSPH deficiency
+DOID 	 name 
+DOID:0050724	PSPH deficiency

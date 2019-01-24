@@ -1,0 +1,3 @@
+MONDO:0001729	active cochlear Meniere's disease
+DOID 	 name 
+DOID:13492	active cochlear Meniere's disease

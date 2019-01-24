@@ -1,0 +1,3 @@
+DOID:8446	intussusception
+monDO ID 	 name 
+MONDO:0007835	intussusception

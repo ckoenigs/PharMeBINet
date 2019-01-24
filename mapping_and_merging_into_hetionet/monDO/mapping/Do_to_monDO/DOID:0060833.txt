@@ -1,0 +1,3 @@
+DOID:0060833	Griscelli syndrome type 2
+monDO ID 	 name 
+MONDO:0011872	Griscelli syndrome type 2

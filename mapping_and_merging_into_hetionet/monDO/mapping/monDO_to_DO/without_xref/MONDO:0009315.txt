@@ -1,0 +1,3 @@
+MONDO:0009315	congenital factor XII deficiency
+DOID 	 name 
+DOID:2231	factor XII deficiency

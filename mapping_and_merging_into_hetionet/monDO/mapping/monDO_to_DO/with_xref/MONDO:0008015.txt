@@ -1,0 +1,3 @@
+MONDO:0008015	motion sickness
+DOID 	 name 
+DOID:2951	motion sickness

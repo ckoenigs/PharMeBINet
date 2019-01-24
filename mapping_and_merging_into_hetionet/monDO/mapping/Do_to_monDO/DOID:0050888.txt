@@ -1,0 +1,3 @@
+DOID:0050888	syndromic intellectual disability
+monDO ID 	 name 
+MONDO:0000508	syndromic intellectual disability

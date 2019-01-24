@@ -1,0 +1,3 @@
+DOID:479	angiokeratoma
+monDO ID 	 name 
+MONDO:0003143	angiokeratoma

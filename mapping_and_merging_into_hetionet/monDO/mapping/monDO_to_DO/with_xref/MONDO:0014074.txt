@@ -1,0 +1,3 @@
+MONDO:0014074	Charcot-Marie-tooth disease dominant intermediate f
+DOID 	 name 
+DOID:0110206	Charcot-Marie-Tooth disease dominant intermediate F

@@ -1,0 +1,3 @@
+DOID:13812	adhesions of uterus
+monDO ID 	 name 
+MONDO:0001809	adhesions of uterus

@@ -1,0 +1,3 @@
+DOID:0110103	atopic dermatitis 7
+monDO ID 	 name 
+MONDO:0013107	atopic dermatitis 7

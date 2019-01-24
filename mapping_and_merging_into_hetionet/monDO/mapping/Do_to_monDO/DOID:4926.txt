@@ -1,0 +1,3 @@
+DOID:4926	bronchiolo-alveolar adenocarcinoma
+monDO ID 	 name 
+MONDO:0004991	bronchoalveolar adenocarcinoma

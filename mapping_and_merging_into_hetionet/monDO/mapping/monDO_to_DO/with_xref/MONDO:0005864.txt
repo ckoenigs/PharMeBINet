@@ -1,0 +1,4 @@
+MONDO:0005864	muscle cancer
+DOID 	 name 
+DOID:4045	muscle cancer
+DOID:461	muscle benign neoplasm

@@ -1,0 +1,3 @@
+MONDO:0012069	KTCN3
+DOID 	 name 
+DOID:10126	keratoconus

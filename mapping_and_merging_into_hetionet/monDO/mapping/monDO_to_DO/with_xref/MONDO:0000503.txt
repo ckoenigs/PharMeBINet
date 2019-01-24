@@ -1,0 +1,3 @@
+MONDO:0000503	in situ pulmonary adenocarcinoma
+DOID 	 name 
+DOID:0050870	in situ pulmonary adenocarcinoma

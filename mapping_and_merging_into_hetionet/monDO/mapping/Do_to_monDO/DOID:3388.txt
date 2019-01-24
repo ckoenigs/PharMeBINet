@@ -1,0 +1,3 @@
+DOID:3388	periodontal disease
+monDO ID 	 name 
+MONDO:0002635	periodontal disease

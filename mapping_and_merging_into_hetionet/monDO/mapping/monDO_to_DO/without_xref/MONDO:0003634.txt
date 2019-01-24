@@ -1,0 +1,3 @@
+MONDO:0003634	proteinuria
+DOID 	 name 
+DOID:576	proteinuria

@@ -1,0 +1,3 @@
+DOID:0080128	mitochondrial DNA depletion syndrome 9
+monDO ID 	 name 
+MONDO:0009504	mitochondrial DNA depletion syndrome 9

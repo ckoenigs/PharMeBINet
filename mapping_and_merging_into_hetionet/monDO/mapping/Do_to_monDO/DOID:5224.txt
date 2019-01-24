@@ -1,0 +1,3 @@
+DOID:5224	acute hemorrhagic encephalitis
+monDO ID 	 name 
+MONDO:0003337	acute hemorrhagic encephalitis

@@ -1,0 +1,3 @@
+MONDO:0007165	spastic ataxia 7
+DOID 	 name 
+DOID:0050945	spastic ataxia 7

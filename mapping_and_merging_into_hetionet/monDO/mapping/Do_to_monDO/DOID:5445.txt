@@ -1,0 +1,3 @@
+DOID:5445	syringocystadenoma papilliferum
+monDO ID 	 name 
+MONDO:0019392	syringocystadenoma papilliferum

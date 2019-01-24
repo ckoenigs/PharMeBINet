@@ -1,0 +1,3 @@
+MONDO:0005077	whooping cough
+DOID 	 name 
+DOID:1116	pertussis

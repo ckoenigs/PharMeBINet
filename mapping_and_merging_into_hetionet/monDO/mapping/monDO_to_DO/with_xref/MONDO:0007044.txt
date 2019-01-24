@@ -1,0 +1,3 @@
+MONDO:0007044	acrodysostosis 1 with or without hormone resistance
+DOID 	 name 
+DOID:14669	acrodysostosis

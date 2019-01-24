@@ -1,0 +1,3 @@
+MONDO:0010305	creatine transporter deficiency
+DOID 	 name 
+DOID:0050800	creatine transporter deficiency

@@ -1,0 +1,3 @@
+MONDO:0018310	Langerhans cell histiocytosis
+DOID 	 name 
+DOID:2571	Langerhans-cell histiocytosis

@@ -1,0 +1,3 @@
+MONDO:0006930	pseudobulbar palsy
+DOID 	 name 
+DOID:12680	pseudobulbar palsy

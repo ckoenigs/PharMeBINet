@@ -1,0 +1,3 @@
+MONDO:0003915	cortical thymoma
+DOID 	 name 
+DOID:6530	cortical thymoma

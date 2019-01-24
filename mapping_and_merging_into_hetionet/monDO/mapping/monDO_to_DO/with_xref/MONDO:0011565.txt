@@ -1,0 +1,3 @@
+MONDO:0011565	metabolic syndrome X
+DOID 	 name 
+DOID:14221	metabolic syndrome X

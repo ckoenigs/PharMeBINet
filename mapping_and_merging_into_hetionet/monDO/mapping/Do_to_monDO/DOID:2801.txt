@@ -1,0 +1,3 @@
+DOID:2801	nonspecific interstitial pneumonia
+monDO ID 	 name 
+MONDO:0019622	non-specific interstitial pneumonia

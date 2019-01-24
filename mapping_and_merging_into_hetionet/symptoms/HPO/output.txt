@@ -1,121 +1,192 @@
-2018-01-10 06:55:26.457596
+2018-02-26 06:31:01.105968
 ##########################################################################
-2018-01-10 06:55:26.457615
+2018-02-26 06:31:01.105999
 connection to db
 ##########################################################################
-2018-01-10 06:55:26.467745
+2018-02-26 06:31:01.371557
 load in diseases information in dictionaries
-number of name to doid:22745
-number of different umls cuis:6521
-number of different omims:845
+blub
+number of name to mondo:56097
+number of different umls cuis:14166
+number of different omims:6303
+number of different orphanets:5712
 ##########################################################################
-2018-01-10 06:55:29.347265
-map hpo disease to doid
-2018-01-10 07:07:12.237269
+2018-02-26 06:31:12.287673
+map hpo disease to mondo
+2018-02-26 06:36:08.510654
 1000
-number of decipher:94
-number of not mapped decipher:26
-number of mapped decipher with name:18
-number of decipher with mapped umls cui:4
-number of mapped decipher with name splitted:20
+number of decipher:47
+number of not mapped decipher:21
+number of mapped decipher with name:12
+number of decipher with mapped umls cui:0
+number of mapped decipher with name splitted:14
 number of omim:952
-number of not mapped omim:781
-number of direct map omim:54
-number of map omim with umls cui:83
-number of map omim with name:34
-2018-01-10 07:07:13.137546
+number of not mapped omim:181
+number of direct map omim:673
+number of map omim with umls cui:70
+number of map omim with name:28
+number of orpha:0
+number of not mapped orpha:0
+number of direct map orpha:0
+number of map orpha with umls cui:0
+2018-02-26 06:36:09.214366
 2000
-number of decipher:94
-number of not mapped decipher:26
-number of mapped decipher with name:18
-number of decipher with mapped umls cui:4
-number of mapped decipher with name splitted:20
+number of decipher:47
+number of not mapped decipher:21
+number of mapped decipher with name:12
+number of decipher with mapped umls cui:0
+number of mapped decipher with name splitted:14
 number of omim:1952
-number of not mapped omim:1605
-number of direct map omim:114
-number of map omim with umls cui:180
-number of map omim with name:53
-2018-01-10 07:07:13.938082
+number of not mapped omim:351
+number of direct map omim:1411
+number of map omim with umls cui:150
+number of map omim with name:40
+number of orpha:0
+number of not mapped orpha:0
+number of direct map orpha:0
+number of map orpha with umls cui:0
+2018-02-26 06:36:09.761617
 3000
-number of decipher:94
-number of not mapped decipher:26
-number of mapped decipher with name:18
-number of decipher with mapped umls cui:4
-number of mapped decipher with name splitted:20
+number of decipher:47
+number of not mapped decipher:21
+number of mapped decipher with name:12
+number of decipher with mapped umls cui:0
+number of mapped decipher with name splitted:14
 number of omim:2952
-number of not mapped omim:2422
-number of direct map omim:165
-number of map omim with umls cui:282
-number of map omim with name:83
-2018-01-10 07:07:14.692546
+number of not mapped omim:493
+number of direct map omim:2164
+number of map omim with umls cui:235
+number of map omim with name:60
+number of orpha:0
+number of not mapped orpha:0
+number of direct map orpha:0
+number of map orpha with umls cui:0
+2018-02-26 06:36:10.432271
 4000
-number of decipher:94
-number of not mapped decipher:26
-number of mapped decipher with name:18
-number of decipher with mapped umls cui:4
-number of mapped decipher with name splitted:20
+number of decipher:47
+number of not mapped decipher:21
+number of mapped decipher with name:12
+number of decipher with mapped umls cui:0
+number of mapped decipher with name splitted:14
 number of omim:3952
-number of not mapped omim:3278
-number of direct map omim:224
-number of map omim with umls cui:345
-number of map omim with name:105
-2018-01-10 07:07:15.182619
+number of not mapped omim:708
+number of direct map omim:2878
+number of map omim with umls cui:293
+number of map omim with name:73
+number of orpha:0
+number of not mapped orpha:0
+number of direct map orpha:0
+number of map orpha with umls cui:0
+2018-02-26 06:36:10.825397
 5000
-number of decipher:94
-number of not mapped decipher:26
-number of mapped decipher with name:18
-number of decipher with mapped umls cui:4
-number of mapped decipher with name splitted:20
+number of decipher:47
+number of not mapped decipher:21
+number of mapped decipher with name:12
+number of decipher with mapped umls cui:0
+number of mapped decipher with name splitted:14
 number of omim:4952
-number of not mapped omim:4098
-number of direct map omim:342
-number of map omim with umls cui:376
-number of map omim with name:136
-2018-01-10 07:07:15.607834
+number of not mapped omim:969
+number of direct map omim:3563
+number of map omim with umls cui:323
+number of map omim with name:97
+number of orpha:0
+number of not mapped orpha:0
+number of direct map orpha:0
+number of map orpha with umls cui:0
+2018-02-26 06:36:11.149223
 6000
-number of decipher:94
-number of not mapped decipher:26
-number of mapped decipher with name:18
-number of decipher with mapped umls cui:4
-number of mapped decipher with name splitted:20
+number of decipher:47
+number of not mapped decipher:21
+number of mapped decipher with name:12
+number of decipher with mapped umls cui:0
+number of mapped decipher with name splitted:14
 number of omim:5952
-number of not mapped omim:4906
-number of direct map omim:485
-number of map omim with umls cui:389
-number of map omim with name:172
-2018-01-10 07:07:15.972475
+number of not mapped omim:1244
+number of direct map omim:4245
+number of map omim with umls cui:332
+number of map omim with name:131
+number of orpha:0
+number of not mapped orpha:0
+number of direct map orpha:0
+number of map orpha with umls cui:0
+2018-02-26 06:36:11.405140
 7000
-number of decipher:94
-number of not mapped decipher:26
-number of mapped decipher with name:18
-number of decipher with mapped umls cui:4
-number of mapped decipher with name splitted:20
+number of decipher:47
+number of not mapped decipher:21
+number of mapped decipher with name:12
+number of decipher with mapped umls cui:0
+number of mapped decipher with name splitted:14
 number of omim:6952
-number of not mapped omim:5754
-number of direct map omim:614
-number of map omim with umls cui:393
-number of map omim with name:191
-2018-01-10 09:23:11.230649
+number of not mapped omim:1447
+number of direct map omim:5025
+number of map omim with umls cui:334
+number of map omim with name:146
+number of orpha:0
+number of not mapped orpha:0
+number of direct map orpha:0
+number of map orpha with umls cui:0
+2018-02-26 06:36:11.870568
 8000
-number of decipher:1542
-number of not mapped decipher:576
-number of mapped decipher with name:308
-number of decipher with mapped umls cui:62
-number of mapped decipher with name splitted:20
+number of decipher:47
+number of not mapped decipher:21
+number of mapped decipher with name:12
+number of decipher with mapped umls cui:0
+number of mapped decipher with name splitted:14
 number of omim:7228
-number of not mapped omim:6002
-number of direct map omim:635
-number of map omim with umls cui:393
-number of map omim with name:198
-2018-01-10 12:16:54.216931
+number of not mapped omim:1497
+number of direct map omim:5245
+number of map omim with umls cui:335
+number of map omim with name:151
+number of orpha:724
+number of not mapped orpha:73
+number of direct map orpha:504
+number of map orpha with umls cui:0
+2018-02-26 06:36:12.274191
 9000
-number of decipher:3542
-number of not mapped decipher:1332
-number of mapped decipher with name:726
-number of decipher with mapped umls cui:132
-number of mapped decipher with name splitted:20
+number of decipher:47
+number of not mapped decipher:21
+number of mapped decipher with name:12
+number of decipher with mapped umls cui:0
+number of mapped decipher with name splitted:14
 number of omim:7228
-number of not mapped omim:6002
-number of direct map omim:635
-number of map omim with umls cui:393
-number of map omim with name:198
+number of not mapped omim:1497
+number of direct map omim:5245
+number of map omim with umls cui:335
+number of map omim with name:151
+number of orpha:1724
+number of not mapped orpha:166
+number of direct map orpha:1195
+number of map orpha with umls cui:0
+2018-02-26 06:36:12.966821
+10000
+number of decipher:47
+number of not mapped decipher:21
+number of mapped decipher with name:12
+number of decipher with mapped umls cui:0
+number of mapped decipher with name splitted:14
+number of omim:7228
+number of not mapped omim:1497
+number of direct map omim:5245
+number of map omim with umls cui:335
+number of map omim with name:151
+number of orpha:2724
+number of not mapped orpha:272
+number of direct map orpha:1769
+number of map orpha with umls cui:0
+##########################################################################
+2018-02-26 06:36:13.001394
+integrate mapping into hetionet for disease
+##########################################################################
+2018-02-26 06:43:35.870735
+map hpo symptoms to mesh or umls cui and integrated them into hetionet
+number of hpos with no umls cui:34
+number of new symptoms:7360
+number of already existing symptoms:420
+##########################################################################
+2018-02-26 07:04:42.847267
+put all relationship information into a cypher file
+number of new connection:115300
+number of update connection:12
+115312
+##########################################################################
+2018-02-26 07:13:54.634583

@@ -1,0 +1,3 @@
+MONDO:0010965	autosomal recessive nonsyndromic deafness 6
+DOID 	 name 
+DOID:0110512	autosomal recessive nonsyndromic deafness 6

@@ -1,0 +1,3 @@
+MONDO:0009380	Dubin-Johnson syndrome
+DOID 	 name 
+DOID:12308	Dubin-Johnson syndrome

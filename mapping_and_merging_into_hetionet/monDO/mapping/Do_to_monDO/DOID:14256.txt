@@ -1,0 +1,3 @@
+DOID:14256	adult-onset Still's disease
+monDO ID 	 name 
+MONDO:0019355	adult-onset Still disease

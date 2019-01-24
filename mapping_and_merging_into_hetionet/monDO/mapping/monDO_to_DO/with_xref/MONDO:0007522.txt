@@ -1,0 +1,3 @@
+MONDO:0007522	Ehlers-Danlos syndrome, classic type
+DOID 	 name 
+DOID:14720	type I Ehlers-Danlos syndrome

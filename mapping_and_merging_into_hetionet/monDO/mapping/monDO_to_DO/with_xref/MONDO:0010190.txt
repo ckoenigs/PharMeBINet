@@ -1,0 +1,3 @@
+MONDO:0010190	pontocerebellar hypoplasia type 2A
+DOID 	 name 
+DOID:0060267	pontocerebellar hypoplasia type 2A

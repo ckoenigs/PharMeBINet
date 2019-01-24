@@ -1,0 +1,3 @@
+MONDO:0001424	sarcoid meningitis
+DOID 	 name 
+DOID:12055	sarcoid meningitis

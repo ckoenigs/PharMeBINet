@@ -1,0 +1,3 @@
+DOID:9384	gonococcal iridocyclitis
+monDO ID 	 name 
+MONDO:0004774	gonococcal iridocyclitis

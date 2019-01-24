@@ -1,0 +1,3 @@
+DOID:7713	tuberculum sellae meningioma
+monDO ID 	 name 
+MONDO:0004339	tuberculum sellae meningioma

@@ -1,0 +1,3 @@
+DOID:2763	ethmoid sinus squamous cell carcinoma
+monDO ID 	 name 
+MONDO:0002416	ethmoid sinus squamous cell carcinoma

@@ -1,0 +1,3 @@
+DOID:0060097	thoracic benign neoplasm
+monDO ID 	 name 
+MONDO:0000634	thoracic benign neoplasm

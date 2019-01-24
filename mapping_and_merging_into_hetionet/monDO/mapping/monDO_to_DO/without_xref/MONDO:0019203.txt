@@ -1,0 +1,3 @@
+MONDO:0019203	acute interstitial pneumonia
+DOID 	 name 
+DOID:2800	acute interstitial pneumonia

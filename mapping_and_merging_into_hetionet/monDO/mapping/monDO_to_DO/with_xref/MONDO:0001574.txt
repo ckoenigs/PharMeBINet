@@ -1,0 +1,3 @@
+MONDO:0001574	capillary disease
+DOID 	 name 
+DOID:1271	capillary disease

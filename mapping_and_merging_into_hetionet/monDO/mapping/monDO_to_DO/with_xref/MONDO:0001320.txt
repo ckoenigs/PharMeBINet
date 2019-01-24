@@ -1,0 +1,3 @@
+MONDO:0001320	ring staphyloma
+DOID 	 name 
+DOID:11594	ring staphyloma

@@ -1,0 +1,3 @@
+DOID:2112	cystoisosporiasis
+monDO ID 	 name 
+MONDO:0018769	isosporiasis

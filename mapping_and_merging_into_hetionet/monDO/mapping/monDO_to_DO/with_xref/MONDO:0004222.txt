@@ -1,0 +1,3 @@
+MONDO:0004222	ovarian clear cell cystadenocarcinoma
+DOID 	 name 
+DOID:7438	ovarian clear cell cystadenocarcinoma

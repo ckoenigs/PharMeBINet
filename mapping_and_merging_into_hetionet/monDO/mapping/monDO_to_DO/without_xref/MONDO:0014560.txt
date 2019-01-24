@@ -1,0 +1,3 @@
+MONDO:0014560	amelogenesis imperfecta type 1F
+DOID 	 name 
+DOID:0110065	amelogenesis imperfecta type 1F

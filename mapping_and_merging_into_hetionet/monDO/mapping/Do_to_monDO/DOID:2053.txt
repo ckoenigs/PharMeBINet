@@ -1,0 +1,3 @@
+DOID:2053	reactive cutaneous fibrous lesion
+monDO ID 	 name 
+MONDO:0006603	reactive cutaneous fibrous lesion

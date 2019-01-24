@@ -1,0 +1,3 @@
+MONDO:0002183	enthesopathy
+DOID 	 name 
+DOID:204	enthesopathy

@@ -1,0 +1,3 @@
+MONDO:0013984	autosomal recessive nonsyndromic deafness 84B
+DOID 	 name 
+DOID:0110530	autosomal recessive nonsyndromic deafness 84B

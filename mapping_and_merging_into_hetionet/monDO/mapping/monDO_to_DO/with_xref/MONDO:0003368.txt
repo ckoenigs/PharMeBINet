@@ -1,0 +1,3 @@
+MONDO:0003368	prostate leiomyosarcoma
+DOID 	 name 
+DOID:5282	prostate leiomyosarcoma

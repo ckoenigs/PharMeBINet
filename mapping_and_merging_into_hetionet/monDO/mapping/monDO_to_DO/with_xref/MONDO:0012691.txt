@@ -1,0 +1,3 @@
+MONDO:0012691	leopard syndrome 2
+DOID 	 name 
+DOID:14291	LEOPARD syndrome

@@ -1,0 +1,3 @@
+MONDO:0012644	asphyxiating thoracic dystrophy 2
+DOID 	 name 
+DOID:0110086	asphyxiating thoracic dystrophy 2

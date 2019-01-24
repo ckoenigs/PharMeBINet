@@ -1,0 +1,3 @@
+DOID:7079	adult cystic teratoma
+monDO ID 	 name 
+MONDO:0004099	adult cystic teratoma

@@ -1,0 +1,3 @@
+DOID:9842	total circumpapillary dystrophy of choroid
+monDO ID 	 name 
+MONDO:0004898	total circumpapillary dystrophy of choroid

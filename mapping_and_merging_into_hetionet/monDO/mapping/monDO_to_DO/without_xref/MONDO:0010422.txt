@@ -1,0 +1,3 @@
+MONDO:0010422	Alzheimer's disease 16
+DOID 	 name 
+DOID:0110036	Alzheimer's disease 16

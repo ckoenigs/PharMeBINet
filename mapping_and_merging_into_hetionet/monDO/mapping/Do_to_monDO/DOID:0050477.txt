@@ -1,0 +1,3 @@
+DOID:0050477	Liddle syndrome
+monDO ID 	 name 
+MONDO:0008323	Liddle syndrome

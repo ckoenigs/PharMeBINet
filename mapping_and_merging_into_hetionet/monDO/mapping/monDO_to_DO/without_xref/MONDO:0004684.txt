@@ -1,0 +1,3 @@
+MONDO:0004684	plantar fibromatosis
+DOID 	 name 
+DOID:8936	plantar fascial fibromatosis

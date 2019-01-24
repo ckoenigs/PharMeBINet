@@ -1,0 +1,3 @@
+MONDO:0000739	uvulitis
+DOID 	 name 
+DOID:0060310	uvulitis

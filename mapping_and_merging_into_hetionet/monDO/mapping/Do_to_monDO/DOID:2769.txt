@@ -1,0 +1,3 @@
+DOID:2769	tic disorder
+monDO ID 	 name 
+MONDO:0002420	tic disorder

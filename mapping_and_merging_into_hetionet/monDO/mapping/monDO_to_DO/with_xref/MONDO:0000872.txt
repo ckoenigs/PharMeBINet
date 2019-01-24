@@ -1,0 +1,3 @@
+MONDO:0000872	b-cell childhood acute lymphoblastic leukemia
+DOID 	 name 
+DOID:0080146	B-cell childhood acute lymphoblastic leukemia

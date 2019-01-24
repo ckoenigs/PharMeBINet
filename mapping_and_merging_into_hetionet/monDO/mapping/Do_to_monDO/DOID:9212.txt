@@ -1,0 +1,3 @@
+DOID:9212	pityriasis rubra pilaris
+monDO ID 	 name 
+MONDO:0008251	pityriasis rubra pilaris

@@ -1,0 +1,3 @@
+MONDO:0014024	hereditary spastic paraplegia 43
+DOID 	 name 
+DOID:0110795	hereditary spastic paraplegia 43

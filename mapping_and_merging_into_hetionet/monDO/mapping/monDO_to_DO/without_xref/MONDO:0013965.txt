@@ -1,0 +1,3 @@
+MONDO:0013965	lethal congenital contracture syndrome 4
+DOID 	 name 
+DOID:0060654	lethal congenital contracture syndrome 4

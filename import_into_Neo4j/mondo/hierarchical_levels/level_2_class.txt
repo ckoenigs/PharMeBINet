@@ -1,322 +1,392 @@
 MonDO_id 	 MonDO_name 	 parent_id 	 parent_name 
-MONDO:0005071	nervous system disease	MONDO:0021199	disease affecting anatomical system
-MONDO:0019623	hereditary angioedema	MONDO:0003847	inherited genetic disease
-MONDO:0009369	non-immune hydrops fetalis	MONDO:0003847	inherited genetic disease
-MONDO:0005076	periodontitis	MONDO:0021166	inflammatory disease
-MONDO:0015106	rare urogenital disease	MONDO:0021200	rare disease
-MONDO:0007653	genochondromatosis	MONDO:0003847	inherited genetic disease
-MONDO:0002028	personality disorder (disease)	MONDO:0002025	disease of mental health
-MONDO:0015778	syndromic hypothyroidism	MONDO:0002254	syndromic disease
-MONDO:0020269	syndromic ichthyosis associated with ocular features	MONDO:0002254	syndromic disease
-MONDO:0005315	bone fracture	MONDO:0021178	injury
-MONDO:0005275	lung disease	MONDO:0000651	thoracic disease
-MONDO:0000507	inclusion body myopathy with Paget disease of bone and frontotemporal dementia	MONDO:0002254	syndromic disease
-MONDO:0019052	inborn errors of metabolism	MONDO:0003847	inherited genetic disease
-MONDO:0020225	syndromic cataract	MONDO:0002254	syndromic disease
-MONDO:0015620	syndromic urogenital tract malformation	MONDO:0002254	syndromic disease
-MONDO:0004779	epididymitis (disease)	MONDO:0005550|MONDO:0021166	infectious disease|inflammatory disease
-MONDO:0000358	orofacial cleft	MONDO:0000839	physical disorder
-MONDO:0005039	reproductive system disease	MONDO:0021199	disease affecting anatomical system
-MONDO:0002008	labyrinthitis	MONDO:0021166	inflammatory disease
-MONDO:0011323	arhinia, choanal atresia, and microphthalmia	MONDO:0003847	inherited genetic disease
-MONDO:0017953	hereditary periodic fever syndrome	MONDO:0003847	inherited genetic disease
-MONDO:0001500	gender identity disorder	MONDO:0002025	disease of mental health
+MONDO:0006901	peritoneal neoplasm	MONDO:0021199	disease affecting anatomical system
 MONDO:0002657	breast disease	MONDO:0000651	thoracic disease
-MONDO:0017118	syndrome with a cerebellar malformation as major feature	MONDO:0002254	syndromic disease
-MONDO:0016419	hereditary breast carcinoma	MONDO:0003847	inherited genetic disease
-MONDO:0009105	syndromic diarrhea	MONDO:0002254	syndromic disease
-MONDO:0016463	syndromic agammaglobulinemia	MONDO:0002254	syndromic disease
+MONDO:0005071	nervous system disease	MONDO:0021199	disease affecting anatomical system
+MONDO:0007653	genochondromatosis	MONDO:0003847	inherited genetic disease
+MONDO:0017953	hereditary periodic fever syndrome	MONDO:0003847	inherited genetic disease
 MONDO:0000611	pre-malignant neoplasm	MONDO:0021074	precancerous condition
 MONDO:0021003	polydactyly (disease)	MONDO:0000839	physical disorder
 MONDO:0003799	conjunctivitis (disease)	MONDO:0021166	inflammatory disease
 MONDO:0009624	microcephaly and chorioretinopathy 1	MONDO:0002254	syndromic disease
-MONDO:0002494	substance-related disorder	MONDO:0002025	disease of mental health
-MONDO:0015212	syndromic intestinal malformation	MONDO:0002254	syndromic disease
 MONDO:0007018	vulvitis	MONDO:0021166	inflammatory disease
-MONDO:0021157	gonococcal cervicitis	MONDO:0021166	inflammatory disease
-MONDO:0004934	periostitis (disease)	MONDO:0021166	inflammatory disease
-MONDO:0002052	lymphadenitis (disease)	MONDO:0021166	inflammatory disease
-MONDO:0005926	poliomyelitis	MONDO:0021166	inflammatory disease
-MONDO:0015691	hypereosinophilic syndrome	MONDO:0002254	syndromic disease
-MONDO:0015278	familial pancreatic carcinoma	MONDO:0003847	inherited genetic disease
-MONDO:0002051	integumentary system disease	MONDO:0021199	disease affecting anatomical system
 MONDO:0006877	oophoritis	MONDO:0021166	inflammatory disease
 MONDO:0003008	hereditary renal cell carcinoma	MONDO:0003847	inherited genetic disease
-MONDO:0011782	angioid streaks	MONDO:0003847	inherited genetic disease
-MONDO:0003067	cervical lymphadenitis	MONDO:0021059	head and neck disease
-MONDO:0007197	bladder diverticulum (disease)	MONDO:0003847	inherited genetic disease
-MONDO:0002647	laryngitis	MONDO:0021166	inflammatory disease
-MONDO:0002645	cerebritis	MONDO:0021166	inflammatory disease
-MONDO:0007972	Meniere disease	MONDO:0003847	inherited genetic disease
-MONDO:0011789	familial meningioma	MONDO:0003847	inherited genetic disease
-MONDO:0016620	primary hypertrophic osteoarthropathy	MONDO:0002254	syndromic disease
-MONDO:0019520	syndromic lymphedema	MONDO:0002254	syndromic disease
-MONDO:0007354	coloboma of optic nerve (disease)	MONDO:0003847	inherited genetic disease
-MONDO:0015895	syndrome with hypoparathyroidism	MONDO:0002254	syndromic disease
-MONDO:0007275	carpal tunnel syndrome	MONDO:0003847	inherited genetic disease
-MONDO:0017417	renal-hepatic-pancreatic dysplasia	MONDO:0000839	physical disorder
-MONDO:0001631	vertebral artery insufficiency	MONDO:0002254	syndromic disease
-MONDO:0021094	immunodeficiency syndrome	MONDO:0002254	syndromic disease
+MONDO:0009256	galactorrhea (disease)	MONDO:0003847	inherited genetic disease
+MONDO:0007275	carpal tunnel syndrome	MONDO:0002254|MONDO:0003847	syndromic disease|inherited genetic disease
 MONDO:0004982	pancreatitis	MONDO:0021166	inflammatory disease
-MONDO:0015210	syndromic gastroduodenal malformation	MONDO:0002254	syndromic disease
-MONDO:0007441	dentinogenesis imperfecta type 2	MONDO:0003847	inherited genetic disease
-MONDO:0021099	intraductal papillomatosis	MONDO:0021199	disease affecting anatomical system
-MONDO:0005249	pneumonia	MONDO:0005550	infectious disease
-MONDO:0017652	rare disease with myoclonus as a major feature	MONDO:0002254	syndromic disease
 MONDO:0020024	rare infertility	MONDO:0021200	rare disease
-MONDO:0021156	hypophysitis	MONDO:0021166	inflammatory disease
-MONDO:0003781	bronchitis	MONDO:0021166	inflammatory disease
-MONDO:0001160	dissociative disorder	MONDO:0002025	disease of mental health
-MONDO:0005990	tracheitis	MONDO:0021166	inflammatory disease
-MONDO:0007864	Klippel-Trenaunay syndrome	MONDO:0002254	syndromic disease
-MONDO:0007345	aorta coarctation	MONDO:0003847	inherited genetic disease
-MONDO:0000565	infective endocarditis	MONDO:0005550|MONDO:0021166	infectious disease|inflammatory disease
-MONDO:0005087	respiratory system disease	MONDO:0021199	disease affecting anatomical system
-MONDO:0008593	trichomegaly	MONDO:0003847	inherited genetic disease
-MONDO:0013019	spondyloepimetaphyseal dysplasia, Pakistani type	MONDO:0003847	inherited genetic disease
-MONDO:0005083	psoriasis	MONDO:0021166	inflammatory disease
-MONDO:0007069	Adie syndrome	MONDO:0002254|MONDO:0003847	syndromic disease|inherited genetic disease
-MONDO:0019997	rare gastroenterologic disease	MONDO:0021199|MONDO:0021200	disease affecting anatomical system|rare disease
-MONDO:0016055	syndrome with corpus callosum agenesis /dysgenesis as a major feature	MONDO:0002254	syndromic disease
-MONDO:0002251	hepatitis	MONDO:0021166	inflammatory disease
-MONDO:0007186	gastroesophageal reflux disease	MONDO:0003847	inherited genetic disease
+MONDO:0006580	miliaria	MONDO:0002254	syndromic disease
+MONDO:0009661	mucopolysaccharidosis type 6	MONDO:0002254	syndromic disease
 MONDO:0008691	zinc, elevated plasma	MONDO:0003847	inherited genetic disease
-MONDO:0018677	visceral heterotaxy	MONDO:0000839	physical disorder
-MONDO:0002708	retinitis	MONDO:0021166	inflammatory disease
 MONDO:0005156	encephalomyelitis	MONDO:0021166	inflammatory disease
-MONDO:0018878	branchiootic syndrome	MONDO:0002254	syndromic disease
-MONDO:0019937	rare gynecologic or obstetric disease	MONDO:0021200	rare disease
-MONDO:0002010	FG syndrome	MONDO:0002254	syndromic disease
 MONDO:0000474	pericardium disease	MONDO:0000651	thoracic disease
 MONDO:0005151	endocrine system disease	MONDO:0021199	disease affecting anatomical system
-MONDO:0008015	motion sickness	MONDO:0003847	inherited genetic disease
-MONDO:0012155	choanal atresia	MONDO:0003847	inherited genetic disease
+MONDO:0000275	monogenic disease	MONDO:0003847	inherited genetic disease
+MONDO:0008491	stiff-person syndrome	MONDO:0002254	syndromic disease
+MONDO:0021350	neoplasm of thorax	MONDO:0000651	thoracic disease
+MONDO:0009229	hyaline fibromatosis syndrome	MONDO:0003847	inherited genetic disease
+MONDO:0015218	syndromic developmental defect of the eye	MONDO:0002254	syndromic disease
+MONDO:0008310	progeria	MONDO:0002254	syndromic disease
+MONDO:0015356	hereditary neoplastic syndrome	MONDO:0003847	inherited genetic disease
+MONDO:0007972	Meniere disease	MONDO:0003847	inherited genetic disease
+MONDO:0008318	Proteus syndrome	MONDO:0000839	physical disorder
+MONDO:0015212	syndromic intestinal malformation	MONDO:0002254	syndromic disease
+MONDO:0019038	rare maxillo-facial surgical disease	MONDO:0021200	rare disease
+MONDO:0015216	syndromic diaphragmatic or abdominal wall malformation	MONDO:0002254	syndromic disease
+MONDO:0004789	cholangitis	MONDO:0021166	inflammatory disease
+MONDO:0008848	atrioventricular dissociation (disease)	MONDO:0003847	inherited genetic disease
+MONDO:0004785	blepharitis	MONDO:0021166	inflammatory disease
+MONDO:0020291	hypoplastic right heart syndrome	MONDO:0002254	syndromic disease
+MONDO:0018961	familial melanoma	MONDO:0003847	inherited genetic disease
+MONDO:0018963	hereditary methemoglobinemia	MONDO:0003847	inherited genetic disease
+MONDO:0016047	endophthalmitis	MONDO:0021166	inflammatory disease
+MONDO:0008004	familial mitral valve prolapse	MONDO:0003847	inherited genetic disease
+MONDO:0021674	post-viral disorder	MONDO:0021669	post-infectious disorder
+MONDO:0021670	post-infectious syndrome	MONDO:0002254|MONDO:0021669	syndromic disease|post-infectious disorder
+MONDO:0004001	compartment syndrome	MONDO:0002254	syndromic disease
+MONDO:0009130	Dyggve-Melchior-Clausen disease	MONDO:0002254	syndromic disease
+MONDO:0004965	acinar cell carcinoma	MONDO:0021199	disease affecting anatomical system
+MONDO:0004966	gastritis (disease)	MONDO:0021166	inflammatory disease
+MONDO:0019956	encephalitis	MONDO:0021166	inflammatory disease
+MONDO:0015621	rare abdominal surgical disease	MONDO:0021200	rare disease
+MONDO:0002052	lymphadenitis (disease)	MONDO:0021166	inflammatory disease
+MONDO:0002118	urinary system disease	MONDO:0021199	disease affecting anatomical system
+MONDO:0007186	gastroesophageal reflux disease	MONDO:0003847	inherited genetic disease
+MONDO:0020240	syndromic retinitis pigmentosa	MONDO:0002254	syndromic disease
+MONDO:0008779	arthrogryposis	MONDO:0003847	inherited genetic disease
+MONDO:0005445	visceral leishmaniasis	MONDO:0021199	disease affecting anatomical system
+MONDO:0008666	volvulus of Midgut	MONDO:0003847	inherited genetic disease
+MONDO:0018493	malignant hyperthermia of anesthesia	MONDO:0002254	syndromic disease
+MONDO:0009044	Crigler-Najjar syndrome	MONDO:0002254	syndromic disease
+MONDO:0020208	syndromic myopia	MONDO:0002254	syndromic disease
+MONDO:0020573	genetic predisposition to disease	MONDO:0003847	inherited genetic disease
+MONDO:0024237	inherited neurodegenerative disorder	MONDO:0003847	inherited genetic disease
+MONDO:0002039	cognitive disorder	MONDO:0002025	disease of mental health
+MONDO:0002471	bursitis	MONDO:0021166	inflammatory disease
+MONDO:0015131	congenital combined immunodeficiency	MONDO:0003847	inherited genetic disease
+MONDO:0015137	periodic fever syndrome	MONDO:0002254	syndromic disease
+MONDO:0017215	calciphylaxis	MONDO:0002254	syndromic disease
+MONDO:0013361	prothrombin deficiency	MONDO:0002254	syndromic disease
+MONDO:0008572	tibia, hypoplasia or aplasia of, with polydactyly	MONDO:0003847	inherited genetic disease
+MONDO:0016463	syndromic agammaglobulinemia	MONDO:0002254	syndromic disease
+MONDO:0011669	hypotonia-cystinuria syndrome	MONDO:0002254	syndromic disease
+MONDO:0001631	vertebral artery insufficiency	MONDO:0002254	syndromic disease
+MONDO:0000838	chromosomal disease	MONDO:0003847	inherited genetic disease
+MONDO:0001046	imperforate anus	MONDO:0000839	physical disorder
+MONDO:0021198	rare genetic disease	MONDO:0021200	rare disease
+MONDO:0018075	neural tube defect	MONDO:0000839	physical disorder
+MONDO:0021195	disease disrupting biological or physiological process	MONDO:0021194	disease disrupting subcellular system
+MONDO:0021197	disease disrupting function of subcellular component	MONDO:0021194	disease disrupting subcellular system
+MONDO:0021196	disease disrupting molecular activity	MONDO:0021194	disease disrupting subcellular system
+MONDO:0021058	neoplastic syndrome	MONDO:0002254	syndromic disease
+MONDO:0018174	hereditary glaucoma	MONDO:0003847	inherited genetic disease
+MONDO:0018609	syndromic hereditary optic neuropathy	MONDO:0002254	syndromic disease
+MONDO:0005217	familial cardiomyopathy	MONDO:0003847	inherited genetic disease
+MONDO:0011182	trimethylaminuria (disease)	MONDO:0003847	inherited genetic disease
+MONDO:0021223	digestive system neoplasm	MONDO:0021199	disease affecting anatomical system
+MONDO:0018677	visceral heterotaxy	MONDO:0002254|MONDO:0000839	syndromic disease|physical disorder
+MONDO:0015762	progressive familial intrahepatic cholestasis	MONDO:0002254	syndromic disease
+MONDO:0005267	heart disease	MONDO:0000651	thoracic disease
+MONDO:0013019	spondyloepimetaphyseal dysplasia, Pakistani type	MONDO:0003847	inherited genetic disease
+MONDO:0004767	vesiculitis	MONDO:0021166	inflammatory disease
+MONDO:0015364	hereditary sensory and autonomic neuropathy	MONDO:0003847	inherited genetic disease
+MONDO:0014863	macrocephaly, dysmorphic facies, and psychomotor retardation; MDFPMR	MONDO:0003847	inherited genetic disease
+MONDO:0007804	Pallister-hall syndrome	MONDO:0000839	physical disorder
+MONDO:0015246	syndromic anorectal malformation	MONDO:0002254	syndromic disease
+MONDO:0004923	chronic inflammation of lacrimal passage	MONDO:0021166	inflammatory disease
+MONDO:0005586	head and neck neoplasia	MONDO:0021059	head and neck disease
+MONDO:0004926	dacryocystitis	MONDO:0021166	inflammatory disease
+MONDO:0009509	Landau-Kleffner syndrome	MONDO:0002254	syndromic disease
+MONDO:0007140	antiphospholipid syndrome	MONDO:0002254	syndromic disease
+MONDO:0015106	rare urogenital disease	MONDO:0021200	rare disease
+MONDO:0018954	Loeys-Dietz syndrome	MONDO:0002254	syndromic disease
+MONDO:0005567	substance withdrawal syndrome	MONDO:0002254	syndromic disease
+MONDO:0022723	chondrodysplasia	MONDO:0002254	syndromic disease
+MONDO:0005550	infectious disease	MONDO:0021683	transmissable disease
+MONDO:0011849	psoriatic arthritis	MONDO:0002254|MONDO:0003847	syndromic disease|inherited genetic disease
+MONDO:0011782	angioid streaks	MONDO:0003847	inherited genetic disease
+MONDO:0003067	cervical lymphadenitis	MONDO:0021059	head and neck disease
+MONDO:0002647	laryngitis	MONDO:0021166	inflammatory disease
+MONDO:0002645	cerebritis	MONDO:0021166	inflammatory disease
+MONDO:0011622	nephrolithiasis, Uric acid, susceptibility to	MONDO:0003847	inherited genetic disease
+MONDO:0005315	bone fracture	MONDO:0021178	injury
+MONDO:0002494	substance-related disorder	MONDO:0002025	disease of mental health
+MONDO:0003781	bronchitis	MONDO:0021166	inflammatory disease
+MONDO:0000565	infective endocarditis	MONDO:0021166	inflammatory disease
+MONDO:0005084	mental or behavioural disorder	MONDO:0002025	disease of mental health
+MONDO:0005087	respiratory system disease	MONDO:0021199	disease affecting anatomical system
+MONDO:0008593	trichomegaly	MONDO:0003847	inherited genetic disease
+MONDO:0005083	psoriasis	MONDO:0021166	inflammatory disease
+MONDO:0019997	rare gastroenterologic disease	MONDO:0021199|MONDO:0021200	disease affecting anatomical system|rare disease
+MONDO:0018502	hereditary gastric cancer	MONDO:0003847	inherited genetic disease
+MONDO:0002010	FG syndrome	MONDO:0002254	syndromic disease
 MONDO:0017985	congenital radioulnar synostosis	MONDO:0000839	physical disorder
-MONDO:0020017	rare otorhinolaryngologic disease	MONDO:0021200|MONDO:0021059	rare disease|head and neck disease
+MONDO:0020017	rare otorhinolaryngologic disease	MONDO:0021059|MONDO:0021200	head and neck disease|rare disease
 MONDO:0020015	rare circulatory system disease	MONDO:0021200	rare disease
 MONDO:0004492	mediastinitis	MONDO:0000651	thoracic disease
 MONDO:0020013	rare odontologic disease	MONDO:0021200	rare disease
 MONDO:0020012	rare systemic or rheumatologic disease	MONDO:0021200	rare disease
-MONDO:0005308	ciliopathy	MONDO:0003847	inherited genetic disease
 MONDO:0004496	myocarditis	MONDO:0021166	inflammatory disease
-MONDO:0015208	syndromic esophageal malformation	MONDO:0002254	syndromic disease
-MONDO:0009229	hyaline fibromatosis syndrome	MONDO:0003847	inherited genetic disease
-MONDO:0017133	rare genetic systemic or rheumatologic disease	MONDO:0021200	rare disease
-MONDO:0017305	syndromic oculocutaneous albinism	MONDO:0002254	syndromic disease
-MONDO:0021145	disease of genitourinary system	MONDO:0021199	disease affecting anatomical system
-MONDO:0002081	musculoskeletal system disease	MONDO:0021199	disease affecting anatomical system
+MONDO:0009576	megalocornea (disease)	MONDO:0003847	inherited genetic disease
 MONDO:0008093	nevus, epidermal	MONDO:0003847	inherited genetic disease
-MONDO:0000009	bleeding disorder, platelet-type	MONDO:0002245	blood platelet disease
-MONDO:0020496	familial porencephaly	MONDO:0003847	inherited genetic disease
-MONDO:0015356	hereditary neoplastic syndrome	MONDO:0003847	inherited genetic disease
-MONDO:0002087	peritoneum cancer	MONDO:0021199	disease affecting anatomical system
-MONDO:0008666	volvulus of Midgut	MONDO:0003847	inherited genetic disease
-MONDO:0019276	inherited epidermolysis bullosa	MONDO:0003847	inherited genetic disease
-MONDO:0015846	syndromic uterovaginal malformation	MONDO:0002254	syndromic disease
-MONDO:0019285	syndromic nail anomaly	MONDO:0002254	syndromic disease
-MONDO:0019038	rare maxillo-facial surgical disease	MONDO:0021200	rare disease
-MONDO:0015216	syndromic diaphragmatic or abdominal wall malformation	MONDO:0002254	syndromic disease
-MONDO:0004789	cholangitis	MONDO:0021166	inflammatory disease
-MONDO:0005377	nephrotic syndrome	MONDO:0002254	syndromic disease
-MONDO:0011057	cerebrovascular disorder	MONDO:0003847	inherited genetic disease
-MONDO:0018502	hereditary gastric cancer	MONDO:0003847	inherited genetic disease
-MONDO:0021067	mediastinal germ cell tumor	MONDO:0000651	thoracic disease
-MONDO:0004785	blepharitis	MONDO:0021166	inflammatory disease
+MONDO:0016532	Lennox-Gastaut syndrome	MONDO:0002254	syndromic disease
+MONDO:0013626	psoriasis 14, pustular	MONDO:0003847	inherited genetic disease
+MONDO:0022904	cryofibrinogenemia	MONDO:0002254	syndromic disease
 MONDO:0003117	somatoform disorder	MONDO:0002025	disease of mental health
-MONDO:0006858	mouth disease	MONDO:0021199	disease affecting anatomical system
-MONDO:0002103	factitious disorder	MONDO:0002025	disease of mental health
-MONDO:0005144	familial amyotrophic lateral sclerosis	MONDO:0003847	inherited genetic disease
-MONDO:0004522	peritonitis	MONDO:0021166	inflammatory disease
-MONDO:0000888	gastrointestinal mucositis	MONDO:0021166	inflammatory disease
-MONDO:0003619	salpingitis	MONDO:0021166	inflammatory disease
-MONDO:0018961	familial melanoma	MONDO:0003847	inherited genetic disease
-MONDO:0008004	familial mitral valve prolapse	MONDO:0003847	inherited genetic disease
-MONDO:0018963	hereditary methemoglobinemia	MONDO:0003847	inherited genetic disease
-MONDO:0020000	rare respiratory disease	MONDO:0021200	rare disease
-MONDO:0005728	diaphragm disease	MONDO:0000651	thoracic disease
-MONDO:0020002	rare surgical thoracic disease	MONDO:0021200|MONDO:0000651	rare disease|thoracic disease
-MONDO:0020005	rare endocrine disease	MONDO:0021200	rare disease
-MONDO:0020006	rare hematologic disease	MONDO:0021200	rare disease
-MONDO:0017195	Bruck syndrome	MONDO:0002254	syndromic disease
-MONDO:0020008	rare immune disease	MONDO:0021200	rare disease
-MONDO:0020009	rare neurologic disease	MONDO:0021200	rare disease
-MONDO:0010080	familial infantile bilateral striatal necrosis	MONDO:0003847	inherited genetic disease
-MONDO:0019272	hereditary palmoplantar keratoderma	MONDO:0003847	inherited genetic disease
-MONDO:0002269	gastroenteritis	MONDO:0021166	inflammatory disease
-MONDO:0020211	syndromic keratoconus	MONDO:0002254	syndromic disease
-MONDO:0020210	syndromic hyperopia	MONDO:0002254	syndromic disease
-MONDO:0018938	mucopolysaccharidosis type 4	MONDO:0002254	syndromic disease
-MONDO:0000709	Crohn ileitis	MONDO:0021166	inflammatory disease
-MONDO:0020215	syndromic corneal dystrophy	MONDO:0002254	syndromic disease
-MONDO:0017234	inherited prion disease	MONDO:0003847	inherited genetic disease
-MONDO:0016525	familial hyperaldosteronism	MONDO:0003847	inherited genetic disease
-MONDO:0016047	endophthalmitis	MONDO:0021166	inflammatory disease
-MONDO:0005267	heart disease	MONDO:0000651	thoracic disease
-MONDO:0003274	thoracic cancer	MONDO:0000651	thoracic disease
+MONDO:0006733	dry eye syndrome	MONDO:0002254	syndromic disease
+MONDO:0015208	syndromic esophageal malformation	MONDO:0002254	syndromic disease
+MONDO:0007686	gray platelet syndrome	MONDO:0002254	syndromic disease
 MONDO:0013953	immunodeficiency 28	MONDO:0003847	inherited genetic disease
-MONDO:0004965	acinar cell carcinoma	MONDO:0021199	disease affecting anatomical system
-MONDO:0006849	mastitis	MONDO:0021166	inflammatory disease
-MONDO:0002406	dermatitis	MONDO:0021166	inflammatory disease
-MONDO:0004966	gastritis (disease)	MONDO:0021166	inflammatory disease
-MONDO:0004796	infectious meningitis	MONDO:0005550	infectious disease
-MONDO:0021073	paraneoplastic syndrome	MONDO:0002254	syndromic disease
-MONDO:0000111	camptodactyly syndrome, Guadalajara	MONDO:0003847	inherited genetic disease
-MONDO:0001026	bacterial infectious disease	MONDO:0005550	infectious disease
-MONDO:0019956	encephalitis	MONDO:0021166	inflammatory disease
-MONDO:0015621	rare abdominal surgical disease	MONDO:0021200	rare disease
-MONDO:0012061	familial sick sinus syndrome	MONDO:0003847	inherited genetic disease
+MONDO:0008226	aggressive periodontitis	MONDO:0003847	inherited genetic disease
+MONDO:0019589	syndromic genetic deafness	MONDO:0002254	syndromic disease
+MONDO:0018851	familial keratoacanthoma	MONDO:0003847	inherited genetic disease
+MONDO:0005039	reproductive system disease	MONDO:0021199	disease affecting anatomical system
 MONDO:0012048	endogenous depression	MONDO:0003847	inherited genetic disease
 MONDO:0020283	uveitis (disease)	MONDO:0021166	inflammatory disease
-MONDO:0002118	urinary system disease	MONDO:0021199	disease affecting anatomical system
-MONDO:0000508	syndromic intellectual disability	MONDO:0002254	syndromic disease
-MONDO:0011080	progressive deafness with stapes fixation	MONDO:0003847	inherited genetic disease
-MONDO:0003749	esophageal disease	MONDO:0000651	thoracic disease
+MONDO:0015846	syndromic uterovaginal malformation	MONDO:0002254	syndromic disease
 MONDO:0001029	Klippel-Feil syndrome	MONDO:0000839	physical disorder
-MONDO:0004126	thyroiditis (disease)	MONDO:0021166	inflammatory disease
-MONDO:0005135	parasitic infection	MONDO:0005550	infectious disease
-MONDO:0004842	stomatitis	MONDO:0021166	inflammatory disease
-MONDO:0019313	hereditary lymphedema	MONDO:0003847	inherited genetic disease
+MONDO:0016055	syndrome with corpus callosum agenesis /dysgenesis as a major feature	MONDO:0002254	syndromic disease
 MONDO:0021164	posthitis	MONDO:0021166	inflammatory disease
-MONDO:0020240	syndromic retinitis pigmentosa	MONDO:0002254	syndromic disease
-MONDO:0001162	impulse control disorder	MONDO:0002025	disease of mental health
 MONDO:0021167	myositis	MONDO:0021166	inflammatory disease
-MONDO:0005445	visceral leishmaniasis	MONDO:0021199	disease affecting anatomical system
-MONDO:0007853	keratoderma, palmoplantar, with nail dystrophy and hereditary motor-sensory neuropathy	MONDO:0003847	inherited genetic disease
-MONDO:0005441	otitis media (disease)	MONDO:0021166	inflammatory disease
+MONDO:0000009	bleeding disorder, platelet-type	MONDO:0002245	blood platelet disease
+MONDO:0017118	syndrome with a cerebellar malformation as major feature	MONDO:0002254	syndromic disease
 MONDO:0017119	syndrome with microcephaly as major feature	MONDO:0002254	syndromic disease
-MONDO:0008226	aggressive periodontitis	MONDO:0003847	inherited genetic disease
-MONDO:0017919	bladder exstrophy-epispadias-cloacal exstrophy complex	MONDO:0000839	physical disorder
-MONDO:0019015	omphalocele (disease)	MONDO:0000839	physical disorder
-MONDO:0017159	syndrome with pulmonary hypertension as a major feature	MONDO:0002254	syndromic disease
-MONDO:0019508	van der Woude syndrome	MONDO:0002254	syndromic disease
-MONDO:0020208	syndromic myopia	MONDO:0002254	syndromic disease
-MONDO:0020573	genetic predisposition to disease	MONDO:0003847	inherited genetic disease
+MONDO:0002269	gastroenteritis	MONDO:0021166	inflammatory disease
 MONDO:0002260	hidradenitis	MONDO:0021166	inflammatory disease
 MONDO:0006032	cystitis	MONDO:0021166	inflammatory disease
-MONDO:0012580	hereditary pulmonary alveolar proteinosis	MONDO:0003847	inherited genetic disease
-MONDO:0002471	bursitis	MONDO:0021166	inflammatory disease
-MONDO:0015131	congenital combined immunodeficiency	MONDO:0003847	inherited genetic disease
-MONDO:0021207	Crohn jejunitis	MONDO:0021166	inflammatory disease
-MONDO:0001222	congenital T-cell immunodeficiency	MONDO:0003847	inherited genetic disease
-MONDO:0021201	skin infection	MONDO:0005550	infectious disease
-MONDO:0013511	cyanosis, transient neonatal	MONDO:0003847	inherited genetic disease
+MONDO:0004972	adenoma	MONDO:0021199	disease affecting anatomical system
 MONDO:0015338	syndromic craniosynostosis	MONDO:0002254	syndromic disease
 MONDO:0010308	thrombocytopenia, X-linked, with or without dyserythropoietic anemia	MONDO:0003847	inherited genetic disease
 MONDO:0007035	acanthosis nigricans (disease)	MONDO:0003847	inherited genetic disease
-MONDO:0016248	familial ovarian cancer	MONDO:0003847	inherited genetic disease
-MONDO:0019755	rare developmental defect during embryogenesis	MONDO:0021200	rare disease
 MONDO:0007031	familial abdominal aortic aneurysm	MONDO:0003847	inherited genetic disease
-MONDO:0001039	tonsillitis	MONDO:0021166	inflammatory disease
-MONDO:0005042	head disease	MONDO:0021059	head and neck disease
-MONDO:0012145	macular degeneration, age-related, 3	MONDO:0003847	inherited genetic disease
-MONDO:0000032	febrile seizures, familial	MONDO:0003847	inherited genetic disease
+MONDO:0007749	autosomal recessive infantile hypercalcemia	MONDO:0003847|MONDO:0000212	inherited genetic disease|hypercalcemia, infantile
+MONDO:0002049	thrombocytopenia	MONDO:0002245	blood platelet disease
 MONDO:0015150	complex hereditary spastic paraplegia	MONDO:0002254	syndromic disease
-MONDO:0005046	immune system disease	MONDO:0021199	disease affecting anatomical system
-MONDO:0004235	diverticulitis	MONDO:0021166	inflammatory disease
 MONDO:0008656	benign paroxysmal positional nystagmus	MONDO:0003847	inherited genetic disease
-MONDO:0004589	hereditary retinal dystrophy	MONDO:0003847	inherited genetic disease
-MONDO:0004627	duodenitis	MONDO:0021166	inflammatory disease
-MONDO:0004625	phlebitis	MONDO:0021166	inflammatory disease
-MONDO:0008572	tibia, hypoplasia or aplasia of, with polydactyly	MONDO:0003847	inherited genetic disease
-MONDO:0007628	foveal hypoplasia 1	MONDO:0003847	inherited genetic disease
-MONDO:0004587	hereditary night blindness	MONDO:0003847	inherited genetic disease
-MONDO:0011669	hypotonia-cystinuria syndrome	MONDO:0002254	syndromic disease
-MONDO:0008375	retinal detachment	MONDO:0003847	inherited genetic disease
-MONDO:0017290	familial intrahepatic cholestasis	MONDO:0003847	inherited genetic disease
-MONDO:0001166	nephritis	MONDO:0021166	inflammatory disease
-MONDO:0015222	syndromic respiratory or mediastinal malformation	MONDO:0002254	syndromic disease
-MONDO:0007291	familial cerebral cavernous malformation	MONDO:0003847	inherited genetic disease
-MONDO:0015224	rare intoxication	MONDO:0021200	rare disease
-MONDO:0010811	benign prostatic hyperplasia (disease)	MONDO:0005043	hyperplasia
-MONDO:0015226	syndrome with limb malformations as a major feature	MONDO:0002254	syndromic disease
-MONDO:0004972	adenoma	MONDO:0021199	disease affecting anatomical system
+MONDO:0018988	Iridocorneal endothelial syndrome	MONDO:0002254	syndromic disease
 MONDO:0019519	rare skin disease	MONDO:0021200	rare disease
-MONDO:0005546	fibromyalgia	MONDO:0002254	syndromic disease
-MONDO:0000838	chromosomal disease	MONDO:0003847	inherited genetic disease
 MONDO:0002468	hyperimmunoglobulin syndrome	MONDO:0003847	inherited genetic disease
-MONDO:0018174	hereditary glaucoma	MONDO:0003847	inherited genetic disease
-MONDO:0021198	rare genetic disease	MONDO:0021200	rare disease
-MONDO:0018075	neural tube defect	MONDO:0000839	physical disorder
-MONDO:0021195	disease disrupting biological or physiological process	MONDO:0021194	disease disrupting subcellular system
-MONDO:0013626	psoriasis 14, pustular	MONDO:0003847	inherited genetic disease
-MONDO:0021197	disease disrupting function of subcellular component	MONDO:0021194	disease disrupting subcellular system
-MONDO:0021196	disease disrupting molecular activity	MONDO:0021194	disease disrupting subcellular system
-MONDO:0021058	neoplastic syndrome	MONDO:0002254	syndromic disease
-MONDO:0004995	cardiovascular disease	MONDO:0021199	disease affecting anatomical system
-MONDO:0006733	dry eye syndrome	MONDO:0002254	syndromic disease
-MONDO:0018609	syndromic hereditary optic neuropathy	MONDO:0002254	syndromic disease
 MONDO:0014778	lamb-Shaffer syndrome; LAMSHF	MONDO:0003847	inherited genetic disease
-MONDO:0005217	familial cardiomyopathy	MONDO:0003847	inherited genetic disease
-MONDO:0002039	cognitive disorder	MONDO:0002025	disease of mental health
-MONDO:0000022	enuresis, nocturnal	MONDO:0002025	disease of mental health
-MONDO:0011182	trimethylaminuria (disease)	MONDO:0003847	inherited genetic disease
-MONDO:0007436	dentin dysplasia type I	MONDO:0003847	inherited genetic disease
-MONDO:0008111	oculodentodigital dysplasia	MONDO:0002254	syndromic disease
-MONDO:0008638	varicose veins	MONDO:0003847	inherited genetic disease
-MONDO:0005113	bacterial disease	MONDO:0005550	infectious disease
-MONDO:0015947	inherited ichthyosis	MONDO:0003847	inherited genetic disease
-MONDO:0001046	imperforate anus	MONDO:0000839	physical disorder
-MONDO:0019721	syndromic renal or urinary tract malformation	MONDO:0002254	syndromic disease
-MONDO:0014863	macrocephaly, dysmorphic facies, and psychomotor retardation; MDFPMR	MONDO:0003847	inherited genetic disease
 MONDO:0006882	orchitis (disease)	MONDO:0021166	inflammatory disease
-MONDO:0005345	hypospadias (disease)	MONDO:0000839	physical disorder
-MONDO:0009633	Microspherophakia and/or megalocornea, with ectopia lentis and With or without secondary glaucoma	MONDO:0003847	inherited genetic disease
-MONDO:0006362	peritoneal mesothelioma (disease)	MONDO:0021199	disease affecting anatomical system
+MONDO:0009633	microspherophakia and/or megalocornea, with ectopia lentis and With or without secondary glaucoma	MONDO:0003847	inherited genetic disease
+MONDO:0019234	peroxisome biogenesis disorder	MONDO:0002254	syndromic disease
 MONDO:0014389	polyglucosan body myopathy 1 with or without immunodeficiency	MONDO:0003847	inherited genetic disease
-MONDO:0005334	nephritis, hereditary	MONDO:0003847	inherited genetic disease
-MONDO:0002041	fungal infectious disease	MONDO:0005550	infectious disease
-MONDO:0021106	laminopathy	MONDO:0003847	inherited genetic disease
-MONDO:0015246	syndromic anorectal malformation	MONDO:0002254	syndromic disease
-MONDO:0007329	cirrhosis, familial	MONDO:0003847	inherited genetic disease
-MONDO:0012000	specific phobia	MONDO:0003847	inherited genetic disease
-MONDO:0019684	rare bone disease	MONDO:0021200	rare disease
-MONDO:0002249	thrombocytosis	MONDO:0002245	blood platelet disease
-MONDO:0000275	monogenic disease	MONDO:0003847	inherited genetic disease
-MONDO:0021108	meningitis (disease)	MONDO:0021166	inflammatory disease
-MONDO:0011786	allergic rhinitis	MONDO:0003847	inherited genetic disease
-MONDO:0002320	congenital nervous system abnormality	MONDO:0000839	physical disorder
-MONDO:0000188	GLUT1 deficiency syndrome	MONDO:0003847	inherited genetic disease
-MONDO:0004335	gastrointestinal system disease	MONDO:0021199	disease affecting anatomical system
-MONDO:0021223	digestive system neoplasm	MONDO:0021199	disease affecting anatomical system
-MONDO:0015540	hemophagocytic syndrome	MONDO:0002254	syndromic disease
-MONDO:0009576	megalocornea (disease)	MONDO:0003847	inherited genetic disease
-MONDO:0011622	nephrolithiasis, Uric acid, susceptibility to	MONDO:0003847	inherited genetic disease
 MONDO:0006955	rheumatic heart disease	MONDO:0021166	inflammatory disease
-MONDO:0021181	inherited blood coagulation disorder	MONDO:0003847	inherited genetic disease
+MONDO:0012155	choanal atresia	MONDO:0003847	inherited genetic disease
+MONDO:0009276	Bernard-Soulier syndrome	MONDO:0002254	syndromic disease
+MONDO:0019037	progressive supranuclear palsy	MONDO:0002254	syndromic disease
+MONDO:0017373	poliomyelitis	MONDO:0021166	inflammatory disease
+MONDO:0006771	glossitis	MONDO:0021166	inflammatory disease
+MONDO:0003937	spondylitis	MONDO:0021166	inflammatory disease
+MONDO:0007886	uterine corpus leiomyoma	MONDO:0003847	inherited genetic disease
+MONDO:0019062	rare infectious disease	MONDO:0021200	rare disease
+MONDO:0006672	balanitis	MONDO:0021166	inflammatory disease
+MONDO:0017278	autoimmune polyendocrinopathy	MONDO:0002254	syndromic disease
+MONDO:0004804	dacryoadenitis	MONDO:0021166	inflammatory disease
+MONDO:0000918	endometritis	MONDO:0021166	inflammatory disease
+MONDO:0015210	syndromic gastroduodenal malformation	MONDO:0002254	syndromic disease
+MONDO:0005070	neoplasm (disease)	MONDO:0023370	neoplastic disease
+MONDO:0017159	syndrome with pulmonary hypertension as a major feature	MONDO:0002254	syndromic disease
+MONDO:0000595	sexual disorder	MONDO:0002025	disease of mental health
+MONDO:0005076	periodontitis	MONDO:0021166	inflammatory disease
+MONDO:0015778	syndromic hypothyroidism	MONDO:0002254	syndromic disease
+MONDO:0022825	congenital cystic eye	MONDO:0002254	syndromic disease
+MONDO:0005275	lung disease	MONDO:0000651	thoracic disease
+MONDO:0008475	spondylolisthesis (disease)	MONDO:0003847	inherited genetic disease
+MONDO:0004779	epididymitis (disease)	MONDO:0021166	inflammatory disease
+MONDO:0000358	orofacial cleft	MONDO:0000839	physical disorder
+MONDO:0007899	lichen sclerosus et atrophicus	MONDO:0003847	inherited genetic disease
+MONDO:0008375	retinal detachment	MONDO:0003847	inherited genetic disease
+MONDO:0004933	hypoplastic left heart syndrome	MONDO:0002254	syndromic disease
+MONDO:0004934	periostitis (disease)	MONDO:0021166	inflammatory disease
+MONDO:0015278	familial pancreatic carcinoma	MONDO:0003847	inherited genetic disease
+MONDO:0005391	restless legs syndrome	MONDO:0002254	syndromic disease
+MONDO:0005559	neurodegenerative disease	MONDO:0024236	degenerative disorder
+MONDO:0021094	immunodeficiency syndrome	MONDO:0002254	syndromic disease
+MONDO:0018940	congenital myasthenic syndrome	MONDO:0002254	syndromic disease
+MONDO:0021099	intraductal papillomatosis	MONDO:0021199	disease affecting anatomical system
+MONDO:0024263	neonatal aspiration syndrome	MONDO:0002254	syndromic disease
+MONDO:0017652	rare disease with myoclonus as a major feature	MONDO:0002254	syndromic disease
+MONDO:0021157	gonococcal cervicitis	MONDO:0021166	inflammatory disease
+MONDO:0021156	hypophysitis	MONDO:0021166	inflammatory disease
+MONDO:0014452	familial dysfibrinogenemia	MONDO:0002254	syndromic disease
+MONDO:0005990	tracheitis	MONDO:0021166	inflammatory disease
+MONDO:0002251	hepatitis	MONDO:0021166	inflammatory disease
+MONDO:0002708	retinitis	MONDO:0021166	inflammatory disease
+MONDO:0007778	hypertelorism (disease)	MONDO:0003847	inherited genetic disease
+MONDO:0019937	rare gynecologic or obstetric disease	MONDO:0021200	rare disease
+MONDO:0008015	motion sickness	MONDO:0003847	inherited genetic disease
+MONDO:0021388	neoplasm of chest wall	MONDO:0021199	disease affecting anatomical system
+MONDO:0005308	ciliopathy	MONDO:0003847	inherited genetic disease
+MONDO:0020269	syndromic ichthyosis associated with ocular features	MONDO:0002254	syndromic disease
+MONDO:0015691	hypereosinophilic syndrome	MONDO:0002254	syndromic disease
+MONDO:0006858	mouth disease	MONDO:0021199	disease affecting anatomical system
+MONDO:0004522	peritonitis	MONDO:0021166	inflammatory disease
+MONDO:0000888	gastrointestinal mucositis	MONDO:0021166	inflammatory disease
+MONDO:0003619	salpingitis	MONDO:0021166	inflammatory disease
+MONDO:0020000	rare respiratory disease	MONDO:0021200	rare disease
+MONDO:0020002	rare surgical thoracic disease	MONDO:0021200|MONDO:0000651	rare disease|thoracic disease
+MONDO:0007600	primary Fanconi syndrome	MONDO:0002254	syndromic disease
+MONDO:0020006	rare hematologic disease	MONDO:0021200	rare disease
+MONDO:0020008	rare immune disease	MONDO:0021200	rare disease
+MONDO:0020009	rare neurologic disease	MONDO:0021200	rare disease
+MONDO:0007354	coloboma of optic nerve (disease)	MONDO:0003847	inherited genetic disease
+MONDO:0000709	Crohn ileitis	MONDO:0021166	inflammatory disease
+MONDO:0016525	familial hyperaldosteronism	MONDO:0003847	inherited genetic disease
+MONDO:0011794	Dravet syndrome	MONDO:0002254	syndromic disease
+MONDO:0021075	neoplastic polyp	MONDO:0021074	precancerous condition
+MONDO:0006687	burning mouth syndrome	MONDO:0002254	syndromic disease
+MONDO:0020005	rare endocrine disease	MONDO:0021200	rare disease
+MONDO:0012061	familial sick sinus syndrome	MONDO:0003847	inherited genetic disease
+MONDO:0004731	central sleep apnea	MONDO:0002254	syndromic disease
+MONDO:0004842	stomatitis	MONDO:0021166	inflammatory disease
+MONDO:0007853	keratoderma, palmoplantar, with nail dystrophy and hereditary motor-sensory neuropathy	MONDO:0003847	inherited genetic disease
+MONDO:0015231	Bartter syndrome	MONDO:0002254	syndromic disease
+MONDO:0012580	hereditary pulmonary alveolar proteinosis	MONDO:0003847	inherited genetic disease
+MONDO:0021207	Crohn jejunitis	MONDO:0021166	inflammatory disease
+MONDO:0001222	congenital T-cell immunodeficiency	MONDO:0003847	inherited genetic disease
+MONDO:0001039	tonsillitis	MONDO:0021166	inflammatory disease
+MONDO:0018901	left ventricular noncompaction	MONDO:0002254	syndromic disease
+MONDO:0000032	febrile seizures, familial	MONDO:0003847	inherited genetic disease
+MONDO:0005046	immune system disease	MONDO:0021199	disease affecting anatomical system
+MONDO:0012400	cortical dysplasia-focal epilepsy syndrome	MONDO:0002254	syndromic disease
+MONDO:0002350	familial nephrotic syndrome	MONDO:0003847	inherited genetic disease
+MONDO:0008420	seborrheic keratosis	MONDO:0003847	inherited genetic disease
+MONDO:0017195	Bruck syndrome	MONDO:0002254	syndromic disease
+MONDO:0016248	familial ovarian cancer	MONDO:0003847	inherited genetic disease
+MONDO:0007432	CADASIL	MONDO:0002254	syndromic disease
+MONDO:0016244	atypical hemolytic-uremic syndrome	MONDO:0002254	syndromic disease
+MONDO:0007436	dentin dysplasia type I	MONDO:0003847	inherited genetic disease
+MONDO:0019287	ectodermal dysplasia syndrome	MONDO:0002254	syndromic disease
+MONDO:0015947	inherited ichthyosis	MONDO:0003847	inherited genetic disease
+MONDO:0019285	syndromic nail anomaly	MONDO:0002254	syndromic disease
+MONDO:0001040	nasopharyngitis	MONDO:0021166	inflammatory disease
+MONDO:0005345	hypospadias (disease)	MONDO:0000839	physical disorder
+MONDO:0020225	syndromic cataract	MONDO:0002254	syndromic disease
+MONDO:0019520	syndromic lymphedema	MONDO:0002254	syndromic disease
+MONDO:0021106	laminopathy	MONDO:0003847	inherited genetic disease
+MONDO:0007329	cirrhosis, familial	MONDO:0003847	inherited genetic disease
+MONDO:0009067	cystinuria (disease)	MONDO:0002254	syndromic disease
+MONDO:0021108	meningitis (disease)	MONDO:0021166	inflammatory disease
+MONDO:0002320	congenital nervous system abnormality	MONDO:0000839	physical disorder
+MONDO:0015540	hemophagocytic syndrome	MONDO:0002254	syndromic disease
+MONDO:0011789	familial meningioma	MONDO:0003847	inherited genetic disease
 MONDO:0017893	inherited acute myeloid leukemia	MONDO:0003847	inherited genetic disease
-MONDO:0005108	viral disease	MONDO:0005550	infectious disease
-MONDO:0015218	syndromic developmental defect of the eye	MONDO:0002254	syndromic disease
+MONDO:0014769	inherited oocyte maturation defect	MONDO:0003847	inherited genetic disease
 MONDO:0010560	cleft palate with or without ankyloglossia, X-linked	MONDO:0003847	inherited genetic disease
 MONDO:0003085	keratitis	MONDO:0021166	inflammatory disease
 MONDO:0010564	red-green color blindness	MONDO:0003847	inherited genetic disease
-MONDO:0005371	mood disorder	MONDO:0002025	disease of mental health
-MONDO:0002049	thrombocytopenia	MONDO:0002245	blood platelet disease
+MONDO:0007721	hiatus hernia (disease)	MONDO:0003847	inherited genetic disease
+MONDO:0016565	syndromic obesity	MONDO:0002254	syndromic disease
+MONDO:0018054	familial atrial fibrillation	MONDO:0003847	inherited genetic disease
+MONDO:0016645	rare neoplastic disease	MONDO:0023370|MONDO:0021200	neoplastic disease|rare disease
+MONDO:0021073	paraneoplastic syndrome	MONDO:0002254	syndromic disease
+MONDO:0019978	Robinow syndrome	MONDO:0002254	syndromic disease
+MONDO:0003406	sleep disorder	MONDO:0002025	disease of mental health
+MONDO:0019623	hereditary angioedema	MONDO:0003847	inherited genetic disease
+MONDO:0009369	non-immune hydrops fetalis	MONDO:0003847	inherited genetic disease
+MONDO:0017305	syndromic oculocutaneous albinism	MONDO:0002254	syndromic disease
+MONDO:0007542	Camurati-Engelmann disease	MONDO:0002254	syndromic disease
+MONDO:0019052	inborn errors of metabolism	MONDO:0003847	inherited genetic disease
+MONDO:0015620	syndromic urogenital tract malformation	MONDO:0002254	syndromic disease
+MONDO:0011323	arhinia, choanal atresia, and microphthalmia	MONDO:0003847	inherited genetic disease
+MONDO:0001500	gender identity disorder	MONDO:0002025	disease of mental health
+MONDO:0016419	hereditary breast carcinoma	MONDO:0003847	inherited genetic disease
+MONDO:0002051	integumentary system disease	MONDO:0021199	disease affecting anatomical system
+MONDO:0016025	myoclonic-astastic epilepsy	MONDO:0002254	syndromic disease
+MONDO:0016620	primary hypertrophic osteoarthropathy	MONDO:0002254	syndromic disease
+MONDO:0017417	renal-hepatic-pancreatic dysplasia	MONDO:0000839	physical disorder
+MONDO:0007864	angioosteohypertrophic syndrome	MONDO:0002254	syndromic disease
+MONDO:0021181	inherited blood coagulation disorder	MONDO:0003847	inherited genetic disease
+MONDO:0008852	congenital central hypoventilation syndrome	MONDO:0002254	syndromic disease
+MONDO:0005429	prion disease	MONDO:0021683	transmissable disease
+MONDO:0018874	acute myeloid leukemia	MONDO:0002254	syndromic disease
+MONDO:0001166	nephritis	MONDO:0021166	inflammatory disease
+MONDO:0005546	fibromyalgia	MONDO:0002254	syndromic disease
+MONDO:0001162	impulse control disorder	MONDO:0002025	disease of mental health
+MONDO:0008596	trichorhinophalangeal syndrome type i	MONDO:0002254	syndromic disease
+MONDO:0001160	dissociative disorder	MONDO:0002025	disease of mental health
+MONDO:0017133	rare genetic systemic or rheumatologic disease	MONDO:0021200	rare disease
+MONDO:0017647	postinfectious autoimmune disease with chorea	MONDO:0021669	post-infectious disorder
+MONDO:0002081	musculoskeletal system disease	MONDO:0021199	disease affecting anatomical system
+MONDO:0020491	subcortical band heterotopia	MONDO:0002254	syndromic disease
+MONDO:0021667	neuralgia	MONDO:0021668	pain disorder
+MONDO:0021666	ear infection	MONDO:0021669|MONDO:0021166	post-infectious disorder|inflammatory disease
+MONDO:0015461	short rib-polydactyly syndrome	MONDO:0002254	syndromic disease
+MONDO:0002249	thrombocytosis	MONDO:0002245	blood platelet disease
+MONDO:0002103	factitious disorder	MONDO:0002025	disease of mental health
+MONDO:0008006	Mobius syndrome	MONDO:0002254	syndromic disease
+MONDO:0002060	intraductal papilloma	MONDO:0021199	disease affecting anatomical system
+MONDO:0007441	dentinogenesis imperfecta type 2	MONDO:0003847	inherited genetic disease
+MONDO:0007197	bladder diverticulum (disease)	MONDO:0003847	inherited genetic disease
+MONDO:0019276	inherited epidermolysis bullosa	MONDO:0003847	inherited genetic disease
+MONDO:0019272	hereditary palmoplantar keratoderma	MONDO:0003847	inherited genetic disease
+MONDO:0005334	nephritis, hereditary	MONDO:0003847	inherited genetic disease
+MONDO:0020211	syndromic keratoconus	MONDO:0002254	syndromic disease
+MONDO:0020210	syndromic hyperopia	MONDO:0002254	syndromic disease
+MONDO:0020215	syndromic corneal dystrophy	MONDO:0002254	syndromic disease
+MONDO:0019015	omphalocele (disease)	MONDO:0000839	physical disorder
+MONDO:0002565	myelitis	MONDO:0021166	inflammatory disease
+MONDO:0015487	fatal infantile encephalocardiomyopathy	MONDO:0002254	syndromic disease
+MONDO:0019508	van der Woude syndrome	MONDO:0002254	syndromic disease
+MONDO:0005979	thoracic outlet syndrome	MONDO:0002254	syndromic disease
+MONDO:0006849	mastitis	MONDO:0021166	inflammatory disease
+MONDO:0002406	dermatitis	MONDO:0021166	inflammatory disease
+MONDO:0001823	sick sinus syndrome	MONDO:0002254	syndromic disease
+MONDO:0009047	cryptorchidism (disease)	MONDO:0003847|MONDO:0000839	inherited genetic disease|physical disorder
+MONDO:0005578	arthritis	MONDO:0021166	inflammatory disease
+MONDO:0003749	esophageal disease	MONDO:0000651	thoracic disease
+MONDO:0004126	thyroiditis (disease)	MONDO:0021166	inflammatory disease
+MONDO:0007345	aorta coarctation	MONDO:0003847	inherited genetic disease
+MONDO:0019313	hereditary lymphedema	MONDO:0003847	inherited genetic disease
+MONDO:0007340	cleidocranial dysplasia	MONDO:0002254	syndromic disease
+MONDO:0017919	bladder exstrophy-epispadias-cloacal exstrophy complex	MONDO:0000839	physical disorder
+MONDO:0015892	growth hormone insensitivity syndrome	MONDO:0002254	syndromic disease
+MONDO:0007291	familial cerebral cavernous malformation	MONDO:0003847	inherited genetic disease
+MONDO:0013511	cyanosis, transient neonatal	MONDO:0003847	inherited genetic disease
+MONDO:0019755	rare developmental defect during embryogenesis	MONDO:0021200	rare disease
+MONDO:0004335	gastrointestinal system disease	MONDO:0021199	disease affecting anatomical system
+MONDO:0004235	diverticulitis	MONDO:0021166	inflammatory disease
+MONDO:0004589	hereditary retinal dystrophy	MONDO:0003847	inherited genetic disease
+MONDO:0007538	hypocalcified amelogenesis imperfecta	MONDO:0003847	inherited genetic disease
+MONDO:0004627	duodenitis	MONDO:0021166	inflammatory disease
+MONDO:0004625	phlebitis	MONDO:0021166	inflammatory disease
+MONDO:0004587	hereditary night blindness	MONDO:0003847	inherited genetic disease
+MONDO:0017290	familial intrahepatic cholestasis	MONDO:0003847	inherited genetic disease
+MONDO:0020066	Ehlers-Danlos syndrome	MONDO:0002254	syndromic disease
+MONDO:0015222	syndromic respiratory or mediastinal malformation	MONDO:0002254	syndromic disease
+MONDO:0015224	rare intoxication	MONDO:0021200	rare disease
+MONDO:0010811	benign prostatic hyperplasia (disease)	MONDO:0005043	hyperplasia
+MONDO:0015226	syndrome with limb malformations as a major feature	MONDO:0002254	syndromic disease
+MONDO:0020068	postinfectious encephalitis	MONDO:0021669	post-infectious disorder
+MONDO:0005728	diaphragm disease	MONDO:0000651	thoracic disease
+MONDO:0008797	anodontia	MONDO:0003847	inherited genetic disease
+MONDO:0004995	cardiovascular disease	MONDO:0021199	disease affecting anatomical system
+MONDO:0018937	mucopolysaccharidosis type 3	MONDO:0002254	syndromic disease
+MONDO:0000022	enuresis, nocturnal	MONDO:0002025	disease of mental health
+MONDO:0000188	GLUT1 deficiency syndrome	MONDO:0003847	inherited genetic disease
+MONDO:0018938	mucopolysaccharidosis type 4	MONDO:0002254	syndromic disease
+MONDO:0019721	syndromic renal or urinary tract malformation	MONDO:0002254	syndromic disease
+MONDO:0012000	specific phobia	MONDO:0003847	inherited genetic disease
+MONDO:0009105	tricho-hepato-enteric syndrome	MONDO:0002254	syndromic disease
+MONDO:0019684	rare bone disease	MONDO:0021200	rare disease
+MONDO:0007834	islet cell adenomatosis	MONDO:0003847	inherited genetic disease
+MONDO:0009022	corpus callosum, agenesis of	MONDO:0003847	inherited genetic disease
+MONDO:0021145	disease of genitourinary system	MONDO:0021199	disease affecting anatomical system
+MONDO:0005042	head disease	MONDO:0021059	head and neck disease
+MONDO:0005377	nephrotic syndrome	MONDO:0002254	syndromic disease
+MONDO:0002028	personality disorder (disease)	MONDO:0002025	disease of mental health
 MONDO:0000114	cerebelloparenchymal disorder	MONDO:0003847	inherited genetic disease
 MONDO:0000115	Chiari malformation	MONDO:0003847	inherited genetic disease
 MONDO:0008538	temporal arteritis	MONDO:0021166	inflammatory disease
-MONDO:0006771	glossitis	MONDO:0021166	inflammatory disease
-MONDO:0003937	spondylitis	MONDO:0021166	inflammatory disease
-MONDO:0005578	arthritis	MONDO:0021166	inflammatory disease
-MONDO:0007721	hiatus hernia (disease)	MONDO:0003847	inherited genetic disease
-MONDO:0019062	rare infectious disease	MONDO:0005550|MONDO:0021200	infectious disease|rare disease
-MONDO:0006672	balanitis	MONDO:0021166	inflammatory disease
-MONDO:0007886	uterine corpus leiomyoma	MONDO:0003847	inherited genetic disease
-MONDO:0004767	vesiculitis	MONDO:0021166	inflammatory disease
+MONDO:0018800	Kallmann syndrome	MONDO:0002254	syndromic disease
+MONDO:0000111	camptodactyly syndrome, Guadalajara	MONDO:0003847	inherited genetic disease
+MONDO:0000508	syndromic intellectual disability	MONDO:0002254	syndromic disease
+MONDO:0000507	inclusion body myopathy with Paget disease of bone and frontotemporal dementia	MONDO:0002254	syndromic disease
+MONDO:0015895	syndrome with hypoparathyroidism	MONDO:0002254	syndromic disease
 MONDO:0005570	hematological system disease	MONDO:0021199	disease affecting anatomical system
-MONDO:0004804	dacryoadenitis	MONDO:0021166	inflammatory disease
-MONDO:0021075	neoplastic polyp	MONDO:0021074	precancerous condition
-MONDO:0000918	endometritis	MONDO:0021166	inflammatory disease
-MONDO:0016565	syndromic obesity	MONDO:0002254	syndromic disease
-MONDO:0000916	intestinal infectious disease	MONDO:0005550	infectious disease
-MONDO:0008420	seborrheic keratosis	MONDO:0003847	inherited genetic disease
-MONDO:0018054	familial atrial fibrillation	MONDO:0003847	inherited genetic disease
-MONDO:0015364	hereditary sensory and autonomic neuropathy	MONDO:0003847	inherited genetic disease
-MONDO:0016645	rare neoplastic disease	MONDO:0021200	rare disease
-MONDO:0007804	Pallister-hall syndrome	MONDO:0000839	physical disorder
-MONDO:0019978	Robinow syndrome	MONDO:0002254	syndromic disease
-MONDO:0004923	chronic inflammation of lacrimal passage	MONDO:0021166	inflammatory disease
-MONDO:0003406	sleep disorder	MONDO:0002025	disease of mental health
-MONDO:0005586	head and neck neoplasia	MONDO:0021059	head and neck disease
-MONDO:0004926	dacryocystitis	MONDO:0021166	inflammatory disease
-MONDO:0000595	sexual disorder	MONDO:0002025	disease of mental health
+MONDO:0020496	familial porencephaly	MONDO:0003847	inherited genetic disease
+MONDO:0016085	Cole-Carpenter syndrome	MONDO:0002254	syndromic disease
+MONDO:0009172	enterocolitis (disease)	MONDO:0003847	inherited genetic disease
+MONDO:0002442	long QT syndrome	MONDO:0002254	syndromic disease
 MONDO:0017329	familial vesicoureteral reflux	MONDO:0003847	inherited genetic disease

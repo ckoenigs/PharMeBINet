@@ -1,0 +1,3 @@
+DOID:0050131	motility-related diarrhea
+monDO ID 	 name 
+MONDO:0000251	motility-related diarrhea

@@ -1,0 +1,3 @@
+MONDO:0010029	situs inversus
+DOID 	 name 
+DOID:758	situs inversus

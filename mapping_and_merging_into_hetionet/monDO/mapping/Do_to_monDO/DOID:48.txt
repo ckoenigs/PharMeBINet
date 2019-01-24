@@ -1,0 +1,3 @@
+DOID:48	male reproductive system disease
+monDO ID 	 name 
+MONDO:0003150	male reproductive system disease

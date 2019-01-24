@@ -1,0 +1,3 @@
+MONDO:0005062	lymphoma
+DOID 	 name 
+DOID:0060058	lymphoma

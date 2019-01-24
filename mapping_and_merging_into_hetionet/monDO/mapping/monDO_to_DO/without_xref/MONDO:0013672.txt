@@ -1,0 +1,3 @@
+MONDO:0013672	chromosome 15q25 deletion syndrome
+DOID 	 name 
+DOID:0060396	chromosome 15q25 deletion syndrome

@@ -1,0 +1,4 @@
+MONDO:0006940	radial nerve lesion
+DOID 	 name 
+DOID:12171	radial neuropathy
+DOID:12170	radial nerve lesion

@@ -1,0 +1,3 @@
+DOID:4702	mongolian spot
+monDO ID 	 name 
+MONDO:0006582	mongolian spot

@@ -1,0 +1,3 @@
+DOID:4110	parasitic ectoparasitic infectious disease
+monDO ID 	 name 
+MONDO:0002875	parasitic ectoparasitic infectious disease

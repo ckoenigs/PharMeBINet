@@ -1,0 +1,3 @@
+MONDO:0009631	isolated microphthalmia 1
+DOID 	 name 
+DOID:0060840	isolated microphthalmia 1

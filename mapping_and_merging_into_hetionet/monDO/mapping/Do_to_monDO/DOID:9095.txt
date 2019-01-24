@@ -1,0 +1,3 @@
+DOID:9095	esophagus carcinoma in situ
+monDO ID 	 name 
+MONDO:0004708	esophagus carcinoma in situ

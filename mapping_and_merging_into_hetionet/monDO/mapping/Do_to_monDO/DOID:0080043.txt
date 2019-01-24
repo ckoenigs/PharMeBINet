@@ -1,0 +1,3 @@
+DOID:0080043	achondrogenesis
+monDO ID 	 name 
+MONDO:0019648	achondrogenesis

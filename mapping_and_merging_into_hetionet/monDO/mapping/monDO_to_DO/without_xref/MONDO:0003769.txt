@@ -1,0 +1,3 @@
+MONDO:0003769	herpetic gastritis
+DOID 	 name 
+DOID:6102	herpetic gastritis

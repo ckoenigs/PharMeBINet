@@ -1,0 +1,4 @@
+MONDO:0005138	lung carcinoma
+DOID 	 name 
+DOID:3905	lung carcinoma
+DOID:3683	lung benign neoplasm

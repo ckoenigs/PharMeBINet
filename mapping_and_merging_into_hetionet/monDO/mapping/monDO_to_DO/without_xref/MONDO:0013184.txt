@@ -1,0 +1,3 @@
+MONDO:0013184	congenital diarrhea 5 with tufting enteropathy
+DOID 	 name 
+DOID:0060776	congenital diarrhea 5 with tufting enteropathy

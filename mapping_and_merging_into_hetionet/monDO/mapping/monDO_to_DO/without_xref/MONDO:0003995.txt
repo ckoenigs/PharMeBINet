@@ -1,0 +1,3 @@
+MONDO:0003995	vulvar childhood botryoid-type embryonal rhabdomyosarcoma
+DOID 	 name 
+DOID:6789	vulvar childhood botryoid-type embryonal rhabdomyosarcoma

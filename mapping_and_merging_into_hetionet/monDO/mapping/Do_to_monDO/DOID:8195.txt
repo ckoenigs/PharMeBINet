@@ -1,0 +1,3 @@
+DOID:8195	hepatoid pattern testicular yolk sac tumor
+monDO ID 	 name 
+MONDO:0004494	testicular yolk sac tumor, hepatoid pattern

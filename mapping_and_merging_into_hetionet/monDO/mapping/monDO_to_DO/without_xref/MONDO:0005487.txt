@@ -1,0 +1,3 @@
+MONDO:0005487	schizoaffective disorder
+DOID 	 name 
+DOID:5418	schizoaffective disorder

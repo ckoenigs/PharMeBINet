@@ -1,0 +1,3 @@
+MONDO:0003205	renal pelvis adenocarcinoma
+DOID 	 name 
+DOID:4918	renal pelvis adenocarcinoma

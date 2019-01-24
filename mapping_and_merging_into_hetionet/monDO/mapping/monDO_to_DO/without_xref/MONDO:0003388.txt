@@ -1,0 +1,3 @@
+MONDO:0003388	ampulla of vater clear cell adenocarcinoma
+DOID 	 name 
+DOID:5308	ampulla of Vater clear cell adenocarcinoma

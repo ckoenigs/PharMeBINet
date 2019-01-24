@@ -1,0 +1,3 @@
+MONDO:0005275	lung disease
+DOID 	 name 
+DOID:850	lung disease

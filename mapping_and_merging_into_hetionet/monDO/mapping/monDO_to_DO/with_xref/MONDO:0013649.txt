@@ -1,0 +1,3 @@
+MONDO:0013649	hypotrichosis 9
+DOID 	 name 
+DOID:0110706	hypotrichosis 9

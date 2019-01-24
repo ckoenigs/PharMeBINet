@@ -1,0 +1,3 @@
+DOID:6844	kidney pelvis sarcomatoid transitional cell carcinoma
+monDO ID 	 name 
+MONDO:0004009	kidney pelvis sarcomatoid transitional cell carcinoma

@@ -1,0 +1,3 @@
+MONDO:0012706	familial temporal lobe epilepsy 4
+DOID 	 name 
+DOID:0060753	familial temporal lobe epilepsy 4

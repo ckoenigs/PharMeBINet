@@ -1,0 +1,3 @@
+MONDO:0004461	vaginal tubulovillous adenoma
+DOID 	 name 
+DOID:8104	vaginal tubulovillous adenoma

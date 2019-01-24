@@ -1,0 +1,3 @@
+DOID:1134	gingival recession
+monDO ID 	 name 
+MONDO:0001268	gingival recession

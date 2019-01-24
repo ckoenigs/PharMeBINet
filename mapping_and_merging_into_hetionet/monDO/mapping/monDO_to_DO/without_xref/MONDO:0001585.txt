@@ -1,0 +1,3 @@
+MONDO:0001585	hallucinogen abuse
+DOID 	 name 
+DOID:12797	hallucinogen abuse

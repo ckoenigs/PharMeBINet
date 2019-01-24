@@ -1,0 +1,3 @@
+DOID:84	osteochondritis dissecans
+monDO ID 	 name 
+MONDO:0017178	osteochondritis dissecans (disease)

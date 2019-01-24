@@ -1,0 +1,3 @@
+MONDO:0000823	familial temporal lobe epilepsy 3
+DOID 	 name 
+DOID:0060750	familial temporal lobe epilepsy 3

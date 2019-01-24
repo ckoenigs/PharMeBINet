@@ -1,0 +1,3 @@
+MONDO:0000225	human monocytic ehrlichiosis
+DOID 	 name 
+DOID:0050026	human monocytic ehrlichiosis

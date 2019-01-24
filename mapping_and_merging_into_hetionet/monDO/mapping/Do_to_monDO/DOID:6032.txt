@@ -1,0 +1,3 @@
+DOID:6032	juvenile type testicular granulosa cell tumor
+monDO ID 	 name 
+MONDO:0003741	juvenile type testicular granulosa cell tumor

@@ -1,0 +1,3 @@
+MONDO:0005218	muscular disease
+DOID 	 name 
+DOID:0080000	muscular disease

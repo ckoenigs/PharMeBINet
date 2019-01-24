@@ -1,0 +1,3 @@
+DOID:121	vaginal disease
+monDO ID 	 name 
+MONDO:0001433	vaginal disease

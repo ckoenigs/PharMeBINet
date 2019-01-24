@@ -1,0 +1,3 @@
+DOID:2729	dyskeratosis congenita
+monDO ID 	 name 
+MONDO:0015780	dyskeratosis congenita

@@ -1,0 +1,3 @@
+DOID:5093	thoracic cancer
+monDO ID 	 name 
+MONDO:0003274	thoracic cancer

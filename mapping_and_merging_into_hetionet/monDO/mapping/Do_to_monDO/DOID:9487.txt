@@ -1,0 +1,3 @@
+DOID:9487	Meckel's diverticulum
+monDO ID 	 name 
+MONDO:0007955	Meckel's diverticulum

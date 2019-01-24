@@ -1,0 +1,3 @@
+MONDO:0000339	spinal polio
+DOID 	 name 
+DOID:0050513	spinal polio

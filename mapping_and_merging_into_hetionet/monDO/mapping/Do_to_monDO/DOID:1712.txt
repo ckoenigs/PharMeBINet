@@ -1,0 +1,3 @@
+DOID:1712	aortic valve stenosis
+monDO ID 	 name 
+MONDO:0004978	aortic stenosis

@@ -1,0 +1,3 @@
+MONDO:0001777	acute gonococcal cystitis
+DOID 	 name 
+DOID:13690	acute gonococcal cystitis

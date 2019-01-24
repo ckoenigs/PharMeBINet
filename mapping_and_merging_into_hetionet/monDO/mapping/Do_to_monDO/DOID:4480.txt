@@ -1,0 +1,3 @@
+DOID:4480	achondroplasia
+monDO ID 	 name 
+MONDO:0007037	achondroplasia

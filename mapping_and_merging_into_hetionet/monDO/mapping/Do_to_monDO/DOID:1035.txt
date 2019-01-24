@@ -1,0 +1,3 @@
+DOID:1035	natural killer cell leukemia
+monDO ID 	 name 
+MONDO:0001010	natural killer cell leukemia

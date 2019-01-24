@@ -1,0 +1,3 @@
+DOID:0060431	chromosome 16p13.3 duplication syndrome
+monDO ID 	 name 
+MONDO:0013273	chromosome 16p13.3 duplication syndrome

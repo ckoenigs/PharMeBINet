@@ -1,0 +1,3 @@
+MONDO:0005563	nut midline carcinoma
+DOID 	 name 
+DOID:0060463	NUT midline carcinoma

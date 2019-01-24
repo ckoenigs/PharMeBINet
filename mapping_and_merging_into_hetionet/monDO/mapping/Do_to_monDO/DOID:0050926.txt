@@ -1,0 +1,3 @@
+DOID:0050926	jejunal adenocarcinoma
+monDO ID 	 name 
+MONDO:0000541	jejunal adenocarcinoma (disease)

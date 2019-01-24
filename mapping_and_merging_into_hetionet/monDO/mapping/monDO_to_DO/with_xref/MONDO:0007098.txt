@@ -1,0 +1,3 @@
+MONDO:0007098	ACys amyloidosis
+DOID 	 name 
+DOID:9246	cerebral amyloid angiopathy

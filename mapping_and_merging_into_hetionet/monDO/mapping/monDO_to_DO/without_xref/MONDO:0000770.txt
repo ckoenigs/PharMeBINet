@@ -1,0 +1,3 @@
+MONDO:0000770	shellfish allergy
+DOID 	 name 
+DOID:0060495	shellfish allergy

@@ -1,0 +1,3 @@
+MONDO:0001597	submandibular gland disease
+DOID 	 name 
+DOID:12897	submandibular gland disease

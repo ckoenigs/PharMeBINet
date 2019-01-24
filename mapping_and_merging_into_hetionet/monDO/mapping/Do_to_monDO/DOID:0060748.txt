@@ -1,0 +1,3 @@
+DOID:0060748	familial temporal lobe epilepsy 1
+monDO ID 	 name 
+MONDO:0010898	familial temporal lobe epilepsy 1

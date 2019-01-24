@@ -1,0 +1,3 @@
+MONDO:0000783	orange allery
+DOID 	 name 
+DOID:0060508	orange allery

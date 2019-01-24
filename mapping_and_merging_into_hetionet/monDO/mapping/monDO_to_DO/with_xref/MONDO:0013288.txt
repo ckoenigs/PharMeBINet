@@ -1,0 +1,3 @@
+MONDO:0013288	agammaglobulinemia 3, autosomal recessive
+DOID 	 name 
+DOID:2583	agammaglobulinemia

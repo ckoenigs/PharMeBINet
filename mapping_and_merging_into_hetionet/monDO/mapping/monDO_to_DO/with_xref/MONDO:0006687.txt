@@ -1,0 +1,3 @@
+MONDO:0006687	burning mouth syndrome
+DOID 	 name 
+DOID:4331	burning mouth syndrome

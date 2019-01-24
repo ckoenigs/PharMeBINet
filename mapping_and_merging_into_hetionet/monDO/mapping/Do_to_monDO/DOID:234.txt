@@ -1,0 +1,3 @@
+DOID:234	colon adenocarcinoma
+monDO ID 	 name 
+MONDO:0002271	colon adenocarcinoma

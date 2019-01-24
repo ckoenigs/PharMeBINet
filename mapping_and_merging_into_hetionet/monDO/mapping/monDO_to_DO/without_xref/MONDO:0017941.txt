@@ -1,0 +1,3 @@
+MONDO:0017941	chikungunya
+DOID 	 name 
+DOID:0050012	chikungunya

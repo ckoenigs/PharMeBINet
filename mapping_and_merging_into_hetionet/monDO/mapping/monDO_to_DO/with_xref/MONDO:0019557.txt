@@ -1,0 +1,3 @@
+MONDO:0019557	Chilblain lupus
+DOID 	 name 
+DOID:0060386	Chilblain lupus

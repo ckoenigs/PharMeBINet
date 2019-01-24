@@ -1,0 +1,3 @@
+MONDO:0003516	adult teratoma
+DOID 	 name 
+DOID:5565	adult teratoma

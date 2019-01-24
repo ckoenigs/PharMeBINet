@@ -1,0 +1,3 @@
+DOID:8252	chronic rhinitis
+monDO ID 	 name 
+MONDO:0004514	chronic rhinitis

@@ -1,0 +1,3 @@
+MONDO:0000675	pain agnosia
+DOID 	 name 
+DOID:0060145	pain agnosia

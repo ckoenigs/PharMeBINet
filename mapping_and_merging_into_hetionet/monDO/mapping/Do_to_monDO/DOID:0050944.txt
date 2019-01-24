@@ -1,0 +1,3 @@
+DOID:0050944	spastic ataxia 5
+monDO ID 	 name 
+MONDO:0013776	spastic ataxia 5

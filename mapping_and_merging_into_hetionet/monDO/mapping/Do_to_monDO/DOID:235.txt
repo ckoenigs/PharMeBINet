@@ -1,0 +1,3 @@
+DOID:235	colonic benign neoplasm
+monDO ID 	 name 
+MONDO:0002278	benign colon neoplasm

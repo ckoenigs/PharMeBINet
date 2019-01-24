@@ -1,0 +1,3 @@
+DOID:0050576	Senior-Loken syndrome
+monDO ID 	 name 
+MONDO:0017842	Senior-Loken syndrome

@@ -1,0 +1,3 @@
+MONDO:0003135	focal embolic glomerulonephritis
+DOID 	 name 
+DOID:4779	focal embolic glomerulonephritis

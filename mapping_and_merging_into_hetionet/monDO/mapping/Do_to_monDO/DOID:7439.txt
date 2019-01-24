@@ -1,0 +1,3 @@
+DOID:7439	polyp of middle ear
+monDO ID 	 name 
+MONDO:0004223	polyp of middle ear

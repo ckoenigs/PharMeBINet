@@ -1,0 +1,3 @@
+DOID:10071	larynx squamous papilloma
+monDO ID 	 name 
+MONDO:0000935	larynx squamous papilloma

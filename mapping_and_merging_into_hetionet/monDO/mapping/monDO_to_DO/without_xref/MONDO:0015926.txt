@@ -1,0 +1,3 @@
+MONDO:0015926	pneumoconiosis
+DOID 	 name 
+DOID:10316	pneumoconiosis

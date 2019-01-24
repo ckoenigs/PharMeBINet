@@ -1,0 +1,3 @@
+MONDO:0008822	arthrogryposis, renal dysfunction, and cholestasis 1
+DOID 	 name 
+DOID:0050763	ARC syndrome

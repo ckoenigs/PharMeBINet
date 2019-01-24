@@ -1,0 +1,3 @@
+MONDO:0003070	axillary lymphadenitis
+DOID 	 name 
+DOID:4640	axillary adenitis

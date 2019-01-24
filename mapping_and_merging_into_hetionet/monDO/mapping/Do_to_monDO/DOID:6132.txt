@@ -1,0 +1,3 @@
+DOID:6132	bronchitis
+monDO ID 	 name 
+MONDO:0003781	bronchitis

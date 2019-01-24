@@ -1,0 +1,3 @@
+MONDO:0003709	hairy cell leukemia
+DOID 	 name 
+DOID:285	hairy cell leukemia

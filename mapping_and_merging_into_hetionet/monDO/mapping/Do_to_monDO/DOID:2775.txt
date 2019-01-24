@@ -1,0 +1,3 @@
+DOID:2775	long bone adamantinoma
+monDO ID 	 name 
+MONDO:0007063	long bone adamantinoma

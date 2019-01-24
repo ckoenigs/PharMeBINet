@@ -1,0 +1,3 @@
+MONDO:0003227	prosopagnosia (disease)
+DOID 	 name 
+DOID:4970	prosopagnosia

@@ -1,0 +1,3 @@
+MONDO:0010905	cone-rod dystrophy 1
+DOID 	 name 
+DOID:0111009	cone-rod dystrophy 1

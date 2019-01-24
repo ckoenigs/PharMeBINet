@@ -1,0 +1,3 @@
+MONDO:0000443	adenylosuccinase lyase deficiency
+DOID 	 name 
+DOID:0050762	adenylosuccinase lyase deficiency

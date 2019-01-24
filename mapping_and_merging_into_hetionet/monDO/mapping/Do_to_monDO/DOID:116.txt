@@ -1,0 +1,3 @@
+DOID:116	pericardium cancer
+monDO ID 	 name 
+MONDO:0001322	pericardium cancer

@@ -1,0 +1,3 @@
+DOID:3637	childhood spinal cord tumor
+monDO ID 	 name 
+MONDO:0002716	childhood spinal cord tumor

@@ -1,0 +1,3 @@
+MONDO:0001854	lacrimal apparatus disease
+DOID 	 name 
+DOID:1400	lacrimal apparatus disease

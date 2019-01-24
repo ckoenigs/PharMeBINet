@@ -1,0 +1,3 @@
+MONDO:0012467	cold-induced sweating syndrome 2
+DOID 	 name 
+DOID:0060294	cold-induced sweating syndrome

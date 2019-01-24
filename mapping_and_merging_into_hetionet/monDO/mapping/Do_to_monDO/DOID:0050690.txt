@@ -1,0 +1,3 @@
+DOID:0050690	brachyolmia
+monDO ID 	 name 
+MONDO:0015262	brachyolmia

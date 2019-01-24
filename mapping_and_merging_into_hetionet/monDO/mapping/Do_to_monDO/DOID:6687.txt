@@ -1,0 +1,3 @@
+DOID:6687	Achenbach syndrome
+monDO ID 	 name 
+MONDO:0006520	Achenbach syndrome

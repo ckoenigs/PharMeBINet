@@ -1,0 +1,3 @@
+MONDO:0001933	endocrine pancreas disease
+DOID 	 name 
+DOID:1428	endocrine pancreas disease

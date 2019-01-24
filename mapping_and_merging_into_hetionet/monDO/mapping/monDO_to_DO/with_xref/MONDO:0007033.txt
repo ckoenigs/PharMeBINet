@@ -1,0 +1,3 @@
+MONDO:0007033	abducens nerve palsy
+DOID 	 name 
+DOID:10865	abducens nerve disease

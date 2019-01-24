@@ -1,0 +1,3 @@
+MONDO:0004487	endometrial type cervical adenomyoma
+DOID 	 name 
+DOID:8178	endometrial type cervical adenomyoma

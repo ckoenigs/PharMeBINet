@@ -1,0 +1,3 @@
+MONDO:0002162	fallopian tube adenosarcoma
+DOID 	 name 
+DOID:1973	fallopian tube adenosarcoma

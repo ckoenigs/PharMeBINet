@@ -1,0 +1,5 @@
+MONDO:0003709	adrenoleukodystrophy
+DOID 	 name 
+DOID:0060215	Balo concentric sclerosis
+DOID:1442	Alpers syndrome
+DOID:10588	adrenoleukodystrophy

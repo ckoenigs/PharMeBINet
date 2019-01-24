@@ -1,0 +1,3 @@
+DOID:6196	reactive arthritis
+monDO ID 	 name 
+MONDO:0017376	reactive arthritis

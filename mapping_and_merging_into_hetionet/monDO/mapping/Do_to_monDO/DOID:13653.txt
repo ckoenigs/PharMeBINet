@@ -1,0 +1,3 @@
+DOID:13653	stenosis of lacrimal punctum
+monDO ID 	 name 
+MONDO:0001767	stenosis of lacrimal punctum

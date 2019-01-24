@@ -1,0 +1,3 @@
+MONDO:0011821	Meckel syndrome, type 3
+DOID 	 name 
+DOID:0050778	Meckel syndrome

@@ -1,0 +1,3 @@
+MONDO:0001803	myringitis bullosa hemorrhagica
+DOID 	 name 
+DOID:13791	myringitis bullosa hemorrhagica

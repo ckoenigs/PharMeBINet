@@ -1,0 +1,3 @@
+DOID:14099	acquired gastric outlet stenosis
+monDO ID 	 name 
+MONDO:0001878	acquired gastric outlet stenosis

@@ -1,0 +1,3 @@
+MONDO:0011439	spinocerebellar ataxia type 12
+DOID 	 name 
+DOID:0050962	spinocerebellar ataxia type 12

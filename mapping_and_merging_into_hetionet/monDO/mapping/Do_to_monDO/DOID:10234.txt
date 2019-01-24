@@ -1,0 +1,3 @@
+DOID:10234	histoplasmosis pericarditis
+monDO ID 	 name 
+MONDO:0000981	histoplasma pericarditis

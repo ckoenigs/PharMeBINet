@@ -1,0 +1,3 @@
+DOID:5374	pilomatrixoma
+monDO ID 	 name 
+MONDO:0007564	pilomatrixoma

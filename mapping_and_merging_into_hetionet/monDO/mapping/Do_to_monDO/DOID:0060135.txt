@@ -1,0 +1,3 @@
+DOID:0060135	apraxia
+monDO ID 	 name 
+MONDO:0000665	apraxia

@@ -1,0 +1,3 @@
+DOID:9808	Goodpasture syndrome
+monDO ID 	 name 
+MONDO:0009303	anti-glomerular basement membrane disease

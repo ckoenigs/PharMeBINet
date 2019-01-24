@@ -1,0 +1,3 @@
+MONDO:0006545	erythema multiforme
+DOID 	 name 
+DOID:0050185	erythema multiforme

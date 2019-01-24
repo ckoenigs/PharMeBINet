@@ -1,0 +1,4 @@
+MONDO:0017387	epithelioid sarcoma
+DOID 	 name 
+DOID:6193	epithelioid sarcoma
+DOID:4235	spindle cell sarcoma

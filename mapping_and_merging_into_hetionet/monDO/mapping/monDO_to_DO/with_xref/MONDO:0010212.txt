@@ -1,0 +1,3 @@
+MONDO:0010212	xeroderma pigmentosum group D
+DOID 	 name 
+DOID:0110845	xeroderma pigmentosum group D

@@ -1,0 +1,3 @@
+DOID:0050141	intestinal botulism
+monDO ID 	 name 
+MONDO:0015805	intestinal botulism

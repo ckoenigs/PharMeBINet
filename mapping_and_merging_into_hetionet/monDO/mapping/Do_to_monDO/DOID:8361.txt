@@ -1,0 +1,3 @@
+DOID:8361	glassy cell variant cervical adenosquamous carcinoma
+monDO ID 	 name 
+MONDO:0004542	glassy cell variant cervical adenosquamous carcinoma

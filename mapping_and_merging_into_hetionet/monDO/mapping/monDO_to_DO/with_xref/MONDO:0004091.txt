@@ -1,0 +1,3 @@
+MONDO:0004091	basaloid squamous cell skin carcinoma
+DOID 	 name 
+DOID:7049	basaloid squamous cell skin carcinoma

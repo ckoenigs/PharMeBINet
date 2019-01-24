@@ -1,0 +1,3 @@
+MONDO:0021020	Crigler-Najjar syndrome type 1
+DOID 	 name 
+DOID:3803	Crigler-Najjar syndrome

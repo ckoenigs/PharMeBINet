@@ -1,0 +1,3 @@
+DOID:11277	Plummer's disease
+monDO ID 	 name 
+MONDO:0001252	Plummer's disease

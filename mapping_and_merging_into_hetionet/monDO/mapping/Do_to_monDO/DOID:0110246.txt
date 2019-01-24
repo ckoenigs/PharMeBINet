@@ -1,0 +1,3 @@
+DOID:0110246	cataract 26 multiple types
+monDO ID 	 name 
+MONDO:0011591	cataract 26 multiple types

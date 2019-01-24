@@ -1,0 +1,4 @@
+MONDO:0003514	malignant teratoma
+DOID 	 name 
+DOID:5563	malignant teratoma
+DOID:3307	teratoma

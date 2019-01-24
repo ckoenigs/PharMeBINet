@@ -1,0 +1,3 @@
+DOID:3716	mucinous stomach adenocarcinoma
+monDO ID 	 name 
+MONDO:0002753	mucinous stomach adenocarcinoma

@@ -1,0 +1,3 @@
+MONDO:0004727	vestibule of mouth cancer
+DOID 	 name 
+DOID:9188	vestibule of mouth cancer

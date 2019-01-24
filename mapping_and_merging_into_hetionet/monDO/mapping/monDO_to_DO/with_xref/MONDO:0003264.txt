@@ -1,0 +1,3 @@
+MONDO:0003264	basosquamous carcinoma
+DOID 	 name 
+DOID:5063	basosquamous carcinoma

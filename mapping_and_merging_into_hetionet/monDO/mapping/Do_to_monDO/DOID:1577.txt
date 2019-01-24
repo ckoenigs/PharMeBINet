@@ -1,0 +1,3 @@
+DOID:1577	limited scleroderma
+monDO ID 	 name 
+MONDO:0006832	limited scleroderma

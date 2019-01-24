@@ -1,0 +1,3 @@
+DOID:10428	stable condition keratoconus
+monDO ID 	 name 
+MONDO:0001030	keratoconus, stable condition

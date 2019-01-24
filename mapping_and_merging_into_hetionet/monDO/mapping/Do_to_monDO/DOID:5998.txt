@@ -1,0 +1,3 @@
+DOID:5998	microglandular adenosis
+monDO ID 	 name 
+MONDO:0003725	microglandular adenosis

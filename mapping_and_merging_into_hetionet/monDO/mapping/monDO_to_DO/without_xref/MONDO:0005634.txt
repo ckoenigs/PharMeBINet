@@ -1,0 +1,3 @@
+MONDO:0005634	acute hemorrhagic conjunctivitis
+DOID 	 name 
+DOID:11227	acute hemorrhagic conjunctivitis

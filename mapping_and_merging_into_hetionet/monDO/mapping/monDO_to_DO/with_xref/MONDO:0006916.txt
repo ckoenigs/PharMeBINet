@@ -1,0 +1,3 @@
+MONDO:0006916	postcholecystectomy syndrome
+DOID 	 name 
+DOID:9740	postcholecystectomy syndrome

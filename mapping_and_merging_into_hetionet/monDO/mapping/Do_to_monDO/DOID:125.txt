@@ -1,0 +1,3 @@
+DOID:125	vagina leiomyoma
+monDO ID 	 name 
+MONDO:0001536	vaginal leiomyoma

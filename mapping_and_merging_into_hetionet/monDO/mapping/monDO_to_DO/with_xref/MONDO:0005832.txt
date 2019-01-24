@@ -1,0 +1,3 @@
+MONDO:0005832	lymphangitis
+DOID 	 name 
+DOID:9317	lymphangitis

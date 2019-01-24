@@ -1,0 +1,3 @@
+MONDO:0001315	neurocirculatory asthenia
+DOID 	 name 
+DOID:11569	neurocirculatory asthenia

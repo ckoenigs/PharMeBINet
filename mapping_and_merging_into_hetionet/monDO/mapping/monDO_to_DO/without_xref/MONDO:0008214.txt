@@ -1,0 +1,3 @@
+MONDO:0008214	Pelger-Huet anomaly
+DOID 	 name 
+DOID:9631	Pelger-Huet anomaly

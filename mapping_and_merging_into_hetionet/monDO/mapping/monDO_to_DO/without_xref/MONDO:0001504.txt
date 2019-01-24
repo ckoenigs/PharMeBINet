@@ -1,0 +1,3 @@
+MONDO:0001504	fetishism
+DOID 	 name 
+DOID:1235	fetishism

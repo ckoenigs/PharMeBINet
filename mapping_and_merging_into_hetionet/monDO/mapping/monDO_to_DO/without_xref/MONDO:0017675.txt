@@ -1,0 +1,3 @@
+MONDO:0017675	punctate palmoplantar keratoderma
+DOID 	 name 
+DOID:0060361	punctate palmoplantar keratoderma

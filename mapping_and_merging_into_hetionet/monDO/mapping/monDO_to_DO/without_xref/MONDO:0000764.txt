@@ -1,0 +1,3 @@
+MONDO:0000764	epithelial-stromal TGFBI dystrophy
+DOID 	 name 
+DOID:0060441	epithelial-stromal TGFBI dystrophy

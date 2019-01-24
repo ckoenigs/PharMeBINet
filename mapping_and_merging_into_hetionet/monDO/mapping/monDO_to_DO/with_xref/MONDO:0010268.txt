@@ -1,0 +1,3 @@
+MONDO:0010268	X-linked lissencephaly with abnormal genitalia
+DOID 	 name 
+DOID:0050453	lissencephaly

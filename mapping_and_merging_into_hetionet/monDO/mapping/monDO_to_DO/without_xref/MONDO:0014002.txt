@@ -1,0 +1,3 @@
+MONDO:0014002	autosomal dominant nocturnal frontal lobe epilepsy 5
+DOID 	 name 
+DOID:0060686	autosomal dominant nocturnal frontal lobe epilepsy 5

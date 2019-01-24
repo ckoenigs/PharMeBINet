@@ -1,0 +1,3 @@
+MONDO:0014063	mitochondrial complex III deficiency nuclear type 2
+DOID 	 name 
+DOID:0060351	mitochondrial complex III deficiency nuclear type 2

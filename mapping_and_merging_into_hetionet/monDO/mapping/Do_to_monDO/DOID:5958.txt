@@ -1,0 +1,3 @@
+DOID:5958	bladder urachal carcinoma
+monDO ID 	 name 
+MONDO:0003715	bladder urachal carcinoma

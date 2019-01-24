@@ -1,0 +1,3 @@
+MONDO:0007309	Charcot-Marie-tooth disease type 1A
+DOID 	 name 
+DOID:0110148	Charcot-Marie-Tooth disease type 1A

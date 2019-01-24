@@ -1,0 +1,3 @@
+MONDO:0008111	oculodentodigital dysplasia
+DOID 	 name 
+DOID:0060291	oculodentodigital dysplasia

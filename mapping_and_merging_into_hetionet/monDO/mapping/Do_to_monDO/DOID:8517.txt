@@ -1,0 +1,3 @@
+DOID:8517	acute cor pulmonale
+monDO ID 	 name 
+MONDO:0004598	acute cor pulmonale

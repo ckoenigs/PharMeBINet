@@ -1,0 +1,3 @@
+MONDO:0003362	cutaneous leiomyosarcoma (disease)
+DOID 	 name 
+DOID:5273	cutaneous leiomyosarcoma

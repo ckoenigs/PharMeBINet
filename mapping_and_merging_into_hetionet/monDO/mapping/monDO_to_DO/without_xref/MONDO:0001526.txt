@@ -1,0 +1,3 @@
+MONDO:0001526	labia minora cancer
+DOID 	 name 
+DOID:1243	labia minora cancer

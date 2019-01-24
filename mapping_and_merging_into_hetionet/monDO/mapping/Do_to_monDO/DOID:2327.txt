@@ -1,0 +1,3 @@
+DOID:2327	viral gastritis
+monDO ID 	 name 
+MONDO:0002270	viral gastritis

@@ -1,0 +1,3 @@
+DOID:0060339	chronic atrial and intestinal dysrhythmia
+monDO ID 	 name 
+MONDO:0014528	chronic atrial and intestinal dysrhythmia

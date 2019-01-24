@@ -1,0 +1,3 @@
+DOID:0060311	adenoid hypertrophy
+monDO ID 	 name 
+MONDO:0000740	adenoid hypertrophy

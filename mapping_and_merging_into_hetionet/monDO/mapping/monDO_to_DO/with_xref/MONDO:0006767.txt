@@ -1,0 +1,3 @@
+MONDO:0006767	gastric antral vascular ectasia
+DOID 	 name 
+DOID:2493	gastric antral vascular ectasia

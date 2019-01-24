@@ -1,0 +1,3 @@
+MONDO:0008840	ataxia telangiectasia
+DOID 	 name 
+DOID:12704	ataxia telangiectasia

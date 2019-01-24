@@ -1,0 +1,3 @@
+MONDO:0011351	autosomal recessive nonsyndromic deafness 21
+DOID 	 name 
+DOID:0110479	autosomal recessive nonsyndromic deafness 21

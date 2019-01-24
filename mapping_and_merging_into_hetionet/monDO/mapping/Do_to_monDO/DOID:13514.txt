@@ -1,0 +1,3 @@
+DOID:13514	venous tributary occlusion of retina
+monDO ID 	 name 
+MONDO:0001733	venous tributary occlusion of retina

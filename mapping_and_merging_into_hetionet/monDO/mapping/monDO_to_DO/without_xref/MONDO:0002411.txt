@@ -1,0 +1,3 @@
+MONDO:0002411	narcissistic personality disorder
+DOID 	 name 
+DOID:2745	narcissistic personality disorder

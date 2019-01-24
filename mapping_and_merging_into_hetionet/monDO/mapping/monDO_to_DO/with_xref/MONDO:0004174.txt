@@ -1,0 +1,3 @@
+MONDO:0004174	secretory uterine corpus endometrioid adenocarcinoma
+DOID 	 name 
+DOID:7289	secretory uterine corpus endometrioid adenocarcinoma

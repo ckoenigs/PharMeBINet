@@ -1,0 +1,3 @@
+DOID:1602	lymphadenitis
+monDO ID 	 name 
+MONDO:0002052	lymphadenitis (disease)

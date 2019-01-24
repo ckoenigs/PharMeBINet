@@ -1,0 +1,3 @@
+DOID:0110309	hypertrophic cardiomyopathy 3
+monDO ID 	 name 
+MONDO:0007267	hypertrophic cardiomyopathy 3

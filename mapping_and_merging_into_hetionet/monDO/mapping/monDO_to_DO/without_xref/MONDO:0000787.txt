@@ -1,0 +1,3 @@
+MONDO:0000787	tomato allergy
+DOID 	 name 
+DOID:0060512	tomato allergy

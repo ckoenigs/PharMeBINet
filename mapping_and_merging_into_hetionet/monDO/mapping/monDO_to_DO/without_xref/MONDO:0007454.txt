@@ -1,0 +1,3 @@
+MONDO:0007454	type 1 diabetes mellitus 2
+DOID 	 name 
+DOID:0110741	type 1 diabetes mellitus 2

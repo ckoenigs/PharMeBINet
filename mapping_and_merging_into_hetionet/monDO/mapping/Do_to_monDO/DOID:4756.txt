@@ -1,0 +1,3 @@
+DOID:4756	testicular Leydig cell tumor
+monDO ID 	 name 
+MONDO:0003124	testicular leydig cell tumor

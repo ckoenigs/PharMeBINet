@@ -1,0 +1,3 @@
+MONDO:0001027	gonococcal seminal vesiculitis
+DOID 	 name 
+DOID:10400	gonococcal seminal vesiculitis

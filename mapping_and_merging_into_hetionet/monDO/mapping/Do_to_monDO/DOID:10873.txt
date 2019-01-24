@@ -1,0 +1,3 @@
+DOID:10873	Kuhnt-Junius degeneration
+monDO ID 	 name 
+MONDO:0005417	wet macular degeneration

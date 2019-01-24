@@ -1,0 +1,3 @@
+DOID:0110874	holoprosencephaly 6
+monDO ID 	 name 
+MONDO:0011616	holoprosencephaly 6

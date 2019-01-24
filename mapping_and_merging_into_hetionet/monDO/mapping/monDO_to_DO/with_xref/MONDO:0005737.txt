@@ -1,0 +1,3 @@
+MONDO:0005737	Ebola hemorrhagic fever
+DOID 	 name 
+DOID:4325	Ebola hemorrhagic fever

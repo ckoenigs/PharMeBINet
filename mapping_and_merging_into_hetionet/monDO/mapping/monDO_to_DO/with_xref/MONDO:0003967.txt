@@ -1,0 +1,3 @@
+MONDO:0003967	synchronous multifocal osteogenic sarcoma
+DOID 	 name 
+DOID:6696	synchronous multifocal osteogenic sarcoma

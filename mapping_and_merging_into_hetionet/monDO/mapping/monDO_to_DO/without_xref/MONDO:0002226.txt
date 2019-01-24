@@ -1,0 +1,3 @@
+MONDO:0002226	tuberculous oophoritis
+DOID 	 name 
+DOID:2148	tuberculous oophoritis

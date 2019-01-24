@@ -1,0 +1,3 @@
+MONDO:0009237	focal epithelial hyperplasia
+DOID 	 name 
+DOID:5362	focal epithelial hyperplasia

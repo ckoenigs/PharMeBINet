@@ -1,0 +1,3 @@
+DOID:0110738	neurodegeneration with brain iron accumulation 4
+monDO ID 	 name 
+MONDO:0013674	neurodegeneration with brain iron accumulation 4

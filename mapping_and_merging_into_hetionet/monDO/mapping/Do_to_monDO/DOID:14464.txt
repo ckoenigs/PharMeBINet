@@ -1,0 +1,3 @@
+DOID:14464	neuroleptic malignant syndrome
+monDO ID 	 name 
+MONDO:0019790	neuroleptic malignant syndrome

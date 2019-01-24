@@ -1,0 +1,3 @@
+DOID:13406	pulmonary sarcoidosis
+monDO ID 	 name 
+MONDO:0001708	pulmonary sarcoidosis

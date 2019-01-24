@@ -1,0 +1,3 @@
+MONDO:0001544	tibial nerve palsy
+DOID 	 name 
+DOID:12529	tibial nerve palsy

@@ -1,0 +1,3 @@
+MONDO:0001096	mediastinum ganglioneuroblastoma
+DOID 	 name 
+DOID:10661	mediastinum ganglioneuroblastoma

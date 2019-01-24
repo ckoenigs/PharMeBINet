@@ -1,0 +1,3 @@
+DOID:0080057	autosomal recessive spinocerebellar ataxia 15
+monDO ID 	 name 
+MONDO:0014311	autosomal recessive spinocerebellar ataxia 15

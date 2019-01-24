@@ -1,0 +1,3 @@
+DOID:2996	mixed germ cell-sex cord neoplasm
+monDO ID 	 name 
+MONDO:0002478	mixed germ cell-sex cord-stromal tumor

@@ -1,0 +1,3 @@
+MONDO:0005984	tinea pedis
+DOID 	 name 
+DOID:12403	tinea pedis

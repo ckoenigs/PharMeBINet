@@ -1,0 +1,3 @@
+MONDO:0008210	patterned macular dystrophy 1
+DOID 	 name 
+DOID:0060866	patterned macular dystrophy 1

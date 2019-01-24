@@ -1,0 +1,3 @@
+DOID:5730	salpingitis isthmica nodosa
+monDO ID 	 name 
+MONDO:0003616	salpingitis isthmica nodosa

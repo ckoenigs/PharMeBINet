@@ -1,0 +1,3 @@
+DOID:606	Brown-Sequard syndrome
+monDO ID 	 name 
+MONDO:0003754	brown-Sequard syndrome

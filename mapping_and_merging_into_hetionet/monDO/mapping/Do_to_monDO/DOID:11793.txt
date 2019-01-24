@@ -1,0 +1,3 @@
+DOID:11793	phthisical cornea
+monDO ID 	 name 
+MONDO:0001368	phthisical cornea

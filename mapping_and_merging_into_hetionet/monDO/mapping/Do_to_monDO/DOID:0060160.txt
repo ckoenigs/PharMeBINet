@@ -1,0 +1,3 @@
+DOID:0060160	survival motor neuron spinal muscular atrophy
+monDO ID 	 name 
+MONDO:0000689	survival motor neuron spinal muscular atrophy

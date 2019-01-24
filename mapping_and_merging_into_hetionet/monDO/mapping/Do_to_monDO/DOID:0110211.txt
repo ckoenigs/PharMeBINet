@@ -1,0 +1,3 @@
+DOID:0110211	Charcot-Marie-Tooth disease X-linked recessive 3
+monDO ID 	 name 
+MONDO:0010551	Charcot-Marie-tooth disease X-linked recessive 3

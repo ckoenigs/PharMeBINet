@@ -1,0 +1,3 @@
+MONDO:0005361	eosinophilic esophagitis
+DOID 	 name 
+DOID:13922	eosinophilic esophagitis

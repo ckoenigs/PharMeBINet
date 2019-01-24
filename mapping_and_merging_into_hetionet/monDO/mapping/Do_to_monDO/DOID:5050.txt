@@ -1,0 +1,3 @@
+DOID:5050	Ehrlich tumor carcinoma
+monDO ID 	 name 
+MONDO:0006739	ehrlich tumor carcinoma

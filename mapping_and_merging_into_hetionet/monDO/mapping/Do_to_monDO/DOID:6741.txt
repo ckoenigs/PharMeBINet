@@ -1,0 +1,3 @@
+DOID:6741	bilateral breast cancer
+monDO ID 	 name 
+MONDO:0003982	bilateral breast carcinoma

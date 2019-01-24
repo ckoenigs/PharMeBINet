@@ -1,0 +1,5 @@
+MONDO:0000451	primary progressive multiple sclerosis
+DOID 	 name 
+DOID:0050784	primary progressive multiple sclerosis
+DOID:0050785	progressive relapsing multiple sclerosis
+DOID:0050783	secondary progressive multiple sclerosis

@@ -1,0 +1,3 @@
+MONDO:0010329	MRX77
+DOID 	 name 
+DOID:0050776	non-syndromic X-linked intellectual disability

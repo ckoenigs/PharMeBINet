@@ -1,0 +1,3 @@
+MONDO:0004770	exophthalmos (disease)
+DOID 	 name 
+DOID:9370	exophthalmos

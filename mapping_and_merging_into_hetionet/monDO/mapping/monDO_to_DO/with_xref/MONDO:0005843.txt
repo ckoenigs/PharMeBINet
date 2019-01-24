@@ -1,0 +1,3 @@
+MONDO:0005843	mediastinal cancer
+DOID 	 name 
+DOID:5559	mediastinal cancer

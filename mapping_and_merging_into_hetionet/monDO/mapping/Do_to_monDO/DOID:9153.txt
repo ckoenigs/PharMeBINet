@@ -1,0 +1,3 @@
+DOID:9153	variola minor
+monDO ID 	 name 
+MONDO:0004720	variola minor infection

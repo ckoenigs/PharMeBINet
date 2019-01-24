@@ -1,0 +1,3 @@
+DOID:1362	paranasal sinus sarcoma
+monDO ID 	 name 
+MONDO:0001758	paranasal sinus sarcoma

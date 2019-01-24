@@ -1,0 +1,3 @@
+DOID:4287	external ear basal cell carcinoma
+monDO ID 	 name 
+MONDO:0002943	external ear basal cell carcinoma

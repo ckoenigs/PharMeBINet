@@ -1,0 +1,3 @@
+MONDO:0005260	autism (disease)
+DOID 	 name 
+DOID:12849	autistic disorder

@@ -1,0 +1,3 @@
+MONDO:0001932	atrophic vulva
+DOID 	 name 
+DOID:14275	atrophic vulva

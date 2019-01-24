@@ -1,0 +1,3 @@
+MONDO:0014078	platelet-type bleeding disorder 15
+DOID 	 name 
+DOID:0111053	platelet-type bleeding disorder 15

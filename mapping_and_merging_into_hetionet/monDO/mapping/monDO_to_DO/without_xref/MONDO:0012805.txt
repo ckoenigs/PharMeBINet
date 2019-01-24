@@ -1,0 +1,3 @@
+MONDO:0012805	childhood onset GLUT1 deficiency syndrome 2
+DOID 	 name 
+DOID:0090045	childhood onset GLUT1 deficiency syndrome 2

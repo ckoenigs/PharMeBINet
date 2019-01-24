@@ -1,0 +1,3 @@
+MONDO:0014106	hypogonadotropic hypogonadism 20 with or without anosmia
+DOID 	 name 
+DOID:0090082	hypogonadotropic hypogonadism 20 with or without anosmia

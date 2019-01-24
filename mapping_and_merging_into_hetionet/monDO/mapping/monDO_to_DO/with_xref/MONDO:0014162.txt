@@ -1,0 +1,3 @@
+MONDO:0014162	infantile hypertrophic cardiomyopathy due to MRPL44 deficiency
+DOID 	 name 
+DOID:0060286	combined oxidative phosphorylation deficiency

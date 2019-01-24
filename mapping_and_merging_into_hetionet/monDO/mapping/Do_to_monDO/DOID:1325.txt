@@ -1,0 +1,3 @@
+DOID:1325	bronchus cancer
+monDO ID 	 name 
+MONDO:0001672	bronchus cancer

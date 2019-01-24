@@ -1,0 +1,3 @@
+MONDO:0014498	familial cold autoinflammatory syndrome 4
+DOID 	 name 
+DOID:0090065	familial cold autoinflammatory syndrome 4

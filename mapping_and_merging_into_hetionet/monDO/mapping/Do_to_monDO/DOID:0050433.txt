@@ -1,0 +1,3 @@
+DOID:0050433	fatal familial insomnia
+monDO ID 	 name 
+MONDO:0010808	fatal familial insomnia

@@ -1,0 +1,3 @@
+DOID:687	hepatoblastoma
+monDO ID 	 name 
+MONDO:0018666	hepatoblastoma

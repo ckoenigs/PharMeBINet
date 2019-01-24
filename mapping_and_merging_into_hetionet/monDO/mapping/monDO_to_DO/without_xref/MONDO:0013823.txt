@@ -1,0 +1,3 @@
+MONDO:0013823	autosomal dominant nonsyndromic deafness 4B
+DOID 	 name 
+DOID:0110574	autosomal dominant nonsyndromic deafness 4B

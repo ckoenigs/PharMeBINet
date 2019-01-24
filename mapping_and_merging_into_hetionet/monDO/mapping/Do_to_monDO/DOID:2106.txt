@@ -1,0 +1,3 @@
+DOID:2106	myotonia congenita
+monDO ID 	 name 
+MONDO:0009710	myotonia congenita

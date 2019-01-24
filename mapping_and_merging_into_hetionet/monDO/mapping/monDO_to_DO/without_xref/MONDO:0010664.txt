@@ -1,0 +1,3 @@
+MONDO:0010664	syndromic X-linked intellectual disability Snyder type
+DOID 	 name 
+DOID:0060802	syndromic X-linked intellectual disability Snyder type

@@ -1,0 +1,3 @@
+DOID:0080101	Compton-North congenital myopathy
+monDO ID 	 name 
+MONDO:0012929	Compton-North congenital myopathy

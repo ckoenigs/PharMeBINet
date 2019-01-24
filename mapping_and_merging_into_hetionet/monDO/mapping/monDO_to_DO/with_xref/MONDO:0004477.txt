@@ -1,0 +1,3 @@
+MONDO:0004477	adrenal gland ganglioneuroblastoma
+DOID 	 name 
+DOID:8140	adrenal gland ganglioneuroblastoma

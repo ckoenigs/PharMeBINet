@@ -1,0 +1,3 @@
+DOID:13295	crater-like holes of optic disc
+monDO ID 	 name 
+MONDO:0001679	crater-like holes of optic disc

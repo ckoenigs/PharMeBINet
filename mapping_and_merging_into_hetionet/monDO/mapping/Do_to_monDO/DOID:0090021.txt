@@ -1,0 +1,3 @@
+DOID:0090021	split hand-foot malformation 1
+monDO ID 	 name 
+MONDO:0008464	split hand-foot malformation 1

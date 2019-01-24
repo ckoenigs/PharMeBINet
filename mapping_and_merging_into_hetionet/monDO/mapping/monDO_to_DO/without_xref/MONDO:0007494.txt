@@ -1,0 +1,3 @@
+MONDO:0007494	episodic kinesigenic dyskinesia 1
+DOID 	 name 
+DOID:0090053	episodic kinesigenic dyskinesia 1

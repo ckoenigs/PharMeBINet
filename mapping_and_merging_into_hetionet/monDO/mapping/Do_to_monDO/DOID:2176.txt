@@ -1,0 +1,3 @@
+DOID:2176	carbuncle
+monDO ID 	 name 
+MONDO:0002237	carbuncle

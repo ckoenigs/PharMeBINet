@@ -1,0 +1,3 @@
+MONDO:0014192	primary ciliary dyskinesia 22
+DOID 	 name 
+DOID:0110597	primary ciliary dyskinesia 22

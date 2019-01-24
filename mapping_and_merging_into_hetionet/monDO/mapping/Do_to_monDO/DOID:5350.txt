@@ -1,0 +1,3 @@
+DOID:5350	ovarian endodermal sinus tumor
+monDO ID 	 name 
+MONDO:0006344	ovarian yolk sac tumor

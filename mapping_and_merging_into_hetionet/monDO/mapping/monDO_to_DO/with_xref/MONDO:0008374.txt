@@ -1,0 +1,3 @@
+MONDO:0008374	retinal cone dystrophy type 1
+DOID 	 name 
+DOID:0050795	cone dystrophy

@@ -1,0 +1,3 @@
+MONDO:0006637	acute kidney tubular necrosis
+DOID 	 name 
+DOID:12556	acute kidney tubular necrosis

@@ -1,0 +1,3 @@
+DOID:6192	inflammatory MFH
+monDO ID 	 name 
+MONDO:0003797	inflammatory MFH

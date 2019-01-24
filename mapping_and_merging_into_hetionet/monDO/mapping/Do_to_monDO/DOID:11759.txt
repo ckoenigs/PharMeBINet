@@ -1,0 +1,3 @@
+DOID:11759	hypochromic anemia
+monDO ID 	 name 
+MONDO:0001357	hypochromic anemia (disease)

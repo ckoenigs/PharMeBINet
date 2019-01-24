@@ -1,0 +1,3 @@
+MONDO:0006032	cystitis
+DOID 	 name 
+DOID:1679	cystitis

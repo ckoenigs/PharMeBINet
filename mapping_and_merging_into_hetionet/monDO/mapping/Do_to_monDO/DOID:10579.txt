@@ -1,0 +1,3 @@
+DOID:10579	leukodystrophy
+monDO ID 	 name 
+MONDO:0019046	leukodystrophy

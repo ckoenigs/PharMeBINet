@@ -1,0 +1,3 @@
+DOID:2776	adamantinoma
+monDO ID 	 name 
+MONDO:0002422	adamantinoma

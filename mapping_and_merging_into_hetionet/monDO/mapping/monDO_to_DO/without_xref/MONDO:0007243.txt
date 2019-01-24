@@ -1,0 +1,3 @@
+MONDO:0007243	Burkitts lymphoma
+DOID 	 name 
+DOID:8584	Burkitt lymphoma

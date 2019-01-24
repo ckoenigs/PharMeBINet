@@ -1,0 +1,3 @@
+MONDO:0002469	lacrimal gland carcinoma ex pleomorphic adenoma
+DOID 	 name 
+DOID:296	mixed lacrimal gland cancer

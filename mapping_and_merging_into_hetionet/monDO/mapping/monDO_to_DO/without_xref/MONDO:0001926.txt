@@ -1,0 +1,3 @@
+MONDO:0001926	ureteral disease
+DOID 	 name 
+DOID:1426	ureteral disease

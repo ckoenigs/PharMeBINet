@@ -1,0 +1,3 @@
+DOID:11427	endosalpingiosis
+monDO ID 	 name 
+MONDO:0001283	endosalpingiosis

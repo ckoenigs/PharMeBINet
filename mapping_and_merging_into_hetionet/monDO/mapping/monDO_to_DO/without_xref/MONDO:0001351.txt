@@ -1,0 +1,3 @@
+MONDO:0001351	uterine adnexa cancer
+DOID 	 name 
+DOID:11747	uterine adnexa cancer

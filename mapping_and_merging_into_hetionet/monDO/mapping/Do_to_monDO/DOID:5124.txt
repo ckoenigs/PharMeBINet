@@ -1,0 +1,3 @@
+DOID:5124	fallopian tube leiomyoma
+monDO ID 	 name 
+MONDO:0003285	fallopian tube leiomyoma

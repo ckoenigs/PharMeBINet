@@ -1,0 +1,3 @@
+MONDO:0013514	hypotrichosis 3
+DOID 	 name 
+DOID:0110700	hypotrichosis 3

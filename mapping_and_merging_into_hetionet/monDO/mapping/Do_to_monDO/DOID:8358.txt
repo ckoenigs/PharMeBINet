@@ -1,0 +1,3 @@
+DOID:8358	pseudoglandular variant testicular seminoma
+monDO ID 	 name 
+MONDO:0004541	pseudoglandular variant testicular seminoma

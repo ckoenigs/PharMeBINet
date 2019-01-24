@@ -1,0 +1,3 @@
+DOID:0050966	spinocerebellar ataxia type 16
+monDO ID 	 name 
+MONDO:0000561	spinocerebellar ataxia type 16

@@ -1,0 +1,3 @@
+MONDO:0013169	chromosome 5p13 duplication syndrome
+DOID 	 name 
+DOID:0060460	chromosome 5p13 duplication syndrome

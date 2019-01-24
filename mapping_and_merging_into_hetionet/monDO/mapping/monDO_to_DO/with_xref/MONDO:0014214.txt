@@ -1,0 +1,3 @@
+MONDO:0014214	short-rib thoracic dysplasia 8 with or without polydactyly
+DOID 	 name 
+DOID:0110094	short-rib thoracic dysplasia 8 with or without polydactyly

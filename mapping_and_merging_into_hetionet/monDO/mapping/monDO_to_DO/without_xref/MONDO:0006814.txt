@@ -1,0 +1,3 @@
+MONDO:0006814	iritis (disease)
+DOID 	 name 
+DOID:1406	iritis

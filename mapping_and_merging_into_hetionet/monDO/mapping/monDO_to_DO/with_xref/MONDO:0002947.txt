@@ -1,0 +1,3 @@
+MONDO:0002947	adamantinoid basal cell epithelioma
+DOID 	 name 
+DOID:4290	adamantinoid basal cell epithelioma

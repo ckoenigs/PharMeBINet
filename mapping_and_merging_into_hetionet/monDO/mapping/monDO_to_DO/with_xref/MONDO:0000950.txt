@@ -1,0 +1,3 @@
+MONDO:0000950	asthenopia
+DOID 	 name 
+DOID:10141	asthenopia

@@ -1,0 +1,3 @@
+DOID:0060208	amyotrophic lateral sclerosis type 17
+monDO ID 	 name 
+MONDO:0013861	amyotrophic lateral sclerosis type 17

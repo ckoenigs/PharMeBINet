@@ -1,0 +1,3 @@
+DOID:10834	voyeurism
+monDO ID 	 name 
+MONDO:0001135	voyeurism

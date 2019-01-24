@@ -1,0 +1,3 @@
+DOID:633	myositis
+monDO ID 	 name 
+MONDO:0021167	myositis

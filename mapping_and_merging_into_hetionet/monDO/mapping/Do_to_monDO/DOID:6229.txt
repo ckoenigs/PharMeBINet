@@ -1,0 +1,3 @@
+DOID:6229	childhood mature teratoma of the ovary
+monDO ID 	 name 
+MONDO:0003818	childhood mature teratoma of the ovary

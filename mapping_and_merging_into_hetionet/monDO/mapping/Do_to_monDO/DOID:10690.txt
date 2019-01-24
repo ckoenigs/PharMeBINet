@@ -1,0 +1,3 @@
+DOID:10690	mastitis
+monDO ID 	 name 
+MONDO:0006849	mastitis

@@ -1,0 +1,3 @@
+MONDO:0004491	uterine corpus choriocarcinoma
+DOID 	 name 
+DOID:8188	uterine corpus choriocarcinoma

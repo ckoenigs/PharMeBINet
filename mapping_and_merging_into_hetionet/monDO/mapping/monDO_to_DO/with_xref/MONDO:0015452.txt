@@ -1,0 +1,3 @@
+MONDO:0015452	Coffin-Siris syndrome
+DOID 	 name 
+DOID:1925	Coffin-Siris syndrome

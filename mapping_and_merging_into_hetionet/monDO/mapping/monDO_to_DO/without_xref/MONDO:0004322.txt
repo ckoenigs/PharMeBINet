@@ -1,0 +1,3 @@
+MONDO:0004322	non-gestational ovarian choriocarcinoma
+DOID 	 name 
+DOID:7665	non-gestational ovarian choriocarcinoma

@@ -1,0 +1,3 @@
+DOID:0110962	brachydactyly-preaxial hallux varus syndrome
+monDO ID 	 name 
+MONDO:0007214	brachydactyly-preaxial hallux varus syndrome

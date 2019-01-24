@@ -1,0 +1,3 @@
+MONDO:0012040	inflammatory bowel disease 9
+DOID 	 name 
+DOID:0110886	inflammatory bowel disease 9

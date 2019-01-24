@@ -1,0 +1,3 @@
+DOID:10507	Dressler's syndrome
+monDO ID 	 name 
+MONDO:0001049	Dressler's syndrome

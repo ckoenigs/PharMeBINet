@@ -1,0 +1,3 @@
+MONDO:0013406	age related macular degeneration 6
+DOID 	 name 
+DOID:0110018	age related macular degeneration 6

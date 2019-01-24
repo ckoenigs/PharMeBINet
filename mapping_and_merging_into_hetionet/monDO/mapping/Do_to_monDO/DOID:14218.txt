@@ -1,0 +1,3 @@
+DOID:14218	dihydropyrimidine dehydrogenase deficiency
+monDO ID 	 name 
+MONDO:0010130	dihydropyrimidine dehydrogenase deficiency

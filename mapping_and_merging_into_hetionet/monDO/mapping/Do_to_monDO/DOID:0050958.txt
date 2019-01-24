@@ -1,0 +1,3 @@
+DOID:0050958	spinocerebellar ataxia type 7
+monDO ID 	 name 
+MONDO:0008120	spinocerebellar ataxia type 7

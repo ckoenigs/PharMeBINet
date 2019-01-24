@@ -1,0 +1,3 @@
+DOID:8193	papillary pattern testicular yolk sac tumor
+monDO ID 	 name 
+MONDO:0004493	testicular yolk sac tumor, papillary pattern

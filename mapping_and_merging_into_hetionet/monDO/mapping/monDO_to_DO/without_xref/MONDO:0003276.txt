@@ -1,0 +1,3 @@
+MONDO:0003276	middle ear disease
+DOID 	 name 
+DOID:5100	middle ear disease

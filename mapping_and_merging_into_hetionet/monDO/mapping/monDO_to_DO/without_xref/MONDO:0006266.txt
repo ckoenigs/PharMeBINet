@@ -1,0 +1,3 @@
+MONDO:0006266	leydig cell tumor
+DOID 	 name 
+DOID:2696	Leydig cell tumor

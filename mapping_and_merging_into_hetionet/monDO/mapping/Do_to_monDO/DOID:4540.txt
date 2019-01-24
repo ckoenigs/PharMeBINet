@@ -1,0 +1,3 @@
+DOID:4540	dysgraphia
+monDO ID 	 name 
+MONDO:0003038	dysgraphia (disease)

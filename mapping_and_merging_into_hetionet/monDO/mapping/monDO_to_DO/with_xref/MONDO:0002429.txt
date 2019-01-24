@@ -1,0 +1,3 @@
+MONDO:0002429	idiopathic interstitial pneumonia
+DOID 	 name 
+DOID:2797	idiopathic interstitial pneumonia

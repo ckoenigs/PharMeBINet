@@ -1,0 +1,3 @@
+MONDO:0006525	allergic contact dermatitis
+DOID 	 name 
+DOID:3042	allergic contact dermatitis

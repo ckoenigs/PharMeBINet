@@ -1,0 +1,3 @@
+DOID:5179	mixed cell type kidney Wilms' tumor
+monDO ID 	 name 
+MONDO:0003318	mixed cell type kidney wilms' tumor

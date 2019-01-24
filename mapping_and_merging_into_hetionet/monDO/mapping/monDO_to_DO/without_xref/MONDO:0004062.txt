@@ -1,0 +1,3 @@
+MONDO:0004062	intermediate cell type uveal melanoma
+DOID 	 name 
+DOID:6992	intraocular mixed cell type melanoma

@@ -1,0 +1,3 @@
+MONDO:0016022	early myoclonic encephalopathy
+DOID 	 name 
+DOID:308	early myoclonic encephalopathy

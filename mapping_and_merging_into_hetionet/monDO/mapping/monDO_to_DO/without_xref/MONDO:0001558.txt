@@ -1,0 +1,3 @@
+MONDO:0001558	Potter's syndrome
+DOID 	 name 
+DOID:12594	Potter's syndrome

@@ -1,0 +1,3 @@
+DOID:0110314	hypertrophic cardiomyopathy 8
+monDO ID 	 name 
+MONDO:0012111	hypertrophic cardiomyopathy 8

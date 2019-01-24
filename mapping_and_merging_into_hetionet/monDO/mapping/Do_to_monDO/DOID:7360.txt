@@ -1,0 +1,3 @@
+DOID:7360	solid pattern testicular yolk sac tumor
+monDO ID 	 name 
+MONDO:0004198	testicular yolk sac tumor, solid pattern

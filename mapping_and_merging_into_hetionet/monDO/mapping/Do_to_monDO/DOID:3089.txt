@@ -1,0 +1,3 @@
+DOID:3089	granulomatous orchitis
+monDO ID 	 name 
+MONDO:0002509	non-specific granulomatous orchitis

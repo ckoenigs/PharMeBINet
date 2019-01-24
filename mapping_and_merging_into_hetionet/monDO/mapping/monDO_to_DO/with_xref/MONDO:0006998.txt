@@ -1,0 +1,3 @@
+MONDO:0006998	tonsil cancer
+DOID 	 name 
+DOID:8858	tonsil cancer

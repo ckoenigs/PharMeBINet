@@ -1,0 +1,3 @@
+DOID:13476	supraglottis cancer
+monDO ID 	 name 
+MONDO:0001724	supraglottis cancer

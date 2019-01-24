@@ -1,0 +1,3 @@
+DOID:5813	purine nucleoside phosphorylase deficiency
+monDO ID 	 name 
+MONDO:0013171	purine nucleoside phosphorylase deficiency

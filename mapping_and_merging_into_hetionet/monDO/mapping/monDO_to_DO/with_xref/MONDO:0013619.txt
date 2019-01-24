@@ -1,0 +1,3 @@
+MONDO:0013619	nephrotic syndrome, type 6
+DOID 	 name 
+DOID:1184	nephrotic syndrome

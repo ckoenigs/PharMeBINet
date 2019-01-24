@@ -1,0 +1,3 @@
+MONDO:0011877	autosomal dominant osteopetrosis 1
+DOID 	 name 
+DOID:0110937	autosomal dominant osteopetrosis 1

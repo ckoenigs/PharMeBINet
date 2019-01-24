@@ -1,0 +1,3 @@
+DOID:1595	endogenous depression
+monDO ID 	 name 
+MONDO:0012048	endogenous depression

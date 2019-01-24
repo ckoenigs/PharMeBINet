@@ -1,0 +1,3 @@
+MONDO:0003031	cervix endometrial stromal tumor
+DOID 	 name 
+DOID:4521	cervix endometrial stromal tumor

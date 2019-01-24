@@ -1,0 +1,3 @@
+DOID:1383	sweat gland disease
+monDO ID 	 name 
+MONDO:0006615	sweat gland disease

@@ -1,0 +1,3 @@
+MONDO:0009793	orofaciodigital syndrome III
+DOID 	 name 
+DOID:0060373	orofaciodigital syndrome III

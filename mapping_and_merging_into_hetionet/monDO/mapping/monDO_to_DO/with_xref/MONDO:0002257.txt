@@ -1,0 +1,3 @@
+MONDO:0002257	ankylosis (disease)
+DOID 	 name 
+DOID:227	ankylosis

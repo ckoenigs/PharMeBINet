@@ -1,0 +1,3 @@
+MONDO:0013112	bronchiectasis with or without elevated sweat chloride 3
+DOID 	 name 
+DOID:9563	bronchiectasis

@@ -1,0 +1,3 @@
+MONDO:0005874	neuroschistosomiasis
+DOID 	 name 
+DOID:13722	neuroschistosomiasis

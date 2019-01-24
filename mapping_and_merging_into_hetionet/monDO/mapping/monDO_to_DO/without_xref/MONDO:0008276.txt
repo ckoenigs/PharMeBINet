@@ -1,0 +1,3 @@
+MONDO:0008276	generalized juvenile polyposis/juvenile polyposis coli
+DOID 	 name 
+DOID:0050787	juvenile polyposis syndrome

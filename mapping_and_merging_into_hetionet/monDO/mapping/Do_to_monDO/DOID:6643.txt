@@ -1,0 +1,3 @@
+DOID:6643	Baastrup's syndrome
+monDO ID 	 name 
+MONDO:0003956	Baastrup's syndrome

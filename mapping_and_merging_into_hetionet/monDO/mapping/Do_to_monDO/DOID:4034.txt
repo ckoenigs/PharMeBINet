@@ -1,0 +1,3 @@
+DOID:4034	fungal gastritis
+monDO ID 	 name 
+MONDO:0002843	fungal gastritis

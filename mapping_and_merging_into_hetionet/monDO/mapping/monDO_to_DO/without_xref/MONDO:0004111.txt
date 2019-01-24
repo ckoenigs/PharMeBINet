@@ -1,0 +1,3 @@
+MONDO:0004111	refractory hematologic cancer
+DOID 	 name 
+DOID:712	refractory hematologic cancer

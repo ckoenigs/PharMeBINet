@@ -1,0 +1,3 @@
+MONDO:0005383	panic disorder
+DOID 	 name 
+DOID:594	panic disorder

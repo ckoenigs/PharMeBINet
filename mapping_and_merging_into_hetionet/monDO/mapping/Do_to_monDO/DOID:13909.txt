@@ -1,0 +1,3 @@
+DOID:13909	red-green color blindness
+monDO ID 	 name 
+MONDO:0010564	red-green color blindness

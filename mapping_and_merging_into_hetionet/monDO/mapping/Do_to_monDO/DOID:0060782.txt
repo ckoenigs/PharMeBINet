@@ -1,0 +1,3 @@
+DOID:0060782	EEC syndrome
+monDO ID 	 name 
+MONDO:0010004	EEC syndrome

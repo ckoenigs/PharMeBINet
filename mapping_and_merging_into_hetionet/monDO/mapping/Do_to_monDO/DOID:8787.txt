@@ -1,0 +1,3 @@
+DOID:8787	disseminated chorioretinitis
+monDO ID 	 name 
+MONDO:0004657	disseminated chorioretinitis

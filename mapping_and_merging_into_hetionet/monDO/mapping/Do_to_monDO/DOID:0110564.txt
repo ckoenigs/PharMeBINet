@@ -1,0 +1,3 @@
+DOID:0110564	autosomal dominant nonsyndromic deafness 3A
+monDO ID 	 name 
+MONDO:0011103	autosomal dominant nonsyndromic deafness 3A

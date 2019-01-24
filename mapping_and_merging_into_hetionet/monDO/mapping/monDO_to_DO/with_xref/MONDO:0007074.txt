@@ -1,0 +1,3 @@
+MONDO:0007074	ainhum (disease)
+DOID 	 name 
+DOID:11329	ainhum

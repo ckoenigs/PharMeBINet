@@ -1,0 +1,3 @@
+MONDO:0006297	maxillary sinus adenoid cystic carcinoma
+DOID 	 name 
+DOID:7198	maxillary sinus adenoid cystic carcinoma

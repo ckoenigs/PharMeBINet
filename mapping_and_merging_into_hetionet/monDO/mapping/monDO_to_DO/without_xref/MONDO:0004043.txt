@@ -1,0 +1,3 @@
+MONDO:0004043	ureter inverted papilloma
+DOID 	 name 
+DOID:6935	ureter inverted papilloma

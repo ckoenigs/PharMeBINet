@@ -1,0 +1,4 @@
+MONDO:0008564	DiGeorge syndrome
+DOID 	 name 
+DOID:11198	DiGeorge syndrome
+DOID:12583	velocardiofacial syndrome

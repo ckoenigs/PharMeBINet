@@ -1,0 +1,3 @@
+DOID:0050548	hereditary sensory neuropathy
+monDO ID 	 name 
+MONDO:0015364	hereditary sensory and autonomic neuropathy

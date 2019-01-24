@@ -1,0 +1,3 @@
+MONDO:0012961	type 1 diabetes mellitus 23
+DOID 	 name 
+DOID:0110760	type 1 diabetes mellitus 23

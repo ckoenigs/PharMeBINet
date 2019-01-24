@@ -1,0 +1,3 @@
+MONDO:0002853	rectum rhabdomyosarcoma
+DOID 	 name 
+DOID:4053	rectum rhabdomyosarcoma

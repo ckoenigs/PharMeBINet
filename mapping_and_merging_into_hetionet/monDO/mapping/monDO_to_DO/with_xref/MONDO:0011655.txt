@@ -1,0 +1,3 @@
+MONDO:0011655	alveolar soft part sarcoma (disease)
+DOID 	 name 
+DOID:4239	alveolar soft part sarcoma

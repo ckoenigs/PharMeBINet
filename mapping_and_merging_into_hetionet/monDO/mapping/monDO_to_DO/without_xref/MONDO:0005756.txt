@@ -1,0 +1,3 @@
+MONDO:0005756	ethmoid sinusitis
+DOID 	 name 
+DOID:9507	ethmoid sinusitis

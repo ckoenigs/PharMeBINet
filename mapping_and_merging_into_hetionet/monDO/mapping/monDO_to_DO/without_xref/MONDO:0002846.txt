@@ -1,0 +1,3 @@
+MONDO:0002846	granulomatous gastritis
+DOID 	 name 
+DOID:4038	granulomatous gastritis

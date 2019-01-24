@@ -1,0 +1,3 @@
+MONDO:0004844	oral mucosa leukoplakia
+DOID 	 name 
+DOID:9655	oral mucosa leukoplakia

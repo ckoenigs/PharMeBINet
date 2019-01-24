@@ -1,0 +1,3 @@
+DOID:10582	Refsum disease
+monDO ID 	 name 
+MONDO:0009958	adult Refsum disease

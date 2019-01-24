@@ -1,0 +1,3 @@
+MONDO:0011031	autosomal dominant nonsyndromic deafness 10
+DOID 	 name 
+DOID:0110542	autosomal dominant nonsyndromic deafness 10

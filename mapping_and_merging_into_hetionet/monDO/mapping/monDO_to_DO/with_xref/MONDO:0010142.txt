@@ -1,0 +1,3 @@
+MONDO:0010142	hypothyroidism due to TSH receptor mutations
+DOID 	 name 
+DOID:0050328	congenital hypothyroidism

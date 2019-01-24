@@ -1,0 +1,3 @@
+MONDO:0002053	hypoglycemic coma
+DOID 	 name 
+DOID:1607	hypoglycemic coma

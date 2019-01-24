@@ -1,0 +1,3 @@
+MONDO:0010399	chromosome Xp21 deletion syndrome
+DOID 	 name 
+DOID:0060427	chromosome Xp21 deletion syndrome

@@ -1,0 +1,3 @@
+MONDO:0007216	brachydactyly type A2
+DOID 	 name 
+DOID:0110965	brachydactyly type A2

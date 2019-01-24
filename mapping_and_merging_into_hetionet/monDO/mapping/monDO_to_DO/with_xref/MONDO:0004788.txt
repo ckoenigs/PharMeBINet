@@ -1,0 +1,3 @@
+MONDO:0004788	cervix squamous papilloma
+DOID 	 name 
+DOID:9445	cervix squamous papilloma

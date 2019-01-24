@@ -1,0 +1,3 @@
+MONDO:0004233	childhood pleomorphic rhabdomyosarcoma
+DOID 	 name 
+DOID:7463	childhood pleomorphic rhabdomyosarcoma

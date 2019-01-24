@@ -1,0 +1,3 @@
+DOID:0110414	retinitis pigmentosa 3
+monDO ID 	 name 
+MONDO:0010227	retinitis pigmentosa 3

@@ -1,0 +1,3 @@
+MONDO:0008931	Cenani-Lenz syndactyly syndrome
+DOID 	 name 
+DOID:0090015	Cenani-Lenz syndactyly syndrome

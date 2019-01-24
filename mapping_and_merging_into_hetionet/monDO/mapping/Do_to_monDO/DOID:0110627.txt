@@ -1,0 +1,3 @@
+DOID:0110627	primary ciliary dyskinesia 26
+monDO ID 	 name 
+MONDO:0014211	primary ciliary dyskinesia 26

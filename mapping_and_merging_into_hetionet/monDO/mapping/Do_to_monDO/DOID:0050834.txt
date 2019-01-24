@@ -1,0 +1,3 @@
+DOID:0050834	CHARGE syndrome
+monDO ID 	 name 
+MONDO:0008965	CHARGE syndrome

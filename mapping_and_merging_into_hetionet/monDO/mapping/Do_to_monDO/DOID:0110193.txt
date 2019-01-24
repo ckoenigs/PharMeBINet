@@ -1,0 +1,3 @@
+DOID:0110193	Charcot-Marie-Tooth disease type 4F
+monDO ID 	 name 
+MONDO:0013959	Charcot-Marie-tooth disease type 4F

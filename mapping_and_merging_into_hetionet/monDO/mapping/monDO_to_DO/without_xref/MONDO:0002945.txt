@@ -1,0 +1,3 @@
+MONDO:0002945	micronodular basal cell carcinoma
+DOID 	 name 
+DOID:4289	micronodular basal cell carcinoma

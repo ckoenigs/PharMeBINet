@@ -1,0 +1,3 @@
+MONDO:0012838	inflammatory bowel disease 16
+DOID 	 name 
+DOID:0110896	inflammatory bowel disease 16

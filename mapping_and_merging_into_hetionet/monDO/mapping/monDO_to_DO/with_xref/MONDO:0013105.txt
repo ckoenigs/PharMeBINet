@@ -1,0 +1,3 @@
+MONDO:0013105	BCC5
+DOID 	 name 
+DOID:2513	basal cell carcinoma

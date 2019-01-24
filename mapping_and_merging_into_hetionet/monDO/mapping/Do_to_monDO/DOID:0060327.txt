@@ -1,0 +1,3 @@
+DOID:0060327	omphalocele
+monDO ID 	 name 
+MONDO:0019015	omphalocele (disease)

@@ -1,0 +1,3 @@
+DOID:9461	exposure keratitis
+monDO ID 	 name 
+MONDO:0004794	exposure keratitis

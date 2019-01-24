@@ -1,0 +1,3 @@
+MONDO:0017778	lamellar ichthyosis
+DOID 	 name 
+DOID:1699	congenital ichthyosiform erythroderma

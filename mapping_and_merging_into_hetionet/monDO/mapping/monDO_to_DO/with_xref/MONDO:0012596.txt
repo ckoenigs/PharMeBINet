@@ -1,0 +1,3 @@
+MONDO:0012596	PSAT deficiency
+DOID 	 name 
+DOID:0050723	PSAT deficiency

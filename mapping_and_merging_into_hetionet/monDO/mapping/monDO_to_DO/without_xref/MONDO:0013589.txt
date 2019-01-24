@@ -1,0 +1,3 @@
+MONDO:0013589	focal segmental glomerulosclerosis 6
+DOID 	 name 
+DOID:0111131	focal segmental glomerulosclerosis 6

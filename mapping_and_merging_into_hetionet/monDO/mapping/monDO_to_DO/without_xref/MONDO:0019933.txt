@@ -1,0 +1,3 @@
+MONDO:0019933	acromegaly
+DOID 	 name 
+DOID:2449	acromegaly

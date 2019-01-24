@@ -1,0 +1,3 @@
+DOID:0050481	endemic typhus
+monDO ID 	 name 
+MONDO:0000330	endemic typhus

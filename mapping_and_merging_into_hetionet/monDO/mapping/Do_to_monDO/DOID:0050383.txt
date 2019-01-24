@@ -1,0 +1,3 @@
+DOID:0050383	typhoidal tularemia
+monDO ID 	 name 
+MONDO:0000321	typhoidal tularemia

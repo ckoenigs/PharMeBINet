@@ -1,0 +1,3 @@
+MONDO:0006645	alcoholic neuropathy
+DOID 	 name 
+DOID:14183	alcoholic neuropathy

@@ -1,0 +1,3 @@
+MONDO:0005006	clear cell sarcoma of kidney
+DOID 	 name 
+DOID:4880	kidney clear cell sarcoma

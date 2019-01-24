@@ -1,0 +1,3 @@
+DOID:9358	fibular collateral ligament bursitis
+monDO ID 	 name 
+MONDO:0004764	fibular collateral ligament bursitis

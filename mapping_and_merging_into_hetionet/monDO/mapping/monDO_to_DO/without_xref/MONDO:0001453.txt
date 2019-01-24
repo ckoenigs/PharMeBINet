@@ -1,0 +1,3 @@
+MONDO:0001453	senile reticular retinal degeneration
+DOID 	 name 
+DOID:12163	senile reticular retinal degeneration

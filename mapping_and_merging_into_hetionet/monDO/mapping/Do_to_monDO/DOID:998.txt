@@ -1,0 +1,3 @@
+DOID:998	eosinophilia-myalgia syndrome
+monDO ID 	 name 
+MONDO:0004941	eosinophilia-myalgia syndrome

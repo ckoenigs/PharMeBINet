@@ -1,0 +1,3 @@
+DOID:0050927	duodenum adenoma
+monDO ID 	 name 
+MONDO:0006187	duodenal villous adenoma

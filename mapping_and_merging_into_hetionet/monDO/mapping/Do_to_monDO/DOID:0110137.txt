@@ -1,0 +1,3 @@
+DOID:0110137	Bardet-Biedl syndrome 15
+monDO ID 	 name 
+MONDO:0014443	Bardet-Biedl syndrome 15

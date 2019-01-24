@@ -1,0 +1,3 @@
+MONDO:0001471	histoplasmosis meningitis
+DOID 	 name 
+DOID:12246	histoplasmosis meningitis

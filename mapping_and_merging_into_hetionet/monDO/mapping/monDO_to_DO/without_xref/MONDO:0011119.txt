@@ -1,0 +1,3 @@
+MONDO:0011119	iridogoniodysgenesis
+DOID 	 name 
+DOID:0050786	iridogoniodysgenesis syndrome

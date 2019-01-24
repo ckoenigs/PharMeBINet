@@ -1,0 +1,3 @@
+DOID:9310	nasal cavity neoplasm
+monDO ID 	 name 
+MONDO:0004756	nasal cavity neoplasm

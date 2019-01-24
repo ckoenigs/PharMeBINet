@@ -1,0 +1,3 @@
+DOID:5268	myxoid leiomyosarcoma
+monDO ID 	 name 
+MONDO:0003359	myxoid leiomyosarcoma

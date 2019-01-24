@@ -1,0 +1,3 @@
+MONDO:0001859	algoneurodystrophy
+DOID 	 name 
+DOID:14022	algoneurodystrophy

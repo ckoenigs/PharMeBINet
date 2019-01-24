@@ -1,0 +1,3 @@
+MONDO:0004473	epiglottis cancer
+DOID 	 name 
+DOID:8133	epiglottis cancer

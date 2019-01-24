@@ -1,0 +1,3 @@
+DOID:5948	angiokeratoma of mibelli
+monDO ID 	 name 
+MONDO:0003712	angiokeratoma of mibelli

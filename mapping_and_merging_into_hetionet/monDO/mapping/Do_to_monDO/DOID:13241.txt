@@ -1,0 +1,3 @@
+DOID:13241	Behcet's disease
+monDO ID 	 name 
+MONDO:0007191	Behcet's syndrome

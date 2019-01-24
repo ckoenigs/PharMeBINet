@@ -1,0 +1,3 @@
+MONDO:0003824	hereditary kidney oncocytoma
+DOID 	 name 
+DOID:6244	familial renal oncocytoma

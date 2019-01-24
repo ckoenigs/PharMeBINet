@@ -1,0 +1,3 @@
+DOID:1895	allergic contact dermatitis of eyelid
+monDO ID 	 name 
+MONDO:0002138	allergic contact dermatitis of eyelid

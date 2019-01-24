@@ -1,0 +1,3 @@
+MONDO:0010676	muscular dystrophy, Hemizygous lethal type
+DOID 	 name 
+DOID:9884	muscular dystrophy

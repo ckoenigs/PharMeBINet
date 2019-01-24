@@ -1,0 +1,3 @@
+MONDO:0001178	pseudopterygium
+DOID 	 name 
+DOID:11028	pseudopterygium

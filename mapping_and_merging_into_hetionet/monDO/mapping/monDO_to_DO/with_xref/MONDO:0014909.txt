@@ -1,0 +1,3 @@
+MONDO:0014909	primary ciliary dyskinesia 34
+DOID 	 name 
+DOID:0110610	primary ciliary dyskinesia 34

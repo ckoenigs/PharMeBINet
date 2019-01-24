@@ -1,0 +1,3 @@
+MONDO:0005602	ovarian teratoma
+DOID 	 name 
+DOID:5567	ovarian germ cell teratoma

@@ -1,0 +1,3 @@
+MONDO:0004254	focal intraductal papillomatosis
+DOID 	 name 
+DOID:7512	localized intraductal papillomatosis

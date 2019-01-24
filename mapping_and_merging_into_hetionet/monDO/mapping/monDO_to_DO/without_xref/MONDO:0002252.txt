@@ -1,0 +1,3 @@
+MONDO:0002252	granulomatous hepatitis
+DOID 	 name 
+DOID:2239	granulomatous hepatitis

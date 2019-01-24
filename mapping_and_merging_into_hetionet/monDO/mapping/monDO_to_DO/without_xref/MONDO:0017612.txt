@@ -1,0 +1,3 @@
+MONDO:0017612	junctional epidermolysis bullosa
+DOID 	 name 
+DOID:3209	junctional epidermolysis bullosa

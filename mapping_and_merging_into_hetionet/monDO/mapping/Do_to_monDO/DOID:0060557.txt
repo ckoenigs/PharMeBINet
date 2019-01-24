@@ -1,0 +1,3 @@
+DOID:0060557	ataxia with oculomotor apraxia type 3
+monDO ID 	 name 
+MONDO:0014084	ataxia with oculomotor apraxia type 3

@@ -1,0 +1,3 @@
+MONDO:0006540	dyshidrosis
+DOID 	 name 
+DOID:9230	pompholyx

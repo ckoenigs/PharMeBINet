@@ -1,0 +1,3 @@
+DOID:0050977	spinocerebellar ataxia type 28
+monDO ID 	 name 
+MONDO:0012450	spinocerebellar ataxia type 28

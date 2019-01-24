@@ -1,0 +1,3 @@
+DOID:4948	gallbladder carcinoma
+monDO ID 	 name 
+MONDO:0003220	gallbladder carcinoma

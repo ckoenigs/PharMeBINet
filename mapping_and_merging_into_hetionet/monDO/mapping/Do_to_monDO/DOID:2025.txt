@@ -1,0 +1,3 @@
+DOID:2025	gestational choriocarcinoma
+monDO ID 	 name 
+MONDO:0020550	gestational choriocarcinoma

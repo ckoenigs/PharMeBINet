@@ -1,0 +1,3 @@
+DOID:0060256	Dowling-Degos disease
+monDO ID 	 name 
+MONDO:0008371	Dowling-Degos disease

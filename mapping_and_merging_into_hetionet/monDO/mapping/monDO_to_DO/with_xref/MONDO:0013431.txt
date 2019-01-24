@@ -1,0 +1,3 @@
+MONDO:0013431	Meier-Gorlin syndrome 4
+DOID 	 name 
+DOID:0060306	Meier-Gorlin syndrome

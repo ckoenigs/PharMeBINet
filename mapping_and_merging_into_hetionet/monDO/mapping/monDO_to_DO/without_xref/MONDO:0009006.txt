@@ -1,0 +1,3 @@
+MONDO:0009006	complement component 2 deficiency
+DOID 	 name 
+DOID:0060295	complement component 2 deficiency

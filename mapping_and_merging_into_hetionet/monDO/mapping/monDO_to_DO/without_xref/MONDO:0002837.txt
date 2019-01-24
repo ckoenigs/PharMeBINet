@@ -1,0 +1,3 @@
+MONDO:0002837	sarcomatoid transitional cell carcinoma
+DOID 	 name 
+DOID:4014	sarcomatoid transitional cell carcinoma

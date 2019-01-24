@@ -1,0 +1,3 @@
+MONDO:0009376	carbamoyl phosphate synthetase i deficiency disease
+DOID 	 name 
+DOID:9280	carbamoyl phosphate synthetase I deficiency disease

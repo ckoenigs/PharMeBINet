@@ -1,0 +1,3 @@
+DOID:0110995	Joubert syndrome 26
+monDO ID 	 name 
+MONDO:0014771	Joubert syndrome 26

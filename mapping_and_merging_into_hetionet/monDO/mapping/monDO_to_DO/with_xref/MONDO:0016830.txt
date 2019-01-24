@@ -1,0 +1,3 @@
+MONDO:0016830	Emery-Dreifuss muscular dystrophy
+DOID 	 name 
+DOID:11726	Emery-Dreifuss muscular dystrophy

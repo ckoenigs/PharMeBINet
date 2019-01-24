@@ -1,0 +1,3 @@
+DOID:3687	MELAS syndrome
+monDO ID 	 name 
+MONDO:0010789	MELAS syndrome

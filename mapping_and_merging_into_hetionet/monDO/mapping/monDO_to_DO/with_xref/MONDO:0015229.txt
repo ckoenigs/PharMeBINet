@@ -1,0 +1,3 @@
+MONDO:0015229	Bardet-Biedl syndrome
+DOID 	 name 
+DOID:1935	Bardet-Biedl syndrome

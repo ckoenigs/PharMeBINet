@@ -1,0 +1,3 @@
+MONDO:0015200	anisakiasis
+DOID 	 name 
+DOID:7033	anisakiasis

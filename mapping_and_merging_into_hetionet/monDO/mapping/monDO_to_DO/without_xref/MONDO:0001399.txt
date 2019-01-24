@@ -1,0 +1,3 @@
+MONDO:0001399	ureter leiomyoma
+DOID 	 name 
+DOID:11887	ureter leiomyoma

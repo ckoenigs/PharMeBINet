@@ -1,0 +1,3 @@
+DOID:0050677	Bjornstad syndrome
+monDO ID 	 name 
+MONDO:0009872	Bjornstad syndrome

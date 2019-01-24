@@ -1,0 +1,3 @@
+MONDO:0009469	benign recurrent intrahepatic cholestasis type 1
+DOID 	 name 
+DOID:1852	intrahepatic cholestasis

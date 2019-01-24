@@ -1,0 +1,3 @@
+MONDO:0011268	renal tubular acidosis, distal, autosomal recessive
+DOID 	 name 
+DOID:14219	renal tubular acidosis

@@ -1,0 +1,3 @@
+DOID:5287	kidney leiomyosarcoma
+monDO ID 	 name 
+MONDO:0003373	kidney leiomyosarcoma

@@ -1,0 +1,3 @@
+DOID:2078	chondroid syringoma of the vulva
+monDO ID 	 name 
+MONDO:0002199	benign mixed tumor of the vulva

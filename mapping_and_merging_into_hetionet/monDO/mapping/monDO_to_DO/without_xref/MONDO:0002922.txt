@@ -1,0 +1,3 @@
+MONDO:0002922	pyoderma
+DOID 	 name 
+DOID:4223	pyoderma

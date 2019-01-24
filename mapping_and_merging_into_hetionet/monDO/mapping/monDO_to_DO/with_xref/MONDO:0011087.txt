@@ -1,0 +1,3 @@
+MONDO:0011087	inflammatory bowel disease 2
+DOID 	 name 
+DOID:0110900	inflammatory bowel disease 2

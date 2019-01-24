@@ -1,0 +1,3 @@
+MONDO:0010362	glycogen storage disease IXd
+DOID 	 name 
+DOID:0111040	glycogen storage disease IXd

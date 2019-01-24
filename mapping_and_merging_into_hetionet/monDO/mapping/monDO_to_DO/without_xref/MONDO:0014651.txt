@@ -1,0 +1,3 @@
+MONDO:0014651	acrofacial dysostosis Cincinnati type
+DOID 	 name 
+DOID:0060353	acrofacial dysostosis Cincinnati type

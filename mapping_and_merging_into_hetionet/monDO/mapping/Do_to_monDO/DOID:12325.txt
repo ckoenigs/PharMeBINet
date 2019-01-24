@@ -1,0 +1,3 @@
+DOID:12325	kyphoscoliotic heart disease
+monDO ID 	 name 
+MONDO:0001492	kyphoscoliotic heart disease

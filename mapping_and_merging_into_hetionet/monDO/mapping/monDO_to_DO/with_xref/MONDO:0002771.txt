@@ -1,0 +1,4 @@
+MONDO:0002771	pulmonary fibrosis
+DOID 	 name 
+DOID:3770	pulmonary fibrosis
+DOID:2797	idiopathic interstitial pneumonia

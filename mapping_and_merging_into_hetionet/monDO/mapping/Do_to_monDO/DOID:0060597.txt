@@ -1,0 +1,3 @@
+DOID:0060597	atypical chronic myeloid leukemia
+monDO ID 	 name 
+MONDO:0020312	atypical chronic myeloid leukemia

@@ -1,0 +1,3 @@
+MONDO:0001066	late yaws
+DOID 	 name 
+DOID:10567	late yaws

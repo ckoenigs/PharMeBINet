@@ -1,0 +1,3 @@
+MONDO:0001800	equatorial staphyloma
+DOID 	 name 
+DOID:13788	equatorial staphyloma

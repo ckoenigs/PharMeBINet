@@ -1,0 +1,3 @@
+MONDO:0004769	orbital plasma cell granuloma
+DOID 	 name 
+DOID:9369	orbital plasma cell granuloma

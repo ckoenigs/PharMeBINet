@@ -1,0 +1,3 @@
+DOID:12197	punctate epithelial keratoconjunctivitis
+monDO ID 	 name 
+MONDO:0001466	punctate epithelial keratoconjunctivitis

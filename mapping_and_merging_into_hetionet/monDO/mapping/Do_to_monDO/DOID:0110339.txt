@@ -1,0 +1,3 @@
+DOID:0110339	osteogenesis imperfecta type 3
+monDO ID 	 name 
+MONDO:0009804	osteogenesis imperfecta type 3

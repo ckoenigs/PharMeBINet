@@ -1,0 +1,3 @@
+DOID:13419	neurogenic bowel
+monDO ID 	 name 
+MONDO:0006868	neurogenic bowel

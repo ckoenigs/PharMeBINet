@@ -1,0 +1,3 @@
+DOID:0060847	Leri-Weill dyschondrosteosis
+monDO ID 	 name 
+MONDO:0007481	Leri-Weill dyschondrosteosis

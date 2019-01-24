@@ -1,0 +1,3 @@
+DOID:10854	salivary gland disease
+monDO ID 	 name 
+MONDO:0001142	salivary gland disease

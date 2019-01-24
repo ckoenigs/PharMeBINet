@@ -1,0 +1,3 @@
+DOID:0110330	Leber congenital amaurosis 13
+monDO ID 	 name 
+MONDO:0012990	Leber congenital amaurosis 13

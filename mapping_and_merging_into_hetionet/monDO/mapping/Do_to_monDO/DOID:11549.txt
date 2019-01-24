@@ -1,0 +1,3 @@
+DOID:11549	Adie syndrome
+monDO ID 	 name 
+MONDO:0018690	Holmes-Adie syndrome

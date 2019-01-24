@@ -1,0 +1,3 @@
+MONDO:0003670	posteroinferior myocardial infarction
+DOID 	 name 
+DOID:5843	posteroinferior myocardial infarction

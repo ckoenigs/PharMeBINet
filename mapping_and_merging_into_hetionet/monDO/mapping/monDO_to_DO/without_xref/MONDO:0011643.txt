@@ -1,0 +1,3 @@
+MONDO:0011643	permanent neonatal diabetes mellitus
+DOID 	 name 
+DOID:0060639	permanent neonatal diabetes mellitus

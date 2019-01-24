@@ -1,0 +1,3 @@
+MONDO:0009688	myasthenia gravis
+DOID 	 name 
+DOID:437	myasthenia gravis

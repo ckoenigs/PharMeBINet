@@ -1,0 +1,3 @@
+DOID:5306	bladder clear cell adenocarcinoma
+monDO ID 	 name 
+MONDO:0003386	bladder clear cell adenocarcinoma

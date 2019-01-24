@@ -1,0 +1,3 @@
+DOID:10341	chronic meningitis
+monDO ID 	 name 
+MONDO:0001007	chronic meningitis

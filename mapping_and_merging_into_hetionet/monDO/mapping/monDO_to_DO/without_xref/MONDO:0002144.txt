@@ -1,0 +1,3 @@
+MONDO:0002144	hyperuricemia (disease)
+DOID 	 name 
+DOID:1920	hyperuricemia

@@ -1,0 +1,3 @@
+DOID:5208	malignant struma ovarii
+monDO ID 	 name 
+MONDO:0003332	malignant struma ovarii

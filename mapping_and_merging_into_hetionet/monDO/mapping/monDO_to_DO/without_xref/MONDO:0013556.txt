@@ -1,0 +1,3 @@
+MONDO:0013556	Hermansky-Pudlak syndrome 4
+DOID 	 name 
+DOID:0060542	Hermansky-Pudlak syndrome 4

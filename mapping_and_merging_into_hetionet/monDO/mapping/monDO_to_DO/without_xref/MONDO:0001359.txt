@@ -1,0 +1,3 @@
+MONDO:0001359	Kohler's disease
+DOID 	 name 
+DOID:11760	Kohler's disease

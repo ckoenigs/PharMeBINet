@@ -1,0 +1,3 @@
+DOID:6945	inverted follicular keratosis
+monDO ID 	 name 
+MONDO:0006563	inverted follicular keratosis

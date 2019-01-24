@@ -1,0 +1,3 @@
+MONDO:0004609	herpes simplex
+DOID 	 name 
+DOID:8566	herpes simplex

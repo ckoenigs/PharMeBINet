@@ -1,0 +1,3 @@
+DOID:0090049	paroxysmal nonkinesigenic dyskinesia 1
+monDO ID 	 name 
+MONDO:0007326	paroxysmal nonkinesigenic dyskinesia 1

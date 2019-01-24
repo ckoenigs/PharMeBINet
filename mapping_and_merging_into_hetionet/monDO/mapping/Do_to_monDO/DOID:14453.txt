@@ -1,0 +1,3 @@
+DOID:14453	farmer's lung
+monDO ID 	 name 
+MONDO:0001971	farmer's lung disease

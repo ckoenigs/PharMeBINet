@@ -1,2 +1,6 @@
 MonDO_id 	 MonDO_name 	 parent_id 	 parent_name 
-MONDO:0019628	Rieger anomaly	MONDO:0011233	Axenfeld-Rieger syndrome type 3
+MONDO:0003281	ovarian cystic teratoma	MONDO:0003820	mature ovarian teratoma
+MONDO:0007052	growth hormone secreting pituitary adenoma	MONDO:0019927	growth hormone-producing pituitary gland neoplasm
+MONDO:0003332	malignant struma ovarii	MONDO:0002372	ovarian monodermal and highly specialized teratoma
+MONDO:0017824	familial isolated pituitary adenoma	MONDO:0007052	growth hormone secreting pituitary adenoma
+MONDO:0019933	acromegaly	MONDO:0007052	growth hormone secreting pituitary adenoma

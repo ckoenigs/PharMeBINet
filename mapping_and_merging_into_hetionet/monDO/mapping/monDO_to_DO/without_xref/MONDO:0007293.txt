@@ -1,0 +1,3 @@
+MONDO:0007293	leukocyte adhesion deficiency 1
+DOID 	 name 
+DOID:0110910	leukocyte adhesion deficiency 1

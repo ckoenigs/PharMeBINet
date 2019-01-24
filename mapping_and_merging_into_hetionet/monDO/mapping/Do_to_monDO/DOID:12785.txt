@@ -1,0 +1,3 @@
+DOID:12785	diabetic polyneuropathy
+monDO ID 	 name 
+MONDO:0001583	diabetic polyneuropathy

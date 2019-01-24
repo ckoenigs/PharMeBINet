@@ -1,0 +1,3 @@
+MONDO:0015277	medullary thyroid gland carcinoma
+DOID 	 name 
+DOID:3973	thyroid medullary carcinoma

@@ -1,0 +1,3 @@
+MONDO:0008386	Axenfeld-Rieger syndrome type 1
+DOID 	 name 
+DOID:0110120	Axenfeld-Rieger syndrome type 1

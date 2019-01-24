@@ -1,0 +1,3 @@
+MONDO:0018882	vasculitis
+DOID 	 name 
+DOID:865	vasculitis

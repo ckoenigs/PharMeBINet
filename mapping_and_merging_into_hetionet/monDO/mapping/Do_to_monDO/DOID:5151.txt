@@ -1,0 +1,3 @@
+DOID:5151	plexiform neurofibroma
+monDO ID 	 name 
+MONDO:0003304	plexiform neurofibroma (disease)

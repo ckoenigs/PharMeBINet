@@ -1,0 +1,3 @@
+DOID:0110390	retinitis pigmentosa 1
+monDO ID 	 name 
+MONDO:0008377	retinitis pigmentosa 1

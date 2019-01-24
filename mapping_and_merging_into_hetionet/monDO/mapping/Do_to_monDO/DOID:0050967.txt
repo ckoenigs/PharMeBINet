@@ -1,0 +1,3 @@
+DOID:0050967	spinocerebellar ataxia type 17
+monDO ID 	 name 
+MONDO:0011781	spinocerebellar ataxia type 17

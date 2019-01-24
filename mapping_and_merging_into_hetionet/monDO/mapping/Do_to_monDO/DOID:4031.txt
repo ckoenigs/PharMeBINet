@@ -1,0 +1,3 @@
+DOID:4031	eosinophilic gastroenteritis
+monDO ID 	 name 
+MONDO:0016129	eosinophilic gastroenteritis

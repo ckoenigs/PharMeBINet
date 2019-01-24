@@ -1,0 +1,3 @@
+DOID:0090140	cortisone reductase deficiency 2
+monDO ID 	 name 
+MONDO:0013842	cortisone reductase deficiency 2

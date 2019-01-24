@@ -1,0 +1,3 @@
+DOID:1557	hypersensitivity reaction type III disease
+monDO ID 	 name 
+MONDO:0007004	hypersensitivity reaction type III disease

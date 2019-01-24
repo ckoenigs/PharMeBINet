@@ -1,0 +1,3 @@
+DOID:0060350	adenine phosphoribosyltransferase deficiency
+monDO ID 	 name 
+MONDO:0013869	adenine phosphoribosyltransferase deficiency

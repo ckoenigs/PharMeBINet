@@ -1,0 +1,3 @@
+MONDO:0007008	uremia
+DOID 	 name 
+DOID:4676	uremia

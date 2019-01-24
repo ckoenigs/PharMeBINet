@@ -1,0 +1,3 @@
+MONDO:0002102	cheilitis
+DOID 	 name 
+DOID:1762	cheilitis

@@ -1,0 +1,3 @@
+DOID:0060785	adult-onset autosomal dominant demyelinating leukodystrophy
+monDO ID 	 name 
+MONDO:0008215	adult-onset autosomal dominant demyelinating leukodystrophy

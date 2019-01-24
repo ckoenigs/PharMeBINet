@@ -1,0 +1,3 @@
+MONDO:0006030	chronic cystitis
+DOID 	 name 
+DOID:1680	chronic cystitis

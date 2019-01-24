@@ -1,0 +1,3 @@
+DOID:0060239	Van der Woude syndrome
+monDO ID 	 name 
+MONDO:0019508	van der Woude syndrome

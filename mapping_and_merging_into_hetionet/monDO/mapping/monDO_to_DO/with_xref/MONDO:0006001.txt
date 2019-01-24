@@ -1,0 +1,3 @@
+MONDO:0006001	urinary schistosomiasis
+DOID 	 name 
+DOID:1394	urinary schistosomiasis

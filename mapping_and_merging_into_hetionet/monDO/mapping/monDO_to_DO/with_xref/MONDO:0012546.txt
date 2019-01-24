@@ -1,0 +1,3 @@
+MONDO:0012546	nephrotic syndrome, type 3
+DOID 	 name 
+DOID:1184	nephrotic syndrome

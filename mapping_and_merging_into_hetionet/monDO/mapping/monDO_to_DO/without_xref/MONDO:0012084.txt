@@ -1,0 +1,3 @@
+MONDO:0012084	aromatic L-amino acid decarboxylase deficiency
+DOID 	 name 
+DOID:0090123	aromatic L-amino acid decarboxylase deficiency

@@ -1,0 +1,3 @@
+DOID:1579	respiratory system disease
+monDO ID 	 name 
+MONDO:0005087	respiratory system disease

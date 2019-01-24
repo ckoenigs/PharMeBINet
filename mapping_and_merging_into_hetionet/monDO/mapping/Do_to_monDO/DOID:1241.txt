@@ -1,0 +1,3 @@
+DOID:1241	luxation of globe
+monDO ID 	 name 
+MONDO:0001523	luxation of globe

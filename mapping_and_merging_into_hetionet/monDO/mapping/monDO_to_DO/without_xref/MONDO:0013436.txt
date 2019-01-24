@@ -1,0 +1,3 @@
+MONDO:0013436	retinitis pigmentosa 39
+DOID 	 name 
+DOID:0110360	retinitis pigmentosa 39

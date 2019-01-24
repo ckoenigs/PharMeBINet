@@ -1,0 +1,3 @@
+DOID:0110035	Alzheimer's disease 2
+monDO ID 	 name 
+MONDO:0007089	Alzheimer's disease 2

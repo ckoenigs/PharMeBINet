@@ -1,0 +1,3 @@
+DOID:230	lateral sclerosis
+monDO ID 	 name 
+MONDO:0018155	lateral sclerosis

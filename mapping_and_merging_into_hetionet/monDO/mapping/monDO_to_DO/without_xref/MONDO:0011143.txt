@@ -1,0 +1,3 @@
+MONDO:0011143	cone-rod dystrophy 6
+DOID 	 name 
+DOID:0111011	cone-rod dystrophy 6

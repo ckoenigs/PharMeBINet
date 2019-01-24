@@ -1,0 +1,3 @@
+DOID:13313	pancreatic mucinous ductal ectasia
+monDO ID 	 name 
+MONDO:0001683	pancreatic mucinous ductal ectasia

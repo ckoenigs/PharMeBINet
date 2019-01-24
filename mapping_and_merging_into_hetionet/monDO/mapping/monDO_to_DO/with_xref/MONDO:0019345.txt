@@ -1,0 +1,3 @@
+MONDO:0019345	shigellosis
+DOID 	 name 
+DOID:12385	shigellosis

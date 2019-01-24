@@ -1,0 +1,3 @@
+DOID:7144	laryngeal small cell carcinoma
+monDO ID 	 name 
+MONDO:0006265	laryngeal small cell carcinoma

@@ -1,0 +1,3 @@
+DOID:8274	synovial angioma
+monDO ID 	 name 
+MONDO:0004519	synovial angioma

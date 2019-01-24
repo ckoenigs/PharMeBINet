@@ -1,0 +1,3 @@
+DOID:0060475	childhood onset epileptic encephalopathy
+monDO ID 	 name 
+MONDO:0014150	childhood onset epileptic encephalopathy

@@ -1,0 +1,3 @@
+MONDO:0001832	bacterial esophagitis
+DOID 	 name 
+DOID:13921	bacterial esophagitis

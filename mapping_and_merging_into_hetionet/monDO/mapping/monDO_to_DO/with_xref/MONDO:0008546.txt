@@ -1,0 +1,3 @@
+MONDO:0008546	thanatophoric dysplasia type 1
+DOID 	 name 
+DOID:13481	thanatophoric dysplasia

@@ -1,0 +1,3 @@
+DOID:0060377	orofaciodigital syndrome VII
+monDO ID 	 name 
+MONDO:0012049	orofaciodigital syndrome VII

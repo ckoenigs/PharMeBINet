@@ -1,0 +1,3 @@
+DOID:0080071	pseudo-Hurler polydystrophy
+monDO ID 	 name 
+MONDO:0009651	pseudo-Hurler polydystrophy

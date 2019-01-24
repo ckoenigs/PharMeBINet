@@ -1,0 +1,3 @@
+DOID:12731	pars planitis
+monDO ID 	 name 
+MONDO:0011644	pars planitis

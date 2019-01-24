@@ -1,0 +1,3 @@
+DOID:0060890	ectopic Cushing syndrome
+monDO ID 	 name 
+MONDO:0020527	ectopic Cushing syndrome

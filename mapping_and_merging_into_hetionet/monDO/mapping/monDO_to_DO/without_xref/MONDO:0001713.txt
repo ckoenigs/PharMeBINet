@@ -1,0 +1,3 @@
+MONDO:0001713	congenital hypoplastic anemia
+DOID 	 name 
+DOID:1342	congenital hypoplastic anemia

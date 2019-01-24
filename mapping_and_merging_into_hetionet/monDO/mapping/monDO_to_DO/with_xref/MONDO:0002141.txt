@@ -1,0 +1,3 @@
+MONDO:0002141	cutaneous undifferentiated pleomorphic sarcoma
+DOID 	 name 
+DOID:1906	malignant skin fibrous histiocytoma

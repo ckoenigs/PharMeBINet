@@ -1,0 +1,3 @@
+DOID:0110939	autosomal recessive osteopetrosis 5
+monDO ID 	 name 
+MONDO:0009817	autosomal recessive osteopetrosis 5

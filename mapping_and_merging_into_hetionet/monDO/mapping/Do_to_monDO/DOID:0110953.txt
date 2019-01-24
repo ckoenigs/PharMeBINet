@@ -1,0 +1,3 @@
+DOID:0110953	Waardenburg syndrome type 4A
+monDO ID 	 name 
+MONDO:0010192	Waardenburg syndrome type 4A

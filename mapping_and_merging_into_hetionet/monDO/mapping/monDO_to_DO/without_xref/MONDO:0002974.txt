@@ -1,0 +1,3 @@
+MONDO:0002974	cervical cancer
+DOID 	 name 
+DOID:4362	cervical cancer

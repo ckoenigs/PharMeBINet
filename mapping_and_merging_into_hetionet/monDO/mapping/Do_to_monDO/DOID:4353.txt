@@ -1,0 +1,3 @@
+DOID:4353	ciliary body disease
+monDO ID 	 name 
+MONDO:0002970	ciliary body disease

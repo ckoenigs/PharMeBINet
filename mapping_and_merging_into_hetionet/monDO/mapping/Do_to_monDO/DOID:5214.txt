@@ -1,0 +1,3 @@
+DOID:5214	demyelinating polyneuropathy
+monDO ID 	 name 
+MONDO:0003334	demyelinating polyneuropathy

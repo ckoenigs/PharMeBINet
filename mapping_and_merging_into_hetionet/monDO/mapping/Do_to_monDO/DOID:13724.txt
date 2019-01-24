@@ -1,0 +1,3 @@
+DOID:13724	scurvy
+monDO ID 	 name 
+MONDO:0009412	scurvy

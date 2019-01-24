@@ -1,0 +1,3 @@
+MONDO:0000812	vertebral column disease
+DOID 	 name 
+DOID:0060564	spinal disease

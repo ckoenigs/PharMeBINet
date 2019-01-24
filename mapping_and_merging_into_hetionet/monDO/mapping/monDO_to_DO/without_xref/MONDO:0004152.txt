@@ -1,0 +1,3 @@
+MONDO:0004152	postgerminal center chronic lymphocytic leukemia/small lymphocytic lymphoma
+DOID 	 name 
+DOID:7230	postgerminal center chronic lymphocytic leukemia/small lymphocytic lymphoma

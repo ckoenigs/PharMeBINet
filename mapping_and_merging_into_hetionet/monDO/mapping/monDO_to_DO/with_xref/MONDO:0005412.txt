@@ -1,0 +1,3 @@
+MONDO:0005412	duodenal ulcer (disease)
+DOID 	 name 
+DOID:1724	duodenal ulcer

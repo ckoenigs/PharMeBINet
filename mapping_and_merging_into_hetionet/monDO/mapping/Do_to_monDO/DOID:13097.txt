@@ -1,0 +1,3 @@
+DOID:13097	intracranial arteriosclerosis
+monDO ID 	 name 
+MONDO:0001632	intracranial arteriosclerosis

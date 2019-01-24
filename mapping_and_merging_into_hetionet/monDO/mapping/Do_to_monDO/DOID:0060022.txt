@@ -1,0 +1,3 @@
+DOID:0060022	CD40 ligand deficiency
+monDO ID 	 name 
+MONDO:0010626	X-linked hyper-IgM syndrome

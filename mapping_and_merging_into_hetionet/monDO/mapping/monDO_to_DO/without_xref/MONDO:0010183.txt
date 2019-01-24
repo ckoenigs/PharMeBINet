@@ -1,0 +1,3 @@
+MONDO:0010183	methylmalonic aciduria and homocystinuria type cblF
+DOID 	 name 
+DOID:0050717	methylmalonic aciduria and homocystinuria type cblF

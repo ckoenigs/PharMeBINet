@@ -1,0 +1,3 @@
+DOID:2092	transient arthritis
+monDO ID 	 name 
+MONDO:0002204	transient arthritis

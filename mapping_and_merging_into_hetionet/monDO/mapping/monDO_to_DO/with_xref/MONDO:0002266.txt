@@ -1,0 +1,3 @@
+MONDO:0002266	malt worker's lung
+DOID 	 name 
+DOID:2314	malt worker's lung

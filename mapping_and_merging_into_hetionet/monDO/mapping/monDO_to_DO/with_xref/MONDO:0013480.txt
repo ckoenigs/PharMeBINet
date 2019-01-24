@@ -1,0 +1,3 @@
+MONDO:0013480	renal hypomagnesemia 6
+DOID 	 name 
+DOID:0060884	renal hypomagnesemia 6

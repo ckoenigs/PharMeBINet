@@ -1,0 +1,3 @@
+MONDO:0001835	facial paralysis
+DOID 	 name 
+DOID:13934	facial paralysis

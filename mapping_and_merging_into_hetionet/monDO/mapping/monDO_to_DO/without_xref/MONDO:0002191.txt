@@ -1,0 +1,3 @@
+MONDO:0002191	syringoma
+DOID 	 name 
+DOID:2065	syringoma

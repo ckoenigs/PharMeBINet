@@ -1,0 +1,3 @@
+DOID:8499	night blindness
+monDO ID 	 name 
+MONDO:0004588	night blindness

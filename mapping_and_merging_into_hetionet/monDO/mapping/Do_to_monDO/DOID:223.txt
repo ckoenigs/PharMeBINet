@@ -1,0 +1,3 @@
+DOID:223	basilar artery insufficiency
+monDO ID 	 name 
+MONDO:0002250	basilar artery insufficiency

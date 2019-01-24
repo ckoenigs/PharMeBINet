@@ -1,0 +1,3 @@
+MONDO:0004394	maxillary sinus squamous cell carcinoma
+DOID 	 name 
+DOID:7910	maxillary sinus squamous cell carcinoma

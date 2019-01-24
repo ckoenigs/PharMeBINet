@@ -1,0 +1,3 @@
+MONDO:0006026	bladder disease
+DOID 	 name 
+DOID:365	bladder disease

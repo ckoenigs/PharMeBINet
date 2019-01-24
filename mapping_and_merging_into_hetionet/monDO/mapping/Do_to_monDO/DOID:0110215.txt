@@ -1,0 +1,3 @@
+DOID:0110215	Leber congenital amaurosis 5
+monDO ID 	 name 
+MONDO:0011473	Leber congenital amaurosis 5

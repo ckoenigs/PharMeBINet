@@ -1,0 +1,3 @@
+MONDO:0003834	gastric cardia carcinoma
+DOID 	 name 
+DOID:6270	gastric cardia carcinoma

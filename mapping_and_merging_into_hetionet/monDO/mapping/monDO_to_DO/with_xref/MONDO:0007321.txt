@@ -1,0 +1,3 @@
+MONDO:0007321	autosomal dominant chondrodysplasia punctata
+DOID 	 name 
+DOID:0060293	autosomal dominant chondrodysplasia punctata

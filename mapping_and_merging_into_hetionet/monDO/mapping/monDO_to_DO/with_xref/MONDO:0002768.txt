@@ -1,0 +1,5 @@
+MONDO:0002768	hermaphroditism
+DOID 	 name 
+DOID:3763	hermaphroditism
+DOID:3765	pseudohermaphroditism
+DOID:1923	sex differentiation disease

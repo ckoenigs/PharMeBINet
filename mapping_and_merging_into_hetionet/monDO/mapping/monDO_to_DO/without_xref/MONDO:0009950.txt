@@ -1,0 +1,3 @@
+MONDO:0009950	pyruvate kinase deficiency of red cells
+DOID 	 name 
+DOID:0111077	pyruvate kinase deficiency of red cells

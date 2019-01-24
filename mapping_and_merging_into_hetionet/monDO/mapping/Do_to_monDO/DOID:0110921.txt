@@ -1,0 +1,3 @@
+DOID:0110921	familial hemophagocytic lymphohistiocytosis 1
+monDO ID 	 name 
+MONDO:0009974	familial hemophagocytic lymphohistiocytosis type 1

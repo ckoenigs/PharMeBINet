@@ -1,0 +1,3 @@
+DOID:0110104	atopic dermatitis 8
+monDO ID 	 name 
+MONDO:0013294	atopic dermatitis 8

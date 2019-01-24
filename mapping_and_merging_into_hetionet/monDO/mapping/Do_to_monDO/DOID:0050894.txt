@@ -1,0 +1,3 @@
+DOID:0050894	ameloblastoma
+monDO ID 	 name 
+MONDO:0017795	ameloblastoma

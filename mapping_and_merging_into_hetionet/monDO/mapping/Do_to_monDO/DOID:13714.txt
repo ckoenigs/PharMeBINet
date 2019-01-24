@@ -1,0 +1,3 @@
+DOID:13714	anodontia
+monDO ID 	 name 
+MONDO:0008797	anodontia

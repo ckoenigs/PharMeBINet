@@ -1,0 +1,3 @@
+MONDO:0013794	thrombocythemia 3
+DOID 	 name 
+DOID:2224	essential thrombocythemia

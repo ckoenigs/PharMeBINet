@@ -1,0 +1,3 @@
+DOID:8506	bullous pemphigoid
+monDO ID 	 name 
+MONDO:0019082	bullous pemphigoid

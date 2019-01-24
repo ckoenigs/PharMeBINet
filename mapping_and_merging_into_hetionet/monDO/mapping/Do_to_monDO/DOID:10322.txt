@@ -1,0 +1,3 @@
+DOID:10322	berylliosis
+monDO ID 	 name 
+MONDO:0015274	chronic beryllium disease

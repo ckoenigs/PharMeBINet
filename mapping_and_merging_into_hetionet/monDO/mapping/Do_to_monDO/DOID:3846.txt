@@ -1,0 +1,3 @@
+DOID:3846	adamantinous craniopharyngioma
+monDO ID 	 name 
+MONDO:0002787	adamantinous craniopharyngioma

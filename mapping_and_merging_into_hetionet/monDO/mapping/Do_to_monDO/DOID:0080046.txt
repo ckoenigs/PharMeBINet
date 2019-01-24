@@ -1,0 +1,3 @@
+DOID:0080046	Stickler syndrome
+monDO ID 	 name 
+MONDO:0019354	Stickler syndrome

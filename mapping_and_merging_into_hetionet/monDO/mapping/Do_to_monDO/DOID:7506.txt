@@ -1,0 +1,3 @@
+DOID:7506	small intestinal L-cell glucagon-like peptide producing tumor
+monDO ID 	 name 
+MONDO:0004252	small intestinal L-cell glucagon-like peptide producing tumor

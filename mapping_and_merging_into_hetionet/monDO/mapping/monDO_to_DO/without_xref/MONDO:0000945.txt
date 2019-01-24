@@ -1,0 +1,3 @@
+MONDO:0000945	venous insufficiency (disease)
+DOID 	 name 
+DOID:10128	venous insufficiency

@@ -1,0 +1,3 @@
+MONDO:0008495	platelet storage pool deficiency
+DOID 	 name 
+DOID:2223	platelet storage pool deficiency

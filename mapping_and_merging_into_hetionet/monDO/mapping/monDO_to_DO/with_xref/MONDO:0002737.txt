@@ -1,0 +1,3 @@
+MONDO:0002737	acute sanguinous otitis media
+DOID 	 name 
+DOID:3696	acute sanguinous otitis media

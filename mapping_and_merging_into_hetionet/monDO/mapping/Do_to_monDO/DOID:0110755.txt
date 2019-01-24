@@ -1,0 +1,3 @@
+DOID:0110755	type 1 diabetes mellitus 18
+monDO ID 	 name 
+MONDO:0011572	type 1 diabetes mellitus 18

@@ -1,0 +1,3 @@
+MONDO:0014788	autosomal recessive limb-girdle muscular dystrophy type 2W
+DOID 	 name 
+DOID:0110288	autosomal recessive limb-girdle muscular dystrophy type 2W

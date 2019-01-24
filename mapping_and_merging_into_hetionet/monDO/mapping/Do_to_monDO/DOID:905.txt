@@ -1,0 +1,3 @@
+DOID:905	Zellweger syndrome
+monDO ID 	 name 
+MONDO:0019609	Zellweger syndrome

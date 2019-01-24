@@ -1,0 +1,3 @@
+MONDO:0005996	trichuriasis
+DOID 	 name 
+DOID:1252	trichuriasis

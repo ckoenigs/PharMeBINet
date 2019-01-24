@@ -1,0 +1,3 @@
+MONDO:0009441	autosomal recessive congenital ichthyosis 1
+DOID 	 name 
+DOID:0060656	autosomal recessive congenital ichthyosis 1

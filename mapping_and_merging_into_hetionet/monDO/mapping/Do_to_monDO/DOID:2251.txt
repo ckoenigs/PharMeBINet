@@ -1,0 +1,3 @@
+DOID:2251	hypertrophic elongation of cervix
+monDO ID 	 name 
+MONDO:0002255	hypertrophic elongation of cervix

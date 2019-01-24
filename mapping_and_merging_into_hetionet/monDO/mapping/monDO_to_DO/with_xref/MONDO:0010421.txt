@@ -1,0 +1,3 @@
+MONDO:0010421	Bruton-type agammaglobulinemia
+DOID 	 name 
+DOID:14179	Bruton-type agammaglobulinemia

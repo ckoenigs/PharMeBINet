@@ -1,0 +1,3 @@
+MONDO:0004019	oxyphilic endometrial endometrioid adenocarcinoma
+DOID 	 name 
+DOID:6865	oxyphilic endometrial endometrioid adenocarcinoma

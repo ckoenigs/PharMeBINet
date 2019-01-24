@@ -1,0 +1,3 @@
+MONDO:0005981	tick paralysis
+DOID 	 name 
+DOID:11285	tick paralysis

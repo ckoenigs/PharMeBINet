@@ -1,0 +1,3 @@
+DOID:9977	hallucinogen dependence
+monDO ID 	 name 
+MONDO:0004939	hallucinogen dependence

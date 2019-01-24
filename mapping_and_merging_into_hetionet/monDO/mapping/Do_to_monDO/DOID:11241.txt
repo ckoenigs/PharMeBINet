@@ -1,0 +1,3 @@
+DOID:11241	appendix lymphoma
+monDO ID 	 name 
+MONDO:0001237	appendix lymphoma

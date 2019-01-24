@@ -1,0 +1,3 @@
+DOID:0050824	sinoatrial node disease
+monDO ID 	 name 
+MONDO:0000469	sinoatrial node disease

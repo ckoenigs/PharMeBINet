@@ -1,0 +1,3 @@
+DOID:12522	bagassosis
+monDO ID 	 name 
+MONDO:0001540	bagassosis

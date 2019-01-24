@@ -1,0 +1,3 @@
+MONDO:0004333	pancreatic ACTH-producing neuroendocrine tumor
+DOID 	 name 
+DOID:7697	pancreatic ACTH hormone producing tumor

@@ -1,0 +1,3 @@
+MONDO:0006599	physical urticaria
+DOID 	 name 
+DOID:0060220	physical urticaria

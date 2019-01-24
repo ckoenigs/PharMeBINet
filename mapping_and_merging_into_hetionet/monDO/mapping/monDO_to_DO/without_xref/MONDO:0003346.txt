@@ -1,0 +1,3 @@
+MONDO:0003346	central nervous system vasculitis
+DOID 	 name 
+DOID:525	central nervous system vasculitis

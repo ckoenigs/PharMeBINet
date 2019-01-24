@@ -1,0 +1,3 @@
+MONDO:0000335	parenchymatous neurosyphilis
+DOID 	 name 
+DOID:0050490	parenchymatous neurosyphilis

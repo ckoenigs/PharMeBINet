@@ -1,0 +1,3 @@
+DOID:11563	retinal vasculitis
+monDO ID 	 name 
+MONDO:0006950	retinal vasculitis

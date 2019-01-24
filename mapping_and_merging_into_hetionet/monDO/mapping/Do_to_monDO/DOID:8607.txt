@@ -1,0 +1,3 @@
+DOID:8607	herpetic whitlow
+monDO ID 	 name 
+MONDO:0004616	herpetic whitlow

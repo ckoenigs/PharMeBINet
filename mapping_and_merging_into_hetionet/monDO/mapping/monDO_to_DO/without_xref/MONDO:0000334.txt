@@ -1,0 +1,3 @@
+MONDO:0000334	multinodular goiter
+DOID 	 name 
+DOID:0050489	multinodular goiter

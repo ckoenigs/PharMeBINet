@@ -1,0 +1,3 @@
+DOID:11488	idiopathic peripheral autonomic neuropathy
+monDO ID 	 name 
+MONDO:0001295	idiopathic peripheral autonomic neuropathy

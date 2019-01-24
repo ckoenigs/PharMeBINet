@@ -1,0 +1,3 @@
+MONDO:0007540	multiple endocrine neoplasia type 1
+DOID 	 name 
+DOID:10017	multiple endocrine neoplasia type 1

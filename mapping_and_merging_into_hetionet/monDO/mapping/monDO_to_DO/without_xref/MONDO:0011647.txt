@@ -1,0 +1,3 @@
+MONDO:0011647	Alzheimer's disease 7
+DOID 	 name 
+DOID:0110039	Alzheimer's disease 7

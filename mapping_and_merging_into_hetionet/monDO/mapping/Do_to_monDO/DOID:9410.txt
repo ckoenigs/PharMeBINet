@@ -1,0 +1,3 @@
+DOID:9410	panhypopituitarism
+monDO ID 	 name 
+MONDO:0019591	panhypopituitarism

@@ -1,0 +1,3 @@
+DOID:10319	mixed mineral dust pneumoconiosis
+monDO ID 	 name 
+MONDO:0001000	mixed mineral dust pneumoconiosis

@@ -1,0 +1,3 @@
+DOID:3828	chromophobe adenoma
+monDO ID 	 name 
+MONDO:0006701	chromophobe adenoma

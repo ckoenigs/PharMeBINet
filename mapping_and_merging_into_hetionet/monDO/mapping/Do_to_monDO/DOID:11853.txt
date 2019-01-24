@@ -1,0 +1,3 @@
+DOID:11853	monocular exotropia
+monDO ID 	 name 
+MONDO:0001392	monocular exotropia

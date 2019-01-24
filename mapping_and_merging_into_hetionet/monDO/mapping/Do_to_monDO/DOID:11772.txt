@@ -1,0 +1,3 @@
+DOID:11772	leukocoria
+monDO ID 	 name 
+MONDO:0001362	leukocoria

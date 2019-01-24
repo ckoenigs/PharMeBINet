@@ -1,0 +1,3 @@
+DOID:0060529	white shrimp allergy
+monDO ID 	 name 
+MONDO:0000804	white shrimp allergy

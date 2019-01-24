@@ -1,0 +1,3 @@
+MONDO:0003849	clivus chordoma
+DOID 	 name 
+DOID:6312	clivus chordoma

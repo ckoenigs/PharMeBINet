@@ -1,0 +1,3 @@
+MONDO:0009673	intermediate spinal muscular atrophy
+DOID 	 name 
+DOID:0050530	intermediate spinal muscular atrophy

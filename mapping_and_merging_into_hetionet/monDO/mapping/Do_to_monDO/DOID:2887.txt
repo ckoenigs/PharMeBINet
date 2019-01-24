@@ -1,0 +1,3 @@
+DOID:2887	prostate leiomyoma
+monDO ID 	 name 
+MONDO:0002452	prostate leiomyoma

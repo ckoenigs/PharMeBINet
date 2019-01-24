@@ -1,0 +1,3 @@
+MONDO:0004279	glossopharyngeal motor neuropathy
+DOID 	 name 
+DOID:7558	glossopharyngeal motor neuropathy

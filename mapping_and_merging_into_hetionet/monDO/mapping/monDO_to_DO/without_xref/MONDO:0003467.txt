@@ -1,0 +1,3 @@
+MONDO:0003467	mediastinum synovial sarcoma
+DOID 	 name 
+DOID:5488	mediastinum synovial sarcoma

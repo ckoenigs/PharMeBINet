@@ -1,0 +1,3 @@
+DOID:11988	conjunctival concretion
+monDO ID 	 name 
+MONDO:0001412	conjunctival concretion

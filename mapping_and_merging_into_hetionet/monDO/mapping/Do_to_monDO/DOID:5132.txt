@@ -1,0 +1,3 @@
+DOID:5132	leiomyoma cutis
+monDO ID 	 name 
+MONDO:0003291	leiomyoma cutis

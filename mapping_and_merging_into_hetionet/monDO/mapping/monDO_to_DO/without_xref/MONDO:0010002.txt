@@ -1,0 +1,3 @@
+MONDO:0010002	Rothmund-Thomson syndrome
+DOID 	 name 
+DOID:2732	Rothmund-Thomson syndrome

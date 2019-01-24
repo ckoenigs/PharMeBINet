@@ -1,0 +1,3 @@
+MONDO:0008727	congenital adrenal hyperplasia due to 3-beta-hydroxysteroid dehydrogenase deficiency
+DOID 	 name 
+DOID:0050811	congenital adrenal hyperplasia

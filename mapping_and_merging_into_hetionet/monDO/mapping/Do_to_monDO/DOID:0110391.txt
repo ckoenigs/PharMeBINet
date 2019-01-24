@@ -1,0 +1,3 @@
+DOID:0110391	retinitis pigmentosa 31
+monDO ID 	 name 
+MONDO:0012367	retinitis pigmentosa 31

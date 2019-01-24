@@ -1,0 +1,3 @@
+DOID:0080123	mitochondrial DNA depletion syndrome 4b
+monDO ID 	 name 
+MONDO:0013350	mitochondrial DNA depletion syndrome 4b

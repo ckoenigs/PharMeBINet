@@ -1,0 +1,3 @@
+DOID:1492	eye and adnexa disease
+monDO ID 	 name 
+MONDO:0002022	eye and adnexa disease

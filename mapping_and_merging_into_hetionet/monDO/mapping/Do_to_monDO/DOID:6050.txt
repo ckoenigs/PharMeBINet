@@ -1,0 +1,3 @@
+DOID:6050	esophageal disease
+monDO ID 	 name 
+MONDO:0003749	esophageal disease

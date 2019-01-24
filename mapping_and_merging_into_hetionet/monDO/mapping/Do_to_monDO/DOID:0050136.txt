@@ -1,0 +1,3 @@
+DOID:0050136	systemic mycosis
+monDO ID 	 name 
+MONDO:0000256	systemic mycosis

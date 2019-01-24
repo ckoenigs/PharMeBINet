@@ -1,0 +1,3 @@
+DOID:0060755	familial temporal lobe epilepsy 2
+monDO ID 	 name 
+MONDO:0011965	familial temporal lobe epilepsy 2

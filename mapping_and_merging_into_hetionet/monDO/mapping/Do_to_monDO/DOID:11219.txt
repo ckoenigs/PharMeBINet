@@ -1,0 +1,3 @@
+DOID:11219	conjunctival folliculosis
+monDO ID 	 name 
+MONDO:0001228	conjunctival folliculosis

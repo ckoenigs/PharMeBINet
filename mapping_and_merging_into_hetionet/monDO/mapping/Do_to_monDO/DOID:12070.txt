@@ -1,0 +1,3 @@
+DOID:12070	Dieulafoy lesion
+monDO ID 	 name 
+MONDO:0001427	dieulafoy lesion

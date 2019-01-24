@@ -1,0 +1,3 @@
+MONDO:0012434	arrhythmogenic right ventricular dysplasia 10
+DOID 	 name 
+DOID:0110081	arrhythmogenic right ventricular dysplasia 10

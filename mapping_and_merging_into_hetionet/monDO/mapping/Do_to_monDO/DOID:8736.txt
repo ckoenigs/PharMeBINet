@@ -1,0 +1,3 @@
+DOID:8736	smallpox
+monDO ID 	 name 
+MONDO:0004651	smallpox

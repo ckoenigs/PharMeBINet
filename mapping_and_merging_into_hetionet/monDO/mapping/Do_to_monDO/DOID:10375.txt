@@ -1,0 +1,3 @@
+DOID:10375	suppression amblyopia
+monDO ID 	 name 
+MONDO:0001019	suppression amblyopia

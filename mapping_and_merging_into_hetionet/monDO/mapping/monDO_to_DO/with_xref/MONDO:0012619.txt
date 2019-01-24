@@ -1,0 +1,3 @@
+MONDO:0012619	MRT11
+DOID 	 name 
+DOID:0060308	autosomal recessive non-syndromic intellectual disability

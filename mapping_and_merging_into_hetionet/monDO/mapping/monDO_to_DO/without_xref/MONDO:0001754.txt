@@ -1,0 +1,3 @@
+MONDO:0001754	eclampsia
+DOID 	 name 
+DOID:13593	eclampsia

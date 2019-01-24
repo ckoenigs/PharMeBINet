@@ -1,0 +1,3 @@
+DOID:14489	ureteral lymphoma
+monDO ID 	 name 
+MONDO:0001977	ureteral lymphoma

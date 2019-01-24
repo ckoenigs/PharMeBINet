@@ -1,0 +1,3 @@
+DOID:0110381	retinitis pigmentosa 14
+monDO ID 	 name 
+MONDO:0010827	retinitis pigmentosa 14

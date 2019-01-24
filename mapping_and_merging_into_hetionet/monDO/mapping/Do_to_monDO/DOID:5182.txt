@@ -1,0 +1,3 @@
+DOID:5182	blastema predominant kidney Wilms' tumor
+monDO ID 	 name 
+MONDO:0003320	blastema predominant kidney wilms' tumor

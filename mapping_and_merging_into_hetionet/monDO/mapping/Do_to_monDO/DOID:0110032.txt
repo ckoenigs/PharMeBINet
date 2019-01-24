@@ -1,0 +1,3 @@
+DOID:0110032	autosomal dominant Alport syndrome
+monDO ID 	 name 
+MONDO:0007086	autosomal dominant Alport syndrome

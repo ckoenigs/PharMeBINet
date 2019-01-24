@@ -1,0 +1,3 @@
+DOID:2451	protein S deficiency
+monDO ID 	 name 
+MONDO:0002304	protein S deficiency

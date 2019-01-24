@@ -1,0 +1,3 @@
+DOID:0110862	congenital stationary night blindness autosomal dominant 1
+monDO ID 	 name 
+MONDO:0012498	congenital stationary night blindness autosomal dominant 1

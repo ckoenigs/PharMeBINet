@@ -1,0 +1,3 @@
+DOID:0050593	primary congenital glaucoma
+monDO ID 	 name 
+MONDO:0000365	primary congenital glaucoma (disease)

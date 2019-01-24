@@ -1,0 +1,3 @@
+DOID:0110846	xeroderma pigmentosum group E
+monDO ID 	 name 
+MONDO:0010213	xeroderma pigmentosum group E

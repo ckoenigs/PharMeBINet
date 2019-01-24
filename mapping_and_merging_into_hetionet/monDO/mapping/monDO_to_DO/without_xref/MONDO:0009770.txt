@@ -1,0 +1,3 @@
+MONDO:0009770	3MC syndrome 1
+DOID 	 name 
+DOID:0060575	3MC syndrome 1

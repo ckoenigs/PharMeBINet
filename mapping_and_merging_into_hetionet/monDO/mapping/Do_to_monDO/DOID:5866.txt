@@ -1,0 +1,3 @@
+DOID:5866	juxtacortical chondrosarcoma
+monDO ID 	 name 
+MONDO:0003683	juxtacortical chondrosarcoma

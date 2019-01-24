@@ -1,0 +1,3 @@
+DOID:7008	protoplasmic astrocytoma
+monDO ID 	 name 
+MONDO:0016687	protoplasmic astrocytoma

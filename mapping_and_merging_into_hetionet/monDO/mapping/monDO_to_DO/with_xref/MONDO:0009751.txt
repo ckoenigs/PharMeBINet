@@ -1,0 +1,3 @@
+MONDO:0009751	neuropathy, hereditary sensory, atypical
+DOID 	 name 
+DOID:0050548	hereditary sensory neuropathy

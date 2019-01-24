@@ -1,0 +1,3 @@
+DOID:7146	Langerhans cell sarcoma
+monDO ID 	 name 
+MONDO:0019480	Langerhans cell sarcoma

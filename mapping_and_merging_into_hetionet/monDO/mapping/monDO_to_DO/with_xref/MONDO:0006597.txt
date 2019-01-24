@@ -1,0 +1,3 @@
+MONDO:0006597	photosensitivity disease
+DOID 	 name 
+DOID:3159	photosensitivity disease

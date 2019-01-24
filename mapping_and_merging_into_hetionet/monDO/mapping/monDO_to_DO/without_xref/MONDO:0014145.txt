@@ -1,0 +1,3 @@
+MONDO:0014145	Leber congenital amaurosis 17
+DOID 	 name 
+DOID:0110217	Leber congenital amaurosis 17

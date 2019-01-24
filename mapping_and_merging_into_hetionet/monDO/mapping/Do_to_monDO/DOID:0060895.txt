@@ -1,0 +1,3 @@
+DOID:0060895	autosomal dominant Parkinson disease 4
+monDO ID 	 name 
+MONDO:0011562	autosomal dominant Parkinson disease 4

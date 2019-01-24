@@ -1,0 +1,3 @@
+MONDO:0000703	collagenous colitis
+DOID 	 name 
+DOID:0060183	collagenous colitis

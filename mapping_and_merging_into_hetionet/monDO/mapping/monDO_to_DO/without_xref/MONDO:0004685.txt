@@ -1,0 +1,3 @@
+MONDO:0004685	Waldeyer's ring cancer
+DOID 	 name 
+DOID:8937	Waldeyer's ring cancer

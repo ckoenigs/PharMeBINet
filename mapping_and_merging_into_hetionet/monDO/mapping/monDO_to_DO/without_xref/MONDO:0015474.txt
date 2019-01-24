@@ -1,0 +1,3 @@
+MONDO:0015474	cryptosporidiosis
+DOID 	 name 
+DOID:1733	cryptosporidiosis

@@ -1,0 +1,3 @@
+DOID:3590	gestational trophoblastic neoplasm
+monDO ID 	 name 
+MONDO:0018944	gestational trophoblastic neoplasm

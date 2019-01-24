@@ -1,0 +1,3 @@
+MONDO:0006452	thymic sarcomatoid carcinoma
+DOID 	 name 
+DOID:8138	thymus sarcomatoid carcinoma

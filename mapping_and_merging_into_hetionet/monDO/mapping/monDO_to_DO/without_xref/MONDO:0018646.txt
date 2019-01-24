@@ -1,0 +1,3 @@
+MONDO:0018646	sclerosing cholangitis (disease)
+DOID 	 name 
+DOID:14268	sclerosing cholangitis

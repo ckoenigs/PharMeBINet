@@ -1,0 +1,3 @@
+MONDO:0009868	glycogen storage disease IXb
+DOID 	 name 
+DOID:0111041	glycogen storage disease IXb

@@ -1,0 +1,3 @@
+DOID:2312	nocardiosis
+monDO ID 	 name 
+MONDO:0017776	nocardiosis

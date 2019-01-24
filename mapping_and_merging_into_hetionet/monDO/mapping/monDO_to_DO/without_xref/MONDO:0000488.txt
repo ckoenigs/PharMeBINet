@@ -1,0 +1,3 @@
+MONDO:0000488	periampullary adenoma
+DOID 	 name 
+DOID:0050849	periampullary adenoma

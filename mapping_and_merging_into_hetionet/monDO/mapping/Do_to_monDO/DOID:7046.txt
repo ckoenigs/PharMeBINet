@@ -1,0 +1,3 @@
+DOID:7046	cervical basaloid squamous cell carcinoma
+monDO ID 	 name 
+MONDO:0004088	cervical basaloid squamous cell carcinoma

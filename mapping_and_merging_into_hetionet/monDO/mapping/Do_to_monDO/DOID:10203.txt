@@ -1,0 +1,3 @@
+DOID:10203	external auditory meatus lipoma
+monDO ID 	 name 
+MONDO:0000973	external ear lipoma

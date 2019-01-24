@@ -1,0 +1,3 @@
+MONDO:0013348	cone-rod dystrophy 15
+DOID 	 name 
+DOID:0111021	cone-rod dystrophy 15

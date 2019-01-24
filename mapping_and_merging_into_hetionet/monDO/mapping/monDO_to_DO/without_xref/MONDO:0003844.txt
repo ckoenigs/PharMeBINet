@@ -1,0 +1,3 @@
+MONDO:0003844	central nervous system lipoma
+DOID 	 name 
+DOID:6293	central nervous system lipoma

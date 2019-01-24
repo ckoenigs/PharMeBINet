@@ -1,0 +1,3 @@
+DOID:646	viral encephalitis
+monDO ID 	 name 
+MONDO:0006009	viral encephalitis

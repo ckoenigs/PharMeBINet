@@ -1,1 +1,1 @@
-decipher id 	 decipher name 	 umls cuis 	 doids 
+decipher id 	 decipher name 	 umls cuis 	 mondos 	 db_type 

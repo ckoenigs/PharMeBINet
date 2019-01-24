@@ -1,0 +1,3 @@
+MONDO:0001921	chronic atticoantral disease
+DOID 	 name 
+DOID:14248	chronic atticoantral disease

@@ -1,0 +1,3 @@
+MONDO:0013295	atopic dermatitis 9
+DOID 	 name 
+DOID:0110105	atopic dermatitis 9

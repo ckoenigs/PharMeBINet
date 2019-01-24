@@ -1,0 +1,3 @@
+MONDO:0005619	typhoid fever
+DOID 	 name 
+DOID:13258	typhoid fever

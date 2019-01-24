@@ -1,0 +1,3 @@
+DOID:0050754	ataxia with oculomotor apraxia type 1
+monDO ID 	 name 
+MONDO:0008842	ataxia with oculomotor apraxia type 1

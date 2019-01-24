@@ -1,0 +1,3 @@
+MONDO:0003067	cervical lymphadenitis
+DOID 	 name 
+DOID:4637	cervical adenitis

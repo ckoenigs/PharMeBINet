@@ -1,0 +1,3 @@
+MONDO:0000766	corneal endothelial dystrophy
+DOID 	 name 
+DOID:0060443	corneal endothelial dystrophy

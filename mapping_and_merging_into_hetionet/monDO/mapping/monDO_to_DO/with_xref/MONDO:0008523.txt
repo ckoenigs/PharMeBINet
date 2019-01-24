@@ -1,0 +1,3 @@
+MONDO:0008523	Blau syndrome
+DOID 	 name 
+DOID:0050678	Blau syndrome

@@ -1,0 +1,3 @@
+DOID:0110912	leukocyte adhesion deficiency 3
+monDO ID 	 name 
+MONDO:0013016	leukocyte adhesion deficiency 3

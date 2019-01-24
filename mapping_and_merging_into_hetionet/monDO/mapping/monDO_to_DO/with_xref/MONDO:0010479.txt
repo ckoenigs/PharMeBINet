@@ -1,0 +1,3 @@
+MONDO:0010479	Charcot-Marie-tooth disease X-linked dominant 6
+DOID 	 name 
+DOID:0110207	Charcot-Marie-Tooth disease X-linked dominant 6

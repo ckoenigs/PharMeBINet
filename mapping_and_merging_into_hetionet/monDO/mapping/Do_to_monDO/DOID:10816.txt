@@ -1,0 +1,3 @@
+DOID:10816	duodenum adenocarcinoma
+monDO ID 	 name 
+MONDO:0006186	duodenal adenocarcinoma

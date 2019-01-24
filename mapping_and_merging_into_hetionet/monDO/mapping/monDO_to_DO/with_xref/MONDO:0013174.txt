@@ -1,0 +1,3 @@
+MONDO:0013174	primary ciliary dyskinesia 13
+DOID 	 name 
+DOID:0110618	primary ciliary dyskinesia 13

@@ -1,0 +1,3 @@
+MONDO:0018982	Niemann-Pick disease type C
+DOID 	 name 
+DOID:14504	Niemann-Pick disease

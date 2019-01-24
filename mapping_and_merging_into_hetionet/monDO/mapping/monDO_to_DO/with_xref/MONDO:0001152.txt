@@ -1,0 +1,4 @@
+MONDO:0001152	amnestic disorder
+DOID 	 name 
+DOID:10914	amnestic disorder
+DOID:11037	dissociative amnesia

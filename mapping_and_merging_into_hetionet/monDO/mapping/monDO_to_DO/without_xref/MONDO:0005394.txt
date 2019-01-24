@@ -1,0 +1,3 @@
+MONDO:0005394	brain infarction
+DOID 	 name 
+DOID:3454	brain infarction

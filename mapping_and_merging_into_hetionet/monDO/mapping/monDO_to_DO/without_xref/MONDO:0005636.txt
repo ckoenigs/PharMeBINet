@@ -1,0 +1,3 @@
+MONDO:0005636	adenosarcoma
+DOID 	 name 
+DOID:1974	adenosarcoma

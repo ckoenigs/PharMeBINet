@@ -1,0 +1,3 @@
+DOID:0110001	3-methylglutaconic aciduria with deafness, encephalopathy, and Leigh-like syndrome
+monDO ID 	 name 
+MONDO:0013875	3-methylglutaconic aciduria with deafness, encephalopathy, and Leigh-like syndrome

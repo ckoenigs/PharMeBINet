@@ -1,0 +1,3 @@
+MONDO:0008646	long QT syndrome 1
+DOID 	 name 
+DOID:0110644	long QT syndrome 1

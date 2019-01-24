@@ -1,0 +1,3 @@
+DOID:0050884	triosephosphate isomerase deficiency
+monDO ID 	 name 
+MONDO:0014221	triosephosphate isomerase deficiency

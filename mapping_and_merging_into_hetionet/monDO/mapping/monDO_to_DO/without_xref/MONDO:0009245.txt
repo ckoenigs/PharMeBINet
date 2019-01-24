@@ -1,0 +1,3 @@
+MONDO:0009245	Friedreich ataxia
+DOID 	 name 
+DOID:12705	Friedreich ataxia

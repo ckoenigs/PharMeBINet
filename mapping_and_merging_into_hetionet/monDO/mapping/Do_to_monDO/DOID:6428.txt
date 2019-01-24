@@ -1,0 +1,3 @@
+DOID:6428	cervical adenoid basal carcinoma
+monDO ID 	 name 
+MONDO:0006132	cervical adenoid basal carcinoma

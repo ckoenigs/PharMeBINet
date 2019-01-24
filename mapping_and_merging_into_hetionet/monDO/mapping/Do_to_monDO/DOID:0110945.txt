@@ -1,0 +1,3 @@
+DOID:0110945	autosomal recessive osteopetrosis 6
+monDO ID 	 name 
+MONDO:0012679	autosomal recessive osteopetrosis 6

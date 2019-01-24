@@ -1,0 +1,3 @@
+MONDO:0004188	iris spindle cell melanoma
+DOID 	 name 
+DOID:7328	iris spindle cell melanoma

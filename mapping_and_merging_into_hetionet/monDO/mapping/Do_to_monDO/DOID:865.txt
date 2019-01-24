@@ -1,0 +1,3 @@
+DOID:865	vasculitis
+monDO ID 	 name 
+MONDO:0018882	vasculitis

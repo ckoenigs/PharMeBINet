@@ -1,0 +1,3 @@
+DOID:12252	Cushing's syndrome
+monDO ID 	 name 
+MONDO:0018912	Cushing syndrome

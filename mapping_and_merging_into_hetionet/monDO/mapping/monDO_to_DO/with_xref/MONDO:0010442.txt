@@ -1,0 +1,3 @@
+MONDO:0010442	46,XX sex reversal 3
+DOID 	 name 
+DOID:14450	46 XX gonadal dysgenesis

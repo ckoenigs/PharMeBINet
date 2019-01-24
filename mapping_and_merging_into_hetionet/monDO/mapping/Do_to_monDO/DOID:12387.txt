@@ -1,0 +1,3 @@
+DOID:12387	nephrogenic diabetes insipidus
+monDO ID 	 name 
+MONDO:0016383	nephrogenic diabetes insipidus

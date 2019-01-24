@@ -1,0 +1,3 @@
+DOID:1529	penile disease
+monDO ID 	 name 
+MONDO:0002036	penile disease

@@ -1,0 +1,4 @@
+MONDO:0015531	non-Langerhans cell histiocytosis
+DOID 	 name 
+DOID:4330	non-Langerhans-cell histiocytosis
+DOID:4394	reticulohistiocytic granuloma

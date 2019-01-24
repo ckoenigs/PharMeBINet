@@ -1,0 +1,3 @@
+MONDO:0009878	pituitary hormone deficiency, combined, 2
+DOID 	 name 
+DOID:9406	hypopituitarism

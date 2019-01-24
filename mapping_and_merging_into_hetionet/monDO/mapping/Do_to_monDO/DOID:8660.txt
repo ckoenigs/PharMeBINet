@@ -1,0 +1,3 @@
+DOID:8660	postcricoid region cancer
+monDO ID 	 name 
+MONDO:0004635	postcricoid region cancer

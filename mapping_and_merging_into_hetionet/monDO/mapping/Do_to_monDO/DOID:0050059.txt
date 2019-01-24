@@ -1,0 +1,3 @@
+DOID:0050059	oropharyngeal anthrax
+monDO ID 	 name 
+MONDO:0000236	oropharyngeal anthrax

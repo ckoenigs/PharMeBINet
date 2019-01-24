@@ -1,0 +1,3 @@
+MONDO:0012875	inflammatory bowel disease 21
+DOID 	 name 
+DOID:0110906	inflammatory bowel disease 21

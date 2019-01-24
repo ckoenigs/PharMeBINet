@@ -1,0 +1,3 @@
+MONDO:0013547	mitochondrial complex v (ATP synthase) deficiency nuclear type 3
+DOID 	 name 
+DOID:0060332	mitochondrial complex V (ATP synthase) deficiency nuclear type 3

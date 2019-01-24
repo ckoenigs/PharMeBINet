@@ -1,0 +1,3 @@
+MONDO:0012753	amyotrophic lateral sclerosis type 9
+DOID 	 name 
+DOID:0060200	amyotrophic lateral sclerosis type 9

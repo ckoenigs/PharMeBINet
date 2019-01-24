@@ -1,0 +1,3 @@
+MONDO:0004064	iris melanoma
+DOID 	 name 
+DOID:6994	malignant iris melanoma

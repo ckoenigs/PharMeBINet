@@ -1,0 +1,3 @@
+DOID:10930	borderline personality disorder
+monDO ID 	 name 
+MONDO:0001156	borderline personality disorder (disease)

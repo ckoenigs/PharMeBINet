@@ -1,0 +1,3 @@
+DOID:3617	epidural spinal canal angiolipoma
+monDO ID 	 name 
+MONDO:0002712	epidural spinal canal angiolipoma

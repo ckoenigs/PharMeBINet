@@ -1,0 +1,3 @@
+DOID:14133	Masters-Allen syndrome
+monDO ID 	 name 
+MONDO:0001887	Masters-Allen syndrome

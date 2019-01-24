@@ -1,0 +1,3 @@
+DOID:0050462	Antley-Bixler syndrome
+monDO ID 	 name 
+MONDO:0008803	Antley-Bixler syndrome

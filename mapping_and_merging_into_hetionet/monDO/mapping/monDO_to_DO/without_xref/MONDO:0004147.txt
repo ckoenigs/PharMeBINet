@@ -1,0 +1,3 @@
+MONDO:0004147	noninvasive malignant thymoma
+DOID 	 name 
+DOID:7214	noninvasive malignant thymoma

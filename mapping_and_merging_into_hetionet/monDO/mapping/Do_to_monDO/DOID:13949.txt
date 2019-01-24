@@ -1,0 +1,3 @@
+DOID:13949	interstitial cystitis
+monDO ID 	 name 
+MONDO:0018301	interstitial cystitis

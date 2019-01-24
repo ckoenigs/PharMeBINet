@@ -1,0 +1,3 @@
+DOID:13864	trochlear nerve disease
+monDO ID 	 name 
+MONDO:0007002	trochlear nerve disease

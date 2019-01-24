@@ -1,0 +1,3 @@
+MONDO:0007441	dentinogenesis imperfecta type 2
+DOID 	 name 
+DOID:4154	dentinogenesis imperfecta

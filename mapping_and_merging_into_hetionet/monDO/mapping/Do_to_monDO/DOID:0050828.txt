@@ -1,0 +1,3 @@
+DOID:0050828	artery disease
+monDO ID 	 name 
+MONDO:0000473	artery disease

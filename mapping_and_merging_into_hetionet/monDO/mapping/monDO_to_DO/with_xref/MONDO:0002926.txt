@@ -1,0 +1,3 @@
+MONDO:0002926	clear cell sarcoma
+DOID 	 name 
+DOID:4233	clear cell sarcoma

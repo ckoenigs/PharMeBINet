@@ -6,4 +6,10 @@ Program need path to ctd data.
 I use the file from June 2017.
 The files can be downloaded by http://ctdbase.org/downloads/.
 
-Davis AP, Grondin CJ, Johnson RJ, Sciaky D, King BL, McMorran R, Wiegers J, Wiegers TC, Mattingly CJ. The Comparative Toxicogenomics Database: update 2017. Nucleic Acids Res. 2016 Sep 19;[Epub ahead of print] 
+Davis AP, Grondin CJ, Johnson RJ, Sciaky D, King BL, McMorran R, Wiegers J, Wiegers TC, Mattingly CJ. The Comparative Toxicogenomics Database: update 2017. Nucleic Acids Res. 2016 Sep 19;[Epub ahead of print]
+
+The file integrate_whole_CTD_into_neo4j_with_csv.py integrate the whole ctd with current exception of the exposure-events/exposure-study into Neo4j with use of csv loader from Neo4j.
+The csv are prepared with the bash script.
+
+I use the file from Apr 2018.
+The files can be downloaded by http://ctdbase.org/downloads/.

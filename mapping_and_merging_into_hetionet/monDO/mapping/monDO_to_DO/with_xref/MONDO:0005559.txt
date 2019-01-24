@@ -1,0 +1,4 @@
+MONDO:0005559	neurodegenerative disease
+DOID 	 name 
+DOID:1443	cerebral degeneration
+DOID:1289	neurodegenerative disease

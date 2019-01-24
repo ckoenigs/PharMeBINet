@@ -1,0 +1,3 @@
+MONDO:0008234	multiple endocrine neoplasia type 2A
+DOID 	 name 
+DOID:0050430	multiple endocrine neoplasia type 2A

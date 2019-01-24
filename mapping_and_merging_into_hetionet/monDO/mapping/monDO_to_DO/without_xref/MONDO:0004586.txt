@@ -1,0 +1,3 @@
+MONDO:0004586	rheumatoid lung disease
+DOID 	 name 
+DOID:849	rheumatoid lung disease

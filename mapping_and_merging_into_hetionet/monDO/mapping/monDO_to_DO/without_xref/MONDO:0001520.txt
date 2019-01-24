@@ -1,0 +1,3 @@
+MONDO:0001520	kleptomania
+DOID 	 name 
+DOID:12400	kleptomania

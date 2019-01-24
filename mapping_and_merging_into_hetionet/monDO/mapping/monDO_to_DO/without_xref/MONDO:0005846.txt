@@ -1,0 +1,3 @@
+MONDO:0005846	microsporidiosis
+DOID 	 name 
+DOID:4271	microsporidiosis

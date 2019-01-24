@@ -1,0 +1,3 @@
+MONDO:0003677	lateral myocardial infarction
+DOID 	 name 
+DOID:5853	lateral myocardial infarction

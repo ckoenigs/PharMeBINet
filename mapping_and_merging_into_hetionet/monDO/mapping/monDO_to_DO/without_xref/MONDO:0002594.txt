@@ -1,0 +1,3 @@
+MONDO:0002594	monkeypox
+DOID 	 name 
+DOID:3292	monkeypox

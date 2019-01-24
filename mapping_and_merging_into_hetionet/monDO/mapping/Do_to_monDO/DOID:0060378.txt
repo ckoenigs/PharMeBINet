@@ -1,0 +1,3 @@
+DOID:0060378	orofaciodigital syndrome VIII
+monDO ID 	 name 
+MONDO:0010336	orofaciodigital syndrome VIII

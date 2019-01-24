@@ -1,0 +1,3 @@
+DOID:13481	thanatophoric dysplasia
+monDO ID 	 name 
+MONDO:0017042	thanatophoric dysplasia

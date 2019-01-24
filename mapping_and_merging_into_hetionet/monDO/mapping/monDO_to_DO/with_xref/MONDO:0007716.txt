@@ -1,0 +1,3 @@
+MONDO:0007716	alpha thalassemia-intellectual disability syndrome type 1
+DOID 	 name 
+DOID:0110029	alpha thalassemia-intellectual disability syndrome type 1

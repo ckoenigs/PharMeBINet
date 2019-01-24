@@ -1,0 +1,3 @@
+DOID:2382	kernicterus
+monDO ID 	 name 
+MONDO:0006819	kernicterus

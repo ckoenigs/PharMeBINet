@@ -1,0 +1,3 @@
+DOID:0110033	autosomal recessive Alport syndrome
+monDO ID 	 name 
+MONDO:0008762	autosomal recessive Alport syndrome

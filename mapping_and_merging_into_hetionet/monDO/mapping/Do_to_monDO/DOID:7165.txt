@@ -1,0 +1,3 @@
+DOID:7165	subacute thyroiditis
+monDO ID 	 name 
+MONDO:0006982	subacute thyroiditis

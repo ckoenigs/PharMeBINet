@@ -1,0 +1,3 @@
+DOID:0060677	catecholaminergic polymorphic ventricular tachycardia 3
+monDO ID 	 name 
+MONDO:0013529	catecholaminergic polymorphic ventricular tachycardia 3

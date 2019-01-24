@@ -1,0 +1,3 @@
+MONDO:0001179	pinguecula
+DOID 	 name 
+DOID:11029	pinguecula

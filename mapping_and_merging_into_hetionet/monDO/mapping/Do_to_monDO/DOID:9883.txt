@@ -1,0 +1,3 @@
+DOID:9883	Becker muscular dystrophy
+monDO ID 	 name 
+MONDO:0010311	Becker muscular dystrophy

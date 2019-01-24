@@ -1,0 +1,3 @@
+DOID:0080085	nonsyndromic congenital nail disorder 7
+monDO ID 	 name 
+MONDO:0011595	nonsyndromic congenital nail disorder 7

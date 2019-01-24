@@ -1,0 +1,3 @@
+MONDO:0012688	cataract 17 multiple types
+DOID 	 name 
+DOID:0110270	cataract 17 multiple types

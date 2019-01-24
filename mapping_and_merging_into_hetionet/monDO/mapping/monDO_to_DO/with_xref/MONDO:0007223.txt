@@ -1,0 +1,3 @@
+MONDO:0007223	brachydactyly type E1
+DOID 	 name 
+DOID:0110972	brachydactyly type E1

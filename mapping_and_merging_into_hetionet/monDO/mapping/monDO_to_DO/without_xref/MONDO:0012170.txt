@@ -1,0 +1,3 @@
+MONDO:0012170	autosomal recessive nonsyndromic deafness 36
+DOID 	 name 
+DOID:0110494	autosomal recessive nonsyndromic deafness 36

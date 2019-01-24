@@ -1,0 +1,3 @@
+MONDO:0002312	opportunistic mycosis
+DOID 	 name 
+DOID:2473	opportunistic mycosis

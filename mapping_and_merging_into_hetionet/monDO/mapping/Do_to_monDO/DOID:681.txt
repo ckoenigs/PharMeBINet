@@ -1,0 +1,3 @@
+DOID:681	progressive bulbar palsy
+monDO ID 	 name 
+MONDO:0008890	progressive bulbar palsy

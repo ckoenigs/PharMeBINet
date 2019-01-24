@@ -1,0 +1,3 @@
+MONDO:0003238	cervical adenomyoma
+DOID 	 name 
+DOID:4995	cervical adenomyoma

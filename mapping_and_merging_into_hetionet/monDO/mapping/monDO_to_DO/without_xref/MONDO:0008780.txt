@@ -1,0 +1,3 @@
+MONDO:0008780	amyotrophic lateral sclerosis type 2
+DOID 	 name 
+DOID:0060194	amyotrophic lateral sclerosis type 2

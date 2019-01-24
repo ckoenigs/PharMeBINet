@@ -1,0 +1,3 @@
+MONDO:0003922	ovarian clear cell malignant adenofibroma
+DOID 	 name 
+DOID:6554	ovarian clear cell malignant adenofibroma

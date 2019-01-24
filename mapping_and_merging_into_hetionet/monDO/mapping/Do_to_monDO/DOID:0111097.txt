@@ -1,0 +1,3 @@
+DOID:0111097	Fanconi anemia complementation group J
+monDO ID 	 name 
+MONDO:0012187	Fanconi anemia complementation group j

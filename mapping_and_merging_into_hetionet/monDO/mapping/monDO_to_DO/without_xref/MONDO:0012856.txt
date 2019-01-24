@@ -1,0 +1,3 @@
+MONDO:0012856	Birk-Barel syndrome
+DOID 	 name 
+DOID:0050675	Birk-Barel syndrome

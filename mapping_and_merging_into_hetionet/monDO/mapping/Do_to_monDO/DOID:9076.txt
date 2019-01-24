@@ -1,0 +1,3 @@
+DOID:9076	discoid lupus erythematosus of eyelid
+monDO ID 	 name 
+MONDO:0004706	discoid lupus erythematosus of eyelid

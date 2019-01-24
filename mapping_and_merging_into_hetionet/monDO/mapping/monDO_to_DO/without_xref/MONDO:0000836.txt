@@ -1,0 +1,3 @@
+MONDO:0000836	disease of bone structure
+DOID 	 name 
+DOID:0080010	bone structure disease

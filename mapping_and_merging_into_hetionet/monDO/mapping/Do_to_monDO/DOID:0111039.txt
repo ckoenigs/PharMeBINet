@@ -1,0 +1,3 @@
+DOID:0111039	hypermethioninemia with deficiency of S-adenosylhomocysteine hydrolase
+monDO ID 	 name 
+MONDO:0013404	hypermethioninemia with deficiency of S-adenosylhomocysteine hydrolase

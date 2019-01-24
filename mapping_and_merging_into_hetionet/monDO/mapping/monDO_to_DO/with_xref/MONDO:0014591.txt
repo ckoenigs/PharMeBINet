@@ -1,0 +1,3 @@
+MONDO:0014591	autosomal dominant Robinow syndrome 2
+DOID 	 name 
+DOID:0060765	autosomal dominant Robinow syndrome 2

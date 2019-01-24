@@ -1,0 +1,3 @@
+MONDO:0002408	bilirubin metabolic disorder
+DOID 	 name 
+DOID:2741	bilirubin metabolic disorder

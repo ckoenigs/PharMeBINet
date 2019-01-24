@@ -1,0 +1,3 @@
+MONDO:0005638	agnosia
+DOID 	 name 
+DOID:4090	agnosia

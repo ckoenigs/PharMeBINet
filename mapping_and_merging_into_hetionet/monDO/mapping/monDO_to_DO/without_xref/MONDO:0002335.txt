@@ -1,0 +1,3 @@
+MONDO:0002335	chronic inflammatory demyelinating polyneuritis
+DOID 	 name 
+DOID:2536	chronic inflammatory demyelinating polyneuritis

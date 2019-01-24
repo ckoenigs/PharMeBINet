@@ -1,0 +1,3 @@
+MONDO:0003760	pediatric ovarian germ cell tumor
+DOID 	 name 
+DOID:6084	pediatric ovarian germ cell tumor

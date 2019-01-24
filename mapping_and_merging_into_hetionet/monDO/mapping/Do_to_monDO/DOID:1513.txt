@@ -1,0 +1,3 @@
+DOID:1513	chronic cervicitis
+monDO ID 	 name 
+MONDO:0002030	chronic cervicitis

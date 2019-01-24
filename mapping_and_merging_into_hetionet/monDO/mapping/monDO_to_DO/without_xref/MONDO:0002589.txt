@@ -1,0 +1,3 @@
+MONDO:0003709	thymoma type AB
+DOID 	 name 
+DOID:3280	mixed type thymoma

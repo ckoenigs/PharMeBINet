@@ -1,0 +1,3 @@
+MONDO:0006831	leukostasis
+DOID 	 name 
+DOID:12986	leukostasis

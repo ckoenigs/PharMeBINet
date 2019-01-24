@@ -1,0 +1,3 @@
+MONDO:0005063	medullary breast carcinoma
+DOID 	 name 
+DOID:5605	breast medullary carcinoma

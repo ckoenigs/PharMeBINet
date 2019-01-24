@@ -1,0 +1,3 @@
+MONDO:0000481	cervical dystonia
+DOID 	 name 
+DOID:0050840	cervical dystonia

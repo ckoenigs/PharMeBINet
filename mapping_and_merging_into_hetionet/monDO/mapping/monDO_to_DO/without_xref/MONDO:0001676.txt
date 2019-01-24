@@ -1,0 +1,3 @@
+MONDO:0001676	erythropoietic protoporphyria
+DOID 	 name 
+DOID:13270	erythropoietic protoporphyria

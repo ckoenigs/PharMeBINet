@@ -1,0 +1,3 @@
+DOID:0080140	multiple congenital anomalies-hypotonia-seizures syndrome 3
+monDO ID 	 name 
+MONDO:0014165	multiple congenital anomalies-hypotonia-seizures syndrome 3

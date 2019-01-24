@@ -1,0 +1,4 @@
+MONDO:0005484	colorectal adenoma
+DOID 	 name 
+DOID:0050914	large intestine adenoma
+DOID:0050860	colorectal adenoma

@@ -1,0 +1,3 @@
+MONDO:0013505	spermatogenic failure 9
+DOID 	 name 
+DOID:14227	azoospermia

@@ -1,0 +1,3 @@
+MONDO:0004204	squamous cell papilloma of skin
+DOID 	 name 
+DOID:7380	squamous cell papilloma of skin

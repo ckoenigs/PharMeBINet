@@ -1,0 +1,3 @@
+MONDO:0011657	autosomal dominant nonsyndromic deafness 24
+DOID 	 name 
+DOID:0110554	autosomal dominant nonsyndromic deafness 24

@@ -1,0 +1,3 @@
+DOID:8122	pseudovascular skin squamous cell carcinoma
+monDO ID 	 name 
+MONDO:0004469	pseudovascular skin squamous cell carcinoma
