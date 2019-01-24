@@ -4,11 +4,7 @@ Created on Tue Jan 23 16:07:43 2018
 
 @author: ckoenig
 """
-from sphinx.addnodes import desc
 
-from gtk._gtk import file_chooser_widget_new_with_backend
-
-'''integrate the other diseases and relationships from disease ontology in hetionet'''
 from py2neo import Graph, authenticate
 import datetime
 import sys, csv
@@ -109,20 +105,25 @@ load all the is_a relationships from MonDO into a dictionary with the resource
 
 def load_in_all_interaction_connection_from_drugbank_in_dict():
     # query = '''MATCH p=(a)-[r:'''+neo4j_interaction_rela_label+''']->(b) RETURN a.identifier,r.url, r.describtion ,b.identifier  '''
-    query = '''MATCH p=(a)-[r:''' + neo4j_interaction_rela_label + ''']->(b) RETURN a.identifier, r.description ,b.identifier '''
+    query = '''MATCH p=(a:Compound_DrugBank)-[r:''' + neo4j_interaction_rela_label + ''']->(b:Compound_DrugBank) RETURN a.identifier, r.description ,b.identifier '''
     print(query)
     results = g.run(query)
+    print(datetime.datetime.utcnow())
     counter_interactions=0
+    counter_multiple=0
     for compound1_id,  description, compound2_id,  in results:
         counter_interactions+=1
         if (compound1_id,compound2_id) in dict_interact_relationships_with_infos:
             dict_interact_relationships_with_infos[(compound1_id, compound2_id)].append(description)
+            counter_multiple+=1
         elif (compound2_id,compound1_id) in dict_interact_relationships_with_infos:
             dict_interact_relationships_with_infos[(compound2_id , compound1_id)].append(description)
+            counter_multiple += 1
         else:
             dict_interact_relationships_with_infos[(compound1_id, compound2_id)] = [description]
 
     print(counter_interactions)
+    print('number of double interaction:'+str(counter_multiple))
     print('number of interaction:' + str(len(dict_interact_relationships_with_infos)))
 
 # label_of_alternative_ids='alternative_ids' old one
@@ -130,7 +131,7 @@ label_of_alternative_ids='alternative_drugbank_ids'
 # dictionary of drugbank id and to the used ids in Hetionet
 dict_drugbank_to_alternatives = {}
 
-list_new_properties=['classification_kingdom','description','classification_subclass','packagers_name_url','classification_superclass','general_references_textbooks_isbn_citation','general_references_links_title_url','classification_class','classification_description','calculated_properties_kind_value_source','affected_organisms','ahfs_codes','absorption','manufacturers','protein_binding','prices_description_cost_unit','state','volume_of_distribution','indication','synthesis_reference','metabolism','classification_direct_parent','mixtures_name_ingredients','patents_number_country_approved_expires_pediatric_extension','mechanism_of_action','half_life','external_links_resource_url','msds','fda_label','clearance','experimental_properties_kind_value_source','general_references_articles_pubmed_citation','pharmacodynamics','external_identifiers','route_of_elimination','dosages_form_route_strength','toxicity',u'pdb_entries', u'atc_code_levels', u'categories_category_mesh_id', u'international_brands_name_company']
+list_new_properties=['classification_kingdom','description','classification_subclass','packagers_name_url','classification_superclass','general_references_textbooks_isbn_citation','general_references_links_title_url','classification_class','classification_description','calculated_properties_kind_value_source','affected_organisms','ahfs_codes','absorption','manufacturers','protein_binding','prices_description_cost_unit','state','volume_of_distribution','indication','synthesis_reference','metabolism','classification_direct_parent','mixtures_name_ingredients','patents_number_country_approved_expires_pediatric_extension','mechanism_of_action','half_life','external_links_resource_url','msds','fda_label','clearance','experimental_properties_kind_value_source','general_references_articles_pubmed_citation','pharmacodynamics','external_identifiers','route_of_elimination','dosages_form_route_strength','toxicity',u'pdb_entries', u'atc_code_levels', u'categories_category_mesh_id', u'international_brands_name_company','ChEMBL']
 list_not_fiting_properties=set([])
 
 file_empty_value=open('compound_interaction/empty_value.csv','w')
@@ -156,11 +157,11 @@ writer_casnumbers=csv.writer(file_casnumber_different,delimiter='\t', quotechar=
 writer_casnumbers.writerow(['Drugbank_id','property','old_value','new_value'])
 
 '''
-Integrate all DrugBank id into Hetionet and generate Cypher file for interaction of DrugBank IDs into Hetionet
+Integrate all DrugBank id into Hetionet
 '''
 
 
-def integrate_DB_information_into_hetionet():
+def integrate_DB_compound_information_into_hetionet():
     #count already existing compound
     counter_already_existing_compound=0
     #count all new drugbank compounds
@@ -198,6 +199,7 @@ def integrate_DB_information_into_hetionet():
             elif intersection[0]!=drugbank_id:
                 dict_drugbank_to_alternatives[drugbank_id] = intersection
                 print(drugbank_id)
+                print(intersection)
             for drug_id in intersection:
                 resource = dict_compounds_in_hetionet[drug_id]['resource']
                 # print(dict_compounds_in_hetionet[drug_id])
@@ -313,6 +315,11 @@ def integrate_DB_information_into_hetionet():
         print(list_not_fiting_properties)
         sys.exit('not fitting')
 
+
+'''
+Generate the the interaction file and the cypher file to integrate the information from the csv into neo4j
+'''
+def genration_of_interaction_file():
     # generate cypher file for interaction
     counter_connection = 0
 
@@ -320,9 +327,6 @@ def integrate_DB_information_into_hetionet():
     one_alternative=0
     count_no_alternative=0
 
-    # h = open('map_connection_of_drugbank_in_hetionet_' + str(file_counter) + '.cypher', 'w')
-    # file_counter += 1
-    # h.write('begin \n')
     g_csv=open('compound_interaction/interaction.csv','w')
     csv_writer= csv.writer(g_csv, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     csv_writer.writerow(['db1','db2','description'])
@@ -334,28 +338,19 @@ def integrate_DB_information_into_hetionet():
     print(dict_drugbank_to_alternatives)
 
     set_alt=set([])
+    counter_all_interaction=0
 
 
     for (compound1, compound2),  description in dict_interact_relationships_with_infos.items():
+
+        counter_all_interaction+=len(description)
         description=list(set(description))
         description='|'.join(description)
         if not compound2 in dict_drugbank_to_alternatives and not compound1 in dict_drugbank_to_alternatives:
-            # query = ''' Match (c1:Compound{identifier:"%s"}), (c2:Compound{identifier:"%s"})
-            #             Create (c1)-[:INTERACTS_CiC{source:"DrugBank", unbiased:'false', resource:['DrugBank'], url:"%s", license:'CC BY-NC 4.0', description:"%s"}]->(c2); \n'''
-            # query = query % (compound1, compound2, url, description)
             count_no_alternative+=1
             counter_connection += 1
+            description = description.encode('utf-8')
             csv_writer.writerow([compound1, compound2,  description])
-            # h.write(query)
-            # if counter_connection % constrain_number == 0:
-            #     h.write('commit \n')
-            #     if counter_connection % creation_max_in_file == 0:
-            #         h.close()
-            #         h = open('map_connection_of_drugbank_in_hetionet_' + str(file_counter) + '.cypher', 'w')
-            #         h.write('begin \n')
-            #         file_counter += 1
-            #     else:
-            #         h.write('begin \n')
         elif compound2 in dict_drugbank_to_alternatives:
             if compound1 in dict_drugbank_to_alternatives:
                 counter_both_alternative += 1
@@ -363,67 +358,30 @@ def integrate_DB_information_into_hetionet():
                 set_alt.add(compound2)
                 for drug2 in dict_drugbank_to_alternatives[compound2]:
                     for drug1 in dict_drugbank_to_alternatives[compound1]:
+                        description=description.encode('utf-8')
                         csv_writer.writerow([drug1, drug2,  description])
-                        # query = ''' Match (c1:Compound{identifier:"%s"}), (c2:Compound{identifier:"%s"})
-                        #         Create (c1)-[:INTERACTS_CiC{source:"DrugBank", unbiased:'false', resource:['DrugBank'], url:"%s", license:'CC BY-NC 4.0', description:"%s"}]->(c2); \n'''
-                        # query = query % (drug1, drug2, url, description)
                         counter_connection += 1
-                        # h.write(query)
-                        # if counter_connection % constrain_number == 0:
-                        #     h.write('commit \n')
-                        #     if counter_connection % creation_max_in_file == 0:
-                        #         h.close()
-                        #         h = open('map_connection_of_drugbank_in_hetionet_' + str(file_counter) + '.cypher', 'w')
-                        #         h.write('begin \n')
-                        #         file_counter += 1
-                        #     else:
-                        #         h.write('begin \n')
 
             else:
                 one_alternative += 1
                 for drug2 in dict_drugbank_to_alternatives[compound2]:
                     set_alt.add(compound2)
+                    description = description.encode('utf-8')
                     csv_writer.writerow([compound1, drug2,description])
-                    # query = ''' Match (c1:Compound{identifier:"%s"}), (c2:Compound{identifier:"%s"})
-                    #         Create (c1)-[:INTERACTS_CiC{source:"DrugBank", unbiased:'false', resource:['DrugBank'], url:"%s", license:'CC BY-NC 4.0', description:"%s"}]->(c2); \n'''
-                    # query = query % (compound1, drug2, url, description)
                     counter_connection += 1
-                    # h.write(query)
-                    # if counter_connection % constrain_number == 0:
-                    #     h.write('commit \n')
-                    #     if counter_connection % creation_max_in_file == 0:
-                    #         h.close()
-                    #         h = open('map_connection_of_drugbank_in_hetionet_' + str(file_counter) + '.cypher', 'w')
-                    #         h.write('begin \n')
-                    #         file_counter += 1
-                    #     else:
-                    #         h.write('begin \n')
         else:
             one_alternative += 1
             for drug1 in dict_drugbank_to_alternatives[compound1]:
                 set_alt.add(compound1)
+                description = description.encode('utf-8')
                 csv_writer.writerow([drug1, compound2,  description])
-                # query = ''' Match (c1:Compound{identifier:"%s"}), (c2:Compound{identifier:"%s"})
-                #         Create (c1)-[:INTERACTS_CiC{source:"DrugBank", unbiased:'false', resource:['DrugBank'], url:"%s", license:'CC BY-NC 4.0', description:"%s"}]->(c2); \n'''
-                # query = query % (drug1, drug2, url, description)
                 counter_connection += 1
-                # h.write(query)
-                # if counter_connection % constrain_number == 0:
-                #     h.write('commit \n')
-                #     if counter_connection % creation_max_in_file == 0:
-                #         h.close()
-                #         h = open('map_connection_of_drugbank_in_hetionet_' + str(file_counter) + '.cypher', 'w')
-                #         h.write('begin \n')
-                #         file_counter += 1
-                #     else:
-                #         h.write('begin \n')
 
-    # h.write('commit')
-    # h.close()
     print(counter_connection)
     print('one has the alternative id in Hetionet:'+str(one_alternative))
     print('both have the alternative id in Hetionet:'+str(counter_both_alternative))
     print('both are in Hetionet with normal id:'+str(count_no_alternative))
+    print('counter of all interaction:'+str(counter_all_interaction))
     print(set_alt)
 
 
@@ -465,7 +423,17 @@ def main():
 
     print('integrate drugbank into hetionet')
 
-    integrate_DB_information_into_hetionet()
+    integrate_DB_compound_information_into_hetionet()
+
+    print(
+        '#################################################################################################################################################################')
+
+    print(datetime.datetime.utcnow())
+
+    print('generate cypher file for interaction')
+
+
+    genration_of_interaction_file()
 
     print(
         '#################################################################################################################################################################')
