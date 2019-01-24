@@ -155,6 +155,7 @@ def take_all_relationships_of_gene_pathway():
     counter_integrated_in_file_rela=0
     counter_multi_direct_evidence=0
 
+    i=0
 
     while counter_of_used_chemical <number_of_chemical:
         all_chemicals_id = []
@@ -268,6 +269,12 @@ def take_all_relationships_of_gene_pathway():
         start = time.time()
 
         # print(dict_chemical_id_chemical)
+        if len(all_chemicals_id)==0:
+            i+=1
+            if i==5:
+                sys.exit()
+        else:
+            i=0
 
         all_chemicals_id = '","'.join(all_chemicals_id)
         query = '''MATCH (chemical:CTDchemical)-[r:associates_CD]->(disease:CTDdisease) Where (disease)-[:equal_to_D_Disease_CTD]-() and chemical.chemical_id in ["''' + all_chemicals_id + '''"] RETURN chemical.chemical_id, chemical.drugBankIDs,  r, disease.mondos, disease.disease_id '''

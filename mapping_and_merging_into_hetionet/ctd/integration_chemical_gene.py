@@ -143,17 +143,17 @@ def sort_information_in_dictionary(chemical, gene, interaction_text, gene_forms,
 
 
 '''
-get all relationships between gene and pathway, take the hetionet identifier an save all important information in a csv
+get all relationships between gene and chemical, take the hetionet identifier an save all important information in a csv
 also generate a cypher file to integrate this information 
 '''
 
 
-def take_all_relationships_of_gene_pathway():
+def take_all_relationships_of_gene_chemical():
     counter_all_rela = 0
     counter_two = 0
 
-    #  Where chemical.chemical_id='C025540' and gene.gene_id='2741'
-    query = '''MATCH (chemical:CTDchemical)-[r:associates_CG{organism_id:'9606'}]->(gene:CTDgene) RETURN gene.gene_id, gene.name, gene.geneSymbol, r, chemical.chemical_id, chemical.name, chemical.synonyms, chemical.drugBankIDs'''
+    #  Where chemical.chemical_id='D000117' and gene.gene_id='2219'
+    query = '''MATCH (chemical:CTDchemical)-[r:associates_CG{organism_id:'9606'}]->(gene:CTDgene)  RETURN gene.gene_id, gene.name, gene.geneSymbol, r, chemical.chemical_id, chemical.name, chemical.synonyms, chemical.drugBankIDs'''
     results = g.run(query)
 
     for gene_id, gene_name, gene_symbol, rela, chemical_id, chemical_name, chemical_synonyms, drugbank_ids, in results:
@@ -210,8 +210,13 @@ def take_all_relationships_of_gene_pathway():
 
     print('number of multiple possible action:' + str(count_multiple_action))
     print('number of new possible action:' + str(count_all_action))
+    print('number of possible regulation:'+str(len(dict_chemical_gene_regulation)))
+    print('number of possible transporter:' + str(len(dict_chemical_gene_transport)))
+    print('number of possible binding:' + str(len(dict_chemical_gene_binding)))
+    print('number of possible metabolic processing:' + str(len(dict_chemical_gene_metabolic_processing)))
     print('number of multiple all:' + str(count_multiple_general))
     print('number of all:' + str(count_all_general))
+    print('number of all pairs:'+str(len(dict_chemical_gene_general)))
     print(counter_two)
 
 
@@ -422,11 +427,13 @@ def sort_regulation_information_into_the_different_files_binding(writer_other_wa
                                                                  special_interaction_text=''):
     unbiased= True if len(pubMedIds)>0 else False
     if position_gene < position_chemical and not one_other_way_around:
+        dict_pairs[(chemical, gene)] = 'yes'
         writer_other_way_around.writerow(
             [chemical, gene, interaction_texts_string, gene_forms, pubMedIds,
              interactions_actions_string, chemical_name, gene_name, special_interaction_text, unbiased])
         one_other_way_around = True
     elif position_chemical < position_gene and not one_chemical_gene:
+        dict_pairs[(chemical, gene)] = 'yes'
         writer_chemical_gene.writerow([chemical, gene, interaction_texts_string, gene_forms, pubMedIds,
                                        interactions_actions_string, chemical_name, gene_name, special_interaction_text, unbiased])
         one_chemical_gene = True
@@ -885,7 +892,7 @@ def generate_csv_and_cypher_file():
                 counter += 1
             interaction_texts=interaction_texts_new
             cotreatment_list=[]
-            print(len(dict_cotreatment))
+            print('number of co treatment:'+str(len(dict_cotreatment)))
             for front, list_back in dict_cotreatment.items():
                 string_one_cotreatment_and_all_results='['+front+']'+';'.join(list_back)
                 cotreatment_list.append(string_one_cotreatment_and_all_results)
@@ -925,7 +932,7 @@ def main():
     print (datetime.datetime.utcnow())
     print('Take all gene-pathway relationships and generate csv and cypher file')
 
-    take_all_relationships_of_gene_pathway()
+    take_all_relationships_of_gene_chemical()
     create_connection_with_neo4j_mysql()
 
     print(

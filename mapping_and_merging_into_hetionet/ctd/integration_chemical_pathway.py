@@ -7,7 +7,7 @@ Created on Fri Sep 15 11:41:20 2017
 
 from py2neo import Graph, authenticate
 import datetime, time
-import csv
+import csv, sys
 
 '''
 create connection to neo4j 
@@ -53,6 +53,8 @@ def take_all_relationships_of_gene_disease():
     counter_all = 0
 
     counter_number_of_used_chemicals=0
+    i=0
+    old_counter=0
 
     while counter_number_of_used_chemicals<number_of_chemicals:
         print(counter_number_of_used_chemicals)
@@ -101,6 +103,14 @@ def take_all_relationships_of_gene_disease():
             all_chemicals_id.extend(ctd_chemicals)
 
         counter_number_of_used_chemicals += counter_chemicals_without_db
+
+        if counter_number_of_used_chemicals ==old_counter:
+            i+=1
+            if i==5:
+                sys.exit()
+        else:
+            old_counter=counter_number_of_used_chemicals
+            i=0
 
 
         # dictionary with all pairs and properties as value
