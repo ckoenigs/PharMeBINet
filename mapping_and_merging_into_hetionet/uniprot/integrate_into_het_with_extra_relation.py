@@ -52,7 +52,8 @@ dict_uniprot_count_genes={}
 dict_gene_to_name={}
 
 # dictionary of the uniprot ids which mapped wrong to the correct ncbi gene id
-# Q96NJ1 (Uncharacterized protein FLJ30774) mapped to 158055 (c9orf163) and with tblastn I found out that the protein is part of the orf
+# Q96NJ1 (Uncharacterized protein FLJ30774) mapped to 158055 (c9orf163) and with tblastn I found out that the protein is
+# part of the orf
 dict_wrong_uniprot_to_correct_gene_id={
     'Q8N8H1':'399669',
     'A2RUG3':'353515',
