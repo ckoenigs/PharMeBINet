@@ -1,1 +1,3 @@
 MonDO_id 	 MonDO_name 	 parent_id 	 parent_name 
+MONDO:0017824	familial isolated pituitary adenoma	MONDO:0007052	growth hormone secreting pituitary adenoma
+MONDO:0019933	acromegaly	MONDO:0007052	growth hormone secreting pituitary adenoma
