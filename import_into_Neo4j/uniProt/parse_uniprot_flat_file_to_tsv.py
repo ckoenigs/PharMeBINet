@@ -187,14 +187,14 @@ def extract_information():
             elif position_line == 1:
                 two_split[1] = two_split[1].replace(';\n', '')
                 all_access_number = two_split[1].split('; ')
-                ac_list = []
+                ac_list = set([])
                 for counter,ac_number in enumerate(all_access_number):
                     if counter==0:
                         dict_protein['identifier']=ac_number
 
                     else:
-                        ac_list.append(ac_number)
-                dict_protein['second_ac_numbers'] = ac_list
+                        ac_list.add(ac_number)
+                dict_protein['second_ac_numbers'] = list(ac_list)
                 position_line += 1
             # sometimes the information of one property are in multiple lines
             #
