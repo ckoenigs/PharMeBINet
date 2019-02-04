@@ -41,10 +41,18 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
     load_file=open('data/gene_info','r')
     reader=csv.DictReader(load_file,delimiter='\t')
 
+    dict_header={}
+    for header_property in reader.fieldnames:
+        if header_property=='#tax_id':
+            dict_header[header_property]='tax_id'
+        else:
+            dict_header[header_property]=header_property
+
     # file for integration into hetionet
     file = open('output_data/genes.csv', 'w')
     writer = csv.DictWriter(file, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL, fieldnames=reader.fieldnames)
-    writer.writeheader()
+    # writer.writeheader()
+    writer.writerow(dict_header)
 
     # file with all gene from hetionet which are not human
     file_nH = open('output_data/genes_not_human.csv', 'w')
@@ -67,7 +75,7 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
     counter_gene_in_hetionet_and_human=0
 
     cypher_file=open('cypher_node.cypher','w')
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/ncbi_genes/output_data/genes.csv" As line Create (n:Gene_Ncbi {'''
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/ncbi_genes/output_data/genes.csv" As line Fieldterminator '\\t' Create (n:Gene_Ncbi {'''
 
     for property in reader.fieldnames:
 
@@ -77,11 +85,13 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
             if property=='GeneID':
                 query+= 'identifier:line.'+property+' ,'
             else:
-                query += 'tax_id:line.' + property + ' ,'
+                query += 'tax_id:line.tax_id ,'
         else:
             query+= property+':line.'+property+' ,'
 
     query= query[:-2]+'});\n'
+    cypher_file.write(query)
+    query = 'Create Constraint On (node:Gene_Ncbi) Assert node.identifier Is Unique;\n'
     cypher_file.write(query)
 
     for row in reader:
