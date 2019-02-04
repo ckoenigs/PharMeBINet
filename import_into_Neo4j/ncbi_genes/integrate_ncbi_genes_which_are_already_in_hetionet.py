@@ -1,5 +1,3 @@
-'''integrate the'''
-from Bio.pairwise2 import identity_match
 from py2neo import Graph, authenticate
 import datetime
 import sys, csv
