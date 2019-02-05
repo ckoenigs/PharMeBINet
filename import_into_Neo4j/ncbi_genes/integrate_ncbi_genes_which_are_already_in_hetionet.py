@@ -77,7 +77,7 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
 
     for property in reader.fieldnames:
 
-        if property in  ['Synonyms','dbXrefs','map_location','Feature_type']:
+        if property in  ['Synonyms','dbXrefs','map_location','Feature_type','Other_designations']:
             query += property + ':split(line.' + property + ",'|') ,"
         elif property in ['#tax_id', 'GeneID']:
             if property=='GeneID':
@@ -91,13 +91,24 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
     cypher_file.write(query)
     query = 'Create Constraint On (node:Gene_Ncbi) Assert node.identifier Is Unique;\n'
     cypher_file.write(query)
+    counter_not_same_name_and_description=0
 
     for row in reader:
 
         counter_all+=1
         gene_id =row['GeneID']
-        if gene_id=='100422997':
-            print('ok')
+        name=row['Full_name_from_nomenclature_authority']
+        description=row['description']
+
+        if name!=description and name != '-':
+            counter_not_same_name_and_description+=1
+            if tax_id == '9606':
+                print(name)
+                print(description)
+                print(gene_id)
+
+        # if gene_id=='100422997':
+        #     print('ok')
         #tax id 9606 is human
         tax_id=row['#tax_id']
         if int(gene_id) in dict_hetionet_gene_ids_to_name:
@@ -121,10 +132,11 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
     print(len(found_gene_ids))
     print('dddddddddddddddddddddddddddddddddddddddddddddddddd')
     print(len(difference))
-    print(difference)
+    # print(difference)
     print('all rows in ncbi gene_info file:'+str(counter_all))
     print('all included ncbi gene_info rows in new file:'+str(counter_included))
     print('all genes which are in hetionet and human:'+str(counter_gene_in_hetionet_and_human))
+    print('number of name and description not equal:'+str(counter_not_same_name_and_description))
 
 
 
