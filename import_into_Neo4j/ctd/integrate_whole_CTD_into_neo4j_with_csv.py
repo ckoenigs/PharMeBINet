@@ -297,7 +297,7 @@ def gather_information_from_disease_go_inferencen(file, ontology):
     result = results.evaluate()
     # depending if chemicals are in neo4j or not the nodes need to be merged or created
     if not result is None:
-        cypher_file_edges.write('begin')
+        cypher_file_edges.write('begin\n')
         query = ''' Match (c:CTDdisease)-[a:affects_DGO]->(n:CTDGO) Set a.old_version=True;\n '''
         cypher_file_edges.write(query)
         cypher_file_edges.write('commit\n')
