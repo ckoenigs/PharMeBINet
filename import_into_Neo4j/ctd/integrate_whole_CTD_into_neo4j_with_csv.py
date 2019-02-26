@@ -59,7 +59,7 @@ def load_chemicals_and_add_to_cypher_file():
     cypher_file_nodes.write('begin\n')
     # depending if chemicals are in neo4j or not the nodes need to be merged or created
     if not result is None:
-        query = ''' Match (c:CTDchemical) Set c.old_version=True;\n '''
+        query = ''' Match (c:CTDchemical) Set c.old_version=True, c.newer_version=False;\n '''
         cypher_file_nodes.write(query)
         cypher_file_nodes.write('commit\n')
         query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chemicals.csv" As line Merge (c:CTDchemical{ chemical_id:split(line.ChemicalID,':')[1]}) On Create Set c.newer_version=True, c.casRN=line.CasRN, c.synonyms=split(line.Synonyms,'|'), c.drugBankIDs=split(line.DrugBankIDs,'|'), c.parentIDs=split(line.ParentIDs,'|'), c.parentTreeNumbers=split(line.ParentTreeNumbers,'|'), c.treeNumbers=split(line.TreeNumbers,'|'), c.definition=line.Definition, c.name=line.ChemicalName On Match Set c.newer_version=True, c.casRN=line.CasRN, c.synonyms=split(line.Synonyms,'|'), c.drugBankIDs=split(line.DrugBankIDs,'|'), c.parentIDs=split(line.ParentIDs,'|'), c.parentTreeNumbers=split(line.ParentTreeNumbers,'|'), c.treeNumbers=split(line.TreeNumbers,'|'), c.definition=line.Definition, c.name=line.ChemicalName;\n '''
@@ -222,7 +222,7 @@ and gather the information
 
 
 def load_chemical_go_enriched():
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chem_go_enriched.csv" As line Merge (c:CTDchemical{ chemical_id:line.ChemicalID }) On Create Set  c.casRN=line.CasRN, c.name=line.ChemicalName, c.newer_version=True;\n '''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chem_go_enriched.csv" As line Merge (c:CTDchemical{ chemical_id:line.ChemicalID }) On Create Set  c.casRN=line.CasRN, c.name=line.ChemicalName, c.newer_version=True On Match Set c.newer_version=True;\n '''
     cypher_file_nodes.write(query)
     # check if chemicals are already in neo4j
     query = '''MATCH r=(c:CTDchemical)-[a:affects_CGO]->(n:CTDGO) RETURN r LIMIT 1 '''
@@ -601,7 +601,7 @@ and gather the information
 
 
 def load_chemical_gene():
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chem_gene_ixns.csv" As line Merge (c:CTDchemical{ chemical_id:line.ChemicalID }) On Create Set c.casRN=line.CasRN, c.name=line.ChemicalName, c.newer_version=True;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chem_gene_ixns.csv" As line Merge (c:CTDchemical{ chemical_id:line.ChemicalID }) On Create Set c.casRN=line.CasRN, c.name=line.ChemicalName, c.newer_version=True On Match Set c.newer_version=True;\n'''
     cypher_file_nodes.write(query)
 
     global counter_edges_queries, cypher_file_edges, edges_file_number
@@ -644,7 +644,7 @@ and gather the information
 
 
 def load_chemical_pathway_enriched():
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chem_pathways_enriched.csv" As line Merge (c:CTDchemical{ chemical_id:line.ChemicalID }) On Create Set c.casRN=line.CasRN, c.name=line.ChemicalName, c.newer_version=True;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chem_pathways_enriched.csv" As line Merge (c:CTDchemical{ chemical_id:line.ChemicalID }) On Create Set c.casRN=line.CasRN, c.name=line.ChemicalName, c.newer_version=True On Match Set c.newer_version=True;\n'''
     cypher_file_nodes.write(query)
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chem_pathways_enriched.csv" As line Merge (g:CTDpathway{ pathway_id:split(line.PathwayID,':')[1] }) On Create Set g.name=line.PathwayName, g.newer_version=True;\n'''
     cypher_file_nodes.write(query)
@@ -686,7 +686,7 @@ and gather the information
 
 
 def load_chemical_disease():
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chemicals_diseases.csv" As line Merge (c:CTDchemical{ chemical_id:line.ChemicalID }) On Create  Set  c.casRN=line.CasRN, c.name=line.ChemicalName, c.newer_version=True;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chemicals_diseases.csv" As line Merge (c:CTDchemical{ chemical_id:line.ChemicalID }) On Create  Set  c.casRN=line.CasRN, c.name=line.ChemicalName, c.newer_version=True On Match Set c.newer_version=True;\n'''
     cypher_file_nodes.write(query)
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chemicals_diseases.csv" As line Merge (g:CTDdisease{ disease_id:split(line.DiseaseID,':')[1]}) On Create Set  g.name=line.DiseaseName, g.newer_version=True;\n'''
     cypher_file_nodes.write(query)
@@ -871,12 +871,14 @@ def main():
 
     load_chemical_disease()
 
+
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
     print('add chemical-disease relationship to cypher file')
 
     load_gene_disease()
+
 
     print('##########################################################################')
 
@@ -888,6 +890,10 @@ def main():
     delete_nodes_with_no_relationship('CTDdisease')
     delete_nodes_with_no_relationship('CTDgene')
     delete_nodes_with_no_relationship('CTDpathway')
+
+    # delete old chemical nodes which are not in ctd anymore
+    query='''Match (n:CTDchemical) Where n.old_version=True and n.newer_version=False Detach Delete n;\n'''
+    delet_node_file.write(query)
 
     print('##########################################################################')
 
