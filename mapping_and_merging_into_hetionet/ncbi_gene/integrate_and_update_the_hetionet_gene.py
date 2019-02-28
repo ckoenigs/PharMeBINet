@@ -80,7 +80,10 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
     on_create_string = ''' On Create SET '''
     for head in header:
         if head != 'identifier':
-            part = 'g.' + head.lower() + '='
+            if head=='geneSymbol':
+                part = 'g.' + head + '='
+            else:
+                part = 'g.' + head.lower() + '='
             if head in list_properties_with_list_elements:
                 part += 'split(line.' + head + ',"|"), '
             else:
