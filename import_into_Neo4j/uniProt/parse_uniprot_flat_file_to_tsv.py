@@ -357,14 +357,14 @@ def extract_information():
                 xref_infos = two_split[1].split('; ')
                 if xref_infos[0] not in ['Pfam','GeneID']:
                     if 'xref' in dict_protein:
-                        dict_protein['xref'].add(xref_infos[0] + '::' + xref_infos[1])
+                        dict_protein['xref'].add(xref_infos[0] + ':' + xref_infos[1])
                     else:
-                        dict_protein['xref'] = set([xref_infos[0] + '::' + xref_infos[1]])
+                        dict_protein['xref'] = set([xref_infos[0] + ':' + xref_infos[1]])
                 elif xref_infos[0] =='Pfam':
                     if 'pfam' in dict_protein:
-                        dict_protein['pfam'].add(xref_infos[1] + '::' + xref_infos[2])
+                        dict_protein['pfam'].add(xref_infos[1] + ':' + xref_infos[2])
                     else:
-                        dict_protein['pfam'] = set([xref_infos[1] + '::' + xref_infos[2]])
+                        dict_protein['pfam'] = set([xref_infos[1] + ':' + xref_infos[2]])
                 else:
                     if 'gene_id' in dict_protein:
                         dict_protein['gene_id'].add(xref_infos[1])
