@@ -392,6 +392,7 @@ def drugs_combination_and_check(neo4j_label):
         query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/drugbank/output/drugbank_drug.tsv" As line FIELDTERMINATOR '\\t' Create (b:''' + neo4j_label + '''{ '''
         new_header = []
 
+        # list properties which are lists
         list_properties = ['alternative_drugbank_ids', 'groups', 'general_references_links_title_url',
                            'general_references_textbooks_isbn_citation', 'general_references_articles_pubmed_citation',
                            'synonyms', 'products', 'international_brands_name_company', 'mixtures_name_ingredients',
@@ -401,7 +402,7 @@ def drugs_combination_and_check(neo4j_label):
                            'patents_number_country_approved_expires_pediatric_extension',
                            'food_interaction', 'sequences', 'calculated_properties_kind_value_source',
                            'experimental_properties_kind_value_source', 'external_identifiers',
-                           'external_links_resource_url']
+                           'external_links_resource_url','classification_alternative_parent','classification_substituent']
 
         for head in header:
             if head == '\xef\xbb\xbfdrugbank_id':
@@ -1992,7 +1993,7 @@ generate cypher file to integrate all DrugBank entries into Neo4j
 
 
 def add_the_other_node_to_cypher(pathway_label, product_label, salt_label, mutated_enzyme_gene_label,
-                                 general_target_label, rela_target_muta_label):
+                                 general_target_label, rela_target_muta_label, pharmacologic_class_label):
     path_pathway = 'drugbank/drugbank_pathway.tsv'
     import_tool_preparation_node(path_pathway, 'pathway_id', pathway_label)
     add_general_to_cypher_node(path_pathway, pathway_label, 'pathway_id')
@@ -2008,8 +2009,15 @@ def add_the_other_node_to_cypher(pathway_label, product_label, salt_label, mutat
     path_mutated_gene_enzyme = 'drugbank/drugbank_mutated_gene_enzyme.tsv'
     import_tool_preparation_node(path_mutated_gene_enzyme, 'connection_id', mutated_enzyme_gene_label)
     add_general_to_cypher_node(path_mutated_gene_enzyme, mutated_enzyme_gene_label, 'connection_id')
+
+    path_pharmacologicClass = 'drugbank/drugbank_pharmacologic_class.tsv'
+    import_tool_preparation_node(path_pharmacologicClass, 'name', pharmacologic_class_label)
+    add_general_to_cypher_node(path_pharmacologicClass, pharmacologic_class_label, 'name')
+
     import_tool_preparation_new_generated_rela(path_mutated_gene_enzyme, rela_target_muta_label, general_target_label,
                                                mutated_enzyme_gene_label)
+
+
 
 
 '''
@@ -2114,7 +2122,7 @@ generate cypher script for the different relationships, where nothing need to ch
 
 
 def add_the_other_rela_to_cypher(pathway_label, product_label, salt_label, mutated_enzyme_gene_label, drug_label,
-                                 general_label, enzyme_label, header_new):
+                                 general_label, enzyme_label, header_new, pharmacologic_class_label):
     global import_string
     # all labe for all rela in neo4j
     label_neo4j_compound_product = 'part_of_CpoP'
@@ -2124,6 +2132,12 @@ def add_the_other_rela_to_cypher(pathway_label, product_label, salt_label, mutat
     label_neo4j_interaction = 'interacts_CiC'
     label_neo4j_enzyme_pathway = 'participates_EpPA'
     label_neo4j_target_peptide = 'has_component_POhcPO'
+    label_neo4j_pharmacologic_class_compound='includes_PCiC'
+
+    path_drug_pharmacologic_class = 'drugbank/drugbank_drug_pharmacologic_class.tsv'
+    add_rela_to_cypher(path_drug_pharmacologic_class,pharmacologic_class_label, drug_label , 'category','drugbank_id',
+                       label_neo4j_pharmacologic_class_compound)
+    generation_of_files_for_import_tool('category','drugbank_id', path_drug_pharmacologic_class, label_neo4j_pharmacologic_class_compound)
 
     path_drug_pathway = 'drugbank/drugbank_drug_pathway.tsv'
     add_rela_to_cypher(path_drug_pathway, drug_label, pathway_label, 'drugbank_id', 'pathway_id',
@@ -2378,9 +2392,10 @@ def main():
     neo4j_label_salt = 'Salt_DrugBank'
     neo4j_label_mutated_gene_enzyme = 'Mutated_enzyme_gene_DrugBank'
     neo4j_label_rela_target_mutate = 'has_POhMU'
+    neo4j_label_pharmacologic_class='PharmacologicClass_DrugBank'
 
     add_the_other_node_to_cypher(neo4j_label_pathway, neo4j_label_product, neo4j_label_salt,
-                                 neo4j_label_mutated_gene_enzyme, neo4j_general_label, neo4j_label_rela_target_mutate)
+                                 neo4j_label_mutated_gene_enzyme, neo4j_general_label, neo4j_label_rela_target_mutate,neo4j_label_pharmacologic_class)
 
     print(
         '###########################################################################################################################')
@@ -2390,7 +2405,7 @@ def main():
 
     add_the_other_rela_to_cypher(neo4j_label_pathway, neo4j_label_product, neo4j_label_salt,
                                  neo4j_label_mutated_gene_enzyme, neo4j_label_drug, neo4j_general_label,
-                                 neo4j_label_enzyme, header_new)
+                                 neo4j_label_enzyme, header_new,neo4j_label_pharmacologic_class)
 
     print(
         '###########################################################################################################################')
