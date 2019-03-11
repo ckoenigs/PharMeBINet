@@ -402,7 +402,7 @@ def intigrate_aeolus_drugs_into_hetionet():
                     url = 'http://www.drugbank.ca/drugs/' + drugbank_id
                     query = '''Match (a:AeolusDrug)  Where a.drug_concept_id="%s" 
                     Set a.drugbank_id="%s", a.how_mapped='%s'
-                    CREATE (n:Compound{licenses:'CC0 1.0', identifier:"%s",inchikey:"%s", inchi:"%s", pubChem_id:"" , name:"%s" , source:"DrugBank via AEOLUS", url:"%s",  resource:["AEOLUS"], hetionet:"no", sider:"no", aeolus:"yes", ndf_rt:"no", rxnorm_cuis:"%s" }) 
+                    CREATE (n:Compound{license:'CC0 1.0', identifier:"%s",inchikey:"%s", inchi:"%s", pubChem_id:"" , name:"%s" , source:"DrugBank via AEOLUS", url:"%s",  resource:["AEOLUS"], hetionet:"no", sider:"no", aeolus:"yes", ndf_rt:"no", rxnorm_cuis:"%s" }) 
                     Create (n)-[:equal_to_Aeolus_drug]->(a); \n'''
 
                     query = query % (
