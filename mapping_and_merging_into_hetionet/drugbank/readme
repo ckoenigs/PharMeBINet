@@ -8,3 +8,8 @@ This can be executed with the shell.
 
 Further is DrugBank integrated into Hetionet with the program integrate_DrugBank_with_interaction_into_hetionet.py.
 
+
+Some properties were double in the compound but with different values content and some were outsourced like salt and categories.
+
+Match (n:Compound) Remove n.brands, n.categories, n.categories_category_mesh_id, n.external_identifiers, n.licenses, n.no_further_chemical_information, n.pubChem, n.pubChem_id, n.salt_names, n.salt_uniis, n.salt_inchikeys
+
