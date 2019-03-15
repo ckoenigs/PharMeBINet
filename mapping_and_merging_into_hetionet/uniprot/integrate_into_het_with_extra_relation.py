@@ -49,11 +49,21 @@ dict_uniprot_to_gene_id={}
 #dict_uniprot_count_genes from hetionet information
 dict_uniprot_count_genes={}
 
-#dictionary gene to name
+#dictionary gene id to gene symbol/name
 dict_gene_to_name={}
 
+#dictionary gene id to gene name
+dict_gene_id_to_gene_name={}
+
 #dictionary gene name to genes without uniprot list
-dict_gene_name_to_gene_without_uniprot={}
+dict_gene_symbol_to_gene_without_uniprot={}
+dict_gene_symbol_to_gene_id={}
+
+# list of all gene symbols which appears in multiple genes
+list_double_gene_symbol_for_genes_without_uniprot_id = set([])
+
+#dictionary gene name to gene id
+dict_gene_name_to_id=defaultdict(list)
 
 # dictionary of the uniprot ids which mapped wrong to the correct ncbi gene id
 # Q96NJ1 (Uncharacterized protein FLJ30774) mapped to 158055 (c9orf163) and with tblastn I found out that the protein is
@@ -85,10 +95,36 @@ def get_all_genes():
     results=g.run(query)
     counter_uniprot_to_multiple_genes=0
     counter_all_genes=0
-    for gene_id, list_uniprots, names, name, in results:
+    list_double_names=set([])
+    for gene_id, list_uniprots, genesymbols, name, in results:
         counter_all_genes+=1
+        dict_gene_id_to_gene_name[gene_id]=name.lower()
+
+        if gene_id==28299:
+            print('ok')
+
+        if genesymbols:
+
+            genesymbols = [x.lower() for x in genesymbols]
+            for genesymbol in genesymbols:
+                if not genesymbol in dict_gene_symbol_to_gene_id:
+                    dict_gene_symbol_to_gene_id[genesymbol] = [gene_id]
+                else:
+                    list_double_gene_symbol_for_genes_without_uniprot_id.add(genesymbol)
+
+                    dict_gene_symbol_to_gene_id[genesymbol].append(gene_id)
+
+
+        #fill the gene name to gene id dictionary
+        if name.lower() in dict_gene_name_to_id:
+            list_double_names.add(name.lower())
+            dict_gene_name_to_id[name.lower()].append(gene_id)
+        else:
+            dict_gene_name_to_id[name.lower()].append(gene_id)
+            
+        # if a list of uniprot ids exists fill the dictionary of uniprot id to gene ids
         if list_uniprots:
-            dict_gene_to_name[gene_id]=[x.lower() for x in names]
+            dict_gene_to_name[gene_id]=[x.lower() for x in genesymbols]
             for uniprot in list_uniprots:
                 # generate dictionary for uniprot to gene(s)
                 # and if more than two genes fit to one uniprot id they will be count
@@ -98,21 +134,28 @@ def get_all_genes():
                     counter_uniprot_to_multiple_genes+=1
                 else:
                     dict_uniprot_to_gene_id[uniprot]=[gene_id]
+                    
+        # to make it possible to map the genes without uniprot id generate a dictionary from gene symbol to gene id
         else:
-            if names:
+            if genesymbols:
 
-                names =[x.lower() for x in names]
-                dict_gene_to_name[gene_id] = names
-                for name in names:
-                    if not name in dict_gene_name_to_gene_without_uniprot:
-                        dict_gene_name_to_gene_without_uniprot[name]=gene_id
-                    else:
-                        print(dict_gene_name_to_gene_without_uniprot)
-                        print(name)
-                        sys.exit('ohje doppelt gene name')
+                genesymbols =[x.lower() for x in genesymbols]
+                dict_gene_to_name[gene_id] = genesymbols
+                # for name in genesymbols:
+                #     if not name in dict_gene_symbol_to_gene_without_uniprot:
+                #         dict_gene_symbol_to_gene_without_uniprot[name]=[gene_id]
+                #     else:
+                #         list_double_gene_symbol_for_genes_without_uniprot_id.add(name)
+                #
+                #         dict_gene_symbol_to_gene_without_uniprot[name].append(gene_id)
+                #         # print(dict_gene_symbol_to_gene_without_uniprot[name])
+                #         # print(name)
+                #         # print('ohje doppelt gene name')
+                #         # sys.exit('ohje doppelt gene name')
             else:
                 dict_gene_to_name[gene_id] = name.lower()
 
+    # all multiple uniprot ids from the hetionet genes
     file=open('uniprot_gene/uniprot_to_multi_genes.csv','w')
     writer=csv.writer(file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     writer.writerow(['uniprot','gene_ids'])
@@ -121,14 +164,17 @@ def get_all_genes():
         writer.writerow([uniprot, string_gene_list])
 
     print('number of uniprots which appears in multiple genes:'+str(counter_uniprot_to_multiple_genes))
+    print('double gene symbol for genes without uniprot id:'+str(len(list_double_gene_symbol_for_genes_without_uniprot_id)))
     print(len(dict_uniprot_to_gene_id))
     print(len(dict_uniprot_count_genes))
     # print(dict_uniprot_count_genes)
 
-    print('number of names to gene, which has no uniprots:'+str(len(dict_gene_name_to_gene_without_uniprot)))
+    print('number of names to gene, which has no uniprots:'+str(len(dict_gene_symbol_to_gene_without_uniprot)))
     print('number of genes:'+str(counter_all_genes))
+    print('number of multiple name:'+str(len(list_double_names)))
 
-# files with rela from uniprot protei to gene with multiple genes
+
+# files with rela from uniprot protei to gene with multiple genes from  protein side
 file_uniprots_with_multiple = open('uniprot_gene/db_uniprot_to_multi_genes.csv', 'w')
 writer_multi = csv.writer(file_uniprots_with_multiple)
 writer_multi.writerow(['uniprot_id', 'protein_name', 'genes', 'alternative_ids'])
@@ -136,7 +182,7 @@ writer_multi.writerow(['uniprot_id', 'protein_name', 'genes', 'alternative_ids']
 # files with rela from uniprot protei to gene
 file_uniprots_gene_rela = open('uniprot_gene/db_uniprot_to_gene_rela.csv', 'w')
 writer_rela = csv.writer(file_uniprots_gene_rela)
-writer_rela.writerow(['uniprot_id', 'gene_id', 'alternative_ids','name_mapping'])
+writer_rela.writerow(['uniprot_id', 'gene_id', 'alternative_ids','name_mapping','ctd','uniprot','resource'])
 
 # file with the gene ids where a uniprot needs to be delete from the uniprot lists
 file_gene_uniprot = open('uniprot_gene/db_gene_uniprot_delete.csv', 'w')
@@ -152,6 +198,36 @@ list_already_integrated_pairs_gene_protein=[]
 
 #counter for not matching gene names
 count_not_mapping_gene_name=0
+
+'''
+check out mapping with use of name
+'''
+def check_mapped_gene_ids_with_name(dict_gene_ids_which_mapped, gene_names):
+    list_fitting_gene_name = []
+    same_gene_name=False
+
+    # find the gene which has the same name as the protein from uniprot
+    for gene_id in dict_gene_ids_which_mapped:
+        for gene_name in gene_names:
+            name_in_dict=dict_gene_to_name[int(gene_id)]
+            if gene_name in dict_gene_to_name[int(gene_id)]:
+                same_gene_name = True
+                list_fitting_gene_name.append(gene_id)
+    return list_fitting_gene_name, same_gene_name
+
+
+'''
+this goes throu a list of mapping gens and check out if they realy do not exists already
+if not integrate them into the csv
+'''
+def check_and_add_rela_pair(identifier,uniprot_id, gene_ids,secondary_uniprot_ids, name_mapping, ctd_mapping, uniprot_mapping,map_resource):
+    for gene_id in gene_ids:
+        if not (identifier, int(gene_id)) in list_already_integrated_pairs_gene_protein:
+            writer_rela.writerow([identifier, gene_id, secondary_uniprot_ids, name_mapping, ctd_mapping, uniprot_mapping, map_resource])
+            list_already_integrated_pairs_gene_protein.append(
+                (identifier, int(gene_id)))
+            list_already_included.append(uniprot_id)
+
 
 ''' 
 check if the uniprot id is in dictionary uniprot to gene and write into right file
@@ -170,78 +246,119 @@ def check_and_write_uniprot_ids(uniprot_id,name,identifier,secondary_uniprot_ids
     genes=[]
     same_gene_name=False
 
-    if identifier=='O76087':
-        print('ok')
+    name=name.split(' {E')[0].lower()
 
     # check if the uniprot id appears in the hetionet gene-uniprot multiple dictionary
     # if yes write this information in the multiple file
     if uniprot_id in dict_uniprot_count_genes:
         writer_multi.writerow([identifier, name, dict_uniprot_to_gene_id[uniprot_id],secondary_uniprot_ids])
-        fitting_gene_id=''
-        list_fitting_gene_name=[]
-        mapping_with_name=[]
-
-        fitting_gene_ids=[]
-
-        if name in dict_gene_name_to_gene_id:
-            mapping_with_name=dict_gene_name_to_gene_id[name]
-
         # find the gene which has the same name as the protein from uniprot
-        for gene_id in dict_uniprot_to_gene_id[uniprot_id]:
-            dict_of_the_gene_names_for_a_gene_id=dict_gene_to_name[gene_id]
-            if str(gene_id) in gene_ids:
-                fitting_gene_ids.append(gene_id)
-            for gene_name in gene_names:
-                if gene_name in dict_gene_to_name[gene_id]:
-                    same_gene_name=True
-                    fitting_gene_id=gene_id
-                    list_fitting_gene_name.append(gene_id)
+        list_fitting_gene_name,same_gene_name=check_mapped_gene_ids_with_name(dict_uniprot_to_gene_id[uniprot_id],gene_names)
+
         #only when one gene has the exact name sas the gene write it in the gene -protein rela file
         if same_gene_name:
-            if len(fitting_gene_ids)>1:
-                print(identifier)
-                print('multiple overlap of gene ids')
-            if len(list_fitting_gene_name)!=len(fitting_gene_ids):
-                if len(list_fitting_gene_name)==1 and list_fitting_gene_name[0] in fitting_gene_ids:
-                    print('length one and is part of the gene list and in gene list')
-                elif len(list_fitting_gene_name)==1 :
-                    print(identifier)
-                    print('with name:')
-                    print(list_fitting_gene_name)
-                    print('with ids:')
-                    print(fitting_gene_ids)
-                    print('name and gene ids do not give the same results')
-                else:
-                        print(identifier)
-                        print(list_fitting_gene_name)
-                        print(fitting_gene_ids)
-                        print('length of name mapping greater one')
+            check_and_add_rela_pair(identifier,uniprot_id,list_fitting_gene_name,secondary_uniprot_ids,'yes','yes','no','CTD')
 
-            if len(list_fitting_gene_name)>1:
+            found_at_least_on = True
+            genes = list_fitting_gene_name
+
+        else:
+            gene_ids_hetionet=[str(x) for x in dict_uniprot_to_gene_id[uniprot_id]]
+            difference_gene_ids=set(gene_ids).difference(gene_ids_hetionet)
+            if len(difference_gene_ids)>0:
+                list_fitting_gene_name, same_gene_name = check_mapped_gene_ids_with_name(
+                    list(difference_gene_ids), gene_names)
+
+                check_and_add_rela_pair(identifier, uniprot_id, difference_gene_ids, secondary_uniprot_ids, 'yes',
+                                        'yes', 'yes','CTD|UniProt')
+
+                found_at_least_on = True
+                genes = difference_gene_ids
+            else:
                 print(identifier)
-                print(list_fitting_gene_name)
-                print(gene_id)
-                print('normally is mapped to multiple genes and not to a single with name mapping')
-            if not (identifier,fitting_gene_id) in list_already_integrated_pairs_gene_protein:
-                writer_rela.writerow([identifier, fitting_gene_id, secondary_uniprot_ids,'x'])
-                list_already_integrated_pairs_gene_protein.append((identifier,fitting_gene_id))
-        found_at_least_on = True
-        genes=dict_uniprot_to_gene_id[uniprot_id]
+                print(dict_uniprot_to_gene_id[uniprot_id])
+                print(gene_ids)
+                print('name mapping is not working')
+
+
     # if an mapping between uniprot an gene exists in hetionet  write this relationship in csv file
     elif uniprot_id in dict_uniprot_to_gene_id:
+        list_of_mapped_genes=[]
 
+        #depending where the mapping is from
+        yes_ctd='no'
+        yes_uniprot='no'
+        yes_name_mapping='no'
+
+        list_of_resources=[]
+
+        #first check out the mapping with each other (mapping from protein and mapping from gene)
+        #because the mapping from gene is also part of the mapping of the genes only the mapping of protein has to be checked
+        if len(gene_ids)>1:
+
+            # if not str(dict_uniprot_to_gene_id[uniprot_id][0]) in gene_ids:
+            #     sys.exit('not similar genes')
+            yes_ctd='yes'
+            yes_uniprot='yes'
+            list_of_resources.append('CTD')
+            list_of_resources.append('UniProt')
+            list_of_mapped_genes, same_gene_name = check_mapped_gene_ids_with_name(
+                gene_ids, gene_names)
+            yes_name_mapping='yes'
+            # print(identifier)
+            # print(dict_uniprot_to_gene_id[uniprot_id])
+            # print(gene_ids)
+            # print(list_of_mapped_genes)
+            # print('multiple from the other direction')
+
+
+        elif len(gene_ids)==1 and gene_ids[0]!=str(dict_uniprot_to_gene_id[uniprot_id][0]):
+            combined_list=gene_ids[:]
+            combined_list.extend(dict_uniprot_to_gene_id[uniprot_id])
+            list_of_mapped_genes, same_gene_name = check_mapped_gene_ids_with_name(
+                combined_list, gene_names)
+            yes_name_mapping = 'yes'
+
+            #check out where the mapping is coming from
+            for gene_id in list_of_mapped_genes:
+                if gene_id in gene_ids:
+                    yes_uniprot='yes'
+                    list_of_resources.append('UniProt')
+                elif gene_id in dict_uniprot_to_gene_id[uniprot_id]:
+                    yes_ctd='yes'
+                    list_of_resources.append('CTD')
+
+
+            if len(list_of_mapped_genes)==0:
+                sys.exit('non of gene and protein mapping is working')
+            # print(identifier)
+            # print(gene_ids)
+            # print(dict_uniprot_to_gene_id[uniprot_id])
+            # print(list_of_mapped_genes)
+            # print('not the same mapping')
+            # sys.exit('not the same mapping')
+        elif len(gene_ids)==1 :
+            yes_ctd = 'yes'
+            list_of_resources.append('CTD')
+            yes_uniprot='yes'
+            list_of_resources.append('UniProt')
+        else:
+            yes_ctd = 'yes'
+            list_of_resources.append('CTD')
+            list_of_mapped_genes=dict_uniprot_to_gene_id[uniprot_id]
+
+        string_list_resources='|'.join(list_of_resources)
         # if not the uniprot id is in the manual dictionary it can integrate
         if not uniprot_id in dict_wrong_uniprot_to_correct_gene_id:
-            if not (identifier, dict_uniprot_to_gene_id[uniprot_id][0]) in list_already_integrated_pairs_gene_protein:
-                writer_rela.writerow([identifier, dict_uniprot_to_gene_id[uniprot_id][0],secondary_uniprot_ids])
-                list_already_integrated_pairs_gene_protein.append((identifier, dict_uniprot_to_gene_id[uniprot_id][0]))
-                list_already_included.append(uniprot_id)
+            check_and_add_rela_pair(identifier, uniprot_id, list_of_mapped_genes, secondary_uniprot_ids,
+                                    yes_name_mapping,yes_ctd,yes_uniprot,string_list_resources)
 
         else:
             # here is the possibility that the gene id is not in neo4j (so this can be a reason why not all relationships are integrated)
+            # now it should work out
             if not (identifier, dict_wrong_uniprot_to_correct_gene_id[uniprot_id]) in list_already_integrated_pairs_gene_protein:
-                writer_rela.writerow([identifier, dict_wrong_uniprot_to_correct_gene_id[uniprot_id], secondary_uniprot_ids])
-                list_already_integrated_pairs_gene_protein.append((identifier, dict_wrong_uniprot_to_correct_gene_id[uniprot_id]))
+                writer_rela.writerow([identifier, dict_wrong_uniprot_to_correct_gene_id[uniprot_id], secondary_uniprot_ids,'no','no','no','Manual'])
+                list_already_integrated_pairs_gene_protein.append((identifier, int(dict_wrong_uniprot_to_correct_gene_id[uniprot_id])))
             # change the gene uniprot list and exclude this uniprot id
             if uniprot_id not in list_already_included:
                 writer_gene_uniprot.writerow([dict_uniprot_to_gene_id[uniprot_id][0], uniprot_id])
@@ -256,31 +373,78 @@ def check_and_write_uniprot_ids(uniprot_id,name,identifier,secondary_uniprot_ids
     else:
         if identifier not in list_already_included:
             # check out the gene ids from uniprot
-            if gene_ids:
-                if not len(gene_ids)>1:
-                    for gene_name in gene_names:
-                        if int(gene_ids[0]) in dict_gene_to_name:
-                            if gene_name in dict_gene_to_name[int(gene_ids[0])]:
-                                same_gene_name = True
-                                fitting_gene_id = gene_ids[0]
-                    # mapped to gene id but gene name and name of gene with this id are not the same
-                    if not same_gene_name:
-                        print(identifier)
-                        print(gene_ids)
-                        print('not same gene names kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk')
-                    list_already_included.append(uniprot_id)
-                else:
-                    print(identifier)
-                    print('gene ids sind groesser als 1 ;(')
+            if gene_ids and gene_names:
+                list_of_mapped_genes, same_gene_name = check_mapped_gene_ids_with_name(
+                    gene_ids, gene_names)
+                # if the gene ids and nam mapping is working write into rela file
+                if len(list_of_mapped_genes)!=0:
+                    check_and_add_rela_pair(identifier, uniprot_id, list_of_mapped_genes, secondary_uniprot_ids,
+                                            'yes', 'no', 'yes', 'UniProt')
 
+                    return True, list_of_mapped_genes
+                else:
+                    if name.lower() in dict_gene_name_to_id:
+                        name_mapped_list=[str(x) for x in dict_gene_name_to_id[name.lower()]]
+                        intersection=set(gene_ids).intersection(name_mapped_list)
+                        if len(intersection)> 0:
+                            check_and_add_rela_pair(identifier, uniprot_id, intersection, secondary_uniprot_ids,
+                                                   'yes', 'no', 'yes', 'UniProt')
+
+                            return True, list(intersection)
+                    else:
+                        # print(identifier)
+                        # print(gene_ids)
+                        # print(gene_names)
+                        # print(list_of_mapped_genes)
+                        print('name with protein mapping')
+            # check out if the mapping gene ids are good by checking the name
+            # but it seems that even if the name are not the same they map correct
+            elif gene_ids:
+                if name.lower() in dict_gene_name_to_id:
+                    list_gene_id_from_name=[str(x) for x in dict_gene_name_to_id[name.lower()]]
+                    intersection=set(gene_ids).intersection(list_gene_id_from_name)
+                    if len(intersection)>0:
+                        check_and_add_rela_pair(identifier, uniprot_id, intersection, secondary_uniprot_ids,
+                                                'yes', 'no', 'yes', 'UniProt')
+                        genes=list(intersection)
+                        found_at_least_on=True
+                        return True, genes
+                else:
+                    print('only gene id mapping')
+
+            # no mapping from the gene or protein and no gene symbol
             else:
-                for gene_name in gene_names:
-                    if gene_name in dict_gene_name_to_gene_without_uniprot:
-                        print(gene_name)
-                        print(identifier)
-                        print(dict_gene_name_to_gene_without_uniprot[gene_name])
-                        print('mapping with name hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh')
-                        list_already_included.append(uniprot_id)
+                if name.lower() in dict_gene_name_to_id:
+                    check_and_add_rela_pair(identifier, uniprot_id, dict_gene_name_to_id[name.lower()], secondary_uniprot_ids,
+                                            'yes','no','no','NameMapping')
+
+                    genes = dict_gene_name_to_id[name.lower()]
+                    found_at_least_on = True
+                    return True, genes
+
+            # check if mapping is possible with gene symbol
+            ## I have to check this out more but it seems like it works
+            list_of_possible_mapped_gene_ids=set([])
+            for gene_name in gene_names:
+                if gene_name in dict_gene_symbol_to_gene_id and not gene_name in list_double_gene_symbol_for_genes_without_uniprot_id:
+                    gene_ids_from_name=dict_gene_symbol_to_gene_id[gene_name]
+                    list_of_possible_mapped_gene_ids=list_of_possible_mapped_gene_ids.union(gene_ids_from_name)
+                    list_already_included.append(uniprot_id)
+                elif gene_name in list_double_gene_symbol_for_genes_without_uniprot_id:
+                    print(gene_name)
+                    print(identifier)
+                    print(dict_gene_symbol_to_gene_id[gene_name])
+                    print('multiple name name mapping')
+
+            #the multiple mapping with gene symbol are not the best only 4 of 14 this make sense but for the other it would be manual mapping
+            if len(list_of_possible_mapped_gene_ids)==1:
+                check_and_add_rela_pair(identifier, uniprot_id, list_of_possible_mapped_gene_ids,
+                                        secondary_uniprot_ids, 'yes','no','no','GeneSymbolMapping')
+
+                # print(identifier)
+                # print(list_of_possible_mapped_gene_ids)
+                found_at_least_on = True
+
     return found_at_least_on, genes
 
 '''
@@ -303,15 +467,15 @@ def get_gather_protein_info_and_generate_relas():
     writer_uniprots_genes = csv.writer(file_uniprots_genes)
     writer_uniprots_genes.writerow(['uniprot_ids', 'gene_id'])
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_gene/db_uniprot_to_gene_rela.csv" As line MATCH (n:Protein{identifier:line.uniprot_id}), (g:Gene{identifier:toInteger(line.gene_id)}) Create (g)-[:PRODUCES_GpP]->(n);\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_gene/db_uniprot_to_gene_rela.csv" As line MATCH (n:Protein{identifier:line.uniprot_id}), (g:Gene{identifier:toInteger(line.gene_id)}) Create (g)-[:PRODUCES_GpP{name_mapping:line.name_mapping ,ctd:line.ctd,uniprot:line.uniprot,resource:split(line.resource,'|'),license:'Creative Commons Attribution (CC BY 4.0) License'}]->(n);\n'''
     file_cypher.write(query)
 
     # the queries to integrate rela to bc, cc and mf
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_go/db_uniprots_to_bc.csv" As line MATCH (g:Protein{identifier:line.uniprot_ids}),(b:BiologicalProcess{identifier:line.go}) Create (g)-[:PARTICIPATES_PRpBC]->(b);\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_go/db_uniprots_to_bc.csv" As line MATCH (g:Protein{identifier:line.uniprot_ids}),(b:BiologicalProcess{identifier:line.go}) Create (g)-[:PARTICIPATES_PRpBC{resource:['UniProt'],source:'UniPort', uniprot:'yes', license:'Creative Commons Attribution (CC BY 4.0) License', url:'https://www.uniprot.org/uniprot/'+line.uniprot_ids}]->(b);\n'''
     file_cypher.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_go/db_uniprots_to_cc.csv" As line MATCH (g:Protein{identifier:line.uniprot_ids}),(b:CellularComponent{identifier:line.go}) Create (g)-[:PARTICIPATES_PRpCC]->(b);\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_go/db_uniprots_to_cc.csv" As line MATCH (g:Protein{identifier:line.uniprot_ids}),(b:CellularComponent{identifier:line.go}) Create (g)-[:PARTICIPATES_PRpCC{resource:['UniProt'],source:'UniPort', uniprot:'yes', license:'Creative Commons Attribution (CC BY 4.0) License', url:'https://www.uniprot.org/uniprot/'+line.uniprot_ids}]->(b);\n'''
     file_cypher.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_go/db_uniprots_to_mf.csv" As line MATCH (g:Protein{identifier:line.uniprot_ids}),(b:MolecularFunction{identifier:line.go}) Create (g)-[:PARTICIPATES_PRpMF]->(b);\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_go/db_uniprots_to_mf.csv" As line MATCH (g:Protein{identifier:line.uniprot_ids}),(b:MolecularFunction{identifier:line.go}) Create (g)-[:PARTICIPATES_PRpMF{resource:['UniProt'],source:'UniPort', uniprot:'yes', license:'Creative Commons Attribution (CC BY 4.0) License', url:'https://www.uniprot.org/uniprot/'+line.uniprot_ids}]->(b);\n'''
     file_cypher.write(query)
 
     # generate a file with all uniprots to bc
@@ -329,7 +493,7 @@ def get_gather_protein_info_and_generate_relas():
     writer_uniprots_mf = csv.writer(file_uniprots_mf)
     writer_uniprots_mf.writerow(['uniprot_ids', 'go'])
 
-    # query to get all Protein information
+    # query to get all Protein information {identifier:'P0DMV0'}
     query='''MATCH (n:Protein_Uniprot) RETURN n '''
     results=g.run(query)
 
@@ -341,22 +505,6 @@ def get_gather_protein_info_and_generate_relas():
 
     #counter protein to gos
     counter_gos_bc=0
-            # most of the not same gene name are still correct, because the gene has not always all synonyms
-
-            # for gene_name in gene_names:
-            #     if not gene_name in dict_gene_to_name[dict_uniprot_to_gene_id[uniprot_id][0]]:
-            #         if gene_name.split(' ')[0] in dict_gene_to_name[dict_uniprot_to_gene_id[uniprot_id][0]]:
-            #             same_gene_name = True
-            #     else:
-            #         same_gene_name = True
-            # if not same_gene_name:
-            #     count_not_mapping_gene_name += 1
-            #     print('identifier:' + identifier)
-            #     print(uniprot_id)
-            #     print(gene_names)
-            #     print(dict_uniprot_to_gene_id[uniprot_id][0])
-            #     print(dict_gene_to_name[dict_uniprot_to_gene_id[uniprot_id][0]])
-            #     print('_______________________________________________________________________')
     counter_gos_cc = 0
     counter_gos_mf = 0
 
@@ -370,8 +518,11 @@ def get_gather_protein_info_and_generate_relas():
         if counter_all_proteins==0:
             dict_node=dict(node)
             for property in dict_node.keys():
+                # the go classifiers are in the rela to bc, cc and mf
+                if property=='go_classifiers':
+                    continue
                 query+= property+':p.'+property+', '
-            query+= 'uniprot:"yes", url:"https://www.uniprot.org/uniprot/"+p.identifier, source:"UniProt", license:"Creative Commons Attribution (CC BY 4.0) License "});\n '
+            query+= 'uniprot:"yes", url:"https://www.uniprot.org/uniprot/"+p.identifier, source:"UniProt", resource:["UniProt"], license:"Creative Commons Attribution (CC BY 4.0) License "});\n '
             file_cypher_node.write(query)
             query = 'Create Constraint On (node:Protein) Assert node.identifier Is Unique;\n'
             file_cypher_node.write(query)
@@ -387,7 +538,7 @@ def get_gather_protein_info_and_generate_relas():
 
         # get the Uniprot id
         identifier= node['identifier']
-        if identifier=='Q13938t':
+        if identifier=='Q9Y2D5':
             print('ok')
         #write into integration file
         writer_uniprots_ids.writerow([identifier])
@@ -440,7 +591,7 @@ def get_gather_protein_info_and_generate_relas():
 
         # to find also relationships to biological processes, cellular component and moleculare functions
         for xref in xrefs:
-            source_id=xref.split('::')
+            source_id=xref.split(':',1)
             if source_id[0]=='GO':
                 if source_id[1] in dict_bp_to_name:
                     counter_gos_bc+=1
