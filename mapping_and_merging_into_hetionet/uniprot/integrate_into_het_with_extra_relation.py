@@ -342,6 +342,7 @@ def check_and_write_uniprot_ids(uniprot_id,name,identifier,secondary_uniprot_ids
             list_of_resources.append('CTD')
             yes_uniprot='yes'
             list_of_resources.append('UniProt')
+            list_of_mapped_genes=gene_ids
         else:
             yes_ctd = 'yes'
             list_of_resources.append('CTD')
@@ -493,7 +494,7 @@ def get_gather_protein_info_and_generate_relas():
     writer_uniprots_mf = csv.writer(file_uniprots_mf)
     writer_uniprots_mf.writerow(['uniprot_ids', 'go'])
 
-    # query to get all Protein information {identifier:'P0DMV0'}
+    # query to get all Protein information {identifier:'P0DMV0'} {identifier:'Q05066'}
     query='''MATCH (n:Protein_Uniprot) RETURN n '''
     results=g.run(query)
 
