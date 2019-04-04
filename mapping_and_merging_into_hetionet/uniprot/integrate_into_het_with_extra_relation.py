@@ -522,7 +522,13 @@ def get_gather_protein_info_and_generate_relas():
                 # the go classifiers are in the rela to bc, cc and mf
                 if property=='go_classifiers':
                     continue
-                query+= property+':p.'+property+', '
+                if property=='second_ac_numbers':
+                    query +=  'alternative_identifiers:p.' + property + ', '
+                # to include only the sequence and not the header
+                elif property=='as_sequence':
+                    query += property + ':split(p.' + property + ',":")[1], '
+                else:
+                    query+= property+':p.'+property+', '
             query+= 'uniprot:"yes", url:"https://www.uniprot.org/uniprot/"+p.identifier, source:"UniProt", resource:["UniProt"], license:"Creative Commons Attribution (CC BY 4.0) License "});\n '
             file_cypher_node.write(query)
             query = 'Create Constraint On (node:Protein) Assert node.identifier Is Unique;\n'
