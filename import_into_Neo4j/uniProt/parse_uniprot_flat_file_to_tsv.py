@@ -61,7 +61,7 @@ dict_two_character_type = {
 # open tsv file
 file = open('uniprot.tsv', 'w')
 header = ['entry', 'status', 'sequenceLength', 'identifier', 'second_ac_numbers', 'name', 'synonyms',  'ncbi_taxid', 'as_sequence',
-          'gene_name', 'general_function', 'chromosome_location', 'pfam','gene_id', 'go_classifiers', 'xref',
+          'gene_name', 'general_function', 'chromosome_location', 'pfam','gene_id', 'go_classifiers', 'xrefs',
           'subcellular_location', 'protein_existence', 'pubmed_ids']
 csv_writer = csv.DictWriter(file, fieldnames=header, delimiter='\t',
                             quotechar='"', quoting=csv.QUOTE_MINIMAL)
@@ -356,10 +356,10 @@ def extract_information():
             elif two_first_letter == 'DR':
                 xref_infos = two_split[1].split('; ')
                 if xref_infos[0] not in ['Pfam','GeneID']:
-                    if 'xref' in dict_protein:
-                        dict_protein['xref'].add(xref_infos[0] + ':' + xref_infos[1])
+                    if 'xrefs' in dict_protein:
+                        dict_protein['xrefs'].add(xref_infos[0] + ':' + xref_infos[1])
                     else:
-                        dict_protein['xref'] = set([xref_infos[0] + ':' + xref_infos[1]])
+                        dict_protein['xrefs'] = set([xref_infos[0] + ':' + xref_infos[1]])
                 elif xref_infos[0] =='Pfam':
                     if 'pfam' in dict_protein:
                         dict_protein['pfam'].add(xref_infos[1] + ':' + xref_infos[2])
