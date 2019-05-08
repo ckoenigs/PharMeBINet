@@ -7,7 +7,7 @@ Created on Wed Apr 18 08:41:20 2018
 
 from py2neo import Graph, authenticate
 import datetime
-import csv
+import csv, sys
 
 '''
 create connection to neo4j and mysql
@@ -59,6 +59,23 @@ def load_hetionet_go_in():
     print('number of molecular function nodes in hetionet:' + str(len(dict_molecular_function_hetionet)))
 
 
+dict_of_go_which_has_no_ontology={
+    'GO:0070453':'Biological Process',
+    'GO:0046035':'Biological Process',
+    'GO:1902225':'Biological Process',
+    'GO:0035937':'Biological Process',
+    'GO:0006225':'Biological Process',
+    'GO:0051320':'Biological Process',
+    'GO:0071919':'Biological Process',
+    'GO:0046114':'Biological Process',
+    'GO:1900996':'Biological Process',
+    'GO:1905691':'Biological Process',
+    'GO:0006181':'Biological Process',
+    'GO:1902492':'Biological Process'
+
+}
+
+
 '''
 check if go is in hetionet or not
 '''
@@ -66,7 +83,17 @@ check if go is in hetionet or not
 
 def check_if_new_or_part_of_hetionet(hetionet_label, go_id, go_name,highestGOLevel):
 
-
+    if hetionet_label is None:
+        if go_id in dict_biological_process_hetionet:
+            hetionet_label='Biological Process'
+        elif go_id in dict_cellular_component_hetionet:
+            hetionet_label="Cellular Component"
+        elif go_id in dict_molecular_function_hetionet:
+            hetionet_label='Molecular Function'
+        elif go_id in dict_of_go_which_has_no_ontology:
+            hetionet_label=dict_of_go_which_has_no_ontology[go_id]
+        else:
+            sys.exit(go_id)
     [dict_hetionet, dict_ctd_not_in_hetionet, dict_ctd_in_hetionet] = dict_processe[hetionet_label]
 
 
