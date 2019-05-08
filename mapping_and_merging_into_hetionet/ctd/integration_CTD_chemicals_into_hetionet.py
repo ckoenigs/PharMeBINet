@@ -134,11 +134,12 @@ properties:
     source
     url
     synonyms
+    Where n.identifier in ["DB00588","DB13867"]
 '''
 
 
 def load_compounds_from_hetionet():
-    query = 'MATCH (n:Compound) RETURN n '
+    query = 'MATCH (n:Compound)  RETURN n '
     results = g.run(query)
     i = 0
 
@@ -220,6 +221,8 @@ properties:
     definition	
     parentTreeNumbers
     treeNumbers
+    
+{chemical_id:"D000068298"}
 '''
 
 
@@ -903,6 +906,8 @@ def integration_of_ctd_chemicals_into_hetionet_compound():
     print('number of all ctd which are mapped include the one with illegal drugbank ids:' + str(counter))
     print(dict_how_mapped_delete_counter)
 
+
+
 '''
 add all not mapped ctd chemicals to csv and then integrate into neo4j as chemicals
 '''
@@ -912,6 +917,7 @@ def add_chemicals_to_csv():
     g.run(query)
 
     for mesh_id in list_drug_CTD_without_drugbank_id:
+
         query = '''Match (c:CTDchemical{chemical_id:'%s'}) Return c'''
         query = query % (mesh_id)
         result = g.run(query)
