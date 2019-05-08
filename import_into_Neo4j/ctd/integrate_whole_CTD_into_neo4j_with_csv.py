@@ -271,6 +271,75 @@ def load_chemical_go_enriched():
 
     # sys.exit()
 
+'''
+load ctd chemicals-go enriched file:
+    0:chemicalname											
+    1:chemicalid
+    2:casrn
+    3:phenotypename
+    4:phenotypeid
+    5:comentionedterms
+    6:organism
+    7:organismid
+    8:interaction
+    9:interactionactions
+    10:anatomyterms
+    11:inferencegenesymbols
+    12:pubmedids
+and gather the information
+'''
+
+
+def load_chemical_phenotype():
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_pheno_term_ixns.csv" As line Merge (c:CTDchemical{ chemical_id:line.ChemicalID }) On Create Set  c.casRN=line.CasRN, c.name=line.ChemicalName, c.newer_version=True On Match Set c.newer_version=True;\n '''
+    cypher_file_nodes.write(query)
+    # check if chemicals are already in neo4j
+    query = '''MATCH r=(c:CTDchemical)-[a:phenotype]->(n:CTDGO) RETURN r LIMIT 1 '''
+    results = g.run(query)
+    result = results.evaluate()
+    # depending if chemicals are in neo4j or not the nodes need to be merged or created
+    if not result is None:
+        cypher_file_edges.write('begin')
+        query = ''' Match (c:CTDchemical)-[a:phenotype]->(n:CTDGO) Set a.old_version=True;\n '''
+        cypher_file_edges.write(query)
+        cypher_file_edges.write('commit\n')
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_pheno_term_ixns.csv" As line Match (c:CTDchemical{ chemical_id:line.chemicalid }), (g:CTDGO{ go_id:line.phenotypeid }) Where line.organismid='9606' Merge (c)-[a:phenotype]->(g) On Create Set a.organismid=line.organismid, a.unbiased=True, a.comentionedterms=line.comentionedterms, a.interaction=line.interaction, a.interactionactions=line.interactionactions, a.anatomyterms=line.anatomyterms, a.inferencegenesymbols=line.inferencegenesymbols, a.pubmedids=line.pubmedids On Match Set a.organismid=line.organismid, a.unbiased=True, a.comentionedterms=line.comentionedterms, a.interaction=line.interaction, a.interactionactions=line.interactionactions, a.anatomyterms=line.anatomyterms, a.inferencegenesymbols=line.inferencegenesymbols, a.pubmedids=line.pubmedids;\n '''
+    else:
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_pheno_term_ixns.csv" As line Match (c:CTDchemical{ chemical_id:line.chemicalid }), (g:CTDGO{ go_id:line.phenotypeid }) Where line.organismid='9606' Create (c)-[a:phenotype{unbiased:True, organismid:line.organismid, comentionedterms:line.comentionedterms, interaction:line.interaction, interactionactions:line.interactionactions, anatomyterms:line.anatomyterms, pubmedids:line.pubmedids, inferencegenesymbols:line.inferencegenesymbols}]->(g);\n '''
+
+    cypher_file_edges.write(query)
+
+    dict_counter_go={}
+
+    # gather information from CTD chemical-go enriched
+    with open('ctd_data/CTD_pheno_term_ixns.csv') as csvfile:
+        reader = csv.reader(csvfile,  quotechar='"')
+        i = 0
+        for row in reader:
+
+            if i > 0:
+                ontology = ''
+                goTermName = row[3]
+                goTermId = row[4]
+                organism_id=row[7]
+                if organism_id!='9606':
+                    continue
+                # if ontology in ['Molecular Function','Biological Process','Cellular Component']:
+                if ontology in dict_counter_go:
+                    dict_counter_go[ontology]+=1
+                else:
+                    dict_counter_go[ontology] = 1
+
+                if not goTermId in dict_Go_properties:
+                    dict_Go_properties[goTermId] = [goTermName, ontology,'']
+
+            i += 1
+
+    print(len(dict_Go_properties))
+    print(dict_counter_go)
+    result=sum(dict_counter_go[x] for x in dict_counter_go.keys())
+    print(result)
+
 
 # dictionary with (disease_id, go_id) and properties as value inferenceGeneSymbol, inference GeneQty
 dict_disease_go = {}
@@ -806,6 +875,13 @@ def main():
     print('load in ctd chemical-go and gather the information')
 
     load_chemical_go_enriched()
+
+    print('##########################################################################')
+
+    print(datetime.datetime.utcnow())
+    print('load in ctd chemical-phenotype and gather the information')
+
+    load_chemical_phenotype()
 
 
     # print('##########################################################################')
