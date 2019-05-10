@@ -941,9 +941,7 @@ def add_chemicals_to_csv():
     else:
         query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/chemical/chemicals.csv" As line MATCH (n:CTDchemical{chemical_id:line.ChemicalID}) Create (d:Chemical{identifier:line.ChemicalID, parentIDs:split(line.parentIDs,'|'), parentTreeNumbers:split(line.parentTreeNumbers,'|'), treeNumbers:split(line.treeNumbers,'|'), definition:line.definition, synonyms:split(line.synonyms,'|'), name:line.name, cas_number:line.casRN, resource:['CTD'], ctd:'yes', ctd_url:'http://ctdbase.org/detail.go?type=chem&acc='+line.ChemicalID, url:"https://meshb.nlm.nih.gov/record/ui?ui="+line.ChemicalID,  license:"U.S. National Library of Medicine ", source:"MeSH via CTD" }) With d, n Create (d)-[:equal_to_CTD_chemical]->(n);\n '''
     cypher_file.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/chemical/chemicals_drugbank.csv" As line  MATCH (n:CTDchemical{chemical_id:line.ChemicalID}), (c:Compound{identifier:line.Drugbank_id})
-                    Set c.ctd="yes", c.ctd_url=line.url, c.resource=split(line.string_resource,'|'), n.drugBankIDs=split(line.string_drugbank_ids,'|')
-                    Create (c)-[:equal_chemical_CTD]->(n);\n
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/chemical/chemicals_drugbank.csv" As line  MATCH (n:CTDchemical{chemical_id:line.ChemicalID}), (c:Compound{identifier:line.Drugbank_id}) Set c.ctd="yes", c.ctd_url=line.url, c.resource=split(line.string_resource,'|'), n.drugBankIDs=split(line.string_drugbank_ids,'|') Create (c)-[:equal_chemical_CTD]->(n);\n
                     '''
     cypher_file.write(query)
     cypher_file.close()
