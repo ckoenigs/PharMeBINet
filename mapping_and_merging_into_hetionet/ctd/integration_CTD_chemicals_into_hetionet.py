@@ -194,17 +194,11 @@ def add_new_label_to_compounds():
 # dictionary wrong multiple mapped ctd
 # manual checked
 dict_wrong_multiple_mapped_ctd={
-    'D006895':u'DB09111',
     'D012978':u'DB01440',
     'D006493':u'DB00407',
-    'D000068759':u'DB01274',
-    'D009173':u'DB00688',
     'C030290':u'DB02201',
-    'C533860':u'DB05367',
     'D002955':u'DB03256',
-    'C031545':u'DB05321',
-    'D014191':u'DB02665',
-    'D015283':u'DB01175'
+    'D014191':u'DB02665'
 }
 
 '''
@@ -238,10 +232,13 @@ def load_drugs_from_CTD():
     for result, in results:
         idType = result['idType']
         chemical_id = result['chemical_id']
+        if chemical_id=='D006895':
+            print('ok')
         synonyms = result['synonyms'] if 'synonyms' in result else []
         drugBankID = result['drugBankID'] if 'drugBankID' in result else ''
         drugBankIDs = result['drugBankIDs'] if 'drugBankIDs' in result else []
         drugBankIDs = filter(bool, drugBankIDs)
+
         casRN= result['casRN'] if 'casRN' in result else ''
         name = result['name'].lower()
         drug = DrugCTD(idType, chemical_id, synonyms, drugBankID, name, drugBankIDs,casRN)
