@@ -92,15 +92,17 @@ def LoadSDF(filename, idName='ID',molColName = 'ROMol',includeFingerprints=False
 
 #####################################################################################################################
 
-
+if len(sys.argv)!=3:
+  sys.exit('This need as input a sdf file and an output file name as .csv')
 my_sdf_file = sys.argv[1]
+to_file=sys.argv[2]
 
 frame = LoadSDF(my_sdf_file,
                             smilesName='SMILES',
                             molColName='Molecule',
                             includeFingerprints=False)
 
-frame.to_csv('metabolite_structure.csv')
+frame.to_csv(to_file)
 
 ####functioniert, aber schmeisst auch einige fehler
 '''
