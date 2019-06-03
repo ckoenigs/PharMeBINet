@@ -1,11 +1,6 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Fri Sep 15 11:41:20 2017
-
-@author: ckoenigs
-"""
-
 from py2neo import Graph, authenticate
+from collections import defaultdict
 import datetime
 import csv, sys
 
@@ -26,535 +21,13 @@ def create_connection_with_neo4j_mysql():
     g = Graph("http://bimi:7475/db/data/", bolt=False)
 
 
-# dictionary with all pairs and properties as value
-dict_chemical_gene_general = {}
-
-# dictionary with all pairs which are associated with change of action and properties as value
-dict_chemical_gene_regulation = {}
-
-# dictionary with all pairs which are associated with binding
-dict_chemical_gene_binding = {}
-
-# dictionary with all pairs which are associated with metabolic processing
-dict_chemical_gene_metabolic_processing = {}
-
-# dictionary with all pairs which are associated with transport
-dict_chemical_gene_transport = {}
-
-# counter of relationships
-count_multiple_action = 0
-count_all_action = 0
-count_multiple_general = 0
-count_all_general = 0
-
-# dictionary pairs of chemical,gene
-dict_pairs = {}
-
-# list of all important relationship actions
-list_important_regulation = ['activity', 'expression', 'degradation']
-list_important_transport = ['transport', 'secretion', 'export', 'uptake', 'import']
-# one is add manual, because metabolic processing is named metabolism in the interaction_texts
-list_metabolic_processing = ['metabolism']
-
-file = open('chemical_gene/metabolic_processing_action.csv', 'r')
-for line in file:
-    list_metabolic_processing.append(line.split(',')[0])
+# generate cypher file
+cypherfile = open('chemical_gene/cypher.cypher', 'w')
 
 '''
-sort into the the directory
+put the first cypher queries into the cypher file which adapt the rela from before
 '''
-
-
-def integration_into_dictionary(dict_action, chemical, gene, interaction_text, gene_forms, pubMedIds,
-                                interactions_actions, interaction_dict, chemical_name, gene_name, chemical_synonyms,
-                                gene_symbol):
-    if (chemical, gene) in dict_action:
-        dict_action[(chemical, gene)][0].append(interaction_text)
-        dict_action[(chemical, gene)][1].extend(gene_forms)
-        dict_action[(chemical, gene)][1] = list(
-            set(dict_action[(chemical, gene)][1]))
-        dict_action[(chemical, gene)][2].extend(pubMedIds)
-        dict_action[(chemical, gene)][2] = list(
-            set(dict_action[(chemical, gene)][2]))
-        dict_action[(chemical, gene)][3].append(interactions_actions)
-        dict_action[(chemical, gene)][6].append(interaction_dict)
-    else:
-        dict_action[(chemical, gene)] = [[interaction_text], gene_forms, pubMedIds,
-                                         [interactions_actions], (chemical_name, gene_name),
-                                         chemical_synonyms, [interaction_dict], gene_symbol]
-
-
-'''
-sort into the different dictionaries and check if they are multiple relas
-'''
-
-
-def sort_information_in_dictionary(chemical, gene, interaction_text, gene_forms, pubMedIds, interactions_actions,
-                                   chemical_name, gene_name, chemical_synonyms, action_bool,
-                                   interaction_dict, gene_symbol, transport_bool, binding_bool,
-                                   metabolic_processing_bool):
-    global count_all_action, count_multiple_action, count_all_general, count_multiple_general
-    any_actions = False
-    if action_bool:
-        any_actions = True
-        count_all_action += 1
-        integration_into_dictionary(dict_chemical_gene_regulation, chemical, gene, interaction_text, gene_forms,
-                                    pubMedIds,
-                                    interactions_actions, interaction_dict, chemical_name, gene_name, chemical_synonyms,
-                                    gene_symbol)
-
-    if transport_bool:
-        any_actions = True
-        count_all_action += 1
-        integration_into_dictionary(dict_chemical_gene_transport, chemical, gene, interaction_text, gene_forms,
-                                    pubMedIds,
-                                    interactions_actions, interaction_dict, chemical_name, gene_name, chemical_synonyms,
-                                    gene_symbol)
-
-    if binding_bool:
-        any_actions = True
-        count_all_action += 1
-        integration_into_dictionary(dict_chemical_gene_binding, chemical, gene, interaction_text, gene_forms,
-                                    pubMedIds,
-                                    interactions_actions, interaction_dict, chemical_name, gene_name, chemical_synonyms,
-                                    gene_symbol)
-    if metabolic_processing_bool:
-        any_actions = True
-        count_all_action += 1
-        integration_into_dictionary(dict_chemical_gene_metabolic_processing, chemical, gene, interaction_text,
-                                    gene_forms,
-                                    pubMedIds,
-                                    interactions_actions, interaction_dict, chemical_name, gene_name, chemical_synonyms,
-                                    gene_symbol)
-
-    count_all_general += 1
-    if (chemical, gene) in dict_chemical_gene_general:
-        count_multiple_general += 1
-        dict_chemical_gene_general[(chemical, gene)][0].append(interaction_text)
-        dict_chemical_gene_general[(chemical, gene)][1].extend(gene_forms)
-        dict_chemical_gene_general[(chemical, gene)][1] = list(set(dict_chemical_gene_general[(chemical, gene)][1]))
-        dict_chemical_gene_general[(chemical, gene)][2].extend(pubMedIds)
-        dict_chemical_gene_general[(chemical, gene)][2] = list(set(dict_chemical_gene_general[(chemical, gene)][2]))
-        dict_chemical_gene_general[(chemical, gene)][3].append(interactions_actions)
-    else:
-        dict_chemical_gene_general[(chemical, gene)] = [[interaction_text], gene_forms, pubMedIds,
-                                                        [interactions_actions], (chemical_name, gene_name),
-                                                        chemical_synonyms, gene_symbol]
-
-
-'''
-get all relationships between gene and chemical, take the hetionet identifier an save all important information in a csv
-also generate a cypher file to integrate this information 
-'''
-
-
-def take_all_relationships_of_gene_chemical():
-    counter_all_rela = 0
-    counter_two = 0
-
-    #  Where chemical.chemical_id='D000117' and gene.gene_id='2219'
-    query = '''MATCH (chemical:CTDchemical)-[r:associates_CG{organism_id:'9606'}]->(gene:CTDgene)  RETURN gene.gene_id, gene.name, gene.geneSymbol, r, chemical.chemical_id, chemical.name, chemical.synonyms, chemical.drugBankIDs'''
-    results = g.run(query)
-
-    for gene_id, gene_name, gene_symbol, rela, chemical_id, chemical_name, chemical_synonyms, drugbank_ids, in results:
-        counter_all_rela += 1
-        interaction_text = rela['interaction_text'] if 'interaction_text' in rela else ''
-        gene_forms = rela['gene_forms'] if 'gene_forms' in rela else []
-        pubMedIds = rela['pubMedIds'] if 'pubMedIds' in rela else []
-        interactions_actions = rela['interactions_actions'] if 'interactions_actions' in rela else []
-        drugbank_ids = drugbank_ids if not drugbank_ids is None else []
-
-        chemical_synonyms = chemical_synonyms if not chemical_synonyms is None else []
-        chemical_synonyms = filter(None, chemical_synonyms)
-
-        interaction_dict = {}
-        interaction_action = False
-        transport_bool = False
-        binding_bool = False
-        metabolic_processing_bool = False
-        for interaction in interactions_actions:
-            splitter = interaction.split('^')
-            if splitter[1] not in interaction_dict:
-                interaction_dict[splitter[1]] = [splitter[0]]
-            else:
-                interaction_dict[splitter[1]].append(splitter[0])
-            if splitter[1] in list_important_regulation:
-                # print(interactions_actions)
-                interaction_action = True
-            elif splitter[1] == 'binding':
-                binding_bool = True
-            elif splitter[1] in list_important_transport:
-                transport_bool = True
-            elif splitter[1] in list_metabolic_processing:
-                metabolic_processing_bool = True
-
-        # if len(interactions_actions) > 2 and interaction_action:
-        #     interaction_action = True
-        # elif interaction_action and len(interactions_actions) == 2:
-        #     counter_two += 1
-
-        if len(drugbank_ids) > 0:
-            for drugbank in drugbank_ids:
-                sort_information_in_dictionary(drugbank, gene_id, interaction_text, gene_forms, pubMedIds,
-                                               interactions_actions, chemical_name, gene_name, chemical_synonyms,
-                                               interaction_action, interaction_dict, gene_symbol, transport_bool,
-                                               binding_bool, metabolic_processing_bool)
-        else:
-            sort_information_in_dictionary(chemical_id, gene_id, interaction_text, gene_forms, pubMedIds,
-                                           interactions_actions, chemical_name, gene_name, chemical_synonyms,
-                                           interaction_action, interaction_dict, gene_symbol, transport_bool,
-                                           binding_bool, metabolic_processing_bool)
-
-        if counter_all_rela % 10000 == 0:
-            print(counter_all_rela)
-
-    print('number of multiple possible action:' + str(count_multiple_action))
-    print('number of new possible action:' + str(count_all_action))
-    print('number of possible regulation:'+str(len(dict_chemical_gene_regulation)))
-    print('number of possible transporter:' + str(len(dict_chemical_gene_transport)))
-    print('number of possible binding:' + str(len(dict_chemical_gene_binding)))
-    print('number of possible metabolic processing:' + str(len(dict_chemical_gene_metabolic_processing)))
-    print('number of multiple all:' + str(count_multiple_general))
-    print('number of all:' + str(count_all_general))
-    print('number of all pairs:'+str(len(dict_chemical_gene_general)))
-    print(counter_two)
-
-
-# csv files
-csvfile_up = open('chemical_gene/relationships_upregulated_chemical_gene.csv', 'wb')
-writer_upregulated = csv.writer(csvfile_up, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-writer_upregulated.writerow(
-    ['ChemicalID', 'GeneID', 'interaction_text', 'gene_forms', 'pubMedIds', 'interactions_actions', 'chemical_name',
-     'gene_name', 'unbiased'])
-
-csvfile_up_other_way_around = open('chemical_gene/relationships_upregulated_gene_chemical.csv', 'wb')
-writer_upregulated_other_way_around = csv.writer(csvfile_up_other_way_around, delimiter=',', quotechar='"',
-                                                 quoting=csv.QUOTE_MINIMAL)
-writer_upregulated_other_way_around.writerow(
-    ['ChemicalID', 'GeneID', 'interaction_text', 'gene_forms', 'pubMedIds', 'interactions_actions', 'chemical_name',
-     'gene_name', 'unbiased'])
-
-csvfile_down = open('chemical_gene/relationships_downregulated_chemical_gene.csv', 'wb')
-writer_downrgulated = csv.writer(csvfile_down, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-writer_downrgulated.writerow(
-    ['ChemicalID', 'GeneID', 'interaction_text', 'gene_forms', 'pubMedIds', 'interactions_actions', 'chemical_name',
-     'gene_name', 'unbiased'])
-
-csvfile_down_other_way_around = open('chemical_gene/relationships_downregulated_gene_chemical.csv', 'wb')
-writer_downrgulated_other_way_around = csv.writer(csvfile_down_other_way_around, delimiter=',', quotechar='"',
-                                                  quoting=csv.QUOTE_MINIMAL)
-writer_downrgulated_other_way_around.writerow(
-    ['ChemicalID', 'GeneID', 'interaction_text', 'gene_forms', 'pubMedIds', 'interactions_actions', 'chemical_name',
-     'gene_name', 'unbiased'])
-
-csvfile_association = open('chemical_gene/relationships_association_chemical_gene.csv', 'wb')
-writer_association = csv.writer(csvfile_association, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-writer_association.writerow(
-    ['ChemicalID', 'GeneID', 'interaction_text', 'gene_forms', 'pubMedIds', 'interactions_actions', 'chemical_name',
-     'gene_name', 'co_treatment', 'unbiased'])
-
-csvfile_association_other_way_around = open('chemical_gene/relationships_association_gene_chemical.csv', 'wb')
-writer_association_other_way_around = csv.writer(csvfile_association_other_way_around, delimiter=',', quotechar='"',
-                                                 quoting=csv.QUOTE_MINIMAL)
-writer_association_other_way_around.writerow(
-    ['ChemicalID', 'GeneID', 'interaction_text', 'gene_forms', 'pubMedIds', 'interactions_actions', 'chemical_name',
-     'gene_name', 'co_treatment', 'unbiased'])
-
-csvfile_binding = open('chemical_gene/relationships_binding_chemical_gene.csv', 'wb')
-writer_binding = csv.writer(csvfile_binding, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-writer_binding.writerow(
-    ['ChemicalID', 'GeneID', 'interaction_text', 'gene_forms', 'pubMedIds', 'interactions_actions', 'chemical_name',
-     'gene_name', 'binding_interaction_text', 'unbiased'])
-
-csvfile_binding_other_way_around = open('chemical_gene/relationships_binding_gene_chemical.csv', 'wb')
-writer_binding_other_way_around = csv.writer(csvfile_binding_other_way_around, delimiter=',', quotechar='"',
-                                             quoting=csv.QUOTE_MINIMAL)
-writer_binding_other_way_around.writerow(
-    ['ChemicalID', 'GeneID', 'interaction_text', 'gene_forms', 'pubMedIds', 'interactions_actions', 'chemical_name',
-     'gene_name', 'binding_interaction_text', 'unbiased'])
-
-csvfile_metabolic_processing = open('chemical_gene/relationships_metabolic_processing_chemical_gene.csv', 'wb')
-writer_metabolic_processing = csv.writer(csvfile_metabolic_processing, delimiter=',', quotechar='"',
-                                         quoting=csv.QUOTE_MINIMAL)
-writer_metabolic_processing.writerow(
-    ['ChemicalID', 'GeneID', 'interaction_text', 'gene_forms', 'pubMedIds', 'interactions_actions', 'chemical_name',
-     'gene_name', 'special_interaction_text', 'unbiased'])
-
-csvfile_metabolic_processing_other_way_around = open(
-    'chemical_gene/relationships_metabolic_processing_gene_chemical.csv', 'wb')
-writer_metabolic_processing_other_way_around = csv.writer(csvfile_metabolic_processing_other_way_around, delimiter=',',
-                                                          quotechar='"',
-                                                          quoting=csv.QUOTE_MINIMAL)
-writer_metabolic_processing_other_way_around.writerow(
-    ['ChemicalID', 'GeneID', 'interaction_text', 'gene_forms', 'pubMedIds', 'interactions_actions', 'chemical_name',
-     'gene_name', 'special_interaction_text', 'unbiased'])
-
-csvfile_transport_out = open('chemical_gene/relationships_transport_out_chemical_gene.csv', 'wb')
-writer_transport_out = csv.writer(csvfile_transport_out, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-writer_transport_out.writerow(
-    ['ChemicalID', 'GeneID', 'interaction_text', 'gene_forms', 'pubMedIds', 'interactions_actions', 'chemical_name',
-     'gene_name', 'special_interaction_text', 'unbiased'])
-
-csvfile_out_other_way_around = open('chemical_gene/relationships_transport_out_gene_chemical.csv', 'wb')
-writer_transport_out_other_way_around = csv.writer(csvfile_out_other_way_around, delimiter=',', quotechar='"',
-                                                   quoting=csv.QUOTE_MINIMAL)
-writer_transport_out_other_way_around.writerow(
-    ['ChemicalID', 'GeneID', 'interaction_text', 'gene_forms', 'pubMedIds', 'interactions_actions', 'chemical_name',
-     'gene_name', 'special_interaction_text', 'unbiased'])
-
-csvfile_in = open('chemical_gene/relationships_transport_in_chemical_gene.csv', 'wb')
-writer_transport_in = csv.writer(csvfile_in, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-writer_transport_in.writerow(
-    ['ChemicalID', 'GeneID', 'interaction_text', 'gene_forms', 'pubMedIds', 'interactions_actions', 'chemical_name',
-     'gene_name', 'special_interaction_text', 'unbiased'])
-
-csvfile_in_other_way_around = open('chemical_gene/relationships_transport_in_gene_chemical.csv', 'wb')
-writer_transport_in_other_way_around = csv.writer(csvfile_in_other_way_around, delimiter=',', quotechar='"',
-                                                  quoting=csv.QUOTE_MINIMAL)
-writer_transport_in_other_way_around.writerow(
-    ['ChemicalID', 'GeneID', 'interaction_text', 'gene_forms', 'pubMedIds', 'interactions_actions', 'chemical_name',
-     'gene_name', 'special_interaction_text', 'unbiased'])
-
-csvfile_transport = open('chemical_gene/relationships_transport_chemical_gene.csv', 'wb')
-writer_transport = csv.writer(csvfile_transport, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-writer_transport.writerow(
-    ['ChemicalID', 'GeneID', 'interaction_text', 'gene_forms', 'pubMedIds', 'interactions_actions', 'chemical_name',
-     'gene_name', 'special_interaction_text', 'unbiased'])
-
-csvfile_transport_other_way_around = open('chemical_gene/relationships_transport_gene_chemical.csv', 'wb')
-writer_transport_other_way_around = csv.writer(csvfile_transport_other_way_around, delimiter=',', quotechar='"',
-                                               quoting=csv.QUOTE_MINIMAL)
-writer_transport_other_way_around.writerow(
-    ['ChemicalID', 'GeneID', 'interaction_text', 'gene_forms', 'pubMedIds', 'interactions_actions', 'chemical_name',
-     'gene_name', 'special_interaction_text', 'unbiased'])
-
-'''
-function to sort the information into the right file for activity, expression and degradation
-'''
-
-
-def sort_regulation_information_into_the_different_files(action, action_value, position_chemical, position_gene,
-                                                         chemical, gene,
-                                                         interaction_texts_string, gene_forms, pubMedIds,
-                                                         interactions_actions_string, one_upregulated_other_way_around,
-                                                         one_upregulated, one_downregulated_other_way_around,
-                                                         one_downregulated, chemical_name, gene_name):
-    if (action in ['activity', 'expression'] and 'increases' in action_value) or (
-            action == 'degradation' and 'decreases' in action_value):
-        dict_pairs[(chemical, gene)] = 'yes'
-
-        one_upregulated, one_upregulated_other_way_around = sort_regulation_information_into_the_different_files_binding(
-            writer_upregulated_other_way_around, writer_upregulated, position_chemical, position_gene,
-            chemical, gene,
-            interaction_texts_string, gene_forms, pubMedIds,
-            interactions_actions_string, one_upregulated, one_upregulated_other_way_around,
-            chemical_name, gene_name)
-
-    elif (action in ['activity', 'expression'] and 'decreases' in action_value) or (
-            action_value == 'degradation' and 'increases' in action_value):
-        dict_pairs[(chemical, gene)] = 'yes'
-
-        one_downregulated, one_downregulated_other_way_around = sort_regulation_information_into_the_different_files_binding(
-            writer_downrgulated_other_way_around, writer_downrgulated, position_chemical, position_gene,
-            chemical, gene,
-            interaction_texts_string, gene_forms, pubMedIds,
-            interactions_actions_string, one_downregulated, one_downregulated_other_way_around,
-            chemical_name, gene_name)
-
-
-    return one_upregulated, one_upregulated_other_way_around, one_downregulated, one_downregulated_other_way_around
-
-
-'''
-function to sort the information into the right file for activity, expression and degradation
-'''
-
-
-def sort_regulation_information_into_the_different_files_transporter(action, action_value, position_chemical,
-                                                                     position_gene,
-                                                                     chemical, gene,
-                                                                     interaction_texts_string, gene_forms, pubMedIds,
-                                                                     interactions_actions_string,
-                                                                     one_out_other_way_around,
-                                                                     one_in, one_in_other_way_around,
-                                                                     one_out, one_transport,
-                                                                     one_transport_other_way_around, chemical_name,
-                                                                     gene_name, interaction_text):
-
-    if action in ['secretion', 'export']:
-        dict_pairs[(chemical, gene)] = 'yes'
-
-        one_out, one_out_other_way_around = sort_regulation_information_into_the_different_files_binding(
-            writer_transport_out_other_way_around, writer_transport_out, position_chemical, position_gene,
-            chemical, gene,
-            interaction_texts_string, gene_forms, pubMedIds,
-            interactions_actions_string, one_out, one_out_other_way_around,
-            chemical_name, gene_name, interaction_text)
-
-    elif action in ['uptake', 'import']:
-        dict_pairs[(chemical, gene)] = 'yes'
-
-        one_in, one_in_other_way_around = sort_regulation_information_into_the_different_files_binding(
-            writer_transport_in_other_way_around, writer_transport_in, position_chemical, position_gene,
-            chemical, gene,
-            interaction_texts_string, gene_forms, pubMedIds,
-            interactions_actions_string, one_in, one_in_other_way_around,
-            chemical_name, gene_name, interaction_text)
-    else:
-        dict_pairs[(chemical, gene)] = 'yes'
-
-        one_transport, one_transport_other_way_around = sort_regulation_information_into_the_different_files_binding(
-            writer_transport_other_way_around, writer_transport, position_chemical, position_gene,
-            chemical, gene,
-            interaction_texts_string, gene_forms, pubMedIds,
-            interactions_actions_string, one_transport, one_transport_other_way_around,
-            chemical_name, gene_name, interaction_text)
-
-    return one_out_other_way_around, one_in, one_in_other_way_around, one_out, one_transport, one_transport_other_way_around
-
-
-'''
-sort into the right file with direction
-'''
-
-
-def sort_regulation_information_into_the_different_files_binding(writer_other_way_around, writer_chemical_gene,
-                                                                 position_chemical, position_gene,
-                                                                 chemical, gene,
-                                                                 interaction_texts_string, gene_forms, pubMedIds,
-                                                                 interactions_actions_string, one_chemical_gene,
-                                                                 one_other_way_around, chemical_name, gene_name,
-                                                                 special_interaction_text=''):
-    unbiased= True if len(pubMedIds)>0 else False
-    if position_gene < position_chemical and not one_other_way_around:
-        dict_pairs[(chemical, gene)] = 'yes'
-        writer_other_way_around.writerow(
-            [chemical, gene, interaction_texts_string, gene_forms, pubMedIds,
-             interactions_actions_string, chemical_name, gene_name, special_interaction_text, unbiased])
-        one_other_way_around = True
-    elif position_chemical < position_gene and not one_chemical_gene:
-        dict_pairs[(chemical, gene)] = 'yes'
-        writer_chemical_gene.writerow([chemical, gene, interaction_texts_string, gene_forms, pubMedIds,
-                                       interactions_actions_string, chemical_name, gene_name, special_interaction_text, unbiased])
-        one_chemical_gene = True
-
-    return one_chemical_gene, one_other_way_around
-
-
-'''
-preparation of the information for the csv files
-'''
-
-
-def preparation_of_information(chemical, gene, interactions_actions, interaction_texts, gene_forms, pubMedIds,
-                               chemical_name, chemical_synonyms):
-    interactions_actions_combine = []
-    interactions_actions_combine.extend(interactions_actions)
-    if (chemical, gene) in dict_chemical_gene_general:
-        list_pair_general = dict_chemical_gene_general[(chemical, gene)]
-        interaction_texts.extend(list_pair_general[0])
-        gene_forms.extend(list_pair_general[1])
-        gene_forms = list(set(gene_forms))
-        pubMedIds.extend(list_pair_general[2])
-        pubMedIds = list(set(pubMedIds))
-        interactions_actions_combine.extend(list_pair_general[3])
-
-    interaction_text_set= list(set(interaction_texts))
-    interaction_texts_string = '|'.join(interaction_text_set)
-    gene_forms = '|'.join(gene_forms)
-    pubMedIds = '|'.join(pubMedIds)
-    interactions_actions_string = ''
-    interaction_actions_list = set([])
-    for interaction_list in interactions_actions_combine:
-        interactions_actions_string += '|'.join(interaction_list) + ';'
-        interaction_actions_list = interaction_actions_list.union(interaction_list)
-    interactions_actions_string = '|'.join(list(interaction_actions_list))
-    # interactions_actions_string = '|'.join(interactions_actions)
-    # interactions_actions_string = interactions_actions_string[0:-1]
-
-    if not chemical_name is None and chemical_name != '':
-        chemical_synonyms.insert(0, chemical_name)
-
-    return interaction_texts, gene_forms, pubMedIds, interactions_actions_combine, interaction_texts_string, interactions_actions_string, chemical_synonyms
-
-
-'''
-search for chemical
-'''
-
-
-def search_for_chemical(chemical_name, chemical_synonyms, interaction_texts):
-    found_chemical = False
-    found_chemical_synonym = ''
-    for chemical_synonym in chemical_synonyms:
-        possible_position = interaction_texts[0].find(chemical_synonym)
-        if possible_position != -1:
-            found_chemical_synonym = chemical_synonym
-            found_chemical = True
-            break
-    if not found_chemical:
-        print('chemical name not found')
-        print(chemical_name)
-    found_chemical_synonym = found_chemical_synonym if found_chemical else chemical_name
-    return found_chemical_synonym
-
-
-'''
-find used name for chemical and gene for text mining
-'''
-
-
-def find_text_name_for_chemical_and_gene(chemical_name, chemical_synonyms, gene_name, gene_symbol, interaction_texts):
-    found_gene = False
-    found_chemical_synonym = search_for_chemical(chemical_name, chemical_synonyms, interaction_texts)
-
-    found_gene_synonym = ''
-    possible_position = interaction_texts[0].find(gene_symbol)
-    if possible_position != -1:
-        found_gene_synonym = gene_symbol
-        found_gene = True
-    found_gene_synonym = found_gene_synonym if found_gene else gene_name
-
-    return found_gene_synonym, found_chemical_synonym
-
-
-'''
-finde the position of the chemical and gene in the interaction text and return this
-'''
-
-
-def find_position_of_chemical_and_gene_in_text(found_chemical_synonym, found_gene_synonym, interaction_text):
-    position_chemical = -1
-    position_gene = -1
-
-    found_gene = False
-    found_chemical = False
-    possible_position = interaction_text.find(found_chemical_synonym)
-    if possible_position != -1:
-        position_chemical = possible_position
-        found_chemical = True
-    position_chemical = default_value_position if not found_chemical else position_chemical
-
-    possible_position = interaction_text.find(found_gene_synonym)
-    if possible_position != -1:
-        position_gene = possible_position
-        found_gene = True
-    position_gene = default_value_position if not found_gene else position_gene
-
-    return position_chemical, position_gene
-
-
-# default value if the position of chemical or gene is not found
-default_value_position = 10000
-
-'''
-generate the different csv files for upregulation, downregulation and association and also the cypher file
-'''
-
-
-def generate_csv_and_cypher_file():
-    # generate cypher file
-    cypherfile = open('chemical_gene/cypher.cypher', 'w')
+def add_cypher_queries_to_cypher_file():
     cypherfile.write('begin\n')
     cypherfile.write(
         'Match (c:Chemical)-[r:BINDS_CbG]->(b:Gene) Where not exists(r.hetionet) Set r.hetionet="yes", r.resource=["Hetionet"];\n')
@@ -571,44 +44,142 @@ def generate_csv_and_cypher_file():
     cypherfile.write(
         'Match (c:Chemical)-[r:DOWNREGULATES_CdG]->(b:Gene) Where not exists(r.hetionet) Set r.hetionet="yes", r.resource=["Hetionet"];\n')
     cypherfile.write('commit\n')
-    # overthink how to chang the additon from urls and actions by merge for update (double entries problem)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/chemical_gene/relationships_binding_chemical_gene.csv" As line Match (n:Gene{identifier:toInteger(line.GeneID)}), (b:Chemical{identifier:line.ChemicalID}) Merge (b)-[r:BINDS_CbG]->(n) On Create Set r.hetionet='no', r.ctd='yes', r.urls="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.sources=["CTD"], r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased=line.unbiased, r.interaction_texts=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|'), r.binding_interaction_text=split(line.binding_interaction_text,'|') On Match SET r.ctd='yes', r.urls= r.urls + "http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.sources=["CTD"], r.license_ctd="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased=line.unbiased, r.interaction_texts=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=r.pubmed_ids+split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|'), r.binding_interaction_text=split(line.binding_interaction_text,'|');\n '''
-    cypherfile.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/chemical_gene/relationships_binding_gene_chemical.csv" As line Match (n:Gene{identifier:toInteger(line.GeneID)}), (b:Chemical{identifier:line.ChemicalID}) Merge (n)-[r:BINDS_GbC]->(b) On Create Set r.hetionet='no', r.ctd='yes', r.urls="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.sources=["CTD"], r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased=line.unbiased, r.interaction_texts=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|'), r.binding_interaction_text=split(line.binding_interaction_text,'|') On Match SET r.ctd='yes', r.urls= r.urls + "http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.sources=["CTD"], r.license_ctd="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased=line.unbiased, r.interaction_texts=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=r.pubmed_ids+split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|'), r.binding_interaction_text=split(line.binding_interaction_text,'|');\n '''
-    cypherfile.write(query)
-    # query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/chemical_gene/relationships_association_chemical_gene.csv" As line Match (n:Gene{identifier:toInteger(line.GeneID)}), (b:Chemical{identifier:line.ChemicalID}) Merge (b)-[r:ASSOCIATES_CaG]->(n) On Create Set r.hetionet='no', r.ctd='yes', r.urls="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.sources=["CTD"], r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased='false', r.interaction_texts=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|'), r.co_treatment=split(line.co_treatment,'|') On Match SET r.ctd='yes', r.urls= r.urls + "http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.sources=["CTD"], r.license_ctd="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased='false', r.interaction_texts=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=r.pubmed_ids+split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|'), r.co_treatment=split(line.co_treatment,'|');\n '''
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/chemical_gene/relationships_association_chemical_gene.csv" As line Match (n:Gene{identifier:toInteger(line.GeneID)}), (b:Chemical{identifier:line.ChemicalID}) Create (b)-[r:ASSOCIATES_CaG{ hetionet:'no', ctd:'yes', urls:"http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , sources:["CTD"], license:"© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", unbiased:line.unbiased, interaction_texts:split(line.interaction_text,'|'), gene_forms:split(line.gene_forms,'|'), pubmed_ids:split(line.pubMedIds,'|'), interactions_actions:split(line.interactions_actions,'|'), co_treatment:split(line.co_treatment,'|')}]->(n) ;\n '''
-    cypherfile.write(query)
-    # by merge licence must be take out if I used different sources with also licence
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/chemical_gene/relationships_downregulated_chemical_gene.csv" As line Match (n:Gene{identifier:toInteger(line.GeneID)}), (b:Chemical{identifier:line.ChemicalID}) Merge (b)-[r:DOWNREGULATES_CdG]->(n) On Create Set r.hetionet='no', r.ctd='yes', r.urls="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.source="CTD", r.resource=['CTD'], r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased=line.unbiased, r.interaction_texts=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|') On Match SET r.ctd='yes', r.urls= r.urls + "http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.resource=r.resource+"CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased=line.unbiased, r.interaction_texts=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=r.pubmed_ids+split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|');\n '''
-    cypherfile.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/chemical_gene/relationships_downregulated_gene_chemical.csv" As line Match (n:Gene{identifier:toInteger(line.GeneID)}), (b:Chemical{identifier:line.ChemicalID}) Merge (n)-[r:DOWNREGULATES_GdC]->(b) On Create Set r.hetionet='no', r.ctd='yes', r.urls="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.source="CTD", r.resource=['CTD'], r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased=line.unbiased, r.interaction_texts=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|') On Match SET r.ctd='yes', r.urls= r.urls + "http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.resource=r.resource+"CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased=line.unbiased, r.interaction_texts=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=r.pubmed_ids+split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|');\n '''
-    cypherfile.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/chemical_gene/relationships_upregulated_chemical_gene.csv" As line Match (n:Gene{identifier:toInteger(line.GeneID)}), (b:Chemical{identifier:line.ChemicalID}) Merge (b)-[r:UPREGULATES_CuG]->(n) On Create Set r.hetionet='no', r.ctd='yes', r.urls="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.source="CTD", r.resource=['CTD'], r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased=line.unbiased, r.interaction_texts=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|') On Match SET r.ctd='yes', r.urls= r.urls + "http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.resource=r.resource+"CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased=line.unbiased, r.interaction_texts=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=r.pubmed_ids+split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|');\n '''
-    cypherfile.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/chemical_gene/relationships_upregulated_gene_chemical.csv" As line Match (n:Gene{identifier:toInteger(line.GeneID)}), (b:Chemical{identifier:line.ChemicalID}) Merge (n)-[r:UPREGULATES_GuC]->(b) On Create Set r.hetionet='no', r.ctd='yes', r.urls="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.source="CTD", r.resource=['CTD'], r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased=line.unbiased, r.interaction_texts=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|') On Match SET r.ctd='yes', r.urls= r.urls + "http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.resource=r.resource+"CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased=line.unbiased, r.interaction_texts=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=r.pubmed_ids+split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|');\n '''
+
+# dictionary with rela name to drug-gene/protein pair
+dict_rela_to_drug_gene_protein_pair = {}
+
+# dictionary from file name to rela name in neo4j
+dict_file_name_to_rela_name = {
+    'upregulated_chemical_gene': 'UPREGULATES_CuG',
+    'upregulated_gene_chemical': 'UPREGULATES_GuC',
+    'upregulated_chemical_protein': 'UPREGULATES_CuPR',
+    'upregulated_protein_chemical': 'UPREGULATES_PRuC',
+    'downregulated_chemical_gene': 'DOWNREGULATES_CdG',
+    'downregulated_gene_chemical': 'DOWNREGULATES_GdC',
+    'downregulated_chemical_protein': 'DOWNREGULATES_CdPR',
+    'downregulated_protein_chemical': 'DOWNREGULATES_PRdC',
+    'association_chemical_gene': 'ASSOCIATES_CaG',
+    'association_gene_chemical': 'ASSOCIATES_CaG',
+    'association_chemical_protein': 'ASSOCIATES_CaPR',
+    'association_protein_chemical': 'ASSOCIATES_CaPR',
+    'binding_chemical_gene': 'BINDS_CbG',
+    'binding_gene_chemical': 'BINDS_GbC',
+    'binding_chemical_protein': 'BINDS_CbPR',
+    'binding_protein_chemical': 'BINDS_PRbC',
+    'metabolic_processing_chemical_gene': 'METABOLIC_PROCESSES_REGULATION_CmpG',
+    'metabolic_processing_gene_chemical': 'METABOLIC_PROCESSES_REGULATION_GmpC',
+    'metabolic_processing_chemical_protein': 'METABOLIC_PROCESSES_REGULATION_CmpPR',
+    'metabolic_processing_protein_chemical': 'METABOLIC_PROCESSES_REGULATION_PRmpC',
+    'transport_out_chemical_gene': 'TRANSPORTS_OUT_OF_CELL_REGULATION_CtoG',
+    'transport_out_gene_chemical': 'TRANSPORTS_OUT_OF_CELL_REGULATION_GtoC',
+    'transport_out_chemical_protein': 'TRANSPORTS_OUT_OF_CELL_REGULATION_CtoPR',
+    'transport_out_protein_chemical': 'TRANSPORTS_OUT_OF_CELL_REGULATION_PRtoC',
+    'transport_in_chemical_gene': 'TRANSPORTS_INTO_CELL_REGULATION_CtiG',
+    'transport_in_gene_chemical': 'TRANSPORTS_INTO_CELL_REGULATION_GtiC',
+    'transport_in_chemical_protein': 'TRANSPORTS_INTO_CELL_REGULATION_CtiPR',
+    'transport_in_protein_chemical': 'TRANSPORTS_INTO_CELL_REGULATION_PRtiC',
+    'transport_chemical_gene': 'TRANSPORTS_REGULATION_CtG',
+    'transport_gene_chemical': 'TRANSPORTS_REGULATION_GtC',
+    'transport_chemical_protein': 'TRANSPORTS_REGULATION_CtPR',
+    'transport_protein_chemical': 'TRANSPORTS_REGULATION_PRtC'
+}
+
+# dictionary from interaction type and value to rela name
+dict_interaction_type_and_value_to_rela_name = {
+    ('activity', 'increases'): 'upregulated',
+    ('expression', 'increases'): 'upregulated',
+    ('degradation', 'decreases'): 'upregulated',
+    ('activity', 'decreases'): 'downregulated',
+    ('expression', 'decreases'): 'downregulated',
+    ('degradation', 'increases'): 'downregulated',
+    ('binds', ''): 'binding',
+    ('secretion', ''): 'transport_out',
+    ('export', ''): 'transport_out',
+    ('import', ''): 'transport_in',
+    ('uptake', ''): 'transport_in',
+    ('transport', ''): 'transport',
+    ('metabolism', ''): 'metabolic_processing'
+}
+
+# list of all important relationship actions
+list_important_regulation = ['activity', 'expression', 'degradation']
+list_important_transport = ['transport', 'secretion', 'export', 'uptake', 'import']
+# one is add manual, because metabolic processing is named metabolism in the interaction_texts
+list_metabolic_processing = ['metabolism']
+
+#dictionary from activity name to interaction text name
+dict_metabolic_activate_name={
+    'metabolic processing':'metabolism'
+}
+
+file = open('chemical_gene/metabolic_processing_action.csv', 'r')
+for line in file:
+    list_metabolic_processing.append(line.split(',')[0])
+    dict_interaction_type_and_value_to_rela_name[(line.split(',')[0], '')] = 'metabolic_processing'
+
+columns = ['ChemicalID', 'GeneID', 'interaction_text', 'gene_forms', 'pubMedIds', 'interactions_actions', 'unbiased']
+
+list_of_rela_names = ['upregulated', 'downregulated', 'association', 'binding', 'metabolic_processing', 'transport_out',
+                      'transport_in', 'transport']
+
+dict_rela_to_file = {}
+
+'''
+generate csv file with the columns fo a path
+'''
+
+
+def generate_csv(path):
+    csvfile = open(path, 'wb')
+    writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+    writer.writerow(columns)
+    return writer
+
+
+'''
+generate the path to csv and generate the csv, add csv to dictionary
+also generate cypher query
+'''
+
+
+def path_to_rela_and_add_to_dict(rela, first, second):
+    rela_full = rela + '_' + first + '_' + second
+    path = 'chemical_gene/relationships_' + rela_full + '.csv'
+    writer = generate_csv(path)
+    dict_rela_to_file[rela_full] = writer
+
+    query_first_part = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/''' + path + '''" As line Match (b:Chemical{identifier:line.ChemicalID}), '''
+    if first == 'gene' or second == 'gene':
+        query_middle_1 = ''' (n:Gene{identifier:toInteger(line.GeneID)})'''
+    else:
+        query_middle_1 = ''' (g:Gene{identifier:toInteger(line.GeneID)})-[:PRODUCES_GpP]->(n:Protein)'''
+    if first=='chemical':
+        query_middle_2 = ''' Merge (b)-[r:%s]->(n)'''
+    else:
+        query_middle_2 = ''' Merge (b)<-[r:%s]-(n)'''
+    query_last_part=''' On Create Set r.hetionet='no', r.ctd='yes', r.urls_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.sources=["CTD"], r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased=line.unbiased, r.interaction_text=line.interaction_text, r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|') On Match SET r.ctd='yes', r.urls_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.sources=["CTD"], r.license_ctd="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased=line.unbiased, r.interaction_text=line.interaction_text, r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=r.pubmed_ids+split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|');\n '''
+    query = query_first_part + query_middle_1+ query_middle_2 + query_last_part
+
+    query = query % (dict_file_name_to_rela_name[rela_full])
     cypherfile.write(query)
 
-    # query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/chemical_gene/relationships_metabolic_processing_chemical_gene.csv" As line Match (n:Gene{identifier:toInteger(line.GeneID)}), (b:Chemical{identifier:line.ChemicalID}) Merge (b)-[r:METABOLIC_PROCESSES_CmpG]->(n) On Create Set r.hetionet='no', r.ctd='yes', r.urls="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.sources=["CTD"], r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased='false', r.interaction_texts=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|'), r.metabolic_processing_interaction_text=split(line.special_interaction_text,'|') On Match SET r.ctd='yes', r.urls= r.urls + "http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.sources=["CTD"], r.license_ctd="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased='false', r.interaction_texts=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=r.pubmed_ids+split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|'), r.metabolic_processing_interaction_text=split(line.special_interaction_text,'|');\n '''
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/chemical_gene/relationships_metabolic_processing_chemical_gene.csv" As line Match (n:Gene{identifier:toInteger(line.GeneID)}), (b:Chemical{identifier:line.ChemicalID}) Merge (b)-[r:METABOLIC_PROCESSES_CmpG{hetionet:'no', ctd:'yes', urls:"http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , sources:["CTD"], license:"© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", unbiased:line.unbiased, interaction_texts:split(line.interaction_text,'|'), gene_forms:split(line.gene_forms,'|'), pubmed_ids:split(line.pubMedIds,'|'), interactions_actions:split(line.interactions_actions,'|'), metabolic_processing_interaction_text:split(line.special_interaction_text,'|')}]->(n) ;\n '''
-    cypherfile.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/chemical_gene/relationships_metabolic_processing_gene_chemical.csv" As line Match (n:Gene{identifier:toInteger(line.GeneID)}), (b:Chemical{identifier:line.ChemicalID}) Merge (n)-[r:METABOLIC_PROCESSES_GmpC]->(b) On Create Set r.hetionet='no', r.ctd='yes', r.urls="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.sources=["CTD"], r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased=line.unbiased, r.interaction_texts=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|'), r.metabolic_processing_interaction_text=split(line.special_interaction_text,'|') On Match SET r.ctd='yes', r.urls= r.urls + "http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.sources=["CTD"], r.license_ctd="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.interaction_texts=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=r.pubmed_ids+split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|'), r.metabolic_processing_interaction_text=split(line.special_interaction_text,'|');\n '''
-    cypherfile.write(query)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/chemical_gene/relationships_transport_chemical_gene.csv" As line Match (n:Gene{identifier:toInteger(line.GeneID)}), (b:Chemical{identifier:line.ChemicalID}) Merge (b)-[r:TRANSPORTS_CtG]->(n) On Create Set r.hetionet='no', r.ctd='yes', r.urls="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.sources=["CTD"], r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased=line.unbiased, r.interaction_texts=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|'), r.transport_interaction_text=split(line.special_interaction_text,'|') On Match SET r.ctd='yes', r.urls= r.urls + "http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.sources=["CTD"], r.license_ctd="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.interaction_texts=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=r.pubmed_ids+split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|'), r.metabolic_processing_interaction_text=split(line.transport_interaction_text,'|');\n '''
-    cypherfile.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/chemical_gene/relationships_transport_gene_chemical.csv" As line Match (n:Gene{identifier:toInteger(line.GeneID)}), (b:Chemical{identifier:line.ChemicalID}) Merge (n)-[r:TRANSPORTS_GtC]->(b) On Create Set r.hetionet='no', r.ctd='yes', r.urls="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.sources=["CTD"], r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased='false', r.interaction_texts=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|'), r.transport_interaction_text=split(line.special_interaction_text,'|') On Match SET r.ctd='yes', r.urls= r.urls + "http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.sources=["CTD"], r.license_ctd="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.interaction_texts=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=r.pubmed_ids+split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|'), r.metabolic_processing_interaction_text=split(line.transport_interaction_text,'|');\n '''
-    cypherfile.write(query)
+# the name of the entities in the rela and dictionary
+chemical = 'chemical'
+gene = 'gene'
+protein = 'protein'
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/chemical_gene/relationships_transport_in_chemical_gene.csv" As line Match (n:Gene{identifier:toInteger(line.GeneID)}), (b:Chemical{identifier:line.ChemicalID}) Merge (b)-[r:TRANSPORTS_INTO_CELL_CtiG]->(n) On Create Set r.hetionet='no', r.ctd='yes', r.urls="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.sources=["CTD"], r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased=line.unbiased, r.interaction_texts=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|'), r.transport_interaction_text=split(line.special_interaction_text,'|') On Match SET r.ctd='yes', r.urls= r.urls + "http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.sources=["CTD"], r.license_ctd="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.interaction_texts=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=r.pubmed_ids+split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|'), r.metabolic_processing_interaction_text=split(line.transport_interaction_text,'|');\n '''
-    cypherfile.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/chemical_gene/relationships_transport_in_gene_chemical.csv" As line Match (n:Gene{identifier:toInteger(line.GeneID)}), (b:Chemical{identifier:line.ChemicalID}) Merge (n)-[r:TRANSPORTS_INTO_CELL_GtiC]->(b) On Create Set r.hetionet='no', r.ctd='yes', r.urls="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.sources=["CTD"], r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased=line.unbiased, r.interaction_texts=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|'), r.transport_interaction_text=split(line.special_interaction_text,'|') On Match SET r.ctd='yes', r.urls= r.urls + "http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.sources=["CTD"], r.license_ctd="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.interaction_texts=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=r.pubmed_ids+split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|'), r.metabolic_processing_interaction_text=split(line.transport_interaction_text,'|');\n '''
-    cypherfile.write(query)
+'''
+generate dictionary for every possible rela combination
+'''
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/chemical_gene/relationships_transport_out_chemical_gene.csv" As line Match (n:Gene{identifier:toInteger(line.GeneID)}), (b:Chemical{identifier:line.ChemicalID}) Merge (b)-[r:TRANSPORTS_OUT_OF_CELL_CtoG]->(n) On Create Set r.hetionet='no', r.ctd='yes', r.urls="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.sources=["CTD"], r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased=line.unbiased, r.interaction_texts=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|'), r.transport_interaction_text=split(line.special_interaction_text,'|') On Match SET r.ctd='yes', r.urls= r.urls + "http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.sources=["CTD"], r.license_ctd="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.interaction_texts=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=r.pubmed_ids+split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|'), r.metabolic_processing_interaction_text=split(line.transport_interaction_text,'|');\n '''
-    cypherfile.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/chemical_gene/relationships_transport_out_gene_chemical.csv" As line Match (n:Gene{identifier:toInteger(line.GeneID)}), (b:Chemical{identifier:line.ChemicalID}) Merge (n)-[r:TRANSPORTS_OUT_OF_CELL_GtoC]->(b) On Create Set r.hetionet='no', r.ctd='yes', r.urls="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.sources=["CTD"], r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased=line.unbiased, r.interaction_texts=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|'), r.transport_interaction_text=split(line.special_interaction_text,'|') On Match SET r.ctd='yes', r.urls= r.urls + "http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.sources=["CTD"], r.license_ctd="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.interaction_texts=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=r.pubmed_ids+split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|'), r.metabolic_processing_interaction_text=split(line.transport_interaction_text,'|');\n '''
-    cypherfile.write(query)
+
+def generate_csv_file_for_different_rela_types():
+    for rela in list_of_rela_names:
+        path_to_rela_and_add_to_dict(rela, chemical, gene)
+        path_to_rela_and_add_to_dict(rela, gene, chemical)
+        path_to_rela_and_add_to_dict(rela, chemical, protein)
+        path_to_rela_and_add_to_dict(rela, protein, chemical)
 
     cypherfile.write('begin\n')
     cypherfile.write('Match (c:Chemical)-[r:BINDS_CbG]->(b:Gene) Where not exists(r.ctd) Set r.ctd="no";\n')
@@ -619,305 +190,330 @@ def generate_csv_and_cypher_file():
     cypherfile.write('begin\n')
     cypherfile.write('Match (c:Chemical)-[r:DOWNREGULATES_CdG]->(b:Gene) Where not exists(r.ctd) Set r.ctd="no";\n')
     cypherfile.write('commit\n')
-    counter_only_two = 0
-    counter_two_and_one = 0
+    cypherfile.close()
 
-    print (datetime.datetime.utcnow())
-    print('up down regulation')
-    # go through all with information about up or down regulated relas
-    for (chemical, gene), [interaction_texts, gene_forms, pubMedIds, interactions_actions, (chemical_name, gene_name),
-                           chemical_synonyms, interaction_dicts, gene_symbol] in dict_chemical_gene_regulation.items():
-        # some relationships can be switched to the general list but all data should be combined
-        # because the this variables do not checked twice by general only
 
-        interaction_texts, gene_forms, pubMedIds, interactions_actions_combine, interaction_texts_string, interactions_actions_string, chemical_synonyms = preparation_of_information(
-            chemical, gene, interactions_actions, interaction_texts, gene_forms, pubMedIds, chemical_name,
-            chemical_synonyms)
+'''
+search for chemical
+'''
 
-        # check that ich pair appears only one time in eache file
-        one_upregulated = False
-        one_upregulated_other_way_around = False
-        one_downregulated = False
-        one_downregulated_other_way_around = False
 
-        counter = 0
-
-        found_gene_synonym, found_chemical_synonym = find_text_name_for_chemical_and_gene(chemical_name,
-                                                                                          chemical_synonyms, gene_name,
-                                                                                          gene_symbol,
-                                                                                          interaction_texts)
-
-        for interactions_action in interactions_actions:
-            interaction_text = interaction_texts[counter]
-            interaction_dict = interaction_dicts[counter]
-
-            for part in interaction_text.split('['):
-                for smaller_part in part.split(']'):
-                    # find take every time the first time when the substring appeares, so some times the chemcial appears multiple
-                    # time so the order for the sub action need to be new classified
-                    position_chemical_new = smaller_part.find(found_chemical_synonym)
-                    position_gene_new = smaller_part.find(found_gene_synonym)
-                    if position_chemical_new != -1 and position_gene_new != -1:
-                        for word in smaller_part.split(' '):
-                            if word in list_important_regulation:
-                                one_upregulated, one_upregulated_other_way_around, one_downregulated, one_downregulated_other_way_around = sort_regulation_information_into_the_different_files(
-                                    word, interaction_dict[word], position_chemical_new,
-                                    position_gene_new, chemical,
-                                    gene, interaction_texts_string, gene_forms, pubMedIds,
-                                    interactions_actions_string, one_upregulated_other_way_around,
-                                    one_upregulated,
-                                    one_downregulated_other_way_around,
-                                    one_downregulated, chemical_name, gene_name)
-
-            counter += 1
-
-    print (datetime.datetime.utcnow())
-    print('binding')
-    # go through all with information about binding
-    for (chemical, gene), [interaction_texts, gene_forms, pubMedIds, interactions_actions,
-                           (chemical_name, gene_name),
-                           chemical_synonyms, interaction_dicts,
-                           gene_symbol] in dict_chemical_gene_binding.items():
-        # some relationships can be switched to the general list but all data should be combined
-        # because the this variables do not checked twice by general only
-
-        interaction_texts, gene_forms, pubMedIds, interactions_actions_combine, interaction_texts_string, interactions_actions_string, chemical_synonyms = preparation_of_information(
-            chemical, gene, interactions_actions, interaction_texts, gene_forms, pubMedIds, chemical_name,
-            chemical_synonyms)
-
-        # check that ich pair appears only one time in eache file
-        one_binding = False
-        one_binding_other_way_around = False
-
-        counter = 0
-
-        found_gene_synonym, found_chemical_synonym = find_text_name_for_chemical_and_gene(chemical_name,
-                                                                                          chemical_synonyms,
-                                                                                          gene_name,
-                                                                                          gene_symbol,
-                                                                                          interaction_texts)
-
-        for interactions_action in interactions_actions:
-            interaction_text = interaction_texts[counter]
-            interaction_dict = interaction_dicts[counter]
-
-            for part in interaction_text.split('['):
-                for smaller_part in part.split(']'):
-                    # find take every time the first time when the substring appeares, so some times the chemcial appears multiple
-                    # time so the order for the sub action need to be new classified
-                    position_chemical_new = smaller_part.find(found_chemical_synonym)
-                    position_gene_new = smaller_part.find(found_gene_synonym)
-                    if position_chemical_new != -1 and position_gene_new != -1:
-                        for word in smaller_part.split(' '):
-                            if word == 'binds':
-                                one_binding, one_binding_other_way_around = sort_regulation_information_into_the_different_files_binding(
-                                    writer_binding_other_way_around, writer_binding, position_chemical_new,
-                                    position_gene_new, chemical,
-                                    gene, interaction_texts_string, gene_forms, pubMedIds,
-                                    interactions_actions_string, one_binding, one_binding_other_way_around,
-                                    chemical_name, gene_name, interaction_text)
-
-            counter += 1
-
-    print (datetime.datetime.utcnow())
-    print('metabolic processing')
-    # go through all with information about metaboloic processing
-    for (chemical, gene), [interaction_texts, gene_forms, pubMedIds, interactions_actions,
-                           (chemical_name, gene_name),
-                           chemical_synonyms, interaction_dicts,
-                           gene_symbol] in dict_chemical_gene_metabolic_processing.items():
-        # some relationships can be switched to the general list but all data should be combined
-        # because the this variables do not checked twice by general only
-
-        interaction_texts, gene_forms, pubMedIds, interactions_actions_combine, interaction_texts_string, interactions_actions_string, chemical_synonyms = preparation_of_information(
-            chemical, gene, interactions_actions, interaction_texts, gene_forms, pubMedIds, chemical_name,
-            chemical_synonyms)
-
-        # check that ich pair appears only one time in eache file
-        one_binding = False
-        one_binding_other_way_around = False
-
-        counter = 0
-
-        found_gene_synonym, found_chemical_synonym = find_text_name_for_chemical_and_gene(chemical_name,
-                                                                                          chemical_synonyms,
-                                                                                          gene_name,
-                                                                                          gene_symbol,
-                                                                                          interaction_texts)
-
-        for interactions_action in interactions_actions:
-            interaction_text = interaction_texts[counter]
-            interaction_dict = interaction_dicts[counter]
-
-            for part in interaction_text.split('['):
-                for smaller_part in part.split(']'):
-                    # find take every time the first time when the substring appeares, so some times the chemcial appears multiple
-                    # time so the order for the sub action need to be new classified
-                    position_chemical_new = smaller_part.find(found_chemical_synonym)
-                    position_gene_new = smaller_part.find(found_gene_synonym)
-                    if position_chemical_new != -1 and position_gene_new != -1:
-                        for word in smaller_part.split(' '):
-                            if word in list_metabolic_processing:
-                                one_binding, one_binding_other_way_around = sort_regulation_information_into_the_different_files_binding(
-                                    writer_metabolic_processing_other_way_around, writer_metabolic_processing,
-                                    position_chemical_new,
-                                    position_gene_new, chemical,
-                                    gene, interaction_texts_string, gene_forms, pubMedIds,
-                                    interactions_actions_string, one_binding, one_binding_other_way_around,
-                                    chemical_name, gene_name, interaction_text)
-
-            counter += 1
-
-    print (datetime.datetime.utcnow())
-    print('transporter')
-    print(len(dict_chemical_gene_transport))
-    # go through all with information about transporter
-    for (chemical, gene), [interaction_texts, gene_forms, pubMedIds, interactions_actions,
-                           (chemical_name, gene_name),
-                           chemical_synonyms, interaction_dicts,
-                           gene_symbol] in dict_chemical_gene_transport.items():
-        # some relationships can be switched to the general list but all data should be combined
-        # because the this variables do not checked twice by general only
-
-        interaction_texts, gene_forms, pubMedIds, interactions_actions_combine, interaction_texts_string, interactions_actions_string, chemical_synonyms = preparation_of_information(
-            chemical, gene, interactions_actions, interaction_texts, gene_forms, pubMedIds, chemical_name,
-            chemical_synonyms)
-
-        # check that ich pair appears only one time in eache file
-        one_out_other_way_around = False
-        one_in = False
-        one_in_other_way_around = False
-        one_out = False
-        one_transport = False
-        one_transport_other_way_around = False
-        counter = 0
-
-        found_gene_synonym, found_chemical_synonym = find_text_name_for_chemical_and_gene(chemical_name,
-                                                                                          chemical_synonyms,
-                                                                                          gene_name,
-                                                                                          gene_symbol,
-                                                                                          interaction_texts)
-
-        for interactions_action in interactions_actions:
-            interaction_text = interaction_texts[counter]
-            interaction_dict = interaction_dicts[counter]
-
-            for part in interaction_text.split('['):
-                for smaller_part in part.split(']'):
-                    # find take every time the first time when the substring appeares, so some times the chemcial appears multiple
-                    # time so the order for the sub action need to be new classified
-                    position_chemical_new = smaller_part.find(found_chemical_synonym)
-                    position_gene_new = smaller_part.find(found_gene_synonym)
-                    if position_chemical_new != -1 and position_gene_new != -1:
-                        for word in smaller_part.split(' '):
-                            if word in list_important_transport:
-                                one_out_other_way_around, one_in, one_in_other_way_around, one_out, one_transport, one_transport_other_way_around = sort_regulation_information_into_the_different_files_transporter(
-                                    word, interaction_dict[word], position_chemical_new,
-                                    position_gene_new, chemical,
-                                    gene, interaction_texts_string, gene_forms, pubMedIds,
-                                    interactions_actions_string, one_out_other_way_around, one_in,
-                                    one_in_other_way_around, one_out, one_transport, one_transport_other_way_around,
-                                    chemical_name, gene_name, interaction_text)
-                                break
-
-            counter += 1
-
-    print (datetime.datetime.utcnow())
-    print('general')
-    for (chemical, gene), [interaction_texts, gene_forms, pubMedIds,
-                           interactions_actions, (chemical_name, gene_name), chemical_synonyms,
-                           gene_symbol] in dict_chemical_gene_general.items():
+def search_for_chemical(chemical_name, chemical_synonyms, interaction_text):
+    found_chemical = False
+    found_chemical_synonym = ''
+    # check also the  name
+    if not chemical_name is None and chemical_name != '':
         chemical_synonyms.insert(0, chemical_name)
-        found_gene_synonym, found_chemical_name_in_interaction_text = find_text_name_for_chemical_and_gene(
-            chemical_name,
-            chemical_synonyms, gene_name,
-            gene_symbol,
-            interaction_texts)
-        counter = 0
-        interactions_actions_string = ''
-        cotreatment_list = []
-        interaction_combined=set([])
-        for interaction_list in interactions_actions:
-            interaction_combined=interaction_combined.union(interaction_list)
-            # interactions_actions_string += '|'.join(interaction_list) + ';'
-            for interaction in interaction_list:
-                if interaction.split('^')[1] == 'cotreatment':
-                    interaction_text = interaction_texts[counter]
-                    for part_interaction_text in interaction_text.split('['):
-                        for small_part in part_interaction_text.split(']'):
-                            if small_part.find(found_chemical_name_in_interaction_text) != -1 and small_part.find(
-                                    'co-treated') != -1:
-                                cotreatment_list.append(interaction_text)
-                            elif small_part.find(found_gene_synonym) != -1 and small_part.find('co-treated') != -1:
-                                cotreatment_list.append(interaction_text)
-            counter+=1
-        # if len(interaction_texts)>200:
-        #     print('MULTI')
-        #     print(len(interaction_texts))
-        #     print(chemical, gene)
-        #     print(gene_name, chemical_name)
 
-        # if (chemical=='C459179' and gene=='9241') or (chemical=='C516138' and gene=='9241') :
-        if len(interaction_texts)>660  and not (chemical,gene)==('C006253', '5465'):
-            dict_cotreatment={}
-            interaction_texts_new=[]
-            counter = 0
-            for interaction_list in interactions_actions:
-                interaction_combined = interaction_combined.union(interaction_list)
-                # interactions_actions_string += '|'.join(interaction_list) + ';'
-                found_co_treatment=False
-                for interaction in interaction_list:
-                    if interaction.split('^')[1] == 'cotreatment':
-                        interaction_text = interaction_texts[counter]
-                        for part_interaction_text in interaction_text.split('['):
-                            list_part_interaction_text=part_interaction_text.split(']')
-                            for small_part in list_part_interaction_text:
-                                if small_part.find(found_chemical_name_in_interaction_text) != -1 and small_part.find(
-                                        'co-treated') != -1:
-                                    found_co_treatment=True
-                                    if small_part not in dict_cotreatment:
-                                        dict_cotreatment[small_part]=set([list_part_interaction_text[1]])
-                                        interaction_texts_new.append(interaction_text)
-                                    else:
-                                        dict_cotreatment[small_part].add(list_part_interaction_text[1])
-                                elif small_part.find(found_gene_synonym) != -1 and small_part.find('co-treated') != -1:
-                                    found_co_treatment=True
-                                    if small_part not in dict_cotreatment:
-                                        dict_cotreatment[small_part]=set([list_part_interaction_text[1]])
-                                        interaction_texts_new.append(interaction_text)
-                                    else:
-                                        dict_cotreatment[small_part].add(list_part_interaction_text[1])
-                if not found_co_treatment:
-                    interaction_texts_new.append(interaction_text)
-                counter += 1
-            interaction_texts=interaction_texts_new
-            cotreatment_list=[]
-            print('number of co treatment:'+str(len(dict_cotreatment)))
-            for front, list_back in dict_cotreatment.items():
-                string_one_cotreatment_and_all_results='['+front+']'+';'.join(list_back)
-                cotreatment_list.append(string_one_cotreatment_and_all_results)
-            counter += 1
-        if (chemical, gene) in dict_pairs and len(cotreatment_list) == 0:
-            continue
-        # if len(cotreatment_list)>0:
-        #     print(chemical,gene)
-        #     print(cotreatment_list)
+    # find the used name of the chemical
+    for chemical_synonym in chemical_synonyms:
+        found_chemical,found_chemical_synonym=search_for_name_in_string(interaction_text,chemical_synonym)
+        if found_chemical:
+            break
+    if not found_chemical:
+        print('chemical name not found')
+        print(chemical_name)
+    found_chemical_synonym = found_chemical_synonym if found_chemical else chemical_name
+    return found_chemical_synonym
 
-        interactions_actions_string='|'.join(list(interaction_combined))
-        interaction_texts=list(set(interaction_texts))
-        interaction_texts = '|'.join(interaction_texts)
-        gene_forms = '|'.join(gene_forms)
-        pubMedIds = '|'.join(pubMedIds)
-        cotreatment_list= set(list(cotreatment_list))
-        cotreatment_list = '|'.join(cotreatment_list)
+'''
+search for a name in a string and gib back if found and the value
+'''
+def search_for_name_in_string(interaction_text,name ):
+    found_name_value=''
+    found_name=False
+    interaction_text=interaction_text.lower()
+    name=name.lower()
+    possible_position = interaction_text.find(name)
+    if possible_position != -1:
+        found_name_value = name
+        found_name = True
+    return found_name, found_name_value
 
-        # interactions_actions_string = '|'.join(interactions_actions)
-        interactions_actions_string = interactions_actions_string[0:-1]
-        unbiased = True if len(pubMedIds) > 0 else False
-        # interactions_actions_string='|'.join(interactions_actions)
-        writer_association.writerow([
-            chemical, gene, interaction_texts, gene_forms, pubMedIds, interactions_actions_string, chemical_name,
-            gene_name, cotreatment_list, unbiased])
+'''
+find used name for gene for text mining
+'''
+
+
+def find_text_name_for_gene(gene_name, gene_symbol, interaction_text, gene_id):
+    found_gene = False
+
+    found_gene_synonym = ''
+
+    found_gene, found_gene_synonym= search_for_name_in_string(interaction_text, gene_symbol)
+    if not found_gene:
+        print(gene_id)
+        print(gene_name)
+        print(gene_symbol)
+        print(interaction_text)
+        print('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh')
+
+        query='''Match (s:Gene{identifier:%s}) Return s.synonyms''' %(gene_id)
+        results=g.run(query)
+        for synonyms, in results:
+            for synonym in synonyms:
+                found_gene, found_gene_synonym = search_for_name_in_string(interaction_text, synonym)
+                if found_gene:
+                    break
+    if not found_gene:
+        print(gene_id)
+        print(gene_name)
+        print(gene_symbol)
+        print(interaction_text)
+        print('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh')
+    found_gene_synonym = found_gene_synonym if found_gene else gene_name
+
+    return found_gene_synonym
+
+
+# dictionary of chemical id to chemical name used in the interaction text
+dict_chemical_id_to_used_name = {}
+
+# dictionary of gene id to gene name used in the interaction text
+dict_gene_id_to_used_name = {}
+
+# dictionary from interaction typ value to interaction text value
+dict_interaction_type_value_to_interaction_text_value = {
+    'increases': 'increased',
+    'decreases': 'decreased'
+}
+
+'''
+sort the information into the right dictionary and add the infomation
+'''
+
+
+def sort_into_dictionary_and_add(dict_action, chemical_id, gene_id, interaction_text, gene_forms, pubMedIds,
+                                 interactions_actions):
+    if (chemical_id, gene_id) in dict_action:
+        dict_action[(chemical_id, gene_id)][0].append(interaction_text)
+        dict_action[(chemical_id, gene_id)][1].append(gene_forms)
+        dict_action[(chemical_id, gene_id)][2].extend(pubMedIds)
+        dict_action[(chemical_id, gene_id)][2] = list(
+            set(dict_action[(chemical_id, gene_id)][2]))
+        dict_action[(chemical_id, gene_id)][3].append(interactions_actions)
+    else:
+        dict_action[(chemical_id, gene_id)] = [[interaction_text], [gene_forms], pubMedIds,
+                                               [interactions_actions]]
+
+
+'''
+get the right rela name
+'''
+
+
+def get_right_rela_name(position_chemical, position_gene, contains_protein, word, action_value):
+    if not (word, action_value) in dict_interaction_type_and_value_to_rela_name:
+        return ''
+    # ge the full name of the rela
+    if position_chemical < position_gene and contains_protein:
+        rela_full = dict_interaction_type_and_value_to_rela_name[(word, action_value)] + '_' + chemical + '_' + protein
+    elif position_chemical < position_gene:
+        rela_full = dict_interaction_type_and_value_to_rela_name[(
+            word, action_value)] + '_' + chemical + '_' + gene
+    elif contains_protein:
+        rela_full = dict_interaction_type_and_value_to_rela_name[(
+            word, action_value)] + '_' + protein + '_' + chemical
+    else:
+        rela_full = dict_interaction_type_and_value_to_rela_name[(
+            word, action_value)] + '_' + gene + '_' + chemical
+    return rela_full
+
+
+'''
+generate for new rela  a dictionary entry with a dictionary for all chemical-gene pairs
+all information of the pair are add into the dictionary
+'''
+
+
+def add_pair_to_dict(chemical_id, drugbank_ids, gene_id, interaction_text, interactions_actions, gene_forms, pubMedIds,
+                     rela_full):
+    # generate for every rela a dictionary with their own drug-gene pair
+    if not rela_full in dict_rela_to_drug_gene_protein_pair:
+        dict_rela_to_drug_gene_protein_pair[rela_full] = defaultdict(dict)
+
+    # add all chemical-gene pair into the right dictionary
+    if drugbank_ids:
+        for drugbank_id in drugbank_ids:
+            sort_into_dictionary_and_add(dict_rela_to_drug_gene_protein_pair[rela_full],
+                                         drugbank_id, gene_id, interaction_text, gene_forms,
+                                         pubMedIds, interactions_actions)
+    else:
+        sort_into_dictionary_and_add(dict_rela_to_drug_gene_protein_pair[rela_full],
+                                     chemical_id, gene_id, interaction_text, gene_forms,
+                                     pubMedIds, interactions_actions)
+
+
+'''
+get all relationships between gene and chemical, take the hetionet identifier an save all important information in a csv
+also generate a cypher file to integrate this information 
+'''
+
+
+def take_all_relationships_of_gene_chemical():
+    counter_all_rela = 0
+
+    #  Where chemical.chemical_id='D000117' and gene.gene_id='2219'; Where chemical.chemical_id='C057693' and gene.gene_id='4128' Where chemical.chemical_id='D001564' and gene.gene_id='9429'  Where chemical.chemical_id='D004976' and gene.gene_id='2950' Where chemical.chemical_id='D015741' and gene.gene_id='367'
+    query = '''MATCH (chemical:CTDchemical)-[r:associates_CG{organism_id:'9606'}]->(gene:CTDgene) RETURN gene.gene_id, gene.name, gene.geneSymbol, r, chemical.chemical_id, chemical.name, chemical.synonyms, chemical.drugBankIDs '''
+    results = g.run(query)
+
+    for gene_id, gene_name, gene_symbol, rela, chemical_id, chemical_name, chemical_synonyms, drugbank_ids, in results:
+        counter_all_rela += 1
+        interaction_text = rela['interaction_text'] if 'interaction_text' in rela else ''
+        gene_forms = rela['gene_forms'] if 'gene_forms' in rela else []
+        pubMedIds = rela['pubMedIds'] if 'pubMedIds' in rela else []
+        interactions_actions = rela['interactions_actions'] if 'interactions_actions' in rela else []
+        drugbank_ids = drugbank_ids if not drugbank_ids is None else []
+
+        chemical_synonyms = chemical_synonyms if not chemical_synonyms is None else []
+        chemical_synonyms = filter(None, chemical_synonyms)
+
+        # for searching in the interaction text if gene and chemical are in the same []
+        if gene_id in dict_gene_id_to_used_name:
+            found_gene_synonym = dict_gene_id_to_used_name[gene_id]
+        else:
+            found_gene_synonym = find_text_name_for_gene(gene_name, gene_symbol, interaction_text, gene_id)
+
+            dict_gene_id_to_used_name[gene_id] = found_gene_synonym
+
+        if chemical_id in dict_chemical_id_to_used_name:
+            found_chemical_synonym = dict_chemical_id_to_used_name[chemical_id]
+        else:
+            found_chemical_synonym = search_for_chemical(chemical_name, chemical_synonyms, interaction_text)
+            dict_chemical_id_to_used_name[chemical_id] = found_chemical_synonym
+
+
+        # check if it is the protein form of the gene or not
+        contains_protein = False
+        if 'protein' in gene_forms:
+            possible_position = interaction_text.lower().find(found_gene_synonym + ' protein')
+            if possible_position != -1:
+                contains_protein = True
+
+        # dictionary for word which appears in the interaction text with the value like increase/decrease
+        dict_interaction_word_to_value = {}
+
+        for interaction in interactions_actions:
+            splitter = interaction.split('^')
+            if splitter[1] in list_important_regulation:
+                if splitter[1] not in dict_interaction_word_to_value:
+                    dict_interaction_word_to_value[splitter[1]] = [splitter[0]]
+                else:
+                    dict_interaction_word_to_value[splitter[1]].append(splitter[0])
+                # print(interactions_actions)
+            elif splitter[1] == 'binding':
+                if 'binds' not in dict_interaction_word_to_value:
+                    dict_interaction_word_to_value['binds'] = ['']
+
+            elif splitter[1] in list_important_transport:
+                if splitter[1] not in dict_interaction_word_to_value:
+                    dict_interaction_word_to_value[splitter[1]] = ['']
+
+            elif splitter[1] in list_metabolic_processing:
+                if splitter[1] in dict_metabolic_activate_name:
+                    splitter[1]=dict_metabolic_activate_name[splitter[1]]
+                if splitter[1] not in dict_interaction_word_to_value:
+                    if len(splitter[1].split(' '))>1:
+                        splitter[1]=splitter[1].split(' ')[0]
+                    dict_interaction_word_to_value[splitter[1]] = ['']
+
+        # if no other rela type is found then the pair are add to association
+        found_a_interaction_type = False
+
+        # to find the exact words and to avoid that not a space is in front or in the end spaces are add
+        interaction_text_with_spaces=' '+interaction_text.replace('[','[ ')+' '
+        interaction_text_with_spaces=interaction_text_with_spaces.replace(']',' ]')
+
+        for part in interaction_text_with_spaces.split('['):
+            for smaller_part in part.split(']'):
+                # find take every time the first time when the substring appeares, so some times the chemcial appears multiple
+                # time so the order for the sub action need to be new classified
+                smaller_part=smaller_part.lower()
+                position_chemical_new = smaller_part.find(' '+found_chemical_synonym+' ')
+                position_gene_new = smaller_part.find(' ' +found_gene_synonym+ ' ')
+                if position_chemical_new != -1 and position_gene_new != -1:
+                    for word in smaller_part.split(' '):
+                        if word in dict_interaction_word_to_value:
+                            found_a_interaction_type = True
+                            if len(dict_interaction_word_to_value[word]) == 1:
+                                action_value = dict_interaction_word_to_value[word][0]
+                                rela_full = get_right_rela_name(position_chemical_new, position_gene_new, contains_protein,
+                                                                word, action_value)
+                                if rela_full == '':
+                                    found_a_interaction_type = False
+                                    continue
+                                add_pair_to_dict(chemical_id, drugbank_ids, gene_id, interaction_text,
+                                                 interactions_actions, gene_forms, pubMedIds, rela_full)
+
+
+                            elif len(dict_interaction_word_to_value[word]) > 1:
+                                found_the_action_value = False
+                                for action_value in dict_interaction_word_to_value[word]:
+                                    if action_value in dict_interaction_type_value_to_interaction_text_value:
+                                        position_action_value = smaller_part.find(
+                                            dict_interaction_type_value_to_interaction_text_value[action_value])
+                                        if position_action_value != -1:
+                                            found_the_action_value = True
+                                            rela_full = get_right_rela_name(position_chemical_new, position_gene_new,
+                                                                            contains_protein, word, action_value)
+                                            if rela_full == '':
+                                                found_a_interaction_type = False
+                                                continue
+                                            add_pair_to_dict(chemical_id, drugbank_ids, gene_id, interaction_text,
+                                                             interactions_actions, gene_forms, pubMedIds, rela_full)
+
+                                if not found_the_action_value:
+                                    found_a_interaction_type = False
+
+                            else:
+                                print(interaction_text)
+                                print(word)
+                                sys.exit('crazy')
+
+        if not found_a_interaction_type:
+            if contains_protein:
+                rela_full = 'association_' + chemical + '_' + protein
+            else:
+                rela_full = 'association_' + chemical + '_' + gene
+            add_pair_to_dict(chemical_id, drugbank_ids, gene_id, interaction_text,
+                             interactions_actions, gene_forms, pubMedIds, rela_full)
+
+    print('number of all rela in human organism:' + str(counter_all_rela))
+
+
+'''
+find the shortest string in a list 
+'''
+
+
+def find_shortest_string_and_index(list_string):
+    shortest_string = min(list_string, key=len)
+    index = list_string.index(shortest_string)
+    return index, shortest_string
+
+
+'''
+now go through all rela types and add every pair to the right csv
+but only take the shortest interaction text and the associated intereaction actions and gene forms
+'ChemicalID', 'GeneID', 'interaction_text', 'gene_forms', 'pubMedIds', 'interactions_actions', 'unbiased'
+'''
+
+
+def fill_the_csv_files():
+    for rela_full, dict_chemical_gene_pair in dict_rela_to_drug_gene_protein_pair.items():
+        for (chemical_id, gene_id), list_of_information in dict_chemical_gene_pair.items():
+            interaction_texts = list_of_information[0]
+            index, shortest_interaction_text = find_shortest_string_and_index(interaction_texts)
+            gene_forms = list_of_information[1]
+            shortest_gene_forms = gene_forms[index]
+
+            pubMedIds = list_of_information[2]
+            interactions_actions = list_of_information[3]
+            shortest_interaction_actions = interactions_actions[index]
+            unbiased = True if len(pubMedIds) > 0 else False
+            dict_rela_to_file[rela_full].writerow(
+                [chemical_id, gene_id, shortest_interaction_text, '|'.join(shortest_gene_forms), '|'.join(pubMedIds),
+                 '|'.join(shortest_interaction_actions), unbiased])
 
 
 def main():
@@ -930,10 +526,9 @@ def main():
         '###########################################################################################################################')
 
     print (datetime.datetime.utcnow())
-    print('Take all gene-pathway relationships and generate csv and cypher file')
+    print('add quereie to cypher file to adapt older rela')
 
-    take_all_relationships_of_gene_chemical()
-    create_connection_with_neo4j_mysql()
+    add_cypher_queries_to_cypher_file()
 
     print(
         '###########################################################################################################################')
@@ -941,7 +536,23 @@ def main():
     print (datetime.datetime.utcnow())
     print(' generate csv and cypher file')
 
-    generate_csv_and_cypher_file()
+    generate_csv_file_for_different_rela_types()
+
+    print(
+        '###########################################################################################################################')
+
+    print (datetime.datetime.utcnow())
+    print('Take all gene-pathway relationships and generate csv and cypher file')
+
+    take_all_relationships_of_gene_chemical()
+
+    print(
+        '###########################################################################################################################')
+
+    print (datetime.datetime.utcnow())
+    print('write into csv files')
+
+    fill_the_csv_files()
 
     print(
         '###########################################################################################################################')

@@ -59,7 +59,7 @@ def load_chemicals_and_add_to_cypher_file():
     cypher_file_nodes.write('begin\n')
     # depending if chemicals are in neo4j or not the nodes need to be merged or created
     if not result is None:
-        query = ''' Match (c:CTDchemical) Set c.old_version=True;\n '''
+        query = ''' Match (c:CTDchemical) Set c.old_version=True, c.newer_version=False;\n '''
         cypher_file_nodes.write(query)
         cypher_file_nodes.write('commit\n')
         query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chemicals.csv" As line Merge (c:CTDchemical{ chemical_id:split(line.ChemicalID,':')[1]}) On Create Set c.newer_version=True, c.casRN=line.CasRN, c.synonyms=split(line.Synonyms,'|'), c.drugBankIDs=split(line.DrugBankIDs,'|'), c.parentIDs=split(line.ParentIDs,'|'), c.parentTreeNumbers=split(line.ParentTreeNumbers,'|'), c.treeNumbers=split(line.TreeNumbers,'|'), c.definition=line.Definition, c.name=line.ChemicalName On Match Set c.newer_version=True, c.casRN=line.CasRN, c.synonyms=split(line.Synonyms,'|'), c.drugBankIDs=split(line.DrugBankIDs,'|'), c.parentIDs=split(line.ParentIDs,'|'), c.parentTreeNumbers=split(line.ParentTreeNumbers,'|'), c.treeNumbers=split(line.TreeNumbers,'|'), c.definition=line.Definition, c.name=line.ChemicalName;\n '''
@@ -222,7 +222,7 @@ and gather the information
 
 
 def load_chemical_go_enriched():
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chem_go_enriched.csv" As line Merge (c:CTDchemical{ chemical_id:line.ChemicalID }) On Create Set  c.casRN=line.CasRN, c.name=line.ChemicalName, c.newer_version=True;\n '''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chem_go_enriched.csv" As line Merge (c:CTDchemical{ chemical_id:line.ChemicalID }) On Create Set  c.casRN=line.CasRN, c.name=line.ChemicalName, c.newer_version=True On Match Set c.newer_version=True;\n '''
     cypher_file_nodes.write(query)
     # check if chemicals are already in neo4j
     query = '''MATCH r=(c:CTDchemical)-[a:affects_CGO]->(n:CTDGO) RETURN r LIMIT 1 '''
@@ -269,7 +269,76 @@ def load_chemical_go_enriched():
     result=sum(dict_counter_go[x] for x in dict_counter_go.keys())
     print(result)
 
-    sys.exit()
+    # sys.exit()
+
+'''
+load ctd chemicals-go enriched file:
+    0:chemicalname											
+    1:chemicalid
+    2:casrn
+    3:phenotypename
+    4:phenotypeid
+    5:comentionedterms
+    6:organism
+    7:organismid
+    8:interaction
+    9:interactionactions
+    10:anatomyterms
+    11:inferencegenesymbols
+    12:pubmedids
+and gather the information
+'''
+
+
+def load_chemical_phenotype():
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_pheno_term_ixns.csv" As line Merge (c:CTDchemical{ chemical_id:line.ChemicalID }) On Create Set  c.casRN=line.CasRN, c.name=line.ChemicalName, c.newer_version=True On Match Set c.newer_version=True;\n '''
+    cypher_file_nodes.write(query)
+    # check if chemicals are already in neo4j
+    query = '''MATCH r=(c:CTDchemical)-[a:phenotype]->(n:CTDGO) RETURN r LIMIT 1 '''
+    results = g.run(query)
+    result = results.evaluate()
+    # depending if chemicals are in neo4j or not the nodes need to be merged or created
+    if not result is None:
+        cypher_file_edges.write('begin')
+        query = ''' Match (c:CTDchemical)-[a:phenotype]->(n:CTDGO) Set a.old_version=True;\n '''
+        cypher_file_edges.write(query)
+        cypher_file_edges.write('commit\n')
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_pheno_term_ixns.csv" As line Match (c:CTDchemical{ chemical_id:line.chemicalid }), (g:CTDGO{ go_id:line.phenotypeid }) Where line.organismid='9606' Merge (c)-[a:phenotype]->(g) On Create Set a.organismid=line.organismid, a.unbiased=True, a.comentionedterms=line.comentionedterms, a.interaction=line.interaction, a.interactionactions=line.interactionactions, a.anatomyterms=line.anatomyterms, a.inferencegenesymbols=line.inferencegenesymbols, a.pubmedids=line.pubmedids On Match Set a.organismid=line.organismid, a.unbiased=True, a.comentionedterms=line.comentionedterms, a.interaction=line.interaction, a.interactionactions=line.interactionactions, a.anatomyterms=line.anatomyterms, a.inferencegenesymbols=line.inferencegenesymbols, a.pubmedids=line.pubmedids;\n '''
+    else:
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_pheno_term_ixns.csv" As line Match (c:CTDchemical{ chemical_id:line.chemicalid }), (g:CTDGO{ go_id:line.phenotypeid }) Where line.organismid='9606' Create (c)-[a:phenotype{unbiased:True, organismid:line.organismid, comentionedterms:line.comentionedterms, interaction:line.interaction, interactionactions:line.interactionactions, anatomyterms:line.anatomyterms, pubmedids:line.pubmedids, inferencegenesymbols:line.inferencegenesymbols}]->(g);\n '''
+
+    cypher_file_edges.write(query)
+
+    dict_counter_go={}
+
+    # gather information from CTD chemical-go enriched
+    with open('ctd_data/CTD_pheno_term_ixns.csv') as csvfile:
+        reader = csv.reader(csvfile,  quotechar='"')
+        i = 0
+        for row in reader:
+
+            if i > 0:
+                ontology = ''
+                goTermName = row[3]
+                goTermId = row[4]
+                organism_id=row[7]
+                if organism_id!='9606':
+                    continue
+                # if ontology in ['Molecular Function','Biological Process','Cellular Component']:
+                if ontology in dict_counter_go:
+                    dict_counter_go[ontology]+=1
+                else:
+                    dict_counter_go[ontology] = 1
+
+                if not goTermId in dict_Go_properties:
+                    dict_Go_properties[goTermId] = [goTermName, ontology,'']
+
+            i += 1
+
+    print(len(dict_Go_properties))
+    print(dict_counter_go)
+    result=sum(dict_counter_go[x] for x in dict_counter_go.keys())
+    print(result)
 
 
 # dictionary with (disease_id, go_id) and properties as value inferenceGeneSymbol, inference GeneQty
@@ -280,6 +349,13 @@ dict_gene_go = {}
 
 '''
 gather information from disease-go inference
+load ctd disease-go enriched files for biological process, molecular function and cellular componenet
+    0:DiseaseName
+    1:DiseaseID
+    2:GOName
+    3:GOID
+    4:InferenceGeneQty
+    5:InferenceGeneSymbols
 '''
 
 
@@ -290,7 +366,7 @@ def gather_information_from_disease_go_inferencen(file, ontology):
     result = results.evaluate()
     # depending if chemicals are in neo4j or not the nodes need to be merged or created
     if not result is None:
-        cypher_file_edges.write('begin')
+        cypher_file_edges.write('begin\n')
         query = ''' Match (c:CTDdisease)-[a:affects_DGO]->(n:CTDGO) Set a.old_version=True;\n '''
         cypher_file_edges.write(query)
         cypher_file_edges.write('commit\n')
@@ -331,30 +407,108 @@ def gather_information_from_disease_go_inferencen(file, ontology):
 
 
 '''
-load ctd disease-go enriched files for biological process, molecular function and cellular componenet
-    0:DiseaseName
-    1:DiseaseID
-    2:GOName
-    3:GOID
-    4:InferenceGeneQty
-    5:InferenceGeneSymbols
-gather the information
+gather information from phenotyp disease-go inference
+
+    0:GOName
+    1:GOID (GO identifer)
+    2:DiseaseName
+    3:DiseaseID (MeSH or OMIM identifier)
+    4:InferenceChemicalQty
+    5:InferenceChemicalNames ('|' delimited list)
+    6:InferenceGeneQty
+    7:InferenceGeneSymbols ('|' delimited list)
+
 '''
 
 
-def load_disease_go_inference():
-    print('start Cellular Component')
-    print(datetime.datetime.utcnow())
-    gather_information_from_disease_go_inferencen('CTD_Disease-GO_cellular_component_associations.csv',
-                                                  'Cellular Component')
-    print('start Molecular Function')
-    print(datetime.datetime.utcnow())
-    gather_information_from_disease_go_inferencen('CTD_Disease-GO_molecular_function_associations.csv',
-                                                  'Molecular Function')
-    print('start Biological Process')
-    print(datetime.datetime.utcnow())
-    gather_information_from_disease_go_inferencen('CTD_Disease-GO_biological_process_associations.csv',
-                                                  'Biological Process')
+def gather_information_from_disease_phenotyp_go_inference(file, ontology):
+    # check if chemicals are already in neo4j
+    query = '''MATCH r=(c:CTDdisease)-[a:affects_DGO]->(n:CTDGO) RETURN r LIMIT 1 '''
+    results = g.run(query)
+    result = results.evaluate()
+    # depending if chemicals are in neo4j or not the nodes need to be merged or created
+    if not result is None:
+        cypher_file_edges.write('begin')
+        query = ''' Match (c:CTDdisease)-[a:affects_DGO]->(n:CTDGO) Set a.old_version=True;\n '''
+        cypher_file_edges.write(query)
+        cypher_file_edges.write('commit\n')
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/ctd/ctd_data/''' + file + '''" As line Match (d:CTDdisease{ disease_id:line.DiseaseID}), (g:CTDGO{ go_id:line.GOID }) Merge (d)-[a:affects_DGO]->(g) On Create Set a.unbiased=True, a.inferenceGeneSymbols=line.InferenceGeneSymbols, a.inferenceGeneQty=line.InferenceGeneQty On Match Set a.unbiased=True, a.inferenceGeneSymbols=line.InferenceGeneSymbols, a.inferenceGeneQty=line.InferenceGeneQty;\n '''
+    else:
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/ctd/ctd_data/''' + file + '''" As line Match (d:CTDdisease{ disease_id:line.DiseaseID}), (g:CTDGO{ go_id:line.GOID }) Create (d)-[a:affects_DGO{unbiased:True, inferenceGeneSymbols:line.InferenceGeneSymbols, inferenceGeneQty:line.InferenceGeneQty}]->(g);\n'''
+
+    cypher_file_edges.write(query)
+
+    with open('ctd_data/' + file) as csvfile:
+        reader = csv.reader(csvfile)
+        i = 0
+        for row in reader:
+
+            if i > 0:
+                disease_id = row[3]
+                goName = row[0]
+                goId = row[1]
+                inferenceGeneQty = row[6]
+                inferenceGeneSymbols = row[7].split('|')
+                inferenceChemicalQty = row[4]
+                inferenceChemicalNames = row[5].split('|')
+
+                if not goId in dict_Go_properties:
+                    dict_Go_properties[goId] = [goName, ontology, '']
+
+                dict_disease_go[(disease_id, goId)] = [inferenceGeneSymbols, inferenceGeneQty,inferenceChemicalNames,inferenceChemicalQty]
+
+                for gene_symbol in inferenceGeneSymbols:
+                    if gene_symbol=='':
+                        continue
+                    # if all thing should be integrated this should not be happening
+                    if gene_symbol not in dict_gene_symbol_to_gene_id:
+                        print('should not happend gene_symbol not in ctd gene')
+                        continue
+                    gene_id = dict_gene_symbol_to_gene_id[gene_symbol]
+                    if (gene_id, goId) not in dict_gene_go:
+                        dict_gene_go[(gene_id, goId)] = [gene_symbol]
+                if i % 20000 == 0:
+                    print(i)
+
+            i += 1
+
+    print('number of gene-go pairs:' + str(len(dict_gene_go)))
+    print('number of disease-go pairs:' + str(len(dict_disease_go)))
+
+'''
+
+gather the information from  the different go files to get all go information
+'''
+
+
+def load_disease_go_inference(file_d_cc, file_d_mf, file_d_bp, old):
+    if old:
+        print('start Cellular Component')
+        print(datetime.datetime.utcnow())
+        gather_information_from_disease_go_inferencen(file_d_cc,
+                                                      'Cellular Component')
+        print('start Molecular Function')
+        print(datetime.datetime.utcnow())
+        gather_information_from_disease_go_inferencen(file_d_mf,
+                                                      'Molecular Function')
+        print('start Biological Process')
+        print(datetime.datetime.utcnow())
+        gather_information_from_disease_go_inferencen(file_d_bp,
+                                                      'Biological Process')
+    else:
+
+        print('start Cellular Component')
+        print(datetime.datetime.utcnow())
+        gather_information_from_disease_phenotyp_go_inference(file_d_cc,
+                                                      'Cellular Component')
+        print('start Molecular Function')
+        print(datetime.datetime.utcnow())
+        gather_information_from_disease_phenotyp_go_inference(file_d_mf,
+                                                      'Molecular Function')
+        print('start Biological Process')
+        print(datetime.datetime.utcnow())
+        gather_information_from_disease_phenotyp_go_inference(file_d_bp,
+                                                      'Biological Process')
     print(len(dict_Go_properties))
 
 
@@ -516,7 +670,7 @@ and gather the information
 
 
 def load_chemical_gene():
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chem_gene_ixns.csv" As line Merge (c:CTDchemical{ chemical_id:line.ChemicalID }) On Create Set c.casRN=line.CasRN, c.name=line.ChemicalName, c.newer_version=True;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chem_gene_ixns.csv" As line Merge (c:CTDchemical{ chemical_id:line.ChemicalID }) On Create Set c.casRN=line.CasRN, c.name=line.ChemicalName, c.newer_version=True On Match Set c.newer_version=True;\n'''
     cypher_file_nodes.write(query)
 
     global counter_edges_queries, cypher_file_edges, edges_file_number
@@ -559,7 +713,7 @@ and gather the information
 
 
 def load_chemical_pathway_enriched():
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chem_pathways_enriched.csv" As line Merge (c:CTDchemical{ chemical_id:line.ChemicalID }) On Create Set c.casRN=line.CasRN, c.name=line.ChemicalName, c.newer_version=True;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chem_pathways_enriched.csv" As line Merge (c:CTDchemical{ chemical_id:line.ChemicalID }) On Create Set c.casRN=line.CasRN, c.name=line.ChemicalName, c.newer_version=True On Match Set c.newer_version=True;\n'''
     cypher_file_nodes.write(query)
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chem_pathways_enriched.csv" As line Merge (g:CTDpathway{ pathway_id:split(line.PathwayID,':')[1] }) On Create Set g.name=line.PathwayName, g.newer_version=True;\n'''
     cypher_file_nodes.write(query)
@@ -601,7 +755,7 @@ and gather the information
 
 
 def load_chemical_disease():
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chemicals_diseases.csv" As line Merge (c:CTDchemical{ chemical_id:line.ChemicalID }) On Create  Set  c.casRN=line.CasRN, c.name=line.ChemicalName, c.newer_version=True;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chemicals_diseases.csv" As line Merge (c:CTDchemical{ chemical_id:line.ChemicalID }) On Create  Set  c.casRN=line.CasRN, c.name=line.ChemicalName, c.newer_version=True On Match Set c.newer_version=True;\n'''
     cypher_file_nodes.write(query)
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chemicals_diseases.csv" As line Merge (g:CTDdisease{ disease_id:split(line.DiseaseID,':')[1]}) On Create Set  g.name=line.DiseaseName, g.newer_version=True;\n'''
     cypher_file_nodes.write(query)
@@ -722,13 +876,27 @@ def main():
 
     load_chemical_go_enriched()
 
+    print('##########################################################################')
+
+    print(datetime.datetime.utcnow())
+    print('load in ctd chemical-phenotype and gather the information')
+
+    load_chemical_phenotype()
+
+
+    # print('##########################################################################')
+    #
+    # print(datetime.datetime.utcnow())
+    # print('load in ctd disease-go and gather the information')
+    #
+    # load_disease_go_inference('CTD_Disease-GO_cellular_component_associations.csv','CTD_Disease-GO_molecular_function_associations.csv','CTD_Disease-GO_biological_process_associations.csv',True)
 
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
-    print('load in ctd disease-go and gather the information')
+    print('load in ctd phenotype disease-go and gather the information')
 
-    load_disease_go_inference()
+    load_disease_go_inference('CTD_Phenotype-Disease_cellular_component_associations.csv','CTD_Phenotype-Disease_molecular_function_associations.csv','CTD_Phenotype-Disease_biological_process_associations.csv', False)
 
     print('##########################################################################')
 
@@ -779,12 +947,14 @@ def main():
 
     load_chemical_disease()
 
+
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
     print('add chemical-disease relationship to cypher file')
 
     load_gene_disease()
+
 
     print('##########################################################################')
 
@@ -796,6 +966,10 @@ def main():
     delete_nodes_with_no_relationship('CTDdisease')
     delete_nodes_with_no_relationship('CTDgene')
     delete_nodes_with_no_relationship('CTDpathway')
+
+    # delete old chemical nodes which are not in ctd anymore
+    query='''Match (n:CTDchemical) Where n.old_version=True and n.newer_version=False Detach Delete n;\n'''
+    delet_node_file.write(query)
 
     print('##########################################################################')
 

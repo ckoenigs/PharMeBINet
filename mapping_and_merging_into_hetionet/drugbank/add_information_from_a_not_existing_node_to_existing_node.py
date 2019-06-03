@@ -75,6 +75,9 @@ def merge_resource_to_node(delete_node, label, merged_node):
     resources_list = dict_delete_node['resource'] if 'resource' in dict_delete_node else []
     url_ctd = dict_delete_node['ctd_url'] if 'ctd_url' in dict_delete_node else ''
 
+    print('delete node:'+delete_node)
+    print('merged node:'+merged_node)
+
     # make all this source to a yes in the merged node
     if len(resources_list) != 0:
 
@@ -106,7 +109,7 @@ def merge_resource_to_node(delete_node, label, merged_node):
             if ctd_url_merged == '':
                 add_query = ''' s.url_ctd="%s" ''' % (url_ctd)
                 query += add_query
-        # g.run(query[0:-1])
+        g.run(query[0:-1])
 
 
 
@@ -337,115 +340,115 @@ def merge_information_from_one_node_to_another(delete_node_id, merged_node_id, n
 
     con.close()
 #
-def main():
-    label='Compound'
-#     # alternativ ids
-#     # old_id = 'DB12546'
-#     # into = 'DB09498'
-#     # old_id='DB01398'
-#     # into='DB00936'
-#     # old_id = 'DB00667'
-#     # into = 'DB05381'
+# def main():
+#     label='Compound'
+# #     # alternativ ids
+# #     # old_id = 'DB12546'
+# #     # into = 'DB09498'
+# #     # old_id='DB01398'
+# #     # into='DB00936'
+# #     # old_id = 'DB00667'
+# #     # into = 'DB05381'
+# #
+# #     # not mapped
+# #     old_id='DB08866'
+# #     into='DB09123'
+# #     old_id = 'DB13390'
+# #     into = 'DB06723'
+# #     old_id = 'DB09162'
+# #     into = 'DB13949'
 #
-#     # not mapped
-#     old_id='DB08866'
-#     into='DB09123'
-#     old_id = 'DB13390'
-#     into = 'DB06723'
-#     old_id = 'DB09162'
-#     into = 'DB13949'
-
-#      Version drugbank 07-18
-#     old_id = 'DB05872'
-#     into='DB08902'
-#     old_id = 'DB11728'
-#     into='DB00569'
+# #      Version drugbank 07-18
+# #     old_id = 'DB05872'
+# #     into='DB08902'
+# #     old_id = 'DB11728'
+# #     into='DB00569'
+# #
+#     #Version drugbank 12 - 18
+#     # old_id = 'DB06667'
+#     # into='DB08876'
+#     # old_id = 'DB05031'
+#     # into='DB08892'
+#     # old_id = 'DB01904'
+#     # into='DB11195'
+#     # Match (n:Compound{identifier:'DB11195'}),(b:AeolusDrug{concept_code:'11377'}) Create (n)-[:equal_to_Aeolus_drug]->(b)
+#     # old_id = 'DB11163'
+#     # into='DB03651'
+#     # old_id = 'DB11163'
+#     # into='DB03651'
+#     # old_id = 'DB05510'
+#     # into='DB04864'
+#     # old_id = 'DB04290'
+#     # into='DB12153'
+#     # old_id = 'DB00021'
+#     # into='DB09532'
+#     # Match (n:Compound{identifier:'DB09532'}),(b:AeolusDrug{concept_code:'9627'}) Create (n)-[:equal_to_Aeolus_drug]->(b)
+#     # old_id = 'DB10072'
+#     # into='DB13890'
+#     # old_id = 'DB05341'
+#     # into='DB06404'
+#     # old_id = 'DB13450'
+#     # into='DB00565'
 #
-    #Version drugbank 12 - 18
-    # old_id = 'DB06667'
-    # into='DB08876'
-    # old_id = 'DB05031'
-    # into='DB08892'
-    # old_id = 'DB01904'
-    # into='DB11195'
-    # Match (n:Compound{identifier:'DB11195'}),(b:AeolusDrug{concept_code:'11377'}) Create (n)-[:equal_to_Aeolus_drug]->(b)
-    # old_id = 'DB11163'
-    # into='DB03651'
-    # old_id = 'DB11163'
-    # into='DB03651'
-    # old_id = 'DB05510'
-    # into='DB04864'
-    # old_id = 'DB04290'
-    # into='DB12153'
-    # old_id = 'DB00021'
-    # into='DB09532'
-    # Match (n:Compound{identifier:'DB09532'}),(b:AeolusDrug{concept_code:'9627'}) Create (n)-[:equal_to_Aeolus_drug]->(b)
-    # old_id = 'DB10072'
-    # into='DB13890'
-    # old_id = 'DB05341'
-    # into='DB06404'
-    # old_id = 'DB13450'
-    # into='DB00565'
-
-    global list_other_to_node, list_node_to_other
-    # list from the specific node to the other with (rela_type,dict_rela,node_labels,dict_node)
-    list_node_to_other = []
-
-    # list from  the other with to the specific node  (rela_type,dict_rela,node_labels,dict_node)
-    list_other_to_node = []
-
-    print(datetime.datetime.utcnow())
-
-    print('##########################################################################')
-
-    print(datetime.datetime.utcnow())
-    print('connection to db')
-    database_connection()
-    print('##########################################################################')
-
-    print(datetime.datetime.utcnow())
-    print('add resources to merged node')
-
-    merge_resource_to_node(old_id, label, into)
-
-    print('##########################################################################')
-
-    print(datetime.datetime.utcnow())
-    print('generate dictionary for labels with unique property ')
-
-    generate_dictionary_for_labels()
-
-    print('##########################################################################')
-
-    print(datetime.datetime.utcnow())
-    print('get all information for the node that is merged into another node ')
-
-    # get_the_information_and_the_direction('DB13390', 'Compound')
-    get_the_information_and_the_direction(old_id, label, into)
-
-    print('##########################################################################')
-
-    print(datetime.datetime.utcnow())
-    print('integrate this into Hetionet')
-
-    # add_this_information_to_the_merged_node('DB06723', 'Compound','DB13390')
-    add_this_information_to_the_merged_node(into , label, old_id)
-
-    print('##########################################################################')
-
-    print(datetime.datetime.utcnow())
-    print('delete merged node')
-
-    # delete_merged_node('DB13390', 'Compound')
-    delete_merged_node(old_id, label)
-
-    print('##########################################################################')
-
-    print(datetime.datetime.utcnow())
-
-    con.close()
-
-
-if __name__ == "__main__":
-    # execute only if run as a script
-    main()
+#     global list_other_to_node, list_node_to_other
+#     # list from the specific node to the other with (rela_type,dict_rela,node_labels,dict_node)
+#     list_node_to_other = []
+#
+#     # list from  the other with to the specific node  (rela_type,dict_rela,node_labels,dict_node)
+#     list_other_to_node = []
+#
+#     print(datetime.datetime.utcnow())
+#
+#     print('##########################################################################')
+#
+#     print(datetime.datetime.utcnow())
+#     print('connection to db')
+#     database_connection()
+#     print('##########################################################################')
+#
+#     print(datetime.datetime.utcnow())
+#     print('add resources to merged node')
+#
+#     merge_resource_to_node(old_id, label, into)
+#
+#     print('##########################################################################')
+#
+#     print(datetime.datetime.utcnow())
+#     print('generate dictionary for labels with unique property ')
+#
+#     generate_dictionary_for_labels()
+#
+#     print('##########################################################################')
+#
+#     print(datetime.datetime.utcnow())
+#     print('get all information for the node that is merged into another node ')
+#
+#     # get_the_information_and_the_direction('DB13390', 'Compound')
+#     get_the_information_and_the_direction(old_id, label, into)
+#
+#     print('##########################################################################')
+#
+#     print(datetime.datetime.utcnow())
+#     print('integrate this into Hetionet')
+#
+#     # add_this_information_to_the_merged_node('DB06723', 'Compound','DB13390')
+#     add_this_information_to_the_merged_node(into , label, old_id)
+#
+#     print('##########################################################################')
+#
+#     print(datetime.datetime.utcnow())
+#     print('delete merged node')
+#
+#     # delete_merged_node('DB13390', 'Compound')
+#     delete_merged_node(old_id, label)
+#
+#     print('##########################################################################')
+#
+#     print(datetime.datetime.utcnow())
+#
+#     con.close()
+#
+#
+# if __name__ == "__main__":
+#     # execute only if run as a script
+#     main()

@@ -147,7 +147,7 @@ def generate_files():
 
     cypher_file = open('gene/cypher.cypher', 'w')
     cypher_file.write('begin\n')
-    cypher_file.write('Match (c:Gene) Set c.hetionet="yes", c.resource=["Hetionet"];\n')
+    cypher_file.write('Match (c:Gene) Where not exists(c.hetionet) Set c.hetionet="yes", c.resource=["Hetionet"];\n')
     cypher_file.write('commit\n')
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/gene/new_genes.csv" As line Create (c:Gene{ identifier:toInteger(line.GeneID), name:line.GeneName, altGeneIDs:split(line.altGeneIDs,'|'),pharmGKBIDs:split(line.pharmGKBIDs,'|'),bioGRIDIDs:split(line.bioGRIDIDs,'|'),geneSymbol:split(line.geneSymbol,'|'),synonyms:split(line.synonyms,'|'),uniProtIDs:split(line.uniProtIDs,'|') , url_ctd:" http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID ,url: "http://identifiers.org/ncbigene/"+line.GeneID, source:"CTD" ,description:"", chromosome:"", license:"© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", hetionet:"no", ctd:"yes", resource:["CTD"]});\n'''
     cypher_file.write(query)

@@ -61,7 +61,7 @@ dict_two_character_type = {
 # open tsv file
 file = open('uniprot.tsv', 'w')
 header = ['entry', 'status', 'sequenceLength', 'identifier', 'second_ac_numbers', 'name', 'synonyms',  'ncbi_taxid', 'as_sequence',
-          'gene_name', 'general_function', 'chromosome_location', 'pfam', 'go_classifiers', 'xref',
+          'gene_name', 'general_function', 'chromosome_location', 'pfam','gene_id', 'go_classifiers', 'xrefs',
           'subcellular_location', 'protein_existence', 'pubmed_ids']
 csv_writer = csv.DictWriter(file, fieldnames=header, delimiter='\t',
                             quotechar='"', quoting=csv.QUOTE_MINIMAL)
@@ -187,14 +187,14 @@ def extract_information():
             elif position_line == 1:
                 two_split[1] = two_split[1].replace(';\n', '')
                 all_access_number = two_split[1].split('; ')
-                ac_list = []
+                ac_list = set([])
                 for counter,ac_number in enumerate(all_access_number):
                     if counter==0:
                         dict_protein['identifier']=ac_number
 
                     else:
-                        ac_list.append(ac_number)
-                dict_protein['second_ac_numbers'] = ac_list
+                        ac_list.add(ac_number)
+                dict_protein['second_ac_numbers'] = list(ac_list)
                 position_line += 1
             # sometimes the information of one property are in multiple lines
             #
@@ -224,9 +224,9 @@ def extract_information():
                             dict_protein['name'] = subcategory_split[1].replace(';\n', '')
                         elif subcategory_split[0] == 'Short':
                             if not 'synonyms' in dict_protein:
-                                dict_protein['synonyms'] = set([subcategory_split[1].replace(';\n', '')])
+                                dict_protein['synonyms'] = set([subcategory_split[1].replace(';\n', '').replace('|',';')])
                             else:
-                                dict_protein['synonyms'].add(subcategory_split[1].replace(';\n', ''))
+                                dict_protein['synonyms'].add(subcategory_split[1].replace(';\n', '').replace('|',';'))
                         # EC seems not to exists so I will exclude this from the file butl let this code included maybe i will need this later
                         else:
                             print(set([subcategory_split[1].replace(';\n', '')]))
@@ -245,9 +245,9 @@ def extract_information():
                                 dict_protein['ecs'].add(subcategory_split[1].replace(';\n', ''))
                         else:
                             if not 'synonyms' in dict_protein:
-                                dict_protein['synonyms'] = set([subcategory_split[1].replace(';\n', '')])
+                                dict_protein['synonyms'] = set([subcategory_split[1].replace(';\n', '').replace('|',';')])
                             else:
-                                dict_protein['synonyms'].add(subcategory_split[1].replace(';\n', ''))
+                                dict_protein['synonyms'].add(subcategory_split[1].replace(';\n', '').replace('|',';'))
 
 
 
@@ -327,25 +327,27 @@ def extract_information():
             # only the one with name
             elif two_first_letter == 'GN':
                 property = two_split[1].split('=')
+                if dict_protein['identifier']=='Q13938':
+                    print('huhu')
                 if property[0] == 'Name':
 
                     if ',\n' in two_split[1]:
                         in_multiple_lines = True
-                        in_multiple_line_string = property[1].split(';')[0].replace('\n','')
+                        in_multiple_line_string = property[1].split(';')[0].replace('\n','').replace('|',';')
                         in_multiple_line_property = 'gene_name'
                         in_multiple_line_property_type_list=True
                     else:
                         if not 'gene_name' in dict_protein:
-                            dict_protein['gene_name'] = set([property[1].split(';')[0].replace('\n', '')])
+                            dict_protein['gene_name'] = set([property[1].split(';')[0].replace('\n', '').replace('|',';')])
                         else:
-                            dict_protein['gene_name'].add(property[1].split(';')[0].replace('\n', ''))
+                            dict_protein['gene_name'].add(property[1].split(';')[0].replace('\n', '').replace('|',';'))
                         # print(property)
                         # print(line)
                         # print(property[1].split(';'))
                         synonyms = property[1].split(';')[1].split('=')
                         if synonyms[0] == ' Synonyms':
                             for synonym in property[2].split(', '):
-                                dict_protein['gene_name'].add(synonym.replace(';\n', ''))
+                                dict_protein['gene_name'].add(synonym.replace(';\n', '').replace('|',';'))
                                 # if not 'synonyms' in dict_protein:
                                 #     dict_protein['synonyms'] = set([synonym.replace(';\n', '')])
                                 # else:
@@ -353,16 +355,22 @@ def extract_information():
             # database cross-references (optional)
             elif two_first_letter == 'DR':
                 xref_infos = two_split[1].split('; ')
-                if xref_infos[0] != 'Pfam':
-                    if 'xref' in dict_protein:
-                        dict_protein['xref'].add(xref_infos[0] + '::' + xref_infos[1])
+                if xref_infos[0] not in ['Pfam','GeneID']:
+                    if 'xrefs' in dict_protein:
+                        dict_protein['xrefs'].add(xref_infos[0] + ':' + xref_infos[1])
                     else:
-                        dict_protein['xref'] = set([xref_infos[0] + '::' + xref_infos[1]])
-                else:
+                        dict_protein['xrefs'] = set([xref_infos[0] + ':' + xref_infos[1]])
+                elif xref_infos[0] =='Pfam':
                     if 'pfam' in dict_protein:
-                        dict_protein['pfam'].add(xref_infos[1] + '::' + xref_infos[2])
+                        dict_protein['pfam'].add(xref_infos[1] + ':' + xref_infos[2])
                     else:
-                        dict_protein['pfam'] = set([xref_infos[1] + '::' + xref_infos[2]])
+                        dict_protein['pfam'] = set([xref_infos[1] + ':' + xref_infos[2]])
+                else:
+                    if 'gene_id' in dict_protein:
+                        dict_protein['gene_id'].add(xref_infos[1])
+                    else:
+                        dict_protein['gene_id'] = set([xref_infos[1] ])
+
                 if xref_infos[0] in ['GO', 'Proteomes']:
                     if xref_infos[0] == 'GO':
                         for short, full in dict_short_to_full_go.items():
