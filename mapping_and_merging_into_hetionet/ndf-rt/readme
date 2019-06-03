@@ -12,3 +12,4 @@ For mapping NDF-RT drug to DrugBank different methods are used:
 4) Map RxNorm cui to DrugBank by using RxNorm-DrugBank table, which was generated with use of names.
 5) Use association of NDF-RT drug to his ingredient and if the ingredient has a DrugBank id then it gets the same. 
 
+python remove_old_reltionships_and_node_information.py Chemical Disease ndf-rt "CONTRA_INDICATES_CcD|INDUCES_CiD|equal_to_Disease_NDF_RT|equal_to_drug_ndf_rt" no

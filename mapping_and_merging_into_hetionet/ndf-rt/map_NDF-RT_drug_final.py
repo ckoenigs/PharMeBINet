@@ -723,7 +723,7 @@ def integrate_connection_into_hetionet():
                 if not (drugbank_id, do_id) in list_contra_indicates_pairs:
                     count_contra_indicate += 1
                     query = ''' Match (c:Compound{identifier:'%s'}), (n:Disease{identifier:'%s'})
-                    Create (c)-[:CONTRA_INDICATES_CcD{source:'NDF-RT',code:"%s", ndf_rt:'yes' ,licence:'UMLS',how_often:1,url:"%s",umls_cuis:"%s"}]->(n);
+                    Create (c)-[:CONTRAINDICATES_CcD{source:'NDF-RT',code:"%s", ndf_rt:'yes' ,licence:'UMLS',how_often:1,url:"%s",umls_cuis:"%s", resource:['NDF-RT']}]->(n);
                     '''
                     query = query % (drugbank_id, do_id, code, url, umls_cuis)
                     list_contra_indicates_pairs.append((drugbank_id, do_id))
@@ -747,7 +747,7 @@ def integrate_connection_into_hetionet():
                 if not (drugbank_id, do_id) in list_induces_pairs:
                     count_induces += 1
                     query = ''' Match (c:Compound{identifier:'%s'}), (n:Disease{identifier:'%s'})
-                    Create (c)-[:INDUCES_CiD{source:'NDF-RT',code:"%s", ndf_rt:'yes', licence:'UMLS',how_often:1,url:"%s",umls_cuis:"%s"}]->(n);
+                    Create (c)-[:INDUCES_CiD{source:'NDF-RT',code:"%s", ndf_rt:'yes', licence:'UMLS',how_often:1,url:"%s",umls_cuis:"%s",resource:['NDF-RT']}]->(n);
                     '''
                     query = query % (drugbank_id, do_id, code, url, umls_cuis)
                     counter_connection += 1

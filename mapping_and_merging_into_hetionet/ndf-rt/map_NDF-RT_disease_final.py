@@ -10,8 +10,6 @@ import datetime
 import MySQLdb as mdb
 import sys
 
-sys.path.append('../aeolus/')
-from synonyms_cuis import search_for_synonyms_cuis
 
 import xml.dom.minidom as dom
 
@@ -77,10 +75,6 @@ def create_connection_with_neo4j_mysql():
     global g
     g = Graph("http://localhost:7474/db/data/")
 
-    # create connection with mysql database
-    global con
-    con = mdb.connect('localhost', 'root', 'Za8p7Tf', 'umls')
-
 
 '''
 load in all diseases from hetionet in a dictionary in a dictionary and  generate dictionary and list with all names and synonyms
@@ -139,13 +133,13 @@ list_code_not_mapped = []
 
 # files for the how_mapped
 map_direct_cui_cui = open('disease/ndf_rt_disease_cui_cui_map.tsv', 'w')
-map_direct_cui_cui.write('code in NDF-RT \t name in NDF-RT \t DO ids with | as seperator  \n')
+map_direct_cui_cui.write('code in NDF-RT \t name in NDF-RT \t MONDO ids with | as seperator  \n')
 
 map_direct_name = open('disease/ndf_rt_disease_name_name_synonym_map.tsv', 'w')
-map_direct_name.write('code in NDF-RT \t name in NDF-RT \t DO ids with | as seperator  \n')
+map_direct_name.write('code in NDF-RT \t name in NDF-RT \t MONDO ids with | as seperator  \n')
 
 map_synonym_cuis = open('disease/ndf_rt_disease_synonyms_map.tsv', 'w')
-map_synonym_cuis.write('code in NDF-RT \t name in NDF-RT \t DO ids with | as seperator  \n')
+map_synonym_cuis.write('code in NDF-RT \t name in NDF-RT \t MONDO ids with | as seperator  \n')
 
 '''
 first round of map:
@@ -285,19 +279,19 @@ all Disease which are not mapped with a ndf-rt disease get the propertie no
 
 
 def integrate_ndf_rt_disease_into_hetionet():
-    for code, dO_ids in dict_mapped.items():
-        do_id_string = "','".join(dO_ids)
+    for code, mondo_ids in dict_mapped.items():
+        do_id_string = "','".join(mondo_ids)
         how_mapped = dict_diseases_NDF_RT[code].how_mapped
-        if len(dO_ids) > 1:
-            string_do_ids = "|".join(dO_ids)
-            multiple_DO_ids.write(
-                code + '\t' + string_do_ids + '\t' + how_mapped + '\t' + dict_diseases_NDF_RT[code].name + '\n')
+        if len(mondo_ids) > 1:
+            string_mondo_ids = "|".join(mondo_ids)
+            multiple_mondo_ids.write(
+                code + '\t' + string_mondo_ids + '\t' + how_mapped + '\t' + dict_diseases_NDF_RT[code].name + '\n')
 
-        query = '''MATCH (n:NDF_RT_disease{code:'%s'}) Set n.DO_IDs=['%s'], n.how_mapped='%s', n.number_of_mapping='%s' '''
-        query = query % (code, do_id_string, how_mapped, str(len(dO_ids)))
+        query = '''MATCH (n:NDF_RT_disease{code:'%s'}) Set n.MONDO_IDs=['%s'], n.how_mapped='%s', n.number_of_mapping='%s' '''
+        query = query % (code, do_id_string, how_mapped, str(len(mondo_ids)))
         g.run(query)
-        for do_id in dO_ids:
-            resource = dict_diseases_hetionet[do_id].resource
+        for mondo_id in mondo_ids:
+            resource = dict_diseases_hetionet[mondo_id].resource
             resource.append('NDF-RT')
             resource = list(set(resource))
             resource = "','".join(resource)
@@ -305,7 +299,7 @@ def integrate_ndf_rt_disease_into_hetionet():
             Set d.resource=['%s'], d.ndf_rt='yes' 
             Create (d)-[:equal_to_Disease_NDF_RT]->(n);           
             '''
-            query = query % (code, do_id, resource)
+            query = query % (code, mondo_id, resource)
             g.run(query)
 
     # search for all disease that did not mapped with ndf-rt and give them the property ndf_rt:'no'
@@ -369,13 +363,13 @@ def main():
 
     find_synonym_cuis_for_ndf_rt_not_mapped()
 
-    print(
-    '###########################################################################################################################')
-
-    print (datetime.datetime.utcnow())
-    print('map round two, check the cuis from disease ontology to synonym cuis in ndf-rt')
-
-    map_with_synonyms_from_code()
+    # print(
+    # '###########################################################################################################################')
+    #
+    # print (datetime.datetime.utcnow())
+    # print('map round two, check the cuis from disease ontology to synonym cuis in ndf-rt')
+    #
+    # map_with_synonyms_from_code()
 
     print(
     '###########################################################################################################################')
