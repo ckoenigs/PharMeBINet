@@ -87,8 +87,8 @@ def generate_files():
     query_start = ''' Match (a:disease)'''
     query_add_part = '''-[:subClassOf]->('''
     query_end_match = '''-[:subClassOf]->(b:disease{`http://www.geneontology.org/formats/oboInOwl#id`:'MONDO:0000001'}) Where '''
-    query_where_level_element = '''not ()-[:subClassOf]->(a) Return a.`http://www.geneontology.org/formats/oboInOwl#id`, a.label, '''
-    query_where_level_class = ''' ()-[:subClassOf]->(a) Return a.`http://www.geneontology.org/formats/oboInOwl#id`, a.label, '''
+    query_where_level_element = '''not ()-[:subClassOf]->(a) Return a.`http://www.geneontology.org/formats/oboInOwl#id`, a.label, a.synonym, '''
+    query_where_level_class = ''' ()-[:subClassOf]->(a) Return a.`http://www.geneontology.org/formats/oboInOwl#id`, a.label, a.synonym, '''
     count_level = 1
     letter_of_parent = 0
 
@@ -111,38 +111,45 @@ def generate_files():
             query_start = query_start + query_add_part + string.ascii_lowercase[count_level] + ')'
             query_level_class = query_start + query_end_match + query_where_level_class + string.ascii_lowercase[
                 letter_of_parent] + '.`http://www.geneontology.org/formats/oboInOwl#id`, ' + string.ascii_lowercase[
-                                    letter_of_parent] + '.label '
+                                    letter_of_parent] + '.label, ' +string.ascii_lowercase[letter_of_parent] + '.synonym '
             query_level_element = query_start + query_end_match + query_where_level_element + string.ascii_lowercase[
                 letter_of_parent] + '.`http://www.geneontology.org/formats/oboInOwl#id`, ' + string.ascii_lowercase[
-                                      letter_of_parent] + '.label '
+                                      letter_of_parent] + '.label, '+string.ascii_lowercase[letter_of_parent] + '.synonym '
 
         else:
             letter_of_parent = count_level + 1
             query_level_class = query_start + query_end_match + query_where_level_class + string.ascii_lowercase[
                 letter_of_parent - 1] + '.`http://www.geneontology.org/formats/oboInOwl#id`, ' + string.ascii_lowercase[
-                                    letter_of_parent - 1] + '.label '
+                                    letter_of_parent - 1] + '.label, '+string.ascii_lowercase[letter_of_parent - 1] + '.synonym '
             query_level_element = query_start + query_end_match + query_where_level_element + string.ascii_lowercase[
                 letter_of_parent - 1] + '.`http://www.geneontology.org/formats/oboInOwl#id`, ' + string.ascii_lowercase[
-                                      letter_of_parent - 1] + '.label '
+                                      letter_of_parent - 1] + '.label, '+string.ascii_lowercase[letter_of_parent - 1] + '.synonym '
 
         dict_levels[count_level] = []
 
         dict_class_entry = {}
         results_classes = g.run(query_level_class)
         # collect the information for classes
-        for id, name, parent_id, parent_name, in results_classes:
+        for id, name, synonym, parent_id, parent_name, parent_synonym, in results_classes:
             if parent_id not in dict_class_entry:
                 dict_class_entry[parent_id] = {id: [name, parent_id]}
             else:
                 dict_class_entry[parent_id][id]=[ name, parent_id]
 
             if id not in dict_level:
-                dict_level[id] = name
+                if name:
+                    dict_level[id] = name
+                else:
+                    dict_level[id]=synonym[0]
+
                 dict_level_class_parent[id] = set([parent_id])
             else:
                 dict_level_class_parent[id].add(parent_id)
             if parent_id not in dict_parent:
-                dict_parent[parent_id] = parent_name
+                if parent_name:
+                    dict_parent[parent_id] = parent_name
+                else:
+                    dict_parent[parent_id] = parent_synonym[0]
 
         dict_levels[count_level].append(dict_class_entry)
 
@@ -161,6 +168,7 @@ def generate_files():
 
             for parent_id in parent_ids:
                 name_parent_string = name_parent_string + dict_parent[parent_id] + '|'
+
             class_file.write(id + '\t' + name + '\t' + parent_ids_string + '\t' + name_parent_string[0:-1] + '\n')
         class_file.close()
 
@@ -168,19 +176,25 @@ def generate_files():
         dict_class_entry = {}
         results_elements = g.run(query_level_element)
         # collect the information for entities
-        for id, name, parent_id, parent_name, in results_elements:
+        for id, name, synonym, parent_id, parent_name, parent_synonym, in results_elements:
             if parent_id not in dict_class_entry:
                 dict_class_entry[parent_id] = {id: [name, parent_id]}
             else:
                 dict_class_entry[parent_id][id]=[ name, parent_id]
 
             if id not in dict_level:
-                dict_level[id] = name
+                if name:
+                    dict_level[id] = name
+                else:
+                    dict_level[id]=synonym[0]
                 dict_level_entries_parent[id] = set([parent_id])
             else:
                 dict_level_entries_parent[id].add(parent_id)
             if parent_id not in dict_parent:
-                dict_parent[parent_id] = parent_name
+                if parent_name:
+                    dict_parent[parent_id] = parent_name
+                else:
+                    dict_parent[parent_id] = parent_synonym[0]
 
         dict_levels[count_level].append(dict_class_entry)
 
