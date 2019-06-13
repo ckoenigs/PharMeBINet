@@ -70,7 +70,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 read -p "Press any key if in original database in neo4j is started" -n1 -s
 echo ''
-
+_hi
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo hierarchy
