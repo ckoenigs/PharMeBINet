@@ -91,6 +91,7 @@ def main():
     print('remove queries for relationships')
 
     for rela in rela_list:
+
         add_delete_query_rela(rela)
 
     print(
