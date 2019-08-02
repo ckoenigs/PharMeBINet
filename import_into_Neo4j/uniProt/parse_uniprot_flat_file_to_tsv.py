@@ -114,8 +114,6 @@ def integration_dict_info_into_csv(dict_information):
 
 set_list_de_categories = set([])
 
-print(sys.argv)
-file = open(sys.argv[1], 'r')
 
 # dictionary to replace the short form of the go classification into strings
 dict_short_to_full_go = {
@@ -148,7 +146,10 @@ def extract_information():
     general_function = False
     subcellular_location = False
 
-    for line in file:
+    print(sys.argv)
+    file_uniprot = open(sys.argv[1], 'r')
+
+    for line in file_uniprot:
         two_split = line.split('   ', 1)
         # if ',\n' in line:
         #     print(line)
