@@ -161,7 +161,7 @@ def load_ndf_rt_xml_inferred_in():
             properties_list.append(text)
 
         properties_string='|'.join(properties_list)
-        # properties_string=properties_string.encode("utf-8")
+        properties_string=properties_string.encode("utf-8")
 
         # go through association of this drug and generate a list of string
         association_list = []
