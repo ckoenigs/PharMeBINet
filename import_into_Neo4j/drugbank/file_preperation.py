@@ -1060,15 +1060,15 @@ def check_and_maybe_generate_a_new_target_file(file, dict_targets_info_external,
         print(file)
         reader = csv.DictReader(csvfile, delimiter='\t')
         header = reader.fieldnames
-        output_file_csv = open(output_file, 'w')
-        writer_output = csv.writer(output_file_csv, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        # output_file_csv = open(output_file, 'w')
+        # writer_output = csv.writer(output_file_csv, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
         i = 0
         for head in header:
             header_new.append(head)
         header_new.append('alternative_uniprot_id')
         header.append('alternative_uniprot_id')
-        writer_output.writerow(header_new)
+        # writer_output.writerow(header_new)
 
         list_of_all_used_uniprot_ids = set([])
         # print(header)
@@ -2255,6 +2255,7 @@ def add_the_other_rela_to_cypher(pathway_label, product_label, salt_label, mutat
                             break
                             # sys.exit(uniprot_id)
                         if head in dict_drugbank_to_uniprot_label:
+                            print(information_to_this_uniprot_entry[0])
                             entries.append(information_to_this_uniprot_entry[0][dict_drugbank_to_uniprot_label[head]])
                         elif head=='id_source':
                             entries.append('Swiss-Prot')
