@@ -97,8 +97,11 @@ def gather_all_disease_symptom_information_from_HPO():
         if aspect == 'M':
             continue
         if  (db_disease+':'+db_disease_id, hpo_id) in dict_disease_symptom_hpo_pair_to_information:
+            print('double information')
             print(db_disease+':'+db_disease_id, hpo_id)
-            sys.exit('double pair')
+            print(dict_disease_symptom_hpo_pair_to_information[(db_disease+':'+db_disease_id, hpo_id)])
+            print(qualifier, reference_id, evidence_code, frequency_modi,aspect)
+            continue
         dict_disease_symptom_hpo_pair_to_information[(db_disease+':'+db_disease_id, hpo_id)] = [qualifier, reference_id, evidence_code,
                                                                                  frequency_modi,aspect]
         csv_writer_rela.writerow([db_disease+':'+db_disease_id, hpo_id,db_disease, qualifier, evidence_code,
