@@ -434,7 +434,7 @@ def gather_information_from_disease_phenotyp_go_inference(file, ontology):
         cypher_file_edges.write('commit\n')
         query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/ctd/ctd_data/''' + file + '''" As line Match (d:CTDdisease{ disease_id:split(line.DiseaseID,':')[1]}), (g:CTDGO{ go_id:line.GOID }) Merge (d)-[a:affects_DGO]->(g) On Create Set a.unbiased=True, a.inferenceGeneSymbols=line.InferenceGeneSymbols, a.inferenceGeneQty=line.InferenceGeneQty On Match Set a.unbiased=True, a.inferenceGeneSymbols=line.InferenceGeneSymbols, a.inferenceGeneQty=line.InferenceGeneQty;\n '''
     else:
-        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/ctd/ctd_data/''' + file + '''" As line Match (d:CTDdisease{ disease_id:split(line.DiseaseID,':)[1]}), (g:CTDGO{ go_id:line.GOID }) Create (d)-[a:affects_DGO{unbiased:True, inferenceGeneSymbols:line.InferenceGeneSymbols, inferenceGeneQty:line.InferenceGeneQty}]->(g);\n'''
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/ctd/ctd_data/''' + file + '''" As line Match (d:CTDdisease{ disease_id:split(line.DiseaseID,':')[1]}), (g:CTDGO{ go_id:line.GOID }) Create (d)-[a:affects_DGO{unbiased:True, inferenceGeneSymbols:line.InferenceGeneSymbols, inferenceGeneQty:line.InferenceGeneQty}]->(g);\n'''
 
     cypher_file_edges.write(query)
 
