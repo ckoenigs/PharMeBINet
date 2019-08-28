@@ -45,7 +45,7 @@ cypher_file.write('begin\n')
 cypher_file.write('Create Constraint On (node:HPOdisease) Assert node.id Is Unique; \n')
 cypher_file.write('commit \n')
 #query for relationships
-query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/hpo/rela_disease_phenotyp.csv" As line MATCH (n:HPOdisease{id:line.disease_id}),(s:HPOsymptom{id:line.phenotype_id}) Create (n)-[:present{source:line.source,qualifier:line.qualifier, evidence_code:line.evidence_code, frequency_modifier:line.frequency_modifier, aspect:line.aspect}]->(s); \n '''
+query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/hpo/rela_disease_phenotyp.csv" As line MATCH (n:HPOdisease{id:line.disease_id}),(s:HPOsymptom{id:line.phenotype_id}) Create (n)-[:present{source:split(line.source,qualifier:split(line.qualifier,'|'), evidence_code:split(line.evidence_code,'|'), reference_id:split(line.reference_id,'|'), frequency_modifier:split(line.frequency_modifier,'|'), aspect:split(line.aspect,'|')}]->(s); \n '''
 cypher_file.write(query)
 
 
@@ -97,15 +97,22 @@ def gather_all_disease_symptom_information_from_HPO():
         if aspect == 'M':
             continue
         if  (db_disease+':'+db_disease_id, hpo_id) in dict_disease_symptom_hpo_pair_to_information:
-            print('double information')
-            print(db_disease+':'+db_disease_id, hpo_id)
-            print(dict_disease_symptom_hpo_pair_to_information[(db_disease+':'+db_disease_id, hpo_id)])
-            print(qualifier, reference_id, evidence_code, frequency_modi,aspect)
-            continue
-        dict_disease_symptom_hpo_pair_to_information[(db_disease+':'+db_disease_id, hpo_id)] = [qualifier, reference_id, evidence_code,
-                                                                                 frequency_modi,aspect]
-        csv_writer_rela.writerow([db_disease+':'+db_disease_id, hpo_id,db_disease, qualifier, evidence_code,
-                                                                                 frequency_modi,aspect])
+            dict_disease_symptom_hpo_pair_to_information[(db_disease + ':' + db_disease_id, hpo_id)]['qualifier'].add(qualifier)
+            dict_disease_symptom_hpo_pair_to_information[(db_disease + ':' + db_disease_id, hpo_id)]['reference_id'].add(
+                reference_id)
+            dict_disease_symptom_hpo_pair_to_information[(db_disease + ':' + db_disease_id, hpo_id)]['evidence_code'].add(
+                evidence_code)
+            dict_disease_symptom_hpo_pair_to_information[(db_disease + ':' + db_disease_id, hpo_id)]['frequency_modi'].add(
+                frequency_modi)
+            dict_disease_symptom_hpo_pair_to_information[(db_disease + ':' + db_disease_id, hpo_id)]['aspect'].add(
+                aspect)
+        else:
+            dict_disease_symptom_hpo_pair_to_information[(db_disease+':'+db_disease_id, hpo_id)] = {'qualifier':set([qualifier]),
+                                                                                                'reference_id':set([reference_id]),
+                                                                                                'evidence_code':set([evidence_code]),
+                                                                                 'frequency_modi':set([frequency_modi]),'aspect':set([aspect])}
+        # csv_writer_rela.writerow([db_disease+':'+db_disease_id, hpo_id,db_disease, qualifier, evidence_code,
+        #                                                                          frequency_modi,aspect])
 
         if not hpo_id in list_symptoms_ids:
             list_symptoms_ids.append((hpo_id))
@@ -124,6 +131,20 @@ def gather_all_disease_symptom_information_from_HPO():
     print('number of hpo:' + str(len(list_symptoms_ids)))
     print('number of disease:' + str(len(list_disease_ids)))
 
+'''
+Write the combined relationship information into csv
+'''
+def write_rela_info_into_csv():
+    for (db_disease, hpo_id), dict_rela_info in dict_disease_symptom_hpo_pair_to_information.items():
+        info_list=[db_disease,hpo_id]
+        info_list.append('|'.join(filter(None,dict_rela_info['qualifier'])))
+        info_list.append('|'.join(filter(None, dict_rela_info['evidence_code'])))
+        info_list.append('|'.join(filter(None, dict_rela_info['reference_id'])))
+        info_list.append('|'.join(filter(None, dict_rela_info['frequency_modi'])))
+        info_list.append('|'.join(filter(None, dict_rela_info['aspect'])))
+        csv_writer_rela.writerow(info_list)
+
+
 
 
 def main():
@@ -135,6 +156,13 @@ def main():
     print('gather disease symptoms pairs and add disease to cypher file')
     gather_all_disease_symptom_information_from_HPO()
 
+
+
+    print('##########################################################################')
+
+    print(datetime.datetime.utcnow())
+    print('combine the rela information and add them to the csv')
+    write_rela_info_into_csv()
 
     print('##########################################################################')
 
