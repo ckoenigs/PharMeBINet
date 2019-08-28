@@ -84,7 +84,9 @@ def gather_information_from_obo():
                         set_parent_child_pair.add((parent_id,dict_all_info['id']))
 
                     else:
-                        # for som properties more than one value appears
+                        # for some properties more than one value appears
+                        if key_term=='xref':
+                            key_term='xrefs'
                         if not key_term in dict_all_info:
                             dict_all_info[key_term] = value.replace('"', '').replace("'", "").replace("\\", "")
                         else:
