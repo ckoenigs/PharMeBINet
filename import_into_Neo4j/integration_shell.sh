@@ -83,7 +83,22 @@ echo "Current time: $now"
 cd  do
 echo do
 
-python ontology_to_neo4j_final.py -i data/HumanDO.obo -s 5 -r [] > output_integration_do.txt
+python ../EFO/transform_obo_to_csv_and_cypher_file.py data/HumanDO.obo do diseaseontology > output_generate_integration_file.txt
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+echo integrate do into neo4j
+
+$path_neo4j/neo4j-shell -file cypher.cypher > output_cypher_integration.txt
+
+sleep 180
+
+$path_neo4j/neo4j restart
+
+
+sleep 120
+
 
 cd ..
 
@@ -183,7 +198,6 @@ echo "Current time: $now"
 cd  EFO
 echo EFO
 
-# python extract_information_from_efo_and_integrate_into_neo4j.py > output_generate_integration_file.txt
 python transform_obo_to_csv_and_cypher_file.py efo.obo EFO EFOdisease > output_generate_integration_file.txt
 
 now=$(date +"%F %T")
@@ -209,7 +223,6 @@ echo "Current time: $now"
 cd  ncbi_genes
 echo NCBI
 
-# python extract_information_from_efo_and_integrate_into_neo4j.py > output_generate_integration_file.txt
 python integrate_ncbi_genes_which_are_already_in_hetionet.py > output_generate_integration_file.txt
 
 now=$(date +"%F %T")
