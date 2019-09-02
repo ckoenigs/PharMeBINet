@@ -6,6 +6,13 @@ path_neo4j=$1
 
 now=$(date +"%F %T")
 echo "Current time: $now"
+echo add hetionet and resource to nodes
+
+$path_neo4j/neo4j-shell -file cypher.cypher > output_cypher_integration.txt
+
+
+now=$(date +"%F %T")
+echo "Current time: $now"
 
 cd sider 
 echo sider
@@ -90,7 +97,7 @@ echo "Current time: $now"
 
 echo integrate do into neo4j
 
-$path_neo4j/neo4j-shell -file cypher.cypher > output_cypher_integration.txt
+cat cypher.cypher | $path_neo4j/cypher-shell -u neo4j -p test > output_cypher_integration.txt
 
 sleep 180
 
@@ -120,7 +127,7 @@ echo "Current time: $now"
 
 echo integrate hpo into neo4j
 
-$path_neo4j/neo4j-shell -file cypher.cypher > output_cypher_integration.txt
+cat cypher.cypher | $path_neo4j/cypher-shell -u neo4j -p test > output_cypher_integration.txt
 
 sleep 180
 
@@ -187,7 +194,7 @@ echo "Current time: $now"
 cd  drugbank
 echo drugbank
 
-./script_to_start_program_and_integrate_into_neo4j.sh
+./script_to_start_program_and_integrate_into_neo4j.sh > output_script.txt
 
 
 cd ..
@@ -205,7 +212,7 @@ echo "Current time: $now"
 
 echo integrate efo into neo4j
 
-$path_neo4j/neo4j-shell -file cypher.cypher > output_cypher_integration.txt
+cat cypher.cypher | $path_neo4j/cypher-shell -u neo4j -p test > output_cypher_integration.txt
 
 sleep 180
 
@@ -248,7 +255,7 @@ cd  mondo
 echo mondo
 
 
-./integrate_mondo_and_add_level.sh $path_neo4j /home/cassandra/Dokumente/neo4j-community-3.5.0-beta02/data/databases/restart_neo4j.sh > output_integration_of_everything.txt
+./integrate_mondo_and_add_level.sh $path_neo4j /home/cassandra/Dokumente/neo4j-community-3.5.8/data/databases/restart_neo4j.sh > output_integration_of_everything.txt
 
 
 cd ..
