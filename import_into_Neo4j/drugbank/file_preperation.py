@@ -2143,7 +2143,7 @@ dict_drugbank_to_uniprot_label={
     'chromosome_location':'chromosome_location',
     'pfams':'pfam',
     'go_classifiers':'go_classifiers',
-    'xrefs':'xref',
+    # 'xrefs':'xref',
     'cellular_location':'subcellular_location'
 }
 
