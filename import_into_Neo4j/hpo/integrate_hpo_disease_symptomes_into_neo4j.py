@@ -41,11 +41,11 @@ for property in list_of_disease_properties:
     query+=property+':line.'+property+ ', '
 query=query[:-2]+'});\n'
 cypher_file.write(query)
-cypher_file.write('begin\n')
+cypher_file.write(':begin\n')
 cypher_file.write('Create Constraint On (node:HPOdisease) Assert node.id Is Unique; \n')
-cypher_file.write('commit \n')
+cypher_file.write(':commit \n')
 #query for relationships
-query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/hpo/rela_disease_phenotyp.csv" As line MATCH (n:HPOdisease{id:line.disease_id}),(s:HPOsymptom{id:line.phenotype_id}) Create (n)-[:present{source:split(line.source,qualifier:split(line.qualifier,'|'), evidence_code:split(line.evidence_code,'|'), reference_id:split(line.reference_id,'|'), frequency_modifier:split(line.frequency_modifier,'|'), aspect:split(line.aspect,'|')}]->(s); \n '''
+query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/hpo/rela_disease_phenotyp.csv" As line MATCH (n:HPOdisease{id:line.disease_id}),(s:HPOsymptom{id:line.phenotype_id}) Create (n)-[:present{source:split(line.source,'|'),qualifier:split(line.qualifier,'|'), evidence_code:split(line.evidence_code,'|'), reference_id:split(line.reference_id,'|'), frequency_modifier:split(line.frequency_modifier,'|'), aspect:split(line.aspect,'|')}]->(s); \n '''
 cypher_file.write(query)
 
 
