@@ -115,9 +115,9 @@ def generate_cypher_file():
             query += property + ':split(line.' + property + ',"|"), '
     query=query[:-2]+'});\n'
     cypher_file.write(query)
-    cypher_file.write('begin\n')
+    cypher_file.write(':begin\n')
     cypher_file.write('Create Constraint On (node:'+neo4j_label+') Assert node.id Is Unique; \n')
-    cypher_file.write('commit\n')
+    cypher_file.write(':commit\n')
 
     # create node csv
     file=open('node.csv','w')
