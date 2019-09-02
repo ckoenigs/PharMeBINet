@@ -1,1 +1,4 @@
 This contains all integration files. And a script to execute all the integration into Neo4j.
+/home/cassandra/Dokumente/neo4j-community-3.2.9/bin
+
+./integration_shell.sh /home/cassandra/Dokumente/neo4j-community-3.2.9/bin > output_all_integration.txt
