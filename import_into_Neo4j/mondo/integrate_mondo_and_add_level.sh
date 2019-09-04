@@ -20,22 +20,24 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 
 $path_neo4j_original/neo4j stop
+sleep 60
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo start the newerst version
 
-$path_neo4j_newest_version graph restart $path_neo4j_newest_version 
+$path_neo4j_newest_version graph restart 
 
 sleep 180
 
 #generate the cypher files from the neo4j database with apoc
-python generate_cypher_file.py > output_program.txt
+#python generate_cypher_file.py > output_program.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 
 $path_neo4j_newest_version graph stop
+sleep 60
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -43,14 +45,16 @@ echo start the original version
 
 $path_neo4j_original/neo4j start
 
+sleep 120
+
 #integrate the mondo information into the other database
-$path_neo4j_original/neo4j-shell -file $mondo > output_cypher_integration.txt
-echo $path_mondo
+cat $mondo | $path_neo4j_original/cypher-shell -u neo4j -p test > output_cypher_integration.txt
+echo integrated
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j_original/neo4j-shell -file single_node_without_connection.cypher > output_cypher_integration_singel.txt
+cat single_node_without_connection.cypher |  $path_neo4j_original/cypher-shell -u neo4j -p test > output_cypher_integration_singel.txt
 
 sleep 180
 
@@ -76,6 +80,8 @@ echo start the newerst version
 
 $path_neo4j_newest_version graph restart
 
+sleep 120
+
 echo get a parent
 python find_connection_for_nodes_without_upper_nodes.py > output_found_parents.txt
 
@@ -84,11 +90,32 @@ echo "Current time: $now"
 
 $path_neo4j_newest_version graph stop
 
+sleep 60
+
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo start the newerst version
 
-path_neo4j_original/neo4j start
+$path_neo4j_original/neo4j start
+
+sleep 120
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo prepare subclass relationships
+
+python prepare_relationship_subclass.py > output_rela.txt
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+$path_neo4j_original/neo4j-shell -file cypher_rela.cypher > output_cypher_integration_rela.txt
+
+sleep 180
+
+$path_neo4j_original/neo4j restart
+
+sleep 120
 
 now=$(date +"%F %T")
 echo "Current time: $now"
