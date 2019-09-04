@@ -21,56 +21,6 @@ def database_connection():
     global g
     g = Graph("http://localhost:7474/db/data/")
 
-
-'''
-First prepare mondo-disease, because some has multiple subClassOf from the different  source and this information are 
-combined in one relationship
-'''
-
-
-def prepare_subClassOf_relationships():
-    # get all nodes with multiple subClassOf relationship
-    query = '''Match p=(a:disease)-[r:subClassOf]->(b:disease) With a,b,type(r) as t, count(r) as coun Where coun >1 Return a.`http://www.geneontology.org/formats/oboInOwl#id` ,b.`http://www.geneontology.org/formats/oboInOwl#id` '''
-    result = g.run(query)
-
-    #count the pairs of multiple subClass relationships
-    counter_pairs_with_multiple_sub_class_rela=0
-    for mondo_id_a, mondo_id_b, in result:
-        counter_pairs_with_multiple_sub_class_rela+=1
-        query = '''Match p=(a:disease{`http://www.geneontology.org/formats/oboInOwl#id`:"%s"})-[r:subClassOf]->(b:disease{`http://www.geneontology.org/formats/oboInOwl#id`:'%s'})  Return r '''
-        query= query %(mondo_id_a,mondo_id_b)
-        defined = 'http://purl.obolibrary.org/obo/upheno/monarch.owl'
-        result = g.run(query)
-
-        dict_orginal_source_target = []
-
-        number_rela=0
-        for rela, in result:
-            number_rela+=1
-            original_source = rela['equivalentOriginalNodeSource'] if 'equivalentOriginalNodeSource' in rela else ''
-            original_target = rela['equivalentOriginalNodeTarget'] if 'equivalentOriginalNodeTarget' in rela else ''
-            combined = '(' + original_source + ',' + original_target + ')'
-            dict_orginal_source_target.append(combined)
-            if rela['isDefinedBy'] != defined:
-                print(rela['isDefinedBy'])
-                break
-
-        # print(datetime.datetime.utcnow())
-        # print(mondo_id_a, mondo_id_b)
-        query = '''Match (a:disease{`http://www.geneontology.org/formats/oboInOwl#id`:"%s"})-[r:subClassOf]->(b:disease{`http://www.geneontology.org/formats/oboInOwl#id`:'%s'}) Delete r '''
-        query= query%(mondo_id_a,mondo_id_b)
-        g.run(query)
-        query = '''Match (a:disease{`http://www.geneontology.org/formats/oboInOwl#id`:"%s"}),(b:disease{`http://www.geneontology.org/formats/oboInOwl#id`:'%s'}) Create (a)-[:subClassOf{lbl:'%s', isDefinedBy:"%s", equivalentOriginalNodeSourceTarget:["%s"]  }]->(b)  '''
-        original_source_target='","'.join(dict_orginal_source_target)
-        query = query % (mondo_id_a, mondo_id_b, rela['lbl'], rela['isDefinedBy'], original_source_target)
-        # print(query)
-        g.run(query)
-        if counter_pairs_with_multiple_sub_class_rela % 1000==0:
-            print(counter_pairs_with_multiple_sub_class_rela)
-            print(datetime.datetime.utcnow())
-    print('total number of pairs with multiple connection:'+str(counter_pairs_with_multiple_sub_class_rela))
-
-
 # dictionary with all levels and two lists the first contains the class element and the second the leafs and each has a
 # dict with parent id as key with id name and parent
 dict_levels = {}
@@ -325,13 +275,6 @@ def main():
     print(datetime.datetime.utcnow())
     print('connection to db')
     database_connection()
-
-    print('##########################################################################')
-
-    print(datetime.datetime.utcnow())
-    print('prepare subClassOf relationships')
-
-    prepare_subClassOf_relationships()
 
 
     print('##########################################################################')
