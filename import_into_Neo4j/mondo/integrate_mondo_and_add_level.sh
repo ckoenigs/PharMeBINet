@@ -31,7 +31,7 @@ $path_neo4j_newest_version graph restart
 sleep 180
 
 #generate the cypher files from the neo4j database with apoc
-#python generate_cypher_file.py > output_program.txt
+python generate_cypher_file.py > output_program.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
