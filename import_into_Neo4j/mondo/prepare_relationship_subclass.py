@@ -20,7 +20,7 @@ def database_connection():
 
 #csv files where subclass relationships need to be combined
 file=open('subclass_rela.csv','w')
-csv_writer=csv.DictWriter(file,terminator='\t')
+csv_writer=csv.writer(file,delimiter='\t')
 header=['disease_id_1','disease_id_2','lbl','isDefinedBy','equivalentOriginalNodeSourceTarget']
 csv_writer.writerow(header)
 
@@ -32,7 +32,7 @@ query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cas
 cypher.write(query)
 query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/mondo/subclass_rela.csv" As line FIELDTERMINATOR '\\t' Match (a:disease{`http://www.geneontology.org/formats/oboInOwl#id`:line.disease_id_1}), (b:disease{`http://www.geneontology.org/formats/oboInOwl#id`:line.disease_id_2}) Create (a)-[:subClassOf{lbl:line.lbl, isDefinedBy:line.isDefinedBy, equivalentOriginalNodeSourceTarget:split(line.equivalentOriginalNodeSourceTarget,'|')  }]->(b)  ;\n '''
 cypher.write(query)
-cypher.closed()
+cypher.close()
 
 '''
 First prepare mondo-disease, because some has multiple subClassOf from the different  source and this information are 
