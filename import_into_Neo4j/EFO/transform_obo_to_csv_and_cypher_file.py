@@ -16,15 +16,24 @@ from itertools import groupby
 def is_data(line):
     return True if line.strip() else False
 
+if len(sys.argv)!=4:
+    sys.exit('need the obo file, directory, neo4j label')
+    
 
-# file path to HPO data source
-file_name = 'efo.obo'
+# file path to data source
+file_name = sys.argv[1]
 
-# dictionary with all efo identifier and a dictionary for all information of this identifier
-dict_all_efo_entries = {}
+# directory
+directory=sys.argv[2]
+
+#neo4j label
+neo4j_label=sys.argv[3]
+
+# dictionary with all identifier and a dictionary for all information of this identifier
+dict_all_entries = {}
 
 #all properties
-set_all_properties_in_efo=set([])
+set_all_properties_in_database=set([])
 
 #list of all properties which are lists
 set_list_properties=set([])
@@ -33,12 +42,12 @@ set_list_properties=set([])
 set_parent_child_pair=set([])
 
 '''
-group the epo terms together and get the information from the different terms and gather all term information in a dictionary
+group the terms together and get the information from the different terms and gather all term information in a dictionary
 further fill the dictionary for the hierachical set
 '''
 
 
-def get_efo_information_and_map_to_umls():
+def gather_information_from_obo():
     # counter of queries
     counter_create = 0
 
@@ -71,21 +80,23 @@ def get_efo_information_and_map_to_umls():
                     #                        elif value in dict_hpo_frequency:
                     #                            is_a_frequency_information = True
                     if key_term == 'is_a':
-                        parent_id = value.split('!')[0].strip()
-                        set_parent_child_pair.add((parent_id,dict_all_info['id'][0]))
+                        parent_id = value.split('!')[0].strip().split(' {')[0]
+                        set_parent_child_pair.add((parent_id,dict_all_info['id']))
 
                     else:
-                        # for som properties more than one value appears
+                        # for some properties more than one value appears
+                        if key_term=='xref':
+                            key_term='xrefs'
                         if not key_term in dict_all_info:
                             dict_all_info[key_term] = value.replace('"', '').replace("'", "").replace("\\", "")
                         else:
                             dict_all_info[key_term]+='|'+value.replace('"', '').replace("'", "").replace("\\", "")
                             set_list_properties.add(key_term)
-                        set_all_properties_in_efo.add(key_term)
+                        set_all_properties_in_database.add(key_term)
 
 
 
-                dict_all_efo_entries[dict_all_info['id'][0]] = dict_all_info
+                dict_all_entries[dict_all_info['id']] = dict_all_info
 
 
 '''
@@ -93,42 +104,38 @@ generate cypher file
 '''
 
 
-def generate_cypher_file(all_child_of_disease):
+def generate_cypher_file():
     #create cypher file
     cypher_file=open('cypher.cypher','w')
-    cypher_file.write('begin\n')
-    query=''' Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/aeolus/node.csv" As line Create (:EFOdisease{'''
-    for property in set_all_properties_in_efo:
+    query=''' Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/'''+directory+'''/node.csv" As line Create (:'''+neo4j_label+'''{'''
+    for property in set_all_properties_in_database:
         if not property in set_list_properties :
             query+=property+':line.'+property+', '
         else:
             query += property + ':split(line.' + property + ',"|"), '
     query=query[:-2]+'});\n'
     cypher_file.write(query)
-    cypher_file.write('commit\nbegin\n')
-    cypher_file.write('Create Constraint On (node:EFOdisease) Assert node.id Is Unique; \n')
-    cypher_file.write('commit')
+    cypher_file.write(':begin\n')
+    cypher_file.write('Create Constraint On (node:'+neo4j_label+') Assert node.id Is Unique; \n')
+    cypher_file.write(':commit\n')
 
     # create node csv
     file=open('node.csv','w')
-    csv_writer=csv.DictWriter(file,fieldnames=list(set_all_properties_in_efo))
-    csv_writer.fieldnames()
+    csv_writer=csv.DictWriter(file,fieldnames=list(set_all_properties_in_database))
+    csv_writer.writeheader()
 
-    for disease_id, dict_value in dict_all_efo_entries.items():
+    for disease_id, dict_value in dict_all_entries.items():
         # add all properties of a node into csv file
         csv_writer.writerow(dict_value)
     file.close()
 
     #add query for relationship integration
-    cypher_file.write('begin')
-    query = ''' Match (a:EFOdisease{id:line.child_id}), (b:EFOdisease{id:line.parent_id}) 
-                     Create (a)-[:is_a_efo]->(b); \n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/'''+directory+'''/rela.csv" As line  Match (a:%s{id:line.child_id}), (b:%s{id:line.parent_id}) Create (a)-[:is_a]->(b); \n''' %(neo4j_label,neo4j_label)
     cypher_file.write(query)
-    cypher_file.write('commit')
 
     #create csv for relationships
     # create node csv
-    file = open('node.csv', 'w')
+    file = open('rela.csv', 'w')
     csv_writer = csv.writer(file)
     csv_writer.writerow(['child_id','parent_id'])
 
@@ -146,7 +153,7 @@ def main():
     print(datetime.datetime.utcnow())
     print('gather symptoms information ')
 
-    get_efo_information_and_map_to_umls()
+    gather_information_from_obo()
 
     print('##########################################################################')
 

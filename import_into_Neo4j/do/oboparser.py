@@ -44,14 +44,15 @@ def parse(oboFile, typedefs):
         for (key, group) in groupby(f, is_data):
             if key:
                 #print(group)
-                #header = group.next().rstrip('\n')
-                header = group.__next__().rstrip('\n')
+                header = group.next().rstrip('\n')
+                # header = group.__next__().rstrip('\n')
                 
                 
 
                 if header.find('[Typedef]') != -1:
                     dataDict = get_data_as_dict(group)
-                    ontology.add_typedef(dataDict['name'])
+                    if 'name' in dataDict:
+                        ontology.add_typedef(dataDict['name'])
                 elif header.find('[Term]') != -1:
                     dataDict = get_data_as_dict(group, typedefs)
                     ontology.add_term(build_term(dataDict))

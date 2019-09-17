@@ -21,56 +21,6 @@ def database_connection():
     global g
     g = Graph("http://localhost:7474/db/data/")
 
-
-'''
-First prepare mondo-disease, because some has multiple subClassOf from the different  source and this information are 
-combined in one relationship
-'''
-
-
-def prepare_subClassOf_relationships():
-    # get all nodes with multiple subClassOf relationship
-    query = '''Match p=(a:disease)-[r:subClassOf]->(b:disease) With a,b,type(r) as t, count(r) as coun Where coun >1 Return a.`http://www.geneontology.org/formats/oboInOwl#id` ,b.`http://www.geneontology.org/formats/oboInOwl#id` '''
-    result = g.run(query)
-
-    #count the pairs of multiple subClass relationships
-    counter_pairs_with_multiple_sub_class_rela=0
-    for mondo_id_a, mondo_id_b, in result:
-        counter_pairs_with_multiple_sub_class_rela+=1
-        query = '''Match p=(a:disease{`http://www.geneontology.org/formats/oboInOwl#id`:"%s"})-[r:subClassOf]->(b:disease{`http://www.geneontology.org/formats/oboInOwl#id`:'%s'})  Return r '''
-        query= query %(mondo_id_a,mondo_id_b)
-        defined = 'http://purl.obolibrary.org/obo/upheno/monarch.owl'
-        result = g.run(query)
-
-        dict_orginal_source_target = []
-
-        number_rela=0
-        for rela, in result:
-            number_rela+=1
-            original_source = rela['equivalentOriginalNodeSource'] if 'equivalentOriginalNodeSource' in rela else ''
-            original_target = rela['equivalentOriginalNodeTarget'] if 'equivalentOriginalNodeTarget' in rela else ''
-            combined = '(' + original_source + ',' + original_target + ')'
-            dict_orginal_source_target.append(combined)
-            if rela['isDefinedBy'] != defined:
-                print(rela['isDefinedBy'])
-                break
-
-        # print(datetime.datetime.utcnow())
-        # print(mondo_id_a, mondo_id_b)
-        query = '''Match (a:disease{`http://www.geneontology.org/formats/oboInOwl#id`:"%s"})-[r:subClassOf]->(b:disease{`http://www.geneontology.org/formats/oboInOwl#id`:'%s'}) Delete r '''
-        query= query%(mondo_id_a,mondo_id_b)
-        g.run(query)
-        query = '''Match (a:disease{`http://www.geneontology.org/formats/oboInOwl#id`:"%s"}),(b:disease{`http://www.geneontology.org/formats/oboInOwl#id`:'%s'}) Create (a)-[:subClassOf{lbl:'%s', isDefinedBy:"%s", equivalentOriginalNodeSourceTarget:["%s"]  }]->(b)  '''
-        original_source_target='","'.join(dict_orginal_source_target)
-        query = query % (mondo_id_a, mondo_id_b, rela['lbl'], rela['isDefinedBy'], original_source_target)
-        # print(query)
-        g.run(query)
-        if counter_pairs_with_multiple_sub_class_rela % 1000==0:
-            print(counter_pairs_with_multiple_sub_class_rela)
-            print(datetime.datetime.utcnow())
-    print('total number of pairs with multiple connection:'+str(counter_pairs_with_multiple_sub_class_rela))
-
-
 # dictionary with all levels and two lists the first contains the class element and the second the leafs and each has a
 # dict with parent id as key with id name and parent
 dict_levels = {}
@@ -87,8 +37,8 @@ def generate_files():
     query_start = ''' Match (a:disease)'''
     query_add_part = '''-[:subClassOf]->('''
     query_end_match = '''-[:subClassOf]->(b:disease{`http://www.geneontology.org/formats/oboInOwl#id`:'MONDO:0000001'}) Where '''
-    query_where_level_element = '''not ()-[:subClassOf]->(a) Return a.`http://www.geneontology.org/formats/oboInOwl#id`, a.label, '''
-    query_where_level_class = ''' ()-[:subClassOf]->(a) Return a.`http://www.geneontology.org/formats/oboInOwl#id`, a.label, '''
+    query_where_level_element = '''not ()-[:subClassOf]->(a) Return a.`http://www.geneontology.org/formats/oboInOwl#id`, a.label, a.synonym, '''
+    query_where_level_class = ''' ()-[:subClassOf]->(a) Return a.`http://www.geneontology.org/formats/oboInOwl#id`, a.label, a.synonym, '''
     count_level = 1
     letter_of_parent = 0
 
@@ -111,38 +61,45 @@ def generate_files():
             query_start = query_start + query_add_part + string.ascii_lowercase[count_level] + ')'
             query_level_class = query_start + query_end_match + query_where_level_class + string.ascii_lowercase[
                 letter_of_parent] + '.`http://www.geneontology.org/formats/oboInOwl#id`, ' + string.ascii_lowercase[
-                                    letter_of_parent] + '.label '
+                                    letter_of_parent] + '.label, ' +string.ascii_lowercase[letter_of_parent] + '.synonym '
             query_level_element = query_start + query_end_match + query_where_level_element + string.ascii_lowercase[
                 letter_of_parent] + '.`http://www.geneontology.org/formats/oboInOwl#id`, ' + string.ascii_lowercase[
-                                      letter_of_parent] + '.label '
+                                      letter_of_parent] + '.label, '+string.ascii_lowercase[letter_of_parent] + '.synonym '
 
         else:
             letter_of_parent = count_level + 1
             query_level_class = query_start + query_end_match + query_where_level_class + string.ascii_lowercase[
                 letter_of_parent - 1] + '.`http://www.geneontology.org/formats/oboInOwl#id`, ' + string.ascii_lowercase[
-                                    letter_of_parent - 1] + '.label '
+                                    letter_of_parent - 1] + '.label, '+string.ascii_lowercase[letter_of_parent - 1] + '.synonym '
             query_level_element = query_start + query_end_match + query_where_level_element + string.ascii_lowercase[
                 letter_of_parent - 1] + '.`http://www.geneontology.org/formats/oboInOwl#id`, ' + string.ascii_lowercase[
-                                      letter_of_parent - 1] + '.label '
+                                      letter_of_parent - 1] + '.label, '+string.ascii_lowercase[letter_of_parent - 1] + '.synonym '
 
         dict_levels[count_level] = []
 
         dict_class_entry = {}
         results_classes = g.run(query_level_class)
         # collect the information for classes
-        for id, name, parent_id, parent_name, in results_classes:
+        for id, name, synonym, parent_id, parent_name, parent_synonym, in results_classes:
             if parent_id not in dict_class_entry:
                 dict_class_entry[parent_id] = {id: [name, parent_id]}
             else:
                 dict_class_entry[parent_id][id]=[ name, parent_id]
 
             if id not in dict_level:
-                dict_level[id] = name
+                if name:
+                    dict_level[id] = name
+                else:
+                    dict_level[id]=synonym[0]
+
                 dict_level_class_parent[id] = set([parent_id])
             else:
                 dict_level_class_parent[id].add(parent_id)
             if parent_id not in dict_parent:
-                dict_parent[parent_id] = parent_name
+                if parent_name:
+                    dict_parent[parent_id] = parent_name
+                else:
+                    dict_parent[parent_id] = parent_synonym[0]
 
         dict_levels[count_level].append(dict_class_entry)
 
@@ -161,6 +118,7 @@ def generate_files():
 
             for parent_id in parent_ids:
                 name_parent_string = name_parent_string + dict_parent[parent_id] + '|'
+
             class_file.write(id + '\t' + name + '\t' + parent_ids_string + '\t' + name_parent_string[0:-1] + '\n')
         class_file.close()
 
@@ -168,19 +126,25 @@ def generate_files():
         dict_class_entry = {}
         results_elements = g.run(query_level_element)
         # collect the information for entities
-        for id, name, parent_id, parent_name, in results_elements:
+        for id, name, synonym, parent_id, parent_name, parent_synonym, in results_elements:
             if parent_id not in dict_class_entry:
                 dict_class_entry[parent_id] = {id: [name, parent_id]}
             else:
                 dict_class_entry[parent_id][id]=[ name, parent_id]
 
             if id not in dict_level:
-                dict_level[id] = name
+                if name:
+                    dict_level[id] = name
+                else:
+                    dict_level[id]=synonym[0]
                 dict_level_entries_parent[id] = set([parent_id])
             else:
                 dict_level_entries_parent[id].add(parent_id)
             if parent_id not in dict_parent:
-                dict_parent[parent_id] = parent_name
+                if parent_name:
+                    dict_parent[parent_id] = parent_name
+                else:
+                    dict_parent[parent_id] = parent_synonym[0]
 
         dict_levels[count_level].append(dict_class_entry)
 
@@ -311,13 +275,6 @@ def main():
     print(datetime.datetime.utcnow())
     print('connection to db')
     database_connection()
-
-    print('##########################################################################')
-
-    print(datetime.datetime.utcnow())
-    print('prepare subClassOf relationships')
-
-    prepare_subClassOf_relationships()
 
 
     print('##########################################################################')

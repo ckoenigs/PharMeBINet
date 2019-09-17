@@ -66,7 +66,7 @@ find out all the chemicals which are now mapped to drugbank ids
 {identifier:'C014081'}
 '''
 def find_not_mapped_chemicals_which_are_mapped_to_DB_id():
-    query = '''Match (d:Chemical), p=(b:CTDchemical)-[]-(e:Chemical) Where d.identifier=b.chemical_id and not (d)-[:equal_to_CTD_chemical]-(b)  Return d, e '''
+    query = '''Match (d:Chemical), p=(b:CTDchemical)<-[]-(e:Chemical) Where d.identifier=b.chemical_id and not (d)-[]-(b)  Return d, e '''
     result = g.run(query)
 
     list_of_mapped_to_drugbank_ids=set([])
@@ -132,7 +132,7 @@ def load_drugs_from_CTD():
 
 
 '''
-check how many of the checmical now has a new mesh id
+check how many of the chemical now has a new mesh id
 '''
 def map_to_new_mesh_id_with_name_mapping():
     delete_index_list=set([])
@@ -203,7 +203,7 @@ def merge_old_nodes_into_new_one():
 def main():
     global exists_chemicals
     print (datetime.datetime.utcnow())
-    print('Generate connection with neo4j and mysql')
+    print('Generate connection with neo4j')
 
     create_connection_with_neo4j()
 
@@ -211,7 +211,7 @@ def main():
         '###########################################################################################################################')
 
     print (datetime.datetime.utcnow())
-    print('Load all compounds from hetionet into a dictionary')
+    print('Load all chemicals without mapping from hetionet into a dictionary')
 
     find_all_chemicals_which_did_not_mapped()
 
@@ -219,7 +219,7 @@ def main():
         '###########################################################################################################################')
 
     print (datetime.datetime.utcnow())
-    print('Load all drugs from ctd into dictionaries depending on the drugbank id exist or not ')
+    print('Load allchemicals which are now also compounds ')
 
     find_not_mapped_chemicals_which_are_mapped_to_DB_id()
 
@@ -227,6 +227,8 @@ def main():
         '###########################################################################################################################')
 
     print (datetime.datetime.utcnow())
+    ################################################################################################################################
+    # check how chemicals has changed
     print('load all ctd chemicals')
 
     load_drugs_from_CTD()
@@ -238,7 +240,7 @@ def main():
     print('Map with name')
 
     map_to_new_mesh_id_with_name_mapping()
-
+    ###################################################################################################################################
     print(
         '###########################################################################################################################')
 

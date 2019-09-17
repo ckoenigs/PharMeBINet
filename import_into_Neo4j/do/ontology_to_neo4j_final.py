@@ -131,6 +131,7 @@ def create_term_relationships(db, mapping):
             childNode = db.node[nodeId]
 
             for (type, parentId, parentName) in mapping[term]['relationships']:
+                parentId=parentId.split(' {')[0]
                 parentNodeId = mapping[parentId]['node_id']
                 parentNode = db.node[parentNodeId]
                 childNode.relationships.create(type, parentNode)
@@ -147,6 +148,9 @@ def create_root_node_index(root_nodes, gdb):
     root_index = gdb.nodes.indexes.create('rootnodes', type='exact', provider='lucene')
 
     for i in range(len(root_nodes)):
+        print(ontology_index['id'])
+        print(root_nodes[i])
+        print(ontology_index['id'][root_nodes[i]])
         neo4j_node = (ontology_index['id'][root_nodes[i]])[0]
         # TODO: Figure out a better way of doing this than casting int to string
         root_index.add('id', str(i), neo4j_node)

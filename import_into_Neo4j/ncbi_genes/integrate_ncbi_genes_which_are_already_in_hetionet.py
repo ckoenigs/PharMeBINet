@@ -1,33 +1,9 @@
-from py2neo import Graph, authenticate
+
 import datetime
 import sys, csv
 
-'''
-create a connection with neo4j
-'''
 
-
-def create_connetion_with_neo4j():
-    # set up authentication parameters and connection
-    authenticate("localhost:7474", "neo4j", "test")
-    global g
-    g = Graph("http://localhost:7474/db/data/")
-
-#dictionary with all gene ids to there name
-dict_hetionet_gene_ids_to_name={}
-
-'''
-load all ncbi identifier from the gene ides into a dictionary (or list)
-'''
-def get_all_ncbi_ids_form_hetionet_genes():
-    query='''Match (g:Gene) Return g.identifier, g.name;'''
-    results=g.run(query)
-    for identifier, name, in results:
-        dict_hetionet_gene_ids_to_name[identifier]=name
-
-    print('number of genes in hetionet:'+str(len(dict_hetionet_gene_ids_to_name)))
-
-# list of found gene ids, because i think not all gene ids from hetionet exists anymore
+# list of found genes
 found_gene_ids=[]
 
 '''
@@ -59,12 +35,6 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
     writer_not_human.writeheader()
 
 
-    # file with all gene  are human but not in hetionet
-    file_H = open('output_data/genes_human_not_in_hetionet.csv', 'w')
-    writer_human_not_in_hetionet = csv.DictWriter(file_H, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL,
-                            fieldnames=reader.fieldnames)
-    writer_human_not_in_hetionet.writeheader()
-
     #count all row in the file
     counter_all=0
     #count all row which will be integrated
@@ -72,9 +42,11 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
     #counter all gene which are human and in hetionet
     counter_gene_in_hetionet_and_human=0
 
+    #create cypher file
     cypher_file=open('cypher_node.cypher','w')
     query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/ncbi_genes/output_data/genes.csv" As line Fieldterminator '\\t' Create (n:Gene_Ncbi {'''
 
+    # add properties into the queries
     for property in reader.fieldnames:
 
         if property in  ['Synonyms','dbXrefs','map_location','Feature_type','Other_designations']:
@@ -93,6 +65,7 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
     cypher_file.write(query)
     counter_not_same_name_and_description=0
 
+    # generate human gene csv
     for row in reader:
 
         counter_all+=1
@@ -111,28 +84,16 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
         #     print('ok')
         #tax id 9606 is human
         tax_id=row['#tax_id']
-        if int(gene_id) in dict_hetionet_gene_ids_to_name:
-            if tax_id!='9606':
-                writer_not_human.writerow(row)
-                found_gene_ids.append(int(gene_id))
-            else:
-                counter_gene_in_hetionet_and_human+=1
-                counter_included+=1
-                writer.writerow(row)
-                found_gene_ids.append(int(gene_id))
+        if tax_id!='9606':
+            writer_not_human.writerow(row)
+            found_gene_ids.append(int(gene_id))
         else:
-            if tax_id=='9606':
-                counter_included+=1
-                writer_human_not_in_hetionet.writerow(row)
-                writer.writerow(row)
+            counter_gene_in_hetionet_and_human+=1
+            counter_included+=1
+            writer.writerow(row)
+            found_gene_ids.append(int(gene_id))
 
-    all_ids_inhetionet=dict_hetionet_gene_ids_to_name.keys()
-    difference= set(all_ids_inhetionet).difference(found_gene_ids)
-    # print(found_gene_ids)
     print(len(found_gene_ids))
-    print('dddddddddddddddddddddddddddddddddddddddddddddddddd')
-    print(len(difference))
-    # print(difference)
     print('all rows in ncbi gene_info file:'+str(counter_all))
     print('all included ncbi gene_info rows in new file:'+str(counter_included))
     print('all genes which are in hetionet and human:'+str(counter_gene_in_hetionet_and_human))
@@ -144,23 +105,7 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
 
 def main():
     print(datetime.datetime.utcnow())
-    print('create connection with neo4j')
-
-    create_connetion_with_neo4j()
-
-    print(
-        '#################################################################################################################################################################')
-
-    print(datetime.datetime.utcnow())
-    print('gather all information of the hetionet genes')
-
-    get_all_ncbi_ids_form_hetionet_genes()
-
-    print(
-        '#################################################################################################################################################################')
-
-    print(datetime.datetime.utcnow())
-    print('gnerate a tsv file with only the hetionet genes')
+    print('generate a tsv file with only the human genes')
 
     load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes()
 

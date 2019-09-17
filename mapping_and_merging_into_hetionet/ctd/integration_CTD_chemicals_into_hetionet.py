@@ -232,7 +232,7 @@ def load_drugs_from_CTD():
     for result, in results:
         idType = result['idType']
         chemical_id = result['chemical_id']
-        if chemical_id=='D006895':
+        if chemical_id=='D007483':
             print('ok')
         synonyms = result['synonyms'] if 'synonyms' in result else []
         drugBankID = result['drugBankID'] if 'drugBankID' in result else ''
@@ -290,7 +290,8 @@ def load_drugs_from_CTD():
                     if drugbankId in  dict_drugs_hetionet:
                         found_a_existing_db=True
                         dict_drugs_CTD_with_drugbankIDs[chemical_id] = drug
-                        if dict_drugs_hetionet[drugbankId].cas_number != casRN and casRN != '':
+                        other_cas_number=dict_drugs_hetionet[drugbankId].cas_number
+                        if other_cas_number != casRN and casRN != '':
                             if casRN in dict_cas_to_drugbank:
                                 file_not_same_cas.write(
                                     chemical_id + '\t' + casRN + '\t' + drugbankId + '\t' + dict_drugs_hetionet[
@@ -820,24 +821,24 @@ def integration_of_ctd_chemicals_into_hetionet_compound():
     for mesh_id, drug in dict_drugs_CTD_with_drugbankIDs.items():
         counter += 1
         delete_index = []
-        # manual check that this mapped wrong
-        if mesh_id in ['C018375', 'D007483']:
-            query = '''Match (c:CTDchemical{chemical_id:'%s'}) Return c'''
-            query = query % (mesh_id)
-            result = g.run(query)
-            first = result.evaluate()
-            parentIDs = '|'.join(first['parentIDs']) if 'parentIDs' in first else ''
-            parentTreeNumbers = '|'.join(first['parentTreeNumbers']) if 'parentTreeNumbers' in first else ''
-            treeNumbers = '|'.join(first['treeNumbers']) if 'treeNumbers' in first else ''
-            definition = first['definition'] if 'definition' in first else ''
-            synonyms = '|'.join(first['synonyms']) if 'synonyms' in first else ''
-            name = first['name'] if 'name' in first else ''
-            casRN = first['casRN'] if 'casRN' in first else ''
-
-            writer.writerow(
-                [mesh_id, parentIDs, parentTreeNumbers, treeNumbers, definition, synonyms,
-                 name, casRN])
-            continue
+        # # manual check that this mapped wrong
+        # if mesh_id in ['C018375']:
+        #     query = '''Match (c:CTDchemical{chemical_id:'%s'}) Return c'''
+        #     query = query % (mesh_id)
+        #     result = g.run(query)
+        #     first = result.evaluate()
+        #     parentIDs = '|'.join(first['parentIDs']) if 'parentIDs' in first else ''
+        #     parentTreeNumbers = '|'.join(first['parentTreeNumbers']) if 'parentTreeNumbers' in first else ''
+        #     treeNumbers = '|'.join(first['treeNumbers']) if 'treeNumbers' in first else ''
+        #     definition = first['definition'] if 'definition' in first else ''
+        #     synonyms = '|'.join(first['synonyms']) if 'synonyms' in first else ''
+        #     name = first['name'] if 'name' in first else ''
+        #     casRN = first['casRN'] if 'casRN' in first else ''
+        #
+        #     writer.writerow(
+        #         [mesh_id, parentIDs, parentTreeNumbers, treeNumbers, definition, synonyms,
+        #          name, casRN])
+        #     continue
         index = 0
         how_mapped = drug.how_mapped
         drugbank_ids = drug.drugBankIDs

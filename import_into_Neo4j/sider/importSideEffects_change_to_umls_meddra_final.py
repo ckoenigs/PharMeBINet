@@ -6,7 +6,7 @@ Created on Wed Apr 19 18:07:14 2017
 """
 
 import datetime
-import sys
+import sys, csv
 
 # path to data 
 if len(sys.argv) > 1:
@@ -16,7 +16,7 @@ if len(sys.argv) > 1:
     filepath= sys.argv[1]
 else:
     # filepath="file:///c:/Users/Cassandra/Documents/uni/Master/test/"
-    filepath = "c:/Users/Cassandra/Documents/uni/Master/test/"
+    filepath = "data/"
 
 
 class SideEffect(object):
@@ -372,71 +372,62 @@ def generate_file_umls_id_label():
 
 
 '''
-Generate cypher file for import in neo4j
+Generate cypher file and csv files for import in neo4j
 '''
 
 
 def generate_cypher_file():
-    i = 1
-    # number of queries for a commit block
-    constrain_number = 20000
 
-    # number of quereies in a file
-    creation_max_in_file = 1000000
-
-    f = open('Sider_database_' + str(i) + '.cypher', 'w', encoding="utf-8")
-    f.write('begin \n')
-    i += 1
 
     # first add all queries with sider drugs
     counter_create = 0
     print('drug Create')
     print (datetime.datetime.utcnow())
+    # create cypher file
+    cypher_file= open('cypher.cypher','w')
+    #query for drugs
+    query = 'USING PERIODIC COMMIT 10000 LOAD CSV WITH HEADERS FROM "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/sider/drug.csv" As line Create (:drugSider{stitchIDflat: line.stitchIDflat , stitchIDstereo: line.stitchIDstereo, PubChem_Coupound_ID: line.PubChem_Coupound_ID} ); \n'
+    cypher_file.write(query)
+    cypher_file.write('begin\n')
+    cypher_file.write('Create Constraint On (node:drugSider) Assert node.stitchIDstereo Is Unique; \n')
+    cypher_file.write('commit \n schema await \n ')
+    #query for side effects
+    query='USING PERIODIC COMMIT 10000 LOAD CSV WITH HEADERS FROM "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/sider/se.csv" As line Create (:seSider{meddraType: line.meddraType , conceptName: line.conceptName, umlsIDmeddra: line.umlsIDmeddra, name: line.name, umls_concept_id: line.umls_concept_id} ); \n'
+    cypher_file.write(query)
+    cypher_file.write('begin\n')
+    cypher_file.write('Create Constraint On (node:seSider) Assert node.umlsIDmeddra Is Unique; \n')
+    cypher_file.write('commit \n schema await \n ')
+    #query for relationships relationships
+    query='USING PERIODIC COMMIT 10000 LOAD CSV WITH HEADERS FROM "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/sider/rela.csv" As line Match (drug:drugSider{stitchIDstereo: line.stitchIDstereo}), (se:seSider{umlsIDmeddra: line.umlsIDmeddra}) Create (drug)-[:Causes{placebo: line.placebo , freq: line.freq, lowerFreq: line.lowerFreq , upperFreq: line.upperFreq, placeboFreq: line.placeboFreq, placeboLowerFreq: line.placeboLowerFreq, placeboUpperFreq: line.placeboUpperFreq}] ->(se); \n'
+    cypher_file.write(query)
+
+    #create drug csv
+    writer=open('drug.csv','w')
+    csv_writer=csv.writer(writer)
+    csv_writer.writerow(['stitchIDflat', 'stitchIDstereo', 'PubChem_Coupound_ID'])
     for key, value in dict_drug.items():
-        create_text = 'Create (:drugSider{stitchIDflat: "%s" , stitchIDstereo: "%s", PubChem_Coupound_ID: "%s"} ); \n' % (
-            value.stitchIDflat, value.stitchIDstereo, value.PubChemID)
-        counter_create += 1
-        f.write(create_text)
-        if counter_create % constrain_number == 0:
-            f.write('commit \n')
-            if counter_create % creation_max_in_file == 0:
-                f.close()
-                f = open('Sider_database_' + str(i) + '.cypher', 'w', encoding="utf-8")
-                f.write('begin \n')
-                i += 1
-            else:
-                f.write('begin \n')
-    f.write('commit \n begin \n')
-    # set stitch stereo ID as key and unique
-    f.write('Create Constraint On (node:drugSider) Assert node.stitchIDstereo Is Unique; \n')
-    f.write('commit \n schema await \n begin \n')
+        csv_writer.writerow([value.stitchIDflat, value.stitchIDstereo, value.PubChemID])
+    writer.close()
 
     # add queries for side effect
     print('side effect Create')
     print (datetime.datetime.utcnow())
+    #create side effect csv
+    writer=open('se.csv','w')
+    csv_writer=csv.writer(writer)
+    csv_writer.writerow(['meddraType' , 'conceptName', 'umlsIDmeddra', 'name', 'umls_concept_id'])
     for key, value in dict_sideEffects.items():
-        create_text = 'Create (:seSider{meddraType: "%s" , conceptName: "%s", umlsIDmeddra: "%s", name: "%s", umls_concept_id: "%s"} ); \n' % (
-            value.meddraType, value.conceptName, value.umlsIDmeddra, value.name, value.umlsIDlable)
-        counter_create += 1
-        f.write(create_text)
-        if counter_create % constrain_number == 0:
-            f.write('commit \n')
-            if counter_create % creation_max_in_file == 0:
-                f.close()
-                f = open('Sider_database_' + str(i) + '.cypher', 'w', encoding="utf-8")
-                f.write('begin \n')
-                i += 1
-            else:
-                f.write('begin \n')
-
-    f.write('commit \n begin \n')
-    # set umlsIDmeddera as key and unique
-    f.write('Create Constraint On (node:seSider) Assert node.umlsIDmeddra Is Unique; \n')
-    f.write('commit \n schema await \n begin \n')
+        csv_writer.writerow([value.meddraType, value.conceptName, value.umlsIDmeddra, value.name, value.umlsIDlable])
+    writer.close()
 
     # make statistics and add query for relationship to file
     print('edges Create')
     print (datetime.datetime.utcnow())
+    #create side effect csv
+    writer=open('rela.csv','w')
+    csv_writer=csv.writer(writer)
+    csv_writer.writerow(['stitchIDstereo', 'umlsIDmeddra','placebo', 'freq', 'lowerFreq', 'upperFreq', 'placeboFreq', 'placeboLowerFreq', 'placeboUpperFreq'])
+
     # filter out all frequencies with floats and compute average, if no value exist take a word
     for key, value in dict_edges.items():
         freqs = value.freq
@@ -511,22 +502,8 @@ def generate_cypher_file():
         placeboLowerFreq = str(min(value.placeboLowerFreq)) if len(value.placeboLowerFreq) > 0 else ''
         placeboUpperFreq = str(max(value.placeboUpperFreq)) if len(value.placeboUpperFreq) > 0 else ''
 
-        create_text = ''' Match (drug:drugSider{stitchIDstereo: "%s"}), (se:seSider{umlsIDmeddra: "%s"})
-        Create (drug)-[:Causes{placebo: "%s" , freq: "%s", lowerFreq: "%s", upperFreq: "%s", placeboFreq: "%s", placeboLowerFreq: "%s", placeboUpperFreq: "%s"}] ->(se); \n''' % (
-            value.drugID, value.sideEffectID, value.placebo, freq, lowerFreq, upperFreq, placeboFreq, placeboLowerFreq,
-            placeboUpperFreq)
-        counter_create += 1
-        f.write(create_text)
-        if counter_create % constrain_number == 0:
-            f.write('commit \n')
-            if counter_create % creation_max_in_file == 0:
-                f.close()
-                f = open('Sider_database_' + str(i) + '.cypher', 'w', encoding="utf-8")
-                f.write('begin \n')
-                i += 1
-            else:
-                f.write('begin \n')
-    f.write('commit')
+        csv_writer.writerow([value.drugID, value.sideEffectID, value.placebo, freq, lowerFreq, upperFreq, placeboFreq, placeboLowerFreq,
+            placeboUpperFreq])
 
 
 # DatabaseError: At c:\Users\Cassandra\Documents\uni\Master\test\meddra.tsv:21724 -  there's a field starting with a quote and whereas it ends that quote there seems to be characters in that field after that ending quote. That isn't supported. This is what I read: 'Ventilation"'

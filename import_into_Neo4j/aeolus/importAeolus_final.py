@@ -6,7 +6,6 @@ Created on Tue Apr 25 20:05:54 2017
 """
 import datetime
 import sys
-from py2neo import Graph, Path, authenticate, Node, Relationship
 
 import csv
 
@@ -234,109 +233,32 @@ def load_contingency_table():
 
         dict_edge[(drug_concept_id, outcome_concept_id)].set_contingence_table(count_a, count_b, count_c, count_d)
 
-'''
-Generate a cypher file for the aeolus nodes drug and outcome and for the aeolus connection.
-'''
-
-def generate_cypher_file():
-    # file counter
-    i = 1
-    # number of quereies in a commit block
-    constrain_number = 20000
-    # maximal number of queries in a file
-    creation_max_in_file = 500000
-
-    f = open('Aeolus_database_' + str(i) + '.cypher', 'w', encoding="utf-8")
-    f.write('begin \n')
-    i += 1
-    # query counter
-    counter_create = 0
-    print('outcome')
-    print (datetime.datetime.utcnow())
-
-    # put aeolus outcome queries in cypher file
-    for key, value in dict_outcomes.items():
-        if value.snomed_outcome_concept_id == '-':
-            create_text = 'Create (:AeolusOutcome{outcome_concept_id: "%s", concept_code: "%s",  name: "%s", snomed_outcome_concept_id: "%s", vocabulary_id: "%s" });\n' % (
-            key, dict_concept[key][5], dict_concept[key][0], '', dict_concept[key][2])
-        else:
-            create_text = 'Create (:AeolusOutcome{outcome_concept_id: "%s", concept_code: "%s",  name: "%s", snomed_outcome_concept_id: "%s", vocabulary_id: "%s" });\n' % (
-            key, dict_concept[key][5], dict_concept[key][0], value.snomed_outcome_concept_id, dict_concept[key][2])
-
-        counter_create += 1
-        f.write(create_text)
-        if counter_create % constrain_number == 0:
-            f.write('commit \n')
-            if counter_create % creation_max_in_file == 0:
-                f.close()
-                f = open('Aeolus_database_' + str(i) + '.cypher', 'w', encoding="utf-8")
-                f.write('begin \n')
-                i += 1
-            else:
-                f.write('begin \n')
-    f.write('commit \n begin \n')
-    f.write('Create Constraint On (node:AeolusOutcome) Assert node.outcome_concept_id Is Unique; \n')
-    f.write('commit \n schema await \n begin \n')
-
-    print('drug')
-    # put aeolus drug queries in cypher file
-    print (datetime.datetime.utcnow())
-    for key, value in dict_drugs.items():
-
-        create_text = 'Create (:AeolusDrug{drug_concept_id: "%s", concept_code: "%s", name: "%s", vocabulary_id: "%s" });\n' % (
-        key, dict_concept[key][5], dict_concept[key][0], dict_concept[key][2])
-        counter_create += 1
-        f.write(create_text)
-        if counter_create % constrain_number == 0:
-            f.write('commit \n')
-            if counter_create % creation_max_in_file == 0:
-                f.close()
-                f = open('Aeolus_database_' + str(i) + '.cypher', 'w', encoding="utf-8")
-                f.write('begin \n')
-                i += 1
-            else:
-                f.write('begin \n')
-    f.write('commit \n begin \n')
-    f.write('Create Constraint On (node:AeolusDrug) Assert node.drug_concept_id Is Unique; \n')
-    f.write('commit \n schema await \n begin \n')
-
-    print('relationships')
-    # all aeolus relationships queries in cypher files
-    print (datetime.datetime.utcnow())
-    for key, value in dict_edge.items():
-
-        create_text = create_text = '''Match (n1:AeolusDrug {drug_concept_id: "%s"}), (n2:AeolusOutcome {outcome_concept_id: "%s"}) Create (n1)-[:Causes{countA: "%s" , countB: "%s" , countC: "%s" , countD: "%s", drug_outcome_pair_count: "%s", prr: "%s", prr_95_percent_upper_confidence_limit: "%s", prr_95_percent_lower_confidence_limit: "%s" , ror: "%s", ror_95_percent_upper_confidence_limit: "%s" , ror_95_percent_lower_confidence_limit: "%s"}]->(n2); \n''' % (
-        value.drug_concept_id, value.outcome_concept_id, value.countA, value.countB, value.countC, value.countD,
-        value.drug_outcome_pair_count, value.prr, value.prr_95_percent_upper_confidence_limit,
-        value.prr_95_percent_lower_confidence_limit, value.ror, value.ror_95_percent_upper_confidence_limit,
-        value.ror_95_percent_lower_confidence_limit)
-        counter_create += 1
-        f.write(create_text)
-        if counter_create % constrain_number == 0:
-            f.write('commit \n')
-            if counter_create % creation_max_in_file == 0:
-                f.close()
-                f = open('Aeolus_database_' + str(i) + '.cypher', 'w', encoding="utf-8")
-                f.write('begin \n')
-                i += 1
-            else:
-                f.write('begin \n')
-    f.write('commit')
 
 
 '''
-generate csv files in form to use the neo4j import tool
+generate csv files in form to use the neo4j-shell and generate cypher file
 '''
 
-def load_in_neo4j():
+def create_csv_and_cypher_file_neo4j():
+    # cypher file to integrate aeolus into Neo4j
+    cypher_file=open('cypher.cypher','w')
+
     print('drug Create')
     print (datetime.datetime.utcnow())
-    f = open('outcome.csv', 'wt', newline='', encoding='utf-8')
+    file_name_outcome='outcome.csv'
+    # f = open(file_name_outcome, 'wt', newline='', encoding='utf-8')
+    f = open(file_name_outcome, 'wt')
 
+    # add cypher wuery to cypher file to integrate outcome
+    cypher_outcome='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/aeolus/'''+file_name_outcome+'''" As line Create (:AeolusOutcome{outcome_concept_id:line.outcome_concept_id , concept_code: line.concept_code,  name: line.name, snomed_outcome_concept_id: line.snomed_outcome_concept_id, vocabulary_id: line.vocabulary_id });\n'''
+    cypher_file.write(cypher_outcome)
+    cypher_file.write('begin \n')
+    cypher_file.write('Create Constraint On (node:AeolusOutcome) Assert node.outcome_concept_id Is Unique; \n')
+    cypher_file.write('commit \n schema await \n ')
     # csv file for outcome
     try:
         writer = csv.writer(f, quoting=csv.QUOTE_NONNUMERIC)
-        writer.writerow(('outcome_concept_id:ID(AeolusOutcome)', 'concept_code', 'name', 'snomed_outcome_concept_id',
+        writer.writerow(('outcome_concept_id', 'concept_code', 'name', 'snomed_outcome_concept_id',
                          'vocabulary_id'))
         for key, value in dict_outcomes.items():
             if value.snomed_outcome_concept_id == '-':
@@ -352,11 +274,21 @@ def load_in_neo4j():
 
     print('drug Create')
     print (datetime.datetime.utcnow())
-    f = open('drug.csv', 'wt', newline='', encoding='utf-8')
+    file_name_drug='drug.csv'
+    f = open(file_name_drug, 'wt')
+
+    # add cypher query to cypher file for integration of drugs
+    # add cypher wuery to cypher file to integrate outcome
+    cypher_outcome = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/aeolus/''' + file_name_drug + '''" As line Create (:AeolusDrug{drug_concept_id: line.drug_concept_id, concept_code: line.concept_code, name: line.name, vocabulary_id: line.vocabulary_id });\n'''
+    cypher_file.write(cypher_outcome)
+    cypher_file.write(' begin \n')
+    cypher_file.write('Create Constraint On (node:AeolusDrug) Assert node.drug_concept_id Is Unique; \n')
+    cypher_file.write('commit \n schema await \n ')
+
     # csv file for drugs
     try:
         writer = csv.writer(f, quoting=csv.QUOTE_NONNUMERIC)
-        writer.writerow(('drug_concept_id:ID(AeolusDrug)', 'concept_code', 'name', 'vocabulary_id'))
+        writer.writerow(('drug_concept_id', 'concept_code', 'name', 'vocabulary_id'))
 
         for key, value in dict_drugs.items():
             writer.writerow((key, dict_concept[key][5], dict_concept[key][0], dict_concept[key][2]))
@@ -367,14 +299,17 @@ def load_in_neo4j():
     print (datetime.datetime.utcnow())
 
     # csv for relationships
+    file_name_drug_outcome='drug_outcome_relation.csv'
+    cypher_outcome = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/aeolus/''' + file_name_drug_outcome + '''" As line Match (n1:AeolusDrug {drug_concept_id: line.drug_id}), (n2:AeolusOutcome {outcome_concept_id: line.adr_id}) Create (n1)-[:Causes{countA: line.countA , countB: line.countB , countC: line.countC , countD: line.countD, drug_outcome_pair_count: line.drug_outcome_pair_count, prr: line.prr, prr_95_percent_upper_confidence_limit: line.prr_95_percent_upper_confidence_limit , prr_95_percent_lower_confidence_limit: line.prr_95_percent_lower_confidence_limit , ror: line.ror , ror_95_percent_upper_confidence_limit: line.ror_95_percent_upper_confidence_limit , ror_95_percent_lower_confidence_limit: line.ror_95_percent_lower_confidence_limit}]->(n2); \n'''
+    cypher_file.write(cypher_outcome)
 
-    f = open('drug_outcome_relation.csv', 'wt', newline='', encoding='utf-8')
+    f = open(file_name_drug_outcome, 'wt')
     try:
         writer = csv.writer(f, quoting=csv.QUOTE_NONNUMERIC)
-        writer.writerow((':START_ID(AeolusDrug)', 'countA', 'countB', 'countC', 'countD', 'drug_outcome_pair_count',
+        writer.writerow(('drug_id', 'countA', 'countB', 'countC', 'countD', 'drug_outcome_pair_count',
                          'prr', 'prr_95_percent_upper_confidence_limit', 'prr_95_percent_lower_confidence_limit', 'ror',
                          'ror_95_percent_upper_confidence_limit', 'ror_95_percent_lower_confidence_limit',
-                         ':END_ID(AeolusOutcome)'))
+                         'adr_id'))
 
         for key, value in dict_edge.items():
             writer.writerow((value.drug_concept_id, value.countA, value.countB, value.countC, value.countD,
@@ -382,8 +317,6 @@ def load_in_neo4j():
                              value.prr_95_percent_lower_confidence_limit, value.ror,
                              value.ror_95_percent_upper_confidence_limit, value.ror_95_percent_lower_confidence_limit,
                              value.outcome_concept_id))
-            # print(value.drug_concept_id,value.countA, value.countB, value.countC, value.countD, value.drug_outcome_pair_count, value.prr, value.prr_95_percent_upper_confidence_limit, value.prr_95_percent_lower_confidence_limit, value.ror,value.ror_95_percent_upper_confidence_limit, value.ror_95_percent_lower_confidence_limit, value.outcome_concept_id)
-            # print(key)
 
     finally:
         f.close()
@@ -410,13 +343,9 @@ def main():
 
     load_contingency_table()
 
-    print('load in neo4j the outcomes, drug and connections')
+    print('create csv and cypher file to integrate aeolus int neo4j')
     print (datetime.datetime.utcnow())
-    #    load_in_neo4j()
-
-    print('load in neo4j the outcomes, drug and connections')
-    print (datetime.datetime.utcnow())
-    generate_cypher_file()
+    create_csv_and_cypher_file_neo4j()
 
 
 if __name__ == "__main__":
