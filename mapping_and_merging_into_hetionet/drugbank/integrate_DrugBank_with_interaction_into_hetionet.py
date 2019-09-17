@@ -12,13 +12,12 @@ import sys, csv
 # reload(sys)
 # sys.setdefaultencoding("utf-8")
 
-
 '''
 create a connection with neo4j
 '''
 
 
-def create_connetion_with_neo4j():
+def create_connection_with_neo4j():
     # set up authentication parameters and connection
     authenticate("localhost:7474", "neo4j", "test")
     global g
@@ -36,16 +35,72 @@ list_compounds_in_hetionet = []
 dict_compounds_in_hetionet = {}
 
 # old_properties
-old_properties = ["allfields", "salt_names", "molecular_formula", "unii", "salt_uniis", "salt_inchikeys", "cas_number",
-                  "synonyms", "brands", "type", "xrefs", "alternative_ids", "inchikey", "atc_codes",
-                  "alternative_drugbank_ids", "food_interaction", "drugbank", "categories", "ctd", "ctd_url", "aeolus",
-                  "rxnorm_cuis", "pubChem_id", "sider", "ndf_rt", "resource", "license", "inchi", "groups", "source",
-                  "url", "hetionet", "identifier", "name", "merged_identifier", "sequences", "url_ctd", "pubChem",
-                  "licenses", "no_further_chemical_information"]
+old_properties = []
+
+# new compound properties
+list_new_properties = []
+
+# neo4j_label_drugbank='DrugBankdrug'
+neo4j_label_drugbank = 'Compound_DrugBank'
+
+# neo4j_interaction_rela_label='interacts'
+neo4j_interaction_rela_label = 'interacts_CiC'
+
+# set of properties which are list element
+set_of_list_properties = set([])
+
+'''
+Get all properties of the hetionet compounds and durgbank compounds and use them to generate the csv files
+'''
+
+
+def get_mondo_properties_and_generate_csv_files():
+    # get the properties of the compounds in hetionet
+    query = '''MATCH (p:Compound) WITH DISTINCT keys(p) AS keys
+        UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields
+        RETURN allfields;'''
+    result = g.run(query)
+    for property, in result:
+        old_properties.append(property)
+
+    # fill the list with all properties in drugbank and not in Hetionet
+    query = '''MATCH (p:%s) WITH DISTINCT keys(p) AS keys
+            UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields
+            RETURN allfields;''' % (neo4j_label_drugbank)
+    result = g.run(query)
+    for property, in result:
+        if property not in old_properties:
+            list_new_properties.append(property)
+
+    list_new_properties.append('xrefs')
+    global all_properties
+    all_properties = list(set(old_properties).union(list_new_properties))
+
+    # generate csv files
+    global csv_update, csv_new, csv_update_alt
+
+    new_nodes = open('output/new_nodes.csv', 'w')
+    csv_new = csv.DictWriter(new_nodes, delimiter='\t', fieldnames=all_properties)
+    csv_new.writeheader()
+
+    all_properties_and_additional = all_properties[:]
+    all_properties_and_additional.append('doid')
+
+    update_nodes = open('output/update_nodes.csv', 'w')
+    csv_update = csv.DictWriter(update_nodes, delimiter='\t', fieldnames=all_properties_and_additional)
+    csv_update.writeheader()
+
+    all_properties_alternative = all_properties[:]
+    all_properties_alternative.append('alternative_id')
+
+    update_nodes_alt = open('output/update_nodes_alt.csv', 'w')
+    csv_update_alt = csv.DictWriter(update_nodes_alt, delimiter='\t', fieldnames=all_properties_alternative)
+    csv_update_alt.writeheader()
+
 
 '''
 load all disease in the dictionary
-has propeteries:
+has properties:
 name 
 identifier
 source
@@ -63,12 +118,6 @@ def load_all_hetionet_compound_in_dictionary():
     print('size of compound in Hetionet before the rest of DrugBank is added: ' + str(len(list_compounds_in_hetionet)))
 
 
-# neo4j_label_drugbank='DrugBankdrug'
-neo4j_label_drugbank = 'Compound_DrugBank'
-
-# neo4j_interaction_rela_label='interacts'
-neo4j_interaction_rela_label = 'interacts_CiC'
-
 '''
 Load in all information from DrugBank.
 properties:
@@ -80,7 +129,7 @@ properties:
     alternative_ids
     id
     url
-    
+
     {identifier:'DB01148'}
 '''
 
@@ -90,14 +139,10 @@ def load_all_DrugBank_compound_in_dictionary():
     print(query)
     results = g.run(query)
     for compound, in results:
-        # food_interaction = compound['food_interaction']
-        # inchikey = compound['inchikey']
-        # inchi = compound['inchi']
-        # name = compound['name']
         all_information = dict(compound)
-        # alternative_ids = compound['alternative_ids']
         id = compound['identifier']
-        # url = compound['url']
+        if id == 'DB13179':
+            print('huh')
         dict_compounds[id] = all_information
     print('size of drugbank: ' + str(len(dict_compounds)))
 
@@ -112,7 +157,8 @@ load all the is_a relationships from MonDO into a dictionary with the resource
 
 def load_in_all_interaction_connection_from_drugbank_in_dict():
     # query = '''MATCH p=(a)-[r:'''+neo4j_interaction_rela_label+''']->(b) RETURN a.identifier,r.url, r.describtion ,b.identifier  '''
-    query = '''MATCH p=(a:Compound_DrugBank)-[r:''' + neo4j_interaction_rela_label + ''']->(b:Compound_DrugBank) RETURN a.identifier, r.description ,b.identifier '''
+    query = '''MATCH p=(a:%s)-[r:''' + neo4j_interaction_rela_label + ''']->(b:%s) RETURN a.identifier, r.description ,b.identifier '''
+    query = query % (neo4j_label_drugbank, neo4j_label_drugbank)
     print(query)
     results = g.run(query)
     print(datetime.datetime.utcnow())
@@ -138,32 +184,6 @@ def load_in_all_interaction_connection_from_drugbank_in_dict():
 label_of_alternative_ids = 'alternative_drugbank_ids'
 # dictionary of drugbank id and to the used ids in Hetionet
 dict_drugbank_to_alternatives = {}
-
-list_new_properties = ['classification_kingdom', 'description', 'classification_subclass', 'packagers_name_url',
-                       'classification_superclass', 'general_references_textbooks_isbn_citation',
-                       'general_references_links_title_url', 'classification_class', 'classification_description',
-                       'calculated_properties_kind_value_source', 'affected_organisms', 'ahfs_codes', 'absorption',
-                       'manufacturers', 'protein_binding', 'prices_description_cost_unit', 'state',
-                       'volume_of_distribution', 'indication', 'synthesis_reference', 'metabolism',
-                       'classification_direct_parent', 'mixtures_name_ingredients',
-                       'patents_number_country_approved_expires_pediatric_extension', 'mechanism_of_action',
-                       'half_life', 'external_links_resource_url', 'msds', 'fda_label', 'clearance',
-                       'experimental_properties_kind_value_source', 'general_references_articles_pubmed_citation',
-                       'pharmacodynamics', 'external_identifiers', 'route_of_elimination',
-                       'dosages_form_route_strength', 'toxicity', u'pdb_entries', u'atc_code_levels',
-                       u'categories_category_mesh_id', u'international_brands_name_company', 'ChEMBL',
-                       'classification_substituent', 'classification_alternative_parent']
-
-
-#file with all node cypher
-file_counter=1
-start_node='compound_interaction/node_cypher_'
-file_all_node_cypher=open(start_node+str(file_counter)+'.cypher','w')
-file_counter+=1
-file_all_node_cypher.write('begin\n')
-counter_all_nodes=0
-maximal_commits=5000
-maximal_commits_file=20000
 
 list_not_fiting_properties = set([])
 
@@ -195,7 +215,6 @@ Integrate all DrugBank id into Hetionet
 
 
 def integrate_DB_compound_information_into_hetionet():
-    global counter_all_nodes, file_counter ,file_all_node_cypher
     # count already existing compound
     counter_already_existing_compound = 0
     # count all new drugbank compounds
@@ -205,22 +224,16 @@ def integrate_DB_compound_information_into_hetionet():
     list_set_key_with_values_length_1 = set([])
 
     # merge list of xrefs
-    list_merge_xrefs=['external_identifiers','xrefs']
-
+    list_merge_xrefs = ['external_identifiers', 'xrefs']
 
     # integrate or add Hetionet compounds
     for drugbank_id, information in dict_compounds.items():
         list_merge_xref_values = set([])
-        if drugbank_id=='DB11864':
+        if drugbank_id == 'DB13179':
             print('huh')
+        if drugbank_id == 'DB00536':
+            print('unii')
 
-        # food_interaction = information[4]
-        # inchikey = information[3]
-        # inchi = information[2]
-        # name = information[1]
-        # alternative_ids = information[5].split('|')
-        # url = information[0]
-        # alternative ids
         if label_of_alternative_ids in information:
             alternative_ids = information[label_of_alternative_ids]
         else:
@@ -231,177 +244,148 @@ def integrate_DB_compound_information_into_hetionet():
             counter_already_existing_compound += 1
 
             # add the intersection drugbank to the alternative dictionary
+            # shows if more then one appears two time
+            multiple_db_ids = False
+            # alternative id is integrated
+            alternativ_id_integrated = False
             if len(intersection) > 1:
                 dict_drugbank_to_alternatives[drugbank_id] = intersection
                 intersection_string = ''
                 for db in intersection:
                     intersection_string += db + ' '
                 file_combined_drugbanks.write(intersection_string[0:-1] + '\n')
+                print('intersection')
                 print(intersection)
+                multiple_db_ids = True
                 # sys.exit('intersection')
             elif intersection[0] != drugbank_id:
                 dict_drugbank_to_alternatives[drugbank_id] = intersection
+                alternativ_id_integrated = True
+                print('problem')
                 print(drugbank_id)
                 print(intersection)
 
+            drug_id = intersection[0]
+            if multiple_db_ids:
+                intersection.remove(drug_id)
 
-            for drug_id in intersection:
-                resource = dict_compounds_in_hetionet[drug_id]['resource']
-                # print(dict_compounds_in_hetionet[drug_id])
-                # print(resource)
-                resource.append('DrugBank')
-
-                resource = list(set(resource))
-                resource = "','".join(resource)
-                query = ''' Match (n:Compound{identifier:"%s"}), (b:''' + neo4j_label_drugbank + '''{identifier:"%s"}) 
-                Set  n.drugbank="yes",'''
-                query = query % (drug_id, drugbank_id)
-                for key, property in information.items():
-                    # to merge the information into one both information must be combinate
-                    if key in list_merge_xrefs:
-                        list_merge_xref_values=list_merge_xref_values.union(property)
-                        continue
-
-                    part = ''
-                    if type(property) == list:
-                        if key in dict_compounds_in_hetionet[drug_id]:
-                            # this is only for one time, because I integrated the food interaction  sometimes wrong
-                            # if key != 'food_interaction':
-                            property.extend(dict_compounds_in_hetionet[drug_id][key])
-                            property = list(set(property))
-                        elif key not in list_new_properties and key not in old_properties:
-                            list_not_fiting_properties.add(key)
-                        if key == label_of_alternative_ids:
-                            property.append(drugbank_id)
-                            property = list(set(property))
-                        property = [x.replace('"', "'").replace('\\', '\\\\') for x in property]
-                        list_string = '","'.join(property)
-                        part = ''' n.%s=["%s"],'''
-                        part = part % (key, list_string)
-                    else:
-                        if key == 'identifier':
-                            continue
-                        if key in dict_compounds_in_hetionet[drug_id]:
-                            if dict_compounds_in_hetionet[drug_id][key] != property:
-                                if key == 'license':
-                                    property = dict_compounds_in_hetionet[drug_id][key]
-                                # the new values are good !!!!!!
-                                # elif dict_compounds_in_hetionet[drug_id][key]=='' or  property=='':
-                                #     print('one is empty thw ne values are good')
-                                # most time the new values are the better fitting values
-                                elif key == 'unii':
-                                    # only this three the older fits better
-                                    if drug_id in ['DB11200', 'DB10360', 'DB09561']:
-                                        property = dict_compounds_in_hetionet[drug_id][key]
-                                    # writer_uniis.writerow(
-                                    #     [drugbank_id, key, dict_compounds_in_hetionet[drug_id][key], property])
-                                # the new names fit better or has greek letter format
-                                # elif key=='name':
-                                #     writer_names.writerow(
-                                #         [drugbank_id, key, dict_compounds_in_hetionet[drug_id][key], property])
-                                # the new values are better so only take the new once
-                                # elif key=='inchikey':
-                                #     writer_inchikeys.writerow(
-                                #         [drugbank_id, key, dict_compounds_in_hetionet[drug_id][key], property])
-                                # the new are better or the same !!!
-                                # elif key=='inchi':
-                                #     writer_inchis.writerow(
-                                #         [drugbank_id, key, dict_compounds_in_hetionet[drug_id][key], property])
-                                # the new types are better fitting
-                                # elif key == 'type':
-                                #     writer_types.writerow(
-                                #         [drugbank_id, key, dict_compounds_in_hetionet[drug_id][key], property])
-                                # the new values fit better then the old values
-                                # elif key == 'cas_number':
-                                #     writer_casnumbers.writerow(
-                                #         [drugbank_id, key, dict_compounds_in_hetionet[drug_id][key], property])
-                                # else:
-                                #     print(drugbank_id)
-                                #     print(dict_compounds_in_hetionet[drug_id][key])
-                                #     print(property)
-                                #     print(key)
-                                #     sys.exit('not the same')
-                        elif key not in list_new_properties and not key in old_properties:
-                            list_not_fiting_properties.add(key)
-                            # sys.exit(key)
-                        # if '\\' in property:
-                        #     property=property.replace('\"','\\"')
-                        #     print(property)
-                        property = property.replace('"', "'").replace('\\', '\\\\')
-                        part = ''' n.%s="%s",'''
-                        part = part % (key, property)
-                    query += part
-                combinde_merge_string='","'.join(list_merge_xref_values)
-                query += ''' n.xrefs=["%s"] ''' %(combinde_merge_string)
-                query +=  ''' Create (n)-[:equal_to_drugbank]->(b);\n'''
-                file_all_node_cypher.write(query.encode('utf-8'))
-                counter_all_nodes+=1
-                if counter_all_nodes%maximal_commits==0 and counter_all_nodes%maximal_commits_file==0:
-                    file_all_node_cypher.write('commit')
-                    file_all_node_cypher = open(start_node + str(file_counter) + '.cypher', 'w')
-                    file_counter += 1
-                    file_all_node_cypher.write('begin\n')
-                elif counter_all_nodes%maximal_commits==0 :
-
-                    print(counter_all_nodes)
-                    file_all_node_cypher.write('commit\nbegin\n')
-                # g.run(query)
-        else:
-            # create a new node
-            counter_new_compound += 1
-            query = '''Match  (b:''' + neo4j_label_drugbank + '''{identifier:"%s"})
-                                                Create (n:Compound{identifier:"%s", resource:['DrugBank'], source:"DrugBank", license:"CC BY-NC 4.0", ctd:'no', aeolus:'no', ndf_rt:'no', hetionet:'no', drugbank:'yes', sider:'no', '''
-
-            query = query % (drugbank_id, drugbank_id)
+            dict_info_prepared = {}
             for key, property in information.items():
                 # to merge the information into one both information must be combinate
                 if key in list_merge_xrefs:
                     list_merge_xref_values = list_merge_xref_values.union(property)
                     continue
+
                 if type(property) == list:
-                    if key == 'alternative_ids':
+                    set_of_list_properties.add(key)
+                    if key in dict_compounds_in_hetionet[drug_id]:
+                        # this is only for one time, because I integrated the food interaction  sometimes wrong
+                        # if key != 'food_interaction':
+                        property.extend(dict_compounds_in_hetionet[drug_id][key])
+                        property = list(set(property))
+                    elif key not in list_new_properties and key not in old_properties:
+                        list_not_fiting_properties.add(key)
+                    if key == label_of_alternative_ids:
+                        property.append(drugbank_id)
+                        property = list(set(property))
+                    dict_info_prepared[key] = '|'.join(property).encode('utf-8').replace('"', "'")
+                else:
+                    if key in dict_compounds_in_hetionet[drug_id]:
+                        # in the most cases if the values are different take the newest on
+                        if dict_compounds_in_hetionet[drug_id][key] != property:
+
+                            if key == 'unii':
+                                # only this three the older fits better
+                                if drug_id in ['DB11200', 'DB10360', 'DB09561']:
+                                    property = dict_compounds_in_hetionet[drug_id][key]
+                        else:
+                            print('same property')
+                            # print('for a key')
+                            # print(key)
+                            # print(property)
+                        dict_info_prepared[key] = property.encode('utf-8').replace('"', "'")
+
+                    elif key not in list_new_properties and not key in old_properties:
+                        list_not_fiting_properties.add(key)
+                    else:
+                        dict_info_prepared[key] = property.encode('utf-8').replace('"', "'")
+
+                dict_info_prepared['xrefs'] = '|'.join(list_merge_xref_values).encode('utf-8')
+                if alternativ_id_integrated:
+                    dict_info_prepared['alternative_id'] = drug_id
+                    csv_update_alt.writerow(dict_info_prepared)
+
+                else:
+                    csv_update.writerow(dict_info_prepared)
+
+
+        else:
+            # create a new node
+            counter_new_compound += 1
+            dict_info_prepared = {}
+            for key, property in information.items():
+
+                # to merge the information into one both information must be combinate
+                if key in list_merge_xrefs:
+                    list_merge_xref_values = list_merge_xref_values.union(property)
+                    continue
+                if type(property) == list:
+                    set_of_list_properties.add(key)
+                    if key == label_of_alternative_ids:
                         property = list(set(property))
 
-                    property = [x.replace('"', "'").replace('\\', '\\\\') for x in property]
-                    list_string = '","'.join(property)
-                    part = ''' %s:["%s"],'''
-                    part = part % (key, list_string)
+                    dict_info_prepared[key] = '|'.join(property).encode('utf-8').replace('"', "'")
                 else:
-                    if key == 'identifier':
-                        continue
-                    part = ''' %s:"%s",'''
-                    property = property.replace('"', "'").replace('\\', '\\\\')
-                    part = part % (key, property)
-                query += part
+                    dict_info_prepared[key] = property.encode('utf-8').replace('"', "'")
 
-            combinded_merge_string = '","'.join(list_merge_xref_values)
-            query += ''' n.xrefs=["%s"] ''' % (combinded_merge_string)
+            combinded_merge_string = '|'.join(list_merge_xref_values)
+            dict_info_prepared['xrefs'] = combinded_merge_string
 
-            query +=  '''})  Create (n)-[:equal_to_drugbank]->(b);\n'''
-            file_all_node_cypher.write(query.encode('utf-8'))
-            counter_all_nodes += 1
-            if counter_all_nodes % maximal_commits == 0 and counter_all_nodes % maximal_commits_file == 0:
-                file_all_node_cypher.write('commit')
-                file_all_node_cypher = open(start_node+str(file_counter) + '.cypher', 'w')
-                file_counter += 1
-                file_all_node_cypher.write('begin\n')
-            elif counter_all_nodes % maximal_commits == 0:
-
-                print(counter_all_nodes)
-                file_all_node_cypher.write('commit\nbegin\n')
-            # g.run(query)
+            csv_new.writerow(dict_info_prepared)
 
     print(list_set_key_with_values_length_1)
     print('already existing compound:' + str(counter_already_existing_compound))
     print('new compound:' + str(counter_new_compound))
 
-    # so that the last queries are also execute
-    file_all_node_cypher.write('commit')
-    file_all_node_cypher.close()
-
     if len(list_not_fiting_properties) > 0:
         print(list_not_fiting_properties)
         sys.exit('not fitting')
+
+
+'''
+Create cypher file
+'''
+
+
+def create_cypher_file():
+    # cypher file
+    cypher_file = open('cypher.cypher', 'w')
+
+    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/drugbank/output/%s.csv" As line Fieldterminator '\\t' Match (a:%s{identifier:line.identifier})'''
+    query_create = ''
+    query_update = ''
+    for property in all_properties:
+        # this is for all similar
+        if property in ['resource', 'license', 'source', 'url']:
+            continue
+        if property in set_of_list_properties:
+            query_create += property + ':split(line.' + property + ',"|"), '
+            query_update += 'b.' + property + '=split(line.' + property + ',"|"), '
+        else:
+            query_create += property + ':line.' + property + ', '
+            query_update += 'b.' + property + '=line.' + property + ', '
+
+    query_update_alternativ = query_start + ', (b:Compound{identifier:line.alternative_id}) Set b.drugbank="yes", ' + query_update + 'b.resource=b.resource+"DrugBank", b.url="http://www.drugbank.ca/drugs/"+line.identifier, b.license="CC BY-NC 4.0" Create (b)-[:equal_to_drugbank]->(a);\n'
+    query_update_alternativ = query_update_alternativ % ('update_nodes_alt', neo4j_label_drugbank)
+    cypher_file.write(query_update_alternativ)
+
+    query_update = query_start + ', (b:Compound{identifier:line.identifier}) Set b.drugbank="yes", ' + query_update + 'b.resource=b.resource+"DrugBank", b.url="http://www.drugbank.ca/drugs/"+line.identifier, b.license="CC BY-NC 4.0" Create (b)-[:equal_to_drugbank]->(a);\n'
+    query_update = query_update % ('update_nodes', neo4j_label_drugbank)
+    cypher_file.write(query_update)
+
+    query_create = query_start + 'Create (b:Compound{identifier:line.identifier, drugbank:"yes", ' + query_create + 'resource:["DrugBank"], url:"http://www.drugbank.ca/drugs/"+line.identifier, license:"CC BY-NC 4.0"}) Create (b)-[:equal_to_drugbank]->(a);\n'
+    query_create = query_create % ('new_nodes', neo4j_label_drugbank)
+    cypher_file.write(query_create)
 
 
 '''
@@ -478,7 +462,15 @@ def main():
     print(datetime.datetime.utcnow())
     print('create connection with neo4j')
 
-    create_connetion_with_neo4j()
+    create_connection_with_neo4j()
+
+    print(
+        '#################################################################################################################################################################')
+
+    print(datetime.datetime.utcnow())
+    print('load all properties of compound and drugbank compound and use the information to genreate csv files')
+
+    get_mondo_properties_and_generate_csv_files()
 
     print(
         '#################################################################################################################################################################')
@@ -503,7 +495,7 @@ def main():
     print(datetime.datetime.utcnow())
     print('load all connection in dictionary')
 
-    load_in_all_interaction_connection_from_drugbank_in_dict()
+    # load_in_all_interaction_connection_from_drugbank_in_dict()
 
     print(
         '#################################################################################################################################################################')
@@ -513,6 +505,15 @@ def main():
     print('integrate drugbank into hetionet')
 
     integrate_DB_compound_information_into_hetionet()
+
+    print(
+        '#################################################################################################################################################################')
+
+    print(datetime.datetime.utcnow())
+
+    print('create cypher queries and cypher file')
+
+    create_cypher_file()
 
     print(
         '#################################################################################################################################################################')
