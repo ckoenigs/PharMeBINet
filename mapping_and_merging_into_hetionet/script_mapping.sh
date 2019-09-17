@@ -25,22 +25,8 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 
 cd drugbank
-now=$(date +"%F %T")
-echo "Current time: $now"
-echo 'integrate Drugbank with interaction into Hetionet'
 
-python integrate_DrugBank_with_interaction_into_hetionet.py > output_integration_file_generation.txt
-
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-$path_neo4j/neo4j-shell -file cypher.cypher > output_cypher.txt
-
-sleep 180
-$path_neo4j/neo4j restart
-sleep 120
-
+./script_mapping_drugbank.sh $path_neo4j/ > output_script.txt
 
 cd ..
 
@@ -77,6 +63,27 @@ echo 'change disease identifier to monDO identifier'
 #python change_identifier_from_DO_to_MONDO_with_monarch_source.py > output_integration_file_generation.txt
 ./integration_of_mondo.sh $path_neo4j > output_mapping_and_integration.txt 
 
+cd ..
+
+
+
+echo Ncbi genes
+cd ncbi_gene
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+python integrate_and_update_the_hetionet_gene.py > output_map.txt
+
+echo integrate connection with ne4j shell
+
+$path_neo4j/neo4j-shell -file cypher_merge.cypher > output_cypher_integration.txt
+
+sleep 180
+
+$path_neo4j/neo4j restart
+
+
+sleep 120
 cd ..
 
 
