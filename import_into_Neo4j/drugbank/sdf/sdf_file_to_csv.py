@@ -27,6 +27,8 @@ except Exception as e:
 try:
   from rdkit.Avalon import pyAvalonTools as pyAvalonTools
   _fingerprinter=lambda x,y:pyAvalonTools.GetAvalonFP(x,isQuery=y,bitFlags=pyAvalonTools.avalonSSSBits)
+
+
 except ImportError:
   _fingerprinter=lambda x,y:Chem.PatternFingerprint(x,fpSize=2048)
 
@@ -67,13 +69,15 @@ def LoadSDF(filename, idName='ID',molColName = 'ROMol',includeFingerprints=False
   else:
     f = filename
   for i, mol in enumerate(Chem.ForwardSDMolSupplier(f)):
-    # if i==119 or i==118:
-    #   print('blub')
+    if i==3872 :
+      print('blub')
     if mol is None: continue
     row = dict((k, mol.GetProp(k)) for k in mol.GetPropNames())
     # if row['DATABASE_ID']=='DB00225':
     #   print('drinne')
     #   sys.exit()
+    if i==3872 :
+      print(row)
     if mol.HasProp('_Name'): row[idName] = mol.GetProp('_Name')
     if smilesName is not None:
       row[smilesName] = Chem.MolToSmiles(mol, isomericSmiles=isomericSmiles)
@@ -96,6 +100,7 @@ if len(sys.argv)!=3:
   sys.exit('This need as input a sdf file and an output file name as .csv')
 my_sdf_file = sys.argv[1]
 to_file=sys.argv[2]
+
 
 frame = LoadSDF(my_sdf_file,
                             smilesName='SMILES',
