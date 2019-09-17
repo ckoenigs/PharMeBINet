@@ -170,8 +170,13 @@ def load_in_all_monDO_in_dictionary():
 
 
 
-# cypher file to ingrate mondo
+# cypher file to integrate mondo
 cypher_file=open('cypher.cypher','w')
+
+
+# a cypher file to add the merged id to the other doids
+cypher_file_end=open('cypher_end.cypher','w')
+
 
 # list_properties in mondo
 list_of_list_prop=set([])
@@ -210,6 +215,10 @@ def generate_cypher_queries():
     # add the disease ontology property to the nodes without
     query = '''Match (d:Disease) Where not exists(d.diseaseOntology) Set d.diseaseOntology='no' ;\n'''
     cypher_file.write(query)
+
+    #combin merged id with doids
+    query = '''MATCH (n:Disease) Where exists(n.merged_identifier) Set n.doids=n.doids+ n.merged_identifier Remove n.merged_identifier;\n'''
+    cypher_file_end.write(query)
 
 
 
@@ -572,7 +581,7 @@ def integrate_mondo_change_identifier():
             found_doid_with_same_name=False
             for doid in doids:
                 dict_merged_nodes[monDo].append(doid)
-                text='python add_information_from_a_not_existing_node_to_existing_node.py %s %s %s\n' %(doid, monDo, 'Disease')
+                text='python ../add_information_from_a_not_existing_node_to_existing_node.py %s %s %s\n' %(doid, monDo, 'Disease')
                 bash_shell.write(text)
                 text='''now=$(date +"%F %T")
                     echo "Current time: $now"\n'''
@@ -656,7 +665,7 @@ add the rela information into
 '''
 
 
-def generate_cypher_file_for_relationship():
+def generate_csv_file_for_relationship():
     # query to get the rela information
     query = ''' Match (a)-[r:subClassOf]->(b) Return a.`http://www.geneontology.org/formats/oboInOwl#id`, b.`http://www.geneontology.org/formats/oboInOwl#id`, r'''
     results = g.run(query)
@@ -731,7 +740,7 @@ def main():
     print(datetime.datetime.utcnow())
     print('generate cypher file for subclassof relationship  ')
 
-    generate_cypher_file_for_relationship()
+    generate_csv_file_for_relationship()
 
     print('##########################################################################')
 
