@@ -179,6 +179,10 @@ def load_in_all_interaction_connection_from_drugbank_in_dict():
     print('number of double interaction:' + str(counter_multiple))
     print('number of interaction:' + str(len(dict_interact_relationships_with_infos)))
 
+#bash shell for merge doids into the mondo nodes
+bash_shell=open('merge_nodes.sh','w')
+bash_shell.write('#!/bin/bash\n')
+
 
 # label_of_alternative_ids='alternative_ids' old one
 label_of_alternative_ids = 'alternative_drugbank_ids'
@@ -247,7 +251,7 @@ def integrate_DB_compound_information_into_hetionet():
             # shows if more then one appears two time
             multiple_db_ids = False
             # alternative id is integrated
-            alternativ_id_integrated = False
+            alternative_id_integrated = False
             if len(intersection) > 1:
                 dict_drugbank_to_alternatives[drugbank_id] = intersection
                 intersection_string = ''
@@ -260,7 +264,7 @@ def integrate_DB_compound_information_into_hetionet():
                 # sys.exit('intersection')
             elif intersection[0] != drugbank_id:
                 dict_drugbank_to_alternatives[drugbank_id] = intersection
-                alternativ_id_integrated = True
+                alternative_id_integrated = True
                 print('problem')
                 print(drugbank_id)
                 print(intersection)
@@ -268,6 +272,14 @@ def integrate_DB_compound_information_into_hetionet():
             drug_id = intersection[0]
             if multiple_db_ids:
                 intersection.remove(drug_id)
+                for alternative_drug_id in intersection:
+                    text = 'python ../add_information_from_a_not_existing_node_to_existing_node.py %s %s %s\n' % (
+                        alternative_drug_id, drugbank_id, 'Compound')
+                    bash_shell.write(text)
+                    text = '''now=$(date +"%F %T")
+                        echo "Current time: $now"\n'''
+                    bash_shell.write(text)
+                bash_shell.close()
 
             dict_info_prepared = {}
             for key, property in information.items():
@@ -311,7 +323,7 @@ def integrate_DB_compound_information_into_hetionet():
                         dict_info_prepared[key] = property.encode('utf-8').replace('"', "'")
 
                 dict_info_prepared['xrefs'] = '|'.join(list_merge_xref_values).encode('utf-8')
-                if alternativ_id_integrated:
+                if alternative_id_integrated:
                     dict_info_prepared['alternative_id'] = drug_id
                     csv_update_alt.writerow(dict_info_prepared)
 
@@ -495,7 +507,7 @@ def main():
     print(datetime.datetime.utcnow())
     print('load all connection in dictionary')
 
-    # load_in_all_interaction_connection_from_drugbank_in_dict()
+    load_in_all_interaction_connection_from_drugbank_in_dict()
 
     print(
         '#################################################################################################################################################################')
