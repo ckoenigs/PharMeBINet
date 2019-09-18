@@ -55,16 +55,26 @@ cd ..
 now=$(date +"%F %T")
 echo "Current time: $now"
 
+cd uniprot
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo 'integrat uniprot proteins'
+
+./integration_protein.sh $path_neo4j > output_mapping_and_integration.txt 
+
+cd ..
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
 cd monDO
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo 'change disease identifier to monDO identifier'
 
-#python change_identifier_from_DO_to_MONDO_with_monarch_source.py > output_integration_file_generation.txt
 ./integration_of_mondo.sh $path_neo4j > output_mapping_and_integration.txt 
 
 cd ..
-
 
 
 echo Ncbi genes
@@ -75,6 +85,8 @@ echo "Current time: $now"
 python integrate_and_update_the_hetionet_gene.py > output_map.txt
 
 echo integrate connection with ne4j shell
+now=$(date +"%F %T")
+echo "Current time: $now"
 
 $path_neo4j/neo4j-shell -file cypher_merge.cypher > output_cypher_integration.txt
 
