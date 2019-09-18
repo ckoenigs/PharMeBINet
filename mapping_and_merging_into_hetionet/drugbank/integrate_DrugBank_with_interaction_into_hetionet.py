@@ -271,7 +271,13 @@ def integrate_DB_compound_information_into_hetionet():
 
             drug_id = intersection[0]
             if multiple_db_ids:
-                intersection.remove(drug_id)
+                # it would cause errors if not the node with the same id is updated and the other one is merged
+                if drugbank_id in intersection:
+                    drug_id=drugbank_id
+                    intersection.remove(drug_id)
+                else:
+                    intersection.remove(drug_id)
+
                 for alternative_drug_id in intersection:
                     text = 'python ../add_information_from_a_not_existing_node_to_existing_node.py %s %s %s\n' % (
                         alternative_drug_id, drugbank_id, 'Compound')
@@ -279,7 +285,6 @@ def integrate_DB_compound_information_into_hetionet():
                     text = '''now=$(date +"%F %T")
                         echo "Current time: $now"\n'''
                     bash_shell.write(text)
-                bash_shell.close()
 
             dict_info_prepared = {}
             for key, property in information.items():
@@ -507,7 +512,7 @@ def main():
     print(datetime.datetime.utcnow())
     print('load all connection in dictionary')
 
-    load_in_all_interaction_connection_from_drugbank_in_dict()
+    # load_in_all_interaction_connection_from_drugbank_in_dict()
 
     print(
         '#################################################################################################################################################################')
