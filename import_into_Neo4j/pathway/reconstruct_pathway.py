@@ -12,9 +12,7 @@ import re, datetime
 import HTMLParser
 import json
 import wget
-from urllib import urlopen
 import gzip
-from StringIO import StringIO
 
 
 import requests
