@@ -103,6 +103,7 @@ def get_all_genes():
         if gene_id==28299:
             print('ok')
 
+        # prepare dictionary from gensymbol to gene ids and remeber which gene symbols appears in multiple genes
         if genesymbols:
 
             genesymbols = [x.lower() for x in genesymbols]
