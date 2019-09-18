@@ -232,12 +232,43 @@ echo NCBI
 
 python integrate_ncbi_genes_which_are_already_in_hetionet.py > output_generate_integration_file.txt
 
+echo rm gz file
+rm data/*
+
 now=$(date +"%F %T")
 echo "Current time: $now"
 
 echo integrate ncbi into neo4j
 
 $path_neo4j/neo4j-shell -file cypher_node.cypher > output_cypher_integration.txt
+
+sleep 180
+
+$path_neo4j/neo4j restart
+
+
+sleep 120
+
+cd ..
+
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+cd  pathway
+echo pathway
+
+python reconstruct_pathway.py > output_generate_integration_file.txt
+
+echo rm gz file
+rm data/*
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+echo integrate pathway into neo4j
+
+$path_neo4j/neo4j-shell -file cypher.cypher > output_cypher_integration.txt
 
 sleep 180
 
