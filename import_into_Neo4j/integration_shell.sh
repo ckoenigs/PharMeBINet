@@ -171,6 +171,8 @@ echo UniProt
 
 python parse_uniprot_flat_file_to_tsv.py database/uniprot_sprot.dat > output_integration.txt
 
+rm database/*
+
 now=$(date +"%F %T")
 echo "Current time: $now"
 
