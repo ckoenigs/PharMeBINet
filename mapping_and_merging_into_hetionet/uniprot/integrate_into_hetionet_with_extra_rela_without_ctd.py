@@ -3,6 +3,7 @@ from collections import defaultdict
 from py2neo import Graph, authenticate
 import datetime
 import sys, csv
+from collections import  defaultdict
 
 '''
 create a connection with neo4j
@@ -67,6 +68,9 @@ list_double_gene_symbol_for_genes_without_uniprot_id = set([])
 # dictionary gene name to gene id
 dict_gene_name_to_id = defaultdict(list)
 
+#dictionary from synonyms to gene id
+dict_synonyms_to_gene_ids=defaultdict(list)
+
 # dictionary of the uniprot ids which mapped wrong to the correct ncbi gene id
 # Q96NJ1 (Uncharacterized protein FLJ30774) mapped to 158055 (c9orf163) and with tblastn I found out that the protein is
 # part of the orf
@@ -95,12 +99,12 @@ Find mapping between genes and proteins
 
 
 def get_all_genes():
-    query = '''MATCH (n:Gene) RETURN n.identifier,  n.geneSymbol, n.name'''
+    query = '''MATCH (n:Gene) RETURN n.identifier,  n.geneSymbol, n.name, n.synonyms'''
     results = g.run(query)
     counter_uniprot_to_multiple_genes = 0
     counter_all_genes = 0
     list_double_names = set([])
-    for gene_id,  genesymbols, name, in results:
+    for gene_id,  genesymbols, name, synonyms, in results:
         counter_all_genes += 1
         dict_gene_id_to_gene_name[gene_id] = name.lower()
 
@@ -128,6 +132,9 @@ def get_all_genes():
             dict_gene_name_to_id[name.lower()].append(gene_id)
         else:
             dict_gene_name_to_id[name.lower()].append(gene_id)
+        if synonyms:
+            for synonym in synonyms:
+                dict_synonyms_to_gene_ids[synonym.lower()].append(gene_id)
 
 
 
@@ -151,7 +158,7 @@ writer_multi.writerow(['uniprot_id', 'protein_name', 'genes', 'alternative_ids']
 # files with rela from uniprot protei to gene
 file_uniprots_gene_rela = open('uniprot_gene/db_uniprot_to_gene_rela.csv', 'w')
 writer_rela = csv.writer(file_uniprots_gene_rela)
-writer_rela.writerow(['uniprot_id', 'gene_id', 'alternative_ids', 'name_mapping', 'ctd', 'uniprot', 'resource'])
+writer_rela.writerow(['uniprot_id', 'gene_id', 'alternative_ids', 'name_mapping',  'uniprot', 'resource'])
 
 # file with the gene ids where a uniprot needs to be delete from the uniprot lists
 file_gene_uniprot = open('uniprot_gene/db_gene_uniprot_delete.csv', 'w')
@@ -172,43 +179,71 @@ check out mapping with use of name
 '''
 
 
-def check_mapped_gene_ids_with_name(dict_gene_ids_which_mapped, gene_names):
+def check_mapped_gene_ids_with_name(list_gene_ids_which_mapped, gene_names):
     list_fitting_gene_name = []
     same_gene_name = False
 
     # find the gene which has the same name as the protein from uniprot
-    for gene_id in dict_gene_ids_which_mapped:
-        for gene_name in gene_names:
-            if int(gene_id) in dict_gene_to_name:
-                name_in_dict = dict_gene_to_name[int(gene_id)]
+    for gene_id in list_gene_ids_which_mapped:
+        if int(gene_id) in dict_gene_to_name:
+            name_in_dict = dict_gene_to_name[int(gene_id)]
+            for gene_name in gene_names:
 
                 if gene_name in name_in_dict:
                     same_gene_name = True
                     list_fitting_gene_name.append(gene_id)
-            else:
+        else:
+            for gene_name in gene_names:
                 if gene_name in dict_gene_symbol_to_gene_id:
                     gene_ids_from_name = dict_gene_symbol_to_gene_id[gene_name]
+                    list_fitting_gene_name.extend(gene_ids_from_name)
                     print('ok gene symbol works')
+                elif gene_name in dict_synonyms_to_gene_ids:
+                    list_fitting_gene_name.extend(dict_synonyms_to_gene_ids[gene_name])
+                    same_gene_name=True
+                    print('only name and id is not existing')
                 else:
                     print('not mapping mybe only synonyms and not only symbol')
                     print(gene_id)
                     print(gene_name)
+    if not same_gene_name:
+        new_list_of_gene_ids=set([])
+        for gene_name in gene_names:
+            if gene_name in dict_synonyms_to_gene_ids:
+                new_list_of_gene_ids=new_list_of_gene_ids.union(dict_synonyms_to_gene_ids[gene_name])
+        list_gene_ids_which_mapped=map(int,list_gene_ids_which_mapped)
+        intersection=new_list_of_gene_ids.intersection(list_gene_ids_which_mapped)
+        if len(intersection)>0:
+            print('cool')
+            print(list_gene_ids_which_mapped)
+            print(new_list_of_gene_ids)
+            print(intersection)
+            print(gene_names)
+            list_fitting_gene_name=list(intersection)
+        else:
+            print('ohje')
+            print(list_gene_ids_which_mapped)
+            print(new_list_of_gene_ids)
+            print(gene_names)
+
+            list_fitting_gene_name=list(new_list_of_gene_ids)
+
 
     return list_fitting_gene_name, same_gene_name
 
 
 '''
-this goes throu a list of mapping gens and check out if they realy do not exists already
+this goes throu a list of mapping gens and check out if they really do not exists already
 if not integrate them into the csv
 '''
 
 
-def check_and_add_rela_pair(identifier, uniprot_id, gene_ids, secondary_uniprot_ids, name_mapping, ctd_mapping,
+def check_and_add_rela_pair(identifier, uniprot_id, gene_ids, secondary_uniprot_ids, name_mapping,
                             uniprot_mapping, map_resource):
     for gene_id in gene_ids:
         if not (identifier, int(gene_id)) in list_already_integrated_pairs_gene_protein:
             writer_rela.writerow(
-                [identifier, gene_id, secondary_uniprot_ids, name_mapping, ctd_mapping, uniprot_mapping, map_resource])
+                [identifier, gene_id, secondary_uniprot_ids, name_mapping,  uniprot_mapping, map_resource])
             list_already_integrated_pairs_gene_protein.append(
                 (identifier, int(gene_id)))
             list_already_included.append(uniprot_id)
@@ -237,15 +272,18 @@ def check_and_write_uniprot_ids(uniprot_id, name, identifier, secondary_uniprot_
 
     # if no gene is found in the multiple or single dictionary, search with name for on mapping or with the gene_ids from uniprot
     if identifier not in list_already_included:
+        print(identifier)
+        if identifier=='Q9NPC4':
+            print('blub')
         # check out the gene ids from uniprot
         if gene_ids and gene_names:
-            print(identifier)
+            # print(identifier)
             list_of_mapped_genes, same_gene_name = check_mapped_gene_ids_with_name(
                 gene_ids, gene_names)
             # if the gene ids and nam mapping is working write into rela file
             if len(list_of_mapped_genes) != 0:
                 check_and_add_rela_pair(identifier, uniprot_id, list_of_mapped_genes, secondary_uniprot_ids,
-                                        'yes', 'no', 'yes', 'UniProt')
+                                        'yes',  'yes', 'UniProt')
 
                 return True, list_of_mapped_genes
             else:
@@ -254,7 +292,7 @@ def check_and_write_uniprot_ids(uniprot_id, name, identifier, secondary_uniprot_
                     intersection = set(gene_ids).intersection(name_mapped_list)
                     if len(intersection) > 0:
                         check_and_add_rela_pair(identifier, uniprot_id, intersection, secondary_uniprot_ids,
-                                                'yes', 'no', 'yes', 'UniProt')
+                                                'yes',  'yes', 'UniProt')
 
                         return True, list(intersection)
                 else:
@@ -271,7 +309,7 @@ def check_and_write_uniprot_ids(uniprot_id, name, identifier, secondary_uniprot_
                 intersection = set(gene_ids).intersection(list_gene_id_from_name)
                 if len(intersection) > 0:
                     check_and_add_rela_pair(identifier, uniprot_id, intersection, secondary_uniprot_ids,
-                                            'yes', 'no', 'yes', 'UniProt')
+                                            'yes',  'yes', 'UniProt')
                     genes = list(intersection)
                     found_at_least_on = True
                     return True, genes
@@ -283,7 +321,7 @@ def check_and_write_uniprot_ids(uniprot_id, name, identifier, secondary_uniprot_
             if name.lower() in dict_gene_name_to_id:
                 check_and_add_rela_pair(identifier, uniprot_id, dict_gene_name_to_id[name.lower()],
                                         secondary_uniprot_ids,
-                                        'yes', 'no', 'no', 'NameMapping')
+                                        'yes', 'no', 'NameMapping')
 
                 genes = dict_gene_name_to_id[name.lower()]
                 found_at_least_on = True
@@ -306,7 +344,7 @@ def check_and_write_uniprot_ids(uniprot_id, name, identifier, secondary_uniprot_
         # the multiple mapping with gene symbol are not the best only 4 of 14 this make sense but for the other it would be manual mapping
         if len(list_of_possible_mapped_gene_ids) == 1:
             check_and_add_rela_pair(identifier, uniprot_id, list_of_possible_mapped_gene_ids,
-                                    secondary_uniprot_ids, 'yes', 'no', 'no', 'GeneSymbolMapping')
+                                    secondary_uniprot_ids, 'yes',  'no', 'GeneSymbolMapping')
 
             # print(identifier)
             # print(list_of_possible_mapped_gene_ids)
@@ -336,7 +374,7 @@ def get_gather_protein_info_and_generate_relas():
     writer_uniprots_genes = csv.writer(file_uniprots_genes)
     writer_uniprots_genes.writerow(['uniprot_ids', 'gene_id'])
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_gene/db_uniprot_to_gene_rela.csv" As line MATCH (n:Protein{identifier:line.uniprot_id}), (g:Gene{identifier:toInteger(line.gene_id)}) Create (g)-[:PRODUCES_GpP{name_mapping:line.name_mapping ,ctd:line.ctd,uniprot:line.uniprot,resource:split(line.resource,'|'),license:'Creative Commons Attribution (CC BY 4.0) License'}]->(n);\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_gene/db_uniprot_to_gene_rela.csv" As line MATCH (n:Protein{identifier:line.uniprot_id}), (g:Gene{identifier:toInteger(line.gene_id)}) Create (g)-[:PRODUCES_GpP{name_mapping:line.name_mapping uniprot:line.uniprot,resource:split(line.resource,'|'),license:'Creative Commons Attribution (CC BY 4.0) License'}]->(n);\n'''
     file_cypher.write(query)
 
     # the queries to integrate rela to bc, cc and mf
