@@ -451,7 +451,7 @@ def get_gather_protein_info_and_generate_relas():
 
         # get the Uniprot id
         identifier = node['identifier']
-        if identifier == 'Q9Y2D5':
+        if identifier == 'Q9NPC4':
             print('ok')
         # write into integration file
         writer_uniprots_ids.writerow([identifier])
@@ -462,7 +462,7 @@ def get_gather_protein_info_and_generate_relas():
         # get the name of the node
         name = node['name']
         # get all xrefs of the node
-        xrefs = node['xref'] if 'xref' in node else []
+        xrefs = node['xrefs'] if 'xrefs' in node else []
 
         # the gene symbol
         geneSymbols = node['gene_name'] if 'gene_name' in node else []
