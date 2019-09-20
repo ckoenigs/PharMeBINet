@@ -2,7 +2,7 @@
 """
 Created on Tue Sep 17 16:07:43 2019
 
-@author: ckoenig
+@author: ckoenigs
 """
 
 from py2neo import Graph, authenticate
@@ -53,10 +53,9 @@ def create_cypher_and_csv_files():
     query=query %(label_of_salt)
     result=g.run(query)
     header=[]
-    query_start='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ncbi_gene/drugbank/output/%s.csv" As line Fieldterminator '\\t' Match (a:Salt_DrugBank {identifier:line.identifier}) Create (b:Compound :Salt{'''
+    query_start='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ncbi_gene/drugbank/output/%s.csv" As line Fieldterminator '\\t' Match (a:%s {identifier:line.identifier}) Create (b:Compound :Salt{'''
     query_start=query_start %(file_node, label_of_salt)
     for property, in result:
-        header.append(property)
         query_start+= property+':line.'+property+', '
     query=query_start+' source:"DrugBank", drugbank="yes", resource:["DrugBank"], url:"https://www.drugbank.ca/salts/"+line.identifier}) Create (b)-[:equal_to_drugbank]->(a)'
 
