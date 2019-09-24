@@ -41,6 +41,13 @@ set_list_properties=set([])
 #set list of all parent-child pairs
 set_parent_child_pair=set([])
 
+# list other relationships
+list_other_rela=[]
+
+# dictionary with list of the other relationships
+dict_other_rela_parent_child={}
+
+
 '''
 group the terms together and get the information from the different terms and gather all term information in a dictionary
 further fill the dictionary for the hierachical set
@@ -82,6 +89,17 @@ def gather_information_from_obo():
                     if key_term == 'is_a':
                         parent_id = value.split('!')[0].strip().split(' {')[0]
                         set_parent_child_pair.add((parent_id,dict_all_info['id']))
+                    elif key_term=='relationship':
+                        print(value.split('!')[0].split(' '))
+                        rela_info=value.split('!')[0].split(' ')
+                        rela_type=rela_info[0]
+                        parent_id=rela_info[1]
+                        if rela_type in list_other_rela:
+                            dict_other_rela_parent_child[rela_type].add((parent_id,dict_all_info['id']))
+                        else:
+                            list_other_rela.append(rela_type)
+                            dict_other_rela_parent_child[rela_type]={(parent_id,dict_all_info['id'])}
+
 
                     else:
                         # for some properties more than one value appears
