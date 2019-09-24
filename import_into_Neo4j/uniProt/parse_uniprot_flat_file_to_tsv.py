@@ -211,10 +211,29 @@ def extract_information():
                 elif in_multiple_lines:
                     # has more than one multiple line
                     if ',\n' in line:
+                        if in_multiple_line_property == 'gene_name':
+                            continue
+                        print('multi multi')
                         in_multiple_line_string += two_split[1].replace('\n', '')
                     # end of one multiple line combination
                     else:
-                        in_multiple_line_string += two_split[1].replace(';\n', '')
+                        if in_multiple_line_property=='gene_name':
+                            if not '{'  in two_split[1] and '}' in two_split[1]:
+                                print('no new information')
+                                print(two_split[1])
+                            elif two_split[1].count('}')>1:
+                                print('no new information')
+                                print(two_split[1])
+                            else:
+                                in_multiple_line_string += two_split[1].replace(';\n', '')
+                                print('new informations')
+                                print(two_split[1])
+                        else:
+                            in_multiple_line_string += two_split[1].replace(';\n', '')
+                            print(in_multiple_line_property)
+                            print('new informations')
+                            print(two_split[1])
+
                         in_multiple_lines = False
                         if in_multiple_line_property_type_list:
                             if in_multiple_line_property in dict_protein:
@@ -337,27 +356,30 @@ def extract_information():
                 # only the one with name
                 elif two_first_letter == 'GN':
                     property = two_split[1].split('=')
-                    if dict_protein['identifier']=='Q13938':
+                    if dict_protein['identifier']=='P30493':
                         print('huhu')
                     if property[0] == 'Name':
 
                         if ',\n' in two_split[1]:
                             in_multiple_lines = True
-                            in_multiple_line_string = property[1].split(';')[0].replace('\n','').replace('|',';')
+                            in_multiple_line_string = property[1].split(';')[0].replace('\n','').replace('|',';').split('{')[0].rstrip()
                             in_multiple_line_property = 'gene_name'
                             in_multiple_line_property_type_list=True
                         else:
+                            gene_name=property[1].split(';')[0].replace('\n', '').replace('|', ';').split(' {')[0].rstrip()
+
                             if not 'gene_name' in dict_protein:
-                                dict_protein['gene_name'] = set([property[1].split(';')[0].replace('\n', '').replace('|',';')])
+                                dict_protein['gene_name'] = set([gene_name])
                             else:
-                                dict_protein['gene_name'].add(property[1].split(';')[0].replace('\n', '').replace('|',';'))
+                                dict_protein['gene_name'].add(gene_name)
                             # print(property)
                             # print(line)
                             # print(property[1].split(';'))
                             synonyms = property[1].split(';')[1].split('=')
                             if synonyms[0] == ' Synonyms':
                                 for synonym in property[2].split(', '):
-                                    dict_protein['gene_name'].add(synonym.replace(';\n', '').replace('|',';'))
+                                    print(property)
+                                    dict_protein['gene_name'].add(synonym.split(';')[0].replace(';\n', '').replace('|',';').split(' {')[0].rstrip())
                                     # if not 'synonyms' in dict_protein:
                                     #     dict_protein['synonyms'] = set([synonym.replace(';\n', '')])
                                     # else:
