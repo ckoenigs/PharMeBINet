@@ -263,7 +263,7 @@ echo pathway
 python reconstruct_pathway.py > output_generate_integration_file.txt
 
 echo rm gz file
-rm data/*
+rm database/*
 
 now=$(date +"%F %T")
 echo "Current time: $now"
