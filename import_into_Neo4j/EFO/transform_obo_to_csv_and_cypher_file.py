@@ -48,6 +48,7 @@ list_other_rela=[]
 dict_other_rela_parent_child={}
 
 
+
 '''
 group the terms together and get the information from the different terms and gather all term information in a dictionary
 further fill the dictionary for the hierachical set
@@ -90,7 +91,6 @@ def gather_information_from_obo():
                         parent_id = value.split('!')[0].strip().split(' {')[0]
                         set_parent_child_pair.add((parent_id,dict_all_info['id']))
                     elif key_term=='relationship':
-                        print(value.split('!')[0].split(' '))
                         rela_info=value.split('!')[0].split(' ')
                         rela_type=rela_info[0]
                         parent_id=rela_info[1]
@@ -152,7 +152,6 @@ def generate_cypher_file():
     cypher_file.write(query)
 
     #create csv for relationships
-    # create node csv
     file = open('rela.csv', 'w')
     csv_writer = csv.writer(file)
     csv_writer.writerow(['child_id','parent_id'])
@@ -161,6 +160,23 @@ def generate_cypher_file():
         csv_writer.writerow([child_id,parent_id])
     file.close()
 
+    print(list_other_rela)
+
+    #generate cypher query and csv for all other rela types
+    for rela_type, list_parent_child in dict_other_rela_parent_child.items():
+        file_name='rela_'+rela_type+'.csv'
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/%s/%s" As line  Match (a:%s{id:line.child_id}), (b:%s{id:line.parent_id}) Create (a)-[:%s]->(b); \n'''
+        query= query %  (directory, file_name, neo4j_label, neo4j_label,rela_type)
+        cypher_file.write(query)
+
+        # create csv for relationships
+        file = open(file_name, 'w')
+        csv_writer = csv.writer(file)
+        csv_writer.writerow(['child_id', 'parent_id'])
+
+        for (parent_id, child_id) in set_parent_child_pair:
+            csv_writer.writerow([child_id, parent_id])
+        file.close()
 
 
 def main():
