@@ -91,7 +91,7 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
             query += part
             on_create_string += part
 
-    query += 'g.ncbi="yes", g.resource=g.resource+"NCBI" ' + on_create_string + ''' g.ctd="no", g.hetionet="no", g.source="Entrez Gene", g.resource="NCBI", g.license="CC0 1.0", g.url="http://identifiers.org/ncbigene/"+line.identifier, g.ncbi='yes', g.resource=['NCBI'] Create (n)<-[:equal_to_ncbi_gene]-(g);\n'''
+    query += 'g.ncbi="yes", g.resource=g.resource+"NCBI" ' + on_create_string + '''  g.source="Entrez Gene", g.resource="NCBI", g.license="CC0 1.0", g.url="http://identifiers.org/ncbigene/"+line.identifier, g.ncbi='yes', g.resource=["NCBI"] Create (n)<-[:equal_to_ncbi_gene]-(g);\n'''
     cypher_file.write(query)
     query='''MATCH (a:Gene) Where not  (a)-[:equal_to_ncbi_gene]->() Detach Delete a;'''
     cypher_file.write(query)
