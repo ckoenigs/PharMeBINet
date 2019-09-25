@@ -56,14 +56,10 @@ further fill the dictionary for the hierachical set
 
 
 def gather_information_from_obo():
-    # counter of queries
-    counter_create = 0
-
-    global cypher_file
-    global file_counter
+    # open the obo file
     with open(file_name) as f:
+        # group lines together which are in a block and go through every block
         for (key, group) in groupby(f, is_data):
-            #            print(key)
             if key:
                 # for python 2.*
                 header = group.next().rstrip('\n')
@@ -77,20 +73,30 @@ def gather_information_from_obo():
 
                 # dictionary for all values
                 dict_all_info = {}
-                # go through all properties of the hpo id
+                # go through all properties of the block
                 for info in group:
+                    #seperate key and value
                     (key_term, value) = [element.strip() for element in info.split(":", 1)]
-                    # check if the id is part of at least one relationship
-                    #                    if key_term == 'id':
-                    #                        if (not value in list_symptoms_ids) and (not value in dict_hpo_frequency):
-                    #                            use_full_hpo_id = False
-                    #                            break
-                    #                        elif value in dict_hpo_frequency:
-                    #                            is_a_frequency_information = True
-                    if key_term == 'is_a':
+
+                    # check if the key is a relationship or not and add the information to the right dictionary
+                    if key_term not in ['is_a','relationship']:
+                        # if key_term=='xref':
+                        #     key_term='xrefs'
+                        # for some properties more than one value appears
+                        if not key_term in dict_all_info:
+                            dict_all_info[key_term] = value.replace('"', '').replace("'", "").replace("\\", "")
+                        # if more than one value appears for a key the key is add to the list of multi values keys
+                        # also the values are connected with a |
+                        else:
+                            dict_all_info[key_term]+='|'+value.replace('"', '').replace("'", "").replace("\\", "")
+                            set_list_properties.add(key_term)
+                        set_all_properties_in_database.add(key_term)
+                    # add the is a relationship to a set
+                    elif key_term == 'is_a' :
                         parent_id = value.split('!')[0].strip().split(' {')[0]
                         set_parent_child_pair.add((parent_id,dict_all_info['id']))
-                    elif key_term=='relationship':
+                    # is a relationship but depending on the type it is add to a different set
+                    else:
                         rela_info=value.split('!')[0].split(' ')
                         rela_type=rela_info[0]
                         parent_id=rela_info[1]
@@ -99,18 +105,6 @@ def gather_information_from_obo():
                         else:
                             list_other_rela.append(rela_type)
                             dict_other_rela_parent_child[rela_type]={(parent_id,dict_all_info['id'])}
-
-
-                    else:
-                        # for some properties more than one value appears
-                        if key_term=='xref':
-                            key_term='xrefs'
-                        if not key_term in dict_all_info:
-                            dict_all_info[key_term] = value.replace('"', '').replace("'", "").replace("\\", "")
-                        else:
-                            dict_all_info[key_term]+='|'+value.replace('"', '').replace("'", "").replace("\\", "")
-                            set_list_properties.add(key_term)
-                        set_all_properties_in_database.add(key_term)
 
 
 
@@ -129,8 +123,9 @@ def generate_cypher_file():
     for property in set_all_properties_in_database:
         if not property in set_list_properties :
             query+=property+':line.'+property+', '
+        # add a 's' at the end of a list property, because they have multiple values :D
         else:
-            query += property + ':split(line.' + property + ',"|"), '
+            query += property + 's:split(line.' + property + ',"|"), '
     query=query[:-2]+'});\n'
     cypher_file.write(query)
     cypher_file.write(':begin\n')
