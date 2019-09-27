@@ -101,6 +101,7 @@ def extract_information_from_block(group, is_type):
                         continue
                     else:
                         add_information_to_dictionary(dict_all_info,key_term,value)
+
                         set_all_properties_in_database.add(key_term)
                         continue
                 dict_other_rela_parent_child[key_term].add((parent_id, identifier))
@@ -190,6 +191,8 @@ def generate_cypher_file():
     for rela_type, list_of_infos in dict_other_rela_parent_child.items():
         if rela_type in type_def:
             if not rela_type==type_def[rela_type]['name']:
+                if len(type_def[rela_type]['name'].split('|'))>1:
+                    type_def[rela_type]['name']=type_def[rela_type]['name'].split('|')[0]
                 rela_type=type_def[rela_type]['name'].replace(' ','_') if not '/' in type_def[rela_type]['name'] else rela_type
 
         # create csv for relationships
