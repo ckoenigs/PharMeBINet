@@ -75,6 +75,7 @@ def pathway_commons():
         file.write(f.read())
     file.close()
 
+    global i
     i = 0
     rows = list()
     PC_Row = collections.namedtuple('PC_Row', ['identifier', 'name', 'source', 'genes','url','idOwn' ])
@@ -178,7 +179,10 @@ def wikipathways():
     global wikipath_df
     wikipath_df = pandas.DataFrame(gmt_generator, columns = ['name', 'description', 'genes'])
     wikipath_df.name = wikipath_df.name.map(lambda x: x.split('%')[0])
+    print(i)
+    wikipath_df['identifier']=['PC11_{}'.format(j) for j in range(i+1,i+1+len(wikipath_df))]
     print(len(wikipath_df))
+    print(j)
 
     # Remove genes absent from our entrez gene version
     for genes in wikipath_df.genes:
@@ -191,7 +195,8 @@ def wikipathways():
 
 
     wikipath_df = pandas.DataFrame({
-        'identifier': wikipath_df['description'].map(lambda x: x.rsplit('/', 1)[1]),
+        'identifier':wikipath_df['identifier'],
+        'idOwn': wikipath_df['description'].map(lambda x: x.rsplit('/', 1)[1]),
         'name': wikipath_df['name'],
         'url': wikipath_df['description'],
         'source': 'wikipathways',
