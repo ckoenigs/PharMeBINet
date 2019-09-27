@@ -57,6 +57,7 @@ def create_cypher_and_csv_files():
     query_start=query_start %(file_node, label_of_salt)
     for property, in result:
         query_start+= property+':line.'+property+', '
+        header.append(property)
     query=query_start+' source:"DrugBank", drugbank="yes", resource:["DrugBank"], url:"https://www.drugbank.ca/salts/"+line.identifier}) Create (b)-[:equal_to_drugbank]->(a)'
 
     cypher_file.write(query)
