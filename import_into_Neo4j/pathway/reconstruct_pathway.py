@@ -127,11 +127,41 @@ def pathway_commons():
         )
         rows.append(row)
 
+
     global pc_df
     pc_df = pandas.DataFrame(rows)
     print(pc_df.head(2))
 
     print(pc_df.source.value_counts())
+
+    # wikipathways: CC BY 3.0
+    # reactome: CC BY 4.0
+    # kegg: not open source
+    # panther:GNU GPLv3
+    # pid:not existing anymore?
+    # netpath:CC BY 2.5
+    # inoh:unknown
+    # humancyc: not open source
+
+    # filter only the open source sources
+    keep = {'wikipathways', 'reactome', 'panther', 'netpath'}
+    pc_df=pc_df.query("source in @keep")
+
+    #dictionary source to license
+    source_to_license={
+        'wikipathways': 'CC BY 3.0',
+        'reactome': 'CC BY 4.0',
+        'kegg': 'not open source',
+        'panther': 'GNU GPLv3',
+        'pid': 'not existing anymore?',
+        'netpath': 'CC BY 2.5',
+        'inoh': 'unknown',
+        'humancyc': 'not open source'
+    }
+
+    #add license to the different sources
+    pc_df['license']=pc_df['source'].map(source_to_license)
+
 
 '''
 Download wikiPathways and extract the information from the gmt file
