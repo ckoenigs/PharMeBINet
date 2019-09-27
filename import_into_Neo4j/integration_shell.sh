@@ -109,6 +109,33 @@ sleep 120
 
 cd ..
 
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+
+cd  GO
+echo go
+
+python ../EFO/transform_obo_to_csv_and_cypher_file.py go-basic.obo GO go > output_generate_integration_file.txt
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+echo integrate go into neo4j
+
+cat cypher.cypher | $path_neo4j/cypher-shell -u neo4j -p test > output_cypher_integration.txt
+
+sleep 180
+
+$path_neo4j/neo4j restart
+
+
+sleep 120
+
+
+cd ..
+
 now=$(date +"%F %T")
 echo "Current time: $now"
 
@@ -207,7 +234,7 @@ echo "Current time: $now"
 cd  EFO
 echo EFO
 
-python transform_obo_to_csv_and_cypher_file.py efo.obo EFO EFOdisease > output_generate_integration_file.txt
+python transform_obo_to_csv_and_cypher_file.py efo.obo EFO efo > output_generate_integration_file.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -263,7 +290,7 @@ echo pathway
 python reconstruct_pathway.py > output_generate_integration_file.txt
 
 echo rm gz file
-rm database/*
+rm data/*
 
 now=$(date +"%F %T")
 echo "Current time: $now"
