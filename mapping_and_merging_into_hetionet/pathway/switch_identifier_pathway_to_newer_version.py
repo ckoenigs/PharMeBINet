@@ -57,7 +57,7 @@ def get_pathway_properties():
     query='''MATCH (p:%s) WITH DISTINCT keys(p) AS keys UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields RETURN allfields;'''
     query= query % (label_pathway)
     result=g.run(query)
-    for property in result:
+    for property, in result:
         if property.find('gene')==-1:
             header.append(property)
 
@@ -84,10 +84,13 @@ dict_id_to_node={}
 file_node=open('output/node.tsv','w')
 csv_node=csv.writer(file_node,delimiter='\t')
 
-file_rela=open('output(rela.tsv','w')
+file_rela=open('output/rela.tsv','w')
 csv_rela=csv.writer(file_rela,delimiter='\t')
 rela_header=['gene_id','pathway_id']
 csv_rela.writerow(rela_header)
+
+#dictionary rela
+dict_rela={}
 
 '''
 load all pathway from neo4j
@@ -117,12 +120,31 @@ def load_in_all_pathways():
         for gene_id in node['genes']:
             gene_id=int(gene_id)
             if gene_id in dict_genes_hetionet:
+                dict_rela[(str(gene_id),identifier)]=1
                 csv_rela.writerow([str(gene_id),identifier])
 
 
 
 
     print('number of different pathway names:' + str(len(dict_name_to_pc_or_wp_identifier)))
+
+
+'''
+combine the information of the different sources
+'''
+def combine_information_from_different_sources(list_of_nodes):
+    dict_combined_information=defaultdict(set)
+    for node in list_of_nodes:
+        for key, value in node.items():
+            if type(value)!=list:
+                dict_combined_information[key].add(value)
+            else:
+                dict_combined_information[key].union(value)
+    #maybe replace the sets with list or transform into string
+    return dict_combined_information
+
+# dictionary the old pc id to the new one
+dict_old_pc_to_new={}
 
 '''
 fill the node csv file by going through the name dictionary and maybe they nodes with the same name will be merges to one node
@@ -135,8 +157,16 @@ def generate_node_csv():
     for name, list_of_nodes in dict_name_to_pc_or_wp_identifier.items():
         if len(list_of_nodes)==1:
             list_info=[]
+            node=list_of_nodes[0]
+
             for head in header:
-                list_info.append(list_of_nodes[0][head])
+                value=node[head] if head in node else ''
+
+                if type(value)==list:
+                    value='|'.join(value)
+                value=value.encode('utf-8')
+                list_info.append(value)
+            print(list_info)
             csv_node.writerow(list_info)
         else:
             counter_double_names+=1
@@ -144,6 +174,21 @@ def generate_node_csv():
                 counter_multiple+=1
                 print(list_of_nodes)
                 print(len(list_of_nodes))
+            dict_combined=combine_information_from_different_sources(list_of_nodes)
+
+            list_info = []
+            for head in header:
+                value = dict_combined[head] if head in node else ''
+                if head=='identifier':
+                    identifier=value[0]
+                    for old_id in value[1:]:
+                        dict_old_pc_to_new[old_id]=identifier
+                    value=identifier
+                if type(value) in [list, set]:
+                    value = '|'.join(value)
+                value = value.encode('utf-8')
+                list_info.append(value)
+            csv_node.writerow(list_info)
             node1=list_of_nodes[0]
             node2=list_of_nodes[1]
             genes_1=node1['genes']
@@ -162,6 +207,7 @@ def generate_node_csv():
                     print(set(genes_2).difference(intersection))
                     print('not the same genes')
                     if source_1==source_2:
+                        print('same source')
                         print(node1['idOwn']) if 'idOwn' in node1 else ''
                         print(node2['idOwn']) if 'idOwn' in node2 else ''
             else:
@@ -180,6 +226,17 @@ def generate_node_csv():
 
     print('number of duplicated once:'+str(counter_double_names))
     print('number of multies:'+str(counter_multiple))
+
+'''
+generate rela csv
+'''
+def generate_rela_csv():
+    for (gene_id, identifier) in dict_rela.keys():
+        if not identifier in dict_old_pc_to_new:
+            csv_rela.writerow([gene_id, identifier])
+        else:
+            csv_rela.writerow([gene_id, dict_old_pc_to_new[identifier]])
+
 
     
     
@@ -201,6 +258,14 @@ def main():
         '###########################################################################################################################')
 
     print (datetime.datetime.utcnow())
+    print('load pathway properties')
+
+    get_pathway_properties()
+
+    print(
+        '###########################################################################################################################')
+
+    print (datetime.datetime.utcnow())
     print('Load all pathways from d. himmelstein into a dictionary')
 
     load_in_all_pathways()
@@ -212,6 +277,14 @@ def main():
     print('Generate csv for switch identifier and ')
 
     generate_node_csv()
+
+    print(
+        '###########################################################################################################################')
+
+    print (datetime.datetime.utcnow())
+    print('Generate csv for rela ')
+
+    generate_rela_csv()
 
     print(
         '###########################################################################################################################')
