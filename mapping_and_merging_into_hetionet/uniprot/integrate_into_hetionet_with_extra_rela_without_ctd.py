@@ -423,6 +423,9 @@ def get_gather_protein_info_and_generate_relas():
                 # to include only the sequence and not the header
                 elif property == 'as_sequence':
                     query += property + ':split(p.' + property + ',":")[1], '
+                # to reduce the xrefs the go are excluded because this information are in the relationships
+                elif property=='xrefs':
+                    query += property + ':split(line.' + property + ',"|"), '
                 else:
                     query += property + ':p.' + property + ', '
             query += 'uniprot:"yes", url:"https://www.uniprot.org/uniprot/"+p.identifier, source:"UniProt", resource:["UniProt"], license:"Creative Commons Attribution (CC BY 4.0) License "});\n '
@@ -511,7 +514,7 @@ def get_gather_protein_info_and_generate_relas():
                     writer_uniprots_mf.writerow([identifier, source_id[1]])
             else:
                 new_xrefs.append(xref)
-
+        new_xrefs='|'.join(new_xrefs)
         writer_uniprots_ids.writerow([identifier, new_xrefs])
 
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_gene/db_gene_uniprot_delete.csv" As line Match (g:Gene{identifier:toInteger(line.gene_id)}) With g,FILTER(x IN g.uniProtIDs WHERE x <> line.uniprot_id) as filterdList 
