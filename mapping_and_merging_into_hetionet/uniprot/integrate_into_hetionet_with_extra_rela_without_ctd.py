@@ -150,20 +150,10 @@ def get_all_genes():
     print('number of multiple name:' + str(len(list_double_names)))
 
 
-# files with rela from uniprot protei to gene with multiple genes from  protein side
-file_uniprots_with_multiple = open('uniprot_gene/db_uniprot_to_multi_genes.csv', 'w')
-writer_multi = csv.writer(file_uniprots_with_multiple)
-writer_multi.writerow(['uniprot_id', 'protein_name', 'genes', 'alternative_ids'])
-
 # files with rela from uniprot protei to gene
 file_uniprots_gene_rela = open('uniprot_gene/db_uniprot_to_gene_rela.csv', 'w')
 writer_rela = csv.writer(file_uniprots_gene_rela)
 writer_rela.writerow(['uniprot_id', 'gene_id', 'alternative_ids', 'name_mapping',  'uniprot', 'resource'])
-
-# file with the gene ids where a uniprot needs to be delete from the uniprot lists
-file_gene_uniprot = open('uniprot_gene/db_gene_uniprot_delete.csv', 'w')
-writer_gene_uniprot = csv.writer(file_gene_uniprot)
-writer_gene_uniprot.writerow(['gene_id', 'uniprot_id'])
 
 # list of all uniprot ids which where wrong mapped and already found in the program to avoid duplication in the file
 list_already_included = []
@@ -367,14 +357,14 @@ def get_gather_protein_info_and_generate_relas():
     # file with every uniprot identifier
     file_uniprots_ids = open('db_uniprot_ids.csv', 'w')
     writer_uniprots_ids = csv.writer(file_uniprots_ids)
-    writer_uniprots_ids.writerow(['uniprot_id'])
+    writer_uniprots_ids.writerow(['uniprot_id','xrefs'])
 
-    # generate a file with all uniprots wich mapped to multiple genes
-    file_uniprots_genes = open('uniprot_gene/db_uniprots_to_genes.csv', 'w')
-    writer_uniprots_genes = csv.writer(file_uniprots_genes)
-    writer_uniprots_genes.writerow(['uniprot_ids', 'gene_id'])
+    # generate a file with all uniprots which mapped to multiple genes
+    file_uniprots_genes = open('uniprot_gene/db_uniprots_to_genes_multi_map.csv', 'w')
+    writer_uniprots_genes_multi_mapps = csv.writer(file_uniprots_genes)
+    writer_uniprots_genes_multi_mapps.writerow(['uniprot_ids', 'gene_id'])
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_gene/db_uniprot_to_gene_rela.csv" As line MATCH (n:Protein{identifier:line.uniprot_id}), (g:Gene{identifier:toInteger(line.gene_id)}) Create (g)-[:PRODUCES_GpP{name_mapping:line.name_mapping uniprot:line.uniprot,resource:split(line.resource,'|'),license:'Creative Commons Attribution (CC BY 4.0) License'}]->(n);\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_gene/db_uniprot_to_gene_rela.csv" As line MATCH (n:Protein{identifier:line.uniprot_id}), (g:Gene{identifier:toInteger(line.gene_id)}) Create (g)-[:PRODUCES_GpP{name_mapping:line.name_mapping, uniprot:line.uniprot,resource:split(line.resource,'|'),license:'Creative Commons Attribution (CC BY 4.0) License'}]->(n);\n'''
     file_cypher.write(query)
 
     # the queries to integrate rela to bc, cc and mf
@@ -454,7 +444,7 @@ def get_gather_protein_info_and_generate_relas():
         if identifier == 'Q9NPC4':
             print('ok')
         # write into integration file
-        writer_uniprots_ids.writerow([identifier])
+
 
         # get the other uniprot ids
         second_uniprot_ids = node['second_ac_numbers'] if 'second_ac_numbers' in node else []
@@ -501,9 +491,12 @@ def get_gather_protein_info_and_generate_relas():
                 overlap_uniprot_ids = ';'.join(overlap_uniprot_ids)
                 set_list_mapped_genes = [str(x) for x in list(set_list_mapped_genes)]
                 set_list_mapped_genes = ';'.join(set_list_mapped_genes)
-                writer_uniprots_genes.writerow([overlap_uniprot_ids, set_list_mapped_genes])
+                writer_uniprots_genes_multi_mapps.writerow([overlap_uniprot_ids, set_list_mapped_genes])
 
         # to find also relationships to biological processes, cellular component and moleculare functions
+
+        #xrefs without go identifier
+        new_xrefs=[]
         for xref in xrefs:
             source_id = xref.split(':', 1)
             if source_id[0] == 'GO':
@@ -516,6 +509,10 @@ def get_gather_protein_info_and_generate_relas():
                 elif source_id[1] in dict_mf_to_name:
                     counter_gos_mf += 1
                     writer_uniprots_mf.writerow([identifier, source_id[1]])
+            else:
+                new_xrefs.append(xref)
+
+        writer_uniprots_ids.writerow([identifier, new_xrefs])
 
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_gene/db_gene_uniprot_delete.csv" As line Match (g:Gene{identifier:toInteger(line.gene_id)}) With g,FILTER(x IN g.uniProtIDs WHERE x <> line.uniprot_id) as filterdList 
                 Set g.uniProtIDs=filterdList;\n '''
