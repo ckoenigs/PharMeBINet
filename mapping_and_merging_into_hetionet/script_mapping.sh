@@ -3,32 +3,6 @@
 #define path to neo4j bin
 path_neo4j=$1
 
-cd drugbank
-now=$(date +"%F %T")
-echo "Current time: $now"
-echo 'transformation of drugbank db in tsv and sort drugbank to with chemichal information and not'
-
-#execution_formatting_of_drugbank_db.sh > output_drugbank_shell.txt
-
-cd ..
-
-cd RxNorm_to_DrugBank
-now=$(date +"%F %T")
-echo "Current time: $now"
-echo 'Generate RxNorm CUI-Drugbank ID mapping tables'
-
-#execute_mapping_rxcui_to_drugbank.sh > output_generation_mapping_tables.txt
-
-cd ..
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-cd drugbank
-
-./script_mapping_drugbank.sh $path_neo4j/ > output_script.txt
-
-cd ..
 
 
 cd do
@@ -55,18 +29,6 @@ cd ..
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-cd uniprot
-now=$(date +"%F %T")
-echo "Current time: $now"
-echo 'integrat uniprot proteins'
-
-./integration_protein.sh $path_neo4j > output_mapping_and_integration.txt 
-
-cd ..
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-
 cd monDO
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -75,7 +37,6 @@ echo 'change disease identifier to monDO identifier'
 ./integration_of_mondo.sh $path_neo4j > output_mapping_and_integration.txt 
 
 cd ..
-
 
 echo Ncbi genes
 cd ncbi_gene
@@ -98,6 +59,50 @@ $path_neo4j/neo4j restart
 sleep 120
 cd ..
 
+echo pathway 
+cd pathway
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo pathway
+
+python switch_identifier_pathway_to_newer_version.py > output_map.txt
+
+echo integrate connection with ne4j shell
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+$path_neo4j/neo4j-shell -file cypher.cypher > output_cypher_integration.txt
+
+sleep 180
+
+$path_neo4j/neo4j restart
+
+
+sleep 120
+cd ..
+
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+cd uniprot
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo 'integrat uniprot proteins'
+
+./integration_protein.sh $path_neo4j > output_mapping_and_integration.txt 
+
+cd ..
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo drugbank
+
+cd drugbank
+
+./script_mapping_drugbank.sh $path_neo4j/ > output_script.txt
+
+cd ..
 
 echo Sider
 cd sider
@@ -117,6 +122,7 @@ $path_neo4j/neo4j restart
 
 
 sleep 120
+exit 1
 cd ..
 
 echo Aeolus outcomes 
@@ -128,7 +134,7 @@ cd aeolus/
 
 #python map_aeolus_outcome_final.py > output_map_aeolus_outcome.txt
 
-exit do, sider, aeolus
+
 cd ..
 
 cd NDF-RT/
@@ -159,6 +165,23 @@ sleep 120
 
 cd ..
 
+cd drugbank
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo 'transformation of drugbank db in tsv and sort drugbank to with chemichal information and not'
+
+#execution_formatting_of_drugbank_db.sh > output_drugbank_shell.txt
+
+cd ..
+
+cd RxNorm_to_DrugBank
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo 'Generate RxNorm CUI-Drugbank ID mapping tables'
+
+#execute_mapping_rxcui_to_drugbank.sh > output_generation_mapping_tables.txt
+
+cd ..
 
 cd CTD/
 now=$(date +"%F %T")
