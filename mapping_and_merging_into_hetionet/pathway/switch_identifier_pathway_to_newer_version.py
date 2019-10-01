@@ -49,6 +49,9 @@ def load_hetionet_pathways_in():
 #header of the node csv
 header=[]
 
+# extra property
+extra_property='all_mapped_ids'
+
 '''
 get the properties of pathway and make the list for the header of the csv file
 however ignore the properties with genes, because this information will be in the relationships 
@@ -60,6 +63,8 @@ def get_pathway_properties():
     for property, in result:
         if property.find('gene')==-1:
             header.append(property)
+
+    header.append(extra_property)
 
 # version string pc
 version_string='PC11_'
@@ -121,7 +126,7 @@ def load_in_all_pathways():
             gene_id=int(gene_id)
             if gene_id in dict_genes_hetionet:
                 dict_rela[(str(gene_id),identifier)]=1
-                csv_rela.writerow([str(gene_id),identifier])
+                # csv_rela.writerow([str(gene_id),identifier])
 
 
 
@@ -146,6 +151,25 @@ def combine_information_from_different_sources(list_of_nodes):
 # dictionary the old pc id to the new one
 dict_old_pc_to_new={}
 
+# properties which are a list
+list_list_properties=set([])
+
+'''
+Prepare value
+'''
+def prepare_value(value, head, combined_node):
+    if head == 'identifier':
+        identifier_s=value
+        if combined_node:
+            identifier = value.pop()
+            for old_id in value:
+                dict_old_pc_to_new[old_id] = identifier
+            value = identifier
+    if type(value) in [list, set]:
+        list_list_properties.add(head)
+        value = '|'.join(value)
+    return value.encode('utf-8')
+
 '''
 fill the node csv file by going through the name dictionary and maybe they nodes with the same name will be merges to one node
 '''
@@ -161,12 +185,13 @@ def generate_node_csv():
 
             for head in header:
                 value=node[head] if head in node else ''
-
-                if type(value)==list:
-                    value='|'.join(value)
-                value=value.encode('utf-8')
+                if head=='identifier':
+                    identifier=value
+                elif head==extra_property:
+                    value=identifier
+                #prepare the value for csv
+                value=prepare_value(value,head,False)
                 list_info.append(value)
-            print(list_info)
             csv_node.writerow(list_info)
         else:
             counter_double_names+=1
@@ -180,62 +205,92 @@ def generate_node_csv():
             for head in header:
                 value = dict_combined[head] if head in node else ''
                 if head=='identifier':
-                    identifier=value[0]
-                    for old_id in value[1:]:
-                        dict_old_pc_to_new[old_id]=identifier
+                    identifier='|'.join(value)
+                elif head==extra_property:
                     value=identifier
-                if type(value) in [list, set]:
-                    value = '|'.join(value)
-                value = value.encode('utf-8')
+                #prepare the value for csv
+                value=prepare_value(value,head,True)
+
+
                 list_info.append(value)
             csv_node.writerow(list_info)
-            node1=list_of_nodes[0]
-            node2=list_of_nodes[1]
-            genes_1=node1['genes']
-            genes_2 = node2['genes']
-            source_1=node1['source']
-            source_2=node2['source']
-            intersection=set(genes_1).intersection(genes_2)
-            if len(genes_1)>len(genes_2):
-                if len(intersection)!=len(genes_2):
-                    print(node1['identifier'])
-                    print(node2['identifier'])
-                    print(source_1)
-                    print(source_2)
-                    # print(genes_2)
-                    # print(intersection)
-                    print(set(genes_2).difference(intersection))
-                    print('not the same genes')
-                    if source_1==source_2:
-                        print('same source')
-                        print(node1['idOwn']) if 'idOwn' in node1 else ''
-                        print(node2['idOwn']) if 'idOwn' in node2 else ''
-            else:
-                if len(intersection)!=len(genes_1):
-                    print(node1['identifier'])
-                    print(node2['identifier'])
-                    print(source_1)
-                    print(source_2)
-                    # print(genes_1)
-                    # print(intersection)
-                    print(set(genes_1).difference(intersection))
-                    print('not the same genes')
-                    if source_1==source_2:
-                        print(node1['idOwn']) if 'idOwn' in node1 else ''
-                        print(node2['idOwn']) if 'idOwn' in node2 else ''
+            # node1=list_of_nodes[0]
+            # node2=list_of_nodes[1]
+            # genes_1=node1['genes']
+            # genes_2 = node2['genes']
+            # source_1=node1['source']
+            # source_2=node2['source']
+            # intersection=set(genes_1).intersection(genes_2)
+            # if len(genes_1)>len(genes_2):
+            #     if len(intersection)!=len(genes_2):
+            #         print(node1['identifier'])
+            #         print(node2['identifier'])
+            #         print(source_1)
+            #         print(source_2)
+            #         # print(genes_2)
+            #         # print(intersection)
+            #         print(set(genes_2).difference(intersection))
+            #         print('not the same genes')
+            #         if source_1==source_2:
+            #             print('same source')
+            #             print(node1['idOwn']) if 'idOwn' in node1 else ''
+            #             print(node2['idOwn']) if 'idOwn' in node2 else ''
+            # else:
+            #     if len(intersection)!=len(genes_1):
+            #         print(node1['identifier'])
+            #         print(node2['identifier'])
+            #         print(source_1)
+            #         print(source_2)
+            #         # print(genes_1)
+            #         # print(intersection)
+            #         print(set(genes_1).difference(intersection))
+            #         print('not the same genes')
+            #         if source_1==source_2:
+            #             print(node1['idOwn']) if 'idOwn' in node1 else ''
+            #             print(node2['idOwn']) if 'idOwn' in node2 else ''
 
     print('number of duplicated once:'+str(counter_double_names))
     print('number of multies:'+str(counter_multiple))
 
 '''
-generate rela csv
+generate rela csv and cypher file
 '''
-def generate_rela_csv():
+def generate_rela_csv_and_cypher_queries():
     for (gene_id, identifier) in dict_rela.keys():
+        # depending if the identifier is removed or not the correct identifier is written into the csv file
         if not identifier in dict_old_pc_to_new:
             csv_rela.writerow([gene_id, identifier])
         else:
-            csv_rela.writerow([gene_id, dict_old_pc_to_new[identifier]])
+            #it made sense that nodes which are combined to one has similare genes and to avoid duplication first check
+            # if this is already in the dictionary
+            if not (gene_id, dict_old_pc_to_new[identifier]) in dict_rela:
+                csv_rela.writerow([gene_id, dict_old_pc_to_new[identifier]])
+
+    # general start of queries
+    query_start='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/pathway/output/%s.tsv" As line FIELDTERMINATOR '\\t' Match '''
+    #generate cypher for node creation
+    query_node_middle='(b:%s ) Where b.identifier in split(line.%s,"|") Create (n:Pathway{'
+    for head in header:
+        if head in list_list_properties:
+            query_node_middle+=head+':split(line.'+head+',"|"), '
+        else:
+            query_node_middle += head + ':line.' + head + ', '
+    query_node=query_start+ query_node_middle[:-2]+'}) Create (n)-[:equal_to_multi_pathways]->(b);\n'
+    query_node=query_node %('node', label_pathway,extra_property)
+
+    cypher_file.write(query_node)
+
+    # cypher query for relationships
+    query_rela_middle=''
+    for head in rela_header:
+        if head.split('_')[0]=='gene':
+            query_rela_middle+= '(g:Gene{identifier:toInt(line.'+head+')}) ,'
+        else:
+            query_rela_middle += '(p:Pathway{identifier:line.' + head + '}) ,'
+    query_rela=query_start+query_rela_middle[:-2]+ 'Create (g)-[:PARTICIPATES_GpPW{license:p.license, source:p.source, unbiased:false, url:p.url}]->(p);\n'
+    query_rela=query_rela %('rela')
+    cypher_file.write(query_rela)
+
 
 
     
@@ -284,7 +339,7 @@ def main():
     print (datetime.datetime.utcnow())
     print('Generate csv for rela ')
 
-    generate_rela_csv()
+    generate_rela_csv_and_cypher_queries()
 
     print(
         '###########################################################################################################################')
