@@ -59,6 +59,27 @@ $path_neo4j/neo4j restart
 sleep 120
 cd ..
 
+echo GO
+cd go
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+python combine_with_new_go.py > output_map.txt
+
+echo integrate connection with ne4j shell
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+$path_neo4j/neo4j-shell -file cypher.cypher > output_cypher_integration.txt
+
+sleep 180
+
+$path_neo4j/neo4j restart
+
+
+sleep 120
+cd ..
+
 echo pathway 
 cd pathway
 now=$(date +"%F %T")
