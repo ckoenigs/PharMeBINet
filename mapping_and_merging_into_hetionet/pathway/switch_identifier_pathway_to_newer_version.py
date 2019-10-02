@@ -267,21 +267,26 @@ def generate_rela_csv_and_cypher_queries():
                 csv_rela.writerow([gene_id, dict_old_pc_to_new[identifier]])
 
     # general start of queries
-    query_start='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/pathway/output/%s.tsv" As line FIELDTERMINATOR '\\t' Match '''
+    query_start='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/pathway/output/%s.tsv" As line FIELDTERMINATOR '\\t' '''
     #generate cypher for node creation
-    query_node_middle='(b:%s ) Where b.identifier in split(line.%s,"|") Create (n:Pathway{'
+    query_node_middle='Create (n:Pathway{'
     for head in header:
         if head in list_list_properties:
             query_node_middle+=head+':split(line.'+head+',"|"), '
         else:
             query_node_middle += head + ':line.' + head + ', '
-    query_node=query_start+ query_node_middle[:-2]+'}) Create (n)-[:equal_to_multi_pathways]->(b);\n'
-    query_node=query_node %('node', label_pathway,extra_property)
+    query_node=query_start+ query_node_middle[:-2]+'}) ;\n'
+    query_node=query_node %('node')
 
     cypher_file.write(query_node)
 
+    # query equal to
+    query_equal=query_start+' Match (b:%s ), (n:Pathway{identifier:line.identifier}) Where b.identifier in split(line.%s,"|") Create (n)-[:equal_to_multi_pathways]->(b);\n'
+    query_equal=query_equal %('node',label_pathway,extra_property)
+    cypher_file.write(query_equal)
+
     # cypher query for relationships
-    query_rela_middle=''
+    query_rela_middle='Match '
     for head in rela_header:
         if head.split('_')[0]=='gene':
             query_rela_middle+= '(g:Gene{identifier:toInt(line.'+head+')}) ,'
