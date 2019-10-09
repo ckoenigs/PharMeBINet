@@ -4,12 +4,12 @@ Created on Thr Sep 26 12:52:43 2017
 
 @author: ckoenig
 """
-from mapping_and_merging_into_hetionet.drugbank.salt_to_compound_mapping_connection_to_drugs import label_of_salt
 
 '''integrate the other diseases and relationships from disease ontology in hetionet'''
 from py2neo import Graph, authenticate
 import datetime
 import sys,csv
+from collections import  defaultdict
 
 # disease ontology license
 license='CC0 4.0 International'
@@ -36,7 +36,7 @@ dict_new_go_to_node={}
 dict_new_nodes={}
 
 # dictionary csv files
-dict_label_to_mapped_to_csv={}
+dict_label_to_mapped_to_csv=defaultdict(dict)
 
 #header of csv file
 header=[]
@@ -46,6 +46,11 @@ dict_header_to_property={}
 
 # cypher file
 cypher_file=open('cypher.cypher','w')
+cypher_file_delete=open('cypher_delete.cypher','w')
+
+#bash shell for merge combined nodes
+bash_shell=open('merge_nodes.sh','w')
+bash_shell.write('#!/bin/bash\n')
 
 '''
 Get the  properties of go
@@ -53,11 +58,14 @@ Get the  properties of go
 def get_go_properties():
     query='''MATCH (p:go) WITH DISTINCT keys(p) AS keys UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields RETURN allfields;'''
     result=g.run(query)
-    query_nodes_start='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/go/%s As line FIELDTERMINATOR '\\t' Match (b:%s{id:line.identifier})'''
-    query_nodes_start= query_nodes_start %(label_go)
+    query_nodes_start='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/go/%s" As line FIELDTERMINATOR '\\t' '''
+
+    part=''' Match (b:%s{id:line.identifier})'''%(label_go)
+    query_nodes_start = query_nodes_start+part
     query_middle_mapped=', (a:%s{identifier:line.identifier}) Set '
     query_middle_new=' Create (a:%s{'
-    for property in result:
+    query_delete_middle=', (a:%s{identifier:line.identifier}) Detach Delete a,b;\n'
+    for property, in result:
         if property in ['def','id','alt_ids']:
             if property=='id':
                 query_middle_new+='identifier:b.'+property+', '
@@ -74,9 +82,20 @@ def get_go_properties():
             query_middle_new += property+':b.' + property + ', '
             query_middle_mapped += 'a.'+property+'=b.' + property + ', '
     query_end=''' Create (a)-[:equal_to_go]->(b);\n'''
-    global query_new, query_mapped
-    query_mapped=query_nodes_start+query_middle_mapped+ 'a.resource=a.resource+"GO", a.go="yes", a.license='+license+query_end
-    query_new=query_nodes_start+query_middle_new+'resource:["GO"], go."yes", source:"Gene Ontology", url:"http://purl.obolibrary.org/obo/"+line.identifier, license:'+license+query_end
+    global query_new, query_mapped, query_delete
+    # combine the different parts for mapping query
+    query_mapped=query_nodes_start+query_middle_mapped+ 'a.resource=a.resource+"GO", a.go="yes", a.license="'+license+'"'+query_end
+
+    # combine the important parts of node creation
+    query_new=query_nodes_start+query_middle_new+'resource:["GO"], go:"yes", source:"Gene Ontology", url:"http://purl.obolibrary.org/obo/"+line.identifier, license:"'+license+'"})'+query_end
+
+    # query_delete=query_nodes_start+ query_delete_middle
+
+    # delete the obsolete nodes of go
+    query_delete_go=part+' Where exists(b.is_obsolete) Detach Delete b;\n'
+    cypher_file_delete.write(query_delete_go)
+    # delete query of hetionet nodes which did not mapped
+    query_delete='''Match (a:%s{identifier:line.identifier}) Detach Delete a;\n'''
 
 
 
@@ -88,15 +107,30 @@ def create_csv_files():
         for x in [True, False]:
             if x:
                 file_name='output/integrate_go_'+label+ '_mapped.tsv'
-                query=query_mapped %(file_name)
+                query=query_mapped %(file_name, dict_go_to_hetionet_label[label])
             else:
                 file_name='output/integrate_go_'+label+ '.tsv'
-                query=query_new %(file_name)
+                query=query_new %(file_name, dict_go_to_hetionet_label[label])
             cypher_file.write(query)
             file=open(file_name,'w')
             csv_file=csv.writer(file,delimiter='\t')
             csv_file.writerow(['identifier'])
             dict_label_to_mapped_to_csv[label][x]=csv_file
+
+        # delete nodes which mapped but were are about to be removed
+        # this can be away if I have on query which delete all nodes which has no connection to a go node
+        # file_name= file_name='output/integrate_go_'+label+ '_delete.tsv'
+        # query = query_delete % (file_name, dict_go_to_hetionet_label[label])
+        # cypher_file.write(query)
+        # file = open(file_name, 'w')
+        # csv_file = csv.writer(file, delimiter='\t')
+        # csv_file.writerow(['identifier'])
+        # dict_label_to_mapped_to_csv[label]['delete'] = csv_file
+
+        #delete of nodes which did not mapped
+        query = query_delete % (dict_go_to_hetionet_label[label])
+        cypher_file_delete.write(query)
+
 
 # dictionary go namespace to node dictionary
 dict_go_namespace_to_nodes={}
@@ -126,16 +160,26 @@ dict_go_to_hetionet_label={
 '''
 check if id is in a dictionary
 '''
-def check_if_identifier_in_hetionet(identifier,namespace,node):
+def check_if_identifier_in_hetionet(identifier,namespace,node, is_alternative_id=False):
     found_id=False
     if identifier in dict_go_namespace_to_nodes[namespace]:
+        if is_alternative_id:
+            return True
+        if 'is_obsolete' in node:
+            print('need to be delete')
+            if 'replaced_by' in node:
+                print('relaced by what to do?')
+                return True
+            # dict_label_to_mapped_to_csv[namespace]['delete'].writerow([identifier])
+            return found_id
+        dict_label_to_mapped_to_csv[namespace][True].writerow([identifier])
+    else:
         if 'is_obsolete' in node:
             print('need to be delete')
             return found_id
-        elif 'replaced_by' in node:
-            print('relaced by what to do?')
-            return found_id
-        dict_label_to_mapped_to_csv[namespace].writerow(identifier)
+        if is_alternative_id:
+            return False
+        dict_label_to_mapped_to_csv[namespace][False].writerow([identifier])
     return True
 
 
@@ -156,17 +200,28 @@ def go_through_go():
     query = '''Match (n:%s) Return n''' % (label_go)
     result = g.run(query)
     for node, in result:
-        identifier=node['identifier']
+        identifier=node['id']
+        if identifier=='GO:0099403':
+            print('jupp')
         namespace=node['namespace']
         alternative_ids=node['alt_ids'] if 'alt_ids' in node else []
         found_id=check_if_identifier_in_hetionet(identifier,namespace,node)
-        if found_id:
-            continue
 
+        # go through the alternative ids
         for alternative_id in alternative_ids:
-            found_id = check_if_identifier_in_hetionet(alternative_id, namespace, node)
-            if found_id:
-                continue
+            found_id_alt = check_if_identifier_in_hetionet(alternative_id, namespace, node, is_alternative_id=True)
+            #if the identifier and an alternative id matched in hetionet the nodes need to be combined
+            # therfore the merge process iss add into the bash file
+            if found_id and found_id_alt:
+                print('found id and alt id')
+                text = 'python ../add_information_from_a_not_existing_node_to_existing_node.py %s %s %s\n' % (
+                    alternative_id, identifier, dict_go_to_hetionet_label[namespace])
+                bash_shell.write(text)
+                text = '''now=$(date +"%F %T")\n echo "Current time: $now"\n'''
+                bash_shell.write(text)
+
+            elif found_id_alt:
+                print('found with alternative id')
 
 
 
