@@ -374,9 +374,9 @@ def create_cypher_file():
             query_create += property + ':line.' + property + ', '
             query_update += 'b.' + property + '=line.' + property + ', '
 
-    query_update_alternativ = query_start + ', (b:Compound{identifier:line.alternative_id}) Set b.drugbank="yes", ' + query_update + 'b.resource=b.resource+"DrugBank", b.url="http://www.drugbank.ca/drugs/"+line.identifier, b.license="CC BY-NC 4.0" Create (b)-[:equal_to_drugbank]->(a);\n'
-    query_update_alternativ = query_update_alternativ % ('update_nodes_alt', neo4j_label_drugbank)
-    cypher_file.write(query_update_alternativ)
+    query_update_alternative = query_start + ', (b:Compound{identifier:line.alternative_id}) Set b.drugbank="yes", ' + query_update + 'b.resource=b.resource+"DrugBank", b.url="http://www.drugbank.ca/drugs/"+line.identifier, b.license="CC BY-NC 4.0" Create (b)-[:equal_to_drugbank]->(a);\n'
+    query_update_alternative = query_update_alternative % ('update_nodes_alt', neo4j_label_drugbank)
+    cypher_file.write(query_update_alternative)
 
     query_update = query_start + ', (b:Compound{identifier:line.identifier}) Set b.drugbank="yes", ' + query_update + 'b.resource=b.resource+"DrugBank", b.url="http://www.drugbank.ca/drugs/"+line.identifier, b.license="CC BY-NC 4.0" Create (b)-[:equal_to_drugbank]->(a);\n'
     query_update = query_update % ('update_nodes', neo4j_label_drugbank)
@@ -404,7 +404,8 @@ def generation_of_interaction_file():
     csv_writer = csv.writer(g_csv, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     csv_writer.writerow(['db1', 'db2', 'description'])
     cypherfile = open('compound_interaction/cypher_interaction.cypher', 'w')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/drugbank/compound_interaction/interaction.csv" As line Match (c1:Compound{identifier:line.db1}), (c2:Compound{identifier:line.db2}) Create (c1)-[:INTERACTS_CiC{source:"DrugBank", unbiased:'false', resource:['DrugBank'], url:line.url, license:'CC BY-NC 4.0', description:split(line.description,'|')}]->(c2);\n '''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/drugbank/compound_interaction/interaction.csv" As line Match (c1:Compound{identifier:line.db1}), (c2:Compound{identifier:line.db2}) Create (c1)-[:INTERACTS_CiC{source:"DrugBank", unbiased:'false', resource:['DrugBank'], url:line.url, license:'%s', description:split(line.description,'|')}]->(c2);\n '''
+    query=query %(license)
     cypherfile.write(query)
     cypherfile.close()
 
@@ -458,6 +459,10 @@ def generation_of_interaction_file():
 
 
 def main():
+    if len(sys.argv)<2:
+        sys.exit('need license')
+    global license
+    license=sys.argv[1]
     print(datetime.datetime.utcnow())
     print('create connection with neo4j')
 
