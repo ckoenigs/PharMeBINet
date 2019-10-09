@@ -117,20 +117,15 @@ def load_all_hetionet_compound_in_dictionary():
         dict_compounds_in_hetionet[compound['identifier']] = dict(compound)
     print('size of compound in Hetionet before the rest of DrugBank is added: ' + str(len(list_compounds_in_hetionet)))
 
+# the new table for unii drugbank pairs
+unii_drugbank_table_file = open('data/map_unii_to_drugbank_id.tsv', 'w')
+csv_unii_drugbank_table=csv.writer(unii_drugbank_table_file,delimiter='\t')
+csv_unii_drugbank_table.write(['unii','drugbank_id'])
+
 
 '''
 Load in all information from DrugBank.
-properties:
-    food_interaction
-    license
-    inchikey
-    inchi
-    name
-    alternative_ids
-    id
-    url
-
-    {identifier:'DB01148'}
+and generate unii-durgbank table file 
 '''
 
 
@@ -141,6 +136,9 @@ def load_all_DrugBank_compound_in_dictionary():
     for compound, in results:
         all_information = dict(compound)
         id = compound['identifier']
+        if 'unii' in compound:
+            unii= compound['unii']
+            csv_unii_drugbank_table.writerow([unii,id])
         if id == 'DB13179':
             print('huh')
         dict_compounds[id] = all_information
@@ -189,29 +187,8 @@ label_of_alternative_ids = 'alternative_drugbank_ids'
 # dictionary of drugbank id and to the used ids in Hetionet
 dict_drugbank_to_alternatives = {}
 
+# show wich properties are not in the old compounds or in the new compounds
 list_not_fiting_properties = set([])
-
-file_empty_value = open('compound_interaction/empty_value.csv', 'w')
-writer_empty = csv.writer(file_empty_value, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-writer_empty.writerow(['Drugbank_id', 'property', 'old_value', 'new_value'])
-file_unii_different = open('compound_interaction/different_uniis.csv', 'w')
-writer_uniis = csv.writer(file_unii_different, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-writer_uniis.writerow(['Drugbank_id', 'property', 'old_value', 'new_value'])
-file_names_different = open('compound_interaction/different_names.csv', 'w')
-writer_names = csv.writer(file_names_different, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-writer_names.writerow(['Drugbank_id', 'property', 'old_value', 'new_value'])
-file_inchikey_different = open('compound_interaction/different_inchikey.csv', 'w')
-writer_inchikeys = csv.writer(file_inchikey_different, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-writer_inchikeys.writerow(['Drugbank_id', 'property', 'old_value', 'new_value'])
-file_inchi_different = open('compound_interaction/different_inchi.csv', 'w')
-writer_inchis = csv.writer(file_inchi_different, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-writer_inchis.writerow(['Drugbank_id', 'property', 'old_value', 'new_value'])
-file_types_different = open('compound_interaction/different_types.csv', 'w')
-writer_types = csv.writer(file_types_different, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-writer_types.writerow(['Drugbank_id', 'property', 'old_value', 'new_value'])
-file_casnumber_different = open('compound_interaction/different_casnumber.csv', 'w')
-writer_casnumbers = csv.writer(file_casnumber_different, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-writer_casnumbers.writerow(['Drugbank_id', 'property', 'old_value', 'new_value'])
 
 '''
 Integrate all DrugBank id into Hetionet
@@ -224,6 +201,7 @@ def integrate_DB_compound_information_into_hetionet():
     # count all new drugbank compounds
     counter_new_compound = 0
 
+    #show which nodes are multiple time in hetionet
     file_combined_drugbanks = open('compound_interaction/combine_file.txt', 'w')
     list_set_key_with_values_length_1 = set([])
 
@@ -243,7 +221,9 @@ def integrate_DB_compound_information_into_hetionet():
         else:
             alternative_ids = []
         alternative_ids.append(drugbank_id)
+        # search for intersection between new db id + alternative ids and hetionet compounds ids
         intersection = list(set(alternative_ids).intersection(list_compounds_in_hetionet))
+        # at least on of the new drugbank ids is in hetionet
         if len(intersection) > 0:
             counter_already_existing_compound += 1
 
@@ -252,6 +232,7 @@ def integrate_DB_compound_information_into_hetionet():
             multiple_db_ids = False
             # alternative id is integrated
             alternative_id_integrated = False
+            # more the one mapped to one node
             if len(intersection) > 1:
                 dict_drugbank_to_alternatives[drugbank_id] = intersection
                 intersection_string = ''
@@ -262,6 +243,7 @@ def integrate_DB_compound_information_into_hetionet():
                 print(intersection)
                 multiple_db_ids = True
                 # sys.exit('intersection')
+            # the alternative id mapped
             elif intersection[0] != drugbank_id:
                 dict_drugbank_to_alternatives[drugbank_id] = intersection
                 alternative_id_integrated = True
@@ -277,7 +259,7 @@ def integrate_DB_compound_information_into_hetionet():
                     intersection.remove(drug_id)
                 else:
                     intersection.remove(drug_id)
-
+                # write into bash file which nodes need to be combined
                 for alternative_drug_id in intersection:
                     text = 'python ../add_information_from_a_not_existing_node_to_existing_node.py %s %s %s\n' % (
                         alternative_drug_id, drugbank_id, 'Compound')
@@ -288,7 +270,7 @@ def integrate_DB_compound_information_into_hetionet():
 
             dict_info_prepared = {}
             for key, property in information.items():
-                # to merge the information into one both information must be combinate
+                # to merge the information into one both information must be combine
                 if key in list_merge_xrefs:
                     list_merge_xref_values = list_merge_xref_values.union(property)
                     continue
@@ -315,8 +297,8 @@ def integrate_DB_compound_information_into_hetionet():
                                 # only this three the older fits better
                                 if drug_id in ['DB11200', 'DB10360', 'DB09561']:
                                     property = dict_compounds_in_hetionet[drug_id][key]
-                        else:
-                            print('same property')
+                        # else:
+                        #     print('same property')
                             # print('for a key')
                             # print(key)
                             # print(property)
@@ -410,7 +392,7 @@ Generate the the interaction file and the cypher file to integrate the informati
 '''
 
 
-def genration_of_interaction_file():
+def generation_of_interaction_file():
     # generate cypher file for interaction
     counter_connection = 0
 
@@ -512,7 +494,7 @@ def main():
     print(datetime.datetime.utcnow())
     print('load all connection in dictionary')
 
-    # load_in_all_interaction_connection_from_drugbank_in_dict()
+    load_in_all_interaction_connection_from_drugbank_in_dict()
 
     print(
         '#################################################################################################################################################################')
@@ -539,7 +521,7 @@ def main():
 
     print('generate cypher file for interaction')
 
-    genration_of_interaction_file()
+    generation_of_interaction_file()
 
     print(
         '#################################################################################################################################################################')
