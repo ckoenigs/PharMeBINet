@@ -59,6 +59,7 @@ def load_hetionet_go_in():
     print('number of molecular function nodes in hetionet:' + str(len(dict_molecular_function_hetionet)))
 
 
+# dictionary of manual checked label of go ids
 dict_of_go_which_has_no_ontology={
     'GO:0070453':'Biological Process',
     'GO:0046035':'Biological Process',
@@ -109,6 +110,33 @@ def check_if_new_or_part_of_hetionet(hetionet_label, go_id, go_name,highestGOLev
     else:
         print('not good')
 
+'''
+load all ctd genes and check if they are in hetionet or not
+'''
+
+
+def load_ctd_go_in():
+    query = '''MATCH (n:CTDGO) RETURN n'''
+    results = g.run(query)
+
+    for go_node, in results:
+        go_id = go_node['go_id']
+        go_name = go_node['name']
+        ontology = go_node['ontology']
+        highestGOLevel= go_node['highestGOLevel']
+        check_if_new_or_part_of_hetionet(ontology,go_id,go_name,highestGOLevel)
+
+    print('number of existing biological process nodes:' + str(len(dict_ctd_biological_process_in_hetionet)))
+    print('number of not existing biological process nodes:' + str(len(dict_ctd_biological_process_not_in_hetionet)))
+
+    print('number of existing Molecular Function nodes:' + str(len(dict_ctd_molecular_function_in_hetionet)))
+    print('number of not existing Molecular Function nodes:' + str(len(dict_ctd_molecular_function_not_in_hetionet)))
+
+    print('number of existing Cellular Component nodes:' + str(len(dict_ctd_cellular_component_in_hetionet)))
+    print('number of not existing Cellular Component nodes:' + str(len(dict_ctd_cellular_component_not_in_hetionet)))
+
+
+
 
 # dictionary of biological_process which are not in hetionet with they properties: name
 dict_ctd_biological_process_not_in_hetionet = {}
@@ -138,37 +166,12 @@ dict_processe = {
                            dict_ctd_cellular_component_in_hetionet]
 }
 
-'''
-load all ctd genes and check if they are in hetionet or not
-'''
-
-
-def load_ctd_go_in():
-    query = '''MATCH (n:CTDGO) RETURN n'''
-    results = g.run(query)
-
-    for go_node, in results:
-        go_id = go_node['go_id']
-        go_name = go_node['name']
-        ontology = go_node['ontology']
-        highestGOLevel= go_node['highestGOLevel']
-        check_if_new_or_part_of_hetionet(ontology,go_id,go_name,highestGOLevel)
-
-    print('number of existing biological process nodes:' + str(len(dict_ctd_biological_process_in_hetionet)))
-    print('number of not existing biological process nodes:' + str(len(dict_ctd_biological_process_not_in_hetionet)))
-
-    print('number of existing Molecular Function nodes:' + str(len(dict_ctd_molecular_function_in_hetionet)))
-    print('number of not existing Molecular Function nodes:' + str(len(dict_ctd_molecular_function_not_in_hetionet)))
-
-    print('number of existing Cellular Component nodes:' + str(len(dict_ctd_cellular_component_in_hetionet)))
-    print('number of not existing Cellular Component nodes:' + str(len(dict_ctd_cellular_component_not_in_hetionet)))
-
 
 # cypher file to integrate and update the go nodes
 cypher_file = open('GO/cypher.cypher', 'w')
 # delete all old
-query='''begin\n MATCH p=()-[r:equal_to_CTD_go]->() Delete r;\n commit\n'''
-cypher_file.write(query)
+# query='''begin\n MATCH p=()-[r:equal_to_CTD_go]->() Delete r;\n commit\n'''
+# cypher_file.write(query)
 
 '''
 Generate cypher and csv for generating the new nodes and the relationships
@@ -188,7 +191,7 @@ def generate_files(file_name_addition, ontology, dict_not_in_hetionet, dict_ctd_
         for gene_id, name in dict_not_in_hetionet.items():
             writer.writerow([gene_id, gene_id])
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/GO/mapping_%s.csv" As line Match (c:%s{ identifier:line.GOIDHetionet}), (n:CTDGO{go_id:line.GOIDCTD}) SET  c.url_ctd=" http://ctdbase.org/detail.go?type=go&acc="+line.GOIDCTD, c.url="http://amigo.geneontology.org/amigo/term/"+line.GOIDCTD, c.highestGOLevel=n.highestGOLevel, c.resource=c.resource+"CTD", c.ctd="yes" Create (c)-[:equal_to_CTD_go]->(n);\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/GO/mapping_%s.csv" As line Match (c:%s{ identifier:line.GOIDHetionet}), (n:CTDGO{go_id:line.GOIDCTD}) SET  c.url_ctd=" http://ctdbase.org/detail.go?type=go&acc="+line.GOIDCTD, c.highestGOLevel=n.highestGOLevel, c.resource=c.resource+"CTD", c.ctd="yes" Create (c)-[:equal_to_CTD_go]->(n);\n'''
     query = query % (file_name_addition, ontology)
     cypher_file.write(query)
     cypher_file.write('begin\n')
