@@ -8,7 +8,7 @@ create a connection with neo4j
 '''
 
 
-def create_connetion_with_neo4j():
+def create_connection_with_neo4j():
     # set up authentication parameters and connection
     authenticate("localhost:7474", "neo4j", "test")
     global g
@@ -321,7 +321,7 @@ def main():
     print(datetime.datetime.utcnow())
     print('create connection with neo4j')
 
-    create_connetion_with_neo4j()
+    create_connection_with_neo4j()
 
     print(
         '#################################################################################################################################################################')

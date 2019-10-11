@@ -120,7 +120,7 @@ def load_all_hetionet_compound_in_dictionary():
 # the new table for unii drugbank pairs
 unii_drugbank_table_file = open('data/map_unii_to_drugbank_id.tsv', 'w')
 csv_unii_drugbank_table=csv.writer(unii_drugbank_table_file,delimiter='\t')
-csv_unii_drugbank_table.write(['unii','drugbank_id'])
+csv_unii_drugbank_table.writerow(['unii','drugbank_id'])
 
 
 '''
