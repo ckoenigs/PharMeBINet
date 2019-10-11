@@ -182,7 +182,7 @@ def wikipathways():
     print(i)
     wikipath_df['identifier']=['PC11_{}'.format(j) for j in range(i+1,i+1+len(wikipath_df))]
     print(len(wikipath_df))
-    print(j)
+    # print(j)
 
     # Remove genes absent from our entrez gene version
     for genes in wikipath_df.genes:
