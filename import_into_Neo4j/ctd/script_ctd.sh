@@ -63,9 +63,10 @@ sleep 180
 ../../../../../neo4j-community-3.2.9/bin/neo4j restart
 sleep 120
 
+cd ..
+
 echo remove csv and csv.gz files
 rm ctd_data/*.csv*
- cd ..
 
 
 
