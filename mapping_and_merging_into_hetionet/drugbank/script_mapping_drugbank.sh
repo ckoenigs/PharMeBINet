@@ -25,7 +25,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo interactions
 
-$path_neo4j/neo4j-shell -file compound_interaction/cypher_interaction.cypher.cypher > output_cypher.txt
+$path_neo4j/neo4j-shell -file compound_interaction/cypher_interaction.cypher > output_cypher.txt
 
 sleep 180
 $path_neo4j/neo4j restart
