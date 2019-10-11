@@ -39,18 +39,26 @@ cc_writer.writerow(['GeneID', 'GOID'])
 
 
 # dictionary with for biological_process, cellular_component, molecular_function the right file
-dict_processe = {
+dict_process = {
     "Biological Process": bp_writer,
     "Molecular Function": mf_writer,
     "Cellular Component": cc_writer
 }
 
 #dictionary counter for bp, cc, mf
-dict_processe_counter = {
+dict_process_counter = {
     "Biological Process": 0,
     "Molecular Function": 0,
     "Cellular Component": 0
 }
+
+#dict of labels of the go in hetionet to file names
+dict_labels_go_to_file_name={
+    'BiologicalProcess':'bp',
+    'MolecularFunction': 'mf',
+    'CellularComponent':'cc'
+}
+
 
 '''
 get all relationships between gene and pathway, take the hetionet identifier an save all important information in a csv
@@ -61,24 +69,12 @@ also generate a cypher file to integrate this information
 def take_all_relationships_of_gene_go():
     # generate cypher file
     cypherfile = open('gene_go/cypher.cypher', 'w')
-    cypherfile.write('begin\n')
-    cypherfile.write(
-        'Match (n:Gene)-[r:PARTICIPATES_GpBP]->(b:BiologicalProcess)  Where not exists(r.hetionet) Set r.hetionet="yes";\n')
-    cypherfile.write('commit\n')
-    cypherfile.write('begin\n')
-    cypherfile.write(
-        'Match (n:Gene)-[r:PARTICIPATES_GpMF]->(b:MolecularFunction)  Where not exists(r.hetionet) Set r.hetionet="yes";\n')
-    cypherfile.write('commit\n')
-    cypherfile.write('begin\n')
-    cypherfile.write(
-        'Match (n:Gene)-[r:PARTICIPATES_GpCC]->(b:CellularComponent)  Where not exists(r.hetionet) Set r.hetionet="yes";\n')
-    cypherfile.write('commit\n')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/gene_go/bp.csv" As line Match (n:Gene{identifier:toInteger(line.GeneID)}), (b:BiologicalProcess{identifier:line.GOID}) Merge (n)-[r:PARTICIPATES_GpBP]->(b) On Create Set r.hetionet='no', r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.source="CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased='false' On Match SET r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID;\n '''
-    cypherfile.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/gene_go/mf.csv" As line Match (n:Gene{identifier:toInteger(line.GeneID)}), (b:MolecularFunction{identifier:line.GOID}) Merge (n)-[r:PARTICIPATES_GpMF]->(b) On Create Set r.hetionet='no', r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.source="CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased='false' On Match SET r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID;\n '''
-    cypherfile.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/gene_go/cc.csv" As line Match (n:Gene{identifier:toInteger(line.GeneID)}), (b:CellularComponent{identifier:line.GOID}) Merge (n)-[r:PARTICIPATES_GpCC]->(b) On Create Set r.hetionet='no', r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.source="CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased='false' On Match SET r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID;\n '''
-    cypherfile.write(query)
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/gene_go/%s.csv" As line Match (n:Gene{identifier:toInteger(line.GeneID)}), (b:%s{identifier:line.GOID}) Merge (n)-[r:PARTICIPATES_GpBP]->(b) On Create Set r.hetionet='no', r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.source="CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased='false' On Match SET r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID;\n '''
+    for label, file_name in dict_labels_go_to_file_name.items():
+        label_query=query %(file_name,label)
+        cypherfile.write(label_query)
+
+    # in other file
     cypherfile.write('begin\n')
     cypherfile.write('Match (n:Gene)-[r:PARTICIPATES_GpBP]->(b:BiologicalProcess) Where not exists(r.ctd) Set r.ctd="no";\n')
     cypherfile.write('commit\n')
@@ -101,8 +97,8 @@ def take_all_relationships_of_gene_go():
             print('change integration of properties')
         if not (gene_id, go_id) in dict_gene_go:
             dict_gene_go[(gene_id, go_id)] = rela
-            dict_processe_counter[ontology]+=1
-            writer= dict_processe[ontology]
+            dict_process_counter[ontology]+=1
+            writer= dict_process[ontology]
             writer.writerow([gene_id, go_id])
             count_possible_relas += 1
         else:
@@ -113,7 +109,7 @@ def take_all_relationships_of_gene_go():
 
     print('number of new rela:'+str(count_possible_relas))
     print('number of relationships which appears multiple time:'+str(count_multiple_pathways))
-    print(dict_processe_counter)
+    print(dict_process_counter)
 
 
 
