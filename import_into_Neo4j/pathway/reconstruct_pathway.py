@@ -171,7 +171,7 @@ def wikipathways():
     # Parse WikiPathways
 
     # download WikiPathways
-    url = 'http://http://data.wikipathways.org/20191010/gmt/wikipathways-20191010-gmt-Homo_sapiens.gmt'
+    url = 'http://data.wikipathways.org/20191010/gmt/wikipathways-20191010-gmt-Homo_sapiens.gmt'
     filename= wget.download(url,out='data/')
 
     gmt_generator = read_gmt(filename)
