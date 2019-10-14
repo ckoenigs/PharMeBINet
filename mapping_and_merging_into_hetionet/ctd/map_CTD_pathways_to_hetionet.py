@@ -40,16 +40,18 @@ load in all pathways from hetionet in a dictionary
 
 
 def load_hetionet_pathways_in():
-    query = '''MATCH (n:Pathway) RETURN n.identifier,n.name, n.source, n.idOwn'''
+    query = '''MATCH (n:Pathway) RETURN n.identifier,n.names, n.source, n.idOwns'''
     results = g.run(query)
 
-    for identifier, name, source, idOwn, in results:
-        dict_pathway_hetionet[identifier] = name
-        dict_pathway_hetionet_xrefs[identifier] = idOwn
-        for id in idOwn:
-            if not id in dict_own_id_to_identifier:
-                dict_own_id_to_identifier[id]=[identifier,source]
-        dict_pathway_hetionet_names[name] = [identifier, source]
+    for identifier, names, source, idOwns, in results:
+        dict_pathway_hetionet[identifier] = names
+        dict_pathway_hetionet_xrefs[identifier] = idOwns
+        if idOwns:
+            for id in idOwns:
+                if not id in dict_own_id_to_identifier:
+                    dict_own_id_to_identifier[id]=identifier
+        for name in names:
+            dict_pathway_hetionet_names[name] = identifier
 
     print('number of pathway nodes in hetionet:' + str(len(dict_pathway_hetionet)))
 
@@ -60,7 +62,7 @@ csv_not_mapped.writerow(['id','name','source'])
 
 file_mapped_pathways = open('pathway/mapped_pathways.tsv', 'w')
 csv_mapped=csv.writer(file_mapped_pathways,delimiter='\t')
-csv_mapped.writerow(['id','id_hetionet'])
+csv_mapped.writerow(['id','id_hetionet','mapped'])
 
 file_multiple_mapped_pathways = open('pathway/multiple_mapped_pathways.tsv', 'w')
 csv_mapped_multi=csv.writer(file_multiple_mapped_pathways,delimiter='\t')
@@ -91,13 +93,14 @@ def load_ctd_pathways_in():
             counter_map_with_id += 1
             # if len(dict_own_id_to_pcid_and_other[pathways_id]) > 1:
             #     print('multiple für identifier')
-            csv_mapped.writerow([pathways_id,dict_own_id_to_identifier[pathways_id][0]])
+            csv_mapped.writerow([pathways_id,dict_own_id_to_identifier[pathways_id]],'id')
 
 
         elif pathways_name in dict_pathway_hetionet_names:
             counter_map_with_name += 1
             print(pathways_id)
             print('mapped with name')
+            csv_mapped.writerow([pathways_id,dict_pathway_hetionet_names[pathways_name]],'name')
 
 
         else:
