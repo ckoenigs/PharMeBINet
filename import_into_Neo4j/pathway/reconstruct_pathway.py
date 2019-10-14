@@ -120,11 +120,11 @@ def pathway_commons():
         row = PC_Row(
             # identifier='PC7_{}'.format(i),
             identifier='PC11_{}'.format(i),
-            name=name,
+            names=name,
             source=description['datasource'],
             genes=genes,
             url=url,
-            idOwn=url.rsplit('/',1)[1]
+            idOwns=url.rsplit('/',1)[1]
         )
         rows.append(row)
 
@@ -199,8 +199,8 @@ def wikipathways():
 
     wikipath_df = pandas.DataFrame({
         'identifier':wikipath_df['identifier'],
-        'idOwn': wikipath_df['description'].map(lambda x: x.rsplit('/', 1)[1]),
-        'name': wikipath_df['name'],
+        'idOwns': wikipath_df['description'].map(lambda x: x.rsplit('/', 1)[1]),
+        'names': wikipath_df['name'],
         'url': wikipath_df['description'],
         'source': 'wikipathways',
         'license': 'CC BY 3.0',
@@ -208,7 +208,7 @@ def wikipathways():
     })
     print(wikipath_df.head(2))
 
-properties_which_are_list=['genes','coding_genes']
+properties_which_are_list=['genes','coding_genes',]
 
 '''
 Combine the both data from the different source to one big one and generate a cypher file
@@ -217,7 +217,7 @@ def combine_both_source():
     # Merge resources into a pathway dataframe
     pathway_df = pandas.concat([wikipath_df, pc_df])
     print(pathway_df)
-    pathway_df = pathway_df[['identifier', 'name', 'url', 'source', 'license', 'genes','idOwn']]
+    pathway_df = pathway_df[['identifier', 'names', 'url', 'source', 'license', 'genes','idOwns']]
     print(len(pathway_df))
 
     # Remove duplicate pathways
