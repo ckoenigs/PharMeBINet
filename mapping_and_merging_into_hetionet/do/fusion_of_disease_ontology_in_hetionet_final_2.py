@@ -228,6 +228,7 @@ def load_disease_ontologie_in_hetionet():
         disease=dict(disease)
 
         # dictionary of integrated
+        xref_umls_cuis='|'.join(xref_umls_cuis)
         dict_of_information = {'umls_cuis': xref_umls_cuis}
 
         for key, value in disease.items():
@@ -277,80 +278,6 @@ def load_in_all_connection_from_disease_ontology():
 
     print('number of relationships:'+str(counter))
 
-
-'''
-Generate new nodes and connection and add new properties to nodes
-the disease nodes in hetionet get new properties, a connection is_a form a disease node to another and a connection form
- the disease node to a diseaseOntology node it generate new disease node with the infomation from diseaseOntology and 
- also the same connection as by the other disease nodes
-'''
-
-
-def integrate_DO_information_into_hetionet():
-    # update disease in hetionet and generate connection between do diseases and hetionet disease
-    print('Update nodes and generate connection to the DiseaseOntology node')
-    output.write('Update nodes and generate connection to the DiseaseOntology node \n')
-    for disease_doid in list_diseases_in_hetionet:
-
-        query = '''Match (n:Disease), (o:DiseaseOntology) Where n.identifier="%s" And o.id="%s"
-        Set n.definition="%s", n.synonyms=["%s"], n.xrefs=["%s"], n.umls_cuis=["%s"], n.alternative_ids=["%s"], n.subset=["%s"], n.resource=["%s"], n.hetionet="yes", n.diseaseOntology="yes"
-        Create (n)-[:equal_to]->(o); \n'''
-
-        if not disease_doid in dict_all_doid_that_is_in_alternative:
-            query = query % (disease_doid, disease_doid, dict_diseases_in_hetionet[disease_doid].definition,
-                             dict_diseases_in_hetionet[disease_doid].synonyms,
-                             dict_diseases_in_hetionet[disease_doid].xrefs,
-                             dict_diseases_in_hetionet[disease_doid].umls_cuis,
-                             dict_diseases_in_hetionet[disease_doid].alternative_ids,
-                             dict_diseases_in_hetionet[disease_doid].subset,
-                             dict_diseases_in_hetionet[disease_doid].resource)
-        else:
-            print(disease_doid)
-            query = query % (disease_doid, dict_all_doid_that_is_in_alternative[disease_doid],
-                             dict_diseases_in_hetionet[disease_doid].definition,
-                             dict_diseases_in_hetionet[disease_doid].synonyms,
-                             dict_diseases_in_hetionet[disease_doid].xrefs,
-                             dict_diseases_in_hetionet[disease_doid].umls_cuis,
-                             dict_diseases_in_hetionet[disease_doid].alternative_ids,
-                             dict_diseases_in_hetionet[disease_doid].subset,
-                             dict_diseases_in_hetionet[disease_doid].resource)
-
-        g.run(query)
-
-    # create new new hetionet diseases and add a connection to the do diseases
-    print('Create the new nodes and connect them with the DiseaseOntology node')
-    output.write('Create the new nodes and connect them with the DiseaseOntology node')
-    for key, disease in dict_diseases_in_hetionet.items():
-        if not key in list_diseases_in_hetionet:
-            query = '''Match (o:DiseaseOntology) Where o.id="%s"
-            Create ( n:Disease {source: "%s", url: "%s", license:"%s", name:"%s",identifier:"%s" ,definition:"%s", synonyms:["%s"], xrefs:["%s"], umls_cuis:["%s"], alternative_ids:["%s"], subset:["%s"], resource:["%s"], hetionet:"no", diseaseOntology:"yes"})
-            Create (n)-[:equal_to]->(o); \n'''
-            query = query % (
-                key, disease.source, disease.url, disease.license, disease.name, disease.identifier, disease.definition,
-                disease.synonyms, disease.xrefs, disease.umls_cuis, disease.alternative_ids, disease.subset,
-                dict_diseases_in_hetionet[disease_doid].resource)
-
-            g.run(query)
-
-    # create the is_a connection between the hetionet diseases
-    print('Create the is_a connection for the Diseases')  #
-    output.write('Create the is_a connection for the Diseases')
-    # counter of all is_a connections
-    count = 0
-    for key, list_doid in dict_is_a_relationship.items():
-        # if key =='DOID:9917' or key =='DOID:5158':
-        #     print('blub')
-        # key = key if key not in dict_all_doid_that_is_in_alternative else dict_all_doid_that_is_in_alternative[key]
-
-        for is_a_doid in list_doid:
-            count+=1
-            # is_a_doid = is_a_doid if is_a_doid not in dict_all_doid_that_is_in_alternative else dict_all_doid_that_is_in_alternative[is_a_doid]
-            query ='''Match (d:Disease {identifier:"%s"}), (d2:Disease {identifier:"%s"}) 
-                Create (d)-[:IS_A_DiD{license:"CC0", source:"Disease Ontology", unbiased:"false"}]->(d2) '''
-            query= query %(key, is_a_doid)
-            g.run(query)
-
-    print('number of is_a relationships:'+str(count))
 
 
 def main():
