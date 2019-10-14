@@ -16,7 +16,7 @@ import gzip
 
 
 import requests
-import pandas
+import pandas, sys
 
 '''
 Get Gene informaation from Entrez-gene
@@ -171,7 +171,7 @@ def wikipathways():
     # Parse WikiPathways
 
     # download WikiPathways
-    url = 'http://data.wikipathways.org/current/gmt/wikipathways-20190910-gmt-Homo_sapiens.gmt'
+    url = 'http://http://data.wikipathways.org/20191010/gmt/wikipathways-20191010-gmt-Homo_sapiens.gmt'
     filename= wget.download(url,out='data/')
 
     gmt_generator = read_gmt(filename)
@@ -179,6 +179,9 @@ def wikipathways():
     global wikipath_df
     wikipath_df = pandas.DataFrame(gmt_generator, columns = ['name', 'description', 'genes'])
     wikipath_df.name = wikipath_df.name.map(lambda x: x.split('%')[0])
+    if len(wikipath_df)==0:
+        print('wikipathway ulr is not working anymore')
+        sys.exit('wikipathway ulr is not working anymore')
     print(i)
     wikipath_df['identifier']=['PC11_{}'.format(j) for j in range(i+1,i+1+len(wikipath_df))]
     print(len(wikipath_df))
