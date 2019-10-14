@@ -240,7 +240,7 @@ def load_in_all_DO_in_dictionary():
     results = g.run(query)
     for disease, in results:
         doid = disease['identifier']
-        # if Do_id == 'DOID:4606':
+        # if doid == 'DOID:0060073':
         #     print('ok')
         dict_DO_to_info[doid] = dict(disease)
         alternative_id = disease['alternative_ids'] if 'alternative_ids' in disease else []
@@ -488,6 +488,8 @@ def gather_information_of_mondo_and_do_then_prepare_dict_for_csv(monDo,info,monD
         doid = list(dict_monDo_to_DO_only_doid[monDo])[0]
     else:
         doid = dict_mondo_xref_doid_mapping[monDo]
+    # if doid =='DOID:0060073':
+    #     print('ohe')
     monDO_synonyms = info['synonym'] if 'synonym' in info else []
     monDo_def = info['definition'] if 'definition' in info else ''
 
