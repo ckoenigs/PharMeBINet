@@ -119,7 +119,7 @@ def load_hetionet_diseases_in():
         # if identifier=='MONDO:0002165':
         #     print('BLUB')
         # add name with mondo to dictionary
-        name_formed = name.lower().split(' exact ')[0]
+        name_formed = name.lower().split(' exact ')[0] if name else ''
         dict_hetionet_id_to_name[identifier] = name
         if name_formed not in dict_name_synonym_to_mondo_id:
             dict_name_synonym_to_mondo_id[name_formed] = [identifier]
@@ -129,7 +129,7 @@ def load_hetionet_diseases_in():
             dict_name_synonym_to_mondo_id[name_formed] = list(part_list)
 
         # add the differnt synonyms with mondo to dictionary
-        if not synonyms is None:
+        if synonyms:
             for synonym in synonyms:
                 synonym = synonym.split(':')[0].lower().split(' exact ')[0]
                 additional_synonym_names = synonym.split(';')
@@ -152,18 +152,20 @@ def load_hetionet_diseases_in():
 
         # list of the umls cuis without the label 'UMLS_CUI:'
         umls_cuis_without_label = []
-
-        for umls_cui in umls_cuis:
-            if len(umls_cui) > 0:
-                cui = umls_cui.split(':')[1]
-                umls_cuis_without_label.append(cui)
-                if cui in dict_umls_cui_to_mondo:
-                    dict_umls_cui_to_mondo[cui].append(identifier)
-                else:
-                    dict_umls_cui_to_mondo[cui] = [identifier]
+        if umls_cuis:
+            for umls_cui in umls_cuis:
+                if len(umls_cui) > 0:
+                    if len(umls_cui.split(':'))<2:
+                        print('ohje')
+                    cui = umls_cui.split(':')[1]
+                    umls_cuis_without_label.append(cui)
+                    if cui in dict_umls_cui_to_mondo:
+                        dict_umls_cui_to_mondo[cui].append(identifier)
+                    else:
+                        dict_umls_cui_to_mondo[cui] = [identifier]
 
         # generate dictionary with doid to mondo
-        if not doids is None:
+        if doids :
             for doid in doids:
                 if doid in dict_doid_to_mondo:
                     dict_doid_to_mondo[doid].append(identifier)
@@ -171,19 +173,20 @@ def load_hetionet_diseases_in():
                     dict_doid_to_mondo[doid] = [identifier]
 
         # add all mondo  with mesh and omim in the dictionaries
-        for xref in xrefs:
-            if xref.split(':')[0] == 'MESH':
-                if not xref.split(':')[1] in dict_mesh_to_mondo:
-                    dict_mesh_to_mondo[xref.split(':')[1]] = [identifier]
-                else:
-                    dict_mesh_to_mondo[xref.split(':')[1]].append(identifier)
-                    dict_mesh_to_mondo[xref.split(':')[1]] = list(set(dict_mesh_to_mondo[xref.split(':')[1]]))
-            elif xref.split(':')[0] == 'OMIM':
-                if not xref.split(':')[1] in dict_omim_to_mondo:
-                    dict_omim_to_mondo[xref.split(':')[1]] = [identifier]
-                else:
-                    dict_omim_to_mondo[xref.split(':')[1]].append(identifier)
-                    dict_omim_to_mondo[xref.split(':')[1]] = list(set(dict_omim_to_mondo[xref.split(':')[1]]))
+        if xrefs:
+            for xref in xrefs:
+                if xref.split(':')[0] == 'MESH':
+                    if not xref.split(':')[1] in dict_mesh_to_mondo:
+                        dict_mesh_to_mondo[xref.split(':')[1]] = [identifier]
+                    else:
+                        dict_mesh_to_mondo[xref.split(':')[1]].append(identifier)
+                        dict_mesh_to_mondo[xref.split(':')[1]] = list(set(dict_mesh_to_mondo[xref.split(':')[1]]))
+                elif xref.split(':')[0] == 'OMIM':
+                    if not xref.split(':')[1] in dict_omim_to_mondo:
+                        dict_omim_to_mondo[xref.split(':')[1]] = [identifier]
+                    else:
+                        dict_omim_to_mondo[xref.split(':')[1]].append(identifier)
+                        dict_omim_to_mondo[xref.split(':')[1]] = list(set(dict_omim_to_mondo[xref.split(':')[1]]))
 
         # generate class DiseaseHetionet and add to dictionary
         disease = DiseaseHetionet(identifier, synonyms, umls_cuis_without_label, xrefs, resource)
