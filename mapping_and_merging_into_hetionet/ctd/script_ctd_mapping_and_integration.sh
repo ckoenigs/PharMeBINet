@@ -45,7 +45,6 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo mapping and integration
 
-#python integrate_CTD_pathways_to_hetionet.py > pathway/output.txt
 python map_CTD_pathways_to_hetionet.py > pathway/output.txt
 
 now=$(date +"%F %T")
