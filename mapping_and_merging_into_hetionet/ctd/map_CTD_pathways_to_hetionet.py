@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Apr 18 12:41:20 2018
-
 @author: ckoenigs
 """
 
@@ -50,12 +49,8 @@ def load_hetionet_pathways_in():
             for id in idOwns:
                 if not id in dict_own_id_to_identifier:
                     dict_own_id_to_identifier[id]=identifier
-        if names:
-            for name in names:
-                dict_pathway_hetionet_names[name] = identifier
-        else:
-            print('has no name')
-            print(identifier)
+        for name in names:
+            dict_pathway_hetionet_names[name] = identifier
 
     print('number of pathway nodes in hetionet:' + str(len(dict_pathway_hetionet)))
 
