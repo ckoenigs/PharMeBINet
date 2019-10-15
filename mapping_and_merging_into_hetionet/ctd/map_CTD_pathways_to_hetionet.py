@@ -50,8 +50,12 @@ def load_hetionet_pathways_in():
             for id in idOwns:
                 if not id in dict_own_id_to_identifier:
                     dict_own_id_to_identifier[id]=identifier
-        for name in names:
-            dict_pathway_hetionet_names[name] = identifier
+        if names:
+            for name in names:
+                dict_pathway_hetionet_names[name] = identifier
+        else:
+            print('has no name')
+            print(identifier)
 
     print('number of pathway nodes in hetionet:' + str(len(dict_pathway_hetionet)))
 
