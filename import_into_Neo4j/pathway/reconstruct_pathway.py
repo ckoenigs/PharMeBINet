@@ -78,7 +78,7 @@ def pathway_commons():
     global i
     i = 0
     rows = list()
-    PC_Row = collections.namedtuple('PC_Row', ['identifier', 'name', 'source', 'genes','url','idOwn' ])
+    PC_Row = collections.namedtuple('PC_Row', ['identifier', 'names', 'source', 'genes','url','idOwns' ])
 
 
     for url, description, genes in read_gmt(filename_without_gz):
@@ -208,7 +208,7 @@ def wikipathways():
     })
     print(wikipath_df.head(2))
 
-properties_which_are_list=['genes','coding_genes',]
+properties_which_are_list=['genes','coding_genes','names','idOwns']
 
 '''
 Combine the both data from the different source to one big one and generate a cypher file
