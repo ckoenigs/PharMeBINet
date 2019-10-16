@@ -3,15 +3,17 @@ echo download ctd files
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-python download_the_ctd_files.py > output_download.txt
+#python download_the_ctd_files.py > output_download.txt
 
 
 echo first remove the first lines of the ctd files
+now=$(date +"%F %T")
+echo "Current time: $now"
 cd ctd_data
 
-for i in *.csv; do 
-    ./delete_the_head.sh $i
-done
+#for i in *.csv; do 
+#    ./delete_the_head.sh $i
+#done
 
 cd ..
 
@@ -66,7 +68,7 @@ sleep 120
 cd ..
 
 echo remove csv and csv.gz files
-rm ctd_data/*.csv*
+#rm ctd_data/*.csv*
 
 
 
