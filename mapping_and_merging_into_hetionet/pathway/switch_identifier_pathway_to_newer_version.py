@@ -115,12 +115,13 @@ def load_in_all_pathways():
         dict_id_to_node[identifier]=dict(node)
 
         # fill dictionary with name to rest
-        name=node['name']
-        if not name in dict_name_to_pc_or_wp_identifier:
-            dict_name_to_pc_or_wp_identifier[name]=[dict(node)]
-        else:
-            dict_name_to_pc_or_wp_identifier[name].append(dict(node))
-            # print( dict_name_to_pc_or_wp_identifier[name])
+        names=node['names']
+        for name in names:
+            if not name in dict_name_to_pc_or_wp_identifier:
+                dict_name_to_pc_or_wp_identifier[name]=[dict(node)]
+            else:
+                dict_name_to_pc_or_wp_identifier[name].append(dict(node))
+                # print( dict_name_to_pc_or_wp_identifier[name])
 
         for gene_id in node['genes']:
             gene_id=int(gene_id)
@@ -144,7 +145,7 @@ def combine_information_from_different_sources(list_of_nodes):
             if type(value)!=list:
                 dict_combined_information[key].add(value)
             else:
-                dict_combined_information[key].union(value)
+                dict_combined_information[key]=dict_combined_information[key].union(value)
     #maybe replace the sets with list or transform into string
     return dict_combined_information
 
@@ -203,7 +204,7 @@ def generate_node_csv():
 
             list_info = []
             for head in header:
-                value = dict_combined[head] if head in node else ''
+                value = dict_combined[head] if head in dict_combined else ''
                 if head=='identifier':
                     identifier='|'.join(value)
                 elif head==extra_property:
