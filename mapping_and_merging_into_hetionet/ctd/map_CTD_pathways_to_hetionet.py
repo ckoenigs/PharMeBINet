@@ -92,14 +92,14 @@ def load_ctd_pathways_in():
             counter_map_with_id += 1
             # if len(dict_own_id_to_pcid_and_other[pathways_id]) > 1:
             #     print('multiple für identifier')
-            csv_mapped.writerow([pathways_id,dict_own_id_to_identifier[pathways_id]],'id')
+            csv_mapped.writerow([pathways_id,dict_own_id_to_identifier[pathways_id],'id'])
 
 
         elif pathways_name in dict_pathway_hetionet_names:
             counter_map_with_name += 1
             print(pathways_id)
             print('mapped with name')
-            csv_mapped.writerow([pathways_id,dict_pathway_hetionet_names[pathways_name]],'name')
+            csv_mapped.writerow([pathways_id,dict_pathway_hetionet_names[pathways_name],'name'])
 
 
         else:
