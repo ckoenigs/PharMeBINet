@@ -1,5 +1,7 @@
 #!/bin/bash
 
+path_neo4j=$1
+
 python combine_with_new_go.py > output_map.txt
 
 echo integrate connection with ne4j shell
