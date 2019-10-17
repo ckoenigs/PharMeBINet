@@ -105,7 +105,9 @@ def check_if_new_or_part_of_hetionet(hetionet_label, go_id, go_name,highestGOLev
             alternative_id=go_id
             normal_id=dict_molecular_function_alternative_hetionet[alternative_id]
         else:
-            sys.exit(go_id)
+            print('should be delete?')
+            print(go_id)
+            # sys.exit(go_id)
         csv_without_ontology.writerow([go_id,hetionet_label])
     [dict_hetionet, dict_alternative_id_to_hetionet, dict_ctd_in_hetionet_alternative, dict_ctd_in_hetionet] = dict_processe[hetionet_label]
 
