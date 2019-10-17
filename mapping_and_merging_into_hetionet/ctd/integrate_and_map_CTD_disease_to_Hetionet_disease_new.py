@@ -506,30 +506,35 @@ def map_with_name():
 
 
 # files for the different map strategies
-map_mesh_omim_to_mondo = open('disease_Disease/map_CTD_disease_mesh_omim_to_mondo.tsv', 'w')
-map_mesh_omim_to_mondo.write(
-    'CTD MESH/OMIM \t type\tname \t Monarch Disease Ontology divided by | \t mondo names \t map_id \n')
+map_mesh_omim_to_mondo_file = open('disease_Disease/map_CTD_disease_mesh_omim_to_mondo.tsv', 'w')
+header=['CTD MESH/OMIM','type','name','Monarch Disease Ontology divided by |','mondo names','map_id']
+map_mesh_omim_to_mondo=csv.writer(map_mesh_omim_to_mondo_file, delimiter='\t')
+map_mesh_omim_to_mondo.writerow(header)
 
-map_mesh_omim_to_mondo_with_alt = open('disease_Disease/map_CTD_disease_alternativ_mesh_omim_to_mondo.tsv', 'w')
-map_mesh_omim_to_mondo_with_alt.write(
-    'CTD MESH/OMIM \t type\tname \t Monarch Disease Ontology divided by | \t mondo names\t map_id \n')
+map_mesh_omim_to_mondo_with_alt_file = open('disease_Disease/map_CTD_disease_alternativ_mesh_omim_to_mondo.tsv', 'w')
+map_mesh_omim_to_mondo_with_alt=csv.writer(map_mesh_omim_to_mondo_with_alt_file, delimiter='\t')
+map_mesh_omim_to_mondo_with_alt.writerow(header)
 
-map_mesh_omim_to_mondo_with_name = open('disease_Disease/map_CTD_disease_name_to_mondo_name_synonyms.tsv', 'w')
-map_mesh_omim_to_mondo_with_name.write(
-    'CTD MESH/OMIM \t type\tname  \t Monarch Disease Ontology divided by | \t mondo names\t map_id \n')
+map_mesh_omim_to_mondo_with_name_file = open('disease_Disease/map_CTD_disease_name_to_mondo_name_synonyms.tsv', 'w')
+map_mesh_omim_to_mondo_with_name=csv.writer(map_mesh_omim_to_mondo_with_name_file, delimiter='\t')
+map_mesh_omim_to_mondo_with_name.writerow(header)
 
-map_doid_to_mondo = open('disease_Disease/map_CTD_disease_doid_to_mondo.tsv', 'w')
-map_doid_to_mondo.write(
-    'CTD MESH/OMIM \t type\tname \t Monarch Disease Ontology divided by | \t mondo names\t map_id \n')
+map_doid_to_mondo_file = open('disease_Disease/map_CTD_disease_doid_to_mondo.tsv', 'w')
+map_doid_to_mondo=csv.writer(map_doid_to_mondo_file, delimiter='\t')
+map_doid_to_mondo.writerow(header)
 
-map_cui_to_mondo = open('disease_Disease/map_CTD_disease_map_to_cui_to_mondo.tsv', 'w')
-map_cui_to_mondo.write(
-    'CTD MESH/OMIM \t type\tname \t Monarch Disease Ontology divided by | \t mondo names\t map_id \n')
+map_cui_to_mondo_file = open('disease_Disease/map_CTD_disease_map_to_cui_to_mondo.tsv', 'w')
+map_cui_to_mondo=csv.writer(map_cui_to_mondo_file, delimiter='\t')
+map_cui_to_mondo.writerow(header)
 
 # multiple mapped ctd disease
-multiple_mapped_ctd_disease = open('disease_Disease/multiple_mapped_ctd_disease.tsv', 'w')
-multiple_mapped_ctd_disease.write(
-    'CTD MESH/OMIM \t type\tname \t Monarch Disease Ontology divided by | \t mondo names\t mapping_strategy \n')
+multiple_mapped_ctd_disease_file = open('disease_Disease/multiple_mapped_ctd_disease.tsv', 'w')
+otherheader=header[:-1]
+otherheader.append('mapping_strategy')
+multiple_mapped_ctd_disease=csv.writer(multiple_mapped_ctd_disease_file, delimiter='\t')
+multiple_mapped_ctd_disease.writerow(otherheader)
+# multiple_mapped_ctd_disease.write(
+#     'CTD MESH/OMIM','type\tname','Monarch Disease Ontology divided by |','mondo names\t mapping_strategy \n')
 
 # dictionary map how_mapped to a file
 dict_how_mapped_to_file = {
@@ -591,24 +596,25 @@ def integrate_disease_into_hetionet():
         if len(mondos) > 0:
             counter_with_mondos += 1
             how_mapped = ctd_disease.how_mapped
-            string_mondos = "|".join(mondos)
+            string_mondos = "|".join(mondos).encode('utf-8')
             names = ''
 
             mapping_ids = ctd_disease.mapping
-            mapping_ids_string = '|'.join(mapping_ids)
+            mapping_ids_string = '|'.join(mapping_ids).encode('utf-8')
 
             for mondo in mondos:
                 names += dict_hetionet_id_to_name[mondo] + '|'
             idType = ctd_disease.idType
+            name=name.encode('utf-8')
             if len(mondos) > 1:
                 dict_how_mapped_to_multiple_mapping[how_mapped] += 1
-                multiple_mapped_ctd_disease.write(
-                    ctd_disease_id + '\t' + idType + '\t' + name + '\t' + string_mondos + '\t' + names[
-                                                                                                 :-1] + '\t' + how_mapped + '\n')
-
-            dict_how_mapped_to_file[how_mapped].write(
-                ctd_disease_id + '\t' + idType + '\t' + name + '\t' + string_mondos + '\t' + names[
-                                                                                             :-1] + '\t' + mapping_ids_string + '\n')
+                multiple_mapped_ctd_disease.writerow([ctd_disease_id , idType , name , string_mondos , names[:-1]
+                                                         , how_mapped ])
+            print([ctd_disease_id ,idType , name , string_mondos , names[:-1] ,
+                                                       mapping_ids_string ])
+            names=names.encode('utf-8')
+            dict_how_mapped_to_file[how_mapped].writerow([ctd_disease_id ,idType , name , string_mondos , names[:-1] ,
+                                                       mapping_ids_string ])
             string_mondos = "','".join(mondos)
             # set in neo4j the mondos for the ctd disease
             query = '''MATCH (n:CTDdisease{disease_id:'%s'}) SET n.mondos=['%s'] '''
@@ -644,12 +650,14 @@ def integrate_disease_into_hetionet():
 
     # generate a file with all not mapped diseases from ctd
     file_not_map = open('disease_Disease/not_map_CTD_disease.tsv', 'w')
-    file_not_map.write('CTD MESH/OMIM \t type  \t CTD names \n')
+    csv_not_mapped=csv.writer(file_not_map,delimiter='\t')
+
+    csv_not_mapped.writerow(['CTD MESH/OMIM','type ','CTD names'])
     for identifier_ctd in list_not_mapped_to_mondo:
         ctd_disease = dict_CTD_disease[identifier_ctd]
         idType = ctd_disease.idType
         name = ctd_disease.name
-        file_not_map.write(identifier_ctd + '\t' + idType + '\t' + name + '\n')
+        csv_not_mapped.writerow([identifier_ctd , idType , name])
 
 
 def main():
