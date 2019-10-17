@@ -92,10 +92,11 @@ def get_go_properties():
     # query_delete=query_nodes_start+ query_delete_middle
 
     # delete the obsolete nodes of go
-    query_delete_go=part+' Where exists(b.is_obsolete) Detach Delete b;\n'
+    query_delete_go=''' Match (b:%s) Where exists(b.is_obsolete) Detach Delete b;\n'''
+    query_delete_go=query_delete_go % (label_go)
     cypher_file_delete.write(query_delete_go)
     # delete query of hetionet nodes which did not mapped
-    query_delete='''Match (a:%s{identifier:line.identifier}) Detach Delete a;\n'''
+    query_delete='''Match (a:%s) Where not (a)-[:equal_to_go]->(:'''+label_go+''') Detach Delete a;\n'''
 
 
 
