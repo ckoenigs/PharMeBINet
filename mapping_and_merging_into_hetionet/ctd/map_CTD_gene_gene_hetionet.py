@@ -63,11 +63,13 @@ def search_for_id_and_write_into_file(gene_id,gene_node):
 
         # gather all xrefs information and add to dictionary
         pharmGKBIDs = gene_node['pharmGKBIDs'] if 'pharmGKBIDs' in gene_node else []
+        pharmGKBIDs = ['pharmGKBIDs:'+id for id in pharmGKBIDs]
         bioGRIDIDs = gene_node['bioGRIDIDs'] if 'bioGRIDIDs' in gene_node else []
-        uniProtIDs = gene_node['uniProtIDs'] if 'uniProtIDs' in gene_node else []
+        pharmGKBIDs = ['bioGRIDIDs:'+id for id in pharmGKBIDs]
+        # uniProtIDs = gene_node['uniProtIDs'] if 'uniProtIDs' in gene_node else []
         xrefs = set(pharmGKBIDs).union(hetionet_node['xrefs']) if 'xrefs' in hetionet_node else set(pharmGKBIDs)
         xrefs = xrefs.union(bioGRIDIDs)
-        xrefs = xrefs.union(uniProtIDs)
+        # xrefs = xrefs.union(uniProtIDs)
         xrefs = '|'.join(xrefs)
         writer.writerow([gene_id, gene_id, xrefs])
         return True
