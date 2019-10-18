@@ -104,22 +104,24 @@ def check_if_new_or_part_of_hetionet(hetionet_label, go_id, go_name,highestGOLev
             hetionet_label = 'Molecular Function'
             alternative_id=go_id
             normal_id=dict_molecular_function_alternative_hetionet[alternative_id]
+        # if this is not found in hetionet then this is an old go id
         else:
-            print('should be delete?')
-            print(go_id)
+            # print('should be delete?')
+            # print(go_id)
+            return
             # sys.exit(go_id)
         csv_without_ontology.writerow([go_id,hetionet_label])
-    [dict_hetionet, dict_alternative_id_to_hetionet, dict_ctd_in_hetionet_alternative, dict_ctd_in_hetionet] = dict_processe[hetionet_label]
+    [dict_hetionet, dict_alternative_id_to_hetionet, dict_ctd_in_hetionet_alternative, dict_ctd_in_hetionet] = dict_process[hetionet_label]
 
     # check if this id is hetionet
     if go_id in dict_hetionet:
         if go_name == dict_hetionet[go_id]:
             dict_ctd_in_hetionet[go_id] = [go_name, highestGOLevel]
         else:
-            print('same id but different names')
-            print(go_id)
-            print(go_name)
-            print(dict_hetionet[go_id])
+            # print('same id but different names')
+            # print(go_id)
+            # print(go_name)
+            # print(dict_hetionet[go_id])
             dict_ctd_in_hetionet[go_id] = [go_name, highestGOLevel]
     # check if it is replaced by a new go id (this id will appear in the alternative ids of the new node)
     # is add to the alternative mapped dictionary
@@ -130,10 +132,12 @@ def check_if_new_or_part_of_hetionet(hetionet_label, go_id, go_name,highestGOLev
     elif found_with_alternative_id:
         dict_ctd_in_hetionet_alternative[alternative_id]=normal_id
         csv_without_ontology.writerow([alternative_id, hetionet_label])
+    # nodes which are not in go anymore
     else:
-        print(go_id)
-        print(hetionet_label)
-        print('not good')
+        return
+        # print(go_id)
+        # print(hetionet_label)
+        # print('not good')
 
 '''
 load all ctd genes and check if they are in hetionet or not
@@ -176,12 +180,14 @@ dict_ctd_cellular_component_in_hetionet_alternative = {}
 dict_ctd_molecular_function_in_hetionet_alternative = {}
 
 # dictionary with for biological_process, cellular_component, molecular_function the right dictionaries
-dict_processe = {
-    "Biological Process": [dict_biological_process_hetionet, dict_ctd_biological_process_in_hetionet_alternative, dict_ctd_biological_process_in_hetionet_alternative,
+# first dictionary has all identifier in hetionet, the second has all alternative hetionet ids to there identifier,
+# third list of all ctd ids which map with alternative ids, fourth dict of all ctd which mapped directly to hetionet
+dict_process = {
+    "Biological Process": [dict_biological_process_hetionet, dict_biological_process_alternative_hetionet, dict_ctd_biological_process_in_hetionet_alternative,
                            dict_ctd_biological_process_in_hetionet],
-    "Molecular Function": [dict_molecular_function_hetionet, dict_ctd_molecular_function_in_hetionet_alternative, dict_ctd_molecular_function_in_hetionet_alternative,
+    "Molecular Function": [dict_molecular_function_hetionet, dict_molecular_function_alternative_hetionet, dict_ctd_molecular_function_in_hetionet_alternative,
                            dict_ctd_molecular_function_in_hetionet],
-    "Cellular Component": [dict_cellular_component_hetionet,dict_ctd_cellular_component_in_hetionet_alternative, dict_ctd_cellular_component_in_hetionet_alternative,
+    "Cellular Component": [dict_cellular_component_hetionet,dict_cellular_component_alternative_hetionet, dict_ctd_cellular_component_in_hetionet_alternative,
                            dict_ctd_cellular_component_in_hetionet]
 }
 
@@ -259,9 +265,13 @@ def main():
     print('Map generate csv and cypher file for all three labels ')
 
     for ontology, [dict_in_hetionet, dict_in_hetionet_alternative, dict_ctd_in_hetionet_alternative,
-                           dict_ctd_in_hetionet] in dict_processe.items():
+                           dict_ctd_in_hetionet] in dict_process.items():
         file_name,hetionet_label=dict_ctd_ontology_to_file_and_label[ontology]
         generate_files(file_name,hetionet_label, dict_ctd_in_hetionet, dict_ctd_in_hetionet_alternative)
+
+    # delete the node which did not mapped because they are obsoleted
+    cypher='MATCH (n:CTDGO) where not (n)<-[:equal_to_CTD_go]-() Detach Delete n;\n'
+    cypher_file.write(cypher)
 
     print(
         '###########################################################################################################################')
