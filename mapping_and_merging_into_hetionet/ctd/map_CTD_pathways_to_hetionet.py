@@ -82,6 +82,7 @@ def load_ctd_pathways_in():
 
     counter_map_with_id = 0
     counter_map_with_name = 0
+    counter_not_mapped=0
     for pathways_node, in results:
         pathways_id = pathways_node['pathway_id']
         pathways_name = pathways_node['name']
@@ -98,16 +99,19 @@ def load_ctd_pathways_in():
         elif pathways_name in dict_pathway_hetionet_names:
             counter_map_with_name += 1
             print(pathways_id)
+            print(dict_pathway_hetionet_names[pathways_name])
             print('mapped with name')
             csv_mapped.writerow([pathways_id,dict_pathway_hetionet_names[pathways_name],'name'])
 
 
         else:
             csv_not_mapped.writerow([pathways_id, pathways_name, pathways_id_type])
+            counter_not_mapped+=1
             # file_not_mapped_pathways.write(pathways_id+ '\t' +pathways_name+ '\t' + pathways_id_type+ '\n' )
 
     print('number of mapping with name:' + str(counter_map_with_name))
     print('number of mapping with id:' + str(counter_map_with_id))
+    print('number of not mapped:'+str(counter_not_mapped))
     # print(dict_mapped_source)
 
 
@@ -119,7 +123,7 @@ generate connection between mapping pathways of ctd and hetionet and generate ne
 
 def create_cypher_file():
     cypher_file=open('pathway/cypher.cypher','w')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/pathway/mapped_pathways.csv" As line Match (d:Pathway{identifier:line.id_hetionet}),(c:CTDpathway{pathway_id:line.id}) Create (d)-[:equal_to_CTD_pathway]->(c) Set d.xrefs= d.xrefs+'CTD', d.ctd="yes", d.ctd_url="http://ctdbase.org/detail.go?type=pathway&acc=%"+line.id;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/pathway/mapped_pathways.tsv" As line FIELDTERMINATOR '\\t' Match (d:Pathway{identifier:line.id_hetionet}),(c:CTDpathway{pathway_id:line.id}) Create (d)-[:equal_to_CTD_pathway]->(c) Set d.xrefs= d.xrefs+'CTD', d.ctd="yes", d.ctd_url="http://ctdbase.org/detail.go?type=pathway&acc=%"+line.id;\n'''
     cypher_file.write(query)
     cypher_file.write('begin\n')
     query='''Match (d:Pathway) Where not  exists(d.ctd) Set d.ctd="no";\n '''
