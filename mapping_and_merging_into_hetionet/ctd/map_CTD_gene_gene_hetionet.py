@@ -100,7 +100,7 @@ def load_ctd_genes_in():
         else:
             counter+=1
 
-    print('number of ctds which are already in hetionet, but has no relationship to ctd chemicals with organism: '+str(counter))
+    print('number of ctd genes which are also in hetionet: '+str(counter))
 
 
 
