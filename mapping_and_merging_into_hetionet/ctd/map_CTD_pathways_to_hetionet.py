@@ -24,9 +24,6 @@ def create_connection_with_neo4j_mysql():
 # dictionary with hetionet pathways with identifier as key and value the name
 dict_pathway_hetionet = {}
 
-# dictionary with hetionet pathways with identifier as key and value the xrefs
-dict_pathway_hetionet_xrefs = {}
-
 # dictionary with hetionet pathways with name as key and value the identifier
 dict_pathway_hetionet_names = {}
 
@@ -44,7 +41,6 @@ def load_hetionet_pathways_in():
 
     for identifier, names, source, idOwns, in results:
         dict_pathway_hetionet[identifier] = names
-        dict_pathway_hetionet_xrefs[identifier] = idOwns
         if idOwns:
             for id in idOwns:
                 if not id in dict_own_id_to_identifier:
@@ -87,6 +83,10 @@ def load_ctd_pathways_in():
         pathways_id = pathways_node['pathway_id']
         pathways_name = pathways_node['name']
         pathways_id_type = pathways_node['id_type']
+        # becuase kegg is not open source it it out
+        if pathways_id_type=='KEGG':
+            counter_not_mapped+=1
+            continue
 
         # check if the ctd pathway id is part in the himmelstein xref
         if pathways_id in dict_own_id_to_identifier:
@@ -123,7 +123,7 @@ generate connection between mapping pathways of ctd and hetionet and generate ne
 
 def create_cypher_file():
     cypher_file=open('pathway/cypher.cypher','w')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/pathway/mapped_pathways.tsv" As line FIELDTERMINATOR '\\t' Match (d:Pathway{identifier:line.id_hetionet}),(c:CTDpathway{pathway_id:line.id}) Create (d)-[:equal_to_CTD_pathway]->(c) Set d.xrefs= d.xrefs+'CTD', d.ctd="yes", d.ctd_url="http://ctdbase.org/detail.go?type=pathway&acc=%"+line.id;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/pathway/mapped_pathways.tsv" As line FIELDTERMINATOR '\\t' Match (d:Pathway{identifier:line.id_hetionet}),(c:CTDpathway{pathway_id:line.id}) Create (d)-[:equal_to_CTD_pathway]->(c) Set d.xrefs= d.xrefs+'CTD', d.ctd="yes", d.ctd_url="http://ctdbase.org/detail.go?type=pathway&acc=%"+line.id, c.hetionet_id=line.id_hetionet;\n'''
     cypher_file.write(query)
     cypher_file.write('begin\n')
     query='''Match (d:Pathway) Where not  exists(d.ctd) Set d.ctd="no";\n '''
