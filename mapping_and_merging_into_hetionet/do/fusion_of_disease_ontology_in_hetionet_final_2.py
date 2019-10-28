@@ -185,6 +185,12 @@ def generate_cypher_file():
     cypher_file.write(query_rela)
     cypher_file.close()
 
+    # add query to update disease nodes with do='no'
+    cypher_general=open('cypher_general.cypher','a')
+    query='''begin\n Match (d:Disease) Where not exists(d.diseaseOntology) Set d.diseaseOntology ='no';\n commit\n '''
+    cypher_general.write(query)
+    cypher_general.close()
+
 
 
 
