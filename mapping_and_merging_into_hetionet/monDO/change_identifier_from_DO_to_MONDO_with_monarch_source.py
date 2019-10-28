@@ -63,6 +63,9 @@ mondo_prop=[]
 
 dict_switch_mondo_prop_to_hetionet = {'hasDbXref': 'xrefs', 'synonym': 'synonyms','label':'name','id':'identifier'}
 
+#list of excluded properties from mondo
+list_exclude_properties=['related','creation_date','created_by','seeAlso']
+
 
 
 '''
@@ -81,6 +84,9 @@ def get_mondo_properties_and_generate_csv_files():
                 continue
         if property in dict_switch_mondo_prop_to_hetionet:
             property=dict_switch_mondo_prop_to_hetionet[property]
+        # exclude the properties from csv files
+        elif property in list_exclude_properties:
+            continue
         mondo_prop.append(property)
 
     #mondo get an additional property
@@ -436,6 +442,9 @@ def prepare_dict_for_csv_file(info):
                 continue
         if key in dict_switch_mondo_prop_to_hetionet:
             key = dict_switch_mondo_prop_to_hetionet[key]
+        # the properties which are excluded from mondo
+        elif key in list_exclude_properties:
+            continue
 
         # if key in list_properties_which_should_be_an_array:
         if type(property) == list:
