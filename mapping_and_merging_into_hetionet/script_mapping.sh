@@ -3,6 +3,9 @@
 #define path to neo4j bin
 path_neo4j=$1
 
+#generate cypher file for adding things to database
+echo "" > cypher_general.cypher
+
 
 
 cd do
@@ -64,20 +67,8 @@ cd go
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-python combine_with_new_go.py > output_map.txt
+./go_integration.sh $path_neo4j > output_script.txt
 
-echo integrate connection with ne4j shell
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-$path_neo4j/neo4j-shell -file cypher.cypher > output_cypher_integration.txt
-
-sleep 180
-
-$path_neo4j/neo4j restart
-
-
-sleep 120
 cd ..
 
 echo pathway 
@@ -122,6 +113,16 @@ echo drugbank
 cd drugbank
 
 ./script_mapping_drugbank.sh $path_neo4j/ > output_script.txt
+
+cd ..
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo ctd
+
+cd ctd 
+
+./script_ctd_mapping_and_integration.sh $path_neo4j/ > output_script.txt
 
 cd ..
 
@@ -201,49 +202,6 @@ echo "Current time: $now"
 echo 'Generate RxNorm CUI-Drugbank ID mapping tables'
 
 #execute_mapping_rxcui_to_drugbank.sh > output_generation_mapping_tables.txt
-
-cd ..
-
-cd CTD/
-now=$(date +"%F %T")
-echo "Current time: $now"
-cd ctd
-echo phenotype
-python map_phenotype_to_hetionet_final.py > output_ctd_phenotype.txt
-
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-echo disease to side effects
-python map_CTD_disease_to_sideEffects_final.py > output_ctd_disease_to_se.txt
-
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-echo disease to disease
-python map_CTD_disease_to_Disease_final.py > output_ctd_disease_to_DO.txt
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-
-echo chemicals
-
-python map_CTD_drug_to_hetionet_final.py > output_ctd_chemical.txt
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-echo ctd connection integration
-
-
-$path_neo4j/neo4j-shell -file map_connection_of_cdt_in_hetionet_1.cypher > output_ctd_connection_cypher.txt
-
-sleep 180
-$path_neo4j/neo4j restart
-sleep 120
 
 cd ..
 
