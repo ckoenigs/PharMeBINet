@@ -228,7 +228,7 @@ def load_disease_CTD():
     # go through all results from the query
     for result, in results:
         idType = result['idType']
-        name = result['name']
+        name = result['name'].lower()
         disease_id = result['disease_id']
         altDiseaseIDs = result['altDiseaseIDs'] if 'altDiseaseIDs' in result else []
 
@@ -245,13 +245,31 @@ def load_disease_CTD():
     # print('number of mapped ctd disease:' + str(len(list_mapped_to_mondo)))
     # print('number of not mapped ctd disease:' + str(len(list_not_mapped_to_mondo)))
 
+'''
+get mondo ids and add them to the class 
+'''
+def mondo_to_class(disease_id, dict_mesh_or_omim_to_mondo, name_ctd):
+    if disease_id in dict_mesh_or_omim_to_mondo:
+        mondos_ids = dict_mesh_or_omim_to_mondo[disease_id]
+        if len(mondos_ids)>1:
+            names_hetionet= {dict_hetionet_id_to_name[x]:x for x in mondos_ids }
+            if name_ctd in names_hetionet:
+                print('find only one string that fits and remove multiple mapping')
+                mondos_ids=[names_hetionet[name_ctd]]
+
+        dict_CTD_disease[disease_id].set_mondos(mondos_ids)
+        dict_CTD_disease[disease_id].set_mapping_id(disease_id)
+        dict_CTD_disease[disease_id].set_how_mapped('map with Mesh or OMIM to mondo id')
+        list_mapped_to_mondo.add(disease_id)
+    else:
+        list_not_mapped_to_mondo.append(disease_id)
 
 '''
-map with use of mesh and omim ID to Monarch Disease Ontology
+map with use of mesh and omim ID to Monarch
 '''
 
 
-def map_disease_with_mesh_omim_to_monarch_disease_ontology():
+def map_disease_with_mesh_omim_to_monarch():
     counter = 0
     for disease_id, disease in dict_CTD_disease.items():
         if disease_id == 'D007007':
@@ -259,22 +277,12 @@ def map_disease_with_mesh_omim_to_monarch_disease_ontology():
         counter += 1
         # depending on the idType the diseases id has to be search in Type MESH, OMIM or both
         if disease.idType == 'MESH':
-            if disease_id in dict_mesh_to_mondo:
-                mondos_ids = dict_mesh_to_mondo[disease_id]
-                dict_CTD_disease[disease_id].set_mondos(mondos_ids)
-                dict_CTD_disease[disease_id].set_mapping_id(disease_id)
-                dict_CTD_disease[disease_id].set_how_mapped('map with Mesh or OMIM to mondo id')
-                list_mapped_to_mondo.add(disease_id)
-                continue
+            mondo_to_class(disease_id, dict_mesh_to_mondo,disease.name)
+            continue
 
         elif disease.idType == 'OMIM':
-            if disease_id in dict_omim_to_mondo:
-                mondos_ids = dict_omim_to_mondo[disease_id]
-                dict_CTD_disease[disease_id].set_mondos(mondos_ids)
-                dict_CTD_disease[disease_id].set_mapping_id(disease_id)
-                dict_CTD_disease[disease_id].set_how_mapped('map with Mesh or OMIM to mondo id')
-                list_mapped_to_mondo.add(disease_id)
-                continue
+            mondo_to_class(disease_id, dict_omim_to_mondo,disease.name)
+            continue
         # else:
         #     print('geht es hier rein?')
         #     if disease_id in dict_omim_to_mondo:
@@ -401,7 +409,7 @@ def map_disease_with_doids_to_monarch_disease_ontology():
     for index in delete_map_mondo:
         list_not_mapped_to_mondo.pop(index)
 
-    print('number of mapped ctd disease after mesh/omim alternativ id map:' + str(
+    print('number of mapped ctd disease after doid map:' + str(
         counter - len(list_not_mapped_to_mondo)))
     print('number of mapped ctd disease:' + str(len(list(list_mapped_to_mondo))))
     print('number of not mapped ctd disease:' + str(len(list_not_mapped_to_mondo)))
@@ -635,7 +643,7 @@ def integrate_disease_into_hetionet():
     print('number of mapped ctd disease:' + str(counter_with_mondos))
     print('counter intersection mondos:' + str(counter_intersection))
     print(dict_how_mapped_to_multiple_mapping)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/disease_Disease/ctd_hetionet.csv" As line MATCH (n:CTDdisease{disease_id:line.ctdDiseaseID}), (d:Disease{identifier:line.HetionetDiseaseId}) Merge (d)-[:equal_to_D_Disease_CTD]->(n) With line, d, n Where d.ctd='no' Set d.resource=d.resource+'CTD', d.ctd='yes', d.ctd_url='http://ctdbase.org/detail.go?type=disease&acc='+line.ctdDiseaseID;\n '''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/disease_Disease/ctd_hetionet.csv" As line MATCH (n:CTDdisease{disease_id:line.ctdDiseaseID}), (d:Disease{identifier:line.HetionetDiseaseId}) Merge (d)-[:equal_CTD_disease]->(n) With line, d, n Where d.ctd='no' Set d.resource=d.resource+'CTD', d.ctd='yes', d.ctd_url='http://ctdbase.org/detail.go?type=disease&acc='+line.ctdDiseaseID;\n '''
     cypher_file.write(query)
     cypher_file.write('begin\n')
     #    search for all disease that did not mapped with ctd disease and give them the property ctd:'no'
@@ -690,7 +698,7 @@ def main():
     print (datetime.datetime.utcnow())
     print('Map ctd disease mesh or Omim to Disease ')
 
-    map_disease_with_mesh_omim_to_monarch_disease_ontology()
+    map_disease_with_mesh_omim_to_monarch()
 
     print(
         '###########################################################################################################################')
