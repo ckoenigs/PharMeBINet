@@ -600,7 +600,7 @@ def integrate_disease_into_hetionet():
                 if len(mondos_intersection) > 0:
                     counter_intersection += 1
                     mondos = mondos_intersection
-                    print(ctd_disease_id)
+                    # print(ctd_disease_id)
         if len(mondos) > 0:
             counter_with_mondos += 1
             how_mapped = ctd_disease.how_mapped
@@ -618,8 +618,8 @@ def integrate_disease_into_hetionet():
                 dict_how_mapped_to_multiple_mapping[how_mapped] += 1
                 multiple_mapped_ctd_disease.writerow([ctd_disease_id , idType , name , string_mondos , names[:-1]
                                                          , how_mapped ])
-            print([ctd_disease_id ,idType , name , string_mondos , names[:-1] ,
-                                                       mapping_ids_string ])
+            # print([ctd_disease_id ,idType , name , string_mondos , names[:-1] ,
+            #                                            mapping_ids_string ])
             names=names.encode('utf-8')
             dict_how_mapped_to_file[how_mapped].writerow([ctd_disease_id ,idType , name , string_mondos , names[:-1] ,
                                                        mapping_ids_string ])

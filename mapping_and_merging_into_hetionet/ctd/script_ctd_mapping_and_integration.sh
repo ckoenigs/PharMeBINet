@@ -64,7 +64,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo map and integrate Disease
 
-python integrate_and_map_CTD_disease_to_Hetionet_disease_new.py > disease_Disease/output.txt
+python integrate_and_map_CTD_disease_to_Hetionet_disease_new.py > disease_Disease/output_new.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
