@@ -21,7 +21,7 @@ echo python
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-python integrate_whole_CTD_into_neo4j_with_csv.py > output_integration_19_04_18.txt
+python integrate_whole_CTD_into_neo4j_with_csv.py > output_integration.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
