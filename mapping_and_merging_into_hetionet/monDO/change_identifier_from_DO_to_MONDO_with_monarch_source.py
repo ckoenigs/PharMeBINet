@@ -633,6 +633,8 @@ def integrate_mondo_change_identifier():
 
                 if key in dict_switch_mondo_prop_to_hetionet:
                     key = dict_switch_mondo_prop_to_hetionet[key]
+                elif key in list_exclude_properties:
+                    continue
 
                 # if key in list_properties_which_should_be_an_array:
                 if type(property) == list:
