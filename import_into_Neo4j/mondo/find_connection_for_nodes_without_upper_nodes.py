@@ -1,5 +1,3 @@
-from _mysql import result
-
 from py2neo import Graph, authenticate
 import datetime
 import csv
