@@ -1,15 +1,6 @@
-from py2neo import Graph, authenticate
 import sys
 import datetime
 import csv
-
-
-# connect with the neo4j database
-def database_connection():
-    authenticate("localhost:7474", "neo4j", "test")
-    global g
-    g = Graph("http://localhost:7474/db/data/")
-
 
 # node cypher file number
 node_file_number = 1
@@ -834,12 +825,6 @@ def delete_nodes_with_no_relationship(label):
 
 def main():
     print(datetime.datetime.utcnow())
-
-    print('##########################################################################')
-
-    print(datetime.datetime.utcnow())
-    print('connection to db')
-    database_connection()
 
     print('##########################################################################')
 
