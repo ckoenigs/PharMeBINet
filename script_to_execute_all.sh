@@ -29,7 +29,7 @@ cd ..
 
 echo cp database
 
-cp -r /home/cassandra/Dokumente/neo4j-community-3.2.9/data/databases/graph.db /home/cassandra/Dokumente/neo4j-community-3.2.9/data/databases/inte.db
+#cp -r /home/cassandra/Dokumente/neo4j-community-3.2.9/data/databases/graph.db /home/cassandra/Dokumente/neo4j-community-3.2.9/data/databases/inte.db
 
 now=$(date +"%F %T")
 echo "Current time: $now"
