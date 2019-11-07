@@ -4,7 +4,7 @@ Created on Fri Feb 2 07:23:43 2018
 @author: ckoenigs
 """
 
-from py2neo import Graph, authenticate
+from py2neo import Graph#, authenticate
 import datetime
 import sys, csv
 
@@ -14,9 +14,9 @@ sys.setdefaultencoding("utf-8")
 
 # connect with the neo4j database
 def database_connection():
-    authenticate("localhost:7474", "neo4j", "test")
+    # authenticate("localhost:7474", )
     global g
-    g = Graph("http://localhost:7474/db/data/")
+    g = Graph("http://localhost:7474/db/data/",auth=("neo4j", "test"))
 
 #csv files where subclass relationships need to be combined
 file=open('subclass_rela.csv','w')
@@ -27,10 +27,15 @@ csv_writer.writerow(header)
 # cypher file to delete double subclass rela and update rela
 cypher=open('cypher_rela.cypher','w')
 
+if len(sys.argv) > 1:
+    path_of_directory = sys.argv[1]
+else:
+    sys.exit('need a path')
+
 # queries for deletion and create combined relationship
-query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/mondo/subclass_rela.csv" As line FIELDTERMINATOR '\\t' Match (a:disease{`http://www.geneontology.org/formats/oboInOwl#id`:line.disease_id_1})-[r:subClassOf]->(b:disease{`http://www.geneontology.org/formats/oboInOwl#id`:line.disease_id_2}) Delete r;\n '''
+query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/mondo/subclass_rela.csv" As line FIELDTERMINATOR '\\t' Match (a:disease{`http://www.geneontology.org/formats/oboInOwl#id`:line.disease_id_1})-[r:subClassOf]->(b:disease{`http://www.geneontology.org/formats/oboInOwl#id`:line.disease_id_2}) Delete r;\n '''
 cypher.write(query)
-query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/mondo/subclass_rela.csv" As line FIELDTERMINATOR '\\t' Match (a:disease{`http://www.geneontology.org/formats/oboInOwl#id`:line.disease_id_1}), (b:disease{`http://www.geneontology.org/formats/oboInOwl#id`:line.disease_id_2}) Create (a)-[:subClassOf{lbl:line.lbl, isDefinedBy:line.isDefinedBy, equivalentOriginalNodeSourceTarget:split(line.equivalentOriginalNodeSourceTarget,'|')  }]->(b)  ;\n '''
+query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/mondo/subclass_rela.csv" As line FIELDTERMINATOR '\\t' Match (a:disease{`http://www.geneontology.org/formats/oboInOwl#id`:line.disease_id_1}), (b:disease{`http://www.geneontology.org/formats/oboInOwl#id`:line.disease_id_2}) Create (a)-[:subClassOf{lbl:line.lbl, isDefinedBy:line.isDefinedBy, equivalentOriginalNodeSourceTarget:split(line.equivalentOriginalNodeSourceTarget,'|')  }]->(b)  ;\n '''
 cypher.write(query)
 cypher.close()
 
