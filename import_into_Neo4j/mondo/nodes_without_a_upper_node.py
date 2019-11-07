@@ -1,14 +1,12 @@
-from _mysql import result
-
-from py2neo import Graph, authenticate
+from py2neo import Graph#, authenticate
 import datetime
 import csv
 
 # connect with the neo4j database
 def database_connection():
-    authenticate("localhost:7474", "neo4j", "test")
+    # authenticate("localhost:7474", "neo4j", "test")
     global g
-    g = Graph("http://localhost:7474/db/data/")
+    g = Graph("http://localhost:7474/db/data/",auth=("neo4j", "test"))
 
 '''
 find all nodes which are not 'disease' but have no upper node
