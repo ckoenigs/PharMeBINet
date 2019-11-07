@@ -21,7 +21,7 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
 
         # create cypher file
         cypher_file = open('cypher_node.cypher', 'w')
-        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/ncbi_genes/output_data/genes.csv" As line Fieldterminator '\\t' Create (n:Gene_Ncbi {'''
+        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ncbi_genes/output_data/genes.csv" As line Fieldterminator '\\t' Create (n:Gene_Ncbi {'''
 
 
 
@@ -108,10 +108,17 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
     print('number of name and description not equal:'+str(counter_not_same_name_and_description))
 
 
-
+# path to directory
+path_of_directory = ''
 
 
 def main():
+    global path_of_directory
+    if len(sys.argv) > 1:
+        path_of_directory = sys.argv[1]
+    else:
+        sys.exit('need a path')
+
     print(datetime.datetime.utcnow())
     print('generate a tsv file with only the human genes')
 
