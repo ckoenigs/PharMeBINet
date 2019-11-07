@@ -385,7 +385,7 @@ def drugs_combination_and_check(neo4j_label):
         output_file_drug = open('output/drugbank_drug.tsv', 'w')
         writer_drug = csv.writer(output_file_drug, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
         writer_drug.writerow(header)
-        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/drugbank/output/drugbank_drug.tsv" As line FIELDTERMINATOR '\\t' Create (b:''' + neo4j_label + '''{ '''
+        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/drugbank/output/drugbank_drug.tsv" As line FIELDTERMINATOR '\\t' Create (b:''' + neo4j_label + '''{ '''
         new_header = []
 
         # list properties which are lists
@@ -1333,7 +1333,7 @@ def generate_combined_csv_files(header_new, neo4j_general_label, special_label_l
             dict_label_to_file[label_string] = writer_output
             writer_output.writerow(header_new)
             writer_output.writerow(property)
-            query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/drugbank/''' + file_path + '''" As line FIELDTERMINATOR '\\t' Create (b'''
+            query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/drugbank/''' + file_path + '''" As line FIELDTERMINATOR '\\t' Create (b'''
             for neo4j_label in label_list:
                 query += ''':''' + neo4j_label + ' '
             query += ''':''' + neo4j_general_label + '''{ '''
@@ -1513,7 +1513,7 @@ def check_and_maybe_generate_a_new_drug_target_file(file, dict_drug_targets_exte
         writer_output = csv.writer(output_file, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
         #query for cypher-shell
-        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/drugbank/output/''' + \
+        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/drugbank/output/''' + \
                 file.split('/')[1]+'_'+rela_type + '''.tsv" As line FIELDTERMINATOR '\\t' Match (c:''' + neo4j_label_drug \
                 + '''{ identifier: line.drugbank_id}), (g:''' + neo4j_label_target + '''{ identifier:line.targets_id })  Create (c)-[a:'''+rela_type+ '_C'+rela_type[0] + short_form_label + '''{ '''
 
@@ -1700,16 +1700,16 @@ def load_reaction_file_in(neo4j_label_metabolite, neo4j_label_drug):
         file_path_meta_drug = 'output/drugbank_reaction_metabolites_compound.tsv'
         file_path_meta_meta = 'output/drugbank_reaction_metabolites_metabolites.tsv'
 
-        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/drugbank/''' + file_path_meta_meta + '''" As line FIELDTERMINATOR '\\t' Match (c:''' + neo4j_label_metabolite \
+        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/drugbank/''' + file_path_meta_meta + '''" As line FIELDTERMINATOR '\\t' Match (c:''' + neo4j_label_metabolite \
                 + '''{ identifier: line.left_element_drugbank_id}), (g:''' + neo4j_label_metabolite + '''{ identifier:line.right_element_drugbank_id })  Create (c)-[a:reacts_with_MrwM{sequence:line.sequence, enzymes:split(line.enzymes,'||'),license:"''' + drugbank_license + '''"}]->(g) ;\n'''
         cypher_rela_file.write(query)
-        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/drugbank/''' + file_path_meta_drug + '''" As line FIELDTERMINATOR '\\t' Match (c:''' + neo4j_label_metabolite \
+        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/drugbank/''' + file_path_meta_drug + '''" As line FIELDTERMINATOR '\\t' Match (c:''' + neo4j_label_metabolite \
                 + '''{ identifier: line.left_element_drugbank_id}), (g:''' + neo4j_label_drug + '''{ identifier:line.right_element_drugbank_id })  Create (c)-[a:reacts_with_MrwC{sequence:line.sequence, enzymes:split(line.enzymes,'||'),license:"''' + drugbank_license + '''"}]->(g) ;\n'''
         cypher_rela_file.write(query)
-        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/drugbank/''' + file_path_drug_drug + '''" As line FIELDTERMINATOR '\\t' Match (c:''' + neo4j_label_drug \
+        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/drugbank/''' + file_path_drug_drug + '''" As line FIELDTERMINATOR '\\t' Match (c:''' + neo4j_label_drug \
                 + '''{ identifier: line.left_element_drugbank_id}), (g:''' + neo4j_label_drug + '''{ identifier:line.right_element_drugbank_id })  Create (c)-[a:reacts_with_CrwC{sequence:line.sequence, enzymes:split(line.enzymes,'||'),license:"''' + drugbank_license + '''"}]->(g) ;\n'''
         cypher_rela_file.write(query)
-        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/drugbank/''' + file_path_drug_meta + '''" As line FIELDTERMINATOR '\\t' Match (c:''' + neo4j_label_drug \
+        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/drugbank/''' + file_path_drug_meta + '''" As line FIELDTERMINATOR '\\t' Match (c:''' + neo4j_label_drug \
                 + '''{ identifier: line.left_element_drugbank_id}), (g:''' + neo4j_label_metabolite + '''{ identifier:line.right_element_drugbank_id })  Create (c)-[a:reacts_with_CrwM{sequence:line.sequence, enzymes:split(line.enzymes,'||'),license:"''' + drugbank_license + '''"}]->(g) ;\n'''
         cypher_rela_file.write(query)
 
@@ -1837,7 +1837,7 @@ def gather_all_metabolite_information_and_generate_a_new_file(neo4j_label):
         header_new.insert(0, 'DRUGBANK_ID')
         header_new = [x.lower() for x in header_new]
         writer_drug.writerow(header_new)
-        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/drugbank/output/drugbank_metabolites.tsv" As line FIELDTERMINATOR '\\t' Create (b:''' + neo4j_label + '''{ '''
+        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/drugbank/output/drugbank_metabolites.tsv" As line FIELDTERMINATOR '\\t' Create (b:''' + neo4j_label + '''{ '''
         for head in header_new:
             if head == 'drugbank_id':
                 query += '''identifier:line.''' + head + ', '
@@ -1911,7 +1911,7 @@ def add_general_to_cypher_node(path, label, special_name):
     with open(path) as csvfile:
         reader = csv.DictReader(csvfile, delimiter='\t')
         header = reader.fieldnames
-        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/drugbank/''' + path + '''" As line FIELDTERMINATOR '\\t' Create (b:''' + label + '''{ '''
+        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/drugbank/''' + path + '''" As line FIELDTERMINATOR '\\t' Create (b:''' + label + '''{ '''
         for head in header:
             if head == special_name:
                 query += 'identifier: line.' + head + ', '
@@ -1935,7 +1935,7 @@ def add_rela_to_cypher(path, label_left, label_right, id_name_left, id_name_righ
         reader = csv.DictReader(csvfile, delimiter='\t')
         header = reader.fieldnames
 
-        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/drugbank/''' + path + '''" As line FIELDTERMINATOR '\\t' Match (b:''' + label_left + '''{ identifier: line.''' + id_name_left + '''}),'''
+        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/drugbank/''' + path + '''" As line FIELDTERMINATOR '\\t' Match (b:''' + label_left + '''{ identifier: line.''' + id_name_left + '''}),'''
         query += '''(c:''' + label_right + '''{ identifier: line.''' + id_name_right + '''}) Create (b)-[:''' + rela_label + '''{'''
         for head in header:
             if head not in [id_name_right, id_name_left]:
@@ -2002,7 +2002,7 @@ def import_tool_preparation_new_generated_rela(file_path, labels, label_targer, 
     writer = csv.writer(output_file_cypher, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     writer.writerow([header_name_target, header_name_mutated])
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/drugbank/output/''' + file_name + '''" As line FIELDTERMINATOR '\\t' Match (b:''' + label_targer + '''{ identifier: line.''' + header_name_target + '''}),'''
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/drugbank/output/''' + file_name + '''" As line FIELDTERMINATOR '\\t' Match (b:''' + label_targer + '''{ identifier: line.''' + header_name_target + '''}),'''
     query += '''(c:''' + label_mutated_gene_protein + '''{ identifier: line.''' + header_name_mutated + '''}) Create (b)-[:''' + labels + ''']->(c);\n'''
     cypher_rela_file.write(query)
 
