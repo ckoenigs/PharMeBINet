@@ -94,9 +94,9 @@ class Edge(object):
 if len(sys.argv) > 1:
     # filepath= "file:///"+sys.argv[1]
     filepath = sys.argv[1]
+    path_of_directory = sys.argv[2]
 else:
-    # filepath="file:///c:/Users/Cassandra/Documents/uni/Master/test/aeolus_v1/"
-    filepath = "c:/Users/Cassandra/Documents/uni/Master/test/aeolus_v1/"
+    sys.exit('need some arguments (aeolus)')
 
 
 # concept dictionary
@@ -250,7 +250,7 @@ def create_csv_and_cypher_file_neo4j():
     f = open(file_name_outcome, 'wt')
 
     # add cypher wuery to cypher file to integrate outcome
-    cypher_outcome='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/aeolus/'''+file_name_outcome+'''" As line Create (:AeolusOutcome{outcome_concept_id:line.outcome_concept_id , concept_code: line.concept_code,  name: line.name, snomed_outcome_concept_id: line.snomed_outcome_concept_id, vocabulary_id: line.vocabulary_id });\n'''
+    cypher_outcome='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/aeolus/'''+file_name_outcome+'''" As line Create (:AeolusOutcome{outcome_concept_id:line.outcome_concept_id , concept_code: line.concept_code,  name: line.name, snomed_outcome_concept_id: line.snomed_outcome_concept_id, vocabulary_id: line.vocabulary_id });\n'''
     cypher_file.write(cypher_outcome)
     cypher_file.write('begin \n')
     cypher_file.write('Create Constraint On (node:AeolusOutcome) Assert node.outcome_concept_id Is Unique; \n')
@@ -279,8 +279,8 @@ def create_csv_and_cypher_file_neo4j():
 
     # add cypher query to cypher file for integration of drugs
     # add cypher wuery to cypher file to integrate outcome
-    cypher_outcome = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/aeolus/''' + file_name_drug + '''" As line Create (:AeolusDrug{drug_concept_id: line.drug_concept_id, concept_code: line.concept_code, name: line.name, vocabulary_id: line.vocabulary_id });\n'''
-    cypher_file.write(cypher_outcome)
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/aeolus/''' + file_name_drug + '''" As line Create (:AeolusDrug{drug_concept_id: line.drug_concept_id, concept_code: line.concept_code, name: line.name, vocabulary_id: line.vocabulary_id });\n'''
+    cypher_file.write(query)
     cypher_file.write(' begin \n')
     cypher_file.write('Create Constraint On (node:AeolusDrug) Assert node.drug_concept_id Is Unique; \n')
     cypher_file.write('commit \n schema await \n ')
@@ -300,8 +300,8 @@ def create_csv_and_cypher_file_neo4j():
 
     # csv for relationships
     file_name_drug_outcome='drug_outcome_relation.csv'
-    cypher_outcome = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/aeolus/''' + file_name_drug_outcome + '''" As line Match (n1:AeolusDrug {drug_concept_id: line.drug_id}), (n2:AeolusOutcome {outcome_concept_id: line.adr_id}) Create (n1)-[:Causes{countA: line.countA , countB: line.countB , countC: line.countC , countD: line.countD, drug_outcome_pair_count: line.drug_outcome_pair_count, prr: line.prr, prr_95_percent_upper_confidence_limit: line.prr_95_percent_upper_confidence_limit , prr_95_percent_lower_confidence_limit: line.prr_95_percent_lower_confidence_limit , ror: line.ror , ror_95_percent_upper_confidence_limit: line.ror_95_percent_upper_confidence_limit , ror_95_percent_lower_confidence_limit: line.ror_95_percent_lower_confidence_limit}]->(n2); \n'''
-    cypher_file.write(cypher_outcome)
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/aeolus/''' + file_name_drug_outcome + '''" As line Match (n1:AeolusDrug {drug_concept_id: line.drug_id}), (n2:AeolusOutcome {outcome_concept_id: line.adr_id}) Create (n1)-[:Causes{countA: line.countA , countB: line.countB , countC: line.countC , countD: line.countD, drug_outcome_pair_count: line.drug_outcome_pair_count, prr: line.prr, prr_95_percent_upper_confidence_limit: line.prr_95_percent_upper_confidence_limit , prr_95_percent_lower_confidence_limit: line.prr_95_percent_lower_confidence_limit , ror: line.ror , ror_95_percent_upper_confidence_limit: line.ror_95_percent_upper_confidence_limit , ror_95_percent_lower_confidence_limit: line.ror_95_percent_lower_confidence_limit}]->(n2); \n'''
+    cypher_file.write(query)
 
     f = open(file_name_drug_outcome, 'wt')
     try:
