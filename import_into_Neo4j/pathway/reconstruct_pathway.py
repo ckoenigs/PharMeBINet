@@ -245,7 +245,7 @@ def combine_both_source():
 
 
     #generate cypher file
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/pathway/pathways.tsv" As line fieldterminator '\\t' Create (c1:pathway_multi{'''
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/pathway/pathways.tsv" As line fieldterminator '\\t' Create (c1:pathway_multi{'''
     for property in pathway_df:
         if property not in properties_which_are_list:
             query+= property+':line.'+property+', '
@@ -256,10 +256,19 @@ def combine_both_source():
     with open('cypher.cypher','w') as file:
         file.write(query)
 
+ # path to directory
+path_of_directory = ''
+
 
 def main():
+    global path_of_directory
+    if len(sys.argv) > 1:
+        path_of_directory = sys.argv[1]
+    else:
+        sys.exit('need a path')
     print(datetime.datetime.utcnow())
     print('load gene information')
+
 
     use_of_entrez_gene()
 
