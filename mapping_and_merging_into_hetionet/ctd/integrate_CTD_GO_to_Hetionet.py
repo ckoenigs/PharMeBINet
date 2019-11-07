@@ -198,7 +198,7 @@ cypher_file = open('GO/cypher.cypher', 'w')
 # query='''begin\n MATCH p=()-[r:equal_to_CTD_go]->() Delete r;\n commit\n'''
 # cypher_file.write(query)
 # add ontology to ctd go
-query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/GO/nodes_without_ontology.csv" As line Match (n:CTDGO{go_id:line.id}) SET n.ontology=line.ontology ;\n'''
+query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/GO/nodes_without_ontology.csv" As line Match (n:CTDGO{go_id:line.id}) SET n.ontology=line.ontology ;\n'''
 cypher_file.write(query)
 
 '''
@@ -219,7 +219,7 @@ def generate_files(file_name_addition, ontology, dict_ctd_in_hetionet,dict_ctd_i
         for ctd_id, hetionet_id in dict_ctd_in_hetionet_alternative.items():
             writer.writerow([ctd_id, hetionet_id])
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/GO/mapping_%s.csv" As line Match (c:%s{ identifier:line.GOIDHetionet}), (n:CTDGO{go_id:line.GOIDCTD}) SET  c.url_ctd=" http://ctdbase.org/detail.go?type=go&acc="+line.GOIDCTD, c.highestGOLevel=n.highestGOLevel, c.resource=c.resource+"CTD", c.ctd="yes" Create (c)-[:equal_to_CTD_go]->(n);\n'''
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/GO/mapping_%s.csv" As line Match (c:%s{ identifier:line.GOIDHetionet}), (n:CTDGO{go_id:line.GOIDCTD}) SET  c.url_ctd=" http://ctdbase.org/detail.go?type=go&acc="+line.GOIDCTD, c.highestGOLevel=n.highestGOLevel, c.resource=c.resource+"CTD", c.ctd="yes" Create (c)-[:equal_to_CTD_go]->(n);\n'''
     query = query % (file_name_addition, ontology)
     cypher_file.write(query)
     cypher_file.write('begin\n')
@@ -236,7 +236,17 @@ dict_ctd_ontology_to_file_and_label={
 }
 
 
+# path to directory
+path_of_directory = ''
+
+
 def main():
+    global path_of_directory
+    if len(sys.argv) > 1:
+        path_of_directory = sys.argv[1]
+    else:
+        sys.exit('need a path')
+
     print (datetime.datetime.utcnow())
     print('Generate connection with neo4j and mysql')
 
