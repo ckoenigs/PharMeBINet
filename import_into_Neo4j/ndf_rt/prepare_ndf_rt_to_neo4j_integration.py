@@ -76,7 +76,7 @@ def load_ndf_rt_xml_inferred_in():
         csv_writer = csv.writer(entity_file, delimiter='\t', quotechar='"', lineterminator='\n')
         csv_writer.writerow(properties_of_node)
         dict_entity_to_file[code] = csv_writer
-        query = '''USING PERIODIC COMMIT 10000 LOAD CSV WITH HEADERS FROM "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/ndf_rt/%s" AS line FIELDTERMINATOR '\\t' Create (n: NDF_RT_''' + entity_name + '{'
+        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ndf_rt/%s" AS line FIELDTERMINATOR '\\t' Create (n: NDF_RT_''' + entity_name + '{'
         print(query)
         print(file_name)
         query = query % (file_name)
@@ -123,7 +123,7 @@ def load_ndf_rt_xml_inferred_in():
             csv_writer = csv.writer(entity_file, delimiter='\t', quotechar='"',lineterminator='\n')
             csv_writer.writerow(rela_info_list)
             dict_rela_file_name_to_file[file_name]=csv_writer
-            query = '''USING PERIODIC COMMIT 10000 LOAD CSV WITH HEADERS FROM "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/ndf_rt/%s" AS line FIELDTERMINATOR '\\t' Match (start: NDF_RT_''' + dict_entities[start_node_code] + '''{code:line.'''+ rela_info_list[0]+ '''}), (end: NDF_RT_''' + dict_entities[end_node_code] + '''{code:line.'''+rela_info_list[1]+'''}) Create (start)-[:%s]->(end);\n'''
+            query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ndf_rt/%s" AS line FIELDTERMINATOR '\\t' Match (start: NDF_RT_''' + dict_entities[start_node_code] + '''{code:line.'''+ rela_info_list[0]+ '''}), (end: NDF_RT_''' + dict_entities[end_node_code] + '''{code:line.'''+rela_info_list[1]+'''}) Create (start)-[:%s]->(end);\n'''
             print(query)
             query=query% (file_name, name)
 
