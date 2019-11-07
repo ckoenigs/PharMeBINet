@@ -72,9 +72,15 @@ csv_writer.writeheader()
 #count_all proteins
 counter=0
 
+# path to project dictionary
+if len(sys.argv) > 1:
+    path_of_directory = sys.argv[1]
+else:
+    sys.exit('need a path')
+
 # all queries which are used to integrate Protein with the extra labels into Hetionet
 cypherfile = open('cypher_protein.cypher', 'w')
-query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/uniProt/uniprot.tsv" As line Fieldterminator '\\t' Create (n:Protein_Uniprot{ '''
+query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/uniProt/uniprot.tsv" As line Fieldterminator '\\t' Create (n:Protein_Uniprot{ '''
 
 '''
 integrate the dictionary information into the csv file
