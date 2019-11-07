@@ -4,7 +4,7 @@ Created on Wed Apr 18 12:41:20 2018
 @author: ckoenigs
 """
 
-from py2neo import Graph, authenticate
+from py2neo import Graph#, authenticate
 import datetime
 import csv
 import sys
@@ -16,9 +16,9 @@ create connection to neo4j
 
 def create_connection_with_neo4j_mysql():
     # create connection with neo4j
-    authenticate("localhost:7474", "neo4j", "test")
+    # authenticate("localhost:7474", )
     global g
-    g = Graph("http://localhost:7474/db/data/")
+    g = Graph("http://localhost:7474/db/data/",auth=("neo4j", "test"))
 
 
 # dictionary with hetionet pathways with identifier as key and value the name
@@ -123,7 +123,7 @@ generate connection between mapping pathways of ctd and hetionet and generate ne
 
 def create_cypher_file():
     cypher_file=open('pathway/cypher.cypher','w')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/pathway/mapped_pathways.tsv" As line FIELDTERMINATOR '\\t' Match (d:Pathway{identifier:line.id_hetionet}),(c:CTDpathway{pathway_id:line.id}) Create (d)-[:equal_to_CTD_pathway]->(c) Set d.xrefs= d.xrefs+'CTD', d.ctd="yes", d.ctd_url="http://ctdbase.org/detail.go?type=pathway&acc=%"+line.id, c.hetionet_id=line.id_hetionet;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Documents/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/pathway/mapped_pathways.tsv" As line FIELDTERMINATOR '\\t' Match (d:Pathway{identifier:line.id_hetionet}),(c:CTDpathway{pathway_id:line.id}) Create (d)-[:equal_to_CTD_pathway]->(c) Set d.xrefs= d.xrefs+'CTD', d.ctd="yes", d.ctd_url="http://ctdbase.org/detail.go?type=pathway&acc=%"+line.id, c.hetionet_id=line.id_hetionet;\n'''
     cypher_file.write(query)
     cypher_file.write('begin\n')
     query='''Match (d:Pathway) Where not  exists(d.ctd) Set d.ctd="no";\n '''
