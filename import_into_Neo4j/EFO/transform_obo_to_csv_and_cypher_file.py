@@ -16,7 +16,7 @@ def contains_information(line):
     return True if line.strip() else False
 
 
-if len(sys.argv) != 4:
+if len(sys.argv) != 5:
     sys.exit('need the obo file, directory, neo4j label')
 
 # file path to data source
@@ -27,6 +27,9 @@ directory = sys.argv[2]
 
 # neo4j label
 neo4j_label = sys.argv[3]
+
+# path to project directory
+path_of_directory = sys.argv[4]
 
 # dictionary with all identifier and a dictionary for all information of this identifier
 dict_all_entries = {}
@@ -219,17 +222,7 @@ def generate_cypher_file():
             csv_writer.writerow(info)
         file.close()
 
-
-# path to directory
-path_of_directory = ''
-
-
 def main():
-    global path_of_directory
-    if len(sys.argv) > 1:
-        path_of_directory = sys.argv[1]
-    else:
-        sys.exit('need a path')
 
     print(datetime.datetime.utcnow())
 
