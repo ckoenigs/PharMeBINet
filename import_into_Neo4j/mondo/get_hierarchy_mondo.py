@@ -4,7 +4,7 @@ Created on Fri Feb 2 07:23:43 2018
 @author: ckoenigs
 """
 
-from py2neo import Graph, authenticate
+from py2neo import Graph#, authenticate
 import datetime
 import string
 import sys
@@ -17,9 +17,9 @@ sys.setdefaultencoding("utf-8")
 
 # connect with the neo4j database
 def database_connection():
-    authenticate("localhost:7474", "neo4j", "test")
+    # authenticate("localhost:7474", )
     global g
-    g = Graph("http://localhost:7474/db/data/")
+    g = Graph("http://localhost:7474/db/data/",auth=("neo4j", "test"))
 
 # dictionary with all levels and two lists the first contains the class element and the second the leafs and each has a
 # dict with parent id as key with id name and parent
@@ -178,7 +178,7 @@ generate cypher file for integration of levels in nodes
 
 def generate_cypher_file():
     cypher_file_to_integrate_level = open('integrate_level.cypher', 'w')
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/mondo/levels.csv" As line Match (n:disease{`http://www.geneontology.org/formats/oboInOwl#id`:line.ID}) Set n.level=split(line.level,'|');\n'''
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/mondo/levels.csv" As line Match (n:disease{`http://www.geneontology.org/formats/oboInOwl#id`:line.ID}) Set n.level=split(line.level,'|');\n'''
     cypher_file_to_integrate_level.write(query)
     with open('levels.csv', 'wb') as csvfile:
         writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
@@ -267,8 +267,17 @@ def generate_tree():
     hypotension_id = 'MONDO:0005044'
     generate_part_tree(hypotension_id, 'Hypertension')
 
+# path to directory
+path_of_directory = ''
+
 
 def main():
+    global path_of_directory
+    if len(sys.argv) > 1:
+        path_of_directory = sys.argv[1]
+    else:
+        sys.exit('need a path')
+
     print(datetime.datetime.utcnow())
     print('##########################################################################')
 
