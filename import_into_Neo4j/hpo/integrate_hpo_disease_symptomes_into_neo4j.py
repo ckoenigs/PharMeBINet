@@ -22,6 +22,15 @@ list_disease_ids = []
 list_symptoms_ids = []
 
 
+# path to directory
+path_of_directory = ''
+if len(sys.argv) > 1:
+    path_of_directory = sys.argv[1]
+else:
+    sys.exit('need a path')
+
+
+
 #csv file for disease node
 writer=open('disease.csv','w')
 csv_writer=csv.writer(writer)
@@ -145,16 +154,9 @@ def write_rela_info_into_csv():
         csv_writer_rela.writerow(info_list)
 
 
-# path to directory
-path_of_directory = ''
-
 
 def main():
-    global path_of_directory
-    if len(sys.argv) > 1:
-        path_of_directory = sys.argv[1]
-    else:
-        sys.exit('need a path')
+
 
     print(datetime.datetime.utcnow())
 
