@@ -268,7 +268,7 @@ def generate_rela_csv_and_cypher_queries():
                 csv_rela.writerow([gene_id, dict_old_pc_to_new[identifier]])
 
     # general start of queries
-    query_start='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Documents/Project/master_database_change/mapping_and_merging_into_hetionet/pathway/output/%s.tsv" As line FIELDTERMINATOR '\\t' '''
+    query_start='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/pathway/output/%s.tsv" As line FIELDTERMINATOR '\\t' '''
     #generate cypher for node creation
     query_node_middle='Create (n:Pathway{'
     for head in header:
@@ -297,11 +297,17 @@ def generate_rela_csv_and_cypher_queries():
     query_rela=query_rela %('rela')
     cypher_file.write(query_rela)
 
-
+# path to directory
+path_of_directory=''
 
     
     
 def main():
+    if len(sys.argv)>1:
+        path_of_directory=sys.argv[1]
+    else:
+        sys.exit('need a path')
+
     print (datetime.datetime.utcnow())
     print('Generate connection with neo4j and mysql')
 
