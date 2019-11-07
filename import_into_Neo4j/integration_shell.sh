@@ -1,8 +1,10 @@
 #!/bin/bash
 
 #define path to neo4j bin
-#path_neo4j=/home/cassandra/Dokumente/hetionet/neo4j-community-3.1.6/bin
 path_neo4j=$1
+
+#path to project
+path_to_project=$2
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -17,7 +19,7 @@ echo "Current time: $now"
 cd sider 
 echo sider
 
-python importSideEffects_change_to_umls_meddra_final.py > output_integration_sider.txt
+python importSideEffects_change_to_umls_meddra_final.py $path_to_project > output_integration_sider.txt
 
 
 now=$(date +"%F %T")
@@ -90,7 +92,7 @@ echo "Current time: $now"
 cd  do
 echo do
 
-python ../EFO/transform_obo_to_csv_and_cypher_file.py data/HumanDO.obo do diseaseontology > output_generate_integration_file.txt
+python ../EFO/transform_obo_to_csv_and_cypher_file.py data/HumanDO.obo do diseaseontology $path_to_project > output_generate_integration_file.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -117,7 +119,7 @@ echo "Current time: $now"
 cd  GO
 echo go
 
-python ../EFO/transform_obo_to_csv_and_cypher_file.py go-basic.obo GO go > output_generate_integration_file.txt
+python ../EFO/transform_obo_to_csv_and_cypher_file.py go-basic.obo GO go $path_to_project > output_generate_integration_file.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -144,10 +146,10 @@ cd  hpo
 echo hpo
 
 #python integrate_hpo_disease_symptomes_into_neo4j.py  > output_integration_hpo.txt
-python ../EFO/transform_obo_to_csv_and_cypher_file.py hpo.obo hpo HPOsymptom > output_generate_integration_file.txt
+python ../EFO/transform_obo_to_csv_and_cypher_file.py hpo.obo hpo HPOsymptom $path_to_project > output_generate_integration_file.txt
 
 echo generation of csv from tsv file
-python integrate_hpo_disease_symptomes_into_neo4j.py > output_disease.txt
+python integrate_hpo_disease_symptomes_into_neo4j.py $path_to_project > output_disease.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -171,7 +173,7 @@ echo "Current time: $now"
 cd aeolus
 echo aeolus
 
-python importAeolus_final.py aeolus_v1/ > output_integration_aeolus.txt
+python importAeolus_final.py aeolus_v1/ $path_to_project > output_integration_aeolus.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -223,7 +225,7 @@ echo "Current time: $now"
 cd  drugbank
 echo drugbank
 
-./script_to_start_program_and_integrate_into_neo4j.sh > output_script.txt
+./script_to_start_program_and_integrate_into_neo4j.sh $path_to_project > output_script.txt
 
 
 cd ..
@@ -234,7 +236,7 @@ echo "Current time: $now"
 cd  EFO
 echo EFO
 
-python transform_obo_to_csv_and_cypher_file.py efo.obo EFO efo > output_generate_integration_file.txt
+python transform_obo_to_csv_and_cypher_file.py efo.obo EFO efo $path_to_project > output_generate_integration_file.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -259,7 +261,7 @@ echo "Current time: $now"
 cd  ncbi_genes
 echo NCBI
 
-python integrate_ncbi_genes_which_are_already_in_hetionet.py > output_generate_integration_file.txt
+python integrate_ncbi_genes_which_are_already_in_hetionet.py $path_to_project > output_generate_integration_file.txt
 
 echo rm gz file
 rm data/*
@@ -287,7 +289,7 @@ echo "Current time: $now"
 cd  pathway
 echo pathway
 
-python reconstruct_pathway.py > output_generate_integration_file.txt
+python reconstruct_pathway.py $path_to_project > output_generate_integration_file.txt
 
 echo rm gz file
 rm data/*
@@ -315,7 +317,7 @@ cd  mondo
 echo mondo
 
 
-./integrate_mondo_and_add_level.sh $path_neo4j /home/cassandra/Dokumente/neo4j-community-3.5.8/data/databases/restart_neo4j.sh > output_integration_of_everything.txt
+./integrate_mondo_and_add_level.sh $path_neo4j /home/cassandra/Documents/neo4j-community-3.5.8/bin/restart_neo4j.sh $path_to_project > output_integration_of_everything.txt
 
 
 cd ..
