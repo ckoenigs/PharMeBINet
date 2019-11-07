@@ -109,7 +109,7 @@ def fasta_iter(fasta_name):
 
 
 # only when all arguments are their continue
-if len(sys.argv) != 7:
+if len(sys.argv) != 8:
     print(
         '1 to the directory with all drugbank information \n 2 to drug sequence \n 3 to external links \n 4 to protein identifier \n 4 to structure \n 5 to target sequence \n')
     print(len(sys.argv))
@@ -122,6 +122,7 @@ path_to_external_links = whole_path + sys.argv[3]
 path_to_protein_identifier = whole_path + sys.argv[4]
 path_to_structure = whole_path + sys.argv[5]
 path_to_target_sequence = whole_path + sys.argv[6]
+path_of_directory = sys.argv[7]
 path_prepared_drugbank_files = 'drugbank/'
 
 cypher_file = open('output/cypher_file.cypher', 'w')
