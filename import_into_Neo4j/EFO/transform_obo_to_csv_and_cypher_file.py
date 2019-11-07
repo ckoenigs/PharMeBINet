@@ -159,7 +159,7 @@ generate cypher file
 def generate_cypher_file():
     # create cypher file
     cypher_file = open('cypher.cypher', 'w')
-    query = ''' Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/''' + directory + '''/output/node.csv" As line Create (:''' + neo4j_label + '''{'''
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/''' + directory + '''/output/node.csv" As line Create (:''' + neo4j_label + '''{'''
     for property in set_all_properties_in_database:
         if not property in set_list_properties:
             query += property + ':line.' + property + ', '
@@ -203,11 +203,11 @@ def generate_cypher_file():
         list_of_infos=list(list_of_infos)
         #depending if the relationships contains also information about a relationships type the qury and the csv file is a bit different
         if len(list_of_infos[0])==2:
-            query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/%s/output/%s" As line  Match (a:%s{id:line.child_id}), (b:%s{id:line.parent_id}) Create (a)-[:%s]->(b); \n'''
+            query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/%s/output/%s" As line  Match (a:%s{id:line.child_id}), (b:%s{id:line.parent_id}) Create (a)-[:%s]->(b); \n'''
             csv_writer.writerow(header_for_two)
         else:
             print(rela_type)
-            query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/%s/output/%s" As line  Match (a:%s{id:line.child_id}), (b:%s{id:line.parent_id}) Create (a)-[:%s{relationship:line.rela}]->(b); \n'''
+            query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/%s/output/%s" As line  Match (a:%s{id:line.child_id}), (b:%s{id:line.parent_id}) Create (a)-[:%s{relationship:line.rela}]->(b); \n'''
             csv_writer.writerow(heeader_for_three)
         # fill the query ND WRITE INTO FILE
         query = query % (directory, file_name, neo4j_label, neo4j_label, rela_type)
@@ -220,8 +220,17 @@ def generate_cypher_file():
         file.close()
 
 
+# path to directory
+path_of_directory = ''
+
 
 def main():
+    global path_of_directory
+    if len(sys.argv) > 1:
+        path_of_directory = sys.argv[1]
+    else:
+        sys.exit('need a path')
+
     print(datetime.datetime.utcnow())
 
     print('##########################################################################')
