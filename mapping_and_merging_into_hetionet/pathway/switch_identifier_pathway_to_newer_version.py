@@ -303,6 +303,7 @@ path_of_directory=''
     
     
 def main():
+    global path_of_directory
     if len(sys.argv)>1:
         path_of_directory=sys.argv[1]
     else:
