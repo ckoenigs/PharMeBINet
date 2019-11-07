@@ -5,9 +5,9 @@ Created on Fri Sep 15 11:41:20 2017
 @author: ckoenigs
 """
 
-from py2neo import Graph, authenticate
+from py2neo import Graph#, authenticate
 import datetime
-import csv
+import csv, sys
 
 '''
 create connection to neo4j 
@@ -20,9 +20,9 @@ def create_connection_with_neo4j_mysql():
     # global g
     # g = Graph("http://localhost:7474/db/data/")
 
-    authenticate("bimi:7475", "ckoenigs", "test")
+    # authenticate("bimi:7475", "ckoenigs", "test")
     global g
-    g = Graph("http://bimi:7475/db/data/",bolt=False)
+    g = Graph("http://bimi:7475/db/data/",bolt=False, auth=("neo4j", "test"))
 
 
 # dictionary with all pairs and properties as value
@@ -101,11 +101,11 @@ Generate the csv and cypher file
 def generate_csv_and_cypher_file():
     # generate cypher file
     cypherfile = open('disease_go/cypher.cypher', 'w')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/disease_go/bp.csv" As line Match (n:Disease{identifier:line.DiseaseID}), (b:BiologicalProcess{identifier:line.GOID}) Merge (n)-[r:ASSOCIATES_DaBP]->(b) On Create Set r.hetionet='no', r.inferenceGeneQty=line.inferenceGeneQty,r.inferenceGeneSymbols=line.inferenceGeneSymbols, r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=disease&acc="+line.diseaseID, r.source="CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased='false' On Match SET r.inferenceGeneQty=line.inferenceGeneQty,r.inferenceGeneSymbols=line.inferenceGeneSymbols, r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=disease&acc="+line.DiseaseID;\n '''
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/disease_go/bp.csv" As line Match (n:Disease{identifier:line.DiseaseID}), (b:BiologicalProcess{identifier:line.GOID}) Merge (n)-[r:ASSOCIATES_DaBP]->(b) On Create Set r.hetionet='no', r.inferenceGeneQty=line.inferenceGeneQty,r.inferenceGeneSymbols=line.inferenceGeneSymbols, r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=disease&acc="+line.diseaseID, r.source="CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased='false' On Match SET r.inferenceGeneQty=line.inferenceGeneQty,r.inferenceGeneSymbols=line.inferenceGeneSymbols, r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=disease&acc="+line.DiseaseID;\n '''
     cypherfile.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/disease_go/mf.csv" As line Match (n:Disease{identifier:line.DiseaseID}), (b:MolecularFunction{identifier:line.GOID}) Merge (n)-[r:ASSOCIATES_DaMF]->(b) On Create Set r.hetionet='no', r.inferenceGeneQty=line.inferenceGeneQty,r.inferenceGeneSymbols=line.inferenceGeneSymbols, r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=disease&acc="+line.diseaseID , r.source="CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased='false' On Match SET r.inferenceGeneQty=line.inferenceGeneQty,r.inferenceGeneSymbols=line.inferenceGeneSymbols, r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=disease&acc="+line.DiseaseID;\n '''
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/disease_go/mf.csv" As line Match (n:Disease{identifier:line.DiseaseID}), (b:MolecularFunction{identifier:line.GOID}) Merge (n)-[r:ASSOCIATES_DaMF]->(b) On Create Set r.hetionet='no', r.inferenceGeneQty=line.inferenceGeneQty,r.inferenceGeneSymbols=line.inferenceGeneSymbols, r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=disease&acc="+line.diseaseID , r.source="CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased='false' On Match SET r.inferenceGeneQty=line.inferenceGeneQty,r.inferenceGeneSymbols=line.inferenceGeneSymbols, r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=disease&acc="+line.DiseaseID;\n '''
     cypherfile.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/disease_go/cc.csv" As line Match (n:Disease{identifier:line.DiseaseID}), (b:CellularComponent{identifier:line.GOID}) Merge (n)-[r:ASSOCIATES_DaCC]->(b) On Create Set r.hetionet='no', r.inferenceGeneQty=line.inferenceGeneQty,r.inferenceGeneSymbols=line.inferenceGeneSymbols, r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=disease&acc="+line.diseaseID , r.source="CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased='false' On Match SET r.inferenceGeneQty=line.inferenceGeneQty,r.inferenceGeneSymbols=line.inferenceGeneSymbols, r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=disease&acc="+line.DiseaseID;\n '''
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''Project/master_database_change/mapping_and_merging_into_hetionet/ctd/disease_go/cc.csv" As line Match (n:Disease{identifier:line.DiseaseID}), (b:CellularComponent{identifier:line.GOID}) Merge (n)-[r:ASSOCIATES_DaCC]->(b) On Create Set r.hetionet='no', r.inferenceGeneQty=line.inferenceGeneQty,r.inferenceGeneSymbols=line.inferenceGeneSymbols, r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=disease&acc="+line.diseaseID , r.source="CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased='false' On Match SET r.inferenceGeneQty=line.inferenceGeneQty,r.inferenceGeneSymbols=line.inferenceGeneSymbols, r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=disease&acc="+line.DiseaseID;\n '''
     cypherfile.write(query)
 
     for (mondo, go_id), [inferenceGeneQty, inferenceGeneSymbols, ontologys, disease_id] in dict_gene_go.items():
@@ -120,7 +120,18 @@ def generate_csv_and_cypher_file():
             writer.writerow([mondo, go_id, inferenceGeneQty, inferenceGeneSymbols, disease_id])
 
 
+
+# path to directory
+path_of_directory = ''
+
+
 def main():
+    global path_of_directory
+    if len(sys.argv) > 1:
+        path_of_directory = sys.argv[1]
+    else:
+        sys.exit('need a path')
+
     print (datetime.datetime.utcnow())
     print('Generate connection with neo4j and mysql')
 
