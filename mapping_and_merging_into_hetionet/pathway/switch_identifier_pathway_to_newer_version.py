@@ -5,7 +5,7 @@ Created on Wed Apr 18 12:41:20 2018
 @author: ckoenigs
 """
 
-from py2neo import Graph, authenticate
+from py2neo import Graph#, authenticate
 import datetime
 import csv
 import sys
@@ -21,9 +21,9 @@ create connection to neo4j
 
 def create_connection_with_neo4j_mysql():
     # create connection with neo4j
-    authenticate("localhost:7474", "neo4j", "test")
+    # authenticate("localhost:7474", )
     global g
-    g = Graph("http://localhost:7474/db/data/")
+    g = Graph("http://localhost:7474/db/data/",auth=("neo4j", "test"))
 
 
 # dictionary with hetionet genes with identifier as key and value the name
@@ -268,7 +268,7 @@ def generate_rela_csv_and_cypher_queries():
                 csv_rela.writerow([gene_id, dict_old_pc_to_new[identifier]])
 
     # general start of queries
-    query_start='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/pathway/output/%s.tsv" As line FIELDTERMINATOR '\\t' '''
+    query_start='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Documents/Project/master_database_change/mapping_and_merging_into_hetionet/pathway/output/%s.tsv" As line FIELDTERMINATOR '\\t' '''
     #generate cypher for node creation
     query_node_middle='Create (n:Pathway{'
     for head in header:
@@ -276,13 +276,13 @@ def generate_rela_csv_and_cypher_queries():
             query_node_middle+=head+':split(line.'+head+',"|"), '
         else:
             query_node_middle += head + ':line.' + head + ', '
-    query_node=query_start+ query_node_middle[:-2]+'}) ;\n'
+    query_node=query_start+ query_node_middle[:-2]+', pathway:"yes"}) ;\n'
     query_node=query_node %('node')
 
     cypher_file.write(query_node)
 
     # query equal to
-    query_equal=query_start+' Match (b:%s ), (n:Pathway{identifier:line.identifier}) Where b.identifier in split(line.%s,"|") Create (n)-[:equal_to_multi_pathways]->(b);\n'
+    query_equal=query_start+' Match (b:%s ), (n:Pathway{identifier:line.identifier}) Where b.identifier in split(line.%s,"|") Create (n)-[:equal_to_multi_pathways]->(b) Set n.pathway="yes";\n'
     query_equal=query_equal %('node',label_pathway,extra_property)
     cypher_file.write(query_equal)
 
