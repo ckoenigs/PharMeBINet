@@ -5,7 +5,7 @@ Created on Tue Sep 17 16:07:43 2019
 @author: ckoenigs
 """
 
-from py2neo import Graph, authenticate
+from py2neo import Graph#, authenticate
 import datetime
 import sys, csv
 
@@ -16,9 +16,9 @@ create a connection with neo4j
 
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
-    authenticate("localhost:7474", "neo4j", "test")
+    # authenticate("localhost:7474", "neo4j", "test")
     global g
-    g = Graph("http://localhost:7474/db/data/")
+    g = Graph("http://localhost:7474/db/data/", auth=("neo4j", "test"))
 
 
 # dictionary of not mapped compound inchikey to node
@@ -59,7 +59,7 @@ def create_cypher_and_csv_files():
     query = query % (label_of_salt)
     result = g.run(query)
     header = []
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/drugbank/output/%s.csv" As line Fieldterminator '\\t' Match '''
+    query_start='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/drugbank/output/%s.csv" As line Fieldterminator '\\t' Match '''
     part=query_start+'''(a:%s {identifier:line.identifier}) Create (b:Compound :Salt{'''
     part = part % (file_node, label_of_salt)
     for property, in result:
@@ -132,10 +132,13 @@ def fill_rela_csv():
 
 
 def main():
+    #path to directory of project
+    global path_of_directory
     if len(sys.argv)<2:
         sys.exit('need a license')
     global license
     license=sys.argv[1]
+    path_of_directory = sys.argv[2]
     print(datetime.datetime.utcnow())
     print('create connection with neo4j')
 
