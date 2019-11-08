@@ -248,6 +248,7 @@ def load_disease_ontologie_in_hetionet():
         dict_of_information['xrefs'] = '|'.join(xref_other)
 
         # hetionet has this doid not included
+        print(disease)
         if not disease['id'] in dict_diseases_in_hetionet and not has_overlap_between_alternative_and_hetionet_id:
             csv_writer_new.writerow(dict_of_information)
 
