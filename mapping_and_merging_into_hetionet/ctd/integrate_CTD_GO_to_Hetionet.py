@@ -5,7 +5,7 @@ Created on Wed Apr 18 08:41:20 2018
 @author: ckoenigs
 """
 
-from py2neo import Graph, authenticate
+from py2neo import Graph#, authenticate
 import datetime
 import csv, sys
 
@@ -16,9 +16,9 @@ create connection to neo4j and mysql
 
 def create_connection_with_neo4j_mysql():
     # create connection with neo4j
-    authenticate("localhost:7474", "neo4j", "test")
+    # authenticate("localhost:7474", "neo4j", "test")
     global g
-    g = Graph("http://localhost:7474/db/data/")
+    g = Graph("http://localhost:7474/db/data/", auth=("neo4j", "test"))
 
 
 # dictionary with hetionet biological process with identifier as key and value the name
@@ -191,6 +191,11 @@ dict_process = {
                            dict_ctd_cellular_component_in_hetionet]
 }
 
+#define path to project
+if len(sys.argv) > 1:
+    path_of_directory = sys.argv[1]
+else:
+    sys.exit('need a path')
 
 # cypher file to integrate and update the go nodes
 cypher_file = open('GO/cypher.cypher', 'w')
@@ -236,16 +241,9 @@ dict_ctd_ontology_to_file_and_label={
 }
 
 
-# path to directory
-path_of_directory = ''
 
 
 def main():
-    global path_of_directory
-    if len(sys.argv) > 1:
-        path_of_directory = sys.argv[1]
-    else:
-        sys.exit('need a path')
 
     print (datetime.datetime.utcnow())
     print('Generate connection with neo4j and mysql')
