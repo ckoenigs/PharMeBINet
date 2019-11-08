@@ -5,7 +5,7 @@ Created on Fri Jan 26 13:31:43 2018
 @author: ckoenigs
 """
 
-from py2neo import Graph, authenticate
+from py2neo import Graph#, authenticate
 import sys, csv
 import datetime
 from types import *
@@ -16,9 +16,9 @@ sys.setdefaultencoding("utf-8")
 
 # connect with the neo4j database
 def database_connection():
-    authenticate("localhost:7474", "neo4j", "test")
+    # authenticate("localhost:7474", )
     global g
-    g = Graph("http://localhost:7474/db/data/")
+    g = Graph("http://localhost:7474/db/data/", auth=("neo4j", "test"))
 
 
 # dictionary monarch DO to information: name
@@ -192,7 +192,7 @@ list_of_list_prop=set([])
 generate cypher queries to integrate and merge disease nodes and create the subclass relationships
 '''
 def generate_cypher_queries():
-    query_start='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/monDO/output/%s.csv" As line FIELDTERMINATOR '\\t' Match (a:disease{`http://www.geneontology.org/formats/oboInOwl#id`:line.identifier}) '''
+    query_start='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/monDO/output/%s.csv" As line FIELDTERMINATOR '\\t' Match (a:disease{`http://www.geneontology.org/formats/oboInOwl#id`:line.identifier}) '''
 
     query_end='''Create (n)-[:equal_to_monDO]->(a); \n'''
     query_update=''
@@ -210,7 +210,7 @@ def generate_cypher_queries():
     query_new=query_start+ 'Create (n:Disease{'+query_new+'mondo:"yes", resource:["MonDO"], url:"http://bioportal.bioontology.org/ontologies/MONDO/"+line.id, license:" CC-BY-SA 3.0", source:"MonDO"}) '+query_end
     query_new=query_new %('new_nodes')
     cypher_file.write(query_new)
-    query_rela = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/monDO/output/%s.csv" As line FIELDTERMINATOR '\\t' Match (a:Disease{identifier:line.id_1}), (b:Disease{identifier:line.id_2}) Create (a)-[:SUBCLASS_OF_DsoD{unbiased:"false", source:"Monarch Disease Ontology", resource:['MonDO'] , mondo:'yes', license:" CC-BY-SA 3.0", equivalentOriginalNodeSourceTarget:split(line.equivalentOriginalNodeSourceTarget,'|')}]->(b);\n'''
+    query_rela='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/monDO/output/%s.csv" As line FIELDTERMINATOR '\\t' Match (a:Disease{identifier:line.id_1}), (b:Disease{identifier:line.id_2}) Create (a)-[:SUBCLASS_OF_DsoD{unbiased:"false", source:"Monarch Disease Ontology", resource:['MonDO'] , mondo:'yes', license:" CC-BY-SA 3.0", equivalentOriginalNodeSourceTarget:split(line.equivalentOriginalNodeSourceTarget,'|')}]->(b);\n'''
     query_rela= query_rela %('rela')
     cypher_file.write(query_rela)
 
@@ -695,9 +695,17 @@ def generate_csv_file_for_relationship():
 
     print('number of relationships:'+str(counter_of_relationships))
 
+ # path to directory
+path_of_directory = ''
 
 
 def main():
+    global path_of_directory
+    if len(sys.argv) > 1:
+        path_of_directory = sys.argv[1]
+    else:
+        sys.exit('need a path')
+
     print(datetime.datetime.utcnow())
 
     print('##########################################################################')
