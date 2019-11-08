@@ -5,7 +5,7 @@ Created on Tue Jan 23 16:07:43 2018
 @author: ckoenig
 """
 
-from py2neo import Graph, authenticate
+from py2neo import Graph#, authenticate
 import datetime
 import sys, csv
 
@@ -19,9 +19,9 @@ create a connection with neo4j
 
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
-    authenticate("localhost:7474", "neo4j", "test")
+    # authenticate("localhost:7474", "neo4j", "test")
     global g
-    g = Graph("http://localhost:7474/db/data/")
+    g = Graph("http://localhost:7474/db/data/",auth=("neo4j", "test"))
 
 
 # dictionary of all compounds with key the drugbank id and list of url, name, inchi, inchikey, food interaction,
@@ -360,7 +360,7 @@ def create_cypher_file():
     # cypher file
     cypher_file = open('cypher.cypher', 'w')
 
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/drugbank/output/%s.csv" As line Fieldterminator '\\t' Match (a:%s{identifier:line.identifier})'''
+    query_start='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/drugbank/output/%s.csv" As line Fieldterminator '\\t' Match (a:%s{identifier:line.identifier})'''
     query_create = ''
     query_update = ''
     for property in all_properties:
@@ -404,7 +404,7 @@ def generation_of_interaction_file():
     csv_writer = csv.writer(g_csv, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     csv_writer.writerow(['db1', 'db2', 'description'])
     cypherfile = open('compound_interaction/cypher_interaction.cypher', 'w')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/drugbank/compound_interaction/interaction.csv" As line Match (c1:Compound{identifier:line.db1}), (c2:Compound{identifier:line.db2}) Create (c1)-[:INTERACTS_CiC{source:"DrugBank", unbiased:'false', resource:['DrugBank'], url:line.url, license:'%s', description:split(line.description,'|')}]->(c2);\n '''
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/drugbank/compound_interaction/interaction.csv" As line Match (c1:Compound{identifier:line.db1}), (c2:Compound{identifier:line.db2}) Create (c1)-[:INTERACTS_CiC{source:"DrugBank", unbiased:'false', resource:['DrugBank'], url:line.url, license:'%s', description:split(line.description,'|')}]->(c2);\n '''
     query=query %(license)
     cypherfile.write(query)
     cypherfile.close()
@@ -457,12 +457,16 @@ def generation_of_interaction_file():
     print('counter of all interaction:' + str(counter_all_interaction))
     print(set_alt)
 
+# path to directory
+path_of_directory = ''
 
 def main():
+    global path_of_directory
     if len(sys.argv)<2:
         sys.exit('need license')
     global license
     license=sys.argv[1]
+    path_of_directory = sys.argv[2]
     print(datetime.datetime.utcnow())
     print('create connection with neo4j')
 
