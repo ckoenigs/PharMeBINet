@@ -1,4 +1,4 @@
-from py2neo import Graph, authenticate
+from py2neo import Graph#, authenticate
 import datetime
 import sys, csv
 
@@ -9,9 +9,9 @@ create a connection with neo4j
 
 def create_connetion_with_neo4j():
     # set up authentication parameters and connection
-    authenticate("localhost:7474", "neo4j", "test")
+    # authenticate("localhost:7474", )
     global g
-    g = Graph("http://localhost:7474/db/data/")
+    g = Graph("http://localhost:7474/db/data/", auth=("neo4j", "test"))
 
 
 # dictionary with all gene ids to there name
@@ -75,7 +75,7 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
     writer.writeheader()
 
     cypher_file = open('cypher_merge.cypher', 'w')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ncbi_gene/output_data/genes_merge.csv" As line Fieldterminator '\\t' Match (n:Gene_Ncbi {identifier:line.identifier}) Merge (g:Gene{identifier:toInteger(line.identifier) }) On Match Set '''
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ncbi_gene/output_data/genes_merge.csv" As line Fieldterminator '\\t' Match (n:Gene_Ncbi {identifier:line.identifier}) Merge (g:Gene{identifier:toInteger(line.identifier) }) On Match Set '''
 
     on_create_string = ''' On Create SET '''
     for head in header:
@@ -232,8 +232,17 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
     print('counter of all genes already in hetionet:' + str(counter_all_in_hetionet))
     print('counter not the same name:' + str(counter_not_same_name))
 
+ # path to directory
+path_of_directory = ''
+
 
 def main():
+    global path_of_directory
+    if len(sys.argv) > 1:
+        path_of_directory = sys.argv[1]
+    else:
+        sys.exit('need a path')
+
     print(datetime.datetime.utcnow())
     print('create connection with neo4j')
 
