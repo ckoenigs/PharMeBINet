@@ -7,7 +7,7 @@ Created on Wed Jul 26 09:52:43 2017
 
 
 '''integrate the other diseases and relationships from disease ontology in hetionet'''
-from py2neo import Graph, authenticate
+from py2neo import Graph#, authenticate
 import datetime
 import sys,csv
 
@@ -65,9 +65,9 @@ create a connection with neo4j
 
 def create_connetion_with_neo4j():
     # set up authentication parameters and connection
-    authenticate("localhost:7474", "neo4j", "test")
+    # authenticate("localhost:7474", "neo4j", "test")
     global g
-    g = Graph("http://localhost:7474/db/data/")
+    g = Graph("http://localhost:7474/db/data/",auth=("neo4j", "test"))
 
 
 # dictionary of all diseases in hetionet with key the disease ontology and value class Disease
@@ -154,7 +154,7 @@ Also create cypher query for generat is a relationships between Diseases
 '''
 def generate_cypher_file():
     cypher_file=open('cypher.cypher','w')
-    query_start='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/do/output/%s.csv" As line FIELDTERMINATOR '\\t' '''
+    query_start='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/do/output/%s.csv" As line FIELDTERMINATOR '\\t' '''
 
     query_middel_set=''
     query_middel_create=''
@@ -284,9 +284,17 @@ def load_in_all_connection_from_disease_ontology():
 
     print('number of relationships:'+str(counter))
 
+ # path to directory
+path_of_directory = ''
 
 
 def main():
+    global path_of_directory
+    if len(sys.argv) > 1:
+        path_of_directory = sys.argv[1]
+    else:
+        sys.exit('need a path')
+
     print(datetime.datetime.utcnow())
     output.write(str(datetime.datetime.utcnow()))
     print('create connection with neo4j')
