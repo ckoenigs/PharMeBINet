@@ -5,7 +5,7 @@ Created on Fri Jan 26 13:31:43 2018
 @author: ckoenigs
 """
 
-from py2neo import Graph, authenticate
+from py2neo import Graph#, authenticate
 import MySQLdb as mdb
 import sys
 import datetime
@@ -32,9 +32,9 @@ def database_connection():
     global con
     con = mdb.connect('localhost', 'root', 'Za8p7Tf', 'umls')
 
-    authenticate("localhost:7474", "neo4j", "test")
+    # authenticate("localhost:7474", )
     global g
-    g = Graph("http://localhost:7474/db/data/")
+    g = Graph("http://localhost:7474/db/data/", auth=("neo4j", "test"))
 
 
 # dictionary with label as key and value is the constraint property
