@@ -5,7 +5,7 @@ Created on Thu Apr 17 12:41:20 2018
 @author: ckoenigs
 """
 
-from py2neo import Graph, authenticate
+from py2neo import Graph#, authenticate
 import datetime
 import csv, sys
 
@@ -16,9 +16,9 @@ create connection to neo4j and mysql
 
 def create_connection_with_neo4j_mysql():
     # create connection with neo4j
-    authenticate("localhost:7474", "neo4j", "test")
+    # authenticate("localhost:7474", "neo4j", "test")
     global g
-    g = Graph("http://localhost:7474/db/data/")
+    g = Graph("http://localhost:7474/db/data/", auth=("neo4j", "test"))
 
 
 # dictionary with hetionet genes with identifier as key and value node as dictionary
@@ -112,7 +112,7 @@ Generate cypher and csv for generating the new nodes and the relationships
 def generate_files():
     #generate cyoher file
     cypher_file = open('gene/cypher.cypher', 'w')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/gene/mapping.csv" As line Match (c:Gene{ identifier:toInteger(line.GeneIDHetionet)}), (n:CTDgene{gene_id:line.GeneIDCTD}) Create (c)-[:equal_to_CTD_gene]->(n) Set c.ctd="yes", c.resource=c.resource+"CTD", c.xrefs=split(line.xrefs,'|'), c.url_ctd=" http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID;\n'''
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/gene/mapping.csv" As line Match (c:Gene{ identifier:toInteger(line.GeneIDHetionet)}), (n:CTDgene{gene_id:line.GeneIDCTD}) Create (c)-[:equal_to_CTD_gene]->(n) Set c.ctd="yes", c.resource=c.resource+"CTD", c.xrefs=split(line.xrefs,'|'), c.url_ctd=" http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID;\n'''
     cypher_file.write(query)
 
     global writer
@@ -125,8 +125,18 @@ def generate_files():
     cypher_file.write('commit')
     cypher_file.close()
 
+# path to directory
+path_of_directory = ''
+
 
 def main():
+    global path_of_directory
+    if len(sys.argv) > 1:
+        print(sys.argv)
+        path_of_directory = sys.argv[1]
+    else:
+        sys.exit('need a path')
+
     print (datetime.datetime.utcnow())
     print('Generate connection with neo4j and mysql')
 
