@@ -3,11 +3,14 @@
 #define path to neo4j bin
 path_neo4j=$1
 
+# path to project
+path_to_project=$2
+
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo map and integrate gene
 
-python map_CTD_gene_gene_hetionet.py > gene/output_gene.txt
+python map_CTD_gene_gene_hetionet.py $path_to_project > gene/output_gene.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -27,7 +30,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo map and integrate GO
 
-python integrate_CTD_GO_to_Hetionet.py > GO/output.txt
+python integrate_CTD_GO_to_Hetionet.py $path_to_project > GO/output.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -45,7 +48,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo mapping and integration
 
-python map_CTD_pathways_to_hetionet.py > pathway/output.txt
+python map_CTD_pathways_to_hetionet.py $path_to_project > pathway/output.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -64,7 +67,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo map and integrate Disease
 
-python integrate_and_map_CTD_disease_to_Hetionet_disease_new.py > disease_Disease/output_new.txt
+python integrate_and_map_CTD_disease_to_Hetionet_disease_new.py $path_to_project > disease_Disease/output_new.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -107,7 +110,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo integrate gene-particitates-pathway
 
-python integrate_gene_participat_pathway.py > gene_pathway/output.txt
+python integrate_gene_participat_pathway.py $path_to_project > gene_pathway/output.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -126,7 +129,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo integrate gene-particitates-go
 
-python integrate_gene_participates_GO.py > gene_go/output.txt
+python integrate_gene_participates_GO.py $path_to_project > gene_go/output.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -146,7 +149,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo integrate go-associate-disease
 
-python integrate_disease_go.py > disease_go/output.txt
+python integrate_disease_go.py $path_to_project > disease_go/output.txt
 
 
 now=$(date +"%F %T")
@@ -168,7 +171,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo integrate disease-associates-pathway
 
-python integrate_disease_associates_pathway.py > disease_pathway/output.txt
+python integrate_disease_associates_pathway.py $path_to_project > disease_pathway/output.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -188,7 +191,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo integrate disease-associates-gene
 
-python integrate_disease_gene.py > gene_disease/output.txt
+python integrate_disease_gene.py $path_to_project > gene_disease/output.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
