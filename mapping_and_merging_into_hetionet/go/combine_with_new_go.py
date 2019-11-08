@@ -6,7 +6,7 @@ Created on Thr Sep 26 12:52:43 2017
 """
 
 '''integrate the other diseases and relationships from disease ontology in hetionet'''
-from py2neo import Graph, authenticate
+from py2neo import Graph#, authenticate
 import datetime
 import sys,csv
 from collections import  defaultdict
@@ -21,9 +21,9 @@ create a connection with neo4j
 
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
-    authenticate("localhost:7474", "neo4j", "test")
+    # authenticate("localhost:7474", "neo4j", "test")
     global g
-    g = Graph("http://localhost:7474/db/data/")
+    g = Graph("http://localhost:7474/db/data/", auth=("neo4j", "test"))
 
 
 #label of go nodes
@@ -58,7 +58,7 @@ Get the  properties of go
 def get_go_properties():
     query='''MATCH (p:go) WITH DISTINCT keys(p) AS keys UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields RETURN allfields;'''
     result=g.run(query)
-    query_nodes_start='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/go/%s" As line FIELDTERMINATOR '\\t' '''
+    query_nodes_start='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/go/%s" As line FIELDTERMINATOR '\\t' '''
 
     part=''' Match (b:%s{id:line.identifier})'''%(label_go)
     query_nodes_start = query_nodes_start+part
@@ -224,11 +224,17 @@ def go_through_go():
             elif found_id_alt:
                 print('found with alternative id')
 
-
-
+ # path to directory
+path_of_directory = ''
 
 
 def main():
+    global path_of_directory
+    if len(sys.argv) > 1:
+        path_of_directory = sys.argv[1]
+    else:
+        sys.exit('need a path')
+
     print(datetime.datetime.utcnow())
     print('create connection with neo4j')
 
