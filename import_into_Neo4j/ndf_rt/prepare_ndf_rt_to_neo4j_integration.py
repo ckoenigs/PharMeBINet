@@ -189,7 +189,7 @@ def main():
     if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]
     else:
-        sys.exit('need a path')
+        sys.exit('need a path ndf-rt')
 
     # start the function to load in the xml file and save the importen values in list and dictionaries
     print('#############################################################')
