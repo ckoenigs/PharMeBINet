@@ -24,7 +24,7 @@ Get Gene informaation from Entrez-gene
 def use_of_entrez_gene():
     # read entrez genes
     url = 'https://raw.githubusercontent.com/dhimmel/entrez-gene/a7362748a34211e5df6f2d185bb3246279760546/data/genes-human.tsv'
-    entrez_df = pandas.read_table(url, dtype={'GeneID': str})
+    entrez_df = pandas.read_csv(url,sep='\t', dtype={'GeneID': str})
     global human_coding_genes, human_genes
     human_genes = set(entrez_df.GeneID)
     human_coding_genes = set(entrez_df[entrez_df.type_of_gene == 'protein-coding'].GeneID)
@@ -215,7 +215,7 @@ Combine the both data from the different source to one big one and generate a cy
 '''
 def combine_both_source():
     # Merge resources into a pathway dataframe
-    pathway_df = pandas.concat([wikipath_df, pc_df])
+    pathway_df = pandas.concat([wikipath_df, pc_df],sort=True)
     print(pathway_df)
     pathway_df = pathway_df[['identifier', 'names', 'url', 'source', 'license', 'genes','idOwns']]
     print(len(pathway_df))
@@ -266,6 +266,7 @@ def main():
         path_of_directory = sys.argv[1]
     else:
         sys.exit('need a path')
+
     print(datetime.datetime.utcnow())
     print('load gene information')
 
