@@ -845,6 +845,16 @@ def main():
     else:
         sys.exit('need a path')
 
+
+    print(datetime.datetime.utcnow())
+
+    print('##########################################################################')
+
+    print(datetime.datetime.utcnow())
+    print('create connection neo4j')
+
+    create_connection_with_neo4j()
+
     print(datetime.datetime.utcnow())
 
     print('##########################################################################')
