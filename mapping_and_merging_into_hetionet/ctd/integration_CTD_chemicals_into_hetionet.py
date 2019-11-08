@@ -5,7 +5,7 @@ Created on Wed Aug 30 11:55:50 2017
 @author: ckoenigs
 """
 
-from py2neo import Graph, authenticate
+from py2neo import Graph#, authenticate
 import datetime
 import MySQLdb as mdb
 import sys, time, csv
@@ -80,9 +80,9 @@ create connection to neo4j and mysql
 
 
 def create_connection_with_neo4j_mysql():
-    authenticate("localhost:7474", "neo4j", "test")
+    # authenticate("localhost:7474", "neo4j", "test")
     global g
-    g = Graph("http://localhost:7474/db/data/")
+    g = Graph("http://localhost:7474/db/data/", auth=("neo4j", "test"))
 
     # create connection with mysql database
     global con
@@ -935,11 +935,11 @@ def add_chemicals_to_csv():
     print('existing chemicals?')
     print(exists_chemicals)
     if exists_chemicals:
-        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/chemical/chemicals.csv" As line MATCH (n:CTDchemical{chemical_id:line.ChemicalID}) Merge (d:Chemical{identifier:line.ChemicalID}) On Create Set d.parentIDs=split(line.parentIDs,'|'), d.parentTreeNumbers=split(line.parentTreeNumbers,'|'), d.treeNumbers=split(line.treeNumbers,'|'), d.definition=line.definition, d.synonyms=split(line.synonyms,'|'), d.name=line.name, d.cas_number=line.casRN, d.resource=['CTD'], d.ctd='yes', d.ctd_url='http://ctdbase.org/detail.go?type=chem&acc='+line.ChemicalID, d.url="https://meshb.nlm.nih.gov/record/ui?ui="+line.ChemicalID,  d.license="U.S. National Library of Medicine ", d.source="MeSH via CTD" On Match Set d.parentIDs=split(line.parentIDs,'|'), d.parentTreeNumbers=split(line.parentTreeNumbers,'|'), d.treeNumbers=split(line.treeNumbers,'|'), d.definition=line.definition, d.synonyms=split(line.synonyms,'|'), d.name=line.name, d.cas_number=line.casRN With d, n Create (d)-[:equal_to_CTD_chemical]->(n)  ;\n '''
+        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/chemical/chemicals.csv" As line MATCH (n:CTDchemical{chemical_id:line.ChemicalID}) Merge (d:Chemical{identifier:line.ChemicalID}) On Create Set d.parentIDs=split(line.parentIDs,'|'), d.parentTreeNumbers=split(line.parentTreeNumbers,'|'), d.treeNumbers=split(line.treeNumbers,'|'), d.definition=line.definition, d.synonyms=split(line.synonyms,'|'), d.name=line.name, d.cas_number=line.casRN, d.resource=['CTD'], d.ctd='yes', d.ctd_url='http://ctdbase.org/detail.go?type=chem&acc='+line.ChemicalID, d.url="https://meshb.nlm.nih.gov/record/ui?ui="+line.ChemicalID,  d.license="U.S. National Library of Medicine ", d.source="MeSH via CTD" On Match Set d.parentIDs=split(line.parentIDs,'|'), d.parentTreeNumbers=split(line.parentTreeNumbers,'|'), d.treeNumbers=split(line.treeNumbers,'|'), d.definition=line.definition, d.synonyms=split(line.synonyms,'|'), d.name=line.name, d.cas_number=line.casRN With d, n Create (d)-[:equal_to_CTD_chemical]->(n)  ;\n '''
     else:
-        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/chemical/chemicals.csv" As line MATCH (n:CTDchemical{chemical_id:line.ChemicalID}) Create (d:Chemical{identifier:line.ChemicalID, parentIDs:split(line.parentIDs,'|'), parentTreeNumbers:split(line.parentTreeNumbers,'|'), treeNumbers:split(line.treeNumbers,'|'), definition:line.definition, synonyms:split(line.synonyms,'|'), name:line.name, cas_number:line.casRN, resource:['CTD'], ctd:'yes', ctd_url:'http://ctdbase.org/detail.go?type=chem&acc='+line.ChemicalID, url:"https://meshb.nlm.nih.gov/record/ui?ui="+line.ChemicalID,  license:"U.S. National Library of Medicine ", source:"MeSH via CTD" }) With d, n Create (d)-[:equal_to_CTD_chemical]->(n);\n '''
+        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/chemical/chemicals.csv" As line MATCH (n:CTDchemical{chemical_id:line.ChemicalID}) Create (d:Chemical{identifier:line.ChemicalID, parentIDs:split(line.parentIDs,'|'), parentTreeNumbers:split(line.parentTreeNumbers,'|'), treeNumbers:split(line.treeNumbers,'|'), definition:line.definition, synonyms:split(line.synonyms,'|'), name:line.name, cas_number:line.casRN, resource:['CTD'], ctd:'yes', ctd_url:'http://ctdbase.org/detail.go?type=chem&acc='+line.ChemicalID, url:"https://meshb.nlm.nih.gov/record/ui?ui="+line.ChemicalID,  license:"U.S. National Library of Medicine ", source:"MeSH via CTD" }) With d, n Create (d)-[:equal_to_CTD_chemical]->(n);\n '''
     cypher_file.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/chemical/chemicals_drugbank.csv" As line  MATCH (n:CTDchemical{chemical_id:line.ChemicalID}), (c:Compound{identifier:line.Drugbank_id}) Set c.ctd="yes", c.ctd_url=line.url, c.resource=split(line.string_resource,'|'), n.drugBankIDs=split(line.string_drugbank_ids,'|') Create (c)-[:equal_chemical_CTD]->(n);\n
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/chemical/chemicals_drugbank.csv" As line  MATCH (n:CTDchemical{chemical_id:line.ChemicalID}), (c:Compound{identifier:line.Drugbank_id}) Set c.ctd="yes", c.ctd_url=line.url, c.resource=split(line.string_resource,'|'), n.drugBankIDs=split(line.string_drugbank_ids,'|') Create (c)-[:equal_chemical_CTD]->(n);\n
                     '''
     cypher_file.write(query)
     cypher_file.close()
@@ -949,6 +949,14 @@ exists_chemicals=False
 
 
 def main():
+    # path to directory
+    global path_of_directory
+    if len(sys.argv) > 1:
+        print(sys.argv)
+        path_of_directory = sys.argv[1]
+    else:
+        sys.exit('need a path')
+
     global exists_chemicals
     print (datetime.datetime.utcnow())
     print('Generate connection with neo4j and mysql')
