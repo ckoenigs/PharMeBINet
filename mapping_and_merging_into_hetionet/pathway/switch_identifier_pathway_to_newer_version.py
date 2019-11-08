@@ -305,6 +305,7 @@ path_of_directory=''
 def main():
     global path_of_directory
     if len(sys.argv)>1:
+        print(sys.argv)
         path_of_directory=sys.argv[1]
     else:
         sys.exit('need a path')
