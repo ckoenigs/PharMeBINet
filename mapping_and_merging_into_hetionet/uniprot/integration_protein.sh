@@ -3,11 +3,14 @@
 #define path to neo4j bin
 path_neo4j=$1
 
+#path to project
+path_to_project=$2
+
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo 'integrate proteins with interaction into Hetionet'
 
-python integrate_into_hetionet_with_extra_rela_without_ctd.py > output_integration_file_generation.txt
+python integrate_into_hetionet_with_extra_relationships.py $path_to_project > output_integration_file_generation.txt
 
 
 now=$(date +"%F %T")
