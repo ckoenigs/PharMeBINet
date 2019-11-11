@@ -6,6 +6,8 @@ path_neo4j=$1
 #path to project
 path_to_project=$2
 
+echo $path_to_project
+
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo add hetionet and resource to nodes
@@ -19,7 +21,7 @@ echo "Current time: $now"
 cd sider 
 echo sider
 
-python importSideEffects_change_to_umls_meddra_final.py $path_to_project > output_integration_sider.txt
+python importSideEffects_change_to_umls_meddra_final.py data/ $path_to_project > output_integration_sider.txt
 
 
 now=$(date +"%F %T")
@@ -44,7 +46,7 @@ echo "Current time: $now"
 cd ctd
 echo ctd
 
-./script_ctd.sh > output.txt
+./script_ctd.sh $path_to_project > output.txt
 
 
 cd ..
@@ -56,7 +58,7 @@ echo "Current time: $now"
 cd  ndf_rt
 echo ndf-rt
 
-python prepare_ndf_rt_to_neo4j_integration.py $ndf_rt_path > output_integration_ndf_rt.txt
+python prepare_ndf_rt_to_neo4j_integration.py $path_to_project > output_integration_ndf_rt.txt
 
 
 now=$(date +"%F %T")
@@ -198,7 +200,8 @@ echo "Current time: $now"
 cd uniProt
 echo UniProt
 
-python parse_uniprot_flat_file_to_tsv.py database/uniprot_sprot.dat > output_integration.txt
+#python parse_uniprot_flat_file_to_tsv.py database/uniprot_sprot.dat $path_to_project > output_integration.txt
+python parse_uniprot_flat_file_to_tsv.py $path_to_project > output_integration.txt
 
 rm database/*
 
