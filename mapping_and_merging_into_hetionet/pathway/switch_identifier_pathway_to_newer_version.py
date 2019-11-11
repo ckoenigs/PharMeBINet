@@ -282,7 +282,7 @@ def generate_rela_csv_and_cypher_queries():
     cypher_file.write(query_node)
 
     # query equal to
-    query_equal=query_start+' Match (b:%s ), (n:Pathway{identifier:line.identifier}) Where b.identifier in split(line.%s,"|") Create (n)-[:equal_to_multi_pathways]->(b) Set n.pathway="yes";\n'
+    query_equal=query_start+' Match (b:%s ), (n:Pathway{identifier:line.identifier}) Where b.identifier in split(line.%s,"|") Create (n)-[:equal_to_multi_pathways]->(b) Set n.pathway="yes", n.resource=n.source;\n'
     query_equal=query_equal %('node',label_pathway,extra_property)
     cypher_file.write(query_equal)
 
