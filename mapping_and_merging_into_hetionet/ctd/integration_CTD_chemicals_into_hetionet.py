@@ -86,11 +86,11 @@ def create_connection_with_neo4j_mysql():
 
     # create connection with mysql database
     global con
-    con = mdb.connect('localhost', 'root', 'Za8p7Tf', 'umls')
+    con = mdb.connect('localhost', 'ckoenigs', 'Za8p7Tf$', 'umls')
 
     # generate connection to mysql to RxNorm database
     global conRxNorm
-    conRxNorm = mdb.connect('localhost', 'root', 'Za8p7Tf', 'RxNorm')
+    conRxNorm = mdb.connect('localhost', 'ckoenigs', 'Za8p7Tf$', '')
 
 # dictionary cas number to durgbank
 dict_cas_to_drugbank={}
@@ -790,10 +790,9 @@ def map_ctd_to_hetionet_compound():
 dict_how_mapped_delete_counter = {}
 
 # add the chemicals which are not in compounds in a csv file
-csvfile = open('chemical/chemicals.csv', 'wb')
+csvfile = open('chemical/chemicals.csv', 'w')
 writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-writer.writerow(
-    ['ChemicalID', 'parentIDs', 'parentTreeNumbers', 'treeNumbers', 'definition', 'synonyms', 'name', 'casRN'])
+writer.writerow(['ChemicalID', 'parentIDs', 'parentTreeNumbers', 'treeNumbers', 'definition', 'synonyms', 'name', 'casRN'])
 
 '''
 integration of ctd chemicals in hetionet
