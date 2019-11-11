@@ -2,7 +2,10 @@
 
 path_neo4j=$1
 
-python combine_with_new_go.py > output_map.txt
+#path to project
+path_to_project=$2
+
+python combine_with_new_go.py $path_to_project > output_map.txt
 
 echo integrate connection with ne4j shell
 now=$(date +"%F %T")
