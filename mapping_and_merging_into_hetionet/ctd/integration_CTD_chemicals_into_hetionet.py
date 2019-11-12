@@ -90,7 +90,7 @@ def create_connection_with_neo4j_mysql():
 
     # generate connection to mysql to RxNorm database
     global conRxNorm
-    conRxNorm = mdb.connect('localhost', 'ckoenigs', 'Za8p7Tf$', '')
+    conRxNorm = mdb.connect('localhost', 'ckoenigs', 'Za8p7Tf$', 'RxNorm')
 
 # dictionary cas number to durgbank
 dict_cas_to_drugbank={}
@@ -232,12 +232,12 @@ def load_drugs_from_CTD():
     for result, in results:
         idType = result['idType']
         chemical_id = result['chemical_id']
-        if chemical_id=='D007483':
+        if chemical_id=='C013759':
             print('ok')
         synonyms = result['synonyms'] if 'synonyms' in result else []
         drugBankID = result['drugBankID'] if 'drugBankID' in result else ''
         drugBankIDs = result['drugBankIDs'] if 'drugBankIDs' in result else []
-        drugBankIDs = filter(bool, drugBankIDs)
+        drugBankIDs = list(filter(None, drugBankIDs))
 
         casRN= result['casRN'] if 'casRN' in result else ''
         name = result['name'].lower()
@@ -267,7 +267,7 @@ def load_drugs_from_CTD():
         else:
             counter_drugbank+=1
             #check if the durgbank id in ctd is also in drugbank
-            if drugBankID in dict_drugs_hetionet:
+            if type(drugBankID)!=list and drugBankID in dict_drugs_hetionet:
                 dict_drugs_CTD_with_drugbankIDs[chemical_id] = drug
                 if dict_drugs_hetionet[drugBankID].cas_number!= casRN and casRN!='' and dict_drugs_hetionet[drugBankID].cas_number!='':
                     if casRN in dict_cas_to_drugbank:
@@ -283,7 +283,28 @@ def load_drugs_from_CTD():
                     else:
                         file_not_same_cas.write(chemical_id+'\t'+casRN+'\t'+drugBankID+'\t'+dict_drugs_hetionet[drugBankID].cas_number+'\n')
                 dict_drugs_CTD_with_drugbankIDs[chemical_id].set_how_mapped('drugbank ids from ctd')
-            else:
+            elif type(drugBankID)!=list and drugBankID in dict_alternative_to_drugbank_id:
+                new_drugbank_id=dict_alternative_to_drugbank_id[drugBankID]
+                dict_drugs_CTD_with_drugbankIDs[chemical_id] = drug
+                if dict_drugs_hetionet[new_drugbank_id].cas_number != casRN and casRN != '' and dict_drugs_hetionet[
+                    new_drugbank_id].cas_number != '':
+                    if casRN in dict_cas_to_drugbank:
+                        file_not_same_cas.write(
+                            chemical_id + '\t' + casRN + '\t' + drugBankID + '\t' + dict_drugs_hetionet[
+                                new_drugbank_id].cas_number + '\t' + dict_cas_to_drugbank[casRN] + '\n')
+                        # manual checked
+                        if chemical_id == 'D017485' and new_drugbank_id == 'DB03955':
+                            dict_drugs_CTD_with_drugbankIDs[chemical_id].set_drugbankIDs(['DB03955'])
+                            dict_drugs_CTD_with_drugbankIDs[chemical_id].set_how_mapped('drugbank ids from ctd')
+                            continue
+                        dict_drugs_CTD_with_drugbankIDs[chemical_id].set_drugbankIDs([dict_cas_to_drugbank[casRN]])
+                    else:
+                        file_not_same_cas.write(
+                            chemical_id + '\t' + casRN + '\t' + drugBankID + '\t' + dict_drugs_hetionet[
+                                drugBankID].cas_number + '\n')
+                dict_drugs_CTD_with_drugbankIDs[chemical_id].set_how_mapped('drugbank ids from ctd')
+
+            elif type(drugBankID)==list:
                 found_a_existing_db=False
                 # search for all drugbank ids in ctd if one is in compound drugbank id
                 for drugbankId in drugBankIDs:
@@ -308,7 +329,28 @@ def load_drugs_from_CTD():
                                     chemical_id + '\t' + casRN + '\t' + drugbankId + '\t' + dict_drugs_hetionet[
                                         drugbankId].cas_number + '\n')
                         dict_drugs_CTD_with_drugbankIDs[chemical_id].set_how_mapped('drugbank ids from ctd')
+                    elif drugbankId in dict_alternative_to_drugbank_id:
+                        found_a_existing_db = True
+                        dict_drugs_CTD_with_drugbankIDs[chemical_id] = drug
+                        other_cas_number = dict_drugs_hetionet[drugbankId].cas_number
+                        if other_cas_number != casRN and casRN != '':
+                            if casRN in dict_cas_to_drugbank:
+                                file_not_same_cas.write(
+                                    chemical_id + '\t' + casRN + '\t' + drugbankId + '\t' + dict_drugs_hetionet[
+                                        drugbankId].cas_number + '\t' + dict_cas_to_drugbank[casRN] + '\n')
 
+                                # manual checked
+                                if chemical_id == 'D017485' and drugbankId == 'DB03955':
+                                    dict_drugs_CTD_with_drugbankIDs[chemical_id].set_drugbankIDs(['DB03955'])
+                                    dict_drugs_CTD_with_drugbankIDs[chemical_id].set_how_mapped('drugbank ids from ctd')
+                                    continue
+                                dict_drugs_CTD_with_drugbankIDs[chemical_id].set_drugbankIDs(
+                                    [dict_cas_to_drugbank[casRN]])
+                            else:
+                                file_not_same_cas.write(
+                                    chemical_id + '\t' + casRN + '\t' + drugbankId + '\t' + dict_drugs_hetionet[
+                                        drugbankId].cas_number + '\n')
+                        dict_drugs_CTD_with_drugbankIDs[chemical_id].set_how_mapped('drugbank ids from ctd')
                 if not found_a_existing_db:
                     dict_drugs_CTD_without_drugbankIDs[chemical_id] = drug
                     list_drug_CTD_without_drugbank_id.append(chemical_id)
