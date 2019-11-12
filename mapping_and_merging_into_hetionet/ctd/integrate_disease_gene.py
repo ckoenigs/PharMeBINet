@@ -9,7 +9,6 @@ from py2neo import Graph#, authenticate
 import datetime, time
 import csv, sys
 import  numpy as np
-from py2neo.packages.httpstream import http
 
 # change socket time out
 # http.socket_timeout = 9999
@@ -62,7 +61,7 @@ def take_all_relationships_of_gene_disease():
     cypherfile.write(
         'Match (n:Disease)-[r:ASSOCIATES_DaG]->(b:Gene) Where not exists(r.hetionet) Set r.hetionet="yes", r.resource=["Hetionet"];\n')
     cypherfile.write('commit\n')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Documents/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/gene_disease/relationships.csv" As line Match (n:Gene{identifier:c(line.GeneID)}), (b:Disease{identifier:line.DiseaseID}) Merge (b)-[r:ASSOCIATES_DaG]->(n) On Create Set r.hetionet='no', r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.resource=["CTD"], r.source="CTD", r.inferences=split(line.inferences,'|'), r.pubMedIDs=split(line.pubMedIDs,'|'), r.directEvidence=split(line.directEvidence,'|') ,r.omimIDs=split(line.omimIDs,'|'), r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased=line.unbiased On Match SET r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.unbiased=line.unbiased, r.inferences=split(line.inferences,'|'), r.pubMedIDs=split(line.pubMedIDs,'|'), r.directEvidence=split(line.directEvidence,'|') ,r.omimIDs=split(line.omimIDs,'|'), r.resource=r.resource+'CTD' ;\n '''
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/gene_disease/relationships.csv" As line Match (n:Gene{identifier:c(line.GeneID)}), (b:Disease{identifier:line.DiseaseID}) Merge (b)-[r:ASSOCIATES_DaG]->(n) On Create Set r.hetionet='no', r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.resource=["CTD"], r.source="CTD", r.inferences=split(line.inferences,'|'), r.pubMedIDs=split(line.pubMedIDs,'|'), r.directEvidence=split(line.directEvidence,'|') ,r.omimIDs=split(line.omimIDs,'|'), r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased=line.unbiased On Match SET r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.unbiased=line.unbiased, r.inferences=split(line.inferences,'|'), r.pubMedIDs=split(line.pubMedIDs,'|'), r.directEvidence=split(line.directEvidence,'|') ,r.omimIDs=split(line.omimIDs,'|'), r.resource=r.resource+'CTD' ;\n '''
     cypherfile.write(query)
     cypherfile.write('begin\n')
     cypherfile.write('Match (n:Disease)-[r:ASSOCIATES_DaG]->(b:Gene) Where not exists(r.ctd) Set r.ctd="no";\n')
@@ -223,6 +222,12 @@ def take_all_relationships_of_gene_disease():
 
 
 def main():
+    global path_of_directory
+    if len(sys.argv) > 1:
+        path_of_directory = sys.argv[1]
+    else:
+        sys.exit('need a path ctd d-g')
+
     print (datetime.datetime.utcnow())
     print('Generate connection with neo4j and mysql')
 
