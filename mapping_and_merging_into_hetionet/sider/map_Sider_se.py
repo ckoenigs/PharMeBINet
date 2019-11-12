@@ -120,6 +120,12 @@ this start only the function the are use for generate the map cypher
 
 
 def integrate_side_effects():
+    global path_of_directory
+    if len(sys.argv) > 1:
+        path_of_directory = sys.argv[1]
+    else:
+        sys.exit('need a path sider se')
+
     print (datetime.datetime.utcnow())
     print('Load in all side effect from hetionet in dictionary')
 
