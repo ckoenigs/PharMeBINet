@@ -93,9 +93,7 @@ def load_all_hetionet_disease_in_dictionary():
     for disease, in results:
         list_diseases_in_hetionet.append(disease['identifier'])
         disease=dict(disease)
-        print(disease['identifier'])
-        dict_diseases_in_hetionet['huh']=disease
-        print(type(disease['identifier']))
+        # dict_diseases_in_hetionet['huh']=disease
         dict_diseases_in_hetionet[disease['identifier']] = disease
     print('size of diseases before the rest of disease ontology was add: ' + str(len(dict_diseases_in_hetionet)))
     output.write(
@@ -215,7 +213,11 @@ DOID:9917 war nur als alternative id da
 def load_disease_ontologie_in_hetionet():
     query = '''Match (n:%s) RETURN n''' %(do_label)
     results = g.run(query)
+
+    counter_new_nodes=0
+    counter_all=0
     for disease, in results:
+        counter_all+=1
         alternative_ids = disease['alt_id'] if disease['alt_id'] != None else []
         overlap=list(set(alternative_ids) & set(dict_diseases_in_hetionet.keys()))
         has_overlap_between_alternative_and_hetionet_id = True if len(overlap
@@ -248,8 +250,8 @@ def load_disease_ontologie_in_hetionet():
         dict_of_information['xrefs'] = '|'.join(xref_other)
 
         # hetionet has this doid not included
-        print(disease)
         if not disease['id'] in dict_diseases_in_hetionet and not has_overlap_between_alternative_and_hetionet_id:
+            counter_new_nodes+=1
             csv_writer_new.writerow(dict_of_information)
 
         # hetionet used the alternative doid
@@ -264,9 +266,13 @@ def load_disease_ontologie_in_hetionet():
         else:
             csv_writer_included.writerow(dict_of_information)
 
-    print('size of disease after the rest of disease ontology was add: ' + str(len(dict_diseases_in_hetionet)))
+    print('size of disease after the rest of disease ontology was add: ' + str(counter_new_nodes))
     output.write(
-        'size of disease after the rest of disease ontology was add: ' + str(len(dict_diseases_in_hetionet)) + '\n')
+        'size of disease after the rest of disease ontology was add: ' + str(counter_new_nodes) + '\n')
+
+    print('size of disease after the rest of disease ontology was add: ' + str(counter_all))
+    output.write(
+        'size of disease after the rest of disease ontology was add: ' + str(counter_all) + '\n')
 
 '''
 load connection from Disease ontolegy in dictionary and check if the alternative is used in hetionet
@@ -292,6 +298,7 @@ path_of_directory = ''
 def main():
     global path_of_directory
     if len(sys.argv) > 1:
+        print(sys.argv)
         path_of_directory = sys.argv[1]
     else:
         sys.exit('need a path')
