@@ -1,4 +1,8 @@
 #!/bin/bash
+
+#path to project
+path_to_project=$1
+
 echo download ctd files
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -21,7 +25,7 @@ echo python
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-python integrate_whole_CTD_into_neo4j_with_csv.py > output_integration.txt
+python integrate_whole_CTD_into_neo4j_with_csv.py $path_to_project > output_integration.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
