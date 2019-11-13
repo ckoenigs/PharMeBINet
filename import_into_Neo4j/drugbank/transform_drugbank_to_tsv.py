@@ -249,7 +249,7 @@ pathway_enzymes=list()
 pathways=list()
 reactions=list()
 snp_effects=list()
-mutated_gene_enzymes=list()
+mutated_gene_proteins=list()
 snp_adverse_drug_reactions=list()
 drug_targets=list()
 targets=list()
@@ -277,7 +277,7 @@ dict_transporter_ids={}
 dict_products_ids={}
 dict_metabolites_ids={}
 dict_pathway_ids={}
-dict_mutated_gene_enzyme={}
+dict_mutated_gene_protein={}
 dict_has_component={}
 dict_pathway_enzyme={}
 for i, drug in enumerate(root):
@@ -647,7 +647,7 @@ for i, drug in enumerate(root):
         
     for part in drug.iterfind('{ns}snp-effects/{ns}effect'.format(ns = ns)):
         snp_effect = collections.OrderedDict()
-        mutated_gene_enzyme = collections.OrderedDict()
+        mutated_gene_protein = collections.OrderedDict()
         
         uniprot_id=part.findtext("{ns}uniprot-id".format(ns = ns))
         rs_id=part.findtext("{ns}rs-id".format(ns = ns))
@@ -664,24 +664,24 @@ for i, drug in enumerate(root):
         snp_effect['pubmed_id']=part.findtext("{ns}pubmed-id".format(ns = ns))
         snp_effect['type']='Effect Directly Studied'
         
-        if unique_id not in dict_mutated_gene_enzyme: 
-            mutated_gene_enzyme['protein_name']=part.findtext("{ns}protein-name".format(ns = ns))
-            mutated_gene_enzyme['gene_symbol']=part.findtext("{ns}gene-symbol".format(ns = ns))
-            mutated_gene_enzyme['uniprot_id']=part.findtext("{ns}uniprot-id".format(ns = ns))
-            mutated_gene_enzyme['rs_id']=part.findtext("{ns}rs-id".format(ns = ns))
-            mutated_gene_enzyme['allele']=part.findtext("{ns}allele".format(ns = ns))
-            mutated_gene_enzyme['defining_change']=part.findtext("{ns}defining-change".format(ns = ns))
-            mutated_gene_enzyme['connection_id']=unique_id
+        if unique_id not in dict_mutated_gene_protein: 
+            mutated_gene_protein['protein_name']=part.findtext("{ns}protein-name".format(ns = ns))
+            mutated_gene_protein['gene_symbol']=part.findtext("{ns}gene-symbol".format(ns = ns))
+            mutated_gene_protein['uniprot_id']=part.findtext("{ns}uniprot-id".format(ns = ns))
+            mutated_gene_protein['rs_id']=part.findtext("{ns}rs-id".format(ns = ns))
+            mutated_gene_protein['allele']=part.findtext("{ns}allele".format(ns = ns))
+            mutated_gene_protein['defining_change']=part.findtext("{ns}defining-change".format(ns = ns))
+            mutated_gene_protein['connection_id']=unique_id
                                
                                
-            dict_mutated_gene_enzyme[unique_id]=''
+            dict_mutated_gene_protein[unique_id]=''
         
-            mutated_gene_enzymes.append(mutated_gene_enzyme)
+            mutated_gene_proteins.append(mutated_gene_protein)
         snp_effects.append(snp_effect)
     
     for part in drug.iterfind('{ns}snp-adverse-drug-reactions/{ns}reaction'.format(ns = ns)):
         snp_adverse_drug_reaction = collections.OrderedDict()
-        mutated_gene_enzyme = collections.OrderedDict()
+        mutated_gene_protein = collections.OrderedDict()
         
         uniprot_id=part.findtext("{ns}uniprot-id".format(ns = ns))
         rs_id=part.findtext("{ns}rs-id".format(ns = ns))
@@ -698,18 +698,18 @@ for i, drug in enumerate(root):
         snp_adverse_drug_reaction['description']=part.findtext("{ns}description".format(ns = ns))
         snp_adverse_drug_reaction['pubmed_id']=part.findtext("{ns}pubmed-id".format(ns = ns))
         snp_adverse_drug_reaction['type']='ADR Directly Studied'
-        if unique_id not in dict_mutated_gene_enzyme: 
-            mutated_gene_enzyme['protein_name']=part.findtext("{ns}protein-name".format(ns = ns))
-            mutated_gene_enzyme['gene_symbol']=part.findtext("{ns}gene-symbol".format(ns = ns))
-            mutated_gene_enzyme['uniprot_id']=part.findtext("{ns}uniprot-id".format(ns = ns))
-            mutated_gene_enzyme['rs_id']=part.findtext("{ns}rs-id".format(ns = ns))
-            mutated_gene_enzyme['allele']=part.findtext("{ns}allele".format(ns = ns))
-            mutated_gene_enzyme['defining_changes']=part.findtext("{ns}adverse-reaction".format(ns = ns))
-            mutated_gene_enzyme['connection_id']=unique_id
+        if unique_id not in dict_mutated_gene_protein: 
+            mutated_gene_protein['protein_name']=part.findtext("{ns}protein-name".format(ns = ns))
+            mutated_gene_protein['gene_symbol']=part.findtext("{ns}gene-symbol".format(ns = ns))
+            mutated_gene_protein['uniprot_id']=part.findtext("{ns}uniprot-id".format(ns = ns))
+            mutated_gene_protein['rs_id']=part.findtext("{ns}rs-id".format(ns = ns))
+            mutated_gene_protein['allele']=part.findtext("{ns}allele".format(ns = ns))
+            mutated_gene_protein['defining_changes']=part.findtext("{ns}adverse-reaction".format(ns = ns))
+            mutated_gene_protein['connection_id']=unique_id
                                
-            dict_mutated_gene_enzyme[unique_id]=''
+            dict_mutated_gene_protein[unique_id]=''
             
-            mutated_gene_enzymes.append(mutated_gene_enzyme)
+            mutated_gene_proteins.append(mutated_gene_protein)
         snp_adverse_drug_reactions.append(snp_adverse_drug_reaction)
         
 
@@ -799,7 +799,7 @@ pathway_enzymes=preperation(pathway_enzymes)
 pathways=preperation(pathways)
 reactions=preperation(reactions)
 snp_effects=preperation(snp_effects)
-mutated_gene_enzymes=preperation(mutated_gene_enzymes)
+mutated_gene_proteins=preperation(mutated_gene_proteins)
 snp_adverse_drug_reactions=preperation(snp_adverse_drug_reactions)
 drug_targets=preperation(drug_targets)
 targets=preperation(targets)
@@ -897,7 +897,7 @@ generate_tsv_file(columns_pathway_enzymes,pathway_enzymes,'drugbank_pathway_enzy
 generate_tsv_file(columns_pathway,pathways,'drugbank_pathway.tsv')
 generate_tsv_file(columns_reactions,reactions,'drugbank_reactions.tsv')
 generate_tsv_file(columns_snp_effects, snp_effects,'drugbank_snp_effects.tsv')
-generate_tsv_file(columns_mutated, mutated_gene_enzymes,'drugbank_mutated_gene_enzyme.tsv')
+generate_tsv_file(columns_mutated, mutated_gene_proteins,'drugbank_mutated_gene_protein.tsv')
 generate_tsv_file(columns_snp_adverse_drug_reactions, snp_adverse_drug_reactions,'drugbank_snp_adverse_drug_reaction.tsv')
 generate_tsv_file(columns_drug_target, drug_targets,'drugbank_drug_target.tsv')
 generate_tsv_file(columns_target, targets,'drugbank_targets.tsv')
