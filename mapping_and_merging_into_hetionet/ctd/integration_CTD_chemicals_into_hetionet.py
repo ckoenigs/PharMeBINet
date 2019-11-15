@@ -9,6 +9,7 @@ from py2neo import Graph#, authenticate
 import datetime
 import MySQLdb as mdb
 import sys, time, csv
+import io
 from collections import defaultdict
 
 
@@ -39,19 +40,16 @@ class DrugCTD:
     how_mapped: string
     """
 
-    def __init__(self, idType, chemical_id, synonyms,  name, drugBankIDs,casRN):
+    def __init__(self, idType, chemical_id, synonyms,  name, drugBankIDs, casRN):
         self.idType = idType
         self.chemical_id = chemical_id
         self.synonyms = synonyms
-        self.drugBankIDs = drugBankIDs
+        self.drugBankIDs = set(drugBankIDs)
         self.name = name
-        self.drugBankIDs = list(set(drugBankIDs))
         self.casRN=casRN
 
     def set_drugbankIDs(self, drugbank_ids):
-        drugbank_ids = filter(bool, drugbank_ids)
-        self.drugBankIDs.extend(drugbank_ids)
-        self.drugBankIDs = list(set(self.drugBankIDs))
+        self.drugBankIDs.update([x for x in drugbank_ids if x and len(x) > 0])
 
     def set_how_mapped(self, how_mapped):
         self.how_mapped = how_mapped
@@ -662,7 +660,7 @@ def map_ctd_to_hetionet_compound():
             print('ohje ')
         # manual mapped
         if mesh=='C025314':
-            drugbank_ids.append('DB13949')
+            drugbank_ids.add('DB13949')
         # check if the mesh id is mapped to the wrond drugbank id
         elif mesh in dict_wrong_multiple_mapped_ctd:
             if dict_wrong_multiple_mapped_ctd[mesh] in drugbank_ids:
@@ -697,7 +695,7 @@ def map_ctd_to_hetionet_compound():
         if len(delete_drugbank_id_and_add_element)>0:
             for delete_id, add_id in delete_drugbank_id_and_add_element.items():
                 drugbank_ids.remove(delete_id)
-                drugbank_ids.append(add_id)
+                drugbank_ids.add(add_id)
 
         # remove all not existing drugbank ids
         if len(delete_not_existing_ids)>0:
@@ -711,22 +709,22 @@ def map_ctd_to_hetionet_compound():
         else:
             list_drug_CTD_without_drugbank_id.append(mesh)
             list_new_compounds.append((mesh,drugbank_ids))
-            drugbank_ids=[]
+            drugbank_ids=set()
 
         # check if ctd map to multiple nodes and if then find intersection with name mapping
         if len(drugbank_ids)>1:
             name=drug.name
-            name_drugbank_ids=set([])
+            name_drugbank_ids=set()
             synonyms=drug.synonyms
             if name in dict_synonym_to_drugbank_id:
-                name_drugbank_ids=name_drugbank_ids.union(dict_synonym_to_drugbank_id[name])
+                name_drugbank_ids.update(dict_synonym_to_drugbank_id[name])
             for synonym in synonyms:
                 synonym=synonym.lower()
                 if synonym in dict_synonym_to_drugbank_id:
-                    name_drugbank_ids = name_drugbank_ids.union(dict_synonym_to_drugbank_id[synonym])
+                    name_drugbank_ids.update(dict_synonym_to_drugbank_id[synonym])
 
             if len(name_drugbank_ids)>0:
-                intersection_drugbank_ids=list(set(name_drugbank_ids).intersection(drugbank_ids))
+                intersection_drugbank_ids=name_drugbank_ids.intersection(drugbank_ids)
                 if len(intersection_drugbank_ids)>0:
                     drugbank_ids=intersection_drugbank_ids
                     print('intersection worked')
@@ -742,7 +740,6 @@ def map_ctd_to_hetionet_compound():
             else:
                 print('intersection not possible')
                 print(mesh)
-
 
         drug.set_drugbankIDs(drugbank_ids)
         dict_drugs_CTD_with_drugbankIDs[mesh]=drug
@@ -773,7 +770,7 @@ def map_ctd_to_hetionet_compound():
 dict_how_mapped_delete_counter = {}
 
 # add the chemicals which are not in compounds in a csv file
-csvfile = open('chemical/chemicals.csv', 'w')
+csvfile = io.open('chemical/chemicals.csv', 'w', encoding='utf-8')
 writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 writer.writerow(['ChemicalID', 'parentIDs', 'parentTreeNumbers', 'treeNumbers', 'definition', 'synonyms', 'name', 'casRN'])
 
@@ -793,7 +790,7 @@ def integration_of_ctd_chemicals_into_hetionet_compound():
     g.run(query)
 
     # file with all chemical_mapped to compound and used to integrated them into Hetionet
-    csvfile_db = open('chemical/chemicals_drugbank.csv', 'wb')
+    csvfile_db = io.open('chemical/chemicals_drugbank.csv', 'w', encoding='utf-8')
     writer_compound = csv.writer(csvfile_db, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     writer_compound.writerow(
         ['ChemicalID', 'Drugbank_id', 'url', 'string_resource', 'string_drugbank_ids'])
