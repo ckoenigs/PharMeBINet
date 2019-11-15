@@ -770,7 +770,7 @@ def map_ctd_to_hetionet_compound():
 dict_how_mapped_delete_counter = {}
 
 # add the chemicals which are not in compounds in a csv file
-csvfile = io.open('chemical/chemicals.csv', 'w', encoding='utf-8')
+csvfile = io.open('chemical/chemicals.csv', 'w', encoding='utf-8', newline='')
 writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 writer.writerow(['ChemicalID', 'parentIDs', 'parentTreeNumbers', 'treeNumbers', 'definition', 'synonyms', 'name', 'casRN'])
 
@@ -790,7 +790,7 @@ def integration_of_ctd_chemicals_into_hetionet_compound():
     g.run(query)
 
     # file with all chemical_mapped to compound and used to integrated them into Hetionet
-    csvfile_db = io.open('chemical/chemicals_drugbank.csv', 'w', encoding='utf-8')
+    csvfile_db = io.open('chemical/chemicals_drugbank.csv', 'w', encoding='utf-8', newline='')
     writer_compound = csv.writer(csvfile_db, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     writer_compound.writerow(
         ['ChemicalID', 'Drugbank_id', 'url', 'string_resource', 'string_drugbank_ids'])
