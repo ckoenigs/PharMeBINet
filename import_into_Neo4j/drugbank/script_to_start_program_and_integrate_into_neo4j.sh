@@ -7,7 +7,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo information extraction from xml
 
-#python transform_drugbank_to_tsv.py > output_transform.txt
+python transform_drugbank_to_tsv.py > output_transform.txt
 
 
 
