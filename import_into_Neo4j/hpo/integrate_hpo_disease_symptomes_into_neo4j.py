@@ -8,7 +8,7 @@ Created on Tue Dec  5 12:14:27 2017
 import sys
 import datetime, csv
 
-reload(sys)
+# reload(sys)
 # set default encoding on utf-8
 sys.setdefaultencoding('utf-8')
 
