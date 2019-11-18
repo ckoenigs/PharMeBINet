@@ -213,7 +213,7 @@ Generate cypher and csv for generating the new nodes and the relationships
 
 def generate_files(file_name_addition, ontology, dict_ctd_in_hetionet,dict_ctd_in_hetionet_alternative ):
     # generate mapped csv
-    with open('GO/mapping_' + file_name_addition + '.csv', 'wb') as csvfile:
+    with open('GO/mapping_' + file_name_addition + '.csv', 'w') as csvfile:
         writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
         writer.writerow(['GOIDCTD', 'GOIDHetionet', 'highestGOLevel'])
         # add the go nodes to cypher file
