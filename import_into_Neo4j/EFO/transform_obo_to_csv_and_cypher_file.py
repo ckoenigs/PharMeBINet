@@ -135,10 +135,10 @@ def gather_information_from_obo():
         for (key, group) in groupby(f, contains_information):
             if key:
                 # for python 2.*
-                header = group.next().rstrip('\n')
+                # header = group.next().rstrip('\n')
                 # for python 3.*
                 # print(group.__next__())
-                # header = group.__next__().rstrip('\n')
+                header = group.__next__().rstrip('\n')
 
                 # take only the information from the terms and add to dictionary and add relationships to dictionaries
                 if header.find('[Term]') >= 0:
