@@ -40,7 +40,7 @@ def take_all_relationships_of_gene_pathway():
     cypherfile.write('Match (n:Gene)-[r:PARTICIPATES_GpPW]->(b:Pathway) Where not exists(r.ctd) Set r.ctd="no";\n')
     cypherfile.write('commit')
 
-    csvfile = open('gene_pathway/relationships.csv', 'wb')
+    csvfile = open('gene_pathway/relationships.csv', 'w')
     writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     writer.writerow(['GeneID', 'PathwayID'])
 

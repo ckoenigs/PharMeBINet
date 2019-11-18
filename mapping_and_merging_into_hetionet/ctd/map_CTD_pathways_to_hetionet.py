@@ -83,7 +83,7 @@ def load_ctd_pathways_in():
         pathways_id = pathways_node['pathway_id']
         pathways_name = pathways_node['name']
         pathways_id_type = pathways_node['id_type']
-        # becuase kegg is not open source it it out
+        # because kegg is not open source it it out
         if pathways_id_type=='KEGG':
             counter_not_mapped+=1
             continue
