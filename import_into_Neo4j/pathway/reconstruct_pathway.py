@@ -8,8 +8,8 @@ https://github.com/dhimmel/pathways/blob/master/merge-resources.ipynb
 import csv
 import collections
 import re, datetime
-# import html.parser
-import HTMLParser
+from html.parser import HTMLParser
+# import HTMLParser
 import json
 import wget
 import gzip
