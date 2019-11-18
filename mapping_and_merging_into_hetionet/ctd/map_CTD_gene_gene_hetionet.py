@@ -116,7 +116,7 @@ def generate_files():
     cypher_file.write(query)
 
     global writer
-    csvfile= open('gene/mapping.csv', 'wb')
+    csvfile= open('gene/mapping.csv', 'w')
     writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     writer.writerow(['GeneIDCTD', 'GeneIDHetionet','xrefs'])
 
