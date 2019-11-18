@@ -33,7 +33,7 @@ open file with nodes without upper nodes and check for everyone if im mondo some
 integrate this information into a new file
 '''
 def generate_integration_file_with_nodes_without_upper_nodes():
-    output_file= open('connection_nodes_without_upper.csv','wb')
+    output_file= open('connection_nodes_without_upper.csv','w')
     global writer
     writer = csv.writer(output_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     writer.writerow(['ID_a', 'ID_b','jump_number','equivalentOriginalNodeSource','equivalentOriginalNodeTarget','isDefinedBy','lbl'])
