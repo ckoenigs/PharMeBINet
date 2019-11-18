@@ -11,9 +11,11 @@ import sys, csv
 # path to data 
 if len(sys.argv) > 1:
     # for windows
-    filepath = "file:///" + sys.argv[1]
+    # filepath = "file:///" + sys.argv[1]
     # for linux
     filepath= sys.argv[1]
+    #path to project
+    path_of_directory = sys.argv[2]
 else:
     # filepath="file:///c:/Users/Cassandra/Documents/uni/Master/test/"
     filepath = "data/"
@@ -509,16 +511,8 @@ def generate_cypher_file():
 # DatabaseError: At c:\Users\Cassandra\Documents\uni\Master\test\meddra.tsv:21724 -  there's a field starting with a quote and whereas it ends that quote there seems to be characters in that field after that ending quote. That isn't supported. This is what I read: 'Ventilation"'
 # That's why I change "Ventilation" to 'Ventilation'
 
- # path to directory
-path_of_directory = ''
-
 
 def main():
-    global path_of_directory
-    if len(sys.argv) > 1:
-        path_of_directory = sys.argv[1]
-    else:
-        sys.exit('need a path')
 
     print (datetime.datetime.utcnow())
     print('import meddra_all_se.tsv')
