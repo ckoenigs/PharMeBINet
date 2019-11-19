@@ -14,7 +14,7 @@ find all nodes which are not 'disease' but have no upper node
 def generate_file_with_nodes_without_upper_nodes():
     query='''MATCH (n:disease) Where not n.`http://www.geneontology.org/formats/oboInOwl#id`='MONDO:0000001' and not (n)-[:subClassOf]->() RETURN n.`http://www.geneontology.org/formats/oboInOwl#id`, n.label'''
     results=g.run(query)
-    with open('nodes_without_upper_nodes.csv', 'wb') as csvfile:
+    with open('nodes_without_upper_nodes.csv', 'w', encoding='utf-8') as csvfile:
         writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
         writer.writerow(['ID', 'name'])
         for id, name, in results:
