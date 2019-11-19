@@ -11,8 +11,8 @@ import sys
 import csv
 #from ete3 import Tree
 
-reload(sys)
-sys.setdefaultencoding("utf-8")
+# reload(sys)
+# sys.setdefaultencoding("utf-8")
 
 
 # connect with the neo4j database
@@ -43,9 +43,9 @@ def generate_files():
     letter_of_parent = 0
 
     while count_level <= 25:
-        class_file = open('hierarchical_levels/level_' + str(count_level) + '_class.txt', 'w')
+        class_file = open('hierarchical_levels/level_' + str(count_level) + '_class.txt', 'w', encoding='utf-8')
         class_file.write('MonDO_id \t MonDO_name \t parent_id \t parent_name \n')
-        entry_file = open('hierarchical_levels/level_' + str(count_level) + '_entry.txt', 'w')
+        entry_file = open('hierarchical_levels/level_' + str(count_level) + '_entry.txt', 'w', encoding='utf-8')
         entry_file.write('MonDO_id \t MonDO_name \t parent_id \t parent_name  \n')
 
         # key parent id and value parent name
@@ -177,10 +177,10 @@ generate cypher file for integration of levels in nodes
 
 
 def generate_cypher_file():
-    cypher_file_to_integrate_level = open('integrate_level.cypher', 'w')
+    cypher_file_to_integrate_level = open('integrate_level.cypher', 'w', encoding='utf-8')
     query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/mondo/levels.csv" As line Match (n:disease{`http://www.geneontology.org/formats/oboInOwl#id`:line.ID}) Set n.level=split(line.level,'|');\n'''
     cypher_file_to_integrate_level.write(query)
-    with open('levels.csv', 'wb') as csvfile:
+    with open('levels.csv', 'w', encoding='utf-8') as csvfile:
         writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
         writer.writerow(['ID', 'level'])
         for id, levels in dict_disease_levels.items():
