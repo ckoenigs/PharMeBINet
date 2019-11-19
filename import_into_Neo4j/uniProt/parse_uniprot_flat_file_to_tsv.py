@@ -2,7 +2,7 @@ import sys
 import datetime
 import csv, re
 import wget
-import gzip
+import gzip, io
 
 # list of all two letter codes in the order that they are used
 list_two_character_type_order = ['ID',  # identification (x1) x
@@ -161,7 +161,7 @@ def extract_information():
     filename = wget.download(url_data, out='database/')
     filename_without_gz = filename.rsplit('.', 1)[0]
     # file = open(filename_without_gz, 'wb')
-    with gzip.open(filename, 'rb') as f:
+    with io.TextIOWrapper(gzip.open(filename, 'rb')) as f:
     # file_uniprot = open(sys.argv[1], 'r')
 
         for line in f:
