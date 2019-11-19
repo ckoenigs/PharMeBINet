@@ -8,6 +8,7 @@ https://github.com/dhimmel/pathways/blob/master/merge-resources.ipynb
 import csv
 import collections
 import re, datetime
+import html
 from html.parser import HTMLParser
 # import HTMLParser
 import json
@@ -105,7 +106,8 @@ def pathway_commons():
         # Process name
         name= description['name']
         name = re.sub(r'^9606: +', '', name)
-        name = HTMLParser.HTMLParser().unescape(name)
+        # name = HTMLParser.unescape(name)
+        name = html.unescape(name)
         if name == 'Not pathway':
             continue
 
