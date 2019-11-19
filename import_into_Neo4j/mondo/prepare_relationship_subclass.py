@@ -8,8 +8,8 @@ from py2neo import Graph#, authenticate
 import datetime
 import sys, csv
 
-reload(sys)
-sys.setdefaultencoding("utf-8")
+# reload(sys)
+# sys.setdefaultencoding("utf-8")
 
 
 # connect with the neo4j database
@@ -19,13 +19,13 @@ def database_connection():
     g = Graph("http://localhost:7474/db/data/",auth=("neo4j", "test"))
 
 #csv files where subclass relationships need to be combined
-file=open('subclass_rela.csv','w')
+file=open('subclass_rela.csv','w', encoding='utf-8')
 csv_writer=csv.writer(file,delimiter='\t')
 header=['disease_id_1','disease_id_2','lbl','isDefinedBy','equivalentOriginalNodeSourceTarget']
 csv_writer.writerow(header)
 
 # cypher file to delete double subclass rela and update rela
-cypher=open('cypher_rela.cypher','w')
+cypher=open('cypher_rela.cypher','w', encoding='utf-8')
 
 if len(sys.argv) > 1:
     path_of_directory = sys.argv[1]
