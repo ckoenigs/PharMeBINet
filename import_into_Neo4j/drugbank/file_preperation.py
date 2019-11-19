@@ -102,9 +102,9 @@ def fasta_iter(fasta_name):
     faiter = (x[1] for x in groupby(fh, lambda line: line[0] == ">"))
     for header in faiter:
         # drop the ">"
-        header = header.next()[1:].strip()
+        header = header.__next__()[1:].strip()
         # join all sequence lines to one.
-        seq = "".join(s.strip() for s in faiter.next())
+        seq = "".join(s.strip() for s in faiter.__next__())
         yield header, seq
 
 
