@@ -514,29 +514,29 @@ def map_with_name():
 
 
 # files for the different map strategies
-map_mesh_omim_to_mondo_file = open('disease_Disease/map_CTD_disease_mesh_omim_to_mondo.tsv', 'w')
+map_mesh_omim_to_mondo_file = open('disease_Disease/map_CTD_disease_mesh_omim_to_mondo.tsv', 'w', encoding='utf-8')
 header=['CTD MESH/OMIM','type','name','Monarch Disease Ontology divided by |','mondo names','map_id']
 map_mesh_omim_to_mondo=csv.writer(map_mesh_omim_to_mondo_file, delimiter='\t')
 map_mesh_omim_to_mondo.writerow(header)
 
-map_mesh_omim_to_mondo_with_alt_file = open('disease_Disease/map_CTD_disease_alternativ_mesh_omim_to_mondo.tsv', 'w')
+map_mesh_omim_to_mondo_with_alt_file = open('disease_Disease/map_CTD_disease_alternativ_mesh_omim_to_mondo.tsv', 'w', encoding='utf-8')
 map_mesh_omim_to_mondo_with_alt=csv.writer(map_mesh_omim_to_mondo_with_alt_file, delimiter='\t')
 map_mesh_omim_to_mondo_with_alt.writerow(header)
 
-map_mesh_omim_to_mondo_with_name_file = open('disease_Disease/map_CTD_disease_name_to_mondo_name_synonyms.tsv', 'w')
+map_mesh_omim_to_mondo_with_name_file = open('disease_Disease/map_CTD_disease_name_to_mondo_name_synonyms.tsv', 'w', encoding='utf-8')
 map_mesh_omim_to_mondo_with_name=csv.writer(map_mesh_omim_to_mondo_with_name_file, delimiter='\t')
 map_mesh_omim_to_mondo_with_name.writerow(header)
 
-map_doid_to_mondo_file = open('disease_Disease/map_CTD_disease_doid_to_mondo.tsv', 'w')
+map_doid_to_mondo_file = open('disease_Disease/map_CTD_disease_doid_to_mondo.tsv', 'w', encoding='utf-8')
 map_doid_to_mondo=csv.writer(map_doid_to_mondo_file, delimiter='\t')
 map_doid_to_mondo.writerow(header)
 
-map_cui_to_mondo_file = open('disease_Disease/map_CTD_disease_map_to_cui_to_mondo.tsv', 'w')
+map_cui_to_mondo_file = open('disease_Disease/map_CTD_disease_map_to_cui_to_mondo.tsv', 'w', encoding='utf-8')
 map_cui_to_mondo=csv.writer(map_cui_to_mondo_file, delimiter='\t')
 map_cui_to_mondo.writerow(header)
 
 # multiple mapped ctd disease
-multiple_mapped_ctd_disease_file = open('disease_Disease/multiple_mapped_ctd_disease.tsv', 'w')
+multiple_mapped_ctd_disease_file = open('disease_Disease/multiple_mapped_ctd_disease.tsv', 'w', encoding='utf-8')
 otherheader=header[:-1]
 otherheader.append('mapping_strategy')
 multiple_mapped_ctd_disease=csv.writer(multiple_mapped_ctd_disease_file, delimiter='\t')
@@ -577,11 +577,11 @@ def integrate_disease_into_hetionet():
     counter_intersection = 0
     # count the number of mapped ctd disease
     counter_with_mondos = 0
-    csvfile_ctd_hetionet_disease = open('disease_Disease/ctd_hetionet.csv', 'wb')
+    csvfile_ctd_hetionet_disease = open('disease_Disease/ctd_hetionet.csv', 'w', encoding='utf-8')
     writer = csv.writer(csvfile_ctd_hetionet_disease, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     writer.writerow(['ctdDiseaseID', 'HetionetDiseaseId', 'mondos'])
 
-    cypher_file = open('disease_Disease/cypher.cypher', 'wb')
+    cypher_file = open('disease_Disease/cypher.cypher', 'w', encoding='utf-8')
     cypher_file.write('begin\n')
     query='''Match (d)-[r:equal_to_D_Disease_CTD]->(n) Delete r;\n '''
     cypher_file.write(query)
@@ -657,7 +657,7 @@ def integrate_disease_into_hetionet():
     cypher_file.write('commit\n')
 
     # generate a file with all not mapped diseases from ctd
-    file_not_map = open('disease_Disease/not_map_CTD_disease.tsv', 'w')
+    file_not_map = open('disease_Disease/not_map_CTD_disease.tsv', 'w', encoding='utf-8')
     csv_not_mapped=csv.writer(file_not_map,delimiter='\t')
 
     csv_not_mapped.writerow(['CTD MESH/OMIM','type ','CTD names'])
