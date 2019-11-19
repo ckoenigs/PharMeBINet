@@ -10,7 +10,7 @@ import datetime, csv
 
 # reload(sys)
 # set default encoding on utf-8
-sys.setdefaultencoding('utf-8')
+# sys.setdefaultencoding('utf-8')
 
 # dictionary with pair(disease_id, HPO id) and qualifier, db_reference, evidence code, frequency modifier
 dict_disease_symptom_hpo_pair_to_information = {}
@@ -32,14 +32,14 @@ else:
 
 
 #csv file for disease node
-writer=open('disease.csv','w')
+writer=open('disease.csv','w', encoding='utf-8')
 csv_writer=csv.writer(writer)
 list_of_disease_properties=['id','name','source']
 csv_writer.writerow(list_of_disease_properties)
 
 # csv file for the relationships
 list_of_rela_properties=['disease_id','phenotype_id','source','qualifier', 'evidence_code', 'frequency_modifier', 'aspect']
-writer_rela=open('rela_disease_phenotyp.csv','w')
+writer_rela=open('rela_disease_phenotyp.csv','w', encoding='utf-8')
 csv_writer_rela=csv.writer(writer_rela)
 csv_writer_rela.writerow(list_of_rela_properties)
 
