@@ -10,8 +10,8 @@ import sys, csv
 import datetime
 from types import *
 
-reload(sys)
-sys.setdefaultencoding("utf-8")
+# reload(sys)
+# sys.setdefaultencoding("utf-8")
 
 
 # connect with the neo4j database
@@ -95,12 +95,12 @@ def get_mondo_properties_and_generate_csv_files():
     # generate csv files
     global csv_new_nodes, csv_map_nodes, csv_rela
     # csv with new nodes
-    new_node_file=open('output/new_nodes.csv','w')
+    new_node_file=open('output/new_nodes.csv','w', encoding='utf-8')
     csv_new_nodes=csv.DictWriter(new_node_file, delimiter='\t',fieldnames=mondo_prop)
     csv_new_nodes.writeheader()
 
     #csv with nodes which needs to be updated
-    map_node_file=open('output/map_nodes.csv','w')
+    map_node_file=open('output/map_nodes.csv','w', encoding='utf-8')
     mondo_prop_mapped=mondo_prop[:]
     mondo_prop_mapped.append('doid')
     mondo_prop_mapped.append('doids')
@@ -108,7 +108,7 @@ def get_mondo_properties_and_generate_csv_files():
     csv_map_nodes.writeheader()
 
     #csv with relatioships
-    rela_file=open('output/rela.csv','w')
+    rela_file=open('output/rela.csv','w', encoding='utf-8')
     csv_rela=csv.writer(rela_file,delimiter='\t')
     csv_rela.writerow(['id_1','id_2','equivalentOriginalNodeSourceTarget'])
 
@@ -177,11 +177,11 @@ def load_in_all_monDO_in_dictionary():
 
 
 # cypher file to integrate mondo
-cypher_file=open('cypher.cypher','w')
+cypher_file=open('cypher.cypher','w', encoding='utf-8')
 
 
 # a cypher file to add the merged id to the other doids
-cypher_file_end=open('cypher_end.cypher','w')
+cypher_file_end=open('cypher_end.cypher','w', encoding='utf-8')
 
 
 # list_properties in mondo
@@ -238,7 +238,7 @@ also check for mapping between do and mondo
 
 def load_in_all_DO_in_dictionary():
     # file mapped doid but not the same name
-    not_direct_name_matching_file = open('not_direct_name_matching_file.tsv', 'w')
+    not_direct_name_matching_file = open('not_direct_name_matching_file.tsv', 'w', encoding='utf-8')
     not_direct_name_matching_file.write('monDO \t DOID \t name monDO \t name DOID \n')
     counter_name_not_matching = 0
 
@@ -336,7 +336,7 @@ def load_in_all_DO_in_dictionary():
     # print('number of mapped monDO:' + str(len(dict_monDo_to_DO)))
 
     # generate file with not mapped doids
-    file_not_mapped_doids = open('not_mapped_DOIDs.txt', 'w')
+    file_not_mapped_doids = open('not_mapped_DOIDs.txt', 'w', encoding='utf-8')
     file_not_mapped_doids.write('doid \t name \n')
     for doid in list_of_not_mapped_doids:
         file_not_mapped_doids.write(doid + '\t' + dict_DO_to_info[doid]['name'] + '\n')
@@ -361,10 +361,10 @@ Generate mapping files
 
 
 def mapping_files():
-    multi_mondo_for_do = open('mapping/multi_mondo_for_a_doid.txt', 'w')
+    multi_mondo_for_do = open('mapping/multi_mondo_for_a_doid.txt', 'w', encoding='utf-8')
     multi_mondo_for_do.write('doid\t name\t mondos\t mondo_names\n')
     for doid, mondos in dict_DO_to_monDOs_only_DO.items():
-        f = open('mapping/Do_to_monDO/' + doid + '.txt', 'w')
+        f = open('mapping/Do_to_monDO/' + doid + '.txt', 'w', encoding='utf-8')
         name=dict_DO_to_info[doid]['name'] if 'name' in dict_DO_to_info[doid] else ''
         f.write(doid + '\t' + name + '\n')
         f.write('monDO ID \t name \n')
@@ -382,7 +382,7 @@ def mapping_files():
         f.close()
 
     for monDo, doids in dict_monDo_to_DO_only_doid.items():
-        g = open('mapping/monDO_to_DO/without_xref/' + monDo + '.txt', 'w')
+        g = open('mapping/monDO_to_DO/without_xref/' + monDo + '.txt', 'w', encoding='utf-8')
         mondo_name = dict_monDO_info[mondo]['label'] if 'label' in dict_monDO_info[mondo] else ''
         g.write(monDo + '\t' + mondo_name + '\n')
         g.write('DOID \t name \n')
@@ -541,7 +541,7 @@ def gather_information_of_mondo_and_do_then_prepare_dict_for_csv(monDo,info,monD
     csv_map_nodes.writerow(dict_info_csv)
 
 #bash shell for merge doids into the mondo nodes
-bash_shell=open('merge_nodes.sh','w')
+bash_shell=open('merge_nodes.sh','w', encoding='utf-8')
 bash_shell.write('#!/bin/bash\n')
 
 '''
