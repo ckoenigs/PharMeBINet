@@ -53,7 +53,7 @@ class Disease:
 
 
 # file to put all information in it
-output = open('output_fusion.txt', 'w')
+output = open('output_fusion.txt', 'w', encoding='utf-8')
 
 # disease ontology license
 license='CC0 1.0 Universal'
@@ -123,26 +123,26 @@ do_label='diseaseontology'
 # generate csv files for integration
 header_nodes=['identifier','name','definition',"synonyms","umls_cuis","subset","xrefs","alternative_ids"]
 #csv file for DOID which are already in Hetionet
-file_included=open('output/already_included.csv','w')
+file_included=open('output/already_included.csv','w', encoding='utf-8')
 csv_writer_included=csv.DictWriter(file_included, delimiter='\t',fieldnames=header_nodes)
 csv_writer_included.writeheader()
 
 header_alt=header_nodes[:]
 header_alt.append('alternative_id')
-file_included_alt=open('output/already_included_but_mapped_with_alt.csv','w')
+file_included_alt=open('output/already_included_but_mapped_with_alt.csv','w', encoding='utf-8')
 csv_writer_included_alt=csv.DictWriter(file_included_alt, delimiter='\t',fieldnames=header_alt)
 csv_writer_included_alt.writeheader()
 
 
-file_included=open('output/new_nodes.csv','w')
-csv_writer_new=csv.DictWriter(file_included, delimiter='\t',fieldnames=header_nodes)
+file_new_nodes=open('output/new_nodes.csv','w', encoding='utf-8')
+csv_writer_new=csv.DictWriter(file_new_nodes, delimiter='\t',fieldnames=header_nodes)
 csv_writer_new.writeheader()
 
 # csv for relationship
 #header of rela
 header_rela=['child','parent']
-file_included=open('output/new_rela.csv','w')
-csv_writer_rela=csv.DictWriter(file_included, delimiter='\t',fieldnames=header_rela)
+file_rela=open('output/new_rela.csv','w', encoding='utf-8')
+csv_writer_rela=csv.DictWriter(file_rela, delimiter='\t',fieldnames=header_rela)
 csv_writer_rela.writeheader()
 
 
@@ -151,7 +151,7 @@ Create cypher file to update and create new Disease nodes from csv.
 Also create cypher query for generat is a relationships between Diseases
 '''
 def generate_cypher_file():
-    cypher_file=open('cypher.cypher','w')
+    cypher_file=open('cypher.cypher','w', encoding='utf-8')
     query_start='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/do/output/%s.csv" As line FIELDTERMINATOR '\\t' '''
 
     query_middel_set=''
@@ -184,7 +184,7 @@ def generate_cypher_file():
     cypher_file.close()
 
     # add query to update disease nodes with do='no'
-    cypher_general=open('../cypher_general.cypher','a')
+    cypher_general=open('../cypher_general.cypher','a', encoding='utf-8')
     query='''begin\n Match (d:Disease) Where not exists(d.diseaseOntology) Set d.diseaseOntology ='no';\n commit\n '''
     cypher_general.write(query)
     cypher_general.close()
@@ -244,9 +244,9 @@ def load_disease_ontologie_in_hetionet():
                 key = dict_DO_prop_to_hetionet_prop[key]
             if key in header_nodes:
                 if type(value) != list:
-                    dict_of_information[key] = value.encode('utf-8')
+                    dict_of_information[key] = value
                 else:
-                    dict_of_information[key] = '|'.join(value).encode('utf-8')
+                    dict_of_information[key] = '|'.join(value)
         dict_of_information['xrefs'] = '|'.join(xref_other)
 
         # hetionet has this doid not included
