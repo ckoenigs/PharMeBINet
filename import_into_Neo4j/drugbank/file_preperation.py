@@ -402,7 +402,7 @@ def drugs_combination_and_check(neo4j_label):
                            'external_links_resource_url','classification_alternative_parent','classification_substituent']
 
         for head in header:
-            if head == '\xef\xbb\xbfdrugbank_id':
+            if head == '\ufeffdrugbank_id':
                 query += '''identifier:line.drugbank_id, '''
                 new_header.append('identifier:ID')
             elif head in list_properties:
