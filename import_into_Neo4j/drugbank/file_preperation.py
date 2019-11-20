@@ -377,7 +377,7 @@ def drugs_combination_and_check(neo4j_label):
     # test if the sequence and the external identifier are the same and when something is not in the xml it is add
     # therefore a new file is generated
     # currently only the uniprot title are add to synonyms
-    with open(path_prepared_drugbank_files + '/drugbank_drug.tsv') as csvfile:
+    with open(path_prepared_drugbank_files + '/drugbank_drug.tsv', encoding='utf-8') as csvfile:
         reader = csv.DictReader(csvfile, delimiter='\t')
         header = reader.fieldnames
         ########
@@ -425,7 +425,8 @@ def drugs_combination_and_check(neo4j_label):
 
         counter_chembl=0
         for row in reader:
-            drugbank_id = row['\xef\xbb\xbfdrugbank_id']
+            # drugbank_id = row['\xef\xbb\xbfdrugbank_id']
+            drugbank_id = row['\ufeffdrugbank_id']
             dict_drugbank_drug_ids[drugbank_id] = 1
             name = row['name']
             cas_number = row['cas_number']
