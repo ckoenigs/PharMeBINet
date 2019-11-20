@@ -70,7 +70,7 @@ def get_pathway_properties():
 version_string='PC11_'
 
 # cypher file
-cypher_file=open('cypher.cypher','w')
+cypher_file=open('cypher.cypher','w', encoding='utf-8')
 #query to delete all old pathways
 query='MATCH (n:Pathway) Detach Delete n;\n'
 cypher_file.write(query)
@@ -86,10 +86,10 @@ dict_own_id_to_pcid_and_other={}
 dict_id_to_node={}
 
 # csv files for nodes and relationship
-file_node=open('output/node.tsv','w')
+file_node=open('output/node.tsv','w', encoding='utf-8')
 csv_node=csv.writer(file_node,delimiter='\t')
 
-file_rela=open('output/rela.tsv','w')
+file_rela=open('output/rela.tsv','w', encoding='utf-8')
 csv_rela=csv.writer(file_rela,delimiter='\t')
 rela_header=['gene_id','pathway_id']
 csv_rela.writerow(rela_header)
@@ -169,7 +169,7 @@ def prepare_value(value, head, combined_node):
     if type(value) in [list, set]:
         list_list_properties.add(head)
         value = '|'.join(value)
-    return value.encode('utf-8')
+    return value
 
 '''
 fill the node csv file by going through the name dictionary and maybe they nodes with the same name will be merges to one node
