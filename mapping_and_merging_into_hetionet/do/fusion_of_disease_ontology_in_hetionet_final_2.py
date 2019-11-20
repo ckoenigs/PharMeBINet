@@ -11,47 +11,6 @@ from py2neo import Graph#, authenticate
 import datetime
 import sys,csv
 
-
-
-class Disease:
-    """
-    source: string
-    url: string
-    license: string
-    name: string
-    identifier: string (DOID)
-    definition: string
-    synonyms: list of strings (names)
-    xrefs: list of strings (like mesh or omim)
-    umls_cuis: list of strings
-    alternative_ids: list of strings (alternatives doids)
-    subset: list of strings
-    resource: list of strings
-    """
-
-    def __init__(self, source, url, licenses, name, identifier, resource):
-        self.source = source
-        self.url = url
-        self.license = licenses
-        self.name = name
-        self.identifier = identifier
-        self.definition = ''
-        self.synonyms = ''
-        self.xrefs = ''
-        self.umls_cuis = ''
-        self.alternative_ids = ''
-        self.subset = ''
-        self.resource = resource
-
-    def set_other_properties(self, definition, synonyms, xrefs, umls_cuis, alternative_ids, subset):
-        self.definition = definition
-        self.synonyms = synonyms
-        self.xrefs = xrefs
-        self.umls_cuis = umls_cuis
-        self.alternative_ids = alternative_ids
-        self.subset = subset
-
-
 # file to put all information in it
 output = open('output_fusion.txt', 'w', encoding='utf-8')
 
@@ -91,10 +50,11 @@ def load_all_hetionet_disease_in_dictionary():
     query = '''Match (n:Disease) RETURN n '''
     results = g.run(query)
     for disease, in results:
-        list_diseases_in_hetionet.append(disease['identifier'])
+        identifier=disease['identifier']
+        list_diseases_in_hetionet.append(identifier)
         disease=dict(disease)
         # dict_diseases_in_hetionet['huh']=disease
-        dict_diseases_in_hetionet[disease['identifier']] = disease
+        dict_diseases_in_hetionet[identifier] = disease
     print('size of diseases before the rest of disease ontology was add: ' + str(len(dict_diseases_in_hetionet)))
     output.write(
         'size of diseases before the rest of disease ontology was add: ' + str(len(dict_diseases_in_hetionet)) + '\n')
@@ -213,13 +173,16 @@ DOID:9917 war nur als alternative id da
 def load_disease_ontologie_in_hetionet():
     query = '''Match (n:%s) RETURN n''' %(do_label)
     results = g.run(query)
+    set_of_all_doids=set(dict_diseases_in_hetionet.keys())
 
     counter_new_nodes=0
     counter_all=0
     for disease, in results:
         counter_all+=1
-        alternative_ids = disease['alt_id'] if disease['alt_id'] != None else []
-        overlap=list(set(alternative_ids) & set(dict_diseases_in_hetionet.keys()))
+        if disease['id']=='DOID:10210':
+            print('blub')
+        alternative_ids = disease['alt_ids'] if 'alt_ids' in disease else []
+        overlap=list(set(alternative_ids) & set_of_all_doids)
         has_overlap_between_alternative_and_hetionet_id = True if len(overlap
             ) > 0 else False
 
@@ -247,6 +210,8 @@ def load_disease_ontologie_in_hetionet():
                     dict_of_information[key] = value
                 else:
                     dict_of_information[key] = '|'.join(value)
+            elif key =='alt_ids':
+                dict_of_information['alternative_ids']=alternative_ids
         dict_of_information['xrefs'] = '|'.join(xref_other)
 
         # hetionet has this doid not included
