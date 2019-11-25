@@ -142,6 +142,7 @@ def load_compounds_from_hetionet():
     for result, in results:
         i += 1
         identifier = result['identifier']
+        print(identifier)
         inchikey = result['inchikey']
         inchi = result['inchi']
         name = result['name']
@@ -151,7 +152,7 @@ def load_compounds_from_hetionet():
         synonyms=result['synonyms'] if 'synonyms' in result else []
 
         #generate name/synonym dictionary to drugbank identifier
-        dict_synonym_to_drugbank_id[name.lower()].append(identifier)
+        dict_synonym_to_drugbank_id[name.lower()].append(identifier) if  name is not None else print('no name')
 
         for synonym in synonyms:
             dict_synonym_to_drugbank_id[synonym.lower()].append(identifier)
@@ -749,7 +750,7 @@ def map_ctd_to_hetionet_compound():
     print(list_new_compounds)
 
     # all not mapped ctd chemicals
-    g = open('chemical/not_mapped_drugs.tsv', 'w')
+    g = io.open('chemical/not_mapped_drugs.tsv', 'w', encoding='utf-8', newline='')
     not_mapped_csv=csv.writer(g,delimiter='\t')
     not_mapped_csv.writerow(['mesh id','name', 'synonyms'])
 
