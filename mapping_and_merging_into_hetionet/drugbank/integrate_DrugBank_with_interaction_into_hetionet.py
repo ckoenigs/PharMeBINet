@@ -9,8 +9,6 @@ from py2neo import Graph#, authenticate
 import datetime
 import sys, csv
 
-# reload(sys)
-# sys.setdefaultencoding("utf-8")
 
 '''
 create a connection with neo4j
@@ -126,16 +124,19 @@ csv_unii_drugbank_table.writerow(['unii','drugbank_id'])
 '''
 Load in all information from DrugBank.
 and generate unii-durgbank table file 
+Where n.identifier="DB13179"
 '''
 
 
 def load_all_DrugBank_compound_in_dictionary():
-    query = '''Match (n:''' + neo4j_label_drugbank + ''') RETURN n '''
+    query = '''Match (n:''' + neo4j_label_drugbank + ''')  RETURN n '''
     print(query)
     results = g.run(query)
     for compound, in results:
         all_information = dict(compound)
         id = compound['identifier']
+        if id=='DB05381':
+            print('huh')
         if 'unii' in compound:
             unii= compound['unii']
             csv_unii_drugbank_table.writerow([unii,id])
@@ -309,13 +310,13 @@ def integrate_DB_compound_information_into_hetionet():
                     else:
                         dict_info_prepared[key] = property.replace('"', "'")
 
-                dict_info_prepared['xrefs'] = '|'.join(list_merge_xref_values)
-                if alternative_id_integrated:
-                    dict_info_prepared['alternative_id'] = drug_id
-                    csv_update_alt.writerow(dict_info_prepared)
+            dict_info_prepared['xrefs'] = '|'.join(list_merge_xref_values)
+            if alternative_id_integrated:
+                dict_info_prepared['alternative_id'] = drug_id
+                csv_update_alt.writerow(dict_info_prepared)
 
-                else:
-                    csv_update.writerow(dict_info_prepared)
+            else:
+                csv_update.writerow(dict_info_prepared)
 
 
         else:
@@ -505,7 +506,7 @@ def main():
     print(datetime.datetime.utcnow())
     print('load all connection in dictionary')
 
-    load_in_all_interaction_connection_from_drugbank_in_dict()
+    # load_in_all_interaction_connection_from_drugbank_in_dict()
 
     print(
         '#################################################################################################################################################################')
