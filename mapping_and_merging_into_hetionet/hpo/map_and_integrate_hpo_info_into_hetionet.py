@@ -9,7 +9,7 @@ from py2neo import Graph#, authenticate
 import MySQLdb as mdb
 import sys
 import datetime
-import threading
+import threading, csv
 
 # set default encoding on utf-8
 sys.setdefaultencoding('utf-8')
@@ -135,50 +135,61 @@ list_not_mapped_disease_ids_to_mondo = []
 dict_disease_id_to_mondos = {}
 
 # files for the different mapping steps of disease
-file_decipher_name = open('mapping_files/disease/map_decipher_with_name.txt', 'w')
-file_decipher_name.write('decipher id \t decipher name \t mondo \t db_type \n')
+file_decipher_name = open('mapping_files/disease/map_decipher_with_name.txt', 'w', encoding='utf-8')
+csv_decipher_name=csv.writer(file_decipher_name,delimiter='\t')
+csv_decipher_name.writerow(['decipher id','decipher name','mondo','db_type'])
 
-file_decipher_name_umls = open('mapping_files/disease/map_decipher_with_name_umls_cui.txt', 'w')
-file_decipher_name_umls.write('decipher id \t decipher name \t umls cuis \t mondos \t db_type \n')
+file_decipher_name_umls = open('mapping_files/disease/map_decipher_with_name_umls_cui.txt', 'w', encoding='utf-8')
+csv_decipher_name_umls=csv.writer(file_decipher_name_umls,delimiter='\t')
+csv_decipher_name_umls.writerow(['decipher id','decipher name','umls cuis','mondo','db_type'])
 
-file_decipher_name_split = open('mapping_files/disease/map_decipher_with_name_split.txt', 'w')
-file_decipher_name_split.write('decipher id \t decipher name \t mondos \t db_type \n')
+file_decipher_name_split = open('mapping_files/disease/map_decipher_with_name_split.txt', 'w', encoding='utf-8')
+csv_decipher_name_split=csv.writer(file_decipher_name_split,delimiter='\t')
+csv_decipher_name_split.writerow(['decipher id','decipher name','mondo','db_type'])
 
-file_not_map_decipher = open('mapping_files/disease/not_map_decipher.txt', 'w')
-file_not_map_decipher.write('decipher id \t decipher name \t db_type \n')
+file_not_map_decipher = open('mapping_files/disease/not_map_decipher.txt', 'w', encoding='utf-8')
+csv_decipher_not_mapped=csv.writer(file_not_map_decipher,delimiter='\t')
+csv_decipher_not_mapped.writerow(['decipher id','decipher name','db_type'])
 
-file_omim_omim = open('mapping_files/disease/map_omim_with_omim.txt', 'w')
-file_omim_omim.write('omim id \t omim name \t mondos \n')
+file_omim_omim = open('mapping_files/disease/map_omim_with_omim.txt', 'w', encoding='utf-8')
+csv_omim_omim=csv.writer(file_omim_omim,delimiter='\t')
+csv_omim_omim.writerow(['omim id','omim name','mondos'])
 
-file_omim_umls_cui = open('mapping_files/disease/map_omim_with_umls_cui.txt', 'w')
-file_omim_umls_cui.write('omim id \t omim name \t umls cuis \t mondos \n')
+file_omim_umls_cui = open('mapping_files/disease/map_omim_with_umls_cui.txt', 'w', encoding='utf-8')
+csv_omim_cui=csv.writer(file_omim_umls_cui,delimiter='\t')
+csv_omim_cui.writerow(['omim id','omim name','umls cuis','mondos'])
 
-file_omim_name = open('mapping_files/disease/map_omim_with_name.txt', 'w')
-file_omim_name.write('omim id \t omim name \t mondos \n')
+file_omim_name = open('mapping_files/disease/map_omim_with_name.txt', 'w', encoding='utf-8')
+csv_omim_name=csv.writer(file_omim_name,delimiter='\t')
+csv_omim_name.writerow(['omim id','omim name','mondos'])
 
-file_not_map_orpha = open('mapping_files/disease/not_map_orpha.txt', 'w')
-file_not_map_orpha.write('orpha id \t orpha name \t mondos \n')
+file_not_map_orpha = open('mapping_files/disease/not_map_orpha.txt', 'w', encoding='utf-8')
+csv_not_mapped_orpha=csv.writer(file_not_map_orpha,delimiter='\t')
+csv_not_mapped_orpha.writerow(['orpha id','orpha name','mondos'])
 
-file_orpha_orpha = open('mapping_files/disease/map_orpha_with_orpha.txt', 'w')
-file_orpha_orpha.write('orpha id \t orpha name \t mondos \n')
+file_orpha_orpha = open('mapping_files/disease/map_orpha_with_orpha.txt', 'w', encoding='utf-8')
+csv_orpha_orpha=csv.writer(file_orpha_orpha,delimiter='\t')
+csv_orpha_orpha.writerow(['orpha id','orpha name','mondos'])
 
-file_orpha_umls_cui = open('mapping_files/disease/map_orpha_with_umls_cui.txt', 'w')
-file_orpha_umls_cui.write('orpha id \t orpha name \t umls cuis \t mondos \n')
+file_orpha_name = open('mapping_files/disease/map_orpha_with_name.txt', 'w', encoding='utf-8')
+csv_orpha_name=csv.writer(file_orpha_name,delimiter='\t')
+csv_orpha_name.writerow(['orpha id','orpha name','mondos'])
 
-file_orpha_name = open('mapping_files/disease/map_orpha_with_name.txt', 'w')
-file_orpha_name.write('orpha id \t orpha name \t mondos \n')
+file_not_map_omim = open('mapping_files/disease/not_map_omim.txt', 'w', encoding='utf-8')
+csv_omim_not_mapped=csv.writer(file_not_map_omim,delimiter='\t')
+csv_omim_not_mapped.writerow(['omim id','omim name'])
 
-file_not_map_omim = open('mapping_files/disease/not_map_omim.txt', 'w')
-file_not_map_omim.write('omim id \t omim name \t mondos \n')
+file_hpo_has_umls_cui = open('mapping_files/symptom/map_hpo_has_umls_cui.txt', 'w', encoding='utf-8')
+csv_symptoms=csv.writer(file_hpo_has_umls_cui,delimiter='\t')
+csv_symptoms.writerow(['hpo id','hpo name','umls cui'])
 
-file_hpo_has_umls_cui = open('mapping_files/symptom/map_hpo_has_umls_cui.txt', 'w')
-file_hpo_has_umls_cui.write('hpo id \t hpo name \t umls cui \n')
+file_hpo_map_name_to_umls_cui = open('mapping_files/symptom/map_hpo_name_to_umls_cui.txt', 'w', encoding='utf-8')
+csv_symptoms_name=csv.writer(file_hpo_map_name_to_umls_cui,delimiter='\t')
+csv_symptoms_name.writerow(['hpo id','hpo name','umls cui'])
 
-file_hpo_map_name_to_umls_cui = open('mapping_files/symptom/map_hpo_name_to_umls_cui.txt', 'w')
-file_hpo_map_name_to_umls_cui.write('hpo id \t hpo name \t umls cui \n')
-
-file_not_map_hpo = open('mapping_files/symptom/not_map_hpo.txt', 'w')
-file_not_map_hpo.write('hpo id \t hpo name \n')
+file_not_map_hpo = open('mapping_files/symptom/not_map_hpo.txt', 'w', encoding='utf-8')
+csv_symptoms_not_mapped=csv.writer(file_not_map_hpo,delimiter='\t')
+csv_symptoms_not_mapped.writerow(['hpo id','hpo name'])
 
 # counter for decipher and orphanet diseases
 counter_decipher = 0
@@ -251,7 +262,7 @@ def check_on_mapping_same_source(dictionary_of_source, counter_map_source_to_sou
                 mondos = [mondo]
         dict_disease_id_to_mondos[db_disease_id] = mondos
         mondos = '|'.join(mondos)
-        file_source_source.write(db_disease_id + '\t' + db_disease_name + '\t' + mondos + '\n')
+        file_source_source.writerow([db_disease_id,db_disease_name, mondos ])
         return True
     else:
         return False
@@ -264,7 +275,7 @@ def mapping_with_name(db_disease_name, db_disease_id,counter_source_with_name,fi
     if db_disease_name in dict_name_to_mondo:
         counter_source_with_name += 1
         mondo = dict_name_to_mondo[db_disease_name]
-        file_source_name.write(db_disease_id + '\t' + db_disease_name + '\t' + mondo + '\n')
+        file_source_name.writerow([db_disease_id , db_disease_name , mondo ])
         dict_disease_id_to_mondos[db_disease_id] = [mondo]
         return True
     else:
@@ -276,7 +287,7 @@ not mapped disease
 def not_mapped_disease(counter_source_not_mapped,db_disease_id,db_disease_name,file_not_map_source):
     counter_source_not_mapped += 1
     list_not_mapped_disease_ids_to_mondo.append(db_disease_id)
-    file_not_map_source.write(db_disease_id + '\t' + db_disease_name + '\n')
+    file_not_map_source.writerow([db_disease_id , db_disease_name ])
 
 '''
 check for an identifier
@@ -317,7 +328,7 @@ def check_for_mapping_with_umls(db_disease_name, db_disease_id,name_in_umls, cou
         dict_disease_id_to_mondos[db_disease_id] = mondos
         mondos = '|'.join(mondos)
         cuis = '|'.join(cuis)
-        file_source_umls_cui.write(db_disease_id + '\t' + db_disease_name + '\t' + cuis + '\t' + mondos + '\n')
+        file_source_umls_cui.writerow([db_disease_id , db_disease_name , cuis , mondos ])
     else:
         return False
 
@@ -370,7 +381,7 @@ def map_hpo_disease_to_mondo(db_disease_id, db_disease_name, db_disease_source):
         #            print(counter_decipher)
         # test if name is directly in dictionary
         # else try to mapp the name but change the name so that no () appears and use the synonyms in the  name
-        if not mapping_with_name(db_disease_name,db_disease_id,counter_decipher_map_with_name,file_decipher_name):
+        if not mapping_with_name(db_disease_name,db_disease_id,counter_decipher_map_with_name,csv_decipher_name):
             names = db_disease_name.split(' (')
             has_found_one = False
             mondos = set([])
@@ -388,8 +399,8 @@ def map_hpo_disease_to_mondo(db_disease_id, db_disease_name, db_disease_source):
                 counter_decipher_map_with_name_split += 1
                 dict_disease_id_to_mondos[db_disease_id] = list(mondos)
                 mondos = '|'.join(list(mondos))
-                file_decipher_name_split.write(
-                    db_disease_id + '\t' + db_disease_name + '\t' + mondos + '\t' + db_disease_source + '\n')
+                csv_decipher_name_split.writerow([
+                    db_disease_id , db_disease_name , mondos , db_disease_source])
             # try to map with find a umls cui for the name and mapp this id
             else:
                 cur = con.cursor()
@@ -416,10 +427,10 @@ def map_hpo_disease_to_mondo(db_disease_id, db_disease_name, db_disease_source):
                     dict_disease_id_to_mondos[db_disease_id] = mondos
                     mondos = '|'.join(mondos)
                     cuis = '|'.join(cuis)
-                    file_decipher_name_umls.write(
-                        db_disease_id + '\t' + db_disease_name + '\t' + cuis + '\t' + mondos + '\t' + db_disease_source + '\n')
+                    csv_decipher_name_umls.writerow([
+                        db_disease_id , db_disease_name , cuis , mondos , db_disease_source ])
                 else:
-                    not_mapped_disease(counter_decipher_not_mapped,db_disease_id,db_disease_name,file_not_map_decipher)
+                    not_mapped_disease(counter_decipher_not_mapped,db_disease_id,db_disease_name,csv_decipher_not_mapped)
                     return
 
     elif db_disease_source == 'OMIM':
@@ -430,14 +441,14 @@ def map_hpo_disease_to_mondo(db_disease_id, db_disease_name, db_disease_source):
 
         #            print('omim')
         # test if omim id is direct in DO
-        if not check_on_mapping_same_source(dict_omim_to_mondo,counter_omim_map_with_omim,db_disease_name,db_disease_id,file_omim_omim):
+        if not check_on_mapping_same_source(dict_omim_to_mondo,counter_omim_map_with_omim,db_disease_name,db_disease_id,csv_omim_omim):
 
-            found_with_umls=check_for_mapping_with_umls(db_disease_name,db_disease_id,"OMIM",counter_omim_map_with_umls_cui,file_omim_umls_cui,counter_omim_with_name,counter_omim_not_mapped,file_not_map_omim)
+            found_with_umls=check_for_mapping_with_umls(db_disease_name,db_disease_id,"OMIM",counter_omim_map_with_umls_cui,csv_omim_cui)
             if not found_with_umls:
-                mappped_with_name=mapping_with_name(db_disease_name,db_disease_id,counter_omim_with_name,file_omim_name)
+                mappped_with_name=mapping_with_name(db_disease_name,db_disease_id,counter_omim_with_name,csv_omim_name)
                 if not mappped_with_name:
                     not_mapped_disease(counter_omim_not_mapped, db_disease_id, db_disease_name,
-                                       file_not_map_omim)
+                                       csv_omim_not_mapped)
                     return
                 
     elif db_disease_source == 'ORPHA':
@@ -445,11 +456,11 @@ def map_hpo_disease_to_mondo(db_disease_id, db_disease_name, db_disease_source):
         #            print('omim')
         # test if ORPHA id is direct in Mondo
         if not check_on_mapping_same_source(dict_orphanet_to_mondo, counter_orpha_map_with_orpha, db_disease_name,
-                                            db_disease_id, file_orpha_orpha):
+                                            db_disease_id, csv_orpha_orpha):
             #check if name mapps
-            if not mapping_with_name(db_disease_name,db_disease_id,counter_orpha_with_name,file_orpha_name):
+            if not mapping_with_name(db_disease_name,db_disease_id,counter_orpha_with_name,csv_orpha_name):
                 #not mapped information are add to file
-                not_mapped_disease(counter_orpha_not_mapped,db_disease_id,db_disease_name,file_not_map_orpha)
+                not_mapped_disease(counter_orpha_not_mapped,db_disease_id,db_disease_name,csv_not_mapped_orpha)
 
     else:
         print('a different db disease source '+ db_disease_source)
@@ -547,7 +558,7 @@ def map_hpo_symptoms_and_integrate_into_hetionet():
                     has_at_least_one = True
                     umls_cuis.append(xref.split(':')[1])
             if has_at_least_one:
-                file_hpo_has_umls_cui.write(hpo_id + '\t' + name + '\t' + '|'.join(umls_cuis) + '\n')
+                csv_symptoms.writerow([hpo_id , name , '|'.join(umls_cuis)])
 
                 # if no external identifier is a umls cui then search for the name in umls
         if has_at_least_one == False:
@@ -558,15 +569,15 @@ def map_hpo_symptoms_and_integrate_into_hetionet():
             if rows_counter > 0:
                 for (cui,) in cur:
                     umls_cuis.append(cui)
-                file_hpo_map_name_to_umls_cui.write(
-                    hpo_id + '\t' + name + '\t' + '|'.join(umls_cuis) + '\n')
+                csv_symptoms_name.writerow([
+                    hpo_id , name , '|'.join(umls_cuis) ])
             else:
 
                 #                            print('Even know nothing is found ;(')
                 #                            print(dict_all_info['id'][0])
                 #                            print(name)
                 counter_no_umls_cui += 1
-                file_not_map_hpo.write(hpo_id + '\t' + name + '\n')
+                csv_symptoms_not_mapped.writerow([hpo_id , name ])
                 continue
         no_cui_in_hetinet_symptomes = False
         all_mapped_cuis_mesh_ids = []
