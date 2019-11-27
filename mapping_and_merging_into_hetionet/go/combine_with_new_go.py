@@ -209,13 +209,13 @@ def get_is_a_relationships_and_add_to_csv(namespace):
     query = '''Match (n:go)-[:is_a]->(m:go) Where n.namespace="%s"  Return n.id,m.id;'''
     query = query % namespace
     results = g.run(query)
-    file_name = 'output/integrate_go_' + namespace + '_mapped.tsv'
+    file_name = 'output/integrate_go_' + namespace + '_relationship.tsv'
     file = open(file_name, 'w')
     csv_file = csv.writer(file, delimiter='\t')
     csv_file.writerow(['identifier_1', 'identifier_2'])
 
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/go/%s" As line FIELDTERMINATOR '\\t' 
-    Match (a1:%s{identifier:line.}), (a2:%s{identifier:line.}) Create (a1)-[:IS_A_%]->(a2);\n'''
+    Match (a1:%s{identifier:line.identifier_1}), (a2:%s{identifier:line.identifier_2}) Create (a1)-[:IS_A_%s{license:"CC0 4.0 International", source:"GO", unbiased:"false"}]->(a2);\n'''
     query = query % (file_name, dict_go_to_hetionet_label[namespace], dict_go_to_hetionet_label[namespace],
                      dict_relationship_ends[namespace])
     cypher_file.write(query)
