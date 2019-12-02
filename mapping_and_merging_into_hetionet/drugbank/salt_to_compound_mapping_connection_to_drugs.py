@@ -25,7 +25,7 @@ def create_connection_with_neo4j():
 dict_not_mapped_compound = {}
 
 # dictionary not mapped compound names to node
-dict_nomt_mapped_compound_name = {}
+dict_not_mapped_compound_name = {}
 
 '''
 Load all compounds which did not mapped and upload them into a dictionary with inchikey as key
@@ -43,7 +43,7 @@ def find_not_mapped_compounds_and_add_to_dict():
         inchikey = inchikey.split('=')[1] if '=' in inchikey else inchikey
         dict_not_mapped_compound[inchikey] = dict(node)
         if 'name' in node:
-            dict_nomt_mapped_compound_name[node['name'].lower()] = dict(node)
+            dict_not_mapped_compound_name[node['name'].lower()] = dict(node)
     print(len(dict_not_mapped_compound))
 
 
@@ -114,7 +114,9 @@ Add a merge to the bash file
 
 
 def add_merge_to_sh_file(dict_not_mapped, mapped_value, node_id):
-    compound_id = dict_not_mapped[mapped_value]['identifier']
+    compound = dict_not_mapped[mapped_value]
+    print(compound)
+    compound_id=compound['identifier']
     # if it mapped to a not mapped compound
     text = 'python ../add_information_from_a_not_existing_node_to_existing_node.py %s %s %s\n' % (
         compound_id, node_id, 'Compound')
@@ -140,7 +142,7 @@ def prepare_node_csv():
         csv_node.writerow(node)
         node_id = node['identifier']
         inchikey = node['inchikey']
-        name = node['name']
+        name = node['name'].lower()
         if 'unii' in node:
             unii = node['unii']
             csv_unii_drugbank_table.writerow([unii, node_id])
@@ -148,8 +150,8 @@ def prepare_node_csv():
         # if so merge this nodes together
         if inchikey in dict_not_mapped_compound:
             add_merge_to_sh_file(dict_not_mapped_compound, inchikey, node_id)
-        elif name.lower() in dict_nomt_mapped_compound_name:
-            add_merge_to_sh_file(dict_nomt_mapped_compound_name, name, node_id)
+        elif name in dict_not_mapped_compound_name:
+            add_merge_to_sh_file(dict_not_mapped_compound_name, name, node_id)
 
 
 '''
