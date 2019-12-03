@@ -224,9 +224,14 @@ def generate_files(file_name_addition, ontology, dict_ctd_in_hetionet,dict_ctd_i
         for ctd_id, hetionet_id in dict_ctd_in_hetionet_alternative.items():
             writer.writerow([ctd_id, hetionet_id])
 
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/GO/mapping_%s.csv" As line Match (c:%s{ identifier:line.GOIDHetionet}), (n:CTDGO{go_id:line.GOIDCTD}) SET  c.url_ctd=" http://ctdbase.org/detail.go?type=go&acc="+line.GOIDCTD, c.highestGOLevel=n.highestGOLevel, c.resource=c.resource+"CTD", c.ctd="yes" Create (c)-[:equal_to_CTD_go]->(n);\n'''
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/GO/mapping_%s.csv" As line Match (c:%s{ identifier:line.GOIDHetionet}), (n:CTDGO{go_id:line.GOIDCTD}) SET  c.url_ctd=" http://ctdbase.org/detail.go?type=go&acc="+line.GOIDCTD, c.highestGOLevel=n.highestGOLevel, c.ctd="yes" Create (c)-[:equal_to_CTD_go]->(n);\n'''
     query = query % (file_name_addition, ontology)
     cypher_file.write(query)
+    cypher_file.write('begin\n')
+    query= '''Match (n:%s) Where exists(n.ctd) Set c.resource=c.resource+"CTD";\n'''
+    query= query %(ontology)
+    cypher_file.write(query)
+    cypher_file.write('commit\n')
     cypher_file.write('begin\n')
     query= '''Match (n:%s) Where not exists(n.ctd) Set n.ctd="no";\n'''
     query= query %(ontology)
