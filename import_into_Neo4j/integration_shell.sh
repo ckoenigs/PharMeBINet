@@ -21,7 +21,7 @@ echo "Current time: $now"
 cd sider 
 echo sider
 
-python importSideEffects_change_to_umls_meddra_final.py data/ $path_to_project > output_integration_sider.txt
+python3 importSideEffects_change_to_umls_meddra_final.py data/ $path_to_project > output_integration_sider.txt
 
 
 now=$(date +"%F %T")
@@ -58,7 +58,7 @@ echo "Current time: $now"
 cd  ndf_rt
 echo ndf-rt
 
-python prepare_ndf_rt_to_neo4j_integration.py $path_to_project > output_integration_ndf_rt.txt
+python3 prepare_ndf_rt_to_neo4j_integration.py $path_to_project > output_integration_ndf_rt.txt
 
 
 now=$(date +"%F %T")
@@ -94,7 +94,7 @@ echo "Current time: $now"
 cd  do
 echo do
 
-python ../EFO/transform_obo_to_csv_and_cypher_file.py data/HumanDO.obo do diseaseontology $path_to_project > output_generate_integration_file.txt
+python3 ../EFO/transform_obo_to_csv_and_cypher_file.py data/HumanDO.obo do diseaseontology $path_to_project > output_generate_integration_file.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -121,7 +121,7 @@ echo "Current time: $now"
 cd  GO
 echo go
 
-python ../EFO/transform_obo_to_csv_and_cypher_file.py go-basic.obo GO go $path_to_project > output_generate_integration_file.txt
+python3 ../EFO/transform_obo_to_csv_and_cypher_file.py go-basic.obo GO go $path_to_project > output_generate_integration_file.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -147,25 +147,7 @@ echo "Current time: $now"
 cd  hpo
 echo hpo
 
-#python integrate_hpo_disease_symptomes_into_neo4j.py  > output_integration_hpo.txt
-python ../EFO/transform_obo_to_csv_and_cypher_file.py hpo.obo hpo HPOsymptom $path_to_project > output_generate_integration_file.txt
-
-echo generation of csv from tsv file
-python integrate_hpo_disease_symptomes_into_neo4j.py $path_to_project > output_disease.txt
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-echo integrate hpo into neo4j
-
-cat cypher.cypher | $path_neo4j/cypher-shell -u neo4j -p test > output_cypher_integration.txt
-
-sleep 180
-
-$path_neo4j/neo4j restart
-
-
-sleep 120
+hpo_integration.sh $path_to_project > output_hpo.txt
 
 cd ..
 
@@ -175,7 +157,7 @@ echo "Current time: $now"
 cd aeolus
 echo aeolus
 
-python importAeolus_final.py aeolus_v1/ $path_to_project > output_integration_aeolus.txt
+python3 importAeolus_final.py aeolus_v1/ $path_to_project > output_integration_aeolus.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -200,15 +182,15 @@ echo "Current time: $now"
 cd uniProt
 echo UniProt
 
-#python parse_uniprot_flat_file_to_tsv.py database/uniprot_sprot.dat $path_to_project > output_integration.txt
-python parse_uniprot_flat_file_to_tsv.py $path_to_project > output_integration.txt
+#python3 parse_uniprot_flat_file_to_tsv.py database/uniprot_sprot.dat $path_to_project > output_integration.txt
+python3 parse_uniprot_flat_file_to_tsv.py $path_to_project > output_integration.txt
 
 rm database/*
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-echo integrate aeolus into neo4j
+echo integrate uniprot into neo4j
 
 $path_neo4j/neo4j-shell -file cypher_protein.cypher > output_cypher_integration_$i.txt
 
@@ -239,7 +221,7 @@ echo "Current time: $now"
 cd  EFO
 echo EFO
 
-python transform_obo_to_csv_and_cypher_file.py efo.obo EFO efo $path_to_project > output_generate_integration_file.txt
+python3 transform_obo_to_csv_and_cypher_file.py efo.obo EFO efo $path_to_project > output_generate_integration_file.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -264,7 +246,7 @@ echo "Current time: $now"
 cd  ncbi_genes
 echo NCBI
 
-python integrate_ncbi_genes_which_are_already_in_hetionet.py $path_to_project > output_generate_integration_file.txt
+python3 integrate_ncbi_genes_which_are_already_in_hetionet.py $path_to_project > output_generate_integration_file.txt
 
 echo rm gz file
 rm data/*
@@ -292,7 +274,7 @@ echo "Current time: $now"
 cd  pathway
 echo pathway
 
-python reconstruct_pathway.py $path_to_project > output_generate_integration_file.txt
+python3 reconstruct_pathway.py $path_to_project > output_generate_integration_file.txt
 
 echo rm gz file
 rm data/*
