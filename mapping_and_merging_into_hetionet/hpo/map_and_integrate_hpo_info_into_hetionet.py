@@ -12,9 +12,6 @@ import datetime
 import threading, csv
 from _collections import defaultdict
 
-# set default encoding on utf-8
-sys.setdefaultencoding('utf-8')
-
 
 # class of thread
 class diseaseMapThread(threading.Thread):
