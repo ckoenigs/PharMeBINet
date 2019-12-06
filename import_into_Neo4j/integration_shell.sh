@@ -147,7 +147,7 @@ echo "Current time: $now"
 cd  hpo
 echo hpo
 
-hpo_integration.sh $path_to_project > output_hpo.txt
+./hpo_integration.sh $path_neo4j $path_to_project > output_hpo.txt
 
 cd ..
 
