@@ -3,6 +3,10 @@
 #define path to neo4j bin
 path_neo4j=$1
 
+#path to project
+path_to_project=$2
+
+
 #download obo file
 wget  -O ./hpo.obo "https://raw.githubusercontent.com/obophenotype/human-phenotype-ontology/master/hp.obo"
 
