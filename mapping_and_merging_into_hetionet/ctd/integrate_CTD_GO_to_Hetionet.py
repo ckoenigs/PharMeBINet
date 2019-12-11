@@ -228,7 +228,7 @@ def generate_files(file_name_addition, ontology, dict_ctd_in_hetionet,dict_ctd_i
     query = query % (file_name_addition, ontology)
     cypher_file.write(query)
     cypher_file.write('begin\n')
-    query= '''Match (n:%s) Where exists(n.ctd) Set c.resource=c.resource+"CTD";\n'''
+    query= '''Match (c:%s) Where exists(n.ctd) Set c.resource=c.resource+"CTD";\n'''
     query= query %(ontology)
     cypher_file.write(query)
     cypher_file.write('commit\n')
