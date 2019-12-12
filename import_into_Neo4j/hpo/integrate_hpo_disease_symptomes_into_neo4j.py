@@ -84,7 +84,8 @@ file:
     7 	Onset modifier: A term-id from the HPO-sub-ontology below the term “Age of onset” (HP:0003674). 	
     8 	Frequency modifier: A term-id from the HPO-sub-ontology below the term “Frequency” (HP:0040279) 	
     9 	With: can have information  about characteristics 
-    10 	Aspect: only with O (Phenotypic abnormality) 	
+    10 	Aspect:  one of P (Phenotypic abnormality), I (inheritance), C (onset and clinical course). This field is mandatory; cardinality 1
+        It also exists M and empty but this are not defined?
     11 	Synonym: can have synonyms for disease or disorder 	
     12 	Date 	
     13 	Assigned by 	
@@ -110,9 +111,9 @@ def gather_all_disease_symptom_information_from_HPO():
         evidence_code = splitted[6]
         frequency_modi = splitted[8]
         aspect = splitted[10]
-        # aspect M stands for a not known aspect, so I filter them out
-        if aspect == 'M':
-            continue
+        # # aspect M stands for a not known aspect, so I filter them out
+        # if aspect == 'M':
+        #     continue
         if  (db_disease+':'+db_disease_id, hpo_id) in dict_disease_symptom_hpo_pair_to_information:
             dict_disease_symptom_hpo_pair_to_information[(db_disease + ':' + db_disease_id, hpo_id)]['qualifier'].add(qualifier)
             dict_disease_symptom_hpo_pair_to_information[(db_disease + ':' + db_disease_id, hpo_id)]['reference_id'].add(
