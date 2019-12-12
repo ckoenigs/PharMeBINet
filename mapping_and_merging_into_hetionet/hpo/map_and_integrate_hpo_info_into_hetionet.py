@@ -8,7 +8,7 @@ Created on Tue Dec  5 12:14:27 2017
 from py2neo import Graph#, authenticate
 import MySQLdb as mdb
 import sys
-import datetime
+import datetime, time
 import threading, csv
 from _collections import defaultdict
 
@@ -33,12 +33,32 @@ class diseaseMapThread(threading.Thread):
         # Free lock to release next thread
         threadLock.release()
 
+# class of thread
+class SymptomMapThread(threading.Thread):
+    def __init__(self, threadID, name, symptom_name, symptom_xrefs, symptom_hpo_id):
+        threading.Thread.__init__(self)
+        self.threadID = threadID
+        self.name = name
+        self.symptom_name = symptom_name
+        self.symptom_xrefs = symptom_xrefs
+        self.symptom_hpo_id = symptom_hpo_id
+
+    def run(self):
+        # print "Starting " + self.name
+        # Get lock to synchronize threads
+        threadLock.acquire()
+        symptoms_mapping(self.symptom_name, self.symptom_xrefs,self.symptom_hpo_id)
+        #      print "Ending " + self.name
+        #      print_time(self.name, self.counter, 3)
+        # Free lock to release next thread
+        threadLock.release()
+
 
 # connect with the neo4j database AND MYSQL
 def database_connection():
     # create connection with mysql database
     global con
-    con = mdb.connect('localhost', 'root', 'Za8p7Tf', 'umls')
+    con = mdb.connect('localhost', 'ckoenigs', 'Za8p7Tf$', 'umls')
 
 
     global g
@@ -66,7 +86,8 @@ def get_all_disease_information_from_hetionet():
     query = ''' Match (d:Disease) Return d.identifier, d.name, d.synonyms, d.xrefs, d.umls_cuis, d.`http://www.geneontology.org/formats/oboInOwl#hasExactSynonym`'''
     results = g.run(query)
     for mondo, name, synonyms, xrefs, umls_cuis, exact_synonyms, in results:
-        dict_name_to_mondo[name.lower()] = mondo
+        if name:
+            dict_name_to_mondo[name.lower()] = mondo
         if mondo =='MONDO:0007122':
             print('blub')
         #        synonyms=synonyms.split(',')
@@ -261,9 +282,9 @@ def check_on_mapping_same_source(dictionary_of_source, counter_map_source_to_sou
         dict_disease_id_to_mondos[db_disease_id] = mondos
         mondos = '|'.join(mondos)
         file_source_source.writerow([db_disease_id,db_disease_name, mondos ])
-        return True
+        return True, counter_map_source_to_source
     else:
-        return False
+        return False, counter_map_source_to_source
 
 '''
 check for mapping with name
@@ -275,10 +296,10 @@ def mapping_with_name(db_disease_name, db_disease_id,counter_source_with_name,fi
         mondo = dict_name_to_mondo[db_disease_name]
         file_source_name.writerow([db_disease_id , db_disease_name , mondo ])
         dict_disease_id_to_mondos[db_disease_id] = [mondo]
-        return True
+        return True, counter_source_with_name
     else:
-        return False
-    
+        return False, counter_source_with_name
+
 '''
 not mapped disease
 '''
@@ -286,6 +307,7 @@ def not_mapped_disease(counter_source_not_mapped,db_disease_id,db_disease_name,f
     counter_source_not_mapped += 1
     list_not_mapped_disease_ids_to_mondo.append(db_disease_id)
     file_not_map_source.writerow([db_disease_id , db_disease_name ])
+    return counter_source_not_mapped
 
 '''
 check for an identifier
@@ -295,10 +317,10 @@ def check_for_mapping_with_umls(db_disease_name, db_disease_id,name_in_umls, cou
     id=db_disease_id.split(':')[1]
 
     # try to map with umls
-    
+
     # fined mapping with use of umls cuis
     cur = con.cursor()
-    query = ('Select CUI From MRCONSO Where SAB="%s" and CODE= "%s" and lower(STR)="%s";')
+    query = ('Select CUI From MRCONSO Where SAB="%s" and CODE= "%s" and STR="%s";')
     query = query % (name_in_umls, id, db_disease_name)
     rows_counter = cur.execute(query)
     found = False
@@ -327,12 +349,13 @@ def check_for_mapping_with_umls(db_disease_name, db_disease_id,name_in_umls, cou
         mondos = '|'.join(mondos)
         cuis = '|'.join(cuis)
         file_source_umls_cui.writerow([db_disease_id , db_disease_name , cuis , mondos ])
+        return True, counter_source_map_with_umls_cui
     else:
-        return False
+        return False, counter_source_map_with_umls_cui
 
 
 
-                
+
 
 
 '''
@@ -350,7 +373,7 @@ def map_hpo_disease_to_mondo(db_disease_id, db_disease_name, db_disease_source):
     global counter_orpha_not_mapped, counter_orpha_map_with_orpha,  counter_orpha_map_with_umls_cui
 
     counter += 1
-    if counter % 1000 == 0:
+    if counter % 5000 == 0:
         print(datetime.datetime.utcnow())
         print(counter)
         print('number of decipher:' + str(counter_decipher))
@@ -379,7 +402,8 @@ def map_hpo_disease_to_mondo(db_disease_id, db_disease_name, db_disease_source):
         #            print(counter_decipher)
         # test if name is directly in dictionary
         # else try to mapp the name but change the name so that no () appears and use the synonyms in the  name
-        if not mapping_with_name(db_disease_name,db_disease_id,counter_decipher_map_with_name,csv_decipher_name):
+        found_name_mapping,counter_decipher_map_with_name =mapping_with_name(db_disease_name,db_disease_id,counter_decipher_map_with_name,csv_decipher_name)
+        if not found_name_mapping:
             names = db_disease_name.split(' (')
             has_found_one = False
             mondos = set([])
@@ -403,7 +427,7 @@ def map_hpo_disease_to_mondo(db_disease_id, db_disease_name, db_disease_source):
             else:
                 cur = con.cursor()
                 # this takes a lot of time
-                query = ('Select CUI From MRCONSO Where lower(STR)="%s";')
+                query = ('Select CUI From MRCONSO Where STR="%s";')
                 query = query % (db_disease_name)
                 rows_counter = cur.execute(query)
                 # rows_counter = 0
@@ -428,7 +452,7 @@ def map_hpo_disease_to_mondo(db_disease_id, db_disease_name, db_disease_source):
                     csv_decipher_name_umls.writerow([
                         db_disease_id , db_disease_name , cuis , mondos , db_disease_source ])
                 else:
-                    not_mapped_disease(counter_decipher_not_mapped,db_disease_id,db_disease_name,csv_decipher_not_mapped)
+                    counter_decipher_not_mapped= not_mapped_disease(counter_decipher_not_mapped,db_disease_id,db_disease_name,csv_decipher_not_mapped)
                     return
 
     elif db_disease_source == 'OMIM':
@@ -439,26 +463,29 @@ def map_hpo_disease_to_mondo(db_disease_id, db_disease_name, db_disease_source):
 
         #            print('omim')
         # test if omim id is direct in DO
-        if not check_on_mapping_same_source(dict_omim_to_mondo,counter_omim_map_with_omim,db_disease_name,db_disease_id,csv_omim_omim):
+        found_same_mapping, counter_omim_map_with_omim=check_on_mapping_same_source(dict_omim_to_mondo,counter_omim_map_with_omim,db_disease_name,db_disease_id,csv_omim_omim)
+        if not found_same_mapping:
 
-            found_with_umls=check_for_mapping_with_umls(db_disease_name,db_disease_id,"OMIM",counter_omim_map_with_umls_cui,csv_omim_cui)
+            found_with_umls, counter_omim_map_with_umls_cui = check_for_mapping_with_umls(db_disease_name,db_disease_id,"OMIM",counter_omim_map_with_umls_cui,csv_omim_cui)
             if not found_with_umls:
-                mappped_with_name=mapping_with_name(db_disease_name,db_disease_id,counter_omim_with_name,csv_omim_name)
+                mappped_with_name, counter_omim_with_name=mapping_with_name(db_disease_name,db_disease_id,counter_omim_with_name,csv_omim_name)
                 if not mappped_with_name:
-                    not_mapped_disease(counter_omim_not_mapped, db_disease_id, db_disease_name,
+                    counter_omim_not_mapped=not_mapped_disease(counter_omim_not_mapped, db_disease_id, db_disease_name,
                                        csv_omim_not_mapped)
                     return
-                
+
     elif db_disease_source == 'ORPHA':
         counter_orpha += 1
         #            print('omim')
         # test if ORPHA id is direct in Mondo
-        if not check_on_mapping_same_source(dict_orphanet_to_mondo, counter_orpha_map_with_orpha, db_disease_name,
-                                            db_disease_id, csv_orpha_orpha):
+        found_same_mapping, counter_orpha_map_with_orpha=check_on_mapping_same_source(dict_orphanet_to_mondo, counter_orpha_map_with_orpha, db_disease_name,
+                                            db_disease_id, csv_orpha_orpha)
+        if not found_same_mapping:
             #check if name mapps
-            if not mapping_with_name(db_disease_name,db_disease_id,counter_orpha_with_name,csv_orpha_name):
+            found_with_name, counter_orpha_with_name=mapping_with_name(db_disease_name,db_disease_id,counter_orpha_with_name,csv_orpha_name)
+            if not found_with_name:
                 #not mapped information are add to file
-                not_mapped_disease(counter_orpha_not_mapped,db_disease_id,db_disease_name,csv_not_mapped_orpha)
+                counter_orpha_not_mapped=not_mapped_disease(counter_orpha_not_mapped,db_disease_id,db_disease_name,csv_not_mapped_orpha)
 
     else:
         print('a different db disease source '+ db_disease_source)
@@ -500,7 +527,7 @@ csv_symptom_new.writerow(['hpo_id','hetionet_id', 'umls_cuis','mesh_ids'])
 
 
 # the general query start
-query_start='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/hpo/%s" As line FIELDTERMINATOR '\\t' 
+query_start='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/hpo/%s" As line FIELDTERMINATOR '\\t' 
     Match'''
 
 
@@ -512,7 +539,7 @@ Integrate mapping connection between disease and HPOdisease and make a dictionar
 def integrate_mapping_of_disease_into_hetionet():
     #query for mapping disease and written into file
     query= query_start+ ''' (n:HPOdisease{id: line.hpo_id}), (d:Disease{identifier:line.hetionet_id}) Set d.hpo="yes" Create (d)-[:equal_to_hpo_disease]->(n);\n '''
-    query =query %('disease_mapped.tsv')
+    query =query %(path_of_directory,'disease_mapped.tsv')
     cypher_file.write(query)
     # write mapping in csv file
     for hpo_id, mondos in dict_disease_id_to_mondos.items():
@@ -536,7 +563,7 @@ function to find mesh id for a cui
 
 def cui_to_mesh(cui):
     cur = con.cursor()
-    query = ("Select CODE From MRCONSO Where SAB= 'MSH' AND CUI In ('%s')")
+    query = ("Select Distinct CODE From MRCONSO Where SAB= 'MSH' AND CUI In ('%s')")
     query = query % (cui)
     rows_counter = cur.execute(query)
     if rows_counter > 0:
@@ -561,13 +588,129 @@ def get_all_symptoms_and_add_to_dict():
     results=g.run(query)
 
     #add all symptoms to dictioanry
-    for result in results:
+    for result, in results:
         identifier=result['identifier']
         dict_of_hetionet_symptoms[identifier]=dict(result)
 
 
 # dictionary from hpo symptom to hetionet symptom
 dict_hpo_to_hetionet_symptoms=defaultdict(set)
+
+#dictionary with the new mesh ids
+dict_new_mesh_ids={}
+
+'''
+first search for umls cuis if not in hpo existing check in umls
+then map with umls to mesh
+check if mesh are in hetionet esle generate new nodes
+'''
+def symptoms_mapping(name, xrefs, hpo_id):
+    global counter_no_umls_cui, counter_symptoms
+    global counter_new_symptom_in_hetionet, counter_symptom_from_hetionet
+    #                    print(dict_all_info)
+    name = name.lower()
+    umls_cuis = []
+    has_at_least_one = False
+
+    if hpo_id=='HP:0002027':
+        print('oj')
+
+    # start = time.time()
+    # try to find umls cui with external identifier from hpo
+    if xrefs is not None:
+        for xref in xrefs:
+            if xref[0:4] == 'UMLS':
+                has_at_least_one = True
+                umls_cuis.append(xref.split(':')[1])
+            else:
+                print('other xref then umls :O')
+                print(xref)
+        if has_at_least_one:
+            csv_symptoms.writerow([hpo_id, name, '|'.join(umls_cuis)])
+    # print('\t xrefs : %.4f seconds' % (time.time() - start))
+    # start = time.time()
+
+    # if no external identifier is a umls cui then search for the name in umls
+    if not has_at_least_one:
+        cur = con.cursor()
+        query = 'SELECT DISTINCT CUI FROM MRCONSO WHERE STR = "%s";' % name
+        rows_counter = cur.execute(query)
+        if rows_counter > 0:
+            for (cui,) in cur:
+                umls_cuis.append(cui)
+            csv_symptoms_name.writerow([
+                hpo_id, name, '|'.join(umls_cuis)])
+        else:
+            counter_no_umls_cui += 1
+            csv_symptoms_not_mapped.writerow([hpo_id, name])
+            return
+    # print('\t umls : %.4f seconds' % (time.time() - start))
+    # start = time.time()
+
+    #
+    no_cui_in_hetinet_symptomes = False
+    all_mapped_cuis_mesh_ids = []
+    # string form of umls cuis
+    umls_string = '|'.join(umls_cuis)
+
+    name = name.replace('"', '')
+    umls_cuis_string_for_mysql = "','".join(umls_cuis)
+    mesh_cui_ids = cui_to_mesh(umls_cuis_string_for_mysql)
+    # found one
+    found_one = False
+    # string form of mesh cuis
+    mesh_cuis_string = '|'.join(mesh_cui_ids)
+
+    #check if mesh ids from hpo map to hetionet mesh
+    for mesh_id in mesh_cui_ids:
+
+        if mesh_id in dict_of_hetionet_symptoms:
+            found_one = True
+
+            csv_symptom_mapped.writerow([hpo_id, mesh_id, umls_string, mesh_cuis_string])
+            dict_hpo_to_hetionet_symptoms[hpo_id].add(mesh_id)
+
+            all_mapped_cuis_mesh_ids.append(mesh_id)
+    # print('\t preparation and write into files : %.4f seconds' % (time.time() - start))
+    # start = time.time()
+
+    if not found_one:
+        name = name.replace('"', '')
+        counter_new_symptom_in_hetionet+=1
+        dict_hpo_to_mesh_ids[hpo_id]=mesh_cui_ids
+        for mesh_id in mesh_cui_ids:
+            if mesh_id in dict_new_mesh_ids:
+                print('oh no double mesh, this can cause problems')
+                print(mesh_id)
+                print(hpo_id)
+                print(dict_new_mesh_ids[mesh_id])
+                print(name)
+            else:
+                dict_new_mesh_ids[mesh_id]=hpo_id
+            csv_symptom_new.writerow([hpo_id, mesh_id, umls_string, mesh_cuis_string])
+            dict_hpo_to_hetionet_symptoms[hpo_id].add(mesh_id)
+    else:
+        dict_hpo_to_mesh_ids[hpo_id]=all_mapped_cuis_mesh_ids
+        counter_symptom_from_hetionet+=1
+
+        # print('\t not mapped write into file : %.4f seconds' % (time.time() - start))
+
+    if counter_symptoms % 200 == 0:
+        print(counter_symptoms)
+        print(datetime.datetime.utcnow())
+
+# aspect dictionary
+dict_aspect={
+    'P': 'Phenotypic abnormality',
+    'I': 'inheritance',
+    'C': 'onset and clinical course'
+}
+
+# dictionary of hpo symptoms
+dict_hpo_symptoms={}
+
+#dictionary mapping hpo to mesh
+dict_hpo_to_mesh_ids={}
 
 
 '''
@@ -577,18 +720,21 @@ hpo symptoms get the mapped umls_cui or mesh as property.
 
 
 def map_hpo_symptoms_and_integrate_into_hetionet():
+    global counter_symptoms, counter_no_umls_cui
     # '','hetionet_id', 'umls_cuis'
     query =query_start+ '''MATCH (s:Symptom{identifier:line.hetionet_id }) , (n:HPOsymptom{id:line.hpo_id}) Set s.hpo='yes', s.umls_cuis=split(line.umls_cuis,"|") s.xrefs=n.xrefs , s.hpo_version='1.2', s.hpo_release='2019-11-08', s.definition=n.def, s.synonyms=n.synonyms, s.url_HPO="http://compbio.charite.de/hpoweb/showterm?id="+line.hpo_id, n.mesh_ids=split(line.mesh_ids,'|') Create (s)-[:equal_to_hpo_symptoms]->(n);\n'''
-    query = query %('symptom_mapped.tsv')
+    query = query %(path_of_directory,'symptom_mapped.tsv')
     cypher_file.write(query)
     # all symptoms which are in hetionet set the resource hpo
     query = '''MATCH (s:Symptom) Where exists(s.hpo) Set s.resource=s.resource+"HPO";\n '''
     cypher_file.write(query)
 
     query=query_start+''' Match (n:HPOsymptom{id:line.hpo_id}) Set n.mesh_ids=split(line.mesh_ids,'|') Create (s:Symptom{identifier:line.hetionet_id, umls_cuis:split(line.umls_cuis,"|") ,source:'MESH',license:'UMLS licence', name:n.name, resource:['HPO'], source:'MESH', url:"http://identifiers.org/mesh/"+line.hetionet_id , xrefs:n.xrefs, hpo:'yes', hpo_version:'1.2', hpo_release:'2019-11-08', definition:n.def, url_HPO:"http://compbio.charite.de/hpoweb/showterm?id="+line.hpo_id})  Create (s)-[:equal_to_hpo_symptoms]->(n);\n '''
-    query=query %('symptom_new.tsv')
+    query=query %(path_of_directory,'symptom_new.tsv')
+    cypher_file.write(query)
     #    counter_has_no_xrefs=0
     #    counter_has_no_umls_cuis=0
+    global counter_no_umls_cui, counter_new_symptom_in_hetionet, counter_symptom_from_hetionet
     # the number of hpo symptoms which are in a relationship, but are not mapped to umls cui
     counter_no_umls_cui = 0
     # counter for the hpo symptoms which are not in hetionet
@@ -596,73 +742,41 @@ def map_hpo_symptoms_and_integrate_into_hetionet():
     #  counter for the symptoms which are already in Hetionet
     counter_symptom_from_hetionet = 0
 
-    query = '''MATCH (n:HPOsymptom) Where not exists(n.replaced_by)  RETURN n.id, n.name, n.xref '''
+    # create a lock, is used to synchronized threads
+    global threadLock
+    threadLock = threading.Lock()
+
+    # all threads
+    threads_symptoms = []
+
+    thread_id = 1
+
+
+    query = '''MATCH (n:HPOsymptom) Where not exists(n.replaced_by)  RETURN n, n.id, n.name, n.xref '''
     results = g.run(query)
+    counter_symptoms=0
 
-    for hpo_id, name, xrefs, in results:
+    for node, hpo_id, name, xrefs, in results:
+        counter_symptoms+=1
+        dict_hpo_symptoms[hpo_id]=node
 
-        #                    print(dict_all_info)
-        name = name.lower()
-        umls_cuis = []
-        has_at_least_one = False
+        # create thread
+        thread = SymptomMapThread(thread_id, 'thread_' + str(thread_id), name,xrefs,hpo_id)
+        # start thread
+        thread.start()
+        # add to list
+        threads_symptoms.append(thread)
+        # increase thread id
+        thread_id += 1
+        if thread_id % 200 == 0:
+            # wait for all threads
+            for t in threads_symptoms:
+                t.join()
 
-        # try to find umls cui with external identifier from hpo
-        if not xrefs == None:
-            for xref in xrefs:
-                if xref[0:4] == 'UMLS':
-                    has_at_least_one = True
-                    umls_cuis.append(xref.split(':')[1])
-                else:
-                    print('othere xref then umls :O')
-                    print(xref)
-            if has_at_least_one:
-                csv_symptoms.writerow([hpo_id , name , '|'.join(umls_cuis)])
+        # wait for all threads
+    for t in threads_symptoms:
+        t.join()
 
-                # if no external identifier is a umls cui then search for the name in umls
-        if has_at_least_one == False:
-            cur = con.cursor()
-            query = ('Select CUI From MRCONSO Where  lower(STR)="%s" Limit 1;')
-            query = query % (name)
-            rows_counter = cur.execute(query)
-            if rows_counter > 0:
-                for (cui,) in cur:
-                    umls_cuis.append(cui)
-                csv_symptoms_name.writerow([
-                    hpo_id , name , '|'.join(umls_cuis) ])
-            else:
-                counter_no_umls_cui += 1
-                csv_symptoms_not_mapped.writerow([hpo_id , name ])
-                continue
-
-        #
-        no_cui_in_hetinet_symptomes = False
-        all_mapped_cuis_mesh_ids = []
-        #string form of umls cuis
-        umls_string='|'.join(umls_cuis)
-
-        name = name.replace('"', '')
-        umls_cuis_string_for_mysql = "','".join(umls_cuis)
-        mesh_cui_ids = cui_to_mesh(umls_cuis_string_for_mysql)
-        # found one
-        found_one = False
-        # string form of mesh cuis
-        mesh_cuis_string = '|'.join(mesh_cui_ids)
-        for mesh_id in mesh_cui_ids:
-
-            if mesh_id in dict_of_hetionet_symptoms:
-                found_one = True
-
-                csv_symptom_mapped.writerow([hpo_id, mesh_id, umls_string, mesh_cuis_string])
-                dict_hpo_to_hetionet_symptoms[hpo_id].add(mesh_id)
-
-            all_mapped_cuis_mesh_ids.append(mesh_id)
-            no_cui_in_hetinet_symptomes = True
-
-        if not found_one:
-            name = name.replace('"', '')
-            for mesh_id in mesh_cui_ids:
-                csv_symptom_new.writerow([hpo_id, mesh_id, umls_string, mesh_cuis_string])
-                dict_hpo_to_hetionet_symptoms[hpo_id].add(mesh_id)
 
     # all symptoms which are not in hpo get the property hpo='no'
     query = '''MATCH (s:Symptom) Where not exists(s.hpo) Set s.hpo='no';\n '''
@@ -688,12 +802,17 @@ has a umls cui.
 '''
 
 
-def generate_cypher_file_for_connection():
+def generate_cypher_file_for_connection(cypher_file):
+    #definition of counter
+    count_new_connection=0
+    count_update_connection=0
+    counter_connection=0
+
     # csv file for relationship symptom- disease
     file_rela_new = open('mapping_files/rela_new.tsv', 'w', encoding='utf-8')
     csv_rela_new = csv.writer(file_rela_new, delimiter='\t')
 
-    file_rela_update = open('mapping_files/rela_new.tsv', 'w', encoding='utf-8')
+    file_rela_update = open('mapping_files/rela_update.tsv', 'w', encoding='utf-8')
     csv_rela_update = csv.writer(file_rela_update, delimiter='\t')
 
     properties=['disease_id', 'symptom']
@@ -703,19 +822,28 @@ def generate_cypher_file_for_connection():
     results=g.run(query)
     query_exist=''' (n:Disease{identifier: line.disease_id})-[r:PRESENTS_DpS]-(s:Symptom{identifier:line.symptom}) Set '''
     query_new=''' (n:Disease{identifier: line.disease_id}), (s:Symptom{identifier:line.symptom}) Create (n)-[r:PRESENTS_DpS{'''
-    for result in results:
-        properties.append(result)
-        query_exist+= 'r.'+result+'=split(line.'+result+',"|"), '
-        query_new +=  result + ':split(line.' + result + ',"|"), '
+    for result, in results:
+        if result!='frequency_modifier':
+
+            properties.append(result)
+            query_exist+= 'r.'+result+'=split(line.'+result+',"|"), '
+            query_new +=  result + ':split(line.' + result + ',"|"), '
+        else:
+            for x in ['frequence_name', 'frequence_def']:
+                properties.append(x)
+                query_exist += 'r.' + x + '=split(line.' + x + ',"|"), '
+                query_new += x + ':split(line.' + x + ',"|"), '
 
     csv_rela_new.writerow(properties)
     csv_rela_update.writerow(properties)
-    query_exists=query_start+query_exist[:-2]+"r.hpo='yes', r.version='phenotype_annotation.tab 2019-11-08', r.resource=r.resource+'HPO', r.url='http://compbio.charite.de/hpoweb/showterm?disease='+line.source[0]; \n"
+    query_exists=query_start+query_exist[:-2]+"r.hpo='yes', r.version='phenotype_annotation.tab 2019-11-08', r.resource=r.resource+'HPO', r.url='http://compbio.charite.de/hpoweb/showterm?disease='+line.source; \n"
+    query_exists=query_exists %(path_of_directory,"rela_update.tsv")
     cypher_file.write(query_exists)
     query='''Match (n:Disease})-[r:PRESENTS_DpS]-(s:Symptom) Where r.hpo='yes SET r.resource=r.resource+'HPO';\n '''
     cypher_file.write(query)
 
-    query_new=query_start+query_new[:-2]+'''version:'phenotype_annotation.tab 2019-11-08',unbiased:'false',source:'Human Phenontype Ontology', resource:['HPO'], hpo:'yes', url:'http://compbio.charite.de/hpoweb/showterm?disease='+line.source[0]}]->(s);\n'''
+    query_new=query_start+query_new[:-2]+'''version:'phenotype_annotation.tab 2019-11-08',unbiased:'false',source:'Human Phenontype Ontology', resource:['HPO'], hpo:'yes', url:'http://compbio.charite.de/hpoweb/showterm?disease='+line.source}]->(s);\n'''
+    query_new = query_new % (path_of_directory, "rela_new.tsv")
     cypher_file.write(query_new)
 
     # fill the files
@@ -727,68 +855,63 @@ def generate_cypher_file_for_connection():
             results = g.run(query)
 
             for connection, hpo_id, in results:
-                mesh_ids= dict_of_hetionet_symptoms[hpo_id]
-                if len(mesh_ids) > 0:
-                    qualifier = connection['qualifier']
-                    reference_id = connection['source']
-                    evidence_code = connection['efidence_code']
-                    frequency_modi = connection['frequency_modifier']
-                    if frequency_modi in dict_frequency:
-                        [definition, name]=dict_frequency[frequency_modi]
-                    else:
-                        query='Match (n:HPOsymptom{id:"%s"}) RETURN n' %(frequency_modi)
-                        frequenz=g.run(query)
-                        for freq in frequenz:
-                            [definition, name]=[freq['def'], freq['name']]
-                            dict_frequency[frequency_modi]=[definition, name]
-
-
-
-
-                    for mesh_id in mesh_ids:
-
-                        if (mondo, mesh_id) in list_new_disease_symptom_pairs:
-                            continue
-                        query = '''MATCH (n:Disease{identifier:"%s"})-[l:PRESENTS_DpS]->(s:Symptom{identifier:"%s"}) 
-                        Set n.hpo='yes' Return l '''
-                        query = query % (mondo, mesh_id)
-                        result = g.run(query)
-                        first_entry = result.evaluate()
-                        url = 'http://compbio.charite.de/hpoweb/showterm?disease=' + reference_id
-                        if first_entry == None:
-                            query = '''MATCH (n:Disease{identifier:"%s"}),(s:Symptom{identifier:"%s"}) 
-                            Create (n)-[:PRESENTS_DpS{version:'phenotype_annotation.tab 2019-11-08',unbiased:'false',source:'%s',qualifier:'%s', efidence_code:'%s', frequency_modifier:'%s',  resource:['HPO'],hetionet:'no',do:'no', hpo:'yes', url:"%s"}]->(s); \n '''
-                            count_new_connection += 1
-                            query = query % (
-                            mondo, mesh_id, reference_id, qualifier, evidence_code, frequency_modi, url)
-
-
-                        else:
-                            resource = first_entry['resource'] if 'resource' in first_entry else []
-                            resource.append("Human Phenotype Ontology")
-                            resource = list(set(resource))
-                            string_resource = '","'.join(resource)
-                            query = '''MATCH (n:Disease{identifier:"%s"})-[l:PRESENTS_DpS]->(s:Symptom{identifier:"%s"})
-                            Set l.hpo='yes', l.version='phenotype_annotation.tab 2017-10-09 10:47', l.source='%s', l.qualifier='%s', l.efidence_code='%s', l.frequency_modifier='%s',l.resource=["%s"], l.url="%s"; \n'''
-                            count_update_connection += 1
-                            query = query % (
-                                mondo, mesh_id, reference_id, qualifier, evidence_code, frequency_modi,
-                                string_resource,
-                                url)
-
-                        counter_connection += 1
-                        cypher_file.write(query)
-                        if counter_connection % constrain_number == 0:
-                            cypher_file.write('commit \n')
-                            if counter_connection % creation_max == 0:
-                                cypher_file.close()
-                                cypher_file = open('cypher/connection_symptoms_' + str(i) + '.cypher', 'w')
-                                cypher_file.write('begin \n')
-                                i += 1
+                # some hpo did not map to mesh
+                if hpo_id in dict_hpo_to_mesh_ids:
+                    mesh_ids= dict_hpo_to_mesh_ids[hpo_id]
+                    if len(mesh_ids) > 0:
+                        rela_properties=[]
+                        for property in properties:
+                            if property not in ['frequency_modifier', 'aspect']:
+                                rela_properties.append(connection[property])
+                            elif property =='aspect':
+                                if 'aspect' in connection:
+                                    if len(connection['aspect'])>1:
+                                        sys.exit('HPO mapping has multiple aspects')
+                                    for aspect in connection['aspect']:
+                                        if aspect in dict_aspect:
+                                            rela_properties.append(dict_aspect[aspect])
+                                        else:
+                                            rela_properties.append(aspect)
+                                else:
+                                    rela_properties.append('')
                             else:
-                                cypher_file.write('begin \n')
+                                node = dict_hpo_symptoms[connection[property]]
+                                rela_properties.append(node['name'])
+                                rela_properties.append(node['def'])
 
-    cypher_file.write('commit \n begin \n')
+                        for mesh_id in mesh_ids:
+
+                            all_properties = [mondo, mesh_id]
+                            all_properties.extend(rela_properties)
+
+                            if (mondo, mesh_id) in list_new_disease_symptom_pairs:
+                                continue
+                            elif mesh_id in dict_new_mesh_ids:
+                                counter_connection += 1
+                                count_new_connection+=1
+                                csv_rela_new.writerow(all_properties)
+                                list_new_disease_symptom_pairs.append((mondo,mesh_id))
+                            else:
+                                counter_connection+=1
+                                query = '''MATCH (n:Disease{identifier:"%s"})-[l:PRESENTS_DpS]->(s:Symptom{identifier:"%s"}) 
+                                Set n.hpo='yes' Return l '''
+                                query = query % (mondo, mesh_id)
+                                result = g.run(query)
+                                first_entry = result.evaluate()
+                                #create new relationship
+                                if first_entry == None:
+                                    csv_rela_new.writerow(all_properties)
+                                    # query = '''MATCH (n:Disease{identifier:"%s"}),(s:Symptom{identifier:"%s"})
+                                    # Create (n)-[:PRESENTS_DpS{version:'phenotype_annotation.tab 2019-11-08',unbiased:'false',source:'%s',qualifier:'%s', efidence_code:'%s', frequency_modifier:'%s',  resource:['HPO'],hetionet:'no',do:'no', hpo:'yes', url:"%s"}]->(s); \n '''
+                                    count_new_connection += 1
+                                    list_new_disease_symptom_pairs.append((mondo,mesh_id))
+
+                                else:
+                                    # query = '''MATCH (n:Disease{identifier:"%s"})-[l:PRESENTS_DpS]->(s:Symptom{identifier:"%s"})
+                                    # Set l.hpo='yes', l.version='phenotype_annotation.tab 2017-10-09 10:47', l.source='%s', l.qualifier='%s', l.efidence_code='%s', l.frequency_modifier='%s',l.resource=["%s"], l.url="%s"; \n'''
+                                    count_update_connection += 1
+                                    csv_rela_update.writerow(all_properties)
+
     query = ''' MATCH ()-[l:PRESENTS_DpS]->(s:Symptom) Where not exists(l.hpo) Set l.hpo='no'; \n '''
     cypher_file.write(query)
     cypher_file.write('commit \n begin \n')
@@ -832,7 +955,7 @@ def main():
     threadLock = threading.Lock()
 
     # all threads
-    threads_synonyms = []
+    threads_disease = []
 
     thread_id = 1
 
@@ -845,12 +968,16 @@ def main():
         # start thread
         thread.start()
         # add to list
-        threads_synonyms.append(thread)
+        threads_disease.append(thread)
         # increase thread id
         thread_id += 1
+        if thread_id % 200 == 0:
+            # wait for all threads
+            for t in threads_disease:
+                t.join()
 
     # wait for all threads
-    for t in threads_synonyms:
+    for t in threads_disease:
         t.join()
     #     map_hpo_disease_to_mondo(db_disease_id, db_disease_name, db_disease_source)
 
@@ -877,6 +1004,13 @@ def main():
     print('integrate mapping into hetionet for disease')
 
     integrate_mapping_of_disease_into_hetionet()
+    print('##########################################################################')
+
+    print(datetime.datetime.utcnow())
+    print('generate dictionary from symptoms of hetionet')
+
+
+    get_all_symptoms_and_add_to_dict()
 
     print('##########################################################################')
 
@@ -890,7 +1024,7 @@ def main():
     print(datetime.datetime.utcnow())
     print('put all relationship information into a cypher file')
 
-    # generate_cypher_file_for_connection()
+    generate_cypher_file_for_connection(cypher_file)
 
     print('##########################################################################')
 
