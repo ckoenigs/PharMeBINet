@@ -685,8 +685,9 @@ def symptoms_mapping(name, xrefs, hpo_id):
                 print(hpo_id)
                 print(dict_new_mesh_ids[mesh_id])
                 print(name)
+                dict_new_mesh_ids[mesh_id].append(hpo_id)
             else:
-                dict_new_mesh_ids[mesh_id]=hpo_id
+                dict_new_mesh_ids[mesh_id]=[hpo_id]
             csv_symptom_new.writerow([hpo_id, mesh_id, umls_string, mesh_cuis_string])
             dict_hpo_to_hetionet_symptoms[hpo_id].add(mesh_id)
     else:
