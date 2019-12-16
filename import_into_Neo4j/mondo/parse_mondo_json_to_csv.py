@@ -17,6 +17,7 @@ def open_json_file_write_into_csv():
     # dictionary of iri to id
     dict_iri_to_id={}
 
+    # has multiple graphs
     for x in data['graphs']:
         #go through all mondo nodes
         for node in x['nodes']:
