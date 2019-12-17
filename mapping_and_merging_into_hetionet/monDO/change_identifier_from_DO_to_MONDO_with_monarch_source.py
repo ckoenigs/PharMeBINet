@@ -59,9 +59,6 @@ list_of_not_mapped_doids = []
 #mondo properties
 mondo_prop=[]
 
-# dictionary of properties which are named different in mondo in comparision to hetionet
-
-dict_switch_mondo_prop_to_hetionet = {'hasDbXref': 'xrefs', 'synonym': 'synonyms','label':'name','id':'identifier'}
 
 #list of excluded properties from mondo
 list_exclude_properties=['related','creation_date','created_by','seeAlso']
@@ -82,11 +79,7 @@ def get_mondo_properties_and_generate_csv_files():
                 property=property.split('#',-1)[1]
             else:
                 continue
-        if property in dict_switch_mondo_prop_to_hetionet:
-            property=dict_switch_mondo_prop_to_hetionet[property]
-        # exclude the properties from csv files
-        elif property in list_exclude_properties:
-            continue
+
         mondo_prop.append(property)
 
     #mondo get an additional property
@@ -153,27 +146,16 @@ def load_in_all_monDO_in_dictionary():
     query = ''' MATCH (n:disease)  RETURN n'''
     results = g.run(query)
     for disease, in results:
-        monDo_id = disease['http://www.geneontology.org/formats/oboInOwl#id']
+        monDo_id = disease['identifier']
         if monDo_id=='MONDO:0006464':
             print('ohje')
         # if monDo_id == 'MONDO:0007062':
         #     print('blub')
-        disease_info={}
-        for key,property in dict(disease).items():
-            if key[0:4]=='http':
-                if '#' in key:
-                    key=key.split('#',-1)[1]
-                else:
-                    continue
-            disease_info[key]=property
+        disease_info=dict(disease)
         dict_monDO_info[monDo_id] = disease_info
-        xrefs = disease_info['hasDbXref'] if 'hasDbXref' in disease_info else []
+        xrefs = disease_info['xrefs'] if 'xref' in disease_info else []
         print(monDo_id)
         fill_dict_with_external_identifier_to_mondo(xrefs,monDo_id)
-
-        possible_xref = disease_info['hasAlternativeId'] if 'hasAlternativeId' in disease_info else []
-        fill_dict_with_external_identifier_to_mondo(possible_xref,monDo_id)
-
 
 
 # cypher file to integrate mondo
@@ -440,11 +422,6 @@ def prepare_dict_for_csv_file(info):
                 key = key.split('#', -1)[1]
             else:
                 continue
-        if key in dict_switch_mondo_prop_to_hetionet:
-            key = dict_switch_mondo_prop_to_hetionet[key]
-        # the properties which are excluded from mondo
-        elif key in list_exclude_properties:
-            continue
 
         # if key in list_properties_which_should_be_an_array:
         if type(property) == list:
@@ -529,7 +506,7 @@ def gather_information_of_mondo_and_do_then_prepare_dict_for_csv(monDo,info,monD
 
     other_xrefs_monDO.extend(dict_DO_to_xref[doid])
     other_xrefs_monDO.remove('') if '' in other_xrefs_monDO else other_xrefs_monDO
-    info['hasDbXref'] = other_xrefs_monDO
+    info['xrefs'] = other_xrefs_monDO
 
     doid_umls=dict_DO_to_info[doid]['umls_cuis'] if 'umls_cuis' in dict_DO_to_info[doid] else []
     umls_cuis_monDO.extend(doid_umls)
@@ -563,7 +540,7 @@ def integrate_mondo_change_identifier():
         if monDo == 'MONDO:0001235':
             print('ohje')
 
-        monDO_xref = info['hasDbXref'] if 'hasDbXref' in info else []
+        monDO_xref = info['xrefs'] if 'xrefs' in info else []
         # one to one mapping of mondo and do or specific mapped one-to-one from me
         if (monDo in dict_monDo_to_DO_only_doid and len(
                 dict_monDo_to_DO_only_doid[monDo]) == 1) or monDo in dict_mondo_xref_doid_mapping:
@@ -619,7 +596,7 @@ def integrate_mondo_change_identifier():
 
             umls_cuis_monDO, other_xrefs_monDO = divide_external_list(monDO_xref)
             info['umls_cuis'] = umls_cuis_monDO
-            info['hasDbXref'] = other_xrefs_monDO
+            info['xrefs'] = other_xrefs_monDO
 
             dict_info_csv={}
 
@@ -630,11 +607,6 @@ def integrate_mondo_change_identifier():
                         key=key.split('#',-1)[1]
                     else:
                         continue
-
-                if key in dict_switch_mondo_prop_to_hetionet:
-                    key = dict_switch_mondo_prop_to_hetionet[key]
-                elif key in list_exclude_properties:
-                    continue
 
                 # if key in list_properties_which_should_be_an_array:
                 if type(property) == list:
