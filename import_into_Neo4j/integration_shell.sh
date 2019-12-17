@@ -302,7 +302,7 @@ cd  mondo
 echo mondo
 
 
-./integrate_mondo_and_add_level.sh $path_neo4j /home/cassandra/Documents/neo4j-community-3.5.8/bin/restart_neo4j.sh $path_to_project > output_integration_of_everything.txt
+./new_mondo.sh $path_neo4j $path_to_project > output_integration_of_everything.txt
 
 
 cd ..
