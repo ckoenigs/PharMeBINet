@@ -5,10 +5,10 @@ Created on Fri Aug  4 12:14:16 2017
 @author: Cassandra
 """
 
-from py2neo import Graph, authenticate
+from py2neo import Graph
 import datetime
 import MySQLdb as mdb
-import sys
+import sys, csv
 
 import xml.dom.minidom as dom
 
@@ -70,9 +70,8 @@ create connection to neo4j and mysql
 
 
 def create_connection_with_neo4j_mysql():
-    authenticate("localhost:7474", "neo4j", "test")
     global g
-    g = Graph("http://localhost:7474/db/data/")
+    g = Graph("http://localhost:7474/db/data/",auth=("neo4j", "test"))
 
     # create connection with mysql database
     global con
@@ -167,6 +166,15 @@ list_map_to_hetionet = []
 dict_mapped_cuis_hetionet = {}
 
 '''
+add cui information into aeolus se class
+'''
+def add_cui_information_to_class(key,cui):
+    if dict_side_effects_aeolus[key].cuis == None:
+        dict_side_effects_aeolus[key].set_cuis_id([cui])
+    else:
+        dict_side_effects_aeolus[key].cuis.append(cui)
+
+'''
 map direct to hetionet and remember which did not map in list
 '''
 
@@ -179,20 +187,18 @@ def map_first_round():
 
                 list_map_to_hetionet.append(key)
 
+                # check if the mapping appears multiple time
+                # also set the mapped cui into the class aeolus
                 if cui in dict_mapped_cuis_hetionet:
 
                     dict_mapped_cuis_hetionet[cui].append(key)
-                    if dict_side_effects_aeolus[key].cuis == None:
-                        dict_side_effects_aeolus[key].set_cuis_id([cui])
-                    else:
-                        dict_side_effects_aeolus[key].cuis.append(cui)
+                    add_cui_information_to_class(key,cui)
                 else:
                     dict_mapped_cuis_hetionet[cui] = [key]
-                    if dict_side_effects_aeolus[key].cuis == None:
-                        dict_side_effects_aeolus[key].set_cuis_id([cui])
-                    else:
-                        dict_side_effects_aeolus[key].cuis.append(cui)
+                    add_cui_information_to_class(key,cui)
+
                 has_one = True
+        # remember not mapped aeolus se
         if has_one == False:
             list_not_mapped_to_hetionet.append(key)
 
@@ -208,57 +214,61 @@ if no hetionet node is found, then generate a new node for side effects
 
 
 def integrate_aeolus_into_hetionet():
+    #file for already existing se
+    file_existing=open('output/se_existing.tsv','w',encoding='utf-8')
+    csv_existing=csv.writer(file_existing,delimiter='\t')
+    csv_existing.writerow(['aSE','SE','cuis'])
+
+    #query for mapping
+    query_start='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/aeolus/output/%s.tsv" As line FIELDTERMINATOR '\\t' Match (a:AeolusOutcome{outcome_concept_id:line.aSE})'''
+    cypher_file= open('cypher_se.cypher','w')
+
+    # query for the update nodes and relationship
+    query_update= query_start+' , (n:SideEffect{identifier:line.SE}) Set a.cuis=split(line.cuis,"|"), n.resource=n.resource+"AEOLUS", n.aeolus="yes" Create (n)-[:equal_to_Aeolus_SE]->(a); \n'
+    query_update= query_update %("se_existing")
+    cypher_file.write(query_update)
+
     # update and generate connection between mapped aeolus outcome and hetionet side effect
     for outcome_concept in list_map_to_hetionet:
-        for cui in dict_side_effects_aeolus[outcome_concept].cuis:
-            resource = dict_all_side_effect[cui].resource
-            resource.append('AEOLUS')
-            resource = list(set(resource))
-            resource = '","'.join(resource)
-            query = '''Match (a:AeolusOutcome),(n:SideEffect)  Where a.outcome_concept_id="%s" and n.identifier="%s"
-            Set a.cui="%s", n.resource=["%s"], n.aeolus="yes"
-            Create (n)-[:equal_to_Aeolus_SE]->(a); \n'''
-            query = query % (outcome_concept, cui, cui, resource)
-            g.run(query)
+        cuis=dict_side_effects_aeolus[outcome_concept].cuis
+        cuis_string='|'.join(cuis)
+        for cui in cuis:
+            csv_existing.writerow([outcome_concept,cui, cuis_string])
+
+    # close file
+    file_existing.close()
+
+    # open new file for new se
+    file_new=open('output/se_new.tsv','w',encoding='utf-8')
+    csv_new=csv.writer(file_new,delimiter='\t')
+    csv_new.writerow(['aSE','SE','cuis'])
+
+    # query for the update nodes and relationship
+    query_new = query_start + ' Create (n:SideEffect{identifier:line.SE, {licenses:"CC0 1.0", name:a.name , source:"UMLS via AEOLUS", url:"http://identifiers.org/umls/"+line.SE , resource:["AEOLUS"],  aeolus:"yes" }}) Set a.cuis=split(line.cuis,"|") Create (n)-[:equal_to_Aeolus_SE]->(a); \n'
+    query_new = query_update % ("se_new")
+    cypher_file.write(query_new)
 
     # generate new hetionet side effects and connect the with the aeolus outcome
     for outcome_concept in list_not_mapped_to_hetionet:
-        query = ''' MATCH (n:SideEffect{identifier:"%s"}) RETURN n '''
-        query = query % (dict_aeolus_SE_with_CUIs[outcome_concept][0])
-        results = g.run(query)
-        result = results.evaluate()
-        if result == None:
-
-            url = 'http://identifiers.org/umls/' + dict_aeolus_SE_with_CUIs[outcome_concept][0]
-            query = '''Match (a:AeolusOutcome) Where a.outcome_concept_id="%s" 
-            Set a.cui="%s"
-            CREATE (n:SideEffect{licenses:'CC0 1.0', identifier:"%s", name:"%s" , source:"UMLS via AEOLUS", url:"%s",meddraType:"", conceptName:"", resource:["AEOLUS"], hetionet:"no", sider:"no", aeolus:"yes" ,umls_label:""}) 
-            Create (n)-[:equal_to_Aeolus_SE]->(a); \n'''
-
-            query = query % (
-            outcome_concept, dict_aeolus_SE_with_CUIs[outcome_concept][0], dict_aeolus_SE_with_CUIs[outcome_concept][0],
-            dict_side_effects_aeolus[outcome_concept].name, url)
-        else:
-            query = '''Match (a:AeolusOutcome),(n:SideEffect)  Where a.outcome_concept_id="%s" and n.identifier="%s"
-            Set a.cui="%s", n.resource=n.resource+"AEOLUS"
-            Create (n)-[:equal_to_Aeolus_SE]->(a); \n'''
-            query = query % (
-            outcome_concept, dict_aeolus_SE_with_CUIs[outcome_concept][0], dict_aeolus_SE_with_CUIs[outcome_concept][0])
-
-        g.run(query)
+        csv_new.writerow([outcome_concept,dict_aeolus_SE_with_CUIs[outcome_concept][0], '|'.join(dict_aeolus_SE_with_CUIs[outcome_concept])])
 
     # search for all side effect that did not mapped with aeolus and give them the property aeolus:'no'
-    query = '''MATCH (n:SideEffect) Where Not Exists(n.aeolus) Set n.aeolus='no' RETURN n.identifier '''
-    results = g.run(query)
-    # for cui, in results:
-    #     query = '''MATCH (n:SideEffect{identifier:"%s"})
-    #     Set n.aeolus='no' '''
-    #     query = query % (cui)
-    #     g.run(query)
+    # add query to update disease nodes with do='no'
+    cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')
+    query = '''begin\n Match (n:SideEffect) Where not exists(n.aeolus) Set n.aeolus="no";\n commit\n '''
+    cypher_general.write(query)
+    cypher_general.close()
 
 
 
 def main():
+
+    global path_of_directory
+    if len(sys.argv) > 1:
+        path_of_directory = sys.argv[1]
+    else:
+        sys.exit('need a path sider se')
+
     print (datetime.datetime.utcnow())
     print('Generate connection with neo4j and mysql')
 
