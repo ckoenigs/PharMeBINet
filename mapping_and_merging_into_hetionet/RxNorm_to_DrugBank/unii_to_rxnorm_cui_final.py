@@ -5,7 +5,7 @@ Created on Mon Sep 11 08:30:30 2017
 @author: Cassandra
 """
 
-import datetime
+import datetime, csv
 
 # dictionary inchikey to rxnorm_ids
 dict_inchikey_to_rxnorm_ids = {}
@@ -33,15 +33,18 @@ file has properties:
 
 
 def load_all_inchikey_and_rxnorm_in_dict():
-    f = open('unii/UNIIs 28Apr2017 Records.txt', 'r')
+    f = open('unii/unii_data.txt', 'r')
+    csv_reader=csv.DictReader(f,delimiter='\t',)
     g = open('results/UNIIs_with_RXCUI.tsv', 'w')
+    csv_writer=csv.writer(g, delimiter='\t')
+    csv_writer.writerow(['unii','rxcui'])
 
     print (datetime.datetime.utcnow())
     i = 0
-    for line in f:
-        splitted = line.split('\t')
-        if len(splitted[5]) > 0:
-            g.write(line)
+    for line in csv_reader:
+        unii=line['UNII']
+        rxcui=line['RXCUI']
+        csv_writer.writerow([unii,rxcui])
 
 
 print (datetime.datetime.utcnow())

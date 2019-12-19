@@ -5,7 +5,7 @@ Created on Mon Aug 28 15:10:41 2017
 @author: ckoenigs
 """
 
-import datetime
+import datetime, csv
 import MySQLdb as mdb
 
 '''
@@ -13,7 +13,7 @@ map drugbank with name to rxnorm
 '''
 
 # generate connection to mysql
-con = mdb.connect('localhost', 'root', 'Za8p7Tf', 'RxNorm')
+con = mdb.connect('localhost', 'ckoenigs', 'Za8p7Tf$', 'RxNorm')
 
 # dictionary with drugbank as key and value is a list of rxcuis
 dict_drugbank_to_rxnorm = {}
@@ -84,7 +84,7 @@ for line in f:
             all_name = all_name + "','" + brands
         all_name = all_name.lower()
         cur = con.cursor()
-        query = ("SELECT RXCUI FROM RXNCONSO WHERE LOWER(STR) in ('%s'); ")
+        query = ("SELECT RXCUI FROM RXNCONSO WHERE STR in ('%s'); ")
         query = query % (all_name)
         cur.execute(query)
         rxcui_list = []

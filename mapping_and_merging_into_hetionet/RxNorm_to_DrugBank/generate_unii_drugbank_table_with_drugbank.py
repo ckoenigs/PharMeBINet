@@ -26,7 +26,7 @@ generate af file with only drugbank and unii IDs
 
 def generate_tsv_file():
     # generate csv file
-    file_map = open('data/map_unii_to_drugbank_id.tsv', 'w')
+    file_map = open('map_unii_to_drugbank_id_and_inchikey.tsv', 'w')
     csv_writer=csv.writer(file_map,delimiter='\t')
     csv_writer.writerow(['unii','drugbank_id','inchikey'])
 
