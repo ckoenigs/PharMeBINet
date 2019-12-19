@@ -74,12 +74,6 @@ def get_mondo_properties_and_generate_csv_files():
         RETURN allfields;'''
     result=g.run(query)
     for property , in result:
-        if property[0:4]=='http':
-            if '#' in property:
-                property=property.split('#',-1)[1]
-            else:
-                continue
-
         mondo_prop.append(property)
 
     #mondo get an additional property
@@ -153,7 +147,7 @@ def load_in_all_monDO_in_dictionary():
         #     print('blub')
         disease_info=dict(disease)
         dict_monDO_info[monDo_id] = disease_info
-        xrefs = disease_info['xrefs'] if 'xref' in disease_info else []
+        xrefs = disease_info['xrefs'] if 'xrefs' in disease_info else []
         print(monDo_id)
         fill_dict_with_external_identifier_to_mondo(xrefs,monDo_id)
 
@@ -245,7 +239,7 @@ def load_in_all_DO_in_dictionary():
                 sys.exit('multiple mondo map to the same ')
             for monDO in dict_external_ids_monDO[doid]:
                 # check if they have the same names
-                monDOname = dict_monDO_info[monDO]['label'].lower() if 'label' in dict_monDO_info[monDO] else ''
+                monDOname = dict_monDO_info[monDO]['name'].lower() if 'name' in dict_monDO_info[monDO] else ''
 
                 do_name = dict_DO_to_info[doid]['name'].lower().replace("'", '') if 'name' in dict_DO_to_info[doid] else ''
                 if monDOname != do_name:
@@ -279,12 +273,12 @@ def load_in_all_DO_in_dictionary():
                     found_with_alternative = True
 
                     for monDO in dict_external_ids_monDO[alternativ_doid]:
-                        monDOname = dict_monDO_info[monDO]['label'].lower()
+                        monDOname = dict_monDO_info[monDO]['name'].lower()
                         do_name = dict_DO_to_info[doid]['name'].lower().replace("'", '')
                         if monDOname != do_name:
                             counter_name_not_matching += 1
                             not_direct_name_matching_file.write(
-                                monDO + '\t' + doid + '\t' + dict_monDO_info[monDO]['label'] + '\t' +
+                                monDO + '\t' + doid + '\t' + dict_monDO_info[monDO]['name'] + '\t' +
                                 dict_DO_to_info[doid][
                                     'name'] + '\n')
                         # fill the dictionary monDo to DO
@@ -330,7 +324,7 @@ def load_in_all_DO_in_dictionary():
     file_mondo_to_multiple_doids.write('monDO\t monDO name\t doids \t doid names\n')
     for monDO, doids in dict_monDo_to_DO_only_doid.items():
         if len(doids) > 1:
-            text = monDO + '\t' + dict_monDO_info[monDO]['label'] + '\t' + '|'.join(doids) + '\t'
+            text = monDO + '\t' + dict_monDO_info[monDO]['name'] + '\t' + '|'.join(doids) + '\t'
             for doid in doids:
                 text = text + dict_DO_to_info[doid]['name'] + '|'
             file_mondo_to_multiple_doids.write(text[0:-1] + '\n')
@@ -355,17 +349,17 @@ def mapping_files():
             line = doid + '\t' + name + '\t' + string_mondos + '\t'
             liste_names = []
             for mondo in mondos:
-                liste_names.append(dict_monDO_info[mondo]['label'])
+                liste_names.append(dict_monDO_info[mondo]['name'])
             list_name_string = ",".join(liste_names)
             multi_mondo_for_do.write(line + list_name_string + '\n')
         for mondo in mondos:
-            mondo_name=dict_monDO_info[mondo]['label'] if 'label' in dict_monDO_info[mondo] else ''
+            mondo_name=dict_monDO_info[mondo]['name'] if 'name' in dict_monDO_info[mondo] else ''
             f.write(mondo + '\t' + mondo_name + '\n')
         f.close()
 
     for monDo, doids in dict_monDo_to_DO_only_doid.items():
         g = open('mapping/monDO_to_DO/without_xref/' + monDo + '.txt', 'w', encoding='utf-8')
-        mondo_name = dict_monDO_info[mondo]['label'] if 'label' in dict_monDO_info[mondo] else ''
+        mondo_name = dict_monDO_info[mondo]['name'] if 'name' in dict_monDO_info[mondo] else ''
         g.write(monDo + '\t' + mondo_name + '\n')
         g.write('DOID \t name \n')
         for doid in doids:
@@ -489,7 +483,7 @@ def gather_information_of_mondo_and_do_then_prepare_dict_for_csv(monDo,info,monD
     else:
         do_synonyms.append(monDO_synonyms)
         monDO_synonyms = dict_DO_to_info[doid]['synonyms'] if 'synonyms' in dict_DO_to_info[doid] else []
-    info['synonym'] = monDO_synonyms
+    info['synonyms'] = monDO_synonyms
 
     info['definition'] = dict_DO_to_info[doid]['definition'] + '[FROM DOID]. ' + monDo_def if 'definition' in \
                                                                                               dict_DO_to_info[
@@ -532,13 +526,6 @@ def integrate_mondo_change_identifier():
     counter_merge_nodes = 0
 
     for monDo, info in dict_monDO_info.items():
-        #problem not create
-        if monDo == 'MONDO:0002087':
-            print('ohje')
-
-        #problem merge
-        if monDo == 'MONDO:0001235':
-            print('ohje')
 
         monDO_xref = info['xrefs'] if 'xrefs' in info else []
         # one to one mapping of mondo and do or specific mapped one-to-one from me
@@ -574,7 +561,7 @@ def integrate_mondo_change_identifier():
                 text='''now=$(date +"%F %T")
                     echo "Current time: $now"\n'''
                 bash_shell.write(text)
-                if dict_DO_to_info[doid]['name'] == info['label']:
+                if dict_DO_to_info[doid]['name'] == info['name']:
                     doid_with_same_name = doid
                     found_doid_with_same_name=True
                 elif monDo in dict_self_decision_mondo_multiple_doid:
@@ -582,7 +569,7 @@ def integrate_mondo_change_identifier():
                         doid_with_same_name = dict_self_decision_mondo_multiple_doid[monDo]
             # if doid_with_same_name == '':
             #     print(monDo)
-            #     print(info['label'])
+            #     print(info['name'])
             #     print(doids)
                 # continue
 
