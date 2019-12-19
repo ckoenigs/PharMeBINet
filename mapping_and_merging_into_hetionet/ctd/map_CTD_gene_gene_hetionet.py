@@ -120,10 +120,11 @@ def generate_files():
     writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     writer.writerow(['GeneIDCTD', 'GeneIDHetionet','xrefs'])
 
-    cypher_file.write('begin\n')
-    cypher_file.write('MATCH (n:Gene) Where not exists(n.ctd) Set n.ctd="no";\n')
-    cypher_file.write('commit')
-    cypher_file.close()
+    # add query to update disease nodes with do='no'
+    cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')
+    query = '''begin\n MATCH (n:Gene) Where not exists(n.ctd) Set n.ctd="no";\n commit\n '''
+    cypher_general.write(query)
+    cypher_general.close()
 
 # path to directory
 path_of_directory = ''

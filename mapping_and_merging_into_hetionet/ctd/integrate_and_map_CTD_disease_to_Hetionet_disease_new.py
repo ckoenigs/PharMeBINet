@@ -645,11 +645,14 @@ def integrate_disease_into_hetionet():
     print(dict_how_mapped_to_multiple_mapping)
     query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/disease_Disease/ctd_hetionet.csv" As line MATCH (n:CTDdisease{disease_id:line.ctdDiseaseID}), (d:Disease{identifier:line.HetionetDiseaseId}) Merge (d)-[:equal_CTD_disease]->(n) With line, d, n Where d.ctd='no' Set d.resource=d.resource+'CTD', d.ctd='yes', d.ctd_url='http://ctdbase.org/detail.go?type=disease&acc='+line.ctdDiseaseID, n.mondos=split(line.mondos, '|');\n '''
     cypher_file.write(query)
-    cypher_file.write('begin\n')
-    #    search for all disease that did not mapped with ctd disease and give them the property ctd:'no'
-    query = '''MATCH (n:Disease) Where Not Exists(n.ctd) SET n.ctd='no';\n '''
-    cypher_file.write(query)
-    cypher_file.write('commit\n')
+
+    # add query to update disease nodes with do='no'
+    cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')
+    query = '''begin\n MATCH (n:Disease) Where not exists(n.ctd) Set n.ctd="no";\n commit\n '''
+    cypher_general.write(query)
+    cypher_general.close()
+
+    # set mondo value where not existing
     cypher_file.write('begin\n')
     # set all ctd disease which are not mapped the mondo as empty
     query = '''MATCH (n:CTDdisease) Where Not Exists(n.mondos) SET n.mondos=[];\n'''

@@ -30,6 +30,7 @@ dict_pathway_hetionet_names = {}
 #dictionary from own id to new identifier
 dict_own_id_to_identifier={}
 
+
 '''
 load in all pathways from hetionet in a dictionary
 '''
@@ -83,7 +84,7 @@ def load_ctd_pathways_in():
         pathways_id = pathways_node['pathway_id']
         pathways_name = pathways_node['name']
         pathways_id_type = pathways_node['id_type']
-        # because kegg is not open source it it out
+        # because kegg is not open source it is out
         if pathways_id_type=='KEGG':
             counter_not_mapped+=1
             continue
@@ -125,10 +126,13 @@ def create_cypher_file():
     cypher_file=open('pathway/cypher.cypher','w')
     query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/pathway/mapped_pathways.tsv" As line FIELDTERMINATOR '\\t' Match (d:Pathway{identifier:line.id_hetionet}),(c:CTDpathway{pathway_id:line.id}) Create (d)-[:equal_to_CTD_pathway]->(c) Set d.resource= d.resource+'CTD', d.ctd="yes", d.ctd_url="http://ctdbase.org/detail.go?type=pathway&acc=%"+line.id, c.hetionet_id=line.id_hetionet;\n'''
     cypher_file.write(query)
-    cypher_file.write('begin\n')
-    query='''Match (d:Pathway) Where not  exists(d.ctd) Set d.ctd="no";\n '''
-    cypher_file.write(query)
-    cypher_file.write('commit')
+
+    # add query to update disease nodes with do='no'
+    cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')
+    query = '''begin\n MATCH (n:Pathway) Where not exists(n.ctd) Set n.ctd="no";\n commit\n '''
+    cypher_general.write(query)
+    cypher_general.close()
+    
 
 # path to directory
 path_of_directory = ''

@@ -924,6 +924,12 @@ def add_chemicals_to_csv():
     cypher_file.write(query)
     cypher_file.close()
 
+    # add query to update disease nodes with do='no'
+    cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')
+    query = '''begin\n MATCH (n:Chemical) Where not exists(n.ctd) Set n.ctd="no";\n commit\n '''
+    cypher_general.write(query)
+    cypher_general.close()
+
 # says if chemicals exists or not so need to create chemicals or merge
 exists_chemicals=False
 
