@@ -4,53 +4,64 @@ Created on Wed Sep 27 13:05:35 2017
 
 @author: Cassandra
 """
+from py2neo import Graph
+import datetime
+import sys, csv
+
+
+'''
+create a connection with neo4j
+'''
+
+
+def create_connection_with_neo4j():
+    # set up authentication parameters and connection
+    # authenticate("localhost:7474", "neo4j", "test")
+    global g
+    g = Graph("http://localhost:7474/db/data/",auth=("neo4j", "test"))
 
 '''
 generate af file with only drugbank and unii IDs
-0:drugbank_id	
-1:name	
-2:type	
-3:groups	
-4:atc_codes	
-5:categories	
-6:inchikey	
-7:inchi	
-8:inchikeys	
-9:synonyms	
-10:unii	
-11:uniis	
-12:external_identifiers	
-13:extra_names	
-14:brands	
-15:molecular_forula	
-16:molecular_formular_experimental	
-17:gene_sequence	
-18:amino_acid_sequence	
-19:sequence	
-20:description
 '''
 
-# file which was extracted from DrugBank xml
-f = open('data/drugbank_with_synonyms_uniis_extern_ids_molecular_seq_formular.tsv', 'r')
-# the new table for unii drugbank pairs
-g = open('data/map_unii_to_drugbank_id.tsv', 'w')
-next(f)
-g.write('unii \t drugbank_id \n')
-# go through the whole file and add only the drugbanks with uniis
-for line in f:
-    splitted = line.split('\t')
-    if splitted[0][0:2] == 'DB':
-        unii = splitted[10]
-        drugbank_id = splitted[0]
-        if not unii == '':
-            g.write(unii + '\t' + drugbank_id + '\n')
-        uniis = splitted[11]
-        if len(uniis) > 2:
-            uniis = uniis.replace('[', '').replace(']', '')
-            uniis = uniis.replace("'", "")
-            uniis = uniis.split('|')
-            for unii in uniis:
-                g.write(unii + '\t' + drugbank_id + '\n')
+def generate_tsv_file():
+    # generate csv file
+    file_map = open('data/map_unii_to_drugbank_id.tsv', 'w')
+    csv_writer=csv.writer(file_map,delimiter='\t')
+    csv_writer.writerow(['unii','drugbank_id','inchikey'])
 
-g.close()
-f.close()
+    # query for getting the information
+    query='''MATCH (n:Compound_DrugBank) RETURN n.identifier, n.unii, n.inchikey '''
+    result=g.run(query)
+
+    # run through the results and fill file
+    for unii, identifier, inchikey, in result:
+        csv_writer.writerow([unii,identifier, inchikey])
+
+    # file map close
+    file_map.close()
+
+
+
+def main():
+
+    print(datetime.datetime.utcnow())
+    print('create connection with neo4j')
+
+    create_connection_with_neo4j()
+
+    print(
+        '#################################################################################################################################################################')
+
+    print(datetime.datetime.utcnow())
+    print('load all properties of compound and drugbank compound and use the information to genreate csv files')
+
+    print(
+        '#################################################################################################################################################################')
+
+    print(datetime.datetime.utcnow())
+
+
+if __name__ == "__main__":
+    # execute only if run as a script
+    main()
