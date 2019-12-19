@@ -95,7 +95,7 @@ def load_sider_in_dict():
 Generate cypher file for side effect nodes
 '''
 def generate_cypher_file():
-    cypher_file=open('cypher.cypher','w')
+    cypher_file=open('cypher_se.cypher','w')
     query_start='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/sider/output/%s.csv" As line FIELDTERMINATOR '\\t' '''
     query_new=''
     query_update=''
