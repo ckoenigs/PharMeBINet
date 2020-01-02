@@ -22,4 +22,4 @@ g = open('results/map_rxnorm_to_UNII.tsv', 'w')
 csv_writer=csv.writer(g,delimiter='\t')
 csv_writer.writerow(['rxcui','unii'])
 for (rxcui, code) in cur:
-    g.write([rxcui , code ])
+    csv_writer.writerow([rxcui , code ])

@@ -56,6 +56,8 @@ def main():
     print(datetime.datetime.utcnow())
     print('load all properties of compound and drugbank compound and use the information to genreate csv files')
 
+    generate_tsv_file()
+
     print(
         '#################################################################################################################################################################')
 

@@ -29,6 +29,7 @@ def load_all_inchikey_and_rxnorm_in_dict():
     print (datetime.datetime.utcnow())
     i = 0
     for line in csv_reader:
+        print(line)
         rxcui = line['rxcui']
         uniis = line['uniis']
         uniis = uniis.split('|')
@@ -109,8 +110,10 @@ generate file rxnorm to drugbank
 def generate_file_rxnorm_to_drugbank():
     f = open('results/map_rxnorm_to_drugbank_with_use_of_unii_and_inchikey.tsv', 'w')
     csv_writer=csv.writer(f, delimiter='\t')
-    csv_writer.writerow(['rxcui','drugbank ids with divided |'])
+    csv_writer.writerow(['rxcui','drugbank_ids'])
+    print(dict_rxnorm_to_drugbank_id)
     for rxcui, drugbank_ids in dict_rxnorm_to_drugbank_id.items():
+        print(rxcui, drugbank_ids)
         drugbank_ids = list(set(drugbank_ids))
         string_drugbank_ids = '|'.join(drugbank_ids)
         csv_writer.writerow([rxcui , string_drugbank_ids ])
