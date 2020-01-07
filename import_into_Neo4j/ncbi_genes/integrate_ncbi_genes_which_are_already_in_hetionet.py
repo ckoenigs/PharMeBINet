@@ -16,7 +16,7 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
     filename = wget.download(url_data, out='data/')
     filename_without_gz = filename.rsplit('.', 1)[0]
     # file = open(filename_without_gz, 'wb')
-    with gzip.open(filename, 'rb') as f:
+    with io.TextIOWrapper(gzip.open(filename, 'rb')) as f:
         csv_reader=csv.DictReader(f,delimiter='\t')
 
         # create cypher file
