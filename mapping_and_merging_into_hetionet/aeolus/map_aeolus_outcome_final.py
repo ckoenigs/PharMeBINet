@@ -267,7 +267,7 @@ def main():
     if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]
     else:
-        sys.exit('need a path sider se')
+        sys.exit('need a path aeolus se')
 
     print (datetime.datetime.utcnow())
     print('Generate connection with neo4j and mysql')
