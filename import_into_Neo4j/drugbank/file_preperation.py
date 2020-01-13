@@ -192,7 +192,26 @@ dict_experimental_properties={}
 dict_calculated_properties={}
 
 '''
+check if properties are equal
+'''
+def check_on_property(property, dict_external, value, drugbank_id, error_massage):
+    if property in dict_external:
+        if value != '':
+            for value_part in value.split('; '):
+                if not value_part in dict_external[property]:
+                    print(dict_external)
+                    print(drugbank_id)
+                    print(property)
+                    print(value)
+                    print(value_part)
+                    print(dict_external[property])
+                    sys.exit(error_massage)
+        return True
+    return False
 
+'''
+go through all files which contains drug information and combinded them
+before combinding 
 '''
 
 
@@ -217,6 +236,7 @@ def drugs_combination_and_check(neo4j_label):
                 else:
                     dict_drug_sequence[db_id] = [seq]
 
+    #list of external references formthe drug links file
     dict_drug_external_ids = {}
 
     # this take all information from drug links.csv
@@ -427,6 +447,8 @@ def drugs_combination_and_check(neo4j_label):
         for row in reader:
             # drugbank_id = row['\xef\xbb\xbfdrugbank_id']
             drugbank_id = row['\ufeffdrugbank_id']
+            if drugbank_id=='DB01054':
+                print('huhu')
             dict_drugbank_drug_ids[drugbank_id] = 1
             name = row['name']
             cas_number = row['cas_number']
@@ -488,17 +510,7 @@ def drugs_combination_and_check(neo4j_label):
                 elif property in dict_changed_external_identifier_source_name:
                     property = dict_changed_external_identifier_source_name[property]
 
-                if property in dict_external:
-                    for value_part in value.split('; '):
-                        if not value_part in dict_external[property]:
-                            print(dict_external)
-                            print(drugbank_id)
-                            print(property)
-                            print(value)
-                            print(value_part)
-                            print(dict_external[property])
-                            sys.exit('external identifier')
-                elif value == '':
+                if check_on_property(property, dict_external, value, drugbank_id, 'external identifier') or value == '':
                     continue
                 else:
                     print(dict_external)
@@ -566,17 +578,7 @@ def drugs_combination_and_check(neo4j_label):
 
                     elif property in dict_changed_external_identifier_source_name:
                         property = dict_changed_external_identifier_source_name[property]
-                        if property in dict_external:
-                            for value_part in value.split('; '):
-                                if not value_part in dict_external[property]:
-                                    print(dict_external)
-                                    print(drugbank_id)
-                                    print(property)
-                                    print(value)
-                                    print(value_part)
-                                    print(dict_external[property])
-                                    sys.exit('structure links external identifier')
-                        elif value == '':
+                        if check_on_property(property, dict_external, value, drugbank_id, 'structure links external identifier') or value == '':
                             continue
                         else:
                             print(dict_external)
@@ -2163,7 +2165,7 @@ def add_the_other_rela_to_cypher(pathway_label, product_label, salt_label, mutat
     label_neo4j_compound_salt = 'has_ChS'
     label_neo4j_compound_mutaded = 'combination_causes_adrs_CccaMU'
     label_neo4j_interaction = 'interacts_CiC'
-    label_neo4j_enzyme_pathway = 'participates_EpPA'
+    label_neo4j_enzyme_pathway = 'participates_POpPA'
     label_neo4j_target_peptide = 'has_component_POhcPO'
     label_neo4j_pharmacologic_class_compound='includes_PCiC'
 
