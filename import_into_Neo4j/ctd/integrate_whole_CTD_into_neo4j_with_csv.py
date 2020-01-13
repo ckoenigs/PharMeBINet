@@ -225,7 +225,7 @@ and gather the information
 
 
 def load_chemical_go_enriched():
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chem_go_enriched.csv" As line Merge (c:CTDchemical{ chemical_id:line.ChemicalID }) On Create Set  c.casRN=line.CasRN, c.name=line.ChemicalName, c.newer_version=True On Match Set c.newer_version=True;\n '''
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chem_go_enriched.csv" As line Merge (c:CTDchemical{ chemical_id:line.ChemicalID }) On Create Set  c.casRN=line.CasRN, c.name=line.ChemicalName;\n '''
     cypher_file_nodes.write(query)
     # check if chemicals are already in neo4j
     query = '''MATCH r=(c:CTDchemical)-[a:affects_CGO]->(n:CTDGO) RETURN r LIMIT 1 '''
@@ -543,7 +543,7 @@ def add_go_to_cypher_file():
 
     cypher_file_nodes.write(query)
 
-    with open('ctd_data/CTD_GO.csv', 'wb') as csvfile:
+    with open('ctd_data/CTD_GO.csv', 'w') as csvfile:
         writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
         writer.writerow(['GOID', 'GOName', 'Ontology', 'HighestGOLevel'])
         # add the go nodes to cypher file
@@ -574,7 +574,7 @@ def gene_go_into_cypher_file():
 
     cypher_file_edges.write(query)
 
-    with open('ctd_data/CTD_Gene_GO.csv', 'wb') as csvfile:
+    with open('ctd_data/CTD_Gene_GO.csv', 'w', encoding='utf-8', newline='') as csvfile:
         writer = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
         writer.writerow(['GeneID', 'GOID', 'GeneSymbol'])
         # add the go nodes to cypher file
