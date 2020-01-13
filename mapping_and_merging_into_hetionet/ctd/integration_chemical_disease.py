@@ -66,11 +66,11 @@ def generate_cypher():
         'Match (n:Chemical)-[r:TREATS_CtD]->(b:Disease) Where not exists(r.hetionet) Set r.hetionet="yes", r.resource=["Hetionet"];\n')
     cypherfile.write('commit\n')
     for (file_name,rela_name) in list_file_name_rela_name:
-        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Documents/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/chemical_disease/%s.csv" As line Match (n:Chemical{identifier:line.ChemicalID})-[r:%s]->(b:Disease{identifier:line.DiseaseID}) Where r.ctd='no' Set r.how_often=r.how_often+1 , r.resource=r.resource+'CTD';\n ''' %(file_name,rela_name)
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/chemical_disease/%s.csv" As line Match (n:Chemical{identifier:line.ChemicalID})-[r:%s]->(b:Disease{identifier:line.DiseaseID}) Where r.ctd='no' Set r.how_often=r.how_often+1 , r.resource=r.resource+'CTD';\n ''' %(file_name,rela_name)
         cypherfile.write(query)
-        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Documents/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/chemical_disease/%s.csv" As line Match (n:Chemical{identifier:line.ChemicalID})-[r:%S]->(b:Disease{identifier:line.DiseaseID}) Set r.ctd='yes', r.directEvidence=split(line.directEvidences,'|'),  r.inferenceGeneSymbol=split(line.inferenceGeneSymbols,'|'), r.inferenceScore=split(line.inferenceScores,'|'), r.pubMedIDs=split(line.pubMedIDs,'|'), r.url_ctd='http://ctdbase.org/detail.go?type=chem&acc='+line.ChemicalID ;\n ''' %(file_name,rela_name)
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/chemical_disease/%s.csv" As line Match (n:Chemical{identifier:line.ChemicalID})-[r:%S]->(b:Disease{identifier:line.DiseaseID}) Set r.ctd='yes', r.directEvidence=split(line.directEvidences,'|'),  r.inferenceGeneSymbol=split(line.inferenceGeneSymbols,'|'), r.inferenceScore=split(line.inferenceScores,'|'), r.pubMedIDs=split(line.pubMedIDs,'|'), r.url_ctd='http://ctdbase.org/detail.go?type=chem&acc='+line.ChemicalID ;\n ''' %(file_name,rela_name)
         cypherfile.write(query)
-        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Documents/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/chemical_disease/%s.csv" As line Match (n:Chemical{identifier:line.ChemicalID}), (b:Disease{identifier:line.DiseaseID}) Merge (n)-[r:%s]->(b) On Create Set r.new='yes', r.directEvidence=split(line.directEvidences,'|'), r.ctd='yes', r.pubMedIDs=split(line.pubMedIDs,'|'), r.resource=["CTD"], r.how_often=1, r.inferenceGeneSymbol=split(line.inferenceGeneSymbols,'|'), r.inferenceScore=split(line.inferenceScores,'|') , r.url_ctd='http://ctdbase.org/detail.go?type=chem&acc='+line.ChemicalID, r.url='http://ctdbase.org/detail.go?type=chem&acc='+line.ChemicalID , r.source="CTD", r.licence="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased='true' ;\n ''' %(file_name,rela_name)
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/chemical_disease/%s.csv" As line Match (n:Chemical{identifier:line.ChemicalID}), (b:Disease{identifier:line.DiseaseID}) Merge (n)-[r:%s]->(b) On Create Set r.new='yes', r.directEvidence=split(line.directEvidences,'|'), r.ctd='yes', r.pubMedIDs=split(line.pubMedIDs,'|'), r.resource=["CTD"], r.how_often=1, r.inferenceGeneSymbol=split(line.inferenceGeneSymbols,'|'), r.inferenceScore=split(line.inferenceScores,'|') , r.url_ctd='http://ctdbase.org/detail.go?type=chem&acc='+line.ChemicalID, r.url='http://ctdbase.org/detail.go?type=chem&acc='+line.ChemicalID , r.source="CTD", r.licence="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased='true' ;\n ''' %(file_name,rela_name)
         cypherfile.write(query)
 
 
@@ -371,6 +371,13 @@ def get_all_important_relationships_and_write_into_files():
 
 
 def main():
+
+    global path_of_directory
+    if len(sys.argv) > 1:
+        path_of_directory = sys.argv[1]
+    else:
+        sys.exit('need a path')
+
     print (datetime.datetime.utcnow())
     print('Generate connection with neo4j and mysql')
 

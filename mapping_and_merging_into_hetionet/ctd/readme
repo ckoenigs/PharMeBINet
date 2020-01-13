@@ -19,6 +19,8 @@ There are different mapping methods used:
 
 The integrate the new compounds and generate a cypher file for all CTD relationships which are extracted from CTD.
 
+The chemical-phenotype relationship was programmed from a student of me: https://github.com/piwonesien/Neo4JCSVImporter
+
 
 
     Davis AP, Grondin CJ, Johnson RJ, Sciaky D, King BL, McMorran R, Wiegers J, Wiegers TC, Mattingly CJ. The Comparative Toxicogenomics Database: update 2017. Nucleic Acids Res. 2016 Sep 19;

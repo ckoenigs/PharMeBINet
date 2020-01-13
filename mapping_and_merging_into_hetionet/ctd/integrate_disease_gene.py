@@ -20,13 +20,12 @@ create connection to neo4j
 
 def create_connection_with_neo4j_mysql():
     # create connection with neo4j
-    # authenticate("localhost:7474", "neo4j", "test")
-    # global g
-    # g = Graph("http://localhost:7474/db/data/")
-
-    # authenticate("bimi:7475", "ckoenigs", "test")
     global g
-    g = Graph("http://bimi:7475/db/data/",bolt=False,auth=("neo4j", "test"))
+    g = Graph("http://localhost:7474/db/data/", auth=("neo4j", "test"))
+
+    # # authenticate("bimi:7475", "ckoenigs", "test")
+    # global g
+    # g = Graph("http://bimi:7475/db/data/",bolt=False,auth=("neo4j", "test"))
 
 
 # dictionary with all pairs and properties as value
@@ -89,7 +88,7 @@ def take_all_relationships_of_gene_disease():
     count_multiple_pathways = 0
     count_possible_relas = 0
     counter_all = 0
-    counter_score_100_or_direct_evidence=0
+    counter_direct_evidence=0
 
     while counter_of_used_disease< number_of_disease:
 
@@ -122,7 +121,7 @@ def take_all_relationships_of_gene_disease():
         # print(dict_disease_id_mondo)
 
         all_disease_id='","'.join(all_disease_id)
-        query = '''MATCH (disease)<-[r:associates_GD]-(gene) Where ()-[:equal_to_CTD_gene]->(gene) and disease.disease_id in ["''' + all_disease_id+ '''"] RETURN gene.gene_id, r, disease.mondos, disease.disease_id Order by disease.disease_id '''
+        query = '''MATCH (disease)<-[r:associates_GD]-(gene) Where ()-[:equal_to_CTD_gene]->(gene) and exists(r.DirectEvidence) and disease.disease_id in ["''' + all_disease_id+ '''"] RETURN gene.gene_id, r, disease.mondos, disease.disease_id Order by disease.disease_id '''
         results = g.run(query)
 
         time_measurement = time.time() - start
@@ -141,13 +140,17 @@ def take_all_relationships_of_gene_disease():
             pubMedIDs = '|'.join(rela['pubMedIDs']) if 'pubMedIDs' in rela else ''
             omimIDs='|'.join(rela['omimIDs']) if 'omimIDs' in rela else ''
 
-            if inferenceScore!='' and float(inferenceScore)<100:
-                if directEvidence!='':
-                    print('ohje direct evidence')
-                if pubMedIDs=='':
-                    print('some has not a pubmed id')
+            # if inferenceScore!='' and float(inferenceScore)<100:
+            #     if directEvidence!='':
+            #         print('ohje direct evidence')
+            #     if pubMedIDs=='':
+            #         print('some has not a pubmed id')
+            #     continue
+            if inferenceScore=='' and directEvidence=='':
+                sys.exit('ctd disease-gene some has non evidence or inference')
+            elif directEvidence=='':
                 continue
-            counter_score_100_or_direct_evidence+=1
+            counter_direct_evidence+=1
             for mondo in dict_disease_id_mondo[disease_id]:
                 if not (gene_id, mondo) in dict_disease_gene:
                     if inferenceChemicalName=='':
@@ -214,7 +217,7 @@ def take_all_relationships_of_gene_disease():
     print('number of direct evidence rela:'+str(counter_directEvidence))
     print('number of inferences rela:' + str(counter_inferences))
     print(counter_all)
-    print(counter_score_100_or_direct_evidence)
+    print(counter_direct_evidence)
     print('number of new rela:'+str(count_possible_relas))
     print('number of relationships which appears multiple time:'+str(count_multiple_pathways))
 

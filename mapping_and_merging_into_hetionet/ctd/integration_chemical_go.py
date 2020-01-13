@@ -5,7 +5,7 @@ Created on Fri Sep 15 11:41:20 2017
 @author: ckoenigs
 """
 
-from py2neo import Graph, authenticate
+from py2neo import Graph#, authenticate
 import datetime
 import csv, time, sys
 import numpy as np
@@ -18,12 +18,12 @@ create connection to neo4j
 def create_connection_with_neo4j_mysql():
     # create connection with neo4j
     # authenticate("localhost:7474", "neo4j", "test")
-    # global g
-    # g = Graph("http://localhost:7474/db/data/")
-    # create connection to server
-    authenticate("bimi:7475", "ckoenigs", "test")
     global g
-    g = Graph("http://bimi:7475/db/data/", bolt=False)
+    g = Graph("http://localhost:7474/db/data/",auth=("neo4j", "test"))
+    # create connection to server
+    # authenticate("bimi:7475", "ckoenigs", "test")
+    # global g
+    # g = Graph("http://bimi:7475/db/data/", bolt=False)
 
 
 # csv files for bp. mf, cc
@@ -59,7 +59,7 @@ put the information in the right csv file
 '''
 
 
-def add_information_into_te_different_csv_files((chemical_id, go_id), information, csvfile):
+def add_information_into_te_different_csv_files(chemical_id, go_id, information, csvfile):
     correctedPValues = list(information[0])
     targetTotalQtys = list(information[1])
     backgroundMatchQtys = list(information[2])
@@ -90,15 +90,15 @@ also generate a cypher file to integrate this information
 def take_all_relationships_of_gene_pathway():
     # generate cypher file
     cypherfile = open('chemical_go/cypher_bp.cypher', 'w')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/chemical_go/bp.csv" As line Match (n:Chemical{identifier:line.ChemicalID}), (b:BiologicalProcess{identifier:line.GOID}) Merge (n)-[r:ASSOCIATES_CaBP]->(b) On Create Set r.hetionet='no', r.targetTotalQty=split(line.targetTotalQty, '|'), r.backgroundTotalQty=split(line.backgroundTotalQty,'|'), r.backgroundMatchQty=split(line.backgroundMatchQty,'|'), r.correctedPValue=split(line.correctedPValue,'|'), r.pValue=split(line.pValue,'|'), r.targetMatchQty=split(line.targetMatchQty,'|'), r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=chem&acc="+line.ChemicalID, r.source="CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased='false' On Match SET r.targetTotalQty=split(line.targetTotalQty, '|'), r.backgroundTotalQty=split(line.backgroundTotalQty,'|'), r.backgroundMatchQty=split(line.backgroundMatchQty,'|'), r.correctedPValue=split(line.correctedPValue,'|'), r.pValue=split(line.pValue,'|'), r.targetMatchQty=split(line.targetMatchQty,'|'), r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=chem&acc="+line.ChemicalID;\n '''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Documents/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/chemical_go/bp.csv" As line Match (n:Chemical{identifier:line.ChemicalID}), (b:BiologicalProcess{identifier:line.GOID}) Merge (n)-[r:ASSOCIATES_CaBP]->(b) On Create Set r.hetionet='no', r.targetTotalQty=split(line.targetTotalQty, '|'), r.backgroundTotalQty=split(line.backgroundTotalQty,'|'), r.backgroundMatchQty=split(line.backgroundMatchQty,'|'), r.correctedPValue=split(line.correctedPValue,'|'), r.pValue=split(line.pValue,'|'), r.targetMatchQty=split(line.targetMatchQty,'|'), r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=chem&acc="+line.ChemicalID, r.source="CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased='false' On Match SET r.targetTotalQty=split(line.targetTotalQty, '|'), r.backgroundTotalQty=split(line.backgroundTotalQty,'|'), r.backgroundMatchQty=split(line.backgroundMatchQty,'|'), r.correctedPValue=split(line.correctedPValue,'|'), r.pValue=split(line.pValue,'|'), r.targetMatchQty=split(line.targetMatchQty,'|'), r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=chem&acc="+line.ChemicalID;\n '''
     cypherfile.write(query)
     cypherfile.close()
     cypherfile = open('chemical_go/cypher_mf.cypher', 'w')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/chemical_go/mf.csv" As line Match (n:Chemical{identifier:line.ChemicalID}), (b:MolecularFunction{identifier:line.GOID}) Merge (n)-[r:ASSOCIATES_CaMF]->(b) On Create Set r.hetionet='no', r.targetTotalQty=split(line.targetTotalQty, '|'), r.backgroundTotalQty=split(line.backgroundTotalQty,'|'), r.backgroundMatchQty=split(line.backgroundMatchQty,'|'), r.correctedPValue=split(line.correctedPValue,'|'), r.pValue=split(line.pValue,'|'), r.targetMatchQty=split(line.targetMatchQty,'|'), r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=chem&acc="+line.ChemicalID, r.source="CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased='false' On Match SET r.targetTotalQty=split(line.targetTotalQty, '|'), r.backgroundTotalQty=split(line.backgroundTotalQty,'|'), r.backgroundMatchQty=split(line.backgroundMatchQty,'|'), r.correctedPValue=split(line.correctedPValue,'|'), r.pValue=split(line.pValue,'|'), r.targetMatchQty=split(line.targetMatchQty,'|'), r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=chem&acc="+line.ChemicalID;\n '''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Documents/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/chemical_go/mf.csv" As line Match (n:Chemical{identifier:line.ChemicalID}), (b:MolecularFunction{identifier:line.GOID}) Merge (n)-[r:ASSOCIATES_CaMF]->(b) On Create Set r.hetionet='no', r.targetTotalQty=split(line.targetTotalQty, '|'), r.backgroundTotalQty=split(line.backgroundTotalQty,'|'), r.backgroundMatchQty=split(line.backgroundMatchQty,'|'), r.correctedPValue=split(line.correctedPValue,'|'), r.pValue=split(line.pValue,'|'), r.targetMatchQty=split(line.targetMatchQty,'|'), r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=chem&acc="+line.ChemicalID, r.source="CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased='false' On Match SET r.targetTotalQty=split(line.targetTotalQty, '|'), r.backgroundTotalQty=split(line.backgroundTotalQty,'|'), r.backgroundMatchQty=split(line.backgroundMatchQty,'|'), r.correctedPValue=split(line.correctedPValue,'|'), r.pValue=split(line.pValue,'|'), r.targetMatchQty=split(line.targetMatchQty,'|'), r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=chem&acc="+line.ChemicalID;\n '''
     cypherfile.write(query)
     cypherfile.close()
     cypherfile = open('chemical_go/cypher_cc.cypher', 'w')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/chemical_go/cc.csv" As line Match (n:Chemical{identifier:line.ChemicalID}), (b:CellularComponent{identifier:line.GOID}) Merge (n)-[r:ASSOCIATES_CaCC]->(b) On Create Set r.hetionet='no', r.targetTotalQty=split(line.targetTotalQty, '|'), r.backgroundTotalQty=split(line.backgroundTotalQty,'|'), r.backgroundMatchQty=split(line.backgroundMatchQty,'|'), r.correctedPValue=split(line.correctedPValue,'|'), r.pValue=split(line.pValue,'|'), r.targetMatchQty=split(line.targetMatchQty,'|'), r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=chem&acc="+line.ChemicalID, r.source="CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased='false' On Match SET r.targetTotalQty=split(line.targetTotalQty, '|'), r.backgroundTotalQty=split(line.backgroundTotalQty,'|'), r.backgroundMatchQty=split(line.backgroundMatchQty,'|'), r.correctedPValue=split(line.correctedPValue,'|'), r.pValue=split(line.pValue,'|'), r.targetMatchQty=split(line.targetMatchQty,'|'), r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=chem&acc="+line.ChemicalID;\n '''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Documents/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/chemical_go/cc.csv" As line Match (n:Chemical{identifier:line.ChemicalID}), (b:CellularComponent{identifier:line.GOID}) Merge (n)-[r:ASSOCIATES_CaCC]->(b) On Create Set r.hetionet='no', r.targetTotalQty=split(line.targetTotalQty, '|'), r.backgroundTotalQty=split(line.backgroundTotalQty,'|'), r.backgroundMatchQty=split(line.backgroundMatchQty,'|'), r.correctedPValue=split(line.correctedPValue,'|'), r.pValue=split(line.pValue,'|'), r.targetMatchQty=split(line.targetMatchQty,'|'), r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=chem&acc="+line.ChemicalID, r.source="CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased='false' On Match SET r.targetTotalQty=split(line.targetTotalQty, '|'), r.backgroundTotalQty=split(line.backgroundTotalQty,'|'), r.backgroundMatchQty=split(line.backgroundMatchQty,'|'), r.correctedPValue=split(line.correctedPValue,'|'), r.pValue=split(line.pValue,'|'), r.targetMatchQty=split(line.targetMatchQty,'|'), r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=chem&acc="+line.ChemicalID;\n '''
     cypherfile.write(query)
     cypherfile.close()
 
@@ -328,7 +328,7 @@ def take_all_relationships_of_gene_pathway():
                     dict_rela_ontology[ontology]+=1
                 else:
                     dict_rela_ontology[ontology]=1
-                add_information_into_te_different_csv_files((chemical_id,go_id),information,dict_processe[ontology])
+                add_information_into_te_different_csv_files(chemical_id,go_id,information,dict_processe[ontology])
 
         print('new relas:'+str(counter_rela))
 
