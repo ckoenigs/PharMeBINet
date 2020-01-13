@@ -533,7 +533,7 @@ properties:
 
 
 def map_use_dhimmel_rxnorm_drugbank_map_unii_inchikey():
-    f = open('../RxNorm_to_DrugBank/results/map_rxnorm_to_drugbank_with_use_of_unii_and_inchikey_4.tsv', 'r')
+    f = open('../RxNorm_to_DrugBank/results/map_rxnorm_to_drugbank_with_use_of_unii_and_inchikey.tsv', 'r')
     next(f)
     delete_rxcui = []
     delete_cui = []
