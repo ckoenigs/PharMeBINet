@@ -1,24 +1,20 @@
 # -*- coding: utf-8 -*-
-from py2neo import Graph, authenticate
-from collections import defaultdict
+import csv
 import datetime
-import csv, sys
+import sys
+from collections import defaultdict
+
+from py2neo import Graph
 
 '''
 create connection to neo4j 
 '''
 
 
-def create_connection_with_neo4j_mysql():
+def create_connection_with_neo4j():
     # create connection with neo4j
-    # authenticate("localhost:7474", "neo4j", "test")
-    # global g
-    # g = Graph("http://localhost:7474/db/data/")
-
-    # create connection to server
-    authenticate("bimi:7475", "ckoenigs", "test")
     global g
-    g = Graph("http://bimi:7475/db/data/", bolt=False)
+    g = Graph("http://localhost:7474/db/data/", auth=("neo4j", "test"))
 
 
 # generate cypher file
@@ -148,7 +144,7 @@ def path_to_rela_and_add_to_dict(rela, first, second):
     writer = generate_csv(path)
     dict_rela_to_file[rela_full] = writer
 
-    query_first_part = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Documents/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/''' + path + '''" As line Match (b:Chemical{identifier:line.ChemicalID}), '''
+    query_first_part = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/''' + path + '''" As line Match (b:Chemical{identifier:line.ChemicalID}), '''
     if first == 'gene' or second == 'gene':
         query_middle_1 = ''' (n:Gene{identifier:toInteger(line.GeneID)})'''
     else:
@@ -517,10 +513,17 @@ def fill_the_csv_files():
 
 
 def main():
+
+    global path_of_directory
+    if len(sys.argv) > 1:
+        path_of_directory = sys.argv[1]
+    else:
+        sys.exit('need a path')
+        
     print (datetime.datetime.utcnow())
     print('Generate connection with neo4j and mysql')
 
-    create_connection_with_neo4j_mysql()
+    create_connection_with_neo4j()
 
     print(
         '###########################################################################################################################')
