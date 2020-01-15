@@ -9,8 +9,17 @@ from py2neo import Graph
 import datetime
 import MySQLdb as mdb
 import sys, csv
+import urllib.request, urllib.error, urllib.parse
+import json
+from api_key import *
 
 import xml.dom.minidom as dom
+
+
+REST_URL = "http://data.bioontology.org"
+
+#http://bioportal.bioontology.org/ontologies/MEDDRA?p=classes&conceptid=10059299
+
 
 
 class SideEffect:
@@ -63,6 +72,30 @@ class SideEffect_Aeolus():
 # dictionary with all side effects from hetionet with umls cui as key and as value a class SideEffect
 dict_all_side_effect = {}
 
+'''
+Create cache file or open and load mapping results
+'''
+
+def cache_api():
+    # header of cache file
+    header=['meddra_id','umls_cuis']
+    global csv_writer
+    try:
+        cache_file=open('cache_api_results.tsv','r', encoding='utf-8')
+        csv_reader=csv.DictReader(cache_file,delimiter='\t')
+        for row in csv_reader:
+            dict_aeolus_SE_with_CUIs[row['meddra_id']]=list(set(row['umls_cuis'].split('|')))
+        cache_file.close()
+        cache_file = open('cache_api_results.tsv', 'a', encoding='utf-8')
+        csv_writer = csv.writer(cache_file, delimiter='\t')
+
+    except:
+        cache_file=open('cache_api_results.tsv','w',encoding='utf-8')
+        csv_writer=csv.writer(cache_file,delimiter='\t')
+        csv_writer.writerow(header)
+
+
+
 
 '''
 create connection to neo4j and mysql
@@ -75,7 +108,15 @@ def create_connection_with_neo4j_mysql():
 
     # create connection with mysql database
     global con
-    con = mdb.connect('localhost', 'root', 'Za8p7Tf', 'umls')
+    con = mdb.connect('localhost', 'ckoenigs', 'Za8p7Tf$', 'umls')
+
+'''
+get from api results from url
+'''
+def get_json(url):
+    opener = urllib.request.build_opener()
+    opener.addheaders = [('Authorization', 'apikey token=' + API_KEY)]
+    return json.loads(opener.open(url).read())
 
 
 '''
@@ -107,6 +148,12 @@ def load_side_effects_from_hetionet_in_dict():
 # dictionary with all aeolus side effects outcome_concept_id (OHDSI ID) as key and value is the class SideEffect_Aeolus
 dict_side_effects_aeolus = {}
 
+# list of list with all meddra cuis in groups of 100
+list_of_list_of_meddra_ids=[]
+
+# number of group size
+number_of_group_size=200
+
 '''
 load all aeolus side effects in a dictionary
 has properties:
@@ -121,10 +168,20 @@ has properties:
 def load_side_effects_aeolus_in_dictionary():
     query = '''MATCH (n:AeolusOutcome) RETURN n'''
     results = g.run(query)
+    # list of_meddra ids
+    list_of_ids=[]
+    #counter
+    counter=0
     for result, in results:
         sideEffect = SideEffect_Aeolus(result['snomed_outcome_concept_id'], result['vocabulary_id'], result['name'],
                                        result['outcome_concept_id'], result['concept_code'])
-        dict_side_effects_aeolus[result['outcome_concept_id']] = sideEffect
+        dict_side_effects_aeolus[result['concept_code']] = sideEffect
+        if result['concept_code'] not in dict_aeolus_SE_with_CUIs:
+            list_of_ids.append(result['concept_code'])
+            counter+=1
+            if counter % number_of_group_size==0:
+                list_of_list_of_meddra_ids.append(list_of_ids)
+                list_of_ids=[]
 
     print('Size of Aoelus side effects:' + str(len(dict_side_effects_aeolus)))
 
@@ -134,26 +191,85 @@ dict_aeolus_SE_with_CUIs = {}
 
 # generate file with meddra and a list of umls cuis and where there are from
 multiple_cuis = open('aeolus_multiple_cuis.tsv', 'w')
-multiple_cuis.write('MedDRA id \t cuis with | as seperator \t where are it from \n')
+csv_multiple_cuis=csv.writer(multiple_cuis,delimiter='\t')
+csv_multiple_cuis.writerow(['MedDRA id','cuis with | as seperator ','where are it from'])
+
 
 '''
-find for every aeolus side effect a least one umls Cui and save them in a dictionary
+search for cui with api from bioportal
 '''
+def search_with_api_bioportal():
+    global csv_writer
+    #counter for not equal names
+    counter_for_not_equal_names=0
 
+    #counter for meddra ids which has no cui
+    counter_meddra_id_without_cui=0
 
-def find_cuis_for_aeolus_side_effects():
-    for key, sideEffect in dict_side_effects_aeolus.items():
-        cur = con.cursor()
-        query = ("Select CUI,LAT,CODE,SAB From MRCONSO Where SAB = 'MDR' and CODE= %s ;")
-        rows_counter = cur.execute(query, (sideEffect.concept_code,))
-        if rows_counter > 0:
-            list_cuis = []
-            for (cui, lat, code, sab) in cur:
-                list_cuis.append(cui)
-            dict_aeolus_SE_with_CUIs[key] = list(set(list_cuis))
-            if len(list(set(list_cuis))) > 1:
-                cuis = "|".join(list(set(list_cuis)))
-                multiple_cuis.write(key + '\t' + cuis + '\t from umls \n')
+    #search for cui id in bioportal
+    for list_ids in list_of_list_of_meddra_ids:
+        string_ids=' '.join(list_ids)
+        part="/search?q="+urllib.parse.quote(string_ids)+"&include=cui,prefLabel&pagesize=220&ontology=MEDDRA"
+        url=REST_URL+part
+        results_all=get_json(url)
+        if results_all['totalCount']>220:
+            sys.exit('more results thant it can show')
+        results=results_all['collection']
+
+        dict_all_inside={}
+        #check if this api got an result
+        if results:
+            for result in results:
+                # print(results)
+                all_infos=result['@id'].split('/')
+                meddra_id=all_infos[-1]
+                # filter out all results which are not from meddra
+                if all_infos[-2]!='MEDDRA':
+                    continue
+
+                # check if the result has a cui
+                if 'cui' in result:
+                    cuis=result['cui']
+                else:
+                    print('no cui')
+                    print(meddra_id)
+                    continue
+                pref_name=result['prefLabel']
+
+                # check if the the id is really in this list
+                if not meddra_id in list_ids:
+                    print('ohje')
+                    print(meddra_id)
+                    print(url)
+                    print(list_ids)
+                    print(result)
+                    print('What did happend')
+                    continue
+
+                # if it contains more than one cui write it into an extra file
+                if len(list(set(cuis))) > 1:
+                    cuis_string = "|".join(list(set(cuis)))
+                    csv_multiple_cuis.writerow([meddra_id , cuis_string ,'from bioportal'])
+                dict_all_inside[meddra_id]=cuis
+                sideEffect_name=dict_side_effects_aeolus[meddra_id].name
+                dict_aeolus_SE_with_CUIs[meddra_id] = list(set(cuis))
+                csv_writer.writerow([meddra_id,'|'.join(cuis)])
+                #check if names are equal
+                if pref_name!=sideEffect_name:
+                    counter_for_not_equal_names+=1
+
+            if len(list_ids)!= len(dict_all_inside):
+                set_list=set(list_ids)
+                set_keys=set(dict_all_inside.keys())
+                counter_meddra_id_without_cui+=len(set_list.difference(set_keys))
+        else:
+            print('not in bioportal')
+            print(list_ids)
+
+    print('Size of Aoelus side effects:' + str(len(dict_side_effects_aeolus)))
+    print('number of not equal names:'+str(counter_for_not_equal_names))
+    print('number of not mapped meddra ids:'+str(counter_meddra_id_without_cui))
+
 
 
 # list with all outcome_concept from aeolus that did not map direkt
@@ -220,7 +336,7 @@ def integrate_aeolus_into_hetionet():
     csv_existing.writerow(['aSE','SE','cuis'])
 
     #query for mapping
-    query_start='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/aeolus/output/%s.tsv" As line FIELDTERMINATOR '\\t' Match (a:AeolusOutcome{outcome_concept_id:line.aSE})'''
+    query_start='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/aeolus/output/%s.tsv" As line FIELDTERMINATOR '\\t' Match (a:AeolusOutcome{concept_code:line.aSE})'''
     cypher_file= open('cypher_se.cypher','w')
 
     # query for the update nodes and relationship
@@ -244,8 +360,8 @@ def integrate_aeolus_into_hetionet():
     csv_new.writerow(['aSE','SE','cuis'])
 
     # query for the update nodes and relationship
-    query_new = query_start + ' Create (n:SideEffect{identifier:line.SE, {licenses:"CC0 1.0", name:a.name , source:"UMLS via AEOLUS", url:"http://identifiers.org/umls/"+line.SE , resource:["AEOLUS"],  aeolus:"yes" }}) Set a.cuis=split(line.cuis,"|") Create (n)-[:equal_to_Aeolus_SE]->(a); \n'
-    query_new = query_update % ("se_new")
+    query_new = query_start + ' Create (n:SideEffect{identifier:line.SE, licenses:"CC0 1.0", name:a.name , source:"UMLS via AEOLUS", url:"http://identifiers.org/umls/"+line.SE , resource:["AEOLUS"],  aeolus:"yes" }) Set a.cuis=split(line.cuis,"|") Create (n)-[:equal_to_Aeolus_SE]->(a); \n'
+    query_new = query_new % ("se_new")
     cypher_file.write(query_new)
 
     # generate new hetionet side effects and connect the with the aeolus outcome
@@ -278,6 +394,14 @@ def main():
     '###########################################################################################################################')
 
     print (datetime.datetime.utcnow())
+    print('Load already mapped from api cache')
+
+    cache_api()
+
+    print(
+    '###########################################################################################################################')
+
+    print (datetime.datetime.utcnow())
     print('Load in all Side effects from hetionet in a dictionary')
 
     load_side_effects_from_hetionet_in_dict()
@@ -296,7 +420,7 @@ def main():
     print (datetime.datetime.utcnow())
     print('Find cuis for aeolus side effects')
 
-    find_cuis_for_aeolus_side_effects()
+    search_with_api_bioportal()
 
     print(
     '###########################################################################################################################')
