@@ -12,8 +12,19 @@ found_gene_ids=[]
 load ncbi tsv file in and write only the important lines into a new csv file for integration into Neo4j
 '''
 def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
-    # download ncbi human genes
-    filename = wget.download(url_data, out='data/')
+    counter_tries=0
+    got_file=False
+    while not got_file and counter_tries<11:
+        try:
+            # download ncbi human genes
+            filename = wget.download(url_data, out='data/')
+            got_file=True
+        except:
+            counter_tries+=1
+            print(counter_tries)
+    if counter_tries>11:
+        sys.exit('did not get any connection to url in ncbi integration\n\n huhuhu\n')
+
     filename_without_gz = filename.rsplit('.', 1)[0]
     # file = open(filename_without_gz, 'wb')
     with io.TextIOWrapper(gzip.open(filename, 'rb')) as f:
