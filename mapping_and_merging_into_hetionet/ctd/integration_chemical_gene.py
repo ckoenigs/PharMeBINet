@@ -18,7 +18,7 @@ def create_connection_with_neo4j():
 
 
 # generate cypher file
-cypherfile = open('chemical_gene/cypher.cypher', 'w')
+cypherfile = open('chemical_gene/cypher.cypher', 'w', encoding='utf-8')
 
 '''
 put the first cypher queries into the cypher file which adapt the rela from before
@@ -108,7 +108,7 @@ dict_metabolic_activate_name={
     'metabolic processing':'metabolism'
 }
 
-file = open('chemical_gene/metabolic_processing_action.csv', 'r')
+file = open('chemical_gene/metabolic_processing_action.csv', 'r', encoding='utf-8')
 for line in file:
     list_metabolic_processing.append(line.split(',')[0])
     dict_interaction_type_and_value_to_rela_name[(line.split(',')[0], '')] = 'metabolic_processing'
@@ -126,7 +126,7 @@ generate csv file with the columns fo a path
 
 
 def generate_csv(path):
-    csvfile = open(path, 'wb')
+    csvfile = open(path, 'w', encoding='utf-8')
     writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     writer.writerow(columns)
     return writer

@@ -55,7 +55,7 @@ also generate a cypher file to integrate this information
 
 def take_all_relationships_of_gene_disease():
     # generate cypher file
-    cypherfile = open('gene_disease/cypher.cypher', 'w')
+    cypherfile = open('gene_disease/cypher.cypher', 'w', encoding='utf-8')
     cypherfile.write('begin\n')
     cypherfile.write(
         'Match (n:Disease)-[r:ASSOCIATES_DaG]->(b:Gene) Where not exists(r.hetionet) Set r.hetionet="yes", r.resource=["Hetionet"];\n')
@@ -66,7 +66,7 @@ def take_all_relationships_of_gene_disease():
     cypherfile.write('Match (n:Disease)-[r:ASSOCIATES_DaG]->(b:Gene) Where not exists(r.ctd) Set r.ctd="no";\n')
     cypherfile.write('commit')
 
-    csvfile = open('gene_disease/relationships.csv', 'wb')
+    csvfile = open('gene_disease/relationships.csv', 'w', encoding='utf-8')
     writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     writer.writerow(['GeneID', 'DiseaseID','inferences','pubMedIDs','directEvidence','omimIDs','unbiased'])
     query='''Match (n:Disease) Return count(n)'''

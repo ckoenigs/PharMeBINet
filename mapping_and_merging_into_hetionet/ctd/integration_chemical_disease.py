@@ -24,15 +24,15 @@ def create_connection_with_neo4j_mysql():
 
 
 # csv files for integrate the different realtionships into hetionet
-csvfile_induces = open('chemical_disease/induces.csv', 'wb')
+csvfile_induces = open('chemical_disease/induces.csv', 'w', encoding='utf-8')
 writer_induces = csv.writer(csvfile_induces, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 writer_induces.writerow(['ChemicalID', 'DiseaseID','omimIDs','directEvidences','pubMedIDs', 'inferenceScores','inferenceGeneSymbols'])
 
-csvfile_treat = open('chemical_disease/treat.csv', 'wb')
+csvfile_treat = open('chemical_disease/treat.csv', 'w', encoding='utf-8')
 writer_treat = csv.writer(csvfile_treat, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 writer_treat.writerow(['ChemicalID', 'DiseaseID','omimIDs','directEvidences','pubMedIDs', 'inferenceScores','inferenceGeneSymbols'])
 
-csvfile_associated = open('chemical_disease/associated.csv', 'wb')
+csvfile_associated = open('chemical_disease/associated.csv', 'w', encoding='utf-8')
 writer_associated = csv.writer(csvfile_associated, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 writer_associated.writerow(['ChemicalID', 'DiseaseID','omimIDs','directEvidences','pubMedIDs', 'inferenceScores','inferenceGeneSymbols'])
 
@@ -47,7 +47,7 @@ def add_information_into_te_different_csv_files( chemical_id,disease_id, informa
     inferenceGeneSymbols ='|'.join(filter(bool, information[4]))
     csvfile.writerow([chemical_id, disease_id,omimIDs,directEvidences,pubMedIDs, inferenceScores,inferenceGeneSymbols])
 
-# csvfile_inf= open('chemical_disease/inf.csv', 'wb')
+# csvfile_inf= open('chemical_disease/inf.csv', 'w')
 # writer_inf = csv.writer(csvfile_inf, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 # writer_inf.writerow(['ChemicalID', 'DiseaseID', 'inferenceScores'])
 
@@ -59,7 +59,7 @@ also generate a cypher file to integrate this information
 
 def generate_cypher():
     # generate cypher file
-    cypherfile = open('chemical_disease/cypher.cypher', 'w')
+    cypherfile = open('chemical_disease/cypher.cypher', 'w', encoding='utf-8')
     list_file_name_rela_name=[('induces','INDUCES_CiD'),('treat','TREATS_CtD'),('associated','ASSOCIATES_CaD')]
     cypherfile.write('begin\n')
     cypherfile.write(
