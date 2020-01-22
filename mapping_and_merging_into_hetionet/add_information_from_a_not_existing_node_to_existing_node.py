@@ -29,8 +29,8 @@ dict_resources = {
 # connect with the neo4j database AND MYSQL
 def database_connection():
     # create connection with mysql database
-    global con
-    con = mdb.connect('localhost', 'root', 'Za8p7Tf', 'umls')
+    # global con
+    # con = mdb.connect('localhost', 'root', 'Za8p7Tf', 'umls')
 
     # authenticate("localhost:7474", )
     global g
@@ -338,7 +338,6 @@ def merge_information_from_one_node_to_another(delete_node_id, merged_node_id, n
 
     print(datetime.datetime.utcnow())
 
-    con.close()
 #
 def main():
     # label='Compound'
@@ -453,7 +452,6 @@ def main():
 
     print(datetime.datetime.utcnow())
 
-    con.close()
 
 
 if __name__ == "__main__":
