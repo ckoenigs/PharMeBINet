@@ -7,7 +7,6 @@ Created on Fri Aug  4 12:14:16 2017
 
 from py2neo import Graph
 import datetime
-import MySQLdb as mdb
 import sys, csv
 import urllib.request, urllib.error, urllib.parse
 import json
@@ -102,13 +101,10 @@ create connection to neo4j and mysql
 '''
 
 
-def create_connection_with_neo4j_mysql():
+def create_connection_with_neo4j():
     global g
     g = Graph("http://localhost:7474/db/data/",auth=("neo4j", "test"))
 
-    # create connection with mysql database
-    global con
-    con = mdb.connect('localhost', 'ckoenigs', 'Za8p7Tf$', 'umls')
 
 '''
 get from api results from url
@@ -144,6 +140,36 @@ def load_side_effects_from_hetionet_in_dict():
         dict_all_side_effect[result['identifier']] = sideEffect
     print('size of side effects before the aeolus is add:' + str(len(dict_all_side_effect)))
 
+#dictionary disease name to identifier
+dict_disease_name_to_id={}
+
+#dictionary disease umls cui to identifier
+dict_disease_cui_to_id={}
+
+'''
+Load all disease with umls, identifier and name (,synonyms?)
+'''
+def load_disease_infos():
+    query='''Match (n:Disease) Return n.identifier, n.name, n.umls_cuis'''
+    results=g.run(query)
+
+    for identifier, name, umls_cuis, in results:
+        if name:
+            name=name.lower()
+            if name in dict_disease_name_to_id:
+                print('name is double')
+                dict_disease_name_to_id[name].append(identifier)
+                print(dict_disease_name_to_id[name])
+
+            else:
+                dict_disease_name_to_id[name]=[identifier]
+        if umls_cuis:
+            for umls_cui in umls_cuis:
+                cui=umls_cui.split(':')[1]
+                if cui in dict_disease_cui_to_id:
+                    dict_disease_cui_to_id[cui].append(identifier)
+                else:
+                    dict_disease_cui_to_id[cui]=[identifier]
 
 # dictionary with all aeolus side effects outcome_concept_id (OHDSI ID) as key and value is the class SideEffect_Aeolus
 dict_side_effects_aeolus = {}
@@ -176,6 +202,8 @@ def load_side_effects_aeolus_in_dictionary():
         sideEffect = SideEffect_Aeolus(result['snomed_outcome_concept_id'], result['vocabulary_id'], result['name'],
                                        result['outcome_concept_id'], result['concept_code'])
         dict_side_effects_aeolus[result['concept_code']] = sideEffect
+        #add all meddra ids where no cui is nown in list of a given size
+        # the list should be not to big because it will be asked with api
         if result['concept_code'] not in dict_aeolus_SE_with_CUIs:
             list_of_ids.append(result['concept_code'])
             counter+=1
@@ -194,6 +222,8 @@ multiple_cuis = open('aeolus_multiple_cuis.tsv', 'w')
 csv_multiple_cuis=csv.writer(multiple_cuis,delimiter='\t')
 csv_multiple_cuis.writerow(['MedDRA id','cuis with | as seperator ','where are it from'])
 
+#list of concept codes which do not have a cui
+list_aeolus_outcome_without_cui=[]
 
 '''
 search for cui with api from bioportal
@@ -209,10 +239,10 @@ def search_with_api_bioportal():
     #search for cui id in bioportal
     for list_ids in list_of_list_of_meddra_ids:
         string_ids=' '.join(list_ids)
-        part="/search?q="+urllib.parse.quote(string_ids)+"&include=cui,prefLabel&pagesize=220&ontology=MEDDRA"
+        part="/search?q="+urllib.parse.quote(string_ids)+"&include=cui,prefLabel&pagesize=250&ontology=MEDDRA"
         url=REST_URL+part
         results_all=get_json(url)
-        if results_all['totalCount']>220:
+        if results_all['totalCount']>250:
             sys.exit('more results thant it can show')
         results=results_all['collection']
 
@@ -232,7 +262,7 @@ def search_with_api_bioportal():
                     cuis=result['cui']
                 else:
                     print('no cui')
-                    print(meddra_id)
+                    print(meddra_id)          
                     continue
                 pref_name=result['prefLabel']
 
@@ -258,13 +288,17 @@ def search_with_api_bioportal():
                 if pref_name!=sideEffect_name:
                     counter_for_not_equal_names+=1
 
+            # check if some do not have a cui and if so add the to the list without cui
             if len(list_ids)!= len(dict_all_inside):
                 set_list=set(list_ids)
                 set_keys=set(dict_all_inside.keys())
-                counter_meddra_id_without_cui+=len(set_list.difference(set_keys))
+                not_mapped_list=list(set_list.difference(set_keys))
+                counter_meddra_id_without_cui+=len()
+                list_aeolus_outcome_without_cui.extend(not_mapped_list)
         else:
             print('not in bioportal')
             print(list_ids)
+            list_aeolus_outcome_without_cui.extend(list_ids)
 
     print('Size of Aoelus side effects:' + str(len(dict_side_effects_aeolus)))
     print('number of not equal names:'+str(counter_for_not_equal_names))
@@ -319,9 +353,112 @@ def map_first_round():
             list_not_mapped_to_hetionet.append(key)
 
     print('length of list which are mapped to hetionet:' + str(len(list_map_to_hetionet)))
-    print('lenth of list whichhas a cui but are not mapped to hetionet:' + str(len(list_not_mapped_to_hetionet)))
+    print('lenth of list which has a cui but are not mapped to hetionet:' + str(len(list_not_mapped_to_hetionet)))
     print('the number of nodes to which they are mapped:' + str(len(dict_mapped_cuis_hetionet)))
 
+#dictionary mapped aeolus outcomet to disease ids
+dict_outcome_to_disease={}
+
+
+
+'''
+Try to map the not mapped to disease
+'''
+def mapping_to_disease():
+    # open file for mapping with disease
+    file=open('output/se_disease_mapping.tsv','w')
+    csv_writer=csv.writer(file, delimiter='\t')
+    csv_writer.writerow(['aSE','disease_id','mapping_method'])
+
+    # open file for not mapping with anything
+    file_not_mapped=open('output/se_not_mapping.tsv','w')
+    csv_writer_not_mapped=csv.writer(file_not_mapped, delimiter='\t')
+    csv_writer_not_mapped.writerow(['aSE','name'])
+
+    #list of delete indeces
+    list_of_delete_index_with_cui=[]
+    list_of_delete_index_without_cui = []
+
+    counter_of_mapping_tries=0
+    counter_of_not_mapped=0
+    #fist outcome with cui but did not mapped
+    for concept_code in list_not_mapped_to_hetionet:
+        counter_of_mapping_tries+=1
+        if concept_code=='10047184':
+            print('test')
+        cuis= dict_aeolus_SE_with_CUIs[concept_code]
+        name=dict_side_effects_aeolus[concept_code].name.lower()
+        mapped_cuis_disease=set()
+        for cui in cuis:
+            if cui in dict_disease_cui_to_id:
+                mapped_cuis_disease=mapped_cuis_disease.union(dict_disease_cui_to_id[cui])
+
+        mapped_name_disease=set()
+        if name in dict_disease_name_to_id:
+            mapped_name_disease=set(dict_disease_name_to_id[name])
+
+        find_intersection=mapped_name_disease.intersection(mapped_cuis_disease)
+        if len(find_intersection)>0:
+            list_of_delete_index_with_cui.append(list_not_mapped_to_hetionet.index(concept_code))
+            dict_outcome_to_disease[concept_code]=find_intersection
+            for disease_id in find_intersection:
+                csv_writer.writerow([concept_code,disease_id,'intersection'])
+            if len(find_intersection)>1:
+                print('intersection is greater than one')
+        elif len(mapped_cuis_disease)>0 and len(mapped_name_disease)==0:
+            list_of_delete_index_with_cui.append(list_not_mapped_to_hetionet.index(concept_code))
+            dict_outcome_to_disease[concept_code]=mapped_cuis_disease
+            print(concept_code)
+            print(mapped_cuis_disease)
+            print('mapped with cui')
+            for disease_id in mapped_cuis_disease:
+                csv_writer.writerow([concept_code,disease_id,'cui mapping'])
+        elif len(mapped_cuis_disease) == 0 and len(mapped_name_disease) >0:
+            list_of_delete_index_with_cui.append(list_not_mapped_to_hetionet.index(concept_code))
+            dict_outcome_to_disease[concept_code]=mapped_name_disease
+            for disease_id in mapped_name_disease:
+                csv_writer.writerow([concept_code,disease_id,'name mapping'])
+
+        elif len(mapped_cuis_disease) > 0 and len(mapped_name_disease) >0:
+            list_of_delete_index_with_cui.append(list_not_mapped_to_hetionet.index(concept_code))
+            # take the name mapping because this is better
+            dict_outcome_to_disease[concept_code]=mapped_name_disease
+            for disease_id in mapped_name_disease:
+                csv_writer.writerow([concept_code,disease_id,'name mapping, but both did mapped'])
+            print(concept_code)
+            print(mapped_cuis_disease)
+            print(mapped_name_disease)
+            print('mapped with name and cui but no intersection')
+        else:
+            # print('no mapping to disease possible')
+            counter_of_not_mapped+=1
+
+    list_of_delete_index_with_cui=sorted(list_of_delete_index_with_cui, reverse= True)
+    for index in list_of_delete_index_with_cui:
+        list_not_mapped_to_hetionet.pop(index)
+
+
+    # try mapping of the outcomes without umls cui with name mapping
+    for concept_code in list_aeolus_outcome_without_cui:
+        counter_of_mapping_tries+=1
+        name=dict_side_effects_aeolus[concept_code].name.lower()
+
+        if name in dict_disease_name_to_id:
+            list_of_delete_index_without_cui.append(list_aeolus_outcome_without_cui.index(concept_code))
+            mapped_name_disease=set(dict_disease_name_to_id[name])
+            dict_outcome_to_disease[concept_code]=mapped_name_disease
+            if len(mapped_name_disease)>1:
+                print('multiple mapping with name')
+                print(concept_code)
+                print(mapped_name_disease)
+        else:
+            # print('no mapping is possible')
+            counter_of_not_mapped+=1
+            csv_writer_not_mapped.writerow([concept_code, dict_side_effects_aeolus[concept_code].name])
+
+
+    print('number of mapping tries:'+str(counter_of_mapping_tries))
+    print('number of not mapped:' + str(counter_of_not_mapped))
 
 '''
 integrate aeolus in hetiont, by map generate a edge from hetionet to the mapped aeolus node
@@ -340,8 +477,13 @@ def integrate_aeolus_into_hetionet():
     cypher_file= open('cypher_se.cypher','w')
 
     # query for the update nodes and relationship
-    query_update= query_start+' , (n:SideEffect{identifier:line.SE}) Set a.cuis=split(line.cuis,"|"), n.resource=n.resource+"AEOLUS", n.aeolus="yes" Create (n)-[:equal_to_Aeolus_SE]->(a); \n'
-    query_update= query_update %("se_existing")
+    query_update= query_start+' , (n:SideEffect{identifier:line.SE}) Set a.cuis=split(line.cuis,"|"), n.resource=n.resource+"AEOLUS", n.aeolus="yes" Create (n)-[:equal_to_Aeolus_SE{mapping_method:line.mapping_method}]->(a); \n'
+    query_update= query_update %("se_disease_mapping")
+    cypher_file.write(query_update)
+
+    # query for mapping disease
+    query_update = query_start + ' , (n:Disease{identifier:line.disease_id}) Set  n.resource=n.resource+"AEOLUS", n.aeolus="yes" Create (n)-[:equal_to_Aeolus_SE]->(a); \n'
+    query_update = query_update % ("se_existing")
     cypher_file.write(query_update)
 
     # update and generate connection between mapped aeolus outcome and hetionet side effect
@@ -388,7 +530,7 @@ def main():
     print (datetime.datetime.utcnow())
     print('Generate connection with neo4j and mysql')
 
-    create_connection_with_neo4j_mysql()
+    create_connection_with_neo4j()
 
     print(
     '###########################################################################################################################')
@@ -418,6 +560,14 @@ def main():
     '###########################################################################################################################')
 
     print (datetime.datetime.utcnow())
+    print('Load in all disease from hetionet in a dictionary')
+
+    load_disease_infos()
+
+    print(
+    '###########################################################################################################################')
+
+    print (datetime.datetime.utcnow())
     print('Find cuis for aeolus side effects')
 
     search_with_api_bioportal()
@@ -429,6 +579,15 @@ def main():
     print('Map round one')
 
     map_first_round()
+    search_with_api_bioportal()
+
+    print(
+    '###########################################################################################################################')
+
+    print (datetime.datetime.utcnow())
+    print('Map round two to disease')
+
+    mapping_to_disease()
 
     print(
     '###########################################################################################################################')
