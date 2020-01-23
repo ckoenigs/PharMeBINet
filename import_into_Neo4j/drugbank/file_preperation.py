@@ -61,13 +61,6 @@ def load_uniprot_info_into_dictionary():
                     dict_ac_number_to_count[ac_number]+=1
                 dict_uniprot[ac_number].append(row)
         ncbi_tax_ids = row['ncbi_taxid']
-        for ncbi_id in ncbi_tax_ids.split('|'):
-            if ncbi_id == '9606':
-                name = row['name']
-                if not name in dict_uniprot_name_to_access:
-                    dict_uniprot_name_to_access['name'] = ac_numbers
-                else:
-                    sys.exit('double human name:' + name)
 
     print('number of multiple ac-numbers:'+str(counter_ac_number_multiple))
     # print(dict_ac_number_to_count)
@@ -410,8 +403,10 @@ def drugs_combination_and_check(neo4j_label):
         new_header = []
 
         # list properties which are lists
-        list_properties = ['alternative_drugbank_ids', 'groups', 'general_references_links_title_url',
-                           'general_references_textbooks_isbn_citation', 'general_references_articles_pubmed_citation',
+        list_properties = ['alternative_drugbank_ids', 'groups', 'general_references_links_reference_id_title_url' ,
+                           'general_references_attachment_reference_id_title_url',
+                           'general_references_textbooks_reference_id_isbn_citation',
+                           'general_references_articles_reference_id_pubmed_citation',
                            'synonyms', 'products', 'international_brands_name_company', 'mixtures_name_ingredients',
                            'packagers_name_url', 'manufacturers', 'prices_description_cost_unit',
                            'categories_category_mesh_id', 'affected_organisms', 'dosages_form_route_strength',
@@ -2165,7 +2160,7 @@ def add_the_other_rela_to_cypher(pathway_label, product_label, salt_label, mutat
     label_neo4j_compound_salt = 'has_ChS'
     label_neo4j_compound_mutaded = 'combination_causes_adrs_CccaMU'
     label_neo4j_interaction = 'interacts_CiC'
-    label_neo4j_enzyme_pathway = 'participates_POpPA'
+    label_neo4j_enzyme_pathway = 'participates_EpPA'
     label_neo4j_target_peptide = 'has_component_POhcPO'
     label_neo4j_pharmacologic_class_compound='includes_PCiC'
 

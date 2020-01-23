@@ -35,11 +35,35 @@ inchi_template = "{ns}calculated-properties/{ns}property[{ns}kind='InChI']/{ns}v
 molecular_formular_template="{ns}calculated-properties/{ns}property[{ns}kind='Molecular Formula']/{ns}value"
 molecular_formular_experimental_template="{ns}experimental-properties/{ns}property[{ns}kind='Molecular Formula']/{ns}value"
 
+#reference id to source
+dict_reference_id_to_infos={}
+
+'''
+add elements to dictionary
+'''
+def add_information_into_dictionary(drug_targets, db_ID,db_targets,position,actions,ref_article_list, ref_link_list, ref_attachment_list,ref_textbooks_list,known_action,target_id=None,induction_strength=None,inhibition_strength=None ):
+    drug_targets['drugbank_id'] = db_ID
+    drug_targets['targets_id_drugbank'] = db_targets
+    drug_targets['position'] = position
+    drug_targets['actions'] = actions
+    drug_targets['ref_article'] = ref_article_list
+    drug_targets['ref_links'] = ref_link_list
+    drug_targets['ref_attachment'] = ref_attachment_list
+    drug_targets['ref_textbooks'] = ref_textbooks_list
+    drug_targets['known_action'] = known_action
+    if target_id:
+        drug_targets['targets_id']= target_id
+    if inhibition_strength:
+        drug_targets['inhibition_strength']= inhibition_strength
+    if induction_strength:
+        drug_targets['induction_strength']= induction_strength
+    return drug_targets
+
 
 '''
 gather the different target information
 '''
-def gather_target_infos(target,drug_targets_info,targets_info,dict_targets_ids,db_ID):
+def gather_target_infos(target,drug_targets_info,targets_info,dict_targets_ids,db_ID, is_enzyme):
 
     for targets in drug.iterfind(target.format(ns = ns)):
 #        print('drinnen ;)')
@@ -54,6 +78,11 @@ def gather_target_infos(target,drug_targets_info,targets_info,dict_targets_ids,d
         known_action = targets.findtext("{ns}known-action".format(ns = ns))
 
 
+        if is_enzyme:
+            inhibition_strength = targets.findtext("{ns}inhibition-strength".format(ns=ns))
+            induction_strength = targets.findtext("{ns}induction-strength".format(ns=ns))
+
+
         actions=[]
         for action in targets.findall('{ns}actions/{ns}action'.format(ns = ns)):
             actions.append(action.text)
@@ -63,58 +92,66 @@ def gather_target_infos(target,drug_targets_info,targets_info,dict_targets_ids,d
 
             pubmed_id=ref.findtext("{ns}pubmed-id".format(ns = ns))
             citation=ref.findtext("{ns}citation".format(ns = ns))
-            ref_article_list.append(pubmed_id+'::'+citation)
+            ref_id = ref.findtext("{ns}ref-id".format(ns=ns))
+            dict_reference_id_to_infos[ref_id] = [pubmed_id, citation]
+
+            ref_article_list.append(ref_id+'::'+pubmed_id+'::'+citation)
 
         ref_textbooks_list=[]
         for ref in targets.findall('{ns}references/{ns}textbooks/{ns}textbook'.format(ns = ns)):
 
             isbn=ref.findtext("{ns}isbn".format(ns = ns))
             citation=ref.findtext("{ns}citation".format(ns = ns))
-            ref_textbooks_list.append(isbn+'::'+citation)
+            ref_id = ref.findtext("{ns}ref-id".format(ns=ns))
+            dict_reference_id_to_infos[ref_id] = [isbn, citation]
+            ref_textbooks_list.append(ref_id+'::'+isbn+'::'+citation)
 
         ref_link_list=[]
         for ref in targets.findall('{ns}references/{ns}links/{ns}link'.format(ns = ns)):
 
             title=ref.findtext("{ns}title".format(ns = ns))
             url=ref.findtext("{ns}url".format(ns = ns))
-            ref_link_list.append(title+'::'+url)
+            ref_id = ref.findtext("{ns}ref-id".format(ns=ns))
+            dict_reference_id_to_infos[ref_id] = [url, title]
+            ref_link_list.append(ref_id+'::'+title+'::'+url)
+
+
+        ref_attachment_list=[]
+        for ref in targets.findall('{ns}references/{ns}attachments/{ns}attachment'.format(ns = ns)):
+
+            title=ref.findtext("{ns}title".format(ns = ns))
+            url=ref.findtext("{ns}url".format(ns = ns))
+            ref_id = ref.findtext("{ns}ref-id".format(ns=ns))
+            dict_reference_id_to_infos[ref_id] = [url, title]
+            ref_attachment_list.append(ref_id+'::'+title+'::'+url)
 
         polypetide_found=False
         peptide_list=[]
-        dict_drug_targt={}
+        dict_drug_target={}
+
+        # go through all polypeptide  generate target and drug-target dictionaries
         for polypeptide in targets.findall("{ns}polypeptide".format(ns = ns)):
             polypetide_found=True
             drug_targets = collections.OrderedDict()
             targets_dict = collections.OrderedDict()
 
-            drug_targets['drugbank_id']=db_ID
-            uniprot_id=polypeptide.get('id')
 
             targets_dict['drugbank_id']= db_targets
-            drug_targets['targets_id_drugbank'] = db_targets
-            drug_targets['organism'] = organism
 
             targets_dict['name']= name
 
-            drug_targets['position']= position
-#            targets_dict['organism']= organism
-
-            drug_targets['actions']=actions
-
-            drug_targets['ref_article']=ref_article_list
-
-            drug_targets['ref_links']=ref_link_list
-
-            drug_targets['ref_textbooks']=ref_textbooks_list
-
-            drug_targets['known_action'] = known_action
 
 
-#        if not targets.find("{ns}polypeptide".format(ns = ns)) is None:
             uniprot_id=polypeptide.get('id')
-            drug_targets['targets_id'] = polypeptide.get('id')
-            targets_dict['id']=polypeptide.get('id')
-            peptide_list.append(polypeptide.get('id'))
+            if is_enzyme:
+                drug_targets=add_information_into_dictionary(drug_targets, db_ID, db_targets, position, actions, ref_article_list,
+                                                ref_link_list, ref_attachment_list, ref_textbooks_list, known_action, uniprot_id, induction_strength,inhibition_strength)
+            else:
+                drug_targets=add_information_into_dictionary(drug_targets, db_ID, db_targets, position, actions, ref_article_list,
+                                                ref_link_list, ref_attachment_list, ref_textbooks_list, known_action, uniprot_id)
+
+            targets_dict['id']=uniprot_id
+            peptide_list.append(uniprot_id)
             targets_dict['id_source']=polypeptide.get('source')
             targets_dict['name']=polypeptide.findtext("{ns}name".format(ns = ns))
             targets_dict['general_function']= polypeptide.findtext("{ns}general-function".format(ns = ns)).replace('\n','').replace('\r','')
@@ -127,6 +164,7 @@ def gather_target_infos(target,drug_targets_info,targets_info,dict_targets_ids,d
             targets_dict['theoretical_pi']= polypeptide.findtext("{ns}theoretical-pi".format(ns = ns)).replace('\n','').replace('\r','')
             targets_dict['molecular_weight']= polypeptide.findtext("{ns}molecular-weight".format(ns = ns)).replace('\n','').replace('\r','')
             targets_dict['chromosome_location']= polypeptide.findtext("{ns}chromosome-location".format(ns = ns)).replace('\n','').replace('\r','')
+            targets_dict['organism']=organism
 
             xref_list=[]
             for xref in polypeptide.findall('{ns}external-identifiers/{ns}external-identifier'.format(ns = ns)):
@@ -165,39 +203,31 @@ def gather_target_infos(target,drug_targets_info,targets_info,dict_targets_ids,d
                 go_classifier_list.append(category+'::'+description)
             targets_dict['go_classifiers']=go_classifier_list
 
-#            drug_targets_info.append(drug_targets)
             if not uniprot_id in dict_targets_ids:
                 targets_info.append(targets_dict)
                 dict_targets_ids[uniprot_id]=1
 
-            if not  (db_ID,uniprot_id) in dict_drug_targt:
-                dict_drug_targt[(db_ID,uniprot_id)]=drug_targets
+            if not  (db_ID,uniprot_id) in dict_drug_target:
+                dict_drug_target[(db_ID,uniprot_id)]=drug_targets
             else:
                 sys.exit()
 
+        # if more then one peptided exists make a big node which is connected to drug and all peptites ar components of this big one
         if len(peptide_list)>1:
             drug_targets = collections.OrderedDict()
             targets_dict = collections.OrderedDict()
-            drug_targets['drugbank_id']=db_ID
+
             targets_dict['drugbank_id']= db_targets
-#            print(db_ID,db_targets)
-            drug_targets['targets_id_drugbank'] = db_targets
-            drug_targets['organism'] = organism
             targets_dict['name']=  targets.findtext("{ns}name".format(ns = ns))
 
-            drug_targets['position']= position
-#            targets_dict['organism']= organism
+            if is_enzyme:
+                drug_targets=add_information_into_dictionary(drug_targets, db_ID, db_targets, position, actions, ref_article_list,
+                                                ref_link_list, ref_attachment_list, ref_textbooks_list, known_action, None, induction_strength,inhibition_strength)
+            else:
+                drug_targets=add_information_into_dictionary(drug_targets, db_ID, db_targets, position, actions, ref_article_list,
+                                                ref_link_list, ref_attachment_list, ref_textbooks_list, known_action)
 
 
-            drug_targets['actions']=actions
-
-            drug_targets['ref_article']=ref_article_list
-
-            drug_targets['ref_links']=ref_link_list
-
-            drug_targets['ref_textbooks']=ref_textbooks_list
-
-            drug_targets['known_action'] = known_action
             drug_targets_info.append(drug_targets)
             if not db_targets in dict_targets_ids:
                 targets_info.append(targets_dict)
@@ -211,34 +241,26 @@ def gather_target_infos(target,drug_targets_info,targets_info,dict_targets_ids,d
                     dict_has_component[(db_targets,petide)]=1
                     has_components.append(target_peptite)
 
-
+        # in case no polypeptide exists then it has only the drugbank id
         elif not polypetide_found :
             drug_targets = collections.OrderedDict()
             targets_dict = collections.OrderedDict()
-            drug_targets['drugbank_id']=db_ID
             targets_dict['drugbank_id']= db_targets
-            drug_targets['targets_id_drugbank'] = db_targets
-            drug_targets['organism'] = organism
             targets_dict['name']=  targets.findtext("{ns}name".format(ns = ns))
 
-            drug_targets['position']= position
-#            targets_dict['organism']= organism
-
-            drug_targets['actions']=actions
-
-            drug_targets['ref_article']=ref_article_list
-
-            drug_targets['ref_links']=ref_link_list
-
-            drug_targets['ref_textbooks']=ref_textbooks_list
-
-            drug_targets['known_action'] = known_action
+            if is_enzyme:
+                drug_targets=add_information_into_dictionary(drug_targets, db_ID, db_targets, position, actions, ref_article_list,
+                                                ref_link_list, ref_attachment_list, ref_textbooks_list, known_action, None, induction_strength,inhibition_strength)
+            else:
+                drug_targets=add_information_into_dictionary(drug_targets, db_ID, db_targets, position, actions, ref_article_list,
+                                                ref_link_list, ref_attachment_list, ref_textbooks_list, known_action)
             drug_targets_info.append(drug_targets)
             if not db_targets in dict_targets_ids:
                 targets_info.append(targets_dict)
                 dict_targets_ids[db_targets]=1
+        # this is when only one peptide exists
         else:
-            for key, list_property in dict_drug_targt.items():
+            for key, list_property in dict_drug_target.items():
 
                 drug_targets_info.append(list_property)
 counter=0
@@ -316,26 +338,41 @@ for i, drug in enumerate(root):
         drug.findall("{ns}synonyms/{ns}synonym".format(ns = ns))]
     row['unii']=drug.findtext(ns + "unii")
     row['state']=drug.findtext(ns + "state")
-    row['general_references_articles_pubmed_citation']=[]
+    row['general_references_articles_reference_id_pubmed_citation']=[]
     for article in drug.iterfind('{ns}general-references/{ns}articles/{ns}article'.format(ns = ns)):
         pubmed_id = article.findtext("{ns}pubmed-id".format(ns = ns))
         citation=article.findtext("{ns}citation".format(ns = ns))
-        combined=pubmed_id+'::'+citation
-        row['general_references_articles_pubmed_citation'].append(combined)
+        ref_id = article.findtext("{ns}ref-id".format(ns=ns))
+        dict_reference_id_to_infos[ref_id] = [pubmed_id, citation]
+        combined=ref_id+'::'+pubmed_id+'::'+citation
+        row['general_references_articles_reference_id_pubmed_citation'].append(combined)
 
-    row['general_references_textbooks_isbn_citation']=[]
+    row['general_references_textbooks_reference_id_isbn_citation']=[]
     for article in drug.iterfind('{ns}general-references/{ns}textbooks/{ns}textbook'.format(ns = ns)):
         isbn = article.findtext("{ns}isbn".format(ns = ns))
         citation=article.findtext("{ns}citation".format(ns = ns))
-        combined=isbn+'::'+citation
-        row['general_references_textbooks_isbn_citation'].append(combined)
+        ref_id = article.findtext("{ns}ref-id".format(ns=ns))
+        dict_reference_id_to_infos[ref_id] = [isbn, citation]
+        combined=ref_id+'::'+isbn+'::'+citation
+        row['general_references_textbooks_reference_id_isbn_citation'].append(combined)
 
-    row['general_references_links_title_url']=[]
+    row['general_references_links_reference_id_title_url']=[]
     for article in drug.iterfind('{ns}general-references/{ns}links/{ns}link'.format(ns = ns)):
         title = article.findtext("{ns}title".format(ns = ns))
         url=article.findtext("{ns}url".format(ns = ns))
-        combined=title+'::'+url
-        row['general_references_links_title_url'].append(combined)
+        ref_id = article.findtext("{ns}ref-id".format(ns=ns))
+        dict_reference_id_to_infos[ref_id] = [url, title]
+        combined=ref_id+'::'+title+'::'+url
+        row['general_references_links_reference_id_title_url'].append(combined)
+
+    row['general_references_attachment_reference_id_title_url'] = []
+    for article in drug.iterfind('{ns}general-references/{ns}attachments/{ns}attachment'.format(ns=ns)):
+        title = article.findtext("{ns}title".format(ns=ns))
+        url = article.findtext("{ns}url".format(ns=ns))
+        ref_id = article.findtext("{ns}ref-id".format(ns=ns))
+        dict_reference_id_to_infos[ref_id] = [url, title]
+        combined = ref_id + '::' + title + '::' + url
+        row['general_references_attachment_reference_id_title_url'].append(combined)
 
     row['synthesis_reference']=drug.findtext(ns + "synthesis-reference").replace('\n','').replace('\r','')
     row['indication']=drug.findtext(ns + "indication").replace('\n','').replace('\r','')
@@ -440,7 +477,7 @@ for i, drug in enumerate(root):
     for international_brand in drug.iterfind('{ns}international-brands/{ns}international-brand'.format(ns = ns)):
         name = international_brand.findtext("{ns}name".format(ns = ns))
         company=international_brand.findtext("{ns}company".format(ns = ns))
-        combined=name+':'+company
+        combined=name+'::'+company
         row['international_brands_name_company'].append(combined)
 
     row['mixtures_name_ingredients']=[]
@@ -448,21 +485,23 @@ for i, drug in enumerate(root):
     for part in drug.iterfind('{ns}mixtures/{ns}mixture'.format(ns = ns)):
         name = part.findtext("{ns}name".format(ns = ns))
         ingredients=part.findtext("{ns}ingredients".format(ns = ns))
-        if ingredients in dict_mixtures_ingredients_combination_names:
-            dict_mixtures_ingredients_combination_names[ingredients].add(name)
-        else:
-            dict_mixtures_ingredients_combination_names[ingredients]=set([name])
+        supplemental_ingredients=part.findtext("{ns}supplemental-ingredients".format(ns = ns))
 
-    for ingredients, names in dict_mixtures_ingredients_combination_names.items():
-        name=';;'.join(names)
-        combined=name+':'+ingredients
+        if ingredients in dict_mixtures_ingredients_combination_names:
+            dict_mixtures_ingredients_combination_names[(ingredients,supplemental_ingredients)].add(name)
+        else:
+            dict_mixtures_ingredients_combination_names[(ingredients,supplemental_ingredients)]=set(name)
+
+    for (ingredient,supplemental_ingredient), names in dict_mixtures_ingredients_combination_names.items():
+        names_string='//'.join(names)
+        combined=names_string+'::'+ingredient+ ' + '+supplemental_ingredient if supplemental_ingredient is not None else names_string+'::'+ingredient
         row['mixtures_name_ingredients'].append(combined)
 
     row['packagers_name_url']=[]
     for part in drug.iterfind('{ns}packagers/{ns}packager'.format(ns = ns)):
         name = part.findtext("{ns}name".format(ns = ns))
         url=part.findtext("{ns}url".format(ns = ns))
-        combined=name+':'+url
+        combined=name+'::'+url
         row['packagers_name_url'].append(combined)
 
     row['manufacturers']= [salt.text for salt in
@@ -473,7 +512,7 @@ for i, drug in enumerate(root):
         description = part.findtext("{ns}description".format(ns = ns))
         cost=part.find("{ns}cost".format(ns = ns)).get('currency')+':'+part.findtext("{ns}cost".format(ns = ns))
         unit = part.findtext("{ns}unit".format(ns = ns))
-        combined=description+':'+cost+':'+unit
+        combined=description+'::'+cost+'::'+unit
         row['prices_description_cost_unit'].append(combined)
 
     for part in drug.iterfind('{ns}categories/{ns}category'.format(ns = ns)):
@@ -500,7 +539,7 @@ for i, drug in enumerate(root):
         form = part.findtext("{ns}form".format(ns = ns))
         route=part.findtext("{ns}route".format(ns = ns))
         strength=part.findtext("{ns}strength".format(ns = ns))
-        combined=form+':'+route+':'+strength
+        combined=form+'::'+route+'::'+strength
         row['dosages_form_route_strength'].append(combined)
 
     row['atc_code_levels'] = [code.get('code') for code in
@@ -521,7 +560,7 @@ for i, drug in enumerate(root):
         approved=part.findtext("{ns}approved".format(ns = ns))
         expires=part.findtext("{ns}expires".format(ns = ns))
         pediatric_extension=part.findtext("{ns}pediatric-extension".format(ns = ns))
-        combined=number+':'+country+':'+approved+':'+expires+':'+pediatric_extension
+        combined=number+'::'+country+'::'+approved+'::'+expires+'::'+pediatric_extension
         row['patents_number_country_approved_expires_pediatric_extension'].append(combined)
 
     row['food_interaction']= [salt.text for salt in
@@ -595,7 +634,16 @@ for i, drug in enumerate(root):
         drug_pathway['drugbank_id']=db_ID
         drug_pathway['pathway_id']=smpdb_id
 
-        drug_pathways.append(drug_pathway)
+        # add all drugbank id that are associated to this pathway to list
+        for drug_ids in part.findall('{ns}drugs/{ns}drug'.format(ns = ns)):
+            drug_pathway_addition = collections.OrderedDict()
+            drug_pathway_addition['drugbank_id']=drug_ids.findtext("{ns}drugbank-id".format(ns = ns))
+            drug_pathway_addition['pathway_id']=smpdb_id
+            if not drug_pathway_addition in drug_pathways:
+                drug_pathways.append(drug_pathway_addition)
+
+        if not drug_pathway in drug_pathways:
+            drug_pathways.append(drug_pathway)
 
 
         for enzym in part.findall('{ns}enzymes/{ns}uniprot-id'.format(ns = ns)):
@@ -714,20 +762,20 @@ for i, drug in enumerate(root):
 
 
     # target
-    gather_target_infos('{ns}targets/{ns}target',drug_targets,targets,dict_target_ids, db_ID)
+    gather_target_infos('{ns}targets/{ns}target',drug_targets,targets,dict_target_ids, db_ID, False)
 
     # enzymes
-    gather_target_infos('{ns}enzymes/{ns}enzyme',drug_enzymes,enzymes,dict_enzyme_ids, db_ID)
+    gather_target_infos('{ns}enzymes/{ns}enzyme',drug_enzymes,enzymes,dict_enzyme_ids, db_ID, True)
 
     # carries
     b=False
 #    if db_ID=='DB00137':
 #        print('jup')
 #        b=True
-    gather_target_infos('{ns}carriers/{ns}carrier',drug_carriers,carriers,dict_carrier_ids, db_ID)
+    gather_target_infos('{ns}carriers/{ns}carrier',drug_carriers,carriers,dict_carrier_ids, db_ID, False)
 
    # transporter
-    gather_target_infos('{ns}transporters/{ns}transporter',drug_transporters,transporters,dict_transporter_ids, db_ID)
+    gather_target_infos('{ns}transporters/{ns}transporter',drug_transporters,transporters,dict_transporter_ids, db_ID, False)
 
 
     # Add drug aliases
@@ -832,8 +880,8 @@ def generate_tsv_file(columns,list_information,file_name):
 print (datetime.datetime.utcnow())
 print('malsehen')
 columns = ['drugbank_id', 'alternative_drugbank_ids' ,'name','cas_number','unii',
-           'state','groups','general_references_links_title_url' ,
-           'general_references_textbooks_isbn_citation', 'general_references_articles_pubmed_citation',
+           'state','groups','general_references_links_reference_id_title_url' , 'general_references_attachment_reference_id_title_url',
+           'general_references_textbooks_reference_id_isbn_citation', 'general_references_articles_reference_id_pubmed_citation',
            'synthesis_reference','indication','pharmacodynamics','mechanism_of_action','toxicity',
            'metabolism','absorption','half_life','protein_binding','route_of_elimination',
            'volume_of_distribution','clearance','classification_subclass','classification_class',
@@ -861,8 +909,9 @@ columns_reactions=['sequence','left_element_drugbank_id','right_element_drugbank
 columns_snp_effects=['drugbank_id','partner_id','description','pubmed_id','type']
 columns_mutated=['connection_id','uniprot_id','rs_id','protein_name','gene_symbol','allele','defining_change']
 columns_snp_adverse_drug_reactions=['drugbank_id','partner_id','description','pubmed_id','type']
-columns_drug_target=['drugbank_id','targets_id','targets_id_drugbank','position','organism','actions','ref_article','ref_links','ref_textbooks','known_action']
-columns_target=['drugbank_id','name','id','id_source','general_function','specific_function','gene_name','locus','cellular_location','transmembrane_regions','signal_regions','theoretical_pi','molecular_weight','go_classifiers','chromosome_location','pfams','gene_sequence','amino_acid_sequence','synonyms','xrefs']
+columns_drug_target=['drugbank_id','targets_id','targets_id_drugbank','position','actions','ref_article','ref_links','ref_attachment','ref_textbooks','known_action']
+columns_drug_enzyme=['drugbank_id','targets_id','targets_id_drugbank','position','actions','ref_article','ref_links','ref_attachment','ref_textbooks','known_action','inhibition_strength','induction_strength']
+columns_target=['drugbank_id','name','id','id_source','general_function','specific_function','gene_name','locus','cellular_location','transmembrane_regions','signal_regions','organism','theoretical_pi','molecular_weight','go_classifiers','chromosome_location','pfams','gene_sequence','amino_acid_sequence','synonyms','xrefs']
 columns_salt=['id','name','unii','inchikey','cas_number','average_mass','monoisotopic_mass']
 columns_drug_salts=['drug_id','salt_id']
 columns_products=['id','name','labeller','ndc_id','ndc_product_code','dpd_id','ema_product_code','ema_ma_number','started_marketing_on','ended_marketing_on','dosage_form','strength','route','fda_application_number','generic','over_the_counter','approved','country','source']
@@ -901,7 +950,7 @@ generate_tsv_file(columns_mutated, mutated_gene_proteins,'drugbank_mutated_gene_
 generate_tsv_file(columns_snp_adverse_drug_reactions, snp_adverse_drug_reactions,'drugbank_snp_adverse_drug_reaction.tsv')
 generate_tsv_file(columns_drug_target, drug_targets,'drugbank_drug_target.tsv')
 generate_tsv_file(columns_target, targets,'drugbank_targets.tsv')
-generate_tsv_file(columns_drug_target, drug_enzymes,'drugbank_drug_enzyme.tsv')
+generate_tsv_file(columns_drug_enzyme, drug_enzymes,'drugbank_drug_enzyme.tsv')
 generate_tsv_file(columns_target, enzymes,'drugbank_enzymes.tsv')
 generate_tsv_file(columns_drug_target, drug_carriers,'drugbank_drug_carrier.tsv')
 generate_tsv_file(columns_target, carriers,'drugbank_carrier.tsv')
