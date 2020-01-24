@@ -359,6 +359,10 @@ def map_first_round():
 #dictionary mapped aeolus outcomet to disease ids
 dict_outcome_to_disease={}
 
+# new nodes  dictionary from umls cui to aeolus outcome
+dict_new_node_cui_to_concept={}
+
+
 
 
 '''
@@ -408,9 +412,9 @@ def mapping_to_disease():
         elif len(mapped_cuis_disease)>0 and len(mapped_name_disease)==0:
             list_of_delete_index_with_cui.append(list_not_mapped_to_hetionet.index(concept_code))
             dict_outcome_to_disease[concept_code]=mapped_cuis_disease
-            print(concept_code)
-            print(mapped_cuis_disease)
-            print('mapped with cui')
+            # print(concept_code)
+            # print(mapped_cuis_disease)
+            # print('mapped with cui')
             for disease_id in mapped_cuis_disease:
                 csv_writer.writerow([concept_code,disease_id,'cui mapping'])
         elif len(mapped_cuis_disease) == 0 and len(mapped_name_disease) >0:
@@ -432,6 +436,11 @@ def mapping_to_disease():
         else:
             # print('no mapping to disease possible')
             counter_of_not_mapped+=1
+            for cui in cuis:
+                if cui in dict_new_node_cui_to_concept:
+                    dict_new_node_cui_to_concept[cui].append(concept_code)
+                else:
+                    dict_new_node_cui_to_concept[cui]=[concept_code]
 
     list_of_delete_index_with_cui=sorted(list_of_delete_index_with_cui, reverse= True)
     for index in list_of_delete_index_with_cui:
@@ -478,12 +487,12 @@ def integrate_aeolus_into_hetionet():
 
     # query for the update nodes and relationship
     query_update= query_start+' , (n:SideEffect{identifier:line.SE}) Set a.cuis=split(line.cuis,"|"), n.resource=n.resource+"AEOLUS", n.aeolus="yes" Create (n)-[:equal_to_Aeolus_SE{mapping_method:line.mapping_method}]->(a); \n'
-    query_update= query_update %("se_disease_mapping")
+    query_update= query_update %("se_existing")
     cypher_file.write(query_update)
 
     # query for mapping disease
     query_update = query_start + ' , (n:Disease{identifier:line.disease_id}) Set  n.resource=n.resource+"AEOLUS", n.aeolus="yes" Create (n)-[:equal_to_Aeolus_SE]->(a); \n'
-    query_update = query_update % ("se_existing")
+    query_update = query_update % ("se_disease_mapping")
     cypher_file.write(query_update)
 
     # update and generate connection between mapped aeolus outcome and hetionet side effect
@@ -507,8 +516,13 @@ def integrate_aeolus_into_hetionet():
     cypher_file.write(query_new)
 
     # generate new hetionet side effects and connect the with the aeolus outcome
-    for outcome_concept in list_not_mapped_to_hetionet:
-        csv_new.writerow([outcome_concept,dict_aeolus_SE_with_CUIs[outcome_concept][0], '|'.join(dict_aeolus_SE_with_CUIs[outcome_concept])])
+    for cui, outcome_concepts in dict_new_node_cui_to_concept:
+        if len(outcome_concepts)==1:
+            csv_new.writerow([outcome_concepts[0],cui, '|'.join(dict_aeolus_SE_with_CUIs[outcome_concepts[0]])])
+        else:
+            print(cui)
+            print(outcome_concepts)
+            print('multi concept for one cui')
 
     # search for all side effect that did not mapped with aeolus and give them the property aeolus:'no'
     # add query to update disease nodes with do='no'
