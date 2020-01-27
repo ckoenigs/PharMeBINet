@@ -122,6 +122,11 @@ cypher_file = open('output/cypher_file.cypher', 'w', encoding='utf-8')
 cypher_rela_file = open('output/cypher_rela_file.cypher', 'w', encoding='utf-8')
 
 
+'''
+add synonyms from xml to the other synonyms for product an salt
+else check for properties if they are equal
+'''
+
 def check_for_properties(property_value, xml_property_list, property_name, synonyms):
     if not property_value == '':
         list_property = property_value.split('; ')
@@ -160,7 +165,9 @@ dict_salts = {}
 # string for integrate the drubank database to neo4j with the neo4j-admin import tool
 import_string = '../../../../neo4j-community-3.2.9/bin/neo4j-admin import --mode=csv'
 
-
+'''
+load salt information and salt-drug relationship
+'''
 def load_salts_information_in():
     with open('drugbank/drugbank_salt.tsv') as csvfile:
         spamreader = csv.DictReader(csvfile, delimiter='\t')
@@ -993,6 +1000,12 @@ def sequences_for_all_targets(directory, dict_drug_targets, dict_targets):
     work_with_target_sequence_fasta(directory, 'protein.fasta', 'amino_acid_sequence', dict_targets, dict_drug_targets)
 
 
+'''
+gathering the target information from the different file pharmacologically active or in all
+also  fill the drug-target relationship
+
+'''
+
 def identifier_for_all_targets(directory, dict_drug_targets, dict_targets, dict_drug_target_pharmacologically_actions):
     with open(directory + 'pharmacologically_active.csv') as csvfile:
         reader = csv.DictReader(csvfile, delimiter=',')
@@ -1002,19 +1015,19 @@ def identifier_for_all_targets(directory, dict_drug_targets, dict_targets, dict_
             dict_target_info = {}
             uniprot_id = row['UniProt ID']
             drug_ids = row['Drug IDs'].split('; ') if row['Drug IDs'] != '' else []
+            # gather the information from this file with exception of id, uniprot id, drug id and species
             for head in header:
                 if head not in ['ID', 'UniProt ID', 'Drug IDs', 'Species']:
                     dict_target_info[head] = row[head].split('; ') if row[head] != '' else []
             if uniprot_id not in dict_targets:
                 dict_targets[uniprot_id] = dict_target_info
             else:
-                for head in header:
+                for head, values in dict_target_info.items():
                     if head not in ['ID', 'UniProt ID', 'Drug IDs', 'Species']:
-                        values = row[head].split('; ') if row[head] != '' else []
                         for value in values:
-                            if value not in dict_target_info[head]:
-                                sys.exit('multiple uniprot in on file and one value is not in there ' + uniprot_id)
-
+                            if head in dict_targets[uniprot_id] and  value not in dict_targets[uniprot_id][head]:
+                                sys.exit('New information in pharmacologically_activity in  ' + uniprot_id)
+            # fill drug-target  pharmacolocigal active relationship dictionary
             for drug_id in drug_ids:
                 dict_drug_target_pharmacologically_actions[(drug_id, uniprot_id)] = row['Species']
 
@@ -1033,6 +1046,7 @@ def identifier_for_all_targets(directory, dict_drug_targets, dict_targets, dict_
             if uniprot_id not in dict_targets:
                 dict_targets[uniprot_id] = dict_target_info
 
+            # add in normal relationship dictionary
             for drug_id in drug_ids:
                 if (drug_id, uniprot_id) not in dict_drug_target_pharmacologically_actions:
                     dict_drug_targets[(drug_id, uniprot_id)] = 1
@@ -1369,6 +1383,9 @@ all_rela_types=set([])
 #dictionary from allfields txpes to relat type
 dict_allfield_type_to_rela_type={}
 
+'''
+load classification of target rela and fill dictionary and set
+'''
 def load_all_allfields_and_their_rela_types_into_a_dict():
     file=open('classification_of_target_rela_DrugBank.CSV','r')
     csv_reader=csv.reader(file )
@@ -1400,7 +1417,7 @@ def check_and_maybe_generate_a_new_drug_target_file(file, dict_drug_targets_exte
 
     # generate the header and the end part of the different rela queries and also put all relationship in a dictionary
     header_tool = []
-    list_properties = ['actions', 'ref_article', 'ref_links', 'ref_textbooks']
+    list_properties = ['actions', 'ref_article', 'ref_links', 'ref_textbooks','ref_attachment']
 
     query_end=''
 
@@ -1600,6 +1617,10 @@ def check_and_maybe_generate_a_new_drug_target_file(file, dict_drug_targets_exte
     print('total number of relationships:' + str(counter_total_relationships))
     output_file.close()
 
+
+'''
+a function that the information for the different protein labels and gather the information and relationships with use of different other functions
+'''
 
 def gather_and_combine_carrier_information(uniprot_links, drugbank_all_polypeptide_sequences_fasta,
                                            drugbank_all_polypeptide_ids_csv, drugbank_target_tsv,

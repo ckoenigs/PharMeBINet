@@ -41,10 +41,11 @@ dict_reference_id_to_infos={}
 '''
 add elements to dictionary
 '''
-def add_information_into_dictionary(drug_targets, db_ID,db_targets,position,actions,ref_article_list, ref_link_list, ref_attachment_list,ref_textbooks_list,known_action,target_id=None,induction_strength=None,inhibition_strength=None ):
+def add_information_into_dictionary(drug_targets, db_ID,db_targets,position,actions,organism,ref_article_list, ref_link_list, ref_attachment_list,ref_textbooks_list,known_action,target_id=None,induction_strength=None,inhibition_strength=None ):
     drug_targets['drugbank_id'] = db_ID
     drug_targets['targets_id_drugbank'] = db_targets
     drug_targets['position'] = position
+    drug_targets['organism']=organism
     drug_targets['actions'] = actions
     drug_targets['ref_article'] = ref_article_list
     drug_targets['ref_links'] = ref_link_list
@@ -144,10 +145,10 @@ def gather_target_infos(target,drug_targets_info,targets_info,dict_targets_ids,d
 
             uniprot_id=polypeptide.get('id')
             if is_enzyme:
-                drug_targets=add_information_into_dictionary(drug_targets, db_ID, db_targets, position, actions, ref_article_list,
+                drug_targets=add_information_into_dictionary(drug_targets, db_ID, db_targets, position, actions, organism, ref_article_list,
                                                 ref_link_list, ref_attachment_list, ref_textbooks_list, known_action, uniprot_id, induction_strength,inhibition_strength)
             else:
-                drug_targets=add_information_into_dictionary(drug_targets, db_ID, db_targets, position, actions, ref_article_list,
+                drug_targets=add_information_into_dictionary(drug_targets, db_ID, db_targets, position, actions, organism, ref_article_list,
                                                 ref_link_list, ref_attachment_list, ref_textbooks_list, known_action, uniprot_id)
 
             targets_dict['id']=uniprot_id
@@ -221,10 +222,10 @@ def gather_target_infos(target,drug_targets_info,targets_info,dict_targets_ids,d
             targets_dict['name']=  targets.findtext("{ns}name".format(ns = ns))
 
             if is_enzyme:
-                drug_targets=add_information_into_dictionary(drug_targets, db_ID, db_targets, position, actions, ref_article_list,
+                drug_targets=add_information_into_dictionary(drug_targets, db_ID, db_targets, position, actions,organism, ref_article_list,
                                                 ref_link_list, ref_attachment_list, ref_textbooks_list, known_action, None, induction_strength,inhibition_strength)
             else:
-                drug_targets=add_information_into_dictionary(drug_targets, db_ID, db_targets, position, actions, ref_article_list,
+                drug_targets=add_information_into_dictionary(drug_targets, db_ID, db_targets, position, actions, organism, ref_article_list,
                                                 ref_link_list, ref_attachment_list, ref_textbooks_list, known_action)
 
 
@@ -249,10 +250,10 @@ def gather_target_infos(target,drug_targets_info,targets_info,dict_targets_ids,d
             targets_dict['name']=  targets.findtext("{ns}name".format(ns = ns))
 
             if is_enzyme:
-                drug_targets=add_information_into_dictionary(drug_targets, db_ID, db_targets, position, actions, ref_article_list,
+                drug_targets=add_information_into_dictionary(drug_targets, db_ID, db_targets, position, actions, organism, ref_article_list,
                                                 ref_link_list, ref_attachment_list, ref_textbooks_list, known_action, None, induction_strength,inhibition_strength)
             else:
-                drug_targets=add_information_into_dictionary(drug_targets, db_ID, db_targets, position, actions, ref_article_list,
+                drug_targets=add_information_into_dictionary(drug_targets, db_ID, db_targets, position, actions, organism, ref_article_list,
                                                 ref_link_list, ref_attachment_list, ref_textbooks_list, known_action)
             drug_targets_info.append(drug_targets)
             if not db_targets in dict_targets_ids:
@@ -311,6 +312,8 @@ for i, drug in enumerate(root):
     row['type'] = drug.get('type')
     row['drugbank_id'] = drug.findtext(ns + "drugbank-id[@primary='true']")
     db_ID=drug.findtext(ns + "drugbank-id[@primary='true']")
+    if db_ID=='DB14512':
+        print('huhu')
     row['cas_number']= drug.findtext(ns +"cas-number")
 #    print(row['drugbank_id'])
 
@@ -909,8 +912,8 @@ columns_reactions=['sequence','left_element_drugbank_id','right_element_drugbank
 columns_snp_effects=['drugbank_id','partner_id','description','pubmed_id','type']
 columns_mutated=['connection_id','uniprot_id','rs_id','protein_name','gene_symbol','allele','defining_change']
 columns_snp_adverse_drug_reactions=['drugbank_id','partner_id','description','pubmed_id','type']
-columns_drug_target=['drugbank_id','targets_id','targets_id_drugbank','position','actions','ref_article','ref_links','ref_attachment','ref_textbooks','known_action']
-columns_drug_enzyme=['drugbank_id','targets_id','targets_id_drugbank','position','actions','ref_article','ref_links','ref_attachment','ref_textbooks','known_action','inhibition_strength','induction_strength']
+columns_drug_target=['drugbank_id','targets_id','targets_id_drugbank','position','actions','ref_article','organism','ref_links','ref_attachment','ref_textbooks','known_action']
+columns_drug_enzyme=['drugbank_id','targets_id','targets_id_drugbank','position','actions','ref_article','organism','ref_links','ref_attachment','ref_textbooks','known_action','inhibition_strength','induction_strength']
 columns_target=['drugbank_id','name','id','id_source','general_function','specific_function','gene_name','locus','cellular_location','transmembrane_regions','signal_regions','organism','theoretical_pi','molecular_weight','go_classifiers','chromosome_location','pfams','gene_sequence','amino_acid_sequence','synonyms','xrefs']
 columns_salt=['id','name','unii','inchikey','cas_number','average_mass','monoisotopic_mass']
 columns_drug_salts=['drug_id','salt_id']
