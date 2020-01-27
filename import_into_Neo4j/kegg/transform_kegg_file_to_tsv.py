@@ -80,6 +80,7 @@ def download_file(url_data):
     return filename
 
 # dictionary mixure ingredient
+dict_mixture_to_ingredient={}
 
 
 '''
@@ -113,6 +114,18 @@ def prepare_drug_files():
                     new_alternative_ids = sorted({x for x in value.split(':')[1].split(' ') if len(x) > 0})
                     row['chemical_structure_group'] = new_alternative_ids
                 elif value.startswith('Product (mixture)'):
+                    for x in value.split(':')[1].split(' '):
+                        if len(x)>0:
+                            mixture_id=x.split('<')[0]
+                            if mixture_id in dict_mixture_to_ingredient:
+                                dict_mixture_to_ingredient[mixture_id].add(row['id'])
+                            else:
+                                dict_mixture_to_ingredient[mixture_id]=set([row['id']])
+                elif value.startswith('Product'):
+                    continue
+                else:
+                    print(value)
+
             del row['REMARK']
         if 'ATOM' in row:
             del row['ATOM']
@@ -120,6 +133,8 @@ def prepare_drug_files():
             del row['BOND']
         if 'BRACKET' in row:
             del row['BRACKET']
+        if 'INTERACTION' in row:
+            del row['INTERACTION']
 
         drugs[row['id']] = row
 
