@@ -33,9 +33,11 @@ def parse_kegg_file(file_path: str) -> List[Dict[str, List[str] or str]]:
     with io.open(file_path, 'r', encoding='utf-8') as f:
         current_entry = {}
         last_keyword = None
+        one_sequence=False
         for line in f:
             line = line.rstrip()
             if line.startswith('///'):
+                one_sequence = False
                 result.append(current_entry)
                 current_entry = {}
                 last_keyword = None
@@ -50,6 +52,19 @@ def parse_kegg_file(file_path: str) -> List[Dict[str, List[str] or str]]:
                     parts = [x for x in value.split(' ') if len(x) > 0]
                     current_entry['id'] = parts[0]
                     current_entry['tags'] = parts[1:]
+                elif keyword=='SEQUENCE':
+                    if value.startswith('('):
+                        one_sequence=False
+                    else:
+                        one_sequence=True
+                    if one_sequence and keyword  in current_entry:
+                        current_entry[keyword][-1]+value
+                    else:
+                        if keyword not in current_entry:
+                            current_entry[keyword] = []
+                        current_entry[keyword].append(value)
+
+
                 else:
                     if keyword not in current_entry:
                         current_entry[keyword] = []
@@ -82,20 +97,79 @@ def download_file(url_data):
 # dictionary mixure ingredient
 dict_mixture_to_ingredient={}
 
+# dictionary alternative identifier to normal drug id
+dict_alternative_id_to_drugbank_id={}
+
+# dictionary drug target (gene symbol) with extra information about the gene form (protein, mrna,..) and network information
+dict_drug_target={}
+
+# dictionary target gene symbol to has and ko identifier
+dict_target_to_has_and_ko={}
+
+# dictionary drug_indicate_disease
+dict_drug_indicate_disease={}
+
+#dictionary metabolite drug-enzyme
+dict_metabolite_drug_enzyme={}
+
+#dictioanry metabolite drug-transporter
+dict_metabolite_drug_transporter={}
+
+#dictionary of all kind of metabolite types to there dictionary
+dict_metabolites_rela={
+    'Enzyme':dict_metabolite_drug_enzyme,
+    'Transporter':dict_metabolite_drug_transporter
+}
+
+#
+
+'''
+fill relationship list between mixture and ingredient(drug)
+sometimes the ingredient has no id in kegg and is only a string, then the string is used as identifier
+
+general get a dictionary which and an element which contains a name (and a id). The id if existing is extracted and add 
+to dictionary as pair with identifier. Else the name is used as identifier.
+The name and id is returned.
+'''
+def fill_mixture_and_ingredient_rela_dict(element, identifier, dict_of_relationship):
+    if '[' in element :
+        name_id=element.rsplit('[',1)
+        id_part = name_id[1]
+        id = id_part.split(':')[1].split(']')[0]
+        if identifier in dict_of_relationship:
+            dict_of_relationship[identifier].add(id)
+        else:
+            dict_of_relationship[identifier] = set([id])
+        return name_id[0].rstrip(), id
+    else:
+        element = element.rstrip(' ')
+        if identifier in dict_of_relationship:
+            dict_of_relationship[identifier].add(element)
+        else:
+            dict_of_relationship[identifier] = set([element])
+        return element, element
+
 
 '''
 prepare drug files and relationships dictionary
 '''
 def prepare_drug_files():
     drugs: Dict[str, Dict[str, List[str] or str]] = {}
-    file_name=download_file(url_data_drug)
-    header=['id','tags','FORMULA','EXACT_MASS','MOL_WEIGHT','SEQUENCE','SOURCE','alternative_ids','therapeutic_category','xrefs','atc_codes','chemical_structure_group','COMMENT']
+
+    # file_name=download_file(url_data_drug)
+    file_name='data/drug'
+    header=['id','tags','names','FORMULA','EXACT_MASS','MOL_WEIGHT','SEQUENCE','SOURCE','alternative_ids','therapeutic_category','xrefs','atc_codes','chemical_structure_group','COMMENT','COMPONENT','EFFICACY']
     #file with csv information
     writer=open('output/drugs.csv','w',encoding='utf-8')
-    csv_writer=csv.writer(writer, delimiter='\t')
+    csv_writer=csv.DictWriter(writer, delimiter='\t',fieldnames=header)
+    csv_writer.writeheader()
     for row in parse_kegg_file(os.path.join(os.path.dirname(__file__), file_name)):
-        if row['id']=='D00088':
+        identifier=row['id']
+        # print(identifier)
+        if identifier=='D00015':
             print('ok')
+
+        #sorte the different information from remakr in the different properties
         if 'REMARK' in row:
             for value in row['REMARK']:
                 if value.startswith('ATC code'):
@@ -106,9 +180,16 @@ def prepare_drug_files():
                 elif value.startswith('Same as'):
                     new_alternative_ids = sorted({x for x in value.split(':')[1].split(' ') if len(x) > 0})
                     row['alternative_ids']=new_alternative_ids
+                    for alternative_id in new_alternative_ids:
+                        if alternative_id in dict_alternative_id_to_drugbank_id:
+                            dict_alternative_id_to_drugbank_id[alternative_id].add(identifier)
+                        else:
+                            dict_alternative_id_to_drugbank_id[alternative_id]=set(identifier)
                 elif value.startswith('Therapeutic category'):
                     new_alternative_ids = sorted({x for x in value.split(':')[1].split(' ') if len(x) > 0})
                     row['therapeutic_category']=new_alternative_ids
+
+
 
                 elif value.startswith('Chemical structure group'):
                     new_alternative_ids = sorted({x for x in value.split(':')[1].split(' ') if len(x) > 0})
@@ -118,25 +199,154 @@ def prepare_drug_files():
                         if len(x)>0:
                             mixture_id=x.split('<')[0]
                             if mixture_id in dict_mixture_to_ingredient:
-                                dict_mixture_to_ingredient[mixture_id].add(row['id'])
+                                dict_mixture_to_ingredient[mixture_id].add(identifier)
                             else:
-                                dict_mixture_to_ingredient[mixture_id]=set([row['id']])
+                                dict_mixture_to_ingredient[mixture_id]=set([identifier])
                 elif value.startswith('Product'):
                     continue
                 else:
                     print(value)
 
             del row['REMARK']
+
+        # generate rela later to check out the alternative ids !
+        #component will be still in the drug because, sometimes the the combination is definded as logic with or's.
+        if 'COMPONENT' in row:
+            counter=0
+            for components in  row['COMPONENT']:
+                for element in components.split(', '):
+                    if len(element)>0:
+                        if element[0]=='(' and element[-1]==')':
+                            new_element=element[1:-1]
+                            for seperate_element in new_element.split('| '):
+                                if len(seperate_element)>0:
+                                    fill_mixture_and_ingredient_rela_dict(seperate_element,identifier, dict_mixture_to_ingredient)
+                        else:
+                            fill_mixture_and_ingredient_rela_dict(element, identifier, dict_mixture_to_ingredient)
+                    else:
+                        row['COMPONENT'][counter]=row['COMPONENT'][counter].replace(', ,',', ')
+                counter+=1
+
+        # update the sequence with what kind of sequence it is
+        if 'SEQUENCE' in row:
+            if '  TYPE' in row:
+                if  len(row['  TYPE'])>1:
+                    print(row['SEQUENCE'])
+                    print(row['  TYPE'])
+                    sys.exit('ohje')
+                row['SEQUENCE']=[row['  TYPE'][0]+':'+x for x in row['SEQUENCE']]
+                del row['  TYPE']
+        if '  TYPE' in row:
+            print(row['  TYPE'])
+
+        # fill relationship durg-disease dictionary
+        if '  DISEASE' in row:
+            for disease in row['  DISEASE']:
+                fill_mixture_and_ingredient_rela_dict(disease, identifier, dict_drug_indicate_disease)
+            del row['  DISEASE']
+
+        # fill rela to metabolite
+        # need own dictionary for enzyme and transporter to integrate this information
+        if 'METABOLISM' in row:
+            for type_metabolism in row['METABOLISM']:
+                # print(type_metabolism)
+                type_metabolism=type_metabolism.split(':',1)
+                type=type_metabolism[0]
+                for meta_protein in type_metabolism[1].split(', '):
+                    if type in dict_metabolites_rela:
+                        if ':' not in meta_protein:
+                            print(meta_protein)
+                            id=meta_protein.split('[')[1].replace(']','')
+                            if identifier in dict_metabolites_rela[type]:
+                                dict_metabolites_rela[type][identifier].add(id)
+                            else:
+                                dict_metabolites_rela[type][identifier]=set(id)
+                        else:
+                            name, identifier=fill_mixture_and_ingredient_rela_dict(meta_protein,identifier,dict_metabolites_rela[type])
+                    else:
+                        sys.exit(type)
+            del row['METABOLISM']
+
+
+        # fill relationship drug-target and build dictionary for different  target
+        if 'TARGET' in row:
+            network_info = ''
+            if '  NETWORK' in row:
+                if len(row['  NETWORK']) > 1:
+                    print(row['TARGET'])
+                    print(row['  NETWORK'])
+                    sys.exit('network to long')
+                network_info = row['  NETWORK'][0]
+                del row['  NETWORK']
+            for target in row['TARGET']:
+
+
+                parts=target.split('[')
+                # print(parts)
+                if len(parts)>1:
+                    if ':' not in parts[1]:
+                        gene_symbol=parts[0]+'['+ parts[1]
+                    else:
+                        gene_symbol = parts[0]
+                    gene_symbol=gene_symbol.rstrip()
+                    extra_information_of_form_of_protein=''
+                    if '(' in parts[-1]:
+                        extra_information_of_form_of_protein=parts[-1].split('(')[1].replace(')','')
+                    if identifier in dict_drug_target:
+                        dict_drug_target[identifier].add((gene_symbol,extra_information_of_form_of_protein,network_info))
+                    else:
+                        dict_drug_target[identifier]=set((gene_symbol,extra_information_of_form_of_protein, network_info))
+
+                    if not gene_symbol in dict_target_to_has_and_ko:
+                        external_identifiers_hsa_ko=[]
+                        counter=0
+                        # print(parts)
+                        for external_ids in parts[1:]:
+                            counter+=1
+                            if ':' not in external_ids:
+                                if counter>1:
+                                    sys.exit('multi name with [')
+                                continue
+                            external_identifiers_hsa_ko.append(external_ids.split(']')[0])
+                        # print(external_identifiers_hsa_ko)
+                        dict_target_to_has_and_ko[gene_symbol]=prepare_external_links(external_identifiers_hsa_ko)
+                else:
+                    gene_symbol = parts[0]
+                    if identifier in dict_drug_target:
+                        dict_drug_target[identifier].add((gene_symbol,'',network_info))
+                    else:
+                        dict_drug_target[identifier]=set((gene_symbol,'',network_info))
+                    dict_target_to_has_and_ko[gene_symbol]=[]
+            del row['TARGET']
+
+        # gather and prepare xrefs
+        if 'DBLINKS' in row:
+            xrefs=prepare_external_links(row['DBLINKS'])
+            row['xrefs']=xrefs
+
+            del row['DBLINKS']
+
+        # will yous the class from dgroup file
+        if 'CLASS' in row:
+            del row['CLASS']
+        # THESE HAS NO INFORMATION WHICH ARE NICE TO SEE
         if 'ATOM' in row:
             del row['ATOM']
         if 'BOND' in row:
             del row['BOND']
         if 'BRACKET' in row:
             del row['BRACKET']
+        if '  REPEAT' in row:
+            del row['  REPEAT']
+        if '  ORIGINAL' in row:
+            del row['  ORIGINAL']
         if 'INTERACTION' in row:
             del row['INTERACTION']
+        csv_writer.writerow(row)
 
-        drugs[row['id']] = row
+        drugs[identifier] = row
+
+    # os.remove(file_name)
 
 #
 # drug_children_id_map: Dict[str, Set[str]] = {}
@@ -325,6 +535,7 @@ def main():
     print('generate a tsv file with only the human genes')
 
     prepare_drug_files()
+
 
     print(
         '#################################################################################################################################################################')
