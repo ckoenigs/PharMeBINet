@@ -215,7 +215,8 @@ also check for mapping between do and mondo
 def load_in_all_DO_in_dictionary():
     # file mapped doid but not the same name
     not_direct_name_matching_file = open('not_direct_name_matching_file.tsv', 'w', encoding='utf-8')
-    not_direct_name_matching_file.write('monDO \t DOID \t name monDO \t name DOID \n')
+    csv_not_direct_name_matching_file=csv.writer(not_direct_name_matching_file,delimiter='\t')
+    csv_not_direct_name_matching_file.writerow(['monDO','DOID','name monDO','name DOID'])
     counter_name_not_matching = 0
 
     query = ''' MATCH (n:Disease) RETURN n'''
@@ -244,8 +245,8 @@ def load_in_all_DO_in_dictionary():
                 do_name = dict_DO_to_info[doid]['name'].lower().replace("'", '') if 'name' in dict_DO_to_info[doid] else ''
                 if monDOname != do_name:
                     counter_name_not_matching += 1
-                    not_direct_name_matching_file.write(
-                        monDO + '\t' + doid + '\t' + monDOname + '\t' + do_name + '\n')
+                    csv_not_direct_name_matching_file.writerow([
+                        monDO , doid , monDOname , do_name ])
 
                 # fill the dictionary monDo to DO
                 if monDO in dict_monDo_to_DO:
@@ -277,10 +278,9 @@ def load_in_all_DO_in_dictionary():
                         do_name = dict_DO_to_info[doid]['name'].lower().replace("'", '')
                         if monDOname != do_name:
                             counter_name_not_matching += 1
-                            not_direct_name_matching_file.write(
-                                monDO + '\t' + doid + '\t' + dict_monDO_info[monDO]['name'] + '\t' +
-                                dict_DO_to_info[doid][
-                                    'name'] + '\n')
+                            csv_not_direct_name_matching_file.write([
+                                monDO , doid , dict_monDO_info[monDO]['name'] ,
+                                dict_DO_to_info[doid]['name']])
                         # fill the dictionary monDo to DO
                         if monDO in dict_monDo_to_DO:
                             dict_monDo_to_DO[monDO].add(doid)
@@ -437,6 +437,8 @@ def gather_information_of_mondo_and_do_then_prepare_dict_for_csv(monDo,info,monD
     doid = list(dict_monDo_to_DO_only_doid[monDo])[0]
     # if doid =='DOID:0060073':
     #     print('ohe')
+    if monDo=='MONDO:0006883':
+        print('fjfjfjf')
     monDO_synonyms = info['synonym'] if 'synonym' in info else []
     monDo_def = info['definition'] if 'definition' in info else ''
 
@@ -493,6 +495,9 @@ def integrate_mondo_change_identifier():
     counter_merge_nodes = 0
 
     for monDo, info in dict_monDO_info.items():
+
+        if monDo == 'MONDO:0006883':
+            print('fjfjfjf')
 
         monDO_xref = info['xrefs'] if 'xrefs' in info else []
         # one to one mapping of mondo and do or specific mapped one-to-one from me
@@ -558,6 +563,15 @@ def integrate_mondo_change_identifier():
                 # if key in list_properties_which_should_be_an_array:
                 if type(property) == list:
                     list_of_list_prop.add(key)
+                    property_string = '|'.join(property)
+                    dict_info_csv[key] = property_string
+
+                    if len(property) > 0 and type(property[0]) == int:
+                        print('int list')
+                        print(property)
+                elif type(property)== set:
+                    list_of_list_prop.add(key)
+                    property=list(property)
                     property_string = '|'.join(property)
                     dict_info_csv[key] = property_string
 
