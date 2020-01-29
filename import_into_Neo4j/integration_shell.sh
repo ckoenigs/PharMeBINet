@@ -94,6 +94,10 @@ echo "Current time: $now"
 cd  do
 echo do
 
+#download do
+wget  -O data/HumanDO.obo "https://raw.githubusercontent.com/DiseaseOntology/HumanDiseaseOntology/master/src/ontology/HumanDO.obo"
+
+
 python3 ../EFO/transform_obo_to_csv_and_cypher_file.py data/HumanDO.obo do diseaseontology $path_to_project > output_generate_integration_file.txt
 
 now=$(date +"%F %T")
@@ -120,6 +124,9 @@ echo "Current time: $now"
 
 cd  GO
 echo go
+
+#download go
+wget  -O ./go-basic.obo "purl.obolibrary.org/obo/go/go-basic.obo"
 
 python3 ../EFO/transform_obo_to_csv_and_cypher_file.py go-basic.obo GO go $path_to_project > output_generate_integration_file.txt
 
@@ -220,6 +227,9 @@ echo "Current time: $now"
 
 cd  EFO
 echo EFO
+
+#download do
+wget  -O ./efo.obo "https://www.ebi.ac.uk/efo/efo.obo"
 
 python3 transform_obo_to_csv_and_cypher_file.py efo.obo EFO efo $path_to_project > output_generate_integration_file.txt
 
