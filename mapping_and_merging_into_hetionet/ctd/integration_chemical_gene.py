@@ -20,27 +20,6 @@ def create_connection_with_neo4j():
 # generate cypher file
 cypherfile = open('chemical_gene/cypher.cypher', 'w', encoding='utf-8')
 
-'''
-put the first cypher queries into the cypher file which adapt the rela from before
-'''
-def add_cypher_queries_to_cypher_file():
-    cypherfile.write('begin\n')
-    cypherfile.write(
-        'Match (c:Chemical)-[r:BINDS_CbG]->(b:Gene) Where not exists(r.hetionet) Set r.hetionet="yes", r.resource=["Hetionet"];\n')
-    cypherfile.write('commit\n')
-    cypherfile.write('begin\n')
-    cypherfile.write(
-        'Match (c:Chemical)-[r:BINDS_CbG]->(b:Gene) Where not exists(r.urls) Set r.urls=[];\n')
-    cypherfile.write('commit\n')
-    cypherfile.write('begin\n')
-    cypherfile.write(
-        'Match (c:Chemical)-[r:UPREGULATES_CuG]->(b:Gene) Where not exists(r.hetionet) Set r.hetionet="yes", r.resource=["Hetionet"];\n')
-    cypherfile.write('commit\n')
-    cypherfile.write('begin\n')
-    cypherfile.write(
-        'Match (c:Chemical)-[r:DOWNREGULATES_CdG]->(b:Gene) Where not exists(r.hetionet) Set r.hetionet="yes", r.resource=["Hetionet"];\n')
-    cypherfile.write('commit\n')
-
 # dictionary with rela name to drug-gene/protein pair
 dict_rela_to_drug_gene_protein_pair = {}
 
@@ -131,6 +110,8 @@ def generate_csv(path):
     writer.writerow(columns)
     return writer
 
+# open the cypher file for the last changes
+cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')
 
 '''
 generate the path to csv and generate the csv, add csv to dictionary
@@ -144,20 +125,45 @@ def path_to_rela_and_add_to_dict(rela, first, second):
     writer = generate_csv(path)
     dict_rela_to_file[rela_full] = writer
 
+    query_to_check_if_this_rela_exist_in_hetionet='''Match p=(b:Chemical)'''
+
     query_first_part = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/''' + path + '''" As line Match (b:Chemical{identifier:line.ChemicalID}), '''
     if first == 'gene' or second == 'gene':
         query_middle_1 = ''' (n:Gene{identifier:toInteger(line.GeneID)})'''
+        part='''(n:Gene)'''
     else:
         query_middle_1 = ''' (g:Gene{identifier:toInteger(line.GeneID)})-[:PRODUCES_GpP]->(n:Protein)'''
+        part='''(n:Protein)'''
+
     if first=='chemical':
         query_middle_2 = ''' Merge (b)-[r:%s]->(n)'''
+        query_to_check_if_this_rela_exist_in_hetionet+='-[r:%s]->'+part+' Return p Limit 1'
     else:
         query_middle_2 = ''' Merge (b)<-[r:%s]-(n)'''
-    query_last_part=''' On Create Set r.hetionet='no', r.ctd='yes', r.urls_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.sources=["CTD"], r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased=line.unbiased, r.interaction_text=line.interaction_text, r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|') On Match SET r.ctd='yes', r.urls_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.sources=["CTD"], r.license_ctd="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased=line.unbiased, r.interaction_text=line.interaction_text, r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=r.pubmed_ids+split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|');\n '''
-    query = query_first_part + query_middle_1+ query_middle_2 + query_last_part
+        query_to_check_if_this_rela_exist_in_hetionet+='<-[r:%s]-'+part+' Return p Limit 1'
+
+    query_to_check_if_this_rela_exist_in_hetionet= query_to_check_if_this_rela_exist_in_hetionet %(dict_file_name_to_rela_name[rela_full])
+    results=g.run(query_to_check_if_this_rela_exist_in_hetionet)
+    result=results.evaluate()
+    if result:
+
+        query_last_part=''' On Create Set r.hetionet='no', r.ctd='yes', r.urls_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.sources=["CTD"], r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased=line.unbiased, r.interaction_text=line.interaction_text, r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|') On Match SET r.ctd='yes', r.urls_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.sources=["CTD"], r.license_ctd="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased=line.unbiased, r.interaction_text=line.interaction_text, r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=r.pubmed_ids+split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|');\n '''
+        query = query_first_part + query_middle_1+ query_middle_2 + query_last_part
+
+
+    else:
+        query_for_update_not_used_relationships=query_to_check_if_this_rela_exist_in_hetionet.split('Return')[0]+' Where not exists(r.ctd) Set r.ctd="no";\n'
+
+        query = '''begin\n '''+ query_for_update_not_used_relationships+'''commit\n '''
+        cypher_general.write(query)
+        query_middle_2_parts=query_middle_2.split(']')
+
+        query_last_part = '''{hetionet:'no', ctd:'yes', urls_ctd:"http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , sources:["CTD"], license:"© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", unbiased:line.unbiased, interaction_text:line.interaction_text, gene_forms:split(line.gene_forms,'|'), pubmed_ids:split(line.pubMedIds,'|'), interactions_actions:split(line.interactions_actions,'|')}]'''
+        query = query_first_part + query_middle_1 + query_middle_2_parts[0].replace('Merge','Create') + query_last_part + query_middle_2_parts[1]
 
     query = query % (dict_file_name_to_rela_name[rela_full])
     cypherfile.write(query)
+
 
 
 # the name of the entities in the rela and dictionary
@@ -362,7 +368,7 @@ def take_all_relationships_of_gene_chemical():
         drugbank_ids = drugbank_ids if not drugbank_ids is None else []
 
         chemical_synonyms = chemical_synonyms if not chemical_synonyms is None else []
-        chemical_synonyms = filter(None, chemical_synonyms)
+        chemical_synonyms = list(filter(None, chemical_synonyms))
 
         # for searching in the interaction text if gene and chemical are in the same []
         if gene_id in dict_gene_id_to_used_name:
@@ -524,14 +530,6 @@ def main():
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j()
-
-    print(
-        '###########################################################################################################################')
-
-    print (datetime.datetime.utcnow())
-    print('add quereie to cypher file to adapt older rela')
-
-    add_cypher_queries_to_cypher_file()
 
     print(
         '###########################################################################################################################')
