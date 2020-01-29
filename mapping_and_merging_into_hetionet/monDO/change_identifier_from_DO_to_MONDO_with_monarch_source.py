@@ -168,7 +168,7 @@ list_of_list_prop=set([])
 generate cypher queries to integrate and merge disease nodes and create the subclass relationships
 '''
 def generate_cypher_queries():
-    query_start='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/monDO/output/%s.csv" As line FIELDTERMINATOR '\\t' Match (a:disease{`http://www.geneontology.org/formats/oboInOwl#id`:line.identifier}) '''
+    query_start='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/monDO/output/%s.csv" As line FIELDTERMINATOR '\\t' Match (a:disease{identifier:line.identifier}) '''
 
     query_end='''Create (n)-[:equal_to_monDO]->(a); \n'''
     query_update=''
@@ -409,19 +409,19 @@ def prepare_dict_for_csv_file(info):
 divide list of external identifier into general and umls
 '''
 def divide_external_list(monDO_xref):
-    umls_cuis_monDO = []
-    other_xrefs_monDO = []
+    umls_cuis_monDO = set()
+    other_xrefs_monDO = set()
     if type(monDO_xref) == list:
         for ref in monDO_xref:
             if ref[0:4] == 'UMLS':
-                umls_cuis_monDO.append(ref)
+                umls_cuis_monDO.add(ref)
             else:
-                other_xrefs_monDO.append(ref)
+                other_xrefs_monDO.add(ref)
     else:
         if monDO_xref[0:4] == 'UMLS':
-            umls_cuis_monDO.append(monDO_xref)
+            umls_cuis_monDO.add(monDO_xref)
         else:
-            other_xrefs_monDO.append(monDO_xref)
+            other_xrefs_monDO.add(monDO_xref)
 
     umls_cuis_monDO.remove('') if '' in umls_cuis_monDO else umls_cuis_monDO
 
@@ -465,14 +465,14 @@ def gather_information_of_mondo_and_do_then_prepare_dict_for_csv(monDo,info,monD
         alternative_ids.remove('')
     info['doids'] = alternative_ids
 
-    other_xrefs_monDO.extend(dict_DO_to_xref[doid])
+    other_xrefs_monDO.union(dict_DO_to_xref[doid])
     other_xrefs_monDO.remove('') if '' in other_xrefs_monDO else other_xrefs_monDO
-    info['xrefs'] = other_xrefs_monDO
+    info['xrefs'] = list(other_xrefs_monDO)
 
     doid_umls=dict_DO_to_info[doid]['umls_cuis'] if 'umls_cuis' in dict_DO_to_info[doid] else []
-    umls_cuis_monDO.extend(doid_umls)
+    umls_cuis_monDO.union(doid_umls)
     umls_cuis_monDO.remove('') if '' in umls_cuis_monDO else umls_cuis_monDO
-    info['umls_cuis'] = list(set(umls_cuis_monDO))
+    info['umls_cuis'] = list(umls_cuis_monDO)
 
     dict_info_csv = prepare_dict_for_csv_file(info)
     dict_info_csv['doid'] = doid
