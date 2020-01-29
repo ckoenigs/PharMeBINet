@@ -159,12 +159,17 @@ def extract_information():
     url_data='ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.dat.gz'
     # download ncbi human genes
     filename = wget.download(url_data, out='database/')
+
+    unzip_file=open('database/uniprot_sprot.dat','w',encoding='utf-8')
+
     filename_without_gz = filename.rsplit('.', 1)[0]
     # file = open(filename_without_gz, 'wb')
     with io.TextIOWrapper(gzip.open(filename, 'rb')) as f:
     # file_uniprot = open(sys.argv[1], 'r')
 
         for line in f:
+            unzip_file.write(line)
+
             two_split = line.split('   ', 1)
             # if ',\n' in line:
             #     print(line)
