@@ -110,7 +110,7 @@ def open_json_file_write_into_csv():
                 # synonyms
                 if 'synonyms' in node['meta']:
                     for synonym in node['meta']['synonyms']:
-                        dict_synonyms[synonym['pred']].add(synonym['val'])
+                        dict_synonyms[synonym['pred']].add(synonym['val'].replace('RELATED ','').replace('EXACT ',''))
                 dict_node['synonyms']='||'.join(synonyms)
                 dict_node['broad_synonyms'] = '||'.join(broad_synonyms)
                 dict_node['related_synonyms'] = '||'.join(related_synonyms)
