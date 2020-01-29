@@ -211,7 +211,7 @@ def load_disease_ontologie_in_hetionet():
                 else:
                     dict_of_information[key] = '|'.join(value)
             elif key =='alt_ids':
-                dict_of_information['alternative_ids']=alternative_ids
+                dict_of_information['alternative_ids']='|'.join(alternative_ids)
         dict_of_information['xrefs'] = '|'.join(xref_other)
 
         # hetionet has this doid not included
