@@ -22,8 +22,10 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
         except:
             counter_tries+=1
             print(counter_tries)
-    if counter_tries>11:
+    if counter_tries>=11:
         sys.exit('did not get any connection to url in ncbi integration\n\n huhuhu\n')
+
+    unzip_file=open('data/Homo_sapiens.gene_info','w',encoding='utf-8')
 
     filename_without_gz = filename.rsplit('.', 1)[0]
     # file = open(filename_without_gz, 'wb')
@@ -86,6 +88,7 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
 
         # generate human gene csv
         for row in csv_reader:
+            unzip_file.write(row)
 
             counter_all+=1
             gene_id =row['GeneID']
