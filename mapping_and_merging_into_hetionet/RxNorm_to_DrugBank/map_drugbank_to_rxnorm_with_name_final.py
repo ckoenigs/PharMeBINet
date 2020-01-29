@@ -62,22 +62,20 @@ count_drugbank_ids = 0
 list_rxnorm_id = []
 j = 0
 
-g = open('name_map_drugbank_to_rxnorm_2.tsv', 'w',encoding='utf-8')
+g = open('results/name_map_drugbank_to_rxnorm.tsv', 'w',encoding='utf-8')
 csv_writer=csv.writer(g,delimiter='\t')
 csv_writer.writerow(['drugbank_id','rxnorm_cui'])
 create_connection_with_neo4j()
 
-query='''Match (c:Compound) Return c.identifier, c.name, c.synonyms, c.international_brands_name_company, c.packagers_name_url '''
+query='''Match (c:Compound) Return c.identifier, c.name, c.synonyms'''
 result=graph.run(query)
-for drugbank_id, name, synonyms, international_brands_name_company, packagers_name_url, in result:
+for drugbank_id, name, synonyms, in result:
     if drugbank_id=='DB08792':
         print('huhu')
     count_drugbank_ids += 1
 
     name = name.replace("'", "")
     all_name=name
-    extra_names = packagers_name_url
-    brands = international_brands_name_company
 
     if synonyms is not None:
         for synonym in synonyms:
@@ -87,24 +85,6 @@ for drugbank_id, name, synonyms, international_brands_name_company, packagers_na
             all_name = all_name+"','" + synonym
 
 
-    if extra_names is not None:
-        for extra_name in extra_names:
-            extra_name= extra_name.split(':')[0]
-            extra_name = extra_name.replace('[', '').replace(']', '')
-            extra_name = extra_name.replace("'", "")
-            extra_name = extra_name.replace("|", "','")
-            all_name = all_name + "','" + extra_name
-
-    if brands is not None:
-        for brand in brands:
-            brand=brand.split(':')[0]
-            brand = brand.replace('[', '').replace(']', '')
-            brand = brand.replace("'", "")
-            brand = brand.replace("|", "','")
-            # print(type(brand))
-            # print(brand)
-            # print(drugbank_id)
-            all_name = all_name + "','" + brand
     all_name_utf=all_name.encode('utf-8')
     cur = con.cursor()
     query = ("SELECT RXCUI FROM RXNCONSO WHERE STR in ('%s'); ")

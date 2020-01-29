@@ -29,7 +29,6 @@ def load_all_inchikey_and_rxnorm_in_dict():
     print (datetime.datetime.utcnow())
     i = 0
     for line in csv_reader:
-        print(line)
         rxcui = line['rxcui']
         uniis = line['uniis']
         uniis = uniis.split('|')
@@ -38,7 +37,7 @@ def load_all_inchikey_and_rxnorm_in_dict():
                 dict_unii_to_rxcui[unii] = [rxcui]
             else:
                 dict_unii_to_rxcui[unii].append(rxcui)
-        inchikeys = line['inchikeys'].split('|')
+        inchikeys = line['inchikeys'].split('|') if line['inchikeys'] !='' else []
         for inchikey in inchikeys:
             if not inchikey in dict_inchikey_to_rxnorm_ids:
                 dict_inchikey_to_rxnorm_ids[inchikey] = [rxcui]
@@ -63,7 +62,7 @@ properties:
 
 
 def map_with_inchikeys_to_drugbank():
-    f = open('map_unii_to_drugbank_id_and_inchikey.tsv', 'r')
+    f = open('results/map_unii_to_drugbank_id_and_inchikey.tsv', 'r')
     csv_reader=csv.DictReader(f, delimiter='\t')
     i = 0
     count_map_with_unii = 0
@@ -84,16 +83,16 @@ def map_with_inchikeys_to_drugbank():
                         dict_rxnorm_to_drugbank_id[rxcui].append(drugbank_id)
             #                    continue
 
-            if inchikey != '':
-                if inchikey in dict_inchikey_to_rxnorm_ids:
-                    count_map_with_inchikey += 1
-                    #                    found_a_drugbank=True
-                    rxnorms = dict_inchikey_to_rxnorm_ids[inchikey]
-                    for rxcui in rxnorms:
-                        if not rxcui in dict_rxnorm_to_drugbank_id:
-                            dict_rxnorm_to_drugbank_id[rxcui] = [drugbank_id]
-                        else:
-                            dict_rxnorm_to_drugbank_id[rxcui].append(drugbank_id)
+        if inchikey != '':
+            if inchikey in dict_inchikey_to_rxnorm_ids:
+                count_map_with_inchikey += 1
+                #                    found_a_drugbank=True
+                rxnorms = dict_inchikey_to_rxnorm_ids[inchikey]
+                for rxcui in rxnorms:
+                    if not rxcui in dict_rxnorm_to_drugbank_id:
+                        dict_rxnorm_to_drugbank_id[rxcui] = [drugbank_id]
+                    else:
+                        dict_rxnorm_to_drugbank_id[rxcui].append(drugbank_id)
 
     print(i)
     print('number of mapped rxcuis:' + str(len(dict_rxnorm_to_drugbank_id)))
@@ -111,7 +110,7 @@ def generate_file_rxnorm_to_drugbank():
     f = open('results/map_rxnorm_to_drugbank_with_use_of_unii_and_inchikey.tsv', 'w')
     csv_writer=csv.writer(f, delimiter='\t')
     csv_writer.writerow(['rxcui','drugbank_ids'])
-    print(dict_rxnorm_to_drugbank_id)
+    print(len(dict_rxnorm_to_drugbank_id))
     for rxcui, drugbank_ids in dict_rxnorm_to_drugbank_id.items():
         print(rxcui, drugbank_ids)
         drugbank_ids = list(set(drugbank_ids))

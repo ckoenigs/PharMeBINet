@@ -44,7 +44,8 @@ def load_all_inchikey_and_rxnorm_in_dict():
     for line in csv_reader:
         unii=line['UNII']
         rxcui=line['RXCUI']
-        csv_writer.writerow([unii,rxcui])
+        if rxcui!='':
+            csv_writer.writerow([unii,rxcui])
 
 
 print (datetime.datetime.utcnow())
