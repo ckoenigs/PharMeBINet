@@ -25,12 +25,15 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
     if counter_tries>=11:
         sys.exit('did not get any connection to url in ncbi integration\n\n huhuhu\n')
 
-    unzip_file=open('data/Homo_sapiens.gene_info','w',encoding='utf-8')
 
     filename_without_gz = filename.rsplit('.', 1)[0]
     # file = open(filename_without_gz, 'wb')
     with io.TextIOWrapper(gzip.open(filename, 'rb')) as f:
         csv_reader=csv.DictReader(f,delimiter='\t')
+
+        unzip_file = open('data/Homo_sapiens.gene_info', 'w', encoding='utf-8')
+        csv_unzip = csv.DictWriter(unzip_file, fieldnames=csv_reader.fieldnames, delimiter='\t')
+        csv_unzip.writeheader()
 
         # create cypher file
         cypher_file = open('cypher_node.cypher', 'w')
@@ -88,7 +91,7 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
 
         # generate human gene csv
         for row in csv_reader:
-            unzip_file.write(row)
+            csv_unzip.writerow(row)
 
             counter_all+=1
             gene_id =row['GeneID']
