@@ -146,14 +146,22 @@ dict_disease_name_to_id={}
 #dictionary disease umls cui to identifier
 dict_disease_cui_to_id={}
 
+# dictionary meddra to mondo
+dict_meddra_to_mondo={}
+
+#ditionary mondo to xrefs and resource
+dict_mondo_to_xrefs_and_resource={}
+
+
 '''
 Load all disease with umls, identifier and name (,synonyms?)
 '''
 def load_disease_infos():
-    query='''Match (n:Disease) Return n.identifier, n.name, n.umls_cuis'''
+    query='''Match (n:Disease) Return n.identifier, n.name, n.umls_cuis, n.xrefs, n.resource'''
     results=g.run(query)
 
-    for identifier, name, umls_cuis, in results:
+    for identifier, name, umls_cuis, xrefs, resource, in results:
+        dict_mondo_to_xrefs_and_resource[identifier]=[xrefs,resource]
         if name:
             name=name.lower()
             if name in dict_disease_name_to_id:
@@ -170,6 +178,16 @@ def load_disease_infos():
                     dict_disease_cui_to_id[cui].append(identifier)
                 else:
                     dict_disease_cui_to_id[cui]=[identifier]
+        if xref:
+            for xref in xrefs:
+                if xref.startswith('MedDRA'):
+                    meddra_id=xref.split(':')[1]
+                    if meddra_id in dict_meddra_to_mondo:
+                        dict_meddra_to_mondo[meddra_id].add(identifier)
+                    else:
+                        dict_meddra_to_mondo[meddra_id]=set(identifier)
+
+
 
 # dictionary with all aeolus side effects outcome_concept_id (OHDSI ID) as key and value is the class SideEffect_Aeolus
 dict_side_effects_aeolus = {}
@@ -210,6 +228,8 @@ def load_side_effects_aeolus_in_dictionary():
             if counter % number_of_group_size==0:
                 list_of_list_of_meddra_ids.append(list_of_ids)
                 list_of_ids=[]
+
+    list_of_list_of_meddra_ids.append(list_of_ids)
 
     print('Size of Aoelus side effects:' + str(len(dict_side_effects_aeolus)))
 
@@ -253,6 +273,8 @@ def search_with_api_bioportal():
                 # print(results)
                 all_infos=result['@id'].split('/')
                 meddra_id=all_infos[-1]
+                if meddra_id=='10052551':
+                    print('test')
                 # filter out all results which are not from meddra
                 if all_infos[-2]!='MEDDRA':
                     continue
@@ -293,7 +315,7 @@ def search_with_api_bioportal():
                 set_list=set(list_ids)
                 set_keys=set(dict_all_inside.keys())
                 not_mapped_list=list(set_list.difference(set_keys))
-                counter_meddra_id_without_cui+=len()
+                counter_meddra_id_without_cui+=len(not_mapped_list)
                 list_aeolus_outcome_without_cui.extend(not_mapped_list)
         else:
             print('not in bioportal')
@@ -303,6 +325,7 @@ def search_with_api_bioportal():
     print('Size of Aoelus side effects:' + str(len(dict_side_effects_aeolus)))
     print('number of not equal names:'+str(counter_for_not_equal_names))
     print('number of not mapped meddra ids:'+str(counter_meddra_id_without_cui))
+
 
 
 
@@ -362,8 +385,23 @@ dict_outcome_to_disease={}
 # new nodes  dictionary from umls cui to aeolus outcome
 dict_new_node_cui_to_concept={}
 
+'''
+get the mapped thins and add them to the dictionary and also write all mappings into the csv file
+'''
+def generate_csv_file(list_of_delet_index, list_not_mapped, concept_code, diseases, mapping_method, csv_writer):
+    list_of_delet_index.append(list_not_mapped.index(concept_code))
+    dict_outcome_to_disease[concept_code] = list(diseases)
+    for disease_id in diseases:
+        resource_disease= dict_mondo_to_xrefs_and_resource[concept_code][1] if dict_mondo_to_xrefs_and_resource[concept_code][1] is not None else []
+        resource_disease=list(set(resource_disease.append("AEOLUS")))
+        resource_string='|'.join(resource_disease)
 
+        xref_disease = dict_mondo_to_xrefs_and_resource[concept_code][0] if \
+        dict_mondo_to_xrefs_and_resource[concept_code][0] is not None else []
+        xref_disease = list(set(xref_disease.append("AEOLUS")))
+        xref_string  = '|'.join(xref_disease)
 
+        csv_writer.writerow([concept_code, disease_id, mapping_method, resource_string, xref_string])
 
 '''
 Try to map the not mapped to disease
@@ -372,7 +410,7 @@ def mapping_to_disease():
     # open file for mapping with disease
     file=open('output/se_disease_mapping.tsv','w')
     csv_writer=csv.writer(file, delimiter='\t')
-    csv_writer.writerow(['aSE','disease_id','mapping_method'])
+    csv_writer.writerow(['aSE','disease_id','mapping_method','resource','xrefs'])
 
     # open file for not mapping with anything
     file_not_mapped=open('output/se_not_mapping.tsv','w')
@@ -388,74 +426,75 @@ def mapping_to_disease():
     #fist outcome with cui but did not mapped
     for concept_code in list_not_mapped_to_hetionet:
         counter_of_mapping_tries+=1
-        if concept_code=='10047184':
-            print('test')
-        cuis= dict_aeolus_SE_with_CUIs[concept_code]
-        name=dict_side_effects_aeolus[concept_code].name.lower()
-        mapped_cuis_disease=set()
-        for cui in cuis:
-            if cui in dict_disease_cui_to_id:
-                mapped_cuis_disease=mapped_cuis_disease.union(dict_disease_cui_to_id[cui])
+        if concept_code in dict_meddra_to_mondo:
+            generate_csv_file(list_of_delete_index_with_cui, list_not_mapped_to_hetionet, concept_code, dict_meddra_to_mondo[concept_code], 'meddra mapping',
+                              csv_writer)
 
-        mapped_name_disease=set()
-        if name in dict_disease_name_to_id:
-            mapped_name_disease=set(dict_disease_name_to_id[name])
-
-        find_intersection=mapped_name_disease.intersection(mapped_cuis_disease)
-        if len(find_intersection)>0:
-            list_of_delete_index_with_cui.append(list_not_mapped_to_hetionet.index(concept_code))
-            dict_outcome_to_disease[concept_code]=find_intersection
-            for disease_id in find_intersection:
-                csv_writer.writerow([concept_code,disease_id,'intersection'])
-            if len(find_intersection)>1:
-                print('intersection is greater than one')
-        elif len(mapped_cuis_disease)>0 and len(mapped_name_disease)==0:
-            list_of_delete_index_with_cui.append(list_not_mapped_to_hetionet.index(concept_code))
-            dict_outcome_to_disease[concept_code]=mapped_cuis_disease
-            # print(concept_code)
-            # print(mapped_cuis_disease)
-            # print('mapped with cui')
-            for disease_id in mapped_cuis_disease:
-                csv_writer.writerow([concept_code,disease_id,'cui mapping'])
-        elif len(mapped_cuis_disease) == 0 and len(mapped_name_disease) >0:
-            list_of_delete_index_with_cui.append(list_not_mapped_to_hetionet.index(concept_code))
-            dict_outcome_to_disease[concept_code]=mapped_name_disease
-            for disease_id in mapped_name_disease:
-                csv_writer.writerow([concept_code,disease_id,'name mapping'])
-
-        elif len(mapped_cuis_disease) > 0 and len(mapped_name_disease) >0:
-            list_of_delete_index_with_cui.append(list_not_mapped_to_hetionet.index(concept_code))
-            # take the name mapping because this is better
-            dict_outcome_to_disease[concept_code]=mapped_name_disease
-            for disease_id in mapped_name_disease:
-                csv_writer.writerow([concept_code,disease_id,'name mapping, but both did mapped'])
-            print(concept_code)
-            print(mapped_cuis_disease)
-            print(mapped_name_disease)
-            print('mapped with name and cui but no intersection')
         else:
-            # print('no mapping to disease possible')
-            counter_of_not_mapped+=1
+            if concept_code=='10062075':
+                print('test')
+            cuis= dict_aeolus_SE_with_CUIs[concept_code]
+            name=dict_side_effects_aeolus[concept_code].name.lower()
+            mapped_cuis_disease=set()
             for cui in cuis:
-                if cui in dict_new_node_cui_to_concept:
-                    dict_new_node_cui_to_concept[cui].append(concept_code)
-                else:
-                    dict_new_node_cui_to_concept[cui]=[concept_code]
+                if cui in dict_disease_cui_to_id:
+                    mapped_cuis_disease=mapped_cuis_disease.union(dict_disease_cui_to_id[cui])
+
+            mapped_name_disease=set()
+            if name in dict_disease_name_to_id:
+                mapped_name_disease=set(dict_disease_name_to_id[name])
+
+            find_intersection=mapped_name_disease.intersection(mapped_cuis_disease)
+            if len(find_intersection)>0:
+                generate_csv_file(list_of_delete_index_with_cui, list_not_mapped_to_hetionet, concept_code, find_intersection, 'intersection name and cui mapping',
+                                  csv_writer)
+                if len(find_intersection)>1:
+                    print('intersection is greater than one')
+            elif len(mapped_cuis_disease)>0 and len(mapped_name_disease)==0:
+                generate_csv_file(list_of_delete_index_with_cui, list_not_mapped_to_hetionet, concept_code, mapped_cuis_disease, 'cui mapping',
+                                  csv_writer)
+            elif len(mapped_cuis_disease) == 0 and len(mapped_name_disease) >0:
+                generate_csv_file(list_of_delete_index_with_cui, list_not_mapped_to_hetionet, concept_code, mapped_name_disease, 'name mapping',
+                                  csv_writer)
+
+            elif len(mapped_cuis_disease) > 0 and len(mapped_name_disease) >0:
+                # take the name mapping because this is better
+                generate_csv_file(list_of_delete_index_with_cui, list_not_mapped_to_hetionet, concept_code, mapped_name_disease, 'name mapping, but both did mapped',
+                                  csv_writer)
+                print(concept_code)
+                print(mapped_cuis_disease)
+                print(mapped_name_disease)
+                print('mapped with name and cui but no intersection')
+            else:
+                # print('no mapping to disease possible')
+                counter_of_not_mapped+=1
+                for cui in cuis:
+                    if cui in dict_new_node_cui_to_concept:
+                        dict_new_node_cui_to_concept[cui].append(concept_code)
+                    else:
+                        dict_new_node_cui_to_concept[cui]=[concept_code]
 
     list_of_delete_index_with_cui=sorted(list_of_delete_index_with_cui, reverse= True)
     for index in list_of_delete_index_with_cui:
         list_not_mapped_to_hetionet.pop(index)
 
 
+    print('number of mapping tries:'+str(counter_of_mapping_tries))
+    print('number of not mapped:' + str(counter_of_not_mapped))
+
+
     # try mapping of the outcomes without umls cui with name mapping
     for concept_code in list_aeolus_outcome_without_cui:
         counter_of_mapping_tries+=1
         name=dict_side_effects_aeolus[concept_code].name.lower()
+        if concept_code in dict_meddra_to_mondo:
+            generate_csv_file(list_of_delete_index_without_cui, list_aeolus_outcome_without_cui, concept_code, dict_meddra_to_mondo[concept_code], 'meddra mapping',
+                                  csv_writer)
 
         if name in dict_disease_name_to_id:
-            list_of_delete_index_without_cui.append(list_aeolus_outcome_without_cui.index(concept_code))
-            mapped_name_disease=set(dict_disease_name_to_id[name])
-            dict_outcome_to_disease[concept_code]=mapped_name_disease
+            generate_csv_file(list_of_delete_index_without_cui, list_aeolus_outcome_without_cui, concept_code, mapped_name_disease, 'meddra mapping',
+                                  csv_writer)
+
             if len(mapped_name_disease)>1:
                 print('multiple mapping with name')
                 print(concept_code)
@@ -479,19 +518,19 @@ def integrate_aeolus_into_hetionet():
     #file for already existing se
     file_existing=open('output/se_existing.tsv','w',encoding='utf-8')
     csv_existing=csv.writer(file_existing,delimiter='\t')
-    csv_existing.writerow(['aSE','SE','cuis'])
+    csv_existing.writerow(['aSE','SE','cuis', 'resources'])
 
     #query for mapping
     query_start='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/aeolus/output/%s.tsv" As line FIELDTERMINATOR '\\t' Match (a:AeolusOutcome{concept_code:line.aSE})'''
     cypher_file= open('cypher_se.cypher','w')
 
     # query for the update nodes and relationship
-    query_update= query_start+' , (n:SideEffect{identifier:line.SE}) Set a.cuis=split(line.cuis,"|"), n.resource=n.resource+"AEOLUS", n.aeolus="yes" Create (n)-[:equal_to_Aeolus_SE{mapping_method:line.mapping_method}]->(a); \n'
+    query_update= query_start+' , (n:SideEffect{identifier:line.SE}) Set a.cuis=split(line.cuis,"|"), n.resource=split(line.resources,"|") , n.aeolus="yes", n.xrefs=n.xrefs+"MedDRA:"+line.aSE Create (n)-[:equal_to_Aeolus_SE{mapping_method:line.mapping_method}]->(a); \n'
     query_update= query_update %("se_existing")
     cypher_file.write(query_update)
 
     # query for mapping disease
-    query_update = query_start + ' , (n:Disease{identifier:line.disease_id}) Set  n.resource=n.resource+"AEOLUS", n.aeolus="yes" Create (n)-[:equal_to_Aeolus_SE]->(a); \n'
+    query_update = query_start + ''' , (n:Disease{identifier:line.disease_id}) Set  n.resource=split(line.resource,"|") , n.aeolus="yes", n.xrefs==split(line.xrefs,"|") Create (n)-[:equal_to_Aeolus_SE]->(a); \n'''
     query_update = query_update % ("se_disease_mapping")
     cypher_file.write(query_update)
 
@@ -500,7 +539,11 @@ def integrate_aeolus_into_hetionet():
         cuis=dict_side_effects_aeolus[outcome_concept].cuis
         cuis_string='|'.join(cuis)
         for cui in cuis:
-            csv_existing.writerow([outcome_concept,cui, cuis_string])
+            resource=dict_all_side_effect[cui].resource
+            resource=list(set(resource.append("AEOLUS")))
+            resources='|'.join(resource)
+
+            csv_existing.writerow([outcome_concept,cui, cuis_string, resources])
 
     # close file
     file_existing.close()
@@ -511,12 +554,12 @@ def integrate_aeolus_into_hetionet():
     csv_new.writerow(['aSE','SE','cuis'])
 
     # query for the update nodes and relationship
-    query_new = query_start + ' Create (n:SideEffect{identifier:line.SE, licenses:"CC0 1.0", name:a.name , source:"UMLS via AEOLUS", url:"http://identifiers.org/umls/"+line.SE , resource:["AEOLUS"],  aeolus:"yes" }) Set a.cuis=split(line.cuis,"|") Create (n)-[:equal_to_Aeolus_SE]->(a); \n'
+    query_new = query_start + ' Create (n:SideEffect{identifier:line.SE, licenses:"CC0 1.0", name:a.name , source:"UMLS via AEOLUS", url:"http://identifiers.org/umls/"+line.SE , resource:["AEOLUS"],  aeolus:"yes", xrefs:[line.aSE] }) Set a.cuis=split(line.cuis,"|") Create (n)-[:equal_to_Aeolus_SE]->(a); \n'
     query_new = query_new % ("se_new")
     cypher_file.write(query_new)
 
     # generate new hetionet side effects and connect the with the aeolus outcome
-    for cui, outcome_concepts in dict_new_node_cui_to_concept:
+    for cui, outcome_concepts in dict_new_node_cui_to_concept.items():
         if len(outcome_concepts)==1:
             csv_new.writerow([outcome_concepts[0],cui, '|'.join(dict_aeolus_SE_with_CUIs[outcome_concepts[0]])])
         else:
