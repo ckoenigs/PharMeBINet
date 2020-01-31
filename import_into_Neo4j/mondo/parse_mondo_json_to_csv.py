@@ -67,6 +67,10 @@ def open_json_file_write_into_csv():
             # get the usable identifier of mondo
             identifier= prepare_id(iri)
 
+            if identifier=='MONDO:0017376':
+                print('ohje')
+
+
             # add information to dictionary
             dict_node['identifier']=identifier
             dict_node['iri']=iri
@@ -110,7 +114,7 @@ def open_json_file_write_into_csv():
                 # synonyms
                 if 'synonyms' in node['meta']:
                     for synonym in node['meta']['synonyms']:
-                        dict_synonyms[synonym['pred']].add(synonym['val'].replace('RELATED ','').replace('EXACT ',''))
+                        dict_synonyms[synonym['pred']].add(synonym['val']+'['+','.join(synonym['xrefs']))
                 dict_node['synonyms']='||'.join(synonyms)
                 dict_node['broad_synonyms'] = '||'.join(broad_synonyms)
                 dict_node['related_synonyms'] = '||'.join(related_synonyms)

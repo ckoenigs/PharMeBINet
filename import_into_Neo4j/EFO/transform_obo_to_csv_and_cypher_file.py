@@ -106,7 +106,7 @@ def extract_information_from_block(group, is_type):
                         print('huhuh')
                     new_key=dict_synonyms[synonym_type[1]]
                     if len(first_part_with_type_and_second_ref[1])>1:
-                        synonym=synonym_type[0]+' ('+first_part_with_type_and_second_ref[1].replace(']',')')
+                        synonym=synonym_type[0]+' ['+first_part_with_type_and_second_ref[1]
                     else:
                         synonym=synonym_type[0]
                     add_information_to_dictionary(dict_all_info, new_key, synonym)
