@@ -68,6 +68,14 @@ def add_information_to_dictionary(dict_all_info,key_term, value):
         dict_all_info[key_term] += '|' + value.replace('"', '').replace("'", "").replace("\\", "")
         set_list_properties.add(key_term)
 
+# dictionary which form
+dict_synonyms = {
+                'EXACT': 'synonyms',
+                'BROAD': 'broad_synonyms',
+                'RELATED': 'related_synonyms',
+                'NARROW': 'narrow_synonyms'
+            }
+
 '''
 go through a block of information and add the node information into a dictionary
 the relationships are either shown as relationships or contain a !
@@ -87,8 +95,25 @@ def extract_information_from_block(group, is_type):
         # check if the key is a relationship or not and add the information to the right dictionary
         if key_term != 'relationship':
             if value.find(' ! ') == -1:
-                add_information_to_dictionary(dict_all_info,key_term,value)
-                set_all_properties_in_database.add(key_term)
+                if key_term!='synonym':
+
+                    add_information_to_dictionary(dict_all_info, key_term, value)
+                    set_all_properties_in_database.add(key_term)
+                else:
+                    first_part_with_type_and_second_ref=value.rsplit(' [',1)
+                    synonym_type=first_part_with_type_and_second_ref[0].rsplit(' ',1)
+                    if '[' in first_part_with_type_and_second_ref[1]:
+                        print('huhuh')
+                    new_key=dict_synonyms[synonym_type[1]]
+                    if len(first_part_with_type_and_second_ref[1])>1:
+                        synonym=synonym_type[0]+' ('+first_part_with_type_and_second_ref[1].replace(']',')')
+                    else:
+                        synonym=synonym_type[0]
+                    add_information_to_dictionary(dict_all_info, new_key, synonym)
+                    set_all_properties_in_database.add(new_key)
+
+
+
             elif not is_type:
                 set_properties_with_bang.add(key_term)
                 identifier=dict_all_info['id']
