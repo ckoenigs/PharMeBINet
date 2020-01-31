@@ -339,6 +339,7 @@ def integrate_DB_compound_information_into_hetionet():
                     dict_info_prepared[key] = property.replace('"', "'")
 
             combinded_merge_string = '|'.join(list_merge_xref_values)
+            set_of_list_properties.add('xrefs')
             dict_info_prepared['xrefs'] = combinded_merge_string
 
             csv_new.writerow(dict_info_prepared)
