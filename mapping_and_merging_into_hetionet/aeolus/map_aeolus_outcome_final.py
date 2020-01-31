@@ -178,14 +178,15 @@ def load_disease_infos():
                     dict_disease_cui_to_id[cui].append(identifier)
                 else:
                     dict_disease_cui_to_id[cui]=[identifier]
-        if xref:
+        if xrefs:
             for xref in xrefs:
                 if xref.startswith('MedDRA'):
                     meddra_id=xref.split(':')[1]
                     if meddra_id in dict_meddra_to_mondo:
                         dict_meddra_to_mondo[meddra_id].add(identifier)
                     else:
-                        dict_meddra_to_mondo[meddra_id]=set(identifier)
+                        dict_meddra_to_mondo[meddra_id]=set([identifier])
+
 
 
 
@@ -392,13 +393,16 @@ def generate_csv_file(list_of_delet_index, list_not_mapped, concept_code, diseas
     list_of_delet_index.append(list_not_mapped.index(concept_code))
     dict_outcome_to_disease[concept_code] = list(diseases)
     for disease_id in diseases:
-        resource_disease= dict_mondo_to_xrefs_and_resource[concept_code][1] if dict_mondo_to_xrefs_and_resource[concept_code][1] is not None else []
-        resource_disease=list(set(resource_disease.append("AEOLUS")))
+
+        resource_disease=dict_mondo_to_xrefs_and_resource[disease_id][1] if dict_mondo_to_xrefs_and_resource[disease_id][1] is not None else []
+        resource_disease.append("AEOLUS")
+        resource_disease=list(set(resource_disease))
         resource_string='|'.join(resource_disease)
 
-        xref_disease = dict_mondo_to_xrefs_and_resource[concept_code][0] if \
-        dict_mondo_to_xrefs_and_resource[concept_code][0] is not None else []
-        xref_disease = list(set(xref_disease.append("AEOLUS")))
+        xref_disease = dict_mondo_to_xrefs_and_resource[disease_id][0] if \
+        dict_mondo_to_xrefs_and_resource[disease_id][0] is not None else []
+        xref_disease.append("MedDRA:" + concept_code)
+        xref_disease = list(set(xref_disease))
         xref_string  = '|'.join(xref_disease)
 
         csv_writer.writerow([concept_code, disease_id, mapping_method, resource_string, xref_string])
@@ -530,7 +534,7 @@ def integrate_aeolus_into_hetionet():
     cypher_file.write(query_update)
 
     # query for mapping disease
-    query_update = query_start + ''' , (n:Disease{identifier:line.disease_id}) Set  n.resource=split(line.resource,"|") , n.aeolus="yes", n.xrefs==split(line.xrefs,"|") Create (n)-[:equal_to_Aeolus_SE]->(a); \n'''
+    query_update = query_start + ''' , (n:Disease{identifier:line.disease_id}) Set  n.resource=split(line.resource,"|") , n.aeolus="yes", n.xrefs=split(line.xrefs,"|") Create (n)-[:equal_to_Aeolus_SE{mapping_method:line.mapping_method}]->(a); \n'''
     query_update = query_update % ("se_disease_mapping")
     cypher_file.write(query_update)
 
@@ -540,7 +544,8 @@ def integrate_aeolus_into_hetionet():
         cuis_string='|'.join(cuis)
         for cui in cuis:
             resource=dict_all_side_effect[cui].resource
-            resource=list(set(resource.append("AEOLUS")))
+            resource.append("AEOLUS")
+            resource=list(set(resource))
             resources='|'.join(resource)
 
             csv_existing.writerow([outcome_concept,cui, cuis_string, resources])
