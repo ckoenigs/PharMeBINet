@@ -22,12 +22,14 @@ class DrugHetionet:
     name :string
     """
 
-    def __init__(self, identifier, inchikey, inchi, name, cas_number):
+    def __init__(self, identifier, inchikey, inchi, name, cas_number, xrefs, resources):
         self.identifier = identifier
         self.inchikey = inchikey
         self.inchi = inchi
         self.name = name
         self.cas_number=cas_number
+        self.xrefs=xrefs
+        self.resources=resources
 
 
 class DrugCTD:
@@ -150,6 +152,8 @@ def load_compounds_from_hetionet():
         alternative_ids=result['alternative_drugbank_ids'] if 'alternative_drugbank_ids' in result else []
         alternative_ids=filter(bool,alternative_ids)
         synonyms=result['synonyms'] if 'synonyms' in result else []
+        xrefs= result['xrefs'] if 'xrefs' in result else []
+        resource = result['resource'] if 'resource' in result else []
 
         #generate name/synonym dictionary to drugbank identifier
         dict_synonym_to_drugbank_id[name.lower()].append(identifier) if  name is not None else print('no name')
@@ -158,7 +162,7 @@ def load_compounds_from_hetionet():
             dict_synonym_to_drugbank_id[synonym.lower()].append(identifier)
         #        resource=result['resource']
 
-        drug = DrugHetionet(identifier, inchikey, inchi, name, cas_number)
+        drug = DrugHetionet(identifier, inchikey, inchi, name, cas_number, xrefs, resource)
 
         dict_drugs_hetionet[identifier] = drug
         for alt_drugbank_id in alternative_ids:
