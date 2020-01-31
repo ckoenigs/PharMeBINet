@@ -493,7 +493,7 @@ for i, drug in enumerate(root):
         if ingredients in dict_mixtures_ingredients_combination_names:
             dict_mixtures_ingredients_combination_names[(ingredients,supplemental_ingredients)].add(name)
         else:
-            dict_mixtures_ingredients_combination_names[(ingredients,supplemental_ingredients)]=set(name)
+            dict_mixtures_ingredients_combination_names[(ingredients,supplemental_ingredients)]={name}
 
     for (ingredient,supplemental_ingredient), names in dict_mixtures_ingredients_combination_names.items():
         names_string='//'.join(names)
