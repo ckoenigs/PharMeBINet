@@ -33,7 +33,7 @@ module.exports = {
   },
   "complexRelations": [
     {
-      $sql: `MATCH (a:Chemical)-[]->(b:CTDchemical)-[r:phenotype]->(c:CTDGO)-[:equal_to_CTD_go ]-(d) 
+      $sql: `MATCH (a:Chemical)-[]->(b:CTDchemical)-[r:phenotype]->(c:CTDGO)-[:equal_to_CTD_go ]-(d)
              WHERE b.chemical_id = {chemicalid} AND c.go_id = {phenotypeid}  AND r.organismid='9606'
              MERGE (a)-[n:{{relationtype}}]->(d)
              ON CREATE SET n={line}
@@ -53,7 +53,7 @@ module.exports = {
         //let actions = line.interaction.match(/\[.+]/);
         let actions = [line.interaction];
         if(actions === null) {
-          return "associates";
+          return "ASSOCIATES_CaGO";
         }
         actions = actions[0].trim();
         // actions = actions.substring(1, actions.length -1);
@@ -82,14 +82,14 @@ module.exports = {
         actionChecker(actions);
 
         if(interaction.includes("affects^phenotype")) {
-          return "associates";
+          return "ASSOCIATES_CaGO";
         }
         if(interaction.includes("phenotype^increase") || interaction.includes("increases^phenotype")) {
-          return actionChecker(actions) ? "increase" : "associates"
+          return actionChecker(actions) ? "UPREGULATES_CiGO" : "ASSOCIATES_CaGO"
         }
 
         if(interaction.includes("phenotype^decrease") || interaction.includes("decreases^phenotype")) {
-          return actionChecker(actions) ? "decrease" : "associates"
+          return actionChecker(actions) ? "DECREASES_CdGO" : "ASSOCIATES_CaGO"
         }
       },
       // Must return a boolean
