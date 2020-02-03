@@ -89,7 +89,7 @@ module.exports = {
         }
 
         if(interaction.includes("phenotype^decrease") || interaction.includes("decreases^phenotype")) {
-          return actionChecker(actions) ? "DECREASES_CdGO" : "ASSOCIATES_CaGO"
+          return actionChecker(actions) ? "DOWNREGULATES_CdGO" : "ASSOCIATES_CaGO"
         }
       },
       // Must return a boolean
