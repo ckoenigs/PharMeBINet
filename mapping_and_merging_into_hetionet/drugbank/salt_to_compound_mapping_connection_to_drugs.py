@@ -85,7 +85,7 @@ def create_cypher_and_csv_files():
     csv_node = csv.DictWriter(node_file, fieldnames=header, delimiter='\t')
     csv_node.writeheader()
     rela_header = ['salt_id', 'compound_id']
-    query_rela = query_start + ' (b:Compound :Salt{identifier:line.salt_id}), (a:Compound {identifier:line.compound_id}) Create (a)-[r:has_ChS{license:"%s"}]->(b);\n'
+    query_rela = query_start + ' (b:Compound :Salt{identifier:line.salt_id}), (a:Compound {identifier:line.compound_id}) Create (a)-[r:PART_OF_CpS{license:"%s"}]->(b);\n'
     query_rela = query_rela % (file_rela, license)
     cypher_file.write(query_rela)
     csv_rela = csv.writer(rela_file, delimiter='\t')
