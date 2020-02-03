@@ -70,10 +70,10 @@ def add_information_to_dictionary(dict_all_info,key_term, value):
 
 # dictionary which form
 dict_synonyms = {
-                'EXACT': 'synonyms',
-                'BROAD': 'broad_synonyms',
-                'RELATED': 'related_synonyms',
-                'NARROW': 'narrow_synonyms'
+                'EXACT': 'synonym',
+                'BROAD': 'broad_synonym',
+                'RELATED': 'related_synonym',
+                'NARROW': 'narrow_synonym'
             }
 
 '''
@@ -94,6 +94,7 @@ def extract_information_from_block(group, is_type):
 
         # check if the key is a relationship or not and add the information to the right dictionary
         if key_term != 'relationship':
+            # some other relationships are not defined A RELATIONSHIP but have a ' ! '
             if value.find(' ! ') == -1:
                 if key_term!='synonym':
 
@@ -102,18 +103,30 @@ def extract_information_from_block(group, is_type):
                 else:
                     first_part_with_type_and_second_ref=value.rsplit(' [',1)
                     synonym_type=first_part_with_type_and_second_ref[0].rsplit(' ',1)
+                    # somethimes it defined the synonym more accurate, but this is not needed
+                    if synonym_type[1] not in dict_synonyms:
+                        # sometimes it has the reference from HPO direct after it, this is add to the other references
+                        if synonym_type[1].startswith('HP:'):
+                            first_part_with_type_and_second_ref[1]=synonym_type[1]+first_part_with_type_and_second_ref[1] if first_part_with_type_and_second_ref[1] ==']' else synonym_type[1]+','+first_part_with_type_and_second_ref[1]
+                            synonym_type = synonym_type[0].rsplit(' ', 1)
+                        else:
+                            synonym_type = synonym_type[0].rsplit(' ', 1)
+
                     if '[' in first_part_with_type_and_second_ref[1]:
                         print('huhuh')
                     new_key=dict_synonyms[synonym_type[1]]
                     if len(first_part_with_type_and_second_ref[1])>1:
-                        synonym=synonym_type[0]+' ['+first_part_with_type_and_second_ref[1]
+                        xrefs=first_part_with_type_and_second_ref[1]
+                        if len(xrefs.split(']'))>1 and ' {' in xrefs.split(']')[1]:
+                            xrefs=xrefs.rsplit(' {',1)[0]
+                        synonym=synonym_type[0]+' ['+xrefs
                     else:
                         synonym=synonym_type[0]
                     add_information_to_dictionary(dict_all_info, new_key, synonym)
                     set_all_properties_in_database.add(new_key)
 
 
-
+            # check for not typedefinition the relationship
             elif not is_type:
                 set_properties_with_bang.add(key_term)
                 identifier=dict_all_info['id']
