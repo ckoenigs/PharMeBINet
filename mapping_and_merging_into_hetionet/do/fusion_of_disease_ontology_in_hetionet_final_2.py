@@ -154,7 +154,7 @@ def generate_cypher_file():
 
 '''
 load the new and old information in the dictionary
-test if not the alternativ doid is used in hetionet 
+test if not the alternativ doid is used in hetionet , but do not use the old entries (is_obsolete=true)
 properties:
     definition
     synonyms
@@ -164,14 +164,12 @@ properties:
     subset
     id
     name
-vorher 137
-nacher 8498
 DOID:9917 war nur als alternative id da
 '''
 
 
 def load_disease_ontologie_in_hetionet():
-    query = '''Match (n:%s) RETURN n''' %(do_label)
+    query = '''Match (n:%s) Where not exists(n.is_obsolete) RETURN n''' %(do_label)
     results = g.run(query)
     set_of_all_doids=set(dict_diseases_in_hetionet.keys())
 
