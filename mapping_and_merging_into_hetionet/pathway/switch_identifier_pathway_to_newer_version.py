@@ -114,6 +114,7 @@ def load_in_all_pathways():
             print('huhu')
         dict_id_to_node[identifier]=dict(node)
 
+
         # fill dictionary with name to rest
         names=node['names']
         for name in names:
@@ -190,6 +191,8 @@ def generate_node_csv():
                     identifier=value
                 elif head==extra_property:
                     value=identifier
+                elif head=='source':
+                    value=value.capitalize()
                 #prepare the value for csv
                 value=prepare_value(value,head,False)
                 list_info.append(value)
