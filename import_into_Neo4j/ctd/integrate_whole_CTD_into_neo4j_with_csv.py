@@ -306,9 +306,9 @@ def load_chemical_phenotype():
         query = ''' Match (c:CTDchemical)-[a:phenotype]->(n:CTDGO) Set a.old_version=True;\n '''
         cypher_file_edges.write(query)
         cypher_file_edges.write('commit\n')
-        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_pheno_term_ixns.csv" As line Match (c:CTDchemical{ chemical_id:line.chemicalid }), (g:CTDGO{ go_id:line.phenotypeid }) Where line.organismid='9606' Merge (c)-[a:phenotype]->(g) On Create Set a.organismid=line.organismid, a.unbiased=True, a.comentionedterms=line.comentionedterms, a.interaction=line.interaction, a.interactionactions=line.interactionactions, a.anatomyterms=line.anatomyterms, a.inferencegenesymbols=line.inferencegenesymbols, a.pubmedids=line.pubmedids On Match Set a.organismid=line.organismid, a.unbiased=True, a.comentionedterms=line.comentionedterms, a.interaction=line.interaction, a.interactionactions=line.interactionactions, a.anatomyterms=line.anatomyterms, a.inferencegenesymbols=line.inferencegenesymbols, a.pubmedids=line.pubmedids;\n '''
+        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_pheno_term_ixns.csv" As line Match (c:CTDchemical{ chemical_id:line.chemicalid }), (g:CTDGO{ go_id:line.phenotypeid }) Merge (c)-[a:phenotype]->(g) On Create Set a.organismid=line.organismid, a.unbiased=True, a.comentionedterms=line.comentionedterms, a.interaction=line.interaction, a.interactionactions=line.interactionactions, a.anatomyterms=line.anatomyterms, a.inferencegenesymbols=line.inferencegenesymbols, a.pubmedids=line.pubmedids On Match Set a.organismid=line.organismid, a.unbiased=True, a.comentionedterms=line.comentionedterms, a.interaction=line.interaction, a.interactionactions=line.interactionactions, a.anatomyterms=line.anatomyterms, a.inferencegenesymbols=line.inferencegenesymbols, a.pubmedids=line.pubmedids;\n '''
     else:
-        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_pheno_term_ixns.csv" As line Match (c:CTDchemical{ chemical_id:line.chemicalid }), (g:CTDGO{ go_id:line.phenotypeid }) Where line.organismid='9606' Create (c)-[a:phenotype{unbiased:True, organismid:line.organismid, comentionedterms:line.comentionedterms, interaction:line.interaction, interactionactions:line.interactionactions, anatomyterms:line.anatomyterms, pubmedids:line.pubmedids, inferencegenesymbols:line.inferencegenesymbols}]->(g);\n '''
+        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_pheno_term_ixns.csv" As line Match (c:CTDchemical{ chemical_id:line.chemicalid }), (g:CTDGO{ go_id:line.phenotypeid }) Create (c)-[a:phenotype{unbiased:True, organismid:line.organismid, comentionedterms:line.comentionedterms, interaction:line.interaction, interactionactions:line.interactionactions, anatomyterms:line.anatomyterms, pubmedids:line.pubmedids, inferencegenesymbols:line.inferencegenesymbols}]->(g);\n '''
 
     cypher_file_edges.write(query)
 
@@ -321,12 +321,14 @@ def load_chemical_phenotype():
         for row in reader:
 
             if i > 0:
+                if row[1]=='C023505':
+                    print('ok')
                 ontology = ''
                 goTermName = row[3]
                 goTermId = row[4]
                 organism_id=row[7]
-                if organism_id!='9606':
-                    continue
+                # if organism_id!='9606':
+                #     continue
                 # if ontology in ['Molecular Function','Biological Process','Cellular Component']:
                 if ontology in dict_counter_go:
                     dict_counter_go[ontology]+=1
