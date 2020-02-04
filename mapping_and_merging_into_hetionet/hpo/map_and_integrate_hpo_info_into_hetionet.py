@@ -83,33 +83,19 @@ load all disease from hetionet and remember all name, synonym, umls cui and omim
 
 
 def get_all_disease_information_from_hetionet():
-    query = ''' Match (d:Disease) Return d.identifier, d.name, d.synonyms, d.xrefs, d.umls_cuis, d.`http://www.geneontology.org/formats/oboInOwl#hasExactSynonym`'''
+    query = ''' Match (d:Disease) Return d.identifier, d.name, d.synonyms, d.xrefs, d.umls_cuis'''
     results = g.run(query)
-    for mondo, name, synonyms, xrefs, umls_cuis, exact_synonyms, in results:
+    for mondo, name, synonyms, xrefs, umls_cuis, in results:
         if name:
             dict_name_to_mondo[name.lower()] = mondo
         if mondo =='MONDO:0007122':
             print('blub')
         #        synonyms=synonyms.split(',')
-        if type(synonyms)==list:
+        if synonyms:
             for synonym in synonyms:
-                synonym = synonym.split(' EXACT')[0].lower()
-                synonym = synonym.split(' RELATED')[0].split(' NOS')[0]
+                synonym = synonym.lower()
                 dict_name_to_mondo[synonym] = mondo
-        elif type(synonyms)==str:
-            synonyms = synonyms.split(' EXACT')[0].lower()
-            synonyms = synonyms.split(' RELATED')[0].split(' NOS')[0]
-            dict_name_to_mondo[synonyms] = mondo
-        elif type(exact_synonyms)==list:
-            for synonym in exact_synonyms:
-                synonym = synonym.split(' EXACT')[0].lower()
-                synonym = synonym.split(' RELATED')[0].split(' NOS')[0]
-                dict_name_to_mondo[synonym] = mondo
-        elif type(exact_synonyms) == str:
-            exact_synonyms = exact_synonyms.split(' EXACT')[0].lower()
-            exact_synonyms = exact_synonyms.split(' RELATED')[0].split(' NOS')[0]
-            dict_name_to_mondo[exact_synonyms] = mondo
-        if type(umls_cuis)==list:
+        if umls_cuis:
             for umls_cui in umls_cuis:
                 #            print(umls_cui)
                 if len(umls_cui) > 0:
@@ -118,7 +104,7 @@ def get_all_disease_information_from_hetionet():
                         dict_umls_cui_to_mondo[umls_cui] = set([mondo])
                     else:
                         dict_umls_cui_to_mondo[umls_cui].add(mondo)
-        if type(xrefs)==list:
+        if xrefs:
             for xref in xrefs:
                 if xref[0:5] == 'OMIM:':
                     omim_id = xref.split(':')[1]
@@ -960,7 +946,8 @@ def main():
 
     thread_id = 1
 
-    query = ''' Match (d:HPOdisease) Return d.id, d.name, d.source'''
+    # search for hpo disease, but exclude old entries
+    query = ''' Match (d:HPOdisease) Where not exists(d.is_obsolete)  Return d.id, d.name, d.source'''
     results = g.run(query)
     for db_disease_id, db_disease_name, db_disease_source, in results:
         # create thread
