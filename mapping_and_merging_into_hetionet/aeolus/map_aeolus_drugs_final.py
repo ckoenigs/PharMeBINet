@@ -457,187 +457,6 @@ def integrate_aeolus_drugs_into_hetionet():
     print(dict_how_mapped_delete_counter)
 
 
-'''       
-dictionary connection (drug ID , SE) and list of information
-0:countA	
-1:prr_95_percent_upper_confidence_limit	
-2:prr	
-3:countB	
-4:prr_95_percent_lower_confidence_limit	
-5:ror	
-6:ror_95_percent_upper_confidence_limit	
-7:ror_95_percent_lower_confidence_limit	
-8:countC	
-9:drug_outcome_pair_count	
-10.countD
-'''
-dict_connection_information = {}
-dict_connection_information_to_disease={}
-
-'''
-go through all connection of the mapped aeolus drugs and remember all information in a dictionary
-'''
-
-
-def get_aeolus_connection_information_in_dict(query,dict_connection_information_for):
-    for drug_concept_id, mapped_ids in dict_aeolus_drug_mapped_ids.items():
-
-        query = query % (drug_concept_id)
-        results = g.run(query)
-
-        for connection, identifier, in results:
-            countA = int(connection['countA']) if connection['countA'] != '\N' else 0
-            prr_95_percent_upper_confidence_limit = float(connection['prr_95_percent_upper_confidence_limit']) if \
-                connection['prr_95_percent_upper_confidence_limit'] != '\N' else 0
-            prr = float(connection['prr']) if connection['prr'] != '\N' else 0
-            countB = float(connection['countB']) if connection['countB'] != '\N' else 0
-            prr_95_percent_lower_confidence_limit = float(connection['prr_95_percent_lower_confidence_limit']) if \
-                connection['prr_95_percent_lower_confidence_limit'] != '\N' else 0
-            ror = float(connection['ror']) if connection['ror'] != '\N' else 0
-            ror_95_percent_upper_confidence_limit = float(connection['ror_95_percent_upper_confidence_limit']) if \
-                connection['ror_95_percent_upper_confidence_limit'] != '\N' else 0
-            ror_95_percent_lower_confidence_limit = float(connection['ror_95_percent_lower_confidence_limit']) if \
-                connection['ror_95_percent_lower_confidence_limit'] != '\N' else 0
-            countC = float(connection['countC']) if connection['countC'] != '\N' else 0
-            drug_outcome_pair_count = float(connection['drug_outcome_pair_count']) if connection[
-                                                                                          'drug_outcome_pair_count'] != '\N' else 0
-            countD = float(connection['countD']) if connection['countD'] != '\N' else 0
-
-        for mapped_id in mapped_ids:
-            #            mapped_id=dict_aeolus_drugs[drug_concept_id].mapped_id
-
-                if not (mapped_id, identifier) in dict_connection_information_for:
-                    dict_connection_information_for[(mapped_id, identifier)] = [[countA],
-                                                                       [prr_95_percent_upper_confidence_limit], [prr],
-                                                                       [countB],
-                                                                       [prr_95_percent_lower_confidence_limit], [ror],
-                                                                       [ror_95_percent_upper_confidence_limit],
-                                                                       [ror_95_percent_lower_confidence_limit],
-                                                                       [countC], [drug_outcome_pair_count], [countD]]
-                else:
-                    dict_connection_information_for[(mapped_id, identifier)][0].append(countA)
-                    dict_connection_information_for[(mapped_id, identifier)][1].append(prr_95_percent_upper_confidence_limit)
-                    dict_connection_information_for[(mapped_id, identifier)][2].append(prr)
-                    dict_connection_information_for[(mapped_id, identifier)][3].append(countB)
-                    dict_connection_information_for[(mapped_id, identifier)][4].append(prr_95_percent_lower_confidence_limit)
-                    dict_connection_information_for[(mapped_id, identifier)][5].append(ror)
-                    dict_connection_information_for[(mapped_id, identifier)][6].append(ror_95_percent_upper_confidence_limit)
-                    dict_connection_information_for[(mapped_id, identifier)][7].append(ror_95_percent_lower_confidence_limit)
-                    dict_connection_information_for[(mapped_id, identifier)][8].append(countC)
-                    dict_connection_information_for[(mapped_id, identifier)][9].append(drug_outcome_pair_count)
-                    dict_connection_information_for[(mapped_id, identifier)][10].append(countD)
-
-
-# counter for the cypher files
-global file_number
-file_number = 1
-
-# rela csv files
-file_mapped=open('drug/mapped_rela_se.csv','w',encoding='utf-8')
-csv_mapped=csv.writer(file_mapped)
-
-file_new=open('drug/new_rela_se.csv','w',encoding='utf-8')
-csv_new=csv.writer(file_new)
-
-
-file_mapped_disease=open('drug/mapped_rela_disease.csv','w',encoding='utf-8')
-csv_mapped_disease=csv.writer(file_mapped_disease)
-
-file_new_disease=open('drug/new_rela_disease.csv','w',encoding='utf-8')
-csv_new_disease=csv.writer(file_new_disease)
-
-header=['chemical_id','disease_sideeffect_id', "countA","prr_95_percent_upper_confidence_limit","prr","countB","prr_95_percent_lower_confidence_limit","ror","ror_95_percent_upper_confidence_limit","ror_95_percent_lower_confidence_limit","countC","drug_outcome_pair_count","countD","ror_min","ror_max","prr_min","prr_max"]
-csv_mapped.writerow(header)
-csv_new.writerow(header)
-csv_mapped_disease.writerow(header)
-csv_new_disease.writerow(header)
-
-
-'''
-update and generate the relationship CAUSES_CcSE.
-go through all drugbank ID identifier pairs anf combine the information of multiple drugbank Id identifier pairs
-Next step is to check if this connection already exists in Hetionet, if true then update the relationship
-if false generate the connection with the properties licence, unbiased, source, url, the other properties that aeolus has
-countA	
-prr_95_percent_upper_confidence_limit	
-prr	
-prr_min
-prr_max
-countB	
-prr_95_percent_lower_confidence_limit	
-ror	
-ror_min
-ror_max
-ror_95_percent_upper_confidence_limit	
-ror_95_percent_lower_confidence_limit	
-countC	
-drug_outcome_pair_count	
-countD
-'''
-
-
-def integrate_connection_from_aeolus_in_hetionet(dict_connection_information_for, query,csv_new, csv_mapped):
-    number_of_new_connection = 0
-    number_of_updated_connection = 0
-
-
-    for (mapped_id, identifier), information_lists in dict_connection_information_for.items():
-        # average of count A
-        countA = str(sum(information_lists[0]) / float(len(information_lists[0])))
-        # average prr 95% upper
-        prr_95_percent_upper_confidence_limit = str(sum(information_lists[1]) / float(len(information_lists[1])))
-        # average prr
-        prr = str(sum(information_lists[2]) / float(len(information_lists[2])))
-        # minmum prr
-        prr_min = str(min(information_lists[2]))
-        # maximu prr
-        prr_max = str(max(information_lists[2]))
-        # average of count B
-        countB = str(sum(information_lists[3]) / float(len(information_lists[3])))
-        # average prr 95 % lower
-        prr_95_percent_lower_confidence_limit = str(sum(information_lists[4]) / float(len(information_lists[4])))
-        # average ror
-        ror = str(sum(information_lists[5]) / float(len(information_lists[5])))
-        # minmum ror
-        ror_min = str(min(information_lists[5]))
-        # maximum ror
-        ror_max = str(max(information_lists[5]))
-        # average of ror 95% lower
-        ror_95_percent_upper_confidence_limit = str(sum(information_lists[6]) / float(len(information_lists[6])))
-        # average of ror 95% lower
-        ror_95_percent_lower_confidence_limit = str(sum(information_lists[7]) / float(len(information_lists[7])))
-        # average of count C
-        countC = str(sum(information_lists[8]) / float(len(information_lists[8])))
-        # average of drug outcome pair
-        drug_outcome_pair_count = str(sum(information_lists[9]) / float(len(information_lists[9])))
-        # average of count D
-        countD = str(sum(information_lists[10]) / float(len(information_lists[10])))
-
-        query = query % (mapped_id, identifier)
-        connections_exist = g.run(query)
-        first_connection = connections_exist.evaluate()
-        if first_connection == None:
-            # todo add the other properties to create
-            csv_new.writerow([mapped_id, identifier, countA, prr_95_percent_upper_confidence_limit, prr, countB,
-                             prr_95_percent_lower_confidence_limit, ror, ror_95_percent_upper_confidence_limit,
-                             ror_95_percent_lower_confidence_limit, countC, drug_outcome_pair_count, countD, ror_min,
-                             ror_max, prr_min, prr_max])
-            number_of_new_connection += 1
-        else:
-            resource = first_connection['resource'] if first_connection['resource'] != None else []
-            if not 'AEOLUS' in resource:
-                resource.append('AEOLUS')
-            resource = '|'.join(resource)
-            how_often = str(int(first_connection['how_often_appears']) + 1) if first_connection['how_often_appears'] != None else '1'
-            csv_mapped.writerow([mapped_id, identifier, countA, prr_95_percent_upper_confidence_limit, prr, countB,
-                             prr_95_percent_lower_confidence_limit, ror, ror_95_percent_upper_confidence_limit,
-                             ror_95_percent_lower_confidence_limit, countC, drug_outcome_pair_count, countD, how_often,
-                             resource, ror_min, ror_max, prr_min, prr_max])
-            number_of_updated_connection += 1
-
-
-    print('number of new connection:' + str(number_of_new_connection))
-    print('number of update connection:' + str(number_of_updated_connection))
 
 
 def main():
@@ -660,125 +479,63 @@ def main():
 
     load_compounds_from_hetionet()
 
-    # because every aeolus drug has so many relationships only part for part can be integrated
-    for x in range(0, 22):
 
-        # dictionary with all aeolus drugs with key drug_concept_id and value is class Drug_Aeolus
-        global dict_aeolus_drugs
-        dict_aeolus_drugs = {}
+    # dictionary with all aeolus drugs with key drug_concept_id and value is class Drug_Aeolus
+    global dict_aeolus_drugs
+    dict_aeolus_drugs = {}
 
-        # dictionary to translate rxnorm id to drug_concept_id
-        global dict_rxnorm_to_drug_concept_id
-        dict_rxnorm_to_drug_concept_id = {}
+    # dictionary to translate rxnorm id to drug_concept_id
+    global dict_rxnorm_to_drug_concept_id
+    dict_rxnorm_to_drug_concept_id = {}
 
-        # list with rxnorm ids which are not mapped to DurgBank ID
-        global list_aeolus_drugs_without_mapped_id
-        list_aeolus_drugs_without_mapped_id = []
+    # list with rxnorm ids which are not mapped to DurgBank ID
+    global list_aeolus_drugs_without_mapped_id
+    list_aeolus_drugs_without_mapped_id = []
 
-        # dictionary with key drug_concept_id and value is a list of drugbank ids
-        global dict_aeolus_drug_mapped_ids
-        dict_aeolus_drug_mapped_ids = {}
-
-        '''       
-        dictionary connection (drug ID , SE) and list of information
-        0:countA	
-        1:prr_95_percent_upper_confidence_limit	
-        2:prr	
-        3:countB	
-        4:prr_95_percent_lower_confidence_limit	
-        5:ror	
-        6:ror_95_percent_upper_confidence_limit	
-        7:ror_95_percent_lower_confidence_limit	
-        8:countC	
-        9:drug_outcome_pair_count	
-        10.countD
-        '''
-        global dict_connection_information
-        dict_connection_information = {}
+    # dictionary with key drug_concept_id and value is a list of drugbank ids
+    global dict_aeolus_drug_mapped_ids
+    dict_aeolus_drug_mapped_ids = {}
 
 
-        print(
-        '###########################################################################################################################')
+    print(
+    '###########################################################################################################################')
 
-        print (datetime.datetime.utcnow())
-        print('Load in all drugs from aeolus in a dictionary')
+    print (datetime.datetime.utcnow())
+    print('Load in all drugs from aeolus in a dictionary')
 
-        load_drug_aeolus_in_dictionary()
+    load_drug_aeolus_in_dictionary()
 
-        print(
-        '###########################################################################################################################')
+    print(
+    '###########################################################################################################################')
 
-        print (datetime.datetime.utcnow())
-        print('Find drugbank ids with use of the rxcuis and save them in a dictionary')
+    print (datetime.datetime.utcnow())
+    print('Find drugbank ids with use of the rxcuis and save them in a dictionary')
 
-        map_rxnorm_to_drugbank_use_rxnorm_database()
+    map_rxnorm_to_drugbank_use_rxnorm_database()
 
-        print(
-        '###########################################################################################################################')
+    print(
+    '###########################################################################################################################')
 
-        print (datetime.datetime.utcnow())
-        print('map with use of rxnorm_to drugbank with mapping using unii and inchikey')
+    print (datetime.datetime.utcnow())
+    print('map with use of rxnorm_to drugbank with mapping using unii and inchikey')
 
-        map_rxnorm_to_drugbank_with_use_inchikeys_and_unii()
+    map_rxnorm_to_drugbank_with_use_inchikeys_and_unii()
 
-        print(
-        '###########################################################################################################################')
+    print(
+    '###########################################################################################################################')
 
-        print (datetime.datetime.utcnow())
-        print('map with rxnorm to drugbank with use of mapping file with name')
+    print (datetime.datetime.utcnow())
+    print('map with rxnorm to drugbank with use of mapping file with name')
 
-        map_name_rxnorm_to_drugbank()
+    map_name_rxnorm_to_drugbank()
 
-        print(
-        '###########################################################################################################################')
+    print(
+    '###########################################################################################################################')
 
-        print (datetime.datetime.utcnow())
-        print('Map the drugbank id from the aeolus drug to the drugbank ids in hetionet')
+    print (datetime.datetime.utcnow())
+    print('Map the drugbank id from the aeolus drug to the drugbank ids in hetionet')
 
-        map_aeolus_drugs_to_hetionet()
-
-        print(
-        '###########################################################################################################################')
-
-        print (datetime.datetime.utcnow())
-        print('integrate aeolus drugs into hetionet')
-        query = '''Match (n:AeolusDrug{drug_concept_id:'%s'})-[l:Causes]->(r:AeolusOutcome)--(b:SideEffect) Return l,b.identifier '''
-        integrate_aeolus_drugs_into_hetionet(query,dict_connection_information)
-
-        print(
-        '###########################################################################################################################')
-
-        print (datetime.datetime.utcnow())
-
-        query = '''Match (n:AeolusDrug{drug_concept_id:'%s'})-[l:Causes]->(r:AeolusOutcome)--(b:Disease) Return l,b.identifier '''
-        integrate_aeolus_drugs_into_hetionet(query,dict_connection_information_to_disease)
-
-
-        print(
-        '###########################################################################################################################')
-
-        print (datetime.datetime.utcnow())
-        print('get the aeolus information')
-
-        get_aeolus_connection_information_in_dict(dict_connection_information,'''Match (c:Compound{identifier:"%s"})-[l:CAUSES_CcSE]-(r:SideEffect{identifier:"%s"}) Return l ''', csv_new, csv_mapped)
-
-
-        print(
-        '###########################################################################################################################')
-
-        print (datetime.datetime.utcnow())
-
-        get_aeolus_connection_information_in_dict(dict_connection_information,
-                                                  '''Match (c:Compound{identifier:"%s"})-[l:INDUCES_CcD]-(r:Disease{identifier:"%s"}) Return l ''',
-                                                  csv_new_disease, csv_mapped_disease)
-
-        print(
-        '###########################################################################################################################')
-
-        print (datetime.datetime.utcnow())
-        print('Integrate connection into hetionet')
-
-        integrate_connection_from_aeolus_in_hetionet()
+    map_aeolus_drugs_to_hetionet()
 
     print(
     '###########################################################################################################################')
