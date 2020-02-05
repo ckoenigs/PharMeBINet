@@ -11,6 +11,8 @@ import MySQLdb as mdb
 import sys, time, csv
 import io
 from collections import defaultdict
+from typing import Any
+
 
 
 
@@ -51,7 +53,7 @@ class DrugCTD:
         self.casRN=casRN
 
     def set_drugbankIDs(self, drugbank_ids):
-        self.drugBankIDs.update([x for x in drugbank_ids if x and len(x) > 0])
+        self.drugBankIDs= drugbank_ids
 
     def set_how_mapped(self, how_mapped):
         self.how_mapped = how_mapped
@@ -95,10 +97,12 @@ def get_umls_mapping_result_or_generate_new_file():
 
     # umls mapping
     global csv_writer_umls
+    csv_writer_umls= Any
     try_to_open_file_and_read_information_into_dict('chemical/mapping_results_umls.tsv',header,dict_mesh_to_drugbank_with_umls,csv_writer_umls)
 
     # rxnorm mapping
     global csv_writer_rxnorm
+    csv_writer_rxnorm=Any
     try_to_open_file_and_read_information_into_dict('chemical/mapping_results_rxnorm.tsv',header,dict_mesh_to_drugbank_with_rxnorm,csv_writer_rxnorm)
 
 
@@ -189,7 +193,6 @@ def load_compounds_from_hetionet():
     for result, in results:
         i += 1
         identifier = result['identifier']
-        print(identifier)
         inchikey = result['inchikey']
         inchi = result['inchi']
         name = result['name']
@@ -217,25 +220,15 @@ def load_compounds_from_hetionet():
             dict_alternative_to_drugbank_id[alt_drugbank_id]=identifier
 
         if cas_number!='':
-            if not cas_number in dict_cas_to_drugbank and not cas_number in list_multi_cas:
-                dict_cas_to_drugbank[cas_number]=identifier
+            if not cas_number in dict_cas_to_drugbank :
+                dict_cas_to_drugbank[cas_number]=[identifier]
             else:
-                if cas_number in list_multi_cas:
-                    continue
-                del dict_cas_to_drugbank[cas_number]
-                list_multi_cas.append(cas_number)
+                dict_cas_to_drugbank[cas_number].append(identifier)
                 print('multi cas')
 
     print('In hetionet are:' + str(len(dict_drugs_hetionet)) + ' drugs')
     print(len(dict_cas_to_drugbank))
 
-
-'''
-add the new label chemical to compounds
-'''
-def add_new_label_to_compounds():
-    query='''Match (n:Compound) Set n:Chemical RETURN n'''
-    g.run(query)
 
 # dictionary wrong multiple mapped ctd
 # manual checked
@@ -257,22 +250,26 @@ add the mapped ctd in dictionary
 '''
 def check_and_add_the_mapping(chemical_id, drug, drugBankID,casRN):
     dict_drugs_CTD_with_drugbankIDs[chemical_id] = drug
+    drugbank_ids=[]
     if dict_drugs_hetionet[drugBankID].cas_number != casRN and casRN != '' and dict_drugs_hetionet[
         drugBankID].cas_number != '':
         if casRN in dict_cas_to_drugbank:
+            drug_string='|'.join(dict_cas_to_drugbank[casRN])
             csv_not_the_same_cas.writerow([
                 chemical_id, casRN, drugBankID, dict_drugs_hetionet[
-                    drugBankID].cas_number, dict_cas_to_drugbank[casRN]])
+                    drugBankID].cas_number, drug_string])
             # manual checked
             if chemical_id == 'D017485' and drugBankID == 'DB03955':
                 dict_drugs_CTD_with_drugbankIDs[chemical_id].set_drugbankIDs(['DB03955'])
                 dict_drugs_CTD_with_drugbankIDs[chemical_id].set_how_mapped('drugbank ids from ctd')
-                return False
-            dict_drugs_CTD_with_drugbankIDs[chemical_id].set_drugbankIDs([dict_cas_to_drugbank[casRN]])
+                return False, [drugBankID]
+            drugbank_ids=dict_cas_to_drugbank[casRN]
         else:
             csv_not_the_same_cas.writerow([chemical_id, casRN, drugBankID, dict_drugs_hetionet[drugBankID].cas_number])
+    if len(drugbank_ids)==0:
+        drugbank_ids.append(drugBankID)
     dict_drugs_CTD_with_drugbankIDs[chemical_id].set_how_mapped('drugbank ids from ctd')
-    return True
+    return True, drugbank_ids
 
 
 '''
@@ -302,8 +299,6 @@ def load_drugs_from_CTD():
     for result, in results:
         idType = result['idType']
         chemical_id = result['chemical_id']
-        if chemical_id=='C013759':
-            print('ok')
         synonyms = result['synonyms'] if 'synonyms' in result else []
         drugBankIDs = result['drugBankIDs'] if 'drugBankIDs' in result else []
         drugBankIDs = list(filter(None, drugBankIDs))
@@ -330,14 +325,19 @@ def load_drugs_from_CTD():
             counter_drugbank+=1
             #found mapping
             found_mapping=False
+            list_mapped_drugbank_ids=[]
             for drugBankID in drugBankIDs:
                 #check if the durgbank id in ctd is also in drugbank
                 if drugBankID in dict_drugs_hetionet:
-                    found_mapping=check_and_add_the_mapping(chemical_id, drug, drugBankID,casRN)
+                    found_mapping, drugBank_ids=check_and_add_the_mapping(chemical_id, drug, drugBankID,casRN)
+                    list_mapped_drugbank_ids.extend(drugBank_ids)
+
 
                 elif drugBankID in dict_alternative_to_drugbank_id:
                     new_drugbank_id=dict_alternative_to_drugbank_id[drugBankID]
-                    found_mapping = check_and_add_the_mapping(chemical_id, drug, new_drugbank_id, casRN)
+                    found_mapping, drugBank_ids = check_and_add_the_mapping(chemical_id, drug, new_drugbank_id, casRN)
+                    list_mapped_drugbank_ids.extend(drugBank_ids)
+            dict_drugs_CTD_with_drugbankIDs[chemical_id].set_drugbankIDs(list_mapped_drugbank_ids)
 
             if not found_mapping:
                 dict_drugs_CTD_without_drugbankIDs[chemical_id] = drug
@@ -363,7 +363,7 @@ def map_with_cas_number_to_drugbank():
         if casRN in dict_cas_to_drugbank:
             counter_map_with_cas+=1
             dict_drugs_CTD_with_drugbankIDs[mesh_id] = dict_drugs_CTD_without_drugbankIDs[mesh_id]
-            dict_drugs_CTD_with_drugbankIDs[mesh_id].set_drugbankIDs([dict_cas_to_drugbank[casRN]])
+            dict_drugs_CTD_with_drugbankIDs[mesh_id].set_drugbankIDs(dict_cas_to_drugbank[casRN])
             dict_drugs_CTD_with_drugbankIDs[mesh_id].set_how_mapped('use cas number to map to drugbank ids')
             delete_mapped_mesh_ids.append(list_drug_CTD_without_drugbank_id.index(mesh_id))
         else:
@@ -743,7 +743,7 @@ map drugbank id from ctd to compound in hetionet
 
 def map_ctd_to_hetionet_compound():
     for mesh, drug in dict_drugs_CTD_with_drugbankIDs.items():
-        drugbank_ids = drug.drugBankIDs
+        drugbank_ids = set(drug.drugBankIDs)
 
         mapped = []
         if mesh=='C539351':
@@ -756,7 +756,7 @@ def map_ctd_to_hetionet_compound():
             if dict_wrong_multiple_mapped_ctd[mesh] in drugbank_ids:
                 drugbank_ids.remove(dict_wrong_multiple_mapped_ctd[mesh])
 
-        string_drugbank_ids = "|".join(drugbank_ids)
+        string_drugbank_ids = "|".join(list(drugbank_ids))
         how_mapped = drug.how_mapped
 
         dict_how_mapped_file[how_mapped].write(mesh + '\t' + string_drugbank_ids + '\n')
@@ -820,12 +820,10 @@ def map_ctd_to_hetionet_compound():
                 print('intersection not possible')
                 print(mesh)
 
-        drug.set_drugbankIDs(drugbank_ids)
+        drug.set_drugbankIDs(list(drugbank_ids))
         dict_drugs_CTD_with_drugbankIDs[mesh]=drug
 
     print('mapped to hetionet compound:' + str(len(dict_ctd_to_compound)))
-    print('will be new generated:' + str(len(list_new_compounds)))
-    print(list_new_compounds)
 
     # all not mapped ctd chemicals
     g = open('chemical/not_mapped_drugs.tsv', 'w', encoding='utf-8')
@@ -834,6 +832,7 @@ def map_ctd_to_hetionet_compound():
 
     for chemical_id, drug in dict_drugs_CTD_without_drugbankIDs.items():
         if not chemical_id in dict_drugs_CTD_with_drugbankIDs:
+            writer.writerow([chemical_id])
             #            print(chemical_id)
             #            print(drug.name)
             #            print(drug.synonyms.encode('utf-8'))
@@ -851,7 +850,7 @@ dict_how_mapped_delete_counter = {}
 # add the chemicals which are not in compounds in a csv file
 csvfile = io.open('chemical/chemicals.csv', 'w', encoding='utf-8', newline='')
 writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-writer.writerow(['ChemicalID', 'parentIDs', 'parentTreeNumbers', 'treeNumbers', 'definition', 'synonyms', 'name', 'casRN'])
+writer.writerow(['ChemicalID'])
 
 '''
 integration of ctd chemicals in hetionet
@@ -895,11 +894,11 @@ def integration_of_ctd_chemicals_into_hetionet_compound():
         index = 0
         how_mapped = drug.how_mapped
         drugbank_ids = drug.drugBankIDs
-
         for drugbank_id in drugbank_ids:
 
+
             index += 1
-            resource = dict_drugs_hetionet[drugbank_id].resource
+            resource = dict_drugs_hetionet[drugbank_id].resources
             resource.append("CTD")
             resource = list(set(resource))
             string_resource = '|'.join(resource)
@@ -923,13 +922,10 @@ def integration_of_ctd_chemicals_into_hetionet_compound():
 '''
 add all not mapped ctd chemicals to csv and then integrate into neo4j as chemicals
 '''
-def add_chemicals_to_csv():
-
-    for mesh_id in list_drug_CTD_without_drugbank_id:
-
-        writer.writerow([mesh_id])
+def generate_cypher_file():
 
     cypher_file= open('chemical/cypher.cypher','w')
+    cypher_file.write('''begin\nMatch (n:Compound) Set n:Chemical RETURN n;\nCommit\n''')
     query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/chemical/chemicals.csv" As line MATCH (n:CTDchemical{chemical_id:line.ChemicalID}) Create (d:Chemical{identifier:line.ChemicalID, parentIDs:n.parentIDs, parentTreeNumbers:n.parentTreeNumbers, treeNumbers:n.treeNumbers, definition:n.definition, synonyms:n.synonyms, name:n.name, cas_number:n.casRN, resource:['CTD'], ctd:'yes', ctd_url:'http://ctdbase.org/detail.go?type=chem&acc='+line.ChemicalID, url:"https://meshb.nlm.nih.gov/record/ui?ui="+line.ChemicalID,  license:"U.S. National Library of Medicine ", source:"MeSH via CTD" }) With d, n Create (d)-[:equal_to_CTD_chemical]->(n);\n '''
     cypher_file.write(query)
     query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/chemical/chemicals_drugbank.csv" As line  MATCH (n:CTDchemical{chemical_id:line.ChemicalID}), (c:Compound{identifier:line.Drugbank_id}) Set c.ctd="yes", c.ctd_url=line.url, c.resource=split(line.string_resource,'|'), n.drugBankIDs=split(line.string_drugbank_ids,'|') Create (c)-[:equal_chemical_CTD]->(n);\n'''
@@ -977,16 +973,6 @@ def main():
 
 
     get_umls_mapping_result_or_generate_new_file()
-
-
-    print(
-        '###########################################################################################################################')
-
-    print (datetime.datetime.utcnow())
-    print('add new label if needed')
-
-    add_new_label_to_compounds()
-    # sys.exit(exists_chemicals)
 
     print(
         '###########################################################################################################################')
@@ -1076,9 +1062,9 @@ def main():
         '###########################################################################################################################')
 
     print (datetime.datetime.utcnow())
-    print('Integrate CTD chemicals to chemicals into hetionet')
+    print('generate cypher file for integration of chemical')
 
-    add_chemicals_to_csv()
+    generate_cypher_file()
 
     print(
         '###########################################################################################################################')
