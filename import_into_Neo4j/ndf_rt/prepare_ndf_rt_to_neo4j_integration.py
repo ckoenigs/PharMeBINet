@@ -52,10 +52,10 @@ def extract_and_add_info_into_dictionary(dictionary, terminology, element):
 
 
 # cypher file to integrate nodes and relationships
-cypher_file = open('cypher_file.cypher', 'w')
+cypher_file = open('cypher_file.cypher', 'w', encoding='utf-8')
 
 # cypher file to delte nodes without relationships
-cypher_file_delete = open('cypher_file_delete.cypher', 'w')
+cypher_file_delete = open('cypher_file_delete.cypher', 'w', encoding='utf-8')
 
 # dictionary rela file name to code combination
 dict_rela_to_list_of_code_tuples={}
@@ -72,7 +72,7 @@ def load_ndf_rt_xml_inferred_in():
     properties_of_node = ['code', "name", "id", "properties", "association"]
     for code, entity_name in dict_entities.items():
         file_name = 'results/'+entity_name + '_file.tsv'
-        entity_file = open(file_name, 'w')
+        entity_file = open(file_name, 'w',encoding='utf-8')
         csv_writer = csv.writer(entity_file, delimiter='\t', quotechar='"', lineterminator='\n')
         csv_writer.writerow(properties_of_node)
         dict_entity_to_file[code] = csv_writer
@@ -119,7 +119,7 @@ def load_ndf_rt_xml_inferred_in():
         dict_rela_to_file[code] = file_name
         if file_name not in dict_rela_file_name_to_file:
             dict_rela_to_list_of_code_tuples[file_name]=[]
-            entity_file = open(file_name, 'w')
+            entity_file = open(file_name, 'w',encoding='utf-8')
             csv_writer = csv.writer(entity_file, delimiter='\t', quotechar='"',lineterminator='\n')
             csv_writer.writerow(rela_info_list)
             dict_rela_file_name_to_file[file_name]=csv_writer
@@ -161,7 +161,6 @@ def load_ndf_rt_xml_inferred_in():
             properties_list.append(text)
 
         properties_string='|'.join(properties_list)
-        properties_string=properties_string.encode("utf-8")
 
         # go through association of this drug and generate a list of string
         association_list = []
