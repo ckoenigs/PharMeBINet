@@ -5,10 +5,10 @@ Created on Tue Aug 22 15:15:37 2017
 @author: ckoenigs
 """
 
-from py2neo import Graph, authenticate
+from py2neo import Graph
 import datetime
 import MySQLdb as mdb
-import sys
+import sys, csv
 from collections import defaultdict
 
 
@@ -36,17 +36,16 @@ create connection to neo4j and mysql
 
 
 def create_connection_with_neo4j_mysql():
-    authenticate("localhost:7474", "neo4j", "test")
     global g
-    g = Graph("http://localhost:7474/db/data/")
+    g = Graph("http://localhost:7474/db/data/",auth=("neo4j", "test"))
 
     # create connection with mysql database
     global con
-    con = mdb.connect('localhost', 'root', 'Za8p7Tf', 'umls')
+    con = mdb.connect('localhost', 'ckoenigs', 'Za8p7Tf$', 'umls')
 
     # generate connection to mysql to RxNorm database
     global conRxNorm
-    conRxNorm = mdb.connect('localhost', 'root', 'Za8p7Tf', 'RxNorm')
+    conRxNorm = mdb.connect('localhost', 'ckoenigs', 'Za8p7Tf$', 'RxNorm')
 
 
 '''
@@ -55,30 +54,13 @@ load in all compound from hetionet in a dictionary
 
 
 def load_hetionet_drug_in():
-    query = '''MATCH (n:Compound) RETURN n.identifier,n'''
+    query = '''MATCH (n:Chemical) RETURN n.identifier,n'''
     results = g.run(query)
 
     for identifier, node, in results:
-        name= node['name']
-        resource = node['resource']
         dict_drug_hetionet[identifier] = dict(node)
     print('length of compound in hetionet:' + str(len(dict_drug_hetionet)))
 
-
-'''
-load in all chemical from hetionet in a dictionary
-'''
-
-
-def load_hetionet_chemical_in():
-    query = '''MATCH (n:Chemical) Where not 'Compound' in labels(n) RETURN n.identifier,n'''
-    results = g.run(query)
-
-    for identifier, node, in results:
-        name= node['name']
-        resource = node['resource']
-        dict_chemical_hetionet[identifier] = dict(node)
-    print('length of compound in hetionet:' + str(len(dict_drug_hetionet)))
 
 
 '''
@@ -88,7 +70,7 @@ load in all compound from ndf-rt in a dictionary and get the  umls cui, rxcui
 
 
 def load_ndf_rt_drug_in():
-    query = '''MATCH (n:NDF_RT_drug) RETURN n'''
+    query = '''MATCH (n:NDF_RT_DRUG_KIND) RETURN n'''
     results = g.run(query)
     count = 0
     i = 0
@@ -99,7 +81,7 @@ def load_ndf_rt_drug_in():
         code = result['code']
         properties = result['properties']
         name = result['name']
-        properties = properties.split(',')
+        properties = properties.split(',') if not type(properties)==list else properties
         association = result['association'] if result['association'] != '' else ''
         umls_cuis = []
         rxnorm_cuis = []
@@ -131,7 +113,7 @@ def load_ndf_rt_drug_in():
         elif len(rxnorm_cuis) == 0:
             cur = conRxNorm.cursor()
             # search for rxcui with name
-            query = ("Select Distinct RXCUI From RXNCONSO Where lower(STR) = '%s' ;")
+            query = ("Select Distinct RXCUI From RXNCONSO Where STR = '%s' ;")
             query = query % (name.lower())
             #        print(query)
             rows_counter = cur.execute(query)
@@ -229,6 +211,7 @@ def map_rxnorm_to_drugbank_use_rxnorm_database():
                 for drugbank_id in drugbank_ids:
                     dict_drug_name_to_db_id[dict_drug_hetionet[drugbank_id]['name'].lower()]=[drugbank_id]
                 print(codes)
+                find_a_mapping=False
                 for code in codes:
                     name = dict_drug_NDF_RT[code]['name'].lower()
                     if name in dict_mesh_name_to_mesh_id:
@@ -237,14 +220,26 @@ def map_rxnorm_to_drugbank_use_rxnorm_database():
                         if not code in dict_code_to_mapped:
                             dict_code_to_mapped[code]=dict_drug_name_to_db_id[name]
                         else:
+                            print('error')
+                            print(name)
+                            print(code)
+                            print(dict_drug_name_to_db_id[name])
+                            print(dict_code_to_mapped[code])
                             sys.exit('mapped to both and both have the same name ;(')
 
                     if not code in dict_code_to_mapped:
+                        print('error')
+                        print(code)
+                        print(name)
+                        print(mesh_ids)
+                        print(drugbank_ids)
                         sys.exit('no mapping with both and name')
 
-
-
-                print('mapped to mesh and drugbank :(')
+                if not find_a_mapping:
+                    print('error')
+                    print(code)
+                    print(name)
+                    print('mapped to mesh and drugbank :(')
 
             if in_chemical or in_drugbank:
                 for code in codes:
@@ -252,7 +247,7 @@ def map_rxnorm_to_drugbank_use_rxnorm_database():
                     if len(drugbank_ids)>0:
                         dict_mapped_code_to_db_id[code]=drugbank_ids
                     else:
-                        dict_mapped_code_to_mesh_id=mesh_ids
+                        dict_mapped_code_to_mesh_id[code]=mesh_ids
                     dict_drug_NDF_RT[code]['mesh_ids'] = mesh_ids
                     dict_drug_NDF_RT[code]['how_mapped']='use rxcui to drugbank ids or mesh with rxnorm'
                     if not code in list_codes_with_drugbank_ids:
@@ -426,26 +421,30 @@ def map_to_drugbank_id_with_ingredient_from():
         index = 0
         for code in codes:
             index += 1
-            associations = dict_drug_NDF_RT[code].association.split(',')
-            for association in associations:
-                if association[0:17] == 'Product_Component':
-                    associatied_code = association.split(':')[1]
-                    if associatied_code in dict_drug_NDF_RT:
-                        drugbank_ids = dict_drug_NDF_RT[associatied_code].drugbank_ids
-                        if len(drugbank_ids) > 0:
-                            dict_drug_NDF_RT[code].set_drugbank_ids(drugbank_ids)
-                            dict_drug_NDF_RT[code]['how_mapped']='use association to the ingredient from'
-                            if not code in list_codes_with_drugbank_ids:
-                                number_of_mapped += 1
-                                list_codes_with_drugbank_ids.append(code)
-                            delete_mapped_codes.append(index - 1)
+            if 'association' in dict_drug_NDF_RT[code]:
+                associations = dict_drug_NDF_RT[code]['association']
+                for association in associations:
+                    if association[0:17] == 'Product_Component':
+                        associatied_code = association.split(':')[1]
+                        if associatied_code in dict_drug_NDF_RT:
+                            if 'drugbank_ids' in dict_drug_NDF_RT[associatied_code]:
+                                drugbank_ids = dict_drug_NDF_RT[associatied_code]['drugbank_ids']
+                                dict_drug_NDF_RT[code]['drugbank_ids']=drugbank_ids
+                                dict_drug_NDF_RT[code]['how_mapped']='use association to the ingredient from'
+                                if not code in list_codes_with_drugbank_ids:
+                                    number_of_mapped += 1
+                                    list_codes_with_drugbank_ids.append(code)
+                                delete_mapped_codes.append(index - 1)
+                            else:
+                                g.write(code + '\t' + dict_drug_NDF_RT[code]['name'] + '\t' + associatied_code + '\t' +
+                                        dict_drug_NDF_RT[
+                                            associatied_code]['name'] + ' \t ingredient also not mapped to drugbank id')
                         else:
-                            g.write(code + '\t' + dict_drug_NDF_RT[code].name + '\t' + associatied_code + '\t' +
-                                    dict_drug_NDF_RT[
-                                        associatied_code].name + ' \t ingredient also not mapped to drugbank id')
-                    else:
-                        g.write(code + '\t' + dict_drug_NDF_RT[
-                            code].name + '\t' + associatied_code + '\t \t ingredient not in hetionet')
+                            g.write(code + '\t' + dict_drug_NDF_RT[
+                            code]['name'] + '\t' + associatied_code + '\t \t ingredient not in hetionet')
+            else:
+                g.write(code+ '\t' + dict_drug_NDF_RT[
+                            code]['name'] + '\t \t \t no association in hetionet')
         # remove all codes from the not mapped list of the rxcui
         delete_mapped_codes = list(set(delete_mapped_codes))
         delete_mapped_codes.sort()
@@ -487,31 +486,35 @@ map_with_unii.write('ndf-rt code \t drugbank_ids with | as seperator  \t name\n'
 map_with_association_to_ingredient = open('drug/ndf_rt_drugs_map_with_association_to_ingredient.tsv', 'w')
 map_with_association_to_ingredient.write('ndf-rt code \t drugbank_ids with | as seperator  \t name\n')
 
+map_rxcui_d_m = open('drug/ndf_rt_drugs_map_with_rxcui_to_DB_or_mesh.tsv', 'w')
+map_rxcui_d_m.write('ndf-rt code \t drugbank_ids with | as seperator  \t name\n')
+
 # dictionary of how_mapped with file as value
 dict_how_mapped_file = {
     'use rxcui to drugbank ids with rxnorm': map_rxcui,
     'use rxcui to drugbank ids with name mapping': map_with_name,
     'use rxcui to drugbank ids with unii and inchikey to drugbank': map_with_unii_inchikey,
     'use unii of the ndf-rt code and map to drugbank id': map_with_unii,
-    'use association to the ingredient from': map_with_association_to_ingredient}
+    'use association to the ingredient from': map_with_association_to_ingredient,
+    'use rxcui to drugbank ids or mesh with rxnorm':map_rxcui_d_m}
 
 # generate file with rxnom and a list of drugbank ids and where there are from
 multiple_drugbankids = open('ndf_rt_multiple_drugbank_ids.tsv', 'w')
 multiple_drugbankids.write('ndf-rt code \t drugbank_ids with | as seperator \t where are it from  \t name\n')
 
 '''
-map ndf-rt drug to hetionet drug by using drugbank id
+write a file with all ndf-rt drugs mapped to drugbank and a file with all not mapped
 '''
 
 
-def map_drug_to_hetionet():
+def gnerate_csv_for_mapped_and_not_mapped_ndf_rts():
     for code in list_codes_with_drugbank_ids:
-        drugbank_ids = dict_drug_NDF_RT[code].drugbank_ids
+        drugbank_ids = dict_drug_NDF_RT[code]['drugbank_ids']
         one_has_mapped = False
         mapped_drugbanks = []
-        name = dict_drug_NDF_RT[code].name
+        name = dict_drug_NDF_RT[code]['name']
         string_drugbank_ids = "|".join(drugbank_ids)
-        how_mapped = dict_drug_NDF_RT[code].how_mapped
+        how_mapped = dict_drug_NDF_RT[code]['how_mapped']
 
         dict_how_mapped_file[how_mapped].write(code + '\t' + string_drugbank_ids + '\t' + name + '\n')
 
@@ -535,11 +538,11 @@ def map_drug_to_hetionet():
     g.write('ndf-rt code \t rxcuis \t uniis \t name\n')
     for code, drug in dict_drug_NDF_RT.items():
         if not code in list_codes_with_drugbank_ids:
-            rxcuis = dict_drug_NDF_RT[code].rxnorm_cuis
+            rxcuis = dict_drug_NDF_RT[code]['rxnorm_cuis'] if 'rxnorm_cuis' in dict_drug_NDF_RT[code] else []
             string_rxcui = '|'.join(rxcuis)
-            uniis = dict_drug_NDF_RT[code].uniis
+            uniis = dict_drug_NDF_RT[code]['uniis'] if 'uniis' in dict_drug_NDF_RT[code] else []
             string_uniis = '|'.join(uniis)
-            g.write(code + '\t' + string_rxcui + '\t' + string_uniis + '\t' + drug.name + '\n')
+            g.write(code + '\t' + string_rxcui + '\t' + string_uniis + '\t' + drug['name'] + '\n')
     g.close()
 
 
@@ -553,7 +556,6 @@ a connection between compounds in hetionet and ndf-rt drug.
 
 
 def integration_of_ndf_rt_drugs_into_hetionet():
-    get_drugbank_information.load_all_drugbank_ids_in_dictionary()
     # count all possible mapped ndf-rt codes
     counter = 0
     # count all ndf-rt codes which has illegal drugbank ids
@@ -562,94 +564,29 @@ def integration_of_ndf_rt_drugs_into_hetionet():
     counter_drugbank_connection = 0
     # list wiwth all codes which are mapped to only illegal drugbank ids
     delete_code = []
+
+    cypher_file=open('drug/cypher.cypher','w')
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Documents/Project/master_database_change/mapping_and_merging_into_hetionet/ndf-rt/drug/mapping_drug.csv" As line  FIELDTERMINATOR '\\t'  MATCH (n:NDF_RT_DRUG_KIND{code:line.code}), (c:Chemical{identifier:line.Chemical_id})  Set n.drugbank_ids=split(line.drugbank_ids,'|'), n.how_mapped=line.how_mapped, c.ndf_rt='yes', c.resource=c.resource+'NDF-RT' Create (c)-[:equal_to_drug_ndf_rt]->(n); \n'''
+    cypher_file.write(query)
+    writer=open('drug/mapping_drug.csv','w')
+    csv_writer=csv.writer(writer,delimiter='\t')
+    header=['code','drugbank_ids','how_mapped','Chemical_id']
+    csv_writer.writerow(header)
     for code in list_codes_with_drugbank_ids:
         counter += 1
-        drugbank_ids = dict_drug_NDF_RT[code].drugbank_ids
-        string_drugbank_ids = "','".join(drugbank_ids)
-        how_mapped = dict_drug_NDF_RT[code].how_mapped
+        drugbank_ids = dict_drug_NDF_RT[code]['drugbank_ids']
+        string_drugbank_ids = "|".join(drugbank_ids)
+        how_mapped = dict_drug_NDF_RT[code]['how_mapped']
 
-        query = '''MATCH (n:NDF_RT_drug{code:'%s'}) 
-        Set n.drugbank_ids=['%s'], n.how_mapped='%s' '''
-        query = query % (code, string_drugbank_ids, dict_drug_NDF_RT[code].how_mapped)
-        g.run(query)
-
-        index = 0
-        delete_index = []
 
         for drugbank_id in drugbank_ids:
-            index += 1
-            query = '''MATCH (n:Compound{identifier:'%s'}) RETURN n '''
-            query = query % (drugbank_id)
-            results = g.run(query)
-
-            first_result = results.evaluate()
-            if first_result == None:
-                [name, inchi, inchikey] = get_drugbank_information.get_drugbank_information(drugbank_id)
-                if name == '':
-                    delete_index.append(index - 1)
-                    continue
-
-                query = '''Match (c:Compound) Where lower(c.name)="%s" Return c'''
-                query = query % (name.lower())
-                results = g.run(query)
-                first_entry = results.evaluate()
-                if first_entry != None:
-                    delete_index.append(index - 1)
-                    continue
-                resource = 'NDF-RT'
-                url = 'http://www.drugbank.ca/drugs/' + drugbank_id
-                query = '''MATCH (n:NDF_RT_drug{code:'%s'}) 
-                Create (c:Compound{identifier:'%s',ndf_rt:'yes',resource:['%s'], pubChem:"", hetionet:'no',sider:'no', license:'CC BY-NC 4.0?', inchikey:"%s", inchi:"%s", name:"%s", source:'DrugBank via NDF-RT' ,url:'%s' })
-                Create (c)-[:equal_to_drug_ndf_rt]->(n)
-                '''
-                query = query % (code, drugbank_id, resource, inchikey, inchi, name, url)
-            else:
-                resource = first_result['resource'] if 'resource' in first_result else []
-                resource.append('NDF-RT')
-                resource = list(set(resource))
-                resource = "','".join(resource)
-                query = '''MATCH (n:NDF_RT_drug{code:'%s'}), (c:Compound{identifier:'%s'}) 
-                Set c.ndf_rt='yes', c.resource=['%s']   
-                Create (c)-[:equal_to_drug_ndf_rt]->(n)
-                '''
-                query = query % (code, drugbank_id, resource)
-            counter_drugbank_connection += 1
-            g.run(query)
-
-        # delete all illegal drugbank ids
-        delete_index = list(set(delete_index))
-        if len(delete_index) == len(drugbank_ids):
-            counter_illegal_drugbank += 1
-            delete_code.append(list_codes_with_drugbank_ids.index(code))
-            # counte the strategy
-            if how_mapped in dict_how_mapped_delete_counter:
-                dict_how_mapped_delete_counter[how_mapped] += 1
-            else:
-                dict_how_mapped_delete_counter[how_mapped] = 1
-        for index in delete_index:
-            dict_drug_NDF_RT[code].drugbank_ids.pop(index)
+            list_of_values=[code,string_drugbank_ids,how_mapped,drugbank_id]
+            csv_writer.writerow(list_of_values)
 
     # all not mapped compound get as property ndf-rt='no'
-    query = ''' Match (c:Compound) Where not exists(c.ndf_rt) 
-            Set c.ndf_rt="no" '''
-    g.run(query)
-
-    # remove all codes which are only mapped to illegal drugbank ids
-    delete_code.sort()
-    delete_code = list(reversed(delete_code))
-    for index in delete_code:
-        list_codes_with_drugbank_ids.pop(index)
-    print('number of illegal:' + str(counter_illegal_drugbank))
-    print('all mapped drug to drugbank where so of the has not existing drugbank ids:' + str(counter))
-    print('number of connection:' + str(counter_drugbank_connection))
-    print(dict_how_mapped_delete_counter)
-
-
-# list contra indicates pairs
-list_contra_indicates_pairs = []
-
-# list induces pairs
-list_induces_pairs = []
+    query = '''begin \n Match (c:Chemical) Where not exists(c.ndf_rt) 
+            Set c.ndf_rt="no"; \n commit '''
+    cypher_file.write(query)
 
 '''
 integrate the connection: contra_indication and induces into hetionet
@@ -841,27 +778,27 @@ def main():
 
     print(
         '###########################################################################################################################')
-    #
-    # print (datetime.datetime.utcnow())
-    # print('map with use of the ingredient')
-    #
-    # # map_to_drugbank_id_with_ingredient_from()
-    #
-    # print(
-    #     '###########################################################################################################################')
-    #
-    # print (datetime.datetime.utcnow())
-    # print('map to hetionet with use of drugbank id')
-    #
-    # map_drug_to_hetionet()
-    #
-    # print(
-    #     '###########################################################################################################################')
-    #
-    # print (datetime.datetime.utcnow())
-    # print('integrate ndf-rt drugs into hetionet')
-    #
-    # integration_of_ndf_rt_drugs_into_hetionet()
+
+    print (datetime.datetime.utcnow())
+    print('map with use of the ingredient')
+
+    map_to_drugbank_id_with_ingredient_from()
+
+    print(
+        '###########################################################################################################################')
+
+    print (datetime.datetime.utcnow())
+    print('create csv files for mapped and not mapped ndf-rt drugs')
+
+    gnerate_csv_for_mapped_and_not_mapped_ndf_rts()
+
+    print(
+        '###########################################################################################################################')
+
+    print (datetime.datetime.utcnow())
+    print('integrate ndf-rt drugs into hetionet')
+
+    integration_of_ndf_rt_drugs_into_hetionet()
     #
     # print(
     #     '###########################################################################################################################')

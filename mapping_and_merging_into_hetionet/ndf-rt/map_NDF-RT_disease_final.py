@@ -130,7 +130,7 @@ load in all diseases from ndf-rt in a dictionary and get all umls cuis
 
 
 def load_ndf_rt_diseases_in():
-    query = '''MATCH (n:NDF_RT_disease) RETURN n'''
+    query = '''MATCH (n:NDF_RT_DISEASE_KIND) RETURN n'''
     results = g.run(query)
     i = 0
     for result, in results:
