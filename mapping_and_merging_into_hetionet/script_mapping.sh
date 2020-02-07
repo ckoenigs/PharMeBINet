@@ -124,19 +124,32 @@ cd ..
 
 now=$(date +"%F %T")
 echo "Current time: $now"
-echo ctd
+echo mapping table rxcui drugbank
 
-cd ctd 
+cd RxNorm_to_DrugBank 
 
-./script_ctd_mapping_and_integration.sh $path_neo4j/ $path_to_project > output_script.txt
+./execute_mapping_rxcui_to_drugbank.sh > output.txt
 
 cd ..
+
 
 echo Sider
 cd sider
 now=$(date +"%F %T")
 echo "Current time: $now"
+echo $path_to_project
 python3 map_Sider_se.py $path_to_project > output_map_se.txt
+
+echo integrate se with neo4j shell
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+$path_neo4j/neo4j-shell -file cypher_se.cypher > output_cypher_integration_se.txt
+
+sleep 180
+
+$path_neo4j/neo4j restart
+
 
 #python3 map_sider_with_stitch_final.py > output_map_sider.txt
 
@@ -159,7 +172,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 
 echo HPO
-python3 map_and_integrate_hpo_info_into_hetionet.py > output_hpo_symptomes.txt
+python3 map_and_integrate_hpo_info_into_hetionet.py $path_to_project > output_hpo_symptomes.txt
 
 $path_neo4j/neo4j-shell -file cypher/connection_symptoms_1.cypher > output_cypher_hpo.txt
 
@@ -167,9 +180,8 @@ sleep 180
 $path_neo4j/neo4j restart
 sleep 120
 
-cd ..
 
-exit 1
+
 cd ..
 
 echo Aeolus outcomes 
@@ -179,19 +191,79 @@ echo "Current time: $now"
 
 cd aeolus/
 
-#python3 map_aeolus_outcome_final.py > output_map_aeolus_outcome.txt
+python3 map_aeolus_outcome_final.py $path_to_project > output_map_aeolus_outcome.txt
 
+
+echo integrate se with neo4j shell
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+$path_neo4j/neo4j-shell -file cypher_se.cypher > output_cypher_integration_se.txt
+
+sleep 180
+
+$path_neo4j/neo4j restart
+sleep 120
 
 cd ..
 
-cd NDF-RT/
+
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo ctd
+
+cd ctd 
+
+./script_ctd_mapping_and_integration.sh $path_neo4j/ $path_to_project > output_script.txt
+
+cd ..
+
+echo Aeolus drugs
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+cd aeolus/
+
+python3  map_aeolus_drugs_final.py $path_to_project > output_aeolus_drug.txt
+
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+$path_neo4j/neo4j-shell -file cypher.cypher > output_cypher_integration_se.txt
+
+sleep 180
+pathbin/neo4j restart
+sleep 120
+
+echo relationships
+python3  integrate_aeolus_relationships.py $path_to_project > output_aeolus_drug.txt
+
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+$path_neo4j/neo4j-shell -file cypher.cypher > output_cypher_integration_se.txt
+
+sleep 180
+pathbin/neo4j restart
+sleep 120
+
+cd ..
+
+
+cd ndf-rt/
 echo ndf-rt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo disease
 
-#python3 map_NDF-RT_disease_final.py > output_map_ndf_rt_disease.txt
+python3 map_NDF-RT_disease_final.py > output_map_ndf_rt_disease.txt
+
+exit 1
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -212,45 +284,7 @@ sleep 120
 
 cd ..
 
-cd drugbank
-now=$(date +"%F %T")
-echo "Current time: $now"
-echo 'transformation of drugbank db in tsv and sort drugbank to with chemichal information and not'
 
-#execution_formatting_of_drugbank_db.sh > output_drugbank_shell.txt
-
-cd ..
-
-cd RxNorm_to_DrugBank
-now=$(date +"%F %T")
-echo "Current time: $now"
-echo 'Generate RxNorm CUI-Drugbank ID mapping tables'
-
-#execute_mapping_rxcui_to_drugbank.sh > output_generation_mapping_tables.txt
-
-cd ..
-
-
-echo Aeolus drugs
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-cd aeolus/
-
-python3  map_aeolus_drug_new_version.py $path_to_project > output_aeolus_drug.txt
-
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-# integration has to be fixed
-
-sleep 180
-pathbin/neo4j restart
-sleep 120
-
-cd ..
 
 
 now=$(date +"%F %T")
