@@ -4,47 +4,19 @@ Created on Tue Aug 22 15:16:45 2017
 
 @author: Cassandra
 """
-from py2neo import Graph, authenticate
+from py2neo import Graph
 import datetime
-import sys
-import json
+import sys, csv
+from collections import defaultdict
 
-import xml.dom.minidom as dom
 
-sys.path.append('../aeolus/')
-import get_drugbank_information
 
-class SideEffect:
-    """
-    license: string
-    identifier: string (UMLS CUI)
-    name: string
-    source: string
-    url: string
-    conceptName: string
-    meddraType: string (PT: preferred term or LLT:lowest level term)
-    umls_label: string (UMLS CUI for label)
-    """
 
-    def __init__(self, licenses, identifier, name, source, url):
-        self.license = licenses
-        self.identifier = identifier
-        self.name = name
-        self.source = source
-        self.url = url
-        self.conceptName = ''
-        self.meddraType = ''
-        self.umls_label = ''
-
-    def set_properties(self, conceptName, meddraType, umls_label):
-        self.conceptName = conceptName
-        self.meddraType = meddraType
-        self.umls_label = umls_label
 
 
 class DrugSider:
     """
-    
+
     stitchIDflat: string
     stitchIDstereo: string
     PubChem_Coupound_ID: int
@@ -85,23 +57,19 @@ class DrugHetionet:
     url: string
     """
 
-    def __init__(self, identifier, inchikey, inchi, name):
+    def __init__(self, identifier, inchikey, inchi, name, resource, xrefs):
         #        self.license=licenses
         self.identifier = identifier
         self.inchikey = inchikey
         self.inchi = inchi
         self.name = name
+        self.resource=resource
+        self.xrefs=xrefs
 
 
-# list of all side effect ids which are in hetionet
-list_side_effect_in_hetionet = []
 
 # list all compound ids in hetionet
 list_compound_in_hetionet = []
-
-# dictionary with all side effects from hetionet and the new ones from sider
-#  with id as key and as value a class SideEffect
-dict_all_side_effect = {}
 
 # dictionary with all compounds with drugbank id as key and class DrugHetionet as value
 dict_all_drug = {}
@@ -115,95 +83,8 @@ create connection to neo4j
 
 
 def create_connection_with_neo4j():
-    authenticate("localhost:7474", "neo4j", "test")
     global g
-    g = Graph("http://localhost:7474/db/data/")
-
-
-'''
-load in all side effects from hetionet
-has properties:
-    license
-    identifier
-    name
-    source
-    url
-'''
-
-
-def load_side_effects_from_hetionet_in_dict():
-    query = '''MATCH (n:SideEffect) RETURN n '''
-    results = g.run(query)
-    for result, in results:
-        list_side_effect_in_hetionet.append(result['identifier'])
-        sideEffect = SideEffect(result['license'], result['identifier'], result['name'], result['source'],
-                                result['url'])
-        dict_all_side_effect[result['identifier']] = sideEffect
-    print('size of side effects before the sider is add:' + str(len(list_side_effect_in_hetionet)))
-
-
-'''
-load all new and old information for side effects in
-meddraType: string (PT or LLT)
-conceptName: string
-umlsIDmeddra: string (UMLS CUI for MedDRA ID)
-name: string
-umls_concept_id: string (UMLS CUI for label)
-'''
-
-
-def load_sider_in_dict():
-    query = '''MATCH (n:seSider) RETURN n '''
-    results = g.run(query)
-    k = 0
-    for result, in results:
-        k += 1
-        meddraType = result['meddraType']
-        conceptName = result['conceptName']
-        umlsIDmeddra = result['umlsIDmeddra']
-        name = result['name']
-        umls_concept_id = result['umls_concept_id']
-
-        if not umlsIDmeddra in dict_all_side_effect:
-            sideEffect = SideEffect('CC BY-NC-SA 4.0', umlsIDmeddra, name, 'UMLS via SIDER 4.1',
-                                    'http://identifiers.org/umls/' + umlsIDmeddra)
-            dict_all_side_effect[umlsIDmeddra] = sideEffect
-        else:
-            sideEffect = dict_all_side_effect[umlsIDmeddra]
-
-        sideEffect.set_properties(conceptName, meddraType, umls_concept_id)
-    print('size of side effects after the sider is add:' + str(len(dict_all_side_effect)))
-
-
-'''
- Map sider side effects to hetionet and add new side effects
-'''
-
-
-def integrate_sider_side_effect_to_hetionet():
-    # all side effects from sider which are already in hetionet only are connected to the hetiont side effect.
-    # Further the hetionet side effects get some new properties.
-    for sideEffect_id in list_side_effect_in_hetionet:
-        query = '''Match (n:SideEffect{identifier:"%s"}), (o:seSider{umlsIDmeddra:"%s"}) 
-        Set n.conceptName="%s", n.meddraType="%s", n.umls_label="%s", n.hetionet='yes', n.sider='yes', n.resource=['hetionet','SIDER']
-        Create (n)-[:equal_to_SE]->(o); \n'''
-
-        query = query % (sideEffect_id, sideEffect_id, dict_all_side_effect[sideEffect_id].conceptName,
-                         dict_all_side_effect[sideEffect_id].meddraType, dict_all_side_effect[sideEffect_id].umls_label)
-        g.run(query)
-
-    # all side effects from sider which are no in hetionet generate new hetiont side effect and a connection between
-    # sider and hetionet side effects is generated.
-    for key, value in dict_all_side_effect.items():
-        if not key in list_side_effect_in_hetionet:
-            query = '''Match (o:seSider{umlsIDmeddra:"%s"})
-            Create (n:SideEffect{license: "%s", identifier: "%s", name: "%s", source: "%s", url: "%s", conceptName: "%s", meddraType: "%s", umls_label: "%s", hetionet:'no', sider:'yes', resource:['SIDER']})
-            Create (n)-[:equal_to_SE]->(o); \n'''
-
-            query = query % (
-                key, value.license, value.identifier, value.name, value.source, value.url, value.conceptName,
-                value.meddraType, value.umls_label)
-            g.run(query)
+    g = Graph("http://localhost:7474/db/data/",auth=("neo4j", "test"))
 
 
 '''
@@ -228,8 +109,10 @@ def load_compounds_from_hetionet():
         inchikey = result['inchikey']
         inchi = result['inchi']
         name = result['name']
+        resource=result['resource']
+        xrefs = result['xrefs']
 
-        drug = DrugHetionet(identifier, inchikey, inchi, name)
+        drug = DrugHetionet(identifier, inchikey, inchi, name, resource, xrefs)
         dict_all_drug[identifier] = drug
 
 
@@ -269,72 +152,44 @@ def load_sider_drug_in_dict():
     print('number of flat ids:' + str(len(dict_flat_to_stereo)))
 
 
-'''
-go through chemical.sources.v5.0.tsv and save only the data with stitch ids from sider and 
-drugbank ids in the file chemical.sources_DB.v5.0.tsv
-
-0:chemical flat
-1:chemical stereo
-2:alias	
-3:source
-    
-'''
-
-
-def generate_short_file_with_important_information_stitch():
-    f = open('StitchData/chemical.sources.v5.0.tsv', 'r')
-    h = open('StitchData/chemical.sources_DB.v5.0.tsv', 'w')
-    i = 0
-    for line in f:
-        if i == 0:
-            h.write(line)
-            i += 1
-        if line[0:3] == 'CID':
-            splitted = line.split('\t')
-            stitch_stereo = splitted[1]
-            source_id = splitted[3]
-            if source_id[0:2] == 'DB':
-                h.write(line)
-
-
 # dictionary with flat in pubchem form as key and a list of drugbank ids as values
 dict_flat_to_drugbank = {}
 
 # dictionary with flat in pubchem form as key and list of drugbank ids as value, but only the drugbank ids where stitch flat and stereo are the same
-dict_flat_to_drugbank_same_stereo = {}
+dict_flat_to_drugbank_same_stereo = defaultdict(list)
 
 # dictionary with stereo id in pubchem form as key and drugbank ids as values
-dict_sider_drug_with_drugbank_ids = {}
+dict_sider_drug_with_drugbank_ids = defaultdict(list)
 
 # files with all mapping for the different how_mapped mmethods
-map_stereo_id_to_drugbank_id = open('drug/Sider_drug_map_stereo_id_to_drugbank.tsv', 'w')
+map_stereo_id_to_drugbank_id = open('drug/Sider_drug_map_stereo_id_to_drugbank.tsv', 'w',encoding='utf-8')
 map_stereo_id_to_drugbank_id.write('stitch id flat \t stitch id stereo \t drugbank ids seperated with |\n')
 
-map_flat_id_same_as_stereo_to_drugbank_id = open('drug/Sider_drug_map_flat_id_same_as_stereo_id_to_drugbank.tsv', 'w')
+map_flat_id_same_as_stereo_to_drugbank_id = open('drug/Sider_drug_map_flat_id_same_as_stereo_id_to_drugbank.tsv', 'w',encoding='utf-8')
 map_flat_id_same_as_stereo_to_drugbank_id.write('stitch id flat \t stitch id stereo \t drugbank ids seperated with |\n')
 
-map_flat_id_to_drugbank_id = open('drug/Sider_drug_map_flat_id_to_drugbank.tsv', 'w')
+map_flat_id_to_drugbank_id = open('drug/Sider_drug_map_flat_id_to_drugbank.tsv', 'w',encoding='utf-8')
 map_flat_id_to_drugbank_id.write('stitch id flat \t stitch id stereo \t drugbank ids seperated with |\n')
 
-map_stereo_to_inchikey_to_drugbank_id = open('drug/Sider_drug_map_stereo_to_inchikey_to_drugbank.tsv', 'w')
+map_stereo_to_inchikey_to_drugbank_id = open('drug/Sider_drug_map_stereo_to_inchikey_to_drugbank.tsv', 'w',encoding='utf-8')
 map_stereo_to_inchikey_to_drugbank_id.write('stitch id flat \t stitch id stereo \t drugbank ids seperated with |\n')
 
 map_stereo_to_inchikey_to_drugbank_id_inchikey_alternative = open(
-    'drug/Sider_drug_map_stereo_to_inchikey_to_drugbank_inchikeys_alternative.tsv', 'w')
+    'drug/Sider_drug_map_stereo_to_inchikey_to_drugbank_inchikeys_alternative.tsv', 'w',encoding='utf-8')
 map_stereo_to_inchikey_to_drugbank_id_inchikey_alternative.write(
     'stitch id flat \t stitch id stereo \t drugbank ids seperated with |\n')
 
-map_stereo_name_to_drugbank_id_name = open('drug/Sider_drug_map_stereo_name_to_drugbank_name.tsv', 'w')
+map_stereo_name_to_drugbank_id_name = open('drug/Sider_drug_map_stereo_name_to_drugbank_name.tsv', 'w',encoding='utf-8')
 map_stereo_name_to_drugbank_id_name.write('stitch id flat \t stitch id stereo \t drugbank ids seperated with |\n')
 
-map_stereo_name_to_drugbank_id_synonym_name = open('drug/Sider_drug_map_stereo_name_to_drugbank_synonym_name.tsv', 'w')
+map_stereo_name_to_drugbank_id_synonym_name = open('drug/Sider_drug_map_stereo_name_to_drugbank_synonym_name.tsv', 'w',encoding='utf-8')
 map_stereo_name_to_drugbank_id_synonym_name.write(
     'stitch id flat \t stitch id stereo \t drugbank ids seperated with |\n')
 
-map_stereo_name_to_drugbank_id_brand_name = open('drug/Sider_drug_map_stereo_name_to_drugbank_brand_name.tsv', 'w')
+map_stereo_name_to_drugbank_id_brand_name = open('drug/Sider_drug_map_stereo_name_to_drugbank_brand_name.tsv', 'w',encoding='utf-8')
 map_stereo_name_to_drugbank_id_brand_name.write('stitch id flat \t stitch id stereo \t drugbank ids seperated with |\n')
 
-map_stereo_name_to_drugbank_id_extra_name = open('drug/Sider_drug_map_stereo_name_to_drugbank_extra_name.tsv', 'w')
+map_stereo_name_to_drugbank_id_extra_name = open('drug/Sider_drug_map_stereo_name_to_drugbank_extra_name.tsv', 'w',encoding='utf-8')
 map_stereo_name_to_drugbank_id_extra_name.write('stitch id flat \t stitch id stereo \t drugbank ids seperated with |\n')
 
 # dictionary with how_mapped as key and file as value
@@ -369,38 +224,33 @@ steroe id is the same as the flat id.
 
 def give_drugbank_ids_with_use_of_stitch_information():
     # find for the stereo id the drugbank ids and save for all flat ids in sider the drugbank ids
-    f = open('StitchData/chemical.sources_DB.v5.0.tsv', 'r')
-    next(f)
-    for line in f:
-        splitted = line.split('\t')
-        stitch_flat = int(splitted[0][4:])
-        stitch_stereo = int(splitted[1][4:])
-        drugbank_id = splitted[3].split('\n')[0]
+    f = open('StitchData/chemical.sources.v5.0.tsv', 'r',encoding='utf-8')
+    csv_reader=csv.reader(f,delimiter='\t')
+    next(csv_reader)
+    for line in csv_reader:
+        stitch_flat = int(line[0][4:])
+        stitch_stereo = int(line[1][4:])
+        xref_source=line[2]
+        xref = line[3][0]
         # get durgbank id with stitch stereo id in pubchem form
         if stitch_stereo in dict_sider_drug:
-            if not stitch_stereo in dict_sider_drug_with_drugbank_ids:
-                dict_sider_drug[stitch_stereo].set_how_mapped('stitch stereo id to drugbank ids')
-                dict_sider_drug_with_drugbank_ids[stitch_stereo] = [drugbank_id]
-
-            else:
-                dict_sider_drug_with_drugbank_ids[stitch_stereo].append(drugbank_id)
+            if xref_source=='DrugBank':
+                if xref in dict_all_drug:
+                    dict_sider_drug[stitch_stereo].set_how_mapped('stitch stereo id to drugbank ids')
+                    dict_sider_drug_with_drugbank_ids[stitch_stereo].append(xref)
         # get drugbank id with use of flat id in pubchem form
         if stitch_flat in dict_flat_to_stereo:
-            if stitch_flat == stitch_stereo:
-                if not stitch_flat in dict_flat_to_drugbank_same_stereo:
-                    dict_flat_to_drugbank_same_stereo[stitch_flat] = [drugbank_id]
-                else:
-                    dict_flat_to_drugbank_same_stereo[stitch_flat].append(drugbank_id)
-            if not stitch_flat in dict_flat_to_drugbank:
-                dict_flat_to_drugbank[stitch_flat] = [drugbank_id]
-            else:
-                dict_flat_to_drugbank[stitch_flat].append(drugbank_id)
+            if xref_source == 'DrugBank':
+                if xref in dict_all_drug:
+                    if stitch_flat == stitch_stereo:
+                        dict_flat_to_drugbank_same_stereo[stitch_flat].append(xref)
+                    dict_sider_drug_with_drugbank_ids[stitch_flat].append(xref)
     print('number of mapped stitch stereo ids to drugbank:' + str(len(dict_sider_drug_with_drugbank_ids)))
     print('number of mapped stitch flat ids to drugbank:' + str(len(dict_flat_to_drugbank)))
     print('number of mapped stitch flat ids to drugbank (same stereo):' + str(len(dict_flat_to_drugbank_same_stereo)))
 
     # check if a sider drug which was not mapped with the stereo id has a mapped flat id
-    g = open('not_mapped_pubchem_ids_from_stitch.txt', 'w')
+    g = open('not_mapped_pubchem_ids_from_stitch.txt', 'w',encoding='utf-8')
     # counter for mapped with flat id where flat and stereo are the same
     i = 0
     # counter for mapped with flat id where flat and stereo are not the same
@@ -442,8 +292,8 @@ properties chemical.v5.0:
 
 
 def make_a_smaller_file_of_stitch_inchikey_and_chemical():
-    g = open('StitchData/chemicals.inchikeys.v5.0.tsv', 'r')
-    h = open('StitchData/chemicals.inchikeys_part.v5.0.tsv', 'w')
+    g = open('StitchData/chemicals.inchikeys.v5.0.tsv', 'r',encoding='utf-8')
+    h = open('StitchData/chemicals.inchikeys_part.v5.0.tsv', 'w',encoding='utf-8')
     i = 0
     for line in g:
         if i == 0:
@@ -460,8 +310,8 @@ def make_a_smaller_file_of_stitch_inchikey_and_chemical():
     g.close()
     h.close()
 
-    g = open('StitchData/chemicals.v5.0.tsv', 'r')
-    h = open('StitchData/chemicals_part.v5.0.tsv', 'w')
+    g = open('StitchData/chemicals.v5.0.tsv', 'r',encoding='utf-8')
+    h = open('StitchData/chemicals_part.v5.0.tsv', 'w',encoding='utf-8')
     i = 0
     for line in g:
         if i == 0:
@@ -500,7 +350,7 @@ load in stitch name and save them in a dictionary
 
 
 def load_in_stitch_name():
-    f = open('StitchData/chemicals_part.v5.0.tsv', 'r')
+    f = open('StitchData/chemicals_part.v5.0.tsv', 'r',encoding='utf-8')
     next(f)
     for line in f:
         splitted = line.split('\t')
@@ -531,7 +381,7 @@ properties of chemicals.inchikeys_part.v5.0.tsv:
 
 
 def load_in_stitch_inchikeys():
-    f = open('StitchData/chemicals.inchikeys_part.v5.0.tsv', 'r')
+    f = open('StitchData/chemicals.inchikeys_part.v5.0.tsv', 'r',encoding='utf-8')
     next(f)
     for line in f:
         splitted = line.split('\t')
@@ -582,7 +432,7 @@ properties from durgbank_without_entries_which has_no_chemical_formular_or_seque
 
 
 def map_inchikeys_to_drugbank():
-    f = open('../drugbank/data/durgbank_without_entries_which has_no_chemical_formular_or_sequence.tsv', 'r')
+    f = open('../drugbank/data/durgbank_without_entries_which has_no_chemical_formular_or_sequence.tsv', 'r',encoding='utf-8')
     next(f)
     # list of all index from in this step mapped stereo ids
     delete_index = []
@@ -665,7 +515,7 @@ properties from durgbank_without_entries_which has_no_chemical_formular_or_seque
 
 
 def map_name_to_drugbank():
-    f = open('../drugbank/data/durgbank_without_entries_which has_no_chemical_formular_or_sequence.tsv', 'r')
+    f = open('../drugbank/data/durgbank_without_entries_which has_no_chemical_formular_or_sequence.tsv', 'r',encoding='utf-8')
     next(f)
     # list of all index from in this step mapped stereo ids
     delete_index = []
@@ -836,7 +686,7 @@ are add and a connection to the sider drug is generated. Further new compound fo
 
 def integrate_sider_drugs_into_hetionet():
     # a file with all sider drugs which has a drugbank id but this has no chemical information
-    without_chemical = open('drug/durgbank_without_chemical_seq.tsv', 'w')
+    without_chemical = open('drug/durgbank_without_chemical_seq.tsv', 'w',encoding='utf-8')
     without_chemical.write('DB \t pubchem \n')
 
     get_drugbank_information.load_all_drugbank_ids_in_dictionary()
@@ -1047,7 +897,7 @@ def integrate_relationship_from_sider_into_hetionet():
     number_of_in_new_connection = 0
     # file counter
     i = 1
-    h = open('map_connection_of_sider_in_hetionet_' + str(i) + '.cypher', 'w')
+    h = open('map_connection_of_sider_in_hetionet_' + str(i) + '.cypher', 'w',encoding='utf-8')
     h.write('begin \n')
     i += 1
     # counter of all queries
@@ -1172,7 +1022,7 @@ def integrate_relationship_from_sider_into_hetionet():
             h.write('commit \n')
             if counter_connection % creation_max == 0:
                 h.close()
-                h = open('map_connection_of_sider_in_hetionet_' + str(i) + '.cypher', 'w')
+                h = open('map_connection_of_sider_in_hetionet_' + str(i) + '.cypher', 'w',encoding='utf-8')
                 h.write('begin \n')
                 i += 1
             h.write('begin \n')
@@ -1213,13 +1063,6 @@ def integration_drug():
     print('Load in all drugs from sider in dictionary')
 
     load_sider_drug_in_dict()
-
-    #    print('###########################################################################################################################')
-    #    
-    #    print (datetime.datetime.utcnow())
-    #    print('Generate short form of stitch: chemical.source.v5.0.tsv')
-    #    
-    #    generate_short_file_with_important_information_stitch()
 
     print(
         '###########################################################################################################################')
@@ -1278,50 +1121,11 @@ def integration_drug():
     integrate_sider_drugs_into_hetionet()
 
 
-'''
-this start only the function the are use for generate the map cyper
-'''
-
-
-def integrate_side_effects():
-    print (datetime.datetime.utcnow())
-    print('Load in all side effect from hetionet in dictionary')
-
-    load_side_effects_from_hetionet_in_dict()
-
-    print(
-        '###########################################################################################################################')
-
-    print (datetime.datetime.utcnow())
-    print('Load in all side effect from sider in dictionary')
-
-    load_sider_in_dict()
-
-    print(
-        '###########################################################################################################################')
-
-    print (datetime.datetime.utcnow())
-    print('map sider to hetionet per cypher')
-
-    integrate_sider_side_effect_to_hetionet()
-
-    print(
-        '###########################################################################################################################')
-
-
 def main():
     print (datetime.datetime.utcnow())
     print('Generate connection with neo4j')
 
     create_connection_with_neo4j()
-
-    print(
-        '###########################################################################################################################')
-
-    print (datetime.datetime.utcnow())
-    print('Integrate sider side effects into hetionet')
-
-    integrate_side_effects()
 
     print(
         '###########################################################################################################################')
