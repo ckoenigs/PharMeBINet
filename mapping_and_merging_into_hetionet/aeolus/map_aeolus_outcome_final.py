@@ -529,7 +529,7 @@ def integrate_aeolus_into_hetionet():
     cypher_file= open('cypher_se.cypher','w')
 
     # query for the update nodes and relationship
-    query_update= query_start+' , (n:SideEffect{identifier:line.SE}) Set a.cuis=split(line.cuis,"|"), n.resource=split(line.resources,"|") , n.aeolus="yes", n.xrefs=n.xrefs+"MedDRA:"+line.aSE Create (n)-[:equal_to_Aeolus_SE{mapping_method:line.mapping_method}]->(a); \n'
+    query_update= query_start+' , (n:SideEffect{identifier:line.SE}) Set a.cuis=split(line.cuis,"|"), n.resource=split(line.resources,"|") , n.aeolus="yes", n.xrefs=n.xrefs+("MedDRA:"+line.aSE) Create (n)-[:equal_to_Aeolus_SE{mapping_method:line.mapping_method}]->(a); \n'
     query_update= query_update %("se_existing")
     cypher_file.write(query_update)
 

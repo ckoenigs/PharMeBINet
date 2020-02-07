@@ -56,7 +56,7 @@ class Drug_Aeolus:
 
 
 # dictionary with all compounds with id (drugbank id) as key and class DrugHetionet as value
-dict_all_drug = Dict[str, DrugHetionet]
+dict_all_drug = {}
 
 # dictionary with all aeolus drugs with key drug_concept_id (OHDSI ID) and value is class Drug_Aeolus
 dict_aeolus_drugs = {}
@@ -103,7 +103,7 @@ def load_compounds_from_hetionet():
         inchi = result['inchi'] if 'inchi' in result else ''
         name = result['name']
         resource=result['resource'] if 'resource' in result else []
-        xrefs=results['xrefs'] if 'xrefs' in result else []
+        xrefs=result['xrefs'] if 'xrefs' in result else []
 
         drug = DrugHetionet(licenses, identifier, inchikey, inchi, name,resource, xrefs )
 
@@ -151,8 +151,9 @@ Search in RxNorm for mapping
 '''
 def search_for_mapping_in_rxnorm(sab,rxnorm_id,drug_concept_id, mapping_string):
     cur = conRxNorm.cursor()
-    query = ("Select RXCUI,LAT,CODE,SAB,STR From RXNCONSO Where SAB = '%s' and RXCUI= %s ;")
-    rows_counter = cur.execute(query, (sab,rxnorm_id,))
+    query = ("Select RXCUI,LAT,CODE,SAB,STR From RXNCONSO Where SAB = '%s' and RXCUI= '%s' ;")
+    query=query %(sab,rxnorm_id)
+    rows_counter = cur.execute(query)
     name = dict_aeolus_drugs[drug_concept_id].name.lower()
     found_a_mapping=False
     if rows_counter > 0:
@@ -163,7 +164,7 @@ def search_for_mapping_in_rxnorm(sab,rxnorm_id,drug_concept_id, mapping_string):
         has_same_name = False
         # check if their are drugbank ids where the name is the same as in aeolus
         for (rxcui, lat, code, sab, label,) in cur:
-            label = label.lower().decode('utf-8')
+            label = label.lower()
             if code in dict_all_drug:
                 dict_all_drug[code].xrefs.append('RxNorm_Cui:'+rxcui)
                 mapped_ids.append(code)
@@ -176,7 +177,7 @@ def search_for_mapping_in_rxnorm(sab,rxnorm_id,drug_concept_id, mapping_string):
             mapped_ids_same_name = list(set(mapped_ids_same_name))
             dict_aeolus_drug_mapped_ids[drug_concept_id] = mapped_ids_same_name
             dict_aeolus_drugs[drug_concept_id].set_how_mapped(mapping_string)
-        else:
+        elif found_a_mapping:
             mapped_ids = list(set(mapped_ids))
             dict_aeolus_drug_mapped_ids[drug_concept_id] = mapped_ids
             dict_aeolus_drugs[drug_concept_id].set_how_mapped(mapping_string)
@@ -285,10 +286,9 @@ def map_to_mesh_chemical():
     delete_list_without_DB = []
     for rxnorm_id in list_aeolus_drugs_without_drugbank_id:
         drug_concept_id = dict_rxnorm_to_drug_concept_id[rxnorm_id]
-        if not search_for_mapping_in_rxnorm('MSH', rxnorm_id, drug_concept_id, 'rxcui map to MESH'):
-            list_aeolus_drugs_without_drugbank_id.append(rxnorm_id)
-        else:
+        if search_for_mapping_in_rxnorm('MSH', rxnorm_id, drug_concept_id, 'rxcui map to MESH'):
             delete_list_without_DB.append(list_aeolus_drugs_without_drugbank_id.index(rxnorm_id))
+
 
     # delete the new mapped rxnorm cuis from not map list
     delete_list_without_DB = list(set(delete_list_without_DB))
@@ -296,6 +296,7 @@ def map_to_mesh_chemical():
     delete_list_without_DB = list(reversed(delete_list_without_DB))
     for index in delete_list_without_DB:
         list_aeolus_drugs_without_drugbank_id.pop(index)
+    print('length of list with cui but no drugbank:' + str(len(list_aeolus_drugs_without_drugbank_id)))
 
 
 # list of drug_concept_ids which are map to hetionet
@@ -305,13 +306,22 @@ list_not_mapped = []
 
 # genertate file for the different map methods
 map_rxcui = open('drug/aeolus_map_with_use_of_rxcui.tsv', 'w')
-map_rxcui.write('rxnorm_cui \t drugbank_ids with | as seperator  \n')
+csv_rxcui=csv.writer(map_rxcui,delimiter='\t')
+csv_rxcui.writerow(['rxnorm_cui','drugbank_ids with | as seperator', 'name'])
 
 map_name = open('drug/aeolus_map_with_use_of_table_of_name_mapping.tsv', 'w')
-map_name.write('rxnorm_cui \t drugbank_ids with | as seperator  \n')
+csv_name=csv.writer(map_name,delimiter='\t')
+csv_name.writerow(['rxnorm_cui','drugbank_ids with | as seperator', 'name'])
 
 map_with_inchikey_unii = open('drug/aeolus_map_with_use_of_unii_and_inchikey.tsv', 'w')
-map_with_inchikey_unii.write('rxnorm_cui \t drugbank_ids with | as seperator  \n')
+csv__inchikey_unii=csv.writer(map_with_inchikey_unii,delimiter='\t')
+csv__inchikey_unii.writerow(['rxnorm_cui','drugbank_ids with | as seperator', 'name'])
+
+
+map_mesh = open('drug/aeolus_map_with_use_of_mesh.tsv', 'w')
+csv_mesh=csv.writer(map_mesh,delimiter='\t')
+csv_mesh.writerow(['rxnorm_cui','drugbank_ids with | as seperator', 'name'])
+
 
 # generate file of not mapped aeolus drugs
 not_mapped = open('drug/not_mapped_rxcuis.tsv', 'w')
@@ -319,9 +329,10 @@ not_mapped.write('drug_concept_id \t rxcui \t name \n')
 
 # dictionary with for every how_mapped has a different file
 dict_how_mapped_files = {
-    'map rxnorm to drugbank with use of name mapping': map_name,
-    'rxcui map to drugbank': map_rxcui,
-    'map rxnorm to drugbank with use of dhimmel inchikey and unii': map_with_inchikey_unii}
+    'map rxnorm to drugbank with use of name mapping': csv_name,
+    'rxcui map to drugbank': csv_rxcui,
+    'map rxnorm to drugbank with use of dhimmel inchikey and unii': csv__inchikey_unii,
+    'rxcui map to MESH':csv_mesh}
 
 # generate file with rxnom and a list of drugbank ids and wheere there are from
 multiple_drugbankids = open('aeolus_multiple_drugbank_ids.tsv', 'w')
@@ -340,7 +351,9 @@ def map_aeolus_drugs_to_hetionet():
         string_list_mapped_ids = "|".join(mapped_ids)
         rxnorm_cui = dict_aeolus_drugs[drug_concept_id].concept_code
         how_mapped = dict_aeolus_drugs[drug_concept_id].how_mapped
-        dict_how_mapped_files[how_mapped].write(rxnorm_cui + '\t' + string_list_mapped_ids + '\n')
+        dict_how_mapped_files[how_mapped].writerow([rxnorm_cui , string_list_mapped_ids, dict_aeolus_drugs[drug_concept_id].name ])
+        if drug_concept_id=='42903441':
+            print('blub')
 
         if len(mapped_ids) > 1:
             multiple_drugbankids.write(rxnorm_cui + '\t' + string_list_mapped_ids + '\t' + how_mapped + '\n')
@@ -379,27 +392,27 @@ Generate cypher file to update or create the relationships in hetionet
 def generate_cypher_file():
     cypher_file=open('cypher.cypher','w',encoding='utf-8')
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/drug/mapped.csv" As line Match (a:AeolusDrug{drug_concept_id:line.aeolus_id}),(n:Compound{identifier:line.chemical_id}) Set a.mapped_id=split(line.mapped_ids,'|'), a.how_mapped=line.how_mapped ,  n.aeolus="yes",n.resource= split(line.resource,'|') , n.xrefs=split(line.xrefs,'|') Create (n)-[:equal_to_Aeolus_drug]->(a); \n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/aeolus/drug/mapped.csv" As line Match (a:AeolusDrug{drug_concept_id:line.aeolus_id}),(n:Compound{identifier:line.chemical_id}) Set a.mapped_id=split(line.mapped_ids,'|'), a.how_mapped=line.how_mapped ,  n.aeolus="yes",n.resource= split(line.resource,'|') , n.xrefs=split(line.xrefs,'|') Create (n)-[:equal_to_Aeolus_drug]->(a); \n'''
 
     cypher_file.write(query)
 
     cypher_file.close()
 
-    #relationship queries
-    cypher_file = open('cypher.cypher', 'w', encoding='utf-8')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ctd/drug/mapped_rela_se.csv" As line Match (c:Compound{identifier:line.chemical_id}),(r:SideEffect{identifier:line.disease_sideeffect_id})  Create (c)-[:CAUSES_CcSE{license:"CC0 1.0",unbiased:"false",source:'AEOLUS',countA:line.countA, prr_95_percent_upper_confidence_limit:line.prr_95_percent_upper_confidence_limit, prr:line.prr, countB:line.countB, prr_95_percent_lower_confidence_limit:line.prr_95_percent_lower_confidence_limit, ror:line.ror, ror_95_percent_upper_confidence_limit:line.ror_95_percent_upper_confidence_limit, ror_95_percent_lower_confidence_limit:line.ror_95_percent_lower_confidence_limit, countC:line.countC, drug_outcome_pair_count:line.drug_outcome_pair_count, countD:line.countD, ror_min:line.ror_min, ror_max:line.ror_max, prr_min:line.prr_min, prr_max:line.prr_max,  aeolus:'yes', how_often_appears:"1", resource:['AEOLUS']}]->(r); \n'''
-    cypher_file.write(query)
-
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ctd/drug/mapped_rela_se.csv" As line Match (c:Compound{identifier:line.chemical_id})-[l:CAUSES_CcSE]-(r:SideEffect{identifier:line.disease_sideeffect_id}) Set l.countA=line.countA, l.prr_95_percent_upper_confidence_limit=line.prr_95_percent_upper_confidence_limit, l.prr=line.prr, l.countB=line.countB, l.prr_95_percent_lower_confidence_limit=line.prr_95_percent_lower_confidence_limit, l.ror=line.ror, l.ror_95_percent_upper_confidence_limit=line.ror_95_percent_upper_confidence_limit, l.ror_95_percent_lower_confidence_limit=line.ror_95_percent_lower_confidence_limit, l.countC=line.countC, l.drug_outcome_pair_count=line.drug_outcome_pair_count, l.countD=line.countD, l.aeolus='yes', l.how_often_appears=line., l.resource=split(line.,"|"), l.ror_min=line.ror_min, l.ror_max=line.ror_max, l.prr_min=line.prr_min, l.prr_max=line.prr_max; \n'''
-    cypher_file.write(query)
-
-    cypher_file = open('cypher.cypher', 'w', encoding='utf-8')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ctd/drug/mapped_rela_se.csv" As line Match (c:Compound{identifier:line.chemical_id}),(r:Disease{identifier:line.disease_sideeffect_id})  Create (c)-[:INDICATES_CiD{license:"CC0 1.0",unbiased:"false",source:'AEOLUS',countA:line.countA, prr_95_percent_upper_confidence_limit:line.prr_95_percent_upper_confidence_limit, prr:line.prr, countB:line.countB, prr_95_percent_lower_confidence_limit:line.prr_95_percent_lower_confidence_limit, ror:line.ror, ror_95_percent_upper_confidence_limit:line.ror_95_percent_upper_confidence_limit, ror_95_percent_lower_confidence_limit:line.ror_95_percent_lower_confidence_limit, countC:line.countC, drug_outcome_pair_count:line.drug_outcome_pair_count, countD:line.countD, ror_min:line.ror_min, ror_max:line.ror_max, prr_min:line.prr_min, prr_max:line.prr_max,  aeolus:'yes', how_often_appears:"1", resource:['AEOLUS']}]->(r); \n'''
-    cypher_file.write(query)
-
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ctd/drug/mapped_rela_se.csv" As line Match (c:Compound{identifier:line.chemical_id})-[l:INDICATES_CiD]-(r:Disease{identifier:line.disease_sideeffect_id}) Set l.countA=line.countA, l.prr_95_percent_upper_confidence_limit=line.prr_95_percent_upper_confidence_limit, l.prr=line.prr, l.countB=line.countB, l.prr_95_percent_lower_confidence_limit=line.prr_95_percent_lower_confidence_limit, l.ror=line.ror, l.ror_95_percent_upper_confidence_limit=line.ror_95_percent_upper_confidence_limit, l.ror_95_percent_lower_confidence_limit=line.ror_95_percent_lower_confidence_limit, l.countC=line.countC, l.drug_outcome_pair_count=line.drug_outcome_pair_count, l.countD=line.countD, l.aeolus='yes', l.how_often_appears=line., l.resource=split(line.,"|"), l.ror_min=line.ror_min, l.ror_max=line.ror_max, l.prr_min=line.prr_min, l.prr_max=line.prr_max; \n'''
-    cypher_file.write(query)
-    cypher_file.close()
+    # #relationship queries
+    # cypher_file = open('cypher_rela.cypher', 'w', encoding='utf-8')
+    # query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ctd/drug/mapped_rela_se.csv" As line Match (c:Compound{identifier:line.chemical_id}),(r:SideEffect{identifier:line.disease_sideeffect_id})  Create (c)-[:CAUSES_CcSE{license:"CC0 1.0",unbiased:"false",source:'AEOLUS',countA:line.countA, prr_95_percent_upper_confidence_limit:line.prr_95_percent_upper_confidence_limit, prr:line.prr, countB:line.countB, prr_95_percent_lower_confidence_limit:line.prr_95_percent_lower_confidence_limit, ror:line.ror, ror_95_percent_upper_confidence_limit:line.ror_95_percent_upper_confidence_limit, ror_95_percent_lower_confidence_limit:line.ror_95_percent_lower_confidence_limit, countC:line.countC, drug_outcome_pair_count:line.drug_outcome_pair_count, countD:line.countD, ror_min:line.ror_min, ror_max:line.ror_max, prr_min:line.prr_min, prr_max:line.prr_max,  aeolus:'yes', how_often_appears:"1", resource:['AEOLUS']}]->(r); \n'''
+    # cypher_file.write(query)
+    #
+    # query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ctd/drug/mapped_rela_se.csv" As line Match (c:Compound{identifier:line.chemical_id})-[l:CAUSES_CcSE]-(r:SideEffect{identifier:line.disease_sideeffect_id}) Set l.countA=line.countA, l.prr_95_percent_upper_confidence_limit=line.prr_95_percent_upper_confidence_limit, l.prr=line.prr, l.countB=line.countB, l.prr_95_percent_lower_confidence_limit=line.prr_95_percent_lower_confidence_limit, l.ror=line.ror, l.ror_95_percent_upper_confidence_limit=line.ror_95_percent_upper_confidence_limit, l.ror_95_percent_lower_confidence_limit=line.ror_95_percent_lower_confidence_limit, l.countC=line.countC, l.drug_outcome_pair_count=line.drug_outcome_pair_count, l.countD=line.countD, l.aeolus='yes', l.how_often_appears=line., l.resource=split(line.,"|"), l.ror_min=line.ror_min, l.ror_max=line.ror_max, l.prr_min=line.prr_min, l.prr_max=line.prr_max; \n'''
+    # cypher_file.write(query)
+    #
+    # cypher_file = open('cypher.cypher', 'w', encoding='utf-8')
+    # query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ctd/drug/mapped_rela_se.csv" As line Match (c:Compound{identifier:line.chemical_id}),(r:Disease{identifier:line.disease_sideeffect_id})  Create (c)-[:INDICATES_CiD{license:"CC0 1.0",unbiased:"false",source:'AEOLUS',countA:line.countA, prr_95_percent_upper_confidence_limit:line.prr_95_percent_upper_confidence_limit, prr:line.prr, countB:line.countB, prr_95_percent_lower_confidence_limit:line.prr_95_percent_lower_confidence_limit, ror:line.ror, ror_95_percent_upper_confidence_limit:line.ror_95_percent_upper_confidence_limit, ror_95_percent_lower_confidence_limit:line.ror_95_percent_lower_confidence_limit, countC:line.countC, drug_outcome_pair_count:line.drug_outcome_pair_count, countD:line.countD, ror_min:line.ror_min, ror_max:line.ror_max, prr_min:line.prr_min, prr_max:line.prr_max,  aeolus:'yes', how_often_appears:"1", resource:['AEOLUS']}]->(r); \n'''
+    # cypher_file.write(query)
+    #
+    # query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ctd/drug/mapped_rela_se.csv" As line Match (c:Compound{identifier:line.chemical_id})-[l:INDICATES_CiD]-(r:Disease{identifier:line.disease_sideeffect_id}) Set l.countA=line.countA, l.prr_95_percent_upper_confidence_limit=line.prr_95_percent_upper_confidence_limit, l.prr=line.prr, l.countB=line.countB, l.prr_95_percent_lower_confidence_limit=line.prr_95_percent_lower_confidence_limit, l.ror=line.ror, l.ror_95_percent_upper_confidence_limit=line.ror_95_percent_upper_confidence_limit, l.ror_95_percent_lower_confidence_limit=line.ror_95_percent_lower_confidence_limit, l.countC=line.countC, l.drug_outcome_pair_count=line.drug_outcome_pair_count, l.countD=line.countD, l.aeolus='yes', l.how_often_appears=line., l.resource=split(line.,"|"), l.ror_min=line.ror_min, l.ror_max=line.ror_max, l.prr_min=line.prr_min, l.prr_max=line.prr_max; \n'''
+    # cypher_file.write(query)
+    # cypher_file.close()
 
     #the general cypher file to update all chemicals and relationship which are not from aeolus
     cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')
@@ -430,7 +443,7 @@ if no hetionet node is found, then generate a new node for compound
 def integrate_aeolus_drugs_into_hetionet():
     # count all possible mapped aeolus drug
     counter = 0
-    # count all qeolus which are only mapped to illegal drugbank ids
+    # count all aeolus which are only mapped to illegal drugbank ids
     counter_with_one_which_is_removed = 0
 
     for drug_concept_id, mapped_ids in dict_aeolus_drug_mapped_ids.items():
@@ -533,9 +546,33 @@ def main():
     '###########################################################################################################################')
 
     print (datetime.datetime.utcnow())
-    print('Map the drugbank id from the aeolus drug to the drugbank ids in hetionet')
+    print('map with mesh to chemical')
+
+    map_to_mesh_chemical()
+
+    print(
+    '###########################################################################################################################')
+
+    print (datetime.datetime.utcnow())
+    print('Map the drugbank id from the aeolus drug to the chemicals in hetionet')
 
     map_aeolus_drugs_to_hetionet()
+
+    print(
+    '###########################################################################################################################')
+
+    print (datetime.datetime.utcnow())
+    print('Generate csv of mapped drugs')
+
+    integrate_aeolus_drugs_into_hetionet()
+
+    print(
+    '###########################################################################################################################')
+
+    print (datetime.datetime.utcnow())
+    print('Generate cypher')
+
+    generate_cypher_file()
 
     print(
     '###########################################################################################################################')
