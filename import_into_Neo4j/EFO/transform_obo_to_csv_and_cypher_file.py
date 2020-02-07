@@ -97,7 +97,8 @@ def extract_information_from_block(group, is_type):
             # some other relationships are not defined A RELATIONSHIP but have a ' ! '
             if value.find(' ! ') == -1:
                 if key_term!='synonym':
-
+                    if value=='DOID:4606':
+                        print('test')
                     add_information_to_dictionary(dict_all_info, key_term, value)
                     set_all_properties_in_database.add(key_term)
                 else:
@@ -131,6 +132,8 @@ def extract_information_from_block(group, is_type):
                 set_properties_with_bang.add(key_term)
                 identifier=dict_all_info['id']
                 parent_id = value.split(' ! ')[0].strip().split(' {')[0]
+                if parent_id=='DOID:4606':
+                    print('test')
                 counter_rela+=1
                 splitted_parent_id=parent_id.split(' ')
                 if len(splitted_parent_id)>1:
@@ -153,6 +156,8 @@ def extract_information_from_block(group, is_type):
             rela_info = value.split('!')[0].split(' ')
             rela_type = rela_info[0]
             parent_id = rela_info[1]
+            if parent_id == 'DOID:4606':
+                print('test')
             identifier=dict_all_info['id']
             dict_other_rela_parent_child[rela_type].add((parent_id, identifier))
             list_other_rela.add(rela_type)
@@ -225,8 +230,8 @@ def generate_cypher_file():
 
     print(list_other_rela)
 
-    header_for_two=['child_id', 'parent_id']
-    heeader_for_three=['child_id', 'parent_id','rela']
+    header_for_two=['parent_id','child_id']
+    heeader_for_three=['parent_id','child_id', 'rela']
 
     # generate cypher query and csv for all rela types
     for rela_type, list_of_infos in dict_other_rela_parent_child.items():
