@@ -40,16 +40,20 @@ writer_associated.writerow(['ChemicalID', 'DiseaseID','omimIDs','directEvidences
 put the information in the right csv file
 '''
 def add_information_into_te_different_csv_files( chemical_id,disease_id, information, csvfile):
-    omimIDs = '|'.join(filter(bool, information[0]))
-    directEvidences = '|'.join(filter(bool, information[1]))
-    pubMedIDs = '|'.join(filter(bool, information[2]))
-    inferenceScores = '|'.join(filter(bool, information[3]))
-    inferenceGeneSymbols ='|'.join(filter(bool, information[4]))
+    omimIDs = '|'.join(list(filter(bool, information[0])))
+    directEvidences = '|'.join(list(filter(bool, information[1])))
+    pubMedIDs = '|'.join(list(filter(bool, information[2])))
+    inferenceScores = '|'.join(list(filter(bool, information[3])))
+    inferenceGeneSymbols ='|'.join(list(filter(bool, information[4])))
     csvfile.writerow([chemical_id, disease_id,omimIDs,directEvidences,pubMedIDs, inferenceScores,inferenceGeneSymbols])
 
 # csvfile_inf= open('chemical_disease/inf.csv', 'w')
 # writer_inf = csv.writer(csvfile_inf, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 # writer_inf.writerow(['ChemicalID', 'DiseaseID', 'inferenceScores'])
+
+
+# generate cypher file
+cypherfile = open('chemical_disease/cypher.cypher', 'w', encoding='utf-8')
 
 '''
 get all relationships between gene and pathway, take the hetionet identifier an save all important information in a csv
@@ -58,19 +62,10 @@ also generate a cypher file to integrate this information
 
 
 def generate_cypher():
-    # generate cypher file
-    cypherfile = open('chemical_disease/cypher.cypher', 'w', encoding='utf-8')
     list_file_name_rela_name=[('induces','INDUCES_CiD'),('treat','TREATS_CtD'),('associated','ASSOCIATES_CaD')]
-    cypherfile.write('begin\n')
-    cypherfile.write(
-        'Match (n:Chemical)-[r:TREATS_CtD]->(b:Disease) Where not exists(r.hetionet) Set r.hetionet="yes", r.resource=["Hetionet"];\n')
-    cypherfile.write('commit\n')
     for (file_name,rela_name) in list_file_name_rela_name:
-        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/chemical_disease/%s.csv" As line Match (n:Chemical{identifier:line.ChemicalID})-[r:%s]->(b:Disease{identifier:line.DiseaseID}) Where r.ctd='no' Set r.how_often=r.how_often+1 , r.resource=r.resource+'CTD';\n ''' %(file_name,rela_name)
-        cypherfile.write(query)
-        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/chemical_disease/%s.csv" As line Match (n:Chemical{identifier:line.ChemicalID})-[r:%S]->(b:Disease{identifier:line.DiseaseID}) Set r.ctd='yes', r.directEvidence=split(line.directEvidences,'|'),  r.inferenceGeneSymbol=split(line.inferenceGeneSymbols,'|'), r.inferenceScore=split(line.inferenceScores,'|'), r.pubMedIDs=split(line.pubMedIDs,'|'), r.url_ctd='http://ctdbase.org/detail.go?type=chem&acc='+line.ChemicalID ;\n ''' %(file_name,rela_name)
-        cypherfile.write(query)
-        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/chemical_disease/%s.csv" As line Match (n:Chemical{identifier:line.ChemicalID}), (b:Disease{identifier:line.DiseaseID}) Merge (n)-[r:%s]->(b) On Create Set r.new='yes', r.directEvidence=split(line.directEvidences,'|'), r.ctd='yes', r.pubMedIDs=split(line.pubMedIDs,'|'), r.resource=["CTD"], r.how_often=1, r.inferenceGeneSymbol=split(line.inferenceGeneSymbols,'|'), r.inferenceScore=split(line.inferenceScores,'|') , r.url_ctd='http://ctdbase.org/detail.go?type=chem&acc='+line.ChemicalID, r.url='http://ctdbase.org/detail.go?type=chem&acc='+line.ChemicalID , r.source="CTD", r.licence="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased='true' ;\n ''' %(file_name,rela_name)
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/chemical_disease/%s.csv" As line Match  (n:Chemical{identifier:line.ChemicalID}), (b:Disease{identifier:line.DiseaseID}) Merge (n)-[r:%s]->(b) On Match Set r.how_often=r.how_often+1 , r.resource=r.resource+'CTD', r.ctd='yes', r.directEvidence=split(line.directEvidences,'|'),  r.inferenceGeneSymbol=split(line.inferenceGeneSymbols,'|'), r.inferenceScore=split(line.inferenceScores,'|'), r.pubMedIDs=split(line.pubMedIDs,'|'), r.url_ctd='http://ctdbase.org/detail.go?type=chem&acc='+line.ChemicalID On Create Set r.new='yes', r.directEvidence=split(line.directEvidences,'|'), r.ctd='yes', r.pubMedIDs=split(line.pubMedIDs,'|'), r.resource=["CTD"], r.how_often=1, r.inferenceGeneSymbol=split(line.inferenceGeneSymbols,'|'), r.inferenceScore=split(line.inferenceScores,'|') , r.url_ctd='http://ctdbase.org/detail.go?type=chem&acc='+line.ChemicalID, r.url='http://ctdbase.org/detail.go?type=chem&acc='+line.ChemicalID , r.source="CTD", r.licence="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased='true' ;\n '''
+        query= query %(file_name,rela_name)
         cypherfile.write(query)
 
 
@@ -135,7 +130,7 @@ def get_all_important_relationships_and_write_into_files():
 
         start = time.time()
         # compound drugbank id
-        query = '''MATCH p=(a)-[r:equal_chemical_CTD]->(b)  Where not exists(a.integrated_drugbank)  With  a, collect(b.chemical_id) As ctd Limit ''' + str(
+        query = '''MATCH p=(a:Compound)-[r:equal_chemical_CTD]->(b:CTDchemical)  Where not exists(a.integrated_drugbank)  With  a, collect(b.chemical_id) As ctd Limit ''' + str(
             number_of_compound_to_work_with) + ''' Set a.integrated_drugbank='yes'  RETURN a.identifier , ctd '''
         # print(query)
         # sys.exit()
@@ -174,7 +169,7 @@ def get_all_important_relationships_and_write_into_files():
         # counter_of_used_chemical+=count_chemicals_drugbank
 
         # get all chemical ids in hetionet and the ctd chemicals
-        query = '''MATCH p=(a)-[r:equal_to_CTD_chemical]->(b)  Where not exists(a.integrated) With  a, collect(b.chemical_id) As ctd Limit ''' + str(
+        query = '''MATCH p=(a:Chemical)-[r:equal_to_CTD_chemical]->(b:CTDchemical)  Where not exists(a.integrated) With  a, collect(b.chemical_id) As ctd Limit ''' + str(
             number_of_compound_to_work_with) + ''' Set a.integrated='yes'  RETURN a.identifier , ctd '''
 
         # print(query)
@@ -255,7 +250,7 @@ def get_all_important_relationships_and_write_into_files():
                                                                []]
 
         all_chemicals_id = '","'.join(all_chemicals_id)
-        query = '''MATCH (chemical:CTDchemical)-[r:associates_CD]->(disease:CTDdisease) Where (disease)-[:equal_to_D_Disease_CTD]-() and chemical.chemical_id in ["''' + all_chemicals_id + '''"]  RETURN chemical.chemical_id, chemical.drugBankIDs,  r, disease.mondos, disease.disease_id '''
+        query = '''MATCH (chemical:CTDchemical)-[r:associates_CD]->(disease:CTDdisease) Where (disease)-[]-(:Disease) and chemical.chemical_id in ["''' + all_chemicals_id + '''"]  RETURN chemical.chemical_id, chemical.drugBankIDs,  r, disease.mondos, disease.disease_id '''
         results = g.run(query)
 
         time_measurement = time.time() - start
@@ -286,7 +281,7 @@ def get_all_important_relationships_and_write_into_files():
             #     counter_over_100+=1
 
             if inferenceScore=='' and directEvidence=='':
-                sys.exit('some rela in ctd chemical-disease has neither inference nor direct efidence ')
+                sys.exit('some rela in ctd chemical-disease has neither inference nor direct evidence ')
             elif directEvidence =='':
                 continue
 
@@ -323,7 +318,7 @@ def get_all_important_relationships_and_write_into_files():
         print(len(dict_chemical_disease))
 
         for (chemical_id, disease_id), information in dict_chemical_disease.items():
-            directEvidences = filter(bool, information[1])
+            directEvidences = list(filter(bool, information[1]))
             counter_integrated_in_file_rela+=1
             # if (chemical_id,disease_id)==('DB00649','MONDO:0011565'):
             #     print('blub')
@@ -357,8 +352,8 @@ def get_all_important_relationships_and_write_into_files():
     print('number of chemicals:'+str(len(list_mesh)))
     print('number of chemicals with db:'+str(len(list_durgbank_mesh)))
 
-    query = '''MATCH (n:Chemical) REMOVE n.integrated, n.integrated_drugbank'''
-    g.run(query)
+    query = '''MATCH (n:Chemical) REMOVE n.integrated, n.integrated_drugbank;\n'''
+    cypherfile.write(query)
 
     print('Average finding disease:' + str(np.mean(list_time_all_finding_chemical)))
     print('Average dict monde:' + str(np.mean(list_time_dict_chemical)))
@@ -387,9 +382,17 @@ def main():
         '###########################################################################################################################')
 
     print (datetime.datetime.utcnow())
-    print('Take all chemical-disease relationships and generate csv and cypher file')
+    print('generate  cypher file')
 
     generate_cypher()
+
+    print(
+        '###########################################################################################################################')
+
+    print (datetime.datetime.utcnow())
+    print('Take all chemical-disease relationships and generate csv')
+
+    get_all_important_relationships_and_write_into_files()
 
     print(
         '###########################################################################################################################')
