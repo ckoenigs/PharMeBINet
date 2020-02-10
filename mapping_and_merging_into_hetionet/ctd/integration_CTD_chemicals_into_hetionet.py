@@ -478,7 +478,7 @@ def map_cui_to_drugbank_with_umls():
                     drugbank_ids.append(code)
             drugbank_ids = list(set(drugbank_ids))
             if len(drugbank_ids)>0:
-
+                drugbank_ids_name=[]
                 if dict_drugs_CTD_without_drugbankIDs[mesh_id].name in dict_synonym_to_drugbank_id:
                     drugbank_ids_name = dict_synonym_to_drugbank_id[dict_drugs_CTD_without_drugbankIDs[mesh_id].name]
                 drugbank_ids=list(set(drugbank_ids).union(drugbank_ids_name))
@@ -598,7 +598,7 @@ def map_rxcui_to_drugbank_with_rxnorm():
                     drugbank_ids.append(code)
             drugbank_ids = list(set(drugbank_ids))
             if len(drugbank_ids)>0:
-
+                drugbank_ids_name=[]
                 if dict_drugs_CTD_without_drugbankIDs[mesh_id].name in dict_synonym_to_drugbank_id:
                     drugbank_ids_name = dict_synonym_to_drugbank_id[dict_drugs_CTD_without_drugbankIDs[mesh_id].name]
                 drugbank_ids=list(set(drugbank_ids).union(drugbank_ids_name))
@@ -722,27 +722,27 @@ list_new_compounds = []
 # all how_mapped files with mappings
 map_ctd = open('chemical/ctd_chemical_to_compound_map_from_ctd.tsv', 'w')
 csv_mapped_ctd=csv.writer(map_ctd,delimiter='\t')
-csv_mapped_ctd.writerow('MESH \t drugbank_ids with | as seperator  \n')
+csv_mapped_ctd.writerow(['MESH','drugbank_ids with | as seperator'])
 
 map_with_cui = open('chemical/ctd_chemical_to_compound_map_use_UMLS_cui.tsv', 'w')
 csv_mapped_cui=csv.writer(map_with_cui,delimiter='\t')
-csv_mapped_cui.writerow('MESH \t drugbank_ids with | as seperator  \n')
+csv_mapped_cui.writerow(['MESH','drugbank_ids with | as seperator'])
 
 map_with_rxcui = open('chemical/ctd_chemical_to_compound_map_use_rxnorm_rxcui.tsv', 'w')
 csv_mapped_rxcui=csv.writer(map_with_rxcui,delimiter='\t')
-csv_mapped_rxcui.writerow('MESH \t drugbank_ids with | as seperator  \n')
+csv_mapped_rxcui.writerow(['MESH','drugbank_ids with | as seperator'])
 
 map_with_rxcui_table = open('chemical/ctd_chemical_to_compound_map_use_rxcui_map_table.tsv', 'w')
 csv_mapped_table=csv.writer(map_with_rxcui_table,delimiter='\t')
-csv_mapped_table.writerow('MESH \t drugbank_ids with | as seperator  \n')
+csv_mapped_table.writerow(['MESH','drugbank_ids with | as seperator'])
 
 map_with_name = open('chemical/ctd_chemical_to_compound_map_use_names.tsv', 'w')
 csv_mapped_name=csv.writer(map_with_name,delimiter='\t')
-csv_mapped_name.writerow('MESH \t drugbank_ids with | as seperator  \n')
+csv_mapped_name.writerow(['MESH','drugbank_ids with | as seperator'])
 
 map_with_cas = open('chemical/ctd_chemical_to_compound_map_use_cas.tsv', 'w')
 csv_mapped_cas=csv.writer(map_with_cas,delimiter='\t')
-csv_mapped_cas.writerow('MESH \t drugbank_ids with | as seperator  \n')
+csv_mapped_cas.writerow(['MESH','drugbank_ids with | as seperator'])
 
 # dictionary with how_mapped as key and file as value
 dict_how_mapped_file = {
@@ -751,7 +751,8 @@ dict_how_mapped_file = {
     'use map table rxcui to map to drugbank ids': csv_mapped_table,
     'use rxnorm rxcui to map to drugbank ids': csv_mapped_rxcui,
     'use  name to map to drugbank ids': csv_mapped_name,
-    'use cas number to map to drugbank ids':csv_mapped_cas}
+    'use cas number to map to drugbank ids':csv_mapped_cas,
+    'cas-id from ctd':csv_mapped_cas}
 
 # generate file with mesh id and a list of drugbank ids and where they are from
 multiple_drugbankids = open('ctd_multiple_drugbank_ids.tsv', 'w')
