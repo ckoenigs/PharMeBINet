@@ -175,6 +175,10 @@ def generate_cypher_queries():
     query_new=''
     for property in mondo_prop:
         if property not in list_of_list_prop:
+            if property=='name':
+                query_new+= property+':split(line.'+property+', "(disease))")[0], '
+                query_update += 'n.' + property + '=split(line.' + property + ', "(disease))")[0], '
+                continue
             query_new+= property+':line.'+property+', '
             query_update += 'n.'+property + '=line.' + property + ', '
         else:
@@ -186,7 +190,7 @@ def generate_cypher_queries():
     query_new=query_start+ 'Create (n:Disease{'+query_new+'mondo:"yes", resource:["MonDO"], url:"http://bioportal.bioontology.org/ontologies/MONDO/"+line.id, license:" CC-BY-SA 3.0", source:"MonDO"}) '+query_end
     query_new=query_new %('new_nodes')
     cypher_file.write(query_new)
-    query_rela='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/monDO/output/%s.csv" As line FIELDTERMINATOR '\\t' Match (a:Disease{identifier:line.id_1}), (b:Disease{identifier:line.id_2}) Create (a)-[:SUBCLASS_OF_DsoD{unbiased:"false", source:"Monarch Disease Ontology", resource:['MonDO'] , mondo:'yes', license:" CC-BY-SA 3.0"}]->(b);\n'''
+    query_rela='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/monDO/output/%s.csv" As line FIELDTERMINATOR '\\t' Match (a:Disease{identifier:line.id_1}),(b:Disease{identifier:line.id_2}) Merge (a)-[r:IS_A_DiD]->(b) On CREATE Set r.unbiased="false",  r.source="Monarch Disease Ontology", r.resource=['MonDO'] , r.mondo='yes', r.license=" CC-BY-SA 3.0" On Match Set r.resource=['MonDO'], r.mondo='yes' ;\n'''
     query_rela= query_rela %('rela')
     cypher_file.write(query_rela)
 
