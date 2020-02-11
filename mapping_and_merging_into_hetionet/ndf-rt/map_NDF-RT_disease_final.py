@@ -39,12 +39,13 @@ class DiseaseNDF_RT:
     diseaseOntology_id: strin
     """
 
-    def __init__(self, code, name, properties, umls_cuis, mesh_cuis):
+    def __init__(self, code, name, properties, umls_cuis, mesh_cuis, rxnorm_cuis):
         self.code = code
         self.name = name
         self.properties = properties
         self.umls_cuis = umls_cuis
         self.mesh_cuis=mesh_cuis
+        self.rxnorm_cuis=rxnorm_cuis
 
     def set_diseaseOntology_id(self, diseaseOntology_id):
         self.diseaseOntology_id = diseaseOntology_id
@@ -107,18 +108,20 @@ def load_hetionet_diseases_in():
         umls_cuis_without_label = []
         dict_name_synonym_to_mondo_id[name.lower()] = identifier
         list_name_synonyms.append(name)
-        for umls_cui in umls_cuis:
-            if len(umls_cui) > 0:
-                cui= prepare_dictionary_xrefs_to_mondo(umls_cui,identifier,dict_umls_to_mondo)
-                umls_cuis_without_label.append(cui)
-
-        for synonym in synonyms:
-            synonym = synonym.split(':')[0].lower()
-            dict_name_synonym_to_mondo_id[synonym] = identifier
-            list_name_synonyms.append(synonym)
-        for xref in xrefs:
-            if xref.startswith('MESH:'):
-                prepare_dictionary_xrefs_to_mondo(xref, identifier, dict_mesh_to_mondo)
+        if umls_cuis:
+            for umls_cui in umls_cuis:
+                if len(umls_cui) > 0:
+                    cui= prepare_dictionary_xrefs_to_mondo(umls_cui,identifier,dict_umls_to_mondo)
+                    umls_cuis_without_label.append(cui)
+        if synonyms:
+            for synonym in synonyms:
+                synonym = synonym.split(':')[0].lower()
+                dict_name_synonym_to_mondo_id[synonym] = identifier
+                list_name_synonyms.append(synonym)
+        if xrefs:
+            for xref in xrefs:
+                if xref.startswith('MESH:'):
+                    prepare_dictionary_xrefs_to_mondo(xref, identifier, dict_mesh_to_mondo)
         disease = DiseaseHetionet(identifier, synonyms, umls_cuis_without_label, xrefs, resource)
         dict_diseases_hetionet[identifier] = disease
     print('length of disease in hetionet:' + str(len(dict_diseases_hetionet)))
@@ -137,7 +140,6 @@ def load_ndf_rt_diseases_in():
         code = result['code']
         properties = result['properties']
         name = result['name'].lower()
-        properties = properties.split(',')
         umls_cuis = []
         mesh_cuis=[]
         rxnorm_cuis=[]
@@ -164,15 +166,15 @@ list_code_not_mapped = []
 # files for the how_mapped
 map_direct_cui_cui = open('disease/ndf_rt_disease_cui_cui_map.tsv', 'w')
 csv_direct_cui=csv.writer(map_direct_cui_cui,delimiter='\t')
-csv_direct_cui.writerow('code in NDF-RT','name in NDF-RT','MONDO ids with | as seperator')
+csv_direct_cui.writerow(['code in NDF-RT','name in NDF-RT','MONDO ids with | as seperator'])
 
 map_direct_name = open('disease/ndf_rt_disease_name_name_synonym_map.tsv', 'w')
 csv_direct_name_synonyms=csv.writer(map_direct_name,delimiter='\t')
-csv_direct_name_synonyms.writerow('code in NDF-RT','name in NDF-RT','MONDO ids with | as seperator')
+csv_direct_name_synonyms.writerow(['code in NDF-RT','name in NDF-RT','MONDO ids with | as seperator'])
 
 map_synonym_cuis = open('disease/ndf_rt_disease_synonyms_map.tsv', 'w')
 csv_direct_synonyms=csv.writer(map_synonym_cuis,delimiter='\t')
-csv_direct_synonyms.writerow('code in NDF-RT','name in NDF-RT','MONDO ids with | as seperator')
+csv_direct_synonyms.writerow(['code in NDF-RT','name in NDF-RT','MONDO ids with | as seperator'])
 
 '''
 prepare mapping list
@@ -181,7 +183,7 @@ def prepare_mapping_list(cuis, dictionary):
     mapping = set()
     for cui in cuis:
         if cui in dictionary:
-            mapping.union(cui)
+            mapping=mapping.union(dictionary[cui])
     return mapping
 
 '''
@@ -193,6 +195,8 @@ ndf-rt diseases
 
 def map_with_cuis_go_through_all():
     for code, diseaseNdfRT in dict_diseases_NDF_RT.items():
+        if code=='C5722':
+            print('ok')
         cuis_hetionet = diseaseNdfRT.umls_cuis
         mesh_cuis=diseaseNdfRT.mesh_cuis
         umls_mapping=prepare_mapping_list(cuis_hetionet, dict_umls_to_mondo)
@@ -202,7 +206,7 @@ def map_with_cuis_go_through_all():
         intersection=umls_mapping.intersection(mesh_mapping)
 
         if len(intersection)>0:
-            dict_diseases_NDF_RT[code].set_how_mapped('direct map of cuis umls and mesh from rdf-rt and hetionet')
+            dict_diseases_NDF_RT[code].set_how_mapped('direct map of cuis umls and mesh from ndf-rt and hetionet')
             dict_mapped[code] = list(intersection)
 
         elif len(mesh_mapping)>0 and len(umls_mapping)>0:
@@ -210,10 +214,10 @@ def map_with_cuis_go_through_all():
             print(mesh_mapping)
             print(umls_mapping)
         elif len(umls_mapping)>0:
-            dict_diseases_NDF_RT[code].set_how_mapped('direct map of cuis umls from rdf-rt and hetionet')
+            dict_diseases_NDF_RT[code].set_how_mapped('direct map of cuis umls from ndf-rt and hetionet')
             dict_mapped[code] = list(umls_mapping)
-        elif len(umls_mapping)>0:
-            dict_diseases_NDF_RT[code].set_how_mapped('direct map of cuis mesh from rdf-rt and hetionet')
+        elif len(mesh_mapping)>0:
+            dict_diseases_NDF_RT[code].set_how_mapped('direct map of cuis mesh from ndf-rt and hetionet')
             dict_mapped[code] = list(mesh_mapping)
         else:
             list_code_not_mapped.append(code)
@@ -226,7 +230,7 @@ def map_with_cuis_go_through_all():
             csv_direct_cui.writerow([code , dict_diseases_NDF_RT[code].name , string_do_ids ])
     print('number of not mapped:' + str(len(list_code_not_mapped)))
 
-
+list_of_codes_which_cuis_are_not_disease_or_se=['C31768','C31772','C31784']
 '''
 map the name of ndf-rt disease to name or synonym of disease ontology
 '''
@@ -252,7 +256,7 @@ def map_with_name():
     for index in delete_map_code:
         code = list_code_not_mapped.pop(index)
         string_do_ids = '|'.join(dict_mapped[code])
-        csv_direct_name_synonyms.write([code , dict_diseases_NDF_RT[code].name , string_do_ids ])
+        csv_direct_name_synonyms.writerow([code , dict_diseases_NDF_RT[code].name , string_do_ids ])
 
     print('number of mapped:' + str(len(dict_mapped)))
     print('number of not mapped:' + str(len(list_code_not_mapped)))
@@ -274,45 +278,51 @@ all Disease which are not mapped with a ndf-rt disease get the propertie no
 
 
 def integrate_ndf_rt_disease_into_hetionet():
+    cypher_file=open('disease/cypher.cypher','w',encoding='utf-8')
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ndf-rt/disease/mapped.csv" As line MATCH (n:NDF_RT_DISEASE_KIND{code:line.code}), (d:Disease{identifier:line.disease_id}) Set n.MONDO_IDs=split(line.mondo_ids,'|'), n.how_mapped=line.how_mapped, d.resource=split(line.resource,'|'), d.ndf_rt='yes'  Create (d)-[:equal_to_Disease_NDF_RT]->(n);\n'''
+    cypher_file.write(query)
+    cypher_file.close()
+    file=open('disease/mapped.csv','w',encoding='utf-8')
+    csv_writer=csv.writer(file)
+    header=['code','disease_id','mondo_ids','how_mapped','resource']
+    csv_writer.writerow(header)
     for code, mondo_ids in dict_mapped.items():
-        do_id_string = "','".join(mondo_ids)
+        mondo_strings = "|".join(mondo_ids)
         how_mapped = dict_diseases_NDF_RT[code].how_mapped
         if len(mondo_ids) > 1:
             string_mondo_ids = "|".join(mondo_ids)
             # multiple_mondo_ids.write(
             #     code + '\t' + string_mondo_ids + '\t' + how_mapped + '\t' + dict_diseases_NDF_RT[code].name + '\n')
-
-        query = '''MATCH (n:NDF_RT_disease{code:'%s'}) Set n.MONDO_IDs=['%s'], n.how_mapped='%s', n.number_of_mapping='%s' '''
-        query = query % (code, do_id_string, how_mapped, str(len(mondo_ids)))
-        g.run(query)
         for mondo_id in mondo_ids:
             resource = dict_diseases_hetionet[mondo_id].resource
             resource.append('NDF-RT')
             resource = list(set(resource))
-            resource = "','".join(resource)
-            query = '''MATCH (n:NDF_RT_disease{code:'%s'}), (d:Disease{identifier:'%s'}) 
-            Set d.resource=['%s'], d.ndf_rt='yes' 
-            Create (d)-[:equal_to_Disease_NDF_RT]->(n);           
-            '''
-            query = query % (code, mondo_id, resource)
-            g.run(query)
+            resource = "|".join(resource)
+            csv_writer.writerow([code,mondo_id,mondo_strings,how_mapped,resource])
 
-    # search for all disease that did not mapped with ndf-rt and give them the property ndf_rt:'no'
-    query = '''MATCH (n:Disease) Where Not Exists(n.ndf_rt) RETURN n.identifier '''
-    results = g.run(query)
-    for cui, in results:
-        query = '''MATCH (n:Disease{identifier:"%s"}) 
-        Set n.ndf_rt='no' '''
-        query = query % (cui)
-        g.run(query)
+    # write file with all not mapped disease
+    file_not_mapped = open('disease/not_mapped.csv', 'w', encoding='utf-8')
+    csv_writer_not_mapped = csv.writer(file_not_mapped)
+    csv_writer_not_mapped.writerow(['code','name','properties'])
+    for code in list_code_not_mapped:
+        csv_writer_not_mapped.writerow([code,dict_diseases_NDF_RT[code].name,dict_diseases_NDF_RT[code].umls_cuis, dict_diseases_NDF_RT[code].properties])
 
-    # search for all ndf-rt disease that did not mapped with DO and give them the property DO_IDs=[]
-    query = '''MATCH (n:NDF_RT_disease) Where Not Exists(n.DO_IDs) 
-        Set n.DO_IDs=[] '''
-    g.run(query)
+    # add query to update disease nodes with do='no'
+    cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')
+    query = '''begin\n MATCH (n:Disease) Where Not Exists(n.ndf_rt) Set n.ndf_rt="no";\n commit\n '''
+    cypher_general.write(query)
+    cypher_general.close()
+
 
 
 def main():
+
+    global path_of_directory
+    if len(sys.argv) > 1:
+        path_of_directory = sys.argv[1]
+    else:
+        sys.exit('need a path')
+
     print (datetime.datetime.utcnow())
     print('Generate connection with neo4j and mysql')
 
@@ -357,7 +367,7 @@ def main():
     print (datetime.datetime.utcnow())
     print('integrate ndf-rt into hetionet')
 
-    # integrate_ndf_rt_disease_into_hetionet()
+    integrate_ndf_rt_disease_into_hetionet()
 
     print(
     '###########################################################################################################################')
