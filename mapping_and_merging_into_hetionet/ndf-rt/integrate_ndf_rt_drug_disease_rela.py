@@ -43,7 +43,7 @@ def integrate_connection_into_hetionet():
     # count all mapped codes
     count_code = 0
 
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/monDO/output/%s.csv" As line FIELDTERMINATOR '\\t' Match (a:Chemical{identifier:line.chemical_id}), (b:Disease{identifier:line.disease_id})  '''
+    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ndf-rt/%s" As line FIELDTERMINATOR '\\t' Match (a:Chemical{identifier:line.chemical_id}), (b:Disease{identifier:line.disease_id})  '''
 
     #cypher file
     cypher_file=open('relationships/cypher.cypher','w',encoding='utf-8')
@@ -66,7 +66,7 @@ def integrate_connection_into_hetionet():
             if result:
                 query=query_start+'Merge (a)-[r:%s]->(b) On Create Set r.source="NDF-RT", r.resource=["NDF-RT"], r.ndf_rt="yes", r.unbiased="false", r.license="" On Match Set r.resource=r.resource+"NDF-RT", r.ndf_rt="yes";\n '
             else:
-                query=query_start+"Create (a)-[r:%s{source:'NDF-RT', resource:['NDF-RT'], ndf_rt:'yes', unbiased:'false', license:''}]->(b)"
+                query=query_start+"Create (a)-[r:%s{source:'NDF-RT', resource:['NDF-RT'], ndf_rt:'yes', unbiased:'false', license:''}]->(b);\n"
             query=query %('relationships/rela_'+rela_type+'.tsv', dict_type_to_label[rela_type])
             cypher_file.write(query)
 
