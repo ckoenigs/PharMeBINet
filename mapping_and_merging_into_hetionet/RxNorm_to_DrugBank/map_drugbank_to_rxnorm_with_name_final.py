@@ -9,7 +9,6 @@ import datetime, csv
 import MySQLdb as mdb
 from py2neo import Graph
 
-
 '''
 create a connection with neo4j
 '''
@@ -18,15 +17,21 @@ create a connection with neo4j
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
     # authenticate("localhost:7474", "neo4j", "test")
-    global graph
-    graph = Graph("http://localhost:7474/db/data/",auth=("neo4j", "test"))
+    return Graph("http://localhost:7474/db/data/", auth=("neo4j", "test"))
+
+
+def chunks(lst, n):
+    """Yield successive n-sized chunks from lst."""
+    for i in range(0, len(lst), n):
+        yield lst[i:i + n]
+
 
 '''
 map drugbank with name to rxnorm
 '''
 
 # generate connection to mysql
-con = mdb.connect('localhost', 'ckoenigs', 'Za8p7Tf$', 'RxNorm',use_unicode=True, charset="utf8")
+con = mdb.connect('localhost', 'ckoenigs', 'Za8p7Tf$', 'RxNorm', use_unicode=True, charset="utf8")
 
 # dictionary with drugbank as key and value is a list of rxcuis
 dict_drugbank_to_rxnorm = {}
@@ -59,50 +64,54 @@ properties of the file:
     20:description
 '''
 count_drugbank_ids = 0
-list_rxnorm_id = []
-j = 0
+list_rxnorm_id = set()
 
-g = open('results/name_map_drugbank_to_rxnorm.tsv', 'w',encoding='utf-8')
-csv_writer=csv.writer(g,delimiter='\t')
-csv_writer.writerow(['drugbank_id','rxnorm_cui'])
-create_connection_with_neo4j()
+g = open('results/name_map_drugbank_to_rxnorm.tsv', 'w', encoding='utf-8')
+csv_writer = csv.writer(g, delimiter='\t')
+csv_writer.writerow(['drugbank_id', 'rxnorm_cui'])
+graph = create_connection_with_neo4j()
 
-query='''Match (c:Compound) Return c.identifier, c.name, c.synonyms'''
-result=graph.run(query)
+synonym_to_drugbank_ids = {}
+
+query = '''Match (c:Compound) Return c.identifier, c.name, c.synonyms'''
+result = graph.run(query)
 for drugbank_id, name, synonyms, in result:
-    if drugbank_id=='DB08792':
-        print('huhu')
     count_drugbank_ids += 1
 
-    name = name.replace("'", "")
-    all_name=name
+    name = name.replace("'", "").lower()
+    if name not in synonym_to_drugbank_ids:
+        synonym_to_drugbank_ids[name] = set()
+    synonym_to_drugbank_ids[name].add(drugbank_id)
 
     if synonyms is not None:
         for synonym in synonyms:
             synonym = synonym.replace('[', '').replace(']', '')
             synonym = synonym.replace("'", "")
-            synonym = synonym.replace("|", "','")
-            all_name = all_name+"','" + synonym
+            for sub_synonym in synonym.split('|'):
+                sub_synonym = sub_synonym.lower().strip()
+                if sub_synonym not in synonym_to_drugbank_ids:
+                    synonym_to_drugbank_ids[sub_synonym] = set()
+                synonym_to_drugbank_ids[sub_synonym].add(drugbank_id)
 
-
-    all_name_utf=all_name.encode('utf-8')
+synonym_chunks = list(chunks(list(synonym_to_drugbank_ids.keys()), 4000))
+print('number of synonym chunks:', len(synonym_chunks))
+set_of_rxcui_drug_bank_pairs=set()
+for chunk in synonym_chunks:
+    names = "','".join(chunk)
     cur = con.cursor()
-    query = ("SELECT RXCUI FROM RXNCONSO WHERE STR in ('%s'); ")
-    query = query % (all_name)
+    query = "SELECT Distinct STR, RXCUI FROM RXNCONSO WHERE LOWER(STR) COLLATE utf8_bin in ('%s');" % names
     cur.execute(query)
 
-    rxcui_list = []
-    for (rxcui,) in cur:
-        rxcui_list.append(rxcui)
-    rxcui_list = list(set(rxcui_list))
-    for rxcui in rxcui_list:
-        csv_writer.writerow([drugbank_id,rxcui ])
-        if not rxcui in list_rxnorm_id:
-            list_rxnorm_id.append(rxcui)
+    for (synonym, rxcui) in cur:
+        list_rxnorm_id.add(rxcui)
+        synonym = synonym.lower().strip()
+        for drugbank_id in synonym_to_drugbank_ids[synonym]:
+            if (rxcui,drugbank_id) in set_of_rxcui_drug_bank_pairs:
+                continue
+            csv_writer.writerow([drugbank_id, rxcui])
+            set_of_rxcui_drug_bank_pairs.add((rxcui,drugbank_id))
 
-    j += 1
-
-print('number of drugbank ids:' + str(j - 1))
-print('number of differnt rxnorm ids:' + str(len(list_rxnorm_id)))
+print('number of drugbank ids:', count_drugbank_ids)
+print('number of differnt rxnorm ids:', len(list_rxnorm_id))
 
 print(datetime.datetime.utcnow())
