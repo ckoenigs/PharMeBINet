@@ -12,6 +12,17 @@ def create_connection_with_neo4j():
     global g
     g = Graph("http://localhost:7474/db/data/", auth=("neo4j", "test"))
 
+#set of chemical side effect pairs
+set_chemical_side_effect_pair=set()
+
+'''
+load all existing chemical-side effect relas in set
+'''
+def get_all_chemical_side_effect_pairs():
+    query='''Match (a:Chemical)-[r]-(b:SideEffect) Return Distinct a.identifier, b.identifier'''
+    results=g.run(query)
+    for chemical_id, side_effect_id, in results:
+        set_chemical_side_effect_pair.add((chemical_id,side_effect_id))
 
 '''
 dictionary with compound-Se as key and value is a list of all different information
@@ -80,9 +91,13 @@ def integrate_relationship_from_sider_into_hetionet():
 
     #cypher file
     cypher_file=open('output/cypher_rela.cypher','w',encoding='utf-8')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/sider/output/mapped_rela_se.tsv" As line FIELDTERMINATOR '\t' Match (a:Chemical{identifier:line.chemical_id}), (b:SideEffect{identifier:line.se_id})
-    Merge (a)-[r:CAUSES_CcSE]->(b) On Create Set r.url="http://sideeffects.embl.de/se/"+line.se_id, r.source="SIDER", r.unbiased="false", r.license="CC BY-NC-SA 4.0", r.upperFrequency=line.upperFrequency, r.resource=["SIDER"],  r.placebo=line.placebo, r.avg_frequency=line.avg_frequency, r.lowerFrequency=line.lowerFrequency,  r.placeboAvgFrequency= line.placeboAvgFrequency, r.placeboLowerFrequency= line.placeboLowerFrequency, r.placeboUpperFrequency= line.placeboUpperFrequency, r.sider="yes" 
-    On Match Set r.upperFrequency=line.upperFrequency, r.placebo=line.placebo, r.avg_frequency=line.avg_frequency, r.lowerFrequency=line.lowerFrequency, r.placeboAvgFrequency= line.placeboAvgFrequency, r.resource=r.resource+"SIDER" , r.placeboLowerFrequency= line.placeboLowerFrequency, r.placeboUpperFrequency= line.placeboUpperFrequency,  r.sider="yes"; \n'''
+    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/sider/output/%s.tsv" As line FIELDTERMINATOR '\t' Match (a:Chemical{identifier:line.chemical_id})'''
+    query=query_start+'''-[r:CAUSES_CcSE]->(b:SideEffect{identifier:line.se_id}) Set r.upperFrequency=line.upperFrequency, r.placebo=line.placebo, r.avg_frequency=line.avg_frequency, r.lowerFrequency=line.lowerFrequency, r.placeboAvgFrequency= line.placeboAvgFrequency, r.resource=r.resource+"SIDER" , r.placeboLowerFrequency= line.placeboLowerFrequency, r.placeboUpperFrequency= line.placeboUpperFrequency,  r.sider="yes"; \n'''
+    query=query % 'mapped_rela_se'
+    cypher_file.write(query)
+
+    query = query_start + ''', (b:SideEffect{identifier:line.se_id}) Create (a)-[r:CAUSES_CcSE{upperFrequency:line.upperFrequency, placebo:line.placebo, avg_frequency:line.avg_frequency, lowerFrequency:line.lowerFrequency, placeboAvgFrequency: line.placeboAvgFrequency, resource:["SIDER"] , placeboLowerFrequency: line.placeboLowerFrequency, placeboUpperFrequency: line.placeboUpperFrequency,  sider:"yes", license:"CC BY-NC-SA 4.0"}]->(b) ; \n'''
+    query = query % 'new_rela_se'
     cypher_file.write(query)
     cypher_file.close()
 
@@ -90,6 +105,10 @@ def integrate_relationship_from_sider_into_hetionet():
     file=open('output/mapped_rela_se.tsv','w',encoding='utf-8')
     csv_writer=csv.writer(file,delimiter='\t')
     csv_writer.writerow(header)
+
+    file_new = open('output/new_rela_se.tsv', 'w', encoding='utf-8')
+    csv_writer_new = csv.writer(file_new, delimiter='\t')
+    csv_writer_new.writerow(header)
     counter=0
     for (chemical_id, umlsId), list_of_information in dict_compound_SE_connection_informations.items():
         counter+=1
@@ -167,8 +186,14 @@ def integrate_relationship_from_sider_into_hetionet():
         placeboLowerFreq = str(min(list_of_information[4]))
         placeboUpperFreq = str(max(list_of_information[6]))
 
-
-        csv_writer.writerow([chemical_id, umlsId, upperFreq, placebo, freq, lowerFreq,
+        if (chemical_id,umlsId) in set_chemical_side_effect_pair:
+            number_of_update_connection+=1
+            csv_writer.writerow([chemical_id, umlsId, upperFreq, placebo, freq, lowerFreq,
+                    placeboFreq,
+                    placeboLowerFreq, placeboUpperFreq])
+        else:
+            number_of_new_connection+=1
+            csv_writer_new.writerow([chemical_id, umlsId, upperFreq, placebo, freq, lowerFreq,
                     placeboFreq,
                     placeboLowerFreq, placeboUpperFreq])
 
@@ -190,6 +215,14 @@ def main():
     print('Generate connection with neo4j')
 
     create_connection_with_neo4j()
+
+    print(
+        '###########################################################################################################################')
+
+    print(datetime.datetime.utcnow())
+    print('Load all pairs in a set')
+
+    get_all_chemical_side_effect_pairs()
 
     print(
         '###########################################################################################################################')
