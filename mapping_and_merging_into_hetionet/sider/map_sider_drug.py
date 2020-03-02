@@ -224,8 +224,6 @@ dict_sider_drug_with_chemical_ids = defaultdict(list)
 check for name mapping get the same results as the other method
 '''
 def check_with_name_mapping(pubchem_id,search_value, dict_key_name,dict_something_to_chemical_ids, is_element=False):
-    if pubchem_id==1003:
-        print('#hhrhr')
     name = dict_key_name[pubchem_id].lower() if pubchem_id in dict_key_name else ''
     chemical_ids = dict_something_to_chemical_ids[search_value] if not is_element else set(dict_something_to_chemical_ids)
 
