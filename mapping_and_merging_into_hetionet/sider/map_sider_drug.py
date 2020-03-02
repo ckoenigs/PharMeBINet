@@ -82,11 +82,12 @@ dict_name_to_chemical = {}
 # dictionary chembl to drugbank id
 dict_chembl_to_drugbank_id = {}
 
-#dictionary synonyms chemical ids
+#dictionary synonyms/name/brands chemical ids
 dict_synonyms_to_chemicals_ids={}
 
 #dictionary_pubchem compound id to chemical id
 dict_pubchem_to_chemical_ids={}
+
 '''
 create connection to neo4j
 '''
@@ -135,6 +136,13 @@ def load_compounds_from_hetionet():
                 if not synonym in dict_synonyms_to_chemicals_ids:
                     dict_synonyms_to_chemicals_ids[synonym]=set()
                 dict_synonyms_to_chemicals_ids[synonym].add(identifier)
+        brand_name_and_companys=result['international_brands_name_company']
+        if brand_name_and_companys:
+            for brand_name_and_company in brand_name_and_companys:
+                brand_name=brand_name_and_company.split('::')[0]
+                if not brand_name in dict_synonyms_to_chemicals_ids:
+                    dict_synonyms_to_chemicals_ids[brand_name]=set()
+                dict_synonyms_to_chemicals_ids[brand_name].add(identifier)
         resource = result['resource']
         xrefs = result['xrefs'] if 'xrefs' in result else []
         for xref in xrefs:
@@ -212,6 +220,26 @@ dict_flat_to_drugbank_same_stereo = defaultdict(list)
 # dictionary with stereo id in pubchem form as key and drugbank ids as values
 dict_sider_drug_with_chemical_ids = defaultdict(list)
 
+'''
+check for name mapping get the same results as the other method
+'''
+def check_with_name_mapping(pubchem_id,search_value, dict_key_name,dict_something_to_chemical_ids, is_element=False):
+    if pubchem_id==1003:
+        print('#hhrhr')
+    name = dict_key_name[pubchem_id].lower() if pubchem_id in dict_key_name else ''
+    chemical_ids = dict_something_to_chemical_ids[search_value] if not is_element else set(dict_something_to_chemical_ids)
+
+    # name and xref are the same identifier
+    if name in dict_synonyms_to_chemicals_ids:
+        chemical_ids_name = dict_synonyms_to_chemicals_ids[name]
+        intersection = chemical_ids_name.intersection(chemical_ids)
+        if intersection:
+            chemical_ids = intersection
+        else:
+            return False, ''
+    else:
+        return False, ''
+    return True, chemical_ids
 
 
 '''
@@ -239,14 +267,24 @@ def map_with_pubchem_id():
         stitch_flat = dict_sider_drug[pubchem_id].stitchIDflat
         pubchem_flat = int(stitch_flat[3:]) - 100000000
 
+        if pubchem_id==8982:
+            print('huhu')
+
         # check if some map already if not add to not mapped list
         if pubchem_id in dict_pubchem_to_chemical_ids:
+            found, chemical_ids =check_with_name_mapping(pubchem_id,pubchem_id, dict_stereo_key_name, dict_pubchem_to_chemical_ids)
+            if not found:
+                continue
             dict_sider_drug[pubchem_id].set_how_mapped('drugbank to pubchem stereo')
-            dict_sider_drug_with_chemical_ids[pubchem_id].extend(dict_pubchem_to_chemical_ids[pubchem_id])
+            dict_sider_drug_with_chemical_ids[pubchem_id].extend(chemical_ids)
             delete_list.add(pubchem_id)
         elif pubchem_flat in dict_pubchem_to_chemical_ids:
+            found, chemical_ids = check_with_name_mapping(pubchem_flat, pubchem_flat,dict_flat_key_name,dict_pubchem_to_chemical_ids)
+            if not found:
+                continue
+
             dict_sider_drug[pubchem_id].set_how_mapped('drugbank to pubchem flat')
-            dict_sider_drug_with_chemical_ids[pubchem_id].extend(dict_pubchem_to_chemical_ids[pubchem_flat])
+            dict_sider_drug_with_chemical_ids[pubchem_id].extend(chemical_ids)
             delete_list.add(pubchem_id)
 
 
@@ -303,6 +341,10 @@ def give_drugbank_ids_with_use_of_stitch_information():
             if xref_source == 'DrugBank':
                 if stitch_stereo in list_of_not_mapped_stitch_stereo:
                     if xref in dict_all_drug:
+                        found, chemical_ids = check_with_name_mapping(stitch_stereo, '', dict_stereo_key_name,
+                                                                      xref, is_element=True)
+                        if not found:
+                            continue
                         delete_list.add(stitch_stereo)
                         dict_sider_drug[stitch_stereo].set_how_mapped('stitch stereo id to drugbank ids')
                         dict_sider_drug_with_chemical_ids[stitch_stereo].append(xref)
@@ -316,12 +358,22 @@ def give_drugbank_ids_with_use_of_stitch_information():
                         for stereo_id in stereos:
                             if not stereo_id in list_of_not_mapped_stitch_stereo:
                                 continue
+
+                            #todo check if this should be the flat once
+                            found, chemical_ids = check_with_name_mapping(stitch_stereo, '',dict_stereo_key_name,
+                                                                          xref, is_element=True)
+                            if not found:
+                                continue
                             delete_list.add(stereo_id)
                             dict_sider_drug[stereo_id].set_how_mapped('stitch flat id to drugbank ids')
                             dict_sider_drug_with_chemical_ids[stereo_id].append(xref)
             else:
                 if stitch_stereo in list_of_not_mapped_stitch_stereo:
                     if xref in dict_chembl_to_drugbank_id:
+                        found, chemical_ids = check_with_name_mapping(stitch_stereo, '', dict_stereo_key_name,
+                                                                      xref, is_element=True)
+                        if not found:
+                            continue
                         delete_list.add(stitch_stereo)
                         dict_sider_drug[stitch_stereo].set_how_mapped('stitch stereo id with chembl to drugbank ids')
                         dict_sider_drug_with_chemical_ids[stitch_stereo].extend(dict_chembl_to_drugbank_id[xref])
@@ -333,6 +385,11 @@ def give_drugbank_ids_with_use_of_stitch_information():
 
                         for stereo_id in dict_flat_to_stereo[stitch_flat]:
                             if not stereo_id in list_of_not_mapped_stitch_stereo:
+                                continue
+
+                            found, chemical_ids = check_with_name_mapping(stitch_stereo, '', dict_stereo_key_name,
+                                                                          xref, is_element=True)
+                            if not found:
                                 continue
                             delete_list.add(stereo_id)
                             dict_sider_drug[stereo_id].set_how_mapped('stitch flat id with chembl to drugbank ids')
@@ -419,9 +476,12 @@ def load_in_stitch_inchikeys():
         inchikey = line[3]
         if stitch_stereo in list_of_not_mapped_stitch_stereo:
             if inchikey in dict_inchikey_to_compound:
+                found, chemical_ids = check_with_name_mapping(stitch_stereo,inchikey, dict_stereo_key_name,dict_inchikey_to_compound)
+                if not found:
+                    continue
                 delete_list.add(stitch_stereo)
                 dict_sider_drug[stitch_stereo].set_how_mapped('stitch stereo id inchikey to drugbank ids')
-                dict_sider_drug_with_chemical_ids[stitch_stereo] = dict_inchikey_to_compound[inchikey]
+                dict_sider_drug_with_chemical_ids[stitch_stereo] = chemical_ids
 
         else:
             if stitch_flat in dict_flat_to_stereo:
@@ -429,9 +489,13 @@ def load_in_stitch_inchikeys():
                     stitch_stereos = dict_flat_to_stereo[stitch_flat]
                     for stereo in stitch_stereos:
                         if stereo in list_of_not_mapped_stitch_stereo:
+                            found, chemical_ids = check_with_name_mapping(stitch_flat, inchikey, dict_flat_key_name,
+                                                                          dict_inchikey_to_compound)
+                            if not found:
+                                continue
                             delete_list.add(stereo)
                             dict_sider_drug[stereo].set_how_mapped('stitch flat id inchikey to drugbank ids')
-                            dict_sider_drug_with_chemical_ids[stereo] = dict_inchikey_to_compound[inchikey]
+                            dict_sider_drug_with_chemical_ids[stereo] = chemical_ids
     # removed all mapped stitch stereo ids from the not mapped list
     delete_elements_from_list(delete_list)
     print('number of mapped stitch stereo ids to drugbank:' + str(len(dict_sider_drug_with_chemical_ids)))
@@ -464,8 +528,6 @@ def load_in_stitch_name():
         csv_writer.writerow(next(csv_reader))
     else:
         next(csv_reader)
-    # list of all index from in this step mapped stereo ids
-    delete_list = set()
     for line in csv_reader:
         name = line[1].lower()
 
@@ -478,15 +540,6 @@ def load_in_stitch_name():
             if pubchemStereo_ID in dict_sider_drug:
                 dict_stereo_key_name[pubchemStereo_ID] = name
 
-            if pubchemStereo_ID  in list_of_not_mapped_stitch_stereo:
-                if name in dict_name_to_chemical:
-                    delete_list.add(pubchemStereo_ID)
-                    dict_sider_drug[pubchemStereo_ID].set_how_mapped('stitch stereo id name to chemical ids name')
-                    dict_sider_drug_with_chemical_ids[pubchemStereo_ID] = list(dict_name_to_chemical[name])
-                elif name in dict_synonyms_to_chemicals_ids:
-                    delete_list.add(pubchemStereo_ID)
-                    dict_sider_drug[pubchemStereo_ID].set_how_mapped('stitch stereo id name to chemical ids synonyms')
-                    dict_sider_drug_with_chemical_ids[pubchemStereo_ID] = list(dict_synonyms_to_chemicals_ids[name])
 
         else:
             pubchem_flat_ID = int(line[0][4:])
@@ -495,14 +548,33 @@ def load_in_stitch_name():
             dict_flat_key_name[pubchem_flat_ID] = name
             dict_name_to_flat_stereo_id[name.lower()] = [pubchem_flat_ID, '']
 
-    # removed all mapped stitch stereo ids from the not mapped lis
-    delete_elements_from_list(delete_list)
 
     print(len(dict_stereo_key_name))
+
+
+'''
+mapping with only name
+'''
+def map_with_names():
+    # list of all index from in this step mapped stereo ids
+    delete_list = set()
+    for pubchemStereo_ID  in list_of_not_mapped_stitch_stereo:
+        if not pubchemStereo_ID in dict_stereo_key_name:
+            continue
+        name=dict_stereo_key_name[pubchemStereo_ID]
+        if name in dict_name_to_chemical:
+            delete_list.add(pubchemStereo_ID)
+            dict_sider_drug[pubchemStereo_ID].set_how_mapped('stitch stereo id name to chemical ids name')
+            dict_sider_drug_with_chemical_ids[pubchemStereo_ID] = list(dict_name_to_chemical[name])
+        elif name in dict_synonyms_to_chemicals_ids:
+            delete_list.add(pubchemStereo_ID)
+            dict_sider_drug[pubchemStereo_ID].set_how_mapped('stitch stereo id name to chemical ids synonyms')
+            dict_sider_drug_with_chemical_ids[pubchemStereo_ID] = list(dict_synonyms_to_chemicals_ids[name])
+
+    # removed all mapped stitch stereo ids from the not mapped lis
+    delete_elements_from_list(delete_list)
     print('number of mapped stitch stereo ids to drugbank:' + str(len(dict_sider_drug_with_chemical_ids)))
     print('number not mapped stitch stereo:' + str(len(list_of_not_mapped_stitch_stereo)))
-
-
 
 '''
 integrate sider drugs into hetionet directly. For the compound which are already in hetionet only some properties 
@@ -515,7 +587,7 @@ def integrate_sider_drugs_into_hetionet():
     #cypher file
     cypher_file=open('cypher_drug.cypher','w',encoding='utf-8')
     
-    query=query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/sider/output/mapped_drug.tsv" As line Fieldterminator '\t' Match (c:Chemical{identifier:line.chemical_id}), (d:drugSider{stitchIDstereo:line.sider_id}) Set c.xrefs=split(line.xrefs,'|'), c.sider="yes", c.resource=line.resource, d.name=line.name, d.how_mapped=line.how_mapped
+    query=query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/sider/output/mapped_drug.tsv" As line Fieldterminator '\t' Match (c:Chemical{identifier:line.chemical_id}), (d:drugSider{stitchIDstereo:line.sider_id}) Set c.xrefs=split(line.xrefs,'|'), c.sider="yes", c.resource=split(line.resource,'|'), d.name=line.name, d.how_mapped=line.how_mapped
                     Create (c)-[:equal_to_drug_Sider]->(d);\n'''
     cypher_file.write(query)
     cypher_file.close()
@@ -631,6 +703,15 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.utcnow())
+    print('Load in stitch names')
+
+    load_in_stitch_name()
+
+
+    print(
+        '###########################################################################################################################')
+
+    print(datetime.datetime.utcnow())
     print('Map with  drugbank pubchem xref')
 
     map_with_pubchem_id()
@@ -660,7 +741,7 @@ def main():
     print(datetime.datetime.utcnow())
     print('Load in stitch name and map to chemical ids')
 
-    load_in_stitch_name()
+    map_with_names()
 
     print(
         '###########################################################################################################################')
