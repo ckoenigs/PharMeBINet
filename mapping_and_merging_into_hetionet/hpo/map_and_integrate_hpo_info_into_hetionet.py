@@ -525,7 +525,7 @@ Integrate mapping connection between disease and HPOdisease and make a dictionar
 def integrate_mapping_of_disease_into_hetionet():
     #query for mapping disease and written into file
     query= query_start+ ''' (n:HPOdisease{id: line.hpo_id}), (d:Disease{identifier:line.hetionet_id}) Set d.hpo="yes" Create (d)-[:equal_to_hpo_disease]->(n);\n '''
-    query =query %(path_of_directory,'disease_mapped.tsv')
+    query =query %(path_of_directory,'mapping_files/disease_mapped.tsv')
     cypher_file.write(query)
     # write mapping in csv file
     for hpo_id, mondos in dict_disease_id_to_mondos.items():
@@ -710,14 +710,14 @@ def map_hpo_symptoms_and_integrate_into_hetionet():
     global counter_symptoms, counter_no_umls_cui
     # '','hetionet_id', 'umls_cuis'
     query =query_start+ '''MATCH (s:Symptom{identifier:line.hetionet_id }) , (n:HPOsymptom{id:line.hpo_id}) Set s.hpo='yes', s.umls_cuis=split(line.umls_cuis,"|") s.xrefs=n.xrefs , s.hpo_version='1.2', s.hpo_release='2019-11-08', s.definition=n.def, s.synonyms=n.synonyms, s.url_HPO="http://compbio.charite.de/hpoweb/showterm?id="+line.hpo_id, n.mesh_ids=split(line.mesh_ids,'|') Create (s)-[:equal_to_hpo_symptoms]->(n);\n'''
-    query = query %(path_of_directory,'symptom_mapped.tsv')
+    query = query %(path_of_directory,'mapping_files/symptom_mapped.tsv')
     cypher_file.write(query)
     # all symptoms which are in hetionet set the resource hpo
     query = '''MATCH (s:Symptom) Where exists(s.hpo) Set s.resource=s.resource+"HPO";\n '''
     cypher_file.write(query)
 
     query=query_start+''' Match (n:HPOsymptom{id:line.hpo_id}) Set n.mesh_ids=split(line.mesh_ids,'|') Create (s:Symptom{identifier:line.hetionet_id, umls_cuis:split(line.umls_cuis,"|") ,source:'MESH',license:'UMLS licence', name:n.name, resource:['HPO'], source:'MESH', url:"http://identifiers.org/mesh/"+line.hetionet_id , xrefs:n.xrefs, hpo:'yes', hpo_version:'1.2', hpo_release:'2019-11-08', definition:n.def, url_HPO:"http://compbio.charite.de/hpoweb/showterm?id="+line.hpo_id})  Create (s)-[:equal_to_hpo_symptoms]->(n);\n '''
-    query=query %(path_of_directory,'symptom_new.tsv')
+    query=query %(path_of_directory,'mapping_files/symptom_new.tsv')
     cypher_file.write(query)
     #    counter_has_no_xrefs=0
     #    counter_has_no_umls_cuis=0
