@@ -79,7 +79,7 @@ def pathway_commons():
     global i
     i = 0
     rows = list()
-    PC_Row = collections.namedtuple('PC_Row', ['identifier', 'names', 'source', 'genes','url','idOwns' ])
+    PC_Row = collections.namedtuple('PC_Row', ['identifier', 'synonym', 'source', 'genes','url','idOwns' ])
 
 
     for url, description, genes in read_gmt(filename_without_gz):
@@ -122,7 +122,7 @@ def pathway_commons():
         row = PC_Row(
             # identifier='PC7_{}'.format(i),
             identifier='PC11_{}'.format(i),
-            names=name,
+            synonym=name,
             source=description['datasource'],
             genes=genes,
             url=url,
@@ -202,7 +202,7 @@ def wikipathways():
     wikipath_df = pandas.DataFrame({
         'identifier':wikipath_df['identifier'],
         'idOwns': wikipath_df['description'].map(lambda x: x.rsplit('/', 1)[1]),
-        'names': wikipath_df['name'],
+        'synonym': wikipath_df['name'],
         'url': wikipath_df['description'],
         'source': 'wikipathways',
         'license': 'CC BY 3.0',
@@ -210,7 +210,7 @@ def wikipathways():
     })
     print(wikipath_df.head(2))
 
-properties_which_are_list=['genes','coding_genes','names','idOwns']
+properties_which_are_list=['genes','coding_genes','synonym','idOwns']
 
 '''
 Combine the both data from the different source to one big one and generate a cypher file
@@ -219,7 +219,7 @@ def combine_both_source():
     # Merge resources into a pathway dataframe
     pathway_df = pandas.concat([wikipath_df, pc_df],sort=True)
     print(pathway_df)
-    pathway_df = pathway_df[['identifier', 'names', 'url', 'source', 'license', 'genes','idOwns']]
+    pathway_df = pathway_df[['identifier', 'synonym', 'url', 'source', 'license', 'genes','idOwns']]
     print(len(pathway_df))
 
     # Remove duplicate pathways
