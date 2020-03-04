@@ -63,7 +63,7 @@ def get_pathway_properties():
     for property, in result:
         if property.find('gene')==-1:
             header.append(property)
-
+    header.append('name')
     header.append(extra_property)
 
 # version string pc
@@ -184,6 +184,7 @@ def generate_node_csv():
         if len(list_of_nodes)==1:
             list_info=[]
             node=list_of_nodes[0]
+            name=''
 
             for head in header:
                 value=node[head] if head in node else ''
@@ -193,6 +194,11 @@ def generate_node_csv():
                     value=identifier
                 elif head=='source':
                     value=value.capitalize()
+                elif head=='synonym':
+                    name=value[0]
+                    value.pop(0)
+                elif head=='name':
+                    value=name
                 #prepare the value for csv
                 value=prepare_value(value,head,False)
                 list_info.append(value)
@@ -208,14 +214,19 @@ def generate_node_csv():
             list_info = []
             for head in header:
                 value = dict_combined[head] if head in dict_combined else ''
-                if head=='identifier':
-                    identifier='|'.join(value)
-                elif head==extra_property:
-                    value=identifier
-                #prepare the value for csv
-                value=prepare_value(value,head,True)
-
-
+                if head == 'identifier':
+                    identifier = value
+                elif head == extra_property:
+                    value = identifier
+                elif head == 'source':
+                    value = value.capitalize()
+                elif head == 'synonym':
+                    name = value[0]
+                    value.pop(0)
+                elif head == 'name':
+                    value = name
+                # prepare the value for csv
+                value = prepare_value(value, head, False)
                 list_info.append(value)
             csv_node.writerow(list_info)
             # node1=list_of_nodes[0]
