@@ -225,6 +225,9 @@ check for name mapping get the same results as the other method
 '''
 def check_with_name_mapping(pubchem_id,search_value, dict_key_name,dict_something_to_chemical_ids, is_element=False):
     name = dict_key_name[pubchem_id].lower() if pubchem_id in dict_key_name else ''
+    splitted_name=name.rsplit('(',1)[0]
+    if len(splitted_name)>0:
+        name=splitted_name
     chemical_ids = dict_something_to_chemical_ids[search_value] if not is_element else set(dict_something_to_chemical_ids)
 
     # name and xref are the same identifier
@@ -270,14 +273,17 @@ def map_with_pubchem_id():
 
         # check if some map already if not add to not mapped list
         if pubchem_id in dict_pubchem_to_chemical_ids:
-            found, chemical_ids =check_with_name_mapping(pubchem_id,pubchem_id, dict_stereo_key_name, dict_pubchem_to_chemical_ids)
-            if not found:
+            #manual checked that methan do not map to activated charcoal (carbon)
+            if pubchem_id=='297':
                 continue
+            # found, chemical_ids =check_with_name_mapping(pubchem_id,pubchem_id, dict_stereo_key_name, dict_pubchem_to_chemical_ids)
+            # if not found:
+            #     continue
             dict_sider_drug[pubchem_id].set_how_mapped('drugbank to pubchem stereo')
-            dict_sider_drug_with_chemical_ids[pubchem_id].extend(chemical_ids)
+            dict_sider_drug_with_chemical_ids[pubchem_id].extend(dict_pubchem_to_chemical_ids[pubchem_id])
             delete_list.add(pubchem_id)
         elif pubchem_flat in dict_pubchem_to_chemical_ids:
-            found, chemical_ids = check_with_name_mapping(pubchem_flat, pubchem_flat,dict_flat_key_name,dict_pubchem_to_chemical_ids)
+            found, chemical_ids = check_with_name_mapping(pubchem_id, pubchem_flat,dict_stereo_key_name,dict_pubchem_to_chemical_ids)
             if not found:
                 continue
 
@@ -487,7 +493,7 @@ def load_in_stitch_inchikeys():
                     stitch_stereos = dict_flat_to_stereo[stitch_flat]
                     for stereo in stitch_stereos:
                         if stereo in list_of_not_mapped_stitch_stereo:
-                            found, chemical_ids = check_with_name_mapping(stitch_flat, inchikey, dict_flat_key_name,
+                            found, chemical_ids = check_with_name_mapping(stitch_stereo, inchikey, dict_stereo_key_name,
                                                                           dict_inchikey_to_compound)
                             if not found:
                                 continue
