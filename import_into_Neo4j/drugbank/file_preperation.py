@@ -2062,8 +2062,8 @@ def add_the_other_node_to_cypher(pathway_label, product_label, salt_label, mutat
     add_general_to_cypher_node(path_mutated_gene_protein, mutated_protein_gene_label, 'connection_id')
 
     path_pharmacologicClass = 'drugbank/drugbank_pharmacologic_class.tsv'
-    import_tool_preparation_node(path_pharmacologicClass, 'name', pharmacologic_class_label)
-    add_general_to_cypher_node(path_pharmacologicClass, pharmacologic_class_label, 'name')
+    import_tool_preparation_node(path_pharmacologicClass, 'id', pharmacologic_class_label)
+    add_general_to_cypher_node(path_pharmacologicClass, pharmacologic_class_label, 'id')
 
     import_tool_preparation_new_generated_rela(path_mutated_gene_protein, rela_target_muta_label, general_target_label,
                                                mutated_protein_gene_label)

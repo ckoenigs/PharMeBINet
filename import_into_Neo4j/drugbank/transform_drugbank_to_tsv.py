@@ -14,10 +14,28 @@ import io
 import json
 import xml.etree.ElementTree as ET
 import datetime
-import sys
+import sys, html
 
 import requests
 import pandas
+
+#dictionary category name to category id
+dict_category_name_to_id={}
+
+try:
+    file=open('categories.csv','r',encoding='utf-8')
+except :
+    import update_drugbank_categories
+    file=open('categories.csv','r')
+csv_reader=csv.reader(file)
+next(csv_reader)
+for row in csv_reader:
+    if row[1] in dict_category_name_to_id:
+        sys.exit('ohje')
+    if row[0]=='DBCAT004682':
+        print('lala')
+    name=html.unescape(row[1])
+    dict_category_name_to_id[name]=row[0]
 
 xml_file = os.path.join('full database.xml')
 #xml_file = os.path.join('drugbank_all_full_database_dezember.xml/test.xml')
@@ -519,19 +537,28 @@ for i, drug in enumerate(root):
         row['prices_description_cost_unit'].append(combined)
 
     for part in drug.iterfind('{ns}categories/{ns}category'.format(ns = ns)):
+
         category = part.findtext("{ns}category".format(ns = ns))
+        if category=='Phenylpiperidine Derivatives':
+            continue
+        # if db_ID=='DB00454':
+        #     print(category)
+
+        category=' '.join(category.split())
+        drugbank_category_id=dict_category_name_to_id[category]
         mesh_id=part.findtext("{ns}mesh-id".format(ns = ns))
 
         drug_pharmacological_class_dict = collections.OrderedDict()
         drug_pharmacological_class_dict['drugbank_id']=db_ID
-        drug_pharmacological_class_dict['category']=category
+        drug_pharmacological_class_dict['category']=drugbank_category_id
         pharmacologic_class_drug.append(drug_pharmacological_class_dict)
-        if not category in dict_pharmacologic_class:
+        if not drugbank_category_id in dict_pharmacologic_class:
             pharmacologic_class_dict = collections.OrderedDict()
-            pharmacologic_class_dict['id']=mesh_id
+            pharmacologic_class_dict['id']=drugbank_category_id
+            pharmacologic_class_dict['mesh_id']=mesh_id
             pharmacologic_class_dict['name']=category
             pharmacologic_classes.append(pharmacologic_class_dict)
-            dict_pharmacologic_class[category]=mesh_id
+            dict_pharmacologic_class[drugbank_category_id]=mesh_id
 
 
     row['affected_organisms']= [salt.text for salt in
@@ -922,7 +949,7 @@ columns_drug_products=['drugbank_id','partner_id']
 columns_metabolites=['drugbank_id','name']
 columns_has_component=['target_id','petide_id']
 columns_drug_pharmacologic_class=['drugbank_id','category']
-columns_pharmacologic_class=['id','name']
+columns_pharmacologic_class=['id','name','mesh_id']
 
 
 
