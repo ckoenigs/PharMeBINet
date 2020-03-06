@@ -303,6 +303,7 @@ for event, node in etree.iterparse(file, events=('end',), tag='ClinVarSet'):
             co_occurrences_set={}
             for co_occurrence in observation.iterfind('Co-occurrenceSet'):
                 print('co-occurences')
+
                 one_co_occurrence={}
                 check_for_information_and_add_to_list_with_extra_name('Zygosity',co_occurrence,one_co_occurrence,name='zygosity')
                 check_for_information_and_add_to_list_with_extra_name('Count',co_occurrence,one_co_occurrence,name='count')
