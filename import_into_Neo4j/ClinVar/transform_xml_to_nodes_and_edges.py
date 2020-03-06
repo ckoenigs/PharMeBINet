@@ -1,6 +1,7 @@
 import lxml.etree as etree
 import csv,sys
 import json
+import datetime
 
 #type to the dictionary of nodes od this type
 type_to_dictionary_of_node={}
@@ -21,19 +22,20 @@ csv_edge.writeheader()
 prepare the citation information
 '''
 def for_citation_extraction_to_list(node,dict_to_use=None):
-    all_citation={}
-    for citation in node.iter('Citation'):
+    all_citation=[]
+    for citation in node.iterfind('Citation'):
         citation_info = {}
-        for id in citation.iter('ID'):
+        for id in citation.iterfind('ID'):
             citation_info[id.get('Source')]=  id.text
         check_for_information_and_add_to_list_with_extra_name('URL', citation, citation_info, name='url')
         check_for_information_and_add_to_list_with_extra_name('CitationText', citation, citation_info,
                                                               name='citation_text')
-        build_low_dict_into_higher_dict(all_citation,citation_info,'citation')
+        all_citation.append(citation_info)
 
-        if not dict_to_use is None:
-            build_low_dict_into_higher_dict(dict_to_use, all_citation, 'citations')
-            return dict_to_use
+
+    if not dict_to_use is None:
+        build_low_dict_into_higher_dict(dict_to_use, all_citation, 'citations')
+        return dict_to_use
 
 
     return all_citation
@@ -42,24 +44,25 @@ def for_citation_extraction_to_list(node,dict_to_use=None):
 preparation of xrefs
 '''
 def preparation_of_xrefs(node,dict_to_use):
-    all = {}
-    for xref in node.iter('XRef'):
-        all[xref.get('DB')]=xref.get('ID')
+    all = set()
+    for xref in node.iterfind('XRef'):
+        all.add(xref.get('DB')+':'+xref.get('ID'))
     if not dict_to_use is None:
-        build_low_dict_into_higher_dict(dict_to_use, all, 'xrefs')
+        if len(all)>0:
+            dict_to_use['xrefs']=list(all)
         return dict_to_use
 
-    return  all
+    return  list(all)
 
 '''
-prepare comments
+for mutliple information
 '''
-def perare_comments(node):
-    dict_comments={}
-    for comment in node.iter('Comment'):
-        check_for_information_and_add_to_list_with_extra_name('Comment', comment, dict_comments,
-                                                              name='comment')
-    return dict_comments
+def for_multiple_tags_at_one(node,tag):
+    list_of_this_tags_outputs=[]
+    for comment in node.iterfind(tag):
+        list_of_this_tags_outputs.append(comment.text)
+    return list_of_this_tags_outputs
+
 
 '''
 clinical significance
@@ -82,7 +85,7 @@ def prepare_clinical_significance(node):
 
         for_citation_extraction_to_list(clinical_significance, dict_significance)
 
-        comment_dict = perare_comments(clinical_significance)
+        comment_dict = for_multiple_tags_at_one(clinical_significance,'Comment')
         build_low_dict_into_higher_dict(dict_significance, comment_dict, 'comments')
 
         # print(dict_significance)
@@ -102,10 +105,10 @@ prepare set_element
 '''
 def prepare_set_element(node, set_element_type):
     dict_all_elements={}
-    for element in node.iter(set_element_type):
+    for element in node.iterfind(set_element_type):
         element_value=element.find('ElementValue')
         type=element_value.get('Type')
-        value=element.text
+        value=element_value.text
         if not type in dict_all_elements:
             dict_all_elements[type]=set()
         dict_all_elements[type].add(value)
@@ -134,6 +137,16 @@ def check_for_information_and_add_to_list_with_extra_name(tag, node,dictionary,n
         else:
             sys.exist('I have to think about this case')
     # return list_to_add
+'''
+higher into lower but with list of elements
+'''
+def build_low_dict_into_higher_dict_with_list(top_dict,lower_dict,name, names):
+    if len(lower_dict) > 0:
+        if not names in top_dict:
+            top_dict[names]=[]
+        top_dict[names].append({name:lower_dict})
+
+
 
 '''
 add set to a set but transform into string before
@@ -147,35 +160,63 @@ Add name to and synonyms to dictionary
 '''
 def add_name_and_synonyms_to_dict(node, dictionary):
     dict_names = prepare_set_element(node, 'Name')
-    synonyms={}
-    synonyms = {synonyms.union(x) for type, x in dict_names if type != 'Preferred'}
+    synonyms=set()
+    for type, set_names in dict_names.items() :
+        if type != 'Preferred':
+            synonyms.union(set_names)
+    synonyms=set(synonyms)
     if 'Preferred' in dict_names:
         name_s = dict_names['Preferred']
         if len(name_s) == 1:
-            dictionary['name'] = name_s[0]
+            if 'name' in dictionary:
+                name=name_s.pop()
+                if name!=dictionary['name']:
+                    print(name)
+                    print(dictionary['name'])
+                    sys.exit('in existing name is different name then from the other source')
+            else:
+                dictionary['name'] = name_s.pop()
         else:
+            print(name_s)
             sys.exit('multiple_names preferred')
     elif len(synonyms) > 0:
-        dictionary['name'] = synonyms[0]
-        synonyms.remove(synonyms[0])
+        if not 'name' in dictionary:
+            dictionary['name'] = synonyms[0]
+            synonyms.remove(synonyms[0])
 
     if len(synonyms) > 0:
-        dictionary['synonyms'] = list(synonyms)
+        if not 'synonyms' in dictionary:
+            dictionary['synonyms'] = list(synonyms)
+        else:
+            dictionary['synonyms']=list(synonyms.union(dictionary['synonyms']))
 
 '''
 prepare symbol
 '''
 def prepare_symbol(node, dictionary,dictionary_name):
     dict_elements=prepare_set_element(node,'Symbol')
-    element_list={}
-    element_list= {element_list.union(x) for type, x in dict_elements}
-    dictionary[dictionary_name]=list(element_list)
+    element_list=set()
+    for type, element in dict_elements.items():
+        element_list.union(element)
+    # element_list= [element_list.union(x) for type, x in dict_elements.items()]
+    if not dictionary_name in dictionary:
+        dictionary[dictionary_name]=list(element_list)
+    else:
+        dictionary[dictionary_name] = list(element_list.union(dictionary[dictionary_name]))
+
+'''
+add to list with addition dictionary name
+'''
+def add_to_list_with_additional_name(list,value,name):
+    list.append({name:value})
 
 
 #all assertion
 assertions_set=set()
 
-file = open('head_part.xml', 'rb')
+print (datetime.datetime.utcnow())
+# file = open('ClinVarFullRelease_00-latest.xml', 'rb')
+file = open('big_head.xml', 'rb')
 for event, node in etree.iterparse(file, events=('end',), tag='ClinVarSet'):
     # print(etree.tostring(node))
     #all edge information
@@ -196,6 +237,7 @@ for event, node in etree.iterparse(file, events=('end',), tag='ClinVarSet'):
         if assertion not in assertions_set:
             assertions_set.add(assertion)
             print(assertion)
+            print(datetime.datetime.utcnow())
         dict_edge_info['assertion']=assertion
         found_clinical, dict_significance= prepare_clinical_significance(reference_assertion)
         if found_clinical:
@@ -203,8 +245,8 @@ for event, node in etree.iterparse(file, events=('end',), tag='ClinVarSet'):
 
         #check if this relationship appears at least in human
         found_human=False
-        observation_list={}
-        for observation in reference_assertion.iter('ObservedIn'):
+        observation_list=[]
+        for observation in reference_assertion.iterfind('ObservedIn'):
             observation_dict_one={}
             sample=observation.find('Sample')
             sample_information={}
@@ -219,7 +261,7 @@ for event, node in etree.iterparse(file, events=('end',), tag='ClinVarSet'):
 
             check_for_information_and_add_to_list_with_extra_name('Origin',sample,sample_information,name='origin')
 
-            for age in sample.iter('Age'):
+            for age in sample.iterfind('Age'):
                 sample_information['Age '+age.get('Type')]=age.text+' '+age.get('age_unit')
 
 
@@ -234,38 +276,38 @@ for event, node in etree.iterparse(file, events=('end',), tag='ClinVarSet'):
             for_citation_extraction_to_list(sample, sample_information)
             preparation_of_xrefs(sample, sample_information)
 
-            comment_dict = perare_comments(sample)
+            comment_dict = for_multiple_tags_at_one(sample,'Comment')
             build_low_dict_into_higher_dict(sample_information, comment_dict, 'comments')
             build_low_dict_into_higher_dict(observation_dict_one,sample_information,'sample')
 
             method_list={}
-            for method in observation.iter('Method'):
+            for method in observation.iterfind('Method'):
                 method_info={}
                 check_for_information_and_add_to_list_with_extra_name('MethodType',method,method_info,name='method_type')
                 preparation_of_xrefs(method,method_info)
-                build_low_dict_into_higher_dict(method_list,method_info,'method')
-            build_low_dict_into_higher_dict(observation_dict_one, method_list, 'methods')
+                build_low_dict_into_higher_dict_with_list(observation_dict_one,method_info,'method','methods')
 
             observed_data_set={}
-            for observed_data in observation.iter('ObservedData'):
+            for observed_data in observation.iterfind('ObservedData'):
                 one_observation={}
                 attribute=observed_data.find('Attribute')
                 one_observation[attribute.get('Type')]=attribute.text
-                for_citation_extraction_to_list(observed_data, observed_data_set)
-                preparation_of_xrefs(observed_data, observed_data_set)
-                comment_dict=perare_comments(observation)
+                for_citation_extraction_to_list(observed_data, one_observation)
+                preparation_of_xrefs(observed_data, one_observation)
+                comment_dict=for_multiple_tags_at_one(observation,'Comment')
                 build_low_dict_into_higher_dict(one_observation, comment_dict, 'comments')
 
-                build_low_dict_into_higher_dict(observed_data_set,one_observation,'observation_data')
-            build_low_dict_into_higher_dict(observation_dict_one, observed_data_set, 'observation_data_multiple')
+                build_low_dict_into_higher_dict_with_list(observation_dict_one,one_observation,'observation_data','observation_data_multiple')
+            # build_low_dict_into_higher_dict(observation_dict_one, observed_data_set, 'observation_data_multiple')
 
             co_occurrences_set={}
-            for co_occurrence in observation.iter('Co-occurrenceSet'):
+            for co_occurrence in observation.iterfind('Co-occurrenceSet'):
+                print('co-occurences')
                 one_co_occurrence={}
                 check_for_information_and_add_to_list_with_extra_name('Zygosity',co_occurrence,one_co_occurrence,name='zygosity')
                 check_for_information_and_add_to_list_with_extra_name('Count',co_occurrence,one_co_occurrence,name='count')
                 allels={}
-                for allele in co_occurrence.iter('AlleleDescSet'):
+                for allele in co_occurrence.iterfind('AlleleDescSet'):
                     one_allel_set={}
                     check_for_information_and_add_to_list_with_extra_name('RelativeOrientation',allele,one_allel_set,name='relative_orientation')
                     check_for_information_and_add_to_list_with_extra_name('Zygosity',allele,one_allel_set,name='zygosity')
@@ -275,12 +317,14 @@ for event, node in etree.iterparse(file, events=('end',), tag='ClinVarSet'):
                     if found_clinical:
                         build_low_dict_into_higher_dict(one_allel_set,dict_significance,'clinical_singnificant')
 
-                    build_low_dict_into_higher_dict(allels, one_allel_set, 'allel')
-                build_low_dict_into_higher_dict(one_co_occurrence, allels, 'allels')
+                    build_low_dict_into_higher_dict_with_list(one_co_occurrence, one_allel_set, 'allel','allels')
+                # build_low_dict_into_higher_dict(one_co_occurrence, allels, 'allels')
 
-                build_low_dict_into_higher_dict(co_occurrences_set, one_co_occurrence, 'co-occurrence')
-            build_low_dict_into_higher_dict(observation_dict_one,co_occurrences_set,'co-occurrences')
-        build_low_dict_into_higher_dict(observation_list, observation_dict_one, 'observation')
+                build_low_dict_into_higher_dict_with_list(observation_dict_one, one_co_occurrence, 'co-occurrence','co-occurrences')
+            # build_low_dict_into_higher_dict(observation_dict_one,co_occurrences_set,'co-occurrences')
+
+        # build_low_dict_into_higher_dict_with_list(observation_list, observation_dict_one, 'observation')
+        add_to_list_with_additional_name(observation_list,observation_dict_one, 'observation')
         dict_edge_info['observations']=json.dumps(observation_list)
 
         # measureSet or genotype
@@ -294,14 +338,32 @@ for event, node in etree.iterparse(file, events=('end',), tag='ClinVarSet'):
                 type_to_dictionary_of_node[type]={}
             identifier=measure_set.get('ID')
             variant_id=identifier
-            accession=measure_set.get('Accession')
+            accession=measure_set.get('Acc')
+            if identifier=='431733':
+                print('ok')
             if not identifier in type_to_dictionary_of_node[type]:
                 node_dictionary['identifier']=identifier
                 node_dictionary['accession']=accession
-                dict_measure={}
-                for measure in measure_set.iter(''):
-                    print()
-                build_low_dict_into_higher_dict(node_dictionary,dict_measure,'measures')
+                dict_measures={}
+                for measure in measure_set.iterfind('Measure'):
+                    # todo if no case exists where a measure set has more than one measure
+                    dict_measure={}
+                    dict_measure['specific_type']=measure.get('Type')
+                    dict_measure['allel_id']=measure.get('ID')
+                    add_name_and_synonyms_to_dict(measure, dict_measure)
+                    prepare_symbol(measure,dict_measure,'Symbol')
+                    dict_attributes={}
+                    for attribut in measure.iterfind('AttributeSet'):
+                        #todo must be a list
+                        check_for_information_and_add_to_list_with_extra_name('Attribute',attribut,dict_attributes,gets='Type')
+                    build_low_dict_into_higher_dict(dict_measure, dict_attributes, 'attributes')
+                    build_low_dict_into_higher_dict_with_list(node_dictionary,dict_measure,'measure','measures')
+
+
+                if len(dict_measures)>1:
+                    print(node_dictionary)
+                    sys.exit('more then one measure')
+                build_low_dict_into_higher_dict(node_dictionary,dict_measures,'measures')
                     
                 add_name_and_synonyms_to_dict(measure_set,node_dictionary)
                 prepare_symbol(measure_set,node_dictionary,'Symbol')
@@ -309,7 +371,7 @@ for event, node in etree.iterparse(file, events=('end',), tag='ClinVarSet'):
                 for_citation_extraction_to_list(measure_set, node_dictionary)
                 preparation_of_xrefs(measure_set, node_dictionary)
 
-                comment_dict=perare_comments(observation)
+                comment_dict=for_multiple_tags_at_one(measure_set,'Comment')
                 build_low_dict_into_higher_dict(node_dictionary, comment_dict, 'comments')
 
 
@@ -335,3 +397,5 @@ for event, node in etree.iterparse(file, events=('end',), tag='ClinVarSet'):
         #     print(dict_edge_info)
             # sys.exit('same pair, but do they have different information?')
     # break
+print(type_to_dictionary_of_node.keys())
+print (datetime.datetime.utcnow())
