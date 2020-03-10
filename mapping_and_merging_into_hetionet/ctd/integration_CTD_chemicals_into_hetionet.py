@@ -24,7 +24,7 @@ class DrugHetionet:
     name :string
     """
 
-    def __init__(self, identifier, inchikey, inchi, name, cas_number, xrefs, resources):
+    def __init__(self, identifier, inchikey, inchi, name, cas_number, xrefs, resources,synonyms):
         self.identifier = identifier
         self.inchikey = inchikey
         self.inchi = inchi
@@ -32,6 +32,7 @@ class DrugHetionet:
         self.cas_number=cas_number
         self.xrefs=xrefs
         self.resources=resources
+        self.synonyms=synonyms
 
 
 class DrugCTD:
@@ -146,7 +147,7 @@ dict_cas_to_drugbank={}
 list_multi_cas=[]
 
 #dictionary from drugbank synonym to drugbank id
-dict_synonym_to_drugbank_id=defaultdict(list)
+dict_synonym_to_drugbank_id=defaultdict(set)
 
 '''
 remove all mapped mesh ids from not_mapped list
@@ -195,22 +196,22 @@ def load_compounds_from_hetionet():
         identifier = result['identifier']
         inchikey = result['inchikey']
         inchi = result['inchi']
-        name = result['name']
+        name = result['name'].lower()
         cas_number= result['cas_number'] if 'cas_number' in result else ''
         alternative_ids=result['alternative_drugbank_ids'] if 'alternative_drugbank_ids' in result else []
         alternative_ids=list(filter(bool,alternative_ids))
-        synonyms=result['synonyms'] if 'synonyms' in result else []
+        synonyms=[x.lower() for x in result['synonyms']] if 'synonyms' in result else []
         xrefs= result['xrefs'] if 'xrefs' in result else []
         resource = result['resource'] if 'resource' in result else []
 
         #generate name/synonym dictionary to drugbank identifier
-        dict_synonym_to_drugbank_id[name.lower()].append(identifier) if  name is not None else print('no name')
+        dict_synonym_to_drugbank_id[name].add(identifier) if  name is not None else print('no name')
 
         for synonym in synonyms:
-            dict_synonym_to_drugbank_id[synonym.lower()].append(identifier)
+            dict_synonym_to_drugbank_id[synonym].add(identifier)
         #        resource=result['resource']
 
-        drug = DrugHetionet(identifier, inchikey, inchi, name, cas_number, xrefs, resource)
+        drug = DrugHetionet(identifier, inchikey, inchi, name, cas_number, xrefs, resource,synonyms)
 
         dict_drugs_hetionet[identifier] = drug
         for alt_drugbank_id in alternative_ids:
@@ -248,12 +249,12 @@ csv_not_the_same_cas.writerow(['mesh', 'cas-mesh', 'durgbank', 'cas-db', 'mappin
 check if the external reference of ctd drugbank id has the same cas number
 add the mapped ctd in dictionary
 '''
-def check_and_add_the_mapping(chemical_id, drug, drugBankID,casRN,name):
+def check_and_add_the_mapping(chemical_id, drug, drugBankID,casRN,name,synonyms):
     dict_drugs_CTD_with_drugbankIDs[chemical_id] = drug
     drugbank_ids=set()
     drugbank_ids_name=[]
     if name in dict_synonym_to_drugbank_id:
-        drugbank_ids_name=dict_synonym_to_drugbank_id[name]
+        drugbank_ids_name=list(dict_synonym_to_drugbank_id[name])
     if dict_drugs_hetionet[drugBankID].cas_number != casRN and casRN != '' and dict_drugs_hetionet[
         drugBankID].cas_number != '':
         if casRN in dict_cas_to_drugbank:
@@ -266,7 +267,17 @@ def check_and_add_the_mapping(chemical_id, drug, drugBankID,casRN,name):
             #     dict_drugs_CTD_with_drugbankIDs[chemical_id].set_drugbankIDs(['DB03955'])
             #     dict_drugs_CTD_with_drugbankIDs[chemical_id].set_how_mapped('drugbank ids from ctd')
             #     return False, [drugBankID]
-            drugbank_ids=set(dict_cas_to_drugbank[casRN])
+
+            ctd_names=set([name])
+            ctd_names=ctd_names.union(synonyms)
+            fitting_drugbank_ids=set()
+            for drugbank_id in set(dict_cas_to_drugbank[casRN]):
+                drugbank_id_names=set([dict_drugs_hetionet[drugbank_id].name])
+                drugbank_id_names=drugbank_id_names.union(dict_drugs_hetionet[drugbank_id].synonyms)
+                if len(ctd_names.intersection(drugbank_id_names))>0:
+                    fitting_drugbank_ids.add(drugbank_id)
+
+            drugbank_ids =fitting_drugbank_ids
             dict_drugs_CTD_with_drugbankIDs[chemical_id].set_how_mapped('cas-id from ctd')
         else:
             csv_not_the_same_cas.writerow([chemical_id, casRN, drugBankID, dict_drugs_hetionet[drugBankID].cas_number])
@@ -304,7 +315,7 @@ def load_drugs_from_CTD():
     for result, in results:
         idType = result['idType']
         chemical_id = result['chemical_id']
-        synonyms = result['synonyms'] if 'synonyms' in result else []
+        synonyms = [x.lower() for x in result['synonyms']] if 'synonyms' in result else []
         drugBankIDs = result['drugBankIDs'] if 'drugBankIDs' in result else []
         drugBankIDs = list(filter(None, drugBankIDs))
 
@@ -334,13 +345,13 @@ def load_drugs_from_CTD():
             for drugBankID in drugBankIDs:
                 #check if the durgbank id in ctd is also in drugbank
                 if drugBankID in dict_drugs_hetionet:
-                    found_mapping, drugBank_ids=check_and_add_the_mapping(chemical_id, drug, drugBankID,casRN, name)
+                    found_mapping, drugBank_ids=check_and_add_the_mapping(chemical_id, drug, drugBankID,casRN, name,synonyms)
                     list_mapped_drugbank_ids.extend(drugBank_ids)
 
 
                 elif drugBankID in dict_alternative_to_drugbank_id:
                     new_drugbank_id=dict_alternative_to_drugbank_id[drugBankID]
-                    found_mapping, drugBank_ids = check_and_add_the_mapping(chemical_id, drug, new_drugbank_id, casRN, name)
+                    found_mapping, drugBank_ids = check_and_add_the_mapping(chemical_id, drug, new_drugbank_id, casRN, name, synonyms)
                     list_mapped_drugbank_ids.extend(drugBank_ids)
             dict_drugs_CTD_with_drugbankIDs[chemical_id].set_drugbankIDs(list_mapped_drugbank_ids)
 
@@ -402,12 +413,27 @@ def find_cui_for_ctd_drugs():
     count_map_with_name = 0
     for mesh_id in list_not_mapped_with_cas:
 
+        found_mapping=False
         if mesh_id in dict_mesh_to_drugbank_with_umls:
-            dict_drugs_CTD_with_drugbankIDs[mesh_id] = dict_drugs_CTD_without_drugbankIDs[mesh_id]
-            dict_drugs_CTD_with_drugbankIDs[mesh_id].set_drugbankIDs(dict_mesh_to_drugbank_with_umls[mesh_id])
-            dict_drugs_CTD_with_drugbankIDs[mesh_id].set_how_mapped('use umls to map to drugbank ids')
-            delete_mapped_mesh_ids.append(list_drug_CTD_without_drugbank_id.index(mesh_id))
-        else:
+            mesh_name=dict_drugs_CTD_without_drugbankIDs[mesh_id].name.lower()
+            drugbank_ids=set()
+            if mesh_name in dict_synonym_to_drugbank_id:
+                drugbank_ids=drugbank_ids.union(dict_synonym_to_drugbank_id[mesh_name])
+            mesh_synonyms=dict_drugs_CTD_without_drugbankIDs[mesh_id].synonyms
+            for synonym in mesh_synonyms:
+                synonym=synonym.lower()
+                if synonym in dict_synonym_to_drugbank_id:
+                    drugbank_ids = drugbank_ids.union(dict_synonym_to_drugbank_id[synonym])
+
+            if len(drugbank_ids.intersection(dict_mesh_to_drugbank_with_umls[mesh_id]))>0:
+
+                dict_drugs_CTD_with_drugbankIDs[mesh_id] = dict_drugs_CTD_without_drugbankIDs[mesh_id]
+                dict_drugs_CTD_with_drugbankIDs[mesh_id].set_drugbankIDs(dict_mesh_to_drugbank_with_umls[mesh_id])
+                dict_drugs_CTD_with_drugbankIDs[mesh_id].set_how_mapped('use umls cui to map to drugbank ids')
+                delete_mapped_mesh_ids.append(list_drug_CTD_without_drugbank_id.index(mesh_id))
+                found_mapping=True
+
+        if found_mapping:
 
             # start = time.time()
             cur = con.cursor()
@@ -691,7 +717,7 @@ def map_with_name_to_drugbank():
         if name in dict_synonym_to_drugbank_id:
             dict_drugs_CTD_with_drugbankIDs[ctd_id] = dict_drugs_CTD_without_drugbankIDs[ctd_id]
             delete_mapped_mesh_ids.append(list_drug_CTD_without_drugbank_id.index(ctd_id))
-            dict_drugs_CTD_with_drugbankIDs[ctd_id].set_drugbankIDs(dict_synonym_to_drugbank_id[name])
+            dict_drugs_CTD_with_drugbankIDs[ctd_id].set_drugbankIDs(list(dict_synonym_to_drugbank_id[name]))
             dict_drugs_CTD_with_drugbankIDs[ctd_id].set_how_mapped('use  name to map to drugbank ids')
             if ctd_id in list_cuis_not_mapped_drugbank_id:
                 delete_cui.append(list_cuis_not_mapped_drugbank_id.index(ctd_id))
@@ -699,7 +725,7 @@ def map_with_name_to_drugbank():
             if synonym in dict_synonym_to_drugbank_id:
                 dict_drugs_CTD_with_drugbankIDs[ctd_id] = dict_drugs_CTD_without_drugbankIDs[ctd_id]
                 delete_mapped_mesh_ids.append(list_drug_CTD_without_drugbank_id.index(ctd_id))
-                dict_drugs_CTD_with_drugbankIDs[ctd_id].set_drugbankIDs(dict_synonym_to_drugbank_id[synonym])
+                dict_drugs_CTD_with_drugbankIDs[ctd_id].set_drugbankIDs(list(dict_synonym_to_drugbank_id[synonym]))
                 dict_drugs_CTD_with_drugbankIDs[ctd_id].set_how_mapped('use  name to map to drugbank ids')
                 if ctd_id in list_cuis_not_mapped_drugbank_id:
                     delete_cui.append(list_cuis_not_mapped_drugbank_id.index(ctd_id))
@@ -818,11 +844,11 @@ def map_ctd_to_hetionet_compound():
             name_drugbank_ids=set()
             synonyms=drug.synonyms
             if name in dict_synonym_to_drugbank_id:
-                name_drugbank_ids.update(dict_synonym_to_drugbank_id[name])
+                name_drugbank_ids.update(list(dict_synonym_to_drugbank_id[name]))
             for synonym in synonyms:
                 synonym=synonym.lower()
                 if synonym in dict_synonym_to_drugbank_id:
-                    name_drugbank_ids.update(dict_synonym_to_drugbank_id[synonym])
+                    name_drugbank_ids.update(list(dict_synonym_to_drugbank_id[synonym]))
 
             if len(name_drugbank_ids)>0:
                 intersection_drugbank_ids=name_drugbank_ids.intersection(drugbank_ids)
