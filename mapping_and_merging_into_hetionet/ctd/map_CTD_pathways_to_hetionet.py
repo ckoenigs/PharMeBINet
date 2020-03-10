@@ -37,17 +37,28 @@ load in all pathways from hetionet in a dictionary
 
 
 def load_hetionet_pathways_in():
-    query = '''MATCH (n:Pathway) RETURN n.identifier,n.names, n.source, n.idOwns'''
+    query = '''MATCH (n:Pathway) RETURN n.identifier,n.name, n.synonyms, n.source, n.idOwns'''
     results = g.run(query)
 
-    for identifier, names, source, idOwns, in results:
-        dict_pathway_hetionet[identifier] = names
+    for identifier, name, synonyms, source, idOwns, in results:
+        if identifier=='PC11_3095':
+            print('lalal')
+        synonyms= synonyms if not synonyms is None else []
         if idOwns:
             for id in idOwns:
                 if not id in dict_own_id_to_identifier:
                     dict_own_id_to_identifier[id]=identifier
-        for name in names:
-            dict_pathway_hetionet_names[name] = identifier
+        if not name in dict_pathway_hetionet_names:
+            dict_pathway_hetionet_names[name.lower()]=identifier
+        else:
+            sys.exit('double name not considered')
+        for synonym in synonyms:
+            if synonym not in dict_pathway_hetionet_names:
+                dict_pathway_hetionet_names[synonym.lower()] = identifier
+            else:
+                sys.exit('double name not considered')
+        synonyms.append(name)
+        dict_pathway_hetionet[identifier] = synonyms
 
     print('number of pathway nodes in hetionet:' + str(len(dict_pathway_hetionet)))
 
@@ -82,7 +93,7 @@ def load_ctd_pathways_in():
     counter_not_mapped=0
     for pathways_node, in results:
         pathways_id = pathways_node['pathway_id']
-        pathways_name = pathways_node['name']
+        pathways_name = pathways_node['name'].lower()
         pathways_id_type = pathways_node['id_type']
         # because kegg is not open source it is out
         if pathways_id_type=='KEGG':
