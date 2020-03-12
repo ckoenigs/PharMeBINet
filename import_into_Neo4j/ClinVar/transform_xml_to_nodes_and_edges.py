@@ -48,6 +48,18 @@ dict_type_dict_pair_measure_set_measure={}
 # dictionary of edges from measure set which has multiple measures to measure for write into the file
 dict_csv_type_measure_set_measure={}
 
+#dictionary of measure set properties which are list
+dict_measure_set_properties_which_are_sets=set()
+
+#dictionary of genotype properties which are list
+dict_genotype_properties_which_are_list=set()
+
+
+if len(sys.argv) > 1:
+    path_of_directory = sys.argv[1]
+else:
+    sys.exit('need a path clinvar')
+
 '''
 prepare the citation information
 '''
@@ -71,6 +83,17 @@ def for_citation_extraction_to_list(node, dict_to_use=None):
 
     return all_citation
 
+'''
+preparation of xrefs for variation file
+'''
+def preparation_of_xrefs_variation(node,dict_to_use):
+    xref_list=node.find('XRefList')
+    if xref_list is not None:
+        all_xrefs=set()
+        for xref in xref_list.iterfind('XRef'):
+            all_xrefs.add(xref.get('DB') + ':' + xref.get('ID'))
+        if len(all_xrefs)>0:
+            dict_to_use['xrefs'] = list(all_xrefs)
 
 '''
 preparation of xrefs
@@ -78,15 +101,15 @@ preparation of xrefs
 
 
 def preparation_of_xrefs(node, dict_to_use):
-    all = set()
+    all_xrefs = set()
     for xref in node.iterfind('XRef'):
-        all.add(xref.get('DB') + ':' + xref.get('ID'))
+        all_xrefs.add(xref.get('DB') + ':' + xref.get('ID'))
     if not dict_to_use is None:
-        if len(all) > 0:
-            dict_to_use['xrefs'] = list(all)
+        if len(all_xrefs) > 0:
+            dict_to_use['xrefs'] = list(all_xrefs)
         return dict_to_use
 
-    return list(all)
+    return list(all_xrefs)
 
 
 '''
@@ -255,7 +278,7 @@ def prepare_symbol(node, dictionary, dictionary_name):
     dict_elements = prepare_set_element(node, 'Symbol')
     element_list = set()
     for type, element in dict_elements.items():
-        element_list.union(element)
+        element_list=element_list.union(element)
     # element_list= [element_list.union(x) for type, x in dict_elements.items()]
     if len(dict_elements) > 0:
         if dictionary_name not in dictionary:
@@ -315,12 +338,10 @@ preparation of attributes
 
 
 def preparation_attributions(node):
-    dict_attributes = {}
+    list_attributes = set()
     for attribute in node.iterfind('AttributeSet'):
-        # todo must be a list
-        check_for_information_and_add_to_dictionary_with_extra_name('Attribute', attribute, dict_attributes,
-                                                                    gets='Type')
-    return dict_attributes
+        list_attributes.add(attribute.find('Attribute').get('Type'))
+    return list(list_attributes)
 
 
 # set of property which appears with different values
@@ -341,13 +362,214 @@ def fusion_of_them(node_dictionary, list_measures):
             if key not in node_dictionary:
                 node_dictionary[key] = value
             else:
-                if value != node_dictionary[key] and key not in set_properties_with_different_values:
-                    print(key)
-                    print(value)
-                    print(node_dictionary[key])
-                    print(node_dictionary)
-                    set_properties_with_different_values.add(key)
-    del node_dictionary['measures']
+                if value != node_dictionary[key] and type(value) in [list,set]:
+                    node_dictionary[key]=set(node_dictionary[key]).union(value)
+                    if key not in set_properties_with_different_values:
+                        set_properties_with_different_values.add(key)
+
+    # del node_dictionary['measures']
+
+'''
+go through dictionary and prepare the values into strings and add all list values names to a set
+'''
+def perpare_dictionary_values(dictionary, specific_type):
+    if specific_type not in dict_type_to_list_property_list:
+        dict_type_to_list_property_list[specific_type]=set()
+    dict_properties_which_are_set=dict_type_to_list_property_list[specific_type]
+    for type_part, value in dictionary.items():
+        if type(value) in [list, set]:
+            list_string = ''
+            for part in value:
+                if type(part) in [list, dict]:
+                    string_version=json.dumps(part).replace('"',"'")
+                    list_string +=  string_version+ '|'
+
+                else:
+                    list_string += part + '|'
+            dictionary[type_part] = list_string[:-1]
+            if type_part not in dict_properties_which_are_set:
+                dict_properties_which_are_set.add(type_part)
+
+'''
+perpare the location information
+'''
+def preparation_location(node, dictionary_used):
+    location = node.find('Location')
+    if location is not None:
+        check_for_information_and_add_to_dictionary_with_extra_name('CytogeneticLocation', location,
+                                                                    dictionary_used,
+                                                                    name='cytogenetic_location')
+
+        add_current_sequence_location_to_dictionary(dictionary_used, location)
+
+    check_for_information_and_add_to_dictionary_with_extra_name('Haploinsufficiency', node, dictionary_used,
+                                                                name='haploinsufficiency')
+    check_for_information_and_add_to_dictionary_with_extra_name('Triplosensitivity', node, dictionary_used,
+                                                                name='triplo sensitivity')
+
+'''
+prepare the hgvs information and return the list with the information
+'''
+def prepare_hgvs(node):
+    hgvs_list = []
+    list_hgvs = node.find('HGVSlist')
+    if list_hgvs is not None:
+        for hgvs in list_hgvs.iterfind('HGVS'):
+            dict_hgvs = {}
+            nucleotide_expression = hgvs.find('NucleotideExpression')
+            if nucleotide_expression is not None:
+                check_for_information_and_add_to_dictionary_with_extra_name('Expression', nucleotide_expression,
+                                                                            dict_hgvs,
+                                                                            name='nucleotide expression')
+            protein_expression = hgvs.find('ProteinExpression')
+            if protein_expression is not None:
+                check_for_information_and_add_to_dictionary_with_extra_name('Expression', protein_expression,
+                                                                            dict_hgvs,
+                                                                            name='nucleotide expression')
+            molecular_consequences = set()
+            for consequence in hgvs.iterfind('MolecularConsequence'):
+                molecular_consequences.add(consequence.get('Type'))
+            if len(molecular_consequences) > 0:
+                dict_hgvs['molecular_consequence'] = list(molecular_consequences)
+            hgvs_list.append(dict_hgvs)
+    return hgvs_list
+
+'''
+prepare synonyms from clinvar variant
+'''
+def prepare_synonyms(node, dictionary):
+    list_synonyms = set()
+    other_names = node.find('OtherNameList')
+    if other_names is not None:
+        for name in other_names.iterfind('Name'):
+            list_synonyms.add(name.text)
+    if len(list_synonyms) > 0:
+        dictionary['synonyms'] = list(list_synonyms)
+
+'''
+prepare functional consequence
+'''
+def prepare_functional_consequence(node):
+    list_functional_consequences = []
+    for functional_consequence in node.iterfind('FunctionalConsequence'):
+        dict_consequence = {}
+        dict_consequence['functional_consequence'] = functional_consequence.get('Value')
+        for_citation_extraction_to_list(functional_consequence, dict_consequence)
+        preparation_of_xrefs(functional_consequence, dict_consequence)
+        comment_dict = for_multiple_tags_at_one(functional_consequence, 'Comment')
+        build_low_dict_into_higher_dict(dict_consequence, comment_dict, 'comments')
+        list_functional_consequences.append(dict_consequence)
+    return list_functional_consequences
+
+'''
+prepare relationship between variation
+'''
+def perpare_rela_between_variations(node,variant_id,id_name,tag_name,from_type, to_type):
+    for single_allele in node.iterfind(tag_name):
+        single_variation_id = single_allele.get('VariationID')
+        if not (from_type, to_type) in edge_between_variations:
+            edge_between_variations[(from_type, to_type)] = set()
+            file_edge = open(
+                'data/edge_' + from_type.replace(' ', '_') + '_' + to_type.replace(' ',
+                                                                                                        '_') + '.tsv',
+                'w', encoding='utf-8')
+            csv_writer = csv.writer(file_edge, delimiter='\t')
+            csv_writer.writerow([id_name, 'other_id'])
+            dict_csv_edge_variations[(from_type, to_type)] = csv_writer
+
+            query = query_edge_variation % (
+            from_type.replace(' ', '_'), to_type.replace(' ', '_'), from_type.replace(' ', '_'),id_name,
+            to_type.replace(' ', '_'), 'other_id')
+            cypher_file_edges.write(query)
+        if (variant_id, single_variation_id) not in edge_between_variations[(from_type, to_type)]:
+            edge_between_variations[(from_type, to_type)].add(
+                (from_type, to_type))
+            dict_csv_edge_variations[(from_type, to_type)].writerow(
+                [variant_id, single_variation_id])
+
+'''
+fill the list with single allels
+'''
+def get_all_single_allel_infos_and_add_to_list(node):
+    list_single=[]
+    specific_type=''
+    for single_allele in node.iterfind('SimpleAllele'):
+
+        dict_single = {}
+
+        check_for_information_and_add_to_dictionary_with_extra_name('VariantType', single_allele, dict_single,
+                                                                    name='specific_type')
+        specific_type = dict_single['specific_type']
+        if 'Variation' not in dict_variation_to_node_ids:
+            dict_variation_to_node_ids['Variation'] = {}
+            dict_csv_file_variation['Variation'] = {}
+        if specific_type not in dict_variation_to_node_ids['Variation']:
+            dict_variation_to_node_ids['Variation'][specific_type] = set()
+            file_type = open('data/' + specific_type.replace(' ', '_') + '.tsv', 'w', encoding='utf-8')
+            csv_writer_type = csv.DictWriter(file_type, delimiter='\t', fieldnames=header_variation)
+            csv_writer_type.writeheader()
+            dict_csv_file_variation['Variation'][specific_type] = csv_writer_type
+
+        allele_id = single_allele.get('AlleleID')
+        single_variation_id = single_allele.get('VariationID')
+        dict_single['allele_id'] = allele_id
+
+        if variant_id not in dict_variation_to_node_ids['Variation'][specific_type]:
+
+            genes_list = single_allele.find('GeneList')
+            if genes_list is not None:
+                list_genes = []
+                for gene in genes_list.iterfind('Gene'):
+                    dict_gene = {}
+
+                    preparation_location(gene, dict_gene)
+
+                    dict_gene['gene_name'] = gene.get('FullName')
+                    dict_gene['gene_id'] = gene.get('GeneID')
+                    gene_symbol = gene.get('Symbol') if 'Symbol' in gene else ''
+                    if gene_symbol != '':
+                        dict_gene['symbol'] = gene_symbol
+                    list_genes.append(dict_single)
+
+            check_for_information_and_add_to_dictionary_with_extra_name('VariantType', single_allele, dict_single,
+                                                                        name='specific_type')
+            preparation_location(single_allele, dict_single)
+
+            prepare_synonyms(single_allele, dict_single)
+
+            hgvs_list = prepare_hgvs(single_allele)
+            build_low_dict_into_higher_dict(dict_single, hgvs_list, 'hgvs_list')
+
+            allele_frequencies = single_allele.find('AlleleFrequencyList')
+            list_of_frequencies = []
+            if not allele_frequencies is None:
+                for allel_frequence in allele_frequencies.iterfind('AlleleFrequency'):
+                    list_of_frequencies.append(
+                        {'frequence': allel_frequence.get('Value'), 'source': allel_frequence.get('Source')})
+                add_list_to_dict_if_not_empty(list_of_frequencies, dict_single, 'frequencies')
+
+            global_minor_allele_frequence = single_allele.find('GlobalMinorAlleleFrequency')
+            if not global_minor_allele_frequence is None:
+                dict_global_allel_frequence = {}
+                add_element_to_dictionary_with_get(dict_global_allel_frequence, global_minor_allele_frequence,
+                                                   'frequence', 'Value')
+                add_element_to_dictionary_with_get(dict_global_allel_frequence, global_minor_allele_frequence,
+                                                   'source', 'Source')
+                add_element_to_dictionary_with_get(dict_global_allel_frequence, global_minor_allele_frequence,
+                                                   'minor_allel', 'MinorAllele')
+                dict_single['global_minor_allele_frequence'] = dict_global_allel_frequence
+
+            list_functional_consequences = prepare_functional_consequence(single_allele)
+            add_list_to_dict_if_not_empty(list_functional_consequences, dict_single, 'functional_consequences')
+
+            preparation_of_xrefs_variation(single_allele, dict_single)
+            comment_dict = for_multiple_tags_at_one(single_allele, 'Comment')
+            build_low_dict_into_higher_dict(dict_single, comment_dict, 'comments')
+            list_single.append(dict_single)
+
+        else:
+            return True, [], ''
+    return False, list_single, specific_type
 
 
 # type with multiple measure
@@ -362,400 +584,651 @@ set_of_species = set()
 # all assertion
 assertions_set = set()
 
+#cypher file nodes
+cypher_file_nodes=open('cypher_file_node.cypher','w',encoding='utf-8')
+
+#cypher files edges
+cypher_file_edges=open('cypher_file_edges.cypher','w',encoding='utf-8')
+
 print(datetime.datetime.utcnow())
-file = open('ClinVarFullRelease_00-latest.xml', 'rb')
-# file = open('big_head.xml', 'rb')
-for event, node in etree.iterparse(file, events=('end',), tag='ClinVarSet'):
-    # print(etree.tostring(node))
-    # all edge information
-    dict_edge_info = {}
-    # dictionary variant information
-    dict_variant_info = {}
-    # dictionary disease
-    dict_disease = {}
+'''
+extract relationships information from full release
+'''
+def get_information_from_full_relase():
+    # file = open('ClinVarFullRelease_00-latest.xml', 'rb')
+    file = open('head_part.xml', 'rb')
+    for event, node in etree.iterparse(file, events=('end',), tag='ClinVarSet'):
+        # print(etree.tostring(node))
+        # all edge information
+        dict_edge_info = {}
+        # dictionary variant information
+        dict_variant_info = {}
+        # dictionary disease
+        dict_disease = {}
 
-    disease_id = ''
-    variant_id = ''
-    dict_edge_info['title'] = node.find('Title').text
-    reference_assertion = node.find('ReferenceClinVarAssertion')
+        disease_id = ''
+        variant_id = ''
+        dict_edge_info['title'] = node.find('Title').text
+        reference_assertion = node.find('ReferenceClinVarAssertion')
 
-    # everything from reference
-    if reference_assertion is not None:
-        assertion = reference_assertion.find('Assertion').get('Type')
-        if assertion not in assertions_set:
-            assertions_set.add(assertion)
-            print(assertion)
-            print(datetime.datetime.utcnow())
-        dict_edge_info['assertion'] = assertion
-        found_clinical, dict_significance = prepare_clinical_significance(reference_assertion)
-        if found_clinical:
-            dict_edge_info['clinical_significance'] = json.dumps(dict_significance)
+        # everything from reference
+        if reference_assertion is not None:
+            assertion = reference_assertion.find('Assertion').get('Type')
+            if assertion not in assertions_set:
+                assertions_set.add(assertion)
+                print(assertion)
+                print(datetime.datetime.utcnow())
+            dict_edge_info['assertion'] = assertion
+            found_clinical, dict_significance = prepare_clinical_significance(reference_assertion)
+            if found_clinical:
+                dict_edge_info['clinical_significance'] = json.dumps(dict_significance)
 
-        # check if this relationship appears at least in human
-        found_human = False
-        observation_list = []
-        for observation in reference_assertion.iterfind('ObservedIn'):
-            observation_dict_one = {}
-            sample = observation.find('Sample')
-            sample_information = {}
-            species = sample.find('Species')
-            if species is not None:
-                if species.text == 'human':
-                    found_human = True
-                else:
-                    if  species.text not in set_of_species:
-                        print('other than human')
-                        print(node.get('ID'))
-                        print(species.text)
-                        set_of_species.add(species.text)
-                    # sys.exit('other the human')
+            # check if this relationship appears at least in human
+            found_human = False
+            observation_list = []
+            for observation in reference_assertion.iterfind('ObservedIn'):
+                observation_dict_one = {}
+                sample = observation.find('Sample')
+                sample_information = {}
+                species = sample.find('Species')
+                if species is not None:
+                    if species.text == 'human':
+                        found_human = True
+                    else:
+                        if  species.text not in set_of_species:
+                            print('other than human')
+                            print(node.get('ID'))
+                            print(species.text)
+                            set_of_species.add(species.text)
+                        # sys.exit('other the human')
 
-            check_for_information_and_add_to_dictionary_with_extra_name('Origin', sample, sample_information,
-                                                                        name='origin')
+                check_for_information_and_add_to_dictionary_with_extra_name('Origin', sample, sample_information,
+                                                                            name='origin')
 
-            for age in sample.iterfind('Age'):
-                sample_information['Age ' + age.get('Type')] = age.text + ' ' + age.get('age_unit')
+                for age in sample.iterfind('Age'):
+                    sample_information['Age ' + age.get('Type')] = age.text + ' ' + age.get('age_unit')
 
-            check_for_information_and_add_to_dictionary_with_extra_name('NumberTested', sample, sample_information,
-                                                                        name='number_tested')
-            check_for_information_and_add_to_dictionary_with_extra_name('NumberMales', sample, sample_information,
-                                                                        name='number_tested_males')
-            check_for_information_and_add_to_dictionary_with_extra_name('NumberFemales', sample, sample_information,
-                                                                        name='number_tested_females')
-            check_for_information_and_add_to_dictionary_with_extra_name('NumberChrTested', sample, sample_information,
-                                                                        name='number_tested_children')
-            check_for_information_and_add_to_dictionary_with_extra_name('GeographicOrigin', sample, sample_information,
-                                                                        name='geographic_origin')
+                check_for_information_and_add_to_dictionary_with_extra_name('NumberTested', sample, sample_information,
+                                                                            name='number_tested')
+                check_for_information_and_add_to_dictionary_with_extra_name('NumberMales', sample, sample_information,
+                                                                            name='number_tested_males')
+                check_for_information_and_add_to_dictionary_with_extra_name('NumberFemales', sample, sample_information,
+                                                                            name='number_tested_females')
+                check_for_information_and_add_to_dictionary_with_extra_name('NumberChrTested', sample, sample_information,
+                                                                            name='number_tested_children')
+                check_for_information_and_add_to_dictionary_with_extra_name('GeographicOrigin', sample, sample_information,
+                                                                            name='geographic_origin')
 
-            check_for_information_and_add_to_dictionary_with_extra_name('Ethnicity', sample, sample_information,
-                                                                        name='ethnicity')
+                check_for_information_and_add_to_dictionary_with_extra_name('Ethnicity', sample, sample_information,
+                                                                            name='ethnicity')
 
-            for_citation_extraction_to_list(sample, sample_information)
-            preparation_of_xrefs(sample, sample_information)
+                for_citation_extraction_to_list(sample, sample_information)
+                preparation_of_xrefs(sample, sample_information)
 
-            comment_dict = for_multiple_tags_at_one(sample, 'Comment')
-            build_low_dict_into_higher_dict(sample_information, comment_dict, 'comments')
-            build_low_dict_into_higher_dict(observation_dict_one, sample_information, 'sample')
+                comment_dict = for_multiple_tags_at_one(sample, 'Comment')
+                build_low_dict_into_higher_dict(sample_information, comment_dict, 'comments')
+                build_low_dict_into_higher_dict(observation_dict_one, sample_information, 'sample')
 
-            method_list = {}
-            for method in observation.iterfind('Method'):
-                method_info = {}
-                check_for_information_and_add_to_dictionary_with_extra_name('MethodType', method, method_info,
-                                                                            name='method_type')
-                preparation_of_xrefs(method, method_info)
-                build_low_dict_into_higher_dict_with_list(observation_dict_one, method_info, 'method', 'methods')
+                method_list = {}
+                for method in observation.iterfind('Method'):
+                    method_info = {}
+                    check_for_information_and_add_to_dictionary_with_extra_name('MethodType', method, method_info,
+                                                                                name='method_type')
+                    preparation_of_xrefs(method, method_info)
+                    build_low_dict_into_higher_dict_with_list(observation_dict_one, method_info, 'method', 'methods')
 
-            observed_data_set = {}
-            for observed_data in observation.iterfind('ObservedData'):
-                one_observation = {}
-                attribute = observed_data.find('Attribute')
-                one_observation[attribute.get('Type')] = attribute.text
-                for_citation_extraction_to_list(observed_data, one_observation)
-                preparation_of_xrefs(observed_data, one_observation)
-                comment_dict = for_multiple_tags_at_one(observation, 'Comment')
-                build_low_dict_into_higher_dict(one_observation, comment_dict, 'comments')
+                observed_data_set = {}
+                for observed_data in observation.iterfind('ObservedData'):
+                    one_observation = {}
+                    attribute = observed_data.find('Attribute')
+                    one_observation[attribute.get('Type')] = attribute.text
+                    for_citation_extraction_to_list(observed_data, one_observation)
+                    preparation_of_xrefs(observed_data, one_observation)
+                    comment_dict = for_multiple_tags_at_one(observation, 'Comment')
+                    build_low_dict_into_higher_dict(one_observation, comment_dict, 'comments')
 
-                build_low_dict_into_higher_dict_with_list(observation_dict_one, one_observation, 'observation_data',
-                                                          'observation_data_multiple')
-            # build_low_dict_into_higher_dict(observation_dict_one, observed_data_set, 'observation_data_multiple')
+                    build_low_dict_into_higher_dict_with_list(observation_dict_one, one_observation, 'observation_data',
+                                                              'observation_data_multiple')
+                # build_low_dict_into_higher_dict(observation_dict_one, observed_data_set, 'observation_data_multiple')
 
-            co_occurrences_set = {}
-            for co_occurrence in observation.iterfind('Co-occurrenceSet'):
-                print('co-occurences')
+                co_occurrences_set = {}
+                for co_occurrence in observation.iterfind('Co-occurrenceSet'):
+                    print('co-occurences')
 
-                one_co_occurrence = {}
-                check_for_information_and_add_to_dictionary_with_extra_name('Zygosity', co_occurrence,
-                                                                            one_co_occurrence,
-                                                                            name='zygosity')
-                check_for_information_and_add_to_dictionary_with_extra_name('Count', co_occurrence, one_co_occurrence,
-                                                                            name='count')
-                allels = {}
-                for allele in co_occurrence.iterfind('AlleleDescSet'):
-                    one_allel_set = {}
-                    check_for_information_and_add_to_dictionary_with_extra_name('RelativeOrientation', allele,
-                                                                                one_allel_set,
-                                                                                name='relative_orientation')
-                    check_for_information_and_add_to_dictionary_with_extra_name('Zygosity', allele, one_allel_set,
+                    one_co_occurrence = {}
+                    check_for_information_and_add_to_dictionary_with_extra_name('Zygosity', co_occurrence,
+                                                                                one_co_occurrence,
                                                                                 name='zygosity')
-                    check_for_information_and_add_to_dictionary_with_extra_name('Name', allele, one_allel_set,
-                                                                                name='name')
-                    found_clinical, dict_significance = prepare_clinical_significance((allele))
-                    if found_clinical:
-                        build_low_dict_into_higher_dict(one_allel_set, dict_significance, 'clinical_singnificant')
+                    check_for_information_and_add_to_dictionary_with_extra_name('Count', co_occurrence, one_co_occurrence,
+                                                                                name='count')
+                    allels = {}
+                    for allele in co_occurrence.iterfind('AlleleDescSet'):
+                        one_allel_set = {}
+                        check_for_information_and_add_to_dictionary_with_extra_name('RelativeOrientation', allele,
+                                                                                    one_allel_set,
+                                                                                    name='relative_orientation')
+                        check_for_information_and_add_to_dictionary_with_extra_name('Zygosity', allele, one_allel_set,
+                                                                                    name='zygosity')
+                        check_for_information_and_add_to_dictionary_with_extra_name('Name', allele, one_allel_set,
+                                                                                    name='name')
+                        found_clinical, dict_significance = prepare_clinical_significance((allele))
+                        if found_clinical:
+                            build_low_dict_into_higher_dict(one_allel_set, dict_significance, 'clinical_singnificant')
 
-                    build_low_dict_into_higher_dict_with_list(one_co_occurrence, one_allel_set, 'allel', 'allels')
-                # build_low_dict_into_higher_dict(one_co_occurrence, allels, 'allels')
+                        build_low_dict_into_higher_dict_with_list(one_co_occurrence, one_allel_set, 'allel', 'allels')
+                    # build_low_dict_into_higher_dict(one_co_occurrence, allels, 'allels')
 
-                build_low_dict_into_higher_dict_with_list(observation_dict_one, one_co_occurrence, 'co-occurrence',
-                                                          'co-occurrences')
-            # build_low_dict_into_higher_dict(observation_dict_one,co_occurrences_set,'co-occurrences')
+                    build_low_dict_into_higher_dict_with_list(observation_dict_one, one_co_occurrence, 'co-occurrence',
+                                                              'co-occurrences')
+                # build_low_dict_into_higher_dict(observation_dict_one,co_occurrences_set,'co-occurrences')
 
-        # build_low_dict_into_higher_dict_with_list(observation_list, observation_dict_one, 'observation')
-        add_dictionary_to_a_list_as_dict_with_a_name(observation_list, observation_dict_one, 'observation')
-        dict_edge_info['observations'] = json.dumps(observation_list)
+            # build_low_dict_into_higher_dict_with_list(observation_list, observation_dict_one, 'observation')
+            add_dictionary_to_a_list_as_dict_with_a_name(observation_list, observation_dict_one, 'observation')
+            dict_edge_info['observations'] = json.dumps(observation_list)
 
-        # measureSet or genotype
-        measure_set = reference_assertion.find('MeasureSet')
-        genotype = reference_assertion.find('GenotypeSet')
-        list_header_measures = ['identifier', 'accession', 'name', 'synonyms', 'symbols', 'comments', 'measures',
-                                'citations', 'xrefs', 'number_of_chromosomes', 'specific_type', 'allele_id',
-                                'attributes',
-                                'cytogenetic_location', 'measure_relationships', 'sequence_location', 'frequencies',
-                                'global_minor_allel_frequence']
-        if measure_set is not None:
-            node_dictionary = {}
-            type = measure_set.get('Type')
-            if type not in type_to_dictionary_of_node:
-                type_to_dictionary_of_node[type] = set()
-                file_type = open('data/' + type + '.tsv', 'w', encoding='utf-8')
-                csv_writer_type = csv.DictWriter(file_type, delimiter='\t', fieldnames=list_header_measures)
-                csv_writer_type.writeheader()
-                type_to_csv_writer[type] = csv_writer_type
-            identifier = measure_set.get('ID')
-            variant_id = identifier
-            accession = measure_set.get('Acc')
-            if identifier == '431733':
-                print('ok')
-            if identifier not in type_to_dictionary_of_node[type]:
-                node_dictionary['identifier'] = identifier
-                node_dictionary['accession'] = accession
+            # measureSet or genotype
+            measure_set = reference_assertion.find('MeasureSet')
+            genotype = reference_assertion.find('GenotypeSet')
+            list_header_measures = ['identifier', 'accession', 'name', 'synonyms', 'symbols', 'comments', 'measures',
+                                    'citations', 'xrefs', 'number_of_chromosomes', 'specific_type', 'allele_id',
+                                    'attributes',
+                                    'cytogenetic_location', 'measure_relationships', 'sequence_location', 'frequencies',
+                                    'global_minor_allele_frequence']
+            if measure_set is not None:
+                node_dictionary = {}
+                type_measure_set = measure_set.get('Type')
+                if type_measure_set not in type_to_dictionary_of_node:
+                    type_to_dictionary_of_node[type_measure_set] = set()
+                    file_type = open('data/' + type_measure_set.replace(' ','_') + '.tsv', 'w', encoding='utf-8')
+                    csv_writer_type = csv.DictWriter(file_type, delimiter='\t', fieldnames=list_header_measures)
+                    csv_writer_type.writeheader()
+                    type_to_csv_writer[type_measure_set] = csv_writer_type
 
-                if accession == 'VCV000599766':
-                    print('blub')
+                identifier = measure_set.get('ID')
+                variant_id = identifier
+                accession = measure_set.get('Acc')
+                if identifier == '431733':
+                    print('ok')
+                if identifier not in type_to_dictionary_of_node[type_measure_set]:
+                    node_dictionary['identifier'] = identifier
+                    node_dictionary['accession'] = accession
 
-                number_of_chr = measure_set.get('NumberOfChromosomes')
-                if number_of_chr is not None:
-                    node_dictionary['number_of_chromosomes'] = number_of_chr
-                dict_measures = []
-                for measure in measure_set.iterfind('Measure'):
-                    # todo if no case exists where a measure set has more than one measure
-                    dict_measure = {}
-                    dict_measure['specific_type'] = measure.get('Type')
-                    dict_measure['allele_id'] = measure.get('ID')
-                    add_name_and_synonyms_to_dict(measure, dict_measure)
-                    prepare_symbol(measure, dict_measure, 'symbols')
-                    dict_attributes = preparation_attributions(measure)
-                    build_low_dict_into_higher_dict(dict_measure, dict_attributes, 'attributes')
+                    if accession == 'VCV000599766':
+                        print('blub')
 
-                    allele_frequencies = measure.find('AlleleFrequencyList')
-                    list_of_frequencies = []
-                    if not allele_frequencies is None:
-                        for allel_frequence in allele_frequencies.iterfind('AlleleFrequency'):
-                            list_of_frequencies.append(
-                                {'frequence': allel_frequence.get('Value'), 'source': allel_frequence.get('Source')})
-                        add_list_to_dict_if_not_empty(list_of_frequencies, dict_measure, 'frequencies')
+                    number_of_chr = measure_set.get('NumberOfChromosomes')
+                    if number_of_chr is not None:
+                        node_dictionary['number_of_chromosomes'] = number_of_chr
+                    dict_measures = []
+                    for measure in measure_set.iterfind('Measure'):
+                        # todo if no case exists where a measure set has more than one measure
+                        dict_measure = {}
 
-                    global_minor_allel_frequence = measure.find('GlobalMinorAlleleFrequency')
-                    if not global_minor_allel_frequence is None:
-                        dict_global_allel_frequence = {}
-                        add_element_to_dictionary_with_get(dict_global_allel_frequence, global_minor_allel_frequence,
-                                                           'frequence', 'Value')
-                        add_element_to_dictionary_with_get(dict_global_allel_frequence, global_minor_allel_frequence,
-                                                           'source', 'Source')
-                        add_element_to_dictionary_with_get(dict_global_allel_frequence, global_minor_allel_frequence,
-                                                           'minor_allel', 'MinorAllele')
-                        dict_measure['global_minor_allel_frequence'] = dict_global_allel_frequence
+                        dict_measure['specific_type'] = measure.get('type_measure_set')
+                        dict_measure['allele_id'] = measure.get('ID')
+                        add_name_and_synonyms_to_dict(measure, dict_measure)
+                        prepare_symbol(measure, dict_measure, 'symbols')
+                        list_attributes = preparation_attributions(measure)
+                        build_low_dict_into_higher_dict_with_list(dict_measure, list_attributes, 'attributes')
 
-                    check_for_information_and_add_to_dictionary_with_extra_name('CytogeneticLocation', measure,
-                                                                                dict_measure,
-                                                                                name='cytogenetic_location')
+                        allele_frequencies = measure.find('AlleleFrequencyList')
+                        list_of_frequencies = []
+                        if not allele_frequencies is None:
+                            for allel_frequence in allele_frequencies.iterfind('AlleleFrequency'):
+                                list_of_frequencies.append(
+                                    {'frequence': allel_frequence.get('Value'), 'source': allel_frequence.get('Source')})
+                            add_list_to_dict_if_not_empty(list_of_frequencies, dict_measure, 'frequencies')
 
-                    add_current_sequence_location_to_dictionary(dict_measure, measure)
+                        global_minor_allele_frequence = measure.find('GlobalMinorAlleleFrequency')
+                        if not global_minor_allele_frequence is None:
+                            dict_global_allel_frequence = {}
+                            add_element_to_dictionary_with_get(dict_global_allel_frequence, global_minor_allele_frequence,
+                                                               'frequence', 'Value')
+                            add_element_to_dictionary_with_get(dict_global_allel_frequence, global_minor_allele_frequence,
+                                                               'source', 'Source')
+                            add_element_to_dictionary_with_get(dict_global_allel_frequence, global_minor_allele_frequence,
+                                                               'minor_allel', 'MinorAllele')
+                            dict_measure['global_minor_allele_frequence'] = dict_global_allel_frequence
 
-                    relationship_information = []
-                    for measure_rela in measure.iterfind('MeasureRelationship'):
-                        dict_rela = {}
-                        add_name_and_synonyms_to_dict(measure_rela, dict_rela)
-                        prepare_symbol(measure_rela, dict_rela, 'symbols')
-                        preparation_of_xrefs(measure_rela, dict_rela)
-                        relationship_information.append(dict_rela)
-                    add_list_to_dict_if_not_empty(relationship_information, dict_measure, 'measure_relationships')
+                        check_for_information_and_add_to_dictionary_with_extra_name('CytogeneticLocation', measure,
+                                                                                    dict_measure,
+                                                                                    name='cytogenetic_location')
 
-                    for_citation_extraction_to_list(measure, dict_measure)
-                    preparation_of_xrefs(measure, dict_measure)
-                    comment_dict = for_multiple_tags_at_one(measure, 'Comment')
-                    build_low_dict_into_higher_dict(dict_measure, comment_dict, 'comments')
+                        add_current_sequence_location_to_dictionary(dict_measure, measure)
 
-                    dict_measures.append(dict_measure)
-                    build_low_dict_into_higher_dict_with_list(node_dictionary, dict_measure, 'measure', 'measures')
+                        relationship_information = []
+                        for measure_rela in measure.iterfind('MeasureRelationship'):
+                            dict_rela = {}
+                            add_name_and_synonyms_to_dict(measure_rela, dict_rela)
+                            prepare_symbol(measure_rela, dict_rela, 'symbols')
+                            preparation_of_xrefs(measure_rela, dict_rela)
+                            relationship_information.append(dict_rela)
+                        add_list_to_dict_if_not_empty(relationship_information, dict_measure, 'measure_relationships')
 
-                if type not in dict_type_to_number_of_measure:
-                    dict_type_to_number_of_measure[type] = set()
-                dict_type_to_number_of_measure[type].add(len(dict_measures))
-                if len(dict_measures)>1:
+                        for_citation_extraction_to_list(measure, dict_measure)
+                        preparation_of_xrefs(measure, dict_measure)
+                        comment_dict = for_multiple_tags_at_one(measure, 'Comment')
+                        build_low_dict_into_higher_dict(dict_measure, comment_dict, 'comments')
 
-                    if type not in dict_type_dict_pair_measure_set_measure:
-                        dict_type_dict_pair_measure_set_measure[type]=set()
-                        writer=open('data/edge_measure_set_measure_'+type+'.csv','w',encoding='utf-8')
-                        csv_writer=csv.writer(writer,delimiter='\t')
-                        csv_writer.writerow(['measure_set_id','measure_id'])
-                        dict_csv_type_measure_set_measure[type]=csv_writer
-                    for dictionary_measure in dict_measures:
-                        if (identifier, dictionary_measure['allele_id']) not in dict_type_dict_pair_measure_set_measure[type]:
-                            dict_type_dict_pair_measure_set_measure[type].add((identifier, dictionary_measure['allele_id']) )
-                if len(dict_measures) > 1 and type not in type_with_multiple_measure:
-                    print('more then one measure')
-                    print(type)
-                    type_with_multiple_measure.add(type)
-                    # print(node_dictionary)
-                    # sys.exit('more then one measure')
-                build_low_dict_into_higher_dict(node_dictionary, dict_measures, 'measures')
+                        dict_measures.append(dict_measure)
+                        build_low_dict_into_higher_dict_with_list(node_dictionary, dict_measure, 'measure', 'measures')
 
-                add_name_and_synonyms_to_dict(measure_set, node_dictionary)
-                prepare_symbol(measure_set, node_dictionary, 'symbols')
+                    if type_measure_set not in dict_type_to_number_of_measure:
+                        dict_type_to_number_of_measure[type_measure_set] = set()
+                    dict_type_to_number_of_measure[type_measure_set].add(len(dict_measures))
+                    if len(dict_measures)>1:
 
-                for_citation_extraction_to_list(measure_set, node_dictionary)
-                preparation_of_xrefs(measure_set, node_dictionary)
+                        if type_measure_set not in dict_type_dict_pair_measure_set_measure:
+                            dict_type_dict_pair_measure_set_measure[type_measure_set]=set()
+                            writer=open('data/edge_measure_set_measure_'+type_measure_set.replace(' ','_')+'.csv','w',encoding='utf-8')
+                            csv_writer=csv.writer(writer,delimiter='\t')
+                            csv_writer.writerow(['measure_set_id','measure_id'])
+                            dict_csv_type_measure_set_measure[type_measure_set]=csv_writer
+                            query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ClinVar/data/edge_measure_set_measure_%s.csv"  As line FIELDTERMINATOR '\t' Match (g:%s_ClinVar{identifier:line.measure_set_id}), (o:%s_ClinVar{identifier:line.measure_id}) Create (g)-[:has_v]->(o);\n'''
+                            query=query % (type_measure_set.replace(' ','_'),type_measure_set.replace(' ','_'),'Variant')
+                            cypher_file_edges.write(query)
+                        for dictionary_measure in dict_measures:
+                            if (identifier, dictionary_measure['allele_id']) not in dict_type_dict_pair_measure_set_measure[type_measure_set]:
+                                dict_type_dict_pair_measure_set_measure[type_measure_set].add((identifier, dictionary_measure['allele_id']) )
+                    if len(dict_measures) > 1 and type_measure_set not in type_with_multiple_measure:
+                        print('more then one measure')
+                        print(type_measure_set)
+                        type_with_multiple_measure.add(type_measure_set)
+                        # print(node_dictionary)
+                        # sys.exit('more then one measure')
+                    build_low_dict_into_higher_dict(node_dictionary, dict_measures, 'measures')
 
-                comment_dict = for_multiple_tags_at_one(measure_set, 'Comment')
-                build_low_dict_into_higher_dict(node_dictionary, comment_dict, 'comments')
+                    add_name_and_synonyms_to_dict(measure_set, node_dictionary)
+                    prepare_symbol(measure_set, node_dictionary, 'symbols')
 
-                if len(dict_measures) == 1:
-                    fusion_of_them(node_dictionary, dict_measures)
+                    for_citation_extraction_to_list(measure_set, node_dictionary)
+                    preparation_of_xrefs(measure_set, node_dictionary)
 
-                type_to_dictionary_of_node[type].add(identifier)
-                type_to_csv_writer[type].writerow(node_dictionary)
+                    comment_dict = for_multiple_tags_at_one(measure_set, 'Comment')
+                    build_low_dict_into_higher_dict(node_dictionary, comment_dict, 'comments')
 
-        elif genotype is not None:
-            list_header_genotype = ['identifier', 'accession', 'name', 'synonyms', 'symbols', 'comments',
-                                    'citations', 'xrefs', 'attributes']
-            list_header_edge_genotype_measure_set = ['genotype_id', 'measure_set_id']
-            identifier = genotype.get('ID')
-            type = genotype.get('Type')
-            accession = genotype.get('Acc')
+                    if len(dict_measures) == 1:
+                        fusion_of_them(node_dictionary, dict_measures)
 
-            variant_id = identifier
+                    perpare_dictionary_values(node_dictionary,dict_measure_set_properties_which_are_sets)
 
-            if type not in dict_type_to_genotype:
-                dict_type_to_genotype[type] = set()
-                dict_type_edge_genotype_measure_set_and_type[type] = {}
-                writer = open('data/genotype_' + type + '.csv', 'w', encoding='utf-8')
-                csv_writer = csv.DictWriter(writer, delimiter='\t', fieldnames=list_header_genotype)
+                    type_to_dictionary_of_node[type_measure_set].add(identifier)
+                    type_to_csv_writer[type_measure_set].writerow(node_dictionary)
+
+            elif genotype is not None:
+                list_header_genotype = ['identifier', 'accession', 'name', 'synonyms', 'symbols', 'comments',
+                                        'citations', 'xrefs', 'attributes']
+                list_header_edge_genotype_measure_set = ['genotype_id', 'measure_set_id']
+                identifier = genotype.get('ID')
+                type_genotype = genotype.get('Type')
+                accession = genotype.get('Acc')
+
+                variant_id = identifier
+
+                if type_genotype not in dict_type_to_genotype:
+                    dict_type_to_genotype[type_genotype] = set()
+                    dict_type_edge_genotype_measure_set_and_type[type_genotype] = {}
+                    writer = open('data/genotype_' + type_genotype.replace(' ','_') + '.tsv', 'w', encoding='utf-8')
+                    csv_writer = csv.DictWriter(writer, delimiter='\t', fieldnames=list_header_genotype)
+                    csv_writer.writeheader()
+                    dict_genotype_type_to_csv[type_genotype] = csv_writer
+
+                for measure_set in genotype.iterfind('MeasureSet'):
+                    measure_set_type = measure_set.get('Type')
+                    identifier_measure_set = measure_set.get('ID')
+
+                    if (type_genotype, measure_set_type) not in dict_type_edge_genotype_measure_set_and_type:
+                        writer = open('data/edge_genotype_' + type_genotype + '_' + measure_set_type + '.csv', 'w',
+                                      encoding='utf-8')
+                        csv_writer = csv.writer(writer, delimiter='\t')
+                        csv_writer.writerow(list_header_edge_genotype_measure_set)
+                        dict_genotype_type_edge_to_measure_set_to_csv[(type_genotype,measure_set_type)] = csv_writer
+                        dict_type_edge_genotype_measure_set_and_type[(type_genotype,measure_set_type)]=set()
+                        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ClinVar/data/edge_genotype_%s_%s.csv"  As line FIELDTERMINATOR '\t' Match (g:Genotype_ClinVar :%s_ClinVar{identifier:line.genotype_id}), (o:%s_ClinVar{identifier:line.measure_set_id}) Create (g)-[:has]->(o);\n'''
+                        query= query %(type_genotype,measure_set_type,type_genotype.replace(' ','_'),measure_set_type.replace(' ','_'))
+                        cypher_file_edges.write(query)
+
+
+                    if not (identifier, identifier_measure_set) in \
+                           dict_type_edge_genotype_measure_set_and_type[type_genotype]:
+
+
+                        dict_type_edge_genotype_measure_set_and_type[(type_genotype,measure_set_type)].add(( identifier, identifier_measure_set))
+
+
+                        dict_genotype_type_edge_to_measure_set_to_csv[(type_genotype,measure_set_type)].writerow(
+                            [identifier, identifier_measure_set, measure_set_type])
+
+                if identifier not in dict_type_to_genotype[type_genotype]:
+                    dict_genotyp = {}
+
+                    dict_genotyp['identifier'] = identifier
+                    dict_genotyp['accession'] = accession
+
+                    list_attributes = preparation_attributions(genotype)
+                    build_low_dict_into_higher_dict_with_list(dict_genotyp, list_attributes, 'attributes')
+
+                    add_name_and_synonyms_to_dict(genotype, dict_genotyp)
+                    prepare_symbol(genotype, dict_genotyp, 'symbols')
+                    for_citation_extraction_to_list(genotype, dict_genotyp)
+                    preparation_of_xrefs(genotype, dict_genotyp)
+                    comment_dict = for_multiple_tags_at_one(genotype, 'Comment')
+                    build_low_dict_into_higher_dict(dict_genotyp, comment_dict, 'comments')
+
+                    dict_type_to_genotype[type_genotype].add(identifier)
+
+                    perpare_dictionary_values(dict_genotyp,dict_genotype_properties_which_are_list)
+
+                    dict_genotype_type_to_csv[type_genotype].writerow(dict_genotyp)
+
+            # trait Set
+            trait_set = reference_assertion.find('TraitSet')
+
+            list_head_trait = ['identifier', 'accession', 'name', 'synonyms', 'symbols', 'comments',
+                               'citations', 'xrefs', 'attributes', 'traits']
+            identifier = trait_set.get('ID')
+            trait_set_type = trait_set.get('Type')
+
+            if not trait_set_type in dict_trait_set_type_dictionary:
+                dict_trait_set_type_dictionary[trait_set_type] = set()
+
+                writer = open('data/trait_set_' + trait_set_type + '.tsv', 'w', encoding='utf-8')
+                csv_writer = csv.DictWriter(writer, delimiter='\t', fieldnames=list_head_trait)
                 csv_writer.writeheader()
-                dict_genotype_type_to_csv[type] = csv_writer
+                dict_trait_set_typ_to_csv[trait_set_type] = csv_writer
 
-            for measure_set in genotype.iterfind('MeasureSet'):
-                measure_set_type = measure_set.get('Type')
-                identifier_measure_set = measure_set.get('ID')
+            if not identifier in dict_trait_set_type_dictionary[trait_set_type]:
+                dict_trait_set = {}
 
-                if (type, measure_set_type) not in dict_type_edge_genotype_measure_set_and_type:
-                    writer = open('data/edge_genotype_' + type + '_' + measure_set_type + '.csv', 'w',
-                                  encoding='utf-8')
-                    csv_writer = csv.writer(writer, delimiter='\t')
-                    csv_writer.writerow(list_header_edge_genotype_measure_set)
-                    dict_genotype_type_edge_to_measure_set_to_csv[(type,measure_set_type)] = csv_writer
-                    dict_type_edge_genotype_measure_set_and_type[(type,measure_set_type)]=set()
+                list_traits = []
+                for trait in trait_set.iterfind('Trait'):
+                    dict_trait = {}
 
-                if not (identifier, identifier_measure_set) in \
-                       dict_type_edge_genotype_measure_set_and_type[type]:
+                    trait_type = trait.get('Type')
+                    trait_identifier = trait.get('ID')
+
+                    dict_trait['type'] = trait_type
+                    dict_trait['identifier'] = trait_identifier
+
+                    add_name_and_synonyms_to_dict(trait, dict_trait)
+                    prepare_symbol(trait, dict_trait, 'symbols')
+
+                    list_attributes = preparation_attributions(trait)
+                    build_low_dict_into_higher_dict_with_list(dict_trait, list_attributes, 'attributes')
+
+                    list_trait_rela = []
+                    for trait_rela in trait.iterfind('TraitRelationship'):
+                        list_trait_rela.append((trait_rela.get('Type'), trait_rela.get('Id')))
+                    if len(list_trait_rela) > 0:
+                        dict_trait['trait_rela'] = list_trait_rela
+
+                    for_citation_extraction_to_list(trait, dict_trait)
+                    preparation_of_xrefs(trait, dict_trait)
+                    comment_dict = for_multiple_tags_at_one(trait, 'Comment')
+                    build_low_dict_into_higher_dict(dict_trait, comment_dict, 'comments')
+                    list_traits.append(dict_trait)
+                    build_low_dict_into_higher_dict_with_list(dict_trait_set, dict_trait, 'trait', 'traits')
+
+                list_attributes = preparation_attributions(trait_set)
+                build_low_dict_into_higher_dict_with_list(dict_trait_set, list_attributes, 'attributes')
+
+                add_name_and_synonyms_to_dict(trait_set, dict_trait_set)
+                prepare_symbol(trait_set, dict_trait_set, 'symbols')
+                for_citation_extraction_to_list(trait_set, dict_trait_set)
+                preparation_of_xrefs(trait_set, dict_trait_set)
+                comment_dict = for_multiple_tags_at_one(trait_set, 'Comment')
+                build_low_dict_into_higher_dict(dict_trait_set, comment_dict, 'comments')
+
+                # if len(list_traits) > 1 and not trait_set_type == 'Finding':
+                #     print(identifier)
+                #     print(trait_set_type)
+                #     print('more then one trait')
+                # sys.exit('more then one trait')
+
+                dict_trait_set_type_dictionary[trait_set_type].add(identifier)
+                dict_trait_set_typ_to_csv[trait_set_type].writerow(dict_trait_set)
+
+        if node[0].text == 'current':
+            csv_edge.writerow(dict_edge_info)
+            # if (variant_id,disease_id) not in dict_edges:
+            #     dict_edges[(variant_id,disease_id)]=dict_edge_info
+            #     csv_edge.writerow(dict_edge_info)
+            # else:
+            #     print(disease_id)
+            #     print(variant_id)
+            #     print(dict_edges[(variant_id,disease_id)])
+            #     print(dict_edge_info)
+            # sys.exit('same pair, but do they have different information?')
+        # break
+        node.clear()
+
+# to get all not found variants
+
+#dictiontionary variation with group variant, haplotype, genotype to all entries
+dict_variation_to_node_ids={}
+
+# edge_dictionary
+edge_between_variations={}
+
+# dictionary of edges for the different types to csv
+dict_csv_edge_variations={}
+
+#dict_type_to_property_list_which is a list
+dict_type_to_list_property_list={}
+
+# head variation
+header_variation=['identifier','accession','name','allele_id','frequencies','global_minor_allele_frequence','xrefs',
+                  'comments', 'genes', 'specific_type', 'synonyms', 'cytogenetic_location', 'hgvs_list',
+                  'sequence_location', 'functional_consequences','number_of_chromosomes','review_status','citations']
+list_header_measures = ['identifier', 'accession', 'name', 'synonyms', 'symbols', 'comments', 'measures',
+                                    'citations', 'xrefs', 'number_of_chromosomes', 'specific_type', 'allele_id',
+                                    'attributes',
+                                    'cytogenetic_location', 'measure_relationships', 'sequence_location', 'frequencies',
+                                    'global_minor_allele_frequence']
+#query for variation edges
+query_edge_variation = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ClinVar/data/edge_%s_%s.tsv"  As line FIELDTERMINATOR '\t' Match (g:%s_ClinVar{identifier:line.%s}), (o:%s_ClinVar{identifier:line.%s}) Create (g)-[:has]->(o);\n'''
+
+#dictionary csv file for variation
+dict_csv_file_variation={}
+
+print(datetime.datetime.utcnow())
+file = open('ClinVarVariationRelease_00-latest.xml', 'rb')
+# file = open('head_variant_big.xml', 'rb')
+for event, node in etree.iterparse(file, events=('end',), tag='VariationArchive'):
+    dict_node={}
+    variant_id= node.get('VariationID')
+    if variant_id=='157525':
+        print('huhu')
+    variation_type=node.get('VariationType')
+    name=node.get('VariationName')
+    accession = node.get('Accession')
+    species=node.find('Species').text.lower()
+    record_status=node.find('RecordStatus').text
+    if  record_status!= 'current' or species!='homo sapiens':
+        node.clear()
+        continue
+    dict_node['identifier']=variant_id
+    dict_node['accession']=accession
+    dict_node['name']=name
+
+    #for interpretation
+    interpreted_record=node.find('InterpretedRecord')
+    if interpreted_record is not None:
+        check_for_information_and_add_to_dictionary_with_extra_name('ReviewStatus', interpreted_record, dict_node,
+                                                                    name='review_status')
+        general_citation=interpreted_record.find('GeneralCitations')
+        if general_citation is not None:
+            for_citation_extraction_to_list(general_citation, dict_node)
+
+        genotype=interpreted_record.find('Genotype')
+        haplotype=interpreted_record.find('Haplotype')
+        #question is if this has one time ore then on single allel?
+        found_already,list_single,specific_type=get_all_single_allel_infos_and_add_to_list(interpreted_record)
+        if found_already:
+            node.clear()
+            continue
+
+        if len(list_single)==1:
+            fusion_of_them(dict_node, list_single)
+
+            property_list_which_are_list=perpare_dictionary_values(dict_node, specific_type)
+
+            dict_csv_file_variation['Variation'][specific_type].writerow(dict_node)
+            dict_variation_to_node_ids['Variation'][specific_type].add(variant_id)
 
 
-                    dict_type_edge_genotype_measure_set_and_type[(type,measure_set_type)].add(( identifier, identifier_measure_set))
+
+        if genotype is not None:
+            if 'Genotype' not in dict_variation_to_node_ids:
+                dict_variation_to_node_ids['Genotype']={}
+                dict_csv_file_variation['Genotype']={}
+            variation_type = genotype.find('VariationType').text
+
+            if variation_type not in  dict_variation_to_node_ids['Genotype']:
+                dict_variation_to_node_ids['Genotype'][variation_type]=set()
+                file_type = open('data/' + variation_type.replace(' ', '_') + '.tsv', 'w', encoding='utf-8')
+                csv_writer_type = csv.DictWriter(file_type, delimiter='\t', fieldnames=header_variation)
+                csv_writer_type.writeheader()
+                dict_csv_file_variation['Genotype'][variation_type] = csv_writer_type
+
+            perpare_rela_between_variations(genotype,variant_id,  'genotyp_id','SimpleAllele','Genotype','Variation')
+            perpare_rela_between_variations(genotype, variant_id, 'genotyp_id','Haplotype','Genotype','Haplotype')
 
 
-                    dict_genotype_type_edge_to_measure_set_to_csv[(type,measure_set_type)].writerow(
-                        [identifier, identifier_measure_set, measure_set_type])
+            if variant_id in dict_variation_to_node_ids['Genotype'][variation_type]:
+                node.clear()
+                continue
+            prepare_synonyms(genotype, dict_node)
 
-            if identifier not in dict_type_to_genotype[type]:
-                dict_genotyp = {}
+            hgvs_list = prepare_hgvs(genotype)
+            build_low_dict_into_higher_dict(dict_node, hgvs_list, 'hgvs_list')
 
-                dict_genotyp['identifier'] = identifier
-                dict_genotyp['accession'] = accession
+            list_functional_consequences = prepare_functional_consequence(genotype)
+            add_list_to_dict_if_not_empty(list_functional_consequences, dict_node, 'functional_consequences')
 
-                dict_attributes = preparation_attributions(genotype)
-                build_low_dict_into_higher_dict(dict_genotyp, dict_attributes, 'attributes')
+            preparation_of_xrefs_variation(genotype, dict_node)
+            comment_dict = for_multiple_tags_at_one(genotype, 'Comment')
+            build_low_dict_into_higher_dict(dict_node, comment_dict, 'comments')
+            citation_list=genotype.find('CitationList')
+            if citation_list is not None:
+                for_citation_extraction_to_list(citation_list, dict_node)
 
-                add_name_and_synonyms_to_dict(genotype, dict_genotyp)
-                prepare_symbol(genotype, dict_genotyp, 'symbols')
-                for_citation_extraction_to_list(genotype, dict_genotyp)
-                preparation_of_xrefs(genotype, dict_genotyp)
-                comment_dict = for_multiple_tags_at_one(genotype, 'Comment')
-                build_low_dict_into_higher_dict(dict_genotyp, comment_dict, 'comments')
+            list_attributes = preparation_attributions(genotype)
+            build_low_dict_into_higher_dict_with_list(dict_node, list_attributes, 'attribute','attributes')
 
-                dict_type_to_genotype[type].add(identifier)
+            perpare_dictionary_values(dict_node,variation_type)
 
-                dict_genotype_type_to_csv[type].writerow(dict_genotyp)
+            dict_csv_file_variation['Genotype'][variation_type].writerow(dict_node)
+            dict_variation_to_node_ids['Genotype'][variation_type].add(variant_id)
 
-        # trait Set
-        trait_set = reference_assertion.find('TraitSet')
 
-        list_head_trait = ['identifier', 'accession', 'name', 'synonyms', 'symbols', 'comments',
-                           'citations', 'xrefs', 'attributes', 'traits']
-        identifier = trait_set.get('ID')
-        trait_set_type = trait_set.get('Type')
+        elif haplotype is not None:
+            if 'Haplotype' not in dict_variation_to_node_ids:
+                dict_variation_to_node_ids['Haplotype']={}
+                dict_csv_file_variation['Haplotype']={}
 
-        if not trait_set_type in dict_trait_set_type_dictionary:
-            dict_trait_set_type_dictionary[trait_set_type] = set()
+            if variation_type not in dict_variation_to_node_ids['Haplotype']:
+                dict_variation_to_node_ids['Haplotype'][variation_type] = set()
+                file_type = open('data/' + variation_type.replace(' ', '_') + '.tsv', 'w', encoding='utf-8')
+                csv_writer_type = csv.DictWriter(file_type, delimiter='\t', fieldnames=header_variation)
+                csv_writer_type.writeheader()
+                dict_csv_file_variation['Haplotype'][variation_type]=csv_writer_type
 
-            writer = open('data/trait_set_' + trait_set_type + '.tsv', 'w', encoding='utf-8')
-            csv_writer = csv.DictWriter(writer, delimiter='\t', fieldnames=list_head_trait)
-            csv_writer.writeheader()
-            dict_trait_set_typ_to_csv[trait_set_type] = csv_writer
 
-        if not identifier in dict_trait_set_type_dictionary[trait_set_type]:
-            dict_trait_set = {}
+            perpare_rela_between_variations(haplotype,variant_id,'haplo_id','SimpleAllele', 'Haplotype','Variation')
 
-            list_traits = []
-            for trait in trait_set.iterfind('Trait'):
-                dict_trait = {}
+            if variant_id in dict_variation_to_node_ids['Haplotype'][variation_type]:
+                continue
 
-                trait_type = trait.get('Type')
-                trait_identifier = trait.get('ID')
+            prepare_synonyms(haplotype, dict_node)
 
-                dict_trait['type'] = trait_type
-                dict_trait['identifier'] = trait_identifier
+            hgvs_list = prepare_hgvs(haplotype)
+            build_low_dict_into_higher_dict(dict_node, hgvs_list, 'hgvs_list')
 
-                add_name_and_synonyms_to_dict(trait, dict_trait)
-                prepare_symbol(trait, dict_trait, 'symbols')
+            list_functional_consequences = prepare_functional_consequence(haplotype)
+            add_list_to_dict_if_not_empty(list_functional_consequences, dict_node, 'functional_consequences')
 
-                dict_attributes = preparation_attributions(trait)
-                build_low_dict_into_higher_dict(dict_trait, dict_attributes, 'attributes')
+            preparation_of_xrefs_variation(haplotype, dict_node)
+            comment_dict = for_multiple_tags_at_one(haplotype, 'Comment')
+            build_low_dict_into_higher_dict(dict_node, comment_dict, 'comments')
+            number_of_copies=haplotype.get('NumberOfCopies')
+            if number_of_copies is not None:
+                dict_node['number_of_copies']=number_of_copies
+            number_of_chromosomes=haplotype.get('NumberOfChromosomes')
+            if number_of_chromosomes is not None:
+                dict_node['number_of_chromosomes']=number_of_chromosomes
 
-                list_trait_rela = []
-                for trait_rela in trait.iterfind('TraitRelationship'):
-                    list_trait_rela.append((trait_rela.get('Type'), trait_rela.get('Id')))
-                if len(list_trait_rela) > 0:
-                    dict_trait['trait_rela'] = list_trait_rela
+            perpare_dictionary_values(dict_node,variation_type)
+            dict_csv_file_variation['Haplotype'][variation_type].writerow(dict_node)
+            dict_variation_to_node_ids['Haplotype'][variation_type].add(variant_id)
+    else:
+        interpreted_record = node.find('IncludedRecord')
+        check_for_information_and_add_to_dictionary_with_extra_name('ReviewStatus', interpreted_record, dict_node,
+                                                                    name='review_status')
+        general_citation = interpreted_record.find('GeneralCitations')
+        if general_citation is not None:
+            for_citation_extraction_to_list(general_citation, dict_node)
 
-                for_citation_extraction_to_list(trait, dict_trait)
-                preparation_of_xrefs(trait, dict_trait)
-                comment_dict = for_multiple_tags_at_one(trait, 'Comment')
-                build_low_dict_into_higher_dict(dict_trait, comment_dict, 'comments')
-                list_traits.append(dict_trait)
-                build_low_dict_into_higher_dict_with_list(dict_trait_set, dict_trait, 'trait', 'traits')
+        found_already,list_single,specific_type = get_all_single_allel_infos_and_add_to_list(interpreted_record)
+        if found_already:
+            node.clear()
+            continue
 
-            dict_attributes = preparation_attributions(trait_set)
-            build_low_dict_into_higher_dict(dict_trait_set, dict_attributes, 'attributes')
+        if len(list_single) == 1:
+            fusion_of_them(dict_node, list_single)
 
-            add_name_and_synonyms_to_dict(trait_set, dict_trait_set)
-            prepare_symbol(trait_set, dict_trait_set, 'symbols')
-            for_citation_extraction_to_list(trait_set, dict_trait_set)
-            preparation_of_xrefs(trait_set, dict_trait_set)
-            comment_dict = for_multiple_tags_at_one(trait_set, 'Comment')
-            build_low_dict_into_higher_dict(dict_trait_set, comment_dict, 'comments')
+            property_list_which_are_list = perpare_dictionary_values(dict_node, specific_type)
 
-            # if len(list_traits) > 1 and not trait_set_type == 'Finding':
-            #     print(identifier)
-            #     print(trait_set_type)
-            #     print('more then one trait')
-            # sys.exit('more then one trait')
+            dict_csv_file_variation['Variation'][specific_type].writerow(dict_node)
+            dict_variation_to_node_ids['Variation'][specific_type].add(variant_id)
 
-            dict_trait_set_type_dictionary[trait_set_type].add(identifier)
-            dict_trait_set_typ_to_csv[trait_set_type].writerow(dict_trait_set)
+    # if variant_id in
 
-    if node[0].text == 'current':
-        csv_edge.writerow(dict_edge_info)
-        # if (variant_id,disease_id) not in dict_edges:
-        #     dict_edges[(variant_id,disease_id)]=dict_edge_info
-        #     csv_edge.writerow(dict_edge_info)
-        # else:
-        #     print(disease_id)
-        #     print(variant_id)
-        #     print(dict_edges[(variant_id,disease_id)])
-        #     print(dict_edge_info)
-        # sys.exit('same pair, but do they have different information?')
-    # break
+
     node.clear()
+
+'''
+prepare the content of the cypher file
+'''
+def prepare_content_of_cypher_file(type_variation,dict_set_of_property_which_are_list,query,list_head):
+    for head in list_head:
+        if head in dict_set_of_property_which_are_list:
+            query += head + ':split(line.' + head + ",'|'), "
+        else:
+            query += head + ':line.' + head + ', '
+    query = query[:-2] + '});\n'
+    type_variation = type_variation.replace(' ', '_')
+    this_query = query % (type_variation, type_variation)
+    cypher_file_nodes.write(this_query)
+
+'''
+generate node cyphers
+'''
+def generate_node_cypher(dict_variation_to_node_ids,list_head):
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ClinVar/data/%s.tsv"  As line FIELDTERMINATOR '\t'  Create (n:%s_ClinVar '''
+    for key, value in dict_variation_to_node_ids.items():
+        if type(value)==dict:
+            new_query=query+':'+ key.replace(' ','_')+'_ClinVar {'
+            for lower_key in value.keys():
+                if lower_key!=key:
+                    list_of_sets_properties=dict_type_to_list_property_list[lower_key]
+                    prepare_content_of_cypher_file(lower_key,list_of_sets_properties,new_query,list_head)
+                else:
+                    list_of_sets_properties = dict_type_to_list_property_list[key]
+                    prepare_content_of_cypher_file(key, list_of_sets_properties, query + '{', list_head)
+        else:
+            list_of_sets_properties=dict_type_to_list_property_list[key]
+            prepare_content_of_cypher_file(key,list_of_sets_properties,query+'{',list_head)
+        query_constraint='''Create Constraint On (node:%s_ClinVar) Assert node.identifier Is Unique; \n''' %(key.replace(' ','_'))
+        cypher_file_nodes.write(query_constraint)
+
+
+
+
+        
+#measure set nodes queries
+generate_node_cypher(dict_variation_to_node_ids,header_variation)
+
 
 for type, set_measure_set_measure in dict_type_dict_pair_measure_set_measure.items():
     for (measure_set_id, allele_id) in set_measure_set_measure:
@@ -764,7 +1237,8 @@ for type, set_measure_set_measure in dict_type_dict_pair_measure_set_measure.ite
         else:
             print(allele_id)
             print(measure_set_id)
-            sys.exit('allele id do not exist somwhere ;(')
+            print('allele id do not exist somwhere ;(')
+            # sys.exit('allele id do not exist somwhere ;(')
 
 
 print(type_to_dictionary_of_node.keys())
