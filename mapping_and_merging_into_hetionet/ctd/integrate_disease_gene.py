@@ -56,15 +56,16 @@ also generate a cypher file to integrate this information
 def take_all_relationships_of_gene_disease():
     # generate cypher file
     cypherfile = open('gene_disease/cypher.cypher', 'w', encoding='utf-8')
-    cypherfile.write('begin\n')
-    cypherfile.write(
-        'Match (n:Disease)-[r:ASSOCIATES_DaG]->(b:Gene) Where not exists(r.hetionet) Set r.hetionet="yes", r.resource=["Hetionet"];\n')
-    cypherfile.write('commit\n')
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/gene_disease/relationships.csv" As line Match (n:Gene{identifier:c(line.GeneID)}), (b:Disease{identifier:line.DiseaseID}) Merge (b)-[r:ASSOCIATES_DaG]->(n) On Create Set r.hetionet='no', r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.resource=["CTD"], r.source="CTD", r.inferences=split(line.inferences,'|'), r.pubMedIDs=split(line.pubMedIDs,'|'), r.directEvidence=split(line.directEvidence,'|') ,r.omimIDs=split(line.omimIDs,'|'), r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased=line.unbiased On Match SET r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.unbiased=line.unbiased, r.inferences=split(line.inferences,'|'), r.pubMedIDs=split(line.pubMedIDs,'|'), r.directEvidence=split(line.directEvidence,'|') ,r.omimIDs=split(line.omimIDs,'|'), r.resource=r.resource+'CTD' ;\n '''
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/gene_disease/relationships.csv" As line Match (n:Gene{identifier:toInteger(line.GeneID)}), (b:Disease{identifier:line.DiseaseID}) Merge (b)-[r:ASSOCIATES_DaG]->(n) On Create Set r.hetionet='no', r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.resource=["CTD"], r.source="CTD", r.inferences=split(line.inferences,'|'), r.pubMedIDs=split(line.pubMedIDs,'|'), r.directEvidence=split(line.directEvidence,'|') ,r.omimIDs=split(line.omimIDs,'|'), r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased=line.unbiased On Match SET r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.unbiased=line.unbiased, r.inferences=split(line.inferences,'|'), r.pubMedIDs=split(line.pubMedIDs,'|'), r.directEvidence=split(line.directEvidence,'|') ,r.omimIDs=split(line.omimIDs,'|'), r.resource=r.resource+'CTD' ;\n '''
     cypherfile.write(query)
-    cypherfile.write('begin\n')
-    cypherfile.write('Match (n:Disease)-[r:ASSOCIATES_DaG]->(b:Gene) Where not exists(r.ctd) Set r.ctd="no";\n')
-    cypherfile.write('commit')
+
+
+    #the general cypher file to update all chemicals and relationship which are not from aeolus
+    cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')
+    cypher_general.write('begin\n')
+    cypher_general.write('Match (n:Disease)-[r:ASSOCIATES_DaG]->(b:Gene) Where not exists(r.ctd) Set r.ctd="no";\n')
+    cypher_general.write('commit')
+    cypher_general.close()
 
     csvfile = open('gene_disease/relationships.csv', 'w', encoding='utf-8')
     writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
@@ -94,7 +95,7 @@ def take_all_relationships_of_gene_disease():
 
         start = time.time()
         # and a.identifier='MONDO:0013604'
-        query = '''MATCH p=(a)-[r:equal_to_D_Disease_CTD]->(b)  Where not exists(a.integrated)   With  a, collect(b.disease_id) As ctd Limit '''+str(
+        query = '''MATCH p=(a:Disease)-[r]->(b:CTDdisease)  Where not exists(a.integrated)   With  a, collect(b.disease_id) As ctd Limit '''+str(
             number_of_compound_to_work_with) + ''' Set a.integrated='yes'  RETURN a.identifier , ctd '''
 
         # print(query)
@@ -121,7 +122,7 @@ def take_all_relationships_of_gene_disease():
         # print(dict_disease_id_mondo)
 
         all_disease_id='","'.join(all_disease_id)
-        query = '''MATCH (disease)<-[r:associates_GD]-(gene) Where ()-[:equal_to_CTD_gene]->(gene) and exists(r.DirectEvidence) and disease.disease_id in ["''' + all_disease_id+ '''"] RETURN gene.gene_id, r, disease.mondos, disease.disease_id Order by disease.disease_id '''
+        query = '''MATCH (:Disease)--(disease:CTDdisease)<-[r:associates_GD]-(gene:CTDgene)--(:Gene) Where   disease.disease_id in ["''' + all_disease_id+ '''"] and exists(r.directEvidence)  RETURN Distinct gene.gene_id, r, disease.disease_id '''
         results = g.run(query)
 
         time_measurement = time.time() - start
@@ -131,7 +132,7 @@ def take_all_relationships_of_gene_disease():
         # dictionary with all pairs and properties as value
         dict_disease_gene = {}
 
-        for gene_id, rela, disease_mondos, disease_id, in results:
+        for gene_id, rela,disease_id, in results:
             counter_all+=1
             rela = dict(rela)
             inferenceChemicalName = rela['inferenceChemicalName'] if 'inferenceChemicalName' in rela else ''
@@ -153,22 +154,14 @@ def take_all_relationships_of_gene_disease():
             counter_direct_evidence+=1
             for mondo in dict_disease_id_mondo[disease_id]:
                 if not (gene_id, mondo) in dict_disease_gene:
-                    if inferenceChemicalName=='':
-                        dict_disease_gene[(gene_id, mondo)] = [[],[directEvidence],[pubMedIDs],[omimIDs]]
-                    else:
-                        dict_disease_gene[(gene_id, mondo)] = [[inferenceChemicalName+':'+inferenceScore], [], [pubMedIDs], [omimIDs]]
+                    dict_disease_gene[(gene_id, mondo)] = [{inferenceChemicalName+':'+inferenceScore},{directEvidence},{pubMedIDs},{omimIDs}]
                     count_possible_relas += 1
                 else:
+                    dict_disease_gene[(gene_id, mondo)][0].add(inferenceChemicalName+':'+inferenceScore)
+                    dict_disease_gene[(gene_id, mondo)][1].add(directEvidence)
+                    dict_disease_gene[(gene_id, mondo)][2].add(pubMedIDs)
+                    dict_disease_gene[(gene_id, mondo)][3].add(omimIDs)
 
-                    if inferenceChemicalName=='':
-                        dict_disease_gene[(gene_id, mondo)][1].append(directEvidence)
-                        dict_disease_gene[(gene_id, mondo)][2].append(pubMedIDs)
-                        dict_disease_gene[(gene_id, mondo)][3].append(omimIDs)
-
-                    else:
-                        dict_disease_gene[(gene_id, mondo)][0].append(inferenceChemicalName+':'+inferenceScore)
-                        dict_disease_gene[(gene_id, mondo)][2].append(pubMedIDs)
-                        dict_disease_gene[(gene_id, mondo)][3].append(omimIDs)
                     count_multiple_pathways += 1
 
             if counter_all%10000==0:
@@ -179,10 +172,10 @@ def take_all_relationships_of_gene_disease():
         list_time_dict_association.append(time_measurement)
         start = time.time()
         for (gene_id, mondo), [inferences, directEvidence, pubMedIDs, omimIDs] in dict_disease_gene.items():
-            inferences=list(set(filter(bool,inferences)))
-            directEvidence = list(set(filter(bool, directEvidence)))
-            pubMedIDs = list(set(filter(bool, pubMedIDs)))
-            omimIDs = list(set(filter(bool, omimIDs)))
+            inferences=list(filter(bool,inferences))
+            directEvidence = list(filter(bool, directEvidence))
+            pubMedIDs = list(filter(bool, pubMedIDs))
+            omimIDs = list(filter(bool, omimIDs))
             inferences_string='|'.join(inferences)
             directEvidence_string = '|'.join(directEvidence)
             pubMedIDs_string = '|'.join(pubMedIDs)
