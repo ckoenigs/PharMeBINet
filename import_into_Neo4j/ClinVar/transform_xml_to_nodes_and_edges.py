@@ -998,6 +998,7 @@ for event, node in etree.iterparse(file, events=('end',), tag='VariationArchive'
             dict_variation_to_node_ids['Genotype'][variation_type].add(variant_id)
 
 
+
         elif haplotype is not None:
             if 'Haplotype' not in dict_variation_to_node_ids:
                 dict_variation_to_node_ids['Haplotype']={}
