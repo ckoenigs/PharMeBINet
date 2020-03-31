@@ -507,7 +507,7 @@ def main():
     print(datetime.datetime.utcnow())
     print('load all connection in dictionary')
 
-    # load_in_all_interaction_connection_from_drugbank_in_dict()
+    load_in_all_interaction_connection_from_drugbank_in_dict()
 
     print(
         '#################################################################################################################################################################')
