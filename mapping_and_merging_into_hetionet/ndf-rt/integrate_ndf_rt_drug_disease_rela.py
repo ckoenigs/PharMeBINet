@@ -26,7 +26,7 @@ dict_type_to_label={
     'may_prevent':'PREVENTS_CpD',
     'CI_with':'CONTRAINDICATES_CcD',
     'induces':'INDUCES_CiD',
-    'may_diagnose':'MAY_DIAGNOSE'
+    'may_diagnose':'MAY_DIAGNOSE_CmdD'
 }
 
 '''
