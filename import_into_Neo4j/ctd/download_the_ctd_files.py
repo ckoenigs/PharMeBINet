@@ -3,23 +3,32 @@ import datetime
 import wget
 import gzip
 
+import urllib.request
 
-import requests
-import pandas
+request_headers = {
+  'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) ' +
+                'Chrome/35.0.1916.47 Safari/537.36'
+}
+
 
 
 
 '''
 download file and generate un ziped csv file
 '''
-def download_and_unzip(url):
-    # download Pathway Commons v11
-    filename = wget.download(url, out='ctd_data/')
-    filename_without_gz =filename.rsplit('.',1)[0]
-    file=open(filename_without_gz,'wb')
-    with gzip.open(filename,'rb') as f:
-        file.write(f.read())
-    file.close()
+def download_and_unzip(url_end):
+    url=url_start+url_end
+    print(url)
+    request = urllib.request.Request(url, headers=request_headers)
+    with urllib.request.urlopen(request) as response, open('./ctd_data/'+url_end.rsplit('.',1)[0], 'wb') as f:
+        f.write(response.read())
+
+    # filename = wget.download(url, out='ctd_data/')
+    # filename_without_gz =filename.rsplit('.',1)[0]
+    # file=open(filename_without_gz,'wb')
+    # with gzip.open(filename,'rb') as f:
+    #     file.write(f.read())
+    # file.close()
 
 # url start
 url_start='http://ctdbase.org/reports/'
@@ -55,12 +64,12 @@ def main():
 
     #down load all gz files from ctd
     for url_end in list_of_ctd_file_names:
-        url=url_start+url_end
-        print(url)
-        download_and_unzip(url)
+        download_and_unzip(url_end)
 
     seperate_url=url_start+seperate
-    filename = wget.download(seperate_url, out='ctd_data/')
+    request = urllib.request.Request(seperate_url, headers=request_headers)
+    with urllib.request.urlopen(request) as response, open('./ctd_data/' +seperate, 'wb') as f:
+        f.write(response.read())
 
     print(
         '#################################################################################################################################################################')
