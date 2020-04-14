@@ -231,6 +231,8 @@ def generate_node_csv():
                 print(len(list_of_nodes))
             dict_combined=combine_information_from_different_sources(list_of_nodes)
 
+            licenses=dict_combined['license']
+
             list_info = []
             for head in header:
                 value = dict_combined[head] if head in dict_combined else ''
@@ -313,7 +315,7 @@ def generate_rela_csv_and_cypher_queries():
     query_rela_middle='Match '
     for head in rela_header:
         if head.split('_')[0]=='gene':
-            query_rela_middle+= '(g:Gene{identifier:toInt(line.'+head+')}) ,'
+            query_rela_middle+= '(g:Gene{identifier:toInteger(line.'+head+')}) ,'
         else:
             query_rela_middle += '(p:Pathway{identifier:line.' + head + '}) ,'
     query_rela=query_start+query_rela_middle[:-2]+ ' Create (g)-[:PARTICIPATES_GpPW{license:p.license, source:p.source, unbiased:false, url:p.url}]->(p);\n'

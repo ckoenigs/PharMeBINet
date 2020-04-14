@@ -175,9 +175,9 @@ def generate_cypher_queries():
     query_new=''
     for property in mondo_prop:
         if property not in list_of_list_prop:
-            if property=='name':
-                query_new+= property+':split(line.'+property+', "(disease))")[0], '
-                query_update += 'n.' + property + '=split(line.' + property + ', "(disease))")[0], '
+            if  property=='iri':
+                query_new += 'url:line.' + property + ', '
+                query_update += 'n.url=line.' + property + ', '
                 continue
             query_new+= property+':line.'+property+', '
             query_update += 'n.'+property + '=line.' + property + ', '
@@ -187,7 +187,7 @@ def generate_cypher_queries():
     query_update=query_start+ ', (n:Disease{identifier:line.doid}) Set '+ query_update+ 'n.mondo="yes", n.license=" CC-BY-SA 3.0", n.resource=n.resource+"MonDo", n.doids=split(line.doids,"|") '+ query_end
     query_update=query_update %('map_nodes')
     cypher_file.write(query_update)
-    query_new=query_start+ 'Create (n:Disease{'+query_new+'mondo:"yes", resource:["MonDO"], url:"http://bioportal.bioontology.org/ontologies/MONDO/"+line.id, license:" CC-BY-SA 3.0", source:"MonDO"}) '+query_end
+    query_new=query_start+ 'Create (n:Disease{'+query_new+'mondo:"yes", resource:["MonDO"], license:" CC-BY-SA 3.0", source:"MonDO"}) '+query_end
     query_new=query_new %('new_nodes')
     cypher_file.write(query_new)
     query_rela='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/monDO/output/%s.csv" As line FIELDTERMINATOR '\\t' Match (a:Disease{identifier:line.id_1}),(b:Disease{identifier:line.id_2}) Merge (a)-[r:IS_A_DiD]->(b) On CREATE Set r.unbiased="false",  r.source="Monarch Disease Ontology", r.resource=['MonDO'] , r.mondo='yes', r.license=" CC-BY-SA 3.0" On Match Set r.resource=['MonDO'], r.mondo='yes' ;\n'''
@@ -282,8 +282,8 @@ def load_in_all_DO_in_dictionary():
                         do_name = dict_DO_to_info[doid]['name'].lower().replace("'", '')
                         if monDOname != do_name:
                             counter_name_not_matching += 1
-                            csv_not_direct_name_matching_file.write([
-                                monDO , doid , dict_monDO_info[monDO]['name'] ,
+                            csv_not_direct_name_matching_file.writerow([
+                                monDO , doid , dict_monDO_info[monDO]['name'],
                                 dict_DO_to_info[doid]['name']])
                         # fill the dictionary monDo to DO
                         if monDO in dict_monDo_to_DO:
@@ -419,13 +419,11 @@ def divide_external_list(monDO_xref):
         for ref in monDO_xref:
             if ref[0:4] == 'UMLS':
                 umls_cuis_monDO.add(ref)
-            else:
-                other_xrefs_monDO.add(ref)
+            other_xrefs_monDO.add(ref)
     else:
         if monDO_xref[0:4] == 'UMLS':
             umls_cuis_monDO.add(monDO_xref)
-        else:
-            other_xrefs_monDO.add(monDO_xref)
+        other_xrefs_monDO.add(monDO_xref)
 
     umls_cuis_monDO.remove('') if '' in umls_cuis_monDO else umls_cuis_monDO
 

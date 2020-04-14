@@ -105,14 +105,14 @@ def generate_cypher_file():
     query_update=query_start+' Match (b:seSider{umlsIDmeddra:line.identifier}), (n:SideEffect{identifier:line.identifier}) Set '+ query_update+' n.sider="yes", n.resource=n.resource+"SIDER" Create (n)-[:equal_to_SE]->(b);\n'
     query_update=query_update %('se_update')
     cypher_file.write(query_update)
-    query_new=query_start+' Match (b:seSider{umlsIDmeddra:line.identifier}) Create (n:SideEffect{'+ query_new+' sider:"yes", url:"http://identifiers.org/umls/"+line.identifier, resource:["SIDER"], xrefs:[], source: "UMLS via SIDER 4.1", license:"CC BY-NC-SA 4.0"}) Create (n)-[:equal_to_SE]->(b);\n'
+    query_new=query_start+' Match (b:seSider{umlsIDmeddra:line.identifier}) Create (n:SideEffect{'+ query_new+' sider:"yes", url:"http://identifiers.org/umls/"+line.identifier, resource:["SIDER"],  source: "UMLS via SIDER 4.1", license:"CC BY-NC-SA 4.0"}) Create (n)-[:equal_to_SE]->(b);\n'
     query_new=query_new %('se_new')
     cypher_file.write(query_new)
     cypher_file.close()
 
     # add query to update disease nodes with do='no'
     cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')
-    query = '''begin\n Match (n:SideEffect) Where not exists(n.sider) Set n.sider="no";\n commit\n '''
+    query = ''':begin\n Match (n:SideEffect) Where not exists(n.sider) Set n.sider="no";\n :commit\n '''
     cypher_general.write(query)
     cypher_general.close()
 

@@ -138,14 +138,14 @@ def generate_cypher_file():
     query_create=query_create % ("new_nodes",do_label,do_name, license, do_name)
     cypher_file.write(query_create)
 
-    query_rela=query_start+ '''Match (d:Disease {identifier:line.child}), (d2:Disease {identifier:line.parent}) Create (d)-[:IS_A_DiD{license:"%s", source:"%s", unbiased:"false"}]->(d2);\n '''
+    query_rela=query_start+ '''Match (d:Disease {identifier:line.child}), (d2:Disease {identifier:line.parent}) Create (d)-[:IS_A_DiD{license:"%s", source:"%s", unbiased:"false", do:'yes'}]->(d2);\n '''
     query_rela = query_rela %("new_rela", license,do_name)
     cypher_file.write(query_rela)
     cypher_file.close()
 
     # add query to update disease nodes with do='no'
     cypher_general=open('../cypher_general.cypher','a', encoding='utf-8')
-    query='''begin\n Match (d:Disease) Where not exists(d.diseaseOntology) Set d.diseaseOntology ='no';\n commit\n '''
+    query=''':begin\n Match (d:Disease) Where not exists(d.diseaseOntology) Set d.diseaseOntology ='no';\n :commit\n '''
     cypher_general.write(query)
     cypher_general.close()
 
@@ -191,8 +191,7 @@ def load_disease_ontologie_in_hetionet():
         for xref in xrefs:
             if xref.split(':')[0] == 'UMLS_CUI':
                 xref_umls_cuis.append(xref)
-            else:
-                xref_other.append(xref)
+            xref_other.append(xref)
 
         disease=dict(disease)
 
