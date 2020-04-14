@@ -63,9 +63,9 @@ def search_for_id_and_write_into_file(gene_id,gene_node):
 
         # gather all xrefs information and add to dictionary
         pharmGKBIDs = gene_node['pharmGKBIDs'] if 'pharmGKBIDs' in gene_node else []
-        pharmGKBIDs = ['pharmGKBIDs:'+id for id in pharmGKBIDs]
+        pharmGKBIDs = ['pharmGKB:'+id for id in pharmGKBIDs]
         bioGRIDIDs = gene_node['bioGRIDIDs'] if 'bioGRIDIDs' in gene_node else []
-        pharmGKBIDs = ['bioGRIDIDs:'+id for id in pharmGKBIDs]
+        bioGRIDIDs = ['bioGRID:'+id for id in bioGRIDIDs]
         # uniProtIDs = gene_node['uniProtIDs'] if 'uniProtIDs' in gene_node else []
         xrefs = set(pharmGKBIDs).union(hetionet_node['xrefs']) if 'xrefs' in hetionet_node else set(pharmGKBIDs)
         xrefs = xrefs.union(bioGRIDIDs)
@@ -122,7 +122,7 @@ def generate_files():
 
     # add query to update disease nodes with do='no'
     cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')
-    query = '''begin\n MATCH (n:Gene) Where not exists(n.ctd) Set n.ctd="no";\n commit\n '''
+    query = ''':begin\n MATCH (n:Gene) Where not exists(n.ctd) Set n.ctd="no";\n :commit\n '''
     cypher_general.write(query)
     cypher_general.close()
 
