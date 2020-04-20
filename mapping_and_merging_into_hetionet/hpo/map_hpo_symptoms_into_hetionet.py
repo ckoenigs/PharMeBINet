@@ -79,7 +79,7 @@ dict_of_hetionet_symptoms={}
 dict_mapped_mesh={}
 
 #dictionnary mesh to new hpo
-dict_ne_mesh_to_hpos={}
+dict_new_mesh_to_hpo={}
 
 #  not mapped hpos files
 not_mapped_file=open('not_mapped.csv','w',encoding='utf-8')
@@ -131,6 +131,8 @@ def symptoms_mapping(name, xrefs, hpo_id):
                 print(xref)
         if has_at_least_one:
             csv_symptoms.writerow([hpo_id, name, '|'.join(umls_cuis)])
+    else:
+        xrefs=[]
     # print('\t xrefs : %.4f seconds' % (time.time() - start))
     # start = time.time()
 
@@ -173,14 +175,14 @@ def symptoms_mapping(name, xrefs, hpo_id):
 
         if mesh_id in dict_of_hetionet_symptoms:
             found_one = True
-            resource=dict_of_hetionet_symptoms[mesh_id]['resource']
+            resource=dict_of_hetionet_symptoms[mesh_id]['resource'] if 'resource' in dict_of_hetionet_symptoms[mesh_id] else []
             resource.append('HPO')
             resource=list(set(resource))
             if mesh_id in dict_mapped_mesh:
                 dict_mapped_mesh[mesh_id][0].append(hpo_id)
                 dict_mapped_mesh[mesh_id][2].append(mesh_cui_ids)
                 dict_mapped_mesh[mesh_id][1]=list(set(umls_cuis).union(dict_mapped_mesh[mesh_id][1]))
-                dict_mapped_mesh[mesh_id][3] = list(set(umls_cuis).union(dict_mapped_mesh[mesh_id][3]).add('HPO:'+hpo_id))
+                dict_mapped_mesh[mesh_id][3] = list(set(umls_cuis).union(dict_mapped_mesh[mesh_id][3]))
             else:
                 dict_mapped_mesh[mesh_id]=[[hpo_id],umls_cuis,[mesh_cui_ids],xrefs,resource]
 
@@ -195,25 +197,25 @@ def symptoms_mapping(name, xrefs, hpo_id):
         dict_hpo_to_mesh_ids[hpo_id]=mesh_cui_ids
         if len(mesh_cui_ids)>0:
             first_mesh= mesh_cui_ids[0]
-            if not first_mesh in dict_new_mesh_ids:
+            if not first_mesh in dict_mapped_mesh:
 
-                dict_new_mesh_ids[mesh_id] = [[hpo_id], umls_cuis, [mesh_cui_ids], xrefs, ["HPO"]]
+                dict_mapped_mesh[first_mesh] = [[hpo_id], umls_cuis, [mesh_cui_ids], xrefs, ["HPO"]]
             else:
                 found_alternativ_mesh_id=False
                 other_mesh=''
                 for mesh_id in mesh_cui_ids:
-                    if mesh_id not in dict_new_mesh_ids:
+                    if mesh_id not in dict_mapped_mesh:
                         found_alternativ_mesh_id=True
                         other_mesh=mesh_id
                         break
                 if found_alternativ_mesh_id:
 
-                    dict_new_mesh_ids[other_mesh] = [[hpo_id], umls_cuis, [mesh_cui_ids], xrefs, ["HPO"]]
+                    dict_mapped_mesh[other_mesh] = [[hpo_id], umls_cuis, [mesh_cui_ids], xrefs, ["HPO"]]
                 else:
                     dict_mapped_mesh[first_mesh][0].append(hpo_id)
                     dict_mapped_mesh[first_mesh][2].append(mesh_cui_ids)
-                    dict_mapped_mesh[first_mesh][1]=list(set(umls_cuis).union(dict_mapped_mesh[mesh_id][1]).add('HPO:'+hpo_id))
-                    dict_mapped_mesh[first_mesh][3] = list(set(umls_cuis).union(dict_mapped_mesh[mesh_id][3]))
+                    dict_mapped_mesh[first_mesh][1]=list(set(umls_cuis).union(dict_mapped_mesh[first_mesh][1]))
+                    dict_mapped_mesh[first_mesh][3] = list(set(xrefs).union(dict_mapped_mesh[first_mesh][3]))
         else:
             csv_not_mapped.writerow([hpo_id,"|".join(xrefs)])
 
