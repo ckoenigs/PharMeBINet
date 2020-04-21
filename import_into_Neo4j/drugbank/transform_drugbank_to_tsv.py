@@ -56,6 +56,10 @@ molecular_formular_experimental_template="{ns}experimental-properties/{ns}proper
 #reference id to source
 dict_reference_id_to_infos={}
 
+# counter_reaction_ids
+counter_reaction_ids=1
+
+
 '''
 add elements to dictionary
 '''
@@ -288,7 +292,6 @@ drug_interactions=list()
 drug_pathways=list()
 pathway_enzymes=list()
 pathways=list()
-reactions=list()
 snp_effects=list()
 mutated_gene_proteins=list()
 snp_adverse_drug_reactions=list()
@@ -308,8 +311,14 @@ metabolites=list()
 has_components=list()
 pharmacologic_classes=list()
 pharmacologic_class_drug=list()
+reactions_left_db=list()
+reactions_left_dbmet=list()
+reactions_right_db=list()
+reactions_right_dbmet=list()
+reactions_to_protein=list()
 
 #dictionaries for the different entities
+reactions=list()
 dict_pharmacologic_class={}
 dict_carrier_ids={}
 dict_enzyme_ids={}
@@ -694,34 +703,59 @@ for i, drug in enumerate(root):
         reaction = collections.OrderedDict()
 
         reaction['sequence'] = part.findtext("{ns}sequence".format(ns = ns))
+        reaction['id']=counter_reaction_ids
+        reaction_id=counter_reaction_ids
+        counter_reaction_ids+=1
         left=part.findtext("{ns}left-element/{ns}drugbank-id".format(ns = ns))
         right=part.findtext("{ns}right-element/{ns}drugbank-id".format(ns = ns))
-        reaction['left_element_drugbank_id']=left
-        reaction['right_element_drugbank_id']=right
+        reactions.append(reaction)
+
+        reaction_to_left=  collections.OrderedDict()
+        reaction_to_left['reaction_id']=reaction_id
         if left[0:5]=='DBMET':
+            reaction_to_left['meta_id'] = left
+            reactions_left_dbmet.append(reaction_to_left)
             if not left in dict_metabolites_ids:
                 metabolite = collections.OrderedDict()
                 metabolite['drugbank_id']=left
                 metabolite['name']=part.findtext("{ns}right-element/{ns}name".format(ns = ns))
                 dict_metabolites_ids[left]=''
                 metabolites.append(metabolite)
+        else:
+            reaction_to_left['drug_id'] = left
+            reactions_left_db.append(reaction_to_left)
 
+        reaction_to_right=  collections.OrderedDict()
+        reaction_to_right['reaction_id']=reaction_id
         if right[0:5]=='DBMET':
+            reaction_to_right['meta_id'] = right
+            reactions_right_dbmet.append(reaction_to_right)
             if not right in dict_metabolites_ids:
                 metabolite = collections.OrderedDict()
                 metabolite['drugbank_id']=right
                 metabolite['name']=part.findtext("{ns}right-element/{ns}name".format(ns = ns))
                 dict_metabolites_ids[right]=''
                 metabolites.append(metabolite)
+        else:
+            reaction_to_right['drug_id'] = right
+            reactions_right_db.append(reaction_to_right)
+
 
         enzymes_list=[]
+
         for enzyme in part.findall('{ns}enzymes/{ns}enzyme'.format(ns = ns)):
+            reaction_to_protein = collections.OrderedDict()
+
+            reaction_to_protein['reaction_id']=reaction_id
+
 
             enzyme_drugbank_id=enzyme.findtext("{ns}drugbank-id".format(ns = ns))
             enzyme_uniprot_id=enzyme.findtext("{ns}uniprot-id".format(ns = ns))
+            reaction_to_protein['protein_id']=enzyme_uniprot_id
+            reaction_to_protein['protein_id_db'] = enzyme_uniprot_id
             enzymes_list.append(enzyme_drugbank_id+':'+enzyme_uniprot_id)
-        reaction['enzymes']=enzymes_list
-        reactions.append(reaction)
+            reactions_to_protein.append(reaction_to_protein)
+
 
     for part in drug.iterfind('{ns}snp-effects/{ns}effect'.format(ns = ns)):
         snp_effect = collections.OrderedDict()
@@ -950,6 +984,12 @@ columns_metabolites=['drugbank_id','name']
 columns_has_component=['target_id','petide_id']
 columns_drug_pharmacologic_class=['drugbank_id','category']
 columns_pharmacologic_class=['id','name','mesh_id']
+columns_reaction=['id','sequence']
+columns_reaction_left_db=['reaction_id','drug_id']
+columns_reaction_left_dbmet=['reaction_id','meta_id']
+columns_reaction_right_db=['reaction_id','drug_id']
+columns_reaction_right_dbmet=['reaction_id','meta_id']
+columns_reaction_enzyme=['reaction_id','protein_id','protein_id_db']
 
 
 
@@ -974,7 +1014,6 @@ generate_tsv_file(columns_drug_interaction,drug_interactions,'drugbank_interacti
 generate_tsv_file(columns_drug_pathway,drug_pathways,'drugbank_drug_pathway.tsv')
 generate_tsv_file(columns_pathway_enzymes,pathway_enzymes,'drugbank_pathway_enzymes.tsv')
 generate_tsv_file(columns_pathway,pathways,'drugbank_pathway.tsv')
-generate_tsv_file(columns_reactions,reactions,'drugbank_reactions.tsv')
 generate_tsv_file(columns_snp_effects, snp_effects,'drugbank_snp_effects.tsv')
 generate_tsv_file(columns_mutated, mutated_gene_proteins,'drugbank_mutated_gene_protein.tsv')
 generate_tsv_file(columns_snp_adverse_drug_reactions, snp_adverse_drug_reactions,'drugbank_snp_adverse_drug_reaction.tsv')
@@ -994,6 +1033,13 @@ generate_tsv_file(columns_metabolites,metabolites,'drugbank_metabolites.tsv')
 generate_tsv_file(columns_has_component,has_components,'drugbank_target_peptide_has_component.tsv')
 generate_tsv_file(columns_drug_pharmacologic_class, pharmacologic_class_drug,'drugbank_drug_pharmacologic_class.tsv')
 generate_tsv_file(columns_pharmacologic_class, pharmacologic_classes,'drugbank_pharmacologic_class.tsv')
+generate_tsv_file(columns_reaction, reactions,'drugbank_reactions.tsv')
+generate_tsv_file(columns_reaction_left_db, reactions_left_db,'drugbank_reaction_to_left_db.tsv')
+generate_tsv_file(columns_reaction_left_dbmet, reactions_left_dbmet,'drugbank__reaction_to_left_dbmet.tsv')
+generate_tsv_file(columns_reaction_right_db, reactions_right_db,'drugbank_reaction_to_right_db.tsv')
+generate_tsv_file(columns_reaction_right_dbmet, reactions_right_dbmet,'drugbank_reaction_to_right_dbmet.tsv')
+generate_tsv_file(columns_reaction_enzyme, reactions_to_protein,'drugbank_reaction_to_protein.tsv')
+
 print (datetime.datetime.utcnow())
 
 
