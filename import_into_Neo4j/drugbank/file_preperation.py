@@ -559,6 +559,8 @@ def drugs_combination_and_check(neo4j_label):
             if drugbank_id in dict_drug_structure_links:
                 dict_from_drug = dict_drug_structure_links[drugbank_id]
 
+
+
                 for group_in_structure_links in dict_from_drug['Drug Groups'].split('; '):
                     if not group_in_structure_links in groups:
                         print(drugbank_id)
@@ -783,7 +785,7 @@ def drugs_combination_and_check(neo4j_label):
                             if drugbank_id in ['DB14193', 'DB14194']:
                                 continue
                             elif property_name in ['InChIKey', 'InChI']:
-                                dict_inchi_inchikey[property_name] = property_value
+                                dict_inchi_inchikey[property_name.lower()] = property_value
                             print(drugbank_id)
                             print(property_name)
                             print(property_value)
@@ -1709,123 +1711,7 @@ this go through the reaction file and take all metabolite ids
 '''
 
 
-def load_reaction_file_in(neo4j_label_metabolite, neo4j_label_drug):
-    with open('drugbank/drugbank_reactions.tsv') as csvfile:
-        global import_string
-        spamreader = csv.DictReader(csvfile, delimiter='\t')
-        header = spamreader.fieldnames
-
-        file_path_drug_drug = 'output/drugbank_reaction_compound_compound.tsv'
-        file_path_drug_meta = 'output/drugbank_reaction_compound_metabolites.tsv'
-        file_path_meta_drug = 'output/drugbank_reaction_metabolites_compound.tsv'
-        file_path_meta_meta = 'output/drugbank_reaction_metabolites_metabolites.tsv'
-
-        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/drugbank/''' + file_path_meta_meta + '''" As line FIELDTERMINATOR '\\t' Match (c:''' + neo4j_label_metabolite \
-                + '''{ identifier: line.left_element_drugbank_id}), (g:''' + neo4j_label_metabolite + '''{ identifier:line.right_element_drugbank_id })  Create (c)-[a:reacts_with_MrwM{sequence:line.sequence, enzymes:split(line.enzymes,'||'),license:"''' + drugbank_license + '''"}]->(g) ;\n'''
-        cypher_rela_file.write(query)
-        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/drugbank/''' + file_path_meta_drug + '''" As line FIELDTERMINATOR '\\t' Match (c:''' + neo4j_label_metabolite \
-                + '''{ identifier: line.left_element_drugbank_id}), (g:''' + neo4j_label_drug + '''{ identifier:line.right_element_drugbank_id })  Create (c)-[a:reacts_with_MrwC{sequence:line.sequence, enzymes:split(line.enzymes,'||'),license:"''' + drugbank_license + '''"}]->(g) ;\n'''
-        cypher_rela_file.write(query)
-        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/drugbank/''' + file_path_drug_drug + '''" As line FIELDTERMINATOR '\\t' Match (c:''' + neo4j_label_drug \
-                + '''{ identifier: line.left_element_drugbank_id}), (g:''' + neo4j_label_drug + '''{ identifier:line.right_element_drugbank_id })  Create (c)-[a:reacts_with_CrwC{sequence:line.sequence, enzymes:split(line.enzymes,'||'),license:"''' + drugbank_license + '''"}]->(g) ;\n'''
-        cypher_rela_file.write(query)
-        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/drugbank/''' + file_path_drug_meta + '''" As line FIELDTERMINATOR '\\t' Match (c:''' + neo4j_label_drug \
-                + '''{ identifier: line.left_element_drugbank_id}), (g:''' + neo4j_label_metabolite + '''{ identifier:line.right_element_drugbank_id })  Create (c)-[a:reacts_with_CrwM{sequence:line.sequence, enzymes:split(line.enzymes,'||'),license:"''' + drugbank_license + '''"}]->(g) ;\n'''
-        cypher_rela_file.write(query)
-
-        output_file_drug_drug = open(file_path_drug_drug, 'w', encoding='utf-8')
-        writer_drug_drug = csv.writer(output_file_drug_drug, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-        output_file_drug_meta = open(file_path_drug_meta, 'w', encoding='utf-8')
-        writer_drug_meta = csv.writer(output_file_drug_meta, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-        output_file_meta_meta = open(file_path_meta_meta, 'w', encoding='utf-8')
-        writer_meta_meta = csv.writer(output_file_meta_meta, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-        output_file_meta_drug = open(file_path_meta_drug, 'w', encoding='utf-8')
-        writer_meta_drug = csv.writer(output_file_meta_drug, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-
-        header = list(header)
-        writer_drug_drug.writerow(header)
-        writer_drug_meta.writerow(header)
-        writer_meta_meta.writerow(header)
-        writer_meta_drug.writerow(header)
-
-        header_tool = []
-        for head in header:
-            if head == 'left_element_drugbank_id':
-                header_tool.append(':START_ID')
-            elif head == 'right_element_drugbank_id':
-                header_tool.append(':END_ID')
-            else:
-                header_tool.append(head + ':string[]')
-        header_tool.append('license')
-        header_tool.append(':TYPE')
-
-        tool_path = 'output/neo4j_import/drugbank_reactions.tsv'
-        csv_tool = open(tool_path, 'w', encoding='utf-8')
-        import_string += ' --relationships ' + tool_path
-        writer_tool = csv.writer(csv_tool, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-        writer_tool.writerow(header_tool)
-        dict_reactions = {}
-
-        for row in spamreader:
-            left_id = row['left_element_drugbank_id']
-            right_id = row['right_element_drugbank_id']
-            # if left_id[0:5] == 'DBMET':
-            #     if not left_id in dict_with_all_metabolite_from_reactions:
-            #         dict_with_all_metabolite_from_reactions[left_id] = ''
-            # if right_id[0:5] == 'DBMET':
-            #     if not right_id in dict_with_all_metabolite_from_reactions:
-            #         dict_with_all_metabolite_from_reactions[right_id] = ''
-            line_information = []
-            enzymes_list = row['enzymes']
-            if (left_id, right_id) in dict_reactions:
-                dict_reactions[(left_id, right_id)].append({'sequence': row['sequence'], 'enzymes': row['enzymes']})
-            else:
-                dict_reactions[(left_id, right_id)] = [{'sequence': row['sequence'], 'enzymes': row['enzymes']}]
-
-        dict_counter = {'drug_drug': 0,
-                        'drug_meta': 0,
-                        'meta_drug': 0,
-                        'meta_meta': 0}
-        for (left_id, right_id), list_properties in dict_reactions.items():
-            sequence_list = set([])
-            enzymes_list = set([])
-            for dict_property in list_properties:
-                sequence_list.add(dict_property['sequence'])
-                enzymes_list = enzymes_list.union(dict_property['enzymes'].split('||'))
-
-            sequence_list_tool = ';'.join(list(sequence_list))
-            enzymes_list_tool = ';'.join(list(enzymes_list))
-            sequence_list = '||'.join(list(sequence_list))
-            enzymes_list = '||'.join(list(enzymes_list))
-            line_information = [sequence_list, left_id, right_id, enzymes_list]
-            line_information_tool = [sequence_list_tool, left_id, right_id, enzymes_list_tool, drugbank_license]
-
-            if left_id[0:5] != 'DBMET' and right_id[0:5] == 'DBMET':
-                writer_drug_meta.writerow(line_information)
-                line_information_tool.append('reacts_with_CrwM')
-                if left_id in dict_drugbank_drug_ids:
-                    writer_tool.writerow(line_information_tool)
-                dict_counter['drug_meta'] += 1
-            elif left_id[0:5] != 'DBMET' and right_id[0:5] != 'DBMET':
-                writer_drug_drug.writerow(line_information)
-                line_information_tool.append('reacts_with_CrwC')
-                if left_id in dict_drugbank_drug_ids and right_id in dict_drugbank_drug_ids:
-                    writer_tool.writerow(line_information_tool)
-                dict_counter['drug_drug'] += 1
-            elif left_id[0:5] == 'DBMET' and right_id[0:5] == 'DBMET':
-                writer_meta_meta.writerow(line_information)
-                line_information_tool.append('reacts_with_MrwM')
-                writer_tool.writerow(line_information_tool)
-                dict_counter['meta_meta'] += 1
-            else:
-                writer_meta_drug.writerow(line_information)
-                line_information_tool.append('reacts_with_MrwC')
-                if right_id in dict_drugbank_drug_ids:
-                    writer_tool.writerow(line_information_tool)
-                dict_counter['meta_drug'] += 1
-
-        print(dict_counter)
-
+def load_metabolite():
     with open('drugbank/drugbank_metabolites.tsv') as csvfile:
         spamreader = csv.DictReader(csvfile, delimiter='\t')
         for row in spamreader:
@@ -2044,7 +1930,7 @@ generate cypher file to integrate all DrugBank entries into Neo4j
 
 
 def add_the_other_node_to_cypher(pathway_label, product_label, salt_label, mutated_protein_gene_label,
-                                 general_target_label, rela_target_muta_label, pharmacologic_class_label):
+                                 general_target_label, rela_target_muta_label, pharmacologic_class_label, reaction_label):
     path_pathway = 'drugbank/drugbank_pathway.tsv'
     import_tool_preparation_node(path_pathway, 'pathway_id', pathway_label)
     add_general_to_cypher_node(path_pathway, pathway_label, 'pathway_id')
@@ -2064,6 +1950,11 @@ def add_the_other_node_to_cypher(pathway_label, product_label, salt_label, mutat
     path_pharmacologicClass = 'drugbank/drugbank_pharmacologic_class.tsv'
     import_tool_preparation_node(path_pharmacologicClass, 'id', pharmacologic_class_label)
     add_general_to_cypher_node(path_pharmacologicClass, pharmacologic_class_label, 'id')
+
+
+    path_reaction = 'drugbank/drugbank_reactions.tsv'
+    import_tool_preparation_node(path_reaction, 'id', reaction_label)
+    add_general_to_cypher_node(path_reaction, reaction_label, 'id')
 
     import_tool_preparation_new_generated_rela(path_mutated_gene_protein, rela_target_muta_label, general_target_label,
                                                mutated_protein_gene_label)
@@ -2168,14 +2059,61 @@ dict_drugbank_to_uniprot_label={
 }
 
 '''
+
+'''
+def add_addtitional_enzymes(uniprot_id,header_new, counter_multiple_information, length_list, spamreader,  spamreader_node,position_of_id, enzyme_label, general_label):
+    if not uniprot_id in dict_all_targets:
+        dict_all_targets[uniprot_id] = 1
+        # entries = ['' for i in range(length_list)]
+        entries = []
+        if uniprot_id in dict_uniprot:
+            information_to_this_uniprot_entry = dict_uniprot[uniprot_id]
+            for head in header_new:
+
+                # it seems P00892, P50224, P62158 and P16683 are not really existing anymore in uniprot so the rela and the information should be removed.
+                if len(information_to_this_uniprot_entry) > 1:
+                    print('mmultiprot ' + uniprot_id)
+                    # print(information_to_this_uniprot_entry)
+                    counter_multiple_information += 1
+                    return  False,
+                    # sys.exit(uniprot_id)
+                if head in dict_drugbank_to_uniprot_label:
+                    print(information_to_this_uniprot_entry[0])
+                    entries.append(information_to_this_uniprot_entry[0][dict_drugbank_to_uniprot_label[head]])
+                elif head == 'id_source':
+                    entries.append('Swiss-Prot')
+                elif head == 'alternative_uniprot_id':
+                    alternativ_ids = '||'.join(list(dict_ac_number_to_alternative[uniprot_id]))
+                    entries.append(alternativ_ids)
+                else:
+                    entries.append('')
+        else:
+            entries = ['' for i in range(length_list)]
+            print('not in swiss-prot:' + uniprot_id)
+        dict_all_targets[uniprot_id] = entries
+
+        # to avoid that the uniprot ids with multiple information are removed
+        if len(entries) != 0:
+            entries[position_of_id] = uniprot_id
+            spamreader.writerow(entries)
+            spamreader_node.writerow([uniprot_id, drugbank_license, enzyme_label + ';' + general_label])
+            return True, uniprot_id
+        else:
+            return False, uniprot_id
+
+
+    else:
+        return True, uniprot_id
+
+'''
 generate cypher script for the different relationships, where nothing need to check.
 '''
 
 
 def add_the_other_rela_to_cypher(pathway_label, product_label, salt_label, mutated_protein_gene_label, drug_label,
-                                 general_label, enzyme_label, header_new, pharmacologic_class_label):
+                                 general_label, enzyme_label, header_new, pharmacologic_class_label, reaction_label, metabolite_label):
     global import_string
-    # all labe for all rela in neo4j
+    # all label for all rela in neo4j
     label_neo4j_compound_product = 'part_of_CpoP'
     label_neo4j_compound_pathway = 'associates_with_CawPA'
     label_neo4j_compound_salt = 'has_ChS'
@@ -2184,6 +2122,37 @@ def add_the_other_rela_to_cypher(pathway_label, product_label, salt_label, mutat
     label_neo4j_enzyme_pathway = 'participates_EpPA'
     label_neo4j_target_peptide = 'has_component_POhcPO'
     label_neo4j_pharmacologic_class_compound='includes_PCiC'
+    label_neo4j_left_rela_Compound='left_part_of_reaction_ClporR'
+    label_neo4j_left_rela_metabolite = 'left_part_of_reaction_MlporR'
+    label_neo4j_right_rela_Compound = 'right_part_of_reaction_ClporR'
+    label_neo4j_right_rela_metabolite = 'right_part_of_reaction_MlporR'
+    label_neo4j_proteins_included_reaction= 'take_part_PtpR'
+
+
+    path_drug_reaction = 'drugbank/drugbank_reaction_to_left_db.tsv'
+    add_rela_to_cypher(path_drug_reaction, drug_label, reaction_label, 'drug_id', 'reaction_id',
+                       label_neo4j_left_rela_Compound)
+    generation_of_files_for_import_tool('drug_id', 'reaction_id', path_drug_reaction, label_neo4j_left_rela_Compound)
+
+    path_meta_reaction = 'drugbank/drugbank__reaction_to_left_dbmet.tsv'
+    add_rela_to_cypher(path_meta_reaction, metabolite_label, reaction_label, 'meta_id', 'reaction_id',
+                       label_neo4j_left_rela_metabolite)
+    generation_of_files_for_import_tool('meta_id', 'reaction_id', path_meta_reaction, label_neo4j_left_rela_metabolite)
+
+    path_drug_reaction = 'drugbank/drugbank_reaction_to_right_db.tsv'
+    add_rela_to_cypher(path_drug_reaction, reaction_label, drug_label, 'reaction_id', 'drug_id',
+                       label_neo4j_right_rela_Compound)
+    generation_of_files_for_import_tool('reaction_id', 'drug_id',  path_drug_reaction, label_neo4j_right_rela_Compound)
+
+    path_meta_reaction = 'drugbank/drugbank_reaction_to_right_dbmet.tsv'
+    add_rela_to_cypher(path_meta_reaction, reaction_label, metabolite_label, 'reaction_id', 'meta_id',
+                       label_neo4j_right_rela_metabolite)
+    generation_of_files_for_import_tool('reaction_id', 'meta_id',  path_meta_reaction, label_neo4j_right_rela_metabolite)
+
+    path_protein_reaction = 'drugbank/drugbank_reaction_to_protein.tsv'
+    add_rela_to_cypher(path_protein_reaction, enzyme_label, reaction_label, 'protein_id', 'reaction_id',
+                       label_neo4j_proteins_included_reaction)
+    generation_of_files_for_import_tool('protein_id', 'reaction_id',  path_protein_reaction, label_neo4j_proteins_included_reaction)
 
     path_drug_pharmacologic_class = 'drugbank/drugbank_drug_pharmacologic_class.tsv'
     add_rela_to_cypher(path_drug_pharmacologic_class,pharmacologic_class_label, drug_label , 'category','drugbank_id',
@@ -2255,54 +2224,24 @@ def add_the_other_rela_to_cypher(pathway_label, product_label, salt_label, mutat
             counter_all += 1
             pathway_id = row['pathway_id']
             uniprot_id = row['uniprot_id']
-
-            # if uniprot_id == ' O49347':
-            #     print('ohm')
-            #     print(uniprot_id)
-            if not uniprot_id in dict_all_targets:
-                dict_all_targets[uniprot_id] = 1
-                # entries = ['' for i in range(length_list)]
-                entries=[]
-                if uniprot_id in dict_uniprot:
-                    information_to_this_uniprot_entry = dict_uniprot[uniprot_id]
-                    for head in header_new:
-
-                        # it seems P00892, P50224, P62158 and P16683 are not really existing anymore in uniprot so the rela and the information should be removed.
-                        if len(information_to_this_uniprot_entry)>1:
-                            print('mmultiprot '+uniprot_id)
-                            # print(information_to_this_uniprot_entry)
-                            counter_multiple_information+=1
-                            break
-                            # sys.exit(uniprot_id)
-                        if head in dict_drugbank_to_uniprot_label:
-                            print(information_to_this_uniprot_entry[0])
-                            entries.append(information_to_this_uniprot_entry[0][dict_drugbank_to_uniprot_label[head]])
-                        elif head=='id_source':
-                            entries.append('Swiss-Prot')
-                        elif head=='alternative_uniprot_id':
-                            alternativ_ids='||'.join(list(dict_ac_number_to_alternative[uniprot_id]))
-                            entries.append(alternativ_ids)
-                        else:
-                            entries.append('')
-                else:
-                    entries = ['' for i in range(length_list)]
-                    print('not in swiss-prot:'+uniprot_id)
-                dict_all_targets[uniprot_id]=entries
-
-                # to avoid that the uniprot ids with multiple information are removed
-                if len(entries)!=0:
-                    entries[position_of_id] = uniprot_id
-                    spamreader.writerow(entries)
-                    spamreader_node.writerow([uniprot_id, drugbank_license, enzyme_label + ';' + general_label])
-                    counter_existing += 1
-                    spamreader_rela.writerow([uniprot_id, pathway_id, drugbank_license, label_neo4j_enzyme_pathway])
-                else:
-                    count_not_existin_interaction_pairs += 1
-
-
-            else:
+            found, uniprot_id= add_addtitional_enzymes(uniprot_id, header_new, counter_multiple_information, length_list, spamreader,
+                                     spamreader_node, position_of_id, enzyme_label, general_label)
+            if found:
                 spamreader_rela.writerow([uniprot_id, pathway_id, drugbank_license, label_neo4j_enzyme_pathway])
                 counter_existing += 1
+            else:
+                count_not_existin_interaction_pairs += 1
+    with open(path_protein_reaction) as csvfile:
+        reader = csv.DictReader(csvfile, delimiter='\t')
+
+        for row in reader:
+            counter_all += 1
+            uniprot_id = row['protein_id']
+            add_addtitional_enzymes(uniprot_id, header_new, counter_multiple_information, length_list, spamreader,
+                                     spamreader_node, position_of_id, enzyme_label, general_label)
+
+
+
 
 
     print('count of the multiple uniprot ids:'+str(counter_multiple_information))
@@ -2325,7 +2264,7 @@ organised all steps for metabolites
 
 def get_and_check_on_drugbank_metabolites(neo4j_label_meatbolite, neo4j_label_drug):
     print('load reaction file')
-    load_reaction_file_in(neo4j_label_meatbolite, neo4j_label_drug)
+    load_metabolite(neo4j_label_meatbolite, neo4j_label_drug)
 
     gather_all_metabolite_information_and_generate_a_new_file(neo4j_label_meatbolite)
 
@@ -2453,9 +2392,10 @@ def main():
     neo4j_label_mutated_gene_protein = 'Mutated_protein_gene_DrugBank'
     neo4j_label_rela_target_mutate = 'has_POhMU'
     neo4j_label_pharmacologic_class='PharmacologicClass_DrugBank'
+    neo4j_label_reaction='Reaction_DrugBank'
 
     add_the_other_node_to_cypher(neo4j_label_pathway, neo4j_label_product, neo4j_label_salt,
-                                 neo4j_label_mutated_gene_protein, neo4j_general_label, neo4j_label_rela_target_mutate,neo4j_label_pharmacologic_class)
+                                 neo4j_label_mutated_gene_protein, neo4j_general_label, neo4j_label_rela_target_mutate,neo4j_label_pharmacologic_class,neo4j_label_reaction)
 
     print(
         '###########################################################################################################################')
@@ -2465,7 +2405,7 @@ def main():
 
     add_the_other_rela_to_cypher(neo4j_label_pathway, neo4j_label_product, neo4j_label_salt,
                                  neo4j_label_mutated_gene_protein, neo4j_label_drug, neo4j_general_label,
-                                 neo4j_label_enzyme, header_new,neo4j_label_pharmacologic_class)
+                                 neo4j_label_enzyme, header_new,neo4j_label_pharmacologic_class, neo4j_label_reaction, neo4j_label_metabolite)
 
     print(
         '###########################################################################################################################')
