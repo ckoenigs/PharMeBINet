@@ -109,6 +109,9 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
         # generate on list of gene symbols
         gene_symbol = set([])
 
+        #synonyms from other designations
+        set_of_synoynmys_from_designation=set()
+
         # remove the empty values '-' and combine the list of other designations and symbols, and symbol_from-Nomeclature_authority and symbol
         for property, value in node.items():
 
@@ -123,7 +126,7 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
                     node[property] = ''
 
             if property == 'Other_designations' and len(list_of_values) != 0:
-                node['Synonyms'].extend(value)
+                set_of_synoynmys_from_designation=set_of_synoynmys_from_designation.union(value)
             elif property == 'Symbol_from_nomenclature_authority' and value != '-':
                 gene_symbol.add(value)
             elif property == 'Symbol' and value != '-':
@@ -134,7 +137,15 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
         node['Symbol'] = list(gene_symbol)
         symbols_ncbi=[x.lower() for x in list(gene_symbol)]
         synonyms= node['Synonyms'] if 'Synonyms' in node else []
+        synonyms=list(set_of_synoynmys_from_designation.union(synonyms))
         synonyms =[x.lower() for x in synonyms]
+
+        if name  is None or name=='-':
+            print('has no name')
+            if node['description'] == '-' or  node['description']=='':
+                print('description is also empty')
+            node['Full_name_from_nomenclature_authority'] = node['description']
+            name=node['description']
 
 
         if int(gene_id) in dict_hetionet_gene_ids_to_name:
@@ -142,16 +153,10 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
             if 'name' in dict_hetionet_gene_ids_to_name[int(gene_id)]:
                 if gene_id=='26083':
                     print('ok')
-                name=name.lower()
                 hetionet_gene_name=dict_hetionet_gene_ids_to_name[int(gene_id)]['name'].lower()
                 description=node['description'].lower()
                 hetionet_gene_description=dict_hetionet_gene_ids_to_name[int(gene_id)]['description'].lower()
                 if not name == hetionet_gene_name:
-                    if name == '-':
-                        print('has no name')
-                        if node['description']=='-':
-                            print('description is also empty')
-                        node['Full_name_from_nomenclature_authority'] = node['description']
 
                     if description == hetionet_gene_name:
 
@@ -214,7 +219,7 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
         else:
             print('not in hetionet')
             print(gene_id)
-            if name == '-':
+            if name == '-' or name is None:
                 node['Full_name_from_nomenclature_authority'] = node['description']
 
             dict_for_insert_into_tsv = {}
