@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const neo4j = require('neo4j-driver').v1;
+const neo4j = require('neo4j-driver');
 const ProgressBar = require('progress');
 const configFolder = "./configs/";
 const missingFolder = "./missing/";
