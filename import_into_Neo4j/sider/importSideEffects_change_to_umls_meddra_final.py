@@ -390,15 +390,15 @@ def generate_cypher_file():
     #query for drugs
     query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'master_database_change/import_into_Neo4j/sider/drug.csv" As line Create (:drugSider{stitchIDflat: line.stitchIDflat , stitchIDstereo: line.stitchIDstereo, PubChem_Coupound_ID: line.PubChem_Coupound_ID} ); \n'
     cypher_file.write(query)
-    cypher_file.write('begin\n')
+    cypher_file.write(':begin\n')
     cypher_file.write('Create Constraint On (node:drugSider) Assert node.stitchIDstereo Is Unique; \n')
-    cypher_file.write('commit \n schema await \n ')
+    cypher_file.write(':commit \n Call db.awaitIndexes(300);  \n ')
     #query for side effects
     query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'master_database_change/import_into_Neo4j/sider/se.csv" As line Create (:seSider{meddraType: line.meddraType , conceptName: line.conceptName, umlsIDmeddra: line.umlsIDmeddra, name: line.name, umls_concept_id: line.umls_concept_id} ); \n'
     cypher_file.write(query)
-    cypher_file.write('begin\n')
+    cypher_file.write(':begin\n')
     cypher_file.write('Create Constraint On (node:seSider) Assert node.umlsIDmeddra Is Unique; \n')
-    cypher_file.write('commit \n schema await \n ')
+    cypher_file.write(':commit \n Call db.awaitIndexes(300); \n ')
     #query for relationships relationships
     query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'master_database_change/import_into_Neo4j/sider/rela.csv" As line Match (drug:drugSider{stitchIDstereo: line.stitchIDstereo}), (se:seSider{umlsIDmeddra: line.umlsIDmeddra}) Create (drug)-[:Causes{placebo: line.placebo , freq: line.freq, lowerFreq: line.lowerFreq , upperFreq: line.upperFreq, placeboFreq: line.placeboFreq, placeboLowerFreq: line.placeboLowerFreq, placeboUpperFreq: line.placeboUpperFreq}] ->(se); \n'
     cypher_file.write(query)

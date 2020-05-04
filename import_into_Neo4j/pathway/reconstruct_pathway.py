@@ -79,13 +79,13 @@ def pathway_commons():
     global i
     i = 0
     rows = list()
-    PC_Row = collections.namedtuple('PC_Row', ['identifier', 'synonyms', 'source', 'genes','url','idOwns' ])
+    PC_Row = collections.namedtuple('PC_Row', ['identifier', 'synonyms', 'source', 'genes','url','xrefs' ])
 
 
     for url, description, genes in read_gmt(filename_without_gz):
 
         # Process description and only for human
-        print(description)
+        # print(description)
         try:
             description = dict(item.split(': ',1) for item in description.split('; '))
         except:
@@ -126,7 +126,7 @@ def pathway_commons():
             source=description['datasource'],
             genes=genes,
             url=url,
-            idOwns=url.rsplit('/',1)[1]
+            xrefs=description['datasource']+':'+url.rsplit('/',1)[1]
         )
         rows.append(row)
 
@@ -201,7 +201,7 @@ def wikipathways():
 
     wikipath_df = pandas.DataFrame({
         'identifier':wikipath_df['identifier'],
-        'idOwns': wikipath_df['description'].map(lambda x: x.rsplit('/', 1)[1]),
+        'xrefs': wikipath_df['description'].map(lambda x: 'wikipathways'+':'+x.rsplit('/', 1)[1]),
         'synonyms': wikipath_df['name'],
         'url': wikipath_df['description'],
         'source': 'wikipathways',
@@ -210,7 +210,7 @@ def wikipathways():
     })
     print(wikipath_df.head(2))
 
-properties_which_are_list=['genes','coding_genes','synonyms','idOwns']
+properties_which_are_list=['genes','coding_genes','synonyms','xrefs']
 
 '''
 Combine the both data from the different source to one big one and generate a cypher file
@@ -219,7 +219,7 @@ def combine_both_source():
     # Merge resources into a pathway dataframe
     pathway_df = pandas.concat([wikipath_df, pc_df],sort=True)
     print(pathway_df)
-    pathway_df = pathway_df[['identifier', 'synonyms', 'url', 'source', 'license', 'genes','idOwns']]
+    pathway_df = pathway_df[['identifier', 'synonyms', 'url', 'source', 'license', 'genes','xrefs']]
     print(len(pathway_df))
 
     # Remove duplicate pathways
@@ -256,6 +256,8 @@ def combine_both_source():
 
     query= query[:-2]+'''});\n '''
     with open('cypher.cypher','w') as file:
+        file.write(query)
+        query='Create Constraint On (node:pathway_multi) Assert node.identifier Is Unique; \n'
         file.write(query)
 
  # path to directory
