@@ -210,6 +210,7 @@ check for name mapping get the same results as the other method
 '''
 def check_with_name_mapping(code,mapping_values):
     name = dict_drug_NDF_RT[code]['name'].lower() if 'name' in dict_drug_NDF_RT[code] else ''
+    name = name.rsplit('[', 1)[0]
 
     # name and xref are the same identifier
     if name in dict_synonyms_to_chemicals_ids:
@@ -456,6 +457,7 @@ def name_mapping():
             if not code in dict_mapped_code_to_db_id:
 
                 name = dict_drug_NDF_RT[code]['name'].lower() if 'name' in dict_drug_NDF_RT[code] else ''
+                name=name.rsplit('[',1)[0]
                 if name in dict_synonyms_to_chemicals_ids:
                     dict_drug_NDF_RT[code]['mapped_ids'] = list(dict_synonyms_to_chemicals_ids[name])
                     dict_drug_NDF_RT[code]['how_mapped'] = 'use name mapping with synonyms and brands'
@@ -538,34 +540,10 @@ dict_map_cui_to_hetionet_drugbank_ids = {}
 # list of cuis that are not mapped
 list_not_map_to_hetionet_with_drugbank_ids = []
 
-# files for the different how_mapped typs
-map_rxcui = open('drug/ndf_rt_drugs_map_with_rxcui.tsv', 'w')
-map_rxcui.write('ndf-rt code \t drugbank_ids with | as seperator  \t name\n')
-
-map_with_name = open('drug/ndf_rt_drugs_map_with_name_table.tsv', 'w')
-map_with_name.write('ndf-rt code \t drugbank_ids with | as seperator  \t name\n')
-
-map_with_unii_inchikey = open('drug/ndf_rt_drugs_map_with_unii_inchikey_table.tsv', 'w')
-map_with_unii_inchikey.write('ndf-rt code \t drugbank_ids with | as seperator  \t name\n')
-
-map_with_unii = open('drug/ndf_rt_drugs_map_with_unii_table.tsv', 'w')
-map_with_unii.write('ndf-rt code \t drugbank_ids with | as seperator  \t name\n')
-
-map_with_association_to_ingredient = open('drug/ndf_rt_drugs_map_with_association_to_ingredient.tsv', 'w')
-map_with_association_to_ingredient.write('ndf-rt code \t drugbank_ids with | as seperator  \t name\n')
-
-map_rxcui_d_m = open('drug/ndf_rt_drugs_map_with_rxcui_to_DB_or_mesh.tsv', 'w')
-map_rxcui_d_m.write('ndf-rt code \t drugbank_ids with | as seperator  \t name\n')
 
 
 # dictionary of how_mapped with file as value
-dict_how_mapped_file = {
-    'use rxcui to drugbank ids with rxnorm': map_rxcui,
-    'use rxcui to drugbank ids with name mapping': map_with_name,
-    'use rxcui to drugbank ids with unii and inchikey to drugbank': map_with_unii_inchikey,
-    'use association to the ingredient from': map_with_association_to_ingredient,
-    'use rxcui to drugbank ids or mesh with rxnorm':map_rxcui_d_m,
-    'use unii to drugbank ids or mesh with rxnorm':map_with_unii}
+dict_how_mapped_file = {}
 
 # generate file with rxnom and a list of drugbank ids and where there are from
 multiple_drugbankids = open('ndf_rt_multiple_drugbank_ids.tsv', 'w')
@@ -584,7 +562,13 @@ def generate_csv_for_mapped_and_not_mapped_ndf_rts():
         string_drugbank_ids = "|".join(drugbank_ids)
         how_mapped = dict_drug_NDF_RT[code]['how_mapped']
 
-        dict_how_mapped_file[how_mapped].write(code + '\t' + string_drugbank_ids + '\t' + name + '\n')
+        if not how_mapped in dict_how_mapped_file:
+            how_mapped_string=how_mapped.replace(' ','_')
+            map = open('drug/'+how_mapped_string+'.tsv', 'w',encoding='utf-8')
+            csv_writer=csv.writer(map,delimiter='\t')
+            csv_writer.writerow(['ndf-rt code','drugbank_ids with | as seperator','name'])
+            dict_how_mapped_file[how_mapped]=csv_writer
+        dict_how_mapped_file[how_mapped].writerow([code , string_drugbank_ids , name ])
 
         if len(drugbank_ids) > 1:
             multiple_drugbankids.write(code + '\t' + string_drugbank_ids + '\t' + how_mapped + '\t' + name + '\n')
@@ -657,8 +641,8 @@ def integration_of_ndf_rt_drugs_into_hetionet():
     # the general cypher file to update all chemicals and relationship which are not from ndfrt
     cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')
     # all not mapped compound get as property ndf-rt='no'
-    query = '''begin \n Match (c:Chemical) Where not exists(c.ndf_rt) 
-            Set c.ndf_rt="no"; \n commit '''
+    query = ''':begin \n Match (c:Chemical) Where not exists(c.ndf_rt) 
+            Set c.ndf_rt="no"; \n :commit '''
     cypher_general.write(query)
     cypher_general.close()
 

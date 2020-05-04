@@ -122,6 +122,7 @@ def load_hetionet_diseases_in():
             for xref in xrefs:
                 if xref.startswith('MESH:'):
                     prepare_dictionary_xrefs_to_mondo(xref, identifier, dict_mesh_to_mondo)
+        resource=  resource  if  resource  is not  None  else []
         disease = DiseaseHetionet(identifier, synonyms, umls_cuis_without_label, xrefs, resource)
         dict_diseases_hetionet[identifier] = disease
     print('length of disease in hetionet:' + str(len(dict_diseases_hetionet)))
@@ -309,7 +310,7 @@ def integrate_ndf_rt_disease_into_hetionet():
 
     # add query to update disease nodes with do='no'
     cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')
-    query = '''begin\n MATCH (n:Disease) Where Not Exists(n.ndf_rt) Set n.ndf_rt="no";\n commit\n '''
+    query = ''':begin\n MATCH (n:Disease) Where Not Exists(n.ndf_rt) Set n.ndf_rt="no";\n :commit\n '''
     cypher_general.write(query)
     cypher_general.close()
 
