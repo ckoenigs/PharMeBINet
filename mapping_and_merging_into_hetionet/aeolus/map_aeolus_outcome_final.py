@@ -43,7 +43,7 @@ class SideEffect:
         self.meddraType = meddraType
         self.conceptName = conceptName
         self.umls_label = umls_label
-        self.resource = resource
+        self.resource = resource if  resource  is not  None else []
 
 
 class SideEffect_Aeolus():
@@ -559,7 +559,7 @@ def integrate_aeolus_into_hetionet():
     csv_new.writerow(['aSE','SE','cuis'])
 
     # query for the update nodes and relationship
-    query_new = query_start + ' Create (n:SideEffect{identifier:line.SE, licenses:"CC0 1.0", name:a.name , source:"UMLS via AEOLUS", url:"http://identifiers.org/umls/"+line.SE , resource:["AEOLUS"],  aeolus:"yes", xrefs:[line.aSE] }) Set a.cuis=split(line.cuis,"|") Create (n)-[:equal_to_Aeolus_SE]->(a); \n'
+    query_new = query_start + ' Create (n:SideEffect{identifier:line.SE, license:"CC0 1.0", name:a.name , source:"UMLS via AEOLUS", url:"http://identifiers.org/umls/"+line.SE , resource:["AEOLUS"],  aeolus:"yes", xrefs:[line.aSE] }) Set a.cuis=split(line.cuis,"|") Create (n)-[:equal_to_Aeolus_SE]->(a); \n'
     query_new = query_new % ("se_new")
     cypher_file.write(query_new)
 
@@ -575,7 +575,7 @@ def integrate_aeolus_into_hetionet():
     # search for all side effect that did not mapped with aeolus and give them the property aeolus:'no'
     # add query to update disease nodes with do='no'
     cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')
-    query = '''begin\n Match (n:SideEffect) Where not exists(n.aeolus) Set n.aeolus="no";\n commit\n '''
+    query = ''':begin\n Match (n:SideEffect) Where not exists(n.aeolus) Set n.aeolus="no";\n :commit\n '''
     cypher_general.write(query)
     cypher_general.close()
 
