@@ -8,17 +8,16 @@ https://github.com/dhimmel/pathways/blob/master/merge-resources.ipynb
 import csv
 import collections
 import re, datetime
-# import html.parser
-import HTMLParser
+import html
+from html.parser import HTMLParser
+# import HTMLParser
 import json
 import wget
-from urllib import urlopen
 import gzip
-from StringIO import StringIO
 
 
 import requests
-import pandas
+import pandas, sys
 
 '''
 Get Gene informaation from Entrez-gene
@@ -26,7 +25,7 @@ Get Gene informaation from Entrez-gene
 def use_of_entrez_gene():
     # read entrez genes
     url = 'https://raw.githubusercontent.com/dhimmel/entrez-gene/a7362748a34211e5df6f2d185bb3246279760546/data/genes-human.tsv'
-    entrez_df = pandas.read_table(url, dtype={'GeneID': str})
+    entrez_df = pandas.read_csv(url,sep='\t', dtype={'GeneID': str})
     global human_coding_genes, human_genes
     human_genes = set(entrez_df.GeneID)
     human_coding_genes = set(entrez_df[entrez_df.type_of_gene == 'protein-coding'].GeneID)
@@ -77,15 +76,16 @@ def pathway_commons():
         file.write(f.read())
     file.close()
 
+    global i
     i = 0
     rows = list()
-    PC_Row = collections.namedtuple('PC_Row', ['identifier', 'name', 'source', 'genes','url','idOwn' ])
+    PC_Row = collections.namedtuple('PC_Row', ['identifier', 'synonyms', 'source', 'genes','url','xrefs' ])
 
 
     for url, description, genes in read_gmt(filename_without_gz):
 
         # Process description and only for human
-        print(description)
+        # print(description)
         try:
             description = dict(item.split(': ',1) for item in description.split('; '))
         except:
@@ -106,7 +106,8 @@ def pathway_commons():
         # Process name
         name= description['name']
         name = re.sub(r'^9606: +', '', name)
-        name = HTMLParser.HTMLParser().unescape(name)
+        # name = HTMLParser.unescape(name)
+        name = html.unescape(name)
         if name == 'Not pathway':
             continue
 
@@ -121,19 +122,49 @@ def pathway_commons():
         row = PC_Row(
             # identifier='PC7_{}'.format(i),
             identifier='PC11_{}'.format(i),
-            name=name,
+            synonyms=name,
             source=description['datasource'],
             genes=genes,
             url=url,
-            idOwn=url.rsplit('/',1)[1]
+            xrefs=description['datasource']+':'+url.rsplit('/',1)[1]
         )
         rows.append(row)
+
 
     global pc_df
     pc_df = pandas.DataFrame(rows)
     print(pc_df.head(2))
 
     print(pc_df.source.value_counts())
+
+    # wikipathways: CC BY 3.0
+    # reactome: CC BY 4.0
+    # kegg: not open source
+    # panther:GNU GPLv3
+    # pid:not existing anymore?
+    # netpath:CC BY 2.5
+    # inoh:unknown
+    # humancyc: not open source
+
+    # filter only the open source sources
+    keep = {'wikipathways', 'reactome', 'panther', 'netpath'}
+    pc_df=pc_df.query("source in @keep")
+
+    #dictionary source to license
+    source_to_license={
+        'wikipathways': 'CC BY 3.0',
+        'reactome': 'CC BY 4.0',
+        'kegg': 'not open source',
+        'panther': 'GNU GPLv3',
+        'pid': 'not existing anymore?',
+        'netpath': 'CC BY 2.5',
+        'inoh': 'unknown',
+        'humancyc': 'not open source'
+    }
+
+    #add license to the different sources
+    pc_df['license']=pc_df['source'].map(source_to_license)
+
 
 '''
 Download wikiPathways and extract the information from the gmt file
@@ -142,7 +173,7 @@ def wikipathways():
     # Parse WikiPathways
 
     # download WikiPathways
-    url = 'http://data.wikipathways.org/current/gmt/wikipathways-20190910-gmt-Homo_sapiens.gmt'
+    url = 'http://data.wikipathways.org/20191010/gmt/wikipathways-20191010-gmt-Homo_sapiens.gmt'
     filename= wget.download(url,out='data/')
 
     gmt_generator = read_gmt(filename)
@@ -150,7 +181,13 @@ def wikipathways():
     global wikipath_df
     wikipath_df = pandas.DataFrame(gmt_generator, columns = ['name', 'description', 'genes'])
     wikipath_df.name = wikipath_df.name.map(lambda x: x.split('%')[0])
+    if len(wikipath_df)==0:
+        print('wikipathway ulr is not working anymore')
+        sys.exit('wikipathway ulr is not working anymore')
+    print(i)
+    wikipath_df['identifier']=['PC11_{}'.format(j) for j in range(i+1,i+1+len(wikipath_df))]
     print(len(wikipath_df))
+    # print(j)
 
     # Remove genes absent from our entrez gene version
     for genes in wikipath_df.genes:
@@ -163,8 +200,9 @@ def wikipathways():
 
 
     wikipath_df = pandas.DataFrame({
-        'identifier': wikipath_df['description'].map(lambda x: x.rsplit('/', 1)[1]),
-        'name': wikipath_df['name'],
+        'identifier':wikipath_df['identifier'],
+        'xrefs': wikipath_df['description'].map(lambda x: 'wikipathways'+':'+x.rsplit('/', 1)[1]),
+        'synonyms': wikipath_df['name'],
         'url': wikipath_df['description'],
         'source': 'wikipathways',
         'license': 'CC BY 3.0',
@@ -172,16 +210,16 @@ def wikipathways():
     })
     print(wikipath_df.head(2))
 
-properties_which_are_list=['genes','coding_genes']
+properties_which_are_list=['genes','coding_genes','synonyms','xrefs']
 
 '''
 Combine the both data from the different source to one big one and generate a cypher file
 '''
 def combine_both_source():
     # Merge resources into a pathway dataframe
-    pathway_df = pandas.concat([wikipath_df, pc_df])
+    pathway_df = pandas.concat([wikipath_df, pc_df],sort=True)
     print(pathway_df)
-    pathway_df = pathway_df[['identifier', 'name', 'url', 'source', 'license', 'genes','idOwn']]
+    pathway_df = pathway_df[['identifier', 'synonyms', 'url', 'source', 'license', 'genes','xrefs']]
     print(len(pathway_df))
 
     # Remove duplicate pathways
@@ -209,7 +247,7 @@ def combine_both_source():
 
 
     #generate cypher file
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/pathway/pathways.tsv" As line fieldterminator '\\t' Create (c1:pathway_multi{'''
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/pathway/pathways.tsv" As line fieldterminator '\\t' Create (c1:pathway_multi{'''
     for property in pathway_df:
         if property not in properties_which_are_list:
             query+= property+':line.'+property+', '
@@ -219,11 +257,23 @@ def combine_both_source():
     query= query[:-2]+'''});\n '''
     with open('cypher.cypher','w') as file:
         file.write(query)
+        query='Create Constraint On (node:pathway_multi) Assert node.identifier Is Unique; \n'
+        file.write(query)
+
+ # path to directory
+path_of_directory = ''
 
 
 def main():
+    global path_of_directory
+    if len(sys.argv) > 1:
+        path_of_directory = sys.argv[1]
+    else:
+        sys.exit('need a path')
+
     print(datetime.datetime.utcnow())
     print('load gene information')
+
 
     use_of_entrez_gene()
 

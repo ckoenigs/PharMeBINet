@@ -1,49 +1,24 @@
 # -*- coding: utf-8 -*-
-from py2neo import Graph, authenticate
-from collections import defaultdict
+import csv
 import datetime
-import csv, sys
+import sys
+from collections import defaultdict
+
+from py2neo import Graph
 
 '''
 create connection to neo4j 
 '''
 
 
-def create_connection_with_neo4j_mysql():
+def create_connection_with_neo4j():
     # create connection with neo4j
-    # authenticate("localhost:7474", "neo4j", "test")
-    # global g
-    # g = Graph("http://localhost:7474/db/data/")
-
-    # create connection to server
-    authenticate("bimi:7475", "ckoenigs", "test")
     global g
-    g = Graph("http://bimi:7475/db/data/", bolt=False)
+    g = Graph("http://localhost:7474/db/data/", auth=("neo4j", "test"))
 
 
 # generate cypher file
-cypherfile = open('chemical_gene/cypher.cypher', 'w')
-
-'''
-put the first cypher queries into the cypher file which adapt the rela from before
-'''
-def add_cypher_queries_to_cypher_file():
-    cypherfile.write('begin\n')
-    cypherfile.write(
-        'Match (c:Chemical)-[r:BINDS_CbG]->(b:Gene) Where not exists(r.hetionet) Set r.hetionet="yes", r.resource=["Hetionet"];\n')
-    cypherfile.write('commit\n')
-    cypherfile.write('begin\n')
-    cypherfile.write(
-        'Match (c:Chemical)-[r:BINDS_CbG]->(b:Gene) Where not exists(r.urls) Set r.urls=[];\n')
-    cypherfile.write('commit\n')
-    cypherfile.write('begin\n')
-    cypherfile.write(
-        'Match (c:Chemical)-[r:UPREGULATES_CuG]->(b:Gene) Where not exists(r.hetionet) Set r.hetionet="yes", r.resource=["Hetionet"];\n')
-    cypherfile.write('commit\n')
-    cypherfile.write('begin\n')
-    cypherfile.write(
-        'Match (c:Chemical)-[r:DOWNREGULATES_CdG]->(b:Gene) Where not exists(r.hetionet) Set r.hetionet="yes", r.resource=["Hetionet"];\n')
-    cypherfile.write('commit\n')
+cypherfile = open('chemical_gene/cypher.cypher', 'w', encoding='utf-8')
 
 # dictionary with rela name to drug-gene/protein pair
 dict_rela_to_drug_gene_protein_pair = {}
@@ -112,7 +87,7 @@ dict_metabolic_activate_name={
     'metabolic processing':'metabolism'
 }
 
-file = open('chemical_gene/metabolic_processing_action.csv', 'r')
+file = open('chemical_gene/metabolic_processing_action.csv', 'r', encoding='utf-8')
 for line in file:
     list_metabolic_processing.append(line.split(',')[0])
     dict_interaction_type_and_value_to_rela_name[(line.split(',')[0], '')] = 'metabolic_processing'
@@ -130,11 +105,13 @@ generate csv file with the columns fo a path
 
 
 def generate_csv(path):
-    csvfile = open(path, 'wb')
+    csvfile = open(path, 'w', encoding='utf-8')
     writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     writer.writerow(columns)
     return writer
 
+# open the cypher file for the last changes
+cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')
 
 '''
 generate the path to csv and generate the csv, add csv to dictionary
@@ -148,20 +125,50 @@ def path_to_rela_and_add_to_dict(rela, first, second):
     writer = generate_csv(path)
     dict_rela_to_file[rela_full] = writer
 
-    query_first_part = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/''' + path + '''" As line Match (b:Chemical{identifier:line.ChemicalID}), '''
+    query_to_check_if_this_rela_exist_in_hetionet='''Match p=(b:Chemical)'''
+
+    query_first_part = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/''' + path + '''" As line Match (b:Chemical{identifier:line.ChemicalID}), '''
     if first == 'gene' or second == 'gene':
         query_middle_1 = ''' (n:Gene{identifier:toInteger(line.GeneID)})'''
+        part='''(n:Gene)'''
     else:
         query_middle_1 = ''' (g:Gene{identifier:toInteger(line.GeneID)})-[:PRODUCES_GpP]->(n:Protein)'''
+        part='''(n:Protein)'''
+
     if first=='chemical':
         query_middle_2 = ''' Merge (b)-[r:%s]->(n)'''
+        query_to_check_if_this_rela_exist_in_hetionet+='-[r:%s]->'+part+' Return p Limit 1'
     else:
         query_middle_2 = ''' Merge (b)<-[r:%s]-(n)'''
-    query_last_part=''' On Create Set r.hetionet='no', r.ctd='yes', r.urls_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.sources=["CTD"], r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased=line.unbiased, r.interaction_text=line.interaction_text, r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|') On Match SET r.ctd='yes', r.urls_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.sources=["CTD"], r.license_ctd="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased=line.unbiased, r.interaction_text=line.interaction_text, r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=r.pubmed_ids+split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|');\n '''
-    query = query_first_part + query_middle_1+ query_middle_2 + query_last_part
+        query_to_check_if_this_rela_exist_in_hetionet+='<-[r:%s]-'+part+' Return p Limit 1'
+
+    query_to_check_if_this_rela_exist_in_hetionet= query_to_check_if_this_rela_exist_in_hetionet %(dict_file_name_to_rela_name[rela_full])
+    results=g.run(query_to_check_if_this_rela_exist_in_hetionet)
+    result=results.evaluate()
+    # if this relationship exists currently only merge is used maybe I will change this to match and create
+    # however, for the relationships which already exists in the general file new queries are added to say which are not in ctd
+    if result:
+
+        query_last_part=''' On Create Set r.hetionet='no', r.ctd='yes', r.urls_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.sources=["CTD"], r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased=line.unbiased, r.interaction_text=line.interaction_text, r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|') On Match SET r.ctd='yes', r.urls_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.sources=["CTD"], r.license_ctd="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased=line.unbiased, r.interaction_text=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=r.pubmed_ids+split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|');\n '''
+        query = query_first_part + query_middle_1+ query_middle_2 + query_last_part
+
+        query_for_update_not_used_relationships = query_to_check_if_this_rela_exist_in_hetionet.split('Return')[
+                                                      0] + ' Where not exists(r.ctd) Set r.ctd="no";\n'
+
+        query_general = ''':begin\n ''' + query_for_update_not_used_relationships + ''':commit\n '''
+        cypher_general.write(query_general)
+
+
+    else:
+
+        query_middle_2_parts=query_middle_2.split(']')
+
+        query_last_part = '''{hetionet:'no', ctd:'yes', urls_ctd:"http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , sources:["CTD"], license:"© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", unbiased:line.unbiased, interaction_text:split(line.interaction_text,'|'), gene_forms:split(line.gene_forms,'|'), pubmed_ids:split(line.pubMedIds,'|'), interactions_actions:split(line.interactions_actions,'|')}]'''
+        query = query_first_part + query_middle_1 + query_middle_2_parts[0].replace('Merge','Create') + query_last_part + query_middle_2_parts[1]+';\n'
 
     query = query % (dict_file_name_to_rela_name[rela_full])
     cypherfile.write(query)
+
 
 
 # the name of the entities in the rela and dictionary
@@ -181,16 +188,6 @@ def generate_csv_file_for_different_rela_types():
         path_to_rela_and_add_to_dict(rela, chemical, protein)
         path_to_rela_and_add_to_dict(rela, protein, chemical)
 
-    cypherfile.write('begin\n')
-    cypherfile.write('Match (c:Chemical)-[r:BINDS_CbG]->(b:Gene) Where not exists(r.ctd) Set r.ctd="no";\n')
-    cypherfile.write('commit\n')
-    cypherfile.write('begin\n')
-    cypherfile.write('Match (c:Chemical)-[r:UPREGULATES_CuG]->(b:Gene) Where not exists(r.ctd) Set r.ctd="no";\n')
-    cypherfile.write('commit\n')
-    cypherfile.write('begin\n')
-    cypherfile.write('Match (c:Chemical)-[r:DOWNREGULATES_CdG]->(b:Gene) Where not exists(r.ctd) Set r.ctd="no";\n')
-    cypherfile.write('commit\n')
-    cypherfile.close()
 
 
 '''
@@ -354,7 +351,7 @@ def take_all_relationships_of_gene_chemical():
     counter_all_rela = 0
 
     #  Where chemical.chemical_id='D000117' and gene.gene_id='2219'; Where chemical.chemical_id='C057693' and gene.gene_id='4128' Where chemical.chemical_id='D001564' and gene.gene_id='9429'  Where chemical.chemical_id='D004976' and gene.gene_id='2950' Where chemical.chemical_id='D015741' and gene.gene_id='367'
-    query = '''MATCH (chemical:CTDchemical)-[r:associates_CG{organism_id:'9606'}]->(gene:CTDgene) RETURN gene.gene_id, gene.name, gene.geneSymbol, r, chemical.chemical_id, chemical.name, chemical.synonyms, chemical.drugBankIDs '''
+    query = '''MATCH (chemical:CTDchemical)-[r:associates_CG{organism_id:'9606'}]->(gene:CTDgene) RETURN gene.gene_id, gene.name, gene.geneSymbol, r, chemical.chemical_id, chemical.name, chemical.synonyms, chemical.drugBankIDs'''
     results = g.run(query)
 
     for gene_id, gene_name, gene_symbol, rela, chemical_id, chemical_name, chemical_synonyms, drugbank_ids, in results:
@@ -366,7 +363,7 @@ def take_all_relationships_of_gene_chemical():
         drugbank_ids = drugbank_ids if not drugbank_ids is None else []
 
         chemical_synonyms = chemical_synonyms if not chemical_synonyms is None else []
-        chemical_synonyms = filter(None, chemical_synonyms)
+        chemical_synonyms = list(filter(None, chemical_synonyms))
 
         # for searching in the interaction text if gene and chemical are in the same []
         if gene_id in dict_gene_id_to_used_name:
@@ -493,6 +490,28 @@ def find_shortest_string_and_index(list_string):
 
 
 '''
+find the shortest list and all list with the same length but different value
+'''
+
+
+def find_shortest_list_and_indeces(list_of_lists):
+    shortest = min(list_of_lists, key=len)
+    all_with_the_same_length=[shortest]
+    shortest_length=len(shortest)
+    indices =[list_of_lists.index(shortest)]
+    counter=0
+    for list_of_list in list_of_lists:
+        if len(list_of_list)==shortest_length:
+            if not list_of_list in all_with_the_same_length:
+                all_with_the_same_length.append(list_of_list)
+                indices.append(counter)
+        counter+=1
+
+
+    return indices, all_with_the_same_length
+
+
+'''
 now go through all rela types and add every pair to the right csv
 but only take the shortest interaction text and the associated intereaction actions and gene forms
 'ChemicalID', 'GeneID', 'interaction_text', 'gene_forms', 'pubMedIds', 'interactions_actions', 'unbiased'
@@ -502,33 +521,42 @@ but only take the shortest interaction text and the associated intereaction acti
 def fill_the_csv_files():
     for rela_full, dict_chemical_gene_pair in dict_rela_to_drug_gene_protein_pair.items():
         for (chemical_id, gene_id), list_of_information in dict_chemical_gene_pair.items():
-            interaction_texts = list_of_information[0]
-            index, shortest_interaction_text = find_shortest_string_and_index(interaction_texts)
-            gene_forms = list_of_information[1]
-            shortest_gene_forms = gene_forms[index]
 
             pubMedIds = list_of_information[2]
+            pubMedIds='|'.join(pubMedIds)
             interactions_actions = list_of_information[3]
-            shortest_interaction_actions = interactions_actions[index]
+            indices,shortest_interaction_actions=find_shortest_list_and_indeces(interactions_actions)
+            shortest_interaction_actions=[';'.join(x) for x in shortest_interaction_actions]
+            shortest_interaction_actions='|'.join(shortest_interaction_actions)
+
+
+            interaction_texts = list_of_information[0]
+            shortest_interaction_text = [ interaction_texts[x] for x in indices]
+            gene_forms = list_of_information[1]
+            shortest_gene_forms =[ gene_forms[x] for x in indices]
+            shortest_gene_forms = [';'.join(x) for x in shortest_gene_forms]
+            shortest_gene_forms='|'.join(shortest_gene_forms)
+
+
             unbiased = True if len(pubMedIds) > 0 else False
+            shortest_interaction_text='|'.join(shortest_interaction_text)
             dict_rela_to_file[rela_full].writerow(
-                [chemical_id, gene_id, shortest_interaction_text, '|'.join(shortest_gene_forms), '|'.join(pubMedIds),
-                 '|'.join(shortest_interaction_actions), unbiased])
+                [chemical_id, gene_id, shortest_interaction_text, shortest_gene_forms , pubMedIds,shortest_interaction_actions
+                 , unbiased])
 
 
 def main():
+
+    global path_of_directory
+    if len(sys.argv) > 1:
+        path_of_directory = sys.argv[1]
+    else:
+        sys.exit('need a path')
+        
     print (datetime.datetime.utcnow())
     print('Generate connection with neo4j and mysql')
 
-    create_connection_with_neo4j_mysql()
-
-    print(
-        '###########################################################################################################################')
-
-    print (datetime.datetime.utcnow())
-    print('add quereie to cypher file to adapt older rela')
-
-    add_cypher_queries_to_cypher_file()
+    create_connection_with_neo4j()
 
     print(
         '###########################################################################################################################')

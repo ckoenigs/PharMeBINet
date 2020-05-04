@@ -4,22 +4,22 @@ Created on Fri Feb 2 07:23:43 2018
 @author: ckoenigs
 """
 
-from py2neo import Graph, authenticate
+from py2neo import Graph#, authenticate
 import datetime
 import string
 import sys
 import csv
 #from ete3 import Tree
 
-reload(sys)
-sys.setdefaultencoding("utf-8")
+# reload(sys)
+# sys.setdefaultencoding("utf-8")
 
 
 # connect with the neo4j database
 def database_connection():
-    authenticate("localhost:7474", "neo4j", "test")
+    # authenticate("localhost:7474", )
     global g
-    g = Graph("http://localhost:7474/db/data/")
+    g = Graph("http://localhost:7474/db/data/",auth=("neo4j", "test"))
 
 # dictionary with all levels and two lists the first contains the class element and the second the leafs and each has a
 # dict with parent id as key with id name and parent
@@ -43,9 +43,9 @@ def generate_files():
     letter_of_parent = 0
 
     while count_level <= 25:
-        class_file = open('hierarchical_levels/level_' + str(count_level) + '_class.txt', 'w')
+        class_file = open('hierarchical_levels/level_' + str(count_level) + '_class.txt', 'w', encoding='utf-8')
         class_file.write('MonDO_id \t MonDO_name \t parent_id \t parent_name \n')
-        entry_file = open('hierarchical_levels/level_' + str(count_level) + '_entry.txt', 'w')
+        entry_file = open('hierarchical_levels/level_' + str(count_level) + '_entry.txt', 'w', encoding='utf-8')
         entry_file.write('MonDO_id \t MonDO_name \t parent_id \t parent_name  \n')
 
         # key parent id and value parent name
@@ -177,10 +177,10 @@ generate cypher file for integration of levels in nodes
 
 
 def generate_cypher_file():
-    cypher_file_to_integrate_level = open('integrate_level.cypher', 'w')
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/mondo/levels.csv" As line Match (n:disease{`http://www.geneontology.org/formats/oboInOwl#id`:line.ID}) Set n.level=split(line.level,'|');\n'''
+    cypher_file_to_integrate_level = open('integrate_level.cypher', 'w', encoding='utf-8')
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/mondo/levels.csv" As line Match (n:disease{`http://www.geneontology.org/formats/oboInOwl#id`:line.ID}) Set n.level=split(line.level,'|');\n'''
     cypher_file_to_integrate_level.write(query)
-    with open('levels.csv', 'wb') as csvfile:
+    with open('levels.csv', 'w', encoding='utf-8') as csvfile:
         writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
         writer.writerow(['ID', 'level'])
         for id, levels in dict_disease_levels.items():
@@ -192,83 +192,92 @@ def generate_cypher_file():
     #cypher_file_to_integrate_level.write('commit')
 
 
-'''
-recursive get the tree structure
-'''
+# '''
+# recursive get the tree structure
+# '''
+#
+#
+# def recursion_tree_generation(parent_id, count_level, maximal_level, with_leaves):
+#     part_tree_string = ''
+#     if count_level <= maximal_level:
+#         if parent_id in dict_levels[count_level][1] and with_leaves:
+#             for id, [name, parent] in dict_levels[count_level][1][parent_id].items():
+#                 part_tree_string = part_tree_string + id.replace(':', '_') + "-" + str(
+#                     count_level) + '-' + name.replace('(',
+#                                                       '').replace(
+#                     ')', '').replace(';', ' ').replace(
+#                     ':', '').replace(',', '')[0:20] + "-" + ","
+#
+#         if parent_id in dict_levels[count_level][0]:
+#             for id, [name, parent] in dict_levels[count_level][0][parent_id].items():
+#                 part_tree_string = part_tree_string + recursion_tree_generation(id,
+#                                                                                 count_level + 1,
+#                                                                                 maximal_level,
+#                                                                                 with_leaves) + "-" + id.replace(':',
+#                                                                                                                 '_') + "-" + str(
+#                     count_level) + '-' + name.replace('(',
+#                                                       '').replace(
+#                     ')', '').replace(';', ' ').replace(':', '').replace(',', '')[0:20] + ","
+#         if len(part_tree_string) > 0:
+#             part_tree_string = "(" + part_tree_string[0:-1] + ")"
+#
+#     return part_tree_string
+#
+#
+# ''' generate part tree for given parent'''
+#
+#
+# def generate_part_tree(parent_id, name):
+#     datatree = "("
+#     levels = dict_disease_levels[parent_id]
+#     for tree_level in list(levels):
+#         datatree += recursion_tree_generation(parent_id, tree_level + 1, len(dict_levels), True)
+#     datatree += ")" + parent_id.replace(':', '_') + "-" + '_'.join(map(str, levels))+"-" + name  + ";"
+#     rooted_tree = Tree(datatree, format=8)
+#     # print rooted_tree.get_ascii(show_internal=True)
+#
+#
+# '''
+# generate tree
+# '''
+#
+#
+# def generate_tree():
+#     count_level = 1
+#     datatree = recursion_tree_generation("MONDO:0000001", count_level, 2, False) + "disease-MONDO_0000001;"
+#     # print(datatree)
+#
+#     rooted_tree = Tree(datatree, format=8)
+#     print rooted_tree.get_ascii(show_internal=True)
+#
+#     asthma_id = 'MONDO:0004979'
+#     # datatree_asthma="("
+#     # levels=dict_disease_levels[asthma_id]
+#     # for tree_level in list(levels):
+#     #     datatree_asthma+= recursion_tree_generation(asthma_id, tree_level+1, len(dict_levels))
+#     # datatree_asthma+=")Asthma-"+asthma_id.replace(':','_')+";"
+#     # rooted_tree=Tree(datatree_asthma, format=8)
+#     # print rooted_tree.get_ascii(show_internal=True)
+#
+#     # generate_part_tree(asthma_id, 'Asthma')
+#     print(dict_levels[7][1]['MONDO:0018956'])
+#
+#     generate_part_tree('MONDO:0001358', 'bronchial disease')
+#
+#     hypotension_id = 'MONDO:0005044'
+#     generate_part_tree(hypotension_id, 'Hypertension')
 
-
-def recursion_tree_generation(parent_id, count_level, maximal_level, with_leaves):
-    part_tree_string = ''
-    if count_level <= maximal_level:
-        if parent_id in dict_levels[count_level][1] and with_leaves:
-            for id, [name, parent] in dict_levels[count_level][1][parent_id].items():
-                part_tree_string = part_tree_string + id.replace(':', '_') + "-" + str(
-                    count_level) + '-' + name.replace('(',
-                                                      '').replace(
-                    ')', '').replace(';', ' ').replace(
-                    ':', '').replace(',', '')[0:20] + "-" + ","
-
-        if parent_id in dict_levels[count_level][0]:
-            for id, [name, parent] in dict_levels[count_level][0][parent_id].items():
-                part_tree_string = part_tree_string + recursion_tree_generation(id,
-                                                                                count_level + 1,
-                                                                                maximal_level,
-                                                                                with_leaves) + "-" + id.replace(':',
-                                                                                                                '_') + "-" + str(
-                    count_level) + '-' + name.replace('(',
-                                                      '').replace(
-                    ')', '').replace(';', ' ').replace(':', '').replace(',', '')[0:20] + ","
-        if len(part_tree_string) > 0:
-            part_tree_string = "(" + part_tree_string[0:-1] + ")"
-
-    return part_tree_string
-
-
-''' generate part tree for given parent'''
-
-
-def generate_part_tree(parent_id, name):
-    datatree = "("
-    levels = dict_disease_levels[parent_id]
-    for tree_level in list(levels):
-        datatree += recursion_tree_generation(parent_id, tree_level + 1, len(dict_levels), True)
-    datatree += ")" + parent_id.replace(':', '_') + "-" + '_'.join(map(str, levels))+"-" + name  + ";"
-    rooted_tree = Tree(datatree, format=8)
-    print rooted_tree.get_ascii(show_internal=True)
-
-
-'''
-generate tree 
-'''
-
-
-def generate_tree():
-    count_level = 1
-    datatree = recursion_tree_generation("MONDO:0000001", count_level, 2, False) + "disease-MONDO_0000001;"
-    # print(datatree)
-
-    rooted_tree = Tree(datatree, format=8)
-    print rooted_tree.get_ascii(show_internal=True)
-
-    asthma_id = 'MONDO:0004979'
-    # datatree_asthma="("
-    # levels=dict_disease_levels[asthma_id]
-    # for tree_level in list(levels):
-    #     datatree_asthma+= recursion_tree_generation(asthma_id, tree_level+1, len(dict_levels))
-    # datatree_asthma+=")Asthma-"+asthma_id.replace(':','_')+";"
-    # rooted_tree=Tree(datatree_asthma, format=8)
-    # print rooted_tree.get_ascii(show_internal=True)
-
-    # generate_part_tree(asthma_id, 'Asthma')
-    print(dict_levels[7][1]['MONDO:0018956'])
-
-    generate_part_tree('MONDO:0001358', 'bronchial disease')
-
-    hypotension_id = 'MONDO:0005044'
-    generate_part_tree(hypotension_id, 'Hypertension')
+# path to directory
+path_of_directory = ''
 
 
 def main():
+    global path_of_directory
+    if len(sys.argv) > 1:
+        path_of_directory = sys.argv[1]
+    else:
+        sys.exit('need a path')
+
     print(datetime.datetime.utcnow())
     print('##########################################################################')
 

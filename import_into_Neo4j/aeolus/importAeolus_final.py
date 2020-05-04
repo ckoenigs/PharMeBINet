@@ -94,9 +94,9 @@ class Edge(object):
 if len(sys.argv) > 1:
     # filepath= "file:///"+sys.argv[1]
     filepath = sys.argv[1]
+    path_of_directory = sys.argv[2]
 else:
-    # filepath="file:///c:/Users/Cassandra/Documents/uni/Master/test/aeolus_v1/"
-    filepath = "c:/Users/Cassandra/Documents/uni/Master/test/aeolus_v1/"
+    sys.exit('need some arguments (aeolus)')
 
 
 # concept dictionary
@@ -123,7 +123,7 @@ properties file:
 
 def load_concept():
     # fobj=open(filepath+ "test_concept.tsv")
-    fobj = open(filepath + "concept.tsv")
+    fobj = open(filepath + "concept.tsv" , encoding='utf-8')
     i = 1
     j = 1
     for line in fobj:
@@ -168,12 +168,13 @@ properties of file:
 
 def load_drug_outcome_statistic():
     # fobj=open(filepath+ "test_standard_drug_outcome_statistics.tsv")
-    fobj = open(filepath + "standard_drug_outcome_statistics.tsv")
+    fobj = open(filepath + "standard_drug_outcome_statistics.tsv", encoding='utf-8')
     i = 1
     j = 1
     for line in fobj:
         splitted = line.split('\t')
         drug_concept_id = splitted[0]
+
         outcome_concept_id = splitted[1]
         snomed_outcome_concept_id = splitted[2] if splitted[2] != '\\N' else '-'
         drug_outcome_pair_count = splitted[3]
@@ -218,7 +219,7 @@ properties of file:
 
 def load_contingency_table():
     # fobj=open(filepath+ "test_standard_drug_outcome_contingency_table.tsv")
-    fobj = open(filepath + "standard_drug_outcome_contingency_table.tsv")
+    fobj = open(filepath + "standard_drug_outcome_contingency_table.tsv", encoding='utf-8')
 
     for line in fobj:
         splitted = line.split('\t')
@@ -226,9 +227,14 @@ def load_contingency_table():
         #        print(splitted)
         drug_concept_id = splitted[0]
         outcome_concept_id = splitted[1]
+        if drug_concept_id=='766814' and outcome_concept_id=='37520987':
+            print('huu')
         count_a = splitted[2]
         count_b = splitted[3]
         count_c = splitted[4]
+        if drug_concept_id == '800878':
+            if count_c=='':
+                print(outcome_concept_id)
         count_d = splitted[5].replace('\n', '')
 
         dict_edge[(drug_concept_id, outcome_concept_id)].set_contingence_table(count_a, count_b, count_c, count_d)
@@ -241,20 +247,20 @@ generate csv files in form to use the neo4j-shell and generate cypher file
 
 def create_csv_and_cypher_file_neo4j():
     # cypher file to integrate aeolus into Neo4j
-    cypher_file=open('cypher.cypher','w')
+    cypher_file=open('cypher.cypher','w', encoding='utf-8')
 
     print('drug Create')
     print (datetime.datetime.utcnow())
     file_name_outcome='outcome.csv'
-    # f = open(file_name_outcome, 'wt', newline='', encoding='utf-8')
-    f = open(file_name_outcome, 'wt')
+    # f = open(file_name_outcome, 'w', newline='', encoding='utf-8')
+    f = open(file_name_outcome, 'w', encoding='utf-8')
 
     # add cypher wuery to cypher file to integrate outcome
-    cypher_outcome='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/aeolus/'''+file_name_outcome+'''" As line Create (:AeolusOutcome{outcome_concept_id:line.outcome_concept_id , concept_code: line.concept_code,  name: line.name, snomed_outcome_concept_id: line.snomed_outcome_concept_id, vocabulary_id: line.vocabulary_id });\n'''
+    cypher_outcome='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/aeolus/'''+file_name_outcome+'''" As line Create (:AeolusOutcome{outcome_concept_id:line.outcome_concept_id , concept_code: line.concept_code,  name: line.name, snomed_outcome_concept_id: line.snomed_outcome_concept_id, vocabulary_id: line.vocabulary_id });\n'''
     cypher_file.write(cypher_outcome)
-    cypher_file.write('begin \n')
+    cypher_file.write(':begin \n')
     cypher_file.write('Create Constraint On (node:AeolusOutcome) Assert node.outcome_concept_id Is Unique; \n')
-    cypher_file.write('commit \n schema await \n ')
+    cypher_file.write(':commit \n Call db.awaitIndexes(300) ; \n ')
     # csv file for outcome
     try:
         writer = csv.writer(f, quoting=csv.QUOTE_NONNUMERIC)
@@ -275,15 +281,15 @@ def create_csv_and_cypher_file_neo4j():
     print('drug Create')
     print (datetime.datetime.utcnow())
     file_name_drug='drug.csv'
-    f = open(file_name_drug, 'wt')
+    f = open(file_name_drug, 'w', encoding='utf-8')
 
     # add cypher query to cypher file for integration of drugs
     # add cypher wuery to cypher file to integrate outcome
-    cypher_outcome = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/aeolus/''' + file_name_drug + '''" As line Create (:AeolusDrug{drug_concept_id: line.drug_concept_id, concept_code: line.concept_code, name: line.name, vocabulary_id: line.vocabulary_id });\n'''
-    cypher_file.write(cypher_outcome)
-    cypher_file.write(' begin \n')
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/aeolus/''' + file_name_drug + '''" As line Create (:AeolusDrug{drug_concept_id: line.drug_concept_id, concept_code: line.concept_code, name: line.name, vocabulary_id: line.vocabulary_id });\n'''
+    cypher_file.write(query)
+    cypher_file.write(' :begin \n')
     cypher_file.write('Create Constraint On (node:AeolusDrug) Assert node.drug_concept_id Is Unique; \n')
-    cypher_file.write('commit \n schema await \n ')
+    cypher_file.write(':commit \n Call db.awaitIndexes(300) ; \n ')
 
     # csv file for drugs
     try:
@@ -300,10 +306,10 @@ def create_csv_and_cypher_file_neo4j():
 
     # csv for relationships
     file_name_drug_outcome='drug_outcome_relation.csv'
-    cypher_outcome = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/aeolus/''' + file_name_drug_outcome + '''" As line Match (n1:AeolusDrug {drug_concept_id: line.drug_id}), (n2:AeolusOutcome {outcome_concept_id: line.adr_id}) Create (n1)-[:Causes{countA: line.countA , countB: line.countB , countC: line.countC , countD: line.countD, drug_outcome_pair_count: line.drug_outcome_pair_count, prr: line.prr, prr_95_percent_upper_confidence_limit: line.prr_95_percent_upper_confidence_limit , prr_95_percent_lower_confidence_limit: line.prr_95_percent_lower_confidence_limit , ror: line.ror , ror_95_percent_upper_confidence_limit: line.ror_95_percent_upper_confidence_limit , ror_95_percent_lower_confidence_limit: line.ror_95_percent_lower_confidence_limit}]->(n2); \n'''
-    cypher_file.write(cypher_outcome)
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/aeolus/''' + file_name_drug_outcome + '''" As line Match (n1:AeolusDrug {drug_concept_id: line.drug_id}), (n2:AeolusOutcome {outcome_concept_id: line.adr_id}) Create (n1)-[:Causes{countA: line.countA , countB: line.countB , countC: line.countC , countD: line.countD, drug_outcome_pair_count: line.drug_outcome_pair_count, prr: line.prr, prr_95_percent_upper_confidence_limit: line.prr_95_percent_upper_confidence_limit , prr_95_percent_lower_confidence_limit: line.prr_95_percent_lower_confidence_limit , ror: line.ror , ror_95_percent_upper_confidence_limit: line.ror_95_percent_upper_confidence_limit , ror_95_percent_lower_confidence_limit: line.ror_95_percent_lower_confidence_limit}]->(n2); \n'''
+    cypher_file.write(query)
 
-    f = open(file_name_drug_outcome, 'wt')
+    f = open(file_name_drug_outcome, 'w', encoding='utf-8')
     try:
         writer = csv.writer(f, quoting=csv.QUOTE_NONNUMERIC)
         writer.writerow(('drug_id', 'countA', 'countB', 'countC', 'countD', 'drug_outcome_pair_count',

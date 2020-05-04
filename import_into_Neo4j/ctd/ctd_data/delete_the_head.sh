@@ -11,4 +11,3 @@ sed -i 's/# //' text.tsv
 head -2 text.tsv
 
 cp text.tsv $1
-

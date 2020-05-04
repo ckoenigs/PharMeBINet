@@ -7,7 +7,7 @@ Created on Fri Jul 14 10:34:41 2017
 
 import xml.dom.minidom as dom
 
-import datetime, csv
+import datetime, csv, sys
 from collections import defaultdict
 
 
@@ -52,10 +52,10 @@ def extract_and_add_info_into_dictionary(dictionary, terminology, element):
 
 
 # cypher file to integrate nodes and relationships
-cypher_file = open('cypher_file.cypher', 'w')
+cypher_file = open('cypher_file.cypher', 'w', encoding='utf-8')
 
 # cypher file to delte nodes without relationships
-cypher_file_delete = open('cypher_file_delete.cypher', 'w')
+cypher_file_delete = open('cypher_file_delete.cypher', 'w', encoding='utf-8')
 
 # dictionary rela file name to code combination
 dict_rela_to_list_of_code_tuples={}
@@ -72,11 +72,11 @@ def load_ndf_rt_xml_inferred_in():
     properties_of_node = ['code', "name", "id", "properties", "association"]
     for code, entity_name in dict_entities.items():
         file_name = 'results/'+entity_name + '_file.tsv'
-        entity_file = open(file_name, 'w')
+        entity_file = open(file_name, 'w',encoding='utf-8')
         csv_writer = csv.writer(entity_file, delimiter='\t', quotechar='"', lineterminator='\n')
         csv_writer.writerow(properties_of_node)
         dict_entity_to_file[code] = csv_writer
-        query = '''USING PERIODIC COMMIT 10000 LOAD CSV WITH HEADERS FROM "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/ndf_rt/%s" AS line FIELDTERMINATOR '\\t' Create (n: NDF_RT_''' + entity_name + '{'
+        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ndf_rt/%s" AS line FIELDTERMINATOR '\\t' Create (n: NDF_RT_''' + entity_name + '{'
         print(query)
         print(file_name)
         query = query % (file_name)
@@ -119,11 +119,11 @@ def load_ndf_rt_xml_inferred_in():
         dict_rela_to_file[code] = file_name
         if file_name not in dict_rela_file_name_to_file:
             dict_rela_to_list_of_code_tuples[file_name]=[]
-            entity_file = open(file_name, 'w')
+            entity_file = open(file_name, 'w',encoding='utf-8')
             csv_writer = csv.writer(entity_file, delimiter='\t', quotechar='"',lineterminator='\n')
             csv_writer.writerow(rela_info_list)
             dict_rela_file_name_to_file[file_name]=csv_writer
-            query = '''USING PERIODIC COMMIT 10000 LOAD CSV WITH HEADERS FROM "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/ndf_rt/%s" AS line FIELDTERMINATOR '\\t' Match (start: NDF_RT_''' + dict_entities[start_node_code] + '''{code:line.'''+ rela_info_list[0]+ '''}), (end: NDF_RT_''' + dict_entities[end_node_code] + '''{code:line.'''+rela_info_list[1]+'''}) Create (start)-[:%s]->(end);\n'''
+            query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ndf_rt/%s" AS line FIELDTERMINATOR '\\t' Match (start: NDF_RT_''' + dict_entities[start_node_code] + '''{code:line.'''+ rela_info_list[0]+ '''}), (end: NDF_RT_''' + dict_entities[end_node_code] + '''{code:line.'''+rela_info_list[1]+'''}) Create (start)-[:%s]->(end);\n'''
             print(query)
             query=query% (file_name, name)
 
@@ -161,7 +161,6 @@ def load_ndf_rt_xml_inferred_in():
             properties_list.append(text)
 
         properties_string='|'.join(properties_list)
-        properties_string=properties_string.encode("utf-8")
 
         # go through association of this drug and generate a list of string
         association_list = []
@@ -180,8 +179,17 @@ def load_ndf_rt_xml_inferred_in():
 
         dict_entity_to_file[entity_code].writerow([code, name, ndf_rt_id, properties_string, association_string])
 
+# path to directory
+path_of_directory = ''
+
 
 def main():
+    global path_of_directory
+    if len(sys.argv) > 1:
+        path_of_directory = sys.argv[1]
+    else:
+        sys.exit('need a path ndf-rt')
+
     # start the function to load in the xml file and save the importen values in list and dictionaries
     print('#############################################################')
     print(datetime.datetime.utcnow())

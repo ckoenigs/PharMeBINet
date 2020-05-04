@@ -60,7 +60,7 @@ split and combined the symptom name and search for this symptom and return if a 
 '''
 
 
-def find_cui_for_different_formas_of_string(symptom, split_word):
+def find_cui_for_different_forms_of_string(symptom, split_word):
     symptom = symptom.replace(' the ', ' ')
     split_by_in = symptom.split(' ' + split_word + ' ')
     if len(split_by_in) == 2:
@@ -145,7 +145,7 @@ def load_in_hetionet_disease_in_dictionary(mondo,  definition):
                 if not found_a_cui:
                     # if not found  search for the name with exclude preposition and use different orders
                     for split_word in list_words_to_split:
-                        if find_cui_for_different_formas_of_string(symptom, split_word):
+                        if find_cui_for_different_forms_of_string(symptom, split_word):
                             found_a_cui = True
                             counter_map_with_changed_order += 1
                             # sys.exit()

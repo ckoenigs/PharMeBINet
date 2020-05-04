@@ -1,14 +1,12 @@
-from _mysql import result
-
-from py2neo import Graph, authenticate
+from py2neo import Graph#, authenticate
 import datetime
-import csv
+import csv,sys
 
 # connect with the neo4j database
 def database_connection():
-    authenticate("localhost:7474", "neo4j", "test")
+    # authenticate("localhost:7474", )
     global g
-    g = Graph("http://localhost:7474/db/data/")
+    g = Graph("http://localhost:7474/db/data/",auth=("neo4j", "test"))
 
 
 def find_an_upper_node(query, disease_id,jumper):
@@ -35,7 +33,7 @@ open file with nodes without upper nodes and check for everyone if im mondo some
 integrate this information into a new file
 '''
 def generate_integration_file_with_nodes_without_upper_nodes():
-    output_file= open('connection_nodes_without_upper.csv','wb')
+    output_file= open('connection_nodes_without_upper.csv','w')
     global writer
     writer = csv.writer(output_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     writer.writerow(['ID_a', 'ID_b','jump_number','equivalentOriginalNodeSource','equivalentOriginalNodeTarget','isDefinedBy','lbl'])
@@ -43,7 +41,7 @@ def generate_integration_file_with_nodes_without_upper_nodes():
     part_query='''-[:subClassOf]->()'''
 
     cypherfile=open('cypher_file_not_connected_nodes.cypher','w')
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/import_into_Neo4j/mondo/connection_nodes_without_upper.csv" As line Match (a:disease{`http://www.geneontology.org/formats/oboInOwl#id`:line.ID_a}), (b:disease{`http://www.geneontology.org/formats/oboInOwl#id`:line.ID_b}) CREATE (a)-[:subClassOf{equivalentOriginalNodeSource:line.equivalentOriginalNodeSource,equivalentOriginalNodeTarget:line.equivalentOriginalNodeTarget,isDefinedBy:line.isDefinedBy,lbl:line.lbl}]->(b) With line, a Set a.level_add=line.jump_number;\n'''
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/mondo/connection_nodes_without_upper.csv" As line Match (a:disease{`http://www.geneontology.org/formats/oboInOwl#id`:line.ID_a}), (b:disease{`http://www.geneontology.org/formats/oboInOwl#id`:line.ID_b}) CREATE (a)-[:subClassOf{equivalentOriginalNodeSource:line.equivalentOriginalNodeSource,equivalentOriginalNodeTarget:line.equivalentOriginalNodeTarget,isDefinedBy:line.isDefinedBy,lbl:line.lbl}]->(b) With line, a Set a.level_add=line.jump_number;\n'''
     cypherfile.write(query)
 
 
@@ -116,7 +114,17 @@ def generate_integration_file_with_nodes_without_upper_nodes():
     print('number of nodes  which has no subclass relationship:'+str(counter_no_subclass_connection))
     print('number of nodes which get no subclass relationship:'+str(count_where_nothing_is_found))
 
+# path to directory
+path_of_directory = ''
+
+
 def main():
+    global path_of_directory
+    if len(sys.argv) > 1:
+        path_of_directory = sys.argv[1]
+    else:
+        sys.exit('need a path')
+
     print(datetime.datetime.utcnow())
 
     print('##########################################################################')

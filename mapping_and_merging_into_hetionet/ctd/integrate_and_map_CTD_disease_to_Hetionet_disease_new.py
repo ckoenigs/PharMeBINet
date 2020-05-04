@@ -5,7 +5,7 @@ Created on Fri Sep 15 11:41:20 2017
 @author: ckoenigs
 """
 
-from py2neo import Graph, authenticate
+from py2neo import Graph#, authenticate
 import datetime
 import MySQLdb as mdb
 import sys
@@ -97,13 +97,13 @@ create connection to neo4j and mysql
 
 def create_connection_with_neo4j_mysql():
     # create connection with neo4j
-    authenticate("localhost:7474", "neo4j", "test")
+    # authenticate("localhost:7474", "neo4j", "test")
     global g
-    g = Graph("http://localhost:7474/db/data/")
+    g = Graph("http://localhost:7474/db/data/", auth=("neo4j", "test"))
 
     # create connection with mysql database
     global con
-    con = mdb.connect('localhost', 'root', 'Za8p7Tf', 'umls')
+    con = mdb.connect('localhost', 'ckoenigs', 'Za8p7Tf$', 'umls')
 
 
 '''
@@ -119,7 +119,7 @@ def load_hetionet_diseases_in():
         # if identifier=='MONDO:0002165':
         #     print('BLUB')
         # add name with mondo to dictionary
-        name_formed = name.lower().split(' exact ')[0]
+        name_formed = name.lower().split(' exact ')[0] if name else ''
         dict_hetionet_id_to_name[identifier] = name
         if name_formed not in dict_name_synonym_to_mondo_id:
             dict_name_synonym_to_mondo_id[name_formed] = [identifier]
@@ -129,7 +129,7 @@ def load_hetionet_diseases_in():
             dict_name_synonym_to_mondo_id[name_formed] = list(part_list)
 
         # add the differnt synonyms with mondo to dictionary
-        if not synonyms is None:
+        if synonyms:
             for synonym in synonyms:
                 synonym = synonym.split(':')[0].lower().split(' exact ')[0]
                 additional_synonym_names = synonym.split(';')
@@ -152,18 +152,20 @@ def load_hetionet_diseases_in():
 
         # list of the umls cuis without the label 'UMLS_CUI:'
         umls_cuis_without_label = []
-
-        for umls_cui in umls_cuis:
-            if len(umls_cui) > 0:
-                cui = umls_cui.split(':')[1]
-                umls_cuis_without_label.append(cui)
-                if cui in dict_umls_cui_to_mondo:
-                    dict_umls_cui_to_mondo[cui].append(identifier)
-                else:
-                    dict_umls_cui_to_mondo[cui] = [identifier]
+        if umls_cuis:
+            for umls_cui in umls_cuis:
+                if len(umls_cui) > 0:
+                    if len(umls_cui.split(':'))<2:
+                        print('ohje')
+                    cui = umls_cui.split(':')[1]
+                    umls_cuis_without_label.append(cui)
+                    if cui in dict_umls_cui_to_mondo:
+                        dict_umls_cui_to_mondo[cui].append(identifier)
+                    else:
+                        dict_umls_cui_to_mondo[cui] = [identifier]
 
         # generate dictionary with doid to mondo
-        if not doids is None:
+        if doids :
             for doid in doids:
                 if doid in dict_doid_to_mondo:
                     dict_doid_to_mondo[doid].append(identifier)
@@ -171,19 +173,20 @@ def load_hetionet_diseases_in():
                     dict_doid_to_mondo[doid] = [identifier]
 
         # add all mondo  with mesh and omim in the dictionaries
-        for xref in xrefs:
-            if xref.split(':')[0] == 'MESH':
-                if not xref.split(':')[1] in dict_mesh_to_mondo:
-                    dict_mesh_to_mondo[xref.split(':')[1]] = [identifier]
-                else:
-                    dict_mesh_to_mondo[xref.split(':')[1]].append(identifier)
-                    dict_mesh_to_mondo[xref.split(':')[1]] = list(set(dict_mesh_to_mondo[xref.split(':')[1]]))
-            elif xref.split(':')[0] == 'OMIM':
-                if not xref.split(':')[1] in dict_omim_to_mondo:
-                    dict_omim_to_mondo[xref.split(':')[1]] = [identifier]
-                else:
-                    dict_omim_to_mondo[xref.split(':')[1]].append(identifier)
-                    dict_omim_to_mondo[xref.split(':')[1]] = list(set(dict_omim_to_mondo[xref.split(':')[1]]))
+        if xrefs:
+            for xref in xrefs:
+                if xref.split(':')[0] == 'MESH':
+                    if not xref.split(':')[1] in dict_mesh_to_mondo:
+                        dict_mesh_to_mondo[xref.split(':')[1]] = [identifier]
+                    else:
+                        dict_mesh_to_mondo[xref.split(':')[1]].append(identifier)
+                        dict_mesh_to_mondo[xref.split(':')[1]] = list(set(dict_mesh_to_mondo[xref.split(':')[1]]))
+                elif xref.split(':')[0] == 'OMIM':
+                    if not xref.split(':')[1] in dict_omim_to_mondo:
+                        dict_omim_to_mondo[xref.split(':')[1]] = [identifier]
+                    else:
+                        dict_omim_to_mondo[xref.split(':')[1]].append(identifier)
+                        dict_omim_to_mondo[xref.split(':')[1]] = list(set(dict_omim_to_mondo[xref.split(':')[1]]))
 
         # generate class DiseaseHetionet and add to dictionary
         disease = DiseaseHetionet(identifier, synonyms, umls_cuis_without_label, xrefs, resource)
@@ -225,7 +228,7 @@ def load_disease_CTD():
     # go through all results from the query
     for result, in results:
         idType = result['idType']
-        name = result['name']
+        name = result['name'].lower()
         disease_id = result['disease_id']
         altDiseaseIDs = result['altDiseaseIDs'] if 'altDiseaseIDs' in result else []
 
@@ -242,13 +245,31 @@ def load_disease_CTD():
     # print('number of mapped ctd disease:' + str(len(list_mapped_to_mondo)))
     # print('number of not mapped ctd disease:' + str(len(list_not_mapped_to_mondo)))
 
+'''
+get mondo ids and add them to the class 
+'''
+def mondo_to_class(disease_id, dict_mesh_or_omim_to_mondo, name_ctd):
+    if disease_id in dict_mesh_or_omim_to_mondo:
+        mondos_ids = dict_mesh_or_omim_to_mondo[disease_id]
+        if len(mondos_ids)>1:
+            names_hetionet= {dict_hetionet_id_to_name[x]:x for x in mondos_ids }
+            if name_ctd in names_hetionet:
+                print('find only one string that fits and remove multiple mapping')
+                mondos_ids=[names_hetionet[name_ctd]]
+
+        dict_CTD_disease[disease_id].set_mondos(mondos_ids)
+        dict_CTD_disease[disease_id].set_mapping_id(disease_id)
+        dict_CTD_disease[disease_id].set_how_mapped('map with Mesh or OMIM to mondo id')
+        list_mapped_to_mondo.add(disease_id)
+    else:
+        list_not_mapped_to_mondo.append(disease_id)
 
 '''
-map with use of mesh and omim ID to Monarch Disease Ontology
+map with use of mesh and omim ID to Monarch
 '''
 
 
-def map_disease_with_mesh_omim_to_monarch_disease_ontology():
+def map_disease_with_mesh_omim_to_monarch():
     counter = 0
     for disease_id, disease in dict_CTD_disease.items():
         if disease_id == 'D007007':
@@ -256,22 +277,12 @@ def map_disease_with_mesh_omim_to_monarch_disease_ontology():
         counter += 1
         # depending on the idType the diseases id has to be search in Type MESH, OMIM or both
         if disease.idType == 'MESH':
-            if disease_id in dict_mesh_to_mondo:
-                mondos_ids = dict_mesh_to_mondo[disease_id]
-                dict_CTD_disease[disease_id].set_mondos(mondos_ids)
-                dict_CTD_disease[disease_id].set_mapping_id(disease_id)
-                dict_CTD_disease[disease_id].set_how_mapped('map with Mesh or OMIM to mondo id')
-                list_mapped_to_mondo.add(disease_id)
-                continue
+            mondo_to_class(disease_id, dict_mesh_to_mondo,disease.name)
+            continue
 
         elif disease.idType == 'OMIM':
-            if disease_id in dict_omim_to_mondo:
-                mondos_ids = dict_omim_to_mondo[disease_id]
-                dict_CTD_disease[disease_id].set_mondos(mondos_ids)
-                dict_CTD_disease[disease_id].set_mapping_id(disease_id)
-                dict_CTD_disease[disease_id].set_how_mapped('map with Mesh or OMIM to mondo id')
-                list_mapped_to_mondo.add(disease_id)
-                continue
+            mondo_to_class(disease_id, dict_omim_to_mondo,disease.name)
+            continue
         # else:
         #     print('geht es hier rein?')
         #     if disease_id in dict_omim_to_mondo:
@@ -398,7 +409,7 @@ def map_disease_with_doids_to_monarch_disease_ontology():
     for index in delete_map_mondo:
         list_not_mapped_to_mondo.pop(index)
 
-    print('number of mapped ctd disease after mesh/omim alternativ id map:' + str(
+    print('number of mapped ctd disease after doid map:' + str(
         counter - len(list_not_mapped_to_mondo)))
     print('number of mapped ctd disease:' + str(len(list(list_mapped_to_mondo))))
     print('number of not mapped ctd disease:' + str(len(list_not_mapped_to_mondo)))
@@ -503,30 +514,35 @@ def map_with_name():
 
 
 # files for the different map strategies
-map_mesh_omim_to_mondo = open('disease_Disease/map_CTD_disease_mesh_omim_to_mondo.tsv', 'w')
-map_mesh_omim_to_mondo.write(
-    'CTD MESH/OMIM \t type\tname \t Monarch Disease Ontology divided by | \t mondo names \t map_id \n')
+map_mesh_omim_to_mondo_file = open('disease_Disease/map_CTD_disease_mesh_omim_to_mondo.tsv', 'w', encoding='utf-8')
+header=['CTD MESH/OMIM','type','name','Monarch Disease Ontology divided by |','mondo names','map_id']
+map_mesh_omim_to_mondo=csv.writer(map_mesh_omim_to_mondo_file, delimiter='\t')
+map_mesh_omim_to_mondo.writerow(header)
 
-map_mesh_omim_to_mondo_with_alt = open('disease_Disease/map_CTD_disease_alternativ_mesh_omim_to_mondo.tsv', 'w')
-map_mesh_omim_to_mondo_with_alt.write(
-    'CTD MESH/OMIM \t type\tname \t Monarch Disease Ontology divided by | \t mondo names\t map_id \n')
+map_mesh_omim_to_mondo_with_alt_file = open('disease_Disease/map_CTD_disease_alternativ_mesh_omim_to_mondo.tsv', 'w', encoding='utf-8')
+map_mesh_omim_to_mondo_with_alt=csv.writer(map_mesh_omim_to_mondo_with_alt_file, delimiter='\t')
+map_mesh_omim_to_mondo_with_alt.writerow(header)
 
-map_mesh_omim_to_mondo_with_name = open('disease_Disease/map_CTD_disease_name_to_mondo_name_synonyms.tsv', 'w')
-map_mesh_omim_to_mondo_with_name.write(
-    'CTD MESH/OMIM \t type\tname  \t Monarch Disease Ontology divided by | \t mondo names\t map_id \n')
+map_mesh_omim_to_mondo_with_name_file = open('disease_Disease/map_CTD_disease_name_to_mondo_name_synonyms.tsv', 'w', encoding='utf-8')
+map_mesh_omim_to_mondo_with_name=csv.writer(map_mesh_omim_to_mondo_with_name_file, delimiter='\t')
+map_mesh_omim_to_mondo_with_name.writerow(header)
 
-map_doid_to_mondo = open('disease_Disease/map_CTD_disease_doid_to_mondo.tsv', 'w')
-map_doid_to_mondo.write(
-    'CTD MESH/OMIM \t type\tname \t Monarch Disease Ontology divided by | \t mondo names\t map_id \n')
+map_doid_to_mondo_file = open('disease_Disease/map_CTD_disease_doid_to_mondo.tsv', 'w', encoding='utf-8')
+map_doid_to_mondo=csv.writer(map_doid_to_mondo_file, delimiter='\t')
+map_doid_to_mondo.writerow(header)
 
-map_cui_to_mondo = open('disease_Disease/map_CTD_disease_map_to_cui_to_mondo.tsv', 'w')
-map_cui_to_mondo.write(
-    'CTD MESH/OMIM \t type\tname \t Monarch Disease Ontology divided by | \t mondo names\t map_id \n')
+map_cui_to_mondo_file = open('disease_Disease/map_CTD_disease_map_to_cui_to_mondo.tsv', 'w', encoding='utf-8')
+map_cui_to_mondo=csv.writer(map_cui_to_mondo_file, delimiter='\t')
+map_cui_to_mondo.writerow(header)
 
 # multiple mapped ctd disease
-multiple_mapped_ctd_disease = open('disease_Disease/multiple_mapped_ctd_disease.tsv', 'w')
-multiple_mapped_ctd_disease.write(
-    'CTD MESH/OMIM \t type\tname \t Monarch Disease Ontology divided by | \t mondo names\t mapping_strategy \n')
+multiple_mapped_ctd_disease_file = open('disease_Disease/multiple_mapped_ctd_disease.tsv', 'w', encoding='utf-8')
+otherheader=header[:-1]
+otherheader.append('mapping_strategy')
+multiple_mapped_ctd_disease=csv.writer(multiple_mapped_ctd_disease_file, delimiter='\t')
+multiple_mapped_ctd_disease.writerow(otherheader)
+# multiple_mapped_ctd_disease.write(
+#     'CTD MESH/OMIM','type\tname','Monarch Disease Ontology divided by |','mondo names\t mapping_strategy \n')
 
 # dictionary map how_mapped to a file
 dict_how_mapped_to_file = {
@@ -561,15 +577,15 @@ def integrate_disease_into_hetionet():
     counter_intersection = 0
     # count the number of mapped ctd disease
     counter_with_mondos = 0
-    csvfile_ctd_hetionet_disease = open('disease_Disease/ctd_hetionet.csv', 'wb')
+    csvfile_ctd_hetionet_disease = open('disease_Disease/ctd_hetionet.csv', 'w', encoding='utf-8')
     writer = csv.writer(csvfile_ctd_hetionet_disease, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-    writer.writerow(['ctdDiseaseID', 'HetionetDiseaseId'])
+    writer.writerow(['ctdDiseaseID', 'HetionetDiseaseId', 'mondos'])
 
-    cypher_file = open('disease_Disease/mapping.cypher', 'wb')
-    cypher_file.write('begin\n')
+    cypher_file = open('disease_Disease/cypher.cypher', 'w', encoding='utf-8')
+    cypher_file.write(':begin\n')
     query='''Match (d)-[r:equal_to_D_Disease_CTD]->(n) Delete r;\n '''
     cypher_file.write(query)
-    cypher_file.write('commit\n')
+    cypher_file.write(':commit\n')
     # go through all ctd disease
     for ctd_disease_id, ctd_disease in dict_CTD_disease.items():
         counter_all += 1
@@ -584,37 +600,38 @@ def integrate_disease_into_hetionet():
                 if len(mondos_intersection) > 0:
                     counter_intersection += 1
                     mondos = mondos_intersection
-                    print(ctd_disease_id)
+                    # print(ctd_disease_id)
         if len(mondos) > 0:
             counter_with_mondos += 1
             how_mapped = ctd_disease.how_mapped
-            string_mondos = "|".join(mondos)
+            string_mondos = "|".join(mondos).encode('utf-8')
             names = ''
 
             mapping_ids = ctd_disease.mapping
-            mapping_ids_string = '|'.join(mapping_ids)
+            mapping_ids_string = '|'.join(mapping_ids).encode('utf-8')
 
             for mondo in mondos:
                 names += dict_hetionet_id_to_name[mondo] + '|'
             idType = ctd_disease.idType
+            name=name.encode('utf-8')
             if len(mondos) > 1:
                 dict_how_mapped_to_multiple_mapping[how_mapped] += 1
-                multiple_mapped_ctd_disease.write(
-                    ctd_disease_id + '\t' + idType + '\t' + name + '\t' + string_mondos + '\t' + names[
-                                                                                                 :-1] + '\t' + how_mapped + '\n')
-
-            dict_how_mapped_to_file[how_mapped].write(
-                ctd_disease_id + '\t' + idType + '\t' + name + '\t' + string_mondos + '\t' + names[
-                                                                                             :-1] + '\t' + mapping_ids_string + '\n')
-            string_mondos = "','".join(mondos)
+                multiple_mapped_ctd_disease.writerow([ctd_disease_id , idType , name , string_mondos , names[:-1]
+                                                         , how_mapped ])
+            # print([ctd_disease_id ,idType , name , string_mondos , names[:-1] ,
+            #                                            mapping_ids_string ])
+            names=names.encode('utf-8')
+            dict_how_mapped_to_file[how_mapped].writerow([ctd_disease_id ,idType , name , string_mondos , names[:-1] ,
+                                                       mapping_ids_string ])
+            string_mondos = "|".join(mondos)
             # set in neo4j the mondos for the ctd disease
-            query = '''MATCH (n:CTDdisease{disease_id:'%s'}) SET n.mondos=['%s'] '''
-            query = query % (ctd_disease_id, string_mondos)
-            g.run(query)
+            # query = '''MATCH (n:CTDdisease{disease_id:'%s'}) SET n.mondos=['%s'] '''
+            # query = query % (ctd_disease_id, string_mondos)
+            # g.run(query)
 
             # generate for all mapped mondos a connection and add new properties to Hetionet disease
             for mondo in mondos:
-                writer.writerow([ctd_disease_id, mondo])
+                writer.writerow([ctd_disease_id, mondo, string_mondos])
         else:
             counter_not_mapped += 1
             if ctd_disease_id not in list_not_mapped_to_mondo:
@@ -626,30 +643,45 @@ def integrate_disease_into_hetionet():
     print('number of mapped ctd disease:' + str(counter_with_mondos))
     print('counter intersection mondos:' + str(counter_intersection))
     print(dict_how_mapped_to_multiple_mapping)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/disease_Disease/ctd_hetionet.csv" As line MATCH (n:CTDdisease{disease_id:line.ctdDiseaseID}), (d:Disease{identifier:line.HetionetDiseaseId}) Merge (d)-[:equal_to_D_Disease_CTD]->(n) With line, d, n Where d.ctd='no' Set d.resource=d.resource+'CTD', d.ctd='yes', d.ctd_url='http://ctdbase.org/detail.go?type=disease&acc='+line.ctdDiseaseID;\n '''
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/disease_Disease/ctd_hetionet.csv" As line MATCH (n:CTDdisease{disease_id:line.ctdDiseaseID}), (d:Disease{identifier:line.HetionetDiseaseId}) Merge (d)-[:equal_CTD_disease]->(n) Set  n.mondos=split(line.mondos, '|') With line, d, n Where d.ctd='no' Set d.resource=d.resource+'CTD', d.ctd='yes', d.ctd_url='http://ctdbase.org/detail.go?type=disease&acc='+line.ctdDiseaseID;\n '''
     cypher_file.write(query)
-    cypher_file.write('begin\n')
-    #    search for all disease that did not mapped with ctd disease and give them the property ctd:'no'
-    query = '''MATCH (n:Disease) Where Not Exists(n.ctd) SET n.ctd='no';\n '''
-    cypher_file.write(query)
-    cypher_file.write('commit\n')
-    cypher_file.write('begin\n')
+
+    # add query to update disease nodes with do='no'
+    cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')
+    query = ''':begin\n MATCH (n:Disease) Where not exists(n.ctd) Set n.ctd="no";\n :commit\n '''
+    cypher_general.write(query)
+    cypher_general.close()
+
+    # set mondo value where not existing
+    cypher_file.write(':begin\n')
     # set all ctd disease which are not mapped the mondo as empty
     query = '''MATCH (n:CTDdisease) Where Not Exists(n.mondos) SET n.mondos=[];\n'''
     cypher_file.write(query)
-    cypher_file.write('commit\n')
+    cypher_file.write(':commit\n')
 
     # generate a file with all not mapped diseases from ctd
-    file_not_map = open('disease_Disease/not_map_CTD_disease.tsv', 'w')
-    file_not_map.write('CTD MESH/OMIM \t type  \t CTD names \n')
+    file_not_map = open('disease_Disease/not_map_CTD_disease.tsv', 'w', encoding='utf-8')
+    csv_not_mapped=csv.writer(file_not_map,delimiter='\t')
+
+    csv_not_mapped.writerow(['CTD MESH/OMIM','type ','CTD names'])
     for identifier_ctd in list_not_mapped_to_mondo:
         ctd_disease = dict_CTD_disease[identifier_ctd]
         idType = ctd_disease.idType
         name = ctd_disease.name
-        file_not_map.write(identifier_ctd + '\t' + idType + '\t' + name + '\n')
+        csv_not_mapped.writerow([identifier_ctd , idType , name])
+
+
+# path to directory
+path_of_directory = ''
 
 
 def main():
+    global path_of_directory
+    if len(sys.argv) > 1:
+        path_of_directory = sys.argv[1]
+    else:
+        sys.exit('need a path')
+
     print (datetime.datetime.utcnow())
     print('Generate connection with neo4j and mysql')
 
@@ -679,7 +711,7 @@ def main():
     print (datetime.datetime.utcnow())
     print('Map ctd disease mesh or Omim to Disease ')
 
-    map_disease_with_mesh_omim_to_monarch_disease_ontology()
+    map_disease_with_mesh_omim_to_monarch()
 
     print(
         '###########################################################################################################################')

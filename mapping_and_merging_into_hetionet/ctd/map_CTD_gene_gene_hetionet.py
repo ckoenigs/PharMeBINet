@@ -5,7 +5,7 @@ Created on Thu Apr 17 12:41:20 2018
 @author: ckoenigs
 """
 
-from py2neo import Graph, authenticate
+from py2neo import Graph#, authenticate
 import datetime
 import csv, sys
 
@@ -16,12 +16,12 @@ create connection to neo4j and mysql
 
 def create_connection_with_neo4j_mysql():
     # create connection with neo4j
-    authenticate("localhost:7474", "neo4j", "test")
+    # authenticate("localhost:7474", "neo4j", "test")
     global g
-    g = Graph("http://localhost:7474/db/data/")
+    g = Graph("http://localhost:7474/db/data/", auth=("neo4j", "test"))
 
 
-# dictionary with hetionet genes with identifier as key and value the name
+# dictionary with hetionet genes with identifier as key and value node as dictionary
 dict_genes_hetionet = {}
 
 '''
@@ -30,11 +30,12 @@ load in all genes from hetionet in a dictionary
 
 
 def load_hetionet_genes_in():
-    query = '''MATCH (n:Gene) RETURN n.identifier,n.name'''
+    query = '''MATCH (n:Gene) RETURN n'''
     results = g.run(query)
 
-    for identifier, name, in results:
-        dict_genes_hetionet[identifier] = name
+    for node, in results:
+        identifier=node['identifier']
+        dict_genes_hetionet[identifier] = dict(node)
 
     print('number of gene nodes in hetionet:' + str(len(dict_genes_hetionet)))
 
@@ -46,87 +47,61 @@ dict_ctd_gene_not_in_hetionet = {}
 dict_ctd_gene_in_hetionet = {}
 
 '''
+check if gene id is in hetionet
+check if name is equal
+combine hetionet xrefs with pharmGKB, bioGRID and UniProt Ids
+last step write information into file
+and return found gene in hetionet True or false
+'''
+def search_for_id_and_write_into_file(gene_id,gene_node):
+    if gene_id in dict_genes_hetionet:
+        gene_name = gene_node['name']
+        hetionet_node = dict_genes_hetionet[gene_id]
+        if gene_name != dict_genes_hetionet[gene_id]['name']:
+            print(gene_id)
+            print('not the same name')
+
+        # gather all xrefs information and add to dictionary
+        pharmGKBIDs = gene_node['pharmGKBIDs'] if 'pharmGKBIDs' in gene_node else []
+        pharmGKBIDs = ['pharmGKB:'+id for id in pharmGKBIDs]
+        bioGRIDIDs = gene_node['bioGRIDIDs'] if 'bioGRIDIDs' in gene_node else []
+        bioGRIDIDs = ['bioGRID:'+id for id in bioGRIDIDs]
+        # uniProtIDs = gene_node['uniProtIDs'] if 'uniProtIDs' in gene_node else []
+        xrefs = set(pharmGKBIDs).union(hetionet_node['xrefs']) if 'xrefs' in hetionet_node else set(pharmGKBIDs)
+        xrefs = xrefs.union(bioGRIDIDs)
+        # xrefs = xrefs.union(uniProtIDs)
+        xrefs = '|'.join(xrefs)
+        writer.writerow([gene_id, gene_id, xrefs])
+        return True
+    else:
+        return False
+'''
 load all ctd genes and check if they are in hetionet or not
 '''
 
 
 def load_ctd_genes_in():
     # take only human genes
-    query = '''MATCH (n:CTDgene) Where not ()-[:associates_CG{organism_id:'9606'}]->(n)  RETURN n'''
+    # query = '''MATCH (n:CTDgene) Where ()-[:associates_CG{organism_id:'9606'}]->(n)  RETURN n'''
+    #because ncbi only the human genes are in hetionet it is ok to take all ctd genes
+    query='''MATCH (n:CTDgene) RETURN n'''
     results = g.run(query)
 
     counter = 0
     for gene_node, in results:
         gene_id = int(gene_node['gene_id'])
-        if gene_id in dict_genes_hetionet:
-            gene_name = gene_node['name']
-            altGeneIDs = gene_node['altGeneIDs'] if 'altGeneIDs' in gene_node else ''
-            if type(altGeneIDs) == list:
-                altGeneIDs = '|'.join(altGeneIDs)
-            pharmGKBIDs = gene_node['pharmGKBIDs'] if 'pharmGKBIDs' in gene_node else ''
-            if type(pharmGKBIDs) == list:
-                pharmGKBIDs = '|'.join(pharmGKBIDs)
-            bioGRIDIDs = gene_node['bioGRIDIDs'] if 'bioGRIDIDs' in gene_node else ''
-            if type(bioGRIDIDs) == list:
-                bioGRIDIDs = '|'.join(bioGRIDIDs)
-            geneSymbol = gene_node['geneSymbol'] if 'geneSymbol' in gene_node else ''
-            if type(geneSymbol) == list:
-                geneSymbol = '|'.join(geneSymbol)
-            synonyms = gene_node['synonyms'] if 'synonyms' in gene_node else ''
-            if type(synonyms) == list:
-                synonyms = '|'.join(synonyms)
-            uniProtIDs = gene_node['uniProtIDs'] if 'uniProtIDs' in gene_node else ''
-            if type(uniProtIDs) == list:
-                uniProtIDs = '|'.join(uniProtIDs)
-            counter += 1
-            dict_ctd_gene_in_hetionet[gene_id] = [gene_name, altGeneIDs, pharmGKBIDs, bioGRIDIDs, geneSymbol,
-                                                  synonyms, uniProtIDs]
-
-    print('number of ctds which are already in hetionet, but has no relationship to ctd chemicals with organism: '+str(counter))
-
-    query = '''MATCH (n:CTDgene) Where ()-[:associates_CG{organism_id:'9606'}]->(n)  RETURN n'''
-    results = g.run(query)
-
-    for gene_node, in results:
-        gene_id = int(gene_node['gene_id'])
-        gene_name = gene_node['name']
-        altGeneIDs = gene_node['altGeneIDs'] if 'altGeneIDs' in gene_node else ''
-        if type(altGeneIDs)==list:
-            altGeneIDs= '|'.join(altGeneIDs)
-        pharmGKBIDs = gene_node['pharmGKBIDs'] if 'pharmGKBIDs' in gene_node else ''
-        if type(pharmGKBIDs)==list:
-            pharmGKBIDs= '|'.join(pharmGKBIDs)
-        bioGRIDIDs = gene_node['bioGRIDIDs'] if 'bioGRIDIDs' in gene_node else ''
-        if type(bioGRIDIDs)==list:
-            bioGRIDIDs= '|'.join(bioGRIDIDs)
-        geneSymbol = gene_node['geneSymbol'] if 'geneSymbol' in gene_node else ''
-        if type(geneSymbol)==list:
-            geneSymbol= '|'.join(geneSymbol)
-        synonyms = gene_node['synonyms'] if 'synonyms' in gene_node else ''
-        if type(synonyms)==list:
-            synonyms= '|'.join(synonyms)
-        uniProtIDs = gene_node['uniProtIDs'] if 'uniProtIDs' in gene_node else ''
-        if type(uniProtIDs)==list:
-            uniProtIDs= '|'.join(uniProtIDs)
-
-        if gene_id in dict_genes_hetionet:
-            if gene_name == dict_genes_hetionet[gene_id]:
-                dict_ctd_gene_in_hetionet[gene_id] = [gene_name, altGeneIDs, pharmGKBIDs, bioGRIDIDs, geneSymbol,
-                                                      synonyms, uniProtIDs]
-            else:
-                # print('same id but different names')
-                # print(gene_name)
-                # print(dict_genes_hetionet[gene_id])
-                dict_ctd_gene_in_hetionet[gene_id] = [gene_name, altGeneIDs, pharmGKBIDs, bioGRIDIDs, geneSymbol,
-                                                      synonyms, uniProtIDs]
+        altGeneIDs = gene_node['altGeneIDs'] if 'altGeneIDs' in gene_node else []
+        if not search_for_id_and_write_into_file(gene_id,gene_node):
+            for alternative_id in altGeneIDs:
+                if search_for_id_and_write_into_file(alternative_id,gene_node):
+                    print(gene_id)
+                    print(alternative_id)
+                    print('alternative is human')
         else:
-            dict_ctd_gene_not_in_hetionet[gene_id] = [gene_name, altGeneIDs, pharmGKBIDs, bioGRIDIDs, geneSymbol,
-                                                      synonyms, uniProtIDs]
+            counter+=1
 
+    print('number of ctd genes which are also in hetionet: '+str(counter))
 
-
-    print('number of existing nodes:' + str(len(dict_ctd_gene_in_hetionet)))
-    print('number of not existing nodes:' + str(len(dict_ctd_gene_not_in_hetionet)))
 
 
 '''
@@ -135,49 +110,46 @@ Generate cypher and csv for generating the new nodes and the relationships
 
 
 def generate_files():
-    # add the gene which are not in hetionet in a csv file
-    with open('gene/new_genes.csv', 'wb') as csvfile:
-        writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-        writer.writerow(
-            ['GeneID', 'GeneName', 'altGeneIDs', 'pharmGKBIDs', 'bioGRIDIDs', 'geneSymbol', 'synonyms', 'uniProtIDs'])
-        # add the go nodes to cypher file
-        for gene_id, [name, altGeneIDs, pharmGKBIDs, bioGRIDIDs, geneSymbol, synonyms,
-                      uniProtIDs] in dict_ctd_gene_not_in_hetionet.items():
-            writer.writerow([gene_id, name, altGeneIDs, pharmGKBIDs, bioGRIDIDs, geneSymbol, synonyms, uniProtIDs])
-
+    #generate cyoher file
     cypher_file = open('gene/cypher.cypher', 'w')
-    cypher_file.write('begin\n')
-    cypher_file.write('Match (c:Gene) Where not exists(c.hetionet) Set c.hetionet="yes", c.resource=["Hetionet"];\n')
-    cypher_file.write('commit\n')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/gene/new_genes.csv" As line Create (c:Gene{ identifier:toInteger(line.GeneID), name:line.GeneName, altGeneIDs:split(line.altGeneIDs,'|'),pharmGKBIDs:split(line.pharmGKBIDs,'|'),bioGRIDIDs:split(line.bioGRIDIDs,'|'),geneSymbol:split(line.geneSymbol,'|'),synonyms:split(line.synonyms,'|'),uniProtIDs:split(line.uniProtIDs,'|') , url_ctd:" http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID ,url: "http://identifiers.org/ncbigene/"+line.GeneID, source:"CTD" ,description:"", chromosome:"", license:"© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", hetionet:"no", ctd:"yes", resource:["CTD"]});\n'''
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/gene/mapping.csv" As line Match (c:Gene{ identifier:toInteger(line.GeneIDHetionet)}), (n:CTDgene{gene_id:line.GeneIDCTD}) Create (c)-[:equal_to_CTD_gene]->(n) Set c.ctd="yes", c.resource=c.resource+"CTD", c.xrefs=split(line.xrefs,'|'), c.url_ctd=" http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID;\n'''
     cypher_file.write(query)
 
-    with open('gene/mapping.csv', 'wb') as csvfile:
-        writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-        writer.writerow(['GeneIDCTD', 'GeneIDHetionet','altGeneIDs', 'pharmGKBIDs', 'bioGRIDIDs', 'geneSymbol', 'synonyms', 'uniProtIDs'])
-        # add the go nodes to cypher file
+    global writer
+    csvfile= open('gene/mapping.csv', 'w')
+    writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+    writer.writerow(['GeneIDCTD', 'GeneIDHetionet','xrefs'])
 
-        for gene_id, [name, altGeneIDs, pharmGKBIDs, bioGRIDIDs, geneSymbol, synonyms,
-                      uniProtIDs] in dict_ctd_gene_in_hetionet.items():
-            writer.writerow([gene_id, gene_id, altGeneIDs, pharmGKBIDs, bioGRIDIDs, geneSymbol, synonyms, uniProtIDs])
+    # add query to update disease nodes with do='no'
+    cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')
+    query = ''':begin\n MATCH (n:Gene) Where not exists(n.ctd) Set n.ctd="no";\n :commit\n '''
+    cypher_general.write(query)
+    cypher_general.close()
 
-        for gene_id, [name, altGeneIDs, pharmGKBIDs, bioGRIDIDs, geneSymbol, synonyms,
-                      uniProtIDs] in dict_ctd_gene_not_in_hetionet.items():
-            writer.writerow([gene_id, gene_id, altGeneIDs, pharmGKBIDs, bioGRIDIDs, geneSymbol, synonyms, uniProtIDs])
-
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/gene/mapping.csv" As line Match (c:Gene{ identifier:toInteger(line.GeneIDHetionet)}), (n:CTDgene{gene_id:line.GeneIDCTD}) Create (c)-[:equal_to_CTD_gene]->(n) With c,n, line Where c.hetionet="yes" Set c.ctd="yes", c.resource=c.resource+"CTD", c.altGeneIDs=split(line.altGeneIDs,'|'),c.pharmGKBIDs=split(line.pharmGKBIDs,'|'),c.bioGRIDIDs=split(line.bioGRIDIDs,'|'),c.geneSymbol=split(line.geneSymbol,'|'),c.synonyms=split(line.synonyms,'|'),c.uniProtIDs=split(line.uniProtIDs,'|') , c.url_ctd=" http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID;\n'''
-    cypher_file.write(query)
-    cypher_file.write('begin\n')
-    cypher_file.write('MATCH (n:Gene) Where not exists(n.ctd) Set n.ctd="no";\n')
-    cypher_file.write('commit')
-    cypher_file.close()
+# path to directory
+path_of_directory = ''
 
 
 def main():
+    global path_of_directory
+    if len(sys.argv) > 1:
+        print(sys.argv)
+        path_of_directory = sys.argv[1]
+    else:
+        sys.exit('need a path')
+
     print (datetime.datetime.utcnow())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j_mysql()
+
+    print(
+        '###########################################################################################################################')
+
+    print (datetime.datetime.utcnow())
+    print('Map generate csv and cypher file ')
+
+    generate_files()
 
     print(
         '###########################################################################################################################')
@@ -194,14 +166,6 @@ def main():
     print('Load all ctd genes from neo4j into a dictionary')
 
     load_ctd_genes_in()
-
-    print(
-        '###########################################################################################################################')
-
-    print (datetime.datetime.utcnow())
-    print('Map generate csv and cypher file ')
-
-    generate_files()
 
     print(
         '###########################################################################################################################')

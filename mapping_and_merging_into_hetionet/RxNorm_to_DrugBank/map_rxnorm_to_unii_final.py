@@ -6,9 +6,10 @@ Created on Wed Aug 23 10:00:16 2017
 """
 
 import MySQLdb as mdb
+import csv
 
 # generate connection to mysql
-con = mdb.connect('localhost', 'root', 'Za8p7Tf', 'RxNorm')
+con = mdb.connect('localhost', 'ckoenigs', 'Za8p7Tf$', 'RxNorm')
 
 # find all
 cur = con.cursor()
@@ -18,6 +19,7 @@ cur.execute(query)
 
 # write all information into a file
 g = open('results/map_rxnorm_to_UNII.tsv', 'w')
-g.write('rxcui \t cuii\n')
+csv_writer=csv.writer(g,delimiter='\t')
+csv_writer.writerow(['rxcui','unii'])
 for (rxcui, code) in cur:
-    g.write(rxcui + '\t' + code + '\n')
+    csv_writer.writerow([rxcui , code ])

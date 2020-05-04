@@ -1,4 +1,4 @@
 The program integrate_mondo_into_neo4j.py integrate MONDO (https://github.com/monarch-initiative/monarch-disease-ontology) into Neo4j.
 The obo file of MONDO was downloaded from http://www.obofoundry.org/ontology/mondo.html.
 
-
+./integrate_mondo_and_add_level.sh /home/cassandra/Dokumente/neo4j-community-3.2.9/bin /home/cassandra/Dokumente/neo4j-community-3.5.8/data/databases/restart_neo4j.sh

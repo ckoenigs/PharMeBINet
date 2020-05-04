@@ -5,9 +5,9 @@ Created on Fri Sep 15 11:41:20 2017
 @author: ckoenigs
 """
 
-from py2neo import Graph, authenticate
+from py2neo import Graph#, authenticate
 import datetime
-import csv
+import csv, sys
 
 '''
 create connection to neo4j 
@@ -16,9 +16,9 @@ create connection to neo4j
 
 def create_connection_with_neo4j_mysql():
     # create connection with neo4j
-    authenticate("localhost:7474", "neo4j", "test")
+    # authenticate("localhost:7474", )
     global g
-    g = Graph("http://localhost:7474/db/data/")
+    g = Graph("http://localhost:7474/db/data/", auth=("neo4j", "test"))
 
 
 # dictionary with all pairs and properties as value
@@ -68,7 +68,7 @@ def generate_csv_and_cypher_file():
     # generate cypher file
     cypherfile = open('disease_pathway/cypher.cypher', 'w')
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/disease_pathway/relationships.csv" As line Match (n:Pathway{identifier:line.PathwayID}), (b:Disease{identifier:line.DiseaseID}) Merge (b)-[r:ASSOCIATES_DaP]->(n) On Create Set r.hetionet='no', r.inferenceGeneSymbol=split(line.inferenceGeneSymbol,'|') , r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=disease&acc="+line.DiseaseID , r.source="CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased='false' On Match SET r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=disease&acc="+line.DiseaseID, r.inferenceGeneSymbol=split(line.inferenceGeneSymbol,'|') ;\n '''
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/disease_pathway/relationships.csv" As line Match (n:Pathway{identifier:line.PathwayID}), (b:Disease{identifier:line.DiseaseID}) Merge (b)-[r:ASSOCIATES_DaP]->(n) On Create Set r.hetionet='no', r.inferenceGeneSymbol=split(line.inferenceGeneSymbol,'|') , r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=disease&acc="+line.DiseaseID , r.source="CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased='false' On Match SET r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=disease&acc="+line.DiseaseID, r.inferenceGeneSymbol=split(line.inferenceGeneSymbol,'|') ;\n '''
     cypherfile.write(query)
 
     csvfile = open('disease_pathway/relationships.csv', 'wb')
@@ -81,7 +81,17 @@ def generate_csv_and_cypher_file():
         
 
 
+# path to directory
+path_of_directory = ''
+
+
 def main():
+    global path_of_directory
+    if len(sys.argv) > 1:
+        path_of_directory = sys.argv[1]
+    else:
+        sys.exit('need a path')
+
     print (datetime.datetime.utcnow())
     print('Generate connection with neo4j and mysql')
 

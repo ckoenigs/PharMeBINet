@@ -5,15 +5,12 @@ Created on Wed Aug 30 11:55:50 2017
 @author: ckoenigs
 """
 
-from py2neo import Graph, authenticate
+from py2neo import Graph#, authenticate
 import datetime
 import sys, time, csv
 from collections import defaultdict
 
 sys.path.append('../drugbank/')
-
-# from is to combine two nodes and delete the old one
-import add_information_from_a_not_existing_node_to_existing_node
 
 
 '''
@@ -22,9 +19,9 @@ create connection to neo4j
 
 
 def create_connection_with_neo4j():
-    authenticate("localhost:7474", "neo4j", "test")
+    # authenticate("localhost:7474", )
     global g
-    g = Graph("http://localhost:7474/db/data/")
+    g = Graph("http://localhost:7474/db/data/", auth=("neo4j", "test"))
 
 #dictionary with all chemicals which are not mapped
 dict_chemical_which_are_not_mapped={}

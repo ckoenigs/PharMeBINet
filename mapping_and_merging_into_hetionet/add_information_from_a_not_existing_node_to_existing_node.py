@@ -5,7 +5,7 @@ Created on Fri Jan 26 13:31:43 2018
 @author: ckoenigs
 """
 
-from py2neo import Graph, authenticate
+from py2neo import Graph#, authenticate
 import MySQLdb as mdb
 import sys
 import datetime
@@ -22,19 +22,19 @@ dict_resources = {
     'hetionet': 'hetionet',
     'NDF-RT': 'ndf_rt',
     'SIDER': 'sider',
-    'MonDO':'mondo'
+    'MonDO': 'mondo'
 }
 
 
 # connect with the neo4j database AND MYSQL
 def database_connection():
     # create connection with mysql database
-    global con
-    con = mdb.connect('localhost', 'root', 'Za8p7Tf', 'umls')
+    # global con
+    # con = mdb.connect('localhost', 'root', 'Za8p7Tf', 'umls')
 
-    authenticate("localhost:7474", "neo4j", "test")
+    # authenticate("localhost:7474", )
     global g
-    g = Graph("http://localhost:7474/db/data/")
+    g = Graph("http://localhost:7474/db/data/", auth=("neo4j", "test"))
 
 
 # dictionary with label as key and value is the constraint property
@@ -48,10 +48,10 @@ Get for all label the unique property, after a : is the label and after a . is t
 def generate_dictionary_for_labels():
     query = '''CALL db.constraints'''
     results = g.run(query)
-    for constraint_string, in results:
+    for name, constraint_string, in results:
         # print(constraint_string)
         label = constraint_string.split(':')[1].split(' )')[0]
-        unique_property = constraint_string.split('.')[1].split(' ')[0]
+        unique_property = constraint_string.split('.')[1].split(' ')[0].rsplit(')',1)[0]
         dict_label_to_unique_prop[label] = unique_property
     # print(dict_label_to_unique_prop)
 
@@ -246,10 +246,10 @@ def add_this_information_to_the_merged_node(identifier, label, delete_node_id):
 
             if type(node[dict_label_to_unique_prop[node_labels[0]]]) == int:
                 query = ''' Match (a:%s{identifier:"%s"}), (b:%s{%s:%s})
-                                Create (a)<-[r:%s {'''
+                                Create (a)<-[r:%s { '''
             else:
                 query = ''' Match (a:%s{identifier:"%s"}), (b:%s{%s:"%s"})
-                             Create (a)<-[r:%s {'''
+                             Create (a)<-[r:%s { '''
 
             query = query % (label, identifier, node_labels[0], dict_label_to_unique_prop[node_labels[0]],
                              node[dict_label_to_unique_prop[node_labels[0]]], rela_type)
@@ -332,63 +332,14 @@ def merge_information_from_one_node_to_another(delete_node_id, merged_node_id, n
     print(datetime.datetime.utcnow())
     print('delete merged node')
 
-    delete_merged_node(delete_node_id, node_label)
+    #delete_merged_node(delete_node_id, node_label)
 
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
 
-    con.close()
 #
 def main():
-    # label='Compound'
-#     # alternativ ids
-#     # old_id = 'DB12546'
-#     # into = 'DB09498'
-#     # old_id='DB01398'
-#     # into='DB00936'
-#     # old_id = 'DB00667'
-#     # into = 'DB05381'
-#
-#     # not mapped
-#     old_id='DB08866'
-#     into='DB09123'
-#     old_id = 'DB13390'
-#     into = 'DB06723'
-#     old_id = 'DB09162'
-#     into = 'DB13949'
-
-#      Version drugbank 07-18
-#     old_id = 'DB05872'
-#     into='DB08902'
-#     old_id = 'DB11728'
-#     into='DB00569'
-#
-    #Version drugbank 12 - 18
-    # old_id = 'DB06667'
-    # into='DB08876'
-    # old_id = 'DB05031'
-    # into='DB08892'
-    # old_id = 'DB01904'
-    # into='DB11195'
-    # Match (n:Compound{identifier:'DB11195'}),(b:AeolusDrug{concept_code:'11377'}) Create (n)-[:equal_to_Aeolus_drug]->(b)
-    # old_id = 'DB11163'
-    # into='DB03651'
-    # old_id = 'DB11163'
-    # into='DB03651'
-    # old_id = 'DB05510'
-    # into='DB04864'
-    # old_id = 'DB04290'
-    # into='DB12153'
-    # old_id = 'DB00021'
-    # into='DB09532'
-    # Match (n:Compound{identifier:'DB09532'}),(b:AeolusDrug{concept_code:'9627'}) Create (n)-[:equal_to_Aeolus_drug]->(b)
-    # old_id = 'DB10072'
-    # into='DB13890'
-    # old_id = 'DB05341'
-    # into='DB06404'
-    # old_id = 'DB13450'
-    # into='DB00565'
 
     if len(sys.argv)<3:
         return
@@ -453,7 +404,6 @@ def main():
 
     print(datetime.datetime.utcnow())
 
-    con.close()
 
 
 if __name__ == "__main__":

@@ -4,7 +4,7 @@ Created on Mon Mai 14 07:23:43 2018
 @author: ckoenigs
 """
 
-from py2neo import Graph, authenticate
+from py2neo import Graph#, authenticate
 import datetime
 import string
 import sys
@@ -16,9 +16,9 @@ sys.setdefaultencoding("utf-8")
 
 # connect with the neo4j database
 def database_connection():
-    authenticate("localhost:7474", "neo4j", "test")
+    # authenticate("localhost:7474", "neo4j", "test")
     global g
-    g = Graph("http://localhost:7474/db/data/")
+    g = Graph("http://localhost:7474/db/data/",auth=("neo4j", "test"))
 
 '''
 add new levels and also check if the nodes has other parent than the add onw

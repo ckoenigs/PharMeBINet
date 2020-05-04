@@ -4,7 +4,7 @@ Created on Fri Aug 18 08:40:47 2017
 
 @author: ckoenigs
 """
-from py2neo import Graph, authenticate
+from py2neo import Graph#, authenticate
 import datetime
 import MySQLdb as mdb
 import sys, csv
@@ -71,12 +71,13 @@ create connection to neo4j and mysql
 
 def create_connection_with_neo4j_mysql():
     # authenticate("localhost:7474", "neo4j", "test")
-    # global g
-    # g = Graph("http://localhost:7474/db/data/")
-
-    authenticate("bimi:7475", "ckoenigs", "test")
     global g
-    g = Graph("http://bimi:7475/db/data/", bolt=False)
+    # g = Graph("http://localhost:7474/db/data/")
+    g = Graph("http://bimi:7475/db/data/", bolt=False, auth=("neo4j", "test"))
+
+    # authenticate("bimi:7475", "ckoenigs", "test")
+    # global g
+    # g = Graph("http://bimi:7475/db/data/", bolt=False,auth=("ckoenigs", "test"))
 
     # create connection with mysql database
     global con
@@ -528,7 +529,7 @@ file_number = 1
 
 # cypher file for rela to integrate the information from csv file
 cypher_exra = open('cypher_map/test_cypher.cypher', 'w')
-query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/chemical_go/bp.csv" As line Match (c:Compound{identifier:"%s"})-[l:CAUSES_CcSE]-(r:SideEffect{identifier:"%s"}) Merge (c)-[l:CAUSES_CcSE]-(r) On Create Set license:"CC0 1.0",unbiased:"false",source:'AEOLUS',url:"", l.countA=line.countA, l.prr_95_percent_upper_confidence_limit=line.prr_95_percent_upper_confidence_limit, l.prr=line.prr, hetionet:'no', ctd:'no', aeolus:'yes', sider:'no', l.countB=line.countB, l.prr_95_percent_lower_confidence_limit=line.prr_95_percent_lower_confidence_limit, l.ror=line.ror, l.ror_95_percent_upper_confidence_limit=line.ror_95_percent_upper_confidence_limit, l.ror_95_percent_lower_confidence_limit=line.ror_95_percent_lower_confidence_limit, l.countC=line.countC, l.drug_outcome_pair_count=line.drug_outcome_pair_count, l.countD=line.countD,  l.how_often_appears=line.how_often_appears, l.resource=split(line.resource,'|'), l.ror_min=line.ror_min, l.ror_max=line.ror_max, l.prr_min=line.prr_min, l.prr_max=line.prr_max, upperFrequency:"", placebo:"", frequency:"", lowerFrequency:"",  placeboFrequency: "", placeboLowerFrequency: "", placeboUpperFrequency: ""
+query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Documents/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/chemical_go/bp.csv" As line Match (c:Compound{identifier:"%s"})-[l:CAUSES_CcSE]-(r:SideEffect{identifier:"%s"}) Merge (c)-[l:CAUSES_CcSE]-(r) On Create Set license:"CC0 1.0",unbiased:"false",source:'AEOLUS',url:"", l.countA=line.countA, l.prr_95_percent_upper_confidence_limit=line.prr_95_percent_upper_confidence_limit, l.prr=line.prr, hetionet:'no', ctd:'no', aeolus:'yes', sider:'no', l.countB=line.countB, l.prr_95_percent_lower_confidence_limit=line.prr_95_percent_lower_confidence_limit, l.ror=line.ror, l.ror_95_percent_upper_confidence_limit=line.ror_95_percent_upper_confidence_limit, l.ror_95_percent_lower_confidence_limit=line.ror_95_percent_lower_confidence_limit, l.countC=line.countC, l.drug_outcome_pair_count=line.drug_outcome_pair_count, l.countD=line.countD,  l.how_often_appears=line.how_often_appears, l.resource=split(line.resource,'|'), l.ror_min=line.ror_min, l.ror_max=line.ror_max, l.prr_min=line.prr_min, l.prr_max=line.prr_max, upperFrequency:"", placebo:"", frequency:"", lowerFrequency:"",  placeboFrequency: "", placeboLowerFrequency: "", placeboUpperFrequency: ""
             On Match Set l.countA=line.countA, l.prr_95_percent_upper_confidence_limit=line.prr_95_percent_upper_confidence_limit, l.prr=line.prr, l.countB=line.countB, l.prr_95_percent_lower_confidence_limit=line.prr_95_percent_lower_confidence_limit, l.ror=line.ror, l.ror_95_percent_upper_confidence_limit=line.ror_95_percent_upper_confidence_limit, l.ror_95_percent_lower_confidence_limit=line.ror_95_percent_lower_confidence_limit, l.countC=line.countC, l.drug_outcome_pair_count=line.drug_outcome_pair_count, l.countD=line.countD, l.hetionet='yes', l.aeolus='yes', l.how_often_appears=line.how_often_appears, l.resource=split(line.resource,'|'), l.ror_min=line.ror_min, l.ror_max=line.ror_max, l.prr_min=line.prr_min, l.prr_max=line.prr_max; \n'''
 cypher_exra.write(query)
 
@@ -573,7 +574,7 @@ def integrate_connection_from_aeolus_in_hetionet():
     global file_number
 
     csv_cypher=open('cypher_map/map_connection_of_aeolus_in_hetionet.cypher', 'w')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/aeolus/cypher_map/map_connection_of_aeolus_in_hetionet.cypher" As line FIELDTERMINATOR '\\t' Match  (c:Compound{identifier:line.drugbank_id}),(se:SideEffect{identifier:line.cui})  Merge (c)-[l:CAUSES_CcSE]->(se) On Create Set l.license="CC0 1.0", l.unbiased="false", l.source='AEOLUS', l.url="", l.countA=line.countA , l.prr_95_percent_upper_confidence_limit=line.prr_95_percent_upper_confidence_limit, l.prr=line.prr, l.countB=line.countB, l.prr_95_percent_lower_confidence_limit=line.prr_95_percent_lower_confidence_limit , l.ror=line.ror, l.ror_95_percent_upper_confidence_limit=line.ror_95_percent_upper_confidence_limit, l.ror_95_percent_lower_confidence_limit=line.ror_95_percent_lower_confidence_limit, l.countC=line.countC, l.drug_outcome_pair_count=line.drug_outcome_pair_count , l.countD=line.countD, l.ror_min=line.ror_min , l.ror_max=line.ror_max, l.prr_min=line.prr_min, l.prr_max=line.prr_max, l.hetionet='no', l.ctd='no', l.aeolus='yes', l.sider='no',  l.how_often_appears="1", l.resource=['AEOLUS'], l.upperFrequency="", l.placebo="", l.frequency="", l.lowerFrequency="",  l.placeboFrequency= "", l.placeboLowerFrequency= "", l.placeboUpperFrequency= "" On Match SET l.countA=line.countA, l.prr_95_percent_upper_confidence_limit=line.prr_95_percent_upper_confidence_limit, l.prr=line.prr, l.countB=line.countB, l.prr_95_percent_lower_confidence_limit=line.prr_95_percent_lower_confidence_limit, l.ror=line.ror, l.ror_95_percent_upper_confidence_limit=line.ror_95_percent_upper_confidence_limit, l.ror_95_percent_lower_confidence_limit=line.ror_95_percent_lower_confidence_limit, l.countC=line.countC, l.drug_outcome_pair_count=line.drug_outcome_pair_count, l.countD=line.countD,  l.aeolus='yes',  l.ror_min=line.ror_min, l.ror_max=line.ror_max, l.prr_min=line.prr_min, l.prr_max=line.prr_max;\n ''' # l.how_often_appears=line.how_often_appears, l.resource=split(line.resource,'|'),
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/aeolus/cypher_map/map_connection_of_aeolus_in_hetionet.cypher" As line FIELDTERMINATOR '\\t' Match  (c:Compound{identifier:line.drugbank_id}),(se:SideEffect{identifier:line.cui})  Merge (c)-[l:CAUSES_CcSE]->(se) On Create Set l.license="CC0 1.0", l.unbiased="false", l.source='AEOLUS', l.url="", l.countA=line.countA , l.prr_95_percent_upper_confidence_limit=line.prr_95_percent_upper_confidence_limit, l.prr=line.prr, l.countB=line.countB, l.prr_95_percent_lower_confidence_limit=line.prr_95_percent_lower_confidence_limit , l.ror=line.ror, l.ror_95_percent_upper_confidence_limit=line.ror_95_percent_upper_confidence_limit, l.ror_95_percent_lower_confidence_limit=line.ror_95_percent_lower_confidence_limit, l.countC=line.countC, l.drug_outcome_pair_count=line.drug_outcome_pair_count , l.countD=line.countD, l.ror_min=line.ror_min , l.ror_max=line.ror_max, l.prr_min=line.prr_min, l.prr_max=line.prr_max, l.hetionet='no', l.ctd='no', l.aeolus='yes', l.sider='no',  l.how_often_appears="1", l.resource=['AEOLUS'], l.upperFrequency="", l.placebo="", l.frequency="", l.lowerFrequency="",  l.placeboFrequency= "", l.placeboLowerFrequency= "", l.placeboUpperFrequency= "" On Match SET l.countA=line.countA, l.prr_95_percent_upper_confidence_limit=line.prr_95_percent_upper_confidence_limit, l.prr=line.prr, l.countB=line.countB, l.prr_95_percent_lower_confidence_limit=line.prr_95_percent_lower_confidence_limit, l.ror=line.ror, l.ror_95_percent_upper_confidence_limit=line.ror_95_percent_upper_confidence_limit, l.ror_95_percent_lower_confidence_limit=line.ror_95_percent_lower_confidence_limit, l.countC=line.countC, l.drug_outcome_pair_count=line.drug_outcome_pair_count, l.countD=line.countD,  l.aeolus='yes',  l.ror_min=line.ror_min, l.ror_max=line.ror_max, l.prr_min=line.prr_min, l.prr_max=line.prr_max;\n ''' # l.how_often_appears=line.how_often_appears, l.resource=split(line.resource,'|'),
     csv_cypher.write(query)
     csv_cypher.close()
 
@@ -681,7 +682,17 @@ def integrate_connection_from_aeolus_in_hetionet():
     print('number of relationships:'+str(counter_connection))
 
 
+# path to directory
+path_of_directory = ''
+
+
 def main():
+    global path_of_directory
+    if len(sys.argv) > 1:
+        path_of_directory = sys.argv[1]
+    else:
+        sys.exit('need a path')
+
     print (datetime.datetime.utcnow())
     print('Generate connection with neo4j and mysql')
 

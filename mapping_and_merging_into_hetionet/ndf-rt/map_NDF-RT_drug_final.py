@@ -5,16 +5,12 @@ Created on Tue Aug 22 15:15:37 2017
 @author: ckoenigs
 """
 
-from py2neo import Graph, authenticate
+from py2neo import Graph
 import datetime
 import MySQLdb as mdb
 import sys
+from collections import  defaultdict
 
-# sys.path.append('../Aeolus/')
-sys.path.append('../aeolus/')
-
-# from synonyms_cuis import search_for_synonyms_cuis
-import get_drugbank_information
 
 import xml.dom.minidom as dom
 
@@ -74,15 +70,16 @@ dict_drug_NDF_RT_rxcui_to_code = {}
 # dictionary with code as key and value is class DrugNDF_RT
 dict_drug_NDF_RT_without_rxcui = {}
 
+
+
 '''
 create connection to neo4j and mysql
 '''
 
 
 def create_connection_with_neo4j_mysql():
-    authenticate("localhost:7474", "neo4j", "test")
     global g
-    g = Graph("http://localhost:7474/db/data/")
+    g = Graph("http://localhost:7474/db/data/",auth=("neo4j", "test"))
 
     # create connection with mysql database
     global con
@@ -99,13 +96,15 @@ load in all compound from hetionet in a dictionary
 
 
 def load_hetionet_drug_in():
-    query = '''MATCH (n:Compound) RETURN n.identifier,n.name, n.resource'''
+    query = '''MATCH (n:Compound) RETURN n.identifier,n.name, n.resource, n.xrefs'''
     results = g.run(query)
 
-    for identifier, name, resource, in results:
+    for identifier, name, resource, xrefs, in results:
         resource = resource if resource != None else []
-        drug = DrugHetionet(identifier, name, resource)
+        drug = DrugHetionet(identifier, name, resource, xrefs)
         dict_drug_hetionet[identifier] = drug
+
+
     print('length of compound in hetionet:' + str(len(dict_drug_hetionet)))
 
 
@@ -152,7 +151,7 @@ def load_ndf_rt_drug_in():
         elif len(rxnorm_cuis) == 0:
             cur = conRxNorm.cursor()
             # search for rxcui with name
-            query = ("Select Distinct RXCUI From RXNCONSO Where lower(STR) = '%s' ;")
+            query = ("Select Distinct RXCUI From RXNCONSO Where STR = '%s' ;")
             query = query % (name.lower())
             #        print(query)
             rows_counter = cur.execute(query)
@@ -239,7 +238,7 @@ properties:
 
 
 def map_use_dhimmel_rxnorm_drugbank_map_unii_inchikey():
-    f = open('../RxNorm_to_DrugBank/results/map_rxnorm_to_drugbank_with_use_of_unii_and_inchikey_4.tsv', 'r')
+    f = open('../RxNorm_to_DrugBank/results/map_rxnorm_to_drugbank_with_use_of_unii_and_inchikey.tsv', 'r')
     next(f)
     number_of_mapped = 0
     # list of all rxcuis which are mapped to drugbank id in this step
@@ -366,7 +365,7 @@ properties:
 
 
 def map_use_name_mapped_rxnorm_drugbank():
-    f = open('../RxNorm_to_DrugBank/results/name_map_drugbank_to_rxnorm_2.tsv', 'r')
+    f = open('../RxNorm_to_DrugBank/results/name_map_drugbank_to_rxnorm.tsv', 'r')
     next(f)
     # list of all rxcuis which are mapped to drugbank id in this step
     delete_list = []

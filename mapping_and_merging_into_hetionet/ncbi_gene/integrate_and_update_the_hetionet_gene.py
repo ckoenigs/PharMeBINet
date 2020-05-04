@@ -1,4 +1,4 @@
-from py2neo import Graph, authenticate
+from py2neo import Graph#, authenticate
 import datetime
 import sys, csv
 
@@ -9,9 +9,9 @@ create a connection with neo4j
 
 def create_connetion_with_neo4j():
     # set up authentication parameters and connection
-    authenticate("localhost:7474", "neo4j", "test")
+    # authenticate("localhost:7474", )
     global g
-    g = Graph("http://localhost:7474/db/data/")
+    g = Graph("http://localhost:7474/db/data/", auth=("neo4j", "test"))
 
 
 # dictionary with all gene ids to there name
@@ -75,7 +75,7 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
     writer.writeheader()
 
     cypher_file = open('cypher_merge.cypher', 'w')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/ncbi_gene/output_data/genes_merge.csv" As line Fieldterminator '\\t' Match (n:Gene_Ncbi {identifier:line.identifier}) Merge (g:Gene{identifier:toInteger(line.identifier) }) On Match Set '''
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ncbi_gene/output_data/genes_merge.csv" As line Fieldterminator '\\t' Match (n:Gene_Ncbi {identifier:line.identifier}) Merge (g:Gene{identifier:toInteger(line.identifier) }) On Match Set '''
 
     on_create_string = ''' On Create SET '''
     for head in header:
@@ -91,7 +91,7 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
             query += part
             on_create_string += part
 
-    query += 'g.ncbi="yes", g.resource=g.resource+"NCBI" ' + on_create_string + ''' g.ctd="no", g.hetionet="no", g.source="Entrez Gene", g.resource="NCBI", g.license="CC0 1.0", g.url="http://identifiers.org/ncbigene/"+line.identifier, g.ncbi='yes', g.resource=['NCBI'] Create (n)<-[:equal_to_ncbi_gene]-(g);\n'''
+    query += 'g.ncbi="yes", g.resource=g.resource+"NCBI" ' + on_create_string + '''  g.source="Entrez Gene", g.resource="NCBI", g.license="CC0 1.0", g.url="http://identifiers.org/ncbigene/"+line.identifier, g.ncbi='yes', g.resource=["NCBI"] Create (n)<-[:equal_to_ncbi_gene]-(g);\n'''
     cypher_file.write(query)
     query='''MATCH (a:Gene) Where not  (a)-[:equal_to_ncbi_gene]->() Detach Delete a;'''
     cypher_file.write(query)
@@ -109,6 +109,9 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
         # generate on list of gene symbols
         gene_symbol = set([])
 
+        #synonyms from other designations
+        set_of_synoynmys_from_designation=set()
+
         # remove the empty values '-' and combine the list of other designations and symbols, and symbol_from-Nomeclature_authority and symbol
         for property, value in node.items():
 
@@ -123,7 +126,7 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
                     node[property] = ''
 
             if property == 'Other_designations' and len(list_of_values) != 0:
-                node['Synonyms'].extend(value)
+                set_of_synoynmys_from_designation=set_of_synoynmys_from_designation.union(value)
             elif property == 'Symbol_from_nomenclature_authority' and value != '-':
                 gene_symbol.add(value)
             elif property == 'Symbol' and value != '-':
@@ -134,7 +137,15 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
         node['Symbol'] = list(gene_symbol)
         symbols_ncbi=[x.lower() for x in list(gene_symbol)]
         synonyms= node['Synonyms'] if 'Synonyms' in node else []
+        synonyms=list(set_of_synoynmys_from_designation.union(synonyms))
         synonyms =[x.lower() for x in synonyms]
+
+        if name  is None or name=='-':
+            print('has no name')
+            if node['description'] == '-' or  node['description']=='':
+                print('description is also empty')
+            node['Full_name_from_nomenclature_authority'] = node['description']
+            name=node['description']
 
 
         if int(gene_id) in dict_hetionet_gene_ids_to_name:
@@ -142,16 +153,10 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
             if 'name' in dict_hetionet_gene_ids_to_name[int(gene_id)]:
                 if gene_id=='26083':
                     print('ok')
-                name=name.lower()
                 hetionet_gene_name=dict_hetionet_gene_ids_to_name[int(gene_id)]['name'].lower()
                 description=node['description'].lower()
                 hetionet_gene_description=dict_hetionet_gene_ids_to_name[int(gene_id)]['description'].lower()
                 if not name == hetionet_gene_name:
-                    if name == '-':
-                        print('has no name')
-                        if node['description']=='-':
-                            print('description is also empty')
-                        node['Full_name_from_nomenclature_authority'] = node['description']
 
                     if description == hetionet_gene_name:
 
@@ -214,7 +219,7 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
         else:
             print('not in hetionet')
             print(gene_id)
-            if name == '-':
+            if name == '-' or name is None:
                 node['Full_name_from_nomenclature_authority'] = node['description']
 
             dict_for_insert_into_tsv = {}
@@ -232,8 +237,17 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
     print('counter of all genes already in hetionet:' + str(counter_all_in_hetionet))
     print('counter not the same name:' + str(counter_not_same_name))
 
+ # path to directory
+path_of_directory = ''
+
 
 def main():
+    global path_of_directory
+    if len(sys.argv) > 1:
+        path_of_directory = sys.argv[1]
+    else:
+        sys.exit('need a path')
+
     print(datetime.datetime.utcnow())
     print('create connection with neo4j')
 

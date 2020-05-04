@@ -5,13 +5,10 @@ Created on Mon Sep  4 10:55:05 2017
 @author: ckoenigs
 """
 
-from py2neo import Graph, authenticate
+from py2neo import Graph
 import datetime
 import MySQLdb as mdb
 import sys
-
-sys.path.append('../aeolus/')
-from synonyms_cuis import search_for_synonyms_cuis
 
 
 class Symptom:
@@ -48,13 +45,12 @@ create connection to neo4j and mysql
 
 
 def create_connection_with_neo4j_mysql():
-    authenticate("localhost:7474", "neo4j", "test")
     global g
-    g = Graph("http://localhost:7474/db/data/")
+    g = Graph("http://localhost:7474/db/data/", auth=("neo4j", "test"))
 
     # create connection with mysql database
     global con
-    con = mdb.connect('localhost', 'root', 'Za8p7Tf', 'umls')
+    con = mdb.connect('localhost', 'ckoenigs', 'Za8p7Tf$', 'umls')
 
 
 # dictionary of all symptoms from hetionet, with mesh_id/ umls cui as key and value is class Symptom
@@ -65,6 +61,21 @@ list_mesh_without_cui = []
 
 # dictionary with all side effects from hetionet with umls cui as key and class SideEffect as value
 dict_side_effects = {}
+
+
+'''
+function that load all side effects in a dictionary 
+'''
+
+
+def load_all_sideEffects_in_a_dict():
+    query = '''MATCH (n:SideEffect) RETURN n.name, n.identifier '''
+    results = g.run(query)
+    for name, cui, in results:
+        side_effect = SideEffect(cui, name)
+        dict_side_effects[cui] = side_effect
+
+    print('size of side effects in hetionet:' + str(len(dict_side_effects)))
 
 '''
 function that load all symptoms in a dictionary and check if it has a umls cui or not
@@ -95,20 +106,26 @@ def load_all_symptoms_in_a_dict():
                 list_cuis = []
                 same_name = False
                 # list of all umls cuis with the same name
-                list_cuis_with_same_name = []
+                list_cuis_with_same_name = set()
                 for (cui, lat, label,) in cur:
-                    label = label.lower().decode('utf-8')
+                    label = label.lower()
                     list_cuis.append(cui)
                     if label == name:
                         same_name = True
-                        list_cuis_with_same_name.append(cui)
+                        list_cuis_with_same_name.add(cui)
                 if same_name:
-                    cuis = list(set(list_cuis_with_same_name))
+                    cuis = list(list_cuis_with_same_name)
                     counter_with_name += 1
                 else:
-                    cuis = list(set(list_cuis))
+                    cuis = list(list_cuis)
                     counter_without_name += 1
-
+                for cui in cuis:
+                    list_cuis_mapped = set()
+                    if cui in dict_side_effects:
+                        list_cuis_mapped.add(cui)
+                    if len(list_cuis_mapped) > 0:
+                        dict_mesh_map_to_cui[identifier] = list_cuis_mapped
+                        dict_symptoms[identifier].set_how_mapped('map with all cuis of mesh id')
             else:
                 list_mesh_without_cui.append(identifier)
                 print(identifier)
@@ -125,73 +142,46 @@ def load_all_symptoms_in_a_dict():
     print('mapped only with mesh:' + str(counter_without_name))
 
 
-'''
-function that load all side effects in a dictionary 
-'''
-
-
-def load_all_sideEffects_in_a_dict():
-    query = '''MATCH (n:SideEffect) RETURN n.name, n.identifier '''
-    results = g.run(query)
-    for name, cui, in results:
-        side_effect = SideEffect(cui, name)
-        dict_side_effects[cui] = side_effect
-
-    print('size of side effects in hetionet:' + str(len(dict_side_effects)))
-
 
 # dictionary with all mesh ids/umls cui that are mapped to side effect, key is mesh id/ umls cui and value is a list of mapped cuis
 dict_mesh_map_to_cui = {}
-
-'''
-go through all symptoms and check if the umls cuis are in the side effects dictionary.
-If not get further umls cuis by search for more umls cui for a mesh id or find the synonym cuis.
-'''
-
-
-def map_symptoms_to_sideEffects():
-    for identifier, symptom in dict_symptoms.items():
-        identifier_cuis = symptom.cuis
-        mapped = []
-        for cui in identifier_cuis:
-            if cui in dict_side_effects:
-                mapped.append(cui)
-        # if direct a match is found
-        if len(mapped) > 0:
-            dict_mesh_map_to_cui[identifier] = mapped
-            dict_symptoms[identifier].set_how_mapped('direct map with cui')
-        else:
-            # only for symptoms with mesh id (somtimes on mesh id has multiple umls cuis)
-            if identifier!= identifier_cuis[0]:
-                cur = con.cursor()
-                query = ("Select CUI,LAT From MRCONSO Where SAB='MSH' and CODE= '%s';")
-                query = query % (identifier)
-                rows_counter = cur.execute(query)
-                if rows_counter > 0:
-                    list_cuis_mapped = []
-                    for (cui, lat,) in cur:
-                        if cui in dict_side_effects:
-                            list_cuis_mapped.append(cui)
-                else:
-                    continue
-                if len(list_cuis_mapped) > 0:
-                    dict_mesh_map_to_cui[identifier] = list_cuis_mapped
-                    dict_symptoms[identifier].set_how_mapped('map with all cuis of mesh id')
-            else:
-                # use symonym umls cuis
-                new_cuis = search_for_synonyms_cuis(identifier_cuis)
-                for cui in new_cuis:
-                    if cui in dict_side_effects:
-                        mapped.append(cui)
-                if len(mapped) > 0:
-                    dict_mesh_map_to_cui[identifier] = mapped
-                    dict_symptoms[identifier].set_how_mapped('map with synonym cuis')
-    #            else:
-    #                print(identifier)
-    #                print(symptom.name)
-    #                print('not found')
-
-    print('number of mapped mesh_ids:' + str(len(dict_mesh_map_to_cui)))
+#
+# '''
+# go through all symptoms and check if the umls cuis are in the side effects dictionary.
+# If not get further umls cuis by search for more umls cui for a mesh id or find the synonym cuis.
+# '''
+#
+#
+# def map_symptoms_to_sideEffects():
+#     for identifier, symptom in dict_symptoms.items():
+#         identifier_cuis = symptom.cuis
+#         mapped = []
+#         for cui in identifier_cuis:
+#             if cui in dict_side_effects:
+#                 mapped.append(cui)
+#         # if direct a match is found
+#         if len(mapped) > 0:
+#             dict_mesh_map_to_cui[identifier] = mapped
+#             dict_symptoms[identifier].set_how_mapped('direct map with cui')
+#         else:
+#             # only for symptoms with mesh id (somtimes on mesh id has multiple umls cuis)
+#             if identifier!= identifier_cuis[0]:
+#                 cur = con.cursor()
+#                 query = ("Select CUI,LAT From MRCONSO Where SAB='MSH' and CODE= '%s';")
+#                 query = query % (identifier)
+#                 rows_counter = cur.execute(query)
+#                 if rows_counter > 0:
+#                     list_cuis_mapped = []
+#                     for (cui, lat,) in cur:
+#                         if cui in dict_side_effects:
+#                             list_cuis_mapped.append(cui)
+#                 else:
+#                     continue
+#                 if len(list_cuis_mapped) > 0:
+#                     dict_mesh_map_to_cui[identifier] = list_cuis_mapped
+#                     dict_symptoms[identifier].set_how_mapped('map with all cuis of mesh id')
+#
+#     print('number of mapped mesh_ids:' + str(len(dict_mesh_map_to_cui)))
 
 
 # files for the different mapping types
@@ -242,14 +232,6 @@ def main():
     '###########################################################################################################################')
 
     print (datetime.datetime.utcnow())
-    print('Load in symptoms from hetionet')
-
-    load_all_symptoms_in_a_dict()
-
-    print(
-    '###########################################################################################################################')
-
-    print (datetime.datetime.utcnow())
     print('Load in side effects from hetionet')
 
     load_all_sideEffects_in_a_dict()
@@ -258,9 +240,17 @@ def main():
     '###########################################################################################################################')
 
     print (datetime.datetime.utcnow())
-    print('Map symptoms to side effects direct')
+    print('Load in symptoms from hetionet')
 
-    map_symptoms_to_sideEffects()
+    load_all_symptoms_in_a_dict()
+
+    # print(
+    # '###########################################################################################################################')
+    #
+    # print (datetime.datetime.utcnow())
+    # print('Map symptoms to side effects direct')
+    #
+    # map_symptoms_to_sideEffects()
 
     print(
     '###########################################################################################################################')

@@ -8,7 +8,7 @@ create a connection with neo4j
 '''
 
 
-def create_connetion_with_neo4j():
+def create_connection_with_neo4j():
     # set up authentication parameters and connection
     authenticate("localhost:7474", "neo4j", "test")
     global g
@@ -169,17 +169,17 @@ def load_proteins_from_drugbank_into_dict():
     query='''Match (n:Protein) Where exists(n.as_sequence) Set n.as_sequence=split(n.as_sequence,':')[1];\n'''
     cypherfile.write(query)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/proteins.csv" As line MATCH (n:Protein_DrugBank{identifier:line.id}) ,(p:Protein{identifier:line.uniport}) Create (p)-[:equal_to_DB_protein]->(n) Set p.drugbank='yes', p.resource=p.resource+ 'DrugBank', p.locus=n.locus, p.molecular_weight=n.molecular_weight, p.as_sequence=split(line.sequences,'|'),p.pfams=split(line.pfams,'|') ;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Documents/Project/master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/proteins.csv" As line MATCH (n:Protein_DrugBank{identifier:line.id}) ,(p:Protein{identifier:line.uniport}) Create (p)-[:equal_to_DB_protein]->(n) Set p.drugbank='yes', p.resource=p.resource+ 'DrugBank', p.locus=n.locus, p.molecular_weight=n.molecular_weight, p.as_sequence=split(line.sequences,'|'),p.pfams=split(line.pfams,'|') ;\n'''
 
     cypherfile.write(query)
     # all queries which are used to integrate Protein with the extra labels into Hetionet
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/proteins_carrier.csv" As line MATCH (g:Protein{identifier:line.id}) Set g:Carrier ;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Documents/Project/master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/proteins_carrier.csv" As line MATCH (g:Protein{identifier:line.id}) Set g:Carrier ;\n'''
     cypherfile.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/proteins_enzyme.csv" As line MATCH (g:Protein{identifier:line.id}) Set g:Enzyme ;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Documents/Project/master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/proteins_enzyme.csv" As line MATCH (g:Protein{identifier:line.id}) Set g:Enzyme ;\n'''
     cypherfile.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/proteins_target.csv" As line MATCH (g:Protein{identifier:line.id}) Set g:Target ;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Documents/Project/master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/proteins_target.csv" As line MATCH (g:Protein{identifier:line.id}) Set g:Target ;\n'''
     cypherfile.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/proteins_transporter.csv" As line MATCH (g:Protein{identifier:line.id}) Set g:Transporter ;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Documents/Project/master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/proteins_transporter.csv" As line MATCH (g:Protein{identifier:line.id}) Set g:Transporter ;\n'''
     cypherfile.write(query)
     query='Create Constraint On (node:Protein) Assert node.identifier Is Unique; \n'
     cypherfile.write(query)
@@ -298,7 +298,7 @@ def generate_csv_componet_rela():
     result= g.run(query)
 
 
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Dokumente/Project/master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/proteins_rela_component.csv" As line MATCH (g:Protein{identifier:line.id1}),(b:Protein{identifier:line.id2}) Create (g)-[:HAS_COMPONENT_PRhcPR]->(b);\n'''
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Documents/Project/master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/proteins_rela_component.csv" As line MATCH (g:Protein{identifier:line.id1}),(b:Protein{identifier:line.id2}) Create (g)-[:HAS_COMPONENT_PRhcPR]->(b);\n'''
     cypher_rela.write(query)
 
     csv_file=open('protein/proteins_rela_component.csv','w')
@@ -321,7 +321,7 @@ def main():
     print(datetime.datetime.utcnow())
     print('create connection with neo4j')
 
-    create_connetion_with_neo4j()
+    create_connection_with_neo4j()
 
     print(
         '#################################################################################################################################################################')

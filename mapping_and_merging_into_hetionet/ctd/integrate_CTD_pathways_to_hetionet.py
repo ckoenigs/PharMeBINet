@@ -31,19 +31,28 @@ dict_pathway_hetionet_xrefs = {}
 # dictionary with hetionet pathways with name as key and value the identifier
 dict_pathway_hetionet_names = {}
 
+#dictionary from own id to new identifier
+dict_own_id_to_identifier={}
+
 '''
 load in all pathways from hetionet in a dictionary
 '''
 
 
 def load_hetionet_pathways_in():
-    query = '''MATCH (n:Pathway) RETURN n.identifier,n.name, n.source, n.xrefs'''
+    query = '''MATCH (n:Pathway) RETURN n.identifier,n.names, n.source, n.idOwns'''
     results = g.run(query)
 
-    for identifier, name, source, xrefs, in results:
+    for identifier, names, source, idOwns, in results:
         dict_pathway_hetionet[identifier] = name
-        dict_pathway_hetionet_xrefs[identifier] = xrefs
-        dict_pathway_hetionet_names[name] = [identifier, source]
+        dict_pathway_hetionet_xrefs[identifier] = idOwns
+        for id in idOwns:
+            if not id in dict_own_id_to_identifier:
+                dict_own_id_to_identifier[id]=[identifier,source]
+            else:
+                print('ohe double xrefs')
+        for name in names:
+            dict_pathway_hetionet_names[name] = [identifier, source]
 
     print('number of pathway nodes in hetionet:' + str(len(dict_pathway_hetionet)))
 
@@ -68,53 +77,6 @@ dict_source_ctd_to_source_pc_or_wp = {
     "REACT": 'reactome',
     "KEGG": 'kegg'
 }
-
-# dictionary with own id from pc to name, pcid and source
-dict_own_id_to_pcid_and_other = {}
-
-# pc maximal number for pc id
-pc_maximal_number_for_id = 999
-
-'''
-load in all pathway with the way himmelstein construct of the identifier but for version 9
-https://github.com/dhimmel/pathways
-properties:
-    0: identifier	
-    1:name	
-    2:url	
-    3:n_genes	
-    4:n_coding_genes	
-    5:source	
-    6:license	
-    7:genes	
-    8:own id
-    9:coding_genes
-'''
-
-
-def load_in_all_pathways_from_himmelsteins_construction_version9():
-    with open('pathways_hetionet_data/pathways_v9_changed_pc9_10.tsv') as tsvfile:
-        print()
-        reader = csv.reader(tsvfile, delimiter='\t')
-        next(reader)
-        for row in reader:
-            identifier = row[0]
-            name = row[1]
-            source = row[5]
-            own_id = row[8]
-            if name in dict_name_to_pc_or_wp_identifier:
-                dict_name_to_pc_or_wp_identifier[name].append([identifier, source])
-            else:
-                dict_name_to_pc_or_wp_identifier[name] = [[identifier, source]]
-            if own_id in dict_own_id_to_pcid_and_other and own_id != "":
-                dict_own_id_to_pcid_and_other[own_id].append([identifier, source, name])
-            elif own_id in dict_own_id_to_pcid_and_other:
-                dict_own_id_to_pcid_and_other[identifier] = [[identifier, source, name]]
-            else:
-                dict_own_id_to_pcid_and_other[own_id] = [[identifier, source, name]]
-    print('number of different pathway names:' + str(len(dict_name_to_pc_or_wp_identifier)))
-    print('number of different pathway ids:' + str(len(dict_own_id_to_pcid_and_other)))
-
 
 # dictionary which is mapped to which source
 dict_mapped_source = {}
@@ -190,10 +152,10 @@ def load_ctd_pathways_in():
         pathways_id_type = pathways_node['id_type']
 
         # check if the ctd pathway id is part in the himmelstein xref
-        if pathways_id in dict_own_id_to_pcid_and_other:
+        if pathways_id in dict_own_id_to_identifier:
             counter_map_with_id += 1
-            if len(dict_own_id_to_pcid_and_other[pathways_id]) > 1:
-                print('multiple für identifier')
+            # if len(dict_own_id_to_pcid_and_other[pathways_id]) > 1:
+            #     print('multiple für identifier')
             pc_or_wp_id = dict_own_id_to_pcid_and_other[pathways_id][0][0]
             pc_or_wp_source = dict_own_id_to_pcid_and_other[pathways_id][0][1]
             check_ctd_pathway_mapped_multiple_or_not(pc_or_wp_id, pathways_id, pathways_name, pathways_id_type,
