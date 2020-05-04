@@ -79,7 +79,7 @@ def open_json_file_write_into_csv():
             dict_iri_to_id[iri]=identifier
 
             # some nodes even do not have a name
-            dict_node['name']=node['lbl'] if 'lbl' in node else ''
+            dict_node['name']=node['lbl'].rsplit(' (disease)')[0] if 'lbl' in node else ''
 
             # the other mondo information which are lists (here set to avoid duplication
             xrefs=set()
@@ -114,7 +114,7 @@ def open_json_file_write_into_csv():
                 # synonyms
                 if 'synonyms' in node['meta']:
                     for synonym in node['meta']['synonyms']:
-                        dict_synonyms[synonym['pred']].add(synonym['val']+'['+','.join(synonym['xrefs'])+']')
+                        dict_synonyms[synonym['pred']].add(synonym['val']+' ['+','.join(synonym['xrefs'])+']')
                 dict_node['synonyms']='||'.join(synonyms)
                 dict_node['broad_synonyms'] = '||'.join(broad_synonyms)
                 dict_node['related_synonyms'] = '||'.join(related_synonyms)

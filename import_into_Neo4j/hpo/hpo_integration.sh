@@ -24,7 +24,7 @@ echo "Current time: $now"
 
 echo integrate hpo into neo4j
 
-cat cypher.cypher | $path_neo4j/cypher-shell -u neo4j -p test > output_cypher_integration.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher > output_cypher_integration.txt
 
 sleep 180
 
