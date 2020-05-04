@@ -3,6 +3,12 @@
 #projekt path
 path_to_project=$1
 
+# path to neo4j
+path_neo4j=$2
+
+
+echo  $path_neo4j
+
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo information extraction from xml
@@ -35,7 +41,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo integration with cypher shell
 
-cat cypher_file.cypher | ../../../../../neo4j-community-3.2.9/bin/cypher-shell -u neo4j -p test > cypher_output.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f cypher_file.cypher > cypher_output.txt
 
-cat cypher_rela_file.cypher | ../../../../../neo4j-community-3.2.9/bin/cypher-shell -u neo4j -p test
+$path_neo4j/cypher-shell -u neo4j -p test -f cypher_rela_file.cypher
 
