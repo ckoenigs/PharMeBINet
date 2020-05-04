@@ -106,3 +106,8 @@ venv.bak/
 
 # End of https://www.gitignore.io/api/python
 
+.txt
+.csv
+.tsv
+.zip
+.xml

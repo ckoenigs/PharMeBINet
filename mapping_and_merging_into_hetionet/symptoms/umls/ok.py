@@ -1099,7 +1099,7 @@ def filter_third_find_symptomes():
     g = open('filter_3_possible_symptomes.txt', 'w')
     for line in f:
         splitted = line.split(';')
-        cui = splitted[0];
+        cui = splitted[0]
         # print(cui)
         bigName = splitted[1]
         sty = splitted[2]

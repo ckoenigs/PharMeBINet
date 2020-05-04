@@ -91,31 +91,37 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
 
         # generate human gene csv
         for row in csv_reader:
-            csv_unzip.writerow(row)
+            new_row={}
+            for  key, value  in  row.items():
+                if value=='-':
+                    new_row[key]=''
+                else:
+                    new_row[key]=value
+            csv_unzip.writerow(new_row)
 
             counter_all+=1
-            gene_id =row['GeneID']
-            name=row['Full_name_from_nomenclature_authority']
-            description=row['description']
+            gene_id =new_row['GeneID']
+            name=new_row['Full_name_from_nomenclature_authority']
+            description=new_row['description']
 
-            if name!=description and name != '-':
+
+            #tax id 9606 is human
+            tax_id=new_row['#tax_id']
+
+            if name!=description and name != '':
                 counter_not_same_name_and_description+=1
                 if tax_id == '9606':
                     print(name)
                     print(description)
                     print(gene_id)
 
-            # if gene_id=='100422997':
-            #     print('ok')
-            #tax id 9606 is human
-            tax_id=row['#tax_id']
             if tax_id!='9606':
-                writer_not_human.writerow(row)
+                writer_not_human.writerow(new_row)
                 found_gene_ids.append(int(gene_id))
             else:
                 counter_gene_in_hetionet_and_human+=1
                 counter_included+=1
-                writer.writerow(row)
+                writer.writerow(new_row)
                 found_gene_ids.append(int(gene_id))
 
     print(len(found_gene_ids))
