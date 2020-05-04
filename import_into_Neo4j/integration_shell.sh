@@ -12,7 +12,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo add hetionet and resource to nodes
 
-$path_neo4j/neo4j-shell -file cypher.cypher > output_cypher_integration.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher > output_cypher_integration.txt
 
 
 now=$(date +"%F %T")
@@ -29,7 +29,7 @@ echo "Current time: $now"
 
 echo integrate sider into neo4j
 
-$path_neo4j/neo4j-shell -file cypher.cypher > output_cypher_integration.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher > output_cypher_integration.txt
 
 sleep 180
 
@@ -46,7 +46,7 @@ echo "Current time: $now"
 cd ctd
 echo ctd
 
-./script_ctd.sh $path_to_project > output.txt
+./script_ctd.sh $path_to_project $path_neo4j > output.txt
 
 
 cd ..
@@ -66,7 +66,7 @@ echo "Current time: $now"
 
 echo integrate ndf-rt into neo4j
 
-$path_neo4j/neo4j-shell -file cypher_file.cypher > output_cypher_integration.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f cypher_file.cypher > output_cypher_integration.txt
 
 sleep 180
 
@@ -76,7 +76,7 @@ $path_neo4j/neo4j restart
 sleep 120
 echo delete ndf-rt nodes without relaionships
 
-$path_neo4j/neo4j-shell -file cypher_file_delete.cypher > output_cypher_delete.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f cypher_file_delete.cypher > output_cypher_delete.txt
 
 sleep 180
 
@@ -105,7 +105,7 @@ echo "Current time: $now"
 
 echo integrate do into neo4j
 
-cat cypher.cypher | $path_neo4j/cypher-shell -u neo4j -p test > output_cypher_integration.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher > output_cypher_integration.txt
 
 sleep 180
 
@@ -135,7 +135,7 @@ echo "Current time: $now"
 
 echo integrate go into neo4j
 
-cat cypher.cypher | $path_neo4j/cypher-shell -u neo4j -p test > output_cypher_integration.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher > output_cypher_integration.txt
 
 sleep 180
 
@@ -171,7 +171,7 @@ echo "Current time: $now"
 
 echo integrate aeolus into neo4j
 
-$path_neo4j/neo4j-shell -file cypher.cypher > output_cypher_integration.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher > output_cypher_integration.txt
 
 sleep 180
 
@@ -199,7 +199,7 @@ echo "Current time: $now"
 
 echo integrate uniprot into neo4j
 
-$path_neo4j/neo4j-shell -file cypher_protein.cypher > output_cypher_integration_$i.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f cypher_protein.cypher > output_cypher_integration_$i.txt
 
 sleep 180
 
@@ -217,7 +217,7 @@ echo "Current time: $now"
 cd  drugbank
 echo drugbank
 
-./script_to_start_program_and_integrate_into_neo4j.sh $path_to_project > output_script.txt
+./script_to_start_program_and_integrate_into_neo4j.sh $path_to_project $path_neo4j > output_script.txt
 
 
 cd ..
@@ -238,7 +238,7 @@ echo "Current time: $now"
 
 echo integrate efo into neo4j
 
-cat cypher.cypher | $path_neo4j/cypher-shell -u neo4j -p test > output_cypher_integration.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher > output_cypher_integration.txt
 
 sleep 180
 
@@ -266,7 +266,7 @@ echo "Current time: $now"
 
 echo integrate ncbi into neo4j
 
-$path_neo4j/neo4j-shell -file cypher_node.cypher > output_cypher_integration.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f cypher_node.cypher > output_cypher_integration.txt
 
 sleep 180
 
@@ -294,7 +294,7 @@ echo "Current time: $now"
 
 echo integrate pathway into neo4j
 
-$path_neo4j/neo4j-shell -file cypher.cypher > output_cypher_integration.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher > output_cypher_integration.txt
 
 sleep 180
 
@@ -319,5 +319,43 @@ cd ..
 
 now=$(date +"%F %T")
 echo "Current time: $now"
+
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+cd  ClinVar
+echo ClinVar
+
+python3 transform_xml_to_nodes_and_edges.py $path_to_project > output_generate_integration_file.txt
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+echo integrate efo into neo4j
+
+$path_neo4j/cypher-shell -u neo4j -p test -f cypher_file_node.cypher > output_cypher_node.txt
+
+sleep 180
+
+$path_neo4j/neo4j restart
+
+
+sleep 120
+
+$path_neo4j/cypher-shell -u neo4j -p test -f cypher_file_edges.cypher > output_cypher_edge.txt
+
+sleep 180
+
+$path_neo4j/neo4j restart
+
+
+sleep 120
+
+rm data/*.gz
+
+cd ..
+
+
 
 
