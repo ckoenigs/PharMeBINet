@@ -143,11 +143,16 @@ combine the information of the different sources
 def combine_information_from_different_sources(list_of_nodes):
     dict_combined_information=defaultdict(set)
     for node in list_of_nodes:
+        source= node['source']
         for key, value in node.items():
+            if key=='license':
+                value=source+':'+value
             if type(value)!=list:
                 dict_combined_information[key].add(value)
             else:
                 dict_combined_information[key]=dict_combined_information[key].union(value)
+    # dict_combined_information['source']=', '.join(dict_combined_information['source'])
+    # dict_combined_information['license'] = ', '.join(dict_combined_information['license'])
     #maybe replace the sets with list or transform into string
     return dict_combined_information
 

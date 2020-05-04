@@ -60,7 +60,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 
 echo map drugbank to rxnorm with names
-
+#take a lot of time
 python3 map_drugbank_to_rxnorm_with_name_final.py >  output_map_drugbank_to_rxnorm_with_name.txt
 
 
