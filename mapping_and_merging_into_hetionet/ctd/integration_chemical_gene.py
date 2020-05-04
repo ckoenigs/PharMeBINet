@@ -155,7 +155,7 @@ def path_to_rela_and_add_to_dict(rela, first, second):
         query_for_update_not_used_relationships = query_to_check_if_this_rela_exist_in_hetionet.split('Return')[
                                                       0] + ' Where not exists(r.ctd) Set r.ctd="no";\n'
 
-        query_general = '''begin\n ''' + query_for_update_not_used_relationships + '''commit\n '''
+        query_general = ''':begin\n ''' + query_for_update_not_used_relationships + ''':commit\n '''
         cypher_general.write(query_general)
 
 

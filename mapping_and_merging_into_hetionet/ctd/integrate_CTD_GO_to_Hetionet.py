@@ -227,15 +227,15 @@ def generate_files(file_name_addition, ontology, dict_ctd_in_hetionet,dict_ctd_i
     query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/GO/mapping_%s.csv" As line Match (c:%s{ identifier:line.GOIDHetionet}), (n:CTDGO{go_id:line.GOIDCTD}) SET  c.url_ctd=" http://ctdbase.org/detail.go?type=go&acc="+line.GOIDCTD, c.highestGOLevel=n.highestGOLevel, c.ctd="yes" Create (c)-[:equal_to_CTD_go]->(n);\n'''
     query = query % (file_name_addition, ontology)
     cypher_file.write(query)
-    cypher_file.write('begin\n')
+    cypher_file.write(':begin\n')
     query= '''Match (c:%s) Where exists(c.ctd) Set c.resource=c.resource+"CTD";\n'''
     query= query %(ontology)
     cypher_file.write(query)
-    cypher_file.write('commit\n')
+    cypher_file.write(':commit\n')
 
     # add query to update disease nodes with do='no'
     cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')
-    query = '''begin\n Match (n:%s) Where not exists(n.ctd) Set n.ctd="no";\n commit\n '''
+    query = ''':begin\n Match (n:%s) Where not exists(n.ctd) Set n.ctd="no";\n :commit\n '''
     query= query %(ontology)
     cypher_general.write(query)
     cypher_general.close()

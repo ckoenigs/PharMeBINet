@@ -63,15 +63,19 @@ also generate a cypher file to integrate this information
 
 def generate_cypher():
     list_file_name_rela_name=[('induces','INDUCES_CiD'),('treat','TREATS_CtD'),('associated','ASSOCIATES_CaD')]
+
+    # the general cypher file to update all chemicals and relationship which are not from aeolus
+    cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')
+
     for (file_name,rela_name) in list_file_name_rela_name:
         query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/chemical_disease/%s.csv" As line Match  (n:Chemical{identifier:line.ChemicalID}), (b:Disease{identifier:line.DiseaseID}) Merge (n)-[r:%s]->(b) On Match Set r.how_often=r.how_often+1 , r.resource=r.resource+'CTD', r.ctd='yes', r.directEvidence=split(line.directEvidences,'|'),  r.inferenceGeneSymbol=split(line.inferenceGeneSymbols,'|'), r.inferenceScore=split(line.inferenceScores,'|'), r.pubMedIDs=split(line.pubMedIDs,'|'), r.url_ctd='http://ctdbase.org/detail.go?type=chem&acc='+line.ChemicalID On Create Set r.new='yes', r.directEvidence=split(line.directEvidences,'|'), r.ctd='yes', r.pubMedIDs=split(line.pubMedIDs,'|'), r.resource=["CTD"], r.how_often=1, r.inferenceGeneSymbol=split(line.inferenceGeneSymbols,'|'), r.inferenceScore=split(line.inferenceScores,'|') , r.url_ctd='http://ctdbase.org/detail.go?type=chem&acc='+line.ChemicalID, r.url='http://ctdbase.org/detail.go?type=chem&acc='+line.ChemicalID , r.source="CTD", r.licence="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased='true' ;\n '''
         query= query %(file_name,rela_name)
         cypherfile.write(query)
 
-
-        cypherfile.write('begin\n')
-        cypherfile.write('Match (n:Chemical)-[r:'+ rela_name+']->(b:Disease) Where not exists(r.ctd) Set r.ctd="no";\n')
-        cypherfile.write('commit\n')
+        cypher_general.write(':begin\n')
+        cypher_general.write('Match (n:Chemical)-[r:'+ rela_name+']->(b:Disease) Where not exists(r.ctd) Set r.ctd="no";\n')
+        cypher_general.write(':commit\n')
+    cypher_general.close()
 
 '''
 
@@ -250,7 +254,7 @@ def get_all_important_relationships_and_write_into_files():
                                                                []]
 
         all_chemicals_id = '","'.join(all_chemicals_id)
-        query = '''MATCH (chemical:CTDchemical)-[r:associates_CD]->(disease:CTDdisease) Where (disease)-[]-(:Disease) and chemical.chemical_id in ["''' + all_chemicals_id + '''"]  RETURN chemical.chemical_id, chemical.drugBankIDs,  r, disease.mondos, disease.disease_id '''
+        query = '''MATCH (chemical:CTDchemical)-[r:associates_CD]->(disease:CTDdisease)--(:Disease) Where  chemical.chemical_id in ["''' + all_chemicals_id + '''"] and exists(r.directEvidence) RETURN DISTINCT chemical.chemical_id, chemical.drugBankIDs,  r, disease.mondos, disease.disease_id '''
         results = g.run(query)
 
         time_measurement = time.time() - start
@@ -354,6 +358,8 @@ def get_all_important_relationships_and_write_into_files():
 
     query = '''MATCH (n:Chemical) REMOVE n.integrated, n.integrated_drugbank;\n'''
     cypherfile.write(query)
+
+    cypherfile.close()
 
     print('Average finding disease:' + str(np.mean(list_time_all_finding_chemical)))
     print('Average dict monde:' + str(np.mean(list_time_dict_chemical)))

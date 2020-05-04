@@ -77,17 +77,17 @@ def take_all_relationships_of_gene_go():
 
     #the general cypher file to update all chemicals and relationship which are not from aeolus
     cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')
-    cypher_general.write('begin\n')
+    cypher_general.write(':begin\n')
     cypher_general.write('Match (n:Gene)-[r:PARTICIPATES_GpBP]->(b:BiologicalProcess) Where not exists(r.ctd) Set r.ctd="no";\n')
-    cypher_general.write('commit\n')
-    cypher_general.write('begin\n')
+    cypher_general.write(':commit\n')
+    cypher_general.write(':begin\n')
     cypher_general.write(
         'Match (n:Gene)-[r:PARTICIPATES_GpMF]->(b:MolecularFunction) Where not exists(r.ctd) Set r.ctd="no";\n')
-    cypher_general.write('commit\n')
-    cypher_general.write('begin\n')
+    cypher_general.write(':commit\n')
+    cypher_general.write(':begin\n')
     cypher_general.write(
         'Match (n:Gene)-[r:PARTICIPATES_GpCC]->(b:CellularComponent) Where not exists(r.ctd) Set r.ctd="no";\n')
-    cypher_general.write('commit')
+    cypher_general.write(':commit')
     cypher_general.close()
 
     query = '''MATCH (gene:CTDgene)-[r:associates_GGO]->(go:CTDGO) Where ()-[:equal_to_CTD_gene]->(gene)  RETURN gene.gene_id, r, go.go_id, go.ontology'''

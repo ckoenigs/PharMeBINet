@@ -140,7 +140,7 @@ def create_cypher_file():
 
     # add query to update disease nodes with do='no'
     cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')
-    query = '''begin\n MATCH (n:Pathway) Where not exists(n.ctd) Set n.ctd="no";\n commit\n '''
+    query = ''':begin\n MATCH (n:Pathway) Where not exists(n.ctd) Set n.ctd="no";\n :commit\n '''
     cypher_general.write(query)
     cypher_general.close()
     

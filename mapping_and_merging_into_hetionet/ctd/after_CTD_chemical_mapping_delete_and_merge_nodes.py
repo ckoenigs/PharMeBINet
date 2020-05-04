@@ -12,9 +12,6 @@ from collections import defaultdict
 
 sys.path.append('../drugbank/')
 
-# from is to combine two nodes and delete the old one
-import add_information_from_a_not_existing_node_to_existing_node
-
 
 '''
 create connection to neo4j 

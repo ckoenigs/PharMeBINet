@@ -582,10 +582,10 @@ def integrate_disease_into_hetionet():
     writer.writerow(['ctdDiseaseID', 'HetionetDiseaseId', 'mondos'])
 
     cypher_file = open('disease_Disease/cypher.cypher', 'w', encoding='utf-8')
-    cypher_file.write('begin\n')
+    cypher_file.write(':begin\n')
     query='''Match (d)-[r:equal_to_D_Disease_CTD]->(n) Delete r;\n '''
     cypher_file.write(query)
-    cypher_file.write('commit\n')
+    cypher_file.write(':commit\n')
     # go through all ctd disease
     for ctd_disease_id, ctd_disease in dict_CTD_disease.items():
         counter_all += 1
@@ -648,16 +648,16 @@ def integrate_disease_into_hetionet():
 
     # add query to update disease nodes with do='no'
     cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')
-    query = '''begin\n MATCH (n:Disease) Where not exists(n.ctd) Set n.ctd="no";\n commit\n '''
+    query = ''':begin\n MATCH (n:Disease) Where not exists(n.ctd) Set n.ctd="no";\n :commit\n '''
     cypher_general.write(query)
     cypher_general.close()
 
     # set mondo value where not existing
-    cypher_file.write('begin\n')
+    cypher_file.write(':begin\n')
     # set all ctd disease which are not mapped the mondo as empty
     query = '''MATCH (n:CTDdisease) Where Not Exists(n.mondos) SET n.mondos=[];\n'''
     cypher_file.write(query)
-    cypher_file.write('commit\n')
+    cypher_file.write(':commit\n')
 
     # generate a file with all not mapped diseases from ctd
     file_not_map = open('disease_Disease/not_map_CTD_disease.tsv', 'w', encoding='utf-8')

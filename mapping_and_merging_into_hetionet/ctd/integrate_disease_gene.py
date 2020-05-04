@@ -62,9 +62,9 @@ def take_all_relationships_of_gene_disease():
 
     #the general cypher file to update all chemicals and relationship which are not from aeolus
     cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')
-    cypher_general.write('begin\n')
+    cypher_general.write(':begin\n')
     cypher_general.write('Match (n:Disease)-[r:ASSOCIATES_DaG]->(b:Gene) Where not exists(r.ctd) Set r.ctd="no";\n')
-    cypher_general.write('commit')
+    cypher_general.write(':commit')
     cypher_general.close()
 
     csvfile = open('gene_disease/relationships.csv', 'w', encoding='utf-8')

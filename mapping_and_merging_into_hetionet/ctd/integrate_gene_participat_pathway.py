@@ -35,10 +35,14 @@ def take_all_relationships_of_gene_pathway():
     cypherfile = open('gene_pathway/cypher.cypher', 'w')
     query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/gene_pathway/relationships.csv" As line Match (n:Gene{identifier:toInteger(line.GeneID)}), (b:Pathway{identifier:line.PathwayID}) Merge (n)-[r:PARTICIPATES_GpPW]->(b) On Create Set r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.source="CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased='false', r.resource=["CTD"] On Match SET r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.resource=r.resource+"CTD";\n '''
     cypherfile.write(query)
-    # in a seperate file
-    cypherfile.write('begin\n')
-    cypherfile.write('Match (n:Gene)-[r:PARTICIPATES_GpPW]->(b:Pathway) Where not exists(r.ctd) Set r.ctd="no";\n')
-    cypherfile.write('commit')
+    cypherfile.close()
+
+    #the general cypher file to update all chemicals and relationship which are not from aeolus
+    cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')
+    cypher_general.write(':begin\n')
+    cypher_general.write('Match (n:Gene)-[r:PARTICIPATES_GpPW]->(b:Pathway) Where not exists(r.ctd) Set r.ctd="no";\n')
+    cypher_general.write(':commit')
+    cypher_general.close()
 
     csvfile = open('gene_pathway/relationships.csv', 'w')
     writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
