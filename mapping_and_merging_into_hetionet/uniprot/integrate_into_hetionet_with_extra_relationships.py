@@ -108,7 +108,7 @@ def get_all_genes():
     list_double_names = set([])
     for gene_id,  genesymbols, name, synonyms, in results:
         counter_all_genes += 1
-        dict_gene_id_to_gene_name[gene_id] = name.lower()
+        dict_gene_id_to_gene_name[gene_id] = name.lower() if  name  is  not None else ''
 
         if gene_id == 28299:
             print('ok')
@@ -522,7 +522,7 @@ def get_gather_protein_info_and_generate_relas():
         new_xrefs='|'.join(new_xrefs)
         writer_uniprots_ids.writerow([identifier, new_xrefs])
 
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_gene/db_gene_uniprot_delete.csv" As line Match (g:Gene{identifier:toInteger(line.gene_id)}) With g,FILTER(x IN g.uniProtIDs WHERE x <> line.uniprot_id) as filterdList 
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_gene/db_gene_uniprot_delete.csv" As line Match (g:Gene{identifier:toInteger(line.gene_id)}) With g,[x IN g.uniProtIDs WHERE x <> line.uniprot_id]  as filterdList 
                 Set g.uniProtIDs=filterdList;\n '''
     file_cypher_node.write(query)
     print('number of existing gene protein rela:' + str(counter_existing_gene_protein_rela))
