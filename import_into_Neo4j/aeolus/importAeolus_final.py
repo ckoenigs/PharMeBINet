@@ -258,9 +258,9 @@ def create_csv_and_cypher_file_neo4j():
     # add cypher wuery to cypher file to integrate outcome
     cypher_outcome='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/aeolus/'''+file_name_outcome+'''" As line Create (:AeolusOutcome{outcome_concept_id:line.outcome_concept_id , concept_code: line.concept_code,  name: line.name, snomed_outcome_concept_id: line.snomed_outcome_concept_id, vocabulary_id: line.vocabulary_id });\n'''
     cypher_file.write(cypher_outcome)
-    cypher_file.write('begin \n')
+    cypher_file.write(':begin \n')
     cypher_file.write('Create Constraint On (node:AeolusOutcome) Assert node.outcome_concept_id Is Unique; \n')
-    cypher_file.write('commit \n schema await \n ')
+    cypher_file.write(':commit \n Call db.awaitIndexes(300) ; \n ')
     # csv file for outcome
     try:
         writer = csv.writer(f, quoting=csv.QUOTE_NONNUMERIC)
@@ -287,9 +287,9 @@ def create_csv_and_cypher_file_neo4j():
     # add cypher wuery to cypher file to integrate outcome
     query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/aeolus/''' + file_name_drug + '''" As line Create (:AeolusDrug{drug_concept_id: line.drug_concept_id, concept_code: line.concept_code, name: line.name, vocabulary_id: line.vocabulary_id });\n'''
     cypher_file.write(query)
-    cypher_file.write(' begin \n')
+    cypher_file.write(' :begin \n')
     cypher_file.write('Create Constraint On (node:AeolusDrug) Assert node.drug_concept_id Is Unique; \n')
-    cypher_file.write('commit \n schema await \n ')
+    cypher_file.write(':commit \n Call db.awaitIndexes(300) ; \n ')
 
     # csv file for drugs
     try:
