@@ -317,6 +317,19 @@ echo mondo
 
 cd ..
 
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+cd  OMIM
+echo omim
+
+
+./script_to_execute_omim.sh $path_to_project $path_neo4j  > output/output_integration_of_everything.txt
+
+
+cd ..
+
 now=$(date +"%F %T")
 echo "Current time: $now"
 
