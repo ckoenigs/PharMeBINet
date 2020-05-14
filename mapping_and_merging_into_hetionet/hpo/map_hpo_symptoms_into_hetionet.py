@@ -17,7 +17,7 @@ def database_connection():
 
 
 # the general query start
-query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%s/master_database_change/mapping_and_merging_into_hetionet/hpo/%s" As line FIELDTERMINATOR '\\t' '''
+query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/hpo/%s" As line FIELDTERMINATOR '\\t' '''
 
 file_hpo_has_umls_cui = open('mapping_files/symptom/map_hpo_has_umls_cui.txt', 'w', encoding='utf-8')
 csv_symptoms = csv.writer(file_hpo_has_umls_cui, delimiter='\t')
@@ -88,7 +88,6 @@ dict_new_mesh_ids = {}
 set_header_for_files = set()
 
 
-
 def combine_hpo_information(hpo_id, dictionary):
     """
     combine the information form different nodes with the same mesh id
@@ -101,13 +100,12 @@ def combine_hpo_information(hpo_id, dictionary):
 
         if key == 'def':
             key = 'definition'
-
         if key in dictionary:
             if key == 'name' and dictionary[key] != value:
                 if 'synonyms' not in dictionary:
-                    dictionary['synonyms'] = []
+                    dictionary['synonyms'] = set()
                     set_header_for_files.add('synonyms')
-                dictionary['synonyms'].append(value)
+                dictionary['synonyms'].add(value)
                 continue
             if key == 'alt_ids':
                 dictionary['xrefs'] = set(value).union(dictionary['xrefs'])
@@ -115,8 +113,8 @@ def combine_hpo_information(hpo_id, dictionary):
                 if value not in dictionary[key]:
                     dictionary[key].append(value)
 
-                else:
-                    dictionary[key] = set(value).union(dictionary[key])
+            else:
+                dictionary[key] = set(value).union(dictionary[key])
         else:
             if key not in ['created_by', 'creation_date', 'id']:
                 if key == 'alt_ids':
@@ -125,10 +123,14 @@ def combine_hpo_information(hpo_id, dictionary):
                         set_header_for_files.add('xrefs')
                     dictionary['xrefs'] = set(value).union(dictionary['xrefs'])
                     continue
+                if key == 'name':
+                    dictionary[key] = value
+                    set_header_for_files.add(key)
+                    continue
                 if type(value) == str:
                     dictionary[key] = [value]
                 else:
-                    dictionary[key] = value
+                    dictionary[key] = set(value)
                 set_header_for_files.add(key)
 
 
@@ -221,7 +223,7 @@ def symptoms_mapping(name, xrefs, hpo_id):
                 dict_mapped_mesh[mesh_id][0].append(hpo_id)
                 dict_mapped_mesh[mesh_id][2].append(mesh_cui_ids)
                 dict_mapped_mesh[mesh_id][1] = list(set(umls_cuis).union(dict_mapped_mesh[mesh_id][1]))
-                dict_mapped_mesh[mesh_id][4] = combine_hpo_information(hpo_id, dict_mapped_mesh[mesh_id][4])
+                combine_hpo_information(hpo_id, dict_mapped_mesh[mesh_id][4])
             else:
                 dict_node = {}
                 combine_hpo_information(hpo_id, dict_node)
@@ -242,7 +244,7 @@ def symptoms_mapping(name, xrefs, hpo_id):
 
                 dict_node = {}
                 combine_hpo_information(hpo_id, dict_node)
-                dict_new_mesh_ids[first_mesh] = [[hpo_id], umls_cuis, [mesh_cui_ids], xrefs, ["HPO"], dict_node]
+                dict_new_mesh_ids[first_mesh] = [[hpo_id], umls_cuis, [mesh_cui_ids], ["HPO"], dict_node]
                 set_header_for_files.add('resource')
                 set_header_for_files.add('umls_ids')
                 set_header_for_files.add('mesh_ids')
@@ -263,7 +265,7 @@ def symptoms_mapping(name, xrefs, hpo_id):
                     dict_new_mesh_ids[first_mesh][0].append(hpo_id)
                     dict_new_mesh_ids[first_mesh][2].append(mesh_cui_ids)
                     dict_new_mesh_ids[first_mesh][1] = list(set(umls_cuis).union(dict_new_mesh_ids[first_mesh][1]))
-                    dict_new_mesh_ids[first_mesh][4] = combine_hpo_information(hpo_id, dict_new_mesh_ids[mesh_id][4])
+                    combine_hpo_information(hpo_id, dict_new_mesh_ids[mesh_id][4])
         else:
             csv_not_mapped.writerow([hpo_id, "|".join(xrefs)])
 
@@ -279,31 +281,43 @@ def symptoms_mapping(name, xrefs, hpo_id):
         print(datetime.datetime.utcnow())
 
 
+def change_all_list_into_strings_from_a_dictionary(dictionary):
+    """
+    change all list  and  set values  to a  string
+    :param dictionary: dictionary
+    :return:
+    """
+    for key, value in dictionary.items():
+        if type(value) in [list, set]:
+            dictionary[key] = "|".join(list(value))
+
+
 '''
 write into a specific file with a given dictionary
 '''
 
 
 def write_into_file(file, dictionary, is_new=False):
-    for mesh_id, [hpos, umls_cuis, list_mesh_cuis,  resource, other] in dictionary.items():
-        other['hetionet_id']=mesh_id
+    for mesh_id, [hpos, umls_cuis, list_mesh_cuis, resource, other] in dictionary.items():
+        other['hetionet_id'] = mesh_id
         umls_string = "|".join(umls_cuis)
         other['umls_ids'] = umls_string
 
         resource_string = "|".join(resource)
         other['resource'] = resource_string
-        all_mesh_cuis = ''
+        all_mesh_cuis = set()
         for index, hpo_id in enumerate(hpos):
             mesh_cuis_string = "|".join(list_mesh_cuis[index])
-            all_mesh_cuis += mesh_cuis_string + '|'
+            all_mesh_cuis = all_mesh_cuis.union(list_mesh_cuis[index])
             if not is_new:
-                other['hpo_id']=hpo_id
+                change_all_list_into_strings_from_a_dictionary(other)
+                other['hpo_id'] = hpo_id
                 other['mesh_ids'] = mesh_cuis_string
                 file.writerow(other)
         if is_new:
-            hpo_ids_string = "|".join(hpos)
-            other['hpo_id'] = hpo_ids_string
+            other['hpo_id'] = hpos
             other['mesh_ids'] = all_mesh_cuis
+            change_all_list_into_strings_from_a_dictionary(other)
             file.writerow(other)
 
 
@@ -323,7 +337,7 @@ def prepare_files():
     # csv file for mapping disease
     file_symptom_new = open('mapping_files/symptom_new.tsv', 'w', encoding='utf-8')
     csv_symptom_new = csv.DictWriter(file_symptom_new, delimiter='\t', fieldnames=list(set_header_for_files))
-    csv_symptom_new.writerow()
+    csv_symptom_new.writeheader()
 
     set_header_for_files.add('')
     # first the mapped on
@@ -367,7 +381,7 @@ def generate_cypher_queries():
     query = query % (path_of_directory, 'mapping_files/symptom_new.tsv')
     cypher_file.write(query)
 
-    query= '''Match (s1:Symptom)--(:HPOsymptom)-[:is_a]->(:HPOsymptom)--(s2:Symptom) Merge (s1)-[:IS_A_SiS{license:"HPO", source:"HPO", resource:["HPO"], hpo:"yes"}]->(s2);\n'''
+    query = '''Match (s1:Symptom)--(:HPOsymptom)-[:is_a]->(:HPOsymptom)--(s2:Symptom) Merge (s1)-[:IS_A_SiS{license:"HPO", source:"HPO", resource:["HPO"], hpo:"yes"}]->(s2);\n'''
     cypher_file.write(query)
 
 
@@ -398,7 +412,8 @@ def map_hpo_symptoms_and_integrate_into_hetionet():
     counter_symptom_from_hetionet = 0
 
     # search for all symptoms but do not take the removed nodes
-    query = '''MATCH (n:HPOsymptom) where n.id in ['HP:0002247','HP:0100867'] and not exists(n.is_obsolete) RETURN n, n.id, n.name, n.xrefs '''
+    # n.id in ['HP:0002247','HP:0100867'] and
+    query = '''MATCH (n:HPOsymptom) where not exists(n.is_obsolete) RETURN n, n.id, n.name, n.xrefs '''
     results = g.run(query)
     counter_symptoms = 0
 
