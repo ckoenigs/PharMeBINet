@@ -10,6 +10,9 @@ import sys, csv
 import datetime
 from types import *
 
+sys.path.append("..")
+from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
+
 # reload(sys)
 # sys.setdefaultencoding("utf-8")
 
@@ -471,6 +474,9 @@ def gather_information_of_mondo_and_do_then_prepare_dict_for_csv(monDo,info,monD
 
     other_xrefs_monDO.union(dict_DO_to_xref[doid])
     other_xrefs_monDO.remove('') if '' in other_xrefs_monDO else other_xrefs_monDO
+
+    other_xrefs_monDO = go_through_xrefs_and_change_if_needed_source_name(
+        other_xrefs_monDO, 'Disease')
     info['xrefs'] = list(other_xrefs_monDO)
 
     doid_umls=dict_DO_to_info[doid]['umls_cuis'] if 'umls_cuis' in dict_DO_to_info[doid] else []
@@ -557,6 +563,8 @@ def integrate_mondo_change_identifier():
 
             umls_cuis_monDO, other_xrefs_monDO = divide_external_list(monDO_xref)
             info['umls_cuis'] = umls_cuis_monDO
+            other_xrefs_monDO = go_through_xrefs_and_change_if_needed_source_name(
+                other_xrefs_monDO, 'Disease')
             info['xrefs'] = other_xrefs_monDO
 
             dict_info_csv={}

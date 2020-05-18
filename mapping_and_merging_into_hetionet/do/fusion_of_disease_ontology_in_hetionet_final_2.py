@@ -11,6 +11,10 @@ from py2neo import Graph#, authenticate
 import datetime
 import sys,csv
 
+
+sys.path.append("..")
+from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
+
 # file to put all information in it
 output = open('output_fusion.txt', 'w', encoding='utf-8')
 
@@ -209,6 +213,8 @@ def load_disease_ontologie_in_hetionet():
                     dict_of_information[key] = '|'.join(value)
             elif key =='alt_ids':
                 dict_of_information['alternative_ids']='|'.join(alternative_ids)
+        xref_other= go_through_xrefs_and_change_if_needed_source_name(
+            xref_other, 'Disease')
         dict_of_information['xrefs'] = '|'.join(xref_other)
 
         # hetionet has this doid not included

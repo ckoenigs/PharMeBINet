@@ -5,7 +5,7 @@ dict_wrong_source_to_source = {
 
 
 #set of sources where the id depends on the label
-set_source_where_source_depend_on_label={['ctd','drugbank','drugcentral']}
+set_source_where_source_depend_on_label=set(['ctd','drugbank','drugcentral', 'kegg'])
 
 def go_through_xrefs_and_change_if_needed_source_name(xrefs, label):
     """
