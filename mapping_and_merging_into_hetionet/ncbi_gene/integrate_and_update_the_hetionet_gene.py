@@ -2,6 +2,9 @@ from py2neo import Graph#, authenticate
 import datetime
 import sys, csv
 
+sys.path.append("..")
+from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
+
 '''
 create a connection with neo4j
 '''
@@ -55,6 +58,8 @@ def add_value_into_dict_with_list_or_not(dict_insert, head, question_header, dic
     # gene Symobole sind keine Liste, muss noch geaendert werden und Feature_type ist leer
     if question_header in dict_with_values:
         if head in list_properties_with_list_elements:
+            if head=='xrefs':
+                xrefs=go_through_xrefs_and_change_if_needed_source_name(dict_with_values[question_header],'Gene')
             dict_insert[head] = '|'.join(dict_with_values[question_header])
         else:
             dict_insert[head] = dict_with_values[question_header]
