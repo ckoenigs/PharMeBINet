@@ -367,7 +367,7 @@ def generate_cypher_queries():
             query_start_create += property + ':line.' + property + ', '
         else:
             query_start_create += property + ':split(line.' + property + ',"|"), '
-            query_start_match += 'n.' + property + ':split(line.' + property + ',"|"), '
+            query_start_match += 'n.' + property + '=split(line.' + property + ',"|"), '
 
     query_match = query_start_match[:-2] + ' Create (s)-[:equal_to_hpo_symptoms]->(n);\n'
     query_match = query_match % (path_of_directory, 'mapping_files/symptom_mapped.tsv')

@@ -32,6 +32,23 @@ def add_query_to_cypher_file(omim_label, database_label, rela_name_addition, fil
     cypher_file.write(query)
 
 
+def create_query_for_phenotype(label, file_name):
+    """
+    create the query for Phenotype by getting the properties form omim
+    :param label:string
+    :param file_name:string
+    :return:
+    """
+    query_create=query_start+' (n:%s {identifier:line.identifier}) Create (p:Phenotype {'
+    query='MATCH (p:%s) WITH DISTINCT keys(p) AS keys UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields RETURN allfields;'
+    query=query % label
+    results=g.run(query)
+    for property, in results:
+        query_create+= property+':n.'+property+', '
+    query_create+= ' license:"OMIM"}, source:"OMIM", resource:["OMIM"], omim:"yes"}) Create (p)-[:equal_to_omim]->(n);\n'
+    query_create=query_create % (path_of_directory, file_name,label)
+    cypher_file.write(query_create)
+
 # dictionary_omim_gene_id_to_node
 dict_omim_id_to_node = {}
 
@@ -117,7 +134,11 @@ def load_phenotype_from_omim_and_map():
 
     counter_mapped = 0
     counter_not_mapped = 0
-    counter_differen_names = 0
+    counter_different_names = 0
+
+    # generate query
+    add_query_to_cypher_file('phenotype_omim', 'Disease', 'disease', file_name)
+    create_query_for_phenotype('phenotype_omim',file_name_not_mapped)
     for node, labels, in results:
         identifier = node['identifier']
         name = node['name'].lower() if 'name' in node else ''
@@ -133,7 +154,7 @@ def load_phenotype_from_omim_and_map():
                 if 'name' in disease_node:
                     disease_synoynms.append(disease_node['name'].lower())
                 if len(set(synonyms).intersection(disease_synoynms)) == 0:
-                    counter_differen_names += 1
+                    counter_different_names += 1
                     print('different names')
                     print(synonyms)
                     print(disease_synoynms)
@@ -148,7 +169,7 @@ def load_phenotype_from_omim_and_map():
             csv_writer_not.writerow([identifier, name, detail_information, xrefs])
     print('number of mapped phenotypes:' + str(counter_mapped))
     print('number of not mapped phenotypes:' + str(counter_not_mapped))
-    print('number of different names:', counter_differen_names)
+    print('number of different names:', counter_different_names)
 
 
 def main():

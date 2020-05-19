@@ -265,7 +265,7 @@ find the shortest list and all list with the same length but different value
 '''
 
 
-def find_shortest_list_and_indeces(list_of_lists):
+def find_shortest_list_and_indices(list_of_lists):
     shortest = min(list_of_lists, key=len)
     all_with_the_same_length = [shortest]
     shortest_length = len(shortest)
@@ -286,7 +286,7 @@ generate cypher queries
 def generate_cypher_queries(file_name,label, rela, start_node, end_node):
     query_first_part = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ctd/''' + file_name + '''" As line Match (b:Chemical{identifier:line.chemical_id}), (go:%s{identifier:line.go_id}) Create (%s)-[:%s {'''
     query_first_part=query_first_part %(label,start_node,rela)
-    query_end='}]->(%s);\n'
+    query_end='license:"CTD license"}]->(%s);\n'
     for property in header:
         if property in ['chemical_id','go_id']:
             continue
@@ -294,7 +294,7 @@ def generate_cypher_queries(file_name,label, rela, start_node, end_node):
             query_first_part+= property+':split(line.'+property+',"|"), '
         else:
             query_first_part += property + ':line.' + property + ', '
-    query=query_first_part[:-2]+query_end %end_node
+    query=query_first_part+query_end %end_node
     cypherfile.write(query)
 
 
@@ -332,7 +332,7 @@ def fill_the_csv_files():
             pubMedIds = list_of_information[1]
             pubMedIds = '|'.join(pubMedIds)
             interactions_actions = list_of_information[2]
-            indices, shortest_interaction_actions = find_shortest_list_and_indeces(interactions_actions)
+            indices, shortest_interaction_actions = find_shortest_list_and_indices(interactions_actions)
             shortest_interaction_actions = [';'.join(x) for x in shortest_interaction_actions]
             shortest_interaction_actions = '|'.join(shortest_interaction_actions)
 
@@ -363,7 +363,7 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.utcnow())
-    print('Take all go-pathway relationships and generate csv and cypher file')
+    print('Take all go-chemical relationships and generate csv and cypher file')
 
     take_all_relationships_of_go_chemical()
 
