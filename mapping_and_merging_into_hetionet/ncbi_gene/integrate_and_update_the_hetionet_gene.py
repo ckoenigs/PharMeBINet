@@ -62,6 +62,7 @@ def add_value_into_dict_with_list_or_not(dict_insert, head, question_header, dic
                 dict_with_values[question_header] = go_through_xrefs_and_change_if_needed_source_name(
                     dict_with_values[question_header], 'Gene')
             dict_insert[head] = '|'.join(dict_with_values[question_header])
+            dict_insert[head] = '|'.join(dict_with_values[question_header])
         else:
             dict_insert[head] = dict_with_values[question_header]
 
@@ -148,8 +149,9 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
 
         if name is None or name == '-':
             print('has no name')
-            if node['description'] == '-' or node['description'] == '':
+            if 'description' not in node or node['description'] == '-' or node['description'] == '':
                 print('description is also empty')
+                node['description']=''
             node['Full_name_from_nomenclature_authority'] = node['description']
             name = node['description']
 
