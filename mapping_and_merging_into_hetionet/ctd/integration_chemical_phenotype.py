@@ -3,6 +3,7 @@ import csv
 import datetime
 import sys
 from collections import defaultdict
+import re
 
 from py2neo import Graph
 
@@ -22,7 +23,6 @@ cypherfile = open('chemical_phenotype/cypher.cypher', 'w', encoding='utf-8')
 
 # dictionary with rela name to drug-go/protein pair
 dict_rela_to_drug_go_pair = {}
-
 
 '''
 generate csv file with the columns fo a path
@@ -100,7 +100,6 @@ def sort_into_dictionary_and_add(dict_action, chemical_id, go_id, interaction_te
                                              [comentioned_terms]]
 
 
-
 '''
 generate for new rela  a dictionary entry with a dictionary for all chemical-go pairs
 all information of the pair are add into the dictionary
@@ -121,18 +120,34 @@ def add_pair_to_dict(chemical_id, drugbank_ids, go_id, interaction_text, interac
                                          pubMedIds, interactions_actions, anatomy_terms, inference_gene_symbols,
                                          comentioned_terms)
     else:
-        sort_into_dictionary_and_add(dict_rela_to_drug_go_pair[(rela_full, label,from_chemical)],
+        sort_into_dictionary_and_add(dict_rela_to_drug_go_pair[(rela_full, label, from_chemical)],
                                      chemical_id, go_id, interaction_text,
                                      pubMedIds, interactions_actions, anatomy_terms, inference_gene_symbols,
                                      comentioned_terms)
 
-dict_rela_name_to_text_name={
-    'INCREASES':'increased',
-    'DECREASES':'decreased'
+
+dict_rela_name_to_text_name = {
+    'INCREASES': 'increased',
+    'DECREASES': 'decreased'
 }
 
-def check_for_go_and_chemical_in_string(string,found_chemical_synonym, go_name, rela_name, chemical_id, drugbank_ids, go_id, interaction_text, interactions_actions,
-                             pubMedIds,label, anatomy_terms, inference_gene_symbols, comentioned_terms):
+
+def find_multiple_occurrences(substring, string):
+    """
+    search for all start indices of the substring in a string
+    :param substring: string
+    :param string: string
+    :return: set of indices
+    """
+    list_of_indices = set()
+    for match in re.finditer(substring, string):
+        list_of_indices.add(match.start())
+    return list_of_indices
+
+
+def check_for_go_and_chemical_in_string(string, found_chemical_synonym, go_name, rela_name, chemical_id, drugbank_ids,
+                                        go_id, interaction_text, interactions_actions,
+                                        pubMedIds, label, anatomy_terms, inference_gene_symbols, comentioned_terms):
     """
     check for the position of chemical and go in the string
     :param string: string
@@ -140,25 +155,32 @@ def check_for_go_and_chemical_in_string(string,found_chemical_synonym, go_name, 
     :param go_name: the name of go which is used
     :return: if they are found together
     """
-    found_together=False
+    found_together = False
     part = string.lower()
-    position_chemical_new = part.find(' ' + found_chemical_synonym + ' ')
+    positions_chemical_new = find_multiple_occurrences(' ' + found_chemical_synonym + ' ',part)
     position_go_new = part.find(' ' + go_name + ' ')
     position_rela_new = part.find(' ' + dict_rela_name_to_text_name[rela_name] + ' ')
+    length_of_phenotyp_string = len(go_name)
 
-    if position_chemical_new != -1 and position_go_new != -1 and position_rela_new != -1:
-        if position_chemical_new < position_go_new:
-            found_together = True
-            add_pair_to_dict(chemical_id, drugbank_ids, go_id, interaction_text, interactions_actions,
-                             pubMedIds,
-                             rela_name, label, anatomy_terms, inference_gene_symbols, comentioned_terms, True)
-        else:
-            found_together = True
-            add_pair_to_dict(chemical_id, drugbank_ids, go_id, interaction_text, interactions_actions,
-                             pubMedIds,
-                             rela_name, label, anatomy_terms, inference_gene_symbols, comentioned_terms,
-                             False)
+    # check if all values appear in the string (go name, chemical name and relationships name
+    # however, many phenotypes include the chemical name in the name to avoid to have phenotype and chemical in the same
+    # check if the position of the chemical is not between the start  and the end of the phenotype string
+    for position_chemical_new in positions_chemical_new:
+        if position_chemical_new != -1 and position_go_new != -1 and position_rela_new != -1 and not (
+                position_go_new <= position_chemical_new <= position_go_new + length_of_phenotyp_string):
+            if position_chemical_new < position_go_new:
+                found_together = True
+                add_pair_to_dict(chemical_id, drugbank_ids, go_id, interaction_text, interactions_actions,
+                                 pubMedIds,
+                                 rela_name, label, anatomy_terms, inference_gene_symbols, comentioned_terms, True)
+            else:
+                found_together = True
+                add_pair_to_dict(chemical_id, drugbank_ids, go_id, interaction_text, interactions_actions,
+                                 pubMedIds,
+                                 rela_name, label, anatomy_terms, inference_gene_symbols, comentioned_terms,
+                                 False)
     return found_together
+
 
 '''
 check if it is a type rela or not
@@ -166,17 +188,21 @@ check if it is a type rela or not
 
 
 def check_for_rela_type(interactions_actions, rela_name, chemical_id, drugbank_ids, go_id, interaction_text, pubMedIds,
-                        label, anatomy_terms, inference_gene_symbols, comentioned_terms, found_chemical_synonym, go_name):
-
+                        label, anatomy_terms, inference_gene_symbols, comentioned_terms, found_chemical_synonym,
+                        go_name):
     # to find the exact words and to avoid that not a space is in front or in the end spaces are add
     interaction_text_with_spaces = ' ' + interaction_text.replace('[', '[ ') + ' '
     interaction_text_with_spaces = interaction_text_with_spaces.replace(']', ' ]')
 
     if len(interactions_actions) == 1:
-        found_together= found_together=check_for_go_and_chemical_in_string(interaction_text_with_spaces, found_chemical_synonym, go_name, rela_name, chemical_id,
-                                                    drugbank_ids, go_id, interaction_text, interactions_actions,
-                                                    pubMedIds, label, anatomy_terms, inference_gene_symbols,
-                                                    comentioned_terms)
+        found_together = found_together = check_for_go_and_chemical_in_string(interaction_text_with_spaces,
+                                                                              found_chemical_synonym, go_name,
+                                                                              rela_name, chemical_id,
+                                                                              drugbank_ids, go_id, interaction_text,
+                                                                              interactions_actions,
+                                                                              pubMedIds, label, anatomy_terms,
+                                                                              inference_gene_symbols,
+                                                                              comentioned_terms)
 
         if not found_together:
             print('something went really wrong')
@@ -184,27 +210,28 @@ def check_for_rela_type(interactions_actions, rela_name, chemical_id, drugbank_i
             print(go_id)
             print(interaction_text_with_spaces)
             add_pair_to_dict(chemical_id, drugbank_ids, go_id, interaction_text, interactions_actions, pubMedIds,
-                             rela_name, label, anatomy_terms, inference_gene_symbols, comentioned_terms,True)
+                             rela_name, label, anatomy_terms, inference_gene_symbols, comentioned_terms, True)
             sys.exit('ctd chemical phenotype error')
     else:
-        
-        found_together=False
+
+        found_together = False
 
         for part in interaction_text_with_spaces.split('['):
             for smaller_part in part.split(']'):
                 # find take every time the first time when the substring appeares, so some times the chemcial appears multiple
                 # time so the order for the sub action need to be new classified
 
-                found_together=check_for_go_and_chemical_in_string(smaller_part, found_chemical_synonym, go_name, rela_name, chemical_id,
-                                                    drugbank_ids, go_id, interaction_text, interactions_actions,
-                                                    pubMedIds, label, anatomy_terms, inference_gene_symbols,
-                                                    comentioned_terms)
+                found_together = check_for_go_and_chemical_in_string(smaller_part, found_chemical_synonym, go_name,
+                                                                     rela_name, chemical_id,
+                                                                     drugbank_ids, go_id, interaction_text,
+                                                                     interactions_actions,
+                                                                     pubMedIds, label, anatomy_terms,
+                                                                     inference_gene_symbols,
+                                                                     comentioned_terms)
 
         if not found_together:
             add_pair_to_dict(chemical_id, drugbank_ids, go_id, interaction_text, interactions_actions, pubMedIds,
                              'ASSOCIATES', label, anatomy_terms, inference_gene_symbols, comentioned_terms, True)
-                
-                    
 
 
 '''
@@ -222,7 +249,7 @@ def take_all_relationships_of_go_chemical():
 
     for go_id, go_name, go_labels, rela, chemical_id, chemical_name, chemical_synonyms, drugbank_ids, in results:
         go_label = go_labels[0]
-        go_name=go_name.lower()
+        go_name = go_name.lower()
         counter_all_rela += 1
         interaction_text = rela['interaction'] if 'interaction' in rela else ''
         pubMedIds = rela['pubmedids'] if 'pubmedids' in rela else []
@@ -245,19 +272,19 @@ def take_all_relationships_of_go_chemical():
 
         if "increases^phenotype" in interactions_actions:
             check_for_rela_type(interactions_actions, 'INCREASES', chemical_id, drugbank_ids, go_id, interaction_text,
-                                pubMedIds, go_label, anatomy_terms, inference_gene_symbols, comentioned_terms, found_chemical_synonym, go_name)
+                                pubMedIds, go_label, anatomy_terms, inference_gene_symbols, comentioned_terms,
+                                found_chemical_synonym, go_name)
 
         elif "decreases^phenotype" in interactions_actions:
             check_for_rela_type(interactions_actions, 'DECREASES', chemical_id, drugbank_ids, go_id, interaction_text,
-                                pubMedIds, go_label, anatomy_terms, inference_gene_symbols, comentioned_terms, found_chemical_synonym, go_name)
+                                pubMedIds, go_label, anatomy_terms, inference_gene_symbols, comentioned_terms,
+                                found_chemical_synonym, go_name)
 
         else:
             add_pair_to_dict(chemical_id, drugbank_ids, go_id, interaction_text, interactions_actions, pubMedIds,
                              'ASSOCIATES', go_label, anatomy_terms, inference_gene_symbols, comentioned_terms, True)
 
     print('number of all rela in human organism:' + str(counter_all_rela))
-
-
 
 
 '''
@@ -280,33 +307,35 @@ def find_shortest_list_and_indices(list_of_lists):
 
     return indices, all_with_the_same_length
 
+
 '''
 generate cypher queries
 '''
-def generate_cypher_queries(file_name,label, rela, start_node, end_node):
-    query_first_part = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ctd/''' + file_name + '''" As line Match (b:Chemical{identifier:line.chemical_id}), (go:%s{identifier:line.go_id}) Create (%s)-[:%s {'''
-    query_first_part=query_first_part %(label,start_node,rela)
-    query_end='license:"CTD license"}]->(%s);\n'
+
+
+def generate_cypher_queries(file_name, label, rela, start_node, end_node):
+    query_first_part = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ctd/''' + file_name + '''" As line Fieldterminator '\\t' Match (b:Chemical{identifier:line.chemical_id}), (go:%s{identifier:line.go_id}) Create (%s)-[:%s {'''
+    query_first_part = query_first_part % (label, start_node, rela)
+    query_end = 'license:"CTD license"}]->(%s);\n'
     for property in header:
-        if property in ['chemical_id','go_id']:
+        if property in ['chemical_id', 'go_id']:
             continue
-        if property not in ['interaction_text','unbiased']:
-            query_first_part+= property+':split(line.'+property+',"|"), '
+        if property not in ['interaction_text', 'unbiased']:
+            query_first_part += property + ':split(line.' + property + ',"|"), '
         else:
             query_first_part += property + ':line.' + property + ', '
-    query=query_first_part+query_end %end_node
+    query = query_first_part + query_end % end_node
     cypherfile.write(query)
 
 
+# header for csv files
+header = ['chemical_id', 'go_id', 'interaction_text', 'pubmed_ids', 'interaction_actions', 'unbiased']
 
-#header for csv files
-header=['chemical_id','go_id', 'interaction_text', 'pubmed_ids', 'interaction_actions','unbiased']
-
-#dictionary from go term to shor form
-dict_go_term_to_short_form={
-    'BiologicalProcess':'BP',
-    'CellularComponent':'CC',
-    'MolecularFunction':'MF'
+# dictionary from go term to shor form
+dict_go_term_to_short_form = {
+    'BiologicalProcess': 'BP',
+    'CellularComponent': 'CC',
+    'MolecularFunction': 'MF'
 }
 
 '''
@@ -317,16 +346,18 @@ but only take the shortest interaction text and the associated intereaction acti
 
 
 def fill_the_csv_files():
-    for (rela_full,label,from_chemical), dict_chemical_go_pair in dict_rela_to_drug_go_pair.items():
-        short_form_label=dict_go_term_to_short_form[label]
+    for (rela_full, label, from_chemical), dict_chemical_go_pair in dict_rela_to_drug_go_pair.items():
+        short_form_label = dict_go_term_to_short_form[label]
         if from_chemical:
-            file_name='chemical_phenotype/chemical_'+label+'_'+rela_full+'.tsv'
-            generate_cypher_queries(file_name,label,rela_full+'_C'+rela_full[0].lower()+short_form_label,'b','go')
+            file_name = 'chemical_phenotype/chemical_' + label + '_' + rela_full + '.tsv'
+            generate_cypher_queries(file_name, label, rela_full + '_C' + rela_full[0].lower() + short_form_label, 'b',
+                                    'go')
         else:
-            file_name='chemical_phenotype/'+label+'_chemical_'+rela_full+'.tsv'
-            generate_cypher_queries(file_name,label,rela_full+'_'+short_form_label+rela_full[0].lower()+'C','go','b')
-        file=open(file_name,'w',encoding='utf-8')
-        csv_writer=csv.writer(file,delimiter='\t')
+            file_name = 'chemical_phenotype/' + label + '_chemical_' + rela_full + '.tsv'
+            generate_cypher_queries(file_name, label, rela_full + '_' + short_form_label + rela_full[0].lower() + 'C',
+                                    'go', 'b')
+        file = open(file_name, 'w', encoding='utf-8')
+        csv_writer = csv.writer(file, delimiter='\t')
         csv_writer.writerow(header)
         for (chemical_id, go_id), list_of_information in dict_chemical_go_pair.items():
             pubMedIds = list_of_information[1]
@@ -342,7 +373,7 @@ def fill_the_csv_files():
             unbiased = True if len(pubMedIds) > 0 else False
             shortest_interaction_text = '|'.join(shortest_interaction_text)
             csv_writer.writerow(
-                [chemical_id, go_id, shortest_interaction_text,  pubMedIds,
+                [chemical_id, go_id, shortest_interaction_text, pubMedIds,
                  shortest_interaction_actions
                     , unbiased])
 
