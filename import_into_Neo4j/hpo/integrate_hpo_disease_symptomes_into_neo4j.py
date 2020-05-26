@@ -38,7 +38,7 @@ list_of_disease_properties=['id','name','source']
 csv_writer.writerow(list_of_disease_properties)
 
 # csv file for the relationships
-list_of_rela_properties=['disease_id','phenotype_id','source','qualifier', 'evidence_code', 'frequency_modifier', 'aspect']
+list_of_rela_properties=['disease_id','phenotype_id','qualifier', 'evidence_code','source', 'frequency_modifier', 'aspect']
 writer_rela=open('rela_disease_phenotyp.csv','w', encoding='utf-8')
 csv_writer_rela=csv.writer(writer_rela)
 csv_writer_rela.writerow(list_of_rela_properties)
@@ -99,6 +99,7 @@ def gather_all_disease_symptom_information_from_HPO():
 
     global file_counter
     global cypher_file
+    next(f)
     for line in f:
 
         splitted = line.split('\t')
