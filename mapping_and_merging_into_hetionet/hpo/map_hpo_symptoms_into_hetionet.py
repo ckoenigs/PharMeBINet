@@ -382,7 +382,7 @@ def generate_cypher_queries():
     query = query % (path_of_directory, 'mapping_files/symptom_new.tsv')
     cypher_file.write(query)
 
-    query = '''Match (s1:Symptom)--(:HPOsymptom)-[:is_a]->(:HPOsymptom)--(s2:Symptom) Merge (s1)-[:IS_A_SiS{license:"HPO", source:"HPO", resource:["HPO"], hpo:"yes"}]->(s2);\n'''
+    query = '''Match (s1:Symptom)--(:HPOsymptom)-[:is_a]->(:HPOsymptom)--(s2:Symptom) Where not ID(s1)=ID(s2) Merge (s1)-[:IS_A_SiS{license:"HPO", source:"HPO", resource:["HPO"], hpo:"yes"}]->(s2);\n'''
     cypher_file.write(query)
 
 
@@ -398,7 +398,7 @@ hpo symptoms get the mapped umls_cui or mesh as property.
 '''
 
 
-def map_hpo_symptoms_and_integrate_into_hetionet():
+def map_hpo_symptoms_and_to_hetionet():
     global counter_symptoms, counter_no_umls_cui
     # '','hetionet_id', 'umls_cuis'
 
@@ -462,7 +462,7 @@ def main():
     print(datetime.datetime.utcnow())
     print('map hpo symptoms to mesh or umls cui and integrated them into hetionet')
 
-    map_hpo_symptoms_and_integrate_into_hetionet()
+    map_hpo_symptoms_and_to_hetionet()
 
     print('##########################################################################')
 
