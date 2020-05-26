@@ -41,7 +41,7 @@ def add_query_to_cypher_file(omim_label, database_label, rela_name_addition, fil
     add query for a specific csv to cypher file
     """
     if integer_id:
-        this_start_query = query_start + "(n:%s {identifier:line.identifier}), (m:%s{identifier:toInteger(line.database_id)})"
+        this_start_query = query_start + "(n:%s {identifier:line.identifier}), (m:%s{identifier:toInteger(line.database_id)})   "
     else:
         this_start_query = query_start + "(n:%s {identifier:line.identifier}), (m:%s{identifier:line.database_id}) "
     this_start_query += "Set m.resource=split(line.resource,'|'), m.omim='yes' , m.xrefs=split(line.xrefs,'|')  Create (m)-[:equal_to_omim_%s{mapping_methode:split(line.mapping_method,'|')}]->(n);\n"
@@ -77,13 +77,23 @@ def prepare_csv_files(file_name, file_header):
 
 
 def add_mapped_one_to_csv_file(dict_node_info, omim_id, mapped_id, csv_writer, mapping_dict, is_int=False):
+    """
+
+    :param dict_node_info:
+    :param omim_id:
+    :param mapped_id:
+    :param csv_writer:
+    :param mapping_dict:
+    :param is_int:
+    :return:
+    """
     if is_int:
         dict_node = dict_node_info[int(mapped_id)]
     else:
         dict_node = dict_node_info[mapped_id]
 
-    xrefs= dict_node['xrefs'] if 'xref' in dict_node else []
-    xrefs.append(omim_id)
+    xrefs= dict_node['xrefs'] if 'xref' not in dict_node else []
+    xrefs.append('OMIM'+':'+omim_id)
     xrefs = go_through_xrefs_and_change_if_needed_source_name(
         xrefs, 'Gene') if is_int else go_through_xrefs_and_change_if_needed_source_name(
         xrefs, 'Disease')
@@ -192,7 +202,7 @@ def create_query_for_phenotype(label, file_name):
     results=g.run(query)
     for property, in results:
         query_create+= property+':n.'+property+', '
-    query_create+= ' license:"OMIM"}, source:"OMIM", resource:["OMIM"], omim:"yes"}) Create (p)-[:equal_to_omim]->(n);\n'
+    query_create+= ' license:"OMIM", source:"OMIM", resource:["OMIM"], omim:"yes"}) Create (p)-[:equal_to_omim]->(n);\n'
     query_create=query_create % (path_of_directory, file_name,label)
     cypher_file.write(query_create)
 
