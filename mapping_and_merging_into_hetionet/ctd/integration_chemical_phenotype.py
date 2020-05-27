@@ -4,6 +4,7 @@ import datetime
 import sys
 from collections import defaultdict
 import re
+from typing import List
 
 from py2neo import Graph
 
@@ -132,17 +133,14 @@ dict_rela_name_to_text_name = {
 }
 
 
-def find_multiple_occurrences(substring, string):
+def find_multiple_occurrences(substring: str, string: str) -> List[int]:
     """
     search for all start indices of the substring in a string
     :param substring: string
     :param string: string
-    :return: set of indices
+    :return: list of indices
     """
-    list_of_indices = set()
-    for match in re.finditer(substring, string):
-        list_of_indices.add(match.start())
-    return list_of_indices
+    return [i for i in range(len(string)) if string.startswith(substring, i)]
 
 
 def check_for_go_and_chemical_in_string(string, found_chemical_synonym, go_name, rela_name, chemical_id, drugbank_ids,
@@ -221,13 +219,15 @@ def check_for_rela_type(interactions_actions, rela_name, chemical_id, drugbank_i
                 # find take every time the first time when the substring appeares, so some times the chemcial appears multiple
                 # time so the order for the sub action need to be new classified
 
-                found_together = check_for_go_and_chemical_in_string(smaller_part, found_chemical_synonym, go_name,
+                found_together_here = check_for_go_and_chemical_in_string(smaller_part, found_chemical_synonym, go_name,
                                                                      rela_name, chemical_id,
                                                                      drugbank_ids, go_id, interaction_text,
                                                                      interactions_actions,
                                                                      pubMedIds, label, anatomy_terms,
                                                                      inference_gene_symbols,
                                                                      comentioned_terms)
+                if  found_together_here:
+                    found_together=True
 
         if not found_together:
             add_pair_to_dict(chemical_id, drugbank_ids, go_id, interaction_text, interactions_actions, pubMedIds,
@@ -244,7 +244,7 @@ def take_all_relationships_of_go_chemical():
     counter_all_rela = 0
 
     #  Where chemical.chemical_id='D000117' and go.go_id='2219'; Where chemical.chemical_id='C057693' and go.go_id='4128' Where chemical.chemical_id='D001564' and go.go_id='9429'  Where chemical.chemical_id='D004976' and go.go_id='2950' Where chemical.chemical_id='D015741' and go.go_id='367'
-    query = '''MATCH (chemical:CTDchemical)-[r:phenotype{organismid:'9606'}]->(cgo:CTDGO)-[:equal_to_CTD_go]-(go) RETURN cgo.go_id, cgo.name, labels(go), r, chemical.chemical_id, chemical.name, chemical.synonyms, chemical.drugBankIDs'''
+    query = '''MATCH (chemical:CTDchemical)-[r:phenotype{organismid:'9606'}]->(cgo:CTDGO)-[:equal_to_CTD_go]-(go)      Where  chemical.chemical_id='D000077212'     RETURN cgo.go_id, cgo.name, labels(go), r, chemical.chemical_id, chemical.name, chemical.synonyms, chemical.drugBankIDs'''
     results = g.run(query)
 
     for go_id, go_name, go_labels, rela, chemical_id, chemical_name, chemical_synonyms, drugbank_ids, in results:
@@ -316,7 +316,7 @@ generate cypher queries
 def generate_cypher_queries(file_name, label, rela, start_node, end_node):
     query_first_part = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ctd/''' + file_name + '''" As line Fieldterminator '\\t' Match (b:Chemical{identifier:line.chemical_id}), (go:%s{identifier:line.go_id}) Create (%s)-[:%s {'''
     query_first_part = query_first_part % (label, start_node, rela)
-    query_end = 'license:"CTD license"}]->(%s);\n'
+    query_end = 'ctd:"yes", source:"CTD", ctd_url:"http://ctdbase.org/detail.go?type=chem&acc="+line.chemical_id ,resource:["CTD"], license:"© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved"}]->(%s);\n'
     for property in header:
         if property in ['chemical_id', 'go_id']:
             continue
