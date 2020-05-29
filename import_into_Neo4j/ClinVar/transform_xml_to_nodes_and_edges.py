@@ -536,7 +536,7 @@ prepare relationship between variation
 '''
 
 
-def perpare_rela_between_variations(node, variant_id, id_name, tag_name, from_type, to_type):
+def prepare_rela_between_variations(node, variant_id, id_name, tag_name, from_type, to_type):
     for single_allele in node.iterfind(tag_name):
         single_variation_id = single_allele.get('VariationID')
         if not (from_type, to_type) in edge_between_variations:
@@ -997,7 +997,7 @@ def get_information_from_full_relase():
 
                 writer = open('data/trait_set_' + trait_set_type + '.tsv', 'w', encoding='utf-8')
                 csv_writer = csv.DictWriter(writer, delimiter='\t', fieldnames=list_head_trait, escapechar="\\",
-                                             doublequote=False)
+                                            doublequote=False)
                 csv_writer.writeheader()
                 dict_trait_set_typ_to_csv[trait_set_type] = csv_writer
 
@@ -1041,7 +1041,7 @@ def get_information_from_full_relase():
 
                         writer = open('data/trait_' + trait_type + '.tsv', 'w', encoding='utf-8')
                         csv_writer = csv.DictWriter(writer, delimiter='\t', fieldnames=list_head_trait, escapechar="\\",
-                                             doublequote=False)
+                                                    doublequote=False)
                         csv_writer.writeheader()
                         dict_trait_typ_to_csv[trait_type] = csv_writer
 
@@ -1184,7 +1184,7 @@ def get_information_from_full_relase():
                 file = open('data/edges/edges_' + general_type + '_' + trait_set_type + '_' + final_assertion + '.tsv',
                             'w', encoding='utf-8')
                 csv_writer = csv.DictWriter(file, fieldnames=edge_information, delimiter='\t', escapechar="\\",
-                                             doublequote=False)
+                                            doublequote=False)
                 csv_writer.writeheader()
                 dict_edge_types_to_csv[(general_type, trait_set_type, final_assertion)] = csv_writer
             # if (variant_id, trait_set_id) not in dict_edges[(general_type, trait_set_type)]:
@@ -1219,8 +1219,8 @@ def perpare_query_for_edges():
         # print(query_edge_variation_trait_set)
         final_assertion = '_'.join(final_assertion.split(' '))
         query = query_edge_variation_trait_set % (
-        general_type, trait_set_type, final_assertion, general_type, 'variant_id', 'trait_set_' + trait_set_type,
-        'trait_set_id', final_assertion)
+            general_type, trait_set_type, final_assertion, general_type, 'variant_id', 'trait_set_' + trait_set_type,
+            'trait_set_id', final_assertion)
         end_query = ' Set '
         for head in edge_information:
             if head in dict_edge_trait_set_variation_pair_to_list_of_list_properties[
@@ -1279,8 +1279,8 @@ def preparation_on_variation_haplo_or_genotype(interpreted_record, variant_id, d
             csv_writer_type.writeheader()
             dict_csv_file_variation['Genotype'][variation_type] = csv_writer_type
 
-        perpare_rela_between_variations(genotype, variant_id, 'genotyp_id', 'SimpleAllele', 'Genotype', 'Variant')
-        perpare_rela_between_variations(genotype, variant_id, 'genotyp_id', 'Haplotype', 'Genotype', 'Haplotype')
+        prepare_rela_between_variations(genotype, variant_id, 'genotyp_id', 'SimpleAllele', 'Genotype', 'Variant')
+        prepare_rela_between_variations(genotype, variant_id, 'genotyp_id', 'Haplotype', 'Genotype', 'Haplotype')
 
         if variant_id in dict_variation_to_node_ids['Genotype'][variation_type]:
             return True
@@ -1321,7 +1321,7 @@ def preparation_on_variation_haplo_or_genotype(interpreted_record, variant_id, d
             csv_writer_type.writeheader()
             dict_csv_file_variation['Haplotype'][variation_type] = csv_writer_type
 
-        perpare_rela_between_variations(haplotype, variant_id, 'haplo_id', 'SimpleAllele', 'Haplotype', 'Variant')
+        prepare_rela_between_variations(haplotype, variant_id, 'haplo_id', 'SimpleAllele', 'Haplotype', 'Variant')
 
         if variant_id in dict_variation_to_node_ids['Haplotype'][variation_type]:
             return True
@@ -1453,7 +1453,7 @@ def prepare_content_of_cypher_file(type_variation, dict_set_of_property_which_ar
             query += head + ':split(line.' + head + ",'|'), "
         else:
             query += head + ':line.' + head + ', '
-    query = query[:-2] + '});\n'
+    query = query + ' license:"CC0 1.0"});\n'
     type_variation = type_variation.replace(' ', '_')
     if extra_name is None:
         this_query = query % (type_variation, type_variation)
@@ -1473,10 +1473,10 @@ def generate_node_cypher(dict_variation_to_node_ids, list_head, extra_name=None,
     for key, value in dict_variation_to_node_ids.items():
         if type(value) == dict:
             if is_Varient and not key == "Variant":
-                query_add = query + ':Variant_ClinVar {'
+                query_add = query + ':Variant_ClinVar '
             else:
-                quer_add = query
-            new_query = quer_add + ':' + key.replace(' ', '_') + '_ClinVar {'
+                query_add = query
+            new_query = query_add + ':' + key.replace(' ', '_') + '_ClinVar {'
             for lower_key in value.keys():
                 if lower_key != key:
                     list_of_sets_properties = dict_type_to_list_property_list[lower_key]
@@ -1484,7 +1484,7 @@ def generate_node_cypher(dict_variation_to_node_ids, list_head, extra_name=None,
 
                 else:
                     list_of_sets_properties = dict_type_to_list_property_list[key]
-                    prepare_content_of_cypher_file(key, list_of_sets_properties, quer_add + ' {', list_head, extra_name)
+                    prepare_content_of_cypher_file(key, list_of_sets_properties, query_add + ' {', list_head, extra_name)
         else:
             list_of_sets_properties = dict_type_to_list_property_list[key]
             prepare_content_of_cypher_file(key, list_of_sets_properties, query + '{', list_head, extra_name)
