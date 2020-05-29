@@ -61,7 +61,7 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
             else:
                 query += header_property + ':line.' + header_property + ' ,'
 
-        query = query[:-2] + '});\n'
+        query = query + ' license:"CC0 1.0"});\n'
         cypher_file.write(query)
         query = 'Create Constraint On (node:Gene_Ncbi) Assert node.identifier Is Unique;\n'
         cypher_file.write(query)
