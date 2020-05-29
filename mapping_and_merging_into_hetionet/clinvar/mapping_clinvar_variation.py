@@ -28,21 +28,22 @@ cypher_file=open('cypher_variants.cypher','w',encoding='utf-8')
 query_start='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%s/master_database_change/mapping_and_merging_into_hetionet/clinvar/output/%s.tsv" As line FIELDTERMINATOR '\\t' 
     Match '''
 
-query_middle="{"
+
 
 '''
 Get all properties of variation and prepare properties and end of 
 '''
 def get_all_variation_properties():
     global query_middle
+    query_middle = "{"
     query='''MATCH (p:Variant_ClinVar) WITH DISTINCT keys(p) AS keys
         UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields
         RETURN allfields;'''
     results=g.run(query)
     for property, in results:
         if property not in ['identifier','rela']:
-            query_middle+=query_middle+ property+':n.'+property+', '
-    query_middle=query_middle[:-2]+'})-[:equal_to_clinvar_variant]->(n);\n'
+            query_middle+= property+':n.'+property+', '
+    query_middle=query_middle+' license:"CC0 1.0", source:"ClinVar", clinvar:"yes",  resource:["ClinVar"], url":https://www.ncbi.nlm.nih.gov/gene/?term="+line.identifier}) Create (m)-[:equal_to_clinvar_variant]->(n);\n'
 
 
 '''
@@ -120,7 +121,6 @@ def load_all_variants_and_finish_the_files():
         dict_tuple_of_labels_to_csv_files[new_labels].writerow([identifier])
 
         if 'rela' in node:
-            print(identifier)
             relationship_infos=json.loads(node["rela"].replace('\\"','"'))
             for rela in relationship_infos:
                 symbols=rela['symbols'] if 'symbols' in rela else []
@@ -132,14 +132,18 @@ def load_all_variants_and_finish_the_files():
                         if gene_id in dict_gene_id_to_gene_node:
                             gene_symbols=set(dict_gene_id_to_gene_node[gene_id]['geneSymbol'])
                             found_gene=True
-                            if len(gene_symbols.intersection(symbols))==0:
-
-                                print(dict_gene_id_to_gene_node[gene_id])
-                                sys.exit('different gene symbols')
+                            # in clivar is a different gene symbol which is in the gene synonyms
+                            # if len(gene_symbols.intersection(symbols))==0:
+                            #     print(identifier)
+                            #     print(gene_id)
+                            #     print(dict_gene_id_to_gene_node[gene_id])
+                            #     print('different gene symbols')
                             csv_rela.writerow([str(gene_id),identifier])
-                if not found_gene:
-                    print('non gene found')
-                    print(rela)
+                 # all the not found is because they are linked to removed or replaced genes
+                # if not found_gene:
+                #     print(identifier)
+                #     print('non gene found')
+                #     print(rela)
 
 
 
@@ -171,6 +175,7 @@ def main():
 
     print(datetime.datetime.utcnow())
     print('connection to db')
+
     database_connection()
 
     print('##########################################################################')
@@ -179,6 +184,13 @@ def main():
     print('Load all genes from database')
 
     load_genes_from_database_and_add_to_dict()
+
+    print('##########################################################################')
+
+    print(datetime.datetime.utcnow())
+    print('get all kind of properties of the variants')
+
+    get_all_variation_properties()
 
     print('##########################################################################')
 
