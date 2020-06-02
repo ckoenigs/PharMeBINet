@@ -49,7 +49,10 @@ def prepare_string_to_dictionary(multi_list_string, property_extra, dictionary):
             if property_extra + key + 's' not in dictionary:
                 set_of_headers.add(property_extra + key + 's')
                 dictionary[property_extra + key + 's'] = set()
-            dictionary[property_extra + key + 's'].add(value)
+            if type(value) == str:
+                dictionary[property_extra + key + 's'].add(value)
+            else:
+                dictionary[property_extra + key + 's'] = dictionary[property_extra + key + 's'].union(value)
 
 
 def split_and_return_name_and_symbol(string):
@@ -64,12 +67,23 @@ def split_and_return_name_and_symbol(string):
     string = string.split('; ')
 
     if len(string) > 2:
-        # todo check how often this happend
-        print('string with more then one ; ;(')
-        print(string)
+        dict_name_symbol['name'] = string[0]
+        symbols=[]
+        # nearly all are symbols only two cases where an alternative name is, here this cases will be ignored if the
+        # string is longer then 2. It is still possible that a name will appear there but the manual checking shows
+        # that all alternative names have more then 2 words.
+        for symbol in string[1:]:
+            symbol_split=symbol.split(' ')
+            if len(symbol_split)<=2:
+                symbols.append(symbol)
+            elif 'symbol' in symbol.lower():
+                symbols.append(symbol)
+
+        dict_name_symbol['symbol'] = symbols
+        # print(dict_name_symbol)
     elif len(string) == 2:
         dict_name_symbol['name'] = string[0]
-        dict_name_symbol['symbol'] = string[1]
+        dict_name_symbol['symbol'] = [string[1]]
     else:
         dict_name_symbol['name'] = string[0]
 
@@ -97,14 +111,18 @@ def load_in_mim_titles():
         set_of_headers.add('detail_information')
 
         prefered = split_and_return_name_and_symbol(line[2])
+        print(line[2])
         if len(prefered) == 2:
             dict_title['name'] = prefered['name']
-            dict_title['symbol'] = prefered['symbol']
+            dict_title['symbol'] = prefered['symbol'][0]
+            if len(prefered['symbol']) > 1:
+                dict_title['alternative_symbols'] = set(prefered['symbol'][1:])
         else:
             dict_title['name'] = prefered['name'] if 'name' in prefered else ''
 
         set_of_headers.add('name')
         set_of_headers.add('symbol')
+        set_of_headers.add('alternative_symbols')
 
         prepare_string_to_dictionary(line[3], 'alternative_', dict_title)
 
@@ -209,7 +227,16 @@ def prepare_name_and_markers_and_add_to_dict(string, dict_phenotype, dict_rela):
     :param dict_rela: dictionary
     :return: name
     """
-    name, marks_information = check_for_symbol_around_name(string)
+    marks_information = []
+    same_name = False
+    while not same_name:
+        name, marks_info = check_for_symbol_around_name(string)
+        if marks_info != '':
+            marks_information.append(marks_info)
+            string=name
+        else:
+            same_name = True
+
     dict_phenotype['name'] = name
 
     dict_rela['kind_of_rela'] = marks_information
@@ -273,8 +300,8 @@ def work_with_name_omim_and_mapping_key(omim_key_part, name, dict_rela, omim_id,
         else:
             name = name_part
 
-        print(omim_id_phenotype)
-        print('thought a string is a omim id ;(')
+        # print(omim_id_phenotype)
+        # print('thought a string is a omim id ;(')
         unkown_counter += 1
         omim_id_phenotype = 'unkown_' + str(unkown_counter)
 
@@ -284,7 +311,10 @@ def work_with_name_omim_and_mapping_key(omim_key_part, name, dict_rela, omim_id,
     # name
     name = prepare_name_and_markers_and_add_to_dict(name, dict_phenotype, dict_rela)
     if not is_digital:
-        dict_unknown_phenotype_name_to_id[name.lower()] = omim_id_phenotype
+        if name.lower() not in dict_unknown_phenotype_name_to_id:
+            dict_unknown_phenotype_name_to_id[name.lower()] = omim_id_phenotype
+        else:
+            omim_id_phenotype = dict_unknown_phenotype_name_to_id[name.lower()]
 
     check_for_omim_and_add_dictionary(omim_id_phenotype, dict_phenotype)
     return omim_id_phenotype
@@ -332,9 +362,9 @@ def prepare_phenotype_gene_relationships(omim_id, phenotypes, comments):
 
             if (omim_id, omim_phenotype_id) not in dict_relationships:
                 dict_relationships[(omim_id, omim_phenotype_id)] = []
-            else:
-                print('double')
-                print((omim_id, omim_phenotype_id))
+            # else:
+            #     print('double in one file')
+            #     print((omim_id, omim_phenotype_id))
             dict_relationships[(omim_id, omim_phenotype_id)].append(dict_rela)
 
 
@@ -372,9 +402,9 @@ def load_in_genemap2():
     # file = open('data/part_genemap2.txt', 'r', encoding='utf-8')
     csv_reader = csv.reader(file, delimiter='\t')
     next(csv_reader)
-    counter=0
+    counter = 0
     for line in csv_reader:
-        counter+=1
+        counter += 1
         dict_genemap2 = {}
         dict_genemap2['labels'] = 'gene'
         # print(line)
@@ -405,9 +435,10 @@ def load_in_genemap2():
         prepare_phenotype_gene_relationships(omim_id, line[12], comments)
 
         check_for_omim_and_add_dictionary(omim_id, dict_genemap2)
-        print(counter)
-        print(len(dict_relationships))
-        print('huhu')
+        if counter%1000==0:
+            print(counter)
+            print(len(dict_relationships))
+            print('huhu')
 
 
 def check_for_name_in_dictionary_if_same_id(omim_id, name):
@@ -556,7 +587,8 @@ def prepare_queries(query_start):
     query_node += '});\n'
 
     query_edge = query_start + ' Match (a:%s_omim{identifier:line.id_1}), (b:%s_omim{identifier:line.id_2}) Create (a)-[:%s{'
-    query_edge = add_properties_to_query(set_of_headers_rela, query_edge, ['inheritance','kind_of_rela','phenotype_mapping_key'])
+    query_edge = add_properties_to_query(set_of_headers_rela, query_edge,
+                                         ['inheritance', 'kind_of_rela', 'phenotype_mapping_key'])
     query_edge += '}]->(b);\n'
     set_of_headers_rela.add('id_1')
     set_of_headers_rela.add('id_2')
@@ -583,8 +615,9 @@ def prepare_labels(label):
 
 # cypher file
 cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
-query_constraint='''Create Constraint On (node:%s_omim) Assert node.identifier Is Unique;\n'''
-set_of_existing_constrains=set()
+query_constraint = '''Create Constraint On (node:%s_omim) Assert node.identifier Is Unique;\n'''
+set_of_existing_constrains = set()
+
 
 def add_node_query_to_cypher(labels, query_node, file_name):
     """
@@ -599,7 +632,7 @@ def add_node_query_to_cypher(labels, query_node, file_name):
     cypher_file.write(query_node)
     for label in labels:
         if not label in set_of_existing_constrains:
-            one_constraint= query_constraint % label
+            one_constraint = query_constraint % label
             cypher_file.write(one_constraint)
             set_of_existing_constrains.add(label)
 
@@ -706,7 +739,7 @@ def combine_the_node_information(query_node):
 
     dict_omim_number_to_dict_of_information.clear()
 
-    print('number of nodes:'+str(len(dict_omim_id_to_node)))
+    print('number of nodes:' + str(len(dict_omim_id_to_node)))
 
     print(dict_same_label_different_values.keys())
     for key, lists in dict_same_label_different_values.items():
@@ -802,7 +835,7 @@ def prepare_and_add_relationships(query_edge):
     :param query_edge: string
     :return:
     """
-    counter=0
+    counter = 0
     for (omim_id, phenotype_omim_id), list_of_dicts in dict_relationships.items():
         labels_gene = dict_omim_id_to_node[omim_id]['labels']
         dict_omim_ids_to_labels, removed = check_labels_if_removed(labels_gene, omim_id)
@@ -816,9 +849,9 @@ def prepare_and_add_relationships(query_edge):
         for dict_info in list_of_dicts:
             for key, value in dict_info.items():
                 if key in dict_combined_rela and dict_combined_rela[key] != value and (
-                        (type(value) == str and value != '') or (type(value) == list and len(value) == 0)):
+                        (type(value) == str and value != '') or (type(value) == list and len(value) > 0)):
                     if key == 'kind_of_rela':
-                        dict_combined_rela[key] = dict_combined_rela[key] + '|' + value
+                        dict_combined_rela[key] = set(dict_combined_rela[key] ).union(value)
                         continue
                     if key == 'phenotype_mapping_key':
                         dict_combined_rela[key] = dict_combined_rela[key] + '|' + value
@@ -836,10 +869,10 @@ def prepare_and_add_relationships(query_edge):
 
         for omim_id, labels in dict_omim_ids_to_labels.items():
             for phenotype_omim_id, phenotype_labels in dict_phenotype_omim_ids_to_labels.items():
-                counter+=1
+                counter += 1
                 write_to_csv_rela(omim_id, labels, phenotype_omim_id, phenotype_labels, dict_combined_rela, query_edge)
 
-    print('number of relationships:'+str(counter))
+    print('number of relationships:' + str(counter))
     print(dict_same_rela_properties.keys())
     for key, lists in dict_same_rela_properties.items():
         print(key + ':' + str(len(lists)))
@@ -879,7 +912,7 @@ def main():
     print(datetime.datetime.utcnow())
     print('Load morbidmap')
 
-    # load_in_morbidmap()
+    load_in_morbidmap()
 
     print('##########################################################################')
 
