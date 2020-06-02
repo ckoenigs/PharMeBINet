@@ -65,21 +65,25 @@ def get_all_already_existing_relationships():
     for disease_id, resource, symptom_id, in results:
         dict_disease_symptom_pair_hetionet[(disease_id, symptom_id)] = resource
 
-def prepare_all_relationships_infos(properties,connection):
+def prepare_all_relationships_infos(properties,connection, mondo_id, symptom_id):
     """
     prepare all relationship infos into a list, the aspects are transformed into readable values and also the frequencies
     :param properties: list of strings
     :param connection: dictionary
+    :param mondo_id: string
+    :param symptom_id: string
     :return: list of the properties
     """
-    rela_properties = []
-    for property in properties:
-        if property not in ['frequency_modifier', 'aspect']:
+    rela_properties = [mondo_id,symptom_id]
+
+    for property in properties[2:]:
+        if property not in ['frequency_name', 'aspect','frequency_def']:
             rela_properties.append(connection[property])
         elif property == 'aspect':
             if 'aspect' in connection:
                 if len(connection['aspect']) > 1:
                     sys.exit('HPO mapping has multiple aspects')
+                # it should be every time one long
                 for aspect in connection['aspect']:
                     if aspect in dict_aspect:
                         rela_properties.append(dict_aspect[aspect])
@@ -87,13 +91,24 @@ def prepare_all_relationships_infos(properties,connection):
                         rela_properties.append(aspect)
             else:
                 rela_properties.append('')
-        elif property=='frequency_modifier':
-            node = dict_hpo_symptom_to_info[connection[property]]
-            rela_properties.append(node['name'])
-            rela_properties.append(node['def'])
+        elif property=='frequency_name':
+            if 'frequency_modifier' in connection:
+                hpos=connection['frequency_modifier']
+                frequencies=[]
+                def_frequencies=[]
+                for hpo in hpos:
+                    node = dict_hpo_symptom_to_info[hpo]
+                    frequencies.append(node['name'])
+                    def_frequencies.append(node['def'])
+                rela_properties.append('|'.join(frequencies))
+                rela_properties.append('|'.join(def_frequencies))
+
+            else:
+                rela_properties.append('')
+                rela_properties.append('')
     return rela_properties
 
-def check_for_pair_in_dictionary(mondo,symptom_id, rela_information_list , dictionary):
+def check_for_pair_in_dictionary(mondo,symptom_id, rela_information_list , dictionary,add_resource=None):
     '''
     check if the pair is already in dictionary or not
     if not generate pair in dictionary
@@ -104,13 +119,37 @@ def check_for_pair_in_dictionary(mondo,symptom_id, rela_information_list , dicti
     :return:
     '''
     if not (mondo, symptom_id) in dictionary:
+        if  add_resource is not None:
+            add_resource.append('HPO')
+            add_resource=sorted(set(add_resource))
+            rela_information_list.append(add_resource)
         dictionary[(mondo, symptom_id)] = rela_information_list
     else:
-        print(mondo)
-        print(symptom_id)
-        print(rela_information_list)
-        print(dictionary[(mondo, symptom_id)])
-        sys.exit('multiple information rela')
+        for index, value in enumerate(dictionary[(mondo, symptom_id)]):
+            # should avoid the problem that the new rela info do not contain the resource info
+            if len(rela_information_list)==index:
+                continue
+            if type(value)== str:
+                if rela_information_list[index]!=value:
+                    if value=='':
+                        dictionary[(mondo, symptom_id)][index]=rela_information_list[index]
+                    elif rela_information_list[index] =='':
+                        continue
+                    else:
+                        new_string=[]
+                        splitted_new_infos=rela_information_list[index].split('|')
+                        for string_part in value.split('|'):
+                            if not string_part in splitted_new_infos:
+                                new_string.append(string_part)
+                        new_string.extend(splitted_new_infos)
+                        dictionary[(mondo, symptom_id)][index]="|".join(new_string)
+            else:
+                if rela_information_list[index]!=value:
+                    for element in rela_information_list[index]:
+                        if element!='':
+                           value.append(element)
+                    dictionary[(mondo, symptom_id)][index]=value
+
 
 '''
 generate cypher file for the disease symptom connections, but only for the pairs where hpo
@@ -145,14 +184,16 @@ def generate_cypher_file_for_connection(cypher_file):
             query_exist += 'r.' + result + '=split(line.' + result + ',"|"), '
             query_new += result + ':split(line.' + result + ',"|"), '
         else:
-            for x in ['frequence_name', 'frequence_def']:
+            for x in ['frequency_name', 'frequency_def']:
                 properties.append(x)
                 query_exist += 'r.' + x + '=split(line.' + x + ',"|"), '
                 query_new += x + ':split(line.' + x + ',"|"), '
 
     csv_rela_new.writerow(properties)
-    csv_rela_update.writerow(properties)
-    query_exists = query_start + query_exist + "r.hpo='yes', r.version='phenotype_annotation.tab 2019-11-08', r.resource=r.resource+'HPO', r.url='http://compbio.charite.de/hpoweb/showterm?disease='+line.source; \n"
+    other_properties=properties[:]
+    other_properties.append('resource')
+    csv_rela_update.writerow(other_properties)
+    query_exists = query_start + query_exist + "r.hpo='yes', r.version='phenotype_annotation.tab 2019-11-08', r.resource=split(line.resource,'|'), r.url='http://compbio.charite.de/hpoweb/showterm?disease='+line.source; \n"
     query_exists = query_exists % (path_of_directory, "mapping_files/rela_update.tsv")
     cypher_file.write(query_exists)
     query = '''Match (n:Disease)-[r:PRESENTS_DpS]-(s:Symptom) Where r.hpo='yes SET r.resource=r.resource+'HPO';\n '''
@@ -168,11 +209,19 @@ def generate_cypher_file_for_connection(cypher_file):
     results = g.run(query)
     # fill the files
     for mondo, relationship, symptom_id, in results:
-        rela_information_list=prepare_all_relationships_infos(properties,relationship)
+        rela_information_list=prepare_all_relationships_infos(properties,relationship, mondo, symptom_id)
         if (mondo, symptom_id) in dict_disease_symptom_pair_hetionet:
-            check_for_pair_in_dictionary(mondo,symptom_id,rela_information_list,dict_mapped_pair_to_info)
+            check_for_pair_in_dictionary(mondo,symptom_id,rela_information_list,dict_mapped_pair_to_info, add_resource=dict_disease_symptom_pair_hetionet[(mondo, symptom_id)])
         else:
             check_for_pair_in_dictionary(mondo,symptom_id,rela_information_list,dict_new_pair_to_info)
+
+    for (mondo_id, symptom_id), rela_info in dict_mapped_pair_to_info.items():
+        count_update_connection+=1
+        csv_rela_update.writerow(rela_info)
+
+    for (mondo_id, symptom_id), rela_info in dict_new_pair_to_info.items():
+        count_new_connection+=1
+        csv_rela_new.writerow(rela_info)
         # for hpo_disease_id in hpo_disease_ids:
         #     query = '''MATCH p=(:HPOdisease{id:"%s"})-[r:present]->(b) RETURN r, b.id '''
         #     query = query % (hpo_disease_id)

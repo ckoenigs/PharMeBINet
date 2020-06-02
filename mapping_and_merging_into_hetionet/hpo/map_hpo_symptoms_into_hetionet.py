@@ -364,8 +364,9 @@ def generate_cypher_queries():
 
     for property in set_header_for_files:
         if property in ['name', 'identifier']:
+            if property=='name':
+                query_start_create += property + ':line.' + property + ', '
             continue
-            # query_start_create += property + ':line.' + property + ', '
         else:
             query_start_create += property + ':split(line.' + property + ',"|"), '
             query_start_match += 'n.' + property + '=split(line.' + property + ',"|"), '
