@@ -15,7 +15,7 @@ def database_connection():
 
 cypher_file = open('output/cypher_phenotype.cypher', 'w', encoding='utf-8')
 
-query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%s/master_database_change/mapping_and_merging_into_hetionet/omim/%s" As line FIELDTERMINATOR '\\t' 
+query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/omim/%s" As line FIELDTERMINATOR '\\t' 
     Match '''
 
 
@@ -137,8 +137,8 @@ def load_phenotype_from_omim_and_map():
     counter_different_names = 0
 
     # generate query
-    add_query_to_cypher_file('phenotype_omim', 'Disease', 'disease', file_name)
-    create_query_for_phenotype('phenotype_omim',file_name_not_mapped)
+    add_query_to_cypher_file('predominantly_phenotypes_omim', 'Disease', 'disease', file_name)
+    create_query_for_phenotype('predominantly_phenotypes_omim',file_name_not_mapped)
     for node, labels, in results:
         identifier = node['identifier']
         name = node['name'].lower() if 'name' in node else ''
