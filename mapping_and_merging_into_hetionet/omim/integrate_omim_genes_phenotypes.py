@@ -6,6 +6,7 @@ import csv
 sys.path.append("..")
 from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
 
+
 def database_connection():
     """
     create connection to neo4j
@@ -32,20 +33,24 @@ def load_genes_from_database_and_add_to_dict():
 
 cypher_file = open('output/cypher_gene_phenotype.cypher', 'w', encoding='utf-8')
 
-query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%s/master_database_change/mapping_and_merging_into_hetionet/omim/%s" As line FIELDTERMINATOR '\\t' 
+query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/omim/%s" As line FIELDTERMINATOR '\\t' 
     Match '''
 
 
-def add_query_to_cypher_file(omim_label, database_label, rela_name_addition, file_name, integer_id=False):
+def add_query_to_cypher_file(omim_label, database_label, rela_name_addition, file_name, integer_id=False,
+                             additional_labels=[]):
     """
     add query for a specific csv to cypher file
     """
     if integer_id:
-        this_start_query = query_start + "(n:%s {identifier:line.identifier}), (m:%s{identifier:toInteger(line.database_id)})   "
+        part = "(n{identifier:line.identifier}), (m:%s{identifier:toInteger(line.database_id)}) Where n:%s or n:%s or n:%s "
+        part = part % (database_label, omim_label, additional_labels[0], additional_labels[1])
     else:
-        this_start_query = query_start + "(n:%s {identifier:line.identifier}), (m:%s{identifier:line.database_id}) "
+        part = "(n:%s {identifier:line.identifier}), (m:%s{identifier:line.database_id}) " % (
+        omim_label, database_label)
+    this_start_query = query_start + part
     this_start_query += "Set m.resource=split(line.resource,'|'), m.omim='yes' , m.xrefs=split(line.xrefs,'|')  Create (m)-[:equal_to_omim_%s{mapping_methode:split(line.mapping_method,'|')}]->(n);\n"
-    query = this_start_query % (path_of_directory, file_name, omim_label, database_label, rela_name_addition)
+    query = this_start_query % (path_of_directory, file_name, rela_name_addition)
     cypher_file.write(query)
 
 
@@ -92,13 +97,13 @@ def add_mapped_one_to_csv_file(dict_node_info, omim_id, mapped_id, csv_writer, m
     else:
         dict_node = dict_node_info[mapped_id]
 
-    xrefs= dict_node['xrefs'] if 'xref' not in dict_node else []
-    xrefs.append('OMIM'+':'+omim_id)
+    xrefs = dict_node['xrefs'] if 'xref' not in dict_node else []
+    xrefs.append('OMIM' + ':' + omim_id)
     xrefs = go_through_xrefs_and_change_if_needed_source_name(
         xrefs, 'Gene') if is_int else go_through_xrefs_and_change_if_needed_source_name(
         xrefs, 'Disease')
 
-    resource=dict_node['resource']
+    resource = dict_node['resource']
     resource.append('OMIM')
     resource = list(set(resource))
     csv_writer.writerow([omim_id, mapped_id, "|".join(resource), "|".join(xrefs)])
@@ -119,7 +124,8 @@ def load_all_omim_gene_and_start_mapping():
     file_name_not_mapped = "gene/not_mapping.tsv"
     csv_writer_not = prepare_csv_files(file_name_not_mapped, ['identifier', 'name'])
     # generate query
-    add_query_to_cypher_file('gene_omim', 'Gene', 'gene', file_name, integer_id=True)
+    add_query_to_cypher_file('gene_omim', 'Gene', 'gene', file_name, integer_id=True,
+                             additional_labels=['phenotype_omim', 'predominantly_phenotypes_omim'])
 
     counter_different_symbol = 0
     for node, labels, in results:
@@ -161,6 +167,8 @@ def load_all_omim_gene_and_start_mapping():
     print('number of mapped gene:' + str(counter_mapped))
     print('number of not mapped gene:' + str(len(set_not_mapped_ids)))
     print(counter_different_symbol)
+
+    return csv_writer
     # print(set_not_mapped_ids)
 
 
@@ -189,6 +197,7 @@ def load_disease_from_database_and_add_to_dict():
                 dict_omim_id_to_disease_ids[omim_id].append(identifier)
     print("number of omim to disease:" + str(len(dict_omim_id_to_disease_ids)))
 
+
 def create_query_for_phenotype(label, file_name):
     """
     create the query for Phenotype by getting the properties form omim
@@ -196,15 +205,16 @@ def create_query_for_phenotype(label, file_name):
     :param file_name:string
     :return:
     """
-    query_create=query_start+' (n:%s {identifier:line.identifier}) Create (p:Phenotype {'
-    query='MATCH (p:%s) WITH DISTINCT keys(p) AS keys UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields RETURN allfields;'
-    query=query % label
-    results=g.run(query)
+    query_create = query_start + ' (n:%s {identifier:line.identifier}) Create (p:Phenotype {'
+    query = 'MATCH (p:%s) WITH DISTINCT keys(p) AS keys UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields RETURN allfields;'
+    query = query % label
+    results = g.run(query)
     for property, in results:
-        query_create+= property+':n.'+property+', '
-    query_create+= ' license:"OMIM", source:"OMIM", resource:["OMIM"], omim:"yes"}) Create (p)-[:equal_to_omim]->(n);\n'
-    query_create=query_create % (path_of_directory, file_name,label)
+        query_create += property + ':n.' + property + ', '
+    query_create += ' license:"OMIM", source:"OMIM", resource:["OMIM"], omim:"yes"}) Create (p)-[:equal_to_omim]->(n);\n'
+    query_create = query_create % (path_of_directory, file_name, label)
     cypher_file.write(query_create)
+
 
 # dictionary omim id to phenotype node
 dict_omim_id_to_phenotype = {}
@@ -213,7 +223,12 @@ dict_omim_id_to_phenotype = {}
 dict_mapped_phenotype_disease_tuple = {}
 
 
-def load_phenotype_from_omim_and_map():
+def load_phenotype_from_omim_and_map(gene_writer):
+    """
+    go through all phenotypes an try to map to disease and gene
+    :param gene_writer: csv writer
+    :return:
+    """
     query = "MATCH (n:phenotype_omim) RETURN n, labels(n)"
     results = g.run(query)
 
@@ -231,13 +246,26 @@ def load_phenotype_from_omim_and_map():
 
     # generate query
     add_query_to_cypher_file('phenotype_omim', 'Disease', 'disease', file_name)
-    create_query_for_phenotype('phenotype_omim',file_name_not_mapped)
+    create_query_for_phenotype('phenotype_omim', file_name_not_mapped)
 
     for node, labels, in results:
         identifier = node['identifier']
         name = node['name'].lower() if 'name' in node else ''
         synonyms = [x.lower() for x in node['alternative_names']] if 'alternative_names' in node else []
         synonyms.append(name)
+        xrefs = node['xrefs'] if 'xrefs' in node else []
+        for xref in xrefs:
+            if xref.startswith('NCBI_GENE:'):
+                ncbi_id = xref.split(':')[1]
+                if int(ncbi_id) in dict_gene_id_to_gene_node:
+                    gene_symbol = [x.lower() for x in
+                                   dict_gene_id_to_gene_node[int(ncbi_id)]['geneSymbol']] if 'geneSymbol' in \
+                                                                                             dict_gene_id_to_gene_node[
+                                                                                                 int(ncbi_id)] else []
+
+                    if (identifier, ncbi_id) not in dict_of_mapped_tuples:
+                        add_mapped_one_to_csv_file(dict_gene_id_to_gene_node, identifier, ncbi_id, gene_writer,
+                                                   dict_of_mapped_tuples, is_int=True)
 
         dict_omim_id_to_phenotype[identifier] = dict(node)
         if identifier in dict_omim_id_to_disease_ids:
@@ -272,7 +300,7 @@ def load_phenotype_from_omim_and_map():
 def mapping_genes():
     """
     all stepps for gene mapping
-    :return:
+    :return: csv writer for gene
     """
 
     print('##########################################################################')
@@ -287,9 +315,11 @@ def mapping_genes():
     print(datetime.datetime.utcnow())
     print('Load all gene omim from database')
 
-    load_all_omim_gene_and_start_mapping()
+    gene_writer = load_all_omim_gene_and_start_mapping()
 
     print('##########################################################################')
+
+    return gene_writer
 
 
 def main():
@@ -312,7 +342,7 @@ def main():
     print(datetime.datetime.utcnow())
     print('Gene mapping')
 
-    mapping_genes()
+    gene_writer = mapping_genes()
 
     print('##########################################################################')
 
@@ -326,7 +356,7 @@ def main():
     print(datetime.datetime.utcnow())
     print('Load all omim phenotypes from database and map')
 
-    load_phenotype_from_omim_and_map()
+    load_phenotype_from_omim_and_map(gene_writer)
 
     print('##########################################################################')
 

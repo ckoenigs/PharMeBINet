@@ -3,6 +3,9 @@ import sys
 import datetime
 import csv
 
+sys.path.append("..")
+from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
+
 
 def database_connection():
     """
@@ -77,13 +80,31 @@ def prepare_csv_files(file_name, header):
 
 
 def add_mapped_one_to_csv_file(dict_node_info, omim_id, mapped_id, csv_writer, mapping_dict, is_int=False):
+    """
+
+        :param dict_node_info:
+        :param omim_id:
+        :param mapped_id:
+        :param csv_writer:
+        :param mapping_dict:
+        :param is_int:
+        :return:
+        """
     if is_int:
-        resource = dict_node_info[int(mapped_id)]['resource']
+        dict_node = dict_node_info[int(mapped_id)]
     else:
-        resource = dict_node_info[mapped_id]['resource']
+        dict_node = dict_node_info[mapped_id]
+
+    xrefs = dict_node['xrefs'] if 'xref' not in dict_node else []
+    xrefs.append('OMIM' + ':' + omim_id)
+    xrefs = go_through_xrefs_and_change_if_needed_source_name(
+        xrefs, 'Gene') if is_int else go_through_xrefs_and_change_if_needed_source_name(
+        xrefs, 'Disease')
+
+    resource = dict_node['resource']
     resource.append('OMIM')
     resource = list(set(resource))
-    csv_writer.writerow([omim_id, mapped_id, "|".join(resource)])
+    csv_writer.writerow([omim_id, mapped_id, "|".join(resource), "|".join(xrefs)])
     mapping_dict[(omim_id, mapped_id)] = 1
 
 
@@ -92,6 +113,20 @@ dict_disease_id_to_disease_node = {}
 
 # dictionary omim id to disease ids
 dict_omim_id_to_disease_ids = {}
+
+# dictionary gene id to gene node
+dict_gene_id_to_gene_node = {}
+
+
+def load_genes_from_database_and_add_to_dict():
+    """
+    Load all Genes from my database  and add them into a dictionary
+    """
+    query = "MATCH (n:Gene) RETURN n"
+    results = g.run(query)
+    for gene, in results:
+        identifier = gene['identifier']
+        dict_gene_id_to_gene_node[identifier] = dict(gene)
 
 
 def load_disease_from_database_and_add_to_dict():
@@ -125,6 +160,8 @@ def load_phenotype_from_omim_and_map():
     results = g.run(query)
 
     # generate csv file
+    file = open("gene/mapping.tsv", 'a', encoding='utf-8')
+    csv_writer_gene = csv.writer(file, delimiter='\t')
 
     file_name = "disease/mapping_2.tsv"
     csv_writer = prepare_csv_files(file_name, file_header)
@@ -144,6 +181,16 @@ def load_phenotype_from_omim_and_map():
         name = node['name'].lower() if 'name' in node else ''
         synonyms = [x.lower() for x in node['alternative_names']] if 'alternative_names' in node else []
         synonyms.append(name)
+
+        xrefs = node['xrefs'] if 'xrefs' in node else []
+        for xref in xrefs:
+            if xref.startswith('NCBI_GENE:'):
+                ncbi_id = xref.split(':')[1]
+                if int(ncbi_id) in dict_gene_id_to_gene_node:
+
+                    if (identifier, ncbi_id) not in dict_of_mapped_tuples:
+                        add_mapped_one_to_csv_file(dict_gene_id_to_gene_node, identifier, ncbi_id, csv_writer_gene,
+                                                   dict_of_mapped_tuples, is_int=True)
 
         dict_omim_id_to_phenotype[identifier] = dict(node)
         if identifier in dict_omim_id_to_disease_ids:
@@ -193,6 +240,13 @@ def main():
     print('Load all disease from database')
 
     load_disease_from_database_and_add_to_dict()
+
+    print('##########################################################################')
+
+    print(datetime.datetime.utcnow())
+    print('Load all gene from database')
+
+    load_genes_from_database_and_add_to_dict()
 
     print('##########################################################################')
 
