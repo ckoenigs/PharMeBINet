@@ -43,7 +43,7 @@ def get_all_variation_properties():
     for property, in results:
         if property not in ['identifier','rela']:
             query_middle+= property+':n.'+property+', '
-    query_middle=query_middle+' license:"CC0 1.0", source:"ClinVar", clinvar:"yes",  resource:["ClinVar"], url":https://www.ncbi.nlm.nih.gov/gene/?term="+line.identifier}) Create (m)-[:equal_to_clinvar_variant]->(n);\n'
+    query_middle=query_middle+' license:"CC0 1.0", source:"ClinVar", clinvar:"yes",  resource:["ClinVar"], url:"https://www.ncbi.nlm.nih.gov/gene/?term="+line.identifier}) Create (m)-[:equal_to_clinvar_variant]->(n);\n'
 
 
 '''

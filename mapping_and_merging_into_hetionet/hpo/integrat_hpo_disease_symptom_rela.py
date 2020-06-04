@@ -18,7 +18,7 @@ query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%
     Match'''
 
 # cypher file for mapping and integration
-cypher_file = open('cypher_edge.cypher', 'w')
+cypher_file = open('cypher/cypher_edge.cypher', 'w')
 
 # list of all new disease-symptom pairs
 list_new_disease_symptom_pairs = []
