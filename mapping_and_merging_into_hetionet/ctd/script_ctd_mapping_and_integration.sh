@@ -196,7 +196,7 @@ python3 integration_chemical_phenotype.py $path_to_project > chemical_phenotype/
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p test -f chemical_phenotype/cypher.cypher > chemical_phenotype/output_cypher.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f chemical_phenotype/cypher.cypher > chemical_phenotype/output_cypher.txt 2>&1 
 
 now=$(date +"%F %T")
 echo "Current time: $now"

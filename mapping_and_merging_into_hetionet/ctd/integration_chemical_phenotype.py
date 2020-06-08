@@ -90,7 +90,7 @@ def sort_into_dictionary_and_add(dict_action, chemical_id, go_id, interaction_te
                                  interactions_actions, anatomy_terms, inference_gene_symbols, comentioned_terms):
     if (chemical_id, go_id) in dict_action:
         dict_action[(chemical_id, go_id)][0].append(interaction_text)
-        dict_action[(chemical_id, go_id)][1].union(pubMedIds)
+        dict_action[(chemical_id, go_id)][1] = dict_action[(chemical_id, go_id)][1].union(pubMedIds)
         dict_action[(chemical_id, go_id)][2].append(interactions_actions)
         dict_action[(chemical_id, go_id)][3].append(anatomy_terms)
         dict_action[(chemical_id, go_id)][4].append(inference_gene_symbols)
@@ -155,7 +155,7 @@ def check_for_go_and_chemical_in_string(string, found_chemical_synonym, go_name,
     """
     found_together = False
     part = string.lower()
-    positions_chemical_new = find_multiple_occurrences(' ' + found_chemical_synonym + ' ',part)
+    positions_chemical_new = find_multiple_occurrences(' ' + found_chemical_synonym + ' ', part)
     position_go_new = part.find(' ' + go_name + ' ')
     position_rela_new = part.find(' ' + dict_rela_name_to_text_name[rela_name] + ' ')
     length_of_phenotyp_string = len(go_name)
@@ -220,14 +220,14 @@ def check_for_rela_type(interactions_actions, rela_name, chemical_id, drugbank_i
                 # time so the order for the sub action need to be new classified
 
                 found_together_here = check_for_go_and_chemical_in_string(smaller_part, found_chemical_synonym, go_name,
-                                                                     rela_name, chemical_id,
-                                                                     drugbank_ids, go_id, interaction_text,
-                                                                     interactions_actions,
-                                                                     pubMedIds, label, anatomy_terms,
-                                                                     inference_gene_symbols,
-                                                                     comentioned_terms)
-                if  found_together_here:
-                    found_together=True
+                                                                          rela_name, chemical_id,
+                                                                          drugbank_ids, go_id, interaction_text,
+                                                                          interactions_actions,
+                                                                          pubMedIds, label, anatomy_terms,
+                                                                          inference_gene_symbols,
+                                                                          comentioned_terms)
+                if found_together_here:
+                    found_together = True
 
         if not found_together:
             add_pair_to_dict(chemical_id, drugbank_ids, go_id, interaction_text, interactions_actions, pubMedIds,
@@ -243,8 +243,8 @@ also generate a cypher file to integrate this information
 def take_all_relationships_of_go_chemical():
     counter_all_rela = 0
 
-    #  Where chemical.chemical_id='D000117' and go.go_id='2219'; Where chemical.chemical_id='C057693' and go.go_id='4128' Where chemical.chemical_id='D001564' and go.go_id='9429'  Where chemical.chemical_id='D004976' and go.go_id='2950' Where chemical.chemical_id='D015741' and go.go_id='367'
-    query = '''MATCH (chemical:CTDchemical)-[r:phenotype{organismid:'9606'}]->(cgo:CTDGO)-[:equal_to_CTD_go]-(go)      Where  chemical.chemical_id='D000077212'     RETURN cgo.go_id, cgo.name, labels(go), r, chemical.chemical_id, chemical.name, chemical.synonyms, chemical.drugBankIDs'''
+    #  Where chemical.chemical_id='D000077212' and go.go_id='0006915'; Where chemical.chemical_id='C057693' and go.go_id='4128' Where chemical.chemical_id='D001564' and go.go_id='9429'  Where chemical.chemical_id='D004976' and go.go_id='2950' Where chemical.chemical_id='D015741' and go.go_id='367'
+    query = '''MATCH (chemical:CTDchemical)-[r:phenotype{organismid:'9606'}]->(cgo:CTDGO)-[:equal_to_CTD_go]-(go) RETURN cgo.go_id, cgo.name, labels(go), r, chemical.chemical_id, chemical.name, chemical.synonyms, chemical.drugBankIDs'''
     results = g.run(query)
 
     for go_id, go_name, go_labels, rela, chemical_id, chemical_name, chemical_synonyms, drugbank_ids, in results:
@@ -329,7 +329,8 @@ def generate_cypher_queries(file_name, label, rela, start_node, end_node):
 
 
 # header for csv files
-header = ['chemical_id', 'go_id', 'interaction_text', 'pubmed_ids', 'interaction_actions', 'unbiased']
+header = ['chemical_id', 'go_id', 'interaction_text', 'pubmed_ids', 'interaction_actions', 'unbiased', 'anatomy_terms',
+          'comentioned_terms']
 
 # dictionary from go term to shor form
 dict_go_term_to_short_form = {
@@ -337,6 +338,24 @@ dict_go_term_to_short_form = {
     'CellularComponent': 'CC',
     'MolecularFunction': 'MF'
 }
+
+
+def prepare_list_of_list(list_of_information, index, indices):
+    """
+    get only the element from the shortest interaction_actions and change in the strings the ^ to :
+    :param list_of_information: list of lists
+    :param index: int
+    :param indices: list of ints
+    :return: string
+    """
+    list_of_shortest_list = [list_of_information[index][x] for x in indices]
+    shortest_list = []
+    for list_part in list_of_shortest_list:
+        list_part = [x.replace('^', ':') for x in list_part]
+        shortest_list.append(';'.join(list_part))
+    shortest_list = '|'.join(shortest_list)
+    return shortest_list
+
 
 '''
 now go through all rela types and add every pair to the right csv
@@ -370,12 +389,15 @@ def fill_the_csv_files():
             interaction_texts = list_of_information[0]
             shortest_interaction_text = [interaction_texts[x] for x in indices]
 
+            shortest_anatomy = prepare_list_of_list(list_of_information, 3, indices)
+            shortest_conditional = prepare_list_of_list(list_of_information, 5, indices)
+
             unbiased = True if len(pubMedIds) > 0 else False
             shortest_interaction_text = '|'.join(shortest_interaction_text)
             csv_writer.writerow(
                 [chemical_id, go_id, shortest_interaction_text, pubMedIds,
                  shortest_interaction_actions
-                    , unbiased])
+                    , unbiased, shortest_anatomy, shortest_conditional])
 
 
 def main():
