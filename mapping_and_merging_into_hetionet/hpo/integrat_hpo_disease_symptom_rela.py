@@ -54,6 +54,19 @@ def load_all_hpo_symptoms_in_dictionary():
         identifier= node['id']
         dict_hpo_symptom_to_info[identifier]=dict(node)
 
+def change_list_values_to_string(list_of_values):
+    """
+    change list or ste values to string to have a list of string
+    :param list_of_values: list of string/list/set
+    :return:  list of string
+    """
+    new_list_value=[]
+    for  value in list_of_values:
+        if type(value) in [list, set]:
+            value="|".join(value)
+        new_list_value.append(value)
+    return new_list_value
+
 
 def get_all_already_existing_relationships():
     """
@@ -122,7 +135,7 @@ def check_for_pair_in_dictionary(mondo,symptom_id, rela_information_list , dicti
         if  add_resource is not None:
             add_resource.append('HPO')
             add_resource=sorted(set(add_resource))
-            rela_information_list.append(add_resource)
+            rela_information_list.append('|'.join(add_resource))
         dictionary[(mondo, symptom_id)] = rela_information_list
     else:
         for index, value in enumerate(dictionary[(mondo, symptom_id)]):
@@ -193,13 +206,13 @@ def generate_cypher_file_for_connection(cypher_file):
     other_properties=properties[:]
     other_properties.append('resource')
     csv_rela_update.writerow(other_properties)
-    query_exists = query_start + query_exist + "r.hpo='yes', r.version='phenotype_annotation.tab 2019-11-08', r.resource=split(line.resource,'|'), r.url='http://compbio.charite.de/hpoweb/showterm?disease='+line.source; \n"
+    query_exists = query_start + query_exist + "r.hpo='yes', r.version='phenotype_annotation.tab 2019-11-08', r.resource=split(line.resource,'|'), r.url='https://hpo.jax.org/app/browse/disease/'+split(line.source,'|')[0]; \n"
     query_exists = query_exists % (path_of_directory, "mapping_files/rela_update.tsv")
     cypher_file.write(query_exists)
-    query = '''Match (n:Disease)-[r:PRESENTS_DpS]-(s:Symptom) Where r.hpo='yes SET r.resource=r.resource+'HPO';\n '''
-    cypher_file.write(query)
+    # query = '''Match (n:Disease)-[r:PRESENTS_DpS]-(s:Symptom) Where r.hpo='yes SET r.resource=r.resource+'HPO';\n '''
+    # cypher_file.write(query)
 
-    query_new = query_start + query_new + '''version:'phenotype_annotation.tab 2019-11-08',unbiased:'false',source:'Human Phenontype Ontology', resource:['HPO'], hpo:'yes', url:'http://compbio.charite.de/hpoweb/showterm?disease='+line.source}]->(s);\n'''
+    query_new = query_start + query_new + '''version:'phenotype_annotation.tab 2019-11-08',unbiased:'false',source:'Human Phenontype Ontology', resource:['HPO'], hpo:'yes', sources:split(line.source,'|'),  url:'https://hpo.jax.org/app/browse/disease/'+split(line.source,'|')[0]}]->(s);\n'''
     query_new = query_new % (path_of_directory, "mapping_files/rela_new.tsv")
     cypher_file.write(query_new)
 
@@ -217,10 +230,12 @@ def generate_cypher_file_for_connection(cypher_file):
 
     for (mondo_id, symptom_id), rela_info in dict_mapped_pair_to_info.items():
         count_update_connection+=1
+        rela_info=change_list_values_to_string(rela_info)
         csv_rela_update.writerow(rela_info)
 
     for (mondo_id, symptom_id), rela_info in dict_new_pair_to_info.items():
         count_new_connection+=1
+        rela_info = change_list_values_to_string(rela_info)
         csv_rela_new.writerow(rela_info)
         # for hpo_disease_id in hpo_disease_ids:
         #     query = '''MATCH p=(:HPOdisease{id:"%s"})-[r:present]->(b) RETURN r, b.id '''
