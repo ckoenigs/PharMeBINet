@@ -40,6 +40,13 @@ dict_aspect={
     'M':'clinical modifier'
 }
 
+# dictionary evidence
+dict_evidence={
+    'IEA':'inferred from electronic annotation',
+    'PCS':'published clinical study',
+    'TAS':'traceable author statement'
+}
+
 # dictionary of all hpo symptoms
 dict_hpo_symptom_to_info={}
 
@@ -90,8 +97,12 @@ def prepare_all_relationships_infos(properties,connection, mondo_id, symptom_id)
     rela_properties = [mondo_id,symptom_id]
 
     for property in properties[2:]:
-        if property not in ['frequency_name', 'aspect','frequency_def']:
+        if property not in ['frequency_name', 'aspect','frequency_def', 'evidence_code']:
             rela_properties.append(connection[property])
+        elif property=='':
+            if 'evidence_code' in connection:
+                rela_properties.append([dict_evidence[x] for x in connection[property]])
+
         elif property == 'aspect':
             if 'aspect' in connection:
                 if len(connection['aspect']) > 1:
