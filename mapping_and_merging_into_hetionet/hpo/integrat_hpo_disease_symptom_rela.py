@@ -99,7 +99,7 @@ def prepare_all_relationships_infos(properties,connection, mondo_id, symptom_id)
     for property in properties[2:]:
         if property not in ['frequency_name', 'aspect','frequency_def', 'evidence_code']:
             rela_properties.append(connection[property])
-        elif property=='':
+        elif property=='evidence_code':
             if 'evidence_code' in connection:
                 rela_properties.append([dict_evidence[x] for x in connection[property]])
 
