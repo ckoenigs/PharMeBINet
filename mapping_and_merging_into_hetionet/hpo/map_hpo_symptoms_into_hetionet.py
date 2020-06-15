@@ -415,7 +415,7 @@ def map_hpo_symptoms_and_to_hetionet():
 
     # search for all symptoms but do not take the removed nodes
     # n.id in ['HP:0002247','HP:0100867'] and
-    query = '''MATCH (n:HPOsymptom) where not exists(n.is_obsolete) RETURN n, n.id, n.name, n.xrefs '''
+    query = '''MATCH (n:HPOsymptom) where not exists(n.is_obsolete) and (n)--(:HPOdisease) RETURN n, n.id, n.name, n.xrefs '''
     results = g.run(query)
     counter_symptoms = 0
 
