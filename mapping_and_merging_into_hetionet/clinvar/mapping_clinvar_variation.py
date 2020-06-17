@@ -25,7 +25,7 @@ def load_genes_from_database_and_add_to_dict():
 
 cypher_file=open('cypher_variants.cypher','w',encoding='utf-8')
 
-query_start='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%s/master_database_change/mapping_and_merging_into_hetionet/clinvar/output/%s.tsv" As line FIELDTERMINATOR '\\t' 
+query_start='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/clinvar/output/%s.tsv" As line FIELDTERMINATOR '\\t' 
     Match '''
 
 
@@ -156,7 +156,9 @@ def perpare_queries_index_and_relationships():
     cypher_file.write(query)
 
     #relationship
-    query=query_start+ "(g:Gene{identifier:}), (v:Variant{identifier:line.%s})"
+    query=query_start+ "(g:Gene{identifier:line.%s}), (v:Variant{identifier:line.%s}) Create  (g)-[:HAS_GhV{source:'ClinVar', resource:['ClinVar'], clinvar:'yes'}]->(v);\n"
+    query=query %('output/gene_variant.tsv', header_rela[0],  header_rela[1])
+    cypher_file.write(query)
 
 
 
