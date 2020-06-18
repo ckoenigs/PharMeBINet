@@ -223,7 +223,7 @@ def generate_cypher_file_for_connection(cypher_file):
     # query = '''Match (n:Disease)-[r:PRESENTS_DpS]-(s:Symptom) Where r.hpo='yes SET r.resource=r.resource+'HPO';\n '''
     # cypher_file.write(query)
 
-    query_new = query_start + query_new + '''version:'phenotype_annotation.tab 2019-11-08',unbiased:'false',source:'Human Phenontype Ontology', resource:['HPO'], hpo:'yes', sources:split(line.source,'|'),  url:'https://hpo.jax.org/app/browse/disease/'+split(line.source,'|')[0]}]->(s);\n'''
+    query_new = query_start + query_new + '''version:'phenotype_annotation.tab 2019-11-08',unbiased:false,source:'Human Phenontype Ontology', resource:['HPO'], hpo:'yes', sources:split(line.source,'|'),  url:'https://hpo.jax.org/app/browse/disease/'+split(line.source,'|')[0]}]->(s);\n'''
     query_new = query_new % (path_of_directory, "mapping_files/rela_new.tsv")
     cypher_file.write(query_new)
 
@@ -248,50 +248,6 @@ def generate_cypher_file_for_connection(cypher_file):
         count_new_connection+=1
         rela_info = change_list_values_to_string(rela_info)
         csv_rela_new.writerow(rela_info)
-        # for hpo_disease_id in hpo_disease_ids:
-        #     query = '''MATCH p=(:HPOdisease{id:"%s"})-[r:present]->(b) RETURN r, b.id '''
-        #     query = query % (hpo_disease_id)
-        #     results = g.run(query)
-        #
-        #     for connection, hpo_id, in results:
-        #         # some hpo did not map to mesh
-        #         if hpo_id in dict_hpo_to_mesh_ids:
-        #             mesh_ids = dict_hpo_to_mesh_ids[hpo_id]
-        #             if len(mesh_ids) > 0:
-        #
-        #
-        #                 for mesh_id in mesh_ids:
-        #
-        #                     all_properties = [mondo, mesh_id]
-        #                     all_properties.extend(rela_properties)
-        #
-        #                     if (mondo, mesh_id) in list_new_disease_symptom_pairs:
-        #                         continue
-        #                     elif mesh_id in dict_new_mesh_ids:
-        #                         counter_connection += 1
-        #                         count_new_connection += 1
-        #                         csv_rela_new.writerow(all_properties)
-        #                         list_new_disease_symptom_pairs.append((mondo, mesh_id))
-        #                     else:
-        #                         counter_connection += 1
-        #                         query = '''MATCH (n:Disease{identifier:"%s"})-[l:PRESENTS_DpS]->(s:Symptom{identifier:"%s"})
-        #                         Set n.hpo='yes' Return l '''
-        #                         query = query % (mondo, mesh_id)
-        #                         result = g.run(query)
-        #                         first_entry = result.evaluate()
-        #                         # create new relationship
-        #                         if first_entry == None:
-        #                             csv_rela_new.writerow(all_properties)
-        #                             # query = '''MATCH (n:Disease{identifier:"%s"}),(s:Symptom{identifier:"%s"})
-        #                             # Create (n)-[:PRESENTS_DpS{version:'phenotype_annotation.tab 2019-11-08',unbiased:'false',source:'%s',qualifier:'%s', efidence_code:'%s', frequency_modifier:'%s',  resource:['HPO'],hetionet:'no',do:'no', hpo:'yes', url:"%s"}]->(s); \n '''
-        #                             count_new_connection += 1
-        #                             list_new_disease_symptom_pairs.append((mondo, mesh_id))
-        #
-        #                         else:
-        #                             # query = '''MATCH (n:Disease{identifier:"%s"})-[l:PRESENTS_DpS]->(s:Symptom{identifier:"%s"})
-        #                             # Set l.hpo='yes', l.version='phenotype_annotation.tab 2017-10-09 10:47', l.source='%s', l.qualifier='%s', l.efidence_code='%s', l.frequency_modifier='%s',l.resource=["%s"], l.url="%s"; \n'''
-        #                             count_update_connection += 1
-        #                             csv_rela_update.writerow(all_properties)
 
     # query = ''' MATCH ()-[l:PRESENTS_DpS]->(s:Symptom) Where not exists(l.hpo) Set l.hpo='no'; \n '''
     # cypher_file.write(query)
