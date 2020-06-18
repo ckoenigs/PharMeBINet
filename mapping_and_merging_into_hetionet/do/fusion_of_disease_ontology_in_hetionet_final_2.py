@@ -15,6 +15,7 @@ import sys,csv
 sys.path.append("..")
 from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
 
+
 # file to put all information in it
 output = open('output_fusion.txt', 'w', encoding='utf-8')
 
