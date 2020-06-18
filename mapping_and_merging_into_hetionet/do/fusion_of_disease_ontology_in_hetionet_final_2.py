@@ -142,7 +142,7 @@ def generate_cypher_file():
     query_create=query_create % ("new_nodes",do_label,do_name, license, do_name)
     cypher_file.write(query_create)
 
-    query_rela=query_start+ '''Match (d:Disease {identifier:line.child}), (d2:Disease {identifier:line.parent}) Create (d)-[:IS_A_DiD{license:"%s", source:"%s", unbiased:"false", do:'yes'}]->(d2);\n '''
+    query_rela=query_start+ '''Match (d:Disease {identifier:line.child}), (d2:Disease {identifier:line.parent}) Create (d)-[:IS_A_DiD{license:"%s", source:"%s", unbiased:false, do:'yes'}]->(d2);\n '''
     query_rela = query_rela %("new_rela", license,do_name)
     cypher_file.write(query_rela)
     cypher_file.close()

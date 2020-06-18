@@ -323,6 +323,9 @@ def generate_cypher_queries(file_name, label, rela, start_node, end_node):
         if property not in ['interaction_text', 'unbiased']:
             query_first_part += property + ':split(line.' + property + ',"|"), '
         else:
+            if  property=='unbiased':
+                query_first_part += property + ':toBoolean(line.' + property + '), '
+                continue
             query_first_part += property + ':line.' + property + ', '
     query = query_first_part + query_end % end_node
     cypherfile.write(query)
