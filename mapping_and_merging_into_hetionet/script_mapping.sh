@@ -82,6 +82,11 @@ echo gene and disease
 
 python3 integrate_omim_genes_phenotypes.py $path_to_project > output/output_map_gene_phenotype.txt
 
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+python3 integrate_omim_predominantly_phenotypes.py $path_to_project > output/output_map_phenotype.txt
+
 echo integrate connection with ne4j shell
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -93,11 +98,6 @@ sleep 180
 $path_neo4j/neo4j restart
 
 sleep 120
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-python3 integrate_omim_predominantly_phenotypes.py $path_to_project > output/output_map_phenotype.txt
 
 echo integrate connection with ne4j shell
 now=$(date +"%F %T")
@@ -244,7 +244,7 @@ sleep 120
 
 python3 integrat_hpo_disease_symptom_rela.py $path_to_project > output/output_hpo_symptomes.txt
 
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher/cypher_edge.cypher > cypher/output_cypher_hpo_edge.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f cypher/cypher_edge.cypher > cypher/output_cypher_hpo_edge.txt 2>&1
 
 sleep 180
 $path_neo4j/neo4j restart
