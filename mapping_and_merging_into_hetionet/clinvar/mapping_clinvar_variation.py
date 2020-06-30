@@ -201,7 +201,12 @@ def main():
 
     load_all_variants_and_finish_the_files()
 
+    print('##########################################################################')
 
+    print(datetime.datetime.utcnow())
+    print('Add constraint and relationships to gene')
+
+    perpare_queries_index_and_relationships()
 
     print('##########################################################################')
 
