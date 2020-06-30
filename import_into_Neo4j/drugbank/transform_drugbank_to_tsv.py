@@ -27,6 +27,12 @@ try:
 except :
     import update_drugbank_categories
     file=open('categories.csv','r')
+
+#generate a file for "proteins" to show which are proteinss and which are not
+decision_protein_file=open('maybe_protein_manual_checked.tsv','w',encoding='utf-8')
+csv_decision_protein_file=csv.writer(decision_protein_file, delimiter='\t')
+csv_decision_protein_file.writerow(['name','identifier','labels','Protein_ja=1_und_nein=0'])
+
 csv_reader=csv.reader(file)
 next(csv_reader)
 for row in csv_reader:
@@ -86,7 +92,7 @@ def add_information_into_dictionary(drug_targets, db_ID,db_targets,position,acti
 '''
 gather the different target information
 '''
-def gather_target_infos(target,drug_targets_info,targets_info,dict_targets_ids,db_ID, is_enzyme):
+def gather_target_infos(target,drug_targets_info,targets_info,dict_targets_ids,db_ID, is_enzyme, is_target):
 
     for targets in drug.iterfind(target.format(ns = ns)):
 #        print('drinnen ;)')
@@ -242,7 +248,7 @@ def gather_target_infos(target,drug_targets_info,targets_info,dict_targets_ids,d
 
             targets_dict['drugbank_id']= db_targets
             targets_dict['name']=  targets.findtext("{ns}name".format(ns = ns))
-
+            csv_decision_protein_file.writerow([targets_dict['name'], targets_dict['drugbank_id'], 'combined protein', 1])
             if is_enzyme:
                 drug_targets=add_information_into_dictionary(drug_targets, db_ID, db_targets, position, actions,organism, ref_article_list,
                                                 ref_link_list, ref_attachment_list, ref_textbooks_list, known_action, None, induction_strength,inhibition_strength)
@@ -271,6 +277,17 @@ def gather_target_infos(target,drug_targets_info,targets_info,dict_targets_ids,d
             targets_dict['drugbank_id']= db_targets
             targets_dict['name']=  targets.findtext("{ns}name".format(ns = ns))
 
+            # the one without a uniprot id are  to classified into protein or not
+            # enzyme, carrier and transporter are every time proteins
+            if not is_target:
+                if not is_enzyme:
+                    csv_decision_protein_file.writerow([targets_dict['name'],targets_dict['drugbank_id'],'not target',1])
+                else:
+                    csv_decision_protein_file.writerow(
+                        [targets_dict['name'], targets_dict['drugbank_id'], 'Enzyme', 1])
+            # targets can be but this has to be checked manual
+            else:
+                csv_decision_protein_file.writerow([targets_dict['name'], targets_dict['drugbank_id'], 'Target maybe no protein', 0])
             if is_enzyme:
                 drug_targets=add_information_into_dictionary(drug_targets, db_ID, db_targets, position, actions, organism, ref_article_list,
                                                 ref_link_list, ref_attachment_list, ref_textbooks_list, known_action, None, induction_strength,inhibition_strength)
@@ -826,20 +843,20 @@ for i, drug in enumerate(root):
 
 
     # target
-    gather_target_infos('{ns}targets/{ns}target',drug_targets,targets,dict_target_ids, db_ID, False)
+    gather_target_infos('{ns}targets/{ns}target',drug_targets,targets,dict_target_ids, db_ID, False, True)
 
     # enzymes
-    gather_target_infos('{ns}enzymes/{ns}enzyme',drug_enzymes,enzymes,dict_enzyme_ids, db_ID, True)
+    gather_target_infos('{ns}enzymes/{ns}enzyme',drug_enzymes,enzymes,dict_enzyme_ids, db_ID, True, False)
 
     # carries
     b=False
 #    if db_ID=='DB00137':
 #        print('jup')
 #        b=True
-    gather_target_infos('{ns}carriers/{ns}carrier',drug_carriers,carriers,dict_carrier_ids, db_ID, False)
+    gather_target_infos('{ns}carriers/{ns}carrier',drug_carriers,carriers,dict_carrier_ids, db_ID, False, False)
 
    # transporter
-    gather_target_infos('{ns}transporters/{ns}transporter',drug_transporters,transporters,dict_transporter_ids, db_ID, False)
+    gather_target_infos('{ns}transporters/{ns}transporter',drug_transporters,transporters,dict_transporter_ids, db_ID, False, False)
 
 
     # Add drug aliases
