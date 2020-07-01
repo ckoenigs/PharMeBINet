@@ -157,7 +157,7 @@ def perpare_queries_index_and_relationships():
 
     #relationship
     query=query_start+ "(g:Gene{identifier:line.%s}), (v:Variant{identifier:line.%s}) Create  (g)-[:HAS_GhV{source:'ClinVar', resource:['ClinVar'], clinvar:'yes'}]->(v);\n"
-    query=query %('output/gene_variant.tsv', header_rela[0],  header_rela[1])
+    query=query %(path_of_directory,'output/gene_variant.tsv', header_rela[0],  header_rela[1])
     cypher_file.write(query)
 
 
