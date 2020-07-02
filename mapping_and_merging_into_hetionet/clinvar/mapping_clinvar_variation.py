@@ -41,7 +41,7 @@ def get_all_variation_properties():
         RETURN allfields;'''
     results=g.run(query)
     for property, in results:
-        if property not in ['identifier','rela']:
+        if property not in ['rela']:
             query_middle+= property+':n.'+property+', '
     query_middle=query_middle+' license:"CC0 1.0", source:"ClinVar", clinvar:"yes",  resource:["ClinVar"], url:"https://www.ncbi.nlm.nih.gov/gene/?term="+line.identifier}) Create (m)-[:equal_to_clinvar_variant]->(n);\n'
 
@@ -156,8 +156,8 @@ def perpare_queries_index_and_relationships():
     cypher_file.write(query)
 
     #relationship
-    query=query_start+ "(g:Gene{identifier:line.%s}), (v:Variant{identifier:line.%s}) Create  (g)-[:HAS_GhV{source:'ClinVar', resource:['ClinVar'], clinvar:'yes'}]->(v);\n"
-    query=query %(path_of_directory,'output/gene_variant.tsv', header_rela[0],  header_rela[1])
+    query=query_start+ "(g:Gene{identifier:toInteger(line.%s)}), (v:Variant{identifier:line.%s}) Create  (g)-[:HAS_GhV{source:'ClinVar', resource:['ClinVar'], clinvar:'yes'}]->(v);\n"
+    query=query %(path_of_directory,'gene_variant', header_rela[0],  header_rela[1])
     cypher_file.write(query)
 
 
