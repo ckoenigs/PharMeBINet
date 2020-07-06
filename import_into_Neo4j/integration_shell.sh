@@ -12,7 +12,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo add hetionet and resource to nodes
 
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher > output_cypher_integration.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher > output_cypher_integration.txt 2>&1
 
 
 now=$(date +"%F %T")
@@ -29,7 +29,7 @@ echo "Current time: $now"
 
 echo integrate sider into neo4j
 
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher > output_cypher_integration.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher > output_cypher_integration.txt 2>&1
 
 sleep 180
 
@@ -66,7 +66,7 @@ echo "Current time: $now"
 
 echo integrate ndf-rt into neo4j
 
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher_file.cypher > output_cypher_integration.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f cypher_file.cypher > output_cypher_integration.txt 2>&1
 
 sleep 180
 
@@ -76,7 +76,7 @@ $path_neo4j/neo4j restart
 sleep 120
 echo delete ndf-rt nodes without relaionships
 
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher_file_delete.cypher > output_cypher_delete.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f cypher_file_delete.cypher > output_cypher_delete.txt 2>&1
 
 sleep 180
 
@@ -105,7 +105,7 @@ echo "Current time: $now"
 
 echo integrate do into neo4j
 
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher > output_cypher_integration.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher > output_cypher_integration.txt 2>&1
 
 sleep 180
 
@@ -135,7 +135,7 @@ echo "Current time: $now"
 
 echo integrate go into neo4j
 
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher > output_cypher_integration.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher > output_cypher_integration.txt 2>&1
 
 sleep 180
 
@@ -164,14 +164,14 @@ echo "Current time: $now"
 cd aeolus
 echo aeolus
 
-python3 importAeolus_final.py aeolus_v1/ $path_to_project > output_integration_aeolus.txt
+python3 importAeolus_final.py aeolus_v1/ $path_to_project > output_integration_aeolus.txt 
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 
 echo integrate aeolus into neo4j
 
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher > output_cypher_integration.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher > output_cypher_integration.txt 2>&1
 
 sleep 180
 
@@ -199,7 +199,7 @@ echo "Current time: $now"
 
 echo integrate uniprot into neo4j
 
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher_protein.cypher > output_cypher_integration_$i.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f cypher_protein.cypher > output_cypher_integration_$i.txt 2>&1
 
 sleep 180
 
@@ -238,7 +238,7 @@ echo "Current time: $now"
 
 echo integrate efo into neo4j
 
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher > output_cypher_integration.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher > output_cypher_integration.txt 2>&1
 
 sleep 180
 
@@ -266,7 +266,7 @@ echo "Current time: $now"
 
 echo integrate ncbi into neo4j
 
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher_node.cypher > output_cypher_integration.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f cypher_node.cypher > output_cypher_integration.txt 2>&1
 
 sleep 180
 
@@ -294,7 +294,7 @@ echo "Current time: $now"
 
 echo integrate pathway into neo4j
 
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher > output_cypher_integration.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher > output_cypher_integration.txt 2>&1
 
 sleep 180
 
@@ -347,7 +347,7 @@ echo "Current time: $now"
 
 echo integrate efo into neo4j
 
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher_file_node.cypher > output_cypher_node.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f cypher_file_node.cypher > output_cypher_node.txt 2>&1
 
 sleep 180
 
