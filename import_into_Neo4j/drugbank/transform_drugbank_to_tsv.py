@@ -23,11 +23,11 @@ import pandas
 dict_category_name_to_id = {}
 
 try:
-    file = open('categories.csv', 'r', encoding='utf-8')
+    file = open('drugbank/categories.csv', 'r', encoding='utf-8')
 except:
     import update_drugbank_categories
 
-    file = open('categories.csv', 'r')
+    file = open('drugbank/categories.csv', 'r')
 
 # generate a file for "proteins" to show which are proteinss and which are not
 decision_protein_file = open('maybe_protein_manual_checked.tsv', 'w', encoding='utf-8')
@@ -587,13 +587,18 @@ for i, drug in enumerate(root):
     for part in drug.iterfind('{ns}categories/{ns}category'.format(ns=ns)):
 
         category = part.findtext("{ns}category".format(ns=ns))
-        if category == 'Phenylpiperidine Derivatives':
-            continue
+        # if category == 'Phenylpiperidine Derivatives':
+        #     continue
         # if db_ID=='DB00454':
         #     print(category)
 
         category = ' '.join(category.split())
-        drugbank_category_id = dict_category_name_to_id[category]
+        if category in dict_category_name_to_id:
+            drugbank_category_id = dict_category_name_to_id[category]
+        else:
+            print('Category')
+            print(category)
+            print(db_ID)
         mesh_id = part.findtext("{ns}mesh-id".format(ns=ns))
 
         drug_pharmacological_class_dict = collections.OrderedDict()
