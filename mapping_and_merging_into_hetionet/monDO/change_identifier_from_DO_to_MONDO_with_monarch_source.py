@@ -444,7 +444,7 @@ def gather_information_of_mondo_and_do_then_prepare_dict_for_csv(monDo,info,monD
     #     print('ohe')
     if monDo=='MONDO:0006883':
         print('fjfjfjf')
-    monDO_synonyms = info['synonym'] if 'synonym' in info else []
+    monDO_synonyms = info['synonyms'] if 'synonyms' in info else []
     monDo_def = info['definition'] if 'definition' in info else ''
 
     umls_cuis_monDO, other_xrefs_monDO = divide_external_list(monDO_xref)
