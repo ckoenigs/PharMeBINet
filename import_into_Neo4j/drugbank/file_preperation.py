@@ -1265,7 +1265,8 @@ def check_and_maybe_generate_a_new_target_file(file, dict_targets_info_external,
                         if property[0:2] == 'BE':
                             set_of_infos=set(before_properties[i].split('||'))
                             set_of_infos.add(property)
-                            before_properties[i] = '||'.join(list(set_of_infos))
+                            set_of_infos=list(filter(bool, set_of_infos))
+                            before_properties[i] = '||'.join(set_of_infos)
                         else:
                             print(identifier)
                             print(before_properties)
@@ -1277,7 +1278,8 @@ def check_and_maybe_generate_a_new_target_file(file, dict_targets_info_external,
                             print(identifier)
                             set_of_infos = set(before_properties[i].split('||'))
                             set_of_infos.add(property)
-                            before_properties[i] = '||'.join(list(set_of_infos))
+                            set_of_infos=list(filter(bool, set_of_infos))
+                            before_properties[i] = '||'.join(set_of_infos)
                             print('another property is not the same')
                         counter_same_id_different_label_not_same_properties += 1
                     i += 1
@@ -2101,7 +2103,7 @@ def add_addtitional_enzymes(uniprot_id, header_new, counter_multiple_information
                     return False,  ""
                     # sys.exit(uniprot_id)
                 if head in dict_drugbank_to_uniprot_label:
-                    print(information_to_this_uniprot_entry[0])
+                    # print(information_to_this_uniprot_entry[0])
                     entries.append(information_to_this_uniprot_entry[0][dict_drugbank_to_uniprot_label[head]])
                 elif head == 'id_source':
                     entries.append('Swiss-Prot')
