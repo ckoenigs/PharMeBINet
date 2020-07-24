@@ -82,7 +82,7 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
     writer.writeheader()
 
     cypher_file = open('cypher_merge.cypher', 'w')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ncbi_gene/output_data/genes_merge.csv" As line Fieldterminator '\\t' Match (n:Gene_Ncbi {identifier:line.identifier}) Merge (g:Gene{identifier:toInteger(line.identifier) }) On Match Set '''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ncbi_gene/output_data/genes_merge.csv" As line Fieldterminator '\\t' Match (n:Gene_Ncbi {identifier:line.identifier}) Merge (g:Gene{identifier:line.identifier }) On Match Set '''
 
     on_create_string = ''' On Create SET '''
     for head in header:
@@ -155,14 +155,14 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
             node['Full_name_from_nomenclature_authority'] = node['description']
             name = node['description']
 
-        if int(gene_id) in dict_hetionet_gene_ids_to_name:
+        if gene_id in dict_hetionet_gene_ids_to_name:
             counter_all_in_hetionet += 1
-            if 'name' in dict_hetionet_gene_ids_to_name[int(gene_id)]:
+            if 'name' in dict_hetionet_gene_ids_to_name[gene_id]:
                 if gene_id == '26083':
                     print('ok')
-                hetionet_gene_name = dict_hetionet_gene_ids_to_name[int(gene_id)]['name'].lower()
+                hetionet_gene_name = dict_hetionet_gene_ids_to_name[gene_id]['name'].lower()
                 description = node['description'].lower()
-                hetionet_gene_description = dict_hetionet_gene_ids_to_name[int(gene_id)]['description'].lower()
+                hetionet_gene_description = dict_hetionet_gene_ids_to_name[gene_id]['description'].lower()
                 if not name == hetionet_gene_name:
 
                     if description == hetionet_gene_name:
@@ -186,7 +186,7 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
                         counter_not_same_name += 1
                         print(gene_id)
                         print(name)
-                        print(dict_hetionet_gene_ids_to_name[int(gene_id)]['name'])
+                        print(dict_hetionet_gene_ids_to_name[gene_id]['name'])
                         # print(node)
                         print('kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk')
 
@@ -198,15 +198,15 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
                 counter_not_same_name += 1
                 print(gene_id)
                 print(name)
-                print(dict_hetionet_gene_ids_to_name[int(gene_id)])
+                print(dict_hetionet_gene_ids_to_name[gene_id])
                 node['Full_name_from_nomenclature_authority'] = list(gene_symbol)[0]
                 print('nonamenonamenonamenonamenonamenonamenonamenonamenonamenonamenoname')
 
-            if 'chromosome' in dict_hetionet_gene_ids_to_name[int(gene_id)] and 'chromosome' in node:
-                chromosome_hetionet = dict_hetionet_gene_ids_to_name[int(gene_id)]['chromosome']
+            if 'chromosome' in dict_hetionet_gene_ids_to_name[gene_id] and 'chromosome' in node:
+                chromosome_hetionet = dict_hetionet_gene_ids_to_name[gene_id]['chromosome']
                 if chromosome_hetionet != node['chromosome'] and chromosome_hetionet != '':
                     print('chromosome ;(')
-                    print(dict_hetionet_gene_ids_to_name[int(gene_id)]['chromosome'])
+                    print(dict_hetionet_gene_ids_to_name[gene_id]['chromosome'])
                     print(node['chromosome'])
                     print(gene_id)
                     # sys.exit(gene_id)

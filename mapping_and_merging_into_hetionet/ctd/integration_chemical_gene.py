@@ -129,10 +129,10 @@ def path_to_rela_and_add_to_dict(rela, first, second):
 
     query_first_part = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/''' + path + '''" As line Match (b:Chemical{identifier:line.ChemicalID}), '''
     if first == 'gene' or second == 'gene':
-        query_middle_1 = ''' (n:Gene{identifier:toInteger(line.GeneID)})'''
+        query_middle_1 = ''' (n:Gene{identifier:line.GeneID})'''
         part='''(n:Gene)'''
     else:
-        query_middle_1 = ''' (g:Gene{identifier:toInteger(line.GeneID)})-[:PRODUCES_GpP]->(n:Protein)'''
+        query_middle_1 = ''' (g:Gene{identifier:line.GeneID})-[:PRODUCES_GpP]->(n:Protein)'''
         part='''(n:Protein)'''
 
     if first=='chemical':
@@ -351,7 +351,7 @@ def take_all_relationships_of_gene_chemical():
     counter_all_rela = 0
 
     #  Where chemical.chemical_id='D000117' and gene.gene_id='2219'; Where chemical.chemical_id='C057693' and gene.gene_id='4128' Where chemical.chemical_id='D001564' and gene.gene_id='9429'  Where chemical.chemical_id='D004976' and gene.gene_id='2950' Where chemical.chemical_id='D015741' and gene.gene_id='367'
-    query = '''MATCH (chemical:CTDchemical)-[r:associates_CG{organism_id:'9606'}]->(gene:CTDgene) RETURN gene.gene_id, gene.name, gene.geneSymbol, r, chemical.chemical_id, chemical.name, chemical.synonyms, chemical.drugBankIDs'''
+    query = '''MATCH (chemical:CTDchemical)-[r:associates_CG{organism_id:'9606'}]->(gene:CTDgene) Where (gene)-[:equal_to_CTD_gene]-(:Gene) RETURN gene.gene_id, gene.name, gene.geneSymbol, r, chemical.chemical_id, chemical.name, chemical.synonyms, chemical.drugBankIDs'''
     results = g.run(query)
 
     for gene_id, gene_name, gene_symbol, rela, chemical_id, chemical_name, chemical_synonyms, drugbank_ids, in results:

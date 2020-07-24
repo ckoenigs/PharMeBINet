@@ -126,7 +126,7 @@ def load_in_all_pathways():
                 # print( dict_name_to_pc_or_wp_identifier[name])
 
         for gene_id in node['genes']:
-            gene_id=int(gene_id)
+            gene_id=gene_id
             if gene_id in dict_genes_hetionet:
                 dict_rela[(str(gene_id),identifier)]=1
                 # csv_rela.writerow([str(gene_id),identifier])
@@ -320,7 +320,7 @@ def generate_rela_csv_and_cypher_queries():
     query_rela_middle='Match '
     for head in rela_header:
         if head.split('_')[0]=='gene':
-            query_rela_middle+= '(g:Gene{identifier:toInteger(line.'+head+')}) ,'
+            query_rela_middle+= '(g:Gene{identifier:line.'+head+'}) ,'
         else:
             query_rela_middle += '(p:Pathway{identifier:line.' + head + '}) ,'
     query_rela=query_start+query_rela_middle[:-2]+ ' Create (g)-[:PARTICIPATES_GpPW{license:p.license, source:p.source, unbiased:false, url:p.url}]->(p);\n'

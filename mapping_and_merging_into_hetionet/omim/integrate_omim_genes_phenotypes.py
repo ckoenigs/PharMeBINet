@@ -37,13 +37,13 @@ query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%
     Match '''
 
 
-def add_query_to_cypher_file(omim_label, database_label, rela_name_addition, file_name, integer_id=False,
+def add_query_to_cypher_file(omim_label, database_label, rela_name_addition, file_name, is_gene=False,
                              additional_labels=[]):
     """
     add query for a specific csv to cypher file
     """
-    if integer_id:
-        part = "(n{identifier:line.identifier}), (m:%s{identifier:toInteger(line.database_id)}) Where n:%s or n:%s or n:%s "
+    if is_gene:
+        part = "(n{identifier:line.identifier}), (m:%s{identifier:line.database_id}) Where n:%s or n:%s or n:%s "
         part = part % (database_label, omim_label, additional_labels[0], additional_labels[1])
     else:
         part = "(n:%s {identifier:line.identifier}), (m:%s{identifier:line.database_id}) " % (
@@ -81,26 +81,23 @@ def prepare_csv_files(file_name, file_header):
     return csv_writer
 
 
-def add_mapped_one_to_csv_file(dict_node_info, omim_id, mapped_id, csv_writer, mapping_dict, is_int=False):
+def add_mapped_one_to_csv_file(dict_node_info, omim_id, mapped_id, csv_writer, mapping_dict, is_gene=False):
     """
 
     :param dict_node_info:
-    :param omim_id:
+    :param omim_id: string
     :param mapped_id:
     :param csv_writer:
     :param mapping_dict:
-    :param is_int:
+    :param is_gene: boolean
     :return:
     """
-    if is_int:
-        dict_node = dict_node_info[int(mapped_id)]
-    else:
-        dict_node = dict_node_info[mapped_id]
+    dict_node = dict_node_info[mapped_id]
 
     xrefs = dict_node['xrefs'] if 'xref' not in dict_node else []
     xrefs.append('OMIM' + ':' + omim_id)
     xrefs = go_through_xrefs_and_change_if_needed_source_name(
-        xrefs, 'Gene') if is_int else go_through_xrefs_and_change_if_needed_source_name(
+        xrefs, 'Gene') if is_gene else go_through_xrefs_and_change_if_needed_source_name(
         xrefs, 'Disease')
 
     resource = dict_node['resource']
@@ -124,7 +121,7 @@ def load_all_omim_gene_and_start_mapping():
     file_name_not_mapped = "gene/not_mapping.tsv"
     csv_writer_not = prepare_csv_files(file_name_not_mapped, ['identifier', 'name'])
     # generate query
-    add_query_to_cypher_file('gene_omim', 'Gene', 'gene', file_name, integer_id=True,
+    add_query_to_cypher_file('gene_omim', 'Gene', 'gene', file_name, is_gene=True,
                              additional_labels=['phenotype_omim', 'predominantly_phenotypes_omim'])
 
     counter_different_symbol = 0
@@ -141,11 +138,11 @@ def load_all_omim_gene_and_start_mapping():
         for xref in xrefs:
             if xref.startswith('NCBI_GENE:'):
                 ncbi_id = xref.split(':')[1]
-                if int(ncbi_id) in dict_gene_id_to_gene_node:
+                if ncbi_id in dict_gene_id_to_gene_node:
                     gene_symbol = [x.lower() for x in
-                                   dict_gene_id_to_gene_node[int(ncbi_id)]['geneSymbol']] if 'geneSymbol' in \
+                                   dict_gene_id_to_gene_node[ncbi_id]['geneSymbol']] if 'geneSymbol' in \
                                                                                              dict_gene_id_to_gene_node[
-                                                                                                 int(ncbi_id)] else []
+                                                                                                 ncbi_id] else []
                     if symbol not in gene_symbol and len(set(gene_symbol).intersection(alternati_symbols)) == 0:
                         # print('different gene symbols')
                         # print(symbol)
@@ -154,7 +151,7 @@ def load_all_omim_gene_and_start_mapping():
                         counter_different_symbol += 1
                     if (identifier, ncbi_id) not in dict_of_mapped_tuples:
                         add_mapped_one_to_csv_file(dict_gene_id_to_gene_node, identifier, ncbi_id, csv_writer,
-                                                   dict_of_mapped_tuples, is_int=True)
+                                                   dict_of_mapped_tuples, is_gene=True)
                         found_at_least_one_mapping = True
 
         if found_at_least_one_mapping:
@@ -257,15 +254,15 @@ def load_phenotype_from_omim_and_map(gene_writer):
         for xref in xrefs:
             if xref.startswith('NCBI_GENE:'):
                 ncbi_id = xref.split(':')[1]
-                if int(ncbi_id) in dict_gene_id_to_gene_node:
+                if ncbi_id in dict_gene_id_to_gene_node:
                     gene_symbol = [x.lower() for x in
-                                   dict_gene_id_to_gene_node[int(ncbi_id)]['geneSymbol']] if 'geneSymbol' in \
+                                   dict_gene_id_to_gene_node[ncbi_id]['geneSymbol']] if 'geneSymbol' in \
                                                                                              dict_gene_id_to_gene_node[
-                                                                                                 int(ncbi_id)] else []
+                                                                                                 ncbi_id] else []
 
                     if (identifier, ncbi_id) not in dict_of_mapped_tuples:
                         add_mapped_one_to_csv_file(dict_gene_id_to_gene_node, identifier, ncbi_id, gene_writer,
-                                                   dict_of_mapped_tuples, is_int=True)
+                                                   dict_of_mapped_tuples, is_gene=True)
 
         dict_omim_id_to_phenotype[identifier] = dict(node)
         if identifier in dict_omim_id_to_disease_ids:

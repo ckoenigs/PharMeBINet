@@ -89,7 +89,7 @@ def load_ctd_genes_in():
 
     counter = 0
     for gene_node, in results:
-        gene_id = int(gene_node['gene_id'])
+        gene_id = gene_node['gene_id']
         altGeneIDs = gene_node['altGeneIDs'] if 'altGeneIDs' in gene_node else []
         if not search_for_id_and_write_into_file(gene_id,gene_node):
             for alternative_id in altGeneIDs:
@@ -112,7 +112,7 @@ Generate cypher and csv for generating the new nodes and the relationships
 def generate_files():
     #generate cyoher file
     cypher_file = open('gene/cypher.cypher', 'w')
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/gene/mapping.csv" As line Match (c:Gene{ identifier:toInteger(line.GeneIDHetionet)}), (n:CTDgene{gene_id:line.GeneIDCTD}) Create (c)-[:equal_to_CTD_gene]->(n) Set c.ctd="yes", c.resource=c.resource+"CTD", c.xrefs=split(line.xrefs,'|'), c.url_ctd=" http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID;\n'''
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/gene/mapping.csv" As line Match (c:Gene{ identifier:line.GeneIDHetionet}), (n:CTDgene{gene_id:line.GeneIDCTD}) Create (c)-[:equal_to_CTD_gene]->(n) Set c.ctd="yes", c.resource=c.resource+"CTD", c.xrefs=split(line.xrefs,'|'), c.url_ctd=" http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID;\n'''
     cypher_file.write(query)
 
     global writer
