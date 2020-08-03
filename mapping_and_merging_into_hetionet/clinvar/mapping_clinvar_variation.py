@@ -183,7 +183,7 @@ def query_for_rela(file_name, label1, label2):
     :return:
     """
     query = query_start + ''' (g:%s{identifier:line.identifier_1}), (c:%s{identifier:line.identifier_2}) Create (g)-[:HAS_%sh%s {source:'ClinVar', resource:['ClinVar'], license:"CC0 1.0", url:'https://www.ncbi.nlm.nih.gov/clinvar/variation/'+line.indetifier_1}]->(c);'''
-    query = query % (file_name, label1, label2, label1[0], label2[0])
+    query = query % (path_of_directory, file_name, label1, label2, label1[0], label2[0])
     cypher_file.write(query)
 
 
