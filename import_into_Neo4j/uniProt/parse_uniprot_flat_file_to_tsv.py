@@ -171,6 +171,7 @@ def extract_information():
     # file = open(filename_without_gz, 'wb')
     with io.TextIOWrapper(gzip.open(filename, 'rb')) as f:
         # file_uniprot = open(sys.argv[1], 'r')
+    # with open('database/part.dat', 'r', encoding='utf-8') as f:
 
         for line in f:
             unzip_file.write(line)
@@ -212,6 +213,8 @@ def extract_information():
                 # ac-numbers
                 elif position_line == 1:
                     two_split[1] = two_split[1].replace(';\n', '')
+                    if two_split[1].startswith('Q12851'):
+                        print('test')
                     all_access_number = two_split[1].split('; ')
                     ac_list = set([])
                     for counter, ac_number in enumerate(all_access_number):
@@ -314,7 +317,7 @@ def extract_information():
                     # if source_value[0]!='ncbi_taxid':
                     #     print(line)
                     #     sys.exit('OX')
-                    if source_value[1] != '9606;\n':
+                    if source_value[1] != '9606;' and not source_value[1].startswith('9606 {'):
                         is_human = False
                         dict_protein['ncbi_taxid'] = source_value[1].split(';')[0]
                     else:
