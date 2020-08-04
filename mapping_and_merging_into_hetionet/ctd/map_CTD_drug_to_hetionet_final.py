@@ -743,7 +743,7 @@ def intigrate_connection_from_ctd_to_hetionet():
                         if not (drugbank_id, cui) in list_causes_new_pairs:
                             number_of_new_connection_causes += 1
                             query = '''Match (c:Compound{identifier:"%s"}), (s:SideEffect{identifier:"%s"}) 
-                            Create(c)-[r:CAUSES_CcSE{how_often_appears:"1", phenotype_action_degree_type:"%s", url_ctd:"%s" ,url:"%s",unbiased:false, resource:['CTD'],license:" Copyright 2002-2012 MDI Biological Laboratory. All rights reserved. Copyright 2012-2017 MDI Biological Laboratory & NC State University. All rights reserved.", ctd:"yes", sider:"no", hetionet:"no",upperFrequency:"", placebo:"", frequency:"", lowerFrequency:"",  placeboFrequency: "", placeboLowerFrequency: "", placeboUpperFrequency: ""}]->(s);\n '''
+                            Create(c)-[r:CAUSES_CcSE{ phenotype_action_degree_type:"%s", url_ctd:"%s" ,url:"%s",unbiased:false, resource:['CTD'],license:" Copyright 2002-2012 MDI Biological Laboratory. All rights reserved. Copyright 2012-2017 MDI Biological Laboratory & NC State University. All rights reserved.", ctd:"yes", sider:"no", hetionet:"no",upperFrequency:"", placebo:"", frequency:"", lowerFrequency:"",  placeboFrequency: "", placeboLowerFrequency: "", placeboUpperFrequency: ""}]->(s);\n '''
                             query = query % (drugbank_id, cui, phenotypeActionDegreeType, url_ctd, url_ctd)
                             list_causes_new_pairs.append((drugbank_id, cui))
                         else:
@@ -753,10 +753,9 @@ def intigrate_connection_from_ctd_to_hetionet():
                         resource = first_entry['resource'] if first_entry['resource'] != None else []
                         resource.append('CTD')
                         resource = '","'.join(resource)
-                        how_often = str(int(first_entry['how_often_appears']) + 1) if first_entry['how_often_appears'] != None else '1'
                         query = '''Match (c:Compound{identifier:"%s"})-[l:CAUSES_CcSE]-(r:SideEffect{identifier:"%s"})
-                        Set  l.how_often_appears="%s", l.resource=["%s"], l.ctd="yes", l.phenotype_action_degree_type="%s", l.url_ctd="%s";\n'''
-                        query = query % (drugbank_id, cui, how_often, resource, phenotypeActionDegreeType, url_ctd)
+                        Set   l.resource=["%s"], l.ctd="yes", l.phenotype_action_degree_type="%s", l.url_ctd="%s";\n'''
+                        query = query % (drugbank_id, cui, resource, phenotypeActionDegreeType, url_ctd)
                     #                g.run(query)
                     counter_connection += 1
                     h.write(query)
@@ -790,7 +789,7 @@ def intigrate_connection_from_ctd_to_hetionet():
                             if first_entry == None:
                                 if not (drugbank_id, doid) in list_inducese_new_pairs:
                                     query = '''Match (c:Compound{identifier:"%s"}), (s:Disease{identifier:"%s"}) 
-                                    Create(c)-[r:INDUCES_CiD{how_often_appears:"1",inferenceScore:"%s", pubMedIDs:"%s",inferenceGeneSymbol:"%s",directEvidence:"%s", url_ctd:"%s"  ,unbiased:false, resource:['CTD'], ctd:"yes",ndf_rt:"no", license:"Copyright 2012-2017 MDI Biological Laboratory & NC State University. All rights reserved."}]->(s);\n '''
+                                    Create(c)-[r:INDUCES_CiD{inferenceScore:"%s", pubMedIDs:"%s",inferenceGeneSymbol:"%s",directEvidence:"%s", url_ctd:"%s"  ,unbiased:false, resource:['CTD'], ctd:"yes",ndf_rt:"no", license:"Copyright 2012-2017 MDI Biological Laboratory & NC State University. All rights reserved."}]->(s);\n '''
                                     query = query % (
                                         drugbank_id, doid, inferenceScore, pubMedIDs, inferenceGeneSymbol,
                                         directEvidence,
@@ -805,12 +804,10 @@ def intigrate_connection_from_ctd_to_hetionet():
                                 resource = first_entry['resource'] if first_entry['resource'] != None else []
                                 resource.append('CTD')
                                 resource = '","'.join(resource)
-                                how_often = str(int(first_entry['how_often_appears']) + 1) if first_entry[
-                                                                                                  'how_often_appears'] != None else '1'
                                 query = '''Match (c:Compound{identifier:"%s"})-[l:INDUCES_CiD]-(r:Disease{identifier:"%s"})
-                                Set  l.how_often_appears="%s", l.resource=["%s"], l.ctd="yes", l.inferenceScore="%s", l.pubMedIDs="%s", l.inferenceGeneSymbol="%s", l.directEvidence="%s", l.url_ctd="%s";\n '''
+                                Set l.resource=["%s"], l.ctd="yes", l.inferenceScore="%s", l.pubMedIDs="%s", l.inferenceGeneSymbol="%s", l.directEvidence="%s", l.url_ctd="%s";\n '''
                                 query = query % (
-                                    drugbank_id, doid, how_often, resource, inferenceScore, pubMedIDs,
+                                    drugbank_id, doid, resource, inferenceScore, pubMedIDs,
                                     inferenceGeneSymbol,
                                     directEvidence, url_ctd)
                             #                g.run(query)
@@ -846,7 +843,7 @@ def intigrate_connection_from_ctd_to_hetionet():
                                 if not (drugbank_id, doid) in list_treats_new_pairs:
                                     number_of_new_connection_association += 1
                                     query = '''Match (c:Compound{identifier:"%s"}), (s:Disease{identifier:"%s"}) 
-                                    Create(c)-[r:TREATS_CtD{how_often_appears:"1",inferenceScore:"%s", pubMedIDs:"%s",inferenceGeneSymbol:"%s",directEvidence:"%s", url_ctd:"%s"  ,unbiased:false, resource:['CTD'], ctd:"yes", hetionet:"no", license:" Copyright 2002-2012 MDI Biological Laboratory. All rights reserved. Copyright 2012-2017 MDI Biological Laboratory & NC State University. All rights reserved."}]->(s);\n '''
+                                    Create(c)-[r:TREATS_CtD{inferenceScore:"%s", pubMedIDs:"%s",inferenceGeneSymbol:"%s",directEvidence:"%s", url_ctd:"%s"  ,unbiased:false, resource:['CTD'], ctd:"yes", hetionet:"no", license:" Copyright 2002-2012 MDI Biological Laboratory. All rights reserved. Copyright 2012-2017 MDI Biological Laboratory & NC State University. All rights reserved."}]->(s);\n '''
                                     query = query % (
                                         drugbank_id, doid, inferenceScore, pubMedIDs, inferenceGeneSymbol,
                                         directEvidence,
@@ -861,11 +858,10 @@ def intigrate_connection_from_ctd_to_hetionet():
                                 resource.append('CTD')
                                 resource.append('Hetionet')
                                 resource = '","'.join(resource)
-                                how_often = str(int(first_entry['how_often_appears']) + 1) if first_entry['how_often_appears'] != None else '1'
                                 query = '''Match (c:Compound{identifier:"%s"})-[l:TREATS_CtD]-(r:Disease{identifier:"%s"})
-                                Set  l.how_often_appears="%s", l.resource=["%s"], l.ctd="yes", l.hetionet="yes", l.inferenceScore="%s", l.pubMedIDs="%s", l.inferenceGeneSymbol="%s", l.directEvidence="%s", l.url_ctd="%s";\n '''
+                                Set   l.resource=["%s"], l.ctd="yes", l.hetionet="yes", l.inferenceScore="%s", l.pubMedIDs="%s", l.inferenceGeneSymbol="%s", l.directEvidence="%s", l.url_ctd="%s";\n '''
                                 query = query % (
-                                    drugbank_id, doid, how_often, resource, inferenceScore, pubMedIDs,
+                                    drugbank_id, doid, resource, inferenceScore, pubMedIDs,
                                     inferenceGeneSymbol,
                                     directEvidence, url_ctd)
 
