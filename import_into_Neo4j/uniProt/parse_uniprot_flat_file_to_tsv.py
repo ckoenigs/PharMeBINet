@@ -317,7 +317,7 @@ def extract_information():
                     # if source_value[0]!='ncbi_taxid':
                     #     print(line)
                     #     sys.exit('OX')
-                    if source_value[1] != '9606;' and not source_value[1].startswith('9606 {'):
+                    if not source_value[1].startswith('9606;') and not source_value[1].startswith('9606 {'):
                         is_human = False
                         dict_protein['ncbi_taxid'] = source_value[1].split(';')[0]
                     else:
