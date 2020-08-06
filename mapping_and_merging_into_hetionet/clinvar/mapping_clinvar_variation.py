@@ -157,8 +157,6 @@ def load_all_variants_and_finish_the_files():
                 #     print(rela)
 
 
-
-
 '''
 prepare the last queries, where the variant nodes get an index and the query for the relationship between gene and variants
 '''
@@ -194,7 +192,7 @@ def create_file(label1, label2):
     :param label2: string
     :return: csv writer
     """
-    file_name = label1 + '_' + label2
+    file_name = label1 + '_' + label2 + '_has'
     query_for_rela(file_name, label1, label2)
     file = open('output/' + file_name + '.tsv', 'w', encoding='utf-8')
     csv_writer = csv.writer(file, delimiter='\t')
@@ -219,6 +217,7 @@ def get_variant_rela_intern(label, list_to_labels):
         results = g.run(query)
         for id1, id2, in results:
             csv_writer.writerow([id1, id2])
+
 
 def main():
     print(datetime.datetime.utcnow())
@@ -269,14 +268,14 @@ def main():
     print(datetime.datetime.utcnow())
     print('Add relationships from Haplotype')
 
-    get_variant_rela_intern('Haplotype_ClinVar',['Variant_ClinVar'])
+    get_variant_rela_intern('Haplotype_ClinVar', ['Variant_ClinVar'])
 
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
     print('Add relationships from Genotype')
 
-    get_variant_rela_intern('Genotype_ClinVar',['Variant_ClinVar', 'Haplotype_ClinVar'])
+    get_variant_rela_intern('Genotype_ClinVar', ['Variant_ClinVar', 'Haplotype_ClinVar'])
 
     print('##########################################################################')
 
