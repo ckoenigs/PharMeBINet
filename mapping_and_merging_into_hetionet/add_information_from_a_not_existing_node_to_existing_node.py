@@ -161,8 +161,6 @@ def get_the_information_and_the_direction(identifier, label, merged_node_id):
 
     print('number of rela from other to node:' + str(len(list_other_to_node)))
 
-
-
 '''
 The node that get the information 
 '''
@@ -214,7 +212,10 @@ def add_this_information_to_the_merged_node(identifier, label, delete_node_id):
 
             for key, property in dict_rela.items():
                 if type(property) != list:
-                    query = query + '''%s:"%s",'''
+                    if type(property)==str:
+                        query = query + '''%s:"%s",'''
+                    else:
+                        query = query + '''%s:%s,'''
                     query = query % (key, property)
                 else:
                     query = query + '''%s:["%s"],'''
@@ -255,7 +256,10 @@ def add_this_information_to_the_merged_node(identifier, label, delete_node_id):
                              node[dict_label_to_unique_prop[node_labels[0]]], rela_type)
             for key, property in dict_rela.items():
                 if type(property) != list:
-                    query = query + '''%s:"%s",'''
+                    if type(property)==str:
+                        query = query + '''%s:"%s",'''
+                    else:
+                        query = query + '''%s:%s,'''
                     query = query % (key, property)
                 else:
                     query = query + '''%s:["%s"],'''
