@@ -84,18 +84,4 @@ $path_neo4j/neo4j restart
 sleep 120
 
 
-now=$(date +"%F %T")
-echo "Current time: $now"
-echo 'mapp Drugbank protein '
 
-python3 merging_protein_into_hetionet.py "${license}" $path_to_project > output_integration_file_generation.txt
-
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-$path_neo4j/cypher-shell -u neo4j -p test -f protein/cypher_protein.cypher > protein/output_cypher.txt
-
-sleep 180
-$path_neo4j/neo4j restart
-sleep 120

@@ -150,13 +150,13 @@ cd clinvar
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-python3 mapping_clinvar_variation.py $path_to_project > output_map.txt
+python3 mapping_clinvar_variation.py $path_to_project > output_map_variant.txt
 
 echo integrate connection with ne4j shell
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher_variants.cypher > output_cypher_integration.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher_variants.cypher > output/output_cypher_integration.txt
 
 sleep 180
 
@@ -267,6 +267,17 @@ cd ctd
 
 cd ..
 
+
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo drugbank Protein
+
+cd drugbank
+
+./script_map_drugbank_protein.sh $path_neo4j/ $path_to_project > output_script.txt
+
+cd ..
 
 echo Sider
 cd sider

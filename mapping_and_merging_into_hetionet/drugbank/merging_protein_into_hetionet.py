@@ -103,7 +103,7 @@ This information where manual checked by me.
 
 def load_manual_checked_proteins_or_not():
     csv_file = open('protein/maybe_proteins_manual_checked.tsv.csv', 'r')
-    reader = csv.DictReader(csv_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+    reader = csv.DictReader(csv_file, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     for row in reader:
         identifier = row['identifier']
         is_protein = True if row['Protein_ja=1_und_nein=0'] == '1' else False
@@ -217,7 +217,7 @@ def integrate_infos_into_csv(part_dict, protein_hetionet, list_input_protein):
         as_seq_part = as_seq.split(' ')[1]
         if as_seq_hetionet_seq != as_seq_part:
             list_as_sequnces.append(as_seq_part)
-
+    print(list_as_sequnces)
     list_as_sequnces = '|'.join(list_as_sequnces)
     list_input_protein.append(list_as_sequnces)
 
@@ -314,8 +314,6 @@ def load_proteins_from_drugbank_into_dict():
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/proteins_target.csv" As line MATCH (g:Protein{identifier:line.id}) Set g:Target ;\n'''
     cypherfile.write(query)
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/proteins_transporter.csv" As line MATCH (g:Protein{identifier:line.id}) Set g:Transporter ;\n'''
-    cypherfile.write(query)
-    query = 'Create Constraint On (node:Protein) Assert node.identifier Is Unique; \n'
     cypherfile.write(query)
     cypherfile.close()
 
@@ -451,7 +449,7 @@ def generate_csv_componet_rela():
 def main():
     global path_of_directory
     if len(sys.argv) < 2:
-        sys.exit('need license')
+        sys.exit('need license and path')
     global license
     license = sys.argv[1]
     path_of_directory = sys.argv[2]
@@ -473,7 +471,7 @@ def main():
         '#################################################################################################################################################################')
 
     print(datetime.datetime.utcnow())
-    print('load all information to the nodes where I was not sure if they are proetins or not')
+    print('load all information to the nodes where I was not sure if they are protein or not')
 
     load_manual_checked_proteins_or_not()
 
@@ -482,7 +480,7 @@ def main():
 
     print(datetime.datetime.utcnow())
 
-    print('load all genes and gather the information for uniprot gene')
+    print('load all Protein and gather the information ')
 
     load_all_hetionet_proteins_in_dictionary()
 
