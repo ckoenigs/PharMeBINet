@@ -559,7 +559,7 @@ def integrate_aeolus_into_hetionet():
     csv_new.writerow(['aSE','SE','cuis'])
 
     # query for the update nodes and relationship
-    query_new = query_start + ' Create (n:SideEffect{identifier:line.SE, license:"CC0 1.0", name:a.name , source:"UMLS via AEOLUS", url:"http://identifiers.org/umls/"+line.SE , resource:["AEOLUS"],  aeolus:"yes", xrefs:[line.aSE] }) Set a.cuis=split(line.cuis,"|") Create (n)-[:equal_to_Aeolus_SE]->(a); \n'
+    query_new = query_start + ' Create (n:SideEffect{identifier:line.SE, license:"CC0 1.0", name:a.name , source:"UMLS via AEOLUS", url:"http://identifiers.org/umls/"+line.SE , resource:["AEOLUS"],  aeolus:"yes", xrefs:["MedDRA:"+line.aSE] }) Set a.cuis=split(line.cuis,"|") Create (n)-[:equal_to_Aeolus_SE]->(a); \n'
     query_new = query_new % ("se_new")
     cypher_file.write(query_new)
 
