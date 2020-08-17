@@ -442,10 +442,10 @@ def give_drugbank_ids_with_use_of_stitch_information():
             #     dict_sider_drug_with_chemical_ids[pubchem_stereo] = dict_flat_to_drugbank_same_stereo[pubchem_flat]
             #     dict_sider_drug[pubchem_stereo].set_how_mapped(
             #         'stitch flat id (same as stereo is) to drugbank ids maybe with chembl')
-            # elif pubchem_flat in dict_flat_to_drugbank:
-            j += 1
-            dict_sider_drug_with_chemical_ids[pubchem_stereo] = dict_flat_to_drugbank[pubchem_flat]
-            dict_sider_drug[pubchem_stereo].set_how_mapped('stitch flat id to drugbank ids maybe with chembl')
+            if pubchem_flat in dict_flat_to_drugbank:
+                j += 1
+                dict_sider_drug_with_chemical_ids[pubchem_stereo] = dict_flat_to_drugbank[pubchem_flat]
+                dict_sider_drug[pubchem_stereo].set_how_mapped('stitch flat id to drugbank ids maybe with chembl')
     g.close()
     print('number of mapped stitch stereo ids to drugbank:' + str(len(dict_sider_drug_with_chemical_ids)))
 
