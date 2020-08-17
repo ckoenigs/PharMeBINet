@@ -156,7 +156,7 @@ dict_mapped_phenotype_disease_tuple = {}
 
 
 def load_phenotype_from_omim_and_map():
-    query = "MATCH (n:predominantly_phenotypes_omim) RETURN n, labels(n)"
+    query = "MATCH (n:predominantly_phenotypes_omim) Where not n:phenotype_omim and not n:gene_omim RETURN n, labels(n)"
     results = g.run(query)
 
     # generate csv file
