@@ -68,13 +68,13 @@ def split_and_return_name_and_symbol(string):
 
     if len(string) > 2:
         dict_name_symbol['name'] = string[0]
-        symbols=[]
+        symbols = []
         # nearly all are symbols only two cases where an alternative name is, here this cases will be ignored if the
         # string is longer then 2. It is still possible that a name will appear there but the manual checking shows
         # that all alternative names have more then 2 words.
         for symbol in string[1:]:
-            symbol_split=symbol.split(' ')
-            if len(symbol_split)<=2:
+            symbol_split = symbol.split(' ')
+            if len(symbol_split) <= 2:
                 symbols.append(symbol)
             elif 'symbol' in symbol.lower():
                 symbols.append(symbol)
@@ -111,7 +111,7 @@ def load_in_mim_titles():
         set_of_headers.add('detail_information')
 
         prefered = split_and_return_name_and_symbol(line[2])
-        print(line[2])
+        # print(line[2])
         if len(prefered) == 2:
             dict_title['name'] = prefered['name']
             dict_title['symbol'] = prefered['symbol'][0]
@@ -233,7 +233,7 @@ def prepare_name_and_markers_and_add_to_dict(string, dict_phenotype, dict_rela):
         name, marks_info = check_for_symbol_around_name(string)
         if marks_info != '':
             marks_information.append(marks_info)
-            string=name
+            string = name
         else:
             same_name = True
 
@@ -435,10 +435,11 @@ def load_in_genemap2():
         prepare_phenotype_gene_relationships(omim_id, line[12], comments)
 
         check_for_omim_and_add_dictionary(omim_id, dict_genemap2)
-        if counter%1000==0:
+        if counter % 1000 == 0:
             print(counter)
             print(len(dict_relationships))
             print('huhu')
+        print('number of rela:'+str(len(dict_relationships)))
 
 
 def check_for_name_in_dictionary_if_same_id(omim_id, name):
@@ -463,7 +464,7 @@ def check_for_name_in_dictionary_if_same_id(omim_id, name):
                         return omim_id_phenotype
         if omim_id_phenotype == '':
             if name.lower() in dict_unknown_phenotype_name_to_id:
-                omim_id = dict_unknown_phenotype_name_to_id[name.lower()]
+                omim_id_phenotype = dict_unknown_phenotype_name_to_id[name.lower()]
                 return omim_id_phenotype
             else:
                 print('not mapped to omim id')
@@ -528,10 +529,12 @@ def load_in_morbidmap():
         dict_phenotype = {}
         dict_phenotype['labels'] = 'phenotype'
 
+        omim_id = line[2]
+
         phenotype = line[0]
         name, omim_id_phenotype = separate_in_name_omim_marker(phenotype, dict_rela, dict_phenotype)
 
-        omim_id = line[2]
+
         gene_symbols = line[1].split(', ')
         cyto_location = line[3]
 
@@ -548,12 +551,13 @@ def load_in_morbidmap():
                 print(line)
                 print('ohje still no omim id for phenotype')
                 continue
-
         check_for_omim_and_add_dictionary(omim_id_phenotype, dict_phenotype)
 
         if (omim_id, omim_id_phenotype) not in dict_relationships:
             dict_relationships[(omim_id, omim_id_phenotype)] = []
         dict_relationships[(omim_id, omim_id_phenotype)].append(dict_rela)
+
+    print('number of rela:' + str(len(dict_relationships)))
 
 
 def add_properties_to_query(set_of_header, query, list_of_list_element):
@@ -602,15 +606,21 @@ def prepare_labels(label):
     :param label
     :return: list of strings
     """
-    new_labels = []
-    if '/' in label:
-        labels = label.split('/')
-        labels = [label.replace(' ', '_') for label in labels]
-        new_labels.extend(labels)
+    run_through = set()
+    if type(label) == set:
+        run_through = run_through.union(label)
     else:
-        label = label.replace(' ', '_')
-        new_labels.append(label)
-    return new_labels
+        run_through = set([label])
+    new_labels = set()
+    for label in run_through:
+        if '/' in label:
+            labels = label.split('/')
+            labels = [label.replace(' ', '_') for label in labels]
+            new_labels=new_labels.union(labels)
+        else:
+            label = label.replace(' ', '_')
+            new_labels.add(label)
+    return sorted(new_labels)
 
 
 # cypher file
@@ -711,7 +721,7 @@ def combine_the_node_information(query_node):
                     if key == 'alternative_symbols':
                         dict_node['alternative_symbols'] = set(dict_node['alternative_symbols']).union(value)
                         continue
-                    if type(value) == str:
+                    if type(value) == str and not key == 'labels':
                         if value.lower() == dict_node[key].lower():
                             continue
                     if key == 'name':
@@ -722,6 +732,11 @@ def combine_the_node_information(query_node):
                     if key == 'cyto_location':
                         dict_node['other_cyto_location'] = dict_node['cyto_location']
                         dict_node['cyto_location'] = value
+                        continue
+                    if key == 'labels':
+                        if not type(dict_node['labels'])==set:
+                            dict_node['labels'] = set([dict_node['labels']])
+                        dict_node['labels'].add(value)
                         continue
 
                     # print(omim_id)
@@ -851,7 +866,7 @@ def prepare_and_add_relationships(query_edge):
                 if key in dict_combined_rela and dict_combined_rela[key] != value and (
                         (type(value) == str and value != '') or (type(value) == list and len(value) > 0)):
                     if key == 'kind_of_rela':
-                        dict_combined_rela[key] = set(dict_combined_rela[key] ).union(value)
+                        dict_combined_rela[key] = set(dict_combined_rela[key]).union(value)
                         continue
                     if key == 'phenotype_mapping_key':
                         dict_combined_rela[key] = dict_combined_rela[key] + '|' + value
