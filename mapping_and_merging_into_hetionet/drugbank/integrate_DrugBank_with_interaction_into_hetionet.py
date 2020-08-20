@@ -262,7 +262,7 @@ def integrate_DB_compound_information_into_hetionet():
                     intersection.remove(drug_id)
                 # write into bash file which nodes need to be combined
                 for alternative_drug_id in intersection:
-                    text = 'python ../add_information_from_a_not_existing_node_to_existing_node.py %s %s %s\n' % (
+                    text = 'python3 ../add_information_from_a_not_existing_node_to_existing_node.py %s %s %s\n' % (
                         alternative_drug_id, drugbank_id, 'Compound')
                     bash_shell.write(text)
                     text = '''now=$(date +"%F %T")

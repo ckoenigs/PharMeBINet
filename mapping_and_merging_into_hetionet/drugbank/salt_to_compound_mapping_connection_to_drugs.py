@@ -118,7 +118,7 @@ def add_merge_to_sh_file(dict_not_mapped, mapped_value, node_id):
     print(compound)
     compound_id=compound['identifier']
     # if it mapped to a not mapped compound
-    text = 'python ../add_information_from_a_not_existing_node_to_existing_node.py %s %s %s\n' % (
+    text = 'python3 ../add_information_from_a_not_existing_node_to_existing_node.py %s %s %s\n' % (
         compound_id, node_id, 'Compound')
     bash_shell.write(text)
     text = '''now=$(date +"%F %T")\n echo "Current time: $now"\n'''
