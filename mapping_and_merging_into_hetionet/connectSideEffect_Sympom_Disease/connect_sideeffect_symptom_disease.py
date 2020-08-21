@@ -104,7 +104,7 @@ def create_cypher_query(header, from_label, to_label, file_name):
         short_second = 'SE'
     else:
         short_second = to_label[0]
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/clinvar/%s" As line FIELDTERMINATOR '\\t' 
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/connectSideEffect_Sympom_Disease/%s" As line FIELDTERMINATOR '\\t' 
                 Match (first:%s {identifier:line.%s}), (second:%s {identifier:line.%s})  Create (first)-[:EQUAL_%se%s{how_mapped:line.%s}]->(second);\n'''
     query = query % (file_name, from_label, header[0], to_label, header[1], from_label[0], short_second, header[2])
     cypher.write(query)
@@ -274,6 +274,18 @@ def load_and_map_disease():
 
         if not mapped_to_sideeffect:
             mapped=mapping(name, identifier,dict_name_ids_to_sideeffect_ids, csv_mapping_d_to_se, 'mapped with name')
+
+            #if not map try with disease synonyms
+            if not  mapped:
+                synonyms= disease['synonyms'] if 'synonyms' in disease else []
+                for synonym in synonyms:
+                    if '[' in synonym:
+                        synonym=synonym.rsplit(' [',1)[0]
+                    synonym=synonym.lower()
+                    mapped_syn = mapping(synonym, identifier, dict_name_ids_to_sideeffect_ids, csv_mapping_d_to_se,
+                                     'mapped with synonyms')
+                    if mapped_syn:
+                        mapped=True
             if mapped:
                 counter_mapped_se+=1
 
