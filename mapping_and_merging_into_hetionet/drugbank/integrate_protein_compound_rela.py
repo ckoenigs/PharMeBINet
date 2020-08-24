@@ -25,27 +25,29 @@ cypher_file = open('rela_protein/cypher.cypher', 'w', encoding='utf-8')
 
 def load_all_protein_chemical_pairs(direction, from_chemical):
     '''
-    load all relationships for one direction and add to dictionary
+    load all relationships for one direction for humans and add to dictionary
     :param direction: string
     :param from_chemical: boolean
     :return:
     '''
-    query = '''Match (p)--(:Protein_DrugBank)%s(:Compound_DrugBank)--(c:Compound) Where 'Protein' in labels(p) or 'Chemical' in labels(p) Return labels(p), p.identifier, r, type(r), c.identifier '''
+    query = '''Match (p)--(:Protein_DrugBank)%s(:Compound_DrugBank)--(c:Compound) Where 'Protein' in labels(p) or 'Chemical' in labels(p) and r.oragnism in ["Humans","Humans and other mammals"] Return labels(p), p.identifier, r, type(r), c.identifier '''
     query = query % (direction)
     results = g.run(query)
 
     for labels, identifier1, rela, rela_type, compound_id, in results:
         if 'Protein' in labels:
             label = 'Protein'
+            short_cut='PR'
         else:
             label = 'Chemical'
+            short_cut='C'
         rela_name = rela_type.split('_')[0].upper()
         if from_chemical:
             rela_direction = '<-[r:%s]-'
-            this_rela_name = rela_name + '_C' + rela_name[0].lower() + label[0]
+            this_rela_name = rela_name + '_C' + rela_name[0].lower() + short_cut
         else:
             rela_direction = '-[r:%s]->'
-            this_rela_name = rela_name + '_' + label[0] + rela_name[0].lower() + 'C'
+            this_rela_name = rela_name + '_' + short_cut + rela_name[0].lower() + 'C'
         rela_direction = rela_direction % (this_rela_name)
 
         # for the connection between real name to names in drugbank
@@ -77,9 +79,10 @@ Create cypher query and the csv file for the different relationships
 
 def create_cypher_query_and_csv_file( rela_name,rela_direction, label_from):
     query = 'Match p=(:%s)%s(:Chemical) Return p Limit 1' % (label_from, rela_direction)
-    result = g.run(query)
+    results = g.run(query)
+    result=results.evaluate()
     exists = False
-    if result.evaluate():
+    if result:
         exists = True
     # file name
     file_name = rela_name + '_Compound_' + label_from
@@ -97,6 +100,9 @@ def create_cypher_query_and_csv_file( rela_name,rela_direction, label_from):
     for property, in results:
         # this is for all similar
         if property in ['organism', license]:
+            if label_from=='Chemical' and property=='organism':
+                query_create += property + ':line.' + property + ', '
+                query_update += 'r.' + property + '=line.' + property + ', '
             continue
         if property.startswith('ref') or property in ['actions','position','known_action']:
             query_create += property + ':split(line.' + property + ',"|"), '
@@ -117,9 +123,9 @@ def create_cypher_query_and_csv_file( rela_name,rela_direction, label_from):
     if not exists:
 
         if rela_direction.startswith('<'):
-            query_create = "<-[:" + rela_name + ' {' + query_create + ', unbiased:toBoolean(line.unbiased), source:"DrugBank", resource:["DrugBank"], drugbank:"yes", license:' + license + '}]-'
+            query_create = "<-[:" + rela_name + ' {' + query_create + ' unbiased:toBoolean(line.unbiased), source:"DrugBank", resource:["DrugBank"], drugbank:"yes", license:"' + license + '"}]-'
         else:
-            query_create = "-[:" + rela_name + ' {' + query_create + ' source:"DrugBank", resource:["DrugBank"], drugbank:"yes", license:' + license + '}]->'
+            query_create = "-[:" + rela_name + ' {' + query_create + ' source:"DrugBank", resource:["DrugBank"], drugbank:"yes", license:"' + license + '"}]->'
         query = query_start + " Create (a)" + query_create + '(c);\n'
     else:
         query = query_start + ' Merge (a)' + rela_direction + '(c) On Create Set ' + query_update + ' r.source="DrugBank", r.resource=["DrugBank"] On Match Set ' + query_update + ' r.resource=r.resource+"DrugBank";\n'
@@ -143,7 +149,7 @@ def run_through_dictionary_to_add_to_tsv_and_cypher():
                 if len(list_rela) == 1:
                     rela_infos = list_rela[0]
                     contain_ref = False
-                    for property in list_of_properties:
+                    for property in list_of_properties[2:]:
                         if property in rela_infos:
                             if property.startswith('ref'):
                                 contain_ref = True
@@ -155,7 +161,7 @@ def run_through_dictionary_to_add_to_tsv_and_cypher():
 
                 else:
                     contain_ref = False
-                    for property in list_of_properties:
+                    for property in list_of_properties[2:]:
                         if property == 'unbiased':
                             csv_list.append('true') if contain_ref else csv_list.append('false')
                             continue
