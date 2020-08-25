@@ -360,7 +360,7 @@ Create cypher file
 
 def create_cypher_file():
     # cypher file
-    cypher_file = open('cypher.cypher', 'w', encoding='utf-8')
+    cypher_file = open('compound_interaction/cypher.cypher', 'w', encoding='utf-8')
 
     query_start='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/drugbank/output/%s.csv" As line Fieldterminator '\\t' Match (a:%s{identifier:line.identifier})'''
     query_create = ''

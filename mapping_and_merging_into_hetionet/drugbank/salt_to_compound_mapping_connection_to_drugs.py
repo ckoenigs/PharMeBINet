@@ -63,13 +63,13 @@ Create cypher and csv files for nodes and relationships
 
 def create_cypher_and_csv_files():
     # open cypher file
-    cypher_file = open('cypher_salt.cypher', 'w')
+    cypher_file = open('salts/cypher_salt.cypher', 'w')
     # get properties of salt nodes
     query = '''MATCH (p:%s) WITH DISTINCT keys(p) AS keys UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields RETURN allfields;'''
     query = query % (label_of_salt)
     result = g.run(query)
     header = []
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/drugbank/output/%s.csv" As line Fieldterminator '\\t' Match '''
+    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/drugbank/salts/%s.csv" As line Fieldterminator '\\t' Match '''
     part = query_start + '''(a:%s {identifier:line.identifier}) Create (b:Compound :Salt{'''
     part = part % (file_node, label_of_salt)
     for property, in result:
@@ -79,8 +79,8 @@ def create_cypher_and_csv_files():
     query = query % (license)
 
     cypher_file.write(query)
-    node_file = open('output/' + file_node + '.csv', 'w')
-    rela_file = open('output/' + file_rela + '.csv', 'w')
+    node_file = open('salts/' + file_node + '.csv', 'w')
+    rela_file = open('salts/' + file_rela + '.csv', 'w')
     global csv_node, csv_rela
     csv_node = csv.DictWriter(node_file, fieldnames=header, delimiter='\t')
     csv_node.writeheader()
