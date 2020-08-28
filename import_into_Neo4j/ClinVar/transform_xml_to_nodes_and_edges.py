@@ -386,9 +386,9 @@ preparation of attributes with get and value
 '''
 
 
-def perparation_attributes_with_get_and_value(node, list_attributes):
-    for attribut in node.iterfind('AttributeSet'):
-        check_for_information_and_add_to_list_with_extra_name('Attribute', attribut, list_attributes,
+def preparation_attributes_with_get_and_value(node, list_attributes):
+    for attribute in node.iterfind('AttributeSet'):
+        check_for_information_and_add_to_list_with_extra_name('Attribute', attribute, list_attributes,
                                                               gets='Type')
 
 
@@ -876,7 +876,7 @@ def get_information_from_full_relase():
                     #     print(variant_id)
                     for measure in measure_set.iterfind('Measure'):
 
-                        perparation_attributes_with_get_and_value(measure, list_attributes_variations)
+                        preparation_attributes_with_get_and_value(measure, list_attributes_variations)
 
                         for measure_rela in measure.iterfind('MeasureRelationship'):
                             dict_rela = {}
@@ -920,7 +920,7 @@ def get_information_from_full_relase():
                         build_low_dict_into_higher_dict(dict_haplotype, comment_dict, 'comments')
 
                         dict_attributes_set = []
-                        perparation_attributes_with_get_and_value(measure, list_attributes_variations)
+                        preparation_attributes_with_get_and_value(measure, list_attributes_variations)
 
                         if len(dict_attributes_set) > 0:
                             dict_haplotype['attributes'] = dict_attributes_set
@@ -1051,7 +1051,7 @@ def get_information_from_full_relase():
                         prepare_symbol(trait, dict_trait, 'symbols')
 
                         list_attributes = []
-                        perparation_attributes_with_get_and_value(trait, list_attributes)
+                        preparation_attributes_with_get_and_value(trait, list_attributes)
                         if len(list_attributes) > 0:
                             build_low_dict_into_higher_dict_with_list(dict_trait, list_attributes, 'attribute',
                                                                       'attributes')
@@ -1132,11 +1132,11 @@ def get_information_from_full_relase():
 
             study_name = clinvar_assertion.find('StudyName')
             if study_name is not None:
-                dict_clinvar_assertion['study_name'] = study_name
+                dict_clinvar_assertion['study_name'] = study_name.text
 
             study_description = clinvar_assertion.find('StudyDescription')
             if study_description is not None:
-                dict_clinvar_assertion['study_description'] = study_description
+                dict_clinvar_assertion['study_description'] = study_description.text
 
             for_citation_extraction_to_list(clinvar_assertion, dict_clinvar_assertion)
 
@@ -1484,7 +1484,8 @@ def generate_node_cypher(dict_variation_to_node_ids, list_head, extra_name=None,
 
                 else:
                     list_of_sets_properties = dict_type_to_list_property_list[key]
-                    prepare_content_of_cypher_file(key, list_of_sets_properties, query_add + ' {', list_head, extra_name)
+                    prepare_content_of_cypher_file(key, list_of_sets_properties, query_add + ' {', list_head,
+                                                   extra_name)
         else:
             list_of_sets_properties = dict_type_to_list_property_list[key]
             prepare_content_of_cypher_file(key, list_of_sets_properties, query + '{', list_head, extra_name)
@@ -1497,9 +1498,11 @@ def generate_node_cypher(dict_variation_to_node_ids, list_head, extra_name=None,
 
 
 print(datetime.datetime.utcnow())
+print('extract information from ClinVarVariationRelease')
 extract_node_info_for_variations()
 print(datetime.datetime.utcnow())
 print(dict_specific_to_general_type)
+print('extract information from Full release')
 get_information_from_full_relase()
 
 # measure set nodes queries
