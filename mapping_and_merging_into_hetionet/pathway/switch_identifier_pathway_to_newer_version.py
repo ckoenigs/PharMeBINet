@@ -14,6 +14,8 @@ from collections import  defaultdict
 # sys.path.append('../../drugbank/')
 # from add_information_from_a_not_existing_node_to_existing_node import merge_information_from_one_node_to_another
 
+sys.path.append("..")
+from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
 '''
 create connection to neo4j 
 '''
@@ -174,6 +176,8 @@ def prepare_value(value, head, combined_node):
             value = identifier
     if type(value) in [list, set]:
         list_list_properties.add(head)
+        if head=='xrefs':
+            value=go_through_xrefs_and_change_if_needed_source_name(value,'Pathway')
         value = '|'.join(value)
     return value
 
@@ -204,6 +208,7 @@ def fill_the_list_of_properties(head, value,identifiers,resource,name, list_info
         value = name
     elif head=='resource':
         value=resource
+
     # prepare the value for csv
     value = prepare_value(value, head, combine_node)
     list_info.append(value)
