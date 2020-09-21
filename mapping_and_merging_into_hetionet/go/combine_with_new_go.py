@@ -11,6 +11,10 @@ import datetime
 import sys, csv
 from collections import defaultdict
 
+
+sys.path.append("..")
+from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
+
 # disease ontology license
 license = 'CC0 4.0 International'
 
@@ -174,9 +178,9 @@ check if id is in a dictionary
 '''
 
 
-def check_if_identifier_in_hetionet(identifier, namespace, node, xrefs, is_alternative_id=False):
+def check_if_identifier_in_hetionet(identifier, label_go, namespace, node, xrefs, is_alternative_id=False):
     found_id = False
-    xref_string="|".join(xrefs)
+    xref_string="|".join(go_through_xrefs_and_change_if_needed_source_name(xrefs, label_go))
     if identifier in dict_go_namespace_to_nodes[namespace]:
         if is_alternative_id:
             return True
@@ -267,16 +271,16 @@ def go_through_go():
                 new_xref.add(splitted_xref[0])
             else:
                 new_xref.add(xref)
-        found_id = check_if_identifier_in_hetionet(identifier, namespace, node,new_xref)
+        found_id = check_if_identifier_in_hetionet(identifier, label_go, namespace, node,new_xref)
 
         # go through the alternative ids
         for alternative_id in alternative_ids:
-            found_id_alt = check_if_identifier_in_hetionet(alternative_id, namespace, node, new_xref, is_alternative_id=True)
+            found_id_alt = check_if_identifier_in_hetionet(alternative_id, label_go, namespace, node, new_xref, is_alternative_id=True)
             # if the identifier and an alternative id matched in hetionet the nodes need to be combined
-            # therfore the merge process iss add into the bash file
+            # therfore the merge process iss add into the bash fileproteins
             if found_id and found_id_alt:
                 print('found id and alt id')
-                text = 'python ../add_information_from_a_not_existing_node_to_existing_node.py %s %s %s\n' % (
+                text = 'python3 ../add_information_from_a_not_existing_node_to_existing_node.py %s %s %s\n' % (
                     alternative_id, identifier, dict_go_to_hetionet_label[namespace])
                 bash_shell.write(text)
                 text = '''now=$(date +"%F %T")\n echo "Current time: $now"\n'''

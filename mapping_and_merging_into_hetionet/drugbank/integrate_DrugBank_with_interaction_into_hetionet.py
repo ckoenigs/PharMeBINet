@@ -9,6 +9,8 @@ from py2neo import Graph#, authenticate
 import datetime
 import sys, csv
 
+sys.path.append("..")
+from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
 
 '''
 create a connection with neo4j
@@ -310,7 +312,7 @@ def integrate_DB_compound_information_into_hetionet():
                     else:
                         dict_info_prepared[key] = property.replace('"', "'")
 
-            dict_info_prepared['xrefs'] = '|'.join(list_merge_xref_values)
+            dict_info_prepared['xrefs'] = '|'.join(go_through_xrefs_and_change_if_needed_source_name(list_merge_xref_values,'Compound'))
             if alternative_id_integrated:
                 dict_info_prepared['alternative_id'] = drug_id
                 csv_update_alt.writerow(dict_info_prepared)
@@ -340,7 +342,7 @@ def integrate_DB_compound_information_into_hetionet():
 
             combinded_merge_string = '|'.join(list_merge_xref_values)
             set_of_list_properties.add('xrefs')
-            dict_info_prepared['xrefs'] = combinded_merge_string
+            dict_info_prepared['xrefs'] = go_through_xrefs_and_change_if_needed_source_name(combinded_merge_string,'Compound')
 
             csv_new.writerow(dict_info_prepared)
 

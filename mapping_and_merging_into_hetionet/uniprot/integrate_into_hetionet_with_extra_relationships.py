@@ -5,6 +5,10 @@ import datetime
 import sys, csv
 from collections import  defaultdict
 
+
+sys.path.append("..")
+from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
+
 '''
 create a connection with neo4j
 '''
@@ -519,7 +523,7 @@ def get_gather_protein_info_and_generate_relas():
                     writer_uniprots_mf.writerow([identifier, source_id[1]])
             else:
                 new_xrefs.append(xref)
-        new_xrefs='|'.join(new_xrefs)
+        new_xrefs='|'.join( go_through_xrefs_and_change_if_needed_source_name(new_xrefs,'Protein'))
         writer_uniprots_ids.writerow([identifier, new_xrefs])
 
     query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_gene/db_gene_uniprot_delete.csv" As line Match (g:Gene{identifier:line.gene_id}) With g,[x IN g.uniProtIDs WHERE x <> line.uniprot_id]  as filterdList 
