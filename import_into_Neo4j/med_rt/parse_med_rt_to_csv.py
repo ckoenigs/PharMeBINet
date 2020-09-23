@@ -1,51 +1,158 @@
 import xml.etree.ElementTree as ET
 from collections import defaultdict
-import os, sys
+import os, sys, csv
+
+
+def transform_label(text):
+    """
+    transform the real name in a neo4j label and addd source at the end
+    :param text: string
+    :return: string
+    """
+    return text.replace(' ', '_') + '_MED_RT'
+
+
+# dictionary type short to full name
+dict_short_to_full_name = {
+    'MoA': transform_label('Mechanisms of Action'),
+    'PE': transform_label('Physiologic Effects'),
+    'EPC': transform_label('FDA Established Pharmacologic Classes'),
+    'APC': transform_label('Additional Pharmacologic Classes'),
+    'PK': transform_label('Pharmacokinetics'),
+    'TC': transform_label('Therapeutic Categories'),
+    'EXT': transform_label('Terminology Extensions for Classification'),
+    'Chemical_Ingredient': transform_label('Chemical_Ingredient'),
+    'Disease_Finding': transform_label('Disease_Finding'),
+    'other': transform_label('other'),
+    'HC': transform_label('local hierarchical concept'),
+    'Dose_Form': transform_label('Dose Form'),
+    'VA_Product': transform_label('VA Product')
+}
 
 
 def mergedicts(x, y):
+    """
+    combine to dictionaries to one
+    :param x:
+    :param y:
+    :return:
+    """
     z = x.copy()  # start with x's keys and values
     z.update(y)  # modifies z with y's keys and values & returns None
     return z
 
 
-# def look_synonyms(dic,xml_dic):
-#    i=0 
-#   # print dic
-#    for filename in xml_dic:
-#        for name in xml_dic[filename]:
-#           
-#            if name in dic:
-#                i+=1
-#    print i
-#    return xml_dic
-
-
-def parse_CUI_line(l):
-    e = l.split('|')
-    ID = e[0]
-    tmp = e[1].strip(']').split('[')
+def parse_CUI_line(line, xref_start):
+    """
+    parse the content to the different names. generate new file if this label has not already a file.
+    Write the line infos as node in the file. And return the mapping between ID and cui.
+    :param line: a line in one of the files
+    :param xref_start: string
+    :return: string (ID), dictionary
+    """
+    ID = line[0]
+    tmp = line[1].strip(']').split('[')
     synonym1 = tmp[0].split(',')
+    if len(tmp) == 1:
+        print(ID)
+        print(xref_start)
+        filename = 'other'
+    else:
+        filename = tmp[1].replace('/', '_').replace(' ','_')
 
-    cui = e[2]
-    tmp1 = e[3].split('[')
+        # some have no label but still a [] as name
+        if filename not in dict_short_to_full_name:
+            filename = 'other'
+            synonym1 = line[0].split(',')
+
+    if not filename in dict_of_file_names:
+        filename=filename.replace(' ','_')
+        csv_writer = generate_node_csv_files(filename)
+        dict_of_file_names[filename] = csv_writer
+
+    cui = line[2]
+    tmp1 = line[3].split('[')
     synonym2 = tmp1[0].split(',')
+    dict_id_to_label[ID] = filename
 
     synonym = set(synonym1).union(synonym2)
+    info = {'id': ID, 'name': synonym.pop(), 'synonyme': '|'.join(synonym), 'xref': xref_start + ':' + cui}
+    dict_of_file_names[filename].writerow(info)
     return ID, {'synonym': synonym, 'cui': cui}
 
 
-def CUI_to_dic(CUI):
-    with open(CUI, 'r',encoding='utf-8') as c:
-        dic = dict(parse_CUI_line(l) for l in c)
+def CUI_to_dic(CUI, xref_start):
+    """
+    generate dictionary with cui to n identifier
+    :param CUI:
+    :param xref_start:
+    :return:
+    """
+    with open(CUI, 'r', encoding='utf-8') as c:
+        csv_reader = csv.reader(c, delimiter='|')
+        dic = dict(parse_CUI_line(l, xref_start) for l in csv_reader)
     return {e['cui']: ID for ID, e in dic.items()}
 
 
-def get_asdic(root, dic, fIDName):
+def generate_rela_file_and_query(filename, from_label, to_label, path):
+    """
+    Generate for rela csv fiel and return it. Also, it add the query for this relationship with this types
+    :param filename: string
+    :param from_label: string
+    :param to_label: string
+    :param path: string
+    :return: csv writer dictionary
+    """
+    filename=filename.replace(' ','_')
+    combinde_name = path + from_label + '_' + to_label + '_' + filename + '.csv'
+    header = ["from_code", "to_code", "qualifier"]
+    file = open(combinde_name, 'w', encoding='utf-8')
+    csv_writer = csv.DictWriter(file, fieldnames=header)
+    csv_writer.writeheader()
+
+    query_rela = query % (path_of_directory, combinde_name)
+    query_rela += 'MAtch (from:%s {id: line.from_code}), (to:%s {id: line.to_code}) Create (from)-[:%s {qualifier: line.qualifier}]->(to);\n'
+    query_rela = query_rela % (dict_short_to_full_name[from_label], dict_short_to_full_name[to_label], filename)
+    cypher_file.write(query_rela)
+
+    return csv_writer
+
+# set of nodes which are generated without information
+set_nodes_from_rela=set()
+
+def add_nodes_without_infos(code, name, namespace):
+    """
+    add node from mesh or rxnorm without known type
+    :param code: string
+    :param namespace: string
+    :param name: string
+    """
+    filename = 'other'
+    if not filename in dict_of_file_names:
+        csv_writer = generate_node_csv_files(filename)
+        dict_of_file_names[filename] = csv_writer
+
+    dict_id_to_label[code] = filename
+
+    if not code in set_nodes_from_rela:
+        infos = {'id': code, 'namespace': namespace, 'name': name}
+        dict_of_file_names[filename].writerow(infos)
+        set_nodes_from_rela.add(code)
+
+
+def prepare_rela_and_add_to_file(root, dic, fIDName, path):
+    """
+    for geting the associations
+    :param root:
+    :param dic:
+    :param fIDName:
+    :return:
+    """
     as_dic = defaultdict(dict)
 
     with open(fIDName, 'a+', encoding='utf-8') as fID:
-        fID.write('"ID","name","namespace"\n')
+        csv_writer = csv.writer(fID)
+        csv_writer.writerow(["ID", "name", "namespace"])
         for ass in root.iter('association'):
             filename = ass.find('name').text
             namespace = ass.find('namespace').text
@@ -61,41 +168,99 @@ def get_asdic(root, dic, fIDName):
                     to_code = dic[to_code]
 
                 else:
-                    fID.write('"' + to_code + '","' + filename + '","' + namespace + '"\n')
+                    csv_writer.writerow([to_code, filename, namespace])
+                    to_name = ass.find('to_name').text
+                    to_namespace = ass.find('to_namespace').text
+                    add_nodes_without_infos(to_code, to_name, to_namespace)
 
             if from_code[0] != 'N':
                 if from_code in dic:
                     from_code = dic[from_code]
 
                 else:
-                    fID.write('"' + from_code + '","' + filename + '","' + namespace + '"\n')
+                    csv_writer.writerow([from_code, filename, namespace])
+                    from_name = ass.find('from_name').text
+                    from_namespace = ass.find('from_namespace').text
+                    add_nodes_without_infos(from_code, from_name, from_namespace)
 
-            as_dic[filename][(to_code, from_code)] = {'to_code': to_code, 'from_code': from_code,
-                                                      'qualifier': (qname, qnamespace, qvalue)}
+            label_from = dict_id_to_label[from_code]
+            label_to = dict_id_to_label[to_code]
+            if (label_from, label_to) not in as_dic[filename]:
+                csv_writer_rela = generate_rela_file_and_query(filename, label_from, label_to, 'output/')
+                as_dic[filename][(label_from, label_to)] = csv_writer_rela
+
+            as_dic[filename][(label_from, label_to)].writerow({'to_code': to_code,
+                                                               'from_code': from_code,
+                                                               'qualifier': qnamespace+':'+qname+':'+qvalue})
 
     return as_dic
 
 
-def write_file(name, adf):
-    with open(name, 'a+',encoding='utf-8') as f:
-        f.write('"from_code","to_code","qualifier(name, namespace, value)"\n')
-        for key, value in adf.items():
-            f.write('"' + value['from_code'] + '","' + value['to_code'] + '","' + str(value['qualifier']) + '"\n')
+# dictionary id to label
+dict_id_to_label = {}
+
+# header
+header = ['id', 'status', 'namespace', 'name', 'propertys', 'synonyme', 'xref']
+
+# dictionary of file names to file
+dict_of_file_names = {}
+
+# cypher file
+cypher_file = open('cypher_med.cypher', 'w', encoding='utf-8')
+
+# cypher file delete
+cypher_file_delete = open('cypher_delete.cypher', 'w', encoding='utf-8')
+
+# query sstart (FIELDTERMINATOR '\\t')
+query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/import_into_Neo4j/med_rt/%s" As line  '''
 
 
-def generate_xml_dic(dic, fIDName):
-    path='data/Core_MEDRT_XML/'
-    xml_files= [f for f in os.listdir(path) if f.endswith('.xml')]
-    if len(xml_files)==1:
-        file_name=xml_files[0]
+def generate_node_csv_files(file_name):
+    """
+    generate csv file for node type and return. Additionaly add query to integrate this node type into neo4j
+    :param file_name: string
+    :return: csv writer dict
+    """
+    file_name=file_name.replace(' ','_')
+    file_name_short = 'output/' + file_name + '.csv'
+    file = open(file_name_short, 'w', encoding='utf-8')
+    csv_writer = csv.DictWriter(file, fieldnames=header)
+    csv_writer.writeheader()
+
+    query_node = query % (path_of_directory, file_name_short)
+    query_node += 'Create (n:%s {'
+    for head in header:
+        if head in ['synonyme', 'propertys']:
+            query_node += head + ': split(line.' + head + ',"|"), '
+        else:
+            query_node += head + ': line.' + head + ', '
+
+    query_node = query_node[:-2] + '});\n'
+    query_node = query_node % (dict_short_to_full_name[file_name])
+    cypher_file.write(query_node)
+    query_constraint='''CREATE CONSTRAINT ON (n:%s) ASSERT n.id IS UNIQUE;\n''' %(dict_short_to_full_name[file_name])
+    cypher_file.write(query_constraint)
+
+    query_delete='Match (s:%s) Where not (s)--() Delete s;\n' %(dict_short_to_full_name[file_name])
+    cypher_file_delete.write(query_delete)
+
+    return csv_writer
+
+
+def prepare_node_and_rela_and_write_to_files(fIDName):
+    """
+    
+    :param fIDName: 
+    :return: 
+    """
+    path = 'data/Core_MEDRT_XML/'
+    xml_files = [f for f in os.listdir(path) if f.endswith('.xml')]
+    if len(xml_files) == 1:
+        file_name = xml_files[0]
     else:
-        sys.exit('xmp not in path '+path)
-    tree = ET.parse(path+file_name)
+        sys.exit('xmp not in path ' + path)
+    tree = ET.parse(path + file_name)
     root = tree.getroot()
-    as_dic = get_asdic(root, dic, fIDName)
-
-    for filenames in as_dic:
-        write_file('output/' + filenames + '.csv', as_dic[filenames])
 
     xml_dic = defaultdict(dict)
     for con in root.iter('concept'):
@@ -103,11 +268,12 @@ def generate_xml_dic(dic, fIDName):
         synonyme = []
         namespace = con.find('namespace').text
         tmp = con.find('name').text.strip(']').split('[')
-        if len(tmp) == 2:
-            filename = tmp[1]
+        # if len(tmp) == 2:
+        #     filename = tmp[1]
+        #
+        # else:
+        #     filename = 'other'
 
-        else:
-            filename = 'other'
         name = tmp[0]
         status = con.find('status').text
         code = con.find('code').text
@@ -121,62 +287,50 @@ def generate_xml_dic(dic, fIDName):
             pnamespace = p.find('namespace').text
             pname = p.find('name').text
             pvalue = p.find('value').text
-            propertys.append((pnamespace, pname, pvalue))
+            propertys.append(pnamespace + ':' + pname + ':' + pvalue)
 
-        #        for e in concept:
-        #
-        #
-        #                    tu
-        #            if e.tag=='code':
-        #                code=e.text
-        #            if e.tag=='status':
-        #                status=e.text
-        #
-        #            if e.tag == 'property':
-        #
-        #            if e.tag =='synonym':
-        #                synonym=e.find('name').text
-        #
-        #
-        xml_dic[filename][code] = {'status': status, 'namespace': namespace, 'name': name, 'propertys': propertys,
-                                   'synonyme': synonyme}
-    #
+            if pname == 'CTY':
+                filename = pvalue
+
+        if not filename in dict_of_file_names:
+            csv_writer = generate_node_csv_files(filename)
+            dict_of_file_names[filename] = csv_writer
+
+        dict_id_to_label[code] = filename
+
+        infos = {'id': code, 'status': status, 'namespace': namespace, 'name': name, 'propertys': '|'.join(propertys),
+                 'synonyme': '|'.join(synonyme)}
+        dict_of_file_names[filename].writerow(infos)
+
+    # to avoid problems with data
+    path = 'data/Core_MEDRT_Accessory_Files/'
+    txt_files = [f for f in os.listdir(path) if 'DTS' not in f]
+    for txt_file in txt_files:
+        if 'mesh' in txt_file.lower():
+            Mesh_CUI = path + txt_file
+        elif 'rxnorm' in txt_file.lower():
+            Rx_CUI = path + txt_file
+
+    Mesh_map = CUI_to_dic(Mesh_CUI, 'MeSH')
+    Rx_map = CUI_to_dic(Rx_CUI, 'RxCUI')
+    dic = mergedicts(Mesh_map, Rx_map)
+
+    prepare_rela_and_add_to_file(root, dic, fIDName, path)
+
     return xml_dic
 
 
-def write_xmlfiles(d):
-    for filename, df in d.items():
-        with open('output/' + filename + '.csv', 'a+', encoding='utf-8') as f:
-            f.write('"ID","name","status","synonyme","propertys(namespace,name,value)"\n')
-            for k, v in df.items():
-                f.write('"' + k + '","' + v['name'] + '","' + v['status'] + '","')
-                for i in v['synonyme']:
-                    f.write('"' + i + '"')
-                f.write(',')
-                for i in v['propertys']:
-                    f.write('"' + str(i) + '"')
-                f.write('\n')
-
-
 def main():
-    # to avoid problems with data
-    path='data/Core_MEDRT_Accessory_Files/'
-    txt_files= [f for f in os.listdir(path) if 'DTS' not in f]
-    for txt_file in txt_files:
-        if 'mesh' in txt_file.lower():
-            Mesh_CUI=path+txt_file
-        elif 'rxnorm' in txt_file.lower():
-            Rx_CUI=path+txt_file
+    global path_of_directory
+    if len(sys.argv) > 1:
+        path_of_directory = sys.argv[1]
+    else:
+        sys.exit('need a path MED-RT')
 
-    Mesh_map = CUI_to_dic(Mesh_CUI)
-    Rx_map = CUI_to_dic(Rx_CUI)
-    total_map = mergedicts(Mesh_map, Rx_map)
-
-    xml_dic = generate_xml_dic(total_map, 'falseID.csv')
+    prepare_node_and_rela_and_write_to_files('falseID.csv')
     # nicht nötig da kene N...IDs in den Dateien vorhanden
     # xml_dic= look_synonyms(Rx_dic,xml_dic)
     # xml_dic= look_synonyms(Mesh_dic,xml_dic)
-    write_xmlfiles(xml_dic)
 
 
 if __name__ == "__main__":
