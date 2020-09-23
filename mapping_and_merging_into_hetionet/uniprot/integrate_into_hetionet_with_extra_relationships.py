@@ -133,11 +133,12 @@ def get_all_genes():
             dict_gene_to_name[gene_id] = name.lower()
 
         # fill the gene name to gene id dictionary
-        if name.lower() in dict_gene_name_to_id:
-            list_double_names.add(name.lower())
-            dict_gene_name_to_id[name.lower()].append(gene_id)
-        else:
-            dict_gene_name_to_id[name.lower()].append(gene_id)
+        if name:
+            if name.lower() in dict_gene_name_to_id:
+                list_double_names.add(name.lower())
+                dict_gene_name_to_id[name.lower()].append(gene_id)
+            else:
+                dict_gene_name_to_id[name.lower()].append(gene_id)
         if synonyms:
             for synonym in synonyms:
                 dict_synonyms_to_gene_ids[synonym.lower()].append(gene_id)
