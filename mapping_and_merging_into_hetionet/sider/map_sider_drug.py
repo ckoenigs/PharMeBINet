@@ -199,6 +199,7 @@ def load_sider_drug_in_dict():
 
         drug = DrugSider(stitchIDflat, stitchIDstereo, PubChem_Coupound_ID)
 
+        # https://www.biostars.org/p/155342/
         pubchem_flat = int(stitchIDflat[3:]) - 100000000
         pubchem_stereo = int(stitchIDstereo[3:])
 
