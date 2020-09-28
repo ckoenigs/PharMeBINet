@@ -13,6 +13,9 @@ def database_connection():
 # dictionary chemical name/synonyms to chemical id
 dict_chemical_name_to_chemical_id = {}
 
+# dictionary chemical id to resource
+dict_chemical_id_to_resource={}
+
 '''
 Load all chemicals from my database  and add them into a dictionary
 '''
@@ -24,6 +27,7 @@ def load_chemicals_from_database_and_add_to_dict():
     for chemical, in results:
         identifier = chemical['identifier']
         name=chemical['name'].lower()
+        dict_chemical_id_to_resource[identifier]=set(chemical['resource'])
         if not name in dict_chemical_name_to_chemical_id:
             dict_chemical_name_to_chemical_id[name]=set()
         dict_chemical_name_to_chemical_id[name].add(identifier)
@@ -43,7 +47,7 @@ dict_tuple_of_labels_to_csv_files = {}
 # file from relationship between gene and variant
 file_rela = open('drug/chemical_drug.tsv', 'w', encoding='utf-8')
 csv_rela = csv.writer(file_rela, delimiter='\t')
-header_rela = ['chemical_id', 'clinvar_id']
+header_rela = ['chemical_id', 'clinvar_id', 'resource']
 csv_rela.writerow(header_rela)
 
 # list of splitibale information
@@ -64,7 +68,7 @@ def load_all_drug_response_and_finish_the_files():
     cypher_file = open('drug/cypher_drug.cypher', 'w', encoding='utf-8')
 
     query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/clinvar/drug/%s.tsv" As line FIELDTERMINATOR '\\t' 
-        Match (c:Chemical{identifier:line.chemical_id}), (t:trait_DrugResponse_ClinVar{identifier:line.clinvar_id}) Create (c)-[:equal_to_clinvar_drug]->(t);\n '''
+        Match (c:Chemical{identifier:line.chemical_id}), (t:trait_DrugResponse_ClinVar{identifier:line.clinvar_id}) Set c.clinvar='yes', c.resource=split(line.resource,"|") Create (c)-[:equal_to_clinvar_drug]->(t);\n '''
     query_start = query_start % (path_of_directory,'chemical_drug')
     cypher_file.write(query_start)
 
@@ -81,8 +85,10 @@ def load_all_drug_response_and_finish_the_files():
         if name_short in dict_chemical_name_to_chemical_id:
             counter += 1
             for chemical_id in dict_chemical_name_to_chemical_id[name_short]:
-
-                csv_rela.writerow([chemical_id,identifier])
+                resource= dict_chemical_id_to_resource[chemical_id]
+                resource.add('ClinVar')
+                resource='|'.join(resource)
+                csv_rela.writerow([chemical_id,identifier,resource])
 
 
     print('number of mapped drug response:',counter)
