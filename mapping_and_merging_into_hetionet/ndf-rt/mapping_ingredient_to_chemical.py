@@ -45,12 +45,12 @@ Load all Chemical from my database  and add them into a dictionary
 
 
 def load_chemical_from_database_and_add_to_dict():
-    query = "MATCH (n:Chemical) RETURN n, labes(n)"
+    query = "MATCH (n:Chemical) RETURN n, labels(n)"
     results = g.run(query)
     for node, labels, in results:
         identifier = node['identifier']
         resource=node['resource']
-        dict_chemical_id_to_resource=resource
+        dict_chemical_id_to_resource[identifier]=resource
 
         if 'Compound' not in labels:
             if identifier not in dict_mesh_to_chemical_id:
@@ -58,7 +58,7 @@ def load_chemical_from_database_and_add_to_dict():
             dict_mesh_to_chemical_id[identifier].add(identifier)
 
         cur = con.cursor()
-        query = ("Select CUI,LAT,CODE,SAB, STR From MRCONSO Where SAB in ['MSH','DRUGBANK'] and CODE= '%s';")
+        query = ("Select CUI,LAT,CODE,SAB, STR From MRCONSO Where SAB in ('MSH','DRUGBANK') and CODE= '%s';")
         query = query % (identifier)
 
         rows_counter = cur.execute(query)
@@ -101,8 +101,8 @@ def write_files(path_of_directory):
 
     cypher_file = open('ingredient/cypher.cypher', 'w', encoding='utf-8')
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet//%s" As line FIELDTERMINATOR '\\t' 
-            Match (n:NDF_RT_INGREDIENT_KIND{code:line.code}), (v:Chemical{identifier:line.chemical_id) Set v.ndf_rt='yes', v.resource=split(line.resource,'|') Create (v)-[:equal_to_ingredient_ndf_rt{how_mapped:line.how_mapped}]->(n);'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/%s" As line FIELDTERMINATOR '\\t' 
+            Match (n:NDF_RT_INGREDIENT_KIND{code:line.code}), (v:Chemical{identifier:line.chemical_id}) Set v.ndf_rt='yes', v.resource=split(line.resource,'|') Create (v)-[:equal_to_ingredient_ndf_rt{how_mapped:line.how_mapped}]->(n);'''
     query =query %(path_of_directory,file_name)
     cypher_file.write(query)
     cypher_file.close()
@@ -127,7 +127,7 @@ def load_all_ingredients_and_map(csv_map):
     query = "MATCH (n:NDF_RT_INGREDIENT_KIND) RETURN n"
     results = g.run(query)
     for node, in results:
-        identifier = node['identifier']
+        identifier = node['code']
         name= node['name'].lower()
         try_to_map(identifier,name, dict_name_to_chemical_id,'name_mapping',csv_map)
 
@@ -150,7 +150,7 @@ def main():
     if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]
     else:
-        sys.exit('need a path ClinVar')
+        sys.exit('need a path NDF-RT ingredient')
 
     print('##########################################################################')
 
