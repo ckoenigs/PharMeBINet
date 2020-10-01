@@ -1,13 +1,17 @@
-from py2neo import Graph
+
 import sys
 import datetime, re
-import csv, json
+import csv, json, math
 
+sys.path.append("..")
+from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
+sys.path.append("../..")
+import create_connection_to_databases
 
 # connect with the neo4j database AND MYSQL
 def database_connection():
     global g
-    g = Graph("http://localhost:7474/db/data/", auth=("neo4j", "test"))
+    g = create_connection_to_databases.database_connection_neo4j()
 
 
 # dictionary gene id to gene node
@@ -44,8 +48,10 @@ def get_all_variation_properties():
         RETURN allfields;'''
     results = g.run(query)
     for property, in results:
-        if property not in ['rela']:
+        if property not in ['rela','xrefs','genes']:
             query_middle += property + ':n.' + property + ', '
+        elif property=='xrefs':
+            query_middle += property + ':split(line.' + property + ',"|"), '
     query_middle = query_middle + ' license:"CC0 1.0", source:"ClinVar", clinvar:"yes",  resource:["ClinVar"], url:"https://www.ncbi.nlm.nih.gov/clinvar/variation/"+line.identifier}) Create (m)-[:equal_to_clinvar_variant]->(n);\n'
 
 
@@ -102,59 +108,85 @@ csv_rela = csv.writer(file_rela, delimiter='\t')
 header_rela = ['gene_id', 'variant_id']
 csv_rela.writerow(header_rela)
 
+divider_of_variant = 5000
+
 '''
 Load all variation sort the ids into the right csv, generate the queries, and add rela to the rela csv
 '''
 
 
 def load_all_variants_and_finish_the_files():
-    query = "MATCH (n:Variant_ClinVar) RETURN n, labels(n)"
-    results = g.run(query)
-    for node, lables, in results:
-        new_labels = set()
-        for label in lables:
-            new_label = prepare_label(label)
-            new_labels.add(new_label)
-        new_labels = tuple(sorted(new_labels))
+    query="Match (n:Variant_ClinVar) Return count(n)"
+    result=g.run(query)
+    number_of_variant= result.evaluate()
 
-        identifier = node['identifier']
+    number_of_rounds=math.ceil(number_of_variant / divider_of_variant)
+    for round_index in range(number_of_rounds):
 
-        # add tuple to dict with csv and gerenarte and add query
-        if not new_labels in dict_tuple_of_labels_to_csv_files:
-            file_name = '_'.join(list(new_labels))
-            file = open('output/' + file_name + '.tsv', 'w', encoding='utf-8')
-            csv_writer = csv.writer(file, delimiter='\t')
-            csv_writer.writerow(['identifier'])
+        query = "MATCH (n:Variant_ClinVar) RETURN n, labels(n) Skip %s Limit %s"
+        query = query % (round_index * divider_of_variant, divider_of_variant)
 
-            dict_tuple_of_labels_to_csv_files[new_labels] = csv_writer
+        results = g.run(query)
+        for node, lables, in results:
+            new_labels = set()
+            for label in lables:
+                new_label = prepare_label(label)
+                new_labels.add(new_label)
+            new_labels = tuple(sorted(new_labels))
 
-            add_query_to_cypher_file(new_labels, file_name)
-        dict_tuple_of_labels_to_csv_files[new_labels].writerow([identifier])
+            identifier = node['identifier']
 
-        if 'rela' in node:
-            relationship_infos = json.loads(node["rela"].replace('\\"', '"'))
-            for rela in relationship_infos:
-                symbols = rela['symbols'] if 'symbols' in rela else []
-                xrefs = rela['xrefs'] if 'xrefs' in rela else []
-                found_gene = False
-                for xref in xrefs:
-                    if xref.startswith('Gene'):
-                        gene_id = xref.split(':')[1]
-                        if gene_id in dict_gene_id_to_gene_node:
-                            gene_symbols = set(dict_gene_id_to_gene_node[gene_id]['geneSymbol'])
-                            found_gene = True
-                            # in clivar is a different gene symbol which is in the gene synonyms
-                            # if len(gene_symbols.intersection(symbols))==0:
-                            #     print(identifier)
-                            #     print(gene_id)
-                            #     print(dict_gene_id_to_gene_node[gene_id])
-                            #     print('different gene symbols')
-                            csv_rela.writerow([str(gene_id), identifier])
-                # all the not found is because they are linked to removed or replaced genes
-                # if not found_gene:
-                #     print(identifier)
-                #     print('non gene found')
-                #     print(rela)
+            # add tuple to dict with csv and gerenarte and add query
+            if not new_labels in dict_tuple_of_labels_to_csv_files:
+                file_name = '_'.join(list(new_labels))
+                file = open('output/' + file_name + '.tsv', 'w', encoding='utf-8')
+                csv_writer = csv.writer(file, delimiter='\t')
+                csv_writer.writerow(['identifier', 'xrefs'])
+
+                dict_tuple_of_labels_to_csv_files[new_labels] = csv_writer
+
+                add_query_to_cypher_file(new_labels, file_name)
+            xrefs= node['xrefs'] if 'xrefs' in node else []
+            new_xrefs=[]
+            for xref in xrefs:
+                if xref.startswith('dbSNP:'):
+                    xref = xref.split(':')
+                    xref = xref[0]+':rs'+xref[1]
+                new_xrefs.append(xref)
+
+            dict_tuple_of_labels_to_csv_files[new_labels].writerow([identifier, '|'.join(go_through_xrefs_and_change_if_needed_source_name(new_xrefs,'Variant'))])
+
+            # if 'rela' in node:
+            #     relationship_infos = json.loads(node["rela"].replace('\\"', '"'))
+            #     for rela in relationship_infos:
+            #         symbols = rela['symbols'] if 'symbols' in rela else []
+            #         xrefs = rela['xrefs'] if 'xrefs' in rela else []
+            #         found_gene = False
+            #         for xref in xrefs:
+            #             if xref.startswith('Gene'):
+            #                 gene_id = xref.split(':')[1]
+            #                 if gene_id in dict_gene_id_to_gene_node:
+            #                     gene_symbols = set(dict_gene_id_to_gene_node[gene_id]['geneSymbol'])
+            #                     found_gene = True
+            #                     # in clivar is a different gene symbol which is in the gene synonyms
+            #                     # if len(gene_symbols.intersection(symbols))==0:
+            #                     #     print(identifier)
+            #                     #     print(gene_id)
+            #                     #     print(dict_gene_id_to_gene_node[gene_id])
+            #                     #     print('different gene symbols')
+            #                     csv_rela.writerow([str(gene_id), identifier])
+                    # all the not found is because they are linked to removed or replaced genes
+                    # if not found_gene:
+                    #     print(identifier)
+                    #     print('non gene found')
+                    #     print(rela)
+            if 'genes' in node:
+                possible_genes_rela=node["genes"].replace('\\"', '"')
+                genes_infos = json.loads(possible_genes_rela)
+                for gene_infos in genes_infos:
+                    gene_id=gene_infos['gene_id']
+                    if gene_id in dict_gene_id_to_gene_node:
+                        csv_rela.writerow([gene_id, identifier])
 
 
 '''

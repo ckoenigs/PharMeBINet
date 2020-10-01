@@ -4,11 +4,13 @@ Created on Tue Aug 22 15:16:45 2017
 
 @author: Cassandra
 """
-from py2neo import Graph
 import datetime
 import sys, csv
 from collections import defaultdict
 import gzip
+
+sys.path.append("../..")
+import create_connection_to_databases
 
 
 class DrugSider:
@@ -95,7 +97,7 @@ create connection to neo4j
 
 def create_connection_with_neo4j():
     global g
-    g = Graph("http://localhost:7474/db/data/", auth=("neo4j", "test"))
+    g = create_connection_to_databases.database_connection_neo4j()
 
 
 '''
@@ -152,7 +154,7 @@ def load_compounds_from_hetionet():
             mixture_name = splitted[0].lower()
             if not '+' in splitted[1]:
                 solo_ingredient = splitted[1].lower()
-                if name==solo_ingredient:
+                if name == solo_ingredient:
                     if not mixture_name in dict_synonyms_to_chemicals_ids:
                         dict_synonyms_to_chemicals_ids[mixture_name] = set()
                     dict_synonyms_to_chemicals_ids[mixture_name].add(identifier)

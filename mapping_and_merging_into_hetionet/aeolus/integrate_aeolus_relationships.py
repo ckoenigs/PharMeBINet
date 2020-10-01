@@ -3,10 +3,12 @@ Created on Tue Feb 04 08:40:47 2020
 
 @author: ckoenigs
 """
-from py2neo import Graph
 import datetime
 import sys, csv
 from collections import defaultdict
+
+sys.path.append("../..")
+import create_connection_to_databases
 
 # dictionary with all compounds with id (drugbank id) as key and class DrugHetionet as value
 dict_all_drug = {}
@@ -21,8 +23,7 @@ create connection to neo4j and mysql
 
 def create_connection_with_neo4j():
     global g
-    # g = Graph("http://bimi:7475/db/data/", bolt=False, auth=("neo4j", "test"))
-    g = Graph("http://localhost:7474/db/data/", auth=("neo4j", "test"))
+    g = create_connection_to_databases.database_connection_neo4j()
 
 
 # path to directory
@@ -125,10 +126,12 @@ def get_aeolus_connection_information_in_dict(label_search, dict_connection_info
                                               number_of_compound_to_work_with, property_label,
                                               dict_chemical_to_the_other_thing):
     query = '''Match (c:Chemical{aeolus:'yes'}) Where not exists(c.%s)  Set c.%s='yes' With c Limit ''' + str(
-        number_of_compound_to_work_with) + ''' Match (c)-[:equal_to_Aeolus_drug]-(r:AeolusDrug)-[l:Causes]-(:AeolusOutcome)--(d:%s) Return c.identifier, l, d.identifier '''
-    query = query % (property_label, property_label,label_search)
+        number_of_compound_to_work_with) + ''' Match (c)-[:equal_to_Aeolus_drug]-(r:AeolusDrug)-[l:Causes]-(:AeolusOutcome)--(d:%s) Where toInteger(l.countA)>100 Return c.identifier, l, d.identifier '''
+    query = query % (property_label, property_label, label_search)
     results = g.run(query)
+    found_something_with_query = False
     for mapped_id, connection, identifier, in results:
+        found_something_with_query = True
         if mapped_id in dict_chemical_to_the_other_thing:
             dict_chemical_to_the_other_thing[mapped_id].add(identifier)
         else:
@@ -221,7 +224,7 @@ def integrate_connection_from_aeolus_in_hetionet(dict_connection_information_for
         query_pair = query % (chemical_id, labels)
         results = g.run(query_pair)
         for label_id, rela_resource, in results:
-            check_for_existing_pairs[chemical_id][label_id] = rela_resource
+            check_for_existing_pairs[chemical_id][label_id] = rela_resource if rela_resource else []
 
     count = 0
 
@@ -326,8 +329,8 @@ def main():
         print(datetime.datetime.utcnow())
         print('get the aeolus information')
 
-
-        get_aeolus_connection_information_in_dict('SideEffect', dict_connection_information, number_of_compounds_at_once,
+        get_aeolus_connection_information_in_dict('SideEffect', dict_connection_information,
+                                                  number_of_compounds_at_once,
                                                   'integrated', dict_chemical_to_side_effects)
 
         print(

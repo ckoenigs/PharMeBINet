@@ -5,10 +5,11 @@ Created on Wed Apr 18 08:41:20 2018
 @author: ckoenigs
 """
 
-from py2neo import Graph#, authenticate
 import datetime
 import csv, sys
 
+sys.path.append("../..")
+import create_connection_to_databases
 '''
 create connection to neo4j and mysql
 '''
@@ -18,7 +19,7 @@ def create_connection_with_neo4j_mysql():
     # create connection with neo4j
     # authenticate("localhost:7474", "neo4j", "test")
     global g
-    g = Graph("http://localhost:7474/db/data/", auth=("neo4j", "test"))
+    g = create_connection_to_databases.database_connection_neo4j()
 
 
 # dictionary with hetionet biological process with identifier as key and value the name

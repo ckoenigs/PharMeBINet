@@ -5,12 +5,11 @@ Created on Fri Jan 26 13:31:43 2018
 @author: ckoenigs
 """
 
-from py2neo import Graph#, authenticate
-import MySQLdb as mdb
 import sys
 import datetime
-import threading
-import types
+
+sys.path.append("..")
+import create_connection_to_databases
 
 # dictionary with the differences sources as and the name as property in Hetionet
 dict_resources = {
@@ -30,11 +29,11 @@ dict_resources = {
 def database_connection():
     # create connection with mysql database
     # global con
-    # con = mdb.connect('localhost', 'root', 'Za8p7Tf', 'umls')
+    # con = mdb.connect('127.0.0.1', 'root', 'Za8p7Tf', 'umls')
 
     # authenticate("localhost:7474", )
     global g
-    g = Graph("http://localhost:7474/db/data/", auth=("neo4j", "test"))
+    g = create_connection_to_databases.database_connection_neo4j()
 
 
 # dictionary with label as key and value is the constraint property
@@ -51,7 +50,7 @@ def generate_dictionary_for_labels():
     for name, constraint_string, in results:
         # print(constraint_string)
         label = constraint_string.split(':')[1].split(' )')[0]
-        unique_property = constraint_string.split('.')[1].split(' ')[0].rsplit(')',1)[0]
+        unique_property = constraint_string.split('.')[1].split(' ')[0].rsplit(')', 1)[0]
         dict_label_to_unique_prop[label] = unique_property
     # print(dict_label_to_unique_prop)
 
@@ -75,8 +74,8 @@ def merge_resource_to_node(delete_node, label, merged_node):
     resources_list = dict_delete_node['resource'] if 'resource' in dict_delete_node else []
     url_ctd = dict_delete_node['ctd_url'] if 'ctd_url' in dict_delete_node else ''
 
-    print('delete node:'+delete_node)
-    print('merged node:'+merged_node)
+    print('delete node:' + delete_node)
+    print('merged node:' + merged_node)
 
     # make all this source to a yes in the merged node
     if len(resources_list) != 0:
@@ -112,8 +111,6 @@ def merge_resource_to_node(delete_node, label, merged_node):
         g.run(query[0:-1])
 
 
-
-
 '''
 The DB13390 is revoked but DB06723 has this as ingredient and fit for the mapping of NDF-RT
 So first get all edges and nodes with type
@@ -139,7 +136,7 @@ def get_the_information_and_the_direction(identifier, label, merged_node_id):
 
         list_node_to_other.append([rela_type, dict_rela, node_labels, node])
 
-    print('number of rela from node to other:'+str(len(list_node_to_other)))
+    print('number of rela from node to other:' + str(len(list_node_to_other)))
 
     query = '''Match (c:%s{identifier:"%s"})<-[r]-(a) Return Type(r), r, labels(a), a '''
     query = query % (label, identifier)
@@ -161,6 +158,7 @@ def get_the_information_and_the_direction(identifier, label, merged_node_id):
 
     print('number of rela from other to node:' + str(len(list_other_to_node)))
 
+
 '''
 The node that get the information 
 '''
@@ -181,13 +179,13 @@ def add_this_information_to_the_merged_node(identifier, label, delete_node_id):
 
     # integrate the new relationships from this node to the other nodes into for this node into Hetionet
     count_new_relationships_from_this_node = 0
-    length_list_node_other=len(list_node_to_other)
+    length_list_node_other = len(list_node_to_other)
     for [rela_type, dict_rela, node_labels, node] in list_node_to_other:
         # test if not a relationship already exists
         if not node_labels[0] in dict_label_to_unique_prop:
-            print('The rela  to this label node has to be manual integrated:'+ node_labels[0])
+            print('The rela  to this label node has to be manual integrated:' + node_labels[0])
             print(node)
-            print('Rela type:'+rela_type)
+            print('Rela type:' + rela_type)
             print(dict_rela)
             continue
         if type(node[dict_label_to_unique_prop[node_labels[0]]]) == int:
@@ -212,7 +210,8 @@ def add_this_information_to_the_merged_node(identifier, label, delete_node_id):
 
             for key, property in dict_rela.items():
                 if type(property) != list:
-                    if type(property)==str:
+                    print(type(property))
+                    if type(property) == str:
                         query = query + '''%s:"%s",'''
                     else:
                         query = query + '''%s:%s,'''
@@ -256,7 +255,7 @@ def add_this_information_to_the_merged_node(identifier, label, delete_node_id):
                              node[dict_label_to_unique_prop[node_labels[0]]], rela_type)
             for key, property in dict_rela.items():
                 if type(property) != list:
-                    if type(property)==str:
+                    if type(property) == str:
                         query = query + '''%s:"%s",'''
                     else:
                         query = query + '''%s:%s,'''
@@ -336,21 +335,21 @@ def merge_information_from_one_node_to_another(delete_node_id, merged_node_id, n
     print(datetime.datetime.utcnow())
     print('delete merged node')
 
-    #delete_merged_node(delete_node_id, node_label)
+    # delete_merged_node(delete_node_id, node_label)
 
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
 
+
 #
 def main():
-
-    if len(sys.argv)<3:
+    if len(sys.argv) < 3:
         return
 
-    old_id =sys.argv[1]
-    into=sys.argv[2]
-    label=sys.argv[3]
+    old_id = sys.argv[1]
+    into = sys.argv[2]
+    label = sys.argv[3]
 
     global list_other_to_node, list_node_to_other
     # list from the specific node to the other with (rela_type,dict_rela,node_labels,dict_node)
@@ -394,7 +393,7 @@ def main():
     print('integrate this into Hetionet')
 
     # add_this_information_to_the_merged_node('DB06723', 'Compound','DB13390')
-    add_this_information_to_the_merged_node(into , label, old_id)
+    add_this_information_to_the_merged_node(into, label, old_id)
 
     print('##########################################################################')
 
@@ -407,7 +406,6 @@ def main():
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
-
 
 
 if __name__ == "__main__":

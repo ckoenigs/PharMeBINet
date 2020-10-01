@@ -1,7 +1,10 @@
-from py2neo import Graph
+sys.path.append("../..")
+import create_connection_to_databases
 import datetime
 import sys, csv
-from collections import defaultdict
+
+sys.path.append("../..")
+import create_connection_to_databases
 
 '''
 create connection to neo4j
@@ -10,19 +13,23 @@ create connection to neo4j
 
 def create_connection_with_neo4j():
     global g
-    g = Graph("http://localhost:7474/db/data/", auth=("neo4j", "test"))
+    g = create_connection_to_databases.database_connection_neo4j()
 
-#set of chemical side effect pairs
-set_chemical_side_effect_pair=set()
+
+# set of chemical side effect pairs
+set_chemical_side_effect_pair = set()
 
 '''
 load all existing chemical-side effect relas in set
 '''
+
+
 def get_all_chemical_side_effect_pairs():
-    query='''Match (a:Chemical)-[r]-(b:SideEffect) Return Distinct a.identifier, b.identifier'''
-    results=g.run(query)
+    query = '''Match (a:Chemical)-[r]-(b:SideEffect) Return Distinct a.identifier, b.identifier'''
+    results = g.run(query)
     for chemical_id, side_effect_id, in results:
-        set_chemical_side_effect_pair.add((chemical_id,side_effect_id))
+        set_chemical_side_effect_pair.add((chemical_id, side_effect_id))
+
 
 '''
 dictionary with compound-Se as key and value is a list of all different information
@@ -89,11 +96,11 @@ def integrate_relationship_from_sider_into_hetionet():
     # number of possible new connection
     number_of_in_new_connection = 0
 
-    #cypher file
-    cypher_file=open('output/cypher_rela.cypher','w',encoding='utf-8')
+    # cypher file
+    cypher_file = open('output/cypher_rela.cypher', 'w', encoding='utf-8')
     query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/sider/output/%s.tsv" As line FIELDTERMINATOR '\t' Match (a:Chemical{identifier:line.chemical_id})'''
-    query=query_start+'''-[r:CAUSES_CcSE]->(b:SideEffect{identifier:line.se_id}) Set r.upperFrequency=line.upperFrequency, r.placebo=line.placebo, r.avg_frequency=line.avg_frequency, r.lowerFrequency=line.lowerFrequency, r.placeboAvgFrequency= line.placeboAvgFrequency, r.resource=r.resource+"SIDER" , r.placeboLowerFrequency= line.placeboLowerFrequency, r.placeboUpperFrequency= line.placeboUpperFrequency,  r.sider="yes"; \n'''
-    query=query % 'mapped_rela_se'
+    query = query_start + '''-[r:CAUSES_CcSE]->(b:SideEffect{identifier:line.se_id}) Set r.upperFrequency=line.upperFrequency, r.placebo=line.placebo, r.avg_frequency=line.avg_frequency, r.lowerFrequency=line.lowerFrequency, r.placeboAvgFrequency= line.placeboAvgFrequency, r.resource=r.resource+"SIDER" , r.placeboLowerFrequency= line.placeboLowerFrequency, r.placeboUpperFrequency= line.placeboUpperFrequency,  r.sider="yes"; \n'''
+    query = query % 'mapped_rela_se'
     cypher_file.write(query)
 
     query = query_start + ''', (b:SideEffect{identifier:line.se_id}) Create (a)-[r:CAUSES_CcSE{upperFrequency:line.upperFrequency, placebo:line.placebo, avg_frequency:line.avg_frequency, lowerFrequency:line.lowerFrequency, placeboAvgFrequency: line.placeboAvgFrequency, resource:["SIDER"] , placeboLowerFrequency: line.placeboLowerFrequency, placeboUpperFrequency: line.placeboUpperFrequency,  sider:"yes", license:"CC BY-NC-SA 4.0"}]->(b) ; \n'''
@@ -101,17 +108,18 @@ def integrate_relationship_from_sider_into_hetionet():
     cypher_file.write(query)
     cypher_file.close()
 
-    header=['chemical_id','se_id','upperFrequency','placebo','avg_frequency','lowerFrequency','placeboAvgFrequency','placeboLowerFrequency','placeboUpperFrequency']
-    file=open('output/mapped_rela_se.tsv','w',encoding='utf-8')
-    csv_writer=csv.writer(file,delimiter='\t')
+    header = ['chemical_id', 'se_id', 'upperFrequency', 'placebo', 'avg_frequency', 'lowerFrequency',
+              'placeboAvgFrequency', 'placeboLowerFrequency', 'placeboUpperFrequency']
+    file = open('output/mapped_rela_se.tsv', 'w', encoding='utf-8')
+    csv_writer = csv.writer(file, delimiter='\t')
     csv_writer.writerow(header)
 
     file_new = open('output/new_rela_se.tsv', 'w', encoding='utf-8')
     csv_writer_new = csv.writer(file_new, delimiter='\t')
     csv_writer_new.writerow(header)
-    counter=0
+    counter = 0
     for (chemical_id, umlsId), list_of_information in dict_compound_SE_connection_informations.items():
-        counter+=1
+        counter += 1
         # lowest frequency
         lowerFreq = str(min(list_of_information[0]))
         # all frequencies
@@ -186,22 +194,21 @@ def integrate_relationship_from_sider_into_hetionet():
         placeboLowerFreq = str(min(list_of_information[4]))
         placeboUpperFreq = str(max(list_of_information[6]))
 
-        if (chemical_id,umlsId) in set_chemical_side_effect_pair:
-            number_of_update_connection+=1
+        if (chemical_id, umlsId) in set_chemical_side_effect_pair:
+            number_of_update_connection += 1
             csv_writer.writerow([chemical_id, umlsId, upperFreq, placebo, freq, lowerFreq,
-                    placeboFreq,
-                    placeboLowerFreq, placeboUpperFreq])
+                                 placeboFreq,
+                                 placeboLowerFreq, placeboUpperFreq])
         else:
-            number_of_new_connection+=1
+            number_of_new_connection += 1
             csv_writer_new.writerow([chemical_id, umlsId, upperFreq, placebo, freq, lowerFreq,
-                    placeboFreq,
-                    placeboLowerFreq, placeboUpperFreq])
-
+                                     placeboFreq,
+                                     placeboLowerFreq, placeboUpperFreq])
 
     print('Number of possible new connection:' + str(number_of_in_new_connection))
     print('Number of new connection:' + str(number_of_new_connection))
     print('Number of update connection:' + str(number_of_update_connection))
-    print(('number of connections',counter))
+    print(('number of connections', counter))
 
 
 def main():

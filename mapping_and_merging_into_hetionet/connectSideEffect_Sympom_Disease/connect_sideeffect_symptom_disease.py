@@ -5,10 +5,11 @@ Created on Mon Sep  4 10:55:05 2017
 @author: ckoenigs
 """
 
-from py2neo import Graph
 import datetime
-import MySQLdb as mdb
 import sys, csv
+
+sys.path.append("../..")
+import create_connection_to_databases
 
 
 class Symptom:
@@ -44,11 +45,11 @@ create connection to neo4j and mysql
 
 def create_connection_with_neo4j_mysql():
     global g
-    g = Graph("http://localhost:7474/db/data/", auth=("neo4j", "test"))
+    g = create_connection_to_databases.database_connection_neo4j()
 
     # create connection with mysql database
     global con
-    con = mdb.connect('localhost', 'ckoenigs', 'Za8p7Tf$', 'umls')
+    con = create_connection_to_databases.database_connection_umls()
 
 
 # dictionary of all symptoms from hetionet, with mesh_id/ umls cui as key and value is class Symptom
@@ -62,6 +63,15 @@ dict_side_effects = {}
 
 # dictionary name/umls_id/meddra_id to set of sideeffects id
 dict_name_ids_to_sideeffect_ids = {}
+
+# set of pairs of symptom side effect
+set_symptom_side_effect = set()
+
+# set of pairs of disease side effect
+set_disease_side_effect = set()
+
+# set of pairs of disease symptom
+set_disease_symptom = set()
 
 # generate cypher file
 cypher = open('cypher.cypher', 'w', encoding='utf-8')
@@ -80,7 +90,7 @@ def add_element_to_dictionary(property, identifier, dictionary):
     dictionary[property].add(identifier)
 
 
-def mapping(from_mapper, from_identifier, dictionary, map_file, how_mapped):
+def mapping(from_mapper, from_identifier, dictionary, map_file, how_mapped, set_of_pairs):
     """
     Map from one name/id of on label to the dictionary of the other label
     if mapped write into  the file the mapping pairs and how they mapped
@@ -90,17 +100,20 @@ def mapping(from_mapper, from_identifier, dictionary, map_file, how_mapped):
     :param dictionary: dictionary
     :param map_file: csv.writer
     :param how_mapped: string
+    :param set_of_pairs: set of tuple pairs
     :return: if it mapped or not
     """
     if from_mapper in dictionary:
         for to_identifier in dictionary[from_mapper]:
-            map_file.writerow([from_identifier, to_identifier, how_mapped])
+            if not (from_identifier, to_identifier) in set_of_pairs:
+                map_file.writerow([from_identifier, to_identifier, how_mapped])
+                set_of_pairs.add((from_identifier, to_identifier))
         return True
     return False
 
 
 def create_cypher_query(header, from_label, to_label, file_name):
-    if from_label == 'Symptom' and to_label == 'SideEffect':
+    if to_label == 'SideEffect':
         short_second = 'SE'
     else:
         short_second = to_label[0]
@@ -179,12 +192,17 @@ def load_all_symptoms_in_a_dict():
         add_element_to_dictionary(identifier, identifier, dict_name_ids_to_symptom_ids)
 
         mapped_with_name = mapping(name, identifier, dict_name_ids_to_sideeffect_ids, csv_mapping_s_to_se,
-                                   'mapped with name')
+                                   'mapped with name', set_symptom_side_effect)
         if mapped_with_name:
-            counter_with_name+=1
-
+            counter_with_name += 1
 
         cuis = []
+
+        # manual checked with wrong mapping with umls
+        if identifier in ['D004881']:
+            list_mesh_without_cui.append(identifier)
+            print(identifier)
+            continue
         cur = con.cursor()
         query = ("Select CUI,LAT,STR From MRCONSO Where SAB='MSH' and CODE= '%s';")
         query = query % (identifier)
@@ -210,7 +228,7 @@ def load_all_symptoms_in_a_dict():
             for cui in cuis:
                 list_cuis_mapped = set()
                 mapping(cui, identifier, dict_name_ids_to_sideeffect_ids, csv_mapping_s_to_se,
-                                   'mapped with umls cui')
+                        'mapped with umls cui', set_symptom_side_effect)
                 if cui in dict_side_effects:
                     list_cuis_mapped.add(cui)
                 if len(list_cuis_mapped) > 0:
@@ -219,7 +237,6 @@ def load_all_symptoms_in_a_dict():
         else:
             list_mesh_without_cui.append(identifier)
             print(identifier)
-
 
         dict_symptoms[identifier] = symptom
 
@@ -240,8 +257,8 @@ def load_and_map_disease():
     csv_mapping_d_to_s = create_mapping_file('mapping_disease_mapping', 'map_d_to_s.tsv',
                                              ['disease_id', 'symptom_id', 'how_mapped'], 'Disease', 'Symptom')
 
-    counter_mapped_se=0
-    counter_mapped_symp=0
+    counter_mapped_se = 0
+    counter_mapped_symp = 0
 
     for disease, in results:
         name = disease['name'].lower() if 'name' in disease else ''
@@ -254,48 +271,65 @@ def load_and_map_disease():
             if xref.lower().startswith('umls'):
                 umls = xref.split(':')[1]
                 mapped = mapping(umls, identifier, dict_name_ids_to_sideeffect_ids, csv_mapping_d_to_se,
-                                 'mapped with UMLS ID')
+                                 'mapped with UMLS ID', set_disease_side_effect)
                 if mapped:
                     mapped_to_sideeffect = True
-                    counter_mapped_se+=1
+                    counter_mapped_se += 1
             elif xref.lower().startswith('meddra'):
                 mapped = mapping(xref, identifier, dict_name_ids_to_sideeffect_ids, csv_mapping_d_to_se,
-                                 'mapped with MedDRA ID')
+                                 'mapped with MedDRA ID', set_disease_side_effect)
                 if mapped:
                     mapped_to_sideeffect = True
-                    counter_mapped_se+=1
+                    counter_mapped_se += 1
             elif xref.lower().startswith('mesh'):
                 mesh = xref.split(':')[1]
                 mapped = mapping(mesh, identifier, dict_name_ids_to_symptom_ids, csv_mapping_d_to_s,
-                                 'mapped with UMLS ID')
+                                 'mapped with MESH ID', set_disease_symptom)
                 if mapped:
                     mapped_to_symptom = True
                     counter_mapped_symp += 1
 
         if not mapped_to_sideeffect:
-            mapped=mapping(name, identifier,dict_name_ids_to_sideeffect_ids, csv_mapping_d_to_se, 'mapped with name')
+            mapped = mapping(name, identifier, dict_name_ids_to_sideeffect_ids, csv_mapping_d_to_se, 'mapped with name',
+                             set_disease_side_effect)
 
-            #if not map try with disease synonyms
-            if not  mapped:
-                synonyms= disease['synonyms'] if 'synonyms' in disease else []
+            # if not map try with disease synonyms
+            if not mapped:
+                synonyms = disease['synonyms'] if 'synonyms' in disease else []
                 for synonym in synonyms:
                     if '[' in synonym:
-                        synonym=synonym.rsplit(' [',1)[0]
-                    synonym=synonym.lower()
+                        synonym = synonym.rsplit(' [', 1)[0]
+                    synonym = synonym.lower()
                     mapped_syn = mapping(synonym, identifier, dict_name_ids_to_sideeffect_ids, csv_mapping_d_to_se,
-                                     'mapped with synonyms')
+                                         'mapped with synonyms', set_disease_side_effect)
                     if mapped_syn:
-                        mapped=True
+                        mapped = True
+
+            if not mapped:
+                cur = con.cursor()
+                query = ('Select CUI,LAT,STR From MRCONSO Where  STR= "%s";')
+                query = query % (name)
+                rows_counter = cur.execute(query)
+                mapped_with_umls = False
+                if rows_counter > 0:
+                    for (cui, lat, label,) in cur:
+                        mapped_with_umls = mapping(cui, identifier, dict_name_ids_to_sideeffect_ids,
+                                                   csv_mapping_d_to_se,
+                                                   'mapped with cui from umls', set_disease_side_effect)
+                        if mapped_with_umls:
+                            mapped = True
             if mapped:
-                counter_mapped_se+=1
+                counter_mapped_se += 1
 
         if not mapped_to_symptom:
-            mapped=mapping(name, identifier,dict_name_ids_to_symptom_ids, csv_mapping_d_to_s, 'mapped with name')
+            mapped = mapping(name, identifier, dict_name_ids_to_symptom_ids, csv_mapping_d_to_s, 'mapped with name',
+                             set_disease_symptom)
             if mapped:
-                counter_mapped_symp+=1
+                counter_mapped_symp += 1
 
-    print('number of mapped disease to se:',counter_mapped_se)
+    print('number of mapped disease to se:', counter_mapped_se)
     print('number of mapped disease to symptom:', counter_mapped_symp)
+
 
 def main():
     global path_of_directory
@@ -328,9 +362,9 @@ def main():
     load_all_symptoms_in_a_dict()
 
     print(
-    '###########################################################################################################################')
+        '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print(datetime.datetime.utcnow())
     print('Load disease an map to se and symptom')
 
     load_and_map_disease()

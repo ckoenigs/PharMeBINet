@@ -1,19 +1,19 @@
-from py2neo import Graph  # , authenticate
-import MySQLdb as mdb
 import sys
 import datetime, time
 import csv
-from _collections import defaultdict
+
+sys.path.append("../..")
+import create_connection_to_databases
 
 
 # connect with the neo4j database AND MYSQL
 def database_connection():
     # create connection with mysql database
     global con
-    con = mdb.connect('localhost', 'ckoenigs', 'Za8p7Tf$', 'umls')
+    con = create_connection_to_databases.database_connection_umls()
 
     global g
-    g = Graph("http://localhost:7474/db/data/", auth=("neo4j", "test"))
+    g = create_connection_to_databases.database_connection_neo4j()
 
 
 # the general query start
@@ -359,12 +359,14 @@ def generate_cypher_queries():
     # cypher file for mapping and integration
     cypher_file = open('cypher/cypher_symptom.cypher', 'w')
 
-    query_start_match = query_start + '''Match (s:Symptom{identifier:line.hetionet_id }) , (n:HPOsymptom{id:line.hpo_id}) Set s.hpo='yes', s.umls_cuis=split(line.umls_cuis,"|"),  s.resource=split(line.resource,"|") , s.hpo_version='1.2', s.hpo_release='2019-11-08', s.url_HPO="https://hpo.jax.org/app/browse/term/"+line.hpo_id, n.mesh_ids=split(line.mesh_ids,'|'),'''
-    query_start_create = query_start + '''Create (s:Symptom{identifier:line.hetionet_id, umls_cuis:split(line.umls_cuis,"|") ,source:'MESH',license:'UMLS licence', resource:['HPO'], source:'MESH', url:"http://identifiers.org/mesh/"+line.hetionet_id , hpo:'yes', hpo_version:'1.2', hpo_release:'2019-11-08', url_HPO:"https://hpo.jax.org/app/browse/term/"+line.hpo_id,  '''
+    query = 'Match (s:Symptom) Set s.xrefs=[]'
+
+    query_start_match = query_start + '''Match (s:Symptom{identifier:line.hetionet_id }) , (n:HPOsymptom{id:line.hpo_id}) Set s.hpo='yes', s.umls_cuis=split(line.umls_cuis,"|"),  s.resource=split(line.resource,"|") , s.hpo_version='1.2', s.hpo_release='2019-11-08', s.url_HPO="https://hpo.jax.org/app/browse/term/"+line.hpo_id, n.mesh_ids=split(line.mesh_ids,'|'), s.xrefs=s.xrefs + line.hpo_id, '''
+    query_start_create = query_start + '''Create (s:Symptom{identifier:line.hetionet_id, umls_cuis:split(line.umls_cuis,"|") ,source:'MESH',license:'UMLS licence', resource:['HPO'], source:'MESH', url:"http://identifiers.org/mesh/"+line.hetionet_id , hpo:'yes', hpo_version:'1.2', hpo_release:'2019-11-08', url_HPO:"https://hpo.jax.org/app/browse/term/"+line.hpo_id, xrefs:[line.hpo_id], '''
 
     for property in set_header_for_files:
         if property in ['name', 'identifier']:
-            if property=='name':
+            if property == 'name':
                 query_start_create += property + ':line.' + property + ', '
             continue
         else:

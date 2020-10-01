@@ -1,10 +1,12 @@
-from py2neo import Graph
 import sys
 import datetime
 import csv
 
 sys.path.append("..")
 from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
+
+sys.path.append("../..")
+import create_connection_to_databases
 
 
 def database_connection():
@@ -13,7 +15,7 @@ def database_connection():
     :return:
     """
     global g
-    g = Graph("http://localhost:7474/db/data/", auth=("neo4j", "test"))
+    g = create_connection_to_databases.database_connection_neo4j()
 
 
 # dictionary gene id to gene node
@@ -47,7 +49,7 @@ def add_query_to_cypher_file(omim_label, database_label, rela_name_addition, fil
         part = part % (database_label, omim_label, additional_labels[0], additional_labels[1])
     else:
         part = "(n:%s {identifier:line.identifier}), (m:%s{identifier:line.database_id}) " % (
-        omim_label, database_label)
+            omim_label, database_label)
     this_start_query = query_start + part
     this_start_query += "Set m.resource=split(line.resource,'|'), m.omim='yes' , m.xrefs=split(line.xrefs,'|')  Create (m)-[:equal_to_omim_%s{mapping_methode:split(line.mapping_method,'|')}]->(n);\n"
     query = this_start_query % (path_of_directory, file_name, rela_name_addition)
@@ -141,8 +143,8 @@ def load_all_omim_gene_and_start_mapping():
                 if ncbi_id in dict_gene_id_to_gene_node:
                     gene_symbol = [x.lower() for x in
                                    dict_gene_id_to_gene_node[ncbi_id]['geneSymbol']] if 'geneSymbol' in \
-                                                                                             dict_gene_id_to_gene_node[
-                                                                                                 ncbi_id] else []
+                                                                                        dict_gene_id_to_gene_node[
+                                                                                            ncbi_id] else []
                     if symbol not in gene_symbol and len(set(gene_symbol).intersection(alternati_symbols)) == 0:
                         # print('different gene symbols')
                         # print(symbol)
@@ -257,8 +259,8 @@ def load_phenotype_from_omim_and_map(gene_writer):
                 if ncbi_id in dict_gene_id_to_gene_node:
                     gene_symbol = [x.lower() for x in
                                    dict_gene_id_to_gene_node[ncbi_id]['geneSymbol']] if 'geneSymbol' in \
-                                                                                             dict_gene_id_to_gene_node[
-                                                                                                 ncbi_id] else []
+                                                                                        dict_gene_id_to_gene_node[
+                                                                                            ncbi_id] else []
 
                     if (identifier, ncbi_id) not in dict_of_mapped_tuples:
                         add_mapped_one_to_csv_file(dict_gene_id_to_gene_node, identifier, ncbi_id, gene_writer,

@@ -6,7 +6,8 @@ from collections import defaultdict
 import re
 from typing import List
 
-from py2neo import Graph
+sys.path.append("../..")
+import create_connection_to_databases
 
 '''
 create connection to neo4j 
@@ -16,7 +17,7 @@ create connection to neo4j
 def create_connection_with_neo4j():
     # create connection with neo4j
     global g
-    g = Graph("http://localhost:7474/db/data/", auth=("neo4j", "test"))
+    g = create_connection_to_databases.database_connection_neo4j()
 
 
 # generate cypher file

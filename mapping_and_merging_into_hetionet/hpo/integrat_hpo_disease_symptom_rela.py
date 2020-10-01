@@ -1,8 +1,9 @@
-from py2neo import Graph
 import sys
-import datetime, time
+import datetime
 import csv
-from _collections import defaultdict
+
+sys.path.append("../..")
+import create_connection_to_databases
 
 
 # connect with the neo4j database AND MYSQL
@@ -10,7 +11,7 @@ def database_connection():
     # create connection with neo4j database
 
     global g
-    g = Graph("http://localhost:7474/db/data/", auth=("neo4j", "test"))
+    g = create_connection_to_databases.database_connection_neo4j()
 
 
 # the general query start
@@ -33,33 +34,35 @@ dict_mapped_pair_to_info = {}
 dict_new_pair_to_info = {}
 
 # dictionary of aspects
-dict_aspect={
-    'P':'phenotypic abnormality',
-    'I':'inheritance',
-    'C':'onset and clinical course',
-    'M':'clinical modifier'
+dict_aspect = {
+    'P': 'phenotypic abnormality',
+    'I': 'inheritance',
+    'C': 'onset and clinical course',
+    'M': 'clinical modifier'
 }
 
 # dictionary evidence
-dict_evidence={
-    'IEA':'inferred from electronic annotation',
-    'PCS':'published clinical study',
-    'TAS':'traceable author statement'
+dict_evidence = {
+    'IEA': 'inferred from electronic annotation',
+    'PCS': 'published clinical study',
+    'TAS': 'traceable author statement'
 }
 
 # dictionary of all hpo symptoms
-dict_hpo_symptom_to_info={}
+dict_hpo_symptom_to_info = {}
+
 
 def load_all_hpo_symptoms_in_dictionary():
     """
     Load all hpo symptoms for freuency infos and so on
     :return:
     """
-    query='''Match (n:HPOsymptom) Return n'''
-    results=g.run(query)
+    query = '''Match (n:HPOsymptom) Return n'''
+    results = g.run(query)
     for node, in results:
-        identifier= node['id']
-        dict_hpo_symptom_to_info[identifier]=dict(node)
+        identifier = node['id']
+        dict_hpo_symptom_to_info[identifier] = dict(node)
+
 
 def change_list_values_to_string(list_of_values):
     """
@@ -67,10 +70,10 @@ def change_list_values_to_string(list_of_values):
     :param list_of_values: list of string/list/set
     :return:  list of string
     """
-    new_list_value=[]
-    for  value in list_of_values:
+    new_list_value = []
+    for value in list_of_values:
         if type(value) in [list, set]:
-            value="|".join(value)
+            value = "|".join(value)
         new_list_value.append(value)
     return new_list_value
 
@@ -85,7 +88,8 @@ def get_all_already_existing_relationships():
     for disease_id, resource, symptom_id, in results:
         dict_disease_symptom_pair_hetionet[(disease_id, symptom_id)] = resource
 
-def prepare_all_relationships_infos(properties,connection, mondo_id, symptom_id):
+
+def prepare_all_relationships_infos(properties, connection, mondo_id, symptom_id):
     """
     prepare all relationship infos into a list, the aspects are transformed into readable values and also the frequencies
     :param properties: list of strings
@@ -94,12 +98,12 @@ def prepare_all_relationships_infos(properties,connection, mondo_id, symptom_id)
     :param symptom_id: string
     :return: list of the properties
     """
-    rela_properties = [mondo_id,symptom_id]
+    rela_properties = [mondo_id, symptom_id]
 
     for property in properties[2:]:
-        if property not in ['frequency_name', 'aspect','frequency_def', 'evidence_code']:
+        if property not in ['frequency_name', 'aspect', 'frequency_def', 'evidence_code']:
             rela_properties.append(connection[property])
-        elif property=='evidence_code':
+        elif property == 'evidence_code':
             if 'evidence_code' in connection:
                 rela_properties.append([dict_evidence[x] for x in connection[property]])
 
@@ -115,11 +119,11 @@ def prepare_all_relationships_infos(properties,connection, mondo_id, symptom_id)
                         rela_properties.append(aspect)
             else:
                 rela_properties.append('')
-        elif property=='frequency_name':
+        elif property == 'frequency_name':
             if 'frequency_modifier' in connection:
-                hpos=connection['frequency_modifier']
-                frequencies=[]
-                def_frequencies=[]
+                hpos = connection['frequency_modifier']
+                frequencies = []
+                def_frequencies = []
                 for hpo in hpos:
                     node = dict_hpo_symptom_to_info[hpo]
                     frequencies.append(node['name'])
@@ -132,7 +136,8 @@ def prepare_all_relationships_infos(properties,connection, mondo_id, symptom_id)
                 rela_properties.append('')
     return rela_properties
 
-def check_for_pair_in_dictionary(mondo,symptom_id, rela_information_list , dictionary,add_resource=None):
+
+def check_for_pair_in_dictionary(mondo, symptom_id, rela_information_list, dictionary, add_resource=None):
     '''
     check if the pair is already in dictionary or not
     if not generate pair in dictionary
@@ -143,36 +148,36 @@ def check_for_pair_in_dictionary(mondo,symptom_id, rela_information_list , dicti
     :return:
     '''
     if not (mondo, symptom_id) in dictionary:
-        if  add_resource is not None:
+        if add_resource is not None:
             add_resource.append('HPO')
-            add_resource=sorted(set(add_resource))
+            add_resource = sorted(set(add_resource))
             rela_information_list.append('|'.join(add_resource))
         dictionary[(mondo, symptom_id)] = rela_information_list
     else:
         for index, value in enumerate(dictionary[(mondo, symptom_id)]):
             # should avoid the problem that the new rela info do not contain the resource info
-            if len(rela_information_list)==index:
+            if len(rela_information_list) == index:
                 continue
-            if type(value)== str:
-                if rela_information_list[index]!=value:
-                    if value=='':
-                        dictionary[(mondo, symptom_id)][index]=rela_information_list[index]
-                    elif rela_information_list[index] =='':
+            if type(value) == str:
+                if rela_information_list[index] != value:
+                    if value == '':
+                        dictionary[(mondo, symptom_id)][index] = rela_information_list[index]
+                    elif rela_information_list[index] == '':
                         continue
                     else:
-                        new_string=[]
-                        splitted_new_infos=rela_information_list[index].split('|')
+                        new_string = []
+                        splitted_new_infos = rela_information_list[index].split('|')
                         for string_part in value.split('|'):
                             if not string_part in splitted_new_infos:
                                 new_string.append(string_part)
                         new_string.extend(splitted_new_infos)
-                        dictionary[(mondo, symptom_id)][index]="|".join(new_string)
+                        dictionary[(mondo, symptom_id)][index] = "|".join(new_string)
             else:
-                if rela_information_list[index]!=value:
+                if rela_information_list[index] != value:
                     for element in rela_information_list[index]:
-                        if element!='':
-                           value.append(element)
-                    dictionary[(mondo, symptom_id)][index]=value
+                        if element != '':
+                            value.append(element)
+                    dictionary[(mondo, symptom_id)][index] = value
 
 
 '''
@@ -214,7 +219,7 @@ def generate_cypher_file_for_connection(cypher_file):
                 query_new += x + ':split(line.' + x + ',"|"), '
 
     csv_rela_new.writerow(properties)
-    other_properties=properties[:]
+    other_properties = properties[:]
     other_properties.append('resource')
     csv_rela_update.writerow(other_properties)
     query_exists = query_start + query_exist + "r.hpo='yes', r.version='phenotype_annotation.tab 2019-11-08', r.resource=split(line.resource,'|'), r.url='https://hpo.jax.org/app/browse/disease/'+split(line.source,'|')[0]; \n"
@@ -233,19 +238,20 @@ def generate_cypher_file_for_connection(cypher_file):
     results = g.run(query)
     # fill the files
     for mondo, relationship, symptom_id, in results:
-        rela_information_list=prepare_all_relationships_infos(properties,relationship, mondo, symptom_id)
+        rela_information_list = prepare_all_relationships_infos(properties, relationship, mondo, symptom_id)
         if (mondo, symptom_id) in dict_disease_symptom_pair_hetionet:
-            check_for_pair_in_dictionary(mondo,symptom_id,rela_information_list,dict_mapped_pair_to_info, add_resource=dict_disease_symptom_pair_hetionet[(mondo, symptom_id)])
+            check_for_pair_in_dictionary(mondo, symptom_id, rela_information_list, dict_mapped_pair_to_info,
+                                         add_resource=dict_disease_symptom_pair_hetionet[(mondo, symptom_id)])
         else:
-            check_for_pair_in_dictionary(mondo,symptom_id,rela_information_list,dict_new_pair_to_info)
+            check_for_pair_in_dictionary(mondo, symptom_id, rela_information_list, dict_new_pair_to_info)
 
     for (mondo_id, symptom_id), rela_info in dict_mapped_pair_to_info.items():
-        count_update_connection+=1
-        rela_info=change_list_values_to_string(rela_info)
+        count_update_connection += 1
+        rela_info = change_list_values_to_string(rela_info)
         csv_rela_update.writerow(rela_info)
 
     for (mondo_id, symptom_id), rela_info in dict_new_pair_to_info.items():
-        count_new_connection+=1
+        count_new_connection += 1
         rela_info = change_list_values_to_string(rela_info)
         csv_rela_new.writerow(rela_info)
 
@@ -300,7 +306,6 @@ def main():
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
-
 
 
 if __name__ == "__main__":

@@ -1,6 +1,8 @@
-from py2neo import Graph  # , authenticate
 import datetime
 import sys, csv
+
+sys.path.append("../..")
+import create_connection_to_databases
 
 '''
 create a connection with neo4j
@@ -10,11 +12,11 @@ create a connection with neo4j
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
     global g
-    g = Graph("http://localhost:7474/db/data/", auth=("neo4j", "test"))
+    g = create_connection_to_databases.database_connection_neo4j()
 
 
 # dictionary name/synonym and dbsnp id to clinvar ids
-dict_name_dbsnp_id_to_clinvar_id={}
+dict_name_dbsnp_id_to_clinvar_id = {}
 
 '''
 Load all Genes from my database  and add them into a dictionary
@@ -28,46 +30,44 @@ def load_variant_from_database_and_add_to_dict():
         identifier = node['identifier']
 
         name = node['name'].lower()
-        if name not in  dict_name_dbsnp_id_to_clinvar_id:
-            dict_name_dbsnp_id_to_clinvar_id[name]=set()
+        if name not in dict_name_dbsnp_id_to_clinvar_id:
+            dict_name_dbsnp_id_to_clinvar_id[name] = set()
         dict_name_dbsnp_id_to_clinvar_id[name].add(identifier)
-        synonyms= node['synonyms'] if 'synonyms' in node else []
+        synonyms = node['synonyms'] if 'synonyms' in node else []
         for synonym in synonyms:
-            synonym=synonym.lower()
+            synonym = synonym.lower()
             if synonym not in dict_name_dbsnp_id_to_clinvar_id:
                 dict_name_dbsnp_id_to_clinvar_id[synonym] = set()
             dict_name_dbsnp_id_to_clinvar_id[synonym].add(identifier)
 
-        xrefs= node['xrefs'] if 'xrefs' in node else []
+        xrefs = node['xrefs'] if 'xrefs' in node else []
         for xref in xrefs:
             if xref.startswith('dbSNP:'):
-                dbSNO_ID= 'rs'+xref.split(':',1)[1]
+                dbSNO_ID = 'rs' + xref.split(':', 1)[1]
                 if dbSNO_ID not in dict_name_dbsnp_id_to_clinvar_id:
                     dict_name_dbsnp_id_to_clinvar_id[dbSNO_ID] = set()
                 dict_name_dbsnp_id_to_clinvar_id[dbSNO_ID].add(identifier)
 
 
-def generate_files():
+def generate_files(path_of_directory):
     """
     generate cypher file and csv file
     :return: csv file
     """
     # file from relationship between gene and variant
-    file_name='gene_variant_to_variant'
-    file = open(file_name+'.tsv', 'w', encoding='utf-8')
+    file_name = 'gene_variant_to_variant'
+    file = open(file_name + '.tsv', 'w', encoding='utf-8')
     csv_mapping = csv.writer(file, delimiter='\t')
     header = ['gene_variant_drugbank', 'variant_id']
     csv_mapping.writerow(header)
     cypher_file = open('gene_variant/cypher.cypher', 'w', encoding='utf-8')
 
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/drugbank/gene_variant/%s.tsv" As line FIELDTERMINATOR '\\t' 
-        Match (n:Mutated_protein_gene_DrugBank{identifier:line.gene_variant_drugbank}), (v:Variant{identifier:line.variant_id) Create (v)-[:equal_to_drugbank_variant]->(n);'''
-    query=query %(file_name)
+        Match (n:Mutated_protein_gene_DrugBank{identifier:line.gene_variant_drugbank}), (v:Variant{identifier:line.variant_id}) Create (v)-[:equal_to_drugbank_variant]->(n);'''
+    query = query % (path_of_directory, file_name)
     cypher_file.write(query)
 
     return csv_mapping
-
-
 
 
 '''
@@ -82,24 +82,20 @@ def load_all_variants_and_finish_the_files(csv_mapping):
         identifier = node['identifier']
         if identifier in dict_name_dbsnp_id_to_clinvar_id:
             for variant in dict_name_dbsnp_id_to_clinvar_id[identifier]:
-                csv_mapping.writerow([identifier,variant])
+                csv_mapping.writerow([identifier, variant])
         else:
             if 'allele' in node:
-                allele= node['allele'].lower()
+                allele = node['allele'].lower()
             else:
                 print('not mapped')
                 print(identifier)
                 continue
             if allele in dict_name_dbsnp_id_to_clinvar_id:
                 for variant in dict_name_dbsnp_id_to_clinvar_id[allele]:
-                    csv_mapping.writerow([identifier,variant])
+                    csv_mapping.writerow([identifier, variant])
             else:
                 print('not mapped')
                 print(identifier)
-                
-            
-
-       
 
 
 def main():
@@ -130,7 +126,7 @@ def main():
     print(datetime.datetime.utcnow())
     print('Generate cypher and csv file')
 
-    csv_mapping=generate_files()
+    csv_mapping = generate_files(path_of_directory)
 
     print('##########################################################################')
 

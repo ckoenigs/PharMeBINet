@@ -5,11 +5,13 @@ Created on Tue Aug 22 15:15:37 2017
 @author: ckoenigs
 """
 
-from py2neo import Graph
 import datetime
-import MySQLdb as mdb
 import sys, csv
 from collections import defaultdict
+
+
+sys.path.append("../..")
+import create_connection_to_databases
 
 
 # dictionary with chemical id as key and the whole node as value
@@ -38,15 +40,15 @@ create connection to neo4j and mysql
 
 def create_connection_with_neo4j_mysql():
     global g
-    g = Graph("http://localhost:7474/db/data/",auth=("neo4j", "test"))
+    g = create_connection_to_databases.database_connection_neo4j()
 
     # create connection with mysql database
     global con
-    con = mdb.connect('localhost', 'ckoenigs', 'Za8p7Tf$', 'umls')
+    con = create_connection_to_databases.database_connection_umls()
 
     # generate connection to mysql to RxNorm database
     global conRxNorm
-    conRxNorm = mdb.connect('localhost', 'ckoenigs', 'Za8p7Tf$', 'RxNorm')
+    conRxNorm = create_connection_to_databases.database_connection_RxNorm()
 
 
 '''

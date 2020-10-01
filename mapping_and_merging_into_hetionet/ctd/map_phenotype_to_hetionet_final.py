@@ -5,10 +5,12 @@ Created on Tue Aug 29 10:03:28 2017
 @author: ckoenigs
 """
 
-from py2neo import Graph, authenticate
 import datetime
 import MySQLdb as mdb
 import sys
+
+sys.path.append("../..")
+import create_connection_to_databases
 
 
 class SideEffectHetionet:
@@ -56,13 +58,12 @@ create connection to neo4j and mysql
 
 
 def create_connection_with_neo4j_mysql():
-    authenticate("localhost:7474", "neo4j", "test")
     global g
-    g = Graph("http://localhost:7474/db/data/")
+    g = create_connection_to_databases.database_connection_neo4j()
 
     # create connection with mysql database
     global con
-    con = mdb.connect('localhost', 'root', 'Za8p7Tf', 'umls')
+    con = create_connection_to_databases.database_connection_umls()
 
 
 '''
@@ -112,7 +113,7 @@ If this is not working use the name to map to umls cui.
 def map_phenotype_to_cui():
     for go_id, phenotype in dict_CTD_phenotypes.items():
         cur = con.cursor()
-        #search for GO ID in umls
+        # search for GO ID in umls
         query = ("Select CUI,LAT,CODE, STR,SAB From MRCONSO Where SAB = 'GO' and CODE= %s ;")
         rows_counter = cur.execute(query, (go_id,))
         name = phenotype.name.lower()
@@ -138,7 +139,7 @@ def map_phenotype_to_cui():
         else:
             print('GO id which is not mapped directly:' + go_id)
             cur = con.cursor()
-            #search for name in umls
+            # search for name in umls
             query = ("Select CUI,LAT,CODE,SAB From MRCONSO Where SAB = 'GO' and lower(STR)= %s ;")
             rows_counter = cur.execute(query, phenotype.name.lower())
             if rows_counter > 0:
@@ -317,55 +318,55 @@ def integrate_phenotype_into_hetionet():
 
 
 def main():
-    print (datetime.datetime.utcnow())
+    print(datetime.datetime.utcnow())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j_mysql()
 
     print(
-    '###########################################################################################################################')
+        '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print(datetime.datetime.utcnow())
     print('Load all side effect from hetionet into a dictionary')
 
     load_side_effects_from_hetionet_in_dict()
 
     print(
-    '###########################################################################################################################')
+        '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print(datetime.datetime.utcnow())
     print('Load all ctd phenotypes from neo4j into a dictionary')
 
     load_phenotpypes_CTD()
 
     print(
-    '###########################################################################################################################')
+        '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print(datetime.datetime.utcnow())
     print('Map go id to cui with use of umls')
 
     map_phenotype_to_cui()
 
     print(
-    '###########################################################################################################################')
+        '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print(datetime.datetime.utcnow())
     print('Map phenotype to hetionet with use of cui')
 
     map_phenotype_to_hetionet()
 
     print(
-    '###########################################################################################################################')
+        '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print(datetime.datetime.utcnow())
     print('integrate phenotype into hetionet')
 
     integrate_phenotype_into_hetionet()
 
     print(
-    '###########################################################################################################################')
+        '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print(datetime.datetime.utcnow())
 
 
 if __name__ == "__main__":

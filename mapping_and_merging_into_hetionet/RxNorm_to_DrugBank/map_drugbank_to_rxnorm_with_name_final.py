@@ -5,9 +5,10 @@ Created on Mon Aug 28 15:10:41 2017
 @author: ckoenigs
 """
 
-import datetime, csv
-import MySQLdb as mdb
-from py2neo import Graph
+import datetime, csv, sys
+
+sys.path.append("../..")
+import create_connection_to_databases
 
 '''
 create a connection with neo4j
@@ -17,7 +18,7 @@ create a connection with neo4j
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
     # authenticate("localhost:7474", "neo4j", "test")
-    return Graph("http://localhost:7474/db/data/", auth=("neo4j", "test"))
+    return create_connection_to_databases.database_connection_neo4j()
 
 
 def chunks(lst, n):
@@ -31,7 +32,7 @@ map drugbank with name to rxnorm
 '''
 
 # generate connection to mysql
-con = mdb.connect('localhost', 'ckoenigs', 'Za8p7Tf$', 'RxNorm', use_unicode=True, charset="utf8")
+con = create_connection_to_databases.database_connection_RxNorm()
 
 # dictionary with drugbank as key and value is a list of rxcuis
 dict_drugbank_to_rxnorm = {}
@@ -95,7 +96,7 @@ for drugbank_id, name, synonyms, in result:
 
 synonym_chunks = list(chunks(list(synonym_to_drugbank_ids.keys()), 4000))
 print('number of synonym chunks:', len(synonym_chunks))
-set_of_rxcui_drug_bank_pairs=set()
+set_of_rxcui_drug_bank_pairs = set()
 for chunk in synonym_chunks:
     names = "','".join(chunk)
     cur = con.cursor()
@@ -106,10 +107,10 @@ for chunk in synonym_chunks:
         list_rxnorm_id.add(rxcui)
         synonym = synonym.lower().strip()
         for drugbank_id in synonym_to_drugbank_ids[synonym]:
-            if (rxcui,drugbank_id) in set_of_rxcui_drug_bank_pairs:
+            if (rxcui, drugbank_id) in set_of_rxcui_drug_bank_pairs:
                 continue
             csv_writer.writerow([drugbank_id, rxcui])
-            set_of_rxcui_drug_bank_pairs.add((rxcui,drugbank_id))
+            set_of_rxcui_drug_bank_pairs.add((rxcui, drugbank_id))
 
 print('number of drugbank ids:', count_drugbank_ids)
 print('number of differnt rxnorm ids:', len(list_rxnorm_id))

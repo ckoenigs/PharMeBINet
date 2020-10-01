@@ -5,12 +5,13 @@ Created on Tue Dec  5 12:14:27 2017
 @author: cassandra
 """
 
-from py2neo import Graph  # , authenticate
-import MySQLdb as mdb
 import sys
-import datetime, time
+import datetime
 import threading, csv
 from _collections import defaultdict
+
+sys.path.append("../..")
+import create_connection_to_databases  # , authenticate
 
 
 # class of thread
@@ -38,10 +39,10 @@ class diseaseMapThread(threading.Thread):
 def database_connection():
     # create connection with mysql database
     global con
-    con = mdb.connect('localhost', 'ckoenigs', 'Za8p7Tf$', 'umls')
+    con = create_connection_to_databases.database_connection_umls()
 
     global g
-    g = Graph("http://localhost:7474/db/data/", auth=("neo4j", "test"))
+    g = create_connection_to_databases.database_connection_neo4j()
 
 
 # dictionary with the names as key and value is the mondo
@@ -68,7 +69,7 @@ def get_all_disease_information_from_hetionet():
     query = ''' Match (d:Disease) Return d.identifier, d.name, d.synonyms, d.xrefs, d.umls_cuis, d'''
     results = g.run(query)
     for mondo, name, synonyms, xrefs, umls_cuis, node, in results:
-        dict_mondo_to_node[mondo]=dict(node)
+        dict_mondo_to_node[mondo] = dict(node)
         if name:
             dict_name_to_mondo[name.lower()] = mondo
         if mondo == 'MONDO:0007122':
@@ -517,11 +518,11 @@ def integrate_mapping_of_disease_into_hetionet():
     # write mapping in csv file
     for hpo_id, mondos in dict_disease_id_to_mondos.items():
         for mondo in mondos:
-            resources =set(dict_mondo_to_node[mondo]['resource'])
+            resources = set(dict_mondo_to_node[mondo]['resource'])
             resources.add('HPO')
-            resources=sorted(resources)
+            resources = sorted(resources)
 
-            csv_disease.writerow([hpo_id, mondo,'|'.join(resources)])
+            csv_disease.writerow([hpo_id, mondo, '|'.join(resources)])
 
             # fill mapped dictionary
             dict_mondo_to_hpo_ids[mondo].append(hpo_id)

@@ -1,7 +1,9 @@
-from py2neo import Graph
 import sys
 import datetime
 import csv
+
+sys.path.append("../..")
+import create_connection_to_databases
 
 
 def database_connection():
@@ -10,7 +12,7 @@ def database_connection():
     :return:
     """
     global g
-    g = Graph("http://localhost:7474/db/data/", auth=("neo4j", "test"))
+    g = create_connection_to_databases.database_connection_neo4j()
 
 
 cypher_file = open('output/cypher_rela.cypher', 'w', encoding='utf-8')

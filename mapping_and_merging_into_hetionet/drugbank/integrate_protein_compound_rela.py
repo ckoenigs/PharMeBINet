@@ -1,6 +1,8 @@
-from py2neo import Graph  # , authenticate
 import datetime
 import sys, csv
+
+sys.path.append("../..")
+import create_connection_to_databases
 
 '''
 create a connection with neo4j
@@ -10,14 +12,14 @@ create a connection with neo4j
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
     global g
-    g = Graph("http://localhost:7474/db/data/", auth=("neo4j", "test"))
+    g = create_connection_to_databases.database_connection_neo4j()
 
 
 # dictionary from type to dictionary with pairs to rela
 dict_rela_type_to_dictionary = {}
 
 # dictionary from real rela type to the names in drugbank
-dict_real_rela_type_to_list_of_rela_types={}
+dict_real_rela_type_to_list_of_rela_types = {}
 
 # cypher file
 cypher_file = open('rela_protein/cypher.cypher', 'w', encoding='utf-8')
@@ -30,17 +32,17 @@ def load_all_protein_chemical_pairs(direction, from_chemical):
     :param from_chemical: boolean
     :return:
     '''
-    query = '''Match (p)--(:Protein_DrugBank)%s(:Compound_DrugBank)--(c:Compound) Where 'Protein' in labels(p) or 'Chemical' in labels(p) and r.oragnism in ["Humans","Humans and other mammals"] Return labels(p), p.identifier, r, type(r), c.identifier '''
+    query = '''Match (p)--(:Protein_DrugBank)%s(:Compound_DrugBank)--(c:Compound) Where 'Protein' in labels(p) or 'Chemical' in labels(p) and r.organism in ["Humans","Humans and other mammals"] Return labels(p), p.identifier, r, type(r), c.identifier '''
     query = query % (direction)
     results = g.run(query)
 
     for labels, identifier1, rela, rela_type, compound_id, in results:
         if 'Protein' in labels:
             label = 'Protein'
-            short_cut='PR'
+            short_cut = 'PR'
         else:
             label = 'Chemical'
-            short_cut='C'
+            short_cut = 'C'
         rela_name = rela_type.split('_')[0].upper()
         if from_chemical:
             rela_direction = '<-[r:%s]-'
@@ -52,7 +54,7 @@ def load_all_protein_chemical_pairs(direction, from_chemical):
 
         # for the connection between real name to names in drugbank
         if not rela_direction in dict_real_rela_type_to_list_of_rela_types:
-            dict_real_rela_type_to_list_of_rela_types[this_rela_name]=set()
+            dict_real_rela_type_to_list_of_rela_types[this_rela_name] = set()
         dict_real_rela_type_to_list_of_rela_types[this_rela_name].add(rela_type)
 
         # build dictionary for pairs
@@ -72,15 +74,16 @@ def load_all_protein_chemical_pairs(direction, from_chemical):
             # print(compound_id)
             dict_pairs[(identifier1, compound_id)].append(dict(rela))
 
+
 '''
 Create cypher query and the csv file for the different relationships
 '''
 
 
-def create_cypher_query_and_csv_file( rela_name,rela_direction, label_from):
+def create_cypher_query_and_csv_file(rela_name, rela_direction, label_from):
     query = 'Match p=(:%s)%s(:Chemical) Return p Limit 1' % (label_from, rela_direction)
     results = g.run(query)
-    result=results.evaluate()
+    result = results.evaluate()
     exists = False
     if result:
         exists = True
@@ -88,23 +91,24 @@ def create_cypher_query_and_csv_file( rela_name,rela_direction, label_from):
     file_name = rela_name + '_Compound_' + label_from
 
     query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/drugbank/rela_protein/%s.tsv" As line Fieldterminator '\\t' Match (a:%s{identifier:line.identifier1}),  (c:Chemical{identifier:line.identifier2}) '''
-    query_start = query_start %(file_name, label_from)
+    query_start = query_start % (file_name, label_from)
     query_create = ''
     query_update = ''
     query = '''MATCH (n:Protein_DrugBank)-[p]-(:Compound_DrugBank) Where type(p) in ["%s"] WITH DISTINCT keys(p) AS keys
         UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields
         RETURN allfields;'''
-    query = query % ( '","'.join(dict_real_rela_type_to_list_of_rela_types[rela_name]),)
+    query = query % ('","'.join(dict_real_rela_type_to_list_of_rela_types[rela_name]),)
     results = g.run(query)
     list_of_properties = ['identifier1', 'identifier2']
     for property, in results:
         # this is for all similar
         if property in ['organism', license]:
-            if label_from=='Chemical' and property=='organism':
+            if label_from == 'Chemical' and property == 'organism':
                 query_create += property + ':line.' + property + ', '
                 query_update += 'r.' + property + '=line.' + property + ', '
+                list_of_properties.append(property)
             continue
-        if property.startswith('ref') or property in ['actions','position','known_action']:
+        if property.startswith('ref') or property in ['actions', 'position', 'known_action']:
             query_create += property + ':split(line.' + property + ',"|"), '
             query_update += 'r.' + property + '=split(line.' + property + ',"|"), '
         else:
@@ -143,6 +147,7 @@ def run_through_dictionary_to_add_to_tsv_and_cypher():
             else:
                 rela_direction = '-[r:%s]->'
             rela_direction = rela_direction % (rela_name)
+            print(label)
             csv_writer, list_of_properties = create_cypher_query_and_csv_file(rela_name, rela_direction, label)
             for (identifier1, compound_id), list_rela in dict_pairs.items():
                 csv_list = [identifier1, compound_id]
@@ -175,7 +180,7 @@ def run_through_dictionary_to_add_to_tsv_and_cypher():
                                 else:
                                     set_of_info_for_this_property.union(rela_infos[property])
                         if len(set_of_info_for_this_property) > 1:
-                            if not (property.startswith('ref') or property in ['actions','position','known_action']):
+                            if not (property.startswith('ref') or property in ['actions', 'position', 'known_action']):
                                 print('ohje, something which I do not expact to be a list is a list')
                                 print(property)
                                 print(csv_list)

@@ -5,9 +5,11 @@ Created on Fri Sep 15 11:41:20 2017
 @author: ckoenigs
 """
 
-from py2neo import Graph, authenticate
 import datetime, time
 import csv, sys
+
+sys.path.append("../..")
+import create_connection_to_databases
 
 '''
 create connection to neo4j 
@@ -16,9 +18,8 @@ create connection to neo4j
 
 def create_connection_with_neo4j_mysql():
     # create connection with neo4j
-    authenticate("localhost:7474", "neo4j", "test")
     global g
-    g = Graph("http://localhost:7474/db/data/")
+    g = create_connection_to_databases.database_connection_neo4j()
 
 
 '''

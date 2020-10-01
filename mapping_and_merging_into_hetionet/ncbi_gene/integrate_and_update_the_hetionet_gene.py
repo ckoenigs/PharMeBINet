@@ -1,9 +1,11 @@
-from py2neo import Graph  # , authenticate
 import datetime
 import sys, csv
 
 sys.path.append("..")
 from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
+
+sys.path.append("../..")
+import create_connection_to_databases
 
 '''
 create a connection with neo4j
@@ -14,7 +16,7 @@ def create_connetion_with_neo4j():
     # set up authentication parameters and connection
     # authenticate("localhost:7474", )
     global g
-    g = Graph("http://localhost:7474/db/data/", auth=("neo4j", "test"))
+    g = create_connection_to_databases.database_connection_neo4j()
 
 
 # dictionary with all gene ids to there name
@@ -151,7 +153,7 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
             print('has no name')
             if 'description' not in node or node['description'] == '-' or node['description'] == '':
                 print('description is also empty')
-                node['description']=''
+                node['description'] = ''
             node['Full_name_from_nomenclature_authority'] = node['description']
             name = node['description']
 

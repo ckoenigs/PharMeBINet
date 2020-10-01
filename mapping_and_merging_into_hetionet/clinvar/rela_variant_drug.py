@@ -1,13 +1,17 @@
-from py2neo import Graph
+sys.path.append("../..")
+import create_connection_to_databases
 import sys
-import datetime, re
+import datetime
 import csv, json
+
+sys.path.append("../..")
+import create_connection_to_databases
 
 
 # connect with the neo4j database AND MYSQL
 def database_connection():
     global g
-    g = Graph("http://localhost:7474/db/data/", auth=("neo4j", "test"))
+    g = create_connection_to_databases.database_connection_neo4j()
 
 
 def go_through_a_dictionary_add_info_into_another(from_dict, to_dictionary, additional_name='', asString=False):
@@ -84,6 +88,32 @@ def go_trough_dict_to_give_infos_into_string_without_key(dictionary_attribute, t
         to_set = to_set.union(attribute_list)
     return to_set
 
+def dict_go_down_dict(dictionary):
+    for key, value in dictionary.items():
+        if type(value)==str:
+            return key, value
+        elif type(value)==dict:
+            down_name, this_value=dict_go_down_dict(value)
+            return key+'_'+down_name, this_value
+        elif type(value)==list:
+            this_value=[]
+            for content in value:
+                if type(content)==str:
+                    this_value.append(content)
+                elif type(content)==dict:
+                    for content_key, content_value in content.items():
+                        this_value.append(content_key+':'+content_value)
+                else:
+                    sys.exit('other content in list')
+                return key, ';'.join(this_value)
+        else:
+            sys.exit('other type by dict down')
+
+# dictionary pair to rela infos
+dict_pair_to_rela_info={}
+
+# set of rela properties
+set_of_rela_properties= {'variant_id','chemical_id'}
 
 '''
 Load all variation sort the ids into the right csv, generate the queries, and add rela to the rela csv
@@ -91,12 +121,7 @@ Load all variation sort the ids into the right csv, generate the queries, and ad
 
 
 def load_all_rela_drug_response_and_finish_the_files():
-    cypher_file = open('output/cypher_drug.cypher', 'w', encoding='utf-8')
-
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/clinvar/output/%s.tsv" As line FIELDTERMINATOR '\\t' 
-        Match (c:Chemical{identifier:line.chemical_id}), (t:trait_DrugResponse_ClinVar{identifier:line.clinvar_id}) Create (c)-[:equal_to_clinvar_drug]->(t);\n '''
-    query_start = query_start % (path_of_directory, 'chemical_drug')
-    cypher_file.write(query_start)
+    global set_of_rela_properties
 
     query = "MATCH (v:Variant)--(:Variant_ClinVar)-[r]-(:trait_set_DrugResponse_ClinVar)--(n:trait_DrugResponse_ClinVar)--(a:Chemical) RETURN v.identifier, r, type(r), n.name, a.identifier"
     results = g.run(query)
@@ -162,16 +187,55 @@ def load_all_rela_drug_response_and_finish_the_files():
                                     elif ob_key=='methods':
                                         observation_as_list.append(ob_key+':['+','.join(ob_value)+']')
                                     elif ob_key=='observation_data_multiple':
+                                        # seems like do not contain any usefull information
+                                        continue
+                                        # print('')
+                                        # print(ob_value)
+                                    else:
+                                        print(ob_key)
                                         print(ob_value)
-                                    # else:
-                                    #     print(ob_key)
-                                    #     print(ob_value)
                                 # print(observation_as_list)
+                                dict_rela_combinde['observation']='|'.join(observation_as_list)
+
+                        else:
+                            print('obser')
+                            print(dict_or_list_observations)
                 elif type(value)==str:
                     h=1
-                    # print(value)
+                    json_infos=transform_json_string_to_dict(value)
+                    for key, values in json_infos.items():
+                        property_name=key+'_observations'
+                        list_of_obs=[]
+                        for observation in values:
+                            list_ob_info=[]
+                            for ob, ob_info in observation.items():
+                                for pro_name, value in ob_info.items():
+                                    if type(value) ==list:
+                                        if type(value[0])==str:
+                                            list_ob_info.append(pro_name+':'+';'.join(value))
+                                        else:
+                                            dict_proper={}
+                                            for dictionary in value:
+                                                property, this_value= dict_go_down_dict(dictionary)
+                                                if not property in dict_proper:
+                                                    dict_proper[property]=set()
+                                                dict_proper[property].add(this_value)
+                                            list_of_pro=[x+':'+';'.join(y) for x,y in dict_proper.items()]
+                                            list_ob_info.extend(list_of_pro)
+
+
+                                    elif type(value)==dict:
+                                        pro_name, this_value = dict_go_down_dict(value)
+                                        list_ob_info.append(pro_name + ':' + this_value)
+                                    else:
+                                        print(';)')
+                                        print(value)
+                                list_of_obs.append('|'.join(list_ob_info))
+                    dict_rela_combinde[property_name]=list_of_obs
+
+
                 else:
-                    sys.exit('observation has mor then 2 types')
+                    sys.exit('observation has more then 2 types')
             elif key in ['xrefs', 'title', 'comments']:
                 dict_rela_combinde[key] = value
 
@@ -181,6 +245,104 @@ def load_all_rela_drug_response_and_finish_the_files():
         # check for none values!
         # print(dict_rela_combinde)
         # sys.exit()
+        set_of_rela_properties=set_of_rela_properties.union(dict_rela_combinde.keys())
+        if (variant_id,chemical_id,rela_type) not in dict_pair_to_rela_info:
+            dict_pair_to_rela_info[(variant_id,chemical_id,rela_type)]=[]
+        dict_pair_to_rela_info[(variant_id,chemical_id,rela_type)].append(dict_rela_combinde)
+    print(set_of_rela_properties)
+
+#dictionary rela type to csv file
+dict_rela_type_to_csv={}
+
+# set of all properties which are a list
+set_of_list_properties=set()
+
+def prepare_dictionary_with_strings_values(dictionary):
+    """
+    go through a dictionary and check out which properties are lists/sets and transform into string
+    :param dictionary: dictionary
+    :return: dictionary
+    """
+    new_dictionary={}
+    for key, value in dictionary.items():
+        if type(value) in [ set, list]:
+            set_of_list_properties.add(key)
+            value='|'.join(value)
+        new_dictionary[key]=value
+    return new_dictionary
+
+
+# cypher file
+cypher_file=open('variant_drug/cypher.cypher','w',encoding='utf-8')
+
+
+def generate_cypher_file_and_csv(rela_type):
+    """
+    Generate cypher file and csv
+    :param rela_type: string
+    :return: csv dict
+    """
+    file_name='variant_drug/'+rela_type+'.tsv'
+    file=open(file_name, 'w',encoding='utf-8')
+    csv_writer=csv.DictWriter(file,fieldnames=list(set_of_rela_properties), delimiter='\t')
+    csv_writer.writeheader()
+
+    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/clinvar/%s.tsv" As line FIELDTERMINATOR '\\t' 
+            Match (c:Chemical{identifier:line.chemical_id}), (t:Variant{identifier:line.variant_id})  Create (c)-[:%s {'''
+    for property in set_of_rela_properties:
+        if property in ['variant_id','chemical_id']:
+            continue
+        elif property in ['clinical_significance_description', 'attributes', 'clinical_significance_date', 'clinical_significance_comments', 'comments', 'xrefs', 'ClinVar_assertion_observations', 'clinical_significance_citations', 'citations', 'assertion', 'clinical_significance_review_status']:
+            query_start+= property+':split(line.'+property+',"|"), '
+        else:
+            query_start+= property+':line.'+property+', '
+        
+
+    query=query_start+ '''resource:['ClinVar'], source:'ClinVar', clinvar:'yes', license:''}]->(t);\n '''
+    query = query % (path_of_directory, file_name, rela_type)
+    cypher_file.write(query)
+
+    return csv_writer
+
+def prepare_csv_file():
+    for (variant_id,chemical_id,rela_type), list_of_dict in dict_pair_to_rela_info.items():
+        if rela_type not in dict_rela_type_to_csv:
+            csv_writer=generate_cypher_file_and_csv(rela_type)
+            dict_rela_type_to_csv[rela_type]=csv_writer
+        if len(list_of_dict)==1:
+            dict_info=list_of_dict[0]
+            dict_info['variant_id']=variant_id
+            dict_info['chemical_id'] = chemical_id
+            dict_rela_type_to_csv[rela_type].writerow(prepare_dictionary_with_strings_values(dict_info))
+        else:
+            combinde_dictionary={}
+            combinde_dictionary['variant_id']=variant_id
+            combinde_dictionary['chemical_id'] = chemical_id
+            for dictionary in list_of_dict:
+                for key, value in dictionary.items():
+                    if not  key in combinde_dictionary:
+                        combinde_dictionary[key]=value
+                    else:
+                        if value!=combinde_dictionary[key]:
+                            if key in ['citations','xrefs']:
+                                combinde_dictionary[key]= set(combinde_dictionary[key]).union(value)
+                                continue
+                            elif key in ['clinical_significance_date','clinical_significance_review_status','clinical_significance_description', 'assertion']:
+                                combinde_dictionary[key] = combinde_dictionary[key].union(value)
+                                continue
+                            elif key in ['accession_reference_ClinVar_assertion','accession_ClinVar_assertion', 'title','observation']:
+                                combinde_dictionary[key] = set([combinde_dictionary[key]]).add(value)
+                                continue
+                            else:
+                                print(key)
+                                print(value)
+                                print(type(value))
+                                print(combinde_dictionary[key])
+                                sys.exit()
+            dict_rela_type_to_csv[rela_type].writerow(prepare_dictionary_with_strings_values(combinde_dictionary))
+    print(set_of_list_properties)
+
+
 
 
 def main():
@@ -205,6 +367,13 @@ def main():
     print('get all kind of properties of the drug response')
 
     load_all_rela_drug_response_and_finish_the_files()
+
+    print('##########################################################################')
+
+    print(datetime.datetime.utcnow())
+    print('get all kind of properties of the drug response')
+
+    prepare_csv_file()
 
     print('##########################################################################')
 

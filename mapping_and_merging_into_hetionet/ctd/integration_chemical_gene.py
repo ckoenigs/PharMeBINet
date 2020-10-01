@@ -4,7 +4,8 @@ import datetime
 import sys
 from collections import defaultdict
 
-from py2neo import Graph
+sys.path.append("../..")
+import create_connection_to_databases
 
 '''
 create connection to neo4j 
@@ -14,7 +15,7 @@ create connection to neo4j
 def create_connection_with_neo4j():
     # create connection with neo4j
     global g
-    g = Graph("http://localhost:7474/db/data/", auth=("neo4j", "test"))
+    g = create_connection_to_databases.database_connection_neo4j()
 
 
 # generate cypher file
@@ -82,9 +83,9 @@ list_important_transport = ['transport', 'secretion', 'export', 'uptake', 'impor
 # one is add manual, because metabolic processing is named metabolism in the interaction_texts
 list_metabolic_processing = ['metabolism']
 
-#dictionary from activity name to interaction text name
-dict_metabolic_activate_name={
-    'metabolic processing':'metabolism'
+# dictionary from activity name to interaction text name
+dict_metabolic_activate_name = {
+    'metabolic processing': 'metabolism'
 }
 
 file = open('chemical_gene/metabolic_processing_action.csv', 'r', encoding='utf-8')
@@ -110,6 +111,7 @@ def generate_csv(path):
     writer.writerow(columns)
     return writer
 
+
 # open the cypher file for the last changes
 cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')
 
@@ -125,32 +127,33 @@ def path_to_rela_and_add_to_dict(rela, first, second):
     writer = generate_csv(path)
     dict_rela_to_file[rela_full] = writer
 
-    query_to_check_if_this_rela_exist_in_hetionet='''Match p=(b:Chemical)'''
+    query_to_check_if_this_rela_exist_in_hetionet = '''Match p=(b:Chemical)'''
 
-    query_first_part = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/''' + path + '''" As line Match (b:Chemical{identifier:line.ChemicalID}), '''
+    query_first_part = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ctd/''' + path + '''" As line Match (b:Chemical{identifier:line.ChemicalID}), '''
     if first == 'gene' or second == 'gene':
         query_middle_1 = ''' (n:Gene{identifier:line.GeneID})'''
-        part='''(n:Gene)'''
+        part = '''(n:Gene)'''
     else:
         query_middle_1 = ''' (g:Gene{identifier:line.GeneID})-[:PRODUCES_GpP]->(n:Protein)'''
-        part='''(n:Protein)'''
+        part = '''(n:Protein)'''
 
-    if first=='chemical':
+    if first == 'chemical':
         query_middle_2 = ''' Merge (b)-[r:%s]->(n)'''
-        query_to_check_if_this_rela_exist_in_hetionet+='-[r:%s]->'+part+' Return p Limit 1'
+        query_to_check_if_this_rela_exist_in_hetionet += '-[r:%s]->' + part + ' Return p Limit 1'
     else:
         query_middle_2 = ''' Merge (b)<-[r:%s]-(n)'''
-        query_to_check_if_this_rela_exist_in_hetionet+='<-[r:%s]-'+part+' Return p Limit 1'
+        query_to_check_if_this_rela_exist_in_hetionet += '<-[r:%s]-' + part + ' Return p Limit 1'
 
-    query_to_check_if_this_rela_exist_in_hetionet= query_to_check_if_this_rela_exist_in_hetionet %(dict_file_name_to_rela_name[rela_full])
-    results=g.run(query_to_check_if_this_rela_exist_in_hetionet)
-    result=results.evaluate()
+    query_to_check_if_this_rela_exist_in_hetionet = query_to_check_if_this_rela_exist_in_hetionet % (
+    dict_file_name_to_rela_name[rela_full])
+    results = g.run(query_to_check_if_this_rela_exist_in_hetionet)
+    result = results.evaluate()
     # if this relationship exists currently only merge is used maybe I will change this to match and create
     # however, for the relationships which already exists in the general file new queries are added to say which are not in ctd
     if result:
 
-        query_last_part=''' On Create Set r.hetionet='no', r.ctd='yes', r.urls_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.resource=["CTD"], r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased=toBoolean(line.unbiased), r.interaction_text=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|') On Match SET r.ctd='yes', r.urls_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.resources=["CTD","Hetionet"], r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased=toBoolean(line.unbiased), r.interaction_text=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=r.pubmed_ids+split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|');\n '''
-        query = query_first_part + query_middle_1+ query_middle_2 + query_last_part
+        query_last_part = ''' On Create Set r.hetionet='no', r.ctd='yes', r.urls_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.resource=["CTD"], r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased=toBoolean(line.unbiased), r.interaction_text=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|') On Match SET r.ctd='yes', r.urls_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.resource=["CTD","Hetionet"], r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased=toBoolean(line.unbiased), r.interaction_text=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=r.pubmed_ids+split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|');\n '''
+        query = query_first_part + query_middle_1 + query_middle_2 + query_last_part
 
         query_for_update_not_used_relationships = query_to_check_if_this_rela_exist_in_hetionet.split('Return')[
                                                       0] + ' Where not exists(r.ctd) Set r.ctd="no";\n'
@@ -161,14 +164,15 @@ def path_to_rela_and_add_to_dict(rela, first, second):
 
     else:
 
-        query_middle_2_parts=query_middle_2.split(']')
+        query_middle_2_parts = query_middle_2.split(']')
 
-        query_last_part = '''{hetionet:'no', ctd:'yes', urls_ctd:"http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID ,source:"CTD", resources:["CTD"], license:"© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", unbiased:toBoolean(line.unbiased), interaction_text:split(line.interaction_text,'|'), gene_forms:split(line.gene_forms,'|'), pubmed_ids:split(line.pubMedIds,'|'), interactions_actions:split(line.interactions_actions,'|')}]'''
-        query = query_first_part + query_middle_1 + query_middle_2_parts[0].replace('Merge','Create') + query_last_part + query_middle_2_parts[1]+';\n'
+        query_last_part = '''{hetionet:'no', ctd:'yes', urls_ctd:"http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID ,source:"CTD", resource:["CTD"], license:"© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", unbiased:toBoolean(line.unbiased), interaction_text:split(line.interaction_text,'|'), gene_forms:split(line.gene_forms,'|'), pubmed_ids:split(line.pubMedIds,'|'), interactions_actions:split(line.interactions_actions,'|')}]'''
+        query = query_first_part + query_middle_1 + query_middle_2_parts[0].replace('Merge',
+                                                                                    'Create') + query_last_part + \
+                query_middle_2_parts[1] + ';\n'
 
     query = query % (dict_file_name_to_rela_name[rela_full])
     cypherfile.write(query)
-
 
 
 # the name of the entities in the rela and dictionary
@@ -189,7 +193,6 @@ def generate_csv_file_for_different_rela_types():
         path_to_rela_and_add_to_dict(rela, protein, chemical)
 
 
-
 '''
 search for chemical
 '''
@@ -204,7 +207,7 @@ def search_for_chemical(chemical_name, chemical_synonyms, interaction_text):
 
     # find the used name of the chemical
     for chemical_synonym in chemical_synonyms:
-        found_chemical,found_chemical_synonym=search_for_name_in_string(interaction_text,chemical_synonym)
+        found_chemical, found_chemical_synonym = search_for_name_in_string(interaction_text, chemical_synonym)
         if found_chemical:
             break
     if not found_chemical:
@@ -213,19 +216,23 @@ def search_for_chemical(chemical_name, chemical_synonyms, interaction_text):
     found_chemical_synonym = found_chemical_synonym if found_chemical else chemical_name
     return found_chemical_synonym
 
+
 '''
 search for a name in a string and gib back if found and the value
 '''
-def search_for_name_in_string(interaction_text,name ):
-    found_name_value=''
-    found_name=False
-    interaction_text=interaction_text.lower()
-    name=name.lower()
+
+
+def search_for_name_in_string(interaction_text, name):
+    found_name_value = ''
+    found_name = False
+    interaction_text = interaction_text.lower()
+    name = name.lower()
     possible_position = interaction_text.find(name)
     if possible_position != -1:
         found_name_value = name
         found_name = True
     return found_name, found_name_value
+
 
 '''
 find used name for gene for text mining
@@ -237,7 +244,7 @@ def find_text_name_for_gene(gene_name, gene_symbol, interaction_text, gene_id):
 
     found_gene_synonym = ''
 
-    found_gene, found_gene_synonym= search_for_name_in_string(interaction_text, gene_symbol)
+    found_gene, found_gene_synonym = search_for_name_in_string(interaction_text, gene_symbol)
     if not found_gene:
         print(gene_id)
         print(gene_name)
@@ -245,8 +252,8 @@ def find_text_name_for_gene(gene_name, gene_symbol, interaction_text, gene_id):
         print(interaction_text)
         print('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh')
 
-        query='''Match (s:Gene{identifier:%s}) Return s.synonyms''' %(gene_id)
-        results=g.run(query)
+        query = '''Match (s:Gene{identifier:%s}) Return s.synonyms''' % (gene_id)
+        results = g.run(query)
         for synonyms, in results:
             for synonym in synonyms:
                 found_gene, found_gene_synonym = search_for_name_in_string(interaction_text, synonym)
@@ -379,7 +386,6 @@ def take_all_relationships_of_gene_chemical():
             found_chemical_synonym = search_for_chemical(chemical_name, chemical_synonyms, interaction_text)
             dict_chemical_id_to_used_name[chemical_id] = found_chemical_synonym
 
-
         # check if it is the protein form of the gene or not
         contains_protein = False
         if 'protein' in gene_forms:
@@ -408,33 +414,34 @@ def take_all_relationships_of_gene_chemical():
 
             elif splitter[1] in list_metabolic_processing:
                 if splitter[1] in dict_metabolic_activate_name:
-                    splitter[1]=dict_metabolic_activate_name[splitter[1]]
+                    splitter[1] = dict_metabolic_activate_name[splitter[1]]
                 if splitter[1] not in dict_interaction_word_to_value:
-                    if len(splitter[1].split(' '))>1:
-                        splitter[1]=splitter[1].split(' ')[0]
+                    if len(splitter[1].split(' ')) > 1:
+                        splitter[1] = splitter[1].split(' ')[0]
                     dict_interaction_word_to_value[splitter[1]] = ['']
 
         # if no other rela type is found then the pair are add to association
         found_a_interaction_type = False
 
         # to find the exact words and to avoid that not a space is in front or in the end spaces are add
-        interaction_text_with_spaces=' '+interaction_text.replace('[','[ ')+' '
-        interaction_text_with_spaces=interaction_text_with_spaces.replace(']',' ]')
+        interaction_text_with_spaces = ' ' + interaction_text.replace('[', '[ ') + ' '
+        interaction_text_with_spaces = interaction_text_with_spaces.replace(']', ' ]')
 
         for part in interaction_text_with_spaces.split('['):
             for smaller_part in part.split(']'):
                 # find take every time the first time when the substring appeares, so some times the chemcial appears multiple
                 # time so the order for the sub action need to be new classified
-                smaller_part=smaller_part.lower()
-                position_chemical_new = smaller_part.find(' '+found_chemical_synonym+' ')
-                position_gene_new = smaller_part.find(' ' +found_gene_synonym+ ' ')
+                smaller_part = smaller_part.lower()
+                position_chemical_new = smaller_part.find(' ' + found_chemical_synonym + ' ')
+                position_gene_new = smaller_part.find(' ' + found_gene_synonym + ' ')
                 if position_chemical_new != -1 and position_gene_new != -1:
                     for word in smaller_part.split(' '):
                         if word in dict_interaction_word_to_value:
                             found_a_interaction_type = True
                             if len(dict_interaction_word_to_value[word]) == 1:
                                 action_value = dict_interaction_word_to_value[word][0]
-                                rela_full = get_right_rela_name(position_chemical_new, position_gene_new, contains_protein,
+                                rela_full = get_right_rela_name(position_chemical_new, position_gene_new,
+                                                                contains_protein,
                                                                 word, action_value)
                                 if rela_full == '':
                                     found_a_interaction_type = False
@@ -496,17 +503,16 @@ find the shortest list and all list with the same length but different value
 
 def find_shortest_list_and_indeces(list_of_lists):
     shortest = min(list_of_lists, key=len)
-    all_with_the_same_length=[shortest]
-    shortest_length=len(shortest)
-    indices =[list_of_lists.index(shortest)]
-    counter=0
+    all_with_the_same_length = [shortest]
+    shortest_length = len(shortest)
+    indices = [list_of_lists.index(shortest)]
+    counter = 0
     for list_of_list in list_of_lists:
-        if len(list_of_list)==shortest_length:
+        if len(list_of_list) == shortest_length:
             if not list_of_list in all_with_the_same_length:
                 all_with_the_same_length.append(list_of_list)
                 indices.append(counter)
-        counter+=1
-
+        counter += 1
 
     return indices, all_with_the_same_length
 
@@ -521,39 +527,36 @@ but only take the shortest interaction text and the associated intereaction acti
 def fill_the_csv_files():
     for rela_full, dict_chemical_gene_pair in dict_rela_to_drug_gene_protein_pair.items():
         for (chemical_id, gene_id), list_of_information in dict_chemical_gene_pair.items():
-
             pubMedIds = list_of_information[2]
-            pubMedIds='|'.join(pubMedIds)
+            pubMedIds = '|'.join(pubMedIds)
             interactions_actions = list_of_information[3]
-            indices,shortest_interaction_actions=find_shortest_list_and_indeces(interactions_actions)
-            shortest_interaction_actions=[';'.join(x) for x in shortest_interaction_actions]
-            shortest_interaction_actions='|'.join(shortest_interaction_actions)
-
+            indices, shortest_interaction_actions = find_shortest_list_and_indeces(interactions_actions)
+            shortest_interaction_actions = [';'.join(x) for x in shortest_interaction_actions]
+            shortest_interaction_actions = '|'.join(shortest_interaction_actions)
 
             interaction_texts = list_of_information[0]
-            shortest_interaction_text = [ interaction_texts[x] for x in indices]
+            shortest_interaction_text = [interaction_texts[x] for x in indices]
             gene_forms = list_of_information[1]
-            shortest_gene_forms =[ gene_forms[x] for x in indices]
+            shortest_gene_forms = [gene_forms[x] for x in indices]
             shortest_gene_forms = [';'.join(x) for x in shortest_gene_forms]
-            shortest_gene_forms='|'.join(shortest_gene_forms)
-
+            shortest_gene_forms = '|'.join(shortest_gene_forms)
 
             unbiased = True if len(pubMedIds) > 0 else False
-            shortest_interaction_text='|'.join(shortest_interaction_text)
+            shortest_interaction_text = '|'.join(shortest_interaction_text)
             dict_rela_to_file[rela_full].writerow(
-                [chemical_id, gene_id, shortest_interaction_text, shortest_gene_forms , pubMedIds,shortest_interaction_actions
-                 , unbiased])
+                [chemical_id, gene_id, shortest_interaction_text, shortest_gene_forms, pubMedIds,
+                 shortest_interaction_actions
+                    , unbiased])
 
 
 def main():
-
     global path_of_directory
     if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]
     else:
         sys.exit('need a path')
-        
-    print (datetime.datetime.utcnow())
+
+    print(datetime.datetime.utcnow())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j()
@@ -561,7 +564,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print(datetime.datetime.utcnow())
     print(' generate csv and cypher file')
 
     generate_csv_file_for_different_rela_types()
@@ -569,7 +572,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print(datetime.datetime.utcnow())
     print('Take all gene-pathway relationships and generate csv and cypher file')
 
     take_all_relationships_of_gene_chemical()
@@ -577,7 +580,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print(datetime.datetime.utcnow())
     print('write into csv files')
 
     fill_the_csv_files()
@@ -585,7 +588,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print(datetime.datetime.utcnow())
 
 
 if __name__ == "__main__":

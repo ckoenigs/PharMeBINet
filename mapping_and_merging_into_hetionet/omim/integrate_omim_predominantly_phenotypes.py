@@ -1,10 +1,12 @@
-from py2neo import Graph
 import sys
 import datetime
 import csv
 
 sys.path.append("..")
 from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
+
+sys.path.append("../..")
+import create_connection_to_databases
 
 
 def database_connection():
@@ -13,7 +15,7 @@ def database_connection():
     :return:
     """
     global g
-    g = Graph("http://localhost:7474/db/data/", auth=("neo4j", "test"))
+    g = create_connection_to_databases.database_connection_neo4j()
 
 
 cypher_file = open('output/cypher_phenotype.cypher', 'w', encoding='utf-8')
@@ -42,15 +44,16 @@ def create_query_for_phenotype(label, file_name):
     :param file_name:string
     :return:
     """
-    query_create=query_start+' (n:%s {identifier:line.identifier}) Create (p:Phenotype {'
-    query='MATCH (p:%s) WITH DISTINCT keys(p) AS keys UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields RETURN allfields;'
-    query=query % label
-    results=g.run(query)
+    query_create = query_start + ' (n:%s {identifier:line.identifier}) Create (p:Phenotype {'
+    query = 'MATCH (p:%s) WITH DISTINCT keys(p) AS keys UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields RETURN allfields;'
+    query = query % label
+    results = g.run(query)
     for property, in results:
-        query_create+= property+':n.'+property+', '
-    query_create+= ' license:"OMIM", source:"OMIM", resource:["OMIM"], omim:"yes"}) Create (p)-[:equal_to_omim]->(n);\n'
-    query_create=query_create % (path_of_directory, file_name,label)
+        query_create += property + ':n.' + property + ', '
+    query_create += ' license:"OMIM", source:"OMIM", resource:["OMIM"], omim:"yes"}) Create (p)-[:equal_to_omim]->(n);\n'
+    query_create = query_create % (path_of_directory, file_name, label)
     cypher_file.write(query_create)
+
 
 # dictionary_omim_gene_id_to_node
 dict_omim_id_to_node = {}
@@ -175,7 +178,7 @@ def load_phenotype_from_omim_and_map():
 
     # generate query
     add_query_to_cypher_file('predominantly_phenotypes_omim', 'Disease', 'disease', file_name)
-    create_query_for_phenotype('predominantly_phenotypes_omim',file_name_not_mapped)
+    create_query_for_phenotype('predominantly_phenotypes_omim', file_name_not_mapped)
     for node, labels, in results:
         identifier = node['identifier']
         name = node['name'].lower() if 'name' in node else ''

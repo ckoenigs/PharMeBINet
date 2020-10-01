@@ -5,13 +5,14 @@ Created on Wed Aug 30 11:55:50 2017
 @author: ckoenigs
 """
 
-from py2neo import Graph#, authenticate
 import datetime
-import MySQLdb as mdb
 import sys, time, csv
 import io
 from collections import defaultdict
 from typing import Any
+
+sys.path.append("../..")
+import create_connection_to_databases#
 
 
 
@@ -130,15 +131,15 @@ create connection to neo4j and mysql
 def create_connection_with_neo4j_mysql():
     # authenticate("localhost:7474", "neo4j", "test")
     global g
-    g = Graph("http://localhost:7474/db/data/", auth=("neo4j", "test"))
+    g = create_connection_to_databases.database_connection_neo4j()
 
     # create connection with mysql database
     global con
-    con = mdb.connect('localhost', 'ckoenigs', 'Za8p7Tf$', 'umls')
+    con = create_connection_to_databases.database_connection_umls()
 
     # generate connection to mysql to RxNorm database
     global conRxNorm
-    conRxNorm = mdb.connect('localhost', 'ckoenigs', 'Za8p7Tf$', 'RxNorm')
+    conRxNorm = create_connection_to_databases.database_connection_RxNorm()
 
 # dictionary cas number to durgbank
 dict_cas_to_drugbank={}

@@ -5,9 +5,11 @@ Created on Tue Sep 17 16:07:43 2019
 @author: ckoenigs
 """
 
-from py2neo import Graph  # , authenticate
 import datetime
 import sys, csv
+
+sys.path.append("../..")
+import create_connection_to_databases  # , authenticate
 
 '''
 create a connection with neo4j
@@ -18,7 +20,7 @@ def create_connection_with_neo4j():
     # set up authentication parameters and connection
     # authenticate("localhost:7474", "neo4j", "test")
     global g
-    g = Graph("http://localhost:7474/db/data/", auth=("neo4j", "test"))
+    g = create_connection_to_databases.database_connection_neo4j()
 
 
 # dictionary of not mapped compound inchikey to node
@@ -94,7 +96,7 @@ def create_cypher_and_csv_files():
 
     # delete compound nodes which are whether drugbank compound nor salt
     # this must be the last step of the compound integration, because else the merge nodes are also removed and this would be a problem
-    cypher_delete_file=open('cypher_delete_compound.cypher','w')
+    cypher_delete_file = open('cypher_delete_compound.cypher', 'w')
     query = '''Match (c:Compound) Where not exists(c.drugbank) Detach Delete c;'''
     cypher_delete_file.write(query)
     cypher_delete_file.close()
@@ -116,7 +118,7 @@ Add a merge to the bash file
 def add_merge_to_sh_file(dict_not_mapped, mapped_value, node_id):
     compound = dict_not_mapped[mapped_value]
     print(compound)
-    compound_id=compound['identifier']
+    compound_id = compound['identifier']
     # if it mapped to a not mapped compound
     text = 'python3 ../add_information_from_a_not_existing_node_to_existing_node.py %s %s %s\n' % (
         compound_id, node_id, 'Compound')

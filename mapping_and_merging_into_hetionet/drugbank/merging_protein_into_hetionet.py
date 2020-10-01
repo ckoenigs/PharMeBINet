@@ -1,7 +1,10 @@
 '''integrate the'''
-from py2neo import Graph
+
 import datetime
 import sys, csv
+
+sys.path.append("../..")
+import create_connection_to_databases
 
 '''
 create a connection with neo4j
@@ -11,7 +14,7 @@ create a connection with neo4j
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
     global g
-    g = Graph("http://localhost:7474/db/data/", auth=("neo4j", "test"))
+    g = create_connection_to_databases.database_connection_neo4j()
 
 
 # dictionary of name/synonym to chemical (not compound)
@@ -116,8 +119,10 @@ file_mapping_chemical = open('protein/mapping_chemical_target.tsv', 'w', encodin
 csv_mapping_chemical = csv.writer(file_mapping_chemical, delimiter='\t')
 csv_mapping_chemical.writerow(['chemical_id', 'id', 'resource'])
 
-def check_if_not_mapped_proteins_migth_be_chemical_targets_or_protein(drugbank_id, name, synonyms, labels, dict_to_resource,
-                                                           write_mapping_file, dict_name_to_ids):
+
+def check_if_not_mapped_proteins_migth_be_chemical_targets_or_protein(drugbank_id, name, synonyms, labels,
+                                                                      dict_to_resource,
+                                                                      write_mapping_file, dict_name_to_ids):
     """
     check if the name or synonyms are in the chemical dictionary and add pair to file
     :param drugbank_id: string
@@ -221,7 +226,6 @@ def integrate_infos_into_csv(part_dict, protein_hetionet, list_input_protein):
     list_as_sequnces = '|'.join(list_as_sequnces)
     list_input_protein.append(list_as_sequnces)
 
-
     # check on the pfams of both
     # to many were not correct and around 230 have to be checked
     # pfam_db= part_dict['pfams'] if 'pfams' in part_dict else []
@@ -267,20 +271,21 @@ def not_mapped_proteins(node, identifier, name, synonyms, labels, counter_not_a_
     """
     drugbank_id = node['drugbank_id']
     found_chemical_map = False
-    found_protein=False
+    found_protein = False
 
     if node['organism'] == 'Humans':
         counter_human_not_found += 1
     if identifier == drugbank_id:
-        found_chemical_map = check_if_not_mapped_proteins_migth_be_chemical_targets_or_protein(identifier, name, synonyms, labels,
-                                                                                    dict_chemical_to_resource,
-                                                                                    csv_mapping_chemical,
-                                                                                    dict_name_to_chemical_id)
-        found_protein = check_if_not_mapped_proteins_migth_be_chemical_targets_or_protein(identifier, name,
+        found_chemical_map = check_if_not_mapped_proteins_migth_be_chemical_targets_or_protein(identifier, name,
                                                                                                synonyms, labels,
-                                                                                               dict_protein_id_to_resource,
-                                                                                               writer,
-                                                                                               dict_name_to_protein_id)
+                                                                                               dict_chemical_to_resource,
+                                                                                               csv_mapping_chemical,
+                                                                                               dict_name_to_chemical_id)
+        found_protein = check_if_not_mapped_proteins_migth_be_chemical_targets_or_protein(identifier, name,
+                                                                                          synonyms, labels,
+                                                                                          dict_protein_id_to_resource,
+                                                                                          writer,
+                                                                                          dict_name_to_protein_id)
         print('did a chemical map?')
     counter_not_a_protein += 1
     if not found_chemical_map and not found_protein:
@@ -300,20 +305,20 @@ def load_proteins_from_drugbank_into_dict():
     query = '''Match (n:Protein) Where exists(n.as_sequence) Set n.as_sequence=split(n.as_sequence,':')[1];\n'''
     cypherfile.write(query)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/proteins.csv" As line Fieldterminator '\\t' MATCH (n:Protein_DrugBank{identifier:line.id}) ,(p:Protein{identifier:line.uniport}) Create (p)-[:equal_to_DB_protein]->(n) Set p.drugbank='yes', p.resource=split(line.resource,"|"), p.locus=n.locus, p.molecular_weight=n.molecular_weight, p.as_sequence=split(line.sequences,'|'),p.pfams=split(line.pfams,'|') ;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/proteins.csv" As line Fieldterminator '\\t' MATCH (n:Protein_DrugBank{identifier:line.id}) ,(p:Protein{identifier:line.uniport}) Create (p)-[:equal_to_DB_protein]->(n) Set p.drugbank='yes', p.resource=split(line.resource,"|"), p.locus=n.locus, p.molecular_weight=n.molecular_weight, p.as_sequence=split(line.sequences,'|'),p.pfams=split(line.pfams,'|') ;\n'''
 
     cypherfile.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/mapping_chemical_target.tsv" As line Fieldterminator '\\t' MATCH (n:Protein_DrugBank{identifier:line.id}) ,(p:Chemical{identifier:line.chemical_id}) Create (p)-[:equal_to_DB_target]->(n) Set p.drugbank='yes', p:Target, p.resource=split(line.resource,"|") ;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/mapping_chemical_target.tsv" As line Fieldterminator '\\t' MATCH (n:Protein_DrugBank{identifier:line.id}) ,(p:Chemical{identifier:line.chemical_id}) Create (p)-[:equal_to_DB_target]->(n) Set p.drugbank='yes', p:Target, p.resource=split(line.resource,"|") ;\n'''
 
     cypherfile.write(query)
     # all queries which are used to integrate Protein with the extra labels into Hetionet
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/proteins_carrier.csv" As line Fieldterminator '\\t' MATCH (g:Protein{identifier:line.id}) Set g:Carrier ;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/proteins_carrier.csv" As line Fieldterminator '\\t' MATCH (g:Protein{identifier:line.id}) Set g:Carrier ;\n'''
     cypherfile.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/proteins_enzyme.csv" As line Fieldterminator '\\t' MATCH (g:Protein{identifier:line.id}) Set g:Enzyme ;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/proteins_enzyme.csv" As line Fieldterminator '\\t' MATCH (g:Protein{identifier:line.id}) Set g:Enzyme ;\n'''
     cypherfile.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/proteins_target.csv" As line Fieldterminator '\\t' MATCH (g:Protein{identifier:line.id}) Set g:Target ;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/proteins_target.csv" As line Fieldterminator '\\t' MATCH (g:Protein{identifier:line.id}) Set g:Target ;\n'''
     cypherfile.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/proteins_transporter.csv" As line Fieldterminator '\\t' MATCH (g:Protein{identifier:line.id}) Set g:Transporter ;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/proteins_transporter.csv" As line Fieldterminator '\\t' MATCH (g:Protein{identifier:line.id}) Set g:Transporter ;\n'''
     cypherfile.write(query)
     cypherfile.close()
 
@@ -402,13 +407,15 @@ def load_proteins_from_drugbank_into_dict():
                 # print(node)
 
             else:
-                counter_not_a_protein=not_mapped_proteins(node, identifier, name, synonyms, labels, counter_not_a_protein, writer_not_mapped,
-                                    counter_human_not_found)
+                counter_not_a_protein = not_mapped_proteins(node, identifier, name, synonyms, labels,
+                                                            counter_not_a_protein, writer_not_mapped,
+                                                            counter_human_not_found)
 
 
         else:
-            counter_not_a_protein=not_mapped_proteins(node, identifier, name, synonyms, labels, counter_not_a_protein, writer_not_mapped,
-                                counter_human_not_found)
+            counter_not_a_protein = not_mapped_proteins(node, identifier, name, synonyms, labels, counter_not_a_protein,
+                                                        writer_not_mapped,
+                                                        counter_human_not_found)
 
     # print(dict_proteins)
     print('number of human proteins:' + str(counter_mapped))
@@ -430,7 +437,7 @@ def generate_csv_componet_rela():
     query = 'MATCH p=(a:Protein_DrugBank)-[r:has_component_PIhcPI]->(b:Protein_DrugBank) RETURN a.identifier, b.identifier'
     result = g.run(query)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/proteins_rela_component.csv" As line Fieldterminator '\\t' MATCH (g:Protein{identifier:line.id1}),(b:Protein{identifier:line.id2}) Create (g)-[:HAS_COMPONENT_PRhcPR]->(b);\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/proteins_rela_component.csv" As line Fieldterminator '\\t' MATCH (g:Protein{identifier:line.id1}),(b:Protein{identifier:line.id2}) Create (g)-[:HAS_COMPONENT_PRhcPR]->(b);\n'''
     cypher_rela.write(query)
 
     csv_file = open('protein/proteins_rela_component.csv', 'w')
