@@ -37,9 +37,9 @@ def generate_node_and_rela_file_and_query(header_rela):
 
     query=query_start+ 'Match (p1:protein_IID{identifier:line.uniprot1}),(p2:protein_IID{identifier:line.uniprot2}) Create (p1)-[:interacts{'
     for header in header_rela:
-        if header in []:
+        if header in ['uniprot1','uniprot2','symbol1','symbol2']:
             continue
-        elif header in []:
+        elif header in ['targeting_drugs','evidence_type','dbs','methods','pmids']:
             query+= header+':split(line.'+header+',";"), '
         else:
             query += header + ':line.' + header + ', '
