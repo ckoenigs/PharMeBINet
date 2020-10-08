@@ -8,7 +8,6 @@ Created on Fri Jul 14 10:34:41 2017
 import xml.dom.minidom as dom
 
 import datetime, csv, sys
-from collections import defaultdict
 
 
 # dictionary of all entities with code as key and value is the entity
@@ -69,7 +68,7 @@ def load_ndf_rt_xml_inferred_in():
 
     # save all kindDef (Entities) in a dictionary with code and name
     extract_and_add_info_into_dictionary(dict_entities, terminology, 'kindDef')
-    properties_of_node = ['code', "name", "id", "properties", "association"]
+    properties_of_node = ['code', "name", "id", "properties"]
     for code, entity_name in dict_entities.items():
         file_name = 'results/'+entity_name + '_file.tsv'
         entity_file = open(file_name, 'w',encoding='utf-8')
@@ -77,11 +76,11 @@ def load_ndf_rt_xml_inferred_in():
         csv_writer.writerow(properties_of_node)
         dict_entity_to_file[code] = csv_writer
         query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ndf_rt/%s" AS line FIELDTERMINATOR '\\t' Create (n: NDF_RT_''' + entity_name + '{'
-        print(query)
-        print(file_name)
+        # print(query)
+        # print(file_name)
         query = query % (file_name)
         for propertie in properties_of_node:
-            if not propertie in ['properties','association']:
+            if not propertie in ['properties']:
                 query += propertie + ':line.' + propertie + ','
             else:
                 query += propertie + ':split(line.' + propertie + ',"|"),'
@@ -124,19 +123,24 @@ def load_ndf_rt_xml_inferred_in():
             csv_writer.writerow(rela_info_list)
             dict_rela_file_name_to_file[file_name]=csv_writer
             query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ndf_rt/%s" AS line FIELDTERMINATOR '\\t' Match (start: NDF_RT_''' + dict_entities[start_node_code] + '''{code:line.'''+ rela_info_list[0]+ '''}), (end: NDF_RT_''' + dict_entities[end_node_code] + '''{code:line.'''+rela_info_list[1]+'''}) Create (start)-[:%s]->(end);\n'''
-            print(query)
+            # print(query)
             query=query% (file_name, name)
 
             cypher_file.write(query)
 
     # get all important concepts
     concepts = terminology.getElementsByTagName('conceptDef')
+    # dictionary code to type
+    dict_code_to_type={}
+    # dictionary association pairs
+    dict_association_pair={}
     for concept in concepts:
         # gete information about node
         entity_code=concept.getElementsByTagName('kind')[0].childNodes[0].nodeValue
         name = concept.getElementsByTagName('name')[0].childNodes[0].nodeValue
         code = concept.getElementsByTagName('code')[0].childNodes[0].nodeValue
         ndf_rt_id = concept.getElementsByTagName('id')[0].childNodes[0].nodeValue
+        dict_code_to_type[code]=entity_code
 
         # go through all possible Role (Relationships) and add the to the different csv files
         definitionRoles = concept.getElementsByTagName('definingRoles')[0]
@@ -175,9 +179,20 @@ def load_ndf_rt_xml_inferred_in():
                     value = association.getElementsByTagName('value')[0].childNodes[0].nodeValue
                     text = dict_associations[name_association] + ':' + value
                     association_list.append(text)
-        association_string='|'.join(association_list)
+                    dict_association_pair[(code,value)]=dict_associations[name_association]
+        # association_string='|'.join(association_list)
 
-        dict_entity_to_file[entity_code].writerow([code, name, ndf_rt_id, properties_string, association_string])
+        dict_entity_to_file[entity_code].writerow([code, name, ndf_rt_id, properties_string])
+
+    association_file = open('results/associates_file.tsv', 'w', encoding='utf-8')
+    csv_writer = csv.writer(association_file, delimiter='\t', quotechar='"', lineterminator='\n')
+    csv_writer.writerow(['code1','code2'])
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ndf_rt/results/associates_file.tsv" AS line FIELDTERMINATOR '\\t' Match (start: NDF_RT_DRUG_KIND{code:line.code2}), (end: NDF_RT_DRUG_KIND {code:line.code1}) Create (start)-[:product_of]->(end);\n'''
+    cypher_file.write(query)
+    for (code1, code2), association_name in dict_association_pair.items():
+        csv_writer.writerow([code1,code2])
+    association_file.close()
+
 
 # path to directory
 path_of_directory = ''
