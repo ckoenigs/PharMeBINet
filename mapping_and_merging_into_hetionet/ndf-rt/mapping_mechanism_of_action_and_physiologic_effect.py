@@ -60,9 +60,9 @@ def write_files(path_of_directory, addition_name, label):
     cypher_file.write(query)
 
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/ndf-rt/%s" As line FIELDTERMINATOR '\\t' 
-                Match (n:%s{code:line.code}) Create (v:PharmacologicClass{identifier:line.id, ndf_rt:'yes', xrefs:split(line.xrefs,'|'), synonyms:split(line.synonyms,'|'), resource:['NDF-RT'], source:'NDF-RT', url:'http://purl.bioontology.org/ontology/NDFRT/'+line.id, name:n.name, license:'', class_type:"%s"}) Create (v)-[:equal_to_%s_ndf_rt{how_mapped:'new'}]->(n);\n'''
+                Match (n:%s{code:line.code}) Create (v:PharmacologicClass{identifier:line.id, ndf_rt:'yes', xrefs:split(line.xrefs,'|'), synonyms:split(line.synonyms,'|'), resource:['NDF-RT'], source:'NDF-RT', url:'http://purl.bioontology.org/ontology/NDFRT/'+line.id, name:split(n.name," [")[0], license:'', class_type:"%s"}) Create (v)-[:equal_to_ndf_rt{how_mapped:'new'}]->(n);\n'''
     query = query % (path_of_directory, file_name_new, label,
-                     addition_name.replace('_', ' ').replace(' kind', '').title().replace('Of', 'of'), addition_name)
+                     addition_name.replace('_', ' ').replace(' kind', '').title().replace('Of', 'of'))
     cypher_file.write(query)
 
     return csv_mapped, csv_new
