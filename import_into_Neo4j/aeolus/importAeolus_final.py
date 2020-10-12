@@ -104,6 +104,93 @@ else:
 # value: 0:concept_name,1:domain_id,2:vocabulary_id,3:concept_class_id,4:standard_concept,5:concept_code
 dict_concept = {}
 
+# dictionary primary_id to drug concept id
+dict_primaryid_to_concept_id={}
+
+# dictionary isr to drug concept id
+dict_isr_to_concept_id={}
+
+def check_for_entry(dictionary, case_id, drug_seq, drug_concept_id):
+    """
+    add concept into dictionary order by case id the drug seq and add to a set
+    :param dictionary: dictionary
+    :param case_id: string
+    :param drug_seq: string
+    :param drug_concept_id: string
+    """
+    if not case_id in dictionary:
+        dictionary[case_id] = {}
+        dictionary[case_id][drug_seq]=set([drug_concept_id])
+    elif  drug_seq not in dictionary[case_id]:
+        dictionary[case_id][drug_seq] = set([drug_concept_id])
+    else:
+        dictionary[case_id][drug_seq].add(drug_concept_id)
+
+
+"""
+import standard case drug.tsv and put all information into the dictionary
+properties file:
+    1: primaryid
+    2: isr
+    3: drug_seq
+    4: role_cod
+    5: standard concept id
+"""
+def load_standard_case_drug():
+    file=open(filepath+'standard_case_drug.tsv','r',encoding='utf-8')
+    csv_reader=csv.reader(file, delimiter='\t')
+    for line in csv_reader:
+        primaryid=line[0]
+        isr=line[1]
+        drug_seq=line[2]
+        concept_id=line[4]
+        if primaryid!='':
+            check_for_entry(dict_primaryid_to_concept_id,primaryid, drug_seq, concept_id)
+        else:
+            check_for_entry(dict_isr_to_concept_id,isr, drug_seq, concept_id)
+
+def check_for_drug_concepts_and_write_into_file(dictionary, case_id, csv_writer, drug_seq, indication_concept_id):
+    """
+    check for case drugs and write into file
+    :param dictionary: dictionary
+    :param case_id: string
+    :param csv_writer: csv writer
+    :param drug_seq: string
+    :param indication_concept_id: string
+    """
+    if case_id in dictionary:
+        if drug_seq in dictionary[case_id]:
+            if len(dictionary[case_id][drug_seq]) > 1:
+                print(dictionary[case_id][drug_seq])
+            for drug_concept_id in dictionary[case_id][drug_seq]:
+                csv_writer.writerow([drug_concept_id, indication_concept_id])
+
+"""
+import standard_case_indication.tsv and put all information into the dictionary
+properties file:
+    0: primaryid
+    1: isr
+    2: indi_drug_seq
+    3: indi_pt
+    4: indication concept id
+    5: snomed indication concept id
+"""
+def load_standard_case_indication():
+    file=open(filepath+'standard_case_indication.tsv','r',encoding='utf-8')
+    csv_reader=csv.reader(file, delimiter='\t')
+    write_file=open('indications.csv','w',encoding='utf-8')
+    csv_writer=csv.writer(write_file)
+    csv_writer.writerow(['drug_concept_id','indication_concept_id'])
+    for line in csv_reader:
+        primaryid=line[0]
+        isr=line[1]
+        drug_seq=line[2]
+        indication_concept_id=line[4]
+        if primaryid!='':
+            check_for_drug_concepts_and_write_into_file(dict_primaryid_to_concept_id, primaryid,csv_writer, drug_seq, indication_concept_id)
+        else:
+            check_for_drug_concepts_and_write_into_file(dict_isr_to_concept_id, isr,csv_writer, drug_seq, indication_concept_id)
+
 #
 '''
 import concept.tsv and put all information into the dictionary
@@ -309,6 +396,9 @@ def create_csv_and_cypher_file_neo4j():
     query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/aeolus/''' + file_name_drug_outcome + '''" As line Match (n1:AeolusDrug {drug_concept_id: line.drug_id}), (n2:AeolusOutcome {outcome_concept_id: line.adr_id}) Create (n1)-[:Causes{countA: line.countA , countB: line.countB , countC: line.countC , countD: line.countD, drug_outcome_pair_count: line.drug_outcome_pair_count, prr: line.prr, prr_95_percent_upper_confidence_limit: line.prr_95_percent_upper_confidence_limit , prr_95_percent_lower_confidence_limit: line.prr_95_percent_lower_confidence_limit , ror: line.ror , ror_95_percent_upper_confidence_limit: line.ror_95_percent_upper_confidence_limit , ror_95_percent_lower_confidence_limit: line.ror_95_percent_lower_confidence_limit}]->(n2); \n'''
     cypher_file.write(query)
 
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/aeolus/indications.csv" As line Match (n1:AeolusDrug {drug_concept_id: line.drug_concept_id}), (n2:AeolusOutcome {outcome_concept_id: line.indication_concept_id}) Create (n1)-[:Indicates]->(n2); \n'''
+    cypher_file.write(query)
+
     f = open(file_name_drug_outcome, 'w', encoding='utf-8')
     try:
         writer = csv.writer(f, quoting=csv.QUOTE_NONNUMERIC)
@@ -333,6 +423,11 @@ def create_csv_and_cypher_file_neo4j():
 
 def main():
 
+    print('start load in case drug ')
+    load_standard_case_drug()
+
+    print('start load in case indication and generate drug-indication file ')
+    load_standard_case_indication()
 
     print('start load in concept ')
     print (datetime.datetime.utcnow())
