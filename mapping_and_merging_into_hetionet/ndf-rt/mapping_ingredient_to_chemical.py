@@ -98,23 +98,26 @@ def write_files(path_of_directory):
     cypher_file = open('ingredient/cypher.cypher', 'w', encoding='utf-8')
 
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/ndf-rt/%s" As line FIELDTERMINATOR '\\t' 
-            Match (n:NDF_RT_INGREDIENT_KIND{code:line.code}), (v:Chemical{identifier:line.chemical_id}) Set v.ndf_rt='yes', v.resource=split(line.resource,'|') Create (v)-[:equal_to_ingredient_ndf_rt{how_mapped:line.how_mapped}]->(n);'''
+            Match (n:NDF_RT_INGREDIENT_KIND{code:line.code}), (v:Chemical{identifier:line.chemical_id}) Set v.ndf_rt='yes', v.resource=split(line.resource,'|') Create (v)-[:equal_to_ingredient_ndf_rt{how_mapped:split(line.how_mapped,"|")}]->(n);'''
     query = query % (path_of_directory, file_name)
     cypher_file.write(query)
     cypher_file.close()
 
     return csv_rela
 
+# dictionary_mapping_pairs
+dict_mapping_pairs={}
 
-def try_to_map(identifier, key, dictionary, how_mapped, csv_map):
+def try_to_map(identifier, key, dictionary, how_mapped):
     if key in dictionary:
         for chemical_id in dictionary[key]:
-            resource = set(dict_chemical_id_to_resource[chemical_id])
-            resource.add('NDR-RT')
-            csv_map.writerow([identifier, chemical_id, '|'.join(sorted(resource)), how_mapped])
+            if not (identifier,chemical_id) in dict_mapping_pairs:
+                dict_mapping_pairs[(identifier,chemical_id)]=set()
+            dict_mapping_pairs[(identifier,chemical_id)].add(how_mapped)
 
 
-def load_all_ingredients_and_map(csv_map):
+
+def load_all_ingredients_and_map():
     """
     Load all ingredients from neo4j and ma them with xrefs of ingredient and name
     :param csv_map: csv writter
@@ -124,20 +127,26 @@ def load_all_ingredients_and_map(csv_map):
     results = g.run(query)
     for node, in results:
         identifier = node['code']
-        name = node['name'].lower()
-        try_to_map(identifier, name, dict_name_to_chemical_id, 'name_mapping', csv_map)
+        name = node['name'].split(' [Chemical/Ingredient')[0].lower()
+        try_to_map(identifier, name, dict_name_to_chemical_id, 'name_mapping')
 
         for property in node['properties']:
-            if property.startswith('UMLS_CUI:'):
+            # if property.startswith('UMLS_CUI:'):
+            #     cui = property.split(':')[1]
+            #     try_to_map(identifier, cui, dict_umls_to_chemical_id, 'umls_mapping')
+            if property.startswith('MeSH_CUI:') or property.startswith('MeSH_DUI:') :
                 cui = property.split(':')[1]
-                try_to_map(identifier, cui, dict_umls_to_chemical_id, 'umls_mapping', csv_map)
-            elif property.startswith('MeSH_CUI:'):
-                cui = property.split(':')[1]
-                try_to_map(identifier, cui, dict_mesh_to_chemical_id, 'mesh_mapping', csv_map)
+                try_to_map(identifier, cui, dict_mesh_to_chemical_id, 'mesh_mapping')
 
             elif property.startswith('RxNorm_CUI:'):
                 cui = property.split(':')[1]
-                try_to_map(identifier, cui, dict_rnxnorm_to_chemical_id, 'rxcui_mapping', csv_map)
+                try_to_map(identifier, cui, dict_rnxnorm_to_chemical_id, 'rxcui_mapping')
+
+def write_mapping_into_file(csv_map):
+    for (identifier, chemical_id), how_mapped in dict_mapping_pairs.items():
+        resource = set(dict_chemical_id_to_resource[chemical_id])
+        resource.add('NDR-RT')
+        csv_map.writerow([identifier, chemical_id, '|'.join(sorted(resource)), '|'.join(how_mapped)])
 
 
 def main():
@@ -174,7 +183,14 @@ def main():
     print(datetime.datetime.utcnow())
     print('Load all ingredients from database')
 
-    load_all_ingredients_and_map(csv_writer)
+    load_all_ingredients_and_map()
+
+    print('##########################################################################')
+
+    print(datetime.datetime.utcnow())
+    print('Write mapping into file')
+
+    write_mapping_into_file(csv_writer)
 
     print('##########################################################################')
 
