@@ -81,8 +81,8 @@ def load_all_label_and_map(label, csv_map, csv_new):
         name = node['name'].lower()
 
         found_mapping = False
-        xrefs = []
-        synonyms = []
+        xrefs = set()
+        synonyms = set()
         for property in node['properties']:
             if property.startswith('NUI:'):
                 id_nui = property.split(':')[1]
@@ -91,9 +91,9 @@ def load_all_label_and_map(label, csv_map, csv_new):
             else:
                 splitted_prop = property.split(':', 1)
                 if 'name' in splitted_prop[0].lower() or 'synonym' in splitted_prop[0].lower():
-                    synonyms.append(splitted_prop[1])
+                    synonyms.add(splitted_prop[1])
                 else:
-                    xrefs.append(property)
+                    xrefs.add(property)
 
         if found_mapping:
             resource = dict_pharmacologic_class_id_to_resource[id_nui]
