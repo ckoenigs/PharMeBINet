@@ -85,6 +85,11 @@ def load_chemical_from_database_and_add_to_dict():
                 if xref not in dict_rnxnorm_to_chemical_id:
                     dict_rnxnorm_to_chemical_id[xref] = set()
                 dict_rnxnorm_to_chemical_id[xref].add(identifier)
+            elif xref.startswith('MESH:'):
+                xref = xref.split(':', 1)[1]
+                if xref not in dict_mesh_to_chemical_id:
+                    dict_mesh_to_chemical_id[xref] = set()
+                dict_mesh_to_chemical_id[xref].add(identifier)
 
 
 def write_files(path_of_directory):

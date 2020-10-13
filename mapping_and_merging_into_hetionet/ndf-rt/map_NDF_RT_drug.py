@@ -63,6 +63,9 @@ def delete_elements_from_list(delete_list):
 #dictionary from unii to chemical id
 dict_unii_to_chemical_id={}
 
+# dictionary umls cui to chemical id
+dict_umls_cui_to_chemical_id={}
+
 '''
 load in all compound from hetionet in a dictionary
 '''
@@ -97,6 +100,17 @@ def load_hetionet_chemical_in():
                 if not brand_name in dict_synonyms_to_chemicals_ids:
                     dict_synonyms_to_chemicals_ids[brand_name] = set()
                 dict_synonyms_to_chemicals_ids[brand_name].add(identifier)
+
+        cur = con.cursor()
+        query = ("Select CUI,LAT,CODE,SAB From MRCONSO Where (SAB = 'DRUGBANK' or SAB='MSH') and CODE= %s ;")
+        rows_counter = cur.execute(query, (identifier,))
+        if rows_counter > 0:
+            for (cui, lat, code, sab,) in cur:
+                if cui not in dict_umls_cui_to_chemical_id:
+                    dict_umls_cui_to_chemical_id[cui]=set()
+                dict_umls_cui_to_chemical_id[cui].add(identifier)
+
+
     print('length of compound in hetionet:' + str(len(dict_chemical_hetionet)))
 
 
@@ -360,7 +374,7 @@ def map_with_unii_to_chemical():
                     delete_mapped_codes.add(rxcui)
                     dict_mapped_code_to_db_id[code] = mapped_to
                     dict_drug_NDF_RT[code]['mapped_ids'] = mapped_to
-                    dict_drug_NDF_RT[code]['how_mapped'] = 'use unii to drugbank ids or mesh with rxnorm'
+                    dict_drug_NDF_RT[code]['how_mapped'] = 'use unii to drugbank ids or mesh'
                     list_codes_with_drugbank_ids.append(code)
 
     #delete elements
@@ -447,6 +461,9 @@ def map_use_name_mapped_rxnorm_drugbank():
     print('length of list of rxcuis without drugbank ids from rxnorm:' + str(len(list_rxcuis_without_drugbank_ids)))
     print('length of list of codes with all drugbank ids from rxnorm:' + str(len(dict_mapped_code_to_db_id)))
 
+
+
+
 '''
 mAPPING WITH NAME TO NAME, SYNONYM and brands name
 '''
@@ -476,57 +493,87 @@ def name_mapping():
     print('length of list of codes with all drugbank ids from rxnorm:' + str(len(dict_mapped_code_to_db_id)))
 
 
-
 '''
-find drugbank id by using the ingredient from of drug_kind
-this is define in the association with name:Product_Component
-This can be used because drugbank is not so specific with the drugs.
+mAPPING WITH umsl cui
 '''
 
 
-def map_to_drugbank_id_with_ingredient_from():
-    # write all drugs which are mapped with this technical in a file
-    g = open('ingredients_with_no_drugbank_id_or_not_in_hetionet.tsv', 'w')
-    csv_writer=csv.writer(g, delimiter='\t')
-    csv_writer.writerow(['code','name','associated code','name of associated code','why'])
-    number_of_mapped = 0
-    # list of all codes which are mapped to drugbank id in this step
-    delete_mapped_codes = set()
+def umls_cui_mapping():
+    # list of all rxcuis which are mapped to drugbank id in this step
+    delete_list = set()
     for rxcui in list_rxcuis_without_drugbank_ids:
         codes = dict_drug_NDF_RT_rxcui_to_code[rxcui]
-        index = 0
         for code in codes:
-            index += 1
-            if 'association' in dict_drug_NDF_RT[code]:
-                associations = dict_drug_NDF_RT[code]['association']
-                for association in associations:
-                    if association[0:17] == 'Product_Component':
-                        associatied_code = association.split(':')[1]
-                        if associatied_code in dict_drug_NDF_RT:
-                            if 'mapped_ids' in dict_drug_NDF_RT[associatied_code]:
-                                drugbank_ids = dict_drug_NDF_RT[associatied_code]['mapped_ids']
-                                dict_drug_NDF_RT[code]['mapped_ids']=drugbank_ids
-                                dict_drug_NDF_RT[code]['how_mapped']='use association to the ingredient from'
-                                if not code in list_codes_with_drugbank_ids:
-                                    number_of_mapped += 1
-                                    list_codes_with_drugbank_ids.append(code)
-                                delete_mapped_codes.add(rxcui)
-                            else:
-                                csv_writer.writerow([code , dict_drug_NDF_RT[code]['name'] , associatied_code ,
-                                        dict_drug_NDF_RT[
-                                            associatied_code]['name'] + 'ingredient also not mapped to drugbank id'])
-                        else:
-                            csv_writer.writerow([code , dict_drug_NDF_RT[
-                            code]['name'] , associatied_code , '' ,'ingredient not in hetionet'])
-            else:
-                csv_writer.writerow([code, dict_drug_NDF_RT[
-                            code]['name'],'','',  ' no association in hetionet'])
-    # remove all codes from the not mapped list of the rxcui
-    delete_elements_from_list(delete_mapped_codes)
+            if not code in dict_mapped_code_to_db_id:
 
-    print('number of new mapped:' + str(number_of_mapped))
+                umls_cui = dict_drug_NDF_RT[code]['umls_cui'] if 'umls_cui' in dict_drug_NDF_RT[code] else ''
+                if umls_cui in dict_umls_cui_to_chemical_id:
+                    dict_drug_NDF_RT[code]['mapped_ids'] = list(dict_umls_cui_to_chemical_id[umls_cui])
+                    dict_drug_NDF_RT[code]['how_mapped'] = 'use name mapping with umls'
+                    delete_list.add(rxcui)
+                    dict_mapped_code_to_db_id[code] = list(dict_umls_cui_to_chemical_id[umls_cui])
+                    if not code in list_codes_with_drugbank_ids:
+                        list_codes_with_drugbank_ids.append(code)
 
-    print('length of list of codes with all drugbank ids from rxnorm:' + str(len(list_codes_with_drugbank_ids)))
+    # remove all new mapped rxcuis from not mapped list
+    delete_elements_from_list(delete_list)
+
+    print('length of list of rxcuis with all drugbank ids from rxnorm:' + str(len(dict_mapped_code_to_db_id)))
+    print('length of list of rxcuis without drugbank ids from rxnorm:' + str(len(list_rxcuis_without_drugbank_ids)))
+    print('length of list of codes with all drugbank ids from rxnorm:' + str(len(dict_mapped_code_to_db_id)))
+
+
+
+# '''
+# find drugbank id by using the ingredient from of drug_kind
+# this is define in the association with name:Product_Component
+# This can be used because drugbank is not so specific with the drugs.
+# '''
+#
+#
+# def map_to_drugbank_id_with_ingredient_from():
+#     # write all drugs which are mapped with this technical in a file
+#     g = open('ingredients_with_no_drugbank_id_or_not_in_hetionet.tsv', 'w')
+#     csv_writer=csv.writer(g, delimiter='\t')
+#     csv_writer.writerow(['code','name','associated code','name of associated code','why'])
+#     number_of_mapped = 0
+#     # list of all codes which are mapped to drugbank id in this step
+#     delete_mapped_codes = set()
+#     for rxcui in list_rxcuis_without_drugbank_ids:
+#         codes = dict_drug_NDF_RT_rxcui_to_code[rxcui]
+#         index = 0
+#         for code in codes:
+#             index += 1
+#             if 'association' in dict_drug_NDF_RT[code]:
+#                 associations = dict_drug_NDF_RT[code]['association']
+#                 for association in associations:
+#                     if association[0:17] == 'Product_Component':
+#                         associatied_code = association.split(':')[1]
+#                         if associatied_code in dict_drug_NDF_RT:
+#                             if 'mapped_ids' in dict_drug_NDF_RT[associatied_code]:
+#                                 drugbank_ids = dict_drug_NDF_RT[associatied_code]['mapped_ids']
+#                                 dict_drug_NDF_RT[code]['mapped_ids']=drugbank_ids
+#                                 dict_drug_NDF_RT[code]['how_mapped']='use association to the ingredient from'
+#                                 if not code in list_codes_with_drugbank_ids:
+#                                     number_of_mapped += 1
+#                                     list_codes_with_drugbank_ids.append(code)
+#                                 delete_mapped_codes.add(rxcui)
+#                             else:
+#                                 csv_writer.writerow([code , dict_drug_NDF_RT[code]['name'] , associatied_code ,
+#                                         dict_drug_NDF_RT[
+#                                             associatied_code]['name'] + 'ingredient also not mapped to drugbank id'])
+#                         else:
+#                             csv_writer.writerow([code , dict_drug_NDF_RT[
+#                             code]['name'] , associatied_code , '' ,'ingredient not in hetionet'])
+#             else:
+#                 csv_writer.writerow([code, dict_drug_NDF_RT[
+#                             code]['name'],'','',  ' no association in hetionet'])
+#     # remove all codes from the not mapped list of the rxcui
+#     delete_elements_from_list(delete_mapped_codes)
+#
+#     print('number of new mapped:' + str(number_of_mapped))
+#
+#     print('length of list of codes with all drugbank ids from rxnorm:' + str(len(list_codes_with_drugbank_ids)))
 
 
 # dictionary with all cuis that are not mapped
@@ -722,9 +769,17 @@ def main():
         '###########################################################################################################################')
 
     print (datetime.datetime.utcnow())
-    print('map with use of the ingredient')
+    print('umls mapping')
 
-    map_to_drugbank_id_with_ingredient_from()
+    umls_cui_mapping()
+
+    # print(
+    #     '###########################################################################################################################')
+    #
+    # print (datetime.datetime.utcnow())
+    # print('map with use of the ingredient')
+    #
+    # map_to_drugbank_id_with_ingredient_from()
 
     print(
         '###########################################################################################################################')
