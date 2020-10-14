@@ -99,10 +99,12 @@ def load_and_prepare_IID_human_data():
             node_into_file(rela_info['uniprot2'], rela_info['symbol2'], csv_node)
 
             evidence_types=rela_info['evidence type'].split(';')
-            if 'exp' in evidence_types:
-                rela_info=dict(rela_info)
-                rela_info=transform_empty_values_into_real_empty_values(rela_info)
-                csv_rela.writerow(rela_info)
+            rela_info=transform_empty_values_into_real_empty_values(rela_info)
+            csv_rela.writerow(rela_info)
+            # if 'exp' in evidence_types:
+            #     rela_info=dict(rela_info)
+            #     rela_info=transform_empty_values_into_real_empty_values(rela_info)
+            #     csv_rela.writerow(rela_info)
 
 
 
