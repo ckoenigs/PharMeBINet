@@ -47,7 +47,8 @@ list_of_ctd_file_names=[
     'CTD_chemicals.csv.gz',
     'CTD_diseases.csv.gz',
     'CTD_genes.csv.gz',
-    'CTD_pathways.csv.gz'
+    'CTD_pathways.csv.gz',
+    'CTD_anatomy.csv.gz'
 ]
 
 #sepearate

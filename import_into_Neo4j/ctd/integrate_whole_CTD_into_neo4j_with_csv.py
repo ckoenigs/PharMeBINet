@@ -1,7 +1,9 @@
 import sys
 import datetime
 import csv
-from py2neo import Graph#, authenticate
+
+sys.path.append("../..")
+import create_connection_to_databases
 
 '''
 create connection to neo4j 
@@ -11,7 +13,7 @@ create connection to neo4j
 def create_connection_with_neo4j():
     # authenticate("localhost:7474", "neo4j", "test")
     global g
-    g = Graph("http://localhost:7474/db/data/",auth=("neo4j", "test"))
+    g = create_connection_to_databases.database_connection_neo4j()
 
 
 # node cypher file number
@@ -45,7 +47,7 @@ load ctd chemical file and generate cypher file for the nodes with properties:
     5:TreeNumbers
     6:ParentTreeNumbers
     7:Synonyms
-    8:DrugBankID
+    # 8:DrugBankID is excluded
 furthermore it test if already nodes are in Neo4j and only add the new ones 
 '''
 
@@ -62,12 +64,12 @@ def load_chemicals_and_add_to_cypher_file():
     cypher_file_nodes.write(':begin\n')
     # depending if chemicals are in neo4j or not the nodes need to be merged or created
     if not result is None:
-        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chemicals.csv" As line Merge (c:CTDchemical{ chemical_id:split(line.ChemicalID,':')[1]}) On Create Set  c.casRN=line.CasRN, c.synonyms=split(line.Synonyms,'|'), c.drugBankIDs=split(line.DrugBankIDs,'|'), c.parentIDs=split(line.ParentIDs,'|'), c.parentTreeNumbers=split(line.ParentTreeNumbers,'|'), c.treeNumbers=split(line.TreeNumbers,'|'), c.definition=line.Definition, c.name=line.ChemicalName On Match Set  c.casRN=line.CasRN, c.synonyms=split(line.Synonyms,'|'), c.drugBankIDs=split(line.DrugBankIDs,'|'), c.parentIDs=split(line.ParentIDs,'|'), c.parentTreeNumbers=split(line.ParentTreeNumbers,'|'), c.treeNumbers=split(line.TreeNumbers,'|'), c.definition=line.Definition, c.name=line.ChemicalName;\n '''
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chemicals.csv" As line Merge (c:CTDchemical{ chemical_id:split(line.ChemicalID,':')[1]}) On Create Set  c.casRN=line.CasRN, c.synonyms=split(line.Synonyms,'|'),  c.parentIDs=split(line.ParentIDs,'|'), c.parentTreeNumbers=split(line.ParentTreeNumbers,'|'), c.treeNumbers=split(line.TreeNumbers,'|'), c.definition=line.Definition, c.name=line.ChemicalName On Match Set  c.casRN=line.CasRN, c.synonyms=split(line.Synonyms,'|'),  c.parentIDs=split(line.ParentIDs,'|'), c.parentTreeNumbers=split(line.ParentTreeNumbers,'|'), c.treeNumbers=split(line.TreeNumbers,'|'), c.definition=line.Definition, c.name=line.ChemicalName;\n '''
 
     else:
         cypher_file_nodes.write('Create Constraint On (node:CTDchemical) Assert node.chemical_id Is Unique;\n')
         cypher_file_nodes.write(':commit\n')
-        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chemicals.csv" As line Create (c:CTDchemical{ chemical_id:split(line.ChemicalID,':')[1] , casRN:line.CasRN, synonyms:split(line.Synonyms,'|'), drugBankIDs:split(line.DrugBankIDs,'|'), parentIDs:split(line.ParentIDs,'|'), parentTreeNumbers:split(line.ParentTreeNumbers,'|'), treeNumbers:split(line.TreeNumbers,'|'), definition:line.Definition, name:line.ChemicalName});\n '''
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chemicals.csv" As line Create (c:CTDchemical{ chemical_id:split(line.ChemicalID,':')[1] , casRN:line.CasRN, synonyms:split(line.Synonyms,'|'),  parentIDs:split(line.ParentIDs,'|'), parentTreeNumbers:split(line.ParentTreeNumbers,'|'), treeNumbers:split(line.TreeNumbers,'|'), definition:line.Definition, name:line.ChemicalName});\n '''
 
     cypher_file_nodes.write(query)
 
@@ -102,11 +104,11 @@ def load_disease_and_add_to_cypher_file():
         query = ''' Match (c:CTDdisease) Set c.old_version=True;\n '''
         cypher_file_nodes.write(query)
         cypher_file_nodes.write(':commit\n')
-        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_diseases.csv" As line Merge (c:CTDdisease{ disease_id:split(line.DiseaseID,':')[1]}) On Create Set c.altDiseaseIDs=split(line.AltDiseaseIDs,"|"), c.idType=split(line.DiseaseID,':')[0], c.synonyms=split(line.Synonyms,'|'), c.slimMappings=split(line.SlimMappings,'|'), c.parentIDs=split(line.ParentIDs,'|'), c.parentTreeNumbers=split(line.ParentTreeNumbers,'|'), c.treeNumbers=split(line.TreeNumbers,'|'), c.definition=line.Definition, c.name=line.DiseaseName  On Match Set  c.altDiseaseIDs=split(line.AltDiseaseIDs,"|"), c.idType=split(line.DiseaseID,':')[0], c.synonyms=split(line.Synonyms,'|'), c.slimMappings=split(line.SlimMappings,'|'), c.parentIDs=split(line.ParentIDs,'|'), c.parentTreeNumbers=split(line.ParentTreeNumbers,'|'), c.treeNumbers=split(line.TreeNumbers,'|'), c.definition=line.Definition, c.name=line.DiseaseName;\n '''
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_diseases.csv" As line Merge (c:CTDdisease{ disease_id:split(line.DiseaseID,':')[1]}) On Create Set c.altDiseaseIDs=split(line.AltDiseaseIDs,"|"), c.idType=split(line.DiseaseID,':')[0], c.synonyms=split(line.Synonyms,'|'), c.slimMappings=split(line.SlimMappings,'|'), c.parentIDs=split(line.ParentIDs,'|'), c.parentTreeNumbers=split(line.ParentTreeNumbers,'|'), c.treeNumbers=split(line.TreeNumbers,'|'), c.definition=line.Definition, c.name=line.DiseaseName  On Match Set  c.altDiseaseIDs=split(line.AltDiseaseIDs,"|"), c.idType=split(line.DiseaseID,':')[0], c.synonyms=split(line.Synonyms,'|'), c.slimMappings=split(line.SlimMappings,'|'), c.parentIDs=split(line.ParentIDs,'|'), c.parentTreeNumbers=split(line.ParentTreeNumbers,'|'), c.treeNumbers=split(line.TreeNumbers,'|'), c.definition=line.Definition, c.name=line.DiseaseName;\n '''
     else:
         cypher_file_nodes.write('Create Constraint On (node:CTDdisease) Assert node.disease_id Is Unique;\n')
         cypher_file_nodes.write(':commit\n')
-        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_diseases.csv" As line Create (c:CTDdisease{ disease_id:split(line.DiseaseID,':')[1], altDiseaseIDs:split(line.AltDiseaseIDs,"|"), idType:split(line.DiseaseID,':')[0] , synonyms:split(line.Synonyms,'|'), slimMappings:split(line.SlimMappings,'|'), parentIDs:split(line.ParentIDs,'|'), parentTreeNumbers:split(line.ParentTreeNumbers,'|'), treeNumbers:split(line.TreeNumbers,'|'), definition:line.Definition, name:line.DiseaseName}) ;\n '''
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_diseases.csv" As line Create (c:CTDdisease{ disease_id:split(line.DiseaseID,':')[1], altDiseaseIDs:split(line.AltDiseaseIDs,"|"), idType:split(line.DiseaseID,':')[0] , synonyms:split(line.Synonyms,'|'), slimMappings:split(line.SlimMappings,'|'), parentIDs:split(line.ParentIDs,'|'), parentTreeNumbers:split(line.ParentTreeNumbers,'|'), treeNumbers:split(line.TreeNumbers,'|'), definition:line.Definition, name:line.DiseaseName}) ;\n '''
 
     cypher_file_nodes.write(query)
 
@@ -134,15 +136,40 @@ def load_pathway_and_add_to_cypher_file():
         query = ''' Match (c:CTDpathway) Set c.old_version=True;\n '''
         cypher_file_nodes.write(query)
         cypher_file_nodes.write(':commit\n')
-        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_pathways.csv" As line Merge (c:CTDpathway{ pathway_id:split(line.PathwayID,":")[1]}) On Create Set c.id_type=split(line.PathwayID,':')[0], c.idType=split(line.PathwayID,":")[0], c.name=line.PathwayName  On Match Set c.idType=split(line.PathwayID,":")[0], c.name=line.PathwayName, c.id_type=split(line.PathwayID,':')[0];\n '''
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_pathways.csv" As line Merge (c:CTDpathway{ pathway_id:split(line.PathwayID,":")[1]}) On Create Set c.id_type=split(line.PathwayID,':')[0], c.idType=split(line.PathwayID,":")[0], c.name=line.PathwayName  On Match Set c.idType=split(line.PathwayID,":")[0], c.name=line.PathwayName, c.id_type=split(line.PathwayID,':')[0];\n '''
     else:
         cypher_file_nodes.write('Create Constraint On (node:CTDpathway) Assert node.pathway_id Is Unique;\n')
         cypher_file_nodes.write(':commit\n')
-        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_pathways.csv" As line Create (c:CTDpathway{ pathway_id:split(line.PathwayID,':')[1], name:line.PathwayName, id_type:split(line.PathwayID,':')[0]}) ;\n '''
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_pathways.csv" As line Create (c:CTDpathway{ pathway_id:split(line.PathwayID,':')[1], name:line.PathwayName, id_type:split(line.PathwayID,':')[0]}) ;\n '''
 
     cypher_file_nodes.write(query)
 
-    # add the chemical nodes to cypher file
+
+'''
+load ctd pathway file and generate cypher file for the nodes with properties:
+    0:AnatomyName
+    1:AnatomyID (MeSH identifier)
+    2:Definition
+    3:AltAnatomyIDs (alternative identifiers; '|'-delimited list)
+    4:ParentIDs (identifiers of the parent terms; '|'-delimited list)
+    5:TreeNumbers (identifiers of the anatomical term's nodes; '|'-delimited list)
+    6:ParentTreeNumbers (identifiers of the parent nodes; '|'-delimited list)
+    7:Synonyms ('|'-delimited list)
+    8:ExternalSynonyms ('|'-delimited list)
+
+furthermore it test if already nodes are in Neo4j and only add the new ones 
+'''
+
+
+def load_anatomy_and_add_to_cypher_file():
+    global counter_nodes_queries, cypher_file_nodes, node_file_number
+
+    cypher_file_nodes.write('Create Constraint On (node:CTDanatomy) Assert node.pathway_id Is Unique;\n')
+    cypher_file_nodes.write(':commit\n')
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_anatomy.csv" As line Create (c:CTDanatomy{ anatomy_id:split(line.AnatomyID,':')[1], name:line.AnatomyName, id_type:split(line.AnatomyID,':')[0], definition:line.Definition,  alternativ_ids:split(line.AltAnatomyIDs,'|'), parent_id:split(line.ParentIDs,'|'), tree_numbers:split(line.TreeNumbers,'|'), parent_tree_numbers:split(line.ParentTreeNumbers,'|'), synonyms:split(line.Synonyms,'|'), externamSynonyms:split(line.ExternalSynonyms,'|') }) ;\n '''
+
+    cypher_file_nodes.write(query)
+
 
 
 # dictionary for genesymbol to gene id
@@ -178,11 +205,11 @@ def load_gene_and_add_to_cypher_file():
         query = ''' Match (c:CTDgene) Set c.old_version=True;\n '''
         cypher_file_nodes.write(query)
         cypher_file_nodes.write(':commit\n')
-        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_genes.csv" As line Merge (c:CTDgene{ gene_id:line.GeneID }) On Create Set c.altGeneIDs=split(line.AltGeneIDs,'|'), c.synonyms=split(line.Synonyms,'|'), c.bioGRIDIDs=split(line.BioGRIDIDs,'|'), c.pharmGKBIDs=split(line.PharmGKBIDs,'|'), c.uniProtIDs=split(line.UniProtIDs,'|'),  c.geneSymbol=line.GeneSymbol, c.name=line.GeneName On Match Set c.altGeneIDs=split(line.AltGeneIDs,'|'), c.synonyms=split(line.Synonyms,'|'), c.bioGRIDIDs=split(line.BioGRIDIDs,'|'), c.pharmGKBIDs=split(line.PharmGKBIDs,'|'), c.uniProtIDs=split(line.UniProtIDs,'|'),  c.geneSymbol=line.GeneSymbol, c.name=line.GeneName ;\n '''
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_genes.csv" As line Merge (c:CTDgene{ gene_id:line.GeneID }) On Create Set c.altGeneIDs=split(line.AltGeneIDs,'|'), c.synonyms=split(line.Synonyms,'|'), c.bioGRIDIDs=split(line.BioGRIDIDs,'|'), c.pharmGKBIDs=split(line.PharmGKBIDs,'|'), c.uniProtIDs=split(line.UniProtIDs,'|'),  c.geneSymbol=line.GeneSymbol, c.name=line.GeneName On Match Set c.altGeneIDs=split(line.AltGeneIDs,'|'), c.synonyms=split(line.Synonyms,'|'), c.bioGRIDIDs=split(line.BioGRIDIDs,'|'), c.pharmGKBIDs=split(line.PharmGKBIDs,'|'), c.uniProtIDs=split(line.UniProtIDs,'|'),  c.geneSymbol=line.GeneSymbol, c.name=line.GeneName ;\n '''
     else:
         cypher_file_nodes.write('Create Constraint On (node:CTDgene) Assert node.gene_id Is Unique;\n')
         cypher_file_nodes.write(':commit\n')
-        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_genes.csv" As line Create (c:CTDgene{ gene_id:line.GeneID, altGeneIDs:split(line.AltGeneIDs,'|'), synonyms:split(line.Synonyms,'|'), bioGRIDIDs:split(line.BioGRIDIDs,'|'), pharmGKBIDs:split(line.PharmGKBIDs,'|'), uniProtIDs:split(line.UniProtIDs,'|'),  geneSymbol:line.GeneSymbol, name:line.GeneName}) ;\n '''
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_genes.csv" As line Create (c:CTDgene{ gene_id:line.GeneID, altGeneIDs:split(line.AltGeneIDs,'|'), synonyms:split(line.Synonyms,'|'), bioGRIDIDs:split(line.BioGRIDIDs,'|'), pharmGKBIDs:split(line.PharmGKBIDs,'|'), uniProtIDs:split(line.UniProtIDs,'|'),  geneSymbol:line.GeneSymbol, name:line.GeneName}) ;\n '''
 
     cypher_file_nodes.write(query)
 
@@ -222,7 +249,7 @@ and gather the information
 
 
 def load_chemical_go_enriched():
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chem_go_enriched.csv" As line Merge (c:CTDchemical{ chemical_id:line.ChemicalID }) On Create Set  c.casRN=line.CasRN, c.name=line.ChemicalName;\n '''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chem_go_enriched.csv" As line Merge (c:CTDchemical{ chemical_id:line.ChemicalID }) On Create Set  c.casRN=line.CasRN, c.name=line.ChemicalName;\n '''
     cypher_file_nodes.write(query)
     # check if chemicals are already in neo4j
     query = '''MATCH r=(c:CTDchemical)-[a:affects_CGO]->(n:CTDGO) RETURN r LIMIT 1 '''
@@ -234,17 +261,17 @@ def load_chemical_go_enriched():
         query = ''' Match (c:CTDchemical)-[a:affects_CGO]->(n:CTDGO) Set a.old_version=True;\n '''
         cypher_file_edges.write(query)
         cypher_file_edges.write(':commit\n')
-        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chem_go_enriched.csv" As line Match (c:CTDchemical{ chemical_id:line.ChemicalID }), (g:CTDGO{ go_id:line.GOTermID }) Merge (c)-[a:affects_CGO]->(g) On Create Set a.unbiased=True, a.pValue=line.PValue, a.correctedPValue=line.CorrectedPValue, a.targetMatchQty=line.TargetMatchQty, a.targetTotalQty=line.TargetTotalQty, a.backgroundMatchQty=line.BackgroundMatchQty, a.backgroundTotalQty=line.BackgroundTotalQty On Match Set a.unbiased=True, a.pValue=line.PValue, a.correctedPValue=line.CorrectedPValue, a.targetMatchQty=line.TargetMatchQty, a.targetTotalQty=line.TargetTotalQty, a.backgroundMatchQty=line.BackgroundMatchQty, a.backgroundTotalQty=line.BackgroundTotalQty;\n '''
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chem_go_enriched.csv" As line Match (c:CTDchemical{ chemical_id:line.ChemicalID }), (g:CTDGO{ go_id:line.GOTermID }) Merge (c)-[a:affects_CGO]->(g) On Create Set a.unbiased=True, a.pValue=line.PValue, a.correctedPValue=line.CorrectedPValue, a.targetMatchQty=line.TargetMatchQty, a.targetTotalQty=line.TargetTotalQty, a.backgroundMatchQty=line.BackgroundMatchQty, a.backgroundTotalQty=line.BackgroundTotalQty On Match Set a.unbiased=True, a.pValue=line.PValue, a.correctedPValue=line.CorrectedPValue, a.targetMatchQty=line.TargetMatchQty, a.targetTotalQty=line.TargetTotalQty, a.backgroundMatchQty=line.BackgroundMatchQty, a.backgroundTotalQty=line.BackgroundTotalQty;\n '''
     else:
-        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chem_go_enriched.csv" As line Match (c:CTDchemical{ chemical_id:line.ChemicalID }), (g:CTDGO{ go_id:line.GOTermID }) Create (c)-[a:affects_CGO{unbiased:True, pValue:line.PValue, correctedPValue:line.CorrectedPValue, targetMatchQty:line.TargetMatchQty, targetTotalQty:line.TargetTotalQty, backgroundMatchQty:line.BackgroundMatchQty, backgroundTotalQty:line.BackgroundTotalQty}]->(g);\n '''
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chem_go_enriched.csv" As line Match (c:CTDchemical{ chemical_id:line.ChemicalID }), (g:CTDGO{ go_id:line.GOTermID }) Create (c)-[a:affects_CGO{unbiased:True, pValue:line.PValue, correctedPValue:line.CorrectedPValue, targetMatchQty:line.TargetMatchQty, targetTotalQty:line.TargetTotalQty, backgroundMatchQty:line.BackgroundMatchQty, backgroundTotalQty:line.BackgroundTotalQty}]->(g);\n '''
 
     cypher_file_edges.write(query)
 
-    dict_counter_go={}
+    dict_counter_go = {}
 
     # gather information from CTD chemical-go enriched
     with open('ctd_data/CTD_chem_go_enriched.csv') as csvfile:
-        reader = csv.reader(csvfile,  quotechar='"')
+        reader = csv.reader(csvfile, quotechar='"')
         i = 0
         for row in reader:
 
@@ -255,7 +282,7 @@ def load_chemical_go_enriched():
                 highestGOLevel = row[6]
                 # if ontology in ['Molecular Function','Biological Process','Cellular Component']:
                 if ontology in dict_counter_go:
-                    dict_counter_go[ontology]+=1
+                    dict_counter_go[ontology] += 1
                 else:
                     dict_counter_go[ontology] = 1
 
@@ -266,10 +293,11 @@ def load_chemical_go_enriched():
 
     print(len(dict_Go_properties))
     print(dict_counter_go)
-    result=sum(dict_counter_go[x] for x in dict_counter_go.keys())
+    result = sum(dict_counter_go[x] for x in dict_counter_go.keys())
     print(result)
 
     # sys.exit()
+
 
 '''
 load ctd chemicals-go enriched file:
@@ -291,43 +319,43 @@ and gather the information
 
 
 def load_chemical_phenotype():
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_pheno_term_ixns.csv" As line Merge (c:CTDchemical{ chemical_id:line.chemicalid }) On Create Set  c.casRN=line.casrn, c.name=line.chemicalname;\n '''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_pheno_term_ixns.csv" As line Merge (c:CTDchemical{ chemical_id:line.chemicalid }) On Create Set  c.casRN=line.casrn, c.name=line.chemicalname;\n '''
     cypher_file_nodes.write(query)
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_pheno_term_ixns.csv" As line Match (c:CTDchemical{ chemical_id:line.chemicalid }), (g:CTDGO{ go_id:line.phenotypeid }) Create (c)-[a:phenotype{unbiased:True, organismid:line.organismid, comentionedterms:split(line.comentionedterms,'|'), interaction:line.interaction, interactionactions:split(line.interactionactions,'|'), anatomyterms:split(line.anatomyterms,'|'), pubmedids:split(line.pubmedids,'|'), inferencegenesymbols:split(line.inferencegenesymbols,'|')}]->(g);\n '''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_pheno_term_ixns.csv" As line Match (c:CTDchemical{ chemical_id:line.chemicalid }), (g:CTDGO{ go_id:line.phenotypeid }) Create (c)-[a:phenotype{unbiased:True, organismid:line.organismid, comentionedterms:split(line.comentionedterms,'|'), interaction:line.interaction, interactionactions:split(line.interactionactions,'|'), anatomyterms:split(line.anatomyterms,'|'), pubmedids:split(line.pubmedids,'|'), inferencegenesymbols:split(line.inferencegenesymbols,'|')}]->(g);\n '''
 
     cypher_file_edges.write(query)
 
-    dict_counter_go={}
+    dict_counter_go = {}
 
     # gather information from CTD chemical-go enriched
     with open('ctd_data/CTD_pheno_term_ixns.csv') as csvfile:
-        reader = csv.reader(csvfile,  quotechar='"')
+        reader = csv.reader(csvfile, quotechar='"')
         i = 0
         for row in reader:
 
             if i > 0:
-                if row[1]=='C023505':
+                if row[1] == 'C023505':
                     print('ok')
                 ontology = ''
                 goTermName = row[3]
                 goTermId = row[4]
-                organism_id=row[7]
+                organism_id = row[7]
                 # if organism_id!='9606':
                 #     continue
                 # if ontology in ['Molecular Function','Biological Process','Cellular Component']:
                 if ontology in dict_counter_go:
-                    dict_counter_go[ontology]+=1
+                    dict_counter_go[ontology] += 1
                 else:
                     dict_counter_go[ontology] = 1
 
                 if not goTermId in dict_Go_properties:
-                    dict_Go_properties[goTermId] = [goTermName, ontology,'']
+                    dict_Go_properties[goTermId] = [goTermName, ontology, '']
 
             i += 1
 
     print(len(dict_Go_properties))
     print(dict_counter_go)
-    result=sum(dict_counter_go[x] for x in dict_counter_go.keys())
+    result = sum(dict_counter_go[x] for x in dict_counter_go.keys())
     print(result)
 
 
@@ -360,9 +388,9 @@ def gather_information_from_disease_go_inferencen(file, ontology):
         query = ''' Match (c:CTDdisease)-[a:affects_DGO]->(n:CTDGO) Set a.old_version=True;\n '''
         cypher_file_edges.write(query)
         cypher_file_edges.write(':commit\n')
-        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ctd/ctd_data/''' + file + '''" As line Match (d:CTDdisease{ disease_id:line.DiseaseID}), (g:CTDGO{ go_id:line.GOID }) Merge (d)-[a:affects_DGO]->(g) On Create Set a.unbiased=True, a.inferenceGeneSymbols=line.InferenceGeneSymbols, a.inferenceGeneQty=line.InferenceGeneQty On Match Set a.unbiased=True, a.inferenceGeneSymbols=line.InferenceGeneSymbols, a.inferenceGeneQty=line.InferenceGeneQty;\n '''
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/''' + file + '''" As line Match (d:CTDdisease{ disease_id:line.DiseaseID}), (g:CTDGO{ go_id:line.GOID }) Merge (d)-[a:affects_DGO]->(g) On Create Set a.unbiased=True, a.inferenceGeneSymbols=line.InferenceGeneSymbols, a.inferenceGeneQty=line.InferenceGeneQty On Match Set a.unbiased=True, a.inferenceGeneSymbols=line.InferenceGeneSymbols, a.inferenceGeneQty=line.InferenceGeneQty;\n '''
     else:
-        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ctd/ctd_data/''' + file + '''" As line Match (d:CTDdisease{ disease_id:line.DiseaseID}), (g:CTDGO{ go_id:line.GOID }) Create (d)-[a:affects_DGO{unbiased:True, inferenceGeneSymbols:line.InferenceGeneSymbols, inferenceGeneQty:line.InferenceGeneQty}]->(g);\n'''
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/''' + file + '''" As line Match (d:CTDdisease{ disease_id:line.DiseaseID}), (g:CTDGO{ go_id:line.GOID }) Create (d)-[a:affects_DGO{unbiased:True, inferenceGeneSymbols:line.InferenceGeneSymbols, inferenceGeneQty:line.InferenceGeneQty}]->(g);\n'''
 
     cypher_file_edges.write(query)
 
@@ -422,9 +450,9 @@ def gather_information_from_disease_phenotyp_go_inference(file, ontology):
         query = ''' Match (c:CTDdisease)-[a:affects_DGO]->(n:CTDGO) Set a.old_version=True;\n '''
         cypher_file_edges.write(query)
         cypher_file_edges.write(':commit\n')
-        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ctd/ctd_data/''' + file + '''" As line Match (d:CTDdisease{ disease_id:split(line.DiseaseID,':')[1]}), (g:CTDGO{ go_id:line.GOID }) Merge (d)-[a:affects_DGO]->(g) On Create Set a.unbiased=True, a.inferenceGeneSymbols=line.InferenceGeneSymbols, a.inferenceGeneQty=line.InferenceGeneQty On Match Set a.unbiased=True, a.inferenceGeneSymbols=line.InferenceGeneSymbols, a.inferenceGeneQty=line.InferenceGeneQty;\n '''
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/''' + file + '''" As line Match (d:CTDdisease{ disease_id:split(line.DiseaseID,':')[1]}), (g:CTDGO{ go_id:line.GOID }) Merge (d)-[a:affects_DGO]->(g) On Create Set a.unbiased=True, a.inferenceGeneSymbols=line.InferenceGeneSymbols, a.inferenceGeneQty=line.InferenceGeneQty On Match Set a.unbiased=True, a.inferenceGeneSymbols=line.InferenceGeneSymbols, a.inferenceGeneQty=line.InferenceGeneQty;\n '''
     else:
-        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ctd/ctd_data/''' + file + '''" As line Match (d:CTDdisease{ disease_id:split(line.DiseaseID,':')[1]}), (g:CTDGO{ go_id:line.GOID }) Create (d)-[a:affects_DGO{unbiased:True, inferenceGeneSymbols:line.InferenceGeneSymbols, inferenceGeneQty:line.InferenceGeneQty}]->(g);\n'''
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/''' + file + '''" As line Match (d:CTDdisease{ disease_id:split(line.DiseaseID,':')[1]}), (g:CTDGO{ go_id:line.GOID }) Create (d)-[a:affects_DGO{unbiased:True, inferenceGeneSymbols:line.InferenceGeneSymbols, inferenceGeneQty:line.InferenceGeneQty}]->(g);\n'''
 
     cypher_file_edges.write(query)
 
@@ -445,10 +473,11 @@ def gather_information_from_disease_phenotyp_go_inference(file, ontology):
                 if not goId in dict_Go_properties:
                     dict_Go_properties[goId] = [goName, ontology, '']
 
-                dict_disease_go[(disease_id, goId)] = [inferenceGeneSymbols, inferenceGeneQty,inferenceChemicalNames,inferenceChemicalQty]
+                dict_disease_go[(disease_id, goId)] = [inferenceGeneSymbols, inferenceGeneQty, inferenceChemicalNames,
+                                                       inferenceChemicalQty]
 
                 for gene_symbol in inferenceGeneSymbols:
-                    if gene_symbol=='':
+                    if gene_symbol == '':
                         continue
                     # if all thing should be integrated this should not be happening
                     if gene_symbol not in dict_gene_symbol_to_gene_id:
@@ -464,6 +493,7 @@ def gather_information_from_disease_phenotyp_go_inference(file, ontology):
 
     print('number of gene-go pairs:' + str(len(dict_gene_go)))
     print('number of disease-go pairs:' + str(len(dict_disease_go)))
+
 
 '''
 
@@ -490,15 +520,15 @@ def load_disease_go_inference(file_d_cc, file_d_mf, file_d_bp, old):
         print('start Cellular Component')
         print(datetime.datetime.utcnow())
         gather_information_from_disease_phenotyp_go_inference(file_d_cc,
-                                                      'Cellular Component')
+                                                              'Cellular Component')
         print('start Molecular Function')
         print(datetime.datetime.utcnow())
         gather_information_from_disease_phenotyp_go_inference(file_d_mf,
-                                                      'Molecular Function')
+                                                              'Molecular Function')
         print('start Biological Process')
         print(datetime.datetime.utcnow())
         gather_information_from_disease_phenotyp_go_inference(file_d_bp,
-                                                      'Biological Process')
+                                                              'Biological Process')
     print(len(dict_Go_properties))
 
 
@@ -522,11 +552,11 @@ def add_go_to_cypher_file():
         query = ''' Match (c:CTDGO) Set c.old_version=True;\n '''
         cypher_file_nodes.write(query)
         cypher_file_nodes.write(':commit\n')
-        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_GO.csv" As line Merge (c:CTDGO{ go_id:line.GOID }) On Create Set c.ontology=line.Ontology, c.highestGOLevel=line.HighestGOLevel, c.name=line.GOName On Match Set c.ontology=line.Ontology, c.highestGOLevel=line.HighestGOLevel, c.name=line.GOName;\n '''
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_GO.csv" As line Merge (c:CTDGO{ go_id:line.GOID }) On Create Set c.ontology=line.Ontology, c.highestGOLevel=line.HighestGOLevel, c.name=line.GOName On Match Set c.ontology=line.Ontology, c.highestGOLevel=line.HighestGOLevel, c.name=line.GOName;\n '''
     else:
         cypher_file_nodes.write('Create Constraint On (node:CTDGO) Assert node.go_id Is Unique;\n')
         cypher_file_nodes.write(':commit\n')
-        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_GO.csv" As line Create (c:CTDGO{ go_id:line.GOID, ontology:line.Ontology, highestGOLevel:line.HighestGOLevel, name:line.GOName});\n'''
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_GO.csv" As line Create (c:CTDGO{ go_id:line.GOID, ontology:line.Ontology, highestGOLevel:line.HighestGOLevel, name:line.GOName});\n'''
 
     cypher_file_nodes.write(query)
 
@@ -555,9 +585,9 @@ def gene_go_into_cypher_file():
         query = ''' Match (c:CTDgene)-[a:associates_GGO]->(n:CTDGO) Set a.old_version=True;\n '''
         cypher_file_edges.write(query)
         cypher_file_edges.write(':commit\n')
-        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_Gene_GO.csv" As line Match (c:CTDgene{ gene_id:line.GeneID }), (g:CTDGO{ go_id:line.GOID }) Merge (c)-[a:associates_GGO{unbiases:False}]->(g) ;\n'''
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_Gene_GO.csv" As line Match (c:CTDgene{ gene_id:line.GeneID }), (g:CTDGO{ go_id:line.GOID }) Merge (c)-[a:associates_GGO{unbiases:False}]->(g) ;\n'''
     else:
-        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_Gene_GO.csv" As line Match (c:CTDgene{ gene_id:line.GeneID }), (g:CTDGO{ go_id:line.GOID }) Create (c)-[a:associates_GGO{unbiases:False}]->(g) ;\n'''
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_Gene_GO.csv" As line Match (c:CTDgene{ gene_id:line.GeneID }), (g:CTDGO{ go_id:line.GOID }) Create (c)-[a:associates_GGO{unbiases:False}]->(g) ;\n'''
 
     cypher_file_edges.write(query)
 
@@ -580,9 +610,9 @@ and gather the information
 
 
 def load_gene_pathway():
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_genes_pathways.csv" As line Merge (c:CTDgene{ gene_id:line.GeneID }) On Create Set  c.geneSymbol=line.GeneSymbol;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_genes_pathways.csv" As line Merge (c:CTDgene{ gene_id:line.GeneID }) On Create Set  c.geneSymbol=line.GeneSymbol;\n'''
     cypher_file_nodes.write(query)
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_genes_pathways.csv" As line Merge (g:CTDpathway{ pathway_id:split(line.PathwayID,':')[1] }) On Create Set g.name=line.PathwayName ;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_genes_pathways.csv" As line Merge (g:CTDpathway{ pathway_id:split(line.PathwayID,':')[1] }) On Create Set g.name=line.PathwayName ;\n'''
     cypher_file_nodes.write(query)
 
     global counter_edges_queries, cypher_file_edges, edges_file_number
@@ -598,9 +628,9 @@ def load_gene_pathway():
         query = ''' Match (c:CTDgene)-[a:participates_GP]->(n:CTDpathway) Set a.old_version=True;\n '''
         cypher_file_edges.write(query)
         cypher_file_edges.write(':commit\n')
-        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_genes_pathways.csv" As line Match (c:CTDgene{ gene_id:line.GeneID }), (g:CTDpathway{ pathway_id:split(line.PathwayID,':')[1] }) Merge (c)-[a:participates_GP{unbiases:False}]->(g) ;\n'''
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_genes_pathways.csv" As line Match (c:CTDgene{ gene_id:line.GeneID }), (g:CTDpathway{ pathway_id:split(line.PathwayID,':')[1] }) Merge (c)-[a:participates_GP{unbiases:False}]->(g) ;\n'''
     else:
-        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_genes_pathways.csv" As line Match (c:CTDgene{ gene_id:line.GeneID }), (g:CTDpathway{ pathway_id:split(line.PathwayID,':')[1] }) Create (c)-[a:participates_GP{unbiases:False}]->(g) ;\n'''
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_genes_pathways.csv" As line Match (c:CTDgene{ gene_id:line.GeneID }), (g:CTDpathway{ pathway_id:split(line.PathwayID,':')[1] }) Create (c)-[a:participates_GP{unbiases:False}]->(g) ;\n'''
 
     cypher_file_edges.write(query)
 
@@ -617,9 +647,9 @@ and gather the information
 
 
 def load_disease_pathway():
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_diseases_pathways.csv" As line Merge (c:CTDdisease{ disease_id:split(line.DiseaseID,':')[1] }) On Create Set  c.name=line.DiseaseName;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_diseases_pathways.csv" As line Merge (c:CTDdisease{ disease_id:split(line.DiseaseID,':')[1] }) On Create Set  c.name=line.DiseaseName;\n'''
     cypher_file_nodes.write(query)
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_diseases_pathways.csv" As line Merge  (g:CTDpathway{ pathway_id:line.PathwayID })  On Create Set g.name=line.PathwayName;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_diseases_pathways.csv" As line Merge  (g:CTDpathway{ pathway_id:line.PathwayID })  On Create Set g.name=line.PathwayName;\n'''
     cypher_file_nodes.write(query)
     global counter_edges_queries, cypher_file_edges, edges_file_number
 
@@ -634,9 +664,9 @@ def load_disease_pathway():
         query = ''' Match (c:CTDdisease)-[a:associates_DP]->(n:CTDpathway) Set a.old_version=True;\n '''
         cypher_file_edges.write(query)
         cypher_file_edges.write(':commit\n')
-        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_diseases_pathways.csv" As line Match (c:CTDdisease{ disease_id:split(line.DiseaseID,':')[1] }), (g:CTDpathway{ pathway_id:split(line.PathwayID,':')[1] })  Merge (c)-[a:associates_DP]->(g) On Match Set a.inferenceGeneSymbol=line.InferenceGeneSymbol On Create Set a.inferenceGeneSymbol=line.InferenceGeneSymbol;\n'''
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_diseases_pathways.csv" As line Match (c:CTDdisease{ disease_id:split(line.DiseaseID,':')[1] }), (g:CTDpathway{ pathway_id:split(line.PathwayID,':')[1] })  Merge (c)-[a:associates_DP]->(g) On Match Set a.inferenceGeneSymbol=line.InferenceGeneSymbol On Create Set a.inferenceGeneSymbol=line.InferenceGeneSymbol;\n'''
     else:
-        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_diseases_pathways.csv" As line Match (c:CTDdisease{ disease_id:split(line.DiseaseID,':')[1] }), (g:CTDpathway{ pathway_id:split(line.PathwayID,':')[1] })  Create (c)-[:associates_DP{inferenceGeneSymbol:line.InferenceGeneSymbol}]->(g);\n'''
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_diseases_pathways.csv" As line Match (c:CTDdisease{ disease_id:split(line.DiseaseID,':')[1] }), (g:CTDpathway{ pathway_id:split(line.PathwayID,':')[1] })  Create (c)-[:associates_DP{inferenceGeneSymbol:line.InferenceGeneSymbol}]->(g);\n'''
 
     cypher_file_edges.write(query)
 
@@ -660,7 +690,7 @@ and gather the information
 
 
 def load_chemical_gene():
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chem_gene_ixns.csv" As line Merge (c:CTDchemical{ chemical_id:line.ChemicalID }) On Create Set c.casRN=line.CasRN, c.name=line.ChemicalName;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chem_gene_ixns.csv" As line Merge (c:CTDchemical{ chemical_id:line.ChemicalID }) On Create Set c.casRN=line.CasRN, c.name=line.ChemicalName;\n'''
     cypher_file_nodes.write(query)
 
     global counter_edges_queries, cypher_file_edges, edges_file_number
@@ -676,9 +706,9 @@ def load_chemical_gene():
         query = ''' Match (c:CTDchemical)-[a:associates_CG]->(n:CTDgene) Set a.old_version=True;\n '''
         cypher_file_edges.write(query)
         cypher_file_edges.write(':commit\n')
-        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chem_gene_ixns.csv" As line Match (c:CTDchemical{ chemical_id:line.ChemicalID }), (g:CTDgene{ gene_id:line.GeneID }) Merge (c)-[a:associates_CG]->(g) On Create Set a.unbiased=False, a.gene_forms=split(line.GeneForms,'|'), a.organism=line.Organism, a.organism_id=line.OrganismID, a.interaction_text=line.Interaction, a.interactions_actions=split(line.InteractionActions,'|'), a.pubMedIds=split(line.PubMedIDs,'|') On Match Set a.unbiased=False, a.gene_forms=split(line.GeneForms,'|'), a.organism=line.Organism, a.organism_id=line.OrganismID, a.interaction_text=line.Interaction, a.interactions_actions=split(line.InteractionActions,'|'), a.pubMedIds=split(line.PubMedIDs,'|');\n'''
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chem_gene_ixns.csv" As line Match (c:CTDchemical{ chemical_id:line.ChemicalID }), (g:CTDgene{ gene_id:line.GeneID }) Merge (c)-[a:associates_CG]->(g) On Create Set a.unbiased=False, a.gene_forms=split(line.GeneForms,'|'), a.organism=line.Organism, a.organism_id=line.OrganismID, a.interaction_text=line.Interaction, a.interactions_actions=split(line.InteractionActions,'|'), a.pubMedIds=split(line.PubMedIDs,'|') On Match Set a.unbiased=False, a.gene_forms=split(line.GeneForms,'|'), a.organism=line.Organism, a.organism_id=line.OrganismID, a.interaction_text=line.Interaction, a.interactions_actions=split(line.InteractionActions,'|'), a.pubMedIds=split(line.PubMedIDs,'|');\n'''
     else:
-        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chem_gene_ixns.csv" As line Match (c:CTDchemical{ chemical_id:line.ChemicalID }), (g:CTDgene{ gene_id:line.GeneID }) Create (c)-[:associates_CG{unbiased:False, gene_forms:split(line.GeneForms,'|'), organism:line.Organism, organism_id:line.OrganismID, interaction_text:line.Interaction, interactions_actions:split(line.InteractionActions,'|'), pubMedIds:split(line.PubMedIDs,'|') }]->(g);\n'''
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chem_gene_ixns.csv" As line Match (c:CTDchemical{ chemical_id:line.ChemicalID }), (g:CTDgene{ gene_id:line.GeneID }) Create (c)-[:associates_CG{unbiased:False, gene_forms:split(line.GeneForms,'|'), organism:line.Organism, organism_id:line.OrganismID, interaction_text:line.Interaction, interactions_actions:split(line.InteractionActions,'|'), pubMedIds:split(line.PubMedIDs,'|') }]->(g);\n'''
 
     cypher_file_edges.write(query)
 
@@ -703,9 +733,9 @@ and gather the information
 
 
 def load_chemical_pathway_enriched():
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chem_pathways_enriched.csv" As line Merge (c:CTDchemical{ chemical_id:line.ChemicalID }) On Create Set c.casRN=line.CasRN, c.name=line.ChemicalName ;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chem_pathways_enriched.csv" As line Merge (c:CTDchemical{ chemical_id:line.ChemicalID }) On Create Set c.casRN=line.CasRN, c.name=line.ChemicalName ;\n'''
     cypher_file_nodes.write(query)
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chem_pathways_enriched.csv" As line Merge (g:CTDpathway{ pathway_id:split(line.PathwayID,':')[1] }) On Create Set g.name=line.PathwayName;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chem_pathways_enriched.csv" As line Merge (g:CTDpathway{ pathway_id:split(line.PathwayID,':')[1] }) On Create Set g.name=line.PathwayName;\n'''
     cypher_file_nodes.write(query)
 
     global counter_edges_queries, cypher_file_edges, edges_file_number
@@ -721,9 +751,9 @@ def load_chemical_pathway_enriched():
         query = ''' Match (c:CTDchemical)-[a:associates_CP]->(n:CTDpathway) Set a.old_version=True;\n '''
         cypher_file_edges.write(query)
         cypher_file_edges.write(':commit\n')
-        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chem_pathways_enriched.csv" As line Match (c:CTDchemical{ chemical_id:line.ChemicalID }), (g:CTDpathway{ pathway_id:split(line.PathwayID,':')[1] }) Merge (c)-[a:associates_CP]->(g) On Create Set a.unbiased=True, a.pValue=line.PValue, a.correctedPValue=line.CorrectedPValue, a.targetMatchQty=line.TargetMatchQty, a.targetTotalQty=line.TargetTotalQty, a.backgroundMatchQty=line.BackgroundMatchQty, a.backgroundTotalQty=line.BackgroundTotalQty On Match Set a.unbiased=True, a.pValue=line.PValue, a.correctedPValue=line.CorrectedPValue, a.targetMatchQty=line.TargetMatchQty, a.targetTotalQty=line.TargetTotalQty, a.backgroundMatchQty=line.BackgroundMatchQty, a.backgroundTotalQty=line.BackgroundTotalQty;\n'''
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chem_pathways_enriched.csv" As line Match (c:CTDchemical{ chemical_id:line.ChemicalID }), (g:CTDpathway{ pathway_id:split(line.PathwayID,':')[1] }) Merge (c)-[a:associates_CP]->(g) On Create Set a.unbiased=True, a.pValue=line.PValue, a.correctedPValue=line.CorrectedPValue, a.targetMatchQty=line.TargetMatchQty, a.targetTotalQty=line.TargetTotalQty, a.backgroundMatchQty=line.BackgroundMatchQty, a.backgroundTotalQty=line.BackgroundTotalQty On Match Set a.unbiased=True, a.pValue=line.PValue, a.correctedPValue=line.CorrectedPValue, a.targetMatchQty=line.TargetMatchQty, a.targetTotalQty=line.TargetTotalQty, a.backgroundMatchQty=line.BackgroundMatchQty, a.backgroundTotalQty=line.BackgroundTotalQty;\n'''
     else:
-        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chem_pathways_enriched.csv" As line Match (c:CTDchemical{ chemical_id:line.ChemicalID }), (g:CTDpathway{ pathway_id:split(line.PathwayID,':')[1]}) Create (c)-[:associates_CP{unbiased:True, pValue:line.PValue, correctedPValue:line.CorrectedPValue, targetMatchQty:line.TargetMatchQty, targetTotalQty:line.TargetTotalQty, backgroundMatchQty:line.BackgroundMatchQty, backgroundTotalQty:line.BackgroundTotalQty }]->(g);\n'''
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chem_pathways_enriched.csv" As line Match (c:CTDchemical{ chemical_id:line.ChemicalID }), (g:CTDpathway{ pathway_id:split(line.PathwayID,':')[1]}) Create (c)-[:associates_CP{unbiased:True, pValue:line.PValue, correctedPValue:line.CorrectedPValue, targetMatchQty:line.TargetMatchQty, targetTotalQty:line.TargetTotalQty, backgroundMatchQty:line.BackgroundMatchQty, backgroundTotalQty:line.BackgroundTotalQty }]->(g);\n'''
 
     cypher_file_edges.write(query)
 
@@ -745,9 +775,9 @@ and gather the information
 
 
 def load_chemical_disease():
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chemicals_diseases.csv" As line Merge (c:CTDchemical{ chemical_id:line.ChemicalID }) On Create  Set  c.casRN=line.CasRN, c.name=line.ChemicalName;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chemicals_diseases.csv" As line Merge (c:CTDchemical{ chemical_id:line.ChemicalID }) On Create  Set  c.casRN=line.CasRN, c.name=line.ChemicalName;\n'''
     cypher_file_nodes.write(query)
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chemicals_diseases.csv" As line Merge (g:CTDdisease{ disease_id:split(line.DiseaseID,':')[1]}) On Create Set  g.name=line.DiseaseName;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chemicals_diseases.csv" As line Merge (g:CTDdisease{ disease_id:split(line.DiseaseID,':')[1]}) On Create Set  g.name=line.DiseaseName;\n'''
     cypher_file_nodes.write(query)
 
     global counter_edges_queries, cypher_file_edges, edges_file_number
@@ -763,9 +793,9 @@ def load_chemical_disease():
         query = ''' Match (c:CTDchemical)-[a:associates_CD]->(n:CTDdisease) Set a.old_version=True;\n '''
         cypher_file_edges.write(query)
         cypher_file_edges.write(':commit\n')
-        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chemicals_diseases.csv" As line Match (c:CTDchemical{ chemical_id:line.ChemicalID }), (g:CTDdisease{ disease_id:split(line.DiseaseID,':')[1]}) Merge (c)-[a:associates_CD ]->(g) On Create Set a.directEvidence=line.DirectEvidence, a.inferenceGeneSymbol=line.InferenceGeneSymbol, a.inferenceScore=line.InferenceScore, a.omimIDs=split(line.OmimIDs,'|'), a.pubMedIDs=split(line.PubMedIDs,'|') On Match Set a.directEvidence=line.DirectEvidence, a.inferenceGeneSymbol=line.InferenceGeneSymbol, a.inferenceScore=line.InferenceScore, a.omimIDs=split(line.OmimIDs,'|'), a.pubMedIDs=split(line.PubMedIDs,'|') ;\n'''
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chemicals_diseases.csv" As line Match (c:CTDchemical{ chemical_id:line.ChemicalID }), (g:CTDdisease{ disease_id:split(line.DiseaseID,':')[1]}) Merge (c)-[a:associates_CD ]->(g) On Create Set a.directEvidence=line.DirectEvidence, a.inferenceGeneSymbol=line.InferenceGeneSymbol, a.inferenceScore=line.InferenceScore, a.omimIDs=split(line.OmimIDs,'|'), a.pubMedIDs=split(line.PubMedIDs,'|') On Match Set a.directEvidence=line.DirectEvidence, a.inferenceGeneSymbol=line.InferenceGeneSymbol, a.inferenceScore=line.InferenceScore, a.omimIDs=split(line.OmimIDs,'|'), a.pubMedIDs=split(line.PubMedIDs,'|') ;\n'''
     else:
-        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chemicals_diseases.csv" As line Match (c:CTDchemical{ chemical_id:line.ChemicalID }), (g:CTDdisease{ disease_id:split(line.DiseaseID,':')[1] }) Create (c)-[:associates_CD{ directEvidence:line.DirectEvidence, inferenceGeneSymbol:line.InferenceGeneSymbol, inferenceScore:line.InferenceScore, omimIDs:split(line.OmimIDs,'|'), pubMedIDs:split(line.PubMedIDs,'|') }]->(g);\n'''
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chemicals_diseases.csv" As line Match (c:CTDchemical{ chemical_id:line.ChemicalID }), (g:CTDdisease{ disease_id:split(line.DiseaseID,':')[1] }) Create (c)-[:associates_CD{ directEvidence:line.DirectEvidence, inferenceGeneSymbol:line.InferenceGeneSymbol, inferenceScore:line.InferenceScore, omimIDs:split(line.OmimIDs,'|'), pubMedIDs:split(line.PubMedIDs,'|') }]->(g);\n'''
 
     cypher_file_edges.write(query)
 
@@ -786,7 +816,7 @@ and gather the information
 
 
 def load_gene_disease():
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_genes_diseases.csv" As line Merge (g:CTDdisease{ disease_id:split(line.DiseaseID,':')[1] }) On Create Set g.name=line.DiseaseName;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_genes_diseases.csv" As line Merge (g:CTDdisease{ disease_id:split(line.DiseaseID,':')[1] }) On Create Set g.name=line.DiseaseName;\n'''
     cypher_file_nodes.write(query)
 
     global counter_edges_queries, cypher_file_edges, edges_file_number
@@ -802,24 +832,28 @@ def load_gene_disease():
         query = ''' Match (c:CTDgene)-[a:associates_GD]->(n:CTDdisease) Set a.old_version=True;\n '''
         cypher_file_edges.write(query)
         cypher_file_edges.write(':commit\n')
-        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_genes_diseases.csv" As line Match (c:CTDgene{ gene_id:line.GeneID }), (g:CTDdisease{ disease_id:split(line.DiseaseID,':')[1] }) Merge (c)-[a:associates_GD ]->(g) On Create Set a.directEvidence=line.DirectEvidence, a.inferenceChemicalName=line.InferenceChemicalName, a.inferenceScore=line.InferenceScore, a.omimIDs=split(line.OmimIDs,'|'), a.pubMedIDs=split(line.PubMedIDs,'|') On Match Set a.directEvidence=line.DirectEvidence, a.inferenceChemicalName=line.InferenceChemicalName, a.inferenceScore=line.InferenceScore, a.omimIDs=split(line.OmimIDs,'|'), a.pubMedIDs=split(line.PubMedIDs,'|');\n'''
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_genes_diseases.csv" As line Match (c:CTDgene{ gene_id:line.GeneID }), (g:CTDdisease{ disease_id:split(line.DiseaseID,':')[1] }) Merge (c)-[a:associates_GD ]->(g) On Create Set a.directEvidence=line.DirectEvidence, a.inferenceChemicalName=line.InferenceChemicalName, a.inferenceScore=line.InferenceScore, a.omimIDs=split(line.OmimIDs,'|'), a.pubMedIDs=split(line.PubMedIDs,'|') On Match Set a.directEvidence=line.DirectEvidence, a.inferenceChemicalName=line.InferenceChemicalName, a.inferenceScore=line.InferenceScore, a.omimIDs=split(line.OmimIDs,'|'), a.pubMedIDs=split(line.PubMedIDs,'|');\n'''
     else:
-        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_genes_diseases.csv" As line Match (c:CTDgene{ gene_id:line.GeneID }), (g:CTDdisease{ disease_id:split(line.DiseaseID,':')[1] }) Create (c)-[:associates_GD{ directEvidence:line.DirectEvidence, inferenceChemicalName:line.InferenceChemicalName, inferenceScore:line.InferenceScore, omimIDs:split(line.OmimIDs,'|'), pubMedIDs:split(line.PubMedIDs,'|') }]->(g);\n'''
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_genes_diseases.csv" As line Match (c:CTDgene{ gene_id:line.GeneID }), (g:CTDdisease{ disease_id:split(line.DiseaseID,':')[1] }) Create (c)-[:associates_GD{ directEvidence:line.DirectEvidence, inferenceChemicalName:line.InferenceChemicalName, inferenceScore:line.InferenceScore, omimIDs:split(line.OmimIDs,'|'), pubMedIDs:split(line.PubMedIDs,'|') }]->(g);\n'''
 
     cypher_file_edges.write(query)
 
+
 # delete node file
-delet_node_file=open('cypher/nodes_delete.cypher','w')
+delet_node_file = open('cypher/nodes_delete.cypher', 'w')
 
 '''
 ad node deleter for all nodes which have no relationship to other nodes
 '''
+
+
 def delete_nodes_with_no_relationship(label):
     delet_node_file.write(':begin\n')
-    query='''MATCH (n:%s) Where not (n)--() Delete n;\n'''
-    query=query %(label)
+    query = '''MATCH (n:%s) Where not (n)--() Delete n;\n'''
+    query = query % (label)
     delet_node_file.write(query)
     delet_node_file.write(':commit\n')
+
 
 # path to directory
 path_of_directory = ''
@@ -831,7 +865,6 @@ def main():
         path_of_directory = sys.argv[1]
     else:
         sys.exit('need a path')
-
 
     print(datetime.datetime.utcnow())
 
@@ -863,7 +896,14 @@ def main():
     print(datetime.datetime.utcnow())
     print('load in ctd pathway and add to cypher file')
 
+    print('##########################################################################')
+
+    print(datetime.datetime.utcnow())
+    print('load in ctd anatomy and add to cypher file')
+
     load_pathway_and_add_to_cypher_file()
+
+    load_anatomy_and_add_to_cypher_file()
 
     print('##########################################################################')
 
@@ -886,7 +926,6 @@ def main():
 
     load_chemical_phenotype()
 
-
     # print('##########################################################################')
     #
     # print(datetime.datetime.utcnow())
@@ -899,7 +938,9 @@ def main():
     print(datetime.datetime.utcnow())
     print('load in ctd phenotype disease-go and gather the information')
 
-    load_disease_go_inference('CTD_Phenotype-Disease_cellular_component_associations.csv','CTD_Phenotype-Disease_molecular_function_associations.csv','CTD_Phenotype-Disease_biological_process_associations.csv', False)
+    load_disease_go_inference('CTD_Phenotype-Disease_cellular_component_associations.csv',
+                              'CTD_Phenotype-Disease_molecular_function_associations.csv',
+                              'CTD_Phenotype-Disease_biological_process_associations.csv', False)
 
     print('##########################################################################')
 
@@ -950,14 +991,12 @@ def main():
 
     load_chemical_disease()
 
-
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
     print('add chemical-disease relationship to cypher file')
 
     load_gene_disease()
-
 
     print('##########################################################################')
 
@@ -969,7 +1008,6 @@ def main():
     delete_nodes_with_no_relationship('CTDdisease')
     delete_nodes_with_no_relationship('CTDgene')
     delete_nodes_with_no_relationship('CTDpathway')
-
 
     print('##########################################################################')
 
