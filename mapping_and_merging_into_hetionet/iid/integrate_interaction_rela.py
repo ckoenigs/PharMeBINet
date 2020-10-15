@@ -22,7 +22,7 @@ def generate_file_and_cypher():
 
     file_name='interaction/rela'
 
-    cypher_file = open('protein/cypher.cypher', 'w', encoding='utf-8')
+    cypher_file = open('interaction/cypher.cypher', 'w', encoding='utf-8')
 
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/iid/%s.tsv" As line FIELDTERMINATOR '\\t' 
             Match (p1:Protein{identifier:line.protein_id_1}), (v:Protein{identifier:line.protein_id_2}) Create (p1)-[:INTERACTS_PRiPR{ '''
