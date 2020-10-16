@@ -40,6 +40,7 @@ def generate_file_and_cypher():
     cypher_file.write(query)
     file=open(file_name+'.tsv','w',encoding='utf-8')
     csv_writer=csv.DictWriter(file,fieldnames=header, delimiter='\t')
+    csv_writer.writeheader()
     return csv_writer
 
 
