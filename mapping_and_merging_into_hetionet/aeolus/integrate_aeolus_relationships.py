@@ -102,6 +102,18 @@ dict_chemical_to_diseases = {}
 # dictionary chemical to side effects
 dict_chemical_to_side_effects = {}
 
+def get_indications(label, set_of_tuples):
+    """
+    get all pair which has an indication connection and add to set
+    :param label: string
+    """
+    query=''' Match (c)-[:equal_to_Aeolus_drug]-(r:AeolusDrug)-[l:Indicates]-(:AeolusOutcome)--(d:%s)  Return  c.identifier,  d.identifier '''
+    query = query %(label)
+    results=g.run(query)
+
+    for chemical_id, outcome_id, in results:
+        set_of_tuples.add((chemical_id,outcome_id))
+
 '''       
 dictionary connection (drug ID , SE) and list of information
 0:countA	
@@ -124,13 +136,16 @@ go through all connection of the mapped aeolus drugs and remember all informatio
 
 def get_aeolus_connection_information_in_dict(label_search, dict_connection_information_for,
                                               number_of_compound_to_work_with, property_label,
-                                              dict_chemical_to_the_other_thing):
+                                              dict_chemical_to_the_other_thing, set_of_indication_pairs):
     query = '''Match (c:Chemical{aeolus:'yes'}) Where not exists(c.%s)  Set c.%s='yes' With c Limit ''' + str(
         number_of_compound_to_work_with) + ''' Match (c)-[:equal_to_Aeolus_drug]-(r:AeolusDrug)-[l:Causes]-(:AeolusOutcome)--(d:%s) Where toInteger(l.countA)>100 Return c.identifier, l, d.identifier '''
     query = query % (property_label, property_label, label_search)
     results = g.run(query)
     found_something_with_query = False
     for mapped_id, connection, identifier, in results:
+        if (mapped_id, identifier) in set_of_indication_pairs:
+            print(mapped_id, identifier)
+            continue
         found_something_with_query = True
         if mapped_id in dict_chemical_to_the_other_thing:
             dict_chemical_to_the_other_thing[mapped_id].add(identifier)
@@ -312,6 +327,10 @@ def main():
 
     number_of_compounds_at_once = 100
 
+    set_of_indication_pairs=set()
+    get_indications('Disease',set_of_indication_pairs)
+    get_indications('SideEffect', set_of_indication_pairs)
+
     running_times = int(number_of_compound_nodes_which_are_connect_with_aeolus / number_of_compounds_at_once) + 1
 
     # because every aeolus drug has so many relationships only part for part can be integrated
@@ -331,7 +350,7 @@ def main():
 
         get_aeolus_connection_information_in_dict('SideEffect', dict_connection_information,
                                                   number_of_compounds_at_once,
-                                                  'integrated', dict_chemical_to_side_effects)
+                                                  'integrated', dict_chemical_to_side_effects, set_of_indication_pairs)
 
         print(
             '###########################################################################################################################')
@@ -340,7 +359,7 @@ def main():
 
         get_aeolus_connection_information_in_dict('Disease', dict_connection_information_to_disease,
                                                   number_of_compounds_at_once, 'integrated_disease',
-                                                  dict_chemical_to_diseases)
+                                                  dict_chemical_to_diseases, set_of_indication_pairs)
 
         print(
             '###########################################################################################################################')
