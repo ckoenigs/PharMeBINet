@@ -78,6 +78,8 @@ def create_connection_with_neo4j_mysql():
     global conRxNorm
     conRxNorm = create_connection_to_databases.database_connection_RxNorm()
 
+# dictionary rxcui to drugbank ids
+dict_rxcui_to_Drugbank_with_xref={}
 
 '''
 load in all compounds from hetionet in dictionary
@@ -104,6 +106,13 @@ def load_compounds_from_hetionet():
         name = result['name']
         resource = result['resource'] if 'resource' in result else []
         xrefs = result['xrefs'] if 'xrefs' in result else []
+        for xref in xrefs:
+            if xref.startswith('RxNorm_Cui'):
+                rxcui=xref.split(':')[1]
+                if not rxcui in dict_rxcui_to_Drugbank_with_xref:
+                    dict_rxcui_to_Drugbank_with_xref[rxcui]=set()
+                dict_rxcui_to_Drugbank_with_xref[rxcui].add(identifier)
+
 
         drug = DrugHetionet(licenses, identifier, inchikey, inchi, name, resource, xrefs)
 
@@ -132,10 +141,17 @@ def load_drug_aeolus_in_dictionary():
     for result, in results:
         if result['vocabulary_id'] != 'RxNorm':
             print('ohje')
+        rxcui=result['concept_code']
+        drug_concept_id=result['drug_concept_id']
         drug = Drug_Aeolus(result['vocabulary_id'], result['name'], result['drug_concept_id'], result['concept_code'])
-        dict_aeolus_drugs[result['drug_concept_id']] = drug
+        dict_aeolus_drugs[rxcui] = drug
         if not result['concept_code'] in dict_rxnorm_to_drug_concept_id:
             dict_rxnorm_to_drug_concept_id[result['concept_code']] = result['drug_concept_id']
+        if rxcui in dict_rxcui_to_Drugbank_with_xref:
+            dict_aeolus_drug_mapped_ids[drug_concept_id] = list(dict_rxcui_to_Drugbank_with_xref[rxcui])
+            dict_aeolus_drugs[drug_concept_id].set_how_mapped('map rxcui with xref')
+        else:
+            list_aeolus_drugs_without_drugbank_id.append(rxcui)
     print('Size of Aoelus drug:' + str(len(dict_aeolus_drugs)))
     print('number of rxnorm ids in aeolus drug:' + str(len(dict_rxnorm_to_drug_concept_id)))
 
@@ -192,9 +208,22 @@ map rxnorm to drugbank with use of the RxNorm database
 
 
 def map_rxnorm_to_drugbank_use_rxnorm_database():
-    for rxnorm_id, drug_concept_id in dict_rxnorm_to_drug_concept_id.items():
-        if not search_for_mapping_in_rxnorm('DRUGBANK', rxnorm_id, drug_concept_id, 'rxcui map to drugbank'):
-            list_aeolus_drugs_without_drugbank_id.append(rxnorm_id)
+    # for rxnorm_id, drug_concept_id in dict_rxnorm_to_drug_concept_id.items():
+    #     if not search_for_mapping_in_rxnorm('DRUGBANK', rxnorm_id, drug_concept_id, 'rxcui map to drugbank'):
+    #         list_aeolus_drugs_without_drugbank_id.append(rxnorm_id)
+
+    delete_list_without_DB = set()
+    for rxnorm_id in list_aeolus_drugs_without_drugbank_id:
+        drug_concept_id = dict_rxnorm_to_drug_concept_id[rxnorm_id]
+        if search_for_mapping_in_rxnorm('DRUGBANK', rxnorm_id, drug_concept_id, 'rxcui map to drugbank'):
+            delete_list_without_DB.add(list_aeolus_drugs_without_drugbank_id.index(rxnorm_id))
+
+    # delete the new mapped rxnorm cuis from not map list
+    delete_list_without_DB = delete_list_without_DB
+    delete_list_without_DB.sort()
+    delete_list_without_DB = list(reversed(delete_list_without_DB))
+    for index in delete_list_without_DB:
+        list_aeolus_drugs_without_drugbank_id.pop(index)
 
     print('all that are map to drugbank id:' + str(len(dict_aeolus_drug_mapped_ids)))
     print('length of list with cui but no drugbank:' + str(len(list_aeolus_drugs_without_drugbank_id)))
