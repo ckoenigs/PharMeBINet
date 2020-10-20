@@ -149,6 +149,9 @@ def load_standard_case_drug():
         else:
             check_for_entry(dict_isr_to_concept_id,isr, drug_seq, concept_id)
 
+# to have every induce tuple only one time
+set_induce_tuples=set()
+
 def check_for_drug_concepts_and_write_into_file(dictionary, case_id, csv_writer, drug_seq, indication_concept_id):
     """
     check for case drugs and write into file
@@ -163,7 +166,10 @@ def check_for_drug_concepts_and_write_into_file(dictionary, case_id, csv_writer,
             if len(dictionary[case_id][drug_seq]) > 1:
                 print(dictionary[case_id][drug_seq])
             for drug_concept_id in dictionary[case_id][drug_seq]:
+                if (drug_concept_id, indication_concept_id) in set_induce_tuples:
+                    continue
                 csv_writer.writerow([drug_concept_id, indication_concept_id])
+                set_induce_tuples.add((drug_concept_id,indication_concept_id))
 
 """
 import standard_case_indication.tsv and put all information into the dictionary
