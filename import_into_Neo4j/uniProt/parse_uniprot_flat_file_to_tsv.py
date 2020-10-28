@@ -66,7 +66,7 @@ file = open('uniprot.tsv', 'w')
 header = ['entry', 'status', 'sequenceLength', 'identifier', 'second_ac_numbers', 'name', 'synonyms', 'ncbi_taxid',
           'as_sequence',
           'gene_name', 'general_function', 'chromosome_location', 'pfam', 'gene_id', 'go_classifiers', 'xrefs',
-          'subcellular_location', 'protein_existence', 'pubmed_ids']
+          'subcellular_location', 'protein_existence', 'pubmed_ids', 'pathway', 'disease']
 csv_writer = csv.DictWriter(file, fieldnames=header, delimiter='\t',
                             quotechar='"', quoting=csv.QUOTE_MINIMAL)
 csv_writer.writeheader()
@@ -111,6 +111,13 @@ def integration_dict_info_into_csv(dict_information):
 
     # finsih the query and write into the file
     if counter == 0:
+        for head in header:
+            if head not in dict_information:
+                print(head)
+                if head in ['disease','pathway']:
+                    query += head + ':split(line.' + head + ',"|"), '
+                else:
+                    query+= head + ':line.' + head + ', '
         query = query[:-2] + '});\n'
         cypherfile.write(query)
         query = 'Create Constraint On (node:Protein_Uniprot) Assert node.identifier Is Unique;\n'
@@ -153,6 +160,8 @@ def extract_information():
     # to get multiple line information of Function (general function) or subcellular location and nned to be which property
     general_function = False
     subcellular_location = False
+    disease = False
+    pathway = False
 
     print(sys.argv)
     # download url of swissprot
@@ -333,13 +342,37 @@ def extract_information():
                             dict_protein['general_function'] = property_value[1].replace('\n', '')
                             general_function = True
                             subcellular_location = False
+                            disease=False
+                            pathway=False
+                        elif property_value[0] == '-!- DISEASE':
+                            if disease:
+                                dict_protein['disease'].append( property_value[1].replace('\n', ''))
+                            else:
+                                dict_protein['disease']=[property_value[1].replace('\n', '')]
+                            general_function = False
+                            subcellular_location = False
+                            disease=True
+                            pathway=False
+                        elif property_value[0] == '-!- PATHWAY':
+                            if disease:
+                                dict_protein['pathway'].append(property_value[1].replace('\n', ''))
+                            else:
+                                dict_protein['pathway'] = [property_value[1].replace('\n', '')]
+                            general_function = False
+                            subcellular_location = False
+                            disease = False
+                            pathway = True
                         elif property_value[0] == '-!- SUBCELLULAR LOCATION':
                             dict_protein['subcellular_location'] = property_value[1].replace('\n', '')
                             general_function = False
                             subcellular_location = True
+                            disease=False
+                            pathway=False
                         else:
                             general_function = False
                             subcellular_location = False
+                            disease=False
+                            pathway=False
 
 
                     elif general_function:
@@ -347,6 +380,10 @@ def extract_information():
                         dict_protein['general_function'] += ' ' + two_split[1].strip().replace('\n', '')
                     elif subcellular_location:
                         dict_protein['subcellular_location'] += ' ' + two_split[1].strip().replace('\n', '')
+                    elif disease:
+                        dict_protein['disease'][-1] += ' ' + two_split[1].strip().replace('\n', '')
+                    elif pathway:
+                        dict_protein['pathway'][-1] += ' ' + two_split[1].strip().replace('\n', '')
 
                 # Protein existence
                 # PE   Level:Evidence;
