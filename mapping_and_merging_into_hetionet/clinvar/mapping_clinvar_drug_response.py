@@ -1,5 +1,3 @@
-sys.path.append("../..")
-import create_connection_to_databases
 import sys
 import datetime
 import csv
@@ -55,7 +53,7 @@ csv_rela.writerow(header_rela)
 # list of splitibale information
 # susceptibility=allergy, susceptibility=
 list_of_splitable_information = [' response', ' hypersensitivity', ' resistance',
-                                 ' susceptibility']  # poor metabolism of
+                                 ' susceptibility',', poor metabolism of']  # poor metabolism of
 
 
 def split_name_to_to_only_name(name):
