@@ -30,7 +30,7 @@ dict_short_to_full_name = {
 }
 
 
-def mergedicts(x, y):
+def merge_dicts(x, y):
     """
     combine to dictionaries to one
     :param x:
@@ -313,7 +313,7 @@ def prepare_node_and_rela_and_write_to_files(fIDName):
 
     Mesh_map = CUI_to_dic(Mesh_CUI, 'MeSH')
     Rx_map = CUI_to_dic(Rx_CUI, 'RxCUI')
-    dic = mergedicts(Mesh_map, Rx_map)
+    dic = merge_dicts(Mesh_map, Rx_map)
 
     prepare_rela_and_add_to_file(root, dic, fIDName, path)
 
