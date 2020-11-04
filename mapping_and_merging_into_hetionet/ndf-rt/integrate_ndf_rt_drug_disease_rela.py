@@ -51,26 +51,27 @@ def integrate_connection_into_hetionet():
     counter_contraindication_double = 0
     counter_induces_double = 0
 
-    query = '''MATCH (a:Chemical)--(n:NDF_RT_DRUG_KIND)-[r]-(:NDF_RT_DISEASE_KIND)--(b:Disease) RETURN Distinct a.identifier, type(r),b.identifier'''
+    query = '''MATCH (a:Chemical)--(n:NDF_RT_DRUG_KIND)-[r]-(:NDF_RT_DISEASE_KIND)--(b:Disease) RETURN Distinct a.identifier, type(r), r.source, b.identifier'''
     result = g.run(query)
 
-    for chemical_id, rela_type, disease_id, in result:
+    for chemical_id, rela_type,rela_source, disease_id, in result:
         if rela_type not in dict_rela_type_to_csv_file:
             file = open('relationships/rela_' + rela_type + '.tsv', 'w', encoding='utf-8')
             csv_writer = csv.writer(file, delimiter='\t')
-            csv_writer.writerow(['chemical_id', 'disease_id'])
+            csv_writer.writerow(['chemical_id', 'disease_id', 'source'])
             dict_rela_type_to_csv_file[rela_type] = csv_writer
             query_check = 'Match p=(:Chemical)-[:%s]-(:Disease) Return p Limit 1' % dict_type_to_label[rela_type]
             results = g.run(query_check)
             result = results.evaluate()
             if result:
-                query = query_start + 'Merge (a)-[r:%s]->(b) On Create Set r.source="NDF-RT", r.resource=["NDF-RT"], r.ndf_rt="yes", r.unbiased=false, r.license="" On Match Set r.resource=r.resource+"NDF-RT", r.ndf_rt="yes";\n '
+                query = query_start + 'Merge (a)-[r:%s]->(b) On Create Set r.source=line.source, r.resource=["NDF-RT"], r.ndf_rt="yes", r.unbiased=false, r.license="" On Match Set r.resource=r.resource+"NDF-RT", r.ndf_rt="yes";\n '
             else:
-                query = query_start + "Create (a)-[r:%s{source:'NDF-RT', resource:['NDF-RT'], ndf_rt:'yes', unbiased:false, license:''}]->(b);\n"
+                query = query_start + "Create (a)-[r:%s{source:'line.source, resource:['NDF-RT'], ndf_rt:'yes', unbiased:false, license:''}]->(b);\n"
             query = query % ('relationships/rela_' + rela_type + '.tsv', dict_type_to_label[rela_type])
             cypher_file.write(query)
 
         count_code += 1
+        source= 'NDF-RT' if rela_source=='NDFRT' else rela_source+' via NDF-RT'
         dict_rela_type_to_csv_file[rela_type].writerow([chemical_id, disease_id])
 
     print('number of contra indications connections:' + str(count_contra_indicate))
