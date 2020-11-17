@@ -155,6 +155,27 @@ def get_all_genes():
     print('number of genes:' + str(counter_all_genes))
     print('number of multiple name:' + str(len(list_double_names)))
 
+# dictionary omim to disease
+dict_omim_to_disease_ids={}
+
+def load_all_disease_information():
+    """
+
+    :return:
+    """
+    query='Match (n:Disease) Return n'
+    results=g.run(query)
+    for node, in results:
+        identifier=node['identifier']
+        xrefs= node['xrefs'] if 'xrefs' in node else []
+        for xref in xrefs:
+            if xref.startswith('OMIM'):
+                omim_id=xref.split(':')[1]
+                if omim_id not in dict_omim_to_disease_ids:
+                    dict_omim_to_disease_ids[omim_id]=set()
+                dict_omim_to_disease_ids[omim_id].add(identifier)
+
+
 
 # files with rela from uniprot protei to gene
 file_uniprots_gene_rela = open('uniprot_gene/db_uniprot_to_gene_rela.csv', 'w')
@@ -349,27 +370,53 @@ def check_and_write_uniprot_ids(uniprot_id, name, identifier, secondary_uniprot_
 
     return found_at_least_on, genes
 
+def split_string_to_get_one_value(try_to_get_value, symbol, which):
+    """
+    check if the list has at least legth 2
+    :param try_to_get_value: list
+    :param symbol: one character
+    :param which: string
+    :return: string
+    """
+    return_value=''
+    if len(try_to_get_value) > 1:
+        return_value = try_to_get_value[1].split(symbol, 1)[0]
+    else:
+        print('no '+which)
+        print(try_to_get_value)
+    return return_value
 
-'''
-Load all uniprots ids of the proteins and check out which appears also in the uniprot gene dictionary
-'''
+def extract_infos_from_disease(string):
+    """
+    General structure is: name (short name) [omim id]: description {reources} Note=rela info
+    extract information out
+    :param string:
+    :return:
+    """
+    try_to_get_omim_id =string.split('[',1)
+    omim_id=split_string_to_get_one_value(try_to_get_omim_id,']','omim')
+    omim_id= omim_id.split(':')[1] if ':' in omim_id else omim_id
 
+    try_to_get_source=string.rsplit('{')
+    sources=split_string_to_get_one_value(try_to_get_source,'}','source')
+    sources='|'.join(sources.split(','))
 
-def get_gather_protein_info_and_generate_relas():
+    note=''
+    if 'Note=' in string:
+        note=string.split('Note=')[1]
+
+    return omim_id, sources, note
+
+def write_cypher_file():
+    """
+    generate the different cpyher queries and write into cypher file
+    :return:
+    """
+
     # cypher file for nodes
     file_cypher_node = open('cypher_node.cypher', 'w')
     # cypher file to integrate the information into Hetionet
     file_cypher = open('cypher_rela.cypher', 'w')
-
-    # file with every uniprot identifier
-    file_uniprots_ids = open('db_uniprot_ids.csv', 'w')
-    writer_uniprots_ids = csv.writer(file_uniprots_ids)
-    writer_uniprots_ids.writerow(['uniprot_id', 'xrefs'])
-
-    # generate a file with all uniprots which mapped to multiple genes
-    file_uniprots_genes = open('uniprot_gene/db_uniprots_to_genes_multi_map.csv', 'w')
-    writer_uniprots_genes_multi_mapps = csv.writer(file_uniprots_genes)
-    writer_uniprots_genes_multi_mapps.writerow(['uniprot_ids', 'gene_id'])
 
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_gene/db_uniprot_to_gene_rela.csv" As line MATCH (n:Protein{identifier:line.uniprot_id}), (g:Gene{identifier:line.gene_id}) Create (g)-[:PRODUCES_GpP{name_mapping:line.name_mapping, uniprot:line.uniprot,resource:split(line.resource,'|'),license:'Creative Commons Attribution (CC BY 4.0) License'}]->(n);\n'''
     file_cypher.write(query)
@@ -381,6 +428,52 @@ def get_gather_protein_info_and_generate_relas():
     file_cypher.write(query)
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_go/db_uniprots_to_mf.csv" As line MATCH (g:Protein{identifier:line.uniprot_ids}),(b:MolecularFunction{identifier:line.go}) Create (g)-[:PARTICIPATES_PRpMF{resource:['UniProt'],source:'UniPort', uniprot:'yes', license:'Creative Commons Attribution (CC BY 4.0) License', url:'https://www.uniprot.org/uniprot/'+line.uniprot_ids}]->(b);\n'''
     file_cypher.write(query)
+
+    query='''MATCH (p:Protein_Uniprot) WITH DISTINCT keys(p) AS keys
+        UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields
+        RETURN allfields;'''
+
+    results=g.run(query)
+
+    for property, in results:
+        # the go classifiers are in the rela to bc, cc and mf and the gene information are in the rela to gene
+        if property in ['go_classifiers', 'gene_name', 'gene_id', 'disease']:
+            continue
+        if property == 'second_ac_numbers':
+            query += 'alternative_identifiers:p.' + property + ', '
+        # to include only the sequence and not the header
+        elif property == 'as_sequence':
+            query += property + ':split(p.' + property + ',":")[1], '
+        # to reduce the xrefs the go are excluded because this information are in the relationships
+        elif property == 'xrefs':
+            query += property + ':split(line.' + property + ',"|"), '
+        else:
+            query += property + ':p.' + property + ', '
+    query += 'uniprot:"yes", url:"https://www.uniprot.org/uniprot/"+p.identifier, source:"UniProt", resource:["UniProt"], license:"Creative Commons Attribution (CC BY 4.0) License "});\n '
+    file_cypher_node.write(query)
+    query = 'Create Constraint On (node:Protein) Assert node.identifier Is Unique;\n'
+    file_cypher_node.write(query)
+
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_gene/db_gene_uniprot_delete.csv" As line Match (g:Gene{identifier:line.gene_id}) With g,[x IN g.uniProtIDs WHERE x <> line.uniprot_id]  as filterdList 
+                 Set g.uniProtIDs=filterdList;\n '''
+    file_cypher_node.write(query)
+
+'''
+Load all uniprots ids of the proteins and check out which appears also in the uniprot gene dictionary
+'''
+
+
+def get_gather_protein_info_and_generate_relas():
+
+    # file with every uniprot identifier
+    file_uniprots_ids = open('db_uniprot_ids.csv', 'w')
+    writer_uniprots_ids = csv.writer(file_uniprots_ids)
+    writer_uniprots_ids.writerow(['uniprot_id', 'xrefs'])
+
+    # generate a file with all uniprots which mapped to multiple genes
+    file_uniprots_genes = open('uniprot_gene/db_uniprots_to_genes_multi_map.csv', 'w')
+    writer_uniprots_genes_multi_mapps = csv.writer(file_uniprots_genes)
+    writer_uniprots_genes_multi_mapps.writerow(['uniprot_ids', 'gene_id'])
 
     # generate a file with all uniprots to bc
     file_uniprots_bc = open('uniprot_go/db_uniprots_to_bc.csv', 'w')
@@ -396,6 +489,12 @@ def get_gather_protein_info_and_generate_relas():
     file_uniprots_mf = open('uniprot_go/db_uniprots_to_mf.csv', 'w')
     writer_uniprots_mf = csv.writer(file_uniprots_mf)
     writer_uniprots_mf.writerow(['uniprot_ids', 'go'])
+
+
+    # generate a file with all uniprots to mf
+    file_uniprots_disease = open('uniprot_disease/db_uniprots_to_disease.csv', 'w')
+    csv_uniprots_disease = csv.writer(file_uniprots_disease)
+    csv_uniprots_disease.writerow(['uniprot_ids', 'disease_id','source','note'])
 
     # query to get all Protein information {identifier:'P0DMV0'} {identifier:'Q05066'} {identifier:'P0DPK4'} {identifier:'E5RIL1'}
     query = '''MATCH (n:Protein_Uniprot) RETURN n '''
@@ -418,28 +517,6 @@ def get_gather_protein_info_and_generate_relas():
     # find overlap between protein and genes
     # maybe check out the go information to generate further relationships to go
     for node, in results:
-        # add the different properties names to the query
-        if counter_all_proteins == 0:
-            dict_node = dict(node)
-            for property in dict_node.keys():
-                # the go classifiers are in the rela to bc, cc and mf
-                if property == 'go_classifiers':
-                    continue
-                if property == 'second_ac_numbers':
-                    query += 'alternative_identifiers:p.' + property + ', '
-                # to include only the sequence and not the header
-                elif property == 'as_sequence':
-                    query += property + ':split(p.' + property + ',":")[1], '
-                # to reduce the xrefs the go are excluded because this information are in the relationships
-                elif property == 'xrefs':
-                    query += property + ':split(line.' + property + ',"|"), '
-                else:
-                    query += property + ':p.' + property + ', '
-            query += 'uniprot:"yes", url:"https://www.uniprot.org/uniprot/"+p.identifier, source:"UniProt", resource:["UniProt"], license:"Creative Commons Attribution (CC BY 4.0) License "});\n '
-            file_cypher_node.write(query)
-            query = 'Create Constraint On (node:Protein) Assert node.identifier Is Unique;\n'
-            file_cypher_node.write(query)
-
         counter_all_proteins += 1
         # get true if on of the uniprot of this nodes are in the dictionary uniprot to gene
         found_at_least_on = False
@@ -462,6 +539,16 @@ def get_gather_protein_info_and_generate_relas():
         name = node['name']
         # get all xrefs of the node
         xrefs = node['xrefs'] if 'xrefs' in node else []
+
+        # get connection to disease
+        if 'disease' in node:
+            diseases=node['disease']
+            for disease in diseases:
+                omim_id, sources, note= extract_infos_from_disease(disease)
+                if omim_id in dict_omim_to_disease_ids:
+                    for disease_id in dict_omim_to_disease_ids[omim_id]:
+                        csv_uniprots_disease.writerow([identifier, disease_id,sources, note])
+
 
         # the gene symbol
         geneSymbols = node['gene_name'] if 'gene_name' in node else []
@@ -503,6 +590,8 @@ def get_gather_protein_info_and_generate_relas():
                 set_list_mapped_genes = ';'.join(set_list_mapped_genes)
                 writer_uniprots_genes_multi_mapps.writerow([overlap_uniprot_ids, set_list_mapped_genes])
 
+
+
         # to find also relationships to biological processes, cellular component and moleculare functions
 
         # xrefs without go identifier
@@ -524,9 +613,6 @@ def get_gather_protein_info_and_generate_relas():
         new_xrefs = '|'.join(go_through_xrefs_and_change_if_needed_source_name(new_xrefs, 'Protein'))
         writer_uniprots_ids.writerow([identifier, new_xrefs])
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_gene/db_gene_uniprot_delete.csv" As line Match (g:Gene{identifier:line.gene_id}) With g,[x IN g.uniProtIDs WHERE x <> line.uniprot_id]  as filterdList 
-                Set g.uniProtIDs=filterdList;\n '''
-    file_cypher_node.write(query)
     print('number of existing gene protein rela:' + str(counter_existing_gene_protein_rela))
     print('number of all proteins:' + str(counter_all_proteins))
     print('rela to one of the bcs:' + str(counter_gos_bc))
@@ -566,6 +652,22 @@ def main():
     print('gather all information of the hetionet Bp,CC and MF')
 
     load_bp_cc_mf_information()
+
+    print(
+        '#################################################################################################################################################################')
+
+    print(datetime.datetime.utcnow())
+    print('gather all information of the disease')
+
+    load_all_disease_information()
+
+    print(
+        '#################################################################################################################################################################')
+
+    print(datetime.datetime.utcnow())
+    print('write cypher queries into cypher file')
+
+    write_cypher_file()
 
     print(
         '#################################################################################################################################################################')
