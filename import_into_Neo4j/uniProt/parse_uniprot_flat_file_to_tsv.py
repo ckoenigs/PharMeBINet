@@ -205,6 +205,13 @@ def extract_information():
                 # sys.exit('first')
                 dict_protein = {}
                 position_line = 0
+
+                # to get multiple line information of Function (general function) or subcellular location and nned to be which property
+                general_function = False
+                subcellular_location = False
+                disease = False
+                pathway = False
+
             # all the other information
             else:
                 # ID   EntryName Status; SequenceLength.
@@ -229,6 +236,7 @@ def extract_information():
                     for counter, ac_number in enumerate(all_access_number):
                         if counter == 0:
                             dict_protein['identifier'] = ac_number
+                            # print(ac_number)
 
                         else:
                             ac_list.add(ac_number)
@@ -346,9 +354,9 @@ def extract_information():
                             pathway=False
                         elif property_value[0] == '-!- DISEASE':
                             if disease:
-                                dict_protein['disease'].append( property_value[1].replace('\n', ''))
+                                dict_protein['disease'].append( property_value[1].replace('\n', '').replace('|',','))
                             else:
-                                dict_protein['disease']=[property_value[1].replace('\n', '')]
+                                dict_protein['disease']=[property_value[1].replace('\n', '').replace('|',',')]
                             general_function = False
                             subcellular_location = False
                             disease=True
@@ -363,7 +371,10 @@ def extract_information():
                             disease = False
                             pathway = True
                         elif property_value[0] == '-!- SUBCELLULAR LOCATION':
-                            dict_protein['subcellular_location'] = property_value[1].replace('\n', '')
+                            if subcellular_location:
+                                dict_protein['subcellular_location'].append( property_value[1].replace('\n', '').replace('|',','))
+                            else:
+                                dict_protein['subcellular_location']=[property_value[1].replace('\n', '').replace('|',',')]
                             general_function = False
                             subcellular_location = True
                             disease=False
