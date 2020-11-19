@@ -392,7 +392,7 @@ def extract_information():
                     elif subcellular_location:
                         dict_protein['subcellular_location'] += ' ' + two_split[1].strip().replace('\n', '')
                     elif disease:
-                        dict_protein['disease'][-1] += ' ' + two_split[1].strip().replace('\n', '')
+                        dict_protein['disease'][-1] += ' ' + two_split[1].strip().replace('\n', '').replace('|',',')
                     elif pathway:
                         dict_protein['pathway'][-1] += ' ' + two_split[1].strip().replace('\n', '')
 
