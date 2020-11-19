@@ -1,10 +1,13 @@
 import csv
 import sys
 import datetime
+import shelve
 
 cypher_file = open('cypher.cypher', 'w', encoding='utf-8')
 
 addition = '_reactome'
+
+get_properties_types = shelve.open('label_to_property_type')
 
 
 def write_indices_into_cypher_file():
@@ -41,9 +44,9 @@ def write_indices_into_cypher_file():
     CREATE CONSTRAINT ON (node:DatabaseObject%s) ASSERT (node.id) IS UNIQUE;
     :commit\n'''
     queries = queries % (
-    addition, addition, addition, addition, addition, addition, addition, addition, addition, addition, addition,
-    addition, addition, addition, addition, addition, addition, addition, addition, addition, addition, addition,
-    addition, addition, addition, addition, addition, addition, addition, addition)
+        addition, addition, addition, addition, addition, addition, addition, addition, addition, addition, addition,
+        addition, addition, addition, addition, addition, addition, addition, addition, addition, addition, addition,
+        addition, addition, addition, addition, addition, addition, addition, addition)
     cypher_file.write(queries)
 
 
@@ -53,7 +56,7 @@ def generate_csv_file(labels, header, dict_tuple_to_csv, give_file_name_back=Fal
     :param labels: tuple
     :param header: list of strings
     """
-    file_name = 'data/'+ differen_directory + '_'.join(labels) + '.csv'
+    file_name = 'data/' + differen_directory + '_'.join(labels) + '.csv'
     file = open(file_name, 'w', encoding='utf-8')
     csv_writer = csv.writer(file, delimiter='\t')
     csv_writer.writerow(header)
@@ -73,37 +76,58 @@ def prepare_query(labels, file_name, query_end):
     :param query_end: string
     """
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/reactome/%s" As line FIELDTERMINATOR '\t' Create (p:%s{''' + query_end
-    join_addition=addition+' :'
-    query = query % (file_name, join_addition.join(labels) +addition)
+    join_addition = addition + ' :'
+    query = query % (file_name, join_addition.join(labels) + addition)
     cypher_file.write(query)
 
 
-def generate_cypher_queries(set_properties_int):
+def prepare_middle(labels):
+    labels=sorted(labels)
+    labels = '|'.join(labels)
+    query_middle = ''
+    if labels in get_properties_types:
+        dict_prop_to_type = get_properties_types[labels]
+        for head in header_node:
+            if head == 'id':
+                query_middle += head + ':toInteger(line.' + head + '), '
+            if head == 'labels' or head not in dict_prop_to_type:
+                continue
+
+            if dict_prop_to_type[head] == 'STRING':
+                query_middle += head + ':line.' + head + ', '
+            elif dict_prop_to_type[head] == 'INTEGER':
+                query_middle += head + ':toInteger(line.' + head + '), '
+            elif dict_prop_to_type[head] == 'BOOLEAN':
+                query_middle += head + ':toBoolean(line.' + head + '), '
+            elif dict_prop_to_type[head].startswith('LIST'):
+                query_middle += head + ':split(line.' + head + ',"||"), '
+            elif dict_prop_to_type[head] == 'FLOAT':
+                query_middle += head + ':toFloat(line.' + head + '), '
+            else:
+                print(head)
+                print(dict_prop_to_type[head])
+
+    else:
+        print('label not in file ;(')
+        print(labels)
+    query_middle = query_middle[:-2] + '});\n'
+    return query_middle
+
+
+
+def generate_cypher_queries():
     """
     prepare the property part of the query and generate for each label combination cypher query
     """
-    query_middle = ''
-    for head in header_node:
-        if head == 'labels':
-            continue
-        if head in set_of_list_position:
-            query_middle += head + ':split(line.' + head + ',"||"), '
-        elif head in set_properties_int:
-            query_middle += head + ':toInteger(line.' + head + '), '
-        else:
-            query_middle += head + ':line.' + head + ', '
-    query_middle = query_middle[:-2] + '});\n'
+
     for labels, file_name in dict_label_tuple_to_file_name.items():
+        query_middle = prepare_middle(labels)
         prepare_query(labels, file_name, query_middle)
 
 
 # dictionary for the other labels the name of the identifier
 dict_other_identifier = {
-    'Taxon': 'taxId',
-    'Species': 'taxId',
     'DBInfo': 'id',
-    'DatabaseObject': 'id',
-    'ReferenceEntity': 'id'
 }
 
 
@@ -114,11 +138,11 @@ def generate_rela_queries(file_name, tuple_info):
     :param tuple_info: tuple
     :return:
     """
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/reactome/%s" As line FIELDTERMINATOR '\t' MATCH (s:%s{%s:line.start}), (e:%s{%s:line.end}) Create (s)-[:%s{order:toInteger(line.order), stoichiometry:toInteger(line.stoichiometry)}]->(e);\n '''
-    start_id = dict_other_identifier[tuple_info[0]] if tuple_info[0] in dict_other_identifier else 'stId'
-    end_id = dict_other_identifier[tuple_info[1]] if tuple_info[1] in dict_other_identifier else 'stId'
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/reactome/%s" As line FIELDTERMINATOR '\t' MATCH (s:%s{%s:toInteger(line.start)}), (e:%s{%s:toInteger(line.end)}) Create (s)-[:%s{order:toInteger(line.order), stoichiometry:toInteger(line.stoichiometry)}]->(e);\n '''
+    start_id = dict_other_identifier[tuple_info[0]] if tuple_info[0] in dict_other_identifier else 'dbId'
+    end_id = dict_other_identifier[tuple_info[1]] if tuple_info[1] in dict_other_identifier else 'dbId'
     query = query % (
-    file_name, tuple_info[0] + addition, start_id, tuple_info[1] + addition, end_id, tuple_info[2])
+        file_name, tuple_info[0] + addition, start_id, tuple_info[1] + addition, end_id, tuple_info[2])
     cypher_file.write(query)
 
 
@@ -155,12 +179,8 @@ def prepare_csv_file_to_csv_files():
     header = next(csv_reader)
     print(header)
 
-    # set of properties which are ints
-    set_properties_int = set()
-
     #  position important id
-    position_stId = 0
-    position_taxId = 0
+    position_dbId = 0
 
     counter = 0
 
@@ -175,16 +195,10 @@ def prepare_csv_file_to_csv_files():
         if property.startswith('_start'):
             property_node = False
             position_of_rela = counter
-        if ':int' in property:
-            property = property.split(':')[0]
-            set_properties_int.add(property)
-        elif ':' in property:
-            property = property.split(':')[0].replace('_', '')
-        if property == 'stId':
-            position_stId = counter
-        elif property == 'taxId':
-            position_taxId = counter
-
+        if property.startswith('_'):
+            property = property.replace('_', '')
+        if property == 'dbId':
+            position_dbId = counter
         if property_node:
             header_node.append(property)
         else:
@@ -199,7 +213,9 @@ def prepare_csv_file_to_csv_files():
 
         # check if node or edge
         if line[0] != '':
-            labels = tuple(line[1].split(':')[1:])
+            labels = line[1].split(':')
+            labels = labels[1:]
+            labels = tuple(labels)
 
             unique_label = ''
             intersection = labels_with_index.intersection(labels)
@@ -210,10 +226,10 @@ def prepare_csv_file_to_csv_files():
             else:
                 unique_label = labels[0]
 
-            if unique_label not in ['Taxon', 'Species', 'DBInfo', 'DatabaseObject', 'ReferenceEntity']:
-                dict_id_to_label_identifier[line[0]] = [unique_label, line[position_stId]]
-            elif unique_label in ['Taxon', 'Species']:
-                dict_id_to_label_identifier[line[0]] = [unique_label, line[position_taxId]]
+            if unique_label not in ['DBInfo']:
+                dict_id_to_label_identifier[line[0]] = [unique_label, line[position_dbId]]
+            # elif unique_label in ['Taxon', 'Species']:
+            #     dict_id_to_label_identifier[line[0]] = [unique_label, line[position_taxId]]
             else:
                 dict_id_to_label_identifier[line[0]] = [unique_label, line[0]]
 
@@ -225,7 +241,6 @@ def prepare_csv_file_to_csv_files():
             for pro_counter, value in enumerate(line[0:position_of_rela]):
                 # if pro_counter
                 if value.startswith('['):
-                    set_of_list_position.add(dict_pos_to_property[pro_counter])
                     value = value.replace('["', '', 1).rsplit('"]', 1)[0].split('","')
                     value = '||'.join(value)
                     line[pro_counter] = value
@@ -235,7 +250,7 @@ def prepare_csv_file_to_csv_files():
             dict_label_tuple_to_csv[labels].writerow(line[0:position_of_rela])
         else:
             if not add_node_queries:
-                generate_cypher_queries(set_properties_int)
+                generate_cypher_queries()
                 add_node_queries = True
                 print(datetime.datetime.utcnow())
                 print('start rela')
