@@ -113,7 +113,7 @@ def load_reactome_gobiolproc_in():
             resource.append('Reactome')
             resource = list(set(resource))
             resource = '|'.join(resource)
-            csv_mapped.writerow([gobiolproc_id, "GO:" + gobiolproc_id], resource)
+            csv_mapped.writerow([gobiolproc_id, "GO:" + gobiolproc_id, resource])
         else:
             csv_not_mapped.writerow([gobiolproc_id])
             # file_not_mapped_pathways.write(pathways_id+ '\t' +pathways_name+ '\t' + pathways_id_type+ '\n' )

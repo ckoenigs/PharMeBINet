@@ -84,7 +84,7 @@ csv_not_mapped.writerow(['id','name'])
 
 file_mapped_disease = open('disease/mapped_disease.tsv', 'w', encoding="utf-8")
 csv_mapped = csv.writer(file_mapped_disease,delimiter='\t', lineterminator='\n')
-csv_mapped.writerow(['id','id_hetionet', 'resource'])
+csv_mapped.writerow(['id','id_hetionet', 'resource', 'reactome_name','pathway_name'])
 
 '''
 load all reatome disease and check if they are in hetionet or not
@@ -110,8 +110,6 @@ def load_reactome_disease_in():
         #mapping nach dem identifier
         if disease_id in dict_doid_id_to_identifier:
             counter_map_with_id += 1
-            print('id')
-            print(dict_doid_id_to_identifier[disease_id])
             disease_names = dict_disease_hetionet[dict_doid_id_to_identifier[disease_id]]
             #PC_11_Zahl Nummer wird im Dictionary nachgeschaut
             hetionet_identifier=dict_doid_id_to_identifier[disease_id]
@@ -136,7 +134,7 @@ def load_reactome_disease_in():
             resource = list(set(resource))
             resource = '|'.join(resource)
             disease_names = dict_disease_hetionet[dict_disease_hetionet_names[disease_name]]
-            csv_mapped.writerow([disease_id,hetionet_identifier, disease_name,disease_names, resource])
+            csv_mapped.writerow([disease_id,hetionet_identifier, resource, disease_name,disease_names ])
 
         #übrige Knoten, die nicht mappen, werden neu erstellt und bekommen neuen Identifier PC_11_Zahl
         #dafür braucht man die höchte Zahl +1, damit keiner überschrieben wird

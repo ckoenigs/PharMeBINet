@@ -86,7 +86,7 @@ csv_not_mapped.writerow(['newId', 'id', 'name'])
 
 file_mapped_pathways = open('pathway/mapped_pathways.tsv', 'w', encoding="utf-8")
 csv_mapped = csv.writer(file_mapped_pathways, delimiter='\t', lineterminator='\n')
-csv_mapped.writerow(['id', 'id_hetionet', 'ownId', 'resource'])
+csv_mapped.writerow(['id', 'id_hetionet', 'ownId','resource' ,'Pathway_name','Pathway_names' ])
 
 '''
 load all reactome pathways and check if they are in hetionet or not
@@ -140,14 +140,14 @@ def load_reactome_pathways_in():
             resource = '|'.join(resource)
             pathway_names = dict_pathway_hetionet[dict_pathway_hetionet_names[pathways_name]]
             csv_mapped.writerow(
-                [pathways_id, hetionet_identifier, string_own_ids, pathways_name, pathway_names, resource])
+                [pathways_id, hetionet_identifier, string_own_ids, resource, pathways_name, pathway_names])
 
         # übrige Knoten, die nicht mappen, werden neu erstellt und bekommen neuen Identifier PC_11_Zahl
         # dafür braucht man die höchte Zahl +1, damit keiner überschrieben wird
         else:
             highest_identifier += 1
-            new_identifier = "PC11_" + str(highest_identifier)
-            csv_not_mapped.writerow([pathways_name])  # new_identifier, pathways_id,
+            new_identifier = "PC12_" + str(highest_identifier)
+            csv_not_mapped.writerow([new_identifier,pathways_id, pathways_name])  # new_identifier, pathways_id,
 
     print('number of mapping with name:' + str(counter_map_with_name))
     print('number of mapping with id:' + str(counter_map_with_id))
@@ -161,12 +161,12 @@ generate connection between mapping pathways of reactome and hetionet and genera
 def create_cypher_file():
     cypher_file = open('pathway/cypher.cypher', 'w', encoding="utf-8")
     # mappt die Knoten, die es in hetionet und reactome gibt und fügt die properties hinzu
-    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/reactome/pathway/mapped_pathways.tsv" As line FIELDTERMINATOR "\\t" MATCH (d:Pathway{identifier:line.id_hetionet}),(c:Pathway_reactome{stId:line.id}) CREATE (d)-[: equal_to_reactome_pathway]->(c) SET d.resource = split(line.resource, '|'), d.reactome = "yes", d.name = c.displayName, d.synonyme = c.name, d.alternativeId = c.oldStId, d.books = c.books, d.pubMed = c.pubMed, d.figure_urls = c.figure_urls, d.publication_url = c.publication_url, d.doi = c.doi, d.definition = c.definition, d.idOwn = split(line.ownId,"|");\n'''
+    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/reactome/pathway/mapped_pathways.tsv" As line FIELDTERMINATOR "\\t" MATCH (d:Pathway{identifier:line.id_hetionet}),(c:Pathway_reactome{stId:line.id}) CREATE (d)-[: equal_to_reactome_pathway]->(c) SET d.resource = split(line.resource, '|'), d.reactome = "yes", d.name = c.displayName, d.synonyme = c.name, d.alternativeId = c.oldStId, d.books = c.books, d.pubMed = c.pubMed, d.figure_urls = c.figure_urls, d.publication_url = c.publication_url, d.doi = c.doi, d.definition = c.definition, d.xrefs = split(line.ownId,"|");\n'''
     query = query % (path_of_directory)
     cypher_file.write(query)
 
     # Neue Knoten werden erzeugt, von denen die nicht mappen
-    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/reactome/pathway/not_mapped_pathways.tsv" As line FIELDTERMINATOR "\\t" MATCH (c:Pathway_reactome{stId:line.id}) CREATE (d:Pathway{identifier:line.id, resource:['Reactome'], reactome:"yes", names:c.displayName, synonyme:c.name, idOwn:[c.stId], identifier:line.newId, alternativeId:c.oldStId, books:c.books, pubMed:c.pubMed, figure_urls:c.figure_urls, publication_url:c.publication_url, doi:c.doi, definition:c.definition, source:"Reactome"}) CREATE (d)-[: equal_to_reactome_pathway]->(c) ;\n'''
+    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/reactome/pathway/not_mapped_pathways.tsv" As line FIELDTERMINATOR "\\t" MATCH (c:Pathway_reactome{stId:line.id}) CREATE (d:Pathway{identifier:line.newId, resource:['Reactome'], reactome:"yes", name:c.displayName, synonyme:c.name, xrefs:["reactome:"+c.stId],  alternativeId:c.oldStId, books:c.books, pubMed:c.pubMed, figure_urls:c.figure_urls, publication_url:c.publication_url, doi:c.doi, definition:c.definition, source:"Reactome"}) CREATE (d)-[: equal_to_reactome_pathway]->(c) ;\n'''
     query = query % (path_of_directory)
     cypher_file.write(query)
 

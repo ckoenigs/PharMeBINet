@@ -8,6 +8,20 @@ path_to_project=$2
 
 now=$(date +"%F %T")
 echo "Current time: $now"
+echo 'modification as of data'
+
+$path_neo4j/cypher-shell -u neo4j -p test -f pathway_modification.cypher
+
+sleep 180
+
+$path_neo4j/neo4j restart
+
+
+sleep 120
+
+
+now=$(date +"%F %T")
+echo "Current time: $now"
 echo 'delete some nodes'
 
 python3 deleteNodes.py > output_delete.txt
@@ -30,7 +44,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo pathway
 
-python3 MappingPathway.py $path_to_project > output_map.txt
+python3 MappingPathway.py $path_to_project > pathway/output_map.txt
 
 echo integrate connection with neo4j shell
 now=$(date +"%F %T")
@@ -50,7 +64,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo disease
 
-python3 MappingDisease.py $path_to_project > output_map.txt
+python3 MappingDisease.py $path_to_project > disease/output_map.txt
 
 
 #//Delete douplication of relationships
@@ -76,7 +90,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo bp
 
-python3 GO_BiolProcess.py $path_to_project > output_map.txt
+python3 GO_BiolProcess.py $path_to_project > gobiolproc/output_map.txt
 
 echo integrate connection with neo4j shell
 now=$(date +"%F %T")
@@ -95,7 +109,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo cc
 
-python3 GO_CellComp.py $path_to_project > output_map.txt
+python3 GO_CellComp.py $path_to_project > gocellcomp/output_map.txt
 
 echo integrate connection with neo4j shell
 now=$(date +"%F %T")
