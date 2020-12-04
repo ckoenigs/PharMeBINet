@@ -140,3 +140,40 @@ sleep 120
 
 
 # relationships!
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo multi edges of Failedreaction integration
+
+python3 CreateEdgeFailedReactionToNode.py $path_to_project > FailedReactionEdges/output_map.txt
+
+echo integrate connection with neo4j shell
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+$path_neo4j/cypher-shell -u neo4j -p test -f FailedReactionEdges/cypher.cypher > FailedReactionEdges/output_cypher_integration.txt
+
+sleep 180
+
+$path_neo4j/neo4j restart
+
+
+sleep 120
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo multi edges of Pathway integration
+
+python3 CreateEdgePathwayToNode.py $path_to_project > PathwayEdges/output_map.txt
+
+echo integrate connection with neo4j shell
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+$path_neo4j/cypher-shell -u neo4j -p test -f PathwayEdges/cypher.cypher > PathwayEdges/output_cypher_integration.txt
+
+sleep 180
+
+$path_neo4j/neo4j restart
+
+
+sleep 120

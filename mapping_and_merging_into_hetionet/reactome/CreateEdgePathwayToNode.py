@@ -34,7 +34,7 @@ load in all pathways from hetionet in a dictionary
 
 def load_hetionet_pathways_hetionet_node_in(csv_file, dict_pathway_hetionet_node_hetionet, new_relationship,
                                            node_reactome_label, rela_equal_name, node_hetionet_label):
-    query = '''MATCH (p:Pathway)-[:equal_to_reactome_pathway]-(r:Pathway_reactome)-[v:%s]-> (n:%s)-[:%s]-(b:%s) RETURN p.identifier, b.identifier, v.order, v.stoichiometry'''
+    query = '''MATCH (p:Pathway)-[:equal_to_reactome_pathway]-(r:Pathway_reactome)-[v:%s]->(n:%s)-[:%s]-(b:%s) RETURN p.identifier, b.identifier, v.order, v.stoichiometry'''
     query = query % (new_relationship, node_reactome_label, rela_equal_name, node_hetionet_label)
     results = graph_database.run(query)
     # for id1, id2, order, stoichiometry, in results:
@@ -116,7 +116,13 @@ def main():
         ['hasEncapsulatedEvent', 'Pathway_reactome', 'equal_to_reactome_pathway', 'Pathway',
          'HAS_ENCAPSULATED_EVENT_PheeP'],
         ['normalPathway', 'Pathway_reactome', 'equal_to_reactome_pathway', 'Pathway',
-         'NORMAL_PATHWAY_PnpP']
+         'NORMAL_PATHWAY_PnpP'],
+        ['hasEvent', 'FailedReaction_reactome', 'equal_to_reactome_failedreaction', 'FailedReaction', 'HAS_FAILED_PhfF'],
+        ['hasEvent', 'Reaction_reactome', 'equal_to_reactome_reaction', 'Reaction',
+         'HAS_REACTION_PhR'],
+        ['goBiologicalProcess','GO_BiologicalProcess_reactome','equal_to_reactome_gobiolproc','BiologicalProcess', 'HAS_BP_PhBP'],
+        ['compartment', 'GO_CellularComponent_reactome', 'equal_to_reactome_gocellcomp', 'CellularComponent',
+        'HAS_CC_PhBP']
     ]
 
     directory = 'PathwayEdges'
