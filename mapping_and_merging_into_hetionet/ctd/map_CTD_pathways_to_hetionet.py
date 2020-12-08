@@ -38,15 +38,15 @@ load in all pathways from hetionet in a dictionary
 
 
 def load_hetionet_pathways_in():
-    query = '''MATCH (n:Pathway) RETURN n.identifier,n.name, n.synonyms, n.source, n.idOwns'''
+    query = '''MATCH (n:Pathway) RETURN n.identifier,n.name, n.synonyms, n.source, n.xrefs'''
     results = g.run(query)
 
-    for identifier, name, synonyms, source, idOwns, in results:
+    for identifier, name, synonyms, source, xrefs, in results:
         if identifier == 'PC11_3095':
             print('lalal')
         synonyms = synonyms if not synonyms is None else []
-        if idOwns:
-            for id in idOwns:
+        if xrefs:
+            for id in xrefs:
                 if not id in dict_own_id_to_identifier:
                     dict_own_id_to_identifier[id] = identifier
         if not name in dict_pathway_hetionet_names:

@@ -66,9 +66,6 @@ def take_all_relationships_of_gene_disease():
     csvfile = open('gene_disease/relationships.csv', 'w', encoding='utf-8')
     writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     writer.writerow(['GeneID', 'DiseaseID', 'inferences', 'pubMedIDs', 'directEvidence', 'omimIDs', 'unbiased'])
-    query = '''Match (n:Disease) Return count(n)'''
-    results = g.run(query)
-    number_of_disease = int(results.evaluate())
     # number_of_disease=500
 
     # counter directEvidence
@@ -77,7 +74,6 @@ def take_all_relationships_of_gene_disease():
     # counter inferences
     counter_inferences = 0
 
-    print(int(number_of_disease))
     # sys.exit()
     number_of_compound_to_work_with = 10
 
@@ -87,38 +83,44 @@ def take_all_relationships_of_gene_disease():
     counter_all = 0
     counter_direct_evidence = 0
 
+    start = time.time()
+    # and a.identifier='MONDO:0013604'
+    query = '''MATCH p=(a:Disease)-[r]->(b:CTDdisease) RETURN a.identifier , b.disease_id '''
+
+    # print(query)
+    # sys.exit()
+    results = g.run(query)
+    time_measurement = time.time() - start
+    print('\tTake ' + str(number_of_compound_to_work_with) + ' disease: %.4f seconds' % (time_measurement))
+    list_time_all_finding_disease.append(time_measurement)
+    all_disease_id = []
+    dict_disease_id_mondo = {}
+    start = time.time()
+    for mondo, ctd_disease_id, in results:
+        all_disease_id.extend(ctd_disease_id)
+        if ctd_disease_id in dict_disease_id_mondo:
+            dict_disease_id_mondo[ctd_disease_id].append(mondo)
+        else:
+            dict_disease_id_mondo[ctd_disease_id] = [mondo]
+
+    time_measurement = time.time() - start
+    print('\t Generate dictionary: %.4f seconds' % (time_measurement))
+    list_time_dict_mondo.append(time_measurement)
+
+    number_of_disease=len(all_disease_id)
     while counter_of_used_disease < number_of_disease:
 
-        start = time.time()
-        # and a.identifier='MONDO:0013604'
-        query = '''MATCH p=(a:Disease)-[r]->(b:CTDdisease)  Where not exists(a.integrated)   With  a, collect(b.disease_id) As ctd Limit ''' + str(
-            number_of_compound_to_work_with) + ''' Set a.integrated='yes'  RETURN a.identifier , ctd '''
 
-        # print(query)
-        # sys.exit()
-        results = g.run(query)
-        time_measurement = time.time() - start
-        print('\tTake ' + str(number_of_compound_to_work_with) + ' disease: %.4f seconds' % (time_measurement))
-        list_time_all_finding_disease.append(time_measurement)
-        all_disease_id = []
-        dict_disease_id_mondo = {}
-        start = time.time()
-        for mondo, ctd_diseases, in results:
-            all_disease_id.extend(ctd_diseases)
-            for disease in ctd_diseases:
-                if disease in dict_disease_id_mondo:
-                    dict_disease_id_mondo[disease].append(mondo)
-                else:
-                    dict_disease_id_mondo[disease] = [mondo]
-        time_measurement = time.time() - start
-        print('\t Generate dictionary: %.4f seconds' % (time_measurement))
-        list_time_dict_mondo.append(time_measurement)
         start = time.time()
 
         # print(dict_disease_id_mondo)
 
-        all_disease_id = '","'.join(all_disease_id)
-        query = '''MATCH (:Disease)--(disease:CTDdisease)<-[r:associates_GD]-(gene:CTDgene)--(:Gene) Where   disease.disease_id in ["''' + all_disease_id + '''"] and exists(r.directEvidence)  RETURN Distinct gene.gene_id, r, disease.disease_id '''
+        if counter_of_used_disease+number_of_compound_to_work_with< number_of_disease:
+            all_disease_id = '","'.join(all_disease_id[counter_of_used_disease:counter_of_used_disease+number_of_compound_to_work_with])
+        else:
+            all_disease_id = '","'.join(
+                all_disease_id[counter_of_used_disease:number_of_disease])
+        query = '''MATCH (disease:CTDdisease)<-[r:associates_GD]-(gene:CTDgene) Where (gene( --(:Gene) and disease.disease_id in ["''' + all_disease_id + '''"] and exists(r.directEvidence)  RETURN Distinct gene.gene_id, r, disease.disease_id '''
         results = g.run(query)
 
         time_measurement = time.time() - start
@@ -137,27 +139,18 @@ def take_all_relationships_of_gene_disease():
             pubMedIDs = '|'.join(rela['pubMedIDs']) if 'pubMedIDs' in rela else ''
             omimIDs = '|'.join(rela['omimIDs']) if 'omimIDs' in rela else ''
 
-            # if inferenceScore!='' and float(inferenceScore)<100:
-            #     if directEvidence!='':
-            #         print('ohje direct evidence')
-            #     if pubMedIDs=='':
-            #         print('some has not a pubmed id')
-            #     continue
-            if inferenceScore == '' and directEvidence == '':
-                sys.exit('ctd disease-gene some has non evidence or inference')
-            elif directEvidence == '':
-                continue
             counter_direct_evidence += 1
             for mondo in dict_disease_id_mondo[disease_id]:
+                tuple_ids=(gene_id, mondo)
                 if not (gene_id, mondo) in dict_disease_gene:
-                    dict_disease_gene[(gene_id, mondo)] = [{inferenceChemicalName + ':' + inferenceScore},
+                    dict_disease_gene[tuple_ids] = [{inferenceChemicalName + ':' + inferenceScore},
                                                            {directEvidence}, {pubMedIDs}, {omimIDs}]
                     count_possible_relas += 1
                 else:
-                    dict_disease_gene[(gene_id, mondo)][0].add(inferenceChemicalName + ':' + inferenceScore)
-                    dict_disease_gene[(gene_id, mondo)][1].add(directEvidence)
-                    dict_disease_gene[(gene_id, mondo)][2].add(pubMedIDs)
-                    dict_disease_gene[(gene_id, mondo)][3].add(omimIDs)
+                    dict_disease_gene[tuple_ids][0].add(inferenceChemicalName + ':' + inferenceScore)
+                    dict_disease_gene[tuple_ids][1].add(directEvidence)
+                    dict_disease_gene[tuple_ids][2].add(pubMedIDs)
+                    dict_disease_gene[tuple_ids][3].add(omimIDs)
 
                     count_multiple_pathways += 1
 
@@ -169,14 +162,10 @@ def take_all_relationships_of_gene_disease():
         list_time_dict_association.append(time_measurement)
         start = time.time()
         for (gene_id, mondo), [inferences, directEvidence, pubMedIDs, omimIDs] in dict_disease_gene.items():
-            inferences = list(filter(bool, inferences))
-            directEvidence = list(filter(bool, directEvidence))
-            pubMedIDs = list(filter(bool, pubMedIDs))
-            omimIDs = list(filter(bool, omimIDs))
-            inferences_string = '|'.join(inferences)
-            directEvidence_string = '|'.join(directEvidence)
-            pubMedIDs_string = '|'.join(pubMedIDs)
-            omimIDs_string = '|'.join(omimIDs)
+            inferences_string = '|'.join(filter(bool, inferences))
+            directEvidence_string = '|'.join(filter(bool, directEvidence))
+            pubMedIDs_string = '|'.join(filter(bool, pubMedIDs))
+            omimIDs_string = '|'.join(filter(bool, omimIDs))
 
             if len(directEvidence) == 0:
                 counter_inferences += 1

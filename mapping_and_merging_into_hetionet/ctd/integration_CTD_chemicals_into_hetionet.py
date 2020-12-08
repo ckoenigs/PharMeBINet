@@ -729,7 +729,7 @@ def map_with_name_to_drugbank():
                 dict_drugs_CTD_with_drugbankIDs[ctd_id] = dict_drugs_CTD_without_drugbankIDs[ctd_id]
                 delete_mapped_mesh_ids.append(list_drug_CTD_without_drugbank_id.index(ctd_id))
                 dict_drugs_CTD_with_drugbankIDs[ctd_id].set_drugbankIDs(list(dict_synonym_to_drugbank_id[synonym]))
-                dict_drugs_CTD_with_drugbankIDs[ctd_id].set_how_mapped('use  name to map to drugbank ids')
+                dict_drugs_CTD_with_drugbankIDs[ctd_id].set_how_mapped('use  name to map to drugbank ids synonyms')
                 if ctd_id in list_cuis_not_mapped_drugbank_id:
                     delete_cui.append(list_cuis_not_mapped_drugbank_id.index(ctd_id))
 
