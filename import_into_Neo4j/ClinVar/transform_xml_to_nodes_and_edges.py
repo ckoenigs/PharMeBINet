@@ -366,7 +366,8 @@ def add_current_sequence_location_to_dictionary(dictionary, node):
                 if len(split_key_for_capital_letters) > 0:
                     key = '_'.join(split_key_for_capital_letters).lower()
                 dict_seq_location[key] = value
-            dictionary['sequence_location'] = to_json_and_replace(dict_seq_location)
+            # dictionary['sequence_location'] = to_json_and_replace(dict_seq_location)
+            dictionary['sequence_location'] = dict_seq_location
 
 
 '''
@@ -481,7 +482,7 @@ def prepare_hgvs(node):
             if protein_expression is not None:
                 check_for_information_and_add_to_dictionary_with_extra_name('Expression', protein_expression,
                                                                             dict_hgvs,
-                                                                            name='nucleotide expression')
+                                                                            name='protein expression')
             molecular_consequences = set()
             for consequence in hgvs.iterfind('MolecularConsequence'):
                 molecular_consequences.add(consequence.get('Type'))
@@ -527,6 +528,7 @@ def prepare_functional_consequence(node):
         preparation_of_xrefs(functional_consequence, dict_consequence)
         comment_dict = for_multiple_tags_at_one(functional_consequence, 'Comment')
         build_low_dict_into_higher_dict(dict_consequence, comment_dict, 'comments')
+
         list_functional_consequences.append(dict_consequence)
     return list_functional_consequences
 
@@ -609,7 +611,8 @@ def get_all_single_allele_infos_and_add_to_list(node, variation_id=None):
                     gene_symbol = gene.get('Symbol') if 'Symbol' in gene else ''
                     if gene_symbol != '':
                         dict_gene['symbol'] = gene_symbol
-                    list_genes.append(dict_single)
+                    list_genes.append(dict_gene)
+                dict_single['genes'] = to_json_and_replace(list_genes)
 
             check_for_information_and_add_to_dictionary_with_extra_name('VariantType', single_allele, dict_single,
                                                                         name='specific_type')
@@ -1369,12 +1372,12 @@ header_variation = ['identifier', 'accession', 'name', 'allele_id', 'frequencies
                     'xrefs', 'attributes', 'comments', 'genes', 'specific_type', 'synonyms', 'cytogenetic_location',
                     'hgvs_list',
                     'sequence_location', 'functional_consequences', 'number_of_chromosomes', 'review_status',
-                    'citations', 'rela', 'global_minor_allel_frequency']
+                    'citations', 'rela', 'global_minor_allel_frequency', 'genes']
 list_header_measures = ['identifier', 'accession', 'name', 'synonyms', 'symbols', 'comments', 'measures',
                         'citations', 'xrefs', 'number_of_chromosomes', 'specific_type', 'allele_id',
                         'attributes',
                         'cytogenetic_location', 'measure_relationships', 'sequence_location', 'frequencies',
-                        'global_minor_allele_frequency']
+                        'global_minor_allele_frequency', 'genes']
 # query for variation edges
 query_edge_variation = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ClinVar/data/edge_%s_%s.tsv"  As line FIELDTERMINATOR '\t' Match (g:%s_ClinVar{identifier:line.%s}), (o:%s_ClinVar{identifier:line.%s}) Create (g)-[:has]->(o);\n'''
 # query_edge_variation = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''/data/edge_%s_%s.tsv"  As line FIELDTERMINATOR '\t' Match (g:%s_ClinVar{identifier:line.%s}), (o:%s_ClinVar{identifier:line.%s}) Create (g)-[:has]->(o);\n'''

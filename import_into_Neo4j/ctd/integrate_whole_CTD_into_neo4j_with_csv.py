@@ -164,6 +164,7 @@ furthermore it test if already nodes are in Neo4j and only add the new ones
 def load_anatomy_and_add_to_cypher_file():
     global counter_nodes_queries, cypher_file_nodes, node_file_number
 
+    cypher_file_nodes.write(':begin\n')
     cypher_file_nodes.write('Create Constraint On (node:CTDanatomy) Assert node.pathway_id Is Unique;\n')
     cypher_file_nodes.write(':commit\n')
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_anatomy.csv" As line Create (c:CTDanatomy{ anatomy_id:split(line.AnatomyID,':')[1], name:line.AnatomyName, id_type:split(line.AnatomyID,':')[0], definition:line.Definition,  alternativ_ids:split(line.AltAnatomyIDs,'|'), parent_id:split(line.ParentIDs,'|'), tree_numbers:split(line.TreeNumbers,'|'), parent_tree_numbers:split(line.ParentTreeNumbers,'|'), synonyms:split(line.Synonyms,'|'), externamSynonyms:split(line.ExternalSynonyms,'|') }) ;\n '''
@@ -1004,7 +1005,7 @@ def main():
     print('delete nodes with no realtionships')
 
     delete_nodes_with_no_relationship('CTDGO')
-    delete_nodes_with_no_relationship('CTDchemical')
+    # delete_nodes_with_no_relationship('CTDchemical')
     delete_nodes_with_no_relationship('CTDdisease')
     delete_nodes_with_no_relationship('CTDgene')
     delete_nodes_with_no_relationship('CTDpathway')

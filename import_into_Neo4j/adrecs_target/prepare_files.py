@@ -214,7 +214,7 @@ def prepare_adrs():
     adrs = prepare_dataframe(adrs)
 
     # variant information
-    dict_old_to_new_label = prepare_file_and_query_for_node('adr', 'adr', header_adrs, [], '|', 'identifier',
+    dict_old_to_new_label = prepare_file_and_query_for_node('adr', 'adr', header_adrs, ['ADRECS_ID','TOXICITY_DETAIL'], '|', 'identifier',
                                                             as_dict=True)
 
     # ditop2 information
@@ -427,25 +427,32 @@ def prepare_variants():
         # rela to gene
         gene_ids = row['Gene_ID']
         if gene_ids != '':
+            counter=0
             for gene_id in str(gene_ids).split(';'):
                 if not int(gene_id) in set_of_gene_ids:
-                    gene_csv.writerow(['', gene_id])
+                    gene_csv.writerow(['', gene_id,row['Gene_Name']])
                     set_of_gene_ids.add(int(gene_id))
                 if not (variant_id, gene_id) in dict_variant_rela_pairs['variant_gene']:
                     dict_variant_rela_pairs['variant_gene'].add((variant_id, gene_id))
                     dict_rela_to_csv['variant_gene'].writerow([variant_id, gene_id])
 
-        protein_id = row['UNIPROT_AC']
-        if protein_id != '':
-            if protein_id not in dict_protein_id_to_dict_infos:
-                print('oh no')
-                print(protein_id)
-                dict_info={'UNIPROT_AC':protein_id}
-                dict_label_to_csv_writer['protein'].writerow(dict_info)
-                dict_protein_id_to_dict_infos[protein_id]=[]
-            if not (variant_id, protein_id) in dict_variant_rela_pairs['variant_protein']:
-                dict_variant_rela_pairs['variant_protein'].add((variant_id, protein_id))
-                dict_rela_to_csv['variant_protein'].writerow([variant_id, protein_id])
+                counter+=1
+
+        protein_ids = row['UNIPROT_AC']
+        if protein_ids != '':
+            counter=0
+            for protein_id in protein_ids.split(';'):
+                if protein_id=='-':
+                    counter+=1
+                    continue
+                if protein_id not in dict_protein_id_to_dict_infos:
+                    dict_info={'UNIPROT_AC':protein_id,'UNIPROT_ID':row['Uniprot_ID'].split(';')[counter]}
+                    dict_label_to_csv_writer['protein'].writerow(dict_info)
+                    dict_protein_id_to_dict_infos[protein_id]=[]
+                if not (variant_id, protein_id) in dict_variant_rela_pairs['variant_protein']:
+                    dict_variant_rela_pairs['variant_protein'].add((variant_id, protein_id))
+                    dict_rela_to_csv['variant_protein'].writerow([variant_id, protein_id])
+                counter+=1
 
         dict_of_properties = {dict_old_to_new_label[node_property]: row[node_property] for node_property in
                               variant_properties}
@@ -628,10 +635,10 @@ def prepare_protein_drug_adr():
             print('not in ditop')
             print(ditop)
 
-        adr_id = row['ADR Term']
+        adr_id = row['ADR Term'].lower()
         if (ditop, adr_id) not in dict_ditop_to_other_entities['ditop_adr']:
             if not adr_id in dict_adr_id_to_dict_infos:
-                new_dict = {'identifier': adr_id}
+                new_dict = {'identifier': adr_id,'ADR_ID':row['ADR_ID'],'ADRECS_ID':row['ADReCS ID']}
                 dict_label_to_csv_writer['adr'].writerow(new_dict)
                 dict_adr_id_to_dict_infos[adr_id] = [adr_id]
 
@@ -689,7 +696,7 @@ def prepare_variant_drug_adr():
         adr_id = row['ADR Term'].lower()
         if (ditop, adr_id) not in dict_ditop_to_other_entities['ditop_adr']:
             if not adr_id in dict_adr_id_to_dict_infos:
-                new_dict = {'identifier': adr_id}
+                new_dict = {'identifier': adr_id,'ADR_ID':row['ADR_ID'],'ADRECS_ID':row['ADReCS ID']}
                 dict_label_to_csv_writer['adr'].writerow(new_dict)
                 dict_adr_id_to_dict_infos[adr_id] = [adr_id]
 
@@ -724,6 +731,7 @@ def main():
     global path_of_directory
     if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]
+        print(path_of_directory)
     else:
         sys.exit('need a path reactome')
 
