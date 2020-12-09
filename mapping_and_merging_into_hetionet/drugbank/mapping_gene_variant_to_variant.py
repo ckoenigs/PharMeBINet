@@ -43,7 +43,7 @@ def load_variant_from_database_and_add_to_dict():
         xrefs = node['xrefs'] if 'xrefs' in node else []
         for xref in xrefs:
             if xref.startswith('dbSNP:'):
-                dbSNO_ID = 'rs' + xref.split(':', 1)[1]
+                dbSNO_ID =  xref.split(':', 1)[1]
                 if dbSNO_ID not in dict_name_dbsnp_id_to_clinvar_id:
                     dict_name_dbsnp_id_to_clinvar_id[dbSNO_ID] = set()
                 dict_name_dbsnp_id_to_clinvar_id[dbSNO_ID].add(identifier)
@@ -56,7 +56,7 @@ def generate_files(path_of_directory):
     """
     # file from relationship between gene and variant
     file_name = 'gene_variant_to_variant'
-    file = open(file_name + '.tsv', 'w', encoding='utf-8')
+    file = open('gene_variant/'+file_name + '.tsv', 'w', encoding='utf-8')
     csv_mapping = csv.writer(file, delimiter='\t')
     header = ['gene_variant_drugbank', 'variant_id']
     csv_mapping.writerow(header)
@@ -78,6 +78,7 @@ Load all variation sort the ids into the right csv, generate the queries, and ad
 def load_all_variants_and_finish_the_files(csv_mapping):
     query = "MATCH (n:Mutated_protein_gene_DrugBank) RETURN n"
     results = g.run(query)
+    counter_not_mapped=0
     for node, in results:
         identifier = node['identifier']
         if identifier in dict_name_dbsnp_id_to_clinvar_id:
@@ -89,6 +90,7 @@ def load_all_variants_and_finish_the_files(csv_mapping):
             else:
                 print('not mapped')
                 print(identifier)
+                counter_not_mapped+=1
                 continue
             if allele in dict_name_dbsnp_id_to_clinvar_id:
                 for variant in dict_name_dbsnp_id_to_clinvar_id[allele]:
@@ -96,17 +98,18 @@ def load_all_variants_and_finish_the_files(csv_mapping):
             else:
                 print('not mapped')
                 print(identifier)
+                counter_not_mapped+=1
+    print('not mapped:',counter_not_mapped)
 
 
 def main():
     print(datetime.datetime.utcnow())
-
     global path_of_directory
-    if len(sys.argv) > 1:
-        path_of_directory = sys.argv[1]
-    else:
-        sys.exit('need a path drugbank gene mutation')
-
+    if len(sys.argv) < 2:
+        sys.exit('need license and path to directory gene variant')
+    global license
+    license = sys.argv[1]
+    path_of_directory = sys.argv[2]
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())

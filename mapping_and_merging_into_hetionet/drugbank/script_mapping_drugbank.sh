@@ -84,4 +84,38 @@ $path_neo4j/neo4j restart
 sleep 120
 
 
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo 'integrate Drugbank salts with interaction into Hetionet'
+
+python3 mapping_gene_variant_to_variant.py "$license" $path_to_project > gene_variant/output.txt
+
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+$path_neo4j/cypher-shell -u neo4j -p test -f gene_variant/cypher.cypher > gene_variant/output_cypher.txt
+
+sleep 180
+$path_neo4j/neo4j restart
+sleep 120
+
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo 'calculate similarities'
+
+# python3 similarity.py  $path_to_project > compound_interaction/output.txt
+
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+$path_neo4j/cypher-shell -u neo4j -p test -f compound_interaction/cypher_resemble.cypher > compound_interaction/output_cypher.txt
+
+sleep 180
+$path_neo4j/neo4j restart
+sleep 120
+
+
 

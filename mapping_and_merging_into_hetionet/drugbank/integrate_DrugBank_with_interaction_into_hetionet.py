@@ -344,10 +344,11 @@ def integrate_DB_compound_information_into_hetionet():
                 else:
                     dict_info_prepared[key] = property.replace('"', "'")
 
+            list_merge_xref_values=go_through_xrefs_and_change_if_needed_source_name(list_merge_xref_values,
+                                                              'Compound')
             combinded_merge_string = '|'.join(list_merge_xref_values)
             set_of_list_properties.add('xrefs')
-            dict_info_prepared['xrefs'] = go_through_xrefs_and_change_if_needed_source_name(combinded_merge_string,
-                                                                                            'Compound')
+            dict_info_prepared['xrefs'] = combinded_merge_string
 
             csv_new.writerow(dict_info_prepared)
 
