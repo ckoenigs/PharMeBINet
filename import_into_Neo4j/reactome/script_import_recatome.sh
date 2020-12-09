@@ -6,14 +6,14 @@ path_neo4j=$1
 #path to project
 path_to_project=$2
 
-$path_neo4j/restart reactome restart
+$path_neo4j/restart_neo4j.sh reactome restart
 sleep 120
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo 'extract as property types'
 
-python3 prepareCsv.py > output_preparation.txt
+python3 get_property_types.py > output_preparation.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -27,7 +27,7 @@ $path_neo4j/neo4j restart
 
 sleep 120
 
-$path_neo4j/restart graph restart
+$path_neo4j/restart_neo4j.sh graph restart
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -50,17 +50,5 @@ $path_neo4j/neo4j restart
 sleep 120
 
 
-now=$(date +"%F %T")
-echo "Current time: $now"
-echo 'modification as graphml'
-
-$path_neo4j/cypher-shell -u neo4j -p test -f pathway_modification.cypher
-
-sleep 180
-
-$path_neo4j/neo4j restart
-
-
-sleep 120
 
 

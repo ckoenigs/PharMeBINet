@@ -1,6 +1,5 @@
 import sys
 import datetime
-from py2neo import Graph
 import shelve
 
 
@@ -31,6 +30,7 @@ def get_label_property_type_inforamtion():
         if node_property in dict_labels_to_propety_type[labels]:
             print('ohje same property but different type')
             print(node_property)
+            print(labels)
         dict_labels_to_propety_type[labels][node_property]=property_type
 
     # print(dict_labels_to_propety_type)

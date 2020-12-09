@@ -87,6 +87,38 @@ sleep 120
 
 cd ..
 
+cd  med_rt
+echo med-rt
+
+python3 parse_med_rt_to_csv.py $path_to_project > output_integration_ndf_rt.txt
+
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+echo integrate med-rt into neo4j
+
+$path_neo4j/cypher-shell -u neo4j -p test -f cypher_med.cypher > output_cypher_integration.txt 2>&1
+
+sleep 180
+
+$path_neo4j/neo4j restart
+
+
+sleep 120
+echo delete med-rt nodes without relaionships
+
+$path_neo4j/cypher-shell -u neo4j -p test -f cypher_delete.cypher
+
+sleep 180
+
+$path_neo4j/neo4j restart
+
+
+sleep 120
+
+cd ..
+
 now=$(date +"%F %T")
 echo "Current time: $now"
 
@@ -95,7 +127,7 @@ cd  do
 echo do
 
 #download do
-wget  -O data/HumanDO.obo "https://raw.githubusercontent.com/DiseaseOntology/HumanDiseaseOntology/master/src/ontology/HumanDO.obo"
+wget  -O data/HumanDO.obo "https://raw.githubusercontent.com/DiseaseOntology/HumanDiseaseOntology/main/src/ontology/doid.obo"
 
 
 python3 ../EFO/transform_obo_to_csv_and_cypher_file.py data/HumanDO.obo do diseaseontology $path_to_project > output_generate_integration_file.txt
@@ -199,7 +231,7 @@ echo "Current time: $now"
 
 echo integrate uniprot into neo4j
 
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher_protein.cypher > output_cypher_integration_$i.txt 2>&1
+$path_neo4j/cypher-shell -u neo4j -p test -f cypher_protein.cypher > output_cypher_integration.txt 2>&1
 
 sleep 180
 
@@ -229,26 +261,36 @@ cd  EFO
 echo EFO
 
 #download do
-wget  -O ./efo.obo "https://www.ebi.ac.uk/efo/efo.obo"
+#wget  -O ./efo.obo "https://www.ebi.ac.uk/efo/efo.obo"
 
-python3 transform_obo_to_csv_and_cypher_file.py efo.obo EFO efo $path_to_project > output_generate_integration_file.txt
+# python3 transform_obo_to_csv_and_cypher_file.py efo.obo EFO efo $path_to_project > output_generate_integration_file.txt
+
+# now=$(date +"%F %T")
+# echo "Current time: $now"
+
+# echo integrate efo into neo4j
+
+# $path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher > output_cypher_integration.txt 2>&1
+
+# sleep 180
+
+# $path_neo4j/neo4j restart
+
+
+# sleep 120
+
+cd ..
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-echo integrate efo into neo4j
 
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher > output_cypher_integration.txt 2>&1
+cd  adrecs_target
+echo adrecs-target
 
-sleep 180
-
-$path_neo4j/neo4j restart
-
-
-sleep 120
+./script_adrecs_target.sh $path_neo4j $path_to_project > output_script.txt
 
 cd ..
-
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -281,6 +323,33 @@ cd ..
 now=$(date +"%F %T")
 echo "Current time: $now"
 
+cd  IID
+echo IID
+
+python3 prepare_human_data_IID.py $path_to_project > output/outputfile.txt
+
+echo rm gz file
+rm data/*
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+echo integrate pathway into neo4j
+
+$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher.cypher > output/output_cypher_integration.txt 2>&1
+
+sleep 180
+
+$path_neo4j/neo4j restart
+
+
+sleep 120
+
+cd ..
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
 cd  pathway
 echo pathway
 
@@ -302,6 +371,18 @@ $path_neo4j/neo4j restart
 
 
 sleep 120
+
+cd ..
+
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+
+cd  reactome
+echo reactome
+
+./script_import_recatome.sh $path_neo4j $path_to_project > output_reactome.txt
 
 cd ..
 
@@ -369,6 +450,23 @@ rm data/*.gz
 
 cd ..
 
+cd  dbSNP
+echo dbSNP
+
+#python3 parse_json_to_tsv_dbsnp.py "/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/dbSNP" $path_to_project  > output/output_generate_integration_file.txt
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+echo integrate efo into neo4j
+
+#$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher > output/output_cypher_node.txt 2>&1
+
+sleep 180
+
+$path_neo4j/neo4j restart
 
 
+sleep 120
 
+cd ..

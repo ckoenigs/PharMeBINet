@@ -114,10 +114,10 @@ def integration_dict_info_into_csv(dict_information):
         for head in header:
             if head not in dict_information:
                 print(head)
-                if head in ['disease','pathway']:
+                if head in ['disease', 'pathway']:
                     query += head + ':split(line.' + head + ',"|"), '
                 else:
-                    query+= head + ':line.' + head + ', '
+                    query += head + ':line.' + head + ', '
         query = query[:-2] + '});\n'
         cypherfile.write(query)
         query = 'Create Constraint On (node:Protein_Uniprot) Assert node.identifier Is Unique;\n'
@@ -136,6 +136,16 @@ dict_short_to_full_go = {
     'F:': 'function::',
     'P:': 'process::'
 }
+
+
+def prepare_strings_for_list_elements(string):
+    """
+    prepare string for list elements
+    :param string: string
+    :return: string
+    """
+    return string.strip().replace('\n', '').replace('|', ',')
+
 
 '''
 extract all information from uniprot flat file  into csv
@@ -180,7 +190,7 @@ def extract_information():
     # file = open(filename_without_gz, 'wb')
     with io.TextIOWrapper(gzip.open(filename, 'rb')) as f:
         # file_uniprot = open(sys.argv[1], 'r')
-    # with open('database/part.dat', 'r', encoding='utf-8') as f:
+        # with open('database/part.dat', 'r', encoding='utf-8') as f:
 
         for line in f:
             unzip_file.write(line)
@@ -350,51 +360,59 @@ def extract_information():
                             dict_protein['general_function'] = property_value[1].replace('\n', '')
                             general_function = True
                             subcellular_location = False
-                            disease=False
-                            pathway=False
+                            disease = False
+                            pathway = False
                         elif property_value[0] == '-!- DISEASE':
                             if disease:
-                                dict_protein['disease'].append( property_value[1].replace('\n', '').replace('|',','))
+                                dict_protein['disease'].append(prepare_strings_for_list_elements(property_value[1]))
                             else:
-                                dict_protein['disease']=[property_value[1].replace('\n', '').replace('|',',')]
+                                dict_protein['disease'] = [prepare_strings_for_list_elements(property_value[1])]
                             general_function = False
                             subcellular_location = False
-                            disease=True
-                            pathway=False
+                            disease = True
+                            pathway = False
                         elif property_value[0] == '-!- PATHWAY':
-                            if disease:
-                                dict_protein['pathway'].append(property_value[1].replace('\n', ''))
+                            list_infos = list(filter(None, prepare_strings_for_list_elements(property_value[1]).split(';')))
+                            if pathway:
+                                dict_protein['pathway'].extend(list_infos)
                             else:
-                                dict_protein['pathway'] = [property_value[1].replace('\n', '')]
+                                dict_protein['pathway'] = list_infos
                             general_function = False
                             subcellular_location = False
                             disease = False
                             pathway = True
                         elif property_value[0] == '-!- SUBCELLULAR LOCATION':
+                            property_value[1]=property_value[1].replace('. Note',' Note')
+                            list_infos = list(filter(None, prepare_strings_for_list_elements(property_value[1]).split('.')))
                             if subcellular_location:
-                                dict_protein['subcellular_location'].append( property_value[1].replace('\n', '').replace('|',','))
+                                dict_protein['subcellular_location'].extend(list_infos)
                             else:
-                                dict_protein['subcellular_location']=[property_value[1].replace('\n', '').replace('|',',')]
+                                dict_protein['subcellular_location'] = list_infos
                             general_function = False
                             subcellular_location = True
-                            disease=False
-                            pathway=False
+                            disease = False
+                            pathway = False
                         else:
                             general_function = False
                             subcellular_location = False
-                            disease=False
-                            pathway=False
+                            disease = False
+                            pathway = False
 
 
                     elif general_function:
 
                         dict_protein['general_function'] += ' ' + two_split[1].strip().replace('\n', '')
                     elif subcellular_location:
-                        dict_protein['subcellular_location'] += ' ' + two_split[1].strip().replace('\n', '')
+                        two_split[1]=two_split[1].replace('. Note',' Note')
+                        prepared_list = list(filter(None, prepare_strings_for_list_elements(two_split[1]).split('.')))
+                        dict_protein['subcellular_location'][-1] += ' ' + prepared_list[0]
+                        dict_protein['subcellular_location'].extend(prepared_list[1:])
                     elif disease:
-                        dict_protein['disease'][-1] += ' ' + two_split[1].strip().replace('\n', '').replace('|',',')
+                        dict_protein['disease'][-1] += ' ' + prepare_strings_for_list_elements(two_split[1])
                     elif pathway:
-                        dict_protein['pathway'][-1] += ' ' + two_split[1].strip().replace('\n', '')
+                        prepared_list = list(filter(None, prepare_strings_for_list_elements(two_split[1]).split(';')))
+                        dict_protein['pathway'][-1] += ' ' + prepared_list[0]
+                        dict_protein['pathway'].extend(prepared_list[1:])
 
                 # Protein existence
                 # PE   Level:Evidence;
@@ -434,7 +452,7 @@ def extract_information():
                         if ',\n' in two_split[1]:
                             in_multiple_lines = True
                             in_multiple_line_string = \
-                            property[1].split(';')[0].replace('\n', '').replace('|', ';').split('{')[0].rstrip()
+                                property[1].split(';')[0].replace('\n', '').replace('|', ';').split('{')[0].rstrip()
                             in_multiple_line_property = 'gene_name'
                             in_multiple_line_property_type_list = True
                         else:
