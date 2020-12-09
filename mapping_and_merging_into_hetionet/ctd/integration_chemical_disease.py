@@ -99,16 +99,6 @@ def get_all_important_relationships_and_write_into_files():
     list_time_dict_association = []
     list_time_add_to_file = []
 
-    # check how many ctd chemicals are mapped
-    query = '''Match (n:Chemical) Where (n)-[:equal_chemical_CTD]-() or (n)-[:equal_to_CTD_chemical]-() Return count(n)'''
-    results = g.run(query)
-    number_of_chemical = int(results.evaluate())
-
-    # query='''MATCH p=(a)-[r:equal_chemichal_CTD]->(b) Create (a)-[:equal_chemical_CTD]->(b) Delete r'''
-    # g.run(query)
-
-    # number_of_chemical=500
-
     # counter directEvidence
     counter_direct_evidence = 0
     # counter association
@@ -116,26 +106,15 @@ def get_all_important_relationships_and_write_into_files():
     # counter marker/mechanism
     counter_marker = 0
 
-    list_durgbank_mesh = []
-    list_mesh = []
 
-    print(int(number_of_chemical))
     # sys.exit()
     number_of_compound_to_work_with = 10
 
     # different counter
     counter = 0
     counter_of_used_rela = 0
-    counter_of_used_chemical = 0
-    counter_no_change = 0
-    counter_over_100 = 0
     counter_integrated_in_file_rela = 0
     counter_multi_direct_evidence = 0
-
-    # list of all chemicals
-    all_chemicals_id = []
-    # dictionary with hetionet chemical id as key and value list of ctd chemical ids
-    dict_chemical_id_chemical = {}
 
     start = time.time()
     # compound drugbank id
@@ -144,7 +123,7 @@ def get_all_important_relationships_and_write_into_files():
     # sys.exit()
     results = g.run(query)
     time_measurement = time.time() - start
-    print('\tTake ' + str(number_of_compound_to_work_with) + ' compound: %.4f seconds' % (time_measurement))
+    print('\tget all mapped compound: %.4f seconds' % (time_measurement))
     list_time_all_finding_chemical.append(time_measurement)
 
     # dictionary ctd chemical to drugbank id
@@ -158,164 +137,134 @@ def get_all_important_relationships_and_write_into_files():
     for chemical_id, ctd_chemical_id, in results:
 
         count_chemicals_drugbank += 1
-        all_chemicals_id.extend(ctd_chemical_id)
         # fill the chemical id to drugbank id dictionary
         if ctd_chemical_id in dict_chemical_to_drugbank:
             dict_chemical_to_drugbank[ctd_chemical_id].append(chemical_id)
         else:
             dict_chemical_to_drugbank[ctd_chemical_id] = [chemical_id]
-        if not ctd_chemical_id in list_durgbank_mesh:
-            list_durgbank_mesh.append(ctd_chemical_id)
 
-    # compound drugbank id
-    query = '''MATCH (b:CTDchemical) Where not (:Compound)-[:equal_chemical_CTD]->(b)   RETURN  b.chemical_id '''
-    # print(query)
-    # sys.exit()
-    results = g.run(query)
-    for  ctd_chemical_id, in results:
-        all_chemicals_id.extend(ctd_chemical_id)
 
-    # counter_of_used_chemical+=count_chemicals_drugbank
-    number_of_chemical = len(all_chemicals_id)
+    # print(dict_chemical_id_chemical)
+    time_measurement = time.time() - start
+    # print('\t Generate dictionary: %.4f seconds' % (time_measurement))
+    list_time_dict_chemical.append(time_measurement)
+    start = time.time()
 
-    # take only a prat of the ctd chemicals, because they have a lot of information
-    while counter_of_used_chemical < number_of_chemical:
+    '''
+            sort all information into dict_chemical_disease
+            '''
 
-        # print(dict_chemical_id_chemical)
-        time_measurement = time.time() - start
-        # print('\t Generate dictionary: %.4f seconds' % (time_measurement))
-        list_time_dict_chemical.append(time_measurement)
-        start = time.time()
-
-        '''
-                sort all information into dict_chemical_disease
-                '''
-
-        def sort_into_dictionary(chemical_id, mondo, omimIDs, directEvidence, pubMedIDs, inferenceScore,
-                                 inferenceGeneSymbol, disease_id):
-            tuple_ids=(chemical_id, mondo)
-            if tuple_ids in dict_chemical_disease:
-                dict_chemical_disease[tuple_ids][0].extend(omimIDs)
-                dict_chemical_disease[tuple_ids][0] = list(
-                    set(dict_chemical_disease[tuple_ids][0]))
-                dict_chemical_disease[tuple_ids][1].append(directEvidence)
-                dict_chemical_disease[tuple_ids][1] = list(
-                    set(dict_chemical_disease[(chemical_id, mondo)][1]))
-                dict_chemical_disease[tuple_ids][2].extend(pubMedIDs)
-                dict_chemical_disease[tuple_ids][2] = list(
-                    set(dict_chemical_disease[(chemical_id, mondo)][2]))
-                dict_chemical_disease[tuple_ids][3].append(inferenceScore)
-                dict_chemical_disease[tuple_ids][3] = list(
-                    set(dict_chemical_disease[tuple_ids][3]))
-                dict_chemical_disease[tuple_ids][4].append(inferenceGeneSymbol)
-                dict_chemical_disease[tuple_ids][4] = list(
-                    set(dict_chemical_disease[tuple_ids][4]))
-                dict_chemical_disease[tuple_ids][5].append(disease_id)
-                dict_chemical_disease[tuple_ids][5] = list(
-                    set(dict_chemical_disease[tuple_ids][5]))
-            else:
-                dict_chemical_disease[tuple_ids] = [omimIDs, [directEvidence], pubMedIDs,
-                                                               [inferenceScore], [inferenceGeneSymbol], [disease_id],
-                                                               []]
-
-        if counter_of_used_chemical + number_of_compound_to_work_with < number_of_chemical:
-            all_chemicals_id = '","'.join(
-                all_chemicals_id[counter_of_used_chemical:counter_of_used_chemical + number_of_compound_to_work_with])
+    def sort_into_dictionary(chemical_id, mondo, omimIDs, directEvidence, pubMedIDs, inferenceScore,
+                             inferenceGeneSymbol, disease_id):
+        tuple_ids=(chemical_id, mondo)
+        if tuple_ids in dict_chemical_disease:
+            dict_chemical_disease[tuple_ids][0].extend(omimIDs)
+            dict_chemical_disease[tuple_ids][0] = list(
+                set(dict_chemical_disease[tuple_ids][0]))
+            dict_chemical_disease[tuple_ids][1].append(directEvidence)
+            dict_chemical_disease[tuple_ids][1] = list(
+                set(dict_chemical_disease[(chemical_id, mondo)][1]))
+            dict_chemical_disease[tuple_ids][2].extend(pubMedIDs)
+            dict_chemical_disease[tuple_ids][2] = list(
+                set(dict_chemical_disease[(chemical_id, mondo)][2]))
+            dict_chemical_disease[tuple_ids][3].append(inferenceScore)
+            dict_chemical_disease[tuple_ids][3] = list(
+                set(dict_chemical_disease[tuple_ids][3]))
+            dict_chemical_disease[tuple_ids][4].append(inferenceGeneSymbol)
+            dict_chemical_disease[tuple_ids][4] = list(
+                set(dict_chemical_disease[tuple_ids][4]))
+            dict_chemical_disease[tuple_ids][5].append(disease_id)
+            dict_chemical_disease[tuple_ids][5] = list(
+                set(dict_chemical_disease[tuple_ids][5]))
         else:
-            all_chemicals_id = '","'.join(
-                all_chemicals_id[counter_of_used_chemical:number_of_chemical])
-        query = '''MATCH (chemical:CTDchemical)-[r:associates_CD]->(disease:CTDdisease) Where (disease)--(:Disease) and  chemical.chemical_id in ["''' + all_chemicals_id + '''"] and exists(r.directEvidence) RETURN DISTINCT chemical.chemical_id,   r, disease.mondos, disease.disease_id '''
-        results = g.run(query)
+            dict_chemical_disease[tuple_ids] = [omimIDs, [directEvidence], pubMedIDs,
+                                                           [inferenceScore], [inferenceGeneSymbol], [disease_id],
+                                                           []]
 
-        time_measurement = time.time() - start
-        # print('\t Find all association: %.4f seconds' % (time_measurement))
-        list_time_find_association.append(time_measurement)
+    query = '''MATCH (chemical:CTDchemical)-[r:associates_CD]->(disease:CTDdisease) Where (disease)--(:Disease) and exists(r.directEvidence) RETURN chemical.chemical_id,   r, disease.mondos, disease.disease_id '''
+    results = g.run(query)
 
-        start = time.time()
+    time_measurement = time.time() - start
+    print('\t Find all association: %.4f seconds' % (time_measurement))
+    list_time_find_association.append(time_measurement)
 
-        # dictionary with all pairs and properties as value
-        dict_chemical_disease = {}
+    start = time.time()
 
-        for chemical_id,  rela, mondos, disease_id, in results:
-            counter += 1
-            # if disease_id=='605552':
-            #     print('blub')
-            rela = dict(rela)
-            omimIDs = rela['omimIDs'] if 'omimIDs' in rela else []
-            directEvidence = rela['directEvidence']
-            pubMedIDs = rela['pubMedIDs'] if 'pubMedIDs' in rela else []
-            inferenceScore = rela['inferenceScore'] if 'inferenceScore' in rela else ''
+    # dictionary with all pairs and properties as value
+    dict_chemical_disease = {}
+
+    for chemical_id,  rela, mondos, disease_id, in results:
+        counter += 1
+        # if disease_id=='605552':
+        #     print('blub')
+        rela = dict(rela)
+        omimIDs = rela['omimIDs'] if 'omimIDs' in rela else []
+        directEvidence = rela['directEvidence']
+        pubMedIDs = rela['pubMedIDs'] if 'pubMedIDs' in rela else []
+        inferenceScore = rela['inferenceScore'] if 'inferenceScore' in rela else ''
 
 
-            counter_of_used_rela += 1
+        counter_of_used_rela += 1
 
-            inferenceGeneSymbol = rela['inferenceGeneSymbol'] if 'inferenceGeneSymbol' in rela else ''
-            if chemical_id not in dict_chemical_to_drugbank and len(mondos) > 0:
+        inferenceGeneSymbol = rela['inferenceGeneSymbol'] if 'inferenceGeneSymbol' in rela else ''
+        if chemical_id not in dict_chemical_to_drugbank and len(mondos) > 0:
+            for mondo in mondos:
+                sort_into_dictionary(chemical_id, mondo, omimIDs, directEvidence, pubMedIDs, inferenceScore,
+                                     inferenceGeneSymbol, disease_id)
+        elif chemical_id in dict_chemical_to_drugbank and len(mondos) > 0:
+            for drugbank_id in dict_chemical_to_drugbank[chemical_id]:
                 for mondo in mondos:
-                    sort_into_dictionary(chemical_id, mondo, omimIDs, directEvidence, pubMedIDs, inferenceScore,
+                    sort_into_dictionary(drugbank_id, mondo, omimIDs, directEvidence, pubMedIDs, inferenceScore,
                                          inferenceGeneSymbol, disease_id)
-            elif chemical_id in dict_chemical_to_drugbank and len(mondos) > 0:
-                for drugbank_id in dict_chemical_to_drugbank[chemical_id]:
-                    for mondo in mondos:
-                        sort_into_dictionary(drugbank_id, mondo, omimIDs, directEvidence, pubMedIDs, inferenceScore,
-                                             inferenceGeneSymbol, disease_id)
 
-            if counter % 10000 == 0:
-                print(counter)
 
-                time_measurement = time.time() - start
-                print('\tTake 1000 pairs: %.4f seconds' % (time_measurement))
-                start = time.time()
-
-        print('number of relationships:' + str(counter))
-        print('number of used rela:' + str(counter_of_used_rela))
-        print('number of relas over 100:' + str(counter_over_100))
+        # print('number of relationships:' + str(counter))
+        # print('number of used rela:' + str(counter_of_used_rela))
+        # print('number of relas over 100:' + str(counter_over_100))
         time_measurement = time.time() - start
         # print('\t Generate dictionary disease chemical: %.4f seconds' % (time_measurement))
         list_time_dict_association.append(time_measurement)
         start = time.time()
 
-        print(len(dict_chemical_disease))
+        if counter%10000==0:
+            print('had now 10000 again:',counter)
+            print(datetime.datetime.utcnow())
 
-        for (chemical_id, disease_id), information in dict_chemical_disease.items():
-            directEvidences = list(filter(bool, information[1]))
-            counter_integrated_in_file_rela += 1
-            # if (chemical_id,disease_id)==('DB00649','MONDO:0011565'):
-            #     print('blub')
-            if len(directEvidences) > 0 and directEvidences[0] != '':
-                counter_direct_evidence += 1
+        # print(len(dict_chemical_disease))
 
-                for directEvidence in directEvidences:
-                    counter_multi_direct_evidence += 1
-                    if directEvidence == 'marker/mechanism':
-                        counter_marker += 1
-                        add_information_into_te_different_csv_files(chemical_id, disease_id, information,
-                                                                    writer_induces)
-                    else:
-                        add_information_into_te_different_csv_files(chemical_id, disease_id, information,
-                                                                    writer_treat)
-            else:
-                counter_association += 1
-                add_information_into_te_different_csv_files(chemical_id, disease_id, information, writer_associated)
+    for (chemical_id, disease_id), information in dict_chemical_disease.items():
+        directEvidences = list(filter(bool, information[1]))
+        counter_integrated_in_file_rela += 1
+        # if (chemical_id,disease_id)==('DB00649','MONDO:0011565'):
+        #     print('blub')
+        if len(directEvidences) > 0 and directEvidences[0] != '':
+            counter_direct_evidence += 1
 
-        counter_of_used_chemical = counter_of_used_chemical + number_of_compound_to_work_with
-        time_measurement = time.time() - start
-        # print('\t Add information to file: %.4f seconds' % (time_measurement))
-        list_time_add_to_file.append(time_measurement)
+            for directEvidence in directEvidences:
+                counter_multi_direct_evidence += 1
+                if directEvidence == 'marker/mechanism':
+                    counter_marker += 1
+                    add_information_into_te_different_csv_files(chemical_id, disease_id, information,
+                                                                writer_induces)
+                else:
+                    add_information_into_te_different_csv_files(chemical_id, disease_id, information,
+                                                                writer_treat)
+        else:
+            counter_association += 1
+            add_information_into_te_different_csv_files(chemical_id, disease_id, information, writer_associated)
+
+
+    time_measurement = time.time() - start
+    # print('\t Add information to file: %.4f seconds' % (time_measurement))
+    list_time_add_to_file.append(time_measurement)
+
+
 
     print('integrated relas:' + str(counter_integrated_in_file_rela))
     print('Number of directEvidence:' + str(counter_direct_evidence))
     print('Number of marker/mechanism:' + str(counter_marker))
     print('Number of  therapeutic:' + str(counter_multi_direct_evidence - counter_marker))
     print('Number of association:' + str(counter_association))
-
-    print('number of chemicals:' + str(len(list_mesh)))
-    print('number of chemicals with db:' + str(len(list_durgbank_mesh)))
-
-    query = '''MATCH (n:Chemical) REMOVE n.integrated, n.integrated_drugbank;\n'''
-    cypherfile.write(query)
-
-    cypherfile.close()
 
     print('Average finding disease:' + str(np.mean(list_time_all_finding_chemical)))
     print('Average dict monde:' + str(np.mean(list_time_dict_chemical)))
