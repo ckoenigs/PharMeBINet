@@ -7,16 +7,11 @@ https://github.com/dhimmel/drugbank/blob/gh-pages/parse.ipynb
 
 import os
 import csv
-import gzip
 import collections
-import re
-import io
-import json
 import xml.etree.ElementTree as ET
 import datetime
 import sys, html
 
-import requests
 import pandas
 
 # dictionary category name to category id
@@ -261,7 +256,7 @@ def gather_target_infos(target, drug_targets_info, targets_info, dict_targets_id
 
             targets_dict['drugbank_id'] = db_targets
             targets_dict['name'] = targets.findtext("{ns}name".format(ns=ns))
-            if  not targets_dict['drugbank_id'] in maybe_not_protein_set:
+            if not targets_dict['drugbank_id'] in maybe_not_protein_set:
                 csv_decision_protein_file.writerow(
                     [targets_dict['name'], targets_dict['drugbank_id'], 'combined protein', 1])
                 maybe_not_protein_set.add(targets_dict['drugbank_id'])
