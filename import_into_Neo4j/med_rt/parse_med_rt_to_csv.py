@@ -42,7 +42,7 @@ def merge_dicts(x, y):
     return z
 
 
-def parse_CUI_line(line, xref_start):
+def parse_CUI_line(line, xref_start, namespace):
     """
     parse the content to the different names. generate new file if this label has not already a file.
     Write the line infos as node in the file. And return the mapping between ID and cui.
@@ -64,6 +64,9 @@ def parse_CUI_line(line, xref_start):
         if filename not in dict_short_to_full_name:
             filename = 'other'
             synonym1 = line[0].split(',')
+    # all rxcui are durgs
+    if filename=='other' and namespace=='RxCUI':
+        filename='Chemical_Ingredient'
 
     if not filename in dict_of_file_names:
         filename=filename.replace(' ','_')
@@ -90,7 +93,7 @@ def CUI_to_dic(CUI, xref_start):
     """
     with open(CUI, 'r', encoding='utf-8') as c:
         csv_reader = csv.reader(c, delimiter='|')
-        dic = dict(parse_CUI_line(l, xref_start) for l in csv_reader)
+        dic = dict(parse_CUI_line(l, xref_start, xref_start) for l in csv_reader)
     return {e['cui']: ID for ID, e in dic.items()}
 
 
@@ -120,14 +123,13 @@ def generate_rela_file_and_query(filename, from_label, to_label, path):
 # set of nodes which are generated without information
 set_nodes_from_rela=set()
 
-def add_nodes_without_infos(code, name, namespace):
+def add_nodes_without_infos(code, name, namespace,filename):
     """
     add node from mesh or rxnorm without known type
     :param code: string
     :param namespace: string
     :param name: string
     """
-    filename = 'other'
     if not filename in dict_of_file_names:
         csv_writer = generate_node_csv_files(filename)
         dict_of_file_names[filename] = csv_writer
@@ -168,20 +170,28 @@ def prepare_rela_and_add_to_file(root, dic, fIDName, path):
                     to_code = dic[to_code]
 
                 else:
-                    csv_writer.writerow([to_code, filename, namespace])
                     to_name = ass.find('to_name').text
                     to_namespace = ass.find('to_namespace').text
-                    add_nodes_without_infos(to_code, to_name, to_namespace)
+                    if to_namespace=='RxNorm':
+                        add_nodes_without_infos(to_code, to_name, to_namespace, 'Chemical_Ingredient')
+                    else:
+                        add_nodes_without_infos(to_code, to_name, to_namespace,'other')
+                        csv_writer.writerow([to_code, filename, namespace])
 
             if from_code[0] != 'N':
                 if from_code in dic:
                     from_code = dic[from_code]
 
                 else:
-                    csv_writer.writerow([from_code, filename, namespace])
+
                     from_name = ass.find('from_name').text
                     from_namespace = ass.find('from_namespace').text
-                    add_nodes_without_infos(from_code, from_name, from_namespace)
+                    if from_namespace=='RxNorm':
+                        add_nodes_without_infos(from_code, from_name, from_namespace, 'Chemical_Ingredient')
+                    else:
+                        add_nodes_without_infos(from_code, from_name, from_namespace,'other')
+                        csv_writer.writerow([from_code, filename, namespace])
+
 
             label_from = dict_id_to_label[from_code]
             label_to = dict_id_to_label[to_code]

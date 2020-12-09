@@ -1,2 +1,0 @@
-MonDO_id 	 MonDO_name 	 parent_id 	 parent_name  
-MONDO:0021017	synaptopathy	MONDO:0000001	disease
