@@ -7,7 +7,7 @@ Created on Fri Jan 26 13:31:43 2018
 
 import sys
 import datetime
-
+sys.path.append("../..")
 sys.path.append("..")
 import create_connection_to_databases
 
