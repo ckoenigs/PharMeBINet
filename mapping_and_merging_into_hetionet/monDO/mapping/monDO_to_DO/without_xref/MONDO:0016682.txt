@@ -1,3 +1,0 @@
-MONDO:0016682	giant cell glioblastoma
-DOID 	 name 
-DOID:3074	giant cell glioblastoma

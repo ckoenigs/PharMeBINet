@@ -1,3 +1,0 @@
-MONDO:0001173	acute salpingitis
-DOID 	 name 
-DOID:10973	acute salpingitis

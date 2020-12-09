@@ -1,3 +1,0 @@
-MONDO:0020561	myxoid/round cell liposarcoma
-DOID 	 name 
-DOID:5363	myxoid liposarcoma

@@ -1,3 +1,0 @@
-DOID:6841	flat ductal epithelial atypia
-monDO ID 	 name 
-MONDO:0004008	flat ductal epithelial atypia

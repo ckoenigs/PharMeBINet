@@ -1,3 +1,0 @@
-MONDO:0005523	steroid inherited metabolic disorder
-DOID 	 name 
-DOID:1701	steroid inherited metabolic disorder

@@ -1,3 +1,0 @@
-MONDO:0007029	branchio-oto-renal syndrome
-DOID 	 name 
-DOID:14702	branchiootorenal syndrome

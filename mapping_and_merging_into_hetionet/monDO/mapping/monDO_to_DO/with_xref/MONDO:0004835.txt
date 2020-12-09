@@ -1,3 +1,0 @@
-MONDO:0004835	necrotizing fasciitis
-DOID 	 name 
-DOID:9602	necrotizing fasciitis

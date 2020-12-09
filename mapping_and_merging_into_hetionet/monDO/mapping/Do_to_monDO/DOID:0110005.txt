@@ -1,3 +1,0 @@
-DOID:0110005	Leber congenital amaurosis 9
-monDO ID 	 name 
-MONDO:0012056	Leber congenital amaurosis 9

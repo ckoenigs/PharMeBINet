@@ -1,3 +1,0 @@
-DOID:1389	polyneuropathy
-monDO ID 	 name 
-MONDO:0001824	polyneuropathy

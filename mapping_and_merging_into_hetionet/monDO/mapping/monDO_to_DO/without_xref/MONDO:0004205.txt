@@ -1,3 +1,0 @@
-MONDO:0004205	lymphohistiocytoid mesothelioma
-DOID 	 name 
-DOID:7381	lymphohistiocytoid mesothelioma

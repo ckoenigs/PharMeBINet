@@ -1,3 +1,0 @@
-MONDO:0002761	cervical verrucous carcinoma
-DOID 	 name 
-DOID:3743	cervical verrucous carcinoma

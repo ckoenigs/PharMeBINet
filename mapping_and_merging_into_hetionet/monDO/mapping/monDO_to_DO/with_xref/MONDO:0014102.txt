@@ -1,3 +1,0 @@
-MONDO:0014102	hypogonadotropic hypogonadism 17 with or without anosmia
-DOID 	 name 
-DOID:0090079	hypogonadotropic hypogonadism 17 with or without anosmia

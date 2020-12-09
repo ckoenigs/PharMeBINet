@@ -1,3 +1,0 @@
-MONDO:0005848	miliary tuberculosis
-DOID 	 name 
-DOID:9861	miliary tuberculosis

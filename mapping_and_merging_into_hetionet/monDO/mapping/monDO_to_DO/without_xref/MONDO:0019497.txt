@@ -1,3 +1,0 @@
-MONDO:0019497	nonsyndromic deafness
-DOID 	 name 
-DOID:0050563	nonsyndromic deafness

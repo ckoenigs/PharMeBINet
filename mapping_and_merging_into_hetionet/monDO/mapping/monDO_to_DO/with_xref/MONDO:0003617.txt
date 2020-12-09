@@ -1,3 +1,0 @@
-MONDO:0003617	chronic salpingitis
-DOID 	 name 
-DOID:5731	chronic salpingitis

@@ -1,3 +1,0 @@
-DOID:446	hyperaldosteronism
-monDO ID 	 name 
-MONDO:0003009	hyperaldosteronism

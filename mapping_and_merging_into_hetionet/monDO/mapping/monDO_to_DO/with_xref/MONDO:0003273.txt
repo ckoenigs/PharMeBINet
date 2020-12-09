@@ -1,3 +1,0 @@
-MONDO:0003273	sternum cancer
-DOID 	 name 
-DOID:5090	sternum cancer

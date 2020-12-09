@@ -1,3 +1,0 @@
-MONDO:0003446	papillary hidradenoma
-DOID 	 name 
-DOID:5439	papillary hidradenoma

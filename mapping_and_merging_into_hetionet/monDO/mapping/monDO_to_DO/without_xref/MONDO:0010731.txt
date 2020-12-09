@@ -1,3 +1,0 @@
-MONDO:0010731	Simpson-Golabi-Behmel syndrome
-DOID 	 name 
-DOID:0060248	Simpson-Golabi-Behmel syndrome

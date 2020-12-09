@@ -1,3 +1,0 @@
-MONDO:0005885	optic neuritis
-DOID 	 name 
-DOID:1210	optic neuritis

@@ -1,3 +1,0 @@
-MONDO:0004837	neurofibroma of the esophagus
-DOID 	 name 
-DOID:961	neurofibroma of the esophagus

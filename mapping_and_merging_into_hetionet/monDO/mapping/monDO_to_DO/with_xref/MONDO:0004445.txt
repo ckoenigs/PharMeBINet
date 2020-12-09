@@ -1,3 +1,0 @@
-MONDO:0004445	bladder papillary clear cell adenocarcinoma
-DOID 	 name 
-DOID:8051	bladder papillary clear cell adenocarcinoma

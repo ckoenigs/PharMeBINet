@@ -1,3 +1,0 @@
-MONDO:0009072	Dandy-Walker syndrome
-DOID 	 name 
-DOID:2785	Dandy-Walker syndrome

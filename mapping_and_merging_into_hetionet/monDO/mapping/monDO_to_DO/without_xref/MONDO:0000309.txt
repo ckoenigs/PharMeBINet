@@ -1,3 +1,0 @@
-MONDO:0000309	aniseikonia
-DOID 	 name 
-DOID:0050304	aniseikonia

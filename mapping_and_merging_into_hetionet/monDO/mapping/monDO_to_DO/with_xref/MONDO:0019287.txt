@@ -1,3 +1,0 @@
-MONDO:0019287	ectodermal dysplasia syndrome
-DOID 	 name 
-DOID:14693	Clouston syndrome

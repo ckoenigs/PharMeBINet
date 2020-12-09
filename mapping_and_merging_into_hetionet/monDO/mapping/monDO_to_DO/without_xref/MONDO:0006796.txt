@@ -1,3 +1,0 @@
-MONDO:0006796	hypertensive encephalopathy
-DOID 	 name 
-DOID:9427	hypertensive encephalopathy

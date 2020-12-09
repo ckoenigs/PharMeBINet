@@ -1,3 +1,0 @@
-MONDO:0002691	liver cancer
-DOID 	 name 
-DOID:3571	liver cancer

@@ -1,3 +1,0 @@
-MONDO:0000778	fruit allergy
-DOID 	 name 
-DOID:0060503	fruit allergy

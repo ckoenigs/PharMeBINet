@@ -1,3 +1,0 @@
-DOID:4217	malignant ovarian Brenner tumor
-monDO ID 	 name 
-MONDO:0002920	malignant ovarian Brenner tumor

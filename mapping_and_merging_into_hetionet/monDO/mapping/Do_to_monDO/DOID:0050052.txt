@@ -1,3 +1,0 @@
-DOID:0050052	Rocky Mountain spotted fever
-monDO ID 	 name 
-MONDO:0019359	Rocky mountain spotted fever

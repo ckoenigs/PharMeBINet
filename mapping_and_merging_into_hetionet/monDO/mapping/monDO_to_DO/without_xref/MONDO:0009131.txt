@@ -1,3 +1,0 @@
-MONDO:0009131	Riley-Day syndrome
-DOID 	 name 
-DOID:11589	Riley-Day syndrome

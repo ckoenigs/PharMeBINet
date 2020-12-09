@@ -1,3 +1,0 @@
-MONDO:0006792	hyperglobulinemic purpura
-DOID 	 name 
-DOID:3325	hyperglobulinemic purpura

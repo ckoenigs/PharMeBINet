@@ -1,3 +1,0 @@
-MONDO:0007290	cataract 5 multiple types
-DOID 	 name 
-DOID:0110255	cataract 5 multiple types

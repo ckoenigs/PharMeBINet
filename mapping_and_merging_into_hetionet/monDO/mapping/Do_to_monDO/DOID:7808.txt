@@ -1,3 +1,0 @@
-DOID:7808	necrotic uveal melanoma
-monDO ID 	 name 
-MONDO:0004365	necrotic uveal melanoma

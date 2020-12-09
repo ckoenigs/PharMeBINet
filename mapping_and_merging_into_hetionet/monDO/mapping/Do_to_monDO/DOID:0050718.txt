@@ -1,3 +1,0 @@
-DOID:0050718	vitamin metabolic disorder
-monDO ID 	 name 
-MONDO:0005528	vitamin metabolic disorder

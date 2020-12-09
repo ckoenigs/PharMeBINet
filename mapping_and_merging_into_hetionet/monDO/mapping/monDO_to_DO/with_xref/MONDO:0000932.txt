@@ -1,3 +1,0 @@
-MONDO:0003709	skin amelanotic melanoma
-DOID 	 name 
-DOID:10054	skin amelanotic melanoma

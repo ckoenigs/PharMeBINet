@@ -1,3 +1,0 @@
-DOID:9297	lip disease
-monDO ID 	 name 
-MONDO:0004748	lip disease

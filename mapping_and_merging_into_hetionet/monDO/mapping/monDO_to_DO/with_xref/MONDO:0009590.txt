@@ -1,3 +1,0 @@
-MONDO:0009590	metachromatic leukodystrophy due to saposin b deficiency
-DOID 	 name 
-DOID:10581	metachromatic leukodystrophy

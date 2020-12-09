@@ -1,3 +1,0 @@
-DOID:10044	balloon cell malignant melanoma
-monDO ID 	 name 
-MONDO:0000929	balloon cell malignant melanoma

@@ -1,3 +1,0 @@
-DOID:9423	blepharitis
-monDO ID 	 name 
-MONDO:0004785	blepharitis

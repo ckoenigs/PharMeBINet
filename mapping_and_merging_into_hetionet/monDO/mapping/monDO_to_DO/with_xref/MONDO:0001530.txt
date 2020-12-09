@@ -1,3 +1,0 @@
-MONDO:0001530	secondary hyperparathyroidism of renal origin
-DOID 	 name 
-DOID:12465	secondary hyperparathyroidism of renal origin

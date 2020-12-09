@@ -1,3 +1,0 @@
-MONDO:0019469	T-cell large granular lymphocyte leukemia
-DOID 	 name 
-DOID:0050751	T-cell large granular lymphocyte leukemia

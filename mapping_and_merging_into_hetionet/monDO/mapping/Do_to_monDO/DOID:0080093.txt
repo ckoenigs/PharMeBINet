@@ -1,3 +1,0 @@
-DOID:0080093	myofibrillar myopathy 2
-monDO ID 	 name 
-MONDO:0012130	myofibrillar myopathy 2

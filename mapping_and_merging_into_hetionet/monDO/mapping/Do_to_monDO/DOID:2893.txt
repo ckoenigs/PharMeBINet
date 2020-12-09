@@ -1,3 +1,0 @@
-DOID:2893	cervix carcinoma
-monDO ID 	 name 
-MONDO:0005131	cervical carcinoma

@@ -1,3 +1,0 @@
-DOID:8538	reticulosarcoma
-monDO ID 	 name 
-MONDO:0009975	reticulum cell sarcoma

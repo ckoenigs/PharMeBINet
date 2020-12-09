@@ -1,3 +1,0 @@
-MONDO:0004492	mediastinitis
-DOID 	 name 
-DOID:819	mediastinitis

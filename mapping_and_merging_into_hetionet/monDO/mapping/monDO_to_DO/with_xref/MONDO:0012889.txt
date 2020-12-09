@@ -1,3 +1,0 @@
-MONDO:0012889	SS3
-DOID 	 name 
-DOID:11335	sarcoidosis

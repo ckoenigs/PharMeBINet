@@ -1,3 +1,0 @@
-DOID:8792	eye carcinoma in situ
-monDO ID 	 name 
-MONDO:0004659	eye carcinoma in situ

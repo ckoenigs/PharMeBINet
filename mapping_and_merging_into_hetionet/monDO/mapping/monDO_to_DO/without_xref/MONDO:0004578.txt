@@ -1,3 +1,0 @@
-MONDO:0004578	flat retinoschisis
-DOID 	 name 
-DOID:8464	flat retinoschisis

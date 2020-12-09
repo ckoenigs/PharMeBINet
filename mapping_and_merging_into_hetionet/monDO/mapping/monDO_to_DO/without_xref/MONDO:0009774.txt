@@ -1,3 +1,0 @@
-MONDO:0009774	cloacal exstrophy (disease)
-DOID 	 name 
-DOID:0080175	cloacal exstrophy

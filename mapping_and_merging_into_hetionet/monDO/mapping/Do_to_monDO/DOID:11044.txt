@@ -1,3 +1,0 @@
-DOID:11044	gastroschisis
-monDO ID 	 name 
-MONDO:0009264	gastroschisis

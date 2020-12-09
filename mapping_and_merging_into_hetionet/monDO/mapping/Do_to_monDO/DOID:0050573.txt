@@ -1,3 +1,0 @@
-DOID:0050573	2-hydroxyglutaric aciduria
-monDO ID 	 name 
-MONDO:0016001	2-hydroxyglutaric aciduria

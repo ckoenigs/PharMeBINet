@@ -1,3 +1,0 @@
-MONDO:0019648	achondrogenesis
-DOID 	 name 
-DOID:0080043	achondrogenesis

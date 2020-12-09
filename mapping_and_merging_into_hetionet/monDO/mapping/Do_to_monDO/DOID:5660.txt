@@ -1,3 +1,0 @@
-DOID:5660	lymphoepithelioma-like carcinoma
-monDO ID 	 name 
-MONDO:0003572	lymphoepithelioma-like carcinoma

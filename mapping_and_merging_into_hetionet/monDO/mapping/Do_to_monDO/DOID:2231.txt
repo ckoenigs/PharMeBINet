@@ -1,3 +1,0 @@
-DOID:2231	factor XII deficiency
-monDO ID 	 name 
-MONDO:0009315	congenital factor XII deficiency

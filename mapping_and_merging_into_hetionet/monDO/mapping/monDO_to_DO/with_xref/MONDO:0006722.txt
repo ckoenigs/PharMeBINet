@@ -1,3 +1,0 @@
-MONDO:0006722	dental fluorosis
-DOID 	 name 
-DOID:13711	dental fluorosis

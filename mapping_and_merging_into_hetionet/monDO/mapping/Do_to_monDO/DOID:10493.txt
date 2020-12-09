@@ -1,3 +1,0 @@
-DOID:10493	adrenal cortical hypofunction
-monDO ID 	 name 
-MONDO:0000004	adrenal hypoplasia

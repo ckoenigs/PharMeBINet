@@ -1,3 +1,0 @@
-DOID:13198	endemic goiter
-monDO ID 	 name 
-MONDO:0006742	endemic goiter

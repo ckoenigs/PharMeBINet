@@ -1,3 +1,0 @@
-DOID:0060357	chylomicron retention disease
-monDO ID 	 name 
-MONDO:0009528	chylomicron retention disease

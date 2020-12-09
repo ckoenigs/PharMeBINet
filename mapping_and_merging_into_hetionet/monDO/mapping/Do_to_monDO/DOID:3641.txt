@@ -1,3 +1,0 @@
-DOID:3641	conus medullaris neoplasm
-monDO ID 	 name 
-MONDO:0002719	conus medullaris neoplasm

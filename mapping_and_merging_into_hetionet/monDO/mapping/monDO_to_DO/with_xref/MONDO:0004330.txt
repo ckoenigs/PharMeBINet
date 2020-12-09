@@ -1,3 +1,0 @@
-MONDO:0004330	leptomeninges sarcoma
-DOID 	 name 
-DOID:7689	leptomeninges sarcoma

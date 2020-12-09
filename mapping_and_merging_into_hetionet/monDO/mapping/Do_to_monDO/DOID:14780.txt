@@ -1,3 +1,0 @@
-DOID:14780	KBG syndrome
-monDO ID 	 name 
-MONDO:0007846	KBG syndrome

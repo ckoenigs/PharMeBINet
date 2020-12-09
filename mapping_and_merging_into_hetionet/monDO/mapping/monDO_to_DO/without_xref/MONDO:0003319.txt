@@ -1,3 +1,0 @@
-MONDO:0003319	scrotum neoplasm
-DOID 	 name 
-DOID:518	scrotum neoplasm

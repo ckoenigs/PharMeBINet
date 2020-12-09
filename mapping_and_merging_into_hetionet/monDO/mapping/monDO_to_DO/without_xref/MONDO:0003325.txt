@@ -1,3 +1,0 @@
-MONDO:0003325	nodular ganglioneuroblastoma
-DOID 	 name 
-DOID:5193	nodular ganglioneuroblastoma

@@ -1,3 +1,0 @@
-MONDO:0002805	hidradenoma
-DOID 	 name 
-DOID:3896	hidradenoma

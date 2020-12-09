@@ -1,3 +1,0 @@
-MONDO:0002636	accessory nerve disease
-DOID 	 name 
-DOID:339	accessory nerve disease

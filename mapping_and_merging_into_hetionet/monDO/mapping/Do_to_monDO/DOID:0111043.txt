@@ -1,3 +1,0 @@
-DOID:0111043	glycogen storage disease IXc
-monDO ID 	 name 
-MONDO:0013091	glycogen storage disease IXc

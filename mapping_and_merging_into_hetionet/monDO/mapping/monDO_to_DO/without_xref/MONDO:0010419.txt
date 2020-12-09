@@ -1,3 +1,0 @@
-MONDO:0010419	X-linked sideroblastic anemia
-DOID 	 name 
-DOID:0060063	X-linked sideroblastic anemia

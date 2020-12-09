@@ -1,3 +1,0 @@
-MONDO:0012829	inflammatory bowel disease 12
-DOID 	 name 
-DOID:0110887	inflammatory bowel disease 12

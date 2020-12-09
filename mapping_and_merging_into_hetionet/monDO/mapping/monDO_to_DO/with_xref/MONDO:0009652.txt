@@ -1,3 +1,0 @@
-MONDO:0009652	mucolipidosis type III gamma
-DOID 	 name 
-DOID:0080071	pseudo-Hurler polydystrophy

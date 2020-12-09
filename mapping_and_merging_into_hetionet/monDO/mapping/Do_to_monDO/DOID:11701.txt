@@ -1,3 +1,0 @@
-DOID:11701	selective IgA deficiency disease
-monDO ID 	 name 
-MONDO:0001341	selective IgA deficiency disease

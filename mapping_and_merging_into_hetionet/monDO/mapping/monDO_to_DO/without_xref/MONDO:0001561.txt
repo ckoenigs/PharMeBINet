@@ -1,4 +1,0 @@
-MONDO:0001561	pyloric stenosis (disease)
-DOID 	 name 
-DOID:12639	pyloric stenosis
-DOID:3122	gastric outlet obstruction

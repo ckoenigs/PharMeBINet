@@ -1,3 +1,0 @@
-DOID:14766	renal agenesis
-monDO ID 	 name 
-MONDO:0018470	renal agenesis (disease)

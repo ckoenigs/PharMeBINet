@@ -1,4 +1,0 @@
-MONDO:0002122	neuritis
-DOID 	 name 
-DOID:1803	neuritis
-DOID:683	motor neuritis

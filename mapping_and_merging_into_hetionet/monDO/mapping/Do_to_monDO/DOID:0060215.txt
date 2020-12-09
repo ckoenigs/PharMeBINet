@@ -1,3 +1,0 @@
-DOID:0060215	Balo concentric sclerosis
-monDO ID 	 name 
-MONDO:0000713	Balo concentric sclerosis

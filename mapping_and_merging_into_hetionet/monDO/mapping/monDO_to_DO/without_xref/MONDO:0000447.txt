@@ -1,3 +1,0 @@
-MONDO:0000447	polycystic liver disease (disease)
-DOID 	 name 
-DOID:0050770	polycystic liver disease

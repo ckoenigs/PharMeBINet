@@ -1,3 +1,0 @@
-MONDO:0000977	chondroid lipoma
-DOID 	 name 
-DOID:10208	chondroid lipoma

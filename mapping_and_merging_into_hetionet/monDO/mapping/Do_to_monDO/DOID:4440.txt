@@ -1,3 +1,0 @@
-DOID:4440	seminoma
-monDO ID 	 name 
-MONDO:0003001	seminoma

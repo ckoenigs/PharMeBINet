@@ -1,3 +1,0 @@
-DOID:0060381	orofaciodigital syndrome XI
-monDO ID 	 name 
-MONDO:0013035	orofaciodigital syndrome XI

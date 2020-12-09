@@ -1,3 +1,0 @@
-MONDO:0001232	orbital osteomyelitis
-DOID 	 name 
-DOID:11232	orbital osteomyelitis

@@ -1,3 +1,0 @@
-DOID:11624	penile neoplasm
-monDO ID 	 name 
-MONDO:0006895	penile neoplasm

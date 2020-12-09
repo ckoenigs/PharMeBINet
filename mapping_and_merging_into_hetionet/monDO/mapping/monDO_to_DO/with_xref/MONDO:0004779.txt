@@ -1,3 +1,0 @@
-MONDO:0004779	epididymitis (disease)
-DOID 	 name 
-DOID:9402	epididymitis

@@ -1,3 +1,0 @@
-DOID:8042	testis polyembryoma
-monDO ID 	 name 
-MONDO:0004442	testis polyembryoma

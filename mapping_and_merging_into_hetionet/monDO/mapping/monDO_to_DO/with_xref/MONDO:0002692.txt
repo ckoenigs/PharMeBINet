@@ -1,3 +1,0 @@
-MONDO:0002692	intracranial sinus thrombosis
-DOID 	 name 
-DOID:3572	intracranial sinus thrombosis

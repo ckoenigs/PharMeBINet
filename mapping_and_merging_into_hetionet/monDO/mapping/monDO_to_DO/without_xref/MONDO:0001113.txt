@@ -1,3 +1,0 @@
-MONDO:0001113	fiedler's myocarditis
-DOID 	 name 
-DOID:10778	fiedler's myocarditis

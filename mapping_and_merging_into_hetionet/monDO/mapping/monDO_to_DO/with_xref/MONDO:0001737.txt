@@ -1,3 +1,0 @@
-MONDO:0001737	tetanus neonatorum
-DOID 	 name 
-DOID:13521	tetanus neonatorum

@@ -1,3 +1,0 @@
-MONDO:0010216	xeroderma pigmentosum group G
-DOID 	 name 
-DOID:0110849	xeroderma pigmentosum group G

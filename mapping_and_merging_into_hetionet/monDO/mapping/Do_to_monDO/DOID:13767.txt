@@ -1,3 +1,0 @@
-DOID:13767	clonorchiasis
-monDO ID 	 name 
-MONDO:0005705	clonorchiasis

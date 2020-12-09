@@ -1,3 +1,0 @@
-DOID:13413	hepatic encephalopathy
-monDO ID 	 name 
-MONDO:0001711	hepatic encephalopathy

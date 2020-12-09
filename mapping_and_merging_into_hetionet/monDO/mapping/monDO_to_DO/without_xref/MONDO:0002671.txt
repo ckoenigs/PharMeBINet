@@ -1,3 +1,0 @@
-MONDO:0002671	breast signet ring cell adenocarcinoma
-DOID 	 name 
-DOID:3503	breast signet ring cell adenocarcinoma

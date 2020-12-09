@@ -1,3 +1,0 @@
-MONDO:0006785	Henoch-Schoenlein purpura
-DOID 	 name 
-DOID:11123	Henoch-Schoenlein purpura

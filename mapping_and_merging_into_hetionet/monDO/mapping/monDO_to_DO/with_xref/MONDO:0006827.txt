@@ -1,3 +1,0 @@
-MONDO:0006827	lateral medullary syndrome
-DOID 	 name 
-DOID:3522	lateral medullary syndrome

@@ -1,3 +1,0 @@
-MONDO:0003523	gastrin-producing neuroendocrine tumor
-DOID 	 name 
-DOID:5577	gastrinoma

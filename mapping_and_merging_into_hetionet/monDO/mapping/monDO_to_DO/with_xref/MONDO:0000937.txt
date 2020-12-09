@@ -1,3 +1,0 @@
-MONDO:0000937	syphilitic encephalitis
-DOID 	 name 
-DOID:10081	syphilitic encephalitis

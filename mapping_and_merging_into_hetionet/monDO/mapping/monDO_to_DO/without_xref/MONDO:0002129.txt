@@ -1,3 +1,0 @@
-MONDO:0002129	bone cancer
-DOID 	 name 
-DOID:184	bone cancer

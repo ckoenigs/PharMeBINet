@@ -1,3 +1,0 @@
-DOID:0110113	atrial heart septal defect 8
-monDO ID 	 name 
-MONDO:0013750	atrial heart septal defect 8

@@ -1,3 +1,0 @@
-MONDO:0005893	pancreatic endocrine carcinoma
-DOID 	 name 
-DOID:1798	pancreatic endocrine carcinoma

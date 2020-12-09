@@ -1,3 +1,0 @@
-DOID:10423	acute pericementitis
-monDO ID 	 name 
-MONDO:0001028	acute pericementitis

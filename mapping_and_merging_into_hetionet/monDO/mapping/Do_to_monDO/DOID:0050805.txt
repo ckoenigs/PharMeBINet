@@ -1,3 +1,0 @@
-DOID:0050805	glioblastoma mesenchymal subtype
-monDO ID 	 name 
-MONDO:0000459	mesenchymal glioblastoma

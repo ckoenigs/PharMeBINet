@@ -1,3 +1,0 @@
-MONDO:0005990	tracheitis
-DOID 	 name 
-DOID:9392	tracheitis

@@ -1,3 +1,0 @@
-MONDO:0011962	endometrial cancer
-DOID 	 name 
-DOID:1380	endometrial cancer

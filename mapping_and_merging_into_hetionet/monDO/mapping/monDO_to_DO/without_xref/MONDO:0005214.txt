@@ -1,3 +1,0 @@
-MONDO:0005214	vulva sarcoma
-DOID 	 name 
-DOID:2096	vulvar sarcoma

@@ -1,3 +1,0 @@
-DOID:11850	transient refractive change
-monDO ID 	 name 
-MONDO:0001390	transient refractive change

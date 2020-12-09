@@ -1,3 +1,0 @@
-MONDO:0007251	campomelic dysplasia
-DOID 	 name 
-DOID:0050463	campomelic dysplasia

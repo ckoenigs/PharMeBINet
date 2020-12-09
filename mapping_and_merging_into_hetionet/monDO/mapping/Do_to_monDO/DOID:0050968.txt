@@ -1,3 +1,0 @@
-DOID:0050968	autosomal dominant cerebellar ataxia, deafness and narcolepsy
-monDO ID 	 name 
-MONDO:0011397	autosomal dominant cerebellar ataxia, deafness and narcolepsy

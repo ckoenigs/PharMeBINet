@@ -1,3 +1,0 @@
-DOID:557	kidney disease
-monDO ID 	 name 
-MONDO:0005240	kidney disease

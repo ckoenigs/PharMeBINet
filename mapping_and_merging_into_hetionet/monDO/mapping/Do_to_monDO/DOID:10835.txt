@@ -1,3 +1,0 @@
-DOID:10835	chylocele of tunica vaginalis
-monDO ID 	 name 
-MONDO:0001136	chylocele of tunica vaginalis

@@ -1,3 +1,0 @@
-DOID:0050526	Gamstorp-Wohlfart syndrome
-monDO ID 	 name 
-MONDO:0007646	Gamstorp-Wohlfart syndrome

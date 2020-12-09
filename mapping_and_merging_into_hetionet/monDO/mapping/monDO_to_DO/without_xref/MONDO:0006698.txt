@@ -1,3 +1,0 @@
-MONDO:0006698	cholecystolithiasis
-DOID 	 name 
-DOID:11151	cholecystolithiasis

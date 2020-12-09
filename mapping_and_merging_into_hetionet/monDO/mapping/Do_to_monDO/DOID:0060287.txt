@@ -1,3 +1,0 @@
-DOID:0060287	cornea plana
-monDO ID 	 name 
-MONDO:0000733	cornea plana

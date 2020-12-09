@@ -1,3 +1,0 @@
-MONDO:0011929	chromosome 1p36 deletion syndrome
-DOID 	 name 
-DOID:0060410	chromosome 1p36 deletion syndrome

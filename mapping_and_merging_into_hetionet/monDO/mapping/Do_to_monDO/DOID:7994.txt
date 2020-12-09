@@ -1,3 +1,0 @@
-DOID:7994	central nervous system osteosarcoma
-monDO ID 	 name 
-MONDO:0004423	central nervous system osteosarcoma

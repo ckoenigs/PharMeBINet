@@ -1,3 +1,0 @@
-DOID:216	dental caries
-monDO ID 	 name 
-MONDO:0005276	dental caries

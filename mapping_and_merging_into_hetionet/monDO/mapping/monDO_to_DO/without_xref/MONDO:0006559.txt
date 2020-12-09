@@ -1,3 +1,0 @@
-MONDO:0006559	hidradenitis suppurativa
-DOID 	 name 
-DOID:2280	hidradenitis suppurativa

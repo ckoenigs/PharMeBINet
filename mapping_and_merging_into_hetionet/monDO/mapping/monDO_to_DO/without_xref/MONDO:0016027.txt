@@ -1,3 +1,0 @@
-MONDO:0016027	benign neonatal seizures
-DOID 	 name 
-DOID:14264	benign neonatal seizures

@@ -1,3 +1,0 @@
-MONDO:0001280	choroiditis
-DOID 	 name 
-DOID:11406	choroiditis

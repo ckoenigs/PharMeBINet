@@ -5,10 +5,11 @@ Created on Mon Sep  4 10:55:05 2017
 @author: ckoenigs
 """
 
-from py2neo import Graph
 import datetime
-import MySQLdb as mdb
 import sys
+
+sys.path.append("../..")
+import create_connection_to_databases
 
 
 class Symptom:
@@ -46,11 +47,11 @@ create connection to neo4j and mysql
 
 def create_connection_with_neo4j_mysql():
     global g
-    g = Graph("http://localhost:7474/db/data/", auth=("neo4j", "test"))
+    g = create_connection_to_databases.database_connection_neo4j()
 
     # create connection with mysql database
     global con
-    con = mdb.connect('localhost', 'ckoenigs', 'Za8p7Tf$', 'umls')
+    con = create_connection_to_databases.database_connection_umls()
 
 
 # dictionary of all symptoms from hetionet, with mesh_id/ umls cui as key and value is class Symptom
@@ -61,7 +62,6 @@ list_mesh_without_cui = []
 
 # dictionary with all side effects from hetionet with umls cui as key and class SideEffect as value
 dict_side_effects = {}
-
 
 '''
 function that load all side effects in a dictionary 
@@ -76,6 +76,7 @@ def load_all_sideEffects_in_a_dict():
         dict_side_effects[cui] = side_effect
 
     print('size of side effects in hetionet:' + str(len(dict_side_effects)))
+
 
 '''
 function that load all symptoms in a dictionary and check if it has a umls cui or not
@@ -94,8 +95,8 @@ def load_all_symptoms_in_a_dict():
         # only the symptoms with a umls cui as identifier has property type
         typ = result['type'] if 'type' in result else ''
         # some symptoms with Mesh id has already a umls cui
-        cui= result['cui'] if 'cui' in result else ''
-        if len(typ) == 0 and len(cui)==0:
+        cui = result['cui'] if 'cui' in result else ''
+        if len(typ) == 0 and len(cui) == 0:
             cuis = []
             cur = con.cursor()
             query = ("Select CUI,LAT,STR From MRCONSO Where SAB='MSH' and CODE= '%s';")
@@ -130,7 +131,7 @@ def load_all_symptoms_in_a_dict():
                 list_mesh_without_cui.append(identifier)
                 print(identifier)
         elif len(typ) == 0:
-            cuis=[cui]
+            cuis = [cui]
         else:
             cuis = [identifier]
         symptom = Symptom(identifier, name, cuis)
@@ -140,7 +141,6 @@ def load_all_symptoms_in_a_dict():
     print('Number od symptoms in hetionet:' + str(len(dict_symptoms)))
     print('mapped with mesh and name:' + str(counter_with_name))
     print('mapped only with mesh:' + str(counter_without_name))
-
 
 
 # dictionary with all mesh ids/umls cui that are mapped to side effect, key is mesh id/ umls cui and value is a list of mapped cuis
@@ -223,23 +223,23 @@ def integrate_connection_into_hetionet():
 
 
 def main():
-    print (datetime.datetime.utcnow())
+    print(datetime.datetime.utcnow())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j_mysql()
 
     print(
-    '###########################################################################################################################')
+        '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print(datetime.datetime.utcnow())
     print('Load in side effects from hetionet')
 
     load_all_sideEffects_in_a_dict()
 
     print(
-    '###########################################################################################################################')
+        '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print(datetime.datetime.utcnow())
     print('Load in symptoms from hetionet')
 
     load_all_symptoms_in_a_dict()
@@ -253,17 +253,17 @@ def main():
     # map_symptoms_to_sideEffects()
 
     print(
-    '###########################################################################################################################')
+        '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print(datetime.datetime.utcnow())
     print('Intigrate symptoms to side effects direct')
 
     integrate_connection_into_hetionet()
 
     print(
-    '###########################################################################################################################')
+        '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print(datetime.datetime.utcnow())
 
 
 if __name__ == "__main__":

@@ -1,3 +1,0 @@
-MONDO:0002630	small cell osteogenic sarcoma
-DOID 	 name 
-DOID:3377	small cell osteogenic sarcoma

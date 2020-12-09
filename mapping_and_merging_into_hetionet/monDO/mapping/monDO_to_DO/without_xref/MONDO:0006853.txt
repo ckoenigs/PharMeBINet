@@ -1,3 +1,0 @@
-MONDO:0006853	mesenchymal chondrosarcoma
-DOID 	 name 
-DOID:4545	mesenchymal chondrosarcoma

@@ -1,3 +1,0 @@
-DOID:4768	epithelial predominant pulmonary blastoma
-monDO ID 	 name 
-MONDO:0003129	epithelial predominant pulmonary blastoma

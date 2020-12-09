@@ -1,3 +1,0 @@
-MONDO:0005086	renal cell carcinoma (disease)
-DOID 	 name 
-DOID:4450	renal cell carcinoma

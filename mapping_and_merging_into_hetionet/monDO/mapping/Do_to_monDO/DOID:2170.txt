@@ -1,3 +1,0 @@
-DOID:2170	vaginitis
-monDO ID 	 name 
-MONDO:0002234	vaginitis (disease)

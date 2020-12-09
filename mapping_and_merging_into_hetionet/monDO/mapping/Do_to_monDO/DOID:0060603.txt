@@ -1,3 +1,0 @@
-DOID:0060603	isolated anhidrosis with normal sweat glands
-monDO ID 	 name 
-MONDO:0007118	isolated anhidrosis with normal sweat glands

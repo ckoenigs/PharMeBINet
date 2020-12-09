@@ -1,3 +1,0 @@
-MONDO:0002976	stomach diverticulosis
-DOID 	 name 
-DOID:4370	stomach diverticulosis

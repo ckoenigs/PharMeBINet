@@ -1,3 +1,0 @@
-DOID:0060115	nervous system benign neoplasm
-monDO ID 	 name 
-MONDO:0000648	nervous system benign neoplasm

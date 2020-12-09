@@ -1,3 +1,0 @@
-MONDO:0004409	nipple duct carcinoma
-DOID 	 name 
-DOID:7953	nipple duct carcinoma

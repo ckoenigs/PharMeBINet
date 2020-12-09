@@ -1,3 +1,0 @@
-MONDO:0003434	vaginal adenoma
-DOID 	 name 
-DOID:5402	vaginal adenoma

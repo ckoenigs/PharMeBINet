@@ -1,3 +1,0 @@
-DOID:0050783	secondary progressive multiple sclerosis
-monDO ID 	 name 
-MONDO:0000450	secondary progressive multiple sclerosis

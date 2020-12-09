@@ -1,3 +1,0 @@
-MONDO:0001362	leukocoria
-DOID 	 name 
-DOID:11772	leukocoria

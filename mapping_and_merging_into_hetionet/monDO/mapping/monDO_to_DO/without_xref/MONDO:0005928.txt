@@ -1,3 +1,0 @@
-MONDO:0005928	post-thrombotic syndrome
-DOID 	 name 
-DOID:2364	post-thrombotic syndrome

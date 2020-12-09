@@ -1,3 +1,0 @@
-DOID:3145	hyperlipoproteinemia type III
-monDO ID 	 name 
-MONDO:0018473	hyperlipoproteinemia type 3

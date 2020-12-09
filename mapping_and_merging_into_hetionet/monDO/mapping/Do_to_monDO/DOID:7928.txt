@@ -1,3 +1,0 @@
-DOID:7928	testis refractory cancer
-monDO ID 	 name 
-MONDO:0004401	testis refractory cancer

@@ -1,3 +1,0 @@
-MONDO:0000482	focal hand dystonia
-DOID 	 name 
-DOID:0050841	focal hand dystonia

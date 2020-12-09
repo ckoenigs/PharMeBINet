@@ -1,3 +1,0 @@
-DOID:9182	pemphigus
-monDO ID 	 name 
-MONDO:0006594	pemphigus

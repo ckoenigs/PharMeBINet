@@ -1,3 +1,0 @@
-MONDO:0010537	Borjeson-Forssman-Lehmann syndrome
-DOID 	 name 
-DOID:0050681	Borjeson-Forssman-Lehmann syndrome

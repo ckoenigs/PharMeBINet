@@ -1,4 +1,0 @@
-MONDO:0005417	wet macular degeneration
-DOID 	 name 
-DOID:4448	macular degeneration
-DOID:10873	Kuhnt-Junius degeneration

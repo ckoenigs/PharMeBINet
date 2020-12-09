@@ -1,3 +1,0 @@
-DOID:6872	spinal cord primitive neuroectodermal neoplasm
-monDO ID 	 name 
-MONDO:0006426	spinal cord primitive neuroectodermal tumor

@@ -1,3 +1,0 @@
-MONDO:0002482	nipple neoplasm
-DOID 	 name 
-DOID:3003	nipple neoplasm

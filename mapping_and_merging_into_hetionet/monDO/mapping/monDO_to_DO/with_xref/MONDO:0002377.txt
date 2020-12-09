@@ -1,3 +1,0 @@
-MONDO:0002377	breast intracanalicular fibroadenoma
-DOID 	 name 
-DOID:2656	breast intracanalicular fibroadenoma

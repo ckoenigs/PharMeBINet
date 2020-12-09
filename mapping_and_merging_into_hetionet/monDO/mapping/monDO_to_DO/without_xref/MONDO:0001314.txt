@@ -1,3 +1,0 @@
-MONDO:0001314	chondrocalcinosis
-DOID 	 name 
-DOID:1156	chondrocalcinosis

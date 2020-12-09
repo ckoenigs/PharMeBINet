@@ -1,3 +1,0 @@
-MONDO:0010360	PARK12
-DOID 	 name 
-DOID:14330	Parkinson's disease

@@ -1,3 +1,0 @@
-DOID:5262	heart sarcoma
-monDO ID 	 name 
-MONDO:0003354	heart sarcoma

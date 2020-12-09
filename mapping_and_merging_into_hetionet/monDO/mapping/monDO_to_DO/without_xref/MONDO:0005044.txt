@@ -1,3 +1,0 @@
-MONDO:0005044	hypertension
-DOID 	 name 
-DOID:10763	hypertension

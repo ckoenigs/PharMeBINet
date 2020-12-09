@@ -1,3 +1,0 @@
-MONDO:0010296	AGMX2
-DOID 	 name 
-DOID:14179	Bruton-type agammaglobulinemia

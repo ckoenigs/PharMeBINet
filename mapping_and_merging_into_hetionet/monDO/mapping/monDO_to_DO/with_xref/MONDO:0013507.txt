@@ -1,3 +1,0 @@
-MONDO:0013507	granulomatous disease, chronic, autosomal recessive, cytochrome b-positive, type 3
-DOID 	 name 
-DOID:3265	chronic granulomatous disease

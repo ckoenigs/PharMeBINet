@@ -1,3 +1,0 @@
-DOID:2394	ovarian cancer
-monDO ID 	 name 
-MONDO:0008170	ovarian cancer

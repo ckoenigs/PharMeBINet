@@ -1,3 +1,0 @@
-DOID:0111118	nephronophthisis 11
-monDO ID 	 name 
-MONDO:0013302	nephronophthisis 11

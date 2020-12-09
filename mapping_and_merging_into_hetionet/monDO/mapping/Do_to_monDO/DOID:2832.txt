@@ -1,3 +1,0 @@
-DOID:2832	geotrichosis
-monDO ID 	 name 
-MONDO:0005772	geotrichosis

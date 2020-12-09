@@ -1,3 +1,0 @@
-DOID:12286	testicular leukemia
-monDO ID 	 name 
-MONDO:0001482	testicular leukemia

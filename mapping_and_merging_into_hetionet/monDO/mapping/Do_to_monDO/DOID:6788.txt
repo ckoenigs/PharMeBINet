@@ -1,3 +1,0 @@
-DOID:6788	vagina botryoid rhabdomyosarcoma
-monDO ID 	 name 
-MONDO:0003994	vagina botryoid rhabdomyosarcoma

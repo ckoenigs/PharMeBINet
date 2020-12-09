@@ -1,3 +1,0 @@
-MONDO:0003750	central nervous system childhood germ cell tumor
-DOID 	 name 
-DOID:6052	central nervous system childhood germ cell tumor

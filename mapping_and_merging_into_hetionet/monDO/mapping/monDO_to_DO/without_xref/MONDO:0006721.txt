@@ -1,3 +1,0 @@
-MONDO:0006721	de Quervain disease
-DOID 	 name 
-DOID:14107	De Quervain disease

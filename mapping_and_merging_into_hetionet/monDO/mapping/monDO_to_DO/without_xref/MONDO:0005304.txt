@@ -1,3 +1,0 @@
-MONDO:0005304	biliary tract neoplasm (disease)
-DOID 	 name 
-DOID:0050625	biliary tract neoplasm

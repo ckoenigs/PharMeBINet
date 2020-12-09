@@ -1,3 +1,0 @@
-MONDO:0009411	autoimmune polyendocrine syndrome type 1
-DOID 	 name 
-DOID:0050167	autoimmune polyendocrine syndrome type 1

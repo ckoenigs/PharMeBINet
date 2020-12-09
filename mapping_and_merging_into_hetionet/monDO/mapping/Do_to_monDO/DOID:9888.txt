@@ -1,3 +1,0 @@
-DOID:9888	alternating esotropia
-monDO ID 	 name 
-MONDO:0004913	alternating esotropia

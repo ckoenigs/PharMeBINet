@@ -1,3 +1,0 @@
-MONDO:0006570	lichen disease
-DOID 	 name 
-DOID:8574	lichen disease

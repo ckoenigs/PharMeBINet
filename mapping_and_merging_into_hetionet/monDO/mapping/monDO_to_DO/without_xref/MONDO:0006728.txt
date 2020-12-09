@@ -1,3 +1,0 @@
-MONDO:0006728	discitis
-DOID 	 name 
-DOID:10986	discitis

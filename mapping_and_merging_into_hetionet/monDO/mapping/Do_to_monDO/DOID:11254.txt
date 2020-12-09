@@ -1,3 +1,0 @@
-DOID:11254	Brill-Zinsser disease
-monDO ID 	 name 
-MONDO:0005680	Brill-Zinsser disease

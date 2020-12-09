@@ -1,3 +1,0 @@
-DOID:8516	pulmonary embolism and infarction
-monDO ID 	 name 
-MONDO:0004597	pulmonary embolism and infarction

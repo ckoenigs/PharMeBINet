@@ -1,3 +1,0 @@
-MONDO:0003147	space motion sickness
-DOID 	 name 
-DOID:4796	space motion sickness

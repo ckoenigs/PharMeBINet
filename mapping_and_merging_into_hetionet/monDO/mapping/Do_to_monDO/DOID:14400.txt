@@ -1,3 +1,0 @@
-DOID:14400	capillary leak syndrome
-monDO ID 	 name 
-MONDO:0001956	capillary leak syndrome

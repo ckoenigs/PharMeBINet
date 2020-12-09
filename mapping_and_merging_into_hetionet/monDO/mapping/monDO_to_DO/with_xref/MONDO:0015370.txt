@@ -1,3 +1,0 @@
-MONDO:0015370	acute respiratory coronavirus infection
-DOID 	 name 
-DOID:2945	severe acute respiratory syndrome

@@ -1,3 +1,0 @@
-MONDO:0002522	tenosynovial giant cell tumor
-DOID 	 name 
-DOID:314	tenosynovial giant cell tumor

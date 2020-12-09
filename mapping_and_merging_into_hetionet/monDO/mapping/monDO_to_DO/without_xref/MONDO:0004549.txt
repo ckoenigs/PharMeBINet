@@ -1,3 +1,0 @@
-MONDO:0004549	cork-handlers' disease
-DOID 	 name 
-DOID:840	cork-handlers' disease

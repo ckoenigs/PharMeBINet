@@ -1,3 +1,0 @@
-DOID:13239	internal pathological resorption
-monDO ID 	 name 
-MONDO:0001668	internal pathological resorption

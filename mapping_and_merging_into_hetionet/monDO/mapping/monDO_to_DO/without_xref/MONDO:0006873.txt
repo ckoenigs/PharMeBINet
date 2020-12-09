@@ -1,3 +1,0 @@
-MONDO:0006873	nutritional deficiency disease
-DOID 	 name 
-DOID:5113	nutritional deficiency disease

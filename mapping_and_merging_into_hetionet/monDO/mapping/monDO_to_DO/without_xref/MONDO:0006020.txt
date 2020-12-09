@@ -1,3 +1,0 @@
-MONDO:0006020	Zollinger-Ellison syndrome (disease)
-DOID 	 name 
-DOID:0050782	Zollinger-Ellison syndrome

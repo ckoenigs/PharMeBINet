@@ -1,3 +1,0 @@
-MONDO:0004441	childhood ovarian embryonal carcinoma
-DOID 	 name 
-DOID:8036	childhood ovarian embryonal carcinoma

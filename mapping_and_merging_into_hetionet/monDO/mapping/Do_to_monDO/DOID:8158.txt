@@ -1,3 +1,0 @@
-DOID:8158	complement component 5 deficiency
-monDO ID 	 name 
-MONDO:0012295	complement component 5 deficiency

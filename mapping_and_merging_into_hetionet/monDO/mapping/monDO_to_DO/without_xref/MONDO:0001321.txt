@@ -1,3 +1,0 @@
-MONDO:0001321	scleral staphyloma (disease)
-DOID 	 name 
-DOID:11595	scleral staphyloma

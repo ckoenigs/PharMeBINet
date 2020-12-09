@@ -1,3 +1,0 @@
-MONDO:0001193	chorioretinal scar
-DOID 	 name 
-DOID:11086	chorioretinal scar

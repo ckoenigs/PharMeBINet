@@ -1,3 +1,0 @@
-MONDO:0005105	melanoma (disease)
-DOID 	 name 
-DOID:1909	melanoma

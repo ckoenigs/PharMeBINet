@@ -1,3 +1,0 @@
-DOID:1785	pituitary cancer
-monDO ID 	 name 
-MONDO:0002109	pituitary cancer

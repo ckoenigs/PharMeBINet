@@ -1,3 +1,0 @@
-DOID:0080038	pycnodysostosis
-monDO ID 	 name 
-MONDO:0009940	pycnodysostosis

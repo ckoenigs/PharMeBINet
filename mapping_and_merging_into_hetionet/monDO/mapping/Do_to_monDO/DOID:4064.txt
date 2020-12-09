@@ -1,3 +1,0 @@
-DOID:4064	bile duct sarcoma
-monDO ID 	 name 
-MONDO:0002862	bile duct sarcoma

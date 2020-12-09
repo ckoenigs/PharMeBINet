@@ -1,3 +1,0 @@
-MONDO:0005055	Kaposi's sarcoma (disease)
-DOID 	 name 
-DOID:8632	Kaposi's sarcoma

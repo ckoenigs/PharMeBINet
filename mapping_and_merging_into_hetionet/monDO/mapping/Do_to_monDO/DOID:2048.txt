@@ -1,3 +1,0 @@
-DOID:2048	autoimmune hepatitis
-monDO ID 	 name 
-MONDO:0016264	autoimmune hepatitis

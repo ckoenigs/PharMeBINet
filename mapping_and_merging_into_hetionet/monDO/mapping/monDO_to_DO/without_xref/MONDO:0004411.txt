@@ -1,3 +1,0 @@
-MONDO:0004411	duodenal gastrinoma
-DOID 	 name 
-DOID:7959	duodenal gastrinoma

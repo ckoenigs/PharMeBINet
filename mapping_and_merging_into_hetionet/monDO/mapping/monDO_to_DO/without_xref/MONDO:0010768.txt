@@ -1,3 +1,0 @@
-MONDO:0010768	gonadoblastoma
-DOID 	 name 
-DOID:3301	gonadoblastoma

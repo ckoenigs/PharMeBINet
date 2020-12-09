@@ -1,3 +1,0 @@
-MONDO:0011072	NIDDM2
-DOID 	 name 
-DOID:9352	type 2 diabetes mellitus

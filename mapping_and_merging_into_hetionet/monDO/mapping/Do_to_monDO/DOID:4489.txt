@@ -1,3 +1,0 @@
-DOID:4489	malignant epithelial mesothelioma
-monDO ID 	 name 
-MONDO:0005599	malignant epithelioid mesothelioma

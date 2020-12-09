@@ -1,3 +1,0 @@
-MONDO:0016006	Cockayne syndrome
-DOID 	 name 
-DOID:2962	Cockayne syndrome

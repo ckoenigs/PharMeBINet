@@ -1,3 +1,0 @@
-DOID:1201	trigeminal nerve neoplasm
-monDO ID 	 name 
-MONDO:0001420	trigeminal nerve neoplasm

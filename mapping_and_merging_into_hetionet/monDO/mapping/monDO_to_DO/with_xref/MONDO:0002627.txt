@@ -1,3 +1,0 @@
-MONDO:0002627	chondroblastic osteosarcoma
-DOID 	 name 
-DOID:3372	chondroblastic osteosarcoma

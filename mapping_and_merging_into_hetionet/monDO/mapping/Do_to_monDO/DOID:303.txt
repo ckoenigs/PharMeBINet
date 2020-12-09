@@ -1,3 +1,0 @@
-DOID:303	substance-related disorder
-monDO ID 	 name 
-MONDO:0002494	substance-related disorder

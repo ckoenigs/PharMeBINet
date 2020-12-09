@@ -1,3 +1,0 @@
-MONDO:0003767	mitral valve disease
-DOID 	 name 
-DOID:61	mitral valve disease

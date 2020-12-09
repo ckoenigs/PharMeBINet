@@ -1,3 +1,0 @@
-MONDO:0000437	cerebellar ataxia
-DOID 	 name 
-DOID:0050753	cerebellar ataxia

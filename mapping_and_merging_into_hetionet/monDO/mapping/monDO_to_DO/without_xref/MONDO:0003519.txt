@@ -1,3 +1,0 @@
-MONDO:0003519	malignant syringoma
-DOID 	 name 
-DOID:5569	malignant syringoma

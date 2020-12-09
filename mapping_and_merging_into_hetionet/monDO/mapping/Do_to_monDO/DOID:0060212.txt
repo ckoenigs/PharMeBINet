@@ -1,3 +1,0 @@
-DOID:0060212	amyotrophic lateral sclerosis type 21
-monDO ID 	 name 
-MONDO:0011632	amyotrophic lateral sclerosis type 21

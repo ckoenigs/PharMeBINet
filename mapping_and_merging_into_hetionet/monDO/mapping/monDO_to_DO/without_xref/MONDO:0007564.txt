@@ -1,3 +1,0 @@
-MONDO:0007564	pilomatrixoma
-DOID 	 name 
-DOID:5374	pilomatrixoma

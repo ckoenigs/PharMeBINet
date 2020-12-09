@@ -1,3 +1,0 @@
-DOID:10779	septic myocarditis
-monDO ID 	 name 
-MONDO:0001114	septic myocarditis

@@ -1,3 +1,0 @@
-DOID:0111116	nephronophthisis 7
-monDO ID 	 name 
-MONDO:0012680	nephronophthisis 7

@@ -1,3 +1,0 @@
-DOID:0110985	Joubert syndrome 16
-monDO ID 	 name 
-MONDO:0013764	Joubert syndrome 16

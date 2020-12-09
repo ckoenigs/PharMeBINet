@@ -1,3 +1,0 @@
-MONDO:0005033	ganglioneuroma (disease)
-DOID 	 name 
-DOID:4817	ganglioneuroma

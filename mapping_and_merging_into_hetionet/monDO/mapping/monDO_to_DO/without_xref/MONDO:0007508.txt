@@ -1,3 +1,0 @@
-MONDO:0007508	Rapp-Hodgkin syndrome
-DOID 	 name 
-DOID:0060330	Rapp-Hodgkin syndrome

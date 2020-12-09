@@ -1,3 +1,0 @@
-DOID:0110320	hypertrophic cardiomyopathy 14
-monDO ID 	 name 
-MONDO:0013197	hypertrophic cardiomyopathy 14

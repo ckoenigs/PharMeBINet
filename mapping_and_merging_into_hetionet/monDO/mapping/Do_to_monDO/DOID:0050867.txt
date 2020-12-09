@@ -1,3 +1,0 @@
-DOID:0050867	Jensen syndrome
-monDO ID 	 name 
-MONDO:0000501	Jensen syndrome

@@ -1,3 +1,0 @@
-MONDO:0001945	postencephalitic Parkinson disease
-DOID 	 name 
-DOID:14332	postencephalitic Parkinson disease

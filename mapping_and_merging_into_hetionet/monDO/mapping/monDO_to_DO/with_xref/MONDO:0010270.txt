@@ -1,3 +1,0 @@
-MONDO:0010270	syndromic X-linked intellectual disability 7
-DOID 	 name 
-DOID:0060808	syndromic X-linked intellectual disability 7

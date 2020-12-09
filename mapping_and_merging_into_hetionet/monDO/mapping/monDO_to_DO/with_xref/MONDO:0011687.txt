@@ -1,3 +1,0 @@
-MONDO:0011687	Charcot-Marie-tooth disease axonal type 2F
-DOID 	 name 
-DOID:0110163	Charcot-Marie-Tooth disease axonal type 2F

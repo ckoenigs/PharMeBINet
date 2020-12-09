@@ -1,3 +1,0 @@
-MONDO:0006850	maxillary sinus neoplasm
-DOID 	 name 
-DOID:1358	maxillary sinus neoplasm

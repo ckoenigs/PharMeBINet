@@ -1,3 +1,0 @@
-MONDO:0014237	autosomal recessive nonsyndromic deafness 76
-DOID 	 name 
-DOID:0110524	autosomal recessive nonsyndromic deafness 76

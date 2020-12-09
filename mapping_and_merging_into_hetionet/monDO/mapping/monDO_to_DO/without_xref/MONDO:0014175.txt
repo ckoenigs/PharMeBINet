@@ -1,3 +1,0 @@
-MONDO:0014175	mitochondrial DNA depletion syndrome 12
-DOID 	 name 
-DOID:0080130	mitochondrial DNA depletion syndrome 12

@@ -1,3 +1,0 @@
-DOID:2643	perivascular epithelioid cell tumor
-monDO ID 	 name 
-MONDO:0006359	neoplasm with perivascular epithelioid cell differentiation

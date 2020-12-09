@@ -1,3 +1,0 @@
-MONDO:0000925	hyperlucent lung
-DOID 	 name 
-DOID:10032	hyperlucent lung

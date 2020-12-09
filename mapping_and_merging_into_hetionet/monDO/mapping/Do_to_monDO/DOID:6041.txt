@@ -1,3 +1,0 @@
-DOID:6041	choroid spindle cell melanoma
-monDO ID 	 name 
-MONDO:0003745	choroid spindle cell melanoma

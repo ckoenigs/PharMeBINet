@@ -1,3 +1,0 @@
-MONDO:0002658	iris cancer
-DOID 	 name 
-DOID:3478	iris cancer

@@ -1,3 +1,0 @@
-MONDO:0016649	Warburg micro syndrome
-DOID 	 name 
-DOID:0060237	Warburg micro syndrome

@@ -1,3 +1,0 @@
-DOID:13068	renal osteodystrophy
-monDO ID 	 name 
-MONDO:0006946	renal osteodystrophy

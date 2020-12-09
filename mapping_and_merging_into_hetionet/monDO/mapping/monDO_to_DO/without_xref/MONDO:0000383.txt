@@ -1,3 +1,0 @@
-MONDO:0000383	reproductive organ benign neoplasm
-DOID 	 name 
-DOID:0050622	reproductive organ benign neoplasm

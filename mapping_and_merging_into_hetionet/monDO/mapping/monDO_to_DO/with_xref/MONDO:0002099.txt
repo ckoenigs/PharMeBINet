@@ -1,3 +1,0 @@
-MONDO:0002099	american histoplasmosis
-DOID 	 name 
-DOID:1759	American histoplasmosis

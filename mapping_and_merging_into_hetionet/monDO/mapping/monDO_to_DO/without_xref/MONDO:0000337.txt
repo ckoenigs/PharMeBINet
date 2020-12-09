@@ -1,3 +1,0 @@
-MONDO:0000337	exanthema subitum
-DOID 	 name 
-DOID:0050495	exanthema subitum

@@ -1,3 +1,0 @@
-MONDO:0006817	juxtacortical osteosarcoma
-DOID 	 name 
-DOID:3373	juxtacortical osteosarcoma

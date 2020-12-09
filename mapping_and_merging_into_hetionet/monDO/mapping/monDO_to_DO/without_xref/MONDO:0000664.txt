@@ -1,3 +1,0 @@
-MONDO:0000664	apperceptive agnosia
-DOID 	 name 
-DOID:0060134	apperceptive agnosia

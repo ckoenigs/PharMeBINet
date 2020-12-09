@@ -1,3 +1,0 @@
-DOID:6726	fibrillary astrocytoma
-monDO ID 	 name 
-MONDO:0016688	fibrillary astrocytoma

@@ -1,3 +1,0 @@
-DOID:4164	cerebral neuroblastoma
-monDO ID 	 name 
-MONDO:0002900	cerebral neuroblastoma

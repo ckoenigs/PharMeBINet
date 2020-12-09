@@ -1,3 +1,0 @@
-MONDO:0014666	hypomyelinating leukodystrophy 11
-DOID 	 name 
-DOID:0060792	hypomyelinating leukodystrophy 11

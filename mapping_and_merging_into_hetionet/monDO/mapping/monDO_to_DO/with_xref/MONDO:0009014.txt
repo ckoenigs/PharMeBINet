@@ -1,3 +1,0 @@
-MONDO:0009014	cornea plana 2
-DOID 	 name 
-DOID:0060287	cornea plana

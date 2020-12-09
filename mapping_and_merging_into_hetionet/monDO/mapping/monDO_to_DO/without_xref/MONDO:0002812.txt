@@ -1,3 +1,0 @@
-MONDO:0002812	otitis interna
-DOID 	 name 
-DOID:3930	otitis interna

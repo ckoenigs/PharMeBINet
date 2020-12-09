@@ -1,3 +1,0 @@
-MONDO:0013005	EAST syndrome
-DOID 	 name 
-DOID:0060484	EAST syndrome

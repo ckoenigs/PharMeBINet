@@ -1,3 +1,0 @@
-DOID:0060046	aphasia
-monDO ID 	 name 
-MONDO:0000598	aphasia

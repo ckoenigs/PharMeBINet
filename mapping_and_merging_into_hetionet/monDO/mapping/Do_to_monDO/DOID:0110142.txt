@@ -1,3 +1,0 @@
-DOID:0110142	Bartter disease type 1
-monDO ID 	 name 
-MONDO:0011127	Bartter disease type 1

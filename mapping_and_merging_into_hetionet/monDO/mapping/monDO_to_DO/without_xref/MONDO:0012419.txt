@@ -1,3 +1,0 @@
-MONDO:0012419	age related macular degeneration 7
-DOID 	 name 
-DOID:0110019	age related macular degeneration 7

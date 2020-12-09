@@ -1,3 +1,0 @@
-DOID:204	enthesopathy
-monDO ID 	 name 
-MONDO:0002183	enthesopathy

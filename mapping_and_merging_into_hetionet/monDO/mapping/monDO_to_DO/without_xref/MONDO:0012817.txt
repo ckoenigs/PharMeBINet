@@ -1,3 +1,0 @@
-MONDO:0012817	Ewing sarcoma
-DOID 	 name 
-DOID:3369	Ewing sarcoma

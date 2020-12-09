@@ -1,3 +1,0 @@
-DOID:10567	late yaws
-monDO ID 	 name 
-MONDO:0001066	late yaws

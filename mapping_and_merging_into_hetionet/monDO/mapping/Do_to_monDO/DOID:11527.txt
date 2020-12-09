@@ -1,3 +1,0 @@
-DOID:11527	laryngostenosis
-monDO ID 	 name 
-MONDO:0001305	laryngostenosis

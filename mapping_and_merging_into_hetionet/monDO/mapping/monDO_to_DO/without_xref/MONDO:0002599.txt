@@ -1,3 +1,0 @@
-MONDO:0002599	teratocarcinoma
-DOID 	 name 
-DOID:3305	teratocarcinoma

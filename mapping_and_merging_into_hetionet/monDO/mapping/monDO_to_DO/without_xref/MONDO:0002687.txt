@@ -1,3 +1,0 @@
-MONDO:0002687	superior mesenteric artery syndrome
-DOID 	 name 
-DOID:3557	superior mesenteric artery syndrome

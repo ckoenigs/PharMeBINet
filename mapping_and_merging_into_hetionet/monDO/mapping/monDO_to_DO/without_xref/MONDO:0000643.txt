@@ -1,3 +1,0 @@
-MONDO:0000643	vulvar benign neoplasm
-DOID 	 name 
-DOID:0060109	vulvar benign neoplasm

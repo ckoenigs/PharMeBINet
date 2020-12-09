@@ -1,3 +1,0 @@
-MONDO:0001239	anemia of prematurity
-DOID 	 name 
-DOID:11243	anemia of prematurity

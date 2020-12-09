@@ -1,3 +1,0 @@
-MONDO:0005207	choriocarcinoma (disease)
-DOID 	 name 
-DOID:3594	choriocarcinoma

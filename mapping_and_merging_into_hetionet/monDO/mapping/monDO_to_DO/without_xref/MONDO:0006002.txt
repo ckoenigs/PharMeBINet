@@ -1,3 +1,0 @@
-MONDO:0006002	urogenital tuberculosis
-DOID 	 name 
-DOID:2149	urogenital tuberculosis

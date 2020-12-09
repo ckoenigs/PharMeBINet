@@ -1,3 +1,0 @@
-MONDO:0001785	malignant secondary hypertension
-DOID 	 name 
-DOID:13731	malignant secondary hypertension

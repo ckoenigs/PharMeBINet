@@ -1,3 +1,0 @@
-DOID:0111023	cone-rod dystrophy 17
-monDO ID 	 name 
-MONDO:0014068	cone-rod dystrophy 17

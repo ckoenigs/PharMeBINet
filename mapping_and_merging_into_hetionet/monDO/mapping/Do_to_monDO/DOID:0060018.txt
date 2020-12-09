@@ -1,3 +1,0 @@
-DOID:0060018	CD3gamma deficiency
-monDO ID 	 name 
-MONDO:0014276	combined immunodeficiency due to CD3gamma deficiency

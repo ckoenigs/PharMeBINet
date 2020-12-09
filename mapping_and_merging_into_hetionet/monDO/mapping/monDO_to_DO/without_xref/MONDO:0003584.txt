@@ -1,3 +1,0 @@
-MONDO:0003584	visual cortex disease
-DOID 	 name 
-DOID:5691	visual cortex disease

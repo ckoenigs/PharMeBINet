@@ -1,3 +1,0 @@
-MONDO:0003085	keratitis
-DOID 	 name 
-DOID:4677	keratitis

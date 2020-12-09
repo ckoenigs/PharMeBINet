@@ -1,3 +1,0 @@
-MONDO:0003047	thymus large cell carcinoma
-DOID 	 name 
-DOID:4553	thymus large cell carcinoma

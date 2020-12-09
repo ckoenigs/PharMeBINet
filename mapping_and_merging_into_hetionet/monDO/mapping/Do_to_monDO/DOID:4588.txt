@@ -1,3 +1,0 @@
-DOID:4588	secretory meningioma
-monDO ID 	 name 
-MONDO:0003055	secretory meningioma

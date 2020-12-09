@@ -1,3 +1,0 @@
-MONDO:0002211	B cell deficiency
-DOID 	 name 
-DOID:2115	B cell deficiency

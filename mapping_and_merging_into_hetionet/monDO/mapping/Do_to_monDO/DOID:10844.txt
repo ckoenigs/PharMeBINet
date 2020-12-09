@@ -1,3 +1,0 @@
-DOID:10844	Japanese encephalitis
-monDO ID 	 name 
-MONDO:0019209	Japanese encephalitis

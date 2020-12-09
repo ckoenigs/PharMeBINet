@@ -1,3 +1,0 @@
-MONDO:0006003	uterine corpus cancer
-DOID 	 name 
-DOID:9460	uterine corpus cancer

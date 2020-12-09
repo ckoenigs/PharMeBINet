@@ -1,3 +1,0 @@
-MONDO:0004907	alopecia
-DOID 	 name 
-DOID:987	alopecia

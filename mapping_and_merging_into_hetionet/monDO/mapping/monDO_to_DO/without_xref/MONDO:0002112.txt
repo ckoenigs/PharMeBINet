@@ -1,3 +1,0 @@
-MONDO:0002112	benign peritoneal mesothelioma
-DOID 	 name 
-DOID:1789	benign peritoneal mesothelioma

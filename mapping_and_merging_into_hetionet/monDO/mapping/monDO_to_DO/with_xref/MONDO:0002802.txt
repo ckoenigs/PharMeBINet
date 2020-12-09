@@ -1,3 +1,0 @@
-MONDO:0002802	functional colonic disease
-DOID 	 name 
-DOID:3877	functional colonic disease

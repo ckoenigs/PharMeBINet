@@ -1,3 +1,0 @@
-DOID:3185	spinal cord glioma
-monDO ID 	 name 
-MONDO:0002542	spinal cord glioma

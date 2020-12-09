@@ -1,3 +1,0 @@
-MONDO:0012503	thiopurine S-methyltransferase deficiency
-DOID 	 name 
-DOID:0080172	thiopurine S-methyltransferase deficiency

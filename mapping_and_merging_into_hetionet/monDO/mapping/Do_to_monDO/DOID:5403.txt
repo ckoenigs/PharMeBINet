@@ -1,3 +1,0 @@
-DOID:5403	microcystic adenoma
-monDO ID 	 name 
-MONDO:0003435	microcystic adenoma

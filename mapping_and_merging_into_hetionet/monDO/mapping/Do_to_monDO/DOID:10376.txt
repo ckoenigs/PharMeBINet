@@ -1,3 +1,0 @@
-DOID:10376	amblyopia
-monDO ID 	 name 
-MONDO:0001020	amblyopia (disease)

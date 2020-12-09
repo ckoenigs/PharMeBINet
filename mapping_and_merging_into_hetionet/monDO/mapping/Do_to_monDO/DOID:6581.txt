@@ -1,3 +1,0 @@
-DOID:6581	breast apocrine carcinoma
-monDO ID 	 name 
-MONDO:0003934	breast apocrine carcinoma

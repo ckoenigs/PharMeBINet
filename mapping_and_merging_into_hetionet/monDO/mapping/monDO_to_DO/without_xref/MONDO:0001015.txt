@@ -1,3 +1,0 @@
-MONDO:0001015	eosinophilic meningitis
-DOID 	 name 
-DOID:10361	eosinophilic meningitis

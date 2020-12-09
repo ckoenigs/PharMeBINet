@@ -1,3 +1,0 @@
-DOID:5340	anterograde amnesia
-monDO ID 	 name 
-MONDO:0003398	anterograde amnesia

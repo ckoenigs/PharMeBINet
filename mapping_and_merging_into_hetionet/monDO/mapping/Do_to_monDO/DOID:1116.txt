@@ -1,3 +1,0 @@
-DOID:1116	pertussis
-monDO ID 	 name 
-MONDO:0005077	whooping cough

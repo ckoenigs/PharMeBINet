@@ -1,3 +1,0 @@
-MONDO:0016215	spastic quadriplegia
-DOID 	 name 
-DOID:10970	spastic quadriplegia

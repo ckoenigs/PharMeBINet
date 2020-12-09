@@ -1,3 +1,0 @@
-DOID:3865	adult central nervous system primitive neuroectodermal neoplasm
-monDO ID 	 name 
-MONDO:0002795	adult central nervous system primitive neuroectodermal neoplasm

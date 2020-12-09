@@ -1,3 +1,0 @@
-MONDO:0005248	adrenocortical adenoma (disease)
-DOID 	 name 
-DOID:0050891	adrenal cortical adenoma

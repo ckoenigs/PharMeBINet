@@ -1,3 +1,0 @@
-DOID:3012	Li-Fraumeni syndrome
-monDO ID 	 name 
-MONDO:0018875	Li-Fraumeni syndrome

@@ -1,3 +1,0 @@
-MONDO:0002655	cutaneous Paget's disease
-DOID 	 name 
-DOID:3450	cutaneous Paget's disease

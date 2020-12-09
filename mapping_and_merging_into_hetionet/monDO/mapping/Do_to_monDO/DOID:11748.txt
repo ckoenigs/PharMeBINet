@@ -1,3 +1,0 @@
-DOID:11748	round ligament malignant neoplasm
-monDO ID 	 name 
-MONDO:0001352	round ligament malignant neoplasm

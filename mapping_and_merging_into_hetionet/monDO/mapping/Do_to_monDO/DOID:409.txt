@@ -1,3 +1,0 @@
-DOID:409	liver disease
-monDO ID 	 name 
-MONDO:0005154	liver disease

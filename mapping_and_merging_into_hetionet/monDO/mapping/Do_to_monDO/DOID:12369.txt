@@ -1,3 +1,0 @@
-DOID:12369	prolapse of urethra
-monDO ID 	 name 
-MONDO:0001514	prolapse of urethra

@@ -1,3 +1,0 @@
-MONDO:0005774	glanders
-DOID 	 name 
-DOID:13444	glanders

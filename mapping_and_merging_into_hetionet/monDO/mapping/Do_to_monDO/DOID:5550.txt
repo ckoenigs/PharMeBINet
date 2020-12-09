@@ -1,3 +1,0 @@
-DOID:5550	choriocarcinoma of ovary
-monDO ID 	 name 
-MONDO:0003507	choriocarcinoma of ovary

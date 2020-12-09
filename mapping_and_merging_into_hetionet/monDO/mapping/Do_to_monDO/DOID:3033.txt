@@ -1,3 +1,0 @@
-DOID:3033	colon signet ring adenocarcinoma
-monDO ID 	 name 
-MONDO:0002495	colon signet ring adenocarcinoma

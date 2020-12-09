@@ -1,3 +1,0 @@
-MONDO:0003709	obsolete collagen diseases
-DOID 	 name 
-DOID:854	collagen disease

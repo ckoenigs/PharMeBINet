@@ -1,3 +1,0 @@
-DOID:1508	candidiasis
-monDO ID 	 name 
-MONDO:0002026	candidiasis

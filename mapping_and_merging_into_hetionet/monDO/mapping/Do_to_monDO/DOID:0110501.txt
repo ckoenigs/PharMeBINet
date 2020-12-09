@@ -1,3 +1,0 @@
-DOID:0110501	autosomal recessive nonsyndromic deafness 44
-monDO ID 	 name 
-MONDO:0012421	autosomal recessive nonsyndromic deafness 44

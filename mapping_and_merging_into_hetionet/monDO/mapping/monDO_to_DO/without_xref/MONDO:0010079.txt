@@ -1,3 +1,0 @@
-MONDO:0010079	Canavan disease
-DOID 	 name 
-DOID:3613	Canavan disease

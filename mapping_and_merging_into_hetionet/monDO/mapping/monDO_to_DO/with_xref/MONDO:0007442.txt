@@ -1,3 +1,0 @@
-MONDO:0007442	dentinogenesis imperfecta type 3
-DOID 	 name 
-DOID:4154	dentinogenesis imperfecta

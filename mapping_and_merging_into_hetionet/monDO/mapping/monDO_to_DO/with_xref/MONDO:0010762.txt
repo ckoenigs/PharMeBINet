@@ -1,3 +1,0 @@
-MONDO:0010762	lymphoma, Hodgkin, Y-linked pseudoautosomal
-DOID 	 name 
-DOID:8567	Hodgkin's lymphoma

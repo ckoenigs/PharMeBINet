@@ -1,3 +1,0 @@
-DOID:9256	colorectal cancer
-monDO ID 	 name 
-MONDO:0005575	colorectal cancer

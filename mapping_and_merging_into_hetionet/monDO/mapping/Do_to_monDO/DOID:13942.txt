@@ -1,3 +1,0 @@
-DOID:13942	acute gonococcal salpingitis
-monDO ID 	 name 
-MONDO:0001837	acute gonococcal salpingitis

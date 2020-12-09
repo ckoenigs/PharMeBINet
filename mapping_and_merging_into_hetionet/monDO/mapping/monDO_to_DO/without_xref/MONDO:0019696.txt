@@ -1,3 +1,0 @@
-MONDO:0019696	acromesomelic dysplasia
-DOID 	 name 
-DOID:0080049	acromesomelic dysplasia

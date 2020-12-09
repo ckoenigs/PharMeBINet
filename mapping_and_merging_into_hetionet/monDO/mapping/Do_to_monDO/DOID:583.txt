@@ -1,3 +1,0 @@
-DOID:583	hemolytic anemia
-monDO ID 	 name 
-MONDO:0003664	hemolytic anemia

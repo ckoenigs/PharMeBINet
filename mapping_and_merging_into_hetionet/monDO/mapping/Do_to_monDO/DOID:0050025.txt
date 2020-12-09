@@ -1,3 +1,0 @@
-DOID:0050025	human granulocytic anaplasmosis
-monDO ID 	 name 
-MONDO:0005118	human granulocytic anaplasmosis

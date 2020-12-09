@@ -1,3 +1,0 @@
-MONDO:0014854	autosomal dominant nonsyndromic deafness 66
-DOID 	 name 
-DOID:0110587	autosomal dominant nonsyndromic deafness 66

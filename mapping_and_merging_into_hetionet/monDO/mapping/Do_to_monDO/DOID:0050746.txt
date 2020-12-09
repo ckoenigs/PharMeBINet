@@ -1,3 +1,0 @@
-DOID:0050746	mantle cell lymphoma
-monDO ID 	 name 
-MONDO:0018876	mantle cell lymphoma

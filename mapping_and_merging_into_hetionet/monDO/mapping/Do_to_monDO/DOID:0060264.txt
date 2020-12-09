@@ -1,3 +1,0 @@
-DOID:0060264	pontocerebellar hypoplasia
-monDO ID 	 name 
-MONDO:0020135	non-syndromic pontocerebellar hypoplasia

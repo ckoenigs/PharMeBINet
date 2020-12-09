@@ -1,3 +1,0 @@
-MONDO:0000498	arteritic anterior ischemic optic neuropathy
-DOID 	 name 
-DOID:0050863	arteritic anterior ischemic optic neuropathy

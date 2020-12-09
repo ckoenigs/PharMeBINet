@@ -1,3 +1,0 @@
-MONDO:0004975	Alzheimers disease
-DOID 	 name 
-DOID:10652	Alzheimer's disease

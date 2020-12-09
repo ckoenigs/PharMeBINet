@@ -1,3 +1,0 @@
-MONDO:0004623	prostate carcinoma in situ
-DOID 	 name 
-DOID:8634	prostate carcinoma in situ

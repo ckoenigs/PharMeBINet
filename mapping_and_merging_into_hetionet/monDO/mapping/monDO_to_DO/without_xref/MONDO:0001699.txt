@@ -1,3 +1,0 @@
-MONDO:0001699	tinea manuum
-DOID 	 name 
-DOID:13369	tinea manuum

@@ -1,3 +1,0 @@
-MONDO:0003512	mediastinal mesenchymal tumor
-DOID 	 name 
-DOID:5560	mediastinal mesenchymal tumor

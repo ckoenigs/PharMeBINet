@@ -1,3 +1,0 @@
-MONDO:0004382	laryngeal disease
-DOID 	 name 
-DOID:786	laryngeal disease

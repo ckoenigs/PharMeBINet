@@ -1,3 +1,0 @@
-DOID:14110	anus cancer
-monDO ID 	 name 
-MONDO:0001879	anus cancer

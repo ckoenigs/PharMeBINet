@@ -1,3 +1,0 @@
-MONDO:0002423	rectosigmoid junction neoplasm
-DOID 	 name 
-DOID:2780	rectosigmoid junction neoplasm

@@ -1,3 +1,0 @@
-DOID:2237	hepatitis
-monDO ID 	 name 
-MONDO:0002251	hepatitis

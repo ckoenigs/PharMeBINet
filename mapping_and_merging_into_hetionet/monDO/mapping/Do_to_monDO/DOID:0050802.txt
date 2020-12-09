@@ -1,3 +1,0 @@
-DOID:0050802	Ehlers-Danlos syndrome progeroid type
-monDO ID 	 name 
-MONDO:0007526	Ehlers-Danlos syndrome progeroid type

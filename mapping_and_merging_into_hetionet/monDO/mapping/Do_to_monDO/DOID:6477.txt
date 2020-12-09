@@ -1,3 +1,0 @@
-DOID:6477	invasive bladder transitional cell carcinoma
-monDO ID 	 name 
-MONDO:0003890	infiltrating bladder urothelial carcinoma

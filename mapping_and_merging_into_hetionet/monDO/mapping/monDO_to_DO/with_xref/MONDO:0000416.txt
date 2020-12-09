@@ -1,3 +1,0 @@
-MONDO:0000416	variable age at onset electroclinical syndrome
-DOID 	 name 
-DOID:0050706	variable age at onset electroclinical syndrome

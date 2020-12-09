@@ -1,3 +1,0 @@
-MONDO:0018800	Kallmann syndrome
-DOID 	 name 
-DOID:3614	Kallmann syndrome

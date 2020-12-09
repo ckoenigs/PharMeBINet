@@ -1,3 +1,0 @@
-MONDO:0000469	sinoatrial node disease
-DOID 	 name 
-DOID:0050824	sinoatrial node disease

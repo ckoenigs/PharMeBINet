@@ -1,3 +1,0 @@
-MONDO:0002635	periodontal disease
-DOID 	 name 
-DOID:3388	periodontal disease

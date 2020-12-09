@@ -1,3 +1,0 @@
-MONDO:0002064	breast angiomatosis
-DOID 	 name 
-DOID:1637	breast angiomatosis

@@ -1,3 +1,0 @@
-MONDO:0009664	mulibrey nanism
-DOID 	 name 
-DOID:0050436	mulibrey nanism

@@ -1,3 +1,0 @@
-DOID:8029	sporadic breast cancer
-monDO ID 	 name 
-MONDO:0004438	sporadic breast cancer

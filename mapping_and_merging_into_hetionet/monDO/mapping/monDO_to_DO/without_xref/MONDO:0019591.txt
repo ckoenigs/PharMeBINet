@@ -1,3 +1,0 @@
-MONDO:0019591	panhypopituitarism
-DOID 	 name 
-DOID:9410	panhypopituitarism

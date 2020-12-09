@@ -1,3 +1,0 @@
-DOID:674	cleft palate
-monDO ID 	 name 
-MONDO:0016064	cleft palate

@@ -1,3 +1,0 @@
-MONDO:0002297	epidermal appendage tumor
-DOID 	 name 
-DOID:2433	epidermal appendage tumor

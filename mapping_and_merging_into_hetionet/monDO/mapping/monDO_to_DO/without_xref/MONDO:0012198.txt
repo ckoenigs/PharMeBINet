@@ -1,3 +1,0 @@
-MONDO:0012198	PCWH syndrome
-DOID 	 name 
-DOID:0090111	PCWH syndrome

@@ -1,3 +1,0 @@
-MONDO:0003687	endocardium cancer
-DOID 	 name 
-DOID:5877	endocardium cancer

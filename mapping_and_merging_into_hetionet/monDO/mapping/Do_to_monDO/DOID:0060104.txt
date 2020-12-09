@@ -1,3 +1,0 @@
-DOID:0060104	cerebellar medulloblastoma
-monDO ID 	 name 
-MONDO:0000641	cerebellar medulloblastoma

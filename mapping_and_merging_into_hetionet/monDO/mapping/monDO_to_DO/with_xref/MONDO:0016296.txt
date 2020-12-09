@@ -1,3 +1,0 @@
-MONDO:0016296	holoprosencephaly
-DOID 	 name 
-DOID:4621	holoprosencephaly

@@ -1,3 +1,0 @@
-MONDO:0004797	mononeuritis of lower limb
-DOID 	 name 
-DOID:9473	mononeuritis of lower limb

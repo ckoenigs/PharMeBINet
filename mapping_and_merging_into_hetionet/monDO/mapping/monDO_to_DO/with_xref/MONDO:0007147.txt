@@ -1,3 +1,0 @@
-MONDO:0007147	obstructive sleep apnea (disease)
-DOID 	 name 
-DOID:0050848	obstructive sleep apnea

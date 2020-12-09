@@ -1,3 +1,0 @@
-MONDO:0003710	ovarian mixed germ cell neoplasm
-DOID 	 name 
-DOID:5936	ovarian mixed germ cell neoplasm

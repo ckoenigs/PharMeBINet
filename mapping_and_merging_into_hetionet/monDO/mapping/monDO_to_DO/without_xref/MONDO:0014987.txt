@@ -1,3 +1,0 @@
-MONDO:0014987	Fanconi anemia complementation group U
-DOID 	 name 
-DOID:0111085	Fanconi anemia complementation group U

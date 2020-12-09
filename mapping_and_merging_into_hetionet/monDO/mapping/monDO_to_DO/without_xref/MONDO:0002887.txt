@@ -1,3 +1,0 @@
-MONDO:0002887	bile duct disease
-DOID 	 name 
-DOID:4138	bile duct disease

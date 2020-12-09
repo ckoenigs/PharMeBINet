@@ -1,3 +1,0 @@
-MONDO:0014095	dilated cardiomyopathy 1JJ
-DOID 	 name 
-DOID:0110438	dilated cardiomyopathy 1JJ

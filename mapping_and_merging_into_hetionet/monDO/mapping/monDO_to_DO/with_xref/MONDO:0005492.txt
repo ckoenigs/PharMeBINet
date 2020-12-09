@@ -1,3 +1,0 @@
-MONDO:0005492	urticaria
-DOID 	 name 
-DOID:1555	urticaria

@@ -1,3 +1,0 @@
-DOID:0060430	chromosome 16p11.2 duplication syndrome
-monDO ID 	 name 
-MONDO:0013847	chromosome 16p11.2 duplication syndrome

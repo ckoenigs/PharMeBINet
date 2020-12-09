@@ -1,3 +1,0 @@
-DOID:12402	pyromania
-monDO ID 	 name 
-MONDO:0001522	pyromania

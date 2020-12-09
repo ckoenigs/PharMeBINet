@@ -1,3 +1,0 @@
-DOID:1583	laryngeal tuberculosis
-monDO ID 	 name 
-MONDO:0005819	laryngeal tuberculosis

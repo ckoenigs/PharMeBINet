@@ -1,3 +1,0 @@
-DOID:986	alopecia areata
-monDO ID 	 name 
-MONDO:0005340	alopecia areata

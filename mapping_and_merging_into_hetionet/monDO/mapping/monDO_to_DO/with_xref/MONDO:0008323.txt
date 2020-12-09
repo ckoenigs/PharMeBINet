@@ -1,3 +1,0 @@
-MONDO:0008323	Liddle syndrome
-DOID 	 name 
-DOID:0050477	Liddle syndrome

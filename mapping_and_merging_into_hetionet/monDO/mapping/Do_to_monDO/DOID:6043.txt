@@ -1,3 +1,0 @@
-DOID:6043	ciliary body spindle cell melanoma
-monDO ID 	 name 
-MONDO:0003746	ciliary body spindle cell melanoma

@@ -1,3 +1,0 @@
-MONDO:0002177	hyperinsulinism (disease)
-DOID 	 name 
-DOID:2018	hyperinsulinism

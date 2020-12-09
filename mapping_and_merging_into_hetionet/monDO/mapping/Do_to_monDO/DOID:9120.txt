@@ -1,3 +1,0 @@
-DOID:9120	amyloidosis
-monDO ID 	 name 
-MONDO:0019065	amyloidosis (disease)

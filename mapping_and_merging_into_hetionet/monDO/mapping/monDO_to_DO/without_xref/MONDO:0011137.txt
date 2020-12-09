@@ -1,3 +1,0 @@
-MONDO:0011137	retinitis pigmentosa 19
-DOID 	 name 
-DOID:0110354	retinitis pigmentosa 19

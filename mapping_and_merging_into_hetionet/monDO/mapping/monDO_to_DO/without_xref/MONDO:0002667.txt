@@ -1,3 +1,0 @@
-MONDO:0002667	gallbladder signet ring cell adenocarcinoma
-DOID 	 name 
-DOID:3499	gallbladder signet ring cell adenocarcinoma

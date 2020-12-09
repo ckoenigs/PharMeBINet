@@ -1,3 +1,0 @@
-MONDO:0003691	childhood malignant mesenchymoma
-DOID 	 name 
-DOID:5893	childhood malignant mesenchymoma

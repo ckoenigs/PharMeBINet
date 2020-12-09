@@ -1,3 +1,0 @@
-MONDO:0003282	ovarian cyst (disease)
-DOID 	 name 
-DOID:5119	ovarian cyst

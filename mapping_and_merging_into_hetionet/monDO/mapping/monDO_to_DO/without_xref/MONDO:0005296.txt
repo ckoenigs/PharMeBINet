@@ -1,3 +1,0 @@
-MONDO:0005296	sleep apnea (disease)
-DOID 	 name 
-DOID:0050847	sleep apnea

@@ -1,3 +1,0 @@
-DOID:0050431	arrhythmogenic right ventricular cardiomyopathy
-monDO ID 	 name 
-MONDO:0016587	arrhythmogenic right ventricular cardiomyopathy

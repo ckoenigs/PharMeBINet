@@ -1,3 +1,0 @@
-DOID:0050556	infantile onset spinocerebellar ataxia
-monDO ID 	 name 
-MONDO:0010060	infantile onset spinocerebellar ataxia

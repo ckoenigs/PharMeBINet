@@ -1,3 +1,0 @@
-MONDO:0000243	ectothrix infectious disease
-DOID 	 name 
-DOID:0050097	ectothrix infectious disease

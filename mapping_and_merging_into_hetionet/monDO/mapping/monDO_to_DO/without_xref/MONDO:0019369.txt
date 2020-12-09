@@ -1,3 +1,0 @@
-MONDO:0019369	complex regional pain syndrome
-DOID 	 name 
-DOID:3223	complex regional pain syndrome

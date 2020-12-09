@@ -1,3 +1,0 @@
-MONDO:0003831	type 2 papillary adenoma of the kidney
-DOID 	 name 
-DOID:6259	type 2 papillary adenoma of the kidney

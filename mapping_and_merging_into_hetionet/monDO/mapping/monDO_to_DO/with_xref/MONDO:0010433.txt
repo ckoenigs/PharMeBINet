@@ -1,3 +1,0 @@
-MONDO:0010433	SLEB15
-DOID 	 name 
-DOID:9074	systemic lupus erythematosus

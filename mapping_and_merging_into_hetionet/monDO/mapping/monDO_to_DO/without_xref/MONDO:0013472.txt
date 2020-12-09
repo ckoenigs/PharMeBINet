@@ -1,3 +1,0 @@
-MONDO:0013472	myofibrillar myopathy 7
-DOID 	 name 
-DOID:0080098	myofibrillar myopathy 7

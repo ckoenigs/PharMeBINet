@@ -1,3 +1,0 @@
-DOID:11230	acute orbital inflammation
-monDO ID 	 name 
-MONDO:0001230	acute orbital inflammation

@@ -1,4 +1,0 @@
-MONDO:0004809	cannabis abuse
-DOID 	 name 
-DOID:9505	cannabis abuse
-DOID:1849	cannabis dependence

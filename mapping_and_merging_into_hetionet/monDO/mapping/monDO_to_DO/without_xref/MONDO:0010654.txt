@@ -1,3 +1,0 @@
-MONDO:0010654	Partington syndrome
-DOID 	 name 
-DOID:14744	Partington syndrome

@@ -1,3 +1,0 @@
-MONDO:0006037	hydrolethalus syndrome
-DOID 	 name 
-DOID:0050779	hydrolethalus syndrome

@@ -1,3 +1,0 @@
-MONDO:0004203	female urethral cancer
-DOID 	 name 
-DOID:738	female urethral cancer

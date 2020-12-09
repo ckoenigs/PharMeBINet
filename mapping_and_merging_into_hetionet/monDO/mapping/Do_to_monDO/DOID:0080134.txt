@@ -1,3 +1,0 @@
-DOID:0080134	multiple mitochondrial dysfunctions syndrome 2
-monDO ID 	 name 
-MONDO:0013675	multiple mitochondrial dysfunctions syndrome 2

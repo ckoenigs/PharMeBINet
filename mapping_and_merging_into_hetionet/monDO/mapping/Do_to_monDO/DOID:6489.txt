@@ -1,3 +1,0 @@
-DOID:6489	periosteal osteogenic sarcoma
-monDO ID 	 name 
-MONDO:0003895	periosteal osteogenic sarcoma

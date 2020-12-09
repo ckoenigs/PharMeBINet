@@ -1,3 +1,0 @@
-MONDO:0001255	ventilation pneumonitis
-DOID 	 name 
-DOID:11289	ventilation pneumonitis

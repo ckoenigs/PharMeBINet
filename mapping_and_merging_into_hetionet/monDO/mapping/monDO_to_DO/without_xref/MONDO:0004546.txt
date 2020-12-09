@@ -1,3 +1,0 @@
-MONDO:0004546	lumbar plexus neoplasm
-DOID 	 name 
-DOID:8389	lumbar plexus neoplasm

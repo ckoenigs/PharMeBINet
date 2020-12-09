@@ -1,3 +1,0 @@
-DOID:6524	malignant ciliary body melanoma
-monDO ID 	 name 
-MONDO:0003912	malignant ciliary body melanoma

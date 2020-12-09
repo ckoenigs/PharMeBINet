@@ -1,3 +1,0 @@
-MONDO:0004673	lower lip cancer
-DOID 	 name 
-DOID:8883	lower lip cancer

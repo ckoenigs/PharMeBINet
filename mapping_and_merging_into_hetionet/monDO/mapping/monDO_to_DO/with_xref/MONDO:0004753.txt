@@ -1,4 +1,0 @@
-MONDO:0004753	mechanical strabismus
-DOID 	 name 
-DOID:9306	mechanical strabismus
-DOID:9837	hypertropia

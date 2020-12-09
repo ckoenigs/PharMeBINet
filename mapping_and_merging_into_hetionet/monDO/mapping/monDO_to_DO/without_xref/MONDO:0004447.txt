@@ -1,3 +1,0 @@
-MONDO:0004447	pituitary stalk meningioma
-DOID 	 name 
-DOID:8058	pituitary stalk meningioma

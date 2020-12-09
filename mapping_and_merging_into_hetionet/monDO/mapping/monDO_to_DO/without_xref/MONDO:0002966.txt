@@ -1,3 +1,0 @@
-MONDO:0002966	splenic manifestation of prolymphocytic leukemia
-DOID 	 name 
-DOID:4334	splenic manifestation of prolymphocytic leukemia

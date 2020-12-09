@@ -1,3 +1,0 @@
-DOID:4696	intraneural perineurioma
-monDO ID 	 name 
-MONDO:0015032	intraneural perineurioma

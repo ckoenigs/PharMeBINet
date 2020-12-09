@@ -1,3 +1,0 @@
-MONDO:0010427	syndromic X-linked intellectual disability Raymond type
-DOID 	 name 
-DOID:0060824	syndromic X-linked intellectual disability Raymond type

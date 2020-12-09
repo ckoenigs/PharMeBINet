@@ -1,3 +1,0 @@
-DOID:7632	Cowper gland carcinoma
-monDO ID 	 name 
-MONDO:0004311	carcinoma of cowper glands

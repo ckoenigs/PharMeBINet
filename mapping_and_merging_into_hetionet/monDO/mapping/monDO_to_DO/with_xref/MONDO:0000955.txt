@@ -1,3 +1,0 @@
-MONDO:0000955	ileum cancer
-DOID 	 name 
-DOID:10153	ileum cancer

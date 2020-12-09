@@ -1,3 +1,0 @@
-DOID:14227	azoospermia
-monDO ID 	 name 
-MONDO:0004983	azoospermia

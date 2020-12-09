@@ -1,3 +1,0 @@
-MONDO:0002924	smooth muscle cancer
-DOID 	 name 
-DOID:4230	smooth muscle cancer

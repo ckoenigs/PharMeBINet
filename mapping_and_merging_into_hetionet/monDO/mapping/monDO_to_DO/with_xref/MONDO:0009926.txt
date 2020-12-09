@@ -1,3 +1,0 @@
-MONDO:0009926	autosomal recessive multiple pterygium syndrome
-DOID 	 name 
-DOID:0080110	multiple pterygium syndrome

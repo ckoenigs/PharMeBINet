@@ -1,3 +1,0 @@
-DOID:4858	pineal gland astrocytoma
-monDO ID 	 name 
-MONDO:0003171	pineal gland astrocytoma

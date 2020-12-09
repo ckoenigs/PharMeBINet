@@ -1,3 +1,0 @@
-MONDO:0009924	Hypocalcemic vitamin d-dependent rickets
-DOID 	 name 
-DOID:10609	rickets

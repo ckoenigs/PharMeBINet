@@ -1,3 +1,0 @@
-MONDO:0006576	Ludwig's angina
-DOID 	 name 
-DOID:4558	Ludwig's angina

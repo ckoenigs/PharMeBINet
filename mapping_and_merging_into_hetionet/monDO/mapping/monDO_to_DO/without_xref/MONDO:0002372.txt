@@ -1,3 +1,0 @@
-MONDO:0002372	ovarian monodermal and highly specialized teratoma
-DOID 	 name 
-DOID:2641	ovarian germ cell monodermal and highly specialized teratoma

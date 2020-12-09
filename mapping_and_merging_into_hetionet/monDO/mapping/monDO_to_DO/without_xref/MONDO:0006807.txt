@@ -1,3 +1,0 @@
-MONDO:0006807	intestinal perforation
-DOID 	 name 
-DOID:2074	intestinal perforation

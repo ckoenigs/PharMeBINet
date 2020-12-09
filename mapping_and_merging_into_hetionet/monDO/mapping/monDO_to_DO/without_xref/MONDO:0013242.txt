@@ -1,3 +1,0 @@
-MONDO:0013242	maturity-onset diabetes of the young type 11
-DOID 	 name 
-DOID:0111109	maturity-onset diabetes of the young type 11

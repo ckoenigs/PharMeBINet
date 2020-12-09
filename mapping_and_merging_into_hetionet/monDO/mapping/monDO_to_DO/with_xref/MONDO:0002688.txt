@@ -1,3 +1,0 @@
-MONDO:0002688	duodenal obstruction
-DOID 	 name 
-DOID:3558	duodenal obstruction

@@ -1,3 +1,0 @@
-MONDO:0001211	total internal ophthalmoplegia
-DOID 	 name 
-DOID:11177	total internal ophthalmoplegia

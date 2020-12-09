@@ -1,3 +1,0 @@
-DOID:0060490	Schimke immuno-osseous dysplasia
-monDO ID 	 name 
-MONDO:0009458	Schimke immuno-osseous dysplasia

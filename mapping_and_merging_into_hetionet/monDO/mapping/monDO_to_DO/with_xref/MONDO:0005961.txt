@@ -1,3 +1,0 @@
-MONDO:0005961	sinusitis
-DOID 	 name 
-DOID:0050127	sinusitis

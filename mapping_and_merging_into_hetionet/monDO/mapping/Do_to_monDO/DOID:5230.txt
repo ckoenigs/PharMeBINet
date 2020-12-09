@@ -1,3 +1,0 @@
-DOID:5230	hepatoerythropoietic porphyria
-monDO ID 	 name 
-MONDO:0019799	hepatoerythropoietic porphyria

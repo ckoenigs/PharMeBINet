@@ -1,3 +1,0 @@
-MONDO:0002069	female breast axillary tail cancer
-DOID 	 name 
-DOID:1650	female breast axillary tail cancer

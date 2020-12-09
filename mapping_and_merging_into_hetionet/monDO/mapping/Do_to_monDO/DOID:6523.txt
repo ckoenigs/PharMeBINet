@@ -1,3 +1,0 @@
-DOID:6523	ciliary body mixed cell melanoma
-monDO ID 	 name 
-MONDO:0003911	ciliary body mixed cell melanoma

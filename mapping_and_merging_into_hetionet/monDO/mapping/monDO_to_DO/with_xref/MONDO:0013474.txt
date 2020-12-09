@@ -1,3 +1,0 @@
-MONDO:0013474	hypertrophic cardiomyopathy 17
-DOID 	 name 
-DOID:0110323	hypertrophic cardiomyopathy 17

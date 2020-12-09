@@ -1,3 +1,0 @@
-DOID:37	skin disease
-monDO ID 	 name 
-MONDO:0005093	skin disease

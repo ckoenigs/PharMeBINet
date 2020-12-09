@@ -1,3 +1,0 @@
-MONDO:0006947	renovascular hypertension (disease)
-DOID 	 name 
-DOID:1591	renovascular hypertension

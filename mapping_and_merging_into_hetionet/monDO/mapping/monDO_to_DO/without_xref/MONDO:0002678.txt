@@ -1,3 +1,0 @@
-MONDO:0002678	pediatric fibrosarcoma
-DOID 	 name 
-DOID:3520	pediatric fibrosarcoma

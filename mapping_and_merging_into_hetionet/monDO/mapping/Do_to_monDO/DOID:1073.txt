@@ -1,3 +1,0 @@
-DOID:1073	renal hypertension
-monDO ID 	 name 
-MONDO:0001105	renal hypertension

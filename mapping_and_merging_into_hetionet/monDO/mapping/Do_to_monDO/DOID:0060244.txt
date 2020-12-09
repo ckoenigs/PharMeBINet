@@ -1,3 +1,0 @@
-DOID:0060244	specific language impairment
-monDO ID 	 name 
-MONDO:0000724	specific language impairment

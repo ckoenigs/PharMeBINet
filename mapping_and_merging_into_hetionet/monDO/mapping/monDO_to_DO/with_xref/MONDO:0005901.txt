@@ -1,3 +1,0 @@
-MONDO:0005901	pasteurellosis
-DOID 	 name 
-DOID:11055	pasteurellosis

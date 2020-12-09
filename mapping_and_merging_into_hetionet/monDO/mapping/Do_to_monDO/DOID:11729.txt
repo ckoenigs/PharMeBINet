@@ -1,3 +1,0 @@
-DOID:11729	Lyme disease
-monDO ID 	 name 
-MONDO:0019632	lyme disease

@@ -1,3 +1,0 @@
-MONDO:0004924	chronic canaliculitis
-DOID 	 name 
-DOID:9936	chronic canaliculitis

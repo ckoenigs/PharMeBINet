@@ -1,3 +1,0 @@
-DOID:1455	geographic tongue
-monDO ID 	 name 
-MONDO:0005771	geographic tongue

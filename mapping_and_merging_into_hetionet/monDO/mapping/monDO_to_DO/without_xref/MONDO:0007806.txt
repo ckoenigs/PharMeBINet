@@ -1,3 +1,0 @@
-MONDO:0007806	hypotrichosis 4
-DOID 	 name 
-DOID:0110701	hypotrichosis 4

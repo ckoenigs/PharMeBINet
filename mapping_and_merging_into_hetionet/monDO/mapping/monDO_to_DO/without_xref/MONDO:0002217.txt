@@ -1,3 +1,0 @@
-MONDO:0002217	central nervous system sarcoma
-DOID 	 name 
-DOID:2133	central nervous system sarcoma

@@ -1,3 +1,0 @@
-DOID:2060	vulvar nodular hidradenoma
-monDO ID 	 name 
-MONDO:0002188	vulvar nodular hidradenoma

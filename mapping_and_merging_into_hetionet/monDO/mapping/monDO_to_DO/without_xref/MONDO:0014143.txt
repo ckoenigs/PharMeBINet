@@ -1,3 +1,0 @@
-MONDO:0014143	Noonan syndrome 8
-DOID 	 name 
-DOID:0060586	Noonan syndrome 8

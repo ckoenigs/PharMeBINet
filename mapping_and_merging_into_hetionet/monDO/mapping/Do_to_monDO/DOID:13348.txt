@@ -1,3 +1,0 @@
-DOID:13348	laryngeal cartilage cancer
-monDO ID 	 name 
-MONDO:0001691	laryngeal cartilage cancer

@@ -1,3 +1,0 @@
-MONDO:0007093	hypomaturation-hypoplastic amelogenesis imperfecta with taurodontism
-DOID 	 name 
-DOID:0110053	amelogenesis imperfecta type 4

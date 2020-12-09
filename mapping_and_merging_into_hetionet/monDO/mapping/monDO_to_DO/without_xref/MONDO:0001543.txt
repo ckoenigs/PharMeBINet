@@ -1,3 +1,0 @@
-MONDO:0001543	lesion of sciatic nerve
-DOID 	 name 
-DOID:12528	lesion of sciatic nerve

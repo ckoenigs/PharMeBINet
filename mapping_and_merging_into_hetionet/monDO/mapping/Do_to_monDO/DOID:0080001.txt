@@ -1,3 +1,0 @@
-DOID:0080001	bone disease
-monDO ID 	 name 
-MONDO:0005381	bone disease

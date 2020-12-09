@@ -1,3 +1,0 @@
-MONDO:0010987	autosomal recessive nonsyndromic deafness 8
-DOID 	 name 
-DOID:0110527	autosomal recessive nonsyndromic deafness 8

@@ -1,3 +1,0 @@
-DOID:6167	prostatic urethral cancer
-monDO ID 	 name 
-MONDO:0003791	prostatic urethral cancer

@@ -1,3 +1,0 @@
-DOID:3044	food allergy
-monDO ID 	 name 
-MONDO:0002497	food allergy

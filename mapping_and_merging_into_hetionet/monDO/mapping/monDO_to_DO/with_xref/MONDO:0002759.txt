@@ -1,3 +1,0 @@
-MONDO:0002759	bladder verrucous carcinoma
-DOID 	 name 
-DOID:3741	bladder verrucous squamous cell carcinoma

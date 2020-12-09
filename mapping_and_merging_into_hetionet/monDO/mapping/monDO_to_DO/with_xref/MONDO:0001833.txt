@@ -1,3 +1,0 @@
-MONDO:0001833	lacrimal duct obstruction
-DOID 	 name 
-DOID:13929	lacrimal duct obstruction

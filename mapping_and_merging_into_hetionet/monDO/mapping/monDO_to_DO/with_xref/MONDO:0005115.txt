@@ -1,3 +1,0 @@
-MONDO:0005115	temporal lobe epilepsy
-DOID 	 name 
-DOID:3328	temporal lobe epilepsy

@@ -1,3 +1,0 @@
-MONDO:0004827	esophagus squamous cell papilloma
-DOID 	 name 
-DOID:959	esophagus squamous cell papilloma

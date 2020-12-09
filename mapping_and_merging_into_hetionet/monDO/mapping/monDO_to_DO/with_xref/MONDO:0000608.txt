@@ -1,3 +1,0 @@
-MONDO:0000608	familial juvenile hyperuricemic nephropathy
-DOID 	 name 
-DOID:0060062	familial juvenile hyperuricemic nephropathy

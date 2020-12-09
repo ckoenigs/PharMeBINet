@@ -1,3 +1,0 @@
-MONDO:0018304	Schnitzler syndrome
-DOID 	 name 
-DOID:4371	Schnitzler syndrome

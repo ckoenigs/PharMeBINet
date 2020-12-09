@@ -1,3 +1,0 @@
-MONDO:0014476	episodic ataxia type 8
-DOID 	 name 
-DOID:0050996	episodic ataxia type 8

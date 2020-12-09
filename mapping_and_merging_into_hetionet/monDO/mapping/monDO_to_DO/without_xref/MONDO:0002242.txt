@@ -1,3 +1,0 @@
-MONDO:0002242	coagulation protein disease
-DOID 	 name 
-DOID:2212	coagulation protein disease

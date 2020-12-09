@@ -1,3 +1,0 @@
-DOID:4872	lung adenoid cystic carcinoma
-monDO ID 	 name 
-MONDO:0003181	lung adenoid cystic carcinoma

@@ -1,3 +1,0 @@
-MONDO:0014023	congenital muscular dystrophy with intellectual disability and severe epilepsy
-DOID 	 name 
-DOID:0050570	congenital disorder of glycosylation type I

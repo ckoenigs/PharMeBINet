@@ -1,3 +1,0 @@
-MONDO:0012455	Kleefstra syndrome
-DOID 	 name 
-DOID:0060352	Kleefstra syndrome

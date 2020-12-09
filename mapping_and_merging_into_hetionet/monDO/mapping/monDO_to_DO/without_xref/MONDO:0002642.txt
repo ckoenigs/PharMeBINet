@@ -1,3 +1,0 @@
-MONDO:0002642	trochlear nerve neoplasm
-DOID 	 name 
-DOID:3421	trochlear nerve neoplasm

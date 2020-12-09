@@ -1,3 +1,0 @@
-DOID:0090043	dystonia 5
-monDO ID 	 name 
-MONDO:0007495	dystonia 5

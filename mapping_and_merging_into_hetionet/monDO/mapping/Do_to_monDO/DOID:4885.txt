@@ -1,3 +1,0 @@
-DOID:4885	Colorado tick fever
-monDO ID 	 name 
-MONDO:0005708	Colorado tick fever

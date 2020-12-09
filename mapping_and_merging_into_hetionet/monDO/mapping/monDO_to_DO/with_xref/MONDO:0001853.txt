@@ -1,3 +1,0 @@
-MONDO:0001853	contact blepharoconjunctivitis
-DOID 	 name 
-DOID:13999	contact blepharoconjunctivitis

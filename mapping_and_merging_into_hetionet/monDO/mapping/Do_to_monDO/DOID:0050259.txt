@@ -1,3 +1,0 @@
-DOID:0050259	baylisascariasis
-monDO ID 	 name 
-MONDO:0000297	baylisascariasis

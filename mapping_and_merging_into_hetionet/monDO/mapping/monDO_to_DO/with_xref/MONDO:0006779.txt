@@ -1,3 +1,0 @@
-MONDO:0006779	heart aneurysm
-DOID 	 name 
-DOID:9768	heart aneurysm

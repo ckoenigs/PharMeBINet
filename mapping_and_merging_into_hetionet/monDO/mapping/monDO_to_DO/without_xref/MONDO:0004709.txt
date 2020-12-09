@@ -1,3 +1,0 @@
-MONDO:0004709	occipital lobe neoplasm
-DOID 	 name 
-DOID:910	occipital lobe neoplasm

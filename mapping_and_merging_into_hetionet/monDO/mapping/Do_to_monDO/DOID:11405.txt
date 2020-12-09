@@ -1,3 +1,0 @@
-DOID:11405	diphtheria
-monDO ID 	 name 
-MONDO:0005504	diphtheria

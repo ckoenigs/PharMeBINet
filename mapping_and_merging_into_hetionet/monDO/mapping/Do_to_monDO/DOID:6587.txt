@@ -1,3 +1,0 @@
-DOID:6587	invasive tubular breast carcinoma
-monDO ID 	 name 
-MONDO:0003936	invasive tubular breast carcinoma

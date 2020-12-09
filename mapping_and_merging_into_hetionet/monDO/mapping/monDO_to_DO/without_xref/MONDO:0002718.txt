@@ -1,3 +1,0 @@
-MONDO:0002718	central nervous system teratoma
-DOID 	 name 
-DOID:3640	central nervous system teratoma

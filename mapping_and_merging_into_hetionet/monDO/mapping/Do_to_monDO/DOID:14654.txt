@@ -1,3 +1,0 @@
-DOID:14654	prostatitis
-monDO ID 	 name 
-MONDO:0005280	prostatitis (disease)

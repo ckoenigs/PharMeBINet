@@ -1,3 +1,0 @@
-MONDO:0005988	toxocariasis
-DOID 	 name 
-DOID:9790	toxocariasis

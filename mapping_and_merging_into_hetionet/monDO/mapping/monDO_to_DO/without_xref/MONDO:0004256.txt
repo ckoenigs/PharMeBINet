@@ -1,3 +1,0 @@
-MONDO:0004256	lumbar spinal canal and spinal cord meningioma
-DOID 	 name 
-DOID:7515	lumbar spinal canal and spinal cord meningioma

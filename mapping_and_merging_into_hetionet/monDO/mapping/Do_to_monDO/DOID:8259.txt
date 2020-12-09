@@ -1,3 +1,0 @@
-DOID:8259	bulbomembranous urethral cancer
-monDO ID 	 name 
-MONDO:0004516	bulbomembranous urethral cancer

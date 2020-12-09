@@ -1,3 +1,0 @@
-MONDO:0000878	cytomegalovirus retinitis
-DOID 	 name 
-DOID:0080160	Cytomegalovirus retinitis

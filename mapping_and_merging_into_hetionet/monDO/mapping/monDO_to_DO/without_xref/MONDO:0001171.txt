@@ -1,3 +1,0 @@
-MONDO:0001171	acute salpingo-oophoritis
-DOID 	 name 
-DOID:10971	acute salpingo-oophoritis

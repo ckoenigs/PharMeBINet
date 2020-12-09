@@ -1,3 +1,0 @@
-MONDO:0005854	mixed connective tissue disease
-DOID 	 name 
-DOID:3492	mixed connective tissue disease

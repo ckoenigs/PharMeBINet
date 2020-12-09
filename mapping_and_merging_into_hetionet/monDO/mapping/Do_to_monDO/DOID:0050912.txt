@@ -1,3 +1,0 @@
-DOID:0050912	colon adenoma
-monDO ID 	 name 
-MONDO:0000527	colon adenoma

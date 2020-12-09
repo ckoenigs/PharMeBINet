@@ -1,3 +1,0 @@
-MONDO:0006820	kidney cortex necrosis
-DOID 	 name 
-DOID:2973	kidney cortex necrosis

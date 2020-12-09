@@ -1,3 +1,0 @@
-MONDO:0004893	hypertropia
-DOID 	 name 
-DOID:9837	hypertropia

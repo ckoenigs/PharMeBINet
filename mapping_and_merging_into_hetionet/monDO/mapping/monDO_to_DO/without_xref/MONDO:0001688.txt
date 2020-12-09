@@ -1,3 +1,0 @@
-MONDO:0001688	toxic optic neuropathy
-DOID 	 name 
-DOID:13329	toxic optic neuropathy

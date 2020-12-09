@@ -1,3 +1,0 @@
-MONDO:0010736	split hand-foot malformation 2
-DOID 	 name 
-DOID:0090027	split hand-foot malformation 2

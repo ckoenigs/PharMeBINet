@@ -1,3 +1,0 @@
-MONDO:0017733	alpha-mannosidosis, adult form
-DOID 	 name 
-DOID:3343	glycoproteinosis

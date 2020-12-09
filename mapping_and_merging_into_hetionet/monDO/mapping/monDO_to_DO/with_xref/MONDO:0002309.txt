@@ -1,3 +1,0 @@
-MONDO:0002309	papillary conjunctivitis
-DOID 	 name 
-DOID:2458	papillary conjunctivitis

@@ -1,3 +1,0 @@
-MONDO:0015742	periventricular leukomalacia
-DOID 	 name 
-DOID:13088	periventricular leukomalacia

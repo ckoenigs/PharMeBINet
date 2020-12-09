@@ -1,3 +1,0 @@
-MONDO:0010068	spondyloepimetaphyseal dysplasia, sponastrime type
-DOID 	 name 
-DOID:5684	spondyloepimetaphyseal dysplasia, Sponastrime type

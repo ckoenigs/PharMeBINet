@@ -1,3 +1,0 @@
-MONDO:0012267	holoprosencephaly 8
-DOID 	 name 
-DOID:0110879	holoprosencephaly 8

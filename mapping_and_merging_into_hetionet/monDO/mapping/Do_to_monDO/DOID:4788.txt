@@ -1,3 +1,0 @@
-DOID:4788	intracranial primitive neuroectodermal tumor
-monDO ID 	 name 
-MONDO:0003142	intracranial primitive neuroectodermal tumor

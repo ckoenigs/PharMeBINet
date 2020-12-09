@@ -1,3 +1,0 @@
-MONDO:0010828	retinitis pigmentosa 11
-DOID 	 name 
-DOID:0110408	retinitis pigmentosa 11

@@ -1,3 +1,0 @@
-DOID:10966	lipoid nephrosis
-monDO ID 	 name 
-MONDO:0006835	lipoid nephrosis

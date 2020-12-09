@@ -1,3 +1,0 @@
-MONDO:0019499	Turner syndrome
-DOID 	 name 
-DOID:3491	Turner syndrome

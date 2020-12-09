@@ -1,3 +1,0 @@
-DOID:1085	Edwards syndrome
-monDO ID 	 name 
-MONDO:0018071	trisomy 18

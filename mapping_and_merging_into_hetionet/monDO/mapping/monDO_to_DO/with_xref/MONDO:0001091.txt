@@ -1,3 +1,0 @@
-MONDO:0001091	lipoma of colon
-DOID 	 name 
-DOID:10655	lipoma of colon

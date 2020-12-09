@@ -1,3 +1,0 @@
-MONDO:0002780	extraskeletal chondroma
-DOID 	 name 
-DOID:3814	extraskeletal chondroma

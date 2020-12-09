@@ -1,3 +1,0 @@
-MONDO:0018965	Alport syndrome
-DOID 	 name 
-DOID:10983	Alport syndrome

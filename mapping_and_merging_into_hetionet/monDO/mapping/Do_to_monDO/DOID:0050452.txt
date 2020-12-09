@@ -1,3 +1,0 @@
-DOID:0050452	mevalonic aciduria
-monDO ID 	 name 
-MONDO:0012481	mevalonic aciduria

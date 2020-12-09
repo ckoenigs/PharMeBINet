@@ -1,3 +1,0 @@
-MONDO:0021055	classic familial adenomatous polyposis
-DOID 	 name 
-DOID:0050424	familial adenomatous polyposis

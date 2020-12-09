@@ -1,3 +1,0 @@
-MONDO:0004208	superior vena cava leiomyosarcoma
-DOID 	 name 
-DOID:7390	superior vena cava leiomyosarcoma

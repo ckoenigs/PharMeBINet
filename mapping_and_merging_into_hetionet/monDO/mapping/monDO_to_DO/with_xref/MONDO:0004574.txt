@@ -1,3 +1,0 @@
-MONDO:0004574	pyridoxine deficiency anemia
-DOID 	 name 
-DOID:8455	pyridoxine deficiency anemia

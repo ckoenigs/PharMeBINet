@@ -1,3 +1,0 @@
-MONDO:0011908	juvenile myelomonocytic leukemia
-DOID 	 name 
-DOID:0050458	juvenile myelomonocytic leukemia

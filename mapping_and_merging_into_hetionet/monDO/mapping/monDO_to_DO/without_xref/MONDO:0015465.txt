@@ -1,3 +1,0 @@
-MONDO:0015465	craniometaphyseal dysplasia
-DOID 	 name 
-DOID:0080033	craniometaphyseal dysplasia

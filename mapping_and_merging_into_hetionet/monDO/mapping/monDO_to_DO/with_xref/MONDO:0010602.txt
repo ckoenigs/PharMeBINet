@@ -1,3 +1,0 @@
-MONDO:0010602	hemophilia A
-DOID 	 name 
-DOID:12134	factor VIII deficiency

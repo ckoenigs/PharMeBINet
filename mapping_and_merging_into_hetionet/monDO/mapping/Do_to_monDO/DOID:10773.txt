@@ -1,3 +1,0 @@
-DOID:10773	bubonic plague
-monDO ID 	 name 
-MONDO:0001112	bubonic plague

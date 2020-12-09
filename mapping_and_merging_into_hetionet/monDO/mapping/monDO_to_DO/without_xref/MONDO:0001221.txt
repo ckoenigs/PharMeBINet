@@ -1,3 +1,0 @@
-MONDO:0001221	esophageal varices
-DOID 	 name 
-DOID:112	esophageal varix

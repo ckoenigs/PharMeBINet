@@ -1,3 +1,0 @@
-DOID:0110023	age related macular degeneration 11
-monDO ID 	 name 
-MONDO:0012767	age related macular degeneration 11

@@ -1,3 +1,0 @@
-MONDO:0012778	CELIAC9
-DOID 	 name 
-DOID:10608	celiac disease

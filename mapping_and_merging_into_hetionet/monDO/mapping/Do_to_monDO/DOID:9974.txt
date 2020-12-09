@@ -1,3 +1,0 @@
-DOID:9974	drug dependence
-monDO ID 	 name 
-MONDO:0005303	drug dependence

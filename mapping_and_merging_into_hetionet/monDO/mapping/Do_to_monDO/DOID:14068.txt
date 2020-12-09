@@ -1,3 +1,0 @@
-DOID:14068	blackwater fever
-monDO ID 	 name 
-MONDO:0005670	blackwater fever

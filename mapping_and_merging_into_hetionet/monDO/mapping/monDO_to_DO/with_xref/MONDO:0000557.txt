@@ -1,3 +1,0 @@
-MONDO:0000557	hereditary ataxia
-DOID 	 name 
-DOID:0050951	hereditary ataxia

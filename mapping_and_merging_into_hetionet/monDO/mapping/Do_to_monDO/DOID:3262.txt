@@ -1,3 +1,0 @@
-DOID:3262	phagocyte bactericidal dysfunction
-monDO ID 	 name 
-MONDO:0005910	phagocyte bactericidal dysfunction

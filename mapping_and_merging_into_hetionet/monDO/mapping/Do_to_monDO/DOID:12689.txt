@@ -1,3 +1,0 @@
-DOID:12689	acoustic neuroma
-monDO ID 	 name 
-MONDO:0001569	acoustic neuroma

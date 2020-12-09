@@ -1,3 +1,0 @@
-MONDO:0013349	ALG11-CDG
-DOID 	 name 
-DOID:0050570	congenital disorder of glycosylation type I

@@ -1,3 +1,0 @@
-MONDO:0014185	chromosome 3q13.31 deletion syndrome
-DOID 	 name 
-DOID:0060418	chromosome 3q13.31 deletion syndrome

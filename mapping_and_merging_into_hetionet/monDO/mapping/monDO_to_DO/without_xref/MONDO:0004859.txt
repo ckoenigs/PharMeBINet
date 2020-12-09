@@ -1,3 +1,0 @@
-MONDO:0004859	hydrops of gallbladder
-DOID 	 name 
-DOID:9717	hydrops of gallbladder

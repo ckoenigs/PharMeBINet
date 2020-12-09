@@ -1,3 +1,0 @@
-MONDO:0004106	testicular yolk sac tumor, macrocystic pattern
-DOID 	 name 
-DOID:7097	macrocystic pattern testicular yolk sac tumor

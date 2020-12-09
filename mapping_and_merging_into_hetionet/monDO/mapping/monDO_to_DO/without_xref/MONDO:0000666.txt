@@ -1,3 +1,0 @@
-MONDO:0000666	associative agnosia
-DOID 	 name 
-DOID:0060136	associative agnosia

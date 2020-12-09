@@ -1,3 +1,0 @@
-MONDO:0018687	progressive muscular atrophy
-DOID 	 name 
-DOID:318	progressive muscular atrophy

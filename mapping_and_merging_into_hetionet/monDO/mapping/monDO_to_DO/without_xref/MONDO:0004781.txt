@@ -1,3 +1,0 @@
-MONDO:0004781	acute myocardial infarction
-DOID 	 name 
-DOID:9408	acute myocardial infarction

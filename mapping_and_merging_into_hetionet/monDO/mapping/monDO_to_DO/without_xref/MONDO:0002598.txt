@@ -1,3 +1,0 @@
-MONDO:0002598	germinoma (disease)
-DOID 	 name 
-DOID:3304	germinoma

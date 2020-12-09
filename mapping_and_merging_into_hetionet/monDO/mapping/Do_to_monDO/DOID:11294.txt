@@ -1,3 +1,0 @@
-DOID:11294	arteriovenous malformation
-monDO ID 	 name 
-MONDO:0001256	arteriovenous malformation

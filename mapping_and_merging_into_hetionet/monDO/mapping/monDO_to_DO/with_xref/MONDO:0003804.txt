@@ -1,3 +1,0 @@
-MONDO:0003804	blood protein disease
-DOID 	 name 
-DOID:620	blood protein disease

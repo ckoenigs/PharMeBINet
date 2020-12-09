@@ -1,3 +1,0 @@
-MONDO:0000873	lymphoblastic lymphoma
-DOID 	 name 
-DOID:0080147	lymphoblastic lymphoma

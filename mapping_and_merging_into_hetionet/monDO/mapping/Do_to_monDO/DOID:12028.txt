@@ -1,3 +1,0 @@
-DOID:12028	Conn's syndrome
-monDO ID 	 name 
-MONDO:0001422	Conn's syndrome

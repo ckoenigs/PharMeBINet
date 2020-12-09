@@ -1,3 +1,0 @@
-MONDO:0011326	citrullinemia, type Ii, adult-onset
-DOID 	 name 
-DOID:9273	citrullinemia

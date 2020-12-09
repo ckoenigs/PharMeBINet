@@ -1,3 +1,0 @@
-DOID:6858	pineal region immature teratoma
-monDO ID 	 name 
-MONDO:0004017	pineal region immature teratoma

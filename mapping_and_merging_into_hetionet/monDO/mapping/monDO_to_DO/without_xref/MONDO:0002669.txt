@@ -1,3 +1,0 @@
-MONDO:0002669	ampullary signet ring cell adenocarcinoma
-DOID 	 name 
-DOID:3501	ampullary signet ring cell adenocarcinoma

@@ -1,3 +1,0 @@
-DOID:0060261	congenital ptosis
-monDO ID 	 name 
-MONDO:0008340	congenital ptosis (disease)

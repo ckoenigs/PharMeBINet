@@ -1,3 +1,0 @@
-MONDO:0003381	pituitary gland disease
-DOID 	 name 
-DOID:53	pituitary gland disease

@@ -1,3 +1,0 @@
-DOID:0110851	rhizomelic chondrodysplasia punctata type 1
-monDO ID 	 name 
-MONDO:0008972	rhizomelic chondrodysplasia punctata type 1

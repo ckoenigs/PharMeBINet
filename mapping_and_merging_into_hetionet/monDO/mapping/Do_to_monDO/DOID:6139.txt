@@ -1,3 +1,0 @@
-DOID:6139	uterine corpus epithelioid leiomyosarcoma
-monDO ID 	 name 
-MONDO:0003782	uterine corpus epithelioid leiomyosarcoma

@@ -1,3 +1,0 @@
-DOID:2001	neuroma
-monDO ID 	 name 
-MONDO:0002173	neuroma

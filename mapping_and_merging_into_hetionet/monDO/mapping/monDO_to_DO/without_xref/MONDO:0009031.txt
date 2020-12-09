@@ -1,3 +1,0 @@
-MONDO:0009031	craniodiaphyseal dysplasia
-DOID 	 name 
-DOID:0080032	craniodiaphyseal dysplasia

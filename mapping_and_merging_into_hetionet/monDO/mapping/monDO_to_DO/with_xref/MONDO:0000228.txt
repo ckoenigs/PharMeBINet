@@ -1,3 +1,0 @@
-MONDO:0000228	Astrakhan spotted fever
-DOID 	 name 
-DOID:0050041	Astrakhan spotted fever

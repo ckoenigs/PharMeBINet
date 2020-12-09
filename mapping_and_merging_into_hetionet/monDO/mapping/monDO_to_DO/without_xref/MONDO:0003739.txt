@@ -1,3 +1,0 @@
-MONDO:0003739	selective immunoglobulin deficiency disease
-DOID 	 name 
-DOID:6025	selective immunoglobulin deficiency disease

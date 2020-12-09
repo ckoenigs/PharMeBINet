@@ -1,3 +1,0 @@
-MONDO:0011608	atopic dermatitis 5
-DOID 	 name 
-DOID:0110101	atopic dermatitis 5

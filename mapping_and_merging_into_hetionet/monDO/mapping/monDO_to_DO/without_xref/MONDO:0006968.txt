@@ -1,3 +1,0 @@
-MONDO:0006968	shoulder impingement syndrome
-DOID 	 name 
-DOID:14276	shoulder impingement syndrome

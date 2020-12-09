@@ -1,3 +1,0 @@
-MONDO:0000536	pharynx squamous cell carcinoma
-DOID 	 name 
-DOID:0050921	pharynx squamous cell carcinoma

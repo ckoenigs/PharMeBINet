@@ -1,3 +1,0 @@
-DOID:5426	premature ovarian failure
-monDO ID 	 name 
-MONDO:0005387	primary ovarian insufficiency

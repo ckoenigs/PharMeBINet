@@ -1,3 +1,0 @@
-MONDO:0003893	rete testis adenoma
-DOID 	 name 
-DOID:6483	rete testis adenoma

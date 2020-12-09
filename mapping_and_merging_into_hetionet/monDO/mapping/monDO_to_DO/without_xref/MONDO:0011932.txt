@@ -1,3 +1,0 @@
-MONDO:0011932	hypotrichosis 6
-DOID 	 name 
-DOID:0110703	hypotrichosis 6

@@ -1,3 +1,0 @@
-MONDO:0019148	Wolman disease
-DOID 	 name 
-DOID:14497	Wolman disease

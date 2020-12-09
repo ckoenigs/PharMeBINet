@@ -1,3 +1,0 @@
-MONDO:0010604	hemophilia B
-DOID 	 name 
-DOID:12259	hemophilia B

@@ -1,3 +1,0 @@
-DOID:6276	malignant ACTH producing neoplasm of pituitary gland
-monDO ID 	 name 
-MONDO:0003838	malignant ACTH producing neoplasm of pituitary gland

@@ -1,3 +1,0 @@
-DOID:0060358	multiple acyl-CoA dehydrogenase deficiency
-monDO ID 	 name 
-MONDO:0009282	multiple acyl-CoA dehydrogenase deficiency

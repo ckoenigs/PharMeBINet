@@ -1,3 +1,0 @@
-MONDO:0007737	humeroradial synostosis (disease)
-DOID 	 name 
-DOID:0060467	humeroradial synostosis

@@ -1,3 +1,0 @@
-MONDO:0000824	congenital diarrhea
-DOID 	 name 
-DOID:0060774	congenital diarrhea

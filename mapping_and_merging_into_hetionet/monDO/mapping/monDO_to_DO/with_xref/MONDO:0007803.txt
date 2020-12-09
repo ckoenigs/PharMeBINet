@@ -1,3 +1,0 @@
-MONDO:0007803	multiple system atrophy
-DOID 	 name 
-DOID:4752	multiple system atrophy

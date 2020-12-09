@@ -1,3 +1,0 @@
-MONDO:0012240	nemaline myopathy 4
-DOID 	 name 
-DOID:0110932	nemaline myopathy 4

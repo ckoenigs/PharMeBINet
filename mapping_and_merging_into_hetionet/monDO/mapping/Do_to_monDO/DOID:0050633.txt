@@ -1,3 +1,0 @@
-DOID:0050633	ocular albinism
-monDO ID 	 name 
-MONDO:0017304	ocular albinism (disease)

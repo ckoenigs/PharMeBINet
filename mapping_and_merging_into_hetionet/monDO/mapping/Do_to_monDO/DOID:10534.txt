@@ -1,3 +1,0 @@
-DOID:10534	stomach cancer
-monDO ID 	 name 
-MONDO:0001056	gastric cancer

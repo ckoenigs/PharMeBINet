@@ -1,3 +1,0 @@
-MONDO:0005186	cocaine dependence
-DOID 	 name 
-DOID:9975	cocaine dependence

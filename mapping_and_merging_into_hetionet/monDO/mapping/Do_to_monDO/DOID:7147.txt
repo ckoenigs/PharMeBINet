@@ -1,3 +1,0 @@
-DOID:7147	ankylosing spondylitis
-monDO ID 	 name 
-MONDO:0005306	ankylosing spondylitis

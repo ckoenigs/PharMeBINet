@@ -1,3 +1,0 @@
-MONDO:0019530	non-syndromic syndactyly
-DOID 	 name 
-DOID:11193	syndactyly

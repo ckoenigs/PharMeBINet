@@ -1,3 +1,0 @@
-MONDO:0005812	influenza
-DOID 	 name 
-DOID:8469	influenza

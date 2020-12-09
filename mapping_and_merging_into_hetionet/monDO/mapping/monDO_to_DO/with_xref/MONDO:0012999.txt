@@ -1,3 +1,0 @@
-MONDO:0012999	guanidinoacetate methyltransferase deficiency
-DOID 	 name 
-DOID:0050799	guanidinoacetate methyltransferase deficiency

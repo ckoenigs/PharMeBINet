@@ -1,3 +1,0 @@
-MONDO:0000513	bone ameloblastoma
-DOID 	 name 
-DOID:0050895	bone ameloblastoma

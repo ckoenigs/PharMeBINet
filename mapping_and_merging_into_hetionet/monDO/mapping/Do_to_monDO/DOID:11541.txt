@@ -1,3 +1,0 @@
-DOID:11541	recurrent corneal erosion
-monDO ID 	 name 
-MONDO:0001306	recurrent corneal erosion

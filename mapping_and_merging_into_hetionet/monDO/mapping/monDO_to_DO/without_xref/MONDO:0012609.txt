@@ -1,3 +1,0 @@
-MONDO:0012609	Alzheimer's disease 12
-DOID 	 name 
-DOID:0110045	Alzheimer's disease 12

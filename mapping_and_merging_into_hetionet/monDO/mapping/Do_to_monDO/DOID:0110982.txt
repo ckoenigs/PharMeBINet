@@ -1,3 +1,0 @@
-DOID:0110982	Joubert syndrome 13
-monDO ID 	 name 
-MONDO:0013608	Joubert syndrome 13

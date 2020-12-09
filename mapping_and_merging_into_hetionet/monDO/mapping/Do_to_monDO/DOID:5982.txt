@@ -1,3 +1,0 @@
-DOID:5982	kidney fibrosarcoma
-monDO ID 	 name 
-MONDO:0003720	kidney fibrosarcoma

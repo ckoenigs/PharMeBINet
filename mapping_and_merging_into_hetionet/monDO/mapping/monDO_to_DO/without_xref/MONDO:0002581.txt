@@ -1,3 +1,0 @@
-MONDO:0002581	spindle cell rhabdomyosarcoma
-DOID 	 name 
-DOID:3260	spindle cell rhabdomyosarcoma

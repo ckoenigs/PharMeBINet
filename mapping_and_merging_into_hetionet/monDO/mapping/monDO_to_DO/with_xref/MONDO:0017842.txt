@@ -1,3 +1,0 @@
-MONDO:0017842	Senior-Loken syndrome
-DOID 	 name 
-DOID:0050576	Senior-Loken syndrome

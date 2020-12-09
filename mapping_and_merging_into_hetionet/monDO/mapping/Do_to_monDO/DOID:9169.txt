@@ -1,3 +1,0 @@
-DOID:9169	Wiskott-Aldrich syndrome
-monDO ID 	 name 
-MONDO:0010518	Wiskott-Aldrich syndrome

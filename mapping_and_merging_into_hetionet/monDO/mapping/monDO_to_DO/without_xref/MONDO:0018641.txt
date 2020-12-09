@@ -1,3 +1,0 @@
-MONDO:0018641	paroxysmal nocturnal hemoglobinuria
-DOID 	 name 
-DOID:0060284	paroxysmal nocturnal hemoglobinuria

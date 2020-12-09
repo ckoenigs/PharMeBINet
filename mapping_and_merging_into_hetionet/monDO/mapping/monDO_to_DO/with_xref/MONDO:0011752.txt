@@ -1,3 +1,0 @@
-MONDO:0011752	nephronophthisis 4
-DOID 	 name 
-DOID:0111115	nephronophthisis 4

@@ -1,3 +1,0 @@
-DOID:6376	hypersplenism
-monDO ID 	 name 
-MONDO:0006795	hypersplenism (disease)

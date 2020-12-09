@@ -1,3 +1,0 @@
-DOID:7962	tamoxifen-related endometrial lesion
-monDO ID 	 name 
-MONDO:0004414	tamoxifen-related endometrial lesion

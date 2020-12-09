@@ -1,3 +1,0 @@
-DOID:0060389	chromosome 10q23 deletion syndrome
-monDO ID 	 name 
-MONDO:0012830	chromosome 10q23 deletion syndrome

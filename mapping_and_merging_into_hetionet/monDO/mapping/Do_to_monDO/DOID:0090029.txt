@@ -1,3 +1,0 @@
-DOID:0090029	CINCA Syndrome
-monDO ID 	 name 
-MONDO:0011776	CINCA syndrome

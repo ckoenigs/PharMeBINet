@@ -1,3 +1,0 @@
-MONDO:0009277	glaucoma 3A
-DOID 	 name 
-DOID:11211	buphthalmos

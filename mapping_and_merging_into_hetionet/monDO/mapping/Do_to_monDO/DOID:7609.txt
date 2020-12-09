@@ -1,3 +1,0 @@
-DOID:7609	parathyroid transitional clear cell adenoma
-monDO ID 	 name 
-MONDO:0004303	parathyroid gland clear cell adenoma

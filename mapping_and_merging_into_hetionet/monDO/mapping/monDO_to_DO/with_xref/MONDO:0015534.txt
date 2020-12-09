@@ -1,3 +1,0 @@
-MONDO:0015534	juvenile xanthogranuloma
-DOID 	 name 
-DOID:4424	juvenile xanthogranuloma

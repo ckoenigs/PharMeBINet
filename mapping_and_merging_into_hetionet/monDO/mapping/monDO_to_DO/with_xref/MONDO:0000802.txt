@@ -1,3 +1,0 @@
-MONDO:0000802	indian prawn allergy
-DOID 	 name 
-DOID:0060527	Indian prawn allergy

@@ -1,3 +1,0 @@
-DOID:2862	glucosephosphate dehydrogenase deficiency
-monDO ID 	 name 
-MONDO:0005775	glucosephosphate dehydrogenase deficiency

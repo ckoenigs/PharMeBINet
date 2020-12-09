@@ -1,3 +1,0 @@
-DOID:6481	bladder signet ring cell adenocarcinoma
-monDO ID 	 name 
-MONDO:0003891	bladder signet ring cell adenocarcinoma

@@ -1,3 +1,0 @@
-DOID:13094	branch retinal artery occlusion
-monDO ID 	 name 
-MONDO:0001630	branch retinal artery occlusion

@@ -1,3 +1,0 @@
-MONDO:0005820	Lassa fever
-DOID 	 name 
-DOID:9537	Lassa fever

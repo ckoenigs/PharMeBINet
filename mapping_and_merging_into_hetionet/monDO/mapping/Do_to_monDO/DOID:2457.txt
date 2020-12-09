@@ -1,3 +1,0 @@
-DOID:2457	giant papillary conjunctivitis
-monDO ID 	 name 
-MONDO:0002308	giant papillary conjunctivitis

@@ -1,3 +1,0 @@
-DOID:3575	cavernous sinus thrombosis
-monDO ID 	 name 
-MONDO:0002694	cavernous sinus thrombosis

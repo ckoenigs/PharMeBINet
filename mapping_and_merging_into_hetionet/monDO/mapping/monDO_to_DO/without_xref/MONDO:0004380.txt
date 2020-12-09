@@ -1,3 +1,0 @@
-MONDO:0004380	dendritic cell sarcoma
-DOID 	 name 
-DOID:7849	dendritic cell sarcoma

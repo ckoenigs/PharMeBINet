@@ -1,3 +1,0 @@
-DOID:7127	radiation cystitis
-monDO ID 	 name 
-MONDO:0004112	radiation cystitis

@@ -1,3 +1,0 @@
-MONDO:0003058	microcystic meningioma
-DOID 	 name 
-DOID:4594	microcystic meningioma

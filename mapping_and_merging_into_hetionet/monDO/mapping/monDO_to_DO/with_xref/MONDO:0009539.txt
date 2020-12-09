@@ -1,3 +1,0 @@
-MONDO:0009539	lymphoblastic leukemia, acute, with lymphomatous features
-DOID 	 name 
-DOID:9952	acute lymphocytic leukemia

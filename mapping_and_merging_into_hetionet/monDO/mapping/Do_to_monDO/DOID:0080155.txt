@@ -1,3 +1,0 @@
-DOID:0080155	very long chain acyl-CoA dehydrogenase deficiency
-monDO ID 	 name 
-MONDO:0008723	very long chain acyl-CoA dehydrogenase deficiency

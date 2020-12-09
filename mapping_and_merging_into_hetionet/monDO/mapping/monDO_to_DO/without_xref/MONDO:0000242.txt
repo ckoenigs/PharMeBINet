@@ -1,3 +1,0 @@
-MONDO:0000242	tinea barbae
-DOID 	 name 
-DOID:0050096	tinea barbae

@@ -1,3 +1,0 @@
-MONDO:0005440	embryonal carcinoma
-DOID 	 name 
-DOID:3308	embryonal carcinoma

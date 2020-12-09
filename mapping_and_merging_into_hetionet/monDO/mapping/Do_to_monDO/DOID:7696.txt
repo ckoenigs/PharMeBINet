@@ -1,3 +1,0 @@
-DOID:7696	lung hilum cancer
-monDO ID 	 name 
-MONDO:0004332	lung hilum cancer

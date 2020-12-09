@@ -1,3 +1,0 @@
-MONDO:0004986	bladder carcinoma (disease)
-DOID 	 name 
-DOID:4007	bladder carcinoma

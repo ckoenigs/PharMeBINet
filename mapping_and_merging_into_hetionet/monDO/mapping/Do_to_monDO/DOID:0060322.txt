@@ -1,3 +1,0 @@
-DOID:0060322	mastoiditis
-monDO ID 	 name 
-MONDO:0000748	mastoiditis (disease)

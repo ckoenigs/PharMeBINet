@@ -1,3 +1,0 @@
-MONDO:0001807	familial combined hyperlipidemia
-DOID 	 name 
-DOID:13809	familial combined hyperlipidemia

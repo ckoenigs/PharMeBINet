@@ -130,7 +130,7 @@ def main():
     print(datetime.datetime.utcnow())
     print('Generate files')
 
-    for label in ['NDF_RT_MECHANISM_OF_ACTION_KIND', 'NDF_RT_PHYSIOLOGIC_EFFECT_KIND']:
+    for label in ['NDF_RT_MECHANISM_OF_ACTION_KIND', 'NDF_RT_PHYSIOLOGIC_EFFECT_KIND', 'NDF_RT_PHARMACOKINETICS_KIND', 'NDF_RT_THERAPEUTIC_CATEGORY_KIND']:
         name_without_ndf_and_lowercase = label.replace('NDF_RT_', '').lower()
 
         csv_mapper, csv_new = write_files(path_of_directory, name_without_ndf_and_lowercase, label)

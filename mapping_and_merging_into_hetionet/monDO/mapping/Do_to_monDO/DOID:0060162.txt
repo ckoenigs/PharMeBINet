@@ -1,3 +1,0 @@
-DOID:0060162	dentatorubral-pallidoluysian atrophy
-monDO ID 	 name 
-MONDO:0007435	dentatorubral-pallidoluysian atrophy

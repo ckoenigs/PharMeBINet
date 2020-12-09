@@ -1,3 +1,0 @@
-MONDO:0005992	trichinosis
-DOID 	 name 
-DOID:9784	trichinosis

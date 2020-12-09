@@ -1,3 +1,0 @@
-MONDO:0010162	tyrosinemia type III
-DOID 	 name 
-DOID:0050727	tyrosinemia type III

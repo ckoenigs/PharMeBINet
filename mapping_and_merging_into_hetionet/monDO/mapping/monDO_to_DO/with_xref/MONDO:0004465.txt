@@ -1,3 +1,0 @@
-MONDO:0004465	periampullary adenocarcinoma
-DOID 	 name 
-DOID:8110	periampullary adenocarcinoma

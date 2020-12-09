@@ -1,3 +1,0 @@
-MONDO:0012930	autosomal recessive severe congenital neutropenia due to G6PC3 deficiency
-DOID 	 name 
-DOID:0050590	severe congenital neutropenia

@@ -1,3 +1,0 @@
-DOID:5537	squamous cell bile duct carcinoma
-monDO ID 	 name 
-MONDO:0003500	squamous cell bile duct carcinoma

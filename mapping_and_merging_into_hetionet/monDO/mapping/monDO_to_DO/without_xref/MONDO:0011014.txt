@@ -1,3 +1,0 @@
-MONDO:0011014	pleuropulmonary blastoma
-DOID 	 name 
-DOID:4769	pleuropulmonary blastoma

@@ -1,3 +1,0 @@
-MONDO:0003591	kidney liposarcoma
-DOID 	 name 
-DOID:5699	kidney liposarcoma

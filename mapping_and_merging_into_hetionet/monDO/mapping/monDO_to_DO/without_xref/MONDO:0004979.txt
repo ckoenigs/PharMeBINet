@@ -1,3 +1,0 @@
-MONDO:0004979	asthma
-DOID 	 name 
-DOID:2841	asthma

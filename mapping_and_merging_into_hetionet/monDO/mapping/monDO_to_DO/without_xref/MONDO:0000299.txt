@@ -1,3 +1,0 @@
-MONDO:0000299	thelaziasis
-DOID 	 name 
-DOID:0050261	thelaziasis

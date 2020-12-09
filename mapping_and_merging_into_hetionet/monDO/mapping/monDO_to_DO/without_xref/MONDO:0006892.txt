@@ -1,3 +1,0 @@
-MONDO:0006892	partial sensory epilepsy
-DOID 	 name 
-DOID:3330	partial sensory epilepsy

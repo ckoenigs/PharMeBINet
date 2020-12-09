@@ -1,3 +1,0 @@
-DOID:0050774	rapadilino syndrome
-monDO ID 	 name 
-MONDO:0009955	rapadilino syndrome

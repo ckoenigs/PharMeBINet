@@ -1,3 +1,0 @@
-DOID:0111080	Fanconi anemia complementation group V
-monDO ID 	 name 
-MONDO:0014985	Fanconi anemia complementation group v

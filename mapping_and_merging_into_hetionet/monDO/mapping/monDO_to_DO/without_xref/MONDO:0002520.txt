@@ -1,3 +1,0 @@
-MONDO:0002520	acute porphyria
-DOID 	 name 
-DOID:3133	acute porphyria

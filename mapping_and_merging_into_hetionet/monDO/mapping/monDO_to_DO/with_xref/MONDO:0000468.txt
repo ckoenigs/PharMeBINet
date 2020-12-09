@@ -1,3 +1,0 @@
-MONDO:0000468	third-degree atrioventricular block
-DOID 	 name 
-DOID:0050823	third-degree atrioventricular block

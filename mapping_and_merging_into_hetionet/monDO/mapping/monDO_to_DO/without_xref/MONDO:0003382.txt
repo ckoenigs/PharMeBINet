@@ -1,3 +1,0 @@
-MONDO:0003382	eyelid disease
-DOID 	 name 
-DOID:530	eyelid disease

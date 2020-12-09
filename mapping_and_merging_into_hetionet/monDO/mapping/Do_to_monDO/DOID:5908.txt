@@ -1,3 +1,0 @@
-DOID:5908	penis verrucous carcinoma
-monDO ID 	 name 
-MONDO:0003698	penis verrucous carcinoma

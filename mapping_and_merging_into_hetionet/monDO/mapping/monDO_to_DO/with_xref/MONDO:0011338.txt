@@ -1,3 +1,0 @@
-MONDO:0011338	Omenn syndrome
-DOID 	 name 
-DOID:0060010	Omenn syndrome

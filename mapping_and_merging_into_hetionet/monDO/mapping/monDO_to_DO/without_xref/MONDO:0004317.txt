@@ -1,3 +1,0 @@
-MONDO:0004317	multiple spinal canal and spinal cord meningioma
-DOID 	 name 
-DOID:7646	multiple spinal canal and spinal cord meningioma

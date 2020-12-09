@@ -1,3 +1,0 @@
-DOID:0080169	tricuspid atresia
-monDO ID 	 name 
-MONDO:0011514	tricuspid atresia (disease)

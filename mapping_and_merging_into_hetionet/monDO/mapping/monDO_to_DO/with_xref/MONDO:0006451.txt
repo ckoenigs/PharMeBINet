@@ -1,5 +1,0 @@
-MONDO:0006451	thymic carcinoma
-DOID 	 name 
-DOID:3275	thymoma
-DOID:3284	thymic carcinoma
-DOID:4554	type C thymoma

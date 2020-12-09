@@ -1,3 +1,0 @@
-MONDO:0002792	cerebellar vermis medulloblastoma
-DOID 	 name 
-DOID:3860	cerebellar vermis medulloblastoma

@@ -1,3 +1,0 @@
-MONDO:0010233	heterotopia, periventricular, X-linked dominant
-DOID 	 name 
-DOID:0050454	periventricular nodular heterotopia

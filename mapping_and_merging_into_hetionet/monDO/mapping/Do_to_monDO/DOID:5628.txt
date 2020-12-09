@@ -1,3 +1,0 @@
-DOID:5628	ampulla of Vater adenosquamous carcinoma
-monDO ID 	 name 
-MONDO:0003553	ampulla of vater adenosquamous carcinoma

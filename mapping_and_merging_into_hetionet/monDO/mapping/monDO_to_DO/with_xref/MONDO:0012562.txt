@@ -1,3 +1,0 @@
-MONDO:0012562	holoprosencephaly 7
-DOID 	 name 
-DOID:0110876	holoprosencephaly 7

@@ -1,3 +1,0 @@
-DOID:0050174	Kunjin encephalitis
-monDO ID 	 name 
-MONDO:0000273	Kunjin encephalitis

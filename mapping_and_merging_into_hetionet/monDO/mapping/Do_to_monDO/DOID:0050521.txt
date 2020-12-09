@@ -1,3 +1,0 @@
-DOID:0050521	Oropouche fever
-monDO ID 	 name 
-MONDO:0000345	Oropouche fever

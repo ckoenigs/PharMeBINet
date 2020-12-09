@@ -1,3 +1,0 @@
-DOID:5997	non-proliferative fibrocystic change of the breast
-monDO ID 	 name 
-MONDO:0003724	non-proliferative fibrocystic change of the breast

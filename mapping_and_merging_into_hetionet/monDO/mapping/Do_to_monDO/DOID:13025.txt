@@ -1,3 +1,0 @@
-DOID:13025	retinopathy of prematurity
-monDO ID 	 name 
-MONDO:0006952	retinopathy of prematurity

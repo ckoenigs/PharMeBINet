@@ -1,3 +1,0 @@
-MONDO:0013200	hypertrophic cardiomyopathy 15
-DOID 	 name 
-DOID:0110321	hypertrophic cardiomyopathy 15

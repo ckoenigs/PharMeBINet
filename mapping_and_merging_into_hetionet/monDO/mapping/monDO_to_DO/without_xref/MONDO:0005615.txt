@@ -1,3 +1,0 @@
-MONDO:0005615	plasmacytoma
-DOID 	 name 
-DOID:3721	plasmacytoma

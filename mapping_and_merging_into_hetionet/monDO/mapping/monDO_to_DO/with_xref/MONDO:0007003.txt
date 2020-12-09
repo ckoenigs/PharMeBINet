@@ -1,3 +1,0 @@
-MONDO:0003709	twin-to-twin transfusion syndrome
-DOID 	 name 
-DOID:13576	twin-to-twin transfusion syndrome

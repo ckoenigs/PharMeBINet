@@ -1,3 +1,0 @@
-MONDO:0003100	nerve plexus neoplasm
-DOID 	 name 
-DOID:4693	nerve plexus neoplasm

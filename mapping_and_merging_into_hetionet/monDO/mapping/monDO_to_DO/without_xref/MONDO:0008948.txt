@@ -1,3 +1,0 @@
-MONDO:0008948	cerebrotendinous xanthomatosis
-DOID 	 name 
-DOID:4810	cerebrotendinous xanthomatosis

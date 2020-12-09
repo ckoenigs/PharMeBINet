@@ -1,3 +1,0 @@
-DOID:8913	dermatophytosis
-monDO ID 	 name 
-MONDO:0004678	dermatophytosis

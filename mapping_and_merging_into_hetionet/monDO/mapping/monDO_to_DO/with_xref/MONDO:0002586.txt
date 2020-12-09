@@ -1,3 +1,0 @@
-MONDO:0002586	thymus cancer
-DOID 	 name 
-DOID:3277	thymus cancer

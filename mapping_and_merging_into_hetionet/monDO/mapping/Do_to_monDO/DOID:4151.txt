@@ -1,3 +1,0 @@
-DOID:4151	skull base chordoma
-monDO ID 	 name 
-MONDO:0002892	skull base chordoma

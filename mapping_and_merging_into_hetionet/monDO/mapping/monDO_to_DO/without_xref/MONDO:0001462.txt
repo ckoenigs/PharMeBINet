@@ -1,3 +1,0 @@
-MONDO:0001462	descending colon cancer
-DOID 	 name 
-DOID:12190	descending colon cancer

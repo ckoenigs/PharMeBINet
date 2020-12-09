@@ -1,3 +1,0 @@
-MONDO:0003989	polyembryoma of the ovary
-DOID 	 name 
-DOID:6774	polyembryoma of the ovary

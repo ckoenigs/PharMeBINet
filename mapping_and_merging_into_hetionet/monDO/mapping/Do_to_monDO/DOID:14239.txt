@@ -1,3 +1,0 @@
-DOID:14239	gastrointestinal tularemia
-monDO ID 	 name 
-MONDO:0001916	gastrointestinal tularemia

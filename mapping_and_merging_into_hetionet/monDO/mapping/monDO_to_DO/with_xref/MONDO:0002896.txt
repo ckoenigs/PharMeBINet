@@ -1,3 +1,0 @@
-MONDO:0002896	primary syphilis
-DOID 	 name 
-DOID:4156	primary syphilis

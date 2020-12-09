@@ -1,3 +1,0 @@
-MONDO:0009299	46 XX gonadal dysgenesis
-DOID 	 name 
-DOID:14450	46 XX gonadal dysgenesis

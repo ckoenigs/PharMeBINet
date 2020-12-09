@@ -1,3 +1,0 @@
-DOID:10519	chronic fungal otitis externa
-monDO ID 	 name 
-MONDO:0001052	chronic fungal otitis externa

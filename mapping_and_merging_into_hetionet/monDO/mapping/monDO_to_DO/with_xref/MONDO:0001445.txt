@@ -1,3 +1,0 @@
-MONDO:0001445	neurogenic bladder (disease)
-DOID 	 name 
-DOID:12143	neurogenic bladder

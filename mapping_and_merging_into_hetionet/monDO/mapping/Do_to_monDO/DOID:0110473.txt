@@ -1,3 +1,0 @@
-DOID:0110473	autosomal recessive nonsyndromic deafness 18A
-monDO ID 	 name 
-MONDO:0011192	autosomal recessive nonsyndromic deafness 18A

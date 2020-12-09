@@ -1,3 +1,0 @@
-DOID:13341	parasitic conjunctivitis
-monDO ID 	 name 
-MONDO:0001690	parasitic conjunctivitis

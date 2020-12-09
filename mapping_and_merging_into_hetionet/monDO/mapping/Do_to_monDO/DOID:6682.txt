@@ -1,3 +1,0 @@
-DOID:6682	spondylolisthesis
-monDO ID 	 name 
-MONDO:0008475	spondylolisthesis (disease)

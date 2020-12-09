@@ -1,3 +1,0 @@
-DOID:13778	chancroid
-monDO ID 	 name 
-MONDO:0001797	chancroid

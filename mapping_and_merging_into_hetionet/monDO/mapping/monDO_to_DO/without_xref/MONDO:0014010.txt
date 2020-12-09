@@ -1,3 +1,0 @@
-MONDO:0014010	autosomal recessive congenital ichthyosis 9
-DOID 	 name 
-DOID:0060718	autosomal recessive congenital ichthyosis 9

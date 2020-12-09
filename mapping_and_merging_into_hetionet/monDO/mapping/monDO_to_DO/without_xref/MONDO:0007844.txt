@@ -1,3 +1,0 @@
-MONDO:0007844	hypogonadotropic hypogonadism 2 with or without anosmia
-DOID 	 name 
-DOID:0090083	hypogonadotropic hypogonadism 2 with or without anosmia

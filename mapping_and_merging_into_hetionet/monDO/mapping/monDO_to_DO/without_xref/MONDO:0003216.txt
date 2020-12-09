@@ -1,3 +1,0 @@
-MONDO:0003216	ureter adenocarcinoma
-DOID 	 name 
-DOID:4938	ureter adenocarcinoma

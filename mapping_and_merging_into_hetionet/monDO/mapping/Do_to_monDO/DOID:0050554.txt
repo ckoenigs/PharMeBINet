@@ -1,3 +1,0 @@
-DOID:0050554	X-linked sideroblastic anemia with ataxia
-monDO ID 	 name 
-MONDO:0010524	X-linked sideroblastic anemia with ataxia

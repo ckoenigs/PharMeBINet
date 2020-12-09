@@ -1,3 +1,0 @@
-MONDO:0006181	digestive system carcinoma
-DOID 	 name 
-DOID:0050922	gastrointestinal carcinoma

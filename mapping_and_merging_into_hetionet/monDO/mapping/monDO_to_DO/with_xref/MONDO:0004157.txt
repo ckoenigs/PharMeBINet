@@ -1,3 +1,0 @@
-MONDO:0003709	pancreatic mucinous cystadenoma
-DOID 	 name 
-DOID:7235	pancreatic mucinous cystadenoma

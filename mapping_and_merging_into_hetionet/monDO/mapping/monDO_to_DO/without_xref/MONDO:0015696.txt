@@ -1,3 +1,0 @@
-MONDO:0015696	Good syndrome
-DOID 	 name 
-DOID:0060028	Good syndrome

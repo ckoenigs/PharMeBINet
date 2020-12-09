@@ -1,3 +1,0 @@
-MONDO:0003709	obsolete urethral diverticulum (disease)
-DOID 	 name 
-DOID:9341	urethral diverticulum

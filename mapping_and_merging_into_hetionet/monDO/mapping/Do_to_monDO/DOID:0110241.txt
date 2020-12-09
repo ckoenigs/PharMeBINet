@@ -1,3 +1,0 @@
-DOID:0110241	cataract 41
-monDO ID 	 name 
-MONDO:0007287	cataract 41

@@ -1,3 +1,0 @@
-DOID:0110594	primary ciliary dyskinesia 1
-monDO ID 	 name 
-MONDO:0009484	primary ciliary dyskinesia 1

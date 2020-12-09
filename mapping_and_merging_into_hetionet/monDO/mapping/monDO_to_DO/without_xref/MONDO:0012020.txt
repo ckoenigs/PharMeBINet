@@ -1,3 +1,0 @@
-MONDO:0012020	chromosome 22q11.2 microduplication syndrome
-DOID 	 name 
-DOID:0060436	chromosome 22q11.2 microduplication syndrome

@@ -1,3 +1,0 @@
-DOID:0060375	orofaciodigital syndrome V
-monDO ID 	 name 
-MONDO:0008267	orofaciodigital syndrome V

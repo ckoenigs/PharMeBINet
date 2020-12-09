@@ -1,3 +1,0 @@
-MONDO:0000538	spindle epithelial tumor with thymus-like differentiation tumor
-DOID 	 name 
-DOID:0050923	spindle epithelial tumor with thymus-like differentiation tumor

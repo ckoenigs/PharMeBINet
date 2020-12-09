@@ -1,3 +1,0 @@
-MONDO:0005904	pericarditis (disease)
-DOID 	 name 
-DOID:1787	pericarditis

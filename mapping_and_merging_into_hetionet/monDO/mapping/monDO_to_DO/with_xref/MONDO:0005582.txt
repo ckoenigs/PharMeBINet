@@ -1,3 +1,0 @@
-MONDO:0005582	binge eating
-DOID 	 name 
-DOID:12129	bulimia nervosa

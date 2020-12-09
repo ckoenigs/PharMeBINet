@@ -1,3 +1,0 @@
-MONDO:0004922	developmental coordination disorder
-DOID 	 name 
-DOID:9923	developmental coordination disorder

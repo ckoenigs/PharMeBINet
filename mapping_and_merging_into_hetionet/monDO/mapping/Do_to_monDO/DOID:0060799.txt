@@ -1,3 +1,0 @@
-DOID:0060799	syndromic X-linked intellectual disability Lubs type
-monDO ID 	 name 
-MONDO:0010283	syndromic X-linked intellectual disability Lubs type

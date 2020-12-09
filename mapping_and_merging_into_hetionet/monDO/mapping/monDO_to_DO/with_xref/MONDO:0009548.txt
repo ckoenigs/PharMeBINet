@@ -1,3 +1,0 @@
-MONDO:0009548	renal hypomagnesemia 5 with ocular involvement
-DOID 	 name 
-DOID:0060881	renal hypomagnesemia 5 with ocular involvement

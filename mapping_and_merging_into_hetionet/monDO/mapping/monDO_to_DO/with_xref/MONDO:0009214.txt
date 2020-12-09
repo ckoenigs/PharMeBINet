@@ -1,3 +1,0 @@
-MONDO:0009214	Fanconi anemia complementation group D2
-DOID 	 name 
-DOID:0111083	Fanconi anemia complementation group D2

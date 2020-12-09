@@ -1,3 +1,0 @@
-MONDO:0002717	spinal cord intramedullary teratoma
-DOID 	 name 
-DOID:3639	spinal cord intramedullary teratoma

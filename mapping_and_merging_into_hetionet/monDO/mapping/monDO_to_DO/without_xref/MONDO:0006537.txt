@@ -1,3 +1,0 @@
-MONDO:0006537	conjunctival pigmentation
-DOID 	 name 
-DOID:12304	conjunctival pigmentation

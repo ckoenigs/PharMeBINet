@@ -1,3 +1,0 @@
-DOID:0060504	apple allergy
-monDO ID 	 name 
-MONDO:0000779	apple allergy

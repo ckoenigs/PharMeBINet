@@ -1,3 +1,0 @@
-MONDO:0002646	viral laryngitis
-DOID 	 name 
-DOID:3436	viral laryngitis

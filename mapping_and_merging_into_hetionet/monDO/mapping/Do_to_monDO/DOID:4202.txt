@@ -1,3 +1,0 @@
-DOID:4202	brain stem glioma
-monDO ID 	 name 
-MONDO:0002911	brain stem glioma

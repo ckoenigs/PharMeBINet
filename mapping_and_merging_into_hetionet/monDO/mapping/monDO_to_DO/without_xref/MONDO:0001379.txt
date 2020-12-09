@@ -1,3 +1,0 @@
-MONDO:0001379	ureteric orifice cancer
-DOID 	 name 
-DOID:11818	ureteric orifice cancer

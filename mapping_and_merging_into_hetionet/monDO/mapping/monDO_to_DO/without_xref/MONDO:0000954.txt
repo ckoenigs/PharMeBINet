@@ -1,3 +1,0 @@
-MONDO:0000954	Meckel diverticulum cancer
-DOID 	 name 
-DOID:10152	Meckel's diverticulum cancer

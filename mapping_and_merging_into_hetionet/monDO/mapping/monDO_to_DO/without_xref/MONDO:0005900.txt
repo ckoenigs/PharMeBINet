@@ -1,3 +1,0 @@
-MONDO:0005900	parotitis
-DOID 	 name 
-DOID:10301	parotitis

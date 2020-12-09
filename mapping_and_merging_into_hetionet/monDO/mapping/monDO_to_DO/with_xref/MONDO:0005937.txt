@@ -1,3 +1,0 @@
-MONDO:0005937	REM sleep behavior disorder
-DOID 	 name 
-DOID:9091	REM sleep behavior disorder

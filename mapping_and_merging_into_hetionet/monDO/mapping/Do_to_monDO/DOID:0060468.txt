@@ -1,3 +1,0 @@
-DOID:0060468	Holt-Oram syndrome
-monDO ID 	 name 
-MONDO:0007732	Holt-Oram syndrome

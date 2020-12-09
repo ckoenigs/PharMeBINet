@@ -1,3 +1,0 @@
-MONDO:0015636	dirofilariasis
-DOID 	 name 
-DOID:1082	dirofilariasis

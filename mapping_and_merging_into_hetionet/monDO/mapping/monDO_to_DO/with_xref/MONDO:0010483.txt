@@ -1,3 +1,0 @@
-MONDO:0010483	X-linked intellectual disability, Cantagrel type
-DOID 	 name 
-DOID:0050776	non-syndromic X-linked intellectual disability

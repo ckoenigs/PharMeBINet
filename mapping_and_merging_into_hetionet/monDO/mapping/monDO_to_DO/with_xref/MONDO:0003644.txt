@@ -1,3 +1,0 @@
-MONDO:0003644	cavernous hemangioma of colon
-DOID 	 name 
-DOID:5775	cavernous hemangioma of colon

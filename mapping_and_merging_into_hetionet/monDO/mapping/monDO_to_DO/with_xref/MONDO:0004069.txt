@@ -1,3 +1,0 @@
-MONDO:0004069	inborn mitochondrial metabolism disorder
-DOID 	 name 
-DOID:700	mitochondrial metabolism disease

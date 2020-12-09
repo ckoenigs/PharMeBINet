@@ -1,3 +1,0 @@
-MONDO:0003096	deep angioma
-DOID 	 name 
-DOID:469	deep angioma

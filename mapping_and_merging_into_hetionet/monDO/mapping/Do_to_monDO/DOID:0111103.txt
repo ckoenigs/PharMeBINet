@@ -1,3 +1,0 @@
-DOID:0111103	maturity-onset diabetes of the young type 4
-monDO ID 	 name 
-MONDO:0011667	maturity-onset diabetes of the young type 4

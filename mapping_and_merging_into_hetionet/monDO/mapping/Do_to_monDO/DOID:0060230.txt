@@ -1,3 +1,0 @@
-DOID:0060230	basal ganglia calcification
-monDO ID 	 name 
-MONDO:0000720	basal ganglia calcification

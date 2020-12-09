@@ -1,3 +1,0 @@
-MONDO:0003081	thalamic disease
-DOID 	 name 
-DOID:4662	thalamic disease

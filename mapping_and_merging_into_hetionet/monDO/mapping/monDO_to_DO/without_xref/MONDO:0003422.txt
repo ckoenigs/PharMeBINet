@@ -1,3 +1,0 @@
-MONDO:0003422	lung adenoma
-DOID 	 name 
-DOID:5386	lung adenoma

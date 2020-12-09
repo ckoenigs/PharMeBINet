@@ -1,3 +1,0 @@
-DOID:0050464	Farber lipogranulomatosis
-monDO ID 	 name 
-MONDO:0009218	Farber lipogranulomatosis

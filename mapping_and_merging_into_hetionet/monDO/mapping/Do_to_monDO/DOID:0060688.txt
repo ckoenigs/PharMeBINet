@@ -1,3 +1,0 @@
-DOID:0060688	arteriovenous malformations of the brain
-monDO ID 	 name 
-MONDO:0007154	arteriovenous malformations of the brain

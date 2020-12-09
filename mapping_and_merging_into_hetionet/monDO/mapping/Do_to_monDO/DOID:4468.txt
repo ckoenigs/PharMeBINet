@@ -1,3 +1,0 @@
-DOID:4468	clear cell adenocarcinoma
-monDO ID 	 name 
-MONDO:0005004	clear cell adenocarcinoma

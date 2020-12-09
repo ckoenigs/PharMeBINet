@@ -1,3 +1,0 @@
-MONDO:0001284	endometriosis of intestine
-DOID 	 name 
-DOID:11428	endometriosis of intestine

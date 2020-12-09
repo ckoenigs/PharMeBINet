@@ -1,3 +1,0 @@
-DOID:0080100	congenital myopathy
-monDO ID 	 name 
-MONDO:0019952	congenital myopathy

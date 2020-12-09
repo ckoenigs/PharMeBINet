@@ -1,3 +1,0 @@
-MONDO:0004701	uterine polyp
-DOID 	 name 
-DOID:9042	polyp of corpus uteri

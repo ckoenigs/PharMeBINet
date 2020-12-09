@@ -1,3 +1,0 @@
-DOID:0050953	X-linked hereditary ataxia
-monDO ID 	 name 
-MONDO:0000559	X-linked hereditary ataxia

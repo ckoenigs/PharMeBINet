@@ -1,3 +1,0 @@
-DOID:848	arthritis
-monDO ID 	 name 
-MONDO:0005578	arthritis

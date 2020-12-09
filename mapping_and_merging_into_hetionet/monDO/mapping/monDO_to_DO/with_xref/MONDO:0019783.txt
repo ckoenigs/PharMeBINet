@@ -1,3 +1,0 @@
-MONDO:0019783	neovascular glaucoma
-DOID 	 name 
-DOID:1687	neovascular glaucoma

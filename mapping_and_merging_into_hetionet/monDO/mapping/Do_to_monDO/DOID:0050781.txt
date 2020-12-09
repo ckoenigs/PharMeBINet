@@ -1,3 +1,0 @@
-DOID:0050781	Ogden syndrome
-monDO ID 	 name 
-MONDO:0010457	Ogden syndrome

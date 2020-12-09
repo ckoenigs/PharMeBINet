@@ -1,3 +1,0 @@
-DOID:988	mitral valve prolapse
-monDO ID 	 name 
-MONDO:0004910	mitral valve prolapse (disease)

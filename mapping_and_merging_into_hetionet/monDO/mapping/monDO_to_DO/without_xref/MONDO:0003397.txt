@@ -1,3 +1,0 @@
-MONDO:0003397	gingival hypertrophy
-DOID 	 name 
-DOID:5338	gingival hypertrophy

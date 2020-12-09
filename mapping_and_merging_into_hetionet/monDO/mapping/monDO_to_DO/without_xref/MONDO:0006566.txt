@@ -1,3 +1,0 @@
-MONDO:0006566	keratosis
-DOID 	 name 
-DOID:161	keratosis

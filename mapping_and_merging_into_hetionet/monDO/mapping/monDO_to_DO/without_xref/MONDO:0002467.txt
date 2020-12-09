@@ -1,3 +1,0 @@
-MONDO:0002467	inner ear disease
-DOID 	 name 
-DOID:2952	inner ear disease

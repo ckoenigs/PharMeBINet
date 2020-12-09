@@ -1,3 +1,0 @@
-DOID:5246	hilar cholangiocellular carcinoma
-monDO ID 	 name 
-MONDO:0003345	hilar cholangiocarcinoma

@@ -1,3 +1,0 @@
-MONDO:0001436	hemosiderosis
-DOID 	 name 
-DOID:12119	hemosiderosis

@@ -1,3 +1,0 @@
-DOID:5026	sclerosing hepatic carcinoma
-monDO ID 	 name 
-MONDO:0003246	sclerosing hepatic carcinoma

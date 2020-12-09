@@ -1,3 +1,0 @@
-DOID:0060414	chromosome 2p12-p11.2 deletion syndrome
-monDO ID 	 name 
-MONDO:0013309	chromosome 2p12-p11.2 deletion syndrome

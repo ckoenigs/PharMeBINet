@@ -1,3 +1,0 @@
-DOID:4003	Schneiderian carcinoma
-monDO ID 	 name 
-MONDO:0002831	non-keratinizing sinonasal squamous cell carcinoma

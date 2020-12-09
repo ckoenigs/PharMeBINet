@@ -1,3 +1,0 @@
-DOID:12349	primary eye hypotony
-monDO ID 	 name 
-MONDO:0001503	primary eye hypotony

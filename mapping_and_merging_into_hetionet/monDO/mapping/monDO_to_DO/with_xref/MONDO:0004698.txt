@@ -1,3 +1,0 @@
-MONDO:0004698	intestine carcinoma in situ
-DOID 	 name 
-DOID:9024	intestine carcinoma in situ

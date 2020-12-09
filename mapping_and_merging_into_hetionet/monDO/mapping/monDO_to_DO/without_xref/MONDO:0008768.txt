@@ -1,3 +1,0 @@
-MONDO:0008768	neuronal ceroid lipofuscinosis 4A
-DOID 	 name 
-DOID:0110730	neuronal ceroid lipofuscinosis 4A

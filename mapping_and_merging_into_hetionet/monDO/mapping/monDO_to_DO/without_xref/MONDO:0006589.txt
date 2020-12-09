@@ -1,3 +1,0 @@
-MONDO:0006589	occupational dermatitis
-DOID 	 name 
-DOID:4404	occupational dermatitis

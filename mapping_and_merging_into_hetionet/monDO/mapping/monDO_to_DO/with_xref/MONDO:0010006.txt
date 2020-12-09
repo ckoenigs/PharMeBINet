@@ -1,3 +1,0 @@
-MONDO:0010006	Sandhoff disease
-DOID 	 name 
-DOID:3323	Sandhoff disease

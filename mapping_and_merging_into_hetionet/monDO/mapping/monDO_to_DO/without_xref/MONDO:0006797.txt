@@ -1,3 +1,0 @@
-MONDO:0006797	hypertensive retinopathy
-DOID 	 name 
-DOID:11561	hypertensive retinopathy

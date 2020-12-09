@@ -1,3 +1,0 @@
-MONDO:0000983	exhibitionism
-DOID 	 name 
-DOID:10236	exhibitionism

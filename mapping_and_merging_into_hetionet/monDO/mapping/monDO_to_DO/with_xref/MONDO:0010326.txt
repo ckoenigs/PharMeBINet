@@ -1,3 +1,0 @@
-MONDO:0010326	mental retardation, X-linked 46
-DOID 	 name 
-DOID:0050776	non-syndromic X-linked intellectual disability

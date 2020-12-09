@@ -1,3 +1,0 @@
-MONDO:0009353	homocystinuria due to methylene tetrahydrofolate reductase deficiency
-DOID 	 name 
-DOID:9263	homocystinuria

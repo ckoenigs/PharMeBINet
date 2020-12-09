@@ -1,3 +1,0 @@
-MONDO:0004348	retinal telangiectasia
-DOID 	 name 
-DOID:7736	retinal telangiectasia

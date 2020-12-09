@@ -1,3 +1,0 @@
-DOID:5752	cervical serous adenocarcinoma
-monDO ID 	 name 
-MONDO:0003631	cervical serous adenocarcinoma

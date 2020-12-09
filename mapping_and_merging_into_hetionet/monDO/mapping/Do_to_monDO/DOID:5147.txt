@@ -1,3 +1,0 @@
-DOID:5147	dartoic leiomyoma
-monDO ID 	 name 
-MONDO:0003301	dartoic leiomyoma

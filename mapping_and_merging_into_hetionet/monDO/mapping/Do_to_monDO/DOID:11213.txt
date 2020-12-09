@@ -1,3 +1,0 @@
-DOID:11213	acute contagious conjunctivitis
-monDO ID 	 name 
-MONDO:0001226	acute contagious conjunctivitis

@@ -1,3 +1,0 @@
-MONDO:0014388	familial median cleft of the upper and lower lips
-DOID 	 name 
-DOID:0050567	orofacial cleft

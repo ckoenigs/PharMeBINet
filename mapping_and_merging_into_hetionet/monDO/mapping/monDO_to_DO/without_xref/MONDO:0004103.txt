@@ -1,3 +1,0 @@
-MONDO:0004103	tall cell variant thyroid gland papillary carcinoma
-DOID 	 name 
-DOID:7089	tall cell variant papillary carcinoma

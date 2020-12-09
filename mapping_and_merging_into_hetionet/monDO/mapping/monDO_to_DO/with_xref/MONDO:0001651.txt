@@ -1,3 +1,0 @@
-MONDO:0001651	scrotum squamous cell carcinoma
-DOID 	 name 
-DOID:13159	scrotum squamous cell carcinoma

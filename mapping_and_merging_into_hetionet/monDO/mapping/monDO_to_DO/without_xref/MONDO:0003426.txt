@@ -1,3 +1,0 @@
-MONDO:0003426	clear cell adenoma
-DOID 	 name 
-DOID:5390	clear cell adenoma

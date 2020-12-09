@@ -1,3 +1,0 @@
-MONDO:0020121	muscular dystrophy
-DOID 	 name 
-DOID:9884	muscular dystrophy

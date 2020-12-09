@@ -1,3 +1,0 @@
-MONDO:0001318	functional gastric disease
-DOID 	 name 
-DOID:1159	functional gastric disease

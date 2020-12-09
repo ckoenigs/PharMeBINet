@@ -1,3 +1,0 @@
-MONDO:0002677	conventional fibrosarcoma
-DOID 	 name 
-DOID:3517	conventional fibrosarcoma

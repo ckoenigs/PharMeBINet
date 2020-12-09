@@ -1,3 +1,0 @@
-DOID:0110490	autosomal recessive nonsyndromic deafness 31
-monDO ID 	 name 
-MONDO:0011767	autosomal recessive nonsyndromic deafness 31

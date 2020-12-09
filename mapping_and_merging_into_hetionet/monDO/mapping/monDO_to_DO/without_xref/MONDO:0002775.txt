@@ -1,3 +1,0 @@
-MONDO:0002775	anovulation
-DOID 	 name 
-DOID:3781	anovulation

@@ -1,3 +1,0 @@
-DOID:7429	childhood brain germinoma
-monDO ID 	 name 
-MONDO:0004217	childhood brain germinoma

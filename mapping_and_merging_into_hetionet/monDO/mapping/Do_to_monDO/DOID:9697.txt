@@ -1,3 +1,0 @@
-DOID:9697	gonococcal keratitis
-monDO ID 	 name 
-MONDO:0004852	gonococcal keratitis

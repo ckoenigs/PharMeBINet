@@ -1,3 +1,0 @@
-DOID:476	breast hemangioma
-monDO ID 	 name 
-MONDO:0003126	breast hemangioma

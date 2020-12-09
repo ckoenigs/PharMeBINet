@@ -1,3 +1,0 @@
-MONDO:0001032	Mooren's ulcer
-DOID 	 name 
-DOID:10439	Mooren's ulcer

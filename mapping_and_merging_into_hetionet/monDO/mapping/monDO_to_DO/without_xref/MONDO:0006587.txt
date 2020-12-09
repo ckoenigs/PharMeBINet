@@ -1,3 +1,0 @@
-MONDO:0003709	nodular nonsuppurative panniculitis
-DOID 	 name 
-DOID:1525	nodular nonsuppurative panniculitis

@@ -1,3 +1,0 @@
-DOID:0050723	PSAT deficiency
-monDO ID 	 name 
-MONDO:0012596	PSAT deficiency

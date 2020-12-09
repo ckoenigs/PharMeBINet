@@ -1,3 +1,0 @@
-MONDO:0005429	prion disease
-DOID 	 name 
-DOID:649	prion disease

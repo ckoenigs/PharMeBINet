@@ -1,3 +1,0 @@
-MONDO:0002679	cerebral infarction
-DOID 	 name 
-DOID:3526	cerebral infarction

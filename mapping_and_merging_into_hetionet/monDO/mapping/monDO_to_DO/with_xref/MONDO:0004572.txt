@@ -1,3 +1,0 @@
-MONDO:0004572	cyclothymic disorder
-DOID 	 name 
-DOID:845	cyclothymic disorder

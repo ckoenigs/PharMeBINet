@@ -1,3 +1,0 @@
-DOID:2064	vulvar syringoma
-monDO ID 	 name 
-MONDO:0002190	vulvar syringoma

@@ -1,3 +1,0 @@
-MONDO:0003709	dendritic cell thymoma
-DOID 	 name 
-DOID:3282	dendritic cell thymoma

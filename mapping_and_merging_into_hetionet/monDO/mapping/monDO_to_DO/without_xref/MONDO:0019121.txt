@@ -1,3 +1,0 @@
-MONDO:0019121	pneumocystosis
-DOID 	 name 
-DOID:11339	pneumocystosis

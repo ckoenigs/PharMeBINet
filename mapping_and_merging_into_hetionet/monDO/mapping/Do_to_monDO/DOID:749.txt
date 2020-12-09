@@ -1,3 +1,0 @@
-DOID:749	active peptic ulcer disease
-monDO ID 	 name 
-MONDO:0004242	active peptic ulcer disease

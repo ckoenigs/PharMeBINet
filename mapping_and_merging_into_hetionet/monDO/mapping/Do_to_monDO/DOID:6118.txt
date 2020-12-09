@@ -1,3 +1,0 @@
-DOID:6118	renal pelvis inverted papilloma
-monDO ID 	 name 
-MONDO:0003776	renal pelvis inverted papilloma

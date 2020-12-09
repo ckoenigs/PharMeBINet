@@ -1,3 +1,0 @@
-MONDO:0002444	melancholia
-DOID 	 name 
-DOID:2848	melancholia

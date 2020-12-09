@@ -1,3 +1,0 @@
-MONDO:0002328	intracranial hemangioma
-DOID 	 name 
-DOID:2517	intracranial structure hemangioma

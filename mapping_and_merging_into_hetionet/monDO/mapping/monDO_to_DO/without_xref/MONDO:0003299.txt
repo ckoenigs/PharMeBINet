@@ -1,3 +1,0 @@
-MONDO:0003299	colorectal leiomyoma
-DOID 	 name 
-DOID:5143	large bowel leiomyoma

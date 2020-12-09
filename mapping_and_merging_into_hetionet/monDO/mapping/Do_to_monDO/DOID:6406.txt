@@ -1,3 +1,0 @@
-DOID:6406	double outlet right ventricle
-monDO ID 	 name 
-MONDO:0018089	double outlet right ventricle

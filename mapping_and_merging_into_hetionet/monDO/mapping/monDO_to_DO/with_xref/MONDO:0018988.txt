@@ -1,3 +1,0 @@
-MONDO:0018988	Iridocorneal endothelial syndrome
-DOID 	 name 
-DOID:11554	Chandler syndrome

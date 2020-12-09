@@ -1,3 +1,0 @@
-DOID:3825	Shwartzman phenomenon
-monDO ID 	 name 
-MONDO:0002783	Shwartzman phenomenon

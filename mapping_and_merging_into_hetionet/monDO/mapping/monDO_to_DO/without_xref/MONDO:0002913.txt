@@ -1,3 +1,0 @@
-MONDO:0002913	cerebellar neoplasm
-DOID 	 name 
-DOID:4205	cerebellum cancer

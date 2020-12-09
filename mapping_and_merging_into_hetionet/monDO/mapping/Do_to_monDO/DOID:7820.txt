@@ -1,3 +1,0 @@
-DOID:7820	sphenocavernous meningioma
-monDO ID 	 name 
-MONDO:0004370	sphenocavernous meningioma

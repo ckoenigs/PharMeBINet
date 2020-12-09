@@ -1,3 +1,0 @@
-MONDO:0003684	clear cell chondrosarcoma
-DOID 	 name 
-DOID:5867	clear cell chondrosarcoma

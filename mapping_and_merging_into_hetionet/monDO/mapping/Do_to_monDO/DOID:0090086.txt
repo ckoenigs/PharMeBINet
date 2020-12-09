@@ -1,3 +1,0 @@
-DOID:0090086	hypogonadotropic hypogonadism 6 with or without anosmia
-monDO ID 	 name 
-MONDO:0012988	hypogonadotropic hypogonadism 6 with or without anosmia

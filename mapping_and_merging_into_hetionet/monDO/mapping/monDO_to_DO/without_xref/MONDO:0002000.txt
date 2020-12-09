@@ -1,3 +1,0 @@
-MONDO:0002000	anaerobic meningitis
-DOID 	 name 
-DOID:14559	anaerobic meningitis

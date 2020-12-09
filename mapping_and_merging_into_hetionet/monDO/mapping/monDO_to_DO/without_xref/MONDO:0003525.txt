@@ -1,3 +1,0 @@
-MONDO:0003525	pancreatic gastrin-producing neuroendocrine tumor
-DOID 	 name 
-DOID:5580	pancreatic gastrinoma

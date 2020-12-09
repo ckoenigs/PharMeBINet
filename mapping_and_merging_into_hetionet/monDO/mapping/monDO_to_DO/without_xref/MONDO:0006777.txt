@@ -1,3 +1,0 @@
-MONDO:0006777	hairy tongue
-DOID 	 name 
-DOID:13500	hairy tongue

@@ -1,3 +1,0 @@
-MONDO:0005034	follicular thyroid carcinoma (disease)
-DOID 	 name 
-DOID:3962	follicular thyroid carcinoma

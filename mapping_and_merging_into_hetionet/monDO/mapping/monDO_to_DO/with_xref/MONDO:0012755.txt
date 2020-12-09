@@ -1,3 +1,0 @@
-MONDO:0012755	episodic ataxia type 7
-DOID 	 name 
-DOID:0050995	episodic ataxia type 7

@@ -1,3 +1,0 @@
-MONDO:0001592	prolapse of female genital organ
-DOID 	 name 
-DOID:1284	prolapse of female genital organ

@@ -1,3 +1,0 @@
-DOID:5830	cervical endometrioid adenocarcinoma
-monDO ID 	 name 
-MONDO:0003665	cervical endometrioid adenocarcinoma

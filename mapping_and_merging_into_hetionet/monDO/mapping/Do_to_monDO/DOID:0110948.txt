@@ -1,3 +1,0 @@
-DOID:0110948	Waardenburg syndrome type 1
-monDO ID 	 name 
-MONDO:0008670	Waardenburg syndrome type 1

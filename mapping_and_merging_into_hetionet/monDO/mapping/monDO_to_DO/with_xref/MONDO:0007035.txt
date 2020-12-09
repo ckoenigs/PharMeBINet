@@ -1,3 +1,0 @@
-MONDO:0007035	acanthosis nigricans (disease)
-DOID 	 name 
-DOID:3138	acanthosis nigricans

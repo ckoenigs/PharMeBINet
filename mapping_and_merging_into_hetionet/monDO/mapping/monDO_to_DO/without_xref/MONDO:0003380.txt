@@ -1,3 +1,0 @@
-MONDO:0003709	endometrial clear cell adenocarcinoma
-DOID 	 name 
-DOID:5299	endometrial clear cell adenocarcinoma

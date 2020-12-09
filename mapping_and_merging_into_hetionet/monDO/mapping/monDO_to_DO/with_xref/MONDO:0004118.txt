@@ -1,3 +1,0 @@
-MONDO:0004118	cystitis cystica
-DOID 	 name 
-DOID:7138	cystitis cystica

@@ -1,3 +1,0 @@
-MONDO:0000794	beta-lactam allergy
-DOID 	 name 
-DOID:0060519	beta-lactam allergy

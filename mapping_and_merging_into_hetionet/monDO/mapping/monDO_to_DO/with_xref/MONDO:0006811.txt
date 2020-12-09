@@ -1,3 +1,0 @@
-MONDO:0006811	intracranial hypotension
-DOID 	 name 
-DOID:4723	intracranial hypotension

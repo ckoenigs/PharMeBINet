@@ -1,3 +1,0 @@
-MONDO:0010973	autosomal dominant nonsyndromic deafness 5
-DOID 	 name 
-DOID:0110575	autosomal dominant nonsyndromic deafness 5

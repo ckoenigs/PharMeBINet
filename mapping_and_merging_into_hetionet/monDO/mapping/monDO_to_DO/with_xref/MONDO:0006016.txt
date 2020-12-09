@@ -1,4 +1,0 @@
-MONDO:0003709	West nile encephalitis
-DOID 	 name 
-DOID:2365	West Nile encephalitis
-DOID:2366	West Nile fever

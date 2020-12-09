@@ -1,3 +1,0 @@
-MONDO:0004931	residual stage corticosteroid-induced glaucoma
-DOID 	 name 
-DOID:9948	residual stage corticosteroid-induced glaucoma

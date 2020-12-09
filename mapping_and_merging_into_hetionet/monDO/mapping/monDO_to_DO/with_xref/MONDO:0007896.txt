@@ -1,3 +1,0 @@
-MONDO:0007896	acute monocytic leukemia
-DOID 	 name 
-DOID:8864	acute monocytic leukemia

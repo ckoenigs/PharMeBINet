@@ -1,3 +1,0 @@
-DOID:13074	tinea unguium
-monDO ID 	 name 
-MONDO:0001628	tinea unguium

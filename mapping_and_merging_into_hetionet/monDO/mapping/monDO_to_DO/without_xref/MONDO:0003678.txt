@@ -1,3 +1,0 @@
-MONDO:0003678	silent myocardial infarction
-DOID 	 name 
-DOID:5854	silent myocardial infarction

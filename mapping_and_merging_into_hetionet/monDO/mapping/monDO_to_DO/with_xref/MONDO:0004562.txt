@@ -1,3 +1,0 @@
-MONDO:0004562	breast apocrine carcinoma in situ
-DOID 	 name 
-DOID:8428	breast apocrine carcinoma in situ

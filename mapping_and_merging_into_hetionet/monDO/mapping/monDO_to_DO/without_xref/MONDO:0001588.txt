@@ -1,3 +1,0 @@
-MONDO:0001588	chronic lacrimal gland enlargement
-DOID 	 name 
-DOID:12809	chronic lacrimal gland enlargement

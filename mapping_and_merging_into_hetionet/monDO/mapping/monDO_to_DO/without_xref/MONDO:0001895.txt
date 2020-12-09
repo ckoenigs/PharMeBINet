@@ -1,3 +1,0 @@
-MONDO:0001895	acute retrobulbar neuritis
-DOID 	 name 
-DOID:14155	acute retrobulbar neuritis

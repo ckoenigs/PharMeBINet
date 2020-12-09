@@ -1,3 +1,0 @@
-MONDO:0009345	histidinemia
-DOID 	 name 
-DOID:0060168	histidinemia

@@ -1,3 +1,0 @@
-MONDO:0004150	breast giant fibroadenoma
-DOID 	 name 
-DOID:7223	breast giant fibroadenoma

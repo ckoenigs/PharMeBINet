@@ -1,3 +1,0 @@
-DOID:0110771	hereditary spastic paraplegia 18
-monDO ID 	 name 
-MONDO:0012639	hereditary spastic paraplegia 18

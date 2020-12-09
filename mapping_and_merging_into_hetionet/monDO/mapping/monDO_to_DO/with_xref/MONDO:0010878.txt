@@ -1,3 +1,0 @@
-MONDO:0010878	hereditary spastic paraplegia 6
-DOID 	 name 
-DOID:0110811	hereditary spastic paraplegia 6

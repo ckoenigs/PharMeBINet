@@ -1,3 +1,0 @@
-MONDO:0006938	pyelitis
-DOID 	 name 
-DOID:2744	pyelitis

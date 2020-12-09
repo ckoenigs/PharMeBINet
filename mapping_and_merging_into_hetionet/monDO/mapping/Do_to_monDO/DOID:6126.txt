@@ -1,3 +1,0 @@
-DOID:6126	anal canal carcinoma
-monDO ID 	 name 
-MONDO:0007108	anal canal carcinoma

@@ -1,3 +1,0 @@
-DOID:0110983	Joubert syndrome 14
-monDO ID 	 name 
-MONDO:0013745	Joubert syndrome 14

@@ -1,3 +1,0 @@
-MONDO:0017048	pseudomyxoma peritonei
-DOID 	 name 
-DOID:3559	pseudomyxoma peritonei

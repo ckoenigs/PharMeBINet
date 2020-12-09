@@ -1,3 +1,0 @@
-DOID:0060869	late-onset retinal degenration
-monDO ID 	 name 
-MONDO:0011579	late-onset retinal degenration

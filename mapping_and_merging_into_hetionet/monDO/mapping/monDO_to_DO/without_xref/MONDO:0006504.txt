@@ -1,3 +1,0 @@
-MONDO:0006504	acquired metabolic disease
-DOID 	 name 
-DOID:0060158	acquired metabolic disease

@@ -1,3 +1,0 @@
-DOID:8233	inflammatory liposarcoma
-monDO ID 	 name 
-MONDO:0004510	inflammatory liposarcoma

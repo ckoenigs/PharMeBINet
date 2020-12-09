@@ -1,4 +1,0 @@
-MONDO:0018408	cystic echinococcosis
-DOID 	 name 
-DOID:1496	echinococcosis
-DOID:1495	cystic echinococcosis

@@ -1,3 +1,0 @@
-MONDO:0009387	familial lipoprotein lipase deficiency
-DOID 	 name 
-DOID:14118	familial lipoprotein lipase deficiency

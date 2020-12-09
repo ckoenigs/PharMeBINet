@@ -1,3 +1,0 @@
-MONDO:0007268	hypertrophic cardiomyopathy 4
-DOID 	 name 
-DOID:0110310	hypertrophic cardiomyopathy 4

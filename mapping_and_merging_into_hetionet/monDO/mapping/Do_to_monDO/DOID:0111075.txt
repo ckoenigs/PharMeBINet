@@ -1,3 +1,0 @@
-DOID:0111075	progressive familial heart block type II
-monDO ID 	 name 
-MONDO:0007701	progressive familial heart block type II

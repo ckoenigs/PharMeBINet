@@ -1,3 +1,0 @@
-DOID:1962	fallopian tube disease
-monDO ID 	 name 
-MONDO:0002156	fallopian tube disease

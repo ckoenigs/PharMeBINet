@@ -1,3 +1,0 @@
-MONDO:0009637	mitochondrial myopathy
-DOID 	 name 
-DOID:699	mitochondrial myopathy

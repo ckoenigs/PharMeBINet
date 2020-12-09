@@ -1,3 +1,0 @@
-MONDO:0003464	cystadenofibroma
-DOID 	 name 
-DOID:5482	cystadenofibroma

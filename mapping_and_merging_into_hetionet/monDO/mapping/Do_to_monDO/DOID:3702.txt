@@ -1,3 +1,0 @@
-DOID:3702	cervical adenocarcinoma
-monDO ID 	 name 
-MONDO:0005153	cervical adenocarcinoma

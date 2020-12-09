@@ -1,3 +1,0 @@
-MONDO:0015306	Lemierre syndrome
-DOID 	 name 
-DOID:11337	Lemierre's syndrome

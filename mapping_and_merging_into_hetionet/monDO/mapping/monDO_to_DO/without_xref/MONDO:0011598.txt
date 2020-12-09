@@ -1,3 +1,0 @@
-MONDO:0011598	atopic dermatitis 4
-DOID 	 name 
-DOID:0110100	atopic dermatitis 4

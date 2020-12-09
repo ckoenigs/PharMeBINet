@@ -1,3 +1,0 @@
-DOID:5382	Bartholin's gland adenoma
-monDO ID 	 name 
-MONDO:0003419	Bartholin's gland adenoma

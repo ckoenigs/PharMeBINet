@@ -1,3 +1,0 @@
-MONDO:0005810	infectious mononucleosis
-DOID 	 name 
-DOID:8568	infectious mononucleosis

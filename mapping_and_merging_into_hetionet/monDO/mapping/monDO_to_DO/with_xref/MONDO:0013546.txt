@@ -1,3 +1,0 @@
-MONDO:0013546	mitochondrial complex v (ATP synthase) deficiency nuclear type 2
-DOID 	 name 
-DOID:0060331	mitochondrial complex V (ATP synthase) deficiency nuclear type 2

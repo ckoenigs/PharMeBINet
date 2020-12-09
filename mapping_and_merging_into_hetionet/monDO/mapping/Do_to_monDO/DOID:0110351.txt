@@ -1,3 +1,0 @@
-DOID:0110351	osteogenesis imperfecta type 11
-monDO ID 	 name 
-MONDO:0012592	osteogenesis imperfecta type 11

@@ -1,3 +1,0 @@
-MONDO:0002223	ovarian malignant mesothelioma
-DOID 	 name 
-DOID:2143	ovarian malignant mesothelioma

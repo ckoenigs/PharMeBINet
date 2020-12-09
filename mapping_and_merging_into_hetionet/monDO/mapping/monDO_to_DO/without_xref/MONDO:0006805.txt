@@ -1,3 +1,0 @@
-MONDO:0006805	intermediate coronary syndrome
-DOID 	 name 
-DOID:8805	intermediate coronary syndrome

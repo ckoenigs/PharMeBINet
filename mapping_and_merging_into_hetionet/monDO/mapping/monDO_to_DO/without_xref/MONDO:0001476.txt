@@ -1,3 +1,0 @@
-MONDO:0001476	coloboma
-DOID 	 name 
-DOID:12270	coloboma

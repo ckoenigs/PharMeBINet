@@ -1,3 +1,0 @@
-MONDO:0019200	retinitis pigmentosa
-DOID 	 name 
-DOID:10584	retinitis pigmentosa

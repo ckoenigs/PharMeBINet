@@ -1,3 +1,0 @@
-MONDO:0010820	autosomal recessive juvenile Parkinson disease 2
-DOID 	 name 
-DOID:0060368	autosomal recessive juvenile Parkinson disease 2

@@ -1,3 +1,0 @@
-MONDO:0006891	partial motor epilepsy
-DOID 	 name 
-DOID:3327	partial motor epilepsy

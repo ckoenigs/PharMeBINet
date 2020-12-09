@@ -1,3 +1,0 @@
-DOID:0060830	deafness-intellectual disability, Martin-Probst type syndrome
-monDO ID 	 name 
-MONDO:0010353	deafness-intellectual disability, Martin-Probst type syndrome

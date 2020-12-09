@@ -1,3 +1,0 @@
-MONDO:0007835	intussusception
-DOID 	 name 
-DOID:8446	intussusception

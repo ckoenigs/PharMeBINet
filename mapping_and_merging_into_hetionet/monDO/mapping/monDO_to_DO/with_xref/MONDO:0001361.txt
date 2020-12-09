@@ -1,5 +1,0 @@
-MONDO:0001361	spontaneous ocular nystagmus
-DOID 	 name 
-DOID:13174	dissociated nystagmus
-DOID:9650	pathologic nystagmus
-DOID:11771	spontaneous ocular nystagmus

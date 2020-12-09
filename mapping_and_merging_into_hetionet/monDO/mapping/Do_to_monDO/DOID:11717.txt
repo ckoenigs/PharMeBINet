@@ -1,3 +1,0 @@
-DOID:11717	neonatal diabetes mellitus
-monDO ID 	 name 
-MONDO:0016391	neonatal diabetes mellitus

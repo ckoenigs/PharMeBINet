@@ -1,3 +1,0 @@
-DOID:5046	mediastinal granular cell myoblastoma
-monDO ID 	 name 
-MONDO:0003255	mediastinal granular cell myoblastoma

@@ -1,3 +1,0 @@
-MONDO:0001849	chronic orbital inflammation
-DOID 	 name 
-DOID:1397	chronic orbital inflammation

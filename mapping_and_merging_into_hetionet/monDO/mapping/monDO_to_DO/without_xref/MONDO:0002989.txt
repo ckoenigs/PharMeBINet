@@ -1,3 +1,0 @@
-MONDO:0002989	benign fibrous histiocytoma
-DOID 	 name 
-DOID:4415	fibrous histiocytoma

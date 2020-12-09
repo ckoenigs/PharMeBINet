@@ -1,3 +1,0 @@
-MONDO:0019538	Gaisbock syndrome
-DOID 	 name 
-DOID:2838	stress polycythemia

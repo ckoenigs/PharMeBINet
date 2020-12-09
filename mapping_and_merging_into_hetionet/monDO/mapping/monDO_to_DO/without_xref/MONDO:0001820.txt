@@ -1,3 +1,0 @@
-MONDO:0001820	focal labyrinthitis
-DOID 	 name 
-DOID:13867	focal labyrinthitis

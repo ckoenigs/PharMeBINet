@@ -1,3 +1,0 @@
-MONDO:0005556	lupus nephritis
-DOID 	 name 
-DOID:0080162	lupus nephritis

@@ -1,3 +1,0 @@
-DOID:5195	peripheral nervous system ganglioneuroblastoma
-monDO ID 	 name 
-MONDO:0003327	peripheral ganglioneuroblastoma

@@ -1,3 +1,0 @@
-DOID:6199	cornea cancer
-monDO ID 	 name 
-MONDO:0003802	cornea cancer

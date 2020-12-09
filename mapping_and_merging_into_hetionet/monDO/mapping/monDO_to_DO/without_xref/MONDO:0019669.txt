@@ -1,3 +1,0 @@
-MONDO:0019669	hypochondrogenesis
-DOID 	 name 
-DOID:0080044	hypochondrogenesis

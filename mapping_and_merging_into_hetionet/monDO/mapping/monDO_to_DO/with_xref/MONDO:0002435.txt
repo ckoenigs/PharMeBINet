@@ -1,3 +1,0 @@
-MONDO:0002435	cranial nerve III tumor
-DOID 	 name 
-DOID:2817	cranial nerve III tumor

@@ -1,3 +1,0 @@
-DOID:11385	expressive language disorder
-monDO ID 	 name 
-MONDO:0001276	expressive language disorder

@@ -1,3 +1,0 @@
-MONDO:0004234	chronic NK-cell lymphocytosis
-DOID 	 name 
-DOID:7465	chronic NK-cell lymphocytosis

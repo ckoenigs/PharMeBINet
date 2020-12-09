@@ -1,3 +1,0 @@
-MONDO:0010371	Aland island eye disease
-DOID 	 name 
-DOID:0050630	Aland Island eye disease

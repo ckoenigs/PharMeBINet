@@ -1,3 +1,0 @@
-MONDO:0005108	viral infectious disease
-DOID 	 name 
-DOID:934	viral infectious disease

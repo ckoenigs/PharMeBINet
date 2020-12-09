@@ -1,3 +1,0 @@
-MONDO:0004274	mixed epithelial/mesenchymal metaplastic breast carcinoma
-DOID 	 name 
-DOID:7541	mixed epithelial/mesenchymal metaplastic breast carcinoma

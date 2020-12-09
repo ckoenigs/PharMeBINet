@@ -1,3 +1,0 @@
-DOID:0050859	hemorrhagic cystitis
-monDO ID 	 name 
-MONDO:0000496	hemorrhagic cystitis

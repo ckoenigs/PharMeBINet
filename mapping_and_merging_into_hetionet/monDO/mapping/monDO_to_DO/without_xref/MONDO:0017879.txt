@@ -1,3 +1,0 @@
-MONDO:0017879	hantavirus pulmonary syndrome
-DOID 	 name 
-DOID:14472	hantavirus pulmonary syndrome

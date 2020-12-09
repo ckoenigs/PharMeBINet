@@ -1,3 +1,0 @@
-MONDO:0012138	muscular dystrophy-dystroglycanopathy type B6
-DOID 	 name 
-DOID:0110637	muscular dystrophy-dystroglycanopathy type B6

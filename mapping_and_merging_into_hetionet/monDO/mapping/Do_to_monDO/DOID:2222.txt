@@ -1,3 +1,0 @@
-DOID:2222	factor X deficiency
-monDO ID 	 name 
-MONDO:0009212	congenital factor X deficiency

@@ -1,3 +1,0 @@
-DOID:7676	testicular thecoma
-monDO ID 	 name 
-MONDO:0004325	testicular thecoma

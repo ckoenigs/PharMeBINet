@@ -1,3 +1,0 @@
-DOID:10223	dermatomyositis
-monDO ID 	 name 
-MONDO:0016367	dermatomyositis

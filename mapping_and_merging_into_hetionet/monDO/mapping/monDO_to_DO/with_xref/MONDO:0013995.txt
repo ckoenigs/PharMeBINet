@@ -1,3 +1,0 @@
-MONDO:0013995	cholestasis, intrahepatic, of pregnancy 3
-DOID 	 name 
-DOID:1852	intrahepatic cholestasis

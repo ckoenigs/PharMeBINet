@@ -1,3 +1,0 @@
-DOID:14798	Blount's disease
-monDO ID 	 name 
-MONDO:0017194	Blount disease

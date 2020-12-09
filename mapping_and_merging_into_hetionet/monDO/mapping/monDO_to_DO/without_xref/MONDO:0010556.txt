@@ -1,3 +1,0 @@
-MONDO:0010556	X-linked chondrodysplasia punctata
-DOID 	 name 
-DOID:0060292	X-linked chondrodysplasia punctata

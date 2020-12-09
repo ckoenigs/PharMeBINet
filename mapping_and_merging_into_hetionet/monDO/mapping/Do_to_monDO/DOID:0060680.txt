@@ -1,3 +1,0 @@
-DOID:0060680	pigment dispersion syndrome
-monDO ID 	 name 
-MONDO:0010896	pigment dispersion syndrome

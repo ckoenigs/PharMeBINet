@@ -1,3 +1,0 @@
-MONDO:0009388	hyperlysinemia (disease)
-DOID 	 name 
-DOID:9274	hyperlysinemia

@@ -1,3 +1,0 @@
-MONDO:0003104	epicardium cancer
-DOID 	 name 
-DOID:4699	epicardium cancer

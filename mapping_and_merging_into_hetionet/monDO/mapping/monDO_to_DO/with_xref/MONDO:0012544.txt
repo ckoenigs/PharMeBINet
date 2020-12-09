@@ -1,3 +1,0 @@
-MONDO:0012544	brachydactyly-syndactyly syndrome
-DOID 	 name 
-DOID:0050689	brachydactyly-syndactyly syndrome

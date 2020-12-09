@@ -1,3 +1,0 @@
-DOID:0110915	childhood hypophosphatasia
-monDO ID 	 name 
-MONDO:0009428	childhood hypophosphatasia

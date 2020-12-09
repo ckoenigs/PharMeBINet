@@ -1,3 +1,0 @@
-MONDO:0004413	cervical non-keratinizing squamous cell carcinoma
-DOID 	 name 
-DOID:7961	cervical non-keratinizing squamous cell carcinoma

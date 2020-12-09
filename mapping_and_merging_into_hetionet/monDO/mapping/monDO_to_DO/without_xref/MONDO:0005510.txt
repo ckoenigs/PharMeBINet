@@ -1,3 +1,0 @@
-MONDO:0005510	hydronephrosis
-DOID 	 name 
-DOID:11111	hydronephrosis

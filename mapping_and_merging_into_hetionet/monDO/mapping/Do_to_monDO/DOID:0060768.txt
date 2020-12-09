@@ -1,3 +1,0 @@
-DOID:0060768	Smith-Magenis syndrome
-monDO ID 	 name 
-MONDO:0008434	Smith-Magenis syndrome

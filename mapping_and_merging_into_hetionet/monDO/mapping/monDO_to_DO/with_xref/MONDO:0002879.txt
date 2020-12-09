@@ -1,3 +1,0 @@
-MONDO:0002879	uterine body mixed cancer
-DOID 	 name 
-DOID:4114	uterine body mixed cancer

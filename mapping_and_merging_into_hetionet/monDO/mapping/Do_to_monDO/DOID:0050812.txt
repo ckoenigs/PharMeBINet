@@ -1,3 +1,0 @@
-DOID:0050812	spondyloepimetaphyseal dysplasia, Pakistani type
-monDO ID 	 name 
-MONDO:0013019	spondyloepimetaphyseal dysplasia, Pakistani type

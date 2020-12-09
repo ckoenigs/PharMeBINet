@@ -1,3 +1,0 @@
-MONDO:0009852	congenital intrinsic factor deficiency
-DOID 	 name 
-DOID:0050734	congenital intrinsic factor deficiency

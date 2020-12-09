@@ -1,3 +1,0 @@
-MONDO:0010138	thyrotoxicosis
-DOID 	 name 
-DOID:7997	thyrotoxicosis

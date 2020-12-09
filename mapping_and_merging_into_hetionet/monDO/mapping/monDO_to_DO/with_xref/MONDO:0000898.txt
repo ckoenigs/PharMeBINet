@@ -1,3 +1,0 @@
-MONDO:0000898	malignant hemangioma
-DOID 	 name 
-DOID:0080189	malignant hemangioma

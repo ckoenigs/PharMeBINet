@@ -1,3 +1,0 @@
-MONDO:0013710	colorectal cancer, hereditary nonpolyposis, type 5
-DOID 	 name 
-DOID:3883	Lynch syndrome

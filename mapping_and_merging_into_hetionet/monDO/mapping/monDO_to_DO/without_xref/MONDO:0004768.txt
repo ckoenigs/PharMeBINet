@@ -1,3 +1,0 @@
-MONDO:0004768	keratoconjunctivitis
-DOID 	 name 
-DOID:9368	keratoconjunctivitis

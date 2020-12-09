@@ -1,3 +1,0 @@
-MONDO:0000306	trichosporonosis
-DOID 	 name 
-DOID:0050290	trichosporonosis

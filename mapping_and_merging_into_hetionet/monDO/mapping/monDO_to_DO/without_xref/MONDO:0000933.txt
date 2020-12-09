@@ -1,3 +1,0 @@
-MONDO:0000933	subglottis neoplasm
-DOID 	 name 
-DOID:10069	subglottis neoplasm

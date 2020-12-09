@@ -1,3 +1,0 @@
-MONDO:0013400	congenital adrenal insufficiency
-DOID 	 name 
-DOID:0050546	congenital adrenal insufficiency

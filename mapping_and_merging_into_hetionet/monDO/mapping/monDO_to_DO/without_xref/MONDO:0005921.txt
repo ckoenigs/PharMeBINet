@@ -1,3 +1,0 @@
-MONDO:0005921	Plasmodium vivax malaria
-DOID 	 name 
-DOID:12978	Plasmodium vivax malaria

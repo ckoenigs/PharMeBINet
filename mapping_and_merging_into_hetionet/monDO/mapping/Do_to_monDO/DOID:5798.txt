@@ -1,3 +1,0 @@
-DOID:5798	macrotrabecular hepatoblastoma
-monDO ID 	 name 
-MONDO:0003651	macrotrabecular hepatoblastoma

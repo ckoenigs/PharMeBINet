@@ -1,3 +1,0 @@
-MONDO:0008355	IHPS1
-DOID 	 name 
-DOID:12638	hypertrophic pyloric stenosis

@@ -1,3 +1,0 @@
-DOID:12342	retroperitoneum carcinoma
-monDO ID 	 name 
-MONDO:0001502	retroperitoneum carcinoma

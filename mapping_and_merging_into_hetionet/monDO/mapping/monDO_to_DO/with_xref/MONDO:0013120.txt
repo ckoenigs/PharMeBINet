@@ -1,3 +1,0 @@
-MONDO:0013120	46,Xy sex reversal 5
-DOID 	 name 
-DOID:14448	46 XY gonadal dysgenesis

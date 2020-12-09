@@ -1,3 +1,0 @@
-MONDO:0006957	root caries
-DOID 	 name 
-DOID:14089	root caries

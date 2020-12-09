@@ -1,3 +1,0 @@
-DOID:10393	secondary hypertrophic osteoarthropathy
-monDO ID 	 name 
-MONDO:0006965	secondary hypertrophic osteoarthropathy

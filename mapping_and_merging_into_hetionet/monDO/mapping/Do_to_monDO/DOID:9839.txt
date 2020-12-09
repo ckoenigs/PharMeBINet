@@ -1,3 +1,0 @@
-DOID:9839	accommodative esotropia
-monDO ID 	 name 
-MONDO:0004895	accommodative esotropia

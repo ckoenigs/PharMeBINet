@@ -1,3 +1,0 @@
-DOID:5041	esophageal cancer
-monDO ID 	 name 
-MONDO:0007576	esophageal cancer

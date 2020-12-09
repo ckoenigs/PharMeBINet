@@ -1,3 +1,0 @@
-DOID:12783	migraine without aura
-monDO ID 	 name 
-MONDO:0011847	migraine without aura

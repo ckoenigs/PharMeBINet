@@ -1,3 +1,0 @@
-MONDO:0002316	motor peripheral neuropathy
-DOID 	 name 
-DOID:2477	motor peripheral neuropathy

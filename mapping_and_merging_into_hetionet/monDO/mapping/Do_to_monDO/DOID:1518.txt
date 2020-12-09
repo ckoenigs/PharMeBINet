@@ -1,3 +1,0 @@
-DOID:1518	cecal disease
-monDO ID 	 name 
-MONDO:0002031	cecal disease

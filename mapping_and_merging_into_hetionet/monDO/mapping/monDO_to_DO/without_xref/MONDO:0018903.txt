@@ -1,3 +1,0 @@
-MONDO:0018903	sarcocystosis
-DOID 	 name 
-DOID:9640	sarcocystosis

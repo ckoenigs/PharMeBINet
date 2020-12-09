@@ -1,3 +1,0 @@
-MONDO:0006717	cutaneous fibrous histiocytoma
-DOID 	 name 
-DOID:4418	cutaneous fibrous histiocytoma

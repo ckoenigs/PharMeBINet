@@ -1,3 +1,0 @@
-MONDO:0000330	endemic typhus
-DOID 	 name 
-DOID:0050481	endemic typhus

@@ -1,3 +1,0 @@
-DOID:13742	neurofibroma of spinal cord
-monDO ID 	 name 
-MONDO:0001789	neurofibroma of spinal cord

@@ -1,3 +1,0 @@
-DOID:0110441	dilated cardiomyopathy 2B
-monDO ID 	 name 
-MONDO:0013848	dilated cardiomyopathy 2B

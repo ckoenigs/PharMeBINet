@@ -1,3 +1,0 @@
-MONDO:0001021	ametropic amblyopia
-DOID 	 name 
-DOID:10377	ametropic amblyopia

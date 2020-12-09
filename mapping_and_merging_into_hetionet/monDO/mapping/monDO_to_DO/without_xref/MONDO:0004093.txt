@@ -1,3 +1,0 @@
-MONDO:0004093	esophageal basaloid carcinoma
-DOID 	 name 
-DOID:7051	esophageal basaloid squamous cell carcinoma

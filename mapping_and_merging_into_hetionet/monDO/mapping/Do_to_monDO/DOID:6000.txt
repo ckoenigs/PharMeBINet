@@ -1,3 +1,0 @@
-DOID:6000	congestive heart failure
-monDO ID 	 name 
-MONDO:0005009	congestive heart failure

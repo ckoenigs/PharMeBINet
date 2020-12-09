@@ -1,3 +1,0 @@
-DOID:3959	adrenal cortical adenocarcinoma
-monDO ID 	 name 
-MONDO:0006639	adrenal cortex carcinoma

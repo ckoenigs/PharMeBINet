@@ -1,3 +1,0 @@
-MONDO:0011812	Duane-radial ray syndrome
-DOID 	 name 
-DOID:0060747	Duane-radial ray syndrome

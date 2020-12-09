@@ -1,3 +1,0 @@
-MONDO:0001781	uterine corpus adenomatoid tumor
-DOID 	 name 
-DOID:1371	uterine corpus adenomatoid tumor

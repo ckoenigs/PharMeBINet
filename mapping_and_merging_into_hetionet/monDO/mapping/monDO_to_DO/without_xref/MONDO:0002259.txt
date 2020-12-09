@@ -1,3 +1,0 @@
-MONDO:0002259	gonadal disease
-DOID 	 name 
-DOID:2277	gonadal disease

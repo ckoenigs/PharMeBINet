@@ -1,3 +1,0 @@
-DOID:11727	facioscapulohumeral muscular dystrophy
-monDO ID 	 name 
-MONDO:0001347	facioscapulohumeral muscular dystrophy

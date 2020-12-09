@@ -1,3 +1,0 @@
-MONDO:0002269	gastroenteritis
-DOID 	 name 
-DOID:2326	gastroenteritis

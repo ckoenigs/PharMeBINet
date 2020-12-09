@@ -1,3 +1,0 @@
-MONDO:0003423	middle ear adenoma
-DOID 	 name 
-DOID:5387	middle ear adenoma

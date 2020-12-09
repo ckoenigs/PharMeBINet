@@ -1,3 +1,0 @@
-DOID:3369	Ewing sarcoma
-monDO ID 	 name 
-MONDO:0012817	Ewing sarcoma

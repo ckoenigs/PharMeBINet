@@ -1,3 +1,0 @@
-MONDO:0005807	idiopathic CD4-positive T-lymphocytopenia
-DOID 	 name 
-DOID:3109	idiopathic CD4-positive T-lymphocytopenia

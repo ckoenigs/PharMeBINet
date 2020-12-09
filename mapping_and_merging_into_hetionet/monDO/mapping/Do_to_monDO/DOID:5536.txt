@@ -1,3 +1,0 @@
-DOID:5536	sarcomatoid squamous cell skin carcinoma
-monDO ID 	 name 
-MONDO:0003499	sarcomatoid squamous cell skin carcinoma

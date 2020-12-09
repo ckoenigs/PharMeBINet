@@ -1,3 +1,0 @@
-DOID:7241	uterine corpus apoplectic leiomyoma
-monDO ID 	 name 
-MONDO:0004161	uterine corpus apoplectic leiomyoma

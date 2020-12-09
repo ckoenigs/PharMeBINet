@@ -1,3 +1,0 @@
-MONDO:0014462	focal segmental glomerulosclerosis 8
-DOID 	 name 
-DOID:0111133	focal segmental glomerulosclerosis 8

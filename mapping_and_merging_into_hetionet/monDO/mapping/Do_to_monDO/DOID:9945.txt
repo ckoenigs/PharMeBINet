@@ -1,3 +1,0 @@
-DOID:9945	constant exophthalmos
-monDO ID 	 name 
-MONDO:0004929	constant exophthalmos

@@ -1,3 +1,0 @@
-MONDO:0000765	stromal dystrophy
-DOID 	 name 
-DOID:0060442	stromal dystrophy

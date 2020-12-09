@@ -1,3 +1,0 @@
-MONDO:0002360	chondroma
-DOID 	 name 
-DOID:2602	chondroma

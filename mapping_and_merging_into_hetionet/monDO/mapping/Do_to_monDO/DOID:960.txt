@@ -1,3 +1,0 @@
-DOID:960	esophagus leiomyoma
-monDO ID 	 name 
-MONDO:0004832	esophagus leiomyoma

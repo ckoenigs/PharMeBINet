@@ -1,3 +1,0 @@
-DOID:6004	aleukemic leukemia
-monDO ID 	 name 
-MONDO:0003730	aleukemic leukemia

@@ -1,3 +1,0 @@
-MONDO:0001665	oculoglandular tularemia
-DOID 	 name 
-DOID:13226	oculoglandular tularemia

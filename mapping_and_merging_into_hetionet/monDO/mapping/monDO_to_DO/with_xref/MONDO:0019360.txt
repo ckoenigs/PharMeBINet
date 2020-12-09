@@ -1,3 +1,0 @@
-MONDO:0019360	rickettsialpox
-DOID 	 name 
-DOID:11103	rickettsialpox

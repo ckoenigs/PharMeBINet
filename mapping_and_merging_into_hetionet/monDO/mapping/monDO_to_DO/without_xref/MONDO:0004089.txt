@@ -1,3 +1,0 @@
-MONDO:0004089	penis basaloid carcinoma
-DOID 	 name 
-DOID:7047	penis basaloid carcinoma

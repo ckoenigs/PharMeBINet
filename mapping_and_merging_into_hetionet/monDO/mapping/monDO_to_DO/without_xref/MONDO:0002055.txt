@@ -1,3 +1,0 @@
-MONDO:0002055	benign eccrine breast spiradenoma
-DOID 	 name 
-DOID:1616	benign eccrine breast spiradenoma

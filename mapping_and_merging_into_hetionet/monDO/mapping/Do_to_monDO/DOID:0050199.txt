@@ -1,3 +1,0 @@
-DOID:0050199	Whitewater Arroyo hemorrhagic fever
-monDO ID 	 name 
-MONDO:0000282	Whitewater Arroyo hemorrhagic fever

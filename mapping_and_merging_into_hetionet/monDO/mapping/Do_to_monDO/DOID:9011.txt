@@ -1,3 +1,0 @@
-DOID:9011	larynx carcinoma in situ
-monDO ID 	 name 
-MONDO:0004696	larynx carcinoma in situ

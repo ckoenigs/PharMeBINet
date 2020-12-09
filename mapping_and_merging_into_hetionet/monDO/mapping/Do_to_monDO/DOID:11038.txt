@@ -1,3 +1,0 @@
-DOID:11038	depersonalization disorder
-monDO ID 	 name 
-MONDO:0001186	depersonalization disorder

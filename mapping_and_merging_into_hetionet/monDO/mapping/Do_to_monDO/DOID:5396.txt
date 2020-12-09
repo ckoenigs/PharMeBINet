@@ -1,3 +1,0 @@
-DOID:5396	prolactin producing pituitary tumor
-monDO ID 	 name 
-MONDO:0003430	prolactin producing pituitary tumor

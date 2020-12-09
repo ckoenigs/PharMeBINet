@@ -1,3 +1,0 @@
-DOID:5040	malignant granular cell esophageal tumor
-monDO ID 	 name 
-MONDO:0003251	esophageal granular cell tumor

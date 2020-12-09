@@ -1,3 +1,0 @@
-DOID:3706	fallopian tube adenocarcinoma
-monDO ID 	 name 
-MONDO:0002746	fallopian tube adenocarcinoma

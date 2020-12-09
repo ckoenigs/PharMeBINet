@@ -1,3 +1,0 @@
-DOID:8331	perineural angioma
-monDO ID 	 name 
-MONDO:0004533	perineural angioma

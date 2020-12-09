@@ -1,3 +1,0 @@
-MONDO:0020380	autosomal dominant cerebellar ataxia
-DOID 	 name 
-DOID:1441	autosomal dominant cerebellar ataxia

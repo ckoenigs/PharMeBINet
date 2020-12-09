@@ -1,3 +1,0 @@
-MONDO:0005339	androgenetic alopecia
-DOID 	 name 
-DOID:0050801	androgenic alopecia

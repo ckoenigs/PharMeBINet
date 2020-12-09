@@ -1,3 +1,0 @@
-MONDO:0006663	asphyxia neonatorum
-DOID 	 name 
-DOID:11088	asphyxia neonatorum

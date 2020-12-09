@@ -1,3 +1,0 @@
-DOID:6590	spondylitis
-monDO ID 	 name 
-MONDO:0003937	spondylitis

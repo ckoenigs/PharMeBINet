@@ -1,3 +1,0 @@
-DOID:11198	DiGeorge syndrome
-monDO ID 	 name 
-MONDO:0008564	DiGeorge syndrome

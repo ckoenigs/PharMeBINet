@@ -1,3 +1,0 @@
-DOID:4048	central nervous system rhabdomyosarcoma
-monDO ID 	 name 
-MONDO:0002850	central nervous system rhabdomyosarcoma

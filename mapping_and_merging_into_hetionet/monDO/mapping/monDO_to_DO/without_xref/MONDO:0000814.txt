@@ -1,3 +1,0 @@
-MONDO:0000814	b-cell adult acute lymphocytic leukemia
-DOID 	 name 
-DOID:0060592	B-cell adult acute lymphocytic leukemia

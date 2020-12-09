@@ -1,3 +1,0 @@
-DOID:13736	uterine inflammatory disease
-monDO ID 	 name 
-MONDO:0001786	uterine inflammatory disease

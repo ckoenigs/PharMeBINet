@@ -1,3 +1,0 @@
-MONDO:0003263	childhood cerebellar neoplasm
-DOID 	 name 
-DOID:5059	childhood cerebellar neoplasm

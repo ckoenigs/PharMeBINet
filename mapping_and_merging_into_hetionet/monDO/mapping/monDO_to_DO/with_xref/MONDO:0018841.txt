@@ -1,3 +1,0 @@
-MONDO:0018841	congenital bile acid synthesis defect
-DOID 	 name 
-DOID:0050674	congenital bile acid synthesis defect

@@ -1,3 +1,0 @@
-DOID:5434	scrapie
-monDO ID 	 name 
-MONDO:0006961	scrapie

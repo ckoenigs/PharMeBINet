@@ -1,3 +1,0 @@
-DOID:10616	acute cervicitis
-monDO ID 	 name 
-MONDO:0001081	acute cervicitis

@@ -1,3 +1,0 @@
-DOID:4090	agnosia
-monDO ID 	 name 
-MONDO:0005638	agnosia

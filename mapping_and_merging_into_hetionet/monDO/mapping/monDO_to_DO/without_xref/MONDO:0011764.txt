@@ -1,3 +1,0 @@
-MONDO:0011764	autosomal dominant Parkinson disease 8
-DOID 	 name 
-DOID:0060371	autosomal dominant Parkinson disease 8

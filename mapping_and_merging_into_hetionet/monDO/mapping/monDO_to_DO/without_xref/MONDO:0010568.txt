@@ -1,3 +1,0 @@
-MONDO:0010568	Aicardi syndrome
-DOID 	 name 
-DOID:8461	Aicardi syndrome

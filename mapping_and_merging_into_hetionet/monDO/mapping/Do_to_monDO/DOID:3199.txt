@@ -1,3 +1,0 @@
-DOID:3199	C-P angle neurinoma
-monDO ID 	 name 
-MONDO:0002551	c-P angle neurinoma

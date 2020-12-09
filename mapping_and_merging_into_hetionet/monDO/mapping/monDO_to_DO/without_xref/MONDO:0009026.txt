@@ -1,3 +1,0 @@
-MONDO:0009026	Costello syndrome
-DOID 	 name 
-DOID:0050469	Costello syndrome

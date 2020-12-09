@@ -1,3 +1,0 @@
-MONDO:0011925	congenital merosin-deficient muscular dystrophy 1A
-DOID 	 name 
-DOID:0110636	congenital merosin-deficient muscular dystrophy 1A

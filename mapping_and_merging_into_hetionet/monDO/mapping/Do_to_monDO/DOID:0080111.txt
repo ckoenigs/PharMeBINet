@@ -1,3 +1,0 @@
-DOID:0080111	mitochondrial complex III deficiency nuclear type 1
-monDO ID 	 name 
-MONDO:0007415	mitochondrial complex III deficiency nuclear type 1

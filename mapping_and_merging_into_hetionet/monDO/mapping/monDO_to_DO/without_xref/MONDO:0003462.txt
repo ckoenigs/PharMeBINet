@@ -1,3 +1,0 @@
-MONDO:0003462	papillary adenofibroma
-DOID 	 name 
-DOID:5479	papillary adenofibroma

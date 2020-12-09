@@ -1,3 +1,0 @@
-DOID:0060676	catecholaminergic polymorphic ventricular tachycardia 2
-monDO ID 	 name 
-MONDO:0012762	catecholaminergic polymorphic ventricular tachycardia 2

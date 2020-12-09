@@ -1,3 +1,0 @@
-DOID:890	mitochondrial encephalomyopathy
-monDO ID 	 name 
-MONDO:0004675	mitochondrial encephalomyopathy

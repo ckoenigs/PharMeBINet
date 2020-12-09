@@ -1,3 +1,0 @@
-MONDO:0010277	syndromic X-linked intellectual disability Shashi type
-DOID 	 name 
-DOID:0060826	syndromic X-linked intellectual disability Shashi type

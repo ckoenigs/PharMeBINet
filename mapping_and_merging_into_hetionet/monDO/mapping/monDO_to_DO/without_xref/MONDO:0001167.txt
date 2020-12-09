@@ -1,3 +1,0 @@
-MONDO:0001167	spastic diplegia
-DOID 	 name 
-DOID:10965	spastic diplegia

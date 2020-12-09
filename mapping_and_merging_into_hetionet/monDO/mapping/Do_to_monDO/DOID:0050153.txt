@@ -1,3 +1,0 @@
-DOID:0050153	pulmonary aspergilloma
-monDO ID 	 name 
-MONDO:0000266	pulmonary aspergilloma

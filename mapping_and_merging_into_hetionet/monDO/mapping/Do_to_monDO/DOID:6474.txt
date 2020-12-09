@@ -1,3 +1,0 @@
-DOID:6474	childhood teratocarcinoma of the testis
-monDO ID 	 name 
-MONDO:0003888	childhood testicular mixed embryonal carcinoma and teratoma

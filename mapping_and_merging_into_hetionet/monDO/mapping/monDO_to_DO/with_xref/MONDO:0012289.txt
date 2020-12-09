@@ -1,3 +1,0 @@
-MONDO:0012289	myofibrillar myopathy 5
-DOID 	 name 
-DOID:0080096	myofibrillar myopathy 5

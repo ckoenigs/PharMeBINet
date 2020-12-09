@@ -1,3 +1,0 @@
-MONDO:0016419	hereditary breast carcinoma
-DOID 	 name 
-DOID:1612	breast cancer

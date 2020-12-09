@@ -1,3 +1,0 @@
-MONDO:0005618	anxiety disorder
-DOID 	 name 
-DOID:2030	anxiety disorder

@@ -1,3 +1,0 @@
-MONDO:0007342	clubfoot
-DOID 	 name 
-DOID:11836	clubfoot

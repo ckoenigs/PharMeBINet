@@ -1,3 +1,0 @@
-DOID:0050876	Caroli disease
-monDO ID 	 name 
-MONDO:0010913	Caroli disease

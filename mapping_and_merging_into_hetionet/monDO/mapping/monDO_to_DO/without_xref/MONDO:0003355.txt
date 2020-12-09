@@ -1,3 +1,0 @@
-MONDO:0003355	ovary leiomyosarcoma
-DOID 	 name 
-DOID:5263	ovary leiomyosarcoma

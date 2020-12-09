@@ -1,3 +1,0 @@
-MONDO:0019956	encephalitis
-DOID 	 name 
-DOID:9588	encephalitis

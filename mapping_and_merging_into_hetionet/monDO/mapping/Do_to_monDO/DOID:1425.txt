@@ -1,3 +1,0 @@
-DOID:1425	pyoureter
-monDO ID 	 name 
-MONDO:0001922	pyoureter

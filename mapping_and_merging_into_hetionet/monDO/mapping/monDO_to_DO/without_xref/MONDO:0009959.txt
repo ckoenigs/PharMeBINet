@@ -1,3 +1,0 @@
-MONDO:0009959	peroxisome biogenesis disorder type 3B
-DOID 	 name 
-DOID:0050444	infantile Refsum disease

@@ -1,3 +1,0 @@
-DOID:0110052	amelogenesis imperfecta type 1B
-monDO ID 	 name 
-MONDO:0007092	amelogenesis imperfecta type 1B

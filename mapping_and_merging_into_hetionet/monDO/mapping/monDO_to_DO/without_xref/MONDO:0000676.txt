@@ -1,3 +1,0 @@
-MONDO:0000676	phonagnosia
-DOID 	 name 
-DOID:0060146	phonagnosia

@@ -1,3 +1,0 @@
-MONDO:0019516	exudative vitreoretinopathy
-DOID 	 name 
-DOID:0050535	exudative vitreoretinopathy

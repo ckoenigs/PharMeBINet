@@ -1,3 +1,0 @@
-MONDO:0002967	tinea capitis
-DOID 	 name 
-DOID:4337	tinea capitis

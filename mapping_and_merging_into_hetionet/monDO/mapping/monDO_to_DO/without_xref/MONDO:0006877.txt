@@ -1,3 +1,0 @@
-MONDO:0006877	oophoritis
-DOID 	 name 
-DOID:10974	oophoritis

@@ -1,3 +1,0 @@
-MONDO:0002385	cystic nephroma
-DOID 	 name 
-DOID:2673	cystic nephroma

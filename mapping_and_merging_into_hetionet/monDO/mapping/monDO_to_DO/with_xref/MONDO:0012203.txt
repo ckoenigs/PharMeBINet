@@ -1,3 +1,0 @@
-MONDO:0012203	familial hyperthyroidism due to mutations in TSH receptor
-DOID 	 name 
-DOID:7998	hyperthyroidism

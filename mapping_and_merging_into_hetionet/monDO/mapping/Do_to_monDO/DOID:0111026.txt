@@ -1,3 +1,0 @@
-DOID:0111026	cone-rod dystrophy 20
-monDO ID 	 name 
-MONDO:0014427	cone-rod dystrophy 20

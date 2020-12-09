@@ -1,3 +1,0 @@
-MONDO:0002072	melanotic neuroectodermal tumor
-DOID 	 name 
-DOID:166	melanotic neuroectodermal tumor

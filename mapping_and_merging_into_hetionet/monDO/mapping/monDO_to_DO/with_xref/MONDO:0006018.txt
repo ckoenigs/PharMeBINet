@@ -1,3 +1,0 @@
-MONDO:0006018	Wissler's syndrome
-DOID 	 name 
-DOID:3047	Wissler's syndrome

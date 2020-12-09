@@ -1,3 +1,0 @@
-DOID:6692	Barre-Lieou syndrome
-monDO ID 	 name 
-MONDO:0005663	Barre-Lieou syndrome

@@ -1,3 +1,0 @@
-MONDO:0000716	agraphia
-DOID 	 name 
-DOID:0060223	agraphia

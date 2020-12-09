@@ -1,3 +1,0 @@
-MONDO:0002740	uterine ligament mucinous adenocarcinoma
-DOID 	 name 
-DOID:3699	uterine ligament mucinous adenocarcinoma

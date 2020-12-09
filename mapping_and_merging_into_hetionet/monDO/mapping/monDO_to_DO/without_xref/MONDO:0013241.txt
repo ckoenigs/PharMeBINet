@@ -1,3 +1,0 @@
-MONDO:0013241	spinocerebellar ataxia type 30
-DOID 	 name 
-DOID:0050979	spinocerebellar ataxia type 30

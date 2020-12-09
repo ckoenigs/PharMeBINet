@@ -1,3 +1,0 @@
-MONDO:0003431	lipoadenoma
-DOID 	 name 
-DOID:5398	lipoadenoma

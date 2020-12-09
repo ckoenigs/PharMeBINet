@@ -1,3 +1,0 @@
-DOID:7302	endodermal sinus pattern testicular yolk sac tumor
-monDO ID 	 name 
-MONDO:0004178	testicular yolk sac tumor, endodermal sinus pattern

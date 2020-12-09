@@ -1,3 +1,0 @@
-MONDO:0001444	Chagas disease
-DOID 	 name 
-DOID:12140	Chagas disease

@@ -1,3 +1,0 @@
-MONDO:0005109	HIV infection
-DOID 	 name 
-DOID:526	human immunodeficiency virus infectious disease

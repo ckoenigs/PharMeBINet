@@ -1,3 +1,0 @@
-MONDO:0002263	female reproductive system disease
-DOID 	 name 
-DOID:229	female reproductive system disease

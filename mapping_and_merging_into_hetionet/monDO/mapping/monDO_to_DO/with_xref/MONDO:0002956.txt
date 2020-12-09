@@ -1,3 +1,0 @@
-MONDO:0002956	skin cystic basal cell carcinoma
-DOID 	 name 
-DOID:4302	cystic basal cell carcinoma

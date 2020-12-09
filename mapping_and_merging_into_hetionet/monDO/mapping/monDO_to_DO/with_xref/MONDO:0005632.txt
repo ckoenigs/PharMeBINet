@@ -1,3 +1,0 @@
-MONDO:0005632	acute chest syndrome
-DOID 	 name 
-DOID:1584	acute chest syndrome

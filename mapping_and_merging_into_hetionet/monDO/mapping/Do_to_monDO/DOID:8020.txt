@@ -1,3 +1,0 @@
-DOID:8020	glomangiomyoma
-monDO ID 	 name 
-MONDO:0002299	glomangioma

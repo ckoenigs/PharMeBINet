@@ -1,3 +1,0 @@
-MONDO:0004264	acute gonococcal endometritis
-DOID 	 name 
-DOID:7527	acute gonococcal endometritis

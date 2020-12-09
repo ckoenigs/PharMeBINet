@@ -1,3 +1,0 @@
-MONDO:0004524	atypical follicular adenoma
-DOID 	 name 
-DOID:8292	atypical follicular adenoma

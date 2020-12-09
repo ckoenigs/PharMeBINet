@@ -1,3 +1,0 @@
-DOID:0110245	cataract 38
-monDO ID 	 name 
-MONDO:0013859	cataract 38

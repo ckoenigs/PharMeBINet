@@ -1,3 +1,0 @@
-MONDO:0004530	early invasive cervical adenocarcinoma
-DOID 	 name 
-DOID:8307	early invasive cervical adenocarcinoma

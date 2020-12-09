@@ -1,3 +1,0 @@
-MONDO:0014426	nanophthalmos 4
-DOID 	 name 
-DOID:10629	microphthalmia

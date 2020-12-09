@@ -1,3 +1,0 @@
-MONDO:0002810	pancreatic serous cystic neoplasm
-DOID 	 name 
-DOID:3919	pancreatic serous cystic neoplasm

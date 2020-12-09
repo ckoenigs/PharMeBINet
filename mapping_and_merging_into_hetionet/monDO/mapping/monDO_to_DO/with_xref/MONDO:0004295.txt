@@ -1,3 +1,0 @@
-MONDO:0004295	asbestos-related lung carcinoma
-DOID 	 name 
-DOID:7596	asbestos-related lung carcinoma

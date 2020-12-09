@@ -1,3 +1,0 @@
-DOID:0060423	chromosome 6q11-q14 deletion syndrome
-monDO ID 	 name 
-MONDO:0013299	chromosome 6q11-q14 deletion syndrome

@@ -1,3 +1,0 @@
-MONDO:0005561	aortic disease
-DOID 	 name 
-DOID:520	aortic disease

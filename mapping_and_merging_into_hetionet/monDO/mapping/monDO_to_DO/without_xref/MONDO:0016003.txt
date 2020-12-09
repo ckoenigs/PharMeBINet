@@ -1,3 +1,0 @@
-MONDO:0016003	ehrlichiosis
-DOID 	 name 
-DOID:10242	ehrlichiosis

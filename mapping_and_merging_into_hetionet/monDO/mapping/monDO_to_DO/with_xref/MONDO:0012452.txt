@@ -1,3 +1,0 @@
-MONDO:0012452	autosomal recessive nonsyndromic deafness 65
-DOID 	 name 
-DOID:0110516	autosomal recessive nonsyndromic deafness 65

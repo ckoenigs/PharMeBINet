@@ -1,3 +1,0 @@
-MONDO:0000382	respiratory system benign neoplasm
-DOID 	 name 
-DOID:0050621	respiratory system benign neoplasm

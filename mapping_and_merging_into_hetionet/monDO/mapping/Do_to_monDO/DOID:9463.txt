@@ -1,3 +1,0 @@
-DOID:9463	otitis externa
-monDO ID 	 name 
-MONDO:0004795	otitis externa

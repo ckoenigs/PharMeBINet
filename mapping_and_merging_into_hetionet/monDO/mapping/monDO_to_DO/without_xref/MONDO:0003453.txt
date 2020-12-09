@@ -1,3 +1,0 @@
-MONDO:0003453	conjunctival intraepithelial neoplasm
-DOID 	 name 
-DOID:5465	conjunctival intraepithelial neoplasm

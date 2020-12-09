@@ -1,3 +1,0 @@
-MONDO:0014664	Joubert syndrome 23
-DOID 	 name 
-DOID:0110992	Joubert syndrome 23

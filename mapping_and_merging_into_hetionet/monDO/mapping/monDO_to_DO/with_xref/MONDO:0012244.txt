@@ -1,3 +1,0 @@
-MONDO:0012244	prostate cancer, hereditary, 5
-DOID 	 name 
-DOID:10283	prostate cancer

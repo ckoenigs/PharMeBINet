@@ -1,4 +1,0 @@
-MONDO:0004359	delusional disorder
-DOID 	 name 
-DOID:778	delusional disorder
-DOID:1229	paranoid schizophrenia

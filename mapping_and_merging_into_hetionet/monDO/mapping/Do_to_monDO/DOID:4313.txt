@@ -1,3 +1,0 @@
-DOID:4313	epidermolysis bullosa acquisita
-monDO ID 	 name 
-MONDO:0018747	acquired epidermolysis bullosa

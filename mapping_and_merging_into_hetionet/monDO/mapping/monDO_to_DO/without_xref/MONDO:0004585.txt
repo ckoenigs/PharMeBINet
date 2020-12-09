@@ -1,3 +1,0 @@
-MONDO:0004585	polyhydramnios (disease)
-DOID 	 name 
-DOID:8488	polyhydramnios

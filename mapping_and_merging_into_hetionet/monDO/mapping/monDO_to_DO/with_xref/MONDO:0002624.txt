@@ -1,3 +1,0 @@
-MONDO:0002624	bone leiomyosarcoma
-DOID 	 name 
-DOID:3367	bone leiomyosarcoma

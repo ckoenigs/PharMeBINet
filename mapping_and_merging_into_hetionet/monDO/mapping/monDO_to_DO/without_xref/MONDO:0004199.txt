@@ -1,3 +1,0 @@
-MONDO:0004199	vulvar keratinizing squamous cell carcinoma
-DOID 	 name 
-DOID:7363	vulvar keratinizing squamous cell carcinoma

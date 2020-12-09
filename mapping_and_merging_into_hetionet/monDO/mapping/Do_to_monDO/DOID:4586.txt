@@ -1,3 +1,0 @@
-DOID:4586	familial meningioma
-monDO ID 	 name 
-MONDO:0011789	familial meningioma

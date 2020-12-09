@@ -1,3 +1,0 @@
-MONDO:0006709	common bile duct neoplasm
-DOID 	 name 
-DOID:4608	common bile duct neoplasm

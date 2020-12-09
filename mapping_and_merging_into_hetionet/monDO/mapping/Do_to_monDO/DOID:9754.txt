@@ -1,3 +1,0 @@
-DOID:9754	ganglion or cyst of synovium/tendon/bursa
-monDO ID 	 name 
-MONDO:0004874	ganglion or cyst of synovium/tendon/bursa

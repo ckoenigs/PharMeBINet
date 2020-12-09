@@ -1,3 +1,0 @@
-MONDO:0006885	panuveitis
-DOID 	 name 
-DOID:12030	panuveitis

@@ -1,3 +1,0 @@
-MONDO:0001174	conjunctival vascular disease
-DOID 	 name 
-DOID:10989	conjunctival vascular disease

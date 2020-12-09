@@ -1,3 +1,0 @@
-DOID:0090121	apparent mineralocorticoid excess
-monDO ID 	 name 
-MONDO:0009025	apparent mineralocorticoid excess

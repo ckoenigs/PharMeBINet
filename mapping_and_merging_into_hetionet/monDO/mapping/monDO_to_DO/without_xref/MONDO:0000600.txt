@@ -1,3 +1,0 @@
-MONDO:0000600	nosophobia
-DOID 	 name 
-DOID:0060048	nosophobia

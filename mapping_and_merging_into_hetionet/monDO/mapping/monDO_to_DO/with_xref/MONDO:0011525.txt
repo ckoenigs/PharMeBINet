@@ -1,3 +1,0 @@
-MONDO:0011525	Carney complex type 2
-DOID 	 name 
-DOID:0050471	Carney complex

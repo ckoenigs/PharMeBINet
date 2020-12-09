@@ -1,3 +1,0 @@
-MONDO:0010767	spermatogenic failure, Y-linked, 2
-DOID 	 name 
-DOID:14227	azoospermia

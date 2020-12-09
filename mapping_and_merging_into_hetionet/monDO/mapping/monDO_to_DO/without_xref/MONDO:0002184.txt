@@ -1,3 +1,0 @@
-MONDO:0002184	drug-induced hepatitis
-DOID 	 name 
-DOID:2044	drug-induced hepatitis

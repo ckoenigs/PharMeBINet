@@ -1,3 +1,0 @@
-DOID:3259	orbit rhabdomyosarcoma
-monDO ID 	 name 
-MONDO:0002580	orbit rhabdomyosarcoma

@@ -1,3 +1,0 @@
-DOID:5288	larynx leiomyosarcoma
-monDO ID 	 name 
-MONDO:0003374	larynx leiomyosarcoma

@@ -1,3 +1,0 @@
-MONDO:0001821	hypoactive sexual desire disorder
-DOID 	 name 
-DOID:13868	hypoactive sexual desire disorder

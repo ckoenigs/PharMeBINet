@@ -1,5 +1,0 @@
-MONDO:0002547	nerve sheath neoplasm
-DOID 	 name 
-DOID:1192	peripheral nervous system neoplasm
-DOID:4697	perineurioma
-DOID:3193	peripheral nerve sheath neoplasm

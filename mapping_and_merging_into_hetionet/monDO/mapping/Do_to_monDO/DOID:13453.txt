@@ -1,3 +1,0 @@
-DOID:13453	gonococcal bursitis
-monDO ID 	 name 
-MONDO:0001719	gonococcal bursitis

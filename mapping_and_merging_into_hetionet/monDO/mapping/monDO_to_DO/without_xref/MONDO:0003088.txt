@@ -1,3 +1,0 @@
-MONDO:0003088	intramuscular hemangioma
-DOID 	 name 
-DOID:468	intramuscular hemangioma

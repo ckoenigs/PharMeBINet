@@ -1,3 +1,0 @@
-MONDO:0000874	T-cell childhood lymphoblastic lymphoma
-DOID 	 name 
-DOID:0080148	T-cell childhood lymphoblastic lymphoma

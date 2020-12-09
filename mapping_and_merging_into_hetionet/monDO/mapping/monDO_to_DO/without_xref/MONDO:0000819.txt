@@ -1,3 +1,0 @@
-MONDO:0000819	anencephaly
-DOID 	 name 
-DOID:0060668	anencephaly

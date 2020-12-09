@@ -1,3 +1,0 @@
-MONDO:0005056	keratinizing squamous cell carcinoma
-DOID 	 name 
-DOID:5521	keratinizing squamous cell carcinoma

@@ -1,3 +1,0 @@
-MONDO:0006696	cervix erosion
-DOID 	 name 
-DOID:3456	cervix erosion

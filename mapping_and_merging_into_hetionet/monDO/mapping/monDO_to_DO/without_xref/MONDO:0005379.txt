@@ -1,3 +1,0 @@
-MONDO:0005379	neurotic disorder
-DOID 	 name 
-DOID:4964	neurotic disorder

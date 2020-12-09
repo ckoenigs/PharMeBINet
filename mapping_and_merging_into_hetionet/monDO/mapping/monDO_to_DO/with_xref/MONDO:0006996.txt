@@ -1,3 +1,0 @@
-MONDO:0006996	thyroid crisis (disease)
-DOID 	 name 
-DOID:12837	thyroid crisis

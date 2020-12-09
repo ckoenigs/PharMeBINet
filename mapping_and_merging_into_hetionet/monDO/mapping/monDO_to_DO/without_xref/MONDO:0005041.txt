@@ -1,3 +1,0 @@
-MONDO:0005041	glaucoma (disease)
-DOID 	 name 
-DOID:1686	glaucoma

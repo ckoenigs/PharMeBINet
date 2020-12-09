@@ -1,3 +1,0 @@
-MONDO:0001865	autoimmune polyendocrinopathy syndrome
-DOID 	 name 
-DOID:14040	autoimmune polyendocrine syndrome

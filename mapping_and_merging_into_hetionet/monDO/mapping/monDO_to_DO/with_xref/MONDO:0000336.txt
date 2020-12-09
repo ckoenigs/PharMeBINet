@@ -1,3 +1,0 @@
-MONDO:0000336	meningovascular neurosyphilis
-DOID 	 name 
-DOID:0050491	meningovascular neurosyphilis

@@ -1,3 +1,0 @@
-MONDO:0002229	ovarian epithelial tumor
-DOID 	 name 
-DOID:2152	ovary epithelial cancer

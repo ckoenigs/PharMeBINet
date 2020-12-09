@@ -1,3 +1,0 @@
-DOID:4406	spongiotic dermatitis
-monDO ID 	 name 
-MONDO:0002987	spongiotic dermatitis

@@ -1,3 +1,0 @@
-DOID:5826	breast lymphoma
-monDO ID 	 name 
-MONDO:0003661	breast lymphoma

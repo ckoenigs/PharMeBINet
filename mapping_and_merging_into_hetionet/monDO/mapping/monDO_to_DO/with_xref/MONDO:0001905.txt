@@ -1,3 +1,0 @@
-MONDO:0001905	bicipital tenosynovitis
-DOID 	 name 
-DOID:14192	bicipital tenosynovitis

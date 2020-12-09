@@ -1,3 +1,0 @@
-MONDO:0011576	familial hyperaldosteronism type II
-DOID 	 name 
-DOID:446	hyperaldosteronism

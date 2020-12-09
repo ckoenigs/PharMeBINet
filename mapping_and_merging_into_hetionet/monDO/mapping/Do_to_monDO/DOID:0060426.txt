@@ -1,3 +1,0 @@
-DOID:0060426	chromosome 19p13.13 deletion syndrome
-monDO ID 	 name 
-MONDO:0013336	chromosome 19p13.13 deletion syndrome

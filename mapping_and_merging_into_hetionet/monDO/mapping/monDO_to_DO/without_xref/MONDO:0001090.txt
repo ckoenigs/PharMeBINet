@@ -1,3 +1,0 @@
-MONDO:0001090	acute anterolateral myocardial infarction
-DOID 	 name 
-DOID:10651	acute anterolateral myocardial infarction

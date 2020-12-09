@@ -1,3 +1,0 @@
-DOID:6758	chest wall lymphoma
-monDO ID 	 name 
-MONDO:0003985	chest wall lymphoma

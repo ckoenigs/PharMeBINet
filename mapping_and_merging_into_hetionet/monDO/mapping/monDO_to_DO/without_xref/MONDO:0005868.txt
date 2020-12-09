@@ -1,3 +1,0 @@
-MONDO:0005868	myelophthisic anemia
-DOID 	 name 
-DOID:2354	myelophthisic anemia

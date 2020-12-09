@@ -1,3 +1,0 @@
-DOID:5232	aortic valve prolapse
-monDO ID 	 name 
-MONDO:0006655	aortic valve prolapse

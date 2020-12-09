@@ -1,3 +1,0 @@
-MONDO:0017579	Baraitser-winter cerebrofrontofacial syndrome
-DOID 	 name 
-DOID:0060229	Baraitser-Winter syndrome

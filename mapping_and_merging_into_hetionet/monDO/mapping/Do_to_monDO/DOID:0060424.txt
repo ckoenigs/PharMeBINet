@@ -1,3 +1,0 @@
-DOID:0060424	chromosome 6q24-q25 deletion syndrome
-monDO ID 	 name 
-MONDO:0013025	chromosome 6q24-q25 deletion syndrome

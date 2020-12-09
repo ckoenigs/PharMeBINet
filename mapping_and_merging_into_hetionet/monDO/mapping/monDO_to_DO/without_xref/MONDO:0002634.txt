@@ -1,3 +1,0 @@
-MONDO:0002634	liposarcoma of bone
-DOID 	 name 
-DOID:3381	liposarcoma of bone

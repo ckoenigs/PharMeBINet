@@ -1,3 +1,0 @@
-MONDO:0019188	Rubinstein-Taybi syndrome
-DOID 	 name 
-DOID:1933	Rubinstein-Taybi syndrome

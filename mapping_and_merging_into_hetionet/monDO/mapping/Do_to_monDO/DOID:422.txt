@@ -1,3 +1,0 @@
-DOID:422	congenital structural myopathy
-monDO ID 	 name 
-MONDO:0002921	congenital structural myopathy

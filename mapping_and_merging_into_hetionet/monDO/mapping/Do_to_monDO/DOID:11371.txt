@@ -1,3 +1,0 @@
-DOID:11371	functional diarrhea
-monDO ID 	 name 
-MONDO:0001272	functional diarrhea

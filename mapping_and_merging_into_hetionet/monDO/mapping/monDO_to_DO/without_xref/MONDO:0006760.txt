@@ -1,3 +1,0 @@
-MONDO:0006760	fetal erythroblastosis
-DOID 	 name 
-DOID:1098	fetal erythroblastosis

@@ -1,3 +1,0 @@
-MONDO:0002440	erythropoietin polycythemia
-DOID 	 name 
-DOID:2839	erythropoietin polycythemia

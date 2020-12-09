@@ -1,3 +1,0 @@
-MONDO:0002807	bronchial neoplasm (disease)
-DOID 	 name 
-DOID:3906	bronchial neoplasm

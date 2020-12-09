@@ -1,3 +1,0 @@
-MONDO:0002174	preretinal fibrosis
-DOID 	 name 
-DOID:2006	preretinal fibrosis

@@ -1,3 +1,0 @@
-MONDO:0002773	third ventricle chordoid glioma
-DOID 	 name 
-DOID:3773	third ventricle chordoid glioma

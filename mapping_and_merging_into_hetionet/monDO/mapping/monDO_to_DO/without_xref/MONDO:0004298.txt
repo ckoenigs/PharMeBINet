@@ -1,3 +1,0 @@
-MONDO:0004298	stomach disease
-DOID 	 name 
-DOID:76	stomach disease

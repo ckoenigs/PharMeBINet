@@ -1,3 +1,0 @@
-MONDO:0012491	WM2
-DOID 	 name 
-DOID:0050747	lymphoplasmacytic lymphoma

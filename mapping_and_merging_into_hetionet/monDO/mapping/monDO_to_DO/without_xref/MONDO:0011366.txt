@@ -1,3 +1,0 @@
-MONDO:0011366	ovarian germ cell tumor
-DOID 	 name 
-DOID:2156	ovarian germ cell cancer

@@ -1,3 +1,0 @@
-MONDO:0008867	biliary atresia
-DOID 	 name 
-DOID:13608	biliary atresia

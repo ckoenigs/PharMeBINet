@@ -1,3 +1,0 @@
-DOID:13240	tooth resorption
-monDO ID 	 name 
-MONDO:0001670	tooth resorption

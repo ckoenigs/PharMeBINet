@@ -1,4 +1,0 @@
-MONDO:0004177	benign urethral neoplasm
-DOID 	 name 
-DOID:734	urethra cancer
-DOID:730	urethral benign neoplasm

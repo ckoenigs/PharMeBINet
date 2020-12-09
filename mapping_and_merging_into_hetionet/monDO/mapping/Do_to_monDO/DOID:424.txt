@@ -1,3 +1,0 @@
-DOID:424	pulmonary immaturity
-monDO ID 	 name 
-MONDO:0002929	pulmonary immaturity

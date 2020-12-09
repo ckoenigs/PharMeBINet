@@ -1,3 +1,0 @@
-MONDO:0009468	pseudotumor cerebri
-DOID 	 name 
-DOID:11459	pseudotumor cerebri

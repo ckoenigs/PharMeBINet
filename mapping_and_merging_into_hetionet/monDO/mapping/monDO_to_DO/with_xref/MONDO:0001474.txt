@@ -1,3 +1,0 @@
-MONDO:0001474	chronic salpingo-oophoritis
-DOID 	 name 
-DOID:12265	chronic salpingo-oophoritis

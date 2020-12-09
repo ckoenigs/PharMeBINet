@@ -1,3 +1,0 @@
-DOID:12926	hypodermyiasis
-monDO ID 	 name 
-MONDO:0005805	hypodermyiasis

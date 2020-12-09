@@ -1,3 +1,0 @@
-DOID:7806	adult spinal cord glioblastoma multiforme
-monDO ID 	 name 
-MONDO:0004363	adult spinal cord glioblastoma multiforme

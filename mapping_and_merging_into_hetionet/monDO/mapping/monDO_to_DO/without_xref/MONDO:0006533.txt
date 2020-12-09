@@ -1,3 +1,0 @@
-MONDO:0006533	cholesteatoma of middle ear
-DOID 	 name 
-DOID:10964	cholesteatoma of middle ear

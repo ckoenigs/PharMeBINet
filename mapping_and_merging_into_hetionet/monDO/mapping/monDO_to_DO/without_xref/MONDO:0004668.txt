@@ -1,3 +1,0 @@
-MONDO:0004668	fascioliasis
-DOID 	 name 
-DOID:885	fascioliasis

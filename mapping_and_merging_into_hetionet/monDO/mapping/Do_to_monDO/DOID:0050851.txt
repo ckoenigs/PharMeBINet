@@ -1,3 +1,0 @@
-DOID:0050851	glomerulosclerosis
-monDO ID 	 name 
-MONDO:0000490	glomerulosclerosis

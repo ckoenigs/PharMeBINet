@@ -1,3 +1,0 @@
-MONDO:0004255	wolffian adnexal tumor
-DOID 	 name 
-DOID:7514	Wolffian adnexal neoplasm

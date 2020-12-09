@@ -1,3 +1,0 @@
-MONDO:0003709	myoma
-DOID 	 name 
-DOID:2691	myoma

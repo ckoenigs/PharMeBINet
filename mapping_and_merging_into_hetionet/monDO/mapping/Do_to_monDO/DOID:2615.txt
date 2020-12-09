@@ -1,3 +1,0 @@
-DOID:2615	papilloma
-monDO ID 	 name 
-MONDO:0002363	papilloma

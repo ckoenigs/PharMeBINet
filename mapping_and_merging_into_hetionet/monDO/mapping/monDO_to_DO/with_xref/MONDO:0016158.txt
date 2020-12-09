@@ -1,3 +1,0 @@
-MONDO:0016158	narcolepsy-cataplexy syndrome
-DOID 	 name 
-DOID:8986	narcolepsy

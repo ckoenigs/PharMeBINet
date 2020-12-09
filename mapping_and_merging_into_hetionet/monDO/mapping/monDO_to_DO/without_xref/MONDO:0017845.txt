@@ -1,3 +1,0 @@
-MONDO:0017845	spastic ataxia
-DOID 	 name 
-DOID:0050952	spastic ataxia

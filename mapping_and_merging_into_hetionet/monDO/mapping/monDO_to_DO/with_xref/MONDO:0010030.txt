@@ -1,3 +1,0 @@
-MONDO:0010030	Sjogren syndrome
-DOID 	 name 
-DOID:12894	Sjogren's syndrome

@@ -1,3 +1,0 @@
-MONDO:0017985	congenital radioulnar synostosis
-DOID 	 name 
-DOID:9827	radioulnar synostosis

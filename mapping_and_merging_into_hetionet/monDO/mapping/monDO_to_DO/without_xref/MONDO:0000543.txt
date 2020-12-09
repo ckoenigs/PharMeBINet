@@ -1,3 +1,0 @@
-MONDO:0000543	ovarian melanoma
-DOID 	 name 
-DOID:0050928	ovarian melanoma

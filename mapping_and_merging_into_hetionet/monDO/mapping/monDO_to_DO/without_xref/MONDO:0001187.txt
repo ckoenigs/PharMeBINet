@@ -1,3 +1,0 @@
-MONDO:0001187	urinary bladder cancer
-DOID 	 name 
-DOID:11054	urinary bladder cancer

@@ -1,3 +1,0 @@
-MONDO:0001920	chronic purulent otitis media
-DOID 	 name 
-DOID:14247	chronic purulent otitis media

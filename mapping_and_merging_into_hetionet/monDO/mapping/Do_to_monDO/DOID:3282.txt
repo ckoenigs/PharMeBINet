@@ -1,3 +1,0 @@
-DOID:3282	dendritic cell thymoma
-monDO ID 	 name 
-MONDO:0016974	thymoma type B

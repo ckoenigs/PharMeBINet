@@ -1,3 +1,0 @@
-DOID:0110916	hereditary spherocytosis type 1
-monDO ID 	 name 
-MONDO:0008447	hereditary spherocytosis type 1

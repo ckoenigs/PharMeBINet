@@ -1,3 +1,0 @@
-DOID:0050744	anaplastic large cell lymphoma
-monDO ID 	 name 
-MONDO:0020325	anaplastic large cell lymphoma

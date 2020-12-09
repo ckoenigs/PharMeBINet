@@ -1,3 +1,0 @@
-DOID:7725	epilepsy with generalized tonic-clonic seizures
-monDO ID 	 name 
-MONDO:0005754	epilepsy with generalized tonic-clonic seizures

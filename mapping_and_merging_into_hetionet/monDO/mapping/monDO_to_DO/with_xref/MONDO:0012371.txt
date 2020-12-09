@@ -1,3 +1,0 @@
-MONDO:0012371	Noonan syndrome 3
-DOID 	 name 
-DOID:0060581	Noonan syndrome 3

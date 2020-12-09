@@ -1,3 +1,0 @@
-MONDO:0000497	pyometritis
-DOID 	 name 
-DOID:0050862	pyometritis

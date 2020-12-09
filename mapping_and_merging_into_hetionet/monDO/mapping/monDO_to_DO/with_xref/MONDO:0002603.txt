@@ -1,3 +1,0 @@
-MONDO:0002603	angiomyolipoma
-DOID 	 name 
-DOID:3314	angiomyolipoma

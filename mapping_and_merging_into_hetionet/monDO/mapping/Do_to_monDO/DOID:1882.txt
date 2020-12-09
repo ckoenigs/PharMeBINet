@@ -1,3 +1,0 @@
-DOID:1882	atrial heart septal defect
-monDO ID 	 name 
-MONDO:0006664	atrial heart septal defect

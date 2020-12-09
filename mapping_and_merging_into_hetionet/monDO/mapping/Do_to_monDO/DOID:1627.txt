@@ -1,3 +1,0 @@
-DOID:1627	intraductal papilloma
-monDO ID 	 name 
-MONDO:0002060	intraductal papilloma

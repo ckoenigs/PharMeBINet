@@ -1,3 +1,0 @@
-MONDO:0000962	spindle cell lipoma
-DOID 	 name 
-DOID:10184	spindle cell lipoma

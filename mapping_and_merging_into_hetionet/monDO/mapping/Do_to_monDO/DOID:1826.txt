@@ -1,3 +1,0 @@
-DOID:1826	epilepsy syndrome
-monDO ID 	 name 
-MONDO:0005027	epilepsy

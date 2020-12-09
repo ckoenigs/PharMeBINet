@@ -1,3 +1,0 @@
-DOID:14365	systemic primary carnitine deficiency disease
-monDO ID 	 name 
-MONDO:0008919	systemic primary carnitine deficiency disease

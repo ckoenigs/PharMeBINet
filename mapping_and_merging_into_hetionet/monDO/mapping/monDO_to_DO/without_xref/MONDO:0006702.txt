@@ -1,3 +1,0 @@
-MONDO:0006702	chronic inflammatory demyelinating polyradiculoneuropathy
-DOID 	 name 
-DOID:5213	chronic inflammatory demyelinating polyradiculoneuropathy

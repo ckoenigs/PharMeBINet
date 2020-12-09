@@ -1,3 +1,0 @@
-MONDO:0004269	breast cystic hypersecretory carcinoma
-DOID 	 name 
-DOID:7537	breast cystic hypersecretory carcinoma

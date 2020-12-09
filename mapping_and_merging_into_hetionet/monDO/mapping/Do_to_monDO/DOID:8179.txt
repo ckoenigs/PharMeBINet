@@ -1,3 +1,0 @@
-DOID:8179	cervical atypical polypoid adenomyoma
-monDO ID 	 name 
-MONDO:0004488	cervical atypical polypoid adenomyoma

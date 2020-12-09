@@ -1,3 +1,0 @@
-MONDO:0012851	hypophosphatemic nephrolithiasis/osteoporosis 2
-DOID 	 name 
-DOID:0080078	hypophosphatemic nephrolithiasis/osteoporosis 2

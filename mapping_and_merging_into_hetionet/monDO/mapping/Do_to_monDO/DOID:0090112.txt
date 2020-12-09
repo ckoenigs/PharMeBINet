@@ -1,3 +1,0 @@
-DOID:0090112	Nasu-Hakola disease
-monDO ID 	 name 
-MONDO:0009092	Nasu-Hakola disease

@@ -1,3 +1,0 @@
-MONDO:0012928	hereditary spastic paraplegia 42
-DOID 	 name 
-DOID:0110794	hereditary spastic paraplegia 42

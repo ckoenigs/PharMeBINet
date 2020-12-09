@@ -1,3 +1,0 @@
-MONDO:0002650	scrotal carcinoma
-DOID 	 name 
-DOID:3445	scrotal carcinoma

@@ -1,3 +1,0 @@
-DOID:0060367	autosomal dominant Parkinson disease 1
-monDO ID 	 name 
-MONDO:0008200	autosomal dominant Parkinson disease 1

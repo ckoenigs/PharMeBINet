@@ -1,3 +1,0 @@
-MONDO:0007790	Charcot-Marie-tooth disease type 3
-DOID 	 name 
-DOID:0050540	Charcot-Marie-Tooth disease type 3

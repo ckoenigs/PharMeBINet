@@ -1,3 +1,0 @@
-DOID:13207	proliferative diabetic retinopathy
-monDO ID 	 name 
-MONDO:0001660	proliferative diabetic retinopathy

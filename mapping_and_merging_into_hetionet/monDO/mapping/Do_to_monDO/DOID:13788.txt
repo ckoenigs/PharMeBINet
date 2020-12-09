@@ -1,3 +1,0 @@
-DOID:13788	equatorial staphyloma
-monDO ID 	 name 
-MONDO:0001800	equatorial staphyloma

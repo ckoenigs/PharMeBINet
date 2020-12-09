@@ -1,3 +1,0 @@
-MONDO:0005847	middle lobe syndrome
-DOID 	 name 
-DOID:2810	middle lobe syndrome

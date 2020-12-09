@@ -1,3 +1,0 @@
-MONDO:0003091	cutaneous mucoepidermoid carcinoma
-DOID 	 name 
-DOID:4683	cutaneous mucoepidermoid carcinoma

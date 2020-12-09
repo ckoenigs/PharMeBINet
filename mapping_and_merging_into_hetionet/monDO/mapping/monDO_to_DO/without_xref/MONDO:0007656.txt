@@ -1,3 +1,0 @@
-MONDO:0007656	Gerstmann-Straussler-Scheinker syndrome
-DOID 	 name 
-DOID:4249	Gerstmann-Straussler-Scheinker syndrome

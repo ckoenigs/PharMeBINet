@@ -1,3 +1,0 @@
-MONDO:0007283	cataract 42
-DOID 	 name 
-DOID:0110237	cataract 42

@@ -1,3 +1,0 @@
-DOID:0090068	giant axonal neuropathy 1
-monDO ID 	 name 
-MONDO:0009749	giant axonal neuropathy 1

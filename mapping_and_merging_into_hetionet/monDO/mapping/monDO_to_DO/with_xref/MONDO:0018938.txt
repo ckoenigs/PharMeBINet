@@ -1,3 +1,0 @@
-MONDO:0018938	mucopolysaccharidosis type 4
-DOID 	 name 
-DOID:12804	mucopolysaccharidosis IV

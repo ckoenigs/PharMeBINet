@@ -1,3 +1,0 @@
-MONDO:0003098	mediastinal neural neoplasm
-DOID 	 name 
-DOID:4691	malignant mediastinal neurogenic neoplasm

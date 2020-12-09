@@ -1,3 +1,0 @@
-MONDO:0007140	antiphospholipid syndrome
-DOID 	 name 
-DOID:2988	antiphospholipid syndrome

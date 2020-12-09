@@ -1,3 +1,0 @@
-MONDO:0006935	pulmonary subvalvular stenosis
-DOID 	 name 
-DOID:8861	pulmonary subvalvular stenosis

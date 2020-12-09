@@ -1,3 +1,0 @@
-DOID:4676	uremia
-monDO ID 	 name 
-MONDO:0007008	uremia

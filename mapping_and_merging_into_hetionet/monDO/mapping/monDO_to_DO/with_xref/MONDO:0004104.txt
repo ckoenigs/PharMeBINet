@@ -1,3 +1,0 @@
-MONDO:0004104	splenic manifestation of hairy cell leukemia
-DOID 	 name 
-DOID:709	splenic manifestation of hairy cell leukemia

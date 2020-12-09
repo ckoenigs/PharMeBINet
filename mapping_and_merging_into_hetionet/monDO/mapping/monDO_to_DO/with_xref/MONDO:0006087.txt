@@ -1,3 +1,0 @@
-MONDO:0006087	appendix adenocarcinoma
-DOID 	 name 
-DOID:3608	appendix adenocarcinoma

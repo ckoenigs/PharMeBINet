@@ -1,3 +1,0 @@
-DOID:1023	borderline leprosy
-monDO ID 	 name 
-MONDO:0005125	borderline leprosy

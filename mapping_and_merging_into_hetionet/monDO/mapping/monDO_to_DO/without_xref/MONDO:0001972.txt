@@ -1,3 +1,0 @@
-MONDO:0001972	Brucella melitensis brucellosis
-DOID 	 name 
-DOID:14456	Brucella melitensis brucellosis

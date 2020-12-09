@@ -1,3 +1,0 @@
-MONDO:0010809	familial chronic myelocytic leukemia-like syndrome
-DOID 	 name 
-DOID:0060761	familial chronic myelocytic leukemia-like syndrome

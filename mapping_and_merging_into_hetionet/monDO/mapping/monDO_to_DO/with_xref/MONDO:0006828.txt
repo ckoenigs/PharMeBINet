@@ -1,3 +1,0 @@
-MONDO:0006828	lethal midline granuloma
-DOID 	 name 
-DOID:9072	lethal midline granuloma

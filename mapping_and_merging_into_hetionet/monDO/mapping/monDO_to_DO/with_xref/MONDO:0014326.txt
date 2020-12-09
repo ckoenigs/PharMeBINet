@@ -1,3 +1,0 @@
-MONDO:0014326	nemaline myopathy 9
-DOID 	 name 
-DOID:0110929	nemaline myopathy 9

@@ -1,3 +1,0 @@
-MONDO:0018997	Noonan syndrome
-DOID 	 name 
-DOID:3490	Noonan syndrome

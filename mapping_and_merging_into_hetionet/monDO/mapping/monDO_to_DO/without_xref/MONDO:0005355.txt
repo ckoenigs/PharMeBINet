@@ -1,3 +1,0 @@
-MONDO:0005355	coronary restenosis
-DOID 	 name 
-DOID:4247	coronary restenosis

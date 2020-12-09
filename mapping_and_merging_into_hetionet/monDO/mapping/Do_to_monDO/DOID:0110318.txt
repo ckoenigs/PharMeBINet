@@ -1,3 +1,0 @@
-DOID:0110318	hypertrophic cardiomyopathy 12
-monDO ID 	 name 
-MONDO:0012804	hypertrophic cardiomyopathy 12

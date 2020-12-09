@@ -1,3 +1,0 @@
-DOID:9877	urethral gland abscess
-monDO ID 	 name 
-MONDO:0004909	urethral gland abscess

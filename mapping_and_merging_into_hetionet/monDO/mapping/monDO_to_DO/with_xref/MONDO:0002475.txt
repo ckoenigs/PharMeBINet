@@ -1,3 +1,0 @@
-MONDO:0002475	lacrimal gland adenocarcinoma
-DOID 	 name 
-DOID:298	lacrimal gland adenocarcinoma

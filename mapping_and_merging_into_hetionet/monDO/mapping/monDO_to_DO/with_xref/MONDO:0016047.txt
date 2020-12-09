@@ -1,3 +1,0 @@
-MONDO:0016047	endophthalmitis
-DOID 	 name 
-DOID:4692	endophthalmitis

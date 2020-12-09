@@ -1,3 +1,0 @@
-DOID:0090054	episodic kinesigenic dyskinesia 2
-monDO ID 	 name 
-MONDO:0012603	episodic kinesigenic dyskinesia 2

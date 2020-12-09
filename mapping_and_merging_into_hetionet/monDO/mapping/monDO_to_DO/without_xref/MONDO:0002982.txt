@@ -1,3 +1,0 @@
-MONDO:0002982	peripheral primitive neuroectodermal tumor of soft tissues
-DOID 	 name 
-DOID:4389	soft tissue peripheral neuroepithelioma

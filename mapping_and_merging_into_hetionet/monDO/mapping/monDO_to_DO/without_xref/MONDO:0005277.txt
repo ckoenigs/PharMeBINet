@@ -1,3 +1,0 @@
-MONDO:0005277	migraine disorder
-DOID 	 name 
-DOID:6364	migraine

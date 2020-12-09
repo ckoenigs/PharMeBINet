@@ -1,3 +1,0 @@
-MONDO:0014611	multiple mitochondrial dysfunctions syndrome 4
-DOID 	 name 
-DOID:0080136	multiple mitochondrial dysfunctions syndrome 4

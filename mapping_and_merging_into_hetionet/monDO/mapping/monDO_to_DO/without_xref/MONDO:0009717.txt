@@ -1,3 +1,0 @@
-MONDO:0009717	Schwartz-Jampel syndrome
-DOID 	 name 
-DOID:0090005	Schwartz-Jampel syndrome 1

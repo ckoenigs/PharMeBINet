@@ -1,3 +1,0 @@
-DOID:9952	acute lymphocytic leukemia
-monDO ID 	 name 
-MONDO:0004967	acute lymphoblastic leukemia (disease)

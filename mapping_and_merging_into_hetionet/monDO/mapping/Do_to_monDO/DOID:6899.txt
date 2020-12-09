@@ -1,3 +1,0 @@
-DOID:6899	malignant ovarian mixed epithelial neoplasm
-monDO ID 	 name 
-MONDO:0004032	malignant ovarian mixed epithelial neoplasm

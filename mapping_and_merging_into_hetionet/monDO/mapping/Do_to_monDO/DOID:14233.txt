@@ -1,3 +1,0 @@
-DOID:14233	orbital cyst
-monDO ID 	 name 
-MONDO:0001915	orbital cyst (disease)

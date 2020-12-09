@@ -1,3 +1,0 @@
-DOID:5190	cervical Wilms' tumor
-monDO ID 	 name 
-MONDO:0003323	cervical wilms' tumor

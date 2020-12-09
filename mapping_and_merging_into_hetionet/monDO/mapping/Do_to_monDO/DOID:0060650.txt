@@ -1,3 +1,0 @@
-DOID:0060650	dicarboxylic aminoaciduria
-monDO ID 	 name 
-MONDO:0009110	dicarboxylic aminoaciduria

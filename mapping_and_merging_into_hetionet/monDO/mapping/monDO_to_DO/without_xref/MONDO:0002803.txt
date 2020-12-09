@@ -1,3 +1,0 @@
-MONDO:0002803	intestinal pseudo-obstruction
-DOID 	 name 
-DOID:3878	intestinal pseudo-obstruction

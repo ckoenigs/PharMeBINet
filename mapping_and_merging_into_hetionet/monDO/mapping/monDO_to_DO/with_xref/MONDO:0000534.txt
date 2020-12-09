@@ -1,3 +1,0 @@
-MONDO:0000534	trachea mucoepidermoid carcinoma
-DOID 	 name 
-DOID:0050919	trachea mucoepidermoid carcinoma

@@ -1,4 +1,0 @@
-MONDO:0013377	isolated microphthalmia 7
-DOID 	 name 
-DOID:0060838	isolated microphthalmia 7
-DOID:10629	microphthalmia

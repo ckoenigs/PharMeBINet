@@ -1,3 +1,0 @@
-MONDO:0018936	osteoblastoma (disease)
-DOID 	 name 
-DOID:0060098	osteoblastoma

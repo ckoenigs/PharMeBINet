@@ -1,3 +1,0 @@
-DOID:13381	pernicious anemia
-monDO ID 	 name 
-MONDO:0008228	pernicious anemia

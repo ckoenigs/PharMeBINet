@@ -1,3 +1,0 @@
-DOID:0050748	marginal zone B-cell lymphoma
-monDO ID 	 name 
-MONDO:0017604	marginal zone lymphoma

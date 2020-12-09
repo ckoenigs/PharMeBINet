@@ -1,3 +1,0 @@
-DOID:5437	intrahepatic bile duct adenoma
-monDO ID 	 name 
-MONDO:0003444	intrahepatic bile duct adenoma

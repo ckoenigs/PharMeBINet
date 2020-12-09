@@ -1,3 +1,0 @@
-DOID:12397	entropion
-monDO ID 	 name 
-MONDO:0001519	entropion (disease)

@@ -1,3 +1,0 @@
-MONDO:0001055	conjunctival pterygium
-DOID 	 name 
-DOID:10526	conjunctival pterygium

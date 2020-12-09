@@ -1,3 +1,0 @@
-DOID:3527	cerebral arterial disease
-monDO ID 	 name 
-MONDO:0006693	cerebral arterial disease

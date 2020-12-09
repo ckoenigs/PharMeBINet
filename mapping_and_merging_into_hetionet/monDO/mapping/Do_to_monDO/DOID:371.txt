@@ -1,3 +1,0 @@
-DOID:371	extracranial neuroblastoma
-monDO ID 	 name 
-MONDO:0002749	extracranial neuroblastoma

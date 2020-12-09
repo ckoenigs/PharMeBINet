@@ -1,3 +1,0 @@
-MONDO:0001004	slate pneumoconiosis
-DOID 	 name 
-DOID:10330	slate pneumoconiosis

@@ -1,3 +1,0 @@
-DOID:4551	anus neoplasm
-monDO ID 	 name 
-MONDO:0003046	anus neoplasm

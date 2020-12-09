@@ -1,3 +1,0 @@
-MONDO:0002459	hypersensitivity reaction type IV disease
-DOID 	 name 
-DOID:2916	hypersensitivity reaction type IV disease

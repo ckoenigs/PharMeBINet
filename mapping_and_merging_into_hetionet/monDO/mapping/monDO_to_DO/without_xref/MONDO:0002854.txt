@@ -1,3 +1,0 @@
-MONDO:0002854	prostate sarcoma
-DOID 	 name 
-DOID:4054	prostate sarcoma

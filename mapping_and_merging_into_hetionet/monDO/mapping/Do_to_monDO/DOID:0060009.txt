@@ -1,3 +1,0 @@
-DOID:0060009	MHC class I deficiency
-monDO ID 	 name 
-MONDO:0011476	MHC class i deficiency

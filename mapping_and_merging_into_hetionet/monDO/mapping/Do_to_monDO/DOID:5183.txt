@@ -1,3 +1,0 @@
-DOID:5183	hereditary Wilms' tumor
-monDO ID 	 name 
-MONDO:0003321	hereditary wilms' tumor

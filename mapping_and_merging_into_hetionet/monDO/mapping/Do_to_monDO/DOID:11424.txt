@@ -1,3 +1,0 @@
-DOID:11424	fallopian tube endometriosis
-monDO ID 	 name 
-MONDO:0001282	fallopian tube endometriosis

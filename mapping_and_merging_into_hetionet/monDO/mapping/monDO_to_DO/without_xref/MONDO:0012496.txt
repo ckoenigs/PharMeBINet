@@ -1,3 +1,0 @@
-MONDO:0012496	Koolen de Vries syndrome
-DOID 	 name 
-DOID:0050880	Koolen de Vries syndrome

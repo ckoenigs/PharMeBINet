@@ -1,3 +1,0 @@
-MONDO:0006585	neurodermatitis
-DOID 	 name 
-DOID:3309	neurodermatitis

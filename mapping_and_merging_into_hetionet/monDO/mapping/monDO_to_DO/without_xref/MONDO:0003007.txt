@@ -1,3 +1,0 @@
-MONDO:0003007	childhood kidney cell carcinoma
-DOID 	 name 
-DOID:4454	childhood kidney cell carcinoma

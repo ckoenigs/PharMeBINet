@@ -1,3 +1,0 @@
-DOID:6175	mediastinal neurilemmoma
-monDO ID 	 name 
-MONDO:0004398	mediastinal schwannoma

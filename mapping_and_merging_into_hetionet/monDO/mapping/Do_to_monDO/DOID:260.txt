@@ -1,3 +1,0 @@
-DOID:260	hepatic flexure cancer
-monDO ID 	 name 
-MONDO:0002357	hepatic flexure cancer

@@ -1,3 +1,0 @@
-MONDO:0010405	HPCX2
-DOID 	 name 
-DOID:10283	prostate cancer

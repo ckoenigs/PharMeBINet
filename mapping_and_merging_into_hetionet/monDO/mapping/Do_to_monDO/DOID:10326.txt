@@ -1,3 +1,0 @@
-DOID:10326	Caplan's syndrome
-monDO ID 	 name 
-MONDO:0005690	Caplan syndrome

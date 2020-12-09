@@ -1,3 +1,0 @@
-DOID:6048	telangiectatic glomangioma
-monDO ID 	 name 
-MONDO:0003747	telangiectatic glomangioma

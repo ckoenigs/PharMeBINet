@@ -1,3 +1,0 @@
-MONDO:0013361	prothrombin deficiency
-DOID 	 name 
-DOID:2235	prothrombin deficiency

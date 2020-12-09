@@ -1,3 +1,0 @@
-MONDO:0003594	mixed liposarcoma
-DOID 	 name 
-DOID:5703	mixed liposarcoma

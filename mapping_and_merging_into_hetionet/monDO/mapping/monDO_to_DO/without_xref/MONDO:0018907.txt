@@ -1,3 +1,0 @@
-MONDO:0018907	craniopharyngioma
-DOID 	 name 
-DOID:3840	craniopharyngioma

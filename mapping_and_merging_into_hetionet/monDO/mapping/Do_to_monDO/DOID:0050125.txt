@@ -1,3 +1,0 @@
-DOID:0050125	dengue shock syndrome
-monDO ID 	 name 
-MONDO:0000248	dengue shock syndrome

@@ -1,3 +1,0 @@
-DOID:6934	urethra inverted papilloma
-monDO ID 	 name 
-MONDO:0004042	urethra inverted papilloma

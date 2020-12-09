@@ -1,3 +1,0 @@
-DOID:1067	open-angle glaucoma
-monDO ID 	 name 
-MONDO:0005338	open-angle glaucoma

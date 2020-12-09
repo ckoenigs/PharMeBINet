@@ -1,4 +1,0 @@
-MONDO:0015364	hereditary sensory and autonomic neuropathy
-DOID 	 name 
-DOID:0050548	hereditary sensory neuropathy
-DOID:2491	sensory peripheral neuropathy

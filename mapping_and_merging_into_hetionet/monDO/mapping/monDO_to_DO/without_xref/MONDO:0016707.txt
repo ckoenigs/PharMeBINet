@@ -1,3 +1,0 @@
-MONDO:0016707	astroblastoma
-DOID 	 name 
-DOID:7305	astroblastoma

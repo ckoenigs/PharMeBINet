@@ -1,3 +1,0 @@
-DOID:11573	listeriosis
-monDO ID 	 name 
-MONDO:0005828	listeriosis

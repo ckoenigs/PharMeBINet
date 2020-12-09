@@ -1,3 +1,0 @@
-MONDO:0004265	acute endometritis
-DOID 	 name 
-DOID:7528	acute endometritis

@@ -1,3 +1,0 @@
-MONDO:0007937	renal hypomagnesemia 2
-DOID 	 name 
-DOID:0060885	renal hypomagnesemia 2

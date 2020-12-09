@@ -1,3 +1,0 @@
-MONDO:0002405	hepatic vascular disease
-DOID 	 name 
-DOID:272	hepatic vascular disease

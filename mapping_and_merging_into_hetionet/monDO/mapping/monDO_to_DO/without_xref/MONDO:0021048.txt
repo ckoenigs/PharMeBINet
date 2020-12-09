@@ -1,3 +1,0 @@
-MONDO:0021048	benign mastocytoma
-DOID 	 name 
-DOID:4658	benign mastocytoma

@@ -1,3 +1,0 @@
-MONDO:0002822	trabecular adenocarcinoma
-DOID 	 name 
-DOID:3965	Merkel cell carcinoma

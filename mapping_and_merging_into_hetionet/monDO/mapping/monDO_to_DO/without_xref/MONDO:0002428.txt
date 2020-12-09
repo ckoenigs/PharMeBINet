@@ -1,3 +1,0 @@
-MONDO:0002428	parasitic protozoa infectious disease
-DOID 	 name 
-DOID:2789	parasitic protozoa infectious disease

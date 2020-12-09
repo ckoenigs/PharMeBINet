@@ -1,3 +1,0 @@
-DOID:12987	agranulocytosis
-monDO ID 	 name 
-MONDO:0001609	agranulocytosis

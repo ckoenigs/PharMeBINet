@@ -1,3 +1,0 @@
-MONDO:0003832	complement deficiency
-DOID 	 name 
-DOID:626	complement deficiency

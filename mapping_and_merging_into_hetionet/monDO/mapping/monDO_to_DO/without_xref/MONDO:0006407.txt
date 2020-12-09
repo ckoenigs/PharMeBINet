@@ -1,3 +1,0 @@
-MONDO:0006407	sarcomatoid mesothelioma
-DOID 	 name 
-DOID:4488	sarcomatoid mesothelioma

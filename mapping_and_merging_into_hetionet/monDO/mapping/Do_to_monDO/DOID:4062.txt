@@ -1,3 +1,0 @@
-DOID:4062	testis sarcoma
-monDO ID 	 name 
-MONDO:0002861	testis sarcoma

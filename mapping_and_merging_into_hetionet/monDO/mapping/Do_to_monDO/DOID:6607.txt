@@ -1,3 +1,0 @@
-DOID:6607	nervous system hibernoma
-monDO ID 	 name 
-MONDO:0003943	central nervous system hibernoma

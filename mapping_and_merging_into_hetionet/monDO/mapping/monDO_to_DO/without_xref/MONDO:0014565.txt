@@ -1,3 +1,0 @@
-MONDO:0014565	cataract 43
-DOID 	 name 
-DOID:0110259	cataract 43

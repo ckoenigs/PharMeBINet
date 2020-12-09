@@ -1,3 +1,0 @@
-DOID:4422	malignant adenofibroma
-monDO ID 	 name 
-MONDO:0002991	adenocarcinofibroma

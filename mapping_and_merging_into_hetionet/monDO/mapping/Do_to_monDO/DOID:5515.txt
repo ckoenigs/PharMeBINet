@@ -1,3 +1,0 @@
-DOID:5515	nasal cavity squamous cell carcinoma
-monDO ID 	 name 
-MONDO:0006059	nasal cavity squamous cell carcinoma

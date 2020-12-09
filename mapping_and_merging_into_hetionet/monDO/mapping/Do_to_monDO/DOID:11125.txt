@@ -1,3 +1,0 @@
-DOID:11125	qualitative platelet defect
-monDO ID 	 name 
-MONDO:0001197	qualitative platelet defect

@@ -1,3 +1,0 @@
-MONDO:0013424	3p- syndrome
-DOID 	 name 
-DOID:0060417	3p- syndrome

@@ -1,3 +1,0 @@
-DOID:0110319	hypertrophic cardiomyopathy 13
-monDO ID 	 name 
-MONDO:0013195	hypertrophic cardiomyopathy 13

@@ -1,3 +1,0 @@
-MONDO:0018106	hereditary xanthinuria
-DOID 	 name 
-DOID:0060236	xanthinuria

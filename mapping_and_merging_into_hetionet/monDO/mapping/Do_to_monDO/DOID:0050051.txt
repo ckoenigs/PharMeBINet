@@ -1,3 +1,0 @@
-DOID:0050051	Rickettsia parkeri spotted fever
-monDO ID 	 name 
-MONDO:0000234	rickettsia parkeri spotted fever

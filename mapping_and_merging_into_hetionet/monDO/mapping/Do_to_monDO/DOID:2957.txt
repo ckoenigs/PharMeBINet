@@ -1,3 +1,0 @@
-DOID:2957	pulmonary tuberculosis
-monDO ID 	 name 
-MONDO:0006052	pulmonary tuberculosis

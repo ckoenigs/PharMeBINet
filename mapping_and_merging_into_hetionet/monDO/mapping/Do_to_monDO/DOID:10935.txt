@@ -1,3 +1,0 @@
-DOID:10935	dissociative disorder
-monDO ID 	 name 
-MONDO:0001160	dissociative disorder

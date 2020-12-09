@@ -1,3 +1,0 @@
-MONDO:0000740	adenoid hypertrophy
-DOID 	 name 
-DOID:0060311	adenoid hypertrophy

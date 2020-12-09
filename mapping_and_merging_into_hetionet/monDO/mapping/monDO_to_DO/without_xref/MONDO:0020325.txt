@@ -1,3 +1,0 @@
-MONDO:0020325	anaplastic large cell lymphoma
-DOID 	 name 
-DOID:0050744	anaplastic large cell lymphoma

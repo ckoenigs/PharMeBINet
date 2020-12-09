@@ -1,3 +1,0 @@
-MONDO:0004938	substance dependence
-DOID 	 name 
-DOID:9973	substance dependence

@@ -1,4 +1,0 @@
-MONDO:0005215	vulvar carcinoma
-DOID 	 name 
-DOID:1245	vulva cancer
-DOID:1294	vulva carcinoma

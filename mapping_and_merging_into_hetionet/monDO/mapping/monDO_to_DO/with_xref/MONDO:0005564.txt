@@ -1,5 +1,0 @@
-MONDO:0005564	embryonal neoplasm
-DOID 	 name 
-DOID:688	embryonal cancer
-DOID:2994	germ cell cancer
-DOID:3095	germ cell and embryonal cancer

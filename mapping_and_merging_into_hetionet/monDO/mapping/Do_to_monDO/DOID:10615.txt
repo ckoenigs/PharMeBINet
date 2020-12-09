@@ -1,3 +1,0 @@
-DOID:10615	acute gonococcal cervicitis
-monDO ID 	 name 
-MONDO:0001080	acute gonococcal cervicitis

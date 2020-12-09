@@ -1,3 +1,0 @@
-DOID:119	vaginal cancer
-monDO ID 	 name 
-MONDO:0001402	vaginal cancer

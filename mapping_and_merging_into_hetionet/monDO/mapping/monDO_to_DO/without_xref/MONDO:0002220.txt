@@ -1,3 +1,0 @@
-MONDO:0002220	teeth hard tissue disease
-DOID 	 name 
-DOID:214	teeth hard tissue disease

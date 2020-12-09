@@ -1,3 +1,0 @@
-DOID:7269	cribriform variant testicular seminoma
-monDO ID 	 name 
-MONDO:0004168	cribriform variant testicular seminoma

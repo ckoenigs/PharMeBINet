@@ -1,3 +1,0 @@
-MONDO:0001319	bladder lateral wall cancer
-DOID 	 name 
-DOID:11593	bladder lateral wall cancer

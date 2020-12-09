@@ -1,3 +1,0 @@
-MONDO:0000262	otomycosis
-DOID 	 name 
-DOID:0050147	otomycosis

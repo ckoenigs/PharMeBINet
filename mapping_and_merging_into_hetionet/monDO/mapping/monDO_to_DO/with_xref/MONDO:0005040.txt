@@ -1,6 +1,0 @@
-MONDO:0005040	germ cell tumor
-DOID 	 name 
-DOID:688	embryonal cancer
-DOID:2994	germ cell cancer
-DOID:3095	germ cell and embryonal cancer
-DOID:3304	germinoma

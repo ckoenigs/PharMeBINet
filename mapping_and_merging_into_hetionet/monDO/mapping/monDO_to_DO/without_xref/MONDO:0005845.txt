@@ -1,3 +1,0 @@
-MONDO:0005845	meningoencephalitis
-DOID 	 name 
-DOID:10554	meningoencephalitis

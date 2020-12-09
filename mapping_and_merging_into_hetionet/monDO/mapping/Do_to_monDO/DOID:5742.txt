@@ -1,3 +1,0 @@
-DOID:5742	pancreatic acinar cell adenocarcinoma
-monDO ID 	 name 
-MONDO:0006346	pancreatic acinar cell carcinoma

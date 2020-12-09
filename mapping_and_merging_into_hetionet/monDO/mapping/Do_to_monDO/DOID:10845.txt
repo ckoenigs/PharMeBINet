@@ -1,3 +1,0 @@
-DOID:10845	St. Louis encephalitis
-monDO ID 	 name 
-MONDO:0005969	st. Louis encephalitis

@@ -1,3 +1,0 @@
-DOID:13100	intracranial vasospasm
-monDO ID 	 name 
-MONDO:0006812	intracranial vasospasm

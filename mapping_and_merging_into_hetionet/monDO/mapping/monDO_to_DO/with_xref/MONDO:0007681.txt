@@ -1,3 +1,0 @@
-MONDO:0007681	familial multinodular goiter
-DOID 	 name 
-DOID:0050489	multinodular goiter

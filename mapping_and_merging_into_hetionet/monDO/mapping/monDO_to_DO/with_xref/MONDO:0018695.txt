@@ -1,3 +1,0 @@
-MONDO:0018695	avian influenza
-DOID 	 name 
-DOID:4492	avian influenza

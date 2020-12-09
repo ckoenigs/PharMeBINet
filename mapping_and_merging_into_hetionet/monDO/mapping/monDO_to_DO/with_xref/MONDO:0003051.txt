@@ -1,3 +1,0 @@
-MONDO:0003051	non specific chronic endometritis
-DOID 	 name 
-DOID:4560	non specific chronic endometritis

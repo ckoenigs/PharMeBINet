@@ -1,3 +1,0 @@
-MONDO:0003569	cranial nerve neuropathy
-DOID 	 name 
-DOID:5656	cranial nerve disease

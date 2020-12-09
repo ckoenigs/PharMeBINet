@@ -1,3 +1,0 @@
-MONDO:0006755	euthyroid sick syndrome
-DOID 	 name 
-DOID:2856	euthyroid sick syndrome

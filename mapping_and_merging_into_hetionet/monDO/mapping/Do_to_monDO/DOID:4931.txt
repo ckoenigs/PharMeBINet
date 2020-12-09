@@ -1,3 +1,0 @@
-DOID:4931	nasal cavity carcinoma
-monDO ID 	 name 
-MONDO:0003212	nasal cavity carcinoma

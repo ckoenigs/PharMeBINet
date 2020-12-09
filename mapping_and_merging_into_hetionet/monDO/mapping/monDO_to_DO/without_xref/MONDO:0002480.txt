@@ -1,3 +1,0 @@
-MONDO:0002480	female reproductive endometrioid cancer
-DOID 	 name 
-DOID:3001	female reproductive endometrioid cancer

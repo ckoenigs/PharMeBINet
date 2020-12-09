@@ -1,3 +1,0 @@
-MONDO:0013189	trichotillomania
-DOID 	 name 
-DOID:0050587	trichotillomania

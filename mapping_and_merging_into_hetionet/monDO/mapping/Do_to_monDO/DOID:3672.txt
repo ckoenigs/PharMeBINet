@@ -1,3 +1,0 @@
-DOID:3672	rhabdoid cancer
-monDO ID 	 name 
-MONDO:0002728	rhabdoid tumor

@@ -1,3 +1,0 @@
-MONDO:0003376	mediastinum leiomyosarcoma
-DOID 	 name 
-DOID:5292	mediastinum leiomyosarcoma

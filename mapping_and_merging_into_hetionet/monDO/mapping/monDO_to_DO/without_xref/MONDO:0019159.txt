@@ -1,3 +1,0 @@
-MONDO:0019159	Loeffler endocarditis
-DOID 	 name 
-DOID:396	Loeffler endocarditis

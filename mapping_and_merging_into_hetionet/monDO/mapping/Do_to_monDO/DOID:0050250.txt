@@ -1,3 +1,0 @@
-DOID:0050250	philophthalmiasis
-monDO ID 	 name 
-MONDO:0000292	philophthalmiasis

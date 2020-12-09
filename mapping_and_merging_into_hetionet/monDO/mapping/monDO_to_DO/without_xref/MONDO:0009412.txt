@@ -1,3 +1,0 @@
-MONDO:0009412	scurvy
-DOID 	 name 
-DOID:13724	scurvy

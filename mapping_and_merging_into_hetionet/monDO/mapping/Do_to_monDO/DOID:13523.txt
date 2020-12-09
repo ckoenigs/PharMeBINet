@@ -1,3 +1,0 @@
-DOID:13523	loiasis
-monDO ID 	 name 
-MONDO:0016566	loiasis

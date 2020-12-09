@@ -1,3 +1,0 @@
-MONDO:0004263	pediatric infratentorial ependymoblastoma
-DOID 	 name 
-DOID:7522	pediatric infratentorial ependymoblastoma

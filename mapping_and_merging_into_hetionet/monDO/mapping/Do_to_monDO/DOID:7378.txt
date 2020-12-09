@@ -1,3 +1,0 @@
-DOID:7378	pituitary hypoplasia
-monDO ID 	 name 
-MONDO:0004201	pituitary hypoplasia

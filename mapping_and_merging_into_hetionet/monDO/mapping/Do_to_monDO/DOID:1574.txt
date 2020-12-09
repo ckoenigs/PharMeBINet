@@ -1,3 +1,0 @@
-DOID:1574	alcohol abuse
-monDO ID 	 name 
-MONDO:0002046	alcohol abuse

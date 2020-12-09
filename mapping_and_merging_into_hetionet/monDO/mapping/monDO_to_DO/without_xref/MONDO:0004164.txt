@@ -1,3 +1,0 @@
-MONDO:0004164	lymphoepithelioma-like acinar prostate adenocarcinoma
-DOID 	 name 
-DOID:7246	lymphoepithelioma-like acinar prostate adenocarcinoma

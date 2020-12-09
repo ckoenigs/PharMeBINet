@@ -1,3 +1,0 @@
-MONDO:0004275	osteosarcoma arising in bone Paget's disease
-DOID 	 name 
-DOID:7542	osteosarcoma arising in bone Paget's disease

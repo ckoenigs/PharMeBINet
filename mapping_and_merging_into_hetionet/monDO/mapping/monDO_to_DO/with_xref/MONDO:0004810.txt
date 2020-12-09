@@ -1,3 +1,0 @@
-MONDO:0004810	acute ethmoiditis
-DOID 	 name 
-DOID:9506	acute ethmoiditis

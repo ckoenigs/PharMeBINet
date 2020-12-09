@@ -1,3 +1,0 @@
-MONDO:0004373	adult papillary meningioma
-DOID 	 name 
-DOID:7826	adult papillary meningioma

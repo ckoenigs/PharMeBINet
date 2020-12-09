@@ -1,3 +1,0 @@
-MONDO:0003658	gray zone lymphoma
-DOID 	 name 
-DOID:5822	gray zone lymphoma

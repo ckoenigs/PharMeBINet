@@ -1,3 +1,0 @@
-MONDO:0007275	carpal tunnel syndrome
-DOID 	 name 
-DOID:12169	carpal tunnel syndrome

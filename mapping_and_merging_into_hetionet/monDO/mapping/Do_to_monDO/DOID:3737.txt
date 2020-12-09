@@ -1,3 +1,0 @@
-DOID:3737	verrucous carcinoma
-monDO ID 	 name 
-MONDO:0006006	verrucous carcinoma

@@ -1,3 +1,0 @@
-MONDO:0010074	BCYM1B
-DOID 	 name 
-DOID:0050690	brachyolmia

@@ -1,3 +1,0 @@
-MONDO:0014290	neurodegeneration with brain iron accumulation 6
-DOID 	 name 
-DOID:0110740	neurodegeneration with brain iron accumulation 6

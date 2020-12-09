@@ -1,4 +1,0 @@
-MONDO:0003709	glioblastoma multiforme (disease)
-DOID 	 name 
-DOID:3068	glioblastoma multiforme
-DOID:3074	giant cell glioblastoma

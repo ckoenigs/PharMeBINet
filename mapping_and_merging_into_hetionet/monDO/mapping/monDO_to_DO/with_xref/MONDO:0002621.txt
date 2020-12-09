@@ -1,3 +1,0 @@
-MONDO:0002621	extraosseous osteosarcoma
-DOID 	 name 
-DOID:3357	extraosseous osteosarcoma

@@ -1,3 +1,0 @@
-MONDO:0010247	X-linked cerebral adrenoleukodystrophy
-DOID 	 name 
-DOID:10588	adrenoleukodystrophy

@@ -1,3 +1,0 @@
-DOID:0060049	autoimmune disease of urogenital tract
-monDO ID 	 name 
-MONDO:0000601	autoimmune disease of urogenital tract

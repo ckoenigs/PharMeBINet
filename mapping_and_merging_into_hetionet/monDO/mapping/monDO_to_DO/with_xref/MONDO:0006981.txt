@@ -1,3 +1,0 @@
-MONDO:0006981	subacute bacterial endocarditis
-DOID 	 name 
-DOID:4562	subacute bacterial endocarditis

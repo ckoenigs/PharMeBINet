@@ -1,3 +1,0 @@
-MONDO:0000399	dyskinetic cerebral palsy
-DOID 	 name 
-DOID:0050672	dyskinetic cerebral palsy

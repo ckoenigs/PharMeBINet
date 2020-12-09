@@ -1,3 +1,0 @@
-MONDO:0002323	senile angioma
-DOID 	 name 
-DOID:2495	senile angioma

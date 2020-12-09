@@ -1,3 +1,0 @@
-MONDO:0004186	cranial nodular fasciitis
-DOID 	 name 
-DOID:7326	cranial pseudosarcomatous fasciitis

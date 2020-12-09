@@ -1,3 +1,0 @@
-DOID:5772	central nervous system hematologic cancer
-monDO ID 	 name 
-MONDO:0003641	central nervous system hematopoietic neoplasm

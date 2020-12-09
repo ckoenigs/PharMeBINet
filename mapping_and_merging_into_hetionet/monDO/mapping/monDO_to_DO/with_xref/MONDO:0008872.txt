@@ -1,3 +1,0 @@
-MONDO:0008872	microcephalic osteodysplastic primordial dwarfism type II
-DOID 	 name 
-DOID:0060609	microcephalic osteodysplastic primordial dwarfism type II

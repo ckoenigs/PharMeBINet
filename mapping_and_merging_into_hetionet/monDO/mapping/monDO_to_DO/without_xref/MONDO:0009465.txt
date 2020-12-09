@@ -1,3 +1,0 @@
-MONDO:0009465	multiple intestinal atresia
-DOID 	 name 
-DOID:14671	multiple intestinal atresia

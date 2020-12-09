@@ -1,3 +1,0 @@
-DOID:0060016	CD3delta deficiency
-monDO ID 	 name 
-MONDO:0014280	immunodeficiency 19

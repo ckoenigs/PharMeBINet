@@ -1,3 +1,0 @@
-MONDO:0006578	mediastinal lipomatosis
-DOID 	 name 
-DOID:3926	mediastinal lipomatosis

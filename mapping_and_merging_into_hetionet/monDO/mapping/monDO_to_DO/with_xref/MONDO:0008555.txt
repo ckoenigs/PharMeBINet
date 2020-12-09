@@ -1,3 +1,0 @@
-MONDO:0008555	thrombocytopenia 2
-DOID 	 name 
-DOID:1588	thrombocytopenia

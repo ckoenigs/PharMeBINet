@@ -1,3 +1,0 @@
-MONDO:0005662	balantidiasis
-DOID 	 name 
-DOID:12386	balantidiasis

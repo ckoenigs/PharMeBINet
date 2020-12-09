@@ -1,3 +1,0 @@
-DOID:992	Omsk hemorrhagic fever
-monDO ID 	 name 
-MONDO:0017882	Omsk hemorrhagic fever

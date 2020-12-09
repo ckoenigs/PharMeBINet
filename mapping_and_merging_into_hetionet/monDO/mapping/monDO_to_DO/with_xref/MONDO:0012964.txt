@@ -1,3 +1,0 @@
-MONDO:0012964	chromosome 15q26-qter deletion syndrome
-DOID 	 name 
-DOID:0060397	chromosome 15q26-qter deletion syndrome

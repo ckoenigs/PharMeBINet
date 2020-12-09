@@ -1,3 +1,0 @@
-MONDO:0004468	anal canal Paget's disease
-DOID 	 name 
-DOID:8119	anal canal Paget's disease

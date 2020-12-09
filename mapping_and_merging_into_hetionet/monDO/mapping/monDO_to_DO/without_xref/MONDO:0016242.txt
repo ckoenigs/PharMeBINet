@@ -1,3 +1,0 @@
-MONDO:0016242	hemoglobin c disease
-DOID 	 name 
-DOID:2859	hemoglobin C disease

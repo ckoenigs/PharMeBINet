@@ -1,3 +1,0 @@
-MONDO:0004170	nodular episcleritis
-DOID 	 name 
-DOID:728	nodular episcleritis

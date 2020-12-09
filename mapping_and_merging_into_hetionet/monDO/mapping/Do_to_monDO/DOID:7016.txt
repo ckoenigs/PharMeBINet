@@ -1,3 +1,0 @@
-DOID:7016	tendon sheath lipoma
-monDO ID 	 name 
-MONDO:0004076	tendon sheath lipoma

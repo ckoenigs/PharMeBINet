@@ -1,3 +1,0 @@
-DOID:0060463	NUT midline carcinoma
-monDO ID 	 name 
-MONDO:0005563	nut midline carcinoma

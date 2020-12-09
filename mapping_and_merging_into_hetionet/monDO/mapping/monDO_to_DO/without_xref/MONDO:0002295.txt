@@ -1,3 +1,0 @@
-MONDO:0002295	skin glomus tumor
-DOID 	 name 
-DOID:2430	skin glomus tumor

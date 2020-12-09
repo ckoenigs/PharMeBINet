@@ -1,3 +1,0 @@
-MONDO:0004993	carcinoma
-DOID 	 name 
-DOID:305	carcinoma

@@ -1,3 +1,0 @@
-DOID:6337	cerebellopontine angle meningioma
-monDO ID 	 name 
-MONDO:0003860	cerebellopontine angle meningioma

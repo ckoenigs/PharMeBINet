@@ -1,3 +1,0 @@
-DOID:10913	benign essential hypertension
-monDO ID 	 name 
-MONDO:0001151	benign essential hypertension

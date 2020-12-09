@@ -1,3 +1,0 @@
-DOID:10151	malignant neoplasm of short bones of lower limb
-monDO ID 	 name 
-MONDO:0000953	malignant neoplasm of short bones of lower limb

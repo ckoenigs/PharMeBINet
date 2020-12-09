@@ -1,3 +1,0 @@
-MONDO:0010481	angioedema
-DOID 	 name 
-DOID:1558	angioedema

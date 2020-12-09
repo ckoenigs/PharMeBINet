@@ -1,3 +1,0 @@
-MONDO:0005151	endocrine system disease
-DOID 	 name 
-DOID:28	endocrine system disease

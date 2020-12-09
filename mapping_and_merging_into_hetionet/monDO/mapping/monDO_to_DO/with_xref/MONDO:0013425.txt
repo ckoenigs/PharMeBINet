@@ -1,3 +1,0 @@
-MONDO:0013425	retinitis pigmentosa 20
-DOID 	 name 
-DOID:0110353	retinitis pigmentosa 20

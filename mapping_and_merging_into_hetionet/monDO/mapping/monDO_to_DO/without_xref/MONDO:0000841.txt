@@ -1,3 +1,0 @@
-MONDO:0000841	metaphyseal dysplasia
-DOID 	 name 
-DOID:0080019	metaphyseal dysplasia

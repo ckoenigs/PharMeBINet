@@ -1,3 +1,0 @@
-MONDO:0003400	childhood endodermal sinus tumor
-DOID 	 name 
-DOID:5342	childhood endodermal sinus tumor

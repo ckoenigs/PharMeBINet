@@ -1,3 +1,0 @@
-MONDO:0011628	propionic acidemia
-DOID 	 name 
-DOID:14701	propionic acidemia

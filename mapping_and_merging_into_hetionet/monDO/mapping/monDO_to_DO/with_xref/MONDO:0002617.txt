@@ -1,3 +1,0 @@
-MONDO:0002617	bone angioendothelial sarcoma
-DOID 	 name 
-DOID:3351	bone angioendothelial sarcoma

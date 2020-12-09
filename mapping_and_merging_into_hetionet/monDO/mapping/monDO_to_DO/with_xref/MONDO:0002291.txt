@@ -1,3 +1,0 @@
-MONDO:0002291	cutaneous granular cell tumor
-DOID 	 name 
-DOID:2410	skin granular cell tumor

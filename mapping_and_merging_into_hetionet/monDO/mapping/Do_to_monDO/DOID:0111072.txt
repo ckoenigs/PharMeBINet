@@ -1,3 +1,0 @@
-DOID:0111072	myostatin-related muscle hypertrophy
-monDO ID 	 name 
-MONDO:0013598	myostatin-related muscle hypertrophy

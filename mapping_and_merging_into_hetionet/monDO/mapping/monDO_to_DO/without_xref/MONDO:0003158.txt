@@ -1,3 +1,0 @@
-MONDO:0003158	myoepithelial carcinoma
-DOID 	 name 
-DOID:4838	myoepithelial carcinoma

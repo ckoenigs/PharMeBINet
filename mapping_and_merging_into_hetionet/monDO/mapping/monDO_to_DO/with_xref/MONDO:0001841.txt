@@ -1,3 +1,0 @@
-MONDO:0001841	uterine corpus epithelioid leiomyoma
-DOID 	 name 
-DOID:13951	uterine corpus epithelioid leiomyoma

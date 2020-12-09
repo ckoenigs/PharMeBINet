@@ -1,3 +1,0 @@
-DOID:0110240	cataract 20 multiple types
-monDO ID 	 name 
-MONDO:0007284	cataract 20 multiple types

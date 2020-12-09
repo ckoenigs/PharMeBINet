@@ -1,3 +1,0 @@
-MONDO:0006558	pemphigoid gestationis
-DOID 	 name 
-DOID:14482	herpes gestationis

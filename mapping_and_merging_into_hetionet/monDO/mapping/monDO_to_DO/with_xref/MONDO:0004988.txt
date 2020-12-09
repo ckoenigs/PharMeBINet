@@ -1,3 +1,0 @@
-MONDO:0004988	breast adenocarcinoma
-DOID 	 name 
-DOID:3458	breast adenocarcinoma

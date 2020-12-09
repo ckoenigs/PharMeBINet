@@ -1,3 +1,0 @@
-MONDO:0002409	auditory system disease
-DOID 	 name 
-DOID:2742	auditory system disease

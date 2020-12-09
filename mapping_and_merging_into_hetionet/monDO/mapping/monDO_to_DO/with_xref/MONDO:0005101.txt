@@ -1,3 +1,0 @@
-MONDO:0005101	ulcerative colitis (disease)
-DOID 	 name 
-DOID:8577	ulcerative colitis

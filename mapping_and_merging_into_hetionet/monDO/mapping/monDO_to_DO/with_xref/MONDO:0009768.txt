@@ -1,3 +1,0 @@
-MONDO:0009768	oculodentodigital dysplasia, autosomal recessive
-DOID 	 name 
-DOID:0060291	oculodentodigital dysplasia

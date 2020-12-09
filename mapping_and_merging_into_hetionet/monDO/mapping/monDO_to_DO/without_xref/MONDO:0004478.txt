@@ -1,3 +1,0 @@
-MONDO:0004478	pregerminal center chronic lymphocytic leukemia/small lymphocytic lymphoma
-DOID 	 name 
-DOID:8144	pregerminal center chronic lymphocytic leukemia/small lymphocytic lymphoma

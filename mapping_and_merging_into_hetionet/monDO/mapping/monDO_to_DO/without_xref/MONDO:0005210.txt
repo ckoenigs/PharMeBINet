@@ -1,3 +1,0 @@
-MONDO:0005210	uterine corpus sarcoma
-DOID 	 name 
-DOID:5165	uterine corpus sarcoma

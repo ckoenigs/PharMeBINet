@@ -1,3 +1,0 @@
-MONDO:0012293	autosomal recessive nonsyndromic deafness 23
-DOID 	 name 
-DOID:0110481	autosomal recessive nonsyndromic deafness 23

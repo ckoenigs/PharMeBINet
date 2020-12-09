@@ -1,3 +1,0 @@
-DOID:7983	breast malignant eccrine spiradenoma
-monDO ID 	 name 
-MONDO:0004420	breast malignant eccrine spiradenoma

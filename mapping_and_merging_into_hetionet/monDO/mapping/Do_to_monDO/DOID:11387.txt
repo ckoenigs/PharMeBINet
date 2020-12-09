@@ -1,3 +1,0 @@
-DOID:11387	epidural abscess
-monDO ID 	 name 
-MONDO:0005752	epidural abscess

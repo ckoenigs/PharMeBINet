@@ -1,3 +1,0 @@
-MONDO:0001277	cerebral arteritis
-DOID 	 name 
-DOID:11390	cerebral arteritis

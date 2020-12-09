@@ -1,3 +1,0 @@
-MONDO:0017124	noma
-DOID 	 name 
-DOID:9672	noma

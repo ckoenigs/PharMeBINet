@@ -1,3 +1,0 @@
-MONDO:0000486	cranio-facial dystonia
-DOID 	 name 
-DOID:0050845	cranio-facial dystonia

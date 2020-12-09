@@ -1,3 +1,0 @@
-MONDO:0014066	mitochondrial complex III deficiency nuclear type 5
-DOID 	 name 
-DOID:0080114	mitochondrial complex III deficiency nuclear type 5

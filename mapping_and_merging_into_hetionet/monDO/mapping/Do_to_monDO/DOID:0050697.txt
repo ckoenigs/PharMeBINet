@@ -1,3 +1,0 @@
-DOID:0050697	chorioamnionitis
-monDO ID 	 name 
-MONDO:0000409	chorioamnionitis

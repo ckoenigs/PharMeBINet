@@ -1,3 +1,0 @@
-DOID:7371	superficial urinary bladder cancer
-monDO ID 	 name 
-MONDO:0004200	superficial urinary bladder carcinoma

@@ -1,3 +1,0 @@
-DOID:0110603	primary ciliary dyskinesia 32
-monDO ID 	 name 
-MONDO:0014657	primary ciliary dyskinesia 32

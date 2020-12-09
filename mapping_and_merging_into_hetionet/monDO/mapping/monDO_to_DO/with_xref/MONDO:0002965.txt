@@ -1,3 +1,0 @@
-MONDO:0002965	parovarian cyst
-DOID 	 name 
-DOID:4333	parovarian cyst

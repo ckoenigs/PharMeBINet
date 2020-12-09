@@ -1,3 +1,0 @@
-DOID:0050160	inhalation anthrax
-monDO ID 	 name 
-MONDO:0016595	inhalational anthrax

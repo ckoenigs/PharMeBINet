@@ -1,3 +1,0 @@
-DOID:7967	lipid-cell variant infiltrating bladder urothelial carcinoma
-monDO ID 	 name 
-MONDO:0004415	lipid-cell variant infiltrating bladder urothelial carcinoma

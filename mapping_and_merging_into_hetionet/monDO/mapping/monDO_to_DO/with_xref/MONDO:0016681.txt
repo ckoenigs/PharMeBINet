@@ -1,3 +1,0 @@
-MONDO:0016681	gliosarcoma
-DOID 	 name 
-DOID:3071	gliosarcoma

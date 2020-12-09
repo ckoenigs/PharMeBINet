@@ -1,3 +1,0 @@
-DOID:5062	phencyclidine abuse
-monDO ID 	 name 
-MONDO:0005912	phencyclidine abuse

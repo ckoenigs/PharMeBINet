@@ -1,3 +1,0 @@
-DOID:4439	central nervous system germ cell tumor
-monDO ID 	 name 
-MONDO:0003000	central nervous system germ cell tumor

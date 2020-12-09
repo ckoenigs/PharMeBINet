@@ -1,3 +1,0 @@
-DOID:6209	malignant mediastinum hemangiopericytoma
-monDO ID 	 name 
-MONDO:0003809	malignant mediastinum hemangiopericytoma

@@ -1,3 +1,0 @@
-MONDO:0019214	inborn carbohydrate metabolic disorder
-DOID 	 name 
-DOID:2978	carbohydrate metabolic disorder

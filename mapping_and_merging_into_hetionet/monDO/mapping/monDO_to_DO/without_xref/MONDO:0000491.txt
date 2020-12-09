@@ -1,3 +1,0 @@
-MONDO:0000491	limb ischemia
-DOID 	 name 
-DOID:0050852	limb ischemia

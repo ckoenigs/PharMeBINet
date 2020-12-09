@@ -1,3 +1,0 @@
-DOID:7181	benign dermal neurilemmoma
-monDO ID 	 name 
-MONDO:0004134	benign dermal neurilemmoma

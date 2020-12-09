@@ -1,3 +1,0 @@
-DOID:5862	localized chondrosarcoma
-monDO ID 	 name 
-MONDO:0003682	localized chondrosarcoma

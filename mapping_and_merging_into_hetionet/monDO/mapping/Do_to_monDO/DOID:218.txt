@@ -1,3 +1,0 @@
-DOID:218	ascending colon cancer
-monDO ID 	 name 
-MONDO:0002238	ascending colon cancer

@@ -1,3 +1,0 @@
-DOID:7444	diffuse intraductal papillomatosis
-monDO ID 	 name 
-MONDO:0004226	diffuse intraductal papillomatosis

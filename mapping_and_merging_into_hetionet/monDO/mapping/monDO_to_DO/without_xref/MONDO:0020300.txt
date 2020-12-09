@@ -1,3 +1,0 @@
-MONDO:0020300	autosomal dominant nocturnal frontal lobe epilepsy
-DOID 	 name 
-DOID:0060681	autosomal dominant nocturnal frontal lobe epilepsy

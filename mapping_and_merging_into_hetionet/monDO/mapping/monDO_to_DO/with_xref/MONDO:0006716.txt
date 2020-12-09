@@ -1,3 +1,0 @@
-MONDO:0006716	coronary thrombosis
-DOID 	 name 
-DOID:11847	coronary thrombosis

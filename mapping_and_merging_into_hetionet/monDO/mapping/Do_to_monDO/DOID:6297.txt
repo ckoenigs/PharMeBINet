@@ -1,3 +1,0 @@
-DOID:6297	viral esophagitis
-monDO ID 	 name 
-MONDO:0003846	viral esophagitis

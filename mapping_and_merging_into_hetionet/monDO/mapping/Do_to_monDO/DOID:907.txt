@@ -1,3 +1,0 @@
-DOID:907	liver fibroma
-monDO ID 	 name 
-MONDO:0004705	liver fibroma

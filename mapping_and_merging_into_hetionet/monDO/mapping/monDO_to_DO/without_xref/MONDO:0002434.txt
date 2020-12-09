@@ -1,3 +1,0 @@
-MONDO:0002434	malignant oculomotor nerve tumor
-DOID 	 name 
-DOID:2816	malignant oculomotor nerve tumor

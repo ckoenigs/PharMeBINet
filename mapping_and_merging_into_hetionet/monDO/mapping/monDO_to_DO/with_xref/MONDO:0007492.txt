@@ -1,3 +1,0 @@
-MONDO:0007492	torsion dystonia 1
-DOID 	 name 
-DOID:0060730	torsion dystonia 1

@@ -1,3 +1,0 @@
-DOID:12883	hypochondriasis
-monDO ID 	 name 
-MONDO:0001596	hypochondriasis

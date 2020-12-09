@@ -1,4 +1,0 @@
-MONDO:0006734	benign duodenal neoplasm
-DOID 	 name 
-DOID:10021	duodenum cancer
-DOID:1737	duodenal benign neoplasm

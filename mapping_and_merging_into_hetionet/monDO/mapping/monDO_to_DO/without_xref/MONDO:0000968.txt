@@ -1,3 +1,0 @@
-MONDO:0000968	kidney lipoma
-DOID 	 name 
-DOID:10194	kidney lipoma

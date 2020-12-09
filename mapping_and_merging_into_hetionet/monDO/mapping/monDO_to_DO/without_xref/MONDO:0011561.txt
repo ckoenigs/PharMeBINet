@@ -1,3 +1,0 @@
-MONDO:0011561	Alzheimer's disease 6
-DOID 	 name 
-DOID:0110038	Alzheimer's disease 6

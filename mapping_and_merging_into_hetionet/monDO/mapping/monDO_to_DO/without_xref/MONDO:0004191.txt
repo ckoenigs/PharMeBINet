@@ -1,3 +1,0 @@
-MONDO:0004191	nephrogenic adenoma
-DOID 	 name 
-DOID:7334	nephrogenic adenoma

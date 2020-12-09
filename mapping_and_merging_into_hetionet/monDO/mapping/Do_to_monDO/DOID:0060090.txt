@@ -1,3 +1,0 @@
-DOID:0060090	central nervous system organ benign neoplasm
-monDO ID 	 name 
-MONDO:0000628	central nervous system organ benign neoplasm

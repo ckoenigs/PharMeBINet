@@ -1,3 +1,0 @@
-MONDO:0013089	SCZD13
-DOID 	 name 
-DOID:5419	schizophrenia

@@ -1,4 +1,0 @@
-MONDO:0008371	Dowling-Degos disease
-DOID 	 name 
-DOID:0060258	reticulate acropigmentation of Kitamura
-DOID:0060256	Dowling-Degos disease

@@ -1,3 +1,0 @@
-DOID:0060047	writing disorder
-monDO ID 	 name 
-MONDO:0000599	writing disorder

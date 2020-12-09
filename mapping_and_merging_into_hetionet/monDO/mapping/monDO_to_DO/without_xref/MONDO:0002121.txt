@@ -1,3 +1,0 @@
-MONDO:0002121	mononeuritis
-DOID 	 name 
-DOID:1802	mononeuritis

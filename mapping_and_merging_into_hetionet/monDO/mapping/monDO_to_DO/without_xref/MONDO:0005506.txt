@@ -1,3 +1,0 @@
-MONDO:0005506	eccrine sweat gland cancer
-DOID 	 name 
-DOID:4921	eccrine sweat gland cancer

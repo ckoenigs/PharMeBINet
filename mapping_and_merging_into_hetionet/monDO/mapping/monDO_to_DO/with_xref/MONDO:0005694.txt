@@ -1,4 +1,0 @@
-MONDO:0005694	cecal neoplasm
-DOID 	 name 
-DOID:1517	cecal benign neoplasm
-DOID:1521	cecum cancer

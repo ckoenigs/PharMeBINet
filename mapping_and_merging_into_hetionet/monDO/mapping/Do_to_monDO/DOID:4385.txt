@@ -1,3 +1,0 @@
-DOID:4385	papillary squamous carcinoma
-monDO ID 	 name 
-MONDO:0002979	papillary squamous carcinoma

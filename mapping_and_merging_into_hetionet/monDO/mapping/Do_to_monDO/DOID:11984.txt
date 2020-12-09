@@ -1,3 +1,0 @@
-DOID:11984	hypertrophic cardiomyopathy
-monDO ID 	 name 
-MONDO:0005045	hypertrophic cardiomyopathy

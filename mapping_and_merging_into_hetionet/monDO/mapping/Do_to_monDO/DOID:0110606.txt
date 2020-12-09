@@ -1,3 +1,0 @@
-DOID:0110606	primary ciliary dyskinesia 6
-monDO ID 	 name 
-MONDO:0012571	primary ciliary dyskinesia 6

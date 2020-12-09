@@ -1,3 +1,0 @@
-DOID:7505	small intestine neoplasm
-monDO ID 	 name 
-MONDO:0004251	small intestine neoplasm

@@ -1,3 +1,0 @@
-MONDO:0005858	mucinous cystadenocarcinoma
-DOID 	 name 
-DOID:3603	mucinous cystadenocarcinoma

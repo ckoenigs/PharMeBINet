@@ -1,3 +1,0 @@
-MONDO:0006667	b- and T-cell mixed leukemia
-DOID 	 name 
-DOID:9953	B- and T-cell mixed leukemia

@@ -1,3 +1,0 @@
-DOID:5058	rhabdoid meningioma
-monDO ID 	 name 
-MONDO:0003262	rhabdoid meningioma

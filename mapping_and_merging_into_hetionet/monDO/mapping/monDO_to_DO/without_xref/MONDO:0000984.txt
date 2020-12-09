@@ -1,3 +1,0 @@
-MONDO:0000984	thalassemia
-DOID 	 name 
-DOID:10241	thalassemia

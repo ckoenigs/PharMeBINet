@@ -1,3 +1,0 @@
-MONDO:0000302	basidiobolomycosis
-DOID 	 name 
-DOID:0050278	basidiobolomycosis

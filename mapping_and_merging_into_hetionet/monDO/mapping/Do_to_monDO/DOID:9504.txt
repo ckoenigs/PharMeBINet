@@ -1,3 +1,0 @@
-DOID:9504	benign mammary dysplasia
-monDO ID 	 name 
-MONDO:0004808	benign mammary dysplasia

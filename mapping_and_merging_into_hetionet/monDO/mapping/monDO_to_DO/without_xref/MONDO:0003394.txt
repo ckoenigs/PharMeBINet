@@ -1,3 +1,0 @@
-MONDO:0003394	dental pulp disease
-DOID 	 name 
-DOID:5330	dental pulp disease

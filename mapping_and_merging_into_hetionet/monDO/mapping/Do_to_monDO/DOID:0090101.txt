@@ -1,3 +1,0 @@
-DOID:0090101	lethal congenital glycogen storage disease of heart
-monDO ID 	 name 
-MONDO:0009867	lethal congenital glycogen storage disease of heart

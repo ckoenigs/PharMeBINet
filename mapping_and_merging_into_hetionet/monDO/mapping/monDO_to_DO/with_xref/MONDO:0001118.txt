@@ -1,3 +1,0 @@
-MONDO:0001118	Queensland tick typhus
-DOID 	 name 
-DOID:10784	Queensland tick typhus

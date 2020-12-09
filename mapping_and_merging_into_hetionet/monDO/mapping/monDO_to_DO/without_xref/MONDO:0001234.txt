@@ -1,3 +1,0 @@
-MONDO:0001234	adhesive otitis media
-DOID 	 name 
-DOID:11235	adhesive otitis media

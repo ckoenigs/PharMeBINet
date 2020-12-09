@@ -1,3 +1,0 @@
-DOID:3803	Crigler-Najjar syndrome
-monDO ID 	 name 
-MONDO:0009044	Crigler-Najjar syndrome

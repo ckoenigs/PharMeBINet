@@ -1,3 +1,0 @@
-DOID:1827	idiopathic generalized epilepsy
-monDO ID 	 name 
-MONDO:0005579	generalised epilepsy

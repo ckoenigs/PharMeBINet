@@ -1,3 +1,0 @@
-DOID:9835	refractive error
-monDO ID 	 name 
-MONDO:0004892	refractive error

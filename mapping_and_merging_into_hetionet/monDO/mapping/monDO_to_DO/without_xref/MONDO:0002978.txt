@@ -1,3 +1,0 @@
-MONDO:0002978	orbit alveolar rhabdomyosarcoma
-DOID 	 name 
-DOID:4384	orbit alveolar rhabdomyosarcoma

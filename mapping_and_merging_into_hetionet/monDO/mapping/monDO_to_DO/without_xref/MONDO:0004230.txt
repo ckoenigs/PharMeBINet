@@ -1,3 +1,0 @@
-MONDO:0004230	adenomatoid tumor
-DOID 	 name 
-DOID:746	adenomatoid tumor

@@ -1,3 +1,0 @@
-MONDO:0018096	Weill-Marchesani syndrome
-DOID 	 name 
-DOID:0050475	Weill-Marchesani syndrome

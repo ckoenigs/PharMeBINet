@@ -1,3 +1,0 @@
-DOID:10022	ampulla of Vater neoplasm
-monDO ID 	 name 
-MONDO:0000921	ampulla of vater neoplasm

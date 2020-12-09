@@ -1,3 +1,0 @@
-MONDO:0019142	porphyria
-DOID 	 name 
-DOID:13268	porphyria

@@ -1,3 +1,0 @@
-MONDO:0004662	heterophyiasis
-DOID 	 name 
-DOID:882	heterophyiasis

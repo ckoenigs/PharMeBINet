@@ -1,3 +1,0 @@
-MONDO:0011337	familial hemophagocytic lymphohistiocytosis 2
-DOID 	 name 
-DOID:0110922	familial hemophagocytic lymphohistiocytosis 2

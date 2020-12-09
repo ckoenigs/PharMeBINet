@@ -1,3 +1,0 @@
-MONDO:0010918	EIG
-DOID 	 name 
-DOID:1827	idiopathic generalized epilepsy

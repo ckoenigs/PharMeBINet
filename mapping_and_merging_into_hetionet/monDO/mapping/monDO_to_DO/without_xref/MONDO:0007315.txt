@@ -1,3 +1,0 @@
-MONDO:0007315	cherubism
-DOID 	 name 
-DOID:1856	cherubism

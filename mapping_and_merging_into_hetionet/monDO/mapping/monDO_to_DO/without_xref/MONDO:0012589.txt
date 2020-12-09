@@ -1,3 +1,0 @@
-MONDO:0012589	Pitt-Hopkins syndrome
-DOID 	 name 
-DOID:0060488	Pitt-Hopkins syndrome

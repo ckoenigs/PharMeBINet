@@ -1,3 +1,0 @@
-DOID:0050035	African tick-bite fever
-monDO ID 	 name 
-MONDO:0000227	african tick-bite fever

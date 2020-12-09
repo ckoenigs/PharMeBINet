@@ -1,3 +1,0 @@
-DOID:1273	respiratory syncytial virus infectious disease
-monDO ID 	 name 
-MONDO:0001577	respiratory syncytial virus infectious disease

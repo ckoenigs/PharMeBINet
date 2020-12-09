@@ -1,3 +1,0 @@
-MONDO:0008661	vitiligo
-DOID 	 name 
-DOID:12306	vitiligo

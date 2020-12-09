@@ -1,3 +1,0 @@
-MONDO:0020552	placental site trophoblastic tumor
-DOID 	 name 
-DOID:3596	placental site trophoblastic tumor

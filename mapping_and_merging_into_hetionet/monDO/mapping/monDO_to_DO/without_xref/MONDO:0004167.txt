@@ -1,3 +1,0 @@
-MONDO:0003709	clear cell carcinoma of lung
-DOID 	 name 
-DOID:7267	lung clear cell carcinoma

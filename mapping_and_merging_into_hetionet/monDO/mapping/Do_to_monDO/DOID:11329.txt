@@ -1,3 +1,0 @@
-DOID:11329	ainhum
-monDO ID 	 name 
-MONDO:0007074	ainhum (disease)

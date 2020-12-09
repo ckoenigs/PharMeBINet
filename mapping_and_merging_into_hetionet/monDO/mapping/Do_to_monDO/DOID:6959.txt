@@ -1,3 +1,0 @@
-DOID:6959	rectal cloacogenic carcinoma
-monDO ID 	 name 
-MONDO:0004052	rectal cloacogenic carcinoma

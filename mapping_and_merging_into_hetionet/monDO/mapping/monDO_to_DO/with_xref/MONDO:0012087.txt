@@ -1,3 +1,0 @@
-MONDO:0012087	primary ciliary dyskinesia 4
-DOID 	 name 
-DOID:0110614	primary ciliary dyskinesia 4

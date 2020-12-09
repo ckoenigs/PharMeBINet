@@ -1,3 +1,0 @@
-MONDO:0006640	adrenal gland hyperfunction
-DOID 	 name 
-DOID:3947	adrenal gland hyperfunction

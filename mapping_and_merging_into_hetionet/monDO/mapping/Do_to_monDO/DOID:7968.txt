@@ -1,3 +1,0 @@
-DOID:7968	plasmacytoid variant infiltrating bladder urothelial carcinoma
-monDO ID 	 name 
-MONDO:0004416	plasmacytoid variant infiltrating bladder urothelial carcinoma

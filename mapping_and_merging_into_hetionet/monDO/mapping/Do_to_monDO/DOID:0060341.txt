@@ -1,3 +1,0 @@
-DOID:0060341	agnathia-otocephaly complex
-monDO ID 	 name 
-MONDO:0008740	agnathia-otocephaly complex

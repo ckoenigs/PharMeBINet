@@ -1,3 +1,0 @@
-DOID:0060314	persistent generalized lymphadenopathy
-monDO ID 	 name 
-MONDO:0000742	persistent generalized lymphadenopathy

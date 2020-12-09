@@ -1,3 +1,0 @@
-DOID:114	heart disease
-monDO ID 	 name 
-MONDO:0005267	heart disease

@@ -1,3 +1,0 @@
-MONDO:0006019	yaws
-DOID 	 name 
-DOID:10371	yaws

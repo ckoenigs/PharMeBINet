@@ -1,3 +1,0 @@
-DOID:3764	Denys-Drash syndrome
-monDO ID 	 name 
-MONDO:0008682	Denys-Drash syndrome

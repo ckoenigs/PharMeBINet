@@ -1,3 +1,0 @@
-MONDO:0009427	infantile hypophosphatasia
-DOID 	 name 
-DOID:0110914	infantile hypophosphatasia

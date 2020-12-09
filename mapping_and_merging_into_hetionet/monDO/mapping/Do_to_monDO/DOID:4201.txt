@@ -1,3 +1,0 @@
-DOID:4201	peroneal neuropathy
-monDO ID 	 name 
-MONDO:0002910	peroneal neuropathy

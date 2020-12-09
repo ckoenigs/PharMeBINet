@@ -1,3 +1,0 @@
-MONDO:0013865	mitochondrial hypertrophic cardiomyopathy with lactic acidosis due to MTO1 deficiency
-DOID 	 name 
-DOID:0060286	combined oxidative phosphorylation deficiency

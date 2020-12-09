@@ -1,3 +1,0 @@
-DOID:8881	rosacea
-monDO ID 	 name 
-MONDO:0006604	rosacea

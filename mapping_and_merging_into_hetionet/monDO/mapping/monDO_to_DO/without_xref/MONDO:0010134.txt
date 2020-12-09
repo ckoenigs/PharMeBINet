@@ -1,3 +1,0 @@
-MONDO:0010134	Pendred syndrome
-DOID 	 name 
-DOID:0060744	Pendred Syndrome

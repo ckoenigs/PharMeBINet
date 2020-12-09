@@ -1,3 +1,0 @@
-MONDO:0005530	opiate dependence
-DOID 	 name 
-DOID:2559	opiate dependence

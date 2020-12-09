@@ -1,3 +1,0 @@
-DOID:8544	chronic fatigue syndrome
-monDO ID 	 name 
-MONDO:0005404	myalgic encephalomeyelitis/Chronic fatigue syndrome

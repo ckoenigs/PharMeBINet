@@ -1,3 +1,0 @@
-DOID:11126	acquired thrombocytopenia
-monDO ID 	 name 
-MONDO:0001198	acquired thrombocytopenia

@@ -1,3 +1,0 @@
-DOID:0060473	Kabuki syndrome
-monDO ID 	 name 
-MONDO:0016512	Kabuki syndrome

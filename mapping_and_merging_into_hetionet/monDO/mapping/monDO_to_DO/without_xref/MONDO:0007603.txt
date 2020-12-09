@@ -1,3 +1,0 @@
-MONDO:0007603	Felty's syndrome
-DOID 	 name 
-DOID:11042	Felty's syndrome

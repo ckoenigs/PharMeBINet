@@ -1,3 +1,0 @@
-MONDO:0009101	Wolfram syndrome 1
-DOID 	 name 
-DOID:0110629	Wolfram syndrome 1

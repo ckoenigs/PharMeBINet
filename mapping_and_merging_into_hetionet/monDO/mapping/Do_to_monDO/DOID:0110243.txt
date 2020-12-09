@@ -1,3 +1,0 @@
-DOID:0110243	cataract 46 juvenile-onset
-monDO ID 	 name 
-MONDO:0008925	cataract 46 juvenile-onset

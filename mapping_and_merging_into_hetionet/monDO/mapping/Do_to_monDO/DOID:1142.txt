@@ -1,3 +1,0 @@
-DOID:1142	alternating exotropia
-monDO ID 	 name 
-MONDO:0001281	alternating exotropia

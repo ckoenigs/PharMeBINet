@@ -1,3 +1,0 @@
-DOID:670	amphetamine abuse
-monDO ID 	 name 
-MONDO:0003969	amphetamine abuse

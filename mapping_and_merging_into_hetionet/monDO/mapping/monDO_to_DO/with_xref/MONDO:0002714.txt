@@ -1,3 +1,0 @@
-MONDO:0002714	central nervous system cancer
-DOID 	 name 
-DOID:3620	central nervous system cancer

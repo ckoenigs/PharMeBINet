@@ -1,3 +1,0 @@
-MONDO:0003611	uterine ligament papillary cystadenoma associated with von hippel-lindau disease
-DOID 	 name 
-DOID:5726	uterine ligament papillary cystadenoma

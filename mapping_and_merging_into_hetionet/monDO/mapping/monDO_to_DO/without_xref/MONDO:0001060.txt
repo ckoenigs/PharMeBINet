@@ -1,3 +1,0 @@
-MONDO:0001060	microinvasive gastric cancer
-DOID 	 name 
-DOID:10541	microinvasive gastric cancer

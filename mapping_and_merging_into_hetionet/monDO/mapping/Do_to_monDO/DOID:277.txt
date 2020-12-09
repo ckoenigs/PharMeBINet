@@ -1,3 +1,0 @@
-DOID:277	chorioangioma
-monDO ID 	 name 
-MONDO:0006375	placental hemangioma

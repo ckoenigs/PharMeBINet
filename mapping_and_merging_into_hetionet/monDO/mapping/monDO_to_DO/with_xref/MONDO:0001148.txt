@@ -1,3 +1,0 @@
-MONDO:0001148	iliac vein thrombophlebitis
-DOID 	 name 
-DOID:10880	iliac vein thrombophlebitis

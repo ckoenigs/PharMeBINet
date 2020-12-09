@@ -1,3 +1,0 @@
-DOID:0050936	extra-adrenal pheochromocytoma
-monDO ID 	 name 
-MONDO:0000550	extra-adrenal sympathetic paraganglioma

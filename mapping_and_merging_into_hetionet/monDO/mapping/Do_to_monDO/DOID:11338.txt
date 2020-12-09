@@ -1,3 +1,0 @@
-DOID:11338	tetanus
-monDO ID 	 name 
-MONDO:0005526	tetanus

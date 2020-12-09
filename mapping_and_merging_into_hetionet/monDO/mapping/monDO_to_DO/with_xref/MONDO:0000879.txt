@@ -1,3 +1,0 @@
-MONDO:0000879	cutaneous candidiasis
-DOID 	 name 
-DOID:0080161	cutaneous candidiasis

@@ -1,3 +1,0 @@
-MONDO:0003657	methotrexate-associated lymphoproliferation
-DOID 	 name 
-DOID:5821	methotrexate-associated lymphoproliferation

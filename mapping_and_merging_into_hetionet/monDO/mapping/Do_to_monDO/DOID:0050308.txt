@@ -1,3 +1,0 @@
-DOID:0050308	Alkhurma hemorrhagic fever
-monDO ID 	 name 
-MONDO:0000310	Alkhurma hemorrhagic fever

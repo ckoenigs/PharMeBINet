@@ -1,3 +1,0 @@
-DOID:13656	gastrin secretion abnormality
-monDO ID 	 name 
-MONDO:0001770	gastrin secretion abnormality

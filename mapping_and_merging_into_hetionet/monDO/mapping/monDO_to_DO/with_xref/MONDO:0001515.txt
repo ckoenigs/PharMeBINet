@@ -1,3 +1,0 @@
-MONDO:0001515	corneal degeneration
-DOID 	 name 
-DOID:1237	corneal degeneration

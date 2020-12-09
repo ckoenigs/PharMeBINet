@@ -1,3 +1,0 @@
-MONDO:0001184	chronic rapidly progressive glomerulonephritis
-DOID 	 name 
-DOID:11036	chronic rapidly progressive glomerulonephritis

@@ -1,3 +1,0 @@
-DOID:0050484	aneruptive fever
-monDO ID 	 name 
-MONDO:0000331	aneruptive fever

@@ -1,3 +1,0 @@
-DOID:13372	alpha 1-antitrypsin deficiency
-monDO ID 	 name 
-MONDO:0013282	alpha 1-antitrypsin deficiency

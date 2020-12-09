@@ -1,3 +1,0 @@
-MONDO:0001576	telangiectasis
-DOID 	 name 
-DOID:1272	telangiectasis

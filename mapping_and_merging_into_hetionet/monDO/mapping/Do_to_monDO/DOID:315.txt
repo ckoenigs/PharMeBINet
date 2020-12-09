@@ -1,3 +1,0 @@
-DOID:315	synovium neoplasm
-monDO ID 	 name 
-MONDO:0002528	synovium neoplasm

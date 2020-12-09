@@ -1,3 +1,0 @@
-MONDO:0004877	transient neonatal thrombocytopenia
-DOID 	 name 
-DOID:9771	transient neonatal thrombocytopenia

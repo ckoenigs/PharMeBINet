@@ -1,3 +1,0 @@
-MONDO:0002065	benign breast adenomyoepithelioma
-DOID 	 name 
-DOID:1641	benign breast adenomyoepithelioma

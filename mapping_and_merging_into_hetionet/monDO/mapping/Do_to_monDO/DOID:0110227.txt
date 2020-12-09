@@ -1,3 +1,0 @@
-DOID:0110227	cataract 32 multiple types
-monDO ID 	 name 
-MONDO:0007278	cataract 32 multiple types

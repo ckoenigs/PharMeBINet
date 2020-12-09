@@ -1,3 +1,0 @@
-MONDO:0011214	progressive familial intrahepatic cholestasis type 3
-DOID 	 name 
-DOID:1852	intrahepatic cholestasis

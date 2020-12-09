@@ -1,3 +1,0 @@
-MONDO:0003731	adult central nervous system teratoma
-DOID 	 name 
-DOID:6015	adult central nervous system teratoma

@@ -1,3 +1,0 @@
-MONDO:0011671	Huntington disease-like 2
-DOID 	 name 
-DOID:0090104	Huntington disease-like 2

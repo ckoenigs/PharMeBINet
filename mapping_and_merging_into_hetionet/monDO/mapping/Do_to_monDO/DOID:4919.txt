@@ -1,3 +1,0 @@
-DOID:4919	renal pelvis carcinoma
-monDO ID 	 name 
-MONDO:0005519	renal pelvis carcinoma

@@ -1,3 +1,0 @@
-MONDO:0005071	nervous system disease
-DOID 	 name 
-DOID:863	nervous system disease

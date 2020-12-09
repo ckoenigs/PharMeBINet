@@ -1,3 +1,0 @@
-MONDO:0000736	dyschromatosis universalis hereditaria
-DOID 	 name 
-DOID:0060304	dyschromatosis universalis hereditaria

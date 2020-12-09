@@ -1,3 +1,0 @@
-MONDO:0002503	adult astrocytic tumour
-DOID 	 name 
-DOID:3076	adult astrocytic tumour

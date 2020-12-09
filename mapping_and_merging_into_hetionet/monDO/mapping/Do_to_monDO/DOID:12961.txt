@@ -1,3 +1,0 @@
-DOID:12961	Poland syndrome
-monDO ID 	 name 
-MONDO:0008262	Poland syndrome

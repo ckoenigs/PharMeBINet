@@ -1,3 +1,0 @@
-DOID:11452	perinatal jaundice due to hepatocellular damage
-monDO ID 	 name 
-MONDO:0006595	perinatal jaundice due to hepatocellular damage

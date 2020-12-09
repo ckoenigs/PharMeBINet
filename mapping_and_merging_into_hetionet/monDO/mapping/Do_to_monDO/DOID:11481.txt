@@ -1,3 +1,0 @@
-DOID:11481	constrictive pericarditis
-monDO ID 	 name 
-MONDO:0006711	constrictive pericarditis (disease)

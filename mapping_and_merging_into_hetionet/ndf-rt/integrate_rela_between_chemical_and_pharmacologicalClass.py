@@ -35,7 +35,7 @@ def write_files(direction_1, direction_2, rela_name):
     csv_rela.writerow(header_rela)
 
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/ndf-rt/%s" As line FIELDTERMINATOR '\\t' 
-            Match (c:Chemical{identifier:line.chemical_id}), (p:PharmacologicClass{identifier:line.pharmacological_class_id}) Merge (c)%s[r:%s]%s(p) On Create Set r.source=line.source, r.resource=['NDF-RT'], r.url='http://purl.bioontology.org/ontology/NDFRT/'+line.pharmacological_class_id , r.license='', r.unbiased=false, r.ndf_rt='yes' On Match Set r.resourcer.resource+'NDF-RT' , r.ndf_rt='yes';'''
+            Match (c:Chemical{identifier:line.chemical_id}), (p:PharmacologicClass{identifier:line.pharmacological_class_id}) Merge (c)%s[r:%s]%s(p) On Create Set r.source=line.source, r.resource=['NDF-RT'], r.url='http://purl.bioontology.org/ontology/NDFRT/'+line.pharmacological_class_id , r.license='', r.unbiased=false, r.ndf_rt='yes' On Match Set r.resourcer=r.resource+'NDF-RT' , r.ndf_rt='yes';'''
     query = query % (path_of_directory, file_name, direction_1, rela_name, direction_2)
     cypher_file.write(query)
 
@@ -63,7 +63,7 @@ def load_connections():
     query = "Match (c:Chemical)--(:NDF_RT_DRUG_KIND)-[t]-()--(d:PharmacologicClass) Return c.identifier, type(t), t, d.identifier"
     results = g.run(query)
     for chemical_id, rela_type, rela, pharmacological_class_id, in results:
-        source = rela.source if 'source' in rela else ''
+        source = rela['source'] if 'source' in rela else ''
         # remove the different suffix
         if rela_type.count('_')==1:
             rela_type=rela_type.split('_')[0]

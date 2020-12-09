@@ -1,3 +1,0 @@
-MONDO:0003545	intradural extramedullary spinal canal neoplasm
-DOID 	 name 
-DOID:5615	spinal canal intradural extramedullary neoplasm

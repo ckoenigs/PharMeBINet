@@ -1,3 +1,0 @@
-MONDO:0000291	granulomatous amebic encephalitis
-DOID 	 name 
-DOID:0050246	granulomatous amebic encephalitis

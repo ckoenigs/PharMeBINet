@@ -1,3 +1,0 @@
-MONDO:0001413	ulceroglandular tularemia
-DOID 	 name 
-DOID:11990	ulceroglandular tularemia

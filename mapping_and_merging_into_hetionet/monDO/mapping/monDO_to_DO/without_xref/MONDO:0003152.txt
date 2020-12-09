@@ -1,3 +1,0 @@
-MONDO:0003152	adult brainstem gliosarcoma
-DOID 	 name 
-DOID:4812	adult brainstem gliosarcoma

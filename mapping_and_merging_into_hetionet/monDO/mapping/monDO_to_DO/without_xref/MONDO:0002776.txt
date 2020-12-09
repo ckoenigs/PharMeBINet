@@ -1,3 +1,0 @@
-MONDO:0002776	external ear disease
-DOID 	 name 
-DOID:379	external ear disease

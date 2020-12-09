@@ -1,3 +1,0 @@
-MONDO:0005503	developmental disorder of mental health
-DOID 	 name 
-DOID:0060037	developmental disorder of mental health

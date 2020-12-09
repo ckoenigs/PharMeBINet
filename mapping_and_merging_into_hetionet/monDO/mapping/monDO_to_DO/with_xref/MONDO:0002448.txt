@@ -1,3 +1,0 @@
-MONDO:0002448	larynx sarcoma
-DOID 	 name 
-DOID:2877	larynx sarcoma

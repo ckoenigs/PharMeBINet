@@ -1,3 +1,0 @@
-DOID:217	enamel caries
-monDO ID 	 name 
-MONDO:0002233	enamel caries

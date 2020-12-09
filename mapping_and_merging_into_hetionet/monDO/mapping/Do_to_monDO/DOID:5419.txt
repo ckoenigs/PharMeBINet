@@ -1,3 +1,0 @@
-DOID:5419	schizophrenia
-monDO ID 	 name 
-MONDO:0005090	schizophrenia (disease)

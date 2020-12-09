@@ -1,3 +1,0 @@
-DOID:0050611	pharynx carcinoma in situ
-monDO ID 	 name 
-MONDO:0000372	pharynx carcinoma in situ

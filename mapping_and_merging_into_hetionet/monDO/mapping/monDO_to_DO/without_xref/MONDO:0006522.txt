@@ -1,3 +1,0 @@
-MONDO:0006522	acquired keratosis
-DOID 	 name 
-DOID:13072	acquired hyperkeratosis

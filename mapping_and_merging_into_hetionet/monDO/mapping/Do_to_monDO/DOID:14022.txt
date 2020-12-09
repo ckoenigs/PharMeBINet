@@ -1,3 +1,0 @@
-DOID:14022	algoneurodystrophy
-monDO ID 	 name 
-MONDO:0001859	algoneurodystrophy

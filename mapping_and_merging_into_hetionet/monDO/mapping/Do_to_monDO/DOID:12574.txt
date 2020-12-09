@@ -1,3 +1,0 @@
-DOID:12574	posterior uveitis
-monDO ID 	 name 
-MONDO:0006918	posterior uveitis

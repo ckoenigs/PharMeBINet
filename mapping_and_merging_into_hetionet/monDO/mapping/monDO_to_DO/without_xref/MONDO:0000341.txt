@@ -1,3 +1,0 @@
-MONDO:0000341	paralytic poliomyelitis
-DOID 	 name 
-DOID:0050515	paralytic poliomyelitis

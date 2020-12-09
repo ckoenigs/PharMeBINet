@@ -1,3 +1,0 @@
-MONDO:0006879	optic papillitis
-DOID 	 name 
-DOID:10175	optic papillitis

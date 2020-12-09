@@ -1,3 +1,0 @@
-MONDO:0002942	sebaceous basal cell carcinoma
-DOID 	 name 
-DOID:4286	sebaceous basal cell carcinoma

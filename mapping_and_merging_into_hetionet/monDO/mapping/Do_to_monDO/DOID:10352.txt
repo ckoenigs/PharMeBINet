@@ -1,3 +1,0 @@
-DOID:10352	breast fibroadenosis
-monDO ID 	 name 
-MONDO:0001012	breast fibroadenosis

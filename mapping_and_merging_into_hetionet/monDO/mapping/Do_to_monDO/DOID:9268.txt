@@ -1,3 +1,0 @@
-DOID:9268	glycine encephalopathy
-monDO ID 	 name 
-MONDO:0011612	glycine encephalopathy

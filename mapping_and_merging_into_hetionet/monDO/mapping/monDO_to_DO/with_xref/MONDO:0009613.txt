@@ -1,3 +1,0 @@
-MONDO:0009613	methylmalonic acidemia cb1A type
-DOID 	 name 
-DOID:0060742	methylmalonic acidemia cb1A type

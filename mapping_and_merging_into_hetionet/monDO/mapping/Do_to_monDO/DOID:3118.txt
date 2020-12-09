@@ -1,3 +1,0 @@
-DOID:3118	hepatobiliary disease
-monDO ID 	 name 
-MONDO:0002515	hepatobiliary disease

@@ -1,3 +1,0 @@
-MONDO:0013334	cocoon syndrome
-DOID 	 name 
-DOID:0060647	cocoon syndrome

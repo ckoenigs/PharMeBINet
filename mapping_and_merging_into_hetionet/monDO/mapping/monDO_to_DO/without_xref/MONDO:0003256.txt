@@ -1,3 +1,0 @@
-MONDO:0003256	neurohypophysis granular cell tumor
-DOID 	 name 
-DOID:5047	neurohypophysis granular cell tumor

@@ -1,3 +1,0 @@
-MONDO:0001371	protein-energy malnutrition
-DOID 	 name 
-DOID:11801	protein-energy malnutrition

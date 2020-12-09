@@ -1,3 +1,0 @@
-MONDO:0018852	achromatopsia
-DOID 	 name 
-DOID:13911	achromatopsia

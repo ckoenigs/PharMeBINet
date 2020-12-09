@@ -1,3 +1,0 @@
-MONDO:0000270	lower respiratory tract disease
-DOID 	 name 
-DOID:0050161	lower respiratory tract disease

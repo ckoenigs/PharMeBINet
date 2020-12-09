@@ -1,3 +1,0 @@
-DOID:299	adenocarcinoma
-monDO ID 	 name 
-MONDO:0004970	adenocarcinoma

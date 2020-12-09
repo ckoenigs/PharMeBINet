@@ -1,3 +1,0 @@
-MONDO:0003121	middle cranial fossa meningioma
-DOID 	 name 
-DOID:4749	middle cranial fossa meningioma

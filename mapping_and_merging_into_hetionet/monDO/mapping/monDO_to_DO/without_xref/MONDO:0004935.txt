@@ -1,3 +1,0 @@
-MONDO:0004935	acquired carotenemia
-DOID 	 name 
-DOID:9969	carotenemia

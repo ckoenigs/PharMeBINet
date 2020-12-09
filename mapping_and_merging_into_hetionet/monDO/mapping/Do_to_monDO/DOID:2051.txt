@@ -1,3 +1,0 @@
-DOID:2051	maxillary sinusitis
-monDO ID 	 name 
-MONDO:0005842	maxillary sinusitis

@@ -1,3 +1,0 @@
-MONDO:0018626	paratyphoid fever
-DOID 	 name 
-DOID:3055	paratyphoid fever

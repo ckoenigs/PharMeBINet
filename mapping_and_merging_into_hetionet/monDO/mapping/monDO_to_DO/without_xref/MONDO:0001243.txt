@@ -1,3 +1,0 @@
-MONDO:0001243	disseminated intravascular coagulation
-DOID 	 name 
-DOID:11247	disseminated intravascular coagulation

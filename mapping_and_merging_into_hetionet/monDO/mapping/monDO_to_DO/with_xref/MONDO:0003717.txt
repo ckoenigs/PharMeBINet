@@ -1,3 +1,0 @@
-MONDO:0003717	renal pelvis papillary tumor
-DOID 	 name 
-DOID:5975	renal pelvis papillary tumor

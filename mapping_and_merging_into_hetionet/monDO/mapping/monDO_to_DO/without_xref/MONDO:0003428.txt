@@ -1,3 +1,0 @@
-MONDO:0003428	brain hemangioma
-DOID 	 name 
-DOID:5393	brain angioma

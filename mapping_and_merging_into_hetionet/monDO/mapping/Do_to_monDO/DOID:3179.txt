@@ -1,3 +1,0 @@
-DOID:3179	inverted papilloma
-monDO ID 	 name 
-MONDO:0002537	inverted papilloma

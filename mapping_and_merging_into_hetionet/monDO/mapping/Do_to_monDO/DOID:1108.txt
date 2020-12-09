@@ -1,3 +1,0 @@
-DOID:1108	esophagus melanoma
-monDO ID 	 name 
-MONDO:0001192	esophagus melanoma

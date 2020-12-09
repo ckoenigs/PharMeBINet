@@ -1,3 +1,0 @@
-DOID:9669	senile cataract
-monDO ID 	 name 
-MONDO:0004847	senile cataract

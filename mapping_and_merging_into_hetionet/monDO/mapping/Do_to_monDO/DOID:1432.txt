@@ -1,3 +1,0 @@
-DOID:1432	blindness
-monDO ID 	 name 
-MONDO:0001941	blindness

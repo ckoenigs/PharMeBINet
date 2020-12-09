@@ -1,3 +1,0 @@
-DOID:4067	anus sarcoma
-monDO ID 	 name 
-MONDO:0002865	anus sarcoma

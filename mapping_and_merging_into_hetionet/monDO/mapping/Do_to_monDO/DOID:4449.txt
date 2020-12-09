@@ -1,3 +1,0 @@
-DOID:4449	macular retinal edema
-monDO ID 	 name 
-MONDO:0003005	macular retinal edema

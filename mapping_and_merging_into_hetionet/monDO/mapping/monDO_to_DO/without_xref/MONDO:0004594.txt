@@ -1,3 +1,0 @@
-MONDO:0004594	puerperal pulmonary embolism
-DOID 	 name 
-DOID:8512	puerperal pulmonary embolism

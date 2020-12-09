@@ -1,3 +1,0 @@
-MONDO:0008328	glaucoma 1, open angle, P
-DOID 	 name 
-DOID:1067	open-angle glaucoma

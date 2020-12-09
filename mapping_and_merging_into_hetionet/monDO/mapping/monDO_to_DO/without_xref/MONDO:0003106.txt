@@ -1,3 +1,0 @@
-MONDO:0003106	verrucous keratotic hemangioma
-DOID 	 name 
-DOID:470	verrucous keratotic hemangioma

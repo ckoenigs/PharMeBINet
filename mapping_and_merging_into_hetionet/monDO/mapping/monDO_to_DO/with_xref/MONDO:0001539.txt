@@ -1,4 +1,0 @@
-MONDO:0001539	retinal perforation
-DOID 	 name 
-DOID:12514	retinal perforation
-DOID:7633	macular holes

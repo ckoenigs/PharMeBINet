@@ -1,3 +1,0 @@
-DOID:615	leukopenia
-monDO ID 	 name 
-MONDO:0003785	leukopenia

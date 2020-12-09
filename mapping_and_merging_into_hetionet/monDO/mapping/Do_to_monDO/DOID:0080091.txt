@@ -1,3 +1,0 @@
-DOID:0080091	spheroid body myopathy
-monDO ID 	 name 
-MONDO:0008448	spheroid body myopathy

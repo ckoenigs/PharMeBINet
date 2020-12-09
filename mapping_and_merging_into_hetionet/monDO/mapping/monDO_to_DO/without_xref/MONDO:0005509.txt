@@ -1,3 +1,0 @@
-MONDO:0005509	histiocytoma
-DOID 	 name 
-DOID:4231	histiocytoma

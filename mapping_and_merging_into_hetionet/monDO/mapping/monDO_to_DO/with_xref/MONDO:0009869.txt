@@ -1,3 +1,0 @@
-MONDO:0009869	Weissenbacher-Zweymuller syndrome
-DOID 	 name 
-DOID:4258	Weissenbacher-Zweymuller syndrome

@@ -1,3 +1,0 @@
-MONDO:0004518	anterior urethra cancer
-DOID 	 name 
-DOID:8272	anterior urethra cancer

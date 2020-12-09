@@ -1,3 +1,0 @@
-DOID:6688	autoimmune lymphoproliferative syndrome
-monDO ID 	 name 
-MONDO:0017979	autoimmune lymphoproliferative syndrome

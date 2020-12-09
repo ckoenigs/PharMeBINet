@@ -1,3 +1,0 @@
-MONDO:0000918	endometritis
-DOID 	 name 
-DOID:1002	endometritis

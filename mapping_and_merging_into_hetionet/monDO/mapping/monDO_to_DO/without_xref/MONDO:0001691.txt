@@ -1,3 +1,0 @@
-MONDO:0001691	laryngeal cartilage cancer
-DOID 	 name 
-DOID:13348	laryngeal cartilage cancer

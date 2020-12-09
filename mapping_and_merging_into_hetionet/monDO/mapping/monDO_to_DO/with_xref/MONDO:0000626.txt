@@ -1,3 +1,0 @@
-MONDO:0000626	vestibular gland benign neoplasm
-DOID 	 name 
-DOID:0060088	vestibular gland benign neoplasm

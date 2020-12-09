@@ -1,3 +1,0 @@
-MONDO:0008846	atransferrinemia
-DOID 	 name 
-DOID:0050649	atransferrinemia

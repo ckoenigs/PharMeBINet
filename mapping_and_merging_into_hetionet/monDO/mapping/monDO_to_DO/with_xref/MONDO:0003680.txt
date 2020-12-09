@@ -1,3 +1,0 @@
-MONDO:0003680	periosteal chondrosarcoma
-DOID 	 name 
-DOID:5859	periosteal chondrosarcoma

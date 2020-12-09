@@ -1,3 +1,0 @@
-DOID:9834	hyperopia
-monDO ID 	 name 
-MONDO:0004891	hyperopia

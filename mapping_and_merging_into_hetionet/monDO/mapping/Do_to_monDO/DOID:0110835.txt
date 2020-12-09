@@ -1,3 +1,0 @@
-DOID:0110835	Usher syndrome type 1H
-monDO ID 	 name 
-MONDO:0012968	Usher syndrome type 1H

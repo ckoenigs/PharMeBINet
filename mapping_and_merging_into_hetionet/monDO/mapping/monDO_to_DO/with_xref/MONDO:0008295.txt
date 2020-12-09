@@ -1,3 +1,0 @@
-MONDO:0008295	sporadic porphyria cutanea tarda
-DOID 	 name 
-DOID:3132	porphyria cutanea tarda

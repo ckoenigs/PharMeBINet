@@ -1,3 +1,0 @@
-DOID:950	dacryoadenitis
-monDO ID 	 name 
-MONDO:0004804	dacryoadenitis

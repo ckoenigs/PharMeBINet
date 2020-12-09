@@ -1,3 +1,0 @@
-MONDO:0000257	acute diarrhea
-DOID 	 name 
-DOID:0050140	acute diarrhea

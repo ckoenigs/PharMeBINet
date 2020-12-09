@@ -1,3 +1,0 @@
-MONDO:0004674	chorioretinitis (disease)
-DOID 	 name 
-DOID:8886	chorioretinitis

@@ -1,3 +1,0 @@
-DOID:1575	rheumatic disease
-monDO ID 	 name 
-MONDO:0005554	rheumatologic disorder

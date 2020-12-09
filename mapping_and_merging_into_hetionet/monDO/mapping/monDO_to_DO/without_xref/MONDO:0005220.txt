@@ -1,3 +1,0 @@
-MONDO:0005220	collecting duct carcinoma
-DOID 	 name 
-DOID:4464	collecting duct carcinoma

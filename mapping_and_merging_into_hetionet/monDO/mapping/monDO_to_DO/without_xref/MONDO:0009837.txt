@@ -1,3 +1,0 @@
-MONDO:0009837	choroid plexus papilloma
-DOID 	 name 
-DOID:2626	choroid plexus papilloma

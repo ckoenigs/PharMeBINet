@@ -1,3 +1,0 @@
-DOID:7235	pancreatic mucinous cystadenoma
-monDO ID 	 name 
-MONDO:0018523	pancreatic mucinous cystadenoma

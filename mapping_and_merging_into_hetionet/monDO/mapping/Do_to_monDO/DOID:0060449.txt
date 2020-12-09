@@ -1,3 +1,0 @@
-DOID:0060449	gelatinous drop-like corneal dystrophy
-monDO ID 	 name 
-MONDO:0008777	gelatinous drop-like corneal dystrophy

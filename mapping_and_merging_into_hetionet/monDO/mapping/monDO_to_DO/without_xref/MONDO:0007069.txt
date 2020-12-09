@@ -1,3 +1,0 @@
-MONDO:0003709	Adie syndrome
-DOID 	 name 
-DOID:11549	Adie syndrome

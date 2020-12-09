@@ -1,3 +1,0 @@
-MONDO:0004534	microglandular adenosis of breast
-DOID 	 name 
-DOID:8335	microglandular adenosis of breast

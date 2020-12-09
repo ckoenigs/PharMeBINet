@@ -1,3 +1,0 @@
-DOID:3119	gastrointestinal system cancer
-monDO ID 	 name 
-MONDO:0002516	digestive system cancer

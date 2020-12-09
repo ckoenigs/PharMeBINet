@@ -1,3 +1,0 @@
-DOID:7037	childhood immature teratoma of ovary
-monDO ID 	 name 
-MONDO:0004082	childhood immature teratoma of ovary

@@ -1,3 +1,0 @@
-DOID:9098	sebaceous gland disease
-monDO ID 	 name 
-MONDO:0006607	sebaceous gland disease

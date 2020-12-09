@@ -1,3 +1,0 @@
-DOID:1883	hepatitis C
-monDO ID 	 name 
-MONDO:0005231	hepatitis C

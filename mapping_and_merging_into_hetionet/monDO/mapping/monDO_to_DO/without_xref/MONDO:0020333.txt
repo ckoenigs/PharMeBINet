@@ -1,3 +1,0 @@
-MONDO:0020333	aggressive systemic mastocytosis
-DOID 	 name 
-DOID:4798	aggressive systemic mastocytosis

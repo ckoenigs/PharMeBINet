@@ -1,3 +1,0 @@
-MONDO:0012118	COG7-CDG
-DOID 	 name 
-DOID:0050571	congenital disorder of glycosylation type II

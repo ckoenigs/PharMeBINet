@@ -1,3 +1,0 @@
-DOID:7221	gallbladder papillary carcinoma
-monDO ID 	 name 
-MONDO:0004148	gallbladder papillary carcinoma

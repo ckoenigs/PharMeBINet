@@ -1,3 +1,0 @@
-DOID:6315	ovarian solid teratoma
-monDO ID 	 name 
-MONDO:0003852	ovarian solid teratoma

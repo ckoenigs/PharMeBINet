@@ -1,3 +1,0 @@
-DOID:6742	synchronous bilateral breast carcinoma
-monDO ID 	 name 
-MONDO:0003983	synchronous bilateral breast carcinoma

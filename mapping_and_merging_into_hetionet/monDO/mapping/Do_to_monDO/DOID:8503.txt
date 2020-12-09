@@ -1,3 +1,0 @@
-DOID:8503	impetigo herpetiformis
-monDO ID 	 name 
-MONDO:0004591	impetigo herpetiformis

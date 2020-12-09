@@ -1,3 +1,0 @@
-DOID:12234	cascade stomach
-monDO ID 	 name 
-MONDO:0001469	cascade stomach

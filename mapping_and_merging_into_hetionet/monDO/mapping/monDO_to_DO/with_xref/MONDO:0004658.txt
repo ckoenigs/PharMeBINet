@@ -1,3 +1,0 @@
-MONDO:0004658	breast carcinoma in situ
-DOID 	 name 
-DOID:8791	breast carcinoma in situ

@@ -1,3 +1,0 @@
-MONDO:0013610	retinitis pigmentosa 61
-DOID 	 name 
-DOID:0110373	retinitis pigmentosa 61

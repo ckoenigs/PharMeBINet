@@ -1,3 +1,0 @@
-MONDO:0016722	pineoblastoma
-DOID 	 name 
-DOID:1664	pineoblastoma

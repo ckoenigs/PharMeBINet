@@ -1,3 +1,0 @@
-DOID:0110224	Brugada syndrome 7
-monDO ID 	 name 
-MONDO:0013146	Brugada syndrome 7

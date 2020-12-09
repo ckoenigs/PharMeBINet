@@ -1,3 +1,0 @@
-MONDO:0009877	Laron syndrome
-DOID 	 name 
-DOID:9521	Laron syndrome

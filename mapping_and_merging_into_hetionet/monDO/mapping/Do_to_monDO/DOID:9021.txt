@@ -1,3 +1,0 @@
-DOID:9021	esophageal leukoplakia
-monDO ID 	 name 
-MONDO:0004697	esophageal leukoplakia (disease)

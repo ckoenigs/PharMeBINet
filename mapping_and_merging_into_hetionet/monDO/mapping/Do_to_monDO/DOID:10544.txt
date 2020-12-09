@@ -1,3 +1,0 @@
-DOID:10544	pylorus cancer
-monDO ID 	 name 
-MONDO:0001061	pylorus cancer

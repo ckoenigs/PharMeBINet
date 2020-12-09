@@ -1,3 +1,0 @@
-DOID:2703	synovitis
-monDO ID 	 name 
-MONDO:0002400	synovitis (disease)

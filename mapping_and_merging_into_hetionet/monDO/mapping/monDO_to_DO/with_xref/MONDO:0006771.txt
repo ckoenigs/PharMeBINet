@@ -1,3 +1,0 @@
-MONDO:0006771	glossitis
-DOID 	 name 
-DOID:1456	glossitis

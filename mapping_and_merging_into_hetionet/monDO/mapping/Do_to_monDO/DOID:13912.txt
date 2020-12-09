@@ -1,3 +1,0 @@
-DOID:13912	acquired color blindness
-monDO ID 	 name 
-MONDO:0001828	acquired color blindness

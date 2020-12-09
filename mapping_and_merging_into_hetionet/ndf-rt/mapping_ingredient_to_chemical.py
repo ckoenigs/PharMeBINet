@@ -38,6 +38,37 @@ dict_rnxnorm_to_chemical_id = {}
 # dictionary chemical id to resource
 dict_chemical_id_to_resource = {}
 
+
+def check_for_rxcui(name, rxcui):
+    """
+    check if the rxcui ids are right
+    :param name: string
+    :param rxcui: string
+    :return: list of strings
+    """
+    query = ('Select Distinct RXCUI  From RXNCONSO Where STR ="%s" ;')
+    query = query % (name)
+    # print(query)
+
+    cur = conRxNorm.cursor()
+    rows_counter = cur.execute(query)
+    found_id = False
+    if rows_counter > 0:
+        other_id = []
+        for rxnorm_cui in cur:
+            if rxnorm_cui[0] == rxcui:
+                found_id = True
+            else:
+                other_id.append(rxnorm_cui[0])
+    else:
+        # there is nothing that can found in rxnorm
+        found_id = True
+    if found_id:
+        return [rxcui]
+    else:
+        return other_id
+
+
 '''
 Load all Chemical from my database  and add them into a dictionary
 '''
@@ -80,11 +111,13 @@ def load_chemical_from_database_and_add_to_dict():
 
         xrefs = node['xrefs'] if 'xrefs' in node else []
         for xref in xrefs:
-            if xref.startswith('RxNorm_Cui:'):
+            if xref.startswith('RxNorm_CUI:'):
                 xref = xref.split(':', 1)[1]
-                if xref not in dict_rnxnorm_to_chemical_id:
-                    dict_rnxnorm_to_chemical_id[xref] = set()
-                dict_rnxnorm_to_chemical_id[xref].add(identifier)
+                rxcuis = check_for_rxcui(name, xref)
+                for rxcui in rxcuis:
+                    if rxcui not in dict_rnxnorm_to_chemical_id:
+                        dict_rnxnorm_to_chemical_id[rxcui] = set()
+                    dict_rnxnorm_to_chemical_id[rxcui].add(identifier)
             elif xref.startswith('MESH:'):
                 xref = xref.split(':', 1)[1]
                 if xref not in dict_mesh_to_chemical_id:
@@ -110,16 +143,17 @@ def write_files(path_of_directory):
 
     return csv_rela
 
+
 # dictionary_mapping_pairs
-dict_mapping_pairs={}
+dict_mapping_pairs = {}
+
 
 def try_to_map(identifier, key, dictionary, how_mapped):
     if key in dictionary:
         for chemical_id in dictionary[key]:
-            if not (identifier,chemical_id) in dict_mapping_pairs:
-                dict_mapping_pairs[(identifier,chemical_id)]=set()
-            dict_mapping_pairs[(identifier,chemical_id)].add(how_mapped)
-
+            if not (identifier, chemical_id) in dict_mapping_pairs:
+                dict_mapping_pairs[(identifier, chemical_id)] = set()
+            dict_mapping_pairs[(identifier, chemical_id)].add(how_mapped)
 
 
 def load_all_ingredients_and_map():
@@ -139,13 +173,17 @@ def load_all_ingredients_and_map():
             # if property.startswith('UMLS_CUI:'):
             #     cui = property.split(':')[1]
             #     try_to_map(identifier, cui, dict_umls_to_chemical_id, 'umls_mapping')
-            if property.startswith('MeSH_CUI:') or property.startswith('MeSH_DUI:') :
-                cui = property.split(':')[1]
-                try_to_map(identifier, cui, dict_mesh_to_chemical_id, 'mesh_mapping')
+            # if property.startswith('MeSH_CUI:') or property.startswith('MeSH_DUI:') :
+            #     cui = property.split(':')[1]
+            #     try_to_map(identifier, cui, dict_mesh_to_chemical_id, 'mesh_mapping')
 
-            elif property.startswith('RxNorm_CUI:'):
-                cui = property.split(':')[1]
-                try_to_map(identifier, cui, dict_rnxnorm_to_chemical_id, 'rxcui_mapping')
+            # if property.startswith('RxNorm_CUI:'):
+            #     cui = property.split(':')[1]
+            #     try_to_map(identifier, cui, dict_rnxnorm_to_chemical_id, 'rxcui_mapping')
+            if property.startswith('Synonym:') or property.startswith('Display_Name'):
+                synonym = property.split(':')[1].lower()
+                try_to_map(identifier, synonym, dict_name_to_chemical_id, 'synonym_mapping')
+
 
 def write_mapping_into_file(csv_map):
     for (identifier, chemical_id), how_mapped in dict_mapping_pairs.items():

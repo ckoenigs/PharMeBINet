@@ -1,3 +1,0 @@
-DOID:10471	patellar tendinitis
-monDO ID 	 name 
-MONDO:0001042	patellar tendinitis

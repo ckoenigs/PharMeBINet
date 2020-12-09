@@ -1,3 +1,0 @@
-MONDO:0010033	generalized peeling skin syndrome
-DOID 	 name 
-DOID:0060283	peeling skin syndrome

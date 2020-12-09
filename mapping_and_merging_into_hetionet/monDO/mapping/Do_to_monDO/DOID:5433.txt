@@ -1,3 +1,0 @@
-DOID:5433	urinary tract papillary transitional cell benign neoplasm
-monDO ID 	 name 
-MONDO:0003443	papillary urothelial neoplasm

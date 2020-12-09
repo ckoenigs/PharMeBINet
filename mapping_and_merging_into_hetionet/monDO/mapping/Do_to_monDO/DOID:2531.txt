@@ -1,3 +1,0 @@
-DOID:2531	hematologic cancer
-monDO ID 	 name 
-MONDO:0002334	hematopoietic and lymphoid system neoplasm

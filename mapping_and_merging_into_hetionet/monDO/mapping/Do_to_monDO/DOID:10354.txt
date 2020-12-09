@@ -1,3 +1,0 @@
-DOID:10354	breast fibrocystic disease
-monDO ID 	 name 
-MONDO:0005219	breast fibrocystic disease

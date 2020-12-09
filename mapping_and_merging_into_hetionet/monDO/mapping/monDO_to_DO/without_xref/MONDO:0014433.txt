@@ -1,3 +1,0 @@
-MONDO:0014433	Bardet-Biedl syndrome 4
-DOID 	 name 
-DOID:0110126	Bardet-Biedl syndrome 4

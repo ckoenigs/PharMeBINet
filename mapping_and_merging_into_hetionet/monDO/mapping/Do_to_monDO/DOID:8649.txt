@@ -1,3 +1,0 @@
-DOID:8649	tongue cancer
-monDO ID 	 name 
-MONDO:0004631	tongue cancer

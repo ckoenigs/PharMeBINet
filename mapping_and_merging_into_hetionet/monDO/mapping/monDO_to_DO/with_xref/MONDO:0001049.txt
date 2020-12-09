@@ -1,3 +1,0 @@
-MONDO:0001049	Dressler's syndrome
-DOID 	 name 
-DOID:10507	Dressler's syndrome

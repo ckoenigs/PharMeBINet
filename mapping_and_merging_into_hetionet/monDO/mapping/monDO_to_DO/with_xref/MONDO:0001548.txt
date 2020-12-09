@@ -1,4 +1,0 @@
-MONDO:0001548	hepatic coma
-DOID 	 name 
-DOID:12550	hepatic coma
-DOID:13413	hepatic encephalopathy

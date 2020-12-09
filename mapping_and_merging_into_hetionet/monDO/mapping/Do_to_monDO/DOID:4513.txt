@@ -1,3 +1,0 @@
-DOID:4513	gallbladder angiosarcoma
-monDO ID 	 name 
-MONDO:0003026	gallbladder angiosarcoma

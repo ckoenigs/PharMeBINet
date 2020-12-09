@@ -1,3 +1,0 @@
-MONDO:0003606	adrenal medulla cancer
-DOID 	 name 
-DOID:5719	adrenal medulla cancer

@@ -1,3 +1,0 @@
-DOID:7031	glottis squamous cell carcinoma
-monDO ID 	 name 
-MONDO:0004080	glottis squamous cell carcinoma

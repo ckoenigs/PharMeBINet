@@ -1,3 +1,0 @@
-MONDO:0005596	cystadenocarcinoma
-DOID 	 name 
-DOID:3111	cystadenocarcinoma

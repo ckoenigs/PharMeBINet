@@ -1,3 +1,0 @@
-MONDO:0005917	placenta disease
-DOID 	 name 
-DOID:780	placenta disease

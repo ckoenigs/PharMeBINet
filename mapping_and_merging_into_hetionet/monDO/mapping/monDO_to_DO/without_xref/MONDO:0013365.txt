@@ -1,3 +1,0 @@
-MONDO:0013365	autosomal recessive nonsyndromic deafness 83
-DOID 	 name 
-DOID:0110528	autosomal recessive nonsyndromic deafness 83

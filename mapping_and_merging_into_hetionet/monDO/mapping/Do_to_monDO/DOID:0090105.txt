@@ -1,3 +1,0 @@
-DOID:0090105	autosomal recessive hypercholesterolemia
-monDO ID 	 name 
-MONDO:0011374	autosomal recessive hypercholesterolemia

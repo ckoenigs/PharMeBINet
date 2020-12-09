@@ -1,3 +1,0 @@
-MONDO:0009595	cartilage-hair hypoplasia
-DOID 	 name 
-DOID:14773	cartilage-hair hypoplasia

@@ -1,3 +1,0 @@
-DOID:0110331	Leber congenital amaurosis 3
-monDO ID 	 name 
-MONDO:0011415	Leber congenital amaurosis 3

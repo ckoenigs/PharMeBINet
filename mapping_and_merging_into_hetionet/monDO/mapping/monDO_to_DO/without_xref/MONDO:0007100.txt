@@ -1,3 +1,0 @@
-MONDO:0007100	familial amyloid neuropathy
-DOID 	 name 
-DOID:0050638	transthyretin amyloidosis

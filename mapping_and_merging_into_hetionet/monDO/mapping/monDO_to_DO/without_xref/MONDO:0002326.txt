@@ -1,3 +1,0 @@
-MONDO:0002326	alcohol-induced mental disorder
-DOID 	 name 
-DOID:251	alcohol-induced mental disorder

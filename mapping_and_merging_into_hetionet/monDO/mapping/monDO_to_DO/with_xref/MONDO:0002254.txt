@@ -1,3 +1,0 @@
-MONDO:0002254	syndromic disease
-DOID 	 name 
-DOID:225	syndrome

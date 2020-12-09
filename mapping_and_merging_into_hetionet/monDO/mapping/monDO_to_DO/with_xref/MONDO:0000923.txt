@@ -1,3 +1,0 @@
-MONDO:0000923	interstitial emphysema
-DOID 	 name 
-DOID:10030	interstitial emphysema

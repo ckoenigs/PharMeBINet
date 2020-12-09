@@ -1,3 +1,0 @@
-DOID:14176	selective IgG deficiency disease
-monDO ID 	 name 
-MONDO:0001901	selective IgG deficiency disease

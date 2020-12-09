@@ -1,3 +1,0 @@
-MONDO:0014732	hypomyelinating leukodystrophy 12
-DOID 	 name 
-DOID:0060796	hypomyelinating leukodystrophy 12

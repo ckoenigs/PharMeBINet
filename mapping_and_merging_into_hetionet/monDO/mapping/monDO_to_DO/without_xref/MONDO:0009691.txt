@@ -1,3 +1,0 @@
-MONDO:0009691	mycosis fungoides
-DOID 	 name 
-DOID:8691	mycosis fungoides

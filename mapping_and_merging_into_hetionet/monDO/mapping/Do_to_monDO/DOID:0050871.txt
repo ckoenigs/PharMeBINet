@@ -1,3 +1,0 @@
-DOID:0050871	fibroma
-monDO ID 	 name 
-MONDO:0005167	fibroma

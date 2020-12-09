@@ -1,3 +1,0 @@
-MONDO:0013834	UV-Sensitive syndrome 3
-DOID 	 name 
-DOID:0060240	UV-sensitive syndrome

@@ -1,3 +1,0 @@
-DOID:14199	posterior dislocation of lens
-monDO ID 	 name 
-MONDO:0001906	posterior dislocation of lens

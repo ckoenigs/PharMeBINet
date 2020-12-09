@@ -1,3 +1,0 @@
-DOID:0050693	Brooke-Spiegler syndrome
-monDO ID 	 name 
-MONDO:0011512	Brooke-Spiegler syndrome

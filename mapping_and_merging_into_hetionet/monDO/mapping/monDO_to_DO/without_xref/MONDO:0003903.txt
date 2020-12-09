@@ -1,3 +1,0 @@
-MONDO:0003903	benign vaginal mixed tumor
-DOID 	 name 
-DOID:6505	vaginal spindle cell epithelioma

@@ -1,3 +1,0 @@
-MONDO:0004771	Fuchs' heterochromic uveitis
-DOID 	 name 
-DOID:9375	Fuchs' heterochromic uveitis

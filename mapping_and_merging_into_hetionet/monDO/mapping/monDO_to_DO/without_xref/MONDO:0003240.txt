@@ -1,3 +1,0 @@
-MONDO:0003240	thyroid gland disease
-DOID 	 name 
-DOID:50	thyroid gland disease

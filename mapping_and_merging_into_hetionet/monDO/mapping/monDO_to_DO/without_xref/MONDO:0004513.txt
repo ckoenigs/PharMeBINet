@@ -1,3 +1,0 @@
-MONDO:0004513	adult pleomorphic rhabdomyosarcoma
-DOID 	 name 
-DOID:8251	adult pleomorphic rhabdomyosarcoma

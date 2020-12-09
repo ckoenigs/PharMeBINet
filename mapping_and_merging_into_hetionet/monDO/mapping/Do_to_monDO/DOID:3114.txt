@@ -1,3 +1,0 @@
-DOID:3114	serous cystadenocarcinoma
-monDO ID 	 name 
-MONDO:0005278	serous adenocarcinoma

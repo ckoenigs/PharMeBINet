@@ -1,3 +1,0 @@
-MONDO:0007534	Beckwith-Wiedemann syndrome
-DOID 	 name 
-DOID:5572	Beckwith-Wiedemann syndrome

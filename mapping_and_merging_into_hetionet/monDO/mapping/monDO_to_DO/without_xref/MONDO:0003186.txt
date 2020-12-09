@@ -1,3 +1,0 @@
-MONDO:0003186	esophageal adenoid cystic carcinoma
-DOID 	 name 
-DOID:4878	esophageal adenoid cystic carcinoma

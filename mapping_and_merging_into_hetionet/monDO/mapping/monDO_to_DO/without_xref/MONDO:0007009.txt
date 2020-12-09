@@ -1,3 +1,0 @@
-MONDO:0007009	ureterolithiasis
-DOID 	 name 
-DOID:14146	ureterolithiasis

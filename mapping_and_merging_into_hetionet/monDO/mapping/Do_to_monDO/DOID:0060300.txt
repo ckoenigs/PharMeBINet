@@ -1,3 +1,0 @@
-DOID:0060300	complement component 7 deficiency
-monDO ID 	 name 
-MONDO:0012412	complement component 7 deficiency

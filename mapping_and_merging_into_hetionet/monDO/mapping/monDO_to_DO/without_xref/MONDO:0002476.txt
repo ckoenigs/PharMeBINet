@@ -1,3 +1,0 @@
-MONDO:0002476	anuria
-DOID 	 name 
-DOID:2983	anuria

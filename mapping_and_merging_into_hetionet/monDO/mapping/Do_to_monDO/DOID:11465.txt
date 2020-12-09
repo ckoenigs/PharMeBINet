@@ -1,3 +1,0 @@
-DOID:11465	autonomic nervous system disease
-monDO ID 	 name 
-MONDO:0001292	autonomic nervous system disease

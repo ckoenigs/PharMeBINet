@@ -1,7 +1,0 @@
-MONDO:0005263	unipolar depression
-DOID 	 name 
-DOID:4964	neurotic disorder
-DOID:1596	mental depression
-DOID:1595	endogenous depression
-DOID:2848	melancholia
-DOID:1470	major depressive disorder

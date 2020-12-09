@@ -1,3 +1,0 @@
-DOID:4471	chromophobe renal cell carcinoma
-monDO ID 	 name 
-MONDO:0017885	chromophobe renal cell carcinoma

@@ -1,3 +1,0 @@
-MONDO:0000938	gastric leiomyoma
-DOID 	 name 
-DOID:10087	gastric leiomyoma

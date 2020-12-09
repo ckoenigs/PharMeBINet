@@ -1,3 +1,0 @@
-DOID:7427	anthrax disease
-monDO ID 	 name 
-MONDO:0005119	anthrax infection

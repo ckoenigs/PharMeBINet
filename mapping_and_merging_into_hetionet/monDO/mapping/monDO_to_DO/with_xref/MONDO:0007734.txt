@@ -1,3 +1,0 @@
-MONDO:0007734	holoprosencephaly 4
-DOID 	 name 
-DOID:0110880	holoprosencephaly 4

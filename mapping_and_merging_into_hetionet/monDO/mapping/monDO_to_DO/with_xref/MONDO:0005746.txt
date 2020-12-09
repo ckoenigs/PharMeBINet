@@ -1,3 +1,0 @@
-MONDO:0005746	enterobiasis
-DOID 	 name 
-DOID:7457	enterobiasis

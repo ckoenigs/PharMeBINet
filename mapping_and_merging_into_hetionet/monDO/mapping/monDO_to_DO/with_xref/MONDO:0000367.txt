@@ -1,3 +1,0 @@
-MONDO:0000367	taeniasis
-DOID 	 name 
-DOID:0050596	taeniasis

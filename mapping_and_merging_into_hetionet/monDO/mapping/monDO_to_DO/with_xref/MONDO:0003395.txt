@@ -1,3 +1,0 @@
-MONDO:0003395	testicular granulosa cell tumor
-DOID 	 name 
-DOID:5331	testicular granulosa cell tumor

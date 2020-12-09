@@ -1,4 +1,0 @@
-MONDO:0003009	hyperaldosteronism
-DOID 	 name 
-DOID:12028	Conn's syndrome
-DOID:446	hyperaldosteronism

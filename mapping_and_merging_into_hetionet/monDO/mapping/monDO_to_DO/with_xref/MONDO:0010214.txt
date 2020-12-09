@@ -1,3 +1,0 @@
-MONDO:0010214	xeroderma pigmentosum variant type
-DOID 	 name 
-DOID:0110847	xeroderma pigmentosum variant type

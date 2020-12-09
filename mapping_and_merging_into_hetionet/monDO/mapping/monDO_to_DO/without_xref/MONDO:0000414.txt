@@ -1,3 +1,0 @@
-MONDO:0000414	childhood electroclinical syndrome
-DOID 	 name 
-DOID:0050704	childhood electroclinical syndrome

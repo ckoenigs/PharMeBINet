@@ -1,3 +1,0 @@
-MONDO:0002558	melanotic neurilemmoma
-DOID 	 name 
-DOID:3205	melanotic neurilemmoma

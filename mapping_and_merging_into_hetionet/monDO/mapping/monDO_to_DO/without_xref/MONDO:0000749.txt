@@ -1,3 +1,0 @@
-MONDO:0000749	breast abscess
-DOID 	 name 
-DOID:0060323	breast abscess

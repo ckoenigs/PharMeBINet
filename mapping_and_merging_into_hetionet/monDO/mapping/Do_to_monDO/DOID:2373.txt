@@ -1,3 +1,0 @@
-DOID:2373	hereditary elliptocytosis
-monDO ID 	 name 
-MONDO:0017319	hereditary elliptocytosis

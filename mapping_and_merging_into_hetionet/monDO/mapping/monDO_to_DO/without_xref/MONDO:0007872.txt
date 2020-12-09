@@ -1,3 +1,0 @@
-MONDO:0007872	LADD syndrome
-DOID 	 name 
-DOID:0050331	LADD syndrome

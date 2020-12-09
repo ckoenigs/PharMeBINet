@@ -1,3 +1,0 @@
-MONDO:0007018	vulvitis
-DOID 	 name 
-DOID:3901	vulvitis

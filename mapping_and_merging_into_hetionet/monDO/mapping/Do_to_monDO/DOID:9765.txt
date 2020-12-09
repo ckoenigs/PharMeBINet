@@ -1,3 +1,0 @@
-DOID:9765	emphysematous cholecystitis
-monDO ID 	 name 
-MONDO:0005742	emphysematous cholecystitis

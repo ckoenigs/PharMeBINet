@@ -1,3 +1,0 @@
-MONDO:0002202	outlet dysfunction constipation
-DOID 	 name 
-DOID:2088	outlet dysfunction constipation

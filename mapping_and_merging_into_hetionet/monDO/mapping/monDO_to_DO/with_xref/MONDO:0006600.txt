@@ -1,3 +1,0 @@
-MONDO:0006600	pigmentation disease
-DOID 	 name 
-DOID:10123	pigmentation disease

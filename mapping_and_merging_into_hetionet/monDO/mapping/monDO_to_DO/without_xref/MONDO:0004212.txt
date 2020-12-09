@@ -1,3 +1,0 @@
-MONDO:0004212	vulvar keratoacanthoma-like carcinoma
-DOID 	 name 
-DOID:7408	vulvar keratoacanthoma-like carcinoma

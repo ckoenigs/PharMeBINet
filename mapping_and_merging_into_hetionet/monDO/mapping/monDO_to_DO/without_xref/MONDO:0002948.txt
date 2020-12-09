@@ -1,3 +1,0 @@
-MONDO:0002948	skin fibroepithelial basal cell carcinoma
-DOID 	 name 
-DOID:4291	fibroepithelial basal cell carcinoma

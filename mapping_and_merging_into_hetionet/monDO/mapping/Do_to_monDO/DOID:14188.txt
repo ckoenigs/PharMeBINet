@@ -1,3 +1,0 @@
-DOID:14188	frozen shoulder
-monDO ID 	 name 
-MONDO:0006763	frozen shoulder

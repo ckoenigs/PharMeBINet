@@ -1,3 +1,0 @@
-MONDO:0014411	myopia 24, autosomal dominant
-DOID 	 name 
-DOID:11830	myopia

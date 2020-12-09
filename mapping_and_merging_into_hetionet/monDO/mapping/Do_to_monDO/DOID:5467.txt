@@ -1,3 +1,0 @@
-DOID:5467	conjunctival cancer
-monDO ID 	 name 
-MONDO:0003454	conjunctival cancer

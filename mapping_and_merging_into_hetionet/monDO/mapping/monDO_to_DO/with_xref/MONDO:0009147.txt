@@ -1,3 +1,0 @@
-MONDO:0009147	ectodermal dysplasia 10B, hypohidrotic/hair/tooth type, autosomal recessive
-DOID 	 name 
-DOID:14793	hypohidrotic ectodermal dysplasia

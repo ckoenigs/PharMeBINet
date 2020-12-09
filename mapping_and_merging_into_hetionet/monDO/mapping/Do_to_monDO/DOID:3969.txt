@@ -1,3 +1,0 @@
-DOID:3969	papillary thyroid carcinoma
-monDO ID 	 name 
-MONDO:0005075	papillary thyroid carcinoma (disease)

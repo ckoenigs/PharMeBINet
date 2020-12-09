@@ -1,3 +1,0 @@
-MONDO:0006863	myxosarcoma
-DOID 	 name 
-DOID:4136	myxosarcoma

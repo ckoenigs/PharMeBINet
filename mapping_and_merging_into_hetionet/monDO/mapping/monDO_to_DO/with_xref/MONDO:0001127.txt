@@ -1,3 +1,0 @@
-MONDO:0001127	tibialis tendinitis
-DOID 	 name 
-DOID:10810	tibialis tendinitis

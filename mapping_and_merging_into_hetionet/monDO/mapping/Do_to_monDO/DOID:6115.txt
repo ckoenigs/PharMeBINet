@@ -1,3 +1,0 @@
-DOID:6115	lateral ventricle meningioma
-monDO ID 	 name 
-MONDO:0003775	lateral ventricle meningioma

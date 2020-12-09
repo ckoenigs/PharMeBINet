@@ -1,3 +1,0 @@
-MONDO:0006004	vasomotor rhinitis
-DOID 	 name 
-DOID:4730	vasomotor rhinitis

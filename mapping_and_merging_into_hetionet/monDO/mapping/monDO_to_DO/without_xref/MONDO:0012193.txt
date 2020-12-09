@@ -1,3 +1,0 @@
-MONDO:0012193	autosomal dominant limb-girdle muscular dystrophy type 1G
-DOID 	 name 
-DOID:0110306	autosomal dominant limb-girdle muscular dystrophy type 1G

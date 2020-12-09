@@ -1,3 +1,0 @@
-MONDO:0004509	intrahepatic biliary papillomatosis
-DOID 	 name 
-DOID:8230	intrahepatic biliary papillomatosis

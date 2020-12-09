@@ -1,3 +1,0 @@
-MONDO:0009696	juvenile myoclonic epilepsy
-DOID 	 name 
-DOID:4890	juvenile myoclonic epilepsy

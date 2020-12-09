@@ -1,3 +1,0 @@
-MONDO:0004636	lip carcinoma in situ
-DOID 	 name 
-DOID:8661	lip carcinoma in situ

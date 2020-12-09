@@ -1,3 +1,0 @@
-MONDO:0000520	parietal lobe ependymal tumor
-DOID 	 name 
-DOID:0050903	parietal lobe ependymoma

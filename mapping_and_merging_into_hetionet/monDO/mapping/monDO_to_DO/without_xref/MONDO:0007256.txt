@@ -1,3 +1,0 @@
-MONDO:0007256	hepatocellular carcinoma
-DOID 	 name 
-DOID:684	hepatocellular carcinoma

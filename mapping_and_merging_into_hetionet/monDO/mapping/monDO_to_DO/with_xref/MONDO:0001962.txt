@@ -1,3 +1,0 @@
-MONDO:0001962	abnormality of glucagon secretion
-DOID 	 name 
-DOID:14427	abnormality of glucagon secretion

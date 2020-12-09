@@ -1,3 +1,0 @@
-DOID:5032	pineal gland cancer
-monDO ID 	 name 
-MONDO:0003249	pineal gland cancer

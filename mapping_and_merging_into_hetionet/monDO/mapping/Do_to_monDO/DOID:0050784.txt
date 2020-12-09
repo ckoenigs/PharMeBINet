@@ -1,3 +1,0 @@
-DOID:0050784	primary progressive multiple sclerosis
-monDO ID 	 name 
-MONDO:0000451	primary progressive multiple sclerosis

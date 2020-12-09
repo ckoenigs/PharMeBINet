@@ -1,3 +1,0 @@
-DOID:9637	stomatitis
-monDO ID 	 name 
-MONDO:0004842	stomatitis

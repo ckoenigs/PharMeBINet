@@ -1,3 +1,0 @@
-DOID:0110505	autosomal recessive nonsyndromic deafness 48
-monDO ID 	 name 
-MONDO:0012273	autosomal recessive nonsyndromic deafness 48

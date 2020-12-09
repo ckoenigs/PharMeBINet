@@ -1,3 +1,0 @@
-MONDO:0004749	myocardium cancer
-DOID 	 name 
-DOID:9299	myocardium cancer

@@ -1,3 +1,0 @@
-DOID:0111078	tibial muscular dystrophy
-monDO ID 	 name 
-MONDO:0010870	tibial muscular dystrophy

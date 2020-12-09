@@ -1,3 +1,0 @@
-DOID:5261	heart leiomyosarcoma
-monDO ID 	 name 
-MONDO:0003353	heart leiomyosarcoma

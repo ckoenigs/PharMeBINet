@@ -1,3 +1,0 @@
-DOID:12318	corneal granular dystrophy
-monDO ID 	 name 
-MONDO:0001490	corneal granular dystrophy

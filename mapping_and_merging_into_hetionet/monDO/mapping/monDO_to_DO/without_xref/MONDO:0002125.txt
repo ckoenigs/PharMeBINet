@@ -1,3 +1,0 @@
-MONDO:0002125	status epilepticus
-DOID 	 name 
-DOID:1824	status epilepticus

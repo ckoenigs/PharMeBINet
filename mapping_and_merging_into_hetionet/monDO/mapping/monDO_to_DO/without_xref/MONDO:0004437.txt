@@ -1,3 +1,0 @@
-MONDO:0003709	gastric signet ring cell adenocarcinoma
-DOID 	 name 
-DOID:8025	gastric signet ring cell adenocarcinoma

@@ -1,3 +1,0 @@
-DOID:0050602	triple-A syndrome
-monDO ID 	 name 
-MONDO:0009279	triple-a syndrome

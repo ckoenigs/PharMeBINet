@@ -1,3 +1,0 @@
-MONDO:0012672	cholelithiasis
-DOID 	 name 
-DOID:10211	cholelithiasis

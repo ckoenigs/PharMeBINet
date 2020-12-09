@@ -1,3 +1,0 @@
-DOID:6367	acral lentiginous melanoma
-monDO ID 	 name 
-MONDO:0003865	acral lentiginous melanoma (disease)

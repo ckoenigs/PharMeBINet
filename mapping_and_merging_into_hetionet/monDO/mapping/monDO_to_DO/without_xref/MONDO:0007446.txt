@@ -1,3 +1,0 @@
-MONDO:0007446	dermatosis papulosa nigra
-DOID 	 name 
-DOID:4400	dermatosis papulosa nigra

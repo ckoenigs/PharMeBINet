@@ -1,3 +1,0 @@
-MONDO:0009795	orofaciodigital syndrome IX
-DOID 	 name 
-DOID:0060382	orofaciodigital syndrome IX

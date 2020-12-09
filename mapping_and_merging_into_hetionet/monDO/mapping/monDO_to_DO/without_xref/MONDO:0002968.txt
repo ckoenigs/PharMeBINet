@@ -1,3 +1,0 @@
-MONDO:0002968	lymphocele
-DOID 	 name 
-DOID:4347	lymphocele

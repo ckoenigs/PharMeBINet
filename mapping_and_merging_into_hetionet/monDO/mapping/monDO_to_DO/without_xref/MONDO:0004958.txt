@@ -1,3 +1,0 @@
-MONDO:0004958	oral squamous cell carcinoma
-DOID 	 name 
-DOID:0050866	oral squamous cell carcinoma

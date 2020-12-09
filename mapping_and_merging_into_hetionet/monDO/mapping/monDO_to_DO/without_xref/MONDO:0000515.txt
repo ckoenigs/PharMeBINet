@@ -1,3 +1,0 @@
-MONDO:0000515	bone chondrosarcoma
-DOID 	 name 
-DOID:0050897	bone chondrosarcoma

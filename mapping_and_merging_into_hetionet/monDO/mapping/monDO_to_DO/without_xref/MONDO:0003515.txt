@@ -1,3 +1,0 @@
-MONDO:0003515	fallopian tube teratoma
-DOID 	 name 
-DOID:5564	fallopian tube teratoma

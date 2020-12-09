@@ -1,3 +1,0 @@
-MONDO:0000344	Ross river fever
-DOID 	 name 
-DOID:0050518	Ross River fever

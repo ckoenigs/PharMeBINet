@@ -1,3 +1,0 @@
-DOID:7612	childhood intracortical osteosarcoma
-monDO ID 	 name 
-MONDO:0004306	childhood intracortical osteosarcoma

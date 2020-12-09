@@ -1,3 +1,0 @@
-MONDO:0017719	gangliosidosis
-DOID 	 name 
-DOID:2368	gangliosidosis

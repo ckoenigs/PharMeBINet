@@ -1,3 +1,0 @@
-DOID:0060172	juvenile absence epilepsy
-monDO ID 	 name 
-MONDO:0011876	juvenile absence epilepsy

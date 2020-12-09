@@ -1,3 +1,0 @@
-MONDO:0006043	metaplastic breast carcinoma
-DOID 	 name 
-DOID:4680	breast metaplastic carcinoma

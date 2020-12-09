@@ -1,3 +1,0 @@
-MONDO:0002450	prostatic adenoma
-DOID 	 name 
-DOID:2883	prostatic adenoma

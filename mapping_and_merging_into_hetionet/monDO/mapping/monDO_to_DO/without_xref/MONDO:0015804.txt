@@ -1,3 +1,0 @@
-MONDO:0015804	infant botulism
-DOID 	 name 
-DOID:0050354	infant botulism

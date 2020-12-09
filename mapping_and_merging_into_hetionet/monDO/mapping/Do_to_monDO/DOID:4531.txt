@@ -1,3 +1,0 @@
-DOID:4531	mucoepidermoid carcinoma
-monDO ID 	 name 
-MONDO:0003036	mucoepidermoid carcinoma

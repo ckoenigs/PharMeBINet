@@ -1,3 +1,0 @@
-MONDO:0003196	appendix carcinoma
-DOID 	 name 
-DOID:4902	appendix carcinoma

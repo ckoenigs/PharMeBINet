@@ -1,3 +1,0 @@
-MONDO:0004754	rectal prolapse (disease)
-DOID 	 name 
-DOID:9307	rectal prolapse

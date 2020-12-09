@@ -1,3 +1,0 @@
-MONDO:0004417	nested variant infiltrating bladder urothelial carcinoma
-DOID 	 name 
-DOID:7969	nested variant infiltrating bladder urothelial carcinoma

@@ -1,3 +1,0 @@
-MONDO:0012077	amyotrophic lateral sclerosis type 8
-DOID 	 name 
-DOID:0050752	amyotrophic lateral sclerosis type 8

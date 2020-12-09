@@ -1,3 +1,0 @@
-MONDO:0001994	sphenoidal sinus cancer
-DOID 	 name 
-DOID:14546	sphenoidal sinus cancer

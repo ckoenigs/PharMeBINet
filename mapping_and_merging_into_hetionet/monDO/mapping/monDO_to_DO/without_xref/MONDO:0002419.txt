@@ -1,3 +1,0 @@
-MONDO:0002419	transient tic disorder
-DOID 	 name 
-DOID:2768	transient tic disorder

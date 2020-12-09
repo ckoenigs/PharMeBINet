@@ -1,3 +1,0 @@
-MONDO:0001204	esophagus sarcoma
-DOID 	 name 
-DOID:1114	esophagus sarcoma

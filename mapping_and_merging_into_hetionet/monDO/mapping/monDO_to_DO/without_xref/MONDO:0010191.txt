@@ -1,3 +1,0 @@
-MONDO:0010191	von Willebrand's disease 3
-DOID 	 name 
-DOID:0111054	von Willebrand's disease 3

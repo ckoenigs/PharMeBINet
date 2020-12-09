@@ -1,3 +1,0 @@
-MONDO:0013584	hereditary sensory neuropathy-deafness-dementia syndrome
-DOID 	 name 
-DOID:0050548	hereditary sensory neuropathy

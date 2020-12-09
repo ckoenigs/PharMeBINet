@@ -1,3 +1,0 @@
-MONDO:0009426	hypoparathyroidism-retardation-dysmorphism syndrome
-DOID 	 name 
-DOID:0060348	hypoparathyroidism-retardation-dysmorphism syndrome

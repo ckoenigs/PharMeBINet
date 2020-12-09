@@ -1,3 +1,0 @@
-DOID:1278	tolosa-hunt syndrome
-monDO ID 	 name 
-MONDO:0018983	Tolosa-Hunt syndrome

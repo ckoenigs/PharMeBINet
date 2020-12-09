@@ -1,3 +1,0 @@
-MONDO:0013323	cranioectodermal dysplasia 2
-DOID 	 name 
-DOID:0050577	Sensenbrenner syndrome

@@ -1,3 +1,0 @@
-MONDO:0011405	poikiloderma with neutropenia
-DOID 	 name 
-DOID:0060551	poikiloderma with neutropenia

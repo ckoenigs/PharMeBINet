@@ -1,3 +1,0 @@
-MONDO:0013924	osteogenesis imperfecta type 13
-DOID 	 name 
-DOID:0110342	osteogenesis imperfecta type 13

@@ -1,3 +1,0 @@
-MONDO:0018824	pyoderma gangrenosum
-DOID 	 name 
-DOID:8553	pyoderma gangrenosum

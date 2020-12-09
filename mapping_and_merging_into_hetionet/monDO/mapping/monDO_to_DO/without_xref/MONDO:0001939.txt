@@ -1,3 +1,0 @@
-MONDO:0001939	skin epithelioid hemangioma
-DOID 	 name 
-DOID:14308	skin epithelioid hemangioma

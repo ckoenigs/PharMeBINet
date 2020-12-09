@@ -1,3 +1,0 @@
-MONDO:0013272	chromosome 14q11-q22 deletion syndrome
-DOID 	 name 
-DOID:0060392	chromosome 14q11-q22 deletion syndrome

@@ -1,3 +1,0 @@
-MONDO:0002330	alcoholic psychosis
-DOID 	 name 
-DOID:252	alcoholic psychosis

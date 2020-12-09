@@ -1,3 +1,0 @@
-DOID:0050855	renal fibrosis
-monDO ID 	 name 
-MONDO:0000494	renal fibrosis

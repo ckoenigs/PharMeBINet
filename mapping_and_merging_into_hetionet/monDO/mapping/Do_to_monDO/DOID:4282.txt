@@ -1,3 +1,0 @@
-DOID:4282	pigmented basal cell carcinoma
-monDO ID 	 name 
-MONDO:0002939	skin pigmented basal cell carcinoma

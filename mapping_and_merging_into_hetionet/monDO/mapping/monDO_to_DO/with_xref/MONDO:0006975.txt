@@ -1,3 +1,0 @@
-MONDO:0006975	smooth muscle tumor
-DOID 	 name 
-DOID:4310	smooth muscle tumor

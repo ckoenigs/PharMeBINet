@@ -1,3 +1,0 @@
-MONDO:0007168	atelosteogenesis type III
-DOID 	 name 
-DOID:0050648	atelosteogenesis

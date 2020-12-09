@@ -1,3 +1,0 @@
-DOID:0060025	immunoglobulin alpha deficiency
-monDO ID 	 name 
-MONDO:0000048	immunoglobulin A deficiency

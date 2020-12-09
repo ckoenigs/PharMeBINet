@@ -1,3 +1,0 @@
-MONDO:0000996	prostate lymphoma
-DOID 	 name 
-DOID:10290	prostate lymphoma

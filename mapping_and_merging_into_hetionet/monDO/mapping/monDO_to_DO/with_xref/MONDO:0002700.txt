@@ -1,3 +1,0 @@
-MONDO:0003709	epithelioid trophoblastic tumor
-DOID 	 name 
-DOID:3593	epithelioid trophoblastic tumor

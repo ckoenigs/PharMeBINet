@@ -1,3 +1,0 @@
-MONDO:0005126	tuberculoid leprosy
-DOID 	 name 
-DOID:1025	tuberculoid leprosy

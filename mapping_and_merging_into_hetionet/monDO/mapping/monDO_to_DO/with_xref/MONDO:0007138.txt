@@ -1,3 +1,0 @@
-MONDO:0007138	anterior segment mesenchymal dysgenesis
-DOID 	 name 
-DOID:0060605	anterior segment mesenchymal dysgenesis

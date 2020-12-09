@@ -1,3 +1,0 @@
-DOID:171	neuroectodermal tumor
-monDO ID 	 name 
-MONDO:0002084	neuroectodermal tumor

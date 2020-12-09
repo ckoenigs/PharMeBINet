@@ -1,3 +1,0 @@
-MONDO:0014093	retinitis pigmentosa 66
-DOID 	 name 
-DOID:0110393	retinitis pigmentosa 66

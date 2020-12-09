@@ -1,3 +1,0 @@
-MONDO:0009624	microcephaly and chorioretinopathy 1
-DOID 	 name 
-DOID:0080105	microcephaly and chorioretinopathy 1

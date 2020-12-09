@@ -1,3 +1,0 @@
-MONDO:0003223	meninges hemangiopericytoma
-DOID 	 name 
-DOID:4957	meninges hemangiopericytoma

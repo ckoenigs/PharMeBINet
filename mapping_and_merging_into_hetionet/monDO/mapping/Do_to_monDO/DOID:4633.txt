@@ -1,3 +1,0 @@
-DOID:4633	nasal cavity inverting papilloma
-monDO ID 	 name 
-MONDO:0003065	nasal cavity inverting papilloma

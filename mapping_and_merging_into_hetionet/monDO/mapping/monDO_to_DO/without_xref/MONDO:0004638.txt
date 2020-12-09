@@ -1,3 +1,0 @@
-MONDO:0004638	lymphosarcoma
-DOID 	 name 
-DOID:8675	lymphosarcoma

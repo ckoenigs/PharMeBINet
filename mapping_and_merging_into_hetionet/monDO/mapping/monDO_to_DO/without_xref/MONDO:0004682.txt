@@ -1,3 +1,0 @@
-MONDO:0004682	retromolar area cancer
-DOID 	 name 
-DOID:8930	retromolar area cancer

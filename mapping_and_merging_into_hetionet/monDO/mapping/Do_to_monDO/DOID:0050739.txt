@@ -1,3 +1,0 @@
-DOID:0050739	autosomal genetic disease
-monDO ID 	 name 
-MONDO:0000429	autosomal genetic disease

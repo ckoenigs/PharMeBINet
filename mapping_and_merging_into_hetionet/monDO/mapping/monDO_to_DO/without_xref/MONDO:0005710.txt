@@ -1,3 +1,0 @@
-MONDO:0005710	composite lymphoma
-DOID 	 name 
-DOID:5820	composite lymphoma

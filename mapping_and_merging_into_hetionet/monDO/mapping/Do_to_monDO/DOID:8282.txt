@@ -1,3 +1,0 @@
-DOID:8282	adult epithelioid sarcoma
-monDO ID 	 name 
-MONDO:0004521	adult epithelioid sarcoma

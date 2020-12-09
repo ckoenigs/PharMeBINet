@@ -1,4 +1,0 @@
-MONDO:0009439	autosomal recessive congenital ichthyosis 2
-DOID 	 name 
-DOID:0060710	autosomal recessive congenital ichthyosis 2
-DOID:1699	congenital ichthyosiform erythroderma

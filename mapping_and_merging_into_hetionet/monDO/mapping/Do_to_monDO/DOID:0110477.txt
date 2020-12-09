@@ -1,3 +1,0 @@
-DOID:0110477	autosomal recessive nonsyndromic deafness 2
-monDO ID 	 name 
-MONDO:0010807	autosomal recessive nonsyndromic deafness 2

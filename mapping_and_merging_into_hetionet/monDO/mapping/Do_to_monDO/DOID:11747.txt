@@ -1,3 +1,0 @@
-DOID:11747	uterine adnexa cancer
-monDO ID 	 name 
-MONDO:0001351	uterine adnexa cancer

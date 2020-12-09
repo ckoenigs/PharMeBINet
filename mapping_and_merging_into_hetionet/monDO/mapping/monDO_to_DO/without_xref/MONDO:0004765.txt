@@ -1,3 +1,0 @@
-MONDO:0004765	intrinsic asthma
-DOID 	 name 
-DOID:9360	intrinsic asthma

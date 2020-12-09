@@ -1,3 +1,0 @@
-MONDO:0006648	anterior compartment syndrome
-DOID 	 name 
-DOID:3933	anterior compartment syndrome

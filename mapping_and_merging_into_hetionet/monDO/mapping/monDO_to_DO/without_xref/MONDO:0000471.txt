@@ -1,3 +1,0 @@
-MONDO:0000471	tricuspid valve disease
-DOID 	 name 
-DOID:0050826	tricuspid valve disease

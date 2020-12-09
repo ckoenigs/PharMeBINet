@@ -1,3 +1,0 @@
-DOID:2600	laryngeal carcinoma
-monDO ID 	 name 
-MONDO:0002358	laryngeal carcinoma

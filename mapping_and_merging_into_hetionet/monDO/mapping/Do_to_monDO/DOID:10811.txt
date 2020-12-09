@@ -1,3 +1,0 @@
-DOID:10811	nasal cavity cancer
-monDO ID 	 name 
-MONDO:0001128	nasal cavity cancer

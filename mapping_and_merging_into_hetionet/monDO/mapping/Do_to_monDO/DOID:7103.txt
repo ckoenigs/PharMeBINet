@@ -1,3 +1,0 @@
-DOID:7103	diaphragma sellae meningioma
-monDO ID 	 name 
-MONDO:0004108	diaphragma sellae meningioma

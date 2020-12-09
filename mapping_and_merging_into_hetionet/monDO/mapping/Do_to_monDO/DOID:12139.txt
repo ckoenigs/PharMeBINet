@@ -1,3 +1,0 @@
-DOID:12139	dysthymic disorder
-monDO ID 	 name 
-MONDO:0001442	dysthymic disorder

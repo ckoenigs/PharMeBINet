@@ -1,3 +1,0 @@
-DOID:5427	urinary bladder villous adenoma
-monDO ID 	 name 
-MONDO:0003439	urinary bladder villous adenoma

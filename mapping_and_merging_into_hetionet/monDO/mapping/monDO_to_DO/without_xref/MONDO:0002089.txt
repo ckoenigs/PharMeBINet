@@ -1,3 +1,0 @@
-MONDO:0002089	retinal vascular occlusion
-DOID 	 name 
-DOID:1729	retinal vascular occlusion

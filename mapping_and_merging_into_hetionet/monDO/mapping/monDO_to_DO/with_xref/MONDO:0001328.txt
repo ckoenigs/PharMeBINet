@@ -1,3 +1,0 @@
-MONDO:0001328	thyroid hormone resistance syndrome
-DOID 	 name 
-DOID:11633	thyroid hormone resistance syndrome

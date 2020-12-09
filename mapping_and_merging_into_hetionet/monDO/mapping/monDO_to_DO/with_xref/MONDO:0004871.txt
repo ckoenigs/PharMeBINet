@@ -1,3 +1,0 @@
-MONDO:0004871	perianal hematoma
-DOID 	 name 
-DOID:9745	perianal hematoma

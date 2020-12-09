@@ -1,3 +1,0 @@
-MONDO:0016068	fibrochondrogenesis
-DOID 	 name 
-DOID:0060465	fibrochondrogenesis

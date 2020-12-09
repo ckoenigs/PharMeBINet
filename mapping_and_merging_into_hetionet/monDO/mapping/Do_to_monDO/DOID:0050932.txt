@@ -1,3 +1,0 @@
-DOID:0050932	lung mucoepidermoid carcinoma
-monDO ID 	 name 
-MONDO:0005616	pulmonary mucoepidermoid carcinoma

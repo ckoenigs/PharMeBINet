@@ -1,3 +1,0 @@
-DOID:9742	pelvic varices
-monDO ID 	 name 
-MONDO:0004869	pelvic varices

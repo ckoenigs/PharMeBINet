@@ -1,3 +1,0 @@
-MONDO:0004927	dacryocystocele
-DOID 	 name 
-DOID:9939	dacryocystocele

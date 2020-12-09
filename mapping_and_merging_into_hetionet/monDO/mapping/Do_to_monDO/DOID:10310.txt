@@ -1,3 +1,0 @@
-DOID:10310	viral meningitis
-monDO ID 	 name 
-MONDO:0007015	viral meningitis

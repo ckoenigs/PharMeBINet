@@ -1,3 +1,0 @@
-DOID:11265	trachoma
-monDO ID 	 name 
-MONDO:0001249	trachoma

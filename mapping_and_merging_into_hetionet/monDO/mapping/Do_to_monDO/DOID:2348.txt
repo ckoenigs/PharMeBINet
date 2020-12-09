@@ -1,3 +1,0 @@
-DOID:2348	arteriosclerotic cardiovascular disease
-monDO ID 	 name 
-MONDO:0002276	arteriosclerotic cardiovascular disease

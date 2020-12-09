@@ -1,3 +1,0 @@
-MONDO:0006744	endolymphatic hydrops
-DOID 	 name 
-DOID:9848	endolymphatic hydrops

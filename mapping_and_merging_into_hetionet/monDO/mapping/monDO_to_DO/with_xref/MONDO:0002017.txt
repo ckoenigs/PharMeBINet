@@ -1,3 +1,0 @@
-MONDO:0002017	olivopontocerebellar atrophy
-DOID 	 name 
-DOID:14784	olivopontocerebellar atrophy

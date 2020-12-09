@@ -1,3 +1,0 @@
-MONDO:0003884	lipoma of the rectum
-DOID 	 name 
-DOID:6459	lipoma of the rectum

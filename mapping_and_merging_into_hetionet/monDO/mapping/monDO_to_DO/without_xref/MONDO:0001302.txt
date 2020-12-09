@@ -1,3 +1,0 @@
-MONDO:0001302	hypertensive heart disease
-DOID 	 name 
-DOID:11516	hypertensive heart disease

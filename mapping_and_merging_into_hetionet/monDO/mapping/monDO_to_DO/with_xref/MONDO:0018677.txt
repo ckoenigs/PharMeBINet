@@ -1,3 +1,0 @@
-MONDO:0018677	visceral heterotaxy
-DOID 	 name 
-DOID:0050545	visceral heterotaxy

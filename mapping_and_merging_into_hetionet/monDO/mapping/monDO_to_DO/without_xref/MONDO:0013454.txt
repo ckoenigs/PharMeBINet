@@ -1,3 +1,0 @@
-MONDO:0013454	Leber congenital amaurosis 11
-DOID 	 name 
-DOID:0110216	Leber congenital amaurosis 11

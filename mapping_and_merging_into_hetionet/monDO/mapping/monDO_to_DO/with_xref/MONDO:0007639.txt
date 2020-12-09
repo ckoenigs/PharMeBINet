@@ -1,3 +1,0 @@
-MONDO:0007639	fundus albipunctatus
-DOID 	 name 
-DOID:11105	fundus albipunctatus

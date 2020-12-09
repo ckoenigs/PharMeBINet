@@ -1,3 +1,0 @@
-MONDO:0012326	autosomal recessive nonsyndromic deafness 42
-DOID 	 name 
-DOID:0110500	autosomal recessive nonsyndromic deafness 42

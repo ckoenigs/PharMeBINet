@@ -1,3 +1,0 @@
-MONDO:0013559	Hermansky-Pudlak syndrome 7
-DOID 	 name 
-DOID:0060545	Hermansky-Pudlak syndrome 7

@@ -1,3 +1,0 @@
-MONDO:0009832	pancreatic agenesis
-DOID 	 name 
-DOID:0050877	pancreatic agenesis

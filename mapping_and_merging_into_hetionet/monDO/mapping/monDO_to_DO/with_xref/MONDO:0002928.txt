@@ -1,3 +1,0 @@
-MONDO:0002928	carcinosarcoma
-DOID 	 name 
-DOID:4236	carcinosarcoma

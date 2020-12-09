@@ -1,3 +1,0 @@
-DOID:5625	esophageal adenosquamous carcinoma
-monDO ID 	 name 
-MONDO:0003550	esophageal adenosquamous carcinoma

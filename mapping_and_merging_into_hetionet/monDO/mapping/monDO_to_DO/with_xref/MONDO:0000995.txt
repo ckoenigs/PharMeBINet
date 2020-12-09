@@ -1,3 +1,0 @@
-MONDO:0000995	familial periodic paralysis
-DOID 	 name 
-DOID:1029	familial periodic paralysis

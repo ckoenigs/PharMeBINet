@@ -1,3 +1,0 @@
-MONDO:0003163	cauda equina intradural extramedullary astrocytoma
-DOID 	 name 
-DOID:4846	cauda equina intradural extramedullary astrocytoma

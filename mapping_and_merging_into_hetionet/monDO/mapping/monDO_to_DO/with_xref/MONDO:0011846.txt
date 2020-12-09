@@ -1,3 +1,0 @@
-MONDO:0011846	bulimia nervosa, susceptibility to, 1
-DOID 	 name 
-DOID:12129	bulimia nervosa

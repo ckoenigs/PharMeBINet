@@ -1,3 +1,0 @@
-DOID:14026	folic acid deficiency anemia
-monDO ID 	 name 
-MONDO:0001860	folic acid deficiency anemia

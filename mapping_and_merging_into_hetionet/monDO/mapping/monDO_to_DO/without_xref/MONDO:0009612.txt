@@ -1,3 +1,0 @@
-MONDO:0009612	methylmalonic aciduria due to methylmalonyl-CoA mutase deficiency
-DOID 	 name 
-DOID:0060740	methylmalonic aciduria due to methylmalonyl-CoA mutase deficiency

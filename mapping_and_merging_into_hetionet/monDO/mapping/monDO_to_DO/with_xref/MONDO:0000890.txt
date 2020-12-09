@@ -1,3 +1,0 @@
-MONDO:0000890	Zika virus congenital syndrome
-DOID 	 name 
-DOID:0080180	Zika virus congenital syndrome

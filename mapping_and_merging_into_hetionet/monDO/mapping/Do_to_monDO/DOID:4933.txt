@@ -1,3 +1,0 @@
-DOID:4933	apocrine adenocarcinoma
-monDO ID 	 name 
-MONDO:0003214	apocrine adenocarcinoma

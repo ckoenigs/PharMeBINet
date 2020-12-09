@@ -1,3 +1,0 @@
-MONDO:0013704	MRT30
-DOID 	 name 
-DOID:0060308	autosomal recessive non-syndromic intellectual disability

@@ -1,3 +1,0 @@
-DOID:8275	intratubular embryonal carcinoma
-monDO ID 	 name 
-MONDO:0004520	intratubular embryonal carcinoma

@@ -1,3 +1,0 @@
-DOID:13310	diphtheritic peritonitis
-monDO ID 	 name 
-MONDO:0001682	diphtheritic peritonitis

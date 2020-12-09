@@ -1,3 +1,0 @@
-MONDO:0002736	ampulla of vater mucinous adenocarcinoma
-DOID 	 name 
-DOID:3693	ampulla of Vater mucinous adenocarcinoma

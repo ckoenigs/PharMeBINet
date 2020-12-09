@@ -1,3 +1,0 @@
-MONDO:0001109	petrositis
-DOID 	 name 
-DOID:10755	petrositis

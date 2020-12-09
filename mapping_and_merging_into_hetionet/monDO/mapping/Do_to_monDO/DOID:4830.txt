@@ -1,3 +1,0 @@
-DOID:4830	adenosquamous carcinoma
-monDO ID 	 name 
-MONDO:0006074	adenosquamous carcinoma

@@ -1,3 +1,0 @@
-DOID:6458	cerebellar liponeurocytoma
-monDO ID 	 name 
-MONDO:0006131	cerebellar liponeurocytoma

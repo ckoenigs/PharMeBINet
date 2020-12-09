@@ -1,3 +1,0 @@
-MONDO:0002930	kidney sarcoma
-DOID 	 name 
-DOID:4242	kidney sarcoma

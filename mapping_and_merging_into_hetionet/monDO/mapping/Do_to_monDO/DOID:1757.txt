@@ -1,3 +1,0 @@
-DOID:1757	facial hemiatrophy
-monDO ID 	 name 
-MONDO:0007710	facial hemiatrophy

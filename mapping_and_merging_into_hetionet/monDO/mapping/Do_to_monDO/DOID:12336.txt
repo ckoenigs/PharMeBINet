@@ -1,3 +1,0 @@
-DOID:12336	male infertility
-monDO ID 	 name 
-MONDO:0005372	male infertility

@@ -1,3 +1,0 @@
-MONDO:0005784	hantavirus hemorrhagic fever with renal syndrome
-DOID 	 name 
-DOID:11266	hemorrhagic fever with renal syndrome

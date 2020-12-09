@@ -1,3 +1,0 @@
-MONDO:0001974	hemangioma of orbit
-DOID 	 name 
-DOID:14459	hemangioma of orbit

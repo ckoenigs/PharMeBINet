@@ -1,3 +1,0 @@
-MONDO:0017570	leukocyte adhesion deficiency
-DOID 	 name 
-DOID:6612	leukocyte adhesion deficiency

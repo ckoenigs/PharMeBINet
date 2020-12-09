@@ -1,3 +1,0 @@
-MONDO:0005977	tabes dorsalis
-DOID 	 name 
-DOID:10027	tabes dorsalis

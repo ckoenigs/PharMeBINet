@@ -1,3 +1,0 @@
-MONDO:0001385	cortical blindness
-DOID 	 name 
-DOID:11831	cortical blindness

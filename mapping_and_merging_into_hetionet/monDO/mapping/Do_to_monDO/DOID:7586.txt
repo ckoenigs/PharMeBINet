@@ -1,3 +1,0 @@
-DOID:7586	supraglottis verrucous carcinoma
-monDO ID 	 name 
-MONDO:0004292	supraglottis verrucous carcinoma

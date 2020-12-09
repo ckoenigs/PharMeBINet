@@ -1,3 +1,0 @@
-DOID:0060844	Norrie disease
-monDO ID 	 name 
-MONDO:0010691	Norrie disease

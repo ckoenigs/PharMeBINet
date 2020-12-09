@@ -1,3 +1,0 @@
-MONDO:0005283	retinopathy
-DOID 	 name 
-DOID:5679	retinal disease

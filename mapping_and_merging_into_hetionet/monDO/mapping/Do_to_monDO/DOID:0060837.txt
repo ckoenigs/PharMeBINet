@@ -1,3 +1,0 @@
-DOID:0060837	isolated microphthalmia 5
-monDO ID 	 name 
-MONDO:0012605	isolated microphthalmia 5

@@ -1,3 +1,0 @@
-MONDO:0002703	appendix mucinous cystadenocarcinoma
-DOID 	 name 
-DOID:3607	appendix mucinous cystadenocarcinoma

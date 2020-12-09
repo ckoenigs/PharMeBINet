@@ -1,3 +1,0 @@
-MONDO:0004612	malignant histiocytosis
-DOID 	 name 
-DOID:8580	malignant histiocytosis

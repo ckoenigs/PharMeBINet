@@ -1,3 +1,0 @@
-MONDO:0011147	chromosome 18q deletion syndrome
-DOID 	 name 
-DOID:0060407	chromosome 18q deletion syndrome

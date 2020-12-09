@@ -1,3 +1,0 @@
-DOID:530	eyelid disease
-monDO ID 	 name 
-MONDO:0003382	eyelid disease

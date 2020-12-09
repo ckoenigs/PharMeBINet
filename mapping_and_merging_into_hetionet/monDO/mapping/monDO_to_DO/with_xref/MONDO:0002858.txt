@@ -1,3 +1,0 @@
-MONDO:0002858	ovary rhabdomyosarcoma
-DOID 	 name 
-DOID:4059	ovary rhabdomyosarcoma

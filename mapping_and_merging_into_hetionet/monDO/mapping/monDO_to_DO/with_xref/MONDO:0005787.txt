@@ -1,3 +1,0 @@
-MONDO:0005787	hepatic tuberculosis
-DOID 	 name 
-DOID:407	hepatic tuberculosis

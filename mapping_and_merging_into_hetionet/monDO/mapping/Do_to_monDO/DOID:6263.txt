@@ -1,3 +1,0 @@
-DOID:6263	inflammatory breast carcinoma
-monDO ID 	 name 
-MONDO:0006804	inflammatory breast carcinoma

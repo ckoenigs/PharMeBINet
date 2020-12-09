@@ -1,3 +1,0 @@
-DOID:8719	in situ carcinoma
-monDO ID 	 name 
-MONDO:0004647	in situ carcinoma

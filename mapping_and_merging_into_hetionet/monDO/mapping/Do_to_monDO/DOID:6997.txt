@@ -1,3 +1,0 @@
-DOID:6997	intermediate cell type ciliary body melanoma
-monDO ID 	 name 
-MONDO:0004066	intermediate cell type ciliary body melanoma

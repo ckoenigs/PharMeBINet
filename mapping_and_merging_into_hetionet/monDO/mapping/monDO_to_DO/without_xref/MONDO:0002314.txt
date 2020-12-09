@@ -1,3 +1,0 @@
-MONDO:0002314	chronic conjunctivitis
-DOID 	 name 
-DOID:2475	chronic conjunctivitis

@@ -1,3 +1,0 @@
-DOID:12237	bile reflux
-monDO ID 	 name 
-MONDO:0006677	bile reflux

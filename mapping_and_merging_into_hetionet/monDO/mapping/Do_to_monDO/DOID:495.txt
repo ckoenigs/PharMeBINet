@@ -1,3 +1,0 @@
-DOID:495	sclerosing hemangioma
-monDO ID 	 name 
-MONDO:0003221	sclerosing hemangioma

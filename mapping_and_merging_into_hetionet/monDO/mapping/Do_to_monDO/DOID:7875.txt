@@ -1,3 +1,0 @@
-DOID:7875	adult xanthogranuloma
-monDO ID 	 name 
-MONDO:0004385	adult xanthogranuloma

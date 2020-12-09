@@ -1,3 +1,0 @@
-MONDO:0004045	pediatric intraocular retinoblastoma
-DOID 	 name 
-DOID:6938	pediatric intraocular retinoblastoma

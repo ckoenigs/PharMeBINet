@@ -1,3 +1,0 @@
-MONDO:0002548	cellular schwannoma
-DOID 	 name 
-DOID:3196	cellular schwannoma

@@ -1,3 +1,0 @@
-MONDO:0000373	gall bladder carcinoma in situ
-DOID 	 name 
-DOID:0050612	gall bladder carcinoma in situ

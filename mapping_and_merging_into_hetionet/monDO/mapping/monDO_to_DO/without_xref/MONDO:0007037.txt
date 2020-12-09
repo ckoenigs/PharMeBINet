@@ -1,3 +1,0 @@
-MONDO:0007037	achondroplasia
-DOID 	 name 
-DOID:4480	achondroplasia

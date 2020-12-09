@@ -1,4 +1,0 @@
-MONDO:0007435	dentatorubral-pallidoluysian atrophy
-DOID 	 name 
-DOID:891	progressive myoclonus epilepsy
-DOID:0060162	dentatorubral-pallidoluysian atrophy

@@ -1,3 +1,0 @@
-DOID:3703	prostate colloid adenocarcinoma
-monDO ID 	 name 
-MONDO:0002743	prostate colloid adenocarcinoma

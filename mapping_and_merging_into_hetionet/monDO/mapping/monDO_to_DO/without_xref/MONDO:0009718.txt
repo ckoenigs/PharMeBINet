@@ -1,3 +1,0 @@
-MONDO:0009718	myxedema
-DOID 	 name 
-DOID:11634	myxedema

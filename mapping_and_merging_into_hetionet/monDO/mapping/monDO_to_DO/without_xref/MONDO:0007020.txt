@@ -1,3 +1,0 @@
-MONDO:0007020	Wernicke encephalopathy
-DOID 	 name 
-DOID:2384	Wernicke encephalopathy

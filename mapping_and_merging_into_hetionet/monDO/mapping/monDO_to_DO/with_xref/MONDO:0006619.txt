@@ -1,3 +1,0 @@
-MONDO:0006619	viral exanthem
-DOID 	 name 
-DOID:8672	viral exanthem

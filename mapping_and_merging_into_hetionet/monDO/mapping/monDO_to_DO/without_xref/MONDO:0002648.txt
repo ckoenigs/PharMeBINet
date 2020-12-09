@@ -1,3 +1,0 @@
-MONDO:0002648	mammary Paget's disease
-DOID 	 name 
-DOID:3443	mammary Paget's disease

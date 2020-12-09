@@ -1,3 +1,0 @@
-DOID:5373	retroperitoneal hemangiopericytoma
-monDO ID 	 name 
-MONDO:0003412	retroperitoneal hemangiopericytoma

@@ -1,3 +1,0 @@
-MONDO:0016567	Locked-in syndrome
-DOID 	 name 
-DOID:12697	locked-in syndrome

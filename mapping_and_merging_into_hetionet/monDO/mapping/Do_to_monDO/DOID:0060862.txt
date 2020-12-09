@@ -1,3 +1,0 @@
-DOID:0060862	mal de Meleda
-monDO ID 	 name 
-MONDO:0009552	mal de Meleda

@@ -1,3 +1,0 @@
-MONDO:0004584	maple bark strippers' lung
-DOID 	 name 
-DOID:8484	maple bark strippers' lung

@@ -1,3 +1,0 @@
-MONDO:0009591	metachromatic leukodystrophy, juvenile form
-DOID 	 name 
-DOID:10581	metachromatic leukodystrophy

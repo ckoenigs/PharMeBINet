@@ -1,3 +1,0 @@
-MONDO:0004016	pineal region mature teratoma
-DOID 	 name 
-DOID:6857	pineal region mature teratoma

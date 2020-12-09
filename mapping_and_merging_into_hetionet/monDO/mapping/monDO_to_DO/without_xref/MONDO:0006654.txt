@@ -1,3 +1,0 @@
-MONDO:0006654	anthracosis
-DOID 	 name 
-DOID:10327	anthracosis

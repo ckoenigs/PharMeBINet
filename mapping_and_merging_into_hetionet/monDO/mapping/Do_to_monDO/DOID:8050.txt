@@ -1,3 +1,0 @@
-DOID:8050	bladder tubulo-cystic clear cell adenocarcinoma
-monDO ID 	 name 
-MONDO:0004444	bladder tubulo-cystic clear cell adenocarcinoma

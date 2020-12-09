@@ -1,3 +1,0 @@
-MONDO:0009949	pyruvate carboxylase deficiency disease
-DOID 	 name 
-DOID:3651	pyruvate carboxylase deficiency disease

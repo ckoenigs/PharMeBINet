@@ -1,3 +1,0 @@
-DOID:5411	lung oat cell carcinoma
-monDO ID 	 name 
-MONDO:0003436	lung oat cell carcinoma

@@ -1,3 +1,0 @@
-MONDO:0003455	bile duct papillary neoplasm
-DOID 	 name 
-DOID:5468	biliary papillomatosis

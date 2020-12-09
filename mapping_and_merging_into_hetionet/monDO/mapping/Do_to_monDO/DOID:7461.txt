@@ -1,3 +1,0 @@
-DOID:7461	large cell keratinizing variant squamous cell breast carcinoma
-monDO ID 	 name 
-MONDO:0004232	large cell keratinizing variant squamous cell breast carcinoma

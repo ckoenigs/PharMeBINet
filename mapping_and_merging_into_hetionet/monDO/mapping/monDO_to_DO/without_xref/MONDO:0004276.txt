@@ -1,3 +1,0 @@
-MONDO:0004276	ceruminoma
-DOID 	 name 
-DOID:7549	ceruminoma

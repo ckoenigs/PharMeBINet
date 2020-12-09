@@ -1,3 +1,0 @@
-DOID:0080027	spondyloepimetaphyseal dysplasia
-monDO ID 	 name 
-MONDO:0000844	spondyloepimetaphyseal dysplasia

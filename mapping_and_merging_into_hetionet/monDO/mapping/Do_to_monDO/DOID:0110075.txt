@@ -1,3 +1,0 @@
-DOID:0110075	arrhythmogenic right ventricular dysplasia 6
-monDO ID 	 name 
-MONDO:0011460	arrhythmogenic right ventricular dysplasia 6

@@ -1,3 +1,0 @@
-MONDO:0000637	musculoskeletal system cancer
-DOID 	 name 
-DOID:0060100	musculoskeletal system cancer

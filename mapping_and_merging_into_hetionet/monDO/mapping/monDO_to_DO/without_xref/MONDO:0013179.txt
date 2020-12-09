@@ -1,3 +1,0 @@
-MONDO:0013179	hereditary spastic paraplegia 44
-DOID 	 name 
-DOID:0110796	hereditary spastic paraplegia 44

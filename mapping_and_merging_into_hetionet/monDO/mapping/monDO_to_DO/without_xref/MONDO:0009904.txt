@@ -1,3 +1,0 @@
-MONDO:0009904	Gitelman syndrome
-DOID 	 name 
-DOID:0050450	Gitelman syndrome

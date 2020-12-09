@@ -1,3 +1,0 @@
-MONDO:0001298	mitral valve insufficiency
-DOID 	 name 
-DOID:11502	mitral valve insufficiency

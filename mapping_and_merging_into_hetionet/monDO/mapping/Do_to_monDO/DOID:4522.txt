@@ -1,3 +1,0 @@
-DOID:4522	superior vena cava angiosarcoma
-monDO ID 	 name 
-MONDO:0003032	superior vena cava angiosarcoma

@@ -1,3 +1,0 @@
-MONDO:0002437	dehydration polycythemia
-DOID 	 name 
-DOID:2833	dehydration polycythemia

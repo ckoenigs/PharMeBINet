@@ -1,3 +1,0 @@
-MONDO:0005722	croup
-DOID 	 name 
-DOID:9395	croup

@@ -1,3 +1,0 @@
-MONDO:0001621	tick-borne relapsing fever
-DOID 	 name 
-DOID:13036	tick-borne relapsing fever

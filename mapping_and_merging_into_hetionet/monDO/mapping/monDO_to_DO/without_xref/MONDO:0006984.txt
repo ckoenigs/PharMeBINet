@@ -1,3 +1,0 @@
-MONDO:0006984	subdural empyema
-DOID 	 name 
-DOID:11389	subdural empyema

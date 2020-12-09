@@ -1,3 +1,0 @@
-MONDO:0002833	fallopian tube transitional cell carcinoma
-DOID 	 name 
-DOID:4008	fallopian tube transitional cell carcinoma

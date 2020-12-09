@@ -1,3 +1,0 @@
-MONDO:0004115	gallbladder small cell carcinoma
-DOID 	 name 
-DOID:7133	gallbladder small cell carcinoma

@@ -1,3 +1,0 @@
-MONDO:0002615	xanthomatosis (disease)
-DOID 	 name 
-DOID:3345	xanthomatosis

@@ -1,3 +1,0 @@
-MONDO:0004397	benign mediastinal psammomatous neurilemmoma
-DOID 	 name 
-DOID:7921	benign mediastinal psammomatous neurilemmoma

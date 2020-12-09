@@ -1,3 +1,0 @@
-MONDO:0009431	hereditary hypophosphatemic rickets with hypercalciuria
-DOID 	 name 
-DOID:0050947	hereditary hypophosphatemic rickets with hypercalciuria

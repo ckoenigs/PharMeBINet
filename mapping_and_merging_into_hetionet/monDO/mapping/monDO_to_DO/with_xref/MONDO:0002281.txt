@@ -1,3 +1,0 @@
-MONDO:0002281	macrocytic anemia (disease)
-DOID 	 name 
-DOID:2361	macrocytic anemia

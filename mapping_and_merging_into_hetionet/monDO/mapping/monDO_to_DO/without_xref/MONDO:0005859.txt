@@ -1,3 +1,0 @@
-MONDO:0005859	mucocutaneous leishmaniasis
-DOID 	 name 
-DOID:9155	mucocutaneous leishmaniasis

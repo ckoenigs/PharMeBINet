@@ -1,3 +1,0 @@
-DOID:4687	mucoepidermoid thyroid carcinoma
-monDO ID 	 name 
-MONDO:0006463	thyroid gland mucoepidermoid carcinoma

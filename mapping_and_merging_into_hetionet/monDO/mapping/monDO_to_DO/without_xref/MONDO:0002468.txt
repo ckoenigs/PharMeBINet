@@ -1,3 +1,0 @@
-MONDO:0002468	hyperimmunoglobulin syndrome
-DOID 	 name 
-DOID:2959	hyperimmunoglobulin syndrome

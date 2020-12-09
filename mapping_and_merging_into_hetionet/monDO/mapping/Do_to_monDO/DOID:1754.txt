@@ -1,3 +1,0 @@
-DOID:1754	mitral valve stenosis
-monDO ID 	 name 
-MONDO:0005852	mitral valve stenosis

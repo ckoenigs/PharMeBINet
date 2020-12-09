@@ -1,3 +1,0 @@
-DOID:0110498	autosomal recessive nonsyndromic deafness 4
-monDO ID 	 name 
-MONDO:0010933	autosomal recessive nonsyndromic deafness 4

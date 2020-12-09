@@ -1,3 +1,0 @@
-DOID:5921	adult brainstem mixed glioma
-monDO ID 	 name 
-MONDO:0003705	adult brainstem mixed glioma

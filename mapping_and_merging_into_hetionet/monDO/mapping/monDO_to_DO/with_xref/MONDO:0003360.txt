@@ -1,3 +1,0 @@
-MONDO:0003360	small intestine leiomyosarcoma
-DOID 	 name 
-DOID:5271	small intestine leiomyosarcoma

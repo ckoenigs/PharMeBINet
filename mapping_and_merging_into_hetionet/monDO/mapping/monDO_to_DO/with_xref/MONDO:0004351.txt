@@ -1,3 +1,0 @@
-MONDO:0004351	intraocular lymphoma
-DOID 	 name 
-DOID:775	intraocular lymphoma

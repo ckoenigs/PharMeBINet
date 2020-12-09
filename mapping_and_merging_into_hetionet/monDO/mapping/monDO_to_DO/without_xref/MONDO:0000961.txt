@@ -1,3 +1,0 @@
-MONDO:0000961	endobronchial lipoma
-DOID 	 name 
-DOID:10183	endobronchial lipoma

@@ -1,3 +1,0 @@
-MONDO:0000224	acquired carbohydrate metabolism disease
-DOID 	 name 
-DOID:0050013	carbohydrate metabolism disease

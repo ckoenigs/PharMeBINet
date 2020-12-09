@@ -1,3 +1,0 @@
-MONDO:0004324	testicular fibroma
-DOID 	 name 
-DOID:7675	testicular fibroma

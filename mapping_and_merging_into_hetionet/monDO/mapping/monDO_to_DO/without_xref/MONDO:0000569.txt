@@ -1,3 +1,0 @@
-MONDO:0000569	autoimmune disease of endocrine system
-DOID 	 name 
-DOID:0060005	autoimmune disease of endocrine system

@@ -1,3 +1,0 @@
-MONDO:0001079	pancreatic steatorrhea
-DOID 	 name 
-DOID:10610	pancreatic steatorrhea

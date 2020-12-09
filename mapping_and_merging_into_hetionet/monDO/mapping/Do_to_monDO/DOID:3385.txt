@@ -1,3 +1,0 @@
-DOID:3385	bacterial vaginosis
-monDO ID 	 name 
-MONDO:0005316	bacterial vaginosis

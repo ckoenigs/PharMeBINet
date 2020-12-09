@@ -1,3 +1,0 @@
-DOID:7824	spinal multifocal clear cell meningioma
-monDO ID 	 name 
-MONDO:0004371	spinal multifocal clear cell meningioma

@@ -1,3 +1,0 @@
-DOID:0060151	tactile agnosia
-monDO ID 	 name 
-MONDO:0000681	tactile agnosia

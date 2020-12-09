@@ -1,3 +1,0 @@
-MONDO:0004328	maxillary sinus adenocarcinoma
-DOID 	 name 
-DOID:7684	maxillary sinus adenocarcinoma

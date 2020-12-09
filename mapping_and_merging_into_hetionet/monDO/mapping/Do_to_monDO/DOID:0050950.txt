@@ -1,3 +1,0 @@
-DOID:0050950	autosomal recessive cerebellar ataxia
-monDO ID 	 name 
-MONDO:0015244	autosomal recessive cerebellar ataxia

@@ -1,3 +1,0 @@
-DOID:14261	fragile X syndrome
-monDO ID 	 name 
-MONDO:0010383	fragile X syndrome

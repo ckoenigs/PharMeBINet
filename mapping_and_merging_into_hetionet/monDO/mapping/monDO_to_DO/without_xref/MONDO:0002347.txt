@@ -1,3 +1,0 @@
-MONDO:0002347	barbiturate dependence
-DOID 	 name 
-DOID:2575	barbiturate dependence

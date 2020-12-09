@@ -1,3 +1,0 @@
-MONDO:0010272	syndromic X-linked intellectual disability type 10
-DOID 	 name 
-DOID:0060810	syndromic X-linked intellectual disability type 10

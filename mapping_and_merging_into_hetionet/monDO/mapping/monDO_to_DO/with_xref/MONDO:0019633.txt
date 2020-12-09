@@ -1,3 +1,0 @@
-MONDO:0019633	relapsing fever
-DOID 	 name 
-DOID:13034	relapsing fever

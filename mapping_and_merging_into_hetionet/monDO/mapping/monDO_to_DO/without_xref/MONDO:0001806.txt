@@ -1,3 +1,0 @@
-MONDO:0001806	vaginal squamous tumor
-DOID 	 name 
-DOID:138	vaginal squamous tumor

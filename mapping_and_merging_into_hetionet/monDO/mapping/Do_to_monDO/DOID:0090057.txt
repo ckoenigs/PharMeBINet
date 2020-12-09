@@ -1,3 +1,0 @@
-DOID:0090057	X-linked dystonia-parkinsonism
-monDO ID 	 name 
-MONDO:0010747	X-linked dystonia-parkinsonism

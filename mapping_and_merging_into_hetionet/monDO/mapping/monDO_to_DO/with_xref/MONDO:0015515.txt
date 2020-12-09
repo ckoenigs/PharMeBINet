@@ -1,3 +1,0 @@
-MONDO:0015515	carnitine palmitoyltransferase II deficiency
-DOID 	 name 
-DOID:0060235	carnitine palmitoyltransferase II deficiency

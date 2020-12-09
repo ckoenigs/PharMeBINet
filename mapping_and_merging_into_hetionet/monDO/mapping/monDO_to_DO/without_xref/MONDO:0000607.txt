@@ -1,3 +1,0 @@
-MONDO:0000607	cutaneous T cell lymphoma
-DOID 	 name 
-DOID:0060061	cutaneous T cell lymphoma

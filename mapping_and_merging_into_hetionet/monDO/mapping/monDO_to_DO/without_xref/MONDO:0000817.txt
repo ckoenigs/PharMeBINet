@@ -1,3 +1,0 @@
-MONDO:0000817	corneal opacification and other ocular anomalies
-DOID 	 name 
-DOID:0060648	corneal opacification and other ocular anomalies

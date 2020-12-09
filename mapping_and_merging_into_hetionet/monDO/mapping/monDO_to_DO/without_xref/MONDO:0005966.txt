@@ -1,3 +1,0 @@
-MONDO:0005966	spleen cancer
-DOID 	 name 
-DOID:672	spleen cancer

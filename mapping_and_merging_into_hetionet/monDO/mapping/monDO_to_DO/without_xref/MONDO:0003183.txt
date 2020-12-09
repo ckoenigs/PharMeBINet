@@ -1,3 +1,0 @@
-MONDO:0003709	trachea adenoid cystic carcinoma
-DOID 	 name 
-DOID:4875	trachea adenoid cystic carcinoma

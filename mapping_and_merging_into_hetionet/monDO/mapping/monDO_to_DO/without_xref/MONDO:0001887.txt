@@ -1,3 +1,0 @@
-MONDO:0001887	Masters-Allen syndrome
-DOID 	 name 
-DOID:14133	Masters-Allen syndrome

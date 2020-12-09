@@ -1,3 +1,0 @@
-MONDO:0000680	astereognosia (disease)
-DOID 	 name 
-DOID:0060150	astereognosia

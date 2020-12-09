@@ -1,3 +1,0 @@
-DOID:0050289	fusariosis
-monDO ID 	 name 
-MONDO:0016426	fusariosis

@@ -1,3 +1,0 @@
-MONDO:0013815	FGFR2-related bent bone dysplasia
-DOID 	 name 
-DOID:10591	pre-eclampsia

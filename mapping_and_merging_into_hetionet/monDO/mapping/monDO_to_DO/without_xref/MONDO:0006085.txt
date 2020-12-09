@@ -1,3 +1,0 @@
-MONDO:0006085	angiolipoma
-DOID 	 name 
-DOID:3616	angiolipoma

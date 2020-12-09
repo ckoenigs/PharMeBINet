@@ -1,3 +1,0 @@
-DOID:1587	thrombocytopenia due to platelet alloimmunization
-monDO ID 	 name 
-MONDO:0002048	thrombocytopenia due to immune destruction

@@ -1,3 +1,0 @@
-MONDO:0019307	junctional epidermolysis bullosa non-Herlitz type
-DOID 	 name 
-DOID:0060738	junctional epidermolysis bullosa non-Herlitz type

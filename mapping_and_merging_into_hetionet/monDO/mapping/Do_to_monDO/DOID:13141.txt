@@ -1,3 +1,0 @@
-DOID:13141	uveitis
-monDO ID 	 name 
-MONDO:0020283	uveitis (disease)

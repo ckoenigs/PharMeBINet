@@ -1,3 +1,0 @@
-DOID:0110398	retinitis pigmentosa 51
-monDO ID 	 name 
-MONDO:0013274	retinitis pigmentosa 51

@@ -1,3 +1,0 @@
-MONDO:0010310	osteopathia striata with cranial sclerosis
-DOID 	 name 
-DOID:0060886	osteopathia striata with cranial sclerosis

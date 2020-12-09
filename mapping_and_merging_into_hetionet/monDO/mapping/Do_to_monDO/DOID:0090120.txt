@@ -1,3 +1,0 @@
-DOID:0090120	hereditary neutrophilia
-monDO ID 	 name 
-MONDO:0008092	hereditary neutrophilia

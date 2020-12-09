@@ -1,3 +1,0 @@
-DOID:8400	malignant cornea melanoma
-monDO ID 	 name 
-MONDO:0004550	malignant cornea melanoma

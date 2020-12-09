@@ -1,3 +1,0 @@
-MONDO:0002727	olfactory nerve disease
-DOID 	 name 
-DOID:367	olfactory nerve disease

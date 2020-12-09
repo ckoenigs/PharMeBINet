@@ -1,3 +1,0 @@
-MONDO:0006528	bacterial exanthem
-DOID 	 name 
-DOID:0050487	bacterial exanthem

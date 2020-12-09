@@ -1,3 +1,0 @@
-MONDO:0012819	diabetic ketoacidosis
-DOID 	 name 
-DOID:1837	diabetic ketoacidosis

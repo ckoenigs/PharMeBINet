@@ -1,3 +1,0 @@
-MONDO:0016532	Lennox-Gastaut syndrome
-DOID 	 name 
-DOID:0050561	Lennox-Gastaut syndrome

@@ -1,3 +1,0 @@
-MONDO:0004410	sarcomatoid penile squamous cell carcinoma
-DOID 	 name 
-DOID:7958	sarcomatoid penile squamous cell carcinoma

@@ -1,3 +1,0 @@
-MONDO:0001684	exocrine pancreatic insufficiency
-DOID 	 name 
-DOID:13316	exocrine pancreatic insufficiency

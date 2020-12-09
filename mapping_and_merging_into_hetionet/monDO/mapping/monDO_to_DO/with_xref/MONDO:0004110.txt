@@ -1,3 +1,0 @@
-MONDO:0004110	refractory hairy cell leukemia
-DOID 	 name 
-DOID:711	refractory hairy cell leukemia

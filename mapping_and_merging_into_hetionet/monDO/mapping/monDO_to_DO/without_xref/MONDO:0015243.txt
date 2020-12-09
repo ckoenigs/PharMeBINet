@@ -1,3 +1,0 @@
-MONDO:0015243	allergic bronchopulmonary aspergillosis
-DOID 	 name 
-DOID:13166	allergic bronchopulmonary aspergillosis

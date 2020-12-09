@@ -1,5 +1,0 @@
-MONDO:0001281	alternating exotropia
-DOID 	 name 
-DOID:1143	exotropia
-DOID:11853	monocular exotropia
-DOID:1142	alternating exotropia

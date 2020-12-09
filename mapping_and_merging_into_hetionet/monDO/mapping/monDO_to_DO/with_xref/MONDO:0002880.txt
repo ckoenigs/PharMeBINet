@@ -1,3 +1,0 @@
-MONDO:0002880	ovarian mesodermal adenosarcoma
-DOID 	 name 
-DOID:4115	ovarian mesodermal adenosarcoma

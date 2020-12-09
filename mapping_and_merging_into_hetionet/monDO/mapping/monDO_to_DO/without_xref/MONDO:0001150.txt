@@ -1,3 +1,0 @@
-MONDO:0001150	hydrocephalus
-DOID 	 name 
-DOID:10908	hydrocephalus

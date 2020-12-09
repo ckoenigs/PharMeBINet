@@ -1,3 +1,0 @@
-MONDO:0007925	chromosome 5q deletion syndrome
-DOID 	 name 
-DOID:0090016	chromosome 5q deletion syndrome

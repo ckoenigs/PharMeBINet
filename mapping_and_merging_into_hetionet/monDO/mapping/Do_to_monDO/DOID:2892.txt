@@ -1,3 +1,0 @@
-DOID:2892	exocervical carcinoma
-monDO ID 	 name 
-MONDO:0002455	exocervical carcinoma

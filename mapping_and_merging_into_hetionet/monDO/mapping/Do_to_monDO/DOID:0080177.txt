@@ -1,3 +1,0 @@
-DOID:0080177	hepatic veno-occlusive disease
-monDO ID 	 name 
-MONDO:0019514	hepatic veno-occlusive disease

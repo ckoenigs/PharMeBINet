@@ -1,5 +1,0 @@
-MONDO:0012048	endogenous depression
-DOID 	 name 
-DOID:4964	neurotic disorder
-DOID:1595	endogenous depression
-DOID:2848	melancholia

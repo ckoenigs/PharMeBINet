@@ -1,3 +1,0 @@
-MONDO:0000462	eye adnexa disease
-DOID 	 name 
-DOID:0050815	eye adnexa disease

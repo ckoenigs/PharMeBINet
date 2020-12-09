@@ -1,3 +1,0 @@
-DOID:5134	anus leiomyoma
-monDO ID 	 name 
-MONDO:0003292	anus leiomyoma

@@ -1,3 +1,0 @@
-MONDO:0005271	allergic disease
-DOID 	 name 
-DOID:1205	allergic hypersensitivity disease

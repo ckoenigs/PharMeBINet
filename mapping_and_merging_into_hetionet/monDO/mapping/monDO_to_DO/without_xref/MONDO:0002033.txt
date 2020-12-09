@@ -1,3 +1,0 @@
-MONDO:0002033	cecum cancer
-DOID 	 name 
-DOID:1521	cecum cancer

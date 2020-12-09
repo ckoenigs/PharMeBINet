@@ -1,3 +1,0 @@
-MONDO:0013183	congenital stationary night blindness 1C
-DOID 	 name 
-DOID:0110867	congenital stationary night blindness 1C

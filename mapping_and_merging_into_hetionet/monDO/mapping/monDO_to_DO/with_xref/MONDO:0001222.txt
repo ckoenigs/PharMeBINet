@@ -1,3 +1,0 @@
-MONDO:0001222	congenital T-cell immunodeficiency
-DOID 	 name 
-DOID:11200	T cell deficiency

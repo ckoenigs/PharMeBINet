@@ -1,3 +1,0 @@
-MONDO:0020076	myeloproliferative neoplasm
-DOID 	 name 
-DOID:2226	myeloproliferative neoplasm

@@ -1,3 +1,0 @@
-MONDO:0001046	imperforate anus
-DOID 	 name 
-DOID:10488	imperforate anus

@@ -1,3 +1,0 @@
-DOID:660	adrenal cortex cancer
-monDO ID 	 name 
-MONDO:0006639	adrenal cortex carcinoma

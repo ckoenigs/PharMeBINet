@@ -1,3 +1,0 @@
-DOID:8602	gum cancer
-monDO ID 	 name 
-MONDO:0005507	gingival cancer

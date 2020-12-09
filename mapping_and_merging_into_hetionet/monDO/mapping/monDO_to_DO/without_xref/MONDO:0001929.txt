@@ -1,3 +1,0 @@
-MONDO:0001929	ascending cholangitis
-DOID 	 name 
-DOID:14270	ascending cholangitis

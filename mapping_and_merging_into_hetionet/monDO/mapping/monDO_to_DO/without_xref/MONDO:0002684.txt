@@ -1,3 +1,0 @@
-MONDO:0002684	atypical choroid plexus papilloma
-DOID 	 name 
-DOID:3544	atypical choroid plexus papilloma

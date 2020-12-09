@@ -1,3 +1,0 @@
-MONDO:0003709	grade III astrocytoma
-DOID 	 name 
-DOID:3078	grade III astrocytoma

@@ -1,3 +1,0 @@
-MONDO:0001678	intestinal tuberculosis
-DOID 	 name 
-DOID:13282	intestinal tuberculosis

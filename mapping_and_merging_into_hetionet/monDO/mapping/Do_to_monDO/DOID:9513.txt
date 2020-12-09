@@ -1,3 +1,0 @@
-DOID:9513	plasmacytic leukemia
-monDO ID 	 name 
-MONDO:0018689	plasma cell leukemia

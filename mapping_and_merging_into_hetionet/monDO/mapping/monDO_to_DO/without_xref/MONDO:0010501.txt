@@ -1,3 +1,0 @@
-MONDO:0010501	syndromic X-linked intellectual disability 34
-DOID 	 name 
-DOID:0060817	syndromic X-linked intellectual disability 34

@@ -1,3 +1,0 @@
-MONDO:0006656	aortitis
-DOID 	 name 
-DOID:519	aortitis

@@ -1,3 +1,0 @@
-MONDO:0012590	XFE progeroid syndrome
-DOID 	 name 
-DOID:0060590	XFE progeroid syndrome

@@ -1,3 +1,0 @@
-MONDO:0004854	ophthalmia neonatorum
-DOID 	 name 
-DOID:9699	ophthalmia neonatorum

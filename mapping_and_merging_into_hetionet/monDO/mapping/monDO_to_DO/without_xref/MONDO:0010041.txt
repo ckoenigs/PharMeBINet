@@ -1,3 +1,0 @@
-MONDO:0010041	Charlevoix-Saguenay spastic ataxia
-DOID 	 name 
-DOID:0050946	Charlevoix-Saguenay spastic ataxia

@@ -1,3 +1,0 @@
-DOID:533	thymus gland disease
-monDO ID 	 name 
-MONDO:0003393	thymus gland disease

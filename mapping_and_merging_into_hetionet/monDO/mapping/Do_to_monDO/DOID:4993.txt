@@ -1,3 +1,0 @@
-DOID:4993	atypical polypoid adenomyoma
-monDO ID 	 name 
-MONDO:0003236	atypical polypoid adenomyoma

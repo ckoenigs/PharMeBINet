@@ -1,3 +1,0 @@
-DOID:0060857	septooptic dysplasia
-monDO ID 	 name 
-MONDO:0008428	septooptic dysplasia

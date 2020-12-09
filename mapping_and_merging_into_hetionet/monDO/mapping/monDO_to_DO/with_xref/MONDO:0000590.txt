@@ -1,3 +1,0 @@
-MONDO:0000590	autoimmune disease of peripheral nervous system
-DOID 	 name 
-DOID:0060033	autoimmune disease of peripheral nervous system

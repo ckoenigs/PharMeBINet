@@ -1,3 +1,0 @@
-DOID:5715	functionless pituitary adenoma
-monDO ID 	 name 
-MONDO:0019613	non-functioning pituitary adenoma

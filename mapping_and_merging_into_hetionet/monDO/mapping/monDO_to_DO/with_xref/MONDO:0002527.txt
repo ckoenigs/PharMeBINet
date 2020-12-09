@@ -1,3 +1,0 @@
-MONDO:0002527	keratoacanthoma
-DOID 	 name 
-DOID:3149	keratoacanthoma

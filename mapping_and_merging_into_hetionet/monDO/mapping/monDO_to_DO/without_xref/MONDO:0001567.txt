@@ -1,3 +1,0 @@
-MONDO:0001567	nephrocalcinosis
-DOID 	 name 
-DOID:12679	nephrocalcinosis

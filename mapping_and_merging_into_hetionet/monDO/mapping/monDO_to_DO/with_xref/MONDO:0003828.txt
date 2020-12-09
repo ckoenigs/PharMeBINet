@@ -1,3 +1,0 @@
-MONDO:0003828	growth hormone-producing pituitary gland carcinoma
-DOID 	 name 
-DOID:6256	malignant growth hormone secreting neoplasm of pituitary

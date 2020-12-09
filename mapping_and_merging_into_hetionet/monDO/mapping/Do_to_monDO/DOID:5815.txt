@@ -1,3 +1,0 @@
-DOID:5815	cerebral lymphoma
-monDO ID 	 name 
-MONDO:0003655	cerebral lymphoma

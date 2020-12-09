@@ -1,3 +1,0 @@
-MONDO:0005714	congenital syphilis
-DOID 	 name 
-DOID:9856	congenital syphilis

@@ -1,3 +1,0 @@
-DOID:9286	priapism
-monDO ID 	 name 
-MONDO:0004745	priapism

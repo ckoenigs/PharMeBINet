@@ -1,3 +1,0 @@
-DOID:14515	WAGR syndrome
-monDO ID 	 name 
-MONDO:0008681	WAGR syndrome

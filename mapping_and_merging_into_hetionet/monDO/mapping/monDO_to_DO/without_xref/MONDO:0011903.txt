@@ -1,3 +1,0 @@
-MONDO:0011903	Charcot-Marie-tooth disease type 2J
-DOID 	 name 
-DOID:0110157	Charcot-Marie-Tooth disease type 2J

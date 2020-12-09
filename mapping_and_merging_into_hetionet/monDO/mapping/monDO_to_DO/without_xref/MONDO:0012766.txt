@@ -1,3 +1,0 @@
-MONDO:0012766	hereditary spastic paraplegia 37
-DOID 	 name 
-DOID:0110788	hereditary spastic paraplegia 37

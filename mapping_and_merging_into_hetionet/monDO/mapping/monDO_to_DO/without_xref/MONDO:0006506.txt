@@ -1,3 +1,0 @@
-MONDO:0006506	congenital nonspherocytic hemolytic anemia
-DOID 	 name 
-DOID:2861	congenital nonspherocytic hemolytic anemia

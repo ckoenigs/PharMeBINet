@@ -1,3 +1,0 @@
-MONDO:0002388	intracystic papillary adenoma
-DOID 	 name 
-DOID:2682	intracystic papillary adenoma

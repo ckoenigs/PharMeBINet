@@ -1,3 +1,0 @@
-DOID:6543	acne
-monDO ID 	 name 
-MONDO:0011438	acne (disease)

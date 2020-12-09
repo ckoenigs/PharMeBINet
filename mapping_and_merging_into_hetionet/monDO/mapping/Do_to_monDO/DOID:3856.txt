@@ -1,3 +1,0 @@
-DOID:3856	male reproductive organ cancer
-monDO ID 	 name 
-MONDO:0005836	male reproductive organ cancer

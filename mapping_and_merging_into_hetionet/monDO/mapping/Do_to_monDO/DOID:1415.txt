@@ -1,3 +1,0 @@
-DOID:1415	gyrate atrophy
-monDO ID 	 name 
-MONDO:0009796	gyrate atrophy

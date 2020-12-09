@@ -1,3 +1,0 @@
-DOID:0110657	congenital myasthenic syndrome 8
-monDO ID 	 name 
-MONDO:0014052	congenital myasthenic syndrome 8

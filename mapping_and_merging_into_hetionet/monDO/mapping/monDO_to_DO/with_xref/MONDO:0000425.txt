@@ -1,3 +1,0 @@
-MONDO:0000425	X-linked disease
-DOID 	 name 
-DOID:0050735	X-linked disease

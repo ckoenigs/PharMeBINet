@@ -1,3 +1,0 @@
-MONDO:0004942	orbit lymphoma
-DOID 	 name 
-DOID:9986	orbit lymphoma

@@ -1,3 +1,0 @@
-MONDO:0014215	primary ciliary dyskinesia 27
-DOID 	 name 
-DOID:0110611	primary ciliary dyskinesia 27

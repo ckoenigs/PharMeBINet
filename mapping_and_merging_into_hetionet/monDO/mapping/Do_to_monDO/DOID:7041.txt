@@ -1,3 +1,0 @@
-DOID:7041	choroid epithelioid cell melanoma
-monDO ID 	 name 
-MONDO:0004085	choroid epithelioid cell melanoma

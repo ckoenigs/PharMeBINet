@@ -1,3 +1,0 @@
-MONDO:0014410	spinocerebellar ataxia type 37
-DOID 	 name 
-DOID:0050984	spinocerebellar ataxia type 37

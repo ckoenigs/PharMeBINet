@@ -1,3 +1,0 @@
-MONDO:0005570	hematological system disease
-DOID 	 name 
-DOID:74	hematopoietic system disease

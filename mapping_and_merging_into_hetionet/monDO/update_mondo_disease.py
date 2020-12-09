@@ -5,7 +5,8 @@ Created on Mon May 07 13:31:43 2018
 @author: ckoenigs
 """
 
-from py2neo import Graph, authenticate
+sys.path.append("../..")
+import create_connection_to_databases, authenticate
 import sys
 import datetime
 from types import *

@@ -1,3 +1,0 @@
-DOID:0050387	nonpapillary renal cell carcinoma
-monDO ID 	 name 
-MONDO:0007763	nonpapillary renal cell carcinoma

@@ -1,3 +1,0 @@
-DOID:3495	extrahepatic bile duct adenocarcinoma
-monDO ID 	 name 
-MONDO:0002665	extrahepatic bile duct adenocarcinoma

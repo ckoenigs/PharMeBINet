@@ -1,3 +1,0 @@
-DOID:1911	endodermal sinus tumor
-monDO ID 	 name 
-MONDO:0005744	yolk sac tumor

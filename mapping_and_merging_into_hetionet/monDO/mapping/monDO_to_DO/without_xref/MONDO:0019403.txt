@@ -1,3 +1,0 @@
-MONDO:0019403	congenital dyserythropoietic anemia
-DOID 	 name 
-DOID:1338	congenital dyserythropoietic anemia

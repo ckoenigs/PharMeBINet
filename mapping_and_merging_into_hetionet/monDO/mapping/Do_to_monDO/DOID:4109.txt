@@ -1,3 +1,0 @@
-DOID:4109	tick infestation
-monDO ID 	 name 
-MONDO:0005980	tick infestation

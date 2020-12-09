@@ -1,3 +1,0 @@
-DOID:0110372	retinitis pigmentosa 4
-monDO ID 	 name 
-MONDO:0013395	retinitis pigmentosa 4

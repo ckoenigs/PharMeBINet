@@ -1,3 +1,0 @@
-MONDO:0003056	lymphoplasmacyte-rich meningioma
-DOID 	 name 
-DOID:4591	lymphoplasmacyte-rich meningioma

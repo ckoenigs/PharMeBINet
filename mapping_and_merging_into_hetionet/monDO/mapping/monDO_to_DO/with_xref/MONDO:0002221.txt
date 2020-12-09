@@ -1,3 +1,0 @@
-MONDO:0002221	urethral urothelial papilloma
-DOID 	 name 
-DOID:2140	urethral urothelial papilloma

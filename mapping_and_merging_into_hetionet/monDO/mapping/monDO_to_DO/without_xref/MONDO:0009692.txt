@@ -1,3 +1,0 @@
-MONDO:0009692	primary myelofibrosis
-DOID 	 name 
-DOID:4971	myelofibrosis

@@ -1,3 +1,0 @@
-MONDO:0007150	arcus senilis
-DOID 	 name 
-DOID:11342	arcus senilis

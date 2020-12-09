@@ -1,3 +1,0 @@
-DOID:14269	suppurative cholangitis
-monDO ID 	 name 
-MONDO:0001928	suppurative cholangitis

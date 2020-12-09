@@ -1,3 +1,0 @@
-MONDO:0006899	pericoronitis
-DOID 	 name 
-DOID:3671	pericoronitis

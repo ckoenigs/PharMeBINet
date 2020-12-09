@@ -1,3 +1,0 @@
-MONDO:0006855	mesenteric vascular occlusion
-DOID 	 name 
-DOID:13252	mesenteric vascular occlusion

@@ -1,3 +1,0 @@
-DOID:13139	crescentic glomerulonephritis
-monDO ID 	 name 
-MONDO:0001645	crescentic glomerulonephritis (disease)

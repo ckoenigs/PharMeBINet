@@ -1,3 +1,0 @@
-DOID:13035	louse-borne relapsing fever
-monDO ID 	 name 
-MONDO:0001620	louse-borne relapsing fever

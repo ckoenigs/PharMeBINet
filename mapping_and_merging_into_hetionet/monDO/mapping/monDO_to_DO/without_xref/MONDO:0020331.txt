@@ -1,3 +1,0 @@
-MONDO:0020331	indolent systemic mastocytosis
-DOID 	 name 
-DOID:4660	indolent systemic mastocytosis

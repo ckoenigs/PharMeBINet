@@ -1,3 +1,0 @@
-MONDO:0003232	alcoholic pancreatitis
-DOID 	 name 
-DOID:4988	alcoholic pancreatitis

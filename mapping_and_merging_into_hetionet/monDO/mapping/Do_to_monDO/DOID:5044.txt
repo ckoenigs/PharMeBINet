@@ -1,3 +1,0 @@
-DOID:5044	cardiac granular cell neoplasm
-monDO ID 	 name 
-MONDO:0003254	cardiac granular cell neoplasm

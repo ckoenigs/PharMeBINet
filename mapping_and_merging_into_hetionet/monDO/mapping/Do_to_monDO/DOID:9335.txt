@@ -1,3 +1,0 @@
-DOID:9335	scotoma
-monDO ID 	 name 
-MONDO:0004758	scotoma (disease)

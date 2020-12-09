@@ -1,3 +1,0 @@
-DOID:8543	Hodgkin's lymphoma, lymphocytic-histiocytic predominance
-monDO ID 	 name 
-MONDO:0004604	Hodgkin's lymphoma, lymphocytic-histiocytic predominance

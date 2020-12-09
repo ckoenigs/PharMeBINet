@@ -1,3 +1,0 @@
-DOID:11034	contact lens corneal edema
-monDO ID 	 name 
-MONDO:0001183	contact lens corneal edema

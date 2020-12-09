@@ -1,3 +1,0 @@
-MONDO:0006993	systolic heart failure
-DOID 	 name 
-DOID:9651	systolic heart failure

@@ -1,3 +1,0 @@
-MONDO:0010460	syndromic X-linked intellectual disability 17
-DOID 	 name 
-DOID:0060803	syndromic X-linked intellectual disability 17

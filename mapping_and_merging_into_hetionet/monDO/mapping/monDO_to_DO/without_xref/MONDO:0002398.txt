@@ -1,3 +1,0 @@
-MONDO:0002398	mucinous adenofibroma
-DOID 	 name 
-DOID:2700	mucinous adenofibroma

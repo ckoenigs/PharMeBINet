@@ -1,3 +1,0 @@
-MONDO:0001301	rumination disorder
-DOID 	 name 
-DOID:11507	rumination disorder

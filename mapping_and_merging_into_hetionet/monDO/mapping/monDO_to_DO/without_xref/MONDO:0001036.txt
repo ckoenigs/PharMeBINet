@@ -1,3 +1,0 @@
-MONDO:0001036	hypopyon
-DOID 	 name 
-DOID:10443	hypopyon

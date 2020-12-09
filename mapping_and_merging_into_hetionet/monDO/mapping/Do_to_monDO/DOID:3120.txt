@@ -1,3 +1,0 @@
-DOID:3120	gallbladder papillomatosis
-monDO ID 	 name 
-MONDO:0002518	gallbladder papillary neoplasm

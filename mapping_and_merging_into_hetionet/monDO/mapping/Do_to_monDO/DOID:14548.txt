@@ -1,3 +1,0 @@
-DOID:14548	steroid-induced glaucoma - borderline
-monDO ID 	 name 
-MONDO:0001996	steroid-induced glaucoma - borderline

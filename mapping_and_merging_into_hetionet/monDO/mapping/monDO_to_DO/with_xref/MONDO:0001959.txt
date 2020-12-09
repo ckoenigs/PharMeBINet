@@ -1,3 +1,0 @@
-MONDO:0001959	labyrinthine bilateral reactive loss
-DOID 	 name 
-DOID:14413	labyrinthine bilateral reactive loss

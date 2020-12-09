@@ -1,3 +1,0 @@
-MONDO:0013903	NYS7
-DOID 	 name 
-DOID:9649	congenital nystagmus

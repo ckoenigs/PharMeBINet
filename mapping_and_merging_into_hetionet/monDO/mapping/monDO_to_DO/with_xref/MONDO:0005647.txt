@@ -1,3 +1,0 @@
-MONDO:0005647	anogenital venereal wart
-DOID 	 name 
-DOID:11168	anogenital venereal wart

@@ -1,4 +1,0 @@
-MONDO:0005082	prostate adenocarcinoma
-DOID 	 name 
-DOID:2526	prostate adenocarcinoma
-DOID:10283	prostate cancer

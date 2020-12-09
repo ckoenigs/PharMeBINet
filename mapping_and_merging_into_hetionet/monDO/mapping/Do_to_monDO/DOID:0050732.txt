@@ -1,3 +1,0 @@
-DOID:0050732	methylmalonic aciduria and homocystinuria type cblE
-monDO ID 	 name 
-MONDO:0005513	methylmalonic aciduria and homocystinuria type cblE

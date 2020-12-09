@@ -1,3 +1,0 @@
-DOID:1612	breast cancer
-monDO ID 	 name 
-MONDO:0007254	breast cancer

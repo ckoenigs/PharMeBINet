@@ -1,3 +1,0 @@
-MONDO:0002886	common bile duct disease
-DOID 	 name 
-DOID:4137	common bile duct disease

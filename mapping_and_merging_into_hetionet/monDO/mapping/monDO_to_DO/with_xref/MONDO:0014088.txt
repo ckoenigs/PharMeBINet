@@ -1,3 +1,0 @@
-MONDO:0014088	advanced sleep phase syndrome 2
-DOID 	 name 
-DOID:0110012	advanced sleep phase syndrome 2

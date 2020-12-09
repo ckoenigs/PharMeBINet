@@ -1,3 +1,0 @@
-DOID:0060280	primary pigmented nodular adrenocortical disease
-monDO ID 	 name 
-MONDO:0015999	primary pigmented nodular adrenocortical disease

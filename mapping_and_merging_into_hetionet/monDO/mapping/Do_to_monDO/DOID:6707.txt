@@ -1,3 +1,0 @@
-DOID:6707	malignant triton tumor
-monDO ID 	 name 
-MONDO:0016757	malignant triton tumor

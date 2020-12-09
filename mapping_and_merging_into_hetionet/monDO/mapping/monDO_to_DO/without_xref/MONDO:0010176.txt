@@ -1,3 +1,0 @@
-MONDO:0010176	Joubert syndrome with orofaciodigital defect
-DOID 	 name 
-DOID:0060376	Joubert syndrome with orofaciodigital defect

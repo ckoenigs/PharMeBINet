@@ -1,3 +1,0 @@
-MONDO:0012062	dilated cardiomyopathy 1O
-DOID 	 name 
-DOID:0110451	dilated cardiomyopathy 1O

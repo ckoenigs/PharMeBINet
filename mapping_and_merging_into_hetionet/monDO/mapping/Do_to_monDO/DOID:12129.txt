@@ -1,3 +1,0 @@
-DOID:12129	bulimia nervosa
-monDO ID 	 name 
-MONDO:0005452	bulimia nervosa

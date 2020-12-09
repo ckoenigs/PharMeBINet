@@ -1,3 +1,0 @@
-DOID:11129	dislocation of ear ossicle
-monDO ID 	 name 
-MONDO:0001199	dislocation of ear ossicle

@@ -1,3 +1,0 @@
-MONDO:0011385	lumbar disc degeneration
-DOID 	 name 
-DOID:90	degenerative disc disease

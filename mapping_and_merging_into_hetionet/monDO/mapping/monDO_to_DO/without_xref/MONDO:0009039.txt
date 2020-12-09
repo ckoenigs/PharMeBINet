@@ -1,3 +1,0 @@
-MONDO:0009039	Baller-Gerold syndrome
-DOID 	 name 
-DOID:0050654	Baller-Gerold syndrome

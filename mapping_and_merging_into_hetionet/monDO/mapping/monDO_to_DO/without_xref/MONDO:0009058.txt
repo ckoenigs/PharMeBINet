@@ -1,3 +1,0 @@
-MONDO:0009058	cystathioninuria (disease)
-DOID 	 name 
-DOID:0090142	cystathioninuria

@@ -1,3 +1,0 @@
-MONDO:0005074	papillary cystadenocarcinoma
-DOID 	 name 
-DOID:3110	papillary cystadenocarcinoma

@@ -1,3 +1,0 @@
-MONDO:0002789	hemangiopericytic tumor
-DOID 	 name 
-DOID:3850	hemangiopericytic tumor

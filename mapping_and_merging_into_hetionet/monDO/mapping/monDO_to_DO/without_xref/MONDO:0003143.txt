@@ -1,3 +1,0 @@
-MONDO:0003143	angiokeratoma
-DOID 	 name 
-DOID:479	angiokeratoma

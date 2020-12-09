@@ -1,3 +1,0 @@
-DOID:3250	pleomorphic rhabdomyosarcoma
-monDO ID 	 name 
-MONDO:0017386	pleomorphic rhabdomyosarcoma

@@ -1,3 +1,0 @@
-MONDO:0000422	inborn glycogen metabolism disorder
-DOID 	 name 
-DOID:0050728	glycogen metabolism disorder

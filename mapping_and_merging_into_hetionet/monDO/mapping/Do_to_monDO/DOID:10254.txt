@@ -1,3 +1,0 @@
-DOID:10254	strawberry gallbladder
-monDO ID 	 name 
-MONDO:0000987	strawberry gallbladder

@@ -1,3 +1,0 @@
-MONDO:0011585	autosomal recessive distal spinal muscular atrophy 2
-DOID 	 name 
-DOID:0111065	autosomal recessive distal spinal muscular atrophy 2

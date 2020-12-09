@@ -1,3 +1,0 @@
-DOID:0060613	X-linked cleft palate with or without ankyloglossia
-monDO ID 	 name 
-MONDO:0017938	X-linked cleft palate with or without ankyloglossia

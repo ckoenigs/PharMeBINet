@@ -1,3 +1,0 @@
-MONDO:0000762	chromosomal duplication syndrome
-DOID 	 name 
-DOID:0060429	chromosomal duplication syndrome

@@ -1,3 +1,0 @@
-MONDO:0001725	balanitis xerotica obliterans
-DOID 	 name 
-DOID:13477	balanitis xerotica obliterans

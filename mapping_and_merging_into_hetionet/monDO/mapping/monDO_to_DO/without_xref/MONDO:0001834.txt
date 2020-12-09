@@ -1,3 +1,0 @@
-MONDO:0001834	visual pathway disease
-DOID 	 name 
-DOID:1393	visual pathway disease

@@ -1,3 +1,0 @@
-DOID:0050737	autosomal recessive disease
-monDO ID 	 name 
-MONDO:0006025	autosomal recessive disease

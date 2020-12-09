@@ -1,3 +1,0 @@
-DOID:4015	spindle cell carcinoma
-monDO ID 	 name 
-MONDO:0006406	sarcomatoid carcinoma

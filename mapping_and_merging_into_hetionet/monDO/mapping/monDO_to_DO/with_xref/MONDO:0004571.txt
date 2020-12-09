@@ -1,3 +1,0 @@
-MONDO:0004571	intestinal impaction
-DOID 	 name 
-DOID:8448	intestinal impaction

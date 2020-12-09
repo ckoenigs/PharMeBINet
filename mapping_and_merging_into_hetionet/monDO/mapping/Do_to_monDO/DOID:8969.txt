@@ -1,3 +1,0 @@
-DOID:8969	tonsillar fossa cancer
-monDO ID 	 name 
-MONDO:0004690	tonsillar fossa cancer

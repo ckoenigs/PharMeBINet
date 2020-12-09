@@ -1,3 +1,0 @@
-MONDO:0005500	congenital disorder of glycosylation type I
-DOID 	 name 
-DOID:0050570	congenital disorder of glycosylation type I

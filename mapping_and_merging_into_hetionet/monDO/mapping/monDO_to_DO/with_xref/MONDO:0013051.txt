@@ -1,3 +1,0 @@
-MONDO:0013051	autosomal recessive cutis laxa type 2B
-DOID 	 name 
-DOID:3144	cutis laxa

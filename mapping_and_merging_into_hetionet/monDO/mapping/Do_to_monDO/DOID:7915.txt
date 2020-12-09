@@ -1,3 +1,0 @@
-DOID:7915	cervical spinal canal and spinal cord meningioma
-monDO ID 	 name 
-MONDO:0004396	cervical spinal canal and spinal cord meningioma

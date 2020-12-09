@@ -1,3 +1,0 @@
-MONDO:0001251	chronic apical periodontitis
-DOID 	 name 
-DOID:11269	chronic apical periodontitis

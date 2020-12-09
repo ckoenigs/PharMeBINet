@@ -1,3 +1,0 @@
-DOID:605	flying phobia
-monDO ID 	 name 
-MONDO:0003748	flying phobia

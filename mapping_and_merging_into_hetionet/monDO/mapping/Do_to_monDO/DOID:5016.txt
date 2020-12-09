@@ -1,3 +1,0 @@
-DOID:5016	hepatocellular clear cell carcinoma
-monDO ID 	 name 
-MONDO:0003243	hepatocellular clear cell carcinoma

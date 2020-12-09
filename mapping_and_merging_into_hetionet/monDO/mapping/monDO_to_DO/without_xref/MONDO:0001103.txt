@@ -1,3 +1,0 @@
-MONDO:0001103	giardiasis
-DOID 	 name 
-DOID:10718	giardiasis

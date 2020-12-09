@@ -1,3 +1,0 @@
-MONDO:0015358	hereditary motor and sensory neuropathy
-DOID 	 name 
-DOID:2477	motor peripheral neuropathy

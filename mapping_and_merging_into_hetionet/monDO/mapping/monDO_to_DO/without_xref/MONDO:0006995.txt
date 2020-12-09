@@ -1,3 +1,0 @@
-MONDO:0006995	tethered spinal cord syndrome
-DOID 	 name 
-DOID:1089	tethered spinal cord syndrome

@@ -1,3 +1,0 @@
-DOID:12997	Phlegmonous dacryocystitis
-monDO ID 	 name 
-MONDO:0001611	phlegmonous dacryocystitis

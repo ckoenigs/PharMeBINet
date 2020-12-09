@@ -1,3 +1,0 @@
-MONDO:0001730	urethral syndrome
-DOID 	 name 
-DOID:13498	urethral syndrome

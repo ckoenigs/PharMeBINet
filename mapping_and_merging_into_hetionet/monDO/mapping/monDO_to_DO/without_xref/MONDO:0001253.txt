@@ -1,3 +1,0 @@
-MONDO:0001253	solar retinopathy
-DOID 	 name 
-DOID:11282	solar retinopathy

@@ -1,3 +1,0 @@
-MONDO:0020311	chronic myelomonocytic leukemia
-DOID 	 name 
-DOID:0080188	chronic myelomonocytic leukemia

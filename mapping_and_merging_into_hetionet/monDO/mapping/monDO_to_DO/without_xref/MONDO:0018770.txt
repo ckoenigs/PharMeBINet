@@ -1,3 +1,0 @@
-MONDO:0018770	Jeune syndrome
-DOID 	 name 
-DOID:0050592	asphyxiating thoracic dystrophy

@@ -1,3 +1,0 @@
-DOID:9164	achalasia
-monDO ID 	 name 
-MONDO:0008698	achalasia (disease)

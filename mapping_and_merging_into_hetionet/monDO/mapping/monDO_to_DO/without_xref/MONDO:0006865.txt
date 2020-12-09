@@ -1,3 +1,0 @@
-MONDO:0006865	necrotizing ulcerative gingivitis
-DOID 	 name 
-DOID:13924	necrotizing ulcerative gingivitis

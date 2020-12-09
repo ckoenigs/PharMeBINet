@@ -1,3 +1,0 @@
-MONDO:0008006	Mobius syndrome
-DOID 	 name 
-DOID:13501	Mobius syndrome

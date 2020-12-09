@@ -1,3 +1,0 @@
-DOID:12566	ulceration of vulva
-monDO ID 	 name 
-MONDO:0001551	ulceration of vulva

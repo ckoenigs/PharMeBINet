@@ -1,3 +1,0 @@
-MONDO:0003461	fallopian tube adenofibroma
-DOID 	 name 
-DOID:5478	fallopian tube adenofibroma

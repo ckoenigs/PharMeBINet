@@ -1,3 +1,0 @@
-DOID:4671	freemartinism
-monDO ID 	 name 
-MONDO:0006762	freemartinism

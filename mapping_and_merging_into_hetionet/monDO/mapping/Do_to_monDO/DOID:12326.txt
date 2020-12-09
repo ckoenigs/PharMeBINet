@@ -1,3 +1,0 @@
-DOID:12326	chronic pulmonary heart disease
-monDO ID 	 name 
-MONDO:0001493	chronic pulmonary heart disease

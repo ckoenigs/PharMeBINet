@@ -1,3 +1,0 @@
-MONDO:0009100	IDDM 1
-DOID 	 name 
-DOID:9744	type 1 diabetes mellitus

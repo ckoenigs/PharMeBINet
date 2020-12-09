@@ -1,3 +1,0 @@
-MONDO:0015917	malignant glioma
-DOID 	 name 
-DOID:3070	malignant glioma

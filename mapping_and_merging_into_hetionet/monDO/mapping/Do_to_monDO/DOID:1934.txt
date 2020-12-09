@@ -1,3 +1,0 @@
-DOID:1934	dysostosis
-monDO ID 	 name 
-MONDO:0018234	dysostosis

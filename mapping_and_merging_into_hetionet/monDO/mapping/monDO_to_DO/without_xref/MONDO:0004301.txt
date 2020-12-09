@@ -1,3 +1,0 @@
-MONDO:0004301	fibrosarcomatous osteosarcoma
-DOID 	 name 
-DOID:7603	fibrosarcomatous osteosarcoma

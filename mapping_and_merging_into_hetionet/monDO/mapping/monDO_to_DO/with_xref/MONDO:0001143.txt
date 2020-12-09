@@ -1,3 +1,0 @@
-MONDO:0001143	paralytic squint
-DOID 	 name 
-DOID:10863	paralytic squint

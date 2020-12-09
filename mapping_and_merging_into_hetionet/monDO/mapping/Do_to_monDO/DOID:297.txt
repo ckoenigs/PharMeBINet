@@ -1,3 +1,0 @@
-DOID:297	pleomorphic adenoma carcinoma
-monDO ID 	 name 
-MONDO:0006403	salivary gland carcinoma ex pleomorphic adenoma

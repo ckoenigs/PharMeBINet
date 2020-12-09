@@ -1,3 +1,0 @@
-DOID:0060216	Cogan syndrome
-monDO ID 	 name 
-MONDO:0015453	Cogan syndrome

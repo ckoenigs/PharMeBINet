@@ -1,3 +1,0 @@
-MONDO:0005094	hemangiopericytoma
-DOID 	 name 
-DOID:264	hemangiopericytoma

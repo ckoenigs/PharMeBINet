@@ -1,3 +1,0 @@
-MONDO:0011189	arrhythmogenic right ventricular dysplasia 4
-DOID 	 name 
-DOID:0110073	arrhythmogenic right ventricular dysplasia 4

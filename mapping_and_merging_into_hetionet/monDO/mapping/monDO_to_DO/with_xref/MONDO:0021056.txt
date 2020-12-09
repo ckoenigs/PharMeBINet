@@ -1,3 +1,0 @@
-MONDO:0021056	familial adenomatous polyposis 1
-DOID 	 name 
-DOID:0050424	familial adenomatous polyposis

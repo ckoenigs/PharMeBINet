@@ -1,3 +1,0 @@
-DOID:0080107	microcephaly and chorioretinopathy 3
-monDO ID 	 name 
-MONDO:0014592	microcephaly and chorioretinopathy 3

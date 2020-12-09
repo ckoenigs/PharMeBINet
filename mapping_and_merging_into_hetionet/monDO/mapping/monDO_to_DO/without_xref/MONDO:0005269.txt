@@ -1,3 +1,0 @@
-MONDO:0005269	carotid artery disease
-DOID 	 name 
-DOID:3407	carotid artery disease

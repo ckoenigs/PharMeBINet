@@ -1,3 +1,0 @@
-DOID:2392	glandular cystitis
-monDO ID 	 name 
-MONDO:0002287	glandular cystitis

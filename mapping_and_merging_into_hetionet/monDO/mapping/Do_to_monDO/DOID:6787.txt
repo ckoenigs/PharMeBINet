@@ -1,3 +1,0 @@
-DOID:6787	childhood vagina botryoid rhabdomyosarcoma
-monDO ID 	 name 
-MONDO:0003993	childhood vagina botryoid rhabdomyosarcoma

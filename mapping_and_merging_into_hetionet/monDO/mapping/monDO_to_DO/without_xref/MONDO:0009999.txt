@@ -1,3 +1,0 @@
-MONDO:0009999	autosomal recessive Robinow syndrome
-DOID 	 name 
-DOID:0060764	autosomal recessive Robinow syndrome

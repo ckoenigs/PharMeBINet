@@ -1,3 +1,0 @@
-MONDO:0004378	pediatric cerebral ependymoblastoma
-DOID 	 name 
-DOID:7841	pediatric cerebral ependymoblastoma

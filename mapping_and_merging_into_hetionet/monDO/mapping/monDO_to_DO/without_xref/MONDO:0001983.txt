@@ -1,3 +1,0 @@
-MONDO:0001983	peripheral degeneration of cornea
-DOID 	 name 
-DOID:14507	peripheral degeneration of cornea

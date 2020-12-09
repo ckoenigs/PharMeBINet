@@ -1,3 +1,0 @@
-MONDO:0006243	hepatoid adenocarcinoma
-DOID 	 name 
-DOID:0060534	hepatoid adenocarcinoma

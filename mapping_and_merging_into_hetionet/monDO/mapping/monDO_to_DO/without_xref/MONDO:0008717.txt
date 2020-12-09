@@ -1,3 +1,0 @@
-MONDO:0008717	acromesomelic dysplasia, Hunter-Thompson type
-DOID 	 name 
-DOID:0080051	acromesomelic dysplasia, Hunter-Thompson type

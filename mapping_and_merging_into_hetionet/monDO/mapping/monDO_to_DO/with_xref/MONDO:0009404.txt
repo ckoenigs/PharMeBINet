@@ -1,3 +1,0 @@
-MONDO:0009404	hypertelorism, microtia, facial clefting syndrome
-DOID 	 name 
-DOID:14670	hypertelorism, microtia, facial clefting syndrome

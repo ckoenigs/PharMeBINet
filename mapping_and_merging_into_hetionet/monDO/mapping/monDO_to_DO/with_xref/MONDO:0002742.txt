@@ -1,3 +1,0 @@
-MONDO:0002742	cervical mucinous adenocarcinoma
-DOID 	 name 
-DOID:3701	cervical mucinous adenocarcinoma

@@ -1,3 +1,0 @@
-MONDO:0018153	Erdheim-Chester disease
-DOID 	 name 
-DOID:4329	Erdheim-Chester disease

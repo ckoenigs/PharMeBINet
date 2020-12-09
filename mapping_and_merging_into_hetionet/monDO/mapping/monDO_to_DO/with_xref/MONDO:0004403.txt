@@ -1,3 +1,0 @@
-MONDO:0004403	childhood precursor T-lymphoblastic lymphoma/leukemia
-DOID 	 name 
-DOID:7933	childhood precursor T-lymphoblastic lymphoma/leukemia

@@ -1,3 +1,0 @@
-MONDO:0017919	bladder exstrophy-epispadias-cloacal exstrophy complex
-DOID 	 name 
-DOID:0080173	bladder exstrophy-epispadias-cloacal exstrophy complex

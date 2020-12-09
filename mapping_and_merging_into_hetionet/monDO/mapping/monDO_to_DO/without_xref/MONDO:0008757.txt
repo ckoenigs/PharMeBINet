@@ -1,3 +1,0 @@
-MONDO:0008757	alopecia universalis
-DOID 	 name 
-DOID:0050634	alopecia universalis

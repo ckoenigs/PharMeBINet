@@ -1,3 +1,0 @@
-MONDO:0005392	scoliosis
-DOID 	 name 
-DOID:0060249	scoliosis

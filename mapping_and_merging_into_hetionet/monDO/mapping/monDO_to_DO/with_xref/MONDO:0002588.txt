@@ -1,3 +1,0 @@
-MONDO:0002588	thymoma type A
-DOID 	 name 
-DOID:3279	spindle cell thymoma

@@ -1,3 +1,0 @@
-MONDO:0003694	ovarian clear cell cystadenofibroma
-DOID 	 name 
-DOID:5896	ovarian clear cell cystadenofibroma

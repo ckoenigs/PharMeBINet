@@ -1,3 +1,0 @@
-MONDO:0003568	chiasmal syndrome
-DOID 	 name 
-DOID:5655	chiasmal syndrome

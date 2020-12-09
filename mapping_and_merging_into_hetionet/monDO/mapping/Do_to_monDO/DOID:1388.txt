@@ -1,3 +1,0 @@
-DOID:1388	Tangier disease
-monDO ID 	 name 
-MONDO:0008783	Tangier disease

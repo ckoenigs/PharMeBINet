@@ -1,3 +1,0 @@
-DOID:12376	juvenile spinal muscular atrophy
-monDO ID 	 name 
-MONDO:0009672	juvenile spinal muscular atrophy

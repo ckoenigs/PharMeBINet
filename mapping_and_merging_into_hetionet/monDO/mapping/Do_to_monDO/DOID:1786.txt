@@ -1,3 +1,0 @@
-DOID:1786	adrenal rest tumor
-monDO ID 	 name 
-MONDO:0002110	adrenal rest tumor

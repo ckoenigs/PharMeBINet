@@ -1,3 +1,0 @@
-MONDO:0005051	invasive lobular carcinoma
-DOID 	 name 
-DOID:3457	invasive lobular carcinoma

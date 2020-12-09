@@ -1,3 +1,0 @@
-MONDO:0002990	benign deep fibrous histiocytoma
-DOID 	 name 
-DOID:4419	benign deep fibrous histiocytoma

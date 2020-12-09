@@ -1,3 +1,0 @@
-DOID:96	staphyloenterotoxemia
-monDO ID 	 name 
-MONDO:0005971	staphyloenterotoxemia

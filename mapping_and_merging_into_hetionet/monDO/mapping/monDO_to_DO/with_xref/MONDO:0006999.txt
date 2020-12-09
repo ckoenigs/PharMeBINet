@@ -1,3 +1,0 @@
-MONDO:0006999	tooth disease
-DOID 	 name 
-DOID:1091	tooth disease

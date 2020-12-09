@@ -1,3 +1,0 @@
-MONDO:0001629	Jaccoud's syndrome
-DOID 	 name 
-DOID:13080	Jaccoud's syndrome

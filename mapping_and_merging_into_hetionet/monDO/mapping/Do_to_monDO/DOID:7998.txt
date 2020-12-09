@@ -1,3 +1,0 @@
-DOID:7998	hyperthyroidism
-monDO ID 	 name 
-MONDO:0004425	hyperthyroidism

@@ -1,3 +1,0 @@
-MONDO:0001431	nutritional optic neuropathy
-DOID 	 name 
-DOID:1209	nutritional optic neuropathy

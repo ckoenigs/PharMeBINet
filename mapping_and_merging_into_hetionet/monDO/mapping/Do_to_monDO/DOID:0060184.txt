@@ -1,3 +1,0 @@
-DOID:0060184	lymphocytic colitis
-monDO ID 	 name 
-MONDO:0000704	lymphocytic colitis

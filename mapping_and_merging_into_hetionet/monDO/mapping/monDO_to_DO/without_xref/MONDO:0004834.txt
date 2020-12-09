@@ -1,3 +1,0 @@
-MONDO:0004834	ischemic fasciitis
-DOID 	 name 
-DOID:9601	ischemic fasciitis

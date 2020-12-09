@@ -1,3 +1,0 @@
-DOID:348	blepharochalasis
-monDO ID 	 name 
-MONDO:0002660	blepharochalasis (disease)

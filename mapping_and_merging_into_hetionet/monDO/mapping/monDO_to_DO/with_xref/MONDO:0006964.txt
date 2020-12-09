@@ -1,3 +1,0 @@
-MONDO:0006964	secondary hyperparathyroidism (disease)
-DOID 	 name 
-DOID:12466	secondary hyperparathyroidism

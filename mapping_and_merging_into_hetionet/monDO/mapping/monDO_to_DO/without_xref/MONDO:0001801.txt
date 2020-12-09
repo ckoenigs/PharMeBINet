@@ -1,3 +1,0 @@
-MONDO:0001801	staphyloma posticum
-DOID 	 name 
-DOID:13789	staphyloma posticum

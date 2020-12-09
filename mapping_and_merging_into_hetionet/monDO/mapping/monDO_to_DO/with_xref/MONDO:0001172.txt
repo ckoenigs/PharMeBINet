@@ -1,3 +1,0 @@
-MONDO:0001172	salpingo-oophoritis
-DOID 	 name 
-DOID:10972	salpingo-oophoritis

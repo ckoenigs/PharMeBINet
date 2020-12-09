@@ -1,3 +1,0 @@
-MONDO:0003668	extragonadal seminoma
-DOID 	 name 
-DOID:5838	extragonadal seminoma

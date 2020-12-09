@@ -1,3 +1,0 @@
-MONDO:0000631	bone benign neoplasm
-DOID 	 name 
-DOID:0060094	bone benign neoplasm

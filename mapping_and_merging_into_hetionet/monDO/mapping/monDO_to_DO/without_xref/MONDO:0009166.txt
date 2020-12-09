@@ -1,3 +1,0 @@
-MONDO:0009166	pontocerebellar hypoplasia type 4
-DOID 	 name 
-DOID:0060273	pontocerebellar hypoplasia type 4

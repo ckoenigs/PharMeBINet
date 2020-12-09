@@ -1,3 +1,0 @@
-DOID:6314	ovarian fetiform teratoma
-monDO ID 	 name 
-MONDO:0003851	ovarian fetiform teratoma

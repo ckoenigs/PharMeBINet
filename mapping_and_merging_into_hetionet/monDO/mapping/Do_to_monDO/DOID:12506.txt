@@ -1,3 +1,0 @@
-DOID:12506	Bell's palsy
-monDO ID 	 name 
-MONDO:0005665	Bell's palsy

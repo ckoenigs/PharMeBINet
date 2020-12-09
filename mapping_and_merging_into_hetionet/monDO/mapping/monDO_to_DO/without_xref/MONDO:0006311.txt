@@ -1,3 +1,0 @@
-MONDO:0006311	myelodysplastic/myeloproliferative neoplasm
-DOID 	 name 
-DOID:4972	myelodysplastic/myeloproliferative neoplasm

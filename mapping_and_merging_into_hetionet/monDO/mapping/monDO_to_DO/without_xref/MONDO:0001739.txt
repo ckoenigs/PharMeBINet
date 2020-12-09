@@ -1,3 +1,0 @@
-MONDO:0001739	purulent labyrinthitis
-DOID 	 name 
-DOID:13534	purulent labyrinthitis

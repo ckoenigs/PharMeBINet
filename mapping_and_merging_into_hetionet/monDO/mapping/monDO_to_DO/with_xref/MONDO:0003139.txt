@@ -1,3 +1,0 @@
-MONDO:0003139	mesangial proliferative glomerulonephritis
-DOID 	 name 
-DOID:4783	mesangial proliferative glomerulonephritis

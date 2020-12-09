@@ -1,3 +1,0 @@
-DOID:3910	lung adenocarcinoma
-monDO ID 	 name 
-MONDO:0005061	lung adenocarcinoma

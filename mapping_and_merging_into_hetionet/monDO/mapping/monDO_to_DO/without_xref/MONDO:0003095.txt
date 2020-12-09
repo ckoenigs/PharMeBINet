@@ -1,3 +1,0 @@
-MONDO:0003095	laryngeal mucoepidermoid carcinoma
-DOID 	 name 
-DOID:4688	laryngeal mucoepidermoid carcinoma

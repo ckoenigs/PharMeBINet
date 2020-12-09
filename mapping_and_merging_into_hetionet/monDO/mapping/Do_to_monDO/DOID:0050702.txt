@@ -1,3 +1,0 @@
-DOID:0050702	neonatal period electroclinical syndrome
-monDO ID 	 name 
-MONDO:0000412	neonatal period electroclinical syndrome

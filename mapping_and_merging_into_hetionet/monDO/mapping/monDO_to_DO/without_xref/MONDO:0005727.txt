@@ -1,3 +1,0 @@
-MONDO:0003709	cystoisosporiasis
-DOID 	 name 
-DOID:2112	cystoisosporiasis

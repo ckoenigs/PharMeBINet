@@ -1,3 +1,0 @@
-MONDO:0013422	type i complement component 8 deficiency
-DOID 	 name 
-DOID:0060301	type I complement component 8 deficiency

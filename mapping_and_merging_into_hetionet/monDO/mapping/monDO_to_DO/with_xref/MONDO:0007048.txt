@@ -1,3 +1,0 @@
-MONDO:0007048	acrokeratosis verruciformis
-DOID 	 name 
-DOID:0050606	acrokeratosis verruciformis

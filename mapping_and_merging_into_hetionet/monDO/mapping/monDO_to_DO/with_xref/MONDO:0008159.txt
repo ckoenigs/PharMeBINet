@@ -1,3 +1,0 @@
-MONDO:0008159	postmenopausal osteoporosis
-DOID 	 name 
-DOID:11476	osteoporosis

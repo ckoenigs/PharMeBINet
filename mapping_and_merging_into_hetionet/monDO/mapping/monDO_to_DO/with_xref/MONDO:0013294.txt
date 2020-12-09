@@ -1,3 +1,0 @@
-MONDO:0013294	atopic dermatitis 8
-DOID 	 name 
-DOID:0110104	atopic dermatitis 8

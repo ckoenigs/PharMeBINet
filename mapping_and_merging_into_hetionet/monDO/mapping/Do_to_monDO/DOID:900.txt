@@ -1,3 +1,0 @@
-DOID:900	hepatopulmonary syndrome
-monDO ID 	 name 
-MONDO:0004694	hepatopulmonary syndrome

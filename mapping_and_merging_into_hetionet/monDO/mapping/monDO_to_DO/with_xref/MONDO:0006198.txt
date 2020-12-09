@@ -1,3 +1,0 @@
-MONDO:0006198	endometrial squamous cell carcinoma
-DOID 	 name 
-DOID:5533	endometrial squamous cell carcinoma

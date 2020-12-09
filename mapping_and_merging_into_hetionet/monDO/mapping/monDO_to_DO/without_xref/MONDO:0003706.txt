@@ -1,3 +1,0 @@
-MONDO:0003706	adult brainstem astrocytoma
-DOID 	 name 
-DOID:5922	adult brainstem astrocytoma

@@ -1,3 +1,0 @@
-DOID:6404	metanephric adenoma
-monDO ID 	 name 
-MONDO:0006301	metanephric adenoma

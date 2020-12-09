@@ -1,3 +1,0 @@
-MONDO:0004202	adrenal medulla carcinoma
-DOID 	 name 
-DOID:7379	adrenal medulla carcinoma

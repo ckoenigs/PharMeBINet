@@ -1,3 +1,0 @@
-MONDO:0002133	chronic rheumatic pericarditis
-DOID 	 name 
-DOID:1869	chronic rheumatic pericarditis

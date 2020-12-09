@@ -1,3 +1,0 @@
-MONDO:0004904	toxic maculopathy
-DOID 	 name 
-DOID:9867	toxic maculopathy

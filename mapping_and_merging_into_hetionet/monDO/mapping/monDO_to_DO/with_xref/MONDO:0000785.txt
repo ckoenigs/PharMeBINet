@@ -1,3 +1,0 @@
-MONDO:0000785	peach allergy
-DOID 	 name 
-DOID:0060510	peach allergy

@@ -1,3 +1,0 @@
-MONDO:0000687	diffuse alopecia areata
-DOID 	 name 
-DOID:0060157	diffuse alopecia areata

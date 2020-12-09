@@ -1,3 +1,0 @@
-MONDO:0017875	Bolivian hemorrhagic fever
-DOID 	 name 
-DOID:0050195	Bolivian hemorrhagic fever

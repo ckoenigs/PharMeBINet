@@ -1,3 +1,0 @@
-MONDO:0009940	pycnodysostosis
-DOID 	 name 
-DOID:0080038	pycnodysostosis

@@ -1,3 +1,0 @@
-MONDO:0018029	congenital factor XIII deficiency
-DOID 	 name 
-DOID:2211	factor XIII deficiency

@@ -1,3 +1,0 @@
-MONDO:0009499	Krabbe disease
-DOID 	 name 
-DOID:10587	Krabbe disease

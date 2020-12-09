@@ -1,3 +1,0 @@
-DOID:10016	multiple endocrine neoplasia type 2B
-monDO ID 	 name 
-MONDO:0008082	multiple endocrine neoplasia type 2B

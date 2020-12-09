@@ -1,3 +1,0 @@
-MONDO:0002674	stricture or kinking of ureter
-DOID 	 name 
-DOID:3508	stricture or kinking of ureter

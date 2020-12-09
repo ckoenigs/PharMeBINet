@@ -1,3 +1,0 @@
-MONDO:0000612	lymphatic system cancer
-DOID 	 name 
-DOID:0060073	lymphatic system cancer

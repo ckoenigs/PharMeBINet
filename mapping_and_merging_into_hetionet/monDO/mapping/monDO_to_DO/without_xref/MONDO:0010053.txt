@@ -1,3 +1,0 @@
-MONDO:0010053	hereditary spherocytosis type 3
-DOID 	 name 
-DOID:0110918	hereditary spherocytosis type 3

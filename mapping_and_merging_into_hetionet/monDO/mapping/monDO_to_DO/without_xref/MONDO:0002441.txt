@@ -1,3 +1,0 @@
-MONDO:0002441	Jervell-Lange Nielsen syndrome
-DOID 	 name 
-DOID:2842	Jervell-Lange Nielsen syndrome

@@ -1,3 +1,0 @@
-DOID:8738	leukoplakia of penis
-monDO ID 	 name 
-MONDO:0006830	leukoplakia of penis

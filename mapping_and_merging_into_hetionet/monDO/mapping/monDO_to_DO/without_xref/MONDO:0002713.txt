@@ -1,3 +1,0 @@
-MONDO:0002713	epidural spinal canal neoplasm
-DOID 	 name 
-DOID:3618	epidural neoplasm

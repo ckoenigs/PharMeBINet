@@ -1,3 +1,0 @@
-MONDO:0003800	conventional malignant hemangiopericytoma
-DOID 	 name 
-DOID:6197	conventional malignant hemangiopericytoma

@@ -1,3 +1,0 @@
-MONDO:0005173	actinic keratosis (disease)
-DOID 	 name 
-DOID:8866	actinic keratosis

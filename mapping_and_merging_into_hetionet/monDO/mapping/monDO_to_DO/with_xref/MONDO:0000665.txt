@@ -1,3 +1,0 @@
-MONDO:0000665	apraxia
-DOID 	 name 
-DOID:0060135	apraxia

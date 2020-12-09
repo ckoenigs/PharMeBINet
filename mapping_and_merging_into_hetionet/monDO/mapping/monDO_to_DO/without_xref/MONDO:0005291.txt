@@ -1,3 +1,0 @@
-MONDO:0005291	brain aneurysm
-DOID 	 name 
-DOID:10941	intracranial aneurysm

@@ -1,3 +1,0 @@
-MONDO:0006591	panniculitis
-DOID 	 name 
-DOID:1526	panniculitis

@@ -1,3 +1,0 @@
-DOID:7656	adult infiltrating astrocytic neoplasm
-monDO ID 	 name 
-MONDO:0004320	adult infiltrating astrocytic neoplasm

@@ -1,3 +1,0 @@
-MONDO:0005938	renal tuberculosis
-DOID 	 name 
-DOID:9733	renal tuberculosis

@@ -1,3 +1,0 @@
-MONDO:0005298	osteoporosis
-DOID 	 name 
-DOID:11476	osteoporosis

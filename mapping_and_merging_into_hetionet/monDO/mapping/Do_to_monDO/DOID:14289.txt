@@ -1,3 +1,0 @@
-DOID:14289	Ebstein anomaly
-monDO ID 	 name 
-MONDO:0009144	Ebstein anomaly

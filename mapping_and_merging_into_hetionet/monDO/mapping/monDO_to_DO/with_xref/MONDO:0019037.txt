@@ -1,3 +1,0 @@
-MONDO:0019037	progressive supranuclear palsy
-DOID 	 name 
-DOID:678	progressive supranuclear palsy

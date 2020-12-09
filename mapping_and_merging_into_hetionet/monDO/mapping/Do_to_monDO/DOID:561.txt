@@ -1,3 +1,0 @@
-DOID:561	trigeminal nerve disease
-monDO ID 	 name 
-MONDO:0003543	trigeminal nerve disease

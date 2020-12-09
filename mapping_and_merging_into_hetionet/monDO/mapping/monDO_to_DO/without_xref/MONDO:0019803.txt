@@ -1,3 +1,0 @@
-MONDO:0019803	angioma serpiginosum
-DOID 	 name 
-DOID:4028	angioma serpiginosum

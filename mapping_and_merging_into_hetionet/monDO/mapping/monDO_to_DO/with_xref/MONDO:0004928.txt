@@ -1,3 +1,0 @@
-MONDO:0004928	lymph node disease
-DOID 	 name 
-DOID:9942	lymph node disease

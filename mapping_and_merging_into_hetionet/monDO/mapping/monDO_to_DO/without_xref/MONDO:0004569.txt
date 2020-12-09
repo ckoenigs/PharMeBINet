@@ -1,3 +1,0 @@
-MONDO:0004569	brachial plexus lesion
-DOID 	 name 
-DOID:8443	brachial plexus lesion

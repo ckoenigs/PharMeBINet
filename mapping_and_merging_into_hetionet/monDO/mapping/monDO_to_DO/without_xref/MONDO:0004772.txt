@@ -1,3 +1,0 @@
-MONDO:0004772	glaucomatocyclitic crisis
-DOID 	 name 
-DOID:9378	glaucomatocyclitic crisis

@@ -1,3 +1,0 @@
-MONDO:0000584	B cell linker protein deficiency
-DOID 	 name 
-DOID:0060027	B cell linker protein deficiency

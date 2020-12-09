@@ -1,3 +1,0 @@
-MONDO:0004621	upper lip cancer
-DOID 	 name 
-DOID:8630	upper lip cancer

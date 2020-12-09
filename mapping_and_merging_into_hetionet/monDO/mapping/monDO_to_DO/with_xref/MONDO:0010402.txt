@@ -1,3 +1,0 @@
-MONDO:0010402	syndromic X-linked intellectual disability 94
-DOID 	 name 
-DOID:0060823	syndromic X-linked intellectual disability 94

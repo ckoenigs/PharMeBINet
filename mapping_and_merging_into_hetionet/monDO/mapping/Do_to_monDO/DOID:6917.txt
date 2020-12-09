@@ -1,3 +1,0 @@
-DOID:6917	predominantly cortical thymoma
-monDO ID 	 name 
-MONDO:0004036	predominantly cortical thymoma

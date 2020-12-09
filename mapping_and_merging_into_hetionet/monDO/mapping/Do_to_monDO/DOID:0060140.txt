@@ -1,3 +1,0 @@
-DOID:0060140	cortical deafness
-monDO ID 	 name 
-MONDO:0000670	cortical deafness

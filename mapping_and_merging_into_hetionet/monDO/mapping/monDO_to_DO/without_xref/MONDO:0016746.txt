@@ -1,3 +1,0 @@
-MONDO:0016746	meningeal melanocytoma
-DOID 	 name 
-DOID:5900	meningeal melanocytoma

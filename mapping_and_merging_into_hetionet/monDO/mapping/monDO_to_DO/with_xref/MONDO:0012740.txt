@@ -1,3 +1,0 @@
-MONDO:0012740	chromosome 22q11.2 deletion syndrome, distal
-DOID 	 name 
-DOID:0060413	chromosome 22q11.2 deletion syndrome, distal

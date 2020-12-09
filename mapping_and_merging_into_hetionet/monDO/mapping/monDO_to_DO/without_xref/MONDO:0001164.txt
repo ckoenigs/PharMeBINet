@@ -1,3 +1,0 @@
-MONDO:0001164	antisocial personality disorder
-DOID 	 name 
-DOID:10939	antisocial personality disorder

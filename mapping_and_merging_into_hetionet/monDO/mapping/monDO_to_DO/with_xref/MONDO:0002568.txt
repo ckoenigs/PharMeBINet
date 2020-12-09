@@ -1,3 +1,0 @@
-MONDO:0002568	tracheal stenosis
-DOID 	 name 
-DOID:3227	tracheal stenosis

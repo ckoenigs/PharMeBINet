@@ -1,3 +1,0 @@
-MONDO:0001695	senile ectropion
-DOID 	 name 
-DOID:13356	senile ectropion

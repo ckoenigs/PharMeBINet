@@ -1,3 +1,0 @@
-DOID:9976	heroin dependence
-monDO ID 	 name 
-MONDO:0005367	heroin dependence

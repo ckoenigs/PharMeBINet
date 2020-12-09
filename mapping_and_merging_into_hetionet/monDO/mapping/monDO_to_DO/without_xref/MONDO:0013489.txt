@@ -1,3 +1,0 @@
-MONDO:0013489	autosomal recessive nonsyndromic deafness 89
-DOID 	 name 
-DOID:0110534	autosomal recessive nonsyndromic deafness 89

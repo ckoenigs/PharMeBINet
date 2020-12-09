@@ -1,3 +1,0 @@
-MONDO:0012936	leukemia, chronic lymphocytic, susceptibility to, 5
-DOID 	 name 
-DOID:1040	chronic lymphocytic leukemia

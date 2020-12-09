@@ -1,3 +1,0 @@
-MONDO:0012539	Joubert syndrome 6
-DOID 	 name 
-DOID:0111001	Joubert syndrome 6

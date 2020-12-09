@@ -1,3 +1,0 @@
-MONDO:0004617	recurrent hypersomnia
-DOID 	 name 
-DOID:8619	recurrent hypersomnia

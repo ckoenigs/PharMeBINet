@@ -1,3 +1,0 @@
-MONDO:0002623	pediatric osteosarcoma
-DOID 	 name 
-DOID:3361	pediatric osteosarcoma

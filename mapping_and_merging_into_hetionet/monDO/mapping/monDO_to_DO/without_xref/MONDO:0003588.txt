@@ -1,3 +1,0 @@
-MONDO:0003588	larynx liposarcoma
-DOID 	 name 
-DOID:5696	larynx liposarcoma

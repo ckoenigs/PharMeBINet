@@ -1,3 +1,0 @@
-MONDO:0014316	Alzheimer's disease 19
-DOID 	 name 
-DOID:0110051	Alzheimer's disease 19

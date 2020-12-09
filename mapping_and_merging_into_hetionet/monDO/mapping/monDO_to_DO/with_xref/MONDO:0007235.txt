@@ -1,3 +1,0 @@
-MONDO:0007235	branchiooculofacial syndrome
-DOID 	 name 
-DOID:0050691	branchiooculofacial syndrome

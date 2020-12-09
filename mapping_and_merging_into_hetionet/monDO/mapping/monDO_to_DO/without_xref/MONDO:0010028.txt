@@ -1,3 +1,0 @@
-MONDO:0010028	sialuria
-DOID 	 name 
-DOID:3659	sialuria

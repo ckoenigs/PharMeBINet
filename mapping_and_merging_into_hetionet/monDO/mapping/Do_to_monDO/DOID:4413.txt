@@ -1,3 +1,0 @@
-DOID:4413	cervix melanoma
-monDO ID 	 name 
-MONDO:0002988	cervix melanoma

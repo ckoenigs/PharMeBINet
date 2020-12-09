@@ -1,3 +1,0 @@
-MONDO:0012528	hypogonadotropic hypogonadism 4 with or without anosmia
-DOID 	 name 
-DOID:0090077	hypogonadotropic hypogonadism 4 with or without anosmia

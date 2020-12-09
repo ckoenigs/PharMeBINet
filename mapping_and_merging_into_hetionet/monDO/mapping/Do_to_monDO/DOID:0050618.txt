@@ -1,3 +1,0 @@
-DOID:0050618	malignant Sertoli-Leydig cell tumor
-monDO ID 	 name 
-MONDO:0000379	malignant Sertoli-leydig cell tumor

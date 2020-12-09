@@ -1,3 +1,0 @@
-MONDO:0008682	Denys-Drash syndrome
-DOID 	 name 
-DOID:3764	Denys-Drash syndrome

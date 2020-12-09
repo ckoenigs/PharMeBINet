@@ -1,3 +1,0 @@
-MONDO:0010379	Brunner syndrome
-DOID 	 name 
-DOID:0060693	Brunner Syndrome

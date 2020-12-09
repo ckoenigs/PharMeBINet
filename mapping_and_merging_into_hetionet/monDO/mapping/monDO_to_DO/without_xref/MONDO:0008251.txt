@@ -1,3 +1,0 @@
-MONDO:0008251	pityriasis rubra pilaris
-DOID 	 name 
-DOID:9212	pityriasis rubra pilaris

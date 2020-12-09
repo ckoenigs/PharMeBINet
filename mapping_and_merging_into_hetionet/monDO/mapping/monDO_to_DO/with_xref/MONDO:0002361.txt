@@ -1,3 +1,0 @@
-MONDO:0002361	transverse colon cancer
-DOID 	 name 
-DOID:261	transverse colon cancer

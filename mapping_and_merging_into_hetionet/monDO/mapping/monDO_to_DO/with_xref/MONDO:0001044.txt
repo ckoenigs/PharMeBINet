@@ -1,3 +1,0 @@
-MONDO:0001044	esophageal atresia (disease)
-DOID 	 name 
-DOID:10485	esophageal atresia

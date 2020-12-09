@@ -1,3 +1,0 @@
-MONDO:0001139	sexual masochism disorder
-DOID 	 name 
-DOID:10849	sexual masochism

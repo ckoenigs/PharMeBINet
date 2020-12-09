@@ -1,3 +1,0 @@
-MONDO:0019992	pseudohypoparathyroidism
-DOID 	 name 
-DOID:4184	pseudohypoparathyroidism

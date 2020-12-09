@@ -1,3 +1,0 @@
-DOID:6725	spinal stenosis
-monDO ID 	 name 
-MONDO:0005965	spinal stenosis

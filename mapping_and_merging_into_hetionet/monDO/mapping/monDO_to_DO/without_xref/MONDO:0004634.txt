@@ -1,3 +1,0 @@
-MONDO:0004634	vein disease
-DOID 	 name 
-DOID:866	vein disease

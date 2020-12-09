@@ -1,3 +1,0 @@
-MONDO:0002224	malignant ovarian cyst
-DOID 	 name 
-DOID:2145	malignant ovarian cyst

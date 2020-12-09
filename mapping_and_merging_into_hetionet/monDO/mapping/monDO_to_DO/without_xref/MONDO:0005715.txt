@@ -1,3 +1,0 @@
-MONDO:0005715	congenital toxoplasmosis
-DOID 	 name 
-DOID:13336	congenital toxoplasmosis

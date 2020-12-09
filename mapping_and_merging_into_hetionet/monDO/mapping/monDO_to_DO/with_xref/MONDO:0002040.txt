@@ -1,3 +1,0 @@
-MONDO:0002040	dermatomycosis
-DOID 	 name 
-DOID:1563	dermatomycosis

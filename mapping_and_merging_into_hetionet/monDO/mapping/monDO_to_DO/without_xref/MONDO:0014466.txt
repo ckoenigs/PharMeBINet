@@ -1,3 +1,0 @@
-MONDO:0014466	Neu-Laxova syndrome 2
-DOID 	 name 
-DOID:0080075	Neu-Laxova syndrome 2

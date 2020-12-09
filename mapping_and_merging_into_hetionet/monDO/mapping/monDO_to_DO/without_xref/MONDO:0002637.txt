@@ -1,3 +1,0 @@
-MONDO:0002637	histiocytosis
-DOID 	 name 
-DOID:3405	histiocytosis

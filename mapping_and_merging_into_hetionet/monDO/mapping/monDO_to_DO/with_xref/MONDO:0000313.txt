@@ -1,3 +1,0 @@
-MONDO:0000313	hypophosphatemia (disease)
-DOID 	 name 
-DOID:0050336	hypophosphatemia

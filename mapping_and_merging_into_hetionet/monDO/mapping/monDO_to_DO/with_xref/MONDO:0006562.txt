@@ -1,3 +1,0 @@
-MONDO:0006562	incontinentia pigmenti achromians
-DOID 	 name 
-DOID:3156	incontinentia pigmenti achromians

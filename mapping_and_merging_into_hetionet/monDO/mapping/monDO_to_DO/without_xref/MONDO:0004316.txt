@@ -1,3 +1,0 @@
-MONDO:0004316	acantholytic squamous cell skin carcinoma
-DOID 	 name 
-DOID:7643	acantholytic squamous cell skin carcinoma

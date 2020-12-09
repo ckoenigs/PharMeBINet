@@ -1,3 +1,0 @@
-MONDO:0000554	endocervical adenocarcinoma
-DOID 	 name 
-DOID:0050940	endocervical adenocarcinoma

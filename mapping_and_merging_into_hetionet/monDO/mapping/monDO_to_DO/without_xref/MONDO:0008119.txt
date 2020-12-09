@@ -1,3 +1,0 @@
-MONDO:0008119	spinocerebellar ataxia type 1
-DOID 	 name 
-DOID:0050954	spinocerebellar ataxia type 1

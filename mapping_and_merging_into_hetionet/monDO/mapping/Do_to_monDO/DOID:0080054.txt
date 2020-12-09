@@ -1,3 +1,0 @@
-DOID:0080054	achondrogenesis type IA
-monDO ID 	 name 
-MONDO:0008701	achondrogenesis type IA

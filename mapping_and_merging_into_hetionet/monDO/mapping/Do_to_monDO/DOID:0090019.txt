@@ -1,3 +1,0 @@
-DOID:0090019	sitosterolemia
-monDO ID 	 name 
-MONDO:0008863	sitosterolemia

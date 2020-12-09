@@ -1,3 +1,0 @@
-MONDO:0005140	ovarian carcinoma
-DOID 	 name 
-DOID:4001	ovarian carcinoma

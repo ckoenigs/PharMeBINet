@@ -1,3 +1,0 @@
-DOID:4079	heart valve disease
-monDO ID 	 name 
-MONDO:0002869	heart valve disease

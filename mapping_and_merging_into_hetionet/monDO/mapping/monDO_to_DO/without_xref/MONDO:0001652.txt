@@ -1,3 +1,0 @@
-MONDO:0001652	scrotum melanoma
-DOID 	 name 
-DOID:13160	scrotum melanoma

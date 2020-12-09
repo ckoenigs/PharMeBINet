@@ -1,3 +1,0 @@
-DOID:11482	hemopericardium
-monDO ID 	 name 
-MONDO:0005783	hemopericardium (disease)

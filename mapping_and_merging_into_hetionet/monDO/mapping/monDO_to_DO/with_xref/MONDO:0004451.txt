@@ -1,3 +1,0 @@
-MONDO:0004451	sarcomatous intrahepatic cholangiocarcinoma
-DOID 	 name 
-DOID:8072	sarcomatous intrahepatic cholangiocarcinoma

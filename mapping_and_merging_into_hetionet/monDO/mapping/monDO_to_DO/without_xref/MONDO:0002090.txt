@@ -1,3 +1,0 @@
-MONDO:0002090	eccrine sweat gland neoplasm
-DOID 	 name 
-DOID:173	eccrine sweat gland neoplasm

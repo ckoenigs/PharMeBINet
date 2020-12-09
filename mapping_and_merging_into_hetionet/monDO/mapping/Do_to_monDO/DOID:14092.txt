@@ -1,3 +1,0 @@
-DOID:14092	renal artery atheroma
-monDO ID 	 name 
-MONDO:0001876	renal artery atheroma

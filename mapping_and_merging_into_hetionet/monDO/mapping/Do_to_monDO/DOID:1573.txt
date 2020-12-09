@@ -1,3 +1,0 @@
-DOID:1573	communicating hydrocephalus
-monDO ID 	 name 
-MONDO:0002045	communicating hydrocephalus

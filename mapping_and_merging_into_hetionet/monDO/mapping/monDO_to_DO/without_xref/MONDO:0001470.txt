@@ -1,3 +1,0 @@
-MONDO:0001470	anal margin squamous cell carcinoma
-DOID 	 name 
-DOID:12239	anal margin squamous cell carcinoma

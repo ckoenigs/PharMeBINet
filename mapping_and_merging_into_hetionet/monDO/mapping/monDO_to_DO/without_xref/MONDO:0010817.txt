@@ -1,3 +1,0 @@
-MONDO:0010817	autosomal dominant nonsyndromic deafness 2A
-DOID 	 name 
-DOID:0110558	autosomal dominant nonsyndromic deafness 2A

@@ -1,3 +1,0 @@
-DOID:0110793	hereditary spastic paraplegia 41
-monDO ID 	 name 
-MONDO:0013239	hereditary spastic paraplegia 41

@@ -1,3 +1,0 @@
-MONDO:0004868	biliary tract disease
-DOID 	 name 
-DOID:9741	biliary tract disease

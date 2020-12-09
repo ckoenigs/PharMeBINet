@@ -1,3 +1,0 @@
-MONDO:0004098	malignant melanocytic peripheral nerve sheath tumor of mediastinum
-DOID 	 name 
-DOID:7077	malignant melanocytic peripheral nerve sheath tumor of mediastinum

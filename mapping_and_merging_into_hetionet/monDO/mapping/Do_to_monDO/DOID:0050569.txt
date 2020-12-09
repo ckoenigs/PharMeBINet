@@ -1,3 +1,0 @@
-DOID:0050569	Seckel syndrome
-monDO ID 	 name 
-MONDO:0019342	Seckel syndrome

@@ -1,3 +1,0 @@
-DOID:9266	cystinuria
-monDO ID 	 name 
-MONDO:0009067	cystinuria (disease)

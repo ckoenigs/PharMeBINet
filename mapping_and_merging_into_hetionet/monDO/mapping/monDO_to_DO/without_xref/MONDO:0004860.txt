@@ -1,3 +1,0 @@
-MONDO:0004860	vitreous disease
-DOID 	 name 
-DOID:9720	vitreous disease

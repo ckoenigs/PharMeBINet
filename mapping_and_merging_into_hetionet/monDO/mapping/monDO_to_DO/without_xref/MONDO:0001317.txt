@@ -1,3 +1,0 @@
-MONDO:0001317	phlyctenulosis
-DOID 	 name 
-DOID:11581	phlyctenulosis

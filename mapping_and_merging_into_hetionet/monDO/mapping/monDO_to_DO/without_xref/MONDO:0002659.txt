@@ -1,3 +1,0 @@
-MONDO:0002659	uveal cancer
-DOID 	 name 
-DOID:3479	uveal cancer

@@ -1,3 +1,0 @@
-MONDO:0012162	patterned macular dystrophy 2
-DOID 	 name 
-DOID:0060864	patterned macular dystrophy 2

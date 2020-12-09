@@ -1,3 +1,0 @@
-DOID:5563	malignant teratoma
-monDO ID 	 name 
-MONDO:0003514	malignant teratoma

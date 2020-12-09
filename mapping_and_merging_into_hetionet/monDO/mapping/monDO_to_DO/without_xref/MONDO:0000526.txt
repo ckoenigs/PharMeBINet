@@ -1,3 +1,0 @@
-MONDO:0000526	appendix carcinoid tumor
-DOID 	 name 
-DOID:0050911	appendix carcinoid tumor

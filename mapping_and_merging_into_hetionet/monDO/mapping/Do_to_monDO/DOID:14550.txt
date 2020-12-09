@@ -1,3 +1,0 @@
-DOID:14550	root resorption
-monDO ID 	 name 
-MONDO:0001997	root resorption

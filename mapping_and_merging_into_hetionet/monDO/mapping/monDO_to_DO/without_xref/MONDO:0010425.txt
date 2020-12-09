@@ -1,3 +1,0 @@
-MONDO:0010425	Lisch epithelial corneal dystrophy
-DOID 	 name 
-DOID:0060450	Lisch epithelial corneal dystrophy

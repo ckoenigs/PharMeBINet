@@ -1,3 +1,0 @@
-MONDO:0010611	hydrocephalus with stenosis of the aqueduct of sylvius
-DOID 	 name 
-DOID:10908	hydrocephalus

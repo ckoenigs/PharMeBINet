@@ -1,3 +1,0 @@
-MONDO:0001608	vagus nerve neoplasm
-DOID 	 name 
-DOID:12984	vagus nerve neoplasm

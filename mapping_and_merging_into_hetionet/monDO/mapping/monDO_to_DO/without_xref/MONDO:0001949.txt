@@ -1,3 +1,0 @@
-MONDO:0001949	acute thyroiditis
-DOID 	 name 
-DOID:14353	acute thyroiditis

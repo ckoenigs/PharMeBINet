@@ -1,3 +1,0 @@
-DOID:13787	localized anterior staphyloma
-monDO ID 	 name 
-MONDO:0001799	localized anterior staphyloma

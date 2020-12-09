@@ -1,3 +1,0 @@
-MONDO:0002733	plexopathy
-DOID 	 name 
-DOID:3688	plexopathy

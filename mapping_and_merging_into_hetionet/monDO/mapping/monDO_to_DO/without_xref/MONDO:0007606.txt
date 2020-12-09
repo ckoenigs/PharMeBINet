@@ -1,3 +1,0 @@
-MONDO:0007606	fibrodysplasia ossificans progressiva
-DOID 	 name 
-DOID:13374	fibrodysplasia ossificans progressiva

@@ -1,3 +1,0 @@
-DOID:7607	chief cell adenoma
-monDO ID 	 name 
-MONDO:0004302	chief cell adenoma

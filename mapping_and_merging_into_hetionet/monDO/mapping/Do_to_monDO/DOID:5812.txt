@@ -1,3 +1,0 @@
-DOID:5812	MHC class II deficiency
-monDO ID 	 name 
-MONDO:0008855	MHC class II deficiency

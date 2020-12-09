@@ -1,3 +1,0 @@
-DOID:10349	solitary cyst of breast
-monDO ID 	 name 
-MONDO:0001009	solitary cyst of breast

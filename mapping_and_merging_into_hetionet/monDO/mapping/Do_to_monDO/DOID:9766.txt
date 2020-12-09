@@ -1,3 +1,0 @@
-DOID:9766	xanthogranulomatous cholecystitis
-monDO ID 	 name 
-MONDO:0004875	xanthogranulomatous cholecystitis

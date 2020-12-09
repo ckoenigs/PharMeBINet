@@ -1,7 +1,0 @@
-MONDO:0002797	childhood medulloblastoma
-DOID 	 name 
-DOID:0050902	medulloblastoma
-DOID:3864	adult medulloblastoma
-DOID:3868	melanotic medulloblastoma
-DOID:3869	childhood medulloblastoma
-DOID:3861	medullomyoblastoma

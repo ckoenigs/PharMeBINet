@@ -1,3 +1,0 @@
-DOID:1572	normal pressure hydrocephalus
-monDO ID 	 name 
-MONDO:0009366	normal pressure hydrocephalus

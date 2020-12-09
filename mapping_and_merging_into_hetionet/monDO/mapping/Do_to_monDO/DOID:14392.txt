@@ -1,3 +1,0 @@
-DOID:14392	thrombophlebitis migrans
-monDO ID 	 name 
-MONDO:0001954	thrombophlebitis migrans

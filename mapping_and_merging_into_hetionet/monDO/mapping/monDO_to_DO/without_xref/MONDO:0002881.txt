@@ -1,3 +1,0 @@
-MONDO:0002881	vaginal adenosarcoma
-DOID 	 name 
-DOID:4117	vaginal adenosarcoma

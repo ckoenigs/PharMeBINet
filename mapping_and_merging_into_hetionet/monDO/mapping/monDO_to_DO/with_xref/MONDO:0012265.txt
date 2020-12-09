@@ -1,3 +1,0 @@
-MONDO:0012265	PEE3
-DOID 	 name 
-DOID:10591	pre-eclampsia

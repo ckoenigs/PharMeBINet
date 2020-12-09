@@ -1,3 +1,0 @@
-DOID:4451	renal carcinoma
-monDO ID 	 name 
-MONDO:0005206	renal carcinoma

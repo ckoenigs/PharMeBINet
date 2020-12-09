@@ -1,3 +1,0 @@
-MONDO:0001394	chronic erythremia
-DOID 	 name 
-DOID:11868	chronic erythremia

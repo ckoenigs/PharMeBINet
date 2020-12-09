@@ -1,3 +1,0 @@
-MONDO:0006651	anterior uveitis (disease)
-DOID 	 name 
-DOID:1407	anterior uveitis

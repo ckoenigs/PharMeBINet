@@ -1,6 +1,0 @@
-MONDO:0001169	spastic monoplegia
-DOID 	 name 
-DOID:10970	spastic quadriplegia
-DOID:1969	cerebral palsy
-DOID:10968	spastic monoplegia
-DOID:10965	spastic diplegia

@@ -1,3 +1,0 @@
-DOID:11364	lens subluxation
-monDO ID 	 name 
-MONDO:0001271	lens subluxation (disease)

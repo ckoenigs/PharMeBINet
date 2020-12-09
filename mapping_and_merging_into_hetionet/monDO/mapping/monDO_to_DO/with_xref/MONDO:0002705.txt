@@ -1,3 +1,0 @@
-MONDO:0002705	breast mucinous cystadenocarcinoma
-DOID 	 name 
-DOID:3609	breast mucinous cystadenocarcinoma

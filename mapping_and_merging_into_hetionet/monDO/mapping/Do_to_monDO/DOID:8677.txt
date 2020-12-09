@@ -1,3 +1,0 @@
-DOID:8677	perinatal necrotizing enterocolitis
-monDO ID 	 name 
-MONDO:0004639	perinatal necrotizing enterocolitis

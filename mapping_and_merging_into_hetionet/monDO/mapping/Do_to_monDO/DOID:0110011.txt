@@ -1,3 +1,0 @@
-DOID:0110011	advanced sleep phase syndrome 1
-monDO ID 	 name 
-MONDO:0011442	advanced sleep phase syndrome 1

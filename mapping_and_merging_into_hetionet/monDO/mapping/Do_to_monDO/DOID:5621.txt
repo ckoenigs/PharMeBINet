@@ -1,3 +1,0 @@
-DOID:5621	histiocytic and dendritic cell cancer
-monDO ID 	 name 
-MONDO:0003547	histiocytic and dendritic cell cancer

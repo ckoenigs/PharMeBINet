@@ -1,3 +1,0 @@
-MONDO:0012445	autosomal recessive nonsyndromic deafness 59
-DOID 	 name 
-DOID:0110511	autosomal recessive nonsyndromic deafness 59

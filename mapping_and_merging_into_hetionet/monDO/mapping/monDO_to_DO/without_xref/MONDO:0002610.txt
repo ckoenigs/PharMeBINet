@@ -1,3 +1,0 @@
-MONDO:0002610	purpura (disease)
-DOID 	 name 
-DOID:3326	purpura

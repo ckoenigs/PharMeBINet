@@ -1,3 +1,0 @@
-MONDO:0001650	acute cystitis (disease)
-DOID 	 name 
-DOID:13148	acute cystitis

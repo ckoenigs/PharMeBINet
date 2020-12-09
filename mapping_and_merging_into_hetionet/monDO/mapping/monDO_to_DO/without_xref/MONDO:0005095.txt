@@ -1,3 +1,0 @@
-MONDO:0005095	spondyloarthropathy
-DOID 	 name 
-DOID:1123	spondyloarthropathy

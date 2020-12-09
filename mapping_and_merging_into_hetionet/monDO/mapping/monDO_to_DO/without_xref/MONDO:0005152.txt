@@ -1,3 +1,0 @@
-MONDO:0005152	hypopituitarism
-DOID 	 name 
-DOID:9406	hypopituitarism

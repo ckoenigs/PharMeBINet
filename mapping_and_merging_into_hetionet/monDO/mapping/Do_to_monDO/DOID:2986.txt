@@ -1,3 +1,0 @@
-DOID:2986	IgA glomerulonephritis
-monDO ID 	 name 
-MONDO:0005342	IgA glomerulonephritis

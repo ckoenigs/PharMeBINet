@@ -1,3 +1,0 @@
-DOID:0050961	spinocerebellar ataxia type 11
-monDO ID 	 name 
-MONDO:0011464	spinocerebellar ataxia type 11

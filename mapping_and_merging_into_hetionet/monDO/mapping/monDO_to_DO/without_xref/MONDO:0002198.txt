@@ -1,3 +1,0 @@
-MONDO:0002198	vulvar glandular tumor
-DOID 	 name 
-DOID:2076	vulvar glandular tumor

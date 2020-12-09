@@ -1,3 +1,0 @@
-MONDO:0005790	hepatitis A
-DOID 	 name 
-DOID:12549	hepatitis A

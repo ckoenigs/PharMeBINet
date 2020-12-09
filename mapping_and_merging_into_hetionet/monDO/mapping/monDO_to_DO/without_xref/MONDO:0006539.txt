@@ -1,3 +1,0 @@
-MONDO:0006539	diffuse lipomatosis
-DOID 	 name 
-DOID:3923	diffuse lipomatosis

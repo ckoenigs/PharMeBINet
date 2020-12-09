@@ -1,3 +1,0 @@
-DOID:12679	nephrocalcinosis
-monDO ID 	 name 
-MONDO:0001567	nephrocalcinosis

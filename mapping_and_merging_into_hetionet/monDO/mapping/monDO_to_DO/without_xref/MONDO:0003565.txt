@@ -1,3 +1,0 @@
-MONDO:0003565	urethral villous adenoma
-DOID 	 name 
-DOID:5643	urethral villous adenoma

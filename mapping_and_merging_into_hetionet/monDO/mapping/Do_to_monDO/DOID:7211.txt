@@ -1,3 +1,0 @@
-DOID:7211	fibrous meningioma
-monDO ID 	 name 
-MONDO:0004144	fibrous meningioma

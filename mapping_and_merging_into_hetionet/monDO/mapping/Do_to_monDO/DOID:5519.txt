@@ -1,3 +1,0 @@
-DOID:5519	colon squamous cell carcinoma
-monDO ID 	 name 
-MONDO:0018513	squamous cell carcinoma of colon

@@ -1,3 +1,0 @@
-DOID:7191	ovarian endometrioid cystadenoma
-monDO ID 	 name 
-MONDO:0004136	ovarian endometrioid cystadenoma

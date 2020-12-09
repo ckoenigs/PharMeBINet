@@ -1,3 +1,0 @@
-DOID:4863	spinal cord astrocytoma
-monDO ID 	 name 
-MONDO:0003174	spinal cord astrocytoma

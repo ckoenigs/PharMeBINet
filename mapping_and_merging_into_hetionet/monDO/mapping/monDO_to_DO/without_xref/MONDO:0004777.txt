@@ -1,3 +1,0 @@
-MONDO:0004777	acute laryngitis
-DOID 	 name 
-DOID:9396	acute laryngitis

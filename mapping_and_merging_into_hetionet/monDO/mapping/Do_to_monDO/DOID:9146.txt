@@ -1,3 +1,0 @@
-DOID:9146	visceral leishmaniasis
-monDO ID 	 name 
-MONDO:0005445	visceral leishmaniasis

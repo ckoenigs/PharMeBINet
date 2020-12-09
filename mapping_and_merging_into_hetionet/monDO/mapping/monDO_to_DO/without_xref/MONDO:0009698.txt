@@ -1,3 +1,0 @@
-MONDO:0009698	Unverricht-Lundborg syndrome
-DOID 	 name 
-DOID:3535	Unverricht-Lundborg syndrome

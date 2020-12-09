@@ -1,3 +1,0 @@
-MONDO:0004782	diabetes insipidus
-DOID 	 name 
-DOID:9409	diabetes insipidus

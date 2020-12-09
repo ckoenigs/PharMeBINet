@@ -1,3 +1,0 @@
-DOID:0060356	Vici syndrome
-monDO ID 	 name 
-MONDO:0009452	Vici syndrome

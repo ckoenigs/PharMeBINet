@@ -1,3 +1,0 @@
-MONDO:0013479	dilated cardiomyopathy 1HH
-DOID 	 name 
-DOID:0110448	dilated cardiomyopathy 1HH

@@ -1,3 +1,0 @@
-DOID:1391	Norum disease
-monDO ID 	 name 
-MONDO:0009515	Norum disease

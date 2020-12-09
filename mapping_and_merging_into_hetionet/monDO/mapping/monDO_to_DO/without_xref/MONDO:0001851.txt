@@ -1,3 +1,0 @@
-MONDO:0001851	primary lacrimal atrophy
-DOID 	 name 
-DOID:1399	primary lacrimal atrophy

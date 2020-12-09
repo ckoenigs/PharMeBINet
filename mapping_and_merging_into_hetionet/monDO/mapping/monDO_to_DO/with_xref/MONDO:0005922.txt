@@ -1,3 +1,0 @@
-MONDO:0005922	pleural tuberculosis
-DOID 	 name 
-DOID:106	pleural tuberculosis

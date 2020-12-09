@@ -1,3 +1,0 @@
-MONDO:0003599	vulvar liposarcoma
-DOID 	 name 
-DOID:5711	vulvar liposarcoma

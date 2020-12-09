@@ -1,3 +1,0 @@
-DOID:0090127	camptodactyly-arthropathy-coxa vara-pericarditis syndrome
-monDO ID 	 name 
-MONDO:0008828	camptodactyly-arthropathy-coxa vara-pericarditis syndrome

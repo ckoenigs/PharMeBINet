@@ -1,3 +1,0 @@
-DOID:8457	pellagra
-monDO ID 	 name 
-MONDO:0019975	pellagra

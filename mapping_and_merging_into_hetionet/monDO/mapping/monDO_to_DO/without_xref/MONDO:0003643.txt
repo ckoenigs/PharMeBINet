@@ -1,3 +1,0 @@
-MONDO:0003643	giant hemangioma
-DOID 	 name 
-DOID:5774	giant hemangioma

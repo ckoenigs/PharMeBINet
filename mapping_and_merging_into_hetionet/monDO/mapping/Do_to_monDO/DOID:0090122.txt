@@ -1,3 +1,0 @@
-DOID:0090122	aromatase excess syndrome
-monDO ID 	 name 
-MONDO:0007690	aromatase excess syndrome

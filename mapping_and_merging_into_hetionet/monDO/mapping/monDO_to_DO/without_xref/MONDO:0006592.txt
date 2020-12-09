@@ -1,3 +1,0 @@
-MONDO:0006592	parapsoriasis
-DOID 	 name 
-DOID:9088	parapsoriasis

@@ -1,3 +1,0 @@
-MONDO:0005995	trichostrongylosis
-DOID 	 name 
-DOID:1254	trichostrongylosis

@@ -1,3 +1,0 @@
-DOID:13189	gout
-monDO ID 	 name 
-MONDO:0005393	gout

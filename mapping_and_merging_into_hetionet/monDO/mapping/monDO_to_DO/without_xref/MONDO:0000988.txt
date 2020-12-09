@@ -1,3 +1,0 @@
-MONDO:0000988	discharging ear
-DOID 	 name 
-DOID:10261	discharging ear

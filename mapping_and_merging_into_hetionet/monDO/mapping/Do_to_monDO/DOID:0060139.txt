@@ -1,3 +1,0 @@
-DOID:0060139	color agnosia
-monDO ID 	 name 
-MONDO:0000669	color agnosia

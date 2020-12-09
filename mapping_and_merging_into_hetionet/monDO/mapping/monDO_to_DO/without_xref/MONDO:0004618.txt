@@ -1,3 +1,0 @@
-MONDO:0004618	diplegia of upper limb
-DOID 	 name 
-DOID:862	diplegia of upper limb

@@ -1,3 +1,0 @@
-MONDO:0004864	acute allergic mucoid otitis media
-DOID 	 name 
-DOID:9735	acute allergic mucoid otitis media

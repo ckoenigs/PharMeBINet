@@ -1,3 +1,0 @@
-MONDO:0000943	acute hydrops keratoconus
-DOID 	 name 
-DOID:10125	acute hydrops keratoconus

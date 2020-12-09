@@ -1,3 +1,0 @@
-DOID:11175	enophthalmos
-monDO ID 	 name 
-MONDO:0001210	enophthalmos (disease)

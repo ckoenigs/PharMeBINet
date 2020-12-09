@@ -1,4 +1,0 @@
-MONDO:0009092	Nasu-Hakola disease
-DOID 	 name 
-DOID:0090111	PCWH syndrome
-DOID:0090112	Nasu-Hakola disease

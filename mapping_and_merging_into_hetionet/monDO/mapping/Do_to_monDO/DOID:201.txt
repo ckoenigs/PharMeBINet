@@ -1,3 +1,0 @@
-DOID:201	connective tissue cancer
-monDO ID 	 name 
-MONDO:0002176	connective tissue cancer

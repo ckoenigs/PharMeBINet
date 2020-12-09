@@ -1,3 +1,0 @@
-DOID:4047	liver rhabdomyosarcoma
-monDO ID 	 name 
-MONDO:0002849	liver rhabdomyosarcoma

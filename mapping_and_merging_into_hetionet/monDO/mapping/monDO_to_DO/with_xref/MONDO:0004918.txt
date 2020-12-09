@@ -1,3 +1,0 @@
-MONDO:0004918	central corneal ulcer
-DOID 	 name 
-DOID:9910	central corneal ulcer

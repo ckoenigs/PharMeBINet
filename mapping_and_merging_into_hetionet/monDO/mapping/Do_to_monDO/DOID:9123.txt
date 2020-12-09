@@ -1,3 +1,0 @@
-DOID:9123	eczema herpeticum
-monDO ID 	 name 
-MONDO:0004712	herpes simplex dermatitis

@@ -1,3 +1,0 @@
-MONDO:0002824	extrinsic cardiomyopathy
-DOID 	 name 
-DOID:3978	extrinsic cardiomyopathy

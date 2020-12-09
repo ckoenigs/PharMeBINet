@@ -1,3 +1,0 @@
-MONDO:0009393	ornithine translocase deficiency
-DOID 	 name 
-DOID:0050720	ornithine translocase deficiency

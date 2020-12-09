@@ -1,3 +1,0 @@
-DOID:13448	posterior corneal pigmentation
-monDO ID 	 name 
-MONDO:0001717	posterior corneal pigmentation

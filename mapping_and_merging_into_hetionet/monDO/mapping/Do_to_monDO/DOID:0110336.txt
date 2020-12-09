@@ -1,3 +1,0 @@
-DOID:0110336	osteogenesis imperfecta type 8
-monDO ID 	 name 
-MONDO:0012581	osteogenesis imperfecta type 8

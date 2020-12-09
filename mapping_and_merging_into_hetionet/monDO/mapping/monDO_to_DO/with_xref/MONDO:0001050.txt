@@ -1,3 +1,0 @@
-MONDO:0001050	malignant otitis externa
-DOID 	 name 
-DOID:10516	malignant otitis externa

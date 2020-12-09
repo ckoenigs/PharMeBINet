@@ -1,3 +1,0 @@
-MONDO:0007078	Albright's hereditary osteodystrophy
-DOID 	 name 
-DOID:0080053	Albright's hereditary osteodystrophy

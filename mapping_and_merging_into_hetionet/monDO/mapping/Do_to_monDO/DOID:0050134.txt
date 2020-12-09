@@ -1,3 +1,0 @@
-DOID:0050134	cutaneous mycosis
-monDO ID 	 name 
-MONDO:0000254	cutaneous mycosis

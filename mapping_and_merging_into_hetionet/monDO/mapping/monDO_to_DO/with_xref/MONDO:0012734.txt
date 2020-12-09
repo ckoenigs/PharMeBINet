@@ -1,3 +1,0 @@
-MONDO:0012734	SERKAL syndrome
-DOID 	 name 
-DOID:14450	46 XX gonadal dysgenesis

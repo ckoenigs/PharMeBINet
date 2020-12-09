@@ -1,3 +1,0 @@
-MONDO:0014548	long QT syndrome 14
-DOID 	 name 
-DOID:0110655	long QT syndrome 14

@@ -1,3 +1,0 @@
-DOID:1036	chronic leukemia
-monDO ID 	 name 
-MONDO:0001014	chronic leukemia

@@ -1,3 +1,0 @@
-DOID:12161	peripheral retinal degeneration
-monDO ID 	 name 
-MONDO:0001451	peripheral retinal degeneration

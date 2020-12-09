@@ -1,3 +1,0 @@
-DOID:6271	gastric cardia adenocarcinoma
-monDO ID 	 name 
-MONDO:0003835	gastric cardia adenocarcinoma

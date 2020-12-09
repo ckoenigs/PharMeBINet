@@ -1,5 +1,0 @@
-MONDO:0001584	ocular motility disease
-DOID 	 name 
-DOID:1279	ocular motility disease
-DOID:538	internuclear ophthalmoplegia
-DOID:10235	Brown's tendon sheath syndrome

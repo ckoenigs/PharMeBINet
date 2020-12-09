@@ -1,3 +1,0 @@
-MONDO:0000226	mineral metabolism disease
-DOID 	 name 
-DOID:0050032	mineral metabolism disease

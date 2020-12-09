@@ -1,3 +1,0 @@
-MONDO:0002341	granulomatous angiitis
-DOID 	 name 
-DOID:2555	granulomatous angiitis

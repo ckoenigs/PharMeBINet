@@ -1,3 +1,0 @@
-MONDO:0001792	epiphora due to insufficient drainage
-DOID 	 name 
-DOID:13756	epiphora due to insufficient drainage

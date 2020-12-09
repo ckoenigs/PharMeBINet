@@ -1,3 +1,0 @@
-MONDO:0011329	cerebral palsy, spastic quadriplegic, 1
-DOID 	 name 
-DOID:10970	spastic quadriplegia

@@ -1,3 +1,0 @@
-DOID:13027	transient global amnesia
-monDO ID 	 name 
-MONDO:0001617	transient global amnesia (disease)

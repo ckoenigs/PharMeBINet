@@ -1,3 +1,0 @@
-DOID:9191	diabetic macular edema
-monDO ID 	 name 
-MONDO:0004728	diabetic macular edema

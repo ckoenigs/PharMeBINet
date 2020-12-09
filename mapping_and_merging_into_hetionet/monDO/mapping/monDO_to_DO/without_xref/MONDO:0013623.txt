@@ -1,3 +1,0 @@
-MONDO:0013623	platelet-type bleeding disorder 11
-DOID 	 name 
-DOID:0111057	platelet-type bleeding disorder 11

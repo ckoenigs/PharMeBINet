@@ -1,3 +1,0 @@
-MONDO:0001229	small intestine diverticulitis
-DOID 	 name 
-DOID:11223	small intestine diverticulitis

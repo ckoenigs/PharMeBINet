@@ -1,3 +1,0 @@
-DOID:0060437	chromosome 22q13 duplication syndrome
-monDO ID 	 name 
-MONDO:0014235	chromosome 22q13 duplication syndrome

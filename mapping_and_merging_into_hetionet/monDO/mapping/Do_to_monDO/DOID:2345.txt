@@ -1,3 +1,0 @@
-DOID:2345	plasma protein metabolism disease
-monDO ID 	 name 
-MONDO:0002273	plasma protein metabolism disease

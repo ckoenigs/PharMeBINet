@@ -1,3 +1,0 @@
-DOID:5940	malignant peripheral nerve sheath tumor
-monDO ID 	 name 
-MONDO:0017827	malignant peripheral nerve sheath tumor

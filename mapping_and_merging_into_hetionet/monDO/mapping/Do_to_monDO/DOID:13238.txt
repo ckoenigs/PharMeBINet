@@ -1,3 +1,0 @@
-DOID:13238	Haverhill fever
-monDO ID 	 name 
-MONDO:0001667	Haverhill fever

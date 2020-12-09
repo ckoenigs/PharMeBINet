@@ -1,3 +1,0 @@
-DOID:682	compartment syndrome
-monDO ID 	 name 
-MONDO:0004001	compartment syndrome

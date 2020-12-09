@@ -1,3 +1,0 @@
-MONDO:0003017	malignant peritoneal solitary fibrous tumor
-DOID 	 name 
-DOID:4490	malignant peritoneal solitary fibrous tumor

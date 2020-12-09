@@ -1,3 +1,0 @@
-MONDO:0010570	craniofrontonasal syndrome
-DOID 	 name 
-DOID:14737	craniofrontonasal syndrome

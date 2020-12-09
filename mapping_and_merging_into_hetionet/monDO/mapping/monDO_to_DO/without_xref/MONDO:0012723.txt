@@ -1,3 +1,0 @@
-MONDO:0012723	Leber congenital amaurosis 10
-DOID 	 name 
-DOID:0110291	Leber congenital amaurosis 10

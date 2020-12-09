@@ -1,3 +1,0 @@
-MONDO:0013652	narcolepsy 7
-DOID 	 name 
-DOID:8986	narcolepsy

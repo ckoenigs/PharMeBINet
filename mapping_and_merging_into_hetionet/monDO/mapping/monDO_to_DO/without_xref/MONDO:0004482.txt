@@ -1,3 +1,0 @@
-MONDO:0004482	fibroosseous pseudotumor of digits
-DOID 	 name 
-DOID:8153	fibroosseous pseudotumor of digits

@@ -1,3 +1,0 @@
-DOID:5681	ovarian embryonal carcinoma
-monDO ID 	 name 
-MONDO:0003581	ovarian embryonal carcinoma

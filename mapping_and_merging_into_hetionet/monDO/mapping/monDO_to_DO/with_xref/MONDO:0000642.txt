@@ -1,3 +1,0 @@
-MONDO:0000642	brain meningioma
-DOID 	 name 
-DOID:0060106	brain meningioma

@@ -1,3 +1,0 @@
-MONDO:0013757	hypothyroidism, congenital, Nongoitrous, 6
-DOID 	 name 
-DOID:0050328	congenital hypothyroidism

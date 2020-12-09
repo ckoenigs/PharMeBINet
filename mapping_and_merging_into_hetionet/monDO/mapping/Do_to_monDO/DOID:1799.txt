@@ -1,3 +1,0 @@
-DOID:1799	islet cell tumor
-monDO ID 	 name 
-MONDO:0005815	pancreatic neuroendocrine neoplasm

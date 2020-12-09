@@ -1,3 +1,0 @@
-DOID:0110326	hypertrophic cardiomyopathy 20
-monDO ID 	 name 
-MONDO:0013477	hypertrophic cardiomyopathy 20

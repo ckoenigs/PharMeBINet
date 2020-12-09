@@ -1,3 +1,0 @@
-DOID:5152	cellular neurofibroma
-monDO ID 	 name 
-MONDO:0003305	cellular neurofibroma

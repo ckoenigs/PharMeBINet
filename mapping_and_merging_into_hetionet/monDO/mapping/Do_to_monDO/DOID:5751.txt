@@ -1,3 +1,0 @@
-DOID:5751	pancreatic serous cystadenocarcinoma
-monDO ID 	 name 
-MONDO:0003630	pancreatic serous cystadenocarcinoma

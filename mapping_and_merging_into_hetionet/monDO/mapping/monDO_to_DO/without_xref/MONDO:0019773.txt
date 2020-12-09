@@ -1,3 +1,0 @@
-MONDO:0019773	myelomeningocele
-DOID 	 name 
-DOID:0060326	myelomeningocele

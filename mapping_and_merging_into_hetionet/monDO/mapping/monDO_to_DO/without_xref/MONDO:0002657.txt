@@ -1,3 +1,0 @@
-MONDO:0002657	breast disease
-DOID 	 name 
-DOID:3463	breast disease

@@ -1,3 +1,0 @@
-DOID:774	retina lymphoma
-monDO ID 	 name 
-MONDO:0004349	retina lymphoma

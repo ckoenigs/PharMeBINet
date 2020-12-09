@@ -1,3 +1,0 @@
-MONDO:0001268	gingival recession
-DOID 	 name 
-DOID:1134	gingival recession

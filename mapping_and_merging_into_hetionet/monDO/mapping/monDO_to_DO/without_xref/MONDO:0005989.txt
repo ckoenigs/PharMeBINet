@@ -1,3 +1,0 @@
-MONDO:0005989	toxoplasmosis
-DOID 	 name 
-DOID:9965	toxoplasmosis

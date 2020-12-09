@@ -1,3 +1,0 @@
-MONDO:0005862	multiple chemical sensitivity
-DOID 	 name 
-DOID:4661	multiple chemical sensitivity

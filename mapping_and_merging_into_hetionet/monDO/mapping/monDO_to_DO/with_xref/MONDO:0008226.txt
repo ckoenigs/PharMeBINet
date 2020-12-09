@@ -1,4 +1,0 @@
-MONDO:0008226	aggressive periodontitis
-DOID 	 name 
-DOID:9893	periodontosis
-DOID:1474	aggressive periodontitis

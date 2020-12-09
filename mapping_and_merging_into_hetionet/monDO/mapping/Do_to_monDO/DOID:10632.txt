@@ -1,3 +1,0 @@
-DOID:10632	Wolfram syndrome
-monDO ID 	 name 
-MONDO:0018105	Wolfram syndrome

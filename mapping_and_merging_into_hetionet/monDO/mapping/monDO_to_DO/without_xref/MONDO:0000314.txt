@@ -1,3 +1,0 @@
-MONDO:0000314	primary bacterial infectious disease
-DOID 	 name 
-DOID:0050338	primary bacterial infectious disease

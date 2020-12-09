@@ -1,3 +1,0 @@
-MONDO:0017590	carcinoma of the ampulla of vater
-DOID 	 name 
-DOID:4932	ampulla of Vater carcinoma

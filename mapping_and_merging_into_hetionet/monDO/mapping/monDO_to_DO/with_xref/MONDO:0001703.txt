@@ -1,8 +1,0 @@
-MONDO:0001703	color vision disorder
-DOID 	 name 
-DOID:13399	color blindness
-DOID:11661	blue color blindness
-DOID:13912	acquired color blindness
-DOID:13910	red color blindness
-DOID:13911	achromatopsia
-DOID:13909	red-green color blindness

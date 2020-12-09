@@ -1,3 +1,0 @@
-MONDO:0006034	gastric adenosquamous carcinoma
-DOID 	 name 
-DOID:5635	gastric adenosquamous carcinoma

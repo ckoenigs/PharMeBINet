@@ -1,3 +1,0 @@
-MONDO:0002088	partial of retinal vein occlusion
-DOID 	 name 
-DOID:1726	partial of retinal vein occlusion

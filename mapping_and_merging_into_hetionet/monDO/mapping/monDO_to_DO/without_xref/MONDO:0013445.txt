@@ -1,3 +1,0 @@
-MONDO:0013445	complement component 9 deficiency
-DOID 	 name 
-DOID:0060303	complement component 9 deficiency

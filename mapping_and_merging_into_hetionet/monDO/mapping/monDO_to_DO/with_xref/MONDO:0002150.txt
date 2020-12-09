@@ -1,4 +1,0 @@
-MONDO:0002150	hypothalamic disease
-DOID 	 name 
-DOID:1931	hypothalamic disease
-DOID:6676	Froelich syndrome

@@ -1,3 +1,0 @@
-MONDO:0000919	ampulla of vater cancer
-DOID 	 name 
-DOID:10020	ampulla of Vater cancer

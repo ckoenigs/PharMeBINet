@@ -1,3 +1,0 @@
-MONDO:0019012	Carpenter syndrome
-DOID 	 name 
-DOID:0060234	Carpenter syndrome

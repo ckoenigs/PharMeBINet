@@ -1,3 +1,0 @@
-DOID:4737	somatoform disorder
-monDO ID 	 name 
-MONDO:0003117	somatoform disorder

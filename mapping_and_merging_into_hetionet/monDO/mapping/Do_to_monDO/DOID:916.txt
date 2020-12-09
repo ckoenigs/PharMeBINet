@@ -1,3 +1,0 @@
-DOID:916	liver neoplasm
-monDO ID 	 name 
-MONDO:0004721	liver neoplasm

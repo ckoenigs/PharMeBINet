@@ -1,3 +1,0 @@
-MONDO:0014496	mitochondrial complex III deficiency nuclear type 9
-DOID 	 name 
-DOID:0080118	mitochondrial complex III deficiency nuclear type 9

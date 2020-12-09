@@ -1,3 +1,0 @@
-DOID:1984	rectal neoplasm
-monDO ID 	 name 
-MONDO:0002165	rectal neoplasm

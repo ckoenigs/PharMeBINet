@@ -1,3 +1,0 @@
-DOID:0110970	brachydactyly type C
-monDO ID 	 name 
-MONDO:0007221	brachydactyly type C

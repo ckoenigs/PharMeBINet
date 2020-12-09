@@ -1,3 +1,0 @@
-DOID:9097	erythematosquamous dermatosis
-monDO ID 	 name 
-MONDO:0006546	erythematosquamous dermatosis

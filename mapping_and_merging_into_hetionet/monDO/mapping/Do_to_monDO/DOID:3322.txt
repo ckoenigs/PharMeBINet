@@ -1,3 +1,0 @@
-DOID:3322	gangliosidosis GM1
-monDO ID 	 name 
-MONDO:0018149	GM1 gangliosidosis

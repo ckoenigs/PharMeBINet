@@ -1,3 +1,0 @@
-DOID:0050425	restless legs syndrome
-monDO ID 	 name 
-MONDO:0005391	restless legs syndrome

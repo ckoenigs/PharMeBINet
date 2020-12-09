@@ -1,3 +1,0 @@
-MONDO:0003709	pancreatic colloid cystadenoma
-DOID 	 name 
-DOID:7735	pancreatic colloid cystadenoma

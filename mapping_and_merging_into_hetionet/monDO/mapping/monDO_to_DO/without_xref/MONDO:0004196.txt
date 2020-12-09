@@ -1,3 +1,0 @@
-MONDO:0004196	rectal sarcomatoid carcinoma
-DOID 	 name 
-DOID:7356	rectum sarcomatoid carcinoma

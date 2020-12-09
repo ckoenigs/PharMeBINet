@@ -1,3 +1,0 @@
-MONDO:0006730	drug psychosis
-DOID 	 name 
-DOID:1742	drug psychosis

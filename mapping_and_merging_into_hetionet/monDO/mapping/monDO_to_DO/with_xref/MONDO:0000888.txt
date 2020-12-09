@@ -1,3 +1,0 @@
-MONDO:0000888	gastrointestinal mucositis
-DOID 	 name 
-DOID:0080178	mucositis

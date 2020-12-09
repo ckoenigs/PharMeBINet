@@ -1,3 +1,0 @@
-DOID:6786	childhood botryoid rhabdomyosarcoma
-monDO ID 	 name 
-MONDO:0003992	childhood botryoid rhabdomyosarcoma

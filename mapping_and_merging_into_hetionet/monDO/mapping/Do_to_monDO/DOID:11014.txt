@@ -1,3 +1,0 @@
-DOID:11014	anorectal stricture
-monDO ID 	 name 
-MONDO:0001177	anorectal stricture

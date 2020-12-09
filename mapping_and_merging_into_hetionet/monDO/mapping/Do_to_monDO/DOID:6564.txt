@@ -1,3 +1,0 @@
-DOID:6564	neurilemmoma of the pleura
-monDO ID 	 name 
-MONDO:0003926	neurilemmoma of the pleura

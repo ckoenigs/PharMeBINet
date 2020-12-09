@@ -1,3 +1,0 @@
-DOID:8800	lung carcinoma in situ
-monDO ID 	 name 
-MONDO:0004660	lung carcinoma in situ

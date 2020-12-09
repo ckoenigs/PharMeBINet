@@ -1,3 +1,0 @@
-MONDO:0008090	cyclic hematopoiesis
-DOID 	 name 
-DOID:5339	cyclic hematopoiesis

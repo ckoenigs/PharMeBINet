@@ -1,3 +1,0 @@
-MONDO:0005903	pericardial tuberculosis
-DOID 	 name 
-DOID:4962	pericardial tuberculosis

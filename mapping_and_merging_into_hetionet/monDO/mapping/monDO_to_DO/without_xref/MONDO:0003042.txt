@@ -1,3 +1,0 @@
-MONDO:0003042	adult mesenchymal chondrosarcoma
-DOID 	 name 
-DOID:4547	adult mesenchymal chondrosarcoma

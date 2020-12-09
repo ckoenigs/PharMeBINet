@@ -1,3 +1,0 @@
-MONDO:0000410	funisitis
-DOID 	 name 
-DOID:0050698	funisitis

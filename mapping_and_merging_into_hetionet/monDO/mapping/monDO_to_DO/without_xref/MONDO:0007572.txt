@@ -1,3 +1,0 @@
-MONDO:0007572	familial erythrocytosis 1
-DOID 	 name 
-DOID:0060652	familial erythrocytosis 1

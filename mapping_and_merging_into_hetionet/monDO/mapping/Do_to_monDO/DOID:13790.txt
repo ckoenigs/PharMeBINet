@@ -1,3 +1,0 @@
-DOID:13790	acute tympanitis
-monDO ID 	 name 
-MONDO:0001802	acute tympanitis

@@ -1,3 +1,0 @@
-DOID:8415	carcinoma arising in nasal papillomatosis
-monDO ID 	 name 
-MONDO:0004556	carcinoma arising in nasal papillomatosis

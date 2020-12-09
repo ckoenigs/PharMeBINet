@@ -1,3 +1,0 @@
-MONDO:0006969	sialadenitis
-DOID 	 name 
-DOID:10303	sialadenitis

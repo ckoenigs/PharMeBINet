@@ -1,3 +1,0 @@
-MONDO:0002877	cervical carcinosarcoma
-DOID 	 name 
-DOID:4112	cervical carcinosarcoma

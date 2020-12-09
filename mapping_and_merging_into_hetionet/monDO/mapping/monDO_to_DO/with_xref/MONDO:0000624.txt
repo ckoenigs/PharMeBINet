@@ -1,3 +1,0 @@
-MONDO:0000624	female reproductive organ benign neoplasm
-DOID 	 name 
-DOID:0060086	female reproductive organ benign neoplasm

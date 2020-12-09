@@ -1,3 +1,0 @@
-MONDO:0017137	onchocerciasis
-DOID 	 name 
-DOID:11678	onchocerciasis

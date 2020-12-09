@@ -1,3 +1,0 @@
-MONDO:0002553	cerebellopontine angle tumor
-DOID 	 name 
-DOID:3200	cerebellopontine angle tumor

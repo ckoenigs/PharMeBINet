@@ -1,3 +1,0 @@
-DOID:6258	type 1 papillary adenoma of the kidney
-monDO ID 	 name 
-MONDO:0003830	type 1 papillary adenoma of the kidney

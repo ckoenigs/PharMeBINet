@@ -1,3 +1,0 @@
-MONDO:0003352	colon sarcoma
-DOID 	 name 
-DOID:5260	colon sarcoma

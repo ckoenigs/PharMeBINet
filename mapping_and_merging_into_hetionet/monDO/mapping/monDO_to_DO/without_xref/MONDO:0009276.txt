@@ -1,3 +1,0 @@
-MONDO:0009276	Bernard-Soulier syndrome
-DOID 	 name 
-DOID:2217	Bernard-Soulier syndrome

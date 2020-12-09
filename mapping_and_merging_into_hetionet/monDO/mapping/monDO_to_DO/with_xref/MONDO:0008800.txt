@@ -1,3 +1,0 @@
-MONDO:0008800	microphthalmia with limb anomalies
-DOID 	 name 
-DOID:0060861	microphthalmia with limb anomalies

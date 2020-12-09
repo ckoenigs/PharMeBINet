@@ -1,3 +1,0 @@
-MONDO:0003141	cerebellopontine angle primitive neuroectodermal
-DOID 	 name 
-DOID:4787	cerebellopontine angle primitive neuroectodermal

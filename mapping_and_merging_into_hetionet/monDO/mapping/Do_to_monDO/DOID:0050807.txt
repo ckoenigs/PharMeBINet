@@ -1,3 +1,0 @@
-DOID:0050807	Kahrizi syndrome
-monDO ID 	 name 
-MONDO:0012991	Kahrizi syndrome

@@ -1,3 +1,0 @@
-DOID:1682	congenital heart disease
-monDO ID 	 name 
-MONDO:0005453	congenital heart disease

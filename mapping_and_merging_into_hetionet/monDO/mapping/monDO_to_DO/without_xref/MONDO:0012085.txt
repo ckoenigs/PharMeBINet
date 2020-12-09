@@ -1,3 +1,0 @@
-MONDO:0012085	primary ciliary dyskinesia 3
-DOID 	 name 
-DOID:0110599	primary ciliary dyskinesia 3

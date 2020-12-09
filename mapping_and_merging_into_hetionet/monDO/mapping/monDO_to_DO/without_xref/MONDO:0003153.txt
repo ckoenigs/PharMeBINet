@@ -1,3 +1,0 @@
-MONDO:0003153	adult brain stem glioma
-DOID 	 name 
-DOID:4813	adult brain stem glioma

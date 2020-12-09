@@ -1,3 +1,0 @@
-MONDO:0010308	thrombocytopenia, X-linked, with or without dyserythropoietic anemia
-DOID 	 name 
-DOID:1588	thrombocytopenia

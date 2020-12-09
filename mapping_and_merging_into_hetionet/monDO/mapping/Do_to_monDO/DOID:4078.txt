@@ -1,3 +1,0 @@
-DOID:4078	tricuspid valve stenosis
-monDO ID 	 name 
-MONDO:0005997	tricuspid valve stenosis

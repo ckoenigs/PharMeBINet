@@ -1,3 +1,0 @@
-DOID:870	neuropathy
-monDO ID 	 name 
-MONDO:0005244	peripheral neuropathy

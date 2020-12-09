@@ -1,3 +1,0 @@
-DOID:270	liver sarcoma
-monDO ID 	 name 
-MONDO:0002397	liver sarcoma

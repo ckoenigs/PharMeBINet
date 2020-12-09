@@ -1,3 +1,0 @@
-DOID:899	choledochal cyst
-monDO ID 	 name 
-MONDO:0018805	choledochal cyst

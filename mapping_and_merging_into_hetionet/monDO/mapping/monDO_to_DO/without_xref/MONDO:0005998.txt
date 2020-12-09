@@ -1,3 +1,0 @@
-MONDO:0005998	trombiculiasis
-DOID 	 name 
-DOID:8399	trombiculiasis

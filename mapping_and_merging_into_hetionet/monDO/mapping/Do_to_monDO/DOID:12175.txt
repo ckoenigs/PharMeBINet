@@ -1,3 +1,0 @@
-DOID:12175	dyshormonogenic goiter
-monDO ID 	 name 
-MONDO:0001460	dyshormonogenic goiter

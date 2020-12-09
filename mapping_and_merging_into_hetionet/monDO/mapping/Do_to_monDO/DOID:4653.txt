@@ -1,3 +1,0 @@
-DOID:4653	intraocular retinoblastoma
-monDO ID 	 name 
-MONDO:0003077	intraocular retinoblastoma

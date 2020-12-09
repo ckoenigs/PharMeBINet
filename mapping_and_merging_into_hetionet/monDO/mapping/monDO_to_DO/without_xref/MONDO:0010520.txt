@@ -1,3 +1,0 @@
-MONDO:0010520	X-linked Alport syndrome
-DOID 	 name 
-DOID:0110034	X-linked Alport syndrome

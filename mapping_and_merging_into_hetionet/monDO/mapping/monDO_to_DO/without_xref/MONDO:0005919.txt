@@ -1,3 +1,0 @@
-MONDO:0005919	placental insufficiency
-DOID 	 name 
-DOID:3891	placental insufficiency

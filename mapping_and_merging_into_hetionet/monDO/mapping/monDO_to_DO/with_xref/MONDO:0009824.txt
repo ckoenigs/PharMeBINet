@@ -1,3 +1,0 @@
-MONDO:0009824	primary hyperoxaluria type 2
-DOID 	 name 
-DOID:2977	primary hyperoxaluria

@@ -1,3 +1,0 @@
-MONDO:0002486	lobular neoplasia
-DOID 	 name 
-DOID:3010	lobular neoplasia

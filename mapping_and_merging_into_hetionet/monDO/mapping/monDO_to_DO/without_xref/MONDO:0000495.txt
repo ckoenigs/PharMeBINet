@@ -1,3 +1,0 @@
-MONDO:0000495	oppositional defiant disorder (disease)
-DOID 	 name 
-DOID:0050856	oppositional defiant disorder

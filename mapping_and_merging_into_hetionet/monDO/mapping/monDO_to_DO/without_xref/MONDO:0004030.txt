@@ -1,3 +1,0 @@
-MONDO:0004030	ureter transitional cell carcinoma
-DOID 	 name 
-DOID:6888	ureter transitional cell carcinoma

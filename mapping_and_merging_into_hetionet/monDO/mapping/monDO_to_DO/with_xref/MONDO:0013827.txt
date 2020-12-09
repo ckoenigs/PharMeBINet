@@ -1,3 +1,0 @@
-MONDO:0013827	hyperekplexia 3
-DOID 	 name 
-DOID:0060698	hyperekplexia 3

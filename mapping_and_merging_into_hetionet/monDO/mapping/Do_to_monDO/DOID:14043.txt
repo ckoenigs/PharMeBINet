@@ -1,3 +1,0 @@
-DOID:14043	neonatal myasthenia gravis
-monDO ID 	 name 
-MONDO:0006866	neonatal myasthenia gravis

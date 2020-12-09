@@ -1,3 +1,0 @@
-DOID:1564	fungal infectious disease
-monDO ID 	 name 
-MONDO:0002041	fungal infectious disease

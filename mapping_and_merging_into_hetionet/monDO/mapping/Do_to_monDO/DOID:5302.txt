@@ -1,3 +1,0 @@
-DOID:5302	uterine ligament clear cell adenocarcinoma
-monDO ID 	 name 
-MONDO:0003384	uterine ligament clear cell adenocarcinoma

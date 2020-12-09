@@ -1,3 +1,0 @@
-DOID:10754	otitis media
-monDO ID 	 name 
-MONDO:0005441	otitis media (disease)

@@ -1,3 +1,0 @@
-DOID:0060013	gamma chain deficiency
-monDO ID 	 name 
-MONDO:0010315	gamma chain deficiency

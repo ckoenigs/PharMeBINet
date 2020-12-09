@@ -1,3 +1,0 @@
-DOID:6620	X-linked hyper IgM syndrome
-monDO ID 	 name 
-MONDO:0010626	X-linked hyper-IgM syndrome

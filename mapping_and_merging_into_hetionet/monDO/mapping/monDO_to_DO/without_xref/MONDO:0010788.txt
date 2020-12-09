@@ -1,3 +1,0 @@
-MONDO:0010788	Leber hereditary optic neuropathy
-DOID 	 name 
-DOID:705	Leber hereditary optic neuropathy

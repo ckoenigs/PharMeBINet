@@ -1,3 +1,0 @@
-DOID:5768	Nager acrofacial dysostosis
-monDO ID 	 name 
-MONDO:0007943	Nager acrofacial dysostosis

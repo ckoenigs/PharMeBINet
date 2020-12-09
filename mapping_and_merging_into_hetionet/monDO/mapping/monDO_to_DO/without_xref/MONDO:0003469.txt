@@ -1,3 +1,0 @@
-MONDO:0003469	epithelioid cell synovial sarcoma
-DOID 	 name 
-DOID:5494	epithelioid cell synovial sarcoma

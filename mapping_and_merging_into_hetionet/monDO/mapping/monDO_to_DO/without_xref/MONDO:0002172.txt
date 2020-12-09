@@ -1,3 +1,0 @@
-MONDO:0002172	otosalpingitis
-DOID 	 name 
-DOID:2000	otosalpingitis

@@ -1,3 +1,0 @@
-MONDO:0017210	infectious anterior uveitis
-DOID 	 name 
-DOID:9389	infectious anterior uveitis

@@ -1,3 +1,0 @@
-MONDO:0015790	central diabetes insipidus
-DOID 	 name 
-DOID:12388	neurohypophyseal diabetes insipidus

@@ -1,3 +1,0 @@
-MONDO:0000939	intracranial abscess
-DOID 	 name 
-DOID:10095	intracranial abscess

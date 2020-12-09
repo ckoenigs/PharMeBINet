@@ -1,3 +1,0 @@
-MONDO:0006733	dry eye syndrome
-DOID 	 name 
-DOID:10140	dry eye syndrome

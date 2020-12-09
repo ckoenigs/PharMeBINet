@@ -1,3 +1,0 @@
-DOID:9954	null-cell leukemia
-monDO ID 	 name 
-MONDO:0004932	null-cell leukemia

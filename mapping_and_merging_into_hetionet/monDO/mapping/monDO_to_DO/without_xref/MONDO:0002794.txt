@@ -1,3 +1,0 @@
-MONDO:0002794	adult medulloblastoma
-DOID 	 name 
-DOID:3864	adult medulloblastoma

@@ -1,3 +1,0 @@
-MONDO:0004611	soft palate cancer
-DOID 	 name 
-DOID:8578	soft palate cancer

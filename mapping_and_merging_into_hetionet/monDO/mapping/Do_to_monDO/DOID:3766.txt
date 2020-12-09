@@ -1,3 +1,0 @@
-DOID:3766	leukorrhea
-monDO ID 	 name 
-MONDO:0002769	leukorrhea

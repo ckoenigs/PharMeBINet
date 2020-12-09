@@ -1,3 +1,0 @@
-MONDO:0001327	pelvic muscle wasting
-DOID 	 name 
-DOID:11629	pelvic muscle wasting

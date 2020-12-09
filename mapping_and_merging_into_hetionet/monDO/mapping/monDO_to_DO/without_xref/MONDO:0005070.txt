@@ -1,3 +1,0 @@
-MONDO:0005070	neoplasm (disease)
-DOID 	 name 
-DOID:14566	disease of cellular proliferation

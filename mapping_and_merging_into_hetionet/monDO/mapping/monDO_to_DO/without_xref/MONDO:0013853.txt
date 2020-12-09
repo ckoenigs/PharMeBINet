@@ -1,3 +1,0 @@
-MONDO:0013853	pontocerebellar hypoplasia type 1B
-DOID 	 name 
-DOID:0060266	pontocerebellar hypoplasia type 1B

@@ -1,3 +1,0 @@
-MONDO:0011107	congenital hypotrichosis with juvenile macular dystrophy
-DOID 	 name 
-DOID:0110711	congenital hypotrichosis with juvenile macular dystrophy

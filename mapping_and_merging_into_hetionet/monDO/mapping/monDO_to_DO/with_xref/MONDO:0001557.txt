@@ -1,3 +1,0 @@
-MONDO:0001557	olecranon bursitis
-DOID 	 name 
-DOID:12581	olecranon bursitis

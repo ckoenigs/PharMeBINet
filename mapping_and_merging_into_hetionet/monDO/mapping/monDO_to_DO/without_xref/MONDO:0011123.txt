@@ -1,3 +1,0 @@
-MONDO:0011123	type 1 diabetes mellitus 15
-DOID 	 name 
-DOID:0110753	type 1 diabetes mellitus 15

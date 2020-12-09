@@ -1,3 +1,0 @@
-MONDO:0013632	autosomal dominant nonsyndromic deafness 33
-DOID 	 name 
-DOID:0110562	autosomal dominant nonsyndromic deafness 33

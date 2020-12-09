@@ -1,3 +1,0 @@
-MONDO:0006583	necrobiosis lipoidica
-DOID 	 name 
-DOID:3486	necrobiosis lipoidica

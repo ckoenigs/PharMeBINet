@@ -1,3 +1,0 @@
-MONDO:0005606	tubular adenocarcinoma
-DOID 	 name 
-DOID:4929	tubular adenocarcinoma

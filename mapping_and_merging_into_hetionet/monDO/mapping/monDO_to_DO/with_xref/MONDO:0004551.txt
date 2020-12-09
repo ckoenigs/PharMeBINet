@@ -1,3 +1,0 @@
-MONDO:0004551	Meckel diverticulitis
-DOID 	 name 
-DOID:8408	Meckel's diverticulitis

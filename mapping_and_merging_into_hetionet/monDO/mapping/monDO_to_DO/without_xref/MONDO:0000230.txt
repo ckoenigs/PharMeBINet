@@ -1,3 +1,0 @@
-MONDO:0000230	Israeli tick typhus
-DOID 	 name 
-DOID:0050043	Israeli tick typhus

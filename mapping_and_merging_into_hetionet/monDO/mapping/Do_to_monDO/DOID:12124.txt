@@ -1,3 +1,0 @@
-DOID:12124	episcleritis periodica fugax
-monDO ID 	 name 
-MONDO:0001439	episcleritis periodica fugax

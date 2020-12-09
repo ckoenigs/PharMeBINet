@@ -1,3 +1,0 @@
-DOID:3565	meningioma
-monDO ID 	 name 
-MONDO:0016642	meningioma (disease)

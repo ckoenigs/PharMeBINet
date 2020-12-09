@@ -1,3 +1,0 @@
-DOID:3843	diencephalic neoplasm
-monDO ID 	 name 
-MONDO:0002786	diencephalic cancer

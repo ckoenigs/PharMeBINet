@@ -1,3 +1,0 @@
-MONDO:0005568	cholesterol embolism
-DOID 	 name 
-DOID:1461	cholesterol embolism

@@ -1,3 +1,0 @@
-MONDO:0002236	ocular cancer
-DOID 	 name 
-DOID:2174	ocular cancer

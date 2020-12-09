@@ -1,4 +1,0 @@
-MONDO:0015974	severe combined immunodeficiency (disease)
-DOID 	 name 
-DOID:5812	MHC class II deficiency
-DOID:627	severe combined immunodeficiency

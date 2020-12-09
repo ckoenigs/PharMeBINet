@@ -1,3 +1,0 @@
-MONDO:0000368	extrapulmonary tuberculosis
-DOID 	 name 
-DOID:0050598	extrapulmonary tuberculosis

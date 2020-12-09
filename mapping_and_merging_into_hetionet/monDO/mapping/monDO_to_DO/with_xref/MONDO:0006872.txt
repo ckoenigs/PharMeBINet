@@ -1,3 +1,0 @@
-MONDO:0006872	nut allergic reaction
-DOID 	 name 
-DOID:4379	nut allergy

@@ -1,3 +1,0 @@
-MONDO:0010211	xeroderma pigmentosum group C
-DOID 	 name 
-DOID:0110844	xeroderma pigmentosum group C

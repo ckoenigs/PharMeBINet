@@ -1,3 +1,0 @@
-MONDO:0002243	hemorrhagic disease
-DOID 	 name 
-DOID:2213	hemorrhagic disease

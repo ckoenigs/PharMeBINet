@@ -1,3 +1,0 @@
-MONDO:0019409	idiopathic juvenile osteoporosis
-DOID 	 name 
-DOID:12559	idiopathic juvenile osteoporosis

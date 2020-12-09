@@ -1,3 +1,0 @@
-MONDO:0002116	malignant exocrine pancreas neoplasm
-DOID 	 name 
-DOID:1795	tumor of exocrine pancreas

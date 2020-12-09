@@ -1,3 +1,0 @@
-MONDO:0009292	glycogen storage disease due to glycogen branching enzyme deficiency
-DOID 	 name 
-DOID:2750	glycogen storage disease IV

@@ -1,3 +1,0 @@
-DOID:14720	type I Ehlers-Danlos syndrome
-monDO ID 	 name 
-MONDO:0019567	Ehlers-Danlos syndrome type 1

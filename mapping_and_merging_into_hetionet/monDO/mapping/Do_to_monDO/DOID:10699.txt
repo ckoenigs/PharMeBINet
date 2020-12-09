@@ -1,3 +1,0 @@
-DOID:10699	paragonimiasis
-monDO ID 	 name 
-MONDO:0005895	paragonimiasis

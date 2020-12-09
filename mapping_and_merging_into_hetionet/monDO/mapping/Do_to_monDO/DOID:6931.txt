@@ -1,3 +1,0 @@
-DOID:6931	papillary extrahepatic bile duct adenocarcinoma
-monDO ID 	 name 
-MONDO:0004039	papillary extrahepatic bile duct adenocarcinoma

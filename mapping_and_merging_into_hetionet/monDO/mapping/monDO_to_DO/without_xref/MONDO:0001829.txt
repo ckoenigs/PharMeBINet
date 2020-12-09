@@ -1,3 +1,0 @@
-MONDO:0001829	lumbosacral plexus lesion
-DOID 	 name 
-DOID:13913	lumbosacral plexus lesion

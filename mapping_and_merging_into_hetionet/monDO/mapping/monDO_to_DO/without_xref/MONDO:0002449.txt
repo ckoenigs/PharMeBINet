@@ -1,3 +1,0 @@
-MONDO:0002449	nodular degeneration of cornea
-DOID 	 name 
-DOID:2879	nodular degeneration of cornea

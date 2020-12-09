@@ -1,3 +1,0 @@
-MONDO:0009562	beta-mannosidosis
-DOID 	 name 
-DOID:3633	beta-mannosidosis

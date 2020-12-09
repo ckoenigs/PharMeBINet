@@ -1,3 +1,0 @@
-MONDO:0019149	cholesteryl ester storage disease
-DOID 	 name 
-DOID:14502	cholesterol ester storage disease

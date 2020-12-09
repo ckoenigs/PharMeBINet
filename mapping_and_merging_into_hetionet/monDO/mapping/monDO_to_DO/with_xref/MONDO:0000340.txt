@@ -1,3 +1,0 @@
-MONDO:0000340	bulbospinal polio
-DOID 	 name 
-DOID:0050514	bulbospinal polio

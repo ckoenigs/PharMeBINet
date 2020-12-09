@@ -1,3 +1,0 @@
-MONDO:0002918	clear cell meningioma
-DOID 	 name 
-DOID:4210	clear cell meningioma

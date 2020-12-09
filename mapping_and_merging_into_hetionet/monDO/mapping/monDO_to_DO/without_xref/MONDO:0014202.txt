@@ -1,3 +1,0 @@
-MONDO:0014202	primary ciliary dyskinesia 24
-DOID 	 name 
-DOID:0110628	primary ciliary dyskinesia 24

@@ -1,3 +1,0 @@
-DOID:0110981	Joubert syndrome 10
-monDO ID 	 name 
-MONDO:0010431	Joubert syndrome 10

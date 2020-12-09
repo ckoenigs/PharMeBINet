@@ -1,3 +1,0 @@
-MONDO:0014577	short-rib thoracic dysplasia 13 with or without polydactyly
-DOID 	 name 
-DOID:0110093	short-rib thoracic dysplasia 13 with or without polydactyly

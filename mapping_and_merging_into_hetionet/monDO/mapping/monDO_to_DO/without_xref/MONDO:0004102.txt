@@ -1,3 +1,0 @@
-MONDO:0004102	columnar cell variant papillary carcinoma
-DOID 	 name 
-DOID:7088	columnar cell variant papillary carcinoma

@@ -1,3 +1,0 @@
-DOID:1005	endometrial disease
-monDO ID 	 name 
-MONDO:0000931	endometrial disease

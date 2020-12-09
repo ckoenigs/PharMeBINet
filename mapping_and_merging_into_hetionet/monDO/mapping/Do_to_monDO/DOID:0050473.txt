@@ -1,3 +1,0 @@
-DOID:0050473	Alstrom syndrome
-monDO ID 	 name 
-MONDO:0008763	Alstrom syndrome

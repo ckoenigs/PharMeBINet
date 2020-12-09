@@ -1,3 +1,0 @@
-MONDO:0010576	X-linked mixed deafness with perilymphatic gusher
-DOID 	 name 
-DOID:10003	sensorineural hearing loss

@@ -1,3 +1,0 @@
-DOID:8927	learning disability
-monDO ID 	 name 
-MONDO:0004681	learning disability

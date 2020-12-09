@@ -1,3 +1,0 @@
-DOID:8216	parapharyngeal meningioma
-monDO ID 	 name 
-MONDO:0004502	parapharyngeal meningioma

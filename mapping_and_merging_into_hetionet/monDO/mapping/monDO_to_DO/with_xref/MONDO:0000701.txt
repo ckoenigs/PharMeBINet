@@ -1,3 +1,0 @@
-MONDO:0000701	ischemic colitis
-DOID 	 name 
-DOID:0060181	ischemic colitis

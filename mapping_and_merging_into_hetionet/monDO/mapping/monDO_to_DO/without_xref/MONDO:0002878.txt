@@ -1,3 +1,0 @@
-MONDO:0002878	uterine corpus adenosarcoma
-DOID 	 name 
-DOID:4113	uterine corpus adenosarcoma

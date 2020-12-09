@@ -1,3 +1,0 @@
-MONDO:0005813	interdigitating dendritic cell sarcoma
-DOID 	 name 
-DOID:7848	interdigitating dendritic cell sarcoma

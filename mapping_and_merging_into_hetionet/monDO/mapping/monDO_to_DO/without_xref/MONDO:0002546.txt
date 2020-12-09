@@ -1,3 +1,0 @@
-MONDO:0002546	schwannoma
-DOID 	 name 
-DOID:3192	neurilemmoma

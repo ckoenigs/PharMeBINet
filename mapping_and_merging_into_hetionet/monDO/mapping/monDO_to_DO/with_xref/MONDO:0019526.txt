@@ -1,3 +1,0 @@
-MONDO:0019526	erythema elevatum diutinum
-DOID 	 name 
-DOID:0060567	erythema elevatum diutinum

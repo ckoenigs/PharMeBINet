@@ -1,3 +1,0 @@
-DOID:0050441	mucosulfatidosis
-monDO ID 	 name 
-MONDO:0010088	mucosulfatidosis

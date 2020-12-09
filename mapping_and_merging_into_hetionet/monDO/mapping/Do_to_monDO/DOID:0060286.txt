@@ -1,3 +1,0 @@
-DOID:0060286	combined oxidative phosphorylation deficiency
-monDO ID 	 name 
-MONDO:0000732	combined oxidative phosphorylation deficiency

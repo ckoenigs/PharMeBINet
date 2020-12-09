@@ -1,3 +1,0 @@
-DOID:6128	gliomatosis cerebri
-monDO ID 	 name 
-MONDO:0016683	gliomatosis cerebri

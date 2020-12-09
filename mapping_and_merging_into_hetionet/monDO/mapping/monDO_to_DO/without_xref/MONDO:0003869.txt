@@ -1,3 +1,0 @@
-MONDO:0003869	childhood brain stem glioma
-DOID 	 name 
-DOID:6383	childhood brain stem glioma

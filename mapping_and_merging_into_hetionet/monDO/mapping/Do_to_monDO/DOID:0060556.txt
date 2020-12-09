@@ -1,3 +1,0 @@
-DOID:0060556	Kufor-Rakeb syndrome
-monDO ID 	 name 
-MONDO:0011706	Kufor-Rakeb syndrome

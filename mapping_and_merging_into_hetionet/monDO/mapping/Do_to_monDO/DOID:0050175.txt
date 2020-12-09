@@ -1,3 +1,0 @@
-DOID:0050175	tick-borne encephalitis
-monDO ID 	 name 
-MONDO:0017572	tick-borne encephalitis

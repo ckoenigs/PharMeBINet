@@ -1,3 +1,0 @@
-DOID:1629	breast myofibroblastoma
-monDO ID 	 name 
-MONDO:0002062	breast myofibroblastoma

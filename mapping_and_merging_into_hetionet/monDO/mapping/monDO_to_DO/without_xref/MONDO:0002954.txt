@@ -1,3 +1,0 @@
-MONDO:0002954	superficial basal cell carcinoma
-DOID 	 name 
-DOID:4300	superficial basal cell carcinoma

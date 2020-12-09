@@ -1,3 +1,0 @@
-DOID:0050557	congenital muscular dystrophy
-monDO ID 	 name 
-MONDO:0019950	congenital muscular dystrophy

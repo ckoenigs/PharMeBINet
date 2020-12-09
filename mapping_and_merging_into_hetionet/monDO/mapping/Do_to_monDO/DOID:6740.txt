@@ -1,3 +1,0 @@
-DOID:6740	cervix small cell carcinoma
-monDO ID 	 name 
-MONDO:0003981	cervix small cell carcinoma

@@ -1,3 +1,0 @@
-MONDO:0015909	aplastic anemia
-DOID 	 name 
-DOID:12449	aplastic anemia

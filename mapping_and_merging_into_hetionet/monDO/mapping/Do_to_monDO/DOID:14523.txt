@@ -1,3 +1,0 @@
-DOID:14523	Argyll Robertson pupil
-monDO ID 	 name 
-MONDO:0001986	Argyll Robertson pupil

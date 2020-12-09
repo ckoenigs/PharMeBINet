@@ -1,3 +1,0 @@
-MONDO:0001947	suppurative thyroiditis
-DOID 	 name 
-DOID:14350	suppurative thyroiditis

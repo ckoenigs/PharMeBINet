@@ -1,3 +1,0 @@
-MONDO:0006910	pituitary-dependent Cushing's disease
-DOID 	 name 
-DOID:3946	pituitary-dependent Cushing's disease

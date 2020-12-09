@@ -1,3 +1,0 @@
-MONDO:0004386	uterine corpus atypical polypoid adenomyoma
-DOID 	 name 
-DOID:7878	uterine corpus atypical polypoid adenomyoma

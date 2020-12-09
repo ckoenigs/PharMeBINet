@@ -1,3 +1,0 @@
-MONDO:0000327	Buruli ulcer disease
-DOID 	 name 
-DOID:0050456	Buruli ulcer disease

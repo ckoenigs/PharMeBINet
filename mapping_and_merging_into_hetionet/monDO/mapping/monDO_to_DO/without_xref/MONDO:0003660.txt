@@ -1,3 +1,0 @@
-MONDO:0003660	adult lymphoma
-DOID 	 name 
-DOID:5825	adult lymphoma

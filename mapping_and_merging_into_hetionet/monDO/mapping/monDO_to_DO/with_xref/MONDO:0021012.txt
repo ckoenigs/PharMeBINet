@@ -1,3 +1,0 @@
-MONDO:0021012	susceptibility to visceral leishmaniasis, 1
-DOID 	 name 
-DOID:9146	visceral leishmaniasis

@@ -1,3 +1,0 @@
-DOID:8130	breast columnar cell mucinous carcinoma
-monDO ID 	 name 
-MONDO:0004472	breast columnar cell mucinous carcinoma

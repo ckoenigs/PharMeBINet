@@ -1,3 +1,0 @@
-MONDO:0001170	hemiplegia
-DOID 	 name 
-DOID:10969	hemiplegia

@@ -1,3 +1,0 @@
-DOID:918	liver inflammatory pseudotumor
-monDO ID 	 name 
-MONDO:0004726	liver inflammatory myofibroblastic tumor

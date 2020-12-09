@@ -1,3 +1,0 @@
-MONDO:0013605	brittle cornea syndrome 2
-DOID 	 name 
-DOID:14775	brittle cornea syndrome

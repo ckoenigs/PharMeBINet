@@ -1,3 +1,0 @@
-MONDO:0002222	urethra leiomyoma
-DOID 	 name 
-DOID:2142	urethra leiomyoma

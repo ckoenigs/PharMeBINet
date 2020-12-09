@@ -1,3 +1,0 @@
-MONDO:0001042	patellar tendinitis
-DOID 	 name 
-DOID:10471	patellar tendinitis

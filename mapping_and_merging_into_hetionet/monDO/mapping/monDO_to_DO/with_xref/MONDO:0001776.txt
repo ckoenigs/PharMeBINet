@@ -1,3 +1,0 @@
-MONDO:0001776	prostate calculus
-DOID 	 name 
-DOID:13689	prostate calculus

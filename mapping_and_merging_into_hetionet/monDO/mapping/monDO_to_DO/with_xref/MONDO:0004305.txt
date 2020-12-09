@@ -1,3 +1,0 @@
-MONDO:0004305	parathyroid oncocytic adenoma
-DOID 	 name 
-DOID:7611	parathyroid oncocytic adenoma

@@ -1,3 +1,0 @@
-DOID:0060548	luminal breast carcinoma
-monDO ID 	 name 
-MONDO:0004990	breast tumor luminal A or B

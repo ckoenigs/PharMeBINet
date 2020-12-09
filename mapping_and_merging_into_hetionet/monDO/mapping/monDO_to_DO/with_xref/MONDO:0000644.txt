@@ -1,3 +1,0 @@
-MONDO:0000644	cervical benign neoplasm
-DOID 	 name 
-DOID:0060110	cervical benign neoplasm

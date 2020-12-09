@@ -1,3 +1,0 @@
-MONDO:0002371	breast pericanalicular fibroadenoma
-DOID 	 name 
-DOID:2639	breast pericanalicular fibroadenoma

@@ -1,3 +1,0 @@
-MONDO:0002587	encapsulated thymoma
-DOID 	 name 
-DOID:3278	encapsulated thymoma

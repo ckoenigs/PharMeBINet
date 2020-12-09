@@ -1,3 +1,0 @@
-MONDO:0009109	lysinuric protein intolerance
-DOID 	 name 
-DOID:0060439	lysinuric protein intolerance

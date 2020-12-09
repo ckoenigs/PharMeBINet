@@ -1,3 +1,0 @@
-DOID:0060453	Reis-Bucklers corneal dystrophy
-monDO ID 	 name 
-MONDO:0012043	Reis-Bucklers corneal dystrophy

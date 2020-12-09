@@ -1,3 +1,0 @@
-DOID:2120	focal dermal hypoplasia
-monDO ID 	 name 
-MONDO:0010592	focal dermal hypoplasia

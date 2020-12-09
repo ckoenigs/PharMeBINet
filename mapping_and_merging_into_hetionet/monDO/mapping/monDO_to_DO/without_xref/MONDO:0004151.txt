@@ -1,3 +1,0 @@
-MONDO:0004151	spinal meninges cancer
-DOID 	 name 
-DOID:7224	spinal meninges cancer

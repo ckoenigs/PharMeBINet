@@ -1,3 +1,0 @@
-MONDO:0011468	hereditary motor and sensory neuropathy, Okinawa type
-DOID 	 name 
-DOID:0050539	Charcot-Marie-Tooth disease type 2

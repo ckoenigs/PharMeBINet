@@ -1,4 +1,0 @@
-MONDO:0004963	T-cell acute lymphoblastic leukemia
-DOID 	 name 
-DOID:5603	acute T cell leukemia
-DOID:0050523	adult T-cell leukemia

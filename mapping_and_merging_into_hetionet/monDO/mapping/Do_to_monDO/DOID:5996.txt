@@ -1,3 +1,0 @@
-DOID:5996	blunt duct adenosis of breast
-monDO ID 	 name 
-MONDO:0003723	blunt duct adenosis of breast

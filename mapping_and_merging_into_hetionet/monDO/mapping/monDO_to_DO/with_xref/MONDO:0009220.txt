@@ -1,3 +1,0 @@
-MONDO:0009220	visceral steatosis, congenital
-DOID 	 name 
-DOID:9452	fatty liver disease

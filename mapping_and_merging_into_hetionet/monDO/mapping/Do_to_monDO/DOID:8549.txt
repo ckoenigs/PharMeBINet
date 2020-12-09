@@ -1,3 +1,0 @@
-DOID:8549	chronic ulcer of skin
-monDO ID 	 name 
-MONDO:0004605	chronic ulcer of skin

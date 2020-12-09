@@ -1,3 +1,0 @@
-DOID:6160	childhood choriocarcinoma of the testis
-monDO ID 	 name 
-MONDO:0003786	childhood testicular choriocarcinoma

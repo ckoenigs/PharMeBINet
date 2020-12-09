@@ -1,3 +1,0 @@
-DOID:12639	pyloric stenosis
-monDO ID 	 name 
-MONDO:0001561	pyloric stenosis (disease)

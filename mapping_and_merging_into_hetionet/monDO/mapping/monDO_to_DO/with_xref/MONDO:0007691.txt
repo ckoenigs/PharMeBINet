@@ -1,3 +1,0 @@
-MONDO:0007691	Guillain-Barre syndrome
-DOID 	 name 
-DOID:12842	Guillain-Barre syndrome

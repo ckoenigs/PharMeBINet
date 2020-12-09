@@ -1,3 +1,0 @@
-DOID:0060642	recessive dystrophic epidermolysis bullosa
-monDO ID 	 name 
-MONDO:0009179	recessive dystrophic epidermolysis bullosa

@@ -1,3 +1,0 @@
-DOID:0060716	autosomal recessive congenital ichthyosis 7
-monDO ID 	 name 
-MONDO:0014009	autosomal recessive congenital ichthyosis 7

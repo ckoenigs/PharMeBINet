@@ -1,3 +1,0 @@
-DOID:0050771	phaeochromocytoma
-monDO ID 	 name 
-MONDO:0008233	phaeochromocytoma

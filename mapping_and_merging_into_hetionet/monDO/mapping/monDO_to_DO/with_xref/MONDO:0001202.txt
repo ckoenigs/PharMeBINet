@@ -1,3 +1,0 @@
-MONDO:0001202	prostatic cyst
-DOID 	 name 
-DOID:11133	prostatic cyst

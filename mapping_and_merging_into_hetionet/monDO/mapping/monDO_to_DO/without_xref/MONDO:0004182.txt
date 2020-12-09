@@ -1,3 +1,0 @@
-MONDO:0004182	stage IVb bladder cancer
-DOID 	 name 
-DOID:7315	Jewett-Marshall bladder cancer

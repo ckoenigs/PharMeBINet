@@ -1,3 +1,0 @@
-MONDO:0013026	subepithelial mucinous corneal dystrophy
-DOID 	 name 
-DOID:0060454	subepithelial mucinous corneal dystrophy

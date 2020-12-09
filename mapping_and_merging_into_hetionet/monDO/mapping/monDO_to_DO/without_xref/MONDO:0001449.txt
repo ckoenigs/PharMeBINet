@@ -1,3 +1,0 @@
-MONDO:0001449	lymphocytic choriomeningitis
-DOID 	 name 
-DOID:12155	lymphocytic choriomeningitis

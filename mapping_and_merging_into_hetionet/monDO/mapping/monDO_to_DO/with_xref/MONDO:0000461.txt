@@ -1,3 +1,0 @@
-MONDO:0000461	biotin deficiency
-DOID 	 name 
-DOID:0050810	biotin deficiency

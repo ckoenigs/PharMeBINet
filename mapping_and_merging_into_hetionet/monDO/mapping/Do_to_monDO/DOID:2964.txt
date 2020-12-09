@@ -1,3 +1,0 @@
-DOID:2964	periarthritis
-monDO ID 	 name 
-MONDO:0006898	periarthritis

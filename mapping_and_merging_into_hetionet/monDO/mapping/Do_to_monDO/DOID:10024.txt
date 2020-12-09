@@ -1,3 +1,0 @@
-DOID:10024	migraine with aura
-monDO ID 	 name 
-MONDO:0005475	migraine with aura

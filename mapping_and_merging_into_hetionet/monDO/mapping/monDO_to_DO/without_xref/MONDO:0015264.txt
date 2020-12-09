@@ -1,3 +1,0 @@
-MONDO:0015264	cryptogenic organizing pneumonia
-DOID 	 name 
-DOID:0050157	cryptogenic organizing pneumonia

@@ -1,3 +1,0 @@
-MONDO:0003078	extraocular retinoblastoma
-DOID 	 name 
-DOID:4656	extraocular retinoblastoma

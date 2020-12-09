@@ -1,3 +1,0 @@
-MONDO:0009807	osteosarcoma (disease)
-DOID 	 name 
-DOID:3347	osteosarcoma

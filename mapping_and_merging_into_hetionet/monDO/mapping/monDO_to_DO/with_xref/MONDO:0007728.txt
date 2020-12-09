@@ -1,3 +1,0 @@
-MONDO:0007728	acne inversa, familial, 1
-DOID 	 name 
-DOID:2280	hidradenitis suppurativa

@@ -1,3 +1,0 @@
-DOID:0080068	Charcot-Marie-Tooth disease type 6
-monDO ID 	 name 
-MONDO:0019551	hereditary motor and sensory neuropathy type 6

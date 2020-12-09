@@ -1,3 +1,0 @@
-DOID:0090002	Tietz syndrome
-monDO ID 	 name 
-MONDO:0007077	Tietz syndrome

@@ -1,3 +1,0 @@
-MONDO:0001697	reading disorder
-DOID 	 name 
-DOID:13365	reading disorder

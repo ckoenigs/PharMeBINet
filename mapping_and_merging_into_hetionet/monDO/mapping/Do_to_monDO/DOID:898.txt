@@ -1,3 +1,0 @@
-DOID:898	autosomal dominant polycystic kidney disease
-monDO ID 	 name 
-MONDO:0004691	autosomal dominant polycystic kidney disease

@@ -1,3 +1,0 @@
-DOID:573	nerve compression syndrome
-monDO ID 	 name 
-MONDO:0003615	nerve compression syndrome

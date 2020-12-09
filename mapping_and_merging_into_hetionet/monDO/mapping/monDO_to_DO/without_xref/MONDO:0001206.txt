@@ -1,3 +1,0 @@
-MONDO:0001206	aqueous misdirection
-DOID 	 name 
-DOID:11149	aqueous misdirection

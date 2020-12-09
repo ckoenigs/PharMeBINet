@@ -1,3 +1,0 @@
-DOID:893	Wilson disease
-monDO ID 	 name 
-MONDO:0010200	Wilson disease

@@ -1,3 +1,0 @@
-MONDO:0005505	dysembryoplastic neuroepithelial tumor
-DOID 	 name 
-DOID:2679	dysembryoplastic neuroepithelial tumor

@@ -1,3 +1,0 @@
-DOID:0110860	polycystic kidney disease 3
-monDO ID 	 name 
-MONDO:0010916	polycystic kidney disease 3

@@ -1,3 +1,0 @@
-DOID:7574	pancreatic intraductal papillary-colloid carcinoma
-monDO ID 	 name 
-MONDO:0004285	pancreatic intraductal papillary-mucinous carcinoma

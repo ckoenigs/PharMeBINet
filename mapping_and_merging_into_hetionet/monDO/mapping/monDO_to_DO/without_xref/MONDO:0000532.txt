@@ -1,3 +1,0 @@
-MONDO:0000532	lung combined type small cell adenocarcinoma
-DOID 	 name 
-DOID:0050917	lung combined type small cell adenocarcinoma

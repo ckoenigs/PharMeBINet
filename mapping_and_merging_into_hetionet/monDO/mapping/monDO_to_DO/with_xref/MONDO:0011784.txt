@@ -1,3 +1,0 @@
-MONDO:0011784	Moyamoya disease 2
-DOID 	 name 
-DOID:13099	Moyamoya disease

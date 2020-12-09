@@ -1,3 +1,0 @@
-MONDO:0004813	tuberculous pneumothorax
-DOID 	 name 
-DOID:9534	tuberculous pneumothorax

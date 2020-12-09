@@ -1,3 +1,0 @@
-DOID:6958	aleukemic monocytic leukemia cutis
-monDO ID 	 name 
-MONDO:0004051	aleukemic monocytic leukemia cutis

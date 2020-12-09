@@ -1,3 +1,0 @@
-MONDO:0002436	nose disease
-DOID 	 name 
-DOID:2825	nose disease

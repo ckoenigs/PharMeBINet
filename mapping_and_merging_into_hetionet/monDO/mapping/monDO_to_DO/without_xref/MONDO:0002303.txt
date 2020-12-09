@@ -1,3 +1,0 @@
-MONDO:0002303	central retinal vein occlusion
-DOID 	 name 
-DOID:2450	central retinal vein occlusion

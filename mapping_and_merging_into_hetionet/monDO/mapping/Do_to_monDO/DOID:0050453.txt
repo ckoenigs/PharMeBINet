@@ -1,3 +1,0 @@
-DOID:0050453	lissencephaly
-monDO ID 	 name 
-MONDO:0018838	lissencephaly (disease)

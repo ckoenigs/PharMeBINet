@@ -1,3 +1,0 @@
-DOID:952	acute dacryoadenitis
-monDO ID 	 name 
-MONDO:0004812	acute dacryoadenitis

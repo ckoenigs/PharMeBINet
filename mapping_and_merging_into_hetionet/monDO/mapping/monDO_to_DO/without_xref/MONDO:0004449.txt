@@ -1,3 +1,0 @@
-MONDO:0004449	intraductal breast myoepitheliosis
-DOID 	 name 
-DOID:8068	intraductal breast myoepitheliosis

@@ -1,3 +1,0 @@
-DOID:11504	autonomic neuropathy
-monDO ID 	 name 
-MONDO:0001300	autonomic neuropathy

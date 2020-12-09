@@ -1,3 +1,0 @@
-MONDO:0005641	aleutian mink disease
-DOID 	 name 
-DOID:2934	aleutian mink disease

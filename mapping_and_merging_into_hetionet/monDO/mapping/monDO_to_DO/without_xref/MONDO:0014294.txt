@@ -1,3 +1,0 @@
-MONDO:0014294	chromosome 15q11.2 deletion syndrome
-DOID 	 name 
-DOID:0060393	chromosome 15q11.2 deletion syndrome

@@ -1,3 +1,0 @@
-DOID:10550	acute eustachian salpingitis
-monDO ID 	 name 
-MONDO:0001064	acute eustachian salpingitis

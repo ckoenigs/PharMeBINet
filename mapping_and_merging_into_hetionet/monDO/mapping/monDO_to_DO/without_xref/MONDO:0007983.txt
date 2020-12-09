@@ -1,3 +1,0 @@
-MONDO:0007983	Schmid metaphyseal chondrodysplasia
-DOID 	 name 
-DOID:0080021	Schmid metaphyseal chondrodysplasia

@@ -1,3 +1,0 @@
-MONDO:0005855	molluscum contagiosum
-DOID 	 name 
-DOID:8867	molluscum contagiosum

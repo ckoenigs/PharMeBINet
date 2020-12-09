@@ -1,3 +1,0 @@
-DOID:10841	Eastern equine encephalitis
-monDO ID 	 name 
-MONDO:0005736	eastern equine encephalitis

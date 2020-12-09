@@ -1,3 +1,0 @@
-MONDO:0005001	chronic gastritis (disease)
-DOID 	 name 
-DOID:4029	gastritis

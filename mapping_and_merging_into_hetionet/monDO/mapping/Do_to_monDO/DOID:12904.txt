@@ -1,3 +1,0 @@
-DOID:12904	mucocele of salivary gland
-monDO ID 	 name 
-MONDO:0001600	mucocele of salivary gland

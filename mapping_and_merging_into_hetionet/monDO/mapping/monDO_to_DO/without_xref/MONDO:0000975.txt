@@ -1,3 +1,0 @@
-MONDO:0000975	lipoma of spermatic cord
-DOID 	 name 
-DOID:10206	lipoma of spermatic cord

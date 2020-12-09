@@ -1,3 +1,0 @@
-MONDO:0012221	alpha-N-acetylgalactosaminidase deficiency type 1
-DOID 	 name 
-DOID:3343	glycoproteinosis

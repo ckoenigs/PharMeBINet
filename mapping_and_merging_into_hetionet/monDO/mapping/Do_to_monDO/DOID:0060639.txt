@@ -1,3 +1,0 @@
-DOID:0060639	permanent neonatal diabetes mellitus
-monDO ID 	 name 
-MONDO:0011643	permanent neonatal diabetes mellitus

@@ -1,3 +1,0 @@
-DOID:10378	disuse amblyopia
-monDO ID 	 name 
-MONDO:0001022	disuse amblyopia

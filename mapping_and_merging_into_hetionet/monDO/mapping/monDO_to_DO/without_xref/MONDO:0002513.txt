@@ -1,3 +1,0 @@
-MONDO:0002513	kidney benign neoplasm
-DOID 	 name 
-DOID:3116	kidney benign neoplasm

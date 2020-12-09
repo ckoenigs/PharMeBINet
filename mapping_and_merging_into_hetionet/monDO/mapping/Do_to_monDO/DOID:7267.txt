@@ -1,3 +1,0 @@
-DOID:7267	lung clear cell carcinoma
-monDO ID 	 name 
-MONDO:0004167	clear cell carcinoma of lung

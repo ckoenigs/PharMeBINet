@@ -1,3 +1,0 @@
-DOID:10780	primary polycythemia
-monDO ID 	 name 
-MONDO:0001115	primary polycythemia

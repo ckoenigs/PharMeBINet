@@ -1,3 +1,0 @@
-MONDO:0019257	hemochromatosis type 2
-DOID 	 name 
-DOID:0111034	hemochromatosis type 2

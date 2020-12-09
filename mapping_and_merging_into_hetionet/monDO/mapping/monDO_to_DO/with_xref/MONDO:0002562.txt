@@ -1,3 +1,0 @@
-MONDO:0002562	demyelinating disease
-DOID 	 name 
-DOID:3213	demyelinating disease

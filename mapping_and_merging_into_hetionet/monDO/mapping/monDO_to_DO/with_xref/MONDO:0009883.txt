@@ -1,3 +1,0 @@
-MONDO:0009883	alpha-2-plasmin inhibitor deficiency
-DOID 	 name 
-DOID:0060601	alpha-2-plasmin inhibitor deficiency

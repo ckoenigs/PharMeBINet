@@ -1,3 +1,0 @@
-MONDO:0015925	interstitial lung disease
-DOID 	 name 
-DOID:3082	interstitial lung disease

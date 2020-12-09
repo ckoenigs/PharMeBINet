@@ -1,3 +1,0 @@
-DOID:104	bacterial infectious disease
-monDO ID 	 name 
-MONDO:0005113	bacterial infectious disease

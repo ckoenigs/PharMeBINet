@@ -1,3 +1,0 @@
-DOID:0060773	cleft lip-palate-ectodermal dysplasia syndrome
-monDO ID 	 name 
-MONDO:0009151	cleft lip-palate-ectodermal dysplasia syndrome

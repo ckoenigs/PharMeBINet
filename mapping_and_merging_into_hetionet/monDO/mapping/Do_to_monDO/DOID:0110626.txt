@@ -1,3 +1,0 @@
-DOID:0110626	primary ciliary dyskinesia 2
-monDO ID 	 name 
-MONDO:0011718	primary ciliary dyskinesia 2

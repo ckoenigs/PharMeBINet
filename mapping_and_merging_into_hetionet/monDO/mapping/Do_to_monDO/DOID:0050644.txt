@@ -1,3 +1,0 @@
-DOID:0050644	arterial calcification of infancy
-monDO ID 	 name 
-MONDO:0018870	arterial calcification of infancy

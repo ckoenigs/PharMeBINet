@@ -1,3 +1,0 @@
-DOID:2217	Bernard-Soulier syndrome
-monDO ID 	 name 
-MONDO:0009276	Bernard-Soulier syndrome

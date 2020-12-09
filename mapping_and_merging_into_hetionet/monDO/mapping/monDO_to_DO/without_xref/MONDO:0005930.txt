@@ -1,3 +1,0 @@
-MONDO:0003709	postpoliomyelitis syndrome
-DOID 	 name 
-DOID:4952	postpoliomyelitis syndrome

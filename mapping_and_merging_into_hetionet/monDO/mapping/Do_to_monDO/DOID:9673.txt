@@ -1,3 +1,0 @@
-DOID:9673	ulcerative stomatitis
-monDO ID 	 name 
-MONDO:0004848	ulcerative stomatitis

@@ -1,3 +1,0 @@
-MONDO:0002676	adult fibrosarcoma
-DOID 	 name 
-DOID:3516	adult fibrosarcoma

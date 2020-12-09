@@ -1,3 +1,0 @@
-MONDO:0002525	inherited lipid metabolism disorder
-DOID 	 name 
-DOID:3146	lipid metabolism disorder

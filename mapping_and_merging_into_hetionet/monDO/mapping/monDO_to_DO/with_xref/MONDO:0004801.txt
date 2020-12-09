@@ -1,3 +1,0 @@
-MONDO:0004801	unilateral hypoactive labyrinth
-DOID 	 name 
-DOID:9496	unilateral hypoactive labyrinth

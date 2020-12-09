@@ -1,3 +1,0 @@
-MONDO:0009989	enhanced S-cone syndrome
-DOID 	 name 
-DOID:0090059	enhanced S-cone syndrome

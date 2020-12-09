@@ -1,3 +1,0 @@
-MONDO:0001024	pneumonic plague
-DOID 	 name 
-DOID:10398	pneumonic plague

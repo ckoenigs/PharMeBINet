@@ -1,3 +1,0 @@
-MONDO:0005682	bronchopneumonia
-DOID 	 name 
-DOID:12375	bronchopneumonia

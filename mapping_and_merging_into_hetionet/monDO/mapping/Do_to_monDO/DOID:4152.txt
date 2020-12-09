@@ -1,3 +1,0 @@
-DOID:4152	chondroid chordoma
-monDO ID 	 name 
-MONDO:0006145	chondroid chordoma

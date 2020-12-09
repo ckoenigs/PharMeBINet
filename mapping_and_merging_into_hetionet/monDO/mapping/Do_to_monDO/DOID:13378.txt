@@ -1,3 +1,0 @@
-DOID:13378	Kawasaki disease
-monDO ID 	 name 
-MONDO:0012727	mucocutaneous lymph node syndrome

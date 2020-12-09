@@ -1,3 +1,0 @@
-MONDO:0003604	functioning pituitary gland neoplasm
-DOID 	 name 
-DOID:5716	hormone producing pituitary cancer

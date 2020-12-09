@@ -1,3 +1,0 @@
-MONDO:0002973	epithelioid cell melanoma
-DOID 	 name 
-DOID:4360	epithelioid cell melanoma

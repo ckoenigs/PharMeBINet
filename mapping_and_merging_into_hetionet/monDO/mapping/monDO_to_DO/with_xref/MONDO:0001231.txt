@@ -1,3 +1,0 @@
-MONDO:0001231	orbital periostitis
-DOID 	 name 
-DOID:11231	orbital periostitis

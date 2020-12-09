@@ -1,3 +1,0 @@
-DOID:3341	osteitis fibrosa
-monDO ID 	 name 
-MONDO:0005890	osteitis fibrosa

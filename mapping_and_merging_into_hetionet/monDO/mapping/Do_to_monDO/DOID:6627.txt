@@ -1,3 +1,0 @@
-DOID:6627	cervical adenoma malignum
-monDO ID 	 name 
-MONDO:0006140	cervical mucinous adenocarcinoma, minimal deviation variant

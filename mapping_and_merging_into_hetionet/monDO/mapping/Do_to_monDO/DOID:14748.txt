@@ -1,3 +1,0 @@
-DOID:14748	Sotos syndrome
-monDO ID 	 name 
-MONDO:0019349	Sotos syndrome

@@ -1,3 +1,0 @@
-DOID:12323	cough variant asthma
-monDO ID 	 name 
-MONDO:0001491	cough variant asthma

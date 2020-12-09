@@ -1,3 +1,0 @@
-DOID:12753	corneal staphyloma
-monDO ID 	 name 
-MONDO:0001579	corneal staphyloma

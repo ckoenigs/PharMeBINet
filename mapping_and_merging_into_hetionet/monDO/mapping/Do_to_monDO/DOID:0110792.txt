@@ -1,3 +1,0 @@
-DOID:0110792	hereditary spastic paraplegia 4
-monDO ID 	 name 
-MONDO:0008438	hereditary spastic paraplegia 4

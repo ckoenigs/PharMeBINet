@@ -1,3 +1,0 @@
-DOID:7565	vulvar eccrine porocarcinoma
-monDO ID 	 name 
-MONDO:0004281	vulvar eccrine porocarcinoma

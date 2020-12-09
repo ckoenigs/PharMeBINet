@@ -1,3 +1,0 @@
-MONDO:0002058	breast adenoma
-DOID 	 name 
-DOID:1625	breast adenoma

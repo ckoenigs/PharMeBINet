@@ -1,4 +1,0 @@
-MONDO:0007063	long bone adamantinoma
-DOID 	 name 
-DOID:2776	adamantinoma
-DOID:2775	long bone adamantinoma

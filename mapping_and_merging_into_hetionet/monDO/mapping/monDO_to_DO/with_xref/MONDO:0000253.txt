@@ -1,5 +1,0 @@
-MONDO:0000253	superficial mycosis
-DOID 	 name 
-DOID:12711	black piedra
-DOID:0050133	superficial mycosis
-DOID:13902	white piedra

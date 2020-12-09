@@ -1,3 +1,0 @@
-DOID:3752	larynx verrucous carcinoma
-monDO ID 	 name 
-MONDO:0002766	larynx verrucous carcinoma

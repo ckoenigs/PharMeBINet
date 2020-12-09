@@ -1,3 +1,0 @@
-MONDO:0011996	chronic myelogenous leukemia
-DOID 	 name 
-DOID:8552	chronic myeloid leukemia

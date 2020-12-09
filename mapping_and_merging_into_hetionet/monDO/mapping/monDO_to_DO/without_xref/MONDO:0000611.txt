@@ -1,3 +1,0 @@
-MONDO:0000611	pre-malignant neoplasm
-DOID 	 name 
-DOID:0060071	pre-malignant neoplasm

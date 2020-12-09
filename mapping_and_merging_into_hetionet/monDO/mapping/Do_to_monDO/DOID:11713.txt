@@ -1,3 +1,0 @@
-DOID:11713	diabetic angiopathy
-monDO ID 	 name 
-MONDO:0006725	diabetic angiopathy

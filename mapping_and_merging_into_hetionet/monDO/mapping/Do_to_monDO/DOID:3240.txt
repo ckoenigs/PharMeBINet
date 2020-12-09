@@ -1,3 +1,0 @@
-DOID:3240	aspiration pneumonitis
-monDO ID 	 name 
-MONDO:0002572	aspiration pneumonitis

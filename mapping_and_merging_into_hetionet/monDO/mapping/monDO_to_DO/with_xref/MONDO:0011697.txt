@@ -1,3 +1,0 @@
-MONDO:0011697	Waardenburg syndrome type 2C
-DOID 	 name 
-DOID:0110951	Waardenburg syndrome type 2C

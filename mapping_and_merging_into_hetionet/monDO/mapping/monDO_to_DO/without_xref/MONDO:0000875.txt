@@ -1,3 +1,0 @@
-MONDO:0000875	adult acute monocytic leukemia
-DOID 	 name 
-DOID:0080149	adult acute monocytic leukemia

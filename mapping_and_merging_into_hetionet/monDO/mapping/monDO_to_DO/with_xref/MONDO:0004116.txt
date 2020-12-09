@@ -1,3 +1,0 @@
-MONDO:0004116	esophagus small cell carcinoma
-DOID 	 name 
-DOID:7134	esophagus small cell carcinoma

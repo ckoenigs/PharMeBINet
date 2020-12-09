@@ -1,3 +1,0 @@
-MONDO:0007637	corneal dystrophy, Fuchs endothelial, 1
-DOID 	 name 
-DOID:11555	Fuchs' endothelial dystrophy

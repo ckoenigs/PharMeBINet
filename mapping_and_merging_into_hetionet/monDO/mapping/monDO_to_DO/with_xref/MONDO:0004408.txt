@@ -1,3 +1,0 @@
-MONDO:0004408	schwannian stroma-rich and stroma-poor composite ganglioneuroblastoma
-DOID 	 name 
-DOID:7951	Schwannian stroma-rich and stroma-poor composite ganglioneuroblastoma

@@ -1,3 +1,0 @@
-DOID:0110632	megaconial type congenital muscular dystrophy
-monDO ID 	 name 
-MONDO:0011246	megaconial type congenital muscular dystrophy

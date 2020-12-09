@@ -1,3 +1,0 @@
-DOID:11836	clubfoot
-monDO ID 	 name 
-MONDO:0007342	clubfoot

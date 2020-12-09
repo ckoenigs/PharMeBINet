@@ -1,3 +1,0 @@
-MONDO:0004641	skin carcinoma in situ
-DOID 	 name 
-DOID:8687	skin carcinoma in situ

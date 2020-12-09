@@ -1,3 +1,0 @@
-DOID:14757	type III Ehlers-Danlos syndrome
-monDO ID 	 name 
-MONDO:0007523	type III Ehlers-Danlos syndrome

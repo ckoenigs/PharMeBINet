@@ -1,3 +1,0 @@
-MONDO:0002809	pancreatic cystadenoma
-DOID 	 name 
-DOID:3918	pancreatic cystadenoma

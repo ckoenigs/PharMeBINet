@@ -1,3 +1,0 @@
-MONDO:0004563	physiological polycythemia
-DOID 	 name 
-DOID:8431	physiological polycythemia

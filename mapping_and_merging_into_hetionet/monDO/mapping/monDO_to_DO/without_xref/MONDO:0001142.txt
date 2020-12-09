@@ -1,3 +1,0 @@
-MONDO:0001142	salivary gland disease
-DOID 	 name 
-DOID:10854	salivary gland disease

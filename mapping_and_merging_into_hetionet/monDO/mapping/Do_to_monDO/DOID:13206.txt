@@ -1,3 +1,0 @@
-DOID:13206	nodular prostate
-monDO ID 	 name 
-MONDO:0001659	nodular prostate

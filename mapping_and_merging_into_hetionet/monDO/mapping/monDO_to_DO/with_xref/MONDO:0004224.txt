@@ -1,3 +1,0 @@
-MONDO:0004224	chronic metabolic polyneuropathy
-DOID 	 name 
-DOID:7441	chronic metabolic polyneuropathy

@@ -1,3 +1,0 @@
-MONDO:0006868	neurogenic bowel
-DOID 	 name 
-DOID:13419	neurogenic bowel

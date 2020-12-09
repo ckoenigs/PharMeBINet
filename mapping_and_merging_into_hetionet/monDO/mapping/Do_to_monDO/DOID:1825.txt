@@ -1,3 +1,0 @@
-DOID:1825	childhood absence epilepsy
-monDO ID 	 name 
-MONDO:0010826	childhood absence epilepsy

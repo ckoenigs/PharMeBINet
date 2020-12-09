@@ -1,3 +1,0 @@
-MONDO:0006534	cholinergic urticaria
-DOID 	 name 
-DOID:14443	cholinergic urticaria

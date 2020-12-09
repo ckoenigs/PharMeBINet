@@ -1,3 +1,0 @@
-DOID:2571	Langerhans-cell histiocytosis
-monDO ID 	 name 
-MONDO:0011495	Langerhans-cell histiocytosis

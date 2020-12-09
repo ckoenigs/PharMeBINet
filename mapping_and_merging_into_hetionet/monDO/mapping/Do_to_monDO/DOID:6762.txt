@@ -1,3 +1,0 @@
-DOID:6762	sternum lymphoma
-monDO ID 	 name 
-MONDO:0003988	sternum lymphoma

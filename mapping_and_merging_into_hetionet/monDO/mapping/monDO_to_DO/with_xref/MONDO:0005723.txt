@@ -1,3 +1,0 @@
-MONDO:0005723	cryptococcal meningitis
-DOID 	 name 
-DOID:0080159	Cryptococcal meningitis

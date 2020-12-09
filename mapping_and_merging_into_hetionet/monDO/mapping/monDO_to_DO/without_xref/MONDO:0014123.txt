@@ -1,3 +1,0 @@
-MONDO:0014123	primary ciliary dyskinesia 21
-DOID 	 name 
-DOID:0110596	primary ciliary dyskinesia 21

@@ -1,3 +1,0 @@
-MONDO:0000510	synucleinopathy
-DOID 	 name 
-DOID:0050890	synucleinopathy

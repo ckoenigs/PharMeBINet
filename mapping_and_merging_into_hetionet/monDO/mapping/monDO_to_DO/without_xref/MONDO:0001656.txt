@@ -1,3 +1,0 @@
-MONDO:0001656	megaesophagus
-DOID 	 name 
-DOID:13186	megaesophagus

@@ -1,3 +1,0 @@
-MONDO:0004981	atrial fibrillation (disease)
-DOID 	 name 
-DOID:0060224	atrial fibrillation

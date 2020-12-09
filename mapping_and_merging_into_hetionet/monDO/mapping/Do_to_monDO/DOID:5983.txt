@@ -1,3 +1,0 @@
-DOID:5983	kidney osteogenic sarcoma
-monDO ID 	 name 
-MONDO:0003721	kidney osteogenic sarcoma

@@ -1,3 +1,0 @@
-MONDO:0001035	hypopyon ulcer
-DOID 	 name 
-DOID:10442	hypopyon ulcer

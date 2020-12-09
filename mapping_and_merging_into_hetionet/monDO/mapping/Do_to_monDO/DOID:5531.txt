@@ -1,3 +1,0 @@
-DOID:5531	ovarian squamous cell carcinoma
-monDO ID 	 name 
-MONDO:0003494	ovarian squamous cell carcinoma

@@ -1,3 +1,0 @@
-MONDO:0005962	skeletal tuberculosis
-DOID 	 name 
-DOID:1639	skeletal tuberculosis

@@ -1,3 +1,0 @@
-DOID:0060524	crustacean allergy
-monDO ID 	 name 
-MONDO:0000799	crustacean allergy

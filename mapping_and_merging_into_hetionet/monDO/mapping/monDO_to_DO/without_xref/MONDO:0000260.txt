@@ -1,3 +1,0 @@
-MONDO:0000260	Kartagener syndrome
-DOID 	 name 
-DOID:0050144	Kartagener syndrome

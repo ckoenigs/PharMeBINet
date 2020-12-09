@@ -1,3 +1,0 @@
-MONDO:0002561	lysosomal storage disease
-DOID 	 name 
-DOID:3211	lysosomal storage disease

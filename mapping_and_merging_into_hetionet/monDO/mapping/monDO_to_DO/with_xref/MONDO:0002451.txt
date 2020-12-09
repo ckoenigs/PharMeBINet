@@ -1,3 +1,0 @@
-MONDO:0002451	benign prostate phyllodes tumor
-DOID 	 name 
-DOID:2885	benign prostate phyllodes tumor

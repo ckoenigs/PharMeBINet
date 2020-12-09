@@ -1,3 +1,0 @@
-DOID:12782	cicatricial ectropion
-monDO ID 	 name 
-MONDO:0001582	cicatricial ectropion

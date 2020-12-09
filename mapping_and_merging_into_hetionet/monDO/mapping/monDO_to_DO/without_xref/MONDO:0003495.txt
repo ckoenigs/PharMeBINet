@@ -1,3 +1,0 @@
-MONDO:0003495	ovarian squamous cell neoplasm
-DOID 	 name 
-DOID:5532	ovarian squamous cell neoplasm

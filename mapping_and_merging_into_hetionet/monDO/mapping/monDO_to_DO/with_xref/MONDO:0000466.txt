@@ -1,3 +1,0 @@
-MONDO:0000466	first-degree atrioventricular block
-DOID 	 name 
-DOID:0050821	first-degree atrioventricular block

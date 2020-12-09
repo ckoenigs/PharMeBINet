@@ -1,3 +1,0 @@
-MONDO:0004940	acute female pelvic peritonitis
-DOID 	 name 
-DOID:9978	acute female pelvic peritonitis

@@ -1,3 +1,0 @@
-MONDO:0020108	autoimmune hemolytic anemia
-DOID 	 name 
-DOID:718	autoimmune hemolytic anemia

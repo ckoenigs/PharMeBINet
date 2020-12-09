@@ -1,3 +1,0 @@
-MONDO:0013127	asphyxiating thoracic dystrophy 3
-DOID 	 name 
-DOID:0110087	asphyxiating thoracic dystrophy 3

@@ -1,3 +1,0 @@
-DOID:0050749	peripheral T-cell lymphoma
-monDO ID 	 name 
-MONDO:0000434	peripheral T-cell lymphoma

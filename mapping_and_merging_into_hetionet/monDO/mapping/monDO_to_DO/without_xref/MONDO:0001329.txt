@@ -1,3 +1,0 @@
-MONDO:0001329	accommodative spasm
-DOID 	 name 
-DOID:11637	accommodative spasm

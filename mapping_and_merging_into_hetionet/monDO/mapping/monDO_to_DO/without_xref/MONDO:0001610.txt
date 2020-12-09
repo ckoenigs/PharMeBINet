@@ -1,3 +1,0 @@
-MONDO:0001610	acute dacryocystitis
-DOID 	 name 
-DOID:12996	acute dacryocystitis

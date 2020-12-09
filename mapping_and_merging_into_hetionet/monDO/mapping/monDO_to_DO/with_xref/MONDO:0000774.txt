@@ -1,3 +1,0 @@
-MONDO:0000774	autoimmune neuropathy
-DOID 	 name 
-DOID:0060499	autoimmune neuropathy

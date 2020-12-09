@@ -1,3 +1,0 @@
-MONDO:0004300	intracortical osteogenic sarcoma
-DOID 	 name 
-DOID:7602	intracortical osteogenic sarcoma

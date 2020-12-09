@@ -1,3 +1,0 @@
-MONDO:0007794	hypogonadotropic hypogonadism 7 with or without anosmia
-DOID 	 name 
-DOID:0090078	hypogonadotropic hypogonadism 7 with or without anosmia

@@ -1,3 +1,0 @@
-MONDO:0007124	ankyloblepharon-ectodermal defects-cleft lip/palate syndrome
-DOID 	 name 
-DOID:0090119	ankyloblepharon-ectodermal defects-cleft lip/palate syndrome

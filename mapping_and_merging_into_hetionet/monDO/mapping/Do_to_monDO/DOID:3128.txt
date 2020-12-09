@@ -1,3 +1,0 @@
-DOID:3128	anus disease
-monDO ID 	 name 
-MONDO:0002519	anus disease

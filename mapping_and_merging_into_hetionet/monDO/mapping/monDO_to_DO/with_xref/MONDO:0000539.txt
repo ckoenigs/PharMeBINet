@@ -1,3 +1,0 @@
-MONDO:0000539	striated muscle rhabdoid tumor
-DOID 	 name 
-DOID:0050924	striated muscle rhabdoid tumor

@@ -1,3 +1,0 @@
-MONDO:0003326	intermixed schwannian stroma-rich ganglioneuroblastoma
-DOID 	 name 
-DOID:5194	intermixed schwannian stroma-rich ganglioneuroblastoma

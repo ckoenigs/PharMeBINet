@@ -1,3 +1,0 @@
-MONDO:0006029	cecum carcinoma
-DOID 	 name 
-DOID:1519	cecum carcinoma

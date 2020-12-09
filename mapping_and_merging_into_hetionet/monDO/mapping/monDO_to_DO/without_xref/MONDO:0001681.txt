@@ -1,3 +1,0 @@
-MONDO:0001681	diphtheritic cystitis
-DOID 	 name 
-DOID:13306	diphtheritic cystitis

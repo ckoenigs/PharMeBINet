@@ -1,3 +1,0 @@
-DOID:10070	larynx leiomyoma
-monDO ID 	 name 
-MONDO:0000934	laryngeal leiomyoma

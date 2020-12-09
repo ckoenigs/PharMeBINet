@@ -1,3 +1,0 @@
-MONDO:0007930	Bernard-Soulier syndrome, type A2, autosomal dominant
-DOID 	 name 
-DOID:0111059	Bernard-Soulier syndrome type A2

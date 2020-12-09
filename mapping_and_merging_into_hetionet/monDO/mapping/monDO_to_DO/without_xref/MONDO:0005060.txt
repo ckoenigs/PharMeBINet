@@ -1,3 +1,0 @@
-MONDO:0005060	liposarcoma
-DOID 	 name 
-DOID:3382	liposarcoma

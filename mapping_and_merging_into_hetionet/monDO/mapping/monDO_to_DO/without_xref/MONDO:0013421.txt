@@ -1,3 +1,0 @@
-MONDO:0013421	type II complement component 8 deficiency
-DOID 	 name 
-DOID:0060302	type II complement component 8 deficiency

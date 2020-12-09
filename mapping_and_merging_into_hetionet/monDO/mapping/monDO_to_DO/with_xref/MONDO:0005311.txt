@@ -1,4 +1,0 @@
-MONDO:0005311	atherosclerosis
-DOID 	 name 
-DOID:1936	atherosclerosis
-DOID:2348	arteriosclerotic cardiovascular disease

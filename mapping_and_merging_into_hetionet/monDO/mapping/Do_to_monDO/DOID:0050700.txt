@@ -1,3 +1,0 @@
-DOID:0050700	cardiomyopathy
-monDO ID 	 name 
-MONDO:0004994	cardiomyopathy

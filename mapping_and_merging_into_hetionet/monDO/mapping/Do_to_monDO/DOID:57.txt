@@ -1,3 +1,0 @@
-DOID:57	aortic valve insufficiency
-monDO ID 	 name 
-MONDO:0005648	aortic valve insufficiency

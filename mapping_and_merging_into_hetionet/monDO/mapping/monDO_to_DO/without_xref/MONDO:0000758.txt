@@ -1,3 +1,0 @@
-MONDO:0000758	bacillary angiomatosis
-DOID 	 name 
-DOID:0060345	bacillary angiomatosis

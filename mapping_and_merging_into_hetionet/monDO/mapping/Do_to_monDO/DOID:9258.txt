@@ -1,3 +1,0 @@
-DOID:9258	Waardenburg's syndrome
-monDO ID 	 name 
-MONDO:0018094	Waardenburg's syndrome

@@ -1,3 +1,0 @@
-MONDO:0004261	periductal breast myoepitheliosis
-DOID 	 name 
-DOID:7520	periductal breast myoepitheliosis

@@ -1,3 +1,0 @@
-DOID:9207	periodic limb movement disorder
-monDO ID 	 name 
-MONDO:0005905	periodic limb movement disorder

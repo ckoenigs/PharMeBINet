@@ -1,3 +1,0 @@
-DOID:6163	familial renal papillary carcinoma
-monDO ID 	 name 
-MONDO:0003789	hereditary papillary renal cell carcinoma

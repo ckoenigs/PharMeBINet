@@ -1,3 +1,0 @@
-MONDO:0002755	solitary osseous plasmacytoma
-DOID 	 name 
-DOID:3722	solitary osseous plasmacytoma

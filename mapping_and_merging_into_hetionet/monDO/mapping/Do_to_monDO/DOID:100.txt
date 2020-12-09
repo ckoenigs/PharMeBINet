@@ -1,3 +1,0 @@
-DOID:100	intestinal infectious disease
-monDO ID 	 name 
-MONDO:0000916	intestinal infectious disease

@@ -1,3 +1,0 @@
-MONDO:0000492	chronic venous insufficiency
-DOID 	 name 
-DOID:0050853	chronic venous insufficiency

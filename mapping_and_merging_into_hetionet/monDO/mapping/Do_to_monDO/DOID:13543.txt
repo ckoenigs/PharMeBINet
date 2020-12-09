@@ -1,3 +1,0 @@
-DOID:13543	hyperparathyroidism
-monDO ID 	 name 
-MONDO:0001741	hyperparathyroidism

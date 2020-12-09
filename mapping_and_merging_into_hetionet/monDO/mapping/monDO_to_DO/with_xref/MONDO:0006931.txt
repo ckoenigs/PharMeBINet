@@ -1,3 +1,0 @@
-MONDO:0006931	pulmonary coin lesion
-DOID 	 name 
-DOID:5364	pulmonary coin lesion

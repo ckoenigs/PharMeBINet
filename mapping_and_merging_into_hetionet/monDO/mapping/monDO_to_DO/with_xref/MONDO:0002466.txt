@@ -1,3 +1,0 @@
-MONDO:0002466	eye carcinoma
-DOID 	 name 
-DOID:295	eye carcinoma

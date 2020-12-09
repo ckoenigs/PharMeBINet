@@ -1,3 +1,0 @@
-DOID:1195	ischemic neuropathy
-monDO ID 	 name 
-MONDO:0001408	ischemic neuropathy

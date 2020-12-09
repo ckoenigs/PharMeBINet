@@ -1,3 +1,0 @@
-DOID:7762	childhood multilocular cystic kidney neoplasm
-monDO ID 	 name 
-MONDO:0004356	childhood multilocular cystic kidney neoplasm

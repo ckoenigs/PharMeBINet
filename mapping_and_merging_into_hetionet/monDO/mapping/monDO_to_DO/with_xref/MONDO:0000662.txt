@@ -1,3 +1,0 @@
-MONDO:0000662	amusia
-DOID 	 name 
-DOID:0060132	amusia

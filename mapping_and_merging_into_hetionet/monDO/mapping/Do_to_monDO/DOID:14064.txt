@@ -1,3 +1,0 @@
-DOID:14064	acute poststreptococcal glomerulonephritis
-monDO ID 	 name 
-MONDO:0001870	acute poststreptococcal glomerulonephritis

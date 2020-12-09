@@ -1,3 +1,0 @@
-MONDO:0006369	pineal parenchymal tumor of intermediate differentiation
-DOID 	 name 
-DOID:5030	pineal parenchymal tumor of intermediate differentiation

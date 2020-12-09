@@ -1,3 +1,0 @@
-DOID:1943	telogen effluvium
-monDO ID 	 name 
-MONDO:0002153	telogen effluvium

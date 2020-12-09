@@ -1,3 +1,0 @@
-MONDO:0002999	central nervous system germinoma
-DOID 	 name 
-DOID:4438	central nervous system germinoma

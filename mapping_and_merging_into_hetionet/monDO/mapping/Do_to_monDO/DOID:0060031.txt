@@ -1,3 +1,0 @@
-DOID:0060031	autoimmune disease of gastrointestinal tract
-monDO ID 	 name 
-MONDO:0000588	autoimmune disease of gastrointestinal tract

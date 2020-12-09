@@ -1,3 +1,0 @@
-MONDO:0014702	hereditary spastic paraplegia 9B
-DOID 	 name 
-DOID:0110825	hereditary spastic paraplegia 9B

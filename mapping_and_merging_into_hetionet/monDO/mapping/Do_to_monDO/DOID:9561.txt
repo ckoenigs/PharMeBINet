@@ -1,3 +1,0 @@
-DOID:9561	nasopharyngeal disease
-monDO ID 	 name 
-MONDO:0004821	nasopharyngeal disease

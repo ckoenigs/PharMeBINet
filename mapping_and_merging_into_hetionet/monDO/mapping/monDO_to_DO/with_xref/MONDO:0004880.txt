@@ -1,3 +1,0 @@
-MONDO:0004880	bowel dysfunction
-DOID 	 name 
-DOID:9779	bowel dysfunction

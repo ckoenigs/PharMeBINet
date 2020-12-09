@@ -1,3 +1,0 @@
-DOID:10126	keratoconus
-monDO ID 	 name 
-MONDO:0015486	keratoconus (disease)

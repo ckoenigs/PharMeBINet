@@ -1,3 +1,0 @@
-MONDO:0002523	cutaneous mucinosis
-DOID 	 name 
-DOID:3141	mucinoses

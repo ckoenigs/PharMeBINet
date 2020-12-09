@@ -1,3 +1,0 @@
-MONDO:0003765	adult leptomeningeal melanoma
-DOID 	 name 
-DOID:6090	adult leptomeningeal melanoma

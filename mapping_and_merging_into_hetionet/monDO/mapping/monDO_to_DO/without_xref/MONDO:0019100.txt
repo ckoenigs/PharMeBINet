@@ -1,3 +1,0 @@
-MONDO:0019100	neuromyelitis optica
-DOID 	 name 
-DOID:8869	neuromyelitis optica

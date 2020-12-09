@@ -1,3 +1,0 @@
-DOID:2691	myoma
-monDO ID 	 name 
-MONDO:0003061	benign muscle neoplasm

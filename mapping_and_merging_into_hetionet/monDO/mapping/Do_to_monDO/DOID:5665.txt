@@ -1,3 +1,0 @@
-DOID:5665	external ear cancer
-monDO ID 	 name 
-MONDO:0003574	external ear cancer

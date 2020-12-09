@@ -1,3 +1,0 @@
-MONDO:0004453	testicular yolk sac tumor, myxomatous pattern
-DOID 	 name 
-DOID:8081	myxomatous pattern testicular yolk sac tumor

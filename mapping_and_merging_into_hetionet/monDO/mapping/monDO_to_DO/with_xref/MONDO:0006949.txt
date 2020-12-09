@@ -1,3 +1,0 @@
-MONDO:0006949	retinal drusen
-DOID 	 name 
-DOID:2569	retinal drusen

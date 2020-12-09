@@ -1,3 +1,0 @@
-DOID:0080154	short chain acyl-CoA dehydrogenase deficiency
-monDO ID 	 name 
-MONDO:0008722	short chain acyl-CoA dehydrogenase deficiency

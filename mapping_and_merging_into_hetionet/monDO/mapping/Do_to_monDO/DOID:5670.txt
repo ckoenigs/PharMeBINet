@@ -1,3 +1,0 @@
-DOID:5670	comedo carcinoma
-monDO ID 	 name 
-MONDO:0003575	comedocarcinoma

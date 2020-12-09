@@ -1,3 +1,0 @@
-DOID:4407	phototoxic dermatitis
-monDO ID 	 name 
-MONDO:0006598	phototoxic dermatitis

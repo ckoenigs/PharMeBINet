@@ -1,3 +1,0 @@
-DOID:0060402	chromosome 17p13.1 deletion syndrome
-monDO ID 	 name 
-MONDO:0013415	chromosome 17p13.1 deletion syndrome

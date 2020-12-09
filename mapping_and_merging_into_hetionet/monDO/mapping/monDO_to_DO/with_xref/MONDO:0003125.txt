@@ -1,3 +1,0 @@
-MONDO:0003125	testicular sex cord-stromal neoplasm
-DOID 	 name 
-DOID:4757	sex cord-stromal neoplasm

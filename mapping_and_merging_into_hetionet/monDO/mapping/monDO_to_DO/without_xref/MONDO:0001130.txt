@@ -1,3 +1,0 @@
-MONDO:0001130	nasal cavity lymphoma
-DOID 	 name 
-DOID:10813	nasal cavity lymphoma

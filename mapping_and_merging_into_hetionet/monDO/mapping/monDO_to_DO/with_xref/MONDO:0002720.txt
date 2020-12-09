@@ -1,3 +1,0 @@
-MONDO:0002720	sella turcica neoplasm
-DOID 	 name 
-DOID:3643	sella turcica neoplasm

@@ -1,3 +1,0 @@
-MONDO:0001897	bilateral hyperactive labyrinth
-DOID 	 name 
-DOID:14165	bilateral hyperactive labyrinth

@@ -1,3 +1,0 @@
-MONDO:0005336	myopathy
-DOID 	 name 
-DOID:423	myopathy

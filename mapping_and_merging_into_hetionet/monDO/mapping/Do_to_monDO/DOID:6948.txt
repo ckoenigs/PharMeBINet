@@ -1,3 +1,0 @@
-DOID:6948	malignant gastric teratoma
-monDO ID 	 name 
-MONDO:0004048	malignant gastric teratoma

@@ -1,3 +1,0 @@
-DOID:12309	urticaria pigmentosa
-monDO ID 	 name 
-MONDO:0019316	maculopapular cutaneous mastocytosis

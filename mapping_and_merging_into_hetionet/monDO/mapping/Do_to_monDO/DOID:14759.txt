@@ -1,3 +1,0 @@
-DOID:14759	autosomal recessive type IV Ehlers-Danlos syndrome
-monDO ID 	 name 
-MONDO:0002014	autosomal recessive Ehlers-Danlos syndrome, vascular type

@@ -1,4 +1,0 @@
-MONDO:0011010	Matthew-wood syndrome
-DOID 	 name 
-DOID:0050819	Matthew-Wood syndrome
-DOID:10629	microphthalmia

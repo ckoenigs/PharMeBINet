@@ -1,3 +1,0 @@
-DOID:161	keratosis
-monDO ID 	 name 
-MONDO:0006566	keratosis

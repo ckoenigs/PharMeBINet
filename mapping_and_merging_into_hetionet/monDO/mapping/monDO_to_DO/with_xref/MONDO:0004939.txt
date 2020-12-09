@@ -1,3 +1,0 @@
-MONDO:0004939	hallucinogen dependence
-DOID 	 name 
-DOID:9977	hallucinogen dependence

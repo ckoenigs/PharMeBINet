@@ -1,3 +1,0 @@
-MONDO:0004943	orbit sarcoma
-DOID 	 name 
-DOID:9987	orbit sarcoma

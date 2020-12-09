@@ -1,3 +1,0 @@
-DOID:13891	bird fancier's lung
-monDO ID 	 name 
-MONDO:0005668	bird fancier's lung

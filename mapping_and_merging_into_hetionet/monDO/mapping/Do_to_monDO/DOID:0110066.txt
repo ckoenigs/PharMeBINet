@@ -1,3 +1,0 @@
-DOID:0110066	amelogenesis imperfecta type 1G
-monDO ID 	 name 
-MONDO:0008771	amelogenesis imperfecta type 1G

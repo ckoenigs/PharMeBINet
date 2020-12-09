@@ -1,3 +1,0 @@
-MONDO:0010407	syndromic X-linked intellectual disability Turner type
-DOID 	 name 
-DOID:0060811	syndromic X-linked intellectual disability Turner type

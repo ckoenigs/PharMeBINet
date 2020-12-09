@@ -1,3 +1,0 @@
-MONDO:0002300	dermis tumor
-DOID 	 name 
-DOID:2438	dermis tumor

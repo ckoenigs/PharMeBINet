@@ -1,3 +1,0 @@
-DOID:8295	scabies
-monDO ID 	 name 
-MONDO:0004525	scabies

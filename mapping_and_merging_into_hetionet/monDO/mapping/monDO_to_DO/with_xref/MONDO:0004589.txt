@@ -1,3 +1,0 @@
-MONDO:0004589	hereditary retinal dystrophy
-DOID 	 name 
-DOID:8500	hereditary retinal dystrophy

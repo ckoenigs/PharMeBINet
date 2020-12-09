@@ -1,3 +1,0 @@
-DOID:5551	choriocarcinoma of the testis
-monDO ID 	 name 
-MONDO:0003508	choriocarcinoma of the testis

@@ -1,3 +1,0 @@
-DOID:3172	papillary adenoma
-monDO ID 	 name 
-MONDO:0002533	papillary adenoma

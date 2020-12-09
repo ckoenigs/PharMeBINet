@@ -1,3 +1,0 @@
-DOID:0060896	autosomal recessive early-onset Parksinson disease 23
-monDO ID 	 name 
-MONDO:0014796	autosomal recessive early-onset Parksinson disease 23

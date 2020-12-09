@@ -1,3 +1,0 @@
-DOID:5500	cellular ependymoma
-monDO ID 	 name 
-MONDO:0003470	cellular ependymoma

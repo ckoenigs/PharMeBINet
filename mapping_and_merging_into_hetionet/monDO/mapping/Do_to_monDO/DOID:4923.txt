@@ -1,3 +1,0 @@
-DOID:4923	thymus adenocarcinoma
-monDO ID 	 name 
-MONDO:0003209	thymus adenocarcinoma

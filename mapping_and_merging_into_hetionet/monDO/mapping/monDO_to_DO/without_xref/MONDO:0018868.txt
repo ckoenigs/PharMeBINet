@@ -1,3 +1,0 @@
-MONDO:0018868	metachromatic leukodystrophy
-DOID 	 name 
-DOID:10581	metachromatic leukodystrophy

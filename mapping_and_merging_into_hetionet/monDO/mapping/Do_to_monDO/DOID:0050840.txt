@@ -1,3 +1,0 @@
-DOID:0050840	cervical dystonia
-monDO ID 	 name 
-MONDO:0000481	cervical dystonia

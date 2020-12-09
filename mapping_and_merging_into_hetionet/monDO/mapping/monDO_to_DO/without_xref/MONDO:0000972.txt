@@ -1,3 +1,0 @@
-MONDO:0000972	gallbladder lipoma
-DOID 	 name 
-DOID:10201	gallbladder lipoma

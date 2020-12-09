@@ -1,3 +1,0 @@
-MONDO:0001985	partial arterial retinal occlusion
-DOID 	 name 
-DOID:14522	partial arterial retinal occlusion

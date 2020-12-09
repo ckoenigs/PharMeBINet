@@ -1,5 +1,0 @@
-MONDO:0002788	papillary craniopharyngioma
-DOID 	 name 
-DOID:3846	adamantinous craniopharyngioma
-DOID:3847	papillary craniopharyngioma
-DOID:3840	craniopharyngioma

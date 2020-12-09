@@ -1,3 +1,0 @@
-DOID:4411	hepatitis E
-monDO ID 	 name 
-MONDO:0005788	hepatitis E

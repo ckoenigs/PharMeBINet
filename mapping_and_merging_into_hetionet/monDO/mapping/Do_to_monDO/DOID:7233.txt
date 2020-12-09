@@ -1,3 +1,0 @@
-DOID:7233	adult central nervous system embryonal carcinoma
-monDO ID 	 name 
-MONDO:0004155	adult central nervous system embryonal carcinoma

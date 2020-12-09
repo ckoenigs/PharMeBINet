@@ -1,3 +1,0 @@
-DOID:7747	pediatric extraocular retinoblastoma
-monDO ID 	 name 
-MONDO:0004350	pediatric extraocular retinoblastoma

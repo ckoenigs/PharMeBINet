@@ -66,7 +66,7 @@ def integrate_connection_into_hetionet():
             if result:
                 query = query_start + 'Merge (a)-[r:%s]->(b) On Create Set r.source=line.source, r.resource=["NDF-RT"], r.ndf_rt="yes", r.unbiased=false, r.license="" On Match Set r.resource=r.resource+"NDF-RT", r.ndf_rt="yes";\n '
             else:
-                query = query_start + "Create (a)-[r:%s{source:'line.source, resource:['NDF-RT'], ndf_rt:'yes', unbiased:false, license:''}]->(b);\n"
+                query = query_start + "Create (a)-[r:%s{source:line.source, resource:['NDF-RT'], ndf_rt:'yes', unbiased:false, license:''}]->(b);\n"
             query = query % ('relationships/rela_' + rela_type + '.tsv', dict_type_to_label[rela_type])
             cypher_file.write(query)
 

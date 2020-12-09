@@ -1,3 +1,0 @@
-DOID:13544	low tension glaucoma
-monDO ID 	 name 
-MONDO:0006837	low tension glaucoma

@@ -1,3 +1,0 @@
-MONDO:0000290	primary amebic meningoencephalitis
-DOID 	 name 
-DOID:0050242	primary amebic meningoencephalitis

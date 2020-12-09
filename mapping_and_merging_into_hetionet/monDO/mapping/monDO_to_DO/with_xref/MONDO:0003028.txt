@@ -1,3 +1,0 @@
-MONDO:0003028	thyroid sarcoma
-DOID 	 name 
-DOID:4515	thyroid sarcoma

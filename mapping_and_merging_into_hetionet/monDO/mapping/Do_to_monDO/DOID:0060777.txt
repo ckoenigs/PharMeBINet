@@ -1,3 +1,0 @@
-DOID:0060777	congenital secretory sodium diarrhea 8
-monDO ID 	 name 
-MONDO:0014808	congenital secretory sodium diarrhea 8

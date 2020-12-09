@@ -1,3 +1,0 @@
-DOID:1440	Machado-Joseph disease
-monDO ID 	 name 
-MONDO:0007182	Machado-Joseph disease

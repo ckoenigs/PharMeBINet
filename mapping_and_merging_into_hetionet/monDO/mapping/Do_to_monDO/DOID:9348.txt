@@ -1,3 +1,0 @@
-DOID:9348	carotid artery dissection
-monDO ID 	 name 
-MONDO:0004763	carotid artery dissection

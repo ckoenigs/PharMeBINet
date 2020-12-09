@@ -1,3 +1,0 @@
-MONDO:0006801	ileal neoplasm
-DOID 	 name 
-DOID:10156	ileal neoplasm

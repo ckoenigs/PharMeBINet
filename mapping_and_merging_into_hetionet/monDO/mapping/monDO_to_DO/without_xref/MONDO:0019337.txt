@@ -1,3 +1,0 @@
-MONDO:0019337	autoimmune bullous skin disease
-DOID 	 name 
-DOID:8502	bullous skin disease

@@ -1,3 +1,0 @@
-DOID:363	uterine cancer
-monDO ID 	 name 
-MONDO:0002715	uterine cancer

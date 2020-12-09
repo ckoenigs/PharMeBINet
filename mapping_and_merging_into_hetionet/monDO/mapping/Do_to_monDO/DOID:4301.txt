@@ -1,3 +1,0 @@
-DOID:4301	vulva basal cell carcinoma
-monDO ID 	 name 
-MONDO:0002955	vulva basal cell carcinoma

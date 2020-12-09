@@ -1,3 +1,0 @@
-MONDO:0013464	episodic ataxia type 5
-DOID 	 name 
-DOID:0050993	episodic ataxia type 5

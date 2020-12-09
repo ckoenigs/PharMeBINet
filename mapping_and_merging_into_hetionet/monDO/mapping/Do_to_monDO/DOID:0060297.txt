@@ -1,3 +1,0 @@
-DOID:0060297	complement component 4a deficiency
-monDO ID 	 name 
-MONDO:0013721	complement component 4a deficiency

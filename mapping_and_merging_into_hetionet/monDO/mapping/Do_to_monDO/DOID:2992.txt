@@ -1,3 +1,0 @@
-DOID:2992	prostate neuroendocrine neoplasm
-monDO ID 	 name 
-MONDO:0002477	prostate neuroendocrine neoplasm

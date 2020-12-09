@@ -1,3 +1,0 @@
-MONDO:0000229	indian tick typhus
-DOID 	 name 
-DOID:0050042	Indian tick typhus

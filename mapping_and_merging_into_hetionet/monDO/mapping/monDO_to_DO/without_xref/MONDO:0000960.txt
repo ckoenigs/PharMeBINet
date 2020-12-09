@@ -1,3 +1,0 @@
-MONDO:0000960	diabetic peripheral angiopathy
-DOID 	 name 
-DOID:10182	diabetic peripheral angiopathy

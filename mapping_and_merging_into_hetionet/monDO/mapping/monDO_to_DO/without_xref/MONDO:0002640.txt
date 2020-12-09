@@ -1,3 +1,0 @@
-MONDO:0002640	optic nerve neoplasm
-DOID 	 name 
-DOID:3419	optic nerve neoplasm

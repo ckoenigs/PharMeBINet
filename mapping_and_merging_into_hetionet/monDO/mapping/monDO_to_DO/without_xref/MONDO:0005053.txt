@@ -1,3 +1,0 @@
-MONDO:0005053	ischemic disease
-DOID 	 name 
-DOID:326	ischemia

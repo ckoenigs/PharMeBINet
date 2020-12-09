@@ -1,3 +1,0 @@
-MONDO:0005546	fibromyalgia
-DOID 	 name 
-DOID:631	fibromyalgia

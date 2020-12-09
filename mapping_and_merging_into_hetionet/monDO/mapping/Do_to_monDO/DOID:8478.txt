@@ -1,3 +1,0 @@
-DOID:8478	actinomycosis
-monDO ID 	 name 
-MONDO:0005631	actinomycosis

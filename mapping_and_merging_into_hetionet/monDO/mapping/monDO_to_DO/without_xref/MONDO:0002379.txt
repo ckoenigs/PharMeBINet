@@ -1,3 +1,0 @@
-MONDO:0002379	cystic teratoma
-DOID 	 name 
-DOID:2660	cystic teratoma

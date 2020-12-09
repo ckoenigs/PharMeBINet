@@ -1,3 +1,0 @@
-MONDO:0006530	cholesteatoma (disease)
-DOID 	 name 
-DOID:869	cholesteatoma

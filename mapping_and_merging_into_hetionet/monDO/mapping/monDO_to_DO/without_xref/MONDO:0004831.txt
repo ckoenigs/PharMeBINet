@@ -1,3 +1,0 @@
-MONDO:0004831	proliferative fasciitis
-DOID 	 name 
-DOID:9599	proliferative fasciitis

@@ -1,3 +1,0 @@
-DOID:10264	mumps
-monDO ID 	 name 
-MONDO:0000989	mumps

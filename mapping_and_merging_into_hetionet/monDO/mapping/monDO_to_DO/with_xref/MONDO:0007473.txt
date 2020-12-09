@@ -1,3 +1,0 @@
-MONDO:0007473	Duane retraction syndrome
-DOID 	 name 
-DOID:12557	Duane retraction syndrome

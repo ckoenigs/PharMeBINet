@@ -1,3 +1,0 @@
-MONDO:0002359	juxtacortical chondroma
-DOID 	 name 
-DOID:2601	juxtacortical chondroma

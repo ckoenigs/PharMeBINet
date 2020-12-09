@@ -1,3 +1,0 @@
-DOID:7280	congenital epulis
-monDO ID 	 name 
-MONDO:0015528	congenital epulis

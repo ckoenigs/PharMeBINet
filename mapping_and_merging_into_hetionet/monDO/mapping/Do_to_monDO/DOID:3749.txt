@@ -1,3 +1,0 @@
-DOID:3749	urethral verrucous carcinoma
-monDO ID 	 name 
-MONDO:0002763	urethral verrucous carcinoma

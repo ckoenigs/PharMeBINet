@@ -1,3 +1,0 @@
-DOID:6510	lung occult squamous cell carcinoma
-monDO ID 	 name 
-MONDO:0003904	lung occult squamous cell carcinoma

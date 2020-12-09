@@ -1,3 +1,0 @@
-MONDO:0015286	congenital disorder of glycosylation
-DOID 	 name 
-DOID:5212	congenital disorder of glycosylation

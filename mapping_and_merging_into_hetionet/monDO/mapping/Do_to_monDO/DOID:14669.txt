@@ -1,3 +1,0 @@
-DOID:14669	acrodysostosis
-monDO ID 	 name 
-MONDO:0019797	acrodysostosis

@@ -1,3 +1,0 @@
-DOID:3374	peripheral osteosarcoma
-monDO ID 	 name 
-MONDO:0002628	peripheral osteosarcoma

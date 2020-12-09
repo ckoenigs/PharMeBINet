@@ -1,3 +1,0 @@
-MONDO:0012477	retinitis pigmentosa 33
-DOID 	 name 
-DOID:0110366	retinitis pigmentosa 33

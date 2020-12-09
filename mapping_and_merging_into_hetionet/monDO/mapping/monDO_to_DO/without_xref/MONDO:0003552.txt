@@ -1,3 +1,0 @@
-MONDO:0003709	adenosquamous gallbladder carcinoma
-DOID 	 name 
-DOID:5627	adenosquamous gallbladder carcinoma

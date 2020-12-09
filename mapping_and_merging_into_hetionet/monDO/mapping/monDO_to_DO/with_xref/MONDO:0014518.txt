@@ -1,3 +1,0 @@
-MONDO:0014518	platelet-type bleeding disorder 19
-DOID 	 name 
-DOID:0111048	platelet-type bleeding disorder 19

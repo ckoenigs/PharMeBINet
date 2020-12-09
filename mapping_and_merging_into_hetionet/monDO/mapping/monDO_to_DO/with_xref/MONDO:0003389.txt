@@ -1,3 +1,0 @@
-MONDO:0003389	epithelial-myoepithelial carcinoma
-DOID 	 name 
-DOID:5309	epithelial-myoepithelial carcinoma

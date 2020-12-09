@@ -1,3 +1,0 @@
-DOID:0060143	integrative agnosia
-monDO ID 	 name 
-MONDO:0000673	integrative agnosia

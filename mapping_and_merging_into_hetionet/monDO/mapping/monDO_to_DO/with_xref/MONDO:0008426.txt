@@ -1,3 +1,0 @@
-MONDO:0008426	Shprintzen-Goldberg syndrome
-DOID 	 name 
-DOID:2340	craniosynostosis

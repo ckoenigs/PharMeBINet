@@ -1,3 +1,0 @@
-MONDO:0001316	streptococcal meningitis
-DOID 	 name 
-DOID:11574	streptococcal meningitis

@@ -1,3 +1,0 @@
-DOID:3029	colon mucinous adenocarcinoma
-monDO ID 	 name 
-MONDO:0005007	colon mucinous adenocarcinoma

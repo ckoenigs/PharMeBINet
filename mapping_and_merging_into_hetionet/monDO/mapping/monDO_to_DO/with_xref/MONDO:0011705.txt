@@ -1,3 +1,0 @@
-MONDO:0003709	lymphangioleiomyomatosis
-DOID 	 name 
-DOID:3319	lymphangioleiomyomatosis

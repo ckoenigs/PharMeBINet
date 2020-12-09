@@ -1,3 +1,0 @@
-MONDO:0005411	gallbladder cancer
-DOID 	 name 
-DOID:3121	gallbladder cancer

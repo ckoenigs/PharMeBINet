@@ -1,3 +1,0 @@
-MONDO:0005645	ancylostomiasis
-DOID 	 name 
-DOID:12841	ancylostomiasis

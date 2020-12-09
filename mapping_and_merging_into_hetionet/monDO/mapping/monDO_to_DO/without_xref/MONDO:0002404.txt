@@ -1,3 +1,0 @@
-MONDO:0002404	liver hemangioma
-DOID 	 name 
-DOID:271	hemangioma of liver

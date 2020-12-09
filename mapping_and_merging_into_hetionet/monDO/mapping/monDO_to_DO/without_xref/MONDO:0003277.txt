@@ -1,3 +1,0 @@
-MONDO:0003277	malignant ear neoplasm
-DOID 	 name 
-DOID:5101	auricular cancer
