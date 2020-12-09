@@ -5,17 +5,18 @@ Created on Mon Dec  4 11:18:05 2017
 @author: cassandra
 """
 
-from py2neo import Graph, authenticate
+import create_connection_to_databases, authenticate
 import MySQLdb as mdb
 import sys
 import datetime
+sys.path.append("../..")
 
 
 # connect with the neo4j database AND MYSQL
 def database_connection():
     # create connection with mysql database
     global con
-    con = mdb.connect('localhost', 'root', 'Za8p7Tf', 'umls')
+    con = mdb.connect('127.0.0.1', 'root', 'Za8p7Tf', 'umls', charset='utf8')
 
     authenticate("localhost:7474", "neo4j", "test")
     global g
@@ -255,7 +256,7 @@ def integrate_infromation_into_hetionet():
                 if not cui in dict_cui_to_mesh:
                     f.write(symptom_term + '\t' + cui + '\t' + '\n')
                     query = ''' MATCH (n:Disease{identifier:"%s"}),(s:Symptom{identifier:"%s"}) 
-                    Create (n)-[:PRESENTS_DpS{license:'CC BY 3.0',unbiased:'false',source:'DO', source_id:'%s',hetionet:'no',do:'yes', resource:['Disease Ontology']}]->(s); \n '''
+                    Create (n)-[:PRESENTS_DpS{license:'CC BY 3.0',unbiased:false,source:'DO', source_id:'%s',hetionet:'no',do:'yes', resource:['Disease Ontology']}]->(s); \n '''
                     query = query % (doid, cui, doid)
                     count_new_connection += 1
 
@@ -267,7 +268,7 @@ def integrate_infromation_into_hetionet():
                     first_entry = result.evaluate()
                     if first_entry == None:
                         query = '''MATCH (n:Disease{identifier:"%s"}),(s:Symptom{identifier:"%s"}) 
-                        Create (n)-[:PRESENTS_DpS{license:'CC BY 3.0',unbiased:'false',source:'DO', source_id:'%s', resource:['Disease Ontology'],hetionet:'no',do:'yes'}]->(s); \n '''
+                        Create (n)-[:PRESENTS_DpS{license:'CC BY 3.0',unbiased:false,source:'DO', source_id:'%s', resource:['Disease Ontology'],hetionet:'no',do:'yes'}]->(s); \n '''
                         count_new_connection += 1
 
                     else:

@@ -429,11 +429,13 @@ def write_cypher_file():
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_go/db_uniprots_to_mf.csv" As line MATCH (g:Protein{identifier:line.uniprot_ids}),(b:MolecularFunction{identifier:line.go}) Create (g)-[:PARTICIPATES_PRpMF{resource:['UniProt'],source:'UniPort', uniprot:'yes', license:'Creative Commons Attribution (CC BY 4.0) License', url:'https://www.uniprot.org/uniprot/'+line.uniprot_ids}]->(b);\n'''
     file_cypher.write(query)
 
-    query='''MATCH (p:Protein_Uniprot) WITH DISTINCT keys(p) AS keys
+    query_property='''MATCH (p:Protein_Uniprot) WITH DISTINCT keys(p) AS keys
         UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields
         RETURN allfields;'''
 
-    results=g.run(query)
+    results=g.run(query_property)
+
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/db_uniprot_ids.csv" As line MATCH (p:Protein_Uniprot{identifier:line.uniprot_id}) Create (p)<-[:equal_to_uniprot]-(:Protein{'''
 
     for property, in results:
         # the go classifiers are in the rela to bc, cc and mf and the gene information are in the rela to gene
@@ -559,7 +561,7 @@ def get_gather_protein_info_and_generate_relas():
 
         # first check out the identifier
         # also check if it has multiple genes or not
-        print(identifier)
+        # print(identifier)
         in_list, genes = check_and_write_uniprot_ids(identifier, name, identifier, '', geneSymbols, gene_ids)
         if in_list:
             found_at_least_on = True

@@ -1,8 +1,0 @@
-omim id 	 omim name 	 mondos 
-OMIM:155800	melanosis, universal	MONDO:0007771
-OMIM:181515	scholte syndrome	MONDO:0010505
-OMIM:217050	complement component 6 deficiency	MONDO:0012908
-OMIM:312530	retinal detachment	MONDO:0008375
-OMIM:605685	cutis verticis gyrata, retinitis pigmentosa, and sensorineural deafness	MONDO:0008999
-OMIM:615970 	alpha-fetoprotein, hereditary persistence of; hpafp	MONDO:0014425
-OMIM:617100	familial adenomatous polyposis 4	MONDO:0014913

@@ -5,7 +5,8 @@ Created on Mon Dec  4 11:18:05 2017
 @author: cassandra
 """
 
-from py2neo import Graph, authenticate
+sys.path.append("../..")
+import create_connection_to_databases, authenticate
 import MySQLdb as mdb
 import sys
 import datetime
@@ -36,7 +37,7 @@ class SymptomThread(threading.Thread):
 def database_connection():
     # create connection with mysql database
     global con
-    con = mdb.connect('localhost', 'root', 'Za8p7Tf', 'umls')
+    con = mdb.connect('127.0.0.1', 'root', 'Za8p7Tf', 'umls')
 
     authenticate("localhost:7474", "neo4j", "test")
     global g

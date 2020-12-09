@@ -1,3 +1,0 @@
-omim id 	 omim name 	 umls cuis 	 mondos 
-OMIM:300990 	midface hypoplasia, hearing impairment, elliptocytosis, and nephrocalcinosis	C4310810	MONDO:0010516
-OMIM:616697 	deafness, autosomal dominant 69	C4225241	MONDO:0014738
