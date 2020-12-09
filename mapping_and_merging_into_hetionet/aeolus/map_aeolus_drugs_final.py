@@ -107,7 +107,7 @@ def load_compounds_from_hetionet():
         resource = result['resource'] if 'resource' in result else []
         xrefs = result['xrefs'] if 'xrefs' in result else []
         for xref in xrefs:
-            if xref.startswith('RxNorm_Cui'):
+            if xref.startswith('RxNorm_CUI'):
                 rxcui=xref.split(':')[1]
                 if not rxcui in dict_rxcui_to_Drugbank_with_xref:
                     dict_rxcui_to_Drugbank_with_xref[rxcui]=set()
@@ -144,7 +144,7 @@ def load_drug_aeolus_in_dictionary():
         rxcui=result['concept_code']
         drug_concept_id=result['drug_concept_id']
         drug = Drug_Aeolus(result['vocabulary_id'], result['name'], result['drug_concept_id'], result['concept_code'])
-        dict_aeolus_drugs[rxcui] = drug
+        dict_aeolus_drugs[drug_concept_id] = drug
         if not result['concept_code'] in dict_rxnorm_to_drug_concept_id:
             dict_rxnorm_to_drug_concept_id[result['concept_code']] = result['drug_concept_id']
         if rxcui in dict_rxcui_to_Drugbank_with_xref:
@@ -154,6 +154,7 @@ def load_drug_aeolus_in_dictionary():
             list_aeolus_drugs_without_drugbank_id.append(rxcui)
     print('Size of Aoelus drug:' + str(len(dict_aeolus_drugs)))
     print('number of rxnorm ids in aeolus drug:' + str(len(dict_rxnorm_to_drug_concept_id)))
+    print('number of not mapped:',len(list_aeolus_drugs_without_drugbank_id))
 
 
 # list of all concept_id where no drugbank id is found, only save the rxnorm ids
@@ -184,7 +185,7 @@ def search_for_mapping_in_rxnorm(sab, rxnorm_id, drug_concept_id, mapping_string
         for (rxcui, lat, code, sab, label,) in cur:
             label = label.lower()
             if code in dict_all_drug:
-                dict_all_drug[code].xrefs.append('RxNorm_Cui:' + rxcui)
+                dict_all_drug[code].xrefs.append('RxNorm_CUI:' + rxcui)
                 mapped_ids.append(code)
                 found_a_mapping = True
                 if label == name:
@@ -219,7 +220,7 @@ def map_rxnorm_to_drugbank_use_rxnorm_database():
             delete_list_without_DB.add(list_aeolus_drugs_without_drugbank_id.index(rxnorm_id))
 
     # delete the new mapped rxnorm cuis from not map list
-    delete_list_without_DB = delete_list_without_DB
+    delete_list_without_DB = list(delete_list_without_DB)
     delete_list_without_DB.sort()
     delete_list_without_DB = list(reversed(delete_list_without_DB))
     for index in delete_list_without_DB:
@@ -257,7 +258,7 @@ def map_rxnorm_to_drugbank_with_use_inchikeys_and_unii():
             dict_aeolus_drug_mapped_ids[drug_concept_id] = drugbank_ids
             # add to all mapped chemical the rxnorm cui as xref
             for drugbank_id in drugbank_ids:
-                dict_all_drug[drugbank_id].xrefs.append('RxNorm_Cui:' + rxnorm_id)
+                dict_all_drug[drugbank_id].xrefs.append('RxNorm_CUI:' + rxnorm_id)
 
     # delete the new mapped rxnorm cuis from not mapped list
     delete_list_without_DB = list(set(delete_list_without_DB))
@@ -291,7 +292,7 @@ def map_name_rxnorm_to_drugbank():
             drug_concept_id = dict_rxnorm_to_drug_concept_id[rxnorm_id]
 
             dict_aeolus_drugs[drug_concept_id].set_how_mapped('map rxnorm to drugbank with use of name mapping')
-            dict_all_drug[drugbank_id].xrefs.append('RxNorm_Cui:' + rxnorm_id)
+            dict_all_drug[drugbank_id].xrefs.append('RxNorm_CUI:' + rxnorm_id)
 
             if not drug_concept_id in dict_aeolus_drug_mapped_ids:
                 dict_aeolus_drug_mapped_ids[drug_concept_id] = [drugbank_id]
@@ -358,12 +359,18 @@ csv_mesh.writerow(['rxnorm_cui', 'drugbank_ids with | as seperator', 'name'])
 not_mapped = open('drug/not_mapped_rxcuis.tsv', 'w')
 not_mapped.write('drug_concept_id \t rxcui \t name \n')
 
+# mapped with xref
+map_xrefs = open('drug/aeolus_map_with_use_of_xrefs.tsv', 'w')
+csv_xrefs = csv.writer(map_xrefs, delimiter='\t')
+csv_xrefs.writerow(['rxnorm_cui', 'drugbank_ids with | as seperator', 'name'])
+
 # dictionary with for every how_mapped has a different file
 dict_how_mapped_files = {
     'map rxnorm to drugbank with use of name mapping': csv_name,
     'rxcui map to drugbank': csv_rxcui,
     'map rxnorm to drugbank with use of dhimmel inchikey and unii': csv__inchikey_unii,
-    'rxcui map to MESH': csv_mesh}
+    'rxcui map to MESH': csv_mesh,
+    'map rxcui with xref':csv_xrefs}
 
 # generate file with rxnom and a list of drugbank ids and wheere there are from
 multiple_drugbankids = open('aeolus_multiple_drugbank_ids.tsv', 'w')
