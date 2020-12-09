@@ -159,6 +159,7 @@ def prepare_name_synonym_for_disease(disease_id, dictionary_with_names, to_dicti
     """
     if 'name' in dictionary_with_names:
         disease_name = dictionary_with_names['name'].lower()
+
         if name_to_check:
             if disease_name not in to_dictionary:
                 to_dictionary[disease_name] = set()
@@ -238,6 +239,7 @@ def mapping_with_name():
     for trait_id in set_not_mapped_ids:
         if 'name' in dict_clinvar_id_to_node[trait_id]:
             name = dict_clinvar_id_to_node[trait_id]['name']
+            name = name.replace(' (disease)','')
             found, counter_new_mapped = check_for_mapping_and_write_in_csv_file(name, dict_disease_name_to_ids,
                                                                                 counter_new_mapped, trait_id,
                                                                                 mapped_ids, ['name'])

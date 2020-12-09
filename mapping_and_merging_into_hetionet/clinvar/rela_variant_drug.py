@@ -1,5 +1,3 @@
-sys.path.append("../..")
-import create_connection_to_databases
 import sys
 import datetime
 import csv, json
@@ -287,7 +285,7 @@ def generate_cypher_file_and_csv(rela_type):
     csv_writer=csv.DictWriter(file,fieldnames=list(set_of_rela_properties), delimiter='\t')
     csv_writer.writeheader()
 
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/clinvar/%s.tsv" As line FIELDTERMINATOR '\\t' 
+    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/clinvar/%s" As line FIELDTERMINATOR '\\t' 
             Match (c:Chemical{identifier:line.chemical_id}), (t:Variant{identifier:line.variant_id})  Create (c)-[:%s {'''
     for property in set_of_rela_properties:
         if property in ['variant_id','chemical_id']:
