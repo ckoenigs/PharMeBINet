@@ -101,7 +101,7 @@ def load_reactome_disease_in():
     counter_map_with_name = 0
     for disease_node, in results:
         disease_id = disease_node['identifier']
-        if disease_id=='3068':
+        if disease_id=='104':
             print('huh')
         disease_name = disease_node['displayName'].lower()
         # if disease_id == "0060053":

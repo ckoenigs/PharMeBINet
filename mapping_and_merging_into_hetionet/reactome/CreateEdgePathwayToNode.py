@@ -58,7 +58,7 @@ generate new relationships between pathways of hetionet and hetionet nodes that 
 
 
 def create_cypher_file(file_name, node_label, rela_name):
-    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/reactome/%s" As line FIELDTERMINATOR "\\t" MATCH (d:Pathway{identifier:line.id_hetionet_pathway}),(c:%s{identifier:line.id_hetionet_node}) CREATE (d)-[: %s{order:line.order, stoichiometry:line.stoichiometry, resource: ['Reactome'], reactome: "yes"}]->(c);\n'''
+    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/reactome/%s" As line FIELDTERMINATOR "\\t" MATCH (d:Pathway{identifier:line.id_hetionet_pathway}),(c:%s{identifier:line.id_hetionet_node}) CREATE (d)-[: %s{order:line.order, stoichiometry:line.stoichiometry, resource: ['Reactome'], reactome: "yes", source:"Reactome"}]->(c);\n'''
     query = query % (path_of_directory, file_name, node_label, rela_name)
     cypher_file.write(query)
 
@@ -120,9 +120,10 @@ def main():
         ['hasEvent', 'FailedReaction_reactome', 'equal_to_reactome_failedreaction', 'FailedReaction', 'HAS_FAILED_PhfF'],
         ['hasEvent', 'Reaction_reactome', 'equal_to_reactome_reaction', 'Reaction',
          'HAS_REACTION_PhR'],
-        ['goBiologicalProcess','GO_BiologicalProcess_reactome','equal_to_reactome_gobiolproc','BiologicalProcess', 'HAS_BP_PhBP'],
+        ['goBiologicalProcess','GO_BiologicalProcess_reactome','equal_to_reactome_gobiolproc','BiologicalProcess', 'HAS_PhBP'],
         ['compartment', 'GO_CellularComponent_reactome', 'equal_to_reactome_gocellcomp', 'CellularComponent',
-        'HAS_CC_PhBP']
+        'HAS_CC_PhBP'],
+        ['disease','Disease_reactome','equal_to_reactome_disease','Disease', 'HAS_PhD']
     ]
 
     directory = 'PathwayEdges'

@@ -1,5 +1,3 @@
-sys.path.append("../..")
-import create_connection_to_databases
 import datetime
 import sys, csv
 

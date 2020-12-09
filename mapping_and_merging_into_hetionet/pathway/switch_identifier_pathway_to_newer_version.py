@@ -205,7 +205,7 @@ def fill_the_list_of_properties(head, value, identifiers, resource, name, list_i
         value = identifiers
     elif head == 'source':
         if type(value) in [list, set]:
-            value = [x.capitalize() for x in value]
+            value = ",".join(sorted([x.capitalize() for x in value]))
             resource = value
         else:
             value = value.capitalize()
@@ -262,40 +262,6 @@ def generate_node_csv():
                 identifiers, name, resource = fill_the_list_of_properties(head, value, identifiers, resource, name,
                                                                           list_info)
             csv_node.writerow(list_info)
-            # node1=list_of_nodes[0]
-            # node2=list_of_nodes[1]
-            # genes_1=node1['genes']
-            # genes_2 = node2['genes']
-            # source_1=node1['source']
-            # source_2=node2['source']
-            # intersection=set(genes_1).intersection(genes_2)
-            # if len(genes_1)>len(genes_2):
-            #     if len(intersection)!=len(genes_2):
-            #         print(node1['identifier'])
-            #         print(node2['identifier'])
-            #         print(source_1)
-            #         print(source_2)
-            #         # print(genes_2)
-            #         # print(intersection)
-            #         print(set(genes_2).difference(intersection))
-            #         print('not the same genes')
-            #         if source_1==source_2:
-            #             print('same source')
-            #             print(node1['idOwn']) if 'idOwn' in node1 else ''
-            #             print(node2['idOwn']) if 'idOwn' in node2 else ''
-            # else:
-            #     if len(intersection)!=len(genes_1):
-            #         print(node1['identifier'])
-            #         print(node2['identifier'])
-            #         print(source_1)
-            #         print(source_2)
-            #         # print(genes_1)
-            #         # print(intersection)
-            #         print(set(genes_1).difference(intersection))
-            #         print('not the same genes')
-            #         if source_1==source_2:
-            #             print(node1['idOwn']) if 'idOwn' in node1 else ''
-            #             print(node2['idOwn']) if 'idOwn' in node2 else ''
 
     print('number of duplicated once:' + str(counter_double_names))
     print('number of multies:' + str(counter_multiple))
@@ -324,7 +290,7 @@ def generate_rela_csv_and_cypher_queries():
     # generate cypher for node creation
     query_node_middle = 'Create (n:Pathway{'
     for head in header:
-        if head in list_list_properties:
+        if head in list_list_properties and head != 'source':
             query_node_middle += head + ':split(line.' + head + ',"|"), '
         else:
             query_node_middle += head + ':line.' + head + ', '

@@ -29,9 +29,13 @@ python3 deleteNodes.py > output_delete.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
-echo ' merge tow nodes '
+echo ' merge two nodes '
 
+# nodes which are double except of the dbid and id
 python3 merge_nodes.py 2011833 1247632 Disease_reactome dbId True > output_merge.txt
+
+
+python3 merge_nodes.py 9611565 3134792 Disease_reactome dbId True > output_merge.txt
 
 
 now=$(date +"%F %T")

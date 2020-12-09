@@ -96,7 +96,7 @@ def add_mapped_one_to_csv_file(dict_node_info, omim_id, mapped_id, csv_writer, m
     """
     dict_node = dict_node_info[mapped_id]
 
-    xrefs = dict_node['xrefs'] if 'xref' not in dict_node else []
+    xrefs = dict_node['xrefs'] if 'xrefs' in dict_node else []
     xrefs.append('OMIM' + ':' + omim_id)
     xrefs = go_through_xrefs_and_change_if_needed_source_name(
         xrefs, 'Gene') if is_gene else go_through_xrefs_and_change_if_needed_source_name(
