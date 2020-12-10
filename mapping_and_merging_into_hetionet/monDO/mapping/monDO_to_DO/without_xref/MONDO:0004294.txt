@@ -1,3 +1,0 @@
-MONDO:0004294	gestational ovarian choriocarcinoma
-DOID 	 name 
-DOID:7591	gestational ovarian choriocarcinoma

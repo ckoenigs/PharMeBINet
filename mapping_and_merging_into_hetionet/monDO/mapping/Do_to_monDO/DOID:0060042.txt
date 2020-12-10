@@ -1,3 +1,0 @@
-DOID:0060042	atypical autism
-monDO ID 	 name 
-MONDO:0005261	pervasive developmental disorder - not otherwise specified

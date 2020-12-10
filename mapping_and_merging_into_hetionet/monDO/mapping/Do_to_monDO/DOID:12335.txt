@@ -1,3 +1,0 @@
-DOID:12335	male genital organ vascular disease
-monDO ID 	 name 
-MONDO:0001497	male genital organ vascular disease

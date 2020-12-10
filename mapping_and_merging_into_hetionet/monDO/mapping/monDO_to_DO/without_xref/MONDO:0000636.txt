@@ -1,3 +1,0 @@
-MONDO:0000636	musculoskeletal system benign neoplasm
-DOID 	 name 
-DOID:0060099	musculoskeletal system benign neoplasm

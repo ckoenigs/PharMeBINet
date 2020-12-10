@@ -1,3 +1,0 @@
-DOID:6214	ovarian papillary neoplasm
-monDO ID 	 name 
-MONDO:0003813	ovarian papillary tumor

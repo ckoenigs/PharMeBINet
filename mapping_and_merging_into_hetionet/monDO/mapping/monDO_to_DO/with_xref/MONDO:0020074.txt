@@ -1,4 +1,0 @@
-MONDO:0020074	progressive myoclonic epilepsy
-DOID 	 name 
-DOID:891	progressive myoclonus epilepsy
-DOID:0060162	dentatorubral-pallidoluysian atrophy

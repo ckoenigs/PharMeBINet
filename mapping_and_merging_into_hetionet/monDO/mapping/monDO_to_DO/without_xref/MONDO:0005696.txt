@@ -1,3 +1,0 @@
-MONDO:0005696	central nervous system tuberculosis
-DOID 	 name 
-DOID:1638	central nervous system tuberculosis

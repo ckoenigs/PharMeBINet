@@ -1,3 +1,0 @@
-MONDO:0002051	integumentary system disease
-DOID 	 name 
-DOID:16	integumentary system disease

@@ -1,3 +1,0 @@
-DOID:0060111	fallopian tube benign neoplasm
-monDO ID 	 name 
-MONDO:0000645	fallopian tube benign neoplasm

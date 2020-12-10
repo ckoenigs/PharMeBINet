@@ -1,3 +1,0 @@
-MONDO:0013457	Leber congenital amaurosis 15
-DOID 	 name 
-DOID:0110189	Leber congenital amaurosis 15

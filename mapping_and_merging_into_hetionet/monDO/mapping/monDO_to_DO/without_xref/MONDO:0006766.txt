@@ -1,3 +1,0 @@
-MONDO:0006766	gait apraxia
-DOID 	 name 
-DOID:4260	gait apraxia

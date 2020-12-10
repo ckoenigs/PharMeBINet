@@ -1,3 +1,0 @@
-DOID:0060515	Atlantic salmon allergy
-monDO ID 	 name 
-MONDO:0000790	Atlantic salmon allergy

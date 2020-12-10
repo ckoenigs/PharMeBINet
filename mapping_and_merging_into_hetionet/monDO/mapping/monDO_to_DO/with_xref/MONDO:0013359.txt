@@ -1,3 +1,0 @@
-MONDO:0013359	familial hyperaldosteronism type III
-DOID 	 name 
-DOID:446	hyperaldosteronism

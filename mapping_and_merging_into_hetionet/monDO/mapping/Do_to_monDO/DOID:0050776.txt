@@ -1,3 +1,0 @@
-DOID:0050776	non-syndromic X-linked intellectual disability
-monDO ID 	 name 
-MONDO:0019181	non-syndromic X-linked intellectual disability

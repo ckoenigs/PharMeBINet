@@ -1,3 +1,0 @@
-MONDO:0004175	mucin-rich endometrial endometrioid adenocarcinoma
-DOID 	 name 
-DOID:7293	mucin-rich endometrial endometrioid adenocarcinoma

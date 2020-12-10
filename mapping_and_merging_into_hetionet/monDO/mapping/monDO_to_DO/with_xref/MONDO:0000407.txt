@@ -1,3 +1,0 @@
-MONDO:0000407	malignant pleural solitary fibrous tumor
-DOID 	 name 
-DOID:0050695	malignant pleural solitary fibrous tumor

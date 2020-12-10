@@ -1,3 +1,0 @@
-MONDO:0008787	microcytic anemia with liver iron overload
-DOID 	 name 
-DOID:0050642	hypochromic microcytic anemia

@@ -1,3 +1,0 @@
-MONDO:0008176	Paget disease of bone 3
-DOID 	 name 
-DOID:5408	Paget's disease of bone

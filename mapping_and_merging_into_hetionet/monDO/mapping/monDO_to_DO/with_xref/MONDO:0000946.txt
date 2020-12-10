@@ -1,3 +1,0 @@
-MONDO:0000946	psychologic vaginismus
-DOID 	 name 
-DOID:10131	psychologic vaginismus

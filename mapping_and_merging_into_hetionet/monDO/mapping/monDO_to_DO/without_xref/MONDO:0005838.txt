@@ -1,3 +1,0 @@
-MONDO:0005838	mansonelliasis
-DOID 	 name 
-DOID:1081	mansonelliasis

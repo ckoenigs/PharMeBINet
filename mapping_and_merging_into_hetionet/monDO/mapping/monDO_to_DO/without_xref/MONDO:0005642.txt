@@ -1,3 +1,0 @@
-MONDO:0005642	atopic conjunctivitis
-DOID 	 name 
-DOID:11204	allergic conjunctivitis

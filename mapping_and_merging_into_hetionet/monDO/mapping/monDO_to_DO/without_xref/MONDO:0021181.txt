@@ -1,3 +1,0 @@
-MONDO:0021181	inherited blood coagulation disorder
-DOID 	 name 
-DOID:2214	inherited blood coagulation disease

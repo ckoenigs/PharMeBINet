@@ -1,3 +1,0 @@
-MONDO:0008283	Cronkhite-Canada syndrome
-DOID 	 name 
-DOID:6225	Cronkhite-Canada syndrome

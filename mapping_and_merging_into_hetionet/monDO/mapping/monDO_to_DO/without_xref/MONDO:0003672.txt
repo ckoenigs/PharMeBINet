@@ -1,3 +1,0 @@
-MONDO:0003672	posterior myocardial infarction
-DOID 	 name 
-DOID:5847	posterior myocardial infarction

@@ -1,3 +1,0 @@
-MONDO:0010462	syndromic X-linked intellectual disability Chudley-Schwartz type
-DOID 	 name 
-DOID:0060819	syndromic X-linked intellectual disability Chudley-Schwartz type

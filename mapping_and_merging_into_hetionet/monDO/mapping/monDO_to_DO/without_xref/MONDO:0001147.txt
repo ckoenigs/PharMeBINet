@@ -1,3 +1,0 @@
-MONDO:0001147	meningocele (disease)
-DOID 	 name 
-DOID:1088	meningocele

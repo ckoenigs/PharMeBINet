@@ -1,3 +1,0 @@
-MONDO:0000980	aortic atherosclerosis (disease)
-DOID 	 name 
-DOID:10230	aortic atherosclerosis

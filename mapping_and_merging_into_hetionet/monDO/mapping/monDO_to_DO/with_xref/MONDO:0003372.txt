@@ -1,3 +1,0 @@
-MONDO:0003372	vulvar leiomyosarcoma
-DOID 	 name 
-DOID:5286	vulvar leiomyosarcoma

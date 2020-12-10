@@ -1,3 +1,0 @@
-DOID:6496	extraskeletal myxoid chondrosarcoma
-monDO ID 	 name 
-MONDO:0012825	extraskeletal myxoid chondrosarcoma

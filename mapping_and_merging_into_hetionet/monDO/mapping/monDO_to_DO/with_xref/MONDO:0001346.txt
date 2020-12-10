@@ -1,3 +1,0 @@
-MONDO:0003709	distal muscular dystrophy
-DOID 	 name 
-DOID:11720	distal muscular dystrophy

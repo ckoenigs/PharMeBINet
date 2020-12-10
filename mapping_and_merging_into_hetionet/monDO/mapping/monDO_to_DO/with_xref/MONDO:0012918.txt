@@ -1,3 +1,0 @@
-MONDO:0012918	primary ciliary dyskinesia 10
-DOID 	 name 
-DOID:0110612	primary ciliary dyskinesia 10

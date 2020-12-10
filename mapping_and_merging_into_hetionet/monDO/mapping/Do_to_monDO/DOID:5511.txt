@@ -1,3 +1,0 @@
-DOID:5511	dysgerminoma of ovary
-monDO ID 	 name 
-MONDO:0003481	dysgerminoma of ovary

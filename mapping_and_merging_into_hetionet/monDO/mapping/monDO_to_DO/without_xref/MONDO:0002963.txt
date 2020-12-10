@@ -1,3 +1,0 @@
-MONDO:0002963	acantholytic acanthoma
-DOID 	 name 
-DOID:4324	acantholytic acanthoma

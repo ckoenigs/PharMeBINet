@@ -1,3 +1,0 @@
-MONDO:0010259	retinitis pigmentosa 24
-DOID 	 name 
-DOID:0110416	retinitis pigmentosa 24

@@ -1,3 +1,0 @@
-DOID:404	gastrointestinal tuberculosis
-monDO ID 	 name 
-MONDO:0005768	gastrointestinal tuberculosis

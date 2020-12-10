@@ -1,3 +1,0 @@
-MONDO:0013513	atrial fibrillation, familial, 9
-DOID 	 name 
-DOID:0050650	familial atrial fibrillation

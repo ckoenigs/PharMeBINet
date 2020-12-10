@@ -1,3 +1,0 @@
-MONDO:0001757	frontal sinus neoplasm
-DOID 	 name 
-DOID:1361	frontal sinus neoplasm

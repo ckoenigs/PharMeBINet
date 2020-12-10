@@ -1,3 +1,0 @@
-DOID:12388	neurohypophyseal diabetes insipidus
-monDO ID 	 name 
-MONDO:0007450	neurohypophyseal diabetes insipidus

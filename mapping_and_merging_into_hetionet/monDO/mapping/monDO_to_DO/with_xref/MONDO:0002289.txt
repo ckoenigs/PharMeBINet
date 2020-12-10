@@ -1,3 +1,0 @@
-MONDO:0002289	iris disease
-DOID 	 name 
-DOID:240	iris disease

@@ -1,3 +1,0 @@
-DOID:12002	trachea sarcoma
-monDO ID 	 name 
-MONDO:0001418	trachea sarcoma

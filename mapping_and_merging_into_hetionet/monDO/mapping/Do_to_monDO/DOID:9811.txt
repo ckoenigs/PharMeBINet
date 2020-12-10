@@ -1,3 +1,0 @@
-DOID:9811	partial circumpapillary choroid dystrophy
-monDO ID 	 name 
-MONDO:0004888	partial circumpapillary choroid dystrophy

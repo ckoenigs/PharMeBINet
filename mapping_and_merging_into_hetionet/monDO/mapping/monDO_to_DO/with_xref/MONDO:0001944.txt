@@ -1,3 +1,0 @@
-MONDO:0001944	mixed malaria
-DOID 	 name 
-DOID:14325	mixed malaria

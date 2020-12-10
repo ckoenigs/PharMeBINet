@@ -1,3 +1,0 @@
-MONDO:0005501	congenital disorder of glycosylation type II
-DOID 	 name 
-DOID:0050571	congenital disorder of glycosylation type II

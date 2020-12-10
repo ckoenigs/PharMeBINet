@@ -1,3 +1,0 @@
-DOID:0090116	spondylocarpotarsal synostosis syndrome
-monDO ID 	 name 
-MONDO:0010094	spondylocarpotarsal synostosis syndrome

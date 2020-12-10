@@ -1,3 +1,0 @@
-DOID:0060084	cell type benign neoplasm
-monDO ID 	 name 
-MONDO:0005165	benign neoplasm

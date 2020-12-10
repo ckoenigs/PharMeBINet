@@ -1,3 +1,0 @@
-DOID:3401	inappropriate ADH syndrome
-monDO ID 	 name 
-MONDO:0006802	inappropriate ADH syndrome

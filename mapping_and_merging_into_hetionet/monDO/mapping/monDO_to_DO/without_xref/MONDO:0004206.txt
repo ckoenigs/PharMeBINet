@@ -1,3 +1,0 @@
-MONDO:0004206	pulmonary vein leiomyosarcoma
-DOID 	 name 
-DOID:7388	pulmonary vein leiomyosarcoma

@@ -1,3 +1,0 @@
-MONDO:0001852	small intestine lymphoma
-DOID 	 name 
-DOID:13996	small intestine lymphoma

@@ -1,3 +1,0 @@
-MONDO:0014750	primary ciliary dyskinesia 33
-DOID 	 name 
-DOID:0110619	primary ciliary dyskinesia 33

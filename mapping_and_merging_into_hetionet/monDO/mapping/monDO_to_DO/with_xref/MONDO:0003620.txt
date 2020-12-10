@@ -1,3 +1,0 @@
-MONDO:0003620	peripheral nervous system disease
-DOID 	 name 
-DOID:574	peripheral nervous system disease

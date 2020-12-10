@@ -1,3 +1,0 @@
-DOID:591	phobic disorder
-monDO ID 	 name 
-MONDO:0003699	phobic disorder

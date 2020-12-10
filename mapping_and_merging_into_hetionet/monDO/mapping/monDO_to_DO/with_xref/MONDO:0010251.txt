@@ -1,3 +1,0 @@
-MONDO:0010251	MRX50
-DOID 	 name 
-DOID:0050776	non-syndromic X-linked intellectual disability

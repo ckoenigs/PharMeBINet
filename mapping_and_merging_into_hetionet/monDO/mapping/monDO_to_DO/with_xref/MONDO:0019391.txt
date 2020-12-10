@@ -1,3 +1,0 @@
-MONDO:0019391	Fanconi anemia
-DOID 	 name 
-DOID:13636	Fanconi anemia

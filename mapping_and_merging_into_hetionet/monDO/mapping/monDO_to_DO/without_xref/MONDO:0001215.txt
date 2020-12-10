@@ -1,3 +1,0 @@
-MONDO:0001215	allescheriosis
-DOID 	 name 
-DOID:11186	allescheriosis

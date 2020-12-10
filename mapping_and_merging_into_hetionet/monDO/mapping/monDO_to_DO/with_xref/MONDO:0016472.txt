@@ -1,3 +1,0 @@
-MONDO:0016472	dracunculiasis
-DOID 	 name 
-DOID:14418	dracunculiasis

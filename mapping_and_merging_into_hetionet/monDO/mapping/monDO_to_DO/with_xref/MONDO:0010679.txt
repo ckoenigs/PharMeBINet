@@ -1,3 +1,0 @@
-MONDO:0010679	Duchenne muscular dystrophy
-DOID 	 name 
-DOID:11723	Duchenne muscular dystrophy

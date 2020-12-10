@@ -1,3 +1,0 @@
-MONDO:0001485	atypical depressive disorder
-DOID 	 name 
-DOID:12294	atypical depressive disorder

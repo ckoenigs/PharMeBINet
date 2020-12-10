@@ -1,3 +1,0 @@
-DOID:4483	rhinitis
-monDO ID 	 name 
-MONDO:0003014	rhinitis

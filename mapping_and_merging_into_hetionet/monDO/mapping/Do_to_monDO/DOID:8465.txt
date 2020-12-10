@@ -1,3 +1,0 @@
-DOID:8465	retinoschisis
-monDO ID 	 name 
-MONDO:0004579	retinoschisis

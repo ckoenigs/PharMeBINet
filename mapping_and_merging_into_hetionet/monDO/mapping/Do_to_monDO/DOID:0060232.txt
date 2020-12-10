@@ -1,3 +1,0 @@
-DOID:0060232	branchiootic syndrome
-monDO ID 	 name 
-MONDO:0018878	branchiootic syndrome

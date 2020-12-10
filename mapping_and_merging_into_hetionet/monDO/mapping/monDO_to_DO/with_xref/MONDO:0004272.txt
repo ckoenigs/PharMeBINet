@@ -1,3 +1,0 @@
-MONDO:0004272	urinary bladder tuberculosis
-DOID 	 name 
-DOID:754	bladder tuberculosis

@@ -1,3 +1,0 @@
-DOID:2113	coccidiosis
-monDO ID 	 name 
-MONDO:0005707	coccidiosis

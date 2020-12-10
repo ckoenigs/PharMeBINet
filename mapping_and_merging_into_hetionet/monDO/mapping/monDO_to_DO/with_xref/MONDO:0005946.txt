@@ -1,3 +1,0 @@
-MONDO:0005946	rhinosporidiosis
-DOID 	 name 
-DOID:2409	rhinosporidiosis

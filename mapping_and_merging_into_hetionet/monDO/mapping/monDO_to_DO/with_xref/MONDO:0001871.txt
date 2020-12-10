@@ -1,3 +1,0 @@
-MONDO:0001871	acute diffuse glomerulonephritis
-DOID 	 name 
-DOID:14066	acute diffuse nephritis

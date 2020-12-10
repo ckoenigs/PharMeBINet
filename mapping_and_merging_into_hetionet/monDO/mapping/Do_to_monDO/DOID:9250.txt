@@ -1,3 +1,0 @@
-DOID:9250	acrocallosal syndrome
-monDO ID 	 name 
-MONDO:0008708	acrocallosal syndrome

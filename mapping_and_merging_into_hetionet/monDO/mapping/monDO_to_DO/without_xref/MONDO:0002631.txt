@@ -1,3 +1,0 @@
-MONDO:0002631	conventional osteosarcoma
-DOID 	 name 
-DOID:3378	conventional central osteosarcoma

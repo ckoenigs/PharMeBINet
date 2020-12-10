@@ -1,3 +1,0 @@
-DOID:12271	aniridia
-monDO ID 	 name 
-MONDO:0019172	aniridia

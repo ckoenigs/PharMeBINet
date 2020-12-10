@@ -1,3 +1,0 @@
-MONDO:0005384	partial epilepsy
-DOID 	 name 
-DOID:2234	focal epilepsy

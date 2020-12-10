@@ -1,3 +1,0 @@
-DOID:355	mast-cell sarcoma
-monDO ID 	 name 
-MONDO:0019024	mast cell sarcoma

@@ -1,3 +1,0 @@
-MONDO:0009549	severe early-childhood-onset retinal dystrophy
-DOID 	 name 
-DOID:0050817	Stargardt disease

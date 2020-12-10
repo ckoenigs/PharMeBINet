@@ -1,3 +1,0 @@
-DOID:14021	Tietze's syndrome
-monDO ID 	 name 
-MONDO:0001858	Tietze's syndrome

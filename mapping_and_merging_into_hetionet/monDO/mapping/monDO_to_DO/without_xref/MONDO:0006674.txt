@@ -1,3 +1,0 @@
-MONDO:0006674	benign fibrous mesothelioma
-DOID 	 name 
-DOID:2653	benign fibrous mesothelioma

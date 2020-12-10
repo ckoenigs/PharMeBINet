@@ -1,3 +1,0 @@
-MONDO:0002260	hidradenitis
-DOID 	 name 
-DOID:2282	hidradenitis

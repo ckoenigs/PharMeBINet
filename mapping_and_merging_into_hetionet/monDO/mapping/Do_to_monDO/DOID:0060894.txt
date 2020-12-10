@@ -1,3 +1,0 @@
-DOID:0060894	early-onset Parkinson disease
-monDO ID 	 name 
-MONDO:0017279	young-onset Parkinson disease

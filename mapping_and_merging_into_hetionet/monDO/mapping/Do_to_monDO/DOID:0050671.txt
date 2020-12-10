@@ -1,3 +1,0 @@
-DOID:0050671	female breast cancer
-monDO ID 	 name 
-MONDO:0000398	female breast cancer

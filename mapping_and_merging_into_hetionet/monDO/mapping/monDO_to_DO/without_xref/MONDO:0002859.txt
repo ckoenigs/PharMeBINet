@@ -1,3 +1,0 @@
-MONDO:0002859	breast rhabdomyosarcoma
-DOID 	 name 
-DOID:4060	breast rhabdomyosarcoma

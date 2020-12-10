@@ -1,3 +1,0 @@
-MONDO:0005941	retroperitoneal cancer
-DOID 	 name 
-DOID:5875	retroperitoneal cancer

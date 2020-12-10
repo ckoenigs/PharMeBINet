@@ -1,3 +1,0 @@
-DOID:3842	skull base neoplasm
-monDO ID 	 name 
-MONDO:0002785	skull base neoplasm

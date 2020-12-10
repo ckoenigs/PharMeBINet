@@ -1,3 +1,0 @@
-MONDO:0001220	hypoparathyroidism
-DOID 	 name 
-DOID:11199	hypoparathyroidism

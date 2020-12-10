@@ -5,9 +5,11 @@ Created on Tue Sep 17 16:07:43 2019
 @author: ckoenigs
 """
 
-from py2neo import Graph  # , authenticate
 import datetime
 import sys, csv
+
+sys.path.append("../..")
+import create_connection_to_databases  # , authenticate
 
 '''
 create a connection with neo4j
@@ -18,7 +20,7 @@ def create_connection_with_neo4j():
     # set up authentication parameters and connection
     # authenticate("localhost:7474", "neo4j", "test")
     global g
-    g = Graph("http://localhost:7474/db/data/", auth=("neo4j", "test"))
+    g = create_connection_to_databases.database_connection_neo4j()
 
 
 # dictionary of not mapped compound inchikey to node
@@ -63,13 +65,13 @@ Create cypher and csv files for nodes and relationships
 
 def create_cypher_and_csv_files():
     # open cypher file
-    cypher_file = open('cypher_salt.cypher', 'w')
+    cypher_file = open('salts/cypher_salt.cypher', 'w')
     # get properties of salt nodes
     query = '''MATCH (p:%s) WITH DISTINCT keys(p) AS keys UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields RETURN allfields;'''
     query = query % (label_of_salt)
     result = g.run(query)
     header = []
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/drugbank/output/%s.csv" As line Fieldterminator '\\t' Match '''
+    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/drugbank/salts/%s.csv" As line Fieldterminator '\\t' Match '''
     part = query_start + '''(a:%s {identifier:line.identifier}) Create (b:Compound :Salt{'''
     part = part % (file_node, label_of_salt)
     for property, in result:
@@ -79,13 +81,13 @@ def create_cypher_and_csv_files():
     query = query % (license)
 
     cypher_file.write(query)
-    node_file = open('output/' + file_node + '.csv', 'w')
-    rela_file = open('output/' + file_rela + '.csv', 'w')
+    node_file = open('salts/' + file_node + '.csv', 'w')
+    rela_file = open('salts/' + file_rela + '.csv', 'w')
     global csv_node, csv_rela
     csv_node = csv.DictWriter(node_file, fieldnames=header, delimiter='\t')
     csv_node.writeheader()
     rela_header = ['salt_id', 'compound_id']
-    query_rela = query_start + ' (b:Compound :Salt{identifier:line.salt_id}), (a:Compound {identifier:line.compound_id}) Create (a)-[r:PART_OF_CpS{license:"%s", source:"DrugBank", resource:["DrugBank"], drugbank:"yes }]->(b);\n'
+    query_rela = query_start + ' (b:Compound :Salt{identifier:line.salt_id}), (a:Compound {identifier:line.compound_id}) Create (a)-[r:PART_OF_CpS{license:"%s", source:"DrugBank", resource:["DrugBank"], drugbank:"yes" }]->(b);\n'
     query_rela = query_rela % (file_rela, license)
     cypher_file.write(query_rela)
     csv_rela = csv.writer(rela_file, delimiter='\t')
@@ -94,7 +96,7 @@ def create_cypher_and_csv_files():
 
     # delete compound nodes which are whether drugbank compound nor salt
     # this must be the last step of the compound integration, because else the merge nodes are also removed and this would be a problem
-    cypher_delete_file=open('cypher_delete_compound.cypher','w')
+    cypher_delete_file = open('cypher_delete_compound.cypher', 'w')
     query = '''Match (c:Compound) Where not exists(c.drugbank) Detach Delete c;'''
     cypher_delete_file.write(query)
     cypher_delete_file.close()
@@ -116,9 +118,9 @@ Add a merge to the bash file
 def add_merge_to_sh_file(dict_not_mapped, mapped_value, node_id):
     compound = dict_not_mapped[mapped_value]
     print(compound)
-    compound_id=compound['identifier']
+    compound_id = compound['identifier']
     # if it mapped to a not mapped compound
-    text = 'python ../add_information_from_a_not_existing_node_to_existing_node.py %s %s %s\n' % (
+    text = 'python3 ../add_information_from_a_not_existing_node_to_existing_node.py %s %s %s\n' % (
         compound_id, node_id, 'Compound')
     bash_shell.write(text)
     text = '''now=$(date +"%F %T")\n echo "Current time: $now"\n'''

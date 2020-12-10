@@ -1,3 +1,0 @@
-MONDO:0003177	prostate adenoid cystic carcinoma
-DOID 	 name 
-DOID:4868	prostate adenoid cystic carcinoma

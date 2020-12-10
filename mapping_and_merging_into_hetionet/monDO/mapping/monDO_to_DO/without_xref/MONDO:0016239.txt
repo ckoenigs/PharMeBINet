@@ -1,3 +1,0 @@
-MONDO:0016239	cystinosis
-DOID 	 name 
-DOID:1064	cystinosis

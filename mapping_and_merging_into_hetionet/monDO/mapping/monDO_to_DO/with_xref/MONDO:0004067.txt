@@ -1,3 +1,0 @@
-MONDO:0004067	gallbladder mucinous adenocarcinoma
-DOID 	 name 
-DOID:6998	gallbladder mucinous carcinoma

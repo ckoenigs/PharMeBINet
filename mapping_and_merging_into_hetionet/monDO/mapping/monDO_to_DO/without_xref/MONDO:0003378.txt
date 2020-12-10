@@ -1,3 +1,0 @@
-MONDO:0003378	liver leiomyosarcoma
-DOID 	 name 
-DOID:5296	liver leiomyosarcoma

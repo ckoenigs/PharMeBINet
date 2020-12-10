@@ -1,3 +1,0 @@
-MONDO:0012653	PHPVAD
-DOID 	 name 
-DOID:0060282	persistent hyperplastic primary vitreous

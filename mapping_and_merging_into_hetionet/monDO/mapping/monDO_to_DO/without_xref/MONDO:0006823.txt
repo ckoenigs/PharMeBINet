@@ -1,3 +1,0 @@
-MONDO:0006823	Klinefelter's syndrome
-DOID 	 name 
-DOID:1921	Klinefelter's syndrome

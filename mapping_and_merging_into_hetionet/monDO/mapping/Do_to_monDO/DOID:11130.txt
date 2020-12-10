@@ -1,3 +1,0 @@
-DOID:11130	secondary hypertension
-monDO ID 	 name 
-MONDO:0001200	secondary hypertension

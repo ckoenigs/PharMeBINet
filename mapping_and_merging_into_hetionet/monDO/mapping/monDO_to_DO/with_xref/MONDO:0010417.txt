@@ -1,3 +1,0 @@
-MONDO:0010417	syndromic X-linked intellectual disability Najm type
-DOID 	 name 
-DOID:0060807	syndromic X-linked intellectual disability Najm type

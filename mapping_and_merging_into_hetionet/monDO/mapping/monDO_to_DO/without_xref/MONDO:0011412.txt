@@ -1,3 +1,0 @@
-MONDO:0011412	familial encephalopathy with neuroserpin inclusion bodies
-DOID 	 name 
-DOID:0050831	familial encephalopathy with neuroserpin inclusion bodies

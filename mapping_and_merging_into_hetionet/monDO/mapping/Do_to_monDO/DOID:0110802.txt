@@ -1,3 +1,0 @@
-DOID:0110802	hereditary spastic paraplegia 50
-monDO ID 	 name 
-MONDO:0013048	hereditary spastic paraplegia 50

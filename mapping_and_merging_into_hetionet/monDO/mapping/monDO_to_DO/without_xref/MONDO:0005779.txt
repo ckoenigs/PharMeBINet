@@ -1,3 +1,0 @@
-MONDO:0005779	hand, foot and mouth disease
-DOID 	 name 
-DOID:10881	hand, foot and mouth disease

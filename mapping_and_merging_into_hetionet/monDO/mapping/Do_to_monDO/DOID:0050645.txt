@@ -1,3 +1,0 @@
-DOID:0050645	arterial tortuosity syndrome
-monDO ID 	 name 
-MONDO:0008818	arterial tortuosity syndrome

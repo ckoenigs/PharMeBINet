@@ -1,3 +1,0 @@
-MONDO:0006541	epidermolysis bullosa
-DOID 	 name 
-DOID:2730	epidermolysis bullosa

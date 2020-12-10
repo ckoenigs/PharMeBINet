@@ -1,3 +1,0 @@
-MONDO:0011630	retinitis pigmentosa 28
-DOID 	 name 
-DOID:0110365	retinitis pigmentosa 28

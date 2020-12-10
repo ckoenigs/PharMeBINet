@@ -1,3 +1,0 @@
-MONDO:0018896	thrombotic thrombocytopenic purpura
-DOID 	 name 
-DOID:10772	thrombotic thrombocytopenic purpura

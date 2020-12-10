@@ -1,3 +1,0 @@
-DOID:2529	splenic disease
-monDO ID 	 name 
-MONDO:0002332	splenic disease

@@ -1,3 +1,0 @@
-MONDO:0003586	esophagus liposarcoma
-DOID 	 name 
-DOID:5694	esophagus liposarcoma

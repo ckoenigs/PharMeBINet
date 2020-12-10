@@ -1,3 +1,0 @@
-MONDO:0007282	cataract 29
-DOID 	 name 
-DOID:0110232	cataract 29

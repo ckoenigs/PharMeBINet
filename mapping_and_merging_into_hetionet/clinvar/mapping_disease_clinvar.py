@@ -1,8 +1,10 @@
-from py2neo import Graph
 import sys
 import datetime
 import csv
 from itertools import groupby
+
+sys.path.append("../..")
+import create_connection_to_databases
 
 
 def database_connection():
@@ -10,7 +12,7 @@ def database_connection():
     create connection to neo4j
     '''
     global g
-    g = Graph("http://localhost:7474/db/data/", auth=("neo4j", "test"))
+    g = create_connection_to_databases.database_connection_neo4j()
 
 
 # dictionary disease id to disease node
@@ -43,17 +45,16 @@ def load_genes_from_database_and_add_to_dict():
         if 'name' in disease:
             name = disease['name'].lower()
             if name not in dict_disease_name_to_ids:
-                dict_disease_name_to_ids[name]=set()
+                dict_disease_name_to_ids[name] = set()
             dict_disease_name_to_ids[name].add(identifier)
-
 
         prepare_name_synonym_for_disease(identifier, dict(disease), dict_disease_name_synonyms_to_ids,
                                          name_to_check=True)
 
 
-cypher_file = open('cypher_disease.cypher', 'w', encoding='utf-8')
+cypher_file = open('disease/cypher_disease.cypher', 'w', encoding='utf-8')
 
-query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%s/master_database_change/mapping_and_merging_into_hetionet/clinvar/disease/%s.tsv" As line FIELDTERMINATOR '\\t' 
+query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/clinvar/disease/%s.tsv" As line FIELDTERMINATOR '\\t' 
     Match '''
 
 
@@ -158,6 +159,7 @@ def prepare_name_synonym_for_disease(disease_id, dictionary_with_names, to_dicti
     """
     if 'name' in dictionary_with_names:
         disease_name = dictionary_with_names['name'].lower()
+
         if name_to_check:
             if disease_name not in to_dictionary:
                 to_dictionary[disease_name] = set()
@@ -199,7 +201,8 @@ def write_into_csv_file(disease_id, trait_id, trait_name, tuple_pair, csv_mappin
     mapping_set = dict_of_mapped_tuples[tuple_pair] if tuple_pair in dict_of_mapped_tuples else mapped_with
     csv_mapping_writer.writerow([trait_id, disease_id, "|".join(list(mapping_set)), trait_name, disease_name])
 
-def check_for_mapping_and_write_in_csv_file(name, dictionary,counter_new_mapped, trait_id,mapped_ids, mapped_with):
+
+def check_for_mapping_and_write_in_csv_file(name, dictionary, counter_new_mapped, trait_id, mapped_ids, mapped_with):
     """
     check if name mapps to a given dictionary and if so write into a csv file
     :param name: stirng
@@ -236,14 +239,17 @@ def mapping_with_name():
     for trait_id in set_not_mapped_ids:
         if 'name' in dict_clinvar_id_to_node[trait_id]:
             name = dict_clinvar_id_to_node[trait_id]['name']
-            found, counter_new_mapped= check_for_mapping_and_write_in_csv_file(name, dict_disease_name_to_ids, counter_new_mapped, trait_id, mapped_ids, ['name'])
+            name = name.replace(' (disease)','')
+            found, counter_new_mapped = check_for_mapping_and_write_in_csv_file(name, dict_disease_name_to_ids,
+                                                                                counter_new_mapped, trait_id,
+                                                                                mapped_ids, ['name'])
             if found:
                 continue
 
             # only if no name-name mapping is possible then check from name to name and synonyms from mondo
             found, counter_new_mapped = check_for_mapping_and_write_in_csv_file(name, dict_disease_name_synonyms_to_ids,
                                                                                 counter_new_mapped, trait_id,
-                                                                                mapped_ids,['name and synonyms'])
+                                                                                mapped_ids, ['name and synonyms'])
             if found:
                 continue
 

@@ -1,3 +1,0 @@
-DOID:2790	necatoriasis
-monDO ID 	 name 
-MONDO:0005870	necatoriasis

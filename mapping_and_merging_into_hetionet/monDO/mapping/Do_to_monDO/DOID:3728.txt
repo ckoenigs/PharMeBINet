@@ -1,3 +1,0 @@
-DOID:3728	acute allergic sanguinous otitis media
-monDO ID 	 name 
-MONDO:0002757	acute allergic sanguinous otitis media

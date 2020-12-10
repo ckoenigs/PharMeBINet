@@ -1,3 +1,0 @@
-MONDO:0016748	hemangioblastoma
-DOID 	 name 
-DOID:5241	hemangioblastoma

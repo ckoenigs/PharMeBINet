@@ -1,3 +1,0 @@
-MONDO:0002706	cervix endometriosis
-DOID 	 name 
-DOID:361	cervix endometriosis

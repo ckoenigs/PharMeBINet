@@ -1,3 +1,0 @@
-DOID:0060008	janus kinase-3 deficiency
-monDO ID 	 name 
-MONDO:0005511	janus kinase-3 deficiency

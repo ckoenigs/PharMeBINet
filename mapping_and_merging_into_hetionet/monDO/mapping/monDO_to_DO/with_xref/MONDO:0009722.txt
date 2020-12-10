@@ -1,3 +1,0 @@
-MONDO:0009722	Native american myopathy
-DOID 	 name 
-DOID:0060346	Native American myopathy

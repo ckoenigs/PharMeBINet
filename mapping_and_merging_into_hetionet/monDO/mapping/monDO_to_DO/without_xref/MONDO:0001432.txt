@@ -1,3 +1,0 @@
-MONDO:0001432	sodoku disease
-DOID 	 name 
-DOID:12096	sodoku disease

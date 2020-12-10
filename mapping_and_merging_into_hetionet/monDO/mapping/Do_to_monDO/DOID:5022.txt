@@ -1,3 +1,0 @@
-DOID:5022	aflatoxins-related hepatocellular carcinoma
-monDO ID 	 name 
-MONDO:0003245	aflatoxins-related hepatocellular carcinoma

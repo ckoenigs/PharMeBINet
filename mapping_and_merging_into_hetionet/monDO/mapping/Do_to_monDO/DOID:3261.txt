@@ -1,3 +1,0 @@
-DOID:3261	Job's syndrome
-monDO ID 	 name 
-MONDO:0007818	Job's syndrome

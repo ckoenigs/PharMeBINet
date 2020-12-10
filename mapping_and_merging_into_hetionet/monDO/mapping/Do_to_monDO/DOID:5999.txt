@@ -1,3 +1,0 @@
-DOID:5999	apocrine adenosis of breast
-monDO ID 	 name 
-MONDO:0003726	apocrine adenosis of breast

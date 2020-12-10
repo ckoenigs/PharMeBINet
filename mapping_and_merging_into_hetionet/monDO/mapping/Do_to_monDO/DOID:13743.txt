@@ -1,3 +1,0 @@
-DOID:13743	spinal cord lipoma
-monDO ID 	 name 
-MONDO:0001790	spinal cord lipoma

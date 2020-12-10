@@ -1,3 +1,0 @@
-MONDO:0012787	hereditary spastic paraplegia 39
-DOID 	 name 
-DOID:0110790	hereditary spastic paraplegia 39

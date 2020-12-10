@@ -1,3 +1,0 @@
-DOID:5334	paraphimosis
-monDO ID 	 name 
-MONDO:0006889	paraphimosis

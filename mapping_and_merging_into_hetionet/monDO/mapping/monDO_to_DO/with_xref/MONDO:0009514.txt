@@ -1,3 +1,0 @@
-MONDO:0009514	Laurence-Moon syndrome
-DOID 	 name 
-DOID:1930	Laurence-Moon syndrome

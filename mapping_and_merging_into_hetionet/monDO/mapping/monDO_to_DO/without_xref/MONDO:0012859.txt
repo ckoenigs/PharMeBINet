@@ -1,3 +1,0 @@
-MONDO:0012859	autosomal recessive osteopetrosis 7
-DOID 	 name 
-DOID:0110946	autosomal recessive osteopetrosis 7

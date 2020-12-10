@@ -1,3 +1,0 @@
-DOID:4637	cervical adenitis
-monDO ID 	 name 
-MONDO:0003067	cervical lymphadenitis

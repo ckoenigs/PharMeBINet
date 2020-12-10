@@ -1,3 +1,0 @@
-MONDO:0003479	toxic pneumonitis
-DOID 	 name 
-DOID:551	toxic pneumonitis

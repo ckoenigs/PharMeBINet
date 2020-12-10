@@ -1,3 +1,0 @@
-DOID:0060177	homocarnosinosis
-monDO ID 	 name 
-MONDO:0009351	homocarnosinosis

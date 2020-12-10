@@ -1,3 +1,0 @@
-MONDO:0003364	gallbladder leiomyosarcoma
-DOID 	 name 
-DOID:5275	gallbladder leiomyosarcoma

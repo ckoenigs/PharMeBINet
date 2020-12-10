@@ -1,3 +1,0 @@
-DOID:0060778	congenital diarrhea 7 with exudative enteropathy
-monDO ID 	 name 
-MONDO:0014375	congenital diarrhea 7 with exudative enteropathy

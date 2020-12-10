@@ -1,3 +1,0 @@
-MONDO:0010789	MELAS syndrome
-DOID 	 name 
-DOID:3687	MELAS syndrome

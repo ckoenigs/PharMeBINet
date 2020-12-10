@@ -1,3 +1,0 @@
-MONDO:0005841	maxillary neoplasm
-DOID 	 name 
-DOID:4618	maxillary neoplasm

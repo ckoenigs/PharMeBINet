@@ -1,3 +1,0 @@
-MONDO:0003709	subependymal glioma
-DOID 	 name 
-DOID:4843	subependymal glioma

@@ -1,3 +1,0 @@
-DOID:14777	benign familial neonatal epilepsy
-monDO ID 	 name 
-MONDO:0002016	benign familial neonatal epilepsy

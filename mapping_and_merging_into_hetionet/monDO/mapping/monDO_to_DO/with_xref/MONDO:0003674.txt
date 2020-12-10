@@ -1,3 +1,0 @@
-MONDO:0003674	subendocardial myocardial infarction
-DOID 	 name 
-DOID:5849	subendocardial myocardial infarction

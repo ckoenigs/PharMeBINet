@@ -1,3 +1,0 @@
-DOID:0050741	alcohol dependence
-monDO ID 	 name 
-MONDO:0007079	alcohol dependence

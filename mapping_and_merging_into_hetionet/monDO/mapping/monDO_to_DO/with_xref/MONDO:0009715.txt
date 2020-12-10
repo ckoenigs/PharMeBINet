@@ -1,3 +1,0 @@
-MONDO:0009715	myotonia congenita, autosomal recessive
-DOID 	 name 
-DOID:2106	myotonia congenita

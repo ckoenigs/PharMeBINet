@@ -1,3 +1,0 @@
-DOID:5597	fallopian tube papillary adenocarcinoma
-monDO ID 	 name 
-MONDO:0003535	fallopian tube papillary adenocarcinoma

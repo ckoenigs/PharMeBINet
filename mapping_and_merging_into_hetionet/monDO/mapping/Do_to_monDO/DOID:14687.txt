@@ -1,3 +1,0 @@
-DOID:14687	diastrophic dysplasia
-monDO ID 	 name 
-MONDO:0009107	diastrophic dysplasia

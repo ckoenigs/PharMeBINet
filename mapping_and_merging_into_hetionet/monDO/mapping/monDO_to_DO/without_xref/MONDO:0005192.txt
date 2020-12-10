@@ -1,3 +1,0 @@
-MONDO:0005192	exocrine pancreatic carcinoma
-DOID 	 name 
-DOID:4905	pancreatic carcinoma

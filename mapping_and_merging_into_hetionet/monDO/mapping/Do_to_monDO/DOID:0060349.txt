@@ -1,3 +1,0 @@
-DOID:0060349	microcephaly with or without chorioretinopathy, lymphedema, or mental retardation
-monDO ID 	 name 
-MONDO:0007918	microcephaly with or without chorioretinopathy, lymphedema, or mental retardation

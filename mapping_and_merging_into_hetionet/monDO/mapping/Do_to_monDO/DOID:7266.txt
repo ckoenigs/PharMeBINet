@@ -1,3 +1,0 @@
-DOID:7266	familiar fallopian tube carcinoma
-monDO ID 	 name 
-MONDO:0004166	hereditary fallopian tube carcinoma

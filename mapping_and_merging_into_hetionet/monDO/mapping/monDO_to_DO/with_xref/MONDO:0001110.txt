@@ -1,3 +1,0 @@
-MONDO:0001110	chronic pyelonephritis
-DOID 	 name 
-DOID:1076	chronic pyelonephritis

@@ -1,3 +1,0 @@
-DOID:4706	infratentorial cancer
-monDO ID 	 name 
-MONDO:0003107	infratentorial cancer

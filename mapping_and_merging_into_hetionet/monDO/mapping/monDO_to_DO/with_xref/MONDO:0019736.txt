@@ -1,3 +1,0 @@
-MONDO:0019736	dense deposit disease
-DOID 	 name 
-DOID:2920	membranoproliferative glomerulonephritis

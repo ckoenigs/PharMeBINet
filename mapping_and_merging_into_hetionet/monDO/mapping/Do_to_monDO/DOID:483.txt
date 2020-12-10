@@ -1,3 +1,0 @@
-DOID:483	cavernous hemangioma
-monDO ID 	 name 
-MONDO:0003155	cavernous hemangioma

@@ -1,3 +1,0 @@
-MONDO:0016227	hereditary episodic ataxia
-DOID 	 name 
-DOID:963	episodic ataxia

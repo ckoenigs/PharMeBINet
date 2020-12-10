@@ -1,3 +1,0 @@
-MONDO:0006590	palmoplantar keratosis
-DOID 	 name 
-DOID:3390	palmoplantar keratosis

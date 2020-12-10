@@ -1,3 +1,0 @@
-MONDO:0005266	diabetic retinopathy
-DOID 	 name 
-DOID:8947	diabetic retinopathy

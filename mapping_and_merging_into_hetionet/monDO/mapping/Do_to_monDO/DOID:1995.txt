@@ -1,3 +1,0 @@
-DOID:1995	rectum sarcoma
-monDO ID 	 name 
-MONDO:0002168	rectum sarcoma

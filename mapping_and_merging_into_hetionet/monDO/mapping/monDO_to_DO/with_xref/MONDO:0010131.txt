@@ -1,3 +1,0 @@
-MONDO:0010131	thyroid hormone resistance, generalized, autosomal recessive
-DOID 	 name 
-DOID:11633	thyroid hormone resistance syndrome

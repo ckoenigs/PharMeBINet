@@ -1,3 +1,0 @@
-MONDO:0002493	prostatic acinar adenocarcinoma
-DOID 	 name 
-DOID:3024	prostatic acinar adenocarcinoma

@@ -1,3 +1,0 @@
-MONDO:0004092	thymus basaloid carcinoma
-DOID 	 name 
-DOID:7050	thymus basaloid carcinoma

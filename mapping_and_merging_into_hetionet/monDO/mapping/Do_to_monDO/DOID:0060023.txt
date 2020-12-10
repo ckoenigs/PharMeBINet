@@ -1,3 +1,0 @@
-DOID:0060023	CD40 deficiency
-monDO ID 	 name 
-MONDO:0011735	hyper-IgM syndrome type 3

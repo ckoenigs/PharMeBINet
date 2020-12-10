@@ -1,3 +1,0 @@
-DOID:0060513	fish allergy
-monDO ID 	 name 
-MONDO:0000788	fish allergy

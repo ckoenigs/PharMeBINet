@@ -1,3 +1,0 @@
-MONDO:0000726	idiopathic scoliosis
-DOID 	 name 
-DOID:0060250	idiopathic scoliosis

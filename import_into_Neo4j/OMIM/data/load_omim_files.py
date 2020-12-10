@@ -34,15 +34,15 @@ def main():
     print('download files')
 
     seperate_url="https://omim.org/static/omim/data/mim2gene.txt"
-    # download_file(seperate_url, "mim2gene.txt")
+    download_file(seperate_url, "mim2gene.txt")
 
 
     for file in url_end:
         seperate_url = url_start + OMIM_KEY+ '/'+file
         print(seperate_url)
-        # download_file(seperate_url,file)
+        download_file(seperate_url,file)
 
-        time.sleep(30)
+        time.sleep(10)
 
 
     print(

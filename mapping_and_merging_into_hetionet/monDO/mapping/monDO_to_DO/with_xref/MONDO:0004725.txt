@@ -1,3 +1,0 @@
-MONDO:0004725	rectum carcinoma in situ
-DOID 	 name 
-DOID:9174	rectum carcinoma in situ

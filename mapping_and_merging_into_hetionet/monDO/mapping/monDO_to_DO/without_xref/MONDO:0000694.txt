@@ -1,3 +1,0 @@
-MONDO:0000694	seasonal affective disorder
-DOID 	 name 
-DOID:0060167	seasonal affective disorder

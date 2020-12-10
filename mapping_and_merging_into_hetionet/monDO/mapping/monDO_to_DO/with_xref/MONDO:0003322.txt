@@ -1,3 +1,0 @@
-MONDO:0003322	epithelial predominant wilms' tumor
-DOID 	 name 
-DOID:5189	epithelial predominant Wilms' tumor

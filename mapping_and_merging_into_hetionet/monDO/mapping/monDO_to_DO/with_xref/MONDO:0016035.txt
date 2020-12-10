@@ -1,3 +1,0 @@
-MONDO:0016035	Nelson syndrome
-DOID 	 name 
-DOID:4968	Nelson syndrome

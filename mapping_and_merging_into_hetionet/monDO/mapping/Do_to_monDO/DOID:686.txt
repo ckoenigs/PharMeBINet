@@ -1,3 +1,0 @@
-DOID:686	liver carcinoma
-monDO ID 	 name 
-MONDO:0004018	liver carcinoma

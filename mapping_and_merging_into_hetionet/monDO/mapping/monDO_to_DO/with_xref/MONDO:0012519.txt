@@ -1,3 +1,0 @@
-MONDO:0012519	Rubinstein-Taybi syndrome due to 16p13.3 microdeletion
-DOID 	 name 
-DOID:1933	Rubinstein-Taybi syndrome

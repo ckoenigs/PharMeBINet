@@ -1,3 +1,0 @@
-MONDO:0012602	autosomal recessive nonsyndromic deafness 24
-DOID 	 name 
-DOID:0110482	autosomal recessive nonsyndromic deafness 24

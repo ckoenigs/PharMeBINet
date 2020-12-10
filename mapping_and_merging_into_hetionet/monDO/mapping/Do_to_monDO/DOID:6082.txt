@@ -1,3 +1,0 @@
-DOID:6082	pediatric testicular germ cell tumor
-monDO ID 	 name 
-MONDO:0003758	childhood testicular germ cell tumor

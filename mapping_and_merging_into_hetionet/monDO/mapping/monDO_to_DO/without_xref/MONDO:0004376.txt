@@ -1,3 +1,0 @@
-MONDO:0004376	infiltrating nipple syringomatous adenoma
-DOID 	 name 
-DOID:7839	infiltrating nipple syringomatous adenoma

@@ -1,3 +1,0 @@
-MONDO:0009679	arthrogryposis due to muscular dystrophy
-DOID 	 name 
-DOID:0110631	arthrogryposis due to muscular dystrophy

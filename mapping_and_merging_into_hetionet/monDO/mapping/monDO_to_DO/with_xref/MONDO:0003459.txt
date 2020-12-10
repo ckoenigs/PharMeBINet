@@ -1,3 +1,0 @@
-MONDO:0003459	cervical adenofibroma
-DOID 	 name 
-DOID:5476	cervical adenofibroma

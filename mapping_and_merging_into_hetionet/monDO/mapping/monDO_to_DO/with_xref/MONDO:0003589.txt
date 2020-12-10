@@ -1,3 +1,0 @@
-MONDO:0003589	liposarcoma of the ovary
-DOID 	 name 
-DOID:5697	liposarcoma of the ovary

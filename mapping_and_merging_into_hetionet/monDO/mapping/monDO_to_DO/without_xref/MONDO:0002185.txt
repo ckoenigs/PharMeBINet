@@ -1,3 +1,0 @@
-MONDO:0002185	hyperostosis
-DOID 	 name 
-DOID:205	hyperostosis

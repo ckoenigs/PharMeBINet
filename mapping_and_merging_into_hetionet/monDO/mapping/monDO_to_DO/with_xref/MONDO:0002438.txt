@@ -1,3 +1,0 @@
-MONDO:0002438	acquired polycythemia
-DOID 	 name 
-DOID:2834	acquired polycythemia

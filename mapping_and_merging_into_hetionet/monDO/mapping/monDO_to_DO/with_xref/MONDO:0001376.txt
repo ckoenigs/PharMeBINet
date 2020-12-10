@@ -1,3 +1,0 @@
-MONDO:0001376	urinary bladder anterior wall cancer
-DOID 	 name 
-DOID:11814	urinary bladder anterior wall cancer

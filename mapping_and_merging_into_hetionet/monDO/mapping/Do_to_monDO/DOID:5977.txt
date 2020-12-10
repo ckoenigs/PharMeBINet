@@ -1,3 +1,0 @@
-DOID:5977	renal pelvis neoplasm
-monDO ID 	 name 
-MONDO:0003719	renal pelvis neoplasm

@@ -1,3 +1,0 @@
-DOID:12185	otosclerosis
-monDO ID 	 name 
-MONDO:0005349	otosclerosis (disease)

@@ -1,3 +1,0 @@
-MONDO:0006505	basal ganglia cerebrovascular disease
-DOID 	 name 
-DOID:10991	basal ganglia cerebrovascular disease

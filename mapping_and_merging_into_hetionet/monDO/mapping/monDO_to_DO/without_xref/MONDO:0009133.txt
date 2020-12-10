@@ -1,3 +1,0 @@
-MONDO:0009133	dysequilibrium syndrome
-DOID 	 name 
-DOID:0050997	cerebellar ataxia, mental retardation and dysequlibrium syndrome

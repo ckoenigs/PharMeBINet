@@ -1,3 +1,0 @@
-DOID:0080196	mandibulofacial dysostosis, Guion-Almeida type
-monDO ID 	 name 
-MONDO:0012516	mandibulofacial dysostosis-microcephaly syndrome

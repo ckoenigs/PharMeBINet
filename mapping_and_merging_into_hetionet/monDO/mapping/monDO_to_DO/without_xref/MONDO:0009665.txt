@@ -1,3 +1,0 @@
-MONDO:0009665	biotinidase deficiency
-DOID 	 name 
-DOID:856	biotinidase deficiency

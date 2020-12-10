@@ -1,3 +1,0 @@
-MONDO:0006644	alcoholic liver cirrhosis
-DOID 	 name 
-DOID:14018	alcoholic liver cirrhosis

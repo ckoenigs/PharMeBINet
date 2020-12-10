@@ -1,3 +1,0 @@
-MONDO:0003252	granular cell cancer
-DOID 	 name 
-DOID:5042	malignant granular cell myoblastoma

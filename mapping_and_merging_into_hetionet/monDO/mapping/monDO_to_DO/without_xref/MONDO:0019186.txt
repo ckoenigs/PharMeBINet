@@ -1,3 +1,0 @@
-MONDO:0019186	Q fever
-DOID 	 name 
-DOID:11100	Q fever

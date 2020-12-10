@@ -1,3 +1,0 @@
-MONDO:0005550	infectious disease
-DOID 	 name 
-DOID:0050117	disease by infectious agent

@@ -1,3 +1,0 @@
-MONDO:0004823	dextrocardia
-DOID 	 name 
-DOID:9565	dextrocardia

@@ -1,3 +1,0 @@
-MONDO:0000233	Japanese spotted fever
-DOID 	 name 
-DOID:0050050	Japanese spotted fever

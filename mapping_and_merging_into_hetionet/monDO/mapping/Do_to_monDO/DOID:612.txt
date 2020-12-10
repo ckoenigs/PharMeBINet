@@ -1,3 +1,0 @@
-DOID:612	primary immunodeficiency disease
-monDO ID 	 name 
-MONDO:0003778	primary immunodeficiency disease

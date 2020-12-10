@@ -1,3 +1,0 @@
-MONDO:0002748	rectum mucinous adenocarcinoma
-DOID 	 name 
-DOID:3709	rectum mucinous adenocarcinoma

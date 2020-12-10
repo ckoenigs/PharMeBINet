@@ -1,3 +1,0 @@
-DOID:0060537	mitochondrial complex II deficiency
-monDO ID 	 name 
-MONDO:0009641	mitochondrial complex II deficiency

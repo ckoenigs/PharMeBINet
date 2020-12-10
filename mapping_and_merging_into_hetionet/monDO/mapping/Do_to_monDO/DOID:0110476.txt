@@ -1,3 +1,0 @@
-DOID:0110476	autosomal recessive nonsyndromic deafness 1B
-monDO ID 	 name 
-MONDO:0012977	autosomal recessive nonsyndromic deafness 1B

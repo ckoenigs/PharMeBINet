@@ -1,3 +1,0 @@
-DOID:0050471	Carney complex
-monDO ID 	 name 
-MONDO:0015285	Carney complex

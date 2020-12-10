@@ -1,3 +1,0 @@
-MONDO:0001940	pleuropneumonia
-DOID 	 name 
-DOID:14319	pleuropneumonia

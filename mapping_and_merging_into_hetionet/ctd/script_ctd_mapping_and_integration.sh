@@ -173,7 +173,7 @@ python3 integration_chemical_gene.py $path_to_project > chemical_gene/output.txt
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p test -f chemical_phenotype/cypher.cypher > chemical_gene/output_cypher.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f chemical_gene/cypher.cypher > chemical_gene/output_cypher.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -183,7 +183,6 @@ sleep 180
 $path_neo4j/neo4j restart
 sleep 120
 
-#cd chemical_phenotype 
 
 
 now=$(date +"%F %T")
@@ -197,12 +196,11 @@ python3 integration_chemical_phenotype.py $path_to_project > chemical_phenotype/
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p test -f gene_disease/cypher.cypher > gene_disease/output_cypher.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f chemical_phenotype/cypher.cypher > chemical_phenotype/output_cypher.txt 2>&1 
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-#cd ..
 sleep 180
 $path_neo4j/neo4j restart
 sleep 120

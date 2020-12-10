@@ -1,3 +1,0 @@
-DOID:2835	polycythemia due to hypoxia
-monDO ID 	 name 
-MONDO:0005572	polycythemia due to hypoxia

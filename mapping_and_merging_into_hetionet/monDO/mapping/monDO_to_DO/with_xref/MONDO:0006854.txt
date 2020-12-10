@@ -1,3 +1,0 @@
-MONDO:0006854	mesenchymoma
-DOID 	 name 
-DOID:2668	mesenchymoma

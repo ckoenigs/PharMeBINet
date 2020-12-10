@@ -1,3 +1,0 @@
-MONDO:0012215	myofibrillar myopathy 3
-DOID 	 name 
-DOID:0080094	myofibrillar myopathy 3

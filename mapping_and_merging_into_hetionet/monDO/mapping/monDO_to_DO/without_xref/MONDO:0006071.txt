@@ -1,3 +1,0 @@
-MONDO:0006071	adenofibroma
-DOID 	 name 
-DOID:2683	adenofibroma

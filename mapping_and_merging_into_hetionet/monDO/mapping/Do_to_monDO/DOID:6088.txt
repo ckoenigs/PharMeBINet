@@ -1,3 +1,0 @@
-DOID:6088	acute stress disorder
-monDO ID 	 name 
-MONDO:0003763	acute stress disorder

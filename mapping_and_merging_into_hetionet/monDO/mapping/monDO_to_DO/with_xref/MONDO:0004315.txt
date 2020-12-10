@@ -1,3 +1,0 @@
-MONDO:0004315	cholangiolocellular carcinoma
-DOID 	 name 
-DOID:7642	cholangiolocellular carcinoma

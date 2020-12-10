@@ -1,3 +1,0 @@
-MONDO:0004248	pediatric infratentorial ependymoma
-DOID 	 name 
-DOID:7501	pediatric infratentorial ependymoma

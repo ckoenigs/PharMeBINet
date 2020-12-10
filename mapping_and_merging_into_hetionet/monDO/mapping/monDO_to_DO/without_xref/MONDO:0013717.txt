@@ -1,3 +1,0 @@
-MONDO:0013717	asphyxiating thoracic dystrophy 5
-DOID 	 name 
-DOID:0110089	asphyxiating thoracic dystrophy 5

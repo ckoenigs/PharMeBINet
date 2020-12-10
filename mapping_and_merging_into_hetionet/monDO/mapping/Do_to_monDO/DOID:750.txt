@@ -1,3 +1,0 @@
-DOID:750	peptic ulcer disease
-monDO ID 	 name 
-MONDO:0004247	peptic ulcer disease

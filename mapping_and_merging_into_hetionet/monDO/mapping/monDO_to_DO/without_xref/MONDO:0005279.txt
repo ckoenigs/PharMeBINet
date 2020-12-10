@@ -1,3 +1,0 @@
-MONDO:0005279	pulmonary embolism (disease)
-DOID 	 name 
-DOID:9477	pulmonary embolism

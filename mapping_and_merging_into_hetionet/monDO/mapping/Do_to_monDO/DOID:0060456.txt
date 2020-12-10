@@ -1,3 +1,0 @@
-DOID:0060456	Schnyder corneal dystrophy
-monDO ID 	 name 
-MONDO:0007374	Schnyder corneal dystrophy

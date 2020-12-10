@@ -1,3 +1,0 @@
-MONDO:0014475	spinocerebellar ataxia type 40
-DOID 	 name 
-DOID:0050986	spinocerebellar ataxia type 40

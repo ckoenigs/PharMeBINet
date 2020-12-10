@@ -1,3 +1,0 @@
-MONDO:0004260	peptic ulcer perforation
-DOID 	 name 
-DOID:752	peptic ulcer perforation

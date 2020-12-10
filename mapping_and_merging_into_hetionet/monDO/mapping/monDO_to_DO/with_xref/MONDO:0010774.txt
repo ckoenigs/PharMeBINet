@@ -1,3 +1,0 @@
-MONDO:0010774	striatonigral degeneration, infantile, mitochondrial
-DOID 	 name 
-DOID:4751	striatonigral degeneration

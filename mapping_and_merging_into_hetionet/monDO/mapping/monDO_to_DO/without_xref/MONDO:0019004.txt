@@ -1,3 +1,0 @@
-MONDO:0019004	kidney Wilms tumor
-DOID 	 name 
-DOID:2154	nephroblastoma

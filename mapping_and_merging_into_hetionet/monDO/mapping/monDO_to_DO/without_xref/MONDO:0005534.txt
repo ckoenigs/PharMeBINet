@@ -1,3 +1,0 @@
-MONDO:0005534	ileocolitis
-DOID 	 name 
-DOID:0060190	ileocolitis

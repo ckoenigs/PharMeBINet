@@ -1,3 +1,0 @@
-MONDO:0006834	lip cancer
-DOID 	 name 
-DOID:8564	lip cancer

@@ -1,3 +1,0 @@
-DOID:0060221	Maffucci syndrome
-monDO ID 	 name 
-MONDO:0013808	Maffucci syndrome

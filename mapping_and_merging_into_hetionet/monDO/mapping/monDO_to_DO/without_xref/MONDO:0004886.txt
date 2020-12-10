@@ -1,3 +1,0 @@
-MONDO:0004886	diffuse secondary choroid atrophy
-DOID 	 name 
-DOID:981	diffuse secondary choroid atrophy

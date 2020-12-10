@@ -1,3 +1,0 @@
-MONDO:0007448	dermatographia
-DOID 	 name 
-DOID:743	dermatographia

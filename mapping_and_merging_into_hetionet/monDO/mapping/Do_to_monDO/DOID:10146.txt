@@ -1,3 +1,0 @@
-DOID:10146	thymus lymphoma
-monDO ID 	 name 
-MONDO:0000951	thymus lymphoma

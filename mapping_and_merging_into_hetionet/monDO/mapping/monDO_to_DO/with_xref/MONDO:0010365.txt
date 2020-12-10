@@ -1,3 +1,0 @@
-MONDO:0010365	CFTDX
-DOID 	 name 
-DOID:0080102	congenital fiber-type disproportion

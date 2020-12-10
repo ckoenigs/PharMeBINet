@@ -1,3 +1,0 @@
-DOID:2344	polyclonal hypergammaglobulinemia
-monDO ID 	 name 
-MONDO:0002272	polyclonal hypergammaglobulinemia

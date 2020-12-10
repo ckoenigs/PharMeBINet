@@ -1,3 +1,0 @@
-DOID:8533	hypopharynx cancer
-monDO ID 	 name 
-MONDO:0005806	hypopharynx cancer

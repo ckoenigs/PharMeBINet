@@ -1,3 +1,0 @@
-MONDO:0014564	congenital bile acid synthesis defect 5
-DOID 	 name 
-DOID:0111066	congenital bile acid synthesis defect 5

@@ -1,3 +1,0 @@
-MONDO:0005895	paragonimiasis
-DOID 	 name 
-DOID:10699	paragonimiasis

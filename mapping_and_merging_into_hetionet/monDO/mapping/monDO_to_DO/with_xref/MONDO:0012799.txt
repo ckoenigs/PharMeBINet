@@ -1,3 +1,0 @@
-MONDO:0012799	hypertrophic cardiomyopathy 11
-DOID 	 name 
-DOID:0110317	hypertrophic cardiomyopathy 11

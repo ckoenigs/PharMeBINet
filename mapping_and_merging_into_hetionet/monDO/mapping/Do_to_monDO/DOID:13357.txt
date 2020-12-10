@@ -1,3 +1,0 @@
-DOID:13357	chondromalacia patellae
-monDO ID 	 name 
-MONDO:0008207	chondromalacia patellae

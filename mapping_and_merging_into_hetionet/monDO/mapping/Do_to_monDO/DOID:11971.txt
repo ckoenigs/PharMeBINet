@@ -1,3 +1,0 @@
-DOID:11971	synostosis
-monDO ID 	 name 
-MONDO:0001411	synostosis

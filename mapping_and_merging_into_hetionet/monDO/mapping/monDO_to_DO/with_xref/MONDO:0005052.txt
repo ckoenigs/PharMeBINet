@@ -1,3 +1,0 @@
-MONDO:0005052	irritable bowel syndrome
-DOID 	 name 
-DOID:9778	irritable bowel syndrome

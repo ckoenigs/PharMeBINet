@@ -1,3 +1,0 @@
-DOID:13832	patent ductus arteriosus
-monDO ID 	 name 
-MONDO:0011827	patent ductus arteriosus

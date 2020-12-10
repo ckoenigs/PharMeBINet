@@ -1,3 +1,0 @@
-DOID:9503	Loeffler syndrome
-monDO ID 	 name 
-MONDO:0019122	idiopathic acute eosinophilic pneumonia

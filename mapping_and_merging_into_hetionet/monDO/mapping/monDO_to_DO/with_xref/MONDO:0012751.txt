@@ -1,3 +1,0 @@
-MONDO:0012751	AAA3
-DOID 	 name 
-DOID:7693	abdominal aortic aneurysm

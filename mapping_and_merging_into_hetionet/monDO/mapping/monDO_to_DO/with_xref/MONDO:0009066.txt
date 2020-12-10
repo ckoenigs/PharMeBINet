@@ -1,3 +1,0 @@
-MONDO:0009066	juvenile nephropathic cystinosis
-DOID 	 name 
-DOID:1064	cystinosis

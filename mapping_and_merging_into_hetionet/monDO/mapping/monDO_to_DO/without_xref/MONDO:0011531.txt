@@ -1,3 +1,0 @@
-MONDO:0011531	Noonan syndrome 2
-DOID 	 name 
-DOID:0060580	Noonan syndrome 2

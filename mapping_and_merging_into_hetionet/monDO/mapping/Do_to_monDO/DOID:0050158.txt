@@ -1,3 +1,0 @@
-DOID:0050158	desquamative interstitial pneumonia
-monDO ID 	 name 
-MONDO:0009887	desquamative interstitial pneumonia

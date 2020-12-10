@@ -1,3 +1,0 @@
-MONDO:0012409	isolated microphthalmia 2
-DOID 	 name 
-DOID:0060839	isolated microphthalmia 2

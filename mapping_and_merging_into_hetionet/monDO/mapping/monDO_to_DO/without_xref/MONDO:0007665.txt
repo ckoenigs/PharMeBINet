@@ -1,3 +1,0 @@
-MONDO:0007665	primary open angle glaucoma
-DOID 	 name 
-DOID:1070	primary open angle glaucoma

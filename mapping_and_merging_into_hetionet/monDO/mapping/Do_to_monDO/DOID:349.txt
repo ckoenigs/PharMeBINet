@@ -1,3 +1,0 @@
-DOID:349	systemic mastocytosis
-monDO ID 	 name 
-MONDO:0016586	systemic mastocytosis

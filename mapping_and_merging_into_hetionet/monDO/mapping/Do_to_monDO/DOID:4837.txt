@@ -1,3 +1,0 @@
-DOID:4837	Gorham's disease
-monDO ID 	 name 
-MONDO:0003157	Gorham's disease

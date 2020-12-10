@@ -1,3 +1,0 @@
-MONDO:0020439	patent foramen ovale (disease)
-DOID 	 name 
-DOID:13620	patent foramen ovale

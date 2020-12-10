@@ -1,3 +1,0 @@
-MONDO:0012290	CEDNIK syndrome
-DOID 	 name 
-DOID:0060337	CEDNIK syndrome

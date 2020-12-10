@@ -1,3 +1,0 @@
-MONDO:0003311	endometrial stromal tumor
-DOID 	 name 
-DOID:5166	endometrial stromal tumor

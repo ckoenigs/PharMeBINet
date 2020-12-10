@@ -1,3 +1,0 @@
-MONDO:0004194	ovarian stromal hyperthecosis
-DOID 	 name 
-DOID:7347	ovarian stromal hyperthecosis

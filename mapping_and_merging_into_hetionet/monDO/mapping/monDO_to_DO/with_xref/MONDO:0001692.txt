@@ -1,3 +1,0 @@
-MONDO:0001692	pedophilia
-DOID 	 name 
-DOID:13351	pedophilia

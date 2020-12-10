@@ -1,3 +1,0 @@
-MONDO:0001041	dentin caries
-DOID 	 name 
-DOID:10461	dentin caries

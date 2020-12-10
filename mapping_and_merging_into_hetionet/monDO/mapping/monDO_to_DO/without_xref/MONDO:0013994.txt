@@ -1,3 +1,0 @@
-MONDO:0013994	Joubert syndrome 20
-DOID 	 name 
-DOID:0110989	Joubert syndrome 20

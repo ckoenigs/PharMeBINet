@@ -1,3 +1,0 @@
-DOID:1340	pure red-cell aplasia
-monDO ID 	 name 
-MONDO:0001705	pure red-cell aplasia

@@ -1,3 +1,0 @@
-DOID:0060055	popliteal pterygium syndrome
-monDO ID 	 name 
-MONDO:0017435	popliteal pterygium syndrome

@@ -1,3 +1,0 @@
-MONDO:0018381	osteochondrosis
-DOID 	 name 
-DOID:8125	osteochondrosis

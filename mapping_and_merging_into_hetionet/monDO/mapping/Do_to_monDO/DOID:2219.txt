@@ -1,3 +1,0 @@
-DOID:2219	Glanzmann's thrombasthenia
-monDO ID 	 name 
-MONDO:0010119	Glanzmann's thrombasthenia

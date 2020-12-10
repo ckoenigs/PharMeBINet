@@ -1,3 +1,0 @@
-MONDO:0009704	carnitine palmitoyl transferase II deficiency, myopathic form
-DOID 	 name 
-DOID:0060235	carnitine palmitoyltransferase II deficiency

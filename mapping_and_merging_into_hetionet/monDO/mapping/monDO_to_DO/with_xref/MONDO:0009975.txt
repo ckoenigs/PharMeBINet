@@ -1,5 +1,0 @@
-MONDO:0009975	reticulum cell sarcoma
-DOID 	 name 
-DOID:8675	lymphosarcoma
-DOID:7848	interdigitating dendritic cell sarcoma
-DOID:8538	reticulosarcoma

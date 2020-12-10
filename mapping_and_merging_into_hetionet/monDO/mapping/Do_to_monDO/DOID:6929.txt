@@ -1,3 +1,0 @@
-DOID:6929	retinal edema
-monDO ID 	 name 
-MONDO:0004037	retinal edema

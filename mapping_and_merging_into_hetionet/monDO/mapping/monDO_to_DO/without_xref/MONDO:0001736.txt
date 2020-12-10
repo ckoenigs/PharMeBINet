@@ -1,3 +1,0 @@
-MONDO:0001736	neonatal infective mastitis
-DOID 	 name 
-DOID:13520	neonatal infective mastitis

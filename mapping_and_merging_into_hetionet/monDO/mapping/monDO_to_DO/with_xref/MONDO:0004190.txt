@@ -1,3 +1,0 @@
-MONDO:0004190	nephrogenic adenoma of urinary bladder
-DOID 	 name 
-DOID:7333	nephrogenic adenoma of urinary bladder

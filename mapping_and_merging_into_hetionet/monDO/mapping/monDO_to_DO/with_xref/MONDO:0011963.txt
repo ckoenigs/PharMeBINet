@@ -1,3 +1,0 @@
-MONDO:0011963	Joubert syndrome 2
-DOID 	 name 
-DOID:0110988	Joubert syndrome 2

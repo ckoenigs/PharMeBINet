@@ -1,3 +1,0 @@
-MONDO:0007867	nonsyndromic congenital nail disorder 2
-DOID 	 name 
-DOID:0080080	nonsyndromic congenital nail disorder 2

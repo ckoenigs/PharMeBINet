@@ -1,3 +1,0 @@
-MONDO:0014036	Alzheimer's disease 17
-DOID 	 name 
-DOID:0110049	Alzheimer's disease 17

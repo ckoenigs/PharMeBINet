@@ -1,3 +1,0 @@
-MONDO:0017990	catecholaminergic polymorphic ventricular tachycardia
-DOID 	 name 
-DOID:0060674	catecholaminergic polymorphic ventricular tachycardia

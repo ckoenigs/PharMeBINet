@@ -1,3 +1,0 @@
-MONDO:0008586	esophageal atresia/tracheoesophageal fistula
-DOID 	 name 
-DOID:0080171	esophageal atresia/tracheoesophageal fistula

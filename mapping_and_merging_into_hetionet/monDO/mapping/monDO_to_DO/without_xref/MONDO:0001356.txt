@@ -1,3 +1,0 @@
-MONDO:0001356	iron deficiency anemia
-DOID 	 name 
-DOID:11758	iron deficiency anemia

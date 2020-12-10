@@ -11,7 +11,7 @@ import datetime, csv
 dict_inchikey_to_rxnorm_ids = {}
 
 '''
-go through all date in file UNIIs 28Apr2017 Records.txt and remember only the one with a rxcui
+go through all date in file UNIIs  Records.txt and remember only the one with a rxcui
 file has properties:
     0:UNII
     1:PT	

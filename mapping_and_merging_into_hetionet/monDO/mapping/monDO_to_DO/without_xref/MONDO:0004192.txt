@@ -1,3 +1,0 @@
-MONDO:0004192	urethra cancer
-DOID 	 name 
-DOID:734	urethra cancer

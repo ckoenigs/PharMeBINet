@@ -1,3 +1,0 @@
-DOID:10915	Wernicke-Korsakoff syndrome
-monDO ID 	 name 
-MONDO:0010198	Wernicke-Korsakoff syndrome

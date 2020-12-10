@@ -1,3 +1,0 @@
-MONDO:0006582	mongolian spot
-DOID 	 name 
-DOID:4702	mongolian spot

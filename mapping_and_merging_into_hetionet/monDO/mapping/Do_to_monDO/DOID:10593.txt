@@ -1,3 +1,0 @@
-DOID:10593	idiopathic progressive polyneuropathy
-monDO ID 	 name 
-MONDO:0001073	idiopathic progressive polyneuropathy

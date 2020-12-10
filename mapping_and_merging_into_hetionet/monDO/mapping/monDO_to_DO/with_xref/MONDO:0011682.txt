@@ -1,3 +1,0 @@
-MONDO:0011682	episodic ataxia type 3
-DOID 	 name 
-DOID:0050991	episodic ataxia type 3

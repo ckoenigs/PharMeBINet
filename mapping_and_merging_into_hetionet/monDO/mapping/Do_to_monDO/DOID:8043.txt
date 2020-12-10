@@ -1,3 +1,0 @@
-DOID:8043	chest wall parachordoma
-monDO ID 	 name 
-MONDO:0004443	chest wall parachordoma

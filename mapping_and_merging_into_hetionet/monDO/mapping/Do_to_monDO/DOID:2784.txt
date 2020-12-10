@@ -1,3 +1,0 @@
-DOID:2784	lung sarcoma
-monDO ID 	 name 
-MONDO:0002426	lung sarcoma

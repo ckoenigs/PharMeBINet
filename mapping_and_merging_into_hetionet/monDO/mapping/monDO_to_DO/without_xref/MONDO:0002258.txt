@@ -1,3 +1,0 @@
-MONDO:0002258	pharyngitis
-DOID 	 name 
-DOID:2275	pharyngitis

@@ -1,3 +1,0 @@
-DOID:0050159	lymphoid interstitial pneumonia
-monDO ID 	 name 
-MONDO:0009537	lymphoid interstitial pneumonia

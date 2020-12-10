@@ -1,3 +1,0 @@
-MONDO:0002741	uterine ligament adenocarcinoma
-DOID 	 name 
-DOID:3700	uterine ligament adenocarcinoma

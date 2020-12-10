@@ -1,3 +1,0 @@
-MONDO:0002738	acute transudative otitis media
-DOID 	 name 
-DOID:3697	acute transudative otitis media

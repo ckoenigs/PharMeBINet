@@ -1,3 +1,0 @@
-MONDO:0001778	dermoid cyst of skin
-DOID 	 name 
-DOID:13691	dermoid cyst of skin

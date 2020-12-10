@@ -1,3 +1,0 @@
-MONDO:0001334	hypertrichosis of eyelid
-DOID 	 name 
-DOID:11669	hypertrichosis of eyelid

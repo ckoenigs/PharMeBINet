@@ -1,4 +1,0 @@
-MONDO:0000500	tongue squamous cell carcinoma
-DOID 	 name 
-DOID:0050865	tongue squamous cell carcinoma
-DOID:1749	squamous cell carcinoma

@@ -1,3 +1,0 @@
-DOID:12167	secondary vitreoretinal degeneration
-monDO ID 	 name 
-MONDO:0001457	secondary vitreoretinal degeneration

@@ -1,3 +1,0 @@
-DOID:7732	childhood malignant schwannoma
-monDO ID 	 name 
-MONDO:0004345	childhood malignant schwannoma

@@ -1,3 +1,0 @@
-DOID:4148	gastrointestinal neuroendocrine benign tumor
-monDO ID 	 name 
-MONDO:0002891	gastrointestinal neuroendocrine benign tumor

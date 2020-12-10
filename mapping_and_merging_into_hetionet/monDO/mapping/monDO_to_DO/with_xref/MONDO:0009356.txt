@@ -1,3 +1,0 @@
-MONDO:0009356	autosomal recessive humeroradial synostosis
-DOID 	 name 
-DOID:0060467	humeroradial synostosis

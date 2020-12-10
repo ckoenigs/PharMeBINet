@@ -1,3 +1,0 @@
-MONDO:0004784	allergic asthma
-DOID 	 name 
-DOID:9415	allergic asthma

@@ -1,3 +1,0 @@
-MONDO:0006883	Pancoast tumor
-DOID 	 name 
-DOID:8007	Pancoast tumor

@@ -1,3 +1,0 @@
-MONDO:0010265	Simpson-Golabi-Behmel syndrome type 2
-DOID 	 name 
-DOID:0060248	Simpson-Golabi-Behmel syndrome

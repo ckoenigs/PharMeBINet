@@ -1,3 +1,0 @@
-DOID:0110699	hypotrichosis 2
-monDO ID 	 name 
-MONDO:0007805	hypotrichosis 2

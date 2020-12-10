@@ -1,3 +1,0 @@
-DOID:11148	hypersecretion glaucoma
-monDO ID 	 name 
-MONDO:0001205	hypersecretion glaucoma

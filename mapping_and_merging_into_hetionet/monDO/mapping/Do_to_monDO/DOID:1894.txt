@@ -1,3 +1,0 @@
-DOID:1894	noninfectious dermatoses of eyelid
-monDO ID 	 name 
-MONDO:0002137	noninfectious dermatoses of eyelid

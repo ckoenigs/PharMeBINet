@@ -1,3 +1,0 @@
-MONDO:0000871	T-cell childhood acute lymphocytic leukemia
-DOID 	 name 
-DOID:0080145	T-cell childhood acute lymphocytic leukemia

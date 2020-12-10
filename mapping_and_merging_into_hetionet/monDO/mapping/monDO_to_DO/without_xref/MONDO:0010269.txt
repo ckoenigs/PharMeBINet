@@ -1,3 +1,0 @@
-MONDO:0010269	Coats disease
-DOID 	 name 
-DOID:7765	Coats disease

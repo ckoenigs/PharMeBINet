@@ -1,3 +1,0 @@
-MONDO:0002644	idiopathic granulomatous myositis
-DOID 	 name 
-DOID:3428	granulomatous myositis

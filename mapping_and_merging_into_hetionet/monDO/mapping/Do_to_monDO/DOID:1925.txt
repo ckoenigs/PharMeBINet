@@ -1,3 +1,0 @@
-DOID:1925	Coffin-Siris syndrome
-monDO ID 	 name 
-MONDO:0015452	Coffin-Siris syndrome

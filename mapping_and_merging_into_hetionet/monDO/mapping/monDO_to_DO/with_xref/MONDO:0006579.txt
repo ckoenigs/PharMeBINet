@@ -1,3 +1,0 @@
-MONDO:0006579	melanoacanthoma
-DOID 	 name 
-DOID:11684	melanoacanthoma

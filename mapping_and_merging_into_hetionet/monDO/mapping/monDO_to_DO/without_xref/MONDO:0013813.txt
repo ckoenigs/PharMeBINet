@@ -1,3 +1,0 @@
-MONDO:0013813	dystonia 21
-DOID 	 name 
-DOID:0090046	dystonia 21

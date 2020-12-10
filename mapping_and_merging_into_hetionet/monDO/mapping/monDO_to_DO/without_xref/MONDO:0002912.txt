@@ -1,3 +1,0 @@
-MONDO:0002912	brain stem cancer
-DOID 	 name 
-DOID:4203	brain stem cancer

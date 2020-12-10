@@ -1,3 +1,0 @@
-DOID:7922	benign mediastinal neurilemmoma
-monDO ID 	 name 
-MONDO:0004398	mediastinal schwannoma

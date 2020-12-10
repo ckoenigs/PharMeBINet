@@ -1,3 +1,0 @@
-MONDO:0004677	tinea nigra
-DOID 	 name 
-DOID:8912	tinea nigra

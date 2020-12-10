@@ -1,3 +1,0 @@
-MONDO:0003517	mature teratoma
-DOID 	 name 
-DOID:5566	mature teratoma

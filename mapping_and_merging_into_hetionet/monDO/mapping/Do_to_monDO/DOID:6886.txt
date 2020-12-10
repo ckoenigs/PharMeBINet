@@ -1,3 +1,0 @@
-DOID:6886	ureter small cell carcinoma
-monDO ID 	 name 
-MONDO:0006482	ureter small cell carcinoma

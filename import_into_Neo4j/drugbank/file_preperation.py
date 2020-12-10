@@ -1250,24 +1250,37 @@ def check_and_maybe_generate_a_new_target_file(file, dict_targets_info_external,
                     string_xref = '||'.join([xref + '::' + ';'.join(values) for xref, values in xrefs.items()])
                     list_properties.append(string_xref)
 
+            # check if entries are already include
             if not identifier in dict_target_properties:
                 dict_target_properties[identifier] = [list_properties, [neo4j_label]]
+
             else:
                 before_properties, label_list = dict_target_properties[identifier]
                 i = 0
                 counter_same_id_different_label += 1
                 for property in list_properties:
                     if property != before_properties[i]:
-                        print(identifier)
-                        print(before_properties)
-                        print(list_properties)
-                        print(label_list)
-                        print(neo4j_label)
+
                         # sys.exit('ohje')
                         if property[0:2] == 'BE':
-                            before_properties[i] += '||' + property
+                            set_of_infos=set(before_properties[i].split('||'))
+                            set_of_infos.add(property)
+                            set_of_infos=list(filter(bool, set_of_infos))
+                            before_properties[i] = '||'.join(set_of_infos)
                         else:
-                            sys.exit('another property is not the same')
+                            print(identifier)
+                            print(before_properties)
+                            print(list_properties)
+                            print(property)
+                            print(before_properties[i])
+                            print(label_list)
+                            print(neo4j_label)
+                            print(identifier)
+                            set_of_infos = set(before_properties[i].split('||'))
+                            set_of_infos.add(property)
+                            set_of_infos=list(filter(bool, set_of_infos))
+                            before_properties[i] = '||'.join(set_of_infos)
+                            print('another property is not the same')
                         counter_same_id_different_label_not_same_properties += 1
                     i += 1
 
@@ -1636,7 +1649,7 @@ a function that the information for the different protein labels and gather the 
 '''
 
 
-def gather_and_combine_carrier_information(uniprot_links, drugbank_all_polypeptide_sequences_fasta,
+def gather_and_combine_protein_information(uniprot_links, drugbank_all_polypeptide_sequences_fasta,
                                            drugbank_all_polypeptide_ids_csv, drugbank_target_tsv,
                                            drugbank_target_output_tsv, drugbank_drug_target_tsv, neo4j_label,
                                            neo4j_label_drug, short_form_label, neo4j_general_label, first):
@@ -1745,9 +1758,9 @@ def gather_all_metabolite_information_and_generate_a_new_file(neo4j_label):
         reader = csv.DictReader(csvfile, delimiter=',')
         header = reader.fieldnames
         header_new = header[:]
-        header_new.remove('')
-        header_new.remove('ID')
-        header_new.remove('Molecule')
+        # header_new.remove('')
+        # header_new.remove('ID')
+        # header_new.remove('Molecule')
         header_new.remove('DATABASE_NAME')
         header_new.remove('DATABASE_ID')
         header_new.remove('DRUGBANK_ID')
@@ -2090,7 +2103,7 @@ def add_addtitional_enzymes(uniprot_id, header_new, counter_multiple_information
                     return False,  ""
                     # sys.exit(uniprot_id)
                 if head in dict_drugbank_to_uniprot_label:
-                    print(information_to_this_uniprot_entry[0])
+                    # print(information_to_this_uniprot_entry[0])
                     entries.append(information_to_this_uniprot_entry[0][dict_drugbank_to_uniprot_label[head]])
                 elif head == 'id_source':
                     entries.append('Swiss-Prot')
@@ -2331,7 +2344,7 @@ def main():
 
     neo4j_general_label = 'Protein_DrugBank'
     neo4j_label_carrier = 'Carrier_DrugBank'
-    gather_and_combine_carrier_information('uniprot_links_carrier.csv',
+    gather_and_combine_protein_information('uniprot_links_carrier.csv',
                                            'drugbank_all_carrier_polypeptide_sequences.fasta/',
                                            'drugbank_all_carrier_polypeptide_ids.csv/', 'drugbank_carrier.tsv',
                                            'drugbank_carrier.tsv', 'drugbank_drug_carrier', neo4j_label_carrier,
@@ -2344,7 +2357,7 @@ def main():
     print('enzymes')
 
     neo4j_label_enzyme = 'Enzyme_DrugBank'
-    gather_and_combine_carrier_information('uniprot_links_enzyme.csv',
+    gather_and_combine_protein_information('uniprot_links_enzyme.csv',
                                            'drugbank_all_enzyme_polypeptide_sequences.fasta/',
                                            'drugbank_all_enzyme_polypeptide_ids.csv/', 'drugbank_enzymes.tsv',
                                            'drugbank_enzymes.tsv', 'drugbank_drug_enzyme', neo4j_label_enzyme,
@@ -2357,7 +2370,7 @@ def main():
     print('target')
 
     neo4j_label_target = 'Target_DrugBank'
-    gather_and_combine_carrier_information('uniprot_links_target.csv',
+    gather_and_combine_protein_information('uniprot_links_target.csv',
                                            'drugbank_all_target_polypeptide_sequences.fasta/',
                                            'drugbank_all_target_polypeptide_ids.csv/', 'drugbank_targets.tsv',
                                            'drugbank_targets.tsv', 'drugbank_drug_target', neo4j_label_target,
@@ -2370,7 +2383,7 @@ def main():
     print('transporter')
 
     neo4j_label_transporter = 'Transporter_DrugBank'
-    header_new = gather_and_combine_carrier_information('uniprot_links_transporter.csv',
+    header_new = gather_and_combine_protein_information('uniprot_links_transporter.csv',
                                                         'drugbank_all_transporter_polypeptide_sequences.fasta/',
                                                         'drugbank_all_transporter_polypeptide_ids.csv/',
                                                         'drugbank_transporter.tsv',

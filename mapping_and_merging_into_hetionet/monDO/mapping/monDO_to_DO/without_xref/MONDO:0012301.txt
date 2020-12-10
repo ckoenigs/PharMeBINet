@@ -1,3 +1,0 @@
-MONDO:0012301	mitochondrial dna depletion syndrome, myopathic form
-DOID 	 name 
-DOID:0080120	mitochondrial DNA depletion syndrome 2

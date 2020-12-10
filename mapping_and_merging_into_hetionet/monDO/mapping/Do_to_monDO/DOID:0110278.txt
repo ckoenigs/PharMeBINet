@@ -1,3 +1,0 @@
-DOID:0110278	autosomal recessive limb-girdle muscular dystrophy type 2D
-monDO ID 	 name 
-MONDO:0011968	autosomal recessive limb-girdle muscular dystrophy type 2D

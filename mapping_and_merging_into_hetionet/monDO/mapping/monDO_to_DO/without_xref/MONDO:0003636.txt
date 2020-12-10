@@ -1,3 +1,0 @@
-MONDO:0003636	vulvar sebaceous carcinoma
-DOID 	 name 
-DOID:5761	vulvar sebaceous carcinoma

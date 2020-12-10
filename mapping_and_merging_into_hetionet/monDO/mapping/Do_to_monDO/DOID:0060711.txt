@@ -1,3 +1,0 @@
-DOID:0060711	autosomal recessive congenital ichthyosis 3
-monDO ID 	 name 
-MONDO:0011680	autosomal recessive congenital ichthyosis 3

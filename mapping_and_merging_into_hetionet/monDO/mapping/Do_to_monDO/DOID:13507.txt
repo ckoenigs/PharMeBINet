@@ -1,3 +1,0 @@
-DOID:13507	trigonitis
-monDO ID 	 name 
-MONDO:0001732	trigonitis

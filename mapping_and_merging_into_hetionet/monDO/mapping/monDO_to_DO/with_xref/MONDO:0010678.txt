@@ -1,3 +1,0 @@
-MONDO:0010678	muscular dystrophy, progressive Pectorodorsal
-DOID 	 name 
-DOID:9884	muscular dystrophy

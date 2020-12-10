@@ -1,3 +1,0 @@
-MONDO:0004126	thyroiditis (disease)
-DOID 	 name 
-DOID:7166	thyroiditis

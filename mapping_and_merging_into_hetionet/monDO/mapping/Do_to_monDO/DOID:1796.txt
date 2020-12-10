@@ -1,3 +1,0 @@
-DOID:1796	pancreas sarcoma
-monDO ID 	 name 
-MONDO:0002117	pancreas sarcoma

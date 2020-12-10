@@ -1,3 +1,0 @@
-MONDO:0001827	white piedra
-DOID 	 name 
-DOID:13902	white piedra

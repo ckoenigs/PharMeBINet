@@ -1,3 +1,0 @@
-DOID:0001816	angiosarcoma
-monDO ID 	 name 
-MONDO:0016982	angiosarcoma (disease)

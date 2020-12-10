@@ -1,3 +1,0 @@
-MONDO:0004180	benign urinary system neoplasm
-DOID 	 name 
-DOID:731	urinary system benign neoplasm

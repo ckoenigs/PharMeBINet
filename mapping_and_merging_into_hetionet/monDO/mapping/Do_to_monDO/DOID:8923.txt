@@ -1,3 +1,0 @@
-DOID:8923	skin melanoma
-monDO ID 	 name 
-MONDO:0005012	cutaneous melanoma (disease)

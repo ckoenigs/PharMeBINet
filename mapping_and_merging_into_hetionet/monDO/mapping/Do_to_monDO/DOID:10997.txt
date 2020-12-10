@@ -1,3 +1,0 @@
-DOID:10997	immature cataract
-monDO ID 	 name 
-MONDO:0001175	immature cataract

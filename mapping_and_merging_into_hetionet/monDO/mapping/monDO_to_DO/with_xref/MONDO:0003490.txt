@@ -1,3 +1,0 @@
-MONDO:0003490	ampulla of vater squamous cell carcinoma
-DOID 	 name 
-DOID:5527	ampulla of Vater squamous cell carcinoma

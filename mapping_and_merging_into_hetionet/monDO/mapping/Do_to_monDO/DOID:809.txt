@@ -1,3 +1,0 @@
-DOID:809	cocaine abuse
-monDO ID 	 name 
-MONDO:0004456	cocaine abuse

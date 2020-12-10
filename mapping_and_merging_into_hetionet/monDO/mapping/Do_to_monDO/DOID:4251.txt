@@ -1,3 +1,0 @@
-DOID:4251	conjunctival disease
-monDO ID 	 name 
-MONDO:0002932	conjunctival disease

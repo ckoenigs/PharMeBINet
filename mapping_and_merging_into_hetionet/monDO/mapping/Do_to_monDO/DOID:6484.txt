@@ -1,3 +1,0 @@
-DOID:6484	mediastinal melanocytic neurilemmoma
-monDO ID 	 name 
-MONDO:0003894	mediastinal melanocytic neurilemmoma

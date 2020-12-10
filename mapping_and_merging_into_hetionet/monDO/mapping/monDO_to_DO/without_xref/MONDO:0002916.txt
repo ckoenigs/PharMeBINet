@@ -1,3 +1,0 @@
-MONDO:0002916	brainstem intraparenchymal clear cell meningioma
-DOID 	 name 
-DOID:4209	brainstem intraparenchymal clear cell meningioma

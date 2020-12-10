@@ -1,3 +1,0 @@
-MONDO:0007813	ichthyosis bullosa of Siemens
-DOID 	 name 
-DOID:0060877	ichthyosis bullosa of Siemens

@@ -1,3 +1,0 @@
-DOID:0090125	COL4A1-related familial vascular leukoencephalopathy
-monDO ID 	 name 
-MONDO:0011865	COL4A1-related familial vascular leukoencephalopathy

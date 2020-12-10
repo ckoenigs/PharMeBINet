@@ -1,3 +1,0 @@
-MONDO:0005569	cartilage disease
-DOID 	 name 
-DOID:1222	cartilage disease

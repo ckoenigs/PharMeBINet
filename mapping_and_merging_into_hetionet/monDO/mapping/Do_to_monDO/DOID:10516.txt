@@ -1,3 +1,0 @@
-DOID:10516	malignant otitis externa
-monDO ID 	 name 
-MONDO:0001050	malignant otitis externa

@@ -1,3 +1,0 @@
-DOID:5276	esophagus leiomyosarcoma
-monDO ID 	 name 
-MONDO:0003365	esophagus leiomyosarcoma

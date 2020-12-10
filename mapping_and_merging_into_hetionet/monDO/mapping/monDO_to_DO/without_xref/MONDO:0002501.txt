@@ -1,3 +1,0 @@
-MONDO:0002501	brain glioblastoma
-DOID 	 name 
-DOID:3073	brain glioblastoma multiforme

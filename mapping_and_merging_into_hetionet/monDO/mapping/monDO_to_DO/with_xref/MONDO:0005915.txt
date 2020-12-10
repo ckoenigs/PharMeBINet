@@ -1,3 +1,0 @@
-MONDO:0005915	pityriasis versicolor
-DOID 	 name 
-DOID:9060	pityriasis versicolor

@@ -1,3 +1,0 @@
-MONDO:0000479	segmental dystonia
-DOID 	 name 
-DOID:0050838	segmental dystonia

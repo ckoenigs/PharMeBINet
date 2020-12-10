@@ -1,3 +1,0 @@
-MONDO:0004247	peptic ulcer disease
-DOID 	 name 
-DOID:750	peptic ulcer disease

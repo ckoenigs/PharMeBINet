@@ -1,3 +1,0 @@
-DOID:5076	mixed glioma
-monDO ID 	 name 
-MONDO:0003268	mixed glioma

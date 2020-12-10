@@ -1,3 +1,0 @@
-MONDO:0000807	latex allergy
-DOID 	 name 
-DOID:0060532	latex allergy

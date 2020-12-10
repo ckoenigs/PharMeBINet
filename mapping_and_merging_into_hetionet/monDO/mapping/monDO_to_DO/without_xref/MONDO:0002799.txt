@@ -1,3 +1,0 @@
-MONDO:0002799	nodular medulloblastoma
-DOID 	 name 
-DOID:3873	nodular medulloblastoma

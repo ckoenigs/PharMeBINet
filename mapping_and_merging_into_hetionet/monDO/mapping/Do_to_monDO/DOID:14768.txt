@@ -1,3 +1,0 @@
-DOID:14768	Saethre-Chotzen syndrome
-monDO ID 	 name 
-MONDO:0007042	Saethre-Chotzen syndrome

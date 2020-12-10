@@ -1,3 +1,0 @@
-DOID:11260	rabies
-monDO ID 	 name 
-MONDO:0019173	rabies

@@ -1,3 +1,0 @@
-DOID:5157	benign pleural mesothelioma
-monDO ID 	 name 
-MONDO:0003308	pleural mesothelioma

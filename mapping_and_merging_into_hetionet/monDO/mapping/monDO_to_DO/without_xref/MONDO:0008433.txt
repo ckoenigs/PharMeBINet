@@ -1,3 +1,0 @@
-MONDO:0008433	small cell lung carcinoma
-DOID 	 name 
-DOID:5409	lung small cell carcinoma

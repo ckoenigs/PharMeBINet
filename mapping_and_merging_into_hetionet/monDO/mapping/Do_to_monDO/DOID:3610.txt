@@ -1,3 +1,0 @@
-DOID:3610	breast mucinous carcinoma
-monDO ID 	 name 
-MONDO:0002707	breast mucinous carcinoma

@@ -1,3 +1,0 @@
-MONDO:0003590	fibroblastic liposarcoma
-DOID 	 name 
-DOID:5698	fibroblastic liposarcoma

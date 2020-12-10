@@ -1,3 +1,0 @@
-MONDO:0001808	chronic subinvolution of uterus
-DOID 	 name 
-DOID:13811	chronic subinvolution of uterus

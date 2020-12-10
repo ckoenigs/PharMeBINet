@@ -1,3 +1,0 @@
-DOID:0050339	commensal bacterial infectious disease
-monDO ID 	 name 
-MONDO:0000315	commensal bacterial infectious disease

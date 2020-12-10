@@ -1,3 +1,0 @@
-DOID:5363	myxoid liposarcoma
-monDO ID 	 name 
-MONDO:0013280	myxoid liposarcoma

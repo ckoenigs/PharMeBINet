@@ -1,3 +1,0 @@
-DOID:8628	Hodgkin's lymphoma, lymphocytic depletion
-monDO ID 	 name 
-MONDO:0004620	Hodgkin's lymphoma, lymphocytic depletion

@@ -1,3 +1,0 @@
-MONDO:0018905	diffuse large B-cell lymphoma
-DOID 	 name 
-DOID:0050745	diffuse large B-cell lymphoma

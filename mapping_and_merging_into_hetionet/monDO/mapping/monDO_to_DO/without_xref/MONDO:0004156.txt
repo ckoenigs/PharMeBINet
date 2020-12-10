@@ -1,3 +1,0 @@
-MONDO:0004156	pancreatic colloid cystadenocarcinoma
-DOID 	 name 
-DOID:7234	pancreatic colloid cystadenocarcinoma

@@ -1,3 +1,0 @@
-MONDO:0002307	blepharoconjunctivitis
-DOID 	 name 
-DOID:2456	blepharoconjunctivitis

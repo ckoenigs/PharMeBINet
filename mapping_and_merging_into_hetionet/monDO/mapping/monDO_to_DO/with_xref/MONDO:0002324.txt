@@ -1,3 +1,0 @@
-MONDO:0002324	enamel erosion
-DOID 	 name 
-DOID:2497	enamel erosion

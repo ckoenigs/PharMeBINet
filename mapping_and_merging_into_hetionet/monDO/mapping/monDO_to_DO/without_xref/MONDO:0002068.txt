@@ -1,3 +1,0 @@
-MONDO:0002068	female breast lower-inner quadrant cancer
-DOID 	 name 
-DOID:1649	female breast lower-inner quadrant cancer

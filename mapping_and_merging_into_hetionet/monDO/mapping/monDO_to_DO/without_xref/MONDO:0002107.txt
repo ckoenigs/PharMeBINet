@@ -1,3 +1,0 @@
-MONDO:0002107	unilateral hyperactive labyrinth
-DOID 	 name 
-DOID:1777	unilateral hyperactive labyrinth

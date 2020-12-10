@@ -1,3 +1,0 @@
-MONDO:0002894	spinal chordoma
-DOID 	 name 
-DOID:4153	spinal chordoma

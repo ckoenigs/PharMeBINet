@@ -1,3 +1,0 @@
-MONDO:0013062	long QT syndrome 12
-DOID 	 name 
-DOID:0110653	long QT syndrome 12

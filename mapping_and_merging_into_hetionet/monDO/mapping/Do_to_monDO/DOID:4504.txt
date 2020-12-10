@@ -1,3 +1,0 @@
-DOID:4504	central nervous system angiosarcoma
-monDO ID 	 name 
-MONDO:0003021	central nervous system angiosarcoma

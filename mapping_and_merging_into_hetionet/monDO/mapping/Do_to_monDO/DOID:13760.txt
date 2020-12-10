@@ -1,3 +1,0 @@
-DOID:13760	Pthirus pubis infestation
-monDO ID 	 name 
-MONDO:0001794	Pthirus pubis infestation

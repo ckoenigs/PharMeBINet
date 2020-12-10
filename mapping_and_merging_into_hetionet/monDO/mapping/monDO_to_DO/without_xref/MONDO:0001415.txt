@@ -1,3 +1,0 @@
-MONDO:0001415	atrophy of testis
-DOID 	 name 
-DOID:11994	atrophy of testis

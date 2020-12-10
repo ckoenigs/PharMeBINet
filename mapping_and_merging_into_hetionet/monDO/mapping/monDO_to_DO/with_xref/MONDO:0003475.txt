@@ -1,6 +1,0 @@
-MONDO:0003475	papillary ependymoma
-DOID 	 name 
-DOID:5075	myxopapillary ependymoma
-DOID:5500	cellular ependymoma
-DOID:4844	benign ependymoma
-DOID:5505	papillary ependymoma

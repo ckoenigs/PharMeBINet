@@ -1,3 +1,0 @@
-MONDO:0013367	long QT syndrome 2
-DOID 	 name 
-DOID:0110645	long QT syndrome 2

@@ -1,3 +1,0 @@
-MONDO:0007186	gastroesophageal reflux disease
-DOID 	 name 
-DOID:8534	gastroesophageal reflux disease

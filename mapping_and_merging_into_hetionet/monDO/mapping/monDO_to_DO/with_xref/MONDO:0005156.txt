@@ -1,3 +1,0 @@
-MONDO:0005156	encephalomyelitis
-DOID 	 name 
-DOID:640	encephalomyelitis

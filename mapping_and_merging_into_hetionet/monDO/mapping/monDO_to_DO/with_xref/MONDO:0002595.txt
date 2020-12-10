@@ -1,3 +1,0 @@
-MONDO:0002595	vaccinia
-DOID 	 name 
-DOID:3298	vaccinia

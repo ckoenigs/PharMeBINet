@@ -1,3 +1,0 @@
-DOID:7518	inhibited female orgasm
-monDO ID 	 name 
-MONDO:0004258	female orgasmic disorder

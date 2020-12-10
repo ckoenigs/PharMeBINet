@@ -1,3 +1,0 @@
-DOID:8943	lattice corneal dystrophy
-monDO ID 	 name 
-MONDO:0004686	lattice corneal dystrophy (disease)

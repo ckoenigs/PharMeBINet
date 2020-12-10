@@ -1,3 +1,0 @@
-DOID:12932	endomyocardial fibrosis
-monDO ID 	 name 
-MONDO:0006746	endomyocardial fibrosis

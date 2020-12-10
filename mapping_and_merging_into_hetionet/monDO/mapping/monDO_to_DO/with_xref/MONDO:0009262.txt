@@ -1,3 +1,0 @@
-MONDO:0009262	GM1 gangliosidosis type 3
-DOID 	 name 
-DOID:3322	gangliosidosis GM1

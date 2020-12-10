@@ -1,3 +1,0 @@
-MONDO:0004343	acinar cell cystadenocarcinoma
-DOID 	 name 
-DOID:7729	acinar cell cystadenocarcinoma

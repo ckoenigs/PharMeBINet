@@ -1,3 +1,0 @@
-DOID:0080050	acromesomelic dysplasia, Maroteaux type
-monDO ID 	 name 
-MONDO:0011275	acromesomelic dysplasia, Maroteaux type

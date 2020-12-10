@@ -1,3 +1,0 @@
-MONDO:0004287	pancreatic foamy gland adenocarcinoma
-DOID 	 name 
-DOID:7577	pancreatic foamy gland adenocarcinoma

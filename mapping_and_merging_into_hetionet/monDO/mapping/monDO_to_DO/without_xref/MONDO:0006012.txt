@@ -1,3 +1,0 @@
-MONDO:0006012	viral pneumonia
-DOID 	 name 
-DOID:10533	viral pneumonia

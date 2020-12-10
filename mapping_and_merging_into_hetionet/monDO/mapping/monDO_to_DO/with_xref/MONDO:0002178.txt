@@ -1,3 +1,0 @@
-MONDO:0002178	placenta cancer
-DOID 	 name 
-DOID:2021	placenta cancer

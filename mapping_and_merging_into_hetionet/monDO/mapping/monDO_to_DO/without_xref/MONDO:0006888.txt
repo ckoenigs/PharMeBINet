@@ -1,3 +1,0 @@
-MONDO:0006888	paraneoplastic polyneuropathy
-DOID 	 name 
-DOID:8681	paraneoplastic polyneuropathy

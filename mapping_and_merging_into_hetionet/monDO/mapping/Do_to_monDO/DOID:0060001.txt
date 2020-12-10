@@ -1,3 +1,0 @@
-DOID:0060001	withdrawal disorder
-monDO ID 	 name 
-MONDO:0005567	substance withdrawal syndrome

@@ -1,3 +1,0 @@
-MONDO:0003921	posterior foramen magnum meningioma
-DOID 	 name 
-DOID:6553	posterior foramen magnum meningioma

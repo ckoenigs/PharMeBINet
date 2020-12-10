@@ -1,3 +1,0 @@
-MONDO:0004828	lower urinary tract calculus
-DOID 	 name 
-DOID:9590	lower urinary tract calculus

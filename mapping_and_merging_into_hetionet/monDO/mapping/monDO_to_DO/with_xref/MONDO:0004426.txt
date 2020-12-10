@@ -1,3 +1,0 @@
-MONDO:0004426	frontal convexity meningioma
-DOID 	 name 
-DOID:8000	frontal convexity meningioma

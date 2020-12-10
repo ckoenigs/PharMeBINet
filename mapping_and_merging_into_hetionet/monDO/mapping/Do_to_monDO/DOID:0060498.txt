@@ -1,3 +1,0 @@
-DOID:0060498	Timothy grass allergy
-monDO ID 	 name 
-MONDO:0000773	Timothy grass allergy

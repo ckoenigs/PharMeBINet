@@ -1,3 +1,0 @@
-MONDO:0011912	autosomal recessive nonsyndromic deafness 37
-DOID 	 name 
-DOID:0110495	autosomal recessive nonsyndromic deafness 37

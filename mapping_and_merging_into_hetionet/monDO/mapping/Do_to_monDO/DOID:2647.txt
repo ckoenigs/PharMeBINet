@@ -1,3 +1,0 @@
-DOID:2647	parachordoma
-monDO ID 	 name 
-MONDO:0006351	parachordoma

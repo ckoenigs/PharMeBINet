@@ -1,3 +1,0 @@
-DOID:5222	acute necrotizing encephalitis
-monDO ID 	 name 
-MONDO:0003336	acute necrotizing encephalitis

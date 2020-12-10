@@ -1,3 +1,0 @@
-MONDO:0006330	ossifying fibromyxoid tumor
-DOID 	 name 
-DOID:2685	ossifying fibromyxoid tumor

@@ -1,3 +1,0 @@
-DOID:14681	Silver-Russell syndrome
-monDO ID 	 name 
-MONDO:0008394	Silver-Russell syndrome

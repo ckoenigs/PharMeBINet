@@ -1,3 +1,0 @@
-MONDO:0000396	spastic cerebral palsy
-DOID 	 name 
-DOID:0050669	spastic cerebral palsy

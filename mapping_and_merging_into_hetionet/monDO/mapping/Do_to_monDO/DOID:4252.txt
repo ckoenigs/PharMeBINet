@@ -1,3 +1,0 @@
-DOID:4252	Alexander disease
-monDO ID 	 name 
-MONDO:0008752	Alexander disease

@@ -1,3 +1,0 @@
-MONDO:0004920	hydrocele
-DOID 	 name 
-DOID:9912	hydrocele

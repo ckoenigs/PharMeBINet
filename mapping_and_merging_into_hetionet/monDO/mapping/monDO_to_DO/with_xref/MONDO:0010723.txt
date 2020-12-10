@@ -1,3 +1,0 @@
-MONDO:0010723	retinitis pigmentosa 2
-DOID 	 name 
-DOID:0110415	retinitis pigmentosa 2

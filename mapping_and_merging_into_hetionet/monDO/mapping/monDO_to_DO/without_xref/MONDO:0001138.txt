@@ -1,3 +1,0 @@
-MONDO:0001138	angiodysplasia of intestine
-DOID 	 name 
-DOID:10846	angiodysplasia of intestine

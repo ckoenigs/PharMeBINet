@@ -1,3 +1,0 @@
-DOID:8483	retinal artery occlusion
-monDO ID 	 name 
-MONDO:0006948	retinal artery occlusion

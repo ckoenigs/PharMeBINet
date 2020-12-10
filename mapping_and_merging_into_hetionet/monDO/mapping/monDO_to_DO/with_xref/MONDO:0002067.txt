@@ -1,3 +1,0 @@
-MONDO:0002067	female breast upper-inner quadrant cancer
-DOID 	 name 
-DOID:1647	female breast upper-inner quadrant cancer

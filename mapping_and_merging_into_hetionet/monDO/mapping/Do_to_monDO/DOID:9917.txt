@@ -1,3 +1,0 @@
-DOID:9917	pleural cancer
-monDO ID 	 name 
-MONDO:0006294	pleural cancer

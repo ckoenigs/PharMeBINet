@@ -1,3 +1,0 @@
-DOID:0050514	bulbospinal polio
-monDO ID 	 name 
-MONDO:0000340	bulbospinal polio

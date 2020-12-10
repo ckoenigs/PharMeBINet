@@ -1,3 +1,0 @@
-DOID:5680	embryonal testis carcinoma
-monDO ID 	 name 
-MONDO:0006446	testicular embryonal carcinoma

@@ -1,3 +1,0 @@
-DOID:10320	asbestosis
-monDO ID 	 name 
-MONDO:0016466	asbestosis

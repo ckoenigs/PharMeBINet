@@ -1,3 +1,0 @@
-MONDO:0001122	chronic maxillary sinusitis
-DOID 	 name 
-DOID:10792	chronic maxillary sinusitis

@@ -1,3 +1,0 @@
-MONDO:0012574	Potocki-Luspski syndrome
-DOID 	 name 
-DOID:0060853	Potocki-Luspski syndrome

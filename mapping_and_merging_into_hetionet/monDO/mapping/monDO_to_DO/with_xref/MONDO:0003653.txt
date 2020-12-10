@@ -1,3 +1,0 @@
-MONDO:0003653	stork bite
-DOID 	 name 
-DOID:5806	stork bite

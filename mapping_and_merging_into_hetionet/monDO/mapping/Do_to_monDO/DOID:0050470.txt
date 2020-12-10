@@ -1,3 +1,0 @@
-DOID:0050470	Donohue syndrome
-monDO ID 	 name 
-MONDO:0009517	Donohue syndrome

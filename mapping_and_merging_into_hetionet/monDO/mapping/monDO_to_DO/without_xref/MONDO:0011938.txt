@@ -1,3 +1,0 @@
-MONDO:0011938	atrial heart septal defect 2
-DOID 	 name 
-DOID:0110107	atrial heart septal defect 2

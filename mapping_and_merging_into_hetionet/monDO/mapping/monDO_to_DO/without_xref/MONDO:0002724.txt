@@ -1,3 +1,0 @@
-MONDO:0002724	mast cell neoplasm
-DOID 	 name 
-DOID:3664	mast cell neoplasm

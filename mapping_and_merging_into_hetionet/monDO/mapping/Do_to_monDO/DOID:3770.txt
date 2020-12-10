@@ -1,3 +1,0 @@
-DOID:3770	pulmonary fibrosis
-monDO ID 	 name 
-MONDO:0002771	pulmonary fibrosis

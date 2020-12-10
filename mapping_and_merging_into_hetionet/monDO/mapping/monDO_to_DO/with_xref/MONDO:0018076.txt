@@ -1,3 +1,0 @@
-MONDO:0018076	tuberculosis
-DOID 	 name 
-DOID:399	tuberculosis

@@ -1,3 +1,0 @@
-MONDO:0002754	extramedullary plasmacytoma
-DOID 	 name 
-DOID:3720	extramedullary plasmacytoma

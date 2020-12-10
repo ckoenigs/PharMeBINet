@@ -1,3 +1,0 @@
-MONDO:0008736	peroxisome biogenesis disorder 2B
-DOID 	 name 
-DOID:10588	adrenoleukodystrophy

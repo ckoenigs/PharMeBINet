@@ -1,3 +1,0 @@
-MONDO:0000594	pervasive developmental disorder
-DOID 	 name 
-DOID:0060040	pervasive developmental disorder

@@ -1,3 +1,0 @@
-DOID:11843	coronary artery anomaly
-monDO ID 	 name 
-MONDO:0001389	coronary artery anomaly

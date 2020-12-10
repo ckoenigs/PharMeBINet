@@ -1,3 +1,0 @@
-DOID:6425	eyelid carcinoma
-monDO ID 	 name 
-MONDO:0003876	eyelid carcinoma

@@ -1,3 +1,0 @@
-DOID:3246	embryonal rhabdomyosarcoma
-monDO ID 	 name 
-MONDO:0009993	embryonal rhabdomyosarcoma (disease)

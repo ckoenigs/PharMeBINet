@@ -1,3 +1,0 @@
-DOID:9743	diabetic neuropathy
-monDO ID 	 name 
-MONDO:0006626	diabetic neuropathy

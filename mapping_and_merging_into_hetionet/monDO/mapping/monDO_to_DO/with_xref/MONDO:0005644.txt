@@ -1,3 +1,0 @@
-MONDO:0005644	amebiasis
-DOID 	 name 
-DOID:9181	amebiasis

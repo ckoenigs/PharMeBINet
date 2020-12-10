@@ -1,3 +1,0 @@
-DOID:0060103	central nervous system primitive neuroectodermal neoplasm
-monDO ID 	 name 
-MONDO:0000640	central nervous system primitive neuroectodermal neoplasm

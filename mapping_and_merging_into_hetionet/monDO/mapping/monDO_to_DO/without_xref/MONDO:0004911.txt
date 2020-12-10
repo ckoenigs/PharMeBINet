@@ -1,3 +1,0 @@
-MONDO:0004911	cardiovascular syphilis
-DOID 	 name 
-DOID:9880	cardiovascular syphilis

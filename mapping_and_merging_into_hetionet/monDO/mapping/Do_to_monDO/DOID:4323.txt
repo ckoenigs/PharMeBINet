@@ -1,3 +1,0 @@
-DOID:4323	epidermolytic acanthoma
-monDO ID 	 name 
-MONDO:0002962	epidermolytic acanthoma

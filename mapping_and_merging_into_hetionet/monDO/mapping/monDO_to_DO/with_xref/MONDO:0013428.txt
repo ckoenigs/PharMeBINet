@@ -1,3 +1,0 @@
-MONDO:0013428	Meier-Gorlin syndrome 2
-DOID 	 name 
-DOID:0060306	Meier-Gorlin syndrome

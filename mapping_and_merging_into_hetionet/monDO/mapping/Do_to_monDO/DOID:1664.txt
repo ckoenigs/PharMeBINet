@@ -1,3 +1,0 @@
-DOID:1664	pineoblastoma
-monDO ID 	 name 
-MONDO:0016722	pineoblastoma

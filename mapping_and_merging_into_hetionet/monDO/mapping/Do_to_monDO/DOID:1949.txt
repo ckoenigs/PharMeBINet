@@ -1,3 +1,0 @@
-DOID:1949	cholecystitis
-monDO ID 	 name 
-MONDO:0002155	cholecystitis

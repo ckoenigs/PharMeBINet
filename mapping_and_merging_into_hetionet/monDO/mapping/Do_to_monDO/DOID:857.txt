@@ -1,3 +1,0 @@
-DOID:857	multiple carboxylase deficiency
-monDO ID 	 name 
-MONDO:0015454	multiple carboxylase deficiency

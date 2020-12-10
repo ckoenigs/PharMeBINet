@@ -1,3 +1,0 @@
-MONDO:0003979	intrahepatic bile duct cystadenoma
-DOID 	 name 
-DOID:6733	intrahepatic bile duct cystadenoma

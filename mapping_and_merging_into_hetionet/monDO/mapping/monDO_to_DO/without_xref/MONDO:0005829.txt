@@ -1,3 +1,0 @@
-MONDO:0005829	louping ill
-DOID 	 name 
-DOID:10250	louping ill

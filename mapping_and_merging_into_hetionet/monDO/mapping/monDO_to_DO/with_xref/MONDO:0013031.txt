@@ -1,3 +1,0 @@
-MONDO:0013031	chromosome 5Q14.3 deletion syndrome, distal
-DOID 	 name 
-DOID:0050454	periventricular nodular heterotopia

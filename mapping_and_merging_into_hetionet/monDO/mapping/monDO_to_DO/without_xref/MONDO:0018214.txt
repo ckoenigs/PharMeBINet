@@ -1,3 +1,0 @@
-MONDO:0018214	generalized epilepsy with febrile seizures plus
-DOID 	 name 
-DOID:0060170	generalized epilepsy with febrile seizures plus

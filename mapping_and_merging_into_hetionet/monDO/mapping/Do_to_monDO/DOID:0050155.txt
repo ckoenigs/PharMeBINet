@@ -1,3 +1,0 @@
-DOID:0050155	sensory system disease
-monDO ID 	 name 
-MONDO:0005128	sensory system disease

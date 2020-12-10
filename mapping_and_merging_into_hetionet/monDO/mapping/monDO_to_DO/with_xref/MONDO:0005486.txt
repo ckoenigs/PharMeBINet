@@ -1,4 +1,0 @@
-MONDO:0005486	tooth agenesis
-DOID 	 name 
-DOID:13714	anodontia
-DOID:0050591	tooth agenesis

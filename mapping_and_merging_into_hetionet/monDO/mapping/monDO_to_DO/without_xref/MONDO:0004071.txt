@@ -1,3 +1,0 @@
-MONDO:0004071	childhood cerebral astrocytoma
-DOID 	 name 
-DOID:7007	childhood cerebral astrocytoma

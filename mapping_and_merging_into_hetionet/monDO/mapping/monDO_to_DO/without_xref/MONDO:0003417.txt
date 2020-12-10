@@ -1,3 +1,0 @@
-MONDO:0003417	internuclear ophthalmoplegia
-DOID 	 name 
-DOID:538	internuclear ophthalmoplegia

@@ -1,3 +1,0 @@
-DOID:4074	pancreatic adenocarcinoma
-monDO ID 	 name 
-MONDO:0006047	pancreatic adenocarcinoma

@@ -1,3 +1,0 @@
-MONDO:0002680	chronic wasting disease
-DOID 	 name 
-DOID:3530	chronic wasting disease

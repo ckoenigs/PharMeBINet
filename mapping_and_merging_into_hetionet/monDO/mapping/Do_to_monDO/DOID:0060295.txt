@@ -1,3 +1,0 @@
-DOID:0060295	complement component 2 deficiency
-monDO ID 	 name 
-MONDO:0009006	complement component 2 deficiency

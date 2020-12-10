@@ -1,3 +1,0 @@
-DOID:5809	childhood parosteal osteogenic sarcoma
-monDO ID 	 name 
-MONDO:0003654	childhood parosteal osteosarcoma

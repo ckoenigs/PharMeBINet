@@ -1,3 +1,0 @@
-MONDO:0007800	chromosome 18p deletion syndrome
-DOID 	 name 
-DOID:0060406	chromosome 18p deletion syndrome

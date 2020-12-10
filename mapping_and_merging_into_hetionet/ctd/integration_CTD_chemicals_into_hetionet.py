@@ -5,13 +5,14 @@ Created on Wed Aug 30 11:55:50 2017
 @author: ckoenigs
 """
 
-from py2neo import Graph#, authenticate
 import datetime
-import MySQLdb as mdb
 import sys, time, csv
 import io
 from collections import defaultdict
 from typing import Any
+
+sys.path.append("../..")
+import create_connection_to_databases#
 
 
 
@@ -130,15 +131,15 @@ create connection to neo4j and mysql
 def create_connection_with_neo4j_mysql():
     # authenticate("localhost:7474", "neo4j", "test")
     global g
-    g = Graph("http://localhost:7474/db/data/", auth=("neo4j", "test"))
+    g = create_connection_to_databases.database_connection_neo4j()
 
     # create connection with mysql database
     global con
-    con = mdb.connect('localhost', 'ckoenigs', 'Za8p7Tf$', 'umls')
+    con = create_connection_to_databases.database_connection_umls()
 
     # generate connection to mysql to RxNorm database
     global conRxNorm
-    conRxNorm = mdb.connect('localhost', 'ckoenigs', 'Za8p7Tf$', 'RxNorm')
+    conRxNorm = create_connection_to_databases.database_connection_RxNorm()
 
 # dictionary cas number to durgbank
 dict_cas_to_drugbank={}
@@ -728,7 +729,7 @@ def map_with_name_to_drugbank():
                 dict_drugs_CTD_with_drugbankIDs[ctd_id] = dict_drugs_CTD_without_drugbankIDs[ctd_id]
                 delete_mapped_mesh_ids.append(list_drug_CTD_without_drugbank_id.index(ctd_id))
                 dict_drugs_CTD_with_drugbankIDs[ctd_id].set_drugbankIDs(list(dict_synonym_to_drugbank_id[synonym]))
-                dict_drugs_CTD_with_drugbankIDs[ctd_id].set_how_mapped('use  name to map to drugbank ids')
+                dict_drugs_CTD_with_drugbankIDs[ctd_id].set_how_mapped('use  name to map to drugbank ids synonyms')
                 if ctd_id in list_cuis_not_mapped_drugbank_id:
                     delete_cui.append(list_cuis_not_mapped_drugbank_id.index(ctd_id))
 
@@ -950,7 +951,7 @@ def generate_cypher_file():
 
     cypher_file= open('chemical/cypher.cypher','w')
     cypher_file.write(''':begin\nMatch (n:Compound) Set n:Chemical;\n:Commit\n''')
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/chemical/chemicals_drugbank.csv" As line  MATCH (n:CTDchemical{chemical_id:line.ChemicalID}), (c:Compound{identifier:line.Drugbank_id}) Set c.ctd="yes", c.ctd_url=line.url, c.resource=split(line.string_resource,'|'), n.drugBankIDs=split(line.string_drugbank_ids,'|'), n.xrefs=split(line.string_xml,'|') Create (c)-[:equal_chemical_CTD{how_mapped:line.how_mapped}]->(n);\n'''
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/chemical/chemicals_drugbank.csv" As line  MATCH (n:CTDchemical{chemical_id:line.ChemicalID}), (c:Compound{identifier:line.Drugbank_id}) Set c.ctd="yes", c.ctd_url=line.url, c.resource=split(line.string_resource,'|'), c.xrefs=split(line.string_xml,'|'), n.drugBankIDs=split(line.string_drugbank_ids,'|')  Create (c)-[:equal_chemical_CTD{how_mapped:line.how_mapped}]->(n);\n'''
     cypher_file.write(query)
     query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/chemical/chemicals.csv" As line MATCH (n:CTDchemical{chemical_id:line.ChemicalID}) Create (d:Chemical{identifier:line.ChemicalID, parentIDs:n.parentIDs, parentTreeNumbers:n.parentTreeNumbers, treeNumbers:n.treeNumbers, definition:n.definition, synonyms:n.synonyms, name:n.name, cas_number:n.casRN, resource:['CTD'], ctd:'yes', ctd_url:'http://ctdbase.org/detail.go?type=chem&acc='+line.ChemicalID, url:"https://meshb.nlm.nih.gov/record/ui?ui="+line.ChemicalID,  license:"U.S. National Library of Medicine ", source:"MeSH via CTD" }) With d, n Create (d)-[:equal_to_CTD_chemical]->(n);\n '''
     cypher_file.write(query)

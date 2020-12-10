@@ -1,3 +1,0 @@
-MONDO:0003477	brain stem ependymoma
-DOID 	 name 
-DOID:5508	brain stem ependymoma

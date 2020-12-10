@@ -1,3 +1,0 @@
-MONDO:0004855	tenosynovitis
-DOID 	 name 
-DOID:970	tenosynovitis

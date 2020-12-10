@@ -1,3 +1,0 @@
-DOID:13120	protein-deficiency anemia
-monDO ID 	 name 
-MONDO:0001638	protein-deficiency anemia

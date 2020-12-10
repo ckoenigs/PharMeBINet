@@ -1,3 +1,0 @@
-DOID:1148	polydactyly
-monDO ID 	 name 
-MONDO:0021003	polydactyly (disease)

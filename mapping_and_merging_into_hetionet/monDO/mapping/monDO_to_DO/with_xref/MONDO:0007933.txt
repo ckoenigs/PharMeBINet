@@ -1,3 +1,0 @@
-MONDO:0007933	VMD1
-DOID 	 name 
-DOID:0050661	vitelliform macular dystrophy

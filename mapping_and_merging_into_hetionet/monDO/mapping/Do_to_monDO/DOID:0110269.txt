@@ -1,3 +1,0 @@
-DOID:0110269	cataract 3 multiple types
-monDO ID 	 name 
-MONDO:0011104	cataract 3 multiple types

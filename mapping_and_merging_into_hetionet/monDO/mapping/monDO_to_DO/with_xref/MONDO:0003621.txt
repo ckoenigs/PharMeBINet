@@ -1,3 +1,0 @@
-MONDO:0003621	small intestinal vasoactive intestinal peptide producing tumor
-DOID 	 name 
-DOID:5740	small intestinal vasoactive intestinal peptide producing tumor

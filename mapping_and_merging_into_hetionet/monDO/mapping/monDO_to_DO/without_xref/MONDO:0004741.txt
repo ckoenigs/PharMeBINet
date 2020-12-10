@@ -1,3 +1,0 @@
-MONDO:0004741	tyrosinemia
-DOID 	 name 
-DOID:9275	tyrosinemia

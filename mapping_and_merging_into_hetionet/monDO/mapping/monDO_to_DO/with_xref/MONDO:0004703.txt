@@ -1,3 +1,0 @@
-MONDO:0004703	bladder carcinoma in situ
-DOID 	 name 
-DOID:9053	bladder carcinoma in situ

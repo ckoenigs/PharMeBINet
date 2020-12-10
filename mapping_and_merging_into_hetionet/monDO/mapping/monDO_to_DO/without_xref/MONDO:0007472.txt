@@ -1,3 +1,0 @@
-MONDO:0007472	basal laminar drusen
-DOID 	 name 
-DOID:0060746	basal laminar drusen

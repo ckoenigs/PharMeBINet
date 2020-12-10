@@ -1,3 +1,0 @@
-DOID:0060492	chicken egg allergy
-monDO ID 	 name 
-MONDO:0000769	chicken egg allergy

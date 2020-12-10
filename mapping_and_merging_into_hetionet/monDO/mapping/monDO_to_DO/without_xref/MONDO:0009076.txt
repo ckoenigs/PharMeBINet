@@ -1,3 +1,0 @@
-MONDO:0009076	autosomal recessive nonsyndromic deafness 1A
-DOID 	 name 
-DOID:0110475	autosomal recessive nonsyndromic deafness 1A

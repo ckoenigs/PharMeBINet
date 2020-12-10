@@ -1,3 +1,0 @@
-MONDO:0003909	Bartholin's gland adenomyoma
-DOID 	 name 
-DOID:6518	Bartholin's gland adenomyoma

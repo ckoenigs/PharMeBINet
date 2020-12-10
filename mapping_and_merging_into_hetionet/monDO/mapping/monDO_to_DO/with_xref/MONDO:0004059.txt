@@ -1,3 +1,0 @@
-MONDO:0004059	dentin sensitivity
-DOID 	 name 
-DOID:698	dentin sensitivity

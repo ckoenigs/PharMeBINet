@@ -1,3 +1,0 @@
-DOID:8338	villoglandular variant cervical mucinous adenocarcinoma
-monDO ID 	 name 
-MONDO:0006141	cervical mucinous adenocarcinoma, villoglandular variant

@@ -1,3 +1,0 @@
-DOID:0060582	Noonan syndrome 4
-monDO ID 	 name 
-MONDO:0012547	Noonan syndrome 4

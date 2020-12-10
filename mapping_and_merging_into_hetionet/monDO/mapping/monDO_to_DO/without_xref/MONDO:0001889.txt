@@ -1,3 +1,0 @@
-MONDO:0001889	ovarian dysfunction
-DOID 	 name 
-DOID:1414	ovarian dysfunction

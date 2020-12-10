@@ -1,3 +1,0 @@
-MONDO:0001296	acquired night blindness
-DOID 	 name 
-DOID:11491	acquired night blindness

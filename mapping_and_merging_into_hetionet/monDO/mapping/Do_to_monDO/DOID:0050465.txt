@@ -1,3 +1,0 @@
-DOID:0050465	Muir-Torre syndrome
-monDO ID 	 name 
-MONDO:0008018	Muir-Torre syndrome

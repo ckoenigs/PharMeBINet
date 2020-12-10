@@ -1,3 +1,0 @@
-DOID:136	vaginal carcinosarcoma
-monDO ID 	 name 
-MONDO:0006488	vaginal carcinosarcoma

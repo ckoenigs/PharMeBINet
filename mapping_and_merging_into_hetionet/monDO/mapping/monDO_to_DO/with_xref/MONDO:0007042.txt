@@ -1,5 +1,0 @@
-MONDO:0007042	Saethre-Chotzen syndrome
-DOID 	 name 
-DOID:12960	acrocephalosyndactylia
-DOID:14768	Saethre-Chotzen syndrome
-DOID:14705	Pfeiffer syndrome

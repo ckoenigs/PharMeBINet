@@ -1,3 +1,0 @@
-MONDO:0019563	crest syndrome
-DOID 	 name 
-DOID:0060218	CREST syndrome

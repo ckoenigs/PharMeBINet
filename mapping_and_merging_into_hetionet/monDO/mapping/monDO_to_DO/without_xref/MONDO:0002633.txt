@@ -1,3 +1,0 @@
-MONDO:0002633	cranial nerve neoplasm
-DOID 	 name 
-DOID:338	cranial nerve neoplasm

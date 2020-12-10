@@ -1,3 +1,0 @@
-DOID:2746	glycogen storage disease V
-monDO ID 	 name 
-MONDO:0009293	glycogen storage disease V

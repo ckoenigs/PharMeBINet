@@ -1,3 +1,0 @@
-MONDO:0002571	central nervous system lymphoma
-DOID 	 name 
-DOID:3234	central nervous system lymphoma

@@ -1,3 +1,0 @@
-MONDO:0011390	focal segmental glomerulosclerosis 2
-DOID 	 name 
-DOID:0111129	focal segmental glomerulosclerosis 2

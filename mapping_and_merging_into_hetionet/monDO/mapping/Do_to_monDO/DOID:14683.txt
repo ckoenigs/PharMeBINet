@@ -1,3 +1,0 @@
-DOID:14683	Binder syndrome
-monDO ID 	 name 
-MONDO:0007953	binder syndrome

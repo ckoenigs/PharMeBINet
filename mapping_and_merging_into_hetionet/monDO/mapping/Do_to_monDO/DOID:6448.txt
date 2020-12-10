@@ -1,3 +1,0 @@
-DOID:6448	vulvar apocrine adenocarcinoma
-monDO ID 	 name 
-MONDO:0003881	vulvar apocrine adenocarcinoma

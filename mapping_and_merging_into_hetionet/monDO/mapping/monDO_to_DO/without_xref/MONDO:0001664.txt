@@ -1,3 +1,0 @@
-MONDO:0001664	submucous uterine fibroid
-DOID 	 name 
-DOID:13222	submucous uterine fibroid

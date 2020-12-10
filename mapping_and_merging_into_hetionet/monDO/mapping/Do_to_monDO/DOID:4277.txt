@@ -1,3 +1,0 @@
-DOID:4277	penis basal cell carcinoma
-monDO ID 	 name 
-MONDO:0002935	penis basal cell carcinoma

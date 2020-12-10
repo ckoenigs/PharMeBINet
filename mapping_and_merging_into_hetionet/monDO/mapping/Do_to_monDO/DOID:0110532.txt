@@ -1,3 +1,0 @@
-DOID:0110532	autosomal recessive nonsyndromic deafness 86
-monDO ID 	 name 
-MONDO:0013826	autosomal recessive nonsyndromic deafness 86

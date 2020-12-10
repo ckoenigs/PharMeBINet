@@ -1,3 +1,0 @@
-DOID:3078	grade III astrocytoma
-monDO ID 	 name 
-MONDO:0016684	anaplastic astrocytoma

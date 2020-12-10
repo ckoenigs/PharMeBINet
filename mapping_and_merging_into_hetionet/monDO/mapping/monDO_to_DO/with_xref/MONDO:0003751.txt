@@ -1,3 +1,0 @@
-MONDO:0003751	pediatric germ cell cancer
-DOID 	 name 
-DOID:6053	pediatric germ cell cancer

@@ -1,3 +1,0 @@
-DOID:9255	frontotemporal dementia
-monDO ID 	 name 
-MONDO:0017276	frontotemporal dementia

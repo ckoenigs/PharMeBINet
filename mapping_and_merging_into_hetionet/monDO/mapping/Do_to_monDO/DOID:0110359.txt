@@ -1,3 +1,0 @@
-DOID:0110359	retinitis pigmentosa 67
-monDO ID 	 name 
-MONDO:0014256	retinitis pigmentosa 67

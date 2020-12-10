@@ -1,3 +1,0 @@
-MONDO:0004464	nephrogenic adenoma of the urethra
-DOID 	 name 
-DOID:8109	nephrogenic adenoma of the urethra

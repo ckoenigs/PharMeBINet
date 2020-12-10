@@ -1,3 +1,0 @@
-MONDO:0008487	polycystic ovary syndrome
-DOID 	 name 
-DOID:11612	polycystic ovary syndrome

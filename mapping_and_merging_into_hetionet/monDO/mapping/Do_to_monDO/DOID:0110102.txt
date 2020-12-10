@@ -1,3 +1,0 @@
-DOID:0110102	atopic dermatitis 6
-monDO ID 	 name 
-MONDO:0011609	atopic dermatitis 6

@@ -1,3 +1,0 @@
-MONDO:0002175	degeneration of macula and posterior pole
-DOID 	 name 
-DOID:2007	degeneration of macula and posterior pole

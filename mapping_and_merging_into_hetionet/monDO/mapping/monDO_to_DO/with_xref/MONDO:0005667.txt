@@ -1,3 +1,0 @@
-MONDO:0005667	biliary dyskinesia
-DOID 	 name 
-DOID:4140	biliary dyskinesia

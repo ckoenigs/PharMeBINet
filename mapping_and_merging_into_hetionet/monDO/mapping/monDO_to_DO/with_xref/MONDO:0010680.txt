@@ -1,3 +1,0 @@
-MONDO:0010680	X-linked Emery-Dreifuss muscular dystrophy
-DOID 	 name 
-DOID:11726	Emery-Dreifuss muscular dystrophy

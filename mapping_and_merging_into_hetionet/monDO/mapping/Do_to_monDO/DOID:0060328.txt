@@ -1,3 +1,0 @@
-DOID:0060328	anal fistula
-monDO ID 	 name 
-MONDO:0000754	anal fistula (disease)

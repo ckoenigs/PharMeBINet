@@ -1,3 +1,0 @@
-DOID:6344	melanocytic psammomatous MPNST
-monDO ID 	 name 
-MONDO:0003862	melanocytic psammomatous MPNST

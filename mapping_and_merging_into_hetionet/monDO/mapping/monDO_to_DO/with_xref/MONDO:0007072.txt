@@ -1,3 +1,0 @@
-MONDO:0007072	adult syndrome
-DOID 	 name 
-DOID:0050601	ADULT syndrome

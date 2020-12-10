@@ -1,3 +1,0 @@
-MONDO:0002744	fallopian tube mucinous adenocarcinoma
-DOID 	 name 
-DOID:3704	fallopian tube mucinous adenocarcinoma

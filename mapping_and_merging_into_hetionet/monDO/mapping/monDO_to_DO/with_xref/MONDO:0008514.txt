@@ -1,3 +1,0 @@
-MONDO:0008514	syndactyly type 3
-DOID 	 name 
-DOID:11193	syndactyly

@@ -1,3 +1,0 @@
-DOID:0110031	hemoglobin H disease
-monDO ID 	 name 
-MONDO:0013512	hemoglobin H disease

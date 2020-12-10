@@ -1,3 +1,0 @@
-MONDO:0002933	osteosclerosis
-DOID 	 name 
-DOID:4254	osteosclerosis

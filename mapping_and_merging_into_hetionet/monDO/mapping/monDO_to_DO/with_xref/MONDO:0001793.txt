@@ -1,4 +1,0 @@
-MONDO:0001793	excessive tearing
-DOID 	 name 
-DOID:1400	lacrimal apparatus disease
-DOID:13757	excessive tearing

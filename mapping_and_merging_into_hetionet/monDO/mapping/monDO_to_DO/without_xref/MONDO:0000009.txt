@@ -1,3 +1,0 @@
-MONDO:0000009	bleeding disorder, platelet-type
-DOID 	 name 
-DOID:2218	blood platelet disease

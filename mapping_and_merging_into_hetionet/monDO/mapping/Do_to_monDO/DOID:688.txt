@@ -1,3 +1,0 @@
-DOID:688	embryonal cancer
-monDO ID 	 name 
-MONDO:0005564	embryonal neoplasm

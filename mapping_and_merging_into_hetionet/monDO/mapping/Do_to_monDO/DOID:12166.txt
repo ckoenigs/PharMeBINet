@@ -1,3 +1,0 @@
-DOID:12166	cobblestone retinal degeneration
-monDO ID 	 name 
-MONDO:0001456	cobblestone retinal degeneration

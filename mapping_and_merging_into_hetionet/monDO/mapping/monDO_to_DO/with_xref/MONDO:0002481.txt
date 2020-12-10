@@ -1,3 +1,0 @@
-MONDO:0002481	ovary neuroendocrine neoplasm
-DOID 	 name 
-DOID:3002	ovary neuroendocrine neoplasm

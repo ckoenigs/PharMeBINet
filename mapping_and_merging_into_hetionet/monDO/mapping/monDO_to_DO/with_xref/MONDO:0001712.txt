@@ -1,4 +1,0 @@
-MONDO:0001712	alexia
-DOID 	 name 
-DOID:13417	alexia
-DOID:4428	dyslexia

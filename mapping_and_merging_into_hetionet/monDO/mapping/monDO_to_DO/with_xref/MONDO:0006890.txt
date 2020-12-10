@@ -1,4 +1,0 @@
-MONDO:0006890	parathyroid gland adenoma
-DOID 	 name 
-DOID:7608	parathyroid adenoma
-DOID:1540	parathyroid carcinoma

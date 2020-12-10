@@ -1,3 +1,0 @@
-DOID:6381	anterior foramen magnum meningioma
-monDO ID 	 name 
-MONDO:0003868	anterior foramen magnum meningioma

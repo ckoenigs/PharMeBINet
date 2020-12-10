@@ -1,3 +1,0 @@
-MONDO:0002559	plexiform schwannoma
-DOID 	 name 
-DOID:3206	plexiform schwannoma

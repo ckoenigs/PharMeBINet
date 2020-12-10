@@ -1,3 +1,0 @@
-DOID:92	speech disorder
-monDO ID 	 name 
-MONDO:0004730	speech disorder

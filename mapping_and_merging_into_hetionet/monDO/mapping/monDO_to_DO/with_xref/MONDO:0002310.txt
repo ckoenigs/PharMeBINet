@@ -1,3 +1,0 @@
-MONDO:0002310	anterior dislocation of lens
-DOID 	 name 
-DOID:2460	anterior dislocation of lens

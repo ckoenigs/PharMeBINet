@@ -1,3 +1,0 @@
-DOID:118	pericardial effusion
-monDO ID 	 name 
-MONDO:0001370	pericardial effusion (disease)

@@ -1,3 +1,0 @@
-MONDO:0014461	hypogonadotropic hypogonadism 22 with or without anosmia
-DOID 	 name 
-DOID:0090081	hypogonadotropic hypogonadism 22 with or without anosmia

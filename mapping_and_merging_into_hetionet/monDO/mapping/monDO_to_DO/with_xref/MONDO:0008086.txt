@@ -1,3 +1,0 @@
-MONDO:0008086	neuropathy, hereditary sensory and autonomic, type 1A
-DOID 	 name 
-DOID:0050548	hereditary sensory neuropathy

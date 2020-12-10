@@ -1,3 +1,0 @@
-MONDO:0000838	chromosomal disease
-DOID 	 name 
-DOID:0080014	chromosomal disease

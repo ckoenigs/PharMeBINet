@@ -1,3 +1,0 @@
-MONDO:0005524	sweat gland carcinoma
-DOID 	 name 
-DOID:5667	sweat gland carcinoma

@@ -1,3 +1,0 @@
-MONDO:0001745	subserous uterine fibroid
-DOID 	 name 
-DOID:13560	subserous uterine fibroid

@@ -1,3 +1,0 @@
-MONDO:0006764	fungal meningitis
-DOID 	 name 
-DOID:11608	fungal meningitis

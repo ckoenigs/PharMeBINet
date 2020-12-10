@@ -1,4 +1,0 @@
-MONDO:0009532	Miller-Dieker lissencephaly syndrome
-DOID 	 name 
-DOID:0060402	chromosome 17p13.1 deletion syndrome
-DOID:0060469	Miller-Dieker lissencephaly syndrome

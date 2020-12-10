@@ -1,3 +1,0 @@
-DOID:1858	McCune Albright syndrome
-monDO ID 	 name 
-MONDO:0008274	polyostotic fibrous dysplasia

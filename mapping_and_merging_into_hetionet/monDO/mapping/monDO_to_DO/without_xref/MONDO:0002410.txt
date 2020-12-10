@@ -1,3 +1,0 @@
-MONDO:0002410	pyeloureteritis cystica
-DOID 	 name 
-DOID:2743	pyeloureteritis cystica

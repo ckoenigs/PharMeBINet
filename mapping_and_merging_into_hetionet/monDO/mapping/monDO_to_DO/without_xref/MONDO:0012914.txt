@@ -1,3 +1,0 @@
-MONDO:0012914	chromosome 1q21.1 deletion syndrome
-DOID 	 name 
-DOID:0060411	chromosome 1q21.1 deletion syndrome

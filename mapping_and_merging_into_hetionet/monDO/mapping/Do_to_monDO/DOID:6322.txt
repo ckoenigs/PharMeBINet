@@ -1,3 +1,0 @@
-DOID:6322	tibial adamantinoma
-monDO ID 	 name 
-MONDO:0006469	tibial adamantinoma

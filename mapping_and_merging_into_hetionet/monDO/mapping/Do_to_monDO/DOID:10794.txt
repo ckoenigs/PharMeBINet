@@ -1,3 +1,0 @@
-DOID:10794	sphenoid sinusitis
-monDO ID 	 name 
-MONDO:0005964	sphenoid sinusitis

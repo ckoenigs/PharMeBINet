@@ -1,3 +1,0 @@
-DOID:320	vascular myelopathy
-monDO ID 	 name 
-MONDO:0002552	vascular myelopathy

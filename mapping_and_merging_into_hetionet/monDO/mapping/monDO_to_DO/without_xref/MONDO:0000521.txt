@@ -1,3 +1,0 @@
-MONDO:0000521	salivary gland carcinoma
-DOID 	 name 
-DOID:0050904	salivary gland carcinoma

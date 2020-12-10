@@ -1,3 +1,0 @@
-DOID:891	progressive myoclonus epilepsy
-monDO ID 	 name 
-MONDO:0020074	progressive myoclonic epilepsy

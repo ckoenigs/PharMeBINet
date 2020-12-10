@@ -1,3 +1,0 @@
-DOID:13196	lingual goiter
-monDO ID 	 name 
-MONDO:0006833	lingual goiter

@@ -1,3 +1,0 @@
-DOID:11668	hypopigmentation of eyelid
-monDO ID 	 name 
-MONDO:0006561	hypopigmentation of eyelid

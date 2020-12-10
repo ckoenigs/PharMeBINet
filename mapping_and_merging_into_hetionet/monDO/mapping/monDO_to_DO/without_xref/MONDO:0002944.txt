@@ -1,3 +1,0 @@
-MONDO:0002944	external ear carcinoma
-DOID 	 name 
-DOID:4288	external ear carcinoma

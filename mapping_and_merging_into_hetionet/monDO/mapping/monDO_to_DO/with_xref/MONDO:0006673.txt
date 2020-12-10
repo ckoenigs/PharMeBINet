@@ -1,3 +1,0 @@
-MONDO:0006673	pituitary gland basophil adenoma
-DOID 	 name 
-DOID:4542	basophil adenoma

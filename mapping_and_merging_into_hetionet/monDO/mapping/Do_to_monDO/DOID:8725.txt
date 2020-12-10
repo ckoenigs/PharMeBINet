@@ -1,3 +1,0 @@
-DOID:8725	vascular dementia
-monDO ID 	 name 
-MONDO:0004648	vascular dementia

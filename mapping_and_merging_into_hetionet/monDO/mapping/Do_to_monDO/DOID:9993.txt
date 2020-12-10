@@ -1,3 +1,0 @@
-DOID:9993	hypoglycemia
-monDO ID 	 name 
-MONDO:0004946	hypoglycemia

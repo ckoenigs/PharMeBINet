@@ -1,3 +1,0 @@
-DOID:0060163	body dysmorphic disorder
-monDO ID 	 name 
-MONDO:0000690	body dysmorphic disorder

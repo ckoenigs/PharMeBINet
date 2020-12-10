@@ -1,3 +1,0 @@
-MONDO:0010577	deafness, X-linked 1
-DOID 	 name 
-DOID:0050566	X-linked nonsyndromic deafness

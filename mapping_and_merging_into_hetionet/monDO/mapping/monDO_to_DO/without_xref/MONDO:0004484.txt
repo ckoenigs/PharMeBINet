@@ -1,3 +1,0 @@
-MONDO:0004484	gallbladder melanoma
-DOID 	 name 
-DOID:8167	gallbladder melanoma

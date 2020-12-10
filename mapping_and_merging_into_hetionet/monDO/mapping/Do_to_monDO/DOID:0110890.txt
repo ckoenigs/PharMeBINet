@@ -1,3 +1,0 @@
-DOID:0110890	inflammatory bowel disease 19
-monDO ID 	 name 
-MONDO:0012845	inflammatory bowel disease 19

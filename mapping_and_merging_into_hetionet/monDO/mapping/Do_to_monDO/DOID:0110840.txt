@@ -1,3 +1,0 @@
-DOID:0110840	Usher syndrome type 2D
-monDO ID 	 name 
-MONDO:0012662	Usher syndrome type 2D

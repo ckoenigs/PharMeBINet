@@ -1,3 +1,0 @@
-MONDO:0001761	favism
-DOID 	 name 
-DOID:13628	favism

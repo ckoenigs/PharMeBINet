@@ -1,3 +1,0 @@
-MONDO:0008401	pleomorphic adenoma
-DOID 	 name 
-DOID:452	pleomorphic adenoma

@@ -1,3 +1,0 @@
-DOID:13561	optic disk drusen
-monDO ID 	 name 
-MONDO:0001746	optic disk drusen

@@ -1,4 +1,0 @@
-MONDO:0001540	bagassosis
-DOID 	 name 
-DOID:12522	bagassosis
-DOID:10316	pneumoconiosis

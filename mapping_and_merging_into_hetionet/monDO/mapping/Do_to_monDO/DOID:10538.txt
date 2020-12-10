@@ -1,3 +1,0 @@
-DOID:10538	gastric fundus cancer
-monDO ID 	 name 
-MONDO:0001058	gastric fundus cancer

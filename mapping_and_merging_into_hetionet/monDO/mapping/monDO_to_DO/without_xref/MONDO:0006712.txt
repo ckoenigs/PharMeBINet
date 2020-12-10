@@ -1,3 +1,0 @@
-MONDO:0006712	corneal edema
-DOID 	 name 
-DOID:11030	corneal edema

@@ -1,3 +1,0 @@
-MONDO:0002613	histrionic personality disorder (disease)
-DOID 	 name 
-DOID:334	histrionic personality disorder

@@ -1,3 +1,0 @@
-MONDO:0001209	common wart
-DOID 	 name 
-DOID:11165	common wart

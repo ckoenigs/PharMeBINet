@@ -1,3 +1,0 @@
-DOID:8505	dermatitis herpetiformis
-monDO ID 	 name 
-MONDO:0015614	dermatitis herpetiformis

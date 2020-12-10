@@ -1,3 +1,0 @@
-MONDO:0003074	familial retinoblastoma
-DOID 	 name 
-DOID:4648	familial retinoblastoma

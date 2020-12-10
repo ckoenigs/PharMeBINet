@@ -1,3 +1,0 @@
-MONDO:0011144	neuronal ceroid lipofuscinosis 6
-DOID 	 name 
-DOID:0110729	neuronal ceroid lipofuscinosis 6

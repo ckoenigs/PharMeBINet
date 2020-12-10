@@ -1,3 +1,0 @@
-MONDO:0005844	meibomian cyst
-DOID 	 name 
-DOID:9903	meibomian cyst

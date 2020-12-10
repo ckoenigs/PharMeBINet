@@ -1,3 +1,0 @@
-MONDO:0002101	facial nerve neoplasm
-DOID 	 name 
-DOID:1760	facial nerve neoplasm

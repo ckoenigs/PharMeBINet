@@ -5,9 +5,11 @@ Created on Fri Sep 15 11:41:20 2017
 @author: ckoenigs
 """
 
-from py2neo import Graph#, authenticate
 import datetime
 import csv, sys
+
+sys.path.append("../..")
+import create_connection_to_databases
 
 '''
 create connection to neo4j 
@@ -18,7 +20,7 @@ def create_connection_with_neo4j_mysql():
     # create connection with neo4j
     # authenticate("localhost:7474", )
     global g
-    g = Graph("http://localhost:7474/db/data/", auth=("neo4j", "test"))
+    g = create_connection_to_databases.database_connection_neo4j()
 
 
 # dictionary with all pairs and properties as value
@@ -33,11 +35,11 @@ also generate a cypher file to integrate this information
 def take_all_relationships_of_gene_pathway():
     # generate cypher file
     cypherfile = open('gene_pathway/cypher.cypher', 'w')
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/gene_pathway/relationships.csv" As line Match (n:Gene{identifier:toInteger(line.GeneID)}), (b:Pathway{identifier:line.PathwayID}) Merge (n)-[r:PARTICIPATES_GpPW]->(b) On Create Set r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.source="CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased='false', r.resource=["CTD"] On Match SET r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.resource=r.resource+"CTD";\n '''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ctd/gene_pathway/relationships.csv" As line Match (n:Gene{identifier:line.GeneID}), (b:Pathway{identifier:line.PathwayID}) Merge (n)-[r:PARTICIPATES_GpPW]->(b) On Create Set r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.source="CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased=false, r.resource=["CTD"] On Match SET r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.resource=r.resource+"CTD";\n '''
     cypherfile.write(query)
     cypherfile.close()
 
-    #the general cypher file to update all chemicals and relationship which are not from aeolus
+    # the general cypher file to update all chemicals and relationship which are not from aeolus
     cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')
     cypher_general.write(':begin\n')
     cypher_general.write('Match (n:Gene)-[r:PARTICIPATES_GpPW]->(b:Pathway) Where not exists(r.ctd) Set r.ctd="no";\n')
@@ -62,7 +64,7 @@ def take_all_relationships_of_gene_pathway():
             count_possible_relas += 1
         else:
             count_multiple_pathways += 1
-        if count_possible_relas%1000==0:
+        if count_possible_relas % 1000 == 0:
             print(count_possible_relas)
 
         # query='''MATCH p=(gene:Gene{identifier:%s})-[r:PARTICIPATES_GpPW]->(pathway:Pathway{identifier:"%s"}) Return p'''
@@ -73,11 +75,8 @@ def take_all_relationships_of_gene_pathway():
         #     print('no entry')
         #     print(gene_id,pathway_hetionet_id)
 
-    print('number of new rela:'+str(count_possible_relas))
-    print('number of relationships which appears multiple time:'+str(count_multiple_pathways))
-
-
-
+    print('number of new rela:' + str(count_possible_relas))
+    print('number of relationships which appears multiple time:' + str(count_multiple_pathways))
 
 
 # path to directory
@@ -91,7 +90,7 @@ def main():
     else:
         sys.exit('need a path')
 
-    print (datetime.datetime.utcnow())
+    print(datetime.datetime.utcnow())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j_mysql()
@@ -99,7 +98,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print(datetime.datetime.utcnow())
     print('Take all gene-pathway relationships and generate csv and cypher file')
 
     take_all_relationships_of_gene_pathway()
@@ -107,7 +106,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print(datetime.datetime.utcnow())
 
 
 if __name__ == "__main__":

@@ -1,3 +1,0 @@
-MONDO:0011852	nonsyndromic congenital nail disorder 8
-DOID 	 name 
-DOID:0080086	nonsyndromic congenital nail disorder 8

@@ -1,3 +1,0 @@
-MONDO:0005758	eunuchism
-DOID 	 name 
-DOID:5003	eunuchism

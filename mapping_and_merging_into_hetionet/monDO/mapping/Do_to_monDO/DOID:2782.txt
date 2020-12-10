@@ -1,3 +1,0 @@
-DOID:2782	rectosigmoid junction cancer
-monDO ID 	 name 
-MONDO:0002425	rectosigmoid junction cancer

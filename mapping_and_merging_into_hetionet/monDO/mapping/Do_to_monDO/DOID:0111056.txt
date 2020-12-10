@@ -1,3 +1,0 @@
-DOID:0111056	platelet-type bleeding disorder 3
-monDO ID 	 name 
-MONDO:0008332	platelet-type bleeding disorder 3

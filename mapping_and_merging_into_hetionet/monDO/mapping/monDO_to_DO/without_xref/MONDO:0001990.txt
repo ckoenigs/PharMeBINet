@@ -1,3 +1,0 @@
-MONDO:0001990	malignant cardiac peripheral nerve sheath neoplasm
-DOID 	 name 
-DOID:14534	malignant cardiac peripheral nerve sheath neoplasm

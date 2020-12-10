@@ -1,3 +1,0 @@
-MONDO:0007972	Meniere disease
-DOID 	 name 
-DOID:9849	Meniere's disease

@@ -1,3 +1,0 @@
-DOID:4527	ovarian angiosarcoma
-monDO ID 	 name 
-MONDO:0003035	ovarian angiosarcoma

@@ -1,4 +1,0 @@
-MONDO:0004901	lingual-facial-buccal dyskinesia
-DOID 	 name 
-DOID:480	movement disease
-DOID:9854	lingual-facial-buccal dyskinesia

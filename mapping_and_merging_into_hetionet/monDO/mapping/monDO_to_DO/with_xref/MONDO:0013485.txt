@@ -1,3 +1,0 @@
-MONDO:0013485	spinocerebellar ataxia type 35
-DOID 	 name 
-DOID:0050982	spinocerebellar ataxia type 35

@@ -1,3 +1,0 @@
-DOID:9841	hypotropia
-monDO ID 	 name 
-MONDO:0004897	hypotropia

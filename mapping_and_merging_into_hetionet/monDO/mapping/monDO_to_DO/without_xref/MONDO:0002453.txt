@@ -1,3 +1,0 @@
-MONDO:0002453	retrocochlear disease
-DOID 	 name 
-DOID:2889	retrocochlear disease

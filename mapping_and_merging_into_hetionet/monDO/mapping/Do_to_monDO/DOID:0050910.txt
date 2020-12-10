@@ -1,3 +1,0 @@
-DOID:0050910	cecum adenoma
-monDO ID 	 name 
-MONDO:0000525	cecum villous adenoma

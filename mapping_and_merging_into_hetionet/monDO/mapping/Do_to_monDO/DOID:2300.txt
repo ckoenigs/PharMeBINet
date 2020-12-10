@@ -1,3 +1,0 @@
-DOID:2300	spondylolysis
-monDO ID 	 name 
-MONDO:0005541	spondylolysis (disease)

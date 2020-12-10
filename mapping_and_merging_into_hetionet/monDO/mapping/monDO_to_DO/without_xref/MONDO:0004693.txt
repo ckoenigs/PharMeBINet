@@ -1,3 +1,0 @@
-MONDO:0004693	cervix uteri carcinoma in situ
-DOID 	 name 
-DOID:8991	cervix uteri carcinoma in situ

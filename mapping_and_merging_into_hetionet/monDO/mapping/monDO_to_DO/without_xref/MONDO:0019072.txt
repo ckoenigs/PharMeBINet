@@ -1,3 +1,0 @@
-MONDO:0019072	intrahepatic cholestasis
-DOID 	 name 
-DOID:1852	intrahepatic cholestasis

@@ -1,3 +1,0 @@
-MONDO:0005333	hyperthyroxinemia
-DOID 	 name 
-DOID:2855	hyperthyroxinemia

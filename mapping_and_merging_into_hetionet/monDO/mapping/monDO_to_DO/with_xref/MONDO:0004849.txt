@@ -1,3 +1,0 @@
-MONDO:0004849	pulmonary emphysema
-DOID 	 name 
-DOID:9675	pulmonary emphysema

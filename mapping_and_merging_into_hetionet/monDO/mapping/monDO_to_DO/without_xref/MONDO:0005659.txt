@@ -1,3 +1,0 @@
-MONDO:0005659	atrophic rhinitis
-DOID 	 name 
-DOID:4731	atrophic rhinitis

@@ -1,3 +1,0 @@
-DOID:7941	Barrett's adenocarcinoma
-monDO ID 	 name 
-MONDO:0004405	Barrett adenocarcinoma

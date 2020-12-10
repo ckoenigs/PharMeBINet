@@ -1,3 +1,0 @@
-MONDO:0010685	MYP1
-DOID 	 name 
-DOID:11830	myopia

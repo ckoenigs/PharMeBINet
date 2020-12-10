@@ -1,3 +1,0 @@
-DOID:4724	brain edema
-monDO ID 	 name 
-MONDO:0006684	brain edema

@@ -1,3 +1,0 @@
-MONDO:0002136	eczematous dermatitis of eyelid
-DOID 	 name 
-DOID:1893	eczematous dermatitis of eyelid

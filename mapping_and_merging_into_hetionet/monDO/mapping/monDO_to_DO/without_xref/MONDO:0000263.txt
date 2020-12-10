@@ -1,3 +1,0 @@
-MONDO:0000263	laryngotracheitis
-DOID 	 name 
-DOID:0050148	laryngotracheitis

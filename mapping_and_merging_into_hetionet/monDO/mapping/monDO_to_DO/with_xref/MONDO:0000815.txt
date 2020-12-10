@@ -1,3 +1,0 @@
-MONDO:0000815	fetal nicotine spectrum disorder
-DOID 	 name 
-DOID:0060606	fetal nicotine spectrum disorder

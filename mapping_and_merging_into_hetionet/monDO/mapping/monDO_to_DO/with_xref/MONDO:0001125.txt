@@ -1,3 +1,0 @@
-MONDO:0001125	acute gonococcal epididymo-orchitis
-DOID 	 name 
-DOID:10802	acute gonococcal epididymo-orchitis

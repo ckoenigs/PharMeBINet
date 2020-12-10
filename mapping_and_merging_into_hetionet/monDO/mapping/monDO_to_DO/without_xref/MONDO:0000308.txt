@@ -1,3 +1,0 @@
-MONDO:0000308	primary systemic mycosis
-DOID 	 name 
-DOID:0050292	primary systemic mycosis

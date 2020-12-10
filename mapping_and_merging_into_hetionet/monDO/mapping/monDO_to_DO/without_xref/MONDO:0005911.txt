@@ -1,3 +1,0 @@
-MONDO:0005911	pharyngoconjunctival fever
-DOID 	 name 
-DOID:13801	pharyngoconjunctival fever

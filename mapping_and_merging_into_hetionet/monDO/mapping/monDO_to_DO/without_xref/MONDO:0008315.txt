@@ -1,3 +1,0 @@
-MONDO:0008315	prostate cancer
-DOID 	 name 
-DOID:10283	prostate cancer

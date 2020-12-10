@@ -1,3 +1,0 @@
-MONDO:0007364	arthrogryposis, distal, type 2E
-DOID 	 name 
-DOID:0050646	distal arthrogryposis

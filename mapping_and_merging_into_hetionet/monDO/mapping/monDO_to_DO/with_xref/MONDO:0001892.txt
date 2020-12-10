@@ -1,3 +1,0 @@
-MONDO:0001892	spinal cord lymphoma
-DOID 	 name 
-DOID:14150	spinal cord lymphoma

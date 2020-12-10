@@ -1,3 +1,0 @@
-MONDO:0011966	periventricular heterotopia with microcephaly, autosomal recessive
-DOID 	 name 
-DOID:0050454	periventricular nodular heterotopia

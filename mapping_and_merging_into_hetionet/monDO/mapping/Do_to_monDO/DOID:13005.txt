@@ -1,3 +1,0 @@
-DOID:13005	intra-abdominal lymph node mast cell malignancy
-monDO ID 	 name 
-MONDO:0001614	intra-abdominal lymph node mast cell malignancy

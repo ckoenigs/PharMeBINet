@@ -1,3 +1,0 @@
-MONDO:0010761	retinitis pigmentosa Y-linked
-DOID 	 name 
-DOID:0110418	retinitis pigmentosa Y-linked

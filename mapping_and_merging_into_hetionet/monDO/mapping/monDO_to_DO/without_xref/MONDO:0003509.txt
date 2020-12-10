@@ -1,3 +1,0 @@
-MONDO:0003509	pineal region choriocarcinoma
-DOID 	 name 
-DOID:5553	pineal region choriocarcinoma

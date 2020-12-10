@@ -1,3 +1,0 @@
-DOID:4915	basophilic carcinoma
-monDO ID 	 name 
-MONDO:0003202	pituitary gland basophilic carcinoma

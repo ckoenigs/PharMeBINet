@@ -1,3 +1,0 @@
-MONDO:0012072	familial partial lipodystrophy, KC6bberling type
-DOID 	 name 
-DOID:0050440	familial partial lipodystrophy

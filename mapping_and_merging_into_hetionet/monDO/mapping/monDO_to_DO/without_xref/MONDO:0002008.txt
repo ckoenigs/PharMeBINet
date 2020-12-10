@@ -1,3 +1,0 @@
-MONDO:0002008	labyrinthitis
-DOID 	 name 
-DOID:1468	labyrinthitis

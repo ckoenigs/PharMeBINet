@@ -1,3 +1,0 @@
-DOID:11797	chronic laryngitis
-monDO ID 	 name 
-MONDO:0001369	chronic laryngitis

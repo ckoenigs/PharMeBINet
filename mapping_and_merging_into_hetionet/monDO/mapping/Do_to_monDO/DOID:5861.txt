@@ -1,3 +1,0 @@
-DOID:5861	myxoid chondrosarcoma
-monDO ID 	 name 
-MONDO:0003681	myxoid chondrosarcoma

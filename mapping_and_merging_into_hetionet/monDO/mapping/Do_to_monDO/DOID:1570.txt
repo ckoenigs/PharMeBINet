@@ -1,3 +1,0 @@
-DOID:1570	ectropion
-monDO ID 	 name 
-MONDO:0002043	ectropion (disease)

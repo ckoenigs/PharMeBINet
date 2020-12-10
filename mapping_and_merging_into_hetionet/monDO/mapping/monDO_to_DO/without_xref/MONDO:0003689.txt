@@ -1,3 +1,0 @@
-MONDO:0003689	congenital hemolytic anemia
-DOID 	 name 
-DOID:589	congenital hemolytic anemia

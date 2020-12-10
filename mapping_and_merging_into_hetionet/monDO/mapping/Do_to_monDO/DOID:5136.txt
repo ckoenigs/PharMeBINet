@@ -1,3 +1,0 @@
-DOID:5136	lung leiomyoma
-monDO ID 	 name 
-MONDO:0003293	lung leiomyoma

@@ -1,3 +1,0 @@
-MONDO:0003112	malignant gastric germ cell tumor
-DOID 	 name 
-DOID:4716	malignant gastric germ cell tumor

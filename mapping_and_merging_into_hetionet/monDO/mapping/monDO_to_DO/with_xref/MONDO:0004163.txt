@@ -1,3 +1,0 @@
-MONDO:0004163	bladder urachal urothelial carcinoma
-DOID 	 name 
-DOID:7244	bladder urachal urothelial carcinoma

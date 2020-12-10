@@ -1,3 +1,0 @@
-DOID:2841	asthma
-monDO ID 	 name 
-MONDO:0004979	asthma

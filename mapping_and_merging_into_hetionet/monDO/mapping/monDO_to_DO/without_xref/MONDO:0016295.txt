@@ -1,3 +1,0 @@
-MONDO:0016295	neuronal ceroid lipofuscinosis
-DOID 	 name 
-DOID:14503	neuronal ceroid lipofuscinosis

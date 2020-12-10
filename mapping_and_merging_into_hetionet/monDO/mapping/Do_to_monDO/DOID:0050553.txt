@@ -1,3 +1,0 @@
-DOID:0050553	JMP syndrome
-monDO ID 	 name 
-MONDO:0017959	JMP syndrome

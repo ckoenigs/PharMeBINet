@@ -1,3 +1,0 @@
-DOID:9938	dacryocystitis
-monDO ID 	 name 
-MONDO:0004926	dacryocystitis

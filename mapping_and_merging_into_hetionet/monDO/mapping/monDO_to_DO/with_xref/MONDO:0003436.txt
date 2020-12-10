@@ -1,3 +1,0 @@
-MONDO:0003436	lung oat cell carcinoma
-DOID 	 name 
-DOID:5411	lung oat cell carcinoma

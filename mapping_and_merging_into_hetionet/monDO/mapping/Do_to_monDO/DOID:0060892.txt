@@ -1,3 +1,0 @@
-DOID:0060892	late onset Parkinson disease
-monDO ID 	 name 
-MONDO:0018466	late onset Parkinson disease

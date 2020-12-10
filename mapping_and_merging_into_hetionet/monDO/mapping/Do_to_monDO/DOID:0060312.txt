@@ -1,3 +1,0 @@
-DOID:0060312	angular cheilitis
-monDO ID 	 name 
-MONDO:0000741	angular cheilitis

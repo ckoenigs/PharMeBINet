@@ -1,3 +1,0 @@
-DOID:10192	pleomorphic lipoma
-monDO ID 	 name 
-MONDO:0000966	pleomorphic lipoma

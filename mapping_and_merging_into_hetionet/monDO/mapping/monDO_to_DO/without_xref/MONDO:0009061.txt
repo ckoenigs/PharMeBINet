@@ -1,3 +1,0 @@
-MONDO:0009061	cystic fibrosis
-DOID 	 name 
-DOID:1485	cystic fibrosis

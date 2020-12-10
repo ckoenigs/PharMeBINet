@@ -1,3 +1,0 @@
-MONDO:0003414	skin pilomatrix carcinoma
-DOID 	 name 
-DOID:5376	skin pilomatrix carcinoma

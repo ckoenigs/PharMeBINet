@@ -1,3 +1,0 @@
-DOID:1283	enterocele
-monDO ID 	 name 
-MONDO:0001589	enterocele

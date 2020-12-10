@@ -1,3 +1,0 @@
-DOID:13112	mechanical entropion
-monDO ID 	 name 
-MONDO:0001636	mechanical entropion

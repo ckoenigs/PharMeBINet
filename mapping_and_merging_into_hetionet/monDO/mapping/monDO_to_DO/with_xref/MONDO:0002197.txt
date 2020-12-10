@@ -1,3 +1,0 @@
-MONDO:0002197	minor vestibular glands adenoma
-DOID 	 name 
-DOID:2075	minor vestibular glands adenoma

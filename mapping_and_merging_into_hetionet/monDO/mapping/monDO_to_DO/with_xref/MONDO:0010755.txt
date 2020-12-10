@@ -1,3 +1,0 @@
-MONDO:0010755	vesicoureteral reflux, X-linked
-DOID 	 name 
-DOID:9620	vesicoureteral reflux

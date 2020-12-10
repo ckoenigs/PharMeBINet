@@ -1,3 +1,0 @@
-DOID:6567	uterine corpus myxoid leiomyosarcoma
-monDO ID 	 name 
-MONDO:0003928	uterine corpus myxoid leiomyosarcoma

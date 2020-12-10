@@ -1,3 +1,0 @@
-MONDO:0010409	syndromic X-linked intellectual disability Shrimpton type
-DOID 	 name 
-DOID:0060813	syndromic X-linked intellectual disability Shrimpton type

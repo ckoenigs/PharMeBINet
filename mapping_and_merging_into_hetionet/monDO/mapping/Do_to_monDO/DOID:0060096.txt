@@ -1,3 +1,0 @@
-DOID:0060096	sensory organ benign neoplasm
-monDO ID 	 name 
-MONDO:0000633	sensory organ benign neoplasm

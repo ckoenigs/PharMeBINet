@@ -1,3 +1,0 @@
-MONDO:0004642	tonsillar pillar cancer
-DOID 	 name 
-DOID:8688	tonsillar pillar cancer

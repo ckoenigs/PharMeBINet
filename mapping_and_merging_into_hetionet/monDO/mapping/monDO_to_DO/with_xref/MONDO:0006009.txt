@@ -1,3 +1,0 @@
-MONDO:0006009	viral encephalitis
-DOID 	 name 
-DOID:646	viral encephalitis

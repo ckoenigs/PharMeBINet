@@ -1,3 +1,0 @@
-MONDO:0001882	bacteriuria (disease)
-DOID 	 name 
-DOID:1412	bacteriuria

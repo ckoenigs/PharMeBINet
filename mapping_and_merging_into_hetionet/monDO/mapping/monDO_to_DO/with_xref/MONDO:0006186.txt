@@ -1,3 +1,0 @@
-MONDO:0006186	duodenal adenocarcinoma
-DOID 	 name 
-DOID:10816	duodenum adenocarcinoma

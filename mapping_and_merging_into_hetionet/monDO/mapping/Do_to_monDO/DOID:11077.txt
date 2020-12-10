@@ -1,3 +1,0 @@
-DOID:11077	brucellosis
-monDO ID 	 name 
-MONDO:0005683	brucellosis

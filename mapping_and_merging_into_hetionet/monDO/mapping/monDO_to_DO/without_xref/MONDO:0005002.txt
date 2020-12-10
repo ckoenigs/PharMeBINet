@@ -1,3 +1,0 @@
-MONDO:0005002	chronic obstructive pulmonary disease
-DOID 	 name 
-DOID:3083	chronic obstructive pulmonary disease

@@ -1,3 +1,0 @@
-DOID:13169	spermatic cord cancer
-monDO ID 	 name 
-MONDO:0001654	spermatic cord cancer

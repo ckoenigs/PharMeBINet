@@ -1,3 +1,0 @@
-DOID:6703	gastric pylorus carcinoma
-monDO ID 	 name 
-MONDO:0003971	gastric pylorus carcinoma

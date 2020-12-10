@@ -1,3 +1,0 @@
-DOID:0050197	Brazilian hemorrhagic fever
-monDO ID 	 name 
-MONDO:0017877	Brazilian hemorrhagic fever

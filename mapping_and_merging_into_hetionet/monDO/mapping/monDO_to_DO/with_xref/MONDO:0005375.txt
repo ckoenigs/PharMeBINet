@@ -1,3 +1,0 @@
-MONDO:0005375	nasopharyngeal neoplasm
-DOID 	 name 
-DOID:9261	nasopharynx carcinoma

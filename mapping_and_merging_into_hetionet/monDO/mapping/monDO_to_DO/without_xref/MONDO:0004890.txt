@@ -1,3 +1,0 @@
-MONDO:0004890	partial central choroid dystrophy
-DOID 	 name 
-DOID:9822	partial central choroid dystrophy

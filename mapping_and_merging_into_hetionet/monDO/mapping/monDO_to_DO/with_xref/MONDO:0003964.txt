@@ -1,4 +1,0 @@
-MONDO:0003964	myositis ossificans
-DOID 	 name 
-DOID:668	myositis ossificans
-DOID:13374	fibrodysplasia ossificans progressiva

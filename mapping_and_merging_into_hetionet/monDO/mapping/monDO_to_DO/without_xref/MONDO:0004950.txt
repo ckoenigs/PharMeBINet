@@ -1,3 +1,0 @@
-MONDO:0004950	gastric carcinoma
-DOID 	 name 
-DOID:5517	stomach carcinoma

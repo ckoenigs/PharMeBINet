@@ -1,3 +1,0 @@
-MONDO:0010525	neural tube defects, X-linked
-DOID 	 name 
-DOID:0080074	neural tube defect

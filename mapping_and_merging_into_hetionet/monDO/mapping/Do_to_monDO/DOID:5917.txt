@@ -1,3 +1,0 @@
-DOID:5917	uterine corpus diffuse leiomyomatosis
-monDO ID 	 name 
-MONDO:0003704	uterine corpus diffuse leiomyomatosis

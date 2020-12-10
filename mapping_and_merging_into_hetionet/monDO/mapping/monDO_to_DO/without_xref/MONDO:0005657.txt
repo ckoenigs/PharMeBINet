@@ -1,3 +1,0 @@
-MONDO:0005657	aspergillosis
-DOID 	 name 
-DOID:13564	aspergillosis

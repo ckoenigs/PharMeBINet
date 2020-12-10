@@ -5,7 +5,8 @@ Created on Tue Dec  5 12:14:27 2017
 @author: cassandra
 """
 
-from py2neo import Graph, authenticate
+sys.path.append("../..")
+import create_connection_to_databases, authenticate
 import MySQLdb as mdb
 import sys
 import datetime
@@ -41,7 +42,7 @@ class diseaseMapThread(threading.Thread):
 def database_connection():
     # create connection with mysql database
     global con
-    con = mdb.connect('localhost', 'root', 'Za8p7Tf', 'umls')
+    con = mdb.connect('127.0.0.1', 'root', 'Za8p7Tf', 'umls')
 
     authenticate("localhost:7474", "neo4j", "test")
     global g
@@ -716,7 +717,7 @@ def generate_cypher_file_for_connection():
                         url = 'http://compbio.charite.de/hpoweb/showterm?disease=' + reference_id
                         if first_entry == None:
                             query = '''MATCH (n:Disease{identifier:"%s"}),(s:Symptom{identifier:"%s"}) 
-                            Create (n)-[:PRESENTS_DpS{version:'phenotype_annotation.tab 2017-10-09 10:47',unbiased:'false',source:'%s',qualifier:'%s', efidence_code:'%s', frequency_modifier:'%s',  resource:['HPO'],hetionet:'no',do:'no', hpo:'yes', url:"%s"}]->(s); \n '''
+                            Create (n)-[:PRESENTS_DpS{version:'phenotype_annotation.tab 2017-10-09 10:47',unbiased:false,source:'%s',qualifier:'%s', efidence_code:'%s', frequency_modifier:'%s',  resource:['HPO'],hetionet:'no',do:'no', hpo:'yes', url:"%s"}]->(s); \n '''
                             count_new_connection += 1
                             query = query % (
                             mondo, umls_cui_mesh, reference_id, qualifier, evidence_code, frequency_modi, url)

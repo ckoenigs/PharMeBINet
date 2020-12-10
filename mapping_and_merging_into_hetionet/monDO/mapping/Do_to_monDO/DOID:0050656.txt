@@ -1,3 +1,0 @@
-DOID:0050656	pseudo-TORCH syndrome 1
-monDO ID 	 name 
-MONDO:0009626	pseudo-TORCH syndrome

@@ -1,3 +1,0 @@
-MONDO:0020124	neuromuscular junction disease
-DOID 	 name 
-DOID:439	neuromuscular junction disease

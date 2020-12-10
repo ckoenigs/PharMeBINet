@@ -1,3 +1,0 @@
-MONDO:0007767	hyperparathyroidism 1
-DOID 	 name 
-DOID:13543	hyperparathyroidism

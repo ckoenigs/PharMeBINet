@@ -1,3 +1,0 @@
-DOID:8566	herpes simplex
-monDO ID 	 name 
-MONDO:0004609	herpes simplex

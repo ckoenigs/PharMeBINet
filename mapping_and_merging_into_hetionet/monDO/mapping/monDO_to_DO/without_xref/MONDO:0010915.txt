@@ -1,3 +1,0 @@
-MONDO:0010915	autosomal dominant nonsyndromic deafness 4A
-DOID 	 name 
-DOID:0110573	autosomal dominant nonsyndromic deafness 4A

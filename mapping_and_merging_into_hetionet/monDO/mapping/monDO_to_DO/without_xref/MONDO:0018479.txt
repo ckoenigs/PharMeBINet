@@ -1,3 +1,0 @@
-MONDO:0018479	congenital adrenal hyperplasia
-DOID 	 name 
-DOID:0050811	congenital adrenal hyperplasia

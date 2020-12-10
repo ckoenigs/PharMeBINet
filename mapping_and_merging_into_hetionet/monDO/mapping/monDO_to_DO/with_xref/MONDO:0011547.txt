@@ -1,3 +1,0 @@
-MONDO:0011547	cataract 31 multiple types
-DOID 	 name 
-DOID:0110265	cataract 31 multiple types

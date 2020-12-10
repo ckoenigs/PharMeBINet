@@ -1,3 +1,0 @@
-DOID:3148	dermal unilateral segmental cavernous angioma
-monDO ID 	 name 
-MONDO:0002526	dermal unilateral segmental cavernous angioma

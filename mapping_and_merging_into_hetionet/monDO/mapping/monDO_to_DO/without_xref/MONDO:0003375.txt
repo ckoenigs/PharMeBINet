@@ -1,3 +1,0 @@
-MONDO:0003709	uterus leiomyosarcoma
-DOID 	 name 
-DOID:5289	uterus leiomyosarcoma

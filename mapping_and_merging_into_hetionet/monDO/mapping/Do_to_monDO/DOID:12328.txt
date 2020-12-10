@@ -1,3 +1,0 @@
-DOID:12328	marasmus
-monDO ID 	 name 
-MONDO:0006848	marasmus

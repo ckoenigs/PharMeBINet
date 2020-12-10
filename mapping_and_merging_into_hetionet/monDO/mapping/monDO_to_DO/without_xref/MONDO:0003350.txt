@@ -1,3 +1,0 @@
-MONDO:0003350	granular cell leiomyosarcoma
-DOID 	 name 
-DOID:5258	granular cell leiomyosarcoma

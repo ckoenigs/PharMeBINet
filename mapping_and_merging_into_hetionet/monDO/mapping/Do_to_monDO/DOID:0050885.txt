@@ -1,3 +1,0 @@
-DOID:0050885	IMAGe syndrome
-monDO ID 	 name 
-MONDO:0013873	IMAGe syndrome

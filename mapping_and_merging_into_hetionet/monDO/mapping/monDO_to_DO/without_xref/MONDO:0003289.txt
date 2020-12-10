@@ -1,3 +1,0 @@
-MONDO:0003289	deep leiomyoma
-DOID 	 name 
-DOID:5128	deep leiomyoma

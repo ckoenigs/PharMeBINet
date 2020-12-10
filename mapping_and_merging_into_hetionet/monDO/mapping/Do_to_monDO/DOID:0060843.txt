@@ -1,3 +1,0 @@
-DOID:0060843	hereditary neuropathy with liability to pressure palsies
-monDO ID 	 name 
-MONDO:0008087	hereditary neuropathy with liability to pressure palsies

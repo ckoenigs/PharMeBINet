@@ -1,3 +1,0 @@
-MONDO:0013712	surfactant metabolism dysfunction, pulmonary, 5
-DOID 	 name 
-DOID:12120	pulmonary alveolar proteinosis

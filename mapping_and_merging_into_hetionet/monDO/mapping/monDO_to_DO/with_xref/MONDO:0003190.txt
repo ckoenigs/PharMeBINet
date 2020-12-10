@@ -1,3 +1,0 @@
-MONDO:0003190	middle ear carcinoma
-DOID 	 name 
-DOID:4893	middle ear carcinoma

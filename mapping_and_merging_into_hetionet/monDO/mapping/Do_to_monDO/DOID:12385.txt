@@ -1,3 +1,0 @@
-DOID:12385	shigellosis
-monDO ID 	 name 
-MONDO:0019345	shigellosis

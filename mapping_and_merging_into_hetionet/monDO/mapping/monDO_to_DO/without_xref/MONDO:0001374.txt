@@ -1,3 +1,0 @@
-MONDO:0001374	bladder sarcoma
-DOID 	 name 
-DOID:11812	bladder sarcoma

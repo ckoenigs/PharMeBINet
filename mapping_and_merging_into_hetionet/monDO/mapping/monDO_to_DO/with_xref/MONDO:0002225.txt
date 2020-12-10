@@ -1,3 +1,0 @@
-MONDO:0002225	ovary sarcoma
-DOID 	 name 
-DOID:2146	ovary sarcoma

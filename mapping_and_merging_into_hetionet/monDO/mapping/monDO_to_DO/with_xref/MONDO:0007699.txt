@@ -1,3 +1,0 @@
-MONDO:0007699	Hashimoto thyroiditis
-DOID 	 name 
-DOID:7188	autoimmune thyroiditis

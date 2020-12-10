@@ -1,3 +1,0 @@
-MONDO:0007109	congenital dyserythropoietic anemia type III
-DOID 	 name 
-DOID:1338	congenital dyserythropoietic anemia

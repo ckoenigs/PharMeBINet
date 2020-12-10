@@ -1,3 +1,0 @@
-MONDO:0013560	Hermansky-Pudlak syndrome 8
-DOID 	 name 
-DOID:0060546	Hermansky-Pudlak syndrome 8

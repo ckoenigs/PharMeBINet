@@ -1,3 +1,0 @@
-DOID:4448	macular degeneration
-monDO ID 	 name 
-MONDO:0003004	macular degeneration

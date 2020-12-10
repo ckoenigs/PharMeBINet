@@ -1,3 +1,0 @@
-MONDO:0000672	form agnosia
-DOID 	 name 
-DOID:0060142	form agnosia

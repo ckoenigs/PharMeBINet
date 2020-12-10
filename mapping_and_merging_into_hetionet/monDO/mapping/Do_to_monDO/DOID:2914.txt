@@ -1,3 +1,0 @@
-DOID:2914	immune system disease
-monDO ID 	 name 
-MONDO:0005046	immune system disease

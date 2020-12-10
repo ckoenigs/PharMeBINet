@@ -1,3 +1,0 @@
-MONDO:0001463	splenic flexure cancer
-DOID 	 name 
-DOID:12191	splenic flexure cancer

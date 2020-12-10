@@ -1,3 +1,0 @@
-DOID:6274	malignant thyroid stimulating hormone producing neoplasm of pituitary gland
-monDO ID 	 name 
-MONDO:0003836	malignant thyroid stimulating hormone producing neoplasm of pituitary gland

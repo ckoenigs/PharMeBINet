@@ -1,3 +1,0 @@
-DOID:10031	compensatory emphysema
-monDO ID 	 name 
-MONDO:0000924	compensatory emphysema

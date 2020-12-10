@@ -1,3 +1,0 @@
-MONDO:0012675	corticosteroid-binding globulin deficiency
-DOID 	 name 
-DOID:0090030	corticosteroid-binding globulin deficiency

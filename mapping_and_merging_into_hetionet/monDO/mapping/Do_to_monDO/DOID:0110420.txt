@@ -1,3 +1,0 @@
-DOID:0110420	dominant pericentral pigmentary retinopathy
-monDO ID 	 name 
-MONDO:0008381	dominant pericentral pigmentary retinopathy

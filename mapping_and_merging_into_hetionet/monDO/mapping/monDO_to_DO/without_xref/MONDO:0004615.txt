@@ -1,3 +1,0 @@
-MONDO:0004615	upper gum cancer
-DOID 	 name 
-DOID:8601	upper gum cancer

@@ -1,3 +1,0 @@
-DOID:0050794	multiple synostoses syndrome
-monDO ID 	 name 
-MONDO:0017923	multiple synostoses syndrome

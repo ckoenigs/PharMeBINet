@@ -1,3 +1,0 @@
-DOID:1404	residual stage angle-closure glaucoma
-monDO ID 	 name 
-MONDO:0001864	residual stage angle-closure glaucoma

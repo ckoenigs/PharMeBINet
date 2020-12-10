@@ -1,3 +1,0 @@
-DOID:11613	hyperandrogenism
-monDO ID 	 name 
-MONDO:0001324	hyperandrogenism

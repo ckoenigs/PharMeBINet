@@ -1,3 +1,0 @@
-DOID:4119	intestinal neuroendocrine benign tumor
-monDO ID 	 name 
-MONDO:0002883	intestinal neuroendocrine neoplasm

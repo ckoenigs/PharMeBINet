@@ -1,3 +1,0 @@
-MONDO:0003821	ovarian biphasic or triphasic teratoma
-DOID 	 name 
-DOID:6232	ovarian biphasic or triphasic teratoma

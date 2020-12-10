@@ -1,3 +1,0 @@
-MONDO:0006481	ureter carcinoma
-DOID 	 name 
-DOID:4939	ureter carcinoma

@@ -1,3 +1,0 @@
-MONDO:0000424	inborn vitamin B12 deficiency (disease)
-DOID 	 name 
-DOID:0050731	vitamin B12 deficiency

@@ -1,3 +1,0 @@
-DOID:9159	gas gangrene
-monDO ID 	 name 
-MONDO:0005767	gas gangrene

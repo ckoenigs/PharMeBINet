@@ -1,3 +1,0 @@
-MONDO:0001552	dyscalculia (disease)
-DOID 	 name 
-DOID:12568	dyscalculia

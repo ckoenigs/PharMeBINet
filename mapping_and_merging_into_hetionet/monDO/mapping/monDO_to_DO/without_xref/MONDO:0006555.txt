@@ -1,3 +1,0 @@
-MONDO:0006555	granulomatous dermatitis
-DOID 	 name 
-DOID:4397	granulomatous dermatitis

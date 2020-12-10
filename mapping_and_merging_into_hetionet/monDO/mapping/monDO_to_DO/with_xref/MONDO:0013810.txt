@@ -1,3 +1,0 @@
-MONDO:0013810	COG6-CGD
-DOID 	 name 
-DOID:0050571	congenital disorder of glycosylation type II

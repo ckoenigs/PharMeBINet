@@ -1,3 +1,0 @@
-DOID:4892	middle ear adenocarcinoma
-monDO ID 	 name 
-MONDO:0003189	middle ear adenocarcinoma

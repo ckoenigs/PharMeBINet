@@ -1,3 +1,0 @@
-DOID:222	perichondritis of auricle
-monDO ID 	 name 
-MONDO:0002246	perichondritis of auricle

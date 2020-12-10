@@ -1,3 +1,0 @@
-MONDO:0002885	erythrasma
-DOID 	 name 
-DOID:4131	erythrasma

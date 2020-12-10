@@ -1,3 +1,0 @@
-MONDO:0010578	deafness dystonia syndrome
-DOID 	 name 
-DOID:0050757	deafness dystonia syndrome

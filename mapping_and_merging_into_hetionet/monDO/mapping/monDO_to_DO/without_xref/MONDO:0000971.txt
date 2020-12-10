@@ -1,3 +1,0 @@
-MONDO:0000971	chest wall lipoma
-DOID 	 name 
-DOID:10200	chest wall lipoma

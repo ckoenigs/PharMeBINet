@@ -1,3 +1,0 @@
-MONDO:0006945	renal artery obstruction
-DOID 	 name 
-DOID:2972	renal artery obstruction

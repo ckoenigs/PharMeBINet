@@ -1,3 +1,0 @@
-DOID:12857	Achilles bursitis
-monDO ID 	 name 
-MONDO:0001594	Achilles bursitis

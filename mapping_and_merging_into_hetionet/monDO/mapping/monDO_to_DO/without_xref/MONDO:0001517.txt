@@ -1,3 +1,0 @@
-MONDO:0001517	dysentery
-DOID 	 name 
-DOID:12384	dysentery

@@ -1,3 +1,0 @@
-MONDO:0005769	geniculate herpes zoster
-DOID 	 name 
-DOID:9210	geniculate herpes zoster

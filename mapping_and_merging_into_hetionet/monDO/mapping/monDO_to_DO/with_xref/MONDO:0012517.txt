@@ -1,3 +1,0 @@
-MONDO:0012517	atypical Gaucher's disease due to saposin c deficiency
-DOID 	 name 
-DOID:0110961	atypical Gaucher's disease due to saposin c deficiency

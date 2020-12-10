@@ -1,3 +1,0 @@
-MONDO:0003924	adrenal cortex adenoma
-DOID 	 name 
-DOID:656	adrenal adenoma

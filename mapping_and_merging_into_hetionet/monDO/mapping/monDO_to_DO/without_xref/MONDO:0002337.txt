@@ -1,3 +1,0 @@
-MONDO:0002337	intra-abdominal hemangioma
-DOID 	 name 
-DOID:254	hemangioma of intra-abdominal structure

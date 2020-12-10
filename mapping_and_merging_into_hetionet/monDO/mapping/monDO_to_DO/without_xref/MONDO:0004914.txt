@@ -1,3 +1,0 @@
-MONDO:0004914	median arcuate ligament syndrome
-DOID 	 name 
-DOID:9892	median arcuate ligament syndrome

@@ -1,3 +1,0 @@
-DOID:3660	wheat allergy
-monDO ID 	 name 
-MONDO:0007021	wheat allergic reaction

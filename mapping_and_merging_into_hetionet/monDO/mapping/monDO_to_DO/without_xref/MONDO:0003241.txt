@@ -1,3 +1,0 @@
-MONDO:0003241	central nervous system hemangioma
-DOID 	 name 
-DOID:501	central nervous system hemangioma

@@ -1,3 +1,0 @@
-DOID:0060144	mirror agnosia
-monDO ID 	 name 
-MONDO:0000674	mirror agnosia

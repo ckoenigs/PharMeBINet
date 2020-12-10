@@ -1,3 +1,0 @@
-MONDO:0000428	Y-linked disease
-DOID 	 name 
-DOID:0050738	Y-linked disease

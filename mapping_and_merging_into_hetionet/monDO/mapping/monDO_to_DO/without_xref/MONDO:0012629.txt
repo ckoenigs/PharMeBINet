@@ -1,3 +1,0 @@
-MONDO:0012629	paroxysmal nonkinesigenic dyskinesia 2
-DOID 	 name 
-DOID:0090047	paroxysmal nonkinesigenic dyskinesia 2

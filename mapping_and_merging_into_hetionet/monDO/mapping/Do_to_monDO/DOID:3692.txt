@@ -1,3 +1,0 @@
-DOID:3692	anal canal adenocarcinoma
-monDO ID 	 name 
-MONDO:0002735	anal canal adenocarcinoma (disease)

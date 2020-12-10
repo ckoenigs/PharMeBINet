@@ -1,3 +1,0 @@
-MONDO:0005133	endometriosis (disease)
-DOID 	 name 
-DOID:289	endometriosis

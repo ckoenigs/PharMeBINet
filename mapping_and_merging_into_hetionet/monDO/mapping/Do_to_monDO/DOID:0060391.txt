@@ -1,3 +1,0 @@
-DOID:0060391	chromosome 13q14 deletion syndrome
-monDO ID 	 name 
-MONDO:0013481	chromosome 13q14 deletion syndrome

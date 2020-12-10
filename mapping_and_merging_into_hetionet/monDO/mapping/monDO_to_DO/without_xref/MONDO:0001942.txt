@@ -1,3 +1,0 @@
-MONDO:0001942	generalized anxiety disorder
-DOID 	 name 
-DOID:14320	generalized anxiety disorder

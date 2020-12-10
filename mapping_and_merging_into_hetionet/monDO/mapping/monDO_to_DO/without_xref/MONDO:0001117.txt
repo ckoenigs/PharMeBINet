@@ -1,3 +1,0 @@
-MONDO:0001117	methemoglobinemia
-DOID 	 name 
-DOID:10783	methemoglobinemia

@@ -1,3 +1,0 @@
-MONDO:0002514	hepatobiliary neoplasm
-DOID 	 name 
-DOID:3117	hepatobiliary benign neoplasm

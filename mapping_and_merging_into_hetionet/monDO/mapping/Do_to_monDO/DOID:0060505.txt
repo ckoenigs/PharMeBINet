@@ -1,3 +1,0 @@
-DOID:0060505	apricot allergy
-monDO ID 	 name 
-MONDO:0000780	apricot allergy

@@ -1,3 +1,0 @@
-MONDO:0011691	amyotrophic lateral sclerosis type 3
-DOID 	 name 
-DOID:0060195	amyotrophic lateral sclerosis type 3

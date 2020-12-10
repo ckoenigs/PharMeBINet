@@ -1,3 +1,0 @@
-MONDO:0003003	cervical alveolar soft part sarcoma
-DOID 	 name 
-DOID:4442	cervical alveolar soft part sarcoma

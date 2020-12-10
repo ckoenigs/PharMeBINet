@@ -1,3 +1,0 @@
-DOID:10075	diphyllobothriasis
-monDO ID 	 name 
-MONDO:0015260	diphyllobothriasis

@@ -1,3 +1,0 @@
-DOID:4254	osteosclerosis
-monDO ID 	 name 
-MONDO:0002933	osteosclerosis

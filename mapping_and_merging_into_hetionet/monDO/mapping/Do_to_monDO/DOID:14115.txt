@@ -1,3 +1,0 @@
-DOID:14115	toxic shock syndrome
-monDO ID 	 name 
-MONDO:0001881	toxic shock syndrome

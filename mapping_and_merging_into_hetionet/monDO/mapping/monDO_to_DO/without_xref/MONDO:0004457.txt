@@ -1,3 +1,0 @@
-MONDO:0004457	maxillary sinus Schneiderian papilloma
-DOID 	 name 
-DOID:8093	maxillary sinus Schneiderian papilloma

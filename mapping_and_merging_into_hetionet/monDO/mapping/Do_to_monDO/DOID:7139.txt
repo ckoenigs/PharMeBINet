@@ -1,3 +1,0 @@
-DOID:7139	endometrial small cell carcinoma
-monDO ID 	 name 
-MONDO:0006197	endometrial small cell carcinoma

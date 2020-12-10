@@ -1,3 +1,0 @@
-MONDO:0002666	pancreatic signet ring cell adenocarcinoma
-DOID 	 name 
-DOID:3497	pancreatic signet ring cell adenocarcinoma

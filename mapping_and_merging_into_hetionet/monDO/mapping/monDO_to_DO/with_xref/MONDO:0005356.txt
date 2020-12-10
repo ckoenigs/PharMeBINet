@@ -1,3 +1,0 @@
-MONDO:0005356	coronary vasospasm
-DOID 	 name 
-DOID:11840	coronary artery vasospasm

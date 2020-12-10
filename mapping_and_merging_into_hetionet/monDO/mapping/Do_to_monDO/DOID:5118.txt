@@ -1,3 +1,0 @@
-DOID:5118	ovarian cystic teratoma
-monDO ID 	 name 
-MONDO:0003281	ovarian cystic teratoma

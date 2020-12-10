@@ -1,3 +1,0 @@
-MONDO:0008827	progressive pseudorheumatoid arthropathy of childhood
-DOID 	 name 
-DOID:0090004	progressive pseudorheumatoid arthropathy of childhood

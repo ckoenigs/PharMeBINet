@@ -1,3 +1,0 @@
-DOID:14251	vitreoretinal dystrophy
-monDO ID 	 name 
-MONDO:0001923	vitreoretinal dystrophy

@@ -1,3 +1,0 @@
-DOID:7532	squamous papillomatosis
-monDO ID 	 name 
-MONDO:0004267	squamous papillomatosis

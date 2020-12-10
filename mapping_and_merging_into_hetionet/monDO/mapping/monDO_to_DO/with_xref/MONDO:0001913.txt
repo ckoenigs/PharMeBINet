@@ -1,3 +1,0 @@
-MONDO:0001913	oligospermia
-DOID 	 name 
-DOID:14228	oligospermia

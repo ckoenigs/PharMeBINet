@@ -1,3 +1,0 @@
-MONDO:0012237	nemaline myopathy 6
-DOID 	 name 
-DOID:0110935	nemaline myopathy 6

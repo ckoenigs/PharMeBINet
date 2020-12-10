@@ -1,3 +1,0 @@
-MONDO:0007103	amyotrophic lateral sclerosis type 1
-DOID 	 name 
-DOID:0060193	amyotrophic lateral sclerosis type 1

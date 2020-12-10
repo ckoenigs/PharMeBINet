@@ -1,3 +1,0 @@
-MONDO:0002860	testis rhabdomyosarcoma
-DOID 	 name 
-DOID:4061	testis rhabdomyosarcoma

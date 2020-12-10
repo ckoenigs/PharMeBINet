@@ -1,3 +1,0 @@
-DOID:0050558	Ullrich congenital muscular dystrophy
-monDO ID 	 name 
-MONDO:0000355	Ullrich congenital muscular dystrophy

@@ -1,3 +1,0 @@
-MONDO:0010169	Usher syndrome type 2A
-DOID 	 name 
-DOID:0110838	Usher syndrome type 2A

@@ -1,3 +1,0 @@
-MONDO:0004833	plantar fasciitis
-DOID 	 name 
-DOID:9600	plantar fasciitis

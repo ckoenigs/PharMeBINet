@@ -1,3 +1,0 @@
-DOID:0050179	Powassan encephalitis
-monDO ID 	 name 
-MONDO:0000276	Powassan encephalitis

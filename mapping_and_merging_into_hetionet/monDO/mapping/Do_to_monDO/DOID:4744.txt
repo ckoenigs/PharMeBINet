@@ -1,3 +1,0 @@
-DOID:4744	placenta accreta
-monDO ID 	 name 
-MONDO:0005916	placenta accreta

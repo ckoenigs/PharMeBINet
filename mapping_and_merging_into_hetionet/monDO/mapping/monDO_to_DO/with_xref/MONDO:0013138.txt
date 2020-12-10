@@ -1,3 +1,0 @@
-MONDO:0013138	BRV2
-DOID 	 name 
-DOID:13941	benign paroxysmal positional nystagmus

@@ -1,3 +1,0 @@
-MONDO:0000358	orofacial cleft
-DOID 	 name 
-DOID:0050567	orofacial cleft

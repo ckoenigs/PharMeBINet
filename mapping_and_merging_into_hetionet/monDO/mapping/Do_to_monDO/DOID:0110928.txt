@@ -1,3 +1,0 @@
-DOID:0110928	nemaline myopathy 2
-monDO ID 	 name 
-MONDO:0009725	nemaline myopathy 2

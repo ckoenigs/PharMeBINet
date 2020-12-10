@@ -1,3 +1,0 @@
-DOID:6677	diffuse infiltrative lymphocytosis syndrome
-monDO ID 	 name 
-MONDO:0003963	diffuse infiltrative lymphocytosis syndrome

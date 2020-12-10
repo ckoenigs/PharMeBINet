@@ -1,3 +1,0 @@
-MONDO:0004336	rectum signet ring adenocarcinoma
-DOID 	 name 
-DOID:7707	rectum signet ring adenocarcinoma

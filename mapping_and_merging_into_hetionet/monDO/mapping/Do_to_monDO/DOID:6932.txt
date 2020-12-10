@@ -1,3 +1,0 @@
-DOID:6932	urinary bladder inverted papilloma
-monDO ID 	 name 
-MONDO:0004040	urinary bladder inverted papilloma

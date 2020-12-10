@@ -1,3 +1,0 @@
-DOID:6700	gastric fundus carcinoma
-monDO ID 	 name 
-MONDO:0003970	gastric fundus carcinoma

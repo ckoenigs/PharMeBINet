@@ -1,3 +1,0 @@
-DOID:0050166	tuberculous salpingitis
-monDO ID 	 name 
-MONDO:0000271	tuberculous salpingitis

@@ -1,3 +1,0 @@
-DOID:5760	sebaceous breast carcinoma
-monDO ID 	 name 
-MONDO:0003635	sebaceous breast carcinoma

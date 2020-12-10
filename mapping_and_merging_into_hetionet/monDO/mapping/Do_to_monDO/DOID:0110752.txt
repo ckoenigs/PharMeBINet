@@ -1,3 +1,0 @@
-DOID:0110752	type 1 diabetes mellitus 13
-monDO ID 	 name 
-MONDO:0011033	type 1 diabetes mellitus 13

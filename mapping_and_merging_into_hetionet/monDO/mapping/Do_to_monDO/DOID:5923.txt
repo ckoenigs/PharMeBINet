@@ -1,3 +1,0 @@
-DOID:5923	distal biliary tract carcinoma
-monDO ID 	 name 
-MONDO:0003707	distal biliary tract carcinoma

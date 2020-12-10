@@ -1,3 +1,0 @@
-DOID:9955	hypoplastic left heart syndrome
-monDO ID 	 name 
-MONDO:0004933	hypoplastic left heart syndrome

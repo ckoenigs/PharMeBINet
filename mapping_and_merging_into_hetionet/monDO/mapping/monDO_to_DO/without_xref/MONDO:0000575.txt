@@ -1,3 +1,0 @@
-MONDO:0000575	interleukin-7 receptor alpha deficiency
-DOID 	 name 
-DOID:0060015	interleukin-7 receptor alpha deficiency

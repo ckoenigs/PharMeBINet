@@ -1,3 +1,0 @@
-DOID:3908	non-small cell lung carcinoma
-monDO ID 	 name 
-MONDO:0005233	non-small cell lung carcinoma (disease)

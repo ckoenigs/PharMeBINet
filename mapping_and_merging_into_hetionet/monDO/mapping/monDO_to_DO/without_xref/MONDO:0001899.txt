@@ -1,3 +1,0 @@
-MONDO:0001899	rheumatic congestive heart failure
-DOID 	 name 
-DOID:14172	rheumatic congestive heart failure

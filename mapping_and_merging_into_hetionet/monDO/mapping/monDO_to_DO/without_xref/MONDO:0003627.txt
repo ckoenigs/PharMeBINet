@@ -1,3 +1,0 @@
-MONDO:0003627	rheumatic pulmonary valve disease
-DOID 	 name 
-DOID:5748	rheumatic pulmonary valve disease

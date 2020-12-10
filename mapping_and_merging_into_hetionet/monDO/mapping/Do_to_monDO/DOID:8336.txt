@@ -1,3 +1,0 @@
-DOID:8336	childhood choriocarcinoma of the ovary
-monDO ID 	 name 
-MONDO:0004535	childhood choriocarcinoma of the ovary

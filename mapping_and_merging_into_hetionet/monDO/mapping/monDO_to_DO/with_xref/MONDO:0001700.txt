@@ -1,3 +1,0 @@
-MONDO:0001700	megaloblastic anemia (disease)
-DOID 	 name 
-DOID:13382	megaloblastic anemia

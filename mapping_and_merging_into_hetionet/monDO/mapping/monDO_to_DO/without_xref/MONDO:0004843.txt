@@ -1,3 +1,0 @@
-MONDO:0004843	pathologic nystagmus
-DOID 	 name 
-DOID:9650	pathologic nystagmus

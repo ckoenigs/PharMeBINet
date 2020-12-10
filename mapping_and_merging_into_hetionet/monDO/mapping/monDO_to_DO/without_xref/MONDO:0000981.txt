@@ -1,3 +1,0 @@
-MONDO:0000981	histoplasma pericarditis
-DOID 	 name 
-DOID:10234	histoplasmosis pericarditis

@@ -1,3 +1,0 @@
-DOID:823	periapical periodontitis
-monDO ID 	 name 
-MONDO:0004508	periapical periodontitis

@@ -1,3 +1,0 @@
-MONDO:0013433	primary sclerosing cholangitis
-DOID 	 name 
-DOID:0060643	primary sclerosing cholangitis

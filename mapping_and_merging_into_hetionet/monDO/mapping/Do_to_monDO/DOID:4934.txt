@@ -1,3 +1,0 @@
-DOID:4934	apocrine sweat gland cancer
-monDO ID 	 name 
-MONDO:0003215	apocrine sweat gland cancer

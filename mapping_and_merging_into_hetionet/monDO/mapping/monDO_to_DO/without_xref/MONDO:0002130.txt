@@ -1,3 +1,0 @@
-MONDO:0002130	mononeuritis of upper limb
-DOID 	 name 
-DOID:1844	mononeuritis of upper limb

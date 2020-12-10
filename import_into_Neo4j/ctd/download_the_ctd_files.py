@@ -1,8 +1,7 @@
-
 import datetime
 import gzip
-from io import StringIO
 import urllib.request
+import time
 
 request_headers = {
 
@@ -11,19 +10,32 @@ request_headers = {
 }
 
 
-
-
-'''
-download file and generate un ziped csv file
-'''
 def download_and_unzip(url_end):
-    url=url_start+url_end
+    """
+    download file and generate un zipped csv file
+    """
+    url = url_start+url_end
     print(url)
-    request_headers["Accept-Encoding"]="gzip"
+    request_headers["Accept-Encoding"] = "gzip"
     request = urllib.request.Request(url, headers=request_headers)
-    with urllib.request.urlopen(request) as response, open('./ctd_data/'+url_end.rsplit('.',1)[0], 'wb') as f:
-        test=gzip.GzipFile(fileobj=response)
-        f.write(test.read())
+    success = False
+    counter=0
+    while not success:
+        try:
+            with urllib.request.urlopen(request) as response, open('./ctd_data/'+url_end.rsplit('.', 1)[0], 'wb') as f:
+                test = gzip.GzipFile(fileobj=response)
+                f.write(test.read())
+            time.sleep(30)
+            success = True
+        except:
+            # Wait 5 minutes to hopefully prevent the cloudflare captcha from triggering again
+            counter+=1
+            print('had an error')
+            time.sleep(60 * 5)
+            if counter==10:
+                print('is not solved')
+                break
+
 
 # url start
 url_start='http://ctdbase.org/reports/'
@@ -35,7 +47,7 @@ list_of_ctd_file_names=[
     'CTD_chemicals_diseases.csv.gz',
     'CTD_chem_go_enriched.csv.gz',
     'CTD_chem_pathways_enriched.csv.gz',
-    'CTD_genes_diseases.csv.gz',
+    # 'CTD_genes_diseases.csv.gz', need to be add manually
     'CTD_genes_pathways.csv.gz',
     'CTD_diseases_pathways.csv.gz',
     'CTD_pheno_term_ixns.csv.gz',
@@ -47,7 +59,8 @@ list_of_ctd_file_names=[
     'CTD_chemicals.csv.gz',
     'CTD_diseases.csv.gz',
     'CTD_genes.csv.gz',
-    'CTD_pathways.csv.gz'
+    'CTD_pathways.csv.gz',
+    'CTD_anatomy.csv.gz'
 ]
 
 #sepearate

@@ -1,3 +1,0 @@
-DOID:807	carotid artery occlusion
-monDO ID 	 name 
-MONDO:0004450	carotid artery occlusion

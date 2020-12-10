@@ -1,3 +1,0 @@
-DOID:0110971	brachydactyly type D
-monDO ID 	 name 
-MONDO:0007222	brachydactyly type D

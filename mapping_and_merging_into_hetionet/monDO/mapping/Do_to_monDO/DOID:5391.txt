@@ -1,3 +1,0 @@
-DOID:5391	bronchus adenoma
-monDO ID 	 name 
-MONDO:0003427	bronchus adenoma

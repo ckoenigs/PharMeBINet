@@ -1,3 +1,0 @@
-DOID:4057	gallbladder rhabdomyosarcoma
-monDO ID 	 name 
-MONDO:0002856	gallbladder rhabdomyosarcoma

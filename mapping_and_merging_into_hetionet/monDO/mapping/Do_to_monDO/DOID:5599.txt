@@ -1,3 +1,0 @@
-DOID:5599	precursor T-lymphoblastic lymphoma/leukemia
-monDO ID 	 name 
-MONDO:0003537	precursor T-lymphoblastic lymphoma/leukemia

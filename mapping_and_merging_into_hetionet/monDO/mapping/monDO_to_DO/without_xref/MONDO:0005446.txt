@@ -1,3 +1,0 @@
-MONDO:0005446	cutaneous leishmaniasis
-DOID 	 name 
-DOID:9111	cutaneous leishmaniasis

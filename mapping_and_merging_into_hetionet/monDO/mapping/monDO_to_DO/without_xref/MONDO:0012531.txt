@@ -1,3 +1,0 @@
-MONDO:0012531	xeroderma pigmentosum group B
-DOID 	 name 
-DOID:0110850	xeroderma pigmentosum group B

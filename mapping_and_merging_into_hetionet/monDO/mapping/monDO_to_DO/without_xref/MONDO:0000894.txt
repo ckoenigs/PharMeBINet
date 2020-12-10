@@ -1,3 +1,0 @@
-MONDO:0000894	mucinous bronchioloalveolar adenocarcinoma
-DOID 	 name 
-DOID:0080185	mucinous bronchioloalveolar adenocarcinoma

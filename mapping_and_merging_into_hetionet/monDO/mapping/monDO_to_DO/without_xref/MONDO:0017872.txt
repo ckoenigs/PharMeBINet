@@ -1,3 +1,0 @@
-MONDO:0017872	Lujo hemorrhagic fever
-DOID 	 name 
-DOID:0050202	lujo hemorrhagic fever

@@ -1,3 +1,0 @@
-DOID:7763	carcinoma of supraglottis
-monDO ID 	 name 
-MONDO:0004357	carcinoma of supraglottis

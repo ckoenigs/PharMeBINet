@@ -1,3 +1,0 @@
-MONDO:0014116	complex cortical dysplasia with other brain malformations 2
-DOID 	 name 
-DOID:0090133	complex cortical dysplasia with other brain malformations 2

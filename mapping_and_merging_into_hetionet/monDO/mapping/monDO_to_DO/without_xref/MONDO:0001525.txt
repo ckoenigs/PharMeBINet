@@ -1,3 +1,0 @@
-MONDO:0001525	thyrocalcitonin secretion disease
-DOID 	 name 
-DOID:12424	thyrocalcitonin secretion disease

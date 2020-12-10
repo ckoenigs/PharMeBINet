@@ -1,3 +1,0 @@
-MONDO:0003411	breast hemangiopericytoma
-DOID 	 name 
-DOID:5370	breast hemangiopericytoma

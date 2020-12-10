@@ -1,3 +1,0 @@
-DOID:11787	chronic congestive splenomegaly
-monDO ID 	 name 
-MONDO:0001367	chronic congestive splenomegaly

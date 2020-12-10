@@ -1,3 +1,0 @@
-MONDO:0007173	atrial heart septal defect 7
-DOID 	 name 
-DOID:0110112	atrial heart septal defect 7

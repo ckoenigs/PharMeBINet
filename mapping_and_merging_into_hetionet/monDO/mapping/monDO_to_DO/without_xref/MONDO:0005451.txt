@@ -1,3 +1,0 @@
-MONDO:0005451	eating disorder
-DOID 	 name 
-DOID:8670	eating disorder

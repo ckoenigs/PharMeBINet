@@ -1,3 +1,0 @@
-DOID:888	fasciolopsiasis
-monDO ID 	 name 
-MONDO:0004672	fasciolopsiasis

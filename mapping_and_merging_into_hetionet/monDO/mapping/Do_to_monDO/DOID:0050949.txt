@@ -1,3 +1,0 @@
-DOID:0050949	autosomal recessive hypophosphatemic rickets
-monDO ID 	 name 
-MONDO:0017324	autosomal recessive hypophosphatemic rickets

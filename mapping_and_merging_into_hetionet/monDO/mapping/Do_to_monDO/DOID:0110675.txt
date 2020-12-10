@@ -1,3 +1,0 @@
-DOID:0110675	congenital myasthenic syndrome 11
-monDO ID 	 name 
-MONDO:0014588	congenital myasthenic syndrome 11

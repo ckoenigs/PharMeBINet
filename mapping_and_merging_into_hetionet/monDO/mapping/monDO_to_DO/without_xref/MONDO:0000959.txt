@@ -1,3 +1,0 @@
-MONDO:0000959	malignant hypertensive renal disease
-DOID 	 name 
-DOID:10177	malignant hypertensive renal disease

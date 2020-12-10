@@ -5,11 +5,13 @@ Created on Wed Aug 23 10:00:16 2017
 @author: ckoenigs
 """
 
-import MySQLdb as mdb
-import csv
+import csv, sys
+
+sys.path.append("../..")
+import create_connection_to_databases
 
 # generate connection to mysql
-con = mdb.connect('localhost', 'ckoenigs', 'Za8p7Tf$', 'RxNorm')
+con = create_connection_to_databases.database_connection_RxNorm()
 
 # find all
 cur = con.cursor()
@@ -19,7 +21,7 @@ cur.execute(query)
 
 # write all information into a file
 g = open('results/map_rxnorm_to_UNII.tsv', 'w')
-csv_writer=csv.writer(g,delimiter='\t')
-csv_writer.writerow(['rxcui','unii'])
+csv_writer = csv.writer(g, delimiter='\t')
+csv_writer.writerow(['rxcui', 'unii'])
 for (rxcui, code) in cur:
-    csv_writer.writerow([rxcui , code ])
+    csv_writer.writerow([rxcui, code])

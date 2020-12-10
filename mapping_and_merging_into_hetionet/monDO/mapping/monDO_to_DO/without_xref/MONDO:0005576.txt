@@ -1,3 +1,0 @@
-MONDO:0005576	cryoglobulinemia
-DOID 	 name 
-DOID:2917	cryoglobulinemia

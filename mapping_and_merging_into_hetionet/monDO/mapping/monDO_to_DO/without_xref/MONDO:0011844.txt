@@ -1,3 +1,0 @@
-MONDO:0011844	myoclonic dystonia 15
-DOID 	 name 
-DOID:0090035	myoclonic dystonia 15

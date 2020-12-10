@@ -1,3 +1,0 @@
-MONDO:0012841	inflammatory bowel disease 18
-DOID 	 name 
-DOID:0110888	inflammatory bowel disease 18

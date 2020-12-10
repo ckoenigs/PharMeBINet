@@ -1,3 +1,0 @@
-MONDO:0002816	adrenal cortex disease
-DOID 	 name 
-DOID:3952	adrenal cortex disease

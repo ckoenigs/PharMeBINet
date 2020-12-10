@@ -1,3 +1,0 @@
-MONDO:0003114	bone giant cell sarcoma
-DOID 	 name 
-DOID:4719	bone giant cell sarcoma

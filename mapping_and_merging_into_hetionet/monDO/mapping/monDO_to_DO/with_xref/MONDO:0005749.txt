@@ -1,5 +1,0 @@
-MONDO:0005749	eosinophilic pneumonia
-DOID 	 name 
-DOID:5870	eosinophilic pneumonia
-DOID:9498	pulmonary eosinophilia
-DOID:9503	Loeffler syndrome

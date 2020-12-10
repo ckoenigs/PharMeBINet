@@ -1,3 +1,0 @@
-DOID:5766	pulmonary sclerosing hemangioma
-monDO ID 	 name 
-MONDO:0006934	pulmonary sclerosing hemangioma

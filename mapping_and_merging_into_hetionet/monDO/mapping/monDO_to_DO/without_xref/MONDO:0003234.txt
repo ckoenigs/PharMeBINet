@@ -1,3 +1,0 @@
-MONDO:0003234	optic nerve astrocytoma
-DOID 	 name 
-DOID:4991	optic nerve astrocytoma

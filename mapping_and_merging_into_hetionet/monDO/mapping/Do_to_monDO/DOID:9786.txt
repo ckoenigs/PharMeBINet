@@ -1,3 +1,0 @@
-DOID:9786	bulbar polio
-monDO ID 	 name 
-MONDO:0005684	bulbar polio

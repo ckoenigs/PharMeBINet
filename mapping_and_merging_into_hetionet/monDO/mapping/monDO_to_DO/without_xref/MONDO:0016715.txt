@@ -1,3 +1,0 @@
-MONDO:0016715	ependymoblastoma
-DOID 	 name 
-DOID:4794	ependymoblastoma

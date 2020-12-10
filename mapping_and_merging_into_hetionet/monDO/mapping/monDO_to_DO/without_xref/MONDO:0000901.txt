@@ -1,3 +1,0 @@
-MONDO:0000901	relapsed/refractory diffuse large B-cell lymphoma
-DOID 	 name 
-DOID:0080192	relapsed/refractory diffuse large B-cell lymphoma

@@ -1,3 +1,0 @@
-MONDO:0015776	rhizomelic chondrodysplasia punctata
-DOID 	 name 
-DOID:2580	rhizomelic chondrodysplasia punctata

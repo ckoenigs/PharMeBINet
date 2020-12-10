@@ -1,3 +1,0 @@
-DOID:10933	obsessive-compulsive disorder
-monDO ID 	 name 
-MONDO:0008114	obsessive-compulsive disorder

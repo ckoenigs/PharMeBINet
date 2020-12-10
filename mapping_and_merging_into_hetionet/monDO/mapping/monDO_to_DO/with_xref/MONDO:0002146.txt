@@ -1,3 +1,0 @@
-MONDO:0002146	hypogonadism
-DOID 	 name 
-DOID:1924	hypogonadism

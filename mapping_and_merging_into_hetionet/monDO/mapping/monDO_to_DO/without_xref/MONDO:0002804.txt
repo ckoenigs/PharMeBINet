@@ -1,3 +1,0 @@
-MONDO:0002804	apocrine adenoma
-DOID 	 name 
-DOID:3895	apocrine adenoma

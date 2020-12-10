@@ -1,3 +1,0 @@
-DOID:0060320	inguinal hernia
-monDO ID 	 name 
-MONDO:0000746	inguinal hernia

@@ -1,3 +1,0 @@
-DOID:6723	malignant type AB thymoma
-monDO ID 	 name 
-MONDO:0003976	malignant type AB thymoma

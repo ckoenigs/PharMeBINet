@@ -1,3 +1,0 @@
-DOID:0110254	cataract 25
-monDO ID 	 name 
-MONDO:0011587	cataract 25

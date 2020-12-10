@@ -1,3 +1,0 @@
-MONDO:0017410	porencephaly
-DOID 	 name 
-DOID:0060263	porencephaly

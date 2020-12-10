@@ -1,3 +1,0 @@
-MONDO:0002842	bacterial gastritis
-DOID 	 name 
-DOID:4033	bacterial gastritis

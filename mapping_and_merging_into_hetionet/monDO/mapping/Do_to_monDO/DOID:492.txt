@@ -1,3 +1,0 @@
-DOID:492	acquired hemangioma
-monDO ID 	 name 
-MONDO:0003206	acquired hemangioma

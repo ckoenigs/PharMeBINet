@@ -1,3 +1,0 @@
-MONDO:0006972	silo filler's disease
-DOID 	 name 
-DOID:4374	silo filler's disease

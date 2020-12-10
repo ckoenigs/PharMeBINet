@@ -1,3 +1,0 @@
-DOID:12642	hiatus hernia
-monDO ID 	 name 
-MONDO:0007721	hiatus hernia (disease)

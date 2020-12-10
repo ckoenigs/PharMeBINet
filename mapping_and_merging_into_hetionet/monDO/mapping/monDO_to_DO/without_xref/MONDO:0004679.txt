@@ -1,3 +1,0 @@
-MONDO:0004679	leukoplakia of vagina
-DOID 	 name 
-DOID:8920	leukoplakia of vagina

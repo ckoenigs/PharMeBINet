@@ -1,3 +1,0 @@
-MONDO:0002577	bile duct rhabdomyosarcoma
-DOID 	 name 
-DOID:3254	bile duct rhabdomyosarcoma

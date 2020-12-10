@@ -1,3 +1,0 @@
-MONDO:0009636	mitochondrial DNA depletion syndrome 3
-DOID 	 name 
-DOID:0080121	mitochondrial DNA depletion syndrome 3

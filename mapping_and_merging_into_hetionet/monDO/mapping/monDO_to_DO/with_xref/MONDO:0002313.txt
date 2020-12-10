@@ -1,5 +1,0 @@
-MONDO:0002313	vernal conjunctivitis
-DOID 	 name 
-DOID:2474	vernal conjunctivitis
-DOID:11204	allergic conjunctivitis
-DOID:2457	giant papillary conjunctivitis

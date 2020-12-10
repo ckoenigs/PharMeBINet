@@ -68,7 +68,7 @@ Pathway Commons V11 download and information extraction
 def pathway_commons():
 
     # download Pathway Commons v11
-    url = 'https://www.pathwaycommons.org/archives/PC2/v11/PathwayCommons11.All.hgnc.gmt.gz'
+    url = 'https://www.pathwaycommons.org/archives/PC2/v12/PathwayCommons12.All.hgnc.gmt.gz'
     filename = wget.download(url, out='data/')
     filename_without_gz =filename.rsplit('.',1)[0]
     file=open(filename_without_gz,'wb')
@@ -121,7 +121,7 @@ def pathway_commons():
         i += 1
         row = PC_Row(
             # identifier='PC7_{}'.format(i),
-            identifier='PC11_{}'.format(i),
+            identifier='PC12_{}'.format(i),
             synonyms=name,
             source=description['datasource'],
             genes=genes,
@@ -173,7 +173,7 @@ def wikipathways():
     # Parse WikiPathways
 
     # download WikiPathways
-    url = 'http://data.wikipathways.org/20191010/gmt/wikipathways-20191010-gmt-Homo_sapiens.gmt'
+    url = 'http://data.wikipathways.org/20201010/gmt/wikipathways-20201010-gmt-Homo_sapiens.gmt'
     filename= wget.download(url,out='data/')
 
     gmt_generator = read_gmt(filename)
@@ -185,7 +185,7 @@ def wikipathways():
         print('wikipathway ulr is not working anymore')
         sys.exit('wikipathway ulr is not working anymore')
     print(i)
-    wikipath_df['identifier']=['PC11_{}'.format(j) for j in range(i+1,i+1+len(wikipath_df))]
+    wikipath_df['identifier']=['PC12_{}'.format(j) for j in range(i+1,i+1+len(wikipath_df))]
     print(len(wikipath_df))
     # print(j)
 

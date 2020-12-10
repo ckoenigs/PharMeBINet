@@ -1,3 +1,0 @@
-MONDO:0001857	Brucella canis brucellosis
-DOID 	 name 
-DOID:14019	Brucella canis brucellosis

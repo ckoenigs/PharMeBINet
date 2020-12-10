@@ -1,3 +1,0 @@
-MONDO:0009288	glycogen storage disease due to glucose-6-phosphatase deficiency type ib
-DOID 	 name 
-DOID:2749	glycogen storage disease I

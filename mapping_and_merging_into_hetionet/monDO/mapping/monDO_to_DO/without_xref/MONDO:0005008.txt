@@ -1,4 +1,0 @@
-MONDO:0005008	colorectal adenocarcinoma
-DOID 	 name 
-DOID:0050861	colorectal adenocarcinoma
-DOID:0050913	large intestine adenocarcinoma

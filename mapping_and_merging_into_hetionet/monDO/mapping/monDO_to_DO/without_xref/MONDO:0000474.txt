@@ -1,3 +1,0 @@
-MONDO:0000474	pericardium disease
-DOID 	 name 
-DOID:0050829	pericardium disease

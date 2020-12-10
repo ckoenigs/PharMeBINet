@@ -1,3 +1,0 @@
-MONDO:0004953	invasive ductal carcinoma
-DOID 	 name 
-DOID:3008	invasive ductal carcinoma

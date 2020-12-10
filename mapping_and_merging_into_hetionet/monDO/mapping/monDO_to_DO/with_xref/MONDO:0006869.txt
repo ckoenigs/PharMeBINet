@@ -1,3 +1,0 @@
-MONDO:0006869	nodular goiter (disease)
-DOID 	 name 
-DOID:13197	nodular goiter

@@ -1,3 +1,0 @@
-MONDO:0003108	cervicomedullary junction neoplasm
-DOID 	 name 
-DOID:4707	cervicomedullary junction neoplasm

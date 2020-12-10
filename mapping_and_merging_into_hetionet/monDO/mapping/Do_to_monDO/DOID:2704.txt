@@ -1,3 +1,0 @@
-DOID:2704	malignant giant cell tumor of the tendon sheath
-monDO ID 	 name 
-MONDO:0002401	malignant giant cell tumor of the tendon sheath

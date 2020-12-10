@@ -1,3 +1,0 @@
-MONDO:0004937	hypervitaminosis d
-DOID 	 name 
-DOID:9971	hypervitaminosis D

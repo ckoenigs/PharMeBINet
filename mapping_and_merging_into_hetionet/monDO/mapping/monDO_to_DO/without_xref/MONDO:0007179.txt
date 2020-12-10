@@ -1,3 +1,0 @@
-MONDO:0007179	hypersensitivity reaction type II disease
-DOID 	 name 
-DOID:417	hypersensitivity reaction type II disease

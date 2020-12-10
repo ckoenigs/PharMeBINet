@@ -1,3 +1,0 @@
-MONDO:0003172	glomeruloid hemangioma
-DOID 	 name 
-DOID:486	glomeruloid hemangioma

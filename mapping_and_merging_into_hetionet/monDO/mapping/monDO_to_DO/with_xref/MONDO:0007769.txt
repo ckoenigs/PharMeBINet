@@ -1,3 +1,0 @@
-MONDO:0007769	hyperpigmentation of eyelid
-DOID 	 name 
-DOID:10122	hyperpigmentation of eyelid

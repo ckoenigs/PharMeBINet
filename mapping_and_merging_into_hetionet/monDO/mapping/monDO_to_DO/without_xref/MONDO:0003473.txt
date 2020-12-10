@@ -1,3 +1,0 @@
-MONDO:0003473	spinal cord ependymoma
-DOID 	 name 
-DOID:5503	spinal cord ependymoma

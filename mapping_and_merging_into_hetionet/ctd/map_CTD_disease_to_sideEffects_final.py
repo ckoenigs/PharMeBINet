@@ -12,11 +12,12 @@ Created on Tue Aug 29 10:03:28 2017
 @author: ckoenigs
 """
 
-from py2neo import Graph, authenticate
 import datetime
 import MySQLdb as mdb
 import sys
 
+sys.path.append("../..")
+import create_connection_to_databases
 
 class SideEffectHetionet:
     """
@@ -68,13 +69,12 @@ create connection to neo4j and mysql
 
 def create_connection_with_neo4j_mysql():
     # create connection with neo4j
-    authenticate("localhost:7474", "neo4j", "test")
     global g
-    g = Graph("http://localhost:7474/db/data/")
+    g = create_connection_to_databases.database_connection_neo4j()
 
     # create connection with mysql database
     global con
-    con = mdb.connect('localhost', 'root', 'Za8p7Tf', 'umls')
+    con = create_connection_to_databases.database_connection_umls()
 
 
 '''

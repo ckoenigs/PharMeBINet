@@ -1,3 +1,0 @@
-MONDO:0005991	trench fever
-DOID 	 name 
-DOID:11101	trench fever

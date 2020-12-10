@@ -1,3 +1,0 @@
-MONDO:0010108	testicular germ cell tumor
-DOID 	 name 
-DOID:5557	testicular germ cell cancer

@@ -1,3 +1,0 @@
-MONDO:0005068	myocardial infarction (disease)
-DOID 	 name 
-DOID:5844	myocardial infarction

@@ -1,3 +1,0 @@
-DOID:0110300	autosomal dominant limb-girdle muscular dystrophy type 1A
-monDO ID 	 name 
-MONDO:0008032	autosomal dominant limb-girdle muscular dystrophy type 1A

@@ -1,3 +1,0 @@
-DOID:1927	sphingolipidosis
-monDO ID 	 name 
-MONDO:0019255	sphingolipidosis

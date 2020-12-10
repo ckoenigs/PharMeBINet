@@ -1,3 +1,0 @@
-MONDO:0001698	tinea profunda
-DOID 	 name 
-DOID:13368	tinea profunda

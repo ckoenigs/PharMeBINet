@@ -1,3 +1,0 @@
-MONDO:0004028	small intestinal fibrosarcoma
-DOID 	 name 
-DOID:6880	small bowel fibrosarcoma

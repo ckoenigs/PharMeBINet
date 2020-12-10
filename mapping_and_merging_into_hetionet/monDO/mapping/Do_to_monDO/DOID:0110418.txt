@@ -1,3 +1,0 @@
-DOID:0110418	retinitis pigmentosa Y-linked
-monDO ID 	 name 
-MONDO:0010761	retinitis pigmentosa Y-linked

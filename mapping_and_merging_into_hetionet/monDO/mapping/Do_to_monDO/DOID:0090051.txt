@@ -1,3 +1,0 @@
-DOID:0090051	dystonia 23
-monDO ID 	 name 
-MONDO:0013928	dystonia 23

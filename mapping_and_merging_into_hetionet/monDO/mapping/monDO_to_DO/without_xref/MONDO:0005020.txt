@@ -1,3 +1,0 @@
-MONDO:0005020	intestinal disease
-DOID 	 name 
-DOID:5295	intestinal disease

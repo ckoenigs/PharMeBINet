@@ -1,3 +1,0 @@
-MONDO:0004153	pediatric CNS embryonal cell carcinoma
-DOID 	 name 
-DOID:7231	pediatric CNS embryonal cell carcinoma

@@ -1,3 +1,0 @@
-MONDO:0002531	skin neoplasm
-DOID 	 name 
-DOID:3165	skin benign neoplasm

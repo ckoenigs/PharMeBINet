@@ -1,3 +1,0 @@
-DOID:6316	Bartholin's gland adenocarcinoma
-monDO ID 	 name 
-MONDO:0003853	Bartholin's gland adenocarcinoma

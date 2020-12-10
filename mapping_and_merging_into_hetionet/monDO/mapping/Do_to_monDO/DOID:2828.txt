@@ -1,3 +1,0 @@
-DOID:2828	acalculous cholecystitis
-monDO ID 	 name 
-MONDO:0006633	acalculous cholecystitis

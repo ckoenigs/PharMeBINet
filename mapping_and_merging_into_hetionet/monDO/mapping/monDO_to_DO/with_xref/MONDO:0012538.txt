@@ -1,3 +1,0 @@
-MONDO:0012538	nemaline myopathy 7
-DOID 	 name 
-DOID:0110934	nemaline myopathy 7

@@ -1,5 +1,6 @@
 import csv, sys
-from py2neo import Graph, authenticate
+sys.path.append("../..")
+import create_connection_to_databases, authenticate
 
 authenticate("localhost:7474", "neo4j", "test")
 global g

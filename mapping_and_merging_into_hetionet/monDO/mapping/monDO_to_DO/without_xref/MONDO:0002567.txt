@@ -1,3 +1,0 @@
-MONDO:0002567	tracheal disease
-DOID 	 name 
-DOID:3225	tracheal disease

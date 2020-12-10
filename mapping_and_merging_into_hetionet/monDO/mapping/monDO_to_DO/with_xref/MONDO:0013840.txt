@@ -1,3 +1,0 @@
-MONDO:0013840	encephalopathy-hypertrophic cardiomyopathy-renal tubular disease syndrome
-DOID 	 name 
-DOID:0050730	coenzyme Q10 deficiency disease

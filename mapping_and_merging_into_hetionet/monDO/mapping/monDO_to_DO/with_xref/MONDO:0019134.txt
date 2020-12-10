@@ -1,3 +1,0 @@
-MONDO:0019134	central neurocytoma
-DOID 	 name 
-DOID:14174	central neurocytoma

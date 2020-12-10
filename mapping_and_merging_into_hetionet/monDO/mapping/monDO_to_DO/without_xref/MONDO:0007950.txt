@@ -1,3 +1,0 @@
-MONDO:0007950	mastocytosis
-DOID 	 name 
-DOID:350	mastocytosis

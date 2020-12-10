@@ -1,3 +1,0 @@
-MONDO:0009735	Netherton syndrome
-DOID 	 name 
-DOID:0050474	Netherton syndrome

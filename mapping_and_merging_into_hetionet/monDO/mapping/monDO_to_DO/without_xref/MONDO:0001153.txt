@@ -1,3 +1,0 @@
-MONDO:0001153	gender dysphoria
-DOID 	 name 
-DOID:10919	transsexualism

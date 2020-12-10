@@ -1,3 +1,0 @@
-MONDO:0014029	osteogenesis imperfecta type 14
-DOID 	 name 
-DOID:0110343	osteogenesis imperfecta type 14

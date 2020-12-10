@@ -1,3 +1,0 @@
-MONDO:0012438	pontocerebellar hypoplasia type 5
-DOID 	 name 
-DOID:0060274	pontocerebellar hypoplasia type 5

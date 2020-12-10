@@ -1,3 +1,0 @@
-MONDO:0012947	mental retardation, autosomal dominant 4
-DOID 	 name 
-DOID:0060307	autosomal dominant non-syndromic intellectual disability

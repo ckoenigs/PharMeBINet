@@ -1,3 +1,0 @@
-DOID:9809	hypersensitivity vasculitis
-monDO ID 	 name 
-MONDO:0006794	hypersensitivity vasculitis

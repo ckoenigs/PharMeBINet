@@ -1,3 +1,0 @@
-DOID:5714	intracranial liposarcoma
-monDO ID 	 name 
-MONDO:0003602	intracranial liposarcoma

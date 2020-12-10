@@ -1,3 +1,0 @@
-MONDO:0005773	Gerstmann syndrome
-DOID 	 name 
-DOID:4969	Gerstmann syndrome

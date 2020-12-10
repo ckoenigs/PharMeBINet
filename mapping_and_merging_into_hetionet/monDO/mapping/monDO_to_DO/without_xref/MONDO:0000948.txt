@@ -1,3 +1,0 @@
-MONDO:0000948	xerophthalmia
-DOID 	 name 
-DOID:10138	xerophthalmia

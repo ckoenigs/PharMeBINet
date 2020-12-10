@@ -1,3 +1,0 @@
-MONDO:0004917	internal hordeolum
-DOID 	 name 
-DOID:9908	internal hordeolum

@@ -1,3 +1,0 @@
-DOID:0060390	distal 10q deletion syndrome
-monDO ID 	 name 
-MONDO:0012315	distal 10q deletion syndrome

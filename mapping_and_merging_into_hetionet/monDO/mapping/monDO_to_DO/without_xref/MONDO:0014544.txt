@@ -1,3 +1,0 @@
-MONDO:0014544	osteogenesis imperfecta type 16
-DOID 	 name 
-DOID:0110345	osteogenesis imperfecta type 16

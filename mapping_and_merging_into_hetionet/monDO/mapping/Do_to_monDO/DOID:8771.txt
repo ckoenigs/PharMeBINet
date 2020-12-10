@@ -1,3 +1,0 @@
-DOID:8771	contagious pustular dermatitis
-monDO ID 	 name 
-MONDO:0005717	contagious pustular dermatitis

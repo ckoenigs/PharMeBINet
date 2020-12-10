@@ -1,3 +1,0 @@
-MONDO:0004158	pancreatic invasive mucinous cystadenocarcinoma
-DOID 	 name 
-DOID:7236	pancreatic invasive mucinous cystadenocarcinoma

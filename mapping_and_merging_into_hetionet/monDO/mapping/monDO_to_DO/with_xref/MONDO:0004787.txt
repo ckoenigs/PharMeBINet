@@ -1,3 +1,0 @@
-MONDO:0004787	cervical mullerian papilloma
-DOID 	 name 
-DOID:9442	cervical Mullerian papilloma

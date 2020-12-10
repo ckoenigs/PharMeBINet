@@ -1,3 +1,0 @@
-DOID:3429	inclusion body myositis
-monDO ID 	 name 
-MONDO:0007827	inclusion body myositis

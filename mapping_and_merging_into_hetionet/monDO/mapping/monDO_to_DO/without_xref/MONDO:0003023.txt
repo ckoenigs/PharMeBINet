@@ -1,3 +1,0 @@
-MONDO:0003023	aorta angiosarcoma
-DOID 	 name 
-DOID:4510	aorta angiosarcoma

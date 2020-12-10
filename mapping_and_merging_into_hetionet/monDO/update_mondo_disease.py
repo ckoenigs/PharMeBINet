@@ -5,7 +5,8 @@ Created on Mon May 07 13:31:43 2018
 @author: ckoenigs
 """
 
-from py2neo import Graph, authenticate
+sys.path.append("../..")
+import create_connection_to_databases, authenticate
 import sys
 import datetime
 from types import *
@@ -554,7 +555,7 @@ def generate_cypher_file_for_relationship():
         url = 'http://bioportal.bioontology.org/ontologies/MONDO/' + child_id
         dict_rela = dict(rela)
         query = ''' Match (a:Disease{identifier:"%s"}), (b:Disease{identifier:"%s"})
-        Create (a)-[:SUBCLASS_OF_DsoD{license:"CC BY 4.0",unbiased:"false", source:"Monarch Disease Ontology", resource:['MonDO'] , mondo:'yes', mondo_source:"%s",'''
+        Create (a)-[:SUBCLASS_OF_DsoD{license:"CC BY 4.0",unbiased:false, source:"Monarch Disease Ontology", resource:['MonDO'] , mondo:'yes', mondo_source:"%s",'''
         query = query % (child_id, parent_id, url)
         for key, property in dict_rela.items():
             if key[0:4] == 'http':

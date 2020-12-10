@@ -31,9 +31,19 @@ cd import_into_Neo4j
 
 cd ..
 
+now=$(date +"%F %T")
+echo "Current time: $now"
 echo cp database
 
+$path_neo4j/neo4j stop
+
+sleep 120
+
 cp -r /mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/neo4j_databases/graph.db /mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/neo4j_databases/inte.db
+
+$path_neo4j/neo4j restart
+
+sleep 120
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -41,7 +51,7 @@ echo "Current time: $now"
 echo mapping and integration
 cd mapping_and_merging_into_hetionet
 
-./script_mapping.sh $path_neo4j $path_project > output_mapping.txt
+./script_mapping.sh $path_neo4j $path_project #> output_mapping.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"

@@ -1,3 +1,0 @@
-DOID:4346	variegate porphyria
-monDO ID 	 name 
-MONDO:0008297	variegate porphyria

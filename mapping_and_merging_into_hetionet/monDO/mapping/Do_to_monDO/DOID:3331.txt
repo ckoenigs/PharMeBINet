@@ -1,3 +1,0 @@
-DOID:3331	frontal lobe epilepsy
-monDO ID 	 name 
-MONDO:0002612	frontal lobe epilepsy

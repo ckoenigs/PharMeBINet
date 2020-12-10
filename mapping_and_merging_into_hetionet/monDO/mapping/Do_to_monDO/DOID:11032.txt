@@ -1,3 +1,0 @@
-DOID:11032	secondary corneal edema
-monDO ID 	 name 
-MONDO:0001181	secondary corneal edema

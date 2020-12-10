@@ -1,3 +1,0 @@
-MONDO:0007908	multiple symmetric lipomatosis
-DOID 	 name 
-DOID:14116	multiple symmetric lipomatosis

@@ -1,3 +1,0 @@
-DOID:4465	papillary renal cell carcinoma
-monDO ID 	 name 
-MONDO:0017884	papillary renal cell carcinoma

@@ -1,3 +1,0 @@
-MONDO:0010012	autoimmune polyendocrinopathy type 2
-DOID 	 name 
-DOID:0050168	autoimmune polyendocrine syndrome type 2

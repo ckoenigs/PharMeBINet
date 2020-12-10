@@ -1,3 +1,0 @@
-DOID:13580	cholestasis
-monDO ID 	 name 
-MONDO:0001751	cholestasis

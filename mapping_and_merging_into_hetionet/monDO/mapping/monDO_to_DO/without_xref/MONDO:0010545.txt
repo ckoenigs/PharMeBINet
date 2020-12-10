@@ -1,3 +1,0 @@
-MONDO:0010545	Nance-Horan syndrome
-DOID 	 name 
-DOID:0060599	Nance-Horan syndrome

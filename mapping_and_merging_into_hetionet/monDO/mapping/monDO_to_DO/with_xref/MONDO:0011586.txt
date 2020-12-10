@@ -1,3 +1,0 @@
-MONDO:0011586	OTSC2
-DOID 	 name 
-DOID:12185	otosclerosis

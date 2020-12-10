@@ -1,3 +1,0 @@
-MONDO:0001753	female infertility of uterine origin
-DOID 	 name 
-DOID:13589	female infertility of uterine origin

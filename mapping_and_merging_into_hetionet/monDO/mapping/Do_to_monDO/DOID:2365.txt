@@ -1,3 +1,0 @@
-DOID:2365	West Nile encephalitis
-monDO ID 	 name 
-MONDO:0019376	West-nile encephalitis

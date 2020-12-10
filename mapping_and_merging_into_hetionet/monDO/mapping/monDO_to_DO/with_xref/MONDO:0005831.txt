@@ -1,3 +1,0 @@
-MONDO:0005831	lymph node tuberculosis
-DOID 	 name 
-DOID:4889	lymph node tuberculosis

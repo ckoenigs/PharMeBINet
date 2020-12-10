@@ -1,3 +1,0 @@
-MONDO:0004667	sublingual gland cancer
-DOID 	 name 
-DOID:8849	sublingual gland cancer

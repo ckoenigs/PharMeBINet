@@ -1,3 +1,0 @@
-MONDO:0002919	posterior cranial fossa meningioma
-DOID 	 name 
-DOID:4211	posterior cranial fossa meningioma

@@ -1,3 +1,0 @@
-MONDO:0005294	peripheral vascular disease
-DOID 	 name 
-DOID:341	peripheral vascular disease

@@ -1,3 +1,0 @@
-DOID:10286	prostate carcinoma
-monDO ID 	 name 
-MONDO:0005159	prostate carcinoma

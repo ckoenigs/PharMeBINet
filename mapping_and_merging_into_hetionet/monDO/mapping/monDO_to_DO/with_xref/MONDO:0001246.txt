@@ -1,4 +1,0 @@
-MONDO:0001246	typhus
-DOID 	 name 
-DOID:11256	typhus
-DOID:11254	Brill-Zinsser disease

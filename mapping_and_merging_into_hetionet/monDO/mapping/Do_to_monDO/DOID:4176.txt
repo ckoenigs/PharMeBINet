@@ -1,3 +1,0 @@
-DOID:4176	blood group incompatibility
-monDO ID 	 name 
-MONDO:0002901	blood group incompatibility

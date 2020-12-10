@@ -1,3 +1,0 @@
-DOID:8398	osteoarthritis
-monDO ID 	 name 
-MONDO:0005178	osteoarthritis

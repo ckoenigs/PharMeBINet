@@ -1,3 +1,0 @@
-DOID:4871	cutaneous adenocystic carcinoma
-monDO ID 	 name 
-MONDO:0003180	cutaneous adenocystic carcinoma

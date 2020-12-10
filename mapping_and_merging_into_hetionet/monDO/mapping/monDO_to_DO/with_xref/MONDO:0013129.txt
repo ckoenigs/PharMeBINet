@@ -1,3 +1,0 @@
-MONDO:0013129	cone dystrophy 4
-DOID 	 name 
-DOID:0050795	cone dystrophy

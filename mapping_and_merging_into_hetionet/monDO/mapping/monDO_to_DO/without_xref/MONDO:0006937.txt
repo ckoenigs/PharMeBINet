@@ -1,3 +1,0 @@
-MONDO:0006937	pulpitis
-DOID 	 name 
-DOID:11121	pulpitis

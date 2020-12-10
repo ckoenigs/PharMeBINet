@@ -1,3 +1,0 @@
-MONDO:0004822	bronchiectasis
-DOID 	 name 
-DOID:9563	bronchiectasis

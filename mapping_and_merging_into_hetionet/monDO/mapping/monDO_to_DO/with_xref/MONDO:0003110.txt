@@ -1,3 +1,0 @@
-MONDO:0003110	skin hemangioma
-DOID 	 name 
-DOID:471	skin hemangioma

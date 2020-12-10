@@ -1,3 +1,0 @@
-MONDO:0012980	endocrine-cerebro-osteodysplasia syndrome
-DOID 	 name 
-DOID:0060641	endocrine-cerebro-osteodysplasia syndrome

@@ -1,3 +1,0 @@
-MONDO:0006474	transitional cell carcinoma
-DOID 	 name 
-DOID:2671	transitional cell carcinoma

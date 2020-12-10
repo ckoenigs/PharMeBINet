@@ -1,3 +1,0 @@
-DOID:0080156	X-linked adrenal hypoplasia congenita
-monDO ID 	 name 
-MONDO:0010264	X-linked adrenal hypoplasia congenita

@@ -1,3 +1,0 @@
-DOID:13129	severe pre-eclampsia
-monDO ID 	 name 
-MONDO:0001641	severe pre-eclampsia

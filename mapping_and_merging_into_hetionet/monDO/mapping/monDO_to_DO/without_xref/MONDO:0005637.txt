@@ -1,3 +1,0 @@
-MONDO:0003709	adult-onset Stills disease
-DOID 	 name 
-DOID:14256	adult-onset Still's disease

@@ -1,3 +1,0 @@
-MONDO:0001805	female breast central part cancer
-DOID 	 name 
-DOID:13799	female breast central part cancer

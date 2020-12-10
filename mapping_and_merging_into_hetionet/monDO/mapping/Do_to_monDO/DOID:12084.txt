@@ -1,3 +1,0 @@
-DOID:12084	transient arthropathy
-monDO ID 	 name 
-MONDO:0001429	transient arthropathy

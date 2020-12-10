@@ -1,3 +1,0 @@
-DOID:820	myocarditis
-monDO ID 	 name 
-MONDO:0004496	myocarditis

@@ -1,3 +1,0 @@
-MONDO:0013900	alternating hemiplegia of childhood 2
-DOID 	 name 
-DOID:0050635	alternating hemiplegia of childhood

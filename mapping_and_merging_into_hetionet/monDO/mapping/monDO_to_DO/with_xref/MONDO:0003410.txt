@@ -1,3 +1,0 @@
-MONDO:0003410	Wolffian duct adenocarcinoma
-DOID 	 name 
-DOID:5368	Wolffian duct adenocarcinoma

@@ -1,3 +1,0 @@
-MONDO:0005979	thoracic outlet syndrome
-DOID 	 name 
-DOID:3103	thoracic outlet syndrome

@@ -1,3 +1,0 @@
-MONDO:0004335	gastrointestinal system disease
-DOID 	 name 
-DOID:77	gastrointestinal system disease

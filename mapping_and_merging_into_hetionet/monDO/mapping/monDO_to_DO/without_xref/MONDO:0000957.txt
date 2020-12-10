@@ -1,3 +1,0 @@
-MONDO:0000957	lacrimal passage granuloma
-DOID 	 name 
-DOID:10174	lacrimal passage granuloma

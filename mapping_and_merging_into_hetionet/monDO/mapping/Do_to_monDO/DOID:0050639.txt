@@ -1,3 +1,0 @@
-DOID:0050639	primary cutaneous amyloidosis
-monDO ID 	 name 
-MONDO:0015301	primary cutaneous amyloidosis

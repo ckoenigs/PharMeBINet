@@ -1,3 +1,0 @@
-MONDO:0010563	blue cone monochromacy
-DOID 	 name 
-DOID:0050679	blue cone monochromacy

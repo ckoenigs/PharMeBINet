@@ -1,3 +1,0 @@
-MONDO:0018116	galactosemia
-DOID 	 name 
-DOID:9870	galactosemia

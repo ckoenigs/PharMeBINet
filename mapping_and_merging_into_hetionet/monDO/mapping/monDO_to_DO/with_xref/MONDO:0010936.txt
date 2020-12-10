@@ -1,3 +1,0 @@
-MONDO:0010936	frontotemporal dementia, chromosome 3-linked
-DOID 	 name 
-DOID:9255	frontotemporal dementia

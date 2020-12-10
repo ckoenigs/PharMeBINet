@@ -1,3 +1,0 @@
-MONDO:0002961	large cell acanthoma
-DOID 	 name 
-DOID:4321	large cell acanthoma

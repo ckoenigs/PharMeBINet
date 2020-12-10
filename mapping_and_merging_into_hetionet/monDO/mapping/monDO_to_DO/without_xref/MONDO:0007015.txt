@@ -1,3 +1,0 @@
-MONDO:0007015	viral meningitis
-DOID 	 name 
-DOID:10310	viral meningitis

@@ -1,3 +1,0 @@
-MONDO:0003306	atypical neurofibroma
-DOID 	 name 
-DOID:5153	atypical neurofibroma

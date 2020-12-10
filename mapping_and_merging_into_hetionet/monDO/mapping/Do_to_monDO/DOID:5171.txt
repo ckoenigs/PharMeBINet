@@ -1,3 +1,0 @@
-DOID:5171	vaginal endometrial stromal tumor
-monDO ID 	 name 
-MONDO:0003314	endometrioid stromal and related neoplasms of the vagina

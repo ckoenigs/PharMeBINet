@@ -1,3 +1,0 @@
-MONDO:0003133	exudative glomerulonephritis
-DOID 	 name 
-DOID:4777	exudative glomerulonephritis

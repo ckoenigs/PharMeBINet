@@ -1,3 +1,0 @@
-MONDO:0012157	congenital myasthenic syndrome 4C
-DOID 	 name 
-DOID:0110679	congenital myasthenic syndrome 4C

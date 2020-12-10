@@ -1,3 +1,0 @@
-DOID:11252	microcytic anemia
-monDO ID 	 name 
-MONDO:0001245	microcytic anemia

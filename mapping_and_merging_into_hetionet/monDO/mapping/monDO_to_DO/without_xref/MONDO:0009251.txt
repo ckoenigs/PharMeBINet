@@ -1,3 +1,0 @@
-MONDO:0009251	fructose-1,6-bisphosphatase deficiency
-DOID 	 name 
-DOID:5204	fructose-1,6-bisphosphatase deficiency

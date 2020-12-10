@@ -1,3 +1,0 @@
-DOID:0060360	hereditary papulotranslucent acrokeratoderma
-monDO ID 	 name 
-MONDO:0007046	hereditary papulotranslucent acrokeratoderma

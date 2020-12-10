@@ -1,3 +1,0 @@
-MONDO:0002375	sebaceous adenoma
-DOID 	 name 
-DOID:2648	sebaceous adenoma

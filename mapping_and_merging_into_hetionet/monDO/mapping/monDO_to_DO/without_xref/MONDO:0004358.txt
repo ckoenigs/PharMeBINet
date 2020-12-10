@@ -1,3 +1,0 @@
-MONDO:0004358	subglottis carcinoma
-DOID 	 name 
-DOID:7764	subglottis carcinoma

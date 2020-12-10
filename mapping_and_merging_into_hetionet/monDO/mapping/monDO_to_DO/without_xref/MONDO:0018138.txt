@@ -1,3 +1,0 @@
-MONDO:0018138	ocular albinism with congenital sensorineural deafness
-DOID 	 name 
-DOID:0090100	ocular albinism with sensorineural deafness

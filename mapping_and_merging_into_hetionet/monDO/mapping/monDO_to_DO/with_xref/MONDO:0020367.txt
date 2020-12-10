@@ -1,3 +1,0 @@
-MONDO:0020367	juvenile glaucoma
-DOID 	 name 
-DOID:1068	juvenile glaucoma

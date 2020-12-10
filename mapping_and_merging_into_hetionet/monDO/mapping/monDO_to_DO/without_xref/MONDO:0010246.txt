@@ -1,3 +1,0 @@
-MONDO:0010246	early infantile epileptic encephalopathy 9
-DOID 	 name 
-DOID:0060848	early infantile epileptic encephalopathy 9

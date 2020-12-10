@@ -1,3 +1,0 @@
-DOID:1517	cecal benign neoplasm
-monDO ID 	 name 
-MONDO:0005694	cecal neoplasm

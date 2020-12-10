@@ -1,3 +1,0 @@
-MONDO:0013525	primary ciliary dyskinesia 16
-DOID 	 name 
-DOID:0110613	primary ciliary dyskinesia 16

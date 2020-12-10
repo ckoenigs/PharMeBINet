@@ -1,3 +1,0 @@
-MONDO:0003452	cochlear disease
-DOID 	 name 
-DOID:5463	cochlear disease

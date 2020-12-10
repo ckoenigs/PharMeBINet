@@ -1,3 +1,0 @@
-MONDO:0006507	hereditary hemochromatosis
-DOID 	 name 
-DOID:2352	hemochromatosis

@@ -1,3 +1,0 @@
-DOID:0110713	Oguchi disease-2
-monDO ID 	 name 
-MONDO:0013259	Oguchi disease-2

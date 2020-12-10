@@ -1,3 +1,0 @@
-MONDO:0000685	visual agnosia (disease)
-DOID 	 name 
-DOID:0060155	visual agnosia

@@ -1,3 +1,0 @@
-DOID:4607	biliary tract cancer
-monDO ID 	 name 
-MONDO:0003060	biliary tract cancer

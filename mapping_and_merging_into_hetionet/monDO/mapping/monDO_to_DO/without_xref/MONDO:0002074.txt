@@ -1,3 +1,0 @@
-MONDO:0002074	Behcet's syndrome arthropathy
-DOID 	 name 
-DOID:1670	Behcet's syndrome arthropathy

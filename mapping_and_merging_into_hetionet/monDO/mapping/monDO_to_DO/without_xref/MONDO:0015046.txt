@@ -1,3 +1,0 @@
-MONDO:0015046	gamma-heavy chain disease
-DOID 	 name 
-DOID:0060127	gamma heavy chain disease

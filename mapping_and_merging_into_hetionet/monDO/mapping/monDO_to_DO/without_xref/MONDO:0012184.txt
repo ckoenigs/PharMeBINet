@@ -1,3 +1,0 @@
-MONDO:0012184	Pierson syndrome
-DOID 	 name 
-DOID:0060852	Pierson syndrome

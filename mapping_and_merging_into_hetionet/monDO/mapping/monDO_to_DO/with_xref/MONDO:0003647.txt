@@ -1,3 +1,0 @@
-MONDO:0003647	atrophic flaccid tympanic membrane
-DOID 	 name 
-DOID:5781	atrophic flaccid tympanic membrane

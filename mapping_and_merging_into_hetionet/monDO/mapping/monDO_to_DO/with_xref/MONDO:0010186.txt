@@ -1,3 +1,0 @@
-MONDO:0010186	vitamin d-dependent rickets, type 2A
-DOID 	 name 
-DOID:10609	rickets

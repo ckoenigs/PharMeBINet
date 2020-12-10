@@ -1,3 +1,0 @@
-MONDO:0004498	sacral spinal canal and spinal cord meningioma
-DOID 	 name 
-DOID:8203	sacral spinal canal and spinal cord meningioma

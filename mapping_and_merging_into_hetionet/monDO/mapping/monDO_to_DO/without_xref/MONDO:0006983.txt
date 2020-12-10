@@ -1,3 +1,0 @@
-MONDO:0006983	subclavian steal syndrome
-DOID 	 name 
-DOID:13002	subclavian steal syndrome

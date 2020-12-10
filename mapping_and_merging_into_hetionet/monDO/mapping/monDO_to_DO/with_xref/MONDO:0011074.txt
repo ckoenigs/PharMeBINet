@@ -1,3 +1,0 @@
-MONDO:0011074	autosomal dominant nonsyndromic deafness 7
-DOID 	 name 
-DOID:0110591	autosomal dominant nonsyndromic deafness 7

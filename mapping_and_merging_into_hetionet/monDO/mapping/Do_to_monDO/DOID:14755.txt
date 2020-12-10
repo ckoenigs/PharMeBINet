@@ -1,3 +1,0 @@
-DOID:14755	argininosuccinic aciduria
-monDO ID 	 name 
-MONDO:0008815	argininosuccinic aciduria

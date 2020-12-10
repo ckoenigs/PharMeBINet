@@ -1,3 +1,0 @@
-MONDO:0004479	malignant childhood germ cell neoplasm
-DOID 	 name 
-DOID:8149	malignant childhood germ cell neoplasm

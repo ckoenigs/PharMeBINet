@@ -1,3 +1,0 @@
-MONDO:0004341	colloid carcinoma of the pancreas
-DOID 	 name 
-DOID:7717	colloid carcinoma of the pancreas

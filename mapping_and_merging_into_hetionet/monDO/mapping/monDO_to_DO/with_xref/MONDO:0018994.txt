@@ -1,3 +1,0 @@
-MONDO:0018994	Charcot-Marie-tooth disease type X
-DOID 	 name 
-DOID:0050542	Charcot-Marie-Tooth disease type X

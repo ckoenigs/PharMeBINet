@@ -1,3 +1,0 @@
-MONDO:0010160	tyrosinemia type II
-DOID 	 name 
-DOID:0050725	tyrosinemia type II

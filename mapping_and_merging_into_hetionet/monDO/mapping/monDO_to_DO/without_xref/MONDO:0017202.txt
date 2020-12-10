@@ -1,3 +1,0 @@
-MONDO:0017202	acute endophthalmitis
-DOID 	 name 
-DOID:11752	acute endophthalmitis

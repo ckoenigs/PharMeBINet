@@ -1,3 +1,0 @@
-MONDO:0006007	vesicoureteral reflux (disease)
-DOID 	 name 
-DOID:9620	vesicoureteral reflux

@@ -1,3 +1,0 @@
-MONDO:0004391	adult extraosseous chondrosarcoma
-DOID 	 name 
-DOID:7902	adult extraosseous chondrosarcoma

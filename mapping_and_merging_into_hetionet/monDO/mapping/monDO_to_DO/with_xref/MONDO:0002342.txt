@@ -1,4 +1,0 @@
-MONDO:0002342	chondromalacia
-DOID 	 name 
-DOID:2557	chondromalacia
-DOID:1222	cartilage disease

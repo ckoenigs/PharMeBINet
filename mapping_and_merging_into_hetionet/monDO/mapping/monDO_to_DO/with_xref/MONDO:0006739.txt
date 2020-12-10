@@ -1,3 +1,0 @@
-MONDO:0006739	ehrlich tumor carcinoma
-DOID 	 name 
-DOID:5050	Ehrlich tumor carcinoma

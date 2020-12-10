@@ -1,3 +1,0 @@
-MONDO:0004514	chronic rhinitis
-DOID 	 name 
-DOID:8252	chronic rhinitis

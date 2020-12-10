@@ -1,3 +1,0 @@
-DOID:5446	eccrine papillary adenoma
-monDO ID 	 name 
-MONDO:0003450	eccrine papillary adenoma

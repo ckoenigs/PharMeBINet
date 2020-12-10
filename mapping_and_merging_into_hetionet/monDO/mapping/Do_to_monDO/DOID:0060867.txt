@@ -1,3 +1,0 @@
-DOID:0060867	macrocephaly-autism syndrome
-monDO ID 	 name 
-MONDO:0011537	macrocephaly-autism syndrome

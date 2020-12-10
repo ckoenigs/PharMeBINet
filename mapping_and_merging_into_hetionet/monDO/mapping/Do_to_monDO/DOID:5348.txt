@@ -1,3 +1,0 @@
-DOID:5348	adult endodermal sinus tumor
-monDO ID 	 name 
-MONDO:0003404	adult yolk sac tumor

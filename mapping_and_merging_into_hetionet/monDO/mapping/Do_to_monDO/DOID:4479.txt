@@ -1,3 +1,0 @@
-DOID:4479	pseudohypoaldosteronism
-monDO ID 	 name 
-MONDO:0018638	pseudohypoaldosteronism

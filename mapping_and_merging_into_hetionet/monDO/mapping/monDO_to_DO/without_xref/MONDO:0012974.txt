@@ -1,3 +1,0 @@
-MONDO:0012974	autosomal dominant nonsyndromic deafness 59
-DOID 	 name 
-DOID:0110583	autosomal dominant nonsyndromic deafness 59

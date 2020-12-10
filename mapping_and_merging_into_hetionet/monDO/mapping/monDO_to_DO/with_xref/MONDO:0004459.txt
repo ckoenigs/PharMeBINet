@@ -1,3 +1,0 @@
-MONDO:0004459	bladder hepatoid adenocarcinoma
-DOID 	 name 
-DOID:8097	bladder hepatoid adenocarcinoma

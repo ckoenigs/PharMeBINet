@@ -1,3 +1,0 @@
-DOID:0050959	spinocerebellar ataxia type 8
-monDO ID 	 name 
-MONDO:0012116	spinocerebellar ataxia type 8

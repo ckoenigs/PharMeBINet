@@ -1,3 +1,0 @@
-MONDO:0008412	intestinal schistosomiasis
-DOID 	 name 
-DOID:0050597	intestinal schistosomiasis

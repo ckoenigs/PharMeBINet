@@ -1,3 +1,0 @@
-MONDO:0003128	classic pulmonary blastoma
-DOID 	 name 
-DOID:4767	classic pulmonary blastoma

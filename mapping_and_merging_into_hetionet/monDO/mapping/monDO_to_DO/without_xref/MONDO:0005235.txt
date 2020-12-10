@@ -1,3 +1,0 @@
-MONDO:0005235	asymptomatic myeloma
-DOID 	 name 
-DOID:9551	smoldering myeloma

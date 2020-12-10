@@ -1,3 +1,0 @@
-DOID:0060395	chromosome 15q24 deletion syndrome
-monDO ID 	 name 
-MONDO:0013256	chromosome 15q24 deletion syndrome

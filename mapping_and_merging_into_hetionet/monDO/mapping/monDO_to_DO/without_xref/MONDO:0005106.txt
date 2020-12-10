@@ -1,3 +1,0 @@
-MONDO:0005106	lipoma
-DOID 	 name 
-DOID:3315	lipoma

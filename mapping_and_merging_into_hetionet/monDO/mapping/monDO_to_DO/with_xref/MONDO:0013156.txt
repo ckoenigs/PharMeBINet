@@ -1,3 +1,0 @@
-MONDO:0013156	muscular dystrophy-dystroglycanopathy (congenital without mental retardation), type B, 4
-DOID 	 name 
-DOID:0050588	muscular dystrophy-dystroglycanopathy

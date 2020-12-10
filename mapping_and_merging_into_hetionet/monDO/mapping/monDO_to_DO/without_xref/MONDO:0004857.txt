@@ -1,3 +1,0 @@
-MONDO:0004857	tendinitis
-DOID 	 name 
-DOID:971	tendinitis

@@ -1,3 +1,0 @@
-MONDO:0013906	amelogenesis imperfecta hypomaturation type 2A4
-DOID 	 name 
-DOID:0110062	amelogenesis imperfecta hypomaturation type 2A4

@@ -1,3 +1,0 @@
-DOID:0060082	breast benign neoplasm
-monDO ID 	 name 
-MONDO:0000620	breast benign neoplasm

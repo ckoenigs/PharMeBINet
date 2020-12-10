@@ -1,3 +1,0 @@
-DOID:0060733	junctional epidermolysis bullosa with pyloric atresia
-monDO ID 	 name 
-MONDO:0009183	junctional epidermolysis bullosa with pyloric atresia

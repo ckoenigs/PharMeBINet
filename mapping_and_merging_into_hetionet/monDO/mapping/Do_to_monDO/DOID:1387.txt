@@ -1,3 +1,0 @@
-DOID:1387	hypolipoproteinemia
-monDO ID 	 name 
-MONDO:0001822	hypolipoproteinemia (disease)

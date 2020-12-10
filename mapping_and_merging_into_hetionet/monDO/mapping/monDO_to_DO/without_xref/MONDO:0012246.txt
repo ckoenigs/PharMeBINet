@@ -1,3 +1,0 @@
-MONDO:0012246	spinocerebellar ataxia type 26
-DOID 	 name 
-DOID:0050975	spinocerebellar ataxia type 26

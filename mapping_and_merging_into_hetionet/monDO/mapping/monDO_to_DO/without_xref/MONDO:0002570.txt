@@ -1,3 +1,0 @@
-MONDO:0002570	high pressure neurological syndrome
-DOID 	 name 
-DOID:3230	high pressure neurological syndrome

@@ -1,3 +1,0 @@
-MONDO:0000502	villous adenoma
-DOID 	 name 
-DOID:0050869	villous adenoma

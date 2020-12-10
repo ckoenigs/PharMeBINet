@@ -1,3 +1,0 @@
-MONDO:0006997	tibial neuropathy
-DOID 	 name 
-DOID:1187	tibial neuropathy

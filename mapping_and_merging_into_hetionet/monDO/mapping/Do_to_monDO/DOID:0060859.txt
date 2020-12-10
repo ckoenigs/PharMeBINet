@@ -1,3 +1,0 @@
-DOID:0060859	salmonellosis
-monDO ID 	 name 
-MONDO:0000827	salmonellosis

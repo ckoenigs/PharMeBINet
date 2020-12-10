@@ -1,3 +1,0 @@
-DOID:10154	small intestine cancer
-monDO ID 	 name 
-MONDO:0000956	small intestine cancer

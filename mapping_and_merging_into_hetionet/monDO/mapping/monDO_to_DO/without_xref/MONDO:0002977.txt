@@ -1,3 +1,0 @@
-MONDO:0002977	autoimmune disease of the nervous system
-DOID 	 name 
-DOID:438	autoimmune disease of the nervous system

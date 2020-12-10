@@ -1,3 +1,0 @@
-MONDO:0007208	Boomerang dysplasia
-DOID 	 name 
-DOID:0050680	Boomerang dysplasia

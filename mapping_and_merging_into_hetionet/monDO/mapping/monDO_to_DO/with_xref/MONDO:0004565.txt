@@ -1,3 +1,0 @@
-MONDO:0004565	intestinal obstruction
-DOID 	 name 
-DOID:8437	intestinal obstruction

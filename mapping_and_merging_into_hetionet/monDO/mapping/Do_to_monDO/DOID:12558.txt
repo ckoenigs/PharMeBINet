@@ -1,3 +1,0 @@
-DOID:12558	chronic progressive external ophthalmoplegia
-monDO ID 	 name 
-MONDO:0005181	progressive external ophthalmoplegia

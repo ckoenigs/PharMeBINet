@@ -1,3 +1,0 @@
-DOID:8850	salivary gland cancer
-monDO ID 	 name 
-MONDO:0004669	salivary gland cancer

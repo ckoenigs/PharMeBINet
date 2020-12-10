@@ -1,3 +1,0 @@
-DOID:0060816	corpus callosum agenesis-intellectual disability-coloboma-micrognathia syndrome
-monDO ID 	 name 
-MONDO:0010333	corpus callosum agenesis-intellectual disability-coloboma-micrognathia syndrome

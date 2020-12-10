@@ -1,3 +1,0 @@
-DOID:2491	sensory peripheral neuropathy
-monDO ID 	 name 
-MONDO:0002321	sensory peripheral neuropathy

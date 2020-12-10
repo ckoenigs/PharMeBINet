@@ -1,3 +1,0 @@
-DOID:4080	tricuspid valve insufficiency
-monDO ID 	 name 
-MONDO:0002870	tricuspid valve insufficiency

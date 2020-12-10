@@ -1,3 +1,0 @@
-DOID:603	AIDS phobia
-monDO ID 	 name 
-MONDO:0003740	AIDS phobia

@@ -1,3 +1,0 @@
-DOID:0050466	Loeys-Dietz syndrome
-monDO ID 	 name 
-MONDO:0018954	Loeys-Dietz syndrome

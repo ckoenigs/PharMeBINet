@@ -1,3 +1,0 @@
-DOID:9820	central gyrate choroidal dystrophy
-monDO ID 	 name 
-MONDO:0004889	central gyrate choroidal dystrophy

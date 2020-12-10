@@ -1,3 +1,0 @@
-MONDO:0004124	prostate stromal sarcoma
-DOID 	 name 
-DOID:7152	prostate stromal sarcoma

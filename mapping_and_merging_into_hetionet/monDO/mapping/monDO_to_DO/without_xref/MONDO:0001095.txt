@@ -1,3 +1,0 @@
-MONDO:0001095	mediastinum neuroblastoma
-DOID 	 name 
-DOID:10660	mediastinum neuroblastoma

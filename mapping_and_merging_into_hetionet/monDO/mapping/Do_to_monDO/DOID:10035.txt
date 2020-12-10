@@ -1,3 +1,0 @@
-DOID:10035	asymptomatic neurosyphilis
-monDO ID 	 name 
-MONDO:0000927	asymptomatic neurosyphilis

@@ -1,3 +1,0 @@
-MONDO:0003806	thyroid hyalinizing trabecular adenoma
-DOID 	 name 
-DOID:6203	thyroid hyalinizing trabecular adenoma

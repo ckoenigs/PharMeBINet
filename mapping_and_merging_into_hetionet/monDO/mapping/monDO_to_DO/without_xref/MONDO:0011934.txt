@@ -1,3 +1,0 @@
-MONDO:0011934	dermatofibrosarcoma protuberans
-DOID 	 name 
-DOID:3507	dermatofibrosarcoma protuberans

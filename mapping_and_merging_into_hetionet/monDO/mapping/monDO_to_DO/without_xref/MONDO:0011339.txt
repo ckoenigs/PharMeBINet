@@ -1,3 +1,0 @@
-MONDO:0011339	hereditary spastic paraplegia 8
-DOID 	 name 
-DOID:0110823	hereditary spastic paraplegia 8

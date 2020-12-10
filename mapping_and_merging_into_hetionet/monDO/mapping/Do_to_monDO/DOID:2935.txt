@@ -1,3 +1,0 @@
-DOID:2935	Chediak-Higashi syndrome
-monDO ID 	 name 
-MONDO:0008963	Chediak-Higashi syndrome

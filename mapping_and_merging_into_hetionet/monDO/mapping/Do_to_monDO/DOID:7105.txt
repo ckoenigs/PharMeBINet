@@ -1,3 +1,0 @@
-DOID:7105	epiglottis neoplasm
-monDO ID 	 name 
-MONDO:0004109	epiglottis neoplasm

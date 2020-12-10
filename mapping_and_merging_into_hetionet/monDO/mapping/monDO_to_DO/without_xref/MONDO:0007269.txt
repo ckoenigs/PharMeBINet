@@ -1,3 +1,0 @@
-MONDO:0007269	dilated cardiomyopathy 1A
-DOID 	 name 
-DOID:0110425	dilated cardiomyopathy 1A

@@ -1,3 +1,0 @@
-MONDO:0000540	small intestinal neuroendocrine tumor G1
-DOID 	 name 
-DOID:0050925	small intestine carcinoid neuroendocrine tumor

@@ -1,3 +1,0 @@
-MONDO:0003064	inverted transitional papilloma
-DOID 	 name 
-DOID:4630	inverted transitional papilloma

@@ -1,3 +1,0 @@
-DOID:5313	vulvar alveolar soft part sarcoma
-monDO ID 	 name 
-MONDO:0003391	vulvar alveolar soft part sarcoma

@@ -1,3 +1,0 @@
-MONDO:0014298	chromosome 5q12 deletion syndrome
-DOID 	 name 
-DOID:0060421	chromosome 5q12 deletion syndrome

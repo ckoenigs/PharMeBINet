@@ -1,3 +1,0 @@
-DOID:5378	hemoglobin D disease
-monDO ID 	 name 
-MONDO:0019537	hemoglobin d disease

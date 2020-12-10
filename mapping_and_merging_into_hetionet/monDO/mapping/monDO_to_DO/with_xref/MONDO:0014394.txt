@@ -1,3 +1,0 @@
-MONDO:0014394	Diamond-Blackfan anemia 13
-DOID 	 name 
-DOID:1339	Diamond-Blackfan anemia

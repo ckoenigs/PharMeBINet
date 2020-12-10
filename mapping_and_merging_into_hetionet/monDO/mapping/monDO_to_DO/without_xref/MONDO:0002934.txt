@@ -1,3 +1,0 @@
-MONDO:0002934	intravascular angioleiomyoma
-DOID 	 name 
-DOID:4266	intravascular angioleiomyoma

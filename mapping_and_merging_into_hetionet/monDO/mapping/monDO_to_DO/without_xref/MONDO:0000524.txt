@@ -1,3 +1,0 @@
-MONDO:0000524	mixed extragonadal germ cell cancer
-DOID 	 name 
-DOID:0050907	mixed extragonadal germ cell cancer

@@ -1,3 +1,0 @@
-MONDO:0004122	thymus small cell carcinoma
-DOID 	 name 
-DOID:7142	thymus small cell carcinoma

@@ -1,3 +1,0 @@
-DOID:0060762	lethal restrictive dermopathy
-monDO ID 	 name 
-MONDO:0010143	lethal restrictive dermopathy

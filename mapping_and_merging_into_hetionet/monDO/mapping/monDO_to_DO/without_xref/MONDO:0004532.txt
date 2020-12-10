@@ -1,3 +1,0 @@
-MONDO:0004532	auditory system cancer
-DOID 	 name 
-DOID:833	auditory system cancer

@@ -1,3 +1,0 @@
-MONDO:0002614	bone inflammation disease
-DOID 	 name 
-DOID:3342	bone inflammation disease

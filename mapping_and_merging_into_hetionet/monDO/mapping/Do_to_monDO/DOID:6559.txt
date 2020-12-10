@@ -1,3 +1,0 @@
-DOID:6559	ethmoid sinus Schneiderian papilloma
-monDO ID 	 name 
-MONDO:0003923	ethmoid sinus Schneiderian papilloma

@@ -1,3 +1,0 @@
-DOID:7539	pregnancy adenoma
-monDO ID 	 name 
-MONDO:0004271	pregnancy adenoma

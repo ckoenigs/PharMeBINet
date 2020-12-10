@@ -1,3 +1,0 @@
-DOID:2055	post-traumatic stress disorder
-monDO ID 	 name 
-MONDO:0005146	post-traumatic stress disorder

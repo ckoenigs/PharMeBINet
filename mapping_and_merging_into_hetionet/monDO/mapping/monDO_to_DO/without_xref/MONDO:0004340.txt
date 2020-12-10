@@ -1,3 +1,0 @@
-MONDO:0004340	mixed ductal-endocrine carcinoma of pancreas
-DOID 	 name 
-DOID:7716	mixed ductal-endocrine carcinoma

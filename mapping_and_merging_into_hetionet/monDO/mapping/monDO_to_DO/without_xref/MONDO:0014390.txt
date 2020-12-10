@@ -1,3 +1,0 @@
-MONDO:0014390	hypotrichosis 13
-DOID 	 name 
-DOID:0110710	hypotrichosis 13

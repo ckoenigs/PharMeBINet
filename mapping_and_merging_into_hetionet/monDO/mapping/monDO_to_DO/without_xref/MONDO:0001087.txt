@@ -1,3 +1,0 @@
-MONDO:0001087	schizotypal personality disorder
-DOID 	 name 
-DOID:10646	schizotypal personality disorder

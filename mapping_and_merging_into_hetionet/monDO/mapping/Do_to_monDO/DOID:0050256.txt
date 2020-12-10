@@ -1,3 +1,0 @@
-DOID:0050256	angiostrongyliasis
-monDO ID 	 name 
-MONDO:0019143	angiostrongyliasis

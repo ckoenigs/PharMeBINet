@@ -1,3 +1,0 @@
-MONDO:0003669	testicular seminoma
-DOID 	 name 
-DOID:5842	testis seminoma

@@ -1,3 +1,0 @@
-MONDO:0002083	Richter's syndrome
-DOID 	 name 
-DOID:1703	Richter's syndrome

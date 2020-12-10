@@ -1,3 +1,0 @@
-MONDO:0001443	tympanosclerosis
-DOID 	 name 
-DOID:1214	tympanosclerosis

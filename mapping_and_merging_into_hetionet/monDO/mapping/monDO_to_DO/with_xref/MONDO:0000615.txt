@@ -1,3 +1,0 @@
-MONDO:0000615	progesterone-receptor positive breast cancer
-DOID 	 name 
-DOID:0060077	progesterone-receptor positive breast cancer

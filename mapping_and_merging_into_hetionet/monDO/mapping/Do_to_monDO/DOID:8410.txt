@@ -1,3 +1,0 @@
-DOID:8410	childhood kidney angiomyolipoma
-monDO ID 	 name 
-MONDO:0004554	childhood kidney angiomyolipoma

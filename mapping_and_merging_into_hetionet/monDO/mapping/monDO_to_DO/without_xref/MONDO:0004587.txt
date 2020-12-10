@@ -1,3 +1,0 @@
-MONDO:0004587	hereditary night blindness
-DOID 	 name 
-DOID:8498	hereditary night blindness

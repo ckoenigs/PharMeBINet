@@ -1,3 +1,0 @@
-MONDO:0001388	glans penis cancer
-DOID 	 name 
-DOID:11839	glans penis cancer

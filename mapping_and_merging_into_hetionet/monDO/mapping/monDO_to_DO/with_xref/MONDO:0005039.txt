@@ -1,3 +1,0 @@
-MONDO:0005039	reproductive system disease
-DOID 	 name 
-DOID:15	reproductive system disease

@@ -1,3 +1,0 @@
-DOID:2766	ethmoid sinus adenocarcinoma
-monDO ID 	 name 
-MONDO:0002418	ethmoid sinus adenocarcinoma

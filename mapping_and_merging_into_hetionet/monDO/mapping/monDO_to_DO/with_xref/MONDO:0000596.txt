@@ -1,3 +1,0 @@
-MONDO:0000596	paraphilic disorder
-DOID 	 name 
-DOID:0060044	paraphilia disorder

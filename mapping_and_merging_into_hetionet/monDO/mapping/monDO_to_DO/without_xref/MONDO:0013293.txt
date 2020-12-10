@@ -1,3 +1,0 @@
-MONDO:0013293	isolated microphthalmia 6
-DOID 	 name 
-DOID:0060835	isolated microphthalmia 6

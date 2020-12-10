@@ -1,3 +1,0 @@
-MONDO:0001404	ecthyma
-DOID 	 name 
-DOID:11907	ecthyma

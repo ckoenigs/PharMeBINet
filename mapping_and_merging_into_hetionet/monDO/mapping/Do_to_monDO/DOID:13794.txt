@@ -1,3 +1,0 @@
-DOID:13794	anterior scleritis
-monDO ID 	 name 
-MONDO:0001804	anterior scleritis

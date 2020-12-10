@@ -1,3 +1,0 @@
-DOID:10556	supine hypotensive syndrome
-monDO ID 	 name 
-MONDO:0001065	supine hypotensive syndrome

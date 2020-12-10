@@ -1,3 +1,0 @@
-DOID:0080029	autosomal recessive spinocerebellar ataxia 16
-monDO ID 	 name 
-MONDO:0014339	autosomal recessive spinocerebellar ataxia 16

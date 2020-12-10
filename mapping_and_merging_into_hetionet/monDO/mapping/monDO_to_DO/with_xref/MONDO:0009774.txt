@@ -1,5 +1,0 @@
-MONDO:0009774	cloacal exstrophy (disease)
-DOID 	 name 
-DOID:0080174	bladder exstrophy
-DOID:0080175	cloacal exstrophy
-DOID:0080173	bladder exstrophy-epispadias-cloacal exstrophy complex

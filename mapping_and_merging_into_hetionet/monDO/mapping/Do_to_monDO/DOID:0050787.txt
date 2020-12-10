@@ -1,3 +1,0 @@
-DOID:0050787	juvenile polyposis syndrome
-monDO ID 	 name 
-MONDO:0008276	generalized juvenile polyposis/juvenile polyposis coli

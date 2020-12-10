@@ -1,3 +1,0 @@
-MONDO:0011168	type 1 diabetes mellitus 10
-DOID 	 name 
-DOID:0110749	type 1 diabetes mellitus 10

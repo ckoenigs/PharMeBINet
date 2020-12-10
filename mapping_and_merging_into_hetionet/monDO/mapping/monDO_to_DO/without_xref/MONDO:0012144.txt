@@ -1,3 +1,0 @@
-MONDO:0012144	Waardenburg syndrome type 2D
-DOID 	 name 
-DOID:0110952	Waardenburg syndrome type 2D

@@ -1,3 +1,0 @@
-DOID:0060299	complement component 6 deficiency
-monDO ID 	 name 
-MONDO:0012908	complement component 6 deficiency

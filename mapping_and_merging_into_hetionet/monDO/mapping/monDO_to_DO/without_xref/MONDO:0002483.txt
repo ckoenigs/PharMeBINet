@@ -1,3 +1,0 @@
-MONDO:0002483	breast myoepithelial tumor
-DOID 	 name 
-DOID:3004	breast myoepithelial neoplasm

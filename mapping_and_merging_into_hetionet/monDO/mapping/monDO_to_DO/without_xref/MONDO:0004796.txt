@@ -1,3 +1,0 @@
-MONDO:0004796	infectious meningitis
-DOID 	 name 
-DOID:9471	meningitis

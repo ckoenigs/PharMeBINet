@@ -1,3 +1,0 @@
-MONDO:0010374	retinitis pigmentosa 34
-DOID 	 name 
-DOID:0110417	retinitis pigmentosa 34

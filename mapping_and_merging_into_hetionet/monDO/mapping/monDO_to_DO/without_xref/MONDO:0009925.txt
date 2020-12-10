@@ -1,3 +1,0 @@
-MONDO:0009925	pseudoxanthoma elasticum
-DOID 	 name 
-DOID:2738	pseudoxanthoma elasticum

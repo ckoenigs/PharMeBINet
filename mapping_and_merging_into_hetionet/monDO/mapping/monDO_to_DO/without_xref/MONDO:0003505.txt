@@ -1,3 +1,0 @@
-MONDO:0003505	femoral cancer
-DOID 	 name 
-DOID:5546	femoral cancer

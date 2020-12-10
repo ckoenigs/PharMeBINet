@@ -1,3 +1,0 @@
-MONDO:0003996	basal ganglia disease
-DOID 	 name 
-DOID:679	basal ganglia disease

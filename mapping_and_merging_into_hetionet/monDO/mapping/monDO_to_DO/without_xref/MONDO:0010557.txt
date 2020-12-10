@@ -1,3 +1,0 @@
-MONDO:0010557	choroideremia
-DOID 	 name 
-DOID:9821	choroideremia

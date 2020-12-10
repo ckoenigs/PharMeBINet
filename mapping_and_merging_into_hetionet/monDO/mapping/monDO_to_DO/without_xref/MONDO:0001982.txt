@@ -1,3 +1,0 @@
-MONDO:0001982	Niemann-Pick disease
-DOID 	 name 
-DOID:14504	Niemann-Pick disease

@@ -1,3 +1,0 @@
-MONDO:0010013	schneckenbecken dysplasia
-DOID 	 name 
-DOID:0050775	schneckenbecken dysplasia

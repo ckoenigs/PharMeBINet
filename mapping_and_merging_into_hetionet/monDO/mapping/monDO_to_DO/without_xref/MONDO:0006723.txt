@@ -1,3 +1,0 @@
-MONDO:0006723	denture stomatitis
-DOID 	 name 
-DOID:11875	denture stomatitis

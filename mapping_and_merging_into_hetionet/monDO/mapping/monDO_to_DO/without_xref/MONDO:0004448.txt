@@ -1,3 +1,0 @@
-MONDO:0004448	frontal sinus inverted papilloma
-DOID 	 name 
-DOID:8060	frontal sinus inverted papilloma

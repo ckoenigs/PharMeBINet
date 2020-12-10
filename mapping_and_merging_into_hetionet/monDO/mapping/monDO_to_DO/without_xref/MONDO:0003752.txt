@@ -1,3 +1,0 @@
-MONDO:0003752	frontal sinus Schneiderian papilloma
-DOID 	 name 
-DOID:6054	frontal sinus Schneiderian papilloma

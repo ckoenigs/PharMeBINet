@@ -1,3 +1,0 @@
-MONDO:0002796	melanotic medulloblastoma
-DOID 	 name 
-DOID:3868	melanotic medulloblastoma

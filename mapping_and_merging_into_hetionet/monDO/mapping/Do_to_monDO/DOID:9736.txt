@@ -1,3 +1,0 @@
-DOID:9736	blue drum syndrome
-monDO ID 	 name 
-MONDO:0004865	blue drum syndrome

@@ -1,3 +1,0 @@
-DOID:2401	clitoris cancer
-monDO ID 	 name 
-MONDO:0002290	clitoris cancer

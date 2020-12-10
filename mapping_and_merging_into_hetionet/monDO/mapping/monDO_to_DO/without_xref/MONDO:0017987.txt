@@ -1,3 +1,0 @@
-MONDO:0017987	syringomyelia
-DOID 	 name 
-DOID:327	syringomyelia

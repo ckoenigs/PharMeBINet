@@ -1,3 +1,0 @@
-MONDO:0004995	cardiovascular disease
-DOID 	 name 
-DOID:1287	cardiovascular system disease

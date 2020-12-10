@@ -1,3 +1,0 @@
-MONDO:0002670	ampulla of vater adenocarcinoma
-DOID 	 name 
-DOID:3502	ampulla of Vater adenocarcinoma

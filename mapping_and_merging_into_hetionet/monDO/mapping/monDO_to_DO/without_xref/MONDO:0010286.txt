@@ -1,3 +1,0 @@
-MONDO:0010286	syndromic X-linked intellectual disability Siderius type
-DOID 	 name 
-DOID:0060812	syndromic X-linked intellectual disability Siderius type

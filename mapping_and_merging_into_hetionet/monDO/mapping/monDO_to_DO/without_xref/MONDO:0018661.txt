@@ -1,3 +1,0 @@
-MONDO:0018661	Zika virus disease
-DOID 	 name 
-DOID:0060478	Zika fever

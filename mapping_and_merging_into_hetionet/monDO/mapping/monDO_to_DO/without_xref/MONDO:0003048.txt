@@ -1,3 +1,0 @@
-MONDO:0003709	type C thymoma
-DOID 	 name 
-DOID:4554	type C thymoma

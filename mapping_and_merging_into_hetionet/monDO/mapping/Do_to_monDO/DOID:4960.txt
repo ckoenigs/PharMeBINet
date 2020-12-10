@@ -1,3 +1,0 @@
-DOID:4960	bone marrow cancer
-monDO ID 	 name 
-MONDO:0005374	bone marrow neoplasm

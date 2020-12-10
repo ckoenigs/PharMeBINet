@@ -1,3 +1,0 @@
-MONDO:0019683	syndactyly type 2
-DOID 	 name 
-DOID:0060242	synpolydactyly

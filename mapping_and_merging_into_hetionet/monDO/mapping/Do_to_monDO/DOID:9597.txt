@@ -1,3 +1,0 @@
-DOID:9597	Krukenberg carcinoma
-monDO ID 	 name 
-MONDO:0004829	Krukenberg carcinoma

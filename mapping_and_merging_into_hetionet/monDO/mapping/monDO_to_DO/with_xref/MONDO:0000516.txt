@@ -1,3 +1,0 @@
-MONDO:0000516	phalanx chondroma
-DOID 	 name 
-DOID:0050898	phalanx chondroma

@@ -1,3 +1,0 @@
-DOID:3210	Pelizaeus-Merzbacher disease
-monDO ID 	 name 
-MONDO:0010714	Pelizaeus-Merzbacher disease

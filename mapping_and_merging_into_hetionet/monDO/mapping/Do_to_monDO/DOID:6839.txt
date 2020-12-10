@@ -1,3 +1,0 @@
-DOID:6839	breast intraductal proliferative lesion
-monDO ID 	 name 
-MONDO:0004007	breast intraductal proliferative lesion

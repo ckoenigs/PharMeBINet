@@ -1,3 +1,0 @@
-MONDO:0001602	labia minora carcinoma
-DOID 	 name 
-DOID:1293	labia minora carcinoma

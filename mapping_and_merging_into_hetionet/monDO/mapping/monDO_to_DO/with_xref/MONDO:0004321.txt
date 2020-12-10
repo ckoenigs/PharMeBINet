@@ -1,3 +1,0 @@
-MONDO:0004321	endometrial mixed adenocarcinoma
-DOID 	 name 
-DOID:7664	endometrial mixed adenocarcinoma

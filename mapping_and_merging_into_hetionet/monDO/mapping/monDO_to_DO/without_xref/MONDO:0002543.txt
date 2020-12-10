@@ -1,3 +1,0 @@
-MONDO:0002543	adult oligodendroglioma
-DOID 	 name 
-DOID:3186	adult oligodendroglioma

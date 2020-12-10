@@ -1,3 +1,0 @@
-MONDO:0000949	conjunctival degeneration
-DOID 	 name 
-DOID:10139	conjunctival degeneration

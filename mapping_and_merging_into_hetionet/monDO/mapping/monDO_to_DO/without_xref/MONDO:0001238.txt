@@ -1,3 +1,0 @@
-MONDO:0001238	polycythemia neonatorum
-DOID 	 name 
-DOID:11242	plethora of newborn

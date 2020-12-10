@@ -1,3 +1,0 @@
-DOID:440	neuromuscular disease
-monDO ID 	 name 
-MONDO:0019056	neuromuscular disease

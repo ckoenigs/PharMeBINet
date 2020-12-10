@@ -1,3 +1,0 @@
-MONDO:0001395	macular keratitis
-DOID 	 name 
-DOID:11871	macular keratitis

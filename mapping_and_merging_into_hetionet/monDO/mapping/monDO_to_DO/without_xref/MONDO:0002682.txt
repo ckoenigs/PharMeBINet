@@ -1,3 +1,0 @@
-MONDO:0002682	cerebral ventricle cancer
-DOID 	 name 
-DOID:3541	cerebral ventricle cancer

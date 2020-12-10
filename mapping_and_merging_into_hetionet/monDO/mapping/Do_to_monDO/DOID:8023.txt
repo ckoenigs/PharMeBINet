@@ -1,3 +1,0 @@
-DOID:8023	myxoid liposarcoma of the ovary
-monDO ID 	 name 
-MONDO:0004436	myxoid liposarcoma of the ovary

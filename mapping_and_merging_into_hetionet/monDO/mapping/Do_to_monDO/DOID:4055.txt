@@ -1,3 +1,0 @@
-DOID:4055	ectomesenchymoma
-monDO ID 	 name 
-MONDO:0002855	ectomesenchymoma

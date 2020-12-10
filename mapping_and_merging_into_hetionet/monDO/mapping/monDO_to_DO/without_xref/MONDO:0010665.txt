@@ -1,3 +1,0 @@
-MONDO:0010665	Wilson-Turner syndrome
-DOID 	 name 
-DOID:0060814	Wilson-Turner syndrome

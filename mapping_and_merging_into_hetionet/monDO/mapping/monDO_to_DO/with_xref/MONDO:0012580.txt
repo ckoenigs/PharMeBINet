@@ -1,3 +1,0 @@
-MONDO:0012580	hereditary pulmonary alveolar proteinosis
-DOID 	 name 
-DOID:12120	pulmonary alveolar proteinosis

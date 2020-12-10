@@ -1,3 +1,0 @@
-MONDO:0002517	tenosynovitis of foot and ankle
-DOID 	 name 
-DOID:312	tenosynovitis of foot and ankle

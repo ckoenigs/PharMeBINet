@@ -1,3 +1,0 @@
-DOID:0050846	hemidystonia
-monDO ID 	 name 
-MONDO:0000487	hemidystonia

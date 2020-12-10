@@ -1,3 +1,0 @@
-MONDO:0008116	oculopharyngeal muscular dystrophy
-DOID 	 name 
-DOID:11719	oculopharyngeal muscular dystrophy

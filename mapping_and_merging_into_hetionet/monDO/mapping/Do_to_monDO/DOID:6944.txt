@@ -1,3 +1,0 @@
-DOID:6944	vulvar seborrheic keratosis
-monDO ID 	 name 
-MONDO:0006622	vulvar seborrheic keratosis

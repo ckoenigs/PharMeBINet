@@ -1,3 +1,0 @@
-MONDO:0003487	adenoid squamous cell carcinoma
-DOID 	 name 
-DOID:5524	adenoid squamous cell carcinoma

@@ -1,3 +1,0 @@
-MONDO:0000889	haemophilus meningitis
-DOID 	 name 
-DOID:0080179	haemophilus meningitis

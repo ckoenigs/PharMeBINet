@@ -1,3 +1,0 @@
-MONDO:0001235	appendix cancer
-DOID 	 name 
-DOID:11239	appendix cancer

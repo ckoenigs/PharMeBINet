@@ -1,3 +1,0 @@
-DOID:10041	dysplastic nevus syndrome
-monDO ID 	 name 
-MONDO:0007964	dysplastic nevus syndrome

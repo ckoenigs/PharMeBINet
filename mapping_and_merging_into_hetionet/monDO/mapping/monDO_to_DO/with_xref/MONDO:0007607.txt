@@ -1,3 +1,0 @@
-MONDO:0007607	Birt-Hogg-Dube syndrome
-DOID 	 name 
-DOID:0050676	Birt-Hogg-Dube syndrome

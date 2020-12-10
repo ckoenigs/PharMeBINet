@@ -1,3 +1,0 @@
-DOID:5389	oxyphilic adenoma
-monDO ID 	 name 
-MONDO:0003424	oncocytic adenoma

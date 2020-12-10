@@ -1,3 +1,0 @@
-DOID:11330	erysipelas
-monDO ID 	 name 
-MONDO:0001266	erysipelas

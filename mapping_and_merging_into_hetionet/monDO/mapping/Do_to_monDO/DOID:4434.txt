@@ -1,3 +1,0 @@
-DOID:4434	small intestine neuroendocrine neoplasm
-monDO ID 	 name 
-MONDO:0002995	small intestine neuroendocrine neoplasm

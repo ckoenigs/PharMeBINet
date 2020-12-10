@@ -1,3 +1,0 @@
-MONDO:0012175	cataract 28
-DOID 	 name 
-DOID:0110244	cataract 28

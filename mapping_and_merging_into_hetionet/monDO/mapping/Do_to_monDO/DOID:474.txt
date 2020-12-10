@@ -1,3 +1,0 @@
-DOID:474	histiocytoid hemangioma
-monDO ID 	 name 
-MONDO:0003119	histiocytoid hemangioma

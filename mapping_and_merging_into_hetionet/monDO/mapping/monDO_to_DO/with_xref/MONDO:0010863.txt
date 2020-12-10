@@ -1,3 +1,0 @@
-MONDO:0010863	type 1 diabetes mellitus 5
-DOID 	 name 
-DOID:0110744	type 1 diabetes mellitus 5

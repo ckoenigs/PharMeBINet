@@ -1,3 +1,0 @@
-DOID:13134	hordeolum externum
-monDO ID 	 name 
-MONDO:0001642	hordeolum externum

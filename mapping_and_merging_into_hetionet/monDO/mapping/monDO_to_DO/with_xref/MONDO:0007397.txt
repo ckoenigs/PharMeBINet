@@ -1,3 +1,0 @@
-MONDO:0007397	craniometaphyseal dysplasia, autosomal dominant
-DOID 	 name 
-DOID:0080033	craniometaphyseal dysplasia

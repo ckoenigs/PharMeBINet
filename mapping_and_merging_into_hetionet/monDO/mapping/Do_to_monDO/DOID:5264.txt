@@ -1,3 +1,0 @@
-DOID:5264	epithelioid leiomyosarcoma
-monDO ID 	 name 
-MONDO:0003356	epithelioid leiomyosarcoma

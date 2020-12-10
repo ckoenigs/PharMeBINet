@@ -1,3 +1,0 @@
-MONDO:0003709	astrocytoma
-DOID 	 name 
-DOID:3069	astrocytoma

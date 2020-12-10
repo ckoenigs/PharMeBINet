@@ -1,3 +1,0 @@
-MONDO:0014537	nephronophthisis 19
-DOID 	 name 
-DOID:0111126	nephronophthisis 19

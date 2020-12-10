@@ -1,3 +1,0 @@
-MONDO:0005112	malignant pleural mesothelioma
-DOID 	 name 
-DOID:7474	malignant pleural mesothelioma

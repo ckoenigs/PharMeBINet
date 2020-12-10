@@ -1,3 +1,0 @@
-MONDO:0002340	tactile epilepsy
-DOID 	 name 
-DOID:2550	tactile epilepsy

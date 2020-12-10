@@ -1,3 +1,0 @@
-MONDO:0013411	cataract 16 multiple types
-DOID 	 name 
-DOID:0110250	cataract 16 multiple types

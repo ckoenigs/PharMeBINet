@@ -1,3 +1,0 @@
-DOID:4997	Camurati-Engelmann disease
-monDO ID 	 name 
-MONDO:0007542	Camurati-Engelmann disease

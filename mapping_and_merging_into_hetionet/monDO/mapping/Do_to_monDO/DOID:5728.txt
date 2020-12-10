@@ -1,3 +1,0 @@
-DOID:5728	diffuse peritoneal leiomyomatosis
-monDO ID 	 name 
-MONDO:0003613	diffuse peritoneal leiomyomatosis

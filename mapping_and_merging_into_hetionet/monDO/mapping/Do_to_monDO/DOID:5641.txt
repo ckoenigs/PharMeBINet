@@ -1,3 +1,0 @@
-DOID:5641	diffuse pulmonary fibrosis
-monDO ID 	 name 
-MONDO:0003563	diffuse pulmonary fibrosis

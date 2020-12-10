@@ -1,3 +1,0 @@
-DOID:0060476	Perlman syndrome
-monDO ID 	 name 
-MONDO:0009965	Perlman syndrome

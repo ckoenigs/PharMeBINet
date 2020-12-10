@@ -1,3 +1,0 @@
-DOID:10209	extrahepatic bile duct lipoma
-monDO ID 	 name 
-MONDO:0000978	extrahepatic bile duct lipoma

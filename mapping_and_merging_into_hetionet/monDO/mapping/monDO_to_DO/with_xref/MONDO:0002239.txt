@@ -1,3 +1,0 @@
-MONDO:0002239	post-surgical hypoinsulinemia
-DOID 	 name 
-DOID:2181	post-surgical hypoinsulinemia

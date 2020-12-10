@@ -1,3 +1,0 @@
-MONDO:0000351	hypermethioninemia (disease)
-DOID 	 name 
-DOID:0050544	hypermethioninemia

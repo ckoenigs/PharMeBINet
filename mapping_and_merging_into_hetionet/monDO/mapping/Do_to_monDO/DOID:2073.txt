@@ -1,3 +1,0 @@
-DOID:2073	perinatal intestinal perforation
-monDO ID 	 name 
-MONDO:0002196	perinatal intestinal perforation

@@ -1,3 +1,0 @@
-MONDO:0011028	autosomal recessive limb-girdle muscular dystrophy type 2F
-DOID 	 name 
-DOID:0110280	autosomal recessive limb-girdle muscular dystrophy type 2F

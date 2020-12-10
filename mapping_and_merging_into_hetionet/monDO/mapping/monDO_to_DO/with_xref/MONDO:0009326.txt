@@ -1,3 +1,0 @@
-MONDO:0009326	congenital heart block
-DOID 	 name 
-DOID:990	congenital heart block

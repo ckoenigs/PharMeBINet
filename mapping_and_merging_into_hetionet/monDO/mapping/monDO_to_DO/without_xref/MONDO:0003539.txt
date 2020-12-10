@@ -1,3 +1,0 @@
-MONDO:0003539	T-cell adult acute lymphocytic leukemia
-DOID 	 name 
-DOID:5602	T-cell adult acute lymphocytic leukemia

@@ -1,3 +1,0 @@
-MONDO:0014108	Fanconi anemia complementation group Q
-DOID 	 name 
-DOID:0111093	Fanconi anemia complementation group Q

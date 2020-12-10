@@ -1,3 +1,0 @@
-MONDO:0001868	primary angle-closure glaucoma
-DOID 	 name 
-DOID:1405	primary angle-closure glaucoma

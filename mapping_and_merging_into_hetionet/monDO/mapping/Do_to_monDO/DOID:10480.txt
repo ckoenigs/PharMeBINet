@@ -1,3 +1,0 @@
-DOID:10480	diaphragmatic eventration
-monDO ID 	 name 
-MONDO:0006726	diaphragmatic eventration (disease)

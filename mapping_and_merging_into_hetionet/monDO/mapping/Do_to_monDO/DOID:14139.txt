@@ -1,3 +1,0 @@
-DOID:14139	anus lymphoma
-monDO ID 	 name 
-MONDO:0001888	anus lymphoma

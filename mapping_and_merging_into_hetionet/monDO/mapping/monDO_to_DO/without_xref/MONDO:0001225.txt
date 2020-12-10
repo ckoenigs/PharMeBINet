@@ -1,3 +1,0 @@
-MONDO:0001225	opioid abuse
-DOID 	 name 
-DOID:11206	opioid abuse

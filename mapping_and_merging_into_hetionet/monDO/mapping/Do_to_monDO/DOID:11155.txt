@@ -1,3 +1,0 @@
-DOID:11155	hypohidrosis
-monDO ID 	 name 
-MONDO:0006560	hypohidrosis

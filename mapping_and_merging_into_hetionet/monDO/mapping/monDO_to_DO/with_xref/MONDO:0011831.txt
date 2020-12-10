@@ -1,3 +1,0 @@
-MONDO:0011831	arrhythmogenic right ventricular dysplasia 8
-DOID 	 name 
-DOID:0110076	arrhythmogenic right ventricular dysplasia 8

@@ -1,3 +1,0 @@
-DOID:4765	pulmonary blastoma
-monDO ID 	 name 
-MONDO:0005933	pulmonary blastoma

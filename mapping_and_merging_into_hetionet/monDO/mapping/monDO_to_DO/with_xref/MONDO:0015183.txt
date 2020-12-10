@@ -1,3 +1,0 @@
-MONDO:0015183	short bowel syndrome
-DOID 	 name 
-DOID:10605	short bowel syndrome

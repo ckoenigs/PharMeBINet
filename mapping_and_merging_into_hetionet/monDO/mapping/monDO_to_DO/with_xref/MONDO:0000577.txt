@@ -1,3 +1,0 @@
-MONDO:0003709	CD3epsilon deficiency
-DOID 	 name 
-DOID:0060017	CD3epsilon deficiency

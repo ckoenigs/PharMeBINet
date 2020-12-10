@@ -1,3 +1,0 @@
-DOID:9663	aphthous stomatitis
-monDO ID 	 name 
-MONDO:0004845	aphthous stomatitis

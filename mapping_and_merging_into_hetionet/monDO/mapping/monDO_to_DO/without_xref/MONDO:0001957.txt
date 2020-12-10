@@ -1,3 +1,0 @@
-MONDO:0001957	critical illness polyneuropathy
-DOID 	 name 
-DOID:14402	critical illness polyneuropathy

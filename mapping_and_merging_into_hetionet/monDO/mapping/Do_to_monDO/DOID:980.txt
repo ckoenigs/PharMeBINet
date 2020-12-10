@@ -1,3 +1,0 @@
-DOID:980	choroidal sclerosis
-monDO ID 	 name 
-MONDO:0004885	choroidal sclerosis

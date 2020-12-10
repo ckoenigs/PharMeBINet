@@ -1,3 +1,0 @@
-DOID:8187	gestational uterine corpus choriocarcinoma
-monDO ID 	 name 
-MONDO:0004490	gestational uterine corpus choriocarcinoma

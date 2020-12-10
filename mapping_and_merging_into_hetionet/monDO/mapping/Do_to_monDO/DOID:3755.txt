@@ -1,3 +1,0 @@
-DOID:3755	antithrombin III deficiency
-monDO ID 	 name 
-MONDO:0013144	antithrombin III deficiency

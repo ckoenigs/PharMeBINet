@@ -1,3 +1,0 @@
-DOID:0060794	hypomyelinating leukodystrophy 7 with or without oligodontia and-or hypogonadotropic hypogonadism
-monDO ID 	 name 
-MONDO:0011897	hypomyelinating leukodystrophy 7 with or without oligodontia and-or hypogonadotropic hypogonadism

@@ -1,3 +1,0 @@
-MONDO:0001031	purulent acute otitis media
-DOID 	 name 
-DOID:10435	purulent acute otitis media

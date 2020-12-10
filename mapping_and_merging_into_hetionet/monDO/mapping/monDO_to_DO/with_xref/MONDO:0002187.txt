@@ -1,3 +1,0 @@
-MONDO:0002187	vulvar disease
-DOID 	 name 
-DOID:2059	vulvar disease

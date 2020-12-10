@@ -1,3 +1,0 @@
-DOID:0060388	chromosomal deletion syndrome
-monDO ID 	 name 
-MONDO:0000761	chromosomal deletion syndrome

@@ -1,3 +1,0 @@
-MONDO:0000964	skin lipoma
-DOID 	 name 
-DOID:10188	skin lipoma

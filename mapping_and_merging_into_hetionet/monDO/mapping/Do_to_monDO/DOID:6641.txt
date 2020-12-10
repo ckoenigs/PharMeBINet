@@ -1,3 +1,0 @@
-DOID:6641	breast juvenile papillomatosis
-monDO ID 	 name 
-MONDO:0003955	juvenile breast papillomatosis

@@ -1,3 +1,0 @@
-MONDO:0004838	orthostatic proteinuria
-DOID 	 name 
-DOID:9617	orthostatic proteinuria

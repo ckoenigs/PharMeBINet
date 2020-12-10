@@ -1,3 +1,0 @@
-MONDO:0007247	basal ganglia calcification, idiopathic, childhood-onset
-DOID 	 name 
-DOID:0060230	basal ganglia calcification

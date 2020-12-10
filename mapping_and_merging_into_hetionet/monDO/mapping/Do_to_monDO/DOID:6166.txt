@@ -1,3 +1,0 @@
-DOID:6166	prostatic urethra urothelial carcinoma
-monDO ID 	 name 
-MONDO:0003790	prostatic urethra urothelial carcinoma

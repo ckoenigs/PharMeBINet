@@ -1,3 +1,0 @@
-MONDO:0000286	Epstein-Barr virus hepatitis
-DOID 	 name 
-DOID:0050204	Epstein-Barr virus hepatitis

@@ -1,3 +1,0 @@
-DOID:5324	fallopian tube germ cell cancer
-monDO ID 	 name 
-MONDO:0003392	fallopian tube germ cell cancer

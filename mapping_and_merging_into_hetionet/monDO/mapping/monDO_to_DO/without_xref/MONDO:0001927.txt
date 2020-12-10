@@ -1,3 +1,0 @@
-MONDO:0001927	pulmonary valve insufficiency
-DOID 	 name 
-DOID:14265	pulmonary valve insufficiency

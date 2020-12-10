@@ -1,3 +1,0 @@
-DOID:12603	acute leukemia
-monDO ID 	 name 
-MONDO:0010643	acute leukemia (disease)

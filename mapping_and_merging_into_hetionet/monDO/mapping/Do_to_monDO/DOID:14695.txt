@@ -1,3 +1,0 @@
-DOID:14695	galactokinase deficiency
-monDO ID 	 name 
-MONDO:0009255	galactokinase deficiency

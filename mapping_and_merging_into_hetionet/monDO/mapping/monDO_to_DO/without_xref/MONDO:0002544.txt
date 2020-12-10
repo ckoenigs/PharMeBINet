@@ -1,3 +1,0 @@
-MONDO:0002544	brain oligodendroglioma
-DOID 	 name 
-DOID:3187	brain oligodendroglioma

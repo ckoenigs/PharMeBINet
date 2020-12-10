@@ -1,3 +1,0 @@
-DOID:1993	rectum cancer
-monDO ID 	 name 
-MONDO:0006519	rectal cancer

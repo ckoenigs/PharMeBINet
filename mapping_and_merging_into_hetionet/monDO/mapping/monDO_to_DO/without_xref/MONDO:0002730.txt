@@ -1,3 +1,0 @@
-MONDO:0002730	childhood kidney neoplasm
-DOID 	 name 
-DOID:3675	childhood kidney neoplasm

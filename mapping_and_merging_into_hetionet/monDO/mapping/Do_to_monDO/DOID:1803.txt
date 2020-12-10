@@ -1,3 +1,0 @@
-DOID:1803	neuritis
-monDO ID 	 name 
-MONDO:0002122	neuritis

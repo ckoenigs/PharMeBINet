@@ -1,3 +1,0 @@
-DOID:10302	parotid disease
-monDO ID 	 name 
-MONDO:0005899	parotid disease

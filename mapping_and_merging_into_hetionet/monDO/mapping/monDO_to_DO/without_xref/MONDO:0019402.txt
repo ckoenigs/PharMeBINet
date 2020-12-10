@@ -1,3 +1,0 @@
-MONDO:0019402	beta thalassemia
-DOID 	 name 
-DOID:12241	beta thalassemia

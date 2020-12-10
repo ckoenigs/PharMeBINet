@@ -1,3 +1,0 @@
-MONDO:0015194	sideroblastic anemia
-DOID 	 name 
-DOID:8955	sideroblastic anemia

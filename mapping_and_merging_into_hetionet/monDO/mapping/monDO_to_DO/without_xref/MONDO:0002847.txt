@@ -1,3 +1,0 @@
-MONDO:0002847	skeletal muscle cancer
-DOID 	 name 
-DOID:4043	skeletal muscle cancer

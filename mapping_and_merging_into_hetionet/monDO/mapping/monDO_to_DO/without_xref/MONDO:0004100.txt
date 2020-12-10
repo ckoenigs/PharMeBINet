@@ -1,3 +1,0 @@
-MONDO:0004100	lung mixed small cell and squamous cell carcinoma
-DOID 	 name 
-DOID:7081	lung mixed small cell and squamous cell carcinoma

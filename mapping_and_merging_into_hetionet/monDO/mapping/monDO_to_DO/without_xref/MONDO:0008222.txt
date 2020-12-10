@@ -1,3 +1,0 @@
-MONDO:0008222	Andersen-Tawil syndrome
-DOID 	 name 
-DOID:0050434	Andersen-Tawil syndrome

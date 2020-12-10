@@ -1,3 +1,0 @@
-MONDO:0005232	large cell carcinoma
-DOID 	 name 
-DOID:4552	large cell carcinoma

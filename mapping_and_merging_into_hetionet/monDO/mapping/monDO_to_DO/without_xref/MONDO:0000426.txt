@@ -1,3 +1,0 @@
-MONDO:0000426	autosomal dominant disease
-DOID 	 name 
-DOID:0050736	autosomal dominant disease

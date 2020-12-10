@@ -1,3 +1,0 @@
-MONDO:0005080	portal hypertension
-DOID 	 name 
-DOID:10762	portal hypertension

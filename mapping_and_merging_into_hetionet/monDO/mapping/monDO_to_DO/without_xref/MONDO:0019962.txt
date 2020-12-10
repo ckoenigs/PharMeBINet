@@ -1,3 +1,0 @@
-MONDO:0019962	thyroid lymphoma
-DOID 	 name 
-DOID:10011	thyroid lymphoma

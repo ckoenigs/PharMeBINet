@@ -1,3 +1,0 @@
-MONDO:0005147	type 1 diabetes mellitus
-DOID 	 name 
-DOID:9744	type 1 diabetes mellitus

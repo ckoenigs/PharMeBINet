@@ -1,3 +1,0 @@
-MONDO:0019790	neuroleptic malignant syndrome
-DOID 	 name 
-DOID:14464	neuroleptic malignant syndrome

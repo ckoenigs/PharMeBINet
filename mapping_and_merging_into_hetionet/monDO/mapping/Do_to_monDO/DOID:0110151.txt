@@ -1,3 +1,0 @@
-DOID:0110151	Charcot-Marie-Tooth disease type 1C
-monDO ID 	 name 
-MONDO:0010995	Charcot-Marie-tooth disease type 1C

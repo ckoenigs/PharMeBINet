@@ -1,3 +1,0 @@
-MONDO:0005706	coccidioidomycosis
-DOID 	 name 
-DOID:13450	coccidioidomycosis

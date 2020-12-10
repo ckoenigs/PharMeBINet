@@ -1,3 +1,0 @@
-DOID:7971	microcystic variant infiltrating bladder urothelial carcinoma
-monDO ID 	 name 
-MONDO:0004418	microcystic variant infiltrating bladder urothelial carcinoma

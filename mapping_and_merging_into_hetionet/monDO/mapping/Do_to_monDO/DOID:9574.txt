@@ -1,3 +1,0 @@
-DOID:9574	choanal atresia
-monDO ID 	 name 
-MONDO:0012155	choanal atresia

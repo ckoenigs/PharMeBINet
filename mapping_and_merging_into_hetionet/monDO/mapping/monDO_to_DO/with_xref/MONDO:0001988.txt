@@ -1,3 +1,0 @@
-MONDO:0001988	external pathological resorption
-DOID 	 name 
-DOID:14529	external pathological resorption

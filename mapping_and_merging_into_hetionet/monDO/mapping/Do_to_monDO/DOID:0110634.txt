@@ -1,3 +1,0 @@
-DOID:0110634	congenital muscular dystrophy 1B
-monDO ID 	 name 
-MONDO:0011486	congenital muscular dystrophy 1B

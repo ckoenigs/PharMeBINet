@@ -1,3 +1,0 @@
-MONDO:0003335	chronic polyneuropathy
-DOID 	 name 
-DOID:5221	chronic polyneuropathy

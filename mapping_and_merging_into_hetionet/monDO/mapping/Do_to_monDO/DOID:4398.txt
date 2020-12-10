@@ -1,3 +1,0 @@
-DOID:4398	pustulosis of palm and sole
-monDO ID 	 name 
-MONDO:0002985	pustulosis of palm and sole

@@ -1,3 +1,0 @@
-DOID:12305	Bloch-Sulzberger syndrome
-monDO ID 	 name 
-MONDO:0010631	Bloch-Sulzberger syndrome

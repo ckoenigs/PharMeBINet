@@ -1,3 +1,0 @@
-DOID:0110202	Charcot-Marie-Tooth disease dominant intermediate A
-monDO ID 	 name 
-MONDO:0011675	Charcot-Marie-tooth disease dominant intermediate a

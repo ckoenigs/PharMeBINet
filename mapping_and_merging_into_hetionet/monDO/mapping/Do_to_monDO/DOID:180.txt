@@ -1,3 +1,0 @@
-DOID:180	ossifying fibroma
-monDO ID 	 name 
-MONDO:0002119	ossifying fibroma (disease)

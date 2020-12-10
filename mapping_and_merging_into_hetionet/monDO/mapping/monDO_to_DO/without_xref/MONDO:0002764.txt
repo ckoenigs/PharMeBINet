@@ -1,3 +1,0 @@
-MONDO:0002764	urethra squamous cell carcinoma
-DOID 	 name 
-DOID:3750	urethra squamous cell carcinoma

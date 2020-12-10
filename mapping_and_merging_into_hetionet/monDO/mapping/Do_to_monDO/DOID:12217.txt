@@ -1,3 +1,0 @@
-DOID:12217	Lewy body dementia
-monDO ID 	 name 
-MONDO:0007488	Lewy body dementia

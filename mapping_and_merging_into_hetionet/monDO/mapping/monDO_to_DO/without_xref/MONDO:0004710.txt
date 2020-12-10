@@ -1,3 +1,0 @@
-MONDO:0004710	uterus carcinoma in situ
-DOID 	 name 
-DOID:9108	uterus carcinoma in situ

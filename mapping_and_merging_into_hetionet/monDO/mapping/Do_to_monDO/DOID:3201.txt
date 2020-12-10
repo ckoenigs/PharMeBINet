@@ -1,3 +1,0 @@
-DOID:3201	sympathetic neurilemmoma
-monDO ID 	 name 
-MONDO:0002554	sympathetic neurilemmoma

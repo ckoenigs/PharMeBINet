@@ -1,3 +1,0 @@
-MONDO:0004669	salivary gland cancer
-DOID 	 name 
-DOID:8850	salivary gland cancer

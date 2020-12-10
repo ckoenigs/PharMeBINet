@@ -1,3 +1,0 @@
-DOID:0050562	West syndrome
-monDO ID 	 name 
-MONDO:0018097	West syndrome

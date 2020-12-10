@@ -1,3 +1,0 @@
-MONDO:0000393	partial fetal alcohol syndrome
-DOID 	 name 
-DOID:0050666	partial fetal alcohol syndrome

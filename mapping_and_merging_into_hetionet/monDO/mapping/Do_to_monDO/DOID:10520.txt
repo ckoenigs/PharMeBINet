@@ -1,3 +1,0 @@
-DOID:10520	acute infection of pinna
-monDO ID 	 name 
-MONDO:0001053	acute infection of pinna

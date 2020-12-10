@@ -1,3 +1,0 @@
-DOID:2739	Gilbert syndrome
-monDO ID 	 name 
-MONDO:0007745	Gilbert syndrome

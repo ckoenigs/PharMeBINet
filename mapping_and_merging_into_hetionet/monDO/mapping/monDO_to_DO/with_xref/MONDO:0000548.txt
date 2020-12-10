@@ -1,3 +1,0 @@
-MONDO:0000548	ovarian clear cell cancer
-DOID 	 name 
-DOID:0050934	ovarian clear cell carcinoma

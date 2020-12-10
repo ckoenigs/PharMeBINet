@@ -1,3 +1,0 @@
-MONDO:0014471	isolated ATP synthase deficiency
-DOID 	 name 
-DOID:0060286	combined oxidative phosphorylation deficiency

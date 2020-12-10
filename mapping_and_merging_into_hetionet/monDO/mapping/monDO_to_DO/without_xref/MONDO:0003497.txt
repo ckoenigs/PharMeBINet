@@ -1,3 +1,0 @@
-MONDO:0003497	renal pelvis squamous cell carcinoma
-DOID 	 name 
-DOID:5534	renal pelvis squamous cell carcinoma

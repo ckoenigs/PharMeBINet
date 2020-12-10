@@ -1,3 +1,0 @@
-DOID:3698	bile duct mucinous adenocarcinoma
-monDO ID 	 name 
-MONDO:0002739	bile duct mucinous adenocarcinoma

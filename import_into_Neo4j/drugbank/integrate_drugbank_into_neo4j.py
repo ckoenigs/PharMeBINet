@@ -4,7 +4,8 @@ Created on Mon Jan 15 12:49:17 2018
 
 @author: Cassandra
 """
-from py2neo import Graph, authenticate
+sys.path.append("../..")
+import create_connection_to_databases, authenticate
 import datetime
 import sys, csv
 import pandas as pd

@@ -1,3 +1,0 @@
-DOID:13690	acute gonococcal cystitis
-monDO ID 	 name 
-MONDO:0001777	acute gonococcal cystitis

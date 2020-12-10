@@ -1,3 +1,0 @@
-MONDO:0000470	endocardium disease
-DOID 	 name 
-DOID:0050825	endocardium disease

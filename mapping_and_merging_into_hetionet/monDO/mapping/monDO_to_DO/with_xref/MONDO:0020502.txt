@@ -1,3 +1,0 @@
-MONDO:0020502	yellow fever
-DOID 	 name 
-DOID:9682	yellow fever

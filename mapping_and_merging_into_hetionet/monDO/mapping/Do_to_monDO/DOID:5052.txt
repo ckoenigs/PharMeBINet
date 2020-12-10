@@ -1,3 +1,0 @@
-DOID:5052	melioidosis
-monDO ID 	 name 
-MONDO:0017775	melioidosis

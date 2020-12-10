@@ -1,3 +1,0 @@
-MONDO:0001537	tuberculous epididymitis
-DOID 	 name 
-DOID:1251	tuberculous epididymitis

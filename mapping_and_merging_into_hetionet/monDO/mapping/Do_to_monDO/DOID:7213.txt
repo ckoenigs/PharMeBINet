@@ -1,3 +1,0 @@
-DOID:7213	transitional meningioma
-monDO ID 	 name 
-MONDO:0004146	transitional meningioma

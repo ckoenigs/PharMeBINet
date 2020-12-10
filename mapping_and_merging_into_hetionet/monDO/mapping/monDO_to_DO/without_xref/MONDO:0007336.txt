@@ -1,3 +1,0 @@
-MONDO:0007336	isolated cleft palate
-DOID 	 name 
-DOID:0110213	isolated cleft palate

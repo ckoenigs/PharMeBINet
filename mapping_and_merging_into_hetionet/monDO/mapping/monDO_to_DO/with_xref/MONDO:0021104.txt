@@ -1,3 +1,0 @@
-MONDO:0021104	alcoholic fatty liver disease
-DOID 	 name 
-DOID:9452	fatty liver disease

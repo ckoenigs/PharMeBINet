@@ -1,3 +1,0 @@
-DOID:543	dystonia
-monDO ID 	 name 
-MONDO:0003441	dystonia (disease)

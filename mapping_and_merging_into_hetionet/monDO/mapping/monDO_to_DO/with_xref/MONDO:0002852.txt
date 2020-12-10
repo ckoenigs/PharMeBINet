@@ -1,3 +1,0 @@
-MONDO:0002852	mediastinum sarcoma
-DOID 	 name 
-DOID:4050	mediastinum sarcoma

@@ -1,3 +1,0 @@
-MONDO:0002906	scleroderma
-DOID 	 name 
-DOID:419	scleroderma

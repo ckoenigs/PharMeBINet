@@ -1,3 +1,0 @@
-MONDO:0000796	cow milk allergy (disease)
-DOID 	 name 
-DOID:0060521	cow milk allergy

@@ -1,3 +1,0 @@
-MONDO:0001086	partial optic atrophy
-DOID 	 name 
-DOID:10631	partial optic atrophy

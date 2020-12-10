@@ -1,3 +1,0 @@
-MONDO:0002104	conversion disorder
-DOID 	 name 
-DOID:1768	conversion disorder

@@ -1,3 +1,0 @@
-DOID:7566	eccrine porocarcinoma
-monDO ID 	 name 
-MONDO:0006189	eccrine porocarcinoma

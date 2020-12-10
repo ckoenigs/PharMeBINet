@@ -1,3 +1,0 @@
-MONDO:0001441	pica disease
-DOID 	 name 
-DOID:12128	pica disease

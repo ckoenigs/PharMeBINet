@@ -1,3 +1,0 @@
-MONDO:0001006	glaucomatous atrophy of optic disc
-DOID 	 name 
-DOID:10337	glaucomatous atrophy of optic disc

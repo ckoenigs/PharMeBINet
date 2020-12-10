@@ -1,3 +1,0 @@
-MONDO:0002402	malignant giant cell tumor
-DOID 	 name 
-DOID:2705	malignant giant cell tumor

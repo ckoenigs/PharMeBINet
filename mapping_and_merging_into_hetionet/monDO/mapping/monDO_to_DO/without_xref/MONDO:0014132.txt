@@ -1,3 +1,0 @@
-MONDO:0014132	multiple mitochondrial dysfunctions syndrome 3
-DOID 	 name 
-DOID:0080135	multiple mitochondrial dysfunctions syndrome 3

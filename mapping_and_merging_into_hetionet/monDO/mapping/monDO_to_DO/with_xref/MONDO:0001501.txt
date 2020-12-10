@@ -1,3 +1,0 @@
-MONDO:0001501	retroperitoneal sarcoma
-DOID 	 name 
-DOID:12341	retroperitoneal sarcoma

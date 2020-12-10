@@ -1,3 +1,0 @@
-MONDO:0004078	mucinous intrahepatic cholangiocarcinoma
-DOID 	 name 
-DOID:7024	mucinous intrahepatic cholangiocarcinoma

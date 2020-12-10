@@ -1,3 +1,0 @@
-MONDO:0016824	myofibromatosis
-DOID 	 name 
-DOID:0080109	infantile myofibromatosis

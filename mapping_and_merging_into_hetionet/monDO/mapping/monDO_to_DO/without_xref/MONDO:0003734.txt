@@ -1,3 +1,0 @@
-MONDO:0003734	adult central nervous system immature teratoma
-DOID 	 name 
-DOID:6018	adult central nervous system immature teratoma

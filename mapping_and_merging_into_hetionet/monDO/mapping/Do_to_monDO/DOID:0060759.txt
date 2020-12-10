@@ -1,3 +1,0 @@
-DOID:0060759	immunodeficiency with hyper IgM type 5
-monDO ID 	 name 
-MONDO:0011971	hyper-IgM syndrome type 5

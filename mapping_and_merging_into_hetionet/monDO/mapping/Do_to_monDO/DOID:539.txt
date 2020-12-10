@@ -1,3 +1,0 @@
-DOID:539	ophthalmoplegia
-monDO ID 	 name 
-MONDO:0003425	ophthalmoplegia

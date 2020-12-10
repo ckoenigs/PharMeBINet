@@ -1,3 +1,0 @@
-DOID:0060006	artemis deficiency
-monDO ID 	 name 
-MONDO:0000570	severe combined immunodeficiency due to artemis deficiency

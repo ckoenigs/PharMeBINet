@@ -1,3 +1,0 @@
-MONDO:0005371	mood disorder
-DOID 	 name 
-DOID:3324	mood disorder

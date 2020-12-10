@@ -1,3 +1,0 @@
-MONDO:0009406	hypertrichotic osteochondrodysplasia Cantu type
-DOID 	 name 
-DOID:0060569	hypertrichotic osteochondrodysplasia Cantu type

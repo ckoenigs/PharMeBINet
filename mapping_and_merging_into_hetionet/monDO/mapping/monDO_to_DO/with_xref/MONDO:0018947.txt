@@ -1,4 +1,0 @@
-MONDO:0018947	centronuclear myopathy
-DOID 	 name 
-DOID:422	congenital structural myopathy
-DOID:14717	centronuclear myopathy

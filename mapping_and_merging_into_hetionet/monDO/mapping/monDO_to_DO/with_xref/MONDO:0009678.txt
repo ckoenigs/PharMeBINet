@@ -1,3 +1,0 @@
-MONDO:0009678	Fukuyama congenital muscular dystrophy
-DOID 	 name 
-DOID:0050559	Fukuyama congenital muscular dystrophy

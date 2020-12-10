@@ -1,3 +1,0 @@
-DOID:4491	persian gulf syndrome
-monDO ID 	 name 
-MONDO:0005907	persian gulf syndrome

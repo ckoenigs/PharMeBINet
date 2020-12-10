@@ -1,5 +1,0 @@
-MONDO:0003709	systemic mastocytosis
-DOID 	 name 
-DOID:4798	aggressive systemic mastocytosis
-DOID:349	systemic mastocytosis
-DOID:4660	indolent systemic mastocytosis

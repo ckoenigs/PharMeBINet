@@ -1,3 +1,0 @@
-MONDO:0018305	chronic granulomatous disease
-DOID 	 name 
-DOID:3265	chronic granulomatous disease

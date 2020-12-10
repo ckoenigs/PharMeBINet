@@ -1,3 +1,0 @@
-DOID:1554	vibratory urticaria
-monDO ID 	 name 
-MONDO:0006618	vibratory urticaria

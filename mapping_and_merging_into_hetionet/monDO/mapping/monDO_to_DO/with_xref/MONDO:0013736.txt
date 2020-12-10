@@ -1,3 +1,0 @@
-MONDO:0013736	myopathy, centronuclear, 3
-DOID 	 name 
-DOID:14717	centronuclear myopathy

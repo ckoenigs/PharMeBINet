@@ -1,3 +1,0 @@
-DOID:8419	colloid adenoma
-monDO ID 	 name 
-MONDO:0004558	thyroid gland macrofollicular adenoma

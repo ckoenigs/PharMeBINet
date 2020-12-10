@@ -1,3 +1,0 @@
-MONDO:0007232	autosomal dominant brachyolmia
-DOID 	 name 
-DOID:0050690	brachyolmia

@@ -1,3 +1,0 @@
-MONDO:0006602	porokeratosis (disease)
-DOID 	 name 
-DOID:3805	porokeratosis

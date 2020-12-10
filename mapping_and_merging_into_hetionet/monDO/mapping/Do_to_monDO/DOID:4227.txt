@@ -1,3 +1,0 @@
-DOID:4227	uterine corpus endometrial stromal sarcoma
-monDO ID 	 name 
-MONDO:0002923	uterine corpus endometrial stromal sarcoma

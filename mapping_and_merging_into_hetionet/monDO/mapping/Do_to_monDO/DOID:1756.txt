@@ -1,3 +1,0 @@
-DOID:1756	facial nerve disease
-monDO ID 	 name 
-MONDO:0002098	facial nerve disease

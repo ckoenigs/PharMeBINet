@@ -1,3 +1,0 @@
-MONDO:0014068	cone-rod dystrophy 17
-DOID 	 name 
-DOID:0111023	cone-rod dystrophy 17

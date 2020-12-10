@@ -1,3 +1,0 @@
-DOID:8221	upper clivus meningioma
-monDO ID 	 name 
-MONDO:0004503	upper clivus meningioma

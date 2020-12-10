@@ -1,3 +1,0 @@
-DOID:7533	subareolar duct papillomatosis
-monDO ID 	 name 
-MONDO:0004268	subareolar duct papillomatosis

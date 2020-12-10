@@ -1,3 +1,0 @@
-DOID:5236	subungual glomus tumor
-monDO ID 	 name 
-MONDO:0003341	subungual glomus tumor

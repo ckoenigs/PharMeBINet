@@ -1,3 +1,0 @@
-DOID:0060080	Her2-receptor negative breast cancer
-monDO ID 	 name 
-MONDO:0000618	Her2-receptor negative breast cancer

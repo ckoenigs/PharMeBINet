@@ -1,3 +1,0 @@
-DOID:7488	posterior urethra cancer
-monDO ID 	 name 
-MONDO:0004240	posterior urethra cancer

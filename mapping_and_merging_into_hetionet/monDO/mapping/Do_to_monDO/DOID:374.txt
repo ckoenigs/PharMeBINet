@@ -1,3 +1,0 @@
-DOID:374	nutrition disease
-monDO ID 	 name 
-MONDO:0005137	nutritional disorder

@@ -1,3 +1,0 @@
-MONDO:0001224	Angelucci's syndrome
-DOID 	 name 
-DOID:11203	Angelucci's syndrome

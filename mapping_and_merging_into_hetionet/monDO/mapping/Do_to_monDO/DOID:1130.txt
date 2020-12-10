@@ -1,3 +1,0 @@
-DOID:1130	pituitary infarct
-monDO ID 	 name 
-MONDO:0001259	pituitary infarct

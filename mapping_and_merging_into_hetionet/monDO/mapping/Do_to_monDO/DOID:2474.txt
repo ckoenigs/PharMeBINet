@@ -1,3 +1,0 @@
-DOID:2474	vernal conjunctivitis
-monDO ID 	 name 
-MONDO:0002313	vernal conjunctivitis

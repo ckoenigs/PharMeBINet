@@ -1,3 +1,0 @@
-MONDO:0017623	PTEN hamartoma tumor syndrome
-DOID 	 name 
-DOID:0080191	PTEN hamartoma tumor syndrome

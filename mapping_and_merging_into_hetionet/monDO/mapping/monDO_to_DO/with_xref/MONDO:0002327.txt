@@ -1,3 +1,0 @@
-MONDO:0002327	intracranial cavernous angioma
-DOID 	 name 
-DOID:2516	intracranial cavernous angioma

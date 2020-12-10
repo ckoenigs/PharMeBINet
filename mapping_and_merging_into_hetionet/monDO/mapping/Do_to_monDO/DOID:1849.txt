@@ -1,3 +1,0 @@
-DOID:1849	cannabis dependence
-monDO ID 	 name 
-MONDO:0005689	cannabis dependence

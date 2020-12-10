@@ -1,3 +1,0 @@
-MONDO:0006556	hand dermatosis
-DOID 	 name 
-DOID:3158	hand dermatosis

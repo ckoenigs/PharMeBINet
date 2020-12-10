@@ -1,3 +1,0 @@
-MONDO:0011264	torsion dystonia 6
-DOID 	 name 
-DOID:0090039	torsion dystonia 6

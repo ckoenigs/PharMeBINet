@@ -1,3 +1,0 @@
-MONDO:0002541	spinal cord oligodendroglioma
-DOID 	 name 
-DOID:3184	spinal cord oligodendroglioma

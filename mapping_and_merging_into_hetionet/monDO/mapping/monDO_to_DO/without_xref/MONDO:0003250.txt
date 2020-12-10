@@ -1,3 +1,0 @@
-MONDO:0003250	benign granular cell tumor
-DOID 	 name 
-DOID:5039	myoblastoma

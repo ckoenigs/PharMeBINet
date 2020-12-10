@@ -1,3 +1,0 @@
-MONDO:0002590	combined thymoma
-DOID 	 name 
-DOID:3281	combined thymoma

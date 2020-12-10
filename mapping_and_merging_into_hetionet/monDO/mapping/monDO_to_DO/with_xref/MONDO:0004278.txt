@@ -1,3 +1,0 @@
-MONDO:0004278	infiltrating bladder urothelial carcinoma sarcomatoid variant
-DOID 	 name 
-DOID:7553	infiltrating bladder urothelial carcinoma sarcomatoid variant

@@ -1,3 +1,0 @@
-MONDO:0013968	PGM1-CDG
-DOID 	 name 
-DOID:0050570	congenital disorder of glycosylation type I

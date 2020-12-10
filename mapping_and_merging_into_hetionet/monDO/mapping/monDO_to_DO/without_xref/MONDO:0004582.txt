@@ -1,3 +1,0 @@
-MONDO:0004582	rheumatic myocarditis
-DOID 	 name 
-DOID:8481	rheumatic myocarditis

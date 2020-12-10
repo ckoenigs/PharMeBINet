@@ -1,3 +1,0 @@
-DOID:0080102	congenital fiber-type disproportion
-monDO ID 	 name 
-MONDO:0000865	congenital fiber-type disproportion

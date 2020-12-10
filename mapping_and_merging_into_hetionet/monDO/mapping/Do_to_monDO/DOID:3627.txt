@@ -1,3 +1,0 @@
-DOID:3627	aortic aneurysm
-monDO ID 	 name 
-MONDO:0005160	aortic aneurysm (disease)

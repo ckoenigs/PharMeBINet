@@ -1,3 +1,0 @@
-MONDO:0019086	carcinoma of esophagus
-DOID 	 name 
-DOID:1107	esophageal carcinoma

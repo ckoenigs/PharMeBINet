@@ -2,6 +2,7 @@ import sys
 import datetime
 import csv, re
 import wget
+import os.path
 import gzip, io
 
 # list of all two letter codes in the order that they are used
@@ -62,15 +63,16 @@ dict_two_character_type = {
 
 # open tsv file
 file = open('uniprot.tsv', 'w')
-header = ['entry', 'status', 'sequenceLength', 'identifier', 'second_ac_numbers', 'name', 'synonyms',  'ncbi_taxid', 'as_sequence',
-          'gene_name', 'general_function', 'chromosome_location', 'pfam','gene_id', 'go_classifiers', 'xrefs',
-          'subcellular_location', 'protein_existence', 'pubmed_ids']
+header = ['entry', 'status', 'sequenceLength', 'identifier', 'second_ac_numbers', 'name', 'synonyms', 'ncbi_taxid',
+          'as_sequence',
+          'gene_name', 'general_function', 'chromosome_location', 'pfam', 'gene_id', 'go_classifiers', 'xrefs',
+          'subcellular_location', 'protein_existence', 'pubmed_ids', 'pathway', 'disease']
 csv_writer = csv.DictWriter(file, fieldnames=header, delimiter='\t',
                             quotechar='"', quoting=csv.QUOTE_MINIMAL)
 csv_writer.writeheader()
 
-#count_all proteins
-counter=0
+# count_all proteins
+counter = 0
 
 # path to project dictionary
 if len(sys.argv) > 1:
@@ -80,7 +82,7 @@ else:
 
 # all queries which are used to integrate Protein with the extra labels into Hetionet
 cypherfile = open('cypher_protein.cypher', 'w')
-query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/uniProt/uniprot.tsv" As line Fieldterminator '\\t' Create (n:Protein_Uniprot{ '''
+query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/uniProt/uniprot.tsv" As line Fieldterminator '\\t' Create (n:Protein_Uniprot{ '''
 
 '''
 integrate the dictionary information into the csv file
@@ -88,15 +90,14 @@ integrate the dictionary information into the csv file
 
 
 def integration_dict_info_into_csv(dict_information):
-    #counter of all proteins which are integrated into the tsv file
+    # counter of all proteins which are integrated into the tsv file
     global counter, query
-
 
     for property, value in dict_information.items():
 
         # add all properties with the right type to the query
-        if counter==0:
-            if type(value) in [list,set]:
+        if counter == 0:
+            if type(value) in [list, set]:
                 query += property + ':split(line.' + property + ',"|"), '
             else:
                 query += property + ':line.' + property + ', '
@@ -108,13 +109,20 @@ def integration_dict_info_into_csv(dict_information):
 
     csv_writer.writerow(dict_information)
 
-    #finsih the query and write into the file
-    if counter==0:
-        query=query[:-2]+'});\n'
+    # finsih the query and write into the file
+    if counter == 0:
+        for head in header:
+            if head not in dict_information:
+                print(head)
+                if head in ['disease', 'pathway']:
+                    query += head + ':split(line.' + head + ',"|"), '
+                else:
+                    query += head + ':line.' + head + ', '
+        query = query[:-2] + '});\n'
         cypherfile.write(query)
-        query='Create Constraint On (node:Protein_Uniprot) Assert node.identifier Is Unique;\n'
+        query = 'Create Constraint On (node:Protein_Uniprot) Assert node.identifier Is Unique;\n'
         cypherfile.write(query)
-    counter+=1
+    counter += 1
 
 
 # def sort_function(two_character, dict_protein):
@@ -122,13 +130,22 @@ def integration_dict_info_into_csv(dict_information):
 
 set_list_de_categories = set([])
 
-
 # dictionary to replace the short form of the go classification into strings
 dict_short_to_full_go = {
     'C:': 'component::',
     'F:': 'function::',
     'P:': 'process::'
 }
+
+
+def prepare_strings_for_list_elements(string):
+    """
+    prepare string for list elements
+    :param string: string
+    :return: string
+    """
+    return string.strip().replace('\n', '').replace('|', ',')
+
 
 '''
 extract all information from uniprot flat file  into csv
@@ -153,19 +170,27 @@ def extract_information():
     # to get multiple line information of Function (general function) or subcellular location and nned to be which property
     general_function = False
     subcellular_location = False
+    disease = False
+    pathway = False
 
     print(sys.argv)
-    #download url of swissprot
-    url_data='ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.dat.gz'
-    # download ncbi human genes
-    filename = wget.download(url_data, out='database/')
+    # download url of swissprot
 
-    unzip_file=open('database/uniprot_sprot.dat','w',encoding='utf-8')
+    if not os.path.exists('database/uniprot_sprot.dat.gz'):
+        print('download')
+        url_data = 'ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.dat.gz'
+        # download ncbi human genes
+        filename = wget.download(url_data, out='database/')
+    else:
+        filename = 'database/uniprot_sprot.dat.gz'
+
+    unzip_file = open('database/uniprot_sprot.dat', 'w', encoding='utf-8')
 
     filename_without_gz = filename.rsplit('.', 1)[0]
     # file = open(filename_without_gz, 'wb')
     with io.TextIOWrapper(gzip.open(filename, 'rb')) as f:
-    # file_uniprot = open(sys.argv[1], 'r')
+        # file_uniprot = open(sys.argv[1], 'r')
+        # with open('database/part.dat', 'r', encoding='utf-8') as f:
 
         for line in f:
             unzip_file.write(line)
@@ -190,7 +215,14 @@ def extract_information():
                 # sys.exit('first')
                 dict_protein = {}
                 position_line = 0
-            #all the other information
+
+                # to get multiple line information of Function (general function) or subcellular location and nned to be which property
+                general_function = False
+                subcellular_location = False
+                disease = False
+                pathway = False
+
+            # all the other information
             else:
                 # ID   EntryName Status; SequenceLength.
                 if position_line == 0:
@@ -207,11 +239,14 @@ def extract_information():
                 # ac-numbers
                 elif position_line == 1:
                     two_split[1] = two_split[1].replace(';\n', '')
+                    if two_split[1].startswith('Q12851'):
+                        print('test')
                     all_access_number = two_split[1].split('; ')
                     ac_list = set([])
-                    for counter,ac_number in enumerate(all_access_number):
-                        if counter==0:
-                            dict_protein['identifier']=ac_number
+                    for counter, ac_number in enumerate(all_access_number):
+                        if counter == 0:
+                            dict_protein['identifier'] = ac_number
+                            # print(ac_number)
 
                         else:
                             ac_list.add(ac_number)
@@ -228,11 +263,11 @@ def extract_information():
                         in_multiple_line_string += two_split[1].replace('\n', '')
                     # end of one multiple line combination
                     else:
-                        if in_multiple_line_property=='gene_name':
-                            if not '{'  in two_split[1] and '}' in two_split[1]:
+                        if in_multiple_line_property == 'gene_name':
+                            if not '{' in two_split[1] and '}' in two_split[1]:
                                 print('no new information')
                                 print(two_split[1])
-                            elif two_split[1].count('}')>1:
+                            elif two_split[1].count('}') > 1:
                                 print('no new information')
                                 print(two_split[1])
                             else:
@@ -264,9 +299,11 @@ def extract_information():
                                 dict_protein['name'] = subcategory_split[1].replace(';\n', '')
                             elif subcategory_split[0] == 'Short':
                                 if not 'synonyms' in dict_protein:
-                                    dict_protein['synonyms'] = {subcategory_split[1].replace(';\n', '').replace('|',';')}
+                                    dict_protein['synonyms'] = {
+                                        subcategory_split[1].replace(';\n', '').replace('|', ';')}
                                 else:
-                                    dict_protein['synonyms'].add(subcategory_split[1].replace(';\n', '').replace('|',';'))
+                                    dict_protein['synonyms'].add(
+                                        subcategory_split[1].replace(';\n', '').replace('|', ';'))
                             # EC seems not to exists so I will exclude this from the file butl let this code included maybe i will need this later
                             else:
                                 print({subcategory_split[1].replace(';\n', '')})
@@ -285,9 +322,11 @@ def extract_information():
                                     dict_protein['ecs'].add(subcategory_split[1].replace(';\n', ''))
                             else:
                                 if not 'synonyms' in dict_protein:
-                                    dict_protein['synonyms'] = {subcategory_split[1].replace(';\n', '').replace('|',';')}
+                                    dict_protein['synonyms'] = {
+                                        subcategory_split[1].replace(';\n', '').replace('|', ';')}
                                 else:
-                                    dict_protein['synonyms'].add(subcategory_split[1].replace(';\n', '').replace('|',';'))
+                                    dict_protein['synonyms'].add(
+                                        subcategory_split[1].replace(';\n', '').replace('|', ';'))
 
 
 
@@ -305,7 +344,7 @@ def extract_information():
                     # if source_value[0]!='ncbi_taxid':
                     #     print(line)
                     #     sys.exit('OX')
-                    if source_value[1] != '9606;\n':
+                    if not source_value[1].startswith('9606;') and not source_value[1].startswith('9606 {'):
                         is_human = False
                         dict_protein['ncbi_taxid'] = source_value[1].split(';')[0]
                     else:
@@ -316,25 +355,64 @@ def extract_information():
                 # CC   Comments and notes
                 elif two_first_letter == 'CC':
                     if '-!-' in two_split[1]:
-                        property_value=two_split[1].split(': ')
+                        property_value = two_split[1].split(': ')
                         if property_value[0] == '-!- FUNCTION':
                             dict_protein['general_function'] = property_value[1].replace('\n', '')
                             general_function = True
                             subcellular_location = False
+                            disease = False
+                            pathway = False
+                        elif property_value[0] == '-!- DISEASE':
+                            if disease:
+                                dict_protein['disease'].append(prepare_strings_for_list_elements(property_value[1]))
+                            else:
+                                dict_protein['disease'] = [prepare_strings_for_list_elements(property_value[1])]
+                            general_function = False
+                            subcellular_location = False
+                            disease = True
+                            pathway = False
+                        elif property_value[0] == '-!- PATHWAY':
+                            list_infos = list(filter(None, prepare_strings_for_list_elements(property_value[1]).split(';')))
+                            if pathway:
+                                dict_protein['pathway'].extend(list_infos)
+                            else:
+                                dict_protein['pathway'] = list_infos
+                            general_function = False
+                            subcellular_location = False
+                            disease = False
+                            pathway = True
                         elif property_value[0] == '-!- SUBCELLULAR LOCATION':
-                            dict_protein['subcellular_location'] = property_value[1].replace('\n', '')
+                            property_value[1]=property_value[1].replace('. Note',' Note')
+                            list_infos = list(filter(None, prepare_strings_for_list_elements(property_value[1]).split('.')))
+                            if subcellular_location:
+                                dict_protein['subcellular_location'].extend(list_infos)
+                            else:
+                                dict_protein['subcellular_location'] = list_infos
                             general_function = False
                             subcellular_location = True
+                            disease = False
+                            pathway = False
                         else:
                             general_function = False
                             subcellular_location = False
+                            disease = False
+                            pathway = False
 
 
                     elif general_function:
 
                         dict_protein['general_function'] += ' ' + two_split[1].strip().replace('\n', '')
                     elif subcellular_location:
-                        dict_protein['subcellular_location'] += ' ' + two_split[1].strip().replace('\n', '')
+                        two_split[1]=two_split[1].replace('. Note',' Note')
+                        prepared_list = list(filter(None, prepare_strings_for_list_elements(two_split[1]).split('.')))
+                        dict_protein['subcellular_location'][-1] += ' ' + prepared_list[0]
+                        dict_protein['subcellular_location'].extend(prepared_list[1:])
+                    elif disease:
+                        dict_protein['disease'][-1] += ' ' + prepare_strings_for_list_elements(two_split[1])
+                    elif pathway:
+                        prepared_list = list(filter(None, prepare_strings_for_list_elements(two_split[1]).split(';')))
+                        dict_protein['pathway'][-1] += ' ' + prepared_list[0]
+                        dict_protein['pathway'].extend(prepared_list[1:])
 
                 # Protein existence
                 # PE   Level:Evidence;
@@ -344,15 +422,15 @@ def extract_information():
                     if len(level_evidence) > 2:
                         print(line)
                         sys.exit('PE')
-                    dict_protein['protein_existence']=level_evidence[1].replace(';\n','')
+                    dict_protein['protein_existence'] = level_evidence[1].replace(';\n', '')
                     position_line += 1
 
                 # reference cross-reference (optional)
                 # can also appear multiple time
                 elif two_first_letter == 'RX':
                     splitted_cross_refs = two_split[1].split('; ')
-                    if not len(splitted_cross_refs)>1:
-                        splitted_cross_refs=two_split[1].split(';')
+                    if not len(splitted_cross_refs) > 1:
+                        splitted_cross_refs = two_split[1].split(';')
                     if 'pubmed_ids' in dict_protein:
                         list_pubmed_ids = dict_protein['pubmed_ids']
                     else:
@@ -367,17 +445,19 @@ def extract_information():
                 # only the one with name
                 elif two_first_letter == 'GN':
                     property = two_split[1].split('=')
-                    if dict_protein['identifier']=='P30493':
+                    if dict_protein['identifier'] == 'P30493':
                         print('huhu')
                     if property[0] == 'Name':
 
                         if ',\n' in two_split[1]:
                             in_multiple_lines = True
-                            in_multiple_line_string = property[1].split(';')[0].replace('\n','').replace('|',';').split('{')[0].rstrip()
+                            in_multiple_line_string = \
+                                property[1].split(';')[0].replace('\n', '').replace('|', ';').split('{')[0].rstrip()
                             in_multiple_line_property = 'gene_name'
-                            in_multiple_line_property_type_list=True
+                            in_multiple_line_property_type_list = True
                         else:
-                            gene_name=property[1].split(';')[0].replace('\n', '').replace('|', ';').split(' {')[0].rstrip()
+                            gene_name = property[1].split(';')[0].replace('\n', '').replace('|', ';').split(' {')[
+                                0].rstrip()
 
                             if not 'gene_name' in dict_protein:
                                 dict_protein['gene_name'] = {gene_name}
@@ -390,7 +470,9 @@ def extract_information():
                             if synonyms[0] == ' Synonyms':
                                 for synonym in property[2].split(', '):
                                     # print(property)
-                                    dict_protein['gene_name'].add(synonym.split(';')[0].replace(';\n', '').replace('|',';').split(' {')[0].rstrip())
+                                    dict_protein['gene_name'].add(
+                                        synonym.split(';')[0].replace(';\n', '').replace('|', ';').split(' {')[
+                                            0].rstrip())
                                     # if not 'synonyms' in dict_protein:
                                     #     dict_protein['synonyms'] = {synonym.replace(';\n', '')}
                                     # else:
@@ -398,12 +480,12 @@ def extract_information():
                 # database cross-references (optional)
                 elif two_first_letter == 'DR':
                     xref_infos = two_split[1].split('; ')
-                    if xref_infos[0] not in ['Pfam','GeneID']:
+                    if xref_infos[0] not in ['Pfam', 'GeneID']:
                         if 'xrefs' in dict_protein:
                             dict_protein['xrefs'].add(xref_infos[0] + ':' + xref_infos[1])
                         else:
                             dict_protein['xrefs'] = {xref_infos[0] + ':' + xref_infos[1]}
-                    elif xref_infos[0] =='Pfam':
+                    elif xref_infos[0] == 'Pfam':
                         if 'pfam' in dict_protein:
                             dict_protein['pfam'].add(xref_infos[1] + ':' + xref_infos[2])
                         else:
@@ -412,7 +494,7 @@ def extract_information():
                         if 'gene_id' in dict_protein:
                             dict_protein['gene_id'].add(xref_infos[1])
                         else:
-                            dict_protein['gene_id'] = {xref_infos[1] }
+                            dict_protein['gene_id'] = {xref_infos[1]}
 
                     if xref_infos[0] in ['GO', 'Proteomes']:
                         if xref_infos[0] == 'GO':

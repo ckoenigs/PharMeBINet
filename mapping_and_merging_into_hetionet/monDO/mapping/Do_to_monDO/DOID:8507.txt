@@ -1,3 +1,0 @@
-DOID:8507	juvenile dermatitis herpetiformis
-monDO ID 	 name 
-MONDO:0006565	juvenile dermatitis herpetiformis

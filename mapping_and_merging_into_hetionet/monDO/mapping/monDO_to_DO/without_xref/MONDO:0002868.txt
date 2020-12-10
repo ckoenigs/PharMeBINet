@@ -1,3 +1,0 @@
-MONDO:0002868	bile duct cystadenocarcinoma
-DOID 	 name 
-DOID:4075	bile duct cystadenocarcinoma

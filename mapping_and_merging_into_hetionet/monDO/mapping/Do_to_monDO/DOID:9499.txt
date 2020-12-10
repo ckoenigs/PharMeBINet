@@ -1,3 +1,0 @@
-DOID:9499	disseminated eosinophilic collagen disease
-monDO ID 	 name 
-MONDO:0004803	disseminated eosinophilic collagen disease

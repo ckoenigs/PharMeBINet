@@ -1,3 +1,0 @@
-MONDO:0010521	amelogenesis imperfecta type 1E
-DOID 	 name 
-DOID:0110058	amelogenesis imperfecta type 1E

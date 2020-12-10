@@ -1,3 +1,0 @@
-MONDO:0010931	VDDR2B
-DOID 	 name 
-DOID:10609	rickets

@@ -1,3 +1,0 @@
-MONDO:0004699	gastrointestinal lymphoma
-DOID 	 name 
-DOID:903	gastrointestinal lymphoma

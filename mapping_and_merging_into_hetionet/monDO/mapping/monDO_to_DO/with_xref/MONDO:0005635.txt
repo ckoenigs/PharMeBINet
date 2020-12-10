@@ -1,3 +1,0 @@
-MONDO:0005635	adenomyoma
-DOID 	 name 
-DOID:2609	adenomyoma

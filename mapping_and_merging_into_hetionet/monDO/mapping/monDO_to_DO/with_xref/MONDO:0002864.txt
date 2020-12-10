@@ -1,3 +1,0 @@
-MONDO:0002864	anus rhabdomyosarcoma
-DOID 	 name 
-DOID:4066	anus rhabdomyosarcoma

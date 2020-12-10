@@ -1,3 +1,0 @@
-DOID:1443	cerebral degeneration
-monDO ID 	 name 
-MONDO:0005559	neurodegenerative disease

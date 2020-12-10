@@ -1,3 +1,0 @@
-DOID:6204	follicular adenoma
-monDO ID 	 name 
-MONDO:0005032	follicular thyroid adenoma

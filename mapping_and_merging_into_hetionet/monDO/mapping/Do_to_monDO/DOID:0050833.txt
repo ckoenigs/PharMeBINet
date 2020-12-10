@@ -1,3 +1,0 @@
-DOID:0050833	orotic aciduria
-monDO ID 	 name 
-MONDO:0009797	orotic aciduria

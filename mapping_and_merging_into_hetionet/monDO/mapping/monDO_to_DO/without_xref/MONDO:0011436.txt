@@ -1,3 +1,0 @@
-MONDO:0011436	autosomal recessive distal spinal muscular atrophy 1
-DOID 	 name 
-DOID:0111064	autosomal recessive distal spinal muscular atrophy 1

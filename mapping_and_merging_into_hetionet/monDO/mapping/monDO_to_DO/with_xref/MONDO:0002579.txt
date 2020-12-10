@@ -1,3 +1,0 @@
-MONDO:0002579	orbit embryonal rhabdomyosarcoma
-DOID 	 name 
-DOID:3258	orbit embryonal rhabdomyosarcoma

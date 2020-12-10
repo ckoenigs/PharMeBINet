@@ -1,3 +1,0 @@
-DOID:11201	parathyroid gland disease
-monDO ID 	 name 
-MONDO:0001223	parathyroid gland disease

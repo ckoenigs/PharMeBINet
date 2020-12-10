@@ -1,3 +1,0 @@
-DOID:9206	Barrett's esophagus
-monDO ID 	 name 
-MONDO:0013662	Barrett esophagus

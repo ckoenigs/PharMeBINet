@@ -1,3 +1,0 @@
-MONDO:0017203	chronic endophthalmitis
-DOID 	 name 
-DOID:10697	chronic endophthalmitis

@@ -1,3 +1,0 @@
-MONDO:0004925	chronic dacryocystitis
-DOID 	 name 
-DOID:9937	chronic dacryocystitis

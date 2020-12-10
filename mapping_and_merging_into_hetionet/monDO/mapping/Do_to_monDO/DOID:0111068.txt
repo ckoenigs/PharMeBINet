@@ -1,3 +1,0 @@
-DOID:0111068	congenital bile acid synthesis defect 4
-monDO ID 	 name 
-MONDO:0008967	congenital bile acid synthesis defect 4

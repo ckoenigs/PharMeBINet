@@ -1,3 +1,0 @@
-DOID:4157	secondary syphilis
-monDO ID 	 name 
-MONDO:0002897	secondary syphilis

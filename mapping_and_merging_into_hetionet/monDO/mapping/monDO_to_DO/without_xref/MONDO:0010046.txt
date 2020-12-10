@@ -1,3 +1,0 @@
-MONDO:0010046	hereditary spastic paraplegia 23
-DOID 	 name 
-DOID:0110774	hereditary spastic paraplegia 23

@@ -1,3 +1,0 @@
-MONDO:0005728	diaphragm disease
-DOID 	 name 
-DOID:10481	diaphragm disease

@@ -1,3 +1,0 @@
-DOID:10782	mesenteric lymphadenitis
-monDO ID 	 name 
-MONDO:0001116	mesenteric lymphadenitis

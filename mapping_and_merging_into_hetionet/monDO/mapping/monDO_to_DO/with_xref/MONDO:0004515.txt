@@ -1,3 +1,0 @@
-MONDO:0004515	olfactory neural tumor
-DOID 	 name 
-DOID:8256	olfactory neural tumor

@@ -1,3 +1,0 @@
-MONDO:0004665	Hodgkin's lymphoma, nodular sclerosis
-DOID 	 name 
-DOID:8838	Hodgkin's lymphoma, nodular sclerosis

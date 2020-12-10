@@ -1,3 +1,0 @@
-MONDO:0003347	inflammatory leiomyosarcoma
-DOID 	 name 
-DOID:5251	inflammatory leiomyosarcoma

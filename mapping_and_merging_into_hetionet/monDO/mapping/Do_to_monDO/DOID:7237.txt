@@ -1,3 +1,0 @@
-DOID:7237	pancreatic non-invasive mucinous cystadenocarcinoma
-monDO ID 	 name 
-MONDO:0004159	pancreatic non-invasive mucinous cystadenocarcinoma

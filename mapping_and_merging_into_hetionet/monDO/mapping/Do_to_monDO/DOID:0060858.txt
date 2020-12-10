@@ -1,3 +1,0 @@
-DOID:0060858	hypotonia-cystinuria syndrome
-monDO ID 	 name 
-MONDO:0011669	hypotonia-cystinuria syndrome

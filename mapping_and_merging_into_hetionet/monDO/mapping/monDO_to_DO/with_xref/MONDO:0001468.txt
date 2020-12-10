@@ -1,3 +1,0 @@
-MONDO:0001468	Plica syndrome
-DOID 	 name 
-DOID:12225	Plica syndrome

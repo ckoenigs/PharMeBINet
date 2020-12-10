@@ -1,3 +1,0 @@
-MONDO:0002890	gastrointestinal adenoma
-DOID 	 name 
-DOID:4147	gastrointestinal adenoma

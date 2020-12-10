@@ -1,3 +1,0 @@
-DOID:5733	salpingitis
-monDO ID 	 name 
-MONDO:0003619	salpingitis

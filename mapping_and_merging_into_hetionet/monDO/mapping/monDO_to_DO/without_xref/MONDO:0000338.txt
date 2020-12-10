@@ -1,3 +1,0 @@
-MONDO:0000338	variola major
-DOID 	 name 
-DOID:0050508	variola major

@@ -1,3 +1,0 @@
-MONDO:0003173	brain stem astrocytic neoplasm
-DOID 	 name 
-DOID:4860	brain stem astrocytic neoplasm

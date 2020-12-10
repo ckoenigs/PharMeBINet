@@ -1,3 +1,0 @@
-MONDO:0002471	bursitis
-DOID 	 name 
-DOID:2965	bursitis

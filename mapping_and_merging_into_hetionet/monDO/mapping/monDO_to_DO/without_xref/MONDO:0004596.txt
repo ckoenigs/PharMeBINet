@@ -1,3 +1,0 @@
-MONDO:0004596	cor pulmonale
-DOID 	 name 
-DOID:8515	Cor pulmonale

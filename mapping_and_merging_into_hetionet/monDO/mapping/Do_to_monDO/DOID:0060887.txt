@@ -1,3 +1,0 @@
-DOID:0060887	ossification of the posterior longitudinal ligament of spine
-monDO ID 	 name 
-MONDO:0011230	ossification of the posterior longitudinal ligament of the spine

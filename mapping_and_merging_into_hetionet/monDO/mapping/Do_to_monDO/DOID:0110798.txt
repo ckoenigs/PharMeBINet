@@ -1,3 +1,0 @@
-DOID:0110798	hereditary spastic paraplegia 46
-monDO ID 	 name 
-MONDO:0013737	hereditary spastic paraplegia 46

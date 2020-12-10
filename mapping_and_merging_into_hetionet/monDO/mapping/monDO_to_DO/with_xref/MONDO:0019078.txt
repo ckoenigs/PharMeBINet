@@ -1,3 +1,0 @@
-MONDO:0019078	Ritscher-Schinzel syndrome
-DOID 	 name 
-DOID:0060565	Ritscher-Schinzel syndrome

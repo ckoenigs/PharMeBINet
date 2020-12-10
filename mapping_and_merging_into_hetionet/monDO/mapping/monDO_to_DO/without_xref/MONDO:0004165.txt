@@ -1,3 +1,0 @@
-MONDO:0004165	selective IgD deficiency disease
-DOID 	 name 
-DOID:7263	selective IgD deficiency disease

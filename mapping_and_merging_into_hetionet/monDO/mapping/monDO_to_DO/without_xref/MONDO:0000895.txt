@@ -1,3 +1,0 @@
-MONDO:0000895	nonmucinous bronchioloalveolar adenocarcinoma
-DOID 	 name 
-DOID:0080186	nonmucinous bronchioloalveolar adenocarcinoma

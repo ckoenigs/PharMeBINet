@@ -1,3 +1,0 @@
-DOID:0050608	Askin's tumor
-monDO ID 	 name 
-MONDO:0006094	Askin tumor

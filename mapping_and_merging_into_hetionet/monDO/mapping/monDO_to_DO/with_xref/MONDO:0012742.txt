@@ -1,3 +1,0 @@
-MONDO:0012742	Brugada syndrome 3
-DOID 	 name 
-DOID:0110220	Brugada syndrome 3

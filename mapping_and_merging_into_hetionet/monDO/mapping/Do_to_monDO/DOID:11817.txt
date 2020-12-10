@@ -1,3 +1,0 @@
-DOID:11817	urachus cancer
-monDO ID 	 name 
-MONDO:0001378	urachus cancer

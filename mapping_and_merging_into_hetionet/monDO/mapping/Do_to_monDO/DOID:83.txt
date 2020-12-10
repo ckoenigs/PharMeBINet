@@ -1,3 +1,0 @@
-DOID:83	cataract
-monDO ID 	 name 
-MONDO:0005129	cataract (disease)

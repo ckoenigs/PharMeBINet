@@ -1,3 +1,0 @@
-MONDO:0003997	colon Kaposi sarcoma
-DOID 	 name 
-DOID:6804	colon Kaposi sarcoma

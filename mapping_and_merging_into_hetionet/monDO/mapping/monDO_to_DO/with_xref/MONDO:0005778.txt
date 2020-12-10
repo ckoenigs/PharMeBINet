@@ -1,3 +1,0 @@
-MONDO:0005778	haemonchiasis
-DOID 	 name 
-DOID:3332	haemonchiasis

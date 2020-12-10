@@ -1,3 +1,0 @@
-DOID:445	Bartter disease
-monDO ID 	 name 
-MONDO:0015231	Bartter syndrome

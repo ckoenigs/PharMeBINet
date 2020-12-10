@@ -1,3 +1,0 @@
-DOID:11968	postmenopausal atrophic vaginitis
-monDO ID 	 name 
-MONDO:0001410	postmenopausal atrophic vaginitis

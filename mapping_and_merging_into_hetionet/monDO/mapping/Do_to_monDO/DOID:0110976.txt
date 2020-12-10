@@ -1,3 +1,0 @@
-DOID:0110976	brachydactyly type E2
-monDO ID 	 name 
-MONDO:0013244	brachydactyly type E2

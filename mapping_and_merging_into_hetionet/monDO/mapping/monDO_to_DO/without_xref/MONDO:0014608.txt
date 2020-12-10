@@ -1,3 +1,0 @@
-MONDO:0014608	mandibulofacial dysostosis with alopecia
-DOID 	 name 
-DOID:0060365	mandibulofacial dysostosis with alopecia

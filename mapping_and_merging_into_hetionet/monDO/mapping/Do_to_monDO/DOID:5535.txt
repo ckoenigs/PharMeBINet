@@ -1,3 +1,0 @@
-DOID:5535	gallbladder squamous cell carcinoma
-monDO ID 	 name 
-MONDO:0006220	gallbladder squamous cell carcinoma

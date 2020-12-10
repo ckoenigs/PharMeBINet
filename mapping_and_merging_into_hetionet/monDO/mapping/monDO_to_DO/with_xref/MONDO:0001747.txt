@@ -1,3 +1,0 @@
-MONDO:0001747	tibial collateral ligament bursitis
-DOID 	 name 
-DOID:13566	tibial collateral ligament bursitis

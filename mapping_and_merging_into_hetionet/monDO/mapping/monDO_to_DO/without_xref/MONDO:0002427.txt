@@ -1,3 +1,0 @@
-MONDO:0002427	cerebellar disease
-DOID 	 name 
-DOID:2786	cerebellar disease

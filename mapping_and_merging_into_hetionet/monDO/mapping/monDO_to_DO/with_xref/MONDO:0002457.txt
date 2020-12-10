@@ -1,3 +1,0 @@
-MONDO:0002457	Treacher-Collins syndrome
-DOID 	 name 
-DOID:2908	Treacher Collins syndrome

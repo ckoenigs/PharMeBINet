@@ -1,3 +1,0 @@
-MONDO:0005566	neonatal abstinence syndrome
-DOID 	 name 
-DOID:9828	neonatal abstinence syndrome

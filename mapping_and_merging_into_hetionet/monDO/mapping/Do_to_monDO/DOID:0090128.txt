@@ -1,3 +1,0 @@
-DOID:0090128	dilated cardiomyopathy with woolly hair and keratoderma
-monDO ID 	 name 
-MONDO:0011581	dilated cardiomyopathy with woolly hair and keratoderma

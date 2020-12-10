@@ -1,3 +1,0 @@
-MONDO:0000446	midface dysplasia
-DOID 	 name 
-DOID:0050767	midface dysplasia

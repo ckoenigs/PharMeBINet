@@ -1,3 +1,0 @@
-MONDO:0009181	epidermolysis bullosa simplex with muscular dystrophy
-DOID 	 name 
-DOID:0090017	epidermolysis bullosa simplex with muscular dystrophy

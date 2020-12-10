@@ -1,3 +1,0 @@
-MONDO:0006994	tarsal tunnel syndrome
-DOID 	 name 
-DOID:12526	tarsal tunnel syndrome

@@ -1,3 +1,0 @@
-DOID:7442	monoclonal gammopathy of uncertain significance
-monDO ID 	 name 
-MONDO:0004225	monoclonal gammopathy of uncertain significance

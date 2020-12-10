@@ -1,3 +1,0 @@
-MONDO:0000386	digestive system neuroendocrine tumor
-DOID 	 name 
-DOID:0050626	gastrointestinal neuroendocrine tumor

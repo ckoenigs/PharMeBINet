@@ -1,3 +1,0 @@
-DOID:8956	cowpox
-monDO ID 	 name 
-MONDO:0005720	cowpox

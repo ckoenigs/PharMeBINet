@@ -1,3 +1,0 @@
-DOID:0110480	autosomal recessive nonsyndromic deafness 22
-monDO ID 	 name 
-MONDO:0011762	autosomal recessive nonsyndromic deafness 22

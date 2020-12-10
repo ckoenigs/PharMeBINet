@@ -1,3 +1,0 @@
-MONDO:0004013	adult vagina botryoid rhabdomyosarcoma
-DOID 	 name 
-DOID:6848	adult vagina botryoid rhabdomyosarcoma

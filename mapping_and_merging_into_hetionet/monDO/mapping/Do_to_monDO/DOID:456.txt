@@ -1,3 +1,0 @@
-DOID:456	ascariasis
-monDO ID 	 name 
-MONDO:0005654	ascariasis

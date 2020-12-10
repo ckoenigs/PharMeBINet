@@ -1,3 +1,0 @@
-MONDO:0002106	labyrinthine unilateral reactive loss
-DOID 	 name 
-DOID:1776	labyrinthine unilateral reactive loss

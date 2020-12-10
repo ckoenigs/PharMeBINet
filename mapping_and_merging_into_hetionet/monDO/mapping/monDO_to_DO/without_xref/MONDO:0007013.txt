@@ -1,3 +1,0 @@
-MONDO:0007013	vasculogenic impotence
-DOID 	 name 
-DOID:4762	vasculogenic impotence

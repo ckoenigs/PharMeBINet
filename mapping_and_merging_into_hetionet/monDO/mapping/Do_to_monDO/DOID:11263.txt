@@ -1,3 +1,0 @@
-DOID:11263	chlamydia
-monDO ID 	 name 
-MONDO:0005701	chlamydia trachomatis infectious disease

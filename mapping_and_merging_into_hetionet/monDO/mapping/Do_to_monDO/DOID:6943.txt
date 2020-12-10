@@ -1,3 +1,0 @@
-DOID:6943	vulvar inverted follicular keratosis
-monDO ID 	 name 
-MONDO:0006621	vulvar inverted follicular keratosis

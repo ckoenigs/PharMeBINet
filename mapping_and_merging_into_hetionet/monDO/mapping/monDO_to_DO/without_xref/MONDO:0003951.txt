@@ -1,3 +1,0 @@
-MONDO:0003951	scrotal angioma
-DOID 	 name 
-DOID:663	scrotal angioma

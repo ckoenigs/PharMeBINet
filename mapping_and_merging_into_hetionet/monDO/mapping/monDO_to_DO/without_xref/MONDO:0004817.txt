@@ -1,3 +1,0 @@
-MONDO:0004817	non-secretory myeloma
-DOID 	 name 
-DOID:9547	non-secretory myeloma

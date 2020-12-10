@@ -1,3 +1,0 @@
-MONDO:0016620	primary hypertrophic osteoarthropathy
-DOID 	 name 
-DOID:14283	primary hypertrophic osteoarthropathy

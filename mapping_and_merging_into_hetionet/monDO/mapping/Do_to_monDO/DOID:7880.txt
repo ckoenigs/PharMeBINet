@@ -1,3 +1,0 @@
-DOID:7880	luteoma
-monDO ID 	 name 
-MONDO:0004387	luteoma of pregnancy

@@ -1,3 +1,0 @@
-MONDO:0004452	childhood central nervous system germinoma
-DOID 	 name 
-DOID:8078	childhood central nervous system germinoma

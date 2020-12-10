@@ -1,3 +1,0 @@
-MONDO:0006526	allergic urticaria
-DOID 	 name 
-DOID:10612	allergic urticaria

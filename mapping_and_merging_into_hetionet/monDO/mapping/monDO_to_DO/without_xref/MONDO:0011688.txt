@@ -1,3 +1,0 @@
-MONDO:0011688	muscular dystrophy-dystroglycanopathy type B5
-DOID 	 name 
-DOID:0110635	muscular dystrophy-dystroglycanopathy type B5

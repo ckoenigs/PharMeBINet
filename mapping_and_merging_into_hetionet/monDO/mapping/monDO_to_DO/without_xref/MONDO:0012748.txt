@@ -1,3 +1,0 @@
-MONDO:0012748	primary ciliary dyskinesia 7
-DOID 	 name 
-DOID:0110605	primary ciliary dyskinesia 7

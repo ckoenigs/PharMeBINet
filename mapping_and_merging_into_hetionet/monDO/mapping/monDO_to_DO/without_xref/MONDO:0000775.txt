@@ -1,3 +1,0 @@
-MONDO:0000775	drug allergy
-DOID 	 name 
-DOID:0060500	drug allergy

@@ -1,3 +1,0 @@
-MONDO:0005354	chronic hepatitis C
-DOID 	 name 
-DOID:1883	hepatitis C

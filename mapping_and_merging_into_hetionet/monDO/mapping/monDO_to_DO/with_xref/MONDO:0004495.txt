@@ -1,3 +1,0 @@
-MONDO:0004495	myotonic cataract
-DOID 	 name 
-DOID:82	myotonic cataract

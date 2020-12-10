@@ -1,3 +1,0 @@
-DOID:146	papilledema
-monDO ID 	 name 
-MONDO:0002003	papilledema

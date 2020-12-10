@@ -1,3 +1,0 @@
-DOID:13550	angle-closure glaucoma
-monDO ID 	 name 
-MONDO:0001744	angle-closure glaucoma

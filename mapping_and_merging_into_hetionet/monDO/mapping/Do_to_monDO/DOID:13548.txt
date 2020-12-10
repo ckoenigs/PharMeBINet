@@ -1,3 +1,0 @@
-DOID:13548	secondary Parkinson disease
-monDO ID 	 name 
-MONDO:0006966	secondary Parkinson disease

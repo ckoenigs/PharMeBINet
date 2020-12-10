@@ -1,3 +1,0 @@
-MONDO:0019297	lymphedema
-DOID 	 name 
-DOID:4977	lymphedema

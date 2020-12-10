@@ -1,3 +1,0 @@
-MONDO:0018075	neural tube defect
-DOID 	 name 
-DOID:0080074	neural tube defect

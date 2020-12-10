@@ -1,3 +1,0 @@
-MONDO:0004079	bronchial mucus gland adenoma
-DOID 	 name 
-DOID:7030	bronchial mucus gland adenoma

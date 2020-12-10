@@ -1,3 +1,0 @@
-MONDO:0003118	testicular Brenner tumor
-DOID 	 name 
-DOID:4739	testicular Brenner tumor

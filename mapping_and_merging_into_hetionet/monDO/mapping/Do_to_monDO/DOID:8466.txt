@@ -1,3 +1,0 @@
-DOID:8466	retinal degeneration
-monDO ID 	 name 
-MONDO:0004580	retinal degeneration

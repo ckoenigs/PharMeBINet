@@ -1,3 +1,0 @@
-MONDO:0005865	mushroom workers' lung
-DOID 	 name 
-DOID:2708	mushroom workers' lung

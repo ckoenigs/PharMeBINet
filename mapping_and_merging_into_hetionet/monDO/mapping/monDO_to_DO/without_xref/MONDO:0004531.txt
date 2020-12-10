@@ -1,3 +1,0 @@
-MONDO:0004531	sclerosing adenosis of breast
-DOID 	 name 
-DOID:8310	sclerosing adenosis of breast

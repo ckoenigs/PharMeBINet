@@ -1,3 +1,0 @@
-DOID:5632	optic nerve sheath meningioma
-monDO ID 	 name 
-MONDO:0003557	optic nerve sheath meningioma

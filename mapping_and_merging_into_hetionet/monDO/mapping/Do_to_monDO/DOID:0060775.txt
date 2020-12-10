@@ -1,3 +1,0 @@
-DOID:0060775	microvillus inclusion disease
-monDO ID 	 name 
-MONDO:0009635	microvillus inclusion disease

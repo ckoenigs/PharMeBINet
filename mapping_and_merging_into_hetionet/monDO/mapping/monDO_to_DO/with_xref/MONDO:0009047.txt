@@ -1,3 +1,0 @@
-MONDO:0009047	cryptorchidism (disease)
-DOID 	 name 
-DOID:11383	cryptorchidism

@@ -1,3 +1,0 @@
-MONDO:0004717	peliosis hepatis
-DOID 	 name 
-DOID:914	peliosis hepatis

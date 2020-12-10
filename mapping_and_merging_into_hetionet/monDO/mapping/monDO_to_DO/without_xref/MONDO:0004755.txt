@@ -1,3 +1,0 @@
-MONDO:0004755	monieziasis
-DOID 	 name 
-DOID:931	monieziasis

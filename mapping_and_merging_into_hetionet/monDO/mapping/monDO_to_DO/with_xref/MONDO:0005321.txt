@@ -1,3 +1,0 @@
-MONDO:0005321	Fuchs' endothelial dystrophy
-DOID 	 name 
-DOID:11555	Fuchs' endothelial dystrophy

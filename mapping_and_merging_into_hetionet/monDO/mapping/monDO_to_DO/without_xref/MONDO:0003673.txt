@@ -1,3 +1,0 @@
-MONDO:0003673	apical myocardial infarction
-DOID 	 name 
-DOID:5848	apical myocardial infarction

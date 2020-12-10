@@ -1,3 +1,0 @@
-MONDO:0006134	cervical adenosquamous carcinoma
-DOID 	 name 
-DOID:5636	cervical adenosquamous carcinoma

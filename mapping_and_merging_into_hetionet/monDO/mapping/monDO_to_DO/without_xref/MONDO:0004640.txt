@@ -1,3 +1,0 @@
-MONDO:0004640	alcoholic gastritis
-DOID 	 name 
-DOID:8680	alcoholic gastritis

@@ -1,3 +1,0 @@
-MONDO:0010667	Prieto syndrome
-DOID 	 name 
-DOID:0060805	Prieto syndrome

@@ -1,3 +1,0 @@
-MONDO:0005833	lymphatic system disease
-DOID 	 name 
-DOID:75	lymphatic system disease

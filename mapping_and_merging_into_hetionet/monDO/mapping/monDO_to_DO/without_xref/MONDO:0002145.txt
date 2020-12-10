@@ -1,3 +1,0 @@
-MONDO:0002145	sex differentiation disease
-DOID 	 name 
-DOID:1923	sex differentiation disease

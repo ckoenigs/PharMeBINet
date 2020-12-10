@@ -1,3 +1,0 @@
-DOID:6639	pediatric CNS choriocarcinoma
-monDO ID 	 name 
-MONDO:0003953	pediatric CNS choriocarcinoma

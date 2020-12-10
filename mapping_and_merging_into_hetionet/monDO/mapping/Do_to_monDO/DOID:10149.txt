@@ -1,3 +1,0 @@
-DOID:10149	long bones of lower limb cancer
-monDO ID 	 name 
-MONDO:0000952	long bones of lower limb cancer

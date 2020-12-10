@@ -1,3 +1,0 @@
-MONDO:0012305	PPR3
-DOID 	 name 
-DOID:0060281	photosensitive epilepsy

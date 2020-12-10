@@ -1,3 +1,0 @@
-DOID:0050920	tonsil squamous cell carcinoma
-monDO ID 	 name 
-MONDO:0000535	tonsil squamous cell carcinoma

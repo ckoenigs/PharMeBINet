@@ -366,7 +366,8 @@ def add_current_sequence_location_to_dictionary(dictionary, node):
                 if len(split_key_for_capital_letters) > 0:
                     key = '_'.join(split_key_for_capital_letters).lower()
                 dict_seq_location[key] = value
-            dictionary['sequence_location'] = to_json_and_replace(dict_seq_location)
+            # dictionary['sequence_location'] = to_json_and_replace(dict_seq_location)
+            dictionary['sequence_location'] = dict_seq_location
 
 
 '''
@@ -386,9 +387,9 @@ preparation of attributes with get and value
 '''
 
 
-def perparation_attributes_with_get_and_value(node, list_attributes):
-    for attribut in node.iterfind('AttributeSet'):
-        check_for_information_and_add_to_list_with_extra_name('Attribute', attribut, list_attributes,
+def preparation_attributes_with_get_and_value(node, list_attributes):
+    for attribute in node.iterfind('AttributeSet'):
+        check_for_information_and_add_to_list_with_extra_name('Attribute', attribute, list_attributes,
                                                               gets='Type')
 
 
@@ -481,7 +482,7 @@ def prepare_hgvs(node):
             if protein_expression is not None:
                 check_for_information_and_add_to_dictionary_with_extra_name('Expression', protein_expression,
                                                                             dict_hgvs,
-                                                                            name='nucleotide expression')
+                                                                            name='protein expression')
             molecular_consequences = set()
             for consequence in hgvs.iterfind('MolecularConsequence'):
                 molecular_consequences.add(consequence.get('Type'))
@@ -527,6 +528,7 @@ def prepare_functional_consequence(node):
         preparation_of_xrefs(functional_consequence, dict_consequence)
         comment_dict = for_multiple_tags_at_one(functional_consequence, 'Comment')
         build_low_dict_into_higher_dict(dict_consequence, comment_dict, 'comments')
+
         list_functional_consequences.append(dict_consequence)
     return list_functional_consequences
 
@@ -536,7 +538,7 @@ prepare relationship between variation
 '''
 
 
-def perpare_rela_between_variations(node, variant_id, id_name, tag_name, from_type, to_type):
+def prepare_rela_between_variations(node, variant_id, id_name, tag_name, from_type, to_type):
     for single_allele in node.iterfind(tag_name):
         single_variation_id = single_allele.get('VariationID')
         if not (from_type, to_type) in edge_between_variations:
@@ -609,7 +611,8 @@ def get_all_single_allele_infos_and_add_to_list(node, variation_id=None):
                     gene_symbol = gene.get('Symbol') if 'Symbol' in gene else ''
                     if gene_symbol != '':
                         dict_gene['symbol'] = gene_symbol
-                    list_genes.append(dict_single)
+                    list_genes.append(dict_gene)
+                dict_single['genes'] = to_json_and_replace(list_genes)
 
             check_for_information_and_add_to_dictionary_with_extra_name('VariantType', single_allele, dict_single,
                                                                         name='specific_type')
@@ -876,7 +879,7 @@ def get_information_from_full_relase():
                     #     print(variant_id)
                     for measure in measure_set.iterfind('Measure'):
 
-                        perparation_attributes_with_get_and_value(measure, list_attributes_variations)
+                        preparation_attributes_with_get_and_value(measure, list_attributes_variations)
 
                         for measure_rela in measure.iterfind('MeasureRelationship'):
                             dict_rela = {}
@@ -920,7 +923,7 @@ def get_information_from_full_relase():
                         build_low_dict_into_higher_dict(dict_haplotype, comment_dict, 'comments')
 
                         dict_attributes_set = []
-                        perparation_attributes_with_get_and_value(measure, list_attributes_variations)
+                        preparation_attributes_with_get_and_value(measure, list_attributes_variations)
 
                         if len(dict_attributes_set) > 0:
                             dict_haplotype['attributes'] = dict_attributes_set
@@ -997,7 +1000,7 @@ def get_information_from_full_relase():
 
                 writer = open('data/trait_set_' + trait_set_type + '.tsv', 'w', encoding='utf-8')
                 csv_writer = csv.DictWriter(writer, delimiter='\t', fieldnames=list_head_trait, escapechar="\\",
-                                             doublequote=False)
+                                            doublequote=False)
                 csv_writer.writeheader()
                 dict_trait_set_typ_to_csv[trait_set_type] = csv_writer
 
@@ -1041,7 +1044,7 @@ def get_information_from_full_relase():
 
                         writer = open('data/trait_' + trait_type + '.tsv', 'w', encoding='utf-8')
                         csv_writer = csv.DictWriter(writer, delimiter='\t', fieldnames=list_head_trait, escapechar="\\",
-                                             doublequote=False)
+                                                    doublequote=False)
                         csv_writer.writeheader()
                         dict_trait_typ_to_csv[trait_type] = csv_writer
 
@@ -1051,7 +1054,7 @@ def get_information_from_full_relase():
                         prepare_symbol(trait, dict_trait, 'symbols')
 
                         list_attributes = []
-                        perparation_attributes_with_get_and_value(trait, list_attributes)
+                        preparation_attributes_with_get_and_value(trait, list_attributes)
                         if len(list_attributes) > 0:
                             build_low_dict_into_higher_dict_with_list(dict_trait, list_attributes, 'attribute',
                                                                       'attributes')
@@ -1132,11 +1135,11 @@ def get_information_from_full_relase():
 
             study_name = clinvar_assertion.find('StudyName')
             if study_name is not None:
-                dict_clinvar_assertion['study_name'] = study_name
+                dict_clinvar_assertion['study_name'] = study_name.text
 
             study_description = clinvar_assertion.find('StudyDescription')
             if study_description is not None:
-                dict_clinvar_assertion['study_description'] = study_description
+                dict_clinvar_assertion['study_description'] = study_description.text
 
             for_citation_extraction_to_list(clinvar_assertion, dict_clinvar_assertion)
 
@@ -1184,7 +1187,7 @@ def get_information_from_full_relase():
                 file = open('data/edges/edges_' + general_type + '_' + trait_set_type + '_' + final_assertion + '.tsv',
                             'w', encoding='utf-8')
                 csv_writer = csv.DictWriter(file, fieldnames=edge_information, delimiter='\t', escapechar="\\",
-                                             doublequote=False)
+                                            doublequote=False)
                 csv_writer.writeheader()
                 dict_edge_types_to_csv[(general_type, trait_set_type, final_assertion)] = csv_writer
             # if (variant_id, trait_set_id) not in dict_edges[(general_type, trait_set_type)]:
@@ -1219,8 +1222,8 @@ def perpare_query_for_edges():
         # print(query_edge_variation_trait_set)
         final_assertion = '_'.join(final_assertion.split(' '))
         query = query_edge_variation_trait_set % (
-        general_type, trait_set_type, final_assertion, general_type, 'variant_id', 'trait_set_' + trait_set_type,
-        'trait_set_id', final_assertion)
+            general_type, trait_set_type, final_assertion, general_type, 'variant_id', 'trait_set_' + trait_set_type,
+            'trait_set_id', final_assertion)
         end_query = ' Set '
         for head in edge_information:
             if head in dict_edge_trait_set_variation_pair_to_list_of_list_properties[
@@ -1279,8 +1282,8 @@ def preparation_on_variation_haplo_or_genotype(interpreted_record, variant_id, d
             csv_writer_type.writeheader()
             dict_csv_file_variation['Genotype'][variation_type] = csv_writer_type
 
-        perpare_rela_between_variations(genotype, variant_id, 'genotyp_id', 'SimpleAllele', 'Genotype', 'Variant')
-        perpare_rela_between_variations(genotype, variant_id, 'genotyp_id', 'Haplotype', 'Genotype', 'Haplotype')
+        prepare_rela_between_variations(genotype, variant_id, 'genotyp_id', 'SimpleAllele', 'Genotype', 'Variant')
+        prepare_rela_between_variations(genotype, variant_id, 'genotyp_id', 'Haplotype', 'Genotype', 'Haplotype')
 
         if variant_id in dict_variation_to_node_ids['Genotype'][variation_type]:
             return True
@@ -1321,7 +1324,7 @@ def preparation_on_variation_haplo_or_genotype(interpreted_record, variant_id, d
             csv_writer_type.writeheader()
             dict_csv_file_variation['Haplotype'][variation_type] = csv_writer_type
 
-        perpare_rela_between_variations(haplotype, variant_id, 'haplo_id', 'SimpleAllele', 'Haplotype', 'Variant')
+        prepare_rela_between_variations(haplotype, variant_id, 'haplo_id', 'SimpleAllele', 'Haplotype', 'Variant')
 
         if variant_id in dict_variation_to_node_ids['Haplotype'][variation_type]:
             return True
@@ -1369,12 +1372,12 @@ header_variation = ['identifier', 'accession', 'name', 'allele_id', 'frequencies
                     'xrefs', 'attributes', 'comments', 'genes', 'specific_type', 'synonyms', 'cytogenetic_location',
                     'hgvs_list',
                     'sequence_location', 'functional_consequences', 'number_of_chromosomes', 'review_status',
-                    'citations', 'rela', 'global_minor_allel_frequency']
+                    'citations', 'rela', 'global_minor_allel_frequency', 'genes']
 list_header_measures = ['identifier', 'accession', 'name', 'synonyms', 'symbols', 'comments', 'measures',
                         'citations', 'xrefs', 'number_of_chromosomes', 'specific_type', 'allele_id',
                         'attributes',
                         'cytogenetic_location', 'measure_relationships', 'sequence_location', 'frequencies',
-                        'global_minor_allele_frequency']
+                        'global_minor_allele_frequency', 'genes']
 # query for variation edges
 query_edge_variation = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ClinVar/data/edge_%s_%s.tsv"  As line FIELDTERMINATOR '\t' Match (g:%s_ClinVar{identifier:line.%s}), (o:%s_ClinVar{identifier:line.%s}) Create (g)-[:has]->(o);\n'''
 # query_edge_variation = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''/data/edge_%s_%s.tsv"  As line FIELDTERMINATOR '\t' Match (g:%s_ClinVar{identifier:line.%s}), (o:%s_ClinVar{identifier:line.%s}) Create (g)-[:has]->(o);\n'''
@@ -1453,7 +1456,7 @@ def prepare_content_of_cypher_file(type_variation, dict_set_of_property_which_ar
             query += head + ':split(line.' + head + ",'|'), "
         else:
             query += head + ':line.' + head + ', '
-    query = query[:-2] + '});\n'
+    query = query + ' license:"CC0 1.0"});\n'
     type_variation = type_variation.replace(' ', '_')
     if extra_name is None:
         this_query = query % (type_variation, type_variation)
@@ -1473,10 +1476,10 @@ def generate_node_cypher(dict_variation_to_node_ids, list_head, extra_name=None,
     for key, value in dict_variation_to_node_ids.items():
         if type(value) == dict:
             if is_Varient and not key == "Variant":
-                query_add = query + ':Variant_ClinVar {'
+                query_add = query + ':Variant_ClinVar '
             else:
-                quer_add = query
-            new_query = quer_add + ':' + key.replace(' ', '_') + '_ClinVar {'
+                query_add = query
+            new_query = query_add + ':' + key.replace(' ', '_') + '_ClinVar {'
             for lower_key in value.keys():
                 if lower_key != key:
                     list_of_sets_properties = dict_type_to_list_property_list[lower_key]
@@ -1484,7 +1487,8 @@ def generate_node_cypher(dict_variation_to_node_ids, list_head, extra_name=None,
 
                 else:
                     list_of_sets_properties = dict_type_to_list_property_list[key]
-                    prepare_content_of_cypher_file(key, list_of_sets_properties, quer_add + ' {', list_head, extra_name)
+                    prepare_content_of_cypher_file(key, list_of_sets_properties, query_add + ' {', list_head,
+                                                   extra_name)
         else:
             list_of_sets_properties = dict_type_to_list_property_list[key]
             prepare_content_of_cypher_file(key, list_of_sets_properties, query + '{', list_head, extra_name)
@@ -1497,9 +1501,11 @@ def generate_node_cypher(dict_variation_to_node_ids, list_head, extra_name=None,
 
 
 print(datetime.datetime.utcnow())
+print('extract information from ClinVarVariationRelease')
 extract_node_info_for_variations()
 print(datetime.datetime.utcnow())
 print(dict_specific_to_general_type)
+print('extract information from Full release')
 get_information_from_full_relase()
 
 # measure set nodes queries

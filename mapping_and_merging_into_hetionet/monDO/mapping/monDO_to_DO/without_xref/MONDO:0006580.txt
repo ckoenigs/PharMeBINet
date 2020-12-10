@@ -1,3 +1,0 @@
-MONDO:0006580	miliaria
-DOID 	 name 
-DOID:1382	miliaria

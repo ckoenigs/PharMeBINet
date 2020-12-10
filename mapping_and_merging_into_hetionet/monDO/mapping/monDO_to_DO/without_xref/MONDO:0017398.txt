@@ -1,3 +1,0 @@
-MONDO:0017398	3MC syndrome
-DOID 	 name 
-DOID:0060225	3MC syndrome

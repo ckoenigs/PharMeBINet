@@ -1,3 +1,0 @@
-MONDO:0005258	autism spectrum disorder
-DOID 	 name 
-DOID:0060041	autism spectrum disorder

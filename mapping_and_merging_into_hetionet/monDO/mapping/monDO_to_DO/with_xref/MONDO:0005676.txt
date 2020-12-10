@@ -1,3 +1,0 @@
-MONDO:0005676	borna disease
-DOID 	 name 
-DOID:5154	borna disease

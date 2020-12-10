@@ -1,3 +1,0 @@
-MONDO:0013748	ventricular septal defect 2
-DOID 	 name 
-DOID:1657	ventricular septal defect

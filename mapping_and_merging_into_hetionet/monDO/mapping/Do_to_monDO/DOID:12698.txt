@@ -1,3 +1,0 @@
-DOID:12698	gynecomastia
-monDO ID 	 name 
-MONDO:0001571	gynecomastia

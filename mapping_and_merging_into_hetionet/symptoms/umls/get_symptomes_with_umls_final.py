@@ -4,7 +4,8 @@ Created on Thu May 18 09:18:08 2017
 
 @author: Cassandra
 """
-from py2neo import Graph, authenticate
+sys.path.append("../..")
+import create_connection_to_databases, authenticate
 import MySQLdb as mdb
 import sys
 import datetime
@@ -74,7 +75,7 @@ def combin(a, b):
 def database_connection():
     # create connection with mysql database
     global con
-    con = mdb.connect('localhost', 'root', 'Za8p7Tf', 'umls')
+    con = mdb.connect('127.0.0.1', 'root', 'Za8p7Tf', 'umls')
 
     authenticate("localhost:7474", "neo4j", "test")
     global g
@@ -854,7 +855,7 @@ def generate_cypher_file_for_relationships():
                 if not symptom in dict_umls_cui_to_mesh_or_umls_cui:
                     query = '''MATCH (n:Disease{identifier:"%s"}), (s:Symptom{identifier:"%s"}) 
                     Set n.umls='yes'
-                    Create (n)-[:PRESENTS_DpS{license:'UMLS ',unbiased:'false',source:'UMLS', resource:['UMLS'],hetionet:'no',do:'no', hpo:'no', umls:'yes'}]->(s); \n'''
+                    Create (n)-[:PRESENTS_DpS{license:'UMLS ',unbiased:false,source:'UMLS', resource:['UMLS'],hetionet:'no',do:'no', hpo:'no', umls:'yes'}]->(s); \n'''
                     query = query % (mondo, symptom)
                     counter_new_connection += 1
                 else:
@@ -866,7 +867,7 @@ def generate_cypher_file_for_relationships():
                     if first_entry == None:
                         query = '''MATCH (n:Disease{identifier:"%s"}),(s:Symptom{identifier:"%s"}) 
                         Set n.umls='yes', 
-                        Create (n)-[:PRESENTS_DpS{license:'UMLS',unbiased:'false',source:'UMLS',resource:['UMLS'],hetionet:'no',do:'no', hpo:'no', umls:'yes'}]->(s); \n'''
+                        Create (n)-[:PRESENTS_DpS{license:'UMLS',unbiased:false,source:'UMLS',resource:['UMLS'],hetionet:'no',do:'no', hpo:'no', umls:'yes'}]->(s); \n'''
                         query = query % (mondo, mesh_or_cui)
                         counter_new_connection += 1
 

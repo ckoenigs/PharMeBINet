@@ -1,3 +1,0 @@
-MONDO:0006312	myofibroma
-DOID 	 name 
-DOID:4386	myofibroma

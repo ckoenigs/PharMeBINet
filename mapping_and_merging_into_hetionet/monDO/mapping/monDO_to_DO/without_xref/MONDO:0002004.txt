@@ -1,3 +1,0 @@
-MONDO:0002004	atheroembolism of kidney
-DOID 	 name 
-DOID:1460	atheroembolism of kidney

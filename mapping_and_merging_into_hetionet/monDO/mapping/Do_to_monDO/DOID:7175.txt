@@ -1,3 +1,0 @@
-DOID:7175	anal Buschke-Lowenstein tumor
-monDO ID 	 name 
-MONDO:0004131	anal Buschke-Lowenstein tumor

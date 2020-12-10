@@ -1,3 +1,0 @@
-MONDO:0001405	dermatophytosis of groin and perianal area
-DOID 	 name 
-DOID:11917	tinea cruris

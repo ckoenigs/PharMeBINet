@@ -1,3 +1,0 @@
-MONDO:0004601	ulcer of lower limbs
-DOID 	 name 
-DOID:8529	ulcer of lower limbs

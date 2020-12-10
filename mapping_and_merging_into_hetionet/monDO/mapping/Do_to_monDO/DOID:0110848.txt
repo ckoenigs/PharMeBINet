@@ -1,3 +1,0 @@
-DOID:0110848	xeroderma pigmentosum group F
-monDO ID 	 name 
-MONDO:0010215	xeroderma pigmentosum group F

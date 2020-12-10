@@ -1,3 +1,0 @@
-MONDO:0005791	herpangina
-DOID 	 name 
-DOID:10883	herpangina

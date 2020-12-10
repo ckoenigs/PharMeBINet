@@ -1,3 +1,0 @@
-MONDO:0012302	PFM3
-DOID 	 name 
-DOID:0060285	parietal foramina

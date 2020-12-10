@@ -1,3 +1,0 @@
-DOID:0090143	brachyolmia-amelogenesis imperfecta syndrome
-monDO ID 	 name 
-MONDO:0011018	brachyolmia-amelogenesis imperfecta syndrome

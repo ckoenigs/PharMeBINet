@@ -1,3 +1,0 @@
-MONDO:0002028	personality disorder (disease)
-DOID 	 name 
-DOID:1510	personality disorder

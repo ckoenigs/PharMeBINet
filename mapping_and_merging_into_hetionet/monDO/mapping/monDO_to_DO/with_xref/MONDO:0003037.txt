@@ -1,3 +1,0 @@
-MONDO:0003037	hypotrichosis
-DOID 	 name 
-DOID:4535	hypotrichosis

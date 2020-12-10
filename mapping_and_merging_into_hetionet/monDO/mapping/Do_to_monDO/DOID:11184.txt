@@ -1,3 +1,0 @@
-DOID:11184	acute conjunctivitis
-monDO ID 	 name 
-MONDO:0001214	acute conjunctivitis

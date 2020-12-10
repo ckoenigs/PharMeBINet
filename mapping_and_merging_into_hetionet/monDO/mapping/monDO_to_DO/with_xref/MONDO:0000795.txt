@@ -1,3 +1,0 @@
-MONDO:0000795	penicillin allergy
-DOID 	 name 
-DOID:0060520	penicillin allergy

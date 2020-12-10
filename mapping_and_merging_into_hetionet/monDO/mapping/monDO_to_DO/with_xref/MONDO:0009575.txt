@@ -1,3 +1,0 @@
-MONDO:0009575	thiamine-responsive megaloblastic anemia syndrome
-DOID 	 name 
-DOID:0090117	thiamine-responsive megaloblastic anemia syndrome

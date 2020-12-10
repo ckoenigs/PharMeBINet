@@ -1,3 +1,0 @@
-MONDO:0000967	conventional lipoma
-DOID 	 name 
-DOID:10193	classic type lipoma

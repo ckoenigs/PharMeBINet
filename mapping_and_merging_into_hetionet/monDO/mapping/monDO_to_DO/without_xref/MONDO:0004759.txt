@@ -1,3 +1,0 @@
-MONDO:0004759	bestiality
-DOID 	 name 
-DOID:9336	bestiality

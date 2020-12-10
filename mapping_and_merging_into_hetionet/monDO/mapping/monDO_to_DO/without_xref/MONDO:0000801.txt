@@ -1,3 +1,0 @@
-MONDO:0000801	green mud crab allergy
-DOID 	 name 
-DOID:0060526	green mud crab allergy

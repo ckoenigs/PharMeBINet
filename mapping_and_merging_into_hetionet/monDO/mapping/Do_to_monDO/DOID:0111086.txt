@@ -1,3 +1,0 @@
-DOID:0111086	Fanconi anemia complementation group G
-monDO ID 	 name 
-MONDO:0013565	Fanconi anemia complementation group G

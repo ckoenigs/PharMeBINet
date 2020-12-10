@@ -1,3 +1,0 @@
-MONDO:0010842	multiple cutaneous and mucosal venous malformations
-DOID 	 name 
-DOID:0050792	multiple cutaneous and mucosal venous malformations

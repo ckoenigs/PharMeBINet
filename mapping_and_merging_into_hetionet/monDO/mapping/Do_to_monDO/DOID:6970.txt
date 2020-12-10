@@ -1,3 +1,0 @@
-DOID:6970	acute inflammation of lacrimal passage
-monDO ID 	 name 
-MONDO:0004055	acute inflammation of lacrimal passage

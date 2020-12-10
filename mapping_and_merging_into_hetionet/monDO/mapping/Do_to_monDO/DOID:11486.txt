@@ -1,3 +1,0 @@
-DOID:11486	Horner's syndrome
-monDO ID 	 name 
-MONDO:0001294	Horner's syndrome

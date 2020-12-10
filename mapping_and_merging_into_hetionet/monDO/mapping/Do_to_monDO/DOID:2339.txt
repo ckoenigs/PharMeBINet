@@ -1,3 +1,0 @@
-DOID:2339	Crouzon syndrome
-monDO ID 	 name 
-MONDO:0007405	Crouzon syndrome

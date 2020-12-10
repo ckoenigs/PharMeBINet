@@ -1,3 +1,0 @@
-MONDO:0001885	lateral cystocele
-DOID 	 name 
-DOID:14130	lateral cystocele

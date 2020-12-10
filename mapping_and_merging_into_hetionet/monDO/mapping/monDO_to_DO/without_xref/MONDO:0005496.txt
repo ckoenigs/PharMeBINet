@@ -1,3 +1,0 @@
-MONDO:0005496	bile duct carcinoma
-DOID 	 name 
-DOID:4897	bile duct carcinoma

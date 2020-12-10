@@ -1,3 +1,0 @@
-MONDO:0003083	venous hemangioma
-DOID 	 name 
-DOID:467	venous hemangioma

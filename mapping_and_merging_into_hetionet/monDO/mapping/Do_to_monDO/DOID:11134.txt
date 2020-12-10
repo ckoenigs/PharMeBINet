@@ -1,3 +1,0 @@
-DOID:11134	prolapse of lacrimal gland
-monDO ID 	 name 
-MONDO:0001203	prolapse of lacrimal gland

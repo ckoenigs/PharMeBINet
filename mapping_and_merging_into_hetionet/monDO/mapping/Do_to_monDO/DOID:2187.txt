@@ -1,3 +1,0 @@
-DOID:2187	amelogenesis imperfecta
-monDO ID 	 name 
-MONDO:0019507	amelogenesis imperfecta

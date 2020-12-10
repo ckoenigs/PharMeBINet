@@ -1,3 +1,0 @@
-MONDO:0013071	Emery-Dreifuss muscular dystrophy 4, autosomal dominant
-DOID 	 name 
-DOID:11726	Emery-Dreifuss muscular dystrophy

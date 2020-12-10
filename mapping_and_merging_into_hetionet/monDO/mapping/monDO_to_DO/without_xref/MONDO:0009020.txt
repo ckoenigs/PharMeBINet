@@ -1,3 +1,0 @@
-MONDO:0009020	macular corneal dystrophy
-DOID 	 name 
-DOID:2565	macular corneal dystrophy

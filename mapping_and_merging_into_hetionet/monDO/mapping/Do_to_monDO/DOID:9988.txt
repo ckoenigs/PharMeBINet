@@ -1,3 +1,0 @@
-DOID:9988	tertiary neurosyphilis
-monDO ID 	 name 
-MONDO:0004944	tertiary neurosyphilis

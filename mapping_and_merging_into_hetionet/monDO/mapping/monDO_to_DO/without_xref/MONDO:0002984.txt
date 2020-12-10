@@ -1,3 +1,0 @@
-MONDO:0002984	reticulohistiocytic granuloma
-DOID 	 name 
-DOID:4394	reticulohistiocytic granuloma

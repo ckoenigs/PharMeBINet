@@ -1,3 +1,0 @@
-DOID:4189	mutism
-monDO ID 	 name 
-MONDO:0002905	mutism (disease)

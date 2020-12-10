@@ -1,3 +1,0 @@
-MONDO:0004897	hypotropia
-DOID 	 name 
-DOID:9841	hypotropia

@@ -1,3 +1,0 @@
-MONDO:0019631	persistent hyperplastic primary vitreous
-DOID 	 name 
-DOID:0060282	persistent hyperplastic primary vitreous

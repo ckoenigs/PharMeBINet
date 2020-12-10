@@ -1,3 +1,0 @@
-DOID:4627	ideomotor apraxia
-monDO ID 	 name 
-MONDO:0006800	ideomotor apraxia

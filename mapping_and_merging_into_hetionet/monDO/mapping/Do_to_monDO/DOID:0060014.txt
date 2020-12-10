@@ -1,3 +1,0 @@
-DOID:0060014	CD45 deficiency
-monDO ID 	 name 
-MONDO:0015702	T-B+ severe combined immunodeficiency due to CD45 deficiency

@@ -1,3 +1,0 @@
-DOID:2548	reflex epilepsy
-monDO ID 	 name 
-MONDO:0017768	reflex epilepsy

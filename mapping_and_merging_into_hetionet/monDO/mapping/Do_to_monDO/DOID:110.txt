@@ -1,3 +1,0 @@
-DOID:110	lens disease
-monDO ID 	 name 
-MONDO:0001176	lens disease

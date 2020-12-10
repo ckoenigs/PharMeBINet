@@ -1,3 +1,0 @@
-DOID:3744	cervical squamous cell carcinoma
-monDO ID 	 name 
-MONDO:0006143	cervical squamous cell carcinoma

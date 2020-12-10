@@ -1,3 +1,0 @@
-DOID:4517	skin angiosarcoma
-monDO ID 	 name 
-MONDO:0003029	skin angiosarcoma

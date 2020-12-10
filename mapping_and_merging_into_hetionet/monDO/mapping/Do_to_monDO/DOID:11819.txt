@@ -1,3 +1,0 @@
-DOID:11819	ureter cancer
-monDO ID 	 name 
-MONDO:0008627	ureter cancer

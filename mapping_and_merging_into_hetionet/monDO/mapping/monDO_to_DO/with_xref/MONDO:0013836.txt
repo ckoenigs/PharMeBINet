@@ -1,3 +1,0 @@
-MONDO:0013836	familial steroid-resistant nephrotic syndrome with sensorineural deafness
-DOID 	 name 
-DOID:0050730	coenzyme Q10 deficiency disease

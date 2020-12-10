@@ -1,3 +1,0 @@
-DOID:8747	subacute myeloid leukemia
-monDO ID 	 name 
-MONDO:0004653	subacute myeloid leukemia

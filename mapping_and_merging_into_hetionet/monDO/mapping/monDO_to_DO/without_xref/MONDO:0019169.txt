@@ -1,3 +1,0 @@
-MONDO:0019169	pyruvate dehydrogenase deficiency
-DOID 	 name 
-DOID:3649	pyruvate decarboxylase deficiency

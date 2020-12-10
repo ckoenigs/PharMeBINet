@@ -1,3 +1,0 @@
-DOID:8645	subacute delirium
-monDO ID 	 name 
-MONDO:0004629	subacute delirium

@@ -1,3 +1,0 @@
-MONDO:0006201	ethmoid sinus adenoid cystic carcinoma
-DOID 	 name 
-DOID:2764	ethmoid sinus adenoid cystic carcinoma

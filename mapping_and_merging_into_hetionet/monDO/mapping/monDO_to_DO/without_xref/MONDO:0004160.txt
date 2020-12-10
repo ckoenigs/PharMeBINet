@@ -1,3 +1,0 @@
-MONDO:0004160	female stress incontinence
-DOID 	 name 
-DOID:724	female stress incontinence

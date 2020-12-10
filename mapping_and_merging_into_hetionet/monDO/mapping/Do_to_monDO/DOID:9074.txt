@@ -1,3 +1,0 @@
-DOID:9074	systemic lupus erythematosus
-monDO ID 	 name 
-MONDO:0007915	systemic lupus erythematosus (disease)

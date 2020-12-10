@@ -1,3 +1,0 @@
-MONDO:0016372	glossopharyngeal neuralgia
-DOID 	 name 
-DOID:14423	glossopharyngeal neuralgia

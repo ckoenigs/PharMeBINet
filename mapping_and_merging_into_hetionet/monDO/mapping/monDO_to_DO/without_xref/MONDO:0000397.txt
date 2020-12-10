@@ -1,3 +1,0 @@
-MONDO:0000397	ataxic cerebral palsy
-DOID 	 name 
-DOID:0050670	ataxic cerebral palsy

@@ -1,3 +1,0 @@
-MONDO:0004570	intestinal volvulus
-DOID 	 name 
-DOID:8445	intestinal volvulus

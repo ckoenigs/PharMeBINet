@@ -1,3 +1,0 @@
-DOID:13386	gastrointestinal anthrax
-monDO ID 	 name 
-MONDO:0001701	gastrointestinal anthrax

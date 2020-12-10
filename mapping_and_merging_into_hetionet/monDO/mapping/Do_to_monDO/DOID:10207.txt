@@ -1,3 +1,0 @@
-DOID:10207	paratesticular lipoma
-monDO ID 	 name 
-MONDO:0000976	paratesticular lipoma

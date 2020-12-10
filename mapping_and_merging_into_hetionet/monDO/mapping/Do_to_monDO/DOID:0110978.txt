@@ -1,3 +1,0 @@
-DOID:0110978	brachydactyly type A1D
-monDO ID 	 name 
-MONDO:0014798	brachydactyly type A1D

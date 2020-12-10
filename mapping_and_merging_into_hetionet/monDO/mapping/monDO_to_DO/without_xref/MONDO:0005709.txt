@@ -1,3 +1,0 @@
-MONDO:0005709	common cold
-DOID 	 name 
-DOID:10459	common cold

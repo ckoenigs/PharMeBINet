@@ -1,3 +1,0 @@
-DOID:974	upper respiratory tract disease
-monDO ID 	 name 
-MONDO:0004867	upper respiratory tract disease

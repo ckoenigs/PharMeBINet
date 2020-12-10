@@ -1,3 +1,0 @@
-MONDO:0004237	large cell carcinoma with rhabdoid phenotype
-DOID 	 name 
-DOID:7480	large cell carcinoma with rhabdoid phenotype

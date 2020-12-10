@@ -1,3 +1,0 @@
-MONDO:0013891	amyotrophic lateral sclerosis type 18
-DOID 	 name 
-DOID:0060209	amyotrophic lateral sclerosis type 18

@@ -1,5 +1,0 @@
-MONDO:0009669	Werdnig-Hoffmann disease
-DOID 	 name 
-DOID:12376	juvenile spinal muscular atrophy
-DOID:13137	Werdnig-Hoffmann disease
-DOID:0060160	survival motor neuron spinal muscular atrophy

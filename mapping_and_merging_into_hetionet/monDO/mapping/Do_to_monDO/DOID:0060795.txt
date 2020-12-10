@@ -1,3 +1,0 @@
-DOID:0060795	hypomyelinating leukodystrophy 13
-monDO ID 	 name 
-MONDO:0014813	hypomyelinating leukodystrophy 13

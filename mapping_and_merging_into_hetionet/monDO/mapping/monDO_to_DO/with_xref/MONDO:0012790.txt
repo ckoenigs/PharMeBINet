@@ -1,3 +1,0 @@
-MONDO:0012790	amyotrophic lateral sclerosis type 10
-DOID 	 name 
-DOID:0060201	amyotrophic lateral sclerosis type 10

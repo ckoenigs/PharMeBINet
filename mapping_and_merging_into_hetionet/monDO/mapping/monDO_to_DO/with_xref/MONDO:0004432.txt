@@ -1,3 +1,0 @@
-MONDO:0004432	mature pericardial teratoma
-DOID 	 name 
-DOID:8012	benign pericardial teratoma

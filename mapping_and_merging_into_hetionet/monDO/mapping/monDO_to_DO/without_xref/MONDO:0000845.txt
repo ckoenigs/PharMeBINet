@@ -1,3 +1,0 @@
-MONDO:0000845	fibrous dysplasia
-DOID 	 name 
-DOID:0080031	fibrous dysplasia

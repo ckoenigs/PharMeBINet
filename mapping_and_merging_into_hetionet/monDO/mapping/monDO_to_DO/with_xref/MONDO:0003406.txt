@@ -1,3 +1,0 @@
-MONDO:0003406	sleep disorder
-DOID 	 name 
-DOID:535	sleep disorder

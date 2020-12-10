@@ -1,3 +1,0 @@
-MONDO:0001774	posterior scleritis
-DOID 	 name 
-DOID:13676	posterior scleritis

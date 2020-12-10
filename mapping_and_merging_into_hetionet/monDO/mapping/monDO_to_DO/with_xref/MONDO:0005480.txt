@@ -1,3 +1,0 @@
-MONDO:0005480	contact dermatitis
-DOID 	 name 
-DOID:2773	contact dermatitis

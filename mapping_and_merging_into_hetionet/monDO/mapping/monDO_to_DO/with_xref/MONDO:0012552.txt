@@ -1,3 +1,0 @@
-MONDO:0012552	multiple endocrine neoplasia type 4
-DOID 	 name 
-DOID:0080137	multiple endocrine neoplasia type 4

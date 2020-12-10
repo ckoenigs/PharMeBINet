@@ -1,3 +1,0 @@
-MONDO:0005673	blind loop syndrome
-DOID 	 name 
-DOID:10606	blind loop syndrome

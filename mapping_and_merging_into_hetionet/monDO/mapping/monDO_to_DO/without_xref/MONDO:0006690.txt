@@ -1,3 +1,0 @@
-MONDO:0006690	carotid artery thrombosis
-DOID 	 name 
-DOID:3410	carotid artery thrombosis

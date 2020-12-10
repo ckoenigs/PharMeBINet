@@ -1,3 +1,0 @@
-MONDO:0006904	phimosis
-DOID 	 name 
-DOID:2712	phimosis

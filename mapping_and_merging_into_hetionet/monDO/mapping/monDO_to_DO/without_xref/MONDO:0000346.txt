@@ -1,3 +1,0 @@
-MONDO:0000346	Balkan hemorrhagic fever
-DOID 	 name 
-DOID:0050522	Balkan hemorrhagic fever

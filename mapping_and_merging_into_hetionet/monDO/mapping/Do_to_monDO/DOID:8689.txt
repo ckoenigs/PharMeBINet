@@ -1,3 +1,0 @@
-DOID:8689	anorexia nervosa
-monDO ID 	 name 
-MONDO:0005351	anorexia nervosa

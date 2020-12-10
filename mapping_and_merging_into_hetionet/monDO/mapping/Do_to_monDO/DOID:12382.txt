@@ -1,3 +1,0 @@
-DOID:12382	complex partial epilepsy
-monDO ID 	 name 
-MONDO:0006710	complex partial epilepsy

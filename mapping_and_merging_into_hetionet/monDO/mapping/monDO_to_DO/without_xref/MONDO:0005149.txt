@@ -1,3 +1,0 @@
-MONDO:0005149	pulmonary hypertension
-DOID 	 name 
-DOID:6432	pulmonary hypertension

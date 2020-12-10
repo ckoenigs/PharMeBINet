@@ -1,3 +1,0 @@
-MONDO:0008891	riboflavin transporter deficiency
-DOID 	 name 
-DOID:0050694	Brown-Vialetto-Van Laere syndrome

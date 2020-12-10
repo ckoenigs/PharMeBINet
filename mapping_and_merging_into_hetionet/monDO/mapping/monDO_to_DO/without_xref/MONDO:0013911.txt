@@ -1,3 +1,0 @@
-MONDO:0013911	hypogonadotropic hypogonadism 9 with or without anosmia
-DOID 	 name 
-DOID:0090085	hypogonadotropic hypogonadism 9 with or without anosmia

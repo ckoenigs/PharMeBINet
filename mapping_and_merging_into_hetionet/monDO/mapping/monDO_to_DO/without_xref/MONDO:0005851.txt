@@ -1,3 +1,0 @@
-MONDO:0005851	Miller Fisher syndrome
-DOID 	 name 
-DOID:12889	Miller Fisher syndrome

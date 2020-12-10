@@ -1,3 +1,0 @@
-MONDO:0000839	physical disorder
-DOID 	 name 
-DOID:0080015	physical disorder

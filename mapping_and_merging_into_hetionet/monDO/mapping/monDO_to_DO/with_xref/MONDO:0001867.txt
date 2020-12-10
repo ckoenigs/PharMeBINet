@@ -1,3 +1,0 @@
-MONDO:0001867	phaeohyphomycosis
-DOID 	 name 
-DOID:14049	phaeohyphomycosis

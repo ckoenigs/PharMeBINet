@@ -1,3 +1,0 @@
-MONDO:0002376	spleen angiosarcoma
-DOID 	 name 
-DOID:265	spleen angiosarcoma

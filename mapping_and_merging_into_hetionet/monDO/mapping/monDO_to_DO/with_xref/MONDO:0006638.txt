@@ -1,3 +1,0 @@
-MONDO:0006638	acute retinal necrosis syndrome
-DOID 	 name 
-DOID:3611	acute retinal necrosis syndrome

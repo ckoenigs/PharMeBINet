@@ -1,3 +1,0 @@
-MONDO:0015527	KlC<ver-Bucy syndrome
-DOID 	 name 
-DOID:2510	Kluver-Bucy syndrome

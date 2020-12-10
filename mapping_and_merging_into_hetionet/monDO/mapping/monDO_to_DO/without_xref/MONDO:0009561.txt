@@ -1,3 +1,0 @@
-MONDO:0009561	alpha-mannosidosis
-DOID 	 name 
-DOID:3413	alpha-mannosidosis

@@ -1,3 +1,0 @@
-MONDO:0002600	mixed germ cell cancer
-DOID 	 name 
-DOID:3306	mixed germ cell cancer

@@ -1,3 +1,0 @@
-DOID:11033	idiopathic corneal edema
-monDO ID 	 name 
-MONDO:0001182	idiopathic corneal edema

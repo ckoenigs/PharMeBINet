@@ -1,3 +1,0 @@
-DOID:8741	seborrheic dermatitis
-monDO ID 	 name 
-MONDO:0006608	seborrheic dermatitis (disease)

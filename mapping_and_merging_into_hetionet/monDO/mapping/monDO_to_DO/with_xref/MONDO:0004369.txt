@@ -1,3 +1,0 @@
-MONDO:0004369	renal infectious disease
-DOID 	 name 
-DOID:782	renal infectious disease

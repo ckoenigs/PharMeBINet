@@ -1,3 +1,0 @@
-MONDO:0007047	punctate palmoplantar keratoderma type III
-DOID 	 name 
-DOID:0060362	punctate palmoplantar keratoderma type III

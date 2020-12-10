@@ -1,3 +1,0 @@
-MONDO:0001129	nasal cavity olfactory neuroblastoma
-DOID 	 name 
-DOID:10812	nasal cavity olfactory neuroblastoma

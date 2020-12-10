@@ -1,3 +1,0 @@
-MONDO:0018983	Tolosa-Hunt syndrome
-DOID 	 name 
-DOID:1278	tolosa-hunt syndrome

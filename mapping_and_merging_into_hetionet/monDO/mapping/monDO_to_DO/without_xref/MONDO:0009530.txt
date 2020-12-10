@@ -1,3 +1,0 @@
-MONDO:0009530	lipoid proteinosis
-DOID 	 name 
-DOID:14498	lipoid proteinosis

@@ -1,3 +1,0 @@
-MONDO:0000870	childhood acute lymphoblastic leukemia
-DOID 	 name 
-DOID:0080144	childhood acute lymphocytic leukemia

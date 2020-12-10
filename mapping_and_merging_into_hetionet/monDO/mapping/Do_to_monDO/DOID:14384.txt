@@ -1,3 +1,0 @@
-DOID:14384	parietal lobe neoplasm
-monDO ID 	 name 
-MONDO:0001952	parietal lobe cancer

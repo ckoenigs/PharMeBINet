@@ -1,3 +1,0 @@
-MONDO:0004873	internal hemorrhoid
-DOID 	 name 
-DOID:9749	internal hemorrhoid

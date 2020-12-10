@@ -1,3 +1,0 @@
-DOID:0060486	Perry syndrome
-monDO ID 	 name 
-MONDO:0008201	Perry syndrome

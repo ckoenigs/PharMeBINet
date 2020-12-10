@@ -1,3 +1,0 @@
-DOID:8002	supraglottis neoplasm
-monDO ID 	 name 
-MONDO:0004427	supraglottis neoplasm

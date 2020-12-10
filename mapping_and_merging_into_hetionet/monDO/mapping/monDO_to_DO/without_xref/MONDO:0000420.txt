@@ -1,3 +1,0 @@
-MONDO:0000420	cerebral folate receptor alpha deficiency
-DOID 	 name 
-DOID:0050719	cerebral folate receptor alpha deficiency

@@ -1,3 +1,0 @@
-MONDO:0003709	adult T-cell leukemia/lymphoma
-DOID 	 name 
-DOID:0050523	adult T-cell leukemia

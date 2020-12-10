@@ -1,3 +1,0 @@
-MONDO:0004522	peritonitis
-DOID 	 name 
-DOID:8283	peritonitis

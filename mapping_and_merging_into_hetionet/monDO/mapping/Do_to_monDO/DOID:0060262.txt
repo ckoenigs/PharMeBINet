@@ -1,3 +1,0 @@
-DOID:0060262	gallbladder disease
-monDO ID 	 name 
-MONDO:0005281	gallbladder disease

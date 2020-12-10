@@ -1,3 +1,0 @@
-MONDO:0006596	photoallergic dermatitis
-DOID 	 name 
-DOID:3818	photoallergic dermatitis

@@ -1,3 +1,0 @@
-DOID:1699	congenital ichthyosiform erythroderma
-monDO ID 	 name 
-MONDO:0019306	congenital non-bullous ichthyosiform erythroderma

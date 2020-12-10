@@ -1,3 +1,0 @@
-DOID:13371	scrub typhus
-monDO ID 	 name 
-MONDO:0019365	scrub typhus

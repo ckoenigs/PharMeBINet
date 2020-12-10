@@ -1,3 +1,0 @@
-MONDO:0018901	left ventricular noncompaction
-DOID 	 name 
-DOID:0060480	left ventricular noncompaction

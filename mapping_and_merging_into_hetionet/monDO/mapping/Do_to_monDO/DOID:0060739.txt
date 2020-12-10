@@ -1,3 +1,0 @@
-DOID:0060739	hand-foot-genital syndrome
-monDO ID 	 name 
-MONDO:0007698	hand-foot-genital syndrome

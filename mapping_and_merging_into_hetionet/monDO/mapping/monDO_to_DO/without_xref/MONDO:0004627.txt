@@ -1,3 +1,0 @@
-MONDO:0004627	duodenitis
-DOID 	 name 
-DOID:8643	duodenitis

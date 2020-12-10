@@ -1,3 +1,0 @@
-MONDO:0009249	hereditary fructose intolerance
-DOID 	 name 
-DOID:9869	hereditary fructose intolerance syndrome

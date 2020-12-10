@@ -1,3 +1,0 @@
-DOID:0070003	blastoma
-monDO ID 	 name 
-MONDO:0005565	blastoma

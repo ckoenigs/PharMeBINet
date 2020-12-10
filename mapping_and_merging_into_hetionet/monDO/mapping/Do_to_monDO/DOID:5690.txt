@@ -1,3 +1,0 @@
-DOID:5690	atypical lipomatous tumor
-monDO ID 	 name 
-MONDO:0006097	atypical lipomatous tumor

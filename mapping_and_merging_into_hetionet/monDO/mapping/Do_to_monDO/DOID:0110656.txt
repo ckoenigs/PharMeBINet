@@ -1,3 +1,0 @@
-DOID:0110656	long QT syndrome 15
-monDO ID 	 name 
-MONDO:0014550	long QT syndrome 15

@@ -1,3 +1,0 @@
-DOID:7757	childhood leukemia
-monDO ID 	 name 
-MONDO:0004355	childhood leukemia

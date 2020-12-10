@@ -1,3 +1,0 @@
-DOID:4917	villous adenocarcinoma
-monDO ID 	 name 
-MONDO:0003204	villous adenocarcinoma

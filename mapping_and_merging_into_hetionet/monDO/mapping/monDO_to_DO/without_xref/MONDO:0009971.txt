@@ -1,3 +1,0 @@
-MONDO:0009971	newborn respiratory distress syndrome
-DOID 	 name 
-DOID:12716	newborn respiratory distress syndrome

@@ -1,3 +1,0 @@
-MONDO:0011013	autosomal dominant hypocalcemia 1
-DOID 	 name 
-DOID:0090107	autosomal dominant hypocalcemia 1

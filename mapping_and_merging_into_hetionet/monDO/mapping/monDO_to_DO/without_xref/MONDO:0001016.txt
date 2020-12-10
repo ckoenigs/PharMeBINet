@@ -1,3 +1,0 @@
-MONDO:0001016	epididymis cancer
-DOID 	 name 
-DOID:10366	epididymis cancer

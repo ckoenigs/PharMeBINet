@@ -1,3 +1,0 @@
-MONDO:0006691	causalgia
-DOID 	 name 
-DOID:3222	causalgia

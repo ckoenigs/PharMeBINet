@@ -1,3 +1,0 @@
-DOID:12527	common peroneal nerve lesion
-monDO ID 	 name 
-MONDO:0001542	common peroneal nerve lesion

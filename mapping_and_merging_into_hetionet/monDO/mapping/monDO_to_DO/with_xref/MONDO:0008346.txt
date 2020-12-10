@@ -1,4 +1,0 @@
-MONDO:0008346	pulmonary hemosiderosis
-DOID 	 name 
-DOID:12118	pulmonary hemosiderosis
-DOID:10328	siderosis

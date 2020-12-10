@@ -1,3 +1,0 @@
-MONDO:0005913	Phlebotomus fever
-DOID 	 name 
-DOID:11360	Phlebotomus fever

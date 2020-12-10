@@ -1,3 +1,0 @@
-DOID:2640	struma ovarii
-monDO ID 	 name 
-MONDO:0006980	struma ovarii

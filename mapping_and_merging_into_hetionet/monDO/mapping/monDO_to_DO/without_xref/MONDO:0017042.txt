@@ -1,3 +1,0 @@
-MONDO:0017042	thanatophoric dysplasia
-DOID 	 name 
-DOID:13481	thanatophoric dysplasia

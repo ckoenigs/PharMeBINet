@@ -1,3 +1,0 @@
-DOID:10793	chronic sphenoidal sinusitis
-monDO ID 	 name 
-MONDO:0001123	chronic sphenoidal sinusitis

@@ -1,3 +1,0 @@
-DOID:14762	calcaneonavicular coalition
-monDO ID 	 name 
-MONDO:0008518	calcaneonavicular coalition

@@ -1,3 +1,0 @@
-DOID:0060186	chemical colitis
-monDO ID 	 name 
-MONDO:0000706	chemical colitis

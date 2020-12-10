@@ -1,3 +1,0 @@
-MONDO:0009693	multiple myeloma
-DOID 	 name 
-DOID:9538	multiple myeloma

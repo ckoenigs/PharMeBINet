@@ -1,3 +1,0 @@
-DOID:0050816	urofacial syndrome
-monDO ID 	 name 
-MONDO:0000463	urofacial syndrome

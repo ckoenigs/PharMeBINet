@@ -1,3 +1,0 @@
-DOID:5894	adult malignant mesenchymoma
-monDO ID 	 name 
-MONDO:0003692	adult malignant mesenchymoma

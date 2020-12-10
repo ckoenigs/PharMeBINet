@@ -1,3 +1,0 @@
-MONDO:0006953	Rh isoimmunization
-DOID 	 name 
-DOID:4175	Rh isoimmunization

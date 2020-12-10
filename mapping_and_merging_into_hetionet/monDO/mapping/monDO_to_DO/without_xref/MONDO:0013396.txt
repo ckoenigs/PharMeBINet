@@ -1,3 +1,0 @@
-MONDO:0013396	chromosome 1p32-p31 deletion syndrome
-DOID 	 name 
-DOID:0060409	chromosome 1p32-p31 deletion syndrome

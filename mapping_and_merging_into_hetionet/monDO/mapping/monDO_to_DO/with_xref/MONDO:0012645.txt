@@ -1,3 +1,0 @@
-MONDO:0012645	GLC1N
-DOID 	 name 
-DOID:1067	open-angle glaucoma

@@ -1,3 +1,0 @@
-MONDO:0004404	precursor T-lymphoblastic lymphoma/leukemia refractory
-DOID 	 name 
-DOID:7936	precursor T-lymphoblastic lymphoma/leukemia refractory

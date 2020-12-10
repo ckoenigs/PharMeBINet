@@ -1,3 +1,0 @@
-MONDO:0018666	hepatoblastoma
-DOID 	 name 
-DOID:687	hepatoblastoma

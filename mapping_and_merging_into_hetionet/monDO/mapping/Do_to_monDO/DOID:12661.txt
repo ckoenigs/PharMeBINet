@@ -1,3 +1,0 @@
-DOID:12661	tooth ankylosis
-monDO ID 	 name 
-MONDO:0008007	tooth ankylosis

@@ -1,3 +1,0 @@
-DOID:3317	hepatic angiomyolipoma
-monDO ID 	 name 
-MONDO:0002605	hepatic angiomyolipoma

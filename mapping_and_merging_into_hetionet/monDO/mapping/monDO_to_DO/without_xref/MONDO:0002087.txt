@@ -1,3 +1,0 @@
-MONDO:0002087	peritoneum cancer
-DOID 	 name 
-DOID:1725	peritoneum cancer

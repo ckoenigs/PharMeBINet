@@ -1,3 +1,0 @@
-MONDO:0009104	Donnai-Barrow syndrome
-DOID 	 name 
-DOID:0090144	Donnai-Barrow syndrome

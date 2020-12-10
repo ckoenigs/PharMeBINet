@@ -1,3 +1,0 @@
-MONDO:0003401	central nervous system endodermal sinus tumor
-DOID 	 name 
-DOID:5343	central nervous system endodermal sinus tumor

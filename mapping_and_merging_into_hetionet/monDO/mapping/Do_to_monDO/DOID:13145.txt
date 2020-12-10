@@ -1,3 +1,0 @@
-DOID:13145	benign renovascular hypertension
-monDO ID 	 name 
-MONDO:0001647	benign renovascular hypertension

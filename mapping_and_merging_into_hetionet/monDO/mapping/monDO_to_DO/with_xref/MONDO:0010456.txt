@@ -1,3 +1,0 @@
-MONDO:0010456	renal cell carcinoma, Xp11-associated
-DOID 	 name 
-DOID:4450	renal cell carcinoma

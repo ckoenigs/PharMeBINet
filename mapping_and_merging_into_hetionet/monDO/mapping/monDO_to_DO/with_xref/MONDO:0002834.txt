@@ -1,3 +1,0 @@
-MONDO:0002834	primary prostate urothelial carcinoma
-DOID 	 name 
-DOID:4011	prostate transitional cell carcinoma

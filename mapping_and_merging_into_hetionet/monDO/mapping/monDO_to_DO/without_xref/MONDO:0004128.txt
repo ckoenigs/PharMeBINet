@@ -1,3 +1,0 @@
-MONDO:0004128	lung occult large cell carcinoma
-DOID 	 name 
-DOID:7169	lung occult large cell carcinoma

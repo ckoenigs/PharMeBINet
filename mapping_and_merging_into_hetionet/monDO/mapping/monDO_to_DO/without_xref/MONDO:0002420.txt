@@ -1,3 +1,0 @@
-MONDO:0002420	tic disorder
-DOID 	 name 
-DOID:2769	tic disorder

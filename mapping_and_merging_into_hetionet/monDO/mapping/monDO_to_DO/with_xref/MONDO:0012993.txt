@@ -1,3 +1,0 @@
-MONDO:0012993	DUH2
-DOID 	 name 
-DOID:0060304	dyschromatosis universalis hereditaria

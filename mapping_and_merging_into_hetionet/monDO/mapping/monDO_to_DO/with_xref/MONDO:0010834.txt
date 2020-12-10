@@ -1,3 +1,0 @@
-MONDO:0010834	HSCR5
-DOID 	 name 
-DOID:10487	Hirschsprung's disease

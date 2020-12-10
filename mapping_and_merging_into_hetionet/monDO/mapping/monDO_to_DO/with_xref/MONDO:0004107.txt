@@ -1,3 +1,0 @@
-MONDO:0004107	splenic manifestation of leukemia
-DOID 	 name 
-DOID:710	splenic manifestation of leukemia

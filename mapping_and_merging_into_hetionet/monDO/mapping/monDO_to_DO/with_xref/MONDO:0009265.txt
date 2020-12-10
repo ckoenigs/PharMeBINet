@@ -1,3 +1,0 @@
-MONDO:0009265	Gaucher's disease type I
-DOID 	 name 
-DOID:0110957	Gaucher's disease type I

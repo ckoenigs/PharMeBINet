@@ -1,3 +1,0 @@
-MONDO:0000813	cardiac tuberculosis
-DOID 	 name 
-DOID:0060570	cardiac tuberculosis

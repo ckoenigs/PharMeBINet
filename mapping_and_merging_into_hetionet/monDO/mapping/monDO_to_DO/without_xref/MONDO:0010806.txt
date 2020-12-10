@@ -1,3 +1,0 @@
-MONDO:0010806	retinitis pigmentosa 13
-DOID 	 name 
-DOID:0110403	retinitis pigmentosa 13

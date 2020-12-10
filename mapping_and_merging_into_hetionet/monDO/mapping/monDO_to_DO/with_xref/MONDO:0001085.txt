@@ -1,3 +1,0 @@
-MONDO:0001085	interstitial nephritis
-DOID 	 name 
-DOID:1063	interstitial nephritis

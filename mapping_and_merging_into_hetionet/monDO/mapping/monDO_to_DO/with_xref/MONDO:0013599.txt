@@ -1,3 +1,0 @@
-MONDO:0013599	autoimmune enteropathy and endocrinopathy-susceptibility to chronic infections syndrome
-DOID 	 name 
-DOID:2058	chronic mucocutaneous candidiasis

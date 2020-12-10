@@ -1,3 +1,0 @@
-MONDO:0009863	Bh4-deficient hyperphenylalaninemia a
-DOID 	 name 
-DOID:0090106	Bh4-deficient hyperphenylalaninemia A

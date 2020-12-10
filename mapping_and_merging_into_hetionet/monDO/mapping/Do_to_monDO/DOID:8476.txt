@@ -1,3 +1,0 @@
-DOID:8476	Whipple disease
-monDO ID 	 name 
-MONDO:0005116	Whipple's disease

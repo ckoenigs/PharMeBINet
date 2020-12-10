@@ -1,3 +1,0 @@
-DOID:0110913	adult hypophosphatasia
-monDO ID 	 name 
-MONDO:0007798	adult hypophosphatasia

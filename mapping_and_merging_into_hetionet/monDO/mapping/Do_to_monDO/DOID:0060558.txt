@@ -1,3 +1,0 @@
-DOID:0060558	lethal congenital contracture syndrome
-monDO ID 	 name 
-MONDO:0017436	lethal congenital contracture syndrome

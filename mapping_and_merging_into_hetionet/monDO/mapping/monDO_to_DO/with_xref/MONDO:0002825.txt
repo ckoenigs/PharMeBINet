@@ -1,3 +1,0 @@
-MONDO:0003709	Meige syndrome
-DOID 	 name 
-DOID:3982	Meige syndrome

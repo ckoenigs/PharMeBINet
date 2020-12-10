@@ -1,3 +1,0 @@
-MONDO:0018100	primary hypomagnesemia
-DOID 	 name 
-DOID:0060879	primary hypomagnesemia

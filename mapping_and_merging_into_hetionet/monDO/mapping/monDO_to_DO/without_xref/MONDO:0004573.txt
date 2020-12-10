@@ -1,3 +1,0 @@
-MONDO:0004573	ariboflavinosis
-DOID 	 name 
-DOID:8454	ariboflavinosis

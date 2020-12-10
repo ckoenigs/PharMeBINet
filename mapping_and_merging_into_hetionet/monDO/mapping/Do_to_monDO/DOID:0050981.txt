@@ -1,3 +1,0 @@
-DOID:0050981	spinocerebellar ataxia type 34
-monDO ID 	 name 
-MONDO:0007574	spinocerebellar ataxia type 34

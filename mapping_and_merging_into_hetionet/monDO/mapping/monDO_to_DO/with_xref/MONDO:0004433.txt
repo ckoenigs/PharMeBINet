@@ -1,3 +1,0 @@
-MONDO:0004433	penis papillary carcinoma
-DOID 	 name 
-DOID:8013	penis papillary carcinoma

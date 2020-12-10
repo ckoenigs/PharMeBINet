@@ -1,3 +1,0 @@
-MONDO:0014138	nemaline myopathy 8
-DOID 	 name 
-DOID:0110930	nemaline myopathy 8

@@ -1,3 +1,0 @@
-DOID:0060574	von Willebrand's disease 2
-monDO ID 	 name 
-MONDO:0013304	von willebrand's disease 2

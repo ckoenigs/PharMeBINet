@@ -1,3 +1,0 @@
-DOID:14501	Sjogren-Larsson syndrome
-monDO ID 	 name 
-MONDO:0010031	Sjogren-Larsson syndrome

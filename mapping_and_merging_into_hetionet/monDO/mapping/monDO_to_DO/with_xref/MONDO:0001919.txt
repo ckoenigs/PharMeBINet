@@ -1,3 +1,0 @@
-MONDO:0001919	cystoid macular retinal degeneration
-DOID 	 name 
-DOID:14245	cystoid macular retinal degeneration

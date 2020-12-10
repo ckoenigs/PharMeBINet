@@ -1,3 +1,0 @@
-DOID:345	uterine disease
-monDO ID 	 name 
-MONDO:0002654	uterine disease

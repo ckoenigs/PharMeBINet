@@ -1,3 +1,0 @@
-MONDO:0000821	cerebral cavernous malformation 3
-DOID 	 name 
-DOID:0060671	cerebral cavernous malformation 3

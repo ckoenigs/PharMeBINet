@@ -1,3 +1,0 @@
-MONDO:0008695	chorea-acanthocytosis
-DOID 	 name 
-DOID:0050766	chorea-acanthocytosis

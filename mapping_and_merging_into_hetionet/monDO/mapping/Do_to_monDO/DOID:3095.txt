@@ -1,3 +1,0 @@
-DOID:3095	germ cell and embryonal cancer
-monDO ID 	 name 
-MONDO:0002510	germ cell and embryonal cancer

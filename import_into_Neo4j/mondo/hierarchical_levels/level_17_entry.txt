@@ -1,6 +1,0 @@
-MonDO_id 	 MonDO_name 	 parent_id 	 parent_name  
-MONDO:0020479	pituitary gigantism	MONDO:0007052	growth hormone secreting pituitary adenoma
-MONDO:0010911	prolactin-producing pituitary gland adenoma	MONDO:0017824	familial isolated pituitary adenoma
-MONDO:0010492	pituitary adenoma, growth hormone-secreting, 2	MONDO:0019933	acromegaly
-MONDO:0008167	dermoid cyst of ovary	MONDO:0003281	ovarian cystic teratoma
-MONDO:0003333	benign struma ovarii	MONDO:0003332	malignant struma ovarii

@@ -1,3 +1,0 @@
-MONDO:0000587	autoimmune disease of eyes, ear, nose and throat
-DOID 	 name 
-DOID:0060030	autoimmune disease of eyes, ear, nose and throat

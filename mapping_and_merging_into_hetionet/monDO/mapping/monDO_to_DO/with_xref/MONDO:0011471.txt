@@ -1,3 +1,0 @@
-MONDO:0011471	inflammatory bowel disease 3
-DOID 	 name 
-DOID:0110891	inflammatory bowel disease 3

@@ -1,3 +1,0 @@
-MONDO:0004236	duodenal somatostatinoma
-DOID 	 name 
-DOID:7479	duodenal somatostatinoma

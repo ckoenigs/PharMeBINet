@@ -1,3 +1,0 @@
-MONDO:0001506	prostatocystitis
-DOID 	 name 
-DOID:12355	prostatocystitis

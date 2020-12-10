@@ -1,3 +1,0 @@
-DOID:6198	corneal intraepithelial neoplasm
-monDO ID 	 name 
-MONDO:0003801	corneal intraepithelial neoplasm

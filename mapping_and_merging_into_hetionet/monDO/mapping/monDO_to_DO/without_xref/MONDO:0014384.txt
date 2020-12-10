@@ -1,3 +1,0 @@
-MONDO:0014384	hypotrichosis 12
-DOID 	 name 
-DOID:0110709	hypotrichosis 12

@@ -1,3 +1,0 @@
-DOID:3356	localized osteosarcoma
-monDO ID 	 name 
-MONDO:0002620	localized osteosarcoma

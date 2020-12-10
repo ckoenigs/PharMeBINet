@@ -1,3 +1,0 @@
-DOID:5876	apocrine sweat gland neoplasm
-monDO ID 	 name 
-MONDO:0003686	apocrine sweat gland neoplasm

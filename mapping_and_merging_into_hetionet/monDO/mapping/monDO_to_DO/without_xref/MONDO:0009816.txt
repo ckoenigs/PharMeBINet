@@ -1,3 +1,0 @@
-MONDO:0009816	autosomal recessive osteopetrosis 2
-DOID 	 name 
-DOID:0110943	autosomal recessive osteopetrosis 2

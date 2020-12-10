@@ -1,3 +1,0 @@
-DOID:0110074	arrhythmogenic right ventricular dysplasia 5
-monDO ID 	 name 
-MONDO:0011459	arrhythmogenic right ventricular dysplasia 5

@@ -1,3 +1,0 @@
-MONDO:0003343	retinal hemangioblastoma
-DOID 	 name 
-DOID:5240	retinal hemangioblastoma

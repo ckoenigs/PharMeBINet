@@ -1,3 +1,0 @@
-MONDO:0013558	Hermansky-Pudlak syndrome 6
-DOID 	 name 
-DOID:0060544	Hermansky-Pudlak syndrome 6

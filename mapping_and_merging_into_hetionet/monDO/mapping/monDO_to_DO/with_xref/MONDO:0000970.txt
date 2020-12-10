@@ -1,3 +1,0 @@
-MONDO:0000970	breast lipoma
-DOID 	 name 
-DOID:10199	breast lipoma

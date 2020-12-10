@@ -1,3 +1,0 @@
-DOID:4690	childhood mediastinal neurogenic tumor
-monDO ID 	 name 
-MONDO:0003097	childhood mediastinal neurogenic neoplasm

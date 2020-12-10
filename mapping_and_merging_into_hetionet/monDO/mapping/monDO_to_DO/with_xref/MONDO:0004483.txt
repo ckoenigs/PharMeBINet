@@ -1,3 +1,0 @@
-MONDO:0004483	thyroid gland oncocytic adenoma
-DOID 	 name 
-DOID:8162	thyroid Hurthle cell adenoma

@@ -1,3 +1,0 @@
-DOID:955	benign neurilemmoma
-monDO ID 	 name 
-MONDO:0004818	benign neurilemmoma

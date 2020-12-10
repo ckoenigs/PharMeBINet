@@ -1,3 +1,0 @@
-MONDO:0014584	congenital myasthenic syndrome 3B
-DOID 	 name 
-DOID:0110665	congenital myasthenic syndrome 3B

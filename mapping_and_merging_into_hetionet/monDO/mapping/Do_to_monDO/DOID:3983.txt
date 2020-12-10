@@ -1,3 +1,0 @@
-DOID:3983	oesophagostomiasis
-monDO ID 	 name 
-MONDO:0005880	oesophagostomiasis

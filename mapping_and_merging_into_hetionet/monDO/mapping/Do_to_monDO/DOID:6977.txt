@@ -1,3 +1,0 @@
-DOID:6977	pancreatic cholera
-monDO ID 	 name 
-MONDO:0004058	pancreatic cholera

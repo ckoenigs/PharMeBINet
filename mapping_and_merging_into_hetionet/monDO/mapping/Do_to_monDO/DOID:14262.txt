@@ -1,3 +1,0 @@
-DOID:14262	oral candidiasis
-monDO ID 	 name 
-MONDO:0005886	oral candidiasis

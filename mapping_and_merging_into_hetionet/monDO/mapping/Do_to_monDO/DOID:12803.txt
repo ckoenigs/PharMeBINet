@@ -1,3 +1,0 @@
-DOID:12803	Sly syndrome
-monDO ID 	 name 
-MONDO:0009662	mucopolysaccharidosis type 7

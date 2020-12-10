@@ -1,3 +1,0 @@
-MONDO:0019005	nephronophthisis (disease)
-DOID 	 name 
-DOID:12712	nephronophthisis

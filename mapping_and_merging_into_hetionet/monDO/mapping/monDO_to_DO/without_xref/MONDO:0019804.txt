@@ -1,3 +1,0 @@
-MONDO:0019804	tracheomalacia
-DOID 	 name 
-DOID:0060313	tracheomalacia

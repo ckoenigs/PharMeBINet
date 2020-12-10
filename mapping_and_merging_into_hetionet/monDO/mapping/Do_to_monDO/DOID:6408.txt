@@ -1,3 +1,0 @@
-DOID:6408	ovary papillary carcinoma
-monDO ID 	 name 
-MONDO:0003874	ovary papillary carcinoma

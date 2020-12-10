@@ -1,3 +1,0 @@
-DOID:3852	Peutz-Jeghers syndrome
-monDO ID 	 name 
-MONDO:0008280	Peutz-Jeghers syndrome

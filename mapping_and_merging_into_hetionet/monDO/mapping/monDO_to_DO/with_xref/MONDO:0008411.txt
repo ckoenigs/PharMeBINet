@@ -1,3 +1,0 @@
-MONDO:0008411	ulnar-mammary syndrome
-DOID 	 name 
-DOID:0060614	ulnar-mammary syndrome

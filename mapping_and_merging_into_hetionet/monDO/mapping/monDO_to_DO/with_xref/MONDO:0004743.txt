@@ -1,3 +1,0 @@
-MONDO:0004743	hyperhomocysteinemia
-DOID 	 name 
-DOID:9279	hyperhomocysteinemia

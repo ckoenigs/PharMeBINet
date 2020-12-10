@@ -1,3 +1,0 @@
-MONDO:0000849	fibrogenesis imperfecta ossium
-DOID 	 name 
-DOID:0080040	fibrogenesis imperfecta ossium

@@ -1,3 +1,0 @@
-DOID:7040	uveal epithelioid cell melanoma
-monDO ID 	 name 
-MONDO:0006200	epithelioid cell uveal melanoma

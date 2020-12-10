@@ -1,3 +1,0 @@
-DOID:0111128	focal segmental glomerulosclerosis 1
-monDO ID 	 name 
-MONDO:0011303	focal segmental glomerulosclerosis 1

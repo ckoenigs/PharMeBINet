@@ -1,3 +1,0 @@
-MONDO:0005902	peanut allergic reaction
-DOID 	 name 
-DOID:4378	peanut allergy

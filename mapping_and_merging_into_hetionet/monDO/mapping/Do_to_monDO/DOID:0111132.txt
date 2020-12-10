@@ -1,3 +1,0 @@
-DOID:0111132	focal segmental glomerulosclerosis 7
-monDO ID 	 name 
-MONDO:0014451	focal segmental glomerulosclerosis 7

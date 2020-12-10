@@ -1,3 +1,0 @@
-DOID:8030	periocular meningioma
-monDO ID 	 name 
-MONDO:0004439	periocular meningioma

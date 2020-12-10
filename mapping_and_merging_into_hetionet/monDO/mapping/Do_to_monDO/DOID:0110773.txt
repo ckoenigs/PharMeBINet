@@ -1,3 +1,0 @@
-DOID:0110773	hereditary spastic paraplegia 2
-monDO ID 	 name 
-MONDO:0010733	hereditary spastic paraplegia 2

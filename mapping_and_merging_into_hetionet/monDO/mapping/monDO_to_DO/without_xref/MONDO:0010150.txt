@@ -1,3 +1,0 @@
-MONDO:0010150	head and neck squamous cell carcinoma
-DOID 	 name 
-DOID:5520	head and neck squamous cell carcinoma

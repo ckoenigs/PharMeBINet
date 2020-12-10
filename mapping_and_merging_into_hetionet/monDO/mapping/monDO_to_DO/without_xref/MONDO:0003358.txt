@@ -1,3 +1,0 @@
-MONDO:0003358	anus leiomyosarcoma
-DOID 	 name 
-DOID:5267	anus leiomyosarcoma

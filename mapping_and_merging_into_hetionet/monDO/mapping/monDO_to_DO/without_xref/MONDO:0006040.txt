@@ -1,3 +1,0 @@
-MONDO:0006040	lactic acidosis
-DOID 	 name 
-DOID:3650	lactic acidosis

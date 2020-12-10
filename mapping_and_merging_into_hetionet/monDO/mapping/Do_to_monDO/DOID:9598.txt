@@ -1,3 +1,0 @@
-DOID:9598	fasciitis
-monDO ID 	 name 
-MONDO:0004830	fasciitis (disease)

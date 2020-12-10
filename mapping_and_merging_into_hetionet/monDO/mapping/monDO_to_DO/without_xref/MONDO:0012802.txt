@@ -1,3 +1,0 @@
-MONDO:0012802	oculoauricular syndrome
-DOID 	 name 
-DOID:0060482	oculoauricular syndrome

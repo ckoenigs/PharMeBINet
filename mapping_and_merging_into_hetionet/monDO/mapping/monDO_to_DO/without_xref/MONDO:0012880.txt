@@ -1,3 +1,0 @@
-MONDO:0012880	hypogonadotropic hypogonadism 5 with or without anosmia
-DOID 	 name 
-DOID:0090084	hypogonadotropic hypogonadism 5 with or without anosmia

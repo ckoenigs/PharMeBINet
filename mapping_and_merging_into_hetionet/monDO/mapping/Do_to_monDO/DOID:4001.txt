@@ -1,3 +1,0 @@
-DOID:4001	ovarian carcinoma
-monDO ID 	 name 
-MONDO:0005140	ovarian carcinoma

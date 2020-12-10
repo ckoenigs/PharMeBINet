@@ -1,3 +1,0 @@
-MONDO:0004132	anal canal squamous cell carcinoma
-DOID 	 name 
-DOID:7177	anal canal squamous cell carcinoma

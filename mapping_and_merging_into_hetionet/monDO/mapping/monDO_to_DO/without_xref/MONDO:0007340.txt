@@ -1,3 +1,0 @@
-MONDO:0007340	cleidocranial dysplasia
-DOID 	 name 
-DOID:13994	cleidocranial dysplasia

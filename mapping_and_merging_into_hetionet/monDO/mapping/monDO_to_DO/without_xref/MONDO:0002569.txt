@@ -1,3 +1,0 @@
-MONDO:0002569	gastric dilatation
-DOID 	 name 
-DOID:3229	gastric dilatation

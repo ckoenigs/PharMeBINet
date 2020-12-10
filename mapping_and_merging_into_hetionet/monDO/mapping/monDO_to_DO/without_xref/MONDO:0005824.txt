@@ -1,3 +1,0 @@
-MONDO:0005824	Legionnaires' disease
-DOID 	 name 
-DOID:10457	Legionnaires' disease

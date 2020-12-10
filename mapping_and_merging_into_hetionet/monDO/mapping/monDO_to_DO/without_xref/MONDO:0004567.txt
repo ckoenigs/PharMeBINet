@@ -1,3 +1,0 @@
-MONDO:0004567	ileus
-DOID 	 name 
-DOID:8440	ileus

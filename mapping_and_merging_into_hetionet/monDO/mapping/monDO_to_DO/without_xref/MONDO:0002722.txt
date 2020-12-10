@@ -1,3 +1,0 @@
-MONDO:0002722	olfactory nerve neoplasm
-DOID 	 name 
-DOID:366	olfactory nerve neoplasm

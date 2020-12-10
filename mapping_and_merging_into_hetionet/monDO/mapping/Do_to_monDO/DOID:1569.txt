@@ -1,3 +1,0 @@
-DOID:1569	mechanical ectropion
-monDO ID 	 name 
-MONDO:0002042	mechanical ectropion

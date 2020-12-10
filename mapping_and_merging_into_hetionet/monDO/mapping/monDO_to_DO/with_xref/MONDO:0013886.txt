@@ -1,3 +1,0 @@
-MONDO:0013886	nonprogressive cerebellar atxia with mental retardation
-DOID 	 name 
-DOID:0050998	nonprogressive cerebellar atxia with mental retardation

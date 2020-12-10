@@ -1,3 +1,0 @@
-MONDO:0001217	pseudomembranous conjunctivitis
-DOID 	 name 
-DOID:11190	pseudomembranous conjunctivitis

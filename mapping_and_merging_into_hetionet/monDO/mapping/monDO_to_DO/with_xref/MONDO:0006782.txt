@@ -1,3 +1,0 @@
-MONDO:0006782	hemometra
-DOID 	 name 
-DOID:9958	hemometra

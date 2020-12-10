@@ -1,4 +1,0 @@
-MONDO:0005011	Crohn's disease
-DOID 	 name 
-DOID:0060192	Crohn's colitis
-DOID:8778	Crohn's disease

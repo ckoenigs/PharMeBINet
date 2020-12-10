@@ -1,3 +1,0 @@
-MONDO:0002322	angiodysplasia
-DOID 	 name 
-DOID:2494	angiodysplasia

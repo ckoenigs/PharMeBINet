@@ -1,3 +1,0 @@
-MONDO:0014191	catecholaminergic polymorphic ventricular tachycardia 5
-DOID 	 name 
-DOID:0060679	catecholaminergic polymorphic ventricular tachycardia 5

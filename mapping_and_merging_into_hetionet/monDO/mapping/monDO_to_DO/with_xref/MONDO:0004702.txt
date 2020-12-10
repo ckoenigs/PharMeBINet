@@ -1,3 +1,0 @@
-MONDO:0004702	uterine cervix leukoplakia
-DOID 	 name 
-DOID:9043	uterine cervix leukoplakia

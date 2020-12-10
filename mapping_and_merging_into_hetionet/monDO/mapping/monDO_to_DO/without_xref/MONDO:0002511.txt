@@ -1,3 +1,0 @@
-MONDO:0002511	stenosis of lacrimal sac
-DOID 	 name 
-DOID:3096	stenosis of lacrimal sac

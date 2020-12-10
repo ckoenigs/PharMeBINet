@@ -1,3 +1,0 @@
-MONDO:0002096	malignant conjunctival melanoma
-DOID 	 name 
-DOID:1751	malignant conjunctival melanoma

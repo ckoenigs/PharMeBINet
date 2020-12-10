@@ -1,3 +1,0 @@
-MONDO:0002681	choroid plexus cancer
-DOID 	 name 
-DOID:3540	choroid plexus cancer

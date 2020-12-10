@@ -1,3 +1,0 @@
-MONDO:0005085	pterygium
-DOID 	 name 
-DOID:0002116	pterygium

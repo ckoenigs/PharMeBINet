@@ -1,3 +1,0 @@
-MONDO:0000859	spina bifida occulta (disease)
-DOID 	 name 
-DOID:0080073	spina bifida occulta

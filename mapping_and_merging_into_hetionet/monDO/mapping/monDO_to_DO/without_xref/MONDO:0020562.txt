@@ -1,3 +1,0 @@
-MONDO:0020562	pleomorphic liposarcoma
-DOID 	 name 
-DOID:5702	pleomorphic liposarcoma

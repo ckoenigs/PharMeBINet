@@ -1,3 +1,0 @@
-DOID:0111060	Ambras type hypertrichosis universalis congenita
-monDO ID 	 name 
-MONDO:0007787	Ambras type hypertrichosis universalis congenita

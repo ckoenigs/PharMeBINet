@@ -1,3 +1,0 @@
-MONDO:0004221	uterine corpus perivascular epithelioid cell tumor
-DOID 	 name 
-DOID:7437	uterus perivascular epithelioid cell tumor

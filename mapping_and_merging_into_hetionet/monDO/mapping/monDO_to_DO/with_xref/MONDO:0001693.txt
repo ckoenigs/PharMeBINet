@@ -1,3 +1,0 @@
-MONDO:0001693	ego-dystonic sexual orientation
-DOID 	 name 
-DOID:13352	ego-dystonic sexual orientation

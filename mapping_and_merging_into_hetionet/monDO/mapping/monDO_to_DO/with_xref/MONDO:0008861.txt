@@ -1,3 +1,0 @@
-MONDO:0008861	3-Methylcrotonyl-Coa carboxylase 1 deficiency
-DOID 	 name 
-DOID:0050710	3-Methylcrotonyl-CoA carboxylase deficiency

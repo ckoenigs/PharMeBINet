@@ -1,3 +1,0 @@
-MONDO:0003709	coronary heart disease
-DOID 	 name 
-DOID:3393	coronary artery disease

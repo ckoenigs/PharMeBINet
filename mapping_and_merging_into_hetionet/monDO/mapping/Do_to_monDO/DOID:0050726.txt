@@ -1,3 +1,0 @@
-DOID:0050726	tyrosinemia type I
-monDO ID 	 name 
-MONDO:0010161	tyrosinemia type i

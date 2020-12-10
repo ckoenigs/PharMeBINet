@@ -1,3 +1,0 @@
-DOID:0110234	cataract 4 multiple types
-monDO ID 	 name 
-MONDO:0007281	cataract 4 multiple types

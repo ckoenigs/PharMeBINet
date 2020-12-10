@@ -1,3 +1,0 @@
-MONDO:0001240	neonatal anemia
-DOID 	 name 
-DOID:11244	neonatal anemia

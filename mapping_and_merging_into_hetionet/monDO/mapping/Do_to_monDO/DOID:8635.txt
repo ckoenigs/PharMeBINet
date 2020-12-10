@@ -1,3 +1,0 @@
-DOID:8635	uvula cancer
-monDO ID 	 name 
-MONDO:0004624	uvula cancer

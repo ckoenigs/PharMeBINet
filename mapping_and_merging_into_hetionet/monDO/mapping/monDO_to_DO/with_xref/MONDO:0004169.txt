@@ -1,3 +1,0 @@
-MONDO:0004169	premenstrual tension
-DOID 	 name 
-DOID:727	premenstrual tension

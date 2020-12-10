@@ -1,3 +1,0 @@
-DOID:13533	osteopetrosis
-monDO ID 	 name 
-MONDO:0017198	osteopetrosis (disease)

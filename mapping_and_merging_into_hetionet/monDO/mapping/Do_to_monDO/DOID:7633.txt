@@ -1,3 +1,0 @@
-DOID:7633	macular holes
-monDO ID 	 name 
-MONDO:0006843	macular holes

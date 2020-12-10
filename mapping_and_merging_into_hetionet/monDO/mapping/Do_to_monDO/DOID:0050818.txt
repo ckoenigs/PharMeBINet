@@ -1,3 +1,0 @@
-DOID:0050818	transcobalamin II deficiency
-monDO ID 	 name 
-MONDO:0010149	transcobalamin II deficiency

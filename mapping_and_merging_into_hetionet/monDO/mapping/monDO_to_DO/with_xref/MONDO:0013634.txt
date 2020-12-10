@@ -1,3 +1,0 @@
-MONDO:0013634	neuropathy, hereditary sensory, type 2C
-DOID 	 name 
-DOID:0050548	hereditary sensory neuropathy

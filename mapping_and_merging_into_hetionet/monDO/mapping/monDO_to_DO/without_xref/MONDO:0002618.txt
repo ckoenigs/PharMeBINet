@@ -1,3 +1,0 @@
-MONDO:0002618	malignant fibrous histiocytoma of bone
-DOID 	 name 
-DOID:3352	malignant fibrous histiocytoma of bone

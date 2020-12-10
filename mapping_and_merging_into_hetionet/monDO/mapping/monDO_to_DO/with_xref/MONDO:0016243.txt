@@ -1,3 +1,0 @@
-MONDO:0016243	hemoglobin E disease
-DOID 	 name 
-DOID:5379	hemoglobin E disease

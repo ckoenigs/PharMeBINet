@@ -1,3 +1,0 @@
-MONDO:0001825	squamous papilloma
-DOID 	 name 
-DOID:139	squamous cell papilloma

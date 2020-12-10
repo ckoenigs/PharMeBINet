@@ -1,3 +1,0 @@
-DOID:0060038	specific developmental disorder
-monDO ID 	 name 
-MONDO:0000592	specific developmental disorder

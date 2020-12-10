@@ -1,3 +1,0 @@
-MONDO:0003458	uterine corpus adenofibroma
-DOID 	 name 
-DOID:5475	uterine corpus adenofibroma

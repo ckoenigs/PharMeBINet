@@ -1,3 +1,0 @@
-DOID:6067	ovarian mucinous neoplasm
-monDO ID 	 name 
-MONDO:0003756	ovarian mucinous neoplasm

@@ -1,3 +1,0 @@
-MONDO:0000499	non-arteritic anterior ischemic optic neuropathy
-DOID 	 name 
-DOID:0050864	non-arteritic anterior ischemic optic neuropathy

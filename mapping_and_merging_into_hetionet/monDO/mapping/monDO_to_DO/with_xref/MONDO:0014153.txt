@@ -1,3 +1,0 @@
-MONDO:0014153	cone-rod dystrophy 18
-DOID 	 name 
-DOID:0111024	cone-rod dystrophy 18

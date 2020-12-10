@@ -1,3 +1,0 @@
-MONDO:0002936	scrotum basal cell carcinoma
-DOID 	 name 
-DOID:4278	scrotum basal cell carcinoma

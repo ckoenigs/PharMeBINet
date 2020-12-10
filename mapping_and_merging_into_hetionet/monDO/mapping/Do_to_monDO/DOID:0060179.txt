@@ -1,3 +1,0 @@
-DOID:0060179	Renpenning syndrome
-monDO ID 	 name 
-MONDO:0010653	Renpenning syndrome

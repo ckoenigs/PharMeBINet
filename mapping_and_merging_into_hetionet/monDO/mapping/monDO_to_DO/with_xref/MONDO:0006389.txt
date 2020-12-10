@@ -1,3 +1,0 @@
-MONDO:0006389	prostate rhabdomyosarcoma
-DOID 	 name 
-DOID:3252	prostate rhabdomyosarcoma

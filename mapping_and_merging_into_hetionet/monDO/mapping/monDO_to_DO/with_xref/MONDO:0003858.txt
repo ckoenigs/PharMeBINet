@@ -1,3 +1,0 @@
-MONDO:0003858	anterior optic tract meningioma
-DOID 	 name 
-DOID:6334	anterior optic tract meningioma

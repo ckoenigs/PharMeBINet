@@ -1,3 +1,0 @@
-MONDO:0002507	gingival overgrowth
-DOID 	 name 
-DOID:3086	gingival overgrowth

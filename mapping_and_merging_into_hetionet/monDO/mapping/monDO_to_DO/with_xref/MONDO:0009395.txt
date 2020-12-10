@@ -1,3 +1,0 @@
-MONDO:0009395	hyperostosis corticalis generalisata
-DOID 	 name 
-DOID:0080036	SOST-related sclerosing bone dysplasia

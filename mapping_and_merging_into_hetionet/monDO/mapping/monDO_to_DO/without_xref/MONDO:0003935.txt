@@ -1,3 +1,0 @@
-MONDO:0003935	oncocytic breast carcinoma
-DOID 	 name 
-DOID:6585	oncocytic breast carcinoma

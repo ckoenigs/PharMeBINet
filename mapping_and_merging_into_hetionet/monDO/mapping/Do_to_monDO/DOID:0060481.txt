@@ -1,3 +1,0 @@
-DOID:0060481	Goldberg-Shprintzen syndrome
-monDO ID 	 name 
-MONDO:0012280	Goldberg-Shprintzen megacolon syndrome

@@ -1,3 +1,0 @@
-DOID:8501	fundus dystrophy
-monDO ID 	 name 
-MONDO:0019118	retinal dystrophy

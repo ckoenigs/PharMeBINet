@@ -1,3 +1,0 @@
-DOID:6085	meningeal melanoma
-monDO ID 	 name 
-MONDO:0003761	meningeal melanoma

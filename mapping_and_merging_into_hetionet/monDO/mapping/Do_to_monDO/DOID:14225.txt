@@ -1,3 +1,0 @@
-DOID:14225	acute frontal sinusitis
-monDO ID 	 name 
-MONDO:0001912	acute frontal sinusitis

@@ -1,3 +1,0 @@
-DOID:294	lacrimal gland cancer
-monDO ID 	 name 
-MONDO:0002464	lacrimal gland cancer

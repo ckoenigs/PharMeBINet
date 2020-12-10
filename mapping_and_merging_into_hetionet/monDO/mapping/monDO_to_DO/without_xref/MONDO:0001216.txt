@@ -1,3 +1,0 @@
-MONDO:0001216	pulp degeneration
-DOID 	 name 
-DOID:11189	pulp degeneration

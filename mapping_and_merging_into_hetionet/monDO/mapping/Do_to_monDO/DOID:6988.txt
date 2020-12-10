@@ -1,3 +1,0 @@
-DOID:6988	peripheral epithelioid sarcoma
-monDO ID 	 name 
-MONDO:0004060	peripheral epithelioid sarcoma

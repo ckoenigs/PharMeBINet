@@ -1,3 +1,0 @@
-DOID:10127	cerebral artery occlusion
-monDO ID 	 name 
-MONDO:0000944	cerebral artery occlusion

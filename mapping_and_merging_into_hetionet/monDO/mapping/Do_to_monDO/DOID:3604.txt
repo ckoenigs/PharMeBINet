@@ -1,3 +1,0 @@
-DOID:3604	ovarian mucinous cystadenocarcinoma
-monDO ID 	 name 
-MONDO:0002701	ovarian mucinous cystadenocarcinoma

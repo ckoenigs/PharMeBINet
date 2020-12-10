@@ -1,3 +1,0 @@
-MONDO:0005425	podoconiosis
-DOID 	 name 
-DOID:0050138	podoconiosis

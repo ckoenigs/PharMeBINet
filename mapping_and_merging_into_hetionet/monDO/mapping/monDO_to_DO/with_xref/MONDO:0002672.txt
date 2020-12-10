@@ -1,3 +1,0 @@
-MONDO:0002672	prostate signet ring cell adenocarcinoma
-DOID 	 name 
-DOID:3504	prostate signet ring cell adenocarcinoma

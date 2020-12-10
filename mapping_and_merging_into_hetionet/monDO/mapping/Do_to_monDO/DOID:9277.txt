@@ -1,3 +1,0 @@
-DOID:9277	primary cerebellar degeneration
-monDO ID 	 name 
-MONDO:0004742	primary cerebellar degeneration

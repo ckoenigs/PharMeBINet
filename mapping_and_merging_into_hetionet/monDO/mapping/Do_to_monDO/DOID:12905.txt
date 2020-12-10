@@ -1,3 +1,0 @@
-DOID:12905	sialolithiasis
-monDO ID 	 name 
-MONDO:0006970	sialolithiasis

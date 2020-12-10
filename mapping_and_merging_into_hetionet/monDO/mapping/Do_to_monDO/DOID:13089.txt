@@ -1,3 +1,0 @@
-DOID:13089	intracranial arterial disease
-monDO ID 	 name 
-MONDO:0006808	intracranial arterial disease

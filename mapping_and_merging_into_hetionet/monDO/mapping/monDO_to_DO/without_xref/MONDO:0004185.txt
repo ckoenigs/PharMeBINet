@@ -1,3 +1,0 @@
-MONDO:0004185	ovarian serous cystadenofibroma
-DOID 	 name 
-DOID:7320	ovarian serous cystadenofibroma

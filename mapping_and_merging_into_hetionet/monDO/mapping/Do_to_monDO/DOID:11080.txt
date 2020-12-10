@@ -1,3 +1,0 @@
-DOID:11080	myiasis
-monDO ID 	 name 
-MONDO:0019147	myiasis

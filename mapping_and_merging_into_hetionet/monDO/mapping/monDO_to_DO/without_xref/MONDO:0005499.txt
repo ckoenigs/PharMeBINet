@@ -1,3 +1,0 @@
-MONDO:0005499	brain glioma
-DOID 	 name 
-DOID:0060108	brain glioma

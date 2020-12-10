@@ -1,3 +1,0 @@
-DOID:7634	suprasellar meningioma
-monDO ID 	 name 
-MONDO:0004312	suprasellar meningioma

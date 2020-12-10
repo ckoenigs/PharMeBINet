@@ -1,3 +1,0 @@
-MONDO:0002487	breast granular cell tumor
-DOID 	 name 
-DOID:3011	breast granular cell tumor

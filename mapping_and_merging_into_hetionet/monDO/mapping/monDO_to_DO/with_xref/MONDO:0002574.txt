@@ -1,3 +1,0 @@
-MONDO:0002574	prostate embryonal rhabdomyosarcoma
-DOID 	 name 
-DOID:3251	prostate embryonal rhabdomyosarcoma

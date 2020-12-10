@@ -1,3 +1,0 @@
-DOID:1963	fallopian tube carcinoma
-monDO ID 	 name 
-MONDO:0006206	fallopian tube carcinoma

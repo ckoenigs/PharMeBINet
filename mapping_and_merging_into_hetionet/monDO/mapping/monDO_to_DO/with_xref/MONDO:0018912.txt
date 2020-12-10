@@ -1,4 +1,0 @@
-MONDO:0018912	Cushing syndrome
-DOID 	 name 
-DOID:3947	adrenal gland hyperfunction
-DOID:12252	Cushing's syndrome

@@ -1,3 +1,0 @@
-MONDO:0013764	Joubert syndrome 16
-DOID 	 name 
-DOID:0110985	Joubert syndrome 16

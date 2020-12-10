@@ -1,3 +1,0 @@
-DOID:2061	nodular hidradenoma
-monDO ID 	 name 
-MONDO:0002189	nodular hidradenoma

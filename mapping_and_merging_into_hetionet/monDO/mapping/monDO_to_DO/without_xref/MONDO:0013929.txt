@@ -1,3 +1,0 @@
-MONDO:0013929	autosomal recessive nonsyndromic deafness 98
-DOID 	 name 
-DOID:0110540	autosomal recessive nonsyndromic deafness 98

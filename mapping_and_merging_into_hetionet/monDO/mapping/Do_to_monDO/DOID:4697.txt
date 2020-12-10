@@ -1,3 +1,0 @@
-DOID:4697	perineurioma
-monDO ID 	 name 
-MONDO:0019404	perineurioma

@@ -1,3 +1,0 @@
-MONDO:0000252	inflammatory diarrhea
-DOID 	 name 
-DOID:0050132	inflammatory diarrhea

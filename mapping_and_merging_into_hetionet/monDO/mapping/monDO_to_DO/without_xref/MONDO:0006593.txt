@@ -1,3 +1,0 @@
-MONDO:0006593	pelvic lipomatosis
-DOID 	 name 
-DOID:3927	pelvic lipomatosis

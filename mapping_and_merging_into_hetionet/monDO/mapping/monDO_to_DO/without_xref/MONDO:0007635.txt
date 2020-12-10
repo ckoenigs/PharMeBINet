@@ -1,3 +1,0 @@
-MONDO:0007635	Frasier syndrome
-DOID 	 name 
-DOID:0050438	Frasier syndrome

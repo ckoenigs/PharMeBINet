@@ -1,3 +1,0 @@
-MONDO:0004014	ethmoid sinus ectopic meningioma
-DOID 	 name 
-DOID:6854	ethmoid sinus ectopic meningioma

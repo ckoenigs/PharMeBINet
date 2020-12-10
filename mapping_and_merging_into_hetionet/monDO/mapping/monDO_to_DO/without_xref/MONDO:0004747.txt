@@ -1,3 +1,0 @@
-MONDO:0004747	cleft lip (disease)
-DOID 	 name 
-DOID:9296	cleft lip

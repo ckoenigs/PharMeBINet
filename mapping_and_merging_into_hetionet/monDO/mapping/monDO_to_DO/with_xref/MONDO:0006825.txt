@@ -1,3 +1,0 @@
-MONDO:0006825	kuru
-DOID 	 name 
-DOID:648	kuru

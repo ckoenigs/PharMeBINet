@@ -1,3 +1,0 @@
-MONDO:0001121	frontal sinusitis
-DOID 	 name 
-DOID:10791	frontal sinusitis

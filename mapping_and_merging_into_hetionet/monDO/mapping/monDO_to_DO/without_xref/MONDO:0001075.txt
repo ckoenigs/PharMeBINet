@@ -1,3 +1,0 @@
-MONDO:0001075	steatorrhea (disease)
-DOID 	 name 
-DOID:10602	steatorrhea

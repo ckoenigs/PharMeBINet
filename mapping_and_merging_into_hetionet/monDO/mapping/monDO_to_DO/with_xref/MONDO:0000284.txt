@@ -1,3 +1,0 @@
-MONDO:0000284	nephropathia epidemica
-DOID 	 name 
-DOID:0050201	nephropathia epidemica

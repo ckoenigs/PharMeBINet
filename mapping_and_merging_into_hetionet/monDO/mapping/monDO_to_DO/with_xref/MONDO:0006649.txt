@@ -1,3 +1,0 @@
-MONDO:0006649	anterior ischemic optic neuropathy
-DOID 	 name 
-DOID:12010	anterior ischemic optic neuropathy

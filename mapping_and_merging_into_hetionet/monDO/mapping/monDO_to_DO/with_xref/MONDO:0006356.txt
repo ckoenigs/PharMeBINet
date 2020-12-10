@@ -1,3 +1,0 @@
-MONDO:0006356	parotid gland adenoid cystic carcinoma
-DOID 	 name 
-DOID:0050931	parotid gland adenoid cystic carcinoma

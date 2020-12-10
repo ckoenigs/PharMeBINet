@@ -1,3 +1,0 @@
-MONDO:0001188	esophagus lymphoma
-DOID 	 name 
-DOID:1106	esophagus lymphoma

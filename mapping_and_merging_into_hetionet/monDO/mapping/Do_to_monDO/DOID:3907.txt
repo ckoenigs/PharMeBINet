@@ -1,3 +1,0 @@
-DOID:3907	lung squamous cell carcinoma
-monDO ID 	 name 
-MONDO:0005097	squamous cell lung carcinoma

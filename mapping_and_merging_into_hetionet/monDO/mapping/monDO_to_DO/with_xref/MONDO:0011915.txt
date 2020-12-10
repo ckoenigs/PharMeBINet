@@ -1,3 +1,0 @@
-MONDO:0011915	MMVP2
-DOID 	 name 
-DOID:988	mitral valve prolapse

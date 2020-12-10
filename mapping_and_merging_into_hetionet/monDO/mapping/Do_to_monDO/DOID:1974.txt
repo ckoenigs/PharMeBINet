@@ -1,3 +1,0 @@
-DOID:1974	adenosarcoma
-monDO ID 	 name 
-MONDO:0005636	adenosarcoma

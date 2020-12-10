@@ -1,3 +1,0 @@
-MONDO:0003709	sympathetic ophthalmia
-DOID 	 name 
-DOID:12029	sympathetic ophthalmia

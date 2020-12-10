@@ -1,3 +1,0 @@
-MONDO:0003675	posterolateral myocardial infarction
-DOID 	 name 
-DOID:5851	posterolateral myocardial infarction

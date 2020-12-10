@@ -1,3 +1,0 @@
-MONDO:0009174	protein-losing enteropathy (disease)
-DOID 	 name 
-DOID:10611	protein-losing enteropathy

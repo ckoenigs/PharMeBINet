@@ -1,3 +1,0 @@
-MONDO:0005655	ascaridiasis
-DOID 	 name 
-DOID:3108	ascaridiasis

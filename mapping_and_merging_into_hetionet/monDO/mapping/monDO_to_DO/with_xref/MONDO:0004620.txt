@@ -1,7 +1,0 @@
-MONDO:0004620	Hodgkin's lymphoma, lymphocytic depletion
-DOID 	 name 
-DOID:8654	Hodgkin's lymphoma, mixed cellularity
-DOID:8567	Hodgkin's lymphoma
-DOID:8543	Hodgkin's lymphoma, lymphocytic-histiocytic predominance
-DOID:8628	Hodgkin's lymphoma, lymphocytic depletion
-DOID:8651	Hodgkin's granuloma

@@ -1,3 +1,0 @@
-DOID:0060589	Yunis-Varon syndrome
-monDO ID 	 name 
-MONDO:0008995	Yunis-Varon syndrome

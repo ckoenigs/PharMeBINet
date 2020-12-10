@@ -1,3 +1,0 @@
-MONDO:0000593	autoimmune disease of skin and connective tissue
-DOID 	 name 
-DOID:0060039	autoimmune disease of skin and connective tissue

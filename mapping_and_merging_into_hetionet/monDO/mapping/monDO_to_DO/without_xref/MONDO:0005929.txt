@@ -1,3 +1,0 @@
-MONDO:0005929	postpartum depression
-DOID 	 name 
-DOID:9478	postpartum depression

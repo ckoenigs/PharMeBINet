@@ -1,3 +1,0 @@
-MONDO:0006005	Venezuelan equine encephalitis
-DOID 	 name 
-DOID:9584	Venezuelan equine encephalitis

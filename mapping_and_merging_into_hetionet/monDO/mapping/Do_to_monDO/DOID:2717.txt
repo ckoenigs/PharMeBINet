@@ -1,3 +1,0 @@
-DOID:2717	Bloom syndrome
-monDO ID 	 name 
-MONDO:0008876	Bloom syndrome

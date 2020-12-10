@@ -1,3 +1,0 @@
-DOID:0060462	Desbuquois dysplasia
-monDO ID 	 name 
-MONDO:0015426	Desbuquois dysplasia

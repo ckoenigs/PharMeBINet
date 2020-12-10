@@ -1,3 +1,0 @@
-MONDO:0004786	chronic cholangitis
-DOID 	 name 
-DOID:9439	chronic cholangitis

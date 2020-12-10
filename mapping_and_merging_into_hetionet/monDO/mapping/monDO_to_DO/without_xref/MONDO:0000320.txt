@@ -1,3 +1,0 @@
-MONDO:0000320	glandular tularemia
-DOID 	 name 
-DOID:0050382	glandular tularemia

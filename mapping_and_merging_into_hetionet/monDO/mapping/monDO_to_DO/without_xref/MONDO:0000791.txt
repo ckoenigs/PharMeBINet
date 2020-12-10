@@ -1,3 +1,0 @@
-MONDO:0000791	carp allergy
-DOID 	 name 
-DOID:0060516	carp allergy

@@ -1,3 +1,0 @@
-DOID:1140	spinal canal and spinal cord meningioma
-monDO ID 	 name 
-MONDO:0001279	spinal canal and spinal cord meningioma

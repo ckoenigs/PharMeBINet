@@ -1,3 +1,0 @@
-DOID:0110132	Bardet-Biedl syndrome 10
-monDO ID 	 name 
-MONDO:0014438	Bardet-Biedl syndrome 10

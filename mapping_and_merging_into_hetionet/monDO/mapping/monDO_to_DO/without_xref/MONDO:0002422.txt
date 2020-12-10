@@ -1,3 +1,0 @@
-MONDO:0002422	adamantinoma
-DOID 	 name 
-DOID:2776	adamantinoma

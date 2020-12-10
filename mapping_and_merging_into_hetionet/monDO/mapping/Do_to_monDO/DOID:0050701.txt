@@ -1,3 +1,0 @@
-DOID:0050701	electroclinical syndrome
-monDO ID 	 name 
-MONDO:0000411	electroclinical syndrome

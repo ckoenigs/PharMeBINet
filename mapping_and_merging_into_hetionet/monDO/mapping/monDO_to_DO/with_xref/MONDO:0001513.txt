@@ -1,3 +1,0 @@
-MONDO:0001513	pulsating exophthalmos
-DOID 	 name 
-DOID:12364	pulsating exophthalmos

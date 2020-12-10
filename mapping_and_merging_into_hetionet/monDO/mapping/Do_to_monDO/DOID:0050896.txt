@@ -1,3 +1,0 @@
-DOID:0050896	bone squamous cell carcinoma
-monDO ID 	 name 
-MONDO:0000514	bone squamous cell carcinoma

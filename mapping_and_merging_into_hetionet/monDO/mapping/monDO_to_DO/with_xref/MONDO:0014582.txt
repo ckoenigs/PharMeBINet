@@ -1,3 +1,0 @@
-MONDO:0014582	congenital myasthenic syndrome 2C
-DOID 	 name 
-DOID:0110680	congenital myasthenic syndrome 2C

@@ -1,3 +1,0 @@
-MONDO:0002815	acute myocarditis
-DOID 	 name 
-DOID:3951	acute myocarditis

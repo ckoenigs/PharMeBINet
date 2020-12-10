@@ -1,3 +1,0 @@
-MONDO:0011849	psoriatic arthritis
-DOID 	 name 
-DOID:9008	psoriatic arthritis

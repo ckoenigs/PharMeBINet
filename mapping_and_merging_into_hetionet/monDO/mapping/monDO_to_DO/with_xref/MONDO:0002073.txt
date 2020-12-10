@@ -1,3 +1,0 @@
-MONDO:0002073	malignant pineal area germ cell neoplasm
-DOID 	 name 
-DOID:1660	malignant pineal area germ cell neoplasm

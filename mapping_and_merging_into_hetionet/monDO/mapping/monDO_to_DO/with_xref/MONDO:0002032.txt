@@ -1,3 +1,0 @@
-MONDO:0002032	colon carcinoma
-DOID 	 name 
-DOID:1520	colon carcinoma

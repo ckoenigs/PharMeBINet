@@ -1,3 +1,0 @@
-MONDO:0000756	parameningeal embryonal rhabdomyosarcoma
-DOID 	 name 
-DOID:0060338	parameningeal embryonal rhabdomyosarcoma

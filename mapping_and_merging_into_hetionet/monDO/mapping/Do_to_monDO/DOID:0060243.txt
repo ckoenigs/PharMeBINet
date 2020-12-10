@@ -1,3 +1,0 @@
-DOID:0060243	stuttering
-monDO ID 	 name 
-MONDO:0000723	stutter disorder

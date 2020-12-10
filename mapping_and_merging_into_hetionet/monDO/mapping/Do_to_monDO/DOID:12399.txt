@@ -1,3 +1,0 @@
-DOID:12399	pathological gambling
-monDO ID 	 name 
-MONDO:0011662	pathological gambling

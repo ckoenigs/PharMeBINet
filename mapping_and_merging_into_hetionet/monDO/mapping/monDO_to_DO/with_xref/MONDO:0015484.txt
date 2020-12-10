@@ -1,3 +1,0 @@
-MONDO:0015484	cysticercosis
-DOID 	 name 
-DOID:10079	cysticercosis

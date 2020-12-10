@@ -1,3 +1,0 @@
-DOID:3153	lipomatosis
-monDO ID 	 name 
-MONDO:0006574	lipomatosis

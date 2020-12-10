@@ -1,3 +1,0 @@
-MONDO:0003847	inherited genetic disease
-DOID 	 name 
-DOID:630	genetic disease

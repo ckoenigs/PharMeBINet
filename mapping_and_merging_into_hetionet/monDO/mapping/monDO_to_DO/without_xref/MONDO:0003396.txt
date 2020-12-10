@@ -1,3 +1,0 @@
-MONDO:0003396	epulis
-DOID 	 name 
-DOID:5337	epulis

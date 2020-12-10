@@ -1,3 +1,0 @@
-MONDO:0001323	infant gynecomastia
-DOID 	 name 
-DOID:11603	infant gynecomastia

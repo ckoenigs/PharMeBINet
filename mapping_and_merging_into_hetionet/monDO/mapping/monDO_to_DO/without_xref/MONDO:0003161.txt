@@ -1,3 +1,0 @@
-MONDO:0003161	benign ependymoma
-DOID 	 name 
-DOID:4844	benign ependymoma

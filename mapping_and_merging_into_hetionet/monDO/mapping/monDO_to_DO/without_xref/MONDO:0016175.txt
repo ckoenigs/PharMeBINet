@@ -1,3 +1,0 @@
-MONDO:0016175	cutis laxa
-DOID 	 name 
-DOID:3144	cutis laxa

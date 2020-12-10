@@ -1,3 +1,0 @@
-MONDO:0002696	Sertoli cell tumor
-DOID 	 name 
-DOID:3577	Sertoli cell tumor

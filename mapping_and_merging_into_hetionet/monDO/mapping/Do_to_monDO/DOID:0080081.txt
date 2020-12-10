@@ -1,3 +1,0 @@
-DOID:0080081	nonsyndromic congenital nail disorder 3
-monDO ID 	 name 
-MONDO:0007900	nonsyndromic congenital nail disorder 3

@@ -1,3 +1,0 @@
-MONDO:0004507	atypical breast papilloma
-DOID 	 name 
-DOID:8227	atypical breast papilloma

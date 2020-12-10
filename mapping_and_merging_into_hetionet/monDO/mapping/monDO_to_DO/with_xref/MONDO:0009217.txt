@@ -1,3 +1,0 @@
-MONDO:0009217	Fanconi-like syndrome
-DOID 	 name 
-DOID:0090066	Fanconi-like syndrome

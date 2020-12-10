@@ -1,3 +1,0 @@
-MONDO:0003625	ovary serous adenocarcinoma
-DOID 	 name 
-DOID:5744	ovary serous adenocarcinoma

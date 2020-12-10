@@ -1,3 +1,0 @@
-DOID:4961	bone marrow disease
-monDO ID 	 name 
-MONDO:0003225	bone marrow disease

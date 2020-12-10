@@ -1,3 +1,0 @@
-MONDO:0007874	trichorhinophalangeal syndrome type II
-DOID 	 name 
-DOID:4998	trichorhinophalangeal syndrome type II

@@ -1,3 +1,0 @@
-DOID:2843	long QT syndrome
-monDO ID 	 name 
-MONDO:0002442	long QT syndrome

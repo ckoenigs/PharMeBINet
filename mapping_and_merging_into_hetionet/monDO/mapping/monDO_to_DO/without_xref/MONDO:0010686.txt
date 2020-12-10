@@ -1,3 +1,0 @@
-MONDO:0010686	N syndrome
-DOID 	 name 
-DOID:0050769	N syndrome

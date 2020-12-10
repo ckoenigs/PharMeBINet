@@ -1,3 +1,0 @@
-DOID:0060137	auditory agnosia
-monDO ID 	 name 
-MONDO:0000667	auditory agnosia

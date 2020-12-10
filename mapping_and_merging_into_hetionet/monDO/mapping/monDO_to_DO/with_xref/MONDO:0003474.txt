@@ -1,3 +1,0 @@
-MONDO:0003474	tanycytic ependymoma
-DOID 	 name 
-DOID:5504	tanycytic ependymoma

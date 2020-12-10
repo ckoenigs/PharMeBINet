@@ -1,3 +1,0 @@
-DOID:707	B-cell lymphoma
-monDO ID 	 name 
-MONDO:0004095	B-cell neoplasm

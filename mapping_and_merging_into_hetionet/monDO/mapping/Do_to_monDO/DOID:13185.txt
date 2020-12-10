@@ -1,3 +1,0 @@
-DOID:13185	esophageal diverticulosis
-monDO ID 	 name 
-MONDO:0006754	esophageal diverticulosis

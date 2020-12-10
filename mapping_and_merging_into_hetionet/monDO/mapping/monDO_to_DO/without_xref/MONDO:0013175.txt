@@ -1,3 +1,0 @@
-MONDO:0013175	retinitis pigmentosa 50
-DOID 	 name 
-DOID:0110396	retinitis pigmentosa 50

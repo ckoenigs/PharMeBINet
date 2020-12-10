@@ -1,3 +1,0 @@
-MONDO:0011480	autosomal dominant nonsyndromic deafness 20
-DOID 	 name 
-DOID:0110550	autosomal dominant nonsyndromic deafness 20

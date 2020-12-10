@@ -1,3 +1,0 @@
-MONDO:0014601	autosomal recessive spinocerebellar ataxia 20
-DOID 	 name 
-DOID:0080066	autosomal recessive spinocerebellar ataxia 20

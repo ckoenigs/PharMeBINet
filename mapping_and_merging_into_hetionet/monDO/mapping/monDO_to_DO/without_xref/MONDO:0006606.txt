@@ -1,3 +1,0 @@
-MONDO:0006606	scleredema adultorum
-DOID 	 name 
-DOID:3140	scleredema adultorum

@@ -1,3 +1,0 @@
-DOID:12162	pseudoretinitis pigmentosa
-monDO ID 	 name 
-MONDO:0001452	pseudoretinitis pigmentosa

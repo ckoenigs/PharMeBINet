@@ -1,3 +1,0 @@
-MONDO:0004081	bile duct clear cell adenocarcinoma
-DOID 	 name 
-DOID:7032	bile duct clear cell adenocarcinoma

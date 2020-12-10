@@ -1,3 +1,0 @@
-MONDO:0001426	mediastinum neurofibroma
-DOID 	 name 
-DOID:12064	mediastinum neurofibroma

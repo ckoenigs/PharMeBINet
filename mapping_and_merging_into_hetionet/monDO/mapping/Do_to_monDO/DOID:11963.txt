@@ -1,3 +1,0 @@
-DOID:11963	esophagitis
-monDO ID 	 name 
-MONDO:0001409	esophagitis (disease)

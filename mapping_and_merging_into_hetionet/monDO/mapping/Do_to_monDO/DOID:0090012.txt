@@ -1,3 +1,0 @@
-DOID:0090012	severe combined immunodeficiency with sensitivity to ionizing radiation
-monDO ID 	 name 
-MONDO:0011225	severe combined immunodeficiency with sensitivity to ionizing radiation

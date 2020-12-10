@@ -1,3 +1,0 @@
-DOID:2101	vulva squamous cell carcinoma
-monDO ID 	 name 
-MONDO:0002210	vulva squamous cell carcinoma

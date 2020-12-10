@@ -1,3 +1,0 @@
-DOID:2481	infantile epileptic encephalopathy
-monDO ID 	 name 
-MONDO:0016021	early infantile epileptic encephalopathy

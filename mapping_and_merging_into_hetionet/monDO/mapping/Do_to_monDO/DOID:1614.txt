@@ -1,3 +1,0 @@
-DOID:1614	male breast cancer
-monDO ID 	 name 
-MONDO:0005628	male breast carcinoma

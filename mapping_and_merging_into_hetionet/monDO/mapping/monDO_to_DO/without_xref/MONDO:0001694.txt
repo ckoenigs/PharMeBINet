@@ -1,3 +1,0 @@
-MONDO:0001694	diffuse interstitial keratitis
-DOID 	 name 
-DOID:13353	diffuse interstitial keratitis

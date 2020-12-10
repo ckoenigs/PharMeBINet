@@ -1,3 +1,0 @@
-DOID:13248	mucocele of appendix
-monDO ID 	 name 
-MONDO:0001671	mucocele of appendix

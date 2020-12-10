@@ -1,3 +1,0 @@
-MONDO:0012458	hypertension, essential, susceptibility to, 5
-DOID 	 name 
-DOID:10825	essential hypertension

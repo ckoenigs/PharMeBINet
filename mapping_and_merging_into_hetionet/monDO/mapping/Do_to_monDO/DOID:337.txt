@@ -1,3 +1,0 @@
-DOID:337	spinal accessory nerve neoplasm
-monDO ID 	 name 
-MONDO:0002626	spinal accessory nerve neoplasm

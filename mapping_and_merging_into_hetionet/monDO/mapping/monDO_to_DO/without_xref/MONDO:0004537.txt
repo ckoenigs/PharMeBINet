@@ -1,3 +1,0 @@
-MONDO:0004537	intestinal variant cervical mucinous adenocarcinoma
-DOID 	 name 
-DOID:8339	intestinal variant cervical mucinous adenocarcinoma

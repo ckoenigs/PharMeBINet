@@ -1,3 +1,0 @@
-MONDO:0005127	lepromatous leprosy
-DOID 	 name 
-DOID:10887	lepromatous leprosy

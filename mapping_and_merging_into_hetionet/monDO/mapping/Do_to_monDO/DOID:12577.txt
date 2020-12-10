@@ -1,3 +1,0 @@
-DOID:12577	urethral obstruction
-monDO ID 	 name 
-MONDO:0001556	urethral obstruction (disease)

@@ -1,3 +1,0 @@
-DOID:6575	childhood optic tract astrocytoma
-monDO ID 	 name 
-MONDO:0003931	childhood optic tract astrocytoma

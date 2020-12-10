@@ -1,3 +1,0 @@
-DOID:0090013	severe combined immunodeficiency, autosomal recessive, T cell-negative, B cell-negative, Nk cell-positive
-monDO ID 	 name 
-MONDO:0011086	severe combined immunodeficiency, autosomal recessive, T cell-negative, b cell-negative, Nk cell-positive

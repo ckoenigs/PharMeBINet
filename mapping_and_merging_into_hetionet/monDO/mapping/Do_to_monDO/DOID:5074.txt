@@ -1,3 +1,0 @@
-DOID:5074	malignant ependymoma
-monDO ID 	 name 
-MONDO:0021191	malignant ependymoma

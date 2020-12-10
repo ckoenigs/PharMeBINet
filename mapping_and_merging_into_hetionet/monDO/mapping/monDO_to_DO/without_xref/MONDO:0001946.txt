@@ -1,3 +1,0 @@
-MONDO:0001946	hyperestrogenism
-DOID 	 name 
-DOID:14336	estrogen excess

@@ -1,3 +1,0 @@
-MONDO:0001417	tracheal lymphoma
-DOID 	 name 
-DOID:12001	tracheal lymphoma

@@ -1,3 +1,0 @@
-DOID:0050650	familial atrial fibrillation
-monDO ID 	 name 
-MONDO:0018054	familial atrial fibrillation

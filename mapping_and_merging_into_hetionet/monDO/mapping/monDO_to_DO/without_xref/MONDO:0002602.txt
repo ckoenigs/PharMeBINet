@@ -1,3 +1,0 @@
-MONDO:0002602	central nervous system disease
-DOID 	 name 
-DOID:331	central nervous system disease

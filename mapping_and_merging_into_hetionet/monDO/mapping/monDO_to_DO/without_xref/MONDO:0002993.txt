@@ -1,3 +1,0 @@
-MONDO:0002993	pancreatic somatostatinoma
-DOID 	 name 
-DOID:4432	pancreatic somatostatinoma

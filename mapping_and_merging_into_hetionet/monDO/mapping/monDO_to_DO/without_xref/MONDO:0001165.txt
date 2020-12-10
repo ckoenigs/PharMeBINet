@@ -1,3 +1,0 @@
-MONDO:0001165	tongue disease
-DOID 	 name 
-DOID:10944	tongue disease

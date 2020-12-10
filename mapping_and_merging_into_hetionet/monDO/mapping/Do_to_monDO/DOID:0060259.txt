@@ -1,3 +1,0 @@
-DOID:0060259	renal-hepatic-pancreatic dysplasia
-monDO ID 	 name 
-MONDO:0017417	renal-hepatic-pancreatic dysplasia

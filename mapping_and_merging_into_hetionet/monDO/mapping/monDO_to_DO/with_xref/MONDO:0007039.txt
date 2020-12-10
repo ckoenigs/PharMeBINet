@@ -1,4 +1,0 @@
-MONDO:0007039	neurofibromatosis type 2
-DOID 	 name 
-DOID:12689	acoustic neuroma
-DOID:8712	neurofibromatosis

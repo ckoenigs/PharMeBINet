@@ -1,3 +1,0 @@
-MONDO:0001978	regional ureteric cancer
-DOID 	 name 
-DOID:14491	regional ureteric cancer

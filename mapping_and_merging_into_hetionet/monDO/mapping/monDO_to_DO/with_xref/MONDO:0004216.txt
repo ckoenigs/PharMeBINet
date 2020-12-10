@@ -1,3 +1,0 @@
-MONDO:0004216	pineal region germinoma
-DOID 	 name 
-DOID:7428	pineal region germinoma

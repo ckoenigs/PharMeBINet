@@ -1,7 +1,10 @@
 '''integrate the'''
-from py2neo import Graph, authenticate
+
 import datetime
 import sys, csv
+
+sys.path.append("../..")
+import create_connection_to_databases
 
 '''
 create a connection with neo4j
@@ -10,34 +13,85 @@ create a connection with neo4j
 
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
-    authenticate("localhost:7474", "neo4j", "test")
     global g
-    g = Graph("http://localhost:7474/db/data/")
+    g = create_connection_to_databases.database_connection_neo4j()
 
-#dictionary hetionet protein with uniprot identifier as key and value is the whole node as dictionary
-dict_hetionet_protein={}
 
+# dictionary of name/synonym to chemical (not compound)
+dict_name_to_chemical_id = {}
+
+# dictionary chemical to resources
+dict_chemical_to_resource = {}
+
+
+def add_name_to_dict(name, identifier, dictionary):
+    """
+    add a name in  dictionary and check if it alerady included
+    :param name: string
+    :param identifier: string
+    :return:
+    """
+    name = name.lower()
+    if name not in dictionary:
+        dictionary[name] = set()
+    dictionary[name].add(identifier)
+
+
+def load_all_chemicals_and_generate_dictionary():
+    """
+    load all chemicals which are also compounds (they are from drugbank and if the where targetes they had an own
+     drugbank id, but it seem not so) and generate a dictionary of name to chemical id
+    :return:
+    """
+    query = 'Match (c:Chemical) Return c.identifier, c.name, c.synonyms, c.resource;'
+    result = g.run(query)
+    for chemical_id, name, synonyms, resources in result:
+        add_name_to_dict(name, chemical_id, dict_name_to_chemical_id)
+        dict_chemical_to_resource[chemical_id] = resources
+        if synonyms:
+            for synonym in synonyms:
+                add_name_to_dict(synonym, chemical_id, dict_name_to_chemical_id)
+
+
+# dictionary hetionet protein with uniprot identifier as key and value is the whole node as dictionary
+dict_hetionet_protein = {}
+
+# dictionary name/synonym to protein id
+dict_name_to_protein_id = {}
+
+# dictionary protein id to resource
+dict_protein_id_to_resource = {}
 
 '''
 gather all hetionet proteins in a dictionary
 '''
+
+
 def load_all_hetionet_proteins_in_dictionary():
     query = '''MATCH (n:Protein) RETURN n.identifier, n ;'''
     results = g.run(query)
-    counter_multiple_identifier=0
+    counter_multiple_identifier = 0
     for identifier, node, in results:
-        alternative_ids=node['alternative_ids'] if 'alternative_ids' in node else []
-        dict_hetionet_protein[identifier]=[dict(node)]
+        alternative_ids = node['alternative_ids'] if 'alternative_ids' in node else []
+        dict_hetionet_protein[identifier] = [dict(node)]
+        name = node['name'] if 'name' in node else ''
+        synonyms = node['synonyms'] if 'synonyms' in node else []
+        resource = node['resource']
+        dict_protein_id_to_resource[identifier] = resource
+        add_name_to_dict(name, identifier, dict_name_to_protein_id)
+        for synonym in synonyms:
+            add_name_to_dict(synonym, identifier, dict_name_to_protein_id)
+
         for alternative_id in alternative_ids:
             if not alternative_id in dict_hetionet_protein:
-                dict_hetionet_protein[alternative_id]=[dict(node)]
+                dict_hetionet_protein[alternative_id] = [dict(node)]
             else:
-                counter_multiple_identifier+=1
+                counter_multiple_identifier += 1
                 dict_hetionet_protein[alternative_id].append(dict(node))
                 # print(alternative_id)
                 # print(dict_hetionet_protein[alternative_id])
                 # print(node)
-    print('number of identifier which appears multiple times:'+str(counter_multiple_identifier))
+    print('number of identifier which appears multiple times:' + str(counter_multiple_identifier))
 
 
 # dictionary of maybe protein or not (the drugbank proteins which has only a drugbank id and no components)
@@ -52,12 +106,53 @@ This information where manual checked by me.
 
 def load_manual_checked_proteins_or_not():
     csv_file = open('protein/maybe_proteins_manual_checked.tsv.csv', 'r')
-    reader = csv.DictReader(csv_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+    reader = csv.DictReader(csv_file, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     for row in reader:
         identifier = row['identifier']
         is_protein = True if row['Protein_ja=1_und_nein=0'] == '1' else False
         dict_be_identifier_sort_to_protein_or_not[identifier] = is_protein
     # print(dict_be_identifier_sort_to_protein_or_not)
+
+
+# file mapping target chemical
+file_mapping_chemical = open('protein/mapping_chemical_target.tsv', 'w', encoding='utf-8')
+csv_mapping_chemical = csv.writer(file_mapping_chemical, delimiter='\t')
+csv_mapping_chemical.writerow(['chemical_id', 'id', 'resource'])
+
+
+def check_if_not_mapped_proteins_migth_be_chemical_targets_or_protein(drugbank_id, name, synonyms, labels,
+                                                                      dict_to_resource,
+                                                                      write_mapping_file, dict_name_to_ids):
+    """
+    check if the name or synonyms are in the chemical dictionary and add pair to file
+    :param drugbank_id: string
+    :param name: string
+    :param synonyms: list of strings
+    :param labels: list of string
+    :return: boolean
+    """
+    found_mapping = False
+    synonyms.append(name)
+    ids = set()
+    for synonym in synonyms:
+        synonym = synonym.lower()
+        if synonym in dict_name_to_ids:
+            ids = ids.union(dict_name_to_ids[synonym])
+
+    if len(ids) > 0:
+        found_mapping = True
+        print('found chemical')
+        print(name)
+        print(ids)
+        print(labels)
+        # if not 'Target_DrugBank' in labels:
+        #     sys.exit('not Target ')
+        for identifier in ids:
+            resource = set(dict_to_resource[identifier])
+            resource.add('DrugBank')
+            resource = sorted(resource)
+            write_mapping_file.writerow([identifier, drugbank_id, "|".join(resource)])
+    return found_mapping
 
 
 # dictionary with all possible proteins
@@ -96,15 +191,23 @@ dict_db_labels_to_csv_label_file = {
 
 # protein csv which should be updated
 generate_csv = open('protein/proteins.csv', 'w')
-writer = csv.writer(generate_csv, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-writer.writerow(['id', 'uniport', 'sequences'])
+writer = csv.writer(generate_csv, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+writer.writerow(['id', 'uniport', 'resource', 'sequences'])
 
 '''
 preparation of the csv for merging for a given node
 '''
-def interagte_infos_into_csv(part_dict,protein_hetionet,list_input_protein):
+
+
+def integrate_infos_into_csv(part_dict, protein_hetionet, list_input_protein):
     # first check on the as sequences and combine the if they are not the same, because they are isoforms
     # or  have only small changes like one as is changed
+
+    resource = set(dict_hetionet_protein[part_dict['identifier']][0]['resource'])
+    resource.add('DrugBank')
+    resource = sorted(resource)
+    list_input_protein.append("|".join(resource))
+
     as_seqs = part_dict['amino_acid_sequence'] if 'amino_acid_sequence' in part_dict else ''
 
     as_seq_hetionet = protein_hetionet['as_sequence'] if 'as_sequence' in protein_hetionet else ''
@@ -119,7 +222,7 @@ def interagte_infos_into_csv(part_dict,protein_hetionet,list_input_protein):
         as_seq_part = as_seq.split(' ')[1]
         if as_seq_hetionet_seq != as_seq_part:
             list_as_sequnces.append(as_seq_part)
-
+    print(list_as_sequnces)
     list_as_sequnces = '|'.join(list_as_sequnces)
     list_input_protein.append(list_as_sequnces)
 
@@ -141,7 +244,7 @@ def interagte_infos_into_csv(part_dict,protein_hetionet,list_input_protein):
     # pfam_protein='|'.join(pfam_protein)
     # list_input_protein.append(pfam_protein)
 
-    #check on gene names are the same
+    # check on gene names are the same
     # hetionet_gene_names=protein_hetionet['gene_name'] if 'gene_name' in protein_hetionet else []
     # db_gene_name=part_dict['gene_name'] if 'gene_name' in part_dict else ''
     # if not db_gene_name in hetionet_gene_names:
@@ -153,6 +256,41 @@ def interagte_infos_into_csv(part_dict,protein_hetionet,list_input_protein):
     writer.writerow(list_input_protein)
 
 
+def not_mapped_proteins(node, identifier, name, synonyms, labels, counter_not_a_protein, writer_not_mapped,
+                        counter_human_not_found):
+    """
+    check if the not mapped "proteins are might be chemical target and if not write into not mapped file
+    :param node: dictionary
+    :param identifier: string
+    :param name: string
+    :param synonyms: list of string
+    :param labels: list of string
+    :param counter_not_a_protein: int
+    :param writer_not_mapped: csv.Dictionarywriter
+    :return:
+    """
+    drugbank_id = node['drugbank_id']
+    found_chemical_map = False
+    found_protein = False
+
+    if node['organism'] == 'Humans':
+        counter_human_not_found += 1
+    if identifier == drugbank_id:
+        found_chemical_map = check_if_not_mapped_proteins_migth_be_chemical_targets_or_protein(identifier, name,
+                                                                                               synonyms, labels,
+                                                                                               dict_chemical_to_resource,
+                                                                                               csv_mapping_chemical,
+                                                                                               dict_name_to_chemical_id)
+        found_protein = check_if_not_mapped_proteins_migth_be_chemical_targets_or_protein(identifier, name,
+                                                                                          synonyms, labels,
+                                                                                          dict_protein_id_to_resource,
+                                                                                          writer,
+                                                                                          dict_name_to_protein_id)
+        print('did a chemical map?')
+    counter_not_a_protein += 1
+    if not found_chemical_map and not found_protein:
+        writer_not_mapped.writerow(dict(node))
+    return counter_not_a_protein
 
 
 '''
@@ -161,55 +299,68 @@ load all possible proteins from Drugbank and put only all as protein defined pro
 
 
 def load_proteins_from_drugbank_into_dict():
-
-
     # conncet the
     cypherfile = open('protein/cypher_protein.cypher', 'w')
     # this is only for the first time to have only the sequences as property and not with header
-    query='''Match (n:Protein) Where exists(n.as_sequence) Set n.as_sequence=split(n.as_sequence,':')[1];\n'''
+    query = '''Match (n:Protein) Where exists(n.as_sequence) Set n.as_sequence=split(n.as_sequence,':')[1];\n'''
     cypherfile.write(query)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Documents/Project/master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/proteins.csv" As line MATCH (n:Protein_DrugBank{identifier:line.id}) ,(p:Protein{identifier:line.uniport}) Create (p)-[:equal_to_DB_protein]->(n) Set p.drugbank='yes', p.resource=p.resource+ 'DrugBank', p.locus=n.locus, p.molecular_weight=n.molecular_weight, p.as_sequence=split(line.sequences,'|'),p.pfams=split(line.pfams,'|') ;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/proteins.csv" As line Fieldterminator '\\t' MATCH (n:Protein_DrugBank{identifier:line.id}) ,(p:Protein{identifier:line.uniport}) Create (p)-[:equal_to_DB_protein]->(n) Set p.drugbank='yes', p.resource=split(line.resource,"|"), p.locus=n.locus, p.molecular_weight=n.molecular_weight, p.as_sequence=split(line.sequences,'|'),p.pfams=split(line.pfams,'|') ;\n'''
+
+    cypherfile.write(query)
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/mapping_chemical_target.tsv" As line Fieldterminator '\\t' MATCH (n:Protein_DrugBank{identifier:line.id}) ,(p:Chemical{identifier:line.chemical_id}) Create (p)-[:equal_to_DB_target]->(n) Set p.drugbank='yes', p:Target, p.resource=split(line.resource,"|") ;\n'''
 
     cypherfile.write(query)
     # all queries which are used to integrate Protein with the extra labels into Hetionet
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Documents/Project/master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/proteins_carrier.csv" As line MATCH (g:Protein{identifier:line.id}) Set g:Carrier ;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/proteins_carrier.csv" As line Fieldterminator '\\t' MATCH (g:Protein{identifier:line.id}) Set g:Carrier ;\n'''
     cypherfile.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Documents/Project/master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/proteins_enzyme.csv" As line MATCH (g:Protein{identifier:line.id}) Set g:Enzyme ;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/proteins_enzyme.csv" As line Fieldterminator '\\t' MATCH (g:Protein{identifier:line.id}) Set g:Enzyme ;\n'''
     cypherfile.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Documents/Project/master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/proteins_target.csv" As line MATCH (g:Protein{identifier:line.id}) Set g:Target ;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/proteins_target.csv" As line Fieldterminator '\\t' MATCH (g:Protein{identifier:line.id}) Set g:Target ;\n'''
     cypherfile.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Documents/Project/master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/proteins_transporter.csv" As line MATCH (g:Protein{identifier:line.id}) Set g:Transporter ;\n'''
-    cypherfile.write(query)
-    query='Create Constraint On (node:Protein) Assert node.identifier Is Unique; \n'
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/proteins_transporter.csv" As line Fieldterminator '\\t' MATCH (g:Protein{identifier:line.id}) Set g:Transporter ;\n'''
     cypherfile.write(query)
     cypherfile.close()
 
-    file_uniprots_with_multiple= open('protein/uniprot_gene/db_uniprot_to_multi_genes.csv','w')
-    writer_multi=csv.writer(file_uniprots_with_multiple)
-    writer_multi.writerow(['uniprot_id','protein_name','genes','alternative_ids'])
-
+    file_uniprots_with_multiple = open('protein/uniprot_gene/db_uniprot_to_multi_genes.csv', 'w')
+    writer_multi = csv.writer(file_uniprots_with_multiple)
+    writer_multi.writerow(['uniprot_id', 'protein_name', 'genes', 'alternative_ids'])
 
     file_uniprots_without_rela = open('protein/uniprot_gene/db_uniprot_without_rela.csv', 'w')
     writer_without_rela = csv.writer(file_uniprots_without_rela)
-    writer_without_rela.writerow(['uniprot_id','name'])
+    writer_without_rela.writerow(['uniprot_id', 'name'])
 
     file_uniprots_gene_with_alternative = open('protein/uniprot_gene/db_uniprot_to_gene_with_alternative.csv', 'w')
     writer_rela_with_alternative = csv.writer(file_uniprots_gene_with_alternative)
-    writer_rela_with_alternative.writerow(['uniprot_id','alternative id','gene(s)'])
+    writer_rela_with_alternative.writerow(['uniprot_id', 'alternative id', 'gene(s)'])
+
+    header_not_mapped = ["gene_name", "pfams", "synonyms", "id_source", "amino_acid_sequence", "gene_sequence",
+                         "chromosome_location", "xrefs", "cellular_location", "theoretical_pi", "signal_regions",
+                         "molecular_weight", "general_function", "specific_function", "locus", "go_classifiers",
+                         "license", "drugbank_id", "name", "identifier", "organism", "transmembrane_regions",
+                         "alternative_uniprot_id"]
+    file_not_mapped = open('protein/not_mapped.tsv', 'w')
+    writer_not_mapped = csv.DictWriter(file_not_mapped, fieldnames=header_not_mapped, delimiter='\t')
+    writer_not_mapped.writeheader()
 
     query = '''MATCH (n:Protein_DrugBank) RETURN n, labels(n) ;'''
     results = g.run(query)
     counter_not_a_protein = 0
+    counter_proteins_in_total = 0
+    counter_mapped = 0
+    counter_human_not_found = 0
 
-    counter_uniprot_with_no_gene_ids=0
+    counter_uniprot_with_no_gene_ids = 0
     for node, labels, in results:
+        counter_proteins_in_total += 1
 
         # input list for protein
         list_input_protein = []
 
         identifier = node['identifier']
-        alternative_uniprot_ids= node['alternative_uniprot_id'] if 'alternative_uniprot_id' in node else []
+        alternative_uniprot_ids = node['alternative_uniprot_id'] if 'alternative_uniprot_id' in node else []
+        name = node['name'] if 'name' in node else ''
+        synonyms = node['synonyms'] if 'synonyms' in node else []
 
         if not identifier in dict_be_identifier_sort_to_protein_or_not or dict_be_identifier_sort_to_protein_or_not[
             identifier]:
@@ -218,106 +369,98 @@ def load_proteins_from_drugbank_into_dict():
 
             part_dict = dict(node)
             part_dict['labels'] = labels
-            name = part_dict['name'] if 'name' in part_dict else ''
-            name = name.encode('utf-8')
+
             labels.remove('Protein_DrugBank')
             for label in labels:
                 dict_db_labels_to_csv_label_file[label].writerow([identifier])
             dict_proteins[identifier] = labels
 
             if identifier in dict_hetionet_protein:
-                print('ok')
-                if len(dict_hetionet_protein[identifier])==1:
-                    protein_hetionet=dict_hetionet_protein[identifier][0]
+                counter_mapped += 1
+                if len(dict_hetionet_protein[identifier]) == 1:
+                    protein_hetionet = dict_hetionet_protein[identifier][0]
                     list_input_protein.append(protein_hetionet['identifier'])
 
-                    interagte_infos_into_csv(part_dict, protein_hetionet, list_input_protein)
+                    integrate_infos_into_csv(part_dict, protein_hetionet, list_input_protein)
 
                 else:
                     print(len(dict_hetionet_protein[identifier]))
                     print(identifier)
                     for protein_hetionet in dict_hetionet_protein[identifier]:
-                        list_multiple_input=[]
+                        list_multiple_input = []
                         list_multiple_input.append(identifier)
                         list_multiple_input.append(protein_hetionet['identifier'])
                         print(protein_hetionet['identifier'])
-                        interagte_infos_into_csv(part_dict, protein_hetionet, list_multiple_input)
+                        integrate_infos_into_csv(part_dict, protein_hetionet, list_multiple_input)
                     print('multiple mapping')
             elif identifier in dict_be_identifier_sort_to_protein_or_not:
                 print('protein without uniprot id')
+                counter_not_a_protein += 1
+                print(node['name'])
+                writer_not_mapped.writerow(dict(node))
+                if node['organism'] == 'Humans':
+                    counter_human_not_found += 1
+
+                drugbank_id = node['drugbank_id']
+                # if identifier == drugbank_id:
+                #     print('do something different protein')
                 # print(node)
 
             else:
-                print('not found')
-                # print(node)
-                # sys.exit('not found')
-            # if identifier in dict_uniprot_count_genes:
-            #     writer_multi.writerow([identifier,name,dict_uniprot_to_gene_id[identifier]])
-            # elif identifier in dict_uniprot_to_gene_id:
-            #     writer_rela.writerow([identifier,dict_uniprot_to_gene_id[identifier][0]])
-            # else:
-            #     found_at_least_one_mapping=False
-            #     list_alternative_ids_mapping=[]
-            #     set_list_genese_of_alternative_ids=set([])
-            #     for alternative_uniprot_id in alternative_uniprot_ids:
-            #         if alternative_uniprot_id in dict_uniprot_count_genes:
-            #             list_alternative_ids_mapping.append(alternative_uniprot_id)
-            #             set_list_genese_of_alternative_ids.union(dict_uniprot_to_gene_id[alternative_uniprot_id])
-            #             writer_rela_with_alternative.writerow([identifier,alternative_uniprot_id,dict_uniprot_to_gene_id[alternative_uniprot_id]])
-            #             found_at_least_one_mapping=True
-            #         elif alternative_uniprot_id in dict_uniprot_to_gene_id:
-            #             list_alternative_ids_mapping.append(alternative_uniprot_id)
-            #             set_list_genese_of_alternative_ids.add(dict_uniprot_to_gene_id[alternative_uniprot_id][0])
-            #             writer_rela_with_alternative.writerow([identifier,alternative_uniprot_id,dict_uniprot_to_gene_id[alternative_uniprot_id][0]])
-            #             found_at_least_one_mapping=True
-            #     if not found_at_least_one_mapping:
-            #         writer_without_rela.writerow([identifier,name])
-            #         counter_uniprot_with_no_gene_ids+=1
-            #     else:
-            #         if len(set_list_genese_of_alternative_ids)==1:
-            #             writer_rela.writerow([identifier, list(set_list_genese_of_alternative_ids)[0],list_alternative_ids_mapping])
-            #         else:
-            #             writer_multi.writerow([identifier, name, list(set_list_genese_of_alternative_ids),list_alternative_ids_mapping])
+                counter_not_a_protein = not_mapped_proteins(node, identifier, name, synonyms, labels,
+                                                            counter_not_a_protein, writer_not_mapped,
+                                                            counter_human_not_found)
 
 
         else:
-            counter_not_a_protein += 1
+            counter_not_a_protein = not_mapped_proteins(node, identifier, name, synonyms, labels, counter_not_a_protein,
+                                                        writer_not_mapped,
+                                                        counter_human_not_found)
+
     # print(dict_proteins)
-    print('number of proteins:' + str(len(dict_proteins)))
-    print('number of not proteins:' + str(counter_not_a_protein))
-    print('number of proteins without gene id:'+str(counter_uniprot_with_no_gene_ids))
+    print('number of human proteins:' + str(counter_mapped))
+    print('number of not proteins or not human or not reviewed:' + str(counter_not_a_protein))
+    print('counter of not protein which were human:' + str(counter_human_not_found))
+    print('nummer of all proteins in drugbank:' + str(counter_proteins_in_total))
+    print('number of proteins without gene id:' + str(counter_uniprot_with_no_gene_ids))
+
 
 # file for all rela which should be integrated
-cypher_rela=open('protein/cypher_protein_rela.cypher', 'w')
+cypher_rela = open('protein/cypher_protein_rela.cypher', 'w')
 
 '''
 Generate csv with component relationships
 '''
+
+
 def generate_csv_componet_rela():
-    query='MATCH p=(a:Protein_DrugBank)-[r:has_component_PIhcPI]->(b:Protein_DrugBank) RETURN a.identifier, b.identifier'
-    result= g.run(query)
+    query = 'MATCH p=(a:Protein_DrugBank)-[r:has_component_PIhcPI]->(b:Protein_DrugBank) RETURN a.identifier, b.identifier'
+    result = g.run(query)
 
-
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Documents/Project/master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/proteins_rela_component.csv" As line MATCH (g:Protein{identifier:line.id1}),(b:Protein{identifier:line.id2}) Create (g)-[:HAS_COMPONENT_PRhcPR]->(b);\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/proteins_rela_component.csv" As line Fieldterminator '\\t' MATCH (g:Protein{identifier:line.id1}),(b:Protein{identifier:line.id2}) Create (g)-[:HAS_COMPONENT_PRhcPR]->(b);\n'''
     cypher_rela.write(query)
 
-    csv_file=open('protein/proteins_rela_component.csv','w')
-    writer_csv=csv.writer(csv_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-    writer_csv.writerow(['id1','id2'])
+    csv_file = open('protein/proteins_rela_component.csv', 'w')
+    writer_csv = csv.writer(csv_file, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+    writer_csv.writerow(['id1', 'id2'])
 
-    counter_component_rela=0
+    counter_component_rela = 0
     for identifier1, identifier2, in result:
-
         print(identifier1)
-        counter_component_rela+=1
-        writer_csv.writerow([identifier1,identifier2])
+        counter_component_rela += 1
+        writer_csv.writerow([identifier1, identifier2])
 
-    print('number of component rela:'+str(counter_component_rela))
-
-
+    print('number of component rela:' + str(counter_component_rela))
 
 
 def main():
+    global path_of_directory
+    if len(sys.argv) < 2:
+        sys.exit('need license and path')
+    global license
+    license = sys.argv[1]
+    path_of_directory = sys.argv[2]
+
     print(datetime.datetime.utcnow())
     print('create connection with neo4j')
 
@@ -327,7 +470,15 @@ def main():
         '#################################################################################################################################################################')
 
     print(datetime.datetime.utcnow())
-    print('load all information to the nodes where I was not sure if they are proetins or not')
+    print('load all chemicals in a dictionary name to chemical id')
+
+    load_all_chemicals_and_generate_dictionary()
+
+    print(
+        '#################################################################################################################################################################')
+
+    print(datetime.datetime.utcnow())
+    print('load all information to the nodes where I was not sure if they are protein or not')
 
     load_manual_checked_proteins_or_not()
 
@@ -336,7 +487,7 @@ def main():
 
     print(datetime.datetime.utcnow())
 
-    print('load all genes and gather the information for uniprot gene')
+    print('load all Protein and gather the information ')
 
     load_all_hetionet_proteins_in_dictionary()
 

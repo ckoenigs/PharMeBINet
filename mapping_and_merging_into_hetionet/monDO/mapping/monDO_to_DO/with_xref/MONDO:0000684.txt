@@ -1,3 +1,0 @@
-MONDO:0000684	verbal auditory agnosia
-DOID 	 name 
-DOID:0060154	verbal auditory agnosia

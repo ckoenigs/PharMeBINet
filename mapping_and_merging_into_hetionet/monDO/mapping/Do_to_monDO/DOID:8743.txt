@@ -1,3 +1,0 @@
-DOID:8743	erythema infectiosum
-monDO ID 	 name 
-MONDO:0006544	erythema infectiosum

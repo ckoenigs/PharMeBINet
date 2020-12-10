@@ -1,3 +1,0 @@
-MONDO:0005502	dengue disease
-DOID 	 name 
-DOID:12205	dengue disease

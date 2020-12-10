@@ -1,3 +1,0 @@
-MONDO:0003998	vaginal tubular adenoma
-DOID 	 name 
-DOID:6809	vaginal tubular adenoma

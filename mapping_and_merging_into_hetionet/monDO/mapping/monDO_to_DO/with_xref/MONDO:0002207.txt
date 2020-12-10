@@ -1,3 +1,0 @@
-MONDO:0002207	vulval Paget's disease
-DOID 	 name 
-DOID:2097	vulval Paget's disease

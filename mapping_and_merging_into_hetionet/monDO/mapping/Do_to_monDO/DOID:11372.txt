@@ -1,3 +1,0 @@
-DOID:11372	megacolon
-monDO ID 	 name 
-MONDO:0001273	megacolon

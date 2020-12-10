@@ -1,3 +1,0 @@
-DOID:0060448	Fleck corneal dystrophy
-monDO ID 	 name 
-MONDO:0007376	fleck corneal dystrophy

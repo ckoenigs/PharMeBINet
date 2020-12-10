@@ -1,3 +1,0 @@
-MONDO:0003600	cutaneous liposarcoma
-DOID 	 name 
-DOID:5712	cutaneous liposarcoma

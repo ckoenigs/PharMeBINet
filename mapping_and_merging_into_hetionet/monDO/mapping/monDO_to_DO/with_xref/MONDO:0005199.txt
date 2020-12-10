@@ -1,3 +1,0 @@
-MONDO:0003709	peripartum cardiomyopathy
-DOID 	 name 
-DOID:9997	peripartum cardiomyopathy

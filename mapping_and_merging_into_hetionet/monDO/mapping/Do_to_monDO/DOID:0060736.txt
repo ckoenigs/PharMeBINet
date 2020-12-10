@@ -1,3 +1,0 @@
-DOID:0060736	epidermolysis bullosa simplex Ogna type
-monDO ID 	 name 
-MONDO:0007555	epidermolysis bullosa simplex Ogna type

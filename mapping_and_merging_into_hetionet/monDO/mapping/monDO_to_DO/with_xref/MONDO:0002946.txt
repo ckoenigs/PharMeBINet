@@ -1,3 +1,0 @@
-MONDO:0002946	gynatresia
-DOID 	 name 
-DOID:429	gynatresia

@@ -1,3 +1,0 @@
-DOID:10686	lactocele
-monDO ID 	 name 
-MONDO:0001099	lactocele

@@ -1,3 +1,0 @@
-DOID:482	hemangioma of peripheral nerve
-monDO ID 	 name 
-MONDO:0003154	hemangioma of peripheral nerve

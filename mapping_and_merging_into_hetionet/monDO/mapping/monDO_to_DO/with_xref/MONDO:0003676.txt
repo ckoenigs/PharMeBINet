@@ -1,3 +1,0 @@
-MONDO:0003676	inferolateral myocardial infarct
-DOID 	 name 
-DOID:5852	inferolateral myocardial infarct

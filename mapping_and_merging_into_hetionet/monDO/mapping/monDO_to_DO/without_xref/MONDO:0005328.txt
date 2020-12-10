@@ -1,3 +1,0 @@
-MONDO:0005328	eye disease
-DOID 	 name 
-DOID:5614	eye disease

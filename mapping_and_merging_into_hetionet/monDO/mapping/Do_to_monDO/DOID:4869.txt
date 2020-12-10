@@ -1,3 +1,0 @@
-DOID:4869	laryngeal adenoid cystic carcinoma
-monDO ID 	 name 
-MONDO:0006264	laryngeal adenoid cystic carcinoma

@@ -1,3 +1,0 @@
-MONDO:0012848	Meckel syndrome, type 6
-DOID 	 name 
-DOID:0050778	Meckel syndrome

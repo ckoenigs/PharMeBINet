@@ -1,3 +1,0 @@
-DOID:0050709	Ohtahara syndrome
-monDO ID 	 name 
-MONDO:0016021	early infantile epileptic encephalopathy

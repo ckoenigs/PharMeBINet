@@ -1,4 +1,0 @@
-MONDO:0003046	anus neoplasm
-DOID 	 name 
-DOID:4551	anus neoplasm
-DOID:4908	anal carcinoma

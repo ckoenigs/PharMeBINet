@@ -1,3 +1,0 @@
-DOID:0110949	Waardenburg syndrome type 3
-monDO ID 	 name 
-MONDO:0007862	Waardenburg syndrome type 3

@@ -1,3 +1,0 @@
-MONDO:0000480	anismus
-DOID 	 name 
-DOID:0050839	anismus

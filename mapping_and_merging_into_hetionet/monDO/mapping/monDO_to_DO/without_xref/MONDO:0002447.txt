@@ -1,3 +1,0 @@
-MONDO:0002447	endometrial carcinoma (disease)
-DOID 	 name 
-DOID:2871	endometrial carcinoma

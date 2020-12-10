@@ -1,3 +1,0 @@
-MONDO:0003165	cerebellar astrocytoma
-DOID 	 name 
-DOID:4848	cerebellar astrocytoma

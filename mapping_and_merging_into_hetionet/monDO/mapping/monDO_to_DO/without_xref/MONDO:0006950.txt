@@ -1,3 +1,0 @@
-MONDO:0006950	retinal vasculitis
-DOID 	 name 
-DOID:11563	retinal vasculitis

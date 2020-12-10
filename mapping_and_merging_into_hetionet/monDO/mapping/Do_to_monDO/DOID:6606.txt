@@ -1,3 +1,0 @@
-DOID:6606	eosinophilic variant of chromophobe renal cell carcinoma
-monDO ID 	 name 
-MONDO:0003942	eosinophilic variant of chromophobe renal cell carcinoma

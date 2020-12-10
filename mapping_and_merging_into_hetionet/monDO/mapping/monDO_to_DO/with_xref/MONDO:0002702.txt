@@ -1,3 +1,0 @@
-MONDO:0002702	ovarian cystadenocarcinoma
-DOID 	 name 
-DOID:3605	ovarian cystadenocarcinoma

@@ -1,3 +1,0 @@
-DOID:2272	vulvovaginal candidiasis
-monDO ID 	 name 
-MONDO:0006014	vulvovaginal candidiasis

@@ -1,3 +1,0 @@
-MONDO:0002331	nephrosis
-DOID 	 name 
-DOID:2527	nephrosis

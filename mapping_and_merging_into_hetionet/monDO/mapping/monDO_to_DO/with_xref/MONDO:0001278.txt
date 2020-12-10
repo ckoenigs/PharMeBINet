@@ -1,3 +1,0 @@
-MONDO:0001278	adult respiratory distress syndrome
-DOID 	 name 
-DOID:11394	adult respiratory distress syndrome

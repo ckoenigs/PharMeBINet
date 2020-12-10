@@ -1,3 +1,0 @@
-MONDO:0009341	Mowat-Wilson syndrome
-DOID 	 name 
-DOID:0060485	Mowat-Wilson syndrome

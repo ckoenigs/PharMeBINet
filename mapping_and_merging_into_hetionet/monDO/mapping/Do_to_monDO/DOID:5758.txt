@@ -1,3 +1,0 @@
-DOID:5758	malignant mesenchymoma
-monDO ID 	 name 
-MONDO:0003633	malignant mesenchymoma

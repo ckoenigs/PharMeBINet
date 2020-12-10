@@ -1,3 +1,0 @@
-DOID:6777	villoglandular endometrial endometrioid adenocarcinoma
-monDO ID 	 name 
-MONDO:0003991	villoglandular endometrial endometrioid adenocarcinoma

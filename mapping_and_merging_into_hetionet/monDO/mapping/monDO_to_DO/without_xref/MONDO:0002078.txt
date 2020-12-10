@@ -1,3 +1,0 @@
-MONDO:0002078	heart septal defect
-DOID 	 name 
-DOID:1681	heart septal defect

@@ -1,3 +1,0 @@
-MONDO:0004379	female breast carcinoma
-DOID 	 name 
-DOID:7843	female breast carcinoma

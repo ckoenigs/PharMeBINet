@@ -1,3 +1,0 @@
-MONDO:0014740	autosomal dominant nonsyndromic deafness 68
-DOID 	 name 
-DOID:0110589	autosomal dominant nonsyndromic deafness 68

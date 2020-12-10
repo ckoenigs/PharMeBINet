@@ -1,3 +1,0 @@
-DOID:1019	osteomyelitis
-monDO ID 	 name 
-MONDO:0005246	osteomyelitis (disease)

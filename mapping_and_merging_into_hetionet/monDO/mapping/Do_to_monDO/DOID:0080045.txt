@@ -1,3 +1,0 @@
-DOID:0080045	Kniest dysplasia
-monDO ID 	 name 
-MONDO:0007987	Kniest dysplasia

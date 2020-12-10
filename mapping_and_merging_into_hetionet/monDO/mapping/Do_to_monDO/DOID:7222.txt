@@ -1,3 +1,0 @@
-DOID:7222	gallbladder pleomorphic giant cell adenocarcinoma
-monDO ID 	 name 
-MONDO:0004149	gallbladder pleomorphic giant cell adenocarcinoma

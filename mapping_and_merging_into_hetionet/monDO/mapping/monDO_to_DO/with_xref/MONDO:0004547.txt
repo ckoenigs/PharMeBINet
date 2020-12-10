@@ -1,3 +1,0 @@
-MONDO:0004547	reticular pattern testicular yolk sac tumor
-DOID 	 name 
-DOID:8392	reticular pattern testicular yolk sac tumor

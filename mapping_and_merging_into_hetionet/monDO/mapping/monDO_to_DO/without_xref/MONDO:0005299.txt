@@ -1,3 +1,0 @@
-MONDO:0005299	brain ischemia
-DOID 	 name 
-DOID:2316	brain ischemia

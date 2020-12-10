@@ -1,3 +1,0 @@
-MONDO:0002656	skin carcinoma
-DOID 	 name 
-DOID:3451	skin carcinoma

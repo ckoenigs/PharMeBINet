@@ -1,3 +1,0 @@
-MONDO:0018667	pleural empyema (disease)
-DOID 	 name 
-DOID:3798	pleural empyema

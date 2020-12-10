@@ -1,3 +1,0 @@
-MONDO:0004430	penis mixed squamous cell carcinoma
-DOID 	 name 
-DOID:8009	penis mixed squamous cell carcinoma

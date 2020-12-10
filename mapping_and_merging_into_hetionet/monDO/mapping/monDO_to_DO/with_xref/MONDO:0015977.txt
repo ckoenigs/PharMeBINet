@@ -1,3 +1,0 @@
-MONDO:0015977	agammaglobulinemia
-DOID 	 name 
-DOID:2583	agammaglobulinemia

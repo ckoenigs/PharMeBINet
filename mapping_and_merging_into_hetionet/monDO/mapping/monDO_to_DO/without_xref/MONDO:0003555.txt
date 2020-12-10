@@ -1,3 +1,0 @@
-MONDO:0003555	Bartholin's gland adenosquamous carcinoma
-DOID 	 name 
-DOID:5630	Bartholin's gland adenosquamous carcinoma

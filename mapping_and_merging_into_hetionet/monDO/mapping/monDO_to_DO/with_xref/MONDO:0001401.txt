@@ -1,3 +1,0 @@
-MONDO:0001401	female breast nipple and areola cancer
-DOID 	 name 
-DOID:11889	female breast nipple and areola cancer

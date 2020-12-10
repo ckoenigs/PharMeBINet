@@ -1,3 +1,0 @@
-MONDO:0009820	osteoporosis-pseudoglioma syndrome
-DOID 	 name 
-DOID:0060849	osteoporosis-pseudoglioma syndrome

@@ -1,3 +1,0 @@
-DOID:5421	lung combined type small cell carcinoma
-monDO ID 	 name 
-MONDO:0003438	combined small cell lung carcinoma

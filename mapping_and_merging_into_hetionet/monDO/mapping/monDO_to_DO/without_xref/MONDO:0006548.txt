@@ -1,3 +1,0 @@
-MONDO:0006548	facial dermatosis
-DOID 	 name 
-DOID:3134	facial dermatosis

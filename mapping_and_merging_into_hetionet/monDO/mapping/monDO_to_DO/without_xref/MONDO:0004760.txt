@@ -1,3 +1,0 @@
-MONDO:0004760	urethral false passage
-DOID 	 name 
-DOID:9339	urethral false passage

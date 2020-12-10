@@ -1,3 +1,0 @@
-MONDO:0003295	leiomyomatosis
-DOID 	 name 
-DOID:5138	leiomyomatosis

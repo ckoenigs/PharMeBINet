@@ -1,4 +1,0 @@
-MONDO:0011794	Dravet syndrome
-DOID 	 name 
-DOID:2481	infantile epileptic encephalopathy
-DOID:0060171	Dravet syndrome

@@ -1,3 +1,0 @@
-MONDO:0004881	myositis fibrosa
-DOID 	 name 
-DOID:9788	myositis fibrosa

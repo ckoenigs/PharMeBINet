@@ -1,3 +1,0 @@
-MONDO:0003709	epithelial malignant thymoma
-DOID 	 name 
-DOID:7926	epithelial malignant thymoma

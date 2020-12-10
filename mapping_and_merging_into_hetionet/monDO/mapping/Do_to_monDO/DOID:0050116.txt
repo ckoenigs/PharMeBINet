@@ -1,3 +1,0 @@
-DOID:0050116	tinea imbricata
-monDO ID 	 name 
-MONDO:0000245	tinea imbricata

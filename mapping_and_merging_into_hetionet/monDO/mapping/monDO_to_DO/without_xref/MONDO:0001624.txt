@@ -1,3 +1,0 @@
-MONDO:0001624	acute sphenoidal sinusitis
-DOID 	 name 
-DOID:13046	acute sphenoidal sinusitis

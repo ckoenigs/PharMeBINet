@@ -1,3 +1,0 @@
-MONDO:0003709	Alpers syndrome
-DOID 	 name 
-DOID:1442	Alpers syndrome

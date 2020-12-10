@@ -1,3 +1,0 @@
-DOID:0060749	familial temporal lobe epilepsy 6
-monDO ID 	 name 
-MONDO:0014308	familial temporal lobe epilepsy 6

@@ -1,3 +1,0 @@
-MONDO:0000990	subendocardial infarction acute myocardial infarction
-DOID 	 name 
-DOID:10266	subendocardial infarction acute myocardial infarction

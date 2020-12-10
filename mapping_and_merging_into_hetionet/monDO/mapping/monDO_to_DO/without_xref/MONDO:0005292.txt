@@ -1,3 +1,0 @@
-MONDO:0005292	colitis (disease)
-DOID 	 name 
-DOID:0060180	colitis

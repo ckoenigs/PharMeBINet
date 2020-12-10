@@ -1,3 +1,0 @@
-DOID:14070	vestibular nystagmus
-monDO ID 	 name 
-MONDO:0001872	vestibular nystagmus (disease)

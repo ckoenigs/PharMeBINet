@@ -1,3 +1,0 @@
-MONDO:0000549	cervical neuroblastoma
-DOID 	 name 
-DOID:0050935	cervical neuroblastoma

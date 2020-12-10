@@ -1,3 +1,0 @@
-MONDO:0001146	fourth cranial nerve palsy
-DOID 	 name 
-DOID:10869	fourth cranial nerve palsy

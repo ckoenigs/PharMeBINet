@@ -1,4 +1,0 @@
-MONDO:0006848	marasmus
-DOID 	 name 
-DOID:11801	protein-energy malnutrition
-DOID:12328	marasmus

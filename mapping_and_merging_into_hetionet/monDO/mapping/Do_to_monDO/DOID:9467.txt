@@ -1,3 +1,0 @@
-DOID:9467	nail-patella syndrome
-monDO ID 	 name 
-MONDO:0008061	nail-patella syndrome

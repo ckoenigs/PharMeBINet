@@ -1,3 +1,0 @@
-DOID:8096	bladder mixed adenocarcinoma
-monDO ID 	 name 
-MONDO:0004458	bladder mixed adenocarcinoma

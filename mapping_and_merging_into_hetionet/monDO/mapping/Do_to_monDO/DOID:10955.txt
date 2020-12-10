@@ -1,3 +1,0 @@
-DOID:10955	strongyloidiasis
-monDO ID 	 name 
-MONDO:0005974	strongyloidiasis

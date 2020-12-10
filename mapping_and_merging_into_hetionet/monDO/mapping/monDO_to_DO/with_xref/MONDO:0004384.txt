@@ -1,3 +1,0 @@
-MONDO:0004384	maxillary sinus inverted papilloma
-DOID 	 name 
-DOID:7868	maxillary sinus inverted papilloma

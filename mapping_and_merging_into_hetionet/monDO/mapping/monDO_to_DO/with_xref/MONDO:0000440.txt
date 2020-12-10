@@ -1,3 +1,0 @@
-MONDO:0000440	metabolic acidosis
-DOID 	 name 
-DOID:0050758	metabolic acidosis

@@ -1,3 +1,0 @@
-DOID:13366	Stiff-Person syndrome
-monDO ID 	 name 
-MONDO:0008491	stiff-person syndrome

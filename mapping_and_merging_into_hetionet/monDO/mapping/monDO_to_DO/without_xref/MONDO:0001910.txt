@@ -1,3 +1,0 @@
-MONDO:0001910	ochronosis (disease)
-DOID 	 name 
-DOID:14223	ochronosis

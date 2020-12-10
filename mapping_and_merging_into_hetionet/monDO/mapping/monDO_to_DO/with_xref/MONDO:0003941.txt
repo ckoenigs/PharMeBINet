@@ -1,3 +1,0 @@
-MONDO:0003941	classic variant of chromophobe renal cell carcinoma
-DOID 	 name 
-DOID:6605	classic variant of chromophobe renal cell carcinoma

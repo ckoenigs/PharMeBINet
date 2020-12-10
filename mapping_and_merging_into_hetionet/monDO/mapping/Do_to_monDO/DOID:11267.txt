@@ -1,3 +1,0 @@
-DOID:11267	keratomalacia
-monDO ID 	 name 
-MONDO:0001250	keratomalacia

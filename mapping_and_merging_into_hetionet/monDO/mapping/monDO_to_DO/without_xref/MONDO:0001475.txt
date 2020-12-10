@@ -1,3 +1,0 @@
-MONDO:0001475	neutropenia
-DOID 	 name 
-DOID:1227	neutropenia

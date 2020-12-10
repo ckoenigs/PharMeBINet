@@ -1,3 +1,0 @@
-MONDO:0008799	anophthalmia/microphthalmia-esophageal atresia syndrome
-DOID 	 name 
-DOID:10629	microphthalmia

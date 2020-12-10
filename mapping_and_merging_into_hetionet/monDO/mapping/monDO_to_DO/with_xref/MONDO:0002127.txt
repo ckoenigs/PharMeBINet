@@ -1,3 +1,0 @@
-MONDO:0002127	urethral stricture (disease)
-DOID 	 name 
-DOID:1829	urethral stricture

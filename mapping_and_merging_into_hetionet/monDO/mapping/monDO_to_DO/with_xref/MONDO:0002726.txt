@@ -1,3 +1,0 @@
-MONDO:0002726	cutaneous solitary mastocytoma
-DOID 	 name 
-DOID:3666	cutaneous solitary mastocytoma

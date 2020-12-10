@@ -1,3 +1,0 @@
-MONDO:0001883	blue toe syndrome
-DOID 	 name 
-DOID:14121	blue toe syndrome

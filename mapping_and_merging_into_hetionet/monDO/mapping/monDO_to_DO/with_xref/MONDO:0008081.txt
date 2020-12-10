@@ -1,3 +1,0 @@
-MONDO:0008081	neurofibromatosis, type IV, of Riccardi
-DOID 	 name 
-DOID:8712	neurofibromatosis

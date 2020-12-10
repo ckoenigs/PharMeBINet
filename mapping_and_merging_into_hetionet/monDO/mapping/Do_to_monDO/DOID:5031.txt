@@ -1,3 +1,0 @@
-DOID:5031	adult pineal parenchymal tumor
-monDO ID 	 name 
-MONDO:0003248	adult pineal parenchymal tumor

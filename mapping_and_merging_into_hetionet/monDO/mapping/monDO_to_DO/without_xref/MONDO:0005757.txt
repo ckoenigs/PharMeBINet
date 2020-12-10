@@ -1,3 +1,0 @@
-MONDO:0005757	eumycotic mycetoma
-DOID 	 name 
-DOID:13078	eumycotic mycetoma

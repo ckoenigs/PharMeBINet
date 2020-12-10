@@ -1,3 +1,0 @@
-MONDO:0009623	Nijmegen breakage syndrome
-DOID 	 name 
-DOID:7400	Nijmegen breakage syndrome

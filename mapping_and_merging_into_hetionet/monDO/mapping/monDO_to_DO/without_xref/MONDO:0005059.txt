@@ -1,3 +1,0 @@
-MONDO:0005059	leukemia (disease)
-DOID 	 name 
-DOID:1240	leukemia

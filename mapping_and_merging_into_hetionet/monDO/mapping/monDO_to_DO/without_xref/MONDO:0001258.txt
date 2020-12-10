@@ -1,3 +1,0 @@
-MONDO:0001258	vertebral artery occlusion
-DOID 	 name 
-DOID:11299	vertebral artery occlusion

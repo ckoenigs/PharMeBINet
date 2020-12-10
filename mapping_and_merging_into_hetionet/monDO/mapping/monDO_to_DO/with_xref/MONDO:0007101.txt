@@ -1,3 +1,0 @@
-MONDO:0007101	familial primary localized cutaneous amyloidosis
-DOID 	 name 
-DOID:0050639	primary cutaneous amyloidosis

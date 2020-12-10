@@ -1,3 +1,0 @@
-MONDO:0003646	rectum neuroendocrine neoplasm
-DOID 	 name 
-DOID:5777	rectum neuroendocrine neoplasm

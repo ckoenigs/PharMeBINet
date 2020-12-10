@@ -1,3 +1,0 @@
-DOID:6676	Froelich syndrome
-monDO ID 	 name 
-MONDO:0003962	Froelich syndrome

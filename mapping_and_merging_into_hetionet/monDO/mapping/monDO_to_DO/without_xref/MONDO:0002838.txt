@@ -1,3 +1,0 @@
-MONDO:0003709	spindle cell carcinoma
-DOID 	 name 
-DOID:4015	spindle cell carcinoma

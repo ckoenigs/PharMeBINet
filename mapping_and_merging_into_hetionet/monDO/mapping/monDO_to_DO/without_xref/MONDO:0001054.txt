@@ -1,3 +1,0 @@
-MONDO:0001054	double pterygium
-DOID 	 name 
-DOID:10525	double pterygium

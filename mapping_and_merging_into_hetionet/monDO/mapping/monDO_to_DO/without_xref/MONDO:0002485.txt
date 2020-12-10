@@ -1,3 +1,0 @@
-MONDO:0002485	breast neuroendocrine neoplasm
-DOID 	 name 
-DOID:3009	breast neuroendocrine neoplasm

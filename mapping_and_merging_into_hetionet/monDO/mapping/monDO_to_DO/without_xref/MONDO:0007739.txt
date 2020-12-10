@@ -1,3 +1,0 @@
-MONDO:0007739	Huntington's disease
-DOID 	 name 
-DOID:12858	Huntington's disease

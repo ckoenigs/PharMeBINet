@@ -1,3 +1,0 @@
-MONDO:0000259	asymptomatic dengue
-DOID 	 name 
-DOID:0050143	asymptomatic dengue

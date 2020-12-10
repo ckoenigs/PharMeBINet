@@ -1,3 +1,0 @@
-MONDO:0018077	tularemia
-DOID 	 name 
-DOID:2123	tularemia

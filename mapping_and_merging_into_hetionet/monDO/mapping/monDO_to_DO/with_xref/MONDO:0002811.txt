@@ -1,3 +1,0 @@
-MONDO:0002811	main bronchus cancer
-DOID 	 name 
-DOID:3924	main bronchus cancer

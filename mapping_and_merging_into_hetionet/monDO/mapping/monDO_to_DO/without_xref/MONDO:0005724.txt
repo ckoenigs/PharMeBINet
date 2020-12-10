@@ -1,3 +1,0 @@
-MONDO:0005724	cryptococcosis
-DOID 	 name 
-DOID:12053	cryptococcosis

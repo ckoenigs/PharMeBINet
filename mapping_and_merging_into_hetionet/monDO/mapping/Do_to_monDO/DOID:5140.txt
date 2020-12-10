@@ -1,3 +1,0 @@
-DOID:5140	gallbladder leiomyoma
-monDO ID 	 name 
-MONDO:0003297	gallbladder leiomyoma

@@ -1,3 +1,0 @@
-DOID:6867	mediastinal gray zone lymphoma
-monDO ID 	 name 
-MONDO:0004020	mediastinal gray zone lymphoma

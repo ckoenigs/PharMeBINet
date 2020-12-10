@@ -1,3 +1,0 @@
-MONDO:0001195	spotted fever
-DOID 	 name 
-DOID:11104	spotted fever

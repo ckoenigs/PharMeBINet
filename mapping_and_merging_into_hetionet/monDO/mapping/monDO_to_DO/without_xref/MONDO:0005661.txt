@@ -1,3 +1,0 @@
-MONDO:0005661	babesiosis
-DOID 	 name 
-DOID:9643	babesiosis

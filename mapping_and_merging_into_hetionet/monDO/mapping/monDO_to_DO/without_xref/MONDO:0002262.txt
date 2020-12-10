@@ -1,3 +1,0 @@
-MONDO:0002262	capillary lymphangioma
-DOID 	 name 
-DOID:2286	capillary lymphangioma

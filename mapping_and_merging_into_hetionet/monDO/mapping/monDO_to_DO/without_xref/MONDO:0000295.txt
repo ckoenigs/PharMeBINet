@@ -1,3 +1,0 @@
-MONDO:0000295	acanthocephaliasis
-DOID 	 name 
-DOID:0050254	acanthocephaliasis

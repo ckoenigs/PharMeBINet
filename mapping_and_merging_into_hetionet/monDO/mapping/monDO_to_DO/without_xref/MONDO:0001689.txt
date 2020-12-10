@@ -1,3 +1,0 @@
-MONDO:0001689	hypertrophy of tongue papillae
-DOID 	 name 
-DOID:13333	hypertrophy of tongue papillae

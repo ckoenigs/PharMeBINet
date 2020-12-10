@@ -1,3 +1,0 @@
-MONDO:0002756	solitary plasmacytoma of chest wall
-DOID 	 name 
-DOID:3723	solitary plasmacytoma of chest wall

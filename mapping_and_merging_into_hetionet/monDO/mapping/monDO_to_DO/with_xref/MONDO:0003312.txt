@@ -1,3 +1,0 @@
-MONDO:0003312	ovarian endometrioid stromal and related neoplasms
-DOID 	 name 
-DOID:5169	ovarian endometrioid stromal sarcoma

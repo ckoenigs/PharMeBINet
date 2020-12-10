@@ -1,3 +1,0 @@
-MONDO:0000604	autonomic peripheral neuropathy
-DOID 	 name 
-DOID:0060054	autonomic peripheral neuropathy

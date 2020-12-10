@@ -1,3 +1,0 @@
-MONDO:0002142	malignant fibroxanthoma
-DOID 	 name 
-DOID:1907	malignant fibroxanthoma

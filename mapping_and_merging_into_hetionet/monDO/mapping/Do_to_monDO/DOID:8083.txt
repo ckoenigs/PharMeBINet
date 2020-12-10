@@ -1,3 +1,0 @@
-DOID:8083	classic congenital mesoblastic nephroma
-monDO ID 	 name 
-MONDO:0004455	classic congenital mesoblastic nephroma

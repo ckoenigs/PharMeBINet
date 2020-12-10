@@ -1,3 +1,0 @@
-MONDO:0006108	bile duct adenoma
-DOID 	 name 
-DOID:5381	bile duct adenoma

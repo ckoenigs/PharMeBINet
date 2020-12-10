@@ -1,3 +1,0 @@
-MONDO:0001029	Klippel-Feil syndrome
-DOID 	 name 
-DOID:10426	Klippel-Feil syndrome

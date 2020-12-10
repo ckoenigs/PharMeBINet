@@ -1,3 +1,0 @@
-DOID:6286	childhood cerebellar astrocytic neoplasm
-monDO ID 	 name 
-MONDO:0003842	childhood cerebellar astrocytic neoplasm

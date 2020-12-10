@@ -1,3 +1,0 @@
-MONDO:0002484	breast ductal carcinoma
-DOID 	 name 
-DOID:3007	breast ductal carcinoma

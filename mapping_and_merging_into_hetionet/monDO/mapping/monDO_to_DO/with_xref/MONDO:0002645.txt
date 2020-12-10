@@ -1,3 +1,0 @@
-MONDO:0002645	cerebritis
-DOID 	 name 
-DOID:3431	cerebritis

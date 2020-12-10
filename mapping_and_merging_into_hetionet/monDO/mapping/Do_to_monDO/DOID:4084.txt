@@ -1,3 +1,0 @@
-DOID:4084	testicular trophoblastic tumor
-monDO ID 	 name 
-MONDO:0002871	testicular trophoblastic tumor

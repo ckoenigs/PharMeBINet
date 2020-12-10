@@ -1,3 +1,0 @@
-DOID:1115	sarcoma
-monDO ID 	 name 
-MONDO:0005089	sarcoma

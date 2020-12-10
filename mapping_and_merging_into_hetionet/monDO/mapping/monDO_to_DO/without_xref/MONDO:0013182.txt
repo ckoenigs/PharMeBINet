@@ -1,3 +1,0 @@
-MONDO:0013182	chromosome 17p13.3 duplication syndrome
-DOID 	 name 
-DOID:0060432	chromosome 17p13.3 duplication syndrome

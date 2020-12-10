@@ -1,3 +1,0 @@
-DOID:12995	conduct disorder
-monDO ID 	 name 
-MONDO:0005352	conduct disorder

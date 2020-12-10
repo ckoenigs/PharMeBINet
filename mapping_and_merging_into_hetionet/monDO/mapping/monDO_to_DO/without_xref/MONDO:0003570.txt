@@ -1,3 +1,0 @@
-MONDO:0003570	lipid-rich carcinoma
-DOID 	 name 
-DOID:5658	lipid-rich carcinoma

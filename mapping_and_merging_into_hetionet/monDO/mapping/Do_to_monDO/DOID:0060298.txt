@@ -1,3 +1,0 @@
-DOID:0060298	complement component 4b deficiency
-monDO ID 	 name 
-MONDO:0013720	complement component 4b deficiency

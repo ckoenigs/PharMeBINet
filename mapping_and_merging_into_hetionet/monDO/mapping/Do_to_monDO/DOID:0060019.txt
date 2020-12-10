@@ -1,3 +1,0 @@
-DOID:0060019	coronin-1A deficiency
-monDO ID 	 name 
-MONDO:0000579	coronin-1A deficiency

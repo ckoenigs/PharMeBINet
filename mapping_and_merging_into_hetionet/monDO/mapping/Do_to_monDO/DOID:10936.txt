@@ -1,3 +1,0 @@
-DOID:10936	schizoid personality disorder
-monDO ID 	 name 
-MONDO:0001161	schizoid personality disorder

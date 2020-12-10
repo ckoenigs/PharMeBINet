@@ -1,3 +1,0 @@
-MONDO:0006679	bladder neck obstruction
-DOID 	 name 
-DOID:13948	bladder neck obstruction

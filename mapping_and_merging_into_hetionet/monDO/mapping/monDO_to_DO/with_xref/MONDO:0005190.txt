@@ -1,5 +1,0 @@
-MONDO:0005190	macroglobulinemia
-DOID 	 name 
-DOID:9080	macroglobulinemia
-DOID:0060901	Waldenstroem's macroglobulinemia
-DOID:0050747	lymphoplasmacytic lymphoma

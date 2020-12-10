@@ -1,3 +1,0 @@
-MONDO:0001108	broad ligament malignant neoplasm
-DOID 	 name 
-DOID:10744	broad ligament malignant neoplasm

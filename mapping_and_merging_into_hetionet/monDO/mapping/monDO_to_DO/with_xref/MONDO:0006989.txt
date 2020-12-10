@@ -1,3 +1,0 @@
-MONDO:0006989	suppurative periapical periodontitis
-DOID 	 name 
-DOID:2562	suppurative periapical periodontitis

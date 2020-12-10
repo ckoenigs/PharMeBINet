@@ -1,3 +1,0 @@
-DOID:0060875	isolated growth hormone deficiency type III
-monDO ID 	 name 
-MONDO:0010615	isolated growth hormone deficiency type III

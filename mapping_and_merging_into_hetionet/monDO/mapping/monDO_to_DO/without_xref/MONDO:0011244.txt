@@ -1,3 +1,0 @@
-MONDO:0011244	Marshall-Smith syndrome
-DOID 	 name 
-DOID:0050858	Marshall-Smith syndrome

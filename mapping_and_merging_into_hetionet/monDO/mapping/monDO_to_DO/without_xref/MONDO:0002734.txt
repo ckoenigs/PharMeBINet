@@ -1,3 +1,0 @@
-MONDO:0002734	anal colloid adenocarcinoma
-DOID 	 name 
-DOID:3691	anal colloid adenocarcinoma

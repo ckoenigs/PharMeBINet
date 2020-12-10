@@ -1,3 +1,0 @@
-MONDO:0002806	bronchus carcinoma
-DOID 	 name 
-DOID:3904	bronchus carcinoma

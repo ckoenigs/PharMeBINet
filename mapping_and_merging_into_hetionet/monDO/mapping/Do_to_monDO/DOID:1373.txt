@@ -1,3 +1,0 @@
-DOID:1373	endometrial stromal nodule
-monDO ID 	 name 
-MONDO:0001783	endometrial stromal nodule

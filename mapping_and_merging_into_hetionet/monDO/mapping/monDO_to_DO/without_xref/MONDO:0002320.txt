@@ -1,3 +1,0 @@
-MONDO:0002320	congenital nervous system abnormality
-DOID 	 name 
-DOID:2490	congenital nervous system abnormality

@@ -1,3 +1,0 @@
-DOID:0090129	carnitine palmitoyltransferase I deficiency
-monDO ID 	 name 
-MONDO:0009705	carnitine palmitoyltransferase i deficiency

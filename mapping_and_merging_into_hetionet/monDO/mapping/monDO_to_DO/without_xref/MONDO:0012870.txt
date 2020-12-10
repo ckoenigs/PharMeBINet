@@ -1,3 +1,0 @@
-MONDO:0012870	chromosome 2q31.2 deletion syndrome
-DOID 	 name 
-DOID:0060416	chromosome 2q31.2 deletion syndrome

@@ -1,3 +1,0 @@
-DOID:6098	thalamic neoplasm
-monDO ID 	 name 
-MONDO:0003766	thalamic cancer

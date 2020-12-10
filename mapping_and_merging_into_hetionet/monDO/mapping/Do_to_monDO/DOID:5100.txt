@@ -1,3 +1,0 @@
-DOID:5100	middle ear disease
-monDO ID 	 name 
-MONDO:0003276	middle ear disease

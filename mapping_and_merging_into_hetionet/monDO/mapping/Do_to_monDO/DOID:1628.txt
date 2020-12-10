@@ -1,3 +1,0 @@
-DOID:1628	intraductal papillary breast neoplasm
-monDO ID 	 name 
-MONDO:0002061	intraductal papillary breast neoplasm

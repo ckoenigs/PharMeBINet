@@ -1,3 +1,0 @@
-DOID:0080008	ischemic bone disease
-monDO ID 	 name 
-MONDO:0005380	osteonecrosis

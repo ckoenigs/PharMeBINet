@@ -1,3 +1,0 @@
-DOID:0060827	X-linked intellectual disability-psychosis-macroorchidism syndrome
-monDO ID 	 name 
-MONDO:0010235	X-linked intellectual disability-psychosis-macroorchidism syndrome

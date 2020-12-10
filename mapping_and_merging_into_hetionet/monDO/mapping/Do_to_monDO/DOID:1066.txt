@@ -1,3 +1,0 @@
-DOID:1066	residual stage of open angle glaucoma
-monDO ID 	 name 
-MONDO:0001094	residual stage of open angle glaucoma

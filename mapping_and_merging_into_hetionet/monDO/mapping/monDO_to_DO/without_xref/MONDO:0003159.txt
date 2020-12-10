@@ -1,3 +1,0 @@
-MONDO:0003159	vascular hemostatic disease
-DOID 	 name 
-DOID:484	vascular hemostatic disease

@@ -1,3 +1,0 @@
-MONDO:0005518	pseudohermaphroditism
-DOID 	 name 
-DOID:3765	pseudohermaphroditism

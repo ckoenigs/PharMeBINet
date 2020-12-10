@@ -1,3 +1,0 @@
-DOID:1596	mental depression
-monDO ID 	 name 
-MONDO:0002050	mental depression

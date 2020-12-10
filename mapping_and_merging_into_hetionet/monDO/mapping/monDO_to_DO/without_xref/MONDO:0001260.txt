@@ -1,3 +1,0 @@
-MONDO:0001260	cercarial dermatitis
-DOID 	 name 
-DOID:11302	cercarial dermatitis

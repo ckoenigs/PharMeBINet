@@ -1,3 +1,0 @@
-DOID:2999	granulosa cell tumor
-monDO ID 	 name 
-MONDO:0006036	granulosa cell tumor

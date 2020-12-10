@@ -1,3 +1,0 @@
-MONDO:0001254	peripheral scars of retina
-DOID 	 name 
-DOID:11283	peripheral scars of retina

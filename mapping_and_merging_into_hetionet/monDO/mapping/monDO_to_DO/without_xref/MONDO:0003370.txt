@@ -1,3 +1,0 @@
-MONDO:0003370	retroperitoneal leiomyosarcoma
-DOID 	 name 
-DOID:5284	retroperitoneal leiomyosarcoma

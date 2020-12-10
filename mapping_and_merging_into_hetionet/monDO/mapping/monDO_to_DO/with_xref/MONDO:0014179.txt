@@ -1,3 +1,0 @@
-MONDO:0014179	inclusion body myopathy with early-onset Paget disease With or without frontotemporal dementia 3
-DOID 	 name 
-DOID:0050881	inclusion body myopathy with Paget disease of bone and frontotemporal dementia

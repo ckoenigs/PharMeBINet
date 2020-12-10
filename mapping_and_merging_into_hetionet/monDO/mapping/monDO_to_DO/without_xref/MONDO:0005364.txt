@@ -1,3 +1,0 @@
-MONDO:0005364	Graves disease
-DOID 	 name 
-DOID:12361	Graves' disease

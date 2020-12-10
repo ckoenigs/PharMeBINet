@@ -1,3 +1,0 @@
-MONDO:0000456	cerebral creatine deficiency syndrome
-DOID 	 name 
-DOID:0050798	cerebral creatine deficiency syndrome

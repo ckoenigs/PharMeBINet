@@ -1,3 +1,0 @@
-MONDO:0007510	Clouston syndrome
-DOID 	 name 
-DOID:14693	Clouston syndrome

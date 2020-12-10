@@ -1,3 +1,0 @@
-DOID:5191	stromal predominant kidney Wilms' tumor
-monDO ID 	 name 
-MONDO:0003324	stromal predominant kidney wilms' tumor

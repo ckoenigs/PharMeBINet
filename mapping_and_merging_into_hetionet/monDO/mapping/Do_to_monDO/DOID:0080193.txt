@@ -1,3 +1,0 @@
-DOID:0080193	superior semicircular canal dehiscence
-monDO ID 	 name 
-MONDO:0018484	semicircular canal dehiscence syndrome

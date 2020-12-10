@@ -1,3 +1,0 @@
-MONDO:0004750	language disorder
-DOID 	 name 
-DOID:93	language disorder

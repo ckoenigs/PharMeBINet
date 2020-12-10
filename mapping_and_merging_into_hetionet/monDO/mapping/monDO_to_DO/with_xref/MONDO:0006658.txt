@@ -1,3 +1,0 @@
-MONDO:0006658	arteriolosclerosis
-DOID 	 name 
-DOID:5162	arteriolosclerosis

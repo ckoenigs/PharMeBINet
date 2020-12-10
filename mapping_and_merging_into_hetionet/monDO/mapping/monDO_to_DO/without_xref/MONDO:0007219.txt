@@ -1,3 +1,0 @@
-MONDO:0007219	brachydactyly type A6
-DOID 	 name 
-DOID:0110968	brachydactyly type A6

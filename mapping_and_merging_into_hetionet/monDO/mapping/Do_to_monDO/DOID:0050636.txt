@@ -1,3 +1,0 @@
-DOID:0050636	familial visceral amyloidosis
-monDO ID 	 name 
-MONDO:0007099	familial visceral amyloidosis

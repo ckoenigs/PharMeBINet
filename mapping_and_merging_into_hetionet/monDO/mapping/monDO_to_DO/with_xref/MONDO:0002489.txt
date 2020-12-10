@@ -1,4 +1,0 @@
-MONDO:0002489	malignant breast phyllodes tumor
-DOID 	 name 
-DOID:1631	benign breast phyllodes tumor
-DOID:3016	breast malignant phyllodes tumor

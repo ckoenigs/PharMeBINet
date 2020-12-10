@@ -1,3 +1,0 @@
-MONDO:0010658	syndromic X-linked intellectual disability 12
-DOID 	 name 
-DOID:0060804	syndromic X-linked intellectual disability 12

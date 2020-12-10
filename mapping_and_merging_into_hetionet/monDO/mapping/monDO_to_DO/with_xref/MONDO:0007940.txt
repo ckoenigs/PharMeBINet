@@ -1,3 +1,0 @@
-MONDO:0007940	malignant hyperthermia, susceptibility to, 3
-DOID 	 name 
-DOID:8545	malignant hyperthermia

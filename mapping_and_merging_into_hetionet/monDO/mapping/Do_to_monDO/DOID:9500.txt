@@ -1,3 +1,0 @@
-DOID:9500	leukocyte disease
-monDO ID 	 name 
-MONDO:0004805	leukocyte disease

@@ -1,3 +1,0 @@
-MONDO:0007125	ankyloglossia
-DOID 	 name 
-DOID:0060604	ankyloglossia

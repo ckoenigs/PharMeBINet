@@ -1,3 +1,0 @@
-MONDO:0002415	bone carcinoma
-DOID 	 name 
-DOID:2762	bone carcinoma

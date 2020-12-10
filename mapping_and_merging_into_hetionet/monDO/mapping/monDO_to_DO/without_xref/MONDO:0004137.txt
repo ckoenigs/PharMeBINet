@@ -1,3 +1,0 @@
-MONDO:0004137	hereditary conventional renal cell carcinoma
-DOID 	 name 
-DOID:7192	hereditary conventional renal cell carcinoma

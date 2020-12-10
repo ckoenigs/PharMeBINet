@@ -1,3 +1,0 @@
-DOID:4734	calciphylaxis
-monDO ID 	 name 
-MONDO:0017215	calciphylaxis

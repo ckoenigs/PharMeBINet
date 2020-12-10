@@ -1,3 +1,0 @@
-DOID:8683	myeloid sarcoma
-monDO ID 	 name 
-MONDO:0006861	myeloid sarcoma

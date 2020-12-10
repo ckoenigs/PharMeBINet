@@ -1,3 +1,0 @@
-DOID:4481	allergic rhinitis
-monDO ID 	 name 
-MONDO:0011786	allergic rhinitis

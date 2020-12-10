@@ -1,3 +1,0 @@
-MONDO:0006646	angioleiomyoma
-DOID 	 name 
-DOID:4265	angiomyoma

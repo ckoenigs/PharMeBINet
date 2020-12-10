@@ -1,3 +1,0 @@
-DOID:0050747	lymphoplasmacytic lymphoma
-monDO ID 	 name 
-MONDO:0000432	lymphoplasmacytic lymphoma

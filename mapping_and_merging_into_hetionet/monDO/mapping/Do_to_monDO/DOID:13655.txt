@@ -1,3 +1,0 @@
-DOID:13655	acquired tear duct stenosis
-monDO ID 	 name 
-MONDO:0001769	acquired tear duct stenosis

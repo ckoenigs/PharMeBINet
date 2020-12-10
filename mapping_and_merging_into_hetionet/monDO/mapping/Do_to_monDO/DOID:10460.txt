@@ -1,3 +1,0 @@
-DOID:10460	nasopharyngitis
-monDO ID 	 name 
-MONDO:0001040	nasopharyngitis

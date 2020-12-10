@@ -1,3 +1,0 @@
-DOID:12919	Plasmodium ovale malaria
-monDO ID 	 name 
-MONDO:0001601	Plasmodium ovale malaria

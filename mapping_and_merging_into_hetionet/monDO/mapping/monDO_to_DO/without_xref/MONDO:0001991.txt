@@ -1,3 +1,0 @@
-MONDO:0001991	malignant cardiac germ cell tumor
-DOID 	 name 
-DOID:14535	malignant cardiac germ cell tumor

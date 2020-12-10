@@ -1,3 +1,0 @@
-MONDO:0010473	X-linked intellectual disability-cardiomegaly-congestive heart failure syndrome
-DOID 	 name 
-DOID:0060828	X-linked intellectual disability-cardiomegaly-congestive heart failure syndrome

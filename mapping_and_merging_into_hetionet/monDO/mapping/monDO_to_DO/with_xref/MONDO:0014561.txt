@@ -1,3 +1,0 @@
-MONDO:0014561	3-methylglutaconic aciduria with cataracts, neurologic involvement and neutropenia
-DOID 	 name 
-DOID:0110003	3-methylglutaconic aciduria with cataracts, neurologic involvement and neutropenia

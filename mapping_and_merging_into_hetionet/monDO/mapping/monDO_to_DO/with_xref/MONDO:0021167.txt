@@ -1,3 +1,0 @@
-MONDO:0021167	myositis
-DOID 	 name 
-DOID:633	myositis

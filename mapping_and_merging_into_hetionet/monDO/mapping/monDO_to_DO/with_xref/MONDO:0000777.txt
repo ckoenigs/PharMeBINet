@@ -1,3 +1,0 @@
-MONDO:0000777	gastrointestinal allergy
-DOID 	 name 
-DOID:0060502	gastrointestinal allergy

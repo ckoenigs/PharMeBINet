@@ -1,3 +1,0 @@
-MONDO:0003713	angiokeratoma circumscriptum
-DOID 	 name 
-DOID:5949	angiokeratoma circumscriptum

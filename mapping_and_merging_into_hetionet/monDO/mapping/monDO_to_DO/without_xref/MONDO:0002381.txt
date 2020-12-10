@@ -1,3 +1,0 @@
-MONDO:0002381	sweat gland neoplasm
-DOID 	 name 
-DOID:2664	sweat gland neoplasm

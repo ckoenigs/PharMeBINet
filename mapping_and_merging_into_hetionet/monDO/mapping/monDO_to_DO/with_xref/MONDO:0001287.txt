@@ -1,3 +1,0 @@
-MONDO:0001287	endometriosis in scar of skin
-DOID 	 name 
-DOID:11430	endometriosis in scar of skin

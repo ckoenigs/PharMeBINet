@@ -1,3 +1,0 @@
-DOID:4327	Marburg hemorrhagic fever
-monDO ID 	 name 
-MONDO:0020500	Marburg hemorrhagic fever

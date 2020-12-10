@@ -1,3 +1,0 @@
-MONDO:0018874	acute myeloid leukemia
-DOID 	 name 
-DOID:9119	acute myeloid leukemia

@@ -1,3 +1,0 @@
-DOID:10289	prostate malignant phyllodes tumor
-monDO ID 	 name 
-MONDO:0000994	malignant prostate phyllodes tumor

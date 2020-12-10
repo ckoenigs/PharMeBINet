@@ -1,3 +1,0 @@
-MONDO:0005314	relapsing-remitting multiple sclerosis
-DOID 	 name 
-DOID:2378	relapsing-remitting multiple sclerosis

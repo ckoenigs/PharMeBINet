@@ -6,10 +6,16 @@ Created on Thr Sep 26 12:52:43 2017
 """
 
 '''integrate the other diseases and relationships from disease ontology in hetionet'''
-from py2neo import Graph  # , authenticate
+
 import datetime
 import sys, csv
 from collections import defaultdict
+
+sys.path.append("../..")
+import create_connection_to_databases
+
+sys.path.append("..")
+from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
 
 # disease ontology license
 license = 'CC0 4.0 International'
@@ -23,7 +29,7 @@ def create_connection_with_neo4j():
     # set up authentication parameters and connection
     # authenticate("localhost:7474", "neo4j", "test")
     global g
-    g = Graph("http://localhost:7474/db/data/", auth=("neo4j", "test"))
+    g = create_connection_to_databases.database_connection_neo4j()
 
 
 # label of go nodes
@@ -68,14 +74,14 @@ def get_go_properties():
     query_middle_new = ' Create (a:%s{'
     query_delete_middle = ', (a:%s{identifier:line.identifier}) Detach Delete a,b;\n'
     for property, in result:
-        if property in ['def', 'id', 'alt_ids','xrefs']:
+        if property in ['def', 'id', 'alt_ids', 'xrefs']:
             if property == 'id':
                 query_middle_new += 'identifier:b.' + property + ', '
                 query_middle_mapped += 'a.identifier=b.' + property + ', '
             elif property == 'alt_ids':
                 query_middle_new += 'alternative_ids:b.' + property + ', '
                 query_middle_mapped += 'a.alternative_ids=b.' + property + ', '
-            elif property=='xrefs':
+            elif property == 'xrefs':
                 query_middle_new += 'xrefs:split(line.' + property + ',"|"), '
                 query_middle_mapped += 'a.xrefs=split(line.' + property + ',"|"), '
 
@@ -122,7 +128,7 @@ def create_csv_files():
             cypher_file.write(query)
             file = open(file_name, 'w')
             csv_file = csv.writer(file, delimiter='\t')
-            csv_file.writerow(['identifier','xrefs'])
+            csv_file.writerow(['identifier', 'xrefs'])
             dict_label_to_mapped_to_csv[label][x] = csv_file
 
         # delete nodes which mapped but were are about to be removed
@@ -174,9 +180,9 @@ check if id is in a dictionary
 '''
 
 
-def check_if_identifier_in_hetionet(identifier, namespace, node, xrefs, is_alternative_id=False):
+def check_if_identifier_in_hetionet(identifier, label_go, namespace, node, xrefs, is_alternative_id=False):
     found_id = False
-    xref_string="|".join(xrefs)
+    xref_string = "|".join(go_through_xrefs_and_change_if_needed_source_name(xrefs, label_go))
     if identifier in dict_go_namespace_to_nodes[namespace]:
         if is_alternative_id:
             return True
@@ -187,14 +193,14 @@ def check_if_identifier_in_hetionet(identifier, namespace, node, xrefs, is_alter
                 return True
             # dict_label_to_mapped_to_csv[namespace]['delete'].writerow([identifier])
             return found_id
-        dict_label_to_mapped_to_csv[namespace][True].writerow([identifier,xref_string])
+        dict_label_to_mapped_to_csv[namespace][True].writerow([identifier, xref_string])
     else:
         if 'is_obsolete' in node:
             print('need to be delete')
             return found_id
         if is_alternative_id:
             return False
-        dict_label_to_mapped_to_csv[namespace][False].writerow([identifier,xref_string])
+        dict_label_to_mapped_to_csv[namespace][False].writerow([identifier, xref_string])
     return True
 
 
@@ -220,7 +226,7 @@ def get_is_a_relationships_and_add_to_csv(namespace):
     csv_file.writerow(['identifier_1', 'identifier_2'])
 
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/go/%s" As line FIELDTERMINATOR '\\t' 
-    Match (a1:%s{identifier:line.identifier_1}), (a2:%s{identifier:line.identifier_2}) Create (a1)-[:IS_A_%s{license:"CC0 4.0 International", source:"GO", unbiased:"false"}]->(a2);\n'''
+    Match (a1:%s{identifier:line.identifier_1}), (a2:%s{identifier:line.identifier_2}) Create (a1)-[:IS_A_%s{license:"CC0 4.0 International", source:"GO", unbiased:false}]->(a2);\n'''
     query = query % (file_name, dict_go_to_hetionet_label[namespace], dict_go_to_hetionet_label[namespace],
                      dict_relationship_ends[namespace])
     cypher_file.write(query)
@@ -259,24 +265,25 @@ def go_through_go():
             print('jupp')
         namespace = node['namespace']
         alternative_ids = node['alt_ids'] if 'alt_ids' in node else []
-        xrefs=node['xrefs'] if 'xrefs'   in node else []
-        new_xref=set()
-        for xref  in  xrefs:
-            splitted_xref=xref.split(' ')
-            if len(splitted_xref)>1:
+        xrefs = node['xrefs'] if 'xrefs' in node else []
+        new_xref = set()
+        for xref in xrefs:
+            splitted_xref = xref.split(' ')
+            if len(splitted_xref) > 1:
                 new_xref.add(splitted_xref[0])
             else:
                 new_xref.add(xref)
-        found_id = check_if_identifier_in_hetionet(identifier, namespace, node,new_xref)
+        found_id = check_if_identifier_in_hetionet(identifier, label_go, namespace, node, new_xref)
 
         # go through the alternative ids
         for alternative_id in alternative_ids:
-            found_id_alt = check_if_identifier_in_hetionet(alternative_id, namespace, node, new_xref, is_alternative_id=True)
+            found_id_alt = check_if_identifier_in_hetionet(alternative_id, label_go, namespace, node, new_xref,
+                                                           is_alternative_id=True)
             # if the identifier and an alternative id matched in hetionet the nodes need to be combined
-            # therfore the merge process iss add into the bash file
+            # therfore the merge process iss add into the bash fileproteins
             if found_id and found_id_alt:
                 print('found id and alt id')
-                text = 'python ../add_information_from_a_not_existing_node_to_existing_node.py %s %s %s\n' % (
+                text = 'python3 ../add_information_from_a_not_existing_node_to_existing_node.py %s %s %s\n' % (
                     alternative_id, identifier, dict_go_to_hetionet_label[namespace])
                 bash_shell.write(text)
                 text = '''now=$(date +"%F %T")\n echo "Current time: $now"\n'''

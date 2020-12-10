@@ -1,3 +1,0 @@
-DOID:4782	subacute glomerulonephritis
-monDO ID 	 name 
-MONDO:0003138	subacute glomerulonephritis

@@ -1,3 +1,0 @@
-DOID:7698	non-functioning pancreatic endocrine tumor
-monDO ID 	 name 
-MONDO:0004334	non-functional pancreatic neuroendocrine tumor

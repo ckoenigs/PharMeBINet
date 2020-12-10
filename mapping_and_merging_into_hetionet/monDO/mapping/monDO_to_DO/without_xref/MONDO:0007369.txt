@@ -1,3 +1,0 @@
-MONDO:0007369	hereditary coproporphyria
-DOID 	 name 
-DOID:13269	hereditary coproporphyria

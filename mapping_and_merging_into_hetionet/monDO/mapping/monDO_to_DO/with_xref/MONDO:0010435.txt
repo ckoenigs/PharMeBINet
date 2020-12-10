@@ -1,3 +1,0 @@
-MONDO:0010435	nystagmus 6, congenital, X-linked
-DOID 	 name 
-DOID:9649	congenital nystagmus

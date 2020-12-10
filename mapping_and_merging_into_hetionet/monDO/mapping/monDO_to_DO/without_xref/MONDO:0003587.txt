@@ -1,3 +1,0 @@
-MONDO:0003587	pediatric liposarcoma
-DOID 	 name 
-DOID:5695	pediatric liposarcoma

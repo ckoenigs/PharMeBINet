@@ -1,3 +1,0 @@
-MONDO:0010099	Tay-Sachs disease AB variant
-DOID 	 name 
-DOID:4795	Tay-Sachs disease AB variant

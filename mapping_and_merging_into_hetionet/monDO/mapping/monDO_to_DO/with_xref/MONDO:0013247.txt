@@ -1,3 +1,0 @@
-MONDO:0013247	Fanconi renotubular syndrome 2
-DOID 	 name 
-DOID:1062	Fanconi syndrome

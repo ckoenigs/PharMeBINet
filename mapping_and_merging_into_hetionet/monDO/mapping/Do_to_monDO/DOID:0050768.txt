@@ -1,3 +1,0 @@
-DOID:0050768	mitochondrial complex V (ATP synthase) deficiency, nuclear type 1
-monDO ID 	 name 
-MONDO:0011421	mitochondrial complex v (ATP synthase) deficiency, nuclear type 1

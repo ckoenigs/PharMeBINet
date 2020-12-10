@@ -1,3 +1,0 @@
-DOID:4377	egg allergy
-monDO ID 	 name 
-MONDO:0005741	egg allergy

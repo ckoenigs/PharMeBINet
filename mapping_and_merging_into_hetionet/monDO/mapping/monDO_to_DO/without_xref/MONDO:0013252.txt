@@ -1,3 +1,0 @@
-MONDO:0013252	Warsaw breakage syndrome
-DOID 	 name 
-DOID:0060535	Warsaw breakage syndrome

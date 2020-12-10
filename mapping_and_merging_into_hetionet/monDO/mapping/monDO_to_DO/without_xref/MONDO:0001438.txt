@@ -1,3 +1,0 @@
-MONDO:0001438	postinflammatory pulmonary fibrosis
-DOID 	 name 
-DOID:12123	postinflammatory pulmonary fibrosis

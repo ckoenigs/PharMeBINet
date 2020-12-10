@@ -1,3 +1,0 @@
-DOID:2122	pneumonic tularemia
-monDO ID 	 name 
-MONDO:0002212	pneumonic tularemia

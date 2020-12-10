@@ -1,3 +1,0 @@
-MONDO:0006857	middle cerebral artery infarction
-DOID 	 name 
-DOID:3525	middle cerebral artery infarction

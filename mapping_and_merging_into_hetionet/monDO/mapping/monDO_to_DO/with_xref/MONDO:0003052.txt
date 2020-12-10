@@ -1,3 +1,0 @@
-MONDO:0003052	granulomatous endometritis
-DOID 	 name 
-DOID:4561	granulomatous endometritis

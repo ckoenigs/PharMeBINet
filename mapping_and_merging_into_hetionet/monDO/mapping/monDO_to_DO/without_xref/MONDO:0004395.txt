@@ -1,3 +1,0 @@
-MONDO:0003709	mixed oligodendroglioma-astrocytoma
-DOID 	 name 
-DOID:7912	mixed oligodendroglioma-astrocytoma

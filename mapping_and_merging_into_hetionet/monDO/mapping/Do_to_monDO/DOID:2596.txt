@@ -1,3 +1,0 @@
-DOID:2596	larynx cancer
-monDO ID 	 name 
-MONDO:0002352	larynx cancer

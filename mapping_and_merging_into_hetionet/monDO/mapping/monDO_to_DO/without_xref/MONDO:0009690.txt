@@ -1,3 +1,0 @@
-MONDO:0009690	congenital myasthenic syndrome 10
-DOID 	 name 
-DOID:0110668	congenital myasthenic syndrome 10

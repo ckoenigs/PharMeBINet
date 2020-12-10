@@ -1,3 +1,0 @@
-DOID:0111031	hemochromatosis type 5
-monDO ID 	 name 
-MONDO:0014225	hemochromatosis type 5

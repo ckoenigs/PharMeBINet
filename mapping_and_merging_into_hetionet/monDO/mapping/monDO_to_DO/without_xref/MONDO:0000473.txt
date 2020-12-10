@@ -1,3 +1,0 @@
-MONDO:0000473	artery disease
-DOID 	 name 
-DOID:0050828	artery disease

@@ -1,3 +1,0 @@
-DOID:0060083	immune system cancer
-monDO ID 	 name 
-MONDO:0000621	immune system cancer

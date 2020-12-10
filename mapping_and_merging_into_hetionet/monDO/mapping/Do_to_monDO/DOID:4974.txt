@@ -1,3 +1,0 @@
-DOID:4974	actinobacillosis
-monDO ID 	 name 
-MONDO:0005630	actinobacillosis

@@ -1,3 +1,0 @@
-MONDO:0012636	RLS6
-DOID 	 name 
-DOID:0050425	restless legs syndrome

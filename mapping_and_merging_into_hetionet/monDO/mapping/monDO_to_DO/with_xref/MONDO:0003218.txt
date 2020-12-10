@@ -1,3 +1,0 @@
-MONDO:0003218	adenocarcinoma in situ
-DOID 	 name 
-DOID:4943	adenocarcinoma in situ

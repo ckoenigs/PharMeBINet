@@ -1,3 +1,0 @@
-MONDO:0000682	time agnosia
-DOID 	 name 
-DOID:0060152	time agnosia

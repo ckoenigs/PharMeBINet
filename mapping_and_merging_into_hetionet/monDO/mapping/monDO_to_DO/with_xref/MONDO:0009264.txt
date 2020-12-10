@@ -1,3 +1,0 @@
-MONDO:0009264	gastroschisis
-DOID 	 name 
-DOID:11044	gastroschisis

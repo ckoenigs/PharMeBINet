@@ -1,3 +1,0 @@
-MONDO:0004737	homocystinuria (disease)
-DOID 	 name 
-DOID:9263	homocystinuria

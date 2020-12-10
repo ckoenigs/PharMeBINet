@@ -1,3 +1,0 @@
-DOID:1999	chronic eustachian salpingitis
-monDO ID 	 name 
-MONDO:0002170	chronic eustachian salpingitis

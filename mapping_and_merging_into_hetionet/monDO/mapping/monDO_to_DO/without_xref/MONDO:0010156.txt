@@ -1,3 +1,0 @@
-MONDO:0010156	Troyer syndrome
-DOID 	 name 
-DOID:0050886	Troyer syndrome

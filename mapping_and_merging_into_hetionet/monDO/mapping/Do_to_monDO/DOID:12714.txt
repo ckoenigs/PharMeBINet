@@ -1,3 +1,0 @@
-DOID:12714	Ellis-Van Creveld syndrome
-monDO ID 	 name 
-MONDO:0009162	Ellis-van Creveld syndrome

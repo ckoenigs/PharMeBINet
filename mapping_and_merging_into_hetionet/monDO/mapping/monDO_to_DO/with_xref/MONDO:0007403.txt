@@ -1,3 +1,0 @@
-MONDO:0007403	inherited Creutzfeldt-Jakob disease
-DOID 	 name 
-DOID:11949	Creutzfeldt-Jakob disease

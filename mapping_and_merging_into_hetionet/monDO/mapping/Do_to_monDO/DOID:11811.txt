@@ -1,3 +1,0 @@
-DOID:11811	urinary bladder posterior wall cancer
-monDO ID 	 name 
-MONDO:0001373	urinary bladder posterior wall cancer

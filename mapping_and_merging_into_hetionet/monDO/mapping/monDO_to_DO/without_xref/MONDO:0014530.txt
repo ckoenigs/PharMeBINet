@@ -1,3 +1,0 @@
-MONDO:0014530	autosomal recessive spinocerebellar ataxia 18
-DOID 	 name 
-DOID:0080042	autosomal recessive spinocerebellar ataxia 18

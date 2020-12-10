@@ -1,3 +1,0 @@
-MONDO:0000222	seminal vesicle acute gonorrhea
-DOID 	 name 
-DOID:0050004	seminal vesicle acute gonorrhea

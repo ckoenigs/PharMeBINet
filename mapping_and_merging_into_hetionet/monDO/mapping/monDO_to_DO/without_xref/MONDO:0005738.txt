@@ -1,3 +1,0 @@
-MONDO:0005738	echinococcosis
-DOID 	 name 
-DOID:1496	echinococcosis

@@ -1,3 +1,0 @@
-MONDO:0004326	sphenoid sinus inverted papilloma
-DOID 	 name 
-DOID:7678	sphenoid sinus inverted papilloma

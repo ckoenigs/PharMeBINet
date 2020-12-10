@@ -1,3 +1,0 @@
-MONDO:0003764	pediatric leptomeningeal melanoma
-DOID 	 name 
-DOID:6089	pediatric leptomeningeal melanoma

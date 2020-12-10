@@ -1,3 +1,0 @@
-DOID:0060728	NGLY1-deficiency
-monDO ID 	 name 
-MONDO:0014109	NGLY1-deficiency

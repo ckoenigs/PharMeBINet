@@ -1,3 +1,0 @@
-MONDO:0007932	age related macular degeneration 2
-DOID 	 name 
-DOID:0110015	age related macular degeneration 2

@@ -1,3 +1,0 @@
-DOID:956	peripheral nerve schwannoma
-monDO ID 	 name 
-MONDO:0004820	peripheral nerve schwannoma

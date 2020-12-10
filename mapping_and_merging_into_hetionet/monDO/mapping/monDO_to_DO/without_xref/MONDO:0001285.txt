@@ -1,3 +1,0 @@
-MONDO:0001285	endometriosis of pelvic peritoneum
-DOID 	 name 
-DOID:11429	endometriosis of pelvic peritoneum

@@ -1,3 +1,0 @@
-MONDO:0000776	metal allergy
-DOID 	 name 
-DOID:0060501	metal allergy

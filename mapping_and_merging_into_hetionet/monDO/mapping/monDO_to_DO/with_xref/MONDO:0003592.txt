@@ -1,3 +1,0 @@
-MONDO:0003592	gastric liposarcoma
-DOID 	 name 
-DOID:5700	gastric liposarcoma

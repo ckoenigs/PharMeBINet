@@ -1,3 +1,0 @@
-MONDO:0000891	mixed fibrolamellar hepatocellular carcinoma
-DOID 	 name 
-DOID:0080182	mixed fibrolamellar hepatocellular carcinoma

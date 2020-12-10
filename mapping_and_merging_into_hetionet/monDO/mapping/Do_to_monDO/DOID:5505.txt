@@ -1,3 +1,0 @@
-DOID:5505	papillary ependymoma
-monDO ID 	 name 
-MONDO:0003475	papillary ependymoma

@@ -1,3 +1,0 @@
-MONDO:0017043	congenital mesoblastic nephroma
-DOID 	 name 
-DOID:4773	congenital mesoblastic nephroma

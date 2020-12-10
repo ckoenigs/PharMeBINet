@@ -1,3 +1,0 @@
-MONDO:0006647	anterior cerebral artery infarction
-DOID 	 name 
-DOID:3528	anterior cerebral artery infarction

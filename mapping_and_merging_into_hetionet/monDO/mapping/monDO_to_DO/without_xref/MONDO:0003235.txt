@@ -1,3 +1,0 @@
-MONDO:0003235	optic nerve glioma
-DOID 	 name 
-DOID:4992	optic nerve glioma

@@ -1,3 +1,0 @@
-DOID:6495	adult myxoid chondrosarcoma
-monDO ID 	 name 
-MONDO:0003899	adult myxoid chondrosarcoma

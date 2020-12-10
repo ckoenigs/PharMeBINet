@@ -1,3 +1,0 @@
-MONDO:0007318	Alagille syndrome
-DOID 	 name 
-DOID:9245	Alagille syndrome

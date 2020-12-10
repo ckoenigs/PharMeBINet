@@ -1,3 +1,0 @@
-MONDO:0008597	trichorhinophalangeal syndrome, type 3
-DOID 	 name 
-DOID:14743	trichorhinophalangeal syndrome type I

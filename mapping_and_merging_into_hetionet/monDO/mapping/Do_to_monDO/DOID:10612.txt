@@ -1,3 +1,0 @@
-DOID:10612	allergic urticaria
-monDO ID 	 name 
-MONDO:0006526	allergic urticaria

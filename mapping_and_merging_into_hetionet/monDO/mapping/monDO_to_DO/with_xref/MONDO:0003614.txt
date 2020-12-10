@@ -1,3 +1,0 @@
-MONDO:0003614	intravenous leiomyomatosis
-DOID 	 name 
-DOID:5729	intravenous leiomyomatosis

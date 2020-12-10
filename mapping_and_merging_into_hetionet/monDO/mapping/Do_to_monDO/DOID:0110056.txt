@@ -1,3 +1,0 @@
-DOID:0110056	amelogenesis imperfecta type 1C
-monDO ID 	 name 
-MONDO:0008770	amelogenesis imperfecta type 1C

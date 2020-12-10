@@ -1,3 +1,0 @@
-DOID:8970	subacute sclerosing panencephalitis
-monDO ID 	 name 
-MONDO:0009835	subacute sclerosing panencephalitis

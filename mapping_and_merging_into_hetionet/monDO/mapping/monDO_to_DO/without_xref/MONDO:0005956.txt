@@ -1,3 +1,0 @@
-MONDO:0005956	septicemic plague
-DOID 	 name 
-DOID:3481	septicemic plague

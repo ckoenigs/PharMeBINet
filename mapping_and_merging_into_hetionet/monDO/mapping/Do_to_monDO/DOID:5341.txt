@@ -1,3 +1,0 @@
-DOID:5341	pineal region yolk sac tumor
-monDO ID 	 name 
-MONDO:0003399	pineal region yolk sac tumor

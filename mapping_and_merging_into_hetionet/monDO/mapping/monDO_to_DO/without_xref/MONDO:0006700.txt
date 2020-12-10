@@ -1,3 +1,0 @@
-MONDO:0006700	choroid cancer
-DOID 	 name 
-DOID:12759	choroid cancer

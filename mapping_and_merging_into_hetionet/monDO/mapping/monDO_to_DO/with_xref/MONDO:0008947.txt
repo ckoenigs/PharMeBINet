@@ -1,4 +1,0 @@
-MONDO:0008947	bilateral striopallidodentate calcinosis
-DOID 	 name 
-DOID:14784	olivopontocerebellar atrophy
-DOID:0060230	basal ganglia calcification

@@ -1,3 +1,0 @@
-DOID:0050266	tungiasis
-monDO ID 	 name 
-MONDO:0019498	tungiasis

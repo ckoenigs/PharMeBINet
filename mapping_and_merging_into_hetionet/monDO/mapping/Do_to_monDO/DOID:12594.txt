@@ -1,3 +1,0 @@
-DOID:12594	Potter's syndrome
-monDO ID 	 name 
-MONDO:0001558	Potter's syndrome

@@ -1,3 +1,0 @@
-MONDO:0014586	congenital myasthenic syndrome 4B
-DOID 	 name 
-DOID:0110677	congenital myasthenic syndrome 4B

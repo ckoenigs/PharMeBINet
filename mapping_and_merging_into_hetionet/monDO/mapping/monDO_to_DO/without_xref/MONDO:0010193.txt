@@ -1,3 +1,0 @@
-MONDO:0010193	Weaver syndrome
-DOID 	 name 
-DOID:14731	Weaver syndrome

@@ -1,3 +1,0 @@
-MONDO:0018166	oral submucous fibrosis
-DOID 	 name 
-DOID:5773	oral submucous fibrosis

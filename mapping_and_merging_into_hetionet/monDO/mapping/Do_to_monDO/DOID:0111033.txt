@@ -1,3 +1,0 @@
-DOID:0111033	African iron overload
-monDO ID 	 name 
-MONDO:0011012	african iron overload

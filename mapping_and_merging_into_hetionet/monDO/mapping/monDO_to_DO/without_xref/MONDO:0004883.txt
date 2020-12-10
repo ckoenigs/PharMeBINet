@@ -1,3 +1,0 @@
-MONDO:0004883	hereditary choroidal atrophy
-DOID 	 name 
-DOID:9794	hereditary choroidal atrophy

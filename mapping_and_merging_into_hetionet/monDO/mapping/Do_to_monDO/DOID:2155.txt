@@ -1,3 +1,0 @@
-DOID:2155	malignant ovarian germ cell neoplasm
-monDO ID 	 name 
-MONDO:0018171	malignant germ cell tumor of ovary

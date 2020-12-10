@@ -1,3 +1,0 @@
-MONDO:0001869	paraurethral gland cancer
-DOID 	 name 
-DOID:14059	paraurethral gland cancer

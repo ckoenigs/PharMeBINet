@@ -1,3 +1,0 @@
-DOID:13722	neuroschistosomiasis
-monDO ID 	 name 
-MONDO:0005874	neuroschistosomiasis

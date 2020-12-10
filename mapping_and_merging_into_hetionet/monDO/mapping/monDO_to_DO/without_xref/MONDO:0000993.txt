@@ -1,3 +1,0 @@
-MONDO:0000993	prostate squamous cell carcinoma
-DOID 	 name 
-DOID:10287	prostate squamous cell carcinoma

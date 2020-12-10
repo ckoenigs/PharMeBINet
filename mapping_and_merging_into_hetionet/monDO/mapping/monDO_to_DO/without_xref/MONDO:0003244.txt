@@ -1,3 +1,0 @@
-MONDO:0003244	central nervous system mesenchymal non-meningothelial tumor
-DOID 	 name 
-DOID:502	central nervous system mesenchymal non-meningothelial tumor

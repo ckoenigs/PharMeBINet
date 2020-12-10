@@ -1,3 +1,0 @@
-MONDO:0011122	obesity (disease)
-DOID 	 name 
-DOID:9970	obesity

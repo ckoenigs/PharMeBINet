@@ -1,3 +1,0 @@
-MONDO:0005888	ornithosis
-DOID 	 name 
-DOID:11262	ornithosis

@@ -1,3 +1,0 @@
-DOID:5057	papillary meningioma of the cerebellum
-monDO ID 	 name 
-MONDO:0003261	papillary meningioma of the cerebellum

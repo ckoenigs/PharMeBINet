@@ -1,3 +1,0 @@
-MONDO:0008287	Greig cephalopolysyndactyly syndrome
-DOID 	 name 
-DOID:14761	Greig cephalopolysyndactyly syndrome

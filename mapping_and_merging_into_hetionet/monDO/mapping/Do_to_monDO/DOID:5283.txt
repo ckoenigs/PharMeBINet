@@ -1,3 +1,0 @@
-DOID:5283	vagina leiomyosarcoma
-monDO ID 	 name 
-MONDO:0003369	vagina leiomyosarcoma

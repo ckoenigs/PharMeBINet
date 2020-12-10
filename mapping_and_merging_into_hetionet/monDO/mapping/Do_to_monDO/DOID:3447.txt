@@ -1,3 +1,0 @@
-DOID:3447	anus adenocarcinoma
-monDO ID 	 name 
-MONDO:0002652	anus adenocarcinoma

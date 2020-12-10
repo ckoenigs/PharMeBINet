@@ -1,3 +1,0 @@
-DOID:0060566	Holzgreve-Wagner-Rehder Syndrome
-monDO ID 	 name 
-MONDO:0009350	Holzgreve-Wagner-Rehder syndrome

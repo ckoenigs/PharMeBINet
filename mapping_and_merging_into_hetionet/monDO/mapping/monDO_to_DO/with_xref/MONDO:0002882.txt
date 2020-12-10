@@ -1,3 +1,0 @@
-MONDO:0002882	colon neuroendocrine neoplasm
-DOID 	 name 
-DOID:4118	colon neuroendocrine neoplasm

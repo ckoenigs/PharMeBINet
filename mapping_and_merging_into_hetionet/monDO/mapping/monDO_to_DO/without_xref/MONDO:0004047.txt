@@ -1,3 +1,0 @@
-MONDO:0004047	sphenoidal sinus neoplasm
-DOID 	 name 
-DOID:6947	sphenoidal sinus neoplasm

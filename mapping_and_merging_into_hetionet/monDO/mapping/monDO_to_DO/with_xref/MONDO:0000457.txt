@@ -1,3 +1,0 @@
-MONDO:0000457	classical glioblastoma
-DOID 	 name 
-DOID:0050803	glioblastoma classical subtype

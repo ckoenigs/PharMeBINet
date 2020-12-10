@@ -1,3 +1,0 @@
-DOID:13964	Morgagni cataract
-monDO ID 	 name 
-MONDO:0001848	Morgagni cataract

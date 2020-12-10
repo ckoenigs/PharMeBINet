@@ -1,3 +1,0 @@
-MONDO:0000489	diabetic encephalopathy
-DOID 	 name 
-DOID:0050850	diabetic encephalopathy

@@ -1,3 +1,0 @@
-MONDO:0003816	articular cartilage disease
-DOID 	 name 
-DOID:6227	articular cartilage disease

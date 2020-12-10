@@ -1,3 +1,0 @@
-MONDO:0015023	nemaline myopathy 11
-DOID 	 name 
-DOID:0110933	nemaline myopathy 11

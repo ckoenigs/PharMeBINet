@@ -1,3 +1,0 @@
-MONDO:0005520	rickets (disease)
-DOID 	 name 
-DOID:10609	rickets

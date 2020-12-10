@@ -1,3 +1,0 @@
-MONDO:0008769	neuronal ceroid lipofuscinosis 2
-DOID 	 name 
-DOID:0110726	neuronal ceroid lipofuscinosis 2

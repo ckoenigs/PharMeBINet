@@ -1,3 +1,0 @@
-DOID:13452	scleritis
-monDO ID 	 name 
-MONDO:0001718	scleritis (disease)

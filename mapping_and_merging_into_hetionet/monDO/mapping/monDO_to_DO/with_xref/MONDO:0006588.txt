@@ -1,3 +1,0 @@
-MONDO:0006588	nonepidermolytic palmoplantar keratoderma
-DOID 	 name 
-DOID:0050428	nonepidermolytic palmoplantar keratoderma

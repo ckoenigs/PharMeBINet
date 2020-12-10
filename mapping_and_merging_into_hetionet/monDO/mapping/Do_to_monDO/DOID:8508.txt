@@ -1,3 +1,0 @@
-DOID:8508	subcorneal pustular dermatosis
-monDO ID 	 name 
-MONDO:0006614	subcorneal pustular dermatosis

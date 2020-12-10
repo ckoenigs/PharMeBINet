@@ -1,3 +1,0 @@
-MONDO:0001780	premature ejaculation (disease)
-DOID 	 name 
-DOID:13709	premature ejaculation

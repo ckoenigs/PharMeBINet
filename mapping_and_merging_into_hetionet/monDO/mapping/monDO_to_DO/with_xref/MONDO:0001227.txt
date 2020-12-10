@@ -1,3 +1,0 @@
-MONDO:0001227	chronic tympanitis
-DOID 	 name 
-DOID:11217	chronic tympanitis

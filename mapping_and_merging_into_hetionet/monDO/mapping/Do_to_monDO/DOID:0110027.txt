@@ -1,3 +1,0 @@
-DOID:0110027	age related macular degeneration 15
-monDO ID 	 name 
-MONDO:0014266	age related macular degeneration 15

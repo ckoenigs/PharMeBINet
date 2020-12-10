@@ -1,3 +1,0 @@
-DOID:11295	retinal microaneurysm
-monDO ID 	 name 
-MONDO:0001257	retinal microaneurysm

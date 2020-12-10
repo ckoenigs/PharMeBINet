@@ -1,3 +1,0 @@
-DOID:11702	dysgammaglobulinemia
-monDO ID 	 name 
-MONDO:0001342	dysgammaglobulinemia (disease)

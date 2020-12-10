@@ -1,3 +1,0 @@
-DOID:10441	marginal corneal ulcer
-monDO ID 	 name 
-MONDO:0001034	marginal corneal ulcer

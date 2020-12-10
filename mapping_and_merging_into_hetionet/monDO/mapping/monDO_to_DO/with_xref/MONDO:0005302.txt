@@ -1,3 +1,0 @@
-MONDO:0005302	attention deficit hyperactivity disorder
-DOID 	 name 
-DOID:1094	attention deficit hyperactivity disorder

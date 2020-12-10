@@ -1,3 +1,0 @@
-MONDO:0009786	OPA6
-DOID 	 name 
-DOID:5723	optic atrophy

@@ -1,3 +1,0 @@
-DOID:0060074	ductal carcinoma in situ
-monDO ID 	 name 
-MONDO:0005023	ductal breast carcinoma in situ

@@ -1,4 +1,0 @@
-MONDO:0006962	sebaceous adenocarcinoma
-DOID 	 name 
-DOID:4840	sebaceous carcinoma
-DOID:4839	sebaceous adenocarcinoma

@@ -1,3 +1,0 @@
-MONDO:0007958	familial medullary thyroid carcinoma
-DOID 	 name 
-DOID:0050547	familial medullary thyroid carcinoma

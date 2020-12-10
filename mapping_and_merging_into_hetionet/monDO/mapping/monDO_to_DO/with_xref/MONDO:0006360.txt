@@ -1,3 +1,0 @@
-MONDO:0006360	penile carcinoma
-DOID 	 name 
-DOID:3449	penis carcinoma

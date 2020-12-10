@@ -1,3 +1,0 @@
-MONDO:0003709	mast-cell leukemia
-DOID 	 name 
-DOID:9254	mast-cell leukemia

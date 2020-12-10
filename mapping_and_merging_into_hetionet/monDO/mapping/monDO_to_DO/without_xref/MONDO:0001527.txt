@@ -1,3 +1,0 @@
-MONDO:0001527	conjugate gaze palsy
-DOID 	 name 
-DOID:12445	conjugate gaze palsy

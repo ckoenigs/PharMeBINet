@@ -1,3 +1,0 @@
-MONDO:0004210	colonic L-cell glucagon-like peptide producing tumor
-DOID 	 name 
-DOID:7401	colonic L-cell glucagon-like peptide producing tumor

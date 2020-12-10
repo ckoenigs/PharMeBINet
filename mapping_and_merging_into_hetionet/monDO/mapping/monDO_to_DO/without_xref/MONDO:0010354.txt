@@ -1,3 +1,0 @@
-MONDO:0010354	Allan-Herndon-Dudley syndrome
-DOID 	 name 
-DOID:0050631	Allan-Herndon-Dudley syndrome

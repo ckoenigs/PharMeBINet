@@ -1,3 +1,0 @@
-DOID:9235	pyriform sinus cancer
-monDO ID 	 name 
-MONDO:0004733	pyriform sinus cancer

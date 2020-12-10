@@ -1,3 +1,0 @@
-MONDO:0018229	Stevens-Johnson syndrome
-DOID 	 name 
-DOID:0050426	Stevens-Johnson syndrome

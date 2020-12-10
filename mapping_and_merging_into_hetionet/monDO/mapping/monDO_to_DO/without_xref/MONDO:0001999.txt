@@ -1,3 +1,0 @@
-MONDO:0001999	primary pulmonary hypertension
-DOID 	 name 
-DOID:14557	primary pulmonary hypertension

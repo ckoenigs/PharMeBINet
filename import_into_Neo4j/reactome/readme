@@ -1,0 +1,20 @@
+This program can combine any two labels which have a relationship and make one big node with all relationship from both nodes.
+It can be decided if the relationships between this label node should still exist or not after the merging.
+Also, the program needs the information which direction the relationship has.
+The last argument is optional but add a label to the combined node.
+
+In the program may be the username (of neo4j) and the password needs to change into yours.
+
+This is the example for Target merging
+python combine_nodes.py target_dictionary chembl_id_lookup True False Target
+
+In the end, you have to use neo4j-shell -file cypher_file.cypher
+
+The program gets at least 4 parameters but can also have a 5.
+1: node label which should be merged into another label
+2: node label where new information is merged in 
+3:  can be True or False by true no self-loops are allowed
+4: can be True or False    
+    by True: the relationship between label 1 and label 2 is label1->label2
+    by False: label1 <- label2
+(5: optional: gives the combined node an additional label)

@@ -1,3 +1,0 @@
-MONDO:0004622	chronic intestinal vascular insufficiency
-DOID 	 name 
-DOID:8633	chronic intestinal vascular insufficiency

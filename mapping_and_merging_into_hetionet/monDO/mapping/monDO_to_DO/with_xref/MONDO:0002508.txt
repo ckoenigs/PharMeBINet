@@ -1,3 +1,0 @@
-MONDO:0002508	gingivitis
-DOID 	 name 
-DOID:3087	gingivitis

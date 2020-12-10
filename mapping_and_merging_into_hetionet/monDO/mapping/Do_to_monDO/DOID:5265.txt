@@ -1,3 +1,0 @@
-DOID:5265	lung leiomyosarcoma
-monDO ID 	 name 
-MONDO:0003357	lung leiomyosarcoma

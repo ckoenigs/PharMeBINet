@@ -1,3 +1,0 @@
-MONDO:0013434	primary ciliary dyskinesia 14
-DOID 	 name 
-DOID:0110598	primary ciliary dyskinesia 14

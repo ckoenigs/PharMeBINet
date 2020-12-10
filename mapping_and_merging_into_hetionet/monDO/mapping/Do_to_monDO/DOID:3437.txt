@@ -1,3 +1,0 @@
-DOID:3437	laryngitis
-monDO ID 	 name 
-MONDO:0002647	laryngitis

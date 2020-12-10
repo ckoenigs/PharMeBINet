@@ -1,3 +1,0 @@
-MONDO:0007648	hereditary diffuse gastric cancer
-DOID 	 name 
-DOID:10534	stomach cancer

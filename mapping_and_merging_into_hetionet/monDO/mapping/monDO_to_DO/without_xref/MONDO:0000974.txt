@@ -1,3 +1,0 @@
-MONDO:0000974	axillary lipoma
-DOID 	 name 
-DOID:10205	axillary lipoma

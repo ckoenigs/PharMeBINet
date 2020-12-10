@@ -1,3 +1,0 @@
-MONDO:0015262	brachyolmia
-DOID 	 name 
-DOID:0050690	brachyolmia

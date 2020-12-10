@@ -1,5 +1,0 @@
-MONDO:0004992	cancer
-DOID 	 name 
-DOID:0050687	cell type cancer
-DOID:0050686	organ system cancer
-DOID:162	cancer

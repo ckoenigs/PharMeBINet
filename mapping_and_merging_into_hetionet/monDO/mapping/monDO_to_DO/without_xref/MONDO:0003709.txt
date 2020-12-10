@@ -1,3 +1,0 @@
-MONDO:0003709	agoraphobia
-DOID 	 name 
-DOID:593	agoraphobia

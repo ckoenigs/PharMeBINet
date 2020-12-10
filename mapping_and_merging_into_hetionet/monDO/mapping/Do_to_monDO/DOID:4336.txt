@@ -1,3 +1,0 @@
-DOID:4336	tinea favosa
-monDO ID 	 name 
-MONDO:0005983	tinea favosa

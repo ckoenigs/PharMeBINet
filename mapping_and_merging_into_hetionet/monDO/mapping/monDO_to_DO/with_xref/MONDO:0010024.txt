@@ -1,3 +1,0 @@
-MONDO:0010024	Beemer-Langer syndrome
-DOID 	 name 
-DOID:9249	Beemer-Langer syndrome

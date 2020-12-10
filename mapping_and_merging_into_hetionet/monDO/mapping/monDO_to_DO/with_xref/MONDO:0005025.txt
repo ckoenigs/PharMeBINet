@@ -1,3 +1,0 @@
-MONDO:0005025	endocarditis (disease)
-DOID 	 name 
-DOID:10314	endocarditis

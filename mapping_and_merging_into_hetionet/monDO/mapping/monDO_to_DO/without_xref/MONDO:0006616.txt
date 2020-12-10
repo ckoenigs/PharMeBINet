@@ -1,3 +1,0 @@
-MONDO:0006616	toxicodendron dermatitis
-DOID 	 name 
-DOID:3819	toxicodendron dermatitis

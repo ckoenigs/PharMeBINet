@@ -1,3 +1,0 @@
-DOID:13146	esophageal candidiasis
-monDO ID 	 name 
-MONDO:0001648	esophageal candidiasis

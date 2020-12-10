@@ -1,3 +1,0 @@
-DOID:11991	osteopoikilosis
-monDO ID 	 name 
-MONDO:0001414	osteopoikilosis (disease)

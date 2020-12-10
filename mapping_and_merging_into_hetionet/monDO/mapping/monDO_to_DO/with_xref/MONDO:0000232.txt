@@ -1,3 +1,0 @@
-MONDO:0000232	Flinders island spotted fever
-DOID 	 name 
-DOID:0050047	Flinders Island spotted fever

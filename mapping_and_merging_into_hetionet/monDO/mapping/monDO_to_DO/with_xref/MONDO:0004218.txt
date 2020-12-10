@@ -1,3 +1,0 @@
-MONDO:0004218	childhood germ cell brain tumor
-DOID 	 name 
-DOID:7430	childhood germ cell brain tumor

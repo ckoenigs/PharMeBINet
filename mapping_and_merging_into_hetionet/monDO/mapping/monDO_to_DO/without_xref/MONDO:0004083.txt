@@ -1,3 +1,0 @@
-MONDO:0004083	Borst-Jadassohn intraepidermal carcinoma
-DOID 	 name 
-DOID:7039	Borst-Jadassohn intraepidermal carcinoma

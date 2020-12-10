@@ -1,3 +1,0 @@
-MONDO:0000616	progesterone-receptor negative breast cancer
-DOID 	 name 
-DOID:0060078	progesterone-receptor negative breast cancer

@@ -1,3 +1,0 @@
-DOID:705	Leber hereditary optic neuropathy
-monDO ID 	 name 
-MONDO:0010788	Leber hereditary optic neuropathy

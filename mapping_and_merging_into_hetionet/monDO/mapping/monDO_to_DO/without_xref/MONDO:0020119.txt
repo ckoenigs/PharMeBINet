@@ -1,3 +1,0 @@
-MONDO:0020119	X-linked syndromic intellectual disability
-DOID 	 name 
-DOID:0060309	syndromic X-linked intellectual disability

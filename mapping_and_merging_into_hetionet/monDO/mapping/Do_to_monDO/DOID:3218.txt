@@ -1,3 +1,0 @@
-DOID:3218	jejunal neoplasm
-monDO ID 	 name 
-MONDO:0002564	jejunal neoplasm

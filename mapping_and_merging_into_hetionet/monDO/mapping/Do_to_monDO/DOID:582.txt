@@ -1,3 +1,0 @@
-DOID:582	hemoglobinuria
-monDO ID 	 name 
-MONDO:0003656	hemoglobinuria

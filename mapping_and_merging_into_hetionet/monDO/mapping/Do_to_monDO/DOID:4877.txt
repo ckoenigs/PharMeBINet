@@ -1,3 +1,0 @@
-DOID:4877	breast adenoid cystic carcinoma
-monDO ID 	 name 
-MONDO:0003185	adenoid cystic breast carcinoma

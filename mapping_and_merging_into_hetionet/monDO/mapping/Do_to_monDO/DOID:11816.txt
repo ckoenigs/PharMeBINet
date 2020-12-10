@@ -1,3 +1,0 @@
-DOID:11816	vitreous syneresis
-monDO ID 	 name 
-MONDO:0001377	vitreous syneresis

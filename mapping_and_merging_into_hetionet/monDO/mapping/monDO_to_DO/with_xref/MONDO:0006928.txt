@@ -1,3 +1,0 @@
-MONDO:0006928	proliferative vitreoretinopathy
-DOID 	 name 
-DOID:9719	proliferative vitreoretinopathy

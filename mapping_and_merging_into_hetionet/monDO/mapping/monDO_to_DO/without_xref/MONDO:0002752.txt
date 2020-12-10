@@ -1,3 +1,0 @@
-MONDO:0002752	ovary adenocarcinoma
-DOID 	 name 
-DOID:3713	ovary adenocarcinoma

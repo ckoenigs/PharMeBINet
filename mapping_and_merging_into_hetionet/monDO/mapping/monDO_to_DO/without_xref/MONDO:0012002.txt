@@ -1,3 +1,0 @@
-MONDO:0012002	autosomal recessive nonsyndromic deafness 40
-DOID 	 name 
-DOID:0110499	autosomal recessive nonsyndromic deafness 40

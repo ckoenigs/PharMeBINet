@@ -1,3 +1,0 @@
-MONDO:0006532	cholesteatoma of external ear
-DOID 	 name 
-DOID:9462	cholesteatoma of external ear

@@ -1,3 +1,0 @@
-MONDO:0005454	lung neuroendocrine neoplasm
-DOID 	 name 
-DOID:5410	pulmonary neuroendocrine tumor

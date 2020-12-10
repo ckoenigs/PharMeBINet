@@ -1,3 +1,0 @@
-DOID:0090052	dystonia 24
-monDO ID 	 name 
-MONDO:0014019	dystonia 24

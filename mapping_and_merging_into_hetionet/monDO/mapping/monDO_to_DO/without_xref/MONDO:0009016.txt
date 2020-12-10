@@ -1,3 +1,0 @@
-MONDO:0009016	band keratopathy
-DOID 	 name 
-DOID:11164	band keratopathy

@@ -1,3 +1,0 @@
-MONDO:0010735	Kennedy's disease
-DOID 	 name 
-DOID:0060161	Kennedy's disease

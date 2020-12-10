@@ -1,3 +1,0 @@
-MONDO:0002695	sagittal sinus thrombosis
-DOID 	 name 
-DOID:3576	sagittal sinus thrombosis

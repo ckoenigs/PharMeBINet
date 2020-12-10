@@ -1,3 +1,0 @@
-MONDO:0005814	intestinal cancer
-DOID 	 name 
-DOID:10155	intestinal cancer

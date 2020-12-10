@@ -1,3 +1,0 @@
-DOID:0060288	omodysplasia
-monDO ID 	 name 
-MONDO:0017136	omodysplasia

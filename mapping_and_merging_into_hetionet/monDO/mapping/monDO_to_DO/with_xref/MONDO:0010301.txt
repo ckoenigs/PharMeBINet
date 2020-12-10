@@ -1,3 +1,0 @@
-MONDO:0010301	THCYTX
-DOID 	 name 
-DOID:2224	essential thrombocythemia

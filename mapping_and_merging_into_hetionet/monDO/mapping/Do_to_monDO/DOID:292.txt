@@ -1,3 +1,0 @@
-DOID:292	lacrimal system cancer
-monDO ID 	 name 
-MONDO:0002460	lacrimal system cancer

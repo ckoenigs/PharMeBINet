@@ -1,3 +1,0 @@
-DOID:0080184	mixed mucinous and nonmucinous bronchioloalveolar adenocarcinoma
-monDO ID 	 name 
-MONDO:0000893	mixed mucinous and nonmucinous bronchioloalveolar adenocarcinoma

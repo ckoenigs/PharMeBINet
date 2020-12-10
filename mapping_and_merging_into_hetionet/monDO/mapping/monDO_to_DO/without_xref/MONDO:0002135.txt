@@ -1,3 +1,0 @@
-MONDO:0002135	optic nerve disease
-DOID 	 name 
-DOID:1891	optic nerve disease

@@ -1,3 +1,0 @@
-DOID:11132	prostatic hypertrophy
-monDO ID 	 name 
-MONDO:0001201	prostatic hypertrophy

@@ -1,3 +1,0 @@
-MONDO:0020536	pigeon-breeder lung disease
-DOID 	 name 
-DOID:13891	bird fancier's lung

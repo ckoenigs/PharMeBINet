@@ -1,3 +1,0 @@
-MONDO:0005821	late congenital syphilis
-DOID 	 name 
-DOID:10039	late congenital syphilis

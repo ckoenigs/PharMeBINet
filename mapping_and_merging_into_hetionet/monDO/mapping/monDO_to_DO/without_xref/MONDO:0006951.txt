@@ -1,3 +1,0 @@
-MONDO:0006951	retinal vein occlusion
-DOID 	 name 
-DOID:1727	retinal vein occlusion

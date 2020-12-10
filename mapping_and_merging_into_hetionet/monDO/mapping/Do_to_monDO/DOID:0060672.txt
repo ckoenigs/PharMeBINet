@@ -1,3 +1,0 @@
-DOID:0060672	Grn-related frontotemporal lobar degeneration with Tdp43 inclusions
-monDO ID 	 name 
-MONDO:0011842	Grn-related frontotemporal lobar degeneration with Tdp43 inclusions

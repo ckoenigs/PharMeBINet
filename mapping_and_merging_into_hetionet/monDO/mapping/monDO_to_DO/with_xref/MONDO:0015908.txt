@@ -1,3 +1,0 @@
-MONDO:0015908	Chromomycosis
-DOID 	 name 
-DOID:1562	chromoblastomycosis

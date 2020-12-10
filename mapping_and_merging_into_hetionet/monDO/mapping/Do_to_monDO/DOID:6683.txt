@@ -1,3 +1,0 @@
-DOID:6683	Aarskog syndrome
-monDO ID 	 name 
-MONDO:0007030	autosomal dominant Aarskog syndrome

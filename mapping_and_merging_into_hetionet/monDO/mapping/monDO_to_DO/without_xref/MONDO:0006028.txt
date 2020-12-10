@@ -1,3 +1,0 @@
-MONDO:0006028	cecum adenocarcinoma
-DOID 	 name 
-DOID:3039	cecum adenocarcinoma

@@ -1,3 +1,0 @@
-DOID:2068	Bartholin's gland benign neoplasm
-monDO ID 	 name 
-MONDO:0002193	Bartholin's gland benign neoplasm

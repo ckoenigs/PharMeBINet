@@ -1,3 +1,0 @@
-MONDO:0001355	ocular siderosis
-DOID 	 name 
-DOID:11754	siderosis of eye

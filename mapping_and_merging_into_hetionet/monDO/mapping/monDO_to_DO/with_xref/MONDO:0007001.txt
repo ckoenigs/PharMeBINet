@@ -1,3 +1,0 @@
-MONDO:0007001	tricuspid valve prolapse (disease)
-DOID 	 name 
-DOID:5644	tricuspid valve prolapse

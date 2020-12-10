@@ -1,3 +1,0 @@
-DOID:7492	central epithelioid sarcoma
-monDO ID 	 name 
-MONDO:0004244	central epithelioid sarcoma

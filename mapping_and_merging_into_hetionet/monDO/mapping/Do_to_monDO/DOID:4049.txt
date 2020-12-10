@@ -1,3 +1,0 @@
-DOID:4049	mediastinum rhabdomyosarcoma
-monDO ID 	 name 
-MONDO:0002851	mediastinum rhabdomyosarcoma

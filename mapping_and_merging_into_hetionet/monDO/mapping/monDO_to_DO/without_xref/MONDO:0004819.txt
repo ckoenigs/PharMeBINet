@@ -1,3 +1,0 @@
-MONDO:0004819	indolent myeloma
-DOID 	 name 
-DOID:9550	indolent myeloma

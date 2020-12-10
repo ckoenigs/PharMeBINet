@@ -1,3 +1,0 @@
-DOID:5233	glomangiosarcoma
-monDO ID 	 name 
-MONDO:0003340	malignant glomus tumor

@@ -1,3 +1,0 @@
-MONDO:0003207	eccrine adenocarcinoma
-DOID 	 name 
-DOID:4920	eccrine adenocarcinoma

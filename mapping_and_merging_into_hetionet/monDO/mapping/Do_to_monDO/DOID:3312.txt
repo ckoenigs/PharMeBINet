@@ -1,3 +1,0 @@
-DOID:3312	bipolar disorder
-monDO ID 	 name 
-MONDO:0004985	bipolar disorder

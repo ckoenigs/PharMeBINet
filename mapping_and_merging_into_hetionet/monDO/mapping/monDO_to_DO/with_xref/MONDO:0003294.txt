@@ -1,3 +1,0 @@
-MONDO:0003294	pericardium leiomyoma
-DOID 	 name 
-DOID:5137	pericardium leiomyoma

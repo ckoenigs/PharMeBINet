@@ -1,3 +1,0 @@
-DOID:12451	sulfhemoglobinemia
-monDO ID 	 name 
-MONDO:0006988	sulfhemoglobinemia

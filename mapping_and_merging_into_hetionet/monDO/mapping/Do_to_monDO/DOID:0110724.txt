@@ -1,3 +1,0 @@
-DOID:0110724	neuronal ceroid lipofuscinosis 8 northern epilepsy variant
-monDO ID 	 name 
-MONDO:0012391	neuronal ceroid lipofuscinosis 8 northern epilepsy variant

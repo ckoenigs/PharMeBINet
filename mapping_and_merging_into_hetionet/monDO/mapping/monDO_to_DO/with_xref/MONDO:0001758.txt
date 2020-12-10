@@ -1,3 +1,0 @@
-MONDO:0001758	paranasal sinus sarcoma
-DOID 	 name 
-DOID:1362	paranasal sinus sarcoma

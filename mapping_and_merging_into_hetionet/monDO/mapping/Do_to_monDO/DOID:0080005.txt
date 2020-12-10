@@ -1,3 +1,0 @@
-DOID:0080005	bone remodeling disease
-monDO ID 	 name 
-MONDO:0000833	bone remodeling disease

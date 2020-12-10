@@ -1,3 +1,0 @@
-DOID:5401	water-clear cell adenoma
-monDO ID 	 name 
-MONDO:0003433	water-clear cell adenoma

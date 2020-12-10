@@ -1,3 +1,0 @@
-DOID:0110638	congenital muscular dystrophy merosin-positive
-monDO ID 	 name 
-MONDO:0012279	congenital muscular dystrophy merosin-positive

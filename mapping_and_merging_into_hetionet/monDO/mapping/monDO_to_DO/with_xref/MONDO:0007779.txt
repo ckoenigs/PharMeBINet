@@ -1,3 +1,0 @@
-MONDO:0007779	autosomal dominant Opitz G/BBB syndrome
-DOID 	 name 
-DOID:0050780	Opitz-GBBB syndrome

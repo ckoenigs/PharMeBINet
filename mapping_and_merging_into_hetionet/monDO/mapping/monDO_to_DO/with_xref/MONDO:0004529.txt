@@ -1,3 +1,0 @@
-MONDO:0004529	nonossifying fibromyxoid tumor
-DOID 	 name 
-DOID:8305	nonossifying fibromyxoid tumor

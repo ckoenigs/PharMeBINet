@@ -1,3 +1,0 @@
-MONDO:0003233	essential tremor
-DOID 	 name 
-DOID:4990	essential tremor

@@ -1,4 +1,0 @@
-MONDO:0001572	leiomyoma
-DOID 	 name 
-DOID:13223	uterine fibroid
-DOID:127	leiomyoma

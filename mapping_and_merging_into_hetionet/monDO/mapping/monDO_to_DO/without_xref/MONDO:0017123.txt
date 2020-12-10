@@ -1,3 +1,0 @@
-MONDO:0017123	arthrogryposis-renal dysfunction-cholestasis syndrome
-DOID 	 name 
-DOID:0050763	ARC syndrome

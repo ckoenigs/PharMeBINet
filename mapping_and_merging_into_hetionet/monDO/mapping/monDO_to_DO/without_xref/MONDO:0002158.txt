@@ -1,3 +1,0 @@
-MONDO:0002158	fallopian tube cancer
-DOID 	 name 
-DOID:1964	fallopian tube cancer

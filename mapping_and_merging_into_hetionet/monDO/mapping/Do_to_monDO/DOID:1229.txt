@@ -1,3 +1,0 @@
-DOID:1229	paranoid schizophrenia
-monDO ID 	 name 
-MONDO:0001484	paranoid schizophrenia

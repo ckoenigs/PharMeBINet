@@ -1,3 +1,0 @@
-MONDO:0021113	respiratory failure
-DOID 	 name 
-DOID:11162	respiratory failure

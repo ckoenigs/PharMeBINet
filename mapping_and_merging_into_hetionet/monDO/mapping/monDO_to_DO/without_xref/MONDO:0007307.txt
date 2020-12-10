@@ -1,3 +1,0 @@
-MONDO:0007307	Charcot-Marie-tooth disease type 1B
-DOID 	 name 
-DOID:0110152	Charcot-Marie-Tooth disease type 1B

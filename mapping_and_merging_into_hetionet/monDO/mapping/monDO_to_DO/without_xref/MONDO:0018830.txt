@@ -1,3 +1,0 @@
-MONDO:0018830	Kimura disease
-DOID 	 name 
-DOID:7365	Kimura disease

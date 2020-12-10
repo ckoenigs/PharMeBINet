@@ -1,3 +1,0 @@
-MONDO:0003130	mesoblastic nephroma
-DOID 	 name 
-DOID:4772	mesoblastic nephroma

@@ -1,3 +1,0 @@
-DOID:10603	glucose intolerance
-monDO ID 	 name 
-MONDO:0001076	glucose intolerance

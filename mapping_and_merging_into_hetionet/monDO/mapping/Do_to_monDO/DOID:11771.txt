@@ -1,3 +1,0 @@
-DOID:11771	spontaneous ocular nystagmus
-monDO ID 	 name 
-MONDO:0001361	spontaneous ocular nystagmus

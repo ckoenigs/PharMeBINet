@@ -1,3 +1,0 @@
-MONDO:0000589	autoimmune disease of musculoskeletal system
-DOID 	 name 
-DOID:0060032	autoimmune disease of musculoskeletal system

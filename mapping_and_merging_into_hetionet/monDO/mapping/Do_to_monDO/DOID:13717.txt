@@ -1,3 +1,0 @@
-DOID:13717	mature cataract
-monDO ID 	 name 
-MONDO:0001782	mature cataract

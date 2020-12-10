@@ -1,3 +1,0 @@
-MONDO:0002470	photosensitive trichothiodystrophy
-DOID 	 name 
-DOID:2960	photosensitive trichothiodystrophy

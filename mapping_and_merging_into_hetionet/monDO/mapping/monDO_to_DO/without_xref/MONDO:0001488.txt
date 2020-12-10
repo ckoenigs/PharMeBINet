@@ -1,3 +1,0 @@
-MONDO:0001488	anterior corneal pigmentation
-DOID 	 name 
-DOID:12307	anterior corneal pigmentation

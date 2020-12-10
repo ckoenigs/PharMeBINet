@@ -1,3 +1,0 @@
-MONDO:0006509	papillary carcinoma
-DOID 	 name 
-DOID:3113	papillary carcinoma

@@ -1,3 +1,0 @@
-MONDO:0013979	primary ciliary dyskinesia 19
-DOID 	 name 
-DOID:0110608	primary ciliary dyskinesia 19

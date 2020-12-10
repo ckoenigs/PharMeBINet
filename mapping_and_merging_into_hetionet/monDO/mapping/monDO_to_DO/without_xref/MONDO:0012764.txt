@@ -1,3 +1,0 @@
-MONDO:0012764	RIDDLE syndrome
-DOID 	 name 
-DOID:0090113	RIDDLE syndrome

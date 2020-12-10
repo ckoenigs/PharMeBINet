@@ -1,3 +1,0 @@
-DOID:7312	breast adenomyoepithelial adenosis
-monDO ID 	 name 
-MONDO:0004181	breast adenomyoepithelial adenosis

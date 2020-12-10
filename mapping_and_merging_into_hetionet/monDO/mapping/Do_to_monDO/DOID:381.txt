@@ -1,3 +1,0 @@
-DOID:381	arthropathy
-monDO ID 	 name 
-MONDO:0006816	arthropathy

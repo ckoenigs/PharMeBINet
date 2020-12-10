@@ -1,3 +1,0 @@
-DOID:0050778	Meckel syndrome
-monDO ID 	 name 
-MONDO:0018921	Meckel syndrome

@@ -1,3 +1,0 @@
-MONDO:0005873	neuroaspergillosis
-DOID 	 name 
-DOID:13565	neuroaspergillosis

@@ -1,3 +1,0 @@
-MONDO:0003709	Churg-Strauss syndrome
-DOID 	 name 
-DOID:3049	Churg-Strauss syndrome

@@ -1,3 +1,0 @@
-DOID:0111081	Fanconi anemia complementation group T
-monDO ID 	 name 
-MONDO:0014638	Fanconi anemia complementation group T

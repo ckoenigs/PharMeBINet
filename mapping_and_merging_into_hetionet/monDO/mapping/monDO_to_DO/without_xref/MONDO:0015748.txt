@@ -1,3 +1,0 @@
-MONDO:0015748	hereditary mucosal leukokeratosis
-DOID 	 name 
-DOID:0050448	hereditary mucosal leukokeratosis

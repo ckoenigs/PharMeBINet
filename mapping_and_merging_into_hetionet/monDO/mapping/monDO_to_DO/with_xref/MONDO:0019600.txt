@@ -1,3 +1,0 @@
-MONDO:0019600	xeroderma pigmentosum
-DOID 	 name 
-DOID:0050427	xeroderma pigmentosum

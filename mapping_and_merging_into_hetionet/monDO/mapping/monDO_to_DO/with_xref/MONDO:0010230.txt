@@ -1,3 +1,0 @@
-MONDO:0010230	MRX23
-DOID 	 name 
-DOID:0050776	non-syndromic X-linked intellectual disability

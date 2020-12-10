@@ -1,3 +1,0 @@
-DOID:13943	acute gonococcal prostatitis
-monDO ID 	 name 
-MONDO:0001838	acute gonococcal prostatitis

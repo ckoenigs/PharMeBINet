@@ -1,3 +1,0 @@
-DOID:5375	hair follicle neoplasm
-monDO ID 	 name 
-MONDO:0003413	hair follicle neoplasm

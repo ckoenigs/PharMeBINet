@@ -1,3 +1,0 @@
-DOID:1791	peritoneal carcinoma
-monDO ID 	 name 
-MONDO:0002113	peritoneal carcinoma

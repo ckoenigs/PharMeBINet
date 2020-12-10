@@ -1,3 +1,0 @@
-MONDO:0010258	MEHMO syndrome
-DOID 	 name 
-DOID:0060801	MEHMO syndrome

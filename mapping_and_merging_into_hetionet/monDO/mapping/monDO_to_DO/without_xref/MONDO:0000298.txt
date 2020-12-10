@@ -1,3 +1,0 @@
-MONDO:0000298	dioctophymiasis
-DOID 	 name 
-DOID:0050260	dioctophymiasis

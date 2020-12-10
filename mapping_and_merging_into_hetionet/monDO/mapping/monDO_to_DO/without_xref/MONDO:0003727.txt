@@ -1,3 +1,0 @@
-MONDO:0003727	animal phobia
-DOID 	 name 
-DOID:600	animal phobia

@@ -1,3 +1,0 @@
-MONDO:0003914	inborn purine-pyrimidine metabolic disorder
-DOID 	 name 
-DOID:653	purine-pyrimidine metabolic disorder

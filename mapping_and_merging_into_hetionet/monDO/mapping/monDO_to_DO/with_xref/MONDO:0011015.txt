@@ -1,3 +1,0 @@
-MONDO:0011015	cataract 24
-DOID 	 name 
-DOID:0110257	cataract 24

@@ -1,3 +1,0 @@
-DOID:0060066	pyridoxine-responsive sideroblastic anemia
-monDO ID 	 name 
-MONDO:0008786	pyridoxine-responsive sideroblastic anemia

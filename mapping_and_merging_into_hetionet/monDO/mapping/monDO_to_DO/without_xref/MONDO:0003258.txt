@@ -1,3 +1,0 @@
-MONDO:0003258	hobnail hemangioma
-DOID 	 name 
-DOID:505	hobnail hemangioma

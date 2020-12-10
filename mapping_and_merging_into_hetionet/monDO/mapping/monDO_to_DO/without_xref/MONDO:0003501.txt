@@ -1,3 +1,0 @@
-MONDO:0003501	external ear squamous cell carcinoma
-DOID 	 name 
-DOID:5538	external ear squamous cell carcinoma

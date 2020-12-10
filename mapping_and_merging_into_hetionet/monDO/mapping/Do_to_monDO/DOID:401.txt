@@ -1,3 +1,0 @@
-DOID:401	multidrug-resistant tuberculosis
-monDO ID 	 name 
-MONDO:0005861	multidrug-resistant tuberculosis

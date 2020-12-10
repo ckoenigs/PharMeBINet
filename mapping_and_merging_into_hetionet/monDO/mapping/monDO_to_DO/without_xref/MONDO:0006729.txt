@@ -1,3 +1,0 @@
-MONDO:0006729	discrete subaortic stenosis
-DOID 	 name 
-DOID:5804	discrete subaortic stenosis

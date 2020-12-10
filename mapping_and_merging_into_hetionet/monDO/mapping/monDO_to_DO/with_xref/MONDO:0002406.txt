@@ -1,3 +1,0 @@
-MONDO:0002406	dermatitis
-DOID 	 name 
-DOID:2723	dermatitis

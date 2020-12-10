@@ -1,3 +1,0 @@
-DOID:0050659	biotin-responsive basal ganglia disease
-monDO ID 	 name 
-MONDO:0011841	biotin-responsive basal ganglia disease

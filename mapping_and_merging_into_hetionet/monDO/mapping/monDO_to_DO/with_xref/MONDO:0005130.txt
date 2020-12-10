@@ -1,3 +1,0 @@
-MONDO:0005130	celiac disease
-DOID 	 name 
-DOID:10608	celiac disease

@@ -1,3 +1,0 @@
-MONDO:0014231	juvenile onset Parkinson disease 19A
-DOID 	 name 
-DOID:0060891	juvenile onset Parkinson disease 19A

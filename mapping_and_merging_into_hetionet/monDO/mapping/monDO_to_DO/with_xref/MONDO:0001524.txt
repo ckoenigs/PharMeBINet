@@ -1,3 +1,0 @@
-MONDO:0001524	globe disease
-DOID 	 name 
-DOID:1242	globe disease

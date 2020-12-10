@@ -1,3 +1,0 @@
-MONDO:0006799	hypothalamic neoplasm
-DOID 	 name 
-DOID:3644	hypothalamic neoplasm

@@ -1,3 +1,0 @@
-MONDO:0003168	pilocytic astrocytoma of cerebellum
-DOID 	 name 
-DOID:4853	pilocytic astrocytoma of cerebellum

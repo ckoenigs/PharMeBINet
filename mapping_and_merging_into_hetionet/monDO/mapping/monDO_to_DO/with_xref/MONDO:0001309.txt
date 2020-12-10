@@ -1,5 +1,0 @@
-MONDO:0001309	oculomotor nerve paralysis
-DOID 	 name 
-DOID:10866	total third-nerve palsy
-DOID:10864	partial third-nerve palsy
-DOID:11550	oculomotor nerve paralysis

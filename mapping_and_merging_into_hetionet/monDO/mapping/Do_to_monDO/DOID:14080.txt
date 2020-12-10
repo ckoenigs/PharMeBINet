@@ -1,3 +1,0 @@
-DOID:14080	glucocorticoid-remediable aldosteronism
-monDO ID 	 name 
-MONDO:0007080	glucocorticoid-remediable aldosteronism

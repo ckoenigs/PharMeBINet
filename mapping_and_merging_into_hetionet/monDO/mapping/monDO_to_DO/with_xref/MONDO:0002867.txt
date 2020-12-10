@@ -1,3 +1,0 @@
-MONDO:0002867	pancreatic cystadenocarcinoma
-DOID 	 name 
-DOID:4073	pancreatic cystadenocarcinoma

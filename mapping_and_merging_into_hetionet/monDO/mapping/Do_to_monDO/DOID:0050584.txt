@@ -1,3 +1,0 @@
-DOID:0050584	gummatous syphilis
-monDO ID 	 name 
-MONDO:0000363	gummatous syphilis

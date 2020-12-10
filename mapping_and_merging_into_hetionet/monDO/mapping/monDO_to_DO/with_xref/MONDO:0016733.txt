@@ -1,3 +1,0 @@
-MONDO:0016733	ganglioglioma
-DOID 	 name 
-DOID:5078	ganglioglioma

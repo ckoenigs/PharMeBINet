@@ -1,3 +1,0 @@
-MONDO:0012398	retinal cone dystrophy 3A
-DOID 	 name 
-DOID:0050795	cone dystrophy

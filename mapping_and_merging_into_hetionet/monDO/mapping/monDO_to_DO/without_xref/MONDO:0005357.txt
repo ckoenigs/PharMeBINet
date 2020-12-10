@@ -1,3 +1,0 @@
-MONDO:0005357	Creutzfeldt Jacob disease
-DOID 	 name 
-DOID:11949	Creutzfeldt-Jakob disease

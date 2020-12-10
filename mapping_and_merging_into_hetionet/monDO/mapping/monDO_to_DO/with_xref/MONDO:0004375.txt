@@ -1,3 +1,0 @@
-MONDO:0004375	end stage renal failure
-DOID 	 name 
-DOID:783	end stage renal failure

@@ -1,3 +1,0 @@
-DOID:9935	chronic inflammation of lacrimal passage
-monDO ID 	 name 
-MONDO:0004923	chronic inflammation of lacrimal passage

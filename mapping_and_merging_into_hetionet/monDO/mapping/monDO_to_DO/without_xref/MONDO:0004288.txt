@@ -1,3 +1,0 @@
-MONDO:0004288	scirrhous breast carcinoma
-DOID 	 name 
-DOID:7578	breast scirrhous carcinoma

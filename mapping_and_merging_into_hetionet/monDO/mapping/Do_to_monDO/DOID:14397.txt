@@ -1,3 +1,0 @@
-DOID:14397	protozoal dysentery
-monDO ID 	 name 
-MONDO:0001955	protozoal dysentery

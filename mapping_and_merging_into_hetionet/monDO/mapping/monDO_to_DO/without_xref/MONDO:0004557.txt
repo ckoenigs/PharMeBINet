@@ -1,3 +1,0 @@
-MONDO:0004557	congenital fibrosarcoma
-DOID 	 name 
-DOID:8418	congenital fibrosarcoma

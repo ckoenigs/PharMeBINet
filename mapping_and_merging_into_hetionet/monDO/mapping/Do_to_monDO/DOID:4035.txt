@@ -1,3 +1,0 @@
-DOID:4035	lymphocytic gastritis
-monDO ID 	 name 
-MONDO:0002844	lymphocytic gastritis

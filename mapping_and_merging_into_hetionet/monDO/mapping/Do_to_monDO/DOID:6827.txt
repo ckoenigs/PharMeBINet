@@ -1,3 +1,0 @@
-DOID:6827	pancreatic solid pseudopapillary carcinoma
-monDO ID 	 name 
-MONDO:0004003	pancreatic solid pseudopapillary carcinoma

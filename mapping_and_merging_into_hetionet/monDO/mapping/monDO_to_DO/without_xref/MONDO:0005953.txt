@@ -1,3 +1,0 @@
-MONDO:0005953	scirrhous adenocarcinoma
-DOID 	 name 
-DOID:4024	scirrhous adenocarcinoma

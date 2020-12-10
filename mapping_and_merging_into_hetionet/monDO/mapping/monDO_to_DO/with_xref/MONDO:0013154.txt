@@ -1,3 +1,0 @@
-MONDO:0013154	muscular dystrophy-dystroglycanopathy (congenital with brain and eye anomalies), type A, 2
-DOID 	 name 
-DOID:0050588	muscular dystrophy-dystroglycanopathy

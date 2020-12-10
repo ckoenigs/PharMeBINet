@@ -1,4 +1,0 @@
-MONDO:0012200	posterior polymorphous corneal dystrophy 3
-DOID 	 name 
-DOID:0110857	posterior polymorphous corneal dystrophy 3
-DOID:0060457	posterior polymorphous corneal dystrophy

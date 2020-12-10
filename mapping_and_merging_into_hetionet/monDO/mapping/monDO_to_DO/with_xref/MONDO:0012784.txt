@@ -1,3 +1,0 @@
-MONDO:0012784	autosomal recessive ataxia due to ubiquinone deficiency
-DOID 	 name 
-DOID:0050730	coenzyme Q10 deficiency disease

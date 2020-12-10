@@ -1,3 +1,0 @@
-MONDO:0005743	encephalitozoonosis
-DOID 	 name 
-DOID:4270	encephalitozoonosis

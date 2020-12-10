@@ -1,3 +1,0 @@
-MONDO:0004853	gonococcal endophthalmia
-DOID 	 name 
-DOID:9698	gonococcal endophthalmia

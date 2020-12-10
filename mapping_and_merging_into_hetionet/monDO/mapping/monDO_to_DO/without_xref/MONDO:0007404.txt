@@ -1,3 +1,0 @@
-MONDO:0007404	Cri-du-chat syndrome
-DOID 	 name 
-DOID:12580	Cri-Du-Chat syndrome

@@ -1,3 +1,0 @@
-MONDO:0000381	infiltrating renal pelvis transitional cell carcinoma
-DOID 	 name 
-DOID:0050620	infiltrating renal pelvis transitional cell carcinoma

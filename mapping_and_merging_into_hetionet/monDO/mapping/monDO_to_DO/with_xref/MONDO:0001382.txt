@@ -1,3 +1,0 @@
-MONDO:0001382	hepatorenal syndrome
-DOID 	 name 
-DOID:11823	hepatorenal syndrome

@@ -1,3 +1,0 @@
-MONDO:0010519	alpha thalassemia-X-linked intellectual disability syndrome
-DOID 	 name 
-DOID:0110030	alpha thalassemia-X-linked intellectual disability syndrome

@@ -1,3 +1,0 @@
-DOID:0110421	late-adult onset retinitis pigmentosa
-monDO ID 	 name 
-MONDO:0009984	late-adult onset retinitis pigmentosa

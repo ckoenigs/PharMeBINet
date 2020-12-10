@@ -1,3 +1,0 @@
-MONDO:0001349	odontoclasia
-DOID 	 name 
-DOID:11736	odontoclasia

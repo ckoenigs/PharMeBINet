@@ -1,3 +1,0 @@
-MONDO:0005170	myeloid neoplasm
-DOID 	 name 
-DOID:0070004	myeloid neoplasm

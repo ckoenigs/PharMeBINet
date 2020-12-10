@@ -1,3 +1,0 @@
-DOID:0090033	myoclonic dystonia
-monDO ID 	 name 
-MONDO:0000903	myoclonus-dystonia syndrome

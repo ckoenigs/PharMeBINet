@@ -1,3 +1,0 @@
-DOID:0060289	Ohdo syndrome
-monDO ID 	 name 
-MONDO:0000734	Ohdo syndrome and variants

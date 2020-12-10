@@ -1,3 +1,0 @@
-MONDO:0003709	testicular germ cell tumor non-seminomatous
-DOID 	 name 
-DOID:4086	testicular germ cell tumor non-seminomatous

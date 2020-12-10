@@ -1,3 +1,0 @@
-DOID:0050594	glycogen storage disease IX
-monDO ID 	 name 
-MONDO:0000366	glycogen storage disease IX

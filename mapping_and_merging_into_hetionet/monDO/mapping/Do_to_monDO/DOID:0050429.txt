@@ -1,3 +1,0 @@
-DOID:0050429	Hailey-Hailey disease
-monDO ID 	 name 
-MONDO:0008218	Hailey-Hailey disease

@@ -1,3 +1,0 @@
-MONDO:0007152	arrhythmogenic right ventricular dysplasia 1
-DOID 	 name 
-DOID:0110070	arrhythmogenic right ventricular dysplasia 1

@@ -1,3 +1,0 @@
-DOID:6037	spindle cell intraocular melanoma
-monDO ID 	 name 
-MONDO:0003744	spindle cell intraocular melanoma

@@ -1,3 +1,0 @@
-DOID:2701	nodular tenosynovitis
-monDO ID 	 name 
-MONDO:0002399	nodular tenosynovitis

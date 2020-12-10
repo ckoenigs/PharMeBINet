@@ -1,3 +1,0 @@
-MONDO:0004751	orbital disease
-DOID 	 name 
-DOID:930	orbital disease

@@ -1,3 +1,0 @@
-MONDO:0005759	fascioloidiasis
-DOID 	 name 
-DOID:1217	fascioloidiasis

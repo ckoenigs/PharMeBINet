@@ -1,3 +1,0 @@
-MONDO:0004815	osteosclerotic myeloma
-DOID 	 name 
-DOID:9541	osteosclerotic myeloma

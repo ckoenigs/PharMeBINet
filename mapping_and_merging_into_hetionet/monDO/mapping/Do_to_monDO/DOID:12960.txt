@@ -1,3 +1,0 @@
-DOID:12960	acrocephalosyndactylia
-monDO ID 	 name 
-MONDO:0019796	acrocephalosyndactyly

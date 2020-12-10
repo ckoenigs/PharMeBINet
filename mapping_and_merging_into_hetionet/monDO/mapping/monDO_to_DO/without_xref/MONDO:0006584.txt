@@ -1,3 +1,0 @@
-MONDO:0006584	neonatal jaundice
-DOID 	 name 
-DOID:2383	neonatal jaundice

@@ -1,3 +1,0 @@
-MONDO:0006008	vestibular neuronitis
-DOID 	 name 
-DOID:12683	vestibular neuronitis

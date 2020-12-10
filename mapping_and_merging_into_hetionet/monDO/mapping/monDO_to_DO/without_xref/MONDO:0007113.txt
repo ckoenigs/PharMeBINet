@@ -1,3 +1,0 @@
-MONDO:0007113	Angelman syndrome
-DOID 	 name 
-DOID:1932	Angelman syndrome

@@ -1,3 +1,0 @@
-MONDO:0000928	eyelid melanoma
-DOID 	 name 
-DOID:10040	malignant eyelid melanoma

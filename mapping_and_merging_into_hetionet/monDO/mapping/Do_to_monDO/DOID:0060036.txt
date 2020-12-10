@@ -1,3 +1,0 @@
-DOID:0060036	intrinsic cardiomyopathy
-monDO ID 	 name 
-MONDO:0000591	intrinsic cardiomyopathy

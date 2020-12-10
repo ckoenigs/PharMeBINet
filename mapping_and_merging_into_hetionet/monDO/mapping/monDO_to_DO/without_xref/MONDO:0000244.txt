@@ -1,3 +1,0 @@
-MONDO:0000244	endothrix infectious disease
-DOID 	 name 
-DOID:0050105	endothrix infectious disease

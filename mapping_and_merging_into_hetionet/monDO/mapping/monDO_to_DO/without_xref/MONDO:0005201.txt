@@ -1,3 +1,0 @@
-MONDO:0005201	restrictive cardiomyopathy
-DOID 	 name 
-DOID:397	restrictive cardiomyopathy

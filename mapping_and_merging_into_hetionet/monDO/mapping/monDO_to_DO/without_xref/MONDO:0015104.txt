@@ -1,3 +1,0 @@
-MONDO:0015104	porphyria cutanea tarda
-DOID 	 name 
-DOID:3132	porphyria cutanea tarda

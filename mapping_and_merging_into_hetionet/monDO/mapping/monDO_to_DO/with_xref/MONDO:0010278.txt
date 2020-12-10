@@ -1,3 +1,0 @@
-MONDO:0010278	Christianson syndrome
-DOID 	 name 
-DOID:0060825	Christianson syndrome

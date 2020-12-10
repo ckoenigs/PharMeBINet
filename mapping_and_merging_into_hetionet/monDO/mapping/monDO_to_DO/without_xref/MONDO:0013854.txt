@@ -1,3 +1,0 @@
-MONDO:0013854	primary ciliary dyskinesia 17
-DOID 	 name 
-DOID:0110621	primary ciliary dyskinesia 17

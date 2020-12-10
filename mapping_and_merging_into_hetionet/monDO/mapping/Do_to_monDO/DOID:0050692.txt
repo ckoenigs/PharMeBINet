@@ -1,3 +1,0 @@
-DOID:0050692	Brody myopathy
-monDO ID 	 name 
-MONDO:0010977	Brody myopathy

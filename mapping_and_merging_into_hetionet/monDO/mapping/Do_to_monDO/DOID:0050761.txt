@@ -1,3 +1,0 @@
-DOID:0050761	paramyloidosis
-monDO ID 	 name 
-MONDO:0000442	paramyloidosis

@@ -1,3 +1,0 @@
-DOID:1928	Williams-Beuren syndrome
-monDO ID 	 name 
-MONDO:0008678	Williams syndrome

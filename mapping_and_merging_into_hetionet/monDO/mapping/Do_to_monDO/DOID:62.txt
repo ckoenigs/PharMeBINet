@@ -1,3 +1,0 @@
-DOID:62	aortic valve disease
-monDO ID 	 name 
-MONDO:0003803	aortic valve disease

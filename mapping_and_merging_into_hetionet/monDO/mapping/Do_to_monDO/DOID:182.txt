@@ -1,3 +1,0 @@
-DOID:182	calcinosis
-monDO ID 	 name 
-MONDO:0002123	calcinosis

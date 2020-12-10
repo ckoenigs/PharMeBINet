@@ -1,3 +1,0 @@
-MONDO:0006908	pituitary apoplexy
-DOID 	 name 
-DOID:1129	pituitary apoplexy

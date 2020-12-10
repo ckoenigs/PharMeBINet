@@ -1,3 +1,0 @@
-MONDO:0006790	hypercementosis
-DOID 	 name 
-DOID:12733	hypercementosis

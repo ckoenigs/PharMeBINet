@@ -1,3 +1,0 @@
-DOID:10456	tonsillitis
-monDO ID 	 name 
-MONDO:0001039	tonsillitis

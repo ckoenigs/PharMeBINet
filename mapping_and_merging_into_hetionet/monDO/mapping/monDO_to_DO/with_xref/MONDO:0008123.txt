@@ -1,3 +1,0 @@
-MONDO:0008123	autosomal dominant omodysplasia
-DOID 	 name 
-DOID:0060288	omodysplasia

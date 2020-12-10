@@ -1,3 +1,0 @@
-MONDO:0003193	bile duct adenocarcinoma
-DOID 	 name 
-DOID:4896	bile duct adenocarcinoma

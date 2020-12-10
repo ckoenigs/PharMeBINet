@@ -1,3 +1,0 @@
-MONDO:0005751	epidemic pleurodynia
-DOID 	 name 
-DOID:10882	epidemic pleurodynia

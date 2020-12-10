@@ -1,3 +1,0 @@
-MONDO:0001787	hepatic infarction
-DOID 	 name 
-DOID:13738	hepatic infarction

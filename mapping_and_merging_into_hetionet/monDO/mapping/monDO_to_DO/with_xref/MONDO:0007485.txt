@@ -1,3 +1,0 @@
-MONDO:0007485	dyskeratosis congenita, autosomal dominant 1
-DOID 	 name 
-DOID:2729	dyskeratosis congenita

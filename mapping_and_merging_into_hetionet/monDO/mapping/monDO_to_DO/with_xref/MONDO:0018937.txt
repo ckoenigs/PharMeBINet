@@ -1,3 +1,0 @@
-MONDO:0018937	mucopolysaccharidosis type 3
-DOID 	 name 
-DOID:12801	mucopolysaccharidosis III

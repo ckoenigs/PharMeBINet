@@ -1,3 +1,0 @@
-MONDO:0018958	nemaline myopathy
-DOID 	 name 
-DOID:3191	nemaline myopathy

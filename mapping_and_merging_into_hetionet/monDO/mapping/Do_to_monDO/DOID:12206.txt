@@ -1,3 +1,0 @@
-DOID:12206	dengue hemorrhagic fever
-monDO ID 	 name 
-MONDO:0005358	dengue hemorrhagic fever

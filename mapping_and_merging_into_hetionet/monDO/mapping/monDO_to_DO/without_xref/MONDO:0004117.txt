@@ -1,3 +1,0 @@
-MONDO:0004117	ampulla of vater small cell carcinoma
-DOID 	 name 
-DOID:7136	ampulla of Vater small cell carcinoma

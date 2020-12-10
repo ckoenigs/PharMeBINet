@@ -1,3 +1,0 @@
-DOID:0060893	juvenile-onset Parkinson disease
-monDO ID 	 name 
-MONDO:0000828	juvenile-onset Parkinson disease

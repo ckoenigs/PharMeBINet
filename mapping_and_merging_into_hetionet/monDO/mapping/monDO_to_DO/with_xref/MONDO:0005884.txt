@@ -1,3 +1,0 @@
-MONDO:0005884	opisthorchiasis
-DOID 	 name 
-DOID:13768	opisthorchiasis

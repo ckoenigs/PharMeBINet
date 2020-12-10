@@ -1,3 +1,0 @@
-DOID:0060370	autosomal recessive early-onset Parkinson disease 7
-monDO ID 	 name 
-MONDO:0011658	autosomal recessive early-onset Parkinson disease 7

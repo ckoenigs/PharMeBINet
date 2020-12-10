@@ -1,3 +1,0 @@
-DOID:4776	rapidly progressive glomerulonephritis
-monDO ID 	 name 
-MONDO:0017236	rapidly progressive glomerulonephritis

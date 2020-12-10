@@ -1,3 +1,0 @@
-MONDO:0001332	palindromic rheumatism
-DOID 	 name 
-DOID:1166	palindromic rheumatism

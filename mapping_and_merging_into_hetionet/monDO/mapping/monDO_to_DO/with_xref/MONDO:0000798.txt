@@ -1,3 +1,0 @@
-MONDO:0000798	mollusc allergy
-DOID 	 name 
-DOID:0060523	mollusc allergy

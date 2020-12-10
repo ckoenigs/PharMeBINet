@@ -1,3 +1,0 @@
-MONDO:0012573	vesicoureteral reflux 2
-DOID 	 name 
-DOID:9620	vesicoureteral reflux

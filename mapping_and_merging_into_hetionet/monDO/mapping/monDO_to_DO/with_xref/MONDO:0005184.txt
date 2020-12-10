@@ -1,4 +1,0 @@
-MONDO:0005184	pancreatic ductal adenocarcinoma
-DOID 	 name 
-DOID:3587	pancreatic ductal carcinoma
-DOID:3498	pancreatic ductal adenocarcinoma

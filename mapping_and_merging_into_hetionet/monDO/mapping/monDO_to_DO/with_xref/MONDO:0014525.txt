@@ -1,3 +1,0 @@
-MONDO:0014525	combined oxidative phosphorylation defect type 23
-DOID 	 name 
-DOID:0060286	combined oxidative phosphorylation deficiency

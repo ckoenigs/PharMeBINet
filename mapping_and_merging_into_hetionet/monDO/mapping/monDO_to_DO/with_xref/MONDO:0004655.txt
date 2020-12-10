@@ -1,3 +1,0 @@
-MONDO:0003709	acute megakaryoblastic leukemia
-DOID 	 name 
-DOID:8761	megakaryocytic leukemia

@@ -1,3 +1,0 @@
-MONDO:0004846	placental abruption (disease)
-DOID 	 name 
-DOID:9667	placental abruption

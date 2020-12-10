@@ -1,4 +1,0 @@
-MONDO:0005823	legionellosis
-DOID 	 name 
-DOID:10458	legionellosis
-DOID:10457	Legionnaires' disease

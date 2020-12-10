@@ -1,3 +1,0 @@
-DOID:0090114	Sorsby's fundus dystrophy
-monDO ID 	 name 
-MONDO:0007640	Sorsby's fundus dystrophy

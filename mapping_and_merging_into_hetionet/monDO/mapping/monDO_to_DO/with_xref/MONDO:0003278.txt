@@ -1,3 +1,0 @@
-MONDO:0003278	inner ear cancer
-DOID 	 name 
-DOID:5102	inner ear cancer

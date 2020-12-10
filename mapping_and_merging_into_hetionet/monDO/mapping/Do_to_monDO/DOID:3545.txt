@@ -1,3 +1,0 @@
-DOID:3545	childhood choroid plexus cancer
-monDO ID 	 name 
-MONDO:0002685	childhood choroid plexus cancer

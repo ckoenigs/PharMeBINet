@@ -1,3 +1,0 @@
-DOID:767	muscular atrophy
-monDO ID 	 name 
-MONDO:0004323	muscular atrophy

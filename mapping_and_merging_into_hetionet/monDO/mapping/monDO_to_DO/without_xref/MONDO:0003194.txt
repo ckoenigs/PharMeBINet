@@ -1,3 +1,0 @@
-MONDO:0003194	hemangioma of lung
-DOID 	 name 
-DOID:490	hemangioma of lung

@@ -1,3 +1,0 @@
-MONDO:0000842	Jansen's metaphyseal chondrodysplasia
-DOID 	 name 
-DOID:0080020	Jansen's metaphyseal chondrodysplasia

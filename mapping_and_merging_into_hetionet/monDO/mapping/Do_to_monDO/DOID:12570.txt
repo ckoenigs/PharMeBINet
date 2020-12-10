@@ -1,3 +1,0 @@
-DOID:12570	phacolytic glaucoma
-monDO ID 	 name 
-MONDO:0001553	phacolytic glaucoma

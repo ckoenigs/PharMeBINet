@@ -1,3 +1,0 @@
-MONDO:0009502	pyruvate dehydrogenase E2 deficiency
-DOID 	 name 
-DOID:3649	pyruvate decarboxylase deficiency

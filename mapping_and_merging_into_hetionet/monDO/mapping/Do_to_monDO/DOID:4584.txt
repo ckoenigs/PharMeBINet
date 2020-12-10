@@ -1,3 +1,0 @@
-DOID:4584	choroid plexus meningioma
-monDO ID 	 name 
-MONDO:0003053	choroid plexus meningioma

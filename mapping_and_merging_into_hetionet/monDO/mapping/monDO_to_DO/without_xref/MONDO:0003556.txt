@@ -1,3 +1,0 @@
-MONDO:0003556	endometrial adenosquamous carcinoma
-DOID 	 name 
-DOID:5631	endometrial adenosquamous carcinoma

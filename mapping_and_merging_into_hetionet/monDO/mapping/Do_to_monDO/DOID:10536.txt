@@ -1,3 +1,0 @@
-DOID:10536	malignant gastric granular cell tumor
-monDO ID 	 name 
-MONDO:0001057	malignant gastric granular cell tumor

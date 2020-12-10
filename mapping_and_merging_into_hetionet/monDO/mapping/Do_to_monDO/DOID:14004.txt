@@ -1,3 +1,0 @@
-DOID:14004	thoracic aortic aneurysm
-monDO ID 	 name 
-MONDO:0005396	thoracic aortic aneurysm

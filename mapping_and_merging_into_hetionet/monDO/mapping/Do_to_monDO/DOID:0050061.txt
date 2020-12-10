@@ -1,3 +1,0 @@
-DOID:0050061	erysipeloid
-monDO ID 	 name 
-MONDO:0000237	erysipeloid

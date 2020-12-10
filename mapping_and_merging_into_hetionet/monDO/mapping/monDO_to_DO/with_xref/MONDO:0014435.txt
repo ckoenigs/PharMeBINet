@@ -1,3 +1,0 @@
-MONDO:0014435	Bardet-Biedl syndrome 7
-DOID 	 name 
-DOID:0110129	Bardet-Biedl syndrome 7

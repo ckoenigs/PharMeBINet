@@ -1,3 +1,0 @@
-MONDO:0002163	thymus lipoma
-DOID 	 name 
-DOID:1975	thymus lipoma

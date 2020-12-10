@@ -1,3 +1,0 @@
-DOID:8802	trachea carcinoma in situ
-monDO ID 	 name 
-MONDO:0004661	trachea carcinoma in situ

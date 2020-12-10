@@ -1,3 +1,0 @@
-MONDO:0001731	benign vaginal mixed epithelial and mesenchymal neoplasm
-DOID 	 name 
-DOID:135	benign vaginal carcinosarcoma

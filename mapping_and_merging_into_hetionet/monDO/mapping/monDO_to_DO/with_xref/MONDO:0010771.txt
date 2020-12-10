@@ -1,3 +1,0 @@
-MONDO:0010771	histiocytoid cardiomyopathy
-DOID 	 name 
-DOID:0080198	infantile histiocytoid cardiomyopathy

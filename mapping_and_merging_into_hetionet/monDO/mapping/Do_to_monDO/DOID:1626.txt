@@ -1,3 +1,0 @@
-DOID:1626	breast duct papilloma
-monDO ID 	 name 
-MONDO:0002059	breast duct papilloma

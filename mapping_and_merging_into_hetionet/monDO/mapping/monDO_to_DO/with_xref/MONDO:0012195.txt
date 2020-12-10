@@ -1,3 +1,0 @@
-MONDO:0012195	arthrogryposis-severe scoliosis syndrome
-DOID 	 name 
-DOID:0050646	distal arthrogryposis

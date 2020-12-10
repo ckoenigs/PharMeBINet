@@ -1,3 +1,0 @@
-MONDO:0015540	hemophagocytic syndrome
-DOID 	 name 
-DOID:0050120	hemophagocytic lymphohistiocytosis

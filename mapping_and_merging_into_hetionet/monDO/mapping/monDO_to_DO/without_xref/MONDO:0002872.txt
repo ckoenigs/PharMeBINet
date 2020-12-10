@@ -1,3 +1,0 @@
-MONDO:0002872	trophoblastic neoplasm
-DOID 	 name 
-DOID:4085	trophoblastic neoplasm

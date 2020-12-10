@@ -1,3 +1,0 @@
-DOID:6059	nasal vestibule papilloma
-monDO ID 	 name 
-MONDO:0003753	nasal vestibule squamous papilloma

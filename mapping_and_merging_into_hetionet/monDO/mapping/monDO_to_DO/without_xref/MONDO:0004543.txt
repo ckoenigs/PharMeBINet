@@ -1,3 +1,0 @@
-MONDO:0004543	enteric pattern testicular yolk sac tumor
-DOID 	 name 
-DOID:8362	enteric pattern testicular yolk sac tumor

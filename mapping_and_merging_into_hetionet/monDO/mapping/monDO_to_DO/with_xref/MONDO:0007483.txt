@@ -1,3 +1,0 @@
-MONDO:0007483	dyschromatosis symmetrica hereditaria
-DOID 	 name 
-DOID:0060257	dyschromatosis symmetrica hereditaria

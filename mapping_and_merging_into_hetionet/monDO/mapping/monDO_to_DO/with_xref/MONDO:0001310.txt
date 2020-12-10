@@ -1,3 +1,0 @@
-MONDO:0001310	Bowman's membrane folds or rupture
-DOID 	 name 
-DOID:11552	Bowman's membrane folds or rupture

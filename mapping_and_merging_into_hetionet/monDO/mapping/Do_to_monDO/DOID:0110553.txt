@@ -1,3 +1,0 @@
-DOID:0110553	autosomal dominant nonsyndromic deafness 23
-monDO ID 	 name 
-MONDO:0011519	autosomal dominant nonsyndromic deafness 23

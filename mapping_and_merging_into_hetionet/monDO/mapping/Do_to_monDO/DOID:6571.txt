@@ -1,3 +1,0 @@
-DOID:6571	non-invasive bladder urothelial carcinoma
-monDO ID 	 name 
-MONDO:0003930	non-invasive bladder urothelial carcinoma

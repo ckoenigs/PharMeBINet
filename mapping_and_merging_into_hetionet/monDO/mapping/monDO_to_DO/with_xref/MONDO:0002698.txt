@@ -1,3 +1,0 @@
-MONDO:0002698	testicular gonadoblastoma (disease)
-DOID 	 name 
-DOID:3579	testicular gonadoblastoma

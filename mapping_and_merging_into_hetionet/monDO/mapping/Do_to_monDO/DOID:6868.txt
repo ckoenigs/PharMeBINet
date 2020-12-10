@@ -1,3 +1,0 @@
-DOID:6868	mediastinal malignant lymphoma
-monDO ID 	 name 
-MONDO:0004021	mediastinal malignant lymphoma

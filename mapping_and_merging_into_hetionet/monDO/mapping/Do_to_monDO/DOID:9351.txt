@@ -1,3 +1,0 @@
-DOID:9351	diabetes mellitus
-monDO ID 	 name 
-MONDO:0005015	diabetes mellitus (disease)

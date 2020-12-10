@@ -1,3 +1,0 @@
-DOID:13491	active vestibular Meniere's disease
-monDO ID 	 name 
-MONDO:0001728	active vestibular Meniere's disease

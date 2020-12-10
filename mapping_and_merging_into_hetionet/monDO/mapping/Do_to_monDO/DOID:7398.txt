@@ -1,3 +1,0 @@
-DOID:7398	cerebral primitive neuroectodermal tumor
-monDO ID 	 name 
-MONDO:0004209	cerebral primitive neuroectodermal tumor

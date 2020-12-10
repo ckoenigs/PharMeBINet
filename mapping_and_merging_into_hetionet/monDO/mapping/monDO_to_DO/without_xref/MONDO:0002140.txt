@@ -1,3 +1,0 @@
-MONDO:0002140	vagina sarcoma
-DOID 	 name 
-DOID:1901	vagina sarcoma

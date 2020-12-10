@@ -1,3 +1,0 @@
-DOID:6210	bladder diffuse clear cell adenocarcinoma
-monDO ID 	 name 
-MONDO:0003810	bladder diffuse clear cell adenocarcinoma

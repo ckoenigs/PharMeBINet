@@ -1,3 +1,0 @@
-DOID:3459	breast carcinoma
-monDO ID 	 name 
-MONDO:0004989	breast carcinoma

@@ -1,3 +1,0 @@
-DOID:1800	neuroendocrine carcinoma
-monDO ID 	 name 
-MONDO:0002120	neuroendocrine carcinoma

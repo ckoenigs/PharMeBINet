@@ -1,3 +1,0 @@
-MONDO:0021002	syndactyly (disease)
-DOID 	 name 
-DOID:11193	syndactyly

@@ -1,3 +1,0 @@
-MONDO:0003169	diencephalic astrocytomas
-DOID 	 name 
-DOID:4855	diencephalic astrocytomas

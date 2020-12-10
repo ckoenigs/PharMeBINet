@@ -1,3 +1,0 @@
-DOID:13482	Proteus syndrome
-monDO ID 	 name 
-MONDO:0008318	Proteus syndrome

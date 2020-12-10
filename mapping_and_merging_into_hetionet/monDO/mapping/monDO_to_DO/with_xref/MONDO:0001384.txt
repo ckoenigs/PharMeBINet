@@ -1,3 +1,0 @@
-MONDO:0001384	myopia (disease)
-DOID 	 name 
-DOID:11830	myopia

@@ -1,3 +1,0 @@
-MONDO:0006390	prostate small cell carcinoma
-DOID 	 name 
-DOID:7141	prostate small cell carcinoma

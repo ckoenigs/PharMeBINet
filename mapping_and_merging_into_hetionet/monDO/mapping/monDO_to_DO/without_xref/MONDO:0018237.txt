@@ -1,3 +1,0 @@
-MONDO:0018237	acrofacial dysostosis
-DOID 	 name 
-DOID:0060379	acrofacial dysostosis

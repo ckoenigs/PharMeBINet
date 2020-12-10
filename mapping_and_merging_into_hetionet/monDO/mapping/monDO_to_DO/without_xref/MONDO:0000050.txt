@@ -1,3 +1,0 @@
-MONDO:0000050	isolated growth hormone deficiency
-DOID 	 name 
-DOID:0060870	isolated growth hormone deficiency

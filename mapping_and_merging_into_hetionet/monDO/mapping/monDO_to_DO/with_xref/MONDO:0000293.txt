@@ -1,3 +1,0 @@
-MONDO:0000293	coenurosis
-DOID 	 name 
-DOID:0050251	coenurosis

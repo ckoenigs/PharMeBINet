@@ -1,3 +1,0 @@
-MONDO:0001612	carotid stenosis
-DOID 	 name 
-DOID:13001	carotid stenosis

@@ -1,3 +1,0 @@
-MONDO:0005701	chlamydia trachomatis infectious disease
-DOID 	 name 
-DOID:11263	chlamydia

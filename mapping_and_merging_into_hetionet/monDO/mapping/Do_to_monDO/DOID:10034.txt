@@ -1,3 +1,0 @@
-DOID:10034	eye accommodation disease
-monDO ID 	 name 
-MONDO:0000926	eye accommodation disease

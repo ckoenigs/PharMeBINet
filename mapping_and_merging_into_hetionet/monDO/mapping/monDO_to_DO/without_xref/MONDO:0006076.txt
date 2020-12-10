@@ -1,3 +1,0 @@
-MONDO:0006076	adrenal gland neuroblastoma
-DOID 	 name 
-DOID:5718	adrenal neuroblastoma

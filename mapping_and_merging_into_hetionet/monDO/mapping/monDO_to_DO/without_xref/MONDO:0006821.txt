@@ -1,3 +1,0 @@
-MONDO:0006821	kidney papillary necrosis
-DOID 	 name 
-DOID:2981	kidney papillary necrosis

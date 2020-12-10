@@ -1,3 +1,0 @@
-MONDO:0008889	thromboangiitis obliterans
-DOID 	 name 
-DOID:12918	thromboangiitis obliterans

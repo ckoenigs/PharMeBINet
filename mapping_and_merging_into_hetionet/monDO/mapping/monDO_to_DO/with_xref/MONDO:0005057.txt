@@ -1,3 +1,0 @@
-MONDO:0005057	large cell neuroendocrine carcinoma
-DOID 	 name 
-DOID:0050872	large cell neuroendocrine carcinoma

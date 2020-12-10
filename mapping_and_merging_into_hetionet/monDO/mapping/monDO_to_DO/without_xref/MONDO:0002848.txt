@@ -1,3 +1,0 @@
-MONDO:0002848	skeletal muscle neoplasm
-DOID 	 name 
-DOID:4044	skeletal muscle neoplasm

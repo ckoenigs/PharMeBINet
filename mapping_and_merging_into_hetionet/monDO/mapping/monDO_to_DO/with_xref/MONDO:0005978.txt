@@ -1,3 +1,0 @@
-MONDO:0005978	theileriasis
-DOID 	 name 
-DOID:3733	theileriasis

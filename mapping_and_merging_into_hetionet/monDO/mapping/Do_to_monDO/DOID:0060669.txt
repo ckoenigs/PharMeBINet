@@ -1,3 +1,0 @@
-DOID:0060669	cerebral cavernous malformation
-monDO ID 	 name 
-MONDO:0000820	cerebral cavernous malformation

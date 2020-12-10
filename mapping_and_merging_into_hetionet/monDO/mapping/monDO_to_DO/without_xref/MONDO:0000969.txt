@@ -1,3 +1,0 @@
-MONDO:0000969	pleural lipoma
-DOID 	 name 
-DOID:10195	pleural lipoma

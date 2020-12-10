@@ -1,3 +1,0 @@
-DOID:6498	seborrheic keratosis
-monDO ID 	 name 
-MONDO:0008420	seborrheic keratosis

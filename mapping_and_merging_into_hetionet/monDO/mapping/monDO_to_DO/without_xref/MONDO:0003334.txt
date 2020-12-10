@@ -1,3 +1,0 @@
-MONDO:0003334	demyelinating polyneuropathy
-DOID 	 name 
-DOID:5214	demyelinating polyneuropathy

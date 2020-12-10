@@ -1,3 +1,0 @@
-MONDO:0016222	spindle cell hemangioma
-DOID 	 name 
-DOID:496	spindle cell hemangioma

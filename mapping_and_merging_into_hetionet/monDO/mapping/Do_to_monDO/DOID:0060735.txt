@@ -1,3 +1,0 @@
-DOID:0060735	epidermolysis bullosa simplex Dowling-Meara type
-monDO ID 	 name 
-MONDO:0007550	epidermolysis bullosa simplex Dowling-Meara type

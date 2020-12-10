@@ -1,3 +1,0 @@
-DOID:0050472	monilethrix
-monDO ID 	 name 
-MONDO:0008009	monilethrix

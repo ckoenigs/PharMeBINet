@@ -1,3 +1,0 @@
-DOID:0060252	sclerocornea
-monDO ID 	 name 
-MONDO:0019629	sclerocornea (disease)

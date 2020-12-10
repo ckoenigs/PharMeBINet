@@ -1,3 +1,0 @@
-MONDO:0004392	intracranial chondrosarcoma
-DOID 	 name 
-DOID:7903	intracranial chondrosarcoma

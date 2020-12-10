@@ -1,3 +1,0 @@
-MONDO:0008708	acrocallosal syndrome
-DOID 	 name 
-DOID:9250	acrocallosal syndrome

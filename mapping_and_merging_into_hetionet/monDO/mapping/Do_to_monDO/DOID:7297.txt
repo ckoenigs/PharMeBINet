@@ -1,3 +1,0 @@
-DOID:7297	childhood extraosseous osteosarcoma
-monDO ID 	 name 
-MONDO:0004176	childhood extraosseous osteosarcoma

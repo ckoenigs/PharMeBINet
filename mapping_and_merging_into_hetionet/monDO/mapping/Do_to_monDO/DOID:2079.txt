@@ -1,3 +1,0 @@
-DOID:2079	eccrine mixed tumor of skin
-monDO ID 	 name 
-MONDO:0002200	eccrine mixed tumor of skin

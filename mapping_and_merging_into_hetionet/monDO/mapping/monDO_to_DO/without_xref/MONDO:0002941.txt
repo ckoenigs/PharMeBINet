@@ -1,3 +1,0 @@
-MONDO:0002941	anal margin carcinoma
-DOID 	 name 
-DOID:4284	anal margin carcinoma

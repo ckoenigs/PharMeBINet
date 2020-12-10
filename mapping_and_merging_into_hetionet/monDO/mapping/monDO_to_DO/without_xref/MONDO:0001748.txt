@@ -1,3 +1,0 @@
-MONDO:0001748	maxillary sinus cancer
-DOID 	 name 
-DOID:1357	maxillary sinus cancer

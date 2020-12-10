@@ -1,3 +1,0 @@
-DOID:3717	gastric adenocarcinoma
-monDO ID 	 name 
-MONDO:0005036	gastric adenocarcinoma

@@ -1,3 +1,0 @@
-MONDO:0010035	Smith-Lemli-Opitz syndrome
-DOID 	 name 
-DOID:14692	Smith-Lemli-Opitz syndrome

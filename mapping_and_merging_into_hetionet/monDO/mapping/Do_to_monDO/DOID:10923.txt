@@ -1,3 +1,0 @@
-DOID:10923	sickle cell anemia
-monDO ID 	 name 
-MONDO:0011382	sickle cell anemia

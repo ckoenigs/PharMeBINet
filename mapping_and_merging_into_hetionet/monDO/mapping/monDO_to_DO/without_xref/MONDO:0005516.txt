@@ -1,3 +1,0 @@
-MONDO:0005516	osteochondrodysplasia
-DOID 	 name 
-DOID:2256	osteochondrodysplasia

@@ -1,6 +1,0 @@
-MONDO:0003061	benign muscle neoplasm
-DOID 	 name 
-DOID:2691	myoma
-DOID:4045	muscle cancer
-DOID:5039	myoblastoma
-DOID:461	muscle benign neoplasm

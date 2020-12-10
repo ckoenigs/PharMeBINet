@@ -1,3 +1,0 @@
-MONDO:0007157	arthrogryposis, distal, type 1A
-DOID 	 name 
-DOID:0050646	distal arthrogryposis

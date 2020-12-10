@@ -1,3 +1,0 @@
-DOID:0050858	Marshall-Smith syndrome
-monDO ID 	 name 
-MONDO:0011244	Marshall-Smith syndrome

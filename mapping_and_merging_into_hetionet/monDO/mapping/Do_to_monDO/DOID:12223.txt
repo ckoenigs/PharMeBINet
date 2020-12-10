@@ -1,3 +1,0 @@
-DOID:12223	specific bursitis often of occupational origin
-monDO ID 	 name 
-MONDO:0001467	specific bursitis often of occupational origin

@@ -1,3 +1,0 @@
-DOID:0050789	tarsal-carpal coalition syndrome
-monDO ID 	 name 
-MONDO:0008521	tarsal-carpal coalition syndrome

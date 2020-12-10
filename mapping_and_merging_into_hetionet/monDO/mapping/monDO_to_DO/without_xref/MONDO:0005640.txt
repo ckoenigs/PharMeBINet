@@ -1,3 +1,0 @@
-MONDO:0005640	akinetic mutism
-DOID 	 name 
-DOID:4267	akinetic mutism

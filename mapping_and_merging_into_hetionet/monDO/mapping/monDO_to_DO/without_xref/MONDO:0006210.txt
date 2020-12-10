@@ -1,3 +1,0 @@
-MONDO:0006210	fibrolamellar carcinoma
-DOID 	 name 
-DOID:5015	fibrolamellar carcinoma

@@ -1,3 +1,0 @@
-MONDO:0005771	geographic tongue
-DOID 	 name 
-DOID:1455	geographic tongue

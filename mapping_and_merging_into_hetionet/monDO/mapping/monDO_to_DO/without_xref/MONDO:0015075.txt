@@ -1,3 +1,0 @@
-MONDO:0015075	thyroid gland carcinoma
-DOID 	 name 
-DOID:3963	thyroid carcinoma

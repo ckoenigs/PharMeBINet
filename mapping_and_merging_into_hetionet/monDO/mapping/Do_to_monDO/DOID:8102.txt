@@ -1,3 +1,0 @@
-DOID:8102	fetal adenoma
-monDO ID 	 name 
-MONDO:0004460	thyroid fetal adenoma

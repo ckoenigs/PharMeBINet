@@ -1,3 +1,0 @@
-MONDO:0002488	intraductal breast neoplasm
-DOID 	 name 
-DOID:3013	intraductal breast neoplasm

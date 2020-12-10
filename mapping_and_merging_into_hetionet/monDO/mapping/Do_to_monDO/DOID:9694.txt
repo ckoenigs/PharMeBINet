@@ -1,3 +1,0 @@
-DOID:9694	toxic myocarditis
-monDO ID 	 name 
-MONDO:0004851	toxic myocarditis

@@ -1,3 +1,0 @@
-MONDO:0004630	substance-induced psychosis
-DOID 	 name 
-DOID:8646	substance-induced psychosis

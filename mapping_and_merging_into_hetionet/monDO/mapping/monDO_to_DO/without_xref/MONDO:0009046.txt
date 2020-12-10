@@ -1,3 +1,0 @@
-MONDO:0009046	Fraser syndrome
-DOID 	 name 
-DOID:0090001	Fraser syndrome

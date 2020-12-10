@@ -1,3 +1,0 @@
-MONDO:0007793	hypochondroplasia
-DOID 	 name 
-DOID:0080041	hypochondroplasia

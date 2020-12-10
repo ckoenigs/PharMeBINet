@@ -1,3 +1,0 @@
-MONDO:0005557	calcium metabolic disease
-DOID 	 name 
-DOID:10575	calcium metabolism disease

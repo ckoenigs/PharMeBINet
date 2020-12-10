@@ -1,3 +1,0 @@
-DOID:0080026	otospondylomegaepiphyseal dysplasia
-monDO ID 	 name 
-MONDO:0008975	otospondylomegaepiphyseal dysplasia

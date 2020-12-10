@@ -1,3 +1,0 @@
-DOID:5501	Pediculus humanus capitis infestation
-monDO ID 	 name 
-MONDO:0003471	Pediculus humanus capitis infestation

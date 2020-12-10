@@ -1,3 +1,0 @@
-MONDO:0002908	glucose metabolism disease
-DOID 	 name 
-DOID:4194	glucose metabolism disease

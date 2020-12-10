@@ -1,3 +1,0 @@
-MONDO:0003211	nasal cavity adenocarcinoma
-DOID 	 name 
-DOID:4930	nasal cavity adenocarcinoma

@@ -1,3 +1,0 @@
-MONDO:0001766	eversion of lacrimal punctum
-DOID 	 name 
-DOID:13651	eversion of lacrimal punctum

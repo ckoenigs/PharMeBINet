@@ -1,3 +1,0 @@
-MONDO:0003939	muscle tissue disease
-DOID 	 name 
-DOID:66	muscle tissue disease

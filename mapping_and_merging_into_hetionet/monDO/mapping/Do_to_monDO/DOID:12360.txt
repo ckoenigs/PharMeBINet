@@ -1,3 +1,0 @@
-DOID:12360	lateral displacement of eye
-monDO ID 	 name 
-MONDO:0001510	lateral displacement of eye

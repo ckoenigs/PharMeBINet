@@ -1,3 +1,0 @@
-MONDO:0004135	subacute lymphocytic thyroiditis
-DOID 	 name 
-DOID:7187	subacute lymphocytic thyroiditis

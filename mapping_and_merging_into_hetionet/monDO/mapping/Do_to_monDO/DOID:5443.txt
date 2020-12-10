@@ -1,3 +1,0 @@
-DOID:5443	clear cell hidradenoma
-monDO ID 	 name 
-MONDO:0003447	clear cell hidradenoma

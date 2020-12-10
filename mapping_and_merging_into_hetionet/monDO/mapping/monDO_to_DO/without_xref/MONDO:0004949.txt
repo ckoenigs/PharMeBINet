@@ -1,3 +1,0 @@
-MONDO:0004949	neoplasm of mature B-cells
-DOID 	 name 
-DOID:706	mature B-cell neoplasm

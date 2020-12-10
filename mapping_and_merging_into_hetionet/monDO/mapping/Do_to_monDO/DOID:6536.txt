@@ -1,3 +1,0 @@
-DOID:6536	plasma cell neoplasm
-monDO ID 	 name 
-MONDO:0004959	plasma cell neoplasm

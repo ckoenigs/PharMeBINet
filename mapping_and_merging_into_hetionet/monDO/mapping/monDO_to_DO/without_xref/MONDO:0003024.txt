@@ -1,3 +1,0 @@
-MONDO:0003024	breast angiosarcoma
-DOID 	 name 
-DOID:4511	breast angiosarcoma

@@ -1,3 +1,0 @@
-DOID:0050868	hepatocellular adenoma
-monDO ID 	 name 
-MONDO:0018902	hepatocellular adenoma

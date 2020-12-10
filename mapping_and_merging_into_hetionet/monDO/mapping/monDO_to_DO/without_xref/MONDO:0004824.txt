@@ -1,3 +1,0 @@
-MONDO:0004824	neonatal candidiasis
-DOID 	 name 
-DOID:9577	neonatal candidiasis

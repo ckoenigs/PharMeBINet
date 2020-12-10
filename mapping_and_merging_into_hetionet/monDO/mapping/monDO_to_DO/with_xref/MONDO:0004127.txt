@@ -1,3 +1,0 @@
-MONDO:0004127	lung occult adenocarcinoma
-DOID 	 name 
-DOID:7168	lung occult adenocarcinoma

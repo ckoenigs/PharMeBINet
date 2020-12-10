@@ -1,3 +1,0 @@
-MONDO:0013551	hereditary spastic paraplegia 47
-DOID 	 name 
-DOID:0110799	hereditary spastic paraplegia 47

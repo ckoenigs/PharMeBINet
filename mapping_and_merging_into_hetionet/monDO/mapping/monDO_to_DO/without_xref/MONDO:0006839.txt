@@ -1,3 +1,0 @@
-MONDO:0006839	Lutembacher's syndrome
-DOID 	 name 
-DOID:1998	Lutembacher's syndrome

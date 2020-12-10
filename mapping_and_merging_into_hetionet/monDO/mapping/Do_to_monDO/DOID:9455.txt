@@ -1,3 +1,0 @@
-DOID:9455	lipid storage disease
-monDO ID 	 name 
-MONDO:0019245	lipid storage disorder

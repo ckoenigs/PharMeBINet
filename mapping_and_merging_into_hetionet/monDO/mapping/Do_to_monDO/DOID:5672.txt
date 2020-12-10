@@ -1,3 +1,0 @@
-DOID:5672	large intestine cancer
-monDO ID 	 name 
-MONDO:0005575	colorectal cancer

@@ -1,3 +1,0 @@
-MONDO:0006605	scalp dermatosis
-DOID 	 name 
-DOID:3136	scalp dermatosis

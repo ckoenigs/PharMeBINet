@@ -1,3 +1,0 @@
-DOID:1328	Rift Valley fever
-monDO ID 	 name 
-MONDO:0017880	Rift valley fever

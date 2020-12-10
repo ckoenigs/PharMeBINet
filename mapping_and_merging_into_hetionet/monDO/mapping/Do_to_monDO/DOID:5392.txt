@@ -1,3 +1,0 @@
-DOID:5392	acidophil adenoma
-monDO ID 	 name 
-MONDO:0006634	pituitary gland acidophil adenoma

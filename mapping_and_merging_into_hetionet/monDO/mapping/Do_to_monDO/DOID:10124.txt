@@ -1,3 +1,0 @@
-DOID:10124	corneal disease
-monDO ID 	 name 
-MONDO:0000942	corneal disease

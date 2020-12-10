@@ -1,3 +1,0 @@
-MONDO:0004746	myopathy of extraocular muscle
-DOID 	 name 
-DOID:929	myopathy of extraocular muscle

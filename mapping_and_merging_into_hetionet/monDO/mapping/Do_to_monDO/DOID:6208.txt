@@ -1,3 +1,0 @@
-DOID:6208	mediastinal osteogenic sarcoma
-monDO ID 	 name 
-MONDO:0003808	mediastinal osteogenic sarcoma

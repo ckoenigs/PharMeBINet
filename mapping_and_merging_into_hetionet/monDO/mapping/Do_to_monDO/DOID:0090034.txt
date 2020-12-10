@@ -1,3 +1,0 @@
-DOID:0090034	myoclonic dystonia 11
-monDO ID 	 name 
-MONDO:0008044	myoclonic dystonia 11

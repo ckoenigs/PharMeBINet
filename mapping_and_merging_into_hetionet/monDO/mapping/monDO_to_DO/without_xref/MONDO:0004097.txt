@@ -1,3 +1,0 @@
-MONDO:0003709	lipid-rich breast carcinoma
-DOID 	 name 
-DOID:7076	lipid-rich breast carcinoma

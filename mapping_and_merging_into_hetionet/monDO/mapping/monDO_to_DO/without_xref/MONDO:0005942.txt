@@ -1,3 +1,0 @@
-MONDO:0005942	Reye syndrome
-DOID 	 name 
-DOID:14525	Reye syndrome

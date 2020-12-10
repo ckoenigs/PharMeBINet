@@ -1,3 +1,0 @@
-MONDO:0011060	early-onset non-syndromic cataract
-DOID 	 name 
-DOID:83	cataract

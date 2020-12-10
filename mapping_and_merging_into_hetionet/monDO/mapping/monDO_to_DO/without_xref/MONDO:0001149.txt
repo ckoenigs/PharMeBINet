@@ -1,3 +1,0 @@
-MONDO:0001149	microcephaly (disease)
-DOID 	 name 
-DOID:10907	microcephaly

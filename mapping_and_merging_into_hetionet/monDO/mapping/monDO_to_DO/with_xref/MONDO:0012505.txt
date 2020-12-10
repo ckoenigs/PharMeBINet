@@ -1,3 +1,0 @@
-MONDO:0012505	pigmented nodular adrenocortical disease, primary, 2
-DOID 	 name 
-DOID:0060280	primary pigmented nodular adrenocortical disease

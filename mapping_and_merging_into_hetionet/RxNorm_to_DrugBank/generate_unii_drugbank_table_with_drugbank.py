@@ -4,9 +4,10 @@ Created on Wed Sep 27 13:05:35 2017
 
 @author: Cassandra
 """
-from py2neo import Graph
 import datetime
 import sys, csv
+sys.path.append("../..")
+import create_connection_to_databases
 
 
 '''
@@ -18,7 +19,7 @@ def create_connection_with_neo4j():
     # set up authentication parameters and connection
     # authenticate("localhost:7474", "neo4j", "test")
     global g
-    g = Graph("http://localhost:7474/db/data/",auth=("neo4j", "test"))
+    g = create_connection_to_databases.database_connection_neo4j()
 
 '''
 generate af file with only drugbank and unii IDs

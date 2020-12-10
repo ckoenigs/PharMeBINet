@@ -1,3 +1,0 @@
-DOID:13249	pneumatosis cystoides intestinalis
-monDO ID 	 name 
-MONDO:0006912	pneumatosis cystoides intestinalis

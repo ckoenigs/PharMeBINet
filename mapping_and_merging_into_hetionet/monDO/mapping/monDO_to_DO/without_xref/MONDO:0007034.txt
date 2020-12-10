@@ -1,3 +1,0 @@
-MONDO:0007034	Adams-Oliver syndrome
-DOID 	 name 
-DOID:0060227	Adams-Oliver syndrome

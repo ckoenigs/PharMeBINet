@@ -1,3 +1,0 @@
-MONDO:0012920	type 1 diabetes mellitus 21
-DOID 	 name 
-DOID:0110758	type 1 diabetes mellitus 21

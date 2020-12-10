@@ -1,3 +1,0 @@
-DOID:13819	lymphogranuloma venereum
-monDO ID 	 name 
-MONDO:0005834	lymphogranuloma venereum

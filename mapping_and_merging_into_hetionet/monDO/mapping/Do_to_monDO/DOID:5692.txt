@@ -1,3 +1,0 @@
-DOID:5692	cellular myxoid liposarcoma
-monDO ID 	 name 
-MONDO:0005238	round cell liposarcoma

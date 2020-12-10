@@ -1,3 +1,0 @@
-MONDO:0016699	myxopapillary ependymoma
-DOID 	 name 
-DOID:5075	myxopapillary ependymoma

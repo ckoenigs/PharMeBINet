@@ -1,3 +1,0 @@
-MONDO:0001291	brain compression
-DOID 	 name 
-DOID:11457	brain compression

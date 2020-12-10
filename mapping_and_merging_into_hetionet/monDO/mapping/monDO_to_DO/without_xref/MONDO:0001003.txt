@@ -1,3 +1,0 @@
-MONDO:0001003	pneumoconiosis due to talc
-DOID 	 name 
-DOID:10329	pneumoconiosis due to talc

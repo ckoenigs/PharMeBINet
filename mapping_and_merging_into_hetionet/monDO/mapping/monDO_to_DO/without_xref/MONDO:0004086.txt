@@ -1,3 +1,0 @@
-MONDO:0004086	ciliary body epithelioid cell melanoma
-DOID 	 name 
-DOID:7042	ciliary body epithelioid cell melanoma

@@ -1,3 +1,0 @@
-MONDO:0007267	hypertrophic cardiomyopathy 3
-DOID 	 name 
-DOID:0110309	hypertrophic cardiomyopathy 3

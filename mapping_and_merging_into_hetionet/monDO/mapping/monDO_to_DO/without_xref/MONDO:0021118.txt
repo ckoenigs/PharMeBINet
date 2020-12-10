@@ -1,3 +1,0 @@
-MONDO:0021118	intestinal neoplasm
-DOID 	 name 
-DOID:4610	intestinal benign neoplasm

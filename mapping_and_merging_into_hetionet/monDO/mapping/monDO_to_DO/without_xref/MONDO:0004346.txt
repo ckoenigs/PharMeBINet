@@ -1,3 +1,0 @@
-MONDO:0004346	signet ring cell intrahepatic cholangiocarcinoma
-DOID 	 name 
-DOID:7733	signet ring cell intrahepatic cholangiocarcinoma

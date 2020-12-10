@@ -1,3 +1,0 @@
-MONDO:0011991	autosomal recessive nonsyndromic deafness 38
-DOID 	 name 
-DOID:0110496	autosomal recessive nonsyndromic deafness 38

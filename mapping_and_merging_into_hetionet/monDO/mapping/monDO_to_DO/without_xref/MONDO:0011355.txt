@@ -1,3 +1,0 @@
-MONDO:0011355	cone-rod dystrophy 7
-DOID 	 name 
-DOID:0111012	cone-rod dystrophy 7

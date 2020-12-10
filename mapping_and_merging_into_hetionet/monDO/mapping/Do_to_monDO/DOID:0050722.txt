@@ -1,3 +1,0 @@
-DOID:0050722	PHGDH deficiency
-monDO ID 	 name 
-MONDO:0011152	PHGDH deficiency

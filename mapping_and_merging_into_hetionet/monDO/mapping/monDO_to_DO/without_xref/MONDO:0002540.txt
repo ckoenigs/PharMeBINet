@@ -1,3 +1,0 @@
-MONDO:0002540	childhood oligodendroglioma
-DOID 	 name 
-DOID:3183	childhood oligodendroglioma

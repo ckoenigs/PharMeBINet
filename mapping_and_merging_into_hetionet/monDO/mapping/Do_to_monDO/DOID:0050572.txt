@@ -1,3 +1,0 @@
-DOID:0050572	cone-rod dystrophy
-monDO ID 	 name 
-MONDO:0015993	cone-rod dystrophy

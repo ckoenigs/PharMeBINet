@@ -1,3 +1,0 @@
-DOID:0050150	Pontiac fever
-monDO ID 	 name 
-MONDO:0020487	Pontiac fever

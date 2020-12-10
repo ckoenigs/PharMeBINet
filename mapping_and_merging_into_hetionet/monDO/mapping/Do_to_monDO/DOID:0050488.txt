@@ -1,3 +1,0 @@
-DOID:0050488	early congenital syphilis
-monDO ID 	 name 
-MONDO:0000333	early congenital syphilis

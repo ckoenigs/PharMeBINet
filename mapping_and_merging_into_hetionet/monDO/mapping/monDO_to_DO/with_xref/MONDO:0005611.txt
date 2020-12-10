@@ -1,3 +1,0 @@
-MONDO:0005611	bladder transitional cell carcinoma
-DOID 	 name 
-DOID:4006	bladder urothelial carcinoma

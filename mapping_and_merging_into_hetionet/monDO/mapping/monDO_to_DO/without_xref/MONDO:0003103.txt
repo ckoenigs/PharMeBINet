@@ -1,3 +1,0 @@
-MONDO:0003103	nerve root neoplasm
-DOID 	 name 
-DOID:4698	nerve root neoplasm

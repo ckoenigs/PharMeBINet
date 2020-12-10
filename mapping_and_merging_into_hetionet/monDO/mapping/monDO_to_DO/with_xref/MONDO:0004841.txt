@@ -1,3 +1,0 @@
-MONDO:0004841	kidney hypertrophy
-DOID 	 name 
-DOID:9622	kidney hypertrophy

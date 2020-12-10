@@ -1,3 +1,0 @@
-MONDO:0004976	amyotrophic lateral sclerosis
-DOID 	 name 
-DOID:332	amyotrophic lateral sclerosis

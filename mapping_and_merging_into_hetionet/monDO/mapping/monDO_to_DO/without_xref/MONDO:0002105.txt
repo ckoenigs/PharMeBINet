@@ -1,3 +1,0 @@
-MONDO:0002105	toxic megacolon
-DOID 	 name 
-DOID:1770	toxic megacolon

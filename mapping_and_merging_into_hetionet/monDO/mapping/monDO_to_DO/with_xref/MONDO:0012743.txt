@@ -1,3 +1,0 @@
-MONDO:0012743	Brugada syndrome 4
-DOID 	 name 
-DOID:0110221	Brugada syndrome 4

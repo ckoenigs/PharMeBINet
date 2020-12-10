@@ -1,3 +1,0 @@
-MONDO:0013202	Waardenburg syndrome type 4C
-DOID 	 name 
-DOID:0110955	Waardenburg syndrome type 4C

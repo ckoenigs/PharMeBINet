@@ -1,3 +1,0 @@
-DOID:0060219	lymph node adenoid cystic carcinoma
-monDO ID 	 name 
-MONDO:0000715	lymph node adenoid cystic carcinoma

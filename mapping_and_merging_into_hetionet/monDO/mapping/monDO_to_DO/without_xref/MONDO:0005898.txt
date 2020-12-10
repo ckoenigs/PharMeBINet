@@ -1,3 +1,0 @@
-MONDO:0005898	paronychia (disease)
-DOID 	 name 
-DOID:13117	paronychia

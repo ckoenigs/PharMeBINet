@@ -1,5 +1,0 @@
-MONDO:0001521	intermittent explosive disorder
-DOID 	 name 
-DOID:10937	impulse control disorder
-DOID:12401	intermittent explosive disorder
-DOID:12400	kleptomania

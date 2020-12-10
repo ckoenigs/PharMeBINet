@@ -1,3 +1,0 @@
-MONDO:0000288	polycystic echinococcosis
-DOID 	 name 
-DOID:0050218	polycystic echinococcosis

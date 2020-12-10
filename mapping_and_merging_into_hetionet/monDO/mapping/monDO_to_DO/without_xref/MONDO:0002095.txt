@@ -1,3 +1,0 @@
-MONDO:0002095	vascular cancer
-DOID 	 name 
-DOID:175	vascular cancer

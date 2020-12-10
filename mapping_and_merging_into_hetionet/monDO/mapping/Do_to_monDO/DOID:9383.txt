@@ -1,3 +1,0 @@
-DOID:9383	iridocyclitis
-monDO ID 	 name 
-MONDO:0004773	iridocyclitis (disease)

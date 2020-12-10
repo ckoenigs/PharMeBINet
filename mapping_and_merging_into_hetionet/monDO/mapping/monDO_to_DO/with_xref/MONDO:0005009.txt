@@ -1,3 +1,0 @@
-MONDO:0005009	congestive heart failure
-DOID 	 name 
-DOID:6000	congestive heart failure

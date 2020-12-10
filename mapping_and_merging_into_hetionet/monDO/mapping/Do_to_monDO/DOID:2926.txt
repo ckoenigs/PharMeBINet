@@ -1,3 +1,0 @@
-DOID:2926	Klippel-Trenaunay syndrome
-monDO ID 	 name 
-MONDO:0007864	Klippel-Trenaunay syndrome

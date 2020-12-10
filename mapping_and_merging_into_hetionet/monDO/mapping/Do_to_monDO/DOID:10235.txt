@@ -1,3 +1,0 @@
-DOID:10235	Brown's tendon sheath syndrome
-monDO ID 	 name 
-MONDO:0000982	Brown's tendon sheath syndrome

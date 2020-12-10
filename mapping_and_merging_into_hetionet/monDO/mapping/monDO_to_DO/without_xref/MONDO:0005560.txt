@@ -1,3 +1,0 @@
-MONDO:0005560	brain disease
-DOID 	 name 
-DOID:936	brain disease

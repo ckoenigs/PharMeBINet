@@ -1,3 +1,0 @@
-DOID:0060153	topographical agnosia
-monDO ID 	 name 
-MONDO:0000683	topographical agnosia

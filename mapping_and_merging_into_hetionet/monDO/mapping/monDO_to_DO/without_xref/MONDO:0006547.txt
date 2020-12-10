@@ -1,3 +1,0 @@
-MONDO:0006547	exanthem (disease)
-DOID 	 name 
-DOID:0050486	exanthem

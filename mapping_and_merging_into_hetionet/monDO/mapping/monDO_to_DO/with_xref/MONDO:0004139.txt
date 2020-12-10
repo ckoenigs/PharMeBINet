@@ -1,3 +1,0 @@
-MONDO:0004139	normocytic anemia
-DOID 	 name 
-DOID:720	normocytic anemia

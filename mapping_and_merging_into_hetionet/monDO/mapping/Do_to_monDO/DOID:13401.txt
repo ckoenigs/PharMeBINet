@@ -1,3 +1,0 @@
-DOID:13401	angioid streaks
-monDO ID 	 name 
-MONDO:0011782	angioid streaks

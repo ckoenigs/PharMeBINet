@@ -1,3 +1,0 @@
-MONDO:0021061	neurofibromatosis
-DOID 	 name 
-DOID:8712	neurofibromatosis

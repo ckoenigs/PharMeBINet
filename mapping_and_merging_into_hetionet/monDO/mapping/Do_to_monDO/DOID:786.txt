@@ -1,3 +1,0 @@
-DOID:786	laryngeal disease
-monDO ID 	 name 
-MONDO:0004382	laryngeal disease

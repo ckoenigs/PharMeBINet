@@ -1,3 +1,0 @@
-MONDO:0006714	coronary aneurysm
-DOID 	 name 
-DOID:3362	coronary aneurysm

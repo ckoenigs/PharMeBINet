@@ -1,3 +1,0 @@
-DOID:2614	serous surface papilloma
-monDO ID 	 name 
-MONDO:0002362	serous surface papilloma

@@ -1,3 +1,0 @@
-MONDO:0004096	spinal cord dermoid cyst
-DOID 	 name 
-DOID:7071	spinal cord dermoid cyst

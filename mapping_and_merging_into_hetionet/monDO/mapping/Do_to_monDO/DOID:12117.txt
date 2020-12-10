@@ -1,3 +1,0 @@
-DOID:12117	pulmonary alveolar microlithiasis
-monDO ID 	 name 
-MONDO:0009928	pulmonary alveolar microlithiasis

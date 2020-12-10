@@ -1,3 +1,0 @@
-MONDO:0005875	Newcastle disease
-DOID 	 name 
-DOID:2929	Newcastle disease

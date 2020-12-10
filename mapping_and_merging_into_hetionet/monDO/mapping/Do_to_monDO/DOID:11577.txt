@@ -1,3 +1,0 @@
-DOID:11577	Cauda equina syndrome
-monDO ID 	 name 
-MONDO:0005693	cauda equina syndrome

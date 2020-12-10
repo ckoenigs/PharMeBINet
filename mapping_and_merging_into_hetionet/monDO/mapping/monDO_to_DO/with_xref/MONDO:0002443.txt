@@ -1,3 +1,0 @@
-MONDO:0002443	bruxism (disease)
-DOID 	 name 
-DOID:2846	bruxism

@@ -1,3 +1,0 @@
-MONDO:0007750	hypercholesterolemia, familial
-DOID 	 name 
-DOID:13810	familial hypercholesterolemia

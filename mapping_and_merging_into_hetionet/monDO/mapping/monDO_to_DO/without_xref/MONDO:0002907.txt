@@ -1,3 +1,0 @@
-MONDO:0002907	intracranial thrombosis
-DOID 	 name 
-DOID:4193	intracranial thrombosis

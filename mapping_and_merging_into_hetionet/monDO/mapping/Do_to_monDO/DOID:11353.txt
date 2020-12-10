@@ -1,3 +1,0 @@
-DOID:11353	bladder diverticulum
-monDO ID 	 name 
-MONDO:0007197	bladder diverticulum (disease)

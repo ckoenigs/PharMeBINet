@@ -1,3 +1,0 @@
-DOID:1936	atherosclerosis
-monDO ID 	 name 
-MONDO:0005311	atherosclerosis

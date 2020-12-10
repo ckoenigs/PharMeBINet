@@ -1,3 +1,0 @@
-DOID:10934	multiple personality disorder
-monDO ID 	 name 
-MONDO:0001159	multiple personality disorder

@@ -1,3 +1,0 @@
-DOID:0110664	congenital myasthenic syndrome 3C
-monDO ID 	 name 
-MONDO:0014585	congenital myasthenic syndrome 3C

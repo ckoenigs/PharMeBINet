@@ -1,3 +1,0 @@
-MONDO:0004915	periodontosis
-DOID 	 name 
-DOID:9893	periodontosis

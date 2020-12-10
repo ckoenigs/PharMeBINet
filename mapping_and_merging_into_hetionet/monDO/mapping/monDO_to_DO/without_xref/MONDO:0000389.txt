@@ -1,3 +1,0 @@
-MONDO:0000389	atelosteogenesis
-DOID 	 name 
-DOID:0050648	atelosteogenesis

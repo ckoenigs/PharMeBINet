@@ -1,3 +1,0 @@
-MONDO:0002849	liver rhabdomyosarcoma
-DOID 	 name 
-DOID:4047	liver rhabdomyosarcoma

@@ -1,3 +1,0 @@
-DOID:6339	vulvar eccrine adenocarcinoma
-monDO ID 	 name 
-MONDO:0003861	vulvar eccrine adenocarcinoma

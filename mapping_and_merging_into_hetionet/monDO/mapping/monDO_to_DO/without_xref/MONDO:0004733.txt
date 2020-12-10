@@ -1,3 +1,0 @@
-MONDO:0004733	pyriform sinus cancer
-DOID 	 name 
-DOID:9235	pyriform sinus cancer

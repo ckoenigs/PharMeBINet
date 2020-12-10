@@ -1,3 +1,0 @@
-DOID:11164	band keratopathy
-monDO ID 	 name 
-MONDO:0009016	band keratopathy

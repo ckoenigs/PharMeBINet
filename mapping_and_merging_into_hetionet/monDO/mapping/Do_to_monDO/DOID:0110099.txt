@@ -1,3 +1,0 @@
-DOID:0110099	atopic dermatitis 3
-monDO ID 	 name 
-MONDO:0011597	atopic dermatitis 3

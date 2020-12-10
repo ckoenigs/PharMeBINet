@@ -1,3 +1,0 @@
-DOID:3151	skin squamous cell carcinoma
-monDO ID 	 name 
-MONDO:0002529	skin squamous cell carcinoma

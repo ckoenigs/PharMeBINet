@@ -1,3 +1,0 @@
-MONDO:0005447	testicular cancer
-DOID 	 name 
-DOID:2998	testicular cancer

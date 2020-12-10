@@ -1,3 +1,0 @@
-MONDO:0000530	rectum adenoma
-DOID 	 name 
-DOID:0050915	rectum adenoma

@@ -1,3 +1,0 @@
-MONDO:0016718	choroid plexus carcinoma
-DOID 	 name 
-DOID:5648	choroid plexus carcinoma

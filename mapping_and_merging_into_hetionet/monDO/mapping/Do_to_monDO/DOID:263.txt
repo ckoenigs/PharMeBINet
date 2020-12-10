@@ -1,3 +1,0 @@
-DOID:263	kidney cancer
-monDO ID 	 name 
-MONDO:0002367	kidney cancer

@@ -1,3 +1,0 @@
-MONDO:0004215	cutaneous anthrax
-DOID 	 name 
-DOID:7426	cutaneous anthrax

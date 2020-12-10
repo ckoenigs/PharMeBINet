@@ -1,3 +1,0 @@
-MONDO:0003562	rete testis neoplasm
-DOID 	 name 
-DOID:5639	rete testis neoplasm

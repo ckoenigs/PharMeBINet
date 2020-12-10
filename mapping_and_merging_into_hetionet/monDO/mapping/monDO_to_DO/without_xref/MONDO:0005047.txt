@@ -1,3 +1,0 @@
-MONDO:0005047	infertility
-DOID 	 name 
-DOID:5223	infertility

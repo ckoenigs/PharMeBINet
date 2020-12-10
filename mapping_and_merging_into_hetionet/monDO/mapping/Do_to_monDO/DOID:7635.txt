@@ -1,3 +1,0 @@
-DOID:7635	Gasserian ganglion meningioma
-monDO ID 	 name 
-MONDO:0004313	Gasserian ganglion meningioma

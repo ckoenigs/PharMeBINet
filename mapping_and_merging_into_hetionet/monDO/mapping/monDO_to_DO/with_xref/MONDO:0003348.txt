@@ -1,3 +1,0 @@
-MONDO:0003348	conventional leiomyosarcoma
-DOID 	 name 
-DOID:5253	conventional leiomyosarcoma

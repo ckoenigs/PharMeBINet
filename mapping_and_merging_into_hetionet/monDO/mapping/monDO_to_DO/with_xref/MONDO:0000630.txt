@@ -1,3 +1,0 @@
-MONDO:0000630	immune system organ benign neoplasm
-DOID 	 name 
-DOID:0060092	immune system organ benign neoplasm

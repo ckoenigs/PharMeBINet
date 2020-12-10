@@ -1,3 +1,0 @@
-DOID:0050908	myelodysplastic syndrome
-monDO ID 	 name 
-MONDO:0018881	myelodysplastic syndrome

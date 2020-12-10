@@ -1,3 +1,0 @@
-DOID:0060758	immunodeficiency with hyper-IgM type 2
-monDO ID 	 name 
-MONDO:0011528	hyper-IgM syndrome type 2

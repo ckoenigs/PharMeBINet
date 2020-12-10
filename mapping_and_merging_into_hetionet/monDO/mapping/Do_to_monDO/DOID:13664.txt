@@ -1,3 +1,0 @@
-DOID:13664	post-vaccinal encephalitis
-monDO ID 	 name 
-MONDO:0001773	post-vaccinal encephalitis

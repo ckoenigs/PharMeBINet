@@ -1,3 +1,0 @@
-MONDO:0002076	pneumothorax (disease)
-DOID 	 name 
-DOID:1673	pneumothorax

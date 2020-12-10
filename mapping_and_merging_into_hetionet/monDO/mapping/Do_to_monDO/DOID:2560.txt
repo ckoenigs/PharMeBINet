@@ -1,3 +1,0 @@
-DOID:2560	morphine dependence
-monDO ID 	 name 
-MONDO:0005531	morphine dependence

@@ -1,3 +1,0 @@
-MONDO:0009338	hepatic veno-occlusive disease-immunodeficiency syndrome
-DOID 	 name 
-DOID:0080177	hepatic veno-occlusive disease

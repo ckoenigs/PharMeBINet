@@ -1,3 +1,0 @@
-MONDO:0016079	sporadic Creutzfeldt-Jakob disease
-DOID 	 name 
-DOID:11949	Creutzfeldt-Jakob disease

@@ -1,3 +1,0 @@
-DOID:0060834	Griscelli syndrome type 3
-monDO ID 	 name 
-MONDO:0012220	Griscelli syndrome type 3

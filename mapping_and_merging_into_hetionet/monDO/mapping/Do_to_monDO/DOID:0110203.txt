@@ -1,3 +1,0 @@
-DOID:0110203	Charcot-Marie-Tooth disease recessive intermediate D
-monDO ID 	 name 
-MONDO:0014467	Charcot-Marie-tooth disease recessive intermediate d

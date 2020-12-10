@@ -1,3 +1,0 @@
-MONDO:0019353	Stargardt disease
-DOID 	 name 
-DOID:0050817	Stargardt disease

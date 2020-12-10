@@ -1,3 +1,0 @@
-MONDO:0005164	fibrosarcoma (disease)
-DOID 	 name 
-DOID:3355	fibrosarcoma

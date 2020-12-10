@@ -1,3 +1,0 @@
-DOID:3861	medullomyoblastoma
-monDO ID 	 name 
-MONDO:0002793	medullomyoblastoma

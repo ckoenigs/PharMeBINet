@@ -1,3 +1,0 @@
-MONDO:0011271	rigid spine muscular dystrophy 1
-DOID 	 name 
-DOID:0110633	rigid spine muscular dystrophy 1

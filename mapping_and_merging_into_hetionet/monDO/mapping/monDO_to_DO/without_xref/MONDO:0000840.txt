@@ -1,3 +1,0 @@
-MONDO:0000840	dysbaric osteonecrosis
-DOID 	 name 
-DOID:0080018	dysbaric osteonecrosis

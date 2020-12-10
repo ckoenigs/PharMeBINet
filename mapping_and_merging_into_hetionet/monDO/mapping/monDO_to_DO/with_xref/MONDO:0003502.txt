@@ -1,3 +1,0 @@
-MONDO:0003502	ureter squamous cell carcinoma
-DOID 	 name 
-DOID:5539	ureter squamous cell carcinoma

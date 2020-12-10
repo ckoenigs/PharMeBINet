@@ -1,3 +1,0 @@
-DOID:7615	sarcomatosis
-monDO ID 	 name 
-MONDO:0004309	sarcomatosis

@@ -1,3 +1,0 @@
-MONDO:0000316	opportunistic bacterial infectious disease
-DOID 	 name 
-DOID:0050340	opportunistic bacterial infectious disease

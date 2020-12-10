@@ -1,3 +1,0 @@
-MONDO:0004393	mixed astrocytoma-ependymoma
-DOID 	 name 
-DOID:7907	mixed astrocytoma-ependymoma

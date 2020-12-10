@@ -1,3 +1,0 @@
-MONDO:0016537	lymphoproliferative syndrome
-DOID 	 name 
-DOID:0060704	lymphoproliferative syndrome

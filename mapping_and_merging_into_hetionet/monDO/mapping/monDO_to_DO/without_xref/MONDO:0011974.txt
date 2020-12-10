@@ -1,3 +1,0 @@
-MONDO:0011974	retinitis pigmentosa 7
-DOID 	 name 
-DOID:0110383	retinitis pigmentosa 7

@@ -1,3 +1,0 @@
-MONDO:0017582	pituitary adenocarcinoma (disease)
-DOID 	 name 
-DOID:4916	pituitary carcinoma

@@ -1,3 +1,0 @@
-MONDO:0004715	liver carcinoma in situ
-DOID 	 name 
-DOID:9132	liver carcinoma in situ

@@ -1,3 +1,0 @@
-MONDO:0003709	penis squamous cell carcinoma
-DOID 	 name 
-DOID:5518	penis squamous cell carcinoma

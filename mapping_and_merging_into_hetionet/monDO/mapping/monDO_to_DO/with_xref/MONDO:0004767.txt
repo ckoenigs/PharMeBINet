@@ -1,3 +1,0 @@
-MONDO:0004767	vesiculitis
-DOID 	 name 
-DOID:9365	vesiculitis

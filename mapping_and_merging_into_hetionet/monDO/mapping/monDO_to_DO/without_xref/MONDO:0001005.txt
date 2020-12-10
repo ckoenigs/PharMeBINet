@@ -1,3 +1,0 @@
-MONDO:0001005	kaolin pneumoconiosis
-DOID 	 name 
-DOID:10331	kaolin pneumoconiosis

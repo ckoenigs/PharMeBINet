@@ -1,3 +1,0 @@
-MONDO:0002940	anal margin basal cell carcinoma
-DOID 	 name 
-DOID:4283	anal margin basal cell carcinoma

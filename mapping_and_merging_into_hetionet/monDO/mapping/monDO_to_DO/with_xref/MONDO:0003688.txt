@@ -1,3 +1,0 @@
-MONDO:0003688	benign intermediate mesothelioma
-DOID 	 name 
-DOID:5884	benign intermediate mesothelioma

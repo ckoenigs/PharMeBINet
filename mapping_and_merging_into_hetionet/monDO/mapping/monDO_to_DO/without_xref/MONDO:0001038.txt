@@ -1,3 +1,0 @@
-MONDO:0001038	perforated corneal ulcer
-DOID 	 name 
-DOID:10445	perforated corneal ulcer

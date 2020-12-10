@@ -1,3 +1,0 @@
-DOID:0060021	DNA ligase IV deficiency
-monDO ID 	 name 
-MONDO:0011686	DNA ligase IV deficiency

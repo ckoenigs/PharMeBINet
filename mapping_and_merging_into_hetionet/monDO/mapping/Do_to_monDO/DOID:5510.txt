@@ -1,3 +1,0 @@
-DOID:5510	pineal dysgerminoma
-monDO ID 	 name 
-MONDO:0003480	pineal region dysgerminoma

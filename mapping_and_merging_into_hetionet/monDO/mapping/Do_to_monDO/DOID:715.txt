@@ -1,3 +1,0 @@
-DOID:715	T-cell leukemia
-monDO ID 	 name 
-MONDO:0005525	T-cell leukemia

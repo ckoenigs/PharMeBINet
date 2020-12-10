@@ -1,3 +1,0 @@
-MONDO:0004580	retinal degeneration
-DOID 	 name 
-DOID:8466	retinal degeneration

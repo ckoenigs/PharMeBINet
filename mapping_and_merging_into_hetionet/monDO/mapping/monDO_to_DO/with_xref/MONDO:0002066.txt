@@ -1,3 +1,0 @@
-MONDO:0002066	breast adenomyoepithelioma
-DOID 	 name 
-DOID:1642	breast adenomyoepithelioma

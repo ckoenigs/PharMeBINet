@@ -1,3 +1,0 @@
-DOID:2047	hepatitis D
-monDO ID 	 name 
-MONDO:0005789	hepatitis D

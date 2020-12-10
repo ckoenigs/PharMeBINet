@@ -1,3 +1,0 @@
-MONDO:0000256	systemic mycosis
-DOID 	 name 
-DOID:0050136	systemic mycosis

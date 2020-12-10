@@ -1,3 +1,0 @@
-MONDO:0002081	musculoskeletal system disease
-DOID 	 name 
-DOID:17	musculoskeletal system disease

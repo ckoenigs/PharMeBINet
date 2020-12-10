@@ -1,3 +1,0 @@
-MONDO:0003579	nerve fibre bundle defect
-DOID 	 name 
-DOID:5678	nerve fibre bundle defect

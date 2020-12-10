@@ -1,3 +1,0 @@
-MONDO:0002622	multifocal osteogenic sarcoma
-DOID 	 name 
-DOID:3360	multifocal osteogenic sarcoma

@@ -1,3 +1,0 @@
-MONDO:0005150	age-related macular degeneration
-DOID 	 name 
-DOID:10871	age related macular degeneration

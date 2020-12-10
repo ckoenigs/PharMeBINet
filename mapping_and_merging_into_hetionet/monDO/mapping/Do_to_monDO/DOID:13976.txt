@@ -1,3 +1,0 @@
-DOID:13976	peptic esophagitis
-monDO ID 	 name 
-MONDO:0006896	peptic esophagitis

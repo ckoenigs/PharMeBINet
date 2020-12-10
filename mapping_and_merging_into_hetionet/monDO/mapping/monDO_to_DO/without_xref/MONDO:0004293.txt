@@ -1,3 +1,0 @@
-MONDO:0004293	supraglottis squamous cell carcinoma
-DOID 	 name 
-DOID:7587	supraglottis squamous cell carcinoma

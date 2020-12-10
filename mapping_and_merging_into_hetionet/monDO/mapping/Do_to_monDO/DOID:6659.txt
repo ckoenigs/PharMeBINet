@@ -1,3 +1,0 @@
-DOID:6659	cervical large cell neuroendocrine carcinoma
-monDO ID 	 name 
-MONDO:0006138	cervical large cell neuroendocrine carcinoma

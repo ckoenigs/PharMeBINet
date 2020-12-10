@@ -1,3 +1,0 @@
-DOID:14512	candidal paronychia
-monDO ID 	 name 
-MONDO:0001984	candidal paronychia

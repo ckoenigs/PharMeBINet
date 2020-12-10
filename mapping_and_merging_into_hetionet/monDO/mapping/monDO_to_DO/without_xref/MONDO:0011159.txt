@@ -1,3 +1,0 @@
-MONDO:0011159	autosomal dominant nonsyndromic deafness 13
-DOID 	 name 
-DOID:0110545	autosomal dominant nonsyndromic deafness 13

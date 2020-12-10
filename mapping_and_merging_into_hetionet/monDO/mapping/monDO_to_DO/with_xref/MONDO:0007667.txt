@@ -1,4 +1,0 @@
-MONDO:0007667	subependymoma
-DOID 	 name 
-DOID:3070	malignant glioma
-DOID:4843	subependymal glioma

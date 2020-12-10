@@ -1,3 +1,0 @@
-MONDO:0002583	mucinous ovarian cystadenoma
-DOID 	 name 
-DOID:3267	mucinous ovarian cystadenoma

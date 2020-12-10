@@ -1,3 +1,0 @@
-MONDO:0003090	extrahepatic bile duct carcinoma
-DOID 	 name 
-DOID:4682	extrahepatic bile duct carcinoma

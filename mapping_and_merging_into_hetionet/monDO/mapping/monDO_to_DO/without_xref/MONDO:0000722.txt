@@ -1,3 +1,0 @@
-MONDO:0000722	non-syndromic synpolydactyly
-DOID 	 name 
-DOID:0060242	synpolydactyly

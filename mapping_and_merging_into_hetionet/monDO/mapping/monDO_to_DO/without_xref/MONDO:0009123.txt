@@ -1,3 +1,0 @@
-MONDO:0009123	dopamine beta-hydroxylase deficiency
-DOID 	 name 
-DOID:0090145	dopamine beta-hydroxylase deficiency

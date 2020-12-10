@@ -1,3 +1,0 @@
-DOID:512	epididymal neoplasm
-monDO ID 	 name 
-MONDO:0003283	epididymal neoplasm

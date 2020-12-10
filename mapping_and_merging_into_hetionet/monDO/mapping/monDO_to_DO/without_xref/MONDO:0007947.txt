@@ -1,3 +1,0 @@
-MONDO:0007947	Marfan syndrome
-DOID 	 name 
-DOID:14323	Marfan syndrome

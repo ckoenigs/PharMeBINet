@@ -1,3 +1,0 @@
-MONDO:0019312	Hermansky-Pudlak syndrome
-DOID 	 name 
-DOID:3753	Hermansky-Pudlak syndrome

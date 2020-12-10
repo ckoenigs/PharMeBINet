@@ -1,3 +1,0 @@
-DOID:3705	fallopian tube mucinous tumor
-monDO ID 	 name 
-MONDO:0002745	fallopian tube mucinous tumor

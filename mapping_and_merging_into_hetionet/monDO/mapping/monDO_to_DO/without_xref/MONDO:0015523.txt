@@ -1,3 +1,0 @@
-MONDO:0015523	epithelioid hemangioendothelioma
-DOID 	 name 
-DOID:0080190	malignant epithelioid hemangioendothelioma

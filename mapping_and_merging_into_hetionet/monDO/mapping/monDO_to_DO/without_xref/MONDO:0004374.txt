@@ -1,3 +1,0 @@
-MONDO:0004374	adult extraskeletal osteosarcoma
-DOID 	 name 
-DOID:7827	adult extraosseous osteosarcoma

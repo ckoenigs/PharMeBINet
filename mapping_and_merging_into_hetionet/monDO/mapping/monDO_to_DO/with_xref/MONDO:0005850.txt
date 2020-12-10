@@ -1,3 +1,0 @@
-MONDO:0005850	milker's nodule
-DOID 	 name 
-DOID:8729	milker's nodule

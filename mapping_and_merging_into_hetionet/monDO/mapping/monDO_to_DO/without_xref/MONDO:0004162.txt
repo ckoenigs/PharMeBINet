@@ -1,3 +1,0 @@
-MONDO:0004162	uterine corpus cellular leiomyoma
-DOID 	 name 
-DOID:7242	uterine corpus cellular leiomyoma

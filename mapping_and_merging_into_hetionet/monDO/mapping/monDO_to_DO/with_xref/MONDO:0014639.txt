@@ -1,3 +1,0 @@
-MONDO:0014639	familial temporal lobe epilepsy 7
-DOID 	 name 
-DOID:0060751	familial temporal lobe epilepsy 7

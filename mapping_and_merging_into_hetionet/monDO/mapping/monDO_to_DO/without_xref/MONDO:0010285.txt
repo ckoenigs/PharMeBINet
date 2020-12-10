@@ -1,3 +1,0 @@
-MONDO:0010285	syndromic X-linked intellectual disability Abidi type
-DOID 	 name 
-DOID:0060818	syndromic X-linked intellectual disability Abidi type

@@ -1,3 +1,0 @@
-MONDO:0014349	pontocerebellar hypoplasia type 10
-DOID 	 name 
-DOID:0060279	pontocerebellar hypoplasia type 10

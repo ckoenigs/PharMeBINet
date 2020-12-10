@@ -1,3 +1,0 @@
-MONDO:0005731	dipetalonemiasis
-DOID 	 name 
-DOID:14422	dipetalonemiasis

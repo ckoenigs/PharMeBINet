@@ -1,3 +1,0 @@
-DOID:2799	bronchiolitis obliterans
-monDO ID 	 name 
-MONDO:0005681	bronchiolitis obliterans (disease)

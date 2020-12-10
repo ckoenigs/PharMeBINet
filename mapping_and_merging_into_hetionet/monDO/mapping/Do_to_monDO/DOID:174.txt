@@ -1,3 +1,0 @@
-DOID:174	acanthoma
-monDO ID 	 name 
-MONDO:0002093	acanthoma (disease)

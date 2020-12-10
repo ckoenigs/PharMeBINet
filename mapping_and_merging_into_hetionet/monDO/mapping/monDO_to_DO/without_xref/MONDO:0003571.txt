@@ -1,3 +1,0 @@
-MONDO:0003571	labyrinthine dysfunction
-DOID 	 name 
-DOID:566	labyrinthine dysfunction

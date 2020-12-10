@@ -1,3 +1,0 @@
-MONDO:0011989	leishmaniasis
-DOID 	 name 
-DOID:9065	leishmaniasis

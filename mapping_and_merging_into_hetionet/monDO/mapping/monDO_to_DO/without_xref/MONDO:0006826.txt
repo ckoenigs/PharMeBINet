@@ -1,3 +1,0 @@
-MONDO:0006826	kwashiorkor
-DOID 	 name 
-DOID:13579	kwashiorkor

@@ -1,3 +1,0 @@
-MONDO:0003900	connective tissue disease
-DOID 	 name 
-DOID:65	connective tissue disease

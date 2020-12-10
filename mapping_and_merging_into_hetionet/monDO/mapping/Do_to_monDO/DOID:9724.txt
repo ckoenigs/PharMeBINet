@@ -1,3 +1,0 @@
-DOID:9724	purulent endophthalmitis
-monDO ID 	 name 
-MONDO:0004863	purulent endophthalmitis

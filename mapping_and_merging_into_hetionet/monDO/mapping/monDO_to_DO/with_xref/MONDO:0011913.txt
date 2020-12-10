@@ -1,3 +1,0 @@
-MONDO:0011913	Alzheimer's disease 3
-DOID 	 name 
-DOID:0110042	Alzheimer's disease 3

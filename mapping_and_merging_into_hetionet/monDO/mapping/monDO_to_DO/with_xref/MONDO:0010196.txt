@@ -1,3 +1,0 @@
-MONDO:0010196	Werner syndrome
-DOID 	 name 
-DOID:5688	Werner syndrome

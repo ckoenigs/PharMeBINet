@@ -1,3 +1,0 @@
-DOID:0110967	brachydactyly type A4
-monDO ID 	 name 
-MONDO:0007218	brachydactyly type A4

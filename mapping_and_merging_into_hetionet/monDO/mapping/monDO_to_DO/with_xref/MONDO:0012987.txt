@@ -1,3 +1,0 @@
-MONDO:0012987	agammaglobulinemia 6, autosomal recessive
-DOID 	 name 
-DOID:2583	agammaglobulinemia

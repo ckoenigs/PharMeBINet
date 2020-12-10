@@ -1,3 +1,0 @@
-DOID:10293	monocular esotropia
-monDO ID 	 name 
-MONDO:0000997	monocular esotropia

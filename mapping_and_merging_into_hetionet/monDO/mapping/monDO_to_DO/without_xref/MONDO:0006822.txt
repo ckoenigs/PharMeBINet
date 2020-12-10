@@ -1,3 +1,0 @@
-MONDO:0003709	Klatskins tumor
-DOID 	 name 
-DOID:4927	Klatskin's tumor

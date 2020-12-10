@@ -1,3 +1,0 @@
-MONDO:0016238	solitary fibrous tumor
-DOID 	 name 
-DOID:264	hemangiopericytoma

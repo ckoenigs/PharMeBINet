@@ -1,3 +1,0 @@
-MONDO:0005028	esophageal adenocarcinoma
-DOID 	 name 
-DOID:4914	esophagus adenocarcinoma

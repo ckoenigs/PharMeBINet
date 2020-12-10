@@ -1,3 +1,0 @@
-MONDO:0002840	eosinophilic gastritis
-DOID 	 name 
-DOID:4030	eosinophilic gastritis

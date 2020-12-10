@@ -1,3 +1,0 @@
-MONDO:0016344	hydranencephaly (disease)
-DOID 	 name 
-DOID:4626	hydranencephaly

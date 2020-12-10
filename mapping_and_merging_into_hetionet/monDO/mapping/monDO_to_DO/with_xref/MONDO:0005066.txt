@@ -1,3 +1,0 @@
-MONDO:0005066	metabolic disease
-DOID 	 name 
-DOID:0014667	disease of metabolism

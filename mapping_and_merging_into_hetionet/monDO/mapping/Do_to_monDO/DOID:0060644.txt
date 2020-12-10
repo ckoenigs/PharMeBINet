@@ -1,3 +1,0 @@
-DOID:0060644	chondrodysplasia-pseudohermaphroditism syndrome
-monDO ID 	 name 
-MONDO:0010814	chondrodysplasia-pseudohermaphroditism syndrome

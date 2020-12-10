@@ -1,3 +1,0 @@
-MONDO:0006960	sciatic neuropathy
-DOID 	 name 
-DOID:11446	sciatic neuropathy

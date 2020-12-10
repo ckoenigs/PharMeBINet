@@ -1,3 +1,0 @@
-MONDO:0003850	clivus chondroid chordoma
-DOID 	 name 
-DOID:6313	clivus chondroid chordoma

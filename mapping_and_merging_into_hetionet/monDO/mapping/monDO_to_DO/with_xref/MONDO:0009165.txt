@@ -1,3 +1,0 @@
-MONDO:0009165	Aicardi-Goutieres syndrome 1
-DOID 	 name 
-DOID:0050629	Aicardi-Goutieres syndrome

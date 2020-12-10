@@ -1,3 +1,0 @@
-DOID:1364	ethmoidal sinus neoplasm
-monDO ID 	 name 
-MONDO:0001764	ethmoidal sinus neoplasm

@@ -1,3 +1,0 @@
-MONDO:0012436	neonatal diabetes mellitus with congenital hypothyroidism
-DOID 	 name 
-DOID:0060638	neonatal diabetes mellitus with congenital hypothyroidism

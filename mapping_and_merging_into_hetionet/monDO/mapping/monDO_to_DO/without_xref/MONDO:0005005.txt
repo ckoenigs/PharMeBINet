@@ -1,3 +1,0 @@
-MONDO:0005005	clear cell renal carcinoma
-DOID 	 name 
-DOID:4467	renal clear cell carcinoma

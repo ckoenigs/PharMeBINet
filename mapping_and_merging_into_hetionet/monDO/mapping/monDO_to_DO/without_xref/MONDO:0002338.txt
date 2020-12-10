@@ -1,3 +1,0 @@
-MONDO:0002338	extratemporal epilepsy
-DOID 	 name 
-DOID:2544	extratemporal epilepsy

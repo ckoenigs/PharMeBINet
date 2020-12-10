@@ -1,3 +1,0 @@
-MONDO:0013279	long QT syndrome 13
-DOID 	 name 
-DOID:0110654	long QT syndrome 13

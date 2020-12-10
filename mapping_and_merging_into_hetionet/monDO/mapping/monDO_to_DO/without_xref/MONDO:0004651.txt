@@ -1,3 +1,0 @@
-MONDO:0004651	smallpox
-DOID 	 name 
-DOID:8736	smallpox

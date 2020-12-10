@@ -1,3 +1,0 @@
-DOID:10187	esophageal lipoma
-monDO ID 	 name 
-MONDO:0000963	esophageal lipoma

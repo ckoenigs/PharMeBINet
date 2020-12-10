@@ -1,3 +1,0 @@
-MONDO:0015609	advanced sleep phase syndrome
-DOID 	 name 
-DOID:0050628	advanced sleep phase syndrome

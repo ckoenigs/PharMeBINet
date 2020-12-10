@@ -1,3 +1,0 @@
-MONDO:0012247	spinocerebellar ataxia type 27
-DOID 	 name 
-DOID:0050976	spinocerebellar ataxia type 27

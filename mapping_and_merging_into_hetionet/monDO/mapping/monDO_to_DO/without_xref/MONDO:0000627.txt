@@ -1,3 +1,0 @@
-MONDO:0000627	benign endocrine neoplasm
-DOID 	 name 
-DOID:0060089	endocrine organ benign neoplasm

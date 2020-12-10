@@ -1,3 +1,0 @@
-MONDO:0010298	Lesch-Nyhan syndrome
-DOID 	 name 
-DOID:1919	Lesch-Nyhan syndrome

@@ -1,3 +1,0 @@
-MONDO:0004858	occlusion of gallbladder
-DOID 	 name 
-DOID:9714	occlusion of gallbladder

@@ -1,3 +1,0 @@
-MONDO:0010565	red color blindness
-DOID 	 name 
-DOID:13910	red color blindness

@@ -1,3 +1,0 @@
-MONDO:0001283	endosalpingiosis
-DOID 	 name 
-DOID:11427	endosalpingiosis

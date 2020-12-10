@@ -1,3 +1,0 @@
-MONDO:0001132	sexual sadism disorder
-DOID 	 name 
-DOID:10817	sexual sadism

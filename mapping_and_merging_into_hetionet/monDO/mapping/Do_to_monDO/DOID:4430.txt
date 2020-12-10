@@ -1,3 +1,0 @@
-DOID:4430	somatostatinoma
-monDO ID 	 name 
-MONDO:0006976	somatostatinoma

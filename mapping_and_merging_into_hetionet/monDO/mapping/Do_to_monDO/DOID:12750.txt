@@ -1,3 +1,0 @@
-DOID:12750	cyclosporiasis
-monDO ID 	 name 
-MONDO:0005725	cyclosporiasis

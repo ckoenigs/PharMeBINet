@@ -1,3 +1,0 @@
-MONDO:0002002	postsurgical hypothyroidism
-DOID 	 name 
-DOID:1458	postsurgical hypothyroidism

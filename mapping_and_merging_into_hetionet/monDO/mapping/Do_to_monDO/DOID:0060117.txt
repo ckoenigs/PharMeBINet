@@ -1,3 +1,0 @@
-DOID:0060117	peritoneal benign neoplasm
-monDO ID 	 name 
-MONDO:0000650	peritoneal benign neoplasm

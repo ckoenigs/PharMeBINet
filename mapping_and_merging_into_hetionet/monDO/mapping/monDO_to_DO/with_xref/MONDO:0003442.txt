@@ -1,3 +1,0 @@
-MONDO:0003442	bladder papillary urothelial neoplasm
-DOID 	 name 
-DOID:5432	bladder papillary transitional cell neoplasm

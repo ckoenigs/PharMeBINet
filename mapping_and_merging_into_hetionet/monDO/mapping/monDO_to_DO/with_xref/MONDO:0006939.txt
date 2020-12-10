@@ -1,3 +1,0 @@
-MONDO:0006939	pyelonephritis
-DOID 	 name 
-DOID:11400	pyelonephritis

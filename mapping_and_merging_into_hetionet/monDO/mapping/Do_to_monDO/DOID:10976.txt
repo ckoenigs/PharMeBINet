@@ -1,3 +1,0 @@
-DOID:10976	membranous glomerulonephritis
-monDO ID 	 name 
-MONDO:0005376	membranous glomerulonephritis

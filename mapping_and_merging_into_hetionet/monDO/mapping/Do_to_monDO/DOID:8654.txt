@@ -1,3 +1,0 @@
-DOID:8654	Hodgkin's lymphoma, mixed cellularity
-monDO ID 	 name 
-MONDO:0004633	Hodgkin's lymphoma, mixed cellularity

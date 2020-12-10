@@ -1,3 +1,0 @@
-MONDO:0003111	gastric neuroendocrine neoplasm
-DOID 	 name 
-DOID:4715	gastric neuroendocrine neoplasm

@@ -1,3 +1,0 @@
-DOID:0050847	sleep apnea
-monDO ID 	 name 
-MONDO:0005296	sleep apnea (disease)

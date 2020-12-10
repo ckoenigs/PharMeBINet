@@ -1,3 +1,0 @@
-DOID:4367	apparent mineralocorticoid excess syndrome
-monDO ID 	 name 
-MONDO:0006657	apparent mineralocorticoid excess syndrome

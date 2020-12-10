@@ -1,3 +1,0 @@
-DOID:14096	infertility due to extratesticular cause
-monDO ID 	 name 
-MONDO:0001877	infertility due to extratesticular cause

@@ -1,3 +1,0 @@
-DOID:614	lymphopenia
-monDO ID 	 name 
-MONDO:0003783	lymphopenia (disease)

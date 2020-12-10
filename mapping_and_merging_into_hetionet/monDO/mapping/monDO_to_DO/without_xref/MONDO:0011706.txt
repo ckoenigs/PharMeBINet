@@ -1,3 +1,0 @@
-MONDO:0011706	Kufor-Rakeb syndrome
-DOID 	 name 
-DOID:0060556	Kufor-Rakeb syndrome

@@ -1,3 +1,0 @@
-MONDO:0012250	Charcot-Marie-tooth disease type 4H
-DOID 	 name 
-DOID:0110192	Charcot-Marie-Tooth disease type 4H

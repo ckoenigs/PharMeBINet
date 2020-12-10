@@ -1,3 +1,0 @@
-MONDO:0010171	Usher syndrome type 1C
-DOID 	 name 
-DOID:0110830	Usher syndrome type 1C

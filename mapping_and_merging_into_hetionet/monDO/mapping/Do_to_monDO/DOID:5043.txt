@@ -1,3 +1,0 @@
-DOID:5043	vulvar granular cell tumor
-monDO ID 	 name 
-MONDO:0003253	vulvar granular cell tumor

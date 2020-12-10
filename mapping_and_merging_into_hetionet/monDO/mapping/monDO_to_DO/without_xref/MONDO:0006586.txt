@@ -1,3 +1,0 @@
-MONDO:0006586	neurotic excoriation
-DOID 	 name 
-DOID:9165	neurotic excoriation

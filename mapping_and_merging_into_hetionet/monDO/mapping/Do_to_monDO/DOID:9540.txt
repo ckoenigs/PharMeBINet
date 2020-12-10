@@ -1,3 +1,0 @@
-DOID:9540	vascular skin disease
-monDO ID 	 name 
-MONDO:0019293	skin vascular disease

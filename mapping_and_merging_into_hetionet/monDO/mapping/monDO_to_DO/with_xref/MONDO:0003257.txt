@@ -1,3 +1,0 @@
-MONDO:0003257	posterior pituitary gland neoplasm
-DOID 	 name 
-DOID:5048	posterior pituitary gland neoplasm

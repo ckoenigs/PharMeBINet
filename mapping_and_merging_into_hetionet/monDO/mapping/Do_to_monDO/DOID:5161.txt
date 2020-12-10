@@ -1,3 +1,0 @@
-DOID:5161	Monckeberg arteriosclerosis
-monDO ID 	 name 
-MONDO:0003310	Monckeberg arteriosclerosis

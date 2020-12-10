@@ -1,3 +1,0 @@
-MONDO:0001866	bipolar i disorder
-DOID 	 name 
-DOID:14042	bipolar I disorder

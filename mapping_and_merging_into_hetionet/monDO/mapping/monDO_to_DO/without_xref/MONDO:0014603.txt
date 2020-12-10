@@ -1,3 +1,0 @@
-MONDO:0014603	autosomal dominant nonsyndromic deafness 40
-DOID 	 name 
-DOID:0110566	autosomal dominant nonsyndromic deafness 40

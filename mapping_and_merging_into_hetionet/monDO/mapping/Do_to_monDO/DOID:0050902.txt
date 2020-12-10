@@ -1,3 +1,0 @@
-DOID:0050902	medulloblastoma
-monDO ID 	 name 
-MONDO:0007959	medulloblastoma

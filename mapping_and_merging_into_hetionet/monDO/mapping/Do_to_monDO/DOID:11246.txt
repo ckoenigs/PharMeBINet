@@ -1,3 +1,0 @@
-DOID:11246	DIC in newborn
-monDO ID 	 name 
-MONDO:0001242	DIC in newborn

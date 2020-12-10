@@ -1,3 +1,0 @@
-DOID:5574	VIPoma
-monDO ID 	 name 
-MONDO:0019960	VIPoma

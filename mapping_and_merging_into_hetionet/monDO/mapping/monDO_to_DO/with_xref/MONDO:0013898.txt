@@ -1,3 +1,0 @@
-MONDO:0013898	karyomegalic interstitial nephritis
-DOID 	 name 
-DOID:0060911	karyomegalic interstitial nephritis

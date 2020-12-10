@@ -1,3 +1,0 @@
-DOID:14452	hypokalemic periodic paralysis
-monDO ID 	 name 
-MONDO:0008223	hypokalemic periodic paralysis

@@ -1,3 +1,0 @@
-DOID:13081	hemangioma of subcutaneous tissue
-monDO ID 	 name 
-MONDO:0006557	hemangioma of subcutaneous tissue

@@ -1,3 +1,0 @@
-DOID:13515	tuberous sclerosis
-monDO ID 	 name 
-MONDO:0001734	tuberous sclerosis

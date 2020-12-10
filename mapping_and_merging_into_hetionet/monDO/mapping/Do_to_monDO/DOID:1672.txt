@@ -1,3 +1,0 @@
-DOID:1672	spontaneous tension pneumothorax
-monDO ID 	 name 
-MONDO:0002075	spontaneous tension pneumothorax

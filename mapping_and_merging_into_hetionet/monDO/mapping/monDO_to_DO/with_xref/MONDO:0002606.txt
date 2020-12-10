@@ -1,3 +1,0 @@
-MONDO:0002606	epithelioid type angiomyolipoma
-DOID 	 name 
-DOID:3318	epithelioid type angiomyolipoma

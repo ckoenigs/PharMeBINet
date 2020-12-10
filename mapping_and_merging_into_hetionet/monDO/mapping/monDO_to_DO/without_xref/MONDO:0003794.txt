@@ -1,3 +1,0 @@
-MONDO:0003709	mediastinal neurilemmoma
-DOID 	 name 
-DOID:6175	mediastinal neurilemmoma

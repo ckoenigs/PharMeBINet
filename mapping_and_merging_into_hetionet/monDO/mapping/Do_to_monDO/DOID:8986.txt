@@ -1,3 +1,0 @@
-DOID:8986	narcolepsy
-monDO ID 	 name 
-MONDO:0021107	narcolepsy

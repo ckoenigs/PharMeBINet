@@ -1,3 +1,0 @@
-MONDO:0000518	sacrum chordoma
-DOID 	 name 
-DOID:0050900	sacrum chordoma

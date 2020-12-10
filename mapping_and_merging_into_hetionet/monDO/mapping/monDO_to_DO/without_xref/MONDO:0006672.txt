@@ -1,3 +1,0 @@
-MONDO:0006672	balanitis
-DOID 	 name 
-DOID:13033	balanitis

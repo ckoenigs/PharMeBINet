@@ -1,3 +1,0 @@
-MONDO:0001752	alveolar periostitis
-DOID 	 name 
-DOID:13585	alveolar periostitis

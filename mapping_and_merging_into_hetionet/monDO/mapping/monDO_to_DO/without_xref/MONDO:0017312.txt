@@ -1,3 +1,0 @@
-MONDO:0017312	Perrault syndrome
-DOID 	 name 
-DOID:0050857	Perrault syndrome

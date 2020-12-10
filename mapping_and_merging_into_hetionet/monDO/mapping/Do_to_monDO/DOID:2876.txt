@@ -1,3 +1,0 @@
-DOID:2876	laryngeal squamous cell carcinoma
-monDO ID 	 name 
-MONDO:0005595	laryngeal squamous cell carcinoma

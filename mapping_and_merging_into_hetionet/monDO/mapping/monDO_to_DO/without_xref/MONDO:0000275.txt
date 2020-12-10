@@ -1,3 +1,0 @@
-MONDO:0000275	monogenic disease
-DOID 	 name 
-DOID:0050177	monogenic disease

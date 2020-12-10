@@ -1,3 +1,0 @@
-MONDO:0004718	xeroderma of eyelid
-DOID 	 name 
-DOID:9140	xeroderma of eyelid

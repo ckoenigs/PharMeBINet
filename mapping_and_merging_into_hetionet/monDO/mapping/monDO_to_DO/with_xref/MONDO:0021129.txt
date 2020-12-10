@@ -1,3 +1,0 @@
-MONDO:0021129	microphthalmia
-DOID 	 name 
-DOID:10629	microphthalmia

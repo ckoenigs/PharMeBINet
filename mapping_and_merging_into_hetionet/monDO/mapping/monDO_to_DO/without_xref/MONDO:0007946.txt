@@ -1,3 +1,0 @@
-MONDO:0007946	jaw-winking syndrome
-DOID 	 name 
-DOID:560	jaw-winking syndrome

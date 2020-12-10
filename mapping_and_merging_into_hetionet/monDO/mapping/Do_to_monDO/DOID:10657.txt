@@ -1,3 +1,0 @@
-DOID:10657	colonic lymphangioma
-monDO ID 	 name 
-MONDO:0001093	colonic lymphangioma

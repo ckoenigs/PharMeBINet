@@ -1,3 +1,0 @@
-DOID:0110130	Bardet-Biedl syndrome 8
-monDO ID 	 name 
-MONDO:0014436	Bardet-Biedl syndrome 8

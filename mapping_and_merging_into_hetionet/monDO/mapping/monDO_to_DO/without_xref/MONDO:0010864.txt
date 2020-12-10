@@ -1,3 +1,0 @@
-MONDO:0010864	type 1 diabetes mellitus 7
-DOID 	 name 
-DOID:0110746	type 1 diabetes mellitus 7

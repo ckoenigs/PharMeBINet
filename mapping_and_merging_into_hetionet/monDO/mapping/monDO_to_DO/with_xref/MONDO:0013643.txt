@@ -1,3 +1,0 @@
-MONDO:0013643	HNFJ3
-DOID 	 name 
-DOID:0060062	familial juvenile hyperuricemic nephropathy

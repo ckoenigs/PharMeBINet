@@ -1,3 +1,0 @@
-MONDO:0002407	capillary hemangioma
-DOID 	 name 
-DOID:2725	capillary hemangioma

@@ -1,3 +1,0 @@
-MONDO:0008596	trichorhinophalangeal syndrome type i
-DOID 	 name 
-DOID:14743	trichorhinophalangeal syndrome type I

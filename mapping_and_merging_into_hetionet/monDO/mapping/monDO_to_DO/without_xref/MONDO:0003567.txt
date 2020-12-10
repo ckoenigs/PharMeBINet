@@ -1,3 +1,0 @@
-MONDO:0003567	bilateral hypoactive labyrinth
-DOID 	 name 
-DOID:565	bilateral hypoactive labyrinth

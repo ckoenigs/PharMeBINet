@@ -1,3 +1,0 @@
-MONDO:0002218	temporal lobe cancer
-DOID 	 name 
-DOID:2135	temporal lobe neoplasm

@@ -1,3 +1,0 @@
-DOID:0050788	proximal symphalangism
-monDO ID 	 name 
-MONDO:0008511	proximal symphalangism (disease)

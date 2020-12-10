@@ -1,4 +1,0 @@
-MONDO:0005711	congenital diaphragmatic hernia
-DOID 	 name 
-DOID:12642	hiatus hernia
-DOID:3827	congenital diaphragmatic hernia

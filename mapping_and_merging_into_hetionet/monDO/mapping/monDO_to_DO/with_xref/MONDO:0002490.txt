@@ -1,3 +1,0 @@
-MONDO:0002490	breast sarcoma
-DOID 	 name 
-DOID:3017	breast sarcoma
