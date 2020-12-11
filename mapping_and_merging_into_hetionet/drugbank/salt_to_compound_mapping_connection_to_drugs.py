@@ -107,7 +107,7 @@ bash_shell = open('merge_nodes_salt.sh', 'w')
 bash_shell.write('#!/bin/bash\n')
 
 # the new table for unii drugbank pairs
-unii_drugbank_table_file = open('data/map_unii_to_drugbank_id.tsv', 'w')
+unii_drugbank_table_file = open('data/map_unii_to_drugbank_id.tsv', 'a')
 csv_unii_drugbank_table = csv.writer(unii_drugbank_table_file, delimiter='\t')
 
 '''
