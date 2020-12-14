@@ -583,7 +583,7 @@ def integrate_aeolus_into_hetionet():
 
     # query for mapping
     query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/aeolus/output/%s.tsv" As line FIELDTERMINATOR '\\t' Match (a:AeolusOutcome{concept_code:line.aSE})'''
-    cypher_file = open('cypher_se.cypher', 'w')
+    cypher_file = open('output/cypher.cypher', 'w')
 
     # query for the update nodes and relationship
     query_update = query_start + ' , (n:SideEffect{identifier:line.SE}) Set a.cuis=split(line.cuis,"|"), n.resource=split(line.resources,"|") , n.aeolus="yes", n.xrefs=n.xrefs+("MedDRA:"+line.aSE) Create (n)-[:equal_to_Aeolus_SE{mapping_method:line.mapping_method}]->(a); \n'

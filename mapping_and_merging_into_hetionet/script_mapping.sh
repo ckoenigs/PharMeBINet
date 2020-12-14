@@ -341,7 +341,7 @@ echo drugbank Protein
 
 cd drugbank
 
-./script_map_drugbank_protein.sh $path_neo4j/ $path_to_project > output_script.txt
+./script_map_drugbank_protein.sh $path_neo4j/ $path_to_project > output_script_protein.txt
 
 cd ..
 
@@ -408,17 +408,6 @@ cd aeolus
 python3 map_aeolus_outcome_final.py $path_to_project > output_map_aeolus_outcome.txt
 
 
-echo integrate se with neo4j shell
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher_se.cypher > output_cypher_integration_se.txt
-
-sleep 180
-
-$path_neo4j/neo4j restart
-sleep 120
-
 
 echo Aeolus drugs
 
@@ -431,8 +420,9 @@ python3  map_aeolus_drugs_final.py $path_to_project > output_aeolus_drug.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
+echo integrate map drug and outcome
 
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher > output_cypher_integration_drug.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher.cypher > output_cypher_integration_drug.txt
 
 sleep 180
 $path_neo4j/neo4j restart
@@ -455,6 +445,7 @@ cd ..
 
 
 cd ndf-rt/
+echo ndf-rt
 
 
 ./script_ndf_rt.sh $path_neo4j/ $path_to_project > output_script.txt
