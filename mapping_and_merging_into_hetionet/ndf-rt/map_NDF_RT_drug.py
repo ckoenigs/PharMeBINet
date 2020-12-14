@@ -674,7 +674,7 @@ def integration_of_ndf_rt_drugs_into_hetionet():
     # list wiwth all codes which are mapped to only illegal drugbank ids
     delete_code = []
 
-    cypher_file = open('drug/cypher.cypher', 'w')
+    cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ndf-rt/drug/mapping_drug.csv" As line  FIELDTERMINATOR '\\t'  MATCH (n:NDF_RT_DRUG_KIND{code:line.code}), (c:Chemical{identifier:line.Chemical_id})  Set n.mapped_ids=split(line.mapped_ids,'|'), n.how_mapped=line.how_mapped, c.ndf_rt='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_drug_ndf_rt]->(n); \n'''
     cypher_file.write(query)
     query='''Match (b:Chemical)--(:NDF_RT_DRUG_KIND)-[:effect_may_be_inhibited_by]->(:NDF_RT_DRUG_KIND)--(c:Chemical) Merge (b)-[r:INTERACTS_CiC]->(c)  On Match Set r.resource=r.resource+'NDF-RT' On Create set r.resource=['NDF-RT'], r.source='NDF-RT', r.license='ndf-rt license'; '''

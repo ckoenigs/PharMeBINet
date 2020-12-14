@@ -37,7 +37,7 @@ def load_pharmacologic_class_from_database_and_add_to_dict():
         dict_pharmacologic_class_id_to_resource[identifier] = set(resource)
 
 
-cypher_file = open('pharmacologicClass/cypher.cypher', 'w', encoding='utf-8')
+cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
 
 
 def write_files(path_of_directory, addition_name, label):

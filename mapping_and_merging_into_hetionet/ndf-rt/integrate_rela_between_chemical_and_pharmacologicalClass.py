@@ -16,7 +16,7 @@ def create_connection_with_neo4j_and_mysql():
 
 
 # open cypher file
-cypher_file = open('chemical_pharmacological/cypher.cypher', 'w', encoding='utf-8')
+cypher_file = open('relationships/cypher.cypher', 'a', encoding='utf-8')
 
 
 def write_files(direction_1, direction_2, rela_name):
