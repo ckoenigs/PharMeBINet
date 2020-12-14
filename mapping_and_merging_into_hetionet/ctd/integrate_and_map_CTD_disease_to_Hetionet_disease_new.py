@@ -588,7 +588,7 @@ def integrate_disease_into_hetionet():
     writer = csv.writer(csvfile_ctd_hetionet_disease, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     writer.writerow(['ctdDiseaseID', 'HetionetDiseaseId', 'mondos'])
 
-    cypher_file = open('disease_Disease/cypher.cypher', 'w', encoding='utf-8')
+    cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
     cypher_file.write(':begin\n')
     query = '''Match (d)-[r:equal_to_D_Disease_CTD]->(n) Delete r;\n '''
     cypher_file.write(query)

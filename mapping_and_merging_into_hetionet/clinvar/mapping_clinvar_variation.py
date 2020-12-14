@@ -30,7 +30,7 @@ def load_genes_from_database_and_add_to_dict():
         dict_gene_id_to_gene_node[identifier] = dict(gene)
 
 
-cypher_file = open('output/cypher_variants.cypher', 'w', encoding='utf-8')
+cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
 
 query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/clinvar/output/%s.tsv" As line FIELDTERMINATOR '\\t' 
     Match '''

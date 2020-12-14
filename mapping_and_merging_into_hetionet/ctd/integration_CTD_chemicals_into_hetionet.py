@@ -949,7 +949,7 @@ add all not mapped ctd chemicals to csv and then integrate into neo4j as chemica
 '''
 def generate_cypher_file():
 
-    cypher_file= open('chemical/cypher.cypher','w')
+    cypher_file= open('output/cypher.cypher','a',encoding='utf-8')
     cypher_file.write(''':begin\nMatch (n:Compound) Set n:Chemical;\n:Commit\n''')
     query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/chemical/chemicals_drugbank.csv" As line  MATCH (n:CTDchemical{chemical_id:line.ChemicalID}), (c:Compound{identifier:line.Drugbank_id}) Set c.ctd="yes", c.ctd_url=line.url, c.resource=split(line.string_resource,'|'), c.xrefs=split(line.string_xml,'|'), n.drugBankIDs=split(line.string_drugbank_ids,'|')  Create (c)-[:equal_chemical_CTD{how_mapped:line.how_mapped}]->(n);\n'''
     cypher_file.write(query)

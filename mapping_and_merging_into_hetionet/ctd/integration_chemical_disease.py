@@ -60,7 +60,7 @@ def add_information_into_te_different_csv_files(chemical_id, disease_id, informa
 
 
 # generate cypher file
-cypherfile = open('chemical_disease/cypher.cypher', 'w', encoding='utf-8')
+cypherfile = open('output/cypher_edge.cypher', 'a', encoding='utf-8')
 
 '''
 get all relationships between gene and pathway, take the hetionet identifier an save all important information in a csv

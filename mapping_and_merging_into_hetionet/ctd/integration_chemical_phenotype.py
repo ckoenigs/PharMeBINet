@@ -21,7 +21,7 @@ def create_connection_with_neo4j():
 
 
 # generate cypher file
-cypherfile = open('chemical_phenotype/cypher.cypher', 'w', encoding='utf-8')
+cypherfile = open('output/cypher_edge.cypher', 'a', encoding='utf-8')
 
 # dictionary with rela name to drug-go/protein pair
 dict_rela_to_drug_go_pair = {}

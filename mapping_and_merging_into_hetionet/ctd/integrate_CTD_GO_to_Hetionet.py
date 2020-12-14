@@ -199,7 +199,7 @@ else:
     sys.exit('need a path')
 
 # cypher file to integrate and update the go nodes
-cypher_file = open('GO/cypher.cypher', 'w')
+cypher_file = open('output/cypher.cypher', 'a',encoding='utf-8')
 # delete all old
 # query='''begin\n MATCH p=()-[r:equal_to_CTD_go]->() Delete r;\n commit\n'''
 # cypher_file.write(query)

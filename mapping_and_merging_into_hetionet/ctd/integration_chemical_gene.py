@@ -19,7 +19,7 @@ def create_connection_with_neo4j():
 
 
 # generate cypher file
-cypherfile = open('chemical_gene/cypher.cypher', 'w', encoding='utf-8')
+cypherfile = open('output/cypher_edge.cypher', 'a', encoding='utf-8')
 
 # dictionary with rela name to drug-gene/protein pair
 dict_rela_to_drug_gene_protein_pair = {}
