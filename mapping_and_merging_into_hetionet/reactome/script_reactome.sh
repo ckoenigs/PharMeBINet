@@ -50,44 +50,12 @@ echo pathway
 
 python3 MappingPathway.py $path_to_project > pathway/output_map.txt
 
-echo integrate connection with neo4j shell
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-$path_neo4j/cypher-shell -u neo4j -p test -f pathway/cypher.cypher > output_cypher_integration.txt
-
-sleep 180
-
-$path_neo4j/neo4j restart
-
-
-sleep 120
-
-
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo disease
 
 python3 MappingDisease.py $path_to_project > disease/output_map.txt
 
-
-#//Delete douplication of relationships
-#//MATCH (s:Disease)-[r:equal_to_reactome_disease]->(e:Disease_reactome)
-#//WITH s,e,type(r) as typ, tail(collect(r)) as coll
-#//foreach(x in coll | delete x)
-
-echo integrate connection with neo4j shell
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-$path_neo4j/cypher-shell -u neo4j -p test -f disease/cypher.cypher > output_cypher_integration.txt
-
-sleep 180
-
-$path_neo4j/neo4j restart
-
-
-sleep 120
 
 
 now=$(date +"%F %T")
@@ -96,30 +64,17 @@ echo bp
 
 python3 GO_BiolProcess.py $path_to_project > gobiolproc/output_map.txt
 
-echo integrate connection with neo4j shell
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-$path_neo4j/cypher-shell -u neo4j -p test -f gobiolproc/cypher.cypher > output_cypher_integration.txt
-
-sleep 180
-
-$path_neo4j/neo4j restart
-
-
-sleep 120
-
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo cc
 
 python3 GO_CellComp.py $path_to_project > gocellcomp/output_map.txt
 
-echo integrate connection with neo4j shell
+echo integrate mapping node with neo4j shell
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p test -f gocellcomp/cypher.cypher > output_cypher_integration.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher.cypher
 
 sleep 180
 
@@ -127,6 +82,11 @@ $path_neo4j/neo4j restart
 
 
 sleep 120
+
+#//Delete douplication of relationships
+#//MATCH (s:Disease)-[r:equal_to_reactome_disease]->(e:Disease_reactome)
+#//WITH s,e,type(r) as typ, tail(collect(r)) as coll
+#//foreach(x in coll | delete x)
 
 
 now=$(date +"%F %T")
@@ -150,18 +110,6 @@ echo multi edges of Failedreaction integration
 
 python3 CreateEdgeFailedReactionToNode.py $path_to_project > FailedReactionEdges/output_map.txt
 
-echo integrate connection with neo4j shell
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-$path_neo4j/cypher-shell -u neo4j -p test -f FailedReactionEdges/cypher.cypher > FailedReactionEdges/output_cypher_integration.txt
-
-sleep 180
-
-$path_neo4j/neo4j restart
-
-
-sleep 120
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -173,7 +121,7 @@ echo integrate connection with neo4j shell
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p test -f PathwayEdges/cypher.cypher > PathwayEdges/output_cypher_integration.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher_edge.cypher 
 
 sleep 180
 

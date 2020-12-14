@@ -127,7 +127,7 @@ def main():
     ]
 
     directory = 'PathwayEdges'
-    cypher_file = open(directory + '/cypher.cypher', 'w', encoding="utf-8")
+    cypher_file = open('output/cypher_edge.cypher', 'a', encoding="utf-8")
 
     for list_element in list_of_combinations:
         new_relationship = list_element[0]
@@ -138,6 +138,7 @@ def main():
         check_relationships_and_generate_file(new_relationship, node_reactome_label, rela_equal_name,
                                               node_hetionet_label, directory,
                                               rela_name)
+    cypher_file.close()
 
     print(
         '###########################################################################################################################')

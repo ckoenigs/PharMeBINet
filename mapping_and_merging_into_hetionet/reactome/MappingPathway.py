@@ -159,7 +159,7 @@ generate connection between mapping pathways of reactome and hetionet and genera
 
 
 def create_cypher_file():
-    cypher_file = open('pathway/cypher.cypher', 'w', encoding="utf-8")
+    cypher_file = open('output/cypher.cypher', 'w', encoding="utf-8")
     # mappt die Knoten, die es in hetionet und reactome gibt und fügt die properties hinzu
     query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/reactome/pathway/mapped_pathways.tsv" As line FIELDTERMINATOR "\\t" MATCH (d:Pathway{identifier:line.id_hetionet}),(c:Pathway_reactome{stId:line.id}) CREATE (d)-[: equal_to_reactome_pathway]->(c) SET d.resource = split(line.resource, '|'), d.reactome = "yes", d.name = c.displayName, d.synonyme = c.name, d.alternativeId = c.oldStId, d.books = c.books, d.pubMed = c.pubMed, d.figure_urls = c.figure_urls, d.publication_url = c.publication_url, d.doi = c.doi, d.definition = c.definition, d.xrefs = split(line.ownId,"|");\n'''
     query = query % (path_of_directory)

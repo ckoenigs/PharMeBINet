@@ -129,7 +129,7 @@ generate connection between mapping gobiolproc of reactome and hetionet and gene
 
 
 def create_cypher_file():
-    cypher_file = open('gobiolproc/cypher.cypher', 'w', encoding="utf-8")
+    cypher_file = open('output/cypher.cypher', 'a', encoding="utf-8")
     # mappt die Knoten, die es in hetionet und reactome gibt und fügt die properties hinzu
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/reactome/gobiolproc/mapped_gobiolproc.tsv" As line FIELDTERMINATOR "\\t"
      Match (d: BiologicalProcess {identifier: line.id_hetionet}),(c:GO_BiologicalProcess_reactome{accession:line.id}) Create (d)-[: equal_to_reactome_gobiolproc]->(c)  SET d.resource = split(line.resource, '|'), d.reactome = "yes";\n'''

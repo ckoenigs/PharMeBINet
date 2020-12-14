@@ -150,7 +150,7 @@ generate connection between mapping disease of reactome and hetionet and generat
 
 
 def create_cypher_file():
-    cypher_file = open('disease/cypher.cypher','w', encoding="utf-8")
+    cypher_file = open('output/cypher.cypher', 'a', encoding="utf-8")
     #mappt die Knoten, die es in hetionet und reactome gibt und fügt die properties hinzu
     query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/reactome/disease/mapped_disease.tsv" As line FIELDTERMINATOR "\\t" MATCH (d:Disease{identifier:line.id_hetionet}),(c:Disease_reactome{identifier:line.id}) CREATE (d)-[: equal_to_reactome_disease]->(c) SET d.resource = split(line.resource, '|'), d.reactome = "yes";\n'''
     query= query % (path_of_directory)
