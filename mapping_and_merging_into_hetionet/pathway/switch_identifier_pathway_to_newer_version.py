@@ -205,8 +205,9 @@ def fill_the_list_of_properties(head, value, identifiers, resource, name, list_i
         value = identifiers
     elif head == 'source':
         if type(value) in [list, set]:
-            value = ",".join(sorted([x.capitalize() for x in value]))
-            resource = value
+            list_value=list(sorted([x.capitalize() for x in value]))
+            value = ",".join(list_value)
+            resource = list_value
         else:
             value = value.capitalize()
             resource = [value]

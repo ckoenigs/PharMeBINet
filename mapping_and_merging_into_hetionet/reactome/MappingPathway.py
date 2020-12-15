@@ -121,7 +121,7 @@ def load_reactome_pathways_in():
             resource.append('Reactome')
             resource = list(set(resource))
             resource = '|'.join(resource)
-            csv_mapped.writerow([pathways_id, hetionet_identifier, string_own_ids, pathways_name, resource])
+            csv_mapped.writerow([pathways_id, hetionet_identifier, string_own_ids, resource, pathways_name])
 
         # mapping nach dem Namen
         elif pathways_name in dict_pathway_hetionet_names:
