@@ -63,6 +63,7 @@ def load_hetionet_gobiolproc_in():
                 dict_gobiolproc_hetionet_alt_ids[alt_id.replace("GO:","")] = identifier
 
     print('number of gobiolproc nodes in hetionet:' + str(len(dict_gobiolproc_hetionet_identifier)))
+    print('number of gobiolproc nodes in hetionet:' + str(len(dict_gobiolproc_hetionet_identifier)))
 
 
 # file for mapped or not mapped identifier
@@ -138,7 +139,7 @@ def create_cypher_file():
     cypher_file.write(':begin\n')
     query = '''Match (d:BiologicalProcess) Where not  exists(d.reactome) Set d.reactome="no";\n '''
     cypher_file.write(query)
-    cypher_file.write(':commit')
+    cypher_file.write(':commit\n')
 
 
 def main():

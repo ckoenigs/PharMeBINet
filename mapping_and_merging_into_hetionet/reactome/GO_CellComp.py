@@ -134,7 +134,7 @@ def create_cypher_file():
     cypher_file.write(':begin\n')
     query = '''Match (d:CellularComponent) Where not  exists(d.reactome) Set d.reactome="no";\n '''
     cypher_file.write(query)
-    cypher_file.write(':commit')
+    cypher_file.write(':commit\n')
 
 
 def main():
