@@ -9,7 +9,6 @@ import datetime
 import sys, csv
 import urllib.request, urllib.error, urllib.parse
 import json
-from api_key import *
 
 sys.path.append("../..")
 import create_connection_to_databases
@@ -69,6 +68,11 @@ class SideEffect_Aeolus():
 
 # dictionary with all side effects from hetionet with umls cui as key and as value a class SideEffect
 dict_all_side_effect = {}
+
+def load_api_key():
+    global API_KEY
+    file=open('api_key.txt','r',encoding='utf-8')
+    API_KEY=next(file).strip(" \n")
 
 '''
 Create cache file or open and load mapping results
@@ -656,6 +660,14 @@ def main():
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j()
+
+    print(
+        '###########################################################################################################################')
+
+    print(datetime.datetime.utcnow())
+    print('Load api key')
+
+    load_api_key()
 
     print(
         '###########################################################################################################################')

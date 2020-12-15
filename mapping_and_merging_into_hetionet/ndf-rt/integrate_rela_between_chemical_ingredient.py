@@ -57,7 +57,7 @@ dict_rela_name_to_other_information={
 
 def load_connections():
     '''
-    Load all connection betweenn chemical and pharmacological class from ndf-rt
+    Load all connection between chemical and pharmacological class from ndf-rt
     :return:
     '''
     query = "Match (c:Chemical)--(:NDF_RT_DRUG_KIND)-[t]-(:NDF_RT_INGREDIENT_KIND)--(d:Chemical) Return c.identifier, type(t), t, d.identifier"
