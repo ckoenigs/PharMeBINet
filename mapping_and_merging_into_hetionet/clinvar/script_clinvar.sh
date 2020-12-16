@@ -21,7 +21,7 @@ echo integrate connection with ne4j shell
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p test -f disease/cypher.cypher > output_cypher_integration.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher.cypher > output_cypher_integration.txt
 
 sleep 180
 
