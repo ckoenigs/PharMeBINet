@@ -8,7 +8,7 @@ Created on Fri Jan 19 11:46:22 2018
 import sys
 import datetime, csv
 from itertools import groupby
-from collections import  defaultdict
+from collections import defaultdict
 
 
 # use to delimit between the blocks
@@ -50,15 +50,17 @@ dict_other_rela_parent_child = defaultdict(set)
 type_def = {}
 
 # set of all properties with !
-set_properties_with_bang=set([])
+set_properties_with_bang = set([])
 
 # counter of all relationships
-counter_rela=0
+counter_rela = 0
 
 '''
 
 '''
-def add_information_to_dictionary(dict_all_info,key_term, value):
+
+
+def add_information_to_dictionary(dict_all_info, key_term, value):
     # for some properties more than one value appears
     if not key_term in dict_all_info:
         dict_all_info[key_term] = value.replace('"', '').replace("'", "").replace("\\", "")
@@ -68,13 +70,16 @@ def add_information_to_dictionary(dict_all_info,key_term, value):
         dict_all_info[key_term] += '|' + value.replace('"', '').replace("'", "").replace("\\", "")
         set_list_properties.add(key_term)
 
+
 # dictionary which form
 dict_synonyms = {
-                'EXACT': 'synonym',
-                'BROAD': 'broad_synonym',
-                'RELATED': 'related_synonym',
-                'NARROW': 'narrow_synonym'
-            }
+    'EXACT': 'synonym',
+    'BROAD': 'broad_synonym',
+    'RELATED': 'related_synonym',
+    'NARROW': 'narrow_synonym'
+}
+
+list_synonyms_type = dict_synonyms.keys()
 
 '''
 go through a block of information and add the node information into a dictionary
@@ -94,35 +99,56 @@ def extract_information_from_block(group, is_type):
 
         # check if the key is a relationship or not and add the information to the right dictionary
         if key_term != 'relationship':
+            # print(value)
             # some other relationships are not defined A RELATIONSHIP but have a ' ! '
             if value.find(' ! ') == -1:
-                if key_term!='synonym':
-                    if value=='DOID:4606':
+                if key_term != 'synonym':
+                    if value == 'UBERON:4000171':
                         print('test')
                     add_information_to_dictionary(dict_all_info, key_term, value)
                     set_all_properties_in_database.add(key_term)
                 else:
-                    first_part_with_type_and_second_ref=value.rsplit(' [',1)
-                    synonym_type=first_part_with_type_and_second_ref[0].rsplit(' ',1)
-                    # somethimes it defined the synonym more accurate, but this is not needed
-                    if synonym_type[1] not in dict_synonyms:
-                        # sometimes it has the reference from HPO direct after it, this is add to the other references
-                        if synonym_type[1].startswith('HP:'):
-                            first_part_with_type_and_second_ref[1]=synonym_type[1]+first_part_with_type_and_second_ref[1] if first_part_with_type_and_second_ref[1] ==']' else synonym_type[1]+','+first_part_with_type_and_second_ref[1]
-                            synonym_type = synonym_type[0].rsplit(' ', 1)
-                        else:
-                            synonym_type = synonym_type[0].rsplit(' ', 1)
 
-                    if '[' in first_part_with_type_and_second_ref[1]:
-                        print('huhuh')
-                    new_key=dict_synonyms[synonym_type[1]]
-                    if len(first_part_with_type_and_second_ref[1])>1:
-                        xrefs=first_part_with_type_and_second_ref[1]
-                        if len(xrefs.split(']'))>1 and ' {' in xrefs.split(']')[1]:
-                            xrefs=xrefs.rsplit(' {',1)[0]
-                        synonym=synonym_type[0]+' ['+xrefs
-                    else:
-                        synonym=synonym_type[0]
+                    found_type = False
+
+                    for synonym_type, key_name in dict_synonyms.items():
+                        if '" ' + synonym_type + ' ' in value:
+                            found_type = True
+                            first_part_synonym_second_addtional_information = value.split(' ' + synonym_type + ' ', 1)
+                            synonym = first_part_synonym_second_addtional_information[0]
+                            new_key = key_name
+                            addtional_info_and_xrefs = first_part_synonym_second_addtional_information[1].split("[", 1)
+                            if len(addtional_info_and_xrefs[1]) > 1:
+                                synonym += ' [' + addtional_info_and_xrefs[1]
+
+                    if not found_type:
+                        print(value)
+                        sys.exit('different formart for synonyms')
+                        # first_part_with_type_and_second_ref = value.rsplit(' [', 1)
+                        # synonym_type = first_part_with_type_and_second_ref[0].rsplit(' ', 1)
+                        # # somethimes it defined the synonym more accurate, but this is not needed
+                        # if synonym_type[1] not in dict_synonyms:
+                        #     # sometimes it has the reference from HPO direct after it, this is add to the other references
+                        #     if synonym_type[1].startswith('HP:'):
+                        #         first_part_with_type_and_second_ref[1] = synonym_type[1] + \
+                        #                                                  first_part_with_type_and_second_ref[1] if \
+                        #         first_part_with_type_and_second_ref[1] == ']' else synonym_type[1] + ',' + \
+                        #                                                            first_part_with_type_and_second_ref[
+                        #                                                                1]
+                        #         synonym_type = synonym_type[0].rsplit(' ', 1)
+                        #     else:
+                        #         synonym_type = synonym_type[0].rsplit(' ', 1)
+
+                        # if '[' in first_part_with_type_and_second_ref[1]:
+                        #     print('huhuh')
+                        # new_key = dict_synonyms[synonym_type[1]]
+                        # if len(first_part_with_type_and_second_ref[1]) > 1:
+                        #     xrefs = first_part_with_type_and_second_ref[1]
+                        #     if len(xrefs.split(']')) > 1 and ' {' in xrefs.split(']')[1]:
+                        #         xrefs = xrefs.rsplit(' {', 1)[0]
+                        #     synonym = synonym_type[0] + ' [' + xrefs
+                        # else:
+                        #     synonym = synonym_type[0]
                     add_information_to_dictionary(dict_all_info, new_key, synonym)
                     set_all_properties_in_database.add(new_key)
 
@@ -130,21 +156,21 @@ def extract_information_from_block(group, is_type):
             # check for not typedefinition the relationship
             elif not is_type:
                 set_properties_with_bang.add(key_term)
-                identifier=dict_all_info['id']
+                identifier = dict_all_info['id']
                 parent_id = value.split(' ! ')[0].strip().split(' {')[0]
-                if parent_id=='DOID:4606':
+                if parent_id == 'DOID:4606':
                     print('test')
-                counter_rela+=1
-                splitted_parent_id=parent_id.split(' ')
-                if len(splitted_parent_id)>1:
+                counter_rela += 1
+                splitted_parent_id = parent_id.split(' ')
+                if len(splitted_parent_id) > 1:
                     # should be only intersection_of
-                    if len(splitted_parent_id)==2:
-                        rela=splitted_parent_id[0]
-                        parent_id=splitted_parent_id[1]
-                        dict_other_rela_parent_child[key_term].add((parent_id,identifier, rela))
+                    if len(splitted_parent_id) == 2:
+                        rela = splitted_parent_id[0]
+                        parent_id = splitted_parent_id[1]
+                        dict_other_rela_parent_child[key_term].add((parent_id, identifier, rela))
                         continue
                     else:
-                        add_information_to_dictionary(dict_all_info,key_term,value)
+                        add_information_to_dictionary(dict_all_info, key_term, value)
 
                         set_all_properties_in_database.add(key_term)
                         continue
@@ -158,7 +184,7 @@ def extract_information_from_block(group, is_type):
             parent_id = rela_info[1]
             if parent_id == 'DOID:4606':
                 print('test')
-            identifier=dict_all_info['id']
+            identifier = dict_all_info['id']
             dict_other_rela_parent_child[rela_type].add((parent_id, identifier))
             list_other_rela.add(rela_type)
 
@@ -173,7 +199,7 @@ further fill the dictionary for the hierarchical set
 
 def gather_information_from_obo():
     # open the obo file
-    with open(file_name) as f:
+    with open(file_name, encoding='utf-8') as f:
         # group lines together which are in a block and go through every block
         for (key, group) in groupby(f, contains_information):
             if key:
@@ -205,7 +231,7 @@ generate cypher file
 def generate_cypher_file():
     # create cypher file
     cypher_file = open('cypher.cypher', 'w')
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/''' + directory + '''/output/node.csv" As line Create (:''' + neo4j_label + '''{'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/''' + directory + '''/output/node.csv" As line Create (:''' + neo4j_label + '''{'''
     for property in set_all_properties_in_database:
         if not property in set_list_properties:
             query += property + ':line.' + property + ', '
@@ -219,7 +245,7 @@ def generate_cypher_file():
     cypher_file.write(':commit\n')
 
     # create node csv
-    file = open('output/node.csv', 'w')
+    file = open('output/node.csv', 'w', encoding='utf-8')
     csv_writer = csv.DictWriter(file, fieldnames=list(set_all_properties_in_database))
     csv_writer.writeheader()
 
@@ -230,43 +256,48 @@ def generate_cypher_file():
 
     print(list_other_rela)
 
-    header_for_two=['parent_id','child_id']
-    heeader_for_three=['parent_id','child_id', 'rela']
+    header_for_two = ['parent_id', 'child_id']
+    heeader_for_three = ['parent_id', 'child_id', 'rela']
 
     # generate cypher query and csv for all rela types
     for rela_type, list_of_infos in dict_other_rela_parent_child.items():
+        if ':' in rela_type and rela_type not in type_def:
+            print('no rela name')
+            print(rela_type)
+            continue
         if rela_type in type_def:
-            if not rela_type==type_def[rela_type]['name']:
+            if not rela_type == type_def[rela_type]['name']:
                 # because a typedef can have multiple names only one is needed
-                if len(type_def[rela_type]['name'].split('|'))>1:
-                    type_def[rela_type]['name']=type_def[rela_type]['name'].split('|')[0]
-                rela_type=type_def[rela_type]['name'].replace(' ','_') if not '/' in type_def[rela_type]['name'] else rela_type
+                if len(type_def[rela_type]['name'].split('|')) > 1:
+                    type_def[rela_type]['name'] = type_def[rela_type]['name'].split('|')[0]
+                rela_type = type_def[rela_type]['name'].replace(' ', '_') if not '/' in type_def[rela_type][
+                    'name'] else rela_type
 
         # create csv for relationships
         file_name = 'rela_' + rela_type + '.csv'
         file = open('output/' + file_name, 'w')
         csv_writer = csv.writer(file)
-        list_of_infos=list(list_of_infos)
-        #depending if the relationships contains also information about a relationships type the qury and the csv file is a bit different
-        if len(list_of_infos[0])==2:
-            query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/%s/output/%s" As line  Match (a:%s{id:line.child_id}), (b:%s{id:line.parent_id}) Create (a)-[:%s]->(b); \n'''
+        list_of_infos = list(list_of_infos)
+        # depending if the relationships contains also information about a relationships type the qury and the csv file is a bit different
+        if len(list_of_infos[0]) == 2:
+            query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/%s/output/%s" As line  Match (a:%s{id:line.child_id}), (b:%s{id:line.parent_id}) Create (a)-[:%s]->(b); \n'''
             csv_writer.writerow(header_for_two)
         else:
             print(rela_type)
-            query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/%s/output/%s" As line  Match (a:%s{id:line.child_id}), (b:%s{id:line.parent_id}) Create (a)-[:%s{relationship:line.rela}]->(b); \n'''
+            query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/%s/output/%s" As line  Match (a:%s{id:line.child_id}), (b:%s{id:line.parent_id}) Create (a)-[:%s{relationship:line.rela}]->(b); \n'''
             csv_writer.writerow(heeader_for_three)
         # fill the query ND WRITE INTO FILE
         query = query % (directory, file_name, neo4j_label, neo4j_label, rela_type)
         cypher_file.write(query)
 
-        #write information into the csv file
+        # write information into the csv file
         for info in list_of_infos:
-            info=list(info)
+            info = list(info)
             csv_writer.writerow(info)
         file.close()
 
-def main():
 
+def main():
     print(datetime.datetime.utcnow())
 
     print('##########################################################################')
