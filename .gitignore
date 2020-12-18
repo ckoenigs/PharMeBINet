@@ -134,6 +134,7 @@ node_modules/
 *.pdf
 *.xsd
 *.json
+*.graphml
 
 wget-log
 wget-log.*

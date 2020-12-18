@@ -380,6 +380,28 @@ cd ..
 now=$(date +"%F %T")
 echo "Current time: $now"
 
+cd  PharmGKB
+echo PharmGKB
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+echo integrate PharmGKB into neo4j
+
+$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher 
+
+sleep 180
+
+$path_neo4j/neo4j restart
+
+
+sleep 120
+
+cd ..
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
 cd  pathway
 echo pathway
 
