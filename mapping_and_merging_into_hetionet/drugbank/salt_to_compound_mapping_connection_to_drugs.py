@@ -65,7 +65,7 @@ Create cypher and csv files for nodes and relationships
 
 def create_cypher_and_csv_files():
     # open cypher file
-    cypher_file = open('salts/cypher_salt.cypher', 'w')
+    cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
     # get properties of salt nodes
     query = '''MATCH (p:%s) WITH DISTINCT keys(p) AS keys UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields RETURN allfields;'''
     query = query % (label_of_salt)
@@ -81,18 +81,20 @@ def create_cypher_and_csv_files():
     query = query % (license)
 
     cypher_file.write(query)
+    cypher_file.close()
     node_file = open('salts/' + file_node + '.csv', 'w')
     rela_file = open('salts/' + file_rela + '.csv', 'w')
     global csv_node, csv_rela
     csv_node = csv.DictWriter(node_file, fieldnames=header, delimiter='\t')
     csv_node.writeheader()
+    cypher_rela = open('output/cypher_rela.csv', 'a', encoding='utf-8')
     rela_header = ['salt_id', 'compound_id']
     query_rela = query_start + ' (b:Compound :Salt{identifier:line.salt_id}), (a:Compound {identifier:line.compound_id}) Create (a)-[r:PART_OF_CpS{license:"%s", source:"DrugBank", resource:["DrugBank"], drugbank:"yes" }]->(b);\n'
     query_rela = query_rela % (file_rela, license)
-    cypher_file.write(query_rela)
+    cypher_rela.write(query_rela)
+    cypher_rela.close()
     csv_rela = csv.writer(rela_file, delimiter='\t')
     csv_rela.writerow(rela_header)
-    cypher_file.close()
 
     # delete compound nodes which are whether drugbank compound nor salt
     # this must be the last step of the compound integration, because else the merge nodes are also removed and this would be a problem
