@@ -45,7 +45,7 @@ sleep 180
 $path_neo4j/neo4j restart
 sleep 120
 
-chmod merge
+echo merge
 chmod 775 merge_nodes.sh
 
 ./merge_nodes.sh > output_merge_compound.txt
