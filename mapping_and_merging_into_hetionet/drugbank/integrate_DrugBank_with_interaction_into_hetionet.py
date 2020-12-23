@@ -368,7 +368,7 @@ Create cypher file
 
 def create_cypher_file():
     # cypher file
-    cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
+    cypher_file = open('compound_interaction/cypher.cypher', 'w', encoding='utf-8')
 
     query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/drugbank/output/%s.csv" As line Fieldterminator '\\t' Match (a:%s{identifier:line.identifier})'''
     query_create = ''
@@ -413,7 +413,7 @@ def generation_of_interaction_file():
     g_csv = open('compound_interaction/interaction.csv', 'w', encoding='utf-8')
     csv_writer = csv.writer(g_csv, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     csv_writer.writerow(['db1', 'db2', 'description'])
-    cypherfile = open('compound_interaction/cypher_rela.cypher', 'w', encoding='utf-8')
+    cypherfile = open('output/cypher_rela.cypher', 'w', encoding='utf-8')
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/drugbank/compound_interaction/interaction.csv" As line Match (c1:Compound{identifier:line.db1}), (c2:Compound{identifier:line.db2}) Create (c1)-[:INTERACTS_CiC{source:"DrugBank", unbiased:false, resource:['DrugBank'], url:line.url, license:'%s', description:split(line.description,'|')}]->(c2);\n '''
     query = query % (license)
     cypherfile.write(query)

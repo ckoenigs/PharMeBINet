@@ -17,7 +17,7 @@ python3 integrate_DrugBank_with_interaction_into_hetionet.py "${license}" $path_
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p test -f compound_output/cypher.cypher
+$path_neo4j/cypher-shell -u neo4j -p test -f compound_interaction/cypher.cypher
 
 
 echo merge

@@ -65,7 +65,7 @@ Create cypher and csv files for nodes and relationships
 
 def create_cypher_and_csv_files():
     # open cypher file
-    cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
+    cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
     # get properties of salt nodes
     query = '''MATCH (p:%s) WITH DISTINCT keys(p) AS keys UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields RETURN allfields;'''
     query = query % (label_of_salt)
