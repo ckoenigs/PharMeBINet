@@ -14,6 +14,21 @@ echo 'integrate Drugbank drugs with interaction into Hetionet'
 
 python3 integrate_DrugBank_with_interaction_into_hetionet.py "${license}" $path_to_project > compound_interaction/output_integration_file_generation.txt
 
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+$path_neo4j/cypher-shell -u neo4j -p test -f compound_output/cypher.cypher
+
+
+echo merge
+chmod 775 merge_nodes.sh
+
+./merge_nodes.sh > output_merge_compound.txt
+
+
+sleep 180
+$path_neo4j/neo4j restart
+sleep 120
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -35,25 +50,15 @@ echo 'integrate Drugbank product  with rela to compound into Hetionet'
 
 python3 integrate_product_and_rela_to_compound.py "$license" $path_to_project > product/output.txt
 
-
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p test -f compound_output/cypher.cypher > output_cypher_drug.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher.cypher > output_cypher_drug.txt
 
 sleep 180
 $path_neo4j/neo4j restart
 sleep 120
 
-echo merge
-chmod 775 merge_nodes.sh
-
-./merge_nodes.sh > output_merge_compound.txt
-
-
-sleep 180
-$path_neo4j/neo4j restart
-sleep 120
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -73,7 +78,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo rela
 
-$path_neo4j/cypher-shell -u neo4j -p test -f compound_output/cypher_rela.cypher 
+$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher_rela.cypher 
 
 sleep 180
 $path_neo4j/neo4j restart

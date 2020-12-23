@@ -432,7 +432,7 @@ def write_cypher_file():
 
     # query gene-disease association
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_disease/db_uniprots_to_disease.csv" As line MATCH (:Protein{identifier:line.uniprot_ids})--(g:Gene),(b:Disease{identifier:line.disease_id}) Merge (b)-[r:ASSOCIATES_DaG]->(g) On Create Set r.source="UniProt", r.resource=["UniProt"], r.uniprot='yes', r.note=line.note, r.sources=split(line.source,"|"), r.url="https://www.uniprot.org/uniprot/"+line On Match Set r.uniprot="yes", r.resource=r.resource+"UniPort", r.note=line.note, r.sources=split(line.source,"|") ;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_disease/db_uniprots_to_disease.csv" As line MATCH (:Protein{identifier:line.uniprot_ids})--(g:Gene),(b:Disease{identifier:line.disease_id}) Merge (b)-[r:ASSOCIATES_DaG]->(g) On Create Set r.source="UniProt", r.resource=["UniProt"], r.uniprot='yes', r.note=line.note, r.sources=split(line.source,"|"), r.url="https://www.uniprot.org/uniprot/"+line.uniprot_ids On Match Set r.uniprot="yes", r.resource=r.resource+"UniPort", r.note=line.note, r.sources=split(line.source,"|") ;\n'''
     file_cypher.write(query)
 
     query_property='''MATCH (p:Protein_Uniprot) WITH DISTINCT keys(p) AS keys
