@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Jan 26 13:31:43 2018
-
-@author: ckoenigs
-"""
-
 import sys
 import datetime
 sys.path.append("../..")
@@ -92,23 +85,26 @@ def merge_resource_to_node(delete_node, label, merged_node):
         query = query[0:-1] + ''' Return s'''
         results = g.run(query)
         result = results.evaluate()
-        resources_merged_node_list = result['resource'] if 'resource' in result else []
-        combined_resource = list(set().union(resources_list, resources_merged_node_list))
-        combined_resource_string = '","'.join(combined_resource)
+        if result:
+            resources_merged_node_list = result['resource'] if 'resource' in result else []
+            combined_resource = list(set().union(resources_list, resources_merged_node_list))
+            combined_resource_string = '","'.join(combined_resource)
 
-        if type(merged_node) == int:
-            query = '''Match (s:%s{identifier:%s}) Set s.resource=["%s"],'''
+            if type(merged_node) == int:
+                query = '''Match (s:%s{identifier:%s}) Set s.resource=["%s"],'''
+            else:
+                query = '''Match (s:%s{identifier:"%s"}) Set s.resource=["%s"],'''
+            query = query % (label, merged_node, combined_resource_string)
+
+            # if it comes from CTD also add the ctd url
+            if url_ctd != '':
+                ctd_url_merged = result['url_ctd'] if 'url_ctd' in result else ''
+                if ctd_url_merged == '':
+                    add_query = ''' s.url_ctd="%s" ''' % (url_ctd)
+                    query += add_query
+            g.run(query[0:-1])
         else:
-            query = '''Match (s:%s{identifier:"%s"}) Set s.resource=["%s"],'''
-        query = query % (label, merged_node, combined_resource_string)
-
-        # if it comes from CTD also add the ctd url
-        if url_ctd != '':
-            ctd_url_merged = result['url_ctd'] if 'url_ctd' in result else ''
-            if ctd_url_merged == '':
-                add_query = ''' s.url_ctd="%s" ''' % (url_ctd)
-                query += add_query
-        g.run(query[0:-1])
+            sys.exit(query +' error line 96')
 
 
 '''
