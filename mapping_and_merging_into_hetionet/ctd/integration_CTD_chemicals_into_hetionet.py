@@ -46,11 +46,10 @@ class DrugCTD:
     how_mapped: string
     """
 
-    def __init__(self, idType, chemical_id, synonyms,  name, drugBankIDs, casRN):
+    def __init__(self, idType, chemical_id, synonyms,  name,  casRN):
         self.idType = idType
         self.chemical_id = chemical_id
         self.synonyms = synonyms
-        self.drugBankIDs = set(drugBankIDs)
         self.name = name
         self.casRN=casRN
 
@@ -309,7 +308,7 @@ properties:
 
 
 def load_drugs_from_CTD():
-    query = 'MATCH (n:CTDchemical) RETURN n'
+    query = 'MATCH (n:CTDchemical{chemical_id:"D012978"}) RETURN n'
     results = g.run(query)
     counter_drugbank=0
 
@@ -319,12 +318,10 @@ def load_drugs_from_CTD():
         if chemical_id=='D012978':
             print('huhu')
         synonyms = [x.lower() for x in result['synonyms']] if 'synonyms' in result else []
-        drugBankIDs = result['drugBankIDs'] if 'drugBankIDs' in result else []
-        drugBankIDs = list(filter(None, drugBankIDs))
 
         casRN= result['casRN'] if 'casRN' in result else ''
         name = result['name'].lower()
-        drug = DrugCTD(idType, chemical_id, synonyms,  name, drugBankIDs,casRN)
+        drug = DrugCTD(idType, chemical_id, synonyms,  name,casRN)
 
 
         # manual
@@ -333,34 +330,8 @@ def load_drugs_from_CTD():
             list_drug_CTD_without_drugbank_id.append(chemical_id)
 
             continue
-
-
-        # the nodes without a drugbank id are not mapped and for the one with DB ID the cas is checked
-        # if it is not the same and another DB with this cas is there then replace the drugbank ids
-        if len(drugBankIDs)==0:
-            dict_drugs_CTD_without_drugbankIDs[chemical_id] = drug
-            list_drug_CTD_without_drugbank_id.append(chemical_id)
-        else:
-            counter_drugbank+=1
-            list_mapped_drugbank_ids=[]
-            for drugBankID in drugBankIDs:
-                #check if the durgbank id in ctd is also in drugbank
-                if drugBankID in dict_drugs_hetionet:
-                    found_mapping, drugBank_ids=check_and_add_the_mapping(chemical_id, drug, drugBankID,casRN, name,synonyms)
-                    list_mapped_drugbank_ids.extend(drugBank_ids)
-
-
-                elif drugBankID in dict_alternative_to_drugbank_id:
-                    new_drugbank_id=dict_alternative_to_drugbank_id[drugBankID]
-                    found_mapping, drugBank_ids = check_and_add_the_mapping(chemical_id, drug, new_drugbank_id, casRN, name, synonyms)
-                    list_mapped_drugbank_ids.extend(drugBank_ids)
-
-            if len(list_mapped_drugbank_ids)>0:
-                dict_drugs_CTD_with_drugbankIDs[chemical_id].set_drugbankIDs(list_mapped_drugbank_ids)
-            else:
-                dict_drugs_CTD_without_drugbankIDs[chemical_id] = drug
-                list_drug_CTD_without_drugbank_id.append(chemical_id)
-
+        dict_drugs_CTD_without_drugbankIDs[chemical_id] = drug
+        list_drug_CTD_without_drugbank_id.append(chemical_id)
 
 
     print(counter_drugbank)
@@ -811,8 +782,9 @@ def map_ctd_to_hetionet_compound():
         # if no drugbank is in the real set then the ctd term should be moved to the unmapped list
         else:
             list_drug_CTD_without_drugbank_id.append(mesh)
-            list_new_compounds.append((mesh,drugbank_ids))
+            # list_new_compounds.append((mesh,drugbank_ids))
             drugbank_ids=set()
+            writer.writerow([mesh])
 
         # check if ctd map to multiple nodes and if then find intersection with name mapping
         if len(drugbank_ids)>1:
