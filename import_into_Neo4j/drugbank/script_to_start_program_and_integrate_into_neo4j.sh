@@ -6,8 +6,22 @@ path_to_project=$1
 # path to neo4j
 path_neo4j=$2
 
+# path to drugbank
+path_to_drugbank_data="/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/Drugbank_database/drugbank_files_without_preperation/"
+
 
 echo  $path_neo4j
+
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo extract sdf information
+
+cd sdf
+
+./script_sdf.sh $path_to_drugbank_data > output.txt
+
+cd ..
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -23,7 +37,7 @@ echo file preperation
 
 output_file=output_file_preperation.txt
 
-python3 file_preperation.py "/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/Drugbank_database/drugbank_files_without_preperation/" drug_sequences/ external_links/ Protein_identifiers/ structure/ target_sequences/ $path_to_project > $output_file
+python3 file_preperation.py $path_to_drugbank_data drug_sequences/ external_links/ Protein_identifiers/ structure/ target_sequences/ $path_to_project > $output_file
 
 #exit 1
 

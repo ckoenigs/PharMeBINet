@@ -502,7 +502,7 @@ def get_gather_protein_info_and_generate_relas():
     # generate a file with all uniprots to mf
     file_uniprots_disease = open('uniprot_disease/db_uniprots_to_disease.csv', 'w')
     csv_uniprots_disease = csv.writer(file_uniprots_disease)
-    csv_uniprots_disease.writerow(['uniprot_ids', 'disease_id','source','note'])
+    csv_uniprots_disease.writerow(['uniprot_ids', 'disease_id','source','note','resource'])
 
     # query to get all Protein information {identifier:'P0DMV0'} {identifier:'Q05066'} {identifier:'P0DPK4'} {identifier:'E5RIL1'}
     query = '''MATCH (n:Protein_Uniprot) RETURN n '''
@@ -521,6 +521,7 @@ def get_gather_protein_info_and_generate_relas():
 
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/db_uniprot_ids.csv" As line MATCH (p:Protein_Uniprot{identifier:line.uniprot_id}) Create (p)<-[:equal_to_uniprot]-(:Protein{'''
 
+    dict_uniprot_disease= {}
     # go through all Proteins
     # find overlap between protein and genes
     # maybe check out the go information to generate further relationships to go
@@ -555,7 +556,10 @@ def get_gather_protein_info_and_generate_relas():
                 omim_id, sources, note= extract_infos_from_disease(disease)
                 if omim_id in dict_omim_to_disease_ids:
                     for disease_id in dict_omim_to_disease_ids[omim_id]:
-                        csv_uniprots_disease.writerow([identifier, disease_id,sources, note])
+                        if (identifier,disease_id) not in dict_uniprot_disease:
+                            dict_uniprot_disease[(identifier,disease_id)]=[]
+                        dict_uniprot_disease[(identifier, disease_id)].append([sources, note])
+
 
 
         # the gene symbol
@@ -620,6 +624,16 @@ def get_gather_protein_info_and_generate_relas():
                 new_xrefs.append(xref)
         new_xrefs = '|'.join(go_through_xrefs_and_change_if_needed_source_name(new_xrefs, 'Protein'))
         writer_uniprots_ids.writerow([identifier, new_xrefs])
+
+    for (identifier, disease_id), list_of_infos in dict_uniprot_disease.items():
+        sources=set()
+        notes=set()
+        for list_of_info in list_of_infos:
+            sources=sources.union(list_of_info[0].split('|'))
+            notes.add(list_of_info[1])
+        sources="|".join(sources)
+        note=" ".join(notes)
+        csv_uniprots_disease.writerow([identifier, disease_id, sources, note])
 
     print('number of existing gene protein rela:' + str(counter_existing_gene_protein_rela))
     print('number of all proteins:' + str(counter_all_proteins))
