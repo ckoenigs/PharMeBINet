@@ -24,7 +24,7 @@ def integrate_information_into_dict(dict_node_id_to_resource, label):
     get all node ids from the database
     :return:
     """
-    query = '''MATCH (n:Chemical) RETURN n.identifier, n.name, n.synonyms, n.resource'''
+    query = '''MATCH (n:Chemical) Where not n:Product RETURN n.identifier, n.name, n.synonyms, n.resource'''
     query = query % (label)
     results = g.run(query)
 

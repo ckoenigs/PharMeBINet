@@ -188,7 +188,7 @@ properties:
 
 
 def load_compounds_from_hetionet():
-    query = 'MATCH (n:Compound)  RETURN n '
+    query = 'MATCH (n:Compound) Where not n:Product RETURN n '
     results = g.run(query)
     i = 0
 
@@ -316,7 +316,7 @@ def load_drugs_from_CTD():
     for result, in results:
         idType = result['idType']
         chemical_id = result['chemical_id']
-        if chemical_id=='C013759':
+        if chemical_id=='D012978':
             print('huhu')
         synonyms = [x.lower() for x in result['synonyms']] if 'synonyms' in result else []
         drugBankIDs = result['drugBankIDs'] if 'drugBankIDs' in result else []

@@ -89,7 +89,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo delete compounds which did not mapped
 
-#$path_neo4j/cypher-shell -u neo4j -p test -f cypher_delete_compound.cypher > output_delete_cypher.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f cypher_delete_compound.cypher > output_delete_cypher.txt
 
 sleep 180
 $path_neo4j/neo4j restart

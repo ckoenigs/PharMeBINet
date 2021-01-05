@@ -105,7 +105,7 @@ load in all compound from hetionet in a dictionary
 
 
 def load_hetionet_chemical_in():
-    query = '''MATCH (n:Chemical) RETURN n.identifier,n'''
+    query = '''MATCH (n:Chemical) Where not n:Product RETURN n.identifier,n'''
     results = g.run(query)
 
     for identifier, node, in results:

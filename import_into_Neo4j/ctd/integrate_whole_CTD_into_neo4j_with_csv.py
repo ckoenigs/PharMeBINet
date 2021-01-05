@@ -62,7 +62,7 @@ def load_chemicals_and_add_to_cypher_file():
 
     cypher_file_nodes.write('Create Constraint On (node:CTDchemical) Assert node.chemical_id Is Unique;\n')
     cypher_file_nodes.write(':commit\n')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chemicals.csv" As line Create (c:CTDchemical{ chemical_id:split(line.ChemicalID,':')[1] , casRN:line.CasRN, synonyms:split(line.Synonyms,'|'),  parentIDs:split(line.ParentIDs,'|'), parentTreeNumbers:split(line.ParentTreeNumbers,'|'), treeNumbers:split(line.TreeNumbers,'|'), definition:line.Definition, name:line.ChemicalName, url:"http://ctdbase.org/detail.go?type=chem&acc="+ line.split(line.ChemicalID,':')[1]});\n '''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_chemicals.csv" As line Create (c:CTDchemical{ chemical_id:split(line.ChemicalID,':')[1] , casRN:line.CasRN, synonyms:split(line.Synonyms,'|'),  parentIDs:split(line.ParentIDs,'|'), parentTreeNumbers:split(line.ParentTreeNumbers,'|'), treeNumbers:split(line.TreeNumbers,'|'), definition:line.Definition, name:line.ChemicalName, url:"http://ctdbase.org/detail.go?type=chem&acc="+ split(line.ChemicalID,':')[1]});\n '''
 
     cypher_file_nodes.write(query)
 
@@ -91,7 +91,7 @@ def load_disease_and_add_to_cypher_file():
 
     cypher_file_nodes.write('Create Constraint On (node:CTDdisease) Assert node.disease_id Is Unique;\n')
     cypher_file_nodes.write(':commit\n')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_diseases.csv" As line Create (c:CTDdisease{ disease_id:split(line.DiseaseID,':')[1], altDiseaseIDs:split(line.AltDiseaseIDs,"|"), idType:split(line.DiseaseID,':')[0] , synonyms:split(line.Synonyms,'|'), slimMappings:split(line.SlimMappings,'|'), parentIDs:split(line.ParentIDs,'|'), parentTreeNumbers:split(line.ParentTreeNumbers,'|'), treeNumbers:split(line.TreeNumbers,'|'), definition:line.Definition, name:line.DiseaseName, url:"http://ctdbase.org/detail.go?type=disease&acc="+ line.split(line.DiseaseID,':')[1]}) ;\n '''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_diseases.csv" As line Create (c:CTDdisease{ disease_id:split(line.DiseaseID,':')[1], altDiseaseIDs:split(line.AltDiseaseIDs,"|"), idType:split(line.DiseaseID,':')[0] , synonyms:split(line.Synonyms,'|'), slimMappings:split(line.SlimMappings,'|'), parentIDs:split(line.ParentIDs,'|'), parentTreeNumbers:split(line.ParentTreeNumbers,'|'), treeNumbers:split(line.TreeNumbers,'|'), definition:line.Definition, name:line.DiseaseName, url:"http://ctdbase.org/detail.go?type=disease&acc="+ split(line.DiseaseID,':')[1]}) ;\n '''
 
     cypher_file_nodes.write(query)
 
@@ -519,7 +519,7 @@ def load_gene_pathway():
 
     global counter_edges_queries, cypher_file_edges, edges_file_number
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_genes_pathways.csv" As line Match (c:CTDgene{ gene_id:line.GeneID }), (g:CTDpathway{ pathway_id:split(line.PathwayID,':')[1] }) Create (c)-[a:participates_GP{unbiases:false, url:"http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID}}]->(g) ;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_genes_pathways.csv" As line Match (c:CTDgene{ gene_id:line.GeneID }), (g:CTDpathway{ pathway_id:split(line.PathwayID,':')[1] }) Create (c)-[a:participates_GP{unbiases:false, url:"http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID}]->(g) ;\n'''
 
     cypher_file_edges.write(query)
 
