@@ -27,7 +27,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo information extraction from xml
 
-python3 transform_drugbank_to_tsv.py > output_transform.txt
+python3 transform_drugbank_to_tsv.py $path_to_project > output_transform.txt
 
 
 
@@ -58,4 +58,6 @@ echo integration with cypher shell
 $path_neo4j/cypher-shell -u neo4j -p test -f cypher_file.cypher > cypher_output.txt 2>&1
 
 $path_neo4j/cypher-shell -u neo4j -p test -f cypher_rela_file.cypher
+
+$path_neo4j/cypher-shell -u neo4j -p test -f cypher_atc.cypher
 

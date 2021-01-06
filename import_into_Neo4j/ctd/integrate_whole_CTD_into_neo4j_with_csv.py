@@ -710,6 +710,8 @@ def prepare_exposure_studies():
 
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_exposure_studies.csv" As line  Create (g:CTDexposureStudy{ '''
     for exposure_head in exposure_header:
+        if exposure_head=='':
+            continue
         if exposure_head in properties_with_list:
             query += exposure_head + ':split(line.' + exposure_head + ', "|"), '
         else:
@@ -785,8 +787,6 @@ def prepare_exposure():
     csv_reader = csv.DictReader(file)
 
     header = csv_reader.fieldnames
-    dict_position_to_header = {x: head for x, head in enumerate(header)}
-    dict_header_to_position = {head: x for x, head in dict_position_to_header.items()}
     exposure_id = 0
 
     other_properties = ['exposurestressorname', 'exposurestressorid', 'exposuremarker', 'exposuremarkerid',
@@ -800,6 +800,8 @@ def prepare_exposure():
 
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/exposure.tsv" As line Fieldterminator "\t" Create  (g:CTDexposureEvents{ '''
     for exposure_head in exposure_header:
+        if exposure_head=='':
+            continue
         if exposure_head in properties_with_list:
             query += exposure_head + ':split(line.' + exposure_head + ', "|"), '
         else:

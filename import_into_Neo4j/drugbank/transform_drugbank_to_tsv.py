@@ -30,6 +30,10 @@ csv_decision_protein_file = csv.writer(decision_protein_file, delimiter='\t')
 csv_decision_protein_file.writerow(['name', 'identifier', 'labels', 'Protein_ja=1_und_nein=0'])
 maybe_not_protein_set = set()
 
+# prepare drugbank atc information
+dict_atc_nodes={}
+set_atc_edges=set()
+
 csv_reader = csv.reader(file)
 next(csv_reader)
 for row in csv_reader:
@@ -41,6 +45,7 @@ for row in csv_reader:
     dict_category_name_to_id[name] = row[0]
 
 xml_file = os.path.join('full database.xml')
+# xml_file = os.path.join('head_new.xml')
 # xml_file = os.path.join('drugbank_all_full_database_dezember.xml/test.xml')
 print(datetime.datetime.utcnow())
 
@@ -381,8 +386,7 @@ for i, drug in enumerate(root):
     row['type'] = drug.get('type')
     row['drugbank_id'] = drug.findtext(ns + "drugbank-id[@primary='true']")
     db_ID = drug.findtext(ns + "drugbank-id[@primary='true']")
-    if db_ID == 'DB14512':
-        print('huhu')
+
     row['cas_number'] = drug.findtext(ns + "cas-number")
     #    print(row['drugbank_id'])
 
@@ -399,6 +403,21 @@ for i, drug in enumerate(root):
                      drug.findall("{ns}groups/{ns}group".format(ns=ns))]
     row['atc_codes'] = [code.get('code') for code in
                         drug.findall("{ns}atc-codes/{ns}atc-code".format(ns=ns))]
+    # prepare atc code
+    for atc_code in drug.findall("{ns}atc-codes/{ns}atc-code".format(ns=ns)):
+        atc_id= atc_code.get('code')
+        if atc_id not in dict_atc_nodes:
+            dict_atc_nodes[atc_id]=''
+
+        atc_before=atc_id
+
+        for general_atc in atc_code.findall("{ns}level".format(ns=ns)):
+            atc_id=general_atc.get('code')
+            if atc_id not in dict_atc_nodes:
+                dict_atc_nodes[atc_id] = general_atc.text
+            set_atc_edges.add((atc_id, atc_before))
+            atc_before=atc_id
+
 
     #    row['categories'] = [x.findtext(ns + 'category') for x in
     #        drug.findall("{ns}categories/{ns}category".format(ns = ns))]
@@ -982,7 +1001,7 @@ def generate_tsv_file(columns, list_information, file_name):
 
 print(datetime.datetime.utcnow())
 print('malsehen')
-columns = ['drugbank_id', 'alternative_drugbank_ids', 'name', 'cas_number', 'unii',
+columns = ['drugbank_id', 'alternative_drugbank_ids', 'name', 'cas_number', 'unii','atc_codes',
            'state', 'groups', 'general_references_links_reference_id_title_url',
            'general_references_attachment_reference_id_title_url',
            'general_references_textbooks_reference_id_isbn_citation',
@@ -1085,6 +1104,44 @@ generate_tsv_file(columns_reaction_left_dbmet, reactions_left_dbmet, 'drugbank__
 generate_tsv_file(columns_reaction_right_db, reactions_right_db, 'drugbank_reaction_to_right_db.tsv')
 generate_tsv_file(columns_reaction_right_dbmet, reactions_right_dbmet, 'drugbank_reaction_to_right_dbmet.tsv')
 generate_tsv_file(columns_reaction_enzyme, reactions_to_protein, 'drugbank_reaction_to_protein.tsv')
+
+# prepare atc integration
+
+# path to directory of project
+if len(sys.argv) < 1:
+    sys.exit('need a path')
+path_of_directory = sys.argv[1]
+
+cypher_file=open('cypher_atc.cypher','w',encoding='utf-8')
+
+query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/drugbank/%s" As line FIELDTERMINATOR '\t' '''
+
+atc_file_name='atc_node.tsv'
+atc_file=open(atc_file_name,'w', encoding='utf-8')
+csv_atc=csv.writer(atc_file, delimiter='\t')
+csv_atc.writerow(['id','name'])
+for identifier, name in dict_atc_nodes.items():
+    csv_atc.writerow([identifier,name])
+atc_file.close()
+
+query= query_start+ " Create (n:atc{identifier:line.id, name:line.name});\n"
+query= query %(atc_file_name)
+cypher_file.write(query)
+cypher_file.write(':begin\n')
+cypher_file.write('Create Constraint On (node:atc) Assert node.identifier Is Unique; \n')
+cypher_file.write(':commit\n')
+
+
+atc_file_name='atc_edge.tsv'
+atc_file=open(atc_file_name,'w', encoding='utf-8')
+csv_atc=csv.writer(atc_file, delimiter='\t')
+csv_atc.writerow(['id_upper','id_down'])
+for (identifier_upper, identifier_down) in set_atc_edges:
+    csv_atc.writerow([identifier_upper,identifier_down])
+atc_file.close()
+query= query_start+ " Match (n:atc{identifier:line.id_upper}), (m:atc{identifier:line.id_down}) Create (n)<-[:is_a]-(m);\n"
+query= query %(atc_file_name)
+cypher_file.write(query)
 
 print(datetime.datetime.utcnow())
 
