@@ -12,6 +12,13 @@ path_to_drugbank_data="/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/Drugb
 
 echo  $path_neo4j
 
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo prepare drugbank categories
+
+python3 update_drugbank_categories.py > out_categories.txt
+
+
 
 now=$(date +"%F %T")
 echo "Current time: $now"
