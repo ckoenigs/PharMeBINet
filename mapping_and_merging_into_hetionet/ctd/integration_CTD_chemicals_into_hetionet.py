@@ -303,12 +303,12 @@ properties:
     parentTreeNumbers
     treeNumbers
     
-{chemical_id:"C044565"}
+{chemical_id:"D012978"}
 '''
 
 
 def load_drugs_from_CTD():
-    query = 'MATCH (n:CTDchemical{chemical_id:"D012978"}) RETURN n'
+    query = 'MATCH (n:CTDchemical) RETURN n'
     results = g.run(query)
     counter_drugbank=0
 
@@ -732,6 +732,12 @@ map drugbank id from ctd to compound in hetionet
 
 
 def map_ctd_to_hetionet_compound():
+
+    # all not mapped ctd chemicals
+    not_mapped_file = open('chemical/not_mapped_drugs.tsv', 'w', encoding='utf-8')
+    not_mapped_csv=csv.writer(not_mapped_file,delimiter='\t')
+    not_mapped_csv.writerow(['mesh id','name', 'synonyms'])
+
     for mesh, drug in dict_drugs_CTD_with_drugbankIDs.items():
         drugbank_ids = set(drug.drugBankIDs)
 
@@ -823,10 +829,6 @@ def map_ctd_to_hetionet_compound():
 
     print('mapped to hetionet compound:' + str(len(dict_ctd_to_compound)))
 
-    # all not mapped ctd chemicals
-    g = open('chemical/not_mapped_drugs.tsv', 'w', encoding='utf-8')
-    not_mapped_csv=csv.writer(g,delimiter='\t')
-    not_mapped_csv.writerow(['mesh id','name', 'synonyms'])
 
     for chemical_id, drug in dict_drugs_CTD_without_drugbankIDs.items():
         if not chemical_id in dict_drugs_CTD_with_drugbankIDs:
