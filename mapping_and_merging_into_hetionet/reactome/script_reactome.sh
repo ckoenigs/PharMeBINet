@@ -117,6 +117,12 @@ echo multi edges of Pathway integration
 
 python3 CreateEdgePathwayToNode.py $path_to_project > PathwayEdges/output_map.txt
 
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo multi edges of Reaction integration
+
+python3 CreateEdgeReactionToNode.py $path_to_project > PathwayEdges/output_map.txt
+
 echo integrate connection with neo4j shell
 now=$(date +"%F %T")
 echo "Current time: $now"
