@@ -427,7 +427,7 @@ def find_cui_for_ctd_drugs():
 
                 cur = con.cursor()
                 # if not mapped map the name to umls cui
-                query = ('Select CUI,LAT,CODE,SAB From MRCONSO Where lower(STR)= "%s" And SAB="MSH" ;')
+                query = ('Select CUI,LAT,CODE,SAB From MRCONSO Where STR= "%s" And SAB="MSH" ;')
                 query= query % (dict_drugs_CTD_without_drugbankIDs[mesh_id].name.lower())
                 rows_counter = cur.execute(query )
                 if rows_counter > 0:

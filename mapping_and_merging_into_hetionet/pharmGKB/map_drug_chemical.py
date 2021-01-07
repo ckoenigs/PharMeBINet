@@ -10,9 +10,14 @@ create connection to neo4j
 '''
 
 
-def create_connection_with_neo4j():
+def create_connection_with_neo4j_and_mysql():
     global g
     g = create_connection_to_databases.database_connection_neo4j()
+    
+
+    # create connection with mysql database
+    global con
+    con = create_connection_to_databases.database_connection_umls()
 
 
 # dictionary of all chemical ids to resource
@@ -238,9 +243,29 @@ def load_pharmgkb_in(label):
                     add_information_to_file(pharmacological_class_id, identifier, csv_writer_pc, 'name',
                                             set_of_all_tuples_with_pc, dict_pc_to_resource)
 
+        if mapped:
+            continue
+
+        if len(name) > 0:
+            name = name.lower()
+            cur = con.cursor()
+            # if not mapped map the name to umls cui
+            query = ('Select CUI,LAT,CODE,SAB From MRCONSO Where STR= "%s" And SAB="MSH" ;')
+            query = query % (name)
+            rows_counter = cur.execute(query)
+            if rows_counter > 0:
+                for (cui, lat, code, sab) in cur:
+                    if code in dict_chemical_to_resource:
+                        mapped = True
+                        add_information_to_file(identifier, code, csv_writer, 'mesh umls', set_of_all_tuples,
+                                                dict_chemical_to_resource)
+
+
         if not mapped:
             counter_not_mapped += 1
             csv_writer_not.writerow([identifier, result['name'], result['types']])
+        else:
+            counter_map+=1
 
     print('number of chemical/drug which mapped:', counter_map)
     print('number of mapped:',len(set_of_all_tuples)+ len(set_of_all_tuples_with_pc))
@@ -272,7 +297,7 @@ def main():
     print(datetime.datetime.utcnow())
     print('Generate connection with neo4j')
 
-    create_connection_with_neo4j()
+    create_connection_with_neo4j_and_mysql()
 
     print(
         '###########################################################################################################################')
