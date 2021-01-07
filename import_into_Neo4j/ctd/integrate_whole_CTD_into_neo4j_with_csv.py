@@ -663,7 +663,7 @@ def load_gene_disease():
     cypher_file_edges.write(query)
 
 
-def genereate_rela_file(file_name, dict_rela_to_file, rela, label, label_id, rela_properties):
+def genereate_rela_file(file_name, dict_rela_to_file, rela, label, label_id, rela_properties, rela_name='associates'):
     """
     prepare csv file and cypher query
     :param file_name: string
@@ -678,8 +678,8 @@ def genereate_rela_file(file_name, dict_rela_to_file, rela, label, label_id, rel
 
     global cypher_file_edges
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/''' + file_name + '''.csv" As line Match (c:%s{ %s:line.Id }), (g:CTDexposureStudy{ reference:line.reference}) Create (g)-[:associates %s]->(c);\n'''
-    query = query % (label, label_id, rela_properties)
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/''' + file_name + '''.csv" As line Match (c:%s{ %s:line.Id }), (g:CTDexposureStudy{ reference:line.reference}) Create (g)-[:%s %s]->(c);\n'''
+    query = query % (label, label_id, rela_name, rela_properties)
     cypher_file_edges.write(query)
 
 
@@ -708,6 +708,12 @@ def prepare_exposure_studies():
 
     exposure_header = [x for x in header if x not in other_properties]
 
+    cypher_file_nodes.write(':begin\n')
+    # depending if chemicals are in neo4j or not the nodes need to be merged or created
+
+    cypher_file_nodes.write('Create Constraint On (node:CTDexposureStudy) Assert node.reference Is Unique;\n')
+    cypher_file_nodes.write(':commit\n')
+
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_exposure_studies.csv" As line  Create (g:CTDexposureStudy{ '''
     for exposure_head in exposure_header:
         if exposure_head=='':
@@ -723,11 +729,11 @@ def prepare_exposure_studies():
     property_for_rela = '{ url:"http://ctdbase.org/detail.go?type=reference&acc="+line.reference  }'
 
     genereate_rela_file('CTD_exposure_studies_stressor_rela', dict_rela_to_file, 'stressor', 'CTDchemical',
-                        'chemical_id', property_for_rela)
+                        'chemical_id', property_for_rela, rela_name='stressor')
     genereate_rela_file('CTD_exposure_studies_marker_gene_rela', dict_rela_to_file, 'marker_gene', 'CTDgene', 'gene_id',
-                        property_for_rela)
+                        property_for_rela, rela_name='marker')
     genereate_rela_file('CTD_exposure_studies_marker_chem_rela', dict_rela_to_file, 'marker_chem', 'CTDchemical',
-                        'chemical_id', property_for_rela)
+                        'chemical_id', property_for_rela, rela_name='marker')
     genereate_rela_file('CTD_exposure_studies_disease_rela', dict_rela_to_file, 'disease', 'CTDdisease', 'disease_id',
                         property_for_rela)
     genereate_rela_file('CTD_exposure_studies_phenotype_rela', dict_rela_to_file, 'pheno', 'CTDGO', 'go_id',
@@ -798,6 +804,12 @@ def prepare_exposure():
     exposure_header = [x for x in header if x not in other_properties]
     exposure_header.append('id')
 
+    cypher_file_nodes.write(':begin\n')
+    # depending if chemicals are in neo4j or not the nodes need to be merged or created
+
+    cypher_file_nodes.write('Create Constraint On (node:CTDexposureEvents) Assert node.id Is Unique;\n')
+    cypher_file_nodes.write(':commit\n')
+
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/exposure.tsv" As line Fieldterminator "\t" Create  (g:CTDexposureEvents{ '''
     for exposure_head in exposure_header:
         if exposure_head=='':
@@ -816,10 +828,10 @@ def prepare_exposure():
     csv_writer.writerow(exposure_header)
 
     dict_event_rela_to_csv = {}
-    genereate_rela_file_event('stressor_exposure', dict_event_rela_to_csv, 'stressor', 'CTDchemical', 'chemical_id')
+    genereate_rela_file_event('stressor_exposure', dict_event_rela_to_csv, 'stressor', 'CTDchemical', 'chemical_id', rela_name='stressor')
     genereate_rela_file_event('marker_chem_exposure', dict_event_rela_to_csv, 'marker_chem', 'CTDchemical',
-                              'chemical_id')
-    genereate_rela_file_event('marker_gene_exposure', dict_event_rela_to_csv, 'marker_gene', 'CTDgene', 'gene_id')
+                              'chemical_id', rela_name='marker')
+    genereate_rela_file_event('marker_gene_exposure', dict_event_rela_to_csv, 'marker_gene', 'CTDgene', 'gene_id', rela_name='marker')
     genereate_rela_file_event('reference_exposure', dict_event_rela_to_csv, 'reference', 'CTDexposureStudy',
                               'reference')
 

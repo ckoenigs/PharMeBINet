@@ -16,7 +16,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo prepare drugbank categories
 
-python3 update_drugbank_categories.py > out_categories.txt
+# python3 update_drugbank_categories.py > out_categories.txt
 
 
 
@@ -65,6 +65,14 @@ echo integration with cypher shell
 $path_neo4j/cypher-shell -u neo4j -p test -f cypher_file.cypher > cypher_output.txt 2>&1
 
 $path_neo4j/cypher-shell -u neo4j -p test -f cypher_rela_file.cypher
+
+sleep 180
+
+$path_neo4j/neo4j restart
+
+
+sleep 120
+
 
 $path_neo4j/cypher-shell -u neo4j -p test -f cypher_atc.cypher
 

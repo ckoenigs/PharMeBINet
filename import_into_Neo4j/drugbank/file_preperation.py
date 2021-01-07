@@ -427,7 +427,7 @@ def drugs_combination_and_check(neo4j_label):
                            'food_interaction', 'sequences', 'calculated_properties_kind_value_source',
                            'experimental_properties_kind_value_source', 'external_identifiers',
                            'external_links_resource_url', 'classification_alternative_parent',
-                           'classification_substituent']
+                           'classification_substituent','atc_codes']
 
         for head in header:
             if head == '\ufeffdrugbank_id':
