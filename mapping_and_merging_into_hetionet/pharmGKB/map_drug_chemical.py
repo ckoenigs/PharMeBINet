@@ -257,7 +257,7 @@ def load_pharmgkb_in(label):
                 for (cui, lat, code, sab) in cur:
                     if code in dict_chemical_to_resource:
                         mapped = True
-                        add_information_to_file(identifier, code, csv_writer, 'mesh umls', set_of_all_tuples,
+                        add_information_to_file(code, identifier, csv_writer, 'mesh umls', set_of_all_tuples,
                                                 dict_chemical_to_resource)
 
 

@@ -279,8 +279,6 @@ sleep 120
 cd ..
 
 
-
-
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo ctd
@@ -288,6 +286,18 @@ echo ctd
 cd ctd 
 
 ./script_ctd_mapping_and_integration.sh $path_neo4j/ $path_to_project > output_script.txt
+
+cd ..
+
+
+cd ndf-rt/
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo ndf-rt
+
+
+./script_ndf_rt.sh $path_neo4j/ $path_to_project > output_script.txt
+
 
 cd ..
 
@@ -444,14 +454,6 @@ sleep 120
 cd ..
 
 
-cd ndf-rt/
-echo ndf-rt
-
-
-./script_ndf_rt.sh $path_neo4j/ $path_to_project > output_script.txt
-
-
-cd ..
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -471,6 +473,16 @@ $path_neo4j/neo4j restart
 sleep 120
 
 cd ..
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo PharmGKB
+cd pharmGKB
+
+./script_pharmgkb.sh $path_neo4j/ $path_to_project > output_script.txt
+
+cd ..
+
 
 exit 1
 
