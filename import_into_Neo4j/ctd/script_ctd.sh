@@ -41,15 +41,13 @@ echo "Current time: $now"
 
 $path_neo4j/cypher-shell -u neo4j -p test -f nodes_1.cypher > output_nodes_1.txt
 
-echo edges 
-now=$(date +"%F %T")
-echo "Current time: $now"
 
 sleep 180
 $path_neo4j/neo4j restart
 sleep 120
 now=$(date +"%F %T")
 echo "Current time: $now"
+echo edge
 
 $path_neo4j/cypher-shell -u neo4j -p test -f edges_1.cypher > output_edges_1.txt
 

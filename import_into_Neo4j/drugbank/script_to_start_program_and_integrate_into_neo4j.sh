@@ -26,7 +26,7 @@ echo extract sdf information
 
 cd sdf
 
-./script_sdf.sh $path_to_drugbank_data > output.txt
+#./script_sdf.sh $path_to_drugbank_data > output.txt
 
 cd ..
 
@@ -66,13 +66,5 @@ $path_neo4j/cypher-shell -u neo4j -p test -f cypher_file.cypher > cypher_output.
 
 $path_neo4j/cypher-shell -u neo4j -p test -f cypher_rela_file.cypher
 
-sleep 180
-
-$path_neo4j/neo4j restart
-
-
-sleep 120
-
-
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher_atc.cypher
+$path_neo4j/cypher-shell -u neo4j -p test -f ../cypher_atc.cypher
 

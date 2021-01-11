@@ -755,11 +755,11 @@ def prepare_exposure_studies():
         if line['phenotypes']!='':
             for disease in line['phenotypes'].split('|'):
                 disease = disease.split('^')
-                dict_rela_to_file['disease'].writerow([reference, disease[1]])
+                dict_rela_to_file['pheno'].writerow([reference, disease[1]])
         if line['diseases'] !='':
             for pheno in line['diseases'].split('|'):
                 pheno = pheno.split('^')
-                dict_rela_to_file['pheno'].writerow([reference, pheno[1]])
+                dict_rela_to_file['disease'].writerow([reference, pheno[1]])
 
 
 
@@ -859,7 +859,7 @@ def prepare_exposure():
         if line['phenotypeid'] != "":
             if 'go_' + outcome_relas not in dict_event_rela_to_csv:
                 genereate_rela_file_event('go_exposure_' + outcome_relas, dict_event_rela_to_csv, 'go_' + outcome_relas,
-                                          'CTDgo', 'go_id', rela_name=outcome_relas,
+                                          'CTDGO', 'go_id', rela_name=outcome_relas,
                                           rela_property='phenotypeactiondegreetype')
             dict_event_rela_to_csv['go_' + outcome_relas].writerow(
                 [exposure_id, line['phenotypeid'], line['phenotypeactiondegreetype']])

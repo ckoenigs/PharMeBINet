@@ -840,7 +840,7 @@ def map_ctd_to_hetionet_compound():
             synonym = synonyms
             #            print(synonym+'\n'+drug.name.encode('utf-8'))
             not_mapped_csv.writerow([chemical_id , drug.name, synonym ])
-    g.close()
+    not_mapped_file.close()
     # sys.exit()
 
 
