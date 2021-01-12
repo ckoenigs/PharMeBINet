@@ -66,6 +66,12 @@ def write_files(path_of_directory):
     header_mapped = ['compound_id', 'id']
     csv_mapped.writerow(header_mapped)
 
+    file_name_mapped_pc = 'output/mapping_pc.tsv'
+    file_mapped_pc = open(file_name_mapped_pc, 'w', encoding='utf-8')
+    csv_mapped_pc = csv.writer(file_mapped_pc, delimiter='\t')
+    header_mapped = ['pc_id', 'id']
+    csv_mapped_pc.writerow(header_mapped)
+
     file_name_new = 'output/new_pc.tsv'
     file_new = open(file_name_new, 'w', encoding='utf-8')
     csv_new = csv.writer(file_new, delimiter='\t')
@@ -75,6 +81,16 @@ def write_files(path_of_directory):
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/atc/%s" As line FIELDTERMINATOR '\\t' 
             Match (n:atc{identifier:line.id}), (v:Compound{identifier:line.compound_id}) Create (v)-[:equal_to_atc]->(n);\n'''
     query = query % (path_of_directory, file_name_mapped)
+    cypher_file.write(query)
+
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/atc/%s" As line FIELDTERMINATOR '\\t' 
+                    Match  (v:PharmacologicClass{identifier:line.pc_id}) Set v.atc_codes=[];\n'''
+    query = query % (path_of_directory, file_name_mapped_pc)
+    cypher_file.write(query)
+
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/atc/%s" As line FIELDTERMINATOR '\\t' 
+                Match (n:atc{identifier:line.id}), (v:PharmacologicClass{identifier:line.pc_id}) Set v.atc_codes=v.atc_codes+line.id Create (v)-[:equal_to_atc]->(n);\n'''
+    query = query % (path_of_directory, file_name_mapped_pc)
     cypher_file.write(query)
 
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/atc/%s" As line FIELDTERMINATOR '\\t' 
@@ -88,10 +104,10 @@ def write_files(path_of_directory):
         query= "MATCH p=(n:%s)--(:atc)-[]->(:atc)--(b:%s) Where (n:Compound or n:PharmacologicClass) and (b:Compound or b:PharmacologicClass) Create (n)-[:BELONGS_TO_%sbt%s{source:'ATC from DrugBank', resource:['DrugBank'], drugbank:'yes'}]->(b);\n"
         query=query %( label_1,label_2, label_1[0], label_2[0])
         cypher_file.write(query)
-    return csv_mapped, csv_new
+    return csv_mapped, csv_new, csv_mapped_pc
 
 
-def load_all_label_and_map( csv_map_drug, csv_new):
+def load_all_label_and_map( csv_map_drug, csv_new, csv_mapped_pc):
     """
     Load all ingredients from neo4j and ma them with xrefs of ingredient and name
     :param csv_map: csv writter
@@ -99,6 +115,11 @@ def load_all_label_and_map( csv_map_drug, csv_new):
     """
     query = "MATCH (n:atc) RETURN n"
     results = g.run(query)
+
+    # counter
+    counter_mapped_to_compound=0
+    counter_mapped_to_pc=0
+    counter_new=0
     for node, in results:
         identifier = node['identifier']
         name = node['name'].lower() if 'name' in node else ''
@@ -106,15 +127,21 @@ def load_all_label_and_map( csv_map_drug, csv_new):
         found_mapping = False
         # map to compound
         if identifier in dict_atc_code_to_compound_ids:
+            counter_mapped_to_compound+=1
             for compound_id in dict_atc_code_to_compound_ids[identifier]:
                 csv_map_drug.writerow([compound_id, identifier])
             continue
         if name in dict_name_to_pharmacologic_class_id:
-            print('name exists :O')
-            print(name)
+            counter_mapped_to_pc+=1
+            for pc_id in dict_name_to_pharmacologic_class_id[name]:
+                csv_mapped_pc.writerow([pc_id, identifier])
             continue
-
+        counter_new+=1
         csv_new.writerow([identifier])
+
+    print('number of mapped to drug:',counter_mapped_to_compound)
+    print('number of mapped to pc:', counter_mapped_to_pc)
+    print('number of new:',counter_new)
 
 
 
@@ -152,14 +179,14 @@ def main():
     print(datetime.datetime.utcnow())
     print('Generate files')
 
-    csv_mapper, csv_new = write_files(path_of_directory)
+    csv_mapper, csv_new, csv_mapped_pc = write_files(path_of_directory)
 
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
     print('Load all label from database')
 
-    load_all_label_and_map(csv_mapper, csv_new)
+    load_all_label_and_map(csv_mapper, csv_new, csv_mapped_pc)
 
     print('##########################################################################')
 

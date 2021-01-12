@@ -145,7 +145,7 @@ def load_pharmgkb_in(label):
     file_pc = open(file_name_pc, 'w', encoding='utf-8')
     csv_writer_pc = csv.writer(file_pc, delimiter='\t')
     csv_writer_pc.writerow(['identifier', 'pharmgkb_id', 'resource', 'how_mapped'])
-    generate_cypher_file(file_name, label, 'PharmacologicClass')
+    generate_cypher_file(file_name_pc, label, 'PharmacologicClass')
 
     not_mapped_file=open('chemical/not_mapping_' + label.split('_')[1] + '.tsv', 'w', encoding='utf-8')
     csv_writer_not = csv.writer(not_mapped_file, delimiter='\t')
