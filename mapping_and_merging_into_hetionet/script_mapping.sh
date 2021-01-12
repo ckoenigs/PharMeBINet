@@ -301,6 +301,23 @@ echo ndf-rt
 
 cd ..
 
+cd atc
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo 'atc'
+
+python3 map_and_integrate_atc.py $path_to_project > output/output.txt 
+
+
+$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher.cypher 
+
+sleep 180
+$path_neo4j/neo4j restart
+sleep 120
+
+
+cd ..
+
 cd clinvar
 
 now=$(date +"%F %T")

@@ -41,6 +41,9 @@ dict_name_to_pharmacologic_class= {}
 # dictionary pharmacological class id to resource
 dict_pc_to_resource={}
 
+# dict_atc_to_pc ids
+dict_atc_to_pc={}
+
 
 def add_value_to_dictionary(dictionary, key, value):
     """
@@ -59,11 +62,14 @@ def load_pharmacological_class():
     load pharmacological information
     :return:
     """
-    query='''Match (n:PharmacologicClass) Return n.identifier, n.name, n.synonyms, n.resource '''
+    query='''Match (n:PharmacologicClass) Return n.identifier, n.name, n.synonyms, n.resource, n.atc_codes '''
 
-    for identifier, name, synonyms, resource, in g.run(query):
+    for identifier, name, synonyms, resource, atc_codes, in g.run(query):
         dict_pc_to_resource[identifier]=resource
-        
+        if atc_codes:
+            for atc_code in atc_codes:
+                add_value_to_dictionary(dict_atc_to_pc, atc_code, identifier)
+
         if name:
             name=name.lower()
             add_value_to_dictionary(dict_name_to_pharmacologic_class, name, identifier)
@@ -223,9 +229,8 @@ def load_pharmgkb_in(label):
         if mapped:
             continue
 
-        name= result['name'] if 'name'  in result else ''
+        name= result['name'].lower() if 'name'  in result else ''
         if len(name)>0:
-            name=name.lower()
             if name in dict_name_to_chemical_id:
                 mapped = True
                 counter_map += 1
@@ -234,9 +239,21 @@ def load_pharmgkb_in(label):
                                             set_of_all_tuples, dict_chemical_to_resource)
         if mapped:
             continue
+
+        atc_codes = result[
+            'atc_identifiers'] if 'atc_identifiers' in result else []
+        for atc_code in atc_codes:
+            if atc_code in dict_atc_to_pc:
+                mapped = True
+                counter_map += 1
+                for pharmacological_class_id in dict_atc_to_pc[atc_code]:
+                    add_information_to_file(pharmacological_class_id, identifier, csv_writer_pc, 'atc',
+                                            set_of_all_tuples_with_pc, dict_pc_to_resource)
+
+        if mapped:
+            continue
         
         if len(name)>0:
-            name=name.lower()
             if name in dict_name_to_pharmacologic_class:
                 mapped=True
                 counter_map += 1
