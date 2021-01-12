@@ -9,7 +9,9 @@ path_neo4j=$2
 echo download ctd files
 now=$(date +"%F %T")
 echo "Current time: $now"
-# amnual add gene-disease file
+
+# download gene-disease manual because there is a human check!
+
 #python3 download_the_ctd_files.py > output_download.txt
 
 
@@ -18,9 +20,9 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 cd ctd_data
 
-#for i in *.csv; do
+# for i in *.csv; do
 #    ./delete_the_head.sh $i
-#done
+# done
 
 cd ..
 

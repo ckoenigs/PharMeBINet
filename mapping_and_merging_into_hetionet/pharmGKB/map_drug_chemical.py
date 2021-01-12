@@ -138,18 +138,19 @@ def load_pharmgkb_in(label):
     file = open(file_name, 'w', encoding='utf-8')
     csv_writer = csv.writer(file, delimiter='\t')
     csv_writer.writerow(['identifier', 'pharmgkb_id', 'resource', 'how_mapped'])
+    generate_cypher_file(file_name, label, 'Chemical')
 
     # csv file pharmacological file
     file_name_pc = 'chemical/mapping_pharmacological_class_' + label.split('_')[1] + '.tsv'
     file_pc = open(file_name_pc, 'w', encoding='utf-8')
     csv_writer_pc = csv.writer(file_pc, delimiter='\t')
     csv_writer_pc.writerow(['identifier', 'pharmgkb_id', 'resource', 'how_mapped'])
+    generate_cypher_file(file_name, label, 'PharmacologicClass')
 
     not_mapped_file=open('chemical/not_mapping_' + label.split('_')[1] + '.tsv', 'w', encoding='utf-8')
     csv_writer_not = csv.writer(not_mapped_file, delimiter='\t')
     csv_writer_not.writerow([ 'pharmgkb_id', 'namr'])
     # generate cypher file
-    generate_cypher_file(file_name, label)
 
     query = '''MATCH (n:%s) RETURN n'''
     query = query % (label)
@@ -273,7 +274,7 @@ def load_pharmgkb_in(label):
     print('number of chemical/drug which not mapped:', counter_not_mapped)
 
 
-def generate_cypher_file(file_name, label):
+def generate_cypher_file(file_name, label, to_label):
     """
     prepare cypher query and add to cypher file
     :param file_name: string
@@ -281,8 +282,8 @@ def generate_cypher_file(file_name, label):
     :return:
     """
     cypher_file = open('output/cypher.cypher', 'a')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/pharmGKB/%s" As line  FIELDTERMINATOR '\\t'  MATCH (n:%s{id:line.pharmgkb_id}), (c:Chemical{identifier:line.identifier})  Set c.pharmgkb='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_%s_phamrgkb{how_mapped:line.how_mapped}]->(n); \n'''
-    query = query % (file_name, label, label.split('_')[1].lower())
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/pharmGKB/%s" As line  FIELDTERMINATOR '\\t'  MATCH (n:%s{id:line.pharmgkb_id}), (c:%s{identifier:line.identifier})  Set c.pharmgkb='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_%s_phamrgkb{how_mapped:line.how_mapped}]->(n); \n'''
+    query = query % (file_name, label, to_label,label.split('_')[1].lower())
     cypher_file.write(query)
     cypher_file.close()
 
