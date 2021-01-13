@@ -45,7 +45,7 @@ def load_hetionet_failedreaction_hetionet_node_in(csv_file, dict_failedReaction_
             sys.exit("Doppelte reaction-Disease Kombination")
         dict_failedReaction_hetionet_node_hetionet[(failedreaction_id, node_id)] = [stoichiometry, order]
         csv_file.writerow([failedreaction_id, node_id, order, stoichiometry])
-    print('number of reaction-'+node_reactome_label+' relationships in hetionet:' + str(
+    print('number of reaction-' + node_reactome_label + ' relationships in hetionet:' + str(
         len(dict_failedReaction_hetionet_node_hetionet)))
 
 
@@ -68,9 +68,9 @@ def check_relationships_and_generate_file(new_relationship, node_reactome_label,
     print(datetime.datetime.utcnow())
     print('Load all relationships from hetionet_failedReaction and hetionet_nodes into a dictionary')
     # file for mapped or not mapped identifier
-    file_name= directory + '/mapped_Reaction_to_'+node_reactome_label+'_'+rela_name+'.tsv'
+    file_name = directory + '/mapped_Reaction_to_' + node_reactome_label + '_' + rela_name + '.tsv'
 
-    file_mapped_failedreaction_to_node = open(file_name,'w', encoding="utf-8")
+    file_mapped_failedreaction_to_node = open(file_name, 'w', encoding="utf-8")
     csv_mapped = csv.writer(file_mapped_failedreaction_to_node, delimiter='\t', lineterminator='\n')
     csv_mapped.writerow(['id_hetionet_Reaction', 'id_hetionet_node', 'order', 'stoichiometry'])
 
@@ -106,19 +106,26 @@ def main():
     # 0: old relationship;           1: name of node in Reactome;        2: relationship equal to Hetionet-node
     # 3: name of node in Hetionet;   4: name of directory                5: name of new relationship
     list_of_combinations = [
-        # ['disease', 'Disease_reactome', 'equal_to_reactome_disease', 'Disease',
-        #  'LEADS_TO_DISEASE_RltdD'],
-        ['compartment', 'GO_CellularComponent_reactome', 'equal_to_reactome_gocellcomp', 'CellularComponent', 'IN_COMPARTMENT_RcCe'],
+        ['disease', 'Disease_reactome', 'equal_to_reactome_disease', 'Disease', 'LEADS_TO_DISEASE_RltdD'],
+        ['compartment', 'GO_CellularComponent_reactome', 'equal_to_reactome_gocellcomp', 'CellularComponent',
+         'IN_COMPARTMENT_RcCe'],
         ['precedingEvent', 'Pathway_reactome', 'equal_to_reactome_pathway', 'Pathway', 'PRECEDING_REACTION_RprP'],
-        ['precedingEvent', 'BlackBoxEvent_reactome', 'equal_to_reactome_blackBoxEvent', 'BlackBoxEvent', 'PRECEDING_REACTION_RprB'],
-        ['precedingEvent', 'Depolymerisation_reactome', 'equal_to_reactome_depolymerisation', 'Depolymerisation', 'PRECEDING_REACTION_RprD'],
-        ['precedingEvent', 'FailedReaction_reactome', 'equal_to_reactome_failedreaction', 'FailedReaction', 'PRECEDING_REACTION_RprF'],
+        ['precedingEvent', 'BlackBoxEvent_reactome', 'equal_to_reactome_blackBoxEvent', 'BlackBoxEvent',
+         'PRECEDING_REACTION_RprB'],
+        ['precedingEvent', 'Depolymerisation_reactome', 'equal_to_reactome_depolymerisation', 'Depolymerisation',
+         'PRECEDING_REACTION_RprD'],
+        ['precedingEvent', 'FailedReaction_reactome', 'equal_to_reactome_failedreaction', 'FailedReaction',
+         'PRECEDING_REACTION_RprF'],
         ['precedingEvent', 'Reaction_reactome', 'equal_to_reactome_reaction', 'Reaction', 'PRECEDING_REACTION_RprR'],
         ['inferredTo', 'Reaction_reactome', 'equal_to_reactome_reaction', 'Reaction', 'HAS_EFFECT_ON_RheoR'],
-        ['inferredTo', 'BlackBoxEvent_reactome', 'equal_to_reactome_blackBoxEvent', 'BlackBoxEvent', 'HAS_EFFECT_ON_RheoB'],
+        ['inferredTo', 'BlackBoxEvent_reactome', 'equal_to_reactome_blackBoxEvent', 'BlackBoxEvent',
+         'HAS_EFFECT_ON_RheoB'],
         ['normalReaction', 'Reaction_reactome', 'equal_to_reactome_reaction', 'Reaction', 'IS_NORMAL_REACTION_RnrR'],
-        ['normalReaction', 'BlackBoxEvent_reactome', 'equal_to_reactome_blackBoxEvent', 'BlackBoxEvent', 'IS_NORMAL_REACTION_RnrB'],
-        ['reverseReaction', 'Reaction_reactome', 'equal_to_reactome_reaction', 'Reaction', 'REVERSE_REACTION_RrrR']
+        ['normalReaction', 'BlackBoxEvent_reactome', 'equal_to_reactome_blackBoxEvent', 'BlackBoxEvent',
+         'IS_NORMAL_REACTION_RnrB'],
+        ['reverseReaction', 'Reaction_reactome', 'equal_to_reactome_reaction', 'Reaction', 'REVERSE_REACTION_RrrR'],
+        ['goBiologicalProcess', 'GO_BiologicalProcess_reactome', 'equal_to_reactome_gobiolproc', 'BiologicalProcess',
+         'OCCURS_IN_GO_BIOLOGICAL_PROCESS_RoigbpB']
     ]
 
     directory = 'FailedReactionEdges'

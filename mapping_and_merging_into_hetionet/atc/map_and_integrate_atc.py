@@ -69,7 +69,7 @@ def write_files(path_of_directory):
     file_name_mapped_pc = 'output/mapping_pc.tsv'
     file_mapped_pc = open(file_name_mapped_pc, 'w', encoding='utf-8')
     csv_mapped_pc = csv.writer(file_mapped_pc, delimiter='\t')
-    header_mapped = ['pc_id', 'id']
+    header_mapped = ['pc_id', 'id', 'resource']
     csv_mapped_pc.writerow(header_mapped)
 
     file_name_new = 'output/new_pc.tsv'
@@ -89,7 +89,7 @@ def write_files(path_of_directory):
     cypher_file.write(query)
 
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/atc/%s" As line FIELDTERMINATOR '\\t' 
-                Match (n:atc{identifier:line.id}), (v:PharmacologicClass{identifier:line.pc_id}) Set v.atc_codes=v.atc_codes+line.id Create (v)-[:equal_to_atc]->(n);\n'''
+                Match (n:atc{identifier:line.id}), (v:PharmacologicClass{identifier:line.pc_id}) Set v.atc_codes=v.atc_codes+line.id, v.resource=split(line.resource,"|"), v.atc="yes" Create (v)-[:equal_to_atc]->(n);\n'''
     query = query % (path_of_directory, file_name_mapped_pc)
     cypher_file.write(query)
 
@@ -134,7 +134,10 @@ def load_all_label_and_map( csv_map_drug, csv_new, csv_mapped_pc):
         if name in dict_name_to_pharmacologic_class_id:
             counter_mapped_to_pc+=1
             for pc_id in dict_name_to_pharmacologic_class_id[name]:
-                csv_mapped_pc.writerow([pc_id, identifier])
+                resource = dict_pharmacologic_class_id_to_resource[pc_id]
+                resource.add("DrugBank")
+                resource='|'.join(sorted(resource))
+                csv_mapped_pc.writerow([pc_id, identifier, resource])
             continue
         counter_new+=1
         csv_new.writerow([identifier])

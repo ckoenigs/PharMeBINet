@@ -33,7 +33,7 @@ load in all pathways from hetionet in a dictionary
 
 
 def load_hetionet_pathways_hetionet_node_in(csv_file, dict_pathway_hetionet_node_hetionet, new_relationship,
-                                           node_reactome_label, rela_equal_name, node_hetionet_label):
+                                            node_reactome_label, rela_equal_name, node_hetionet_label):
     query = '''MATCH (p:Pathway)-[:equal_to_reactome_pathway]-(r:Pathway_reactome)-[v:%s]->(n:%s)-[:%s]-(b:%s) RETURN p.identifier, b.identifier, v.order, v.stoichiometry'''
     query = query % (new_relationship, node_reactome_label, rela_equal_name, node_hetionet_label)
     results = graph_database.run(query)
@@ -71,7 +71,7 @@ def check_relationships_and_generate_file(new_relationship, node_reactome_label,
     print(datetime.datetime.utcnow())
     print('Load all relationships from hetionet_pathway and hetionet_nodes into a dictionary')
     # file for mapped or not mapped identifier
-    file_name=directory + '/mapped_pathway_to_'+node_reactome_label+'_'+rela_name+'.tsv'
+    file_name = directory + '/mapped_pathway_to_' + node_reactome_label + '_' + rela_name + '.tsv'
     file_mapped_pathway_to_node = open(file_name,
                                        'w', encoding="utf-8")
     csv_mapped = csv.writer(file_mapped_pathway_to_node, delimiter='\t', lineterminator='\n')
@@ -80,7 +80,7 @@ def check_relationships_and_generate_file(new_relationship, node_reactome_label,
     dict_pathway_node = {}
 
     load_hetionet_pathways_hetionet_node_in(csv_mapped, dict_pathway_node, new_relationship, node_reactome_label,
-                                           rela_equal_name, node_hetionet_label)
+                                            rela_equal_name, node_hetionet_label)
 
     print(
         '###########################################################################################################################')
@@ -108,22 +108,32 @@ def main():
     # 0: old relationship;           1: name of node in Reactome;        2: relationship equal to Hetionet-node
     # 3: name of node in Hetionet;   4: name of directory                5: name of new relationship
     list_of_combinations = [
-        ['precedingEvent', 'BlackBoxEvent_reactome', 'equal_to_reactome_blackBoxEvent', 'BlackBoxEvent', 'PRECEDING_REACTION_PpB'],
-        ['precedingEvent', 'Reaction_reactome', 'equal_to_reactome_reaction', 'Reaction',
+        ['precedingEvent', 'BlackBoxEvent_reactome', 'equal_to_reactome_blackBoxEvent', 'BlackBoxEvent',
+         'PathwayEdgeToBlackBoxEvent', 'PRECEDING_REACTION_PpB'],
+        ['precedingEvent', 'Reaction_reactome', 'equal_to_reactome_reaction', 'Reaction', 'PathwayEdgeToReaction',
          'PRECEDING_REACTION_PpR'],
-        ['precedingEvent', 'Pathway_reactome', 'equal_to_reactome_pathway', 'Pathway',
+        ['precedingEvent', 'Pathway_reactome', 'equal_to_reactome_pathway', 'Pathway', 'PathwayEdgeToPathway',
          'PRECEDING_REACTION_PpP'],
-        ['hasEncapsulatedEvent', 'Pathway_reactome', 'equal_to_reactome_pathway', 'Pathway',
+        ['hasEncapsulatedEvent', 'Pathway_reactome', 'equal_to_reactome_pathway', 'Pathway', 'PathwayEdgeToPathway2',
          'HAS_ENCAPSULATED_EVENT_PheeP'],
-        ['normalPathway', 'Pathway_reactome', 'equal_to_reactome_pathway', 'Pathway',
+        ['normalPathway', 'Pathway_reactome', 'equal_to_reactome_pathway', 'Pathway', 'PathwayEdgeToPathway3',
          'NORMAL_PATHWAY_PnpP'],
-        ['hasEvent', 'FailedReaction_reactome', 'equal_to_reactome_failedreaction', 'FailedReaction', 'HAS_FAILED_PhfF'],
-        ['hasEvent', 'Reaction_reactome', 'equal_to_reactome_reaction', 'Reaction',
-         'HAS_REACTION_PhR'],
-        ['goBiologicalProcess','GO_BiologicalProcess_reactome','equal_to_reactome_gobiolproc','BiologicalProcess', 'HAS_PhBP'],
+        ['hasEvent', 'Pathway_reactome', 'equal_to_reactome_pathway', 'Pathway', 'PathwayEdgeToPathway4',
+         'OCCURS_IN_PoiP'],
+        ['hasEvent', 'Depolymerisation_reactome', 'equal_to_reactome_depolymerisation', 'Depolymerisation',
+         'PathwayEdgeToDepolymerisation', 'PARTICIPATES_IN_PpiD'],
+        ['hasEvent', 'BlackBoxEvent_reactome', 'equal_to_reactome_blackBoxEvent', 'BlackBoxEvent',
+         'PathwayEdgeToBlackBoxEvent2', 'PARTICIPATES_IN_PpiB'],
+        ['hasEvent', 'Polymerisation_reactome', 'equal_to_reactome_polymerisation', 'Polymerisation',
+         'PathwayEdgeToPolymerisation', 'PARTICIPATES_IN_PpiPo'],
+        ['hasEvent', 'FailedReaction_reactome', 'equal_to_reactome_failedreaction', 'FailedReaction',
+         'PathwayEdgeToFailedReaction', 'PARTICIPATES_IN_PpiF'],
+        ['goBiologicalProcess', 'GO_BiologicalProcess_reactome', 'equal_to_reactome_gobiolproc', 'BiologicalProcess',
+         'OCCURS_IN_GO_BIOLOGICAL_PROCESS_PoigbpB'],
+        ['hasEvent', 'Reaction_reactome', 'equal_to_reactome_reaction', 'Reaction', 'PARTICIPATES_IN_PpiR'],
         ['compartment', 'GO_CellularComponent_reactome', 'equal_to_reactome_gocellcomp', 'CellularComponent',
-        'HAS_CC_PhBP'],
-        ['disease','Disease_reactome','equal_to_reactome_disease','Disease', 'HAS_PhD']
+         'IN_COMPARTMENT_FicCe'],
+        ['disease', 'Disease_reactome', 'equal_to_reactome_disease', 'Disease', 'LEADS_TO_PltD']
     ]
 
     directory = 'PathwayEdges'
