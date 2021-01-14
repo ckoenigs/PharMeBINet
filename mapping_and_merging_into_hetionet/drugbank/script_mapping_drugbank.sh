@@ -53,7 +53,7 @@ python3 integrate_product_and_rela_to_compound.py "$license" $path_to_project > 
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher.cypher > output_cypher_drug.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher.cypher
 
 sleep 180
 $path_neo4j/neo4j restart

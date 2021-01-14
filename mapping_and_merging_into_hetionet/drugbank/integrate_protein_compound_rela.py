@@ -37,6 +37,11 @@ def load_all_protein_chemical_pairs(direction, from_chemical):
     results = g.run(query)
 
     for labels, identifier1, rela, rela_type, compound_id, in results:
+        # take only the rela which have references!
+        refs=[x for x in rela.keys() if x.startswith('ref')]
+        if len(refs)==0:
+            continue
+
         if 'Protein' in labels:
             label = 'Protein'
             short_cut = 'PR'

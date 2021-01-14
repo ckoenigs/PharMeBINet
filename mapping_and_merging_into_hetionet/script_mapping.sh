@@ -229,7 +229,7 @@ echo drugbank
 
 cd drugbank
 
-./script_mapping_drugbank.sh $path_neo4j/ $path_to_project > output_script.txt
+./script_mapping_drugbank.sh $path_neo4j/ $path_to_project #> output_script.txt
 
 cd ..
 

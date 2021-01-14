@@ -52,7 +52,7 @@ def add_value_to_dictionary(dictionary, key, value):
     :param value: string
     :return:
     """
-    if value not in dictionary:
+    if key not in dictionary:
         dictionary[key] = set()
     dictionary[key].add(value)
 
@@ -89,6 +89,9 @@ dict_compound_id_to_names={}
 # dictionary compound to salt ids
 dict_compound_id_to_salts_id={}
 
+#dictionary mesh and drugbank id to chemical id
+dict_mesh_db_id_to_chemical_id={}
+
 '''
 load in all compound from hetionet in a dictionary
 '''
@@ -100,6 +103,7 @@ def load_db_info_in():
 
     for identifier, inchi, xrefs, resource, name, synonyms, in results:
         dict_chemical_to_resource[identifier] = resource if resource else []
+        dict_mesh_db_id_to_chemical_id[identifier]=set([identifier])
         if inchi:
             dict_inchi_to_chemical_id[inchi] = identifier
 
@@ -111,6 +115,8 @@ def load_db_info_in():
                     add_value_to_dictionary(dict_pubchem_compound_to_chemical_id, value, identifier)
                 elif xref.startswith('RxNorm_CUI'):
                     add_value_to_dictionary(dict_rxcui_to_chemical_id, value, identifier)
+                elif xref.startswith('MESH'):
+                    add_value_to_dictionary(dict_mesh_db_id_to_chemical_id, value, identifier)
 
         dict_compound_id_to_names[identifier]=set()
         if name:
@@ -334,15 +340,26 @@ def load_pharmgkb_in(label):
             name = name.lower()
             cur = con.cursor()
             # if not mapped map the name to umls cui
-            query = ('Select CUI,LAT,CODE,SAB From MRCONSO Where STR= "%s" And SAB="MSH" ;')
+            query = ('Select Distinct CUI From MRCONSO Where STR= "%s";')
             query = query % (name)
             rows_counter = cur.execute(query)
             if rows_counter > 0:
-                for (cui, lat, code, sab) in cur:
-                    if code in dict_chemical_to_resource:
-                        mapped = True
-                        add_information_to_file(code, identifier, csv_writer, 'mesh umls', set_of_all_tuples,
-                                                dict_chemical_to_resource, xref=dict_compound_id_to_xrefs[code])
+                cuis=set()
+                for (cui,) in cur:
+                    cuis.add(cui)
+
+                cur2 = con.cursor()
+                # if not mapped map the name to umls cui
+                query = ('Select Distinct CODE, SAB From MRCONSO Where CUI in ("%s") and (SAB="MSH" or SAB="DRUGBANK");')
+                query = query % ('","'.join(cuis))
+                rows_counter = cur2.execute(query)
+                if rows_counter>0:
+                    for (code, sab) in cur2:
+                        if code in dict_mesh_db_id_to_chemical_id:
+                            for chemical_id in dict_mesh_db_id_to_chemical_id[code]:
+                                mapped = True
+                                add_information_to_file(chemical_id, identifier, csv_writer, 'umls over mesh and drugbank', set_of_all_tuples,
+                                                        dict_chemical_to_resource, xref=dict_compound_id_to_xrefs[chemical_id])
 
         if not mapped:
             counter_not_mapped += 1
