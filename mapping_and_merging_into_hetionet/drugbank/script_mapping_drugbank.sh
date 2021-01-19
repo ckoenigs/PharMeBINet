@@ -75,6 +75,12 @@ sleep 120
 
 now=$(date +"%F %T")
 echo "Current time: $now"
+echo 'integrate Drugbank compound-variant edge'
+
+python3 integrate_variant_compound_edge.py $path_to_project > gene_variant/output.txt
+
+now=$(date +"%F %T")
+echo "Current time: $now"
 echo rela
 
 $path_neo4j/cypher-shell -u neo4j -p test -f output/cypher_rela.cypher 
