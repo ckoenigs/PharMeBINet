@@ -27,12 +27,16 @@ def prepare_cypher_query(file_name):
     get all properties of drugbank product and add to list of header
     :return:
     """
+    cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
+    query = 'Create Constraint On (node:Product) Assert node.identifier Is Unique;\n'
+    cypher_file.write(query)
+
     query = ''' MATCH (p:Product_DrugBank) WITH DISTINCT keys(p) AS keys
     UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields
     RETURN allfields;'''
 
-
     results = g.run(query)
+
 
     query_start=''' Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/drugbank/%s" As line FIELDTERMINATOR '\\t' 
     Match (n:Product_DrugBank{identifier:line.identifier}) Create (v:Product :Compound {'''
@@ -41,9 +45,7 @@ def prepare_cypher_query(file_name):
 
     query_start+= ' url:line.url, resource:["DrugBank"]})-[:equal_drugbank_product]->(n);\n'
     query=query_start %(path_of_directory, file_name)
-    cypher_file=open('output/cypher.cypher', 'a', encoding='utf-8')
-    cypher_file.write(query)
-    query = 'Create Constraint On (node:Product) Assert node.identifier Is Unique;\n'
+
     cypher_file.write(query)
     cypher_file.close()
     cypher_rela = open('output/cypher_rela.cypher', 'a', encoding='utf-8')

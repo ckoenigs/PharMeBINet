@@ -134,6 +134,20 @@ def fill_dict_with_external_identifier_to_mondo(xrefs, monDo_id):
         else:
             dict_external_ids_monDO[xrefs] = [monDo_id]
 
+# dictionary mondo id to mondo name
+dict_mondo_id_to_name={}
+
+def add_entry_to_dict(dictionary, key, value):
+    """
+    add entry in dictionary
+    :param dictionary: dictionary
+    :param key: string
+    :param value: string
+    :return:
+    """
+    if key not in dictionary:
+        dictionary[key]=set()
+    dictionary[key].add(value)
 
 '''
 Load MonDO disease in dictionary
@@ -146,14 +160,16 @@ def load_in_all_monDO_in_dictionary():
     results = g.run(query)
     for disease, in results:
         monDo_id = disease['identifier']
-        if monDo_id == 'MONDO:0006464':
-            print('ohje')
-        # if monDo_id == 'MONDO:0007062':
-        #     print('blub')
+        name= disease['name'].lower()
+        add_entry_to_dict(dict_mondo_id_to_name,monDo_id,name)
+        synonyms= disease['synonyms']
+        if synonyms:
+            for synonym in synonyms:
+                synonym=synonym.rsplit(' [')[0].lower()
+                add_entry_to_dict(dict_mondo_id_to_name, monDo_id, synonym)
         disease_info = dict(disease)
         dict_monDO_info[monDo_id] = disease_info
         xrefs = disease_info['xrefs'] if 'xrefs' in disease_info else []
-        print(monDo_id)
         fill_dict_with_external_identifier_to_mondo(xrefs, monDo_id)
 
 
@@ -210,6 +226,14 @@ def generate_cypher_queries():
     query = '''MATCH (n:Disease) Where exists(n.merged_identifier) Set n.doids=n.doids+ n.merged_identifier Remove n.merged_identifier;\n'''
     cypher_file_end.write(query)
 
+# #dictionary doid to multiple remove not fitting mondo
+# # manual checked
+dict_doid_to_multi_remove={
+    'DOID:0080626':set(['MONDO:0020489']),
+    'DOID:0111365': set(['MONDO:0006450']),
+    'DOID:0111649': set(['MONDO:0021849']),
+    'DOID:0111564': set(['MONDO:0018052','MONDO:0020306']),
+}
 
 '''
 Load in all disease ontology ids with external identifier and alternative id
@@ -230,6 +254,7 @@ def load_in_all_DO_in_dictionary():
         doid = disease['identifier']
         # if doid == 'DOID:0060073':
         #     print('ok')
+        name=disease['name'].lower()
         dict_DO_to_info[doid] = dict(disease)
         alternative_id = disease['alternative_ids'] if 'alternative_ids' in disease else []
         dict_do_to_alternative_do[doid] = alternative_id
@@ -240,9 +265,23 @@ def load_in_all_DO_in_dictionary():
         dict_DO_to_xref[doid] = xrefs
         if doid in dict_external_ids_monDO:
             if len(dict_external_ids_monDO[doid]) > 1:
-                print(doid)
-                print(dict_external_ids_monDO[doid])
-                sys.exit('multiple mondo map to the same ')
+                list_of_name_mapped_mondo_ids=[]
+                for mondo_id in  dict_external_ids_monDO[doid]:
+                    mondo_names=dict_mondo_id_to_name[mondo_id]
+                    for mondo_name in mondo_names:
+                        if mondo_name==name:
+                            list_of_name_mapped_mondo_ids.append(mondo_id)
+                if len(list_of_name_mapped_mondo_ids)==1:
+                    dict_external_ids_monDO[doid]=list_of_name_mapped_mondo_ids
+                else:
+                    if doid  in dict_doid_to_multi_remove:
+                        dict_external_ids_monDO[doid] = list(set(dict_external_ids_monDO[doid]).difference(dict_doid_to_multi_remove[doid]))
+                if len(dict_external_ids_monDO[doid]) > 1:
+                    print(doid)
+                    print(dict_external_ids_monDO[doid])
+                    print(list_of_name_mapped_mondo_ids)
+                    print('multiple mondo map to the same ')
+                    sys.exit('multiple mondo map to the same ')
             for monDO in dict_external_ids_monDO[doid]:
                 # check if they have the same names
                 monDOname = dict_monDO_info[monDO]['name'].lower() if 'name' in dict_monDO_info[monDO] else ''

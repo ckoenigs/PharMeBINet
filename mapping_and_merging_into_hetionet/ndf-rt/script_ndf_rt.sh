@@ -64,6 +64,13 @@ python3  integrate_rela_between_chemical_and_pharmacologicalClass.py $path_to_pr
 
 now=$(date +"%F %T")
 echo "Current time: $now"
+echo pharmacologic class chemical rela
+
+python3  integrate_rela_between_chemical_ingredient.py $path_to_project > chemical_ingredient/output.txt
+
+
+now=$(date +"%F %T")
+echo "Current time: $now"
 echo integration of ndf-rt connection into hetionet
 
 $path_neo4j/cypher-shell -u neo4j -p test -f relationships/cypher.cypher

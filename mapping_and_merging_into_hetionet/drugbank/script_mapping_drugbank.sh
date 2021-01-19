@@ -36,7 +36,11 @@ echo 'integrate Drugbank salts with interaction into Hetionet'
 
 python3 salt_to_compound_mapping_connection_to_drugs.py "$license" $path_to_project > salts/output_integration_file_generation_salt.txt
 
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo 'integrate Drugbank product  with rela to compound into Hetionet'
 
+python3 integrate_product_and_rela_to_compound.py "$license" $path_to_project > product/output.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -44,11 +48,6 @@ echo 'integrate Drugbank salts with interaction into Hetionet'
 
 python3 mapping_gene_variant_to_variant.py "$license" $path_to_project > gene_variant/output.txt
 
-now=$(date +"%F %T")
-echo "Current time: $now"
-echo 'integrate Drugbank product  with rela to compound into Hetionet'
-
-python3 integrate_product_and_rela_to_compound.py "$license" $path_to_project > product/output.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"

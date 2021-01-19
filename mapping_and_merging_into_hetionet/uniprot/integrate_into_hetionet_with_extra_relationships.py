@@ -628,6 +628,8 @@ def get_gather_protein_info_and_generate_relas():
         for list_of_info in list_of_infos:
             sources=sources.union(list_of_info[0].split('|'))
             notes.add(list_of_info[1])
+        if len(sources)==0:
+            print('ohje sources')
         sources="|".join(sources)
         note=" ".join(notes)
         csv_gene_disease.writerow([identifier, disease_id, sources, note])
