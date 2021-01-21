@@ -125,6 +125,7 @@ def load_in_all_pathways():
         # fill dictionary with name to rest
         names = node['synonyms']
         for name in names:
+            name=name.lower()
             if not name in dict_name_to_pc_or_wp_identifier:
                 dict_name_to_pc_or_wp_identifier[name] = [dict(node)]
             else:

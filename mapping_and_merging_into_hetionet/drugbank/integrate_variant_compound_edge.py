@@ -80,7 +80,7 @@ def main():
     print(datetime.datetime.utcnow())
     global path_of_directory
     if len(sys.argv) < 2:
-        sys.exit('need  path to directory gene variant')
+        sys.exit('need path to directory gene variant')
 
     path_of_directory = sys.argv[1]
     print('##########################################################################')
