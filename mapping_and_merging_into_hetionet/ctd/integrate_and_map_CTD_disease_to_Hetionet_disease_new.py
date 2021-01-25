@@ -116,7 +116,9 @@ def load_hetionet_diseases_in():
     query = '''MATCH (n:Disease) RETURN n.identifier,n.name, n.synonyms, n.xrefs, n.umls_cuis, n.resource, n.doids'''
     results = g.run(query)
 
+    counter=0
     for identifier, name, synonyms, xrefs, umls_cuis, resource, doids, in results:
+        counter+=1
         # if identifier=='MONDO:0002165':
         #     print('BLUB')
         # add name with mondo to dictionary
@@ -192,6 +194,7 @@ def load_hetionet_diseases_in():
         # generate class DiseaseHetionet and add to dictionary
         disease = DiseaseHetionet(identifier, synonyms, umls_cuis_without_label, xrefs, resource)
         dict_diseases_hetionet[identifier] = disease
+    print('length of counter:',counter)
     print('length of disease in hetionet:' + str(len(dict_diseases_hetionet)))
     print('number of different MESH in mondo:' + str(len(dict_mesh_to_mondo)))
     print('number of different OMIM in mondo:' + str(len(dict_omim_to_mondo)))

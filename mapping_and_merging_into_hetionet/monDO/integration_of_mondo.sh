@@ -18,7 +18,7 @@ echo integrate mondo
 
 $path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher > output_cypher_integration.txt
 
-sleep 180
+sleep 120
 
 $path_neo4j/neo4j restart
 
@@ -29,14 +29,13 @@ chmod 775 merge_nodes.sh
 
 ./merge_nodes.sh > output_mergy.txt
 
-sleep 180
+sleep 120
 
 $path_neo4j/neo4j restart
 
-sleep 180
+sleep 120
 
 $path_neo4j/cypher-shell -u neo4j -p test -f cypher_end.cypher > output_cypher_end_integration.txt
 
-sleep 180
 
 
