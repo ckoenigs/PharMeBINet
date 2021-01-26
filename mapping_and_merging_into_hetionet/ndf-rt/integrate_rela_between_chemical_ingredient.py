@@ -81,8 +81,8 @@ def load_connections():
             print(rela_type)
             continue
 
-        # add only pair which are not already added
-        if (chemical_id, ingredient_chemical_id) in dict_mapping_pairs[rela_type] : # or (
+        # add only pair which are not already added and do not integrate self-loops
+        if (chemical_id, ingredient_chemical_id) in dict_mapping_pairs[rela_type] or chemical_id==ingredient_chemical_id : # or (
         # ingredient_chemical_id, chemical_id) in dict_mapping_pairs[rela_type]
             continue
 

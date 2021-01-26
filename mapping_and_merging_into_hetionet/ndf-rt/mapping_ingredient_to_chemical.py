@@ -75,7 +75,7 @@ Load all Chemical from my database  and add them into a dictionary
 
 
 def load_chemical_from_database_and_add_to_dict():
-    query = "MATCH (n:Chemical) RETURN n, labels(n)"
+    query = "MATCH (n:Chemical) Where not n:Product RETURN n, labels(n)"
     results = g.run(query)
     for node, labels, in results:
         identifier = node['identifier']
