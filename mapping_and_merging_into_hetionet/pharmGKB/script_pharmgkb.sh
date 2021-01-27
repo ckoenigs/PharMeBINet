@@ -15,9 +15,15 @@ python3 map_gene.py $path_to_project > gene/output.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
-echo 'map chemical and drug'
+echo 'map chemical'
 
 python3 map_drug_chemical.py $path_to_project > chemical/output.txt
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo 'map variant and haplotypes'
+
+python3 map_haplotype_and_variant.py $path_to_project > variant/output.txt
 
 
 now=$(date +"%F %T")

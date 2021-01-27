@@ -14,6 +14,37 @@ def create_connection_with_neo4j():
     global g
     g = create_connection_to_databases.database_connection_neo4j()
 
+# dictionary chemical name to id
+dict_name_to_chemical_ids={}
+
+def add_entry_to_dictionary(dictionary, key, value):
+    """
+    prepare dictionary with value
+    :param dictionary: dictionary
+    :param key: string
+    :param value: string
+    :return:
+    """
+    if key not in dictionary:
+        dictionary[key]=set()
+    dictionary[key].add(value)
+
+def load_chemical_to_dict():
+    """
+    Prepare dictionary from name to chemical id
+    :return:
+    """
+    query='''Match (c:Chemical) Where not c:Product Return c.name, c.synonyms, c.identifier;'''
+    results=g.run(query)
+    for name, synonyms, identifier, in results:
+        if name:
+            name=name.lower()
+            add_entry_to_dictionary(dict_name_to_chemical_ids,name, identifier)
+        if synonyms:
+            for synonym in synonyms:
+                synonym = synonym.lower()
+                add_entry_to_dictionary(dict_name_to_chemical_ids, synonym, identifier)
+
 
 def generate_file_and_cypher():
     """
@@ -26,14 +57,15 @@ def generate_file_and_cypher():
     results = g.run(query)
 
     file_name = 'interaction/rela'
+    file_name_drug='interaction/rela_drug'
 
     cypher_file = open('interaction/cypher.cypher', 'w', encoding='utf-8')
 
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/iid/%s.tsv" As line FIELDTERMINATOR '\\t' 
-            Match (p1:Protein{identifier:line.protein_id_1}), (p2:Protein{identifier:line.protein_id_2}) Create (p1)-[:INTERACTS_PRiPR{ '''
+            Match (p1:Protein{identifier:line.protein_id_1}), (p2:Protein{identifier:line.protein_id_2}) Create (p1)-[:INTERACTS_PRiI]->(b:Interaction{ '''
     query = query % (path_of_directory, file_name)
 
-    header = ['protein_id_1', 'protein_id_2']
+    header = ['protein_id_1', 'protein_id_2', 'id']
     for head, in results:
         header.append(head)
         if head in ['targeting_drugs', 'evidence_type', 'dbs', 'methods', 'pmids']:
@@ -41,15 +73,26 @@ def generate_file_and_cypher():
         else:
             query += head + ':line.' + head + ', '
 
-    query += ' license:"blub", iid:"yes", resource:["IID"], url:"blub"}]->(p2);\n'
+    query += ' license:"blub", iid:"yes", resource:["IID"], url:"blub", identifier:"IPP_"+line.id, meta_edge:true})-[:INTERACTS_IiPR]->(p2);\n'
     cypher_file.write(query)
+    cypher_file.write('Create Constraint On (node:Interaction) Assert node.identifier Is Unique;\n')
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/iid/%s.tsv" As line FIELDTERMINATOR '\\t' 
+                Match (i:Interaction{identifier:"IPP_"+line.id}), (c:Chemical{identifier:line.chemical_id}) Create (i)<-[:DRUG_TARGET_CdtI]-(c);\n'''
+    query = query % (path_of_directory, file_name_drug)
+    cypher_file.write(query)
+    cypher_file.close()
+
     file = open(file_name + '.tsv', 'w', encoding='utf-8')
     csv_writer = csv.DictWriter(file, fieldnames=header, delimiter='\t')
     csv_writer.writeheader()
-    return csv_writer
+
+    file_drug = open(file_name_drug + '.tsv', 'w', encoding='utf-8')
+    csv_writer_drug = csv.writer(file_drug, delimiter='\t')
+    csv_writer_drug.writerow(['id','chemical_id'])
+    return csv_writer, csv_writer_drug
 
 
-def prepare_dictionary(dictionary):
+def prepare_dictionary(dictionary, counter):
     """
     prepare the list values in dictionary to strings
     :param dictionary: dictionary
@@ -60,11 +103,15 @@ def prepare_dictionary(dictionary):
         if type(value) == list:
             value = '|'.join(value)
         new_dict[key] = value
+    new_dict['id']=counter
     return new_dict
 
 
 # dictionary rela pairs to infos
 dict_pair_to_infos = {}
+
+# dictionary pair to drugs id
+dict_pair_to_drug_ids={}
 
 
 def load_and_prepare_IID_human_data():
@@ -72,26 +119,44 @@ def load_and_prepare_IID_human_data():
     write only rela with exp into file
     """
 
-    query = '''Match (p1:Protein)--(:protein_IID)-[r:interacts]->(:protein_IID)--(p2:Protein) Return p1.identifier, r, p2.identifier ; '''
+    query = '''Match (p1:Protein)-[:equal_to_iid_protein]-(d:protein_IID)-[r:interacts]->(:protein_IID)-[:equal_to_iid_protein]-(p2:Protein) Where 'exp' in r.evidence_types Return p1.identifier, r, p2.identifier '''
     results = g.run(query)
 
+
     for p1_id, rela, p2_id, in results:
-        evidence_types = rela['evidence_types'] if 'evidence_types' in rela else []
-        if 'exp' in evidence_types:
-            rela_info = dict(rela)
-            rela_info['protein_id_1'] = p1_id
-            rela_info['protein_id_2'] = p2_id
-            if (p1_id, p2_id) not in dict_pair_to_infos:
-                dict_pair_to_infos[(p1_id, p2_id)] = []
-            dict_pair_to_infos[(p1_id, p2_id)].append(rela_info)
+        rela_info = dict(rela)
+        if (p1_id, p2_id) not in dict_pair_to_infos:
+            dict_pair_to_infos[(p1_id, p2_id)] = []
+            dict_pair_to_drug_ids[(p1_id,p2_id)]=set()
+        drugs= rela['targeting_drugs']
+        if drugs:
+            for drug in drugs:
+                drug=drug.lower()
+                if drug in dict_name_to_chemical_ids:
+                    for chemical_id in dict_name_to_chemical_ids[drug]:
+                        dict_pair_to_drug_ids[(p1_id, p2_id)].add(chemical_id)
+                else:
+                    print('ohno')
+                    print(drug)
+
+        rela_info['protein_id_1'] = p1_id
+        rela_info['protein_id_2'] = p2_id
+
+        dict_pair_to_infos[(p1_id, p2_id)].append(rela_info)
 
 
-def wirte_info_into_files():
-    csv_writer = generate_file_and_cypher()
+def write_info_into_files():
+    csv_writer, csv_writer_drug = generate_file_and_cypher()
     counter = 0
     for (p1, p2), list_of_dict in dict_pair_to_infos.items():
+        counter += 1
+
+        if (p1,p2) in dict_pair_to_drug_ids:
+            for drug in dict_pair_to_drug_ids[(p1,p2)]:
+                csv_writer_drug.writerow([counter, drug])
+
         if len(list_of_dict) == 1:
-            csv_writer.writerow(prepare_dictionary(list_of_dict[0]))
+            csv_writer.writerow(prepare_dictionary(list_of_dict[0], counter))
         else:
             print('multi')
             new_dict = {}
@@ -112,8 +177,7 @@ def wirte_info_into_files():
                         else:
                             print('also different type problem')
 
-            csv_writer.writerow(prepare_dictionary(new_dict))
-        counter += 1
+            csv_writer.writerow(prepare_dictionary(new_dict, counter))
         if counter % 10000 == 0:
             print(counter)
 
@@ -136,6 +200,13 @@ def main():
     print('generate connection to neo4j')
 
     create_connection_with_neo4j()
+    print(
+        '#################################################################################################################################################################')
+
+    print(datetime.datetime.utcnow())
+    print('load chemical')
+
+    load_chemical_to_dict()
 
     print(
         '#################################################################################################################################################################')
@@ -149,7 +220,7 @@ def main():
     print(datetime.datetime.utcnow())
     print('prepare files')
 
-    wirte_info_into_files()
+    write_info_into_files()
 
     print(
         '#################################################################################################################################################################')

@@ -21,16 +21,19 @@ dict_gene_to_resource = {}
 # dictionary gene symbol to gene id
 dict_gene_symbol_to_gene_id = {}
 
+# dictionary synonym to gene id
+dict_synonym_to_gene_id = {}
+
 '''
 load in all compound from hetionet in a dictionary
 '''
 
 
 def load_db_genes_in():
-    query = '''MATCH (n:Gene) RETURN n.identifier,n.geneSymbol, n.resource'''
+    query = '''MATCH (n:Gene) RETURN n.identifier,n.geneSymbol, n.resource, n.synonyms'''
     results = g.run(query)
 
-    for identifier, gene_symbols, resource, in results:
+    for identifier, gene_symbols, resource, synonyms, in results:
         dict_gene_to_resource[identifier] = resource if resource else []
 
         if gene_symbols:
@@ -39,6 +42,14 @@ def load_db_genes_in():
                 if gene_symbol not in dict_gene_symbol_to_gene_id:
                     dict_gene_symbol_to_gene_id[gene_symbol] = set()
                 dict_gene_symbol_to_gene_id[gene_symbol].add(identifier)
+
+        if synonyms:
+            for synonym in synonyms:
+                synonym=synonym.lower()
+                if synonym not in dict_synonym_to_gene_id:
+                    dict_synonym_to_gene_id[synonym] = set()
+                dict_synonym_to_gene_id[synonym].add(identifier)
+
 
     print('length of gene in db:' + str(len(dict_gene_to_resource)))
 
@@ -53,7 +64,7 @@ def load_pharmgkb_genes_in():
     file_name = 'gene/mapping.tsv'
     file = open(file_name, 'w', encoding='utf-8')
     csv_writer = csv.writer(file, delimiter='\t')
-    csv_writer.writerow(['gene_id', 'pharmgkb_id', 'resource'])
+    csv_writer.writerow(['gene_id', 'pharmgkb_id', 'resource', 'how_mapped'])
 
     # generate cypher file
     generate_cypher_file(file_name)
@@ -77,27 +88,39 @@ def load_pharmgkb_genes_in():
                 resource = "|".join(sorted(resource))
                 csv_writer.writerow([ncbi_gene_id, identifier, resource, 'id'])
 
+        symbol = result['symbol'].lower() if 'symbol' in result else ''
         if not found_a_mapping:
-            symbol = result['symbol'].lower() if 'symbol' in result else ''
+
             if len(symbol) > 0 and symbol in dict_gene_symbol_to_gene_id:
+                found_a_mapping=True
                 for gene_id in dict_gene_symbol_to_gene_id[symbol]:
                     resource = dict_gene_to_resource[gene_id]
                     resource.append("PharmGKB")
                     resource = "|".join(sorted(resource))
                     csv_writer.writerow([gene_id, identifier, resource, 'symbol'])
-                counter_map += 1
-            else:
-                print(identifier)
-                counter_not_mapped += 1
-        else:
+
+
+        if found_a_mapping:
             counter_map += 1
+            continue
+
+        if len(symbol) > 0 and symbol in dict_synonym_to_gene_id:
+            for gene_id in dict_synonym_to_gene_id[symbol]:
+                resource = dict_gene_to_resource[gene_id]
+                resource.append("PharmGKB")
+                resource = "|".join(sorted(resource))
+                csv_writer.writerow([gene_id, identifier, resource, 'symbolSynonym'])
+            counter_map += 1
+
+        else:
+            counter_not_mapped += 1
     print('number of genes which mapped:', counter_map)
     print('number of genes which not mapped:', counter_not_mapped)
 
 
 def generate_cypher_file(file_name):
     cypher_file = open('output/cypher.cypher', 'w')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/pharmGKB/%s" As line  FIELDTERMINATOR '\\t'  MATCH (n:PharmGKB_Gene{id:line.pharmgkb_id}), (c:Gene{identifier:line.gene_id})  Set c.pharmgkb='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_gene_pharmgkb]->(n); \n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/pharmGKB/%s" As line  FIELDTERMINATOR '\\t'  MATCH (n:PharmGKB_Gene{id:line.pharmgkb_id}), (c:Gene{identifier:line.gene_id})  Set c.pharmgkb='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_gene_pharmgkb{how_mapped:line.how_mapped}]->(n); \n'''
     query = query % (file_name)
     cypher_file.write(query)
     cypher_file.close()
