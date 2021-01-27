@@ -106,8 +106,8 @@ def load_db_info_in():
         dict_mesh_db_id_to_chemical_id[identifier]=set([identifier])
         if inchi:
             dict_inchi_to_chemical_id[inchi] = identifier
-
-        dict_compound_id_to_xrefs[identifier] = xrefs if xrefs is not None else []
+        xrefs = set(xrefs) if xrefs else set()
+        dict_compound_id_to_xrefs[identifier] = xrefs
         if xrefs:
             for xref in xrefs:
                 value = xref.split(':', 1)[1]
@@ -140,7 +140,7 @@ def load_db_info_in():
     print('length of chemical in db:' + str(len(dict_chemical_to_resource)))
 
 
-def add_information_to_file(drugbank_id, identifier, csv_writer, how_mapped, tuple_set, dict_to_resource, xref=[]):
+def add_information_to_file(drugbank_id, identifier, csv_writer, how_mapped, tuple_set, dict_to_resource, xref):
     """
     add mapper to file if not already is added!
     :param drugbank_id:
@@ -156,8 +156,7 @@ def add_information_to_file(drugbank_id, identifier, csv_writer, how_mapped, tup
     resource = dict_to_resource[drugbank_id]
     resource.append('PharmGKB')
     resource = "|".join(sorted(set(resource)))
-    if len(xref) > 0:
-        xref.append('PharmGKB:' + identifier)
+    xref.add('PharmGKB:' + identifier)
     xrefs = '|'.join(sorted(xref))
     csv_writer.writerow([drugbank_id, identifier, resource, how_mapped, xrefs])
     
@@ -190,7 +189,7 @@ def load_pharmgkb_in(label):
     file_name = 'chemical/mapping_' + label.split('_')[1] + '.tsv'
     file = open(file_name, 'w', encoding='utf-8')
     csv_writer = csv.writer(file, delimiter='\t')
-    csv_writer.writerow(['identifier', 'pharmgkb_id', 'resource', 'how_mapped'])
+    csv_writer.writerow(['identifier', 'pharmgkb_id', 'resource', 'how_mapped', 'xrefs'])
     generate_cypher_file(file_name, label, 'Chemical')
 
     # csv file pharmacological file
@@ -270,24 +269,24 @@ def load_pharmgkb_in(label):
                     for db_id in drugbank_ids:
                         add_information_to_file(db_id, identifier, csv_writer, 'pubchem compound', set_of_all_tuples,
                                                 dict_chemical_to_resource, xref=dict_compound_id_to_xrefs[db_id])
-        if mapped:
-            continue
-
-        rxnorm_identfiers = result[
-            'rxnorm_identifiers'] if 'rxnorm_identifiers' in result else []
-        for rxnorm_identfier in rxnorm_identfiers:
-            if rxnorm_identfier in dict_rxcui_to_chemical_id:
-                mapped = True
-                counter_map += 1
-                for drugbank_id in dict_rxcui_to_chemical_id[rxnorm_identfier]:
-                    drugbank_ids = set([drugbank_id])
-                    if name != '':
-                        drugbank_ids = check_if_name_are_correct_or_with_salt(name, drugbank_id)
-                    mapped = True
-                    for db_id in drugbank_ids:
-                        add_information_to_file(db_id, identifier, csv_writer, 'rxcui',
-                                                set_of_all_tuples,
-                                                dict_chemical_to_resource, xref=dict_compound_id_to_xrefs[db_id])
+        # if mapped:
+        #     continue
+        #
+        # rxnorm_identfiers = result[
+        #     'rxnorm_identifiers'] if 'rxnorm_identifiers' in result else []
+        # for rxnorm_identfier in rxnorm_identfiers:
+        #     if rxnorm_identfier in dict_rxcui_to_chemical_id:
+        #         mapped = True
+        #         counter_map += 1
+        #         for drugbank_id in dict_rxcui_to_chemical_id[rxnorm_identfier]:
+        #             drugbank_ids = set([drugbank_id])
+        #             if name != '':
+        #                 drugbank_ids = check_if_name_are_correct_or_with_salt(name, drugbank_id)
+        #             mapped = True
+        #             for db_id in drugbank_ids:
+        #                 add_information_to_file(db_id, identifier, csv_writer, 'rxcui',
+        #                                         set_of_all_tuples,
+        #                                         dict_chemical_to_resource, xref=dict_compound_id_to_xrefs[db_id])
 
         if mapped:
             continue
@@ -311,19 +310,21 @@ def load_pharmgkb_in(label):
         if mapped:
             continue
 
-        atc_codes = result[
-            'atc_identifiers'] if 'atc_identifiers' in result else []
-        if 'Drug Class' in types:
-            for atc_code in atc_codes:
-                if atc_code in dict_atc_to_pc:
-                    mapped = True
-                    counter_map += 1
-                    for pharmacological_class_id in dict_atc_to_pc[atc_code]:
-                        add_information_to_file(pharmacological_class_id, identifier, csv_writer_pc, 'atc',
-                                                set_of_all_tuples_with_pc, dict_pc_to_resource)
-
-        if mapped:
-            continue
+        # atc_codes = result[
+        #     'atc_identifiers'] if 'atc_identifiers' in result else []
+        # if 'Drug Class' in types:
+        #     # only consider the one with only one atc code!
+        #     if len(atc_codes)==1:
+        #         for atc_code in atc_codes:
+        #             if atc_code in dict_atc_to_pc:
+        #                 mapped = True
+        #                 counter_map += 1
+        #                 for pharmacological_class_id in dict_atc_to_pc[atc_code]:
+        #                     add_information_to_file(pharmacological_class_id, identifier, csv_writer_pc, 'atc',
+        #                                             set_of_all_tuples_with_pc, dict_pc_to_resource)
+        #
+        # if mapped:
+        #     continue
 
         if len(name) > 0 and 'Drug Class' in types:
             if name in dict_name_to_pharmacologic_class:
@@ -419,7 +420,7 @@ def main():
 
     load_pharmacological_class()
 
-    for label in ['PharmGKB_Drug', 'PharmGKB_Chemical']:
+    for label in [ 'PharmGKB_Chemical']:
         print(
             '###########################################################################################################################')
 

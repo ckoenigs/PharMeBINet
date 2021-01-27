@@ -25,6 +25,12 @@ echo 'map variant and haplotypes'
 
 python3 map_haplotype_and_variant.py $path_to_project > variant/output.txt
 
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo 'map phenotypes'
+
+python3 map_phenotype.py $path_to_project > disease/output.txt
+
 
 now=$(date +"%F %T")
 echo "Current time: $now"
