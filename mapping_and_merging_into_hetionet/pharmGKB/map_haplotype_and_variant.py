@@ -102,11 +102,19 @@ def load_pharmgkb_in(label, directory, mapped_label):
     csv_writer = csv.writer(file, delimiter='\t')
     csv_writer.writerow(['identifier', 'pharmgkb_id', 'resource', 'how_mapped'])
 
+    # csv_file for new
+    file_name_new = directory + '/new_' + label.split('_')[1] + '.tsv'
+    file_new = open(file_name_new, 'w', encoding='utf-8')
+    csv_writer_new = csv.writer(file_new, delimiter='\t')
+    csv_writer_new.writerow(['identifier', 'dbid', 'how_mapped'])
+
+    # csv file for not mapping
     not_mapped_file = open(directory+'/not_mapping_' + label.split('_')[1] + '.tsv', 'w', encoding='utf-8')
     csv_writer_not = csv.writer(not_mapped_file, delimiter='\t')
-    csv_writer_not.writerow(['pharmgkb_id', 'namr'])
+    csv_writer_not.writerow(['pharmgkb_id', 'name'])
     # generate cypher file
     generate_cypher_file(file_name, label, mapped_label)
+    generate_cypher_file(file_name_new, label, mapped_label, False)
 
     query = '''MATCH (n:%s) RETURN n'''
     query = query % (label)
@@ -126,14 +134,13 @@ def load_pharmgkb_in(label, directory, mapped_label):
 
         mapped = False
 
-        name = result['name'] if 'name' in result else ''
         if len(name) > 0:
             name = name.lower()
             if name in dict_dbSNP_to_id:
                 mapped = True
                 counter_map += 1
-                for identifier in dict_dbSNP_to_id[name]:
-                    add_information_to_file(identifier, identifier, csv_writer, 'dbSNP',
+                for identifier_variant in dict_dbSNP_to_id[name]:
+                    add_information_to_file(identifier_variant, identifier, csv_writer, 'dbSNP',
                                             set_of_all_tuples, dict_node_to_resource)
             if mapped:
                 continue
@@ -141,8 +148,8 @@ def load_pharmgkb_in(label, directory, mapped_label):
             if name in dict_name_to_node_id:
                 mapped = True
                 counter_map += 1
-                for identifier in dict_name_to_node_id[name]:
-                    add_information_to_file(identifier, identifier, csv_writer, 'dbSNP',
+                for identifier_variant in dict_name_to_node_id[name]:
+                    add_information_to_file(identifier_variant, identifier, csv_writer, 'name',
                                             set_of_all_tuples, dict_node_to_resource)
             if mapped:
                 continue
@@ -151,13 +158,15 @@ def load_pharmgkb_in(label, directory, mapped_label):
         if not mapped:
             counter_not_mapped += 1
             csv_writer_not.writerow([identifier, result['name'], result['types']])
+            if name.startswith('rs') and name[2].isdigit():
+                csv_writer_new.writerow([identifier,name,  'new'])
 
     print('number of variant which mapped:', counter_map)
     print('number of mapped:', len(set_of_all_tuples) )
     print('number of variant which not mapped:', counter_not_mapped)
 
 
-def generate_cypher_file(file_name, label, mapped_label):
+def generate_cypher_file(file_name, label, mapped_label, mapped=True):
     """
     prepare cypher query and add to cypher file
     :param file_name: string
@@ -165,8 +174,12 @@ def generate_cypher_file(file_name, label, mapped_label):
     :return:
     """
     cypher_file = open('output/cypher.cypher', 'a')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/pharmGKB/%s" As line  FIELDTERMINATOR '\\t'  MATCH (n:%s{id:line.pharmgkb_id}), (c:%s{identifier:line.identifier})  Set c.pharmgkb='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_%s_phamrgkb{how_mapped:line.how_mapped}]->(n); \n'''
-    query = query % (file_name, label, label.split('_')[1].lower(), mapped_label)
+    if mapped:
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/pharmGKB/%s" As line  FIELDTERMINATOR '\\t'  MATCH (n:%s), (c:%s{identifier:line.identifier}) Where n.id=line.pharmgkb_id or n.name=line.pharmgkb_id  Set c.pharmgkb='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_%s_phamrgkb{how_mapped:line.how_mapped}]->(n); \n'''
+        query = query % (file_name, label,  mapped_label, label.split('_')[1].lower())
+    else:
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/pharmGKB/%s" As line  FIELDTERMINATOR '\\t'  MATCH (n:%s) Where n.id=line.identifier or n.name=line.identifier   Create (c:%s{identifier:line.dbid, name:n.name, synonyms:n.synonyms, location:n.location, pharmgkb:'yes', resource:["PharmGBK"], xrefs:["dbSNP:"+line.dbid] ,license:"CC BY-SA 4.0" , source:"dbSNP from PharmGKB"})-[:equal_to_%s_phamrgkb{how_mapped:line.how_mapped}]->(n);\n ''' # With c,n  Match (g:PharmGKB_Gene)--(b:Gene) Where g.id in n.gene_ids Create (c)<-[:HAS_GhV {resource:['PharmGKB'], source:'PharmGKB', pharmgkb:'yes', license:'CC BY-SA 4.0'}]-(b); \n
+        query = query % (file_name, label, mapped_label, label.split('_')[1].lower())
     cypher_file.write(query)
     cypher_file.close()
 

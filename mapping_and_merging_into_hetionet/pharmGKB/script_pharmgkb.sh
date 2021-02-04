@@ -6,6 +6,8 @@ path_neo4j=$1
 #path to project
 path_to_project=$2
 
+license="CC BY-SA 4.0"
+
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo 'map pahrmgkb gene'

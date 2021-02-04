@@ -92,16 +92,19 @@ dict_compound_id_to_salts_id={}
 #dictionary mesh and drugbank id to chemical id
 dict_mesh_db_id_to_chemical_id={}
 
+# dictionary from alternative drugbank id to identifier
+dict_alter_id_to_id={}
+
 '''
 load in all compound from hetionet in a dictionary
 '''
 
 
 def load_db_info_in():
-    query = '''MATCH (n:Chemical) Where not n:Product RETURN n.identifier,n.inchi, n.xrefs, n.resource, n.name, n.synonyms'''
+    query = '''MATCH (n:Chemical) Where not n:Product RETURN n.identifier,n.inchi, n.xrefs, n.resource, n.name, n.synonyms, n.alternative_drugbank_ids'''
     results = g.run(query)
 
-    for identifier, inchi, xrefs, resource, name, synonyms, in results:
+    for identifier, inchi, xrefs, resource, name, synonyms, alternative_drug_ids, in results:
         dict_chemical_to_resource[identifier] = resource if resource else []
         dict_mesh_db_id_to_chemical_id[identifier]=set([identifier])
         if inchi:
@@ -130,6 +133,11 @@ def load_db_info_in():
                 dict_compound_id_to_names[identifier].add(synonym)
                 add_value_to_dictionary(dict_name_to_chemical_id, synonym, identifier)
 
+        if alternative_drug_ids:
+            for alt_db_id in alternative_drug_ids:
+                add_value_to_dictionary(dict_alter_id_to_id, alt_db_id, identifier)
+
+
     query = '''MATCH (n:Chemical)--(m:Salt) RETURN n.identifier, m.identifier'''
     results = g.run(query)
     for compound_id, salt_id, in results:
@@ -140,7 +148,7 @@ def load_db_info_in():
     print('length of chemical in db:' + str(len(dict_chemical_to_resource)))
 
 
-def add_information_to_file(drugbank_id, identifier, csv_writer, how_mapped, tuple_set, dict_to_resource, xref):
+def add_information_to_file(drugbank_id, identifier, csv_writer, how_mapped, tuple_set, dict_to_resource, xref=set()):
     """
     add mapper to file if not already is added!
     :param drugbank_id:
@@ -249,6 +257,12 @@ def load_pharmgkb_in(label):
                     for drugbank_id in drugbank_ids:
                         add_information_to_file(drugbank_id, identifier, csv_writer, 'drugbank', set_of_all_tuples,
                                                 dict_chemical_to_resource, xref=dict_compound_id_to_xrefs[drugbank_id])
+                # elif value in dict_alter_id_to_id:
+                #     drugbank_ids = dict_alter_id_to_id[value]
+                #     mapped = True
+                #     for drugbank_id in drugbank_ids:
+                #         add_information_to_file(drugbank_id, identifier, csv_writer, 'drugbank_alternativ', set_of_all_tuples,
+                #                                 dict_chemical_to_resource, xref=dict_compound_id_to_xrefs[drugbank_id])
 
         if mapped:
             counter_map += 1
@@ -310,6 +324,8 @@ def load_pharmgkb_in(label):
         if mapped:
             continue
 
+
+
         # atc_codes = result[
         #     'atc_identifiers'] if 'atc_identifiers' in result else []
         # if 'Drug Class' in types:
@@ -334,6 +350,19 @@ def load_pharmgkb_in(label):
                     add_information_to_file(pharmacological_class_id, identifier, csv_writer_pc, 'name',
                                             set_of_all_tuples_with_pc, dict_pc_to_resource)
 
+        if mapped:
+            continue
+
+        generic_names= result['generic_names']
+        if generic_names:
+            for generic_name in generic_names:
+                if generic_name in dict_name_to_chemical_id:
+                    mapped = True
+                    counter_map += 1
+                    for drugbank_id in dict_name_to_chemical_id[generic_name]:
+                        add_information_to_file(drugbank_id, identifier, csv_writer, 'generic_name',
+                                                set_of_all_tuples, dict_chemical_to_resource,
+                                                xref=dict_compound_id_to_xrefs[drugbank_id])
         if mapped:
             continue
 
