@@ -101,7 +101,7 @@ def integrate_relationship_from_sider_into_hetionet():
     query = query % 'mapped_rela_se'
     cypher_file.write(query)
 
-    query = query_start + ''', (b:SideEffect{identifier:line.se_id}) Create (a)-[r:CAUSES_CcSE{upperFrequency:line.upperFrequency, placebo:line.placebo, avg_frequency:line.avg_frequency, lowerFrequency:line.lowerFrequency, placeboAvgFrequency: line.placeboAvgFrequency, resource:["SIDER"] , placeboLowerFrequency: line.placeboLowerFrequency, placeboUpperFrequency: line.placeboUpperFrequency,  sider:"yes", license:"CC BY-NC-SA 4.0"}]->(b) ; \n'''
+    query = query_start + ''', (b:SideEffect{identifier:line.se_id}) Create (a)-[r:CAUSES_CcSE{upperFrequency:line.upperFrequency, placebo:line.placebo, avg_frequency:line.avg_frequency, lowerFrequency:line.lowerFrequency, placeboAvgFrequency: line.placeboAvgFrequency, resource:["SIDER"] , placeboLowerFrequency: line.placeboLowerFrequency, placeboUpperFrequency: line.placeboUpperFrequency, url:"http://sideeffects.embl.de/se/"+ line.se_id ,  sider:"yes", license:"CC BY-NC-SA 4.0"}]->(b) ; \n'''
     query = query % 'new_rela_se'
     cypher_file.write(query)
     cypher_file.close()

@@ -118,8 +118,6 @@ def load_in_all_pathways():
 
     for node, in results:
         identifier = node['identifier']
-        if identifier == 'PC11_755':
-            print('huhu')
         dict_id_to_node[identifier] = dict(node)
 
         # fill dictionary with name to rest

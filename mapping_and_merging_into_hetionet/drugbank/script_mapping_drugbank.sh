@@ -6,7 +6,7 @@ path_neo4j=$1
 #path to project
 path_to_project=$2
 
-license='CC BY-NC 4.0'
+license='Attribution-NonCommercial 4.0 International'
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -77,7 +77,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo 'integrate Drugbank compound-variant edge'
 
-python3 integrate_variant_compound_edge.py $path_to_project > gene_variant/output.txt
+python3 integrate_variant_compound_edge.py $path_to_project "$license" > gene_variant/output.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"

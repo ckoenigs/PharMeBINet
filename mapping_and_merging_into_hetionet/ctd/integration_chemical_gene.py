@@ -152,7 +152,7 @@ def path_to_rela_and_add_to_dict(rela, first, second):
     # however, for the relationships which already exists in the general file new queries are added to say which are not in ctd
     if result:
 
-        query_last_part = ''' On Create Set r.hetionet='no', r.ctd='yes', r.urls_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.resource=["CTD"], r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased=toBoolean(line.unbiased), r.interaction_text=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|') On Match SET r.ctd='yes', r.urls_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.resource=["CTD","Hetionet"], r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased=toBoolean(line.unbiased), r.interaction_text=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=r.pubmed_ids+split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|');\n '''
+        query_last_part = ''' On Create Set r.hetionet='no', r.ctd='yes', r.urls_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.resource=["CTD"], r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2021 NC State University. All rights reserved.", r.unbiased=toBoolean(line.unbiased), r.interaction_text=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|') On Match SET r.ctd='yes', r.urls_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.resource=["CTD","Hetionet"], r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2021 NC State University. All rights reserved.", r.unbiased=toBoolean(line.unbiased), r.interaction_text=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=r.pubmed_ids+split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|');\n '''
         query = query_first_part + query_middle_1 + query_middle_2 + query_last_part
 
         query_for_update_not_used_relationships = query_to_check_if_this_rela_exist_in_hetionet.split('Return')[
@@ -166,7 +166,7 @@ def path_to_rela_and_add_to_dict(rela, first, second):
 
         query_middle_2_parts = query_middle_2.split(']')
 
-        query_last_part = '''{hetionet:'no', ctd:'yes', urls_ctd:"http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID ,source:"CTD", resource:["CTD"], license:"© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", unbiased:toBoolean(line.unbiased), interaction_text:split(line.interaction_text,'|'), gene_forms:split(line.gene_forms,'|'), pubmed_ids:split(line.pubMedIds,'|'), interactions_actions:split(line.interactions_actions,'|')}]'''
+        query_last_part = '''{hetionet:'no', ctd:'yes', urls_ctd:"http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID ,source:"CTD", resource:["CTD"], license:"© 2002–2012 MDI Biological Laboratory. © 2012–2021 NC State University. All rights reserved.", unbiased:toBoolean(line.unbiased), interaction_text:split(line.interaction_text,'|'), gene_forms:split(line.gene_forms,'|'), pubmed_ids:split(line.pubMedIds,'|'), interactions_actions:split(line.interactions_actions,'|')}]'''
         query = query_first_part + query_middle_1 + query_middle_2_parts[0].replace('Merge',
                                                                                     'Create') + query_last_part + \
                 query_middle_2_parts[1] + ';\n'
@@ -539,7 +539,7 @@ def fill_the_csv_files():
             gene_forms = list_of_information[1]
             shortest_gene_forms = [gene_forms[x] for x in indices]
             shortest_gene_forms = [';'.join(x) for x in shortest_gene_forms]
-            shortest_gene_forms = '|'.join(shortest_gene_forms)
+            shortest_gene_forms = '|'.join(set(shortest_gene_forms))
 
             unbiased = True if len(pubMedIds) > 0 else False
             shortest_interaction_text = '|'.join(shortest_interaction_text)

@@ -52,7 +52,7 @@ def get_all_variation_properties():
             query_middle += property + ':n.' + property + ', '
         elif property=='xrefs':
             query_middle += property + ':split(line.' + property + ',"|"), '
-    query_middle = query_middle + ' license:"CC0 1.0", source:"ClinVar", clinvar:"yes",  resource:["ClinVar"], url:"https://www.ncbi.nlm.nih.gov/clinvar/variation/"+line.identifier}) Create (m)-[:equal_to_clinvar_variant]->(n);\n'
+    query_middle = query_middle + ' license:"https://www.ncbi.nlm.nih.gov/home/about/policies/", source:"ClinVar", clinvar:"yes",  resource:["ClinVar"], url:"https://www.ncbi.nlm.nih.gov/clinvar/variation/"+line.identifier}) Create (m)-[:equal_to_clinvar_variant]->(n);\n'
 
 
 '''

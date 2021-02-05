@@ -43,8 +43,8 @@ def prepare_cypher_query(file_name):
     for product_property, in results:
         query_start+= product_property +':n.'+product_property+', '
 
-    query_start+= ' url:line.url, resource:["DrugBank"], drugbank:"yes"})-[:equal_drugbank_product]->(n);\n'
-    query=query_start %(path_of_directory, file_name)
+    query_start+= ' url:line.url, resource:["DrugBank"], drugbank:"yes", license:"%s"})-[:equal_drugbank_product]->(n);\n'
+    query=query_start %(path_of_directory, file_name, license)
 
     cypher_file.write(query)
     cypher_file.close()

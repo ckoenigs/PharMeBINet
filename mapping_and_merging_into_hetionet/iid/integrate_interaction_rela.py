@@ -113,16 +113,12 @@ dict_pair_to_infos = {}
 # dictionary pair to drugs id
 dict_pair_to_drug_ids={}
 
-
-def load_and_prepare_IID_human_data():
+def run_through_results_and_add_to_dictionary(results):
     """
-    write only rela with exp into file
+    run through all results and add to the dictionaries. ALso check if have target drug and map to chemical!
+    :param results: neo4j result
+    :return:
     """
-
-    query = '''Match (p1:Protein)-[:equal_to_iid_protein]-(d:protein_IID)-[r:interacts]->(:protein_IID)-[:equal_to_iid_protein]-(p2:Protein) Where 'exp' in r.evidence_types Return p1.identifier, r, p2.identifier '''
-    results = g.run(query)
-
-
     for p1_id, rela, p2_id, in results:
         rela_info = dict(rela)
         if (p1_id, p2_id) not in dict_pair_to_infos:
@@ -143,6 +139,21 @@ def load_and_prepare_IID_human_data():
         rela_info['protein_id_2'] = p2_id
 
         dict_pair_to_infos[(p1_id, p2_id)].append(rela_info)
+
+
+def load_and_prepare_IID_human_data():
+    """
+    write only rela with exp into file
+    """
+
+    query = '''Match (p1:Protein)-[:equal_to_iid_protein]-(d:protein_IID)-[r:interacts]->(:protein_IID)-[:equal_to_iid_protein]-(p2:Protein) Where 'exp' in r.evidence_types Return p1.identifier, r, p2.identifier '''
+    results = g.run(query)
+    run_through_results_and_add_to_dictionary(results)
+
+    # to check for selfloops interaction
+    query= '''Match p=(a:Protein)-[:equal_to_iid_protein]->(d:protein_IID)-[r:interacts]-(d) Where 'exp' in r.evidence_types Return  a.identifier as p1 , r, a.identifier as p2 '''
+    results = g.run(query)
+    run_through_results_and_add_to_dictionary(results)
 
 
 def write_info_into_files():

@@ -296,7 +296,7 @@ def generate_cypher_file_and_csv(rela_type):
             query_start+= property+':line.'+property+', '
         
 
-    query=query_start+ '''resource:['ClinVar'], source:'ClinVar', clinvar:'yes', license:''}]->(t);\n '''
+    query=query_start+ '''resource:['ClinVar'], source:'ClinVar', clinvar:'yes', license:'https://www.ncbi.nlm.nih.gov/home/about/policies/', url:"https://www.ncbi.nlm.nih.gov/clinvar/variation/"+line.variant_id}]->(t);\n '''
     query = query % (path_of_directory, file_name, rela_type)
     cypher_file.write(query)
 

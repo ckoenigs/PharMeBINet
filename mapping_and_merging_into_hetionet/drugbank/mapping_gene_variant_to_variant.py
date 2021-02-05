@@ -75,8 +75,8 @@ def generate_files(path_of_directory):
     cypher_file.write(query)
 
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/drugbank/gene_variant/%s.tsv" As line FIELDTERMINATOR '\\t' 
-            Match (n:Mutated_protein_gene_DrugBank{identifier:line.variant_id}) Create (v:Variant{identifier:line.variant_id, defining_change:n.defining_change, gene_symbol:n.gene_symbol, license:n.license, allele:n.allele, protein_name:n.protein_name, drugbank:"yes",  source:"dbSNP from DrugBank", resource:["DrugBank"] ,xrefs:split(line.xrefs,"|") }) Create (v)-[:equal_to_drugbank_variant]->(n);\n'''
-    query = query % (path_of_directory, file_name_new)
+            Match (n:Mutated_protein_gene_DrugBank{identifier:line.variant_id}) Create (v:Variant{identifier:line.variant_id, defining_change:n.defining_change, gene_symbol:n.gene_symbol, license:"%s", allele:n.allele, protein_name:n.protein_name, drugbank:"yes",  source:"dbSNP from DrugBank", resource:["DrugBank"] ,xrefs:split(line.xrefs,"|") }) Create (v)-[:equal_to_drugbank_variant]->(n);\n'''
+    query = query % (path_of_directory, file_name_new, license)
     cypher_file.write(query)
 
     return csv_mapping, csv_new

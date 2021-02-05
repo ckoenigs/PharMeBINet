@@ -362,7 +362,7 @@ def generate_cypher_queries():
     query = 'Match (s:Symptom) Set s.xrefs=[]'
 
     query_start_match = query_start + '''Match (s:Symptom{identifier:line.hetionet_id }) , (n:HPOsymptom{id:line.hpo_id}) Set s.hpo='yes', s.umls_cuis=split(line.umls_cuis,"|"),  s.resource=split(line.resource,"|") , s.hpo_version='1.2', s.hpo_release='2019-11-08', s.url_HPO="https://hpo.jax.org/app/browse/term/"+line.hpo_id, n.mesh_ids=split(line.mesh_ids,'|'), s.xrefs=s.xrefs + line.hpo_id, '''
-    query_start_create = query_start + '''Create (s:Symptom{identifier:line.hetionet_id, umls_cuis:split(line.umls_cuis,"|") ,source:'MESH',license:'UMLS licence', resource:['HPO'], source:'MESH', url:"http://identifiers.org/mesh/"+line.hetionet_id , hpo:'yes', hpo_version:'1.2', hpo_release:'2019-11-08', url_HPO:"https://hpo.jax.org/app/browse/term/"+line.hpo_id, xrefs:[line.hpo_id], '''
+    query_start_create = query_start + '''Create (s:Symptom{identifier:line.hetionet_id, umls_cuis:split(line.umls_cuis,"|") ,source:'MESH',license:'Users of all UMLS ontologies must abide by the terms of the UMLS license, available at https://uts.nlm.nih.gov/license.html', resource:['HPO'], source:'MESH', url:"http://identifiers.org/mesh/"+line.hetionet_id , hpo:'yes', hpo_version:'1.2', hpo_release:'2019-11-08', url_HPO:"https://hpo.jax.org/app/browse/term/"+line.hpo_id, xrefs:[line.hpo_id], '''
 
     for property in set_header_for_files:
         if property in ['name', 'identifier','mesh_ids']:

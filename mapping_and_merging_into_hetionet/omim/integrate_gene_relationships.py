@@ -18,7 +18,7 @@ def database_connection():
 cypher_file = open('output/cypher_rela.cypher', 'w', encoding='utf-8')
 
 query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/omim/%s" As line FIELDTERMINATOR '\\t' 
-    Match (g:Gene{identifier:line.%s}),(to:%s{identifier:line.%s}) Merge (g)<-[r:ASSOCIATES_%saG]-(to) On Create Set r.resource=['OMIM'], r.source='OMIM', r.omim='yes', r.license='Copyright® 1966-2020 Johns Hopkins University', %s On Match Set r.resource=r.resource+'OMIM', r.omim="yes", %s ;\n'''
+    Match (g:Gene{identifier:line.%s}),(to:%s{identifier:line.%s}) Merge (g)<-[r:ASSOCIATES_%saG]-(to) On Create Set r.resource=['OMIM'], r.source='OMIM', r.omim='yes', r.license='https://www.omim.org/help/agreement', %s On Match Set r.resource=r.resource+'OMIM', r.omim="yes", %s ;\n'''
 
 
 def prepare_cypher_query(file, header_start, to_label):

@@ -384,16 +384,16 @@ def create_cypher_file():
             query_create += property + ':line.' + property + ', '
             query_update += 'b.' + property + '=line.' + property + ', '
 
-    query_update_alternative = query_start + ', (b:Compound{identifier:line.alternative_id}) Set b.drugbank="yes", ' + query_update + 'b.resource=b.resource+"DrugBank", b.url="http://www.drugbank.ca/drugs/"+line.identifier, b.license="CC BY-NC 4.0" Create (b)-[:equal_to_drugbank]->(a);\n'
-    query_update_alternative = query_update_alternative % ('update_nodes_alt', neo4j_label_drugbank)
+    query_update_alternative = query_start + ', (b:Compound{identifier:line.alternative_id}) Set b.drugbank="yes", ' + query_update + 'b.resource=b.resource+"DrugBank", b.url="http://www.drugbank.ca/drugs/"+line.identifier, b.license="%s" Create (b)-[:equal_to_drugbank]->(a);\n'
+    query_update_alternative = query_update_alternative % ('update_nodes_alt', neo4j_label_drugbank, license)
     cypher_file.write(query_update_alternative)
 
-    query_update = query_start + ', (b:Compound{identifier:line.identifier}) Set b.drugbank="yes", ' + query_update + 'b.resource=b.resource+"DrugBank", b.url="http://www.drugbank.ca/drugs/"+line.identifier, b.license="CC BY-NC 4.0" Create (b)-[:equal_to_drugbank]->(a);\n'
-    query_update = query_update % ('update_nodes', neo4j_label_drugbank)
+    query_update = query_start + ', (b:Compound{identifier:line.identifier}) Set b.drugbank="yes", ' + query_update + 'b.resource=b.resource+"DrugBank", b.url="http://www.drugbank.ca/drugs/"+line.identifier, b.license="%s" Create (b)-[:equal_to_drugbank]->(a);\n'
+    query_update = query_update % ('update_nodes', neo4j_label_drugbank, license)
     cypher_file.write(query_update)
 
-    query_create = query_start + 'Create (b:Compound{identifier:line.identifier, drugbank:"yes", ' + query_create + 'resource:["DrugBank"], url:"http://www.drugbank.ca/drugs/"+line.identifier, license:"CC BY-NC 4.0"}) Create (b)-[:equal_to_drugbank]->(a);\n'
-    query_create = query_create % ('new_nodes', neo4j_label_drugbank)
+    query_create = query_start + 'Create (b:Compound{identifier:line.identifier, drugbank:"yes", ' + query_create + 'resource:["DrugBank"], url:"http://www.drugbank.ca/drugs/"+line.identifier, license:"%s"}) Create (b)-[:equal_to_drugbank]->(a);\n'
+    query_create = query_create % ('new_nodes', neo4j_label_drugbank, license)
     cypher_file.write(query_create)
 
 

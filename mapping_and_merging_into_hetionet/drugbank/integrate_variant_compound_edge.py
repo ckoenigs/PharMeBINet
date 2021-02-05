@@ -70,6 +70,8 @@ def load_all_pair_and_prepare_for_dictionary(csv_mapping):
                 dict_all_infos['pubmed_ids']='|'.join(value)
             elif key=='type':
                 dict_all_infos['type'] = '; '.join(value)
+            elif key=='license':
+                dict_all_infos[key] = license
             else:
                 dict_all_infos[key] = ' '.join(value)
         csv_mapping.writerow(dict_all_infos)
@@ -78,11 +80,12 @@ def load_all_pair_and_prepare_for_dictionary(csv_mapping):
 
 def main():
     print(datetime.datetime.utcnow())
-    global path_of_directory
-    if len(sys.argv) < 2:
+    global path_of_directory, license
+    if len(sys.argv) < 3:
         sys.exit('need path to directory gene variant')
 
     path_of_directory = sys.argv[1]
+    license = sys.argv[2]
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
