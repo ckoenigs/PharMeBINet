@@ -132,12 +132,12 @@ def create_cypher_query_and_csv_file(rela_name, rela_direction, label_from):
     if not exists:
 
         if rela_direction.startswith('<'):
-            query_create = "<-[:" + rela_name + ' {' + query_create + ' unbiased:toBoolean(line.unbiased), source:"DrugBank", resource:["DrugBank"], drugbank:"yes", license:"' + license + '"}]-'
+            query_create = "<-[:" + rela_name + ' {' + query_create + ' unbiased:toBoolean(line.unbiased), source:"DrugBank", resource:["DrugBank"], url:"https://go.drugbank.com/drugs/"+line.identifier2, drugbank:"yes", license:"' + license + '"}]-'
         else:
             query_create = "-[:" + rela_name + ' {' + query_create + ' source:"DrugBank", resource:["DrugBank"], drugbank:"yes", license:"' + license + '"}]->'
         query = query_start + " Create (a)" + query_create + '(c);\n'
     else:
-        query = query_start + ' Merge (a)' + rela_direction + '(c) On Create Set ' + query_update + ' r.source="DrugBank", r.resource=["DrugBank"] On Match Set ' + query_update + ' r.resource=r.resource+"DrugBank";\n'
+        query = query_start + ' Merge (a)' + rela_direction + '(c) On Create Set ' + query_update + ' r.source="DrugBank", r.drugbank="yes", r.resource=["DrugBank"], r.url="https://go.drugbank.com/drugs/"+line.identifier2, r.license="'+license+'" On Match Set ' + query_update + ' r.drugbank="yes",  r.resource=r.resource+"DrugBank";\n'
 
     cypher_file.write(query)
 
