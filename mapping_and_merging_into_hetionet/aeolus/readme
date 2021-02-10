@@ -6,5 +6,9 @@ The mapping of the AEOLUS drugs has many different methods:
 2. Mapped RXNORM cui to Drugbank ids with a mapped table which used the unii and InChIKey
 3. Mapped RXNORM cui to Drugbank ids with a mapped table, which was generated with name mapping. 
 
-It is integrated into Hetionet. Also for the relationship, a cypher file is generated.
+It is integrated into Hetionet.
 
+For the relationships, a filter is used, because sometimes are also the diseases in outcomes that the drug should treat.
+So, the indicates table is also considered to remove all pairs where the drug indicates the outcome.
+Additionally, to not have only a few cases where this outcome appears it consider all cases where this combination appears at least 100-times.
+Furthermore, it should at least a total frequency for the drug of 0.1%.

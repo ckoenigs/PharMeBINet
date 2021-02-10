@@ -94,7 +94,7 @@ def main():
     global path_of_directory, license
     if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]
-        license = sys.argv[1]
+        license = sys.argv[2]
     else:
         sys.exit('need a path reactome raction')
 
@@ -105,7 +105,7 @@ def main():
     create_connection_with_neo4j()
 
     # 0: old relationship;           1: name of node in Reactome;        2: relationship equal to Hetionet-node
-    # 3: name of node in Hetionet;   4: name of directory                5: name of new relationship
+    # 3: name of node in Hetionet;   4: name of new relationship
     list_of_combinations = [
         ['disease', 'Disease_reactome', 'equal_to_reactome_disease', 'Disease', 'LEADS_TO_DISEASE_RltdD'],
         ['compartment', 'GO_CellularComponent_reactome', 'equal_to_reactome_gocellcomp', 'CellularComponent',
