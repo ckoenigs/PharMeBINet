@@ -1,1 +1,6 @@
 #ClinVar Parser
+https://www.ncbi.nlm.nih.gov/clinvar/
+
+The data are parsed to csv and is integrated into Neo4j with cypher queries.
+
+![er_diagram](https://github.com/ckoenigs/master_database_change/import_into_Neo4j/ClinVar/clinvar.png)
