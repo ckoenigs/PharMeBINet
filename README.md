@@ -1,9 +1,11 @@
-# master_database_change
-Different steps to update Hetionet (http://het.io/).
+# PharmaMeBiNet: The heterogeneouspharmacological medicalbiochemical network
+Fist use Hetionet (http://het.io/) as start base and was updated to Neo4j database service 4.0.3.
+First the different data source are parsed and then integrated into Neo4j database.
+In the next step the different database are mapped and merged intho Hetionet and generate the database PharmaMeBiNet
 
-The shell script do the integration into neo4j and the mapping and merging to Hetionet. 
-./script_to_execute_all.sh /home/cassandra/Documents/neo4j-community-3.2.9/bin /home/cassandra/Documents/Project/  > output.txt
+By execute:
+./script_to_execute_all.sh path_to_neo4j_service_bin path_of_project_in_system
+./script_to_execute_all.sh /home/cassandra/Documents/neo4j-community-4.0.3/bin /home/cassandra/Documents/Project/ 
 
-./script_to_execute_all.sh /home/cassandra/Documents/neo4j-community-4.0.3/bin /home/cassandra/Documents/Project/ > output.txt 2>&1 &
 
 
