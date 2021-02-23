@@ -57,6 +57,11 @@ def load_compounds_from_database_and_add_to_dict():
 
 cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
 
+# dictionary first letter to rela letters
+dict_first_letter_to_rela_letter={
+    'P':'PC',
+    'C':'C'
+}
 
 def write_files(path_of_directory):
     # file from relationship between gene and variant
@@ -101,8 +106,8 @@ def write_files(path_of_directory):
     list_of_labels=['Compound','PharmacologicClass']
 
     for [label_1, label_2] in [[x,y] for x in list_of_labels for y in list_of_labels]:
-        query= "MATCH p=(n:%s)--(:atc)-[]->(:atc)--(b:%s) Where (n:Compound or n:PharmacologicClass) and (b:Compound or b:PharmacologicClass) Create (n)-[:BELONGS_TO_%sbt%s{source:'ATC from DrugBank', resource:['DrugBank'], drugbank:'yes'}]->(b);\n"
-        query=query %( label_1,label_2, label_1[0], label_2[0])
+        query= "MATCH p=(n:%s)--(:atc)-[]->(:atc)--(b:%s) Create (n)-[:BELONGS_TO_%sbt%s{source:'ATC from DrugBank', resource:['DrugBank'], drugbank:'yes'}]->(b);\n"
+        query=query %( label_1,label_2, dict_first_letter_to_rela_letter[label_1[0]], dict_first_letter_to_rela_letter[label_2[0]])
         cypher_file.write(query)
     return csv_mapped, csv_new, csv_mapped_pc
 

@@ -206,9 +206,9 @@ def check_if_identifier_in_hetionet(identifier, label_go, namespace, node, xrefs
 
 # dictionary for relationship ends
 dict_relationship_ends = {
-    "biological_process": 'BiB',
-    "molecular_function": 'MiM',
-    "cellular_component": 'CciCc'
+    "biological_process": 'BPiBP',
+    "molecular_function": 'MFiMF',
+    "cellular_component": 'CCiCC'
 }
 
 '''

@@ -96,7 +96,7 @@ def main():
     global path_of_directory, license
     if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]
-        license = sys.argv[1]
+        license = sys.argv[2]
     else:
         sys.exit('need a path reactome protein')
 
@@ -107,34 +107,34 @@ def main():
     create_connection_with_neo4j()
 
     # 0: old relationship;           1: name of node in Reactome;        2: relationship equal to Hetionet-node
-    # 3: name of node in Hetionet;   4: name of directory                5: name of new relationship
+    # 3: name of node in Hetionet;   4: name of new relationship
     list_of_combinations = [
         ['precedingEvent', 'BlackBoxEvent_reactome', 'equal_to_reactome_blackBoxEvent', 'BlackBoxEvent',
-         'PathwayEdgeToBlackBoxEvent', 'PRECEDING_REACTION_PpB'],
-        ['precedingEvent', 'Reaction_reactome', 'equal_to_reactome_reaction', 'Reaction', 'PathwayEdgeToReaction',
-         'PRECEDING_REACTION_PpR'],
-        ['precedingEvent', 'Pathway_reactome', 'equal_to_reactome_pathway', 'Pathway', 'PathwayEdgeToPathway',
-         'PRECEDING_REACTION_PpP'],
-        ['hasEncapsulatedEvent', 'Pathway_reactome', 'equal_to_reactome_pathway', 'Pathway', 'PathwayEdgeToPathway2',
-         'HAS_ENCAPSULATED_EVENT_PheeP'],
-        ['normalPathway', 'Pathway_reactome', 'equal_to_reactome_pathway', 'Pathway', 'PathwayEdgeToPathway3',
-         'NORMAL_PATHWAY_PnpP'],
-        ['hasEvent', 'Pathway_reactome', 'equal_to_reactome_pathway', 'Pathway', 'PathwayEdgeToPathway4',
-         'OCCURS_IN_PoiP'],
+         'PRECEDING_REACTION_PWpB'],
+        ['precedingEvent', 'Reaction_reactome', 'equal_to_reactome_reaction', 'Reaction',
+         'PRECEDING_REACTION_PWpR'],
+        ['precedingEvent', 'Pathway_reactome', 'equal_to_reactome_pathway', 'Pathway',
+         'PRECEDING_REACTION_PWpPW'],
+        ['hasEncapsulatedEvent', 'Pathway_reactome', 'equal_to_reactome_pathway', 'Pathway',
+         'HAS_ENCAPSULATED_EVENT_PWheePW'],
+        ['normalPathway', 'Pathway_reactome', 'equal_to_reactome_pathway', 'Pathway',
+         'NORMAL_PATHWAY_PWnpPW'],
+        ['hasEvent', 'Pathway_reactome', 'equal_to_reactome_pathway', 'Pathway',
+         'OCCURS_IN_PWoiPW'],
         ['hasEvent', 'Depolymerisation_reactome', 'equal_to_reactome_depolymerisation', 'Depolymerisation',
-         'PathwayEdgeToDepolymerisation', 'PARTICIPATES_IN_PpiD'],
+         'PARTICIPATES_IN_PWpiDP'],
         ['hasEvent', 'BlackBoxEvent_reactome', 'equal_to_reactome_blackBoxEvent', 'BlackBoxEvent',
-         'PathwayEdgeToBlackBoxEvent2', 'PARTICIPATES_IN_PpiB'],
+         'PARTICIPATES_IN_PWpiB'],
         ['hasEvent', 'Polymerisation_reactome', 'equal_to_reactome_polymerisation', 'Polymerisation',
-         'PathwayEdgeToPolymerisation', 'PARTICIPATES_IN_PpiPo'],
+         'PARTICIPATES_IN_PWpiPO'],
         ['hasEvent', 'FailedReaction_reactome', 'equal_to_reactome_failedreaction', 'FailedReaction',
-         'PathwayEdgeToFailedReaction', 'PARTICIPATES_IN_PpiF'],
+         'PARTICIPATES_IN_PWpiF'],
         ['goBiologicalProcess', 'GO_BiologicalProcess_reactome', 'equal_to_reactome_gobiolproc', 'BiologicalProcess',
-         'OCCURS_IN_GO_BIOLOGICAL_PROCESS_PoigbpB'],
-        ['hasEvent', 'Reaction_reactome', 'equal_to_reactome_reaction', 'Reaction', 'PARTICIPATES_IN_PpiR'],
+         'OCCURS_IN_GO_BIOLOGICAL_PROCESS_PWoigbpBP'],
+        ['hasEvent', 'Reaction_reactome', 'equal_to_reactome_reaction', 'Reaction', 'PARTICIPATES_IN_PWpiR'],
         ['compartment', 'GO_CellularComponent_reactome', 'equal_to_reactome_gocellcomp', 'CellularComponent',
-         'IN_COMPARTMENT_FicCe'],
-        ['disease', 'Disease_reactome', 'equal_to_reactome_disease', 'Disease', 'LEADS_TO_PltD']
+         'IN_COMPARTMENT_PWicCC'],
+        ['disease', 'Disease_reactome', 'equal_to_reactome_disease', 'Disease', 'LEADS_TO_PWltD']
     ]
 
     directory = 'PathwayEdges'

@@ -109,12 +109,12 @@ def main():
     list_of_combinations = [
         ['disease', 'Disease_reactome', 'equal_to_reactome_disease', 'Disease', 'LEADS_TO_DISEASE_RltdD'],
         ['compartment', 'GO_CellularComponent_reactome', 'equal_to_reactome_gocellcomp', 'CellularComponent',
-         'IN_COMPARTMENT_RcCe'],
-        ['precedingEvent', 'Pathway_reactome', 'equal_to_reactome_pathway', 'Pathway', 'PRECEDING_REACTION_RprP'],
+         'IN_COMPARTMENT_RcCC'],
+        ['precedingEvent', 'Pathway_reactome', 'equal_to_reactome_pathway', 'Pathway', 'PRECEDING_REACTION_RprPW'],
         ['precedingEvent', 'BlackBoxEvent_reactome', 'equal_to_reactome_blackBoxEvent', 'BlackBoxEvent',
          'PRECEDING_REACTION_RprB'],
         ['precedingEvent', 'Depolymerisation_reactome', 'equal_to_reactome_depolymerisation', 'Depolymerisation',
-         'PRECEDING_REACTION_RprD'],
+         'PRECEDING_REACTION_RprDP'],
         ['precedingEvent', 'FailedReaction_reactome', 'equal_to_reactome_failedreaction', 'FailedReaction',
          'PRECEDING_REACTION_RprF'],
         ['precedingEvent', 'Reaction_reactome', 'equal_to_reactome_reaction', 'Reaction', 'PRECEDING_REACTION_RprR'],
@@ -126,7 +126,7 @@ def main():
          'IS_NORMAL_REACTION_RnrB'],
         ['reverseReaction', 'Reaction_reactome', 'equal_to_reactome_reaction', 'Reaction', 'REVERSE_REACTION_RrrR'],
         ['goBiologicalProcess', 'GO_BiologicalProcess_reactome', 'equal_to_reactome_gobiolproc', 'BiologicalProcess',
-         'OCCURS_IN_GO_BIOLOGICAL_PROCESS_RoigbpB']
+         'OCCURS_IN_GO_BIOLOGICAL_PROCESS_RoigbpBP']
     ]
 
     directory = 'FailedReactionEdges'
