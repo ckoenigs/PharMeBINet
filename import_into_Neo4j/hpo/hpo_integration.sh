@@ -8,10 +8,14 @@ path_to_project=$2
 
 
 #download obo file
-wget  -O ./hpo.obo "https://raw.githubusercontent.com/obophenotype/human-phenotype-ontology/master/hp.obo"
+wget  -O ./hpo.obo "http://purl.obolibrary.org/obo/hp.obo"
 
 #download phenotype_annotation file
-wget -O ./phenotype_annotation.tab "http://compbio.charite.de/jenkins/job/hpo.annotations/lastStableBuild/artifact/misc/phenotype_annotation.tab"
+# wget -O ./phenotype_annotation.tab "http://compbio.charite.de/jenkins/job/hpo.annotations/lastStableBuild/artifact/misc/phenotype_annotation.tab"
+wget -O ./phenotype.hpoa "http://purl.obolibrary.org/obo/hp/hpoa/phenotype.hpoa"
+
+# seperate version from content in phenotype
+./delete_head.sh phenotype.hpoa
 
 #python3 integrate_hpo_disease_symptomes_into_neo4j.py  > output_integration_hpo.txt
 python3 ../EFO/transform_obo_to_csv_and_cypher_file.py hpo.obo hpo HPOsymptom $path_to_project > output_generate_integration_file.txt
