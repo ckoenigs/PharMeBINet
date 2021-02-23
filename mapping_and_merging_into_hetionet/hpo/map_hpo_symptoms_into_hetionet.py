@@ -347,14 +347,6 @@ def prepare_files():
     write_into_file(csv_symptom_new, dict_new_mesh_ids, is_new=True)
 
 
-# aspect dictionary
-dict_aspect = {
-    'P': 'Phenotypic abnormality',
-    'I': 'inheritance',
-    'C': 'onset and clinical course'
-}
-
-
 def generate_cypher_queries():
     # cypher file for mapping and integration
     cypher_file = open('cypher/cypher_symptom.cypher', 'w')
@@ -365,7 +357,7 @@ def generate_cypher_queries():
     query_start_create = query_start + '''Create (s:Symptom{identifier:line.hetionet_id, umls_cuis:split(line.umls_cuis,"|") ,source:'MESH',license:'Users of all UMLS ontologies must abide by the terms of the UMLS license, available at https://uts.nlm.nih.gov/license.html', resource:['HPO'], source:'MESH', url:"http://identifiers.org/mesh/"+line.hetionet_id , hpo:'yes', hpo_version:'1.2', hpo_release:'2019-11-08', url_HPO:"https://hpo.jax.org/app/browse/term/"+line.hpo_id, xrefs:[line.hpo_id], '''
 
     for property in set_header_for_files:
-        if property in ['name', 'identifier','mesh_ids']:
+        if property in ['name', 'identifier', 'mesh_ids']:
             if property == 'name':
                 query_start_create += property + ':line.' + property + ', '
             continue

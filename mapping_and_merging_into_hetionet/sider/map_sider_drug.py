@@ -150,6 +150,7 @@ def load_compounds_from_hetionet():
         # take mixtures name as synonym if it has only one ingredient and it is only the drug name!
         mixtures_name_ingredients = result['mixtures_name_ingredients'] if 'mixtures_name_ingredients' in result else []
         for mixture_name_ingredient in mixtures_name_ingredients:
+            # print(mixture_name_ingredient)
             splitted = mixture_name_ingredient.split('::')
             mixture_name = splitted[0].lower()
             if not '+' in splitted[1]:

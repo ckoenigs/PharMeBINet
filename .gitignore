@@ -134,6 +134,7 @@ node_modules/
 *.xsd
 *.json
 *.graphml
+*.hpoa
 
 wget-log
 wget-log.*

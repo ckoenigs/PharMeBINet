@@ -293,7 +293,7 @@ def integrate_DB_compound_information_into_hetionet():
                     if key == label_of_alternative_ids:
                         property.append(drugbank_id)
                         property = list(set(property))
-                    dict_info_prepared[key] = '|'.join(property).replace('"', "'")
+                    dict_info_prepared[key] = '||'.join(property).replace('"', "'")
                 else:
                     if key in dict_compounds_in_hetionet[drug_id]:
                         # in the most cases if the values are different take the newest on
@@ -315,7 +315,7 @@ def integrate_DB_compound_information_into_hetionet():
                     else:
                         dict_info_prepared[key] = property.replace('"', "'")
 
-            dict_info_prepared['xrefs'] = '|'.join(
+            dict_info_prepared['xrefs'] = '||'.join(
                 go_through_xrefs_and_change_if_needed_source_name(list_merge_xref_values, 'Compound'))
             if alternative_id_integrated:
                 dict_info_prepared['alternative_id'] = drug_id
@@ -340,13 +340,13 @@ def integrate_DB_compound_information_into_hetionet():
                     if key == label_of_alternative_ids:
                         property = list(set(property))
 
-                    dict_info_prepared[key] = '|'.join(property).replace('"', "'")
+                    dict_info_prepared[key] = '||'.join(property).replace('"', "'")
                 else:
                     dict_info_prepared[key] = property.replace('"', "'")
 
             list_merge_xref_values=go_through_xrefs_and_change_if_needed_source_name(list_merge_xref_values,
                                                               'Compound')
-            combinded_merge_string = '|'.join(list_merge_xref_values)
+            combinded_merge_string = '||'.join(list_merge_xref_values)
             set_of_list_properties.add('xrefs')
             dict_info_prepared['xrefs'] = combinded_merge_string
 
@@ -378,8 +378,8 @@ def create_cypher_file():
         if property in ['resource', 'license', 'source', 'url']:
             continue
         if property in set_of_list_properties:
-            query_create += property + ':split(line.' + property + ',"|"), '
-            query_update += 'b.' + property + '=split(line.' + property + ',"|"), '
+            query_create += property + ':split(line.' + property + ',"||"), '
+            query_update += 'b.' + property + '=split(line.' + property + ',"||"), '
         else:
             query_create += property + ':line.' + property + ', '
             query_update += 'b.' + property + '=line.' + property + ', '
@@ -428,7 +428,7 @@ def generation_of_interaction_file():
 
         counter_all_interaction += len(description)
         description = list(set(description))
-        description = '|'.join(description)
+        description = '||'.join(description)
         if not compound2 in dict_drugbank_to_alternatives and not compound1 in dict_drugbank_to_alternatives:
             count_no_alternative += 1
             counter_connection += 1

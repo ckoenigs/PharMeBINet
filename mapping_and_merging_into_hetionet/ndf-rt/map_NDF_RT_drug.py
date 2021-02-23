@@ -671,7 +671,7 @@ def integration_of_ndf_rt_drugs_into_hetionet():
     counter_illegal_drugbank = 0
     # number of all connection
     counter_drugbank_connection = 0
-    # list wiwth all codes which are mapped to only illegal drugbank ids
+    # list with all codes which are mapped to only illegal drugbank ids
     delete_code = []
 
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')

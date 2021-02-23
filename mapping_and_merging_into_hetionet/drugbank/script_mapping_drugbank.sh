@@ -106,7 +106,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo 'calculate similarities'
 
-#spython3 similarity.py  $path_to_project > compound_interaction/output.txt
+python3 similarity.py  $path_to_project > compound_interaction/output.txt
 
 
 now=$(date +"%F %T")
