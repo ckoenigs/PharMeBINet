@@ -342,7 +342,7 @@ def load_pharmgkb_in(label):
         # if mapped:
         #     continue
 
-        if len(name) > 0 and 'Drug Class' in types:
+        if len(name) > 0 and types and 'Drug Class' in types:
             if name in dict_name_to_pharmacologic_class:
                 mapped = True
                 counter_map += 1
