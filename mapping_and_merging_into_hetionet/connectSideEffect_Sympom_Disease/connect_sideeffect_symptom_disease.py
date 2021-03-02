@@ -336,6 +336,73 @@ def load_and_map_disease():
     print('number of mapped disease to se:', counter_mapped_se)
     print('number of mapped disease to symptom:', counter_mapped_symp)
 
+def load_and_map_phenotype():
+    query = "MATCH (n:Phenotype) Where size(labels(n))=1 RETURN n"
+    results = g.run(query)
+
+    # create mapping file to side effect and cypher query
+    csv_mapping_p_to_se = create_mapping_file('mapping_phenotype_mapping', 'map_p_to_se.tsv',
+                                              ['phenotype_id', 'side_effect_id', 'how_mapped'], 'Phenotype', 'SideEffect')
+
+    set_phenotype_se=set()
+
+    counter_mapped_se = 0
+
+    for phenotype, in results:
+        name = phenotype['name'].lower() if 'name' in phenotype else ''
+        identifier = phenotype['identifier']
+
+        mapped_to_sideeffect = False
+        xrefs = phenotype['xrefs'] if 'xrefs' in phenotype else []
+        for xref in xrefs:
+            if xref.lower().startswith('umls'):
+                umls = xref.split(':')[1]
+                mapped = mapping(umls, identifier, dict_name_ids_to_sideeffect_ids, csv_mapping_p_to_se,
+                                 'mapped with UMLS ID', set_phenotype_se)
+                if mapped:
+                    mapped_to_sideeffect = True
+                    counter_mapped_se += 1
+            elif xref.lower().startswith('meddra'):
+                mapped = mapping(xref, identifier, dict_name_ids_to_sideeffect_ids, csv_mapping_p_to_se,
+                                 'mapped with MedDRA ID', set_phenotype_se)
+                if mapped:
+                    mapped_to_sideeffect = True
+                    counter_mapped_se += 1
+
+        if not mapped_to_sideeffect:
+            mapped = mapping(name, identifier, dict_name_ids_to_sideeffect_ids, csv_mapping_p_to_se, 'mapped with name',
+                             set_phenotype_se)
+
+            # if not map try with phenotype synonyms
+            if not mapped:
+                synonyms = phenotype['synonyms'] if 'synonyms' in phenotype else []
+                for synonym in synonyms:
+                    if '[' in synonym:
+                        synonym = synonym.rsplit(' [', 1)[0]
+                    synonym = synonym.lower()
+                    mapped_syn = mapping(synonym, identifier, dict_name_ids_to_sideeffect_ids, csv_mapping_p_to_se,
+                                         'mapped with synonyms', set_phenotype_se)
+                    if mapped_syn:
+                        mapped = True
+
+            if not mapped:
+                cur = con.cursor()
+                query = ('Select CUI,LAT,STR From MRCONSO Where  STR= "%s";')
+                query = query % (name)
+                rows_counter = cur.execute(query)
+                mapped_with_umls = False
+                if rows_counter > 0:
+                    for (cui, lat, label,) in cur:
+                        mapped_with_umls = mapping(cui, identifier, dict_name_ids_to_sideeffect_ids,
+                                                   csv_mapping_p_to_se,
+                                                   'mapped with cui from umls', set_phenotype_se)
+                        if mapped_with_umls:
+                            mapped = True
+            if mapped:
+                counter_mapped_se += 1
+
+
+    print('number of mapped phenotype to se:', counter_mapped_se)
 
 def main():
     global path_of_directory
@@ -374,6 +441,14 @@ def main():
     print('Load disease an map to se and symptom')
 
     load_and_map_disease()
+
+    print(
+        '###########################################################################################################################')
+
+    print(datetime.datetime.utcnow())
+    print('Load phenotype an map to se and symptom')
+
+    load_and_map_phenotype()
 
     print(
         '###########################################################################################################################')
