@@ -16,19 +16,7 @@ echo "" > cypher_general.cypher
 cd do
 now=$(date +"%F %T")
 echo "Current time: $now"
-echo 'Integrate Disease Ontology into Hetionet'
-
-python3 fusion_of_disease_ontology_in_hetionet_final_2.py $path_to_project > output_do.txt
-
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher > output_cypher.txt
-
-sleep 120
-$path_neo4j/neo4j restart
-sleep 120
+./script_do.sh $path_neo4j $path_to_project > output_script.txt
 
 
 cd ..
@@ -55,17 +43,7 @@ cd ncbi_gene
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-python3 integrate_and_update_the_hetionet_gene.py $path_to_project > output_map.txt
-
-echo integrate connection with neo4j shell
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher_merge.cypher > output_cypher_integration.txt
-
-sleep 120
-
-$path_neo4j/neo4j restart
+./script_ncbi.sh $path_neo4j $path_to_project > output_script.txt
 
 
 sleep 120
@@ -78,56 +56,8 @@ cd omim
 
 now=$(date +"%F %T")
 echo "Current time: $now"
-echo gene and disease
 
-python3 integrate_omim_genes_phenotypes.py $path_to_project > output/output_map_gene_phenotype.txt
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-python3 integrate_omim_predominantly_phenotypes.py $path_to_project > output/output_map_phenotype.txt
-
-echo integrate connection with cypher shell
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher_gene_phenotype.cypher > output/output_cypher_integration_gene_disease.txt
-
-sleep 120
-
-$path_neo4j/neo4j restart
-
-sleep 120
-
-echo integrate connection with cypher shell
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher_phenotype.cypher > output/output_cypher_integration_disease.txt
-
-sleep 120
-
-$path_neo4j/neo4j restart
-
-sleep 120
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-echo gene and disease
-
-python3 integrate_gene_relationships.py $path_to_project > output/output_rela.txt
-
-echo integrate connection with cypher shell
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher_rela.cypher > output/output_cypher_rela.txt
-
-sleep 120
-
-$path_neo4j/neo4j restart
-
-sleep 120
+./script_omim.sh $path_neo4j $path_to_project > output_script.txt
 
 cd ..
 
@@ -145,20 +75,8 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo pathway
 
-python3 switch_identifier_pathway_to_newer_version.py $path_to_project > output_map.txt
+./script_pathway.sh $path_neo4j $path_to_project > output_script.txt
 
-echo integrate connection with neo4j shell
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher > output_cypher_integration.txt
-
-sleep 120
-
-$path_neo4j/neo4j restart
-
-
-sleep 120
 cd ..
 
 
@@ -179,14 +97,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo 'IID'
 
-python3 mapping_protein.py $path_to_project > protein/output_mapping_and_integration.txt 
-
-
-$path_neo4j/cypher-shell -u neo4j -p test -f protein/cypher.cypher > protein/output_cypher.txt
-
-sleep 120
-$path_neo4j/neo4j restart
-sleep 120
+./script_iid.sh $path_neo4j $path_to_project > output_script.txt
 
 cd ..
 
@@ -237,30 +148,8 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 
 echo HPO
-python3 map_and_integrate_hpo_info_into_hetionet.py $path_to_project > output/output_hpo_disease.txt
 
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher/cypher_disease.cypher > cypher/output_cypher_hpo.txt
-
-sleep 120
-$path_neo4j/neo4j restart
-sleep 120
-
-python3 map_hpo_symptoms_into_hetionet.py $path_to_project > output/output_hpo_symptomes.txt
-
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher/cypher_symptom.cypher > cypher/output_cypher_hpo_symptom.txt
-
-sleep 120
-$path_neo4j/neo4j restart
-sleep 120
-
-python3 integrat_hpo_disease_symptom_rela.py $path_to_project > output/output_hpo_symptomes.txt
-
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher/cypher_edge.cypher > cypher/output_cypher_hpo_edge.txt 2>&1
-
-sleep 120
-$path_neo4j/neo4j restart
-sleep 120
-
+./script_hpo.sh $path_neo4j/ $path_to_project > output_script.txt
 
 
 cd ..
@@ -276,24 +165,6 @@ cd ctd
 
 cd ..
 
-
-cd iid
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-echo 'IID interaction'
-
-python3 integrate_interaction_rela.py $path_to_project > interaction/outputintegration.txt 
-
-
-$path_neo4j/cypher-shell -u neo4j -p test -f interaction/cypher.cypher > interaction/output_cypher.txt
-
-sleep 120
-$path_neo4j/neo4j restart
-sleep 120
-
-
-cd ..
 
 cd ndf-rt/
 now=$(date +"%F %T")
@@ -311,15 +182,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo 'atc'
 
-python3 map_and_integrate_atc.py $path_to_project > output/output.txt 
-
-
-$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher.cypher 
-
-sleep 120
-$path_neo4j/neo4j restart
-sleep 120
-
+./script_atc.sh $path_neo4j/ $path_to_project > output_script.txt
 
 cd ..
 
@@ -327,41 +190,9 @@ cd clinvar
 
 now=$(date +"%F %T")
 echo "Current time: $now"
-echo clinvar drug response
+echo clinvar 
 
-python3 mapping_clinvar_drug_response.py $path_to_project > output_map.txt
-
-echo integrate connection with neo4j shell
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-$path_neo4j/cypher-shell -u neo4j -p test -f drug/cypher_drug.cypher > output_cypher_drug.txt
-
-sleep 120
-
-$path_neo4j/neo4j restart
-
-
-sleep 120
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-echo clinvar drug response - variant rela
-
-python3 rela_variant_drug.py $path_to_project > variant_drug/output.txt
-
-echo integrate connection with neo4j shell
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-$path_neo4j/cypher-shell -u neo4j -p test -f variant_drug/cypher.cypher > variant_drug/output_cypher_integration.txt
-
-sleep 120
-
-$path_neo4j/neo4j restart
-
-
-sleep 120
+./script_clinvar_drug_response.sh $path_neo4j/ $path_to_project > output_script.txt
 
 cd ..
 
@@ -381,97 +212,18 @@ echo Sider
 cd sider
 now=$(date +"%F %T")
 echo "Current time: $now"
-echo se
-python3 map_Sider_se.py $path_to_project > output_map_se.txt
 
-echo integrate se with neo4j shell
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher_se.cypher > output_cypher_integration_se.txt
-
-sleep 120
-
-$path_neo4j/neo4j restart
-sleep 120
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-echo drug
-python3 map_sider_drug.py $path_to_project > output_map_drug.txt
-
-echo integrate se with neo4j shell
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher_drug.cypher > output_cypher_integration_drug.txt
-
-sleep 120
-
-$path_neo4j/neo4j restart
-sleep 120
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-echo drug
-python3 integrate_rela_drug_side_effect.py $path_to_project > output_map_rela.txt
-
-echo integrate relationships
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher_rela.cypher > output_cypher_integration_drug.txt
-
-sleep 120
-
-$path_neo4j/neo4j restart
-sleep 120
-
-
+./script_sider.sh $path_neo4j/ $path_to_project > output_script.txt
 
 cd ..
-echo Aeolus outcomes 
+echo Aeolus  
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 
 cd aeolus
 
-python3 map_aeolus_outcome_final.py $path_to_project > output_map_aeolus_outcome.txt
-
-
-
-echo Aeolus drugs
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-
-python3  map_aeolus_drugs_final.py $path_to_project > output_aeolus_drug.txt
-
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-echo integrate map drug and outcome
-
-$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher.cypher > output_cypher_integration_drug.txt
-
-sleep 120
-$path_neo4j/neo4j restart
-sleep 120
-
-echo relationships
-python3  integrate_aeolus_relationships.py $path_to_project > output_aeolus_rela.txt
-
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher_rela.cypher > output_cypher_integration_rela.txt
-
-sleep 120
-$path_neo4j/neo4j restart
-sleep 120
+./script_aeolus.sh $path_neo4j/ $path_to_project > output_script.txt
 
 cd ..
 
@@ -482,17 +234,8 @@ echo "Current time: $now"
 echo map symptoms to side effects
 cd connectSideEffect_Sympom_Disease/
 
-python3 connect_sideeffect_symptom_disease.py $path_to_project > output_symptoms_to_sideEffects_disease.txt
+./script_phenotyp_mapping.sh $path_neo4j/ $path_to_project > output_script.txt
 
-now=$(date +"%F %T")
-echo "Current time: $now"
-echo integration of equal relationship between disease, side effect and symptom
-
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher > output_cypher.txt
-
-sleep 120
-$path_neo4j/neo4j restart
-sleep 120
 
 cd ..
 

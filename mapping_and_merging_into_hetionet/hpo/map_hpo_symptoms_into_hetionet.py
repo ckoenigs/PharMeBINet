@@ -64,7 +64,7 @@ dict_new_mesh_to_hpo = {}
 #  not mapped hpos files
 not_mapped_file = open('mapping_files/symptom/not_mapped.csv', 'w', encoding='utf-8')
 csv_not_mapped = csv.writer(file_not_map_hpo, delimiter='\t')
-csv_not_mapped.writerow(['hpo_id', 'name'])
+csv_not_mapped.writerow(['hpo_id', 'name', 'xrefs'])
 
 '''
 Get al symptoms from hetionet and put this information into a dictionary
@@ -110,8 +110,8 @@ def combine_hpo_information(hpo_id, dictionary):
             if key == 'alt_ids':
                 dictionary['xrefs'] = set(value).union(dictionary['xrefs'])
             if type(value) == str:
-                if value not in dictionary[key]:
-                    dictionary[key].append(value)
+
+                dictionary[key].add(value)
 
             else:
                 dictionary[key] = set(value).union(dictionary[key])
@@ -128,7 +128,7 @@ def combine_hpo_information(hpo_id, dictionary):
                     set_header_for_files.add(key)
                     continue
                 if type(value) == str:
-                    dictionary[key] = [value]
+                    dictionary[key] = set([value])
                 else:
                     dictionary[key] = set(value)
                 set_header_for_files.add(key)
@@ -236,9 +236,9 @@ def symptoms_mapping(name, xrefs, hpo_id):
     # start = time.time()
 
     if not found_one:
-        counter_new_symptom_in_hetionet += 1
         dict_hpo_to_mesh_ids[hpo_id] = mesh_cui_ids
         if len(mesh_cui_ids) > 0:
+            counter_new_symptom_in_hetionet += 1
             first_mesh = mesh_cui_ids[0]
             if not first_mesh in dict_new_mesh_ids:
 
@@ -267,7 +267,7 @@ def symptoms_mapping(name, xrefs, hpo_id):
                     dict_new_mesh_ids[first_mesh][1] = list(set(umls_cuis).union(dict_new_mesh_ids[first_mesh][1]))
                     combine_hpo_information(hpo_id, dict_new_mesh_ids[mesh_id][4])
         else:
-            csv_not_mapped.writerow([hpo_id, "|".join(xrefs)])
+            csv_not_mapped.writerow([hpo_id, name ,"|".join(xrefs)])
 
 
     else:
@@ -349,7 +349,7 @@ def prepare_files():
 
 def generate_cypher_queries():
     # cypher file for mapping and integration
-    cypher_file = open('cypher/cypher_symptom.cypher', 'w')
+    cypher_file = open('cypher/cypher.cypher', 'a')
 
     query = 'Match (s:Symptom) Set s.xrefs=[]'
 
@@ -409,7 +409,7 @@ def map_hpo_symptoms_and_to_hetionet():
 
     # search for all symptoms which have a connection to disease  but do not take the removed nodes
     # n.id in ['HP:0002247','HP:0100867'] and
-    query = '''MATCH (n:HPOsymptom) where not exists(n.is_obsolete) and (n)--(:HPOdisease) RETURN n, n.id, n.name, n.xrefs '''
+    query = '''MATCH (n:HPOsymptom)-[r:present]-(:HPOdisease) where not exists(n.is_obsolete) and "P" in r.aspect RETURN Distinct n, n.id, n.name, n.xrefs'''
     results = g.run(query)
     counter_symptoms = 0
 
