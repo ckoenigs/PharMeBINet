@@ -74,7 +74,7 @@ set_disease_side_effect = set()
 set_disease_symptom = set()
 
 # generate cypher file
-cypher = open('cypher.cypher', 'w', encoding='utf-8')
+cypher = open('output/cypher.cypher', 'w', encoding='utf-8')
 query = 'Match (n:Disease) Set n:Phenotype;\n'
 cypher.write(query)
 query = 'Match (n:Symptom) Set n:Phenotype;\n'

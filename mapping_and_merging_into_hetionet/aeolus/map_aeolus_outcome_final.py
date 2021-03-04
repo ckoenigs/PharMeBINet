@@ -277,7 +277,7 @@ def load_side_effects_aeolus_in_dictionary():
 dict_aeolus_SE_with_CUIs = {}
 
 # generate file with meddra and a list of umls cuis and where there are from
-multiple_cuis = open('aeolus_multiple_cuis.tsv', 'w')
+multiple_cuis = open('output/aeolus_multiple_cuis.tsv', 'w')
 csv_multiple_cuis = csv.writer(multiple_cuis, delimiter='\t')
 csv_multiple_cuis.writerow(['MedDRA id', 'cuis with | as seperator ', 'where are it from'])
 

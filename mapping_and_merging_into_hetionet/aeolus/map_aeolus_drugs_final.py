@@ -373,7 +373,7 @@ dict_how_mapped_files = {
     'map rxcui with xref':csv_xrefs}
 
 # generate file with rxnom and a list of drugbank ids and wheere there are from
-multiple_drugbankids = open('aeolus_multiple_drugbank_ids.tsv', 'w')
+multiple_drugbankids = open('drug/aeolus_multiple_drugbank_ids.tsv', 'w')
 multiple_drugbankids.write('rxnorm_cui \t drugbank_ids with | as seperator \t where are it from \n')
 
 '''

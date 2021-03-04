@@ -1,0 +1,31 @@
+#!/bin/bash
+
+#define path to neo4j bin
+path_neo4j=$1
+
+#path to project
+path_to_project=$2
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+echo HPO
+python3 map_and_integrate_hpo_info_into_hetionet.py $path_to_project > output/output_hpo_disease.txt
+
+
+python3 map_hpo_symptoms_into_hetionet.py $path_to_project > output/output_hpo_symptomes.txt
+
+$path_neo4j/cypher-shell -u neo4j -p test -f cypher/cypher.cypher > cypher/output_cypher_hpo.txt
+
+sleep 120
+$path_neo4j/neo4j restart
+sleep 120
+
+python3 integrat_hpo_disease_symptom_rela.py $path_to_project > output/output_hpo_symptomes_rela.txt
+
+$path_neo4j/cypher-shell -u neo4j -p test -f cypher/cypher_edge.cypher > cypher/output_cypher_hpo_edge.txt 2>&1
+
+sleep 120
+$path_neo4j/neo4j restart
+sleep 120
+

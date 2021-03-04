@@ -16,14 +16,12 @@ echo "" > cypher_general.cypher
 cd do
 now=$(date +"%F %T")
 echo "Current time: $now"
+echo do
 ./script_do.sh $path_neo4j $path_to_project > output_script.txt
 
 
 cd ..
 
-
-now=$(date +"%F %T")
-echo "Current time: $now"
 
 cd monDO
 now=$(date +"%F %T")
@@ -33,15 +31,12 @@ echo 'change disease identifier to monDO identifier'
 ./integration_of_mondo.sh $path_neo4j $path_to_project > output_mapping_and_integration.txt
 
 
-now=$(date +"%F %T")
-echo "Current time: $now"
-
 cd ..
 
-echo Ncbi genes
 cd ncbi_gene
 now=$(date +"%F %T")
 echo "Current time: $now"
+echo Ncbi genes
 
 ./script_ncbi.sh $path_neo4j $path_to_project > output_script.txt
 
@@ -51,20 +46,20 @@ cd ..
 
 
 
-echo OMIM
 cd omim
 
 now=$(date +"%F %T")
 echo "Current time: $now"
+echo OMIM
 
 ./script_omim.sh $path_neo4j $path_to_project > output_script.txt
 
 cd ..
 
-echo GO
 cd go
 now=$(date +"%F %T")
 echo "Current time: $now"
+echo GO
 
 ./go_integration.sh $path_neo4j $path_to_project > output_script.txt
 
@@ -79,9 +74,6 @@ echo pathway
 
 cd ..
 
-
-now=$(date +"%F %T")
-echo "Current time: $now"
 
 cd uniprot
 now=$(date +"%F %T")
@@ -101,10 +93,10 @@ echo 'IID'
 
 cd ..
 
-echo reactome
 cd reactome
 now=$(date +"%F %T")
 echo "Current time: $now"
+echo reactome
 
 ./script_reactome.sh $path_neo4j $path_to_project > output_script.txt
 
@@ -190,7 +182,7 @@ cd clinvar
 
 now=$(date +"%F %T")
 echo "Current time: $now"
-echo clinvar 
+echo clinvar drug response
 
 ./script_clinvar_drug_response.sh $path_neo4j/ $path_to_project > output_script.txt
 
@@ -208,18 +200,18 @@ cd drugbank
 
 cd ..
 
-echo Sider
 cd sider
 now=$(date +"%F %T")
 echo "Current time: $now"
+echo Sider
 
 ./script_sider.sh $path_neo4j/ $path_to_project > output_script.txt
 
 cd ..
-echo Aeolus  
 
 now=$(date +"%F %T")
 echo "Current time: $now"
+echo Aeolus  
 
 cd aeolus
 
