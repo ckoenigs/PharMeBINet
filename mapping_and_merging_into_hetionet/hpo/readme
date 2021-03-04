@@ -1,1 +1,6 @@
-This map the disease to DOID and the symptoms to UMLS CUI/MESH ID and then integrate the new symptoms and the relationships into Hetionet.
+The HPO diseases were mapped with name mapping, UMLS, OMIM ID, and ORPHA ID.
+
+I took from HPO only the phenotypes which are part of the Phenotypic abnormality hierarchy as symptoms to map and the ones that do not map generate a new node with HPO id as an identifier. 
+This was done by getting the disease-phenotype association with aspect P. Then by trying to map the mesh id UMLS and name mapping were used!
+
+The relationships between disease and symptom are only the relationships with aspect P. 
