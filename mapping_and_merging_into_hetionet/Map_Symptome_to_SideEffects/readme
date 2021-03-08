@@ -1,9 +1,0 @@
-This program generates a connection between side effects and symptoms based on the mapping of MESH ID to UMLS CUI and UMLS CUI symptom to UMLS CUI side effects.
-
-First, take for all symptoms the UMLS cui or get the UMLS cuis from the MESH ID in UMLS (optimal only the UMLS cuis with the same name else all with the MESH ID). 
-
-First to generate the connection use the UMLS identifier of the symptoms and search for them in the side effects.
-If not found then for the symptoms with MESH ID get all UMLS cui for the MESH ID and find the fitting side effect.
-The last possibility is to use the synonym UMLS cuis.
-
-All connection are in map/.
