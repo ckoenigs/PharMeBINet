@@ -89,12 +89,7 @@ def write_files(path_of_directory):
     cypher_file.write(query)
 
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/atc/%s" As line FIELDTERMINATOR '\\t' 
-                    Match  (v:PharmacologicClass{identifier:line.pc_id}) Set v.atc_codes=[];\n'''
-    query = query % (path_of_directory, file_name_mapped_pc)
-    cypher_file.write(query)
-
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/atc/%s" As line FIELDTERMINATOR '\\t' 
-                Match (n:atc{identifier:line.id}), (v:PharmacologicClass{identifier:line.pc_id}) Set v.atc_codes=v.atc_codes+line.id, v.resource=split(line.resource,"|"), v.atc="yes" Create (v)-[:equal_to_atc]->(n);\n'''
+                Match (n:atc{identifier:line.id}), (v:PharmacologicClass{identifier:line.pc_id}) Set v.atc_code=line.id, v.resource=split(line.resource,"|"), v.atc="yes" Create (v)-[:equal_to_atc]->(n);\n'''
     query = query % (path_of_directory, file_name_mapped_pc)
     cypher_file.write(query)
 
@@ -111,8 +106,13 @@ def write_files(path_of_directory):
         cypher_file.write(query)
     return csv_mapped, csv_new, csv_mapped_pc
 
+#dictionary mapped drug id to atc codes
+dict_drug_id_to_atc_codes={}
 
-def load_all_label_and_map( csv_map_drug, csv_new, csv_mapped_pc):
+#dictionary mapped pc id to atc codes
+dict_pc_id_to_atc_codes={}
+
+def load_all_label_and_map( csv_map_drug, csv_new):
     """
     Load all ingredients from neo4j and ma them with xrefs of ingredient and name
     :param csv_map: csv writter
@@ -134,22 +134,50 @@ def load_all_label_and_map( csv_map_drug, csv_new, csv_mapped_pc):
         if identifier in dict_atc_code_to_compound_ids:
             counter_mapped_to_compound+=1
             for compound_id in dict_atc_code_to_compound_ids[identifier]:
+                if compound_id not in dict_drug_id_to_atc_codes:
+                    dict_drug_id_to_atc_codes[compound_id]=set()
+                dict_drug_id_to_atc_codes[compound_id].add(identifier)
                 csv_map_drug.writerow([compound_id, identifier])
             continue
         if name in dict_name_to_pharmacologic_class_id:
             counter_mapped_to_pc+=1
             for pc_id in dict_name_to_pharmacologic_class_id[name]:
-                resource = dict_pharmacologic_class_id_to_resource[pc_id]
-                resource.add("DrugBank")
-                resource='|'.join(sorted(resource))
-                csv_mapped_pc.writerow([pc_id, identifier, resource])
+                if pc_id not in dict_pc_id_to_atc_codes:
+                    dict_pc_id_to_atc_codes[pc_id]=set()
+                dict_pc_id_to_atc_codes[pc_id].add(identifier)
+                # resource = dict_pharmacologic_class_id_to_resource[pc_id]
+                # resource.add("DrugBank")
+                # resource='|'.join(sorted(resource))
+                # csv_mapped_pc.writerow([pc_id, identifier, resource])
             continue
         counter_new+=1
         csv_new.writerow([identifier])
 
+
     print('number of mapped to drug:',counter_mapped_to_compound)
     print('number of mapped to pc:', counter_mapped_to_pc)
     print('number of new:',counter_new)
+
+
+def to_avoid_multiple_mapping(csv_mapped_pc,csv_new):
+    """
+    go through all name mapped
+    :return:
+    """
+    for pc_id, set_of_atcs in dict_pc_id_to_atc_codes.items():
+        resource = dict_pharmacologic_class_id_to_resource[pc_id]
+        resource.add("DrugBank")
+        resource='|'.join(sorted(resource))
+        if len(set_of_atcs)==1:
+            csv_mapped_pc.writerow([pc_id, set_of_atcs.pop(), resource])
+        else:
+            longest_one= max(set_of_atcs,key=len)
+            csv_mapped_pc.writerow([pc_id, longest_one, resource])
+            for atc in set_of_atcs:
+                if atc!=longest_one:
+                    csv_new.writerow([atc])
+
+
 
 
 
@@ -194,7 +222,14 @@ def main():
     print(datetime.datetime.utcnow())
     print('Load all label from database')
 
-    load_all_label_and_map(csv_mapper, csv_new, csv_mapped_pc)
+    load_all_label_and_map(csv_mapper, csv_new)
+
+    print('##########################################################################')
+
+    print(datetime.datetime.utcnow())
+    print('map only to one for pc')
+
+    to_avoid_multiple_mapping(csv_mapped_pc, csv_new)
 
     print('##########################################################################')
 
