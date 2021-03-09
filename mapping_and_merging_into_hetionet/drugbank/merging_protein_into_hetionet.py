@@ -43,7 +43,7 @@ def load_all_chemicals_and_generate_dictionary():
      drugbank id, but it seem not so) and generate a dictionary of name to chemical id
     :return:
     """
-    query = 'Match (c:Chemical) Return c.identifier, c.name, c.synonyms, c.resource;'
+    query = 'Match (c:Chemical) Where not "Product" in labels(c) Return c.identifier, c.name, c.synonyms, c.resource;'
     result = g.run(query)
     for chemical_id, name, synonyms, resources in result:
         add_name_to_dict(name, chemical_id, dict_name_to_chemical_id)
