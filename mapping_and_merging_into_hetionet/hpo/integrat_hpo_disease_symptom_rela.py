@@ -99,7 +99,7 @@ def prepare_all_relationships_infos(properties, connection, mondo_id, symptom_id
     :return: list of the properties
     """
     rela_properties = [mondo_id, symptom_id]
-    sources= ';'.join(connection['source'])
+    sources = ';'.join(connection['source'])
 
     for property in properties[2:]:
         if property not in ['frequency_name', 'aspect', 'frequency_def', 'evidence_code', 'onset', 'modifier']:
@@ -120,8 +120,8 @@ def prepare_all_relationships_infos(properties, connection, mondo_id, symptom_id
                         rela_properties.append(aspect)
             else:
                 rela_properties.append('')
-        elif property in ['onset','modifier']:
-            hpos = connection[property]  if property in connection else []
+        elif property in ['onset', 'modifier']:
+            hpos = connection[property] if property in connection else []
             onsets = []
             for hpo in hpos:
                 if hpo in dict_hpo_symptom_to_info:
@@ -141,7 +141,7 @@ def prepare_all_relationships_infos(properties, connection, mondo_id, symptom_id
                     if hpo in dict_hpo_symptom_to_info:
                         node = dict_hpo_symptom_to_info[hpo]
                         frequencies.append(node['name'])
-                        definition=node['def'].replace('[]','['+sources+']')
+                        definition = node['def'].replace('[]', '[' + sources + ']')
                         def_frequencies.append(definition)
                     else:
                         # hpo +=' ['+sources+']'
@@ -196,7 +196,7 @@ def check_for_pair_in_dictionary(mondo, symptom_id, rela_information_list, dicti
             else:
                 if rela_information_list[index] != value:
                     if value is None:
-                        value=[]
+                        value = []
                     if rela_information_list[index] is None:
                         continue
 
@@ -251,14 +251,14 @@ def generate_cypher_file_for_connection(cypher_file):
     other_properties = properties[:]
     other_properties.append('resource')
     csv_rela_update.writerow(other_properties)
-    query_exists = query_start + query_exist + "r.hpo='yes', r.version='phenotype_annotation.tab 2019-11-08', r.resource=split(line.resource,'|'), r.url='https://hpo.jax.org/app/browse/disease/'+split(line.source,'|')[0]; \n"
-    query_exists = query_exists % (path_of_directory, "mapping_files/rela_update.tsv")
+    query_exists = query_start + query_exist + "r.hpo='yes', r.version='phenotype_annotation.tab %s', r.resource=split(line.resource,'|'), r.url='https://hpo.jax.org/app/browse/disease/'+split(line.source,'|')[0]; \n"
+    query_exists = query_exists % (path_of_directory, "mapping_files/rela_update.tsv", hpo_date)
     cypher_file.write(query_exists)
     # query = '''Match (n:Disease)-[r:PRESENTS_DpS]-(s:Symptom) Where r.hpo='yes SET r.resource=r.resource+'HPO';\n '''
     # cypher_file.write(query)
 
-    query_new = query_start + query_new + '''version:'phenotype_annotation.tab 2019-11-08',unbiased:false,source:'Human Phenontype Ontology', license:'https://hpo.jax.org/app/license', resource:['HPO'], hpo:'yes', sources:split(line.source,'|'),  url:'https://hpo.jax.org/app/browse/disease/'+split(line.source,'|')[0]}]->(s);\n'''
-    query_new = query_new % (path_of_directory, "mapping_files/rela_new.tsv")
+    query_new = query_start + query_new + '''version:'phenotype_annotation.tab %s',unbiased:false,source:'Human Phenontype Ontology', license:'https://hpo.jax.org/app/license', resource:['HPO'], hpo:'yes', sources:split(line.source,'|'),  url:'https://hpo.jax.org/app/browse/disease/'+split(line.source,'|')[0]}]->(s);\n'''
+    query_new = query_new % (path_of_directory, "mapping_files/rela_new.tsv", hpo_date)
     cypher_file.write(query_new)
 
     print(properties)
@@ -295,15 +295,37 @@ def generate_cypher_file_for_connection(cypher_file):
     print('number of update connection:' + str(count_update_connection))
     print(counter_connection)
 
+def get_inheritance_information_for_disease():
+    query='Match (d:Disease)--(:HPOdisease)-[r]-(s:HPOsymptom) Where "I" in r.aspect Return Distinct d.identifier, s.name, r.source'
+    results=g.run(query)
+    dict_disease_id_to_inheritances={}
+    for disease_id, inheritance, sources, in results:
+        if not disease_id in  dict_disease_id_to_inheritances:
+            dict_disease_id_to_inheritances[disease_id]=set()
+        dict_disease_id_to_inheritances[disease_id].add((inheritance,tuple(sources)))
+
+    file_name='output/inheritances.tsv'
+    file=open(file_name,'w')
+    csv_writer=csv.writer(file,delimiter='\t')
+    csv_writer.writerow(['disease_id','inheritances'])
+    for disease_id, inheritances_and_source in dict_disease_id_to_inheritances.items():
+        inheritances='|'.join([ x[0]+' ('+','.join(x[1])+')' for x in inheritances_and_source])
+        csv_writer.writerow([disease_id,inheritances])
+
+    query= query_start+ '(d:Disease{identifier:line.disease_id}) Set d.inheritance=split(line.inheritances,"|");\n'
+    query = query % (path_of_directory, file_name)
+    cypher_file.write(query)
+
 
 def main():
     print(datetime.datetime.utcnow())
 
-    global path_of_directory
-    if len(sys.argv) > 1:
+    global path_of_directory, hpo_date
+    if len(sys.argv) > 2:
         path_of_directory = sys.argv[1]
+        hpo_date = sys.argv[2]
     else:
-        sys.exit('need a path')
+        sys.exit('need a path and hpo date')
 
     print('##########################################################################')
 
@@ -331,6 +353,13 @@ def main():
     print('put all relationship information into a cypher file')
 
     generate_cypher_file_for_connection(cypher_file)
+
+    print('##########################################################################')
+
+    print(datetime.datetime.utcnow())
+    print('inheritances')
+
+    get_inheritance_information_for_disease()
 
     print('##########################################################################')
 
