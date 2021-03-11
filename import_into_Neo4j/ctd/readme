@@ -1,15 +1,11 @@
-Only the part of the file chemical-disease association (with directEvidence: therapeutic or marker/mechanism) is integrated into neo4j and only a part of exposure-event association (only with positive correlation with outcome).
-It took further information from chemical vocabulary and disease vocabulary.
-This was executed with python 3.5.3 on windows. 
-Program need path to ctd data.
+http://ctdbase.org/
 
-I use the file from June 2017.
-The files can be downloaded by http://ctdbase.org/downloads/.
+There is a script that downloads the file from CTD and prepared the CSV files such that the header on each CSV file is removed. Then run in the program and generated for each file of chemical, disease, gene, anatomy, and pathway the cypher query to integrate the node into neo4j.
+However, for gene, I prepare a dictionary from gene symbol to gene id.
+ The cypher queries are generated for the relationships file.
+ The Relationships with GO information were run through to generate a node CSV for the GO terms.
+ In the CTD disease-go is the relationship file between gene and go terms generated.
+ Also, the exposure files are separated into different files because the exposures are nodes with their own identifier.
+ In the end in the cypher file will be queries added which removed all nodes from CTD which has no relationships except chemical.
 
-Davis AP, Grondin CJ, Johnson RJ, Sciaky D, King BL, McMorran R, Wiegers J, Wiegers TC, Mattingly CJ. The Comparative Toxicogenomics Database: update 2017. Nucleic Acids Res. 2016 Sep 19;[Epub ahead of print]
-
-The file integrate_whole_CTD_into_neo4j_with_csv.py integrate the whole ctd with current exception of the exposure-events/exposure-study into Neo4j with use of csv loader from Neo4j.
-The csv are prepared with the bash script.
-
-I use the file from Apr 2018.
-The files can be downloaded by http://ctdbase.org/downloads/.
+The schema is shown below:

@@ -2,20 +2,6 @@ import sys
 import datetime
 import csv
 
-sys.path.append("../..")
-import create_connection_to_databases
-
-'''
-create connection to neo4j 
-'''
-
-
-def create_connection_with_neo4j():
-    # authenticate("localhost:7474", "neo4j", "test")
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
-
-
 # node cypher file number
 node_file_number = 1
 
@@ -55,8 +41,6 @@ furthermore it test if already nodes are in Neo4j and only add the new ones
 def load_chemicals_and_add_to_cypher_file():
     global counter_nodes_queries, cypher_file_nodes, node_file_number
     # say if in neo4j already ctd chemicals exists
-    exists_ctd_chemicals_already_in_neo4j = False
-
     cypher_file_nodes.write(':begin\n')
     # depending if chemicals are in neo4j or not the nodes need to be merged or created
 
@@ -84,8 +68,6 @@ furthermore it test if already nodes are in Neo4j and only add the new ones
 
 def load_disease_and_add_to_cypher_file():
     global counter_nodes_queries, cypher_file_nodes, node_file_number
-    # say if in neo4j already ctd chemicals exists
-    exists_ctd_disease_already_in_neo4j = False
 
     cypher_file_nodes.write(':begin\n')
 
@@ -716,7 +698,7 @@ def prepare_exposure_studies():
 
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/CTD_exposure_studies.csv" As line  Create (g:CTDexposureStudy{ '''
     for exposure_head in exposure_header:
-        if exposure_head=='':
+        if exposure_head == '':
             continue
         if exposure_head in properties_with_list:
             query += exposure_head + ':split(line.' + exposure_head + ', "|"), '
@@ -745,23 +727,21 @@ def prepare_exposure_studies():
             stressor_id = exposure_stressor.split('^')[1]
             dict_rela_to_file['stressor'].writerow([reference, stressor_id])
 
-        if line['exposuremarkers']!='':
+        if line['exposuremarkers'] != '':
             for marker in line['exposuremarkers'].split('|'):
                 marker = marker.split('^')
                 if marker[2] == 'GENE':
                     dict_rela_to_file['marker_gene'].writerow([reference, marker[1]])
                 else:
                     dict_rela_to_file['marker_chem'].writerow([reference, marker[1]])
-        if line['phenotypes']!='':
+        if line['phenotypes'] != '':
             for disease in line['phenotypes'].split('|'):
                 disease = disease.split('^')
                 dict_rela_to_file['pheno'].writerow([reference, disease[1]])
-        if line['diseases'] !='':
+        if line['diseases'] != '':
             for pheno in line['diseases'].split('|'):
                 pheno = pheno.split('^')
                 dict_rela_to_file['disease'].writerow([reference, pheno[1]])
-
-
 
 
 def genereate_rela_file_event(file_name, dict_rela_to_file, rela, label, label_id, rela_name='associates',
@@ -812,7 +792,7 @@ def prepare_exposure():
 
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ctd/ctd_data/exposure.tsv" As line Fieldterminator "\t" Create  (g:CTDexposureEvents{ '''
     for exposure_head in exposure_header:
-        if exposure_head=='':
+        if exposure_head == '':
             continue
         if exposure_head in properties_with_list:
             query += exposure_head + ':split(line.' + exposure_head + ', "|"), '
@@ -828,10 +808,12 @@ def prepare_exposure():
     csv_writer.writerow(exposure_header)
 
     dict_event_rela_to_csv = {}
-    genereate_rela_file_event('stressor_exposure', dict_event_rela_to_csv, 'stressor', 'CTDchemical', 'chemical_id', rela_name='stressor')
+    genereate_rela_file_event('stressor_exposure', dict_event_rela_to_csv, 'stressor', 'CTDchemical', 'chemical_id',
+                              rela_name='stressor')
     genereate_rela_file_event('marker_chem_exposure', dict_event_rela_to_csv, 'marker_chem', 'CTDchemical',
                               'chemical_id', rela_name='marker')
-    genereate_rela_file_event('marker_gene_exposure', dict_event_rela_to_csv, 'marker_gene', 'CTDgene', 'gene_id', rela_name='marker')
+    genereate_rela_file_event('marker_gene_exposure', dict_event_rela_to_csv, 'marker_gene', 'CTDgene', 'gene_id',
+                              rela_name='marker')
     genereate_rela_file_event('reference_exposure', dict_event_rela_to_csv, 'reference', 'CTDexposureStudy',
                               'reference')
 
@@ -911,15 +893,6 @@ def main():
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
-    print('create connection neo4j')
-
-    create_connection_with_neo4j()
-
-    print(datetime.datetime.utcnow())
-
-    print('##########################################################################')
-
-    print(datetime.datetime.utcnow())
     print('load in ctd chemical and add to cypher file')
 
     load_chemicals_and_add_to_cypher_file()
@@ -936,12 +909,12 @@ def main():
     print(datetime.datetime.utcnow())
     print('load in ctd pathway and add to cypher file')
 
+    load_pathway_and_add_to_cypher_file()
+
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
     print('load in ctd anatomy and add to cypher file')
-
-    load_pathway_and_add_to_cypher_file()
 
     load_anatomy_and_add_to_cypher_file()
 
