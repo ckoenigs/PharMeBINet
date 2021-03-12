@@ -1,11 +1,6 @@
+Disease Ontology (DO) was downloaded from http://disease-ontology.org/downloads/ human disease ontology.
 
-Disease Ontology was downloaded from http://disease-ontology.org/downloads/ human disease ontology.
-
-Disease Ontology 2015 update: an expanded and updated database of human diseases for linking biomedical knowledge through disease data
-Kibbe WA, Arze C, Felix V, Mitraka E, Bolton E, Fu G, Mungall CJ, Binder JX, Malone J, Vasant D, Parkinson H, Schriml LM.
-Nucleic Acids Research 2014; Oct 27. pii: gku1011
-
-The data from the Disease Omtology will be transformed into node and relationship csv with the program of EFO/transform_obo_to_csv_and_cypher_file.py data/HumanDO.obo do diseaseontology
-After this the data will be integrated into Neo4j with the Neo4j shell.
-
-Further the program get_hierarchy_do.py extract for all hierarchical level the leaves (entities) and the parent nodes (classes).
+First, the script downloads the latest version of DO.
+Then the OBO file from the Disease Ontology will be transformed into node and relationship CSV with the program of EFO/transform_obo_to_csv_and_cypher_file.py data/HumanDO.obo do diseaseontology
+All terms are a node in DO all property-value pairs in OBO are a property in the node except for property key='is_a' and 'relationship'. They are for generating a different kind of relationships of the OBO file.
+Additionally, the cypher queries for the node and the different kinds of relationships are generated. After this, the data will be integrated into Neo4j with the Neo4j shell.

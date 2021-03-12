@@ -1,6 +1,0 @@
-MonDO_id 	 MonDO_name 	 parent_id 	 parent_name 
-DOID:2640	struma ovarii	DOID:2641	ovarian germ cell monodermal and highly specialized teratoma
-DOID:3605	ovarian cystadenocarcinoma	DOID:3713	ovary adenocarcinoma
-DOID:10443	hypopyon	DOID:9383	iridocyclitis
-DOID:5744	ovary serous adenocarcinoma	DOID:3713	ovary adenocarcinoma
-DOID:3721	plasmacytoma	DOID:6536	plasma cell neoplasm
