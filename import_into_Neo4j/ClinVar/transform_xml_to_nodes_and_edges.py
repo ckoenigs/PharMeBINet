@@ -43,12 +43,6 @@ edge_information = ['variant_id', 'trait_set_id', 'title', 'assertion', 'clinica
                     'citations', 'attributes', 'study_description', 'comments', 'study_name', 'variation_attributes',
                     'variation_rela', 'accession_clinvar', 'xrefs']
 
-# dictionary of edges from measure set which has multiple measures to measure
-dict_type_dict_pair_measure_set_measure = {}
-
-# dictionary of edges from measure set which has multiple measures to measure for write into the file
-dict_csv_type_measure_set_measure = {}
-
 # dictionary of measure set properties which are list
 dict_measure_set_properties_which_are_sets = set()
 
@@ -1522,15 +1516,6 @@ generate_node_cypher(dict_trait_type_dictionary, list_head_trait, extra_name='tr
 # prepare the important edge queries
 perpare_query_for_edges()
 
-for type, set_measure_set_measure in dict_type_dict_pair_measure_set_measure.items():
-    for (measure_set_id, allele_id) in set_measure_set_measure:
-        if allele_id in dict_allele_id_to_variant_id:
-            dict_csv_type_measure_set_measure[type].writerow([measure_set_id, dict_allele_id_to_variant_id[allele_id]])
-        else:
-            print(allele_id)
-            print(measure_set_id)
-            print('allele id do not exist somewhere ;(')
-            # sys.exit('allele id do not exist somwhere ;(')
 
 print(set_of_species)
 print(dict_rela_type_pair_to_count)
