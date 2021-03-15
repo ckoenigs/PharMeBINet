@@ -1,3 +1,12 @@
 http://geneontology.org/
 
-Extract node and realtionship information from obo file into a csv file and prepare cypher file to integrate into Neo4j.
+First, the script downloads the latest version of Gene Ontology (GO).
+
+Then the OBO file from the GO will be transformed into node and relationship CSV with the program of EFO/transform_obo_to_csv_and_cypher_file.py go-basic.obo GO go
+All terms are a node in GO all property-value pairs in OBO are a property in the node except for property key='is_a' and 'relationship'. They are for generating a different kind of relationships of the OBO file.
+Additionally, the cypher queries for the node and the different kinds of relationships are generated. After this, the data will be integrated into Neo4j with the Neo4j shell.
+
+Next the the phenotype_anotation file is handled. There a file for the disease nodes is generated and files for the relationships between disease ['id', 'name', 'source'] and symptom ['disease_id', 'phenotype_id', 'qualifier', 'evidence_code', 'source', 'frequency_modifier','aspect', 'onset', 'sex', 'modifier', 'biocuration'].
+Therefore it runs through all lines and combines the information of equal disease symptom pairs.
+
+In the last step, the nodes and relationships are integrated into Neo4j with the cypher queries from the different programs!
