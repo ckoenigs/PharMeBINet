@@ -1,0 +1,4 @@
+https://evs.nci.nih.gov/ftp1/MED-RT/
+
+The xml is parsed in multiple csv files for nodes and relationships. additional the cypher files are generated to integrated the information into Neo4j.
+Like in here:

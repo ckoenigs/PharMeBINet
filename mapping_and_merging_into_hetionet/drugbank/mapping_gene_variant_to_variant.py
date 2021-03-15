@@ -4,6 +4,9 @@ import sys, csv
 sys.path.append("../..")
 import create_connection_to_databases
 
+sys.path.append("..")
+from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
+
 '''
 create a connection with neo4j
 '''
@@ -90,20 +93,20 @@ Load all variation sort the ids into the right csv, generate the queries, and ad
 def load_all_variants_and_finish_the_files(csv_mapping, csv_new):
     query = "MATCH (n:Mutated_protein_gene_DrugBank) RETURN n"
     results = g.run(query)
-    counter_map=0
+    counter_map = 0
     counter_not_mapped = 0
-    counter_new=0
+    counter_new = 0
     for node, in results:
         identifier = node['identifier']
         if identifier in dict_name_dbsnp_id_to_clinvar_id:
-            counter_map+=1
+            counter_map += 1
             for variant in dict_name_dbsnp_id_to_clinvar_id[identifier]:
                 csv_mapping.writerow([identifier, variant])
         else:
             if 'allele' in node:
                 allele = node['allele'].lower()
                 if allele in dict_name_dbsnp_id_to_clinvar_id:
-                    counter_map+=1
+                    counter_map += 1
                     for variant in dict_name_dbsnp_id_to_clinvar_id[allele]:
                         csv_mapping.writerow([identifier, variant])
                     continue
@@ -112,16 +115,17 @@ def load_all_variants_and_finish_the_files(csv_mapping, csv_new):
             else:
                 counter_not_mapped += 1
             if 'rs_id' in node:
-                counter_new+=1
+                counter_new += 1
                 if node['rs_id'] != identifier:
                     print('oh no')
                 xrefs = ['dbSNP:' + identifier]
                 if 'uniprot_id' in node:
                     xrefs.append('UniProt:' + node['uniprot_id'])
+                xrefs = go_through_xrefs_and_change_if_needed_source_name(xrefs, 'dbSNP')
                 csv_new.writerow([identifier, '|'.join(xrefs)])
 
     print('not mapped:', counter_not_mapped)
-    print('counter new:',counter_new)
+    print('counter new:', counter_new)
     print('counter mapped:', counter_map)
 
 

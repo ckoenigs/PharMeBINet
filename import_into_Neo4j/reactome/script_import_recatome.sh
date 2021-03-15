@@ -13,7 +13,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo 'extract as property types'
 
-python3 get_property_types.py > output_preparation.txt
+python3 get_property_types.py > output/output_preparation.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -33,7 +33,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo 'replace labels'
 
-python3 prepareCsv.py $path_to_project  > output_preparation.txt
+python3 prepareCsv.py $path_to_project  > output/output_preparation.txt
 
 
 now=$(date +"%F %T")

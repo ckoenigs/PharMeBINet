@@ -27,6 +27,9 @@ dict_disease_name_to_ids = {}
 # dictionary disease name and synonyms to set diease ids
 dict_disease_name_synonyms_to_ids = {}
 
+# dictionary disease id to resource
+dict_disease_id_to_resource={}
+
 
 def load_genes_from_database_and_add_to_dict():
     '''
@@ -38,6 +41,7 @@ def load_genes_from_database_and_add_to_dict():
         identifier = disease['identifier']
         dict_disease_id_to_disease_node[identifier] = dict(disease)
         xrefs = disease['xrefs'] if 'xrefs' in disease else []
+        dict_disease_id_to_resource[identifier]= disease['resource']
         for xref in xrefs:
             if xref not in dict_xref_to_disease_id:
                 dict_xref_to_disease_id[xref] = set()
@@ -62,7 +66,7 @@ def add_query_to_cypher_file():
     '''
     add query for a specific csv to cypher file
     '''
-    this_start_query = query_start + "(n:trait_Disease_ClinVar {identifier:line.trait_id}), (m:Disease{identifier:line.disease_id}) Create (m)-[:equal_to_clinvar_disease{mapping_methode:split(line.mapping_method,'|')}]->(n);\n"
+    this_start_query = query_start + "(n:trait_Disease_ClinVar {identifier:line.trait_id}), (m:Disease{identifier:line.disease_id}) Set m.clinvar='yes' Create (m)-[:equal_to_clinvar_disease{mapping_methode:split(line.mapping_method,'|')}]->(n);\n"
     query = this_start_query % (path_of_directory, 'mapping')
     cypher_file.write(query)
 
@@ -199,7 +203,9 @@ def write_into_csv_file(disease_id, trait_id, trait_name, tuple_pair, csv_mappin
                                                                           dict_disease_id_to_disease_node[
                                                                               disease_id] else ''
     mapping_set = dict_of_mapped_tuples[tuple_pair] if tuple_pair in dict_of_mapped_tuples else mapped_with
-    csv_mapping_writer.writerow([trait_id, disease_id, "|".join(list(mapping_set)), trait_name, disease_name])
+    reource=set(dict_disease_id_to_resource[disease_id])
+    reource.add('ClinVar')
+    csv_mapping_writer.writerow([trait_id, disease_id, "|".join(list(mapping_set)), '|'.join(sorted(reource)), trait_name, disease_name])
 
 
 def check_for_mapping_and_write_in_csv_file(name, dictionary, counter_new_mapped, trait_id, mapped_ids, mapped_with):
@@ -227,7 +233,7 @@ def check_for_mapping_and_write_in_csv_file(name, dictionary, counter_new_mapped
 # files for mapping csv
 file_mapping = open('disease/mapping.tsv', 'w', encoding='utf-8')
 csv_mapping_writer = csv.writer(file_mapping, delimiter='\t')
-csv_mapping_writer.writerow(['trait_id', 'disease_id', 'mapping_method'])
+csv_mapping_writer.writerow(['trait_id', 'disease_id', 'mapping_method', 'resource'])
 
 
 def mapping_with_name():

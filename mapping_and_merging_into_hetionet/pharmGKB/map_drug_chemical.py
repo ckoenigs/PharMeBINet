@@ -5,6 +5,9 @@ from collections import defaultdict
 sys.path.append("../..")
 import create_connection_to_databases
 
+sys.path.append("..")
+from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
+
 '''
 create connection to neo4j 
 '''
@@ -84,16 +87,16 @@ def load_pharmacological_class():
 dict_compound_id_to_xrefs = {}
 
 # dictionary compound id to names
-dict_compound_id_to_names={}
+dict_compound_id_to_names = {}
 
 # dictionary compound to salt ids
-dict_compound_id_to_salts_id={}
+dict_compound_id_to_salts_id = {}
 
-#dictionary mesh and drugbank id to chemical id
-dict_mesh_db_id_to_chemical_id={}
+# dictionary mesh and drugbank id to chemical id
+dict_mesh_db_id_to_chemical_id = {}
 
 # dictionary from alternative drugbank id to identifier
-dict_alter_id_to_id={}
+dict_alter_id_to_id = {}
 
 '''
 load in all compound from hetionet in a dictionary
@@ -106,7 +109,7 @@ def load_db_info_in():
 
     for identifier, inchi, xrefs, resource, name, synonyms, alternative_drug_ids, in results:
         dict_chemical_to_resource[identifier] = resource if resource else []
-        dict_mesh_db_id_to_chemical_id[identifier]=set([identifier])
+        dict_mesh_db_id_to_chemical_id[identifier] = set([identifier])
         if inchi:
             dict_inchi_to_chemical_id[inchi] = identifier
         xrefs = set(xrefs) if xrefs else set()
@@ -121,7 +124,7 @@ def load_db_info_in():
                 elif xref.startswith('MESH'):
                     add_value_to_dictionary(dict_mesh_db_id_to_chemical_id, value, identifier)
 
-        dict_compound_id_to_names[identifier]=set()
+        dict_compound_id_to_names[identifier] = set()
         if name:
             name = name.lower()
             dict_compound_id_to_names[identifier].add(name)
@@ -137,12 +140,11 @@ def load_db_info_in():
             for alt_db_id in alternative_drug_ids:
                 add_value_to_dictionary(dict_alter_id_to_id, alt_db_id, identifier)
 
-
     query = '''MATCH (n:Chemical)--(m:Salt) RETURN n.identifier, m.identifier'''
     results = g.run(query)
     for compound_id, salt_id, in results:
         if compound_id not in dict_compound_id_to_salts_id:
-            dict_compound_id_to_salts_id[compound_id]=set()
+            dict_compound_id_to_salts_id[compound_id] = set()
         dict_compound_id_to_salts_id[compound_id].add(salt_id)
 
     print('length of chemical in db:' + str(len(dict_chemical_to_resource)))
@@ -165,9 +167,10 @@ def add_information_to_file(drugbank_id, identifier, csv_writer, how_mapped, tup
     resource.append('PharmGKB')
     resource = "|".join(sorted(set(resource)))
     xref.add('PharmGKB:' + identifier)
-    xrefs = '|'.join(sorted(xref))
+    xrefs = '|'.join(go_through_xrefs_and_change_if_needed_source_name(xref,'chemical'))
     csv_writer.writerow([drugbank_id, identifier, resource, how_mapped, xrefs])
-    
+
+
 def check_if_name_are_correct_or_with_salt(name, drugbank_id):
     """
     check if the name is fitting to drugbank id or to there salt if no mapping exists use the existing drugbank id 
@@ -175,7 +178,7 @@ def check_if_name_are_correct_or_with_salt(name, drugbank_id):
     :param drugbank_id: string 
     :return: set of drugbank ids
     """
-    drugbank_ids=set([drugbank_id])
+    drugbank_ids = set([drugbank_id])
     if name in dict_name_to_chemical_id:
         chemical_ids = dict_name_to_chemical_id[name]
         if drugbank_id not in chemical_ids:
@@ -184,6 +187,7 @@ def check_if_name_are_correct_or_with_salt(name, drugbank_id):
                 if len(salts.intersection(chemical_ids)) > 0:
                     drugbank_ids = salts.intersection(chemical_ids)
     return drugbank_ids
+
 
 def load_pharmgkb_in(label):
     """
@@ -231,7 +235,7 @@ def load_pharmgkb_in(label):
         mapped = False
         inchi = result['inchi'] if 'inchi' in result else ''
         name = result['name'].lower() if 'name' in result else ''
-        types= result['types']
+        types = result['types']
 
         if inchi in dict_inchi_to_chemical_id:
             mapped = True
@@ -243,16 +247,14 @@ def load_pharmgkb_in(label):
         if mapped:
             continue
 
-
-
         cross_references = result['cross_references'] if 'cross_references' in result else []
         for cross_reference in cross_references:
             value = cross_reference.split(':', 1)[1]
             if cross_reference.startswith('DrugBank'):
                 if value in dict_chemical_to_resource:
-                    drugbank_ids=set([value])
-                    if name!='':
-                        drugbank_ids=check_if_name_are_correct_or_with_salt(name, value)
+                    drugbank_ids = set([value])
+                    if name != '':
+                        drugbank_ids = check_if_name_are_correct_or_with_salt(name, value)
                     mapped = True
                     for drugbank_id in drugbank_ids:
                         add_information_to_file(drugbank_id, identifier, csv_writer, 'drugbank', set_of_all_tuples,
@@ -267,7 +269,6 @@ def load_pharmgkb_in(label):
         if mapped:
             counter_map += 1
             continue
-
 
         pubchem_compound_identifiers = result[
             'pubchem_compound_identifiers'] if 'pubchem_compound_identifiers' in result else []
@@ -324,8 +325,6 @@ def load_pharmgkb_in(label):
         if mapped:
             continue
 
-
-
         # atc_codes = result[
         #     'atc_identifiers'] if 'atc_identifiers' in result else []
         # if 'Drug Class' in types:
@@ -353,7 +352,7 @@ def load_pharmgkb_in(label):
         if mapped:
             continue
 
-        generic_names= result['generic_names']
+        generic_names = result['generic_names']
         if generic_names:
             for generic_name in generic_names:
                 if generic_name in dict_name_to_chemical_id:
@@ -374,22 +373,25 @@ def load_pharmgkb_in(label):
             query = query % (name)
             rows_counter = cur.execute(query)
             if rows_counter > 0:
-                cuis=set()
+                cuis = set()
                 for (cui,) in cur:
                     cuis.add(cui)
 
                 cur2 = con.cursor()
                 # if not mapped map the name to umls cui
-                query = ('Select Distinct CODE, SAB From MRCONSO Where CUI in ("%s") and (SAB="MSH" or SAB="DRUGBANK");')
+                query = (
+                    'Select Distinct CODE, SAB From MRCONSO Where CUI in ("%s") and (SAB="MSH" or SAB="DRUGBANK");')
                 query = query % ('","'.join(cuis))
                 rows_counter = cur2.execute(query)
-                if rows_counter>0:
+                if rows_counter > 0:
                     for (code, sab) in cur2:
                         if code in dict_mesh_db_id_to_chemical_id:
                             for chemical_id in dict_mesh_db_id_to_chemical_id[code]:
                                 mapped = True
-                                add_information_to_file(chemical_id, identifier, csv_writer, 'umls over mesh and drugbank', set_of_all_tuples,
-                                                        dict_chemical_to_resource, xref=dict_compound_id_to_xrefs[chemical_id])
+                                add_information_to_file(chemical_id, identifier, csv_writer,
+                                                        'umls over mesh and drugbank', set_of_all_tuples,
+                                                        dict_chemical_to_resource,
+                                                        xref=dict_compound_id_to_xrefs[chemical_id])
 
         if not mapped:
             counter_not_mapped += 1
@@ -449,7 +451,7 @@ def main():
 
     load_pharmacological_class()
 
-    for label in [ 'PharmGKB_Chemical']:
+    for label in ['PharmGKB_Chemical']:
         print(
             '###########################################################################################################################')
 

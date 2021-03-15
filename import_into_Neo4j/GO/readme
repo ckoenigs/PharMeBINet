@@ -1,0 +1,3 @@
+http://geneontology.org/
+
+Extract node and realtionship information from obo file into a csv file and prepare cypher file to integrate into Neo4j.

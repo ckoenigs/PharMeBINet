@@ -1,0 +1,3 @@
+https://www.omim.org/
+
+For this the OMIM acedemic data are needet to prepare all information to the node and relationship files. Also a cypher file is generate to integrate the data into Neo4j.

@@ -125,26 +125,10 @@ echo "Current time: $now"
 
 cd  do
 echo do
-
-#download do
-wget  -O data/HumanDO.obo "https://raw.githubusercontent.com/DiseaseOntology/HumanDiseaseOntology/main/src/ontology/doid.obo"
-
-
-python3 ../EFO/transform_obo_to_csv_and_cypher_file.py data/HumanDO.obo do diseaseontology $path_to_project > output_generate_integration_file.txt
-
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-echo integrate do into neo4j
-
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher > output_cypher_integration.txt 2>&1
-
-sleep 180
-
-$path_neo4j/neo4j restart
-
-
-sleep 120
+./script_import_do.sh $path_neo4j $path_to_project  > output.txt
 
 
 cd ..
@@ -386,16 +370,7 @@ echo PharmGKB
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-echo integrate PharmGKB into neo4j
-
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher 
-
-sleep 180
-
-$path_neo4j/neo4j restart
-
-
-sleep 120
+./script_pharmGKB.sh $path_neo4j > output/script_output.txt
 
 cd ..
 

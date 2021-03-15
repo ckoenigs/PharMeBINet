@@ -18,3 +18,7 @@ The program gets at least 4 parameters but can also have a 5.
     by True: the relationship between label 1 and label 2 is label1->label2
     by False: label1 <- label2
 (5: optional: gives the combined node an additional label)
+
+
+sed -i 's+<key id="label" for="node" attr.name="label" attr.type="string"/>+<key id="labels" for="node" attr.name="labels" attr.type="string"/>+g' pathwaydata.graphml
+java -jar Neo4j-GraphML-Importer-v1.0.0.jar -i reactome/pathwaydata.graphml  -e bolt://localhost:7687 --username neo4j --password test

@@ -15,6 +15,10 @@ sys.path.append("../..")
 import create_connection_to_databases#
 
 
+sys.path.append("..")
+from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
+
+
 
 
 class DrugHetionet:
@@ -906,7 +910,7 @@ def integration_of_ctd_chemicals_into_hetionet_compound():
 
             xrefs = dict_drugs_hetionet[drugbank_id].xrefs
             xrefs.append("MESH:"+mesh_id)
-            xrefs = list(set(xrefs))
+            xrefs = go_through_xrefs_and_change_if_needed_source_name(xrefs, 'chemical')
             string_xrefs = '|'.join(xrefs)
 
             url = 'http://ctdbase.org/detail.go?type=chem&acc=' + mesh_id

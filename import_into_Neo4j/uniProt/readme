@@ -1,0 +1,3 @@
+https://www.uniprot.org/
+
+Parse part of the SwissProt flat file to csv file. However, only human proteinare perparted and integrated into Noe4j.

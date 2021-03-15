@@ -25,7 +25,7 @@ def get_the_constraints_and_write_into_file():
     """
     query = '''CALL db.constraints'''
 
-    file_with_constraints = open('constraint.txt', 'w', encoding='utf-8')
+    file_with_constraints = open('output/constraint.txt', 'w', encoding='utf-8')
     results = g.run(query)
     for index_name, description, in results:
         splitted = description.split(':')

@@ -12,6 +12,9 @@ import sys
 sys.path.append("../..")
 import create_connection_to_databases
 
+sys.path.append("..")
+from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
+
 '''
 create a connection with neo4j
 '''
@@ -86,7 +89,7 @@ csv_not_mapped.writerow(['newId', 'id', 'name'])
 
 file_mapped_pathways = open('pathway/mapped_pathways.tsv', 'w', encoding="utf-8")
 csv_mapped = csv.writer(file_mapped_pathways, delimiter='\t', lineterminator='\n')
-csv_mapped.writerow(['id', 'id_hetionet', 'ownId','resource' ,'Pathway_name','Pathway_names' ])
+csv_mapped.writerow(['id', 'id_hetionet', 'ownId', 'resource', 'Pathway_name', 'Pathway_names'])
 
 '''
 load all reactome pathways and check if they are in hetionet or not
@@ -116,7 +119,7 @@ def load_reactome_pathways_in():
             # Liste von idOwns wird nach dem PC_11_Zahl durchsucht und als String aneinandergehängt (join)
             # als Trennungssymbol wird | genutzt
             own_ids = dict_pathway_hetionet_xrefs[hetionet_identifier]
-            string_own_ids = '|'.join(own_ids)
+            string_own_ids = '|'.join(go_through_xrefs_and_change_if_needed_source_name(own_ids,'pathway'))
             resource = dict_pathwayId_to_resource[hetionet_identifier]
             resource.append('Reactome')
             resource = list(set(resource))
@@ -133,7 +136,7 @@ def load_reactome_pathways_in():
 
             hetionet_identifier = dict_pathway_hetionet_names[pathways_name]
             own_ids = dict_pathway_hetionet_xrefs[hetionet_identifier]
-            string_own_ids = '|'.join(own_ids)
+            string_own_ids = '|'.join(go_through_xrefs_and_change_if_needed_source_name(own_ids,'pathway'))
             resource = dict_pathwayId_to_resource[hetionet_identifier]
             resource.append('Reactome')
             resource = list(set(resource))
@@ -147,7 +150,7 @@ def load_reactome_pathways_in():
         else:
             highest_identifier += 1
             new_identifier = "PC12_" + str(highest_identifier)
-            csv_not_mapped.writerow([new_identifier,pathways_id, pathways_name])  # new_identifier, pathways_id,
+            csv_not_mapped.writerow([new_identifier, pathways_id, pathways_name])  # new_identifier, pathways_id,
 
     print('number of mapping with name:' + str(counter_map_with_name))
     print('number of mapping with id:' + str(counter_map_with_id))
@@ -183,7 +186,7 @@ def main():
     else:
         sys.exit('need a path reactome protein')
 
-    print (datetime.datetime.utcnow())
+    print(datetime.datetime.utcnow())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j()

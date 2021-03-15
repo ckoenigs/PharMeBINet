@@ -5,6 +5,9 @@ from collections import defaultdict
 sys.path.append("../..")
 import create_connection_to_databases
 
+sys.path.append("..")
+from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
+
 '''
 create connection to neo4j 
 '''
@@ -44,9 +47,33 @@ dict_xrefs_to_dict_xref_to_se = {}
 
 
 def add_entry_to_dictionary(dictionary, key, value):
+    """
+    Integrate a key -value to set in to a dictionary. if kex not existing key is add to dictionary with a set.
+    :param dictionary:
+    :param key:
+    :param value:
+    :return:
+    """
     if key not in dictionary:
         dictionary[key] = set()
     dictionary[key].add(value)
+
+
+def prepare_and_integrate_information_into_dictionary(xref, dict_xrefs_to_dict_xref_id_to_identifier, identifier,
+                                                      source):
+    """
+    gete only the id from the xref
+    add source to dictionary if not existing and then add xref-identifier pair into dictionary
+    :param xref: string
+    :param dict_xrefs_to_dict_xref_id_to_identifier:dictionary
+    :param identifier: string
+    :param source: string
+    :return:
+    """
+    xref = xref.split(':', 1)[1]
+    if source not in dict_xrefs_to_dict_xref_id_to_identifier:
+        dict_xrefs_to_dict_xref_id_to_identifier[source] = {}
+    add_entry_to_dictionary(dict_xrefs_to_dict_xref_id_to_identifier[source], xref, identifier)
 
 
 '''
@@ -79,20 +106,21 @@ def load_db_nodes_in(label, dict_node_to_resource, dict_node_name_to_node_id, di
         if xrefs:
             for xref in xrefs:
                 if xref.startswith('UMLS'):
-                    xref = xref.split(':', 1)[1]
-                    if 'umls' not in dict_xrefs_to_dict_xref_id_to_identifier:
-                        dict_xrefs_to_dict_xref_id_to_identifier['umls'] = {}
-                    add_entry_to_dictionary(dict_xrefs_to_dict_xref_id_to_identifier['umls'], xref, identifier)
+                    prepare_and_integrate_information_into_dictionary(xref, dict_xrefs_to_dict_xref_id_to_identifier,
+                                                                      identifier, 'umls')
+
                 elif xref.startswith('MESH'):
-                    xref = xref.split(':', 1)[1]
-                    if 'mesh' not in dict_xrefs_to_dict_xref_id_to_identifier:
-                        dict_xrefs_to_dict_xref_id_to_identifier['mesh'] = {}
-                    add_entry_to_dictionary(dict_xrefs_to_dict_xref_id_to_identifier['mesh'], xref, identifier)
+                    prepare_and_integrate_information_into_dictionary(xref, dict_xrefs_to_dict_xref_id_to_identifier,
+                                                                      identifier, 'mesh')
                 elif xref.startswith('MedDRA'):
-                    xref = xref.split(':', 1)[1]
-                    if 'meddra' not in dict_xrefs_to_dict_xref_id_to_identifier:
-                        dict_xrefs_to_dict_xref_id_to_identifier['meddra'] = {}
-                    add_entry_to_dictionary(dict_xrefs_to_dict_xref_id_to_identifier['meddra'], xref, identifier)
+                    prepare_and_integrate_information_into_dictionary(xref, dict_xrefs_to_dict_xref_id_to_identifier,
+                                                                      identifier, 'meddra')
+                elif xref.startswith('SCTID'):
+                    prepare_and_integrate_information_into_dictionary(xref, dict_xrefs_to_dict_xref_id_to_identifier,
+                                                                      identifier, 'snomed')
+                elif xref.startswith('SNOMEDCT_US'):
+                    prepare_and_integrate_information_into_dictionary(xref, dict_xrefs_to_dict_xref_id_to_identifier,
+                                                                      identifier, 'snomed')
 
     print('length of disease in db:' + str(len(dict_disease_to_resource)))
 
@@ -162,7 +190,7 @@ def load_pharmgkb_phenotypes_in():
         found_a_mapping = False
 
         if 'name' in dict_names:
-            found_a_mapping = check_for_mapping(dict_names, 'name' ,'name_disease', dict_disease_name_to_disease_id,
+            found_a_mapping = check_for_mapping(dict_names, 'name', 'name_disease', dict_disease_name_to_disease_id,
                                                 dict_csv_map['Disease'],
                                                 identifier, dict_disease_to_resource)
 
@@ -170,16 +198,31 @@ def load_pharmgkb_phenotypes_in():
             counter_map += 1
             continue
 
-        if 'UMLS' in dict_source_to_ids:
-            found_a_mapping = check_for_mapping(dict_source_to_ids,'UMLS' ,'UMLS_disease', dict_xrefs_to_dict_xref_to_disease['umls'],
+        if 'SnoMedCT' in dict_source_to_ids:
+            found_a_mapping = check_for_mapping(dict_source_to_ids, 'SnoMedCT', 'SnoMedCT_disease',
+                                                dict_xrefs_to_dict_xref_to_disease['snomed'],
                                                 dict_csv_map['Disease'], identifier, dict_disease_to_resource)
 
         if found_a_mapping:
             counter_map += 1
             continue
 
+        if 'UMLS' in dict_source_to_ids:
+            found_a_mapping = check_for_mapping(dict_source_to_ids, 'UMLS', 'UMLS_disease',
+                                                dict_xrefs_to_dict_xref_to_disease['umls'],
+                                                dict_csv_map['Disease'], identifier, dict_disease_to_resource)
+
+        if found_a_mapping:
+            counter_map += 1
+            continue
+
+        if 'SnoMedCT' in dict_source_to_ids:
+            found_a_mapping = check_for_mapping(dict_source_to_ids, 'SnoMedCT', 'Snomed_symptom',
+                                                dict_xrefs_to_dict_xref_to_symptom['snomed'],
+                                                dict_csv_map['Symptom'], identifier, dict_symptom_to_resource)
+
         if 'name' in dict_names:
-            found_a_mapping = check_for_mapping(dict_names,'name','name_symptom', dict_symptom_name_to_symptom_id,
+            found_a_mapping = check_for_mapping(dict_names, 'name', 'name_symptom', dict_symptom_name_to_symptom_id,
                                                 dict_csv_map['Symptom'],
                                                 identifier, dict_symptom_to_resource)
 
@@ -188,7 +231,8 @@ def load_pharmgkb_phenotypes_in():
             continue
 
         if 'UMLS' in dict_source_to_ids:
-            found_a_mapping = check_for_mapping(dict_source_to_ids,'UMLS','UMLS_symptom', dict_xrefs_to_dict_xref_to_symptom['umls'],
+            found_a_mapping = check_for_mapping(dict_source_to_ids, 'UMLS', 'UMLS_symptom',
+                                                dict_xrefs_to_dict_xref_to_symptom['umls'],
                                                 dict_csv_map['Symptom'], identifier, dict_symptom_to_resource)
 
         if found_a_mapping:
@@ -199,11 +243,12 @@ def load_pharmgkb_phenotypes_in():
             for alternate_name in result['alternate_names']:
                 alternate_name = alternate_name.lower()
                 add_entry_to_dictionary(dict_names, 'name', alternate_name)
-            found_a_mapping = check_for_mapping(dict_names,'name' ,'alternate_names_disease', dict_disease_name_to_disease_id,
-                                                dict_csv_map['Disease'],
-                                                identifier, dict_disease_to_resource)
+            # found_a_mapping = check_for_mapping(dict_names,'name' ,'alternate_names_disease', dict_disease_name_to_disease_id,
+            #                                     dict_csv_map['Disease'],
+            #                                     identifier, dict_disease_to_resource)
             if not found_a_mapping:
-                found_a_mapping = check_for_mapping(dict_names, 'name' , 'alternate_names_symptom', dict_symptom_name_to_symptom_id,
+                found_a_mapping = check_for_mapping(dict_names, 'name', 'alternate_names_symptom',
+                                                    dict_symptom_name_to_symptom_id,
                                                     dict_csv_map['Symptom'],
                                                     identifier, dict_symptom_to_resource)
 
@@ -212,7 +257,8 @@ def load_pharmgkb_phenotypes_in():
             continue
 
         if 'name' in dict_names:
-            found_a_mapping = check_for_mapping(dict_names,'name' ,'alternate_names_and_name_se', dict_se_name_to_se_id, dict_csv_map['SideEffect'],
+            found_a_mapping = check_for_mapping(dict_names, 'name', 'alternate_names_and_name_se',
+                                                dict_se_name_to_se_id, dict_csv_map['SideEffect'],
                                                 identifier,
                                                 dict_se_to_resource)
 
@@ -221,7 +267,8 @@ def load_pharmgkb_phenotypes_in():
             continue
 
         if 'UMLS' in dict_source_to_ids:
-            found_a_mapping = check_for_mapping(dict_source_to_ids,'UMLS' ,'UMLS_se', dict_xrefs_to_dict_xref_to_se['umls'],
+            found_a_mapping = check_for_mapping(dict_source_to_ids, 'UMLS', 'UMLS_se',
+                                                dict_xrefs_to_dict_xref_to_se['umls'],
                                                 dict_csv_map['SideEffect'], identifier, dict_se_to_resource)
 
         if found_a_mapping:
@@ -245,7 +292,9 @@ def load_pharmgkb_phenotypes_in():
 
         # I do not want to add a node which is named adverse events!
         if identifier != 'PA166151827':
-            xrefs = '|'.join([x.rsplit('(', 1)[0] for x in external_identifiers])
+            xrefs = '|'.join(
+                go_through_xrefs_and_change_if_needed_source_name([x.rsplit('(', 1)[0] for x in external_identifiers],
+                                                                  'phenotype'))
             csv_new.writerow([identifier, xrefs])
 
         print(name)

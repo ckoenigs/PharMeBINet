@@ -137,6 +137,9 @@ now=$(date +"%F %T")
 python3 ../add_information_from_a_not_existing_node_to_existing_node.py GO:0048305 GO:0002377 BiologicalProcess
 now=$(date +"%F %T")
  echo "Current time: $now"
+python3 ../add_information_from_a_not_existing_node_to_existing_node.py GO:0002386 GO:0002385 BiologicalProcess
+now=$(date +"%F %T")
+ echo "Current time: $now"
 python3 ../add_information_from_a_not_existing_node_to_existing_node.py GO:0051023 GO:0002637 BiologicalProcess
 now=$(date +"%F %T")
  echo "Current time: $now"
@@ -287,6 +290,9 @@ now=$(date +"%F %T")
 python3 ../add_information_from_a_not_existing_node_to_existing_node.py GO:0042787 GO:0006511 BiologicalProcess
 now=$(date +"%F %T")
  echo "Current time: $now"
+python3 ../add_information_from_a_not_existing_node_to_existing_node.py GO:0072512 GO:0006812 BiologicalProcess
+now=$(date +"%F %T")
+ echo "Current time: $now"
 python3 ../add_information_from_a_not_existing_node_to_existing_node.py GO:0071804 GO:0006813 BiologicalProcess
 now=$(date +"%F %T")
  echo "Current time: $now"
@@ -324,6 +330,9 @@ python3 ../add_information_from_a_not_existing_node_to_existing_node.py GO:00512
 now=$(date +"%F %T")
  echo "Current time: $now"
 python3 ../add_information_from_a_not_existing_node_to_existing_node.py GO:0098602 GO:0007155 BiologicalProcess
+now=$(date +"%F %T")
+ echo "Current time: $now"
+python3 ../add_information_from_a_not_existing_node_to_existing_node.py GO:0023014 GO:0007165 BiologicalProcess
 now=$(date +"%F %T")
  echo "Current time: $now"
 python3 ../add_information_from_a_not_existing_node_to_existing_node.py GO:0010579 GO:0007189 BiologicalProcess
@@ -488,6 +497,18 @@ now=$(date +"%F %T")
 python3 ../add_information_from_a_not_existing_node_to_existing_node.py GO:0022891 GO:0022857 MolecularFunction
 now=$(date +"%F %T")
  echo "Current time: $now"
+python3 ../add_information_from_a_not_existing_node_to_existing_node.py GO:0015077 GO:0022890 MolecularFunction
+now=$(date +"%F %T")
+ echo "Current time: $now"
+python3 ../add_information_from_a_not_existing_node_to_existing_node.py GO:0072509 GO:0022890 MolecularFunction
+now=$(date +"%F %T")
+ echo "Current time: $now"
+python3 ../add_information_from_a_not_existing_node_to_existing_node.py GO:0072510 GO:0022890 MolecularFunction
+now=$(date +"%F %T")
+ echo "Current time: $now"
+python3 ../add_information_from_a_not_existing_node_to_existing_node.py GO:0070838 GO:0030001 BiologicalProcess
+now=$(date +"%F %T")
+ echo "Current time: $now"
 python3 ../add_information_from_a_not_existing_node_to_existing_node.py GO:0044254 GO:0030163 BiologicalProcess
 now=$(date +"%F %T")
  echo "Current time: $now"
@@ -495,9 +516,6 @@ python3 ../add_information_from_a_not_existing_node_to_existing_node.py GO:00105
 now=$(date +"%F %T")
  echo "Current time: $now"
 python3 ../add_information_from_a_not_existing_node_to_existing_node.py GO:0038049 GO:0030374 MolecularFunction
-now=$(date +"%F %T")
- echo "Current time: $now"
-python3 ../add_information_from_a_not_existing_node_to_existing_node.py GO:0010861 GO:0030375 MolecularFunction
 now=$(date +"%F %T")
  echo "Current time: $now"
 python3 ../add_information_from_a_not_existing_node_to_existing_node.py GO:0051708 GO:0030581 BiologicalProcess
@@ -854,10 +872,19 @@ now=$(date +"%F %T")
 python3 ../add_information_from_a_not_existing_node_to_existing_node.py GO:0015198 GO:0035673 MolecularFunction
 now=$(date +"%F %T")
  echo "Current time: $now"
+python3 ../add_information_from_a_not_existing_node_to_existing_node.py GO:0017091 GO:0035925 MolecularFunction
+now=$(date +"%F %T")
+ echo "Current time: $now"
 python3 ../add_information_from_a_not_existing_node_to_existing_node.py GO:0071436 GO:0036376 BiologicalProcess
 now=$(date +"%F %T")
  echo "Current time: $now"
 python3 ../add_information_from_a_not_existing_node_to_existing_node.py GO:0008329 GO:0038187 MolecularFunction
+now=$(date +"%F %T")
+ echo "Current time: $now"
+python3 ../add_information_from_a_not_existing_node_to_existing_node.py GO:0045908 GO:0042310 BiologicalProcess
+now=$(date +"%F %T")
+ echo "Current time: $now"
+python3 ../add_information_from_a_not_existing_node_to_existing_node.py GO:0045909 GO:0042311 BiologicalProcess
 now=$(date +"%F %T")
  echo "Current time: $now"
 python3 ../add_information_from_a_not_existing_node_to_existing_node.py GO:0033136 GO:0042501 BiologicalProcess
@@ -1187,13 +1214,13 @@ now=$(date +"%F %T")
 python3 ../add_information_from_a_not_existing_node_to_existing_node.py GO:0050880 GO:0097746 BiologicalProcess
 now=$(date +"%F %T")
  echo "Current time: $now"
-python3 ../add_information_from_a_not_existing_node_to_existing_node.py GO:0045909 GO:0097755 BiologicalProcess
-now=$(date +"%F %T")
- echo "Current time: $now"
-python3 ../add_information_from_a_not_existing_node_to_existing_node.py GO:0045908 GO:0097756 BiologicalProcess
-now=$(date +"%F %T")
- echo "Current time: $now"
 python3 ../add_information_from_a_not_existing_node_to_existing_node.py GO:0016337 GO:0098609 BiologicalProcess
+now=$(date +"%F %T")
+ echo "Current time: $now"
+python3 ../add_information_from_a_not_existing_node_to_existing_node.py GO:0015672 GO:0098662 BiologicalProcess
+now=$(date +"%F %T")
+ echo "Current time: $now"
+python3 ../add_information_from_a_not_existing_node_to_existing_node.py GO:0072511 GO:0098662 BiologicalProcess
 now=$(date +"%F %T")
  echo "Current time: $now"
 python3 ../add_information_from_a_not_existing_node_to_existing_node.py GO:1990035 GO:0098703 BiologicalProcess

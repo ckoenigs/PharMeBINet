@@ -1,0 +1,4 @@
+https://www.pharmgkb.org/
+
+The with BioDWH preparte graphml of PharmGKB is loaded into Neo4j with BioDWH import tool.
+https://github.com/BioDWH2

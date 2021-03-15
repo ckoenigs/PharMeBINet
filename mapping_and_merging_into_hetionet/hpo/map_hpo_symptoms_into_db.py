@@ -6,6 +6,9 @@ sys.path.append("../..")
 import create_connection_to_databases
 
 
+sys.path.append("..")
+from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
+
 # connect with the neo4j database AND MYSQL
 def database_connection():
     # create connection with mysql database
@@ -40,6 +43,7 @@ def cui_to_mesh(cui):
         return codes
     else:
         return []
+
 
 def name_to_umls_cui(name):
     """
@@ -104,27 +108,27 @@ def generate_cypher_queries_and_csv_files():
     results = g.run(query)
 
     query_start_match = query_start + '''Match (s:Symptom{identifier:line.hetionet_id }) , (n:HPOsymptom{id:line.hpo_id}) Set s.hpo='yes', s.umls_cuis=split(line.umls_cuis,"|"),  s.resource=split(line.resource,"|") , s.hpo_release='%s', s.url_HPO="https://hpo.jax.org/app/browse/term/"+line.hpo_id, n.mesh_ids=split(line.mesh_ids,'|'), s.xrefs=s.xrefs + line.hpo_id, '''
-    query_start_create = query_start + '''Match (n:HPOsymptom{id:line.hpo_id}) Create (s:Symptom{identifier:line.hetionet_id, umls_cuis:split(line.umls_cuis,"|") ,source:'HPO',license:'Users of all UMLS ontologies must abide by the terms of the UMLS license, available at https://uts.nlm.nih.gov/license.html', resource:['HPO'], source:'HPO', hpo:'yes', hpo_release:'%s', url:"https://hpo.jax.org/app/browse/term/"+line.hpo_id, xrefs:n.xrefs, '''
+    query_start_create = query_start + '''Match (n:HPOsymptom{id:line.hpo_id}) Create (s:Symptom{identifier:line.hetionet_id, umls_cuis:split(line.umls_cuis,"|") ,source:'HPO',license:'Users of all UMLS ontologies must abide by the terms of the UMLS license, available at https://uts.nlm.nih.gov/license.html', resource:['HPO'], source:'HPO', hpo:'yes', hpo_release:'%s', url:"https://hpo.jax.org/app/browse/term/"+line.hpo_id, xrefs:split(line.xrefs,"|"), '''
 
     for property, in results:
-        if property in ['name', 'id', 'xrefs', 'created_by', 'creation_date', 'is_obsolete', 'replaced_by', 'subset',
+        if property in ['name', 'id', 'created_by', 'creation_date', 'is_obsolete', 'replaced_by', 'subset',
                         'considers']:
             if property == 'name':
                 query_start_create += property + ':n.' + property + ', '
             continue
         elif property == 'def':
             query_start_create += 'definition:n.' + property + ', '
-            query_start_match += 'n.definition=n.definition+n.' + property + ', '
+            query_start_match += 's.definition=n.definition+n.' + property + ', '
         elif property == 'alt_ids':
             query_start_create += 'alternative_ids:n.' + property + ', '
-            query_start_match += 'n.alternative_ids=n.alternative_ids+n.' + property + ', '
+            query_start_match += 's.alternative_ids=n.' + property + ', '
 
-        elif property in ['synonyms', 'related_synonyms', 'broad_synonyms', 'narrow_synonyms']:
+        elif property in ['xrefs']:
             query_start_create += property + ':split(line.' + property + ',"|"), '
-            query_start_match += 'n.' + property + '=split(line.' + property + ',"|"), '
+            query_start_match += 's.' + property + '=split(line.' + property + ',"|"), '
         else:
             query_start_create += property + ':n.' + property + ', '
-            query_start_match += 'n.' + property + '=n.' + property + ', '
+            query_start_match += 's.' + property + '=n.' + property + ', '
 
     query_match = query_start_match[:-2] + ' Create (s)-[:equal_to_hpo_symptoms{how_mapped:line.how_mapped}]->(n);\n'
     query_match = query_match % (path_of_directory, file_name_mapped, ontology_date)
@@ -147,7 +151,7 @@ dict_of_hetionet_symptoms = {}
 dict_name_to_symptom_id = {}
 
 # dictionary umls cuis to mesh
-dict_umls_cui_to_mesh={}
+dict_umls_cui_to_mesh = {}
 
 
 def get_all_symptoms_and_add_to_dict():
@@ -168,10 +172,10 @@ def get_all_symptoms_and_add_to_dict():
             dict_name_to_symptom_id[name] = set()
         dict_name_to_symptom_id[name].add(identifier)
 
-        umls_cuis=name_to_umls_cui(name)
+        umls_cuis = name_to_umls_cui(name)
         for cui in umls_cuis:
             if cui not in dict_umls_cui_to_mesh:
-                dict_umls_cui_to_mesh[cui]=set()
+                dict_umls_cui_to_mesh[cui] = set()
             dict_umls_cui_to_mesh[cui].add(identifier)
 
 
@@ -207,6 +211,7 @@ def check_on_mapping_of_mesh_ids(mesh_ids, node_id, xrefs, how_mapped):
                 }
                 dict_mapped_mesh[mesh_id] = dict_node
     return found_one
+
 
 def check_on_mapping_of_umls_cuis(umls_cuis, node_id, xrefs, how_mapped):
     """
@@ -372,7 +377,7 @@ def map_hpo_symptoms_and_to_hetionet(csv_new):
             dict_node = {
                 'hpo_id': node_id,
                 'hetionet_id': node_id,
-                'xrefs': '|'.join(xrefs),
+                'xrefs': '|'.join(go_through_xrefs_and_change_if_needed_source_name(xrefs,'symptom')),
                 'mesh_ids': '|'.join(mesh_ids),
                 'umls_ids': '|'.join(umls_cuis),
                 'how_mapped': 'new'
@@ -392,14 +397,15 @@ def prepare_mapped_nodes_for_file(csv_mapped):
     for mesh_id, dict_info in dict_mapped_mesh.items():
         dict_node = {
             'hetionet_id': mesh_id,
-            'xrefs': '|'.join(dict_info['xrefs']),
+            'xrefs': '|'.join(go_through_xrefs_and_change_if_needed_source_name(dict_info['xrefs'], 'symptom')),
+            'resource': '|'.join(dict_info['resource'])
             # 'how_mapped': '|'.join(set(dict_info['how_mapped']))
         }
         if len(dict_info['hpos_how_mapped']) > 1:
             print(mesh_id)
         for (hpo_id, how_mapped) in dict_info['hpos_how_mapped']:
             dict_node['hpo_id'] = hpo_id
-            dict_node['how_mapped']= how_mapped
+            dict_node['how_mapped'] = how_mapped
             csv_mapped.writerow(dict_node)
 
 

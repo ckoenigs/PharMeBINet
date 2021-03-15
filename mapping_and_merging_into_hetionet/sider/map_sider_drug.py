@@ -12,6 +12,8 @@ import gzip
 sys.path.append("../..")
 import create_connection_to_databases
 
+sys.path.append("..")
+from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
 
 class DrugSider:
     """
@@ -660,7 +662,7 @@ def integrate_sider_drugs_into_hetionet():
 
             xrefs = dict_all_drug[chemical_id].xrefs
             xrefs.append('PubChem Compound:' + str(pubchem_stereo))
-            xrefs = list(set(xrefs))
+            xrefs=go_through_xrefs_and_change_if_needed_source_name(xrefs,'chemical')
             xrefs = '|'.join(xrefs)
             csv_writer.writerow([chemical_id, xrefs, resource, stitch_stereo, name, how_mapped])
 
