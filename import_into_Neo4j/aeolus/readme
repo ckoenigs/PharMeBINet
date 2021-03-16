@@ -1,6 +1,6 @@
 This integrates only the drug and outcome data from AEOLUS into Neo4j.
 
-The AEOLUS data can be download by http://datadryad.org/resource/doi:10.5061/dryad.8q0s4. 
+The AEOLUS data (April 8, 2017) can be download by http://datadryad.org/resource/doi:10.5061/dryad.8q0s4. 
 
 The data of AEOLUS are all tsv files.
 
@@ -21,7 +21,9 @@ Add to the edge information the contingency table entries.
 
 In the last step, the cypher queries are generated to integrate the outcome/indications, drugs, and the relationships between drug and outcome/indication as to cause or indicates. 
 Additionally, the CSV files for outcome/indication, drug, and relationships are generated.
- 
+
+
+License: CC0 1.0 Universal (CC0 1.0) Public Domain Dedication l 
 
 Banda JM, Evans L, Vanguri RS, Tatonetti NP, Ryan PB, Shah NH (2016) A curated and standardized adverse drug event resource to accelerate drug safety research. Scientific Data 3: 160026. https://doi.org/10.1038/sdata.2016.26
 
