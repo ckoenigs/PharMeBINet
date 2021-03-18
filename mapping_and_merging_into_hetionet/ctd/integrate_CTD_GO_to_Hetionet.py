@@ -146,7 +146,7 @@ load all ctd genes and check if they are in hetionet or not
 
 
 def load_ctd_go_in():
-    query = '''MATCH (n:CTDGO) RETURN n'''
+    query = '''MATCH (n:CTD_GO) RETURN n'''
     results = g.run(query)
 
     for go_node, in results:
@@ -204,7 +204,7 @@ cypher_file = open('output/cypher.cypher', 'a',encoding='utf-8')
 # query='''begin\n MATCH p=()-[r:equal_to_CTD_go]->() Delete r;\n commit\n'''
 # cypher_file.write(query)
 # add ontology to ctd go
-query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/GO/nodes_without_ontology.csv" As line Match (n:CTDGO{go_id:line.id}) SET n.ontology=line.ontology ;\n'''
+query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/GO/nodes_without_ontology.csv" As line Match (n:CTD_GO{go_id:line.id}) SET n.ontology=line.ontology ;\n'''
 cypher_file.write(query)
 
 '''
@@ -225,7 +225,7 @@ def generate_files(file_name_addition, ontology, dict_ctd_in_hetionet,dict_ctd_i
         for ctd_id, hetionet_id in dict_ctd_in_hetionet_alternative.items():
             writer.writerow([ctd_id, hetionet_id])
 
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/GO/mapping_%s.csv" As line Match (c:%s{ identifier:line.GOIDHetionet}), (n:CTDGO{go_id:line.GOIDCTD}) SET  c.url_ctd=" http://ctdbase.org/detail.go?type=go&acc="+line.GOIDCTD, c.highestGOLevel=n.highestGOLevel, c.ctd="yes" Create (c)-[:equal_to_CTD_go]->(n);\n'''
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/GO/mapping_%s.csv" As line Match (c:%s{ identifier:line.GOIDHetionet}), (n:CTD_GO{go_id:line.GOIDCTD}) SET  c.url_ctd=" http://ctdbase.org/detail.go?type=go&acc="+line.GOIDCTD, c.highestGOLevel=n.highestGOLevel, c.ctd="yes" Create (c)-[:equal_to_CTD_go]->(n);\n'''
     query = query % (file_name_addition, ontology)
     cypher_file.write(query)
     cypher_file.write(':begin\n')
@@ -287,7 +287,7 @@ def main():
         generate_files(file_name,hetionet_label, dict_ctd_in_hetionet, dict_ctd_in_hetionet_alternative)
 
     # delete the node which did not mapped because they are obsoleted
-    cypher='MATCH (n:CTDGO) where not (n)<-[:equal_to_CTD_go]-() Detach Delete n;\n'
+    cypher='MATCH (n:CTD_GO) where not (n)<-[:equal_to_CTD_go]-() Detach Delete n;\n'
     cypher_file.write(cypher)
 
     print(

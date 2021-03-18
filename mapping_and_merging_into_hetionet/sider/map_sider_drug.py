@@ -15,7 +15,7 @@ import create_connection_to_databases
 sys.path.append("..")
 from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
 
-class DrugSider:
+class drug_Sider:
     """
 
     stitchIDflat: string
@@ -74,7 +74,7 @@ list_compound_in_hetionet = []
 # dictionary with all compounds with drugbank id as key and class DrugHetionet as value
 dict_all_drug = {}
 
-# dictionary with all drugs from sider with the stereo id as key and class DrugSider as value
+# dictionary with all drugs from sider with the stereo id as key and class drug_Sider as value
 dict_sider_drug = {}
 
 # dictionary inchikey to compound id
@@ -192,7 +192,7 @@ load all sider drugs in a dictionary, further generate the PubChem ID from Stitc
 
 
 def load_sider_drug_in_dict():
-    query = 'MATCH (n:drugSider) RETURN n '
+    query = 'MATCH (n:drug_Sider) RETURN n '
     results = g.run(query)
 
     for result, in results:
@@ -202,7 +202,7 @@ def load_sider_drug_in_dict():
         PubChem_Coupound_ID = result['PubChem_Coupound_ID']
         list_stitchIDstereo.append(stitchIDstereo)
 
-        drug = DrugSider(stitchIDflat, stitchIDstereo, PubChem_Coupound_ID)
+        drug = drug_Sider(stitchIDflat, stitchIDstereo, PubChem_Coupound_ID)
 
         # https://www.biostars.org/p/155342/
         pubchem_flat = int(stitchIDflat[3:]) - 100000000
@@ -619,7 +619,7 @@ def integrate_sider_drugs_into_hetionet():
     # cypher file
     cypher_file = open('output/cypher_drug.cypher', 'w', encoding='utf-8')
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/sider/output/mapped_drug.tsv" As line Fieldterminator '\t' Match (c:Chemical{identifier:line.chemical_id}), (d:drugSider{stitchIDstereo:line.sider_id}) Set c.xrefs=split(line.xrefs,'|'), c.sider="yes", c.resource=split(line.resource,'|'), d.name=line.name, d.how_mapped=line.how_mapped
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/sider/output/mapped_drug.tsv" As line Fieldterminator '\t' Match (c:Chemical{identifier:line.chemical_id}), (d:drug_Sider{stitchIDstereo:line.sider_id}) Set c.xrefs=split(line.xrefs,'|'), c.sider="yes", c.resource=split(line.resource,'|'), d.name=line.name, d.how_mapped=line.how_mapped
                     Create (c)-[:equal_to_drug_Sider]->(d);\n'''
     cypher_file.write(query)
     cypher_file.close()

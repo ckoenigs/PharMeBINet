@@ -184,7 +184,7 @@ properties file:
 def load_standard_case_indication():
     file=open(filepath+'standard_case_indication.tsv','r',encoding='utf-8')
     csv_reader=csv.reader(file, delimiter='\t')
-    write_file=open('indications.csv','w',encoding='utf-8')
+    write_file=open('output/indications.csv','w',encoding='utf-8')
     csv_writer=csv.writer(write_file)
     csv_writer.writerow(['drug_concept_id','indication_concept_id'])
     for line in csv_reader:
@@ -216,7 +216,7 @@ properties file:
 
 def load_concept():
     # fobj=open(filepath+ "test_concept.tsv")
-    fobj = open(filepath + "concept.tsv" , encoding='utf-8')
+    fobj = open(filepath + "concept.tsv", 'r' , encoding='utf-8')
     i = 1
     j = 1
     for line in fobj:
@@ -261,7 +261,7 @@ properties of file:
 
 def load_drug_outcome_statistic():
     # fobj=open(filepath+ "test_standard_drug_outcome_statistics.tsv")
-    fobj = open(filepath + "standard_drug_outcome_statistics.tsv", encoding='utf-8')
+    fobj = open(filepath + "standard_drug_outcome_statistics.tsv", "r", encoding='utf-8')
     i = 1
     j = 1
     for line in fobj:
@@ -312,7 +312,7 @@ properties of file:
 
 def load_contingency_table():
     # fobj=open(filepath+ "test_standard_drug_outcome_contingency_table.tsv")
-    fobj = open(filepath + "standard_drug_outcome_contingency_table.tsv", encoding='utf-8')
+    fobj = open(filepath + "standard_drug_outcome_contingency_table.tsv","r" ,encoding='utf-8')
 
     for line in fobj:
         splitted = line.split('\t')
@@ -340,19 +340,19 @@ generate csv files in form to use the neo4j-shell and generate cypher file
 
 def create_csv_and_cypher_file_neo4j():
     # cypher file to integrate aeolus into Neo4j
-    cypher_file=open('cypher.cypher','w', encoding='utf-8')
+    cypher_file=open('output/cypher.cypher','w', encoding='utf-8')
 
     print('drug Create')
     print (datetime.datetime.utcnow())
-    file_name_outcome='outcome.csv'
+    file_name_outcome='output/outcome.csv'
     # f = open(file_name_outcome, 'w', newline='', encoding='utf-8')
     f = open(file_name_outcome, 'w', encoding='utf-8')
 
     # add cypher wuery to cypher file to integrate outcome
-    cypher_outcome='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/aeolus/'''+file_name_outcome+'''" As line Create (:AeolusOutcome{outcome_concept_id:line.outcome_concept_id , concept_code: line.concept_code,  name: line.name, snomed_outcome_concept_id: line.snomed_outcome_concept_id, vocabulary_id: line.vocabulary_id });\n'''
+    cypher_outcome='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/aeolus/'''+file_name_outcome+'''" As line Create (:Aeolus_Outcome{outcome_concept_id:line.outcome_concept_id , concept_code: line.concept_code,  name: line.name, snomed_outcome_concept_id: line.snomed_outcome_concept_id, vocabulary_id: line.vocabulary_id });\n'''
     cypher_file.write(cypher_outcome)
     cypher_file.write(':begin \n')
-    cypher_file.write('Create Constraint On (node:AeolusOutcome) Assert node.outcome_concept_id Is Unique; \n')
+    cypher_file.write('Create Constraint On (node:Aeolus_Outcome) Assert node.outcome_concept_id Is Unique; \n')
     cypher_file.write(':commit \n Call db.awaitIndexes(300) ; \n ')
     # csv file for outcome
     try:
@@ -362,26 +362,26 @@ def create_csv_and_cypher_file_neo4j():
         for key, value in dict_outcomes.items():
             if value.snomed_outcome_concept_id == '-':
                 writer.writerow((key, dict_concept[key][5], dict_concept[key][0], '', dict_concept[key][2]))
-            # append_query='''CREATE (out%s:AeolusOutcome{concept_code: '%s', name: '%s', outcome_concept_id: %s, vocabulary_id: '%s'}) \n''' %(key,dict_concept[key][5],dict_concept[key][0],key,dict_concept[key][2] )
+            # append_query='''CREATE (out%s:Aeolus_Outcome{concept_code: '%s', name: '%s', outcome_concept_id: %s, vocabulary_id: '%s'}) \n''' %(key,dict_concept[key][5],dict_concept[key][0],key,dict_concept[key][2] )
             else:
                 writer.writerow((key, dict_concept[key][5], dict_concept[key][0], value.snomed_outcome_concept_id,
                                  dict_concept[key][2]))
-            # append_query='''CREATE (out%s:AeolusOutcome{concept_code: '%s', name: '%s', outcome_concept_id: %s, snomed_outcome_concept_id: %s, vocabulary_id: '%s'}) \n''' %(key,dict_concept[key][5],dict_concept[key][0],key,value.snomed_outcome_concept_id,dict_concept[key][2] )
+            # append_query='''CREATE (out%s:Aeolus_Outcome{concept_code: '%s', name: '%s', outcome_concept_id: %s, snomed_outcome_concept_id: %s, vocabulary_id: '%s'}) \n''' %(key,dict_concept[key][5],dict_concept[key][0],key,value.snomed_outcome_concept_id,dict_concept[key][2] )
 
     finally:
         f.close()
 
     print('drug Create')
     print (datetime.datetime.utcnow())
-    file_name_drug='drug.csv'
+    file_name_drug='output/drug.csv'
     f = open(file_name_drug, 'w', encoding='utf-8')
 
     # add cypher query to cypher file for integration of drugs
     # add cypher wuery to cypher file to integrate outcome
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/aeolus/''' + file_name_drug + '''" As line Create (:AeolusDrug{drug_concept_id: line.drug_concept_id, concept_code: line.concept_code, name: line.name, vocabulary_id: line.vocabulary_id });\n'''
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/aeolus/''' + file_name_drug + '''" As line Create (:Aeolus_Drug{drug_concept_id: line.drug_concept_id, concept_code: line.concept_code, name: line.name, vocabulary_id: line.vocabulary_id });\n'''
     cypher_file.write(query)
     cypher_file.write(' :begin \n')
-    cypher_file.write('Create Constraint On (node:AeolusDrug) Assert node.drug_concept_id Is Unique; \n')
+    cypher_file.write('Create Constraint On (node:Aeolus_Drug) Assert node.drug_concept_id Is Unique; \n')
     cypher_file.write(':commit \n Call db.awaitIndexes(300) ; \n ')
 
     # csv file for drugs
@@ -398,11 +398,11 @@ def create_csv_and_cypher_file_neo4j():
     print (datetime.datetime.utcnow())
 
     # csv for relationships
-    file_name_drug_outcome='drug_outcome_relation.csv'
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/aeolus/''' + file_name_drug_outcome + '''" As line Match (n1:AeolusDrug {drug_concept_id: line.drug_id}), (n2:AeolusOutcome {outcome_concept_id: line.adr_id}) Create (n1)-[:Causes{countA: line.countA , countB: line.countB , countC: line.countC , countD: line.countD, drug_outcome_pair_count: line.drug_outcome_pair_count, prr: line.prr, prr_95_percent_upper_confidence_limit: line.prr_95_percent_upper_confidence_limit , prr_95_percent_lower_confidence_limit: line.prr_95_percent_lower_confidence_limit , ror: line.ror , ror_95_percent_upper_confidence_limit: line.ror_95_percent_upper_confidence_limit , ror_95_percent_lower_confidence_limit: line.ror_95_percent_lower_confidence_limit}]->(n2); \n'''
+    file_name_drug_outcome='output/drug_outcome_relation.csv'
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/aeolus/''' + file_name_drug_outcome + '''" As line Match (n1:Aeolus_Drug {drug_concept_id: line.drug_id}), (n2:Aeolus_Outcome {outcome_concept_id: line.adr_id}) Create (n1)-[:Causes{countA: line.countA , countB: line.countB , countC: line.countC , countD: line.countD, drug_outcome_pair_count: line.drug_outcome_pair_count, prr: line.prr, prr_95_percent_upper_confidence_limit: line.prr_95_percent_upper_confidence_limit , prr_95_percent_lower_confidence_limit: line.prr_95_percent_lower_confidence_limit , ror: line.ror , ror_95_percent_upper_confidence_limit: line.ror_95_percent_upper_confidence_limit , ror_95_percent_lower_confidence_limit: line.ror_95_percent_lower_confidence_limit}]->(n2); \n'''
     cypher_file.write(query)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/aeolus/indications.csv" As line Match (n1:AeolusDrug {drug_concept_id: line.drug_concept_id}), (n2:AeolusOutcome {outcome_concept_id: line.indication_concept_id}) Create (n1)-[:Indicates]->(n2); \n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/aeolus/output/indications.csv" As line Match (n1:Aeolus_Drug {drug_concept_id: line.drug_concept_id}), (n2:Aeolus_Outcome {outcome_concept_id: line.indication_concept_id}) Create (n1)-[:Indicates]->(n2); \n'''
     cypher_file.write(query)
 
     f = open(file_name_drug_outcome, 'w', encoding='utf-8')

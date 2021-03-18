@@ -88,9 +88,9 @@ load all ctd genes and check if they are in hetionet or not
 
 def load_ctd_genes_in():
     # take only human genes
-    # query = '''MATCH (n:CTDgene) Where ()-[:associates_CG{organism_id:'9606'}]->(n)  RETURN n'''
+    # query = '''MATCH (n:CTD_gene) Where ()-[:associates_CG{organism_id:'9606'}]->(n)  RETURN n'''
     # because ncbi only the human genes are in hetionet it is ok to take all ctd genes
-    query = '''MATCH (n:CTDgene) RETURN n'''
+    query = '''MATCH (n:CTD_gene) RETURN n'''
     results = g.run(query)
 
     counter = 0
@@ -117,7 +117,7 @@ Generate cypher and csv for generating the new nodes and the relationships
 def generate_files():
     # generate cyoher file
     cypher_file = open('output/cypher.cypher', 'w',encoding='utf-8')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ctd/gene/mapping.csv" As line Match (c:Gene{ identifier:line.GeneIDHetionet}), (n:CTDgene{gene_id:line.GeneIDCTD}) Create (c)-[:equal_to_CTD_gene]->(n) Set c.ctd="yes", c.resource=c.resource+"CTD", c.xrefs=split(line.xrefs,'|'), c.url_ctd=" http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ctd/gene/mapping.csv" As line Match (c:Gene{ identifier:line.GeneIDHetionet}), (n:CTD_gene{gene_id:line.GeneIDCTD}) Create (c)-[:equal_to_CTD_gene]->(n) Set c.ctd="yes", c.resource=c.resource+"CTD", c.xrefs=split(line.xrefs,'|'), c.url_ctd=" http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID;\n'''
     cypher_file.write(query)
 
     global writer

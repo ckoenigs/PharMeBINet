@@ -115,7 +115,7 @@ def load_all_label_and_map_drug_to_pc(csv_new, csv_other):
     :param csv_map: csv writter
     :return:
     """
-    query = "MATCH  (n:NDF_RT_DRUG_KIND) Where n.name contains \"[EPC]\"  RETURN n"
+    query = "MATCH  (n:NDFRT_DRUG_KIND) Where n.name contains \"[EPC]\"  RETURN n"
     results = g.run(query)
     for node, in results:
         identifier = node['code']
@@ -164,9 +164,9 @@ def main():
     print(datetime.datetime.utcnow())
     print('Generate files')
 
-    for label in ['NDF_RT_MECHANISM_OF_ACTION_KIND', 'NDF_RT_PHYSIOLOGIC_EFFECT_KIND', 'NDF_RT_PHARMACOKINETICS_KIND',
-                  'NDF_RT_THERAPEUTIC_CATEGORY_KIND']:
-        name_without_ndf_and_lowercase = label.replace('NDF_RT_', '').lower()
+    for label in ['NDFRT_MECHANISM_OF_ACTION_KIND', 'NDFRT_PHYSIOLOGIC_EFFECT_KIND', 'NDFRT_PHARMACOKINETICS_KIND',
+                  'NDFRT_THERAPEUTIC_CATEGORY_KIND']:
+        name_without_ndf_and_lowercase = label.replace('NDFRT_', '').lower()
 
         csv_new = write_files(path_of_directory, name_without_ndf_and_lowercase, label)
 
@@ -181,8 +181,8 @@ def main():
 
         print(datetime.datetime.utcnow())
 
-    label = 'NDF_RT_DRUG_KIND'
-    name_without_ndf_and_lowercase = label.replace('NDF_RT_', '').lower()
+    label = 'NDFRT_DRUG_KIND'
+    name_without_ndf_and_lowercase = label.replace('NDFRT_', '').lower()
     csv_new, csv_other = write_files_drug(path_of_directory, name_without_ndf_and_lowercase, label)
 
     print('##########################################################################')

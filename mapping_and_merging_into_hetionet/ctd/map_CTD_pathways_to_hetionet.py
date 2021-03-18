@@ -86,7 +86,7 @@ load all ctd pathways and check if they are in hetionet or not
 
 
 def load_ctd_pathways_in():
-    query = '''MATCH (n:CTDpathway) RETURN n'''
+    query = '''MATCH (n:CTD_pathway) RETURN n'''
     results = g.run(query)
 
     counter_map_with_id = 0
@@ -135,7 +135,7 @@ generate connection between mapping pathways of ctd and hetionet and generate ne
 
 def create_cypher_file():
     cypher_file = open('output/cypher.cypher', 'a',encoding='utf-8')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ctd/pathway/mapped_pathways.tsv" As line FIELDTERMINATOR '\\t' Match (d:Pathway{identifier:line.id_hetionet}),(c:CTDpathway{pathway_id:line.id}) Create (d)-[:equal_to_CTD_pathway]->(c) Set d.resource= d.resource+'CTD', d.ctd="yes", d.ctd_url="http://ctdbase.org/detail.go?type=pathway&acc=%"+line.id, c.hetionet_id=line.id_hetionet;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ctd/pathway/mapped_pathways.tsv" As line FIELDTERMINATOR '\\t' Match (d:Pathway{identifier:line.id_hetionet}),(c:CTD_pathway{pathway_id:line.id}) Create (d)-[:equal_to_CTD_pathway]->(c) Set d.resource= d.resource+'CTD', d.ctd="yes", d.ctd_url="http://ctdbase.org/detail.go?type=pathway&acc=%"+line.id, c.hetionet_id=line.id_hetionet;\n'''
     cypher_file.write(query)
 
     # add query to update disease nodes with do='no'

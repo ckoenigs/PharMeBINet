@@ -91,7 +91,7 @@ def take_all_relationships_of_gene_go():
     cypher_general.write(':commit')
     cypher_general.close()
 
-    query = '''MATCH (gene:CTDgene)-[r:associates_GGO]->(go:CTDGO) Where ()-[:equal_to_CTD_gene]->(gene)  RETURN gene.gene_id, r, go.go_id, go.ontology'''
+    query = '''MATCH (gene:CTD_gene)-[r:associates_GGO]->(go:CTD_GO) Where ()-[:equal_to_CTD_gene]->(gene)  RETURN gene.gene_id, r, go.go_id, go.ontology'''
     results = g.run(query)
     count_multiple_pathways = 0
     count_possible_relas = 0

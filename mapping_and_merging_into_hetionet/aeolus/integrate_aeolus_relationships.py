@@ -96,7 +96,7 @@ def get_indications(label, set_of_tuples):
     get all pair which has an indication connection and add to set
     :param label: string
     """
-    query=''' Match (c)-[:equal_to_Aeolus_drug]-(r:AeolusDrug)-[l:Indicates]-(:AeolusOutcome)--(d:%s)  Return  c.identifier,  d.identifier '''
+    query=''' Match (c)-[:equal_to_Aeolus_drug]-(r:Aeolus_Drug)-[l:Indicates]-(:Aeolus_Outcome)--(d:%s)  Return  c.identifier,  d.identifier '''
     query = query %(label)
     results=g.run(query)
 
@@ -127,7 +127,7 @@ def get_aeolus_connection_information_in_dict(label_search, dict_connection_info
                                               number_of_compound_to_work_with, property_label,
                                               dict_chemical_to_the_other_thing, set_of_indication_pairs):
     # and toFloat(l.countA)/(toFloat(l.countA)+toFloat(l.countC))>0.0001
-    query = '''Match (c:Chemical{aeolus:'yes'}) With c  Match (c)-[:equal_to_Aeolus_drug]-(r:AeolusDrug)-[l:Causes]-(:AeolusOutcome)--(d:%s) Where toInteger(l.countA)>100 and toFloat(l.countA)/(toFloat(l.countA)+toFloat(l.countB))>0.001  Return c.identifier, l, d.identifier '''
+    query = '''Match (c:Chemical{aeolus:'yes'}) With c  Match (c)-[:equal_to_Aeolus_drug]-(r:Aeolus_Drug)-[l:Causes]-(:Aeolus_Outcome)--(d:%s) Where toInteger(l.countA)>100 and toFloat(l.countA)/(toFloat(l.countA)+toFloat(l.countB))>0.001  Return c.identifier, l, d.identifier '''
     query = query % ( label_search)
     results = g.run(query)
     found_something_with_query = False

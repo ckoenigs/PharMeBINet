@@ -48,7 +48,7 @@ find all connection drug-se from sider for every compound-Se in hetionet and sav
 
 
 def find_all_compound_SE_pairs_of_sider():
-    query = '''Match (a:Compound)--(:drugSider)-[l:Causes]->(:seSider)--(b:SideEffect) Return a.identifier, l, b.identifier'''
+    query = '''Match (a:Compound)--(:drug_Sider)-[l:Causes]->(:se_Sider)--(b:SideEffect) Return a.identifier, l, b.identifier'''
     results = g.run(query)
     for chemical_id, connection, umlsId, in results:
         lowerFreq = connection['lowerFreq'] if not connection['lowerFreq'] is None else ''

@@ -94,10 +94,10 @@ def get_all_adrecs_target_and_map(db_label, dict_node_id_to_resource):
     csv_mapping = csv.writer(mapping_file, delimiter='\t')
     csv_mapping.writerow(['variant_id', 'adr_variant_id', 'resource'])
 
-    prepare_query(file_name, db_label, 'variant_ADReCS_Target')
+    prepare_query(file_name, db_label, 'variant_ADReCSTarget')
 
     # get data
-    query = '''MATCH (n:variant_ADReCS_Target) RETURN n'''
+    query = '''MATCH (n:variant_ADReCSTarget) RETURN n'''
     results = g.run(query)
 
     # counter mapping

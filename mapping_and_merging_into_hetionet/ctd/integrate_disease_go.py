@@ -64,7 +64,7 @@ also generate a cypher file to integrate this information
 
 
 def take_all_relationships_of_disease_go():
-    query = '''MATCH (disease)-[r:affects_DGO]->(go:CTDGO)  RETURN disease.mondos, disease.disease_id, r, go.go_id, go.ontology '''
+    query = '''MATCH (disease)-[r:affects_DGO]->(go:CTD_GO)  RETURN disease.mondos, disease.disease_id, r, go.go_id, go.ontology '''
     results = g.run(query)
     count_multiple_pathways = 0
     count_possible_relas = 0

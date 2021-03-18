@@ -58,64 +58,14 @@ echo "Current time: $now"
 cd  ndf_rt
 echo ndf-rt
 
-python3 prepare_ndf_rt_to_neo4j_integration.py $path_to_project > output_integration_ndf_rt.txt
-
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-echo integrate ndf-rt into neo4j
-
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher_file.cypher > output_cypher_integration.txt 2>&1
-
-sleep 180
-
-$path_neo4j/neo4j restart
-
-
-sleep 120
-echo delete ndf-rt nodes without relaionships
-
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher_file_delete.cypher > output_cypher_delete.txt 2>&1
-
-sleep 180
-
-$path_neo4j/neo4j restart
-
-
-sleep 120
+./script_import_ndf_rt.sh $path_neo4j $path_to_project > output.txt
 
 cd ..
 
 cd  med_rt
 echo med-rt
 
-python3 parse_med_rt_to_csv.py $path_to_project > output_integration_ndf_rt.txt
-
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-echo integrate med-rt into neo4j
-
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher_med.cypher > output_cypher_integration.txt 2>&1
-
-sleep 180
-
-$path_neo4j/neo4j restart
-
-
-sleep 120
-echo delete med-rt nodes without relaionships
-
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher_delete.cypher
-
-sleep 180
-
-$path_neo4j/neo4j restart
-
-
-sleep 120
+./script_med_rt_integration.sh $path_neo4j $path_to_project > output.txt
 
 cd ..
 
@@ -171,25 +121,10 @@ echo "Current time: $now"
 cd  GO
 echo go
 
-#download go
-wget  -O ./go-basic.obo "purl.obolibrary.org/obo/go/go-basic.obo"
-
-python3 ../EFO/transform_obo_to_csv_and_cypher_file.py go-basic.obo GO go $path_to_project > output_generate_integration_file.txt
-
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-echo integrate go into neo4j
-
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher > output_cypher_integration.txt 2>&1
-
-sleep 180
-
-$path_neo4j/neo4j restart
-
-
-sleep 120
-
+./script_to_integrate_go.sh $path_neo4j $path_to_project  > output.txt
 
 cd ..
 
@@ -217,7 +152,7 @@ echo "Current time: $now"
 
 echo integrate aeolus into neo4j
 
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher > output_cypher_integration.txt 2>&1
+$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher.cypher > output_cypher_integration.txt
 
 sleep 180
 
@@ -235,7 +170,7 @@ echo "Current time: $now"
 cd uniProt
 echo UniProt
 
-#python3 parse_uniprot_flat_file_to_tsv.py database/uniprot_sprot.dat $path_to_project > output_integration.txt
+# python3 parse_uniprot_flat_file_to_tsv.py database/uniprot_sprot.dat $path_to_project > output_integration.txt
 python3 parse_uniprot_flat_file_to_tsv.py $path_to_project > output_integration.txt
 
 rm database/*
@@ -312,24 +247,7 @@ echo "Current time: $now"
 cd  ncbi_genes
 echo NCBI
 
-python3 integrate_ncbi_genes_which_are_already_in_hetionet.py $path_to_project > output_generate_integration_file.txt
-
-echo rm gz file
-rm data/*
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-echo integrate ncbi into neo4j
-
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher_node.cypher > output_cypher_integration.txt 2>&1
-
-sleep 180
-
-$path_neo4j/neo4j restart
-
-
-sleep 120
+./script_ncbi_gene.sh $path_neo4j $path_to_project > output.txt
 
 cd ..
 
@@ -409,7 +327,7 @@ echo "Current time: $now"
 cd  reactome
 echo reactome
 
-./script_import_recatome.sh $path_neo4j $path_to_project > output_reactome.txt
+./script_import_recatome_with_graphml.sh $path_neo4j > output_reactome.txt
 
 cd ..
 

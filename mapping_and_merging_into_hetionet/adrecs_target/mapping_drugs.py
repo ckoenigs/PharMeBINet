@@ -89,10 +89,10 @@ def get_all_adrecs_target_and_map(db_label,  dict_node_id_to_resource):
     csv_mapping = csv.writer(mapping_file, delimiter='\t')
     csv_mapping.writerow(['db_id', 'act_id', 'resource'])
 
-    prepare_query(file_name, db_label, 'drug_ADReCS_Target','db_id','Drug_Name','act_id')
+    prepare_query(file_name, db_label, 'drug_ADReCSTarget','db_id','Drug_Name','act_id')
 
     # get data
-    query = '''MATCH (n:drug_ADReCS_Target) RETURN n'''
+    query = '''MATCH (n:drug_ADReCSTarget) RETURN n'''
     results = g.run(query)
 
     # counter mapping

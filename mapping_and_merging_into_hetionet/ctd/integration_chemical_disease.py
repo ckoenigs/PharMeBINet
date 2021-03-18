@@ -118,7 +118,7 @@ def get_all_important_relationships_and_write_into_files():
 
     start = time.time()
     # compound drugbank id
-    query = '''MATCH p=(a:Compound)-[r:equal_chemical_CTD]->(b:CTDchemical)   RETURN a.identifier , b.chemical_id '''
+    query = '''MATCH p=(a:Compound)-[r:equal_chemical_CTD]->(b:CTD_chemical)   RETURN a.identifier , b.chemical_id '''
     # print(query)
     # sys.exit()
     results = g.run(query)
@@ -181,7 +181,7 @@ def get_all_important_relationships_and_write_into_files():
                                                            [inferenceScore], [inferenceGeneSymbol], [disease_id],
                                                            []]
 
-    query = '''MATCH (chemical:CTDchemical)-[r:associates_CD]->(disease:CTDdisease) Where (disease)--(:Disease) and exists(r.directEvidence) RETURN chemical.chemical_id,   r, disease.mondos, disease.disease_id '''
+    query = '''MATCH (chemical:CTD_chemical)-[r:associates_CD]->(disease:CTD_disease) Where (disease)--(:Disease) and exists(r.directEvidence) RETURN chemical.chemical_id,   r, disease.mondos, disease.disease_id '''
     results = g.run(query)
 
     time_measurement = time.time() - start

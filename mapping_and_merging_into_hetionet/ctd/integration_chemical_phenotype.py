@@ -245,7 +245,7 @@ def take_all_relationships_of_go_chemical():
     counter_all_rela = 0
 
     #  Where chemical.chemical_id='D000077212' and go.go_id='0006915'; Where chemical.chemical_id='C057693' and go.go_id='4128' Where chemical.chemical_id='D001564' and go.go_id='9429'  Where chemical.chemical_id='D004976' and go.go_id='2950' Where chemical.chemical_id='D015741' and go.go_id='367'
-    query = '''MATCH (chemical:CTDchemical)-[r:phenotype{organismid:'9606'}]->(cgo:CTDGO)-[:equal_to_CTD_go]-(go) RETURN cgo.go_id, cgo.name, labels(go), r, chemical.chemical_id, chemical.name, chemical.synonyms, chemical.drugBankIDs'''
+    query = '''MATCH (chemical:CTD_chemical)-[r:phenotype{organismid:'9606'}]->(cgo:CTD_GO)-[:equal_to_CTD_go]-(go) RETURN cgo.go_id, cgo.name, labels(go), r, chemical.chemical_id, chemical.name, chemical.synonyms, chemical.drugBankIDs'''
     results = g.run(query)
 
     for go_id, go_name, go_labels, rela, chemical_id, chemical_name, chemical_synonyms, drugbank_ids, in results:

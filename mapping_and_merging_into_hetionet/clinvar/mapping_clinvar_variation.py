@@ -2,9 +2,11 @@
 import sys
 import datetime, re
 import csv, json, math
+import re
 
 sys.path.append("..")
 from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
+
 sys.path.append("../..")
 import create_connection_to_databases
 
@@ -64,6 +66,8 @@ def add_query_to_cypher_file(tuples, file_name):
     this_start_query = query_start + "(n:Variant_ClinVar {identifier:line.identifier}) Create (m"
     this_start_query = this_start_query % (path_of_directory, file_name)
     for label in list(tuples):
+        if '_' in label:
+            label= re.sub("\_[a-z]", lambda m: m.group(0)[1].upper(), label)
         this_start_query += ':' + label + ' '
     query = this_start_query + query_middle
     cypher_file.write(query)
@@ -75,7 +79,8 @@ prepare the label remove _ and change instead letter to upper letter
 
 
 def prepare_label(label):
-    label = label.rsplit('_', 1)[0].capitalize()
+    label = label.rsplit('_', 1)[0]
+    label = label[0].upper()+ label[1:]
 
     def remove_and_made_upper_letter(match):
         '''
@@ -245,6 +250,7 @@ def get_variant_rela_intern(label, list_to_labels):
     :param list_to_labels: list of strings
     :return:
     """
+    set_of_pairs=set()
     for other_label in list_to_labels:
         short_label1 = label.split('_')[0]
         short_label2 = other_label.split('_')[0]
@@ -254,7 +260,10 @@ def get_variant_rela_intern(label, list_to_labels):
         query = query % (label, other_label)
         results = g.run(query)
         for id1, id2, in results:
+            if (id1,id2) in set_of_pairs:
+                continue
             csv_writer.writerow([id1, id2])
+            set_of_pairs.add((id1,id2))
 
 
 def main():
@@ -313,7 +322,7 @@ def main():
     print(datetime.datetime.utcnow())
     print('Add relationships from Genotype')
 
-    get_variant_rela_intern('Genotype_ClinVar', ['Variant_ClinVar', 'Haplotype_ClinVar'])
+    get_variant_rela_intern('Genotype_ClinVar', ['Haplotype_ClinVar', 'Variant_ClinVar'])
 
     print('##########################################################################')
 

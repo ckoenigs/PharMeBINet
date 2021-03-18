@@ -494,14 +494,14 @@ def map_hpo_disease_to_mondo(db_disease_id, db_disease_name, db_disease_source):
 dict_mondo_to_hpo_ids = {}
 
 '''
-Integrate mapping connection between disease and HPOdisease and make a dictionary mondo to hpo id
+Integrate mapping connection between disease and HPO_disease and make a dictionary mondo to hpo id
 '''
 
 
 def integrate_mapping_of_disease_into_hetionet():
     for hpo_id, mondos in dict_disease_id_to_mondos.items():
         for mondo in mondos:
-            query = '''Match (n:HPOdisease{id: "%s"}), (d:Disease{identifier:"%s"}) 
+            query = '''Match (n:HPO_disease{id: "%s"}), (d:Disease{identifier:"%s"}) 
                 Set d.hpo="yes"
                 Create (d)-[:equal_to_hpo_disease]->(n)'''
 
@@ -554,7 +554,7 @@ def map_hpo_symptoms_and_integrate_into_hetionet():
     #  counter for the symptoms which are already in Hetionet
     counter_symptom_from_hetionet = 0
 
-    query = '''MATCH (n:HPOsymptom) RETURN n.id, n.name, n.xref '''
+    query = '''MATCH (n:HPO_symptom) RETURN n.id, n.name, n.xref '''
     results = g.run(query)
 
     for hpo_id, name, xrefs, in results:
@@ -614,7 +614,7 @@ def map_hpo_symptoms_and_integrate_into_hetionet():
 
                 counter_symptom_from_hetionet += 1
                 mesh_or_cui = first_entry['identifier']
-                query = '''MATCH (s:Symptom{identifier:"%s"}) , (n:HPOsymptom{id:"%s"})
+                query = '''MATCH (s:Symptom{identifier:"%s"}) , (n:HPO_symptom{id:"%s"})
                     Set   s.hpo='yes', s.cui="%s", s.hpo_version='1.2', s.hpo_release='2017-10-05', s.resource=["%s"] 
                     Create (s)-[:equal_to_hpo_symptoms]->(n)'''
                 query = query % (mesh_or_cui, hpo_id, umls_cui, string_resource)
@@ -631,14 +631,14 @@ def map_hpo_symptoms_and_integrate_into_hetionet():
             url_hpo = 'http://compbio.charite.de/hpoweb/showterm?id=' + hpo_id
             counter_new_symptom_in_hetionet += 1
             url = 'http://identifiers.org/umls/' + umls_cuis[0]
-            query = ''' Match (n:HPOsymptom{id:"%s"})
+            query = ''' Match (n:HPO_symptom{id:"%s"})
                 Set n.umls_cui_mesh=["%s"]
                 Create (s:Symptom{identifier:"%s",type:'cui',license:'UMLS licence', name:"%s", resource:['Human Phenotype Ontology'], source:'UMLS', url:"%s", hetionet:'no', do:'no', hpo:'yes', hpo_version:'1.2', hpo_release:'2017-10-05', url_HPO:"%s"}) 
                 Create (s)-[:equal_to_hpo_symptoms]->(n) '''
             query = query % (hpo_id, umls_cuis[0], umls_cuis[0], name, url, url_hpo)
         else:
             mapped_identifier_string = '","'.join(all_mapped_cuis_mesh_ids)
-            query = ''' Match (n:HPOsymptom{id:"%s"})
+            query = ''' Match (n:HPO_symptom{id:"%s"})
                 Set n.umls_cui_mesh=["%s"] '''
             query = query % (hpo_id, mapped_identifier_string)
         # print(no_cui_in_hetinet_symptomes)
@@ -650,7 +650,7 @@ def map_hpo_symptoms_and_integrate_into_hetionet():
     g.run(query)
 
     # set for all hpo symptomes which are not mapped the umls_cui_mesh to empty list
-    query = '''MATCH (s:HPOsymptom) Where not exists(s.umls_cui_mesh) Set s.umls_cui_mesh=[] '''
+    query = '''MATCH (s:HPO_symptom) Where not exists(s.umls_cui_mesh) Set s.umls_cui_mesh=[] '''
     g.run(query)
     #    print('number of hpo with no umle cui:'+str(counter_has_no_umls_cuis))
     #    print('number of hpo with no xrefs:'+str(counter_has_no_xrefs))
@@ -694,7 +694,7 @@ def generate_cypher_file_for_connection():
     for mondo, hpo_disease_ids in dict_mondo_to_hpo_ids.items():
 
         for hpo_disease_id in hpo_disease_ids:
-            query = '''MATCH p=(:HPOdisease{id:"%s"})-[r:present]->(b) RETURN r, b.umls_cui_mesh '''
+            query = '''MATCH p=(:HPO_disease{id:"%s"})-[r:present]->(b) RETURN r, b.umls_cui_mesh '''
             query = query % (hpo_disease_id)
             results = g.run(query)
 
@@ -790,7 +790,7 @@ def main():
 
     thread_id = 1
 
-    query = ''' Match (d:HPOdisease) Return d.id, d.name, d.source'''
+    query = ''' Match (d:HPO_disease) Return d.id, d.name, d.source'''
     results = g.run(query)
     for db_disease_id, db_disease_name, db_disease_source, in results:
         # create thread

@@ -50,7 +50,7 @@ def take_all_relationships_of_gene_pathway():
     writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     writer.writerow(['GeneID', 'PathwayID'])
 
-    query = '''MATCH (gene:CTDgene)-[r:participates_GP]->(pathway:CTDpathway) Where ()-[:equal_to_CTD_gene]->(gene)  RETURN gene.gene_id, r, pathway.hetionet_id'''
+    query = '''MATCH (gene:CTD_gene)-[r:participates_GP]->(pathway:CTD_pathway) Where ()-[:equal_to_CTD_gene]->(gene)  RETURN gene.gene_id, r, pathway.hetionet_id'''
     results = g.run(query)
     count_multiple_pathways = 0
     count_possible_relas = 0

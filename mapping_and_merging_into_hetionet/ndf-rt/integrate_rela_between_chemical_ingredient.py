@@ -69,7 +69,7 @@ def load_connections(label):
     Load all connection between chemical and pharmacological class from ndf-rt
     :return:
     '''
-    query = "Match (c:%s)--(:NDF_RT_DRUG_KIND)-[t]-(:NDF_RT_INGREDIENT_KIND)--(d:Chemical) Return c.identifier, type(t), t, d.identifier"
+    query = "Match (c:%s)--(:NDFRT_DRUG_KIND)-[t]-(:NDFRT_INGREDIENT_KIND)--(d:Chemical) Return c.identifier, type(t), t, d.identifier"
     query = query % (label)
     results = g.run(query)
     for chemical_id, rela_type, rela, ingredient_chemical_id, in results:

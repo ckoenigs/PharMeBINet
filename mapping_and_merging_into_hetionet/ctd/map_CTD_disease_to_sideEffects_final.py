@@ -110,7 +110,7 @@ properties:
 
 
 def load_disease_CTD():
-    query = ''' MATCH ()-[r:Causes]->(n:CTDdisease) RETURN Distinct n Limit 10 '''
+    query = ''' MATCH ()-[r:Causes]->(n:CTD_disease) RETURN Distinct n Limit 10 '''
     results = g.run(query)
 
     # go through all results from the query
@@ -330,7 +330,7 @@ def integrate_disease_into_hetionet():
             resource.append('CTD')
             resource = list(set(resource))
             resource = "','".join(resource)
-            query = '''Match (s:SideEffect), (n:CTDdisease) Where s.identifier='%s' And n.disease_id='%s'
+            query = '''Match (s:SideEffect), (n:CTD_disease) Where s.identifier='%s' And n.disease_id='%s'
             Set s.resource=['%s'], s.ctd='yes', s.ctd_url='http://ctdbase.org/detail.go?type=disease&acc=%s' , n.cui='%s'
             Create (s)-[:equal_to_SE_Disease_CTD]->(n);
             '''
@@ -353,14 +353,14 @@ def integrate_disease_into_hetionet():
         first_node = node_exist.evaluate()
         if first_node == None:
             name = dict_CTD_disease[disease_id].name.replace("'", "")
-            query = '''Match  (n:CTDdisease) Where  n.disease_id='%s'
+            query = '''Match  (n:CTD_disease) Where  n.disease_id='%s'
             Set n.cui='%s'
             Create (s:SideEffect{identifier:'%s', umls_label:'', aeolus:'no', sider:'no', url:'%s', hetionet:'no', source:'UMLS via CTD', name:'%s', conceptName:'',license:'Copyright 2012-2017 MDI Biological Laboratory & NC State University. All rights reserved.', meddraType:'', resource:['CTD'], ctd:'yes', ctd_url:'http://ctdbase.org/detail.go?type=disease&acc=%s'}) 
             Create (s)-[:equal_to_SE_Disease_CTD]->(n);
             '''
             query = query % (disease_id, cui, cui, url, name, dict_CTD_disease[disease_id].idType + ':' + disease_id)
         else:
-            query = '''Match  (n:CTDdisease), (s:SideEffect{identifier:'%s'}) Where  n.disease_id='%s'
+            query = '''Match  (n:CTD_disease), (s:SideEffect{identifier:'%s'}) Where  n.disease_id='%s'
             Set n.cui='%s'
             Create (s)-[:equal_to_SE_Disease_CTD]->(n);
             '''

@@ -7,7 +7,7 @@ cypher_file = open('cypher.cypher', 'w', encoding='utf-8')
 
 cypher_file_rela = open('cypher_rela.cypher', 'w', encoding='utf-8')
 
-addition = '_ADReCS_Target'
+addition = '_ADReCSTarget'
 
 # dictionary rela to csv
 dict_rela_to_csv = {}

@@ -93,8 +93,8 @@ def main():
     print('prepare for each label the files')
 
     dict_label_to_at_label = {
-        'Gene': ['gene_ADReCS_Target', 'GENE_ID'],
-        'Protein': ['protein_ADReCS_Target', 'UNIPROT_AC']
+        'Gene': ['gene_ADReCSTarget', 'GENE_ID'],
+        'Protein': ['protein_ADReCSTarget', 'UNIPROT_AC']
     }
 
     for db_label, adrecs_target_label_and_identifier_name in dict_label_to_at_label.items():

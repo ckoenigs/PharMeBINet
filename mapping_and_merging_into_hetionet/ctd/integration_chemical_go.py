@@ -231,7 +231,7 @@ def take_all_relationships_of_gene_pathway():
         start = time.time()
 
         all_chemicals_id = '","'.join(all_chemicals_id)
-        query = '''MATCH (chemical:CTDchemical)-[r:affects_CGO]->(go:CTDGO) Where chemical.chemical_id in ["''' + all_chemicals_id + '''"] RETURN chemical.chemical_id, chemical.drugBankIDs, r, go.go_id, go.ontology '''
+        query = '''MATCH (chemical:CTD_chemical)-[r:affects_CGO]->(go:CTD_GO) Where chemical.chemical_id in ["''' + all_chemicals_id + '''"] RETURN chemical.chemical_id, chemical.drugBankIDs, r, go.go_id, go.ontology '''
         results = g.run(query)
 
         time_measurement = time.time() - start

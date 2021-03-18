@@ -84,7 +84,7 @@ def take_all_relationships_of_gene_disease():
 
     start = time.time()
     # and a.identifier='MONDO:0013604'
-    query = '''MATCH p=(a:Disease)-[r]->(b:CTDdisease) RETURN a.identifier , b.disease_id '''
+    query = '''MATCH p=(a:Disease)-[r]->(b:CTD_disease) RETURN a.identifier , b.disease_id '''
 
     # print(query)
     # sys.exit()
@@ -109,7 +109,7 @@ def take_all_relationships_of_gene_disease():
 
     # print(dict_disease_id_mondo)
 
-    query = '''MATCH (disease:CTDdisease)<-[r:associates_GD]-(gene:CTDgene) Where (gene)--(:Gene) and (disease)--(:Disease) and exists(r.directEvidence)  RETURN Distinct gene.gene_id, r, disease.disease_id '''
+    query = '''MATCH (disease:CTD_disease)<-[r:associates_GD]-(gene:CTD_gene) Where (gene)--(:Gene) and (disease)--(:Disease) and exists(r.directEvidence)  RETURN Distinct gene.gene_id, r, disease.disease_id '''
     results = g.run(query)
 
     time_measurement = time.time() - start

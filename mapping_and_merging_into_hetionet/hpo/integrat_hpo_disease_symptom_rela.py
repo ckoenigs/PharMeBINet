@@ -57,7 +57,7 @@ def load_all_hpo_symptoms_in_dictionary():
     Load all hpo symptoms for freuency infos and so on
     :return:
     """
-    query = '''Match (n:HPOsymptom) Return n'''
+    query = '''Match (n:HPO_symptom) Return n'''
     results = g.run(query)
     for node, in results:
         identifier = node['id']
@@ -231,7 +231,7 @@ def generate_cypher_file_for_connection(cypher_file):
     properties = ['disease_id', 'symptom']
 
     # get all properties
-    query = 'MATCH (n:HPOdisease)-[p:present]-(:HPOsymptom) WITH DISTINCT keys(p) AS keys UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields RETURN allfields;'
+    query = 'MATCH (n:HPO_disease)-[p:present]-(:HPO_symptom) WITH DISTINCT keys(p) AS keys UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields RETURN allfields;'
     results = g.run(query)
     query_exist = ''' (n:Disease{identifier: line.disease_id})-[r:PRESENTS_DpS]-(s:Symptom{identifier:line.symptom}) Set '''
     query_new = ''' (n:Disease{identifier: line.disease_id}), (s:Symptom{identifier:line.symptom}) Create (n)-[r:PRESENTS_DpS{'''
@@ -257,13 +257,13 @@ def generate_cypher_file_for_connection(cypher_file):
     # query = '''Match (n:Disease)-[r:PRESENTS_DpS]-(s:Symptom) Where r.hpo='yes SET r.resource=r.resource+'HPO';\n '''
     # cypher_file.write(query)
 
-    query_new = query_start + query_new + '''version:'phenotype_annotation.tab %s',unbiased:false,source:'Human Phenontype Ontology', license:'https://hpo.jax.org/app/license', resource:['HPO'], hpo:'yes', sources:split(line.source,'|'),  url:'https://hpo.jax.org/app/browse/disease/'+split(line.source,'|')[0]}]->(s);\n'''
+    query_new = query_start + query_new + '''version:'phenotype_annotation.tab %s',unbiased:false,source:'Human Phenontype Ontology', license:'This service/product uses the Human Phenotype Ontology (version information). Find out more at http://www.human-phenotype-ontology.org We request that the HPO logo be included as well.', resource:['HPO'], hpo:'yes', sources:split(line.source,'|'),  url:'https://hpo.jax.org/app/browse/disease/'+split(line.source,'|')[0]}]->(s);\n'''
     query_new = query_new % (path_of_directory, "mapping_files/rela_new.tsv", hpo_date)
     cypher_file.write(query_new)
 
     print(properties)
 
-    query = '''Match (d:Disease)--(:HPOdisease)-[p:present]-(:HPOsymptom)--(s:Symptom) Where 'P' in p.aspect Return d.identifier, p, s.identifier'''
+    query = '''Match (d:Disease)--(:HPO_disease)-[p:present]-(:HPO_symptom)--(s:Symptom) Where 'P' in p.aspect Return d.identifier, p, s.identifier'''
     results = g.run(query)
     # fill the files
     for mondo, relationship, symptom_id, in results:
@@ -296,7 +296,7 @@ def generate_cypher_file_for_connection(cypher_file):
     print(counter_connection)
 
 def get_inheritance_information_for_disease():
-    query='Match (d:Disease)--(:HPOdisease)-[r]-(s:HPOsymptom) Where "I" in r.aspect Return Distinct d.identifier, s.name, r.source'
+    query='Match (d:Disease)--(:HPO_disease)-[r]-(s:HPO_symptom) Where "I" in r.aspect Return Distinct d.identifier, s.name, r.source'
     results=g.run(query)
     dict_disease_id_to_inheritances={}
     for disease_id, inheritance, sources, in results:

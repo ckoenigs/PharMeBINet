@@ -506,13 +506,13 @@ query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%
     Match'''
 
 '''
-Integrate mapping connection between disease and HPOdisease and make a dictionary mondo to hpo id
+Integrate mapping connection between disease and HPO_disease and make a dictionary mondo to hpo id
 '''
 
 
 def integrate_mapping_of_disease_into_hetionet():
     # query for mapping disease and written into file
-    query = query_start + ''' (n:HPOdisease{id: line.hpo_id}), (d:Disease{identifier:line.hetionet_id}) Set d.hpo="yes", d.resource=split(line.resource,"|") Create (d)-[:equal_to_hpo_disease]->(n);\n '''
+    query = query_start + ''' (n:HPO_disease{id: line.hpo_id}), (d:Disease{identifier:line.hetionet_id}) Set d.hpo="yes", d.resource=split(line.resource,"|") Create (d)-[:equal_to_hpo_disease]->(n);\n '''
     query = query % (path_of_directory, 'mapping_files/disease_mapped.tsv')
     cypher_file.write(query)
     # write mapping in csv file
@@ -575,7 +575,7 @@ def main():
     thread_id = 1
 
     # search for hpo disease, but exclude old entries
-    query = ''' Match (d:HPOdisease) Where not exists(d.is_obsolete)  Return d.id, d.name, d.source'''
+    query = ''' Match (d:HPO_disease) Where not exists(d.is_obsolete)  Return d.id, d.name, d.source'''
     results = g.run(query)
     for db_disease_id, db_disease_name, db_disease_source, in results:
         # create thread

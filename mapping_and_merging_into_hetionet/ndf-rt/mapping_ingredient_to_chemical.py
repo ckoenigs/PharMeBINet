@@ -136,7 +136,7 @@ def write_files(path_of_directory):
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
 
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/ndf-rt/%s" As line FIELDTERMINATOR '\\t' 
-            Match (n:NDF_RT_INGREDIENT_KIND{code:line.code}), (v:Chemical{identifier:line.chemical_id}) Set v.ndf_rt='yes', v.resource=split(line.resource,'|') Create (v)-[:equal_to_ingredient_ndf_rt{how_mapped:split(line.how_mapped,"|")}]->(n);'''
+            Match (n:NDFRT_INGREDIENT_KIND{code:line.code}), (v:Chemical{identifier:line.chemical_id}) Set v.ndf_rt='yes', v.resource=split(line.resource,'|') Create (v)-[:equal_to_ingredient_ndf_rt{how_mapped:split(line.how_mapped,"|")}]->(n);'''
     query = query % (path_of_directory, file_name)
     cypher_file.write(query)
     cypher_file.close()
@@ -162,7 +162,7 @@ def load_all_ingredients_and_map():
     :param csv_map: csv writter
     :return:
     """
-    query = "MATCH (n:NDF_RT_INGREDIENT_KIND) RETURN n"
+    query = "MATCH (n:NDFRT_INGREDIENT_KIND) RETURN n"
     results = g.run(query)
     for node, in results:
         identifier = node['code']

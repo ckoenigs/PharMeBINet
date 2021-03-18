@@ -245,7 +245,7 @@ has properties:
 
 def load_side_effects_aeolus_in_dictionary():
     # {concept_code:'10000031'}
-    query = '''MATCH (n:AeolusOutcome) RETURN n'''
+    query = '''MATCH (n:Aeolus_Outcome) RETURN n'''
     results = g.run(query)
     # list of_meddra ids
     list_of_ids = []
@@ -595,7 +595,7 @@ def integrate_aeolus_into_hetionet():
     csv_existing.writerow(['aSE', 'SE', 'cuis', 'resources'])
 
     # query for mapping
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/aeolus/output/%s.tsv" As line FIELDTERMINATOR '\\t' Match (a:AeolusOutcome{concept_code:line.aSE})'''
+    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/aeolus/output/%s.tsv" As line FIELDTERMINATOR '\\t' Match (a:Aeolus_Outcome{concept_code:line.aSE})'''
     cypher_file = open('output/cypher.cypher', 'w')
 
     # query for the update nodes and relationship
