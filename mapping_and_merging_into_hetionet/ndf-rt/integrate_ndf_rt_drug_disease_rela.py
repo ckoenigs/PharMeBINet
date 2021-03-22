@@ -52,7 +52,7 @@ def integrate_connection_into_hetionet(label):
     counter_contraindication_double = 0
     counter_induces_double = 0
 
-    query = '''MATCH (a:%s)--(n:NDF_RT_DRUG_KIND)-[r]-(:NDF_RT_DISEASE_KIND)--(b:Disease) RETURN Distinct a.identifier, type(r), r.source, b.identifier'''
+    query = '''MATCH (a:%s)--(n:NDFRT_DRUG_KIND)-[r]-(:NDFRT_DISEASE_KIND)--(b:Disease) RETURN Distinct a.identifier, type(r), r.source, b.identifier'''
     query =query %(label)
     print(query)
     result = g.run(query)

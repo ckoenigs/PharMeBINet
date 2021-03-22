@@ -69,6 +69,8 @@ def add_query_to_cypher_file(tuples, file_name):
         if '_' in label:
             label= re.sub("\_[a-z]", lambda m: m.group(0)[1].upper(), label)
         this_start_query += ':' + label + ' '
+    if not 'Genotype' in tuples and not 'Haplotype' in tuples:
+        this_start_query += ':GeneVariant '
     query = this_start_query + query_middle
     cypher_file.write(query)
 
@@ -104,7 +106,7 @@ def prepare_rela(rela):
     p = re.compile('{[a-zA-Z]')
 
 
-# dictionary tuple of lables to csv file
+# dictionary tuple of labels to csv file
 dict_tuple_of_labels_to_csv_files = {}
 
 # file from relationship between gene and variant
@@ -132,9 +134,9 @@ def load_all_variants_and_finish_the_files():
         query = query % (round_index * divider_of_variant, divider_of_variant)
 
         results = g.run(query)
-        for node, lables, in results:
+        for node, labels, in results:
             new_labels = set()
-            for label in lables:
+            for label in labels:
                 new_label = prepare_label(label)
                 new_labels.add(new_label)
             new_labels = tuple(sorted(new_labels))

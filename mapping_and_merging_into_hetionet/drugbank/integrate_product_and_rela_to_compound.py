@@ -39,7 +39,7 @@ def prepare_cypher_query(file_name):
 
 
     query_start='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/drugbank/%s" As line FIELDTERMINATOR '\\t' 
-    Match (n:Product_DrugBank{identifier:line.identifier}) Create (v:Product :Chemical {'''
+    Match (n:Product_DrugBank{identifier:line.identifier}) Create (v:Product {'''
     for product_property, in results:
         query_start+= product_property +':n.'+product_property+', '
 

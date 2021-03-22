@@ -39,8 +39,23 @@ def get_the_constraints_and_write_into_file():
             file_with_constraints.write(description+'\n')
     file_with_constraints.close()
 
+    query='''CALL db.indexes '''
+    results= g.run(query)
+    indices=''
+
+    for id, name, state, populationPercent, uniqueness, type, entityType, labelsOrTypes, properties, provider, in results:
+        for label in labelsOrTypes:
+            for property in properties:
+                indices+=label+suffix+'.'+property+';'
+    print(indices)
+
+
 
 def main():
+    global suffix
+    if len(sys.argv)<2:
+        sys.exit('need a suffix')
+    suffix=sys.argv[1]
     print(datetime.datetime.utcnow())
 
     print('##########################################################################')
