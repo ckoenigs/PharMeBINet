@@ -4,7 +4,7 @@ from typing import Dict, Set, Tuple
 import datetime
 
 # generate cypher file
-cypher_file = open('cypher.cypher', 'w')
+cypher_file = open('output/cypher.cypher', 'w')
 
 
 def generate_cypher_queries(file_name, label, properties, list_properties):
@@ -79,6 +79,9 @@ def add_id_to_label_set_of_ids_if_not_exists(label: str, _id: str) -> bool:
 # dictionary label or rela_label to file
 dict_label_to_tsv_file = {}
 
+# test
+path_to_data =''
+
 # header snp
 header_snp = ['is_top_level', 'is_chromosome', 'supporting_subsnps', 'position', 'is_alt', 'deleted_sequence',
               'other_rsids_in_cur_release', 'variant_type', 'mol_type', 'xrefs', 'anchor', 'create_date',
@@ -101,7 +104,7 @@ def generate_csv_file_and_add_to_dictionary(label, header):
     :param header: list of stings
     :return: file name
     """
-    file_name = path_to_data + '/output/' + label + '.tsv'
+    file_name = path_to_data + 'output/' + label + '.tsv'
     file = open(file_name, 'w', encoding='utf-8')
     csv_file = csv.DictWriter(file, delimiter='\t', fieldnames=header)
     csv_file.writeheader()
@@ -122,6 +125,8 @@ def prepare_own_set(dictionary, dict_node):
         dictionary['type'] = 'xref'
         dictionary['value'] = 'clinvar:' + dictionary['value']
     type_plural = dictionary['type'] + 's'
+    if not type_plural in header_snp:
+        return
     if type_plural not in dict_node:
         dict_node[type_plural] = set()
         set_headers_node.add(type_plural)
@@ -159,6 +164,8 @@ def add_information_from_one_dict_to_another(from_dict, to_dict, key):
     # print(from_dict)
     # print(key)
     if key in from_dict:
+        if key not in header_snp:
+            return
         if key in to_dict and from_dict[key] != to_dict[key]:
             # some have multiple possibilities for the insertion
             if key == 'inserted_sequence':
@@ -306,8 +313,19 @@ def prepare_dict_node_to_be_string(dict_node):
 # counter not used nodes
 counter_not_used_nodes = 0
 
+def add_to_node_information(key,value, dict_node):
+    """
+    add only values which should be add into dictionary
+    :param key:
+    :param value:
+    :param dict_node:
+    :return:
+    """
+    if key in header_snp:
+        dict_node[key]=value
 
-def prepare_json_information_to_tsv(data, chromosome_number):
+
+def prepare_json_information_to_tsv(data, chromosome_number=None):
     """
     information about the different properties of the json are from https://github.com/ncbi/dbsnp/blob/master/specs/refsnp_specification_deprecated.yaml
     only the interesting information were taken
@@ -315,7 +333,10 @@ def prepare_json_information_to_tsv(data, chromosome_number):
     :return:
     """
     global counter_not_used_nodes
-    dict_node = {'chromosome': chromosome_number}
+    if chromosome_number is not None:
+        dict_node = {'chromosome': chromosome_number}
+    else:
+        dict_node = {}
 
     snp_id = ''
     for key, value in data.items():
@@ -323,26 +344,26 @@ def prepare_json_information_to_tsv(data, chromosome_number):
             if key == 'refsnp_id':
                 key = 'identifier'
                 snp_id = value
-            dict_node[key] = value
+            add_to_node_information(key,value, dict_node)
             set_headers_node.add(key)
             continue
         # pubmed citations
         if key == 'citations':
-            dict_node[key] = value
+            add_to_node_information(key,value, dict_node)
             set_headers_node.add(key)
             continue
 
         # the merged ids
         if key == 'dbsnp1_merges':
             list_merge_ids = [x['merged_rsid'] for x in value]
-            dict_node[key] = list_merge_ids
+            add_to_node_information(key,list_merge_ids, dict_node)
             set_headers_node.add(key)
             continue
         if key == 'primary_snapshot_data':
             # print(value.keys())
             for property, values in value.items():
                 if type(values) == str:
-                    dict_node[property] = values
+                    add_to_node_information(property,values, dict_node)
                     set_headers_node.add(property)
                     continue
                 # contains only subsnp, frequency and clinvar
@@ -587,13 +608,13 @@ def prepare_json_information_to_tsv(data, chromosome_number):
                                                                                                            'orientation')
                                             dict_label_to_tsv_file['gene'].writerow(dict_gene)
 
-                                        if (snp_id, gene_id) not in dict_rela_label_to_pairs['snp_gene']:
+                                        if (snp_id, gene_id, return_seq_ontology_names(gene)) not in dict_rela_label_to_pairs['snp_gene']:
                                             dict_snp_gene = {}
                                             dict_snp_gene['snp_id'] = snp_id
                                             dict_snp_gene['gene_id'] = gene_id
                                             dict_snp_gene['sequence_ontology'] = return_seq_ontology_names(gene)
                                             dict_label_to_tsv_file['snp_gene'].writerow(dict_snp_gene)
-                                            # dict_rela_label_to_pairs['snp_gene'].add((snp_id, gene_id))
+                                            dict_rela_label_to_pairs['snp_gene'].add((snp_id, gene_id, return_seq_ontology_names(gene)))
 
                                         if add_label_set_of_ids_if_not_exists('rna'):
                                             generate_files_with_node_and_rela('rna', 'gene',
@@ -623,9 +644,9 @@ def prepare_json_information_to_tsv(data, chromosome_number):
                                                         dict_rela_label_to_pairs['snp_rna']:
                                                     if codon_aligned_transcript_change['deleted_sequence'] != \
                                                             codon_aligned_transcript_change['inserted_sequence']:
-                                                        # dict_rela_label_to_pairs['snp_rna'].add((snp_id, rna_id,
-                                                        #                                          codon_aligned_transcript_change[
-                                                        #                                              'position']))
+                                                        dict_rela_label_to_pairs['snp_rna'].add((snp_id, rna_id,
+                                                                                                 codon_aligned_transcript_change[
+                                                                                                     'position']))
 
                                                         add_information_from_one_dict_to_another_and_prepare_as_string(
                                                             codon_aligned_transcript_change, dict_rela_snp_rna,
@@ -641,13 +662,13 @@ def prepare_json_information_to_tsv(data, chromosome_number):
                                             else:
                                                 if (snp_id, rna_id, sequence_ontology) not in dict_rela_label_to_pairs[
                                                     'snp_rna']:
-                                                    # dict_rela_label_to_pairs['snp_rna'].add(
-                                                    #     (snp_id, rna_id, sequence_ontology))
+                                                    dict_rela_label_to_pairs['snp_rna'].add(
+                                                        (snp_id, rna_id, sequence_ontology))
                                                     dict_label_to_tsv_file['snp_rna'].writerow(dict_rela_snp_rna)
 
                                             # gene rna relationship
                                             if (gene_id, rna_id) not in dict_rela_label_to_pairs['gene_rna']:
-                                                # dict_rela_label_to_pairs['gene_rna'].add((gene_id, rna_id))
+                                                dict_rela_label_to_pairs['gene_rna'].add((gene_id, rna_id))
                                                 dict_gene_rna = {'gene_id': gene_id, 'rna_id': rna_id}
                                                 dict_label_to_tsv_file['gene_rna'].writerow(dict_gene_rna)
 
@@ -674,8 +695,8 @@ def prepare_json_information_to_tsv(data, chromosome_number):
                                                         if (snp_id, protein_id) not in dict_rela_label_to_pairs[
                                                             'snp_protein']:
                                                             dict_snp_protein['protein_id'] = protein_id
-                                                            # dict_rela_label_to_pairs['snp_protein'].add(
-                                                            #     (snp_id, protein_id))
+                                                            dict_rela_label_to_pairs['snp_protein'].add(
+                                                                (snp_id, protein_id))
                                                             add_information_from_one_dict_to_another_and_prepare_as_string(
                                                                 spdi,
                                                                 dict_snp_protein,
@@ -706,7 +727,7 @@ def prepare_json_information_to_tsv(data, chromosome_number):
 
                                                 # rna protein relationship
                                                 if (rna_id, protein_id) not in dict_rela_label_to_pairs['rna_protein']:
-                                                    # dict_rela_label_to_pairs['rna_protein'].add((rna_id, protein_id))
+                                                    dict_rela_label_to_pairs['rna_protein'].add((rna_id, protein_id))
                                                     dict_rna_protein = {'rna_id': rna_id, 'protein_id': protein_id}
                                                     dict_label_to_tsv_file['rna_protein'].writerow(dict_rna_protein)
             continue
@@ -757,7 +778,19 @@ def prepare_json_information_to_tsv(data, chromosome_number):
     prepare_dict_node_to_be_string(dict_node)
     dict_label_to_tsv_file['snp'].writerow(dict_node)
 
-def run_through_list_of_nodes_as_json_string(path_directory,path_data, json_file, chr):
+def prepare_snp_file():
+    """
+    prepare snp csv file and cypher query
+    :return:
+    """
+    if not 'snp' in dict_label_to_tsv_file:
+        # #the node csv file for generating snp nodes
+        file_name = generate_csv_file_and_add_to_dictionary('snp', header_snp)
+
+        generate_cypher_queries(file_name, 'snp', header_snp, header_snp_list)
+
+
+def run_through_list_of_nodes_as_json_string(path_directory, path_data, json_file, chr):
     global path_to_data, path_of_directory
     path_of_directory = path_directory
     path_to_data = path_data

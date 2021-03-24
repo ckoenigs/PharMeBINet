@@ -84,7 +84,7 @@ def main():
     global path_of_directory, path_to_data
     # path to data for windows
     if len(sys.argv) == 3:
-        path_to_data = sys.argv[1]
+        path_to_data = sys.argv[1]+'/'
         path_of_directory = sys.argv[2]
     else:
         sys.exit('need path to project (dbsnp)')
