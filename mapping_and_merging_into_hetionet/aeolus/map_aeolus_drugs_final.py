@@ -99,7 +99,7 @@ properties:
 
 
 def load_compounds_from_hetionet():
-    query = 'MATCH (n:Chemical) Where not n:Product RETURN n '
+    query = 'MATCH (n:Chemical) RETURN n '
     results = g.run(query)
 
     for result, in results:
