@@ -34,6 +34,7 @@ maybe_not_protein_set = set()
 dict_atc_nodes = {}
 set_atc_edges = set()
 
+# get the information for the drugbank categroies
 csv_reader = csv.reader(file)
 next(csv_reader)
 for row in csv_reader:
@@ -44,16 +45,19 @@ for row in csv_reader:
     name = html.unescape(row[1])
     dict_category_name_to_id[name] = row[0]
 
+# open the xml file
 xml_file = os.path.join('full database.xml')
 # xml_file = os.path.join('part.xml')
 # xml_file = os.path.join('drugbank_all_full_database_dezember.xml/test.xml')
 print(datetime.datetime.utcnow())
 
+# parse it to usable formart
 tree = ET.parse(xml_file)
 root = tree.getroot()
 
 print(datetime.datetime.utcnow())
 
+# templates to extract some information from drugbank xml
 ns = '{http://www.drugbank.ca}'
 inchikey_template = "{ns}calculated-properties/{ns}property[{ns}kind='InChIKey']/{ns}value"
 inchi_template = "{ns}calculated-properties/{ns}property[{ns}kind='InChI']/{ns}value"
@@ -66,14 +70,29 @@ dict_reference_id_to_infos = {}
 # counter_reaction_ids
 counter_reaction_ids = 1
 
-'''
-add elements to dictionary
-'''
 
 
 def add_information_into_dictionary(drug_targets, db_ID, db_targets, position, actions, organism, ref_article_list,
                                     ref_link_list, ref_attachment_list, ref_textbooks_list, known_action,
                                     target_id=None, induction_strength=None, inhibition_strength=None):
+    """
+    Prepare dictionary for relationship information between drug and carrier/enzyme/target/transporter
+    :param drug_targets: dictionary
+    :param db_ID: string
+    :param db_targets: string
+    :param position: string
+    :param actions: list
+    :param organism: string
+    :param ref_article_list: list
+    :param ref_link_list: list
+    :param ref_attachment_list: list
+    :param ref_textbooks_list:  list
+    :param known_action: string
+    :param target_id: string
+    :param induction_strength: string
+    :param inhibition_strength: string
+    :return:
+    """
     drug_targets['drugbank_id'] = db_ID
     drug_targets['targets_id_drugbank'] = db_targets
     drug_targets['position'] = position
@@ -93,12 +112,29 @@ def add_information_into_dictionary(drug_targets, db_ID, db_targets, position, a
     return drug_targets
 
 
-'''
-gather the different target information
-'''
-
 
 def gather_target_infos(target, drug_targets_info, targets_info, dict_targets_ids, db_ID, is_enzyme, is_target):
+    """
+    This gather the information for carrier, enzyme, target and transporter node. First the information for the
+    relationship are gathered. Then if the carrier, enzyme, target and transporter has peptides then generate for them
+    nodes with properties: # identifier (uniprot id), drugbank id, name , id source, general function, specific
+    function, gene name, locus, cellular location, transmembrane regions, signal regions, theoretical pi, molecular
+    weight, chromosome location, organism, xrefs, synonyms, amino acid sequence, gene sequence, pfams, go classifier
+    If more then one polypeptide exists then an over node is generated with the drugbank id as identifier and the name
+    and is connected to the polypeptides as has component. If no polypeptides exists then only the node with drugbank id
+    and name is generated with connection to the drug. If only one peptide exists then the relationship is generated
+    between this peptide and the drug.
+
+    Also, for every polypeptide a edge is generated.
+    :param target:string
+    :param drug_targets_info: list of dictionaries
+    :param targets_info: list of dictionaries
+    :param dict_targets_ids:
+    :param db_ID: string
+    :param is_enzyme: boolean
+    :param is_target:boolean
+    :return:
+    """
     for targets in drug.iterfind(target.format(ns=ns)):
         #        print('drinnen ;)')
 
@@ -106,6 +142,7 @@ def gather_target_infos(target, drug_targets_info, targets_info, dict_targets_id
 
         name = targets.findtext("{ns}name".format(ns=ns))
 
+        # gather relationships information
         position = targets.get('position')
         organism = targets.findtext("{ns}organism".format(ns=ns))
         known_action = targets.findtext("{ns}known-action".format(ns=ns))
@@ -156,6 +193,7 @@ def gather_target_infos(target, drug_targets_info, targets_info, dict_targets_id
         dict_drug_target = {}
 
         # go through all polypeptide  generate target and drug-target dictionaries
+        # add the drug target information into a dictionary
         for polypeptide in targets.findall("{ns}polypeptide".format(ns=ns)):
             polypetide_found = True
             drug_targets = collections.OrderedDict()
@@ -163,9 +201,8 @@ def gather_target_infos(target, drug_targets_info, targets_info, dict_targets_id
 
             targets_dict['drugbank_id'] = db_targets
 
-            targets_dict['name'] = name
-
             uniprot_id = polypeptide.get('id')
+            # generate relationship between polypeptide and drug
             if is_enzyme:
                 drug_targets = add_information_into_dictionary(drug_targets, db_ID, db_targets, position, actions,
                                                                organism, ref_article_list,
@@ -178,6 +215,7 @@ def gather_target_infos(target, drug_targets_info, targets_info, dict_targets_id
                                                                ref_link_list, ref_attachment_list, ref_textbooks_list,
                                                                known_action, uniprot_id)
 
+            # gather polypeptide information
             targets_dict['id'] = uniprot_id
             peptide_list.append(uniprot_id)
             targets_dict['id_source'] = polypeptide.get('source')
@@ -215,8 +253,8 @@ def gather_target_infos(target, drug_targets_info, targets_info, dict_targets_id
             targets_dict['xrefs'] = xref_list
             targets_dict['synonyms'] = [salt.text for salt in
                                         polypeptide.findall("{ns}synonyms/{ns}synonym".format(ns=ns))]
-            targets_dict['amino-acid-sequence'] = polypeptide.findtext("{ns}amino-acid-sequence".format(ns=ns)).replace(
-                '\n', '').replace('\r', '')
+            # targets_dict['amino-acid-sequence'] = polypeptide.findtext("{ns}amino-acid-sequence".format(ns=ns)).replace(
+            #     '\n', '').replace('\r', '')
             all_seq = polypeptide.findtext("{ns}amino-acid-sequence".format(ns=ns)).split('\n',
                                                                                           1) if polypeptide.findtext(
                 "{ns}amino-acid-sequence".format(ns=ns)) != None else []
@@ -254,13 +292,14 @@ def gather_target_infos(target, drug_targets_info, targets_info, dict_targets_id
             else:
                 sys.exit()
 
-        # if more then one peptided exists make a big node which is connected to drug and all peptites ar components of this big one
+        # if more then one peptide exists make a big node which is connected to drug and all peptites ar components of
+        # this big one
         if len(peptide_list) > 1:
             drug_targets = collections.OrderedDict()
             targets_dict = collections.OrderedDict()
 
             targets_dict['drugbank_id'] = db_targets
-            targets_dict['name'] = targets.findtext("{ns}name".format(ns=ns))
+            targets_dict['name'] = name
             if not targets_dict['drugbank_id'] in maybe_not_protein_set:
                 csv_decision_protein_file.writerow(
                     [targets_dict['name'], targets_dict['drugbank_id'], 'combined protein', 1])
@@ -281,13 +320,15 @@ def gather_target_infos(target, drug_targets_info, targets_info, dict_targets_id
             if not db_targets in dict_targets_ids:
                 targets_info.append(targets_dict)
                 dict_targets_ids[db_targets] = 1
-            for petide in peptide_list:
 
-                if not (db_targets, petide) in dict_has_component:
+            # prepare relationships between combined protein and its components peptides
+            for peptide in peptide_list:
+
+                if not (db_targets, peptide) in dict_has_component:
                     target_peptite = collections.OrderedDict()
                     target_peptite['target_id'] = db_targets
-                    target_peptite['petide_id'] = petide
-                    dict_has_component[(db_targets, petide)] = 1
+                    target_peptite['petide_id'] = peptide
+                    dict_has_component[(db_targets, peptide)] = 1
                     has_components.append(target_peptite)
 
         # in case no polypeptide exists then it has only the drugbank id
@@ -334,6 +375,7 @@ def gather_target_infos(target, drug_targets_info, targets_info, dict_targets_id
 
 
 counter = 0
+# list of the different nodes and relationship pairs dictionaries
 rows = list()
 drug_interactions = list()
 drug_pathways = list()
@@ -364,7 +406,7 @@ reactions_right_db = list()
 reactions_right_dbmet = list()
 reactions_to_protein = list()
 
-# dictionaries for the different entities
+# dictionaries for the different node entities
 reactions = list()
 dict_pharmacologic_class = {}
 dict_carrier_ids = {}
@@ -377,7 +419,22 @@ dict_pathway_ids = {}
 dict_mutated_gene_protein = {}
 dict_has_component = {}
 dict_pathway_enzyme = {}
+
+"""
+Run through each drug in the xml and parse the information into the different dictionaries. Most are the drug 
+information but some are also the salt, product, target, enzyme, carrier, transporter, reaction, gene_variant, 
+metabolite, atc structure and pathway.
+Drug contains information about identifier, type, cas_number, alternative drugbank ids, name, description, group, atc
+codes, inchi, inchikey, synonyms, unii,different references, synthesis_reference, indication, pharmacodynamics,
+mechanism_of_action, toxicity, metabolism, absorption, half_life, protein_binding, route_of_elimination, 
+volume_of_distribution, clearance , the different classification classes, international brands name company, mixtures 
+name ingredients, packagers name url, prices description cost unit, affected organisms, dosages form route strength, 
+atc code levels, ahfs codes, pdb entries,fda label, msds, patents number country approved expires pediatric extension, 
+food interaction, sequences, calculated properties kind value source, experimental properties kind value source, 
+external identifiers and external links resource url.  
+"""
 for i, drug in enumerate(root):
+
     counter += 1
     row = collections.OrderedDict()
 
@@ -403,7 +460,7 @@ for i, drug in enumerate(root):
                      drug.findall("{ns}groups/{ns}group".format(ns=ns))]
     row['atc_codes'] = [code.get('code') for code in
                         drug.findall("{ns}atc-codes/{ns}atc-code".format(ns=ns))]
-    # prepare atc code
+    # prepare atc code for extracting atc structure
     for atc_code in drug.findall("{ns}atc-codes/{ns}atc-code".format(ns=ns)):
         atc_id = atc_code.get('code')
         if atc_id not in dict_atc_nodes:
@@ -427,6 +484,7 @@ for i, drug in enumerate(root):
     row['unii'] = drug.findtext(ns + "unii")
     row['state'] = drug.findtext(ns + "state")
     row['general_references_articles_reference_id_pubmed_citation'] = []
+    # combine each information to one big string
     for article in drug.iterfind('{ns}general-references/{ns}articles/{ns}article'.format(ns=ns)):
         pubmed_id = article.findtext("{ns}pubmed-id".format(ns=ns))
         citation = article.findtext("{ns}citation".format(ns=ns))
@@ -436,6 +494,7 @@ for i, drug in enumerate(root):
         row['general_references_articles_reference_id_pubmed_citation'].append(combined)
 
     row['general_references_textbooks_reference_id_isbn_citation'] = []
+    # combine each information to one big string
     for article in drug.iterfind('{ns}general-references/{ns}textbooks/{ns}textbook'.format(ns=ns)):
         isbn = article.findtext("{ns}isbn".format(ns=ns))
         citation = article.findtext("{ns}citation".format(ns=ns))
@@ -445,6 +504,7 @@ for i, drug in enumerate(root):
         row['general_references_textbooks_reference_id_isbn_citation'].append(combined)
 
     row['general_references_links_reference_id_title_url'] = []
+    # combine each information to one big string
     for article in drug.iterfind('{ns}general-references/{ns}links/{ns}link'.format(ns=ns)):
         title = article.findtext("{ns}title".format(ns=ns))
         url = article.findtext("{ns}url".format(ns=ns))
@@ -454,6 +514,7 @@ for i, drug in enumerate(root):
         row['general_references_links_reference_id_title_url'].append(combined)
 
     row['general_references_attachment_reference_id_title_url'] = []
+    # combine each information to one big string
     for article in drug.iterfind('{ns}general-references/{ns}attachments/{ns}attachment'.format(ns=ns)):
         title = article.findtext("{ns}title".format(ns=ns))
         url = article.findtext("{ns}url".format(ns=ns))
@@ -488,6 +549,10 @@ for i, drug in enumerate(root):
                                                 drug.findall("{ns}classification/{ns}alternative-parent".format(ns=ns))]
     #    drug.findtext(ns + "classification/{ns}alternative-parent".format(ns = ns))
 
+    """
+    The salt node has the information id, name, unii. inchikey, cas nmber, average mass and monoisotopic mass.
+    Also the relationship information are extract between drug and salt.
+    """
     for salt in drug.iterfind('{ns}salts/{ns}salt'.format(ns=ns)):
         salt_dict = collections.OrderedDict()
         drug_salt = collections.OrderedDict()
@@ -505,6 +570,12 @@ for i, drug in enumerate(root):
         drug_salts.append(drug_salt)
         salts.append(salt_dict)
 
+    """
+        The Product node has the information id (ndc code/dpd id/ema number), name, labeller. started_marketing_on, 
+        ended_marketing_on, dosage_form, strength, route, fda_application_number, generic, over_the_counter, approved, 
+        country and source.
+        Also the relationship information are extract between drug and product.
+        """
     for product in drug.iterfind('{ns}products/{ns}product'.format(ns=ns)):
         products_dict = collections.OrderedDict()
         drug_products_dict = collections.OrderedDict()
@@ -518,7 +589,7 @@ for i, drug in enumerate(root):
         if ndc_product_code == '' and dpd_id == '' and ema_ma_number == '':
             print('ohje')
             print(db_ID)
-
+        # one of ema, dpd or ndc is the unique identifier
         if dpd_id != '':
             unique_id = dpd_id
         elif ndc_product_code != '':
@@ -554,9 +625,9 @@ for i, drug in enumerate(root):
         #        print(products_dict)
 
         products.append(products_dict)
-
     row['international_brands_name_company'] = []
     for international_brand in drug.iterfind('{ns}international-brands/{ns}international-brand'.format(ns=ns)):
+        # combine each information to one big string
         name = international_brand.findtext("{ns}name".format(ns=ns))
         company = international_brand.findtext("{ns}company".format(ns=ns))
         combined = name + '::' + company
@@ -564,6 +635,7 @@ for i, drug in enumerate(root):
 
     row['mixtures_name_ingredients'] = []
     dict_mixtures_ingredients_combination_names = {}
+    # make for all ingredients and supplemental-ingredients an dictionary with all names this combination can have
     for part in drug.iterfind('{ns}mixtures/{ns}mixture'.format(ns=ns)):
         name = part.findtext("{ns}name".format(ns=ns))
         ingredients = part.findtext("{ns}ingredients".format(ns=ns))
@@ -577,7 +649,7 @@ for i, drug in enumerate(root):
             dict_mixtures_ingredients_combination_names[(ingredients, supplemental_ingredients)].add(name)
         else:
             dict_mixtures_ingredients_combination_names[(ingredients, supplemental_ingredients)] = {name}
-
+    # make for every combination a string and add to list
     for (ingredient, supplemental_ingredient), names in dict_mixtures_ingredients_combination_names.items():
         names_string = '//'.join(names)
         combined = names_string + '::' + ingredient + ' + ' + supplemental_ingredient if supplemental_ingredient is not None else names_string + '::' + ingredient
@@ -586,6 +658,7 @@ for i, drug in enumerate(root):
 
     row['packagers_name_url'] = []
     for part in drug.iterfind('{ns}packagers/{ns}packager'.format(ns=ns)):
+        # combine each information to one big string
         name = part.findtext("{ns}name".format(ns=ns))
         url = part.findtext("{ns}url".format(ns=ns))
         combined = name + '::' + url
@@ -596,19 +669,20 @@ for i, drug in enumerate(root):
 
     row['prices_description_cost_unit'] = []
     for part in drug.iterfind('{ns}prices/{ns}price'.format(ns=ns)):
+        # combine each information to one big string
         description = part.findtext("{ns}description".format(ns=ns))
         cost = part.find("{ns}cost".format(ns=ns)).get('currency') + ':' + part.findtext("{ns}cost".format(ns=ns))
         unit = part.findtext("{ns}unit".format(ns=ns))
         combined = description + '::' + cost + '::' + unit
         row['prices_description_cost_unit'].append(combined)
 
+    """ 
+    The category ids are from the csv file but get additional information like mesh id and name.
+    Add also relationship between drug and category.
+    """
     for part in drug.iterfind('{ns}categories/{ns}category'.format(ns=ns)):
 
         category = part.findtext("{ns}category".format(ns=ns))
-        # if category == 'Phenylpiperidine Derivatives':
-        #     continue
-        # if db_ID=='DB00454':
-        #     print(category)
 
         category = ' '.join(category.split())
         if category in dict_category_name_to_id:
@@ -631,11 +705,13 @@ for i, drug in enumerate(root):
             pharmacologic_classes.append(pharmacologic_class_dict)
             dict_pharmacologic_class[drugbank_category_id] = mesh_id
 
+
     row['affected_organisms'] = [salt.text for salt in
                                  drug.findall("{ns}affected-organisms/{ns}affected-organism".format(ns=ns))]
 
     row['dosages_form_route_strength'] = []
     for part in drug.iterfind('{ns}dosages/{ns}dosage'.format(ns=ns)):
+        # combine each information to one big string
         form = part.findtext("{ns}form".format(ns=ns))
         route = part.findtext("{ns}route".format(ns=ns))
         strength = part.findtext("{ns}strength".format(ns=ns))
@@ -657,6 +733,7 @@ for i, drug in enumerate(root):
 
     row['patents_number_country_approved_expires_pediatric_extension'] = []
     for part in drug.iterfind('{ns}patents/{ns}patent'.format(ns=ns)):
+        # combine each information to one big string
         number = part.findtext("{ns}number".format(ns=ns))
         country = part.findtext("{ns}country".format(ns=ns))
         approved = part.findtext("{ns}approved".format(ns=ns))
@@ -668,7 +745,7 @@ for i, drug in enumerate(root):
     row['food_interaction'] = [salt.text for salt in
                                drug.findall("{ns}food-interactions/{ns}food-interaction".format(ns=ns))]
 
-    # muss noch geprüft werde das nicht jede verbindung doppelt ist
+    # add all drug-drug interaction
     for part in drug.iterfind('{ns}drug-interactions/{ns}drug-interaction'.format(ns=ns)):
         drug_interaction = collections.OrderedDict()
         drug_interaction['DB_ID1'] = db_ID
@@ -676,11 +753,13 @@ for i, drug in enumerate(root):
         drug_interaction['description'] = part.findtext("{ns}description".format(ns=ns))
         drug_interactions.append(drug_interaction)
 
+    # get all drug sequence information
     all_seq = [seq.text.split('\n', 1) for seq in
                drug.findall("{ns}sequences/{ns}sequence".format(ns=ns))] if drug.findtext(
         "{ns}sequences/{ns}sequence".format(ns=ns)) != None else []
 
     counter = 0
+    # prepare the sequence such they would not make problems in csv files
     for all_spliter in all_seq:
         all_spliter[0] = all_spliter[0].replace(' ', '_').replace('|', '/')
         all_spliter[1] = all_spliter[1].replace('\n', '')
@@ -688,9 +767,11 @@ for i, drug in enumerate(root):
         counter += 1
     row['sequences'] = all_seq
 
+
     #    row['sequences']= [seq.text.replace('\n',' ',1).replace('\r',' ',1).replace('\t','').replace('\n','').replace('\r','') for seq in drug.findall("{ns}sequences/{ns}sequence".format(ns = ns))] if drug.findtext("{ns}sequences/{ns}sequence".format(ns = ns))!=None else []
     row['calculated_properties_kind_value_source'] = []
     for part in drug.iterfind('{ns}calculated-properties/{ns}property'.format(ns=ns)):
+        # combine each information to one big string
         kind = part.findtext("{ns}kind".format(ns=ns))
         value = part.findtext("{ns}value".format(ns=ns))
         source = part.findtext("{ns}source".format(ns=ns))
@@ -699,25 +780,35 @@ for i, drug in enumerate(root):
 
     row['experimental_properties_kind_value_source'] = []
     for part in drug.iterfind('{ns}experimental-properties/{ns}property'.format(ns=ns)):
+        # combine each information to one big string
         kind = part.findtext("{ns}kind".format(ns=ns))
         value = part.findtext("{ns}value".format(ns=ns))
         source = part.findtext("{ns}source".format(ns=ns))
         combined = kind + '::' + value + '::' + source
         row['experimental_properties_kind_value_source'].append(combined)
 
+    # prepare a list of external for with form: [source:id, source:id, ...]
     extern_ids_source = [salt.text for salt in
                          drug.findall("{ns}external-identifiers/{ns}external-identifier/{ns}resource".format(ns=ns))]
     extern_ids = [salt.text for salt in
                   drug.findall("{ns}external-identifiers/{ns}external-identifier/{ns}identifier".format(ns=ns))]
     row['external_identifiers'] = [i + ':' + j for i, j in zip(extern_ids_source, extern_ids)]
 
+
     row['external_links_resource_url'] = []
     for part in drug.iterfind('{ns}external-links/{ns}external-link'.format(ns=ns)):
+        # combine each information to one big string
         resource = part.findtext("{ns}resource".format(ns=ns))
         url = part.findtext("{ns}url".format(ns=ns))
         combined = resource + '::' + url
         row['external_links_resource_url'].append(combined)
 
+    """
+    Generathe the pathway node with properties: pathway id (smpdb id), name and category.
+    Additionally, the the drug pathway is added to the relationship drug-pathway. However, in pathway are more drugs. 
+    This is also used for generate pathway-drug relationships. Also, in pathway are additonal information about enzymes.
+    This information is used to generate realtionships between pathway and enzyme.
+    """
     for part in drug.iterfind('{ns}pathways/{ns}pathway'.format(ns=ns)):
         pathway = collections.OrderedDict()
         drug_pathway = collections.OrderedDict()
@@ -747,6 +838,7 @@ for i, drug in enumerate(root):
         if not drug_pathway in drug_pathways:
             drug_pathways.append(drug_pathway)
 
+        # generate pathway-enzyme relationships
         for enzym in part.findall('{ns}enzymes/{ns}uniprot-id'.format(ns=ns)):
 
             pathway_enzym = collections.OrderedDict()
@@ -761,9 +853,16 @@ for i, drug in enumerate(root):
                 pathway_enzymes.append(pathway_enzym)
                 dict_pathway_enzyme[(smpdb_id, uniprot_id)] = 1
 
+    """
+    Reaction is an edge-node. This means it is an edge, but because it is not a one-to-one relationship it get there own
+    csv file. A reaction has as property a self generated id and a sequence.  Then the Reaction has a left element and
+    a right element. The left and right element can be a metabolite or a drug. This generate the relationships.
+    Howevere, the metabolite get his properties identifier and name from here. However, reaction has also enzymes in the
+    reaction to produce out of the left the right element. These relationships are also added.
+    """
     for part in drug.iterfind('{ns}reactions/{ns}reaction'.format(ns=ns)):
         reaction = collections.OrderedDict()
-
+        # information for reaction node
         reaction['sequence'] = part.findtext("{ns}sequence".format(ns=ns))
         reaction['id'] = counter_reaction_ids
         reaction_id = counter_reaction_ids
@@ -772,6 +871,7 @@ for i, drug in enumerate(root):
         right = part.findtext("{ns}right-element/{ns}drugbank-id".format(ns=ns))
         reactions.append(reaction)
 
+        # information for left edge and maybe generate a metabolite node
         reaction_to_left = collections.OrderedDict()
         reaction_to_left['reaction_id'] = reaction_id
         if left[0:5] == 'DBMET':
@@ -787,6 +887,7 @@ for i, drug in enumerate(root):
             reaction_to_left['drug_id'] = left
             reactions_left_db.append(reaction_to_left)
 
+        # information for right edge and maybe generate a metabolite node
         reaction_to_right = collections.OrderedDict()
         reaction_to_right['reaction_id'] = reaction_id
         if right[0:5] == 'DBMET':
@@ -803,7 +904,7 @@ for i, drug in enumerate(root):
             reactions_right_db.append(reaction_to_right)
 
         enzymes_list = []
-
+        # prepare relationships between enzymes and reactions
         for enzyme in part.findall('{ns}enzymes/{ns}enzyme'.format(ns=ns)):
             reaction_to_protein = collections.OrderedDict()
 
@@ -816,6 +917,11 @@ for i, drug in enumerate(root):
             enzymes_list.append(enzyme_drugbank_id + ':' + enzyme_uniprot_id)
             reactions_to_protein.append(reaction_to_protein)
 
+    """
+    There exists mutated gene or protein information nodes with properties protein name, gene symbol, uniprot id,
+    rs id, allele, defining change and a id (rs id or gene symbol). The relationship between drugbank and the  mutated 
+    gene or protein has additional information: description pubmed id and type.
+    """
     for part in drug.iterfind('{ns}snp-effects/{ns}effect'.format(ns=ns)):
         snp_effect = collections.OrderedDict()
         mutated_gene_protein = collections.OrderedDict()
@@ -823,8 +929,9 @@ for i, drug in enumerate(root):
         uniprot_id = part.findtext("{ns}uniprot-id".format(ns=ns))
         rs_id = part.findtext("{ns}rs-id".format(ns=ns))
         gene_symbol = part.findtext("{ns}gene-symbol".format(ns=ns))
-
+        # gather information for relationship
         snp_effect['drugbank_id'] = db_ID
+        # check for unique identifier for mutated gene or protein
         if rs_id != '':
             snp_effect['partner_id'] = rs_id
             unique_id = rs_id
@@ -834,7 +941,7 @@ for i, drug in enumerate(root):
         snp_effect['description'] = part.findtext("{ns}description".format(ns=ns))
         snp_effect['pubmed_id'] = part.findtext("{ns}pubmed-id".format(ns=ns))
         snp_effect['type'] = 'Effect Directly Studied'
-
+        # generate the mutated gene or protein node information
         if unique_id not in dict_mutated_gene_protein:
             mutated_gene_protein['protein_name'] = part.findtext("{ns}protein-name".format(ns=ns))
             mutated_gene_protein['gene_symbol'] = part.findtext("{ns}gene-symbol".format(ns=ns))
@@ -849,6 +956,11 @@ for i, drug in enumerate(root):
             mutated_gene_proteins.append(mutated_gene_protein)
         snp_effects.append(snp_effect)
 
+    """
+        There exists mutated gene or protein information nodes with properties protein name, gene symbol, uniprot id,
+        rs id, allele, defining change and a id (rs id or gene symbol). The relationship between drugbank and the mutated 
+        gene or protein has additional information: description pubmed id and type.
+        """
     for part in drug.iterfind('{ns}snp-adverse-drug-reactions/{ns}reaction'.format(ns=ns)):
         snp_adverse_drug_reaction = collections.OrderedDict()
         mutated_gene_protein = collections.OrderedDict()
@@ -857,7 +969,9 @@ for i, drug in enumerate(root):
         rs_id = part.findtext("{ns}rs-id".format(ns=ns))
         gene_symbol = part.findtext("{ns}gene-symbol".format(ns=ns))
 
+        # gather information for relationship
         snp_adverse_drug_reaction['drugbank_id'] = db_ID
+        # check for unique identifier for mutated gene or protein
         if rs_id != '':
             snp_adverse_drug_reaction['partner_id'] = rs_id
             unique_id = rs_id
@@ -868,6 +982,7 @@ for i, drug in enumerate(root):
         snp_adverse_drug_reaction['description'] = part.findtext("{ns}description".format(ns=ns))
         snp_adverse_drug_reaction['pubmed_id'] = part.findtext("{ns}pubmed-id".format(ns=ns))
         snp_adverse_drug_reaction['type'] = 'ADR Directly Studied'
+        # generate the mutated gene or protein node information
         if unique_id not in dict_mutated_gene_protein:
             mutated_gene_protein['protein_name'] = part.findtext("{ns}protein-name".format(ns=ns))
             mutated_gene_protein['gene_symbol'] = part.findtext("{ns}gene-symbol".format(ns=ns))
@@ -889,10 +1004,6 @@ for i, drug in enumerate(root):
     gather_target_infos('{ns}enzymes/{ns}enzyme', drug_enzymes, enzymes, dict_enzyme_ids, db_ID, True, False)
 
     # carries
-    b = False
-    #    if db_ID=='DB00137':
-    #        print('jup')
-    #        b=True
     gather_target_infos('{ns}carriers/{ns}carrier', drug_carriers, carriers, dict_carrier_ids, db_ID, False, False)
 
     # transporter
@@ -924,12 +1035,12 @@ print('number of entries in drugbank:' + str(counter))
 print(datetime.datetime.utcnow())
 
 
-# sys.exit()
-# alias_dict = {row['drugbank_id']: row['aliases'] for row in rows}
-# with open('./drugbank/aliases.json', 'w') as fp:
-#     json.dump(alias_dict, fp, indent=2, sort_keys=True)
-
 def collapse_list_values(row):
+    """
+    Do some preparation for information with list. Like remove empty values and make the list to a string
+    :param row:
+    :return:
+    """
     for key, value in row.items():
         if isinstance(value, list):
             #            print(key)
@@ -945,54 +1056,51 @@ def collapse_list_values(row):
                     del value[j]
 
             if len(value) > 0:
-                #                if key=='inchikeys':
-                #                    print(value)
                 string_value = '||'.join(value)
                 row[key] = string_value.replace('\t', '').replace('\n', '').replace('\r', '')
-            #                if key=='food_interaction':
-            #                    print('blub')
             else:
                 row[key] = ''
 
     return row
 
 
-# preperate the list
-def preperation(list_information):
+# prepare the list information
+def preparation(list_information):
     list_information = list(map(collapse_list_values, list_information))
     return list_information
 
 
 print(datetime.datetime.utcnow())
-print('preperation of information lists')
-rows = preperation(rows)
-drug_interactions = preperation(drug_interactions)
-drug_pathways = preperation(drug_pathways)
-pathway_enzymes = preperation(pathway_enzymes)
-pathways = preperation(pathways)
-reactions = preperation(reactions)
-snp_effects = preperation(snp_effects)
-mutated_gene_proteins = preperation(mutated_gene_proteins)
-snp_adverse_drug_reactions = preperation(snp_adverse_drug_reactions)
-drug_targets = preperation(drug_targets)
-targets = preperation(targets)
-drug_enzymes = preperation(drug_enzymes)
-enzymes = preperation(enzymes)
-drug_carriers = preperation(drug_carriers)
-carriers = preperation(carriers)
-drug_transporters = preperation(drug_transporters)
-transporters = preperation(transporters)
-drug_salts = preperation(drug_salts)
-salts = preperation(salts)
-products = preperation(products)
-drug_products = preperation(drug_products)
-metabolites = preperation(metabolites)
-has_components = preperation(has_components)
-pharmacologic_classes = preperation(pharmacologic_classes)
-pharmacologic_class_drug = preperation(pharmacologic_class_drug)
+print('preparation of information lists')
+# prepare the information from the different different dictionaries
+rows = preparation(rows)
+drug_interactions = preparation(drug_interactions)
+drug_pathways = preparation(drug_pathways)
+pathway_enzymes = preparation(pathway_enzymes)
+pathways = preparation(pathways)
+reactions = preparation(reactions)
+snp_effects = preparation(snp_effects)
+mutated_gene_proteins = preparation(mutated_gene_proteins)
+snp_adverse_drug_reactions = preparation(snp_adverse_drug_reactions)
+drug_targets = preparation(drug_targets)
+targets = preparation(targets)
+drug_enzymes = preparation(drug_enzymes)
+enzymes = preparation(enzymes)
+drug_carriers = preparation(drug_carriers)
+carriers = preparation(carriers)
+drug_transporters = preparation(drug_transporters)
+transporters = preparation(transporters)
+drug_salts = preparation(drug_salts)
+salts = preparation(salts)
+products = preparation(products)
+drug_products = preparation(drug_products)
+metabolites = preparation(metabolites)
+has_components = preparation(has_components)
+pharmacologic_classes = preparation(pharmacologic_classes)
+pharmacologic_class_drug = preparation(pharmacologic_class_drug)
 
 
-# preperation and generation of an tsv
+# preparation and generation of an tsv
 def generate_tsv_file(columns, list_information, file_name):
     # print(list_information)
     # print(columns)
@@ -1005,6 +1113,7 @@ def generate_tsv_file(columns, list_information, file_name):
 
 print(datetime.datetime.utcnow())
 print('malsehen')
+# csv header
 columns = ['drugbank_id', 'alternative_drugbank_ids', 'name', 'cas_number', 'unii', 'atc_codes',
            'state', 'groups', 'general_references_links_reference_id_title_url',
            'general_references_attachment_reference_id_title_url',
@@ -1027,6 +1136,7 @@ columns = ['drugbank_id', 'alternative_drugbank_ids', 'name', 'cas_number', 'uni
 drugbank_df = pandas.DataFrame.from_dict(rows)[columns]
 drugbank_df.head()
 
+# the different csv header for the different csv files
 columns_drug_interaction = ['DB_ID1', 'DB_ID2', 'description']
 # drugbank_df_drug_interaction = pandas.DataFrame.from_dict(drug_interactions)[columns_drug_interaction]
 # drugbank_df_drug_interaction.head()
@@ -1063,6 +1173,7 @@ columns_reaction_right_db = ['reaction_id', 'drug_id']
 columns_reaction_right_dbmet = ['reaction_id', 'meta_id']
 columns_reaction_enzyme = ['reaction_id', 'protein_id', 'protein_id_db']
 
+# prepare slim drugbank drug versionbased on approved drug, has inchi and is a small molecule
 drugbank_slim_df = drugbank_df[
     drugbank_df.groups.map(lambda x: 'approved' in x) &
     drugbank_df.inchi.map(lambda x: x is not None) &
@@ -1078,6 +1189,7 @@ drugbank_df.to_csv(path, sep='\t', index=False, encoding='utf-8-sig')
 path = os.path.join('drugbank', 'drugbank-slim2_drug.tsv')
 drugbank_slim_df.to_csv(path, sep='\t', index=False, encoding='utf-8')
 
+# generate the csv gor alld the different dictionaries and csv headers
 generate_tsv_file(columns_drug_interaction, drug_interactions, 'drugbank_interaction.tsv')
 generate_tsv_file(columns_drug_pathway, drug_pathways, 'drugbank_drug_pathway.tsv')
 generate_tsv_file(columns_pathway_enzymes, pathway_enzymes, 'drugbank_pathway_enzymes.tsv')
@@ -1120,6 +1232,7 @@ cypher_file = open('cypher_atc.cypher', 'w', encoding='utf-8')
 
 query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/drugbank/%s" As line FIELDTERMINATOR '\t' '''
 
+# write info into csv file
 atc_file_name = 'atc_node.tsv'
 atc_file = open(atc_file_name, 'w', encoding='utf-8')
 csv_atc = csv.writer(atc_file, delimiter='\t')
@@ -1128,6 +1241,7 @@ for identifier, name in dict_atc_nodes.items():
     csv_atc.writerow([identifier, name])
 atc_file.close()
 
+# prepare act node queries
 query = query_start + " Create (n:atc{identifier:line.id, name:line.name});\n"
 query = query % (atc_file_name)
 cypher_file.write(query)
@@ -1135,6 +1249,7 @@ cypher_file.write(':begin\n')
 cypher_file.write('Create Constraint On (node:atc) Assert node.identifier Is Unique; \n')
 cypher_file.write(':commit\n')
 
+# prepare atc edge file
 atc_file_name = 'atc_edge.tsv'
 atc_file = open(atc_file_name, 'w', encoding='utf-8')
 csv_atc = csv.writer(atc_file, delimiter='\t')
@@ -1142,6 +1257,7 @@ csv_atc.writerow(['id_upper', 'id_down'])
 for (identifier_upper, identifier_down) in set_atc_edges:
     csv_atc.writerow([identifier_upper, identifier_down])
 atc_file.close()
+#prepare atc edge query
 query = query_start + " Match (n:atc{identifier:line.id_upper}), (m:atc{identifier:line.id_down}) Create (n)<-[:is_a]-(m);\n"
 query = query % (atc_file_name)
 cypher_file.write(query)
