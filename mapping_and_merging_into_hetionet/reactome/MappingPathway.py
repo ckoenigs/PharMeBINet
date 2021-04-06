@@ -43,6 +43,7 @@ dict_pathwayId_to_resource = {}
 
 # Höchste Zahl des Identifiers um neue Identifier zu vergeben (PC_11_...)
 highest_identifier = 0
+
 '''
 load in all pathways from hetionet in a dictionary
 '''
@@ -119,6 +120,7 @@ def load_reactome_pathways_in():
             # Liste von idOwns wird nach dem PC_11_Zahl durchsucht und als String aneinandergehängt (join)
             # als Trennungssymbol wird | genutzt
             own_ids = dict_pathway_hetionet_xrefs[hetionet_identifier]
+            own_ids.append('reactome:'+pathways_id)
             string_own_ids = '|'.join(go_through_xrefs_and_change_if_needed_source_name(own_ids,'pathway'))
             resource = dict_pathwayId_to_resource[hetionet_identifier]
             resource.append('Reactome')
@@ -136,6 +138,7 @@ def load_reactome_pathways_in():
 
             hetionet_identifier = dict_pathway_hetionet_names[pathways_name]
             own_ids = dict_pathway_hetionet_xrefs[hetionet_identifier]
+            own_ids.append('reactome:'+pathways_id)
             string_own_ids = '|'.join(go_through_xrefs_and_change_if_needed_source_name(own_ids,'pathway'))
             resource = dict_pathwayId_to_resource[hetionet_identifier]
             resource.append('Reactome')

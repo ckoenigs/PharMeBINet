@@ -102,11 +102,11 @@ def load_ctd_pathways_in():
             continue
 
         # check if the ctd pathway id is part in the himmelstein xref
-        if pathways_id in dict_own_id_to_identifier:
+        if 'reactome:'+pathways_id in dict_own_id_to_identifier:
             counter_map_with_id += 1
             # if len(dict_own_id_to_pcid_and_other[pathways_id]) > 1:
             #     print('multiple für identifier')
-            csv_mapped.writerow([pathways_id, dict_own_id_to_identifier[pathways_id], 'id'])
+            csv_mapped.writerow([pathways_id, dict_own_id_to_identifier['reactome:'+pathways_id], 'id'])
 
 
         elif pathways_name in dict_pathway_hetionet_names:
@@ -135,7 +135,7 @@ generate connection between mapping pathways of ctd and hetionet and generate ne
 
 def create_cypher_file():
     cypher_file = open('output/cypher.cypher', 'a',encoding='utf-8')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ctd/pathway/mapped_pathways.tsv" As line FIELDTERMINATOR '\\t' Match (d:Pathway{identifier:line.id_hetionet}),(c:CTD_pathway{pathway_id:line.id}) Create (d)-[:equal_to_CTD_pathway]->(c) Set d.resource= d.resource+'CTD', d.ctd="yes", d.ctd_url="http://ctdbase.org/detail.go?type=pathway&acc=%"+line.id, c.hetionet_id=line.id_hetionet;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ctd/pathway/mapped_pathways.tsv" As line FIELDTERMINATOR '\\t' Match (d:Pathway{identifier:line.id_hetionet}),(c:CTD_pathway{pathway_id:line.id}) Create (d)-[:equal_to_CTD_pathway{how_mapped:line.mapped}]->(c) Set d.resource= d.resource+'CTD', d.ctd="yes", d.ctd_url="http://ctdbase.org/detail.go?type=pathway&acc=%"+line.id, c.hetionet_id=line.id_hetionet;\n'''
     cypher_file.write(query)
 
     # add query to update disease nodes with do='no'

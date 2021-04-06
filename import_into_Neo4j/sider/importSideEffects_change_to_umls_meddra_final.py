@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Apr 19 18:07:14 2017
-
-@author: Cassandra
-"""
-
 import datetime
 import sys, csv
 
@@ -127,14 +120,14 @@ properties:
 
 def import_meddra_all_se():
     fobj = open(filepath + "meddra_all_se.tsv")
-    for line in fobj:
-        splitted = line.split('\t')
+    csv_reader= csv.reader(fobj, delimiter='\t')
+    for splitted in csv_reader:
         stitchIDflat = splitted[0]
         stitchIDstereo = splitted[1]
         umlsIDlable = splitted[2]
         meddraType = splitted[3]
         umlsIDmeddra = splitted[4]
-        name = splitted[5].replace('\n', '')
+        name = splitted[5]
 
         # fill the dictionary with stitch flat id as key and add the different stitch stereo IDs
         if stitchIDflat in dict_flat_to_list_stereo:
@@ -159,7 +152,7 @@ def import_meddra_all_se():
         if not umlsIDmeddra in dict_sideEffects:
             dict_sideEffects[umlsIDmeddra] = sideEffect
         else:
-            # if the existing SE has not the prefered nam take the prefered name
+            # if the existing SE has not the prefered name take the prefered name
             if meddraType == 'PT':
                 if dict_sideEffects[umlsIDmeddra].meddraType != 'PT':
                     dict_sideEffects[umlsIDmeddra] = sideEffect
@@ -186,8 +179,8 @@ import meddra_freq.tsv and add information into the dictionaries
 
 def import_meddra_freq():
     fobj = open(filepath + "meddra_freq.tsv")
-    for line in fobj:
-        splitted = line.split('\t')
+    csv_reader= csv.reader(fobj, delimiter='\t')
+    for splitted in csv_reader:
         stitchIDflat = splitted[0]
         stitchIDstereo = splitted[1]
         umlsIDlable = splitted[2]
@@ -197,7 +190,7 @@ def import_meddra_freq():
         upperFreq = splitted[6]
         meddraType = splitted[7]
         umlsIDmeddra = splitted[8]
-        name = splitted[9].replace('\n', '')
+        name = splitted[9]
 
         # fill the dictionary with stitch flat id as key and add the different stitch stereo IDs
         if stitchIDflat in dict_flat_to_list_stereo:
@@ -252,8 +245,8 @@ import meddra_all_lable_indications.tsv and add information into dictionaries
 
 def import_meddra_all_lable_indication():
     fobj = open(filepath + "meddra_all_label_indications.tsv")
-    for line in fobj:
-        splitted = line.split('\t')
+    csv_reader= csv.reader(fobj, delimiter='\t')
+    for splitted in csv_reader:
         sourceLableIndi = splitted[0]
         stitchIDflat = splitted[1]
         stitchIDstereo = splitted[2]
@@ -261,7 +254,7 @@ def import_meddra_all_lable_indication():
         methodDetection = splitted[4]
         meddraType = splitted[6]
         umlsIDmeddra = splitted[7]
-        name = splitted[8].replace('\n', '')
+        name = splitted[8]
 
         # fill the dictionary with stitch flat id as key and add the different stitch stereo IDs
         if stitchIDflat in dict_flat_to_list_stereo:
@@ -315,14 +308,14 @@ import meddra_all_indications.tsv and add information into dictionaries
 def import_meddra_all_indication():
     fobj = open(filepath + "meddra_all_indications.tsv")
     counter = 0
-    for line in fobj:
-        splitted = line.split('\t')
+    csv_reader= csv.reader(fobj, delimiter='\t')
+    for splitted in csv_reader:
         stitchIDflat = splitted[0]
         umlsIDlable = splitted[1]
         conceptName = splitted[3]
         meddraType = splitted[4]
         umlsIDmeddra = splitted[5]
-        name = splitted[6].replace('\n', '')
+        name = splitted[6]
 
 
         # if the side effect has no UMLS ID for meddera use the UMLS ID for lable

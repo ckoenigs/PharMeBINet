@@ -294,7 +294,7 @@ def generate_rela_csv_and_cypher_queries():
             query_node_middle += head + ':split(line.' + head + ',"|"), '
         else:
             query_node_middle += head + ':line.' + head + ', '
-    query_node = query_start + query_node_middle[:-2] + ', pathway:"yes"});\n'
+    query_node = query_start + query_node_middle[:-2] + ', combined_wikipathway_and_pathway_common:"yes"});\n'
     query_node = query_node % ('node')
 
     cypher_file.write(query_node)
@@ -312,7 +312,7 @@ def generate_rela_csv_and_cypher_queries():
         else:
             query_rela_middle += '(p:Pathway{identifier:line.' + head + '}) ,'
     query_rela = query_start + query_rela_middle[
-                               :-2] + ' Create (g)-[:PARTICIPATES_GpPW{license:p.license, source:p.source, unbiased:false, url:p.url, resource:p.source}]->(p);\n'
+                               :-2] + ' Create (g)-[:PARTICIPATES_GpPW{license:p.license, source:p.source, unbiased:false, url:p.url, resource:p.source, combined_wikipathway_and_pathway_common:"yes"}]->(p);\n'
     query_rela = query_rela % ('rela')
     cypher_file.write(query_rela)
 
