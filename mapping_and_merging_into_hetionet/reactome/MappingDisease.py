@@ -157,10 +157,10 @@ def create_cypher_file():
     cypher_file.write(query)
 
 
-    cypher_file.write(':begin\n')
-    query = '''MATCH (d:Disease_reactome) WHERE NOT  exists(d.reactome) SET d.reactome="no";\n '''
-    cypher_file.write(query)
-    cypher_file.write(':commit\n')
+    # cypher_file.write(':begin\n')
+    # query = '''MATCH (d:Disease_reactome) WHERE NOT  exists(d.reactome) SET d.reactome="no";\n '''
+    # cypher_file.write(query)
+    # cypher_file.write(':commit\n')
 
 def main():
     global path_of_directory

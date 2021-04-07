@@ -73,6 +73,12 @@ echo cc
 
 python3 GO_CellComp.py $path_to_project > gocellcomp/output_map.txt
 
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo drug
+
+python3 MappingDrug.py $path_to_project > drug/output_map.txt
+
 echo integrate mapping node with neo4j shell
 now=$(date +"%F %T")
 echo "Current time: $now"
