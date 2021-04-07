@@ -216,11 +216,6 @@ def load_pharmgkb_phenotypes_in():
             counter_map += 1
             continue
 
-        if 'SnoMedCT' in dict_source_to_ids:
-            found_a_mapping = check_for_mapping(dict_source_to_ids, 'SnoMedCT', 'Snomed_symptom',
-                                                dict_xrefs_to_dict_xref_to_symptom['snomed'],
-                                                dict_csv_map['Symptom'], identifier, dict_symptom_to_resource)
-
         if 'name' in dict_names:
             found_a_mapping = check_for_mapping(dict_names, 'name', 'name_symptom', dict_symptom_name_to_symptom_id,
                                                 dict_csv_map['Symptom'],
@@ -229,6 +224,15 @@ def load_pharmgkb_phenotypes_in():
         if found_a_mapping:
             counter_map += 1
             continue
+
+        # if 'SnoMedCT' in dict_source_to_ids:
+        #     found_a_mapping = check_for_mapping(dict_source_to_ids, 'SnoMedCT', 'Snomed_symptom',
+        #                                         dict_xrefs_to_dict_xref_to_symptom['snomed'],
+        #                                         dict_csv_map['Symptom'], identifier, dict_symptom_to_resource)
+        #
+        # if found_a_mapping:
+        #     counter_map += 1
+        #     continue
 
         if 'UMLS' in dict_source_to_ids:
             found_a_mapping = check_for_mapping(dict_source_to_ids, 'UMLS', 'UMLS_symptom',
@@ -239,25 +243,9 @@ def load_pharmgkb_phenotypes_in():
             counter_map += 1
             continue
 
-        if 'alternate_names' in result:
-            for alternate_name in result['alternate_names']:
-                alternate_name = alternate_name.lower()
-                add_entry_to_dictionary(dict_names, 'name', alternate_name)
-            # found_a_mapping = check_for_mapping(dict_names,'name' ,'alternate_names_disease', dict_disease_name_to_disease_id,
-            #                                     dict_csv_map['Disease'],
-            #                                     identifier, dict_disease_to_resource)
-            if not found_a_mapping:
-                found_a_mapping = check_for_mapping(dict_names, 'name', 'alternate_names_symptom',
-                                                    dict_symptom_name_to_symptom_id,
-                                                    dict_csv_map['Symptom'],
-                                                    identifier, dict_symptom_to_resource)
-
-        if found_a_mapping:
-            counter_map += 1
-            continue
 
         if 'name' in dict_names:
-            found_a_mapping = check_for_mapping(dict_names, 'name', 'alternate_names_and_name_se',
+            found_a_mapping = check_for_mapping(dict_names, 'name', 'name_se',
                                                 dict_se_name_to_se_id, dict_csv_map['SideEffect'],
                                                 identifier,
                                                 dict_se_to_resource)
@@ -270,6 +258,19 @@ def load_pharmgkb_phenotypes_in():
             found_a_mapping = check_for_mapping(dict_source_to_ids, 'UMLS', 'UMLS_se',
                                                 dict_xrefs_to_dict_xref_to_se['umls'],
                                                 dict_csv_map['SideEffect'], identifier, dict_se_to_resource)
+
+        if found_a_mapping:
+            counter_map += 1
+            continue
+
+        # if 'alternate_names' in result:
+        #     for alternate_name in result['alternate_names']:
+        #         alternate_name = alternate_name.lower()
+        #         add_entry_to_dictionary(dict_names, 'name', alternate_name)
+        #     found_a_mapping = check_for_mapping(dict_names, 'name', 'alternate_names_and_name_se',
+        #                                        dict_se_name_to_se_id, dict_csv_map['SideEffect'],
+        #                                        identifier,
+        #                                        dict_se_to_resource)
 
         if found_a_mapping:
             counter_map += 1
