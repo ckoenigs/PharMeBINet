@@ -187,7 +187,7 @@ generate connection between mapping drug of reactome and hetionet and generate n
 
 
 def create_cypher_file():
-    cypher_file = open('output/cypher.cypher', 'a', encoding="utf-8")
+    cypher_file = open('output/cypher_drug.cypher', 'w', encoding="utf-8")
     query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/reactome/drug/mapped_drug.tsv" As line FIELDTERMINATOR "\\t" MATCH (d:Compound{identifier:line.id_hetionet}),(c:ReferenceTherapeutic_reactome{identifier:line.id}) CREATE (d)-[: equal_to_reactome_drug]->(c) SET d.resource = split(line.resource, '|'), d.reactome = "yes";\n'''
     query = query % (path_of_directory)
     cypher_file.write(query)
