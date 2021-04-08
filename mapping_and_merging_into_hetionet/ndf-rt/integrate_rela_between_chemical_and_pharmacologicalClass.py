@@ -42,7 +42,7 @@ def write_files(label, direction_1, direction_2, rela_name):
 
 
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/ndf-rt/%s" As line FIELDTERMINATOR '\\t' 
-            Match (c:%s{identifier:line.chemical_id}), (p:PharmacologicClass{identifier:line.pharmacological_class_id}) Merge (c)%s[r:%s]%s(p) On Create Set r.source=line.source, r.resource=['NDF-RT'], r.url='http://purl.bioontology.org/ontology/NDFRT/'+line.pharmacological_class_id , r.license='UMLS license, available at https://uts.nlm.nih.gov/license.html', r.unbiased=false, r.ndf_rt='yes' On Match Set r.resourcer=r.resource+'NDF-RT' , r.ndf_rt='yes';'''
+            Match (c:%s{identifier:line.chemical_id}), (p:PharmacologicClass{identifier:line.pharmacological_class_id}) Merge (c)%s[r:%s]%s(p) On Create Set r.source=line.source, r.resource=['NDF-RT'], r.url='http://purl.bioontology.org/ontology/NDFRT/'+line.pharmacological_class_id , r.license='UMLS license, available at https://uts.nlm.nih.gov/license.html', r.unbiased=false, r.ndf_rt='yes' On Match Set r.resource=r.resource+'NDF-RT' , r.ndf_rt='yes';'''
     query = query % (path_of_directory, file_name, label, direction_1, rela_name, direction_2)
     cypher_file.write(query)
 
@@ -69,7 +69,7 @@ def load_connections(label):
     Load all connection betweenn chemical and pharmacological class from ndf-rt
     :return:
     '''
-    query = "Match (c:%s)--(:NDF_RT_DRUG_KIND)-[t]-(n)--(d:PharmacologicClass)  Where any(x in labels(n) where x in ['NDF_RT_MECHANISM_OF_ACTION_KIND','NDF_RT_PHARMACOKINETICS_KIND','NDF_RT_PHYSIOLOGIC_EFFECT_KIND','NDF_RT_THERAPEUTIC_CATEGORY_KIND']) Return c.identifier, type(t), t, d.identifier"
+    query = "Match (c:%s)--(:NDFRT_DRUG_KIND)-[t]-(n)--(d:PharmacologicClass)  Where any(x in labels(n) where x in ['NDFRT_MECHANISM_OF_ACTION_KIND','NDFRT_PHARMACOKINETICS_KIND','NDFRT_PHYSIOLOGIC_EFFECT_KIND','NDFRT_THERAPEUTIC_CATEGORY_KIND']) Return c.identifier, type(t), t, d.identifier"
     query = query % (label)
     results = g.run(query)
     for chemical_id, rela_type, rela, pharmacological_class_id, in results:
@@ -96,11 +96,13 @@ def load_connections(label):
 
         dict_mapping_pairs[(rela_type, label)][(chemical_id, pharmacological_class_id)].add(source)
 
-    for (rela_type, label), dict_pair_to_source in dict_mapping_pairs.items():
+    for (rela_type, label_loop), dict_pair_to_source in dict_mapping_pairs.items():
+        if label != label_loop:
+            continue
         for (chemical_id, pharmacological_class_id), sources in dict_pair_to_source.items():
             source = ' and '.join(
                 ['NDF-RT' if rela_source == 'NDFRT' else rela_source + ' via NDF-RT' for rela_source in sources])
-            dict_rela_to_csv[(rela_type, label)].writerow([chemical_id, pharmacological_class_id, source])
+            dict_rela_to_csv[(rela_type, label_loop)].writerow([chemical_id, pharmacological_class_id, source])
 
 
 def main():
