@@ -42,6 +42,7 @@ python3 integration_CTD_chemicals_into_hetionet.py $path_to_project > chemical/o
 
 now=$(date +"%F %T")
 echo "Current time: $now"
+echo integrate nodes into database
 
 $path_neo4j/cypher-shell -u neo4j -p test -f output/cypher.cypher > output/output_cypher.txt
 
@@ -49,7 +50,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 
 
-sleep 180
+sleep 60
 $path_neo4j/neo4j restart
 sleep 120
 
@@ -108,7 +109,7 @@ $path_neo4j/cypher-shell -u neo4j -p test -f output/cypher_edge.cypher > output/
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-sleep 180
+sleep 60
 $path_neo4j/neo4j restart
 sleep 120
 

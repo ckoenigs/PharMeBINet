@@ -85,7 +85,7 @@ echo "Current time: $now"
 
 $path_neo4j/cypher-shell -u neo4j -p test -f output/cypher.cypher
 
-sleep 180
+sleep 120
 
 $path_neo4j/neo4j restart
 
@@ -104,7 +104,7 @@ echo other nodes integration
 
 $path_neo4j/cypher-shell -u neo4j -p test -f other_reactome_node_integration.cypher
 
-sleep 180
+sleep 120
 
 $path_neo4j/neo4j restart
 
@@ -138,7 +138,7 @@ echo "Current time: $now"
 
 $path_neo4j/cypher-shell -u neo4j -p test -f output/cypher_edge.cypher 
 
-sleep 180
+sleep 120
 
 $path_neo4j/neo4j restart
 
