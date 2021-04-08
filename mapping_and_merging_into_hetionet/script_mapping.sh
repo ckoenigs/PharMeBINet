@@ -240,6 +240,15 @@ cd pharmGKB
 
 cd ..
 
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo dbSNP
+cd dbSNP
+
+./script_to_get_dbSNPs_information.sh $path_neo4j $path_to_project > output_script.txt
+
+cd ..
+
 
 exit 1
 
