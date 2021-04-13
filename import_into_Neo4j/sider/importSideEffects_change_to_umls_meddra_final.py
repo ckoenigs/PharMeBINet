@@ -360,7 +360,7 @@ generate a file with all side effects which has no umls id meddra and use the um
 
 
 def generate_file_umls_id_label():
-    g = open('Sider_cuis_which_are_from_umlsIdLabel.tsv', 'w')
+    g = open('output/Sider_cuis_which_are_from_umlsIdLabel.tsv', 'w')
     g.write('umlsIdLabel \t name \n')
     for cui, name in dict_cui_which_use_label_id.items():
         g.write(cui + '\t' + name + '\n')
@@ -379,25 +379,25 @@ def generate_cypher_file():
     print('drug Create')
     print (datetime.datetime.utcnow())
     # create cypher file
-    cypher_file= open('cypher.cypher','w')
+    cypher_file= open('output/cypher.cypher','w')
     #query for drugs
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'master_database_change/import_into_Neo4j/sider/drug.csv" As line Create (:drug_Sider{stitchIDflat: line.stitchIDflat , stitchIDstereo: line.stitchIDstereo, PubChem_Coupound_ID: line.PubChem_Coupound_ID} ); \n'
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'master_database_change/import_into_Neo4j/sider/output/drug.csv" As line Create (:drug_Sider{stitchIDflat: line.stitchIDflat , stitchIDstereo: line.stitchIDstereo, PubChem_Coupound_ID: line.PubChem_Coupound_ID} ); \n'
     cypher_file.write(query)
     cypher_file.write(':begin\n')
     cypher_file.write('Create Constraint On (node:drug_Sider) Assert node.stitchIDstereo Is Unique; \n')
     cypher_file.write(':commit \n Call db.awaitIndexes(300);  \n ')
     #query for side effects
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'master_database_change/import_into_Neo4j/sider/se.csv" As line Create (:se_Sider{meddraType: line.meddraType , conceptName: line.conceptName, umlsIDmeddra: line.umlsIDmeddra, name: line.name, umls_concept_id: line.umls_concept_id} ); \n'
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'master_database_change/import_into_Neo4j/sider/output/se.csv" As line Create (:se_Sider{meddraType: line.meddraType , conceptName: line.conceptName, umlsIDmeddra: line.umlsIDmeddra, name: line.name, umls_concept_id: line.umls_concept_id} ); \n'
     cypher_file.write(query)
     cypher_file.write(':begin\n')
     cypher_file.write('Create Constraint On (node:se_Sider) Assert node.umlsIDmeddra Is Unique; \n')
     cypher_file.write(':commit \n Call db.awaitIndexes(300); \n ')
     #query for relationships relationships
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'master_database_change/import_into_Neo4j/sider/rela.csv" As line Match (drug:drug_Sider{stitchIDstereo: line.stitchIDstereo}), (se:se_Sider{umlsIDmeddra: line.umlsIDmeddra}) Create (drug)-[:Causes{placebo: line.placebo , freq: line.freq, lowerFreq: line.lowerFreq , upperFreq: line.upperFreq, placeboFreq: line.placeboFreq, placeboLowerFreq: line.placeboLowerFreq, placeboUpperFreq: line.placeboUpperFreq}] ->(se); \n'
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'master_database_change/import_into_Neo4j/sider/output/rela.csv" As line Match (drug:drug_Sider{stitchIDstereo: line.stitchIDstereo}), (se:se_Sider{umlsIDmeddra: line.umlsIDmeddra}) Create (drug)-[:Causes{placebo: line.placebo , freq: line.freq, lowerFreq: line.lowerFreq , upperFreq: line.upperFreq, placeboFreq: line.placeboFreq, placeboLowerFreq: line.placeboLowerFreq, placeboUpperFreq: line.placeboUpperFreq}] ->(se); \n'
     cypher_file.write(query)
 
     #create drug csv
-    writer=open('drug.csv','w')
+    writer=open('output/drug.csv','w')
     csv_writer=csv.writer(writer)
     csv_writer.writerow(['stitchIDflat', 'stitchIDstereo', 'PubChem_Coupound_ID'])
     for key, value in dict_drug.items():
@@ -408,7 +408,7 @@ def generate_cypher_file():
     print('side effect Create')
     print (datetime.datetime.utcnow())
     #create side effect csv
-    writer=open('se.csv','w')
+    writer=open('output/se.csv','w')
     csv_writer=csv.writer(writer)
     csv_writer.writerow(['meddraType' , 'conceptName', 'umlsIDmeddra', 'name', 'umls_concept_id'])
     for key, value in dict_sideEffects.items():
@@ -419,7 +419,7 @@ def generate_cypher_file():
     print('edges Create')
     print (datetime.datetime.utcnow())
     #create side effect csv
-    writer=open('rela.csv','w')
+    writer=open('output/rela.csv','w')
     csv_writer=csv.writer(writer)
     csv_writer.writerow(['stitchIDstereo', 'umlsIDmeddra','placebo', 'freq', 'lowerFreq', 'upperFreq', 'placeboFreq', 'placeboLowerFreq', 'placeboUpperFreq'])
 

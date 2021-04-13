@@ -27,7 +27,7 @@ echo integration of the database into hetionet
 # ths python scripts executed on windows with python 3.5.3
 cd import_into_Neo4j
 
-./integration_shell.sh $path_neo4j $path_project > output_all_integration.txt
+./integration_shell.sh $path_neo4j $path_project #> output_all_integration.txt
 
 cd ..
 

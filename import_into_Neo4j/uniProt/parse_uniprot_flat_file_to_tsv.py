@@ -62,7 +62,7 @@ dict_two_character_type = {
 }
 
 # open tsv file
-file = open('uniprot.tsv', 'w')
+file = open('output/uniprot.tsv', 'w')
 header = ['entry', 'status', 'sequenceLength', 'identifier', 'second_ac_numbers', 'name', 'synonyms', 'ncbi_taxid',
           'as_sequence',
           'gene_name', 'general_function', 'chromosome_location', 'pfam', 'gene_id', 'go_classifiers', 'xrefs',
@@ -81,8 +81,8 @@ else:
     sys.exit('need a path')
 
 # all queries which are used to integrate Protein with the extra labels into Hetionet
-cypherfile = open('cypher_protein.cypher', 'w')
-query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/uniProt/uniprot.tsv" As line Fieldterminator '\\t' Create (n:Protein_Uniprot{ '''
+cypherfile = open('output/cypher_protein.cypher', 'w')
+query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/uniProt/output/uniprot.tsv" As line Fieldterminator '\\t' Create (n:Protein_Uniprot{ '''
 
 '''
 integrate the dictionary information into the csv file

@@ -169,6 +169,16 @@ echo ndf-rt
 
 cd ..
 
+
+cd reactome
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo reactome drug
+
+./script_reactome_drug.sh $path_neo4j $path_to_project > output_script.txt
+
+cd ..
+
 cd atc
 now=$(date +"%F %T")
 echo "Current time: $now"

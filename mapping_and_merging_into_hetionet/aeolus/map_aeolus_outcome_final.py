@@ -72,8 +72,20 @@ class SideEffect_Aeolus():
 # dictionary with all side effects from hetionet with umls cui as key and as value a class SideEffect
 dict_all_side_effect = {}
 
+'''
+create connection to neo4j and mysql
+'''
+
+
+def create_connection_with_neo4j():
+    global g
+    g = create_connection_to_databases.database_connection_neo4j()
 
 def load_api_key():
+    """
+    Load api key for BioPortal
+    :return:
+    """
     global API_KEY
     file = open('api_key.txt', 'r', encoding='utf-8')
     API_KEY = next(file).strip(" \n")
@@ -103,14 +115,7 @@ def cache_api():
         csv_writer.writerow(header)
 
 
-'''
-create connection to neo4j and mysql
-'''
 
-
-def create_connection_with_neo4j():
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
 
 
 '''
@@ -170,54 +175,6 @@ def load_side_effects_from_hetionet_in_dict():
 
     print('size of side effects before the aeolus is add:' + str(len(dict_all_side_effect)))
 
-
-# dictionary disease name to identifier
-dict_disease_name_to_id = {}
-
-# dictionary disease umls cui to identifier
-dict_disease_cui_to_id = {}
-
-# dictionary meddra to mondo
-dict_meddra_to_mondo = {}
-
-# ditionary mondo to xrefs and resource
-dict_mondo_to_xrefs_and_resource = {}
-
-'''
-Load all disease with umls, identifier and name (,synonyms?)
-'''
-
-
-def load_disease_infos():
-    query = '''Match (n:Disease) Return n.identifier, n.name, n.umls_cuis, n.xrefs, n.resource'''
-    results = g.run(query)
-
-    for identifier, name, umls_cuis, xrefs, resource, in results:
-        dict_mondo_to_xrefs_and_resource[identifier] = [xrefs, resource]
-        if name:
-            name = name.lower()
-            if name in dict_disease_name_to_id:
-                print('name is double')
-                dict_disease_name_to_id[name].append(identifier)
-                print(dict_disease_name_to_id[name])
-
-            else:
-                dict_disease_name_to_id[name] = [identifier]
-        if umls_cuis:
-            for umls_cui in umls_cuis:
-                cui = umls_cui.split(':')[1]
-                if cui in dict_disease_cui_to_id:
-                    dict_disease_cui_to_id[cui].append(identifier)
-                else:
-                    dict_disease_cui_to_id[cui] = [identifier]
-        if xrefs:
-            for xref in xrefs:
-                if xref.startswith('MedDRA'):
-                    meddra_id = xref.split(':')[1]
-                    if meddra_id in dict_meddra_to_mondo:
-                        dict_meddra_to_mondo[meddra_id].add(identifier)
-                    else:
-                        dict_meddra_to_mondo[meddra_id] = set([identifier])
 
 
 # dictionary with all aeolus side effects outcome_concept_id (OHDSI ID) as key and value is the class SideEffect_Aeolus
@@ -280,6 +237,56 @@ def load_side_effects_aeolus_in_dictionary():
 
     print('Size of Aoelus side effects:' + str(len(dict_side_effects_aeolus)))
     print('number of mapped:', len(dict_mapped_cuis_hetionet))
+
+
+# dictionary disease name to identifier
+dict_disease_name_to_id = {}
+
+# dictionary disease umls cui to identifier
+dict_disease_cui_to_id = {}
+
+# dictionary meddra to mondo
+dict_meddra_to_mondo = {}
+
+# ditionary mondo to xrefs and resource
+dict_mondo_to_xrefs_and_resource = {}
+
+'''
+Load all disease with umls, identifier and name (,synonyms?)
+'''
+
+
+def load_disease_infos():
+    query = '''Match (n:Disease) Return n.identifier, n.name, n.umls_cuis, n.xrefs, n.resource'''
+    results = g.run(query)
+
+    for identifier, name, umls_cuis, xrefs, resource, in results:
+        dict_mondo_to_xrefs_and_resource[identifier] = [xrefs, resource]
+        if name:
+            name = name.lower()
+            if name in dict_disease_name_to_id:
+                print('name is double')
+                dict_disease_name_to_id[name].append(identifier)
+                print(dict_disease_name_to_id[name])
+
+            else:
+                dict_disease_name_to_id[name] = [identifier]
+        if umls_cuis:
+            for umls_cui in umls_cuis:
+                cui = umls_cui.split(':')[1]
+                if cui in dict_disease_cui_to_id:
+                    dict_disease_cui_to_id[cui].append(identifier)
+                else:
+                    dict_disease_cui_to_id[cui] = [identifier]
+        if xrefs:
+            for xref in xrefs:
+                if xref.startswith('MedDRA'):
+                    meddra_id = xref.split(':')[1]
+                    if meddra_id in dict_meddra_to_mondo:
+                        dict_meddra_to_mondo[meddra_id].add(identifier)
+                    else:
+                        dict_meddra_to_mondo[meddra_id] = set([identifier])
+
 
 
 # dictionary with for every key outcome_concept a list of umls cuis as value

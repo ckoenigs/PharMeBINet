@@ -800,10 +800,10 @@ set_of_species = set()
 assertions_set = set()
 
 # cypher file nodes
-cypher_file_nodes = open('cypher_file_node.cypher', 'w', encoding='utf-8')
+cypher_file_nodes = open('output/cypher_file_node.cypher', 'w', encoding='utf-8')
 
 # cypher files edges
-cypher_file_edges = open('cypher_file_edges.cypher', 'w', encoding='utf-8')
+cypher_file_edges = open('output/cypher_file_edges.cypher', 'w', encoding='utf-8')
 
 '''
 extract relationships information from full release

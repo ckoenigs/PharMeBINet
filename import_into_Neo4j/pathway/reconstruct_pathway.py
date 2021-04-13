@@ -259,10 +259,10 @@ def combine_both_source():
     for column in 'genes', 'coding_genes':
         write_df[column] = write_df[column].map(join)
 
-    write_df.to_csv('pathways.tsv', index=False, sep='\t', encoding='utf-8')
+    write_df.to_csv('output/pathways.tsv', index=False, sep='\t', encoding='utf-8')
 
     # generate cypher file
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/pathway/pathways.tsv" As line fieldterminator '\\t' Create (c1:pathway_multi{'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/pathway/output/pathways.tsv" As line fieldterminator '\\t' Create (c1:pathway_multi{'''
     for property in pathway_df:
         if property not in properties_which_are_list:
             query += property + ':line.' + property + ', '
@@ -270,7 +270,7 @@ def combine_both_source():
             query += property + ':split(line.' + property + ',"|"), '
 
     query = query[:-2] + '''});\n '''
-    with open('cypher.cypher', 'w') as file:
+    with open('output/cypher.cypher', 'w') as file:
         file.write(query)
         query = 'Create Constraint On (node:pathway_multi) Assert node.identifier Is Unique; \n'
         file.write(query)

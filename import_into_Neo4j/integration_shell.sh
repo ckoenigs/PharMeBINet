@@ -21,22 +21,8 @@ echo "Current time: $now"
 cd sider 
 echo sider
 
-python3 importSideEffects_change_to_umls_meddra_final.py data/ $path_to_project > output_integration_sider.txt
+./script_sider.sh $path_neo4j $path_to_project > output.txt
 
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-echo integrate sider into neo4j
-
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher > output_cypher_integration.txt 2>&1
-
-sleep 180
-
-$path_neo4j/neo4j restart
-
-
-sleep 120
 
 cd ..
 
@@ -62,6 +48,8 @@ echo ndf-rt
 
 cd ..
 
+now=$(date +"%F %T")
+echo "Current time: $now"
 cd  med_rt
 echo med-rt
 
@@ -75,8 +63,6 @@ echo "Current time: $now"
 
 cd  do
 echo do
-now=$(date +"%F %T")
-echo "Current time: $now"
 
 ./script_import_do.sh $path_neo4j $path_to_project  > output.txt
 
@@ -99,11 +85,11 @@ python3 ../EFO/transform_obo_to_csv_and_cypher_file.py data/ext.obo Uberon ubero
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-echo integrate do into neo4j
+echo integrate uberon into neo4j
 
 $path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher > output_cypher_integration.txt 2>&1
 
-sleep 180
+sleep 60
 
 $path_neo4j/neo4j restart
 
@@ -120,9 +106,6 @@ echo "Current time: $now"
 
 cd  GO
 echo go
-
-now=$(date +"%F %T")
-echo "Current time: $now"
 
 ./script_to_integrate_go.sh $path_neo4j $path_to_project  > output.txt
 
@@ -145,21 +128,7 @@ echo "Current time: $now"
 cd aeolus
 echo aeolus
 
-python3 importAeolus_final.py aeolus_v1/ $path_to_project > output_integration_aeolus.txt 
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-echo integrate aeolus into neo4j
-
-$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher.cypher > output_cypher_integration.txt
-
-sleep 180
-
-$path_neo4j/neo4j restart
-
-
-sleep 120
+./script_aeolus.sh $path_neo4j $path_to_project > output_script.txt
 
 
 cd ..
@@ -170,24 +139,7 @@ echo "Current time: $now"
 cd uniProt
 echo UniProt
 
-# python3 parse_uniprot_flat_file_to_tsv.py database/uniprot_sprot.dat $path_to_project > output_integration.txt
-python3 parse_uniprot_flat_file_to_tsv.py $path_to_project > output_integration.txt
-
-rm database/*
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-echo integrate uniprot into neo4j
-
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher_protein.cypher > output_cypher_integration.txt 2>&1
-
-sleep 180
-
-$path_neo4j/neo4j restart
-
-
-sleep 120
+./script_uniprot.sh $path_neo4j $path_to_project > output_script.txt
 
 
 cd ..
@@ -221,7 +173,7 @@ echo EFO
 
 # $path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher > output_cypher_integration.txt 2>&1
 
-# sleep 180
+# sleep 60
 
 # $path_neo4j/neo4j restart
 
@@ -258,24 +210,7 @@ echo "Current time: $now"
 cd  IID
 echo IID
 
-python3 prepare_human_data_IID.py $path_to_project > output/outputfile.txt
-
-echo rm gz file
-rm data/*
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-echo integrate pathway into neo4j
-
-$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher.cypher > output/output_cypher_integration.txt 2>&1
-
-sleep 180
-
-$path_neo4j/neo4j restart
-
-
-sleep 120
+./script_iid.sh $path_neo4j $path_to_project > output.txt
 
 cd ..
 
@@ -298,24 +233,7 @@ echo "Current time: $now"
 cd  pathway
 echo pathway
 
-python3 reconstruct_pathway.py $path_to_project > output_generate_integration_file.txt
-
-echo rm gz file
-rm data/*
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-echo integrate pathway into neo4j
-
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher > output_cypher_integration.txt 2>&1
-
-sleep 180
-
-$path_neo4j/neo4j restart
-
-
-sleep 120
+./script_pathway.sh $path_neo4j $path_to_project > output.txt
 
 cd ..
 
@@ -359,39 +277,10 @@ cd ..
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-
 cd  ClinVar
 echo ClinVar
 
-python3 transform_xml_to_nodes_and_edges.py $path_to_project > output_generate_integration_file.txt
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-echo integrate efo into neo4j
-
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher_file_node.cypher > output_cypher_node.txt 2>&1
-
-sleep 180
-
-$path_neo4j/neo4j restart
-
-
-sleep 120
-
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher_file_edges.cypher > output_cypher_edge.txt
-
-sleep 180
-
-$path_neo4j/neo4j restart
-
-
-sleep 120
-
-rm data/*.gz
+./script_clinvar.sh $path_neo4j $path_to_project  > output_script.txt
 
 cd ..
 
@@ -407,7 +296,7 @@ echo integrate efo into neo4j
 
 #$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher > output/output_cypher_node.txt 2>&1
 
-sleep 180
+sleep 60
 
 $path_neo4j/neo4j restart
 

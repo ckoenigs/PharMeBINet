@@ -109,7 +109,7 @@ file:
 
 
 def gather_all_disease_symptom_information_from_HPO():
-    f = open('phenotype.hpoa', 'r')
+    f = open('data/phenotype.hpoa', 'r')
     # count all queries
     csv_reader = csv.reader(f, delimiter='\t')
 
