@@ -36,13 +36,20 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo multi edges of Reaction integration
 
-python3 TreatEdgeIntoNode.py $path_to_project $license > PathwayEdges/output_map.txt
+python3 TreatEdgeIntoNode.py $path_to_project $license > PathwayEdges/output.txt
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo drug-ReactionLikeEvent relationships
+
+python3 CreateEdgeDrugToNode.py $path_to_project $license > DrugEdges/output.txt
+
 
 echo integrate connection with neo4j shell
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p test -f treatment/cypher.cypher.cypher 
+$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher_drug_edge.cypher
 
 sleep 60
 

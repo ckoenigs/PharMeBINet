@@ -136,6 +136,7 @@ node_modules/
 *.graphml
 *.hpoa
 *.jar
+*.tmp
 
 wget-log
 wget-log.*

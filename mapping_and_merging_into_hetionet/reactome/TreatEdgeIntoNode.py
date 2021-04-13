@@ -38,7 +38,7 @@ def generate_file_and_cypher():
     file_name = 'treatment/rela'
     file_name_go = 'treatment/rela_go'
 
-    cypher_file = open('treatment/cypher.cypher', 'w', encoding='utf-8')
+    cypher_file = open('output/cypher_drug_edge.cypher', 'w', encoding='utf-8')
 
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/reactome/%s.tsv" As line FIELDTERMINATOR '\\t'
             Match (p1:Chemical{identifier:line.drug_reactome_id}), (p2:Disease{identifier:line.disease_reactome_id}) Create (p1)-[:TREATS_DtT]->(b:Treatment{license:"free to use for academic purposes", reactome:"yes", source:"Reactome", resource:["Reactome"], url:"http://iid.ophid.utoronto.ca/", stoichiometry: line.stoichiometry , order:line.order , identifier:"T_"+line.id, meta_edge:true})-[:TREATS_TtD]->(p2);\n '''
