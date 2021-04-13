@@ -111,13 +111,6 @@ def add_value_to_dictionary(dictionary, key, value):
     dictionary[key].add(value)
 
 
-def load_all_variant_gene_pair():
-    """
-
-    :return:
-    """
-    query = 'Match (n:PharmGKB_Variant)<-[:PharmGKB_HAS_VARIANT]-(m:PharmGKB_Gene)'
-
 # dictionary meta edge id to clinical annotation infos
 dict_meta_id_to_clinical_annotation_info = {}
 
@@ -133,7 +126,7 @@ def load_db_info_in():
     Match (d)--(:PharmGKB_Chemical)--(:Chemical) 
     Match (d)--(g)--(:Variant) Where  'PharmGKB_Variant' in labels(g) or "PharmGKB_Haplotype" in labels(g) 
     Optional Match (d)--(:PharmGKB_Gene)--(:Gene)
-    Optional  Match (d)--(:PharmGKB_Phenotype)--(:Disease)   
+    Optional  Match (d)--(:PharmGKB_Phenotype)--(:Phenotype)   
     Match (d)--(e:PharmGKB_ClinicalAnnotation)
     Return Distinct d.id, e '''
     results = g.run(query)
