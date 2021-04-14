@@ -25,3 +25,7 @@ In this program, it generates a file for drug-disease and drug-outcome pairs whe
 Additionally, for pairs that appear multiple times, the information is combined to one edge. Also, a cypher file is generated with queries to integrate the chemical-disease and chemical-SE edges. The edge chemical-disease is called might_induces. For chemical-SE is it might_causes.
 
 In the last step, the last cypher file is used to integrate the edges into Neo4j.
+
+
+License: https://www.bioontology.org/terms/
+Whetzel PL, Noy NF, Shah NH, Alexander PR, Nyulas C, Tudorache T, Musen MA. BioPortal: enhanced functionality via new Web services from the National Center for Biomedical Ontology to access and use ontologies in software applications. Nucleic Acids Res. 2011 Jul;39(Web Server issue):W541-5. Epub 2011 Jun 14.
