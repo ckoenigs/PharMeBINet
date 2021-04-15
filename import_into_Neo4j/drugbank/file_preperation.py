@@ -30,7 +30,7 @@ load uniprot information into dictionary
 
 
 def load_uniprot_info_into_dictionary():
-    file_uniprot = open('../uniProt/uniprot.tsv', 'r', encoding='utf-8')
+    file_uniprot = open('../uniProt/output/uniprot.tsv', 'r', encoding='utf-8')
     csv_reader = csv.DictReader(file_uniprot, delimiter='\t')
     counter_row = 0
     counter_ac_number_multiple = 0

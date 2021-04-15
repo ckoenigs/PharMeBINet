@@ -33,7 +33,7 @@ def add_value_to_dictionary(dictionary, key, value):
     :param value: string
     :return:
     """
-    if value not in dictionary:
+    if key not in dictionary:
         dictionary[key] = set()
     dictionary[key].add(value)
 
