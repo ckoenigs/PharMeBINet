@@ -43,6 +43,7 @@ def generate_rela_files(directory, rela, rela_name, query_start):
     dict_rela_partner_to_csv_file[rela] = csv_file
 
     query_rela = query_start + ' (b:ClinicalAnnotationMetadata{identifier:line.meta_id}), (c:%s{identifier:line.other_id}) Create (b)-[:%s]->(c);\n'
+    rela_name = rela_name %('CAM')
     query_rela = query_rela % (file_name, rela, rela_name)
     cypher_file.write(query_rela)
 
@@ -58,11 +59,11 @@ dict_pGKB_label_to_label = {
 
 # dictionary label to rela_name
 dict_label_to_rela_name = {
-    'Gene': 'associates',
-    'Variant': 'associates',
-    'Chemical': 'associates',
-    'Phenotype': 'associates'
-    # 'Haplotype': 'associates'
+    'Gene': 'ASSOCIATES_%saG',
+    'Variant': 'ASSOCIATES_%saV',
+    'Chemical': 'ASSOCIATES_%saC',
+    'Phenotype': 'ASSOCIATES_%saPT'
+    # 'Haplotype': 'ASSOCIATES_%saH'
 }
 
 
@@ -78,14 +79,14 @@ def prepare_files(directory):
 
     query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/pharmGKB/%s" As line  FIELDTERMINATOR '\\t'  MATCH '''
 
-    query_meta_node = query_start + '(n:PharmGKB_ClinicalAnnotationMetadata{id:line.identifier}) Create (b:ClinicalAnnotationMetadata{'
+    query_meta_node = query_start + '(n:PharmGKB_ClinicalAnnotationMetadata{id:toInteger(line.identifier)}) Create (b:ClinicalAnnotationMetadata{'
     query = 'MATCH (p:PharmGKB_ClinicalAnnotationMetadata) WITH DISTINCT keys(p) AS keys UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields RETURN allfields;'
     results = g.run(query)
     for property, in results:
         if property != 'id':
             query_meta_node += property + ':n.' + property + ', '
         else:
-            query_meta_node += 'identifier:n.' + property + ', '
+            query_meta_node += 'identifier:toString(n.' + property + '), '
 
     query_meta_node += ' genotypes:split(line.genotypes,"|"), clinical_phenotypes:split(line.clinical_phenotypes, "|")  , source:"PharmGKB", resource:["PharmGKB"], meta_edge:true, license:"%s"}) Create (n)<-[:equal_metadata]-(b);\n'
     query_meta_node = query_meta_node % (file_name, license)

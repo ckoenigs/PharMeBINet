@@ -59,6 +59,12 @@ python3 integrate_clinical_annotation_metadata.py $path_to_project $license > me
 
 now=$(date +"%F %T")
 echo "Current time: $now"
+echo 'integrate clinical variant annotation rela'
+
+python3 integrate_different_annotations.py $path_to_project $license > annotation_variant_edge/output.txt
+
+now=$(date +"%F %T")
+echo "Current time: $now"
 
 $path_neo4j/cypher-shell -u neo4j -p test -f output/cypher_edge.cypher 
 
