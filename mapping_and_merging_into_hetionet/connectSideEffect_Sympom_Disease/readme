@@ -2,6 +2,7 @@ This script generates relationships between the different kinds of phenotypes. T
 
 The SE-symptom edges use:
 	Name mapping
+	Mapping with xref UMLS cui to SE identifier
 	Mapping Mesh to UMLS CUI and try to map to SE identifier
 
 The SE-disease edges use:
@@ -12,6 +13,7 @@ The SE-disease edges use:
 	Disease name to UMLS to get UMLS CUI and map to SE identifier
 
 The symptom-disease edges use:
+	Disease UMLS cui to symptom xref UMLS cui
 	Disease external identifier  from MESH are mapped to SE identifier
 	Name mapping
 
