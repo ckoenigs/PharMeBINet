@@ -6,7 +6,9 @@ path_neo4j=$1
 #path to project
 path_to_project=$2
 
-echo $path_to_project
+# import tool
+name_of_import_tool='Neo4j-GraphML-Importer-v1.1.5'
+echo $name_of_import_tool
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -223,7 +225,7 @@ echo PharmGKB
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-./script_pharmGKB.sh $path_neo4j > output/script_output.txt
+./script_pharmGKB.sh $path_neo4j $name_of_import_tool #> output/script_output.txt
 
 cd ..
 
@@ -245,7 +247,7 @@ echo "Current time: $now"
 cd  reactome
 echo reactome
 
-./script_import_recatome_with_graphml.sh $path_neo4j > output_reactome.txt
+./script_import_recatome_with_graphml.sh $path_neo4j $name_of_import_tool > output_reactome.txt
 
 cd ..
 

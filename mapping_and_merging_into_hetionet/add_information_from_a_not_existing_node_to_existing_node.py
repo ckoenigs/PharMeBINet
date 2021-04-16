@@ -40,7 +40,10 @@ Get for all label the unique property, after a : is the label and after a . is t
 def generate_dictionary_for_labels():
     query = '''CALL db.constraints'''
     results = g.run(query)
-    for name, constraint_string, in results:
+    # version <=4.0.x
+    # for name, constraint_string, in results:
+    #version 4.2.x
+    for name, constraint_string, details, in results:
         # print(constraint_string)
         label = constraint_string.split(':')[1].split(' )')[0]
         unique_property = constraint_string.split('.')[1].split(' ')[0].rsplit(')', 1)[0]

@@ -27,7 +27,10 @@ def get_the_constraints_and_write_into_file():
 
     file_with_constraints = open('output/constraint.txt', 'w', encoding='utf-8')
     results = g.run(query)
-    for index_name, description, in results:
+    # version 4.0.3
+    # for index_name, description, in results:
+    # version 4.2.5
+    for index_name, description, details,  in results:
         splitted = description.split(':')
         label = splitted[1].split(' )')[0]
         query = "Match (n:%s) Return n Limit 1;" % (label)
@@ -39,7 +42,7 @@ def get_the_constraints_and_write_into_file():
             file_with_constraints.write(description+'\n')
     file_with_constraints.close()
 
-    query='''CALL db.indexes '''
+    query='''CALL db.indexes ''' # also possible after 4.2.x: SHOW INDEXES
     results= g.run(query)
     indices=''
 
