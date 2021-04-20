@@ -28,16 +28,7 @@ echo sider
 
 cd ..
 
-now=$(date +"%F %T")
-echo "Current time: $now"
 
-cd ctd
-echo ctd
-
-./script_ctd.sh $path_to_project $path_neo4j > output.txt
-
-
-cd ..
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -225,7 +216,7 @@ echo PharmGKB
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-./script_pharmGKB.sh $path_neo4j $name_of_import_tool #> output/script_output.txt
+./script_pharmGKB.sh $path_neo4j $name_of_import_tool > output/script_output.txt
 
 cd ..
 
@@ -283,6 +274,17 @@ cd  ClinVar
 echo ClinVar
 
 ./script_clinvar.sh $path_neo4j $path_to_project  > output_script.txt
+
+cd ..
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+cd ctd
+echo ctd
+
+./script_ctd.sh $path_to_project $path_neo4j > output.txt
+
 
 cd ..
 
