@@ -101,7 +101,7 @@ def load_ctd_pathways_in():
             counter_not_mapped += 1
             continue
 
-        # check if the ctd pathway id is part in the himmelstein xref
+        # check if the ctd pathway id is part in the xref
         if 'reactome:'+pathways_id in dict_own_id_to_identifier:
             counter_map_with_id += 1
             # if len(dict_own_id_to_pcid_and_other[pathways_id]) > 1:

@@ -26,7 +26,7 @@ chmod 775 merge_nodes.sh
 ./merge_nodes.sh > output_merge_compound.txt
 
 
-sleep 180
+sleep 120
 $path_neo4j/neo4j restart
 sleep 120
 
@@ -68,7 +68,7 @@ chmod 775 merge_nodes_salt.sh
 ./merge_nodes_salt.sh > output/output_merge_compound.txt
 
 
-sleep 180
+sleep 120
 $path_neo4j/neo4j restart
 sleep 120
 

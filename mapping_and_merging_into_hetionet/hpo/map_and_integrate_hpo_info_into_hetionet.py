@@ -438,7 +438,7 @@ def map_hpo_disease_to_mondo(db_disease_id, db_disease_names, db_disease_source)
         id = db_disease_id.split(':')[1]
 
         #            print('omim')
-        # test if omim id is direct in DO
+        # test if omim id is direct in MONDO
         found_same_mapping, counter_omim_map_with_omim = check_on_mapping_same_source(dict_omim_to_mondo,
                                                                                       counter_omim_map_with_omim,
                                                                                       db_disease_names, db_disease_id,

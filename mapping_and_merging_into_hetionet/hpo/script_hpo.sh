@@ -7,10 +7,10 @@ path_neo4j=$1
 path_to_project=$2
 
 # hpo date annotated
-hpo_annotated_date='2021-02-08'
+hpo_annotated_date='2021-04-14'
 
 # hpo date ontology
-hpo_ontology_date='2021-02-28'
+hpo_ontology_date='2021-04-14'
 
 now=$(date +"%F %T")
 echo "Current time: $now"

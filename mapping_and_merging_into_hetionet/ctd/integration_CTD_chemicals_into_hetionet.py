@@ -877,24 +877,6 @@ def integration_of_ctd_chemicals_into_hetionet_compound():
 
     for mesh_id, drug in dict_drugs_CTD_with_drugbankIDs.items():
         counter += 1
-        # # manual check that this mapped wrong
-        # if mesh_id in ['C018375']:
-        #     query = '''Match (c:CTD_chemical{chemical_id:'%s'}) Return c'''
-        #     query = query % (mesh_id)
-        #     result = g.run(query)
-        #     first = result.evaluate()
-        #     parentIDs = '|'.join(first['parentIDs']) if 'parentIDs' in first else ''
-        #     parentTreeNumbers = '|'.join(first['parentTreeNumbers']) if 'parentTreeNumbers' in first else ''
-        #     treeNumbers = '|'.join(first['treeNumbers']) if 'treeNumbers' in first else ''
-        #     definition = first['definition'] if 'definition' in first else ''
-        #     synonyms = '|'.join(first['synonyms']) if 'synonyms' in first else ''
-        #     name = first['name'] if 'name' in first else ''
-        #     casRN = first['casRN'] if 'casRN' in first else ''
-        #
-        #     writer.writerow(
-        #         [mesh_id, parentIDs, parentTreeNumbers, treeNumbers, definition, synonyms,
-        #          name, casRN])
-        #     continue
         index = 0
         how_mapped = drug.how_mapped
         drugbank_ids = drug.drugBankIDs

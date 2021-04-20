@@ -175,7 +175,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo reactome drug
 
-./script_reactome_drug.sh $path_neo4j $path_to_project > output_script.txt
+./script_reactome_drug.sh $path_neo4j $path_to_project > output_script_drug.txt
 
 cd ..
 
@@ -229,7 +229,14 @@ cd aeolus
 
 cd ..
 
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo PharmGKB
+cd pharmGKB
 
+./script_pharmgkb.sh $path_neo4j/ $path_to_project > output_script.txt
+
+cd ..
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -241,14 +248,7 @@ cd connectSideEffect_Sympom_Disease/
 
 cd ..
 
-now=$(date +"%F %T")
-echo "Current time: $now"
-echo PharmGKB
-cd pharmGKB
 
-./script_pharmgkb.sh $path_neo4j/ $path_to_project > output_script.txt
-
-cd ..
 
 now=$(date +"%F %T")
 echo "Current time: $now"
