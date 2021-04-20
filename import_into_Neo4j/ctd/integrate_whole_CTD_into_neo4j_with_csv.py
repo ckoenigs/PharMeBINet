@@ -900,13 +900,6 @@ def main():
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
-    print('load in ctd disease and add to cypher file')
-
-    load_disease_and_add_to_cypher_file()
-
-    print('##########################################################################')
-
-    print(datetime.datetime.utcnow())
     print('load in ctd pathway and add to cypher file')
 
     load_pathway_and_add_to_cypher_file()
@@ -924,6 +917,13 @@ def main():
     print('load in ctd gene and add to cypher file')
 
     load_gene_and_add_to_cypher_file()
+
+    print('##########################################################################')
+
+    print(datetime.datetime.utcnow())
+    print('load in ctd disease and add to cypher file')
+
+    load_disease_and_add_to_cypher_file()
 
     print('##########################################################################')
 
