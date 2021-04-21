@@ -174,10 +174,10 @@ def load_in_all_monDO_in_dictionary():
 
 
 # cypher file to integrate mondo
-cypher_file = open('cypher.cypher', 'w', encoding='utf-8')
+cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
 
 # a cypher file to add the merged id to the other doids
-cypher_file_end = open('cypher_end.cypher', 'w', encoding='utf-8')
+cypher_file_end = open('output/cypher_end.cypher', 'w', encoding='utf-8')
 
 # list_properties in mondo
 list_of_list_prop = set([])
@@ -243,7 +243,7 @@ also check for mapping between do and mondo
 
 def load_in_all_DO_in_dictionary():
     # file mapped doid but not the same name
-    not_direct_name_matching_file = open('not_direct_name_matching_file.tsv', 'w', encoding='utf-8')
+    not_direct_name_matching_file = open('output/not_direct_name_matching_file.tsv', 'w', encoding='utf-8')
     csv_not_direct_name_matching_file = csv.writer(not_direct_name_matching_file, delimiter='\t')
     csv_not_direct_name_matching_file.writerow(['monDO', 'DOID', 'name monDO', 'name DOID'])
     counter_name_not_matching = 0
@@ -260,8 +260,6 @@ def load_in_all_DO_in_dictionary():
         dict_do_to_alternative_do[doid] = alternative_id
 
         xrefs = disease['xrefs'] if 'xrefs' in disease else []
-        # i do not know why I did this??????
-        # xrefs = xrefs[0].replace("'","").split(',')
         dict_DO_to_xref[doid] = xrefs
         if doid in dict_external_ids_monDO:
             if len(dict_external_ids_monDO[doid]) > 1:
@@ -357,7 +355,7 @@ def load_in_all_DO_in_dictionary():
     # print('number of mapped monDO:' + str(len(dict_monDo_to_DO)))
 
     # generate file with not mapped doids
-    file_not_mapped_doids = open('not_mapped_DOIDs.txt', 'w', encoding='utf-8')
+    file_not_mapped_doids = open('output/not_mapped_DOIDs.txt', 'w', encoding='utf-8')
     file_not_mapped_doids.write('doid \t name \n')
     for doid in list_of_not_mapped_doids:
         file_not_mapped_doids.write(doid + '\t' + dict_DO_to_info[doid]['name'] + '\n')
@@ -365,7 +363,7 @@ def load_in_all_DO_in_dictionary():
     file_not_mapped_doids.close()
 
     # file for multiple mapped monDO IDs
-    file_mondo_to_multiple_doids = open('multiple_doids_for_monDO.tsv', 'w')
+    file_mondo_to_multiple_doids = open('output/multiple_doids_for_monDO.tsv', 'w')
     file_mondo_to_multiple_doids.write('monDO\t monDO name\t doids \t doid names\n')
     for monDO, doids in dict_monDo_to_DO_only_doid.items():
         if len(doids) > 1:
@@ -381,8 +379,9 @@ Generate mapping files
 
 
 def mapping_files():
-    multi_mondo_for_do = open('mapping/multi_mondo_for_a_doid.txt', 'w', encoding='utf-8')
-    multi_mondo_for_do.write('doid\t name\t mondos\t mondo_names\n')
+    multi_mondo_for_do = open('mapping/multi_mondo_for_a_doid.tsv', 'w', encoding='utf-8')
+    csv_multi_mondp_for_do=csv.writer(multi_mondo_for_do, delimiter='\t')
+    csv_multi_mondp_for_do.writerow(['doid','name','mondos','mondo_names'])
     for doid, mondos in dict_DO_to_monDOs_only_DO.items():
         f = open('mapping/Do_to_monDO/' + doid + '.txt', 'w', encoding='utf-8')
         name = dict_DO_to_info[doid]['name'] if 'name' in dict_DO_to_info[doid] else ''
@@ -395,7 +394,7 @@ def mapping_files():
             for mondo in mondos:
                 liste_names.append(dict_monDO_info[mondo]['name'])
             list_name_string = ",".join(liste_names)
-            multi_mondo_for_do.write(line + list_name_string + '\n')
+            csv_multi_mondp_for_do.write([line , list_name_string ])
         for mondo in mondos:
             mondo_name = dict_monDO_info[mondo]['name'] if 'name' in dict_monDO_info[mondo] else ''
             f.write(mondo + '\t' + mondo_name + '\n')

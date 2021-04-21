@@ -83,7 +83,7 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
                             fieldnames=header)
     writer.writeheader()
 
-    cypher_file = open('cypher_merge.cypher', 'w')
+    cypher_file = open('output_data/cypher_merge.cypher', 'w')
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ncbi_gene/output_data/genes_merge.csv" As line Fieldterminator '\\t' Match (n:Gene_Ncbi {identifier:line.identifier}) Merge (g:Gene{identifier:line.identifier }) On Match Set '''
 
     on_create_string = ''' On Create SET '''

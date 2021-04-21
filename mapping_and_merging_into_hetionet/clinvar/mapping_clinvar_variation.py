@@ -206,7 +206,7 @@ def perpare_queries_index_and_relationships():
     cypher_file.write(query)
 
     # relationship
-    query = query_start + "(g:Gene{identifier:line.%s}), (v:Variant{identifier:line.%s}) Create  (g)-[:HAS_GhV{source:'ClinVar', resource:['ClinVar'], clinvar:'yes'}]->(v);\n"
+    query = query_start + "(g:Gene{identifier:line.%s}), (v:Variant{identifier:line.%s}) Create  (g)-[:HAS_GhV{source:'ClinVar', resource:['ClinVar'], clinvar:'yes', license:'https://www.ncbi.nlm.nih.gov/home/about/policies/'}]->(v);\n"
     query = query % (path_of_directory, 'gene_variant', header_rela[0], header_rela[1])
     cypher_file.write(query)
 
@@ -225,7 +225,7 @@ def query_for_rela(file_name, label1, label2):
     :param label2: string
     :return:
     """
-    query = query_start + ''' (g:%s{identifier:line.identifier_1}), (c:%s{identifier:line.identifier_2}) Create (g)-[:HAS_%sh%s {source:'ClinVar', resource:['ClinVar'], license:"CC0 1.0", url:'https://www.ncbi.nlm.nih.gov/clinvar/variation/'+line.indetifier_1}]->(c);'''
+    query = query_start + ''' (g:%s{identifier:line.identifier_1}), (c:%s{identifier:line.identifier_2}) Create (g)-[:HAS_%sh%s {source:'ClinVar', resource:['ClinVar'], license:"https://www.ncbi.nlm.nih.gov/home/about/policies/", url:'https://www.ncbi.nlm.nih.gov/clinvar/variation/'+line.indetifier_1}]->(c);'''
     query = query % (path_of_directory, file_name, label1, label2, dict_first_letter_to_rela_letter[label1[0]], dict_first_letter_to_rela_letter[label2[0]])
     cypher_file.write(query)
 
