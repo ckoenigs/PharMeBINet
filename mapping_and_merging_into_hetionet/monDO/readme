@@ -1,29 +1,14 @@
-This program integrate MonDO to Hetionet and change the identifier from DOID to MONDO.
+This program integrates MONDO to disease and changes the identifier from DOID to MONDO.
 
-The identifier MONDO:0013239 has no connection.
+First, the program tries to map the MONDO disease to the disease in the database.
+               First, all properties are loaded off the MONDO disease and are used for the CSV files for new nodes, mapped nodes, and is_a relationships between the MONDO disease nodes.
+               Then, load the MONDO disease and prepare the different dictionaries for the mapping.
+               The first mapping method is based on the DOID to the external reference DOID from MONDO. Next is the mapping of the alternative DOID to MONDO external references.
+               Now, all mapped nodes are written into a CSV file with combined information of MONDO and DO. If multiple diseases are mapped to one MONDO disease only one pair is added to the CSV file and the others are added to the merge script. The not mapped are written into their CSV file.
+               In the last step, all is_a relationships of MONDO are extracted and wrote into another CSV file.
 
-The DOIDs which are not mapped to any MONDO with the xrefs from MONDO are:
-    deleted: 'DOID:7267', 'DOID:0060017', 'DOID:946', 'DOID:6823', 'DOID:0050332', 'DOID:8150', 'DOID:5469',
-                          'DOID:0080125', 'DOID:7571', 'DOID:0060517', 'DOID:9341', 'DOID:0080193', 'DOID:0080197',
-                          'DOID:0080196', 'DOID:0050875','DOID:0050987', 'DOID:2468', 'DOID:854'
-    mapped manual:
-    DOID:0080194	Carey-Fineman-Ziter syndrome    MONDO:0009700 same OMIM:254940
-    DOID:0080195	Marinesco-Sjogren syndrome  MONDO:0009567 same OMIM:248800
-    DOID:0080198	infantile histiocytoid cardiomyopathy   MONDO:0010771 same OMIM:500000
-    DOID:4556	lung large cell carcinoma   MONDO:0003050 same UMLS:C0345958
-    DOID:1059	intellectual disability MONDO:0001071  same UMLS:C0025362
+Next, change the existing node identifier to the MONDO identifier and add new information. Also, new nodes are integrated. All of this is done by the cypher shell.
 
-    mapped manual and merged to parent, because it has relationships to other nodes than Disease
-    DOID:1233	transvestism    parent:MONDO:0001504(fetishism)
+Disease nodes where more than one node mapped to MOND the other are merged into the one node with the merge script.
 
-All MONDOs which are mapped to multiple DOIDs will generate on node which contains all nodes from all DOIDs.
-Only exception is MONDO:0000001 (disease) this map to DOID:4 (disease) and DOID:7 (disease of anatomical entity).
-DOID:7 fit's better to MONDO:0021199 (disease affecting anatomical system), which map not to any DOID.
-So MONDO:0021199 is merged into DOID:7. Further is DOID:7 excluded from MONDO:0000001 xref.
-
-This queries must be done
-CREATE CONSTRAINT ON (n:DiseaseOntology) Assert n.id is unique
-#the rest program is changed before so if this is not needed anymore
-MATCH (n:Disease) Where n.identifier='DOID:9917'  Set n.alternateIds= n.alternateIds+ 'DOID:5158'
-
-
+In the last step, the disease nodes that did not map to MONDO are removed with the cypher-shell and the cypher file.
