@@ -171,6 +171,10 @@ def main():
 
     load_all_variants_and_finish_the_files(csv_mapping)
 
+    # delete the Variant nodes which have an not real dbSNP or a merged rs id (is not known which is which only for the drugbank one)
+    query='''Match p=(n:Variant) Where n.identifier starts with 'rs' and not (n)--(:snp_dbSNP) and not exists(n.drugbank) Detach Delete n;\n'''
+    cypher_file.write(query)
+
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())

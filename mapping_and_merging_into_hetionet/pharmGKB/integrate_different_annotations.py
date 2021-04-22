@@ -46,7 +46,7 @@ def generate_rela_files(label, rela_name, query_start):
     dict_rela_partner_to_csv_file[label] = csv_file
 
     query_rela = query_start + ' (b:VariantAnnotation{identifier:line.anno_id}), (c:%s{identifier:line.other_id}) Create (b)-[:%s]->(c);\n'
-    rela_name = rela_name %('VA')
+    rela_name = rela_name % ('VA')
     query_rela = query_rela % (file_name, label, rela_name)
     cypher_file.write(query_rela)
 
@@ -130,36 +130,45 @@ def load_db_info_in(label, csv_writer):
     :param csv_writer: csv writer
     :return:
     """
-    query = '''MATCH (d:%s) 
-    Match (d)--(g)--(:Variant) Where  'PharmGKB_Variant' in labels(g) or "PharmGKB_Haplotype" in labels(g) 
-    Match (d)--(e:PharmGKB_StudyParameters)
-    Return Distinct d.id, e '''
-    query = query % (label)
+    dict_va_id_to_study_parametwers = {}
+    query = '''Match (d)--(e:PharmGKB_StudyParameters) Return d.id, e'''
     results = g.run(query)
-
-    counter_meta_edges = 0
     for identifier, study_parameter, in results:
-        counter_meta_edges += 1
         if identifier not in dict_annotation_to_study_parameters:
             dict_annotation_to_study_parameters[identifier] = []
         dict_annotation_to_study_parameters[identifier].append(dict(study_parameter))
 
-    for identifier, list_study_parameters in dict_annotation_to_study_parameters.items():
-        list_of_sudy_parameters_as_json= [json.dumps(x).replace('"','\'') for x in list_study_parameters]
-        csv_writer.writerow([identifier, '|'.join(list_of_sudy_parameters_as_json)])
+    query = '''MATCH (d:%s) 
+    Match (d)--(g)--(:Variant) Where  'PharmGKB_Variant' in labels(g) or "PharmGKB_Haplotype" in labels(g) 
+    Return Distinct d.id '''
+    query = query % (label)
+    results = g.run(query)
+
+    counter_meta_edges = 0
+    for identifier, in results:
+        counter_meta_edges += 1
+        if identifier in dict_annotation_to_study_parameters:
+            list_of_study_parameters_as_json = [json.dumps(x).replace('"', '\'') for x in
+                                                dict_annotation_to_study_parameters[identifier]]
+        else:
+            list_of_study_parameters_as_json = []
+        csv_writer.writerow([identifier, '|'.join(list_of_study_parameters_as_json)])
 
     print('length of ' + label + ' in db:' + str(counter_meta_edges))
 
 
-def fill_the_rela_files(label_new_node):
+def fill_the_rela_files(label_node):
     """
-    check for relationship form the new nodes to chemical, variant and gene
-    :param label_new_node: string
+    check for relationship form the new nodes to chemical, variant and gene. Add cypher query to metaData annotation.
+    :param label_node: string
     :return:
     """
+    query = 'Match (n:VariantAnnotation)--(:%s)--(:PharmGKB_ClinicalAnnotationMetadata)--(b:ClinicalAnnotationMetadata) Create (n)<-[:ASSOICATES_CAMaVA]-(b);\n'
+    query = query % (label_node)
+    cypher_file.write(query)
     query_general = 'Match (n:%s)--(:%s)--(m:%s) Return Distinct n.id, m.identifier'
     for pharmGKB_label, label in dict_pGKB_label_to_label.items():
-        query = query_general % (label_new_node, pharmGKB_label, label)
+        query = query_general % (label_node, pharmGKB_label, label)
         results = g.run(query)
         counter = 0
         counter_specific = 0
@@ -170,6 +179,18 @@ def fill_the_rela_files(label_new_node):
                 dict_rela_partner_to_csv_file[label].writerow([meta_id, other_id])
         print('count rela with ' + pharmGKB_label + ':', counter)
         print('count rela with ' + pharmGKB_label + ' and other condition are working:', counter_specific)
+
+def prepare_delete_variant_annotation():
+    """
+    All variant annotation are delete where the pGKB chemical/gene/ClinivalAnnotationMetadata are not mapped to my
+    database. So add the query to check and delete to cypher file.
+    :return:
+    """
+    list_of_delete_label_if_not_mapped=['ClinicalAnnotationMetadata','Gene','Chemical']
+    query='MATCH p=(a:VariantAnnotation)--(n:PharmGKB_VariantAnnotation)--(b:PharmGKB_%s) Where not (b)--(:%s) Detach Delete a;\n'
+    for label in list_of_delete_label_if_not_mapped:
+        new_query=query %(label,label)
+        cypher_file.write(new_query)
 
 
 def main():
@@ -222,6 +243,14 @@ def main():
     print('Fill rela files')
 
     fill_the_rela_files('PharmGKB_VariantAnnotation')
+
+    print(
+        '###########################################################################################################################')
+
+    print(datetime.datetime.utcnow())
+    print('prepare delete queries')
+
+    prepare_delete_variant_annotation()
 
     print(
         '###########################################################################################################################')
