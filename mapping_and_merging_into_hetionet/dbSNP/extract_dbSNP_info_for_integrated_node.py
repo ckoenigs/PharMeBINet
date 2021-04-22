@@ -29,6 +29,9 @@ def add_entry_to_dictionary(dictionary, key, value):
 # all nodes id to node infos
 dict_nodes = {}
 
+# set of all not existing dbSNP ids
+set_not_existing_dbSNP_ids=set()
+
 
 def load_already_extracted_infos_from_file():
     """
@@ -36,7 +39,7 @@ def load_already_extracted_infos_from_file():
     add into a dictionary
     :return:
     """
-    global file
+    global file , csv_file_not_existing_ids
     file_name = 'data/api_infos.json'
     try:
         file = open(file_name, 'r')
@@ -47,8 +50,21 @@ def load_already_extracted_infos_from_file():
         file.close()
         file=open(file_name, 'a')
     except:
-        sys.exit('again stopped here')
         file = open(file_name, 'w')
+        
+    file_name_not_existing='data/not_existing_ids.tsv'
+    try:
+        file_not_existing_ids = open(file_name_not_existing, 'r')
+        csv_reader=csv.reader(file_not_existing_ids)
+        for line in csv_reader:
+            set_not_existing_dbSNP_ids.add(line[0])
+        file_not_existing_ids.close()
+        file_not_existing_ids=open(file_name_not_existing, 'a')
+        csv_file_not_existing_ids=csv.writer(file_not_existing_ids)
+    except:
+        file_not_existing_ids = open(file_name_not_existing, 'w')
+        csv_file_not_existing_ids=csv.writer(file_not_existing_ids)
+    
 
 
 
@@ -73,11 +89,22 @@ def ask_api_and_prepare_return(ids):
     dict_nodes_new={}
     if len(ids)>0:
         url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=snp&id=%s&rettype=json&retmode=text'
-        url = url % (ids[:-1])
+        url = url % (ids)
         res = requests.get(url)
         res_json_string = res.text
-        if res_json_string=='':
+        if res_json_string=='' and not ',' in ids:
+            csv_file_not_existing_ids.writerow([ids])
+            print(ids)
             return dict_nodes_new
+        # check if nothing is found all ids single, because if one id is not existing in dbSNP anymore then nothing is 
+        # found. Therefore, check every id one by one. 
+        elif res_json_string=='':
+            for single_id in ids.split(','):
+                time.sleep(5)
+                dict_node_new= ask_api_and_prepare_return(single_id)
+                dict_nodes_new.update(dict_node_new)
+            return dict_nodes_new
+
         res_json_string = prepare_string_to_right_json_string(res_json_string)
         dict_nodes_new=ujson.loads(res_json_string)
     return dict_nodes_new
@@ -99,7 +126,7 @@ def load_dbSNP_data_for_nodes_with_dbSNP_in_db():
     prepare_a_single_node.prepare_snp_file()
 
     # get nodes which should get dbSNP information
-    query = 'Match (n:GeneVariant) Where size(labels(n))=2  Return n.identifier '
+    query = 'Match (n:GeneVariant) Where n.identifier starts with "rs"  Return n.identifier '
     results = g.run(query)
     string_of_ids = ''
     counter_to_seek=0
@@ -108,19 +135,20 @@ def load_dbSNP_data_for_nodes_with_dbSNP_in_db():
         # print(rs_id)
         counter_all+=1
         rs_id= rs_id.replace('rs', '')
-        if rs_id not in dict_nodes:
+        if rs_id not in dict_nodes and not rs_id in set_not_existing_dbSNP_ids:
             # print('in api question')
             string_of_ids += rs_id + ','
             counter_to_seek+=1
+            # 10 is ok but it seems like if on id is not a dbSNP id then they do not get any result of the query
             if counter_to_seek % 10==0:
                 print(counter_to_seek)
                 print(datetime.datetime.utcnow())
                 time.sleep(5)
-                dict_nodes_to_list = ask_api_and_prepare_return(string_of_ids)
+                dict_nodes_to_list = ask_api_and_prepare_return(string_of_ids[:-1])
                 add_information_from_api_dictionary_to_files(dict_nodes_to_list)
                 # print(dict_nodes_to_list)
                 string_of_ids=''
-        else:
+        elif not rs_id in set_not_existing_dbSNP_ids :
             prepare_a_single_node.prepare_json_information_to_tsv(dict_nodes[rs_id])
         if counter_all % 500==0:
             print('100 through')
