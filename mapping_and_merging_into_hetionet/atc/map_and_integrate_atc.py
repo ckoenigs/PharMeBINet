@@ -101,7 +101,7 @@ def write_files(path_of_directory):
     list_of_labels=['Compound','PharmacologicClass']
 
     for [label_1, label_2] in [[x,y] for x in list_of_labels for y in list_of_labels]:
-        query= "MATCH p=(n:%s)--(:atc)-[]->(:atc)--(b:%s) Create (n)-[:BELONGS_TO_%sbt%s{source:'ATC from DrugBank', resource:['DrugBank'], drugbank:'yes'}]->(b);\n"
+        query= "MATCH p=(n:%s)--(:atc)-[]->(:atc)--(b:%s) Merge (n)-[r:BELONGS_TO_%sbt%s]->(b) On Create Set r.source='ATC from DrugBank', r.resource=['DrugBank'], r.drugbank='yes';\n"
         query=query %( label_1,label_2, dict_first_letter_to_rela_letter[label_1[0]], dict_first_letter_to_rela_letter[label_2[0]])
         cypher_file.write(query)
     return csv_mapped, csv_new, csv_mapped_pc
@@ -111,6 +111,9 @@ dict_drug_id_to_atc_codes={}
 
 #dictionary mapped pc id to atc codes
 dict_pc_id_to_atc_codes={}
+
+# check that each pair exists only one time
+set_of_rela_pairs=set()
 
 def load_all_label_and_map( csv_map_drug, csv_new):
     """
@@ -137,7 +140,9 @@ def load_all_label_and_map( csv_map_drug, csv_new):
                 if compound_id not in dict_drug_id_to_atc_codes:
                     dict_drug_id_to_atc_codes[compound_id]=set()
                 dict_drug_id_to_atc_codes[compound_id].add(identifier)
-                csv_map_drug.writerow([compound_id, identifier])
+                if (compound_id,identifier) not in set_of_rela_pairs:
+                    csv_map_drug.writerow([compound_id, identifier])
+                    set_of_rela_pairs.add((compound_id,identifier))
             continue
         if name in dict_name_to_pharmacologic_class_id:
             counter_mapped_to_pc+=1
@@ -187,7 +192,7 @@ def main():
     if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]
     else:
-        sys.exit('need a path NDF-RT ')
+        sys.exit('need a path atc ')
 
     print('##########################################################################')
 
