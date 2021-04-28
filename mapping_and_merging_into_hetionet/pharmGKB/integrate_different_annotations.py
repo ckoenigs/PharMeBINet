@@ -55,7 +55,7 @@ def generate_rela_files(label, rela_name, query_start):
 dict_pGKB_label_to_label = {
     'PharmGKB_Gene': 'Gene',
     'PharmGKB_Variant': 'Variant',
-    'PharmGKB_Chemical': 'Chemical',
+    'PharmGKB_Chemical': ['Chemical','PharmacologicClass'],
     'PharmGKB_Haplotype': 'Variant'
 }
 
@@ -64,7 +64,8 @@ dict_label_to_rela_name = {
     'Gene': 'ASSOCIATES_%saG',
     'Variant': 'ASSOCIATES_%saV',
     'Chemical': 'ASSOCIATES_%saC',
-    'Haplotype': 'ASSOCIATES_%saH'
+    'Haplotype': 'ASSOCIATES_%saH',
+    'PharmacologicClass':'ASSOCIATES_%saPC'
 }
 
 # add constraint
@@ -168,15 +169,27 @@ def fill_the_rela_files(label_node):
     cypher_file.write(query)
     query_general = 'Match (n:%s)--(:%s)--(m:%s) Return Distinct n.id, m.identifier'
     for pharmGKB_label, label in dict_pGKB_label_to_label.items():
-        query = query_general % (label_node, pharmGKB_label, label)
-        results = g.run(query)
-        counter = 0
-        counter_specific = 0
-        for meta_id, other_id, in results:
-            counter += 1
-            if meta_id in dict_annotation_to_study_parameters:
-                counter_specific += 1
-                dict_rela_partner_to_csv_file[label].writerow([meta_id, other_id])
+        if type(label)==str:
+            query = query_general % (label_node, pharmGKB_label, label)
+            results = g.run(query)
+            counter = 0
+            counter_specific = 0
+            for meta_id, other_id, in results:
+                counter += 1
+                if meta_id in dict_annotation_to_study_parameters:
+                    counter_specific += 1
+                    dict_rela_partner_to_csv_file[label].writerow([meta_id, other_id])
+        else:
+            for single_label in label:
+                query = query_general % (label_node, pharmGKB_label, single_label)
+                results = g.run(query)
+                counter = 0
+                counter_specific = 0
+                for meta_id, other_id, in results:
+                    counter += 1
+                    if meta_id in dict_annotation_to_study_parameters:
+                        counter_specific += 1
+                        dict_rela_partner_to_csv_file[single_label].writerow([meta_id, other_id])
         print('count rela with ' + pharmGKB_label + ':', counter)
         print('count rela with ' + pharmGKB_label + ' and other condition are working:', counter_specific)
 
@@ -186,11 +199,14 @@ def prepare_delete_variant_annotation():
     database. So add the query to check and delete to cypher file.
     :return:
     """
-    list_of_delete_label_if_not_mapped=['ClinicalAnnotationMetadata','Gene','Chemical']
+    list_of_delete_label_if_not_mapped=['ClinicalAnnotationMetadata','Gene']
     query='MATCH p=(a:VariantAnnotation)--(n:PharmGKB_VariantAnnotation)--(b:PharmGKB_%s) Where not (b)--(:%s) Detach Delete a;\n'
     for label in list_of_delete_label_if_not_mapped:
         new_query=query %(label,label)
         cypher_file.write(new_query)
+    query = 'MATCH p=(a:VariantAnnotation)--(n:PharmGKB_VariantAnnotation)--(b:PharmGKB_Chemical) Where not( (b)--(:Chemical) or (b)--(:PharmacologicClass)) Detach Delete a;\n'
+    cypher_file.write(query)
+
 
 
 def main():

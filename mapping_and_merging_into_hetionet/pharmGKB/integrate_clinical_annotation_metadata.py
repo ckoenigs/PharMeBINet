@@ -43,7 +43,7 @@ def generate_rela_files(directory, rela, rela_name, query_start):
     dict_rela_partner_to_csv_file[rela] = csv_file
 
     query_rela = query_start + ' (b:ClinicalAnnotationMetadata{identifier:line.meta_id}), (c:%s{identifier:line.other_id}) Create (b)-[:%s]->(c);\n'
-    rela_name = rela_name %('CAM')
+    rela_name = rela_name % ('CAM')
     query_rela = query_rela % (file_name, rela, rela_name)
     cypher_file.write(query_rela)
 
@@ -52,7 +52,7 @@ def generate_rela_files(directory, rela, rela_name, query_start):
 dict_pGKB_label_to_label = {
     'PharmGKB_Gene': 'Gene',
     'PharmGKB_Variant': 'Variant',
-    'PharmGKB_Chemical': 'Chemical',
+    'PharmGKB_Chemical': ['Chemical', 'PharmacologicClass'],
     'PharmGKB_Phenotype': 'Phenotype',
     'PharmGKB_Haplotype': 'Variant'
 }
@@ -62,7 +62,8 @@ dict_label_to_rela_name = {
     'Gene': 'ASSOCIATES_%saG',
     'Variant': 'ASSOCIATES_%saV',
     'Chemical': 'ASSOCIATES_%saC',
-    'Phenotype': 'ASSOCIATES_%saPT'
+    'Phenotype': 'ASSOCIATES_%saPT',
+    'PharmacologicClass': 'ASSOCIATES_%saPC'
     # 'Haplotype': 'ASSOCIATES_%saH'
 }
 
@@ -115,6 +116,7 @@ def add_value_to_dictionary(dictionary, key, value):
 # dictionary meta edge id to clinical annotation infos
 dict_meta_id_to_clinical_annotation_info = {}
 
+
 def load_db_info_in():
     """
     First generate the files and the queries. Then prepare clinical annotation meta data. Therefor take only where the
@@ -124,7 +126,7 @@ def load_db_info_in():
     """
     csv_writer = prepare_files('metadata_edge')
     query = '''MATCH (d:PharmGKB_ClinicalAnnotationMetadata) 
-    Match (d)--(:PharmGKB_Chemical)--(:Chemical) 
+    Match (d)--(:PharmGKB_Chemical)--(j) Where  'Chemical' in labels(j) or "PharmacologicClass" in labels(j) 
     Match (d)--(g)--(:Variant) Where  'PharmGKB_Variant' in labels(g) or "PharmGKB_Haplotype" in labels(g) 
     Optional Match (d)--(:PharmGKB_Gene)--(:Gene)
     Optional  Match (d)--(:PharmGKB_Phenotype)--(:Phenotype)   
@@ -149,24 +151,47 @@ def load_db_info_in():
     print('length of chemical in db:' + str(counter_meta_edges))
 
 
+def get_rela_and_add_to_csv_file(query_general, pharmGKB_label, label):
+    """
+    ssearch for all relationship pairs of a given pGKB label and db label and write into a csv file.
+    :param query_general: string
+    :param pharmGKB_label: string
+    :param label: string
+    :return:
+    """
+    query = query_general % (pharmGKB_label, label)
+    results = g.run(query)
+    counter = 0
+    counter_specific = 0
+    for meta_id, other_id, in results:
+        counter += 1
+        if meta_id in dict_meta_id_to_clinical_annotation_info:
+            counter_specific += 1
+            dict_rela_partner_to_csv_file[label].writerow([meta_id, other_id])
+
+    return counter, counter_specific
+
+
 def fill_the_rela_files():
     """
     
     :return: 
     """
-    query_general='Match (n:PharmGKB_ClinicalAnnotationMetadata)--(:%s)--(m:%s) Return Distinct n.id, m.identifier'
+    query_general = 'Match (n:PharmGKB_ClinicalAnnotationMetadata)--(:%s)--(m:%s) Return Distinct n.id, m.identifier'
     for pharmGKB_label, label in dict_pGKB_label_to_label.items():
-        query= query_general % (pharmGKB_label, label)
-        results=g.run(query)
-        counter=0
-        counter_specific=0
-        for meta_id, other_id, in results:
-            counter+=1
-            if meta_id in dict_meta_id_to_clinical_annotation_info:
-                counter_specific+=1
-                dict_rela_partner_to_csv_file[label].writerow([meta_id,other_id])
-        print('count rela with '+pharmGKB_label+':',counter)
+        counter = 0
+        counter_specific = 0
+        if type(label) == str:
+            counter, counter_specific = get_rela_and_add_to_csv_file(query_general, pharmGKB_label, label)
+        else:
+            for db_label in label:
+                counter_part, counter_specific_part = get_rela_and_add_to_csv_file(query_general, pharmGKB_label,
+                                                                                   db_label)
+                counter += counter_part
+                counter_specific += counter_specific_part
+        print('count rela with ' + pharmGKB_label + ':', counter)
         print('count rela with ' + pharmGKB_label + ' and other condition are working:', counter_specific)
+
 
 def main():
     global path_of_directory, license
@@ -185,7 +210,7 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.utcnow())
-    print('Load in variant from hetionet')
+    print('Load in metadata from hetionet')
 
     load_db_info_in()
 
