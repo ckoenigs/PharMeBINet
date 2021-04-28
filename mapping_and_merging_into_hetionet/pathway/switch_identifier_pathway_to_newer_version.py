@@ -42,7 +42,7 @@ load in all pathways from hetionet in a dictionary
 '''
 
 
-def load_hetionet_pathways_in():
+def load_genes_into_dict():
     query = '''MATCH (n:Gene) RETURN n.identifier,n.name'''
     results = g.run(query)
 
@@ -75,12 +75,8 @@ def get_pathway_properties():
     header.append(extra_property)
     header.append('resource')
 
-
-# version string pc
-version_string = 'PC11_'
-
 # cypher file
-cypher_file = open('cypher.cypher', 'w', encoding='utf-8')
+cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
 # query to delete all old pathways
 query = 'MATCH (n:Pathway) Detach Delete n;\n'
 cypher_file.write(query)
@@ -340,7 +336,7 @@ def main():
     print(datetime.datetime.utcnow())
     print('Load all pathways from hetionet into a dictionary')
 
-    load_hetionet_pathways_in()
+    load_genes_into_dict()
 
     print(
         '###########################################################################################################################')
@@ -354,7 +350,7 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.utcnow())
-    print('Load all pathways from d. himmelstein into a dictionary')
+    print('Load all pathways from neo4j into a dictionary')
 
     load_in_all_pathways()
 
