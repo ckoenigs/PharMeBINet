@@ -40,6 +40,9 @@ dict_name_to_chemical_id = {}
 # dictionary name to pharmacological class ids
 dict_name_to_pharmacologic_class = {}
 
+# dictionary identifier to pharmacological class ids
+dict_identifier_to_pharmacologic_class = {}
+
 # dictionary pharmacological class id to resource
 dict_pc_to_resource = {}
 
@@ -69,6 +72,7 @@ def load_pharmacological_class():
 
     for identifier, name, synonyms, resource, atc_codes, in g.run(query):
         dict_pc_to_resource[identifier] = resource
+        dict_identifier_to_pharmacologic_class[identifier] = identifier
         if atc_codes:
             for atc_code in atc_codes:
                 add_value_to_dictionary(dict_atc_to_pc, atc_code, identifier)
@@ -167,7 +171,7 @@ def add_information_to_file(drugbank_id, identifier, csv_writer, how_mapped, tup
     resource.append('PharmGKB')
     resource = "|".join(sorted(set(resource)))
     xref.add('PharmGKB:' + identifier)
-    xrefs = '|'.join(go_through_xrefs_and_change_if_needed_source_name(xref,'chemical'))
+    xrefs = '|'.join(go_through_xrefs_and_change_if_needed_source_name(xref, 'chemical'))
     csv_writer.writerow([drugbank_id, identifier, resource, how_mapped, xrefs])
 
 
@@ -265,6 +269,15 @@ def load_pharmgkb_in(label):
                 #     for drugbank_id in drugbank_ids:
                 #         add_information_to_file(drugbank_id, identifier, csv_writer, 'drugbank_alternativ', set_of_all_tuples,
                 #                                 dict_chemical_to_resource, xref=dict_compound_id_to_xrefs[drugbank_id])
+
+        external_references = result['external_vocabulary'] if 'external_vocabulary' in result else []
+        for xref in external_references:
+            value = xref.split(':')[1].split('(')[0]
+            if xref.startswith('NDFRT'):
+                if value in dict_identifier_to_pharmacologic_class and 'Drug Class' in types:
+                    mapped = True
+                    add_information_to_file(value, identifier, csv_writer_pc, 'ndf-rt', set_of_all_tuples_with_pc,
+                                            dict_pc_to_resource)
 
         if mapped:
             counter_map += 1
