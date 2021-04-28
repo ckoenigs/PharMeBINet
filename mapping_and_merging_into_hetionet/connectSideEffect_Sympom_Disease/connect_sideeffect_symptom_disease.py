@@ -171,8 +171,14 @@ def load_all_sideEffects_in_a_dict():
     print('size of side effects in hetionet:' + str(len(dict_side_effects)))
 
 
-# dictionary name/mesh_id to set of symptom ids
-dict_name_ids_to_symptom_ids = {}
+# dictionary name/mesh to set of symptom ids
+dict_name_and_mesh_ids_to_symptom_ids = {}
+
+# dictionary hpo id to set of symptom ids
+dict_hpo_ids_to_symptom_ids = {}
+
+# dictionary umls id to set of symptom ids
+dict_umls_id_to_symptom_ids = {}
 
 '''
 function that load all symptoms in a dictionary and check if it has a umls cui or not
@@ -192,61 +198,113 @@ def load_all_symptoms_in_a_dict():
     for result, in results:
         name = result['name'].lower()
         identifier = result['identifier']
+        xrefs= result['xrefs'] if 'xrefs' in result else []
 
         symptom = Symptom(identifier, name, [])
-        add_element_to_dictionary(name, identifier, dict_name_ids_to_symptom_ids)
-        add_element_to_dictionary(identifier, identifier, dict_name_ids_to_symptom_ids)
+        add_element_to_dictionary(name, identifier, dict_name_and_mesh_ids_to_symptom_ids)
+
 
         mapped_with_name = mapping(name, identifier, dict_name_ids_to_sideeffect_ids, csv_mapping_s_to_se,
                                    'mapped with name', set_symptom_side_effect)
         if mapped_with_name:
             counter_with_name += 1
 
-        cuis = []
+        set_mesh = set()
+        cuis=set()
+        for xref in xrefs:
+            if xref.startswith('MESH'):
+                mesh_id=xref.split(':')[1]
+                set_mesh.add(mesh_id)
+                add_element_to_dictionary(mesh_id, identifier, dict_name_and_mesh_ids_to_symptom_ids)
+            elif xref.startswith('UMLS'):
+                umls_cui=xref.split(':')[1]
+                cuis.add(umls_cui)
+                # add_element_to_dictionary(umls_cui, identifier, dict_umls_id_to_symptom_ids)
+            elif xref.startswith('HPO'):
+                hpo_id=xref.split(':',1)[1]
+                add_element_to_dictionary(hpo_id, identifier, dict_hpo_ids_to_symptom_ids)
+
 
         # manual checked with wrong mapping with umls
         if identifier in ['D004881']:
             list_mesh_without_cui.append(identifier)
             print(identifier)
             continue
+
+        found_with_umls=False
+        cuis_from_umls=set()
+
+        # get first hte umls with the same name
         cur = con.cursor()
-        query = ("Select CUI,LAT,STR From MRCONSO Where SAB='MSH' and CODE= '%s';")
-        query = query % (identifier)
+        query = ("Select CUI From MRCONSO Where STR='%s';")
+        query = query % (name)
         rows_counter = cur.execute(query)
         if rows_counter > 0:
+            found_with_umls = True
             # list of all umls cuis which has the mesh id
             list_cuis = []
             same_name = False
             # list of all umls cuis with the same name
             list_cuis_with_same_name = set()
-            for (cui, lat, label,) in cur:
-                label = label.lower()
-                list_cuis.append(cui)
-                if label == name:
-                    same_name = True
-                    list_cuis_with_same_name.add(cui)
-            if same_name:
-                cuis = list(list_cuis_with_same_name)
-                counter_with_name += 1
-            else:
-                cuis = list(list_cuis)
-                counter_without_name += 1
-            for cui in cuis:
-                list_cuis_mapped = set()
+            for (cui,) in cur:
+                cuis_from_umls.add(cui)
+        # because sometimes when I checked the umls cuis of HPO they were not so good. So, they are validated with umls
+        # information.
+        if len(set_mesh)>0 and len(cuis_from_umls)==0:
+            for mesh_id in set_mesh:
+                cur = con.cursor()
+                query = ("Select CUI,LAT,STR From MRCONSO Where SAB='MSH' and CODE= '%s';")
+                query = query % (mesh_id)
+                rows_counter = cur.execute(query)
+                if rows_counter > 0:
+                    found_with_umls=True
+                    # list of all umls cuis which has the mesh id
+                    list_cuis = []
+                    same_name = False
+                    # list of all umls cuis with the same name
+                    list_cuis_with_same_name = set()
+                    for (cui, lat, label,) in cur:
+                        label = label.lower()
+                        list_cuis.append(cui)
+                        if label == name:
+                            same_name = True
+                            list_cuis_with_same_name.add(cui)
+                    if same_name:
+                        cuis_from_umls = cuis_from_umls.union(list_cuis_with_same_name)
+                        counter_with_name += 1
+                    else:
+                        cuis_from_umls = cuis_from_umls.union(list_cuis)
+                        counter_without_name += 1
+
+        # check compare hpo umls cui and umls cui from umls with mesh and/or name
+        # if overlap exists this is used else the one from umls nad only noting else exists the umls cuis from HPO
+        intersection= cuis.intersection(cuis_from_umls)
+        found_intersection=False
+        if len(intersection)>0:
+            cuis=intersection
+        else:
+            cuis=cuis_from_umls if len(cuis_from_umls)>0 else cuis
+
+        for cui in cuis:
+            add_element_to_dictionary(cui, identifier, dict_umls_id_to_symptom_ids)
+            list_cuis_mapped = set()
+            mapped_with='xrefs umls cui' if not found_with_umls else 'mapped with umls cui with umls and/or xref'
+            if not mapped_with_name:
                 mapping(cui, identifier, dict_name_ids_to_sideeffect_ids, csv_mapping_s_to_se,
-                        'mapped with umls cui', set_symptom_side_effect)
+                        mapped_with, set_symptom_side_effect)
                 if cui in dict_side_effects:
                     list_cuis_mapped.add(cui)
                 if len(list_cuis_mapped) > 0:
                     # dict_mesh_map_to_cui[identifier] = list_cuis_mapped
                     symptom.set_how_mapped('map with all cuis of mesh id')
-        else:
+        if len(cuis)==0:
             list_mesh_without_cui.append(identifier)
-            print(identifier)
+
+            # print(identifier)
 
         dict_symptoms[identifier] = symptom
 
-    print(list_mesh_without_cui)
+    print('Number of Symptoms without a umls cui and now from umls',len(list_mesh_without_cui))
     print('Number of symptoms in hetionet:' + str(len(dict_symptoms)))
     print('mapped with mesh and name:' + str(counter_with_name))
     print('mapped only with mesh:' + str(counter_without_name))
@@ -273,14 +331,22 @@ def load_and_map_disease():
         mapped_to_sideeffect = False
         mapped_to_symptom = False
         xrefs = disease['xrefs'] if 'xrefs' in disease else []
+        umls_cuis=[]
+        mesh_ids=[]
         for xref in xrefs:
             if xref.lower().startswith('umls'):
                 umls = xref.split(':')[1]
+                umls_cuis.append(umls)
                 mapped = mapping(umls, identifier, dict_name_ids_to_sideeffect_ids, csv_mapping_d_to_se,
                                  'mapped with UMLS ID', set_disease_side_effect)
                 if mapped:
                     mapped_to_sideeffect = True
                     counter_mapped_se += 1
+                # mapped = mapping(umls, identifier, dict_umls_id_to_symptom_ids, csv_mapping_d_to_s,
+                #                  'mapped with UMLS ID from xref', set_disease_symptom)
+                # if mapped:
+                #     mapped_to_symptom = True
+                #     counter_mapped_symp += 1
             elif xref.lower().startswith('meddra'):
                 mapped = mapping(xref, identifier, dict_name_ids_to_sideeffect_ids, csv_mapping_d_to_se,
                                  'mapped with MedDRA ID', set_disease_side_effect)
@@ -289,8 +355,15 @@ def load_and_map_disease():
                     counter_mapped_se += 1
             elif xref.lower().startswith('mesh'):
                 mesh = xref.split(':')[1]
-                mapped = mapping(mesh, identifier, dict_name_ids_to_symptom_ids, csv_mapping_d_to_s,
-                                 'mapped with MESH ID', set_disease_symptom)
+                mesh_ids.append(mesh)
+                # mapped = mapping(mesh, identifier, dict_name_and_mesh_ids_to_symptom_ids, csv_mapping_d_to_s,
+                #                  'mapped with MESH ID', set_disease_symptom)
+                # if mapped:
+                #     mapped_to_symptom = True
+                #     counter_mapped_symp += 1
+            elif xref.lower().startswith('hp'):
+                mapped = mapping(xref, identifier, dict_hpo_ids_to_symptom_ids, csv_mapping_d_to_s,
+                                 'mapped with HPO ID', set_disease_symptom)
                 if mapped:
                     mapped_to_symptom = True
                     counter_mapped_symp += 1
@@ -326,9 +399,26 @@ def load_and_map_disease():
                             mapped = True
             if mapped:
                 counter_mapped_se += 1
+        if not mapped_to_symptom:
+            for umls in umls_cuis:
+                mapped = mapping(umls, identifier, dict_umls_id_to_symptom_ids, csv_mapping_d_to_s,
+                                 'mapped with UMLS ID from xref', set_disease_symptom)
+                if mapped:
+                    mapped_to_symptom = True
+                    counter_mapped_symp += 1
+                    # break
+
+        # if not mapped_to_symptom:
+        #     for mesh in mesh_ids:
+        #         mapped = mapping(mesh, identifier, dict_name_and_mesh_ids_to_symptom_ids, csv_mapping_d_to_s,
+        #                          'mapped with MESH ID', set_disease_symptom)
+        #         if mapped:
+        #             mapped_to_symptom = True
+        #             counter_mapped_symp += 1
+                # break
 
         if not mapped_to_symptom:
-            mapped = mapping(name, identifier, dict_name_ids_to_symptom_ids, csv_mapping_d_to_s, 'mapped with name',
+            mapped = mapping(name, identifier, dict_name_and_mesh_ids_to_symptom_ids, csv_mapping_d_to_s, 'mapped with name',
                              set_disease_symptom)
             if mapped:
                 counter_mapped_symp += 1
