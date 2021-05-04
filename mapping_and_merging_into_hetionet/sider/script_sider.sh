@@ -9,27 +9,17 @@ path_to_project=$2
 echo se
 python3 map_Sider_se.py $path_to_project > output/output_map_se.txt
 
-echo integrate se with neo4j shell
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher_se.cypher > output/output_cypher_integration_se.txt
-
-sleep 120
-
-$path_neo4j/neo4j restart
-sleep 120
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo drug
 python3 map_sider_drug.py $path_to_project > output/output_map_drug.txt
 
-echo integrate se with neo4j shell
+echo integrate mapping with cypher shell
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher_drug.cypher > output/output_cypher_integration_drug.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher.cypher > output/output_cypher_integration_drug.txt
 
 sleep 120
 

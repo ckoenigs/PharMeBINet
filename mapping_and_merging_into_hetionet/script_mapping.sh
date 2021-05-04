@@ -259,6 +259,15 @@ cd dbSNP
 
 cd ..
 
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo PharmGKB edges
+cd pharmGKB
+
+./script_pharmgkb_edges.sh $path_neo4j/ $path_to_project > output_script_edges.txt
+
+cd ..
+
 
 exit 1
 
