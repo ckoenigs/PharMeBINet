@@ -202,8 +202,8 @@ preparation of the csv for merging for a given node
 def integrate_infos_into_csv(part_dict, protein_hetionet, list_input_protein):
     # first check on the as sequences and combine the if they are not the same, because they are isoforms
     # or  have only small changes like one as is changed
-
-    resource = set(dict_hetionet_protein[part_dict['identifier']][0]['resource'])
+    # print(protein_hetionet)
+    resource = set(protein_hetionet['resource'])
     resource.add('DrugBank')
     resource = sorted(resource)
     list_input_protein.append("|".join(resource))
