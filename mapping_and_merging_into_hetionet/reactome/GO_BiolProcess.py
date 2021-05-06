@@ -108,9 +108,7 @@ def load_reactome_gobiolproc_in():
             resource = '|'.join(resource)
             csv_mapped.writerow([gobiolproc_id, "GO:" + gobiolproc_id, resource])  # erster eintrag reactome, zweiter hetionet
         elif gobiolproc_id in dict_gobiolproc_hetionet_alt_ids:
-            #hetionet_identifier = dict_gobiolproc_hetionet_alt_ids[gobiolproc_id]
-            #print('GOBIOLPROC: ' + gobiolproc_id)
-            resource = dict_gobiolprocId_to_resource["GO:" + gobiolproc_id]
+            resource = dict_gobiolprocId_to_resource["GO:" + dict_gobiolproc_hetionet_alt_ids[gobiolproc_id]]
             resource.append('Reactome')
             resource = list(set(resource))
             resource = '|'.join(resource)
