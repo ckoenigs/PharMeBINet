@@ -22,11 +22,11 @@ dict_rela_type_to_csv_file = {}
 
 # dictionary rela type to rela label
 dict_type_to_label = {
-    'may_treat': 'TREATS_CtD',
-    'may_prevent': 'PREVENTS_CpD',
-    'CI_with': 'CONTRAINDICATES_CcD',
-    'induces': 'INDUCES_CiD',
-    'may_diagnose': 'MAY_DIAGNOSES_CmdD'
+    'may_treat': 'TREATS_%stD',
+    'may_prevent': 'PREVENTS_%spD',
+    'CI_with': 'CONTRAINDICATES_%scD',
+    'induces': 'INDUCES_%siD',
+    'may_diagnose': 'MAY_DIAGNOSES_%smdD'
 }
 
 # cypher file
@@ -69,6 +69,11 @@ def integrate_connection_into_hetionet(label):
             csv_writer.writerow(['chemical_id', 'disease_id', 'source'])
             dict_rela_type_to_csv_file[(rela_type,label)] = csv_writer
             query_check = 'Match p=(:%s)-[:%s]-(:Disease) Return p Limit 1' % (label,dict_type_to_label[rela_type])
+            if label=="Chemical":
+                letter='C'
+            else:
+                letter='PC'
+            query_check=query_check %(letter)
             results = g.run(query_check)
             result = results.evaluate()
             if result:
@@ -76,6 +81,7 @@ def integrate_connection_into_hetionet(label):
             else:
                 query = query_start + "Create (a)-[r:%s{source:line.source, resource:['NDF-RT'], ndf_rt:'yes', unbiased:false, license:'UMLS license, available at https://uts.nlm.nih.gov/license.html'}]->(b);\n"
             query = query % ('relationships/'+file_name, label ,dict_type_to_label[rela_type])
+            query =query %(letter)
             cypher_file.write(query)
 
         count_code += 1
