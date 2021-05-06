@@ -45,8 +45,9 @@ def integrate_information_into_dict(entity_name, dict_go, dict_alt_go_to_go):
     for identifier, name, alt_go_ids, in results:
         dict_go[identifier] = name
         counter_entities += 1
-        for alt_go_id in alt_go_ids:
-            dict_alt_go_to_go[alt_go_id]=identifier
+        if alt_go_ids:
+            for alt_go_id in alt_go_ids:
+                dict_alt_go_to_go[alt_go_id]=identifier
 
     print('It exists ' + str(counter_entities) + ' ' + entity_name)
     print(len(dict_go))
