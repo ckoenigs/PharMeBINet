@@ -318,7 +318,7 @@ def generate_cypher_file_and_csv(rela_type):
     csv_writer.writeheader()
 
     query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/clinvar/%s" As line FIELDTERMINATOR '\\t' 
-            Match (c:Chemical{identifier:line.chemical_id}), (t:Variant{identifier:line.variant_id})  Create (c)-[:%s {'''
+            Match (c:Chemical{identifier:line.chemical_id}), (t:Variant{identifier:line.variant_id})  Create (c)<-[:%s {'''
     for property in set_of_rela_properties:
         if property in ['variant_id', 'chemical_id']:
             continue
@@ -330,7 +330,7 @@ def generate_cypher_file_and_csv(rela_type):
         else:
             query_start += property + ':line.' + property + ', '
 
-    query = query_start + '''resource:['ClinVar'], source:'ClinVar', clinvar:'yes', license:'https://www.ncbi.nlm.nih.gov/home/about/policies/', url:"https://www.ncbi.nlm.nih.gov/clinvar/variation/"+line.variant_id}]->(t);\n '''
+    query = query_start + '''resource:['ClinVar'], source:'ClinVar', clinvar:'yes', license:'https://www.ncbi.nlm.nih.gov/home/about/policies/', url:"https://www.ncbi.nlm.nih.gov/clinvar/variation/"+line.variant_id}]-(t);\n '''
     query = query % (path_of_directory, file_name, rela_type)
     cypher_file.write(query)
 
@@ -366,7 +366,7 @@ def prepare_csv_file():
             rela_type = dict_rela_type_to_new_name[rela_type]
             rela_end = dict_rela_name_to_rela_end[rela_type]
             if additional_information != '' and additional_information.lower() != 'other':
-                rela_type = rela_type + '_' + additional_information.replace('|', '_')
+                rela_type = rela_type + '_TO_' + additional_information.replace('|', '_').upper()
                 rela_type = rela_type.replace(' ', '').replace('/', '_')
             rela_type += rela_end
         else:
