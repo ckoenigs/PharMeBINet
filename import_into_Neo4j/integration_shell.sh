@@ -223,6 +223,19 @@ cd ..
 now=$(date +"%F %T")
 echo "Current time: $now"
 
+cd  drugcentral
+echo drugcentral
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+./integrate_drugcentral.sh $path_neo4j $name_of_import_tool > output/script_output.txt
+
+cd ..
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
 cd  pathway
 echo pathway
 
