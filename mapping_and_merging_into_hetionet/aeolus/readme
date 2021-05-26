@@ -1,3 +1,4 @@
+Verion BioPortal: 
 The script can be run with a path to neo4j and the path to the project.
 First map the AEOLUS outcome and the AEOLUS drugs. After that, the connections are integrated.
 

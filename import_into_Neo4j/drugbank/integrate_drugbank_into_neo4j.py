@@ -4,12 +4,12 @@ Created on Mon Jan 15 12:49:17 2018
 
 @author: Cassandra
 """
-sys.path.append("../..")
 import create_connection_to_databases, authenticate
 import datetime
 import sys, csv
 import pandas as pd
 
+sys.path.append("../..")
 # dictionary for every drug with all information about this:name, inchikey, inchi, food interaction, alternative ids
 dict_drug_info = {}
 
