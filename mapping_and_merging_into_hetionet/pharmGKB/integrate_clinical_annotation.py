@@ -1,6 +1,7 @@
 import datetime
 import sys, csv
 from collections import defaultdict
+import json
 
 '''
 for the clinical annotation levels of evidence https://www.pharmgkb.org/page/clinAnnLevels
@@ -43,7 +44,7 @@ def generate_rela_files(directory, rela, rela_name, query_start):
     dict_rela_partner_to_csv_file[rela] = csv_file
 
     query_rela = query_start + ' (b:ClinicalAnnotationMetadata{identifier:line.meta_id}), (c:%s{identifier:line.other_id}) Create (b)-[:%s]->(c);\n'
-    rela_name = rela_name % ('CAM')
+    rela_name = rela_name % ('CA')
     query_rela = query_rela % (file_name, rela, rela_name)
     cypher_file.write(query_rela)
 
@@ -76,12 +77,12 @@ def prepare_files(directory):
     file_name = directory + '/meta_node.tsv'
     file = open(file_name, 'w')
     csv_file = csv.writer(file, delimiter='\t')
-    csv_file.writerow(['identifier', 'genotypes', 'clinical_phenotypes'])
+    csv_file.writerow(['identifier', 'allele_infos'])
 
     query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/pharmGKB/%s" As line  FIELDTERMINATOR '\\t'  MATCH '''
 
-    query_meta_node = query_start + '(n:PharmGKB_ClinicalAnnotationMetadata{id:toInteger(line.identifier)}) Create (b:ClinicalAnnotationMetadata{'
-    query = 'MATCH (p:PharmGKB_ClinicalAnnotationMetadata) WITH DISTINCT keys(p) AS keys UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields RETURN allfields;'
+    query_meta_node = query_start + '(n:PharmGKB_ClinicalAnnotation{id:toInteger(line.identifier)}) Create (b:ClinicalAnnotation{'
+    query = 'MATCH (p:PharmGKB_ClinicalAnnotation) WITH DISTINCT keys(p) AS keys UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields RETURN allfields;'
     results = g.run(query)
     for property, in results:
         if property != 'id':
@@ -89,10 +90,10 @@ def prepare_files(directory):
         else:
             query_meta_node += 'identifier:toString(n.' + property + '), '
 
-    query_meta_node += ' genotypes:split(line.genotypes,"|"), clinical_phenotypes:split(line.clinical_phenotypes, "|")  , source:"PharmGKB", resource:["PharmGKB"], meta_edge:true, license:"%s"}) Create (n)<-[:equal_metadata]-(b);\n'
+    query_meta_node += ' allele_infos:split(line.allele_infos,"|")  , source:"PharmGKB", resource:["PharmGKB"], meta_edge:true, license:"%s"}) Create (n)<-[:equal_metadata]-(b);\n'
     query_meta_node = query_meta_node % (file_name, license)
     cypher_file.write(query_meta_node)
-    cypher_file.write('Create Constraint On (node:ClinicalAnnotationMetadata) Assert node.identifier Is Unique;\n')
+    cypher_file.write('Create Constraint On (node:ClinicalAnnotation) Assert node.identifier Is Unique;\n')
 
     for rela, rela_name in dict_label_to_rela_name.items():
         generate_rela_files(directory, rela, rela_name, query_start)
@@ -125,12 +126,12 @@ def load_db_info_in():
     :return:
     """
     csv_writer = prepare_files('metadata_edge')
-    query = '''MATCH (d:PharmGKB_ClinicalAnnotationMetadata) 
+    query = '''MATCH (d:PharmGKB_ClinicalAnnotation) 
     Match (d)--(:PharmGKB_Chemical)--(j) Where  'Chemical' in labels(j) or "PharmacologicClass" in labels(j) 
     Match (d)--(g)--(:Variant) Where  'PharmGKB_Variant' in labels(g) or "PharmGKB_Haplotype" in labels(g) 
     Optional Match (d)--(:PharmGKB_Gene)--(:Gene)
     Optional  Match (d)--(:PharmGKB_Phenotype)--(:Phenotype)   
-    Match (d)--(e:PharmGKB_ClinicalAnnotation)
+    Match (d)--(e:PharmGKB_ClinicalAnnotationAllele)
     Return Distinct d.id, e '''
     results = g.run(query)
 
@@ -138,15 +139,11 @@ def load_db_info_in():
     for identifier, clinical_annotation, in results:
         counter_meta_edges += 1
         if identifier not in dict_meta_id_to_clinical_annotation_info:
-            dict_meta_id_to_clinical_annotation_info[identifier] = {'genotype': set(), 'clinical_phenotype': set()}
-        genotype = clinical_annotation['genotype']
-        clinical_phenotype = clinical_annotation['clinical_phenotype']
-        dict_meta_id_to_clinical_annotation_info[identifier]['genotype'].add(genotype)
-        dict_meta_id_to_clinical_annotation_info[identifier]['clinical_phenotype'].add(clinical_phenotype)
+            dict_meta_id_to_clinical_annotation_info[identifier] = []
+        dict_meta_id_to_clinical_annotation_info[identifier].append(json.dumps(dict(clinical_annotation)))
 
-    for identifier, dict_clinical_annotations in dict_meta_id_to_clinical_annotation_info.items():
-        csv_writer.writerow([identifier, '|'.join(dict_clinical_annotations['genotype']),
-                             '|'.join(dict_clinical_annotations['clinical_phenotype'])])
+    for identifier, list_of_clinical_annotation_alleles in dict_meta_id_to_clinical_annotation_info.items():
+        csv_writer.writerow([identifier, '|'.join(list_of_clinical_annotation_alleles)])
 
     print('length of chemical in db:' + str(counter_meta_edges))
 
@@ -177,7 +174,7 @@ def fill_the_rela_files():
     
     :return: 
     """
-    query_general = 'Match (n:PharmGKB_ClinicalAnnotationMetadata)--(:%s)--(m:%s) Return Distinct n.id, m.identifier'
+    query_general = 'Match (n:PharmGKB_ClinicalAnnotation)--(:%s)--(m:%s) Return Distinct n.id, m.identifier'
     for pharmGKB_label, label in dict_pGKB_label_to_label.items():
         counter = 0
         counter_specific = 0
