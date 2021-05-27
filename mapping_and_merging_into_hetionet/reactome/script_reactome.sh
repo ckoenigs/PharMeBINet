@@ -15,7 +15,7 @@ echo 'modification as of data'
 
 $path_neo4j/cypher-shell -u neo4j -p test -f pathway_modification.cypher
 
-sleep 180
+sleep 120
 
 $path_neo4j/neo4j restart
 
@@ -75,9 +75,9 @@ python3 GO_CellComp.py $path_to_project > gocellcomp/output_map.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
-echo drug
+echo mf
 
-python3 MappingDrug.py $path_to_project > drug/output_map.txt
+python3 MappingGO_MolecularFunction.py $path_to_project > gomolfunc/output_map.txt
 
 echo integrate mapping node with neo4j shell
 now=$(date +"%F %T")

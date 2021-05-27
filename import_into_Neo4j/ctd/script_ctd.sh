@@ -12,7 +12,7 @@ echo "Current time: $now"
 
 # download gene-disease manual because there is a human check!
 
-#python3 download_the_ctd_files.py > output_download.txt
+# python3 download_the_ctd_files.py > output_download.txt
 
 
 echo first remove the first lines of the ctd files
@@ -20,9 +20,9 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 cd ctd_data
 
-# for i in *.csv; do
-#    ./delete_the_head.sh $i
-# done
+#for i in *.csv; do
+#   ./delete_the_head.sh $i
+#done
 
 cd ..
 
