@@ -37,7 +37,7 @@ def get_pairs_information():
     file_cypher.write(query)
 
     # only the interaction in the same organism
-    query="""Match (n:Protein)--(:Protein_Uniprot)-[r]->(:Protein_Uniprot)--(p:Protein) Where r.organismsDiffer='false' Return Distinct n.identifier, r, p.identifier """
+    query="""Match (n:Protein_Uniprot)-[r]->(p:Protein_Uniprot) Where r.organismsDiffer='false' Return Distinct n.identifier, r, p.identifier """
     results=g.run(query)
 
     #dictionary pairs to info
