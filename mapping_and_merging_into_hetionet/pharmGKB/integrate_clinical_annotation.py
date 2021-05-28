@@ -43,7 +43,7 @@ def generate_rela_files(directory, rela, rela_name, query_start):
     csv_file.writerow(['meta_id', 'other_id'])
     dict_rela_partner_to_csv_file[rela] = csv_file
 
-    query_rela = query_start + ' (b:ClinicalAnnotationMetadata{identifier:line.meta_id}), (c:%s{identifier:line.other_id}) Create (b)-[:%s]->(c);\n'
+    query_rela = query_start + ' (b:ClinicalAnnotation{identifier:line.meta_id}), (c:%s{identifier:line.other_id}) Create (b)-[:%s]->(c);\n'
     rela_name = rela_name % ('CA')
     query_rela = query_rela % (file_name, rela, rela_name)
     cypher_file.write(query_rela)
@@ -140,7 +140,8 @@ def load_db_info_in():
         counter_meta_edges += 1
         if identifier not in dict_meta_id_to_clinical_annotation_info:
             dict_meta_id_to_clinical_annotation_info[identifier] = []
-        dict_meta_id_to_clinical_annotation_info[identifier].append(json.dumps(dict(clinical_annotation)))
+        clinical_annotation_allele_json=json.dumps(dict(clinical_annotation)).replace('\\"','"')
+        dict_meta_id_to_clinical_annotation_info[identifier].append(clinical_annotation_allele_json)
 
     for identifier, list_of_clinical_annotation_alleles in dict_meta_id_to_clinical_annotation_info.items():
         csv_writer.writerow([identifier, '|'.join(list_of_clinical_annotation_alleles)])
