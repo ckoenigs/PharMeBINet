@@ -53,7 +53,7 @@ def load_all_protein_chemical_pairs(direction, from_chemical):
         refs = [x for x in rela.keys() if x.startswith('ref')]
         if len(refs) == 0:
             continue
-        rela_type_splitted = rela_type.split('_')
+        rela_type_splitted = rela_type.rsplit('_',1)
 
         last_part = rela_type_splitted[1]
         if len(last_part) == 3:
@@ -61,7 +61,9 @@ def load_all_protein_chemical_pairs(direction, from_chemical):
         elif len(last_part) == 4:
             letter = last_part[2:]
         else:
-            sys.exist('different length of end of rela in drugbank compound-protein')
+
+            print(last_part)
+            sys.exit('different length of end of rela in drugbank compound-protein')
         type_of_interaction = dict_first_letter_to_rela_letter[letter]
         rela['interaction_with_form'] = type_of_interaction
 
