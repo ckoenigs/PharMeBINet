@@ -26,6 +26,12 @@ set_evidence = set()
 # dict of evidence and protein id
 dict_evidence_protein_pairs_to_info = {}
 
+# dictionary uniprot accession to  set of uniprot identifiers
+dict_up_accession_to_uniprot_id = {}
+
+# list of interactions
+list_of_interactions = []
+
 
 def combine_xrefs(attributes):
     """
@@ -92,10 +98,10 @@ def prepare_tsv_dictionary(dictionary):
                 continue
             if type(value[0]) != str:
                 value = [json.dumps(x) for x in value]
-            value = "|".join(value)
+            value = "||".join(value)
         elif type(value) == dict:
             value = json.dumps(value)
-        value=value.replace('\\"','"')
+        value = value.replace('\\"', '"')
         new_dictionary[key] = value
     return new_dictionary
 
@@ -109,12 +115,14 @@ def prepare_evidence(attrib, protein_id, parent=None):
     :return:
     """
     evidence_id = attrib['type']
+    evidence_key = attrib['key']
 
     if evidence_id not in set_evidence:
         if 'evidence' not in dict_node_type_to_tsv:
             generates_node_tsv_file_and_cypher('evidence', ['id'], [])
             generates_rela_tsv_file_and_cypher('evidence',
-                                               ['uniprot_id', 'evidence_id', 'source', 'importedFrom'], 'part_of',
+                                               ['uniprot_id', 'evidence_id', 'source', 'importedFrom', 'key'],
+                                               'part_of',
                                                ['source', 'importedFrom'])
 
         dict_node_type_to_tsv['evidence'].writerow({'id': evidence_id})
@@ -123,18 +131,20 @@ def prepare_evidence(attrib, protein_id, parent=None):
     if not (evidence_id, protein_id) in dict_evidence_protein_pairs_to_info:
         dict_evidence_protein_pairs_to_info[(evidence_id, protein_id)] = {}
 
+    dict_pair = {'uniprot_id': protein_id, 'evidence_id': evidence_id, 'key': evidence_key}
     if parent is not None:
         for child in parent.iterchildren():
             tag = child.tag.replace(ns, '')
-            if tag not in dict_evidence_protein_pairs_to_info[(evidence_id, protein_id)]:
-                dict_evidence_protein_pairs_to_info[(evidence_id, protein_id)][tag] = set()
+            if tag not in dict_pair:
+                dict_pair[tag] = set()
             for dbRefs in child.iterchildren():
                 db_ref_tag = dbRefs.tag.replace(ns, '')
                 if db_ref_tag != 'dbReference':
                     sys.exit('evidence has not df Ref')
-                dict_evidence_protein_pairs_to_info[(evidence_id, protein_id)][tag].add(combine_xrefs(dbRefs.attrib))
+                dict_pair[tag].add(combine_xrefs(dbRefs.attrib))
             if len(child.attrib) > 0:
-                dict_evidence_protein_pairs_to_info[(evidence_id, protein_id)][tag].add('ref:' + child.attrib['ref'])
+                dict_pair[tag].add('ref:' + child.attrib['ref'])
+    dict_node_type_to_tsv['protein_evidence'].writerow(dict_pair)
     # dict_pair={'uniprot_id':protein_id,'evidence_id':evidence_id}
     # dict_pair.update(dict_evidence_protein_pairs_to_info[(evidence_id, protein_id)])
     # dict_pair=prepare_tsv_dictionary(dict_pair)
@@ -250,7 +260,7 @@ def run_trough_xml_and_parse_data():
     # download file
     # download url of swissprot
 
-    if not os.path.exists('database/uniprot_sprot.xml.gz'):
+    if not os.path.exists('database/uniprot_sprot_human.xml.gz'):
         print('download')
         # url_path = 'ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.xml.gz'
         # url_data = 'ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.dat.gz'
@@ -260,12 +270,13 @@ def run_trough_xml_and_parse_data():
     else:
         filename = 'database/uniprot_sprot_human.xml.gz'
 
-    filename_without_gz = filename.rsplit('.', 1)[0]
-    file = io.TextIOWrapper(gzip.open(filename, 'rb'))
+    # filename_without_gz = filename.rsplit('.', 1)[0]
+    # file = io.TextIOWrapper(gzip.open(filename, 'rb'))
+    file = gzip.open(filename, 'rb')
 
     # open xml file
     # file = open('test.xml', 'rb')
-    file = open('uniprot_sprot.xml', 'rb')
+    # file = open(filename, 'rb')
 
     # go through the entries in uniprot xml
     for event, node in etree.iterparse(file, events=('end',), tag="{ns}entry".format(ns=ns)):
@@ -298,6 +309,9 @@ def run_trough_xml_and_parse_data():
 
         # the identifier
         identifier = ''
+
+        # accession first
+        first_accession = True
 
         for child in node.iterchildren():
 
@@ -470,6 +484,7 @@ def run_trough_xml_and_parse_data():
                                             print(identifier)
                                             print(disease_id)
                                             sys.exit('dfRef disease')
+                                dict_disease_node = prepare_tsv_dictionary(dict_disease_node)
                                 dict_node_type_to_tsv['disease'].writerow(dict_disease_node)
                                 # print(dict_disease_node.keys())
                             name_second_label_id = 'disease_id'
@@ -480,8 +495,10 @@ def run_trough_xml_and_parse_data():
                             if 'protein_protein' not in dict_node_type_to_tsv:
                                 generates_rela_tsv_file_and_cypher('protein',
                                                                    ['protein_id', 'protein_id_2', 'organismsDiffer',
-                                                                    'experiments', 'interaction_ids'], 'interaction',
-                                                                   [])
+                                                                    'experiments', 'interaction_ids',
+                                                                    'iso_of_protein_from', 'iso_of_protein_to'],
+                                                                   'interaction',
+                                                                   ['interaction_ids'])
                             interact_id = subchild.attrib['intactId']
                             add_key_value_to_dictionary_as_list(dict_comment, 'interaction_ids', interact_id)
                             interacter_uniprot_id_element = subchild.find("{ns}id".format(ns=ns))
@@ -617,7 +634,8 @@ def run_trough_xml_and_parse_data():
                         if name_second_label_id == 'disease_id':
                             dict_node_type_to_tsv['protein_disease'].writerow(dict_rela)
                         elif name_second_label_id == 'protein_id_2':
-                            dict_node_type_to_tsv['protein_protein'].writerow(dict_rela)
+                            list_of_interactions.append(dict_rela)
+                            # dict_node_type_to_tsv['protein_protein'].writerow(dict_rela)
                 else:
                     print("%s - %s - %s" % (tag, child.text, child.attrib))
             else:
@@ -628,7 +646,16 @@ def run_trough_xml_and_parse_data():
                         if tag == 'accession':
                             dict_protein['identifier'] = child.text
                             identifier = child.text
+
+                            first_accession = False
+                            if child.text not in dict_up_accession_to_uniprot_id:
+                                dict_up_accession_to_uniprot_id[child.text] = set()
+                            dict_up_accession_to_uniprot_id[child.text].add(identifier)
                             continue
+                    if 'accession' == tag:
+                        if child.text not in dict_up_accession_to_uniprot_id:
+                            dict_up_accession_to_uniprot_id[child.text] = set()
+                        dict_up_accession_to_uniprot_id[child.text].add(identifier)
                     dict_protein[tag].append(child.text)
                 # sequence information
                 elif tag == 'sequence':
@@ -736,7 +763,7 @@ def prepare_node_cypher_query(file_name, label, properties, list_properties):
 
     for property in properties:
         if property in list_properties:
-            query += property + ':split(line.' + property + ',"|"), '
+            query += property + ':split(line.' + property + ',"||"), '
         else:
             query += property + ':line.' + property + ', '
     query = query[:-2] + '});\n'
@@ -756,6 +783,7 @@ def prepare_edge_cypher_query(file_name, label, rela_name, properties, list_prop
     :return:
     """
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/uniProt/%s" As line Fieldterminator '\\t' Match (n:Protein_Uniprot{identifier:line.%s}), (b:%s_Uniprot{%s:line.%s}) Create (n)-[:%s'''
+
     query = query + '{' if len(properties) > 2 else query
     if label in ['protein', 'disease']:
         query = query % (file_name, properties[0], label.capitalize(), 'identifier', properties[1], rela_name)
@@ -807,6 +835,48 @@ def write_evidence_rela_info_into_tsv():
         dict_node_type_to_tsv['protein_evidence'].writerow(dict_pair)
 
 
+def check_for_protein(protein_id):
+    """
+    Check if the protein id or the not isoform is in the dict_up_accession_to_uniprot_id
+    :param protein_id: string
+    :return: found id in dict, protein id, isoform
+    """
+    if '-' in protein_id:
+        without_iso = protein_id.split('-')[0]
+        if without_iso in dict_up_accession_to_uniprot_id:
+            return True, without_iso, protein_id
+        else:
+            print('accession not in dictionary?', protein_id)
+            return False, '', ''
+    else:
+        if protein_id in dict_up_accession_to_uniprot_id:
+            return True, protein_id, ''
+        else:
+            print('accession not in dictionary?', protein_id)
+            return False, '', ''
+
+
+def write_interaction_rela_into_tsv():
+    for dict_rela in list_of_interactions:
+        protein_id_1 = dict_rela['protein_id']
+        protein_id_2 = dict_rela['protein_id_2']
+
+        found_id_1, protein_id_1, protein_1_iso = check_for_protein(protein_id_1)
+        if not found_id_1:
+            continue
+        found_id_2, protein_id_2, protein_2_iso = check_for_protein(protein_id_2)
+        if not found_id_2:
+            continue
+
+        for identifier1 in dict_up_accession_to_uniprot_id[protein_id_1]:
+            for identifier2 in dict_up_accession_to_uniprot_id[protein_id_2]:
+                dict_rela['protein_id'] = identifier1
+                dict_rela['protein_id_2'] = identifier2
+                dict_rela['iso_of_protein_from'] = protein_1_iso
+                dict_rela['iso_of_protein_to'] = protein_2_iso
+                dict_node_type_to_tsv['protein_protein'].writerow(dict_rela)
+
+
 def main():
     global path_of_directory
     # path to project dictionary
@@ -825,7 +895,13 @@ def main():
     print(datetime.datetime.utcnow())
     print('write evidence-protein pairs into tsv file')
 
-    write_evidence_rela_info_into_tsv()
+    # write_evidence_rela_info_into_tsv()
+
+    print('#############################################################')
+    print(datetime.datetime.utcnow())
+    print('write protein-protein pairs into tsv file')
+
+    write_interaction_rela_into_tsv()
 
     print('#############################################################')
     print(datetime.datetime.utcnow())
