@@ -35,6 +35,7 @@ load in all Compounds from hetionet in a dictionary
 def load_hetionet_compound_hetionet_node_in(label, csv_file, dict_compound_hetionet_node_hetionet,
                                                   new_relationship,
                                                   node_reactome_label, rela_equal_name, node_hetionet_label, direction1, direction2):
+    # {identifier:'DB01025'}
     query = '''MATCH (p:Chemical)-[:equal_to_reactome_drug]-(r:ReferenceEntity_reactome)<-[:referenceEntity]-(z:%s)%s[v:%s]%s(n:%s)-[:%s]-(b:%s) RETURN p.identifier, b.identifier, v.order, v.stoichiometry, z.displayName'''
     query = query % (label, direction1, new_relationship, direction2, node_reactome_label, rela_equal_name, node_hetionet_label)
     #print(query)
@@ -130,7 +131,7 @@ def main():
     ]
 
     directory = 'DrugEdges'
-    cypher_file = open('output/cypher_edge.cypher', 'w', encoding="utf-8")
+    cypher_file = open('output/cypher_drug_edge.cypher', 'a', encoding="utf-8")
 
     for list_element in list_of_combinations:
         new_relationship = list_element[0]
