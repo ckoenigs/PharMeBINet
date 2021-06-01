@@ -55,7 +55,7 @@ def generate_rela_files(label, rela_name, query_start):
 dict_pGKB_label_to_label = {
     'PharmGKB_Gene': 'Gene',
     'PharmGKB_Variant': 'Variant',
-    'PharmGKB_Chemical': ['Chemical','PharmacologicClass'],
+    'PharmGKB_Chemical': ['Chemical', 'PharmacologicClass'],
     'PharmGKB_Haplotype': 'Variant'
 }
 
@@ -65,12 +65,39 @@ dict_label_to_rela_name = {
     'Variant': 'ASSOCIATES_%saV',
     'Chemical': 'ASSOCIATES_%saC',
     'Haplotype': 'ASSOCIATES_%saH',
-    'PharmacologicClass':'ASSOCIATES_%saPC'
+    'PharmacologicClass': 'ASSOCIATES_%saPC'
 }
 
 # add constraint
 add_constraint = False
 
+
+# set of all VA ids where not all connections exists
+set_of_all_VA_ids_without_all_connections = set()
+
+
+def check_for_connection(label, label_to):
+    """
+    get all VA ids where a connection is not there
+    :param label: string
+    :param label_to: string
+    :return:
+    """
+    query = '''Match (d:PharmGKB_VariantAnnotation)--(a:%s) Where not (a)--(:%s) Return d.id; '''
+    query = query % (label, label_to)
+    results = g.run(query)
+    for identifier, in results:
+        set_of_all_VA_ids_without_all_connections.add(identifier)
+
+def check_for_connection_chemical():
+    """
+    get all VA ids where a connection is not there to chemical or PC
+    :return:
+    """
+    query = '''Match (d:PharmGKB_VariantAnnotation)--(a:PharmGKB_Chemical) Where not ((a)--(:Chemical) or (a)--(:PharmacologicClass)) Return d.id; '''
+    results = g.run(query)
+    for identifier, in results:
+        set_of_all_VA_ids_without_all_connections.add(identifier)
 
 def prepare_files(label, query_start):
     """
@@ -83,7 +110,7 @@ def prepare_files(label, query_start):
     file_name = directory + '/' + label + '_node.tsv'
     file = open(file_name, 'w')
     csv_file = csv.writer(file, delimiter='\t')
-    csv_file.writerow(['identifier', 'study_parameters'])
+    csv_file.writerow(['identifier', 'study_parameters', 'guideline_urls', 'PubMed_ids', 'PubMed_Central_ids'])
 
     query_meta_node = query_start + '(n:%s{id:toInteger(line.identifier)}) Create (b:VariantAnnotation :%s {'
     query = 'MATCH (p:%s) WITH DISTINCT keys(p) AS keys UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields RETURN allfields;'
@@ -95,7 +122,7 @@ def prepare_files(label, query_start):
         else:
             query_meta_node += 'identifier:toString(n.' + property + '), '
 
-    query_meta_node += ' study_parameters:split(line.study_parameters,"|") , source:"PharmGKB", resource:["PharmGKB"], meta_edge:true, license:"%s"}) Create (n)<-[:equal_metadata]-(b);\n'
+    query_meta_node += ' study_parameters:split(line.study_parameters,"|"), guideline_urls:split(line.guideline_urls,"|"), PubMed_ids:split(line.PubMed_ids,"|"),PubMed_Central_ids:split(line.PubMed_Central_ids,"|") , source:"PharmGKB", resource:["PharmGKB"], meta_edge:true, license:"%s"}) Create (n)<-[:equal_metadata]-(b);\n'
     query_meta_node = query_meta_node % (file_name, label, label.split('_')[1], license)
     cypher_file.write(query_meta_node)
     if not add_constraint:
@@ -118,8 +145,65 @@ def add_value_to_dictionary(dictionary, key, value):
     dictionary[key].add(value)
 
 
+def add_check_and_add_info(property_in_pGKB, literature, property_name, dictionary):
+    """
+    First, check if the property id in the node. The get the value of this property. If the new_property name is not in
+    the dictionary generate a set. Add the value to the dictionary.
+    :param property_in_pGKB: string
+    :param literature: node
+    :param property_name: string
+    :param dictionary: dictionary
+    :return:
+    """
+    if property_in_pGKB in literature:
+        value = str(literature[property_in_pGKB])
+        if property_name not in dictionary:
+            dictionary[property_name] = set()
+        dictionary[property_name].add(value)
+
+
 # dictionary annotation id id to list of studies parameter
 dict_annotation_to_study_parameters = {}
+
+# dictionary annotation id id to list of pubmed ids
+dict_annotation_to_literatur = {}
+
+
+def load_additional_information_into_dictionary():
+    """
+    Prepare the StudyParameters and Literatures information.
+    :return:
+    """
+    query = '''Match (d:PharmGKB_VariantAnnotation)--(e:PharmGKB_StudyParameters) Return d.id, e'''
+    results = g.run(query)
+    for identifier, study_parameter, in results:
+        if identifier not in dict_annotation_to_study_parameters:
+            dict_annotation_to_study_parameters[identifier] = []
+        dict_annotation_to_study_parameters[identifier].append(dict(study_parameter))
+
+    query = '''Match (d:PharmGKB_VariantAnnotation)--(e:PharmGKB_Literature) Return d.id, e'''
+    results = g.run(query)
+    for identifier, literatur, in results:
+        if identifier not in dict_annotation_to_literatur:
+            dict_annotation_to_literatur[identifier] = {}
+
+        add_check_and_add_info('id', literatur, 'guideline_urls', dict_annotation_to_literatur[identifier])
+        add_check_and_add_info('pmid', literatur, 'PubMed_ids', dict_annotation_to_literatur[identifier])
+        add_check_and_add_info('pmcid', literatur, 'PubMed_Central_ids', dict_annotation_to_literatur[identifier])
+
+
+def add_infos_into_list(identifier, property_name, infos):
+    """
+    Depending of information exists they are add to the list or an empty value.
+    :param identifier: string
+    :param property_name: string
+    :param infos: list
+    :return:
+    """
+    if property_name in dict_annotation_to_literatur[identifier]:
+        infos.append('|'.join(dict_annotation_to_literatur[identifier][property_name]))
+    else:
+        infos.append('')
 
 
 def load_db_info_in(label, csv_writer):
@@ -131,31 +215,32 @@ def load_db_info_in(label, csv_writer):
     :param csv_writer: csv writer
     :return:
     """
-    dict_va_id_to_study_parametwers = {}
-    query = '''Match (d)--(e:PharmGKB_StudyParameters) Return d.id, e'''
-    results = g.run(query)
-    for identifier, study_parameter, in results:
-        if identifier not in dict_annotation_to_study_parameters:
-            dict_annotation_to_study_parameters[identifier] = []
-        dict_annotation_to_study_parameters[identifier].append(dict(study_parameter))
 
-    query = '''MATCH (d:%s) 
-    Match (d)--(g)--(:Variant) Where  'PharmGKB_Variant' in labels(g) or "PharmGKB_Haplotype" in labels(g) 
-    Return Distinct d.id '''
+    query = '''MATCH (d:%s)  Return Distinct d.id '''
     query = query % (label)
     results = g.run(query)
 
     counter_meta_edges = 0
+    counter_of_integrated_edges=0
     for identifier, in results:
         counter_meta_edges += 1
-        if identifier in dict_annotation_to_study_parameters:
-            list_of_study_parameters_as_json = [json.dumps(x).replace('"', '\'') for x in
-                                                dict_annotation_to_study_parameters[identifier]]
-        else:
-            list_of_study_parameters_as_json = []
-        csv_writer.writerow([identifier, '|'.join(list_of_study_parameters_as_json)])
+        if identifier not in set_of_all_VA_ids_without_all_connections:
+            counter_of_integrated_edges+=1
+            if identifier in dict_annotation_to_study_parameters:
+                list_of_study_parameters_as_json = [json.dumps(x).replace('"', '\'') for x in
+                                                    dict_annotation_to_study_parameters[identifier]]
+            else:
+                list_of_study_parameters_as_json = []
+            infos = [identifier, '|'.join(list_of_study_parameters_as_json)]
+            if identifier in dict_annotation_to_literatur:
+                add_infos_into_list(identifier, 'guideline_urls', infos)
+                add_infos_into_list(identifier, 'PubMed_ids', infos)
+                add_infos_into_list(identifier, 'PubMed_Central_ids', infos)
+
+            csv_writer.writerow(infos)
 
     print('length of ' + label + ' in db:' + str(counter_meta_edges))
+    print('length of ' + label + ' in db with all connections:' + str(counter_of_integrated_edges))
 
 
 def fill_the_rela_files(label_node):
@@ -164,21 +249,21 @@ def fill_the_rela_files(label_node):
     :param label_node: string
     :return:
     """
-    query = 'Match (n:VariantAnnotation)--(:%s)--(:PharmGKB_ClinicalAnnotationMetadata)--(b:ClinicalAnnotationMetadata) Create (n)<-[:ASSOICATES_CAMaVA]-(b);\n'
+    query = 'Match (n:VariantAnnotation)--(:%s)-[r]-(:PharmGKB_ClinicalAnnotation)--(b:ClinicalAnnotation) Create (n)<-[h:HAS_EVIDENCE_CAheVA]-(b) Set h=r;\n'
     query = query % (label_node)
     cypher_file.write(query)
     query_general = 'Match (n:%s)--(:%s)--(m:%s) Return Distinct n.id, m.identifier'
     for pharmGKB_label, label in dict_pGKB_label_to_label.items():
-        if type(label)==str:
+        if type(label) == str:
             query = query_general % (label_node, pharmGKB_label, label)
             results = g.run(query)
             counter = 0
-            counter_specific = 0
+            # counter_specific = 0
             for meta_id, other_id, in results:
                 counter += 1
-                if meta_id in dict_annotation_to_study_parameters:
-                    counter_specific += 1
-                    dict_rela_partner_to_csv_file[label].writerow([meta_id, other_id])
+                dict_rela_partner_to_csv_file[label].writerow([meta_id, other_id])
+                # if meta_id in dict_annotation_to_study_parameters:
+                #     counter_specific += 1
         else:
             for single_label in label:
                 query = query_general % (label_node, pharmGKB_label, single_label)
@@ -187,11 +272,12 @@ def fill_the_rela_files(label_node):
                 counter_specific = 0
                 for meta_id, other_id, in results:
                     counter += 1
-                    if meta_id in dict_annotation_to_study_parameters:
-                        counter_specific += 1
-                        dict_rela_partner_to_csv_file[single_label].writerow([meta_id, other_id])
+                    dict_rela_partner_to_csv_file[single_label].writerow([meta_id, other_id])
+                    # if meta_id in dict_annotation_to_study_parameters:
+                    #     counter_specific += 1
         print('count rela with ' + pharmGKB_label + ':', counter)
-        print('count rela with ' + pharmGKB_label + ' and other condition are working:', counter_specific)
+        # print('count rela with ' + pharmGKB_label + ' and other condition are working:', counter_specific)
+
 
 def prepare_delete_variant_annotation():
     """
@@ -199,14 +285,13 @@ def prepare_delete_variant_annotation():
     database. So add the query to check and delete to cypher file.
     :return:
     """
-    list_of_delete_label_if_not_mapped=['ClinicalAnnotationMetadata','Gene']
-    query='MATCH p=(a:VariantAnnotation)--(n:PharmGKB_VariantAnnotation)--(b:PharmGKB_%s) Where not (b)--(:%s) Detach Delete a;\n'
+    list_of_delete_label_if_not_mapped = ['ClinicalAnnotationMetadata', 'Gene']
+    query = 'MATCH p=(a:VariantAnnotation)--(n:PharmGKB_VariantAnnotation)--(b:PharmGKB_%s) Where not (b)--(:%s) Detach Delete a;\n'
     for label in list_of_delete_label_if_not_mapped:
-        new_query=query %(label,label)
+        new_query = query % (label, label)
         cypher_file.write(new_query)
     query = 'MATCH p=(a:VariantAnnotation)--(n:PharmGKB_VariantAnnotation)--(b:PharmGKB_Chemical) Where not( (b)--(:Chemical) or (b)--(:PharmacologicClass)) Detach Delete a;\n'
     cypher_file.write(query)
-
 
 
 def main():
@@ -221,6 +306,31 @@ def main():
     print('Generate connection with neo4j')
 
     create_connection_with_neo4j()
+
+    print(
+        '###########################################################################################################################')
+
+    print(datetime.datetime.utcnow())
+    print('get all VA ids wher not all connections exists')
+
+    list_of_labels = [
+        ['PharmGKB_Variant', 'Variant'],
+        ['PharmGKB_Haplotype', 'Variant'],
+        ['PharmGKB_Gene', 'Gene'],
+        ['PharmGKB_Phenotype', 'Phenotype'],
+    ]
+
+    for pair in list_of_labels:
+        check_for_connection(pair[0], pair[1])
+    check_for_connection_chemical()
+
+    print(
+        '###########################################################################################################################')
+
+    print(datetime.datetime.utcnow())
+    print('Load additional information of literature and study parameters into dictionaries')
+
+    load_additional_information_into_dictionary()
 
     # query start
     query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/pharmGKB/%s" As line  FIELDTERMINATOR '\\t'  MATCH '''

@@ -101,6 +101,35 @@ def prepare_files(directory):
     return csv_file
 
 
+# set of allCA ids where not all connections exists
+set_of_all_CA_ids_without_all_connections = set()
+
+
+def check_for_connection(label, label_to):
+    """
+    get all CA ids where a connection is not there
+    :param label: string
+    :param label_to: string
+    :return:
+    """
+    query = '''Match (d:PharmGKB_ClinicalAnnotation)--(a:%s) Where not (a)--(:%s) Return d.id; '''
+    query = query % (label, label_to)
+    results = g.run(query)
+    for identifier, in results:
+        set_of_all_CA_ids_without_all_connections.add(identifier)
+
+
+def check_for_connection_chemical():
+    """
+    get all CA ids where a connection is not there
+    :return:
+    """
+    query = '''Match (d:PharmGKB_ClinicalAnnotation)--(a:PharmGKB_Chemical) Where not ((a)--(:Chemical) or (a)--(:PharmacologicClass)) Return d.id; '''
+    results = g.run(query)
+    for identifier, in results:
+        set_of_all_CA_ids_without_all_connections.add(identifier)
+
+
 def add_value_to_dictionary(dictionary, key, value):
     """
     add key to dictionary if not existing and add value to set
@@ -125,28 +154,32 @@ def load_db_info_in():
     csv file.
     :return:
     """
+    query = '''Match (d:PharmGKB_ClinicalAnnotation)--(e:PharmGKB_ClinicalAnnotationAllele) Return Distinct d.id, e'''
+    results = g.run(query)
+    for identifier, clinical_annotation, in results:
+        if identifier not in dict_meta_id_to_clinical_annotation_info:
+            dict_meta_id_to_clinical_annotation_info[identifier] = []
+        clinical_annotation_allele_json = json.dumps(dict(clinical_annotation)).replace('\\"', '"')
+        dict_meta_id_to_clinical_annotation_info[identifier].append(clinical_annotation_allele_json)
+
     csv_writer = prepare_files('metadata_edge')
-    query = '''MATCH (d:PharmGKB_ClinicalAnnotation) 
-    Match (d)--(:PharmGKB_Chemical)--(j) Where  'Chemical' in labels(j) or "PharmacologicClass" in labels(j) 
-    Match (d)--(g)--(:Variant) Where  'PharmGKB_Variant' in labels(g) or "PharmGKB_Haplotype" in labels(g) 
-    Optional Match (d)--(:PharmGKB_Gene)--(:Gene)
-    Optional  Match (d)--(:PharmGKB_Phenotype)--(:Phenotype)   
-    Match (d)--(e:PharmGKB_ClinicalAnnotationAllele)
-    Return Distinct d.id, e '''
+    query = '''MATCH (d:PharmGKB_ClinicalAnnotation) Return d.id'''
     results = g.run(query)
 
     counter_meta_edges = 0
-    for identifier, clinical_annotation, in results:
+    counter_integrated = 0
+    for identifier, in results:
         counter_meta_edges += 1
-        if identifier not in dict_meta_id_to_clinical_annotation_info:
-            dict_meta_id_to_clinical_annotation_info[identifier] = []
-        clinical_annotation_allele_json=json.dumps(dict(clinical_annotation)).replace('\\"','"')
-        dict_meta_id_to_clinical_annotation_info[identifier].append(clinical_annotation_allele_json)
+        if identifier not in set_of_all_CA_ids_without_all_connections:
+            counter_integrated += 1
+            if identifier in dict_meta_id_to_clinical_annotation_info:
+                allels = '|'.join(dict_meta_id_to_clinical_annotation_info[identifier])
+            else:
+                allels = ''
+            csv_writer.writerow([identifier, allels])
 
-    for identifier, list_of_clinical_annotation_alleles in dict_meta_id_to_clinical_annotation_info.items():
-        csv_writer.writerow([identifier, '|'.join(list_of_clinical_annotation_alleles)])
-
-    print('length of chemical in db:' + str(counter_meta_edges))
+    print('length of CA in db:' + str(counter_meta_edges))
+    print('length of CA in with all connections:', counter_integrated)
 
 
 def get_rela_and_add_to_csv_file(query_general, pharmGKB_label, label):
@@ -203,6 +236,23 @@ def main():
     print('Generate connection with neo4j')
 
     create_connection_with_neo4j()
+
+    print(
+        '###########################################################################################################################')
+
+    print(datetime.datetime.utcnow())
+    print('get all CA ids wher not all connections exists')
+
+    list_of_labels = [
+        ['PharmGKB_Variant', 'Variant'],
+        ['PharmGKB_Haplotype', 'Variant'],
+        ['PharmGKB_Gene', 'Gene'],
+        ['PharmGKB_Phenotype', 'Phenotype'],
+    ]
+
+    for pair in list_of_labels:
+        check_for_connection(pair[0], pair[1])
+    check_for_connection_chemical()
 
     print(
         '###########################################################################################################################')
