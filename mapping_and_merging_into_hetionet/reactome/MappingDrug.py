@@ -10,6 +10,7 @@ import datetime
 import csv
 import sys
 import html
+import ast
 
 sys.path.append("../..")
 import create_connection_to_databases
@@ -116,7 +117,7 @@ csv_not_mapped.writerow(['id', 'name'])
 
 file_mapped_drug = open('drug/mapped_drug.tsv', 'w', encoding="utf-8")
 csv_mapped = csv.writer(file_mapped_drug, delimiter='\t', lineterminator='\n')
-csv_mapped.writerow(['id', 'id_hetionet', 'resource', 'databaseName'])
+csv_mapped.writerow(['id', 'id_hetionet', 'resource', 'how_mapped' ,'databaseName'])
 
 '''
 load all reactome drug and check if they are in hetionet or not
@@ -125,7 +126,7 @@ load all reactome drug and check if they are in hetionet or not
 set_pair = set()
 def load_reactome_drug_in(label):
     global highest_identifier
-    query = '''MATCH (n:ReferenceEntity_reactome)--(h:%s) WHERE n.databaseName in [ "ChEBI", "IUPHAR" , "COMPOUND", "PubChem Compound"] RETURN n, h'''
+    query = '''MATCH (n:ReferenceEntity_reactome)--(h:%s) WHERE n.databaseName in [ "ChEBI", "IUPHAR" , "COMPOUND", "PubChem Compound", "Guide to Pharmacology"] RETURN n, h'''
     query = query % (label)
     results = graph_database.run(query)
 
@@ -134,14 +135,13 @@ def load_reactome_drug_in(label):
     for reference_node, drug_node, in results:
         mapped = False
         identifier_reactome = reference_node['identifier'] if "identifier" in reference_node else []
-        drug_name = reference_node['inn'].lower() if "inn" in reference_node else reference_node[
-            'inn']  # INN - international nonproprietary name
-        drug_names = reference_node['name'] if "name" in reference_node else []
+        drug_name = reference_node['inn'].lower() if "inn" in reference_node else ''
+        drug_names = ast.literal_eval(reference_node['name']) if "name" in reference_node else []
         databaseName = reference_node['databaseName'] if "databaseName" in reference_node else []
-        alternative_drug_name = drug_node["name"] if "name" in drug_node else []
+        alternative_drug_name = ast.literal_eval(drug_node["name"]) if "name" in drug_node else []
         dbId = reference_node["dbId"]
 
-        # xrefs: add prefixes
+        # xrefs: add prefixess
         if databaseName == "ChEBI":
             database_identifier = "ChEBI:" + identifier_reactome
         elif databaseName == "COMPOUND":
@@ -150,7 +150,7 @@ def load_reactome_drug_in(label):
             database_identifier = "PubChem Compound:" + identifier_reactome
 
         # mapping IUPHAR
-        if databaseName == "IUPHAR":
+        if databaseName == "IUPHAR" or databaseName=='Guide to Pharmacology':
             if identifier_reactome in dict_iuphar_to_inchi_hetionet:
                 hetionet_identifier = dict_hetionet_inchi_drugbank_identifier[
                     dict_iuphar_to_inchi_hetionet[identifier_reactome]]
@@ -161,7 +161,7 @@ def load_reactome_drug_in(label):
                 resource.append('Reactome')
                 resource = list(set(resource))
                 resource = '|'.join(resource)
-                csv_mapped.writerow([dbId, hetionet_identifier, resource, drug_name, databaseName])
+                csv_mapped.writerow([dbId, hetionet_identifier, resource, 'IUPHAR', drug_name, databaseName])
                 mapped = True
                 set_pair.add((hetionet_identifier, dbId))
 
@@ -177,12 +177,12 @@ def load_reactome_drug_in(label):
             resource.append('Reactome')
             resource = list(set(resource))
             resource = '|'.join(resource)
-            csv_mapped.writerow([dbId, hetionet_identifier, resource, drug_name, databaseName])
+            csv_mapped.writerow([dbId, hetionet_identifier, resource, databaseName, drug_name, databaseName])
             mapped = True
             set_pair.add((hetionet_identifier, dbId))
 
         # mapping with name
-        if drug_name in dict_drug_hetionet_names:
+        if drug_name in dict_drug_hetionet_names and not  mapped:
             hetionet_identifier = dict_drug_hetionet_names[drug_name]
             if (hetionet_identifier, dbId) in set_pair:
                 continue
@@ -192,14 +192,15 @@ def load_reactome_drug_in(label):
             resource = list(set(resource))
             resource = '|'.join(resource)
             drug_names = dict_drug_hetionet[dict_drug_hetionet_names[drug_name]]
-            csv_mapped.writerow([dbId, hetionet_identifier, resource, drug_name, drug_names, "NAME"])
+            csv_mapped.writerow([dbId, hetionet_identifier, resource, "NAME", drug_name, drug_names])
             mapped = True
             set_pair.add((hetionet_identifier, dbId))
 
 
         # mapping with alternative_names
-        elif not mapped:
+        if not mapped:
             for name in alternative_drug_name:
+                name=name.lower()
                 if name in dict_drug_hetionet_names:
                     hetionet_identifier = dict_drug_hetionet_names[name]
                     if (hetionet_identifier, dbId) in set_pair:
@@ -210,7 +211,7 @@ def load_reactome_drug_in(label):
                     resource = list(set(resource))
                     resource = '|'.join(resource)
                     drug_names = dict_drug_hetionet[dict_drug_hetionet_names[name]]
-                    csv_mapped.writerow([dbId, hetionet_identifier, resource, name, drug_names, "NAME_DRUG"])
+                    csv_mapped.writerow([dbId, hetionet_identifier, resource, "NAME_DRUG", name, drug_names])
                     mapped = True
                     set_pair.add((hetionet_identifier, dbId))
 
@@ -234,13 +235,13 @@ def load_reactome_drug_in(label):
                     resource = list(set(resource))
                     resource = '|'.join(resource)
                     drug_names = dict_drug_hetionet[dict_drug_hetionet_names[name]]
-                    csv_mapped.writerow([dbId, hetionet_identifier, resource, drug_name, drug_names, "NAME_HTML"])
+                    csv_mapped.writerow([dbId, hetionet_identifier, resource, "NAME_HTML", drug_name, drug_names])
                     mapped = True
                     set_pair.add((hetionet_identifier, dbId))
 
             if not mapped:
                 csv_not_mapped.writerow([identifier_reactome, drug_name, drug_names, databaseName])
-        else:
+        if not mapped:
             csv_not_mapped.writerow([identifier_reactome, drug_name, drug_names, databaseName])
 
     print('----------------------------------------------------------------------------------------')
@@ -254,7 +255,7 @@ generate connection between mapping drug of reactome and hetionet and generate n
 
 def create_cypher_file():
     cypher_file = open('output/cypher_mapping2.cypher', 'w', encoding="utf-8")
-    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/reactome/mapped_drug.tsv" As line FIELDTERMINATOR "\\t" MATCH (d:Chemical{identifier:line.id_hetionet}),(c:ReferenceEntity_reactome{dbId:toInteger(line.id)}) CREATE (d)-[:equal_to_reactome_drug]->(c) SET d.resource = split(line.resource, '|'), d.reactome = "yes";\n'''
+    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/reactome/drug/mapped_drug.tsv" As line FIELDTERMINATOR "\\t" MATCH (d:Chemical{identifier:line.id_hetionet}),(c:ReferenceEntity_reactome{dbId:toInteger(line.id)}) CREATE (d)-[:equal_to_reactome_drug{how_mapped:line.how_mapped}]->(c) SET d.resource = split(line.resource, '|'), d.reactome = "yes";\n'''
     query = query %(path_of_directory)
     cypher_file.write(query)
 
