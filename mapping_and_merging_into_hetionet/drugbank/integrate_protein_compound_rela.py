@@ -74,12 +74,13 @@ def load_all_protein_chemical_pairs(direction, from_chemical):
             label = 'Chemical'
             short_cut = 'C'
         rela_name = rela_type_splitted[0].upper()
+        abbreviaction_rela=''.join([x[0].lower() for x in rela_name.split('_')])
         if from_chemical:
             rela_direction = '<-[r:%s]-'
-            this_rela_name = rela_name + '_C' + rela_name[0].lower() + short_cut
+            this_rela_name = rela_name + '_C' + abbreviaction_rela + short_cut
         else:
             rela_direction = '-[r:%s]->'
-            this_rela_name = rela_name + '_' + short_cut + rela_name[0].lower() + 'C'
+            this_rela_name = rela_name + '_' + short_cut + abbreviaction_rela + 'C'
         rela_direction = rela_direction % (this_rela_name)
 
         # for the connection between real name to names in drugbank
