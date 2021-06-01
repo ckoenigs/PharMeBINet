@@ -76,15 +76,15 @@ set_of_rela_names = set(['upregulated', 'downregulated'])
 list_of_actions = ['decreases', 'increases', 'affects']
 
 # rela from ctd to rela in database
-dict_rela_small_to_rela_great = {
+dict_xtd_rela_to_database_rela_name = {
     'upregulated': 'UPREGULATES',
     'downregulated': 'DOWNREGULATES',
     'association': 'ASSOCIATES',
     'binding': 'BINDS',
-    'metabolic_processing': 'METABOLIC_PROCESSES_REGULATION',
-    'cellular_actions': 'CELLULAR_ACTIONS',
-    'protein_actions': 'PROTEIN_ACTIONS',
-    'actions_on_DNA': 'ACTION_ON_DNA'
+    'metabolic_processing': 'IS_ACTIVE_IN_METABOLISM',
+    'cellular_actions': 'IS_ACTIVE_ON_CELLULAR_LEVEL',
+    'protein_actions': 'IS_ACTIVE_ON_POLYPEPTIDE_LEVEL',
+    'actions_on_DNA': 'IS_ACTIVE_ON_DNA_OR_RNA_LEVEL'
 }
 
 # prepare the action type to rela name
@@ -102,7 +102,7 @@ for file in files:
                     set_of_rela_names.add(verb_action + '_' + rela_name)
                     dict_interaction_type_and_value_to_rela_name[
                         (action_type, verb_action)] = verb_action + '_' + rela_name
-                    dict_rela_small_to_rela_great[
+                    dict_xtd_rela_to_database_rela_name[
                         verb_action + '_' + rela_name] = verb_action.upper() + '_' + rela_name.upper()
             else:
                 if action_type not in list_of_specific_action:
@@ -140,7 +140,7 @@ def prepare_rela_great(rela, label1, label2):
 
 
 for label_gene_or_protein in [gene, protein]:
-    for small_rela, greate_rela in dict_rela_small_to_rela_great.items():
+    for small_rela, greate_rela in dict_xtd_rela_to_database_rela_name.items():
         dict_file_name_to_rela_name[
             prepare_rela_small(small_rela, chemical, label_gene_or_protein)] = prepare_rela_great(greate_rela,
                                                                                                   chemical,
@@ -635,7 +635,7 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.utcnow())
-    print('Take all gene-pathway relationships and generate csv and cypher file')
+    print('Take all gene-chemical relationships and generate csv and cypher file')
 
     take_all_relationships_of_gene_chemical()
 
