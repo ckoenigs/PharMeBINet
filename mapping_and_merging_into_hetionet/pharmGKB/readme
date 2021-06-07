@@ -47,8 +47,8 @@ The next script starts with the preparation of variant-gene connection from pGKB
     First, the TSV file is generated. Then the query to merge the gene variant information is added to the generated cypher file.
     All variant-gene pairs are extracted from pGKB which are mapped to the database. The information is written into the TSV file.
 
-Next, the preparation of the clinicalAnnotationMetadata is generated.
-    Therefore, the TSV file is generated for the ClinicalAnnotationMetadata. Additionally, a cypher query to integrate these meta-edges into the database is added to the cypher file. Next for all pairs CAM-variant/chemical/pc/gene/phenotype the TSV files are generated and additional cypher queries are added.
+Next, the preparation of the clinicalAnnotation is generated.
+    Therefore, the TSV file is generated for the clinicalAnnotation (CA). The CA allele information are added to the CA nodes. Additionally, a cypher query to integrate these meta-edges into the database is added to the cypher file. Next for all pairs CA-variant/chemical/pc/gene/phenotype the TSV files are generated and additional cypher queries are added.
     Next, get all CAM where the pGKB chemical is connected to chemical or pc and pGKB variant/haplotype are connected to the variant with ClinicalAnnotation.
     The CA are prepared for the CAM as properties genotypes and clinical phenotype.
     In the following step, the CAM information is written into the TSV file.
