@@ -201,6 +201,11 @@ def gather_information_from_obo():
     # open the obo file
     with open(file_name, encoding='utf-8') as f:
         # group lines together which are in a block and go through every block
+        f.readline()
+        line_2=f.readline()
+        file=open('version_obo.txt','w')
+        file.write(line_2)
+        file.close()
         for (key, group) in groupby(f, contains_information):
             if key:
                 # for python 2.*
