@@ -58,6 +58,13 @@ echo drug-ReactionLikeEvent relationships
 python3 CreateEdgeDrugToNode.py $path_to_project $license > DrugEdges/output.txt
 
 
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo Regulation relationships
+
+#python3 CreateEdgeRegulationToNode.py $path_to_project $license > RegulationEdges/output.txt
+
+
 echo integrate connection with neo4j shell
 now=$(date +"%F %T")
 echo "Current time: $now"

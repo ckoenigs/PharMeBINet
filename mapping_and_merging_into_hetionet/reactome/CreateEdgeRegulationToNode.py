@@ -118,7 +118,7 @@ def main():
     ]
    
     directory = 'RegulationEdges'
-    cypher_file = open('output/cypher_edge.cypher', 'w', encoding="utf-8")
+    cypher_file = open('output/cypher_drug_edge.cypher', 'a', encoding="utf-8")
 
     for list_element in list_of_combinations:
         new_relationship = list_element[0]
