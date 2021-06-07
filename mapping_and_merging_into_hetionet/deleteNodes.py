@@ -13,7 +13,7 @@ dict_label_to_index_constraint_infos = {}
 # are settings to reduce the number of logs)
 
 # all node source to delete
-TODELETE = {'sider', 'ctd', 'ndfrt', 'aeolus', 'drugbank', 'ncbi', 'efo', 'hpo', 'uniprot', 'multi', 'go',
+TODELETE = {'sider', 'ctd', 'ndfrt', 'aeolus', 'drugbank', 'ncbi', 'efo', 'hpo', 'uniprot', 'multi', 'go', 'dc',
             'diseaseontology', 'mondo', 'clinvar', 'omim', 'reactome', 'adrecstarget', 'iid', 'medrt', 'pharmgkb'}
 
 # dictionary label to batch size
