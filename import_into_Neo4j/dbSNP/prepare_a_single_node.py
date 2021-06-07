@@ -24,7 +24,7 @@ def generate_cypher_queries(file_name, label, properties, list_properties):
         else:
             query_node += filename + ':line.' + filename + ', '
 
-    query_node = query_node + ' license:"CC0 1.0"});\n'
+    query_node = query_node + ' license:"https://www.ncbi.nlm.nih.gov/home/about/policies/"});\n'
     query_node = query_node % (file_name, label)
     cypher_file.write(query_node)
 

@@ -257,7 +257,7 @@ def generate_cypher_file_for_connection(cypher_file):
     # query = '''Match (n:Disease)-[r:PRESENTS_DpS]-(s:Symptom) Where r.hpo='yes SET r.resource=r.resource+'HPO';\n '''
     # cypher_file.write(query)
 
-    query_new = query_start + query_new + '''version:'phenotype_annotation.tab %s',unbiased:false,source:'Human Phenontype Ontology', license:'This service/product uses the Human Phenotype Ontology (version information). Find out more at http://www.human-phenotype-ontology.org We request that the HPO logo be included as well.', resource:['HPO'], hpo:'yes', sources:split(line.source,'|'),  url:'https://hpo.jax.org/app/browse/disease/'+split(line.source,'|')[0]}]->(s);\n'''
+    query_new = query_start + query_new + '''version:'phenotype_annotation.tab %s',unbiased:false,source:'Human Phenontype Ontology', license:'This service/product uses the Human Phenotype Ontology (April 2021). Find out more at http://www.human-phenotype-ontology.org We request that the HPO logo be included as well.', resource:['HPO'], hpo:'yes', sources:split(line.source,'|'),  url:'https://hpo.jax.org/app/browse/disease/'+split(line.source,'|')[0]}]->(s);\n'''
     query_new = query_new % (path_of_directory, "mapping_files/rela_new.tsv", hpo_date)
     cypher_file.write(query_new)
 

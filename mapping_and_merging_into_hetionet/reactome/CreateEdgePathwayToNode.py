@@ -94,7 +94,7 @@ def check_relationships_and_generate_file(new_relationship, node_reactome_label,
 
 def main():
     global path_of_directory, license
-    if len(sys.argv) > 1:
+    if len(sys.argv) > 2:
         path_of_directory = sys.argv[1]
         license = sys.argv[2]
     else:

@@ -6,7 +6,7 @@ path_neo4j=$1
 #path to project
 path_to_project=$2
 
-license='CC BY-NC 4.0'
+license='Attribution-NonCommercial 4.0 International'
 
 now=$(date +"%F %T")
 echo "Current time: $now"

@@ -61,7 +61,7 @@ def generate_files(path_of_directory):
             continue
         query += 'v.' + property + '=n.'+ property + ', '
 
-    query += '''v.dbsnp="yes", v.resource=split(line.resource,"|"), v.xrefs=split(line.xrefs,"|") Create (v)-[:equal_to_drugbank_variant]->(n);\n'''
+    query += '''v.dbsnp="yes", v.resource=split(line.resource,"|"), v.source='dbSNP', v.license='https://www.ncbi.nlm.nih.gov/home/about/policies/' ,v.xrefs=split(line.xrefs,"|") Create (v)-[:equal_to_drugbank_variant]->(n);\n'''
 
     query = query % (path_of_directory, file_name)
     cypher_file.write(query)
