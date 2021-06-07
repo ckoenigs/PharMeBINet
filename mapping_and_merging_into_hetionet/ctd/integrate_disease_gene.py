@@ -131,12 +131,24 @@ def take_all_relationships_of_gene_disease():
         counter_direct_evidence += 1
         for mondo in dict_disease_id_mondo[disease_id]:
             tuple_ids = (gene_id, mondo)
+            if inferenceScore=='' and inferenceChemicalName=='':
+                inference_info=''
+            elif inferenceScore=='':
+                print('inference score empty but name not')
+                inference_info = inferenceChemicalName
+            elif inferenceChemicalName=='':
+                print('inference name empty but score not')
+                inference_info = inferenceScore
+            else:
+                inference_info=inferenceChemicalName + ':' + inferenceScore
+
+
             if not (gene_id, mondo) in dict_disease_gene:
-                dict_disease_gene[tuple_ids] = [{inferenceChemicalName + ':' + inferenceScore},
+                dict_disease_gene[tuple_ids] = [{inference_info},
                                                 {directEvidence}, {pubMedIDs}, {omimIDs}]
                 count_possible_relas += 1
             else:
-                dict_disease_gene[tuple_ids][0].add(inferenceChemicalName + ':' + inferenceScore)
+                dict_disease_gene[tuple_ids][0].add(inference_info)
                 dict_disease_gene[tuple_ids][1].add(directEvidence)
                 dict_disease_gene[tuple_ids][2].add(pubMedIDs)
                 dict_disease_gene[tuple_ids][3].add(omimIDs)
