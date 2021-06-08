@@ -25,13 +25,13 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo 'map variant and haplotypes'
 
-python3 map_haplotype_and_variant.py $path_to_project $license > variant/output.txt
+python3 map_haplotype_and_variant.py $path_to_project "${license}" > variant/output.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo 'map phenotypes'
 
-python3 map_phenotype.py $path_to_project $license > disease/output.txt
+python3 map_phenotype.py $path_to_project "${license}" > disease/output.txt
 
 
 now=$(date +"%F %T")

@@ -43,26 +43,26 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo multi edges of Reaction integration
 
-python3 TreatEdgeIntoNode.py $path_to_project $license > PathwayEdges/output.txt
+python3 TreatEdgeIntoNode.py $path_to_project "${license}" > PathwayEdges/output.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo edge physicalentity-reactionLikeEvent
 
-python3 CreateEdgeReactionToPhysicalEntity.py $path_to_project $license > physikalEntityEdges/output.txt
+python3 CreateEdgeReactionToPhysicalEntity.py $path_to_project "${license}" > physikalEntityEdges/output.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo drug-ReactionLikeEvent relationships
 
-python3 CreateEdgeDrugToNode.py $path_to_project $license > DrugEdges/output.txt
+python3 CreateEdgeDrugToNode.py $path_to_project "${license}" > DrugEdges/output.txt
 
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo Regulation relationships
 
-#python3 CreateEdgeRegulationToNode.py $path_to_project $license > RegulationEdges/output.txt
+#python3 CreateEdgeRegulationToNode.py $path_to_project "${license}" > RegulationEdges/output.txt
 
 
 echo integrate connection with neo4j shell

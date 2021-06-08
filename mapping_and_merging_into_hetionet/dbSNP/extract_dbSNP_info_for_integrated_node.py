@@ -151,9 +151,9 @@ def load_dbSNP_data_for_nodes_with_dbSNP_in_db():
         elif not rs_id in set_not_existing_dbSNP_ids :
             prepare_a_single_node.prepare_json_information_to_tsv(dict_nodes[rs_id])
         if counter_all % 500==0:
-            print('100 through')
+            print('500 through')
 
-
+    print('all counted gene variant with rs:',counter_all)
     print(string_of_ids)
     time.sleep(10)
     dict_nodes_to_list=ask_api_and_prepare_return(string_of_ids)
