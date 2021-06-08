@@ -24,7 +24,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 chmod 775 merge_nodes.sh
 
-./merge_nodes.sh > output_merge.txt
+./merge_nodes.sh > output/output_merge.txt
 
 sleep 120
 
@@ -35,7 +35,7 @@ echo delete nodes
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher_delete.cypher > output_cypher_delete.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f cypher_delete.cypher > output/output_cypher_delete.txt
 sleep 120
 
 $path_neo4j/neo4j restart
