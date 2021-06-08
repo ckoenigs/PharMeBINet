@@ -791,7 +791,7 @@ def prepare_edge_cypher_query(file_name, label, rela_name, properties, list_prop
         query = query % (file_name, properties[0], label.capitalize(), 'id', properties[1], rela_name)
     for property in properties[2:]:
         if property in list_properties:
-            query += property + ':split(line.' + property + ',"|"), '
+            query += property + ':split(line.' + property + ',"||"), '
         else:
             query += property + ':line.' + property + ', '
     query = query[:-2] + '}]->(b);\n' if len(properties) > 2 else query + ']->(b);\n'
