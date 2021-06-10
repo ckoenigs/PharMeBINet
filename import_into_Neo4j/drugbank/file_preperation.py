@@ -528,9 +528,9 @@ def drugs_combination_and_check(neo4j_label):
                     sys.exit('external identifier not existing')
 
             groups = []
-            # dictionary with all experimental properties if the durgbank id is at least on structure file
+            # dictionary with all experimental properties if the drugbank id is at least on structure file
             dict_experimental_property_value = {}
-            # dictionary with all calculated properties if the durgbank id is at least on structure file
+            # dictionary with all calculated properties if the drugbank id is at least on structure file
             dict_calculated_property_value = {}
             dict_calculated_property_value_to_tool = {}
             if drugbank_id in dict_drug_structure_links or drugbank_id in dict_drug_structure:
