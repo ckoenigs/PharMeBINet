@@ -1,6 +1,6 @@
 https://hpo.jax.org/app/
 
-Version:
+Version: 2021-06-08
 
 The script first download the hpo.obo and the phenotype_annotation.hpoa files.
 
