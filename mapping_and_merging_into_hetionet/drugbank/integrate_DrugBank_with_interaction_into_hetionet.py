@@ -53,7 +53,7 @@ neo4j_interaction_rela_label = 'interacts_CiC'
 set_of_list_properties = set([])
 
 '''
-Get all properties of the hetionet compounds and durgbank compounds and use them to generate the csv files
+Get all properties of the hetionet compounds and drugbank compounds and use them to generate the csv files
 '''
 
 
@@ -128,7 +128,7 @@ csv_unii_drugbank_table.writerow(['unii', 'drugbank_id'])
 
 '''
 Load in all information from DrugBank.
-and generate unii-durgbank table file 
+and generate unii-drugbank table file 
 Where n.identifier="DB13179"
 '''
 

@@ -182,7 +182,7 @@ generate_csv_transporter = open('protein/proteins_transporter.csv', 'w')
 writer_transporter = csv.writer(generate_csv_transporter, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 writer_transporter.writerow(['id'])
 
-# dictionary of Durgbank labels to hetionet labels:
+# dictionary of drugbank labels to hetionet labels:
 dict_db_labels_to_csv_label_file = {
     'Enzyme_DrugBank': writer_enzyme,
     'Transporter_DrugBank': writer_transporter,

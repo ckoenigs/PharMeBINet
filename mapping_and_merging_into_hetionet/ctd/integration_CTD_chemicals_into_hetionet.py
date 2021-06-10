@@ -144,7 +144,7 @@ def create_connection_with_neo4j_mysql():
     global conRxNorm
     conRxNorm = create_connection_to_databases.database_connection_RxNorm()
 
-# dictionary cas number to durgbank
+# dictionary cas number to drugbank
 dict_cas_to_drugbank={}
 
 # list of removed multiple cas number
@@ -247,7 +247,7 @@ dict_wrong_multiple_mapped_ctd={
 
 file_not_same_cas = open('chemical/not_same_cas.tsv', 'w')
 csv_not_the_same_cas = csv.writer(file_not_same_cas, delimiter='\t')
-csv_not_the_same_cas.writerow(['mesh', 'cas-mesh', 'durgbank', 'cas-db', 'mapping_with_cas'])
+csv_not_the_same_cas.writerow(['mesh', 'cas-mesh', 'drugbank', 'cas-db', 'mapping_with_cas'])
 
 '''
 check if the external reference of ctd drugbank id has the same cas number

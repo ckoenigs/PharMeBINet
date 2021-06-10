@@ -330,7 +330,7 @@ properties:
     0:stitch flat id
     1:stitch stereo id
     2:source
-    3:source id (Durgbank id)
+    3:source id (drugbank id)
 
 if for the stereo id nothing is found uses the drugbank id which is found for the flat id. Prefer the flat ids where the 
 steroe id is the same as the flat id. 
@@ -368,7 +368,7 @@ def give_drugbank_ids_with_use_of_stitch_information():
                 continue
             if not part_exist:
                 csv_writer.writerow(line)
-            # get durgbank id with stitch stereo id in pubchem form
+            # get drugbank id with stitch stereo id in pubchem form
             if xref_source == 'DrugBank':
                 if stitch_stereo in list_of_not_mapped_stitch_stereo:
                     if xref in dict_all_drug:

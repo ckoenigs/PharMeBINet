@@ -22,7 +22,7 @@ Next the Product:
 In the following the DrugBank gene variant is mapped to variant:
                First, load all variants from the database.
                Then, generate the mapping TSV and new node TSV. Also, the cypher queries for mapping and generate new nodes are generated and add to the cypher file.
-               For the mapping is used dbSNP identifier of the DurgBank gene variant to the external reference dbSNP identifier of the database. Next, mapping is allele name to database variant name.  All that did not map, but have an rs identifier (dbSNP identifier) are added to the TSV file for the new node.
+               For the mapping is used dbSNP identifier of the drugbank gene variant to the external reference dbSNP identifier of the database. Next, mapping is allele name to database variant name.  All that did not map, but have an rs identifier (dbSNP identifier) are added to the TSV file for the new node.
 The node information and the relationships are integrated into the database with cypher-shell.
 In the following, the merge node script of the salt is executed.
 The variant-compound edge needs an own program:

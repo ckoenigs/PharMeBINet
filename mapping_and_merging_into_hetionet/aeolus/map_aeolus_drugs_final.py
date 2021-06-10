@@ -522,7 +522,7 @@ def main():
     global dict_rxnorm_to_drug_concept_id
     dict_rxnorm_to_drug_concept_id = {}
 
-    # list with rxnorm ids which are not mapped to DurgBank ID
+    # list with rxnorm ids which are not mapped to drugbank ID
     global list_aeolus_drugs_without_mapped_id
     list_aeolus_drugs_without_mapped_id = []
 
