@@ -209,7 +209,11 @@ def create_query_for_phenotype(label, file_name):
     query = query % label
     results = g.run(query)
     for property, in results:
-        query_create += property + ':n.' + property + ', '
+        if property!='alternative_names':
+
+            query_create += property + ':n.' + property + ', '
+        else:
+            query_create += 'synonyms:n.' + property + ', '
     query_create += ' license:"https://www.omim.org/help/agreement", source:"OMIM", resource:["OMIM"], omim:"yes"}) Create (p)-[:equal_to_omim]->(n);\n'
     query_create = query_create % (path_of_directory, file_name, label)
     cypher_file.write(query_create)
