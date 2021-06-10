@@ -9,8 +9,6 @@ path_to_project=$2
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-# python3 parse_uniprot_flat_file_to_tsv.py database/uniprot_sprot.dat $path_to_project > output_integration.txt
-# python3 parse_uniprot_flat_file_to_tsv.py $path_to_project > output/output_integration.txt
 python3 parse_uniprot_xml_file_to_tsv.py $path_to_project > output/output_integration.txt
 
 rm database/*
