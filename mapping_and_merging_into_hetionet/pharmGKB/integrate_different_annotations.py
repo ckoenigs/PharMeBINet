@@ -122,7 +122,7 @@ def prepare_files(label, query_start):
         else:
             query_meta_node += 'identifier:toString(n.' + property + '), '
 
-    query_meta_node += ' study_parameters:split(line.study_parameters,"|"), guideline_urls:split(line.guideline_urls,"|"), PubMed_ids:split(line.PubMed_ids,"|"),PubMed_Central_ids:split(line.PubMed_Central_ids,"|") , source:"PharmGKB", resource:["PharmGKB"], meta_edge:true, license:"%s"}) Create (n)<-[:equal_metadata]-(b);\n'
+    query_meta_node += ' study_parameters:split(line.study_parameters,"|"), guideline_urls:split(line.guideline_urls,"|"), pubMed_ids:split(line.PubMed_ids,"|"),pubMed_Central_ids:split(line.PubMed_Central_ids,"|") , source:"PharmGKB", resource:["PharmGKB"], node_edge:true, url:"https://www.pharmgkb.org/variantAnnotation/"+line.identifier, license:"%s"}) Create (n)<-[:equal_metadata]-(b);\n'
     query_meta_node = query_meta_node % (file_name, label, label.split('_')[1], license)
     cypher_file.write(query_meta_node)
     if not add_constraint:
@@ -159,6 +159,8 @@ def add_check_and_add_info(property_in_pGKB, literature, property_name, dictiona
         value = str(literature[property_in_pGKB])
         if property_name not in dictionary:
             dictionary[property_name] = set()
+        if property_name=='guideline_urls':
+            value='https://www.pharmgkb.org/literature/'+value
         dictionary[property_name].add(value)
 
 

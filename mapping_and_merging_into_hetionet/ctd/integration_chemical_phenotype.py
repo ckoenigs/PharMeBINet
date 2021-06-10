@@ -333,7 +333,7 @@ def generate_cypher_queries(file_name, label, rela, start_node, end_node):
 
 
 # header for csv files
-header = ['chemical_id', 'go_id', 'interaction_text', 'pubmed_ids', 'interaction_actions', 'unbiased', 'anatomy_terms',
+header = ['chemical_id', 'go_id', 'interaction_text', 'pubMed_ids', 'interaction_actions', 'unbiased', 'anatomy_terms',
           'comentioned_terms']
 
 # dictionary from go term to shor form

@@ -110,7 +110,7 @@ def generate_file_and_cypher():
         else:
             query += head + ':line.' + head + ', '
 
-    query += ' license:"free to use for academic purposes", iid:"yes", source:"Integrated Interactions Database", resource:["IID"], url:"http://iid.ophid.utoronto.ca/", identifier:"IPP_"+line.id, meta_edge:true})-[:INTERACTS_IiP]->(p2);\n'
+    query += ' license:"free to use for academic purposes", iid:"yes", source:"Integrated Interactions Database", resource:["IID"], url:"http://iid.ophid.utoronto.ca/", identifier:"IPP_"+line.id, node_edge:true})-[:INTERACTS_IiP]->(p2);\n'
     cypher_file.write(query)
     cypher_file.write('Create Constraint On (node:Interaction) Assert node.identifier Is Unique;\n')
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/iid/%s.tsv" As line FIELDTERMINATOR '\\t' 

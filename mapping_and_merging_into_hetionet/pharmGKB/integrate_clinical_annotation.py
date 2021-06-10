@@ -90,7 +90,7 @@ def prepare_files(directory):
         else:
             query_meta_node += 'identifier:toString(n.' + property + '), '
 
-    query_meta_node += ' allele_infos:split(line.allele_infos,"|")  , source:"PharmGKB", resource:["PharmGKB"], meta_edge:true, license:"%s"}) Create (n)<-[:equal_metadata]-(b);\n'
+    query_meta_node += ' allele_infos:split(line.allele_infos,"|")  , source:"PharmGKB", resource:["PharmGKB"], node_edge:true, license:"%s"}) Create (n)<-[:equal_metadata]-(b);\n'
     query_meta_node = query_meta_node % (file_name, license)
     cypher_file.write(query_meta_node)
     cypher_file.write('Create Constraint On (node:ClinicalAnnotation) Assert node.identifier Is Unique;\n')
