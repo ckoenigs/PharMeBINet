@@ -34,11 +34,11 @@ load in all pathways from hetionet in a dictionary
 
 def load_hetionet_pathways_hetionet_node_in(csv_file, dict_pathway_hetionet_node_hetionet, new_relationship,
                                             node_reactome_label, rela_equal_name, node_hetionet_label):
-    query = '''MATCH (p:Pathway)-[:equal_to_reactome_pathway]-(r:Pathway_reactome)-[v:%s]->(n:%s)-[:%s]-(b:%s) RETURN p.identifier, b.identifier, v.order, v.stoichiometry'''
+    query = '''MATCH (p:Pathway)-[:equal_to_reactome_pathway]-(r:Pathway_reactome)-[v:%s]->(n:%s)-[:%s]-(b:%s) RETURN p.identifier, b.identifier, v.order, v.stoichiometry, r.stId'''
     query = query % (new_relationship, node_reactome_label, rela_equal_name, node_hetionet_label)
     results = graph_database.run(query)
     # for id1, id2, order, stoichiometry, in results:
-    for pathway_id, node_id, order, stoichiometry, in results:
+    for pathway_id, node_id, order, stoichiometry, stid, in results:
         if (pathway_id, node_id) in dict_pathway_hetionet_node_hetionet:
             print(pathway_id, node_id)
             print(node_reactome_label)
@@ -48,7 +48,7 @@ def load_hetionet_pathways_hetionet_node_in(csv_file, dict_pathway_hetionet_node
             # sys.exit("Doppelte Pathway-Node Kombination")
 
         dict_pathway_hetionet_node_hetionet[(pathway_id, node_id)] = [stoichiometry, order]
-        csv_file.writerow([pathway_id, node_id, order, stoichiometry])
+        csv_file.writerow([pathway_id, node_id, order, stoichiometry, stid])
     print('number of Pathway-Nodes relationships in hetionet:' + str(len(dict_pathway_hetionet_node_hetionet)))
 
 
@@ -58,7 +58,7 @@ generate new relationships between pathways of hetionet and hetionet nodes that 
 
 
 def create_cypher_file(file_name, node_label, rela_name):
-    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/reactome/%s" As line FIELDTERMINATOR "\\t" MATCH (d:Pathway{identifier:line.id_hetionet_pathway}),(c:%s{identifier:line.id_hetionet_node}) CREATE (d)-[: %s{order:line.order, stoichiometry:line.stoichiometry, resource: ['Reactome'], reactome: "yes", source:"Reactome", license:"%s"}]->(c);\n'''
+    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/reactome/%s" As line FIELDTERMINATOR "\\t" MATCH (d:Pathway{identifier:line.id_hetionet_pathway}),(c:%s{identifier:line.id_hetionet_node}) CREATE (d)-[: %s{order:line.order, stoichiometry:line.stoichiometry, resource: ['Reactome'], reactome: "yes", source:"Reactome", license:"%s", url:"https://reactome.org/content/detail/"+line.stid}]->(c);\n'''
     query = query % (path_of_directory, file_name, node_label, rela_name, license)
     cypher_file.write(query)
 
@@ -75,7 +75,7 @@ def check_relationships_and_generate_file(new_relationship, node_reactome_label,
     file_mapped_pathway_to_node = open(file_name,
                                        'w', encoding="utf-8")
     csv_mapped = csv.writer(file_mapped_pathway_to_node, delimiter='\t', lineterminator='\n')
-    csv_mapped.writerow(['id_hetionet_pathway', 'id_hetionet_node', 'order', 'stoichiometry'])
+    csv_mapped.writerow(['id_hetionet_pathway', 'id_hetionet_node', 'order', 'stoichiometry','stid'])
 
     dict_pathway_node = {}
 

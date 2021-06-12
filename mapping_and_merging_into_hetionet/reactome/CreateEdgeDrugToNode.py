@@ -36,23 +36,24 @@ def load_hetionet_compound_hetionet_node_in(label, csv_file, dict_compound_hetio
                                                   new_relationship,
                                                   node_reactome_label, rela_equal_name, node_hetionet_label, direction1, direction2):
     # {identifier:'DB01025'}
-    query = '''MATCH (p:Chemical)-[:equal_to_reactome_drug]-(r:ReferenceEntity_reactome)<-[:referenceEntity]-(z:%s)%s[v:%s]%s(n:%s)-[:%s]-(b:%s) RETURN p.identifier, b.identifier, v.order, v.stoichiometry, z.displayName'''
+    query = '''MATCH (p:Chemical)-[:equal_to_reactome_drug]-(r:ReferenceEntity_reactome)<-[:referenceEntity]-(z:%s)%s[v:%s]%s(n:%s)-[:%s]-(b:%s) RETURN p.identifier, b.identifier, v.order, v.stoichiometry, z.displayName, z.stId'''
     query = query % (label, direction1, new_relationship, direction2, node_reactome_label, rela_equal_name, node_hetionet_label)
     #print(query)
     results = graph_database.run(query)
     # for id1, id2, order, stoichiometry, in results:
-    for compound_id, node_id, order, stoichiometry, displayName, in results:
+    for compound_id, node_id, order, stoichiometry, displayName, stid, in results:
         compartment = ""
         displayName = displayName.split("[")
         compartment = displayName[1]
         compartment = compartment.replace("]", "")
         if (compound_id, node_id) not in dict_compound_hetionet_node_hetionet:
-            dict_compound_hetionet_node_hetionet[(compound_id, node_id)] = [stoichiometry, order, set([compartment])]
+            dict_compound_hetionet_node_hetionet[(compound_id, node_id)] = [stoichiometry, order, set([compartment]), set([stid])]
             # csv_file.writerow([compound_id, node_id, order, stoichiometry, compartment])
             continue
         else:
             print(compound_id,node_id)
             dict_compound_hetionet_node_hetionet[(compound_id, node_id)][2].add(compartment)
+            dict_compound_hetionet_node_hetionet[(compound_id, node_id)][3].add(stid)
             print(compartment)
         # dict_compound_hetionet_node_hetionet[(compound_id, node_id)] = [stoichiometry, order]
         # csv_file.writerow([compound_id, node_id, order, stoichiometry, compartment])
@@ -65,7 +66,7 @@ generate new relationships between Compound of hetionet and Drug of hetionet nod
 
 
 def create_cypher_file(directory, file_path, node_label, rela_name, direction1, direction2):
-    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/reactome/%s" As line FIELDTERMINATOR "\\t" MATCH (d:Chemical{identifier:line.id_hetionet_Compound}),(c:%s{identifier:line.id_hetionet_node}) CREATE (d)%s[: %s{order:line.order, stoichiometry:line.stoichiometry, compartments: split(line.compartment, "|"), resource: ['Reactome'], reactome: "yes", license:"%s"}]%s(c);\n'''
+    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/reactome/%s" As line FIELDTERMINATOR "\\t" MATCH (d:Chemical{identifier:line.id_hetionet_Compound}),(c:%s{identifier:line.id_hetionet_node}) CREATE (d)%s[: %s{order:line.order, stoichiometry:line.stoichiometry, compartments: split(line.compartment, "|"), resource: ['Reactome'], reactome: "yes", license:"%s", source:"Reactome", url:"https://reactome.org/content/detail/"+line.stid}]%s(c);\n'''
     query = query % (path_of_directory, file_path, node_label, direction1, rela_name, license ,direction2)
     cypher_file.write(query)
 
@@ -82,7 +83,7 @@ def check_relationships_and_generate_file(new_relationship, node_reactome_label,
 
     file_mapped_drug_to_node = open(file_name,'w', encoding="utf-8")
     csv_mapped = csv.writer(file_mapped_drug_to_node, delimiter='\t', lineterminator='\n')
-    csv_mapped.writerow(['id_hetionet_Compound', 'id_hetionet_node', 'order', 'stoichiometry', 'compartment'])
+    csv_mapped.writerow(['id_hetionet_Compound', 'id_hetionet_node', 'order', 'stoichiometry', 'compartment', 'stid'])
 
     dict_compound_node = {}
 
@@ -91,7 +92,7 @@ def check_relationships_and_generate_file(new_relationship, node_reactome_label,
                                                       node_reactome_label,
                                                       rela_equal_name, node_hetionet_label, direction1, direction2)
     for (compound_id, node_id), list_of_properties in dict_compound_node.items():
-        csv_mapped.writerow([compound_id, node_id, list_of_properties[0], list_of_properties[1], "|".join(list_of_properties[2])])
+        csv_mapped.writerow([compound_id, node_id, list_of_properties[0], list_of_properties[1], "|".join(list_of_properties[2]), list_of_properties[3].pop()])
 
     print(
         '°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°')
