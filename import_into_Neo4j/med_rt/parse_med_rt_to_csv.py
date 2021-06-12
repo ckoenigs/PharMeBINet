@@ -79,7 +79,7 @@ def parse_CUI_line(line, xref_start, namespace):
     dict_id_to_label[ID] = filename
 
     synonym = set(synonym1).union(synonym2)
-    info = {'id': ID, 'name': synonym.pop(), 'synonyme': '|'.join(synonym), 'xref': xref_start + ':' + cui}
+    info = {'id': ID, 'name': synonym.pop(), 'synonyms': '|'.join(synonym), 'xref': xref_start + ':' + cui}
     dict_of_file_names[filename].writerow(info)
     return ID, {'synonym': synonym, 'cui': cui}
 
@@ -211,7 +211,7 @@ def prepare_rela_and_add_to_file(root, dic, fIDName, path):
 dict_id_to_label = {}
 
 # header
-header = ['id', 'status', 'namespace', 'name', 'propertys', 'synonyme', 'xref']
+header = ['id', 'status', 'namespace', 'name', 'propertys', 'synonyms', 'xref']
 
 # dictionary of file names to file
 dict_of_file_names = {}
@@ -241,7 +241,7 @@ def generate_node_csv_files(file_name):
     query_node = query % (path_of_directory, file_name_short)
     query_node += 'Create (n:%s {'
     for head in header:
-        if head in ['synonyme', 'propertys']:
+        if head in ['synonyms', 'propertys']:
             query_node += head + ': split(line.' + head + ',"|"), '
         else:
             query_node += head + ': line.' + head + ', '
@@ -310,7 +310,7 @@ def prepare_node_and_rela_and_write_to_files(fIDName):
         dict_id_to_label[code] = filename
 
         infos = {'id': code, 'status': status, 'namespace': namespace, 'name': name, 'propertys': '|'.join(propertys),
-                 'synonyme': '|'.join(synonyme)}
+                 'synonyms': '|'.join(synonyme)}
         dict_of_file_names[filename].writerow(infos)
 
     # to avoid problems with data
