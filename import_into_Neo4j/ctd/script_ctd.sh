@@ -1,10 +1,11 @@
 #!/bin/bash
 
 #path to project
-path_to_project=$1
+path_to_ctd_data=$1
 
 # path to neo4j
 path_neo4j=$2
+
 
 echo download ctd files
 now=$(date +"%F %T")
@@ -12,25 +13,25 @@ echo "Current time: $now"
 
 # download gene-disease manual because there is a human check!
 
-# python3 download_the_ctd_files.py > output_download.txt
+# python3 download_the_ctd_files.py $path_to_ctd_data > output_download.txt
 
 
 echo first remove the first lines of the ctd files
 now=$(date +"%F %T")
 echo "Current time: $now"
-cd ctd_data
+# cd path_to_ctd_data/ctd_data
 
-#for i in *.csv; do
-#   ./delete_the_head.sh $i
+#for i in $path_to_ctd_data/ctd_data/*.csv; do
+#   $path_to_ctd_data/ctd_data/delete_the_head.sh $i
 #done
 
-cd ..
+#cd ..
 
 echo python3
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-python3 integrate_whole_CTD_into_neo4j_with_csv.py $path_to_project > output_integration.txt
+python3 integrate_whole_CTD_into_neo4j_with_csv.py $path_to_ctd_data > output_integration.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"

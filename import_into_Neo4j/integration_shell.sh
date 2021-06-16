@@ -296,7 +296,7 @@ echo "Current time: $now"
 cd ctd
 echo ctd
 
-./script_ctd.sh $path_to_project $path_neo4j > output.txt
+./script_ctd.sh /mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases $path_neo4j > output.txt
 
 
 cd ..
