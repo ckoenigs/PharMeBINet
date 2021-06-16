@@ -41,9 +41,9 @@ def generate_file_and_cypher():
     cypher_file = open('output/cypher_drug_edge.cypher', 'w', encoding='utf-8')
 
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/reactome/%s.tsv" As line FIELDTERMINATOR '\\t'
-            Match (p1:Chemical{identifier:line.drug_reactome_id}), (p2:Disease{identifier:line.disease_reactome_id}) Create (p1)-[:TREATS_DtT]->(b:Treatment{license:"%s", reactome:"yes", source:"Reactome", resource:["Reactome"], url:"http://iid.ophid.utoronto.ca/", stoichiometry: line.stoichiometry , order:line.order , identifier:"T_"+line.id, node_edge:true})-[:TREATS_TtD]->(p2);\n '''
+            Match (p1:Chemical{identifier:line.drug_reactome_id}), (p2:Disease{identifier:line.disease_reactome_id}) Create (p1)-[:TREATS_CtT]->(b:Treatment{license:"%s", reactome:"yes", source:"Reactome", resource:["Reactome"], url:"https://reactome.org/content/detail/"+line.stid, stoichiometry: line.stoichiometry , order:line.order , identifier:"T_"+line.id, node_edge:true})-[:TREATS_TtD]->(p2);\n '''
     query = query % (path_of_directory, file_name, license)
-    header = ['drug_reactome_id', 'disease_reactome_id', 'id', 'stoichiometry', 'order']
+    header = ['drug_reactome_id', 'disease_reactome_id', 'id', 'stoichiometry', 'order', 'stid']
     cypher_file.write(query)
     cypher_file.write('Create Constraint On (node:Treatment) Assert node.identifier Is Unique;\n')
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/reactome/%s.tsv" As line FIELDTERMINATOR '\\t'
@@ -92,7 +92,7 @@ def run_through_results_and_add_to_dictionary(results):
     :return:
     """
     #hier muss noch go dazu
-    for p1_id, rela, p2, p2_id, go_accession in results:
+    for p1_id, rela, p2, p2_id, go_accession, stid, in results:
         rela_info = dict(rela)
         go_accession = "GO:" + go_accession
         if (p1_id, p2_id) not in dict_pair_to_infos:
@@ -103,6 +103,7 @@ def run_through_results_and_add_to_dictionary(results):
 
         rela_info['drug_reactome_id'] = p1_id
         rela_info['disease_reactome_id'] = p2_id
+        rela_info['stid']=stid
 
         dict_pair_to_infos[(p1_id, p2_id)].append(rela_info)
 
@@ -112,7 +113,7 @@ def load_and_prepare_reactome_data():
     write only rela with exp into file
     """
 
-    query = '''match p=(c:Chemical)--(:ReferenceTherapeutic_reactome)--(d:Drug_reactome)-[rela:disease]-(:Disease_reactome)--(e:Disease) with c,d,e,rela match (d)--(f:GO_CellularComponent_reactome) return c.identifier, rela, e,  e.identifier , f.accession'''
+    query = '''match p=(c:Chemical)--(:ReferenceTherapeutic_reactome)--(d:Drug_reactome)-[rela:disease]-(:Disease_reactome)--(e:Disease) with c,d,e,rela match (d)--(f:GO_CellularComponent_reactome) return c.identifier, rela, e,  e.identifier , f.accession, d.stId'''
     results = g.run(query)
     run_through_results_and_add_to_dictionary(results)
 
