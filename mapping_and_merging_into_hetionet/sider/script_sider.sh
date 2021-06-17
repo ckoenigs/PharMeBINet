@@ -19,7 +19,7 @@ echo integrate mapping with cypher shell
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher.cypher > output/output_cypher_integration_drug.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher.cypher 
 
 sleep 120
 
@@ -35,7 +35,7 @@ echo integrate relationships
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher_rela.cypher > output/output_cypher_integration_drug.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher_rela.cypher
 
 sleep 120
 

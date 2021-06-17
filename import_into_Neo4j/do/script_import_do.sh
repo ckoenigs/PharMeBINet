@@ -17,7 +17,7 @@ echo "Current time: $now"
 
 echo integrate do into neo4j
 
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher > output_cypher_integration.txt 2>&1
+$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher 
 
 sleep 180
 

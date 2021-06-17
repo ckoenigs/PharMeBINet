@@ -11,7 +11,7 @@ echo integrate connection with ne4j shell
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher > output/output_cypher_integration.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher
 
 sleep 120
 
@@ -35,7 +35,7 @@ echo delete nodes
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher_delete.cypher > output/output_cypher_delete.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f cypher_delete.cypher
 sleep 120
 
 $path_neo4j/neo4j restart

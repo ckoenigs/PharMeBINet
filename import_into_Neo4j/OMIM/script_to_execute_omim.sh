@@ -35,7 +35,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 
 
-$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher.cypher > output/cypher.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher.cypher
 
 now=$(date +"%F %T")
 echo "Current time: $now"

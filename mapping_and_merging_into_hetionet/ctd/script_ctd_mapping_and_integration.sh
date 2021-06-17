@@ -44,7 +44,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo integrate nodes into database
 
-$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher.cypher > output/output_cypher.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher.cypher 
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -104,7 +104,7 @@ python3 integrate_disease_gene.py $path_to_project > gene_disease/output.txt
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher_edge.cypher > output/output_cypher_edge.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher_edge.cypher
 
 now=$(date +"%F %T")
 echo "Current time: $now"

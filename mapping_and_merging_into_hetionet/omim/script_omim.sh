@@ -19,7 +19,7 @@ echo integrate connection with cypher shell
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher_gene_phenotype.cypher > output/output_cypher_integration_gene_disease.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher_gene_phenotype.cypher
 
 sleep 120
 
@@ -49,7 +49,7 @@ echo integrate connection with cypher shell
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher_rela.cypher > output/output_cypher_rela.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher_rela.cypher 
 
 sleep 120
 

@@ -14,7 +14,7 @@ python3 fusion_of_disease_ontology_in_hetionet_final_2.py $path_to_project > out
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher > output_cypher.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher 
 
 sleep 120
 $path_neo4j/neo4j restart

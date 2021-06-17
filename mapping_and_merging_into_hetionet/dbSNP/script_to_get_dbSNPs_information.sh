@@ -19,7 +19,13 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo integrat dbSNP information into Neo4j
 
-$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher.cypher > output/output_cypher.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher.cypher 
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo integrat dbSNP clinvar rela
+
+$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher_dbSNP_clinVar.cypher 
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -47,7 +53,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo integrat mapping dbSNP information into Neo4j
 
-$path_neo4j/cypher-shell -u neo4j -p test -f output_mapping/cypher.cypher > output_mapping/output_cypher.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f output_mapping/cypher.cypher
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -62,7 +68,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo integrat mapping dbSNP information into Neo4j
 
-$path_neo4j/cypher-shell -u neo4j -p test -f output_mapping/cypher_edge.cypher > output_mapping/output_cypher_rela.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f output_mapping/cypher_edge.cypher 
 
 now=$(date +"%F %T")
 echo "Current time: $now"

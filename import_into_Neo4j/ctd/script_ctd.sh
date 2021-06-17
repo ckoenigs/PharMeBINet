@@ -42,7 +42,7 @@ echo nodes
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p test -f nodes_1.cypher > output_nodes_1.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f nodes_1.cypher 
 
 
 sleep 180
@@ -52,7 +52,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo edge
 
-$path_neo4j/cypher-shell -u neo4j -p test -f edges_1.cypher > output_edges_1.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f edges_1.cypher 
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -64,7 +64,7 @@ sleep 120
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p test -f nodes_delete.cypher > output_delete_nodes.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f nodes_delete.cypher
 
 now=$(date +"%F %T")
 echo "Current time: $now"

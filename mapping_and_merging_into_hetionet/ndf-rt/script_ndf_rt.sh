@@ -40,7 +40,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo integration of ndf-rt connection into hetionet
 
-$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher.cypher > output/output_ndf_rt_drug_cypher.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher.cypher
 
 sleep 180
 $path_neo4j/neo4j restart

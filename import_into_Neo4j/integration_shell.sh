@@ -14,7 +14,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo add hetionet and resource to nodes
 
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher > output_cypher_integration.txt 2>&1
+$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher 
 
 
 now=$(date +"%F %T")

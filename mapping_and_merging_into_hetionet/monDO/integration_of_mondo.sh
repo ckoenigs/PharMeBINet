@@ -16,7 +16,7 @@ echo "Current time: $now"
 
 echo integrate mondo
 
-$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher.cypher > output/output_cypher_integration.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher.cypher 
 
 sleep 120
 
@@ -35,7 +35,7 @@ $path_neo4j/neo4j restart
 
 sleep 120
 
-$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher_end.cypher > output/output_cypher_end_integration.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher_end.cypher 
 
 
 

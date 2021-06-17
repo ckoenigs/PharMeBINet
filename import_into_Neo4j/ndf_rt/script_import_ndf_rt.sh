@@ -14,7 +14,7 @@ echo "Current time: $now"
 
 echo integrate ndf-rt into neo4j
 
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher_file.cypher > output_cypher_integration.txt 2>&1
+$path_neo4j/cypher-shell -u neo4j -p test -f cypher_file.cypher
 
 sleep 120
 
@@ -24,7 +24,7 @@ $path_neo4j/neo4j restart
 sleep 120
 echo delete ndf-rt nodes without relaionships
 
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher_file_delete.cypher > output_cypher_delete.txt 2>&1
+$path_neo4j/cypher-shell -u neo4j -p test -f cypher_file_delete.cypher
 
 sleep 120
 

@@ -14,7 +14,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo integration of equal relationship between disease, side effect and symptom
 
-$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher.cypher > output/output_cypher.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher.cypher 
 
 sleep 120
 $path_neo4j/neo4j restart

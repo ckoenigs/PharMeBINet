@@ -112,7 +112,7 @@ echo 'calculate similarities'
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p test -f compound_interaction/cypher_resemble.cypher > compound_interaction/output_cypher.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f compound_interaction/cypher_resemble.cypher
 
 sleep 180
 $path_neo4j/neo4j restart

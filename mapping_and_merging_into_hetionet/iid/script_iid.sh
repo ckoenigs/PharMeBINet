@@ -11,7 +11,7 @@ echo mapping
 python3 mapping_protein.py $path_to_project > protein/output_mapping_and_integration.txt 
 
 
-$path_neo4j/cypher-shell -u neo4j -p test -f protein/cypher.cypher > protein/output_cypher.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f protein/cypher.cypher
 
 sleep 120
 $path_neo4j/neo4j restart
@@ -24,7 +24,7 @@ echo 'IID interaction'
 python3 integrate_interaction_rela.py $path_to_project > interaction/outputintegration.txt 
 
 
-$path_neo4j/cypher-shell -u neo4j -p test -f interaction/cypher.cypher > interaction/output_cypher.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f interaction/cypher.cypher
 
 sleep 120
 $path_neo4j/neo4j restart
