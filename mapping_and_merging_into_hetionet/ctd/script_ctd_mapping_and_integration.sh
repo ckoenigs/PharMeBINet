@@ -70,7 +70,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo integrate gene-particitates-go
 
-python3 integrate_gene_participates_GO.py $path_to_project > gene_go/output.txt
+# python3 integrate_gene_participates_GO.py $path_to_project > gene_go/output.txt
 
 
 now=$(date +"%F %T")
