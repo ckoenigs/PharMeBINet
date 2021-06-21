@@ -14,7 +14,6 @@ sys.path.append("../..")
 import create_connection_to_databases
 
 # sys.path.append('../../drugbank/')
-# from add_information_from_a_not_existing_node_to_existing_node import merge_information_from_one_node_to_another
 
 sys.path.append("..")
 from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name

@@ -346,6 +346,7 @@ def run_trough_xml_and_parse_data():
                     prepare_evidence(attributes, identifier, child)
                 # different kind of features like mutation version/ regions/...
                 elif tag == 'feature':
+
                     if tag not in dict_protein:
                         dict_protein[tag] = []
                     dict_feature = dict(attributes)

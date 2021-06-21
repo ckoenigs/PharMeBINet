@@ -884,9 +884,8 @@ def integration_of_ctd_chemicals_into_hetionet_compound():
 
 
             index += 1
-            resource = dict_drugs_hetionet[drugbank_id].resources
-            resource.append("CTD")
-            resource = list(set(resource))
+            resource = set(dict_drugs_hetionet[drugbank_id].resources)
+            resource.add("CTD")
             string_resource = '|'.join(resource)
             string_dbs='|'.join(drugbank_ids)
 

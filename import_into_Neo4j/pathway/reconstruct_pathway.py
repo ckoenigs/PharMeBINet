@@ -82,7 +82,7 @@ Pathway Commons V11 download and information extraction
 
 
 def pathway_commons():
-    # download Pathway Commons v11
+    # download Pathway Commons v12
     url = 'https://www.pathwaycommons.org/archives/PC2/v12/PathwayCommons12.All.hgnc.gmt.gz'
     filename = wget.download(url, out='data/')
     filename_without_gz = filename.rsplit('.', 1)[0]
