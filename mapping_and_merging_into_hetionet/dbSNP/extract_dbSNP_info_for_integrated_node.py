@@ -21,9 +21,32 @@ def create_connection_with_neo4j():
 
 
 def add_entry_to_dictionary(dictionary, key, value):
+    """
+    add entry  to dictionary
+    :param dictionary:
+    :param key:
+    :param value:
+    :return:
+    """
     if key not in dictionary:
         dictionary[key] = set()
     dictionary[key].add(value)
+
+# dictionary rs id to clinvar ids
+dict_rs_id_to_clinvar_ids={}
+
+def get_all_variants_without_rs():
+    """
+    Get all variant which has rs ids in xrefs
+    :return:
+    """
+    query = 'Match (n:Variant) Where not n.identifier starts with "rs" and ANY ( x IN n.xrefs WHERE x contains "dbSNP" )   Return n.identifier, n.xrefs '
+    results = g.run(query)
+    for clinvar_id, xrefs, in results:
+        for xref in xrefs:
+            if xref.startswith('dbSNP'):
+                add_entry_to_dictionary(dict_rs_id_to_clinvar_ids, xref.split(':')[1], clinvar_id)
+    print('number of rs ids:',len(dict_rs_id_to_clinvar_ids))
 
 
 # all nodes id to node infos
@@ -122,8 +145,18 @@ def add_information_from_api_dictionary_to_files(dict_nodes_to_list):
 
 def load_dbSNP_data_for_nodes_with_dbSNP_in_db():
     # prepare cypher query and csv file for snp
-    prepare_a_single_node.path_to_data =path_of_directory
+    prepare_a_single_node.path_to_data =path_of_directory_dbSNP
     prepare_a_single_node.prepare_snp_file()
+
+    file_name='output/rs_clinvar_rela.tsv'
+    file=open(file_name,'w', encoding='utf-8')
+    csv_writer=csv.writer(file, delimiter='\t')
+    csv_writer.writerow(['rs_id','clinvar_id', 'license'])
+
+    cypher_file=open('output/cypher_dbSNP_clinVar.cypher','w',encoding='utf-8')
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/dbSNP/%s" As line FIELDTERMINATOR '\\t' Match (n:Variant{identifier:line.rs_id}), (m:Variant{identifier:line.clinvar_id}) Create (m)-[:IS_ALLEL_OF_ViaoV{url:"https://www.ncbi.nlm.nih.gov/clinvar/variation/"+line.clinvar_id, license:"https://www.ncbi.nlm.nih.gov/home/about/policies/", source:"external identifier from ClinVar", resource:["ClinVar"], clinvar:"yes"}]->(n);\n'''
+    query=query %(path_of_directory, file_name)
+    cypher_file.write(query)
 
     # get nodes which should get dbSNP information
     query = 'Match (n:GeneVariant) Where n.identifier starts with "rs"  Return n.identifier '
@@ -132,6 +165,9 @@ def load_dbSNP_data_for_nodes_with_dbSNP_in_db():
     counter_to_seek=0
     counter_all=0
     for rs_id, in results:
+        if rs_id in dict_rs_id_to_clinvar_ids:
+            for clinvar_id in dict_rs_id_to_clinvar_ids[rs_id]:
+                csv_writer.writerow([rs_id,clinvar_id,'clinvar license'])
         # print(rs_id)
         counter_all+=1
         rs_id= rs_id.replace('rs', '')
@@ -163,9 +199,10 @@ def load_dbSNP_data_for_nodes_with_dbSNP_in_db():
 
 
 def main():
-    global path_of_directory, license
+    global path_of_directory, license, path_of_directory_dbSNP
     if len(sys.argv) > 2:
-        path_of_directory = sys.argv[1] +'master_database_change/mapping_and_merging_into_hetionet/dbSNP/'
+        path_of_directory = sys.argv[1]
+        path_of_directory_dbSNP = sys.argv[1] +'master_database_change/mapping_and_merging_into_hetionet/dbSNP/'
         license = sys.argv[2]
     else:
         sys.exit('need a path and license')
@@ -174,6 +211,16 @@ def main():
     print('diseaserate connection with neo4j')
 
     create_connection_with_neo4j()
+
+    print(
+        '###########################################################################################################################')
+
+    print(datetime.datetime.utcnow())
+    print('Load variant which are not from dbSNP ')
+
+    load_already_extracted_infos_from_file()
+
+    get_all_variants_without_rs()
 
     print(
         '###########################################################################################################################')
