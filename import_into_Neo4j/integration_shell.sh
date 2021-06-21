@@ -28,6 +28,17 @@ echo sider
 
 cd ..
 
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+cd bioGrid 
+echo bioGrid
+
+./script_biogrid.sh $path_neo4j $path_to_project > output.txt
+
+
+cd ..
+
 
 
 now=$(date +"%F %T")
