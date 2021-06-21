@@ -50,11 +50,12 @@ def load_db_info_in():
 
     for identifier,  xrefs, resource, name, synonyms, in results:
         dict_node_to_resource[identifier] = resource if resource else []
-
-        if xrefs:
-            for xref in xrefs:
-                if xref.startswith('dbSNP'):
-                    add_value_to_dictionary(dict_dbSNP_to_id, xref.split(':')[1], identifier)
+        if identifier.startswith('rs'):
+            add_value_to_dictionary(dict_dbSNP_to_id, identifier, identifier)
+        # if xrefs:
+        #     for xref in xrefs:
+        #         if xref.startswith('dbSNP'):
+                    # add_value_to_dictionary(dict_dbSNP_to_id, xref.split(':')[1], identifier)
         if name:
             name = name.lower()
             add_value_to_dictionary(dict_name_to_node_id, name, identifier)
