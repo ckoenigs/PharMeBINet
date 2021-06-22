@@ -27,12 +27,13 @@ Load all Genes from my database  and add them into a dictionary
 
 
 def load_variant_from_database_and_add_to_dict():
-    query = "MATCH (n:Variant) RETURN n"
+    # Where not n.identifier starts with 'rs'
+    query = "MATCH (n:Variant)  RETURN n"
     results = g.run(query)
     for node, in results:
         identifier = node['identifier']
 
-        name = node['name'].lower()
+        name = node['name'].lower() if 'name' in node else ''
         if name not in dict_name_dbsnp_id_to_clinvar_id:
             dict_name_dbsnp_id_to_clinvar_id[name] = set()
         dict_name_dbsnp_id_to_clinvar_id[name].add(identifier)
@@ -98,7 +99,8 @@ def load_all_variants_and_finish_the_files(csv_mapping, csv_new):
     counter_new = 0
     for node, in results:
         identifier = node['identifier']
-        if identifier in dict_name_dbsnp_id_to_clinvar_id:
+        defining_change = node['defining_change'].lower() if 'defining_change' in node else ''
+        if identifier in dict_name_dbsnp_id_to_clinvar_id and not (defining_change=='' or  ' or ' in defining_change or  'allelle' in defining_change or '>' in defining_change):
             counter_map += 1
             for variant in dict_name_dbsnp_id_to_clinvar_id[identifier]:
                 csv_mapping.writerow([identifier, variant])
@@ -133,7 +135,8 @@ def main():
     print(datetime.datetime.utcnow())
     global path_of_directory
     if len(sys.argv) < 2:
-        sys.exit('need license and path to directory gene variant')
+        print(len(sys.argv))
+        sys.exit('need license and path')
     global license
     license = sys.argv[1]
     path_of_directory = sys.argv[2]
