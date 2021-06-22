@@ -72,8 +72,8 @@ def add_to_file(dict_node_id_to_resource, identifier_db, identifier_act_id,csv_m
     :param csv_mapping: csv writer
     :return:
     """
-    resource = dict_node_id_to_resource[identifier_db]
-    resource.append('ADReCS-Target')
+    resource = set(dict_node_id_to_resource[identifier_db])
+    resource.add('ADReCS-Target')
     resource = sorted(resource)
     csv_mapping.writerow([identifier_db, identifier_act_id, '|'.join(resource)])
 

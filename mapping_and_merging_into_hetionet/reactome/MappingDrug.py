@@ -157,10 +157,9 @@ def load_reactome_drug_in(label):
                 if (hetionet_identifier, dbId) in set_pair:
                     continue
                 counter_map_with_id += 1
-                resource = dict_identifier_to_resource[hetionet_identifier]
-                resource.append('Reactome')
-                resource = list(set(resource))
-                resource = '|'.join(resource)
+                resource = set(dict_identifier_to_resource[hetionet_identifier])
+                resource.add('Reactome')
+                resource = '|'.join(sorted(resource))
                 csv_mapped.writerow([dbId, hetionet_identifier, resource, 'IUPHAR', drug_name, databaseName])
                 mapped = True
                 set_pair.add((hetionet_identifier, dbId))
@@ -173,10 +172,9 @@ def load_reactome_drug_in(label):
             if (hetionet_identifier, dbId) in set_pair:
                 continue
             counter_map_with_id += 1
-            resource = dict_identifier_to_resource[hetionet_identifier]
-            resource.append('Reactome')
-            resource = list(set(resource))
-            resource = '|'.join(resource)
+            resource = set(dict_identifier_to_resource[hetionet_identifier])
+            resource.add('Reactome')
+            resource = '|'.join(sorted(resource))
             csv_mapped.writerow([dbId, hetionet_identifier, resource, databaseName, drug_name, databaseName])
             mapped = True
             set_pair.add((hetionet_identifier, dbId))
@@ -187,10 +185,9 @@ def load_reactome_drug_in(label):
             if (hetionet_identifier, dbId) in set_pair:
                 continue
             counter_map_with_name += 1
-            resource = dict_identifier_to_resource[hetionet_identifier]
-            resource.append('Reactome')
-            resource = list(set(resource))
-            resource = '|'.join(resource)
+            resource = set(dict_identifier_to_resource[hetionet_identifier])
+            resource.add('Reactome')
+            resource = '|'.join(sorted(resource))
             drug_names = dict_drug_hetionet[dict_drug_hetionet_names[drug_name]]
             csv_mapped.writerow([dbId, hetionet_identifier, resource, "NAME", drug_name, drug_names])
             mapped = True
@@ -206,10 +203,9 @@ def load_reactome_drug_in(label):
                     if (hetionet_identifier, dbId) in set_pair:
                         continue
                     counter_map_with_name += 1
-                    resource = dict_identifier_to_resource[hetionet_identifier]
-                    resource.append('Reactome')
-                    resource = list(set(resource))
-                    resource = '|'.join(resource)
+                    resource = set(dict_identifier_to_resource[hetionet_identifier])
+                    resource.add('Reactome')
+                    resource = '|'.join(sorted(resource))
                     drug_names = dict_drug_hetionet[dict_drug_hetionet_names[name]]
                     csv_mapped.writerow([dbId, hetionet_identifier, resource, "NAME_DRUG", name, drug_names])
                     mapped = True
@@ -230,10 +226,9 @@ def load_reactome_drug_in(label):
                     if (hetionet_identifier, dbId) in set_pair:
                         continue
                     counter_map_with_name += 1
-                    resource = dict_identifier_to_resource[hetionet_identifier]
-                    resource.append('Reactome')
-                    resource = list(set(resource))
-                    resource = '|'.join(resource)
+                    resource = set(dict_identifier_to_resource[hetionet_identifier])
+                    resource.add('Reactome')
+                    resource = '|'.join(sorted(resource))
                     drug_names = dict_drug_hetionet[dict_drug_hetionet_names[name]]
                     csv_mapped.writerow([dbId, hetionet_identifier, resource, "NAME_HTML", drug_name, drug_names])
                     mapped = True

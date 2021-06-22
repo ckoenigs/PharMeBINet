@@ -79,17 +79,15 @@ def load_reactome_gomolfunc_in():
         # check if the reactome pathway id is part in the hetionet idOwn
         if gomolfunc_id in dict_gomolfunc_hetionet_identifier:
             counter_map_with_id += 1
-            resource = dict_gomolfunc_to_resource["GO:" + gomolfunc_id]
-            resource.append('Reactome')
-            resource = list(set(resource))
-            resource = '|'.join(resource)
+            resource = set(dict_gomolfunc_to_resource["GO:" + gomolfunc_id])
+            resource.add('Reactome')
+            resource = '|'.join(sorted(resource))
             csv_mapped.writerow([gomolfunc_id, "GO:" + gomolfunc_id, resource])
         elif gomolfunc_id in dict_gomolfunc_hetionet_alt_ids:
             real_go_identifier = "GO:" + dict_gomolfunc_hetionet_alt_ids[gomolfunc_id]
-            resource = dict_gomolfunc_to_resource[real_go_identifier]
-            resource.append('Reactome')
-            resource = list(set(resource))
-            resource = '|'.join(resource)
+            resource = set(dict_gomolfunc_to_resource[real_go_identifier])
+            resource.add('Reactome')
+            resource = '|'.join(sorted(resource))
             csv_mapped.writerow([gomolfunc_id, real_go_identifier, resource])
         else:
             csv_not_mapped.writerow([gomolfunc_id, resource])

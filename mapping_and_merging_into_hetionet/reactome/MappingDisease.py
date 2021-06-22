@@ -115,10 +115,9 @@ def load_reactome_disease_in():
             hetionet_identifier=dict_doid_id_to_identifier[disease_id]
             #Liste von idOwns wird nach dem PC_11_Zahl durchsucht und als String aneinandergehängt (join)
             #als Trennungssymbol wird | genutzt
-            resource = dict_diseaseId_to_resource[hetionet_identifier]
-            resource.append('Reactome')
-            resource = list(set(resource))
-            resource = '|'.join(resource)
+            resource = set(dict_diseaseId_to_resource[hetionet_identifier])
+            resource.add('Reactome')
+            resource = '|'.join(sorted(resource))
             csv_mapped.writerow([disease_id, hetionet_identifier, resource])
 
         #mapping nach dem Namen
@@ -129,10 +128,9 @@ def load_reactome_disease_in():
             print(dict_disease_hetionet_names[disease_name])
             print(disease_name)
             hetionet_identifier = dict_disease_hetionet_names[disease_name]
-            resource = dict_diseaseId_to_resource[hetionet_identifier]
-            resource.append('Reactome')
-            resource = list(set(resource))
-            resource = '|'.join(resource)
+            resource = set(dict_diseaseId_to_resource[hetionet_identifier])
+            resource.add('Reactome')
+            resource = '|'.join(sorted(resource))
             disease_names = dict_disease_hetionet[dict_disease_hetionet_names[disease_name]]
             csv_mapped.writerow([disease_id,hetionet_identifier, resource, disease_name,disease_names ])
 

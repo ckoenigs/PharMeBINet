@@ -98,17 +98,15 @@ def load_reactome_gocellcomp_in():
             # if len(dict_own_id_to_pcid_and_other[pathways_id]) > 1:
             #     print('multiple für identifier')
             print('id')
-            resource = dict_gocellcompId_to_resource["GO:" + gocellcomp_id]
-            resource.append('Reactome')
-            resource = list(set(resource))
-            resource = '|'.join(resource)
+            resource = set(dict_gocellcompId_to_resource["GO:" + gocellcomp_id])
+            resource.add('Reactome')
+            resource = '|'.join(sorted(resource))
             csv_mapped.writerow(
                 [gocellcomp_id, "GO:" + gocellcomp_id, resource])  # erster eintrag reactome, zweiter hetionet
         elif gocellcomp_id in dict_gocellcomp_hetionet_alt_ids:
-            resource = dict_gocellcompId_to_resource["GO:" + dict_gocellcomp_hetionet_alt_ids[gocellcomp_id]]
-            resource.append('Reactome')
-            resource = list(set(resource))
-            resource = '|'.join(resource)
+            resource = set(dict_gocellcompId_to_resource["GO:" + dict_gocellcomp_hetionet_alt_ids[gocellcomp_id]])
+            resource.add('Reactome')
+            resource = '|'.join(sorted(resource))
             csv_mapped.writerow([gocellcomp_id, "GO:" + gocellcomp_id, resource])
         else:
             csv_not_mapped.writerow([gocellcomp_id])

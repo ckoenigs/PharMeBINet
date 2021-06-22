@@ -122,10 +122,9 @@ def load_reactome_pathways_in():
             own_ids = dict_pathway_hetionet_xrefs[hetionet_identifier]
             own_ids.append('reactome:'+pathways_id)
             string_own_ids = '|'.join(go_through_xrefs_and_change_if_needed_source_name(own_ids,'pathway'))
-            resource = dict_pathwayId_to_resource[hetionet_identifier]
-            resource.append('Reactome')
-            resource = list(set(resource))
-            resource = '|'.join(resource)
+            resource = set(dict_pathwayId_to_resource[hetionet_identifier])
+            resource.add('Reactome')
+            resource = '|'.join(sorted(resource))
             csv_mapped.writerow([pathways_id, hetionet_identifier, string_own_ids, resource, pathways_name])
 
         # mapping nach dem Namen
@@ -140,10 +139,9 @@ def load_reactome_pathways_in():
             own_ids = dict_pathway_hetionet_xrefs[hetionet_identifier]
             own_ids.append('reactome:'+pathways_id)
             string_own_ids = '|'.join(go_through_xrefs_and_change_if_needed_source_name(own_ids,'pathway'))
-            resource = dict_pathwayId_to_resource[hetionet_identifier]
-            resource.append('Reactome')
-            resource = list(set(resource))
-            resource = '|'.join(resource)
+            resource = set(dict_pathwayId_to_resource[hetionet_identifier])
+            resource.add('Reactome')
+            resource = '|'.join(sorted(resource))
             pathway_names = dict_pathway_hetionet[dict_pathway_hetionet_names[pathways_name]]
             csv_mapped.writerow(
                 [pathways_id, hetionet_identifier, string_own_ids, resource, pathways_name, pathway_names])

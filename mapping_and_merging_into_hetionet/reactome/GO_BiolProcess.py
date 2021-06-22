@@ -102,16 +102,14 @@ def load_reactome_gobiolproc_in():
             # if len(dict_own_id_to_pcid_and_other[pathways_id]) > 1:
             #     print('multiple für identifier')
 
-            resource = dict_gobiolprocId_to_resource["GO:" + gobiolproc_id]
-            resource.append('Reactome')
-            resource = list(set(resource))
-            resource = '|'.join(resource)
+            resource = set(dict_gobiolprocId_to_resource["GO:" + gobiolproc_id])
+            resource.add('Reactome')
+            resource = '|'.join(sorted(resource))
             csv_mapped.writerow([gobiolproc_id, "GO:" + gobiolproc_id, resource])  # erster eintrag reactome, zweiter hetionet
         elif gobiolproc_id in dict_gobiolproc_hetionet_alt_ids:
-            resource = dict_gobiolprocId_to_resource["GO:" + dict_gobiolproc_hetionet_alt_ids[gobiolproc_id]]
-            resource.append('Reactome')
-            resource = list(set(resource))
-            resource = '|'.join(resource)
+            resource = set(dict_gobiolprocId_to_resource["GO:" + dict_gobiolproc_hetionet_alt_ids[gobiolproc_id]])
+            resource.add('Reactome')
+            resource = '|'.join(sorted(resource))
             csv_mapped.writerow([gobiolproc_id, "GO:" + gobiolproc_id, resource])
         else:
             csv_not_mapped.writerow([gobiolproc_id])

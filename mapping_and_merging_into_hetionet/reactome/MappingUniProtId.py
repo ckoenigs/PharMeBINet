@@ -81,8 +81,8 @@ def load_reactome_referenceEntity_in():
                 #print(identifier)
                 resource = dict_uniprot_to_resource[identifier]
                 resource.append('Reactome')
-                resource = list(set(resource))
-                resource = '|'.join(resource)
+                resource = set(resource)
+                resource = '|'.join(sorted(resource))
                 csv_mapped.writerow([identifier, identifier, resource])
                 set_pairs.add((identifier, identifier))
         elif identifier in dict_alternative_id_to_protein_id:
@@ -90,8 +90,8 @@ def load_reactome_referenceEntity_in():
             if not (identifier, hetionet_uniprotID) in set_pairs:
                 resource = dict_uniprot_to_resource[hetionet_uniprotID]
                 resource.append('Reactome')
-                resource = list(set(resource))
-                resource = '|'.join(resource)
+                resource = set(resource)
+                resource = '|'.join(sorted(resource))
                 csv_mapped.writerow([identifier, hetionet_uniprotID, resource])
                 set_pairs.add((identifier, hetionet_uniprotID))
         else:
