@@ -157,6 +157,10 @@ cd ctd
 
 cd ..
 
+sleep 120 
+$path_neo4j/neo4j restart
+sleep 120
+
 
 cd ndf-rt/
 now=$(date +"%F %T")
