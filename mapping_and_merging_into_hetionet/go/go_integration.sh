@@ -24,7 +24,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 chmod 775 merge_nodes.sh
 
-./merge_nodes.sh > output/output_merge.txt
+./merge_nodes.sh $path_neo4j > output/output_merge.txt
 
 sleep 120
 

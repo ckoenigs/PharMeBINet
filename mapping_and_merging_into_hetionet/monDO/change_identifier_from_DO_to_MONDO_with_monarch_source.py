@@ -536,7 +536,10 @@ def gather_information_of_mondo_and_do_then_prepare_dict_for_csv(monDo, info, mo
 
 # bash shell for merge doids into the mondo nodes
 bash_shell = open('merge_nodes.sh', 'w', encoding='utf-8')
-bash_shell.write('#!/bin/bash\n')
+bash_start='''#!/bin/bash
+#define path to neo4j bin
+path_neo4j=$1\n\n'''
+bash_shell.write(bash_start)
 
 '''
 integrate mondo into hetionet and change identifier
@@ -581,8 +584,10 @@ def integrate_mondo_change_identifier():
             found_doid_with_same_name = False
             for doid in doids:
                 dict_merged_nodes[monDo].append(doid)
-                text = 'python ../add_information_from_a_not_existing_node_to_existing_node.py %s %s %s\n' % (
+                text = 'python ../add_info_from_removed_node_to_other_node.py %s %s %s\n' % (
                 doid, monDo, 'Disease')
+                bash_shell.write(text)
+                text = '$path_neo4j/cypher-shell -u neo4j -p test -f cypher_merge.cypher \n\n'
                 bash_shell.write(text)
                 text = '''now=$(date +"%F %T")
                     echo "Current time: $now"\n'''

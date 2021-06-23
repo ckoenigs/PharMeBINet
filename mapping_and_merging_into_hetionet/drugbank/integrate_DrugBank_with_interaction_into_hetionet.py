@@ -186,7 +186,7 @@ def load_in_all_interaction_connection_from_drugbank_in_dict():
 
 # bash shell for merge doids into the mondo nodes
 bash_shell = open('merge_nodes.sh', 'w', encoding='utf-8')
-bash_shell.write('#!/bin/bash\n')
+bash_shell.write('#!/bin/bash\n #define path to neo4j bin\npath_neo4j=$1\n\n')
 
 # label_of_alternative_ids='alternative_ids' old one
 label_of_alternative_ids = 'alternative_drugbank_ids'
@@ -267,8 +267,10 @@ def integrate_DB_compound_information_into_hetionet():
                     intersection.remove(drug_id)
                 # write into bash file which nodes need to be combined
                 for alternative_drug_id in intersection:
-                    text = 'python3 ../add_information_from_a_not_existing_node_to_existing_node.py %s %s %s\n' % (
+                    text = 'python3 ../add_info_from_removed_node_to_other_node.py %s %s %s\n' % (
                         alternative_drug_id, drugbank_id, 'Compound')
+                    bash_shell.write(text)
+                    text = '$path_neo4j/cypher-shell -u neo4j -p test -f cypher_merge.cypher \n\n'
                     bash_shell.write(text)
                     text = '''now=$(date +"%F %T")
                         echo "Current time: $now"\n'''

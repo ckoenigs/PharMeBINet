@@ -106,7 +106,10 @@ def create_cypher_and_csv_files():
 
 # bash shell for merge doids into the mondo nodes
 bash_shell = open('merge_nodes_salt.sh', 'w')
-bash_shell.write('#!/bin/bash\n')
+bash_start='''#!/bin/bash
+#define path to neo4j bin
+path_neo4j=$1\n\n'''
+bash_shell.write(bash_start)
 
 # the new table for unii drugbank pairs
 unii_drugbank_table_file = open('data/map_unii_to_drugbank_id.tsv', 'a')
@@ -122,8 +125,10 @@ def add_merge_to_sh_file(dict_not_mapped, mapped_value, node_id):
     print(compound)
     compound_id = compound['identifier']
     # if it mapped to a not mapped compound
-    text = 'python3 ../add_information_from_a_not_existing_node_to_existing_node.py %s %s %s\n' % (
+    text = 'python3 ../add_info_from_removed_node_to_other_node.py %s %s %s\n' % (
         compound_id, node_id, 'Compound')
+    bash_shell.write(text)
+    text = '$path_neo4j/cypher-shell -u neo4j -p test -f cypher_merge.cypher \n\n'
     bash_shell.write(text)
     text = '''now=$(date +"%F %T")\n echo "Current time: $now"\n'''
     bash_shell.write(text)

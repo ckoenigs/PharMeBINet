@@ -56,7 +56,10 @@ cypher_file_delete = open('cypher_delete.cypher', 'w')
 
 # bash shell for merge combined nodes
 bash_shell = open('merge_nodes.sh', 'w')
-bash_shell.write('#!/bin/bash\n')
+bash_start='''#!/bin/bash
+#define path to neo4j bin
+path_neo4j=$1\n\n'''
+bash_shell.write(bash_start)
 
 '''
 Get the  properties of go
@@ -283,8 +286,10 @@ def go_through_go():
             # therfore the merge process iss add into the bash fileproteins
             if found_id and found_id_alt:
                 print('found id and alt id')
-                text = 'python3 ../add_information_from_a_not_existing_node_to_existing_node.py %s %s %s\n' % (
+                text = 'python3 ../add_info_from_removed_node_to_other_node.py %s %s %s\n' % (
                     alternative_id, identifier, dict_go_to_hetionet_label[namespace])
+                bash_shell.write(text)
+                text = '$path_neo4j/cypher-shell -u neo4j -p test -f cypher_merge.cypher \n\n'
                 bash_shell.write(text)
                 text = '''now=$(date +"%F %T")\n echo "Current time: $now"\n'''
                 bash_shell.write(text)

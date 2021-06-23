@@ -23,7 +23,7 @@ $path_neo4j/cypher-shell -u neo4j -p test -f compound_interaction/cypher.cypher
 echo merge
 chmod 775 merge_nodes.sh
 
-./merge_nodes.sh > output_merge_compound.txt
+./merge_nodes.sh $path_neo4j > output_merge_compound.txt
 
 
 sleep 120
@@ -65,7 +65,7 @@ echo merge nodes
 
 chmod 775 merge_nodes_salt.sh
 
-./merge_nodes_salt.sh > output/output_merge_compound.txt
+./merge_nodes_salt.sh $path_neo4j > output/output_merge_compound.txt
 
 
 sleep 120
