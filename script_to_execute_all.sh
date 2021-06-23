@@ -39,7 +39,7 @@ $path_neo4j/neo4j stop
 
 sleep 120
 
-cp -r /mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/neo4j_databases/graph.db /mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/neo4j_databases/inte.db
+cp -r /mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/neo4j_databases/hetionet /mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/neo4j_databases/inte.db
 
 $path_neo4j/neo4j restart
 
@@ -63,9 +63,9 @@ sleep 120
 
 $path_neo4j/neo4j stop
 
-sleep 120
+sleep 180
 
-cp -r /mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/neo4j_databases/graph.db /mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/neo4j_databases/with_source.db
+cp -r /mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/neo4j_databases/hetionet /mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/neo4j_databases/withsource
 
 sleep 120
 
