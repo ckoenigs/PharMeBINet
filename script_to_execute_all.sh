@@ -59,6 +59,7 @@ echo "Current time: $now"
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo cp database
+sleep 120
 
 $path_neo4j/neo4j stop
 
@@ -66,11 +67,16 @@ sleep 120
 
 cp -r /mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/neo4j_databases/graph.db /mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/neo4j_databases/with_source.db
 
+sleep 120
+
 $path_neo4j/neo4j restart
 
 sleep 120
 
 echo delete source nodes
+now=$(date +"%F %T")
+echo "Current time: $now"
+
 cd mapping_and_merging_into_hetionet
 
 ./delete_script.sh $path_neo4j > output_delte_source.txt
