@@ -14,7 +14,8 @@ dict_label_to_index_constraint_infos = {}
 
 # all node source to delete
 TODELETE = {'sider', 'ctd', 'ndfrt', 'aeolus', 'drugbank', 'ncbi', 'efo', 'hpo', 'uniprot', 'multi', 'go', 'dc',
-            'diseaseontology', 'mondo', 'clinvar', 'omim', 'reactome', 'adrecstarget', 'iid', 'medrt', 'pharmgkb'}
+            'diseaseontology', 'mondo', 'clinvar', 'omim', 'reactome', 'adrecstarget', 'iid', 'medrt', 'pharmgkb',
+            'biogrid', 'dbsnp'}
 
 # dictionary label to batch size
 dict_label_to_batch_size = {
@@ -148,7 +149,7 @@ for label in results:
         else:
             batch = '200'
             q = "CALL apoc.periodic.iterate('MATCH (n:%s) RETURN n', 'DETACH DELETE n', {batchSize:%s})" % (
-            label, batch)
+                label, batch)
             print(q)
             db.session().write_transaction(query, q)
             time_5 = time.time()
