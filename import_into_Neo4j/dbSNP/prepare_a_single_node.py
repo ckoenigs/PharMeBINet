@@ -85,14 +85,14 @@ path_to_data =''
 # header snp
 header_snp = ['is_top_level', 'is_chromosome', 'supporting_subsnps', 'position', 'is_alt', 'deleted_sequence',
               'other_rsids_in_cur_release', 'variant_type', 'mol_type', 'xrefs', 'anchor', 'create_date',
-              'clinical_variant_ids', 'last_update_date', 'dbsnp1_merges', 'assembly_accession', 'frequencies',
-              'is_patch', 'seq_id', 'subsnps', 'hgsv', 'identifier', 'citations', 'frequencys', 'seq_type',
+              'clinical_variant_ids', 'last_update_date', 'dbsnp1_merges', 'assembly_accession',
+              'is_patch', 'seq_id', 'subsnps', 'hgvs_list', 'identifier', 'citations', 'frequencies_list', 'seq_type',
               'inserted_sequence', 'last_update_build_id', 'assembly_name', 'sequence_position_deletion_insertions',
               'chromosome']
 
 # header snp where the property is a list
-header_snp_list = ['frequencies', 'frequencys', 'sequence_position_deletion_insertions', 'xrefs',
-                   'other_rsids_in_cur_release', 'hgsv', 'clinical_variant_ids', 'dbsnp1_merges', 'citations',
+header_snp_list = ['frequencies_list',  'sequence_position_deletion_insertions', 'xrefs',
+                   'other_rsids_in_cur_release', 'hgvs_list', 'clinical_variant_ids', 'dbsnp1_merges', 'citations',
                    'supporting_subsnps', 'subsnps']
 
 
@@ -435,17 +435,17 @@ def prepare_json_information_to_tsv(data, chromosome_number=None):
                                     add_information_from_one_dict_to_another(spdi, dict_node, 'inserted_sequence')
                                     add_information_from_one_dict_to_another(spdi, dict_node, 'position')
 
-                                if 'hgvs' not in dict_node:
-                                    dict_node['hgsv'] = set()
-                                dict_node['hgsv'].add(allele['hgvs'])
-                                set_headers_node.add('hgsv')
+                                if 'hgvs_list' not in dict_node:
+                                    dict_node['hgvs_list'] = set()
+                                dict_node['hgvs_list'].add(allele['hgvs'])
+                                set_headers_node.add('hgvs_list')
                         else:
                             # get all possible hgvs
                             for allele in allele_dictionary['alleles']:
-                                if 'hgvs' not in dict_node:
-                                    dict_node['hgsv'] = set()
-                                dict_node['hgsv'].add(allele['hgvs'])
-                                set_headers_node.add('hgsv')
+                                if 'hgvs_list' not in dict_node:
+                                    dict_node['hgvs_list'] = set()
+                                dict_node['hgvs_list'].add(allele['hgvs'])
+                                set_headers_node.add('hgvs_list')
                         # todo have to think if the information can be combined
                         # I combinded them
                         # dict_node['placements_with_allele'] = list_of_alleles
@@ -480,10 +480,10 @@ def prepare_json_information_to_tsv(data, chromosome_number=None):
                                         allele_count_without_snp) + '/' + str(
                                         total_count) + ' ' + study_name + ')'
                                     list_frequencies.append(frequency_string)
-                                if 'frequencies' not in dict_node:
-                                    dict_node['frequencies'] = set()
+                                if 'frequencies_list' not in dict_node:
+                                    dict_node['frequencies_list'] = set()
                                     set_headers_node.add('frequencies')
-                                dict_node['frequencies'] = dict_node['frequencies'].union(list_frequencies)
+                                dict_node['frequencies_list'] = dict_node['frequencies_list'].union(list_frequencies)
 
                                 continue
                             if head == 'clinical':
