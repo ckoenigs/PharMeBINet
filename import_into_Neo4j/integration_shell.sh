@@ -39,6 +39,16 @@ echo bioGrid
 
 cd ..
 
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+cd smpdb 
+echo smpdb
+
+./script_integrat_smpdb.sh $path_neo4j $path_to_project > output.txt
+
+
+cd ..
 
 
 now=$(date +"%F %T")
