@@ -47,7 +47,7 @@ def generate_file_and_cypher():
     cypher_file.write(query)
     cypher_file.write('Create Constraint On (node:Treatment) Assert node.identifier Is Unique;\n')
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/reactome/%s.tsv" As line FIELDTERMINATOR '\\t'
-                Match (i:Treatment{identifier:"T_"+line.id}), (c:CellularComponent{identifier:line.go_id}) Set i.subcellular_location="GO term enrichment" Create (i)-[:IS_LOCALIZED_IN_TliC]->(c);\n'''
+                Match (i:Treatment{identifier:"T_"+line.id}), (c:CellularComponent{identifier:line.go_id}) Set i.subcellular_location="GO term enrichment" Create (i)-[:IS_LOCALIZED_IN_TliCC]->(c);\n'''
     query = query % (path_of_directory, file_name_go)
     cypher_file.write(query)
     cypher_file.close()
