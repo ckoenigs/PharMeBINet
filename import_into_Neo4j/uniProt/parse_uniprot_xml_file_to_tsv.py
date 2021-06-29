@@ -255,7 +255,7 @@ def run_trough_xml_and_parse_data():
                                         'subcellular_location', 'ec_number', 'accession', 'cofactor', 'references',
                                         'feature', 'pharmaceutical', 'induction', 'disease', 'gene_id',
                                         'go_classifiers', 'chromosome_location', 'pfam', 'gene_location', 'molecule',
-                                        'allergen'])
+                                        'allergen', 'mass_spectrometry', 'sequence_caution'])
 
     # download file
     # download url of swissprot
