@@ -217,12 +217,19 @@ def integrate_infos_into_csv(part_dict, protein_hetionet, list_input_protein):
         as_seq_hetionet_seq = as_seq_hetionet
     list_as_sequnces = []
     list_as_sequnces.append(as_seq_hetionet_seq)
+    # list_as_sequnces.extend(as_seq_hetionet_seq)
     for as_seq in as_seqs:
 
-        as_seq_part = as_seq.split(' ')[1]
-        if as_seq_hetionet_seq != as_seq_part:
+        if as_seq.startswith('>'):
+            as_seq_part = as_seq.split(' ')[1]
+        else:
+            as_seq_part = as_seq.split(':')[1]
+        if as_seq_part=='':
+            print('empyt as')
+            print(as_seq)
+        if as_seq_hetionet_seq != as_seq_part and as_seq_part!='':
             list_as_sequnces.append(as_seq_part)
-    print(list_as_sequnces)
+    # print(list_as_sequnces)
     list_as_sequnces = '|'.join(list_as_sequnces)
     list_input_protein.append(list_as_sequnces)
 
