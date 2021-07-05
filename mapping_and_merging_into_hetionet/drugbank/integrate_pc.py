@@ -85,7 +85,7 @@ def load_all_drugbank_pc_and_map():
             found_mapping=True
             for pc_id in dict_mesh_id_to_pc_ids[mesh_id]:
                 if (identifier,pc_id) not in dict_pc_db_to_pc_id:
-                    dict_mesh_id_to_pc_ids[(identifier,pc_id)]='mesh_mapped'
+                    dict_pc_db_to_pc_id[(identifier,pc_id)]='mesh_mapped'
                 else:
                     print('multy mapping with mesh')
         if not found_mapping:
@@ -93,7 +93,7 @@ def load_all_drugbank_pc_and_map():
                 found_mapping = True
                 for pc_id in dict_name_to_pc_ids[name]:
                     if (identifier, pc_id) not in dict_pc_db_to_pc_id:
-                        dict_mesh_id_to_pc_ids[(identifier, pc_id)] = 'name_mapped'
+                        dict_pc_db_to_pc_id[(identifier, pc_id)] = 'name_mapped'
                     else:
                         print('multy mapping with name')
         if found_mapping:
