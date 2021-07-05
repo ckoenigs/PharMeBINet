@@ -53,6 +53,8 @@ cd mapping_and_merging_into_hetionet
 
 ./script_mapping.sh $path_neo4j $path_project #> output_mapping.txt
 
+cd ..
+
 now=$(date +"%F %T")
 echo "Current time: $now"
 
@@ -81,6 +83,8 @@ cd mapping_and_merging_into_hetionet
 
 ./delete_script.sh $path_neo4j > output_delte_source.txt
 
+now=$(date +"%F %T")
+echo "Current time: $now"
 
 #[ ]*[0-9]+K[\. ]+[0-9]+\%[ ]+[0-9,]+M[ =][0-9,ms]+\n
 
