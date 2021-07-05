@@ -101,7 +101,10 @@ def generate_file_and_cypher():
     for head, in results:
         header.append(head)
         if head in ['evidence_type', 'dbs', 'methods', 'pmids']:
-            query += head + ':split(line.' + head + ',"|"), '
+            if head != 'pmids':
+                query += head + ':split(line.' + head + ',"|"), '
+            else:
+                query += 'pubMed_ids:split(line.' + head + ',"|"), '
         elif head in ['targeting_drugs', 'enzymes', 'ion_channels', 'receptors_transporters', 'drug_targets',
                       'orthologs_are_drug_targets', 'drugs targeting orthologs']:
             continue

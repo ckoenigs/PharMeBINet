@@ -352,7 +352,7 @@ def write_cypher_file():
         elif property == 'xrefs':
             query += property + ':split(line.' + property + ',"|"), '
         if property == 'accession':
-            query += 'alternative_identifiers:p.' + property + ', '
+            query += 'alternative_ids:p.' + property + ', '
         else:
             query += property + ':p.' + property + ', '
     query += 'uniprot:"yes", url:"https://www.uniprot.org/uniprot/"+p.identifier, source:"UniProt", resource:["UniProt"], license:"CC BY 4.0"});\n '

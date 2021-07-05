@@ -162,7 +162,7 @@ list_new_add_umls_cuis = []
 '''
 generate symptoms and generate connection from disease to symptoms
 also generate file with disease symptoms
-Create (s:Symptom{identifier:"%s",type:'cui',license:'UMLS licence', name:"%s", source:'UMLS', url:"%s", hetionet:'no', umls:'yes'}) 
+Create (s:Symptom{identifier:"%s",type:'cui',license:'UMLS license', name:"%s", source:'UMLS', url:"%s", hetionet:'no', umls:'yes'}) 
 '''
 
 
@@ -191,7 +191,7 @@ def integrate_infromation_into_hetionet():
             #            print(cui)
             url = 'http://identifiers.org/umls/' + cui
             query = '''
-            Create (s:Symptom{identifier:"%s",type:'cui',license:'UMLS licence', name:"%s", resource:['Disease Ontology'], source:'UMLS', url:"%s", hetionet:'no', do:'yes'});     '''
+            Create (s:Symptom{identifier:"%s",type:'cui',license:'UMLS license', name:"%s", resource:['Disease Ontology'], source:'UMLS', url:"%s", hetionet:'no', do:'yes'});     '''
             query = query % (cui, symptom, url)
             counter_new_symptoms += 1
             list_new_add_umls_cuis.append(cui)

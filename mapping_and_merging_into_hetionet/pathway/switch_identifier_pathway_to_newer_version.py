@@ -194,7 +194,9 @@ def fill_the_list_of_properties(head, value, identifiers, resource, name, list_i
         if type(value) in [list, set]:
             identifiers = value.copy()
             combine_node = True
-
+    elif head =='license':
+        if type(value)!=str:
+            value=','.join(value)
     elif head == extra_property:
         value = identifiers
     elif head == 'source':
@@ -207,7 +209,9 @@ def fill_the_list_of_properties(head, value, identifiers, resource, name, list_i
             resource = [value]
     elif head == 'synonyms':
         name = value.pop()
-
+    elif head =='url':
+        if type(value)!=str:
+            value = ' , '.join(value)
     elif head == 'name':
         value = name
     elif head == 'resource':
@@ -307,7 +311,7 @@ def generate_rela_csv_and_cypher_queries():
         else:
             query_rela_middle += '(p:Pathway{identifier:line.' + head + '}) ,'
     query_rela = query_start + query_rela_middle[
-                               :-2] + ' Create (g)-[:PARTICIPATES_GpPW{license:p.license, source:p.source, unbiased:false, url:p.url, resource:p.source, combined_wikipathway_and_pathway_common:"yes"}]->(p);\n'
+                               :-2] + ' Create (g)-[:PARTICIPATES_GpPW{license:p.license, source:p.source, unbiased:false, url:p.url, resource:p.resource, combined_wikipathway_and_pathway_common:"yes"}]->(p);\n'
     query_rela = query_rela % ('rela')
     cypher_file.write(query_rela)
 

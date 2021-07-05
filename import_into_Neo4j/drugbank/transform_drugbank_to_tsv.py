@@ -450,7 +450,7 @@ for i, drug in enumerate(root):
     alternative_ids = [group.text for group in
                        drug.findall("{ns}drugbank-id".format(ns=ns))]
     alternative_ids.remove(db_ID)
-    row['alternative_drugbank_ids'] = alternative_ids
+    row['alternative_ids'] = alternative_ids
 
     row['name'] = drug.findtext(ns + "name")
 
@@ -1114,7 +1114,7 @@ def generate_tsv_file(columns, list_information, file_name):
 print(datetime.datetime.utcnow())
 print('malsehen')
 # csv header
-columns = ['drugbank_id', 'alternative_drugbank_ids', 'name', 'cas_number', 'unii', 'atc_codes',
+columns = ['drugbank_id', 'alternative_ids', 'name', 'cas_number', 'unii', 'atc_codes',
            'state', 'groups', 'general_references_links_reference_id_title_url',
            'general_references_attachment_reference_id_title_url',
            'general_references_textbooks_reference_id_isbn_citation',

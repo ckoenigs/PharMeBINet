@@ -428,7 +428,7 @@ def write_cypher_file():
         if property in ['go_classifiers', 'gene_name', 'gene_id', 'disease']:
             continue
         if property == 'second_ac_numbers':
-            query += 'alternative_identifiers:p.' + property + ', '
+            query += 'alternative_ids:p.' + property + ', '
         # to include only the sequence and not the header
         elif property == 'as_sequence':
             query += property + ':split(p.' + property + ',":")[1], '

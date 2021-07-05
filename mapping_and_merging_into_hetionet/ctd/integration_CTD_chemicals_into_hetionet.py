@@ -202,7 +202,7 @@ def load_compounds_from_hetionet():
         inchi = result['inchi']
         name = result['name'].lower()
         cas_number= result['cas_number'] if 'cas_number' in result else ''
-        alternative_ids=result['alternative_drugbank_ids'] if 'alternative_drugbank_ids' in result else []
+        alternative_ids=result['alternative_ids'] if 'alternative_ids' in result else []
         alternative_ids=list(filter(bool,alternative_ids))
         synonyms=[x.lower() for x in result['synonyms']] if 'synonyms' in result else []
         xrefs= result['xrefs'] if 'xrefs' in result else []

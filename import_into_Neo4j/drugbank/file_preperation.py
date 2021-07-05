@@ -415,7 +415,7 @@ def drugs_combination_and_check(neo4j_label):
         new_header = []
 
         # list properties which are lists
-        list_properties = ['alternative_drugbank_ids', 'groups', 'general_references_links_reference_id_title_url',
+        list_properties = ['alternative_ids', 'groups', 'general_references_links_reference_id_title_url',
                            'general_references_attachment_reference_id_title_url',
                            'general_references_textbooks_reference_id_isbn_citation',
                            'general_references_articles_reference_id_pubmed_citation',
@@ -631,7 +631,7 @@ def drugs_combination_and_check(neo4j_label):
             if drugbank_id in dict_drug_structure:
 
                 dict_drug_structure_properties = dict_drug_structure[drugbank_id]
-                alternative_drugbank_ids_list = row['alternative_drugbank_ids'].split('||')
+                alternative_ids_list = row['alternative_ids'].split('||')
 
                 salts_name_list = set([])
 
@@ -654,7 +654,7 @@ def drugs_combination_and_check(neo4j_label):
                     [brand_name.split(':')[0] for brand_name in row['international_brands_name_company'].split('||')])
 
                 dict_property_name_to_list = {
-                    'SECONDARY_ACCESSION_NUMBERS': alternative_drugbank_ids_list,
+                    'SECONDARY_ACCESSION_NUMBERS': alternative_ids_list,
                     'DRUG_GROUPS': groups,
                     'PRODUCTS': products_name_list,
                     'INTERNATIONAL_BRANDS': brand_name_list,
@@ -2110,8 +2110,8 @@ def add_additional_enzymes(uniprot_id, header_new, counter_multiple_information,
                 elif head == 'id_source':
                     entries.append('Swiss-Prot')
                 elif head == 'alternative_uniprot_id':
-                    alternativ_ids = '||'.join(list(dict_ac_number_to_alternative[uniprot_id]))
-                    entries.append(alternativ_ids)
+                    alternative_ids = '||'.join(list(dict_ac_number_to_alternative[uniprot_id]))
+                    entries.append(alternative_ids)
                 else:
                     entries.append('')
         else:

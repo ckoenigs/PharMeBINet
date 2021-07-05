@@ -94,7 +94,7 @@ def write_files(path_of_directory):
     cypher_file.write(query)
 
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/atc/%s" As line FIELDTERMINATOR '\\t' 
-                Match (n:atc{identifier:line.id}) Create (v:PharmacologicClass{identifier:line.id, drugbank:'yes', resource:['DrugBank'], source:'ATC from DrugBankT', url:'http://identifiers.org/atc:'+line.id, name:n.name, license:'Attribution-NonCommercial 4.0 International', class_type:"ATC code", atc_codes:[line.id]}) Create (v)-[:equal_to_atc]->(n);\n'''
+                Match (n:atc{identifier:line.id}) Create (v:PharmacologicClass{identifier:line.id, drugbank:'yes', resource:['DrugBank'], source:'ATC from DrugBankT', url:'http://identifiers.org/atc:'+line.id, name:n.name, license:'Attribution-NonCommercial 4.0 International', class_type:["ATC code"], atc_codes:[line.id]}) Create (v)-[:equal_to_atc]->(n);\n'''
     query = query % (path_of_directory, file_name_new)
     cypher_file.write(query)
 

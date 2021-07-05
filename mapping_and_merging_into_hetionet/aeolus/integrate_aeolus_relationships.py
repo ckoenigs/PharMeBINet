@@ -202,7 +202,7 @@ def get_aeolus_connection_information_in_dict(label_search, dict_connection_info
 update and generate the relationship CAUSES_CcSE.
 go through all drugbank ID identifier pairs anf combine the information of multiple drugbank Id identifier pairs
 Next step is to check if this connection already exists in Hetionet, if true then update the relationship
-if false generate the connection with the properties licence, unbiased, source, url, the other properties that aeolus has
+if false generate the connection with the properties license, unbiased, source, url, the other properties that aeolus has
 countA	
 prr_95_percent_upper_confidence_limit	
 prr	

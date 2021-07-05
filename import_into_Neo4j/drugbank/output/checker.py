@@ -35,7 +35,7 @@ for row in spamreader:
     id1 = row['left_element_drugbank_id']
     id2 = row['right_element_drugbank_id']
     if not id2 in dict_search:
-        query = '''MATCH (n:Compound_DrugBank) Where n.identifier='%s' or '%s' in n.alternative_drugbank_ids RETURN n.identifier''' % (
+        query = '''MATCH (n:Compound_DrugBank) Where n.identifier='%s' or '%s' in n.alternative_ids RETURN n.identifier''' % (
         id2, id2)
         results = g.run(query)
         result = results.evaluate()
@@ -56,7 +56,7 @@ for row in spamreader:
             continue
 
     if not id1 in dict_search:
-        query = '''MATCH (n:Compound_DrugBank) Where n.identifier='%s' or '%s' in n.alternative_drugbank_ids RETURN n.identifier''' % (
+        query = '''MATCH (n:Compound_DrugBank) Where n.identifier='%s' or '%s' in n.alternative_ids RETURN n.identifier''' % (
         id1, id1)
         results = g.run(query)
         result = results.evaluate()

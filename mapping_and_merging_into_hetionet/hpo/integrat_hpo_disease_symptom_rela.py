@@ -236,6 +236,8 @@ def generate_cypher_file_for_connection(cypher_file):
     query_exist = ''' (n:Disease{identifier: line.disease_id})-[r:PRESENTS_DpS]-(s:Symptom{identifier:line.symptom}) Set '''
     query_new = ''' (n:Disease{identifier: line.disease_id}), (s:Symptom{identifier:line.symptom}) Create (n)-[r:PRESENTS_DpS{'''
     for result, in results:
+        if result=='source':
+            continue
         if result != 'frequency_modifier':
 
             properties.append(result)
