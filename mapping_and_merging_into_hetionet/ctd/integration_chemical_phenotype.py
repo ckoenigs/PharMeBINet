@@ -253,7 +253,7 @@ def take_all_relationships_of_go_chemical():
         go_name = go_name.lower()
         counter_all_rela += 1
         interaction_text = rela['interaction'] if 'interaction' in rela else ''
-        pubMedIds = rela['pubmedids'] if 'pubmedids' in rela else []
+        pubMedIds = rela['pubMed_ids'] if 'pubMed_ids' in rela else []
         interactions_actions = rela['interactionactions'] if 'interactionactions' in rela else []
         comentioned_terms = rela['comentionedterms'] if 'comentionedterms' in rela else []
         anatomy_terms = rela['anatomyterms'] if 'anatomyterms' in rela else []

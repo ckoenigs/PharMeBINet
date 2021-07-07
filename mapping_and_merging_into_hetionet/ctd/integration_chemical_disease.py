@@ -27,17 +27,17 @@ def create_connection_with_neo4j_mysql():
 csvfile_induces = open('chemical_disease/induces.csv', 'w', encoding='utf-8')
 writer_induces = csv.writer(csvfile_induces, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 writer_induces.writerow(
-    ['ChemicalID', 'DiseaseID', 'omimIDs', 'directEvidences', 'pubMedIDs', 'inferenceScores', 'inferenceGeneSymbols'])
+    ['ChemicalID', 'DiseaseID', 'omimIDs', 'directEvidences', 'pubMed_ids', 'inferenceScores', 'inferenceGeneSymbols'])
 
 csvfile_treat = open('chemical_disease/treat.csv', 'w', encoding='utf-8')
 writer_treat = csv.writer(csvfile_treat, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 writer_treat.writerow(
-    ['ChemicalID', 'DiseaseID', 'omimIDs', 'directEvidences', 'pubMedIDs', 'inferenceScores', 'inferenceGeneSymbols'])
+    ['ChemicalID', 'DiseaseID', 'omimIDs', 'directEvidences', 'pubMed_ids', 'inferenceScores', 'inferenceGeneSymbols'])
 
 csvfile_associated = open('chemical_disease/associated.csv', 'w', encoding='utf-8')
 writer_associated = csv.writer(csvfile_associated, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 writer_associated.writerow(
-    ['ChemicalID', 'DiseaseID', 'omimIDs', 'directEvidences', 'pubMedIDs', 'inferenceScores', 'inferenceGeneSymbols'])
+    ['ChemicalID', 'DiseaseID', 'omimIDs', 'directEvidences', 'pubMed_ids', 'inferenceScores', 'inferenceGeneSymbols'])
 
 '''
 put the information in the right csv file
@@ -47,11 +47,11 @@ put the information in the right csv file
 def add_information_into_te_different_csv_files(chemical_id, disease_id, information, csvfile):
     omimIDs = '|'.join(list(filter(bool, information[0])))
     directEvidences = '|'.join(list(filter(bool, information[1])))
-    pubMedIDs = '|'.join(list(filter(bool, information[2])))
+    pubMed_ids = '|'.join(list(filter(bool, information[2])))
     inferenceScores = '|'.join(list(filter(bool, information[3])))
     inferenceGeneSymbols = '|'.join(list(filter(bool, information[4])))
     csvfile.writerow(
-        [chemical_id, disease_id, omimIDs, directEvidences, pubMedIDs, inferenceScores, inferenceGeneSymbols])
+        [chemical_id, disease_id, omimIDs, directEvidences, pubMed_ids, inferenceScores, inferenceGeneSymbols])
 
 
 # csvfile_inf= open('chemical_disease/inf.csv', 'w')
@@ -75,7 +75,7 @@ def generate_cypher():
     cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')
 
     for (file_name, rela_name) in list_file_name_rela_name:
-        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ctd/chemical_disease/%s.csv" As line Match  (n:Chemical{identifier:line.ChemicalID}), (b:Disease{identifier:line.DiseaseID}) Merge (n)-[r:%s]->(b) On Match Set r.resource=r.resource+'CTD', r.ctd='yes', r.directEvidence=split(line.directEvidences,'|'),  r.inferenceGeneSymbol=split(line.inferenceGeneSymbols,'|'), r.inferenceScore=split(line.inferenceScores,'|'), r.pubMed_ids=split(line.pubMedIDs,'|'), r.url_ctd='http://ctdbase.org/detail.go?type=chem&acc='+line.ChemicalID On Create Set r.new='yes', r.directEvidence=split(line.directEvidences,'|'), r.ctd='yes', r.pubMed_ids=split(line.pubMedIDs,'|'), r.resource=["CTD"], r.inferenceGeneSymbol=split(line.inferenceGeneSymbols,'|'), r.inferenceScore=split(line.inferenceScores,'|') , r.url='http://ctdbase.org/detail.go?type=chem&acc='+line.ChemicalID, r.source="CTD", r.licence="© 2002–2012 MDI Biological Laboratory. © 2012–2021 NC State University. All rights reserved.", r.unbiased=true ;\n '''
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ctd/chemical_disease/%s.csv" As line Match  (n:Chemical{identifier:line.ChemicalID}), (b:Disease{identifier:line.DiseaseID}) Merge (n)-[r:%s]->(b) On Match Set r.resource=r.resource+'CTD', r.ctd='yes', r.directEvidence=split(line.directEvidences,'|'),  r.inferenceGeneSymbol=split(line.inferenceGeneSymbols,'|'), r.inferenceScore=split(line.inferenceScores,'|'), r.pubMed_ids=split(line.pubMed_ids,'|'), r.url_ctd='http://ctdbase.org/detail.go?type=chem&acc='+line.ChemicalID On Create Set r.directEvidence=split(line.directEvidences,'|'), r.ctd='yes', r.pubMed_ids=split(line.pubMed_ids,'|'), r.resource=["CTD"], r.inferenceGeneSymbol=split(line.inferenceGeneSymbols,'|'), r.inferenceScore=split(line.inferenceScores,'|') , r.url='http://ctdbase.org/detail.go?type=chem&acc='+line.ChemicalID, r.source="CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2021 NC State University. All rights reserved.", r.unbiased=true ;\n '''
         query = query % (file_name, rela_name)
         cypherfile.write(query)
 
@@ -154,7 +154,7 @@ def get_all_important_relationships_and_write_into_files():
             sort all information into dict_chemical_disease
             '''
 
-    def sort_into_dictionary(chemical_id, mondo, omimIDs, directEvidence, pubMedIDs, inferenceScore,
+    def sort_into_dictionary(chemical_id, mondo, omimIDs, directEvidence, pubMed_ids, inferenceScore,
                              inferenceGeneSymbol, disease_id):
         tuple_ids=(chemical_id, mondo)
         if tuple_ids in dict_chemical_disease:
@@ -164,7 +164,7 @@ def get_all_important_relationships_and_write_into_files():
             dict_chemical_disease[tuple_ids][1].append(directEvidence)
             dict_chemical_disease[tuple_ids][1] = list(
                 set(dict_chemical_disease[(chemical_id, mondo)][1]))
-            dict_chemical_disease[tuple_ids][2].extend(pubMedIDs)
+            dict_chemical_disease[tuple_ids][2].extend(pubMed_ids)
             dict_chemical_disease[tuple_ids][2] = list(
                 set(dict_chemical_disease[(chemical_id, mondo)][2]))
             dict_chemical_disease[tuple_ids][3].append(inferenceScore)
@@ -177,7 +177,7 @@ def get_all_important_relationships_and_write_into_files():
             dict_chemical_disease[tuple_ids][5] = list(
                 set(dict_chemical_disease[tuple_ids][5]))
         else:
-            dict_chemical_disease[tuple_ids] = [omimIDs, [directEvidence], pubMedIDs,
+            dict_chemical_disease[tuple_ids] = [omimIDs, [directEvidence], pubMed_ids,
                                                            [inferenceScore], [inferenceGeneSymbol], [disease_id],
                                                            []]
 
@@ -200,7 +200,7 @@ def get_all_important_relationships_and_write_into_files():
         rela = dict(rela)
         omimIDs = rela['omimIDs'] if 'omimIDs' in rela else []
         directEvidence = rela['directEvidence']
-        pubMedIDs = rela['pubMedIDs'] if 'pubMedIDs' in rela else []
+        pubMed_ids = rela['pubMed_ids'] if 'pubMed_ids' in rela else []
         inferenceScore = rela['inferenceScore'] if 'inferenceScore' in rela else ''
 
 
@@ -209,12 +209,12 @@ def get_all_important_relationships_and_write_into_files():
         inferenceGeneSymbol = rela['inferenceGeneSymbol'] if 'inferenceGeneSymbol' in rela else ''
         if chemical_id not in dict_chemical_to_drugbank and len(mondos) > 0:
             for mondo in mondos:
-                sort_into_dictionary(chemical_id, mondo, omimIDs, directEvidence, pubMedIDs, inferenceScore,
+                sort_into_dictionary(chemical_id, mondo, omimIDs, directEvidence, pubMed_ids, inferenceScore,
                                      inferenceGeneSymbol, disease_id)
         elif chemical_id in dict_chemical_to_drugbank and len(mondos) > 0:
             for drugbank_id in dict_chemical_to_drugbank[chemical_id]:
                 for mondo in mondos:
-                    sort_into_dictionary(drugbank_id, mondo, omimIDs, directEvidence, pubMedIDs, inferenceScore,
+                    sort_into_dictionary(drugbank_id, mondo, omimIDs, directEvidence, pubMed_ids, inferenceScore,
                                          inferenceGeneSymbol, disease_id)
 
 
