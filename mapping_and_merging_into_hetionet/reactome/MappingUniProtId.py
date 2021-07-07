@@ -41,14 +41,14 @@ load in all uniprotIDs of Protein from hetionet in a dictionary
 '''
 
 def load_hetionet_uniprotIDs_in():
-    query = '''MATCH (n:Protein) RETURN n.identifier, n.name, n.alternative_identifiers, n.resource'''
+    query = '''MATCH (n:Protein) RETURN n.identifier, n.name, n.alternative_ids, n.resource'''
     results = graph_database.run(query)
 
-    for identifier, name, alternative_identifiers, resource, in results:
+    for identifier, name, alternative_ids, resource, in results:
         dict_uniprot_id_to_name[identifier] = name.lower()
         dict_uniprot_to_resource[identifier] = resource if resource else []
-        if alternative_identifiers:
-            for alt_id in alternative_identifiers:
+        if alternative_ids:
+            for alt_id in alternative_ids:
                 #print(alt_id)
                 dict_alternative_id_to_protein_id[alt_id] = identifier
 
@@ -68,12 +68,12 @@ load all reactome uniprotIDs ReferenceEntity and check if they are in hetionet o
 
 def load_reactome_referenceEntity_in():
     global highest_identifier
-    query = '''MATCH (n:PhysicalEntity_reactome)-[r:referenceEntity]-(a:ReferenceEntity_reactome) WHERE a.databaseName = 'UniProt' RETURN a.identifier, a.name, a.alternative_identifiers, n.name'''
+    query = '''MATCH (n:PhysicalEntity_reactome)-[r:referenceEntity]-(a:ReferenceEntity_reactome) WHERE a.databaseName = 'UniProt' RETURN a.identifier, a.name, n.name'''
     # p = (n:PhysicalEntity) - [r:referenceEntity]-(a:ReferenceEntity) Where a.databaseName = 'UniProt' RETURN n, r, a Limit 25
     results = graph_database.run(query)
     set_pairs = set()
     counter_map_with_id = 0
-    for identifier, names, alternative_identifiers, physicalEntityNames in results:
+    for identifier, names, physicalEntityNames in results:
         name = names[0].lower() if names else physicalEntityNames[0].lower()
         if identifier in dict_uniprot_id_to_name:
             if not (identifier, identifier) in set_pairs:
