@@ -243,7 +243,7 @@ def run_trough_xml_and_parse_data():
                                         'tissue_specificity', 'gene_name', 'protein_existence', 'domain',
                                         'miscellaneous', 'catalytic_activity', 'as_sequence', 'sequenceLength',
                                         'online_information', 'function', 'activity_regulation', 'caution', 'subunit',
-                                        'alternative_products', 'biophysicochemical_properties', 'subcellular_location',
+                                        'alternative_products', 'biophysicochemical_properties', 'subcellular_locations',
                                         'PTM', 'mass_spectrometry', 'similarity', 'biotechnology', 'sequence_caution',
                                         'ec_number', 'accession', 'cofactor', 'references', 'feature', 'pharmaceutical',
                                         'induction', 'disease', 'gene_id', 'go_classifiers', 'chromosome_location',
@@ -252,7 +252,7 @@ def run_trough_xml_and_parse_data():
                                         'tissue_specificity', 'gene_name', 'domain', 'miscellaneous',
                                         'catalytic_activity', 'online_information', 'function', 'activity_regulation',
                                         'caution', 'subunit', 'alternative_products', 'biophysicochemical_properties',
-                                        'subcellular_location', 'ec_number', 'accession', 'cofactor', 'references',
+                                        'subcellular_locations', 'ec_number', 'accession', 'cofactor', 'references',
                                         'feature', 'pharmaceutical', 'induction', 'disease', 'gene_id',
                                         'go_classifiers', 'chromosome_location', 'pfam', 'gene_location', 'molecule',
                                         'allergen', 'mass_spectrometry', 'sequence_caution'])
@@ -626,6 +626,8 @@ def run_trough_xml_and_parse_data():
                             print("%s - %s - %s" % (sub_tag, subchild.text, subchild.attrib))
 
                     if not is_a_rela:
+                        if comment_type=='subcellular location':
+                            comment_type='subcellular_locations'
                         add_key_value_to_dictionary_as_list(dict_protein, comment_type.replace(' ', '_'), dict_comment)
                     else:
                         # print(dict_comment.keys())
