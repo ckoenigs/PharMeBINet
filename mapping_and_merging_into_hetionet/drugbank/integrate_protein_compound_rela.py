@@ -134,15 +134,16 @@ def create_cypher_query_and_csv_file(rela_name, rela_direction, label_from):
     list_of_properties = ['identifier1', 'identifier2', 'interaction_with_form']
     for property, in results:
         # this is for all similar
-        if property in ['organism', license]:
+        if property in ['organism', 'license']:
             if label_from == 'Chemical' and property == 'organism':
                 query_create += property + ':line.' + property + ', '
                 query_update += 'r.' + property + '=line.' + property + ', '
                 list_of_properties.append(property)
             continue
         if property.startswith('ref') or property in ['actions', 'position', 'known_action']:
-            query_create += property + ':split(line.' + property + ',"|"), '
-            query_update += 'r.' + property + '=split(line.' + property + ',"|"), '
+            prop_first= property+'s' if property[-1]!='s' else property
+            query_create += prop_first + ':split(line.' + property + ',"|"), '
+            query_update += 'r.' + prop_first + '=split(line.' + property + ',"|"), '
         else:
             query_create += property + ':line.' + property + ', '
             query_update += 'r.' + property + '=line.' + property + ', '

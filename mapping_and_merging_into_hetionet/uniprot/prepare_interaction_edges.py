@@ -34,7 +34,7 @@ Load all uniprots ids of the proteins and check out which appears also in the un
 
 def get_pairs_information():
 
-    # only the interaction in the same organism
+    # only the interaction in the same organism {identifier:'Q13627'}
     query="""Match (n:Protein_Uniprot)-[r]->(p:Protein_Uniprot) Where r.organismsDiffer='false' Return Distinct n.identifier, r, p.identifier """
     results=g.run(query)
 
@@ -71,7 +71,7 @@ def write_info_into_csv_file():
     # query gene-disease association
 
     file_cypher = open('output/cypher_edge.cypher', 'a')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/%s" As line MATCH (g:Protein{identifier:line.protein_id1}),(b:Protein{identifier:line.protein_id2}) Create (b)-[r:INTERACTS_PiP{source:"UniProt", license:"CC BY 4.0", resource:["UniProt"], uniprot:'yes', iso_of_protein_from:line.iso_of_protein_from, iso_of_protein_to:line.iso_of_protein_to, interaction_ids:split(line.interaction_ids, "|"), experiments:split(line.experiments, "|")}]->(g) ;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/%s" As line MATCH (g:Protein{identifier:line.protein_id1}),(b:Protein{identifier:line.protein_id2}) Create (g)-[r:INTERACTS_PiP{source:"UniProt", license:"CC BY 4.0", resource:["UniProt"], uniprot:'yes', iso_of_protein_from:line.iso_of_protein_from, iso_of_protein_to:line.iso_of_protein_to, interaction_ids:split(line.interaction_ids, "|"), experiments:split(line.experiments, "|")}]->(b) ;\n'''
     query = query % (file_name)
     file_cypher.write(query)
 
