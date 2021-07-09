@@ -214,7 +214,7 @@ def perpare_queries_index_and_relationships():
 dict_first_letter_to_rela_letter={
     'G':'GT',
     'H':'H',
-    'V':'V'
+    'V':'GV'
 }
 
 def query_for_rela(file_name, label1, label2):
