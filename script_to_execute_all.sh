@@ -79,9 +79,9 @@ echo delete source nodes
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-cd mapping_and_merging_into_hetionet
+cd final_preparation
 
-./delete_script.sh $path_neo4j > output_delte_source.txt
+./prepare_clear_pharmebinet.sh $path_neo4j > output_delete_source.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"

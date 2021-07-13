@@ -9,7 +9,16 @@ import_tool='../import_into_Neo4j/Neo4j-GraphML-Importer-v1.1.5'
 # path to pharMeBiNet graphml
 path_to_pharMeBiNet='/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/PharMeBiNet/'
 
-$path_neo4j/restart_neo4j.sh reactome restart
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo 'delete source nodes'
+
+./delete_script.sh $path_neo4j > output_delete_source.txt
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+$path_neo4j/neo4j restart
 
 sleep 60
 
