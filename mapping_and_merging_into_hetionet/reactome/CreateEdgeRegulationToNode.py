@@ -111,8 +111,8 @@ def main():
         ['regulatedBy', 'FailedReaction_reactome', 'equal_to_reactome_failedreaction', 'FailedReaction', 'IS_REGULATED_BY_RGirbF', '<-', '-'],
         ['regulatedBy', 'BlackBoxEvent_reactome', 'equal_to_reactome_blackBoxEvent', 'BlackBoxEvent', 'IS_REGULATED_BY_RGirbB', '<-', '-'],
         ['regulatedBy', 'Polymerisation_reactome', 'equal_to_reactome_polymerisation', 'Polymerisation', 'IS_REGULATED_BY_RGirbP', '<-', '-'],
-        ['regulator', 'PhysicalEntity_reactome)--(:ReferenceEntity_reactome', 'equal_to_reactome_drug', 'Chemical', 'HAS_REGULATOR_RGirC', '-', '->'],
-        ['activeUnit', 'PhysicalEntity_reactome)--(:ReferenceEntity_reactome', 'equal_to_reactome_drug', 'Chemical', 'HAS_ACTIVE_UNIT_RGiauC', '-', '->'],
+        ['regulator', 'PhysicalEntity_reactome)--(:ReferenceEntity_reactome', 'equal_to_reactome_drug', 'Chemical', 'HAS_REGULATOR_RGirCH', '-', '->'],
+        ['activeUnit', 'PhysicalEntity_reactome)--(:ReferenceEntity_reactome', 'equal_to_reactome_drug', 'Chemical', 'HAS_ACTIVE_UNIT_RGiauCH', '-', '->'],
         ['goBiologicalProcess', 'GO_BiologicalProcess_reactome', 'equal_to_reactome_gobiolproc', 'BiologicalProcess', 'OCCURS_IN_GO_BIOLOGICAL_PROCESS_RGoigbpB', '-', '->'],
         ['activity', 'GO_MolecularFunction_reactome', 'equal_to_reactome_gomolfunc', 'MolecularFunction', 'HAS_ACTIVITY_RGhaM', '-', '->']
     ]
