@@ -1,7 +1,7 @@
 import time
 import sys
 
-sys.path.append("..")
+sys.path.append("../..")
 from databaseConnection import query, generateConnection
 
 STOP_AFTER = 50000  # so many nodes will be deleted, then will the program exit
