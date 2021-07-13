@@ -1,7 +1,7 @@
 import sys
 import datetime
 
-sys.path.append("../..")
+sys.path.append("..")
 import create_connection_to_databases
 
 '''
@@ -29,7 +29,7 @@ import_tool=$1
 # define path to pharmebinet
 path_to_pharmebinet=$2\n\n''')
 
-    import_tool='java -jar ../$import_tool.jar -i $path_to_pharmebinet"PharMeBiNet.graphml"  -e bolt://localhost:7687 --username neo4j --password test  --modify-edge-labels false --indices "%s"'
+    import_tool='java -jar $import_tool.jar -i $path_to_pharmebinet"PharMeBiNet.graphml"  -e bolt://localhost:7687 --username neo4j --password test  --modify-edge-labels false --indices "%s"'
 
     query='''CALL db.indexes ''' # also possible after 4.2.x: SHOW INDEXES
     results= g.run(query)
