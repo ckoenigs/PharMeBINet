@@ -373,11 +373,11 @@ def fill_the_csv_files():
         short_form_label = dict_go_term_to_short_form[label]
         if from_chemical:
             file_name = 'chemical_phenotype/chemical_' + label + '_' + rela_full + '.tsv'
-            generate_cypher_queries(file_name, label, rela_full + '_C' + rela_full[0].lower() + short_form_label, 'b',
+            generate_cypher_queries(file_name, label, rela_full + '_CH' + rela_full[0].lower() + short_form_label, 'b',
                                     'go')
         else:
             file_name = 'chemical_phenotype/' + label + '_chemical_' + rela_full + '.tsv'
-            generate_cypher_queries(file_name, label, rela_full + '_' + short_form_label + rela_full[0].lower() + 'C',
+            generate_cypher_queries(file_name, label, rela_full + '_' + short_form_label + rela_full[0].lower() + 'CH',
                                     'go', 'b')
         file = open(file_name, 'w', encoding='utf-8')
         csv_writer = csv.writer(file, delimiter='\t')

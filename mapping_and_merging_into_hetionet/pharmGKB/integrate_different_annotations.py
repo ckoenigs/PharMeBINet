@@ -63,7 +63,7 @@ dict_pGKB_label_to_label = {
 dict_label_to_rela_name = {
     'Gene': 'ASSOCIATES_%saG',
     'Variant': 'ASSOCIATES_%saV',
-    'Chemical': 'ASSOCIATES_%saC',
+    'Chemical': 'ASSOCIATES_%saCH',
     'Haplotype': 'ASSOCIATES_%saH',
     'PharmacologicClass': 'ASSOCIATES_%saPC'
 }

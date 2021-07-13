@@ -41,7 +41,7 @@ def generate_file_and_cypher():
     cypher_file = open('output/cypher_drug_edge.cypher', 'w', encoding='utf-8')
 
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/reactome/%s.tsv" As line FIELDTERMINATOR '\\t'
-            Match (p1:Chemical{identifier:line.drug_reactome_id}), (p2:Disease{identifier:line.disease_reactome_id}) Create (p1)-[:TREATS_CtT]->(b:Treatment{license:"%s", reactome:"yes", source:"Reactome", resource:["Reactome"], url:"https://reactome.org/content/detail/"+line.stid, stoichiometry: line.stoichiometry , order:line.order , identifier:"T_"+line.id, node_edge:true})-[:TREATS_TtD]->(p2);\n '''
+            Match (p1:Chemical{identifier:line.drug_reactome_id}), (p2:Disease{identifier:line.disease_reactome_id}) Create (p1)-[:TREATS_CHtT]->(b:Treatment{license:"%s", reactome:"yes", source:"Reactome", resource:["Reactome"], url:"https://reactome.org/content/detail/"+line.stid, stoichiometry: line.stoichiometry , order:line.order , identifier:"T_"+line.id, node_edge:true})-[:TREATS_TtD]->(p2);\n '''
     query = query % (path_of_directory, file_name, license)
     header = ['drug_reactome_id', 'disease_reactome_id', 'id', 'stoichiometry', 'order', 'stid']
     cypher_file.write(query)

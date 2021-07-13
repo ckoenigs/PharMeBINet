@@ -29,7 +29,7 @@ def write_files(label, direction_1, direction_2, rela_name):
     '''
     # give the rela the right abbreviation
     if label == 'Chemical':
-        rela_name = rela_name % ('C')
+        rela_name = rela_name % ('CH')
     else:
         rela_name = rela_name % ('PC')
 
@@ -57,10 +57,10 @@ dict_rela_to_csv = {}
 # dictionary rela name in ndf-rt to information needed
 # has_active_metabolites
 dict_rela_name_to_other_information = {
-    'has': ['-', '->', 'HAS_INGREDIENT_%shiC'],
-    'CI': ['-', '->', 'CONTRAINDICATES_%scC'],
-    'has_Chemical_Structure': ['-', '->', 'HAS_CHEMICAL_STRUCTURE_%shcsC'],
-    'has_active_metabolites': ['-', '->', 'HAS_ACTIVE_METABOLITE_%shamC']
+    'has': ['-', '->', 'HAS_INGREDIENT_%shiCH'],
+    'CI': ['-', '->', 'CONTRAINDICATES_%scCH'],
+    'has_Chemical_Structure': ['-', '->', 'HAS_CHEMICAL_STRUCTURE_%shcsCH'],
+    'has_active_metabolites': ['-', '->', 'HAS_ACTIVE_METABOLITE_%shamCH']
 }
 
 

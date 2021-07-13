@@ -70,7 +70,7 @@ def integrate_connection_into_hetionet(label):
             dict_rela_type_to_csv_file[(rela_type,label)] = csv_writer
             query_check = 'Match p=(:%s)-[:%s]-(:Disease) Return p Limit 1' % (label,dict_type_to_label[rela_type])
             if label=="Chemical":
-                letter='C'
+                letter='CH'
             else:
                 letter='PC'
             query_check=query_check %(letter)

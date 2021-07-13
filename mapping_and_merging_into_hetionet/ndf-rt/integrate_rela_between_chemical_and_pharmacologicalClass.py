@@ -29,7 +29,7 @@ def write_files(label, direction_1, direction_2, rela_name):
     '''
     # give the rela the right abbreviation
     if label == 'Chemical':
-        rela_name = rela_name % ('C')
+        rela_name = rela_name % ('CH')
     else:
         rela_name = rela_name % ('PC')
 

@@ -69,7 +69,7 @@ also generate a cypher file to integrate this information
 
 
 def generate_cypher():
-    list_file_name_rela_name = [('induces', 'INDUCES_CiD'), ('treat', 'TREATS_CtD'), ('associated', 'ASSOCIATES_CaD')]
+    list_file_name_rela_name = [('induces', 'INDUCES_CHiD'), ('treat', 'TREATS_CHtD'), ('associated', 'ASSOCIATES_CHaD')]
 
     # the general cypher file to update all chemicals and relationship which are not from aeolus
     cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')

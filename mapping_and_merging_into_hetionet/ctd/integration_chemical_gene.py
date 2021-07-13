@@ -136,7 +136,13 @@ def prepare_rela_small(rela, label1, label2):
 
 
 def prepare_rela_great(rela, label1, label2):
-    return rela + '_' + label1.upper()[0] + ''.join([x.lower()[0] for x in rela.split('_')]) + label2.upper()[0]
+    if label1=='chemical':
+        letter_1='CH'
+        letter_2=label2.upper()[0]
+    else:
+        letter_1=label1.upper()[0]
+        letter_2='CH'
+    return rela + '_' + letter_1+ ''.join([x.lower()[0] for x in rela.split('_')]) + letter_2
 
 
 for label_gene_or_protein in [gene, protein]:
