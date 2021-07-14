@@ -31,7 +31,7 @@ def generate_files(path_of_directory):
     cypher_file = open('output/cypher_rela.cypher', 'a', encoding='utf-8')
 
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/drugbank/gene_variant/%s.tsv" As line FIELDTERMINATOR '\\t' 
-        Match (n:Compound{identifier:line.compound_id}), (v:Variant{identifier:line.variant_id}) MERGE (v)-[r:COMBINATION_CAUSES_ADR_VccaC]->(n) On Create set r.type=line.type, r.license=line.license, r.description=line.description, r.pubMed_ids=split(line.pubmed_ids,"|"), r.drugbank="yes", r.resource=["DrugBank"], r.url="https://go.drugbank.com/drugs/"+line.compound_id On Match Set r.drugbank="yes", r.resource=r.resource+"DrugBank" ;\n'''
+        Match (n:Compound{identifier:line.compound_id}), (v:Variant{identifier:line.variant_id}) MERGE (v)-[r:COMBINATION_CAUSES_ADR_VccaCH]->(n) On Create set r.type=line.type, r.license=line.license, r.description=line.description, r.pubMed_ids=split(line.pubmed_ids,"|"), r.drugbank="yes", r.resource=["DrugBank"], r.url="https://go.drugbank.com/drugs/"+line.compound_id On Match Set r.drugbank="yes", r.resource=r.resource+"DrugBank" ;\n'''
     query = query % (path_of_directory, file_name)
     cypher_file.write(query)
 

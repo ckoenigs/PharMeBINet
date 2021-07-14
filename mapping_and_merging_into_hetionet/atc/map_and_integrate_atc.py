@@ -60,7 +60,7 @@ cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
 # dictionary first letter to rela letters
 dict_first_letter_to_rela_letter={
     'P':'PC',
-    'C':'C'
+    'C':'CH'
 }
 
 def write_files(path_of_directory):
