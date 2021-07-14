@@ -53,7 +53,7 @@ generate new relationships between reaction of hetionet and protein of hetionet 
 
 
 def create_cypher_file( file_path, node_label, rela_name):
-    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/reactome/%s" As line FIELDTERMINATOR "\\t" MATCH (d:Reaction{identifier:line.id_hetionet_Reaction}),(c:%s{identifier:line.id_hetionet_node}) CREATE (d)-[: %s{order:line.order, stoichiometry:line.stoichiometry, resource: ['Reactome'], reactome: "yes", license:"%s", url:"https://reactome.org/content/detail/"+line.id_hetionet_Reaction}]->(c);\n'''
+    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/reactome/%s" As line FIELDTERMINATOR "\\t" MATCH (d:Reaction{identifier:line.id_hetionet_Reaction}),(c:%s{identifier:line.id_hetionet_node}) CREATE (c)-[: %s{order:line.order, stoichiometry:line.stoichiometry, resource: ['Reactome'], reactome: "yes", license:"%s", url:"https://reactome.org/content/detail/"+line.id_hetionet_Reaction}]->(d);\n'''
     query = query % (path_of_directory, file_path, node_label, rela_name, license)
     cypher_file.write(query)
 
@@ -104,7 +104,7 @@ def main():
     # 0: old relationship;           1: name of node in Reactome;        2: relationship equal to Hetionet-node
     # 3: name of node in Hetionet;   4: name of directory                5: name of new relationship
     list_of_combinations = [
-        ['equal_to_reactome_uniprot', 'Protein', 'INPUT_PiR']
+        ['equal_to_reactome_uniprot', 'Protein', 'IS_INPUT_OF_PiioR']
     ]
 
     directory = 'physikalEntityEdges'
