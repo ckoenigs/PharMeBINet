@@ -6,26 +6,30 @@ path_to_ctd_data=$1
 # path to neo4j
 path_neo4j=$2
 
+file=$path_to_ctd_data/ctd_data/CTD_genes.csv
 
-echo download ctd files
-now=$(date +"%F %T")
-echo "Current time: $now"
+if [ ! -f "$file" ];
+then
+    echo download ctd files
+    now=$(date +"%F %T")
+    echo "Current time: $now"
 
-# download gene-disease manual because there is a human check!
+    # download gene-disease manual because there is a human check!
 
-# python3 download_the_ctd_files.py $path_to_ctd_data > output_download.txt
+    python3 download_the_ctd_files.py $path_to_ctd_data > output_download.txt
 
 
-echo first remove the first lines of the ctd files
-now=$(date +"%F %T")
-echo "Current time: $now"
-# cd path_to_ctd_data/ctd_data
+    echo first remove the first lines of the ctd files
+    now=$(date +"%F %T")
+    echo "Current time: $now"
+    # cd path_to_ctd_data/ctd_data
 
-#for i in $path_to_ctd_data/ctd_data/*.csv; do
-#   $path_to_ctd_data/ctd_data/delete_the_head.sh $i
-#done
+    for i in $path_to_ctd_data/ctd_data/*.csv; do
+    $path_to_ctd_data/ctd_data/delete_the_head.sh $i
+    done
 
-#cd ..
+    #cd ..
+fi
 
 echo python3
 now=$(date +"%F %T")
