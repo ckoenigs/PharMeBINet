@@ -1,6 +1,7 @@
 import sys
 import datetime
 import csv, json
+import re
 
 sys.path.append("../..")
 import create_connection_to_databases
@@ -49,12 +50,15 @@ def transform_json_string_to_dict(json_string):
     :param json_string: string
     :return: dictionary
     """
+    # print(json_string)
     if '\\"' in json_string:
-        value = json_string.replace('\\"', '"')
+        json_string = json_string.replace('\\"', '"')
     else:
-        value = json_string.replace("'", "\"")
-
-    return json.loads(value)
+        json_string = re.sub("([{\[])'", '\\1"', json_string)
+        json_string = re.sub("([\:,]) '", '\\1 "', json_string)
+        json_string = re.sub("'([\:,\]}])", '"\\1', json_string)
+    # print(json_string)
+    return json.loads(json_string)
 
 
 def list_of_dictionary_to_list_of_string(list_of_dict):
@@ -143,6 +147,8 @@ def load_all_rela_drug_response_and_finish_the_files():
     print(query)
     counter_rela=0
     for variant_id, rela_info, rela_type, respose_name, chemical_id, in results:
+        print(variant_id)
+        print(chemical_id)
         counter_rela+=1
 
         rela_info = dict(rela_info)
@@ -157,6 +163,9 @@ def load_all_rela_drug_response_and_finish_the_files():
         # print(dict(rela_info))
         for key, value in rela_info.items():
             if 'citations' == key:
+                # value is a list
+                dict_rela_combinde[key] = value
+            elif 'citations_info' ==key:
                 dict_rela_combinde[key] = list_of_dictionary_to_list_of_string(value)
             elif key == 'clinical_significance':
                 value = transform_json_string_to_dict(value)
@@ -325,7 +334,7 @@ def generate_cypher_file_and_csv(rela_type):
         elif property in ['clinical_significance_description', 'attributes', 'clinical_significance_date',
                           'clinical_significance_comments', 'comments', 'xrefs', 'ClinVar_assertion_observations',
                           'clinical_significance_citations', 'citations', 'assertion',
-                          'clinical_significance_review_status', 'additional_rela_infos']:
+                          'clinical_significance_review_status', 'additional_rela_infos', 'citations_info']:
             query_start += property + ':split(line.' + property + ',"|"), '
         else:
             query_start += property + ':line.' + property + ', '
@@ -348,11 +357,11 @@ dict_rela_type_to_new_name = {
 
 # dictionary rela name to end
 dict_rela_name_to_rela_end = {
-    "ASSOCIATES": "_VaC",
-    "CONFERS_RESISTANCE": "_VcrC",
-    "IS_RISIK_FACTOR_WITH": "_VirfwC",
-    "CONFERS_RESISTANCE": "_VcrC",
-    'CONFERS_SENSITIVITY':'_VcsC'
+    "ASSOCIATES": "_VaCH",
+    "CONFERS_RESISTANCE": "_VcrCH",
+    "IS_RISIK_FACTOR_WITH": "_VirfwCH",
+    "CONFERS_RESISTANCE": "_VcrCH",
+    'CONFERS_SENSITIVITY':'_VcsCH'
 }
 
 
