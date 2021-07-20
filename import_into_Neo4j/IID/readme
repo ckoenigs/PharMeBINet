@@ -1,5 +1,7 @@
 http://iid.ophid.utoronto.ca/
 
+Version: 2018-11
+
 First, the program downloads the file from Integrated Interactions Database (IID) version 2018-11.
 Next, the cypher file and the cypher queries are generated to integrate all the information.
 Then it runs through the file to generate for the protein nodes an own tsv file. 

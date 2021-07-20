@@ -1,6 +1,6 @@
 The JSON file of MONDO is downloaded from http://purl.obolibrary.org/obo/mondo.json.
 
-Version: 
+Version: 2021-07-12
 
 The script first downloads the latest version of MONDO as a JSON file.
 Then in the python script, the CSV for node and edges and cypher file are generated. Therefore, only the nodes with IRI that start with 'http://purl.obolibrary.org/obo/MONDO' are taken. The others are from other databases.
