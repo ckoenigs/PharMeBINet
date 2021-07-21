@@ -16,7 +16,7 @@ echo integrate med-rt into neo4j
 
 $path_neo4j/cypher-shell -u neo4j -p test -f cypher_med.cypher 
 
-sleep 120
+sleep 60
 
 $path_neo4j/neo4j restart
 
@@ -26,7 +26,7 @@ echo delete med-rt nodes without relaionships
 
 $path_neo4j/cypher-shell -u neo4j -p test -f cypher_delete.cypher
 
-sleep 180
+sleep 120
 
 $path_neo4j/neo4j restart
 

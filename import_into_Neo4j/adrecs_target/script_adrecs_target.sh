@@ -17,7 +17,7 @@ echo integrate adrecs target nodes into neo4j
 
 $path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher 
 
-sleep 180
+sleep 60
 
 $path_neo4j/neo4j restart
 
@@ -31,7 +31,7 @@ echo integrate adrecs target rela into neo4j
 
 $path_neo4j/cypher-shell -u neo4j -p test -f cypher_rela.cypher 
 
-sleep 180
+sleep 60
 
 $path_neo4j/neo4j restart
 

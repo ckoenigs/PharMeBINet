@@ -33,7 +33,7 @@ echo integrate hpo into neo4j
 
 $path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher 
 
-sleep 180
+sleep 60
 
 $path_neo4j/neo4j restart
 

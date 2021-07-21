@@ -49,7 +49,7 @@ echo "Current time: $now"
 $path_neo4j/cypher-shell -u neo4j -p test -f nodes_1.cypher 
 
 
-sleep 180
+sleep 60
 $path_neo4j/neo4j restart
 sleep 120
 now=$(date +"%F %T")
@@ -61,7 +61,7 @@ $path_neo4j/cypher-shell -u neo4j -p test -f edges_1.cypher
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-sleep 180
+sleep 120
 $path_neo4j/neo4j restart
 sleep 120
 
@@ -73,7 +73,7 @@ $path_neo4j/cypher-shell -u neo4j -p test -f nodes_delete.cypher
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-sleep 180
+sleep 120
 $path_neo4j/neo4j restart
 sleep 120
 
