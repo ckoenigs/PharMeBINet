@@ -37,6 +37,7 @@ def load_hetionet_regulation_hetionet_node_in(csv_file, dict_regulation_hetionet
                                                   node_reactome_label, rela_equal_name, node_hetionet_label, direction1, direction2):
     query = '''MATCH (p:Regulation)-[:equal_to_reactome_regulation]-(r:Regulation_reactome)%s[v:%s]%s(n:%s)-[:%s]-(b:%s) RETURN p.identifier, b.identifier, v.order, v.stoichiometry, r.schemaClass, n.stId'''
     query = query % (direction1, new_relationship, direction2, node_reactome_label, rela_equal_name, node_hetionet_label)
+    print(query)
     results = graph_database.run(query)
     # for id1, id2, order, stoichiometry, in results:
     for regulation_id, node_id, order, stoichiometry, knownAction, stid, in results:
@@ -111,7 +112,7 @@ def main():
         ['regulatedBy', 'FailedReaction_reactome', 'equal_to_reactome_failedreaction', 'FailedReaction', 'IS_REGULATED_BY_RGirbF', '<-', '-'],
         ['regulatedBy', 'BlackBoxEvent_reactome', 'equal_to_reactome_blackBoxEvent', 'BlackBoxEvent', 'IS_REGULATED_BY_RGirbB', '<-', '-'],
         ['regulatedBy', 'Polymerisation_reactome', 'equal_to_reactome_polymerisation', 'Polymerisation', 'IS_REGULATED_BY_RGirbP', '<-', '-'],
-        ['regulator', 'PhysicalEntity_reactome)--(:ReferenceEntity_reactome', 'equal_to_reactome_drug', 'Chemical', 'HAS_REGULATOR_RGirCH', '-', '->'],
+        # ['regulator', 'PhysicalEntity_reactome)--(:ReferenceEntity_reactome', 'equal_to_reactome_drug', 'Chemical', 'HAS_REGULATOR_RGirCH', '-', '->'], do not exists anymore
         ['activeUnit', 'PhysicalEntity_reactome)--(:ReferenceEntity_reactome', 'equal_to_reactome_drug', 'Chemical', 'HAS_ACTIVE_UNIT_RGiauCH', '-', '->'],
         ['goBiologicalProcess', 'GO_BiologicalProcess_reactome', 'equal_to_reactome_gobiolproc', 'BiologicalProcess', 'OCCURS_IN_GO_BIOLOGICAL_PROCESS_RGoigbpB', '-', '->'],
         ['activity', 'GO_MolecularFunction_reactome', 'equal_to_reactome_gomolfunc', 'MolecularFunction', 'HAS_ACTIVITY_RGhaM', '-', '->']
