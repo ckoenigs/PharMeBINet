@@ -71,7 +71,7 @@ def load_reactome_drug_in(label_1, label_2):
     query = '''MATCH (p:%s]-(r:ReferenceEntity_reactome)<-[:interactor]-(n:Interaction_reactome)-[:interactor]->(s:ReferenceEntity_reactome)-[:%s RETURN p.identifier, r.schemaClass, r.variantIdentifier, q.identifier, s.schemaClass, s.variantIdentifier, n.accession;'''
     #query = '''MATCH (p:Protein)-[:equal_to_reactome_uniprot]-(r:ReferenceEntity_reactome)<-[:interactor]-(n:Interaction_reactome)-[:interactor]->(s:ReferenceEntity_reactome)-[:equal_to_reactome_uniprot]-(q:Protein) RETURN r.identifier, r.schemaClass, r.variantIdentifier, s.identifier, s.schemaClass, s.variantIdentifier, n.accession;'''
     query = query % (label_1, label_2)
-    #print(query)
+    print(query)
     results = graph_database.run(query)
     counter_map_with_id = 0
 
@@ -143,22 +143,25 @@ generate connection between mapping interactions of reactome and hetionet and ge
 
 def create_cypher_file(label_1, label_2, csv_mapped_name, csv_not_mapped_name, rela_label):
 
-    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:///C:/Users/Dietrich/PycharmProjects/reactome_projekt/%s" As line FIELDTERMINATOR "\\t" MATCH (d:%s{identifier:line.interactor1_het_id})-[b:%s]->(c:%s{identifier:line.interactor2_het_id}) where ((b.iso_of_protein_from = line.iso_from and not line.iso_from is NULL) or (line.iso_from is NULL and not exists(b.iso_of_protein_from))) and ((b.iso_of_protein_to = line.iso_to and not line.iso_to is NULL) or (line.iso_to is NULL and not exists(b.iso_of_protein_to))) SET b.resource = split(line.resource, '|'), b.reactome = "yes", b.interaction_ids = split(line.interaction_ids_EBI, "|");\n'''
-    query = query % (csv_mapped_name, label_1, rela_label, label_2 )
+    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/reactome/%s" As line FIELDTERMINATOR "\\t" MATCH (d:%s{identifier:line.interactor1_het_id})-[b:%s]->(c:%s{identifier:line.interactor2_het_id}) where ((b.iso_of_protein_from = line.iso_from and not line.iso_from is NULL) or (line.iso_from is NULL and not exists(b.iso_of_protein_from))) and ((b.iso_of_protein_to = line.iso_to and not line.iso_to is NULL) or (line.iso_to is NULL and not exists(b.iso_of_protein_to))) SET b.resource = split(line.resource, '|'), b.reactome = "yes", b.interaction_ids = split(line.interaction_ids_EBI, "|");\n'''
+    query = query % (path_of_directory, csv_mapped_name, label_1, rela_label, label_2 )
     cypher_file.write(query)
     #new interactions
-    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:///C:/Users/Dietrich/PycharmProjects/reactome_projekt/%s" As line FIELDTERMINATOR "\\t" MATCH (d:%s{identifier:line.interactor1_het_id}),(c:%s{identifier:line.interactor2_het_id}) CREATE (d)-[:%s{interaction_ids: split(line.accession, "|"), iso_of_protein_from:line.iso_from, iso_of_protein_to:line.iso_to, resource:["Reactome"], reactome:"yes"}]->(c);\n'''
-    query = query % (csv_not_mapped_name, label_1, label_2, rela_label)
+    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/reactome/%s" As line FIELDTERMINATOR "\\t" MATCH (d:%s{identifier:line.interactor1_het_id}),(c:%s{identifier:line.interactor2_het_id}) CREATE (d)-[:%s{interaction_ids: split(line.accession, "|"), iso_of_protein_from:line.iso_from, iso_of_protein_to:line.iso_to, resource:["Reactome"], reactome:"yes"}]->(c);\n'''
+    query = query % (path_of_directory, csv_not_mapped_name, label_1, label_2, rela_label)
     cypher_file.write(query)
 
-    #cypher_file.write(':begin\n')
-    query = '''MATCH (d:ReferenceEntity_reactome) WHERE NOT  exists(d.reactome) SET d.reactome="no";\n '''
-    cypher_file.write(query)
-    #cypher_file.write(':commit')
 
 
 def main():
     global csv_mapped, csv_not_mapped, cypher_file
+    global path_of_directory, license
+    if len(sys.argv) > 2:
+        path_of_directory = sys.argv[1]
+        license = sys.argv[2]
+    else:
+        sys.exit('need a path and license reactome edge interaction')
+
     cypher_file = open('interactions/cypher.cypher', 'w', encoding="utf-8")
     print(datetime.datetime.utcnow())
     print('Generate connection with neo4j and mysql')
