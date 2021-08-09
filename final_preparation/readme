@@ -1,0 +1,3 @@
+First the external sources are removed from PharMeBINet. The to have a smaller database PharMeBINet is exported as
+graphML and importet into a new Neo4j database with the Neo4j-GraphML-Importer-v1.1.5
+(https://github.com/BioDWH2/Neo4j-GraphML-Importer).
