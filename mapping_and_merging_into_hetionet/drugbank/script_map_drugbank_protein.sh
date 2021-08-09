@@ -6,7 +6,7 @@ path_neo4j=$1
 #path to project
 path_to_project=$2
 
-license='CC BY-NC 4.0'
+license='Attribution-NonCommercial 4.0 International'
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -18,7 +18,7 @@ python3 merging_protein_into_hetionet.py "${license}" $path_to_project > protein
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p test -f protein/cypher_protein.cypher > protein/output_cypher.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f protein/cypher_protein.cypher 
 
 sleep 180
 $path_neo4j/neo4j restart
@@ -34,7 +34,7 @@ python3 integrate_protein_compound_rela.py "${license}" $path_to_project > rela_
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p test -f rela_protein/cypher.cypher > rela_protein/output_cypher.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f rela_protein/cypher.cypher 
 
 sleep 180
 $path_neo4j/neo4j restart

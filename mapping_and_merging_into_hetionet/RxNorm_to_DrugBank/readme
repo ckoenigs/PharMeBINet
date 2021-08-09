@@ -1,21 +1,23 @@
 The idea is from https://think-lab.github.io/d/40/ but it is only the basic idea.
 
-The results of the different programmes are in results
+Version: UNII: Apr 12, 2021
 
-First the file map_rxnorm_to_unii_final.py must be executed, therefore the database RxNorm in MySQL is needed. The User and the password need to be changed. 
-This file load all RxNorm Cui with unii in a file. 
-
-The second file which needs to be executed is unii_to_rxnorm_cui_final.py. This uses the FDA-SRS database (https://fdasis.nlm.nih.gov/srs/srs.jsp) to get
-further RxNorm Cuis and unii pairs.
-
-The third file is combine_rxnorm_and_fda_srs_to_a_rxnorm_unii_inchkey_file.py which combine both files from before and get further inchikey from FDA-SRS for the different UNIIs.
-
-The fourth file is map_rxcui_to_drugbank_with_unii_inchikey_final.py. This uses the InChIKey and UNIIs from DurgBank to map to the RxNorm CUI which are mapped to UNII and InChIKey.
-
-Further, exist a mapping between RxCUI and DrugBank ID with use of the DrugBank names and search for them in the RxNorm database. This is in file map_drugbank_to_rxnorm_with_name_final.py.
-
-All these files can be executed with the script. But at least the DrugBank file must be prepared.
-
+The preparation of mapping table with RxNorm and UNII from mapping between RxNorm Cui to DrugBank.
+First, download the latest version of UNII from FDA-SRS database (https://fdasis.nlm.nih.gov/srs/srs.jsp) and unzip it.
+Then generate the UNII-DrugBank-InChIKey table.
+               Load all DrugBank identifier with UNII and InChIKey entries and wrote into a TSV file.
+Next, load all RxNorm-UNII connections.
+               With the use of RxNorm, the TSV with information between RxCui and UNII is generated.
+Then, another RxNorm-UNII table is generated.
+               The next pairs are extracted from the UNII data and written into another TSV file.
+In the following, the information from the generated tables is combined.
+First, all RxCui-UNII tables are loaded into a dictionary. 
+Next, it extracts the UNII-InChIKey information from UNII data into a dictionary.
+Finally, generate a combined TSV with RxCui-UNII-InChIKey
+The following program generates a mapping table between DrugBank id and RxCui.
+               First, the information from the last tables is loaded into dictionaries.
+               Then, the table with the DrugBank-UNII-InChIKey is loaded and mapped with UNII and InChIKey to the RxCui. The mapping pair is written into a dictionary.
+               In the last step, all RxCuis with the DrugBank ids are written into a new TSV file.
 
 
 

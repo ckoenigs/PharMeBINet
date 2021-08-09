@@ -12,6 +12,9 @@ import sys
 sys.path.append("../..")
 import create_connection_to_databases
 
+sys.path.append("..")
+from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
+
 '''
 create a connection with neo4j
 '''
@@ -40,6 +43,7 @@ dict_pathwayId_to_resource = {}
 
 # Höchste Zahl des Identifiers um neue Identifier zu vergeben (PC_11_...)
 highest_identifier = 0
+
 '''
 load in all pathways from hetionet in a dictionary
 '''
@@ -86,7 +90,7 @@ csv_not_mapped.writerow(['newId', 'id', 'name'])
 
 file_mapped_pathways = open('pathway/mapped_pathways.tsv', 'w', encoding="utf-8")
 csv_mapped = csv.writer(file_mapped_pathways, delimiter='\t', lineterminator='\n')
-csv_mapped.writerow(['id', 'id_hetionet', 'ownId','resource' ,'Pathway_name','Pathway_names' ])
+csv_mapped.writerow(['id', 'id_hetionet', 'ownId', 'resource', 'Pathway_name', 'Pathway_names'])
 
 '''
 load all reactome pathways and check if they are in hetionet or not
@@ -116,12 +120,12 @@ def load_reactome_pathways_in():
             # Liste von idOwns wird nach dem PC_11_Zahl durchsucht und als String aneinandergehängt (join)
             # als Trennungssymbol wird | genutzt
             own_ids = dict_pathway_hetionet_xrefs[hetionet_identifier]
-            string_own_ids = '|'.join(own_ids)
-            resource = dict_pathwayId_to_resource[hetionet_identifier]
-            resource.append('Reactome')
-            resource = list(set(resource))
-            resource = '|'.join(resource)
-            csv_mapped.writerow([pathways_id, hetionet_identifier, string_own_ids, pathways_name, resource])
+            own_ids.append('reactome:'+pathways_id)
+            string_own_ids = '|'.join(go_through_xrefs_and_change_if_needed_source_name(own_ids,'pathway'))
+            resource = set(dict_pathwayId_to_resource[hetionet_identifier])
+            resource.add('Reactome')
+            resource = '|'.join(sorted(resource))
+            csv_mapped.writerow([pathways_id, hetionet_identifier, string_own_ids, resource, pathways_name])
 
         # mapping nach dem Namen
         elif pathways_name in dict_pathway_hetionet_names:
@@ -133,11 +137,11 @@ def load_reactome_pathways_in():
 
             hetionet_identifier = dict_pathway_hetionet_names[pathways_name]
             own_ids = dict_pathway_hetionet_xrefs[hetionet_identifier]
-            string_own_ids = '|'.join(own_ids)
-            resource = dict_pathwayId_to_resource[hetionet_identifier]
-            resource.append('Reactome')
-            resource = list(set(resource))
-            resource = '|'.join(resource)
+            own_ids.append('reactome:'+pathways_id)
+            string_own_ids = '|'.join(go_through_xrefs_and_change_if_needed_source_name(own_ids,'pathway'))
+            resource = set(dict_pathwayId_to_resource[hetionet_identifier])
+            resource.add('Reactome')
+            resource = '|'.join(sorted(resource))
             pathway_names = dict_pathway_hetionet[dict_pathway_hetionet_names[pathways_name]]
             csv_mapped.writerow(
                 [pathways_id, hetionet_identifier, string_own_ids, resource, pathways_name, pathway_names])
@@ -147,7 +151,7 @@ def load_reactome_pathways_in():
         else:
             highest_identifier += 1
             new_identifier = "PC12_" + str(highest_identifier)
-            csv_not_mapped.writerow([new_identifier,pathways_id, pathways_name])  # new_identifier, pathways_id,
+            csv_not_mapped.writerow([new_identifier, pathways_id, pathways_name])  # new_identifier, pathways_id,
 
     print('number of mapping with name:' + str(counter_map_with_name))
     print('number of mapping with id:' + str(counter_map_with_id))
@@ -159,21 +163,21 @@ generate connection between mapping pathways of reactome and hetionet and genera
 
 
 def create_cypher_file():
-    cypher_file = open('pathway/cypher.cypher', 'w', encoding="utf-8")
+    cypher_file = open('output/cypher.cypher', 'w', encoding="utf-8")
     # mappt die Knoten, die es in hetionet und reactome gibt und fügt die properties hinzu
-    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/reactome/pathway/mapped_pathways.tsv" As line FIELDTERMINATOR "\\t" MATCH (d:Pathway{identifier:line.id_hetionet}),(c:Pathway_reactome{stId:line.id}) CREATE (d)-[: equal_to_reactome_pathway]->(c) SET d.resource = split(line.resource, '|'), d.reactome = "yes", d.name = c.displayName, d.synonyme = c.name, d.alternativeId = c.oldStId, d.books = c.books, d.pubMed = c.pubMed, d.figure_urls = c.figure_urls, d.publication_url = c.publication_url, d.doi = c.doi, d.definition = c.definition, d.xrefs = split(line.ownId,"|");\n'''
+    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/reactome/pathway/mapped_pathways.tsv" As line FIELDTERMINATOR "\\t" MATCH (d:Pathway{identifier:line.id_hetionet}),(c:Pathway_reactome{stId:line.id}) CREATE (d)-[: equal_to_reactome_pathway]->(c) SET d.resource = split(line.resource, '|'), d.reactome = "yes", d.name = c.displayName, d.synonyms = apoc.convert.fromJsonList(c.name), d.alternative_id = c.oldStId, d.books = c.books, d.pubMed_ids = c.pubMed_ids, d.figure_urls = c.figure_urls, d.publication_urls = c.publication_urls, d.doi = c.doi, d.definition = c.definition, d.xrefs = split(line.ownId,"|");\n'''
     query = query % (path_of_directory)
     cypher_file.write(query)
 
     # Neue Knoten werden erzeugt, von denen die nicht mappen
-    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/reactome/pathway/not_mapped_pathways.tsv" As line FIELDTERMINATOR "\\t" MATCH (c:Pathway_reactome{stId:line.id}) CREATE (d:Pathway{identifier:line.newId, resource:['Reactome'], reactome:"yes", name:c.displayName, synonyme:c.name, xrefs:["reactome:"+c.stId],  alternativeId:c.oldStId, books:c.books, pubMed:c.pubMed, figure_urls:c.figure_urls, publication_url:c.publication_url, doi:c.doi, definition:c.definition, source:"Reactome"}) CREATE (d)-[: equal_to_reactome_pathway]->(c) ;\n'''
+    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/reactome/pathway/not_mapped_pathways.tsv" As line FIELDTERMINATOR "\\t" MATCH (c:Pathway_reactome{stId:line.id}) CREATE (d:Pathway{identifier:line.newId, resource:['Reactome'], reactome:"yes", name:c.displayName, synonyms:apoc.convert.fromJsonList(c.name), xrefs:["reactome:"+c.stId],  alternative_id:c.oldStId, books:c.books, pubMed_ids:c.pubMed_ids, figure_urls:c.figure_urls, publication_urls:c.publication_urls, doi:c.doi, definition:c.definition, source:"Reactome", url:"https://reactome.org/content/detail/"+line.id}) CREATE (d)-[: equal_to_reactome_pathway]->(c) ;\n'''
     query = query % (path_of_directory)
     cypher_file.write(query)
 
-    cypher_file.write(':begin\n')
-    query = '''MATCH (d:Pathway_reactome) WHERE NOT  exists(d.reactome) SET d.reactome="no";\n '''
-    cypher_file.write(query)
-    cypher_file.write(':commit')
+    # cypher_file.write(':begin\n')
+    # query = '''MATCH (d:Pathway_reactome) WHERE NOT  exists(d.reactome) SET d.reactome="no";\n '''
+    # cypher_file.write(query)
+    # cypher_file.write(':commit\n')
 
 
 def main():
@@ -183,7 +187,7 @@ def main():
     else:
         sys.exit('need a path reactome protein')
 
-    print (datetime.datetime.utcnow())
+    print(datetime.datetime.utcnow())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j()

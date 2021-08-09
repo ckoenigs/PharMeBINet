@@ -34,8 +34,8 @@ also generate a cypher file to integrate this information
 
 def take_all_relationships_of_gene_pathway():
     # generate cypher file
-    cypherfile = open('gene_pathway/cypher.cypher', 'w')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ctd/gene_pathway/relationships.csv" As line Match (n:Gene{identifier:line.GeneID}), (b:Pathway{identifier:line.PathwayID}) Merge (n)-[r:PARTICIPATES_GpPW]->(b) On Create Set r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.source="CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased=false, r.resource=["CTD"] On Match SET r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.resource=r.resource+"CTD";\n '''
+    cypherfile = open('output/cypher_edge.cypher', 'w',encoding='utf-8')
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ctd/gene_pathway/relationships.csv" As line Match (n:Gene{identifier:line.GeneID}), (b:Pathway{identifier:line.PathwayID}) Merge (n)-[r:PARTICIPATES_GpPW]->(b) On Create Set r.ctd='yes', r.url="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.source="CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2021 NC State University. All rights reserved.", r.unbiased=false, r.resource=["CTD"] On Match SET r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.resource=r.resource+"CTD";\n '''
     cypherfile.write(query)
     cypherfile.close()
 
@@ -50,7 +50,7 @@ def take_all_relationships_of_gene_pathway():
     writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     writer.writerow(['GeneID', 'PathwayID'])
 
-    query = '''MATCH (gene:CTDgene)-[r:participates_GP]->(pathway:CTDpathway) Where ()-[:equal_to_CTD_gene]->(gene)  RETURN gene.gene_id, r, pathway.hetionet_id'''
+    query = '''MATCH (gene:CTD_gene)-[r:participates_GP]->(pathway:CTD_pathway) Where ()-[:equal_to_CTD_gene]->(gene)  RETURN gene.gene_id, r, pathway.hetionet_id'''
     results = g.run(query)
     count_multiple_pathways = 0
     count_possible_relas = 0

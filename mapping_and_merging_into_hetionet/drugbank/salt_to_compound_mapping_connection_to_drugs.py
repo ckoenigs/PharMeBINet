@@ -65,7 +65,7 @@ Create cypher and csv files for nodes and relationships
 
 def create_cypher_and_csv_files():
     # open cypher file
-    cypher_file = open('salts/cypher_salt.cypher', 'w')
+    cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
     # get properties of salt nodes
     query = '''MATCH (p:%s) WITH DISTINCT keys(p) AS keys UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields RETURN allfields;'''
     query = query % (label_of_salt)
@@ -81,18 +81,20 @@ def create_cypher_and_csv_files():
     query = query % (license)
 
     cypher_file.write(query)
+    cypher_file.close()
     node_file = open('salts/' + file_node + '.csv', 'w')
     rela_file = open('salts/' + file_rela + '.csv', 'w')
     global csv_node, csv_rela
     csv_node = csv.DictWriter(node_file, fieldnames=header, delimiter='\t')
     csv_node.writeheader()
+    cypher_rela = open('output/cypher_rela.cypher', 'a', encoding='utf-8')
     rela_header = ['salt_id', 'compound_id']
-    query_rela = query_start + ' (b:Compound :Salt{identifier:line.salt_id}), (a:Compound {identifier:line.compound_id}) Create (a)-[r:PART_OF_CpS{license:"%s", source:"DrugBank", resource:["DrugBank"], drugbank:"yes" }]->(b);\n'
+    query_rela = query_start + ' (b:Compound :Salt{identifier:line.salt_id}), (a:Compound {identifier:line.compound_id}) Create (a)-[r:PART_OF_CpSA{license:"%s", url:"https://go.drugbank.com/drugs/"+line.compound_id, source:"DrugBank", resource:["DrugBank"], drugbank:"yes" }]->(b);\n'
     query_rela = query_rela % (file_rela, license)
-    cypher_file.write(query_rela)
+    cypher_rela.write(query_rela)
+    cypher_rela.close()
     csv_rela = csv.writer(rela_file, delimiter='\t')
     csv_rela.writerow(rela_header)
-    cypher_file.close()
 
     # delete compound nodes which are whether drugbank compound nor salt
     # this must be the last step of the compound integration, because else the merge nodes are also removed and this would be a problem
@@ -104,10 +106,13 @@ def create_cypher_and_csv_files():
 
 # bash shell for merge doids into the mondo nodes
 bash_shell = open('merge_nodes_salt.sh', 'w')
-bash_shell.write('#!/bin/bash\n')
+bash_start='''#!/bin/bash
+#define path to neo4j bin
+path_neo4j=$1\n\n'''
+bash_shell.write(bash_start)
 
 # the new table for unii drugbank pairs
-unii_drugbank_table_file = open('data/map_unii_to_drugbank_id.tsv', 'w')
+unii_drugbank_table_file = open('data/map_unii_to_drugbank_id.tsv', 'a')
 csv_unii_drugbank_table = csv.writer(unii_drugbank_table_file, delimiter='\t')
 
 '''
@@ -120,8 +125,10 @@ def add_merge_to_sh_file(dict_not_mapped, mapped_value, node_id):
     print(compound)
     compound_id = compound['identifier']
     # if it mapped to a not mapped compound
-    text = 'python3 ../add_information_from_a_not_existing_node_to_existing_node.py %s %s %s\n' % (
+    text = 'python3 ../add_info_from_removed_node_to_other_node.py %s %s %s\n' % (
         compound_id, node_id, 'Compound')
+    bash_shell.write(text)
+    text = '$path_neo4j/cypher-shell -u neo4j -p test -f cypher_merge.cypher \n\n'
     bash_shell.write(text)
     text = '''now=$(date +"%F %T")\n echo "Current time: $now"\n'''
     bash_shell.write(text)

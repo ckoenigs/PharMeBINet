@@ -914,7 +914,7 @@ def integrate_symptoms_into_hetionet():
         if first_entry == None:
             url = 'http://identifiers.org/umls/' + symptom_cui
             query = '''
-            Create (s:Symptom{identifier:"%s",type:'cui',license:'UMLS licence', name:"%s", resource:['UMLS'], source:'UMLS', url:"%s", hetionet:'no', do:'no', hpo:'no', umls:'yes'});     '''
+            Create (s:Symptom{identifier:"%s",type:'cui',license:'UMLS license', name:"%s", resource:['UMLS'], source:'UMLS', url:"%s", hetionet:'no', do:'no', hpo:'no', umls:'yes'});     '''
             query = query % (symptom_cui, name, url)
             counter_new_symptoms += 1
         else:

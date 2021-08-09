@@ -16,20 +16,23 @@ def create_connection_with_neo4j():
     global g
     g = create_connection_to_databases.database_connection_neo4j()
 
+
 # dict rs id to identifier
-dict_rs_to_ids={}
+dict_rs_to_ids = {}
 
 # dictionary name to ids
-dict_name_to_id={}
+dict_name_to_id = {}
 
-def integrate_information_into_dict(dict_node_id_to_resource, label):
+
+def integrate_information_into_dict(dict_node_id_to_resource):
     """
     get all node ids from the database
     :return:
     """
     query = '''MATCH (n:Variant) RETURN n.identifier, n.name, n.synonyms, n.xrefs, n.resource'''
-    query = query % (label)
     results = g.run(query)
+
+    print(datetime.datetime.utcnow())
 
     for identifier, name, synonyms, xrefs, resource, in results:
         dict_node_id_to_resource[identifier] = resource
@@ -54,7 +57,7 @@ def integrate_information_into_dict(dict_node_id_to_resource, label):
                         dict_rs_to_ids[dbSNP_ID] = set()
                     dict_rs_to_ids[dbSNP_ID].add(identifier)
 
-    print('number of', label, 'in database', len(dict_node_id_to_resource))
+    print('number of Variant in database', len(dict_node_id_to_resource))
 
 
 def prepare_query(file_name, db_label, adrecs_label):
@@ -63,7 +66,8 @@ def prepare_query(file_name, db_label, adrecs_label):
     query = query % (director, file_name, db_label, adrecs_label)
     cypher_file.write(query)
 
-def add_to_file(dict_node_id_to_resource, identifier_db, identifier_act_id,csv_mapping):
+
+def add_to_file(dict_node_id_to_resource, identifier_db, identifier_act_id, csv_mapping):
     """
     add resource and write mapping pair in csv file
     :param dict_node_id_to_resource: dictionary
@@ -77,7 +81,8 @@ def add_to_file(dict_node_id_to_resource, identifier_db, identifier_act_id,csv_m
     resource = sorted(resource)
     csv_mapping.writerow([identifier_db, identifier_act_id, '|'.join(resource)])
 
-def get_all_adrecs_target_and_map(db_label,  dict_node_id_to_resource):
+
+def get_all_adrecs_target_and_map(db_label, dict_node_id_to_resource):
     """
     prepare files and write information into files
     :return:
@@ -89,30 +94,34 @@ def get_all_adrecs_target_and_map(db_label,  dict_node_id_to_resource):
     csv_mapping = csv.writer(mapping_file, delimiter='\t')
     csv_mapping.writerow(['variant_id', 'adr_variant_id', 'resource'])
 
-    prepare_query(file_name, db_label, 'variant_ADReCS_Target')
+    prepare_query(file_name, db_label, 'variant_ADReCSTarget')
 
     # get data
-    query = '''MATCH (n:variant_ADReCS_Target) RETURN n'''
+    query = '''MATCH (n:variant_ADReCSTarget) RETURN n'''
     results = g.run(query)
 
     # counter mapping
-    counter_mapping=0
+    counter_mapping = 0
+    # counter not mapped
+    counter_not_mapped = 0
     for node, in results:
-        #rs or a name
+        # rs or a name
         identifier = node['Variation_ID'].lower()
         if identifier in dict_rs_to_ids:
-            counter_mapping+=1
+            counter_mapping += 1
             for variant_id in dict_rs_to_ids[identifier]:
-                add_to_file(dict_node_id_to_resource,variant_id,node['Variation_ID'],csv_mapping)
-        elif identifier  in dict_name_to_id:
-            counter_mapping+=1
+                add_to_file(dict_node_id_to_resource, variant_id, node['Variation_ID'], csv_mapping)
+        elif identifier in dict_name_to_id:
+            counter_mapping += 1
             for variant_id in dict_name_to_id[identifier]:
                 add_to_file(dict_node_id_to_resource, variant_id, node['Variation_ID'], csv_mapping)
 
         else:
+            counter_not_mapped += 1
             print(' not in database :O')
             print(identifier)
-    print('mapped:',counter_mapping)
+    print('mapped:', counter_mapping)
+    print('not mapped', counter_not_mapped)
 
 
 def main():
@@ -137,14 +146,13 @@ def main():
     print(datetime.datetime.utcnow())
     print('prepare for each label the files')
 
-
     # dict node id to resource
     dict_node_id_to_resource = {}
 
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
-    print('get all genes from database')
+    print('get all variant from database')
 
     integrate_information_into_dict(dict_node_id_to_resource)
 
@@ -153,7 +161,7 @@ def main():
     print(datetime.datetime.utcnow())
     print('prepare file and write information of mapping in it')
 
-    get_all_adrecs_target_and_map('Variant',dict_node_id_to_resource)
+    get_all_adrecs_target_and_map('Variant', dict_node_id_to_resource)
 
     print('##########################################################################')
 

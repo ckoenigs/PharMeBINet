@@ -2,7 +2,10 @@
 import csv
 import datetime
 import sys
+import glob
 from collections import defaultdict
+
+from setuptools._distutils.command.check import check
 
 sys.path.append("../..")
 import create_connection_to_databases
@@ -19,84 +22,139 @@ def create_connection_with_neo4j():
 
 
 # generate cypher file
-cypherfile = open('chemical_gene/cypher.cypher', 'w', encoding='utf-8')
+cypherfile = open('output/cypher_edge.cypher', 'a', encoding='utf-8')
 
-# dictionary with rela name to drug-gene/protein pair
-dict_rela_to_drug_gene_protein_pair = {}
-
-# dictionary from file name to rela name in neo4j
-dict_file_name_to_rela_name = {
-    'upregulated_chemical_gene': 'UPREGULATES_CuG',
-    'upregulated_gene_chemical': 'UPREGULATES_GuC',
-    'upregulated_chemical_protein': 'UPREGULATES_CuPR',
-    'upregulated_protein_chemical': 'UPREGULATES_PRuC',
-    'downregulated_chemical_gene': 'DOWNREGULATES_CdG',
-    'downregulated_gene_chemical': 'DOWNREGULATES_GdC',
-    'downregulated_chemical_protein': 'DOWNREGULATES_CdPR',
-    'downregulated_protein_chemical': 'DOWNREGULATES_PRdC',
-    'association_chemical_gene': 'ASSOCIATES_CaG',
-    'association_gene_chemical': 'ASSOCIATES_CaG',
-    'association_chemical_protein': 'ASSOCIATES_CaPR',
-    'association_protein_chemical': 'ASSOCIATES_CaPR',
-    'binding_chemical_gene': 'BINDS_CbG',
-    'binding_gene_chemical': 'BINDS_GbC',
-    'binding_chemical_protein': 'BINDS_CbPR',
-    'binding_protein_chemical': 'BINDS_PRbC',
-    'metabolic_processing_chemical_gene': 'METABOLIC_PROCESSES_REGULATION_CmpG',
-    'metabolic_processing_gene_chemical': 'METABOLIC_PROCESSES_REGULATION_GmpC',
-    'metabolic_processing_chemical_protein': 'METABOLIC_PROCESSES_REGULATION_CmpPR',
-    'metabolic_processing_protein_chemical': 'METABOLIC_PROCESSES_REGULATION_PRmpC',
-    'transport_out_chemical_gene': 'TRANSPORTS_OUT_OF_CELL_REGULATION_CtoG',
-    'transport_out_gene_chemical': 'TRANSPORTS_OUT_OF_CELL_REGULATION_GtoC',
-    'transport_out_chemical_protein': 'TRANSPORTS_OUT_OF_CELL_REGULATION_CtoPR',
-    'transport_out_protein_chemical': 'TRANSPORTS_OUT_OF_CELL_REGULATION_PRtoC',
-    'transport_in_chemical_gene': 'TRANSPORTS_INTO_CELL_REGULATION_CtiG',
-    'transport_in_gene_chemical': 'TRANSPORTS_INTO_CELL_REGULATION_GtiC',
-    'transport_in_chemical_protein': 'TRANSPORTS_INTO_CELL_REGULATION_CtiPR',
-    'transport_in_protein_chemical': 'TRANSPORTS_INTO_CELL_REGULATION_PRtiC',
-    'transport_chemical_gene': 'TRANSPORTS_REGULATION_CtG',
-    'transport_gene_chemical': 'TRANSPORTS_REGULATION_GtC',
-    'transport_chemical_protein': 'TRANSPORTS_REGULATION_CtPR',
-    'transport_protein_chemical': 'TRANSPORTS_REGULATION_PRtC'
-}
+# the name of the entities in the rela and dictionary
+chemical = 'chemical'
+gene = 'gene'
+protein = 'protein'
 
 # dictionary from interaction type and value to rela name
 dict_interaction_type_and_value_to_rela_name = {
     ('activity', 'increases'): 'upregulated',
     ('expression', 'increases'): 'upregulated',
-    ('degradation', 'decreases'): 'upregulated',
+    # ('degradation', 'decreases'): 'upregulated',
     ('activity', 'decreases'): 'downregulated',
     ('expression', 'decreases'): 'downregulated',
-    ('degradation', 'increases'): 'downregulated',
-    ('binds', ''): 'binding',
-    ('secretion', ''): 'transport_out',
-    ('export', ''): 'transport_out',
-    ('import', ''): 'transport_in',
-    ('uptake', ''): 'transport_in',
-    ('transport', ''): 'transport',
-    ('metabolism', ''): 'metabolic_processing'
+    # ('degradation', 'increases'): 'downregulated',
 }
 
-# list of all important relationship actions
-list_important_regulation = ['activity', 'expression', 'degradation']
-list_important_transport = ['transport', 'secretion', 'export', 'uptake', 'import']
-# one is add manual, because metabolic processing is named metabolism in the interaction_texts
-list_metabolic_processing = ['metabolism']
+# dictionary specific action cases get addional label for the group
+dict_specific_cases = {}
+
+# specific considered actions
+list_of_specific_action = ['activity', 'expression']
 
 # dictionary from activity name to interaction text name
-dict_metabolic_activate_name = {
-    'metabolic processing': 'metabolism'
+dict_activate_name_text_action_name = {
+    'metabolic processing': 'metabolism',
+    'cotreatment': 'co-treated',
+    'ethylation': ['methylation', 'ethylation'],
+    'response to substance': 'susceptibility',
+    'binding':'binds'
+
 }
 
-file = open('chemical_gene/metabolic_processing_action.csv', 'r', encoding='utf-8')
-for line in file:
-    list_metabolic_processing.append(line.split(',')[0])
-    dict_interaction_type_and_value_to_rela_name[(line.split(',')[0], '')] = 'metabolic_processing'
+# grouped actions to rela name
+dict_file_action_group_to_edge_name = {
+    'chemical_gene/action_to_rela/metabolic_processing_action.csv': 'metabolic_processing',
+    'chemical_gene/action_to_rela/degradation.csv': 'degeneration',
+    'chemical_gene/action_to_rela/general.csv': 'association',
+    'chemical_gene/action_to_rela/cellular_level.csv': 'cellular_actions',
+    'chemical_gene/action_to_rela/binding.csv': 'binding',
+    'chemical_gene/action_to_rela/protein_level.csv': 'protein_actions',
+    'chemical_gene/action_to_rela/DNA_level.csv': 'actions_on_DNA'
+}
 
-columns = ['ChemicalID', 'GeneID', 'interaction_text', 'gene_forms', 'pubMedIds', 'interactions_actions', 'unbiased']
+# rela TSV header
+columns = ['ChemicalID', 'GeneID', 'interaction_text', 'gene_forms', 'pubMed_ids', 'interactions_actions', 'unbiased']
 
-list_of_rela_names = ['upregulated', 'downregulated', 'association', 'binding', 'metabolic_processing', 'transport_out',
-                      'transport_in', 'transport']
+# list of rela names
+set_of_rela_names = set(['upregulated', 'downregulated'])
+
+# list_of_actions
+list_of_actions = ['decreases', 'increases', 'affects']
+
+# rela from ctd to rela in database
+dict_xtd_rela_to_database_rela_name = {
+    'upregulated': 'UPREGULATES',
+    'downregulated': 'DOWNREGULATES',
+    'association': 'ASSOCIATES',
+    'binding': 'BINDS',
+    'metabolic_processing': 'IS_ACTIVE_IN_METABOLISM',
+    'cellular_actions': 'IS_ACTIVE_ON_CELLULAR_LEVEL',
+    'protein_actions': 'IS_ACTIVE_ON_POLYPEPTIDE_LEVEL',
+    'actions_on_DNA': 'IS_ACTIVE_ON_DNA_OR_RNA_LEVEL'
+}
+
+# prepare the action type to rela name
+files = glob.glob("chemical_gene/action_to_rela/*.csv")
+for file in files:
+    if file in dict_file_action_group_to_edge_name:
+        rela_name = dict_file_action_group_to_edge_name[file]
+        open_file = open(file, 'r')
+        csv_reader = csv.reader(open_file)
+        for line in csv_reader:
+            action_type = line[0]
+            if 'degeneration' == rela_name:
+                list_of_specific_action.append(action_type)
+                for verb_action in list_of_actions:
+                    set_of_rela_names.add(verb_action + '_' + rela_name)
+                    dict_interaction_type_and_value_to_rela_name[
+                        (action_type, verb_action)] = verb_action + '_' + rela_name
+                    dict_xtd_rela_to_database_rela_name[
+                        verb_action + '_' + rela_name] = verb_action.upper() + '_' + rela_name.upper()
+            else:
+                if action_type not in list_of_specific_action:
+                    if action_type in dict_activate_name_text_action_name:
+                        action_type=dict_activate_name_text_action_name[action_type]
+                    if type(action_type)==str:
+                        dict_interaction_type_and_value_to_rela_name[(action_type, '')] = rela_name
+                        set_of_rela_names.add(rela_name)
+                    else:
+                        for action in action_type:
+                            dict_interaction_type_and_value_to_rela_name[(action, '')] = rela_name
+                            set_of_rela_names.add(rela_name)
+                else:
+                    dict_specific_cases[action_type] = rela_name
+                    for verb_action in list_of_actions:
+                        if not (action_type, verb_action) in dict_interaction_type_and_value_to_rela_name:
+                            dict_interaction_type_and_value_to_rela_name[(action_type, verb_action)] = rela_name
+                            set_of_rela_names.add(rela_name)
+    else:
+        sys.exit('file ' + file + ' has no rela!')
+
+# dictionary with rela name to drug-gene/protein pair
+dict_rela_to_drug_gene_protein_pair = {}
+
+# dictionary from file name to rela name in neo4j
+dict_file_name_to_rela_name = {}
+
+
+def prepare_rela_small(rela, label1, label2):
+    return rela + '_' + label1 + '_' + label2
+
+
+def prepare_rela_great(rela, label1, label2):
+    if label1=='chemical':
+        letter_1='CH'
+        letter_2=label2.upper()[0]
+    else:
+        letter_1=label1.upper()[0]
+        letter_2='CH'
+    return rela + '_' + letter_1+ ''.join([x.lower()[0] for x in rela.split('_')]) + letter_2
+
+
+for label_gene_or_protein in [gene, protein]:
+    for small_rela, greate_rela in dict_xtd_rela_to_database_rela_name.items():
+        dict_file_name_to_rela_name[
+            prepare_rela_small(small_rela, chemical, label_gene_or_protein)] = prepare_rela_great(greate_rela,
+                                                                                                  chemical,
+                                                                                                  label_gene_or_protein)
+        dict_file_name_to_rela_name[
+            prepare_rela_small(small_rela, label_gene_or_protein, chemical)] = prepare_rela_great(greate_rela,
+                                                                                                  label_gene_or_protein,
+                                                                                                  chemical)
 
 dict_rela_to_file = {}
 
@@ -145,14 +203,14 @@ def path_to_rela_and_add_to_dict(rela, first, second):
         query_to_check_if_this_rela_exist_in_hetionet += '<-[r:%s]-' + part + ' Return p Limit 1'
 
     query_to_check_if_this_rela_exist_in_hetionet = query_to_check_if_this_rela_exist_in_hetionet % (
-    dict_file_name_to_rela_name[rela_full])
+        dict_file_name_to_rela_name[rela_full])
     results = g.run(query_to_check_if_this_rela_exist_in_hetionet)
     result = results.evaluate()
     # if this relationship exists currently only merge is used maybe I will change this to match and create
     # however, for the relationships which already exists in the general file new queries are added to say which are not in ctd
     if result:
 
-        query_last_part = ''' On Create Set r.hetionet='no', r.ctd='yes', r.urls_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.resource=["CTD"], r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased=toBoolean(line.unbiased), r.interaction_text=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|') On Match SET r.ctd='yes', r.urls_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.resource=["CTD","Hetionet"], r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", r.unbiased=toBoolean(line.unbiased), r.interaction_text=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=r.pubmed_ids+split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|');\n '''
+        query_last_part = ''' On Create Set r.hetionet='no', r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.resource=["CTD"], r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2021 NC State University. All rights reserved.", r.unbiased=toBoolean(line.unbiased), r.interaction_texts=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubMed_ids=split(line.pubMed_ids,'|'), r.interactions_actions=split(line.interactions_actions,'|') On Match SET r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.resource=["CTD","Hetionet"], r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2021 NC State University. All rights reserved.", r.unbiased=toBoolean(line.unbiased), r.interaction_texts=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubmed_ids=r.pubmed_ids+split(line.pubMedIds,'|'), r.interactions_actions=split(line.interactions_actions,'|');\n '''
         query = query_first_part + query_middle_1 + query_middle_2 + query_last_part
 
         query_for_update_not_used_relationships = query_to_check_if_this_rela_exist_in_hetionet.split('Return')[
@@ -166,7 +224,7 @@ def path_to_rela_and_add_to_dict(rela, first, second):
 
         query_middle_2_parts = query_middle_2.split(']')
 
-        query_last_part = '''{hetionet:'no', ctd:'yes', urls_ctd:"http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID ,source:"CTD", resource:["CTD"], license:"© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved.", unbiased:toBoolean(line.unbiased), interaction_text:split(line.interaction_text,'|'), gene_forms:split(line.gene_forms,'|'), pubmed_ids:split(line.pubMedIds,'|'), interactions_actions:split(line.interactions_actions,'|')}]'''
+        query_last_part = '''{hetionet:'no', ctd:'yes', url_ctd:"http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID ,source:"CTD", resource:["CTD"], license:"© 2002–2012 MDI Biological Laboratory. © 2012–2021 NC State University. All rights reserved.", unbiased:toBoolean(line.unbiased), interaction_texts:split(line.interaction_text,'|'), gene_forms:split(line.gene_forms,'|'), pubMed_ids:split(line.pubMed_ids,'|'), interactions_actions:split(line.interactions_actions,'|')}]'''
         query = query_first_part + query_middle_1 + query_middle_2_parts[0].replace('Merge',
                                                                                     'Create') + query_last_part + \
                 query_middle_2_parts[1] + ';\n'
@@ -175,18 +233,13 @@ def path_to_rela_and_add_to_dict(rela, first, second):
     cypherfile.write(query)
 
 
-# the name of the entities in the rela and dictionary
-chemical = 'chemical'
-gene = 'gene'
-protein = 'protein'
-
 '''
 generate dictionary for every possible rela combination
 '''
 
 
 def generate_csv_file_for_different_rela_types():
-    for rela in list_of_rela_names:
+    for rela in set_of_rela_names:
         path_to_rela_and_add_to_dict(rela, chemical, gene)
         path_to_rela_and_add_to_dict(rela, gene, chemical)
         path_to_rela_and_add_to_dict(rela, chemical, protein)
@@ -358,14 +411,14 @@ def take_all_relationships_of_gene_chemical():
     counter_all_rela = 0
 
     #  Where chemical.chemical_id='D000117' and gene.gene_id='2219'; Where chemical.chemical_id='C057693' and gene.gene_id='4128' Where chemical.chemical_id='D001564' and gene.gene_id='9429'  Where chemical.chemical_id='D004976' and gene.gene_id='2950' Where chemical.chemical_id='D015741' and gene.gene_id='367'
-    query = '''MATCH (chemical:CTDchemical)-[r:associates_CG{organism_id:'9606'}]->(gene:CTDgene) Where (gene)-[:equal_to_CTD_gene]-(:Gene) RETURN gene.gene_id, gene.name, gene.geneSymbol, r, chemical.chemical_id, chemical.name, chemical.synonyms, chemical.drugBankIDs'''
+    query = '''MATCH (chemical:CTD_chemical)-[r:associates_CG{organism_id:'9606'}]->(gene:CTD_gene) Where (gene)-[:equal_to_CTD_gene]-(:Gene) RETURN gene.gene_id, gene.name, gene.geneSymbol, r, chemical.chemical_id, chemical.name, chemical.synonyms, chemical.drugBankIDs'''
     results = g.run(query)
 
     for gene_id, gene_name, gene_symbol, rela, chemical_id, chemical_name, chemical_synonyms, drugbank_ids, in results:
         counter_all_rela += 1
         interaction_text = rela['interaction_text'] if 'interaction_text' in rela else ''
         gene_forms = rela['gene_forms'] if 'gene_forms' in rela else []
-        pubMedIds = rela['pubMedIds'] if 'pubMedIds' in rela else []
+        pubMedIds = rela['pubMed_ids'] if 'pubMed_ids' in rela else []
         interactions_actions = rela['interactions_actions'] if 'interactions_actions' in rela else []
         drugbank_ids = drugbank_ids if not drugbank_ids is None else []
 
@@ -396,29 +449,44 @@ def take_all_relationships_of_gene_chemical():
         # dictionary for word which appears in the interaction text with the value like increase/decrease
         dict_interaction_word_to_value = {}
 
+        # prepare the dictionary of action words that can appear in a interact_text part
         for interaction in interactions_actions:
             splitter = interaction.split('^')
-            if splitter[1] in list_important_regulation:
-                if splitter[1] not in dict_interaction_word_to_value:
-                    dict_interaction_word_to_value[splitter[1]] = [splitter[0]]
+            action_type = splitter[1]
+            if action_type in list_of_specific_action:
+                if action_type not in dict_interaction_word_to_value:
+                    dict_interaction_word_to_value[action_type] = [splitter[0]]
                 else:
-                    dict_interaction_word_to_value[splitter[1]].append(splitter[0])
+                    dict_interaction_word_to_value[action_type].append(splitter[0])
                 # print(interactions_actions)
-            elif splitter[1] == 'binding':
-                if 'binds' not in dict_interaction_word_to_value:
-                    dict_interaction_word_to_value['binds'] = ['']
+            elif (action_type, '') in dict_interaction_type_and_value_to_rela_name:
 
-            elif splitter[1] in list_important_transport:
-                if splitter[1] not in dict_interaction_word_to_value:
-                    dict_interaction_word_to_value[splitter[1]] = ['']
+                if len(action_type.split(' ')) > 1:
+                    action_type = action_type.split(' ')[0]
 
-            elif splitter[1] in list_metabolic_processing:
-                if splitter[1] in dict_metabolic_activate_name:
-                    splitter[1] = dict_metabolic_activate_name[splitter[1]]
-                if splitter[1] not in dict_interaction_word_to_value:
-                    if len(splitter[1].split(' ')) > 1:
-                        splitter[1] = splitter[1].split(' ')[0]
-                    dict_interaction_word_to_value[splitter[1]] = ['']
+                if action_type not in dict_interaction_word_to_value:
+                    dict_interaction_word_to_value[action_type] = ['']
+            elif action_type in dict_activate_name_text_action_name:
+                    if type(dict_activate_name_text_action_name[action_type]) == str:
+                        action_type = dict_activate_name_text_action_name[action_type]
+                    else:
+                        counter = 0
+                        last = len(dict_activate_name_text_action_name[action_type]) - 1
+                        for part in dict_activate_name_text_action_name[action_type]:
+                            if counter == last:
+                                action_type = part
+                            else:
+                                if (part,'') in dict_interaction_type_and_value_to_rela_name:
+                                    if part not in dict_interaction_word_to_value:
+                                        dict_interaction_word_to_value[part] = ['']
+                                else:
+                                    sys.exit(part+'is not in rela')
+                            counter += 1
+                    if (action_type,'') in dict_interaction_type_and_value_to_rela_name:
+                        if action_type not in dict_interaction_word_to_value:
+                            dict_interaction_word_to_value[action_type] = ['']
+            else:
+                sys.exit('the interaction '+action_type+' has no rela')
 
         # if no other rela type is found then the pair are add to association
         found_a_interaction_type = False
@@ -539,7 +607,7 @@ def fill_the_csv_files():
             gene_forms = list_of_information[1]
             shortest_gene_forms = [gene_forms[x] for x in indices]
             shortest_gene_forms = [';'.join(x) for x in shortest_gene_forms]
-            shortest_gene_forms = '|'.join(shortest_gene_forms)
+            shortest_gene_forms = '|'.join(set(shortest_gene_forms))
 
             unbiased = True if len(pubMedIds) > 0 else False
             shortest_interaction_text = '|'.join(shortest_interaction_text)
@@ -573,7 +641,7 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.utcnow())
-    print('Take all gene-pathway relationships and generate csv and cypher file')
+    print('Take all gene-chemical relationships and generate csv and cypher file')
 
     take_all_relationships_of_gene_chemical()
 

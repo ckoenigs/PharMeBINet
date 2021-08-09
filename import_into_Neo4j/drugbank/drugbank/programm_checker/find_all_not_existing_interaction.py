@@ -16,7 +16,7 @@ g = Graph("http://localhost:7474/db/data/")
 #     id1 = row['DB_ID1']
 #     id2 = row['DB_ID2']
 #     if not id2 in dict_search:
-#         query='''MATCH (n:Compound_DrugBank) Where n.identifier='%s' or '%s' in n.alternative_drugbank_ids RETURN n.identifier''' %(id2,id2)
+#         query='''MATCH (n:Compound_DrugBank) Where n.identifier='%s' or '%s' in n.alternative_ids RETURN n.identifier''' %(id2,id2)
 #         results=g.run(query)
 #         result=results.evaluate()
 #         if not result:

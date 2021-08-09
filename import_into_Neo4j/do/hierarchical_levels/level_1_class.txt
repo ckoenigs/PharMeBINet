@@ -1,9 +1,0 @@
-MonDO_id 	 MonDO_name 	 parent_id 	 parent_name 
-DOID:0080015	physical disorder	DOID:4	disease
-DOID:150	disease of mental health	DOID:4	disease
-DOID:7	disease of anatomical entity	DOID:4	disease
-DOID:630	genetic disease	DOID:4	disease
-DOID:0014667	disease of metabolism	DOID:4	disease
-DOID:0050117	disease by infectious agent	DOID:4	disease
-DOID:225	syndrome	DOID:4	disease
-DOID:14566	disease of cellular proliferation	DOID:4	disease

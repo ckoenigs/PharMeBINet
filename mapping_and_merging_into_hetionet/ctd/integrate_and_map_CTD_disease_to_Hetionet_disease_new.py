@@ -116,7 +116,9 @@ def load_hetionet_diseases_in():
     query = '''MATCH (n:Disease) RETURN n.identifier,n.name, n.synonyms, n.xrefs, n.umls_cuis, n.resource, n.doids'''
     results = g.run(query)
 
+    counter=0
     for identifier, name, synonyms, xrefs, umls_cuis, resource, doids, in results:
+        counter+=1
         # if identifier=='MONDO:0002165':
         #     print('BLUB')
         # add name with mondo to dictionary
@@ -192,6 +194,7 @@ def load_hetionet_diseases_in():
         # generate class DiseaseHetionet and add to dictionary
         disease = DiseaseHetionet(identifier, synonyms, umls_cuis_without_label, xrefs, resource)
         dict_diseases_hetionet[identifier] = disease
+    print('length of counter:',counter)
     print('length of disease in hetionet:' + str(len(dict_diseases_hetionet)))
     print('number of different MESH in mondo:' + str(len(dict_mesh_to_mondo)))
     print('number of different OMIM in mondo:' + str(len(dict_omim_to_mondo)))
@@ -223,7 +226,7 @@ then search if the disease has in CTD mondo as alternative ID
 
 
 def load_disease_CTD():
-    query = ''' MATCH (n:CTDdisease) RETURN n'''
+    query = ''' MATCH (n:CTD_disease) RETURN n'''
     results = g.run(query)
 
     # go through all results from the query
@@ -586,9 +589,9 @@ def integrate_disease_into_hetionet():
     counter_with_mondos = 0
     csvfile_ctd_hetionet_disease = open('disease_Disease/ctd_hetionet.csv', 'w', encoding='utf-8')
     writer = csv.writer(csvfile_ctd_hetionet_disease, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-    writer.writerow(['ctdDiseaseID', 'HetionetDiseaseId', 'mondos'])
+    writer.writerow(['CTD_diseaseID', 'HetionetDiseaseId', 'mondos', 'resource'])
 
-    cypher_file = open('disease_Disease/cypher.cypher', 'w', encoding='utf-8')
+    cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
     cypher_file.write(':begin\n')
     query = '''Match (d)-[r:equal_to_D_Disease_CTD]->(n) Delete r;\n '''
     cypher_file.write(query)
@@ -632,13 +635,16 @@ def integrate_disease_into_hetionet():
                                                           mapping_ids_string])
             string_mondos = "|".join(mondos)
             # set in neo4j the mondos for the ctd disease
-            # query = '''MATCH (n:CTDdisease{disease_id:'%s'}) SET n.mondos=['%s'] '''
+            # query = '''MATCH (n:CTD_disease{disease_id:'%s'}) SET n.mondos=['%s'] '''
             # query = query % (ctd_disease_id, string_mondos)
             # g.run(query)
 
             # generate for all mapped mondos a connection and add new properties to Hetionet disease
             for mondo in mondos:
-                writer.writerow([ctd_disease_id, mondo, string_mondos])
+                disease_class=dict_diseases_hetionet[mondo]
+                resource=set(disease_class.resource)
+                resource.add('CTD')
+                writer.writerow([ctd_disease_id, mondo, string_mondos,'|'.join(resource)])
         else:
             counter_not_mapped += 1
             if ctd_disease_id not in list_not_mapped_to_mondo:
@@ -650,7 +656,7 @@ def integrate_disease_into_hetionet():
     print('number of mapped ctd disease:' + str(counter_with_mondos))
     print('counter intersection mondos:' + str(counter_intersection))
     print(dict_how_mapped_to_multiple_mapping)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ctd/disease_Disease/ctd_hetionet.csv" As line MATCH (n:CTDdisease{disease_id:line.ctdDiseaseID}), (d:Disease{identifier:line.HetionetDiseaseId}) Merge (d)-[:equal_CTD_disease]->(n) Set  n.mondos=split(line.mondos, '|') With line, d, n Where not exists(d.ctd) Set d.resource=d.resource+'CTD', d.ctd='yes', d.ctd_url='http://ctdbase.org/detail.go?type=disease&acc='+line.ctdDiseaseID;\n '''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ctd/disease_Disease/ctd_hetionet.csv" As line MATCH (n:CTD_disease{disease_id:line.CTD_diseaseID}), (d:Disease{identifier:line.HetionetDiseaseId}) Merge (d)-[:equal_CTD_disease]->(n) Set  n.mondos=split(line.mondos, '|') With line, d, n Where not exists(d.ctd) Set d.resource=split(line.resource,"|") , d.ctd='yes', d.ctd_url='http://ctdbase.org/detail.go?type=disease&acc='+line.CTD_diseaseID;\n '''
     cypher_file.write(query)
 
     # add query to update disease nodes with do='no'
@@ -662,7 +668,7 @@ def integrate_disease_into_hetionet():
     # set mondo value where not existing
     cypher_file.write(':begin\n')
     # set all ctd disease which are not mapped the mondo as empty
-    query = '''MATCH (n:CTDdisease) Where Not Exists(n.mondos) SET n.mondos=[];\n'''
+    query = '''MATCH (n:CTD_disease) Where Not Exists(n.mondos) SET n.mondos=[];\n'''
     cypher_file.write(query)
     cypher_file.write(':commit\n')
 

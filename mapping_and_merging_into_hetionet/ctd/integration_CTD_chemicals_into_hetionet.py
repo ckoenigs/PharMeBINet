@@ -15,6 +15,10 @@ sys.path.append("../..")
 import create_connection_to_databases#
 
 
+sys.path.append("..")
+from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
+
+
 
 
 class DrugHetionet:
@@ -46,11 +50,10 @@ class DrugCTD:
     how_mapped: string
     """
 
-    def __init__(self, idType, chemical_id, synonyms,  name, drugBankIDs, casRN):
+    def __init__(self, idType, chemical_id, synonyms,  name,  casRN):
         self.idType = idType
         self.chemical_id = chemical_id
         self.synonyms = synonyms
-        self.drugBankIDs = set(drugBankIDs)
         self.name = name
         self.casRN=casRN
 
@@ -141,7 +144,7 @@ def create_connection_with_neo4j_mysql():
     global conRxNorm
     conRxNorm = create_connection_to_databases.database_connection_RxNorm()
 
-# dictionary cas number to durgbank
+# dictionary cas number to drugbank
 dict_cas_to_drugbank={}
 
 # list of removed multiple cas number
@@ -188,7 +191,7 @@ properties:
 
 
 def load_compounds_from_hetionet():
-    query = 'MATCH (n:Compound)  RETURN n '
+    query = 'MATCH (n:Compound) Where not n:Product RETURN n '
     results = g.run(query)
     i = 0
 
@@ -199,7 +202,7 @@ def load_compounds_from_hetionet():
         inchi = result['inchi']
         name = result['name'].lower()
         cas_number= result['cas_number'] if 'cas_number' in result else ''
-        alternative_ids=result['alternative_drugbank_ids'] if 'alternative_drugbank_ids' in result else []
+        alternative_ids=result['alternative_ids'] if 'alternative_ids' in result else []
         alternative_ids=list(filter(bool,alternative_ids))
         synonyms=[x.lower() for x in result['synonyms']] if 'synonyms' in result else []
         xrefs= result['xrefs'] if 'xrefs' in result else []
@@ -244,7 +247,7 @@ dict_wrong_multiple_mapped_ctd={
 
 file_not_same_cas = open('chemical/not_same_cas.tsv', 'w')
 csv_not_the_same_cas = csv.writer(file_not_same_cas, delimiter='\t')
-csv_not_the_same_cas.writerow(['mesh', 'cas-mesh', 'durgbank', 'cas-db', 'mapping_with_cas'])
+csv_not_the_same_cas.writerow(['mesh', 'cas-mesh', 'drugbank', 'cas-db', 'mapping_with_cas'])
 
 '''
 check if the external reference of ctd drugbank id has the same cas number
@@ -304,27 +307,25 @@ properties:
     parentTreeNumbers
     treeNumbers
     
-{chemical_id:"C044565"}
+{chemical_id:"D012978"}
 '''
 
 
 def load_drugs_from_CTD():
-    query = 'MATCH (n:CTDchemical) RETURN n'
+    query = 'MATCH (n:CTD_chemical) RETURN n'
     results = g.run(query)
     counter_drugbank=0
 
     for result, in results:
         idType = result['idType']
         chemical_id = result['chemical_id']
-        if chemical_id=='C013759':
+        if chemical_id=='D012978':
             print('huhu')
         synonyms = [x.lower() for x in result['synonyms']] if 'synonyms' in result else []
-        drugBankIDs = result['drugBankIDs'] if 'drugBankIDs' in result else []
-        drugBankIDs = list(filter(None, drugBankIDs))
 
         casRN= result['casRN'] if 'casRN' in result else ''
         name = result['name'].lower()
-        drug = DrugCTD(idType, chemical_id, synonyms,  name, drugBankIDs,casRN)
+        drug = DrugCTD(idType, chemical_id, synonyms,  name,casRN)
 
 
         # manual
@@ -333,34 +334,8 @@ def load_drugs_from_CTD():
             list_drug_CTD_without_drugbank_id.append(chemical_id)
 
             continue
-
-
-        # the nodes without a drugbank id are not mapped and for the one with DB ID the cas is checked
-        # if it is not the same and another DB with this cas is there then replace the drugbank ids
-        if len(drugBankIDs)==0:
-            dict_drugs_CTD_without_drugbankIDs[chemical_id] = drug
-            list_drug_CTD_without_drugbank_id.append(chemical_id)
-        else:
-            counter_drugbank+=1
-            list_mapped_drugbank_ids=[]
-            for drugBankID in drugBankIDs:
-                #check if the durgbank id in ctd is also in drugbank
-                if drugBankID in dict_drugs_hetionet:
-                    found_mapping, drugBank_ids=check_and_add_the_mapping(chemical_id, drug, drugBankID,casRN, name,synonyms)
-                    list_mapped_drugbank_ids.extend(drugBank_ids)
-
-
-                elif drugBankID in dict_alternative_to_drugbank_id:
-                    new_drugbank_id=dict_alternative_to_drugbank_id[drugBankID]
-                    found_mapping, drugBank_ids = check_and_add_the_mapping(chemical_id, drug, new_drugbank_id, casRN, name, synonyms)
-                    list_mapped_drugbank_ids.extend(drugBank_ids)
-
-            if len(list_mapped_drugbank_ids)>0:
-                dict_drugs_CTD_with_drugbankIDs[chemical_id].set_drugbankIDs(list_mapped_drugbank_ids)
-            else:
-                dict_drugs_CTD_without_drugbankIDs[chemical_id] = drug
-                list_drug_CTD_without_drugbank_id.append(chemical_id)
-
+        dict_drugs_CTD_without_drugbankIDs[chemical_id] = drug
+        list_drug_CTD_without_drugbank_id.append(chemical_id)
 
 
     print(counter_drugbank)
@@ -456,7 +431,7 @@ def find_cui_for_ctd_drugs():
 
                 cur = con.cursor()
                 # if not mapped map the name to umls cui
-                query = ('Select CUI,LAT,CODE,SAB From MRCONSO Where lower(STR)= "%s" And SAB="MSH" ;')
+                query = ('Select CUI,LAT,CODE,SAB From MRCONSO Where STR= "%s" And SAB="MSH" ;')
                 query= query % (dict_drugs_CTD_without_drugbankIDs[mesh_id].name.lower())
                 rows_counter = cur.execute(query )
                 if rows_counter > 0:
@@ -761,6 +736,12 @@ map drugbank id from ctd to compound in hetionet
 
 
 def map_ctd_to_hetionet_compound():
+
+    # all not mapped ctd chemicals
+    not_mapped_file = open('chemical/not_mapped_drugs.tsv', 'w', encoding='utf-8')
+    not_mapped_csv=csv.writer(not_mapped_file,delimiter='\t')
+    not_mapped_csv.writerow(['mesh id','name', 'synonyms'])
+
     for mesh, drug in dict_drugs_CTD_with_drugbankIDs.items():
         drugbank_ids = set(drug.drugBankIDs)
 
@@ -811,8 +792,9 @@ def map_ctd_to_hetionet_compound():
         # if no drugbank is in the real set then the ctd term should be moved to the unmapped list
         else:
             list_drug_CTD_without_drugbank_id.append(mesh)
-            list_new_compounds.append((mesh,drugbank_ids))
+            # list_new_compounds.append((mesh,drugbank_ids))
             drugbank_ids=set()
+            writer.writerow([mesh])
 
         # check if ctd map to multiple nodes and if then find intersection with name mapping
         if len(drugbank_ids)>1:
@@ -851,10 +833,6 @@ def map_ctd_to_hetionet_compound():
 
     print('mapped to hetionet compound:' + str(len(dict_ctd_to_compound)))
 
-    # all not mapped ctd chemicals
-    g = open('chemical/not_mapped_drugs.tsv', 'w', encoding='utf-8')
-    not_mapped_csv=csv.writer(g,delimiter='\t')
-    not_mapped_csv.writerow(['mesh id','name', 'synonyms'])
 
     for chemical_id, drug in dict_drugs_CTD_without_drugbankIDs.items():
         if not chemical_id in dict_drugs_CTD_with_drugbankIDs:
@@ -866,7 +844,7 @@ def map_ctd_to_hetionet_compound():
             synonym = synonyms
             #            print(synonym+'\n'+drug.name.encode('utf-8'))
             not_mapped_csv.writerow([chemical_id , drug.name, synonym ])
-    g.close()
+    not_mapped_file.close()
     # sys.exit()
 
 
@@ -899,24 +877,6 @@ def integration_of_ctd_chemicals_into_hetionet_compound():
 
     for mesh_id, drug in dict_drugs_CTD_with_drugbankIDs.items():
         counter += 1
-        # # manual check that this mapped wrong
-        # if mesh_id in ['C018375']:
-        #     query = '''Match (c:CTDchemical{chemical_id:'%s'}) Return c'''
-        #     query = query % (mesh_id)
-        #     result = g.run(query)
-        #     first = result.evaluate()
-        #     parentIDs = '|'.join(first['parentIDs']) if 'parentIDs' in first else ''
-        #     parentTreeNumbers = '|'.join(first['parentTreeNumbers']) if 'parentTreeNumbers' in first else ''
-        #     treeNumbers = '|'.join(first['treeNumbers']) if 'treeNumbers' in first else ''
-        #     definition = first['definition'] if 'definition' in first else ''
-        #     synonyms = '|'.join(first['synonyms']) if 'synonyms' in first else ''
-        #     name = first['name'] if 'name' in first else ''
-        #     casRN = first['casRN'] if 'casRN' in first else ''
-        #
-        #     writer.writerow(
-        #         [mesh_id, parentIDs, parentTreeNumbers, treeNumbers, definition, synonyms,
-        #          name, casRN])
-        #     continue
         index = 0
         how_mapped = drug.how_mapped
         drugbank_ids = drug.drugBankIDs
@@ -924,15 +884,14 @@ def integration_of_ctd_chemicals_into_hetionet_compound():
 
 
             index += 1
-            resource = dict_drugs_hetionet[drugbank_id].resources
-            resource.append("CTD")
-            resource = list(set(resource))
+            resource = set(dict_drugs_hetionet[drugbank_id].resources)
+            resource.add("CTD")
             string_resource = '|'.join(resource)
             string_dbs='|'.join(drugbank_ids)
 
             xrefs = dict_drugs_hetionet[drugbank_id].xrefs
             xrefs.append("MESH:"+mesh_id)
-            xrefs = list(set(xrefs))
+            xrefs = go_through_xrefs_and_change_if_needed_source_name(xrefs, 'chemical')
             string_xrefs = '|'.join(xrefs)
 
             url = 'http://ctdbase.org/detail.go?type=chem&acc=' + mesh_id
@@ -949,11 +908,11 @@ add all not mapped ctd chemicals to csv and then integrate into neo4j as chemica
 '''
 def generate_cypher_file():
 
-    cypher_file= open('chemical/cypher.cypher','w')
+    cypher_file= open('output/cypher.cypher','a',encoding='utf-8')
     cypher_file.write(''':begin\nMatch (n:Compound) Set n:Chemical;\n:Commit\n''')
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/chemical/chemicals_drugbank.csv" As line  MATCH (n:CTDchemical{chemical_id:line.ChemicalID}), (c:Compound{identifier:line.Drugbank_id}) Set c.ctd="yes", c.ctd_url=line.url, c.resource=split(line.string_resource,'|'), c.xrefs=split(line.string_xml,'|'), n.drugBankIDs=split(line.string_drugbank_ids,'|')  Create (c)-[:equal_chemical_CTD{how_mapped:line.how_mapped}]->(n);\n'''
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/chemical/chemicals_drugbank.csv" As line  MATCH (n:CTD_chemical{chemical_id:line.ChemicalID}), (c:Compound{identifier:line.Drugbank_id}) Set c.ctd="yes", c.ctd_url=line.url, c.resource=split(line.string_resource,'|'), c.xrefs=split(line.string_xml,'|'), n.drugBankIDs=split(line.string_drugbank_ids,'|')  Create (c)-[:equal_chemical_CTD{how_mapped:line.how_mapped}]->(n);\n'''
     cypher_file.write(query)
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/chemical/chemicals.csv" As line MATCH (n:CTDchemical{chemical_id:line.ChemicalID}) Create (d:Chemical{identifier:line.ChemicalID, parentIDs:n.parentIDs, parentTreeNumbers:n.parentTreeNumbers, treeNumbers:n.treeNumbers, definition:n.definition, synonyms:n.synonyms, name:n.name, cas_number:n.casRN, resource:['CTD'], ctd:'yes', ctd_url:'http://ctdbase.org/detail.go?type=chem&acc='+line.ChemicalID, url:"https://meshb.nlm.nih.gov/record/ui?ui="+line.ChemicalID,  license:"U.S. National Library of Medicine ", source:"MeSH via CTD" }) With d, n Create (d)-[:equal_to_CTD_chemical]->(n);\n '''
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/chemical/chemicals.csv" As line MATCH (n:CTD_chemical{chemical_id:line.ChemicalID}) Create (d:Chemical{identifier:line.ChemicalID, parentIDs:n.parentIDs, parentTreeNumbers:n.parentTreeNumbers, treeNumbers:n.treeNumbers, definition:n.definition, synonyms:n.synonyms, name:n.name, cas_number:n.casRN, resource:['CTD'], ctd:'yes', ctd_url:'http://ctdbase.org/detail.go?type=chem&acc='+line.ChemicalID, url:"https://meshb.nlm.nih.gov/record/ui?ui="+line.ChemicalID,  license:"Copyright 2002-2012 MDI Biological Laboratory. All rights reserved. Copyright 2012-2021 NC State University. All rights reserved.", source:"MeSH via CTD" }) With d, n Create (d)-[:equal_to_CTD_chemical]->(n);\n '''
     cypher_file.write(query)
     cypher_file.write(':begin\n Create Constraint On (node:Chemical) Assert node.identifier Is Unique;\n :commit\n')
     cypher_file.close()

@@ -9,10 +9,12 @@ import datetime
 import sys, csv
 import urllib.request, urllib.error, urllib.parse
 import json
-from api_key import *
 
 sys.path.append("../..")
 import create_connection_to_databases
+
+sys.path.append("..")
+from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
 
 REST_URL = "http://data.bioontology.org"
 
@@ -71,6 +73,25 @@ class SideEffect_Aeolus():
 dict_all_side_effect = {}
 
 '''
+create connection to neo4j and mysql
+'''
+
+
+def create_connection_with_neo4j():
+    global g
+    g = create_connection_to_databases.database_connection_neo4j()
+
+def load_api_key():
+    """
+    Load api key for BioPortal
+    :return:
+    """
+    global API_KEY
+    file = open('api_key.txt', 'r', encoding='utf-8')
+    API_KEY = next(file).strip(" \n")
+
+
+'''
 Create cache file or open and load mapping results
 '''
 
@@ -94,14 +115,7 @@ def cache_api():
         csv_writer.writerow(header)
 
 
-'''
-create connection to neo4j and mysql
-'''
 
-
-def create_connection_with_neo4j():
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
 
 
 '''
@@ -114,8 +128,10 @@ def get_json(url):
     opener.addheaders = [('Authorization', 'apikey token=' + API_KEY)]
     return json.loads(opener.open(url).read())
 
+
 # dictionary side effect name to se ids
-dict_se_name_to_ids= {}
+dict_se_name_to_ids = {}
+
 
 def add_entries_into_dict(key, value, dictionary):
     """
@@ -126,8 +142,10 @@ def add_entries_into_dict(key, value, dictionary):
     :return:
     """
     if not key in dictionary:
-        dictionary[key]=set()
+        dictionary[key] = set()
     dictionary[key].add(value)
+
+
 '''
 load in all side effects from hetionet into a dictionary
 has properties:
@@ -151,11 +169,74 @@ def load_side_effects_from_hetionet_in_dict():
                                 result['url'], result['meddraType'], result['conceptName'], result['umls_label'],
                                 result['resource'])
         dict_all_side_effect[result['identifier']] = sideEffect
-        add_entries_into_dict(result['name'].lower(),result['identifier'],dict_se_name_to_ids)
+        add_entries_into_dict(result['name'].lower(), result['identifier'], dict_se_name_to_ids)
         if 'conceptName' in result:
             add_entries_into_dict(result['conceptName'].lower(), result['identifier'], dict_se_name_to_ids)
 
     print('size of side effects before the aeolus is add:' + str(len(dict_all_side_effect)))
+
+
+
+# dictionary with all aeolus side effects outcome_concept_id (OHDSI ID) as key and value is the class SideEffect_Aeolus
+dict_side_effects_aeolus = {}
+
+# list of list with all meddra cuis in groups of 100
+list_of_list_of_meddra_ids = []
+
+# number of group size
+number_of_group_size = 200
+
+# set of mapped meddra ids
+set_concept_ids_mapped = set()
+
+'''
+load all aeolus side effects in a dictionary
+has properties:
+    snomed_outcome_concept_id
+    vocabulary_id: defined the type of the concept_code
+    name
+    outcome_concept_id: OHDSI ID
+    concept_code: MedDRA ID
+'''
+
+
+def load_side_effects_aeolus_in_dictionary():
+    # {concept_code:'10000031'}
+    query = '''MATCH (n:Aeolus_Outcome) RETURN n'''
+    results = g.run(query)
+    # list of_meddra ids
+    list_of_ids = []
+    # counter
+    counter = 0
+    for result, in results:
+        sideEffect = SideEffect_Aeolus(result['snomed_outcome_concept_id'], result['vocabulary_id'], result['name'],
+                                       result['outcome_concept_id'], result['concept_code'])
+        dict_side_effects_aeolus[result['concept_code']] = sideEffect
+        # add all meddra ids where no cui is nown in list of a given size
+        # the list should be not to big because it will be asked with api
+        if result['concept_code'] not in dict_aeolus_SE_with_CUIs:
+            list_of_ids.append(result['concept_code'])
+            counter += 1
+            if counter % number_of_group_size == 0:
+                list_of_list_of_meddra_ids.append(list_of_ids)
+                list_of_ids = []
+
+        if result['name'].lower() in dict_se_name_to_ids:
+            list_map_to_hetionet.append(result['concept_code'])
+            set_concept_ids_mapped.add(result['concept_code'])
+            cuis = dict_se_name_to_ids[result['name'].lower()]
+            for cui in cuis:
+                # check if the mapping appears multiple time
+                # also set the mapped cui into the class aeolus
+                if cui not in dict_mapped_cuis_hetionet:
+                    dict_mapped_cuis_hetionet[cui] = []
+                dict_mapped_cuis_hetionet[cui].append(result['concept_code'])
+                add_cui_information_to_class(result['concept_code'], cui)
+
+    list_of_list_of_meddra_ids.append(list_of_ids)
+
+    print('Size of Aoelus side effects:' + str(len(dict_side_effects_aeolus)))
+    print('number of mapped:', len(dict_mapped_cuis_hetionet))
 
 
 # dictionary disease name to identifier
@@ -207,73 +288,12 @@ def load_disease_infos():
                         dict_meddra_to_mondo[meddra_id] = set([identifier])
 
 
-# dictionary with all aeolus side effects outcome_concept_id (OHDSI ID) as key and value is the class SideEffect_Aeolus
-dict_side_effects_aeolus = {}
-
-# list of list with all meddra cuis in groups of 100
-list_of_list_of_meddra_ids = []
-
-# number of group size
-number_of_group_size = 200
-
-# set of mapped meddra ids
-set_concept_ids_mapped=set()
-
-'''
-load all aeolus side effects in a dictionary
-has properties:
-    snomed_outcome_concept_id
-    vocabulary_id: defined the type of the concept_code
-    name
-    outcome_concept_id: OHDSI ID
-    concept_code: MedDRA ID
-'''
-
-
-def load_side_effects_aeolus_in_dictionary():
-    #{concept_code:'10000031'}
-    query = '''MATCH (n:AeolusOutcome) RETURN n'''
-    results = g.run(query)
-    # list of_meddra ids
-    list_of_ids = []
-    # counter
-    counter = 0
-    for result, in results:
-        sideEffect = SideEffect_Aeolus(result['snomed_outcome_concept_id'], result['vocabulary_id'], result['name'],
-                                       result['outcome_concept_id'], result['concept_code'])
-        dict_side_effects_aeolus[result['concept_code']] = sideEffect
-        # add all meddra ids where no cui is nown in list of a given size
-        # the list should be not to big because it will be asked with api
-        if result['concept_code'] not in dict_aeolus_SE_with_CUIs:
-            list_of_ids.append(result['concept_code'])
-            counter += 1
-            if counter % number_of_group_size == 0:
-                list_of_list_of_meddra_ids.append(list_of_ids)
-                list_of_ids = []
-
-        if result['name'].lower() in dict_se_name_to_ids:
-            list_map_to_hetionet.append(result['concept_code'])
-            set_concept_ids_mapped.add(result['concept_code'])
-            cuis=dict_se_name_to_ids[result['name'].lower()]
-            for cui in cuis:
-                # check if the mapping appears multiple time
-                # also set the mapped cui into the class aeolus
-                if cui not in dict_mapped_cuis_hetionet:
-                    dict_mapped_cuis_hetionet[cui]=[]
-                dict_mapped_cuis_hetionet[cui].append(result['concept_code'])
-                add_cui_information_to_class(result['concept_code'], cui)
-
-    list_of_list_of_meddra_ids.append(list_of_ids)
-
-    print('Size of Aoelus side effects:' + str(len(dict_side_effects_aeolus)))
-    print('number of mapped:', len(dict_mapped_cuis_hetionet))
-
 
 # dictionary with for every key outcome_concept a list of umls cuis as value
 dict_aeolus_SE_with_CUIs = {}
 
 # generate file with meddra and a list of umls cuis and where there are from
-multiple_cuis = open('aeolus_multiple_cuis.tsv', 'w')
+multiple_cuis = open('output/aeolus_multiple_cuis.tsv', 'w')
 csv_multiple_cuis = csv.writer(multiple_cuis, delimiter='\t')
 csv_multiple_cuis.writerow(['MedDRA id', 'cuis with | as seperator ', 'where are it from'])
 
@@ -295,7 +315,7 @@ def search_with_api_bioportal():
 
     # search for cui id in bioportal
     for list_ids in list_of_list_of_meddra_ids:
-        if len(list_ids)==0:
+        if len(list_ids) == 0:
             continue
         string_ids = ' '.join(list_ids)
         part = "/search?q=" + urllib.parse.quote(string_ids) + "&include=cui,prefLabel&pagesize=250&ontology=MEDDRA"
@@ -441,7 +461,7 @@ def generate_csv_file(list_of_delet_index, list_not_mapped, concept_code, diseas
     dict_outcome_to_disease[concept_code] = list(diseases)
     for disease_id in diseases:
         resource_disease = dict_mondo_to_xrefs_and_resource[disease_id][1] if \
-        dict_mondo_to_xrefs_and_resource[disease_id][1] is not None else []
+            dict_mondo_to_xrefs_and_resource[disease_id][1] is not None else []
         resource_disease.append("AEOLUS")
         resource_disease = list(set(resource_disease))
         resource_string = '|'.join(resource_disease)
@@ -449,7 +469,7 @@ def generate_csv_file(list_of_delet_index, list_not_mapped, concept_code, diseas
         xref_disease = dict_mondo_to_xrefs_and_resource[disease_id][0] if \
             dict_mondo_to_xrefs_and_resource[disease_id][0] is not None else []
         xref_disease.append("MedDRA:" + concept_code)
-        xref_disease = list(set(xref_disease))
+        xref_disease = go_through_xrefs_and_change_if_needed_source_name(xref_disease,'disease')
         xref_string = '|'.join(xref_disease)
 
         csv_writer.writerow([concept_code, disease_id, mapping_method, resource_string, xref_string])
@@ -582,8 +602,8 @@ def integrate_aeolus_into_hetionet():
     csv_existing.writerow(['aSE', 'SE', 'cuis', 'resources'])
 
     # query for mapping
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/aeolus/output/%s.tsv" As line FIELDTERMINATOR '\\t' Match (a:AeolusOutcome{concept_code:line.aSE})'''
-    cypher_file = open('cypher_se.cypher', 'w')
+    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/aeolus/output/%s.tsv" As line FIELDTERMINATOR '\\t' Match (a:Aeolus_Outcome{concept_code:line.aSE})'''
+    cypher_file = open('output/cypher.cypher', 'w')
 
     # query for the update nodes and relationship
     query_update = query_start + ' , (n:SideEffect{identifier:line.SE}) Set a.cuis=split(line.cuis,"|"), n.resource=split(line.resources,"|") , n.aeolus="yes", n.xrefs=n.xrefs+("MedDRA:"+line.aSE) Create (n)-[:equal_to_Aeolus_SE{mapping_method:line.mapping_method}]->(a); \n'
@@ -596,13 +616,13 @@ def integrate_aeolus_into_hetionet():
     cypher_file.write(query_update)
 
     # update and generate connection between mapped aeolus outcome and hetionet side effect
-    counter_mapped=0
+    counter_mapped = 0
     for outcome_concept in list_map_to_hetionet:
         if outcome_concept not in dict_side_effects_aeolus:
             continue
         cuis = dict_side_effects_aeolus[outcome_concept].cuis
         cuis_string = '|'.join(cuis)
-        counter_mapped+=1
+        counter_mapped += 1
         for cui in cuis:
             resource = dict_all_side_effect[cui].resource
             resource.append("AEOLUS")
@@ -610,7 +630,7 @@ def integrate_aeolus_into_hetionet():
             resources = '|'.join(resource)
 
             csv_existing.writerow([outcome_concept, cui, cuis_string, resources])
-    print('number of mapped:',counter_mapped)
+    print('number of mapped:', counter_mapped)
 
     # close file
     file_existing.close()
@@ -618,7 +638,7 @@ def integrate_aeolus_into_hetionet():
     # open new file for new se
     file_new = open('output/se_new.tsv', 'w', encoding='utf-8')
     csv_new = csv.writer(file_new, delimiter='\t')
-    csv_new.writerow(['aSE', 'SE', 'cuis','meddras'])
+    csv_new.writerow(['aSE', 'SE', 'cuis', 'meddras'])
 
     # query for the update nodes and relationship
     query_new = query_start + ' Set a.cuis=split(line.cuis,"|") Merge (n:SideEffect{identifier:line.SE}) On Create Set  n.license="CC0 1.0", n.name=a.name , n.source="UMLS via AEOLUS", n.url="http://identifiers.org/umls/"+line.SE , n.resource=["AEOLUS"],  n.aeolus="yes", n.xrefs=split(line.meddras,"|")  Create (n)-[:equal_to_Aeolus_SE]->(a); \n'
@@ -628,14 +648,15 @@ def integrate_aeolus_into_hetionet():
     # generate new hetionet side effects and connect the with the aeolus outcome
     for cui, outcome_concepts in dict_new_node_cui_to_concept.items():
         if len(outcome_concepts) == 1:
-            csv_new.writerow([outcome_concepts[0], cui, '|'.join(dict_aeolus_SE_with_CUIs[outcome_concepts[0]]),'MedDRA:'+'|MedDRA:'.join(outcome_concepts)])
+            csv_new.writerow([outcome_concepts[0], cui, '|'.join(dict_aeolus_SE_with_CUIs[outcome_concepts[0]]),
+                              'MedDRA:' + '|MedDRA:'.join(outcome_concepts)])
         else:
             print(cui)
             print(outcome_concepts)
             print('multi concept for one cui')
             for outcome_concept in outcome_concepts:
                 csv_new.writerow([outcome_concept, cui, '|'.join(dict_aeolus_SE_with_CUIs[outcome_concepts[0]]),
-                                                                     'MedDRA:' + '|MedDRA:'.join(outcome_concepts)])
+                                  'MedDRA:' + '|MedDRA:'.join(outcome_concepts)])
 
     # search for all side effect that did not mapped with aeolus and give them the property aeolus:'no'
     # add query to update disease nodes with do='no'
@@ -656,6 +677,14 @@ def main():
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j()
+
+    print(
+        '###########################################################################################################################')
+
+    print(datetime.datetime.utcnow())
+    print('Load api key')
+
+    load_api_key()
 
     print(
         '###########################################################################################################################')
@@ -704,7 +733,7 @@ def main():
     print('Map round one')
 
     map_first_round()
-    #search_with_api_bioportal()
+    # search_with_api_bioportal()
 
     print(
         '###########################################################################################################################')

@@ -274,10 +274,9 @@ def integrate_phenotype_into_hetionet():
         id_without_go = go_id.split(':')[1]
 
         if len(cuis) == 1:
-            resource = dict_side_effects_hetionet[cuis[0]].resource
-            resource.append('CTD')
-            resource = list(set(resource))
-            resource = "','".join(resource)
+            resource = set(dict_side_effects_hetionet[cuis[0]].resource)
+            resource.add('CTD')
+            resource = "','".join(sorted(resource))
             query = '''Match (s:SideEffect), (n:CTDphenotype) Where s.identifier='%s' And n.go_id='%s'
             Set s.resource=['%s'], s.ctd='yes', s.ctd_url='http://ctdbase.org/detail.go?type=go&acc=GO:%s' , n.cui='%s'
             Create (s)-[:equal_to_SE_CTD]->(n);

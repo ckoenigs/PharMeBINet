@@ -182,7 +182,7 @@ generate_csv_transporter = open('protein/proteins_transporter.csv', 'w')
 writer_transporter = csv.writer(generate_csv_transporter, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 writer_transporter.writerow(['id'])
 
-# dictionary of Durgbank labels to hetionet labels:
+# dictionary of drugbank labels to hetionet labels:
 dict_db_labels_to_csv_label_file = {
     'Enzyme_DrugBank': writer_enzyme,
     'Transporter_DrugBank': writer_transporter,
@@ -202,8 +202,8 @@ preparation of the csv for merging for a given node
 def integrate_infos_into_csv(part_dict, protein_hetionet, list_input_protein):
     # first check on the as sequences and combine the if they are not the same, because they are isoforms
     # or  have only small changes like one as is changed
-
-    resource = set(dict_hetionet_protein[part_dict['identifier']][0]['resource'])
+    # print(protein_hetionet)
+    resource = set(protein_hetionet['resource'])
     resource.add('DrugBank')
     resource = sorted(resource)
     list_input_protein.append("|".join(resource))
@@ -217,12 +217,19 @@ def integrate_infos_into_csv(part_dict, protein_hetionet, list_input_protein):
         as_seq_hetionet_seq = as_seq_hetionet
     list_as_sequnces = []
     list_as_sequnces.append(as_seq_hetionet_seq)
+    # list_as_sequnces.extend(as_seq_hetionet_seq)
     for as_seq in as_seqs:
 
-        as_seq_part = as_seq.split(' ')[1]
-        if as_seq_hetionet_seq != as_seq_part:
+        if as_seq.startswith('>'):
+            as_seq_part = as_seq.split(' ')[1]
+        else:
+            as_seq_part = as_seq.split(':')[1]
+        if as_seq_part=='':
+            print('empyt as')
+            print(as_seq)
+        if as_seq_hetionet_seq != as_seq_part and as_seq_part!='':
             list_as_sequnces.append(as_seq_part)
-    print(list_as_sequnces)
+    # print(list_as_sequnces)
     list_as_sequnces = '|'.join(list_as_sequnces)
     list_input_protein.append(list_as_sequnces)
 

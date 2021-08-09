@@ -35,8 +35,8 @@ def load_protein_from_database_and_add_to_dict():
     for node, in results:
         identifier = node['identifier']
         dict_protein_id_to_resource[identifier]=node['resource']
-        alternative_identifiers = node['alternative_identifiers'] if 'alternative_identifiers' in node else []
-        for alternative_id in alternative_identifiers:
+        alternative_ids = node['alternative_ids'] if 'alternative_ids' in node else []
+        for alternative_id in alternative_ids:
             if alternative_id not in dict_alt_id_to_id:
                 dict_alt_id_to_id[alternative_id]=set()
             dict_alt_id_to_id[alternative_id].add(identifier)

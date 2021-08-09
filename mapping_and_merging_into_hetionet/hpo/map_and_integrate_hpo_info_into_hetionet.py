@@ -438,7 +438,7 @@ def map_hpo_disease_to_mondo(db_disease_id, db_disease_names, db_disease_source)
         id = db_disease_id.split(':')[1]
 
         #            print('omim')
-        # test if omim id is direct in DO
+        # test if omim id is direct in MONDO
         found_same_mapping, counter_omim_map_with_omim = check_on_mapping_same_source(dict_omim_to_mondo,
                                                                                       counter_omim_map_with_omim,
                                                                                       db_disease_names, db_disease_id,
@@ -499,20 +499,20 @@ csv_disease = csv.writer(file_disease, delimiter='\t')
 csv_disease.writerow(['hpo_id', 'hetionet_id', 'resource'])
 
 # cypher file for mapping and integration
-cypher_file = open('cypher/cypher_disease.cypher', 'w')
+cypher_file = open('cypher/cypher.cypher', 'w')
 
 # the general query start
 query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/hpo/%s" As line FIELDTERMINATOR '\\t' 
     Match'''
 
 '''
-Integrate mapping connection between disease and HPOdisease and make a dictionary mondo to hpo id
+Integrate mapping connection between disease and HPO_disease and make a dictionary mondo to hpo id
 '''
 
 
 def integrate_mapping_of_disease_into_hetionet():
     # query for mapping disease and written into file
-    query = query_start + ''' (n:HPOdisease{id: line.hpo_id}), (d:Disease{identifier:line.hetionet_id}) Set d.hpo="yes", d.resource=split(line.resource,"|") Create (d)-[:equal_to_hpo_disease]->(n);\n '''
+    query = query_start + ''' (n:HPO_disease{id: line.hpo_id}), (d:Disease{identifier:line.hetionet_id}) Set d.hpo="yes", d.resource=split(line.resource,"|") Create (d)-[:equal_to_hpo_disease]->(n);\n '''
     query = query % (path_of_directory, 'mapping_files/disease_mapped.tsv')
     cypher_file.write(query)
     # write mapping in csv file
@@ -575,7 +575,7 @@ def main():
     thread_id = 1
 
     # search for hpo disease, but exclude old entries
-    query = ''' Match (d:HPOdisease) Where not exists(d.is_obsolete)  Return d.id, d.name, d.source'''
+    query = ''' Match (d:HPO_disease) Where not exists(d.is_obsolete)  Return d.id, d.name, d.source'''
     results = g.run(query)
     for db_disease_id, db_disease_name, db_disease_source, in results:
         # create thread

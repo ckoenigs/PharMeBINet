@@ -56,7 +56,10 @@ cypher_file_delete = open('cypher_delete.cypher', 'w')
 
 # bash shell for merge combined nodes
 bash_shell = open('merge_nodes.sh', 'w')
-bash_shell.write('#!/bin/bash\n')
+bash_start='''#!/bin/bash
+#define path to neo4j bin
+path_neo4j=$1\n\n'''
+bash_shell.write(bash_start)
 
 '''
 Get the  properties of go
@@ -206,9 +209,9 @@ def check_if_identifier_in_hetionet(identifier, label_go, namespace, node, xrefs
 
 # dictionary for relationship ends
 dict_relationship_ends = {
-    "biological_process": 'BiB',
-    "molecular_function": 'MiM',
-    "cellular_component": 'CciCc'
+    "biological_process": 'BPiBP',
+    "molecular_function": 'MFiMF',
+    "cellular_component": 'CCiCC'
 }
 
 '''
@@ -226,9 +229,9 @@ def get_is_a_relationships_and_add_to_csv(namespace):
     csv_file.writerow(['identifier_1', 'identifier_2'])
 
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/go/%s" As line FIELDTERMINATOR '\\t' 
-    Match (a1:%s{identifier:line.identifier_1}), (a2:%s{identifier:line.identifier_2}) Create (a1)-[:IS_A_%s{license:"CC0 4.0 International", source:"GO", unbiased:false}]->(a2);\n'''
+    Match (a1:%s{identifier:line.identifier_1}), (a2:%s{identifier:line.identifier_2}) Create (a1)-[:IS_A_%s{license:"%s", source:"Gene Ontology", unbiased:false, resource:["GO"], http://purl.obolibrary.org/obo/"+line.identifier_1}]->(a2);\n'''
     query = query % (file_name, dict_go_to_hetionet_label[namespace], dict_go_to_hetionet_label[namespace],
-                     dict_relationship_ends[namespace])
+                     dict_relationship_ends[namespace], license)
     cypher_file.write(query)
 
     # go through the results
@@ -283,8 +286,10 @@ def go_through_go():
             # therfore the merge process iss add into the bash fileproteins
             if found_id and found_id_alt:
                 print('found id and alt id')
-                text = 'python3 ../add_information_from_a_not_existing_node_to_existing_node.py %s %s %s\n' % (
+                text = 'python3 ../add_info_from_removed_node_to_other_node.py %s %s %s\n' % (
                     alternative_id, identifier, dict_go_to_hetionet_label[namespace])
+                bash_shell.write(text)
+                text = '$path_neo4j/cypher-shell -u neo4j -p test -f cypher_merge.cypher \n\n'
                 bash_shell.write(text)
                 text = '''now=$(date +"%F %T")\n echo "Current time: $now"\n'''
                 bash_shell.write(text)

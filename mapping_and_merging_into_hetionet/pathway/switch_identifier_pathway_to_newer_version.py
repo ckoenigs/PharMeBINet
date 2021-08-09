@@ -14,7 +14,6 @@ sys.path.append("../..")
 import create_connection_to_databases
 
 # sys.path.append('../../drugbank/')
-# from add_information_from_a_not_existing_node_to_existing_node import merge_information_from_one_node_to_another
 
 sys.path.append("..")
 from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
@@ -42,7 +41,7 @@ load in all pathways from hetionet in a dictionary
 '''
 
 
-def load_hetionet_pathways_in():
+def load_genes_into_dict():
     query = '''MATCH (n:Gene) RETURN n.identifier,n.name'''
     results = g.run(query)
 
@@ -75,12 +74,8 @@ def get_pathway_properties():
     header.append(extra_property)
     header.append('resource')
 
-
-# version string pc
-version_string = 'PC11_'
-
 # cypher file
-cypher_file = open('cypher.cypher', 'w', encoding='utf-8')
+cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
 # query to delete all old pathways
 query = 'MATCH (n:Pathway) Detach Delete n;\n'
 cypher_file.write(query)
@@ -118,13 +113,12 @@ def load_in_all_pathways():
 
     for node, in results:
         identifier = node['identifier']
-        if identifier == 'PC11_755':
-            print('huhu')
         dict_id_to_node[identifier] = dict(node)
 
         # fill dictionary with name to rest
         names = node['synonyms']
         for name in names:
+            name=name.lower()
             if not name in dict_name_to_pc_or_wp_identifier:
                 dict_name_to_pc_or_wp_identifier[name] = [dict(node)]
             else:
@@ -200,19 +194,24 @@ def fill_the_list_of_properties(head, value, identifiers, resource, name, list_i
         if type(value) in [list, set]:
             identifiers = value.copy()
             combine_node = True
-
+    elif head =='license':
+        if type(value)!=str:
+            value=','.join(value)
     elif head == extra_property:
         value = identifiers
     elif head == 'source':
         if type(value) in [list, set]:
-            value = ",".join(sorted([x.capitalize() for x in value]))
-            resource = value
+            list_value=list(sorted([x.capitalize() for x in value]))
+            value = ",".join(list_value)
+            resource = list_value
         else:
             value = value.capitalize()
             resource = [value]
     elif head == 'synonyms':
         name = value.pop()
-
+    elif head =='url':
+        if type(value)!=str:
+            value = ' , '.join(value)
     elif head == 'name':
         value = name
     elif head == 'resource':
@@ -294,7 +293,7 @@ def generate_rela_csv_and_cypher_queries():
             query_node_middle += head + ':split(line.' + head + ',"|"), '
         else:
             query_node_middle += head + ':line.' + head + ', '
-    query_node = query_start + query_node_middle[:-2] + ', pathway:"yes"});\n'
+    query_node = query_start + query_node_middle[:-2] + ', combined_wikipathway_and_pathway_common:"yes"});\n'
     query_node = query_node % ('node')
 
     cypher_file.write(query_node)
@@ -312,7 +311,7 @@ def generate_rela_csv_and_cypher_queries():
         else:
             query_rela_middle += '(p:Pathway{identifier:line.' + head + '}) ,'
     query_rela = query_start + query_rela_middle[
-                               :-2] + ' Create (g)-[:PARTICIPATES_GpPW{license:p.license, source:p.source, unbiased:false, url:p.url, resource:p.source}]->(p);\n'
+                               :-2] + ' Create (g)-[:PARTICIPATES_GpPW{license:p.license, source:p.source, unbiased:false, url:p.url, resource:p.resource, combined_wikipathway_and_pathway_common:"yes"}]->(p);\n'
     query_rela = query_rela % ('rela')
     cypher_file.write(query_rela)
 
@@ -340,7 +339,7 @@ def main():
     print(datetime.datetime.utcnow())
     print('Load all pathways from hetionet into a dictionary')
 
-    load_hetionet_pathways_in()
+    load_genes_into_dict()
 
     print(
         '###########################################################################################################################')
@@ -354,7 +353,7 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.utcnow())
-    print('Load all pathways from d. himmelstein into a dictionary')
+    print('Load all pathways from neo4j into a dictionary')
 
     load_in_all_pathways()
 

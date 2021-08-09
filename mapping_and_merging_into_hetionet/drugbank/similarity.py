@@ -113,7 +113,8 @@ def prepare_fingerprints(mols_pyble, mols_rdf):
 #print(len(dict_pybel_id_to_fingerprints))
 #print(dict_pybel_id_to_fingerprints['DB00006'])
 
-threshold=0.5
+# set the threshold
+threshold=0.75
 
 def generate_cypher(header, file_name):
     cypherfile = open('compound_interaction/cypher_resemble.cypher', 'w', encoding='utf-8')

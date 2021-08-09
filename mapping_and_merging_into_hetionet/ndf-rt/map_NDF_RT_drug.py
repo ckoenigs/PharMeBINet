@@ -162,7 +162,7 @@ load in all compound from ndf-rt in a dictionary and get the  umls cui, rxcui
 
 
 def load_ndf_rt_drug_in():
-    query = '''MATCH (n:NDF_RT_DRUG_KIND) RETURN n'''
+    query = '''MATCH (n:NDFRT_DRUG_KIND) RETURN n'''
     results = g.run(query)
     count = 0
     i = 0
@@ -671,13 +671,13 @@ def integration_of_ndf_rt_drugs_into_hetionet():
     counter_illegal_drugbank = 0
     # number of all connection
     counter_drugbank_connection = 0
-    # list wiwth all codes which are mapped to only illegal drugbank ids
+    # list with all codes which are mapped to only illegal drugbank ids
     delete_code = []
 
-    cypher_file = open('drug/cypher.cypher', 'w')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ndf-rt/drug/mapping_drug.csv" As line  FIELDTERMINATOR '\\t'  MATCH (n:NDF_RT_DRUG_KIND{code:line.code}), (c:Chemical{identifier:line.Chemical_id})  Set n.mapped_ids=split(line.mapped_ids,'|'), n.how_mapped=line.how_mapped, c.ndf_rt='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_drug_ndf_rt]->(n); \n'''
+    cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ndf-rt/drug/mapping_drug.csv" As line  FIELDTERMINATOR '\\t'  MATCH (n:NDFRT_DRUG_KIND{code:line.code}), (c:Chemical{identifier:line.Chemical_id})  Set n.mapped_ids=split(line.mapped_ids,'|'), n.how_mapped=line.how_mapped, c.ndf_rt='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_drug_ndf_rt]->(n); \n'''
     cypher_file.write(query)
-    query='''Match (b:Chemical)--(:NDF_RT_DRUG_KIND)-[:effect_may_be_inhibited_by]->(:NDF_RT_DRUG_KIND)--(c:Chemical) Merge (b)-[r:INTERACTS_CiC]->(c)  On Match Set r.resource=r.resource+'NDF-RT' On Create set r.resource=['NDF-RT'], r.source='NDF-RT', r.license='ndf-rt license'; '''
+    query='''Match (b:Chemical)--(:NDFRT_DRUG_KIND)-[:effect_may_be_inhibited_by]->(:NDFRT_DRUG_KIND)--(c:Chemical) Merge (b)-[r:INTERACTS_CiC]->(c)  On Match Set r.resource=r.resource+'NDF-RT' On Create set r.resource=['NDF-RT'], r.source='NDF-RT', r.license='ndf-rt license'; '''
     cypher_file.write(query)
     cypher_file.close()
     writer = open('drug/mapping_drug.csv', 'w')

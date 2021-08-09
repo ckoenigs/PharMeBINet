@@ -1,4 +1,7 @@
 import time
+import sys
+
+sys.path.append("../..")
 from databaseConnection import query, generateConnection
 
 STOP_AFTER = 50000  # so many nodes will be deleted, then will the program exit
@@ -42,7 +45,7 @@ for i in TODELETE:
             time_4 = time.time()
             q = 'MATCH (n:' + i + ')-[r]-() WHERE n.taxId <> "9606" WITH r LIMIT %s DELETE r' % (BATCH_SIZE_RELA)
             #WHERE n.speciesName = "Homo sapiens"
-            db.session().read_transaction(query, q)
+            db.session().write_transaction(query, q)
             nowDel += BATCH_SIZE_RELA
             time_5 = time.time()
             # print('Deleted circa', BATCH_SIZE, 'Nodes of type', i, 'of', nowDel, 'in time', time_5 - time_4)
@@ -56,6 +59,6 @@ print("TotalDeletes:", totalDeletes)
 timex = time.time()
 
 q = 'MATCH (n:' + i + ') WHERE n.taxId <> "9606" WITH n DETACH DELETE n'
-db.session().read_transaction(query, q)
+db.session().write_transaction(query, q)
 
 print("Total time", timex - time1)

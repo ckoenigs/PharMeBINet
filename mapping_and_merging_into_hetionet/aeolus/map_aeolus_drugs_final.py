@@ -10,6 +10,9 @@ import sys, csv
 sys.path.append("../..")
 import create_connection_to_databases
 
+sys.path.append("..")
+from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
+
 
 class DrugHetionet:
     """
@@ -78,8 +81,9 @@ def create_connection_with_neo4j_mysql():
     global conRxNorm
     conRxNorm = create_connection_to_databases.database_connection_RxNorm()
 
+
 # dictionary rxcui to drugbank ids
-dict_rxcui_to_Drugbank_with_xref={}
+dict_rxcui_to_Drugbank_with_xref = {}
 
 '''
 load in all compounds from hetionet in dictionary
@@ -108,11 +112,10 @@ def load_compounds_from_hetionet():
         xrefs = result['xrefs'] if 'xrefs' in result else []
         for xref in xrefs:
             if xref.startswith('RxNorm_CUI'):
-                rxcui=xref.split(':')[1]
+                rxcui = xref.split(':')[1]
                 if not rxcui in dict_rxcui_to_Drugbank_with_xref:
-                    dict_rxcui_to_Drugbank_with_xref[rxcui]=set()
+                    dict_rxcui_to_Drugbank_with_xref[rxcui] = set()
                 dict_rxcui_to_Drugbank_with_xref[rxcui].add(identifier)
-
 
         drug = DrugHetionet(licenses, identifier, inchikey, inchi, name, resource, xrefs)
 
@@ -135,14 +138,14 @@ has properties:
 
 
 def load_drug_aeolus_in_dictionary():
-    query = '''MATCH (n:AeolusDrug)  RETURN n'''
+    query = '''MATCH (n:Aeolus_Drug)  RETURN n'''
 
     results = g.run(query)
     for result, in results:
         if result['vocabulary_id'] != 'RxNorm':
             print('ohje')
-        rxcui=result['concept_code']
-        drug_concept_id=result['drug_concept_id']
+        rxcui = result['concept_code']
+        drug_concept_id = result['drug_concept_id']
         drug = Drug_Aeolus(result['vocabulary_id'], result['name'], result['drug_concept_id'], result['concept_code'])
         dict_aeolus_drugs[drug_concept_id] = drug
         if not result['concept_code'] in dict_rxnorm_to_drug_concept_id:
@@ -154,7 +157,7 @@ def load_drug_aeolus_in_dictionary():
             list_aeolus_drugs_without_drugbank_id.append(rxcui)
     print('Size of Aoelus drug:' + str(len(dict_aeolus_drugs)))
     print('number of rxnorm ids in aeolus drug:' + str(len(dict_rxnorm_to_drug_concept_id)))
-    print('number of not mapped:',len(list_aeolus_drugs_without_drugbank_id))
+    print('number of not mapped:', len(list_aeolus_drugs_without_drugbank_id))
 
 
 # list of all concept_id where no drugbank id is found, only save the rxnorm ids
@@ -370,10 +373,10 @@ dict_how_mapped_files = {
     'rxcui map to drugbank': csv_rxcui,
     'map rxnorm to drugbank with use of dhimmel inchikey and unii': csv__inchikey_unii,
     'rxcui map to MESH': csv_mesh,
-    'map rxcui with xref':csv_xrefs}
+    'map rxcui with xref': csv_xrefs}
 
 # generate file with rxnom and a list of drugbank ids and wheere there are from
-multiple_drugbankids = open('aeolus_multiple_drugbank_ids.tsv', 'w')
+multiple_drugbankids = open('drug/aeolus_multiple_drugbank_ids.tsv', 'w')
 multiple_drugbankids.write('rxnorm_cui \t drugbank_ids with | as seperator \t where are it from \n')
 
 '''
@@ -430,9 +433,9 @@ Generate cypher file to update or create the relationships in hetionet
 
 
 def generate_cypher_file():
-    cypher_file = open('cypher.cypher', 'w', encoding='utf-8')
+    cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/aeolus/drug/mapped.csv" As line Match (a:AeolusDrug{drug_concept_id:line.aeolus_id}),(n:Chemical{identifier:line.chemical_id}) Set a.mapped_id=split(line.mapped_ids,'|'), a.how_mapped=line.how_mapped ,  n.aeolus="yes",n.resource= split(line.resource,'|') , n.xrefs=split(line.xrefs,'|') Create (n)-[:equal_to_Aeolus_drug]->(a); \n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/aeolus/drug/mapped.csv" As line Match (a:Aeolus_Drug{drug_concept_id:line.aeolus_id}),(n:Chemical{identifier:line.chemical_id}) Set a.mapped_id=split(line.mapped_ids,'|'), a.how_mapped=line.how_mapped ,  n.aeolus="yes",n.resource= split(line.resource,'|') , n.xrefs=split(line.xrefs,'|') Create (n)-[:equal_to_Aeolus_drug]->(a); \n'''
 
     cypher_file.write(query)
 
@@ -479,7 +482,7 @@ def integrate_aeolus_drugs_into_hetionet():
         mapped_ids_string = '|'.join(mapped_ids)
         for mapped_id in mapped_ids:
             index += 1
-            xrefs = list(set(dict_all_drug[mapped_id].xrefs))
+            xrefs = go_through_xrefs_and_change_if_needed_source_name(dict_all_drug[mapped_id].xrefs,'chemical')
             xrefs_string = '|'.join(xrefs)
             resource = dict_all_drug[mapped_id].resource
             resource.append('AEOLUS')
@@ -519,7 +522,7 @@ def main():
     global dict_rxnorm_to_drug_concept_id
     dict_rxnorm_to_drug_concept_id = {}
 
-    # list with rxnorm ids which are not mapped to DurgBank ID
+    # list with rxnorm ids which are not mapped to drugbank ID
     global list_aeolus_drugs_without_mapped_id
     list_aeolus_drugs_without_mapped_id = []
 

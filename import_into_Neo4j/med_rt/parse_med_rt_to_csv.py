@@ -9,7 +9,7 @@ def transform_label(text):
     :param text: string
     :return: string
     """
-    return text.replace(' ', '_') + '_MED_RT'
+    return text.replace(' ', '_') + '_MEDRT'
 
 
 # dictionary type short to full name
@@ -58,18 +58,18 @@ def parse_CUI_line(line, xref_start, namespace):
         print(xref_start)
         filename = 'other'
     else:
-        filename = tmp[1].replace('/', '_').replace(' ','_')
+        filename = tmp[1].replace('/', '_').replace(' ', '_')
 
         # some have no label but still a [] as name
         if filename not in dict_short_to_full_name:
             filename = 'other'
             synonym1 = line[0].split(',')
     # all rxcui are durgs
-    if filename=='other' and namespace=='RxCUI':
-        filename='Chemical_Ingredient'
+    if filename == 'other' and namespace == 'RxCUI':
+        filename = 'Chemical_Ingredient'
 
     if not filename in dict_of_file_names:
-        filename=filename.replace(' ','_')
+        filename = filename.replace(' ', '_')
         csv_writer = generate_node_csv_files(filename)
         dict_of_file_names[filename] = csv_writer
 
@@ -79,7 +79,7 @@ def parse_CUI_line(line, xref_start, namespace):
     dict_id_to_label[ID] = filename
 
     synonym = set(synonym1).union(synonym2)
-    info = {'id': ID, 'name': synonym.pop(), 'synonyme': '|'.join(synonym), 'xref': xref_start + ':' + cui}
+    info = {'id': ID, 'name': synonym.pop(), 'synonyms': '|'.join(synonym), 'xref': xref_start + ':' + cui}
     dict_of_file_names[filename].writerow(info)
     return ID, {'synonym': synonym, 'cui': cui}
 
@@ -106,7 +106,7 @@ def generate_rela_file_and_query(filename, from_label, to_label, path):
     :param path: string
     :return: csv writer dictionary
     """
-    filename=filename.replace(' ','_')
+    filename = filename.replace(' ', '_')
     combinde_name = path + from_label + '_' + to_label + '_' + filename + '.csv'
     header = ["from_code", "to_code", "qualifier"]
     file = open(combinde_name, 'w', encoding='utf-8')
@@ -120,10 +120,12 @@ def generate_rela_file_and_query(filename, from_label, to_label, path):
 
     return csv_writer
 
-# set of nodes which are generated without information
-set_nodes_from_rela=set()
 
-def add_nodes_without_infos(code, name, namespace,filename):
+# set of nodes which are generated without information
+set_nodes_from_rela = set()
+
+
+def add_nodes_without_infos(code, name, namespace, filename):
     """
     add node from mesh or rxnorm without known type
     :param code: string
@@ -172,10 +174,10 @@ def prepare_rela_and_add_to_file(root, dic, fIDName, path):
                 else:
                     to_name = ass.find('to_name').text
                     to_namespace = ass.find('to_namespace').text
-                    if to_namespace=='RxNorm':
+                    if to_namespace == 'RxNorm':
                         add_nodes_without_infos(to_code, to_name, to_namespace, 'Chemical_Ingredient')
                     else:
-                        add_nodes_without_infos(to_code, to_name, to_namespace,'other')
+                        add_nodes_without_infos(to_code, to_name, to_namespace, 'other')
                         csv_writer.writerow([to_code, filename, namespace])
 
             if from_code[0] != 'N':
@@ -186,12 +188,11 @@ def prepare_rela_and_add_to_file(root, dic, fIDName, path):
 
                     from_name = ass.find('from_name').text
                     from_namespace = ass.find('from_namespace').text
-                    if from_namespace=='RxNorm':
+                    if from_namespace == 'RxNorm':
                         add_nodes_without_infos(from_code, from_name, from_namespace, 'Chemical_Ingredient')
                     else:
-                        add_nodes_without_infos(from_code, from_name, from_namespace,'other')
+                        add_nodes_without_infos(from_code, from_name, from_namespace, 'other')
                         csv_writer.writerow([from_code, filename, namespace])
-
 
             label_from = dict_id_to_label[from_code]
             label_to = dict_id_to_label[to_code]
@@ -201,7 +202,7 @@ def prepare_rela_and_add_to_file(root, dic, fIDName, path):
 
             as_dic[filename][(label_from, label_to)].writerow({'to_code': to_code,
                                                                'from_code': from_code,
-                                                               'qualifier': qnamespace+':'+qname+':'+qvalue})
+                                                               'qualifier': qnamespace + ':' + qname + ':' + qvalue})
 
     return as_dic
 
@@ -210,7 +211,7 @@ def prepare_rela_and_add_to_file(root, dic, fIDName, path):
 dict_id_to_label = {}
 
 # header
-header = ['id', 'status', 'namespace', 'name', 'propertys', 'synonyme', 'xref']
+header = ['id', 'status', 'namespace', 'name', 'propertys', 'synonyms', 'xref']
 
 # dictionary of file names to file
 dict_of_file_names = {}
@@ -231,7 +232,7 @@ def generate_node_csv_files(file_name):
     :param file_name: string
     :return: csv writer dict
     """
-    file_name=file_name.replace(' ','_')
+    file_name = file_name.replace(' ', '_')
     file_name_short = 'output/' + file_name + '.csv'
     file = open(file_name_short, 'w', encoding='utf-8')
     csv_writer = csv.DictWriter(file, fieldnames=header)
@@ -240,7 +241,7 @@ def generate_node_csv_files(file_name):
     query_node = query % (path_of_directory, file_name_short)
     query_node += 'Create (n:%s {'
     for head in header:
-        if head in ['synonyme', 'propertys']:
+        if head in ['synonyms', 'propertys']:
             query_node += head + ': split(line.' + head + ',"|"), '
         else:
             query_node += head + ': line.' + head + ', '
@@ -248,10 +249,10 @@ def generate_node_csv_files(file_name):
     query_node = query_node[:-2] + '});\n'
     query_node = query_node % (dict_short_to_full_name[file_name])
     cypher_file.write(query_node)
-    query_constraint='''CREATE CONSTRAINT ON (n:%s) ASSERT n.id IS UNIQUE;\n''' %(dict_short_to_full_name[file_name])
+    query_constraint = '''CREATE CONSTRAINT ON (n:%s) ASSERT n.id IS UNIQUE;\n''' % (dict_short_to_full_name[file_name])
     cypher_file.write(query_constraint)
 
-    query_delete='Match (s:%s) Where not (s)--() Delete s;\n' %(dict_short_to_full_name[file_name])
+    query_delete = 'Match (s:%s) Where not (s)--() Delete s;\n' % (dict_short_to_full_name[file_name])
     cypher_file_delete.write(query_delete)
 
     return csv_writer
@@ -268,7 +269,7 @@ def prepare_node_and_rela_and_write_to_files(fIDName):
     if len(xml_files) == 1:
         file_name = xml_files[0]
     else:
-        sys.exit('xmp not in path ' + path)
+        sys.exit('xml not in path ' + path)
     tree = ET.parse(path + file_name)
     root = tree.getroot()
 
@@ -309,7 +310,7 @@ def prepare_node_and_rela_and_write_to_files(fIDName):
         dict_id_to_label[code] = filename
 
         infos = {'id': code, 'status': status, 'namespace': namespace, 'name': name, 'propertys': '|'.join(propertys),
-                 'synonyme': '|'.join(synonyme)}
+                 'synonyms': '|'.join(synonyme)}
         dict_of_file_names[filename].writerow(infos)
 
     # to avoid problems with data

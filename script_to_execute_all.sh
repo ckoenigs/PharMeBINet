@@ -27,7 +27,7 @@ echo integration of the database into hetionet
 # ths python scripts executed on windows with python 3.5.3
 cd import_into_Neo4j
 
-./integration_shell.sh $path_neo4j $path_project > output_all_integration.txt
+./integration_shell.sh $path_neo4j $path_project #> output_all_integration.txt
 
 cd ..
 
@@ -39,7 +39,7 @@ $path_neo4j/neo4j stop
 
 sleep 120
 
-cp -r /mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/neo4j_databases/graph.db /mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/neo4j_databases/inte.db
+cp -r /mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/neo4j_databases/hetionet /mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/neo4j_databases/inte.db
 
 $path_neo4j/neo4j restart
 
@@ -52,6 +52,36 @@ echo mapping and integration
 cd mapping_and_merging_into_hetionet
 
 ./script_mapping.sh $path_neo4j $path_project #> output_mapping.txt
+
+cd ..
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo cp database
+sleep 120
+
+$path_neo4j/neo4j stop
+
+sleep 180
+
+cp -r /mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/neo4j_databases/hetionet /mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/neo4j_databases/withsource
+
+sleep 120
+
+$path_neo4j/neo4j restart
+
+sleep 120
+
+echo delete source nodes
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+cd final_preparation
+
+./prepare_clear_pharmebinet.sh $path_neo4j > output_delete_source.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"

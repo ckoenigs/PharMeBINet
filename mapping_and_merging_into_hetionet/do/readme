@@ -1,2 +1,2 @@
-Integrate the DO information into Hetionet. This means all DOIDs which are already in Hetionet get only new properties and all the other generate new diseases.  
-Further, the is_a relationships from Do are also integrated into Hetionet.
+Integrate the DO disease information into the database. This means all disease with DOIDs which are already in the database get only new properties and all the other generate new diseases.  However, it checks also if maybe the DOID of disease appears in the alternative identifier of DO. Each pair is written into a CSV file and a cypher file is generate which got queries to update the node information, add new disease nodes, and integrate the is_a relationship between the disease nodes. Also, the is_a relationship pairs are integrated into a CSV file.
+In the last step, the information is integrated with cyher-shell.

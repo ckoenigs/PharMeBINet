@@ -32,16 +32,24 @@ dict_pathway_hetionet_names = {}
 # dictionary from own id to new identifier
 dict_own_id_to_identifier = {}
 
+# dictionary pathway id to resource
+dict_pathway_id_to_resource={}
+
 '''
 load in all pathways from hetionet in a dictionary
 '''
 
 
 def load_hetionet_pathways_in():
-    query = '''MATCH (n:Pathway) RETURN n.identifier,n.name, n.synonyms, n.source, n.xrefs'''
+    query = '''MATCH (n:Pathway) RETURN n.identifier,n.name, n.synonyms, n.source, n.xrefs, n.resource'''
     results = g.run(query)
 
-    for identifier, name, synonyms, source, xrefs, in results:
+    for identifier, name, synonyms, source, xrefs, resource, in results:
+        dict_pathway_id_to_resource[identifier]=resource
+        # print(identifier)
+        # print(name)
+        # print(synonyms)
+        # print(type(synonyms))
         if identifier == 'PC11_3095':
             print('lalal')
         synonyms = synonyms if not synonyms is None else []
@@ -50,14 +58,16 @@ def load_hetionet_pathways_in():
                 if not id in dict_own_id_to_identifier:
                     dict_own_id_to_identifier[id] = identifier
         if not name in dict_pathway_hetionet_names:
-            dict_pathway_hetionet_names[name.lower()] = identifier
-        else:
-            sys.exit('double name not considered')
+            dict_pathway_hetionet_names[name.lower()] = set()
+        dict_pathway_hetionet_names[name.lower()].add(identifier)
+        # else:
+        #     sys.exit('double name not considered')
         for synonym in synonyms:
             if synonym not in dict_pathway_hetionet_names:
-                dict_pathway_hetionet_names[synonym.lower()] = identifier
-            else:
-                sys.exit('double name not considered')
+                dict_pathway_hetionet_names[synonym.lower()] = set()
+            dict_pathway_hetionet_names[synonym.lower()].add(identifier)
+            # else:
+            #     sys.exit('double name not considered')
         synonyms.append(name)
         dict_pathway_hetionet[identifier] = synonyms
 
@@ -71,7 +81,7 @@ csv_not_mapped.writerow(['id', 'name', 'source'])
 
 file_mapped_pathways = open('pathway/mapped_pathways.tsv', 'w')
 csv_mapped = csv.writer(file_mapped_pathways, delimiter='\t')
-csv_mapped.writerow(['id', 'id_hetionet', 'mapped'])
+csv_mapped.writerow(['id', 'id_hetionet', 'mapped', 'resource'])
 
 file_multiple_mapped_pathways = open('pathway/multiple_mapped_pathways.tsv', 'w')
 csv_mapped_multi = csv.writer(file_multiple_mapped_pathways, delimiter='\t')
@@ -80,13 +90,25 @@ csv_mapped_multi.writerow(['id_s', 'name', 'source_sources', 'id_hetionet', 'sou
 # dictionary where a ctd pathway mapped to multiple pc or wp ids
 dict_ctd_to_multiple_pc_or_wp_ids = {}
 
+def prepare_resource(mapped_id):
+    """
+    Prepare the resource information
+    :param mapped_id: string
+    :return: string of resource
+    """
+    resource=set(dict_pathway_id_to_resource[mapped_id])
+    resource.add('CTD')
+    return '|'.join(sorted(resource))
+
+
+
 '''
 load all ctd pathways and check if they are in hetionet or not
 '''
 
 
 def load_ctd_pathways_in():
-    query = '''MATCH (n:CTDpathway) RETURN n'''
+    query = '''MATCH (n:CTD_pathway) RETURN n'''
     results = g.run(query)
 
     counter_map_with_id = 0
@@ -101,12 +123,12 @@ def load_ctd_pathways_in():
             counter_not_mapped += 1
             continue
 
-        # check if the ctd pathway id is part in the himmelstein xref
-        if pathways_id in dict_own_id_to_identifier:
+        # check if the ctd pathway id is part in the xref
+        if 'reactome:'+pathways_id in dict_own_id_to_identifier:
             counter_map_with_id += 1
             # if len(dict_own_id_to_pcid_and_other[pathways_id]) > 1:
             #     print('multiple für identifier')
-            csv_mapped.writerow([pathways_id, dict_own_id_to_identifier[pathways_id], 'id'])
+            csv_mapped.writerow([pathways_id, dict_own_id_to_identifier['reactome:'+pathways_id], 'id', prepare_resource(dict_own_id_to_identifier['reactome:'+pathways_id])])
 
 
         elif pathways_name in dict_pathway_hetionet_names:
@@ -114,7 +136,8 @@ def load_ctd_pathways_in():
             print(pathways_id)
             print(dict_pathway_hetionet_names[pathways_name])
             print('mapped with name')
-            csv_mapped.writerow([pathways_id, dict_pathway_hetionet_names[pathways_name], 'name'])
+            for pathway_id in dict_pathway_hetionet_names[pathways_name]:
+                csv_mapped.writerow([pathways_id, pathway_id, 'name', prepare_resource(pathway_id)])
 
 
         else:
@@ -134,8 +157,8 @@ generate connection between mapping pathways of ctd and hetionet and generate ne
 
 
 def create_cypher_file():
-    cypher_file = open('pathway/cypher.cypher', 'w')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ctd/pathway/mapped_pathways.tsv" As line FIELDTERMINATOR '\\t' Match (d:Pathway{identifier:line.id_hetionet}),(c:CTDpathway{pathway_id:line.id}) Create (d)-[:equal_to_CTD_pathway]->(c) Set d.resource= d.resource+'CTD', d.ctd="yes", d.ctd_url="http://ctdbase.org/detail.go?type=pathway&acc=%"+line.id, c.hetionet_id=line.id_hetionet;\n'''
+    cypher_file = open('output/cypher.cypher', 'a',encoding='utf-8')
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ctd/pathway/mapped_pathways.tsv" As line FIELDTERMINATOR '\\t' Match (d:Pathway{identifier:line.id_hetionet}),(c:CTD_pathway{pathway_id:line.id}) Create (d)-[:equal_to_CTD_pathway{how_mapped:line.mapped}]->(c) Set d.resource= split(line.resource, "|") , d.ctd="yes", d.ctd_url="http://ctdbase.org/detail.go?type=pathway&acc=%"+line.id, c.hetionet_id=line.id_hetionet;\n'''
     cypher_file.write(query)
 
     # add query to update disease nodes with do='no'

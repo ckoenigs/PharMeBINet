@@ -30,7 +30,7 @@ load uniprot information into dictionary
 
 
 def load_uniprot_info_into_dictionary():
-    file_uniprot = open('../uniProt/uniprot.tsv', 'r', encoding='utf-8')
+    file_uniprot = open('../uniProt/output/uniprot.tsv', 'r', encoding='utf-8')
     csv_reader = csv.DictReader(file_uniprot, delimiter='\t')
     counter_row = 0
     counter_ac_number_multiple = 0
@@ -415,7 +415,7 @@ def drugs_combination_and_check(neo4j_label):
         new_header = []
 
         # list properties which are lists
-        list_properties = ['alternative_drugbank_ids', 'groups', 'general_references_links_reference_id_title_url',
+        list_properties = ['alternative_ids', 'groups', 'general_references_links_reference_id_title_url',
                            'general_references_attachment_reference_id_title_url',
                            'general_references_textbooks_reference_id_isbn_citation',
                            'general_references_articles_reference_id_pubmed_citation',
@@ -427,7 +427,7 @@ def drugs_combination_and_check(neo4j_label):
                            'food_interaction', 'sequences', 'calculated_properties_kind_value_source',
                            'experimental_properties_kind_value_source', 'external_identifiers',
                            'external_links_resource_url', 'classification_alternative_parent',
-                           'classification_substituent']
+                           'classification_substituent', 'atc_codes']
 
         for head in header:
             if head == '\ufeffdrugbank_id':
@@ -528,9 +528,9 @@ def drugs_combination_and_check(neo4j_label):
                     sys.exit('external identifier not existing')
 
             groups = []
-            # dictionary with all experimental properties if the durgbank id is at least on structure file
+            # dictionary with all experimental properties if the drugbank id is at least on structure file
             dict_experimental_property_value = {}
-            # dictionary with all calculated properties if the durgbank id is at least on structure file
+            # dictionary with all calculated properties if the drugbank id is at least on structure file
             dict_calculated_property_value = {}
             dict_calculated_property_value_to_tool = {}
             if drugbank_id in dict_drug_structure_links or drugbank_id in dict_drug_structure:
@@ -631,7 +631,7 @@ def drugs_combination_and_check(neo4j_label):
             if drugbank_id in dict_drug_structure:
 
                 dict_drug_structure_properties = dict_drug_structure[drugbank_id]
-                alternative_drugbank_ids_list = row['alternative_drugbank_ids'].split('||')
+                alternative_ids_list = row['alternative_ids'].split('||')
 
                 salts_name_list = set([])
 
@@ -654,7 +654,7 @@ def drugs_combination_and_check(neo4j_label):
                     [brand_name.split(':')[0] for brand_name in row['international_brands_name_company'].split('||')])
 
                 dict_property_name_to_list = {
-                    'SECONDARY_ACCESSION_NUMBERS': alternative_drugbank_ids_list,
+                    'SECONDARY_ACCESSION_NUMBERS': alternative_ids_list,
                     'DRUG_GROUPS': groups,
                     'PRODUCTS': products_name_list,
                     'INTERNATIONAL_BRANDS': brand_name_list,
@@ -1263,9 +1263,9 @@ def check_and_maybe_generate_a_new_target_file(file, dict_targets_info_external,
 
                         # sys.exit('ohje')
                         if property[0:2] == 'BE':
-                            set_of_infos=set(before_properties[i].split('||'))
+                            set_of_infos = set(before_properties[i].split('||'))
                             set_of_infos.add(property)
-                            set_of_infos=list(filter(bool, set_of_infos))
+                            set_of_infos = list(filter(bool, set_of_infos))
                             before_properties[i] = '||'.join(set_of_infos)
                         else:
                             print(identifier)
@@ -1278,7 +1278,7 @@ def check_and_maybe_generate_a_new_target_file(file, dict_targets_info_external,
                             print(identifier)
                             set_of_infos = set(before_properties[i].split('||'))
                             set_of_infos.add(property)
-                            set_of_infos=list(filter(bool, set_of_infos))
+                            set_of_infos = list(filter(bool, set_of_infos))
                             before_properties[i] = '||'.join(set_of_infos)
                             print('another property is not the same')
                         counter_same_id_different_label_not_same_properties += 1
@@ -2086,7 +2086,8 @@ generate  new  enzyme nodes  if they do  not  exist anymore
 '''
 
 
-def add_addtitional_enzymes(uniprot_id, header_new, counter_multiple_information, length_list, spamreader, spamreader_node, position_of_id, enzyme_label, general_label):
+def add_additional_enzymes(uniprot_id, header_new, counter_multiple_information, length_list, spamreader,
+                           spamreader_node, position_of_id, enzyme_label, general_label):
     if not uniprot_id in dict_all_targets:
         dict_all_targets[uniprot_id] = 1
         # entries = ['' for i in range(length_list)]
@@ -2095,12 +2096,13 @@ def add_addtitional_enzymes(uniprot_id, header_new, counter_multiple_information
             information_to_this_uniprot_entry = dict_uniprot[uniprot_id]
             for head in header_new:
 
-                # it seems P00892, P50224, P62158 and P16683 are not really existing anymore in uniprot so the rela and the information should be removed.
+                # it seems P00892, P50224, P62158 and P16683 are not really existing anymore in uniprot so the rela and
+                # the information should be removed.
                 if len(information_to_this_uniprot_entry) > 1:
                     print('mmultiprot ' + uniprot_id)
                     # print(information_to_this_uniprot_entry)
                     counter_multiple_information += 1
-                    return False,  ""
+                    return False, ""
                     # sys.exit(uniprot_id)
                 if head in dict_drugbank_to_uniprot_label:
                     # print(information_to_this_uniprot_entry[0])
@@ -2108,8 +2110,8 @@ def add_addtitional_enzymes(uniprot_id, header_new, counter_multiple_information
                 elif head == 'id_source':
                     entries.append('Swiss-Prot')
                 elif head == 'alternative_uniprot_id':
-                    alternativ_ids = '||'.join(list(dict_ac_number_to_alternative[uniprot_id]))
-                    entries.append(alternativ_ids)
+                    alternative_ids = '||'.join(list(dict_ac_number_to_alternative[uniprot_id]))
+                    entries.append(alternative_ids)
                 else:
                     entries.append('')
         else:
@@ -2256,9 +2258,9 @@ def add_the_other_rela_to_cypher(pathway_label, product_label, salt_label, mutat
             uniprot_id = row['uniprot_id']
             print('check pathway  enzymes')
             print(uniprot_id)
-            found, uniprot_id = add_addtitional_enzymes(uniprot_id, header_new, counter_multiple_information,
-                                                        length_list, spamreader,  spamreader_node, position_of_id,
-                                                        enzyme_label, general_label)
+            found, uniprot_id = add_additional_enzymes(uniprot_id, header_new, counter_multiple_information,
+                                                       length_list, spamreader, spamreader_node, position_of_id,
+                                                       enzyme_label, general_label)
             if found:
                 spamreader_rela.writerow([uniprot_id, pathway_id, drugbank_license, label_neo4j_enzyme_pathway])
                 counter_existing += 1
@@ -2270,8 +2272,8 @@ def add_the_other_rela_to_cypher(pathway_label, product_label, salt_label, mutat
         for row in reader:
             counter_all += 1
             uniprot_id = row['protein_id']
-            add_addtitional_enzymes(uniprot_id, header_new, counter_multiple_information, length_list, spamreader,
-                                    spamreader_node, position_of_id, enzyme_label, general_label)
+            add_additional_enzymes(uniprot_id, header_new, counter_multiple_information, length_list, spamreader,
+                                   spamreader_node, position_of_id, enzyme_label, general_label)
 
     print('count of the multiple uniprot ids:' + str(counter_multiple_information))
     csvfile.close()

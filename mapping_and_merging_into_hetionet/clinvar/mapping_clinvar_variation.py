@@ -2,9 +2,11 @@
 import sys
 import datetime, re
 import csv, json, math
+import re
 
 sys.path.append("..")
 from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
+
 sys.path.append("../..")
 import create_connection_to_databases
 
@@ -30,7 +32,7 @@ def load_genes_from_database_and_add_to_dict():
         dict_gene_id_to_gene_node[identifier] = dict(gene)
 
 
-cypher_file = open('output/cypher_variants.cypher', 'w', encoding='utf-8')
+cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
 
 query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/clinvar/output/%s.tsv" As line FIELDTERMINATOR '\\t' 
     Match '''
@@ -52,7 +54,7 @@ def get_all_variation_properties():
             query_middle += property + ':n.' + property + ', '
         elif property=='xrefs':
             query_middle += property + ':split(line.' + property + ',"|"), '
-    query_middle = query_middle + ' license:"CC0 1.0", source:"ClinVar", clinvar:"yes",  resource:["ClinVar"], url:"https://www.ncbi.nlm.nih.gov/clinvar/variation/"+line.identifier}) Create (m)-[:equal_to_clinvar_variant]->(n);\n'
+    query_middle = query_middle + ' license:"https://www.ncbi.nlm.nih.gov/home/about/policies/", source:"ClinVar", clinvar:"yes",  resource:["ClinVar"], url:"https://www.ncbi.nlm.nih.gov/clinvar/variation/"+line.identifier}) Create (m)-[:equal_to_clinvar_variant]->(n);\n'
 
 
 '''
@@ -64,7 +66,11 @@ def add_query_to_cypher_file(tuples, file_name):
     this_start_query = query_start + "(n:Variant_ClinVar {identifier:line.identifier}) Create (m"
     this_start_query = this_start_query % (path_of_directory, file_name)
     for label in list(tuples):
+        if '_' in label:
+            label= re.sub("\_[a-z]", lambda m: m.group(0)[1].upper(), label)
         this_start_query += ':' + label + ' '
+    if not 'Genotype' in tuples and not 'Haplotype' in tuples:
+        this_start_query += ':GeneVariant '
     query = this_start_query + query_middle
     cypher_file.write(query)
 
@@ -75,7 +81,8 @@ prepare the label remove _ and change instead letter to upper letter
 
 
 def prepare_label(label):
-    label = label.rsplit('_', 1)[0].capitalize()
+    label = label.rsplit('_', 1)[0]
+    label = label[0].upper()+ label[1:]
 
     def remove_and_made_upper_letter(match):
         '''
@@ -99,7 +106,7 @@ def prepare_rela(rela):
     p = re.compile('{[a-zA-Z]')
 
 
-# dictionary tuple of lables to csv file
+# dictionary tuple of labels to csv file
 dict_tuple_of_labels_to_csv_files = {}
 
 # file from relationship between gene and variant
@@ -127,9 +134,9 @@ def load_all_variants_and_finish_the_files():
         query = query % (round_index * divider_of_variant, divider_of_variant)
 
         results = g.run(query)
-        for node, lables, in results:
+        for node, labels, in results:
             new_labels = set()
-            for label in lables:
+            for label in labels:
                 new_label = prepare_label(label)
                 new_labels.add(new_label)
             new_labels = tuple(sorted(new_labels))
@@ -199,10 +206,16 @@ def perpare_queries_index_and_relationships():
     cypher_file.write(query)
 
     # relationship
-    query = query_start + "(g:Gene{identifier:line.%s}), (v:Variant{identifier:line.%s}) Create  (g)-[:HAS_GhV{source:'ClinVar', resource:['ClinVar'], clinvar:'yes'}]->(v);\n"
+    query = query_start + "(g:Gene{identifier:line.%s}), (v:Variant{identifier:line.%s}) Create  (g)-[:HAS_GhV{source:'ClinVar', resource:['ClinVar'], clinvar:'yes', license:'https://www.ncbi.nlm.nih.gov/home/about/policies/'}]->(v);\n"
     query = query % (path_of_directory, 'gene_variant', header_rela[0], header_rela[1])
     cypher_file.write(query)
 
+#dictionary first label letter to rela letter
+dict_first_letter_to_rela_letter={
+    'G':'GT',
+    'H':'H',
+    'V':'GV'
+}
 
 def query_for_rela(file_name, label1, label2):
     """
@@ -212,8 +225,8 @@ def query_for_rela(file_name, label1, label2):
     :param label2: string
     :return:
     """
-    query = query_start + ''' (g:%s{identifier:line.identifier_1}), (c:%s{identifier:line.identifier_2}) Create (g)-[:HAS_%sh%s {source:'ClinVar', resource:['ClinVar'], license:"CC0 1.0", url:'https://www.ncbi.nlm.nih.gov/clinvar/variation/'+line.indetifier_1}]->(c);'''
-    query = query % (path_of_directory, file_name, label1, label2, label1[0], label2[0])
+    query = query_start + ''' (g:%s{identifier:line.identifier_1}), (c:%s{identifier:line.identifier_2}) Create (g)-[:HAS_%sh%s {source:'ClinVar', resource:['ClinVar'], license:"https://www.ncbi.nlm.nih.gov/home/about/policies/", url:'https://www.ncbi.nlm.nih.gov/clinvar/variation/'+line.indetifier_1}]->(c);'''
+    query = query % (path_of_directory, file_name, label1, label2, dict_first_letter_to_rela_letter[label1[0]], dict_first_letter_to_rela_letter[label2[0]])
     cypher_file.write(query)
 
 
@@ -239,6 +252,7 @@ def get_variant_rela_intern(label, list_to_labels):
     :param list_to_labels: list of strings
     :return:
     """
+    set_of_pairs=set()
     for other_label in list_to_labels:
         short_label1 = label.split('_')[0]
         short_label2 = other_label.split('_')[0]
@@ -248,7 +262,10 @@ def get_variant_rela_intern(label, list_to_labels):
         query = query % (label, other_label)
         results = g.run(query)
         for id1, id2, in results:
+            if (id1,id2) in set_of_pairs:
+                continue
             csv_writer.writerow([id1, id2])
+            set_of_pairs.add((id1,id2))
 
 
 def main():
@@ -307,7 +324,7 @@ def main():
     print(datetime.datetime.utcnow())
     print('Add relationships from Genotype')
 
-    get_variant_rela_intern('Genotype_ClinVar', ['Variant_ClinVar', 'Haplotype_ClinVar'])
+    get_variant_rela_intern('Genotype_ClinVar', ['Haplotype_ClinVar', 'Variant_ClinVar'])
 
     print('##########################################################################')
 

@@ -1,7 +1,7 @@
 import datetime
 import gzip
 import urllib.request
-import time
+import time, sys
 
 request_headers = {
 
@@ -22,7 +22,7 @@ def download_and_unzip(url_end):
     counter=0
     while not success:
         try:
-            with urllib.request.urlopen(request) as response, open('./ctd_data/'+url_end.rsplit('.', 1)[0], 'wb') as f:
+            with urllib.request.urlopen(request) as response, open(path_of_ctd_data+'/ctd_data/'+url_end.rsplit('.', 1)[0], 'wb') as f:
                 test = gzip.GzipFile(fileobj=response)
                 f.write(test.read())
             time.sleep(30)
@@ -69,11 +69,16 @@ seperate='CTD_chem_gene_ixn_types.csv'
 def main():
     print(datetime.datetime.utcnow())
     print('download files')
+    global path_of_ctd_data
+    if len(sys.argv) > 1:
+        path_of_ctd_data = sys.argv[1]
+    else:
+        sys.exit('need a path')
 
     # the file without gzip
     seperate_url = url_start + seperate
     request = urllib.request.Request(seperate_url, headers=request_headers)
-    with urllib.request.urlopen(request) as response, open('./ctd_data/' + seperate, 'wb') as f:
+    with urllib.request.urlopen(request) as response, open(path_of_ctd_data+'/ctd_data/' + seperate, 'wb') as f:
         f.write(response.read())
 
     #down load all gz files from ctd

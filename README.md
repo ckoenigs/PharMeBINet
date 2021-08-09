@@ -3,9 +3,9 @@ Fist use Hetionet (http://het.io/) as start base and was updated to Neo4j databa
 First the different data source are parsed and then integrated into Neo4j database.
 In the next step the different database are mapped and merged intho Hetionet and generate the database PharmaMeBiNet
 
-By execute:
-./script_to_execute_all.sh path_to_neo4j_service_bin path_of_project_in_system
-./script_to_execute_all.sh /home/cassandra/Documents/neo4j-community-4.0.3/bin /home/cassandra/Documents/Project/ 
+The shell script do the integration into neo4j and the mapping and merging to Hetionet. 
 
+
+./script_to_execute_all.sh /mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/neo4j/neo4j-community-4.2.5/bin /home/cassandra/Documents/Project/ > output.txt 2>&1 &
 
 

@@ -1,20 +1,12 @@
-This program can combine any two labels which have a relationship and make one big node with all relationship from both nodes.
-It can be decided if the relationships between this label node should still exist or not after the merging.
-Also, the program needs the information which direction the relationship has.
-The last argument is optional but add a label to the combined node.
+https://www.pharmgkb.org/
 
-In the program may be the username (of neo4j) and the password needs to change into yours.
+Version: June 08, 2021
 
-This is the example for Target merging
-python combine_nodes.py target_dictionary chembl_id_lookup True False Target
+First, the script starts the Reactome Neo4j database.
+Then get all constraints/indices from Reactome.
+In the next step, the Reactome database is exported with APOC export as graphML.
+Then my database is started and the Neo4j-GraphML-Importer-v1.1.3 (https://github.com/BioDWH2/Neo4j-GraphML-Importer) is used to import the data.
+The Reactome node gets a suffix and the indices of Reactome are also integrated with the import tool.
+java -jar Neo4j-GraphML-Importer-v1.0.0.jar -i reactome/pathwaydata.graphml  -e bolt://localhost:7687 --username neo4j --password test
 
-In the end, you have to use neo4j-shell -file cypher_file.cypher
-
-The program gets at least 4 parameters but can also have a 5.
-1: node label which should be merged into another label
-2: node label where new information is merged in 
-3:  can be True or False by true no self-loops are allowed
-4: can be True or False    
-    by True: the relationship between label 1 and label 2 is label1->label2
-    by False: label1 <- label2
-(5: optional: gives the combined node an additional label)
+License: Creative Commons Attribution 4.0 International (CC BY 4.0) License 

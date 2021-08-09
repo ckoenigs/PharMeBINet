@@ -29,16 +29,25 @@ dict_cc_to_name = {}
 # dictionary of molecular function key is the id and value the name
 dict_mf_to_name = {}
 
+# dictionary of biological process key is the alt id and value the id
+dict_alt_bp_to_id = {}
+# dictionary of cellular component key is the alt id and value the id
+dict_alt_cc_to_id = {}
+# dictionary of molecular function key is the alt id and value the id
+dict_alt_mf_to_id = {}
 
 # function integrate identifier and name into the right dictionary
-def integrate_information_into_dict(entity_name, dict_go):
-    query = '''MATCH (n:''' + entity_name + ''') RETURN n.identifier, n.name'''
+def integrate_information_into_dict(entity_name, dict_go, dict_alt_go_to_go):
+    query = '''MATCH (n:''' + entity_name + ''') RETURN n.identifier, n.name, n.alternative_ids'''
     results = g.run(query)
 
     counter_entities = 0
-    for identifier, name, in results:
+    for identifier, name, alt_go_ids, in results:
         dict_go[identifier] = name
         counter_entities += 1
+        if alt_go_ids:
+            for alt_go_id in alt_go_ids:
+                dict_alt_go_to_go[alt_go_id]=identifier
 
     print('It exists ' + str(counter_entities) + ' ' + entity_name)
     print(len(dict_go))
@@ -46,16 +55,13 @@ def integrate_information_into_dict(entity_name, dict_go):
 
 # load all information of biological process, cellular component and molecular function and put this information into a dictionary
 def load_bp_cc_mf_information():
-    integrate_information_into_dict('BiologicalProcess', dict_bp_to_name)
-    integrate_information_into_dict('CellularComponent', dict_cc_to_name)
-    integrate_information_into_dict('MolecularFunction', dict_mf_to_name)
+    integrate_information_into_dict('BiologicalProcess', dict_bp_to_name, dict_alt_bp_to_id)
+    integrate_information_into_dict('CellularComponent', dict_cc_to_name, dict_alt_cc_to_id)
+    integrate_information_into_dict('MolecularFunction', dict_mf_to_name, dict_alt_mf_to_id)
 
 
 # dictionary from uniprot to gene id from hetionet information
 dict_uniprot_to_gene_id = {}
-
-# dict_uniprot_count_genes from hetionet information
-dict_uniprot_count_genes = {}
 
 # dictionary gene id to gene symbol/name
 dict_gene_to_name = {}
@@ -143,14 +149,6 @@ def get_all_genes():
         if synonyms:
             for synonym in synonyms:
                 dict_synonyms_to_gene_ids[synonym.lower()].append(gene_id)
-
-    # all multiple uniprot ids from the hetionet genes
-    file = open('uniprot_gene/uniprot_to_multi_genes.csv', 'w')
-    writer = csv.writer(file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-    writer.writerow(['uniprot', 'gene_ids'])
-    for uniprot in dict_uniprot_count_genes.keys():
-        string_gene_list = '|'.join(str(x) for x in dict_uniprot_to_gene_id[uniprot])
-        writer.writerow([uniprot, string_gene_list])
 
     print('number of genes:' + str(counter_all_genes))
     print('number of multiple name:' + str(len(list_double_names)))
@@ -272,7 +270,7 @@ check if the uniprot id is in dictionary uniprot to gene and write into right fi
 all inputs are from the uniprot nodes
 uniprot_id can be identifier or an alternative uniprot id 
 
-gene_names are the genesymbol of uniport
+gene_names are the genesymbol of UniProt
 gene_ids are the gene ids which from uniprot
 '''
 
@@ -382,8 +380,9 @@ def split_string_to_get_one_value(try_to_get_value, symbol, which):
     if len(try_to_get_value) > 1:
         return_value = try_to_get_value[1].split(symbol, 1)[0]
     else:
-        print('no '+which)
-        print(try_to_get_value)
+        if not try_to_get_value[0].startswith('Note') :
+            print('no '+which)
+            print(try_to_get_value)
     return return_value
 
 def extract_infos_from_disease(string):
@@ -413,21 +412,8 @@ def write_cypher_file():
     :return:
     """
 
-    # cypher file for nodes
-    file_cypher_node = open('cypher_node.cypher', 'w')
-    # cypher file to integrate the information into Hetionet
-    file_cypher = open('cypher_rela.cypher', 'w')
-
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_gene/db_uniprot_to_gene_rela.csv" As line MATCH (n:Protein{identifier:line.uniprot_id}), (g:Gene{identifier:line.gene_id}) Create (g)-[:PRODUCES_GpP{name_mapping:line.name_mapping, uniprot:line.uniprot,resource:split(line.resource,'|'),license:'Creative Commons Attribution (CC BY 4.0) License'}]->(n);\n'''
-    file_cypher.write(query)
-
-    # the queries to integrate rela to bc, cc and mf
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_go/db_uniprots_to_bc.csv" As line MATCH (g:Protein{identifier:line.uniprot_ids}),(b:BiologicalProcess{identifier:line.go}) Create (g)-[:PARTICIPATES_PRpBC{resource:['UniProt'],source:'UniPort', uniprot:'yes', license:'Creative Commons Attribution (CC BY 4.0) License', url:'https://www.uniprot.org/uniprot/'+line.uniprot_ids}]->(b);\n'''
-    file_cypher.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_go/db_uniprots_to_cc.csv" As line MATCH (g:Protein{identifier:line.uniprot_ids}),(b:CellularComponent{identifier:line.go}) Create (g)-[:PARTICIPATES_PRpCC{resource:['UniProt'],source:'UniPort', uniprot:'yes', license:'Creative Commons Attribution (CC BY 4.0) License', url:'https://www.uniprot.org/uniprot/'+line.uniprot_ids}]->(b);\n'''
-    file_cypher.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_go/db_uniprots_to_mf.csv" As line MATCH (g:Protein{identifier:line.uniprot_ids}),(b:MolecularFunction{identifier:line.go}) Create (g)-[:PARTICIPATES_PRpMF{resource:['UniProt'],source:'UniPort', uniprot:'yes', license:'Creative Commons Attribution (CC BY 4.0) License', url:'https://www.uniprot.org/uniprot/'+line.uniprot_ids}]->(b);\n'''
-    file_cypher.write(query)
+    # cypher file for nodes and relas
+    file_cypher = open('output/cypher.cypher', 'w')
 
     query_property='''MATCH (p:Protein_Uniprot) WITH DISTINCT keys(p) AS keys
         UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields
@@ -442,7 +428,7 @@ def write_cypher_file():
         if property in ['go_classifiers', 'gene_name', 'gene_id', 'disease']:
             continue
         if property == 'second_ac_numbers':
-            query += 'alternative_identifiers:p.' + property + ', '
+            query += 'alternative_ids:p.' + property + ', '
         # to include only the sequence and not the header
         elif property == 'as_sequence':
             query += property + ':split(p.' + property + ',":")[1], '
@@ -451,14 +437,31 @@ def write_cypher_file():
             query += property + ':split(line.' + property + ',"|"), '
         else:
             query += property + ':p.' + property + ', '
-    query += 'uniprot:"yes", url:"https://www.uniprot.org/uniprot/"+p.identifier, source:"UniProt", resource:["UniProt"], license:"Creative Commons Attribution (CC BY 4.0) License "});\n '
-    file_cypher_node.write(query)
+    query += 'uniprot:"yes", url:"https://www.uniprot.org/uniprot/"+p.identifier, source:"UniProt", resource:["UniProt"], license:"CC BY 4.0"});\n '
+    file_cypher.write(query)
     query = 'Create Constraint On (node:Protein) Assert node.identifier Is Unique;\n'
-    file_cypher_node.write(query)
+    file_cypher.write(query)
 
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_gene/db_gene_uniprot_delete.csv" As line Match (g:Gene{identifier:line.gene_id}) With g,[x IN g.uniProtIDs WHERE x <> line.uniprot_id]  as filterdList 
                  Set g.uniProtIDs=filterdList;\n '''
-    file_cypher_node.write(query)
+    file_cypher.write(query)
+
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_gene/db_uniprot_to_gene_rela.csv" As line MATCH (n:Protein{identifier:line.uniprot_id}), (g:Gene{identifier:line.gene_id}) Create (g)-[:PRODUCES_GpP{name_mapping:line.name_mapping, uniprot:line.uniprot,resource:split(line.resource,'|'),license:'CC BY 4.0', url:'https://www.uniprot.org/uniprot/'+line.uniprot_id}]->(n);\n'''
+    file_cypher.write(query)
+
+    # the queries to integrate rela to bc, cc and mf
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_go/db_uniprots_to_bc.csv" As line MATCH (g:Protein{identifier:line.uniprot_ids}),(b:BiologicalProcess{identifier:line.go}) Create (g)-[:PARTICIPATES_PpBP{resource:['UniProt'],source:'UniProt', uniprot:'yes', license:'CC BY 4.0', url:'https://www.uniprot.org/uniprot/'+line.uniprot_ids}]->(b);\n'''
+    file_cypher.write(query)
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_go/db_uniprots_to_cc.csv" As line MATCH (g:Protein{identifier:line.uniprot_ids}),(b:CellularComponent{identifier:line.go}) Create (g)-[:PARTICIPATES_PpCC{resource:['UniProt'],source:'UniProt', uniprot:'yes', license:'CC BY 4.0', url:'https://www.uniprot.org/uniprot/'+line.uniprot_ids}]->(b);\n'''
+    file_cypher.write(query)
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_go/db_uniprots_to_mf.csv" As line MATCH (g:Protein{identifier:line.uniprot_ids}),(b:MolecularFunction{identifier:line.go}) Create (g)-[:PARTICIPATES_PpMF{resource:['UniProt'],source:'UniProt', uniprot:'yes', license:'CC BY 4.0', url:'https://www.uniprot.org/uniprot/'+line.uniprot_ids}]->(b);\n'''
+    file_cypher.write(query)
+
+    # query gene-disease association
+
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_disease/db_gene_to_disease.csv" As line MATCH (g:Gene{identifier:line.gene_ids}),(b:Disease{identifier:line.disease_id}) Merge (b)-[r:ASSOCIATES_DaG]->(g) On Create Set r.source="UniProt", r.resource=["UniProt"], r.uniprot='yes', r.note=line.note, r.sources=split(line.source,"|"), r.url="https://www.uniprot.org/uniprot/"+line.uniprot_ids On Match Set r.uniprot="yes", r.resource=r.resource+"UniProt", r.note=line.note, r.sources=split(line.source,"|") ;\n'''
+    file_cypher.write(query)
+
 
 '''
 Load all uniprots ids of the proteins and check out which appears also in the uniprot gene dictionary
@@ -494,9 +497,9 @@ def get_gather_protein_info_and_generate_relas():
 
 
     # generate a file with all uniprots to mf
-    file_uniprots_disease = open('uniprot_disease/db_uniprots_to_disease.csv', 'w')
-    csv_uniprots_disease = csv.writer(file_uniprots_disease)
-    csv_uniprots_disease.writerow(['uniprot_ids', 'disease_id','source','note'])
+    file_gene_disease = open('uniprot_disease/db_gene_to_disease.csv', 'w')
+    csv_gene_disease = csv.writer(file_gene_disease)
+    csv_gene_disease.writerow(['gene_ids', 'disease_id','source','note','resource'])
 
     # query to get all Protein information {identifier:'P0DMV0'} {identifier:'Q05066'} {identifier:'P0DPK4'} {identifier:'E5RIL1'}
     query = '''MATCH (n:Protein_Uniprot) RETURN n '''
@@ -513,8 +516,7 @@ def get_gather_protein_info_and_generate_relas():
     counter_gos_cc = 0
     counter_gos_mf = 0
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/db_uniprot_ids.csv" As line MATCH (p:Protein_Uniprot{identifier:line.uniprot_id}) Create (p)<-[:equal_to_uniprot]-(:Protein{'''
-
+    dict_gene_disease= {}
     # go through all Proteins
     # find overlap between protein and genes
     # maybe check out the go information to generate further relationships to go
@@ -542,16 +544,6 @@ def get_gather_protein_info_and_generate_relas():
         # get all xrefs of the node
         xrefs = node['xrefs'] if 'xrefs' in node else []
 
-        # get connection to disease
-        if 'disease' in node:
-            diseases=node['disease']
-            for disease in diseases:
-                omim_id, sources, note= extract_infos_from_disease(disease)
-                if omim_id in dict_omim_to_disease_ids:
-                    for disease_id in dict_omim_to_disease_ids[omim_id]:
-                        csv_uniprots_disease.writerow([identifier, disease_id,sources, note])
-
-
         # the gene symbol
         geneSymbols = node['gene_name'] if 'gene_name' in node else []
         geneSymbols = [x.split(' {')[0] for x in geneSymbols]
@@ -568,20 +560,21 @@ def get_gather_protein_info_and_generate_relas():
             overlap_uniprot_ids.add(identifier)
             set_list_mapped_genes = set_list_mapped_genes.union(genes)
 
-        # test the secondary ids if they are in dictionary uniprot to gene
-        # also check if it has multiple genes or not
-        for second_uniprot_id in second_uniprot_ids:
-            # if second_uniprot_id=='P30042':
-            #     print('huu')
-            #     print(identifier)
-            if second_uniprot_id == identifier:
-                continue
-            in_list, gene = check_and_write_uniprot_ids(second_uniprot_id, name, identifier, second_uniprot_id,
-                                                        geneSymbols, gene_ids)
-            if in_list:
-                found_at_least_on = True
-                overlap_uniprot_ids.add(second_uniprot_id)
-                set_list_mapped_genes = set_list_mapped_genes.union(genes)
+        # is not used bacuase the mapping consist only on gene ids, name and gene symbol!
+        # # test the secondary ids if they are in dictionary uniprot to gene
+        # # also check if it has multiple genes or not
+        # for second_uniprot_id in second_uniprot_ids:
+        #     # if second_uniprot_id=='P30042':
+        #     #     print('huu')
+        #     #     print(identifier)
+        #     if second_uniprot_id == identifier:
+        #         continue
+        #     in_list, gene = check_and_write_uniprot_ids(second_uniprot_id, name, identifier, second_uniprot_id,
+        #                                                 geneSymbols, gene_ids)
+        #     if in_list:
+        #         found_at_least_on = True
+        #         overlap_uniprot_ids.add(second_uniprot_id)
+        #         set_list_mapped_genes = set_list_mapped_genes.union(genes)
 
         # if one mapped gene is found then count this and also if multiple genes mappes to multiple uniprots ids write this in a new file to check the manual
         if found_at_least_on:
@@ -591,6 +584,18 @@ def get_gather_protein_info_and_generate_relas():
                 set_list_mapped_genes = [str(x) for x in list(set_list_mapped_genes)]
                 set_list_mapped_genes = ';'.join(set_list_mapped_genes)
                 writer_uniprots_genes_multi_mapps.writerow([overlap_uniprot_ids, set_list_mapped_genes])
+
+            # get connection to disease
+            if 'disease' in node:
+                diseases = node['disease']
+                for disease in diseases:
+                    omim_id, sources, note = extract_infos_from_disease(disease)
+                    if omim_id in dict_omim_to_disease_ids:
+                        for disease_id in dict_omim_to_disease_ids[omim_id]:
+                            for gene_id in set_list_mapped_genes:
+                                if (gene_id, disease_id) not in dict_gene_disease:
+                                    dict_gene_disease[(gene_id, disease_id)] = []
+                                dict_gene_disease[(gene_id, disease_id)].append([sources, note])
 
 
 
@@ -610,10 +615,34 @@ def get_gather_protein_info_and_generate_relas():
                 elif source_id[1] in dict_mf_to_name:
                     counter_gos_mf += 1
                     writer_uniprots_mf.writerow([identifier, source_id[1]])
+                elif source_id[1] in dict_alt_bp_to_id:
+                    counter_gos_bc += 1
+                    writer_uniprots_bc.writerow([identifier, dict_alt_bp_to_id[source_id[1]]])
+                elif source_id[1] in dict_alt_cc_to_id:
+                    counter_gos_cc += 1
+                    writer_uniprots_bc.writerow([identifier, dict_alt_cc_to_id[source_id[1]]])
+                elif source_id[1] in dict_alt_mf_to_id:
+                    counter_gos_mf += 1
+                    writer_uniprots_bc.writerow([identifier, dict_alt_mf_to_id[source_id[1]]])
+
+                else:
+                    print('GO not found:'+source_id[1])
             else:
                 new_xrefs.append(xref)
         new_xrefs = '|'.join(go_through_xrefs_and_change_if_needed_source_name(new_xrefs, 'Protein'))
         writer_uniprots_ids.writerow([identifier, new_xrefs])
+
+    for (identifier, disease_id), list_of_infos in dict_gene_disease.items():
+        sources=set()
+        notes=set()
+        for list_of_info in list_of_infos:
+            sources=sources.union(list_of_info[0].split('|'))
+            notes.add(list_of_info[1])
+        if len(sources)==0:
+            print('ohje sources')
+        sources="|".join(sources)
+        note=" ".join(notes)
+        csv_gene_disease.writerow([identifier, disease_id, sources, note])
 
     print('number of existing gene protein rela:' + str(counter_existing_gene_protein_rela))
     print('number of all proteins:' + str(counter_all_proteins))

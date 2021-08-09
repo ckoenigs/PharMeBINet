@@ -36,18 +36,12 @@ Generate cypher file to update or create the relationships in hetionet
 
 def generate_cypher_file():
     # relationship queries
-    cypher_file = open('cypher_rela.cypher', 'w', encoding='utf-8')
+    cypher_file = open('output/cypher_rela.cypher', 'w', encoding='utf-8')
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/aeolus/drug/new_rela_se.csv" As line Match (c:Chemical{identifier:line.chemical_id}),(r:SideEffect{identifier:line.disease_sideeffect_id})  Create (c)-[:MIGHT_CAUSES_CmcSE{license:"CC0 1.0",unbiased:false,source:'AEOLUS',countA:line.countA, prr_95_percent_upper_confidence_limit:line.prr_95_percent_upper_confidence_limit, prr:line.prr, countB:line.countB, prr_95_percent_lower_confidence_limit:line.prr_95_percent_lower_confidence_limit, ror:line.ror, ror_95_percent_upper_confidence_limit:line.ror_95_percent_upper_confidence_limit, ror_95_percent_lower_confidence_limit:line.ror_95_percent_lower_confidence_limit, countC:line.countC, drug_outcome_pair_count:line.drug_outcome_pair_count, countD:line.countD, ror_min:line.ror_min, ror_max:line.ror_max, prr_min:line.prr_min, prr_max:line.prr_max,  aeolus:'yes', resource:['AEOLUS']}]->(r); \n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/aeolus/drug/new_rela_se.csv" As line Match (c:Chemical{identifier:line.chemical_id}),(r:SideEffect{identifier:line.disease_sideeffect_id})  Create (c)-[:MIGHT_CAUSES_CHmcSE{license:"CC0 1.0",unbiased:false,source:'AEOLUS',countA:line.countA, prr_95_percent_upper_confidence_limit:line.prr_95_percent_upper_confidence_limit, prr:line.prr, countB:line.countB, prr_95_percent_lower_confidence_limit:line.prr_95_percent_lower_confidence_limit, ror:line.ror, ror_95_percent_upper_confidence_limit:line.ror_95_percent_upper_confidence_limit, ror_95_percent_lower_confidence_limit:line.ror_95_percent_lower_confidence_limit, countC:line.countC, drug_outcome_pair_count:line.drug_outcome_pair_count, countD:line.countD, ror_min:line.ror_min, ror_max:line.ror_max, prr_min:line.prr_min, prr_max:line.prr_max,  aeolus:'yes', resource:['AEOLUS']}]->(r); \n'''
     cypher_file.write(query)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/aeolus/drug/new_rela_disease.csv" As line Match (c:Chemical{identifier:line.chemical_id}),(r:Disease{identifier:line.disease_sideeffect_id})  Create (c)-[:MIGHT_INDUCES_CmiD{license:"CC0 1.0",unbiased:false,source:'AEOLUS',countA:line.countA, prr_95_percent_upper_confidence_limit:line.prr_95_percent_upper_confidence_limit, prr:line.prr, countB:line.countB, prr_95_percent_lower_confidence_limit:line.prr_95_percent_lower_confidence_limit, ror:line.ror, ror_95_percent_upper_confidence_limit:line.ror_95_percent_upper_confidence_limit, ror_95_percent_lower_confidence_limit:line.ror_95_percent_lower_confidence_limit, countC:line.countC, drug_outcome_pair_count:line.drug_outcome_pair_count, countD:line.countD, ror_min:line.ror_min, ror_max:line.ror_max, prr_min:line.prr_min, prr_max:line.prr_max,  aeolus:'yes', resource:['AEOLUS']}]->(r); \n'''
-    cypher_file.write(query)
-
-    query = ''':begin\n Match (c:Chemical) Where exists(c.integrated) Remove c.integrated;\n :commit\n'''
-    cypher_file.write(query)
-
-    query = ''':begin\n Match (c:Chemical) Where exists(c.integrated_disease) Remove c.integrated_disease;\n :commit\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/aeolus/drug/new_rela_disease.csv" As line Match (c:Chemical{identifier:line.chemical_id}),(r:Disease{identifier:line.disease_sideeffect_id})  Create (c)-[:MIGHT_INDUCES_CHmiD{license:"CC0 1.0",unbiased:false,source:'AEOLUS',countA:line.countA, prr_95_percent_upper_confidence_limit:line.prr_95_percent_upper_confidence_limit, prr:line.prr, countB:line.countB, prr_95_percent_lower_confidence_limit:line.prr_95_percent_lower_confidence_limit, ror:line.ror, ror_95_percent_upper_confidence_limit:line.ror_95_percent_upper_confidence_limit, ror_95_percent_lower_confidence_limit:line.ror_95_percent_lower_confidence_limit, countC:line.countC, drug_outcome_pair_count:line.drug_outcome_pair_count, countD:line.countD, ror_min:line.ror_min, ror_max:line.ror_max, prr_min:line.prr_min, prr_max:line.prr_max,  aeolus:'yes', resource:['AEOLUS']}]->(r); \n'''
     cypher_file.write(query)
 
     cypher_file.close()
@@ -102,7 +96,7 @@ def get_indications(label, set_of_tuples):
     get all pair which has an indication connection and add to set
     :param label: string
     """
-    query=''' Match (c)-[:equal_to_Aeolus_drug]-(r:AeolusDrug)-[l:Indicates]-(:AeolusOutcome)--(d:%s)  Return  c.identifier,  d.identifier '''
+    query=''' Match (c)-[:equal_to_Aeolus_drug]-(r:Aeolus_Drug)-[l:Indicates]-(:Aeolus_Outcome)--(d:%s)  Return  c.identifier,  d.identifier '''
     query = query %(label)
     results=g.run(query)
 
@@ -132,14 +126,17 @@ go through all connection of the mapped aeolus drugs and remember all informatio
 def get_aeolus_connection_information_in_dict(label_search, dict_connection_information_for,
                                               number_of_compound_to_work_with, property_label,
                                               dict_chemical_to_the_other_thing, set_of_indication_pairs):
-    query = '''Match (c:Chemical{aeolus:'yes'}) Where not exists(c.%s)  Set c.%s='yes' With c Limit ''' + str(
-        number_of_compound_to_work_with) + ''' Match (c)-[:equal_to_Aeolus_drug]-(r:AeolusDrug)-[l:Causes]-(:AeolusOutcome)--(d:%s) Where toInteger(l.countA)>100 Return c.identifier, l, d.identifier '''
-    query = query % (property_label, property_label, label_search)
+    # and toFloat(l.countA)/(toFloat(l.countA)+toFloat(l.countC))>0.0001
+    query = '''Match (c:Chemical{aeolus:'yes'}) With c  Match (c)-[:equal_to_Aeolus_drug]-(r:Aeolus_Drug)-[l:Causes]-(:Aeolus_Outcome)--(d:%s) Where toInteger(l.countA)>100 and toFloat(l.countA)/(toFloat(l.countA)+toFloat(l.countB))>0.001  Return c.identifier, l, d.identifier '''
+    query = query % ( label_search)
     results = g.run(query)
     found_something_with_query = False
+    counter_all_rela=0
     for mapped_id, connection, identifier, in results:
+        counter_all_rela+=1
+        # has oppsite rela!
         if (mapped_id, identifier) in set_of_indication_pairs:
-            print(mapped_id, identifier)
+            # print(mapped_id, identifier)
             continue
         found_something_with_query = True
         if mapped_id in dict_chemical_to_the_other_thing:
@@ -198,13 +195,14 @@ def get_aeolus_connection_information_in_dict(label_search, dict_connection_info
             dict_connection_information_for[(mapped_id, identifier)][8].append(countC)
             dict_connection_information_for[(mapped_id, identifier)][9].append(drug_outcome_pair_count)
             dict_connection_information_for[(mapped_id, identifier)][10].append(countD)
+    print('number of rela:', counter_all_rela)
 
 
 '''
 update and generate the relationship CAUSES_CcSE.
 go through all drugbank ID identifier pairs anf combine the information of multiple drugbank Id identifier pairs
 Next step is to check if this connection already exists in Hetionet, if true then update the relationship
-if false generate the connection with the properties licence, unbiased, source, url, the other properties that aeolus has
+if false generate the connection with the properties license, unbiased, source, url, the other properties that aeolus has
 countA	
 prr_95_percent_upper_confidence_limit	
 prr	
@@ -300,55 +298,50 @@ def main():
     get_indications('Disease',set_of_indication_pairs)
     get_indications('SideEffect', set_of_indication_pairs)
 
-    running_times = int(number_of_compound_nodes_which_are_connect_with_aeolus / number_of_compounds_at_once) + 1
+    global dict_connection_information, dict_connection_information_to_disease, dict_chemical_to_side_effects, dict_chemical_to_diseases
+    dict_connection_information = {}
+    dict_connection_information_to_disease = {}
+    dict_chemical_to_side_effects = {}
+    dict_chemical_to_diseases = {}
 
-    # because every aeolus drug has so many relationships only part for part can be integrated
-    for x in range(0, running_times):
-        print(x)
-        global dict_connection_information, dict_connection_information_to_disease, dict_chemical_to_side_effects, dict_chemical_to_diseases
-        dict_connection_information = {}
-        dict_connection_information_to_disease = {}
-        dict_chemical_to_side_effects = {}
-        dict_chemical_to_diseases = {}
+    print(
+        '###########################################################################################################################')
 
-        print(
-            '###########################################################################################################################')
+    print(datetime.datetime.utcnow())
+    print('get the aeolus information')
 
-        print(datetime.datetime.utcnow())
-        print('get the aeolus information')
+    get_aeolus_connection_information_in_dict('SideEffect', dict_connection_information,
+                                              number_of_compounds_at_once,
+                                              'integrated', dict_chemical_to_side_effects, set_of_indication_pairs)
 
-        get_aeolus_connection_information_in_dict('SideEffect', dict_connection_information,
-                                                  number_of_compounds_at_once,
-                                                  'integrated', dict_chemical_to_side_effects, set_of_indication_pairs)
+    print(
+        '###########################################################################################################################')
 
-        print(
-            '###########################################################################################################################')
+    print(datetime.datetime.utcnow())
 
-        print(datetime.datetime.utcnow())
+    get_aeolus_connection_information_in_dict('Disease', dict_connection_information_to_disease,
+                                              number_of_compounds_at_once, 'integrated_disease',
+                                              dict_chemical_to_diseases, set_of_indication_pairs)
 
-        get_aeolus_connection_information_in_dict('Disease', dict_connection_information_to_disease,
-                                                  number_of_compounds_at_once, 'integrated_disease',
-                                                  dict_chemical_to_diseases, set_of_indication_pairs)
+    print(
+        '###########################################################################################################################')
 
-        print(
-            '###########################################################################################################################')
+    print(datetime.datetime.utcnow())
+    print('Integrate connection into hetionet')
 
-        print(datetime.datetime.utcnow())
-        print('Integrate connection into hetionet')
+    print(
+        '###########################################################################################################################')
 
-        print(
-            '###########################################################################################################################')
+    print(datetime.datetime.utcnow())
+    print('integrate aeolus connection into csv for integration into  hetionet')
+    integrate_connection_from_aeolus_in_hetionet(dict_connection_information, csv_new)
 
-        print(datetime.datetime.utcnow())
-        print('integrate aeolus connection into csv for integration into  hetionet')
-        integrate_connection_from_aeolus_in_hetionet(dict_connection_information, csv_new)
+    print(
+        '###########################################################################################################################')
 
-        print(
-            '###########################################################################################################################')
+    print(datetime.datetime.utcnow())
 
-        print(datetime.datetime.utcnow())
-
-        integrate_connection_from_aeolus_in_hetionet(dict_connection_information_to_disease, csv_new_disease)
+    integrate_connection_from_aeolus_in_hetionet(dict_connection_information_to_disease, csv_new_disease)
 
     print(
         '###########################################################################################################################')

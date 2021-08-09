@@ -7,7 +7,7 @@ cypher_file = open('cypher.cypher', 'w', encoding='utf-8')
 
 cypher_file_rela = open('cypher_rela.cypher', 'w', encoding='utf-8')
 
-addition = '_ADReCS_Target'
+addition = '_ADReCSTarget'
 
 # dictionary rela to csv
 dict_rela_to_csv = {}
@@ -238,7 +238,7 @@ def prepare_adrs():
             dict_label_to_csv_writer['ditop2'].writerow(ditop_list)
         set_ditop2_ids.add(ditop2)
 
-        # protein node
+        # adr node
         identifier = row['ADR_TERM'].lower() if row['ADR_TERM'] != '' else row['TOXICITY_DETAIL'].lower()
 
         if (ditop2, identifier) not in dict_ditop_to_other_entities['ditop_adr']:

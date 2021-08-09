@@ -1,7 +1,8 @@
 # dictionary wrong (not fitting) source to real source
 dict_wrong_source_to_source = {
     'MIM': 'OMIM',
-    'RxCUI':'RxNorm_CUI'
+    'RxCUI':'RxNorm_CUI',
+    'MSH':'MESH'
 }
 
 

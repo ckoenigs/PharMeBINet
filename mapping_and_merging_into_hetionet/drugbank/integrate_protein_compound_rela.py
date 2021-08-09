@@ -24,6 +24,15 @@ dict_real_rela_type_to_list_of_rela_types = {}
 # cypher file
 cypher_file = open('rela_protein/cypher.cypher', 'w', encoding='utf-8')
 
+# dictionary first letter to rela Letter
+dict_first_letter_to_rela_letter = {
+    'T': 'Target',
+    'C': 'Carrier',
+    'CA': 'Carrier',
+    'TR': 'Transport',
+    'E': 'Enzyme'
+}
+
 
 def load_all_protein_chemical_pairs(direction, from_chemical):
     '''
@@ -36,20 +45,42 @@ def load_all_protein_chemical_pairs(direction, from_chemical):
     query = query % (direction)
     results = g.run(query)
 
+    counter = 0
     for labels, identifier1, rela, rela_type, compound_id, in results:
+        counter += 1
+        rela = dict(rela)
+        # take only the rela which have references!
+        refs = [x for x in rela.keys() if x.startswith('ref')]
+        if len(refs) == 0:
+            continue
+        rela_type_splitted = rela_type.rsplit('_',1)
+
+        last_part = rela_type_splitted[1]
+        if len(last_part) == 3:
+            letter = last_part[2]
+        elif len(last_part) == 4:
+            letter = last_part[2:]
+        else:
+
+            print(last_part)
+            sys.exit('different length of end of rela in drugbank compound-protein')
+        type_of_interaction = dict_first_letter_to_rela_letter[letter]
+        rela['interaction_with_form'] = type_of_interaction
+
         if 'Protein' in labels:
             label = 'Protein'
-            short_cut = 'PR'
+            short_cut = 'P'
         else:
             label = 'Chemical'
-            short_cut = 'C'
-        rela_name = rela_type.split('_')[0].upper()
+            short_cut = 'CH'
+        rela_name = rela_type_splitted[0].upper()
+        abbreviaction_rela=''.join([x[0].lower() for x in rela_name.split('_')])
         if from_chemical:
             rela_direction = '<-[r:%s]-'
-            this_rela_name = rela_name + '_C' + rela_name[0].lower() + short_cut
+            this_rela_name = rela_name + '_CH' + abbreviaction_rela + short_cut
         else:
             rela_direction = '-[r:%s]->'
-            this_rela_name = rela_name + '_' + short_cut + rela_name[0].lower() + 'C'
+            this_rela_name = rela_name + '_' + short_cut + abbreviaction_rela + 'CH'
         rela_direction = rela_direction % (this_rela_name)
 
         # for the connection between real name to names in drugbank
@@ -73,6 +104,7 @@ def load_all_protein_chemical_pairs(direction, from_chemical):
             # print(labels)
             # print(compound_id)
             dict_pairs[(identifier1, compound_id)].append(dict(rela))
+    print('number of edges:', counter)
 
 
 '''
@@ -99,18 +131,19 @@ def create_cypher_query_and_csv_file(rela_name, rela_direction, label_from):
         RETURN allfields;'''
     query = query % ('","'.join(dict_real_rela_type_to_list_of_rela_types[rela_name]),)
     results = g.run(query)
-    list_of_properties = ['identifier1', 'identifier2']
+    list_of_properties = ['identifier1', 'identifier2', 'interaction_with_form']
     for property, in results:
         # this is for all similar
-        if property in ['organism', license]:
+        if property in ['organism', 'license']:
             if label_from == 'Chemical' and property == 'organism':
                 query_create += property + ':line.' + property + ', '
                 query_update += 'r.' + property + '=line.' + property + ', '
                 list_of_properties.append(property)
             continue
         if property.startswith('ref') or property in ['actions', 'position', 'known_action']:
-            query_create += property + ':split(line.' + property + ',"|"), '
-            query_update += 'r.' + property + '=split(line.' + property + ',"|"), '
+            prop_first= property+'s' if property[-1]!='s' else property
+            query_create += prop_first + ':split(line.' + property + ',"|"), '
+            query_update += 'r.' + prop_first + '=split(line.' + property + ',"|"), '
         else:
             query_create += property + ':line.' + property + ', '
             query_update += 'r.' + property + '=line.' + property + ', '
@@ -127,15 +160,14 @@ def create_cypher_query_and_csv_file(rela_name, rela_direction, label_from):
     if not exists:
 
         if rela_direction.startswith('<'):
-            query_create = "<-[:" + rela_name + ' {' + query_create + ' unbiased:toBoolean(line.unbiased), source:"DrugBank", resource:["DrugBank"], drugbank:"yes", license:"' + license + '"}]-'
+            query_create = "<-[:" + rela_name + ' {' + query_create + ' interaction_with_form:split(line.interaction_with_form,"|"), unbiased:toBoolean(line.unbiased), source:"DrugBank", resource:["DrugBank"], url:"https://go.drugbank.com/drugs/"+line.identifier2, drugbank:"yes", license:"' + license + '"}]-'
         else:
-            query_create = "-[:" + rela_name + ' {' + query_create + ' source:"DrugBank", resource:["DrugBank"], drugbank:"yes", license:"' + license + '"}]->'
+            query_create = "-[:" + rela_name + ' {' + query_create + 'interaction_with_form:split(line.interaction_with_form,"|") , source:"DrugBank", resource:["DrugBank"], drugbank:"yes", license:"' + license + '"}]->'
         query = query_start + " Create (a)" + query_create + '(c);\n'
     else:
-        query = query_start + ' Merge (a)' + rela_direction + '(c) On Create Set ' + query_update + ' r.source="DrugBank", r.resource=["DrugBank"] On Match Set ' + query_update + ' r.resource=r.resource+"DrugBank";\n'
+        query = query_start + ' Merge (a)' + rela_direction + '(c) On Create Set ' + query_update + ' r.interaction_with_form=split(line.interaction_with_form,"|"), r.source="DrugBank", r.drugbank="yes", r.resource=["DrugBank"], r.url="https://go.drugbank.com/drugs/"+line.identifier2, r.license="' + license + '" On Match Set ' + query_update + ' r.drugbank="yes",  r.resource=r.resource+"DrugBank";\n'
 
     cypher_file.write(query)
-
     return csv_writer, list_of_properties
 
 
@@ -147,7 +179,6 @@ def run_through_dictionary_to_add_to_tsv_and_cypher():
             else:
                 rela_direction = '-[r:%s]->'
             rela_direction = rela_direction % (rela_name)
-            print(label)
             csv_writer, list_of_properties = create_cypher_query_and_csv_file(rela_name, rela_direction, label)
             for (identifier1, compound_id), list_rela in dict_pairs.items():
                 csv_list = [identifier1, compound_id]
@@ -178,9 +209,10 @@ def run_through_dictionary_to_add_to_tsv_and_cypher():
                                 if type(rela_infos[property]) == str:
                                     set_of_info_for_this_property.add(rela_infos[property])
                                 else:
-                                    set_of_info_for_this_property.union(rela_infos[property])
+                                    set_of_info_for_this_property=set_of_info_for_this_property.union(rela_infos[property])
                         if len(set_of_info_for_this_property) > 1:
-                            if not (property.startswith('ref') or property in ['actions', 'position', 'known_action']):
+                            if not (property.startswith('ref') or property in ['actions', 'position', 'known_action',
+                                                                               'interaction_with_form']):
                                 print('ohje, something which I do not expact to be a list is a list')
                                 print(property)
                                 print(csv_list)

@@ -74,7 +74,7 @@ graph = create_connection_with_neo4j()
 
 synonym_to_drugbank_ids = {}
 
-query = '''Match (c:Compound) Return c.identifier, c.name, c.synonyms'''
+query = '''Match (c:Compound) Where not c:Product Return c.identifier, c.name, c.synonyms'''
 result = graph.run(query)
 for drugbank_id, name, synonyms, in result:
     count_drugbank_ids += 1

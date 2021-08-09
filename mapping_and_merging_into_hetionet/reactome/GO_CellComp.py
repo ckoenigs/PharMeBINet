@@ -98,17 +98,15 @@ def load_reactome_gocellcomp_in():
             # if len(dict_own_id_to_pcid_and_other[pathways_id]) > 1:
             #     print('multiple für identifier')
             print('id')
-            resource = dict_gocellcompId_to_resource["GO:" + gocellcomp_id]
-            resource.append('Reactome')
-            resource = list(set(resource))
-            resource = '|'.join(resource)
+            resource = set(dict_gocellcompId_to_resource["GO:" + gocellcomp_id])
+            resource.add('Reactome')
+            resource = '|'.join(sorted(resource))
             csv_mapped.writerow(
                 [gocellcomp_id, "GO:" + gocellcomp_id, resource])  # erster eintrag reactome, zweiter hetionet
         elif gocellcomp_id in dict_gocellcomp_hetionet_alt_ids:
-            resource = dict_gocellcompId_to_resource["GO:" + dict_gocellcomp_hetionet_alt_ids[gocellcomp_id]]
-            resource.append('Reactome')
-            resource = list(set(resource))
-            resource = '|'.join(resource)
+            resource = set(dict_gocellcompId_to_resource["GO:" + dict_gocellcomp_hetionet_alt_ids[gocellcomp_id]])
+            resource.add('Reactome')
+            resource = '|'.join(sorted(resource))
             csv_mapped.writerow([gocellcomp_id, "GO:" + gocellcomp_id, resource])
         else:
             csv_not_mapped.writerow([gocellcomp_id])
@@ -125,16 +123,16 @@ generate connection between mapping gocellcomp of reactome and hetionet and gene
 
 
 def create_cypher_file():
-    cypher_file = open('gocellcomp/cypher.cypher', 'w', encoding="utf-8")
+    cypher_file = open('output/cypher.cypher', 'a', encoding="utf-8")
     # mappt die Knoten, die es in hetionet und reactome gibt und fügt die properties hinzu
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/reactome/gocellcomp/mapped_gocellcomp.tsv" As line FIELDTERMINATOR "\\t"
      Match (d: CellularComponent{identifier: line.id_hetionet}),(c:GO_CellularComponent_reactome{accession:line.id}) Create (d)-[: equal_to_reactome_gocellcomp]->(c) SET d.resource = split(line.resource, '|'), d.reactome = "yes";\n'''
     query = query % (path_of_directory)
     cypher_file.write(query)
-    cypher_file.write(':begin\n')
-    query = '''Match (d:CellularComponent) Where not  exists(d.reactome) Set d.reactome="no";\n '''
-    cypher_file.write(query)
-    cypher_file.write(':commit')
+    # cypher_file.write(':begin\n')
+    # query = '''Match (d:CellularComponent) Where not  exists(d.reactome) Set d.reactome="no";\n '''
+    # cypher_file.write(query)
+    # cypher_file.write(':commit\n')
 
 
 def main():

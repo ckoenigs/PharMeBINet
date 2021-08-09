@@ -24,7 +24,7 @@ def integrate_information_into_dict(dict_node_id_to_resource, label):
     get all node ids from the database
     :return:
     """
-    query = '''MATCH (n:Chemical) RETURN n.identifier, n.name, n.synonyms, n.resource'''
+    query = '''MATCH (n:Chemical) Where not n:Product RETURN n.identifier, n.name, n.synonyms, n.resource'''
     query = query % (label)
     results = g.run(query)
 
@@ -72,8 +72,8 @@ def add_to_file(dict_node_id_to_resource, identifier_db, identifier_act_id,csv_m
     :param csv_mapping: csv writer
     :return:
     """
-    resource = dict_node_id_to_resource[identifier_db]
-    resource.append('ADReCS-Target')
+    resource = set(dict_node_id_to_resource[identifier_db])
+    resource.add('ADReCS-Target')
     resource = sorted(resource)
     csv_mapping.writerow([identifier_db, identifier_act_id, '|'.join(resource)])
 
@@ -89,10 +89,10 @@ def get_all_adrecs_target_and_map(db_label,  dict_node_id_to_resource):
     csv_mapping = csv.writer(mapping_file, delimiter='\t')
     csv_mapping.writerow(['db_id', 'act_id', 'resource'])
 
-    prepare_query(file_name, db_label, 'drug_ADReCS_Target','db_id','Drug_Name','act_id')
+    prepare_query(file_name, db_label, 'drug_ADReCSTarget','db_id','Drug_Name','act_id')
 
     # get data
-    query = '''MATCH (n:drug_ADReCS_Target) RETURN n'''
+    query = '''MATCH (n:drug_ADReCSTarget) RETURN n'''
     results = g.run(query)
 
     # counter mapping

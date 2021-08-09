@@ -41,8 +41,8 @@ def get_all_ncbi_ids_form_hetionet_genes():
 # ditionary from ncbi property to hetionet property name
 dict_ncbi_property_to_hetionet_property = {
     "Full_name_from_nomenclature_authority": 'name',
-    "Symbol": 'geneSymbol',
-    "Symbol_from_nomenclature_authority": 'geneSymbol',
+    "Symbol": 'gene_symbols',
+    "Symbol_from_nomenclature_authority": 'gene_symbols',
     "Synonyms": 'synonyms',
     "dbXrefs": 'xrefs'
 }
@@ -50,7 +50,7 @@ dict_ncbi_property_to_hetionet_property = {
 dict_hetionet_property_to_ncbi_property = dict(map(reversed, dict_ncbi_property_to_hetionet_property.items()))
 
 # list of properties  which have a list element
-list_properties_with_list_elements = ['geneSymbol', 'synonyms', 'xrefs', 'map_location', 'Feature_type']
+list_properties_with_list_elements = ['gene_symbols', 'synonyms', 'xrefs', 'map_location', 'Feature_type']
 
 # list of found gene ids, because i think not all gene ids from hetionet exists anymore
 found_gene_ids = []
@@ -77,19 +77,19 @@ load ncbi tsv file in and write only the important lines into a new csv file for
 def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
     # file for integration into hetionet
     file = open('output_data/genes_merge.csv', 'w')
-    header = ['identifier', 'name', 'description', 'chromosome', 'geneSymbol', 'synonyms', 'Feature_type',
+    header = ['identifier', 'name', 'description', 'chromosome', 'gene_symbols', 'synonyms', 'Feature_type',
               'type_of_gene', 'map_location', 'xrefs']
     writer = csv.DictWriter(file, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL,
                             fieldnames=header)
     writer.writeheader()
 
-    cypher_file = open('cypher_merge.cypher', 'w')
+    cypher_file = open('output_data/cypher_merge.cypher', 'w')
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ncbi_gene/output_data/genes_merge.csv" As line Fieldterminator '\\t' Match (n:Gene_Ncbi {identifier:line.identifier}) Merge (g:Gene{identifier:line.identifier }) On Match Set '''
 
     on_create_string = ''' On Create SET '''
     for head in header:
         if head != 'identifier':
-            if head == 'geneSymbol':
+            if head == 'gene_symbols':
                 part = 'g.' + head + '='
             else:
                 part = 'g.' + head.lower() + '='
@@ -100,7 +100,7 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
             query += part
             on_create_string += part
 
-    query += 'g.ncbi="yes", g.resource=g.resource+"NCBI" ' + on_create_string + '''  g.source="Entrez Gene", g.resource="NCBI", g.license="CC0 1.0", g.url="http://identifiers.org/ncbigene/"+line.identifier, g.ncbi='yes', g.resource=["NCBI"] Create (n)<-[:equal_to_ncbi_gene]-(g);\n'''
+    query += 'g.ncbi="yes", g.resource=g.resource+"NCBI" ' + on_create_string + '''  g.source="Entrez Gene", g.resource="NCBI", g.license="https://www.ncbi.nlm.nih.gov/home/about/policies/", g.url="http://identifiers.org/ncbigene/"+line.identifier, g.ncbi='yes', g.resource=["NCBI"] Create (n)<-[:equal_to_ncbi_gene]-(g);\n'''
     cypher_file.write(query)
     query = '''MATCH (a:Gene) Where not  (a)-[:equal_to_ncbi_gene]->() Detach Delete a;'''
     cypher_file.write(query)

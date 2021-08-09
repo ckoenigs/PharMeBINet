@@ -21,7 +21,7 @@ def create_connection_with_neo4j():
 
 
 # generate cypher file
-cypherfile = open('chemical_phenotype/cypher.cypher', 'w', encoding='utf-8')
+cypherfile = open('output/cypher_edge.cypher', 'a', encoding='utf-8')
 
 # dictionary with rela name to drug-go/protein pair
 dict_rela_to_drug_go_pair = {}
@@ -245,7 +245,7 @@ def take_all_relationships_of_go_chemical():
     counter_all_rela = 0
 
     #  Where chemical.chemical_id='D000077212' and go.go_id='0006915'; Where chemical.chemical_id='C057693' and go.go_id='4128' Where chemical.chemical_id='D001564' and go.go_id='9429'  Where chemical.chemical_id='D004976' and go.go_id='2950' Where chemical.chemical_id='D015741' and go.go_id='367'
-    query = '''MATCH (chemical:CTDchemical)-[r:phenotype{organismid:'9606'}]->(cgo:CTDGO)-[:equal_to_CTD_go]-(go) RETURN cgo.go_id, cgo.name, labels(go), r, chemical.chemical_id, chemical.name, chemical.synonyms, chemical.drugBankIDs'''
+    query = '''MATCH (chemical:CTD_chemical)-[r:phenotype{organismid:'9606'}]->(cgo:CTD_GO)-[:equal_to_CTD_go]-(go) RETURN cgo.go_id, cgo.name, labels(go), r, chemical.chemical_id, chemical.name, chemical.synonyms, chemical.drugBankIDs'''
     results = g.run(query)
 
     for go_id, go_name, go_labels, rela, chemical_id, chemical_name, chemical_synonyms, drugbank_ids, in results:
@@ -253,7 +253,7 @@ def take_all_relationships_of_go_chemical():
         go_name = go_name.lower()
         counter_all_rela += 1
         interaction_text = rela['interaction'] if 'interaction' in rela else ''
-        pubMedIds = rela['pubmedids'] if 'pubmedids' in rela else []
+        pubMedIds = rela['pubMed_ids'] if 'pubMed_ids' in rela else []
         interactions_actions = rela['interactionactions'] if 'interactionactions' in rela else []
         comentioned_terms = rela['comentionedterms'] if 'comentionedterms' in rela else []
         anatomy_terms = rela['anatomyterms'] if 'anatomyterms' in rela else []
@@ -333,7 +333,7 @@ def generate_cypher_queries(file_name, label, rela, start_node, end_node):
 
 
 # header for csv files
-header = ['chemical_id', 'go_id', 'interaction_text', 'pubmed_ids', 'interaction_actions', 'unbiased', 'anatomy_terms',
+header = ['chemical_id', 'go_id', 'interaction_text', 'pubMed_ids', 'interaction_actions', 'unbiased', 'anatomy_terms',
           'comentioned_terms']
 
 # dictionary from go term to shor form
@@ -373,11 +373,11 @@ def fill_the_csv_files():
         short_form_label = dict_go_term_to_short_form[label]
         if from_chemical:
             file_name = 'chemical_phenotype/chemical_' + label + '_' + rela_full + '.tsv'
-            generate_cypher_queries(file_name, label, rela_full + '_C' + rela_full[0].lower() + short_form_label, 'b',
+            generate_cypher_queries(file_name, label, rela_full + '_CH' + rela_full[0].lower() + short_form_label, 'b',
                                     'go')
         else:
             file_name = 'chemical_phenotype/' + label + '_chemical_' + rela_full + '.tsv'
-            generate_cypher_queries(file_name, label, rela_full + '_' + short_form_label + rela_full[0].lower() + 'C',
+            generate_cypher_queries(file_name, label, rela_full + '_' + short_form_label + rela_full[0].lower() + 'CH',
                                     'go', 'b')
         file = open(file_name, 'w', encoding='utf-8')
         csv_writer = csv.writer(file, delimiter='\t')

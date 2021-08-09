@@ -69,7 +69,7 @@ umls_concept_id: string (UMLS CUI for label)
 
 
 def load_sider_in_dict():
-    query = '''MATCH (n:seSider) RETURN n '''
+    query = '''MATCH (n:se_Sider) RETURN n '''
     results = g.run(query)
     k = 0
     counter_new = 0
@@ -98,7 +98,7 @@ Generate cypher file for side effect nodes
 
 
 def generate_cypher_file():
-    cypher_file = open('cypher_se.cypher', 'w')
+    cypher_file = open('output/cypher.cypher', 'w')
     query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/sider/output/%s.csv" As line FIELDTERMINATOR '\\t' '''
     query_new = ''
     query_update = ''
@@ -106,10 +106,10 @@ def generate_cypher_file():
         query_new += head + ':line.' + head + ', '
         if not head == 'identifier':
             query_update += 'n.' + head + '=line.' + head + ', '
-    query_update = query_start + ' Match (b:seSider{umlsIDmeddra:line.identifier}), (n:SideEffect{identifier:line.identifier}) Set ' + query_update + ' n.sider="yes", n.resource=n.resource+"SIDER" Create (n)-[:equal_to_SE]->(b);\n'
+    query_update = query_start + ' Match (b:se_Sider{umlsIDmeddra:line.identifier}), (n:SideEffect{identifier:line.identifier}) Set ' + query_update + ' n.sider="yes", n.resource=n.resource+"SIDER" Create (n)-[:equal_to_SE]->(b);\n'
     query_update = query_update % ('se_update')
     cypher_file.write(query_update)
-    query_new = query_start + ' Match (b:seSider{umlsIDmeddra:line.identifier}) Create (n:SideEffect{' + query_new + ' sider:"yes", url:"http://identifiers.org/umls/"+line.identifier, resource:["SIDER"],  source: "UMLS via SIDER 4.1", license:"CC BY-NC-SA 4.0"}) Create (n)-[:equal_to_SE]->(b);\n'
+    query_new = query_start + ' Match (b:se_Sider{umlsIDmeddra:line.identifier}) Create (n:SideEffect{' + query_new + ' sider:"yes", url:"http://identifiers.org/umls/"+line.identifier, resource:["SIDER"],  source: "UMLS via SIDER 4.1", license:"CC BY-NC-SA 4.0"}) Create (n)-[:equal_to_SE]->(b);\n'
     query_new = query_new % ('se_new')
     cypher_file.write(query_new)
     cypher_file.close()

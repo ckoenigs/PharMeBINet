@@ -12,19 +12,6 @@ echo map and integrate gene
 
 python3 map_CTD_gene_gene_hetionet.py $path_to_project > gene/output_gene.txt
 
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-$path_neo4j/cypher-shell -u neo4j -p test -f gene/cypher.cypher > gene/output_cypher.txt
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-
-sleep 180
-$path_neo4j/neo4j restart
-sleep 120
-
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -32,36 +19,13 @@ echo map and integrate GO
 
 python3 integrate_CTD_GO_to_Hetionet.py $path_to_project > GO/output.txt
 
-now=$(date +"%F %T")
-echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p test -f GO/cypher.cypher > GO/output_cypher.txt
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-
-sleep 180
-$path_neo4j/neo4j restart
-sleep 120
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo mapping and integration pathway
 
 python3 map_CTD_pathways_to_hetionet.py $path_to_project > pathway/output.txt
 
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-$path_neo4j/cypher-shell -u neo4j -p test -f pathway/cypher.cypher > pathway/output_cypher.txt
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-
-sleep 180
-$path_neo4j/neo4j restart
-sleep 120
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -69,18 +33,6 @@ echo map and integrate Disease
 
 python3 integrate_and_map_CTD_disease_to_Hetionet_disease_new.py $path_to_project > disease_Disease/output_new.txt
 
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-$path_neo4j/cypher-shell -u neo4j -p test -f disease_Disease/cypher.cypher > disease_Disease/output_cypher.txt
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-
-sleep 180
-$path_neo4j/neo4j restart
-sleep 120
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -90,14 +42,15 @@ python3 integration_CTD_chemicals_into_hetionet.py $path_to_project > chemical/o
 
 now=$(date +"%F %T")
 echo "Current time: $now"
+echo integrate nodes into database
 
-$path_neo4j/cypher-shell -u neo4j -p test -f chemical/cypher.cypher > chemical/output_cypher.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher.cypher 
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 
 
-sleep 180
+sleep 60
 $path_neo4j/neo4j restart
 sleep 120
 
@@ -112,37 +65,12 @@ echo integrate gene-particitates-pathway
 
 python3 integrate_gene_participat_pathway.py $path_to_project > gene_pathway/output.txt
 
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-$path_neo4j/cypher-shell -u neo4j -p test -f gene_pathway/cypher.cypher > gene_pathway/output_cypher.txt
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-
-sleep 180
-$path_neo4j/neo4j restart
-sleep 120
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo integrate gene-particitates-go
 
-python3 integrate_gene_participates_GO.py $path_to_project > gene_go/output.txt
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-$path_neo4j/cypher-shell -u neo4j -p test -f gene_go/cypher.cypher > gene_go/output_cypher.txt
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-
-sleep 180
-$path_neo4j/neo4j restart
-sleep 120
+# python3 integrate_gene_participates_GO.py $path_to_project > gene_go/output.txt
 
 
 now=$(date +"%F %T")
@@ -151,38 +79,12 @@ echo integrate chemical disease
 
 python3 integration_chemical_disease.py $path_to_project > chemical_disease/output.txt
 
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-$path_neo4j/cypher-shell -u neo4j -p test -f chemical_disease/cypher.cypher > chemical_disease/output_cypher.txt
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-
-sleep 180
-$path_neo4j/neo4j restart
-sleep 120
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo integrate chemical gene
 
 python3 integration_chemical_gene.py $path_to_project > chemical_gene/output.txt
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-$path_neo4j/cypher-shell -u neo4j -p test -f chemical_gene/cypher.cypher > chemical_gene/output_cypher.txt
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-
-sleep 180
-$path_neo4j/neo4j restart
-sleep 120
-
 
 
 now=$(date +"%F %T")
@@ -195,20 +97,6 @@ python3 integration_chemical_phenotype.py $path_to_project > chemical_phenotype/
 
 now=$(date +"%F %T")
 echo "Current time: $now"
-
-$path_neo4j/cypher-shell -u neo4j -p test -f chemical_phenotype/cypher.cypher > chemical_phenotype/output_cypher.txt 2>&1 
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-sleep 180
-$path_neo4j/neo4j restart
-sleep 120
-
-
-
-now=$(date +"%F %T")
-echo "Current time: $now"
 echo integrate disease-associates-gene
 
 python3 integrate_disease_gene.py $path_to_project > gene_disease/output.txt
@@ -216,7 +104,7 @@ python3 integrate_disease_gene.py $path_to_project > gene_disease/output.txt
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p test -f gene_disease/cypher.cypher > gene_disease/output_cypher.txt
+$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher_edge.cypher
 
 now=$(date +"%F %T")
 echo "Current time: $now"
