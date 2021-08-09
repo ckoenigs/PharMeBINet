@@ -350,7 +350,7 @@ def generate_cypher_file_and_csv(rela_type):
 dict_rela_type_to_new_name = {
     "variation_to_disease": "ASSOCIATES",
     "confers_resistance": "CONFERS_RESISTANCE",
-    "hypersensitivity": "IS_RISIK_FACTOR_WITH",
+    "hypersensitivity": "IS_RISK_FACTOR_WITH",
     "resistance": "CONFERS_RESISTANCE",
     'confers_sensitivity':"CONFERS_SENSITIVITY"
 }
@@ -359,7 +359,7 @@ dict_rela_type_to_new_name = {
 dict_rela_name_to_rela_end = {
     "ASSOCIATES": "_VaCH",
     "CONFERS_RESISTANCE": "_VcrCH",
-    "IS_RISIK_FACTOR_WITH": "_VirfwCH",
+    "IS_RISK_FACTOR_WITH": "_VirfwCH",
     "CONFERS_RESISTANCE": "_VcrCH",
     'CONFERS_SENSITIVITY':'_VcsCH'
 }
