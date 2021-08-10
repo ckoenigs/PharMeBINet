@@ -23,7 +23,7 @@ In the last step, the cypher queries are generated to integrate the outcome/indi
 Additionally, the CSV files for outcome/indication, drug, and relationships are generated.
 
 
-License: CC0 1.0 Universal (CC0 1.0) Public Domain Dedication l 
+License: CC0 1.0 Universal (CC0 1.0) Public Domain Dedication
 
 Banda JM, Evans L, Vanguri RS, Tatonetti NP, Ryan PB, Shah NH (2016) A curated and standardized adverse drug event resource to accelerate drug safety research. Scientific Data 3: 160026. https://doi.org/10.1038/sdata.2016.26
 
