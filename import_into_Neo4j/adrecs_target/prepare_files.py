@@ -196,6 +196,8 @@ dict_ditop_to_other_entities = {}
 def prepare_adrs():
     """"
     prepare the adr file for adr csv and cypher
+    DITOP2_ID	ADR_ID	ADRECS_ID	ADR_TERM	TOXICITY_DETAIL	ORGAISM	DATA_SOURCE
+
     """
     adrs = pd.read_excel('data/ALLTOXI_INFO.xlsx', index_col=None, sheet_name='all1')
     # print(adrs.head())
@@ -206,6 +208,7 @@ def prepare_adrs():
     adr_properties.remove('DITOP2_ID')
     adr_properties.remove('ORGAISM')
     adr_properties.remove('DATA_SOURCE')
+    adr_properties.remove('TOXICITY_DETAIL')
 
     header_adrs = adr_properties[::]
     header_adrs.append('identifier')
@@ -214,12 +217,12 @@ def prepare_adrs():
     adrs = prepare_dataframe(adrs)
 
     # variant information
-    dict_old_to_new_label = prepare_file_and_query_for_node('adr', 'adr', header_adrs, ['ADRECS_ID','TOXICITY_DETAIL'], '|', 'identifier',
+    dict_old_to_new_label = prepare_file_and_query_for_node('adr', 'adr', header_adrs, ['ADRECS_ID'], '|', 'identifier',
                                                             as_dict=True)
 
     # ditop2 information
-    header_ditop = ['DITOP2_ID', 'ORGAISM', 'DATA_SOURCE']
-    prepare_file_and_query_for_node('ditop2', 'ditop2', header_ditop, [], ';', 'DITOP2_ID')
+    header_ditop = ['DITOP2_ID', 'ORGAISM', 'DATA_SOURCE','TOXICITY_DETAIL']
+    prepare_file_and_query_for_node('ditop2', 'ditop2', header_ditop, ['TOXICITY_DETAIL'], ';', 'DITOP2_ID')
 
     # rela preparation
     prepare_file_and_query_for_rela('ditop2', 'adr', 'DITOP2_ID', 'identifier', 'ditop_adrs')
@@ -239,7 +242,10 @@ def prepare_adrs():
         set_ditop2_ids.add(ditop2)
 
         # adr node
-        identifier = row['ADR_TERM'].lower() if row['ADR_TERM'] != '' else row['TOXICITY_DETAIL'].lower()
+        if row['ADR_TERM'] != '':
+            identifier = row['ADR_TERM'].lower()
+        else:
+            continue
 
         if (ditop2, identifier) not in dict_ditop_to_other_entities['ditop_adr']:
             dict_ditop_to_other_entities['ditop_adr'].add((ditop2, identifier))
@@ -254,11 +260,11 @@ def prepare_adrs():
         else:
 
             for key, value in dict_of_properties.items():
-                if key == 'TOXICITY_DETAIL':
-                    if type(dict_adr_id_to_dict_infos[identifier][key]) == str:
-                        dict_adr_id_to_dict_infos[identifier][key] = set([dict_adr_id_to_dict_infos[identifier][key]])
-                    dict_adr_id_to_dict_infos[identifier][key].add(value)
-                    continue
+                # if key == 'TOXICITY_DETAIL':
+                #     if type(dict_adr_id_to_dict_infos[identifier][key]) == str:
+                #         dict_adr_id_to_dict_infos[identifier][key] = set([dict_adr_id_to_dict_infos[identifier][key]])
+                #     dict_adr_id_to_dict_infos[identifier][key].add(value)
+                #     continue
                 if key == 'ADRECS_ID':
                     if type(dict_adr_id_to_dict_infos[identifier][key]) == str:
                         dict_adr_id_to_dict_infos[identifier][key] = set([dict_adr_id_to_dict_infos[identifier][key]])
@@ -288,6 +294,9 @@ def prepare_adrs():
 def prepare_drug():
     """"
     prepare the drug file for durg csv and cypher, also seperate the drug to target information!
+    Target_ID	BADD_DID	DrugBank_ID	Drug Name	Description	ATC	KEGG	PubChem	Drug_Synonym	NDC	Brand
+    Indications	Molecular_Formula	CAS
+
     """
     drugs = pd.read_excel('data/ALLDRUG_INFO.xlsx', index_col=None, )
     # print(drugs.head())
@@ -342,6 +351,8 @@ file_name_gene = 'output/genes.csv'
 def prepare_genes():
     """"
     prepare the drug file for durg csv and cypher, also seperate the drug to target information!
+    GENE_ID	GENE_SYMBOL	GENE_FULL_NAME	SYNONYMS	CHROMOSOME	MAP_LOCATION	TYPE_OF_GENE	OTHER_DESIGNATIONS	DBXREFS
+
     """
     global set_of_gene_ids
 
@@ -365,6 +376,8 @@ def prepare_genes():
 def prepare_variants():
     """"
     prepare the drug file for durg csv and cypher, also seperate the drug to target information!
+    BADD_TID	Variation_ID	UNIPROT_AC	Gene_Name	Gene_ID	Uniprot_ID	Class	Chrom	ChromStart	ChromEnd	Strand	Observed	Alleles	AlleleFreqs	PMID	Link	Data_Source
+
     """
     variants = pd.read_excel('data/SNP_Variation_INFO.xlsx', index_col=None, )
     # print(variants.head())
@@ -517,6 +530,8 @@ dict_protein_id_to_dict_infos = {}
 def prepare_proteins():
     """"
     prepare the protein file for protein csv and cypher
+    RID	UNIPROT_AC	UNIPROT_ID	Protein names	Gene names	GeneID	Function	String
+
     """
     protein = pd.read_excel('data/DITOP_PROTEIN_INFO.xlsx', index_col=None, )
     # print(protein.head())
@@ -613,6 +628,8 @@ def prepare_proteins():
 def prepare_protein_drug_adr():
     """"
     prepare the protein file for protein drug adr csv and cypher
+    BADD_TID	ADR_ID	ADReCS ID	ADR Term	Uniprot AC	Drug_Name
+
     """
     protein_drug_adr = pd.read_excel('data/P_D_A.xlsx', index_col=None, )
     # print(protein.head())
@@ -671,6 +688,8 @@ def prepare_protein_drug_adr():
 def prepare_variant_drug_adr():
     """"
     prepare the file for variant drug adr csv and cypher
+    BADD_TID	ADR_ID	ADReCS ID	ADR Term	Variation	Drug_Name
+
     """
     protein_drug_adr = pd.read_excel('data/V_D_A.xlsx', index_col=None, )
     # print(protein.head())
