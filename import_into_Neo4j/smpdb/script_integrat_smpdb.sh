@@ -16,7 +16,7 @@ python3 prepare_smpdb.py $path_to_project > output/outputfile.txt
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-echo integrate biogrid into neo4j
+echo integrate smpDB into neo4j
 
 $path_neo4j/cypher-shell -u neo4j -p test -f output/cypher.cypher 
 
