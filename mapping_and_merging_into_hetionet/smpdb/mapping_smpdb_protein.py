@@ -95,7 +95,7 @@ Load all variation sort the ids into the right csv, generate the queries, and ad
 '''
 
 
-def load_all_iid_protein_and_finish_the_files(csv_mapping_protein, csv_mapping_compound):
+def load_all_smpdb_protein_and_finish_the_files(csv_mapping_protein, csv_mapping_compound):
     query = "MATCH (n:protein_smpdb) RETURN n"
     results = g.run(query)
     counter_not_mapped = 0
@@ -108,7 +108,7 @@ def load_all_iid_protein_and_finish_the_files(csv_mapping_protein, csv_mapping_c
         if uniprot_id != '':
             if uniprot_id in dict_protein_id_to_resource:
                 csv_mapping_protein.writerow(
-                    [identifier, identifier, resource(dict_protein_id_to_resource[identifier]), 'id'])
+                    [identifier, uniprot_id, resource(dict_protein_id_to_resource[uniprot_id]), 'id'])
             elif uniprot_id in dict_alt_id_to_id:
                 for protein_id in dict_alt_id_to_id[uniprot_id]:
                     csv_mapping_protein.writerow(
@@ -183,9 +183,9 @@ def main():
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
-    print('Load all iid protein from database')
+    print('Load all smpdb protein from database')
 
-    load_all_iid_protein_and_finish_the_files(csv_mapping_protein, csv_mapping_compound)
+    load_all_smpdb_protein_and_finish_the_files(csv_mapping_protein, csv_mapping_compound)
 
     print('##########################################################################')
 
