@@ -50,6 +50,16 @@ echo smpdb
 
 cd ..
 
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+cd hmdb 
+echo HMDB
+
+./script_integrate_hmdb.sh $path_neo4j $path_to_project > output.txt
+
+
+cd ..
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -87,31 +97,31 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 
 
-cd  Uberon
-echo Uberon
+# cd  Uberon
+# echo Uberon
 
-#download uberon
-wget -O data/ext.obo "http://purl.obolibrary.org/obo/uberon/ext.obo"
-
-
-python3 ../EFO/transform_obo_to_csv_and_cypher_file.py data/ext.obo Uberon uberon_extend $path_to_project > output_generate_integration_file.txt
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-echo integrate uberon into neo4j
-
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher > output_cypher_integration.txt 2>&1
-
-sleep 60
-
-$path_neo4j/neo4j restart
+# #download uberon
+# wget -O data/ext.obo "http://purl.obolibrary.org/obo/uberon/ext.obo"
 
 
-sleep 120
+# python3 ../EFO/transform_obo_to_csv_and_cypher_file.py data/ext.obo Uberon uberon_extend $path_to_project > output_generate_integration_file.txt
+
+# now=$(date +"%F %T")
+# echo "Current time: $now"
+
+# echo integrate uberon into neo4j
+
+# $path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher > output_cypher_integration.txt 2>&1
+
+# sleep 60
+
+# $path_neo4j/neo4j restart
 
 
-cd ..
+# sleep 120
+
+
+# cd ..
 
 
 now=$(date +"%F %T")
@@ -322,23 +332,23 @@ echo ctd
 
 cd ..
 
-cd  dbSNP
-echo dbSNP
+# cd  dbSNP
+# echo dbSNP
 
-#python3 parse_json_to_tsv_dbsnp.py "/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/dbSNP" $path_to_project  > output/output_generate_integration_file.txt
+# #python3 parse_json_to_tsv_dbsnp.py "/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/dbSNP" $path_to_project  > output/output_generate_integration_file.txt
 
-now=$(date +"%F %T")
-echo "Current time: $now"
+# now=$(date +"%F %T")
+# echo "Current time: $now"
 
-echo integrate efo into neo4j
+# echo integrate efo into neo4j
 
-#$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher > output/output_cypher_node.txt 2>&1
+# #$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher > output/output_cypher_node.txt 2>&1
 
-sleep 60
+# sleep 60
 
-$path_neo4j/neo4j restart
+# $path_neo4j/neo4j restart
 
 
-sleep 120
+# sleep 120
 
-cd ..
+# cd ..

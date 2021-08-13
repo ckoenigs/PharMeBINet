@@ -262,7 +262,7 @@ def prepare_cypher_files_and_tsv():
                                        ['xrefs', 'synonyms', 'taxonomy_alternative_parents', 'taxonomy_substituents',
                                         'taxonomy_external_descriptors', 'experimental_properties',
                                         "predicted_properties", 'spectra', 'biospecimen_locations',
-                                        'cellular_locations', 'tissue_locations', 'general_references'])
+                                        'cellular_locations', 'tissue_locations', 'general_references','secondary_accessions'])
 
     generates_rela_tsv_file_and_cypher('metabolite', 'pathway', ['metabolite_id', 'pathway_id'], 'associates', [])
     generates_rela_tsv_file_and_cypher('metabolite', 'disease', ['metabolite_id', 'disease_id', 'references'],
@@ -463,7 +463,7 @@ def go_trough_ontology_and_write_information(descendant, parent_node_id, node_id
     :return:
     """
     # get ontology node information
-    name = descendant.findtext('{ns}term'.format(ns=ns))
+    name = descendant.findtext('{ns}term'.format(ns=ns)).strip()
     definition = descendant.findtext('{ns}definition'.format(ns=ns))
     level = descendant.findtext('{ns}level'.format(ns=ns))
     parent_id = descendant.findtext('{ns}parent_id'.format(ns=ns))
@@ -544,7 +544,7 @@ def run_trough_xml_and_parse_data_metabolite():
                                     dict_node[tag + '_' + subchild_tag] = subchild.text
                         elif tag == 'ontology':
                             for root in child.iterchildren():
-                                ontology_name = root.findtext('{ns}term'.format(ns=ns))
+                                ontology_name = root.findtext('{ns}term'.format(ns=ns)).strip()
                                 ontology_definition = root.findtext('{ns}definition'.format(ns=ns))
                                 ontology_level = root.findtext('{ns}level'.format(ns=ns))
                                 ontology_parent_id = root.findtext('{ns}parent_id'.format(ns=ns))
@@ -617,7 +617,7 @@ def run_trough_xml_and_parse_data_metabolite():
                                     dict_reference = prepare_reference(reference)
                                     list_references.append(dict_reference)
 
-                                disease_id = disease_omim_id if disease_omim_id else disease_name
+                                disease_id = disease_omim_id if disease_omim_id else disease_name.strip()
                                 if disease_id not in dict_disease_id_to_name:
                                     dict_disease_id_to_name[disease_id] = disease_name
                                     dict_node_type_to_tsv['disease'].writerow({'identifier': disease_id, 'name': disease_name})
