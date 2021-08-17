@@ -112,7 +112,7 @@ dict_tuple_of_labels_to_csv_files = {}
 # file from relationship between gene and variant
 file_rela = open('output/gene_variant.tsv', 'w', encoding='utf-8')
 csv_rela = csv.writer(file_rela, delimiter='\t')
-header_rela = ['gene_id', 'variant_id']
+header_rela = ['gene_id', 'variant_id','resource']
 csv_rela.writerow(header_rela)
 
 divider_of_variant = 5000
@@ -193,7 +193,9 @@ def load_all_variants_and_finish_the_files():
                 for gene_infos in genes_infos:
                     gene_id=gene_infos['gene_id']
                     if gene_id in dict_gene_id_to_gene_node:
-                        csv_rela.writerow([gene_id, identifier])
+                        resource=set(dict_gene_id_to_gene_node[gene_id]['resource'])
+                        resource.add('ClinVar')
+                        csv_rela.writerow([gene_id, identifier, '|'.join(resource)])
 
 
 '''
@@ -206,7 +208,7 @@ def perpare_queries_index_and_relationships():
     cypher_file.write(query)
 
     # relationship
-    query = query_start + "(g:Gene{identifier:line.%s}), (v:Variant{identifier:line.%s}) Create  (g)-[:HAS_GhV{source:'ClinVar', resource:['ClinVar'], clinvar:'yes', license:'https://www.ncbi.nlm.nih.gov/home/about/policies/'}]->(v);\n"
+    query = query_start + "(g:Gene{identifier:line.%s}), (v:Variant{identifier:line.%s}) Set g.resource=split(line.resource,'|'), g.clinvar='yes' Create  (g)-[:HAS_GhV{source:'ClinVar', resource:['ClinVar'], clinvar:'yes', license:'https://www.ncbi.nlm.nih.gov/home/about/policies/'}]->(v);\n"
     query = query % (path_of_directory, 'gene_variant', header_rela[0], header_rela[1])
     cypher_file.write(query)
 
