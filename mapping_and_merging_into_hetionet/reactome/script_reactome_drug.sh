@@ -70,7 +70,6 @@ echo "Current time: $now"
 echo Interaction relationships
 
 #python3 CreateEdgeInteraction.py $path_to_project "${license}" > RegulationEdges/output.txt
- '
 
 
 echo integrate connection with neo4j shell
