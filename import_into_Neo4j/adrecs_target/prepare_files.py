@@ -181,7 +181,7 @@ def prepare_dictionary(dictionary):
     new_dict = {}
     for key, value in dictionary.items():
         if type(value) in [list, set]:
-            value = '|'.join(value)
+            value = '|'.join([str(x) for x in value])
         new_dict[key] = value
     return new_dict
 
@@ -519,6 +519,7 @@ def prepare_variants():
                     print(dict_variant_id_to_infos[variant_id][key])
 
     for _, dict_info in dict_variant_id_to_infos.items():
+        dict_info= prepare_dictionary(dict_info)
         dict_label_to_csv_writer['variants'].writerow(dict_info)
 
     print(set_of_all_variant_ids_where_difference)
@@ -620,6 +621,7 @@ def prepare_proteins():
                     print(dict_protein_id_to_dict_infos[protein_id][key])
 
     for _, dict_info in dict_protein_id_to_dict_infos.items():
+        dict_info=prepare_dictionary(dict_info)
         dict_label_to_csv_writer['protein'].writerow(dict_info)
 
     print(set_of_all_protein_ids_where_difference)
