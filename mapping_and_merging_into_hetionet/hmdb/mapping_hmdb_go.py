@@ -99,7 +99,7 @@ def generate_files(label, label_hmdb):
     writer = csv.writer(file, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     writer.writerow(['GOIDHMDB', 'GOIDHetionet','how_mapped'])
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/hmdb/%s" As line  Fieldterminator '\\t'  Match (c:%s{ identifier:line.GOIDHetionet}), (n:%s{identifier:line.GOIDHMDB}) SET  c.ctd="yes", c.resource=c.resource+'HMDB' Create (c)-[:equal_to_hmdb_go{how_mapped:line.how_mapped}]->(n);\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/hmdb/%s" As line  Fieldterminator '\\t'  Match (c:%s{ identifier:line.GOIDHetionet}), (n:%s{identifier:line.GOIDHMDB}) SET  c.hmdb="yes", c.resource=c.resource+'HMDB' Create (c)-[:equal_to_hmdb_go{how_mapped:line.how_mapped}]->(n);\n'''
     query = query % (file_name, label, label_hmdb)
     cypher_file.write(query)
 
