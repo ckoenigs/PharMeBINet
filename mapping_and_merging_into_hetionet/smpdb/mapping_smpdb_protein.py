@@ -149,7 +149,7 @@ def main():
     else:
         sys.exit('need a path smpdb protein')
 
-    cypher_file = open('protein/cypher.cypher', 'w', encoding='utf-8')
+    cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
 
     print('##########################################################################')
 
