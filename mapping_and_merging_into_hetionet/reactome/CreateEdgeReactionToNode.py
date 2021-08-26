@@ -55,7 +55,7 @@ generate new relationships between pathways of hetionet and FailedReaction of he
 
 
 def create_cypher_file(directory, file_path, node_label, rela_name):
-    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/reactome/%s" As line FIELDTERMINATOR "\\t" MATCH (d:Reaction{identifier:line.id_hetionet_Reaction}),(c:%s{identifier:line.id_hetionet_node}) CREATE (d)-[: %s{order:line.order, stoichiometry:line.stoichiometry, resource: ['Reactome'], reactome: "yes", license:"%s", source:"Reactome" url:"https://reactome.org/content/detail/"+line.id_hetionet_Reaction}]->(c);\n'''
+    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/reactome/%s" As line FIELDTERMINATOR "\\t" MATCH (d:Reaction{identifier:line.id_hetionet_Reaction}),(c:%s{identifier:line.id_hetionet_node}) CREATE (d)-[: %s{order:line.order, stoichiometry:line.stoichiometry, resource: ['Reactome'], reactome: "yes", license:"%s", source:"Reactome", url:"https://reactome.org/content/detail/"+line.id_hetionet_Reaction}]->(c);\n'''
     query = query % (path_of_directory, file_path, node_label, rela_name, license)
     cypher_file.write(query)
 
