@@ -38,7 +38,7 @@ dict_pathway_id_to_resource={}
 dict_smpdb_id_to_pathway_ids={}
 
 
-def load_pc_from_database():
+def load_pw_from_database():
     """
     Load all pc into different mapping dictionaries
     :return:
@@ -114,7 +114,7 @@ def add_source_to_resource_and_prepare_string(resource):
 dict_db_pathway_pathway_to_how_mapped = {}
 
 
-def load_all_smpdb_pc_and_map(csv_mapping, csv_not_mapped):
+def load_all_smpdb_pw_and_map(csv_mapping, csv_not_mapped):
     global highest_identifier
     query = "MATCH (v:pathway_smpdb) RETURN v"
     results = g.run(query)
@@ -176,7 +176,7 @@ def main():
     print(datetime.datetime.utcnow())
     print('load pc from neo4j')
 
-    load_pc_from_database()
+    load_pw_from_database()
 
     print('##########################################################################')
 
@@ -190,7 +190,7 @@ def main():
     print(datetime.datetime.utcnow())
     print('Load pc from smpdb and map')
 
-    load_all_smpdb_pc_and_map(csv_mapping, csv_not_mapped)
+    load_all_smpdb_pw_and_map(csv_mapping, csv_not_mapped)
 
     print('##########################################################################')
 

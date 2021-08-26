@@ -101,12 +101,12 @@ def main():
 
     # 0: smpdb label           1: label in database        2: relationship to create
     list_of_combinations = [
-        ['metabolite_smpdb', 'Metabolite', 'associates'],
-        ['protein_smpdb', 'Protein', 'associates'],
+        ['metabolite_smpdb', 'Metabolite', 'ASSOCIATES_PWaM'],
+        ['protein_smpdb', 'Protein', 'ASSOCIATES_PWaP'],
     ]
 
     directory = 'edge_pathways'
-    cypher_file = open('output/cypher.cypher', 'a', encoding="utf-8")
+    cypher_file = open('output/cypher_edge.cypher', 'w', encoding="utf-8")
 
     for list_element in list_of_combinations:
         smpdb_label = list_element[0]
