@@ -34,7 +34,7 @@ dict_name_to_pathway_ids = {}
 # dictionary pathway id to resource
 dict_pathway_id_to_resource={}
 
-# dictionary smpdb id to pathway id
+# dictionary hmdb id to pathway id
 dict_hmdb_id_to_pathway_ids={}
 
 
@@ -89,11 +89,6 @@ def generate_files(path_of_directory):
         Match (n:Pathway{identifier:line.pathway_id}), (v:Pathway_HMDB{identifier:line.pathway_hmdb_id}) Create (n)-[r:equal_to_pathway_hmdb{how_mapped:line.how_mapped}]->(v) Set n.hmdb="yes", n.resource=split(line.resource,"|") ;\n'''
     query = query % (path_of_directory, file_name)
     cypher_file.write(query)
-
-    # query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/smpdb/%s" As line FIELDTERMINATOR '\\t'
-    #         Match  (v:Pathway_HMDB{identifier:line.pathway_hmdb_id}) Create (n:Pathway{identifier:line.new_id, smpdb:"yes", resource:["SMPDB"], source:"SMPDB", license:"SMPDB is offered to the public as a freely available resource. Use and re-distribution of the data, in whole or in part, for commercial purposes requires explicit permission of the authors and explicit acknowledgment of the source material (SMPDB) and the original publication",category:v.category, description:v.description, name:v.name, xrefs:['smpdb:'+v.smpdb_id] }) Create (n)-[r:equal_to_pathway_smpdb]->(v);\n'''
-    # query = query % (path_of_directory, file_name_not)
-    # cypher_file.write(query)
 
     return csv_mapping, csv_not_mapped
 
