@@ -147,7 +147,7 @@ def pathway_commons():
     global pc_df
     pc_df = pandas.DataFrame(rows)
     print(pc_df.head(2))
-
+    print(pc_df['source'].unique())
     print(pc_df.source.value_counts())
 
     # wikipathways: CC BY 3.0
@@ -160,7 +160,7 @@ def pathway_commons():
     # humancyc: not open source
 
     # filter only the open source sources
-    keep = {'wikipathways', 'reactome', 'panther', 'netpath'}
+    keep = {'wikipathways', 'reactome', 'panther', 'netpath', 'pathbank'}
     pc_df = pc_df.query("source in @keep")
 
     # dictionary source to license
@@ -172,7 +172,8 @@ def pathway_commons():
         'pid': 'not existing anymore?',
         'netpath': 'CC BY 2.5',
         'inoh': 'unknown',
-        'humancyc': 'not open source'
+        'humancyc': 'acedemic',
+        'pathbank':'PathBank is offered to the public as a freely available resource. Use and re-distribution of the data, in whole or in part, for commercial purposes requires explicit permission of the authors and explicit acknowledgment of the source material (PathBank) and the original publication. '
     }
 
     # add license to the different sources
