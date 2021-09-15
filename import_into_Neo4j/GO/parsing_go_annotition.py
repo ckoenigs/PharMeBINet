@@ -45,7 +45,7 @@ def generate_csv_file_and_prepare_cypher_queries_edge(file_name, label, rela_typ
     """
 
     # generate node query and indices
-    query = query_start + """ Match (n:go{ id:line.go_id}), (m:%s_go {identifier:line.identifier_node1}) Create (n)-[:%s{"""
+    query = query_start + """ Match (n:go{ id:line.go_id}), (m:%s_go {identifier:line.identifier_node1}) Create (m)-[:%s{"""
     for head in rela_properties:
         if head in ['identifier_node1', 'go_id']:
             continue
@@ -54,7 +54,7 @@ def generate_csv_file_and_prepare_cypher_queries_edge(file_name, label, rela_typ
         else:
             query += head + ":line." + head + ", "
 
-    query = query[:-2] + "}]->(m);\n "
+    query = query[:-2] + "}]->(n);\n "
     query = query % (path_of_directory, file_name, label, rela_type)
     cypher_file_edge.write(query)
 
