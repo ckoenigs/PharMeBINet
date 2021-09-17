@@ -34,9 +34,9 @@ CREATE (m:FailedReaction{identifier:n.stId, synonyms:apoc.convert.fromJsonList(n
 category:n.category, isInferred:n.isInferred, definition:n.definition, resource:['Reactome'], license:'CC BY 4.0',  reactome:'yes', url:"https://reactome.org/content/detail/"+ n.stId, pubMed_ids:n.pubMed_ids, source:"Reactome", systematicName:n.systematicName})<-[:equal_to_reactome_failedreaction]-(n);
 
 //-------------------- Create Regulation --------------------------------------------------
-//CREATE CONSTRAINT ON (a:Regulation) ASSERT a.identifier IS UNIQUE;
+CREATE CONSTRAINT ON (a:Regulation) ASSERT a.identifier IS UNIQUE;
  
-//MATCH (n:Regulation_reactome)--(m:PhysicalEntity_reactome)
-//WHERE m.speciesName = "Homo sapiens" WITH distinct n
-//CREATE (m:Regulation{identifier:n.dbId, name:n.displayName, alternative_id:n.oldStId, pubMed_ids:n.pubMed_ids,
-//url:"https://reactome.org/content/detail/" + n.stId})<-[:equal_to_reactome_regulation]-(n);
+MATCH (n:Regulation_reactome)--(m:PhysicalEntity_reactome)
+WHERE m.speciesName = "Homo sapiens" WITH distinct n
+CREATE (m:Regulation{identifier:n.dbId, name:n.displayName, alternative_id:n.oldStId, pubMed_ids:n.pubMed_ids,
+url:"https://reactome.org/content/detail/" + n.stId})<-[:equal_to_reactome_regulation]-(n);
