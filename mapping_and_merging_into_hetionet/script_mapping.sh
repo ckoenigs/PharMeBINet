@@ -84,6 +84,15 @@ echo 'integrat uniprot proteins'
 
 cd ..
 
+cd go
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo GO protein and relationships 
+
+./go_protein_and_edges_integration.sh $path_neo4j $path_to_project > output_script.txt
+
+cd ..
+
 cd iid
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -99,6 +108,24 @@ echo "Current time: $now"
 echo reactome
 
 ./script_reactome.sh $path_neo4j $path_to_project > output_script.txt
+
+cd ..
+
+cd hmdb
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo hmdb protein, go, metabolite
+
+./script_hmdb_mapping_and_merging.sh $path_neo4j $path_to_project > output_script_part_1.txt
+
+cd ..
+
+cd smpdb
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo smpdb
+
+./script_to_mapping_smpdb.sh $path_neo4j $path_to_project > output_script.txt
 
 cd ..
 
@@ -179,7 +206,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo reactome drug
 
-./script_reactome_drug.sh $path_neo4j $path_to_project > output_script_drug.txt
+./script_reactome_drug.sh $path_neo4j $path_to_project #> output_script_drug.txt
 
 cd ..
 
