@@ -82,7 +82,7 @@ def generate_files(path_of_directory):
     # not mapped file
     file_name_not = 'pathway/not_mapped_pathway.tsv'
     file_not = open(file_name_not, 'w', encoding='utf-8')
-    header_not = ['pathway_smpdb_id', 'name', 'new_id']
+    header_not = ['pathway_smpdb_id', 'name', 'new_id', 'xrefs']
     csv_not_mapped = csv.writer(file_not, delimiter='\t')
     csv_not_mapped.writerow(header_not)
 
@@ -94,7 +94,7 @@ def generate_files(path_of_directory):
     cypher_file.write(query)
 
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/smpdb/%s" As line FIELDTERMINATOR '\\t' 
-            Match  (v:pathway_smpdb{smpdb_id:line.pathway_smpdb_id}) Create (n:Pathway{identifier:line.new_id, smpdb:"yes", resource:["SMPDB"], source:"SMPDB", license:"SMPDB is offered to the public as a freely available resource. Use and re-distribution of the data, in whole or in part, for commercial purposes requires explicit permission of the authors and explicit acknowledgment of the source material (SMPDB) and the original publication",category:v.category, description:v.description, name:v.name, xrefs:['smpdb:'+v.smpdb_id] }) Create (n)-[r:equal_to_pathway_smpdb]->(v);\n'''
+            Match  (v:pathway_smpdb{smpdb_id:line.pathway_smpdb_id}) Create (n:Pathway{identifier:line.new_id, smpdb:"yes", resource:["SMPDB"], source:"SMPDB", license:"SMPDB is offered to the public as a freely available resource. Use and re-distribution of the data, in whole or in part, for commercial purposes requires explicit permission of the authors and explicit acknowledgment of the source material (SMPDB) and the original publication",category:v.category, description:v.description, name:v.name, xrefs:split(line.xrefs,'|'), url:"https://smpdb.ca/view/"+line.pathway_smpdb_id }) Create (n)-[r:equal_to_pathway_smpdb]->(v);\n'''
     query = query % (path_of_directory, file_name_not)
     cypher_file.write(query)
 
@@ -113,9 +113,11 @@ def add_source_to_resource_and_prepare_string(resource):
 # dictionary mapping db pathway and pathway to how mapped
 dict_db_pathway_pathway_to_how_mapped = {}
 
+# dictionary name pathway name to pathway id
+dict_new_pathway_name_to_pathway_ids={}
 
-def load_all_smpdb_pw_and_map(csv_mapping, csv_not_mapped):
-    global highest_identifier
+
+def load_all_smpdb_pw_and_map(csv_mapping):
     query = "MATCH (v:pathway_smpdb) RETURN v"
     results = g.run(query)
 
@@ -151,10 +153,24 @@ def load_all_smpdb_pw_and_map(csv_mapping, csv_not_mapped):
             counter_mapped += 1
         else:
             counter_not_mapped += 1
-            highest_identifier+=1
-            csv_not_mapped.writerow([identifier, name, 'PC12_'+str(highest_identifier)])
+
+            if name not in dict_new_pathway_name_to_pathway_ids:
+                dict_new_pathway_name_to_pathway_ids[name]=set()
+            dict_new_pathway_name_to_pathway_ids[name].add(identifier)
     print('number of mapped node:', counter_mapped)
     print('number of not mapped node:', counter_not_mapped)
+
+def new_pathway_add_to_file(csv_not_mapped):
+    """
+    Write the new pathways into a file
+    :param csv_not_mapped: csv writer
+    :return:
+    """
+    global highest_identifier
+    for name, set_of_ids in dict_new_pathway_name_to_pathway_ids.items():
+        xrefs='smpdb:'+'|smpdb:'.join(set_of_ids)
+        highest_identifier+=1
+        csv_not_mapped.writerow([set_of_ids.pop(), name, 'PC12_'+str(highest_identifier), xrefs])
 
 
 def main():
@@ -190,7 +206,14 @@ def main():
     print(datetime.datetime.utcnow())
     print('Load pc from smpdb and map')
 
-    load_all_smpdb_pw_and_map(csv_mapping, csv_not_mapped)
+    load_all_smpdb_pw_and_map(csv_mapping)
+
+    print('##########################################################################')
+
+    print(datetime.datetime.utcnow())
+    print('Write new pathway nodes in file')
+
+    new_pathway_add_to_file(csv_not_mapped)
 
     print('##########################################################################')
 

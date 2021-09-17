@@ -28,18 +28,18 @@ def load_pathway_node_edge_info(csv_file, dict_pathway_node_to_rela_info,
     :param node_pharmebinet_label: string
     :return: 
     """
-    query = '''MATCH (p:Pathway)-[]-(r:pathway_smpdb)-[v]-(n:%s)-[]-(b:%s) RETURN p.identifier, b.identifier, v'''
+    query = '''MATCH (p:Pathway)-[]-(r:pathway_smpdb)-[v]-(n:%s)-[]-(b:%s) RETURN p.identifier, b.identifier, v, r.smpdb_id'''
     query = query % ( node_smpdb_label, node_pharmebinet_label)
     print(query)
     results = graph_database.run(query)
     # for id1, id2, order, stoichiometry, in results:
-    for pathway_id, node_id, edge,  in results:
+    for pathway_id, node_id, edge, smpdb_pathway_id,   in results:
         if (pathway_id, node_id) in dict_pathway_node_to_rela_info:
             print(pathway_id, node_id)
             # sys.exit("Doppeltepathway-edge Kombination")
             continue
         dict_pathway_node_to_rela_info[(pathway_id, node_id)] = edge
-        csv_file.writerow([pathway_id, node_id])
+        csv_file.writerow([pathway_id, node_id, smpdb_pathway_id])
     print('number of pathway-'+node_smpdb_label+' relationships in hetionet:' + str(
         len(dict_pathway_node_to_rela_info)))
 
@@ -50,7 +50,7 @@ generate new relationships between pathways and nodes that have edges in smpdb
 
 
 def create_cypher_file( file_path, node_label, rela_name):
-    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/smpdb/%s" As line FIELDTERMINATOR "\\t" MATCH (d:Pathway{identifier:line.pathway_id}),(c:%s{identifier:line.node_id}) CREATE (d)-[: %s{ resource: ['SMPDB'], smpdb: "yes", license:"SMPDB is offered to the public as a freely available resource. Use and re-distribution of the data, in whole or in part, for commercial purposes requires explicit permission of the authors and explicit acknowledgment of the source material (SMPDB) and the original publication", url:"https://smpdb.ca/view/"+line.pathway_id, source:"SMPDB"}]->(c);\n'''
+    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/smpdb/%s" As line FIELDTERMINATOR "\\t" MATCH (d:Pathway{identifier:line.pathway_id}),(c:%s{identifier:line.node_id}) CREATE (d)-[: %s{ resource: ['SMPDB'], smpdb: "yes", license:"SMPDB is offered to the public as a freely available resource. Use and re-distribution of the data, in whole or in part, for commercial purposes requires explicit permission of the authors and explicit acknowledgment of the source material (SMPDB) and the original publication", url:"https://smpdb.ca/view/"+line.smpdb_pathway_id, source:"SMPDB"}]->(c);\n'''
     query = query % (path_of_directory, file_path, node_label, rela_name)
     cypher_file.write(query)
 
@@ -69,7 +69,7 @@ def check_relationships_and_generate_file( node_smpdb_label, node_pharmebinet_la
 
     file_edge_pathway_to_node = open(file_name,'w', encoding="utf-8")
     csv_edge = csv.writer(file_edge_pathway_to_node, delimiter='\t', lineterminator='\n')
-    csv_edge.writerow(['pathway_id', 'node_id'])
+    csv_edge.writerow(['pathway_id', 'node_id','smpdb_pathway_id'])
 
     dict_pathway_node = {}
 
