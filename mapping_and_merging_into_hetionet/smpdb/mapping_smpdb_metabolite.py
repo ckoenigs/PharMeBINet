@@ -50,21 +50,6 @@ def load_metabolites_from_database_and_add_to_dict():
     print('number of metabolites:',len(dict_metabolite_id_to_resource))
 
 
-# dictionary compound id to name and resource
-dict_compound_id_to_name = {}
-
-
-def load_compound_from_database_and_add_to_dict():
-    """
-    Load all compound data for mapping to drugbank.
-    :return:
-    """
-    query = "MATCH (n:Compound) RETURN n.identifier, n.name, n.resource"
-    results = g.run(query)
-    for identifier, name, resource, in results:
-        dict_compound_id_to_name[identifier] = {'name': name, 'resource': resource}
-    print('number of compound:', len(dict_compound_id_to_name))
-
 
 def generate_files(path_of_directory, label):
     """
@@ -97,7 +82,7 @@ Load all variation sort the ids into the right csv, generate the queries, and ad
 '''
 
 
-def load_all_smpdb_metabolite_and_finish_the_files(csv_mapping_metabolite, csv_not_mapped):
+def     load_all_smpdb_metabolite_and_finish_the_files(csv_mapping_metabolite, csv_not_mapped):
     query = "MATCH (n:metabolite_smpdb) RETURN n"
     results = g.run(query)
     counter_not_mapped = 0
@@ -159,17 +144,9 @@ def main():
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
-    print('Load all Compound from database')
-
-    load_compound_from_database_and_add_to_dict()
-
-    print('##########################################################################')
-
-    print(datetime.datetime.utcnow())
     print('Generate cypher and csv file')
 
     csv_mapping_metabolite = generate_files(path_of_directory, 'Metabolite')
-    # csv_mapping_compound = generate_files(path_of_directory, 'Compound')
 
     file=open('metabolite/not_mapped.csv','w', encoding='utf-8')
     csv_not_mapped=csv.writer(file, delimiter='\t')

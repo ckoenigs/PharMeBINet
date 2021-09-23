@@ -37,6 +37,9 @@ dict_pathway_id_to_resource={}
 # dictionary smpdb id to pathway id
 dict_smpdb_id_to_pathway_ids={}
 
+# dictionary pathway id to xrefs
+dict_pathway_id_to_xrefs={}
+
 
 def load_pw_from_database():
     """
@@ -65,6 +68,7 @@ def load_pw_from_database():
             split_xrefs=xref.split(':',1)
             if split_xrefs[0]=='pathbank':
                 add_entry_to_dictionary(dict_smpdb_id_to_pathway_ids, split_xrefs[1], identifier)
+        dict_pathway_id_to_xrefs[identifier]=set(xrefs)
 
 
 def generate_files(path_of_directory):
@@ -75,7 +79,7 @@ def generate_files(path_of_directory):
     # file from relationship between gene and variant
     file_name = 'pathway/mapping_pathway.tsv'
     file = open(file_name, 'w', encoding='utf-8')
-    header = ['pathway_smpdb_id', 'pathway_id', 'resource', 'how_mapped']
+    header = ['pathway_smpdb_id', 'pathway_id', 'resource', 'how_mapped', 'xrefs']
     csv_mapping = csv.writer(file, delimiter='\t')
     csv_mapping.writerow(header)
 
@@ -89,7 +93,7 @@ def generate_files(path_of_directory):
     cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
 
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/smpdb/%s" As line FIELDTERMINATOR '\\t' 
-        Match (n:Pathway{identifier:line.pathway_id}), (v:pathway_smpdb{smpdb_id:line.pathway_smpdb_id}) Create (n)-[r:equal_to_pathway_smpdb{how_mapped:line.how_mapped}]->(v) Set n.smpdb="yes", n.resource=split(line.resource,"|") , n.description=v.description, n.category=v.category, n.source= n.source+', SMPDB', n.license=n.license+'SMPDB is offered to the public as a freely available resource. Use and re-distribution of the data, in whole or in part, for commercial purposes requires explicit permission of the authors and explicit acknowledgment of the source material (SMPDB) and the original publication.';\n'''
+        Match (n:Pathway{identifier:line.pathway_id}), (v:pathway_smpdb{smpdb_id:line.pathway_smpdb_id}) Create (n)-[r:equal_to_pathway_smpdb{how_mapped:line.how_mapped}]->(v) Set n.smpdb="yes", n.resource=split(line.resource,"|") , n.description=v.description, n.xrefs= split(line.xrefs,"|"), n.category=v.category, n.source= n.source+', SMPDB', n.license=n.license+'SMPDB is offered to the public as a freely available resource. Use and re-distribution of the data, in whole or in part, for commercial purposes requires explicit permission of the authors and explicit acknowledgment of the source material (SMPDB) and the original publication.';\n'''
     query = query % (path_of_directory, file_name)
     cypher_file.write(query)
 
@@ -100,13 +104,13 @@ def generate_files(path_of_directory):
 
     return csv_mapping, csv_not_mapped
 
-def add_source_to_resource_and_prepare_string(resource):
+def add_source_to_resource_and_prepare_string(resource,add_string):
     """
     prepare resource to string
     :param resource:
     :return:
     """
-    resource.add('SMPDB')
+    resource.add(add_string)
     return '|'.join(sorted(resource))
 
 
@@ -134,7 +138,7 @@ def load_all_smpdb_pw_and_map(csv_mapping):
             for pathway_id in dict_smpdb_id_to_pathway_ids[identifier]:
                 if (identifier, pathway_id) not in dict_db_pathway_pathway_to_how_mapped:
                     dict_db_pathway_pathway_to_how_mapped[(identifier, pathway_id)] = 'smpdb_id_mapped'
-                    csv_mapping.writerow([identifier, pathway_id, add_source_to_resource_and_prepare_string(dict_pathway_id_to_resource[pathway_id]),'smpdb_id_mapped'])
+                    csv_mapping.writerow([identifier, pathway_id, add_source_to_resource_and_prepare_string(dict_pathway_id_to_resource[pathway_id], 'SMPDB'),'smpdb_id_mapped', add_source_to_resource_and_prepare_string(dict_pathway_id_to_xrefs[pathway_id], 'smpdb:'+identifier)])
                 else:
                     print('multy mapping')
         if found_mapping:
@@ -146,7 +150,7 @@ def load_all_smpdb_pw_and_map(csv_mapping):
             for pathway_id in dict_name_to_pathway_ids[name]:
                 if (identifier, pathway_id) not in dict_db_pathway_pathway_to_how_mapped:
                     dict_db_pathway_pathway_to_how_mapped[(identifier, pathway_id)] = 'name_mapped'
-                    csv_mapping.writerow([identifier, pathway_id, add_source_to_resource_and_prepare_string(dict_pathway_id_to_resource[pathway_id]),'name_mapped'])
+                    csv_mapping.writerow([identifier, pathway_id, add_source_to_resource_and_prepare_string(dict_pathway_id_to_resource[pathway_id],'SMPDB'),'name_mapped', add_source_to_resource_and_prepare_string(dict_pathway_id_to_xrefs[pathway_id], 'smpdb:'+identifier)])
                 else:
                     print('multy mapping with name')
         if found_mapping:
