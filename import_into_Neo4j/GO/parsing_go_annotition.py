@@ -170,8 +170,14 @@ def prepare_geo_annotation_file(go_annotation_file_name):
     # remove node 1, node 2 (except of identifier) and taxon infos of rela csv
     dataframe_csv = dataframe_csv.drop(
         columns=['database_node1', 'symbol_node1', 'name_1', 'synonyms_1', 'label_1', 'aspect', 'taxon'])
-
+    #
     # print(dataframe_csv['qualifier'].unique())
+    # result_dataframe=dataframe_csv[dataframe_csv['identifier_node1']=='Q9BYF1']
+    # print('#test blub', labels)
+    # print(result_dataframe.head())
+    #
+    # file_name = 'edge_go_to_' + label  + '.tsv'
+    # result_dataframe.to_csv(file_name, sep='\t', index=False)
 
     # prepare the different
     for rela_type in dataframe_csv['qualifier'].unique():

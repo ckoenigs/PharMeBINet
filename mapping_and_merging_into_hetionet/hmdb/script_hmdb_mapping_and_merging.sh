@@ -35,7 +35,7 @@ echo integration of hmdb mapping and nodes into hetionet
 
 $path_neo4j/cypher-shell -u neo4j -p test -f output/cypher.cypher
 
-sleep 180
+sleep 60
 $path_neo4j/neo4j restart
 sleep 120
 
