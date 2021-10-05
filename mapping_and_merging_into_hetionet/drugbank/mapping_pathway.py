@@ -29,10 +29,14 @@ def add_entry_to_dictionary(dictionary, key, value):
 # dictionary name to pc ids
 dict_name_to_pathway_ids={}
 
-# dictionary_mesh_id_to_pathway_ids
-dict_mesh_id_to_pathway_ids={}
+# dictionary_smpdb_id_to_pathway_ids
+dict_smpdb_id_to_pathway_ids={}
 
-def load_pc_from_database():
+
+# dictionary metabolite_id to resource
+dict_pathway_id_to_resource={}
+
+def load_pathway_from_database():
     """
     Load all pc into different mapping dictionaries
     :return:
@@ -41,12 +45,18 @@ def load_pc_from_database():
     results=g.run(query)
     for node, in results:
         identifier= node['identifier']
+        dict_pathway_id_to_resource[identifier]=set(node['resource'])
         name=node['name'].lower()
         add_entry_to_dictionary(dict_name_to_pathway_ids,name,identifier)
 
         synonyms= node['synonyms'] if 'synonyms' in node else []
         for synonym in synonyms:
             add_entry_to_dictionary(dict_name_to_pathway_ids,synonym.lower(), identifier)
+
+        for xref in node['xrefs']:
+            if xref.startswith('smpdb'):
+                smpdb_id=xref.split(':')[1]
+                add_entry_to_dictionary(dict_smpdb_id_to_pathway_ids, smpdb_id, identifier)
 
 
 
@@ -75,12 +85,25 @@ def generate_files(path_of_directory):
         Match (n:Pathway{identifier:line.pathway_id}), (v:Pathway_DrugBank{identifier:line.pathway_db_id}) Create (n)-[r:equal_to_pathway_drugbank]->(v) Set n.drugbank="yes", n.resource=split(line.resource,"|") ;\n'''
     query = query % (path_of_directory, file_name)
     cypher_file.write(query)
+    cypher_file.close()
 
     return csv_mapping, csv_not_mapped
 
 # dictionary mapping db pathway and pathway to howmapped
 dict_db_pathway_pathway_to_how_mapped={}
 
+
+# dictionary_smpdb_id_to_pathway_ids
+dict_smpdb_id_from_db_to_pathway_ids={}
+
+def add_resource(set_resource):
+    """
+    Add resource and prepare string
+    :param set_resource: set
+    :return:
+    """
+    set_resource.add('DrugBank')
+    return '|'.join(sorted(set_resource))
 
 def load_all_drugbank_pc_and_map(csv_mapping, csv_not_mapped):
     query = "MATCH (v:Pathway_DrugBank) RETURN v"
@@ -94,12 +117,27 @@ def load_all_drugbank_pc_and_map(csv_mapping, csv_not_mapped):
         identifier=node['identifier']
         name=node['name'].lower()
         found_mapping=False
+        if identifier in dict_smpdb_id_to_pathway_ids:
+            found_mapping = True
+            dict_smpdb_id_from_db_to_pathway_ids[identifier]=dict_smpdb_id_to_pathway_ids[identifier]
+            for pathway_id in dict_smpdb_id_to_pathway_ids[identifier]:
+                if (identifier, pathway_id) not in dict_db_pathway_pathway_to_how_mapped:
+                    dict_db_pathway_pathway_to_how_mapped[(identifier, pathway_id)] = 'smpdb_id'
+                    csv_mapping.writerow([identifier, pathway_id, add_resource(dict_pathway_id_to_resource[pathway_id])])
+                else:
+                    print('multy mapping with smpdb id')
+
+        if found_mapping:
+            counter_mapped+=1
+            continue
+
         if name in dict_name_to_pathway_ids:
             found_mapping = True
+            dict_smpdb_id_from_db_to_pathway_ids[identifier] = dict_name_to_pathway_ids[name]
             for pathway_id in dict_name_to_pathway_ids[name]:
                 if (identifier, pathway_id) not in dict_db_pathway_pathway_to_how_mapped:
                     dict_db_pathway_pathway_to_how_mapped[(identifier, pathway_id)] = 'name_mapped'
-                    csv_mapping.writerow([identifier, pathway_id, 'name_mapped'])
+                    csv_mapping.writerow([identifier, pathway_id, add_resource(dict_pathway_id_to_resource[pathway_id])])
                 else:
                     print('multy mapping with name')
         if found_mapping:
@@ -110,14 +148,50 @@ def load_all_drugbank_pc_and_map(csv_mapping, csv_not_mapped):
     print('number of mapped node:',counter_mapped)
     print('number of not mapped node:', counter_not_mapped)
 
+def generate_edge_files():
+    """
+    Prepare pathway compound edge file and cypher query.
+    :return: csv file
+    """
+    file_name = 'pathway/edge_pathway_compound.tsv'
+    file = open(file_name, 'w', encoding='utf-8')
+    header = ['pathway_id', 'compound_id']
+    csv_edge = csv.writer(file, delimiter='\t')
+    csv_edge.writerow(header)
+
+
+    cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
+
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/drugbank/%s" As line FIELDTERMINATOR '\\t' 
+            Match (n:Pathway{identifier:line.pathway_id}), (v:Compound{identifier:line.compound_id}) Create (v)-[r:ASSOCIATES_CaPW{license:"%s", source:"DrugBank", drugbank:"yes", resource:["DrugBank"], url:"https://go.drugbank.com/drugs/"+line.compound_id}]->(n) ;\n'''
+    query = query % (path_of_directory, file_name, license)
+    cypher_file.write(query)
+    cypher_file.close()
+
+    return csv_edge
+
+def prepare_edges_to_compound():
+    """
+    Prepare compound-pathway file and cypher query
+    :return:
+    """
+    query='''Match (v:Pathway_DrugBank)--(m:Compound_DrugBank) Return v.identifier, m.identifier '''
+    results=g.run(query)
+
+    csv_edge=generate_edge_files()
+    for smpdb_id, compound_id, in results:
+        if smpdb_id in dict_smpdb_id_from_db_to_pathway_ids:
+            for pathway_id in dict_smpdb_id_from_db_to_pathway_ids[smpdb_id]:
+                csv_edge.writerow([pathway_id, compound_id])
+
 def main():
     print(datetime.datetime.utcnow())
     global path_of_directory, license
     if len(sys.argv) < 3:
-        sys.exit('need path anf license pc drugbank')
+        sys.exit('need path anf license pathway drugbank')
 
-    path_of_directory = sys.argv[1]
-    license = sys.argv[2]
+    path_of_directory = sys.argv[2]
+    license = sys.argv[1]
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
@@ -128,9 +202,9 @@ def main():
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
-    print('load pc from neo4j')
+    print('load pathway from neo4j')
 
-    load_pc_from_database()
+    load_pathway_from_database()
 
     print('##########################################################################')
 
@@ -142,9 +216,16 @@ def main():
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
-    print('Load pc from drugbank and map')
+    print('Load pathways from drugbank and map')
 
     load_all_drugbank_pc_and_map(csv_mapping, csv_not_mapped)
+
+    print('##########################################################################')
+
+    print(datetime.datetime.utcnow())
+    print('Prepare pathway-compound edge')
+
+    prepare_edges_to_compound()
 
     print('##########################################################################')
 
