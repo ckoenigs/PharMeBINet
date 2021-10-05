@@ -74,6 +74,17 @@ cd ..
 
 now=$(date +"%F %T")
 echo "Current time: $now"
+
+
+cd  DisGeNET
+echo disgenet
+
+./script_integrated_disgenet.sh $path_neo4j $path_to_project > output.txt
+
+cd ..
+
+now=$(date +"%F %T")
+echo "Current time: $now"
 cd  med_rt
 echo med-rt
 
