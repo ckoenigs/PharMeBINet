@@ -17,7 +17,14 @@ def create_connection_with_neo4j():
     global g
     g = create_connection_to_databases.database_connection_neo4j()
 
+
+
 def get_all_metabolites_with_xrefs():
+    """
+    prepare the file and the cypher query to integrate the metabolite. Then load all metabolites of hmdb and prepare the
+    xrefs. Then write into csv file.
+    :return:
+    """
     file_name='metabolite/new.tsv'
     file=open(file_name,'w',encoding='utf-8')
     csv_writer=csv.writer(file,delimiter='\t')
@@ -35,8 +42,12 @@ def get_all_metabolites_with_xrefs():
     query='MATCH (p:Metabolite_HMDB) Return p.identifier, p.xrefs'
     results=g.run(query)
     for identifier, xrefs, in results:
+
         if xrefs:
+
             csv_writer.writerow([identifier, '|'.join(change_xref_source_name_to_a_specifice_form.go_through_xrefs_and_change_if_needed_source_name(xrefs,'Metabolite'))])
+
+
         else:
             csv_writer.writerow([identifier,''])
 
