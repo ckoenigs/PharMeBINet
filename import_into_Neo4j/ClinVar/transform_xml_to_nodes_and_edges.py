@@ -837,7 +837,7 @@ def get_information_from_full_relase():
 
         trait_set_id = ''
         variant_id = ''
-        dict_edge_info['title'] = node.find('Title').text
+        dict_edge_info['title'] = node.find('Title').text if node.find('Title') is not None else ''
         reference_assertion = node.find('ReferenceClinVarAssertion')
 
         final_assertion = ''
