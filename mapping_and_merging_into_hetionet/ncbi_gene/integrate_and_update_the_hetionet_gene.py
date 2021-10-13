@@ -40,17 +40,16 @@ def get_all_ncbi_ids_form_hetionet_genes():
 
 # ditionary from ncbi property to hetionet property name
 dict_ncbi_property_to_hetionet_property = {
-    "Full_name_from_nomenclature_authority": 'name',
-    "Symbol": 'gene_symbols',
-    "Symbol_from_nomenclature_authority": 'gene_symbols',
-    "Synonyms": 'synonyms',
+    "full_name_from_nomenclature_authority": 'name',
+    "symbol": 'gene_symbols',
+    "symbol_from_nomenclature_authority": 'gene_symbols',
     "dbXrefs": 'xrefs'
 }
 
 dict_hetionet_property_to_ncbi_property = dict(map(reversed, dict_ncbi_property_to_hetionet_property.items()))
 
 # list of properties  which have a list element
-list_properties_with_list_elements = ['gene_symbols', 'synonyms', 'xrefs', 'map_location', 'Feature_type']
+list_properties_with_list_elements = ['gene_symbols', 'synonyms', 'xrefs', 'map_location', 'feature_type']
 
 # list of found gene ids, because i think not all gene ids from hetionet exists anymore
 found_gene_ids = []
@@ -77,7 +76,7 @@ load ncbi tsv file in and write only the important lines into a new csv file for
 def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
     # file for integration into hetionet
     file = open('output_data/genes_merge.csv', 'w')
-    header = ['identifier', 'name', 'description', 'chromosome', 'gene_symbols', 'synonyms', 'Feature_type',
+    header = ['identifier', 'name', 'description', 'chromosome', 'gene_symbols', 'synonyms', 'feature_type',
               'type_of_gene', 'map_location', 'xrefs']
     writer = csv.DictWriter(file, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL,
                             fieldnames=header)
@@ -106,7 +105,7 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
     cypher_file.write(query)
     cypher_file.close()
 
-    query = '''MATCH (n:Gene_Ncbi) RETURN n.identifier, n.Full_name_from_nomenclature_authority, n;'''
+    query = '''MATCH (n:Gene_Ncbi) RETURN n.identifier, n.full_name_from_nomenclature_authority, n;'''
     results = g.run(query)
     counter_not_same_name = 0
     counter_all = 0
@@ -134,18 +133,18 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
                 if value == '-':
                     node[property] = ''
 
-            if property == 'Other_designations' and len(list_of_values) != 0:
+            if property == 'other_designations' and len(list_of_values) != 0:
                 set_of_synoynmys_from_designation = set_of_synoynmys_from_designation.union(value)
-            elif property == 'Symbol_from_nomenclature_authority' and value != '-':
+            elif property == 'symbol_from_nomenclature_authority' and value != '-':
                 gene_symbol.add(value)
-            elif property == 'Symbol' and value != '-':
+            elif property == 'symbol' and value != '-':
                 gene_symbol.add(value)
 
         # make one list
-        node['Symbol_from_nomenclature_authority'] = list(gene_symbol)
-        node['Symbol'] = list(gene_symbol)
+        node['symbol_from_nomenclature_authority'] = list(gene_symbol)
+        node['symbol'] = list(gene_symbol)
         symbols_ncbi = [x.lower() for x in list(gene_symbol)]
-        synonyms = node['Synonyms'] if 'Synonyms' in node else []
+        synonyms = node['synonyms'] if 'synonyms' in node else []
         synonyms = list(set_of_synoynmys_from_designation.union(synonyms))
         synonyms = [x.lower() for x in synonyms]
 
@@ -154,7 +153,7 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
             if 'description' not in node or node['description'] == '-' or node['description'] == '':
                 print('description is also empty')
                 node['description'] = ''
-            node['Full_name_from_nomenclature_authority'] = node['description']
+            node['full_name_from_nomenclature_authority'] = node['description']
             name = node['description']
 
         if gene_id in dict_hetionet_gene_ids_to_name:
@@ -201,7 +200,7 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
                 print(gene_id)
                 print(name)
                 print(dict_hetionet_gene_ids_to_name[gene_id])
-                node['Full_name_from_nomenclature_authority'] = list(gene_symbol)[0]
+                node['full_name_from_nomenclature_authority'] = list(gene_symbol)[0]
                 print('nonamenonamenonamenonamenonamenonamenonamenonamenonamenonamenoname')
 
             if 'chromosome' in dict_hetionet_gene_ids_to_name[gene_id] and 'chromosome' in node:
@@ -229,7 +228,7 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
             print('not in hetionet')
             print(gene_id)
             if name == '-' or name is None:
-                node['Full_name_from_nomenclature_authority'] = node['description']
+                node['full_name_from_nomenclature_authority'] = node['description']
 
             dict_for_insert_into_tsv = {}
             for head in header:
