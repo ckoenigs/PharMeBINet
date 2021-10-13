@@ -42,7 +42,7 @@ def use_of_entrez_gene():
     human_genes = set()
     human_coding_genes = set()
     symbol_to_entrez = {}
-    query = 'MATCH (n:Gene_Ncbi) RETURN n.identifier, n.Symbol, n.type_of_gene'
+    query = 'MATCH (n:Gene_Ncbi) RETURN n.identifier, n.symbol, n.type_of_gene'
     results = g.run(query)
     for identifier, symbol, type_of_gene, in results:
         human_genes.add(identifier)
