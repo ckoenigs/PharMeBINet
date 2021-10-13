@@ -119,7 +119,7 @@ def load_anatomy_and_add_to_cypher_file():
     global counter_nodes_queries, cypher_file_nodes, node_file_number
 
     cypher_file_nodes.write(':begin\n')
-    cypher_file_nodes.write('Create Constraint On (node:CTD_anatomy) Assert node.pathway_id Is Unique;\n')
+    cypher_file_nodes.write('Create Constraint On (node:CTD_anatomy) Assert node.anatomy_id Is Unique;\n')
     cypher_file_nodes.write(':commit\n')
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/CTD_anatomy.csv" As line Create (c:CTD_anatomy{ anatomy_id:split(line.AnatomyID,':')[1], name:line.AnatomyName, id_type:split(line.AnatomyID,':')[0], definition:line.Definition,  alternative_ids:split(line.AltAnatomyIDs,'|'), parent_id:split(line.ParentIDs,'|'), tree_numbers:split(line.TreeNumbers,'|'), parent_tree_numbers:split(line.ParentTreeNumbers,'|'), synonyms:split(line.Synonyms,'|'), externamSynonyms:split(line.ExternalSynonyms,'|'), url:"http://ctdbase.org/detail.go?type=anatomy&acc="+split(line.AnatomyID,':')[1] }) ;\n '''
 
