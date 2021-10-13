@@ -24,7 +24,7 @@ def generate_csv_file_and_prepare_cypher_queries(keys, file_name, label, unique_
     query = query % (path_of_directory, file_name, label)
     for head in keys:
         head_short = head.split('_')[0]
-        if head in ['synonyms']:
+        if head_short in ['synonyms']:
             query += head_short + ":split(line." + head + ",'|'), "
         else:
             query += head_short + ":line." + head + ", "
