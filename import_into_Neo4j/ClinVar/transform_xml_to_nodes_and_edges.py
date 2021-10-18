@@ -1239,7 +1239,7 @@ def perpare_query_for_edges():
         end_query = ' Set '
         for head in edge_information:
             if head in dict_edge_trait_set_variation_pair_to_list_of_list_properties[
-                (general_type, trait_set_type, final_assertion)]:
+                (general_type, trait_set_type, final_assertion)] or head=='attributes':
                 query += head + ':split(line.' + head + ',"|"), '
             elif head in ['variant_id', 'trait_set_id']:
                 continue

@@ -157,7 +157,7 @@ def load_gene_and_add_to_cypher_file():
     cypher_file_nodes.write(query)
 
     ## add the chemical nodes to cypher file
-    with open(path_of_ctd_data+'/ctd_data/CTD_genes.csv') as csvfile:
+    with open(path_of_ctd_data + '/ctd_data/CTD_genes.csv') as csvfile:
         reader = csv.reader(csvfile)
         i = 0
         for row in reader:
@@ -202,7 +202,7 @@ def load_chemical_go_enriched():
     dict_counter_go = {}
 
     # gather information from CTD chemical-go enriched
-    with open(path_of_ctd_data+'/ctd_data/CTD_chem_go_enriched.csv') as csvfile:
+    with open(path_of_ctd_data + '/ctd_data/CTD_chem_go_enriched.csv') as csvfile:
         reader = csv.reader(csvfile, quotechar='"')
         i = 0
         for row in reader:
@@ -260,7 +260,7 @@ def load_chemical_phenotype():
     dict_counter_go = {}
 
     # gather information from CTD chemical-go enriched
-    with open(path_of_ctd_data+'/ctd_data/CTD_pheno_term_ixns.csv') as csvfile:
+    with open(path_of_ctd_data + '/ctd_data/CTD_pheno_term_ixns.csv') as csvfile:
         reader = csv.reader(csvfile, quotechar='"')
         i = 0
         for row in reader:
@@ -314,7 +314,7 @@ def gather_information_from_disease_go_inferencen(file, ontology):
 
     cypher_file_edges.write(query)
 
-    with open(path_of_ctd_data+'/ctd_data/' + file) as csvfile:
+    with open(path_of_ctd_data + '/ctd_data/' + file) as csvfile:
         reader = csv.reader(csvfile)
         i = 0
         for row in reader:
@@ -364,7 +364,7 @@ def gather_information_from_disease_phenotyp_go_inference(file, ontology):
 
     cypher_file_edges.write(query)
 
-    with open(path_of_ctd_data+'/ctd_data/' + file) as csvfile:
+    with open(path_of_ctd_data + '/ctd_data/' + file) as csvfile:
         reader = csv.reader(csvfile)
         i = 0
         for row in reader:
@@ -457,7 +457,7 @@ def add_go_to_cypher_file():
 
     cypher_file_nodes.write(query)
 
-    with open(path_of_ctd_data+'/ctd_data/CTD_GO.csv', 'w') as csvfile:
+    with open(path_of_ctd_data + '/ctd_data/CTD_GO.csv', 'w') as csvfile:
         writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
         writer.writerow(['GOID', 'GOName', 'Ontology', 'HighestGOLevel'])
         # add the go nodes to cypher file
@@ -475,7 +475,7 @@ def gene_go_into_cypher_file():
 
     cypher_file_edges.write(query)
 
-    with open(path_of_ctd_data+'/ctd_data/CTD_Gene_GO.csv', 'w', encoding='utf-8', newline='') as csvfile:
+    with open(path_of_ctd_data + '/ctd_data/CTD_Gene_GO.csv', 'w', encoding='utf-8', newline='') as csvfile:
         writer = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
         writer.writerow(['GeneID', 'GOID', 'GeneSymbol'])
         # add the go nodes to cypher file
@@ -653,7 +653,7 @@ def genereate_rela_file(file_name, dict_rela_to_file, rela, label, label_id, rel
     :param rela: string
     :return:
     """
-    file_rela_stressor = open(path_of_ctd_data+'/ctd_data/' + file_name + '.csv', 'w', encoding='utf-8')
+    file_rela_stressor = open(path_of_ctd_data + '/ctd_data/' + file_name + '.csv', 'w', encoding='utf-8')
     csv_rela_stressor = csv.writer(file_rela_stressor)
     csv_rela_stressor.writerow(['reference', 'Id'])
     dict_rela_to_file[rela] = csv_rela_stressor
@@ -681,7 +681,7 @@ def prepare_exposure_studies():
     :return:
     """
     global cypher_file_nodes
-    file = open(path_of_ctd_data+'/ctd_data/CTD_exposure_studies.csv', 'r', encoding='utf-8')
+    file = open(path_of_ctd_data + '/ctd_data/CTD_exposure_studies.csv', 'r', encoding='utf-8')
     csv_reader = csv.DictReader(file)
     header = csv_reader.fieldnames
 
@@ -712,7 +712,8 @@ def prepare_exposure_studies():
 
     genereate_rela_file('CTD_exposure_studies_stressor_rela', dict_rela_to_file, 'stressor', 'CTD_chemical',
                         'chemical_id', property_for_rela, rela_name='stressor')
-    genereate_rela_file('CTD_exposure_studies_marker_gene_rela', dict_rela_to_file, 'marker_gene', 'CTD_gene', 'gene_id',
+    genereate_rela_file('CTD_exposure_studies_marker_gene_rela', dict_rela_to_file, 'marker_gene', 'CTD_gene',
+                        'gene_id',
                         property_for_rela, rela_name='marker')
     genereate_rela_file('CTD_exposure_studies_marker_chem_rela', dict_rela_to_file, 'marker_chem', 'CTD_chemical',
                         'chemical_id', property_for_rela, rela_name='marker')
@@ -753,7 +754,7 @@ def genereate_rela_file_event(file_name, dict_rela_to_file, rela, label, label_i
     :param rela: string
     :return:
     """
-    file_rela_stressor = open(path_of_ctd_data+'/ctd_data/' + file_name + '.csv', 'w', encoding='utf-8')
+    file_rela_stressor = open(path_of_ctd_data + '/ctd_data/' + file_name + '.csv', 'w', encoding='utf-8')
     csv_rela_stressor = csv.writer(file_rela_stressor)
     csv_rela_stressor.writerow(['exposureId', 'Id']) if rela_property == "" else csv_rela_stressor.writerow(
         ['exposureId', 'Id', rela_property])
@@ -769,7 +770,7 @@ def genereate_rela_file_event(file_name, dict_rela_to_file, rela, label, label_i
 
 def prepare_exposure():
     global cypher_file_nodes
-    file = open(path_of_ctd_data+'/ctd_data/CTD_exposure_events.csv', 'r', encoding='utf-8')
+    file = open(path_of_ctd_data + '/ctd_data/CTD_exposure_events.csv', 'r', encoding='utf-8')
     csv_reader = csv.DictReader(file)
 
     header = csv_reader.fieldnames
@@ -779,7 +780,8 @@ def prepare_exposure():
                         'outcomerelationship', 'diseasename', 'diseaseid', 'phenotypename', 'phenotypeid',
                         'phenotypeactiondegreetype', 'reference']  # , 'anatomy'
     properties_with_list = ['stressorsourcecategory', 'smokingstatus', 'sex', 'race', 'methods', 'studycountries',
-                            'stateorprovince', 'citytownregionarea', 'associatedstudytitles', 'studyfactors']
+                            'stateorprovince', 'citytownregionarea', 'associatedstudytitles', 'studyfactors',
+                            'receptors']
 
     exposure_header = [x for x in header if x not in other_properties]
     exposure_header.append('id')
@@ -803,7 +805,7 @@ def prepare_exposure():
 
     exposure_header.append('chemicalID')
 
-    write_file = open(path_of_ctd_data+'/ctd_data/exposure.tsv', 'w', encoding='utf-8')
+    write_file = open(path_of_ctd_data + '/ctd_data/exposure.tsv', 'w', encoding='utf-8')
     csv_writer = csv.writer(write_file, delimiter='\t')
     csv_writer.writerow(exposure_header)
 
