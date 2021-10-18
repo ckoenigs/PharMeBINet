@@ -109,7 +109,7 @@ def main():
     # 0: old relationship;           1: name of node in Reactome;        2: relationship equal to Hetionet-node
     # 3: name of node in Hetionet;   4: name of new relationship
     list_of_combinations = [
-        ['precedingEvent', 'BlackBoxEvent_reactome', 'equal_to_reactome_blackBoxEvent', 'BlackBoxEvent',
+         ['precedingEvent', 'BlackBoxEvent_reactome', 'equal_to_reactome_blackBoxEvent', 'BlackBoxEvent',
          'PRECEDING_REACTION_PWpB'],
         ['precedingEvent', 'Reaction_reactome', 'equal_to_reactome_reaction', 'Reaction',
          'PRECEDING_REACTION_PWpR'],

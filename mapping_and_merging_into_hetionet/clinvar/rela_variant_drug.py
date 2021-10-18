@@ -335,7 +335,10 @@ def generate_cypher_file_and_csv(rela_type):
                           'clinical_significance_comments', 'comments', 'xrefs', 'ClinVar_assertion_observations',
                           'clinical_significance_citations', 'citations', 'assertion',
                           'clinical_significance_review_status', 'additional_rela_infos', 'citations_info']:
-            query_start += property + ':split(line.' + property + ',"|"), '
+            if property!='assertion':
+                query_start += property + ':split(line.' + property + ',"|"), '
+            else:
+                query_start += property + 's:split(line.' + property + ',"|"), '
         else:
             query_start += property + ':line.' + property + ', '
 

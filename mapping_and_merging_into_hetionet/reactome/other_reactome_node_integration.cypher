@@ -38,5 +38,5 @@ CREATE CONSTRAINT ON (a:Regulation) ASSERT a.identifier IS UNIQUE;
  
 MATCH (n:Regulation_reactome)--(m:PhysicalEntity_reactome)
 WHERE m.speciesName = "Homo sapiens" WITH distinct n
-CREATE (m:Regulation{identifier:n.dbId, name:n.displayName, alternative_id:n.oldStId, pubMed_ids:n.pubMed_ids,
+CREATE (m:Regulation{identifier:toString(n.dbId), name:n.displayName, alternative_id:n.oldStId, pubMed_ids:n.pubMed_ids,
 url:"https://reactome.org/content/detail/" + n.stId})<-[:equal_to_reactome_regulation]-(n);
