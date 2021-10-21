@@ -210,11 +210,11 @@ def integrate_infos_into_csv(part_dict, protein_hetionet, list_input_protein):
 
     as_seqs = part_dict['amino_acid_sequence'] if 'amino_acid_sequence' in part_dict else ''
 
-    as_seq_hetionet = protein_hetionet['as_sequence'] if 'as_sequence' in protein_hetionet else ''
-    if ':' in as_seq_hetionet:
-        as_seq_hetionet_seq = as_seq_hetionet.split(':')[1]
+    as_seq_hetionet = protein_hetionet['as_sequences'] if 'as_sequences' in protein_hetionet else []
+    if ':' in as_seq_hetionet[0]:
+        as_seq_hetionet_seq = as_seq_hetionet[0].split(':')[1]
     else:
-        as_seq_hetionet_seq = as_seq_hetionet
+        as_seq_hetionet_seq = as_seq_hetionet[0]
     list_as_sequnces = []
     list_as_sequnces.append(as_seq_hetionet_seq)
     # list_as_sequnces.extend(as_seq_hetionet_seq)
@@ -309,10 +309,10 @@ def load_proteins_from_drugbank_into_dict():
     # conncet the
     cypherfile = open('protein/cypher_protein.cypher', 'w')
     # this is only for the first time to have only the sequences as property and not with header
-    query = '''Match (n:Protein) Where exists(n.as_sequence) Set n.as_sequence=split(n.as_sequence,':')[1];\n'''
-    cypherfile.write(query)
+    # query = '''Match (n:Protein) Where exists(n.as_sequence) Set n.as_sequence=split(n.as_sequence,':')[1];\n'''
+    # cypherfile.write(query)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/proteins.csv" As line Fieldterminator '\\t' MATCH (n:Protein_DrugBank{identifier:line.id}) ,(p:Protein{identifier:line.uniport}) Create (p)-[:equal_to_DB_protein]->(n) Set p.drugbank='yes', p.resource=split(line.resource,"|"), p.locus=n.locus, p.molecular_weight=n.molecular_weight, p.as_sequence=split(line.sequences,'|'),p.pfams=split(line.pfams,'|') ;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/proteins.csv" As line Fieldterminator '\\t' MATCH (n:Protein_DrugBank{identifier:line.id}) ,(p:Protein{identifier:line.uniport}) Create (p)-[:equal_to_DB_protein]->(n) Set p.drugbank='yes', p.resource=split(line.resource,"|"), p.locus=n.locus, p.molecular_weight=n.molecular_weight, p.as_sequences=split(line.sequences,'|'),p.pfams=split(line.pfams,'|') ;\n'''
 
     cypherfile.write(query)
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/mapping_chemical_target.tsv" As line Fieldterminator '\\t' MATCH (n:Protein_DrugBank{identifier:line.id}) ,(p:Chemical{identifier:line.chemical_id}) Create (p)-[:equal_to_DB_target]->(n) Set p.drugbank='yes', p:Target, p.resource=split(line.resource,"|") ;\n'''

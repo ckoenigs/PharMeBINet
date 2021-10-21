@@ -575,7 +575,7 @@ def main():
     thread_id = 1
 
     # search for hpo disease, but exclude old entries
-    query = ''' Match (d:HPO_disease) Where not exists(d.is_obsolete)  Return d.id, d.name, d.source'''
+    query = ''' Match (d:HPO_disease) Where not exists(d.is_obsolete)  Return d.id, d.names, d.source'''
     results = g.run(query)
     for db_disease_id, db_disease_name, db_disease_source, in results:
         # create thread
