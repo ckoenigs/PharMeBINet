@@ -20,7 +20,7 @@ def generate_cypher_queries(file_name, label, properties, list_properties):
     query_node = query_start + ' Create (n:%s_dbSNP{'
     for filename in properties:
         if filename in list_properties:
-            query_node += filename + ':split(line.' + filename + ',"|"), '
+            query_node += filename + ':split(line.' + filename + ',"||"), '
         else:
             query_node += filename + ':line.' + filename + ', '
 
@@ -148,7 +148,7 @@ def add_information_from_one_dict_to_another_and_prepare_as_string(from_dict, to
         if type(from_dict[key]) in [set, list]:
             if len(from_dict[key]) > 0 and type(from_dict[key][0]) == int:
                 from_dict[key] = [str(x) for x in from_dict[key]]
-            to_dict[key] = "|".join(list(from_dict[key]))
+            to_dict[key] = "||".join(list(from_dict[key]))
         else:
             to_dict[key] = from_dict[key]
 
@@ -192,7 +192,7 @@ def return_seq_ontology_names(dictionary):
     :param dictionary: dictionary
     :return: string
     """
-    return "|".join([x['name'] for x in dictionary['sequence_ontology']])
+    return "||".join([x['name'] for x in dictionary['sequence_ontology']])
 
 
 def generate_files_with_node_and_rela(label_node, label_other_node, node_properties):
@@ -304,7 +304,7 @@ def prepare_dict_node_to_be_string(dict_node):
             if len(value) > 0 and type(list(value)[0]) == int:
                 value = [str(x) for x in value]
             set_header_node_list.add(key)
-            dict_node[key] = "|".join(list(value))
+            dict_node[key] = "||".join(list(value))
 
 
 # header_snp
@@ -517,14 +517,14 @@ def prepare_json_information_to_tsv(data, chromosome_number=None):
                                                                                   ['snp_id', 'disease_id',
                                                                                    'clinical_significances', 'origins',
                                                                                    'collection_method', 'citations',
-                                                                                   'review_status'], [])
+                                                                                   'review_status'], ['citations','origins'])
                                     disease_id, disease_xrefs, disease_name, disease_synonyms = find_disease_id_generate_xref_name_and_synonyms(
                                         clinical['disease_names'], clinical['disease_ids'])
 
                                     if add_id_to_label_set_of_ids_if_not_exists('disease', disease_id):
                                         dict_disease = {'identifier': disease_id, 'name': disease_name,
-                                                        'xrefs': "|".join(list(disease_xrefs)),
-                                                        'synonyms': "|".join(list(disease_synonyms))}
+                                                        'xrefs': "||".join(list(disease_xrefs)),
+                                                        'synonyms': "||".join(list(disease_synonyms))}
                                         dict_label_to_tsv_file['disease'].writerow(dict_disease)
 
                                     if (snp_id, disease_id) not in dict_rela_label_to_pairs['snp_disease']:

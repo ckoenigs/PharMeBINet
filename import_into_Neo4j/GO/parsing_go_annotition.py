@@ -49,7 +49,7 @@ def generate_csv_file_and_prepare_cypher_queries_edge(file_name, label, rela_typ
     for head in rela_properties:
         if head in ['identifier_node1', 'go_id']:
             continue
-        if head in ['db_reference', 'with_from', 'annotation_extension']:
+        if head in ['db_reference', 'with_from', 'annotation_extension', 'assigned_by', 'gene_product_id']:
             query += head + ":split(line." + head + ",'|'), "
         else:
             query += head + ":line." + head + ", "
@@ -187,11 +187,11 @@ def prepare_geo_annotation_file(go_annotation_file_name):
         rela_type = rela_type.replace('|', '_')
         file_name = 'output/edges/edge_go_to_' + label + '_' + rela_type + '.tsv'
         if (label, rela_type) not in dict_label_rela_name_to_dataframe:
-            dict_label_rela_name_to_dataframe[( label, rela_type)] = part_dataframe
+            dict_label_rela_name_to_dataframe[(label, rela_type)] = part_dataframe
         else:
             # print('number of row, columns before:',dict_label_rela_name_to_dataframe[(label, rela_type)].shape , rela_type)
             dict_label_rela_name_to_dataframe[(label, rela_type)] = dict_label_rela_name_to_dataframe[
-                ( label, rela_type)].append(part_dataframe).drop_duplicates()
+                (label, rela_type)].append(part_dataframe).drop_duplicates()
             # print('number of row, columns after:' , dict_label_rela_name_to_dataframe[(label, rela_type)].shape)
 
 
@@ -204,7 +204,6 @@ def generate_nodes_files_and_cypher_queries():
         file_name_node_1 = 'output/' + label + '.tsv'
         dataframe.to_csv(file_name_node_1, sep='\t', index=False)
         generate_csv_file_and_prepare_cypher_queries(dataframe, file_name_node_1, label, 'identifier')
-        
 
 
 def generate_edges_files_and_cypher_queries():
@@ -212,7 +211,7 @@ def generate_edges_files_and_cypher_queries():
     generate the different node files.
     :return:
     """
-    for (label,rela_type), part_dataframe in dict_label_rela_name_to_dataframe.items():
+    for (label, rela_type), part_dataframe in dict_label_rela_name_to_dataframe.items():
         file_name = 'output/edges/edge_go_to_' + label + '_' + rela_type + '.tsv'
         part_dataframe.to_csv(file_name, sep='\t', index=False)
         generate_csv_file_and_prepare_cypher_queries_edge(file_name, label, rela_type, list(part_dataframe))
