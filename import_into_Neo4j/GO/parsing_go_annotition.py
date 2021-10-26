@@ -49,7 +49,7 @@ def generate_csv_file_and_prepare_cypher_queries_edge(file_name, label, rela_typ
     for head in rela_properties:
         if head in ['identifier_node1', 'go_id']:
             continue
-        if head in ['db_reference', 'with_from', 'annotation_extension', 'assigned_by', 'gene_product_id']:
+        if head in ['db_reference', 'with_from', 'annotation_extension', 'assigned_by', 'gene_product_id','date']:
             query += head + ":split(line." + head + ",'|'), "
         else:
             query += head + ":line." + head + ", "

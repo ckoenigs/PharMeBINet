@@ -502,7 +502,7 @@ def run_trough_xml_and_parse_data():
                                                                     'experiments', 'interaction_ids',
                                                                     'iso_of_protein_from', 'iso_of_protein_to'],
                                                                    'interaction',
-                                                                   ['interaction_ids'])
+                                                                   ['interaction_ids','experiments'])
                             interact_id = subchild.attrib['intactId']
                             add_key_value_to_dictionary_as_list(dict_comment, 'interaction_ids', interact_id)
                             interacter_uniprot_id_element = subchild.find("{ns}id".format(ns=ns))
