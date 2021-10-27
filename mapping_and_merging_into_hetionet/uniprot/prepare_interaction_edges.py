@@ -22,7 +22,7 @@ dict_pairs_to_info={}
 
 def combine_info(tuple_ids_and_iso, rela):
     for prop in ['experiments', 'interaction_ids']:  # ,  'iso_of_protein_to', 'iso_of_protein_from'
-        if prop != 'interaction_ids':
+        if prop not in  ['interaction_ids','experiments']:
             dict_pairs_to_info[tuple_ids_and_iso][prop].add(rela[prop])
         else:
             dict_pairs_to_info[tuple_ids_and_iso][prop] = \
@@ -52,7 +52,7 @@ def get_pairs_information():
         else:
             dict_rela={}
             for prop in ['experiments','interaction_ids']: #:,'iso_of_protein_to','iso_of_protein_from'
-                if prop!='interaction_ids':
+                if prop not in ['interaction_ids','experiments']:
                     dict_rela[prop]={rela[prop]}
                 else:
                     dict_rela[prop] = set(rela[prop])

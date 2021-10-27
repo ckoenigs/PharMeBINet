@@ -592,7 +592,7 @@ def prepare_queries(query_start):
 
     query_edge = query_start + ' Match (a:%s_omim{identifier:line.id_1}), (b:%s_omim{identifier:line.id_2}) Create (a)-[:%s{'
     query_edge = add_properties_to_query(set_of_headers_rela, query_edge,
-                                         ['inheritance', 'kind_of_rela', 'phenotype_mapping_key'])
+                                         ['inheritance', 'kind_of_rela', 'phenotype_mapping_key', 'comments'])
     query_edge += '}]->(b);\n'
     set_of_headers_rela.add('id_1')
     set_of_headers_rela.add('id_2')

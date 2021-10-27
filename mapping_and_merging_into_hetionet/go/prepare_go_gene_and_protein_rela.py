@@ -64,6 +64,11 @@ def get_go_rela_properties():
             if property == 'db_reference':
                 part += 'pubMed_ids:split(line.pubmed_ids,"|"), '
                 header.append('pubmed_ids')
+                continue
+            elif property == 'evidence':
+                part += property + 's:split(line.' + property + ',"|"), '
+                header.append(property)
+                continue
             part += property + ':split(line.' + property + ',"|"), '
         else:
             if property not in ['gene_product_id', 'qualifier']:
@@ -118,6 +123,7 @@ def write_rela_info_into_file(go_id, other_id, rela, go_label, other_label, rela
                 if entry.startswith('PMID:'):
                     pubmed_ids.add(entry.split(':', 1)[1])
             dict_rela['pubmed_ids'] = '|'.join(pubmed_ids)
+            continue
 
         if type(value) != str:
             value = '|'.join(value)
@@ -183,14 +189,15 @@ def check_for_difference_in_rela_information(dict_first, dict_new_rela_info, go_
 
     for key, value in dict_new_rela_info.items():
         if key in dict_first and value != dict_first[key]:
-            if key in ['db_reference', 'annotation_extension', 'assigned_by', 'with_from', 'gene_product_id']:
+            if key in ['db_reference', 'annotation_extension', 'assigned_by', 'with_from', 'gene_product_id',
+                        'date']:
                 dict_first[key].extend(value)
                 continue
-            elif key in ['evidence',  'date'] and type(dict_first[key]) != set:
+            elif key in ['evidence'] and type(dict_first[key]) != set:
                 dict_first[key] = set([dict_first[key]])
                 dict_first[key].add(value)
                 continue
-            elif key in ['evidence',  'date']:
+            elif key in ['evidence']:
                 dict_first[key].add(value)
                 continue
             print('different data ', key, go_id, other_id)

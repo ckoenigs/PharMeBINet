@@ -126,7 +126,7 @@ def main():
     else:
         sys.exit('need a path hmdb protein')
 
-    cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
+    cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
 
     print('##########################################################################')
 
