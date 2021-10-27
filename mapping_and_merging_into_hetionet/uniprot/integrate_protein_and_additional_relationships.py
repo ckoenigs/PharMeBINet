@@ -187,7 +187,7 @@ def check_and_add_rela_pair(identifier, uniprot_id, gene_ids, secondary_uniprot_
                             uniprot_mapping, map_resource):
     for gene_id in gene_ids:
         if gene_id not in dict_gene_id_to_resource:
-            print('gene problem',gene_id)
+            print('gene problem', gene_id)
             continue
         if not (identifier, gene_id) in list_already_integrated_pairs_gene_protein:
             writer_rela.writerow(
@@ -353,8 +353,10 @@ def write_cypher_file():
         # to have the prepared xrefs
         elif property == 'xrefs':
             query += property + ':split(line.' + property + ',"|"), '
-        if property == 'accession':
+        elif property == 'accessions':
             query += 'alternative_ids:p.' + property + ', '
+        elif property =='as_sequence':
+            query += property + 's:[p.' + property + '], '
         else:
             query += property + ':p.' + property + ', '
     query += 'uniprot:"yes", url:"https://www.uniprot.org/uniprot/"+p.identifier, source:"UniProt", resource:["UniProt"], license:"CC BY 4.0"});\n '
@@ -369,13 +371,13 @@ def write_cypher_file():
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_gene/db_uniprot_to_gene_rela.csv" As line MATCH (n:Protein{identifier:line.uniprot_id}), (g:Gene{identifier:line.gene_id}) Set g.resource=split(line.resource_node,'|'), g.uniprot='yes' Create (g)-[:PRODUCES_GpP{name_mapping:line.name_mapping, uniprot:line.uniprot,resource:split(line.resource,'|'),license:'CC BY 4.0', url:'https://www.uniprot.org/uniprot/'+line.uniprot_id}]->(n);\n'''
     file_cypher.write(query)
 
-    # the queries to integrate rela to bc, cc and mf
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_go/db_uniprots_to_bc.csv" As line MATCH (g:Protein{identifier:line.uniprot_ids}),(b:BiologicalProcess{identifier:line.go}) Set b.resource=split(line.resource,'|'), b.uniprot='yes' Create (g)-[:PARTICIPATES_PpBP{resource:['UniProt'],source:'UniProt', uniprot:'yes', license:'CC BY 4.0', url:'https://www.uniprot.org/uniprot/'+line.uniprot_ids}]->(b);\n'''
-    file_cypher.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_go/db_uniprots_to_cc.csv" As line MATCH (g:Protein{identifier:line.uniprot_ids}),(b:CellularComponent{identifier:line.go}) Set b.resource=split(line.resource,'|'), b.uniprot='yes' Create (g)-[:PARTICIPATES_PpCC{resource:['UniProt'],source:'UniProt', uniprot:'yes', license:'CC BY 4.0', url:'https://www.uniprot.org/uniprot/'+line.uniprot_ids}]->(b);\n'''
-    file_cypher.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_go/db_uniprots_to_mf.csv" As line MATCH (g:Protein{identifier:line.uniprot_ids}),(b:MolecularFunction{identifier:line.go}) Set b.resource=split(line.resource,'|'), b.uniprot='yes' Create (g)-[:PARTICIPATES_PpMF{resource:['UniProt'],source:'UniProt', uniprot:'yes', license:'CC BY 4.0', url:'https://www.uniprot.org/uniprot/'+line.uniprot_ids}]->(b);\n'''
-    file_cypher.write(query)
+    # # the queries to integrate rela to bc, cc and mf
+    # query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_go/db_uniprots_to_bc.csv" As line MATCH (g:Protein{identifier:line.uniprot_ids}),(b:BiologicalProcess{identifier:line.go}) Set b.resource=split(line.resource,'|'), b.uniprot='yes' Create (g)-[:PARTICIPATES_PpBP{resource:['UniProt'],source:'UniProt', uniprot:'yes', license:'CC BY 4.0', url:'https://www.uniprot.org/uniprot/'+line.uniprot_ids}]->(b);\n'''
+    # file_cypher.write(query)
+    # query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_go/db_uniprots_to_cc.csv" As line MATCH (g:Protein{identifier:line.uniprot_ids}),(b:CellularComponent{identifier:line.go}) Set b.resource=split(line.resource,'|'), b.uniprot='yes' Create (g)-[:PARTICIPATES_PpCC{resource:['UniProt'],source:'UniProt', uniprot:'yes', license:'CC BY 4.0', url:'https://www.uniprot.org/uniprot/'+line.uniprot_ids}]->(b);\n'''
+    # file_cypher.write(query)
+    # query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_go/db_uniprots_to_mf.csv" As line MATCH (g:Protein{identifier:line.uniprot_ids}),(b:MolecularFunction{identifier:line.go}) Set b.resource=split(line.resource,'|'), b.uniprot='yes' Create (g)-[:PARTICIPATES_PpMF{resource:['UniProt'],source:'UniProt', uniprot:'yes', license:'CC BY 4.0', url:'https://www.uniprot.org/uniprot/'+line.uniprot_ids}]->(b);\n'''
+    # file_cypher.write(query)
 
 
 def add_resource(set_resource):
@@ -387,6 +389,13 @@ def add_resource(set_resource):
     set_resource.add('UniProt')
     return '|'.join(set_resource)
 
+
+# dictionary from go label to set of pairs
+dict_go_label_to_pairs = {
+    'bp': set(),
+    'cc': set(),
+    'mf': set()
+}
 
 '''
 Load all uniprots ids of the proteins and check out which appears also in the uniprot gene dictionary
@@ -450,7 +459,7 @@ def get_gather_protein_info_and_generate_relas():
         # get the Uniprot id
         identifier = node['identifier']
         # print(identifier)
-        if identifier == 'P0DI82':
+        if identifier == 'Q2M2I8':
             print('ok')
 
         # get the name of the node
@@ -497,27 +506,45 @@ def get_gather_protein_info_and_generate_relas():
                 if source_id[0] == 'GO':
                     if source_id[1] in dict_bp_to_resource:
                         counter_gos_bc += 1
+                        if (identifier, source_id[1]) in dict_go_label_to_pairs['bp']:
+                            continue
+                        dict_go_label_to_pairs['bp'].add((identifier, source_id[1]))
                         writer_uniprots_bc.writerow(
                             [identifier, source_id[1], add_resource(dict_bp_to_resource[source_id[1]])])
                     elif source_id[1] in dict_cc_to_resource:
                         counter_gos_cc += 1
+                        if (identifier, source_id[1]) in dict_go_label_to_pairs['cc']:
+                            continue
+                        dict_go_label_to_pairs['cc'].add((identifier, source_id[1]))
                         writer_uniprots_cc.writerow(
                             [identifier, source_id[1], add_resource(dict_cc_to_resource[source_id[1]])])
                     elif source_id[1] in dict_mf_to_resource:
                         counter_gos_mf += 1
+                        if (identifier, source_id[1]) in dict_go_label_to_pairs['mf']:
+                            continue
+                        dict_go_label_to_pairs['mf'].add((identifier, source_id[1]))
                         writer_uniprots_mf.writerow(
                             [identifier, source_id[1], add_resource(dict_mf_to_resource[source_id[1]])])
                     elif source_id[1] in dict_alt_bp_to_id:
                         counter_gos_bc += 1
+                        if (identifier, dict_alt_bp_to_id[source_id[1]]) in dict_go_label_to_pairs['bp']:
+                            continue
+                        dict_go_label_to_pairs['bp'].add((identifier, dict_alt_bp_to_id[source_id[1]]))
                         writer_uniprots_bc.writerow([identifier, dict_alt_bp_to_id[source_id[1]], add_resource(
                             dict_bp_to_resource[dict_alt_bp_to_id[source_id[1]]])])
                     elif source_id[1] in dict_alt_cc_to_id:
                         counter_gos_cc += 1
-                        writer_uniprots_bc.writerow([identifier, dict_alt_cc_to_id[source_id[1]], add_resource(
+                        if (identifier, dict_alt_cc_to_id[source_id[1]]) in dict_go_label_to_pairs['cc']:
+                            continue
+                        dict_go_label_to_pairs['cc'].add((identifier, dict_alt_cc_to_id[source_id[1]]))
+                        writer_uniprots_cc.writerow([identifier, dict_alt_cc_to_id[source_id[1]], add_resource(
                             dict_cc_to_resource[dict_alt_cc_to_id[source_id[1]]])])
                     elif source_id[1] in dict_alt_mf_to_id:
                         counter_gos_mf += 1
-                        writer_uniprots_bc.writerow([identifier, dict_alt_mf_to_id[source_id[1]], add_resource(
+                        if (identifier, dict_alt_mf_to_id[source_id[1]]) in dict_go_label_to_pairs['mf']:
+                            continue
+                        dict_go_label_to_pairs['mf'].add((identifier, dict_alt_mf_to_id[source_id[1]]))
+                        writer_uniprots_mf.writerow([identifier, dict_alt_mf_to_id[source_id[1]], add_resource(
                             dict_mf_to_resource[dict_alt_mf_to_id[source_id[1]]])])
 
                     else:
