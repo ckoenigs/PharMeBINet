@@ -22,14 +22,17 @@ dict_db_id_to_real_db_id={}
 # dict inchikey to compound id
 dict_inchiKey_to_compound_id={}
 
+# dictionary name to compound ids
+dict_name_to_drugbank_ids={}
+
 def load_compounds():
     """
     Load compounds ids into a set.
     :return:
     """
-    query='Match (n:Compound) Return n.identifier, n.alternative_ids, n.inchikey'
+    query='Match (n:Compound) Return n.identifier, n.alternative_ids, n.inchikey, n.name, n.synonyms'
     results=g.run(query)
-    for compound_id, alternative_ids, inchikey, in results:
+    for compound_id, alternative_ids, inchikey,name, synonyms, in results:
         dict_db_id_to_real_db_id[compound_id]=compound_id
         if alternative_ids:
             for alternative_id in alternative_ids:
@@ -41,6 +44,18 @@ def load_compounds():
                 dict_db_id_to_real_db_id[alternative_id]=compound_id
         if inchikey:
             dict_inchiKey_to_compound_id[inchikey]=compound_id
+
+        if name:
+            name=name.lower()
+            if not name in dict_name_to_drugbank_ids:
+                dict_name_to_drugbank_ids[name]=set()
+            dict_name_to_drugbank_ids[name].add(compound_id)
+        # if synonyms:
+        #     for synonym in synonyms:
+        #         synonym = synonym.lower()
+        #         if not synonym in dict_name_to_drugbank_ids:
+        #             dict_name_to_drugbank_ids[synonym] = set()
+        #         dict_name_to_drugbank_ids[synonym].add(compound_id)
 
 # set of metabolite compound pairs
 set_metabolite_compound_pairs=set()
@@ -71,25 +86,38 @@ def get_all_metabolites_with_xrefs():
     cypher_query = cypher_query % (path_of_directory, file_name_rela)
     cypher_file.write(cypher_query)
 
-    query='MATCH (p:Metabolite_HMDB) Return p.identifier, p.xrefs, p.inchikey'
+    query='MATCH (p:Metabolite_HMDB) Return p.identifier, p.xrefs, p.inchikey, p.name, p.synonyms'
     results=g.run(query)
-    for identifier, xrefs, inchikey, in results:
+    for identifier, xrefs, inchikey, name,synonyms,  in results:
         is_mapped=False
         if inchikey:
             if inchikey in dict_inchiKey_to_compound_id:
                 write_rela_into_csv_file(dict_inchiKey_to_compound_id,inchikey,identifier,csv_writer_rela,'inchikey')
                 is_mapped=True
 
-        # if xrefs:
-        #     if not is_mapped:
-        #         for xref in xrefs:
-        #             if xref.startswith('drugbank'):
-        #                 db_id=xref.split(':')[1]
-        #                 if db_id not in dict_db_id_to_real_db_id:
-        #                     print('drugbank id not in drugbank?',db_id, identifier)
-        #                 else:
-        #                     write_rela_into_csv_file(dict_db_id_to_real_db_id, db_id, identifier, csv_writer_rela,
-        #                                              'drugbank_id')
+        if xrefs:
+            if not is_mapped:
+                drugbank_ids_hmdb=set()
+                for xref in xrefs:
+                    if xref.startswith('drugbank'):
+                        db_id=xref.split(':')[1]
+                        if db_id not in dict_db_id_to_real_db_id:
+                            print('drugbank id not in drugbank?',db_id, identifier)
+                        else:
+                            drugbank_ids_hmdb.add(db_id)
+
+                drugbank_ids_by_names=set() if name.lower() not in dict_name_to_drugbank_ids else dict_name_to_drugbank_ids[name.lower()]
+                # if synonyms:
+                #     for synonym in synonyms:
+                #         synonym=synonym.lower()
+                #         if synonym in dict_name_to_drugbank_ids:
+                #             drugbank_ids_by_names=drugbank_ids_by_names.union(dict_name_to_drugbank_ids[synonym])
+
+                intersection=drugbank_ids_by_names.intersection(drugbank_ids_hmdb)
+                if len(intersection)>0:
+                    for db_id in intersection:
+                        write_rela_into_csv_file(dict_db_id_to_real_db_id, db_id, identifier, csv_writer_rela,
+                                                         'drugbank_id_and_name')
 
 
 def main():
