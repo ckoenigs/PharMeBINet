@@ -47,6 +47,8 @@ def prepare_cypher_query(file_name):
     query=query_start %(path_of_directory, file_name, license)
 
     cypher_file.write(query)
+    query='''Create Constraint On (node:Product) Assert node.identifier Is Unique; \n'''
+    cypher_file.write(query)
     cypher_file.close()
     cypher_rela = open('output/cypher_rela.cypher', 'a', encoding='utf-8')
     query_rela='Match (n:Compound)--(:Compound_DrugBank)--(:Product_DrugBank)--(m:Product) Create (n)-[:HAS_ChPR{source:"DrugBank", resource:["DrugBank"], license:"%s", drugbank:"yes"}]->(m);\n'
