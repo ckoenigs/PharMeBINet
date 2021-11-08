@@ -274,6 +274,8 @@ def prepare_cypher_files_and_tsv():
                                        'associates', ['references'])
     generates_rela_tsv_file_and_cypher('ontology', 'ontology', ['ontology_id1', 'ontology_id2'], 'associates', [])
 
+# to avoid double edges without information
+set_protein_pathway=set()
 
 def run_trough_xml_and_parse_data_protein():
     # counter of human entries
@@ -365,8 +367,11 @@ def run_trough_xml_and_parse_data_protein():
                         elif tag == 'pathways':
                             for subchild in child.iterchildren():
                                 pathway_identifier = get_pathway_information(subchild)
-                                dict_node_type_to_tsv['protein_pathway'].writerow(
-                                    {'protein_id': identifier, 'pathway_id': pathway_identifier})
+                                if not (identifier, pathway_identifier) in set_protein_pathway:
+                                    dict_node_type_to_tsv['protein_pathway'].writerow(
+                                        {'protein_id': identifier, 'pathway_id': pathway_identifier})
+                                    set_protein_pathway.add((identifier,pathway_identifier))
+
                         elif tag == 'metabolite_associations':
                             for subchild in child.iterchildren():
                                 metabolite_name = subchild.findtext('{ns}name'.format(ns=ns))
