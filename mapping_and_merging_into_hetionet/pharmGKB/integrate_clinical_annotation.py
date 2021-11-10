@@ -154,11 +154,14 @@ def load_db_info_in():
     csv file.
     :return:
     """
+    #{id:1444667346}
     query = '''Match (d:PharmGKB_ClinicalAnnotation)--(e:PharmGKB_ClinicalAnnotationAllele) Return Distinct d.id, e'''
     results = g.run(query)
     for identifier, clinical_annotation, in results:
         if identifier not in dict_meta_id_to_clinical_annotation_info:
             dict_meta_id_to_clinical_annotation_info[identifier] = []
+        # blub=json.dumps(dict(clinical_annotation))
+        clinical_annotation['text']=clinical_annotation['text'].replace('"','\'')
         clinical_annotation_allele_json = json.dumps(dict(clinical_annotation)).replace('\\"', '"')
         dict_meta_id_to_clinical_annotation_info[identifier].append(clinical_annotation_allele_json)
 
