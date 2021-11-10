@@ -8,7 +8,7 @@ standard_case_drug.tsv: Aggregated and mapped information found in the DRUGyyQq 
 Generate a dictionary from case id (primaryid, isr) to drug_seq to drug_concept ids
 
 indications.tsv: Mapped indication preferred terms from the INDIyyQq files into OHDSI standard vocabulary concept identifiers and SNOMEDCT concept identifiers.
-Generate with the dictionary before a set of drug-indication tuples.
+Generate with the dictionary before a set of drug-indication tuples. Write the tuple in to indication file.
 
 concept.tsv: OHDSI vocabulary version v5.0 08-JUN-15 concepts.
 Prepare a dictionary from concept id to concept information.

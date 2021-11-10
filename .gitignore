@@ -137,6 +137,7 @@ node_modules/
 *.hpoa
 *.jar
 *.tmp
+*.db
 
 wget-log
 wget-log.*
