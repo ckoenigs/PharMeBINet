@@ -55,7 +55,7 @@ def generate_node_and_rela_file_and_query(header_rela):
                         'decreasing_strength_mutations', "disrupting_mutations", "disrupting_rate_mutations",
                         "disrupting_strength_mutations", "increasing_mutations", "increasing_rate_mutations",
                         "increasing_strength_mutations", "no_effect_mutations", "unknown_effect_mutations"]:
-            if header in ['evidence_type', 'db_with_ppi']:
+            if header in ['evidence_type', 'db_with_ppi','experiments']:
                 query += header + 's:split(line.`' + header + '`,"|"), '
             else:
                 query += header + ':split(line.`' + header + '`,"|"), '
