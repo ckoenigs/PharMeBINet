@@ -93,6 +93,16 @@ echo GO protein and relationships
 
 cd ..
 
+
+cd uniprot
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo 'integrat uniprot proteins-go rela'
+
+./integration_protein_go_from_uniprot.sh $path_neo4j $path_to_project > output_mapping_and_integration.txt 
+
+cd ..
+
 cd iid
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -116,7 +126,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo hmdb protein, go, metabolite
 
-./script_hmdb_mapping_and_merging.sh $path_neo4j $path_to_project > output_script_part_1.txt
+#./script_hmdb_mapping_and_merging.sh $path_neo4j $path_to_project > output_script_part_1.txt
 
 cd ..
 
@@ -125,7 +135,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo smpdb
 
-./script_to_mapping_smpdb.sh $path_neo4j $path_to_project > output_script.txt
+#./script_to_mapping_smpdb.sh $path_neo4j $path_to_project > output_script.txt
 
 cd ..
 
@@ -173,6 +183,15 @@ echo HPO
 
 cd ..
 
+cd hmdb
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo hmdb pathway, disease
+
+#./script_hmdb_mapping_and_merging_part2.sh $path_neo4j $path_to_project > output_script_part_2.txt
+
+cd ..
+
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -206,7 +225,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo reactome drug
 
-./script_reactome_drug.sh $path_neo4j $path_to_project #> output_script_drug.txt
+./script_reactome_drug.sh $path_neo4j $path_to_project > output_script_drug.txt
 
 cd ..
 
@@ -250,6 +269,15 @@ echo Sider
 
 cd ..
 
+cd disgenet
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo DisGeNet
+
+#./script_to_integrate_disgenet.sh $path_neo4j $path_to_project #> output_script.txt
+
+cd ..
+
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo Aeolus  
@@ -268,6 +296,16 @@ cd pharmGKB
 ./script_pharmgkb.sh $path_neo4j/ $path_to_project > output_script.txt
 
 cd ..
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo DrugCentral
+cd drugcentral
+
+#./script_to_map_and_integrate_drug_central_information.sh $path_neo4j $path_to_project > output_script.txt
+
+cd ..
+
 
 now=$(date +"%F %T")
 echo "Current time: $now"
