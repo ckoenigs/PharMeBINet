@@ -82,6 +82,7 @@ class Edge(object):
         self.placeboFreq = []
         self.placeboLowerFreq = []
         self.placeboUpperFreq = []
+        self.methodDetection=[]
 
     def set_frequence(self, placebo, freq, lowerFreq, upperFreq):
         self.placebo = placebo
@@ -95,11 +96,14 @@ class Edge(object):
             self.upperFreq.append(float(upperFreq))
 
     def set_methodDetection(self, methodDetection):
-        self.methodDetection = methodDetection
+        self.methodDetection.append(methodDetection)
 
 
 # a dictionary with (drugID (stitch stereo id), side effect ID (umls cui)) as key and edge as value
-dict_edges = {}
+dict_edges_side_effects = {}
+
+# a dictionary with (drugID (stitch stereo id), side effect ID (umls cui)) as key and edge as value
+dict_edges_indications = {}
 
 # dictionary of umls cuis where the umls id label is used because there was no meddra umls cui
 dict_cui_which_use_label_id = {}
@@ -159,9 +163,137 @@ def import_meddra_all_se():
 
         # generate the edge and add to dictionary
         edge = Edge(stitchIDstereo, umlsIDmeddra)
-        dict_edges[(stitchIDstereo, umlsIDmeddra)] = edge
+        dict_edges_side_effects[(stitchIDstereo, umlsIDmeddra)] = edge
 
     fobj.close()
+
+
+
+
+'''
+import meddra_all_lable_indications.tsv and add information into dictionaries
+# 1: source labelindication
+# 2: STITCH compund IDs (flat)
+# 3: STITCH compund IDs (stereo) 
+# 4: UMLS concept ID (on lable)
+# 5: method of detection: NLP_indication / NLP_precondition / text_mention
+# 6: concept name
+# 7: MedDRA concept type
+# 8: UMLS concept id (MedDRA term)
+# 9: MedDRA concept name   
+'''
+
+
+def import_meddra_all_lable_indication():
+    fobj = open(filepath + "meddra_all_label_indications.tsv")
+    csv_reader= csv.reader(fobj, delimiter='\t')
+    for splitted in csv_reader:
+        sourceLableIndi = splitted[0]
+        stitchIDflat = splitted[1]
+        stitchIDstereo = splitted[2]
+        umlsIDlable = splitted[3]
+        methodDetection = splitted[4]
+        meddraType = splitted[6]
+        umlsIDmeddra = splitted[7]
+        name = splitted[8]
+
+        # fill the dictionary with stitch flat id as key and add the different stitch stereo IDs
+        if stitchIDflat in dict_flat_to_list_stereo:
+            if not stitchIDstereo in dict_flat_to_list_stereo[stitchIDflat]:
+                dict_flat_to_list_stereo[stitchIDflat].append(stitchIDstereo)
+        else:
+            dict_flat_to_list_stereo[stitchIDflat] = [stitchIDstereo]
+
+        # generate drug and add to dictionary
+        if not stitchIDstereo in dict_drug:
+            drug = Drug(stitchIDflat, stitchIDstereo)
+            dict_drug[stitchIDstereo] = drug
+
+        # if the side effect has no UMLS ID for meddera use the UMLS ID for lable
+        if len(umlsIDmeddra) == 0:
+            if not umlsIDlable in dict_cui_which_use_label_id:
+                dict_cui_which_use_label_id[umlsIDlable] = name
+            umlsIDmeddra = umlsIDlable
+
+        # generate side effect and add to list of side effects if not existing
+        sideEffect = SideEffect(umlsIDlable, meddraType, umlsIDmeddra, name)
+        if not umlsIDmeddra in dict_sideEffects:
+            dict_sideEffects[umlsIDmeddra] = sideEffect
+        else:
+            # if the existing SE has not the prefered nam take the prefered name
+            if meddraType == 'PT':
+                if dict_sideEffects[umlsIDmeddra].meddraType != 'PT':
+                    dict_sideEffects[umlsIDmeddra] = sideEffect
+
+        # generate the edge and add to dictionary  if not existing and app property method detection
+        if not (stitchIDstereo, umlsIDmeddra) in dict_edges_indications:
+            edge = Edge(stitchIDstereo, umlsIDmeddra)
+            edge.set_methodDetection(methodDetection)
+            dict_edges_indications[(stitchIDstereo, umlsIDmeddra)] = edge
+
+        dict_edges_indications[(stitchIDstereo, umlsIDmeddra)].set_methodDetection(methodDetection)
+
+        # dict_edges[(stitchIDstereo, umlsIDmeddra)].set_methodDetection(sourceLableIndi)
+
+'''
+import meddra_all_indications.tsv and add information into dictionaries
+# 1: STITCH compund IDs (flat)
+# 2: UMLS concept ID (on lable)
+# 3: method of detection: NLP_indication / NLP_precondition / text_mention
+# 4: concept name
+# 5: MedDRA concept type
+# 6: UMLS concept id (MedDRA term)
+# 7: MedDRA concept name 
+'''
+def import_meddra_all_indication():
+    fobj = open(filepath + "meddra_all_indications.tsv")
+    counter = 0
+    csv_reader= csv.reader(fobj, delimiter='\t')
+    for splitted in csv_reader:
+        stitchIDflat = splitted[0]
+        umlsIDlable = splitted[1]
+        methodDetection = splitted[2]
+        conceptName = splitted[3]
+        meddraType = splitted[4]
+        umlsIDmeddra = splitted[5]
+        name = splitted[6]
+
+
+        # if the side effect has no UMLS ID for meddera use the UMLS ID for lable
+        if len(umlsIDmeddra) == 0:
+            if not umlsIDlable in dict_cui_which_use_label_id:
+                dict_cui_which_use_label_id[umlsIDlable] = name
+            umlsIDmeddra = umlsIDlable
+        se = SideEffect(umlsIDlable, meddraType, umlsIDmeddra, name)
+
+        # generate side effect and add to list of side effects if not existing
+        if not umlsIDmeddra in dict_sideEffects:
+            se.set_conceptName(conceptName)
+            dict_sideEffects[umlsIDmeddra] = se
+        else:
+            # if the existing SE has not the prefered nam take the prefered name
+            if meddraType == 'PT' and dict_sideEffects[umlsIDmeddra].meddraType != 'PT':
+                se.set_conceptName(conceptName)
+                dict_sideEffects[umlsIDmeddra] = se
+            else:
+                dict_sideEffects[umlsIDmeddra].set_conceptName(conceptName)
+
+        # for all stitch stereo ID of a stitch flat ID generate the connection
+        if stitchIDflat in dict_flat_to_list_stereo:
+            list_stereo_ids = dict_flat_to_list_stereo[stitchIDflat]
+
+            for stitchIDstereo in list_stereo_ids:
+                # generate the edge and add to dictionary
+                if not (stitchIDstereo, umlsIDmeddra) in dict_edges_indications:
+                    edge = Edge(stitchIDstereo, umlsIDmeddra)
+                    # edge.set_methodDetection(methodDetection)
+                    dict_edges_indications[(stitchIDstereo, umlsIDmeddra)] = edge
+                    dict_edges_indications[(stitchIDstereo, umlsIDmeddra)].set_methodDetection(methodDetection)
+
+        else:
+            counter += 1
+            print('some flat are not in the other files!')
+    print(counter)
 
 
 '''
@@ -221,137 +353,19 @@ def import_meddra_freq():
                     dict_sideEffects[umlsIDmeddra] = sideEffect
 
         # generate the edge and add to dictionary if not existing, also add the properties for frequence
-        if not (stitchIDstereo, umlsIDmeddra) in dict_edges:
-            edge = Edge(stitchIDstereo, umlsIDmeddra)
-            edge.set_frequence(placebo, freq, lowerFreq, upperFreq)
-            dict_edges[(stitchIDstereo, umlsIDmeddra)] = edge
-        else:
-            dict_edges[(stitchIDstereo, umlsIDmeddra)].set_frequence(placebo, freq, lowerFreq, upperFreq)
-
-
-'''
-import meddra_all_lable_indications.tsv and add information into dictionaries
-# 1: source labelindication
-# 2: STITCH compund IDs (flat)
-# 3: STITCH compund IDs (stereo) 
-# 4: UMLS concept ID (on lable)
-# 5: method of detection: NLP_indication / NLP_precondition / text_mention
-# 6: concept name
-# 7: MedDRA concept type
-# 8: UMLS concept id (MedDRA term)
-# 9: MedDRA concept name   
-'''
-
-
-def import_meddra_all_lable_indication():
-    fobj = open(filepath + "meddra_all_label_indications.tsv")
-    csv_reader= csv.reader(fobj, delimiter='\t')
-    for splitted in csv_reader:
-        sourceLableIndi = splitted[0]
-        stitchIDflat = splitted[1]
-        stitchIDstereo = splitted[2]
-        umlsIDlable = splitted[3]
-        methodDetection = splitted[4]
-        meddraType = splitted[6]
-        umlsIDmeddra = splitted[7]
-        name = splitted[8]
-
-        # fill the dictionary with stitch flat id as key and add the different stitch stereo IDs
-        if stitchIDflat in dict_flat_to_list_stereo:
-            if not stitchIDstereo in dict_flat_to_list_stereo[stitchIDflat]:
-                dict_flat_to_list_stereo[stitchIDflat].append(stitchIDstereo)
-        else:
-            dict_flat_to_list_stereo[stitchIDflat] = [stitchIDstereo]
-
-        # generate drug and add to dictionary
-        if not stitchIDstereo in dict_drug:
-            drug = Drug(stitchIDflat, stitchIDstereo)
-            dict_drug[stitchIDstereo] = drug
-
-        # if the side effect has no UMLS ID for meddera use the UMLS ID for lable
-        if len(umlsIDmeddra) == 0:
-            if not umlsIDlable in dict_cui_which_use_label_id:
-                dict_cui_which_use_label_id[umlsIDlable] = name
-            umlsIDmeddra = umlsIDlable
-
-        # generate side effect and add to list of side effects if not existing
-        sideEffect = SideEffect(umlsIDlable, meddraType, umlsIDmeddra, name)
-        if not umlsIDmeddra in dict_sideEffects:
-            dict_sideEffects[umlsIDmeddra] = sideEffect
-        else:
-            # if the existing SE has not the prefered nam take the prefered name
-            if meddraType == 'PT':
-                if dict_sideEffects[umlsIDmeddra].meddraType != 'PT':
-                    dict_sideEffects[umlsIDmeddra] = sideEffect
-
-        # generate the edge and add to dictionary  if not existing and app property method detection
-        if not (stitchIDstereo, umlsIDmeddra) in dict_edges:
-            edge = Edge(stitchIDstereo, umlsIDmeddra)
-            edge.set_methodDetection(methodDetection)
-            dict_edges[(stitchIDstereo, umlsIDmeddra)] = edge
-
-        else:
-            dict_edges[(stitchIDstereo, umlsIDmeddra)].set_methodDetection(methodDetection)
-
-        dict_edges[(stitchIDstereo, umlsIDmeddra)].set_methodDetection(sourceLableIndi)  
-
-'''
-import meddra_all_indications.tsv and add information into dictionaries
-# 1: STITCH compund IDs (flat)
-# 2: UMLS concept ID (on lable)
-# 3: method of detection: NLP_indication / NLP_precondition / text_mention
-# 4: concept name
-# 5: MedDRA concept type
-# 6: UMLS concept id (MedDRA term)
-# 7: MedDRA concept name 
-'''
-def import_meddra_all_indication():
-    fobj = open(filepath + "meddra_all_indications.tsv")
-    counter = 0
-    csv_reader= csv.reader(fobj, delimiter='\t')
-    for splitted in csv_reader:
-        stitchIDflat = splitted[0]
-        umlsIDlable = splitted[1]
-        conceptName = splitted[3]
-        meddraType = splitted[4]
-        umlsIDmeddra = splitted[5]
-        name = splitted[6]
-
-
-        # if the side effect has no UMLS ID for meddera use the UMLS ID for lable
-        if len(umlsIDmeddra) == 0:
-            if not umlsIDlable in dict_cui_which_use_label_id:
-                dict_cui_which_use_label_id[umlsIDlable] = name
-            umlsIDmeddra = umlsIDlable
-        se = SideEffect(umlsIDlable, meddraType, umlsIDmeddra, name)
-
-        # generate side effect and add to list of side effects if not existing
-        if not umlsIDmeddra in dict_sideEffects:
-            se.set_conceptName(conceptName)
-            dict_sideEffects[umlsIDmeddra] = se
-        else:
-            # if the existing SE has not the prefered nam take the prefered name
-            if meddraType == 'PT' and dict_sideEffects[umlsIDmeddra].meddraType != 'PT':
-                se.set_conceptName(conceptName)
-                dict_sideEffects[umlsIDmeddra] = se
-            else:
-                dict_sideEffects[umlsIDmeddra].set_conceptName(conceptName)
-
-        # for all stitch stereo ID of a stitch flat ID generate the connection
-        if stitchIDflat in dict_flat_to_list_stereo:
-            list_stereo_ids = dict_flat_to_list_stereo[stitchIDflat]
-
-            for stitchIDstereo in list_stereo_ids:
-                # generate the edge and add to dictionary
-                if not (stitchIDstereo, umlsIDmeddra) in dict_edges:
-                    edge = Edge(stitchIDstereo, umlsIDmeddra)
-                    # edge.set_methodDetection(methodDetection)
-                    dict_edges[(stitchIDstereo, umlsIDmeddra)] = edge
-
-        else:
-            counter += 1
-            print('some flat are not in the other files!')
-    print(counter)
+        found_tuple=False
+        if  (stitchIDstereo, umlsIDmeddra) in dict_edges_side_effects:
+            dict_edges_side_effects[(stitchIDstereo, umlsIDmeddra)].set_frequence(placebo, freq, lowerFreq, upperFreq)
+            found_tuple=True
+        if (stitchIDstereo, umlsIDmeddra) in dict_edges_indications:
+            print('in indication')
+            dict_edges_indications[(stitchIDstereo, umlsIDmeddra)].set_frequence(placebo, freq, lowerFreq, upperFreq)
+            found_tuple=True
+        if not found_tuple:
+            print('not in one of them ')
+            # edge = Edge(stitchIDstereo, umlsIDmeddra)
+            # edge.set_frequence(placebo, freq, lowerFreq, upperFreq)
+            # dict_edges[(stitchIDstereo, umlsIDmeddra)] = edge
 
 
 '''
@@ -365,66 +379,20 @@ def generate_file_umls_id_label():
     for cui, name in dict_cui_which_use_label_id.items():
         g.write(cui + '\t' + name + '\n')
 
-
-'''
-Generate cypher file and csv files for import in neo4j
-'''
-
-
-def generate_cypher_file():
-
-
-    # first add all queries with sider drugs
-    counter_create = 0
-    print('drug Create')
-    print (datetime.datetime.utcnow())
-    # create cypher file
-    cypher_file= open('output/cypher.cypher','w')
-    #query for drugs
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'master_database_change/import_into_Neo4j/sider/output/drug.csv" As line Create (:drug_Sider{stitchIDflat: line.stitchIDflat , stitchIDstereo: line.stitchIDstereo, PubChem_Coupound_ID: line.PubChem_Coupound_ID} ); \n'
-    cypher_file.write(query)
-    cypher_file.write(':begin\n')
-    cypher_file.write('Create Constraint On (node:drug_Sider) Assert node.stitchIDstereo Is Unique; \n')
-    cypher_file.write(':commit \n Call db.awaitIndexes(300);  \n ')
-    #query for side effects
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'master_database_change/import_into_Neo4j/sider/output/se.csv" As line Create (:se_Sider{meddraType: line.meddraType , conceptName: line.conceptName, umlsIDmeddra: line.umlsIDmeddra, name: line.name, umls_concept_id: line.umls_concept_id} ); \n'
-    cypher_file.write(query)
-    cypher_file.write(':begin\n')
-    cypher_file.write('Create Constraint On (node:se_Sider) Assert node.umlsIDmeddra Is Unique; \n')
-    cypher_file.write(':commit \n Call db.awaitIndexes(300); \n ')
-    #query for relationships relationships
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'master_database_change/import_into_Neo4j/sider/output/rela.csv" As line Match (drug:drug_Sider{stitchIDstereo: line.stitchIDstereo}), (se:se_Sider{umlsIDmeddra: line.umlsIDmeddra}) Create (drug)-[:Causes{placebo: line.placebo , freq: line.freq, lowerFreq: line.lowerFreq , upperFreq: line.upperFreq, placeboFreq: line.placeboFreq, placeboLowerFreq: line.placeboLowerFreq, placeboUpperFreq: line.placeboUpperFreq}] ->(se); \n'
-    cypher_file.write(query)
-
-    #create drug csv
-    writer=open('output/drug.csv','w')
-    csv_writer=csv.writer(writer)
-    csv_writer.writerow(['stitchIDflat', 'stitchIDstereo', 'PubChem_Coupound_ID'])
-    for key, value in dict_drug.items():
-        csv_writer.writerow([value.stitchIDflat, value.stitchIDstereo, value.PubChemID])
-    writer.close()
-
-    # add queries for side effect
-    print('side effect Create')
-    print (datetime.datetime.utcnow())
-    #create side effect csv
-    writer=open('output/se.csv','w')
-    csv_writer=csv.writer(writer)
-    csv_writer.writerow(['meddraType' , 'conceptName', 'umlsIDmeddra', 'name', 'umls_concept_id'])
-    for key, value in dict_sideEffects.items():
-        csv_writer.writerow([value.meddraType, value.conceptName, value.umlsIDmeddra, value.name, value.umlsIDlable])
-    writer.close()
-
-    # make statistics and add query for relationship to file
-    print('edges Create')
-    print (datetime.datetime.utcnow())
-    #create side effect csv
-    writer=open('output/rela.csv','w')
-    csv_writer=csv.writer(writer)
-    csv_writer.writerow(['stitchIDstereo', 'umlsIDmeddra','placebo', 'freq', 'lowerFreq', 'upperFreq', 'placeboFreq', 'placeboLowerFreq', 'placeboUpperFreq'])
+def write_rela_in_csv(file_name, dictionary):
+    """
+    Generate csv file for relationship and prepare the different frequency information and write into csv file.
+    :param file_name: string
+    :param dictionary: dictionary
+    :return:
+    """
+    writer = open('output/'+file_name+'.csv', 'w')
+    csv_writer = csv.writer(writer)
+    csv_writer.writerow(['stitchIDstereo', 'umlsIDmeddra', 'placebo', 'freq', 'lowerFreq', 'upperFreq', 'placeboFreq',
+                         'placeboLowerFreq', 'placeboUpperFreq', 'method_of_detection'])
 
     # filter out all frequencies with floats and compute average, if no value exist take a word
-    for key, value in dict_edges.items():
+    for key, value in dictionary.items():
         freqs = value.freq
         freqs_word = ''
         freqs_value = 0
@@ -497,8 +465,69 @@ def generate_cypher_file():
         placeboLowerFreq = str(min(value.placeboLowerFreq)) if len(value.placeboLowerFreq) > 0 else ''
         placeboUpperFreq = str(max(value.placeboUpperFreq)) if len(value.placeboUpperFreq) > 0 else ''
 
-        csv_writer.writerow([value.drugID, value.sideEffectID, value.placebo, freq, lowerFreq, upperFreq, placeboFreq, placeboLowerFreq,
-            placeboUpperFreq])
+        csv_writer.writerow(
+            [value.drugID, value.sideEffectID, value.placebo, freq, lowerFreq, upperFreq, placeboFreq, placeboLowerFreq,
+             placeboUpperFreq, '|'.join(set(value.methodDetection))])
+
+'''
+Generate cypher file and csv files for import in neo4j
+'''
+
+
+def generate_cypher_file():
+
+
+    # first add all queries with sider drugs
+    counter_create = 0
+    print('drug Create')
+    print (datetime.datetime.utcnow())
+    # create cypher file
+    cypher_file= open('output/cypher.cypher','w')
+    #query for drugs
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'master_database_change/import_into_Neo4j/sider/output/drug.csv" As line Create (:drug_Sider{stitchIDflat: line.stitchIDflat , stitchIDstereo: line.stitchIDstereo, PubChem_Coupound_ID: line.PubChem_Coupound_ID} ); \n'
+    cypher_file.write(query)
+    cypher_file.write(':begin\n')
+    cypher_file.write('Create Constraint On (node:drug_Sider) Assert node.stitchIDstereo Is Unique; \n')
+    cypher_file.write(':commit \n Call db.awaitIndexes(300);  \n ')
+    #query for side effects
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'master_database_change/import_into_Neo4j/sider/output/se.csv" As line Create (:se_Sider{meddraType: line.meddraType , conceptName: line.conceptName, umlsIDmeddra: line.umlsIDmeddra, name: line.name, umls_concept_id: line.umls_concept_id} ); \n'
+    cypher_file.write(query)
+    cypher_file.write(':begin\n')
+    cypher_file.write('Create Constraint On (node:se_Sider) Assert node.umlsIDmeddra Is Unique; \n')
+    cypher_file.write(':commit \n Call db.awaitIndexes(300); \n ')
+    #query for relationships relationships
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'master_database_change/import_into_Neo4j/sider/output/rela.csv" As line Match (drug:drug_Sider{stitchIDstereo: line.stitchIDstereo}), (se:se_Sider{umlsIDmeddra: line.umlsIDmeddra}) Create (drug)-[:Causes{placebo: line.placebo , freq: line.freq, lowerFreq: line.lowerFreq , upperFreq: line.upperFreq, placeboFreq: line.placeboFreq, placeboLowerFreq: line.placeboLowerFreq, placeboUpperFreq: line.placeboUpperFreq, method_of_detection:split(line.method_of_detection,"|")}] ->(se); \n'
+    cypher_file.write(query)
+
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'master_database_change/import_into_Neo4j/sider/output/rela_indicates.csv" As line Match (drug:drug_Sider{stitchIDstereo: line.stitchIDstereo}), (se:se_Sider{umlsIDmeddra: line.umlsIDmeddra}) Create (drug)-[:Indicates{placebo: line.placebo , freq: line.freq, lowerFreq: line.lowerFreq , upperFreq: line.upperFreq, placeboFreq: line.placeboFreq, placeboLowerFreq: line.placeboLowerFreq, placeboUpperFreq: line.placeboUpperFreq, method_of_detection:split(line.method_of_detection,"|")}] ->(se); \n'
+    cypher_file.write(query)
+
+    #create drug csv
+    writer=open('output/drug.csv','w')
+    csv_writer=csv.writer(writer)
+    csv_writer.writerow(['stitchIDflat', 'stitchIDstereo', 'PubChem_Coupound_ID'])
+    for key, value in dict_drug.items():
+        csv_writer.writerow([value.stitchIDflat, value.stitchIDstereo, value.PubChemID])
+    writer.close()
+
+    # add queries for side effect
+    print('side effect Create')
+    print (datetime.datetime.utcnow())
+    #create side effect csv
+    writer=open('output/se.csv','w')
+    csv_writer=csv.writer(writer)
+    csv_writer.writerow(['meddraType' , 'conceptName', 'umlsIDmeddra', 'name', 'umls_concept_id'])
+    for key, value in dict_sideEffects.items():
+        csv_writer.writerow([value.meddraType, value.conceptName, value.umlsIDmeddra, value.name, value.umlsIDlable])
+    writer.close()
+
+    # make statistics and add query for relationship to file
+    print('edges Create')
+    print (datetime.datetime.utcnow())
+    #create side effect csv
+    write_rela_in_csv('rela', dict_edges_side_effects)
+    write_rela_in_csv('rela_indicates', dict_edges_indications)
+
 
 
 # DatabaseError: At c:\Users\Cassandra\Documents\uni\Master\test\meddra.tsv:21724 -  there's a field starting with a quote and whereas it ends that quote there seems to be characters in that field after that ending quote. That isn't supported. This is what I read: 'Ventilation"'
@@ -512,16 +541,6 @@ def main():
 
 
     import_meddra_all_se()
-
-    print('number of drug afte the first file:' + str(len(dict_drug)))
-
-    print('#############################################################')
-    print (datetime.datetime.utcnow())
-    print('import meddra_freq.tsv')
-
-    import_meddra_freq()
-
-    print(len(dict_drug))
 
     print('number of drug afte the second file:' + str(len(dict_drug)))
 
@@ -537,9 +556,20 @@ def main():
 
     import_meddra_all_indication()
 
+    print('number of drug afte the first file:' + str(len(dict_drug)))
+
+    print('#############################################################')
+    print (datetime.datetime.utcnow())
+    print('import meddra_freq.tsv')
+
+    import_meddra_freq()
+
+    print(len(dict_drug))
+
     print('number of se in the end' + str(len(dict_sideEffects)))
     print('number of drug in the end:' + str(len(dict_drug)))
-    print('number of relationships in the end' + str(len(dict_edges)))
+    print('number of relationships in the end:' + str(len(dict_edges_side_effects)))
+    print('number of relationships in the end indication:' + str(len(dict_edges_indications)))
 
     print('#############################################################')
     print (datetime.datetime.utcnow())
