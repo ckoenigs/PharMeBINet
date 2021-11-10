@@ -47,7 +47,7 @@ list_of_ctd_file_names=[
     'CTD_chemicals_diseases.csv.gz',
     'CTD_chem_go_enriched.csv.gz',
     'CTD_chem_pathways_enriched.csv.gz',
-    # 'CTD_genes_diseases.csv.gz', need to be add manually
+    'CTD_genes_diseases.csv.gz', # need to be add manually
     'CTD_genes_pathways.csv.gz',
     'CTD_diseases_pathways.csv.gz',
     'CTD_pheno_term_ixns.csv.gz',
