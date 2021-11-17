@@ -99,7 +99,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo 'integrat uniprot proteins-go rela'
 
-./integration_protein_go_from_uniprot.sh $path_neo4j $path_to_project > output_mapping_and_integration.txt 
+./integration_protein_go_from_uniprot.sh $path_neo4j $path_to_project > output_mapping_and_integration_go_edge.txt 
 
 cd ..
 
