@@ -15,7 +15,7 @@ python3 check_on_go_rela_and_integration.py $path_to_project > uniprot_go/output
 
 now=$(date +"%F %T")
 echo "Current time: $now"
-echo node cypher
+echo edge cypher
 
 $path_neo4j/cypher-shell -u neo4j -p test -f output/cypher_edge_go.cypher 
 
