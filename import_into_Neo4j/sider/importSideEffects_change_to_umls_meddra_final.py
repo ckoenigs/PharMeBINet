@@ -171,7 +171,7 @@ def import_meddra_all_se():
 
 
 '''
-import meddra_all_lable_indications.tsv and add information into dictionaries
+import meddra_all_label_indications.tsv and add information into dictionaries
 # 1: source labelindication
 # 2: STITCH compund IDs (flat)
 # 3: STITCH compund IDs (stereo) 
