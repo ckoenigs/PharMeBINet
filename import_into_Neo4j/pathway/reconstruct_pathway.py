@@ -8,9 +8,6 @@ import csv
 import collections
 import re, datetime
 import html
-from html.parser import HTMLParser
-# import HTMLParser
-import json
 import wget
 import gzip
 
@@ -189,7 +186,7 @@ def wikipathways():
     # Parse WikiPathways
 
     # download WikiPathways
-    url = 'http://data.wikipathways.org/20211010/gmt/wikipathways-20211010-gmt-Homo_sapiens.gmt'
+    url = 'http://data.wikipathways.org/20211110/gmt/wikipathways-20211110-gmt-Homo_sapiens.gmt'
     filename = wget.download(url, out='data/')
 
     gmt_generator = read_gmt(filename)
