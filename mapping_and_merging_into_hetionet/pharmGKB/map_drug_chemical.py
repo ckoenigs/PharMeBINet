@@ -383,7 +383,8 @@ def load_pharmgkb_in(label):
             cur = con.cursor()
             # if not mapped map the name to umls cui
             query = ('Select Distinct CUI From MRCONSO Where STR= "%s";')
-            query = query % (name)
+            query = query % (name.replace('"','\''))
+            # print(query)
             rows_counter = cur.execute(query)
             if rows_counter > 0:
                 cuis = set()
