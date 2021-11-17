@@ -8,6 +8,11 @@ path_to_project=$2
 
 license='Attribution-NonCommercial 4.0 International'
 
+
+sleep 120
+$path_neo4j/neo4j restart
+sleep 120
+
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo 'integrate Drugbank drugs with interaction into Hetionet'
