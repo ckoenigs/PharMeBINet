@@ -145,11 +145,11 @@ def load_all_rela_drug_response_and_finish_the_files():
     query = "MATCH (v:Variant)--(:Variant_ClinVar)-[r]-(:trait_set_DrugResponse_ClinVar)--(n:trait_DrugResponse_ClinVar)--(a:Chemical) RETURN v.identifier, r, type(r), n.name, a.identifier"
     results = g.run(query)
     print(query)
-    counter_rela=0
+    counter_rela = 0
     for variant_id, rela_info, rela_type, respose_name, chemical_id, in results:
         print(variant_id)
         print(chemical_id)
-        counter_rela+=1
+        counter_rela += 1
 
         rela_info = dict(rela_info)
 
@@ -165,7 +165,7 @@ def load_all_rela_drug_response_and_finish_the_files():
             if 'citations' == key:
                 # value is a list
                 dict_rela_combinde[key] = value
-            elif 'citations_info' ==key:
+            elif 'citations_info' == key:
                 dict_rela_combinde[key] = list_of_dictionary_to_list_of_string(value)
             elif key == 'clinical_significance':
                 value = transform_json_string_to_dict(value)
@@ -286,7 +286,7 @@ def load_all_rela_drug_response_and_finish_the_files():
             dict_pair_to_rela_info[(variant_id, chemical_id, rela_type, additiona_infos)] = []
         dict_pair_to_rela_info[(variant_id, chemical_id, rela_type, additiona_infos)].append(dict_rela_combinde)
     print(set_of_rela_properties)
-    print('number of relas of clinvar:',counter_rela)
+    print('number of relas of clinvar:', counter_rela)
 
 
 # dictionary rela type to csv file
@@ -334,8 +334,9 @@ def generate_cypher_file_and_csv(rela_type):
         elif property in ['clinical_significance_description', 'attributes', 'clinical_significance_date',
                           'clinical_significance_comments', 'comments', 'xrefs', 'ClinVar_assertion_observations',
                           'clinical_significance_citations', 'citations', 'assertion',
-                          'clinical_significance_review_status', 'additional_rela_infos', 'citations_info']:
-            if property!='assertion':
+                          'clinical_significance_review_status', 'additional_rela_infos', 'citations_info',
+                          'observation', 'clinical_significance_citations_info']:
+            if property not in ['assertion', 'observation']:
                 query_start += property + ':split(line.' + property + ',"|"), '
             else:
                 query_start += property + 's:split(line.' + property + ',"|"), '
@@ -355,7 +356,7 @@ dict_rela_type_to_new_name = {
     "confers_resistance": "CONFERS_RESISTANCE",
     "hypersensitivity": "IS_RISK_FACTOR_WITH",
     "resistance": "CONFERS_RESISTANCE",
-    'confers_sensitivity':"CONFERS_SENSITIVITY"
+    'confers_sensitivity': "CONFERS_SENSITIVITY"
 }
 
 # dictionary rela name to end
@@ -364,7 +365,7 @@ dict_rela_name_to_rela_end = {
     "CONFERS_RESISTANCE": "_VcrCH",
     "IS_RISK_FACTOR_WITH": "_VirfwCH",
     "CONFERS_RESISTANCE": "_VcrCH",
-    'CONFERS_SENSITIVITY':'_VcsCH'
+    'CONFERS_SENSITIVITY': '_VcsCH'
 }
 
 
@@ -373,6 +374,7 @@ def prepare_csv_file():
     prepare the different rela files and generate cypher queries
     :return:
     """
+    counter_not_used_edges=0
     for (variant_id, chemical_id, rela_type, additional_information), list_of_dict in dict_pair_to_rela_info.items():
         if rela_type in dict_rela_type_to_new_name:
             rela_type = dict_rela_type_to_new_name[rela_type]
@@ -391,7 +393,11 @@ def prepare_csv_file():
             dict_info = list_of_dict[0]
             dict_info['variant_id'] = variant_id
             dict_info['chemical_id'] = chemical_id
-            dict_rela_type_to_csv[rela_type].writerow(prepare_dictionary_with_strings_values(dict_info))
+            if "no assertion criteria provided" not in dict_info['clinical_significance_review_status']:
+                dict_rela_type_to_csv[rela_type].writerow(prepare_dictionary_with_strings_values(dict_info))
+            else:
+                counter_not_used_edges+=1
+
         else:
             combinde_dictionary = {}
             combinde_dictionary['variant_id'] = variant_id
@@ -423,8 +429,13 @@ def prepare_csv_file():
                                 print(type(value))
                                 print(combinde_dictionary[key])
                                 # sys.exit()
-            dict_rela_type_to_csv[rela_type].writerow(prepare_dictionary_with_strings_values(combinde_dictionary))
+
+            if "no assertion criteria provided" not in combinde_dictionary['clinical_significance_review_status']:
+                dict_rela_type_to_csv[rela_type].writerow(prepare_dictionary_with_strings_values(combinde_dictionary))
+            else:
+                counter_not_used_edges+=1
     print(set_of_list_properties)
+    print('number of edges which are not used:',counter_not_used_edges)
 
 
 def main():
