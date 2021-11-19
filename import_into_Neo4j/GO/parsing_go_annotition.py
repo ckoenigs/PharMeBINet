@@ -185,7 +185,6 @@ def prepare_geo_annotation_file(go_annotation_file_name):
         part_dataframe['evidence'] = part_dataframe['evidence'].map(dict_evidence_code_to_evidence)
         # part_dataframe.drop(columns=['qualifier'])
         rela_type = rela_type.replace('|', '_')
-        file_name = 'output/edges/edge_go_to_' + label + '_' + rela_type + '.tsv'
         if (label, rela_type) not in dict_label_rela_name_to_dataframe:
             dict_label_rela_name_to_dataframe[(label, rela_type)] = part_dataframe
         else:
