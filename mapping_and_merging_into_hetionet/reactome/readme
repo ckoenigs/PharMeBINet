@@ -34,7 +34,7 @@ The same goes for Reactome CC to CC.
                 This has the same steps as BP mapping only with CC.
 
 The cypher-shell integrates the mapped information and the new nodes.
-Next, the cypher-shell integrates with another cypher file the nodes of ReactionLikeEvent (reaction, polymerization, depolymerization, black box event, failed reaction).
+Next, the cypher-shell integrates with another cypher file the nodes of ReactionLikeEvent (reaction, polymerization, depolymerization, black box event, failed reaction). But only human ReactionLike Event and such that have a pubmed ids.
 
 The next program prepares the edges between FailedReaction and disease/pathway/ReactionLikeEvent/CC.
                 First, generate the cypher file.
