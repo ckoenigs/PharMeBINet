@@ -146,6 +146,9 @@ def prepare_evidence(attrib, protein_id, parent=None):
                 dict_pair[tag].add(combine_xrefs(dbRefs.attrib))
             if len(child.attrib) > 0:
                 dict_pair[tag].add('ref:' + child.attrib['ref'])
+    for key, value in dict_pair.items():
+        if type(value) in [set,list]:
+            dict_pair[key]='||'.join(value)
     dict_node_type_to_tsv['protein_evidence'].writerow(dict_pair)
     # dict_pair={'uniprot_id':protein_id,'evidence_id':evidence_id}
     # dict_pair.update(dict_evidence_protein_pairs_to_info[(evidence_id, protein_id)])
