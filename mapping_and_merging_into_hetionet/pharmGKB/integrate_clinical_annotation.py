@@ -166,7 +166,7 @@ def load_db_info_in():
         dict_meta_id_to_clinical_annotation_info[identifier].append(clinical_annotation_allele_json)
 
     csv_writer = prepare_files('metadata_edge')
-    query = '''MATCH (d:PharmGKB_ClinicalAnnotation) Return d.id'''
+    query = '''MATCH (d:PharmGKB_ClinicalAnnotation) Where d.level_of_evidence<>'4' Return d.id'''
     results = g.run(query)
 
     counter_meta_edges = 0
