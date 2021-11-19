@@ -138,7 +138,7 @@ def load_all_protein_form_go_and_map_and_write_to_file():
             csv_writer.writerow([identifier, identifier, resource(dict_uniprot_id_to_resource[identifier]),'id_mapped'])
         elif identifier in dict_alternativ_uniprot_id_to_identifiers:
             for real_id in dict_alternativ_uniprot_id_to_identifiers[identifier]:
-                csv_writer.writerow([identifier, real_id, resource(dict_uniprot_id_to_resource[identifier]),'alt_id_mapped'])
+                csv_writer.writerow([identifier, real_id, resource(dict_uniprot_id_to_resource[real_id]),'alt_id_mapped'])
         else:
             counter_not_mapped+=1
             csv_not_mapped.writerow([identifier, node['name']])
