@@ -218,7 +218,7 @@ def load_db_info_in(label, csv_writer):
     :return:
     """
 
-    query = '''MATCH (d:%s)  Return Distinct d.id '''
+    query = '''MATCH (d:%s) Where d.significance<>'no'  Return Distinct d.id '''
     query = query % (label)
     results = g.run(query)
 
@@ -352,7 +352,7 @@ def main():
             '###########################################################################################################################')
 
         print(datetime.datetime.utcnow())
-        print('Load in ' + label + ' from hetionet')
+        print('Load in ' + label + ' from neo4j')
 
         load_db_info_in(label, csv_writer)
 
