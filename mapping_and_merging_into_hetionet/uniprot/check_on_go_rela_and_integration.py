@@ -124,8 +124,7 @@ def create_cypher_file(file_name, file_name_new, label):
     cypher_file.write(query)
 
     query = '''LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/uniprot/%s" As line FIELDTERMINATOR "\\t" MATCH (d:%s{identifier:line.node_id_1})-[r]-(c:Protein{identifier:line.node_id_2}) Where not exists(r.not) and type(r) in ["%s"] Set  r.resource=split(line.resource,'|'), r.uniprot='yes';\n'''
-    query = query % (path_of_directory, file_name, label, '","'.join(dict_go_to_rela_types[label])
-                     )
+    query = query % (path_of_directory, file_name, label, '","'.join(dict_go_to_rela_types[label]))
     cypher_file.write(query)
 
 
