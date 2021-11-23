@@ -181,7 +181,7 @@ def get_all_important_relationships_and_write_into_files():
                                                            [inferenceScore], [inferenceGeneSymbol], [disease_id],
                                                            []]
 
-    query = '''MATCH (chemical:CTD_chemical)-[r:associates_CD]->(disease:CTD_disease) Where (disease)--(:Disease) and exists(r.directEvidence) RETURN chemical.chemical_id,   r, disease.mondos, disease.disease_id '''
+    query = '''MATCH (chemical:CTD_chemical)-[r:associates_CD]->(disease:CTD_disease) Where (disease)--(:Disease) and exists(r.directEvidence) and exists(r.pubMed_ids) RETURN chemical.chemical_id,   r, disease.mondos, disease.disease_id '''
     results = g.run(query)
 
     time_measurement = time.time() - start
