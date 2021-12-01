@@ -13,7 +13,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo 'export database'
 
-#$path_neo4j/cypher-shell -u neo4j -p test -f export_pharMeBINet.cypher
+$path_neo4j/cypher-shell -u neo4j -p test -f export_pharMeBINet.cypher
 
 now=$(date +"%F %T")
 echo "Current time: $now"
