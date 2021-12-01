@@ -49,7 +49,7 @@ relationship of DrugBank but because the protein which has multiple components h
                
 Integrate the mapping of protein and target into the database with cypher-shell.
 Prepare the relationships between ´compound-protein/target:
-               First, take all  compound-protein/target (chemical) pairs where the relationship are in the human and add them to a dictionary
+               First, take all  compound-protein/target (chemical) pairs where the relationship are in the human and have references and add them to a dictionary
                Then, go through all relationship pairs of the different relationship types and generate TSV files and cypher queries to integrate the information into the database. In the following, the pair information is written into the TSV file. If multiple edges with the same relationship type exist the information is combined and written into the TSV file.
 
 Integrate the protein/target-compound relationship with cypher-shell.
