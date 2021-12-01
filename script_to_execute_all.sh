@@ -55,7 +55,6 @@ cd mapping_and_merging_into_hetionet
 
 cd ..
 
-exit 1
 
 now=$(date +"%F %T")
 echo "Current time: $now"
