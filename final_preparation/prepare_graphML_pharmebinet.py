@@ -50,7 +50,7 @@ counter_key=0
 counter_all_edges=0
 counter_selected_edge=0
 
-file_name_from='/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/PharMeBiNet/PharMeBiNet.graphml'
+file_name_from='/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/PharMeBiNet/wholedata.graphml'
 # file_name_from='/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/PharMeBiNet/query.graphml'
 
 

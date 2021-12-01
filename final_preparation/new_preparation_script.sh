@@ -13,7 +13,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo 'export database'
 
-$path_neo4j/cypher-shell -u neo4j -p test -f export_pharMeBINet.cypher
+#$path_neo4j/cypher-shell -u neo4j -p test -f export_pharMeBINet.cypher
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -30,7 +30,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo 'remove not used data'
 
-python3 prepare_graphML_pharmebinet.py > output/output_preparation.txt
+python3 prepare_graphML_pharmebinet.py #> output/output_preparation.txt
 
 
 sleep 120
@@ -41,7 +41,7 @@ sleep 60
 
 chmod 775 shell_import_pharmebinet.sh
 
-./shell_import_pharmebinet.sh $import_tool $path_to_pharMeBiNet > output/import_graphml.txt
+./shell_import_pharmebinet.sh $import_tool $path_to_pharMeBiNet #> output/import_graphml.txt
 
 sleep 60
 
