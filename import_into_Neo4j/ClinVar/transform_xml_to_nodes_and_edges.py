@@ -452,6 +452,23 @@ def perpare_dictionary_values(dictionary, specific_type, dict_type_s_to_list_pro
             if type_part not in dict_properties_which_are_set:
                 dict_properties_which_are_set.add(type_part)
 
+'''
+go through dictionary and prepare the values into strings and add all list values names to a set
+'''
+
+
+def perpare_dictionary_values_add_to_set(dictionary, set_properties_which_are_set_or_list):
+    for type_part, value in dictionary.items():
+        if type(value) in [list, set]:
+            list_string = ''
+            for part in value:
+                if type(part) in [list, dict]:
+                    list_string += to_json_and_replace(part) + '|'
+
+                else:
+                    list_string += part + '|'
+            dictionary[type_part] = list_string[:-1]
+            set_properties_which_are_set_or_list.add(type_part)
 
 '''
 perpare the location information
@@ -791,6 +808,8 @@ dict_specific_to_general_type = {}
 
 # dictionary for every pair which properties are lists
 dict_edge_trait_set_variation_pair_to_list_of_list_properties = {}
+# set for edge pairs which properties are lists
+set_edge_trait_set_variation_pair_to_list_of_list_properties = set()
 
 # head of all trait files
 list_head_trait = ['identifier', 'accession', 'name', 'synonyms', 'symbols', 'comments',
@@ -1204,8 +1223,7 @@ def get_information_from_full_relase():
                 dict_edge_types_to_csv[(general_type, trait_set_type, final_assertion)] = csv_writer
             # if (variant_id, trait_set_id) not in dict_edges[(general_type, trait_set_type)]:
             dict_rela_type_pair_to_count[(general_type, trait_set_type, final_assertion)] += 1
-            perpare_dictionary_values(dict_edge_info, (general_type, trait_set_type, final_assertion),
-                                      dict_edge_trait_set_variation_pair_to_list_of_list_properties)
+            perpare_dictionary_values_add_to_set(dict_edge_info, set_edge_trait_set_variation_pair_to_list_of_list_properties)
             dict_edge_info['variant_id'] = variant_id
             dict_edge_info['trait_set_id'] = trait_set_id
             dict_edges[((general_type, trait_set_type, final_assertion))].add((variant_id, trait_set_id))
@@ -1238,8 +1256,7 @@ def perpare_query_for_edges():
             'trait_set_id', final_assertion)
         end_query = ' Set '
         for head in edge_information:
-            if head in dict_edge_trait_set_variation_pair_to_list_of_list_properties[
-                (general_type, trait_set_type, final_assertion)] or head=='attributes':
+            if head in set_edge_trait_set_variation_pair_to_list_of_list_properties or head=='attributes':
                 query += head + ':split(line.' + head + ',"|"), '
             elif head in ['variant_id', 'trait_set_id']:
                 continue
