@@ -58,7 +58,7 @@ cd ..
 
 now=$(date +"%F %T")
 echo "Current time: $now"
-
+#exit 1
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo cp database
