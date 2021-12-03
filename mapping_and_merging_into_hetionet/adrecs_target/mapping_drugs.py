@@ -19,13 +19,12 @@ def create_connection_with_neo4j():
 # dictionary name to ids
 dict_name_to_id={}
 
-def integrate_information_into_dict(dict_node_id_to_resource, label):
+def integrate_information_into_dict(dict_node_id_to_resource):
     """
     get all node ids from the database
     :return:
     """
     query = '''MATCH (n:Chemical) Where not n:Product RETURN n.identifier, n.name, n.synonyms, n.resource'''
-    query = query % (label)
     results = g.run(query)
 
     for identifier, name, synonyms, resource, in results:
@@ -44,7 +43,7 @@ def integrate_information_into_dict(dict_node_id_to_resource, label):
                 dict_name_to_id[synonym].add(identifier)
 
 
-    print('number of', label, 'in database', len(dict_node_id_to_resource))
+    print('number of Chemical in database', len(dict_node_id_to_resource))
 
 
 def prepare_query(file_name, db_label, adrecs_label, db_id,adrecs_id_internal, adrecs_id):
@@ -58,8 +57,8 @@ def prepare_query(file_name, db_label, adrecs_label, db_id,adrecs_id_internal, a
     :param adrecs_id: string
     :return:
     """
-    cypher_file = open(db_label.lower() + '/cypher.cypher', 'w', encoding='utf-8')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/%s/%s" As line MATCH (n:%s{identifier:line.%s}), (g:%s{%s:line.%s}) Set n.resource=split(line.resource,"|"), n.adrecs_target='yes' Create (n)-[:equal_adrecs_target_%s}]->(g);\n'''
+    cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/%s/%s" As line Fieldterminator '\\t' MATCH (n:%s{identifier:line.%s}), (g:%s{%s:line.%s}) Set n.resource=split(line.resource,"|"), n.adrecs_target='yes' Create (n)-[:equal_adrecs_target_%s}]->(g);\n'''
     query = query % (director, file_name, db_label, db_id,adrecs_label, adrecs_id_internal, adrecs_id, db_label.lower())
     cypher_file.write(query)
 
@@ -97,23 +96,26 @@ def get_all_adrecs_target_and_map(db_label,  dict_node_id_to_resource):
 
     # counter mapping
     counter_mapping=0
+    counter_not_mapped=0
     for node, in results:
         #rs or a name
         identifier = node['Drug_Name'].lower()
         drugbank_id= node['DrugBank_ID'] if 'DrugBank_ID' in node else ''
         if drugbank_id!='':
             if drugbank_id in dict_node_id_to_resource:
+                counter_mapping+=1
                 add_to_file(dict_node_id_to_resource, drugbank_id, identifier, csv_mapping)
-                continue
         if identifier  in dict_name_to_id:
             counter_mapping+=1
             for drugbank_id in dict_name_to_id[identifier]:
                 add_to_file(dict_node_id_to_resource, drugbank_id, identifier, csv_mapping)
 
         else:
+            counter_not_mapped+=1
             print(' not in database :O')
             print(identifier)
     print('mapped:',counter_mapping)
+    print('number of not mapped drugs:', counter_not_mapped)
 
 
 def main():
