@@ -39,7 +39,7 @@ $path_neo4j/neo4j stop
 
 sleep 120
 
-cp -r /mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/neo4j_databases/hetionet /mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/neo4j_databases/inte.db
+# cp -r /mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/neo4j_databases/hetionet /mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/neo4j_databases/inte.db
 
 $path_neo4j/neo4j restart
 
@@ -55,9 +55,10 @@ cd mapping_and_merging_into_hetionet
 
 cd ..
 
+
 now=$(date +"%F %T")
 echo "Current time: $now"
-
+#exit 1
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo cp database
@@ -81,7 +82,7 @@ echo "Current time: $now"
 
 cd final_preparation
 
-./prepare_clear_pharmebinet.sh $path_neo4j > output_delete_source.txt
+./new_preparation_script.sh $path_neo4j #> output_delete_source.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"

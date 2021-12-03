@@ -52,14 +52,14 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
             # add property depending if list or not or int into query
 
             if header_property in ['Synonyms', 'dbXrefs', 'map_location', 'Feature_type', 'Other_designations']:
-                query += header_property + ':split(line.' + header_property + ",'|') ,"
+                query += header_property.lower() + ':split(line.' + header_property + ",'|') ,"
             elif header_property in ['#tax_id', 'GeneID']:
                 if header_property == 'GeneID':
                     query += 'identifier:line.' + header_property + ' ,'
                 else:
                     query += 'tax_id:line.tax_id ,'
             else:
-                query += header_property + ':line.' + header_property + ' ,'
+                query += header_property.lower() + ':line.' + header_property + ' ,'
 
         query = query + ' license:"CC0 1.0"});\n'
         cypher_file.write(query)

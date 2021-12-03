@@ -1,6 +1,6 @@
-https://www.pharmgkb.org/
+https://reactome.org/
 
-Version: June 08, 2021
+Version: October 01, 2021
 
 First, the script starts the Reactome Neo4j database.
 Then get all constraints/indices from Reactome.

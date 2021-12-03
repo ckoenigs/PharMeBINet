@@ -262,7 +262,8 @@ def prepare_cypher_files_and_tsv():
                                        ['xrefs', 'synonyms', 'taxonomy_alternative_parents', 'taxonomy_substituents',
                                         'taxonomy_external_descriptors', 'experimental_properties',
                                         "predicted_properties", 'spectra', 'biospecimen_locations',
-                                        'cellular_locations', 'tissue_locations', 'general_references'])
+                                        'cellular_locations', 'tissue_locations', 'general_references',
+                                        'secondary_accessions'])
 
     generates_rela_tsv_file_and_cypher('metabolite', 'pathway', ['metabolite_id', 'pathway_id'], 'associates', [])
     generates_rela_tsv_file_and_cypher('metabolite', 'disease', ['metabolite_id', 'disease_id', 'references'],
@@ -273,6 +274,8 @@ def prepare_cypher_files_and_tsv():
                                        'associates', ['references'])
     generates_rela_tsv_file_and_cypher('ontology', 'ontology', ['ontology_id1', 'ontology_id2'], 'associates', [])
 
+# to avoid double edges without information
+set_protein_pathway=set()
 
 def run_trough_xml_and_parse_data_protein():
     # counter of human entries
@@ -349,7 +352,8 @@ def run_trough_xml_and_parse_data_protein():
                                             for subsubchild in subchild.iterchildren():
                                                 subsubchild_tag = subsubchild.tag.replace(ns, '')
                                                 # subtags.add(subsubchild_tag)
-                                                print("%s - %s - %s" % (subsubchild_tag, subsubchild.text, subsubchild.attrib))
+                                                print("%s - %s - %s" % (
+                                                subsubchild_tag, subsubchild.text, subsubchild.attrib))
                                                 print(len(subsubchild))
                                                 print(identifier)
                                                 sys.exit('ohno protein or gene properties')
@@ -363,8 +367,11 @@ def run_trough_xml_and_parse_data_protein():
                         elif tag == 'pathways':
                             for subchild in child.iterchildren():
                                 pathway_identifier = get_pathway_information(subchild)
-                                dict_node_type_to_tsv['protein_pathway'].writerow(
-                                    {'protein_id': identifier, 'pathway_id': pathway_identifier})
+                                if not (identifier, pathway_identifier) in set_protein_pathway:
+                                    dict_node_type_to_tsv['protein_pathway'].writerow(
+                                        {'protein_id': identifier, 'pathway_id': pathway_identifier})
+                                    set_protein_pathway.add((identifier,pathway_identifier))
+
                         elif tag == 'metabolite_associations':
                             for subchild in child.iterchildren():
                                 metabolite_name = subchild.findtext('{ns}name'.format(ns=ns))
@@ -382,7 +389,8 @@ def run_trough_xml_and_parse_data_protein():
                                 go_label = go_category.replace(' ', '')
                                 if go_label not in dict_go_classifier_to_id_to_description:
                                     generates_node_tsv_file_and_cypher(go_label, ['identifier', 'description'], [])
-                                    generates_rela_tsv_file_and_cypher('protein', go_label, ['protein_id', 'identifier'],
+                                    generates_rela_tsv_file_and_cypher('protein', go_label,
+                                                                       ['protein_id', 'identifier'],
                                                                        'associates', [])
                                     dict_go_classifier_to_id_to_description[go_label] = {}
                                 if go_id:
@@ -406,13 +414,15 @@ def run_trough_xml_and_parse_data_protein():
                                 if (identifier, metabolite_accession) not in dict_protein_metabolite_to_rela_info:
                                     dict_protein_metabolite_to_rela_info[identifier, metabolite_accession] = []
                                 # print(dict_reference)
-                                dict_protein_metabolite_to_rela_info[identifier, metabolite_accession].append(dict_reference)
+                                dict_protein_metabolite_to_rela_info[identifier, metabolite_accession].append(
+                                    dict_reference)
 
                         else:
                             print("%s - %s - %s" % (tag, child.text, child.attrib))
                             sys.exit('with child protein problem')
                     else:
-                        if tag in ["version", "creation_date", "update_date", "protein_type", "gene_name", "uniprot_name",
+                        if tag in ["version", "creation_date", "update_date", "protein_type", "gene_name",
+                                   "uniprot_name",
                                    "general_function", "specific_function"]:
                             dict_protein[tag] = child.text
                         elif tag in ["hgnc_id", "geneatlas_id", "genbank_gene_id", "genecard_id", "genbank_protein_id",
@@ -463,7 +473,7 @@ def go_trough_ontology_and_write_information(descendant, parent_node_id, node_id
     :return:
     """
     # get ontology node information
-    name = descendant.findtext('{ns}term'.format(ns=ns))
+    name = descendant.findtext('{ns}term'.format(ns=ns)).strip()
     definition = descendant.findtext('{ns}definition'.format(ns=ns))
     level = descendant.findtext('{ns}level'.format(ns=ns))
     parent_id = descendant.findtext('{ns}parent_id'.format(ns=ns))
@@ -481,7 +491,7 @@ def go_trough_ontology_and_write_information(descendant, parent_node_id, node_id
     if ontology_id not in dict_ontology_id_to_ontology_info:
         dict_ontology_id_to_ontology_info[ontology_id] = dict_node
         # print(dict_node)
-        dict_node=prepare_tsv_dictionary(dict_node)
+        dict_node = prepare_tsv_dictionary(dict_node)
         dict_node_type_to_tsv['ontology'].writerow(dict_node)
 
     # add parent child relationship
@@ -544,7 +554,7 @@ def run_trough_xml_and_parse_data_metabolite():
                                     dict_node[tag + '_' + subchild_tag] = subchild.text
                         elif tag == 'ontology':
                             for root in child.iterchildren():
-                                ontology_name = root.findtext('{ns}term'.format(ns=ns))
+                                ontology_name = root.findtext('{ns}term'.format(ns=ns)).strip()
                                 ontology_definition = root.findtext('{ns}definition'.format(ns=ns))
                                 ontology_level = root.findtext('{ns}level'.format(ns=ns))
                                 ontology_parent_id = root.findtext('{ns}parent_id'.format(ns=ns))
@@ -555,7 +565,7 @@ def run_trough_xml_and_parse_data_metabolite():
                                 if ontology_id not in dict_ontology_id_to_ontology_info:
                                     dict_ontology_id_to_ontology_info[ontology_id] = dict_head
                                     # print(dict_head)
-                                    dict_head=prepare_tsv_dictionary(dict_head)
+                                    dict_head = prepare_tsv_dictionary(dict_head)
                                     dict_node_type_to_tsv['ontology'].writerow(dict_head)
                                 ontology_type = root.findtext('{ns}type'.format(ns=ns))
                                 if ontology_type == 'parent':
@@ -609,7 +619,7 @@ def run_trough_xml_and_parse_data_metabolite():
                             dict_property[tag] = list_of_concentrations
                         elif tag == 'diseases':
                             for subchild in child.iterchildren():
-                                disease_name = subchild.findtext('{ns}name'.format(ns=ns))
+                                disease_name = subchild.findtext('{ns}name'.format(ns=ns)).strip()
                                 disease_omim_id = subchild.findtext('{ns}omim_id'.format(ns=ns))
                                 references = subchild.find('{ns}references'.format(ns=ns))
                                 list_references = []
@@ -620,7 +630,8 @@ def run_trough_xml_and_parse_data_metabolite():
                                 disease_id = disease_omim_id if disease_omim_id else disease_name
                                 if disease_id not in dict_disease_id_to_name:
                                     dict_disease_id_to_name[disease_id] = disease_name
-                                    dict_node_type_to_tsv['disease'].writerow({'identifier': disease_id, 'name': disease_name})
+                                    dict_node_type_to_tsv['disease'].writerow(
+                                        {'identifier': disease_id, 'name': disease_name})
 
                                 dict_rela = {'metabolite_id': identifier, 'disease_id': disease_id,
                                              'references': list_references}
@@ -639,12 +650,15 @@ def run_trough_xml_and_parse_data_metabolite():
                             sys.exit('with child metabolite problem')
                     else:
                         if tag in ["version", "creation_date", "update_date", "status", "name", "description",
-                                   "chemical_formula", "average_molecular_weight", "monisotopic_molecular_weight", "iupac_name",
+                                   "chemical_formula", "average_molecular_weight", "monisotopic_molecular_weight",
+                                   "iupac_name",
                                    "traditional_iupac", "cas_registry_number", "smiles", "inchi", "inchikey", "state",
                                    "synthesis_reference"]:
                             dict_node[tag] = child.text
-                        elif tag in ["kegg_id", "chemspider_id", "foodb_id", "drugbank_id", "pubchem_compound_id", "chebi_id",
-                                     "pdb_id", "knapsack_id", "wikipedia_id", "biocyc_id", "phenol_explorer_compound_id",
+                        elif tag in ["kegg_id", "chemspider_id", "foodb_id", "drugbank_id", "pubchem_compound_id",
+                                     "chebi_id",
+                                     "pdb_id", "knapsack_id", "wikipedia_id", "biocyc_id",
+                                     "phenol_explorer_compound_id",
                                      "bigg_id", "metlin_id", "vmh_id", "fbonto_id"]:
                             if not child.text is None:
                                 add_key_value_to_dictionary_as_list(dict_node, 'xrefs', tag + ':' + child.text)
@@ -653,7 +667,8 @@ def run_trough_xml_and_parse_data_metabolite():
                             dict_node['identifier'] = identifier
                         # tags from tags with childs but no childs are there
                         elif tag in ["experimental_properties", "spectra", "diseases", "normal_concentrations",
-                                     "protein_associations", "abnormal_concentrations", "ontology", "general_references",
+                                     "protein_associations", "abnormal_concentrations", "ontology",
+                                     "general_references",
                                      "synonyms", "taxonomy", "secondary_accessions"]:
                             continue
                         else:
@@ -661,7 +676,6 @@ def run_trough_xml_and_parse_data_metabolite():
                             print("%s - %s - %s" % (tag, child.text, child.attrib))
                             print(identifier)
                             sys.exit()
-
 
                 set_of_metabolite_properties = set_of_metabolite_properties.union(dict_node.keys())
                 dict_node = prepare_tsv_dictionary(dict_node)
@@ -727,7 +741,6 @@ def main():
     print('parse xml data metabolite ')
 
     run_trough_xml_and_parse_data_metabolite()
-
 
     print('#############################################################')
     print(datetime.datetime.utcnow())

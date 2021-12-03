@@ -136,7 +136,10 @@ def load_pathway_information():
 
             dict_line = {}
             for key, value in dict_old_porperty_to_new.items():
-                dict_line[value] = line[key]
+                if key!='Description':
+                    dict_line[value] = line[key]
+                else:
+                    dict_line[value] = line[key].replace('\n',' ')
             csv_writer.writerow(dict_line)
 
 
@@ -179,11 +182,14 @@ def combine_other_node_information(dict_node, identifier, dict_nodes):
 def extract_info_rela_and_other_node(csv_edge, csv_writer, url_file, identifier_name, dict_old_porperty_to_new_node,
                                      dict_node_id_to_node_info, set_pathway_node_pair):
     request = get(url_file)
+    count_csv_files=0
+    all_pathway_ids=set()
     with ZipFile(BytesIO(request.content), 'r') as zipObj:
     # with ZipFile(zip_name, 'r') as zipObj:
         for zip_info in zipObj.filelist:
             f = zipObj.open(zip_info, 'r')
             csv_reader = csv.DictReader(io.TextIOWrapper(f, 'utf-8'))
+            count_csv_files+=1
             for line in csv_reader:
                 # print(line)
                 # get an identifier for node (in protein at least some have only dugbank id
@@ -202,6 +208,7 @@ def extract_info_rela_and_other_node(csv_edge, csv_writer, url_file, identifier_
                 # check if it has not a athway id which did not exists in the pathway file
                 if pathway_id not in set_smpdb_id:
                     print('ohje, a pathway which is not in pathways :(')
+                all_pathway_ids.add(pathway_id)
 
                 # do not write duplicate edges in csv
                 if (pathway_id, identifier) in set_pathway_node_pair:
@@ -217,6 +224,9 @@ def extract_info_rela_and_other_node(csv_edge, csv_writer, url_file, identifier_
     # write node information into csv file
     for dict_node in dict_node_id_to_node_info.values():
         csv_writer.writerow(dict_node)
+
+    print('number of  files:', count_csv_files)
+    print(len(all_pathway_ids))
 
 
 # set of protein ids to protein infos
@@ -343,16 +353,16 @@ def main():
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
-    print('load pathway-protein interaction')
+    print('load pathway-metabolite interaction')
 
-    prepare_pathway_protein_csv()
+    prepare_pathway_metabolite_csv()
 
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
-    print('load pathway-metabolite interaction')
+    print('load pathway-protein interaction')
 
-    prepare_pathway_metabolite_csv()
+    prepare_pathway_protein_csv()
 
     print('##########################################################################')
 

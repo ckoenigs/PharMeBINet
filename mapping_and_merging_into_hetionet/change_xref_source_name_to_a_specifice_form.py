@@ -2,7 +2,17 @@
 dict_wrong_source_to_source = {
     'MIM': 'OMIM',
     'RxCUI':'RxNorm_CUI',
-    'MSH':'MESH'
+    'MSH':'MESH',
+    'kegg_id':'KEGG Compound',
+    'chemspider_id':'ChemSpider',
+    'drugbank_id':'DrugBank',
+    'foodb_id':'FooDB',
+    'chebi_id':'ChEBI',
+    'pubchem_compound_id':'PubChem Compound',
+    'wikipedia_id':'Wikipedia',
+    'pdb_id':'PDB'
+
+
 }
 
 

@@ -11,33 +11,26 @@ path_to_pharMeBiNet='/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/PharMeB
 
 now=$(date +"%F %T")
 echo "Current time: $now"
-echo 'delete source nodes'
-
-./delete_script.sh $path_neo4j > output_delete_source.txt
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-$path_neo4j/neo4j restart
-
-sleep 60
-
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-echo 'extract as property types'
-
-python3 prepare_shell_for_graphml_import.py > output/output_preparation.txt
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-echo 'extract as graphml'
+echo 'export database'
 
 $path_neo4j/cypher-shell -u neo4j -p test -f export_pharMeBINet.cypher
 
+now=$(date +"%F %T")
+echo "Current time: $now"
+
 sleep 60
 
 $path_neo4j/neo4j restart
+
+
+sleep 120
+
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo 'remove not used data'
+
+python3 prepare_graphML_pharmebinet.py #> output/output_preparation.txt
 
 
 sleep 120
@@ -48,7 +41,7 @@ sleep 60
 
 chmod 775 shell_import_pharmebinet.sh
 
-./shell_import_pharmebinet.sh $import_tool $path_to_pharMeBiNet > output/import_graphml.txt
+./shell_import_pharmebinet.sh $import_tool $path_to_pharMeBiNet #> output/import_graphml.txt
 
 sleep 60
 

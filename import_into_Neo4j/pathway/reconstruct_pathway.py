@@ -8,9 +8,6 @@ import csv
 import collections
 import re, datetime
 import html
-from html.parser import HTMLParser
-# import HTMLParser
-import json
 import wget
 import gzip
 
@@ -42,7 +39,7 @@ def use_of_entrez_gene():
     human_genes = set()
     human_coding_genes = set()
     symbol_to_entrez = {}
-    query = 'MATCH (n:Gene_Ncbi) RETURN n.identifier, n.Symbol, n.type_of_gene'
+    query = 'MATCH (n:Gene_Ncbi) RETURN n.identifier, n.symbol, n.type_of_gene'
     results = g.run(query)
     for identifier, symbol, type_of_gene, in results:
         human_genes.add(identifier)
@@ -147,7 +144,7 @@ def pathway_commons():
     global pc_df
     pc_df = pandas.DataFrame(rows)
     print(pc_df.head(2))
-
+    print(pc_df['source'].unique())
     print(pc_df.source.value_counts())
 
     # wikipathways: CC BY 3.0
@@ -160,7 +157,7 @@ def pathway_commons():
     # humancyc: not open source
 
     # filter only the open source sources
-    keep = {'wikipathways', 'reactome', 'panther', 'netpath'}
+    keep = {'wikipathways', 'reactome', 'panther', 'netpath', 'pathbank'}
     pc_df = pc_df.query("source in @keep")
 
     # dictionary source to license
@@ -172,7 +169,8 @@ def pathway_commons():
         'pid': 'not existing anymore?',
         'netpath': 'CC BY 2.5',
         'inoh': 'unknown',
-        'humancyc': 'not open source'
+        'humancyc': 'acedemic',
+        'pathbank':'PathBank is offered to the public as a freely available resource. Use and re-distribution of the data, in whole or in part, for commercial purposes requires explicit permission of the authors and explicit acknowledgment of the source material (PathBank) and the original publication. '
     }
 
     # add license to the different sources
@@ -188,7 +186,7 @@ def wikipathways():
     # Parse WikiPathways
 
     # download WikiPathways
-    url = 'http://data.wikipathways.org/20210710/gmt/wikipathways-20210710-gmt-Homo_sapiens.gmt'
+    url = 'http://data.wikipathways.org/20211110/gmt/wikipathways-20211110-gmt-Homo_sapiens.gmt'
     filename = wget.download(url, out='data/')
 
     gmt_generator = read_gmt(filename)

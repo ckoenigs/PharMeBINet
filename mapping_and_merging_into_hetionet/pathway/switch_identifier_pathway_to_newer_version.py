@@ -74,6 +74,7 @@ def get_pathway_properties():
     header.append(extra_property)
     header.append('resource')
 
+
 # cypher file
 cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
 # query to delete all old pathways
@@ -118,7 +119,7 @@ def load_in_all_pathways():
         # fill dictionary with name to rest
         names = node['synonyms']
         for name in names:
-            name=name.lower()
+            name = name.lower()
             if not name in dict_name_to_pc_or_wp_identifier:
                 dict_name_to_pc_or_wp_identifier[name] = [dict(node)]
             else:
@@ -194,14 +195,14 @@ def fill_the_list_of_properties(head, value, identifiers, resource, name, list_i
         if type(value) in [list, set]:
             identifiers = value.copy()
             combine_node = True
-    elif head =='license':
-        if type(value)!=str:
-            value=','.join(value)
+    elif head == 'license':
+        if type(value) != str:
+            value = ','.join(value)
     elif head == extra_property:
         value = identifiers
     elif head == 'source':
         if type(value) in [list, set]:
-            list_value=list(sorted([x.capitalize() for x in value]))
+            list_value = list(sorted([x.capitalize() for x in value]))
             value = ",".join(list_value)
             resource = list_value
         else:
@@ -209,8 +210,8 @@ def fill_the_list_of_properties(head, value, identifiers, resource, name, list_i
             resource = [value]
     elif head == 'synonyms':
         name = value.pop()
-    elif head =='url':
-        if type(value)!=str:
+    elif head == 'url':
+        if type(value) != str:
             value = ' , '.join(value)
     elif head == 'name':
         value = name

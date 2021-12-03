@@ -10,7 +10,6 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo 'integrate proteins with interaction into Hetionet'
 
-#python3 integrate_into_hetionet_with_extra_relationships.py $path_to_project > output/output_integration_file_generation.txt
 python3 integrate_protein_and_additional_relationships.py $path_to_project > output/output_protein.txt
 
 

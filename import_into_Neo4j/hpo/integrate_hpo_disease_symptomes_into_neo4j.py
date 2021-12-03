@@ -35,7 +35,7 @@ list_of_disease_properties = ['id', 'name', 'source']
 csv_writer.writerow(list_of_disease_properties)
 
 # csv file for the relationships
-list_of_rela_properties = ['disease_id', 'phenotype_id', 'qualifier', 'evidence_code', 'source', 'frequency_modifier',
+list_of_rela_properties = ['disease_id', 'phenotype_id', 'qualifier', 'evidence_code', 'sources', 'frequency_modifier',
                            'aspect', 'onset', 'sex', 'modifier', 'biocuration']
 writer_rela = open('output/rela_disease_phenotyp.csv', 'w', encoding='utf-8')
 csv_writer_rela = csv.writer(writer_rela)
@@ -46,7 +46,7 @@ cypher_file = open('cypher.cypher', 'a')
 query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/hpo/output/disease.csv" As line Create (:HPO_disease{'''
 for property in list_of_disease_properties:
     if property == 'name':
-        query += property + ':split(line.' + property + ',"|"), '
+        query += property + 's:split(line.' + property + ',"|"), '
         continue
     query += property + ':line.' + property + ', '
 query = query[:-2] + '});\n'
@@ -60,7 +60,10 @@ query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + p
 for property in list_of_rela_properties:
     if property in ['disease_id', 'phenotype_id']:
         continue
-    query+= property+':split(line.'+property+',"|"), '
+    if property !='qualifier':
+        query+= property+':split(line.'+property+',"|"), '
+    else:
+        query += property + 's:split(line.' + property + ',"|"), '
 query= query[:-2]+'''}]->(s); \n '''
 cypher_file.write(query)
 
@@ -187,7 +190,7 @@ def write_rela_info_into_csv():
         for property in list_of_rela_properties:
             if property in ['disease_id', 'phenotype_id']:
                 continue
-            elif property=='source':
+            elif property=='sources':
                 property='reference_id'
             info_list.append('|'.join(filter(None, dict_rela_info[property])))
         csv_writer_rela.writerow(info_list)

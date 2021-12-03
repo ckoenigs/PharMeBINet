@@ -136,7 +136,7 @@ def write_files(path_of_directory):
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
 
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/ndf-rt/%s" As line FIELDTERMINATOR '\\t' 
-            Match (n:NDFRT_INGREDIENT_KIND{code:line.code}), (v:Chemical{identifier:line.chemical_id}) Set v.ndf_rt='yes', v.resource=split(line.resource,'|') Create (v)-[:equal_to_ingredient_ndf_rt{how_mapped:split(line.how_mapped,"|")}]->(n);'''
+            Match (n:NDFRT_INGREDIENT_KIND{code:line.code}), (v:Chemical{identifier:line.chemical_id}) Set v.ndf_rt='yes', v.resource=split(line.resource,'|') Create (v)-[:equal_to_ingredient_ndf_rt{how_mapped:line.how_mapped}]->(n);'''
     query = query % (path_of_directory, file_name)
     cypher_file.write(query)
     cypher_file.close()
@@ -189,7 +189,7 @@ def write_mapping_into_file(csv_map):
     for (identifier, chemical_id), how_mapped in dict_mapping_pairs.items():
         resource = set(dict_chemical_id_to_resource[chemical_id])
         resource.add('NDR-RT')
-        csv_map.writerow([identifier, chemical_id, '|'.join(sorted(resource)), '|'.join(how_mapped)])
+        csv_map.writerow([identifier, chemical_id, '|'.join(sorted(resource)), ';'.join(how_mapped)])
 
 
 def main():

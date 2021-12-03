@@ -121,9 +121,9 @@ def prepare_evidence(attrib, protein_id, parent=None):
         if 'evidence' not in dict_node_type_to_tsv:
             generates_node_tsv_file_and_cypher('evidence', ['id'], [])
             generates_rela_tsv_file_and_cypher('evidence',
-                                               ['uniprot_id', 'evidence_id', 'source', 'importedFrom', 'key'],
+                                               ['uniprot_id', 'evidence_id', 'sources', 'importedFrom', 'key'],
                                                'part_of',
-                                               ['source', 'importedFrom'])
+                                               ['sources', 'importedFrom'])
 
         dict_node_type_to_tsv['evidence'].writerow({'id': evidence_id})
     set_evidence.add(evidence_id)
@@ -135,6 +135,8 @@ def prepare_evidence(attrib, protein_id, parent=None):
     if parent is not None:
         for child in parent.iterchildren():
             tag = child.tag.replace(ns, '')
+            if tag=='source':
+                tag='sources'
             if tag not in dict_pair:
                 dict_pair[tag] = set()
             for dbRefs in child.iterchildren():
@@ -144,6 +146,9 @@ def prepare_evidence(attrib, protein_id, parent=None):
                 dict_pair[tag].add(combine_xrefs(dbRefs.attrib))
             if len(child.attrib) > 0:
                 dict_pair[tag].add('ref:' + child.attrib['ref'])
+    for key, value in dict_pair.items():
+        if type(value) in [set,list]:
+            dict_pair[key]='||'.join(value)
     dict_node_type_to_tsv['protein_evidence'].writerow(dict_pair)
     # dict_pair={'uniprot_id':protein_id,'evidence_id':evidence_id}
     # dict_pair.update(dict_evidence_protein_pairs_to_info[(evidence_id, protein_id)])
@@ -243,7 +248,8 @@ def run_trough_xml_and_parse_data():
                                         'tissue_specificity', 'gene_name', 'protein_existence', 'domain',
                                         'miscellaneous', 'catalytic_activity', 'as_sequence', 'sequenceLength',
                                         'online_information', 'function', 'activity_regulation', 'caution', 'subunit',
-                                        'alternative_products', 'biophysicochemical_properties', 'subcellular_locations',
+                                        'alternative_products', 'biophysicochemical_properties',
+                                        'subcellular_locations',
                                         'PTM', 'mass_spectrometry', 'similarity', 'biotechnology', 'sequence_caution',
                                         'ec_number', 'accession', 'cofactor', 'references', 'feature', 'pharmaceutical',
                                         'induction', 'disease', 'gene_id', 'go_classifiers', 'chromosome_location',
@@ -499,7 +505,7 @@ def run_trough_xml_and_parse_data():
                                                                     'experiments', 'interaction_ids',
                                                                     'iso_of_protein_from', 'iso_of_protein_to'],
                                                                    'interaction',
-                                                                   ['interaction_ids'])
+                                                                   ['interaction_ids','experiments'])
                             interact_id = subchild.attrib['intactId']
                             add_key_value_to_dictionary_as_list(dict_comment, 'interaction_ids', interact_id)
                             interacter_uniprot_id_element = subchild.find("{ns}id".format(ns=ns))
@@ -626,8 +632,8 @@ def run_trough_xml_and_parse_data():
                             print("%s - %s - %s" % (sub_tag, subchild.text, subchild.attrib))
 
                     if not is_a_rela:
-                        if comment_type=='subcellular location':
-                            comment_type='subcellular_locations'
+                        if comment_type == 'subcellular location':
+                            comment_type = 'subcellular_locations'
                         add_key_value_to_dictionary_as_list(dict_protein, comment_type.replace(' ', '_'), dict_comment)
                     else:
                         # print(dict_comment.keys())
@@ -766,7 +772,10 @@ def prepare_node_cypher_query(file_name, label, properties, list_properties):
 
     for property in properties:
         if property in list_properties:
-            query += property + ':split(line.' + property + ',"||"), '
+            if property in ['chromosome_location', 'accession']:
+                query += property + 's:split(line.' + property + ',"||"), '
+            else:
+                query += property + ':split(line.' + property + ',"||"), '
         else:
             query += property + ':line.' + property + ', '
     query = query[:-2] + '});\n'

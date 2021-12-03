@@ -218,7 +218,7 @@ def load_db_info_in(label, csv_writer):
     :return:
     """
 
-    query = '''MATCH (d:%s)  Return Distinct d.id '''
+    query = '''MATCH (d:%s) Where d.significance<>'no'  Return Distinct d.id '''
     query = query % (label)
     results = g.run(query)
 
@@ -251,7 +251,7 @@ def fill_the_rela_files(label_node):
     :param label_node: string
     :return:
     """
-    query = 'Match (n:VariantAnnotation)--(:%s)-[r]-(:PharmGKB_ClinicalAnnotation)--(b:ClinicalAnnotation) Create (n)<-[h:HAS_EVIDENCE_CAheVA]-(b) Set h=r;\n'
+    query = 'Match (n:VariantAnnotation)--(:%s)-[r]-(:PharmGKB_ClinicalAnnotation)--(b:ClinicalAnnotation) Create (n)<-[h:HAS_EVIDENCE_CAheVA]-(b) Set h=r, h.pubMed_ids=[r.pmid] Remove h.pmid;\n'
     query = query % (label_node)
     cypher_file.write(query)
     query_general = 'Match (n:%s)--(:%s)--(m:%s) Return Distinct n.id, m.identifier'
@@ -352,7 +352,7 @@ def main():
             '###########################################################################################################################')
 
         print(datetime.datetime.utcnow())
-        print('Load in ' + label + ' from hetionet')
+        print('Load in ' + label + ' from neo4j')
 
         load_db_info_in(label, csv_writer)
 

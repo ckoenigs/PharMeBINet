@@ -37,10 +37,11 @@ def integrate_information_into_dict(dict_node_id_to_resource):
     for identifier, name, synonyms, xrefs, resource, in results:
         dict_node_id_to_resource[identifier] = resource
 
-        name = name.lower()
-        if name not in dict_name_to_id:
-            dict_name_to_id[name] = set()
-        dict_name_to_id[name].add(identifier)
+        name = name.lower() if name else ''
+        if name:
+            if name not in dict_name_to_id:
+                dict_name_to_id[name] = set()
+            dict_name_to_id[name].add(identifier)
 
         if synonyms:
             for synonym in synonyms:
@@ -94,6 +95,16 @@ def get_all_adrecs_target_and_map(db_label, dict_node_id_to_resource):
     csv_mapping = csv.writer(mapping_file, delimiter='\t')
     csv_mapping.writerow(['variant_id', 'adr_variant_id', 'resource'])
 
+    file_new_name = db_label.lower() + '/new_variants.csv'
+    new_file = open(file_new_name, 'w', encoding='utf-8')
+    csv_new = csv.writer(new_file, delimiter='\t')
+    csv_new.writerow(['identifier', 'name'])
+
+    file_not_name = db_label.lower() + '/not_mapping.csv'
+    not_mapping_file = open(file_not_name, 'w', encoding='utf-8')
+    csv_not_mapping = csv.writer(not_mapping_file, delimiter='\t')
+    csv_not_mapping.writerow(['identifier', 'name'])
+
     prepare_query(file_name, db_label, 'variant_ADReCSTarget')
 
     # get data
@@ -118,8 +129,9 @@ def get_all_adrecs_target_and_map(db_label, dict_node_id_to_resource):
 
         else:
             counter_not_mapped += 1
-            print(' not in database :O')
-            print(identifier)
+            # print(' not in database :O')
+            # print(identifier)
+            csv_not_mapping.writerow([identifier])
     print('mapped:', counter_mapping)
     print('not mapped', counter_not_mapped)
 

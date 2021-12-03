@@ -37,19 +37,24 @@ dict_molecular_function_hetionet = {}
 # dictionary with hetionet molecular function with alternative id as key and value identifier
 dict_molecular_function_alternative_hetionet = {}
 
+# dictionary go id to resource
+dict_go_id_to_resource={}
+
 '''
 get information and put the into a dictionary one norma identifier and one alternative identifier to normal identifier
 '''
 def get_information_and_add_to_dict(label,dict_hetionet, dict_alternative_ids_hetionet):
-    query = '''MATCH (n:%s) RETURN n.identifier,n.name, n.alternative_ids'''
+    query = '''MATCH (n:%s) RETURN n.identifier,n.name, n.alternative_ids, n.resource'''
     query=query %(label)
     results = g.run(query)
 
-    for identifier, name, alternative_ids in results:
+    for identifier, name, alternative_ids, resource, in results:
         dict_hetionet[identifier] = name
         if alternative_ids:
             for alternative_id in alternative_ids:
                 dict_alternative_ids_hetionet[alternative_id]=identifier
+        dict_go_id_to_resource[identifier]=set(resource)
+
 '''
 load in all biological process, molecular function and cellular components from hetionet in a dictionary
 '''
@@ -207,6 +212,16 @@ cypher_file = open('output/cypher.cypher', 'a',encoding='utf-8')
 query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/GO/nodes_without_ontology.csv" As line Match (n:CTD_GO{go_id:line.id}) SET n.ontology=line.ontology ;\n'''
 cypher_file.write(query)
 
+def add_resource(go_id):
+    """
+    add to a give id the ctd resource and return it as string
+    :param go_id: string
+    :return: string
+    """
+    resource=dict_go_id_to_resource[go_id]
+    resource.add('CTD')
+    return '|'.join(sorted(resource))
+
 '''
 Generate cypher and csv for generating the new nodes and the relationships
 '''
@@ -216,23 +231,18 @@ def generate_files(file_name_addition, ontology, dict_ctd_in_hetionet,dict_ctd_i
     # generate mapped csv
     with open('GO/mapping_' + file_name_addition + '.csv', 'w') as csvfile:
         writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-        writer.writerow(['GOIDCTD', 'GOIDHetionet', 'highestGOLevel'])
+        writer.writerow(['GOIDCTD', 'GOIDHetionet', 'highestGOLevel','resource'])
         # add the go nodes to cypher file
 
-        for gene_id, name in dict_ctd_in_hetionet.items():
-            writer.writerow([gene_id, gene_id])
+        for go_id, name in dict_ctd_in_hetionet.items():
+            writer.writerow([go_id, go_id,'',add_resource(go_id)])
 
         for ctd_id, hetionet_id in dict_ctd_in_hetionet_alternative.items():
-            writer.writerow([ctd_id, hetionet_id])
+            writer.writerow([ctd_id, hetionet_id,'',add_resource(hetionet_id)])
 
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/GO/mapping_%s.csv" As line Match (c:%s{ identifier:line.GOIDHetionet}), (n:CTD_GO{go_id:line.GOIDCTD}) SET  c.url_ctd=" http://ctdbase.org/detail.go?type=go&acc="+line.GOIDCTD, c.highestGOLevel=n.highestGOLevel, c.ctd="yes" Create (c)-[:equal_to_CTD_go]->(n);\n'''
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/GO/mapping_%s.csv" As line Match (c:%s{ identifier:line.GOIDHetionet}), (n:CTD_GO{go_id:line.GOIDCTD}) SET  c.url_ctd=" http://ctdbase.org/detail.go?type=go&acc="+line.GOIDCTD, c.highestGOLevel=n.highestGOLevel, c.ctd="yes", c.resource=split(line.resource,"|") Create (c)-[:equal_to_CTD_go]->(n);\n'''
     query = query % (file_name_addition, ontology)
     cypher_file.write(query)
-    cypher_file.write(':begin\n')
-    query= '''Match (c:%s) Where exists(c.ctd) Set c.resource=c.resource+"CTD";\n'''
-    query= query %(ontology)
-    cypher_file.write(query)
-    cypher_file.write(':commit\n')
 
     # add query to update disease nodes with do='no'
     cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')

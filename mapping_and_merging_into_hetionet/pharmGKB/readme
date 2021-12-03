@@ -48,14 +48,14 @@ The next script starts with the preparation of variant-gene connection from pGKB
     All variant-gene pairs are extracted from pGKB which are mapped to the database. The information is written into the TSV file.
 
 Next, the preparation of the clinicalAnnotation is generated.
-    Therefore, the TSV file is generated for the clinicalAnnotation (CA). The CA allele information are added to the CA nodes. Additionally, a cypher query to integrate these meta-edges into the database is added to the cypher file. Next for all pairs CA-variant/chemical/pc/gene/phenotype the TSV files are generated and additional cypher queries are added.
+    Therefore, the TSV file is generated for the clinicalAnnotation (CA). The CA allele information are added to the CA nodes, but only CA which has at least level of evidence>=3. Additionally, a cypher query to integrate these meta-edges into the database is added to the cypher file. Next for all pairs CA-variant/chemical/pc/gene/phenotype the TSV files are generated and additional cypher queries are added.
     Next, get all CAM where the pGKB chemical is connected to chemical or pc and pGKB variant/haplotype are connected to the variant with ClinicalAnnotation.
     The CA are prepared for the CAM as properties genotypes and clinical phenotype.
     In the following step, the CAM information is written into the TSV file.
     The last step is to write the different relationship pairs in the different TSV files.
 
 The last program prepares the integration of the different VariantAnnotation into the database.
-    For all VA first the TSV file for the meta-edge is generated with the additional cypher query.  Then all studyParameter are loaded and generate a VA-sp dictionary.
+    For all VA (except of the non significance) first the TSV file for the meta-edge is generated with the additional cypher query.  Then all studyParameter are loaded and generate a VA-sp dictionary.
     Then all VA from this type with a mapped variant/haplotype is loaded. The SPs are prepared as JSON property of the VA. All information is written into the TSV file.
     Then a query is added to integrate a relationship between CAM and VA.
     Then all pairs of VA-chemical/gene/pc/variant are loaded and written into the different TSV files.

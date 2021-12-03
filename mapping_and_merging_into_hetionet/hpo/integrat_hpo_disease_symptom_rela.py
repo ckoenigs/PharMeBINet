@@ -99,7 +99,7 @@ def prepare_all_relationships_infos(properties, connection, mondo_id, symptom_id
     :return: list of the properties
     """
     rela_properties = [mondo_id, symptom_id]
-    sources = ';'.join(connection['source'])
+    sources = ';'.join(connection['sources'])
 
     for property in properties[2:]:
         if property not in ['frequency_name', 'aspect', 'frequency_def', 'evidence_code', 'onset', 'modifier']:
@@ -236,7 +236,8 @@ def generate_cypher_file_for_connection(cypher_file):
     query_exist = ''' (n:Disease{identifier: line.disease_id})-[r:PRESENTS_DpS]-(s:Symptom{identifier:line.symptom}) Set '''
     query_new = ''' (n:Disease{identifier: line.disease_id}), (s:Symptom{identifier:line.symptom}) Create (n)-[r:PRESENTS_DpS{'''
     for result, in results:
-        if result=='source':
+        if result=='sources':
+            properties.append(result)
             continue
         if result != 'frequency_modifier':
 
@@ -253,13 +254,13 @@ def generate_cypher_file_for_connection(cypher_file):
     other_properties = properties[:]
     other_properties.append('resource')
     csv_rela_update.writerow(other_properties)
-    query_exists = query_start + query_exist + "r.hpo='yes', r.version='phenotype_annotation.tab %s', r.resource=split(line.resource,'|'), r.url='https://hpo.jax.org/app/browse/disease/'+split(line.source,'|')[0]; \n"
+    query_exists = query_start + query_exist + "r.hpo='yes', r.version='phenotype_annotation.tab %s', r.resource=split(line.resource,'|'), r.url='https://hpo.jax.org/app/browse/disease/'+split(line.sources,'|')[0]; \n"
     query_exists = query_exists % (path_of_directory, "mapping_files/rela_update.tsv", hpo_date)
     cypher_file.write(query_exists)
     # query = '''Match (n:Disease)-[r:PRESENTS_DpS]-(s:Symptom) Where r.hpo='yes SET r.resource=r.resource+'HPO';\n '''
     # cypher_file.write(query)
 
-    query_new = query_start + query_new + '''version:'phenotype_annotation.tab %s',unbiased:false,source:'Human Phenontype Ontology', license:'This service/product uses the Human Phenotype Ontology (April 2021). Find out more at http://www.human-phenotype-ontology.org We request that the HPO logo be included as well.', resource:['HPO'], hpo:'yes', sources:split(line.source,'|'),  url:'https://hpo.jax.org/app/browse/disease/'+split(line.source,'|')[0]}]->(s);\n'''
+    query_new = query_start + query_new + '''version:'phenotype_annotation.tab %s',unbiased:false,source:'Human Phenontype Ontology', license:'This service/product uses the Human Phenotype Ontology (April 2021). Find out more at http://www.human-phenotype-ontology.org We request that the HPO logo be included as well.', resource:['HPO'], hpo:'yes', sources:split(line.sources,'|'),  url:'https://hpo.jax.org/app/browse/disease/'+split(line.sources,'|')[0]}]->(s);\n'''
     query_new = query_new % (path_of_directory, "mapping_files/rela_new.tsv", hpo_date)
     cypher_file.write(query_new)
 
@@ -298,7 +299,7 @@ def generate_cypher_file_for_connection(cypher_file):
     print(counter_connection)
 
 def get_inheritance_information_for_disease():
-    query='Match (d:Disease)--(:HPO_disease)-[r]-(s:HPO_symptom) Where "I" in r.aspect Return Distinct d.identifier, s.name, r.source'
+    query='Match (d:Disease)--(:HPO_disease)-[r]-(s:HPO_symptom) Where "I" in r.aspect Return Distinct d.identifier, s.name, r.sources'
     results=g.run(query)
     dict_disease_id_to_inheritances={}
     for disease_id, inheritance, sources, in results:

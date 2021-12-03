@@ -204,7 +204,7 @@ def generate_cypher_queries():
         else:
             query_new += property + ':split(line.' + property + ', "|"), '
             query_update += 'n.' + property + '=split(line.' + property + ', "|"), '
-    query_update = query_start + ', (n:Disease{identifier:line.doid}) Set ' + query_update + 'n.mondo="yes", n.license=" CC-BY-SA 3.0", n.resource=n.resource+"MonDo", n.doids=split(line.doids,"|") ' + query_end
+    query_update = query_start + ', (n:Disease{identifier:line.doid}) Set ' + query_update + 'n.mondo="yes", n.license=" CC-BY-SA 3.0", n.resource=n.resource+"MonDO", n.doids=split(line.doids,"|") ' + query_end
     query_update = query_update % ('map_nodes')
     cypher_file.write(query_update)
     query_new = query_start + 'Create (n:Disease{' + query_new + 'mondo:"yes", resource:["MonDO"], url:"https://monarchinitiative.org/disease/"+ line.identifier , license:"CC-BY-SA 3.0", source:"MonDO"}) ' + query_end

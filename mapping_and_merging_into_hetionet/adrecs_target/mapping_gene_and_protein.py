@@ -34,7 +34,7 @@ def integrate_information_into_dict(dict_node_id_to_resource, label):
 
 def prepare_query(file_name, db_label, adrecs_label, adrecs_id):
     cypher_file = open(db_label.lower() + '/cypher.cypher', 'w', encoding='utf-8')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/%s/%s" As line MATCH (n:%s{identifier:line.identifier}), (g:%s{%s:line.identifier}) Set n.resource=split(line.resource,"|") Create (n)-[:equal_adrecs_target_%s}]->(g);\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/%s/%s" As line Fieldterminator '\\t' MATCH (n:%s{identifier:line.identifier}), (g:%s{%s:line.identifier}) Set n.resource=split(line.resource,"|") Create (n)-[:equal_adrecs_target_%s]->(g);\n'''
     query = query % (director, file_name, db_label, adrecs_label, adrecs_id, db_label.lower())
     cypher_file.write(query)
 
@@ -51,6 +51,11 @@ def get_all_adrecs_target_and_map(db_label, adrecs_label, adrecs_id, dict_node_i
     csv_mapping = csv.writer(mapping_file, delimiter='\t')
     csv_mapping.writerow(['identifier', 'resource'])
 
+    file_not_name = db_label.lower() + '/not_mapping.csv'
+    not_mapping_file = open(file_not_name, 'w', encoding='utf-8')
+    csv_not_mapping = csv.writer(not_mapping_file, delimiter='\t')
+    csv_not_mapping.writerow(['identifier', 'name'])
+
     prepare_query(file_name, db_label, adrecs_label, adrecs_id)
 
     # get data
@@ -58,16 +63,24 @@ def get_all_adrecs_target_and_map(db_label, adrecs_label, adrecs_id, dict_node_i
     query = query % (adrecs_label)
     results = g.run(query)
 
+    counter_mapped=0
+    counter_not_mapped = 0
+
     for node, in results:
         identifier = node[adrecs_id]
         if identifier in dict_node_id_to_resource:
+            counter_mapped+=1
             resource = dict_node_id_to_resource[identifier]
             resource.append('ADReCS-Target')
             resource = sorted(resource)
             csv_mapping.writerow([identifier, '|'.join(resource)])
         else:
-            print(db_label, ' not in database :O')
-            print(identifier)
+            # print(db_label, ' not in database :O')
+            # print(identifier)
+            counter_not_mapped+=1
+            csv_not_mapping.writerow([identifier, node['GENE_FULL_NAME']])
+    print('number of mapped:',counter_mapped)
+    print('number of not mapped:', counter_not_mapped)
 
 
 def main():

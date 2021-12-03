@@ -271,12 +271,14 @@ def generate_cypher_file():
             print(rela_type)
             continue
         if rela_type in type_def:
-            if not rela_type == type_def[rela_type]['name']:
-                # because a typedef can have multiple names only one is needed
-                if len(type_def[rela_type]['name'].split('|')) > 1:
-                    type_def[rela_type]['name'] = type_def[rela_type]['name'].split('|')[0]
-                rela_type = type_def[rela_type]['name'].replace(' ', '_') if not '/' in type_def[rela_type][
-                    'name'] else rela_type
+            if 'name' in type_def[rela_type]:
+                if not rela_type == type_def[rela_type]['name']:
+                    # because a typedef can have multiple names only one is needed
+                    if len(type_def[rela_type]['name'].split('|')) > 1:
+                        type_def[rela_type]['name'] = type_def[rela_type]['name'].split('|')[0]
+                    rela_type = type_def[rela_type]['name'].replace(' ', '_') if not '/' in type_def[rela_type][
+                        'name'] else rela_type
+
 
         # create csv for relationships
         file_name = 'rela_' + rela_type + '.csv'

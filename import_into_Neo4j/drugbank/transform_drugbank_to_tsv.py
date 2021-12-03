@@ -71,7 +71,6 @@ dict_reference_id_to_infos = {}
 counter_reaction_ids = 1
 
 
-
 def add_information_into_dictionary(drug_targets, db_ID, db_targets, position, actions, organism, ref_article_list,
                                     ref_link_list, ref_attachment_list, ref_textbooks_list, known_action,
                                     target_id=None, induction_strength=None, inhibition_strength=None):
@@ -110,7 +109,6 @@ def add_information_into_dictionary(drug_targets, db_ID, db_targets, position, a
     if induction_strength:
         drug_targets['induction_strength'] = induction_strength
     return drug_targets
-
 
 
 def gather_target_infos(target, drug_targets_info, targets_info, dict_targets_ids, db_ID, is_enzyme, is_target):
@@ -640,10 +638,9 @@ for i, drug in enumerate(root):
         name = part.findtext("{ns}name".format(ns=ns))
         ingredients = part.findtext("{ns}ingredients".format(ns=ns))
         supplemental_ingredients = part.findtext("{ns}supplemental-ingredients".format(ns=ns))
-        if (len(ingredients)==0):
+        if (len(ingredients) == 0):
             print(ingredients)
             print(name)
-
 
         if (ingredients, supplemental_ingredients) in dict_mixtures_ingredients_combination_names:
             dict_mixtures_ingredients_combination_names[(ingredients, supplemental_ingredients)].add(name)
@@ -704,7 +701,6 @@ for i, drug in enumerate(root):
             pharmacologic_class_dict['name'] = category
             pharmacologic_classes.append(pharmacologic_class_dict)
             dict_pharmacologic_class[drugbank_category_id] = mesh_id
-
 
     row['affected_organisms'] = [salt.text for salt in
                                  drug.findall("{ns}affected-organisms/{ns}affected-organism".format(ns=ns))]
@@ -767,7 +763,6 @@ for i, drug in enumerate(root):
         counter += 1
     row['sequences'] = all_seq
 
-
     #    row['sequences']= [seq.text.replace('\n',' ',1).replace('\r',' ',1).replace('\t','').replace('\n','').replace('\r','') for seq in drug.findall("{ns}sequences/{ns}sequence".format(ns = ns))] if drug.findtext("{ns}sequences/{ns}sequence".format(ns = ns))!=None else []
     row['calculated_properties_kind_value_source'] = []
     for part in drug.iterfind('{ns}calculated-properties/{ns}property'.format(ns=ns)):
@@ -793,7 +788,6 @@ for i, drug in enumerate(root):
     extern_ids = [salt.text for salt in
                   drug.findall("{ns}external-identifiers/{ns}external-identifier/{ns}identifier".format(ns=ns))]
     row['external_identifiers'] = [i + ':' + j for i, j in zip(extern_ids_source, extern_ids)]
-
 
     row['external_links_resource_url'] = []
     for part in drug.iterfind('{ns}external-links/{ns}external-link'.format(ns=ns)):
@@ -860,6 +854,7 @@ for i, drug in enumerate(root):
     Howevere, the metabolite get his properties identifier and name from here. However, reaction has also enzymes in the
     reaction to produce out of the left the right element. These relationships are also added.
     """
+
     for part in drug.iterfind('{ns}reactions/{ns}reaction'.format(ns=ns)):
         reaction = collections.OrderedDict()
         # information for reaction node
@@ -1257,7 +1252,7 @@ csv_atc.writerow(['id_upper', 'id_down'])
 for (identifier_upper, identifier_down) in set_atc_edges:
     csv_atc.writerow([identifier_upper, identifier_down])
 atc_file.close()
-#prepare atc edge query
+# prepare atc edge query
 query = query_start + " Match (n:atc{identifier:line.id_upper}), (m:atc{identifier:line.id_down}) Create (n)<-[:is_a]-(m);\n"
 query = query % (atc_file_name)
 cypher_file.write(query)

@@ -137,6 +137,7 @@ node_modules/
 *.hpoa
 *.jar
 *.tmp
+*.db
 
 wget-log
 wget-log.*
@@ -150,3 +151,4 @@ key_omim
 *.cypher
 
 
+mapping_and_merging_into_hetionet/monDO/merge_nodes.sh

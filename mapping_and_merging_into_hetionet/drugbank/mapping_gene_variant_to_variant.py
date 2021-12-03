@@ -22,35 +22,34 @@ def create_connection_with_neo4j():
 dict_name_dbsnp_id_to_clinvar_id = {}
 
 '''
-Load all Genes from my database  and add them into a dictionary
+Load all Variant from my database  and add them into a dictionary
 '''
 
 
 def load_variant_from_database_and_add_to_dict():
     # Where not n.identifier starts with 'rs'
-    query = "MATCH (n:Variant)  RETURN n"
+    query = "MATCH (n:Variant)  RETURN n.identifier, n.name, n.synonyms, n.xrefs"
     results = g.run(query)
-    for node, in results:
-        identifier = node['identifier']
+    for identifier, name, synonyms, xrefs,  in results:
 
-        name = node['name'].lower() if 'name' in node else ''
+        name = name.lower() if name else ''
         if name not in dict_name_dbsnp_id_to_clinvar_id:
             dict_name_dbsnp_id_to_clinvar_id[name] = set()
         dict_name_dbsnp_id_to_clinvar_id[name].add(identifier)
-        synonyms = node['synonyms'] if 'synonyms' in node else []
-        for synonym in synonyms:
-            synonym = synonym.lower()
-            if synonym not in dict_name_dbsnp_id_to_clinvar_id:
-                dict_name_dbsnp_id_to_clinvar_id[synonym] = set()
-            dict_name_dbsnp_id_to_clinvar_id[synonym].add(identifier)
+        if synonyms:
+            for synonym in synonyms:
+                synonym = synonym.lower()
+                if synonym not in dict_name_dbsnp_id_to_clinvar_id:
+                    dict_name_dbsnp_id_to_clinvar_id[synonym] = set()
+                dict_name_dbsnp_id_to_clinvar_id[synonym].add(identifier)
 
-        xrefs = node['xrefs'] if 'xrefs' in node else []
-        for xref in xrefs:
-            if xref.startswith('dbSNP:'):
-                dbSNO_ID = xref.split(':', 1)[1]
-                if dbSNO_ID not in dict_name_dbsnp_id_to_clinvar_id:
-                    dict_name_dbsnp_id_to_clinvar_id[dbSNO_ID] = set()
-                dict_name_dbsnp_id_to_clinvar_id[dbSNO_ID].add(identifier)
+        if xrefs:
+            for xref in xrefs:
+                if xref.startswith('dbSNP:'):
+                    dbSNO_ID = xref.split(':', 1)[1]
+                    if dbSNO_ID not in dict_name_dbsnp_id_to_clinvar_id:
+                        dict_name_dbsnp_id_to_clinvar_id[dbSNO_ID] = set()
+                    dict_name_dbsnp_id_to_clinvar_id[dbSNO_ID].add(identifier)
 
 
 def generate_files(path_of_directory):
@@ -79,7 +78,7 @@ def generate_files(path_of_directory):
     cypher_file.write(query)
 
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/drugbank/gene_variant/%s.tsv" As line FIELDTERMINATOR '\\t' 
-            Match (n:Mutated_protein_gene_DrugBank{identifier:line.variant_id}) Create (v:Variant :GeneVariant{identifier:line.variant_id, defining_change:n.defining_change, gene_symbol:n.gene_symbol, license:"%s", allele:n.allele, protein_name:n.protein_name, drugbank:"yes",  source:"dbSNP from DrugBank", resource:["DrugBank"] ,xrefs:split(line.xrefs,"|") }) Create (v)-[:equal_to_drugbank_variant]->(n);\n'''
+            Match (n:Mutated_protein_gene_DrugBank{identifier:line.variant_id}) Create (v:Variant :GeneVariant{identifier:line.variant_id, defining_change:n.defining_change, gene_symbol:n.gene_symbol, license:"%s", allele:n.allele, protein_name:n.protein_name, drugbank:"yes",  source:"dbSNP from DrugBank", resource:["DrugBank"] ,xrefs:split(line.xrefs,"|"), url:'https://www.ncbi.nlm.nih.gov/snp/'+line.variant_id }) Create (v)-[:equal_to_drugbank_variant]->(n);\n'''
     query = query % (path_of_directory, file_name_new, license)
     cypher_file.write(query)
 

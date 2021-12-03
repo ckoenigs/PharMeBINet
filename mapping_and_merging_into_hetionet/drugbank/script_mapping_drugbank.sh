@@ -8,6 +8,11 @@ path_to_project=$2
 
 license='Attribution-NonCommercial 4.0 International'
 
+
+sleep 120
+$path_neo4j/neo4j restart
+sleep 120
+
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo 'integrate Drugbank drugs with interaction into Hetionet'
@@ -44,9 +49,21 @@ python3 integrate_product_and_rela_to_compound.py "$license" $path_to_project > 
 
 now=$(date +"%F %T")
 echo "Current time: $now"
-echo 'integrate Drugbank salts with interaction into Hetionet'
+echo 'integrate Drugbank gene variant '
 
 python3 mapping_gene_variant_to_variant.py "$license" $path_to_project > gene_variant/output.txt
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo 'integrate Drugbank pathway'
+
+python3 mapping_pathway.py "$license" $path_to_project > pathway/output.txt
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo 'integrate Drugbank metabolite'
+
+python3 mapping_drugbank_metabolite.py "$license" $path_to_project > metabolite/output.txt
 
 
 now=$(date +"%F %T")
