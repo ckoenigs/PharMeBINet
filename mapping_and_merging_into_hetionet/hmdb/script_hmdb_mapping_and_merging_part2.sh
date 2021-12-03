@@ -24,7 +24,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo disease
 
-# python3 mapping_hmdb_disease.py $path_to_project > disease/output_integration.txt
+python3 mapping_hmdb_disease.py $path_to_project > disease/output_integration.txt
 
 
 
@@ -39,3 +39,21 @@ $path_neo4j/neo4j restart
 sleep 120
 
 # relationships!
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo prepare edges without any own information between metabolite/protein and pathway/BP/CC/MF
+
+python3 edge_protein_without_infos.py $path_to_project > edge_protein_metabolite_without_info/output.txt
+
+
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo integration of hmdb edges
+
+$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher_edge.cypher
+
+sleep 60
+$path_neo4j/neo4j restart
+sleep 120

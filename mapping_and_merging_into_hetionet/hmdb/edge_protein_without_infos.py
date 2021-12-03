@@ -16,17 +16,27 @@ def create_connection_with_neo4j():
     global graph_database
     graph_database = create_connection_to_databases.database_connection_neo4j()
 
+# dictionary go to rela types which are general
+dict_go_to_rela_types = {
+    'BiologicalProcess': ["INVOLVED_IN_PiiBP", "PARTICIPATES_PpBP"],
+    'MolecularFunction': ["ENABLES_PeMF", "CONTRIBUTES_TO_PctMF", "PARTICIPATES_PpMF"],
+    'CellularComponent': ["PART_OF_PpoCC", "LOCATED_IN_PliCC", "PARTICIPATES_PpCC", "COLOCALIZES_WITH_PcwCC"]
+}
 
-def load_existing_pairs(label, other_label, rela_type, dict_pair_to_resource):
+def load_existing_pairs(label, other_label, dict_pair_to_resource):
     """
     Get all pairs for a specific label pair with a given relationship type and add to a set.
     :param label: string
     :param other_label: string
-    :param rela_type: string
     :param dict_pair_to_resource: dictionary
     :return:
     """
-    query = 'Match (n:%s)-[r]-(m:%s) Return n.identifier, m.identifier, r.resource' % (label,  other_label)
+    if label not in dict_go_to_rela_types:
+        query = 'Match (n:%s)-[r]-(m:%s)  Where not exists(r.not) Return n.identifier, m.identifier, r.resource' % (
+            label, other_label)
+    else:
+        query = 'Match (n:%s)-[r]-(m:%s) Where  not exists(r.not) and type(r) in ["%s"] Return n.identifier, m.identifier, r.resource' % (
+            label, 'Protein', '","'.join(dict_go_to_rela_types[label]))
     # query = 'Match (n:%s)-[r:%s]-(m:%s) Return n.identifier, m.identifier, r.resource' % (label, rela_type, other_label)
     results = graph_database.run(query)
     for node_id_1, node_id_2, resource, in results:
@@ -65,23 +75,23 @@ def load_pair_edges(csv_mapped, csv_new, label, own_label_hmdb, other_hmdb_label
     set_of_used_pairs = set()
 
     # counter_mapped
-    counter_mapped=0
+    counter_mapped = 0
 
-    #counter new
-    counter_new=0
+    # counter new
+    counter_new = 0
 
     for node_id_1, node_id_2, in results:
         if (node_id_1, node_id_2) in set_of_used_pairs:
             continue
         set_of_used_pairs.add((node_id_1, node_id_2))
         if (node_id_1, node_id_2) in dict_pair_to_resource:
-            counter_mapped+=1
+            counter_mapped += 1
             csv_mapped.writerow([node_id_1, node_id_2, prepare_resource(dict_pair_to_resource[(node_id_1, node_id_2)])])
         else:
-            counter_new+=1
+            counter_new += 1
             csv_new.writerow([node_id_1, node_id_2])
 
-    print('number of ' + label + '  and '  +other_label + ' relationships in hetionet:' + str(
+    print('number of ' + label + '  and ' + other_label + ' relationships in hetionet:' + str(
         len(set_of_used_pairs)))
     print('number of mapped edges:', counter_mapped)
     print('number of new edges:', counter_new)
@@ -92,8 +102,8 @@ generate new relationships between protein/metabolite and nodes that have edges 
 '''
 
 
-def create_cypher_file(file_name, file_name_new, label, node_pharmebinet_label, rela_name, direction_first,
-                       direction_last):
+def create_cypher_file(file_name, file_name_new, label, node_pharmebinet_label, direction_first, direction_last,
+                       rela_name):
     """
     Prepare mapping edges and creation cypher queries.
     :param file_name: string
@@ -110,23 +120,28 @@ def create_cypher_file(file_name, file_name_new, label, node_pharmebinet_label, 
                      'proteins' if label == 'Protein' else 'metabolites', direction_last)
     cypher_file.write(query)
 
-    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/hmdb/%s" As line FIELDTERMINATOR "\\t" MATCH (d:%s{identifier:line.node_id_1})-[r:%s]-(c:%s{identifier:line.node_id_2}) Set  r.resource=split(line.resource,'|'), r.hmdb='yes';\n'''
-    query = query % (path_of_directory, file_name, label, rela_name, node_pharmebinet_label)
+    if label not in dict_go_to_rela_types:
+        query = '''LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/hmdb/%s" As line FIELDTERMINATOR "\\t" MATCH (d:%s{identifier:line.node_id_1})-[r]-(c:%s{identifier:line.node_id_2}) Where not exists(r.not) Set  r.resource=split(line.resource,'|'), r.hmdb='yes';\n'''
+        query = query % (path_of_directory, file_name, label, node_pharmebinet_label)
+    else:
+
+        query = '''LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/uniprot/%s" As line FIELDTERMINATOR "\\t" MATCH (d:%s{identifier:line.node_id_1})-[r]-(c:%s{identifier:line.node_id_2}) Where not exists(r.not) and type(r) in ["%s"] Set  r.resource=split(line.resource,'|'), r.hmdb='yes';\n'''
+        query = query % (path_of_directory, file_name, label, node_pharmebinet_label, '","'.join(dict_go_to_rela_types[label]))
     cypher_file.write(query)
 
 
 def check_relationships_and_generate_file(label, own_hmdb_label, other_node_hmdb_label, node_pharmebinet_label,
-                                          directory, rela_name, direction_first, direction_last):
+                                          directory, direction_first, direction_last, rela_name):
     """
 
-    :param label:
-    :param own_hmdb_label:
-    :param other_node_hmdb_label:
-    :param node_pharmebinet_label:
-    :param directory:
-    :param rela_name:
-    :param direction_first:
-    :param direction_last:
+    :param label: string
+    :param own_hmdb_label: string
+    :param other_node_hmdb_label: striing
+    :param node_pharmebinet_label: string
+    :param directory: dictionary
+    :param direction_first: string
+    :param direction_last: string
+    :param rela_name: string
     :return:
     """
 
@@ -136,13 +151,13 @@ def check_relationships_and_generate_file(label, own_hmdb_label, other_node_hmdb
     print(datetime.datetime.utcnow())
     print('Load all relationships from metabolite/protein-node and hetionet_nodes into a dictionary')
     # file for mapped or not mapped identifier
-    file_name = directory + '/edge_' + label + '_to_' + other_node_hmdb_label + '_' + rela_name + '.tsv'
+    file_name = directory + '/edge_' + label + '_to_' + other_node_hmdb_label + '.tsv'
 
     file_edge_pro_or_meta_to_node = open(file_name, 'w', encoding="utf-8")
     csv_edge = csv.writer(file_edge_pro_or_meta_to_node, delimiter='\t', lineterminator='\n')
     csv_edge.writerow(['node_id_1', 'node_id_2', 'resource'])
 
-    file_name_new = directory + '/edge_new_' + label + '_to_' + other_node_hmdb_label + '_' + rela_name + '.tsv'
+    file_name_new = directory + '/edge_new_' + label + '_to_' + other_node_hmdb_label + '.tsv'
 
     file_edge_pro_or_meta_to_node_new = open(file_name_new, 'w', encoding="utf-8")
     csv_edge_new = csv.writer(file_edge_pro_or_meta_to_node_new, delimiter='\t', lineterminator='\n')
@@ -156,7 +171,7 @@ def check_relationships_and_generate_file(label, own_hmdb_label, other_node_hmdb
 
     dict_pair_to_resource = {}
 
-    load_existing_pairs(label, node_pharmebinet_label, rela_name, dict_pair_to_resource)
+    load_existing_pairs(label, node_pharmebinet_label, dict_pair_to_resource)
 
     print(
         '###########################################################################################################################')
@@ -174,8 +189,8 @@ def check_relationships_and_generate_file(label, own_hmdb_label, other_node_hmdb
 
     print('Integrate new relationships and connect them ')
 
-    create_cypher_file(file_name, file_name_new, label, node_pharmebinet_label,
-                       rela_name, direction_first, direction_last)
+    create_cypher_file(file_name, file_name_new, label, node_pharmebinet_label, direction_first, direction_last,
+                       rela_name)
 
 
 def main():
@@ -192,12 +207,12 @@ def main():
     create_connection_with_neo4j()
 
     dict_label_to_infos = {
-        'Metabolite': [['Metabolite_HMDB', 'Pathway_HMDB', 'Pathway', 'ASSOCIATES_PWaM', '<-', '-']],
+        'Metabolite': [['Metabolite_HMDB', 'Pathway_HMDB', 'Pathway', '<-', '-', 'ASSOCIATES_PWaP']],
         'Protein': [
-            ['Protein_HMDB', 'Pathway_HMDB', 'Pathway', 'ASSOCIATES_PWaP', '<-', '-'],
-            ['Protein_HMDB', 'Biologicalprocess_HMDB', 'BiologicalProcess', 'PARTICIPATES_PpBP', '-', '->'],
-            ['Protein_HMDB', 'Cellularcomponent_HMDB', 'CellularComponent', 'PARTICIPATES_PpCC', '-', '->'],
-            ['Protein_HMDB', 'Molecularfunction_HMDB', 'MolecularFunction', 'PARTICIPATES_PpMF', '-', '->']
+            ['Protein_HMDB', 'Pathway_HMDB', 'Pathway', '<-', '-', 'ASSOCIATES_PWaP'],
+            ['Protein_HMDB', 'Biologicalprocess_HMDB', 'BiologicalProcess', '-', '->', 'PARTICIPATES_PpBP'],
+            ['Protein_HMDB', 'Cellularcomponent_HMDB', 'CellularComponent', '-', '->', 'PARTICIPATES_PpCC'],
+            ['Protein_HMDB', 'Molecularfunction_HMDB', 'MolecularFunction', '-', '->', 'PARTICIPATES_PpMF']
         ]
     }
 
@@ -209,11 +224,12 @@ def main():
             own_hmdb_label = list_element[0]
             other_hmdb_label = list_element[1]
             node_label = list_element[2]
-            relationship_name = list_element[3]
-            direction_first = list_element[4]
-            direction_last = list_element[5]
+            direction_first = list_element[3]
+            direction_last = list_element[4]
+            rela_name = list_element[5]
             check_relationships_and_generate_file(label, own_hmdb_label, other_hmdb_label, node_label, directory,
-                                                  relationship_name, direction_first, direction_last)
+                                                  direction_first, direction_last, rela_name
+                                                  )
 
     cypher_file.close()
 
