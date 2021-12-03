@@ -54,6 +54,7 @@ def generate_files(path_of_directory):
     if not os.path.exists(path_of_directory):
         os.mkdir(path_of_directory)
 
+
     file_name = 'DisGeNet_variant_to_Variant'
     file_path = os.path.join(path_of_directory, file_name) +'.tsv'
     header = ['DisGeNet_snp_id', 'identifier', 'resource', 'mapping_method']
@@ -67,11 +68,11 @@ def generate_files(path_of_directory):
     # master_database_change/mapping_and_merging_into_hetionet/DisGeNet/
     query = f'Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:{file_path}" As line FIELDTERMINATOR "\\t" \
         Match (n:variant_DisGeNet{{snpId:line.DisGeNet_snp_id}}), (v:Variant{{identifier:line.identifier}}) Set v.DisGeNet="yes", v.resource=split(line.resource,"|") Create (v)-[:equal_to_DisGeNet_variant{{mapped_with:line.mapping_method}}]->(n);\n'
-    mode = 'w' if os.path.exists(cypher_file_path) else 'a'
+    mode = 'a' if os.path.exists(cypher_file_path) else 'w'
     cypher_file = open(cypher_file_path, mode, encoding='utf-8')
     cypher_file.write(query)
-    query = f'USING PERIODIC COMMIT 10000 LOAD CSV FROM "file:/Users/MT/UNI/Vorlesungen_SS_21/ISY-Projects/KnowledgeEngineering/data/DisGeNet/mapping/variant/not_mapped.csv" AS line  \
-              Match (n:variant_DisGeNet{{snpId:line[0]}}) Create (p:Variant{{identifier:n.snpId, chromosome:n.chromosome, position:n.position, resource:["DisGeNet"], xrefs:["dbSNP:"+n.snpId], disgenet:"yes"}});\n'
+    query = f'USING PERIODIC COMMIT 10000 LOAD CSV FROM "file:{path_of_directory}not_mapped.csv" AS line  \
+              Match (n:variant_DisGeNet{{snpId:line[0]}}) Create (p:Variant{{identifier:n.snpId, chromosome:n.chromosome, position:n.position, resource:["DisGeNet"], xrefs:["dbSNP:"+n.snpId], disgenet:"yes", source:"DisGeNet" }}) Create (p)-[:equal_to_DisGeNet_variant{{mapped_with:"new"}}]->(n);\n'
     cypher_file.write(query)
 
     return csv_mapping
@@ -133,6 +134,7 @@ def main():
     source = os.path.join(home, 'output')
     path_of_directory = os.path.join(home, 'variant/')
 
+
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
@@ -159,9 +161,6 @@ def main():
 
     print('##########################################################################')
     print(datetime.datetime.utcnow())
-    print('Generate cypher file for not mapped variants')
-    load_not_mapped_variants_and_generate_cypher_query()
-    print('finished')
 
 if __name__ == "__main__":
     # execute only if run as a script
