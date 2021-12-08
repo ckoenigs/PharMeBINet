@@ -31,12 +31,12 @@ def load_existing_pairs(label, other_label, dict_pair_to_resource):
     :param dict_pair_to_resource: dictionary
     :return:
     """
-    if label not in dict_go_to_rela_types:
+    if other_label not in dict_go_to_rela_types:
         query = 'Match (n:%s)-[r]-(m:%s)  Where not exists(r.not) Return n.identifier, m.identifier, r.resource' % (
             label, other_label)
     else:
         query = 'Match (n:%s)-[r]-(m:%s) Where  not exists(r.not) and type(r) in ["%s"] Return n.identifier, m.identifier, r.resource' % (
-            label, 'Protein', '","'.join(dict_go_to_rela_types[label]))
+            label, other_label, '","'.join(dict_go_to_rela_types[other_label]))
     # query = 'Match (n:%s)-[r:%s]-(m:%s) Return n.identifier, m.identifier, r.resource' % (label, rela_type, other_label)
     results = graph_database.run(query)
     for node_id_1, node_id_2, resource, in results:
@@ -120,13 +120,13 @@ def create_cypher_file(file_name, file_name_new, label, node_pharmebinet_label, 
                      'proteins' if label == 'Protein' else 'metabolites', direction_last)
     cypher_file.write(query)
 
-    if label not in dict_go_to_rela_types:
+    if node_pharmebinet_label not in dict_go_to_rela_types:
         query = '''LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/hmdb/%s" As line FIELDTERMINATOR "\\t" MATCH (d:%s{identifier:line.node_id_1})-[r]-(c:%s{identifier:line.node_id_2}) Where not exists(r.not) Set  r.resource=split(line.resource,'|'), r.hmdb='yes';\n'''
         query = query % (path_of_directory, file_name, label, node_pharmebinet_label)
     else:
-
-        query = '''LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/uniprot/%s" As line FIELDTERMINATOR "\\t" MATCH (d:%s{identifier:line.node_id_1})-[r]-(c:%s{identifier:line.node_id_2}) Where not exists(r.not) and type(r) in ["%s"] Set  r.resource=split(line.resource,'|'), r.hmdb='yes';\n'''
-        query = query % (path_of_directory, file_name, label, node_pharmebinet_label, '","'.join(dict_go_to_rela_types[label]))
+        print('GOs')
+        query = '''LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/hmdb/%s" As line FIELDTERMINATOR "\\t" MATCH (d:%s{identifier:line.node_id_1})-[r]-(c:%s{identifier:line.node_id_2}) Where not exists(r.not) and type(r) in ["%s"] Set  r.resource=split(line.resource,'|'), r.hmdb='yes';\n'''
+        query = query % (path_of_directory, file_name, label, node_pharmebinet_label, '","'.join(dict_go_to_rela_types[node_pharmebinet_label]))
     cypher_file.write(query)
 
 
