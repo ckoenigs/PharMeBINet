@@ -188,18 +188,20 @@ def generate_file(csv_mapped):
         resource = list(set(resource))
         resource = '|'.join(resource)
         # csv_mapped.writerow([interactor1_rea_id, interactor2_rea_id, resource, '|'.join(dict_iso_interaction_ids['interaction_ids']), '|'.join(dict_iso_interaction_ids['iso_from']), '|'.join(dict_iso_interaction_ids['iso_to'])])
-        csv_mapped.writerow(
-            [interactor1_rea_id, interactor2_rea_id, resource, '|'.join(dict_iso_interaction_ids['interaction_ids']),
-             variantIdentifier_1, variantIdentifier_2, '|'.join(dict_iso_interaction_ids['pubmed_ids'])])
+        if len(dict_iso_interaction_ids['pubmed_ids'])>0:
+            csv_mapped.writerow(
+                [interactor1_rea_id, interactor2_rea_id, resource, '|'.join(dict_iso_interaction_ids['interaction_ids']),
+                 variantIdentifier_1, variantIdentifier_2, '|'.join(dict_iso_interaction_ids['pubmed_ids'])])
 
 
 def generate_file_else(csv_not_mapped):
     for (interactor2_rea_id, interactor1_rea_id, variantIdentifier_2,
          variantIdentifier_1), dict_iso_interaction_ids in dict_protein_ids_to_iso_from_and_to_2.items():
         # csv_not_mapped.writerow([interactor2_rea_id, interactor1_rea_id, '|'.join(dict_iso_interaction_ids['interaction_ids']), '|'.join(dict_iso_interaction_ids['iso_from']), '|'.join(dict_iso_interaction_ids['iso_to']), resource])
-        csv_not_mapped.writerow(
-            [interactor1_rea_id, interactor2_rea_id, '|'.join(dict_iso_interaction_ids['interaction_ids']),
-             variantIdentifier_1, variantIdentifier_2, '|'.join(dict_iso_interaction_ids['pubmed_ids'])])
+        if len(dict_iso_interaction_ids['pubmed_ids'])>0:
+            csv_not_mapped.writerow(
+                [interactor1_rea_id, interactor2_rea_id, '|'.join(dict_iso_interaction_ids['interaction_ids']),
+                 variantIdentifier_1, variantIdentifier_2, '|'.join(dict_iso_interaction_ids['pubmed_ids'])])
 
 
 '''
