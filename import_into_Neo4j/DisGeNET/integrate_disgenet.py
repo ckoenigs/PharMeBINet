@@ -65,8 +65,9 @@ def get_proteinInfo():
     :return: list of unique gene-ID's
     """
 
-    name1 = 'mapa_geneid_4_uniprot_crossref.tsv'
-    file1 = pd.read_csv(os.path.join(source, name1), sep="\t").convert_dtypes()
+    name1 = 'mapa_geneid_4_uniprot_crossref.tsv.gz'
+    file1 = pd.read_csv(os.path.join(source, name1), compression='gzip', sep='\t').convert_dtypes()
+    # file1 = pd.read_csv(os.path.join(source, name1), sep="\t").convert_dtypes()
     # 2. Relation protein to gene; edge-information (can simply be copied, contains no duplicates)
     file1.rename(columns={'GENEID': 'geneId'},
                  inplace=True)  # need to rename column "GENEID" to "geneId" for later coherence

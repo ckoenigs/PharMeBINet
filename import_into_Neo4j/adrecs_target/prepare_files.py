@@ -715,6 +715,7 @@ def prepare_variant_drug_adr():
             print(ditop)
 
         adr_id = row['ADR Term'].lower()
+        
         if (ditop, adr_id) not in dict_ditop_to_other_entities['ditop_adr']:
             if not adr_id in dict_adr_id_to_dict_infos:
                 new_dict = {'identifier': adr_id,'ADR_ID':row['ADR_ID'],'ADRECS_ID':row['ADReCS ID']}
