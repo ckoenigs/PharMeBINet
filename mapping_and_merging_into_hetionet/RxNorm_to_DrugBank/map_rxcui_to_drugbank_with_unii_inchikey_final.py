@@ -23,7 +23,7 @@ properties:
 
 
 def load_all_inchikey_and_rxnorm_in_dict():
-    f = open('results/new_rxcui_uniis_inchkeys.tsv', 'r')
+    f = open('results/new_rxcui_uniis_inchkeys.tsv', 'r',encoding='utf-8')
     csv_reader=csv.DictReader(f,delimiter='\t')
 
     print (datetime.datetime.utcnow())
@@ -62,7 +62,7 @@ properties:
 
 
 def map_with_inchikeys_to_drugbank():
-    f = open('results/map_unii_to_drugbank_id_and_inchikey.tsv', 'r')
+    f = open('results/map_unii_to_drugbank_id_and_inchikey.tsv', 'r', encoding='utf-8')
     csv_reader=csv.DictReader(f, delimiter='\t')
     i = 0
     count_map_with_unii = 0
@@ -107,7 +107,7 @@ generate file rxnorm to drugbank
 
 
 def generate_file_rxnorm_to_drugbank():
-    f = open('results/map_rxnorm_to_drugbank_with_use_of_unii_and_inchikey.tsv', 'w')
+    f = open('results/map_rxnorm_to_drugbank_with_use_of_unii_and_inchikey.tsv', 'w', encoding='utf-8')
     csv_writer=csv.writer(f, delimiter='\t')
     csv_writer.writerow(['rxcui','drugbank_ids'])
     print(len(dict_rxnorm_to_drugbank_id))
