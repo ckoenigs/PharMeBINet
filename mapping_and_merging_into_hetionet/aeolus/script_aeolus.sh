@@ -6,6 +6,11 @@ path_neo4j=$1
 #path to project
 path_to_project=$2
 
+
+sleep 180
+$path_neo4j/neo4j restart
+sleep 180
+
 echo aeolus outcome mapping
 python3 map_aeolus_outcome_final.py $path_to_project > output/output_map_aeolus_outcome.txt
 
