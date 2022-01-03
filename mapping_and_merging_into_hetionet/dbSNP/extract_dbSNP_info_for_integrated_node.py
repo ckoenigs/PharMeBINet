@@ -63,10 +63,12 @@ def load_already_extracted_infos_from_file():
     :return:
     """
     global file , csv_file_not_existing_ids
-    file_name = 'data/api_infos.json'
+    file_name = '/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/dbSNP/api_infos.json'
     try:
         file = open(file_name, 'r')
+        counter_line=0
         for line in file.readlines():
+            counter_line+=1
             node = ujson.loads(line)
             node_id = node['refsnp_id']
             dict_nodes[node_id] = node
@@ -115,6 +117,13 @@ def ask_api_and_prepare_return(ids):
         url = url % (ids)
         res = requests.get(url)
         res_json_string = res.text
+        if 'error' in res_json_string:
+            time.sleep(10)
+            res = requests.get(url)
+            res_json_string = res.text
+        if 'error' in res_json_string:
+            print(res_json_string,url)
+            sys.exit('second error')
         if res_json_string=='' and not ',' in ids:
             csv_file_not_existing_ids.writerow([ids])
             print(ids)
@@ -122,12 +131,13 @@ def ask_api_and_prepare_return(ids):
         # check if nothing is found all ids single, because if one id is not existing in dbSNP anymore then nothing is 
         # found. Therefore, check every id one by one. 
         elif res_json_string=='':
+            print('in loop')
             for single_id in ids.split(','):
                 time.sleep(5)
                 dict_node_new= ask_api_and_prepare_return(single_id)
                 dict_nodes_new.update(dict_node_new)
             return dict_nodes_new
-
+        # print(ids, res_json_string)
         res_json_string = prepare_string_to_right_json_string(res_json_string)
         dict_nodes_new=ujson.loads(res_json_string)
     return dict_nodes_new
@@ -184,10 +194,14 @@ def load_dbSNP_data_for_nodes_with_dbSNP_in_db():
                 add_information_from_api_dictionary_to_files(dict_nodes_to_list)
                 # print(dict_nodes_to_list)
                 string_of_ids=''
+            if counter_to_seek % 5000 == 0:
+                break
+
         elif not rs_id in set_not_existing_dbSNP_ids :
             prepare_a_single_node.prepare_json_information_to_tsv(dict_nodes[rs_id])
         if counter_all % 500==0:
             print('500 through')
+
 
     print('all counted gene variant with rs:',counter_all)
     print(string_of_ids)
@@ -217,8 +231,6 @@ def main():
 
     print(datetime.datetime.utcnow())
     print('Load variant which are not from dbSNP ')
-
-    load_already_extracted_infos_from_file()
 
     get_all_variants_without_rs()
 
