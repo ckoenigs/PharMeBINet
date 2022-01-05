@@ -15,7 +15,7 @@ dict_unii_to_rxcui = {}
 load unii to rxcui
 '''
 def load_unii_to_rxcui():
-    g = open('results/UNIIs_with_RXCUI.tsv', 'r')
+    g = open('results/UNIIs_with_RXCUI.tsv', 'r', encoding='utf-8')
     csv_reader=csv.DictReader(g, delimiter='\t')
     # print(csv_reader.fieldnames)
     for line in csv_reader:
@@ -48,7 +48,7 @@ def load_rxcui_to_unii():
     counter_rxcui = 0
     counter_unii = 0
     count_different_unii = 0
-    f = open('results/map_rxnorm_to_UNII.tsv', 'r')
+    f = open('results/map_rxnorm_to_UNII.tsv', 'r', encoding='utf-8')
     csv_reader=csv.DictReader(f,delimiter='\t')
     for line in csv_reader:
         rxcui = line['rxcui']
@@ -99,7 +99,7 @@ find for all unii a inchikey in fda-srs
 
 '''
 def generate_unii_inchikey_connection():
-    h = open('unii/unii_data.txt', 'r')
+    h = open('unii/unii_data.txt', 'r', encoding='utf-8')
     csv_writer=csv.DictReader(h, delimiter='\t')
     for line in csv_writer:
         unii = line['UNII']
@@ -116,7 +116,7 @@ def generate_unii_inchikey_connection():
 generate new file with rxcui, uniis, inchikeys
 '''
 def generate_rxcui_unii_inchikey_file():
-    g = open('results/new_rxcui_uniis_inchkeys.tsv', 'w')
+    g = open('results/new_rxcui_uniis_inchkeys.tsv', 'w', encoding='utf-8')
     csv_writer=csv.writer(g,delimiter='\t')
     csv_writer.writerow(['rxcui','uniis','inchikeys'])
     for rxcui, uniis in dict_rxcui_to_unii.items():
