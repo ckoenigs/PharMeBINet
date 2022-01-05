@@ -368,7 +368,7 @@ def write_cypher_file():
     #              Set g.uniProtIDs=filterdList;\n '''
     # file_cypher.write(query)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_gene/db_uniprot_to_gene_rela.csv" As line MATCH (n:Protein{identifier:line.uniprot_id}), (g:Gene{identifier:line.gene_id}) Set g.resource=split(line.resource_node,'|'), g.uniprot='yes' Create (g)-[:PRODUCES_GpP{name_mapping:line.name_mapping, uniprot:line.uniprot,resource:split(line.resource,'|'),license:'CC BY 4.0', url:'https://www.uniprot.org/uniprot/'+line.uniprot_id, source="UniProt"}]->(n);\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_gene/db_uniprot_to_gene_rela.csv" As line MATCH (n:Protein{identifier:line.uniprot_id}), (g:Gene{identifier:line.gene_id}) Set g.resource=split(line.resource_node,'|'), g.uniprot='yes' Create (g)-[:PRODUCES_GpP{name_mapping:line.name_mapping, uniprot:line.uniprot,resource:split(line.resource,'|'),license:'CC BY 4.0', url:'https://www.uniprot.org/uniprot/'+line.uniprot_id, source:"UniProt"}]->(n);\n'''
     file_cypher.write(query)
 
     # # the queries to integrate rela to bc, cc and mf
