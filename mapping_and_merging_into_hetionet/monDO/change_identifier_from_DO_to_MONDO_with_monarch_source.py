@@ -229,10 +229,21 @@ def generate_cypher_queries():
 # #dictionary doid to multiple remove not fitting mondo
 # # manual checked
 dict_doid_to_multi_remove={
-    'DOID:0080626':set(['MONDO:0020489']),
-    'DOID:0111365': set(['MONDO:0006450']),
-    'DOID:0111649': set(['MONDO:0021849']),
-    'DOID:0111564': set(['MONDO:0018052','MONDO:0020306']),
+    'DOID:0080626':['MONDO:0020489'],
+    'DOID:0111365': ['MONDO:0006450'],
+    'DOID:0111649': ['MONDO:0021849'],
+    'DOID:0111564': ['MONDO:0018052','MONDO:0020306'],
+    'DOID:0050608': ['MONDO:0012817'], # map to MONDO:0006094
+    'DOID:0060536': ['MONDO:0100224'], # map to MONDO:0100133
+    'DOID:0110305': ['MONDO:0018098'], # map to MONDO:0021018
+    'DOID:1799': ['MONDO:0019954'], # map to MONDO:0005815
+    'DOID:688': ['MONDO:0005040'], # map to MONDO:0005564
+    'DOID:707': ['MONDO:0004949'], # map to MONDO:0004095
+    'DOID:7188': ['MONDO:0005623'], # map to MONDO:0007699
+    'DOID:9212': ['MONDO:0008251'], # map to MONDO:0100017
+    'DOID:0080130': ['MONDO:0014959'], # map to MONDO:0014175
+    'DOID:676': ['MONDO:0005185'], # map to MONDO:0011429
+
 }
 
 '''
@@ -273,6 +284,7 @@ def load_in_all_DO_in_dictionary():
                     dict_external_ids_monDO[doid]=list_of_name_mapped_mondo_ids
                 else:
                     if doid  in dict_doid_to_multi_remove:
+                        test=list(set(dict_external_ids_monDO[doid]).difference(dict_doid_to_multi_remove[doid]))
                         dict_external_ids_monDO[doid] = list(set(dict_external_ids_monDO[doid]).difference(dict_doid_to_multi_remove[doid]))
                 if len(dict_external_ids_monDO[doid]) > 1:
                     print(doid)
@@ -394,7 +406,7 @@ def mapping_files():
             for mondo in mondos:
                 liste_names.append(dict_monDO_info[mondo]['name'])
             list_name_string = ",".join(liste_names)
-            csv_multi_mondp_for_do.write([line , list_name_string ])
+            csv_multi_mondp_for_do.writerow([line , list_name_string ])
         for mondo in mondos:
             mondo_name = dict_monDO_info[mondo]['name'] if 'name' in dict_monDO_info[mondo] else ''
             f.write(mondo + '\t' + mondo_name + '\n')
@@ -504,9 +516,11 @@ def gather_information_of_mondo_and_do_then_prepare_dict_for_csv(monDo, info, mo
         monDO_synonyms = dict_DO_to_info[doid]['synonyms'] if 'synonyms' in dict_DO_to_info[doid] else []
     info['synonyms'] = monDO_synonyms
 
+    # prepare definition
     info['definition'] = dict_DO_to_info[doid]['definition'] + '[FROM DOID]. ' + monDo_def if 'definition' in \
                                                                                               dict_DO_to_info[
                                                                                                   doid] else monDo_def
+    info['definition'] = info['definition'].replace('\t',' ')
 
     alternative_ids = dict_DO_to_info[doid]['alternative_ids'] if 'alternative_ids' in dict_DO_to_info[doid] else []
     alternative_ids.append(doid)
@@ -517,7 +531,7 @@ def gather_information_of_mondo_and_do_then_prepare_dict_for_csv(monDo, info, mo
         alternative_ids.remove('')
     info['doids'] = alternative_ids
 
-    other_xrefs_monDO.union(dict_DO_to_xref[doid])
+    other_xrefs_monDO= other_xrefs_monDO.union(dict_DO_to_xref[doid])
     other_xrefs_monDO.remove('') if '' in other_xrefs_monDO else other_xrefs_monDO
 
     other_xrefs_monDO = go_through_xrefs_and_change_if_needed_source_name(
@@ -528,6 +542,7 @@ def gather_information_of_mondo_and_do_then_prepare_dict_for_csv(monDo, info, mo
     umls_cuis_monDO.union(doid_umls)
     umls_cuis_monDO.remove('') if '' in umls_cuis_monDO else umls_cuis_monDO
     info['umls_cuis'] = list(umls_cuis_monDO)
+
 
     dict_info_csv = prepare_dict_for_csv_file(info)
     dict_info_csv['doid'] = doid
