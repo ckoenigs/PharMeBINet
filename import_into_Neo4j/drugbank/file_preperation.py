@@ -463,7 +463,7 @@ def drugs_combination_and_check(neo4j_label):
             drug_type = row['type'].replace(' ', '')
             external_identifier = row['external_identifiers'].split('||') if row['external_identifiers'] != '' else []
             dict_external = {}
-            synonyms = set(row['synonyms'].split('||')) if not row['synonyms'] == '' else set([])
+            synonyms = set(row['synonyms'].split('||')) if not row['synonyms'] == '' else set()
             chembl = []
             # to make chembl as an own property
             ################################################################################
@@ -661,6 +661,8 @@ def drugs_combination_and_check(neo4j_label):
                     'SALTS': salts_name_list,
                     'SYNONYMS': synonyms
                 }
+
+                synonyms_lower=[x.lower() for x in synonyms]
                 if drugbank_id == 'DB09496':
                     print('huh')
 
@@ -705,7 +707,8 @@ def drugs_combination_and_check(neo4j_label):
                         continue
                     # generic name should be the same as the name in the xml file
                     elif property_name == 'GENERIC_NAME':
-                        if property_value != name and not property_value in synonyms:
+                        if property_value.lower() != name.lower() and not property_value.lower() in synonyms_lower:
+                            # synonyms.add(property_value)
                             print(name)
                             print(property_value)
                             sys.exit('generic name')
@@ -1078,7 +1081,7 @@ def check_and_maybe_generate_a_new_target_file(file, dict_targets_info_external,
                                                neo4j_general_label):
     header_new = []
     with open(file) as csvfile:
-        print(file)
+        # print(file)
         reader = csv.DictReader(csvfile, delimiter='\t')
         header = reader.fieldnames
         # output_file_csv = open(output_file, 'w')
@@ -1497,8 +1500,8 @@ def check_and_maybe_generate_a_new_drug_target_file(file, dict_drug_targets_exte
 
                 if (drugbank_id, target_id) in dict_all_target_drug_pairs:
                     print('multi in different')
-                    print(dict_all_target_drug_pairs[(drugbank_id, target_id)])
-                    print(row)
+                    # print(dict_all_target_drug_pairs[(drugbank_id, target_id)])
+                    # print(row)
                     list_before = dict_all_target_drug_pairs[(drugbank_id, target_id)]
                     different = False
                     # gather all information and compare the rela information with the other rela from the same pair
