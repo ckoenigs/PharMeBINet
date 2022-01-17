@@ -31,7 +31,7 @@ then
     #cd ..
 fi
 
-echo python3
+echo prepare ctd data
 now=$(date +"%F %T")
 echo "Current time: $now"
 

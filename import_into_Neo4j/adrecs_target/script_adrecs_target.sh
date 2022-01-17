@@ -6,6 +6,12 @@ path_neo4j=$1
 #path to project
 path_to_project=$2
 
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+echo prepare ADReCS-Target integration
+
 # run preparation adrecs-target
 python3 prepare_files.py $path_to_project > output/output.txt
 
