@@ -46,7 +46,6 @@ def load_protein_from_database_and_add_to_dict():
             #     dict_alternativeId_to_identifiers[alternative_id] = set()
             dict_alternativeId_to_identifiers[alternative_id].add(identifier)
 
-
 def generate_files(path_of_directory):
     """
     generate cypher file and csv file
@@ -92,25 +91,12 @@ def load_all_DisGeNet_protein_and_finish_the_files(csv_mapping):
             for uniprot_id in dict_alternativeId_to_identifiers[identifier]:
                 csv_mapping.writerow([identifier, uniprot_id, resource(uniprot_id), 'alternative_id'])
         else:
-            # gene_symbols= node['symbols'] if 'symbols' in node else []
-            # set_of_mapped_uniprot_ids=set()
-            # found_a_map=False
-            # for gene_symbol in gene_symbols:
-            #     if gene_symbol in dict_gene_symbol_to_id:
-            #         for protein_id in dict_gene_symbol_to_id[gene_symbol]:
-            #             if protein_id not in set_of_mapped_uniprot_ids:
-            #                 csv_mapping.writerow([identifier, protein_id, resource(protein_id),
-            #                                       'gene symbol'])
-            #                 set_of_mapped_uniprot_ids.add(protein_id)
-            # #                 found_a_map=True
-            # if not found_a_map:
             counter_not_mapped += 1
             print(identifier)
     print('number of not-mapped proteins:', counter_not_mapped)
     print('number of all proteins:', counter_all)
 
 
-######### MAIN #########
 def main():
     print(datetime.datetime.utcnow())
 

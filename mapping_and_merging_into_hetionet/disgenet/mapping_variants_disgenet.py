@@ -72,7 +72,7 @@ def generate_files(path_of_directory):
     cypher_file = open(cypher_file_path, mode, encoding='utf-8')
     cypher_file.write(query)
     query = f'USING PERIODIC COMMIT 10000 LOAD CSV FROM "file:{path_of_directory}not_mapped.csv" AS line  \
-              Match (n:variant_DisGeNet{{snpId:line[0]}}) Create (p:Variant{{identifier:n.snpId, chromosome:n.chromosome, position:n.position, resource:["DisGeNet"], xrefs:["dbSNP:"+n.snpId], disgenet:"yes", source:"DisGeNet" }}) Create (p)-[:equal_to_DisGeNet_variant{{mapped_with:"new"}}]->(n);\n'
+              Match (n:variant_DisGeNet{{snpId:line[0]}}) Create (p:Variant :GeneVariant{{identifier:n.snpId, chromosome:n.chromosome, position:n.position, resource:["DisGeNet"], xrefs:["dbSNP:"+n.snpId], disgenet:"yes", source:"dbSNP from DisGeNet" }}) Create (p)-[:equal_to_DisGeNet_variant{{mapped_with:"new"}}]->(n);\n'
     cypher_file.write(query)
 
     return csv_mapping

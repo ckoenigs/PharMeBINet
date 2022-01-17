@@ -49,7 +49,7 @@ def generate_files(path_of_directory):
     file = open(file_path, mode, encoding='utf-8')
     csv_mapping = csv.writer(file, delimiter='\t')
     csv_mapping.writerow(header)
-    
+
     cypher_file_path = os.path.join(source, 'cypher.cypher')
     # master_database_change/mapping_and_merging_into_hetionet/DisGeNet/
     query = f'Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:{file_path}" As line FIELDTERMINATOR "\\t" \
