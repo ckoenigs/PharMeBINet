@@ -5,19 +5,11 @@ worked_url=false
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo down load fda file
-#$counter_of_connection_tries -lt 11 && 
-while  ! $worked_url && (("$counter_of_connection_tries" < "11")) ; do
-    wget -O ./UNII_Data.zip "https://fdasis.nlm.nih.gov/srs/download/srs/UNII_Data.zip" 
-    worked_url=true
-    counter_of_connection_tries=$((counter_of_connection_tries+1))
-    echo $counter_of_connection_tries
-done
-if (("$counter_of_connection_tries" >= "11"))
-    then
-        echo could not download the file
-        exit 1;
-fi
-unzip UNII_Data.zip -d unii/
+
+python3 download_unii_data.py
+
+
+unzip UNII_Data*.zip -d unii/
 cd unii
 # unzip UNII_Data.zip -d .
 mv UNII_Records* unii_data.txt
@@ -69,3 +61,4 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 
 rm unii/*
+rm UNII_Data*.zip
