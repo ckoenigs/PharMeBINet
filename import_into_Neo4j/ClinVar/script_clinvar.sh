@@ -6,12 +6,16 @@ path_neo4j=$1
 #path to project
 path_to_project=$2
 
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo prepare clinvar data
+
 python3 transform_xml_to_nodes_and_edges.py $path_to_project > output/output_generate_integration_file.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-echo integrate efo into neo4j
+echo integrate clinvar into neo4j
 
 $path_neo4j/cypher-shell -u neo4j -p test -f output/cypher_file_node.cypher
 
