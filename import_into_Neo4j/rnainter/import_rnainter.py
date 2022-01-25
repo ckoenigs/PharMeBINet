@@ -106,8 +106,15 @@ def nodes(file, name):
 def main():
 
     global path_of_directory
+
+    species_condition = False
+    #"Homo sapiens"
+    species=''
     if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]
+        if len(sys.argv)==3:
+            species_condition=True
+            species=sys.argv[2]
     else:
         sys.exit('need a path rna_inter')
 
@@ -115,6 +122,7 @@ def main():
          "dna": "Download_data_RD.tar.gz", "compound": "Download_data_RC.tar.gz",
          "histone": "Download_data_RH.tar.gz"
          }
+
 
     print('##################################################################################')
     print(datetime.datetime.now())
@@ -127,6 +135,11 @@ def main():
         print(i)
         print(datetime.datetime.now())
         csv = pd.read_csv("data/"+file, compression='gzip', sep='\t', low_memory=False)
+        if (species_condition):
+            if i not in ['compound','histone']:
+                csv= csv[(csv.Species1==species)&(csv.Species2==species)]
+            else:
+                csv = csv[(csv.Species1 == species)]
         a = nodes(csv, i)
         rna = pd.concat([rna, a])
         edges(csv, i)
