@@ -26,7 +26,7 @@ echo extract sdf information
 
 cd sdf
 
-#./script_sdf.sh $path_to_drugbank_data > output.txt
+# ./script_sdf.sh $path_to_drugbank_data > output.txt
 
 cd ..
 
