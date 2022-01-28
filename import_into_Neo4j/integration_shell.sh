@@ -53,6 +53,17 @@ cd ..
 now=$(date +"%F %T")
 echo "Current time: $now"
 
+cd DDinter 
+echo DDinter
+
+./script_integrated_ddinter.sh $path_neo4j $path_to_project > output.txt
+
+
+cd ..
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
 cd hmdb 
 echo HMDB
 
@@ -246,6 +257,17 @@ cd  IID
 echo IID
 
 ./script_iid.sh $path_neo4j $path_to_project > output.txt
+
+cd ..
+
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+cd  rnainter
+echo RNAinter
+
+./script_integrate_rna_inter.sh $path_neo4j $path_to_project > output.txt
 
 cd ..
 
