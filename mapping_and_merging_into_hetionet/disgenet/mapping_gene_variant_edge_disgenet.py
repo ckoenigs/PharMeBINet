@@ -67,7 +67,7 @@ def get_DisGeNet_information():
     mode = 'w' if os.path.exists(not_mapped_path) else 'w+'
     file = open(not_mapped_path, mode, encoding='utf-8')
     writer = csv.writer(file)
-    writer.writerow(['gene_id', 'variant_id', 'resource'])
+    writer.writerow(['gene_id', 'variant_id', 'sources'])
 
     counter_not_mapped = 0
     counter_all = 0
@@ -84,10 +84,10 @@ def get_DisGeNet_information():
             resource = [resource] if isinstance(resource, str) else resource
             resource.append("DisGeNet")
             # 4 columns: Id, Var_id, SourceId, resource, sourceS
-            csv_gene_variant.writerow([gene_id, variant_id,  resource, rela['sourceId']])
+            csv_gene_variant.writerow([gene_id, variant_id,  '|'.join(resource), '|'.join(rela['sourceId'])])
         else:
             counter_not_mapped += 1
-            writer.writerow([gene_id, variant_id, rela['sourceId']])
+            writer.writerow([gene_id, variant_id, '|'.join(rela['sourceId'])])
     file.close()
     file_gene_variant.close()
     print('number of new edges:', counter_not_mapped)
@@ -99,10 +99,10 @@ def get_DisGeNet_information():
     mode = 'a' if os.path.exists(cypher_path) else 'w'
     file_cypher = open(cypher_path, mode, encoding='utf-8')
     # 1. Set…
-    query = f'USING PERIODIC COMMIT 10000 LOAD CSV WITH HEADERS FROM "file:{path_of_directory}{file_name}" AS line  Match (n:Variant{{identifier:line.variant_id}})-[r:HAS_GhV]-(v:Gene{{identifier:line.gene_id}}) Set r.DisGeNet="yes",  r.resource = line.resource, r.sources = line.sources;\n'
+    query = f'USING PERIODIC COMMIT 10000 LOAD CSV WITH HEADERS FROM "file:{path_of_directory}{file_name}" AS line  Match (n:Variant{{identifier:line.variant_id}})-[r:HAS_GhV]-(v:Gene{{identifier:line.gene_id}}) Set r.disgenet="yes",  r.resource = split(line.resource,"|"), r.sources = split(line.sources,"|") ;\n'
     file_cypher.write(query)
     # 2. Create… (finde beide KNOTEN)
-    query = f'USING PERIODIC COMMIT 10000 LOAD CSV WITH HEADERS FROM "file:{path_of_directory}{file_name_not_mapped}" AS line Match (n:Variant{{identifier:line.variant_id}}), (v:Gene{{identifier:line.gene_id}}) Create (v)-[:HAS_GhV{{source:"DisGeNet", resource:line.resource, DisGeNet:"yes"}}]->(n);\n'
+    query = f'USING PERIODIC COMMIT 10000 LOAD CSV WITH HEADERS FROM "file:{path_of_directory}{file_name_not_mapped}" AS line Match (n:Variant{{identifier:line.variant_id}}), (v:Gene{{identifier:line.gene_id}}) Create (v)-[:HAS_GhV{{source:"DisGeNet", resource:["DisGeNet"] , sources:split(line.sources,"|"), disgenet:"yes", url:"https://www.disgenet.org/browser/0/0/2/0/0/25/snpid__"+line.variant_id+"-source__CURATED/_b./"}}]->(n);\n'
     file_cypher.write(query)
     file_cypher.close()
 

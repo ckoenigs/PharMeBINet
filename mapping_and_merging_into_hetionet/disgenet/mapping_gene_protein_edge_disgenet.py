@@ -22,6 +22,7 @@ def open_file(file_path):
     file = open(file_path, mode)
     return file
 
+
 def get_pairs_information():
     '''
     Load all uniprots ids of the proteins and check out which appears also in the uniprot gene dictionary
@@ -39,19 +40,20 @@ def get_pairs_information():
     gene_to_protein_writer = csv.writer(gene_to_protein)
     gene_to_protein_writer.writerow(['gene_id', 'protein_id'])
 
+    # I check manually on the new edges between gene and protein and most are not accurate, so only the existing are
+    # updated
     # query = '''Match (n:Gene)--(:gene_DisGeNet)-[k]-(:protein_DisGeNet)--(p:Protein) Merge (n)-[r:PRODUCES_GpP]->(p) On Create Set r.source="DisGeNet", r.resource=["DisGeNet"], r.disgenet="yes", r.license="CC BY 4.0" On Match Set r.resource=r.resource+"DisGeNet" r.disgenet="yes";'''
     query = f'''USING PERIODIC COMMIT 10000 LOAD CSV WITH HEADERS FROM "file:{file_path}" AS line  Match (n:Protein{{identifier:line.protein_id}})-[r:PRODUCES_GpP]-(v:Gene{{identifier:line.gene_id}})  Set r.resource=r.resource+"DisGeNet", r.disgenet="yes";\n'''
     cypher_edge.write(query)
     cypher_edge.close()
 
-    
     query = """Match (n:Gene)--(:gene_DisGeNet)-[k]-(:protein_DisGeNet)--(p:Protein) Return Distinct n.identifier,  p.identifier; """
     results = g.run(query)
-    #dictionary pairs to info
+    # dictionary pairs to info
     set_pairs = set()
 
-    for gene_id,  protein_id, in results:
-        if (gene_id, protein_id) in set_pairs :
+    for gene_id, protein_id, in results:
+        if (gene_id, protein_id) in set_pairs:
             continue
         gene_to_protein_writer.writerow([gene_id, protein_id])
         set_pairs.add((gene_id, protein_id))
@@ -64,7 +66,6 @@ def main():
     global home
     global path_of_directory
     global source
-
 
     if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]
@@ -87,7 +88,6 @@ def main():
     print('gather all information of the genes/proteins')
 
     get_pairs_information()
-
 
     print('##########################################################################')
 
