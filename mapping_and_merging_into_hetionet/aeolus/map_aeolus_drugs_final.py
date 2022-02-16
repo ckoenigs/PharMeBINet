@@ -482,7 +482,7 @@ def integrate_aeolus_drugs_into_hetionet():
         mapped_ids_string = '|'.join(mapped_ids)
         for mapped_id in mapped_ids:
             index += 1
-            xrefs = go_through_xrefs_and_change_if_needed_source_name(dict_all_drug[mapped_id].xrefs,'chemical')
+            xrefs = go_through_xrefs_and_change_if_needed_source_name(dict_all_drug[mapped_id].xrefs, 'chemical')
             xrefs_string = '|'.join(xrefs)
             resource = dict_all_drug[mapped_id].resource
             resource.append('AEOLUS')
