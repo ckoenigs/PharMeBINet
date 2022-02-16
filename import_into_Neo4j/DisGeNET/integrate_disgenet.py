@@ -59,7 +59,7 @@ def cypher_edge(cypher_file, filename, label, properties, id_list, edge_name):
         # ignore key labels (wie diseaseId)
         if header in id_list:
             continue
-        elif header in ['pmid', 'sourceId']:  # properties that are lists must be splitted
+        elif header in ['pmid', 'sourceId','associationType','sentence']:  # properties that are lists must be splitted
             query += f'{header}:split(line.{header},"|"), '
         else:
             query += f'{header}:line.{header}, '
