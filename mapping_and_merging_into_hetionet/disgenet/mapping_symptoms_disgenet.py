@@ -16,6 +16,23 @@ dict_symptom_id_to_resource = defaultdict(set)
 #dict for alternative_ids
 dict_xrefs_to_identifier = defaultdict(set)
 
+# dictionary name to set of ids
+dict_name_to_identifier= defaultdict(set)
+
+def check_for_multiple_mapping_and_try_to_reduce_multiple_mapping(name, mapping_ids):
+    """
+    Try to reduce multiple mapping be also consider name mapping ids intersection
+    :param name: string
+    :param mapping_ids: set of mapped ids
+    :return: set of ids
+    """
+    if len(mapping_ids)>1 and name in dict_name_to_identifier:
+        name_mapped_ids=dict_name_to_identifier[name]
+        intersection= name_mapped_ids.intersection(mapping_ids)
+        if len(intersection)>0:
+            return intersection
+
+    return mapping_ids
 
 def load_symptoms_from_database_and_add_to_dict(g):
     '''
@@ -29,11 +46,18 @@ def load_symptoms_from_database_and_add_to_dict(g):
         #for mapping with MESH
         dict_symptom_id_to_resource[identifier] = node['resource']
 
+        name= node['name'].lower()
+        dict_name_to_identifier[name].add(identifier)
+
+        if 'synonyms' in node:
+            for synonym in node['synonyms']:
+                dict_name_to_identifier[synonym.lower()].add(identifier)
+
         if 'xrefs' in node:
             # find index of xrefs "UMLS" entry
             umls_id_idx = [i for i, item in enumerate(node['xrefs']) if item.startswith('UMLS')]
             # save all relevant xrefs (for alternative mapping)
-            xrefs = [nr for nr in node['xrefs'] if nr.startswith(('MESH', 'HPO'))]
+            xrefs = [nr for nr in node['xrefs'] if nr.startswith(('HPO'))] # 'MESH',
             for xref in xrefs:
                 dict_xrefs_to_identifier[xref].add(identifier)
         else:
@@ -51,7 +75,7 @@ def load_symptoms_from_database_and_add_to_dict(g):
             for i in umls_id_idx:
                 _, umls_id = node['xrefs'][i].split(':')
                 # put umls_id as identifier if 'UMLS' exists in xrefs
-                dict_umls_id_to_identifier[umls_id] = identifier
+                dict_umls_id_to_identifier[umls_id].add(identifier)
 
 
 def generate_files(path_of_directory):
@@ -75,7 +99,7 @@ def generate_files(path_of_directory):
 
     # master_database_change/mapping_and_merging_into_hetionet/DisGeNet/
     query = f'Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:{path_of_directory}{file_name}.tsv" As line FIELDTERMINATOR "\\t" \
-        Match (n:disease_DisGeNet{{diseaseId:line.DisGeNet_diseaseId}}), (v:Symptom{{identifier:line.identifier}}) Set v.DisGeNet="yes", v.resource=split(line.resource,"|") Create (v)-[:equal_to_DisGeNet_disease{{mapped_with:line.mapping_method}}]->(n);\n'
+        Match (n:disease_DisGeNet{{diseaseId:line.DisGeNet_diseaseId}}), (v:Symptom{{identifier:line.identifier}}) Set v.disgenet="yes", v.resource=split(line.resource,"|") Create (v)-[:equal_to_DisGeNet_disease{{mapped_with:line.mapping_method}}]->(n);\n'
 
     return  query
 
@@ -86,22 +110,32 @@ def resource(identifier):
     return '|'.join(resource)
 
 
-def load_all_unmapped_DisGeNet_disease_and_finish_the_files(umls_id,xrefs):
+def load_all_unmapped_DisGeNet_disease_and_finish_the_files(name,umls_id,xrefs):
     """
     Load all unmapped DisGeNet_diseases sort the ids into the right csv, generate the queries, and add rela to the rela csv
     """
     equivalent_id_map = {"MSH": "MESH", "HPO":"HPO"}
 
-    alternative_ids = [x for x in xrefs if x.startswith(('MSH', 'HPO'))] if not xrefs is None else []
+    alternative_ids = [x for x in xrefs if x.startswith(( 'HPO'))] if not xrefs is None else [] # 'MSH',
 
     # mapping via UMLS
     if umls_id in dict_umls_id_to_identifier:
         # Mesh Identifier from Symptom
-        identifier = dict_umls_id_to_identifier[umls_id]
-        csv_mapping.writerow([umls_id, identifier, resource(identifier), 'umls'])
+        identifiers = dict_umls_id_to_identifier[umls_id]
+        reduced_identifier= check_for_multiple_mapping_and_try_to_reduce_multiple_mapping(name,identifiers)
+        for identifier in reduced_identifier:
+            csv_mapping.writerow([umls_id, identifier, resource(identifier), 'umls'])
         return  True
+
+    # name mapping
+    if name:
+        if name in dict_name_to_identifier:
+            for identifier in dict_name_to_identifier[name]:
+                csv_mapping.writerow([umls_id, identifier, resource(identifier), 'name'])
+            return True
+
     # mapping via xrefs
-    elif alternative_ids:
+    if alternative_ids:
         found_mapping=False
         # mapping via xrefs
         for item in alternative_ids:
@@ -111,8 +145,9 @@ def load_all_unmapped_DisGeNet_disease_and_finish_the_files(umls_id,xrefs):
             equ_id = equivalent_id_map[name] + ":" + id_num
             if equ_id in dict_xrefs_to_identifier:
                 found_mapping=True
-                identifier = dict_xrefs_to_identifier[equ_id]
-                for ident in identifier:  # in case of several values for one id
+                identifiers = dict_xrefs_to_identifier[equ_id]
+                reduced_identifier = check_for_multiple_mapping_and_try_to_reduce_multiple_mapping(name, identifiers)
+                for ident in reduced_identifier:  # in case of several values for one id
                     csv_mapping.writerow([umls_id, ident, resource(ident), equivalent_id_map[name].lower()])
         return found_mapping
 
