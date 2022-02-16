@@ -208,7 +208,9 @@ def prepare_reference(reference):
     dict_reference = {}
     for reference_info in reference.iterchildren():
         reference_info_tag = reference_info.tag.replace(ns, '')
-        dict_reference[reference_info_tag] = reference_info.text
+        if  reference_info.text is None:
+            continue
+        dict_reference[reference_info_tag] = reference_info.text.replace('"','\'')
     return dict_reference
 
 
@@ -267,7 +269,7 @@ def prepare_cypher_files_and_tsv():
 
     generates_rela_tsv_file_and_cypher('metabolite', 'pathway', ['metabolite_id', 'pathway_id'], 'associates', [])
     generates_rela_tsv_file_and_cypher('metabolite', 'disease', ['metabolite_id', 'disease_id', 'references'],
-                                       'associates', [])
+                                       'associates', ['references'])
     generates_rela_tsv_file_and_cypher('metabolite', 'ontology', ['metabolite_id', 'identifier'], 'associates', [])
     generates_rela_tsv_file_and_cypher('protein', 'pathway', ['protein_id', 'pathway_id'], 'associates', [])
     generates_rela_tsv_file_and_cypher('protein', 'metabolite', ['protein_id', 'metabolite_id', 'references'],
