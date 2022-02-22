@@ -63,6 +63,22 @@ list_of_not_mapped_doids = []
 # mondo properties
 mondo_prop = []
 
+# set of excluded mondo ids which are not human ids
+set_of_non_human_ids=set()
+
+def get_all_non_human_ids():
+    """
+    Get all non human disease (MONDO:0005583) nodes and add them to a set
+    :return:
+    """
+    # disease with id MONDO:0005583  is "non-human animal disease"
+    query='''Match p=(n:disease{identifier:'MONDO:0005583'})<-[:is_a*]-(a:disease) Return Distinct a.identifier '''
+    set_of_non_human_ids.add('MONDO:0005583')
+    results= g.run(query)
+    for identifier, in results:
+        set_of_non_human_ids.add(identifier)
+
+
 # list of excluded properties from mondo
 list_exclude_properties = ['related', 'creation_date', 'created_by', 'seeAlso']
 
@@ -160,6 +176,8 @@ def load_in_all_monDO_in_dictionary():
     results = g.run(query)
     for disease, in results:
         monDo_id = disease['identifier']
+        if monDo_id in set_of_non_human_ids:
+            continue
         name= disease['name'].lower()
         add_entry_to_dict(dict_mondo_id_to_name,monDo_id,name)
         synonyms= disease['synonyms']
@@ -710,6 +728,13 @@ def main():
     print(datetime.datetime.utcnow())
     print('connection to db')
     database_connection()
+
+    print('##########################################################################')
+
+    print(datetime.datetime.utcnow())
+    print('generate list of non human disease')
+
+    get_all_non_human_ids()
 
     print('##########################################################################')
 
