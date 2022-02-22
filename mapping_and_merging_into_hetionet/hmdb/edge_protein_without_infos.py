@@ -115,7 +115,7 @@ def create_cypher_file(file_name, file_name_new, label, node_pharmebinet_label, 
     :param direction_last: string
     :return:
     """
-    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/hmdb/%s" As line FIELDTERMINATOR "\\t" MATCH (d:%s{identifier:line.node_id_1}),(c:%s{identifier:line.node_id_2}) CREATE (d)%s[: %s{ resource: ['HMDB'], hmdb: "yes", license:"HMDB is offered to the public as a freely available resource. Use and re-distribution of the data, in whole or in part, for commercial purposes requires explicit permission of the authors and explicit acknowledgment of the source material (HMDB) and the original publication", url:"https://hmdb.ca/%s/"+line.node_id_1, source:"HMDB"}]%s(c);\n'''
+    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/hmdb/%s" As line FIELDTERMINATOR "\\t" MATCH (d:%s{identifier:line.node_id_1}),(c:%s{identifier:line.node_id_2}) CREATE (d)%s[: %s{ resource: ['HMDB'], hmdb: "yes", license:"Creative Commons (CC) Attribution-NonCommercial (NC) 4.0 International Licensing ", url:"https://hmdb.ca/%s/"+line.node_id_1, source:"HMDB"}]%s(c);\n'''
     query = query % (path_of_directory, file_name_new, label, node_pharmebinet_label, direction_first, rela_name,
                      'proteins' if label == 'Protein' else 'metabolites', direction_last)
     cypher_file.write(query)
