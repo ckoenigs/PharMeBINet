@@ -217,11 +217,11 @@ def load_dbSNP_data_for_nodes_with_dbSNP_in_db():
         if counter_all % 500==0:
             print('500 through')
 
-    file_already_downloaded.close()
     print(string_of_ids)
     time.sleep(10)
     dict_nodes_to_list, counter_not_found=ask_api_and_prepare_return(string_of_ids)
     counter_not_existing+=counter_not_found
+    file_already_downloaded.close()
     add_information_from_api_dictionary_to_files(dict_nodes_to_list)
     # print(dict_nodes_to_list)
 
