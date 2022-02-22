@@ -41,7 +41,11 @@ echo integrate mappings into neo4j
 
 $path_neo4j/cypher-shell -u neo4j -p test -f output/cypher.cypher 
 
-sleep 60
+sleep 120
+$path_neo4j/neo4j restart
+sleep 180
+
+sleep 120
 $path_neo4j/neo4j restart
 sleep 120
 
@@ -61,16 +65,10 @@ python3 mapping_gene_variant_edge_disgenet.py $path_to_project > gene_variant_ed
 
 now=$(date +"%F %T")
 echo "Current time: $now"
-echo 'Edge disgenet gene-disease'
+echo 'Edge disgenet gene/variant-disease'
 
 python3 mapping_gene_disease_edge_disgenet.py $path_to_project > gene_disease_edge/output.txt
 
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-echo 'Edge disgenet disease-variant'
-
-python3 mapping_variant_disease_edges_disgenet.py $path_to_project > variant_disease_edge/output.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
