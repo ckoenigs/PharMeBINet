@@ -9,7 +9,10 @@ import_tool=$2
 # path to reactome graphml
 path_to_reactome='/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/reactome/'
 
-$path_neo4j/restart_neo4j.sh reactome restart
+path_neo4j_other='/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/neo4j/neo4j-community-4.3.10/bin'
+
+$path_neo4j/restart_neo4j.sh graph stop
+$path_neo4j_other/restart_neo4j.sh reactome restart
 
 sleep 60
 
@@ -25,11 +28,11 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo 'extract as graphml'
 
-$path_neo4j/cypher-shell -u neo4j -p test -f export_reactome.cypher
+$path_neo4j_other/cypher-shell -u neo4j -p test -f export_reactome.cypher
 
 sleep 60
 
-$path_neo4j/neo4j restart
+$path_neo4j_other/neo4j stop
 
 
 sleep 120
@@ -52,3 +55,4 @@ sleep 120
 
 now=$(date +"%F %T")
 echo "Current time: $now"
+
