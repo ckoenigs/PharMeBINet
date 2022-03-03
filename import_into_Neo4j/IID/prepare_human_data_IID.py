@@ -19,7 +19,7 @@ dict_number_to_number = {
 
 def generate_node_and_rela_file_and_query(header_rela):
     """
-    generate csv file for rela and node and also the cypher file with queries
+    generate tsv file for rela and node and also the cypher file with queries
     :param header_rela: list of strings
     :return:  csv writer for node and rela
     """
