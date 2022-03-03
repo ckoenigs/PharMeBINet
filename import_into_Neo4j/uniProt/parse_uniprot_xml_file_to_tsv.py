@@ -739,7 +739,7 @@ dict_node_type_to_tsv = {}
 
 def generate_tsv_file(label, properties):
     """
-    Prepare a filename. The generate a file and make a csv writer on it.
+    Prepare a filename. The generate a file and make a tsv writer on it.
     :param label: string
     :param properties: list
     :return: string
