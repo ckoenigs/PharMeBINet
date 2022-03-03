@@ -15,10 +15,10 @@ dict_prefix_to_label = {
 # dictionary omim number to dictionary of the different sources
 dict_omim_number_to_dict_of_information = {}
 
-# set header for csv
+# set header for tsv
 set_of_headers = set(['identifier', 'other_cyto_location'])
 
-# set header rela for csv
+# set header rela for tsv
 set_of_headers_rela = set()
 
 
@@ -283,9 +283,9 @@ def work_with_name_omim_and_mapping_key(omim_key_part, name, dict_rela, omim_id,
     :param omim_key_part: string
     :param name: string
     :param dict_rela: dictionary
+    :param omim_id: omim id from the gene
     :return: omim id of phenotype
     """
-    global unkown_counter
     dict_phenotype = {}
     dict_phenotype['labels'] = 'phenotype'
     omim_id_phenotype_and_mapping_key = omim_key_part.split(' (')
@@ -302,8 +302,7 @@ def work_with_name_omim_and_mapping_key(omim_key_part, name, dict_rela, omim_id,
 
         # print(omim_id_phenotype)
         # print('thought a string is a omim id ;(')
-        unkown_counter += 1
-        omim_id_phenotype = 'unkown_' + str(unkown_counter)
+        omim_id_phenotype = omim_id
 
     # rela
     prepare_the_mapping_key(omim_id_phenotype_and_mapping_key[1], dict_rela)
@@ -311,10 +310,11 @@ def work_with_name_omim_and_mapping_key(omim_key_part, name, dict_rela, omim_id,
     # name
     name = prepare_name_and_markers_and_add_to_dict(name, dict_phenotype, dict_rela)
     if not is_digital:
-        if name.lower() not in dict_unknown_phenotype_name_to_id:
-            dict_unknown_phenotype_name_to_id[name.lower()] = omim_id_phenotype
-        else:
-            omim_id_phenotype = dict_unknown_phenotype_name_to_id[name.lower()]
+        # if name.lower() not in dict_unknown_phenotype_name_to_id:
+        #     dict_unknown_phenotype_name_to_id[name.lower()] = omim_id_phenotype
+        # else:
+        #     omim_id_phenotype = dict_unknown_phenotype_name_to_id[name.lower()]
+        omim_id_phenotype = omim_id
 
     check_for_omim_and_add_dictionary(omim_id_phenotype, dict_phenotype)
     return omim_id_phenotype
@@ -342,8 +342,6 @@ def separate_information_of_string(string, dict_rela, omim_id):
 # dictionary_of_unkown_pehnotype_name_to_new_id
 dict_unknown_phenotype_name_to_id = {}
 
-# counter for generate unknown ids
-unkown_counter = 0
 
 
 def prepare_phenotype_gene_relationships(omim_id, phenotypes, comments):
@@ -463,11 +461,11 @@ def check_for_name_in_dictionary_if_same_id(omim_id, name):
                         omim_id_phenotype = omim_id
                         return omim_id_phenotype
         if omim_id_phenotype == '':
-            if name.lower() in dict_unknown_phenotype_name_to_id:
-                omim_id_phenotype = dict_unknown_phenotype_name_to_id[name.lower()]
-                return omim_id_phenotype
-            else:
-                print('not mapped to omim id')
+            # if name.lower() in dict_unknown_phenotype_name_to_id:
+            #     omim_id_phenotype = dict_unknown_phenotype_name_to_id[name.lower()]
+            #     return omim_id_phenotype
+            # else:
+            print('not mapped to omim id')
     else:
         print('omim not existing')
         sys.exit('not mapped to omim id')
@@ -647,14 +645,14 @@ def add_node_query_to_cypher(labels, query_node, file_name):
             set_of_existing_constrains.add(label)
 
 
-# dictionary labels to csv file
+# dictionary labels to tsv file
 dict_labels_to_csv = {}
 
 
 def dict_to_csv(dict_node, labels, query_node, omim_id):
     """
-    add the different dictionaries to csv file
-    if the tuple of labels do not exists a new csv file is generated and also the cypher query
+    add the different dictionaries to tsv file
+    if the tuple of labels do not exists a new tsv file is generated and also the cypher query
     :param dict_node: dictionary
     :param labels: list of strings
     :param query_node: string
@@ -703,7 +701,7 @@ dict_omim_id_to_node = {}
 
 def combine_the_node_information(query_node):
     """
-    combine the information from the different files to one dictionary and add to csv file, also if not exist add the
+    combine the information from the different files to one dictionary and add to tsv file, also if not exist add the
     fitting cypher query to cypher file
     :param query_node: string
     :return:
@@ -805,7 +803,7 @@ def check_labels_if_removed(labels_gene, omim_id):
     return dict_omim_id_to_labels, removed
 
 
-# dictionary label pair to the csv file
+# dictionary label pair to the tsv file
 dict_label_pair_to_csv_file = {}
 
 
@@ -816,8 +814,8 @@ def add_rela_query(file_name, label_1, label_2, query_rela):
 
 def write_to_csv_rela(omim_id, labels, phenotype_omim_id, phenotype_labels, dict_combined_rela, query_rela):
     """
-    prepare the dictionary with the ids and add to csv file
-    generate the csv file for each label tuple and add cypher query to cypher file
+    prepare the dictionary with the ids and add to tsv file
+    generate the tsv file for each label tuple and add cypher query to cypher file
     :param omim_id: string
     :param labels: list
     :param phenotype_omim_id: string
@@ -935,7 +933,7 @@ def main():
     print('Prepare the cypher queries')
 
     # query start
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/OMIM/%s"  As line FIELDTERMINATOR '\t' '''
+    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/OMIM/%s"  As line FIELDTERMINATOR '\\t' '''
 
     query_node, query_edge = prepare_queries(query_start)
 
@@ -952,6 +950,12 @@ def main():
     print('Combine rela information')
 
     prepare_and_add_relationships(query_edge)
+
+
+    query='Match (n:%s_omim) Where not (n)--() Delete n;\n'
+    for label in ['gene','predominantly_phenotypes','phenotype']:
+        new_query=query %(label)
+        cypher_file.write(new_query)
 
     print('##########################################################################')
 
