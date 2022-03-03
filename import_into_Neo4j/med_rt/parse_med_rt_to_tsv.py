@@ -99,7 +99,7 @@ def CUI_to_dic(CUI, xref_start):
 
 def generate_rela_file_and_query(filename, from_label, to_label, path):
     """
-    Generate for rela csv fiel and return it. Also, it add the query for this relationship with this types
+    Generate for rela tsv file and return it. Also, it add the query for this relationship with this types
     :param filename: string
     :param from_label: string
     :param to_label: string
@@ -107,10 +107,10 @@ def generate_rela_file_and_query(filename, from_label, to_label, path):
     :return: csv writer dictionary
     """
     filename = filename.replace(' ', '_')
-    combinde_name = path + from_label + '_' + to_label + '_' + filename + '.csv'
+    combinde_name = path + from_label + '_' + to_label + '_' + filename + '.tsv'
     header = ["from_code", "to_code", "qualifier"]
     file = open(combinde_name, 'w', encoding='utf-8')
-    csv_writer = csv.DictWriter(file, fieldnames=header)
+    csv_writer = csv.DictWriter(file, fieldnames=header, delimiter='\t')
     csv_writer.writeheader()
 
     query_rela = query % (path_of_directory, combinde_name)
@@ -155,7 +155,7 @@ def prepare_rela_and_add_to_file(root, dic, fIDName, path):
     as_dic = defaultdict(dict)
 
     with open(fIDName, 'a+', encoding='utf-8') as fID:
-        csv_writer = csv.writer(fID)
+        csv_writer = csv.writer(fID,delimiter='\t')
         csv_writer.writerow(["ID", "name", "namespace"])
         for ass in root.iter('association'):
             filename = ass.find('name').text
@@ -223,19 +223,19 @@ cypher_file = open('cypher_med.cypher', 'w', encoding='utf-8')
 cypher_file_delete = open('cypher_delete.cypher', 'w', encoding='utf-8')
 
 # query sstart (FIELDTERMINATOR '\\t')
-query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/import_into_Neo4j/med_rt/%s" As line  '''
+query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/import_into_Neo4j/med_rt/%s" As line  Fieldterminator '\\t' '''
 
 
 def generate_node_csv_files(file_name):
     """
-    generate csv file for node type and return. Additionaly add query to integrate this node type into neo4j
+    generate tsv file for node type and return. Additionaly add query to integrate this node type into neo4j
     :param file_name: string
     :return: csv writer dict
     """
     file_name = file_name.replace(' ', '_')
-    file_name_short = 'output/' + file_name + '.csv'
+    file_name_short = 'output/' + file_name + '.tsv'
     file = open(file_name_short, 'w', encoding='utf-8')
-    csv_writer = csv.DictWriter(file, fieldnames=header)
+    csv_writer = csv.DictWriter(file, fieldnames=header, delimiter='\t')
     csv_writer.writeheader()
 
     query_node = query % (path_of_directory, file_name_short)
@@ -338,10 +338,7 @@ def main():
     else:
         sys.exit('need a path MED-RT')
 
-    prepare_node_and_rela_and_write_to_files('falseID.csv')
-    # nicht nötig da kene N...IDs in den Dateien vorhanden
-    # xml_dic= look_synonyms(Rx_dic,xml_dic)
-    # xml_dic= look_synonyms(Mesh_dic,xml_dic)
+    prepare_node_and_rela_and_write_to_files('falseID.tsv')
 
 
 if __name__ == "__main__":

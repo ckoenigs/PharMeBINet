@@ -56,7 +56,7 @@ dict_node_type_to_tsv = {}
 
 def generate_tsv_file(label, properties):
     """
-    Prepare a filename. The generate a file and make a csv writer on it.
+    Prepare a filename. The generate a file and make a tsv writer on it.
     :param label: string
     :param properties: list
     :return: string
@@ -686,9 +686,9 @@ def run_trough_xml_and_parse_data_metabolite():
                 node.clear()
 
 
-def write_pathways_into_csv_file():
+def write_pathways_into_tsv_file():
     """
-    Add information into csv file.
+    Add information into tsv file.
     :return:
     """
     for identifier, dict_pathway in dict_pathway_to_pathway_info.items():
@@ -696,9 +696,9 @@ def write_pathways_into_csv_file():
         dict_node_type_to_tsv['pathway'].writerow(dict_pathway)
 
 
-def write_go_information_into_csv_files():
+def write_go_information_into_tsv_files():
     """
-    Add information into csv file.
+    Add information into tsv file.
     :return:
     """
     for label, dict_id_to_description in dict_go_classifier_to_id_to_description.items():
@@ -707,9 +707,9 @@ def write_go_information_into_csv_files():
             dict_node_type_to_tsv[label].writerow(dict_go)
 
 
-def write_protein_metabolite_rela_into_csv():
+def write_protein_metabolite_rela_into_tsv():
     """
-    Write rela information after preparation into csv file.
+    Write rela information after preparation into tsv file.
     :return: 
     """
     for (protein_id, metabolite_id), list_references in dict_protein_metabolite_to_rela_info.items():
@@ -748,19 +748,19 @@ def main():
     print(datetime.datetime.utcnow())
     print('generate pathway ')
 
-    write_pathways_into_csv_file()
+    write_pathways_into_tsv_file()
 
     print('#############################################################')
     print(datetime.datetime.utcnow())
     print('generate go ')
 
-    write_go_information_into_csv_files()
+    write_go_information_into_tsv_files()
 
     print('#############################################################')
     print(datetime.datetime.utcnow())
     print('write protein-metabolite pairs into tsv file')
 
-    write_protein_metabolite_rela_into_csv()
+    write_protein_metabolite_rela_into_tsv()
 
     print('#############################################################')
     print(datetime.datetime.utcnow())
