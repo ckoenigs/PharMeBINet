@@ -28,22 +28,22 @@ if len(sys.argv) > 1:
 else:
     sys.exit('need a path')
 
-# csv file for disease node
-writer = open('output/disease.csv', 'w', encoding='utf-8')
-csv_writer = csv.writer(writer)
+# tsv file for disease node
+writer = open('output/disease.tsv', 'w', encoding='utf-8')
+csv_writer = csv.writer(writer, delimiter='\t')
 list_of_disease_properties = ['id', 'name', 'source']
 csv_writer.writerow(list_of_disease_properties)
 
-# csv file for the relationships
+# tsv file for the relationships
 list_of_rela_properties = ['disease_id', 'phenotype_id', 'qualifier', 'evidence_code', 'sources', 'frequency_modifier',
                            'aspect', 'onset', 'sex', 'modifier', 'biocuration']
-writer_rela = open('output/rela_disease_phenotyp.csv', 'w', encoding='utf-8')
-csv_writer_rela = csv.writer(writer_rela)
+writer_rela = open('output/rela_disease_phenotyp.tsv', 'w', encoding='utf-8')
+csv_writer_rela = csv.writer(writer_rela, delimiter='\t')
 csv_writer_rela.writerow(list_of_rela_properties)
 
 # cypher file
 cypher_file = open('cypher.cypher', 'a')
-query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/hpo/output/disease.csv" As line Create (:HPO_disease{'''
+query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/hpo/output/disease.tsv" As line  Fieldterminator '\\t' Create (:HPO_disease{'''
 for property in list_of_disease_properties:
     if property == 'name':
         query += property + 's:split(line.' + property + ',"|"), '
@@ -55,7 +55,7 @@ cypher_file.write(':begin\n')
 cypher_file.write('Create Constraint On (node:HPO_disease) Assert node.id Is Unique; \n')
 cypher_file.write(':commit \n')
 # query for relationships
-query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/hpo/output/rela_disease_phenotyp.csv" As line MATCH (n:HPO_disease{id:line.disease_id}),(s:HPO_symptom{id:line.phenotype_id}) Create (n)-[:present{'''
+query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/hpo/output/rela_disease_phenotyp.tsv" As line  Fieldterminator '\\t' MATCH (n:HPO_disease{id:line.disease_id}),(s:HPO_symptom{id:line.phenotype_id}) Create (n)-[:present{'''
 
 for property in list_of_rela_properties:
     if property in ['disease_id', 'phenotype_id']:
@@ -167,7 +167,7 @@ def gather_all_disease_symptom_information_from_HPO():
         # many diseases have more than one abnormal phenotype, but the disease need to be added only one time
         if db_disease_id in list_disease_ids:
             continue
-        # write disease into csv
+        # write disease into tsv
         csv_writer.writerow([db_disease_id, '|'.join(db_disease_name), db_disease_id.split(':')[0]])
 
         # add disease id to list
@@ -179,7 +179,7 @@ def gather_all_disease_symptom_information_from_HPO():
 
 
 '''
-Write the combined relationship information into csv
+Write the combined relationship information into tsv
 '''
 
 
@@ -208,7 +208,7 @@ def main():
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
-    print('combine the rela information and add them to the csv')
+    print('combine the rela information and add them to the tsv')
     write_rela_info_into_csv()
 
     print('##########################################################################')
