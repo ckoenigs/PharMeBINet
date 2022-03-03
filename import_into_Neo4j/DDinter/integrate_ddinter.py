@@ -60,7 +60,7 @@ def load_data(letter, csv_writer):
 
 def generate_drug_file(edge_file_name):
     """
-    Write durg into csv file
+    Write durg into tsv file
     :edge_file_name: string
     :return:
     """
