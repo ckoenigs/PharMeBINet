@@ -3,7 +3,7 @@ https://www.ncbi.nlm.nih.gov/clinvar/
 
 Version: 2021-11
 
-The data are parsed to CSV and are integrated into Neo4j with cypher queries.
+The data are parsed to TSV and are integrated into Neo4j with cypher queries.
 
 Go through 2 XML files:
 https://ftp.ncbi.nlm.nih.gov/pub/clinvar/xml/clinvar_variation/ClinVarVariationRelease_00-latest.xml.gz

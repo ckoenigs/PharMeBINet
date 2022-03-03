@@ -18,8 +18,8 @@ dict_traits = {}
 # dictionary of relationships
 dict_edges = {}
 
-# dictionary of relationship types combination to csv
-dict_edge_types_to_csv = {}
+# dictionary of relationship types combination to tsv
+dict_edge_types_to_tsv = {}
 
 # trait set type to trait set node
 dict_trait_set_type_dictionary = {}
@@ -30,11 +30,11 @@ dict_trait_type_dictionary = {}
 # dictionary trait rela
 dict_edge_traits = {}
 
-# trait set type to csv
-dict_trait_set_typ_to_csv = {}
+# trait set type to tsv
+dict_trait_set_typ_to_tsv = {}
 
-# trait set type to csv
-dict_trait_typ_to_csv = {}
+# trait set type to tsv
+dict_trait_typ_to_tsv = {}
 
 # dictionary relationship counter for each pair
 dict_rela_type_pair_to_count = {}
@@ -577,7 +577,7 @@ def prepare_rela_between_variations(node, variant_id, id_name, tag_name, from_ty
                 'w', encoding='utf-8')
             csv_writer = csv.writer(file_edge, delimiter='\t')
             csv_writer.writerow([id_name, 'other_id'])
-            dict_csv_edge_variations[(from_type, to_type)] = csv_writer
+            dict_tsv_edge_variations[(from_type, to_type)] = csv_writer
 
             query = query_edge_variation % (
                 prepare_for_file_name_and_label(from_type), prepare_for_file_name_and_label(to_type), prepare_for_file_name_and_label(from_type), id_name,
@@ -587,7 +587,7 @@ def prepare_rela_between_variations(node, variant_id, id_name, tag_name, from_ty
             dict_rela_type_pair_to_count[(from_type, to_type)] += 1
             edge_between_variations[(from_type, to_type)].add(
                 (from_type, to_type))
-            dict_csv_edge_variations[(from_type, to_type)].writerow(
+            dict_tsv_edge_variations[(from_type, to_type)].writerow(
                 [variant_id, single_variation_id])
 
 
@@ -608,7 +608,7 @@ def get_all_single_allele_infos_and_add_to_list(node, variation_id=None):
         specific_type = dict_single['specific_type']
         if 'Variant' not in dict_variation_to_node_ids:
             dict_variation_to_node_ids['Variant'] = {}
-            dict_csv_file_variation['Variant'] = {}
+            dict_tsv_file_variation['Variant'] = {}
         if specific_type not in dict_variation_to_node_ids['Variant']:
             dict_specific_to_general_type[specific_type] = 'Variant'
             dict_variation_to_node_ids['Variant'][specific_type] = set()
@@ -617,7 +617,7 @@ def get_all_single_allele_infos_and_add_to_list(node, variation_id=None):
             #                                  doublequote=False)
             csv_writer_type = csv.DictWriter(file_type, delimiter='\t', fieldnames=header_variation,  quotechar='"')
             csv_writer_type.writeheader()
-            dict_csv_file_variation['Variant'][specific_type] = csv_writer_type
+            dict_tsv_file_variation['Variant'][specific_type] = csv_writer_type
 
         allele_id = single_allele.get('AlleleID')
         single_variation_id = single_allele.get('VariationID')
@@ -960,7 +960,7 @@ def get_information_from_full_relase():
 
                         perpare_dictionary_values(dict_haplotype, type_measure_set, dict_type_to_list_property_list)
 
-                        dict_csv_file_variation[general_type][type_measure_set].writerow(dict_haplotype)
+                        dict_tsv_file_variation[general_type][type_measure_set].writerow(dict_haplotype)
                         dict_variation_to_node_ids[general_type][type_measure_set].add(variant_id)
 
                         for measure in measure_set.iterfind('Measure'):
@@ -976,7 +976,7 @@ def get_information_from_full_relase():
                                         'w', encoding='utf-8')
                                     csv_writer = csv.writer(file_edge, delimiter='\t')
                                     csv_writer.writerow(['haplo', 'other_id'])
-                                    dict_csv_edge_variations[(type_measure_set, measure_type)] = csv_writer
+                                    dict_tsv_edge_variations[(type_measure_set, measure_type)] = csv_writer
 
                                     query = query_edge_variation % (
                                         prepare_for_file_name_and_label(type_measure_set), prepare_for_file_name_and_label(measure_type),
@@ -988,7 +988,7 @@ def get_information_from_full_relase():
                                     dict_rela_type_pair_to_count[(type_measure_set, measure_type)] += 1
                                     edge_between_variations[(type_measure_set, measure_type)].add(
                                         (type_measure_set, measure_type))
-                                    dict_csv_edge_variations[(type_measure_set, measure_type)].writerow(
+                                    dict_tsv_edge_variations[(type_measure_set, measure_type)].writerow(
                                         [variant_id, measure_id])
                             else:
                                 print(variant_id)
@@ -1031,7 +1031,7 @@ def get_information_from_full_relase():
                 #                             doublequote=False)
                 csv_writer = csv.DictWriter(writer, delimiter='\t', fieldnames=list_head_trait, quotechar='"')
                 csv_writer.writeheader()
-                dict_trait_set_typ_to_csv[trait_set_type] = csv_writer
+                dict_trait_set_typ_to_tsv[trait_set_type] = csv_writer
 
             if not trait_set_id in dict_trait_set_type_dictionary[trait_set_type]:
                 dict_trait_set = {}
@@ -1053,7 +1053,7 @@ def get_information_from_full_relase():
                             'w', encoding='utf-8')
                         csv_writer = csv.writer(file_edge, delimiter='\t')
                         csv_writer.writerow(['trait_set_id', 'trait_id'])
-                        dict_csv_edge_variations[(trait_set_type, trait_type)] = csv_writer
+                        dict_tsv_edge_variations[(trait_set_type, trait_type)] = csv_writer
 
                         query = query_edge_variation % (
                             prepare_for_file_name_and_label(trait_set_type), prepare_for_file_name_and_label(trait_type),
@@ -1064,7 +1064,7 @@ def get_information_from_full_relase():
                         dict_rela_type_pair_to_count[(trait_set_type, trait_type)] += 1
                         dict_edge_traits[(trait_set_type, trait_type)].add(
                             (trait_set_id, trait_identifier))
-                        dict_csv_edge_variations[(trait_set_type, trait_type)].writerow(
+                        dict_tsv_edge_variations[(trait_set_type, trait_type)].writerow(
                             [trait_set_id, trait_identifier])
 
                     if not trait_type in dict_trait_type_dictionary:
@@ -1075,7 +1075,7 @@ def get_information_from_full_relase():
                         #                             doublequote=False)
                         csv_writer = csv.DictWriter(writer, delimiter='\t', fieldnames=list_head_trait, quotechar='"')
                         csv_writer.writeheader()
-                        dict_trait_typ_to_csv[trait_type] = csv_writer
+                        dict_trait_typ_to_tsv[trait_type] = csv_writer
 
                     if trait_identifier not in dict_trait_type_dictionary[trait_type]:
 
@@ -1101,7 +1101,7 @@ def get_information_from_full_relase():
 
                         perpare_dictionary_values(dict_trait, trait_type, dict_type_to_list_property_list)
 
-                        dict_trait_typ_to_csv[trait_type].writerow(dict_trait)
+                        dict_trait_typ_to_tsv[trait_type].writerow(dict_trait)
                         dict_trait_type_dictionary[trait_type].add(trait_identifier)
                     # build_low_dict_into_higher_dict_with_list(dict_trait_set, dict_trait, 'trait', 'traits')
 
@@ -1124,7 +1124,7 @@ def get_information_from_full_relase():
                 perpare_dictionary_values(dict_trait_set, trait_set_type, dict_type_to_list_property_list)
 
                 dict_trait_set_type_dictionary[trait_set_type].add(trait_set_id)
-                dict_trait_set_typ_to_csv[trait_set_type].writerow(dict_trait_set)
+                dict_trait_set_typ_to_tsv[trait_set_type].writerow(dict_trait_set)
 
             for_citation_extraction_to_list(reference_assertion, dict_edge_info)
             comment_dict = for_multiple_tags_at_one(reference_assertion, 'Comment')
@@ -1220,14 +1220,14 @@ def get_information_from_full_relase():
                 #                             doublequote=False)
                 csv_writer = csv.DictWriter(file, fieldnames=edge_information, delimiter='\t', quotechar='"')
                 csv_writer.writeheader()
-                dict_edge_types_to_csv[(general_type, trait_set_type, final_assertion)] = csv_writer
+                dict_edge_types_to_tsv[(general_type, trait_set_type, final_assertion)] = csv_writer
             # if (variant_id, trait_set_id) not in dict_edges[(general_type, trait_set_type)]:
             dict_rela_type_pair_to_count[(general_type, trait_set_type, final_assertion)] += 1
             perpare_dictionary_values_add_to_set(dict_edge_info, set_edge_trait_set_variation_pair_to_list_of_list_properties)
             dict_edge_info['variant_id'] = variant_id
             dict_edge_info['trait_set_id'] = trait_set_id
             dict_edges[((general_type, trait_set_type, final_assertion))].add((variant_id, trait_set_id))
-            dict_edge_types_to_csv[(general_type, trait_set_type, final_assertion)].writerow(dict_edge_info)
+            dict_edge_types_to_tsv[(general_type, trait_set_type, final_assertion)].writerow(dict_edge_info)
             # else:
             #     print(trait_set_id)
             #     print(trait_set_type)
@@ -1240,7 +1240,7 @@ def get_information_from_full_relase():
     print('number of not human edges:', counter_not_human)
 
 
-query_edge_variation_trait_set = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ClinVar/data/edges/edges_%s_%s_%s.tsv"  As line FIELDTERMINATOR '\t' Match (g:%s_ClinVar{identifier:line.%s}), (o:%s_ClinVar{identifier:line.%s}) Create (g)-[:%s{'''
+query_edge_variation_trait_set = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ClinVar/data/edges/edges_%s_%s_%s.tsv"  As line FIELDTERMINATOR '\\t' Match (g:%s_ClinVar{identifier:line.%s}), (o:%s_ClinVar{identifier:line.%s}) Create (g)-[:%s{'''
 # query_edge_variation_trait_set = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''/data/edges/edges_%s_%s_%s.tsv"  As line FIELDTERMINATOR '\t' Match (g:%s_ClinVar{identifier:line.%s}), (o:%s_ClinVar{identifier:line.%s}) Create (g)-[:%s{'''
 '''
 prepare query for edges between variation and trait sets
@@ -1293,13 +1293,13 @@ def preparation_on_variation_haplo_or_genotype(interpreted_record, variant_id, d
         property_list_which_are_list = perpare_dictionary_values(dict_node, specific_type,
                                                                  dict_type_to_list_property_list)
 
-        dict_csv_file_variation['Variant'][specific_type].writerow(dict_node)
+        dict_tsv_file_variation['Variant'][specific_type].writerow(dict_node)
         dict_variation_to_node_ids['Variant'][specific_type].add(variant_id)
 
     if genotype is not None:
         if 'Genotype' not in dict_variation_to_node_ids:
             dict_variation_to_node_ids['Genotype'] = {}
-            dict_csv_file_variation['Genotype'] = {}
+            dict_tsv_file_variation['Genotype'] = {}
         variation_type = genotype.find('VariationType').text
 
         if variation_type not in dict_variation_to_node_ids['Genotype']:
@@ -1310,7 +1310,7 @@ def preparation_on_variation_haplo_or_genotype(interpreted_record, variant_id, d
             #                                  doublequote=False)
             csv_writer_type = csv.DictWriter(file_type, delimiter='\t', fieldnames=header_variation, quotechar='"')
             csv_writer_type.writeheader()
-            dict_csv_file_variation['Genotype'][variation_type] = csv_writer_type
+            dict_tsv_file_variation['Genotype'][variation_type] = csv_writer_type
 
         prepare_rela_between_variations(genotype, variant_id, 'genotyp_id', 'SimpleAllele', 'Genotype', 'Variant')
         prepare_rela_between_variations(genotype, variant_id, 'genotyp_id', 'Haplotype', 'Genotype', 'Haplotype')
@@ -1337,13 +1337,13 @@ def preparation_on_variation_haplo_or_genotype(interpreted_record, variant_id, d
 
         perpare_dictionary_values(dict_node, variation_type, dict_type_to_list_property_list)
 
-        dict_csv_file_variation['Genotype'][variation_type].writerow(dict_node)
+        dict_tsv_file_variation['Genotype'][variation_type].writerow(dict_node)
         dict_variation_to_node_ids['Genotype'][variation_type].add(variant_id)
 
     elif haplotype is not None:
         if 'Haplotype' not in dict_variation_to_node_ids:
             dict_variation_to_node_ids['Haplotype'] = {}
-            dict_csv_file_variation['Haplotype'] = {}
+            dict_tsv_file_variation['Haplotype'] = {}
 
         if variation_type not in dict_variation_to_node_ids['Haplotype']:
             dict_specific_to_general_type[variation_type] = 'Haplotype'
@@ -1353,7 +1353,7 @@ def preparation_on_variation_haplo_or_genotype(interpreted_record, variant_id, d
             #                                  doublequote=False)
             csv_writer_type = csv.DictWriter(file_type, delimiter='\t', fieldnames=header_variation, quotechar='"')
             csv_writer_type.writeheader()
-            dict_csv_file_variation['Haplotype'][variation_type] = csv_writer_type
+            dict_tsv_file_variation['Haplotype'][variation_type] = csv_writer_type
 
         prepare_rela_between_variations(haplotype, variant_id, 'haplo_id', 'SimpleAllele', 'Haplotype', 'Variant')
 
@@ -1379,7 +1379,7 @@ def preparation_on_variation_haplo_or_genotype(interpreted_record, variant_id, d
             dict_node['number_of_chromosomes'] = number_of_chromosomes
 
         perpare_dictionary_values(dict_node, variation_type, dict_type_to_list_property_list)
-        dict_csv_file_variation['Haplotype'][variation_type].writerow(dict_node)
+        dict_tsv_file_variation['Haplotype'][variation_type].writerow(dict_node)
         dict_variation_to_node_ids['Haplotype'][variation_type].add(variant_id)
     return False
 
@@ -1392,8 +1392,8 @@ dict_variation_to_node_ids = {}
 # edge_dictionary
 edge_between_variations = {}
 
-# dictionary of edges for the different types to csv
-dict_csv_edge_variations = {}
+# dictionary of edges for the different types to tsv
+dict_tsv_edge_variations = {}
 
 # dict_type_to_property_list_which is a list
 dict_type_to_list_property_list = {}
@@ -1413,8 +1413,8 @@ list_header_measures = ['identifier', 'accession', 'name', 'synonyms', 'symbols'
 query_edge_variation = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ClinVar/data/edge_%s_%s.tsv"  As line FIELDTERMINATOR '\t' Match (g:%s_ClinVar{identifier:line.%s}), (o:%s_ClinVar{identifier:line.%s}) Create (g)-[:has]->(o);\n'''
 # query_edge_variation = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''/data/edge_%s_%s.tsv"  As line FIELDTERMINATOR '\t' Match (g:%s_ClinVar{identifier:line.%s}), (o:%s_ClinVar{identifier:line.%s}) Create (g)-[:has]->(o);\n'''
 
-# dictionary csv file for variation
-dict_csv_file_variation = {}
+# dictionary tsv file for variation
+dict_tsv_file_variation = {}
 
 print(datetime.datetime.utcnow())
 
