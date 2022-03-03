@@ -61,6 +61,13 @@ counter_rela = 0
 
 
 def add_information_to_dictionary(dict_all_info, key_term, value):
+    if value[-1]=='}':
+        # print(key_term, value)
+        splitted_value=value.split(' {')
+        value=splitted_value[0]
+        if 'superClassOf' in splitted_value[1] and key_term=='xref':
+            print('removed', splitted_value)
+            return
     # for some properties more than one value appears
     if not key_term in dict_all_info:
         dict_all_info[key_term] = value.replace('"', '').replace("'", "").replace("\\", "")
@@ -236,7 +243,7 @@ generate cypher file
 def generate_cypher_file():
     # create cypher file
     cypher_file = open('cypher.cypher', 'w')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/''' + directory + '''/output/node.csv" As line Create (:''' + neo4j_label + '''{'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/''' + directory + '''/output/node.tsv" As line Fieldterminator '\\t' Create (:''' + neo4j_label + '''{'''
     for property in set_all_properties_in_database:
         if not property in set_list_properties:
             query += property + ':line.' + property + ', '
@@ -249,9 +256,9 @@ def generate_cypher_file():
     cypher_file.write('Create Constraint On (node:' + neo4j_label + ') Assert node.id Is Unique; \n')
     cypher_file.write(':commit\n')
 
-    # create node csv
-    file = open('output/node.csv', 'w', encoding='utf-8')
-    csv_writer = csv.DictWriter(file, fieldnames=list(set_all_properties_in_database))
+    # create node tsv
+    file = open('output/node.tsv', 'w', encoding='utf-8')
+    csv_writer = csv.DictWriter(file, fieldnames=list(set_all_properties_in_database), delimiter='\t')
     csv_writer.writeheader()
 
     for disease_id, dict_value in dict_all_entries.items():
@@ -281,17 +288,17 @@ def generate_cypher_file():
 
 
         # create csv for relationships
-        file_name = 'rela_' + rela_type + '.csv'
+        file_name = 'rela_' + rela_type + '.tsv'
         file = open('output/' + file_name, 'w')
-        csv_writer = csv.writer(file)
+        csv_writer = csv.writer(file, delimiter='\t')
         list_of_infos = list(list_of_infos)
         # depending if the relationships contains also information about a relationships type the qury and the csv file is a bit different
         if len(list_of_infos[0]) == 2:
-            query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/%s/output/%s" As line  Match (a:%s{id:line.child_id}), (b:%s{id:line.parent_id}) Create (a)-[:%s]->(b); \n'''
+            query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/%s/output/%s" As line Fieldterminator '\\t' Match (a:%s{id:line.child_id}), (b:%s{id:line.parent_id}) Create (a)-[:%s]->(b); \n'''
             csv_writer.writerow(header_for_two)
         else:
             print(rela_type)
-            query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/%s/output/%s" As line  Match (a:%s{id:line.child_id}), (b:%s{id:line.parent_id}) Create (a)-[:%s{relationship:line.rela}]->(b); \n'''
+            query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/%s/output/%s" As line Fieldterminator '\\t' Match (a:%s{id:line.child_id}), (b:%s{id:line.parent_id}) Create (a)-[:%s{relationship:line.rela}]->(b); \n'''
             csv_writer.writerow(heeader_for_three)
         # fill the query ND WRITE INTO FILE
         query = query % (directory, file_name, neo4j_label, neo4j_label, rela_type)
@@ -317,7 +324,7 @@ def main():
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
-    print('put all relationship and node information into a csv and create a cypher file')
+    print('put all relationship and node information into a tsv and create a cypher file')
 
     generate_cypher_file()
 
