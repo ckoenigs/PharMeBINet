@@ -11,5 +11,6 @@ However, for gene, I prepare a dictionary from gene symbol to gene id.
  In the end in the cypher file will be queries added which removed all nodes from CTD which has no relationships except chemical.
 
 The schema is shown below:
+![er_diagram](picture/ctd.png)
 
 License:© 2002–2012 MDI Biological Laboratory. All rights reserved. © 2012–2021 NC State University. All rights reserved.

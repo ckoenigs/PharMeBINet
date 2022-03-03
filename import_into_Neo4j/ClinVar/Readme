@@ -17,6 +17,6 @@ After all, files are run through the cypher files are prepared for each node and
 
 The schema is shown here:
 
-![er_diagram](https://github.com/ckoenigs/master_database_change/import_into_Neo4j/ClinVar/clinvar.png)
+![er_diagram](clinvar.png)
 
 License:https://www.ncbi.nlm.nih.gov/home/about/policies/

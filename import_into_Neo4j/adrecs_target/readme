@@ -33,4 +33,9 @@ The ADReCS ID and ADR ID values are switched! The ADRs are added to the list of 
 ThreeLever.txt: Contain information of association between ADR, drug and gene/protein/variant. ([ADReCS ID|ADR Term|Drug Name|ID (gene/protein/variant)|Type (GA (protein)/GB (variant)/GC (gene))])
 It was not used because the information are all in the other file with the DITOP2 information and in the ADRAlert2GENE2ID. This was manually checked.
 
+schema is show below:
+
+![er_diagram](adrecs_traget.png)
+
+
 License:  Free for academic use

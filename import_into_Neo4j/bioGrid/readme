@@ -12,6 +12,6 @@ Last the combined gene information from both files is written into a TSV file.
 
 The schema is shown here:
 
-![er_diagram](https://github.com/ckoenigs/master_database_change/import_into_Neo4j/bioGrid/bioGrid.png)
+![er_diagram](bioGrid.png)
 
 License: The MIT License (MIT)
