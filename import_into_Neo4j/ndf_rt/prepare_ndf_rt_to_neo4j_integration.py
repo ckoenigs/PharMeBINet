@@ -144,7 +144,7 @@ def load_ndf_rt_xml_inferred_in():
         ndf_rt_id = concept.getElementsByTagName('id')[0].childNodes[0].nodeValue
         dict_code_to_type[code]=entity_code
 
-        # go through all possible Role (Relationships) and add the to the different csv files
+        # go through all possible Role (Relationships) and add the to the different tsv files
         definitionRoles = concept.getElementsByTagName('definingRoles')[0]
         if definitionRoles.hasChildNodes() == True:
             roles = definitionRoles.getElementsByTagName('role')
