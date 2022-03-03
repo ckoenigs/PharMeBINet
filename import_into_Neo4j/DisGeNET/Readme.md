@@ -16,6 +16,6 @@ The script integrates DisGeNet into Neo4j with Neo4j cypher-shell and cypher fil
 
 The schema is shown here:
 
-![er_diagram](https://github.com/ckoenigs/master_database_change/import_into_Neo4j/DisGeNET/disgenet_graph1.png)
+![er_diagram](disgenet_graph1.png)
 
 License: Attribution-NonCommercial-ShareAlike 4.0 International License

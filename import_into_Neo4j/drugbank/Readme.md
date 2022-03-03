@@ -14,14 +14,14 @@ In the last step, the information is integrated to Neo4j with Neo4j cypher-shell
 
 This should have the form:
 
-![er_diagram](https://github.com/ckoenigs/DrugBank_to_Neo4j/blob/master/drugbank_er.png)
+![er_diagram](drugbank_er.png)
 
 The Compound has so many properties:
 
-![er_diagram](https://github.com/ckoenigs/DrugBank_to_Neo4j/blob/master/drugbank_compound.png)
+![er_diagram](drugbank_compound.png)
 
 The Relationships have also some properties:
 
-![er_diagram](https://github.com/ckoenigs/DrugBank_to_Neo4j/blob/master/drugbank_er_rela.png)
+![er_diagram](drugbank_er_rela.png)
 
 License: Creative Common’s Attribution-NonCommercial 4.0 International License.
