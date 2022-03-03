@@ -2,7 +2,7 @@ http://www.bio-add.org/ADReCS-Target/index.jsp
 
 The files are downloaded from their homepage version ADReCS-Target 1.0.
 
-Transform the xlsx into CSV files separated into nodes files and relationship files. Additional, empty values were changed to a common symbol
+Transform the xlsx into TSV files separated into nodes files and relationship files. Additional, empty values were changed to a common symbol
 And generate additional cypher files to integrate the nodes and relationships into Noe4j.
 
 ALLTOXI_INFO (sheet all1):	Adverse reaction drug information. [ DITOP2_ID	ADR_ID	ADRECS_ID	ADR_TERM	TOXICITY_DETAIL	ORGAISM	DATA_SOURCE]

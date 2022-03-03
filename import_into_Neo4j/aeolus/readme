@@ -20,7 +20,7 @@ standard_drug_outcome_contingency_table.tsv: Contains all calculated 2x2 conting
 Add to the edge information the contingency table entries.
 
 In the last step, the cypher queries are generated to integrate the outcome/indications, drugs, and the relationships between drug and outcome/indication as to cause or indicates. 
-Additionally, the CSV files for outcome/indication, drug, and relationships are generated.
+Additionally, the TSV files for outcome/indication, drug, and relationships are generated.
 
 
 License: CC0 1.0 Universal (CC0 1.0) Public Domain Dedication l 
