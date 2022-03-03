@@ -127,7 +127,7 @@ dict_label_rela_name_to_dataframe = {}
 def prepare_geo_annotation_file(go_annotation_file_name):
     """
     firs extract and pars the gzip csv file into a pandas dataframe. Add header. Get the label of the other node. Then
-    prepare the node csv by make it identifier unique and write it into  csv and generate cypher query. The prepare
+    prepare the node csv by make it identifier unique and write it into  tsv and generate cypher query. The prepare
     different rela type files.
     :param go_annotation_file_name: string
     :return:
