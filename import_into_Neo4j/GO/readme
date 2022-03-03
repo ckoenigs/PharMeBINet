@@ -17,6 +17,6 @@ In the last step, the nodes and relationships are integrated into Neo4j with the
 
 The schema is shown here:
 
-![er_diagram](https://github.com/ckoenigs/PharMeBINet/import_into_Neo4j/GO/go.png)
+![er_diagram](https://github.com/ckoenigs/PharMeBINet/blob/ck/import_into_Neo4j/GO/go.png)
 
 License: CC0 4.0 International
