@@ -13,7 +13,7 @@ def cypher_node(filename, label, properties, unique_property):
     :param unique_property: identifier (e.g. diseaseId)
     """
 
-    query_start = f'Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:{path_of_directory}master_database_change/import_into_Neo4j/rnainter/{filename}" As line fieldterminator "," '
+    query_start = f'Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:{path_of_directory}master_database_change/import_into_Neo4j/rnainter/{filename}" As line fieldterminator "\\t" '
 
     query = query_start + 'Create (p:%s_RNAInter{' % (label)
     for x in properties:
@@ -36,7 +36,7 @@ def cypher_edge(filename, label, properties, edge_name):
     :param edge_name: specifies how the connection btw. two nodes is called
     """
 
-    query_start = f'Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:{path_of_directory}master_database_change/import_into_Neo4j/rnainter/{filename}" As line fieldterminator "," '
+    query_start = f'Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:{path_of_directory}master_database_change/import_into_Neo4j/rnainter/{filename}" As line fieldterminator "\\t" '
     query = query_start + f'Match (p1:rna_RNAInter{{Raw_ID:line.Raw_ID1}}),(p2:{label}_RNAInter{{Raw_ID:line.Raw_ID2}}) Create (p1)-[:{edge_name}{{  '
     for header in properties:
         # ignore key labels (wie diseaseId)
@@ -64,8 +64,8 @@ def edges(file, name):
     edge["Raw_ID1"].fillna(edge["Interactor1"], inplace=True)
     edge["Raw_ID2"].fillna(edge["Interactor2"], inplace=True)
     edge = edge.set_index("RNAInterID")
-    file_name = "output/rna_" + name + ".csv"
-    edge.to_csv(file_name)
+    file_name = "output/rna_" + name + ".tsv"
+    edge.to_csv(file_name, sep='\t')
     cypher_edge(file_name, name, ["RNAInterID", "score", "strong", "weak", "predict"], "associate")
 
 
@@ -96,25 +96,24 @@ def nodes(file, name):
         file["Raw_ID2"].fillna(file["Interactor2"], inplace=True)
         file = file.drop_duplicates(subset=['Raw_ID2'])
         file = file.set_index('Raw_ID2')
-        file_name = 'output/' + name + ".csv"
-        file.to_csv(file_name)
+        file_name = 'output/' + name + ".tsv"
+        file.to_csv(file_name, sep='\t')
         cypher_node(file_name, name, ["Raw_ID2", "Interactor2", "Category2", "Species2"], "Raw_ID")
 
     return (rna)
 
 
 def main():
-
     global path_of_directory
 
     species_condition = False
-    #"Homo sapiens"
-    species=''
+    # "Homo sapiens"
+    species = ''
     if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]
-        if len(sys.argv)==3:
-            species_condition=True
-            species=sys.argv[2]
+        if len(sys.argv) == 3:
+            species_condition = True
+            species = sys.argv[2]
     else:
         sys.exit('need a path rna_inter')
 
@@ -123,21 +122,20 @@ def main():
          "histone": "Download_data_RH.tar.gz"
          }
 
-
     print('##################################################################################')
     print(datetime.datetime.now())
 
     rna = pd.DataFrame()
-    file_name_rna="output/rna.csv"
+    file_name_rna = "output/rna.tsv"
     cypher_node(file_name_rna, "rna", ["Raw_ID1", "Interactor1", "Category1", "Species1"], "Raw_ID")
 
     for i, file in d.items():
         print(i)
         print(datetime.datetime.now())
-        csv = pd.read_csv("data/"+file, compression='gzip', sep='\t', low_memory=False)
+        csv = pd.read_csv("data/" + file, compression='gzip', sep='\t', low_memory=False)
         if (species_condition):
-            if i not in ['compound','histone']:
-                csv= csv[(csv.Species1==species)&(csv.Species2==species)]
+            if i not in ['compound', 'histone']:
+                csv = csv[(csv.Species1 == species) & (csv.Species2 == species)]
             else:
                 csv = csv[(csv.Species1 == species)]
         a = nodes(csv, i)
@@ -148,7 +146,7 @@ def main():
     rna["Raw_ID1"].fillna(rna["Interactor1"], inplace=True)
     rna = rna.drop_duplicates(subset=['Raw_ID1'])
     rna = rna.set_index('Raw_ID1')
-    rna.to_csv(file_name_rna)
+    rna.to_csv(file_name_rna, sep='\t')
 
     print('##################################################################################')
     print(datetime.datetime.now())
