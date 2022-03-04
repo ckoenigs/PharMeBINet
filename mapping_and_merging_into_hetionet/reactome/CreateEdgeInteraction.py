@@ -286,7 +286,7 @@ def main():
             ['interactor1_het_id', 'interactor2_het_id', 'resource', 'interaction_ids_EBI', 'iso_from', 'iso_to',
              'pubmed_ids'])
 
-        print('Generate file mapped_interactions.csv with properties')
+        print('Generate file mapped_interactions.tsv with properties')
 
         generate_file(csv_mapped)
 
@@ -295,7 +295,7 @@ def main():
 
         print(datetime.datetime.utcnow())
 
-        print('Generate file not_mapped_interactions.csv with properties')
+        print('Generate file not_mapped_interactions.tsv with properties')
 
         generate_file_else(csv_not_mapped)
 
