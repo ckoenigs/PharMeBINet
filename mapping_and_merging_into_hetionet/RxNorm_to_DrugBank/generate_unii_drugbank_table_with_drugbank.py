@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Sep 27 13:05:35 2017
-
-@author: Cassandra
-"""
 import datetime
 import sys, csv
 sys.path.append("../..")
@@ -55,7 +49,7 @@ def main():
         '#################################################################################################################################################################')
 
     print(datetime.datetime.utcnow())
-    print('load all properties of compound and drugbank compound and use the information to genreate csv files')
+    print('load all properties of compound and drugbank compound and use the information to genreate tsv files')
 
     generate_tsv_file()
 
