@@ -69,7 +69,7 @@ def name_to_umls_cui(name):
 
 def prepare_dictionary_for_file(dictionary):
     """
-    prepare dictionary for writing into csv file. This means list and sets are transformed to string
+    prepare dictionary for writing into tsv file. This means list and sets are transformed to string
     :param dictionary: dictionary
     :return:
     """
@@ -81,19 +81,19 @@ def prepare_dictionary_for_file(dictionary):
     return new_dict
 
 
-def generate_cypher_queries_and_csv_files():
+def generate_cypher_queries_and_tsv_files():
     """
-    generate cypher queries and csv files
+    generate cypher queries and tsv files
     :return: csv writer for mapping and new
     """
     set_header_for_files = ['hpo_id', 'hetionet_id', 'xrefs', 'mesh_ids', 'resource', 'umls_ids', 'how_mapped']
-    # csv file for mapping disease
+    # tsv file for mapping disease
     file_name_mapped = 'mapping_files/symptom_mapped.tsv'
     file_symptom_mapped = open(file_name_mapped, 'w', encoding='utf-8')
     csv_symptom_mapped = csv.DictWriter(file_symptom_mapped, delimiter='\t', fieldnames=set_header_for_files)
     csv_symptom_mapped.writeheader()
 
-    # csv file for mapping disease
+    # tsv file for mapping disease
     file_name_new = 'mapping_files/symptom_new.tsv'
     file_symptom_new = open(file_name_new, 'w', encoding='utf-8')
     csv_symptom_new = csv.DictWriter(file_symptom_new, delimiter='\t', fieldnames=set_header_for_files)
@@ -390,7 +390,7 @@ def map_hpo_symptoms_and_to_hetionet(csv_new):
 
 def prepare_mapped_nodes_for_file(csv_mapped):
     """
-    write the information into csv file.
+    write the information into tsv file.
     :param csv_mapped: csv writer
     :return:
     """
@@ -437,7 +437,7 @@ def main():
     print(datetime.datetime.utcnow())
     print('generate dictionary from symptoms of hetionet')
 
-    csv_mapped, csv_new = generate_cypher_queries_and_csv_files()
+    csv_mapped, csv_new = generate_cypher_queries_and_tsv_files()
 
     print('##########################################################################')
 

@@ -221,7 +221,7 @@ def generate_cypher_file_for_connection(cypher_file):
     count_update_connection = 0
     counter_connection = 0
 
-    # csv file for relationship symptom- disease
+    # tsv file for relationship symptom- disease
     file_rela_new = open('mapping_files/rela_new.tsv', 'w', encoding='utf-8')
     csv_rela_new = csv.writer(file_rela_new, delimiter='\t')
 
