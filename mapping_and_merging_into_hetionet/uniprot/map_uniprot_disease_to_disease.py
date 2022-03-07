@@ -66,17 +66,16 @@ Load all uniprots ids of the proteins and check out which appears also in the un
 
 def gather_uniprot_disease_infos_and_add_to_file():
     # generate a file with all uniprots to
-    file_name='uniprot_disease/mapping_disease.csv'
+    file_name='uniprot_disease/mapping_disease.tsv'
     file_gene_disease = open(file_name, 'w')
-    csv_disease = csv.writer(file_gene_disease)
+    csv_disease = csv.writer(file_gene_disease, delimiter='\t')
     csv_disease.writerow(['uniprot_disease_id', 'disease_id','resource'])
     # csv_gene_disease.writerow(['gene_ids', 'disease_id','source','note','resource'])
 
     # query gene-disease association
 
     file_cypher = open('output/cypher.cypher', 'a')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/%s" As line MATCH (g:Disease_Uniprot{identifier:line.uniprot_disease_id}),(b:Disease{identifier:line.disease_id}) Create (b)-[r:equal_to_uniprot_disease]->(g) Set b.resource=split(line.resource,"|"), b.uniprot='yes' ;\n'''
-    # query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_disease/db_gene_to_disease.csv" As line MATCH (g:Gene{identifier:line.gene_ids}),(b:Disease{identifier:line.disease_id}) Merge (b)-[r:ASSOCIATES_DaG]->(g) On Create Set r.source="UniProt", r.resource=["UniProt"], r.uniprot='yes', r.note=line.note, r.sources=split(line.source,"|"), r.url="https://www.uniprot.org/uniprot/"+line.uniprot_ids On Match Set r.uniprot="yes", r.resource=r.resource+"UniProt", r.note=line.note, r.sources=split(line.source,"|") ;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/%s" As line FIELDTERMINATOR "\\t" MATCH (g:Disease_Uniprot{identifier:line.uniprot_disease_id}),(b:Disease{identifier:line.disease_id}) Create (b)-[r:equal_to_uniprot_disease]->(g) Set b.resource=split(line.resource,"|"), b.uniprot='yes' ;\n'''
     query =query %(file_name)
     file_cypher.write(query)
 

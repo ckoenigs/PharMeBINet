@@ -163,8 +163,8 @@ def get_all_genes():
 
 
 # files with rela from uniprot protei to gene
-file_uniprots_gene_rela = open('uniprot_gene/db_uniprot_to_gene_rela.csv', 'w')
-writer_rela = csv.writer(file_uniprots_gene_rela)
+file_uniprots_gene_rela = open('uniprot_gene/db_uniprot_to_gene_rela.tsv', 'w')
+writer_rela = csv.writer(file_uniprots_gene_rela, delimiter='\t')
 writer_rela.writerow(
     ['uniprot_id', 'gene_id', 'alternative_ids', 'name_mapping', 'uniprot', 'resource', 'resource_node'])
 
@@ -179,7 +179,7 @@ count_not_mapping_gene_name = 0
 
 '''
 this goes throu a list of mapping gens and check out if they really do not exists already
-if not integrate them into the csv
+if not integrate them into the tsv
 '''
 
 
@@ -344,7 +344,7 @@ def write_cypher_file():
 
     results = g.run(query_property)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/db_uniprot_ids.csv" As line MATCH (p:Protein_Uniprot{identifier:line.uniprot_id}) Create (p)<-[:equal_to_uniprot]-(:Protein{'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/db_uniprot_ids.tsv" As line FIELDTERMINATOR "\\t" MATCH (p:Protein_Uniprot{identifier:line.uniprot_id}) Create (p)<-[:equal_to_uniprot]-(:Protein{'''
 
     for property, in results:
         # the go classifiers are in the rela to bc, cc and mf and the gene information are in the rela to gene
@@ -364,19 +364,19 @@ def write_cypher_file():
     query = 'Create Constraint On (node:Protein) Assert node.identifier Is Unique;\n'
     file_cypher.write(query)
 
-    # query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_gene/db_gene_uniprot_delete.csv" As line Match (g:Gene{identifier:line.gene_id}) With g,[x IN g.uniProtIDs WHERE x <> line.uniprot_id]  as filterdList
+    # query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_gene/db_gene_uniprot_delete.tsv" As line FIELDTERMINATOR "\\t" Match (g:Gene{identifier:line.gene_id}) With g,[x IN g.uniProtIDs WHERE x <> line.uniprot_id]  as filterdList
     #              Set g.uniProtIDs=filterdList;\n '''
     # file_cypher.write(query)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_gene/db_uniprot_to_gene_rela.csv" As line MATCH (n:Protein{identifier:line.uniprot_id}), (g:Gene{identifier:line.gene_id}) Set g.resource=split(line.resource_node,'|'), g.uniprot='yes' Create (g)-[:PRODUCES_GpP{name_mapping:line.name_mapping, uniprot:line.uniprot,resource:split(line.resource,'|'),license:'CC BY 4.0', url:'https://www.uniprot.org/uniprot/'+line.uniprot_id, source:"UniProt"}]->(n);\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_gene/db_uniprot_to_gene_rela.tsv" As line FIELDTERMINATOR "\\t" MATCH (n:Protein{identifier:line.uniprot_id}), (g:Gene{identifier:line.gene_id}) Set g.resource=split(line.resource_node,'|'), g.uniprot='yes' Create (g)-[:PRODUCES_GpP{name_mapping:line.name_mapping, uniprot:line.uniprot,resource:split(line.resource,'|'),license:'CC BY 4.0', url:'https://www.uniprot.org/uniprot/'+line.uniprot_id, source:"UniProt"}]->(n);\n'''
     file_cypher.write(query)
 
     # # the queries to integrate rela to bc, cc and mf
-    # query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_go/db_uniprots_to_bc.csv" As line MATCH (g:Protein{identifier:line.uniprot_ids}),(b:BiologicalProcess{identifier:line.go}) Set b.resource=split(line.resource,'|'), b.uniprot='yes' Create (g)-[:PARTICIPATES_PpBP{resource:['UniProt'],source:'UniProt', uniprot:'yes', license:'CC BY 4.0', url:'https://www.uniprot.org/uniprot/'+line.uniprot_ids}]->(b);\n'''
+    # query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_go/db_uniprots_to_bc.tsv" As line FIELDTERMINATOR "\\t" MATCH (g:Protein{identifier:line.uniprot_ids}),(b:BiologicalProcess{identifier:line.go}) Set b.resource=split(line.resource,'|'), b.uniprot='yes' Create (g)-[:PARTICIPATES_PpBP{resource:['UniProt'],source:'UniProt', uniprot:'yes', license:'CC BY 4.0', url:'https://www.uniprot.org/uniprot/'+line.uniprot_ids}]->(b);\n'''
     # file_cypher.write(query)
-    # query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_go/db_uniprots_to_cc.csv" As line MATCH (g:Protein{identifier:line.uniprot_ids}),(b:CellularComponent{identifier:line.go}) Set b.resource=split(line.resource,'|'), b.uniprot='yes' Create (g)-[:PARTICIPATES_PpCC{resource:['UniProt'],source:'UniProt', uniprot:'yes', license:'CC BY 4.0', url:'https://www.uniprot.org/uniprot/'+line.uniprot_ids}]->(b);\n'''
+    # query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_go/db_uniprots_to_cc.tsv" As line FIELDTERMINATOR "\\t" MATCH (g:Protein{identifier:line.uniprot_ids}),(b:CellularComponent{identifier:line.go}) Set b.resource=split(line.resource,'|'), b.uniprot='yes' Create (g)-[:PARTICIPATES_PpCC{resource:['UniProt'],source:'UniProt', uniprot:'yes', license:'CC BY 4.0', url:'https://www.uniprot.org/uniprot/'+line.uniprot_ids}]->(b);\n'''
     # file_cypher.write(query)
-    # query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_go/db_uniprots_to_mf.csv" As line MATCH (g:Protein{identifier:line.uniprot_ids}),(b:MolecularFunction{identifier:line.go}) Set b.resource=split(line.resource,'|'), b.uniprot='yes' Create (g)-[:PARTICIPATES_PpMF{resource:['UniProt'],source:'UniProt', uniprot:'yes', license:'CC BY 4.0', url:'https://www.uniprot.org/uniprot/'+line.uniprot_ids}]->(b);\n'''
+    # query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_go/db_uniprots_to_mf.tsv" As line FIELDTERMINATOR "\\t" MATCH (g:Protein{identifier:line.uniprot_ids}),(b:MolecularFunction{identifier:line.go}) Set b.resource=split(line.resource,'|'), b.uniprot='yes' Create (g)-[:PARTICIPATES_PpMF{resource:['UniProt'],source:'UniProt', uniprot:'yes', license:'CC BY 4.0', url:'https://www.uniprot.org/uniprot/'+line.uniprot_ids}]->(b);\n'''
     # file_cypher.write(query)
 
 
@@ -404,28 +404,28 @@ Load all uniprots ids of the proteins and check out which appears also in the un
 
 def get_gather_protein_info_and_generate_relas():
     # file with every uniprot identifier
-    file_uniprots_ids = open('db_uniprot_ids.csv', 'w')
-    writer_uniprots_ids = csv.writer(file_uniprots_ids)
+    file_uniprots_ids = open('db_uniprot_ids.tsv', 'w')
+    writer_uniprots_ids = csv.writer(file_uniprots_ids, delimiter='\t')
     writer_uniprots_ids.writerow(['uniprot_id', 'xrefs'])
 
     # generate a file with all uniprots which mapped to multiple genes
-    file_uniprots_genes = open('uniprot_gene/db_uniprots_to_genes_multi_map.csv', 'w')
-    writer_uniprots_genes_multi_mapps = csv.writer(file_uniprots_genes)
+    file_uniprots_genes = open('uniprot_gene/db_uniprots_to_genes_multi_map.tsv', 'w')
+    writer_uniprots_genes_multi_mapps = csv.writer(file_uniprots_genes,delimiter='\t')
     writer_uniprots_genes_multi_mapps.writerow(['uniprot_ids', 'gene_id'])
 
     # generate a file with all uniprots to bc
-    file_uniprots_bc = open('uniprot_go/db_uniprots_to_bc.csv', 'w')
-    writer_uniprots_bc = csv.writer(file_uniprots_bc)
+    file_uniprots_bc = open('uniprot_go/db_uniprots_to_bc.tsv', 'w')
+    writer_uniprots_bc = csv.writer(file_uniprots_bc, delimiter='\t')
     writer_uniprots_bc.writerow(['uniprot_ids', 'go', 'resource'])
 
     # generate a file with all uniprots to cc
-    file_uniprots_cc = open('uniprot_go/db_uniprots_to_cc.csv', 'w')
-    writer_uniprots_cc = csv.writer(file_uniprots_cc)
+    file_uniprots_cc = open('uniprot_go/db_uniprots_to_cc.tsv', 'w')
+    writer_uniprots_cc = csv.writer(file_uniprots_cc,delimiter='\t')
     writer_uniprots_cc.writerow(['uniprot_ids', 'go', 'resource'])
 
     # generate a file with all uniprots to mf
-    file_uniprots_mf = open('uniprot_go/db_uniprots_to_mf.csv', 'w')
-    writer_uniprots_mf = csv.writer(file_uniprots_mf)
+    file_uniprots_mf = open('uniprot_go/db_uniprots_to_mf.tsv', 'w')
+    writer_uniprots_mf = csv.writer(file_uniprots_mf,delimiter='\t')
     writer_uniprots_mf.writerow(['uniprot_ids', 'go', 'resource'])
 
     # query to get all Protein information {identifier:'P0DMV0'} {identifier:'Q05066'} {identifier:'P0DPK4'} {identifier:'E5RIL1'} {identifier:'P01009'}

@@ -60,18 +60,18 @@ def get_pairs_information():
 
 
 
-def write_info_into_csv_file():
+def write_info_into_tsv_file():
     # generate a file with all uniprots to
-    file_name = 'output/protein_interaction.csv'
+    file_name = 'output/protein_interaction.tsv'
     file_gene_disease = open(file_name, 'w')
-    csv_gene_disease = csv.writer(file_gene_disease)
+    csv_gene_disease = csv.writer(file_gene_disease, delimiter='\t')
     csv_gene_disease.writerow(
         ['protein_id1', 'protein_id2', 'interaction_ids', 'iso_of_protein_to', 'iso_of_protein_from', 'experiments'])
 
     # query gene-disease association
 
     file_cypher = open('output/cypher_edge.cypher', 'a')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/%s" As line MATCH (g:Protein{identifier:line.protein_id1}),(b:Protein{identifier:line.protein_id2}) Create (g)-[r:INTERACTS_PiP{source:"UniProt", license:"CC BY 4.0", resource:["UniProt"], uniprot:'yes', iso_of_protein_from:line.iso_of_protein_from, iso_of_protein_to:line.iso_of_protein_to, interaction_ids:split(line.interaction_ids, "|"), experiments:split(line.experiments, "|")}]->(b) ;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/%s" As line FIELDTERMINATOR "\\t" MATCH (g:Protein{identifier:line.protein_id1}),(b:Protein{identifier:line.protein_id2}) Create (g)-[r:INTERACTS_PiP{source:"UniProt", license:"CC BY 4.0", resource:["UniProt"], uniprot:'yes', iso_of_protein_from:line.iso_of_protein_from, iso_of_protein_to:line.iso_of_protein_to, interaction_ids:split(line.interaction_ids, "|"), experiments:split(line.experiments, "|")}]->(b) ;\n'''
     query = query % (file_name)
     file_cypher.write(query)
 
@@ -113,9 +113,9 @@ def main():
         '#################################################################################################################################################################')
 
     print(datetime.datetime.utcnow())
-    print('generate and write info in csv file')
+    print('generate and write info in tsv file')
 
-    write_info_into_csv_file()
+    write_info_into_tsv_file()
 
 
     print(

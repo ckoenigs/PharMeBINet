@@ -1,4 +1,3 @@
-from py2neo import Graph
 import datetime
 import csv
 import sys
@@ -66,8 +65,8 @@ def load_pair_edges(csv_mapped, csv_new, label, dict_pair_to_resource):
     :param dict_pair_to_resource: dictionary
     :return:
     """
-    file = open('uniprot_go/db_uniprots_to_' + dict_go[label] + '.csv', 'r')
-    csv_reader = csv.reader(file, delimiter=',')
+    file = open('uniprot_go/db_uniprots_to_' + dict_go[label] + '.tsv', 'r')
+    csv_reader = csv.reader(file, delimiter='\t')
     next(csv_reader)
 
     # set of all hmdb pairs
