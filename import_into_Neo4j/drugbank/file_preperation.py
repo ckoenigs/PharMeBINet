@@ -292,8 +292,8 @@ def drugs_combination_and_check(neo4j_label):
     print('take all information from structure')
     # this takes all information from structures -> structure.sdf which was converted into a csv
     # properties: ALOGPS_LOGP	ALOGPS_LOGS	ALOGPS_SOLUBILITY	DATABASE_ID	DATABASE_NAME	DRUGBANK_ID	DRUG_GROUPS	EXACT_MASS	FORMULA	GENERIC_NAME	ID	INCHI_IDENTIFIER	INCHI_KEY	INTERNATIONAL_BRANDS	JCHEM_ACCEPTOR_COUNT	JCHEM_ATOM_COUNT	JCHEM_AVERAGE_POLARIZABILITY	JCHEM_BIOAVAILABILITY	JCHEM_DONOR_COUNT	JCHEM_FORMAL_CHARGE	JCHEM_GHOSE_FILTER	JCHEM_IUPAC	JCHEM_LOGP	JCHEM_MDDR_LIKE_RULE	JCHEM_NUMBER_OF_RINGS	JCHEM_PHYSIOLOGICAL_CHARGE	JCHEM_PKA	JCHEM_PKA_STRONGEST_ACIDIC	JCHEM_PKA_STRONGEST_BASIC	JCHEM_POLAR_SURFACE_AREA	JCHEM_REFRACTIVITY	JCHEM_ROTATABLE_BOND_COUNT	JCHEM_RULE_OF_FIVE	JCHEM_TRADITIONAL_IUPAC	JCHEM_VEBER_RULE	MOLECULAR_WEIGHT	Molecule	PRODUCTS	SALTS	SECONDARY_ACCESSION_NUMBERS	SMILES	SYNONYMS
-    with open('sdf/structure.csv') as csvfile:
-        spamreader = csv.DictReader(csvfile, delimiter=',')
+    with open('sdf/structure.tsv') as csvfile:
+        spamreader = csv.DictReader(csvfile, delimiter='\t')
         properties = spamreader.fieldnames
         i = 0
         properties = []
@@ -392,7 +392,7 @@ def drugs_combination_and_check(neo4j_label):
 
     load_salts_information_in()
 
-    tool_path = 'output/neo4j_import/drugbank_compounds.tsv'
+    tool_path = 'output/neo4j_import/drugbank_compounds.csv'
     output_import_file = open(tool_path, 'w', encoding='utf-8')
 
     global import_string
@@ -662,7 +662,7 @@ def drugs_combination_and_check(neo4j_label):
                     'SYNONYMS': synonyms
                 }
 
-                synonyms_lower=[x.lower() for x in synonyms]
+                synonyms_lower = [x.lower() for x in synonyms]
                 if drugbank_id == 'DB09496':
                     print('huh')
 
@@ -1330,7 +1330,7 @@ def generate_combined_csv_files(header_new, neo4j_general_label, special_label_l
     general_file_start = 'output/drugbank_'
     general_file_end = '.tsv'
 
-    tool_path = 'output/neo4j_import/carrier_enzyme_target_transporter.tsv'
+    tool_path = 'output/neo4j_import/carrier_enzyme_target_transporter.csv'
     output_file = open(tool_path, 'w', encoding='utf-8')
     import_string += ' --nodes ' + tool_path
     writer = csv.writer(output_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
@@ -1440,7 +1440,7 @@ def check_and_maybe_generate_a_new_drug_target_file(file, dict_drug_targets_exte
     dict_drug_targe_pairs_xml = {}
 
     # file for import tool
-    tool_path = 'output/neo4j_import/drug_target.tsv'
+    tool_path = 'output/neo4j_import/drug_target.csv'
     output_import_tool = open(tool_path, 'a', encoding='utf-8')
     writer_tool = csv.writer(output_import_tool, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
@@ -1757,8 +1757,8 @@ def gather_all_metabolite_information_and_generate_a_new_file(neo4j_label):
     output_file_drug = open('output/drugbank_metabolites.tsv', 'w', encoding='utf-8')
     writer_drug = csv.writer(output_file_drug, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
-    with open('sdf/metabolite_structure.csv') as csvfile:
-        reader = csv.DictReader(csvfile, delimiter=',')
+    with open('sdf/metabolite_structure.tsv') as csvfile:
+        reader = csv.DictReader(csvfile, delimiter='\t')
         header = reader.fieldnames
         header_new = header[:]
         # header_new.remove('')
@@ -1886,7 +1886,7 @@ prepare the import file for nodes
 
 def import_tool_preparation_node(file_path, id_name, labels):
     global import_string
-    output_file = open('output/neo4j_import/' + file_path.split('/')[1], 'w', encoding='utf-8')
+    output_file = open('output/neo4j_import/' + file_path.split('/')[1].replace('tsv','csv'), 'w', encoding='utf-8')
     import_string += ' --nodes ' + 'output/neo4j_import/' + file_path.split('/')[1]
     writer = csv.writer(output_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     with open(file_path) as csvfile:
@@ -1924,7 +1924,7 @@ prepare the import file for nodes and generate the a new connect target to mutat
 def import_tool_preparation_new_generated_rela(file_path, labels, label_targer, label_mutated_gene_protein):
     global import_string
     file_name = 'drugbank_target_mutated.tsv'
-    output_file = open('output/neo4j_import/' + file_name, 'w', encoding='utf-8')
+    output_file = open('output/neo4j_import/' + file_name.replace('tsv','csv'), 'w', encoding='utf-8')
 
     import_string += ' --relationships ' + 'output/neo4j_import/' + file_name
 
@@ -1995,7 +1995,7 @@ generate files for import tool for rela
 
 def generation_of_files_for_import_tool(left_label, right_label, input_path, neo4j_label):
     global import_string
-    output_file = open('output/neo4j_import/' + input_path.split('/')[1], 'w', encoding='utf-8')
+    output_file = open('output/neo4j_import/' + input_path.split('/')[1].replace('tsv','csv'), 'w', encoding='utf-8')
     import_string += ' --relationships ' + 'output/neo4j_import/' + input_path.split('/')[1]
     writer = csv.writer(output_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     with open(input_path) as csvfile:
@@ -2032,7 +2032,7 @@ generate files for import tool for rela for drug drug interaction
 
 def generation_of_files_for_import_tool_interaction(left_label, right_label, input_path, neo4j_label):
     global import_string
-    output_file = open('output/neo4j_import/' + input_path.split('/')[1], 'w', encoding='utf-8')
+    output_file = open('output/neo4j_import/' + input_path.split('/')[1].replace('tsv','csv'), 'w', encoding='utf-8')
     import_string += ' --relationships ' + 'output/neo4j_import/' + input_path.split('/')[1]
     writer = csv.writer(output_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     with open(input_path) as csvfile:
@@ -2234,13 +2234,13 @@ def add_the_other_rela_to_cypher(pathway_label, product_label, salt_label, mutat
     csvfile = open('output/drugbank_Enzyme_DrugBank_2.tsv', 'w', encoding='utf-8')
     spamreader = csv.writer(csvfile, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
-    enzymel_path = 'output/neo4j_import/drugbank_enzyme.tsv'
+    enzymel_path = 'output/neo4j_import/drugbank_enzyme.csv'
     file_tool_output = open(enzymel_path, 'w', encoding='utf-8')
     import_string += ' --nodes ' + enzymel_path
     spamreader_node = csv.writer(file_tool_output, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     spamreader_node.writerow(['identifier:ID', 'license', ':LABEL'])
 
-    tool_path = 'output/neo4j_import/drugbank_enzyme_pathway.tsv'
+    tool_path = 'output/neo4j_import/drugbank_enzyme_pathway.csv'
     file_tool_output_rela = open(tool_path, 'w', encoding='utf-8')
     import_string += ' --relationships ' + tool_path
     spamreader_rela = csv.writer(file_tool_output_rela, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
