@@ -80,7 +80,7 @@ def add_entry_to_dictionary(dictionary, key, value):
 
 def generate_file_and_cypher():
     """
-    generate cypher file and csv file
+    generate cypher file and tsv file
     :return:
     """
     query = '''MATCH (:protein_IID)-[p:interacts]->(:protein_IID) WITH DISTINCT keys(p) AS keys
