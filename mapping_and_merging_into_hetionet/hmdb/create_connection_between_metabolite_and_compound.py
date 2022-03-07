@@ -60,7 +60,7 @@ def load_compounds():
 # set of metabolite compound pairs
 set_metabolite_compound_pairs=set()
 
-def write_rela_into_csv_file(dict_to_compund_id, key, identifier, csv_writer, mapped):
+def write_rela_into_tsv_file(dict_to_compund_id, key, identifier, csv_writer, mapped):
     """
     get the compound id and check if pair is not written into tsv file. If not write into file and add to set.
     :param dict_to_compund_id: dictionary
@@ -92,7 +92,7 @@ def get_all_metabolites_with_xrefs():
         is_mapped=False
         if inchikey:
             if inchikey in dict_inchiKey_to_compound_id:
-                write_rela_into_csv_file(dict_inchiKey_to_compound_id,inchikey,identifier,csv_writer_rela,'inchikey')
+                write_rela_into_tsv_file(dict_inchiKey_to_compound_id,inchikey,identifier,csv_writer_rela,'inchikey')
                 is_mapped=True
 
         if xrefs:
@@ -116,7 +116,7 @@ def get_all_metabolites_with_xrefs():
                 intersection=drugbank_ids_by_names.intersection(drugbank_ids_hmdb)
                 if len(intersection)>0:
                     for db_id in intersection:
-                        write_rela_into_csv_file(dict_db_id_to_real_db_id, db_id, identifier, csv_writer_rela,
+                        write_rela_into_tsv_file(dict_db_id_to_real_db_id, db_id, identifier, csv_writer_rela,
                                                          'drugbank_id_and_name')
 
 
@@ -148,7 +148,7 @@ def main():
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
-    print('Load all hmdb Metabolite from database and write prepared information into csv file')
+    print('Load all hmdb Metabolite from database and write prepared information into tsv file')
 
     get_all_metabolites_with_xrefs()
 
