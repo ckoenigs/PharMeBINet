@@ -1,12 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thr Sep 26 12:52:43 2017
-
-@author: ckoenig
-"""
-
-'''integrate the other diseases and relationships from disease ontology in hetionet'''
-
 import datetime
 import sys, csv
 from collections import defaultdict
@@ -29,10 +20,10 @@ def create_connection_with_neo4j():
     g = create_connection_to_databases.database_connection_neo4j()
 
 
-# dictionary csv files
-dict_label_to_label_to_rela_to_csv = defaultdict(dict)
+# dictionary tsv files
+dict_label_to_label_to_rela_to_tsv = defaultdict(dict)
 
-# header of csv file
+# header of tsv file
 header = ['go_id', 'other_id']
 
 # cypher file
@@ -50,7 +41,7 @@ dict_relationship_ends = {
 
 def get_go_rela_properties():
     """
-    Get the rela properties and prepare the rela cypher query and the csv header list.
+    Get the rela properties and prepare the rela cypher query and the tsv header list.
     :return:
     """
     query = '''MATCH (:protein_go)-[p]-(:go) WITH DISTINCT keys(p) AS keys UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields RETURN allfields;'''
@@ -82,9 +73,9 @@ def get_go_rela_properties():
     query_rela = query_nodes_start + part + 'resource:["GO"], go:"yes", source:"Gene Ontology", url:"http://purl.obolibrary.org/obo/"+line.go_id, license:"' + license + '"}]->(b);\n'
 
 
-def create_csv_file(go_label, other_label, rela_type):
+def create_tsv_file(go_label, other_label, rela_type):
     """
-    Generate csv files for given labels and rela type. Also the cypher query is prepared and add to the cypher file.
+    Generate tsv files for given labels and rela type. Also the cypher query is prepared and add to the cypher file.
     :param go_label: string
     :param other_label: string
     :param rela_type: string
@@ -101,12 +92,12 @@ def create_csv_file(go_label, other_label, rela_type):
     query = query_rela % (file_name, go_label, other_label, rela_type_neo4j)
     cypher_file.write(query)
 
-    dict_label_to_label_to_rela_to_csv[go_label][other_label][rela_type] = csv_writer
+    dict_label_to_label_to_rela_to_tsv[go_label][other_label][rela_type] = csv_writer
 
 
 def write_rela_info_into_file(go_id, other_id, rela, go_label, other_label, rela_type):
     """
-    Prepare rela information and write into csv file
+    Prepare rela information and write into tsv file
     :param go_id: string
     :param other_id: string
     :param rela: dictionary
@@ -135,7 +126,7 @@ def write_rela_info_into_file(go_id, other_id, rela, go_label, other_label, rela
 
         dict_rela[prop] = value
 
-    dict_label_to_label_to_rela_to_csv[go_label][other_label][rela_type].writerow(dict_rela)
+    dict_label_to_label_to_rela_to_tsv[go_label][other_label][rela_type].writerow(dict_rela)
 
 
 # dictionary label to other label to rela type_to_pairs_ to rela info
@@ -221,12 +212,12 @@ def get_all_relationship_pairs(go_label, other_label):
     query = '''Match (n:%s)--(:go)-[r]-(:protein_go)--(m:%s) Return n.identifier, m.identifier, type(r), r''' % (
         go_label, other_label)
     result = g.run(query)
-    dict_label_to_label_to_rela_to_csv[go_label][other_label] = {}
+    dict_label_to_label_to_rela_to_tsv[go_label][other_label] = {}
     dict_label_to_label_to_rela_type_pairs_to_rela_info[go_label][other_label] = {}
     counter_double = 0
     for go_id, other_id, rela_type, rela, in result:
-        if rela_type not in dict_label_to_label_to_rela_to_csv[go_label][other_label]:
-            create_csv_file(go_label, other_label, rela_type)
+        if rela_type not in dict_label_to_label_to_rela_to_tsv[go_label][other_label]:
+            create_tsv_file(go_label, other_label, rela_type)
             dict_label_to_label_to_rela_type_pairs_to_rela_info[go_label][other_label][rela_type] = {}
         rela = dict(rela)
         if (go_id, other_id) in dict_label_to_label_to_rela_type_pairs_to_rela_info[go_label][other_label][rela_type]:
@@ -241,7 +232,7 @@ def get_all_relationship_pairs(go_label, other_label):
 
 def write_the_combined_rela_into_files():
     """
-    Write the combined rela information into the right csv files
+    Write the combined rela information into the right tsv files
     :return:
     """
     for go_label, dict_other_label_to_rela_type_pairs_to_rela_info in dict_label_to_label_to_rela_type_pairs_to_rela_info.items():
@@ -290,7 +281,7 @@ def main():
     print(
         '#################################################################################################################################################################')
     print(datetime.datetime.utcnow())
-    print('write combined rela information into csv files')
+    print('write combined rela information into tsv files')
 
     write_the_combined_rela_into_files()
 

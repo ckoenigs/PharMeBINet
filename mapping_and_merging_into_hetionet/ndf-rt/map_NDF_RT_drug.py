@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Aug 22 15:15:37 2017
-
-@author: ckoenigs
-"""
 
 import datetime
 import sys, csv
@@ -615,7 +609,7 @@ write a file with all ndf-rt drugs mapped to drugbank and a file with all not ma
 '''
 
 
-def generate_csv_for_mapped_and_not_mapped_ndf_rts():
+def generate_tsv_for_mapped_and_not_mapped_ndf_rts():
     for code in list_codes_with_drugbank_ids:
         drugbank_ids = dict_drug_NDF_RT[code]['mapped_ids']
         mapped_drugbanks = []
@@ -675,12 +669,12 @@ def integration_of_ndf_rt_drugs_into_hetionet():
     delete_code = []
 
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ndf-rt/drug/mapping_drug.csv" As line  FIELDTERMINATOR '\\t'  MATCH (n:NDFRT_DRUG_KIND{code:line.code}), (c:Chemical{identifier:line.Chemical_id})  Set n.mapped_ids=split(line.mapped_ids,'|'), n.how_mapped=line.how_mapped, c.ndf_rt='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_drug_ndf_rt]->(n); \n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ndf-rt/drug/mapping_drug.tsv" As line  FIELDTERMINATOR '\\t'  MATCH (n:NDFRT_DRUG_KIND{code:line.code}), (c:Chemical{identifier:line.Chemical_id})  Set n.mapped_ids=split(line.mapped_ids,'|'), n.how_mapped=line.how_mapped, c.ndf_rt='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_drug_ndf_rt]->(n); \n'''
     cypher_file.write(query)
     query='''Match (b:Chemical)--(:NDFRT_DRUG_KIND)-[:effect_may_be_inhibited_by]->(:NDFRT_DRUG_KIND)--(c:Chemical) Merge (b)-[r:INTERACTS_CiC]->(c)  On Match Set r.resource=r.resource+'NDF-RT' On Create set r.resource=['NDF-RT'], r.source='NDF-RT', r.license='ndf-rt license'; '''
     cypher_file.write(query)
     cypher_file.close()
-    writer = open('drug/mapping_drug.csv', 'w')
+    writer = open('drug/mapping_drug.tsv', 'w')
     csv_writer = csv.writer(writer, delimiter='\t')
     header = ['code', 'mapped_ids', 'how_mapped', 'Chemical_id', 'resource']
     csv_writer.writerow(header)
@@ -796,9 +790,9 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.utcnow())
-    print('create csv files for mapped and not mapped ndf-rt drugs')
+    print('create tsv files for mapped and not mapped ndf-rt drugs')
 
-    generate_csv_for_mapped_and_not_mapped_ndf_rts()
+    generate_tsv_for_mapped_and_not_mapped_ndf_rts()
 
     print(
         '###########################################################################################################################')

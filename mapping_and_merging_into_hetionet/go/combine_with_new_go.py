@@ -1,12 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thr Sep 26 12:52:43 2017
-
-@author: ckoenig
-"""
-
-'''integrate the other diseases and relationships from disease ontology in hetionet'''
-
 import datetime
 import sys, csv
 from collections import defaultdict
@@ -41,10 +32,10 @@ dict_new_go_to_node = {}
 # dictionary of the new nodes
 dict_new_nodes = {}
 
-# dictionary csv files
-dict_label_to_mapped_to_csv = defaultdict(dict)
+# dictionary tsv files
+dict_label_to_mapped_to_tsv = defaultdict(dict)
 
-# header of csv file
+# header of tsv file
 header = []
 
 # header to property name
@@ -100,11 +91,11 @@ def get_go_properties():
 
 
 '''
-create the csv files
+create the tsv files
 '''
 
 
-def create_csv_files():
+def create_tsv_files():
     for label in dict_go_to_hetionet_label:
         # delete the old nodes
         query_delete = '''Match (a:%s)  Detach Delete a;\n''' %dict_go_to_hetionet_label[label]
@@ -114,9 +105,9 @@ def create_csv_files():
         query = query_new % (file_name, dict_go_to_hetionet_label[label])
         cypher_file.write(query)
         file = open(file_name, 'w')
-        csv_file = csv.writer(file, delimiter='\t')
-        csv_file.writerow(['identifier', 'xrefs'])
-        dict_label_to_mapped_to_csv[label] = csv_file
+        tsv_file = csv.writer(file, delimiter='\t')
+        tsv_file.writerow(['identifier', 'xrefs'])
+        dict_label_to_mapped_to_tsv[label] = tsv_file
 
 
 
@@ -145,7 +136,7 @@ def check_if_identifier_in_hetionet(identifier, label_go, namespace, node, xrefs
         print('need to be delete')
         return found_id
 
-    dict_label_to_mapped_to_csv[namespace].writerow([identifier, xref_string])
+    dict_label_to_mapped_to_tsv[namespace].writerow([identifier, xref_string])
     return True
 
 
@@ -157,18 +148,18 @@ dict_relationship_ends = {
 }
 
 '''
-Get all is_a relationships for bp, cc and mf and add the into a csv file
+Get all is_a relationships for bp, cc and mf and add the into a tsv file
 '''
 
 
-def get_is_a_relationships_and_add_to_csv(namespace):
+def get_is_a_relationships_and_add_to_tsv(namespace):
     query = '''Match (n:go)-[:is_a]->(m:go) Where n.namespace="%s"  Return n.id,m.id;'''
     query = query % namespace
     results = g.run(query)
     file_name = 'output/integrate_go_' + namespace + '_relationship.tsv'
     file = open(file_name, 'w')
-    csv_file = csv.writer(file, delimiter='\t')
-    csv_file.writerow(['identifier_1', 'identifier_2'])
+    tsv_file = csv.writer(file, delimiter='\t')
+    tsv_file.writerow(['identifier_1', 'identifier_2'])
 
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/go/%s" As line FIELDTERMINATOR '\\t' 
     Match (a1:%s{identifier:line.identifier_1}), (a2:%s{identifier:line.identifier_2}) Create (a1)-[:IS_A_%s{license:"%s", source:"Gene Ontology", unbiased:false, resource:["GO"],  url:"http://purl.obolibrary.org/obo/"+line.identifier_1}]->(a2);\n'''
@@ -178,7 +169,7 @@ def get_is_a_relationships_and_add_to_csv(namespace):
 
     # go through the results
     for id1, id2, in results:
-        csv_file.writerow([id1, id2])
+        tsv_file.writerow([id1, id2])
 
 
 '''
@@ -187,9 +178,9 @@ prepare the go internal relationships
 
 
 def prepare_go_internal_relationships():
-    get_is_a_relationships_and_add_to_csv('molecular_function')
-    get_is_a_relationships_and_add_to_csv('biological_process')
-    get_is_a_relationships_and_add_to_csv('cellular_component')
+    get_is_a_relationships_and_add_to_tsv('molecular_function')
+    get_is_a_relationships_and_add_to_tsv('biological_process')
+    get_is_a_relationships_and_add_to_tsv('cellular_component')
 
 
 '''
@@ -244,9 +235,9 @@ def main():
         '#################################################################################################################################################################')
 
     print(datetime.datetime.utcnow())
-    print('create csv for all names spscae and mapped a csv')
+    print('create tsv for all names spaces and mapped a tsv')
 
-    create_csv_files()
+    create_tsv_files()
 
     print(
         '#################################################################################################################################################################')

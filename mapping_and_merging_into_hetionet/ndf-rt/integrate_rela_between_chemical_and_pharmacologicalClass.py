@@ -21,7 +21,7 @@ cypher_file = open('relationships/cypher.cypher', 'a', encoding='utf-8')
 
 def write_files(label, direction_1, direction_2, rela_name):
     '''
-    generate csv file and generate query for cypher file
+    generate tsv file and generate query for cypher file
     :param direction_1: string
     :param direction_2: string
     :param rela_name: string
@@ -52,8 +52,8 @@ def write_files(label, direction_1, direction_2, rela_name):
 # dictionary_mapping_pairs
 dict_mapping_pairs = {}
 
-# dictionary relationship to csv
-dict_rela_to_csv = {}
+# dictionary relationship to tsv
+dict_rela_to_tsv = {}
 
 # dictionary rela name in ndf-rt to information needed
 # 'site_of_metabolism':['<-', '-', 'METABOLIZES_PCmC']
@@ -82,10 +82,10 @@ def load_connections(label):
             rela_type = rela_type.split('_')[0]
 
         if rela_type in dict_rela_name_to_other_information:
-            if (rela_type, label) not in dict_rela_to_csv:
+            if (rela_type, label) not in dict_rela_to_tsv:
                 rela_info = dict_rela_name_to_other_information[rela_type]
                 csv_writer = write_files(label, rela_info[0], rela_info[1], rela_info[2])
-                dict_rela_to_csv[(rela_type, label)] = csv_writer
+                dict_rela_to_tsv[(rela_type, label)] = csv_writer
                 dict_mapping_pairs[(rela_type, label)] = {}
         else:
             print((rela_type, label))
@@ -102,7 +102,7 @@ def load_connections(label):
         for (chemical_id, pharmacological_class_id), sources in dict_pair_to_source.items():
             source = ' and '.join(
                 ['NDF-RT' if rela_source == 'NDFRT' else rela_source + ' via NDF-RT' for rela_source in sources])
-            dict_rela_to_csv[(rela_type, label_loop)].writerow([chemical_id, pharmacological_class_id, source])
+            dict_rela_to_tsv[(rela_type, label_loop)].writerow([chemical_id, pharmacological_class_id, source])
 
 
 def main():
