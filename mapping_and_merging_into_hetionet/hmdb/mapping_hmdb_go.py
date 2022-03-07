@@ -43,8 +43,8 @@ def get_information_and_add_to_dict(label, dict_hetionet, dict_alternative_ids_h
 
 
 # csv of nodes without ontology
-file_without_ontology = open('go/nodes_without_ontology.csv', 'w')
-csv_without_ontology = csv.writer(file_without_ontology)
+file_without_ontology = open('go/nodes_without_ontology.tsv', 'w')
+csv_without_ontology = csv.writer(file_without_ontology, delimiter='\t')
 csv_without_ontology.writerow(['id', 'ontology','name'])
 
 
@@ -138,7 +138,7 @@ def main():
             '###########################################################################################################################')
 
         print(datetime.datetime.utcnow())
-        print('Prepare cypher query and csv file')
+        print('Prepare cypher query and tsv file')
 
         csv_writer = generate_files(label, hmdb_label)
 

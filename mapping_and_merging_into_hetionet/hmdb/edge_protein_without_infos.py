@@ -66,7 +66,7 @@ def load_pair_edges(csv_mapped, csv_new, label, own_label_hmdb, other_hmdb_label
     :param dict_pair_to_resource: dictionary
     :return:
     """
-    query = '''MATCH (p:%s)-[]-(r:%s)-[v]-(n:%s)-[]-(b:%s) RETURN p.identifier, b.identifier'''
+    query = '''MATCH (p:%s)-[]-(r:%s)-[v]-(n:%s)-[]-(b:%s) RETURN p.identifier, b.identifier, r.identifier'''
     query = query % (label, own_label_hmdb, other_hmdb_label, other_label)
     print(query)
     results = graph_database.run(query)
@@ -80,7 +80,7 @@ def load_pair_edges(csv_mapped, csv_new, label, own_label_hmdb, other_hmdb_label
     # counter new
     counter_new = 0
 
-    for node_id_1, node_id_2, in results:
+    for node_id_1, node_id_2, hmdb_id, in results:
         if (node_id_1, node_id_2) in set_of_used_pairs:
             continue
         set_of_used_pairs.add((node_id_1, node_id_2))
@@ -89,7 +89,7 @@ def load_pair_edges(csv_mapped, csv_new, label, own_label_hmdb, other_hmdb_label
             csv_mapped.writerow([node_id_1, node_id_2, prepare_resource(dict_pair_to_resource[(node_id_1, node_id_2)])])
         else:
             counter_new += 1
-            csv_new.writerow([node_id_1, node_id_2])
+            csv_new.writerow([node_id_1, node_id_2, hmdb_id])
 
     print('number of ' + label + '  and ' + other_label + ' relationships in hetionet:' + str(
         len(set_of_used_pairs)))
@@ -115,10 +115,11 @@ def create_cypher_file(file_name, file_name_new, label, node_pharmebinet_label, 
     :param direction_last: string
     :return:
     """
-    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/hmdb/%s" As line FIELDTERMINATOR "\\t" MATCH (d:%s{identifier:line.node_id_1}),(c:%s{identifier:line.node_id_2}) CREATE (d)%s[: %s{ resource: ['HMDB'], hmdb: "yes", license:"Creative Commons (CC) Attribution-NonCommercial (NC) 4.0 International Licensing ", url:"https://hmdb.ca/%s/"+line.node_id_1, source:"HMDB"}]%s(c);\n'''
-    query = query % (path_of_directory, file_name_new, label, node_pharmebinet_label, direction_first, rela_name,
-                     'proteins' if label == 'Protein' else 'metabolites', direction_last)
-    cypher_file.write(query)
+    if label=='Metabolite' or node_pharmebinet_label=='Pathway':
+        query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/hmdb/%s" As line FIELDTERMINATOR "\\t" MATCH (d:%s{identifier:line.node_id_1}),(c:%s{identifier:line.node_id_2}) CREATE (d)%s[: %s{ resource: ['HMDB'], hmdb: "yes", license:"Creative Commons (CC) Attribution-NonCommercial (NC) 4.0 International Licensing ", url:"https://hmdb.ca/%s/"+line.hmdb_id, source:"HMDB"}]%s(c);\n'''
+        query = query % (path_of_directory, file_name_new, label, node_pharmebinet_label, direction_first, rela_name,
+                         'proteins' if label == 'Protein' else 'metabolites', direction_last)
+        cypher_file.write(query)
 
     if node_pharmebinet_label not in dict_go_to_rela_types:
         query = '''LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/hmdb/%s" As line FIELDTERMINATOR "\\t" MATCH (d:%s{identifier:line.node_id_1})-[r]-(c:%s{identifier:line.node_id_2}) Where not exists(r.not) Set  r.resource=split(line.resource,'|'), r.hmdb='yes';\n'''
@@ -161,7 +162,7 @@ def check_relationships_and_generate_file(label, own_hmdb_label, other_node_hmdb
 
     file_edge_pro_or_meta_to_node_new = open(file_name_new, 'w', encoding="utf-8")
     csv_edge_new = csv.writer(file_edge_pro_or_meta_to_node_new, delimiter='\t', lineterminator='\n')
-    csv_edge_new.writerow(['node_id_1', 'node_id_2'])
+    csv_edge_new.writerow(['node_id_1', 'node_id_2', 'hmdb_id'])
 
     print(
         '###########################################################################################################################')

@@ -22,7 +22,7 @@ def create_connection_with_neo4j():
 def get_all_metabolites_with_xrefs():
     """
     prepare the file and the cypher query to integrate the metabolite. Then load all metabolites of hmdb and prepare the
-    xrefs. Then write into csv file.
+    xrefs. Then write into tsv file.
     :return:
     """
     file_name='metabolite/new.tsv'
@@ -73,7 +73,7 @@ def main():
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
-    print('Load all hmdb Metabolite from database and write prepared information into csv file')
+    print('Load all hmdb Metabolite from database and write prepared information into tsv file')
 
     get_all_metabolites_with_xrefs()
 

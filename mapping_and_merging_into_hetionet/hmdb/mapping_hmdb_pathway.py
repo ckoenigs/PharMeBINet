@@ -66,7 +66,7 @@ def load_pw_from_database():
 
 def generate_files(path_of_directory):
     """
-    generate cypher file and csv file
+    generate cypher file and tsv file
     :return: csv files
     """
     # file from relationship between gene and variant
@@ -173,7 +173,7 @@ def main():
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
-    print('Generate cypher and csv file')
+    print('Generate cypher and tsv file')
 
     csv_mapping, csv_not_mapped = generate_files(path_of_directory)
 
