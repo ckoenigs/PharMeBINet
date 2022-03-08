@@ -24,6 +24,13 @@ python3 mapping_product_drugcentral.py $path_to_project > product/output.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
+echo 'integrate Drugcentral product'
+
+python3 mapping_GOterm_drugcentral.py $path_to_project > goTerm/output.txt
+
+
+now=$(date +"%F %T")
+echo "Current time: $now"
 
 $path_neo4j/cypher-shell -u neo4j -p test -f output/cypher.cypher
 

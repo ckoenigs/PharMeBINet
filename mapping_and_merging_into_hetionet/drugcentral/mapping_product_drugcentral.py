@@ -86,9 +86,9 @@ def load_DC_product_in():
         resource = '|'.join(resource)
         csv_mapped.writerow([node_id, product_id, resource, methodes])
 
-def generate_csv_files():
+def generate_tsv_files():
     """
-    Generate csv files for mapped and not mapped. Additionally, the cypher query is generated.
+    Generate tsv files for mapped and not mapped. Additionally, the cypher query is generated.
     :return:
     """
     global csv_mapped, csv_not_mapped
@@ -139,9 +139,9 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.utcnow())
-    print('generate csv files and cypher file')
+    print('generate tsv files and cypher file')
 
-    generate_csv_files()
+    generate_tsv_files()
 
     print(
         '###########################################################################################################################')
