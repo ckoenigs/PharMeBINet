@@ -29,9 +29,9 @@ def load_existing_drug_interaction():
 
     print('number of interaction in database already:', len(dict_existing_drug_interaction_to_resource))
 
-def create_file_and_csv_writer(file_name):
+def create_file_and_tsv_writer(file_name):
     """
-    Generate file as csv writer.
+    Generate file as tsv writer.
     :param file_name: string
     :return:
     """
@@ -47,12 +47,12 @@ def load_ddinter_interaction( directory):
     :return:
     """
 
-    # csv_file
+    # tsv_file
     file_name_mapped = directory + '/mapped_dd_inter.tsv'
-    csv_writer_mapped= create_file_and_csv_writer(file_name_mapped)
+    csv_writer_mapped= create_file_and_tsv_writer(file_name_mapped)
 
     file_name_new = directory + '/new_dd_inter.tsv'
-    csv_writer_new= create_file_and_csv_writer(file_name_new)
+    csv_writer_new= create_file_and_tsv_writer(file_name_new)
 
     # generate cypher files to integrate information
     generate_cypher_file(file_name_mapped, file_name_new)

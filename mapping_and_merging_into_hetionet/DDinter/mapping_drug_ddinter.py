@@ -62,7 +62,7 @@ def prepare_query(file_name):
 
 def add_to_file(dict_node_id_to_resource, identifier_db, identifier_act_id, csv_mapping, how_mapped):
     """
-    add resource and write mapping pair in csv file
+    add resource and write mapping pair in tsv file
     :param dict_node_id_to_resource: dictionary
     :param identifier_db: string
     :param identifier_act_id: string
@@ -82,7 +82,7 @@ def get_all_ddinter_and_map(dict_node_id_to_resource):
     """
 
     # prepare files
-    file_name = 'output/mapping.csv'
+    file_name = 'output/mapping.tsv'
     mapping_file = open(file_name, 'w', encoding='utf-8')
     csv_mapping = csv.writer(mapping_file, delimiter='\t')
     csv_mapping.writerow(['db_id', 'ddinter_id', 'resource', 'how_mapped'])
