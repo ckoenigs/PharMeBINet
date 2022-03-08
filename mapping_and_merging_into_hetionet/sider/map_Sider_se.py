@@ -1,9 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Aug 29 15:16:45 2019
 
-@author: Cassandra
-"""
 import datetime
 import sys, csv
 
@@ -27,13 +22,13 @@ list_side_effect_in_hetionet = []
 #  with id as key and as value a class SideEffect
 dict_all_side_effect = {}
 
-# create csv for sider se effects which includes the already existing nodes which need to be updated and the new generated nodes
-file_update_node = open('output/se_update.csv', 'w')
+# create tsv for sider se effects which includes the already existing nodes which need to be updated and the new generated nodes
+file_update_node = open('output/se_update.tsv', 'w')
 header = ["name", "identifier", "meddraType", "conceptName"]
 csv_writer_update = csv.DictWriter(file_update_node, delimiter='\t', fieldnames=header)
 csv_writer_update.writeheader()
 
-file_new_node = open('output/se_new.csv', 'w')
+file_new_node = open('output/se_new.tsv', 'w')
 csv_writer_new = csv.DictWriter(file_new_node, delimiter='\t', fieldnames=header)
 csv_writer_new.writeheader()
 
@@ -99,7 +94,7 @@ Generate cypher file for side effect nodes
 
 def generate_cypher_file():
     cypher_file = open('output/cypher.cypher', 'w')
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/sider/output/%s.csv" As line FIELDTERMINATOR '\\t' '''
+    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/sider/output/%s.tsv" As line FIELDTERMINATOR '\\t' '''
     query_new = ''
     query_update = ''
     for head in header:

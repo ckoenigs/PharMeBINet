@@ -96,7 +96,7 @@ def integrate_relationship_from_sider_into_hetionet():
 
     # cypher file
     cypher_file = open('output/cypher_rela.cypher', 'w', encoding='utf-8')
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/sider/output/%s.tsv" As line FIELDTERMINATOR '\t' Match (a:Chemical{identifier:line.chemical_id})'''
+    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/sider/output/%s.tsv" As line FIELDTERMINATOR '\\t' Match (a:Chemical{identifier:line.chemical_id})'''
     query = query_start + '''-[r:CAUSES_CHcSE]->(b:SideEffect{identifier:line.se_id}) Set r.upperFrequency=line.upperFrequency, r.placebo=line.placebo, r.avg_frequency=line.avg_frequency, r.lowerFrequency=line.lowerFrequency, r.placeboAvgFrequency= line.placeboAvgFrequency, r.resource=r.resource+"SIDER" , r.placeboLowerFrequency= line.placeboLowerFrequency, r.placeboUpperFrequency= line.placeboUpperFrequency,  r.sider="yes"; \n'''
     query = query % 'mapped_rela_se'
     cypher_file.write(query)
