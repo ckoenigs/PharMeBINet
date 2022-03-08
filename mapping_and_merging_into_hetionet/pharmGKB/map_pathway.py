@@ -53,7 +53,7 @@ def load_db_pathways_in():
 def check_for_mapping(dict_source_to_ids, source, dict_source_to_pathway_ids, csv_writer, identifier):
     """
     go through all cui_ids of the different sources and check if the are in the dictionary to pathway id. If so add
-    them into csv file.
+    them into tsv file.
     :param dict_source_to_ids:
     :param source:
     :param dict_source_to_pathway_ids:
@@ -78,7 +78,7 @@ def load_pharmgkb_phathways_in():
     mapp pathway pharmgkb to pathway
     :return:
     """
-    # csv_file
+    # tsv_file
     file_name = 'pathway/mapping.tsv'
     file = open(file_name, 'w', encoding='utf-8')
     csv_writer = csv.writer(file, delimiter='\t')

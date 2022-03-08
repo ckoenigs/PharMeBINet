@@ -133,7 +133,7 @@ def check_for_mapping(dict_source_to_ids, source, source_extra, dict_source_to_d
                       dictionary_node_to_resource):
     """
     go through all cui_ids of the different sources and check if the are in the dictionary to disease id. If so add
-    them into csv file.
+    them into tsv file.
     :param dict_source_to_ids:
     :param source:
     :param dict_source_to_disease_ids:
@@ -306,7 +306,7 @@ def load_pharmgkb_phenotypes_in():
 
 
 def generate_cypher_file():
-    dict_label_to_csv_mapping = {}
+    dict_label_to_tsv_mapping = {}
     # new file
     file_name_new = 'disease/new.tsv'
     file_new = open(file_name_new, 'w', encoding='utf-8')
@@ -315,12 +315,12 @@ def generate_cypher_file():
     cypher_file = open('output/cypher.cypher', 'a')
 
     for label in ["Disease", "Symptom", "SideEffect"]:
-        # csv_file
+        # tsv_file
         file_name = 'disease/mapping_' + label + '.tsv'
         file = open(file_name, 'w', encoding='utf-8')
         csv_writer = csv.writer(file, delimiter='\t')
         csv_writer.writerow(['disease_id', 'pharmgkb_id', 'resource', 'how_mapped'])
-        dict_label_to_csv_mapping[label] = csv_writer
+        dict_label_to_tsv_mapping[label] = csv_writer
         query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/pharmGKB/%s" As line  FIELDTERMINATOR '\\t'  MATCH (n:PharmGKB_Phenotype{id:line.pharmgkb_id}), (c:%s{identifier:line.disease_id})   Set c.pharmgkb='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_disease_pharmgkb{how_mapped:line.how_mapped}]->(n); \n'''
 
         query = query % (file_name, label)
@@ -330,7 +330,7 @@ def generate_cypher_file():
     query = query % (file_name_new, license)
     cypher_file.write(query)
     cypher_file.close()
-    return dict_label_to_csv_mapping, csv_writer_new
+    return dict_label_to_tsv_mapping, csv_writer_new
 
 
 def main():

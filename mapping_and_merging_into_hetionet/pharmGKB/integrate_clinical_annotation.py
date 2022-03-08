@@ -21,8 +21,8 @@ def create_connection_with_neo4j():
     g = create_connection_to_databases.database_connection_neo4j()
 
 
-# dictionary rela partner to csv file
-dict_rela_partner_to_csv_file = {}
+# dictionary rela partner to tsv file
+dict_rela_partner_to_tsv_file = {}
 
 # open rela cypher file
 cypher_file = open('output/cypher_edge.cypher', 'a')
@@ -41,7 +41,7 @@ def generate_rela_files(directory, rela, rela_name, query_start):
     file = open(file_name, 'w')
     csv_file = csv.writer(file, delimiter='\t')
     csv_file.writerow(['meta_id', 'other_id'])
-    dict_rela_partner_to_csv_file[rela] = csv_file
+    dict_rela_partner_to_tsv_file[rela] = csv_file
 
     query_rela = query_start + ' (b:ClinicalAnnotation{identifier:line.meta_id}), (c:%s{identifier:line.other_id}) Create (b)-[:%s]->(c);\n'
     rela_name = rela_name % ('CA')
@@ -151,7 +151,7 @@ def load_db_info_in():
     """
     First generate the files and the queries. Then prepare clinical annotation meta data. Therefor take only where the
     chemical and variants are mapped. Also fusion the clinical_annotation into the node and write the information in a
-    csv file.
+    tsv file.
     :return:
     """
     #{id:1444667346}
@@ -185,9 +185,9 @@ def load_db_info_in():
     print('length of CA in with all connections:', counter_integrated)
 
 
-def get_rela_and_add_to_csv_file(query_general, pharmGKB_label, label):
+def get_rela_and_add_to_tsv_file(query_general, pharmGKB_label, label):
     """
-    ssearch for all relationship pairs of a given pGKB label and db label and write into a csv file.
+    ssearch for all relationship pairs of a given pGKB label and db label and write into a tsv file.
     :param query_general: string
     :param pharmGKB_label: string
     :param label: string
@@ -201,7 +201,7 @@ def get_rela_and_add_to_csv_file(query_general, pharmGKB_label, label):
         counter += 1
         if meta_id in dict_meta_id_to_clinical_annotation_info:
             counter_specific += 1
-            dict_rela_partner_to_csv_file[label].writerow([meta_id, other_id])
+            dict_rela_partner_to_tsv_file[label].writerow([meta_id, other_id])
 
     return counter, counter_specific
 
@@ -216,10 +216,10 @@ def fill_the_rela_files():
         counter = 0
         counter_specific = 0
         if type(label) == str:
-            counter, counter_specific = get_rela_and_add_to_csv_file(query_general, pharmGKB_label, label)
+            counter, counter_specific = get_rela_and_add_to_tsv_file(query_general, pharmGKB_label, label)
         else:
             for db_label in label:
-                counter_part, counter_specific_part = get_rela_and_add_to_csv_file(query_general, pharmGKB_label,
+                counter_part, counter_specific_part = get_rela_and_add_to_tsv_file(query_general, pharmGKB_label,
                                                                                    db_label)
                 counter += counter_part
                 counter_specific += counter_specific_part

@@ -60,7 +60,7 @@ def load_pharmgkb_genes_in():
     mapp gene pharmgkb to gene
     :return:
     """
-    # csv_file
+    # tsv_file
     file_name = 'gene/mapping.tsv'
     file = open(file_name, 'w', encoding='utf-8')
     csv_writer = csv.writer(file, delimiter='\t')

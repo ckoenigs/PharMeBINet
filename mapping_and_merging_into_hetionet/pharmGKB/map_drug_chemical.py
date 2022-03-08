@@ -201,14 +201,14 @@ def load_pharmgkb_in(label):
     :return:
     """
 
-    # csv_file
+    # tsv_file
     file_name = 'chemical/mapping_' + label.split('_')[1] + '.tsv'
     file = open(file_name, 'w', encoding='utf-8')
     csv_writer = csv.writer(file, delimiter='\t')
     csv_writer.writerow(['identifier', 'pharmgkb_id', 'resource', 'how_mapped', 'xrefs'])
     generate_cypher_file(file_name, label, 'Chemical')
 
-    # csv file pharmacological file
+    # tsv file pharmacological file
     file_name_pc = 'chemical/mapping_pharmacological_class_' + label.split('_')[1] + '.tsv'
     file_pc = open(file_name_pc, 'w', encoding='utf-8')
     csv_writer_pc = csv.writer(file_pc, delimiter='\t')

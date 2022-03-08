@@ -20,8 +20,8 @@ def create_connection_with_neo4j():
     g = create_connection_to_databases.database_connection_neo4j()
 
 
-# dictionary rela partner to csv file
-dict_rela_partner_to_csv_file = {}
+# dictionary rela partner to tsv file
+dict_rela_partner_to_tsv_file = {}
 
 # directory of save the data
 directory = 'annotation_variant_edge'
@@ -43,7 +43,7 @@ def generate_rela_files(label, rela_name, query_start):
     file = open(file_name, 'w')
     csv_file = csv.writer(file, delimiter='\t')
     csv_file.writerow(['anno_id', 'other_id'])
-    dict_rela_partner_to_csv_file[label] = csv_file
+    dict_rela_partner_to_tsv_file[label] = csv_file
 
     query_rela = query_start + ' (b:VariantAnnotation{identifier:line.anno_id}), (c:%s{identifier:line.other_id}) Create (b)-[:%s]->(c);\n'
     rela_name = rela_name % ('VA')
@@ -212,7 +212,7 @@ def load_db_info_in(label, csv_writer):
     """
     First generate the files and the queries. Then prepare clinical annotation meta data. Therefor take only where the
     chemical and variants are mapped. Also fusion the clinical_annotation into the node and write the information in a
-    csv file.
+    tsv file.
     :param label: string
     :param csv_writer: csv writer
     :return:
@@ -263,7 +263,7 @@ def fill_the_rela_files(label_node):
             # counter_specific = 0
             for meta_id, other_id, in results:
                 counter += 1
-                dict_rela_partner_to_csv_file[label].writerow([meta_id, other_id])
+                dict_rela_partner_to_tsv_file[label].writerow([meta_id, other_id])
                 # if meta_id in dict_annotation_to_study_parameters:
                 #     counter_specific += 1
         else:
@@ -274,7 +274,7 @@ def fill_the_rela_files(label_node):
                 counter_specific = 0
                 for meta_id, other_id, in results:
                     counter += 1
-                    dict_rela_partner_to_csv_file[single_label].writerow([meta_id, other_id])
+                    dict_rela_partner_to_tsv_file[single_label].writerow([meta_id, other_id])
                     # if meta_id in dict_annotation_to_study_parameters:
                     #     counter_specific += 1
         print('count rela with ' + pharmGKB_label + ':', counter)

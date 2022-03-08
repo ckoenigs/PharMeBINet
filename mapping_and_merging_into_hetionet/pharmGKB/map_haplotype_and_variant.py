@@ -97,19 +97,19 @@ def load_pharmgkb_in(label, directory, mapped_label):
     :return:
     """
 
-    # csv_file
+    # tsv_file
     file_name = directory+'/mapping_' + label.split('_')[1] + '.tsv'
     file = open(file_name, 'w', encoding='utf-8')
     csv_writer = csv.writer(file, delimiter='\t')
     csv_writer.writerow(['identifier', 'pharmgkb_id', 'resource', 'how_mapped'])
 
-    # csv_file for new
+    # tsv_file for new
     file_name_new = directory + '/new_' + label.split('_')[1] + '.tsv'
     file_new = open(file_name_new, 'w', encoding='utf-8')
     csv_writer_new = csv.writer(file_new, delimiter='\t')
     csv_writer_new.writerow(['identifier', 'dbid', 'how_mapped'])
 
-    # csv file for not mapping
+    # tsv file for not mapping
     not_mapped_file = open(directory+'/not_mapping_' + label.split('_')[1] + '.tsv', 'w', encoding='utf-8')
     csv_writer_not = csv.writer(not_mapped_file, delimiter='\t')
     csv_writer_not.writerow(['pharmgkb_id', 'name'])

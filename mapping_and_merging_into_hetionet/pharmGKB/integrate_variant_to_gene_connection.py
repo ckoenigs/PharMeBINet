@@ -25,7 +25,7 @@ def load_pharmgkb_in(label, directory):
     :return:
     """
 
-    # csv_file
+    # tsv_file
     file_name = directory + '/integrate_' + label.split('_')[1] + '.tsv'
     file = open(file_name, 'w', encoding='utf-8')
     csv_writer = csv.writer(file, delimiter='\t')
