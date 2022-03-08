@@ -14,8 +14,8 @@ The second script mapped the go protein to protein and gene.
 The cypher shell integrates the mapping connection between go protein, and protein and gene.
 
 Next, the relationships between the GOs and protein/Gene are prepared.
-    First, get all relationships properties and prepare the header list of the CSV files and prepare the general cypher query to integrate the edge information.
-    Then, for each label combination and relationship type a CSV file and a cypher query are added to the cypher file.
+    First, get all relationships properties and prepare the header list of the TSV files and prepare the general cypher query to integrate the edge information.
+    Then, for each label combination and relationship type a TSV file and a cypher query are added to the cypher file.
     Next, the pairs are loaded from Neo4j and combine existing pairs. This is not done if the gene_product_id or the with_from are different.
-    All, combinations are written in the right CSV file with all edge information.
+    All, combinations are written in the right TSV file with all edge information.
 Last, the cypher shell integrates the edges into my database.

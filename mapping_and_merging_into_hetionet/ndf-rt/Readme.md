@@ -15,7 +15,7 @@ Then, the NDF-RT drugs are mapped to the chemical.
     Next, the mapping table of RxCui to DrugBank from RxNorm to FDA UNII to DrugBank based on InChIKey and UNII is used.
     Then the mapping of NDF-RT drug name to chemical name, synonyms, and brands.
     The last mapping is UMLS CUI mapping based on NDF-RT external UMLS CUI to chemical UMLS Cuis of UMLS.
-    In the last step, the cypher query for the mapping is generated and added to the cypher file. Also, the mapping CSV file is generated and filled with the pairs.
+    In the last step, the cypher query for the mapping is generated and added to the cypher file. Also, the mapping TSV file is generated and filled with the pairs.
 
 In the following, the NDF-RT ingredients are mapped to chemicals.
     First, the mapping TSV is generated, the fitting cypher query is created and added to the cypher file.

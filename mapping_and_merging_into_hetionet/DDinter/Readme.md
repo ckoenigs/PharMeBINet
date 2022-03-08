@@ -4,7 +4,7 @@ Version: 2020-05-13
 
 The script of DDinter first prepare a drug mapping
 
-The python program try to map the DDinter drug to Chemical with name mapping. All mapping pairs are written into a CSV file and additonally a cypher gfile with cypher queries to integrate the mapping into Neo4j.
+The python program try to map the DDinter drug to Chemical with name mapping. All mapping pairs are written into a TSV file and additonally a cypher file with cypher queries to integrate the mapping into Neo4j.
 
 The mappings are integrated with cypher shell.
 
@@ -17,4 +17,4 @@ Description of level of interaction (http://ddinter.scbdd.com/explanation/)[http
     Unknown: The DDIs collected from the article published in Sci Transl Med were lack of mechanism descriptions, and thus the severity classifications of these DDIs were annotated with 'Unknown'.
 
 
-License:Creative Commons Attribution-NonCommercial-ShareAlike 4.0
+License: Creative Commons Attribution-NonCommercial-ShareAlike 4.0

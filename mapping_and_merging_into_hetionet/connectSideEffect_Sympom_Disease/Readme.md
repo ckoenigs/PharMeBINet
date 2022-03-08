@@ -24,5 +24,5 @@ The SE-phenotype edge use as mapping:
 	Synonyms of phenotype to SE name
 	Phenotype name to UMLS to get UMLS CUI and map to SE identifier
               
-All the mapping pairs are written into a CSV file and for each label pair, a cypher query is generated and wrote into a cypher file.
+All the mapping pairs are written into a TSV file and for each label pair, a cypher query is generated and wrote into a cypher file.
 In the end, the information is integrated into the database with the cypher shell.
