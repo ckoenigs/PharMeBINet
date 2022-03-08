@@ -130,13 +130,13 @@ list_of_splitable_information = [' response', ' hypersensitivity', ' resistance'
                                  ' susceptibility']  # poor metabolism of
 
 '''
-Load all variation sort the ids into the right csv, generate the queries, and add rela to the rela csv
+Load all variation sort the ids into the right tsv, generate the queries, and add rela to the rela tsv
 '''
 
 
 def load_all_rela_drug_response_and_finish_the_files():
     """
-    Go through all information and prepare them for writing into csv file
+    Go through all information and prepare them for writing into tsv file
     :return:
     """
     global set_of_rela_properties
@@ -289,8 +289,8 @@ def load_all_rela_drug_response_and_finish_the_files():
     print('number of relas of clinvar:', counter_rela)
 
 
-# dictionary rela type to csv file
-dict_rela_type_to_csv = {}
+# dictionary rela type to tsv file
+dict_rela_type_to_tsv = {}
 
 # set of all properties which are a list
 set_of_list_properties = set()
@@ -315,11 +315,11 @@ def prepare_dictionary_with_strings_values(dictionary):
 cypher_file = open('variant_drug/cypher.cypher', 'w', encoding='utf-8')
 
 
-def generate_cypher_file_and_csv(rela_type):
+def generate_cypher_file_and_tsv(rela_type):
     """
-    Generate cypher file and csv
+    Generate cypher file and tsv
     :param rela_type: string
-    :return: csv dict
+    :return: csv dict writer
     """
     file_name = 'variant_drug/' + rela_type + '.tsv'
     file = open(file_name, 'w', encoding='utf-8')
@@ -369,7 +369,7 @@ dict_rela_name_to_rela_end = {
 }
 
 
-def prepare_csv_file():
+def prepare_tsv_file():
     """
     prepare the different rela files and generate cypher queries
     :return:
@@ -386,15 +386,15 @@ def prepare_csv_file():
         else:
             print(rela_type)
 
-        if rela_type not in dict_rela_type_to_csv:
-            csv_writer = generate_cypher_file_and_csv(rela_type)
-            dict_rela_type_to_csv[rela_type] = csv_writer
+        if rela_type not in dict_rela_type_to_tsv:
+            csv_writer = generate_cypher_file_and_tsv(rela_type)
+            dict_rela_type_to_tsv[rela_type] = csv_writer
         if len(list_of_dict) == 1:
             dict_info = list_of_dict[0]
             dict_info['variant_id'] = variant_id
             dict_info['chemical_id'] = chemical_id
             if "no assertion criteria provided" not in dict_info['clinical_significance_review_status']:
-                dict_rela_type_to_csv[rela_type].writerow(prepare_dictionary_with_strings_values(dict_info))
+                dict_rela_type_to_tsv[rela_type].writerow(prepare_dictionary_with_strings_values(dict_info))
             else:
                 counter_not_used_edges+=1
 
@@ -431,7 +431,7 @@ def prepare_csv_file():
                                 # sys.exit()
 
             if "no assertion criteria provided" not in combinde_dictionary['clinical_significance_review_status']:
-                dict_rela_type_to_csv[rela_type].writerow(prepare_dictionary_with_strings_values(combinde_dictionary))
+                dict_rela_type_to_tsv[rela_type].writerow(prepare_dictionary_with_strings_values(combinde_dictionary))
             else:
                 counter_not_used_edges+=1
     print(set_of_list_properties)
@@ -466,7 +466,7 @@ def main():
     print(datetime.datetime.utcnow())
     print('get all kind of properties of the drug response')
 
-    prepare_csv_file()
+    prepare_tsv_file()
 
     print('##########################################################################')
 

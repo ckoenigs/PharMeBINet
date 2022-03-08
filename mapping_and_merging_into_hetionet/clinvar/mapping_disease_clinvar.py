@@ -64,7 +64,7 @@ query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%
 
 def add_query_to_cypher_file():
     '''
-    add query for a specific csv to cypher file
+    add query for a specific tsv to cypher file
     '''
     this_start_query = query_start + "(n:trait_Disease_ClinVar {identifier:line.trait_id}), (m:Disease{identifier:line.disease_id}) Set m.clinvar='yes' Create (m)-[:equal_to_clinvar_disease{mapping_methode:split(line.mapping_method,'|')}]->(n);\n"
     query = this_start_query % (path_of_directory, 'mapping')
@@ -190,9 +190,9 @@ def prepare_name_synonym_for_disease(disease_id, dictionary_with_names, to_dicti
 dict_disease_id_to_synonymsy_set = {}
 
 
-def write_into_csv_file(disease_id, trait_id, trait_name, tuple_pair, csv_mapping_writer, mapped_with=None):
+def write_into_tsv_file(disease_id, trait_id, trait_name, tuple_pair, csv_mapping_writer, mapped_with=None):
     """
-    write into the csv file
+    write into the tsv file
     :param disease_id: string
     :param trait_id: string
     :param trait_name:  string
@@ -208,9 +208,9 @@ def write_into_csv_file(disease_id, trait_id, trait_name, tuple_pair, csv_mappin
     csv_mapping_writer.writerow([trait_id, disease_id, "|".join(list(mapping_set)), '|'.join(sorted(reource)), trait_name, disease_name])
 
 
-def check_for_mapping_and_write_in_csv_file(name, dictionary, counter_new_mapped, trait_id, mapped_ids, mapped_with):
+def check_for_mapping_and_write_in_tsv_file(name, dictionary, counter_new_mapped, trait_id, mapped_ids, mapped_with):
     """
-    check if name mapps to a given dictionary and if so write into a csv file
+    check if name mapps to a given dictionary and if so write into a tsv file
     :param name: stirng
     :param dictionary:  dictionary
     :param counter_new_mapped: int
@@ -224,13 +224,13 @@ def check_for_mapping_and_write_in_csv_file(name, dictionary, counter_new_mapped
         counter_new_mapped += 1
         mapped_ids.add(trait_id)
         for disease_id in dictionary[name]:
-            write_into_csv_file(disease_id, trait_id, name, (trait_id, disease_id), csv_mapping_writer,
+            write_into_tsv_file(disease_id, trait_id, name, (trait_id, disease_id), csv_mapping_writer,
                                 mapped_with=mapped_with)
         return True, counter_new_mapped
     return False, counter_new_mapped
 
 
-# files for mapping csv
+# files for mapping tsv
 file_mapping = open('disease/mapping.tsv', 'w', encoding='utf-8')
 csv_mapping_writer = csv.writer(file_mapping, delimiter='\t')
 csv_mapping_writer.writerow(['trait_id', 'disease_id', 'mapping_method', 'resource'])
@@ -246,14 +246,14 @@ def mapping_with_name():
         if 'name' in dict_clinvar_id_to_node[trait_id]:
             name = dict_clinvar_id_to_node[trait_id]['name']
             name = name.replace(' (disease)','')
-            found, counter_new_mapped = check_for_mapping_and_write_in_csv_file(name, dict_disease_name_to_ids,
+            found, counter_new_mapped = check_for_mapping_and_write_in_tsv_file(name, dict_disease_name_to_ids,
                                                                                 counter_new_mapped, trait_id,
                                                                                 mapped_ids, ['name'])
             if found:
                 continue
 
             # only if no name-name mapping is possible then check from name to name and synonyms from mondo
-            found, counter_new_mapped = check_for_mapping_and_write_in_csv_file(name, dict_disease_name_synonyms_to_ids,
+            found, counter_new_mapped = check_for_mapping_and_write_in_tsv_file(name, dict_disease_name_synonyms_to_ids,
                                                                                 counter_new_mapped, trait_id,
                                                                                 mapped_ids, ['name and synonyms'])
             if found:
@@ -267,7 +267,7 @@ def mapping_with_name():
                 if synonym in dict_disease_name_synonyms_to_ids:
                     found_synonyms = True
                     for disease_id in dict_disease_name_synonyms_to_ids[synonym]:
-                        write_into_csv_file(disease_id, trait_id, synonym, (trait_id, disease_id), csv_mapping_writer,
+                        write_into_tsv_file(disease_id, trait_id, synonym, (trait_id, disease_id), csv_mapping_writer,
                                             mapped_with=['synonym'])
             if found_synonyms:
                 counter_new_mapped += 1
@@ -280,9 +280,9 @@ def mapping_with_name():
     print('number of not mapped:' + str(len(set_not_mapped_ids)))
 
 
-def write_in_csv_files():
+def write_in_tsv_files():
     """
-    write in the different csv files, the mapped and not mapped ids
+    write in the different tsv files, the mapped and not mapped ids
     """
 
     # because a lot of multiple mapping between trait disease and disease appears and not all are so good it try to reduce this
@@ -292,11 +292,11 @@ def write_in_csv_files():
     for trait_id, group in group_mappings_after_trait(dict_of_mapped_tuples.keys()):
         group = list(group)
         trait_name = dict_clinvar_id_to_node[trait_id]['name'] if 'name' in dict_clinvar_id_to_node[trait_id] else ''
-        # not multiple mapped can be written directly into the csv file
+        # not multiple mapped can be written directly into the tsv file
         if len(group) == 1:
             tuple_pair = group[0]
             disease_id = tuple_pair[1]
-            write_into_csv_file(disease_id, trait_id, trait_name, tuple_pair, csv_mapping_writer)
+            write_into_tsv_file(disease_id, trait_id, trait_name, tuple_pair, csv_mapping_writer)
             continue
         synonyms_trait = [x.lower() for x in dict_clinvar_id_to_node[trait_id]['synonyms']] if 'synonyms' in \
                                                                                                dict_clinvar_id_to_node[
@@ -319,10 +319,10 @@ def write_in_csv_files():
 
         if found_exact_map:
             for disease_id in list_of_exact_map:
-                write_into_csv_file(disease_id, trait_id, trait_name, (trait_id, disease_id), csv_mapping_writer)
+                write_into_tsv_file(disease_id, trait_id, trait_name, (trait_id, disease_id), csv_mapping_writer)
         else:
             for (x, disease_id) in group:
-                write_into_csv_file(disease_id, trait_id, trait_name, (trait_id, disease_id), csv_mapping_writer)
+                write_into_tsv_file(disease_id, trait_id, trait_name, (trait_id, disease_id), csv_mapping_writer)
 
     file_mapping.close()
 
@@ -383,9 +383,9 @@ def main():
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
-    print('Write the csv')
+    print('Write the tsv')
 
-    write_in_csv_files()
+    write_in_tsv_files()
 
     print('##########################################################################')
 

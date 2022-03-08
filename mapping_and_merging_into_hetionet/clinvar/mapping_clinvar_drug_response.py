@@ -41,9 +41,6 @@ def load_chemicals_from_database_and_add_to_dict():
             dict_chemical_name_to_chemical_id[synonym].add(identifier)
 
 
-# dictionary tuple of lables to csv file
-dict_tuple_of_labels_to_csv_files = {}
-
 # file from relationship between gene and variant
 file_rela = open('drug/chemical_drug.tsv', 'w', encoding='utf-8')
 csv_rela = csv.writer(file_rela, delimiter='\t')
@@ -63,7 +60,7 @@ def split_name_to_to_only_name(name):
 
 
 '''
-Load all variation sort the ids into the right csv, generate the queries, and add rela to the rela csv
+Load all variation sort the ids into the right tsv, generate the queries, and add rela to the rela tsv
 '''
 
 
