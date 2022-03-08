@@ -62,8 +62,8 @@ def load_pathway_from_database():
 
 def generate_files(path_of_directory):
     """
-    generate cypher file and csv file
-    :return: csv files
+    generate cypher file and tsv file
+    :return: csv writers
     """
     # file from relationship between gene and variant
     file_name = 'pathway/mapping_pathway.tsv'
@@ -151,7 +151,7 @@ def load_all_drugbank_pc_and_map(csv_mapping, csv_not_mapped):
 def generate_edge_files():
     """
     Prepare pathway compound edge file and cypher query.
-    :return: csv file
+    :return: csv writer
     """
     file_name = 'pathway/edge_pathway_compound.tsv'
     file = open(file_name, 'w', encoding='utf-8')
@@ -209,7 +209,7 @@ def main():
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
-    print('Generate cypher and csv file')
+    print('Generate cypher and tsv file')
 
     csv_mapping, csv_not_mapped = generate_files(path_of_directory)
 

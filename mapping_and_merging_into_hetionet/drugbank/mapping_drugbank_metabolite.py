@@ -63,8 +63,8 @@ def load_metabolite_from_database():
 
 def generate_files(path_of_directory):
     """
-    generate cypher file and csv file
-    :return: csv files
+    generate cypher file and tsv file
+    :return: csv writer
     """
     # file from relationship between gene and variant
     file_name = 'metabolite/mapping_metabolite.tsv'
@@ -195,7 +195,7 @@ def main():
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
-    print('Generate cypher and csv file')
+    print('Generate cypher and tsv file')
 
     csv_mapping, csv_not_mapped = generate_files(path_of_directory)
 

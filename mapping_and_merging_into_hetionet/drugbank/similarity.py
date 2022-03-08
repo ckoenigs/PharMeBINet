@@ -119,7 +119,7 @@ threshold=0.75
 def generate_cypher(header, file_name):
     cypherfile = open('compound_interaction/cypher_resemble.cypher', 'w', encoding='utf-8')
     query='''Match c1:Compound)-[r:RESEMBLES_CrC]->(c2:Compound) Delete r '''
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/drugbank/compound_interaction/%s" As line Match (c1:Compound{identifier:line.id1}), (c2:Compound{identifier:line.id2}) Create (c1)-[:RESEMBLES_CrC{source:"Open Babel and rdKit", unbiased:false, resource:['OpenBabel','rdKit'],  license:'%s', '''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/drugbank/compound_interaction/%s" As line  Fieldterminator '\\t' Match (c1:Compound{identifier:line.id1}), (c2:Compound{identifier:line.id2}) Create (c1)-[:RESEMBLES_CrC{source:"Open Babel and rdKit", unbiased:false, resource:['OpenBabel','rdKit'],  license:'%s', '''
     for head in header:
         query+= head+':toFloat(line.'+head+'), '
     query = query % (file_name,'CC0 1.0')
@@ -134,7 +134,7 @@ def calculate_similarities_and_write_into_file():
     header=['id1','id2','morgan bit vec_cosine', 'maccs_dice', 'morgan bit vec_tanimoto', 'morgan bit vec_dice', 'topologic_tanimoto', 'morgan bit vec_mcconnaughey', 'topologic torsin_tanimoto', 'maccs_rdkit_dice', 'maccs_rdkit_tanimoto', 'fp3_tanimoto', 'fp4_tanimoto', 'fp2_tanimoto', 'maccs_open_babel_tanimoto', 'maccs_rdkit_tversky', 'topologic torsin bit vec_dice', 'topologic torsin bit vec_cosine', 'atom pair_tanimoto', 'topologic_dice', 'morgan_dice', 'atom pair hash_tanimoto', 'atom pair_tversky', 'topologic torsin_tversky', 'topologic torsin bit vec_tversky', 'morgan_tanimoto', 'morgan bit vec_russel', 'morgan bit vec_sokal', 'morgan_tversky', 'morgan bit vec_tversky',  'atom pair hash_dice', 'topologic torsin bit vec_kulczynski', 'topologic torsin bit vec_tanimoto', 'topologic torsin bit vec_mcconnaughey', 'morgan hash_dice', 'morgan bit vec_kulczynski', 'atom pair_dice',  'morgan hash_tversky', 'morgan hash_tanimoto', 'topologic torsin_dice', 'topologic torsin bit vec_russel',  'atom pair hash_tversky',  'topologic torsin bit vec_sokal',  'topologic_tversky', 'atom_pair_hash_bit_vec_mcconnaughey', 'atom_pair_hash_bit_vec_cosine', 'atom_pair_hash_bit_vec_kulczynski', 'atom_pair_hash_bit_vec_tanimoto', 'atom_pair_hash_bit_vec_russel', 'atom_pair_hash_bit_vec_dice', 'atom_pair_hash_bit_vec_sokal', 'atom_pair_hash_bit_vec_tversky']
     header =[x.replace(' ','_') for x in header]
     file_write=open('compound_interaction/pair_to_similarity.tsv','w',encoding='utf-8')
-    csv_writer= csv.DictWriter(file_write, fieldnames=header)
+    csv_writer= csv.DictWriter(file_write, fieldnames=header, delimiter='\t')
     csv_writer.writeheader()
     generate_cypher(header, 'pair_to_similarity.tsv')
     counter=0
