@@ -82,39 +82,39 @@ do_name = "Disease Ontology"
 # disease ontology label
 do_label = 'diseaseontology'
 
-# generate csv files for integration
+# generate tsv files for integration
 header_nodes = ['identifier', 'name', 'definition', "synonyms", "umls_cuis", "subset", "xrefs", "alternative_ids"]
-# csv file for DOID which are already in Hetionet
-file_included = open('output/already_included.csv', 'w', encoding='utf-8')
+# tsv file for DOID which are already in Hetionet
+file_included = open('output/already_included.tsv', 'w', encoding='utf-8')
 csv_writer_included = csv.DictWriter(file_included, delimiter='\t', fieldnames=header_nodes)
 csv_writer_included.writeheader()
 
 header_alt = header_nodes[:]
 header_alt.append('alternative_id')
-file_included_alt = open('output/already_included_but_mapped_with_alt.csv', 'w', encoding='utf-8')
+file_included_alt = open('output/already_included_but_mapped_with_alt.tsv', 'w', encoding='utf-8')
 csv_writer_included_alt = csv.DictWriter(file_included_alt, delimiter='\t', fieldnames=header_alt)
 csv_writer_included_alt.writeheader()
 
-file_new_nodes = open('output/new_nodes.csv', 'w', encoding='utf-8')
+file_new_nodes = open('output/new_nodes.tsv', 'w', encoding='utf-8')
 csv_writer_new = csv.DictWriter(file_new_nodes, delimiter='\t', fieldnames=header_nodes)
 csv_writer_new.writeheader()
 
-# csv for relationship
+# tsv for relationship
 # header of rela
 header_rela = ['child', 'parent']
-file_rela = open('output/new_rela.csv', 'w', encoding='utf-8')
+file_rela = open('output/new_rela.tsv', 'w', encoding='utf-8')
 csv_writer_rela = csv.DictWriter(file_rela, delimiter='\t', fieldnames=header_rela)
 csv_writer_rela.writeheader()
 
 '''
-Create cypher file to update and create new Disease nodes from csv.
+Create cypher file to update and create new Disease nodes from tsv.
 Also create cypher query for generat is a relationships between Diseases
 '''
 
 
 def generate_cypher_file():
     cypher_file = open('cypher.cypher', 'w', encoding='utf-8')
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/do/output/%s.csv" As line FIELDTERMINATOR '\\t' '''
+    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/do/output/%s.tsv" As line FIELDTERMINATOR '\\t' '''
 
     query_middel_set = ''
     query_middel_create = ''
@@ -130,17 +130,17 @@ def generate_cypher_file():
         if not header in ['url', 'identifier']:
             query_middel_set += 'n.' + header + '=line.' + header + ', '
 
-    query_set = query_start + ' Match (n:Disease{identifier:line.identifier}), (b:%s{id:line.identifier}) Set ' + query_middel_set + 'n.resource=["Hetionet","%s"], n.hetionet="yes", n.diseaseOntology="yes", n.license="%s" Create (n)-[:equal_to]->(b);\n'
+    query_set = query_start + ' Match (n:Disease{identifier:line.identifier}), (b:%s{id:line.identifier}) Set ' + query_middel_set + 'n.resource=["Hetionet","%s"], n.hetionet="yes", n.diseaseOntology="yes", n.license="%s", n.url="http://www.ontobee.org/ontology/DOID?iri=http://purl.obolibrary.org/obo/DOID_"+split(line.identifier,":")[1] Create (n)-[:equal_to]->(b);\n'
     query_set = query_set % ("already_included", do_label, do_name, license)
     cypher_file.write(query_set)
     query_set_alt = query_start + ' Match (n:Disease{identifier:line.alternative_id}), (b:%s{id:line.identifier}) Set ' + query_middel_set_alt + 'n.resource=["Hetionet","%s"], n.hetionet="yes", n.diseaseOntology="yes", n.license="%s", n.url="http://purl.obolibrary.org/obo/DOID_"+split(line.identifier,":")[1] Create (n)-[:equal_to]->(b);\n'
     query_set_alt = query_set_alt % ("already_included_but_mapped_with_alt", do_label, do_name, license)
     cypher_file.write(query_set_alt)
-    query_create = query_start + ' Match (b:%s{id:line.identifier}) Create (n:Disease{' + query_middel_create + 'resource:["Hetionet","%s"], hetionet:"yes", diseaseOntology:"yes", license:"%s", source:"%s",  url:"http://purl.obolibrary.org/obo/DOID_"+split(line.identifier,":")[1]}) Create (n)-[:equal_to]->(b);\n'
+    query_create = query_start + ' Match (b:%s{id:line.identifier}) Create (n:Disease{' + query_middel_create + 'resource:["%s"], diseaseOntology:"yes", license:"%s", source:"%s",  url:"http://purl.obolibrary.org/obo/DOID_"+split(line.identifier,":")[1]}) Create (n)-[:equal_to]->(b);\n'
     query_create = query_create % ("new_nodes", do_label, do_name, license, do_name)
     cypher_file.write(query_create)
 
-    query_rela = query_start + '''Match (d:Disease {identifier:line.child}), (d2:Disease {identifier:line.parent}) Create (d)-[:IS_A_DiD{license:"%s", source:"%s", unbiased:false, do:'yes'}]->(d2);\n '''
+    query_rela = query_start + '''Match (d:Disease {identifier:line.child}), (d2:Disease {identifier:line.parent}) Create (d)-[:IS_A_DiD{license:"%s", source:"%s", unbiased:false, do:'yes', url:"http://purl.obolibrary.org/obo/DOID_"+split(line.child,":")[1]  }]->(d2);\n '''
     query_rela = query_rela % ("new_rela", license, do_name)
     cypher_file.write(query_rela)
     cypher_file.close()
