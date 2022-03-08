@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Sep  4 10:55:05 2017
-
-@author: ckoenigs
-"""
-
 import datetime
 import sys, csv
 
@@ -131,7 +124,7 @@ def create_cypher_query(header, from_label, to_label, file_name):
 
 def create_mapping_file(directory, file_name, header, from_label, to_label):
     """
-    generate the csv writer for the mapping file and additionaly also the
+    generate the tsv writer for the mapping file and additionaly also the
     :param directory:
     :param file_name:
     :param header:
