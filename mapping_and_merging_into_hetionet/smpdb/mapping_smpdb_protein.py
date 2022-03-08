@@ -66,7 +66,7 @@ def load_compound_from_database_and_add_to_dict():
 
 def generate_files(path_of_directory, label):
     """
-    generate cypher file and csv file
+    generate cypher file and tsv file
     :return: csv file
     """
     # file from relationship between gene and variant
@@ -91,7 +91,7 @@ def resource(resource):
 
 
 '''
-Load all variation sort the ids into the right csv, generate the queries, and add rela to the rela csv
+Load all variation sort the ids into the right tsv, generate the queries, and add rela to the rela tsv
 '''
 
 
@@ -175,7 +175,7 @@ def main():
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
-    print('Generate cypher and csv file')
+    print('Generate cypher and tsv file')
 
     csv_mapping_protein = generate_files(path_of_directory, 'Protein')
     csv_mapping_compound = generate_files(path_of_directory, 'Compound')

@@ -32,13 +32,13 @@ def add_entry_to_dictionary(dictionary, key, value):
 dict_name_to_pathway_ids = {}
 
 # dictionary pathway id to resource
-dict_pathway_id_to_resource={}
+dict_pathway_id_to_resource = {}
 
 # dictionary smpdb id to pathway id
-dict_smpdb_id_to_pathway_ids={}
+dict_smpdb_id_to_pathway_ids = {}
 
 # dictionary pathway id to xrefs
-dict_pathway_id_to_xrefs={}
+dict_pathway_id_to_xrefs = {}
 
 
 def load_pw_from_database():
@@ -49,10 +49,10 @@ def load_pw_from_database():
     global highest_identifier
     query = '''Match (n:Pathway) Return n'''
     results = g.run(query)
-    highest_identifier=0
+    highest_identifier = 0
     for node, in results:
         identifier = node['identifier']
-        dict_pathway_id_to_resource[identifier]=set(node['resource'])
+        dict_pathway_id_to_resource[identifier] = set(node['resource'])
         # find the highest number
         if int(identifier.split("_", -1)[1]) > highest_identifier:
             highest_identifier = int(identifier.split("_", -1)[1])
@@ -63,17 +63,17 @@ def load_pw_from_database():
         for synonym in synonyms:
             add_entry_to_dictionary(dict_name_to_pathway_ids, synonym.lower(), identifier)
 
-        xrefs= node['xrefs'] if 'xrefs' in node else []
+        xrefs = node['xrefs'] if 'xrefs' in node else []
         for xref in xrefs:
-            split_xrefs=xref.split(':',1)
-            if split_xrefs[0]=='pathbank':
+            split_xrefs = xref.split(':', 1)
+            if split_xrefs[0] == 'pathbank':
                 add_entry_to_dictionary(dict_smpdb_id_to_pathway_ids, split_xrefs[1], identifier)
-        dict_pathway_id_to_xrefs[identifier]=set(xrefs)
+        dict_pathway_id_to_xrefs[identifier] = set(xrefs)
 
 
 def generate_files(path_of_directory):
     """
-    generate cypher file and csv file
+    generate cypher file and tsv file
     :return: csv files
     """
     # file from relationship between gene and variant
@@ -104,7 +104,8 @@ def generate_files(path_of_directory):
 
     return csv_mapping, csv_not_mapped
 
-def add_source_to_resource_and_prepare_string(resource,add_string):
+
+def add_source_to_resource_and_prepare_string(resource, add_string):
     """
     prepare resource to string
     :param resource:
@@ -118,7 +119,7 @@ def add_source_to_resource_and_prepare_string(resource,add_string):
 dict_db_pathway_pathway_to_how_mapped = {}
 
 # dictionary name pathway name to pathway id
-dict_new_pathway_name_to_pathway_ids={}
+dict_new_pathway_name_to_pathway_ids = {}
 
 
 def load_all_smpdb_pw_and_map(csv_mapping):
@@ -134,11 +135,14 @@ def load_all_smpdb_pw_and_map(csv_mapping):
         name = node['name'].lower()
         found_mapping = False
         if identifier in dict_smpdb_id_to_pathway_ids:
-            found_mapping=True
+            found_mapping = True
             for pathway_id in dict_smpdb_id_to_pathway_ids[identifier]:
                 if (identifier, pathway_id) not in dict_db_pathway_pathway_to_how_mapped:
                     dict_db_pathway_pathway_to_how_mapped[(identifier, pathway_id)] = 'smpdb_id_mapped'
-                    csv_mapping.writerow([identifier, pathway_id, add_source_to_resource_and_prepare_string(dict_pathway_id_to_resource[pathway_id], 'SMPDB'),'smpdb_id_mapped', add_source_to_resource_and_prepare_string(dict_pathway_id_to_xrefs[pathway_id], 'smpdb:'+identifier)])
+                    csv_mapping.writerow([identifier, pathway_id, add_source_to_resource_and_prepare_string(
+                        dict_pathway_id_to_resource[pathway_id], 'SMPDB'), 'smpdb_id_mapped',
+                                          add_source_to_resource_and_prepare_string(
+                                              dict_pathway_id_to_xrefs[pathway_id], 'smpdb:' + identifier)])
                 else:
                     print('multy mapping')
         if found_mapping:
@@ -150,7 +154,10 @@ def load_all_smpdb_pw_and_map(csv_mapping):
             for pathway_id in dict_name_to_pathway_ids[name]:
                 if (identifier, pathway_id) not in dict_db_pathway_pathway_to_how_mapped:
                     dict_db_pathway_pathway_to_how_mapped[(identifier, pathway_id)] = 'name_mapped'
-                    csv_mapping.writerow([identifier, pathway_id, add_source_to_resource_and_prepare_string(dict_pathway_id_to_resource[pathway_id],'SMPDB'),'name_mapped', add_source_to_resource_and_prepare_string(dict_pathway_id_to_xrefs[pathway_id], 'smpdb:'+identifier)])
+                    csv_mapping.writerow([identifier, pathway_id, add_source_to_resource_and_prepare_string(
+                        dict_pathway_id_to_resource[pathway_id], 'SMPDB'), 'name_mapped',
+                                          add_source_to_resource_and_prepare_string(
+                                              dict_pathway_id_to_xrefs[pathway_id], 'smpdb:' + identifier)])
                 else:
                     print('multy mapping with name')
         if found_mapping:
@@ -159,10 +166,11 @@ def load_all_smpdb_pw_and_map(csv_mapping):
             counter_not_mapped += 1
 
             if name not in dict_new_pathway_name_to_pathway_ids:
-                dict_new_pathway_name_to_pathway_ids[name]=set()
+                dict_new_pathway_name_to_pathway_ids[name] = set()
             dict_new_pathway_name_to_pathway_ids[name].add(identifier)
     print('number of mapped node:', counter_mapped)
     print('number of not mapped node:', counter_not_mapped)
+
 
 def new_pathway_add_to_file(csv_not_mapped):
     """
@@ -172,9 +180,9 @@ def new_pathway_add_to_file(csv_not_mapped):
     """
     global highest_identifier
     for name, set_of_ids in dict_new_pathway_name_to_pathway_ids.items():
-        xrefs='smpdb:'+'|smpdb:'.join(set_of_ids)
-        highest_identifier+=1
-        csv_not_mapped.writerow([set_of_ids.pop(), name, 'PC12_'+str(highest_identifier), xrefs])
+        xrefs = 'smpdb:' + '|smpdb:'.join(set_of_ids)
+        highest_identifier += 1
+        csv_not_mapped.writerow([set_of_ids.pop(), name, 'PC12_' + str(highest_identifier), xrefs])
 
 
 def main():
@@ -201,7 +209,7 @@ def main():
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
-    print('Generate cypher and csv file')
+    print('Generate cypher and tsv file')
 
     csv_mapping, csv_not_mapped = generate_files(path_of_directory)
 

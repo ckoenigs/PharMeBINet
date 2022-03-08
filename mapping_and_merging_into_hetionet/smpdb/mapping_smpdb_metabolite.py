@@ -13,7 +13,8 @@ def create_connection_with_neo4j():
     # set up authentication parameters and connection
     global g
     g = create_connection_to_databases.database_connection_neo4j()
-    
+
+
 def add_entry_to_dictionary(dictionary, key, value):
     """
     prepare entry in dictionary if not exists. Then add new value.
@@ -47,13 +48,12 @@ def load_metabolites_from_database_and_add_to_dict():
         inchi_key = node['inchikey']
         if inchi_key:
             add_entry_to_dictionary(dict_inchi_key_to_metabolite_ids, inchi_key, identifier)
-    print('number of metabolites:',len(dict_metabolite_id_to_resource))
-
+    print('number of metabolites:', len(dict_metabolite_id_to_resource))
 
 
 def generate_files(path_of_directory, label):
     """
-    generate cypher file and csv file
+    generate cypher file and tsv file
     :return: csv file
     """
     # file from relationship between gene and variant
@@ -78,11 +78,11 @@ def resource(resource):
 
 
 '''
-Load all variation sort the ids into the right csv, generate the queries, and add rela to the rela csv
+Load all variation sort the ids into the right tsv, generate the queries, and add rela to the rela tsv
 '''
 
 
-def     load_all_smpdb_metabolite_and_finish_the_files(csv_mapping_metabolite, csv_not_mapped):
+def load_all_smpdb_metabolite_and_finish_the_files(csv_mapping_metabolite, csv_not_mapped):
     query = "MATCH (n:metabolite_smpdb) RETURN n"
     results = g.run(query)
     counter_not_mapped = 0
@@ -92,10 +92,10 @@ def     load_all_smpdb_metabolite_and_finish_the_files(csv_mapping_metabolite, c
         identifier = node['identifier']
         hmdb_id = node['hmdb_id'] if 'hmdb_id' in node else ''
         inchi_key = node['inchi_key'] if 'inchi_key' in node else ''
-        has_mapped=False
+        has_mapped = False
         if hmdb_id != '':
             if hmdb_id in dict_metabolite_id_to_resource:
-                has_mapped=True
+                has_mapped = True
                 csv_mapping_metabolite.writerow(
                     [identifier, hmdb_id, resource(dict_metabolite_id_to_resource[hmdb_id]), 'hmdb_id'])
         if has_mapped:
@@ -103,10 +103,11 @@ def     load_all_smpdb_metabolite_and_finish_the_files(csv_mapping_metabolite, c
 
         if inchi_key != '':
             if inchi_key in dict_inchi_key_to_metabolite_ids:
-                has_mapped=True
+                has_mapped = True
                 for metabolite_id in dict_inchi_key_to_metabolite_ids[inchi_key]:
                     csv_mapping_metabolite.writerow(
-                        [identifier, metabolite_id,  resource(dict_metabolite_id_to_resource[metabolite_id]), 'inchi_key'])
+                        [identifier, metabolite_id, resource(dict_metabolite_id_to_resource[metabolite_id]),
+                         'inchi_key'])
 
         if has_mapped:
             continue
@@ -144,13 +145,13 @@ def main():
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
-    print('Generate cypher and csv file')
+    print('Generate cypher and tsv file')
 
     csv_mapping_metabolite = generate_files(path_of_directory, 'Metabolite')
 
-    file=open('metabolite/not_mapped.csv','w', encoding='utf-8')
-    csv_not_mapped=csv.writer(file, delimiter='\t')
-    csv_not_mapped.writerow(['identifier','name','hmdb_id'])
+    file = open('metabolite/not_mapped.tsv', 'w', encoding='utf-8')
+    csv_not_mapped = csv.writer(file, delimiter='\t')
+    csv_not_mapped.writerow(['identifier', 'name', 'hmdb_id'])
 
     print('##########################################################################')
 
