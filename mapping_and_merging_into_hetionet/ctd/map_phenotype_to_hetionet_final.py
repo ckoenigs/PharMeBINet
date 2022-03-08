@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Aug 29 10:03:28 2017
-
-@author: ckoenigs
-"""
-
 import datetime
 import MySQLdb as mdb
 import sys

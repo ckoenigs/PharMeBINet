@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Apr 17 12:41:20 2018
-
-@author: ckoenigs
-"""
 
 import datetime
 import csv, sys
@@ -110,19 +104,19 @@ def load_ctd_genes_in():
 
 
 '''
-Generate cypher and csv for generating the new nodes and the relationships
+Generate cypher and tsv for generating the new nodes and the relationships
 '''
 
 
 def generate_files():
     # generate cyoher file
     cypher_file = open('output/cypher.cypher', 'w',encoding='utf-8')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ctd/gene/mapping.csv" As line Match (c:Gene{ identifier:line.GeneIDHetionet}), (n:CTD_gene{gene_id:line.GeneIDCTD}) Create (c)-[:equal_to_CTD_gene]->(n) Set c.ctd="yes", c.resource=c.resource+"CTD", c.xrefs=split(line.xrefs,'|'), c.url_ctd=" http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ctd/gene/mapping.tsv" As line  FIELDTERMINATOR '\\t' Match (c:Gene{ identifier:line.GeneIDHetionet}), (n:CTD_gene{gene_id:line.GeneIDCTD}) Create (c)-[:equal_to_CTD_gene]->(n) Set c.ctd="yes", c.resource=c.resource+"CTD", c.xrefs=split(line.xrefs,'|'), c.url_ctd=" http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID;\n'''
     cypher_file.write(query)
 
     global writer
-    csvfile = open('gene/mapping.csv', 'w')
-    writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+    csvfile = open('gene/mapping.tsv', 'w')
+    writer = csv.writer(csvfile, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     writer.writerow(['GeneIDCTD', 'GeneIDHetionet', 'xrefs'])
 
     # add query to update disease nodes with do='no'
@@ -153,7 +147,7 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.utcnow())
-    print('Map generate csv and cypher file ')
+    print('Map generate tsv and cypher file ')
 
     generate_files()
 

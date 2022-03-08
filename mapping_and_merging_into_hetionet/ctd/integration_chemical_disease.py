@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Sep 15 11:41:20 2017
-
-@author: ckoenigs
-"""
 
 import datetime
 import csv, time, sys
@@ -23,28 +17,28 @@ def create_connection_with_neo4j_mysql():
     g = create_connection_to_databases.database_connection_neo4j()
 
 
-# csv files for integrate the different realtionships into hetionet
-csvfile_induces = open('chemical_disease/induces.csv', 'w', encoding='utf-8')
-writer_induces = csv.writer(csvfile_induces, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+# tsv files for integrate the different realtionships into hetionet
+csvfile_induces = open('chemical_disease/induces.tsv', 'w', encoding='utf-8')
+writer_induces = csv.writer(csvfile_induces, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 writer_induces.writerow(
     ['ChemicalID', 'DiseaseID', 'omimIDs', 'directEvidences', 'pubMed_ids', 'inferenceScores', 'inferenceGeneSymbols'])
 
-csvfile_treat = open('chemical_disease/treat.csv', 'w', encoding='utf-8')
-writer_treat = csv.writer(csvfile_treat, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+csvfile_treat = open('chemical_disease/treat.tsv', 'w', encoding='utf-8')
+writer_treat = csv.writer(csvfile_treat, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 writer_treat.writerow(
     ['ChemicalID', 'DiseaseID', 'omimIDs', 'directEvidences', 'pubMed_ids', 'inferenceScores', 'inferenceGeneSymbols'])
 
-csvfile_associated = open('chemical_disease/associated.csv', 'w', encoding='utf-8')
-writer_associated = csv.writer(csvfile_associated, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+csvfile_associated = open('chemical_disease/associated.tsv', 'w', encoding='utf-8')
+writer_associated = csv.writer(csvfile_associated, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 writer_associated.writerow(
     ['ChemicalID', 'DiseaseID', 'omimIDs', 'directEvidences', 'pubMed_ids', 'inferenceScores', 'inferenceGeneSymbols'])
 
 '''
-put the information in the right csv file
+put the information in the right tsv file
 '''
 
 
-def add_information_into_te_different_csv_files(chemical_id, disease_id, information, csvfile):
+def add_information_into_te_different_tsv_files(chemical_id, disease_id, information, csvfile):
     omimIDs = '|'.join(list(filter(bool, information[0])))
     directEvidences = '|'.join(list(filter(bool, information[1])))
     pubMed_ids = '|'.join(list(filter(bool, information[2])))
@@ -54,8 +48,8 @@ def add_information_into_te_different_csv_files(chemical_id, disease_id, informa
         [chemical_id, disease_id, omimIDs, directEvidences, pubMed_ids, inferenceScores, inferenceGeneSymbols])
 
 
-# csvfile_inf= open('chemical_disease/inf.csv', 'w')
-# writer_inf = csv.writer(csvfile_inf, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+# csvfile_inf= open('chemical_disease/inf.tsv', 'w')
+# writer_inf = csv.writer(csvfile_inf, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 # writer_inf.writerow(['ChemicalID', 'DiseaseID', 'inferenceScores'])
 
 
@@ -63,7 +57,7 @@ def add_information_into_te_different_csv_files(chemical_id, disease_id, informa
 cypherfile = open('output/cypher_edge.cypher', 'a', encoding='utf-8')
 
 '''
-get all relationships between gene and pathway, take the hetionet identifier an save all important information in a csv
+get all relationships between gene and pathway, take the hetionet identifier an save all important information in a tsv
 also generate a cypher file to integrate this information 
 '''
 
@@ -75,7 +69,7 @@ def generate_cypher():
     cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')
 
     for (file_name, rela_name) in list_file_name_rela_name:
-        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ctd/chemical_disease/%s.csv" As line Match  (n:Chemical{identifier:line.ChemicalID}), (b:Disease{identifier:line.DiseaseID}) Merge (n)-[r:%s]->(b) On Match Set r.resource=r.resource+'CTD', r.ctd='yes', r.directEvidences=split(line.directEvidences,'|'),  r.inferenceGeneSymbol=split(line.inferenceGeneSymbols,'|'), r.inferenceScore=split(line.inferenceScores,'|'), r.pubMed_ids=split(line.pubMed_ids,'|'), r.url_ctd='http://ctdbase.org/detail.go?type=chem&acc='+line.ChemicalID On Create Set r.directEvidences=split(line.directEvidences,'|'), r.ctd='yes', r.pubMed_ids=split(line.pubMed_ids,'|'), r.resource=["CTD"], r.inferenceGeneSymbol=split(line.inferenceGeneSymbols,'|'), r.inferenceScore=split(line.inferenceScores,'|') , r.url='http://ctdbase.org/detail.go?type=chem&acc='+line.ChemicalID, r.source="CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2021 NC State University. All rights reserved.", r.unbiased=true ;\n '''
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ctd/chemical_disease/%s.tsv" As line  FIELDTERMINATOR '\\t' Match  (n:Chemical{identifier:line.ChemicalID}), (b:Disease{identifier:line.DiseaseID}) Merge (n)-[r:%s]->(b) On Match Set r.resource=r.resource+'CTD', r.ctd='yes', r.directEvidences=split(line.directEvidences,'|'),  r.inferenceGeneSymbol=split(line.inferenceGeneSymbols,'|'), r.inferenceScore=split(line.inferenceScores,'|'), r.pubMed_ids=split(line.pubMed_ids,'|'), r.url_ctd='http://ctdbase.org/detail.go?type=chem&acc='+line.ChemicalID On Create Set r.directEvidences=split(line.directEvidences,'|'), r.ctd='yes', r.pubMed_ids=split(line.pubMed_ids,'|'), r.resource=["CTD"], r.inferenceGeneSymbol=split(line.inferenceGeneSymbols,'|'), r.inferenceScore=split(line.inferenceScores,'|') , r.url='http://ctdbase.org/detail.go?type=chem&acc='+line.ChemicalID, r.source="CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2021 NC State University. All rights reserved.", r.unbiased=true ;\n '''
         query = query % (file_name, rela_name)
         cypherfile.write(query)
 
@@ -244,14 +238,14 @@ def get_all_important_relationships_and_write_into_files():
                 counter_multi_direct_evidence += 1
                 if directEvidence == 'marker/mechanism':
                     counter_marker += 1
-                    add_information_into_te_different_csv_files(chemical_id, disease_id, information,
+                    add_information_into_te_different_tsv_files(chemical_id, disease_id, information,
                                                                 writer_induces)
                 else:
-                    add_information_into_te_different_csv_files(chemical_id, disease_id, information,
+                    add_information_into_te_different_tsv_files(chemical_id, disease_id, information,
                                                                 writer_treat)
         else:
             counter_association += 1
-            add_information_into_te_different_csv_files(chemical_id, disease_id, information, writer_associated)
+            add_information_into_te_different_tsv_files(chemical_id, disease_id, information, writer_associated)
 
 
     time_measurement = time.time() - start
@@ -299,7 +293,7 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.utcnow())
-    print('Take all chemical-disease relationships and generate csv')
+    print('Take all chemical-disease relationships and generate tsv')
 
     get_all_important_relationships_and_write_into_files()
 

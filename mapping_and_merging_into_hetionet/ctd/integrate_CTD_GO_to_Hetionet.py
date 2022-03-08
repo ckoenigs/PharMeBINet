@@ -76,8 +76,8 @@ def load_hetionet_go_in():
 
 
 # csv of nodes without ontology
-file_without_ontology=open('GO/nodes_without_ontology.csv','w')
-csv_without_ontology=csv.writer(file_without_ontology)
+file_without_ontology=open('GO/nodes_without_ontology.tsv','w')
+csv_without_ontology=csv.writer(file_without_ontology,delimiter='\t')
 csv_without_ontology.writerow(['id','ontology'])
 
 '''
@@ -133,7 +133,7 @@ def check_if_new_or_part_of_hetionet(hetionet_label, go_id, go_name,highestGOLev
     # is add to the alternative mapped dictionary
     elif go_id in dict_alternative_id_to_hetionet:
         dict_ctd_in_hetionet_alternative[go_id]=dict_alternative_id_to_hetionet[go_id]
-    # if the ontology was unknown  then the  id is add to the alternative mapped dictionary and in the csv
+    # if the ontology was unknown  then the  id is add to the alternative mapped dictionary and in the tsv
     # to set the ontology
     elif found_with_alternative_id:
         dict_ctd_in_hetionet_alternative[alternative_id]=normal_id
@@ -209,7 +209,7 @@ cypher_file = open('output/cypher.cypher', 'a',encoding='utf-8')
 # query='''begin\n MATCH p=()-[r:equal_to_CTD_go]->() Delete r;\n commit\n'''
 # cypher_file.write(query)
 # add ontology to ctd go
-query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/GO/nodes_without_ontology.csv" As line Match (n:CTD_GO{go_id:line.id}) SET n.ontology=line.ontology ;\n'''
+query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/GO/nodes_without_ontology.tsv" As line  FIELDTERMINATOR '\\t' Match (n:CTD_GO{go_id:line.id}) SET n.ontology=line.ontology ;\n'''
 cypher_file.write(query)
 
 def add_resource(go_id):
@@ -223,14 +223,14 @@ def add_resource(go_id):
     return '|'.join(sorted(resource))
 
 '''
-Generate cypher and csv for generating the new nodes and the relationships
+Generate cypher and tsv for generating the new nodes and the relationships
 '''
 
 
 def generate_files(file_name_addition, ontology, dict_ctd_in_hetionet,dict_ctd_in_hetionet_alternative ):
     # generate mapped csv
-    with open('GO/mapping_' + file_name_addition + '.csv', 'w') as csvfile:
-        writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+    with open('GO/mapping_' + file_name_addition + '.tsv', 'w') as csvfile:
+        writer = csv.writer(csvfile, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
         writer.writerow(['GOIDCTD', 'GOIDHetionet', 'highestGOLevel','resource'])
         # add the go nodes to cypher file
 
@@ -240,7 +240,7 @@ def generate_files(file_name_addition, ontology, dict_ctd_in_hetionet,dict_ctd_i
         for ctd_id, hetionet_id in dict_ctd_in_hetionet_alternative.items():
             writer.writerow([ctd_id, hetionet_id,'',add_resource(hetionet_id)])
 
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/GO/mapping_%s.csv" As line Match (c:%s{ identifier:line.GOIDHetionet}), (n:CTD_GO{go_id:line.GOIDCTD}) SET  c.url_ctd=" http://ctdbase.org/detail.go?type=go&acc="+line.GOIDCTD, c.highestGOLevel=n.highestGOLevel, c.ctd="yes", c.resource=split(line.resource,"|") Create (c)-[:equal_to_CTD_go]->(n);\n'''
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/GO/mapping_%s.tsv" As line  FIELDTERMINATOR '\\t' Match (c:%s{ identifier:line.GOIDHetionet}), (n:CTD_GO{go_id:line.GOIDCTD}) SET  c.url_ctd=" http://ctdbase.org/detail.go?type=go&acc="+line.GOIDCTD, c.highestGOLevel=n.highestGOLevel, c.ctd="yes", c.resource=split(line.resource,"|") Create (c)-[:equal_to_CTD_go]->(n);\n'''
     query = query % (file_name_addition, ontology)
     cypher_file.write(query)
 
@@ -289,7 +289,7 @@ def main():
         '###########################################################################################################################')
 
     print (datetime.datetime.utcnow())
-    print('Map generate csv and cypher file for all three labels ')
+    print('Map generate tsv and cypher file for all three labels ')
 
     for ontology, [dict_in_hetionet, dict_in_hetionet_alternative, dict_ctd_in_hetionet_alternative,
                            dict_ctd_in_hetionet] in dict_process.items():

@@ -1,8 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Apr 18 12:41:20 2018
-@author: ckoenigs
-"""
+
 
 import datetime
 import csv
