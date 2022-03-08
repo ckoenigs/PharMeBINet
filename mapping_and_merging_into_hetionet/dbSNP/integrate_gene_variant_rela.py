@@ -37,8 +37,8 @@ cypher_file = open('output_mapping/cypher_edge.cypher', 'w', encoding='utf-8')
 
 def generate_files(path_of_directory):
     """
-    generate cypher file and csv file
-    :return: csv file
+    generate cypher file and tsv file
+    :return: tsv file
     """
     # file from relationship between gene and variant
     file_name = 'output_mapping/gene_variant'
@@ -73,14 +73,14 @@ def main():
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
-    print('Generate cypher and csv file')
+    print('Generate cypher and tsv file')
 
     csv_mapping = generate_files(path_of_directory)
 
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
-    print('Load all Gene-variant pairs into a csv file from database')
+    print('Load all Gene-variant pairs into a tsv file from database')
 
     load_rela_from_database_and_add_to_dict(csv_mapping)
 

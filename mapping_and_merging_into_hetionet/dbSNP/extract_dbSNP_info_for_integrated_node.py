@@ -284,7 +284,7 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.utcnow())
-    print('Write already found data into csv file')
+    print('Write already found data into tsv file')
 
     go_through_downloaded_json_and_add_them_to_tsv()
 

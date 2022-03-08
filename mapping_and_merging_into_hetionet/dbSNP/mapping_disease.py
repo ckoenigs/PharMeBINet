@@ -82,7 +82,7 @@ query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%
 
 def add_query_to_cypher_file(file_name):
     '''
-    add query for a specific csv to cypher file
+    add query for a specific tsv to cypher file
     '''
     this_start_query = query_start + "(n:disease_dbSNP {identifier:line.identifier}), (m:Disease{identifier:line.disease_id}) Set m.dbSNP='yes', m.resource=split(line.resource,'|') Create (m)-[:equal_to_dbsnp_disease{how_mapped:split(line.how_mapped,'|')}]->(n);\n"
     query = this_start_query % (path_of_directory, file_name)
@@ -90,7 +90,7 @@ def add_query_to_cypher_file(file_name):
 
 def generate_files():
     """
-    Generate csv mapping file and cypher query
+    Generate tsv mapping file and cypher query
     :return:
     """
     file_name='disease/mapping.tsv'

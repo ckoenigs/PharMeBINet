@@ -35,7 +35,7 @@ cypher_file = open('output_mapping/cypher.cypher', 'a', encoding='utf-8')
 
 def generate_files(path_of_directory):
     """
-    generate cypher file and csv file
+    generate cypher file and tsv file
     :return: csv file
     """
     # file from relationship between gene and variant
@@ -55,7 +55,7 @@ def generate_files(path_of_directory):
 
 
 '''
-Load all dbSNP gene ids  and map them. The integrate them into the right csv, generate the queries
+Load all dbSNP gene ids  and map them. The integrate them into the right tsv, generate the queries
 '''
 
 
@@ -106,7 +106,7 @@ def main():
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
-    print('Generate cypher and csv file')
+    print('Generate cypher and tsv file')
 
     csv_mapping = generate_files(path_of_directory)
 
