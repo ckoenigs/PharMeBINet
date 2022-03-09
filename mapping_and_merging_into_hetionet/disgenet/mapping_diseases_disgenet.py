@@ -105,7 +105,7 @@ def load_disease_from_database_and_add_to_dict():
 
 def generate_files(path_of_directory):
     """
-    generate cypher file and csv file
+    generate cypher file and tsv file
     :return: csv file
     """
     # make sure folder exists
@@ -163,7 +163,7 @@ def find_code(node):
 
 def load_all_DisGeNet_disease_and_finish_the_files():
     """
-    Load all variation sort the ids into the right csv, generate the queries, and add rela to the rela csv
+    Load all variation sort the ids into the right tsv, generate the queries, and add rela to the rela tsv
     """
 
     query = "MATCH (n:disease_DisGeNet) RETURN n"
@@ -172,11 +172,11 @@ def load_all_DisGeNet_disease_and_finish_the_files():
     counter_all = 0
     equivalent_id_map = {"OMIM": "OMIM", "NCI": "NCIT", "ICD10CM": "ICD10", "ICD10": "ICD10", "ICD9CM": "ICD9", "ICD9":"ICD9", "DO":"DOID"}
 
-    not_mapped_path = os.path.join(path_of_directory, 'not_mapped.csv')
+    not_mapped_path = os.path.join(path_of_directory, 'not_mapped.tsv')
     header = ['DisGeNet_diseaseId', 'diseaseName', 'xrefs']
     mode = 'w' if os.path.exists(not_mapped_path) else 'w+'
     file = open(not_mapped_path, mode, encoding='utf-8')
-    writer = csv.writer(file)
+    writer = csv.writer(file, delimiter='\t')
     writer.writerow(header)
 
     mapping_df = pd.DataFrame(columns=['DisGeNet_diseaseId', 'identifier', 'resource', 'mapping_method'])
@@ -326,7 +326,7 @@ def main():
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
-    print('Generate cypher and csv file')
+    print('Generate cypher and tsv file')
     generate_files(path_of_directory)
 
     print('##########################################################################')

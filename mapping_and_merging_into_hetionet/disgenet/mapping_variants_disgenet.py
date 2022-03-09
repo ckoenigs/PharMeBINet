@@ -47,8 +47,8 @@ def load_variants_from_database_and_add_to_dict():
 
 def generate_files(path_of_directory):
     """
-    generate cypher file and csv file
-    :return: csv file
+    generate cypher file and tsv file
+    :return: tsv file
     """
     # make sure folder exists
     if not os.path.exists(path_of_directory):
@@ -71,7 +71,7 @@ def generate_files(path_of_directory):
     mode = 'a' if os.path.exists(cypher_file_path) else 'w'
     cypher_file = open(cypher_file_path, mode, encoding='utf-8')
     cypher_file.write(query)
-    query = f'USING PERIODIC COMMIT 10000 LOAD CSV FROM "file:{path_of_directory}not_mapped.csv" AS line  \
+    query = f'USING PERIODIC COMMIT 10000 LOAD CSV FROM "file:{path_of_directory}not_mapped.tsv" AS line  FIELDTERMINATOR "\\t"  \
               Match (n:variant_DisGeNet{{snpId:line[0]}}) Create (p:Variant :GeneVariant{{identifier:n.snpId, chromosome:n.chromosome, position:n.position, resource:["DisGeNet"], xrefs:["dbSNP:"+n.snpId], disgenet:"yes", source:"dbSNP from DisGeNet" }}) Create (p)-[:equal_to_DisGeNet_variant{{mapped_with:"new"}}]->(n);\n'
     cypher_file.write(query)
 
@@ -86,7 +86,7 @@ def resource(identifier):
 
 def load_all_DisGeNet_variants_and_finish_the_files(csv_mapping):
     """
-    Load all variation sort the ids into the right csv, generate the queries, and add rela to the rela csv
+    Load all variation sort the ids into the right tsv, generate the queries, and add rela to the rela tsv
     """
 
     query = "MATCH (n:variant_DisGeNet) RETURN n"
@@ -94,10 +94,10 @@ def load_all_DisGeNet_variants_and_finish_the_files(csv_mapping):
     counter_not_mapped = 0
     counter_all = 0
 
-    not_mapped_path = os.path.join(path_of_directory, 'not_mapped.csv')
+    not_mapped_path = os.path.join(path_of_directory, 'not_mapped.tsv')
     mode = 'w' if os.path.exists(not_mapped_path) else 'w+'
     file = open(not_mapped_path, mode, encoding='utf-8')
-    writer = csv.writer(file)
+    writer = csv.writer(file, delimiter='\t')
  
     for node, in results:
         counter_all += 1
@@ -150,7 +150,7 @@ def main():
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
-    print('Generate cypher and csv file')
+    print('Generate cypher and tsv file')
     csv_mapping = generate_files(path_of_directory)
 
     print('##########################################################################')

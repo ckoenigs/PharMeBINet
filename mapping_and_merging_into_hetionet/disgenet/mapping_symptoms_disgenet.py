@@ -80,8 +80,8 @@ def load_symptoms_from_database_and_add_to_dict(g):
 
 def generate_files(path_of_directory):
     """
-    generate cypher file and csv file
-    :return: csv file
+    generate cypher file and tsv file
+    :return: tsv file
     """
     global csv_mapping
     # make sure folder exists
@@ -112,7 +112,7 @@ def resource(identifier):
 
 def load_all_unmapped_DisGeNet_disease_and_finish_the_files(name,umls_id,xrefs):
     """
-    Load all unmapped DisGeNet_diseases sort the ids into the right csv, generate the queries, and add rela to the rela csv
+    Load all unmapped DisGeNet_diseases sort the ids into the right tsv, generate the queries, and add rela to the rela tsv
     """
     equivalent_id_map = {"MSH": "MESH", "HPO":"HPO"}
 

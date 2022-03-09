@@ -34,8 +34,8 @@ def load_genes_from_database_and_add_to_dict():
 
 def generate_files(path_of_directory):
     """
-    generate cypher file and csv file
-    :return: csv file
+    generate cypher file and tsv file
+    :return: tsv file
     """
     # make sure folder exists
     if not os.path.exists(path_of_directory):
@@ -69,7 +69,7 @@ def resource(identifier):
 
 def load_all_DisGeNet_genes_and_finish_the_files(csv_mapping):
     """
-    Load all variation sort the ids into the right csv, generate the queries, and add rela to the rela csv
+    Load all variation sort the ids into the right tsv, generate the queries, and add rela to the rela tsv
     """
 
     query = "MATCH (n:gene_DisGeNet) RETURN n"
@@ -125,7 +125,7 @@ def main():
     print('##########################################################################')
 
     print(datetime.datetime.utcnow())
-    print('Generate cypher and csv file')
+    print('Generate cypher and tsv file')
     csv_mapping = generate_files(path_of_directory)
 
     print('##########################################################################')
