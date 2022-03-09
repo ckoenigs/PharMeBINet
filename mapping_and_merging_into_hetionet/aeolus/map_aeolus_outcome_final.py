@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Aug  4 12:14:16 2017
-
-@author: Cassandra
-"""
-
 import datetime
 import sys, csv
 import urllib.request, urllib.error, urllib.parse
@@ -452,11 +445,11 @@ dict_outcome_to_disease = {}
 dict_new_node_cui_to_concept = {}
 
 '''
-get the mapped thins and add them to the dictionary and also write all mappings into the csv file
+get the mapped thins and add them to the dictionary and also write all mappings into the tsv file
 '''
 
 
-def generate_csv_file(list_of_delet_index, list_not_mapped, concept_code, diseases, mapping_method, csv_writer):
+def generate_tsv_file(list_of_delet_index, list_not_mapped, concept_code, diseases, mapping_method, csv_writer):
     list_of_delet_index.append(list_not_mapped.index(concept_code))
     dict_outcome_to_disease[concept_code] = list(diseases)
     for disease_id in diseases:
@@ -501,7 +494,7 @@ def mapping_to_disease():
     for concept_code in list_not_mapped_to_hetionet:
         counter_of_mapping_tries += 1
         if concept_code in dict_meddra_to_mondo:
-            generate_csv_file(list_of_delete_index_with_cui, list_not_mapped_to_hetionet, concept_code,
+            generate_tsv_file(list_of_delete_index_with_cui, list_not_mapped_to_hetionet, concept_code,
                               dict_meddra_to_mondo[concept_code], 'meddra mapping',
                               csv_writer)
 
@@ -523,23 +516,23 @@ def mapping_to_disease():
 
             find_intersection = mapped_name_disease.intersection(mapped_cuis_disease)
             if len(find_intersection) > 0:
-                generate_csv_file(list_of_delete_index_with_cui, list_not_mapped_to_hetionet, concept_code,
+                generate_tsv_file(list_of_delete_index_with_cui, list_not_mapped_to_hetionet, concept_code,
                                   find_intersection, 'intersection name and cui mapping',
                                   csv_writer)
                 if len(find_intersection) > 1:
                     print('intersection is greater than one')
             elif len(mapped_cuis_disease) > 0 and len(mapped_name_disease) == 0:
-                generate_csv_file(list_of_delete_index_with_cui, list_not_mapped_to_hetionet, concept_code,
+                generate_tsv_file(list_of_delete_index_with_cui, list_not_mapped_to_hetionet, concept_code,
                                   mapped_cuis_disease, 'cui mapping',
                                   csv_writer)
             elif len(mapped_cuis_disease) == 0 and len(mapped_name_disease) > 0:
-                generate_csv_file(list_of_delete_index_with_cui, list_not_mapped_to_hetionet, concept_code,
+                generate_tsv_file(list_of_delete_index_with_cui, list_not_mapped_to_hetionet, concept_code,
                                   mapped_name_disease, 'name mapping',
                                   csv_writer)
 
             elif len(mapped_cuis_disease) > 0 and len(mapped_name_disease) > 0:
                 # take the name mapping because this is better
-                generate_csv_file(list_of_delete_index_with_cui, list_not_mapped_to_hetionet, concept_code,
+                generate_tsv_file(list_of_delete_index_with_cui, list_not_mapped_to_hetionet, concept_code,
                                   mapped_name_disease, 'name mapping, but both did mapped',
                                   csv_writer)
                 print(concept_code)
@@ -567,12 +560,12 @@ def mapping_to_disease():
         counter_of_mapping_tries += 1
         name = dict_side_effects_aeolus[concept_code].name.lower()
         if concept_code in dict_meddra_to_mondo:
-            generate_csv_file(list_of_delete_index_without_cui, list_aeolus_outcome_without_cui, concept_code,
+            generate_tsv_file(list_of_delete_index_without_cui, list_aeolus_outcome_without_cui, concept_code,
                               dict_meddra_to_mondo[concept_code], 'meddra mapping',
                               csv_writer)
 
         if name in dict_disease_name_to_id:
-            generate_csv_file(list_of_delete_index_without_cui, list_aeolus_outcome_without_cui, concept_code,
+            generate_tsv_file(list_of_delete_index_without_cui, list_aeolus_outcome_without_cui, concept_code,
                               mapped_name_disease, 'meddra mapping',
                               csv_writer)
 

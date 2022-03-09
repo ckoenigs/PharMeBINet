@@ -1,9 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Aug 18 08:40:47 2017
 
-@author: ckoenigs
-"""
 import datetime
 import sys, csv
 
@@ -435,7 +430,7 @@ Generate cypher file to update or create the relationships in hetionet
 def generate_cypher_file():
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/aeolus/drug/mapped.csv" As line Match (a:Aeolus_Drug{drug_concept_id:line.aeolus_id}),(n:Chemical{identifier:line.chemical_id}) Set a.mapped_id=split(line.mapped_ids,'|'), a.how_mapped=line.how_mapped ,  n.aeolus="yes",n.resource= split(line.resource,'|') , n.xrefs=split(line.xrefs,'|') Create (n)-[:equal_to_Aeolus_drug]->(a); \n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/aeolus/drug/mapped.tsv" As line Fieldterminator '\\t' Match (a:Aeolus_Drug{drug_concept_id:line.aeolus_id}),(n:Chemical{identifier:line.chemical_id}) Set a.mapped_id=split(line.mapped_ids,'|'), a.how_mapped=line.how_mapped ,  n.aeolus="yes",n.resource= split(line.resource,'|') , n.xrefs=split(line.xrefs,'|') Create (n)-[:equal_to_Aeolus_drug]->(a); \n'''
 
     cypher_file.write(query)
 
@@ -455,9 +450,9 @@ def generate_cypher_file():
     cypher_general.close()
 
 
-# csv for mapped aeolus pairs
-file = open('drug/mapped.csv', 'w', encoding='utf-8')
-csv_writer = csv.writer(file)
+# tsv for mapped aeolus pairs
+file = open('drug/mapped.tsv', 'w', encoding='utf-8')
+csv_writer = csv.writer(file, delimiter='\t')
 header = ['aeolus_id', 'chemical_id', 'mapped_ids', 'how_mapped', 'resource', 'xrefs']
 csv_writer.writerow(header)
 
@@ -582,7 +577,7 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.utcnow())
-    print('Generate csv of mapped drugs')
+    print('Generate tsv of mapped drugs')
 
     integrate_aeolus_drugs_into_hetionet()
 
