@@ -32,18 +32,18 @@ def get_pairs_information():
     if not os.path.exists(path_of_directory):
         os.mkdir(path_of_directory)
 
-    file_name = 'gene_to_protein.csv'
+    file_name = 'gene_to_protein.tsv'
     file_path = os.path.join(path_of_directory, file_name)
     cypher_name = 'cypher_edge.cypher'
     cypher_edge = open_file(os.path.join(source, cypher_name))
     gene_to_protein = open_file(os.path.join(path_of_directory, file_name))
-    gene_to_protein_writer = csv.writer(gene_to_protein)
+    gene_to_protein_writer = csv.writer(gene_to_protein, delimiter='\t')
     gene_to_protein_writer.writerow(['gene_id', 'protein_id'])
 
     # I check manually on the new edges between gene and protein and most are not accurate, so only the existing are
     # updated
     # query = '''Match (n:Gene)--(:gene_DisGeNet)-[k]-(:protein_DisGeNet)--(p:Protein) Merge (n)-[r:PRODUCES_GpP]->(p) On Create Set r.source="DisGeNet", r.resource=["DisGeNet"], r.disgenet="yes", r.license="CC BY 4.0" On Match Set r.resource=r.resource+"DisGeNet" r.disgenet="yes";'''
-    query = f'''USING PERIODIC COMMIT 10000 LOAD CSV WITH HEADERS FROM "file:{file_path}" AS line  Match (n:Protein{{identifier:line.protein_id}})-[r:PRODUCES_GpP]-(v:Gene{{identifier:line.gene_id}})  Set r.resource=r.resource+"DisGeNet", r.disgenet="yes";\n'''
+    query = f'''USING PERIODIC COMMIT 10000 LOAD CSV WITH HEADERS FROM "file:{file_path}" AS line FIELDTERMINATOR "\\t"   Match (n:Protein{{identifier:line.protein_id}})-[r:PRODUCES_GpP]-(v:Gene{{identifier:line.gene_id}})  Set r.resource=r.resource+"DisGeNet", r.disgenet="yes";\n'''
     cypher_edge.write(query)
     cypher_edge.close()
 
