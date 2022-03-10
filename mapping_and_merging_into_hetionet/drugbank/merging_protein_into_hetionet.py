@@ -105,7 +105,7 @@ This information where manual checked by me.
 
 
 def load_manual_checked_proteins_or_not():
-    csv_file = open('protein/maybe_proteins_manual_checked.tsv.csv', 'r')
+    csv_file = open('protein/maybe_proteins_manual_checked.tsv', 'r')
     reader = csv.DictReader(csv_file, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     for row in reader:
         identifier = row['identifier']
