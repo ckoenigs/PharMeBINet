@@ -20,7 +20,7 @@ echo "Current time: $now"
 
 $path_neo4j/cypher-shell -u neo4j -p test -f protein/cypher_protein.cypher 
 
-sleep 180
+sleep 120
 $path_neo4j/neo4j restart
 sleep 120
 
