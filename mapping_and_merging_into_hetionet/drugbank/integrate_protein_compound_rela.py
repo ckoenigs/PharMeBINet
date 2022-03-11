@@ -184,9 +184,13 @@ def run_through_dictionary_to_add_to_tsv_and_cypher():
                     contain_ref = False
                     for property in list_of_properties[2:]:
                         if property in rela_infos:
+                            value= rela_infos[property]
                             if property.startswith('ref'):
                                 contain_ref = True
-                            tsv_list.append(rela_infos[property])
+                            if type(value)==list:
+                                # print(property)
+                                value='|'.join(value)
+                            tsv_list.append(value)
                         elif property == 'unbiased':
                             tsv_list.append('true') if contain_ref else tsv_list.append('false')
                         else:
