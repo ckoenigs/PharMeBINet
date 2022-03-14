@@ -60,6 +60,9 @@ def add_to_dictionary_with_set(dictionary, key, value):
         dictionary[key] = set()
     dictionary[key].add(value)
 
+# dictionary disease identifier to omim counter
+dict_disease_id_to_omim_count={}
+
 
 '''
 load in all disease from hetionet in a dictionary
@@ -74,11 +77,13 @@ def load_hetionet_labels_in(label, dict_label_id_to_resource, dict_name_to_ids, 
     #  run through results
     for identifier, name, xrefs, synonyms, resource, in results:
         dict_label_id_to_resource[identifier] = set(resource)
+        dict_disease_id_to_omim_count[identifier]=0
         if xrefs:
             for xref in xrefs:
                 if xref.startswith('OMIM:'):
                     omim_id = xref.split(':')[1]
                     add_to_dictionary_with_set(dict_xref_id_to_ids, omim_id, identifier)
+                    dict_disease_id_to_omim_count[identifier]+=1
 
         if name:
             add_to_dictionary_with_set(dict_name_to_ids, name.lower(), identifier)
@@ -203,15 +208,27 @@ def load_hmdb_disease_and_map():
         if disease_id in dict_omim_id_to_disease_ids:
             counter_map_with_id += 1
             is_mapped = True
+            mondo_diseases=set()
+            lowest_count=100
             for database_identifier in dict_omim_id_to_disease_ids[disease_id]:
-                csv_writer_disease.writerow([disease_id, database_identifier,
-                                     prepare_resource(dict_disease_id_to_resource[database_identifier]), 'omim id'])
+                omim_ids_of_the_id=dict_disease_id_to_omim_count[database_identifier]
+                if lowest_count> omim_ids_of_the_id:
+                    mondo_diseases = set([database_identifier])
+                    lowest_count=omim_ids_of_the_id
+                elif lowest_count==omim_ids_of_the_id:
+                    mondo_diseases.add(database_identifier)
+
+            for mondo_disease in mondo_diseases:
+                csv_writer_disease.writerow([disease_id, mondo_disease,
+                                             prepare_resource(dict_disease_id_to_resource[mondo_disease]), 'omim_id'])
+            if lowest_count!=1:
+                print(lowest_count, mondo_diseases)
+                print(dict_omim_id_to_disease_ids[disease_id])
+                print(disease_id, disease_name)
 
         if is_mapped:
             continue
 
-        if is_mapped:
-            continue
 
         counter_not_mapped += 1
         csv_not_mapped.writerow([disease_id, disease_name])
