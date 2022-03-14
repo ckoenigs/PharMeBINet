@@ -24,4 +24,4 @@ The Relationships have also some properties:
 
 ![er_diagram](picture/drugbank_er_rela.png)
 
-License: Creative Common’s Attribution-NonCommercial 4.0 International License.
+License: Creative Common's Attribution-NonCommercial 4.0 International License.
