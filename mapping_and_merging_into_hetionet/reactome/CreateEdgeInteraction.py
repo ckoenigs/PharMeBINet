@@ -232,14 +232,14 @@ def main():
         sys.exit('need a path and license reactome edge interaction')
 
     cypher_file = open('output/cypher_drug_edge.cypher', 'a', encoding="utf-8")
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j_mysql()
     print(
         '°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all interactions from hetionet into a dictionary')
 
     load_hetionet_interactions_in()
@@ -247,7 +247,7 @@ def main():
     print(
         '°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all reactome interactions from neo4j into a dictionary')
 
     list_of_combinations = [
@@ -270,7 +270,7 @@ def main():
         print(
             '__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-._')
 
-        print(datetime.datetime.utcnow())
+        print(datetime.datetime.now())
 
         # file for mapped or not mapped identifier
         file_name_not_mapped = 'interactions/not_mapped_interactions_' + file_name + '.tsv'
@@ -293,7 +293,7 @@ def main():
         print(
             '°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°')
 
-        print(datetime.datetime.utcnow())
+        print(datetime.datetime.now())
 
         print('Generate file not_mapped_interactions.tsv with properties')
 
@@ -302,7 +302,7 @@ def main():
         print(
             '°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°')
 
-        print(datetime.datetime.utcnow())
+        print(datetime.datetime.now())
 
         print('Integrate new interactions')
 
@@ -310,7 +310,7 @@ def main():
 
         print(
             '__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-._')
-        print(datetime.datetime.utcnow())
+        print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

@@ -95,7 +95,7 @@ def load_all_drug_response_and_finish_the_files():
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     global path_of_directory
     if len(sys.argv) > 1:
@@ -105,28 +105,28 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('connection to db')
 
     database_connection()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all chemicals from database')
 
     load_chemicals_from_database_and_add_to_dict()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('get all kind of properties of the drug response')
 
     load_all_drug_response_and_finish_the_files()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

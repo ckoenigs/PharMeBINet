@@ -272,12 +272,12 @@ def main():
     else:
         sys.exit('need a path')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j()
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate cypher file')
 
     generate_cypher_file()
@@ -303,7 +303,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('get the aeolus information')
 
     get_aeolus_connection_information_in_dict('SideEffect', dict_connection_information,
@@ -313,7 +313,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     get_aeolus_connection_information_in_dict('Disease', dict_connection_information_to_disease,
                                               number_of_compounds_at_once, 'integrated_disease',
@@ -322,27 +322,27 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Integrate connection into hetionet')
 
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('integrate aeolus connection into tsv for integration into  hetionet')
     integrate_connection_from_aeolus_in_hetionet(dict_connection_information, csv_new)
 
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     integrate_connection_from_aeolus_in_hetionet(dict_connection_information_to_disease, csv_new_disease)
 
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

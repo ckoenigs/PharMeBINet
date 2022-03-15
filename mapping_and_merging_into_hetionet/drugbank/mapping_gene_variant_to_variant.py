@@ -131,7 +131,7 @@ def load_all_variants_and_finish_the_files(csv_mapping, csv_new):
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     global path_of_directory
     if len(sys.argv) < 2:
         print(len(sys.argv))
@@ -141,35 +141,35 @@ def main():
     path_of_directory = sys.argv[2]
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('connection to db')
 
     create_connection_with_neo4j()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all Variant from database')
 
     load_variant_from_database_and_add_to_dict()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate cypher and tsv file')
 
     csv_mapping, csv_new = generate_files(path_of_directory)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all variation from database')
 
     load_all_variants_and_finish_the_files(csv_mapping, csv_new)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

@@ -837,7 +837,7 @@ def write_adr_csv_file():
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     global path_of_directory
     if len(sys.argv) > 1:
@@ -848,70 +848,70 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('parse adr to tsv')
 
     prepare_adrs()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('parse drug to tsv')
 
     prepare_drug()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('parse genes to tsv')
 
     prepare_genes()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('parse protein to tsv')
 
     prepare_proteins()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('parse variant to tsv')
 
     prepare_variants()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('parse protein drug adr')
 
     prepare_protein_drug_adr()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('parse variant drug adr')
 
     prepare_variant_drug_adr()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('parse adr drug protein')
 
     prepare_adr_gene_drug_rela()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('write adr information into tsv')
 
     write_adr_csv_file()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

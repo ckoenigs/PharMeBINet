@@ -96,7 +96,7 @@ def main():
     else:
         sys.exit('need a path')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('create connection with neo4j')
 
     create_connection_with_neo4j()
@@ -104,7 +104,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('gather all information of the proteins')
 
     get_pairs_information()
@@ -112,7 +112,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('generate and write info in tsv file')
 
     write_info_into_tsv_file()
@@ -121,7 +121,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

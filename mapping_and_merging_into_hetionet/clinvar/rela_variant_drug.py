@@ -439,7 +439,7 @@ def prepare_tsv_file():
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     global path_of_directory
     if len(sys.argv) > 1:
@@ -449,28 +449,28 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('connection to db')
 
     database_connection()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('get all kind of properties of the drug response')
 
     load_all_rela_drug_response_and_finish_the_files()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('get all kind of properties of the drug response')
 
     prepare_tsv_file()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

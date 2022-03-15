@@ -285,7 +285,7 @@ def main():
     else:
         sys.exit('need a path')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('connect to neo4j')
 
     create_connection_with_neo4j()
@@ -293,7 +293,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load gene information')
 
     use_of_entrez_gene()
@@ -301,7 +301,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load pathway commons information')
 
     pathway_commons()
@@ -309,7 +309,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load pathway wikiPathways')
 
     wikipathways()
@@ -317,7 +317,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('combine both sources and generate tsv')
 
     combine_both_source()
@@ -325,7 +325,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

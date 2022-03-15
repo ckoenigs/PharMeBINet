@@ -310,7 +310,7 @@ def integrate_phenotype_into_hetionet():
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j_mysql()
@@ -318,7 +318,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all side effect from hetionet into a dictionary')
 
     load_side_effects_from_hetionet_in_dict()
@@ -326,7 +326,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all ctd phenotypes from neo4j into a dictionary')
 
     load_phenotpypes_CTD()
@@ -334,7 +334,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Map go id to cui with use of umls')
 
     map_phenotype_to_cui()
@@ -342,7 +342,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Map phenotype to hetionet with use of cui')
 
     map_phenotype_to_hetionet()
@@ -350,7 +350,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('integrate phenotype into hetionet')
 
     integrate_phenotype_into_hetionet()
@@ -358,7 +358,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

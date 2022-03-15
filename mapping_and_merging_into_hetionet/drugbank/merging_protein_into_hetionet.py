@@ -468,7 +468,7 @@ def main():
     license = sys.argv[1]
     path_of_directory = sys.argv[2]
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('create connection with neo4j')
 
     create_connection_with_neo4j()
@@ -476,7 +476,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load all chemicals in a dictionary name to chemical id')
 
     load_all_chemicals_and_generate_dictionary()
@@ -484,7 +484,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load all information to the nodes where I was not sure if they are protein or not')
 
     load_manual_checked_proteins_or_not()
@@ -492,7 +492,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     print('load all Protein and gather the information ')
 
@@ -501,7 +501,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     print('load all DrugBank proteins in dictionary')
 
@@ -510,7 +510,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     print('load all DrugBank has component rela and write them in tsv and generate cypher file for integration')
 
@@ -519,7 +519,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

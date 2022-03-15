@@ -218,7 +218,7 @@ def main():
     else:
         sys.exit('need a path')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('create connection with neo4j')
 
     create_connection_with_neo4j()
@@ -226,7 +226,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('get go properties and generate queries')
 
     get_go_properties()
@@ -234,7 +234,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('create tsv for all names spaces and mapped a tsv')
 
     create_tsv_files()
@@ -242,14 +242,14 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('generate hetionet dictionary')
 
     prepare_go_internal_relationships()
 
     print(
         '#################################################################################################################################################################')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('go through all gos in dictionary')
 
     go_through_go()
@@ -257,7 +257,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

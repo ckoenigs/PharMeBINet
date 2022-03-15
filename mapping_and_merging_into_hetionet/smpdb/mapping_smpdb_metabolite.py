@@ -118,7 +118,7 @@ def load_all_smpdb_metabolite_and_finish_the_files(csv_mapping_metabolite, csv_n
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     global path_of_directory, cypher_file
     if len(sys.argv) > 1:
@@ -130,21 +130,21 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('connection to db')
 
     create_connection_with_neo4j()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all Metabolite from database')
 
     load_metabolites_from_database_and_add_to_dict()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate cypher and tsv file')
 
     csv_mapping_metabolite = generate_files(path_of_directory, 'Metabolite')
@@ -155,14 +155,14 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all smpdb metabolite from database')
 
     load_all_smpdb_metabolite_and_finish_the_files(csv_mapping_metabolite, csv_not_mapped)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

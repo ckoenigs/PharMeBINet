@@ -253,21 +253,21 @@ def main():
     else:
         sys.exit('need a path')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('create connection with neo4j')
 
     create_connection_with_neo4j()
 
     print(
         '#################################################################################################################################################################')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('get all rela properties and prepare query')
 
     get_go_rela_properties()
 
     print(
         '#################################################################################################################################################################')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('go through all gos rela in dictionary')
 
     for go_label in ['BiologicalProcess', 'MolecularFunction', 'CellularComponent']:
@@ -280,7 +280,7 @@ def main():
 
     print(
         '#################################################################################################################################################################')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('write combined rela information into tsv files')
 
     write_the_combined_rela_into_files()
@@ -288,7 +288,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

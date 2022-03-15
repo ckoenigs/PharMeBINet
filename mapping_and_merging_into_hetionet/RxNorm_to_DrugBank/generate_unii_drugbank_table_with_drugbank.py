@@ -40,7 +40,7 @@ def generate_tsv_file():
 
 def main():
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('create connection with neo4j')
 
     create_connection_with_neo4j()
@@ -48,7 +48,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load all properties of compound and drugbank compound and use the information to genreate tsv files')
 
     generate_tsv_file()
@@ -56,7 +56,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

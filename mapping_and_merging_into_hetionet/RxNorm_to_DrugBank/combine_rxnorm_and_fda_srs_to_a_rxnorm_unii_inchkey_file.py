@@ -138,35 +138,35 @@ def generate_rxcui_unii_inchikey_file():
 def main():
     print(
         '###########################################################################################################################')
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     print('load all information over rxcui and unii in a dictionary')
 
     load_unii_to_rxcui()
 
     print(
         '###########################################################################################################################')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load all information over rxcui and unii in a dictionary')
 
     load_rxcui_to_unii()
 
     print(
         '###########################################################################################################################')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load all information over unii to inchikey in a dictionary')
 
     generate_unii_inchikey_connection()
 
     print(
         '###########################################################################################################################')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('generate file rxcui, unii and inchikey')
 
     generate_rxcui_unii_inchikey_file()
 
     print(
     '###########################################################################################################################')
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
 
 
 if __name__ == "__main__":

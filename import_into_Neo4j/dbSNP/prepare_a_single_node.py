@@ -813,4 +813,4 @@ def run_through_list_of_nodes_as_json_string(path_directory, path_data, json_fil
         # prepare_json_information_to_tsv(line, chr)
         if counter % 10000 == 0:
             print(counter)
-            print(datetime.datetime.utcnow())
+            print(datetime.datetime.now())

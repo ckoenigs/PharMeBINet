@@ -197,23 +197,23 @@ def write_rela_info_into_csv():
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('gather disease symptoms pairs and add disease to cypher file')
     gather_all_disease_symptom_information_from_HPO()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('combine the rela information and add them to the tsv')
     write_rela_info_into_csv()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

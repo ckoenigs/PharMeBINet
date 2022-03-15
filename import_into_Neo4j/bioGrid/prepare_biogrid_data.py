@@ -551,7 +551,7 @@ def prepare_gene_file():
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     global path_of_directory
     if len(sys.argv) > 1:
@@ -561,28 +561,28 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load chemical-gene interaction')
 
     load_chemical_interaction_and_seperate_information()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load gene-gene interaction')
 
     load_protein_interaction_and_seperate_information()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('generate gene file')
 
     prepare_gene_file()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

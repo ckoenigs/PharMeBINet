@@ -183,7 +183,7 @@ def main():
     global license
     license = sys.argv[1]
     path_of_directory = sys.argv[2]
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('create connection with neo4j')
 
     create_connection_with_neo4j()
@@ -191,7 +191,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('get compound which are not ind drugbank drugs')
 
     find_not_mapped_compounds_and_add_to_dict()
@@ -199,7 +199,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('open and create cypher and tsv files')
 
     create_cypher_and_tsv_files()
@@ -207,7 +207,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     print('prepare node tsv and make bash for merging not mapped compounds to salt')
 
@@ -216,7 +216,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('create rela')
 
     fill_rela_tsv()
@@ -224,7 +224,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

@@ -170,7 +170,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('generate connection to neo4j')
 
     create_connection_with_neo4j()
@@ -178,14 +178,14 @@ def main():
 
     print(
         '#################################################################################################################################################################')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load reactome data')
 
     load_and_prepare_reactome_data()
 
     print(
         '#################################################################################################################################################################')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('prepare files')
 
     write_info_into_files()
@@ -193,7 +193,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

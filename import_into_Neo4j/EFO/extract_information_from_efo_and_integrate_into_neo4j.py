@@ -139,25 +139,25 @@ def generate_cypher_file(all_child_of_disease):
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     print('##########################################################hierachical################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('gather symptoms information ')
 
     get_efo_information_and_map_to_umls()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('put all relationship and node information into a csv and create a cypher file')
 
     generate_cypher_file()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

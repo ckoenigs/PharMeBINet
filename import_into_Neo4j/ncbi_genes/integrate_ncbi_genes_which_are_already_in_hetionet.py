@@ -138,7 +138,7 @@ def main():
     else:
         sys.exit('need a path')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('generate a tsv file with only the human genes')
 
     load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes()
@@ -146,7 +146,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

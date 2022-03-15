@@ -867,7 +867,7 @@ def get_information_from_full_relase():
             if assertion not in assertions_set:
                 assertions_set.add(assertion)
                 print(assertion)
-                print(datetime.datetime.utcnow())
+                print(datetime.datetime.now())
             dict_edge_info['assertion'] = assertion
             found_clinical, dict_significance = prepare_clinical_significance(reference_assertion)
             if found_clinical:
@@ -1147,7 +1147,7 @@ def get_information_from_full_relase():
             if assertion not in assertions_set:
                 assertions_set.add(assertion)
                 print(assertion)
-                print(datetime.datetime.utcnow())
+                print(datetime.datetime.now())
             dict_clinvar_assertion['assertion'] = assertion
             dict_clinvar_assertion['accession_clinvar'] = clinvar_assertion.find('ClinVarAccession').get('Acc')
             xrefs = get_xrefs_wih_other_tag_system(clinvar_assertion)
@@ -1416,7 +1416,7 @@ query_edge_variation = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS Fro
 # dictionary tsv file for variation
 dict_tsv_file_variation = {}
 
-print(datetime.datetime.utcnow())
+print(datetime.datetime.now())
 
 '''
 get the node information for variations
@@ -1531,10 +1531,10 @@ def generate_node_cypher(dict_variation_to_node_ids, list_head, extra_name=None,
         cypher_file_nodes.write(query_constraint)
 
 
-print(datetime.datetime.utcnow())
+print(datetime.datetime.now())
 print('extract information from ClinVarVariationRelease')
 extract_node_info_for_variations()
-print(datetime.datetime.utcnow())
+print(datetime.datetime.now())
 print(dict_specific_to_general_type)
 print('extract information from Full release')
 get_information_from_full_relase()
@@ -1551,4 +1551,4 @@ perpare_query_for_edges()
 
 print(set_of_species)
 print(dict_rela_type_pair_to_count)
-print(datetime.datetime.utcnow())
+print(datetime.datetime.now())

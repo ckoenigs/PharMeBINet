@@ -655,7 +655,7 @@ def main():
     else:
         sys.exit('need a path')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j()
@@ -663,7 +663,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print(' generate tsv and cypher file')
 
     generate_tsv_file_for_different_rela_types()
@@ -671,7 +671,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Take all gene-chemical relationships and generate tsv and cypher file')
 
     take_all_relationships_of_gene_chemical()
@@ -679,7 +679,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('write into tsv files')
 
     fill_the_tsv_files()
@@ -687,7 +687,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

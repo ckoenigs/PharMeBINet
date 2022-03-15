@@ -257,7 +257,7 @@ def main():
     else:
         sys.exit('need a path')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('create connection with neo4j')
 
     create_connetion_with_neo4j()
@@ -265,7 +265,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('gather all information of the hetionet genes')
 
     get_all_ncbi_ids_form_hetionet_genes()
@@ -273,7 +273,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('gnerate a tsv file with only the hetionet genes')
 
     load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes()
@@ -281,7 +281,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

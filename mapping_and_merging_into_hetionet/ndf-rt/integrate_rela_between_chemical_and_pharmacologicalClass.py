@@ -106,7 +106,7 @@ def load_connections(label):
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     global path_of_directory
     if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]
@@ -115,14 +115,14 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('connection to db')
 
     create_connection_with_neo4j_and_mysql()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load pairs and generate files')
 
     for label in ['Chemical', 'PharmacologicClass']:
@@ -130,7 +130,7 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

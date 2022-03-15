@@ -705,7 +705,7 @@ def integrate_mondo_change_identifier():
 
     print('number of new nodes:' + str(counter_new_nodes))
     print('number of switched nodes:' + str(counter_switched_nodes))
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     print(dict_merged_nodes)
     print(len(dict_merged_nodes))
@@ -743,73 +743,73 @@ def main():
     else:
         sys.exit('need a path')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('connection to db')
     database_connection()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('generate list of non human disease')
 
     get_all_non_human_ids()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('gather all properties from mondo and put them as header into the tsv files ')
 
     get_mondo_properties_and_generate_csv_files()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load in MonDO diseases ')
 
     load_in_all_monDO_in_dictionary()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load in DO diseases and map with DOID ')
 
     load_in_all_DO_in_dictionary()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('generate the mapping files ')
 
     mapping_files()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('integrate and switch the nodes but ignore the multiple mapped monDO ids ')
 
     integrate_mondo_change_identifier()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('generate cypher file')
 
     generate_cypher_queries()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('generate cypher file for subclassof relationship  ')
 
     generate_csv_file_for_relationship()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

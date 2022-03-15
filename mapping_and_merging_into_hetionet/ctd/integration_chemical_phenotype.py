@@ -410,7 +410,7 @@ def main():
     else:
         sys.exit('need a path')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('generate connection with neo4j and mysql')
 
     create_connection_with_neo4j()
@@ -418,7 +418,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Take all go-chemical relationships and generate tsv and cypher file')
 
     take_all_relationships_of_go_chemical()
@@ -426,7 +426,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('write into tsv files')
 
     fill_the_tsv_files()
@@ -434,7 +434,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

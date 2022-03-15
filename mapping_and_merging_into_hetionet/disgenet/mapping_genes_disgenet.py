@@ -92,7 +92,7 @@ def load_all_DisGeNet_genes_and_finish_the_files(csv_mapping):
 
 ######### MAIN #########
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     global home
     global path_of_directory
@@ -112,25 +112,25 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('connection to db')
     create_connection_with_neo4j()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all Genes from database')
     load_genes_from_database_and_add_to_dict()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate cypher and tsv file')
     csv_mapping = generate_files(path_of_directory)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all DisGeNet genes from database')
     load_all_DisGeNet_genes_and_finish_the_files(csv_mapping)
 

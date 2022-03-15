@@ -226,7 +226,7 @@ def main():
     else:
         sys.exit('need a path ctd d-g')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j_mysql()
@@ -234,7 +234,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load existings disease-gene pairs')
 
     load_existing_gene_disease_pairs()
@@ -242,7 +242,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Take all gene-disease relationships and generate tsv and cypher file')
 
     take_all_relationships_of_gene_disease()
@@ -250,7 +250,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

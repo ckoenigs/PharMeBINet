@@ -9,7 +9,7 @@ g = Graph("http://localhost:7474/db/data/")
 dict_chemical={}
 dict_go={}
 dict_pairs={}
-print (datetime.datetime.utcnow())
+print (datetime.datetime.now())
 
 file= open('mf.csv','r')
 reader=csv.DictReader(file)
@@ -50,6 +50,6 @@ for line in reader:
     #     dict_chemical[chemical_id]=1
     if counter %100000==0:
         print(counter)
-        print (datetime.datetime.utcnow())
+        print (datetime.datetime.now())
 
 print(counter_multiple)

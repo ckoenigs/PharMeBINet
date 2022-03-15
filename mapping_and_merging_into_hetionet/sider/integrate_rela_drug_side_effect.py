@@ -216,7 +216,7 @@ def main():
     else:
         sys.exit('need a path')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j')
 
     create_connection_with_neo4j()
@@ -224,7 +224,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all pairs in a set')
 
     get_all_chemical_side_effect_pairs()
@@ -232,7 +232,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Merge the edge information')
 
     find_all_compound_SE_pairs_of_sider()
@@ -240,14 +240,14 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Integrate sider connection into hetionet')
 
     integrate_relationship_from_sider_into_hetionet()
 
     print(
         '###########################################################################################################################')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

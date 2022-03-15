@@ -240,7 +240,7 @@ def main():
     path_of_directory = sys.argv[2]
     print(sys.argv)
     print(path_of_directory)
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('create connection with neo4j')
 
     create_connection_with_neo4j()
@@ -248,7 +248,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load all rela and add to dictionary')
 
     load_all_protein_chemical_pairs('-[r]->', False)
@@ -257,7 +257,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load all hetionet compound in dictionary')
 
     run_through_dictionary_to_add_to_tsv_and_cypher()
@@ -265,7 +265,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

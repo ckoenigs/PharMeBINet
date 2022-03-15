@@ -63,7 +63,7 @@ def check_relationships_and_generate_file(rela_equal_name, node_hetionet_label,
     print(
         '###...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...###')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all relationships from hetionet_reaction and hetionet_protein into a dictionary')
     # file for mapped or not mapped identifier
     file_name= directory + '/mapped_Reaction_to_'+rela_name+'.tsv'
@@ -80,7 +80,7 @@ def check_relationships_and_generate_file(rela_equal_name, node_hetionet_label,
     print(
         '###...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...###')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     print('Integrate new relationships and connect them ')
 
@@ -96,7 +96,7 @@ def main():
         sys.exit('need a path and license reactome edge')
 
     global cypher_file
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j()
@@ -122,7 +122,7 @@ def main():
     print(
         '###...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...###')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

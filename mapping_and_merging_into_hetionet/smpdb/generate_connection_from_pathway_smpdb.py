@@ -62,7 +62,7 @@ def check_relationships_and_generate_file( node_smpdb_label, node_pharmebinet_la
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all relationships from pathway-node and hetionet_nodes into a dictionary')
     # file for mapped or not mapped identifier
     file_name= directory + '/edge_pathway_to_'+node_smpdb_label+'_'+rela_name+'.tsv'
@@ -79,7 +79,7 @@ def check_relationships_and_generate_file( node_smpdb_label, node_pharmebinet_la
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     print('Integrate new relationships and connect them ')
 
@@ -94,7 +94,7 @@ def main():
         sys.exit('need a path smpdb pathway_edge')
 
     global cypher_file
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j()
@@ -118,7 +118,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

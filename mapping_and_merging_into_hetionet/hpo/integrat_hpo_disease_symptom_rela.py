@@ -321,7 +321,7 @@ def get_inheritance_information_for_disease():
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     global path_of_directory, hpo_date
     if len(sys.argv) > 2:
@@ -332,41 +332,41 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('connection to db')
     database_connection()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load in hpo symptoms')
 
     load_all_hpo_symptoms_in_dictionary()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('get all existing relationships')
 
     get_all_already_existing_relationships()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('put all relationship information into a cypher file')
 
     generate_cypher_file_for_connection(cypher_file)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('inheritances')
 
     get_inheritance_information_for_disease()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

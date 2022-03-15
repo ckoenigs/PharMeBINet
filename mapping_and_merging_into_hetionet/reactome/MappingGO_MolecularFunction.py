@@ -118,7 +118,7 @@ def main():
         path_of_directory = sys.argv[1]
     else:
         sys.exit('need a path reactome mf')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j_mysql()
@@ -126,7 +126,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all MolecularFunction from hetionet into a dictionary')
 
     load_hetionet_gomolfunc_in()
@@ -134,7 +134,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all reactome GO_MolecularFunction from neo4j into a dictionary')
 
     load_reactome_gomolfunc_in()
@@ -142,7 +142,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Integrate new GO_MolecularFunction and connect them to reactome ')
 
     create_cypher_file()
@@ -150,7 +150,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

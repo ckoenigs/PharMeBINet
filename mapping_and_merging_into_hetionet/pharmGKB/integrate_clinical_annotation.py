@@ -235,7 +235,7 @@ def main():
     else:
         sys.exit('need a path and license')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j')
 
     create_connection_with_neo4j()
@@ -243,7 +243,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('get all CA ids wher not all connections exists')
 
     list_of_labels = [
@@ -260,7 +260,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load in metadata from hetionet')
 
     load_db_info_in()
@@ -268,7 +268,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Fill rela files')
 
     fill_the_rela_files()
@@ -276,7 +276,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

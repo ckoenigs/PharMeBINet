@@ -128,7 +128,7 @@ def integrate_side_effects():
     else:
         sys.exit('need a path sider se')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load in all side effect from hetionet in dictionary')
 
     load_side_effects_from_hetionet_in_dict()
@@ -136,7 +136,7 @@ def integrate_side_effects():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load in all side effect from sider in dictionary')
 
     load_sider_in_dict()
@@ -144,7 +144,7 @@ def integrate_side_effects():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('map sider to hetionet per cypher')
 
     generate_cypher_file()
@@ -154,7 +154,7 @@ def integrate_side_effects():
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j')
 
     create_connection_with_neo4j()
@@ -162,7 +162,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Integrate sider side effects into hetionet')
 
     integrate_side_effects()

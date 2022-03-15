@@ -137,7 +137,7 @@ def check_relationships_and_generate_file(label):
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all relationships from metabolite/protein-node and hetionet_nodes into a dictionary')
     global dict_go_protein_to_rela_type
     # dictionary_go_protein_pair_to_rela_type
@@ -159,7 +159,7 @@ def check_relationships_and_generate_file(label):
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all relationships from pairs from pharmebinet into a set')
 
     dict_pair_to_resource = {}
@@ -169,7 +169,7 @@ def check_relationships_and_generate_file(label):
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all relationships pairs of uniprot')
 
     load_pair_edges(csv_edge, csv_edge_new, label, dict_pair_to_resource)
@@ -177,7 +177,7 @@ def check_relationships_and_generate_file(label):
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     print('Integrate new relationships and connect them ')
 
@@ -192,7 +192,7 @@ def main():
         sys.exit('need a path uniprot-go edges')
 
     global cypher_file
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j')
 
     create_connection_with_neo4j()
@@ -200,7 +200,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('prepare for the different gos')
 
     cypher_file = open('output/cypher_edge_go.cypher', 'w', encoding="utf-8")
@@ -214,7 +214,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

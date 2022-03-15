@@ -266,14 +266,14 @@ def main():
         path_of_directory = sys.argv[1]
     else:
         sys.exit('need a path reactome drug')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j_mysql()
     print(
         '°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all iuphar ids into a dictionary')
 
     load_iuphar_ids_in()
@@ -281,7 +281,7 @@ def main():
     print(
         '__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-._')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all drugs from hetionet into a dictionary')
 
     load_hetionet_drug_in()
@@ -289,7 +289,7 @@ def main():
     print(
         '°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all reactome drug from neo4j into a dictionary')
 
     for label in ["Drug_reactome", "PhysicalEntity_reactome"]:
@@ -298,7 +298,7 @@ def main():
     print(
         '__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-._')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Integrate new drug and connect them to reactome ')
 
     create_cypher_file()
@@ -306,7 +306,7 @@ def main():
     print(
         '°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

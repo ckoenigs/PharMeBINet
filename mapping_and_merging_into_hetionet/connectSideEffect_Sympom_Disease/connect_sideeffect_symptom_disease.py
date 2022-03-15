@@ -496,7 +496,7 @@ def main():
     else:
         sys.exit('need a path for connection of se,s,d')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j_mysql()
@@ -504,7 +504,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load in side effects from hetionet')
 
     load_all_sideEffects_in_a_dict()
@@ -512,7 +512,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load in symptoms from hetionet and map to se')
 
     load_all_symptoms_in_a_dict()
@@ -520,7 +520,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load disease an map to se and symptom')
 
     load_and_map_disease()
@@ -528,7 +528,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load phenotype an map to se and symptom')
 
     load_and_map_phenotype()
@@ -536,7 +536,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

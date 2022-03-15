@@ -695,7 +695,7 @@ def main():
     else:
         sys.exit('need a path')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j_mysql()
@@ -703,7 +703,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all disease from hetionet into a dictionary')
 
     load_hetionet_diseases_in()
@@ -713,7 +713,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all ctd diseases from neo4j into a dictionary')
 
     load_disease_CTD()
@@ -721,7 +721,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Map ctd disease mesh or Omim to Disease ')
 
     map_disease_with_mesh_omim_to_monarch()
@@ -729,7 +729,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Map ctd disease alternative mesh or Omim to Disease ')
 
     map_disease_with_mesh_omim_alternativ_ids_to_monarch_disease_ontology()
@@ -737,7 +737,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Map ctd disease doid to Disease ')
 
     map_disease_with_doids_to_monarch_disease_ontology()
@@ -745,7 +745,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Map ctd disease cui to Disease ')
 
     map_to_cui_and_try_to_map_to_hetionet()
@@ -753,7 +753,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Map ctd disease name to mondo name and synonyms')
 
     map_with_name()
@@ -761,7 +761,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('integrate disease into hetionet')
 
     integrate_disease_into_hetionet()
@@ -769,7 +769,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

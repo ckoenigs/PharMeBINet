@@ -74,7 +74,7 @@ def main():
     else:
         sys.exit('need a path and license')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j')
 
     create_connection_with_neo4j()
@@ -83,7 +83,7 @@ def main():
         print(
             '###########################################################################################################################')
 
-        print(datetime.datetime.utcnow())
+        print(datetime.datetime.now())
         print('Load in %s from pharmgb in' % (label))
 
         load_pharmgkb_in(label, 'variant_gene')
@@ -91,7 +91,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

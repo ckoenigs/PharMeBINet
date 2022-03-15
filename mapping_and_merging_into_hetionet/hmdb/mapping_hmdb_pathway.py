@@ -150,7 +150,7 @@ def load_all_hmdb_pw_and_map(csv_mapping, csv_not_mapped):
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     global path_of_directory
     if len(sys.argv) < 2:
         sys.exit('need path for hmdb pathway')
@@ -158,35 +158,35 @@ def main():
     path_of_directory = sys.argv[1]
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('connection to db')
 
     create_connection_with_neo4j()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load pw from neo4j')
 
     load_pw_from_database()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate cypher and tsv file')
 
     csv_mapping, csv_not_mapped = generate_files(path_of_directory)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load pc from hmdb and map')
 
     load_all_hmdb_pw_and_map(csv_mapping, csv_not_mapped)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

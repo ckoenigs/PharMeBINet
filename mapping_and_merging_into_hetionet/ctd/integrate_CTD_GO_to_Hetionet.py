@@ -264,7 +264,7 @@ dict_ctd_ontology_to_file_and_label={
 
 def main():
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j_mysql()
@@ -272,7 +272,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     print('Load all go from hetionet into a dictionary')
 
     load_hetionet_go_in()
@@ -280,7 +280,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     print('Load all ctd go from neo4j into a dictionary')
 
     load_ctd_go_in()
@@ -288,7 +288,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     print('Map generate tsv and cypher file for all three labels ')
 
     for ontology, [dict_in_hetionet, dict_in_hetionet_alternative, dict_ctd_in_hetionet_alternative,
@@ -303,7 +303,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
 
 
 if __name__ == "__main__":

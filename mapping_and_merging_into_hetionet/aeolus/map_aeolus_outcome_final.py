@@ -666,7 +666,7 @@ def main():
     else:
         sys.exit('need a path aeolus se')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j()
@@ -674,7 +674,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load api key')
 
     load_api_key()
@@ -682,7 +682,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load already mapped from api cache')
 
     cache_api()
@@ -690,7 +690,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load in all Side effects from hetionet in a dictionary')
 
     load_side_effects_from_hetionet_in_dict()
@@ -698,7 +698,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load in all Side effects from AEOLUS in a dictionary')
 
     load_side_effects_aeolus_in_dictionary()
@@ -706,7 +706,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load in all disease from hetionet in a dictionary')
 
     load_disease_infos()
@@ -714,7 +714,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Find cuis for aeolus side effects')
 
     search_with_api_bioportal()
@@ -722,7 +722,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Map round one')
 
     map_first_round()
@@ -731,7 +731,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Map round two to disease')
 
     mapping_to_disease()
@@ -739,7 +739,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('intergarte aeolus outcome to hetionet(+Sider)')
 
     integrate_aeolus_into_hetionet()
@@ -747,7 +747,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

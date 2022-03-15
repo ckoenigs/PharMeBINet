@@ -37,7 +37,7 @@ def add_atrributes(tree, attributs):
 # added_graph = ET.SubElement(other_root, 'graph')
 
 
-print(datetime.datetime.utcnow())
+print(datetime.datetime.now())
 print('###########################################################################################################################################')
 
 set_of_added_ids=set()
@@ -72,7 +72,7 @@ with open(filename, 'w', encoding='utf-8') as xf:
         if node.tag == ns + 'node':
             break
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('graph')
     print('###########################################################################################################')
     xf.write('  <graph id="G" todo="directed">\n')
@@ -93,7 +93,7 @@ with open(filename, 'w', encoding='utf-8') as xf:
                 xf.write('     ')
                 xf.write(clear_attributes(ET.tostring(node, encoding='utf-8').decode('utf-8')))
             if counter_all_nodes % 500_000 == 0 and counter_all_nodes > 0:
-                print(datetime.datetime.utcnow())
+                print(datetime.datetime.now())
                 print('node', counter_all_nodes)
                 xf.flush()
             node.clear()
@@ -106,7 +106,7 @@ with open(filename, 'w', encoding='utf-8') as xf:
                 xf.write('     ')
                 xf.write(clear_attributes(ET.tostring(node, encoding='utf-8').decode('utf-8')))
             if counter_all_edges % 1_000_000 == 0 and counter_all_edges > 0:
-                print(datetime.datetime.utcnow())
+                print(datetime.datetime.now())
                 print('edges', counter_all_edges)
                 xf.flush()
             node.clear()
@@ -117,7 +117,7 @@ print('from all edges', counter_all_edges, 'are real edges', counter_selected_ed
 # ET.ElementTree(other_root).write('/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/PharMeBiNet/PharMeBiNet_finished.graphml')
 
 print('finished xml parser')
-print(datetime.datetime.utcnow())
+print(datetime.datetime.now())
 print('###########################################################################################################################################')
 
 
@@ -215,11 +215,11 @@ sys.exit()
 #         sys.exit()
 #
 #     if counter_nodes_all % 500000==0 and counter_nodes_all>0:
-#         print(datetime.datetime.utcnow())
+#         print(datetime.datetime.now())
 #         print('node',counter_nodes_all)
 #
 #     if counter_edges_all%1000000==0 and counter_edges_all>0:
-#         print(datetime.datetime.utcnow())
+#         print(datetime.datetime.now())
 #         print('edges', counter_edges_all)
 #
 #     # if counter_nodes_all % 8859764==0 and counter_nodes_all>0:

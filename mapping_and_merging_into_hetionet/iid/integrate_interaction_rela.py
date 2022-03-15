@@ -244,28 +244,28 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('generate connection to neo4j')
 
     create_connection_with_neo4j()
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load go ')
 
     get_go_cellular_component_id()
 
     print(
         '#################################################################################################################################################################')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load IID human data')
 
     load_and_prepare_IID_human_data()
 
     print(
         '#################################################################################################################################################################')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('prepare files')
 
     write_info_into_files()
@@ -273,7 +273,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

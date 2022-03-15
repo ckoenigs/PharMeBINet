@@ -343,63 +343,63 @@ def main():
     home = os.getcwd()
     source = os.path.join(home, 'data')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print("Create connection to sql lite")
 
     create_connection_to_sqllite()
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print("Call gene_proteinInfo to generate Protein related info-tables")
     # return unique Gene-ID's from 'mapa_geneid_4_uniprot.tsv' as side-product for later use
     gene_ids_prottbl = get_proteinInfo()
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print("Call get_geneInfo for Gene related information")
     # return unique disease-ID's, snp-ID's, and disease-Information as side-product for later use
     disease_ids_genetbl, snp_ids_genetbl, disease_df_genetbl = get_geneInfo(gene_ids_prottbl)
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print("Call get_variantInfo for Variant related information")
     # return unique disease-ID's and DF of disease-Information as side product for later use
     disease_ids_vartbl, disease_df_vartbl = get_variantInfo(snp_ids_genetbl)
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print("Call get_diseaseInfo for Disease information")
     # as input it gets the unique disease-ID's from gene/variant tables (arg 1,2) +
     # the disease-information Dataframes from all_gene/all_variant tables (arg 3,4)
     get_diseaseInfo(disease_ids_genetbl, disease_ids_vartbl, disease_df_genetbl, disease_df_vartbl)
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print("Generate Cypher files")
     # select the files from output directory
     output_files = [f for f in os.listdir(destination) if
@@ -428,7 +428,7 @@ def main():
         # print(f'file: {curr_file} \nlabel: {label} \nproperties: {header} \nid_list: {id_list}\n')
         cypher_edge(cypher_file, curr_file, label, header, id_list, edge_name)
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

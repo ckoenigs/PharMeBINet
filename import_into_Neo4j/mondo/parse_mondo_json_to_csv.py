@@ -174,11 +174,11 @@ def main():
         sys.exit('need path to project (mondo)')
 
     print('load json and prepare files')
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
 
     open_json_file_write_into_csv()
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
 
 
 if __name__ == "__main__":

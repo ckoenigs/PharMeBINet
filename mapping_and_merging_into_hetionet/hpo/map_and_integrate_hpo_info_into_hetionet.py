@@ -344,7 +344,7 @@ def map_hpo_disease_to_mondo(db_disease_id, db_disease_names, db_disease_source)
 
     counter += 1
     if counter % 5000 == 0:
-        print(datetime.datetime.utcnow())
+        print(datetime.datetime.now())
         print(counter)
         print('number of decipher:' + str(counter_decipher))
         print('number of not mapped decipher:' + str(counter_decipher_not_mapped))
@@ -539,7 +539,7 @@ dict_frequency = {}
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     global path_of_directory
     if len(sys.argv) > 1:
@@ -549,20 +549,20 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('connection to db')
     database_connection()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load in diseases information in dictionaries')
 
     get_all_disease_information_from_hetionet()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('map hpo disease to mondo')
 
     # create a lock, is used to synchronized threads
@@ -616,14 +616,14 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('integrate mapping into hetionet for disease')
 
     integrate_mapping_of_disease_into_hetionet()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     con.close()
 

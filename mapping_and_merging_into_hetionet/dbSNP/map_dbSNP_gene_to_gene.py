@@ -84,35 +84,35 @@ def load_all_dbSnp_gene_and_finish_the_files(csv_mapping):
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     global path_of_directory, license
     if len(sys.argv) < 2:
         sys.exit('need  path to directory gene variant and license')
     path_of_directory = sys.argv[1]
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('connection to db')
 
     create_connection_with_neo4j()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all Gene from database')
 
     load_gene_from_database_and_add_to_dict()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate cypher and tsv file')
 
     csv_mapping = generate_files(path_of_directory)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all variation from database')
 
     load_all_dbSnp_gene_and_finish_the_files(csv_mapping)
@@ -120,7 +120,7 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

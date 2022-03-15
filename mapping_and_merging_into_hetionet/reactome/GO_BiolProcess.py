@@ -144,7 +144,7 @@ def main():
         path_of_directory = sys.argv[1]
     else:
         sys.exit('need a path reactome protein')
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j()
@@ -152,7 +152,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all BiologicalProcess from hetionet into a dictionary')
 
     load_hetionet_gobiolproc_in()
@@ -160,7 +160,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all reactome GO_BiologicalProcess from neo4j into a dictionary')
 
     load_reactome_gobiolproc_in()
@@ -168,7 +168,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Integrate new GO_BiologicalProcess and connect them to reactome ')
 
     create_cypher_file()
@@ -176,7 +176,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

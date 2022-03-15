@@ -1155,11 +1155,11 @@ def all_possible_symptomes_from_filter(filter_file):
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('connection to db')
     database_connection()
 
@@ -1167,7 +1167,7 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load in cui diseases')
 
     load_in_hetionet_disease_in_dictionary()
@@ -1176,7 +1176,7 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('generate file with multiple mapped cuis')
 
     generate_multiple_mapped_cuis_file()
@@ -1184,7 +1184,7 @@ def main():
 
     print('##########################################################################')
     #
-    #    print(datetime.datetime.utcnow())
+    #    print(datetime.datetime.now())
     #    print('load all information of from conso')
     #    #get_names()
     #    load_in_MRCONSO()
@@ -1198,19 +1198,19 @@ def main():
     #            break
     #    print('##########################################################################')
     #
-    #    print(datetime.datetime.utcnow())
+    #    print(datetime.datetime.now())
     #    print('generate contraindication file')
     #    find_contraindication()#
     #
     #    print('##########################################################################')
     #
-    #    print(datetime.datetime.utcnow())
+    #    print(datetime.datetime.now())
     #    print('generate induces file')
     #    find_induces()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('find synonyms for the diseases')
 
     # create a lock, is used to synchronized threads
@@ -1250,7 +1250,7 @@ def main():
     # print(dict_possible_symptomes)
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('first filter of a list of all possible symptoms')
     # filter_one_find_symptomes()
     # i = 0
@@ -1262,19 +1262,19 @@ def main():
     #            break
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('second filter of a list of all possible symptoms')
     # filter_second_find_symptomes()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('third filter of a list of all possible symptoms')
     # filter_third_find_symptomes()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load in filter file to get cui from possible symptomes')
     all_possible_symptomes_from_filter('filter_3_possible_symptomes.txt')
 
@@ -1282,7 +1282,7 @@ def main():
 
     # sys.exit()
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('find symptoms for every diseases')
 
     # create a lock, is used to synchronized threads
@@ -1335,21 +1335,21 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('integrate into symptoms into hetionet')
 
     integrate_symptoms_into_hetionet()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('create cypher file for connections')
 
     generate_cypher_file_for_relationships()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     con.close()
 

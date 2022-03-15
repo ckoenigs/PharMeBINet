@@ -727,43 +727,43 @@ def main():
         sys.exit('need a path')
 
     print('#############################################################')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('prepare cypherfile and tsv files ')
 
     prepare_cypher_files_and_tsv()
 
     print('#############################################################')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('parse xml data protein ')
 
     run_trough_xml_and_parse_data_protein()
 
     print('#############################################################')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('parse xml data metabolite ')
 
     run_trough_xml_and_parse_data_metabolite()
 
     print('#############################################################')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('generate pathway ')
 
     write_pathways_into_tsv_file()
 
     print('#############################################################')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('generate go ')
 
     write_go_information_into_tsv_files()
 
     print('#############################################################')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('write protein-metabolite pairs into tsv file')
 
     write_protein_metabolite_rela_into_tsv()
 
     print('#############################################################')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

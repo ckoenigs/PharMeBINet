@@ -288,7 +288,7 @@ def load_all_DisGeNet_disease_and_finish_the_files():
 
 ######### MAIN #########
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     global home
     global path_of_directory
@@ -307,31 +307,31 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('connection to db')
     create_connection_with_neo4j()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all Diseases from database')
     load_disease_from_database_and_add_to_dict()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all Symptoms from database')
     mapping_symptoms_disgenet.load_symptoms_from_database_and_add_to_dict(g)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate cypher and tsv file')
     generate_files(path_of_directory)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all DisGeNet diseases from database')
     load_all_DisGeNet_disease_and_finish_the_files()
 

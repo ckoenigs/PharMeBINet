@@ -295,7 +295,7 @@ def take_all_relationships_of_gene_pathway():
                 start = time.time()
                 print('number of chemicals:'+str(counter_of_used_chemical))
                 if counter % 1000000:
-                    print(datetime.datetime.utcnow())
+                    print(datetime.datetime.now())
 
         print('number of relationships:' + str(counter))
         time_measurement = time.time() - start
@@ -355,7 +355,7 @@ def take_all_relationships_of_gene_pathway():
 
 
 def main():
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j_mysql()
@@ -363,7 +363,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     print('Take all chemical-go relationships and generate tsv and cypher file')
 
     take_all_relationships_of_gene_pathway()
@@ -371,7 +371,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
 
 
 if __name__ == "__main__":

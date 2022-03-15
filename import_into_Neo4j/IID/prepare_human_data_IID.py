@@ -167,7 +167,7 @@ def main():
     else:
         sys.exit('need a path and a optional filter like exp, pred, ortho')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load IID human data')
 
     load_and_prepare_IID_human_data(evidence_type_filter)
@@ -175,7 +175,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

@@ -209,7 +209,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     print('Extract information from sdf into rdkit and open babel')
 
     mol_pybel, mol_rdkit=transform_into_ob_and_rdkit_fromart()
@@ -217,7 +217,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     print('Calculate different fingerprints')
 
     prepare_fingerprints(mol_pybel, mol_rdkit)
@@ -225,14 +225,14 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     print('calculates pair was similarities')
 
     calculate_similarities_and_write_into_file()
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
 
 
 if __name__ == "__main__":

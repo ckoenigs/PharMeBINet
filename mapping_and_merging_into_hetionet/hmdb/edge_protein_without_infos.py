@@ -149,7 +149,7 @@ def check_relationships_and_generate_file(label, own_hmdb_label, other_node_hmdb
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all relationships from metabolite/protein-node and hetionet_nodes into a dictionary')
     # file for mapped or not mapped identifier
     file_name = directory + '/edge_' + label + '_to_' + other_node_hmdb_label + '.tsv'
@@ -167,7 +167,7 @@ def check_relationships_and_generate_file(label, own_hmdb_label, other_node_hmdb
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all relationships from pairs from pharmebinet into a set')
 
     dict_pair_to_resource = {}
@@ -177,7 +177,7 @@ def check_relationships_and_generate_file(label, own_hmdb_label, other_node_hmdb
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all relationships pairs of hmdb')
 
     load_pair_edges(csv_edge, csv_edge_new, label, own_hmdb_label, other_node_hmdb_label, node_pharmebinet_label,
@@ -186,7 +186,7 @@ def check_relationships_and_generate_file(label, own_hmdb_label, other_node_hmdb
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     print('Integrate new relationships and connect them ')
 
@@ -202,7 +202,7 @@ def main():
         sys.exit('need a path hmdb edges without info')
 
     global cypher_file
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j')
 
     create_connection_with_neo4j()
@@ -237,7 +237,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

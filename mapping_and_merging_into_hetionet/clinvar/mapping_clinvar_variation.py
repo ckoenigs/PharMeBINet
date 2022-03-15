@@ -271,7 +271,7 @@ def get_variant_rela_intern(label, list_to_labels):
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     global path_of_directory
     if len(sys.argv) > 1:
@@ -281,56 +281,56 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('connection to db')
 
     database_connection()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all genes from database')
 
     load_genes_from_database_and_add_to_dict()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('get all kind of properties of the variants')
 
     get_all_variation_properties()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all variation from database')
 
     load_all_variants_and_finish_the_files()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Add constraint and relationships to gene')
 
     perpare_queries_index_and_relationships()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Add relationships from Haplotype')
 
     get_variant_rela_intern('Haplotype_ClinVar', ['Variant_ClinVar'])
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Add relationships from Genotype')
 
     get_variant_rela_intern('Genotype_ClinVar', ['Haplotype_ClinVar', 'Variant_ClinVar'])
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

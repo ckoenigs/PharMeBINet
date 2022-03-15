@@ -304,7 +304,7 @@ def main():
     else:
         sys.exit('need a path and license')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j')
 
     create_connection_with_neo4j()
@@ -312,7 +312,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('get all VA ids wher not all connections exists')
 
     list_of_labels = [
@@ -329,7 +329,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load additional information of literature and study parameters into dictionaries')
 
     load_additional_information_into_dictionary()
@@ -343,7 +343,7 @@ def main():
         print(
             '###########################################################################################################################')
 
-        print(datetime.datetime.utcnow())
+        print(datetime.datetime.now())
         print('Generate genration file for node')
 
         csv_writer = prepare_files(label, query_start)
@@ -351,14 +351,14 @@ def main():
         print(
             '###########################################################################################################################')
 
-        print(datetime.datetime.utcnow())
+        print(datetime.datetime.now())
         print('Load in ' + label + ' from neo4j')
 
         load_db_info_in(label, csv_writer)
 
     print(
         '###########################################################################################################################')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Prepare relationship files')
 
     for label, rela_name in dict_label_to_rela_name.items():
@@ -367,7 +367,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Fill rela files')
 
     fill_the_rela_files('PharmGKB_VariantAnnotation')
@@ -375,7 +375,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('prepare delete queries')
 
     prepare_delete_variant_annotation()
@@ -383,7 +383,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

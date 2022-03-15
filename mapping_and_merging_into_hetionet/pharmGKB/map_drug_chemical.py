@@ -444,7 +444,7 @@ def main():
     else:
         sys.exit('need a path')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j')
 
     create_connection_with_neo4j_and_mysql()
@@ -452,7 +452,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load in chemical from hetionet')
 
     load_db_info_in()
@@ -460,7 +460,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load in pharmacological class from hetionet')
 
     load_pharmacological_class()
@@ -469,7 +469,7 @@ def main():
         print(
             '###########################################################################################################################')
 
-        print(datetime.datetime.utcnow())
+        print(datetime.datetime.now())
         print('Load in %s from pharmgb in' % (label))
 
         load_pharmgkb_in(label)
@@ -477,7 +477,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

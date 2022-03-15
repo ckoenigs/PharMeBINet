@@ -114,7 +114,7 @@ def main():
     else:
         sys.exit('need a path')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j_mysql()
@@ -129,7 +129,7 @@ def main():
         print(
             '###########################################################################################################################')
 
-        print(datetime.datetime.utcnow())
+        print(datetime.datetime.now())
         print('Load all go from hetionet into a dictionary')
 
         get_information_and_add_to_dict(label, dict_hetionet, dict_alternative_ids_hetionet)
@@ -137,7 +137,7 @@ def main():
         print(
             '###########################################################################################################################')
 
-        print(datetime.datetime.utcnow())
+        print(datetime.datetime.now())
         print('Prepare cypher query and tsv file')
 
         csv_writer = generate_files(label, hmdb_label)
@@ -145,7 +145,7 @@ def main():
         print(
             '###########################################################################################################################')
 
-        print(datetime.datetime.utcnow())
+        print(datetime.datetime.now())
         print('Load all hmdb '+hmdb_label+' from neo4j into a dictionary')
 
         load_hmdb_data_in_an_map_to_database(hmdb_label,dict_hetionet, dict_alternative_ids_hetionet, csv_writer)
@@ -155,7 +155,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 if __name__ == "__main__":
     # execute only if run as a script

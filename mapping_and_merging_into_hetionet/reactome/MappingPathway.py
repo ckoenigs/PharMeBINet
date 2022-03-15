@@ -180,7 +180,7 @@ def main():
     else:
         sys.exit('need a path reactome protein')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j()
@@ -188,7 +188,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all pathways from hetionet into a dictionary')
 
     load_hetionet_pathways_in()
@@ -196,7 +196,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all reactome pathways from neo4j into a dictionary')
 
     load_reactome_pathways_in()
@@ -204,7 +204,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Integrate new pathways and connect them to reactome ')
 
     create_cypher_file()
@@ -212,7 +212,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

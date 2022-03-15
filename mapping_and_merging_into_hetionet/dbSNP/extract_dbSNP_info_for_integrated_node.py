@@ -199,7 +199,7 @@ def load_dbSNP_data_for_nodes_with_dbSNP_in_db():
             if counter_to_seek % 10==0:
                 print('in api question')
                 print(counter_to_seek)
-                print(datetime.datetime.utcnow())
+                print(datetime.datetime.now())
                 time.sleep(5)
                 dict_nodes_to_list , counter_not_found = ask_api_and_prepare_return(string_of_ids[:-1])
                 counter_not_existing+=counter_not_found
@@ -251,7 +251,7 @@ def main():
     else:
         sys.exit('need a path and license')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('diseaserate connection with neo4j')
 
     create_connection_with_neo4j()
@@ -259,7 +259,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load variant which are not from dbSNP ')
 
     get_all_variants_without_rs()
@@ -267,7 +267,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load dbSNP node info from file if possible else generate a new file')
 
     load_already_extracted_infos_from_file()
@@ -275,7 +275,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load dbSNP node from db and get dbSNP infos')
 
     load_dbSNP_data_for_nodes_with_dbSNP_in_db()
@@ -283,7 +283,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Write already found data into tsv file')
 
     go_through_downloaded_json_and_add_them_to_tsv()
@@ -291,7 +291,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

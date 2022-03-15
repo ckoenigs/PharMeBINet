@@ -187,7 +187,7 @@ def to_avoid_multiple_mapping(csv_mapped_pc,csv_new):
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]
@@ -196,49 +196,49 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('connection to db')
 
     create_connection_with_neo4j_and_mysql()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all Pharmacologic classes from database')
 
     load_pharmacologic_class_from_database_and_add_to_dict()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all compounds from database')
 
     load_compounds_from_database_and_add_to_dict()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate files')
 
     csv_mapper, csv_new, csv_mapped_pc = write_files(path_of_directory)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all label from database')
 
     load_all_label_and_map(csv_mapper, csv_new)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('map only to one for pc')
 
     to_avoid_multiple_mapping(csv_mapped_pc, csv_new)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

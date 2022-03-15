@@ -698,7 +698,7 @@ def main():
     else:
         sys.exit('need a path sider')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j')
 
     create_connection_with_neo4j()
@@ -706,13 +706,13 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Map drugs from sider to hetionet')
 
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load in all compounds from hetionet in dictionary')
 
     load_chemicals_from_database()
@@ -720,7 +720,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load in all drugs from sider in dictionary')
 
     load_sider_drug_in_dict()
@@ -728,7 +728,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load in stitch names')
 
     load_in_stitch_name()
@@ -736,7 +736,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Map with  drugbank pubchem xref')
 
     map_with_pubchem_id()
@@ -744,7 +744,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all for all stereo the inchikey and map to chemical ids')
 
     load_in_stitch_inchikeys()
@@ -752,7 +752,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print(
         'Load in all important information from the short from of chemical.source.v5.0.tsv and add them in dictionary')
 
@@ -761,7 +761,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load in stitch name and map to chemical ids')
 
     map_with_names()
@@ -769,14 +769,14 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Integrate sider drugs into hetionet')
 
     integrate_sider_drugs_into_hetionet()
 
     print(
         '###########################################################################################################################')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

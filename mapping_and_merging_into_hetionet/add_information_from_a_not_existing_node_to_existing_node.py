@@ -297,48 +297,48 @@ def merge_information_from_one_node_to_another(delete_node_id, merged_node_id, n
     # list from  the other with to the specific node  (rela_type,dict_rela,node_labels,dict_node)
     list_other_to_node = []
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('connection to db')
     database_connection()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('add resources to merged node')
 
     merge_resource_to_node(delete_node_id, node_label, merged_node_id)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('generate dictionary for labels with unique property ')
 
     generate_dictionary_for_labels()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('get all information for the node that is merged into another node ')
 
     get_the_information_and_the_direction(delete_node_id, node_label, merged_node_id)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('integrate this into Hetionet')
 
     add_this_information_to_the_merged_node(merged_node_id, node_label, delete_node_id)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('delete merged node')
 
     # delete_merged_node(delete_node_id, node_label)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 #
@@ -357,30 +357,30 @@ def main():
     # list from  the other with to the specific node  (rela_type,dict_rela,node_labels,dict_node)
     list_other_to_node = []
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('connection to db')
     database_connection()
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('add resources to merged node')
 
     merge_resource_to_node(old_id, label, into)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('generate dictionary for labels with unique property ')
 
     generate_dictionary_for_labels()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('get all information for the node that is merged into another node ')
 
     # get_the_information_and_the_direction('DB13390', 'Compound')
@@ -388,7 +388,7 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('integrate this into Hetionet')
 
     # add_this_information_to_the_merged_node('DB06723', 'Compound','DB13390')
@@ -396,7 +396,7 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('delete merged node')
 
     # delete_merged_node('DB13390', 'Compound')
@@ -404,7 +404,7 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

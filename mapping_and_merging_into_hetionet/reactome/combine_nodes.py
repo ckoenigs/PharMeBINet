@@ -124,18 +124,18 @@ def main():
             5: new label if the merged node should get another label''')
     
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('connection to db')
     
     database_connection()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('generate cypher file for merging the nodes')
 
     string_with_consider_rela_to_combined_node=''
@@ -146,7 +146,7 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 

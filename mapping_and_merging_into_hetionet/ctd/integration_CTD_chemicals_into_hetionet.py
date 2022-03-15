@@ -931,14 +931,14 @@ def main():
         sys.exit('need a path')
 
     global exists_chemicals
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j_mysql()
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     print('Load all compounds from hetionet into a dictionary')
 
     load_compounds_from_hetionet()
@@ -946,7 +946,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     print('Load all mesh drugbank ids from file in dictionary and prepare file')
 
 
@@ -955,7 +955,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     print('Load all drugs from ctd into dictionaries depending on the drugbank id exist or not ')
 
     load_drugs_from_CTD()
@@ -963,17 +963,17 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     print('Map with use of cas')
 
     map_with_cas_number_to_drugbank()
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
 
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     print('Find cuis for the ctd mesh terms ')
 
     find_cui_for_ctd_drugs()
@@ -981,7 +981,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     print('Find drugbank ids with use of the cuis in umls ')
 
     map_cui_to_drugbank_with_umls()
@@ -989,7 +989,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     print('Find rxcuis for the ctd mesh terms  ')
 
     find_rxcui_for_ctd_drugs()
@@ -997,7 +997,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     print('Find drugbank ids with use of the rxcuis in rxnorm ')
 
     map_rxcui_to_drugbank_with_rxnorm()
@@ -1005,7 +1005,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     print('Find drugbank ids with use of the rxnorm drugbank table which is generated with unii and inchikeys ')
 
     map_use_dhimmel_rxnorm_drugbank_map_unii_inchikey()
@@ -1013,7 +1013,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     print('Find drugbank ids with use of the name mapping')
 
     map_with_name_to_drugbank()
@@ -1021,7 +1021,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     print('Map ctd chemical to hetionet compound ')
 
     map_ctd_to_hetionet_compound()
@@ -1030,7 +1030,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     print('Integrate CTD chemicals into hetionet')
 
     integration_of_ctd_chemicals_into_hetionet_compound()
@@ -1039,7 +1039,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     print('generate cypher file for integration of chemical')
 
     generate_cypher_file()
@@ -1047,7 +1047,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
 
 
 if __name__ == "__main__":

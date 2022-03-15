@@ -60,9 +60,9 @@ cypher_file_delete = open('cypher_file_delete.cypher', 'w', encoding='utf-8')
 dict_rela_to_list_of_code_tuples={}
 
 def load_ndf_rt_xml_inferred_in():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     tree = dom.parse("NDFRT_Public_2018.02.05_TDE.xml")
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     terminology = tree.documentElement
 
@@ -209,13 +209,13 @@ def main():
 
     # start the function to load in the xml file and save the importen values in list and dictionaries
     print('#############################################################')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load in the xml data')
     load_ndf_rt_xml_inferred_in()
 
 
     print('#############################################################')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

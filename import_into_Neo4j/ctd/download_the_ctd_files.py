@@ -67,7 +67,7 @@ list_of_ctd_file_names=[
 seperate='CTD_chem_gene_ixn_types.csv'
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('download files')
     global path_of_ctd_data
     if len(sys.argv) > 1:
@@ -88,7 +88,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 

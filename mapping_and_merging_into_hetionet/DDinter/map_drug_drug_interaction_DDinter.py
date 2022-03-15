@@ -121,7 +121,7 @@ def main():
     else:
         sys.exit('need a path and license')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j')
 
     create_connection_with_neo4j()
@@ -129,7 +129,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load existings drug-drug interactions' )
 
     load_existing_drug_interaction()
@@ -137,7 +137,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load in dd-interaction from ddinter in' )
 
     load_ddinter_interaction('output')
@@ -145,7 +145,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

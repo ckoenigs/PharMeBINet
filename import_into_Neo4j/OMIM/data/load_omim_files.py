@@ -30,7 +30,7 @@ url_start='https://data.omim.org/downloads/'
 url_end={"mimTitles.txt","genemap2.txt","morbidmap.txt"}
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('download files')
 
     seperate_url="https://omim.org/static/omim/data/mim2gene.txt"
@@ -48,7 +48,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 

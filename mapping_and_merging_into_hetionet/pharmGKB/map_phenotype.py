@@ -341,7 +341,7 @@ def main():
     else:
         sys.exit('need a path and license')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('diseaserate connection with neo4j')
 
     create_connection_with_neo4j()
@@ -349,7 +349,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load in disease and symptom from hetionet')
 
     load_db_nodes_in('Disease', dict_disease_to_resource, dict_disease_name_to_disease_id,
@@ -364,7 +364,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load in disease from pharmgb in')
 
     load_pharmgkb_phenotypes_in()
@@ -372,7 +372,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

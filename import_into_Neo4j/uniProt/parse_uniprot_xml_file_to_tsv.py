@@ -898,25 +898,25 @@ def main():
         sys.exit('need a path')
 
     print('#############################################################')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('parse xml data ')
 
     run_trough_xml_and_parse_data()
 
     print('#############################################################')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('write evidence-protein pairs into tsv file')
 
     # write_evidence_rela_info_into_tsv()
 
     print('#############################################################')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('write protein-protein pairs into tsv file')
 
     write_interaction_rela_into_tsv()
 
     print('#############################################################')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

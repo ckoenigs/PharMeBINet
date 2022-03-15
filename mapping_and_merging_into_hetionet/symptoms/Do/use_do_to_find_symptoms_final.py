@@ -244,7 +244,7 @@ def integrate_information_into_hetionet():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     # file counter
     i = 1
@@ -339,17 +339,17 @@ def integrate_information_into_hetionet():
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('connection to db')
     database_connection()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load in diseases with symptoms in and find for the symptoms umls cuis')
 
     # create a lock, is used to synchronized threads
@@ -389,13 +389,13 @@ def main():
     # sys.exit()
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('integrate new information into hetionet and cypher files')
     integrate_information_into_hetionet()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     con.close()
 

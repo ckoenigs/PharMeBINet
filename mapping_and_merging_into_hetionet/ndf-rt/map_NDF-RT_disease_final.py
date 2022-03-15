@@ -318,7 +318,7 @@ def main():
     else:
         sys.exit('need a path')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j()
@@ -326,7 +326,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load in diseases from hetionet')
 
     load_hetionet_diseases_in()
@@ -334,7 +334,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load in diseases from ndf-rt')
 
     load_ndf_rt_diseases_in()
@@ -342,7 +342,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('map round one, check the cuis from disease ontology to cuis in ndf-rt')
 
     map_with_cuis_go_through_all()
@@ -350,7 +350,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('map with name ndf-rt to name or synonym od DO')
 
     map_with_name()
@@ -358,7 +358,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('integrate ndf-rt into hetionet')
 
     integrate_ndf_rt_disease_into_hetionet()
@@ -366,7 +366,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

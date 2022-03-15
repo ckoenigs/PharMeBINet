@@ -709,7 +709,7 @@ def main():
     else:
         sys.exit('need a path')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j_mysql()
@@ -717,7 +717,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load in chemical from hetionet')
 
     load_hetionet_chemical_in()
@@ -725,7 +725,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load in drug from ndf-rt')
 
     load_ndf_rt_drug_in()
@@ -733,7 +733,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('map rxcui to drugbank ids with use of rxnorm')
 
     map_rxnorm_to_drugbank_use_rxnorm_database()
@@ -741,7 +741,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('map unii to drugbank ids')
 
     map_with_unii_to_chemical()
@@ -749,7 +749,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('map rxcui to drugbank ids with use of rxnorm-drugbank table with unii and inchikey from dhimmel')
 
     map_use_dhimmel_rxnorm_drugbank_map_unii_inchikey()
@@ -757,7 +757,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('map rxcui to drugbank ids with use of rxnorm-drugbank table with name mapping')
 
     # map_use_name_mapped_rxnorm_drugbank()
@@ -765,7 +765,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('name mapping')
 
     name_mapping()
@@ -773,7 +773,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('umls mapping')
 
     umls_cui_mapping()
@@ -781,7 +781,7 @@ def main():
     # print(
     #     '###########################################################################################################################')
     #
-    # print (datetime.datetime.utcnow())
+    # print (datetime.datetime.now())
     # print('map with use of the ingredient')
     #
     # map_to_drugbank_id_with_ingredient_from()
@@ -789,7 +789,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('create tsv files for mapped and not mapped ndf-rt drugs')
 
     generate_tsv_for_mapped_and_not_mapped_ndf_rts()
@@ -797,7 +797,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('integrate ndf-rt drugs into hetionet')
 
     integration_of_ndf_rt_drugs_into_hetionet()
@@ -805,7 +805,7 @@ def main():
     # print(
     #     '###########################################################################################################################')
     #
-    # print (datetime.datetime.utcnow())
+    # print (datetime.datetime.now())
     # print('integrate ndf-rt connection into hetionet')
     #
     # integrate_connection_into_hetionet()
@@ -813,7 +813,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

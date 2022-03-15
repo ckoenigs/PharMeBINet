@@ -111,7 +111,7 @@ def main():
     else:
         sys.exit('need a path reactome protein')
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j_mysql()
@@ -119,7 +119,7 @@ def main():
     print(
         '###...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...###')
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     print('Load all uniprotIDs from hetionet Protein into a dictionary')
 
     load_hetionet_uniprotIDs_in()
@@ -128,7 +128,7 @@ def main():
     print(
         '###...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...###')
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     print('Load all reactome uniprotIDs from ReferenceEntity from neo4j into a dictionary')
 
     load_reactome_referenceEntity_in()
@@ -137,7 +137,7 @@ def main():
     print(
         '###...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...###')
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     print('Integrate new edges to reactome ')
 
     create_cypher_file()
@@ -145,7 +145,7 @@ def main():
     print(
         '###...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...###')
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
 
 
 if __name__ == "__main__":

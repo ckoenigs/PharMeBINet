@@ -222,7 +222,7 @@ def get_all_important_relationships_and_write_into_files():
 
         if counter%10000==0:
             print('had now 10000 again:',counter)
-            print(datetime.datetime.utcnow())
+            print(datetime.datetime.now())
 
         # print(len(dict_chemical_disease))
 
@@ -276,7 +276,7 @@ def main():
     else:
         sys.exit('need a path')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j_mysql()
@@ -284,7 +284,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('generate  cypher file')
 
     generate_cypher()
@@ -292,7 +292,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Take all chemical-disease relationships and generate tsv')
 
     get_all_important_relationships_and_write_into_files()
@@ -300,7 +300,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

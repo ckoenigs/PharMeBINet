@@ -248,7 +248,7 @@ def main():
         path_of_directory = sys.argv[1]
     else:
         sys.exit('need a path hmdb disease')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j()
@@ -256,7 +256,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all disease and symptom from hetionet into a dictionary')
 
     load_hetionet_labels_in('Disease', dict_disease_id_to_resource, dict_disease_name_to_disease_ids,
@@ -268,7 +268,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all hmdb disease from neo4j into a dictionary')
 
     load_hmdb_disease_and_map()
@@ -276,7 +276,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

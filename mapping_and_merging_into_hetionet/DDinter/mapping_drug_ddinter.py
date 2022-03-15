@@ -118,7 +118,7 @@ def get_all_ddinter_and_map(dict_node_id_to_resource):
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     global path_of_directory, director
     if len(sys.argv) > 1:
@@ -128,35 +128,35 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('create connection to neo4j')
 
     create_connection_with_neo4j()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('prepare for each label the files')
 
     dict_node_id_to_resource = {}
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('get all drugs from database')
 
     integrate_information_into_dict(dict_node_id_to_resource)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('prepare file and write information of mapping in it')
 
     get_all_ddinter_and_map(dict_node_id_to_resource)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

@@ -118,7 +118,7 @@ def main():
     cypher_file = open('output/cypher_edge.cypher', 'a', encoding="utf-8")
 
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j')
 
     create_connection_with_neo4j()
@@ -128,7 +128,7 @@ def main():
         print(
             '###########################################################################################################################')
 
-        print(datetime.datetime.utcnow())
+        print(datetime.datetime.now())
         print('load rela data', label)
 
         load_pair_edges(label)
@@ -136,7 +136,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     cypher_file.close()
 

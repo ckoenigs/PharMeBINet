@@ -217,7 +217,7 @@ def generate_edges_files_and_cypher_queries():
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     global path_of_directory
     if len(sys.argv) > 1:
@@ -227,31 +227,31 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load')
 
     for go_annotation_file_name in ['goa_human', 'goa_human_complex', 'goa_human_isoform', 'goa_human_rna']:
-        print(datetime.datetime.utcnow())
+        print(datetime.datetime.now())
         print('load ' + go_annotation_file_name)
         prepare_geo_annotation_file(go_annotation_file_name)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('generate node files and queries')
 
     generate_nodes_files_and_cypher_queries()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('generate edge files and queries')
 
     generate_edges_files_and_cypher_queries()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

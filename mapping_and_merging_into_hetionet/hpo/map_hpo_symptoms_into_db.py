@@ -410,7 +410,7 @@ def prepare_mapped_nodes_for_file(csv_mapped):
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     global path_of_directory, ontology_date
     if len(sys.argv) > 2:
@@ -421,41 +421,41 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('connection to db')
     database_connection()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('generate dictionary from symptoms of hetionet')
 
     get_all_symptoms_and_add_to_dict()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('generate dictionary from symptoms of hetionet')
 
     csv_mapped, csv_new = generate_cypher_queries_and_tsv_files()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('map hpo symptoms to mesh or umls cui and integrated them into hetionet')
 
     map_hpo_symptoms_and_to_hetionet(csv_new)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('The mapped nodes are wrote into file')
 
     prepare_mapped_nodes_for_file(csv_mapped)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     con.close()
 

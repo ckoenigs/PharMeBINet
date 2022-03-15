@@ -77,21 +77,21 @@ def main():
     source = os.path.join(home, 'output')
     path_of_directory = os.path.join(home, 'gene_protein_edge/')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('create connection with neo4j')
 
     create_connection_with_neo4j()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('gather all information of the genes/proteins')
 
     get_pairs_information()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

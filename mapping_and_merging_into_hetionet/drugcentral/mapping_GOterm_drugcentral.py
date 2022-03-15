@@ -248,7 +248,7 @@ def main():
         path_of_directory = sys.argv[1]
     else:
         sys.exit('need a path drugcentral go')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
 
@@ -256,22 +256,22 @@ def main():
 
     print('#####################################################################################')
     print("load biological process in")
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     load_biologicalProcess_in()
 
     print('#####################################################################################')
     print("load cellular Component in")
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     load_cellularComponent_in()
 
     print('#####################################################################################')
     print("load molecular function in")
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     load_molecularFunction_in()
 
     print('#####################################################################################')
     print("load GO term")
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     load_GO_term_in()
 
     print('#####################################################################################')

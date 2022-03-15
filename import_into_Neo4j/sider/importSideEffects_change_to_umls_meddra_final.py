@@ -480,7 +480,7 @@ def generate_cypher_file():
     # first add all queries with sider drugs
     counter_create = 0
     print('drug Create')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     # create cypher file
     cypher_file = open('output/cypher.cypher', 'w')
     # query for drugs
@@ -512,7 +512,7 @@ def generate_cypher_file():
 
     # add queries for side effect
     print('side effect Create')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     # create side effect tsv
     writer = open('output/se.tsv', 'w')
     csv_writer = csv.writer(writer, delimiter='\t')
@@ -523,7 +523,7 @@ def generate_cypher_file():
 
     # make statistics and add query for relationship to file
     print('edges Create')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     # create side effect tsv
     write_rela_in_csv('rela', dict_edges_side_effects)
     write_rela_in_csv('rela_indicates', dict_edges_indications)
@@ -534,7 +534,7 @@ def generate_cypher_file():
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('import meddra_all_se.tsv')
 
     import_meddra_all_se()
@@ -542,13 +542,13 @@ def main():
     print('number of drug afte the second file:' + str(len(dict_drug)))
 
     print('#############################################################')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('import meddra_all_lable_indication.tsv')
 
     import_meddra_all_lable_indication()
 
     print('#############################################################')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('import meddra_all_indication.tsv')
 
     import_meddra_all_indication()
@@ -556,7 +556,7 @@ def main():
     print('number of drug afte the first file:' + str(len(dict_drug)))
 
     print('#############################################################')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('import meddra_freq.tsv')
 
     import_meddra_freq()
@@ -569,18 +569,18 @@ def main():
     print('number of relationships in the end indication:' + str(len(dict_edges_indications)))
 
     print('#############################################################')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('generate file where are cuis use form umlsIdLabel')
 
     generate_file_umls_id_label()
 
     print('#############################################################')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('generate cypher file')
     generate_cypher_file()
 
     print('#############################################################')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

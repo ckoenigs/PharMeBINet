@@ -30,12 +30,12 @@ def load_edges_from_database_and_add_to_dict():
     print("query_ended----------")
 
     count = 0
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     for gene_id, resource, variant_id, in results:
         count += 1
         if count % 50000 == 0:
             print(f"process: {count}")
-            print(datetime.datetime.utcnow())
+            print(datetime.datetime.now())
         if (gene_id, variant_id) in dict_pairs_to_info and dict_pairs_to_info[(gene_id, variant_id)] != resource:
             print('------ohje------')
             print(gene_id)
@@ -125,14 +125,14 @@ def main():
     source = os.path.join(home, 'output')
     path_of_directory = os.path.join(home, 'gene_variant_edge/')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('create connection with neo4j')
 
     create_connection_with_neo4j()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('gather all information of the genes/variants')
 
     load_edges_from_database_and_add_to_dict()
@@ -143,7 +143,7 @@ def main():
     get_DisGeNet_information()
 
     print('##########################################################################')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

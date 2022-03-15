@@ -226,7 +226,7 @@ def drugs_combination_and_check(neo4j_label):
     dict_drug_sequence = {}
 
     # this gather all information from the sequence folder
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('gather all information form drug sequences files')
     for file in os.listdir(path_to_drug_sequences):
         if file.endswith(".fasta"):
@@ -245,7 +245,7 @@ def drugs_combination_and_check(neo4j_label):
     dict_drug_external_ids = {}
 
     # this take all information from drug links.csv
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('take all information from drug links.csv')
     with open(path_to_external_links + 'drug links.csv') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=',')
@@ -266,7 +266,7 @@ def drugs_combination_and_check(neo4j_label):
 
     dict_drug_structure_links = {}
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('take all information from structure links')
     # this takes all information from structures -> structure links.csv
     with open(path_to_structure + 'structure links.csv') as csvfile:
@@ -288,7 +288,7 @@ def drugs_combination_and_check(neo4j_label):
 
     dict_drug_structure = {}
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('take all information from structure')
     # this takes all information from structures -> structure.sdf which was converted into a csv
     # properties: ALOGPS_LOGP	ALOGPS_LOGS	ALOGPS_SOLUBILITY	DATABASE_ID	DATABASE_NAME	DRUGBANK_ID	DRUG_GROUPS	EXACT_MASS	FORMULA	GENERIC_NAME	ID	INCHI_IDENTIFIER	INCHI_KEY	INTERNATIONAL_BRANDS	JCHEM_ACCEPTOR_COUNT	JCHEM_ATOM_COUNT	JCHEM_AVERAGE_POLARIZABILITY	JCHEM_BIOAVAILABILITY	JCHEM_DONOR_COUNT	JCHEM_FORMAL_CHARGE	JCHEM_GHOSE_FILTER	JCHEM_IUPAC	JCHEM_LOGP	JCHEM_MDDR_LIKE_RULE	JCHEM_NUMBER_OF_RINGS	JCHEM_PHYSIOLOGICAL_CHARGE	JCHEM_PKA	JCHEM_PKA_STRONGEST_ACIDIC	JCHEM_PKA_STRONGEST_BASIC	JCHEM_POLAR_SURFACE_AREA	JCHEM_REFRACTIVITY	JCHEM_ROTATABLE_BOND_COUNT	JCHEM_RULE_OF_FIVE	JCHEM_TRADITIONAL_IUPAC	JCHEM_VEBER_RULE	MOLECULAR_WEIGHT	Molecule	PRODUCTS	SALTS	SECONDARY_ACCESSION_NUMBERS	SMILES	SYNONYMS
@@ -351,10 +351,10 @@ def drugs_combination_and_check(neo4j_label):
         'JCHEM_LOGP': 'logP'
     }
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('missing structure sdf')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('check and combine the different information source with the xml source in an new file')
 
     new_properties_for_tsv = ['JCHEM_VEBER_RULE', 'JCHEM_PKA', 'JCHEM_ATOM_COUNT', 'JCHEM_FORMAL_CHARGE']
@@ -1663,7 +1663,7 @@ def gather_and_combine_protein_information(uniprot_links, drugbank_all_polypepti
     dict_drug_target_external = {}
     dict_target_info_external = {}
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('gather  information from uniprot_links')
 
     # this take all information from drug links.csv
@@ -1677,7 +1677,7 @@ def gather_and_combine_protein_information(uniprot_links, drugbank_all_polypepti
     dict_drug_target_sequence = {}
     dict_target_info_sequence = {}
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('gather  information from polypeptide sequence')
 
     # this take all information from drug links.csv
@@ -1694,7 +1694,7 @@ def gather_and_combine_protein_information(uniprot_links, drugbank_all_polypepti
     dict_drug_target_pharmacologically_active_identifier = {}
     dict_target_info_identifier = {}
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('gather  information from polypeptide_ids')
 
     # this take all information from drug links.csv
@@ -1707,7 +1707,7 @@ def gather_and_combine_protein_information(uniprot_links, drugbank_all_polypepti
         len(dict_drug_target_pharmacologically_active_identifier)))
     print('number of targets:' + str(len(dict_target_info_identifier)))
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('compare and generate new target file')
 
     # check and if necessary generate a combined new file
@@ -1717,7 +1717,7 @@ def gather_and_combine_protein_information(uniprot_links, drugbank_all_polypepti
                                                             'output/' + drugbank_target_output_tsv, neo4j_label,
                                                             neo4j_general_label)
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('compare and generate new drug-target file')
 
     # check and if necessary generate combined file for rela drug-target
@@ -2315,7 +2315,7 @@ def generate_shell_script():
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load uniprot')
 
     load_uniprot_info_into_dictionary()
@@ -2323,7 +2323,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('drug')
 
     neo4j_label_drug = 'Compound_DrugBank'
@@ -2333,7 +2333,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load rela types drug protein')
 
     load_all_allfields_and_their_rela_types_into_a_dict()
@@ -2341,7 +2341,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('carrier')
 
     # to open a blank file
@@ -2358,7 +2358,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('enzymes')
 
     neo4j_label_enzyme = 'Enzyme_DrugBank'
@@ -2371,7 +2371,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('target')
 
     neo4j_label_target = 'Target_DrugBank'
@@ -2384,7 +2384,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('transporter')
 
     neo4j_label_transporter = 'Transporter_DrugBank'
@@ -2399,7 +2399,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('general')
     output = 'output/'
     generate_combined_csv_files(header_new, neo4j_general_label,
@@ -2408,7 +2408,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('metabolites')
 
     neo4j_label_metabolite = 'Metabolite_DrugBank'
@@ -2417,7 +2417,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('other_nodes_without_update')
 
     neo4j_label_pathway = 'Pathway_DrugBank'
@@ -2435,7 +2435,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('other rela without update')
 
     add_the_other_rela_to_cypher(neo4j_label_pathway, neo4j_label_product, neo4j_label_salt,
@@ -2446,7 +2446,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('generate shell script')
 
     generate_shell_script()
@@ -2454,7 +2454,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

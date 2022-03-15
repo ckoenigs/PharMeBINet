@@ -353,7 +353,7 @@ def create_csv_and_cypher_file_neo4j():
     cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
 
     print('drug Create')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     file_name_outcome = 'output/outcome.tsv'
     # f = open(file_name_outcome, 'w', newline='', encoding='utf-8')
     f = open(file_name_outcome, 'w', encoding='utf-8')
@@ -382,7 +382,7 @@ def create_csv_and_cypher_file_neo4j():
         f.close()
 
     print('drug Create')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     file_name_drug = 'output/drug.tsv'
     f = open(file_name_drug, 'w', encoding='utf-8')
 
@@ -405,7 +405,7 @@ def create_csv_and_cypher_file_neo4j():
         f.close()
 
     print('rel Create')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     # tsv for relationships
     file_name_drug_outcome = 'output/drug_outcome_relation.tsv'
@@ -434,7 +434,7 @@ def create_csv_and_cypher_file_neo4j():
         f.close()
 
     print('end')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 def main():
@@ -445,22 +445,22 @@ def main():
     load_standard_case_indication()
 
     print('start load in concept ')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     load_concept()
 
     print("start drug outcome statistic ")
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     load_drug_outcome_statistic()
 
     print("start drug outcome contigency table")
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     load_contingency_table()
 
     print('create tsv and cypher file to integrate aeolus int neo4j')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     create_csv_and_cypher_file_neo4j()
 
 

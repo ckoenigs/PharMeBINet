@@ -49,13 +49,13 @@ for row in csv_reader:
 xml_file = os.path.join('full database.xml')
 # xml_file = os.path.join('part.xml')
 # xml_file = os.path.join('drugbank_all_full_database_dezember.xml/test.xml')
-print(datetime.datetime.utcnow())
+print(datetime.datetime.now())
 
 # parse it to usable formart
 tree = ET.parse(xml_file)
 root = tree.getroot()
 
-print(datetime.datetime.utcnow())
+print(datetime.datetime.now())
 
 # templates to extract some information from drugbank xml
 ns = '{http://www.drugbank.ca}'
@@ -1027,7 +1027,7 @@ for i, drug in enumerate(root):
 #        break
 
 print('number of entries in drugbank:' + str(counter))
-print(datetime.datetime.utcnow())
+print(datetime.datetime.now())
 
 
 def collapse_list_values(row):
@@ -1065,7 +1065,7 @@ def preparation(list_information):
     return list_information
 
 
-print(datetime.datetime.utcnow())
+print(datetime.datetime.now())
 print('preparation of information lists')
 # prepare the information from the different different dictionaries
 rows = preparation(rows)
@@ -1106,7 +1106,7 @@ def generate_tsv_file(columns, list_information, file_name):
     drugbank_information.to_csv(path, sep='\t', index=False, encoding='utf-8')
 
 
-print(datetime.datetime.utcnow())
+print(datetime.datetime.now())
 print('malsehen')
 # tsv header
 columns = ['drugbank_id', 'alternative_ids', 'name', 'cas_number', 'unii', 'atc_codes',
@@ -1257,7 +1257,7 @@ query = query_start + " Match (n:atc{identifier:line.id_upper}), (m:atc{identifi
 query = query % (atc_file_name)
 cypher_file.write(query)
 
-print(datetime.datetime.utcnow())
+print(datetime.datetime.now())
 
 # write drugbank tsv
 # path = os.path.join('drugbank', 'drugbank_interaction.tsv')

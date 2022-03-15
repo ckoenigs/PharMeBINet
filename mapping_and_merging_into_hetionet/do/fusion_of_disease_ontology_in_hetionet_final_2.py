@@ -269,8 +269,8 @@ def main():
     else:
         sys.exit('need a path')
 
-    print(datetime.datetime.utcnow())
-    output.write(str(datetime.datetime.utcnow()))
+    print(datetime.datetime.now())
+    output.write(str(datetime.datetime.now()))
     print('create connection with neo4j')
     output.write('create connection with neo4j')
 
@@ -281,8 +281,8 @@ def main():
     output.write(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
-    output.write(str(datetime.datetime.utcnow()))
+    print(datetime.datetime.now())
+    output.write(str(datetime.datetime.now()))
     print('generate cypher file')
     output.write('generate cypher file')
 
@@ -293,8 +293,8 @@ def main():
     output.write(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
-    output.write(str(datetime.datetime.utcnow()))
+    print(datetime.datetime.now())
+    output.write(str(datetime.datetime.now()))
     print('load all hetionet diseases in dictionary')
     output.write('load all hetionet diseases in dictionary')
 
@@ -305,8 +305,8 @@ def main():
     output.write(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
-    output.write(str(datetime.datetime.utcnow()))
+    print(datetime.datetime.now())
+    output.write(str(datetime.datetime.now()))
 
     print('load all disease ontology diseases in dictionary')
     output.write('load all disease ontology diseases in dictionary')
@@ -318,8 +318,8 @@ def main():
     output.write(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
-    output.write(str(datetime.datetime.utcnow()))
+    print(datetime.datetime.now())
+    output.write(str(datetime.datetime.now()))
 
     print('load all connection in dictionary')
     output.write('load all connection in dictionary')
@@ -332,8 +332,8 @@ def main():
         '#################################################################################################################################################################')
     print(len(dict_diseases_in_hetionet))
 
-    print(datetime.datetime.utcnow())
-    output.write(str(datetime.datetime.utcnow()))
+    print(datetime.datetime.now())
+    output.write(str(datetime.datetime.now()))
     output.close()
 
 

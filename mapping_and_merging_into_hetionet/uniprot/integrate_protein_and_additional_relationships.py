@@ -432,7 +432,7 @@ def get_gather_protein_info_and_generate_relas():
     query = '''MATCH (n:Protein_Uniprot) RETURN n '''
     results = g.run(query)
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     # counter of combined gene protein interaction
     counter_existing_gene_protein_rela = 0
     # counter all proteins
@@ -571,7 +571,7 @@ def main():
     else:
         sys.exit('need a path')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('create connection with neo4j')
 
     create_connection_with_neo4j()
@@ -579,7 +579,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('gather all information of the hetionet genes')
 
     get_all_genes()
@@ -587,7 +587,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('gather all information of the hetionet Bp,CC and MF')
 
     load_bp_cc_mf_information()
@@ -595,7 +595,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('write cypher queries into cypher file')
 
     write_cypher_file()
@@ -603,7 +603,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('gather all information of the proteins')
 
     get_gather_protein_info_and_generate_relas()
@@ -613,7 +613,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

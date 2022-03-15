@@ -132,7 +132,7 @@ def main():
     else:
         sys.exit('need a path')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('pathwayrate connection with neo4j')
 
     create_connection_with_neo4j()
@@ -140,7 +140,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load in pathway from hetionet')
 
     load_db_pathways_in()
@@ -148,7 +148,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load in pathway from pharmgb in')
 
     load_pharmgkb_phathways_in()
@@ -156,7 +156,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

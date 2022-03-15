@@ -158,7 +158,7 @@ def load_in_all_interaction_connection_from_drugbank_in_dict():
     query = query % (neo4j_label_drugbank, neo4j_label_drugbank)
     print(query)
     results = g.run(query)
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     counter_interactions = 0
     counter_multiple = 0
     for compound1_id, description, compound2_id, in results:
@@ -476,7 +476,7 @@ def main():
     path_of_directory = sys.argv[2]
     print(sys.argv)
     print(path_of_directory)
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('create connection with neo4j')
 
     create_connection_with_neo4j()
@@ -484,7 +484,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load all properties of compound and drugbank compound and use the information to generate tsv files')
 
     get_properties_and_generate_tsv_files()
@@ -492,7 +492,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load all hetionet compound in dictionary')
 
     load_all_hetionet_compound_in_dictionary()
@@ -500,7 +500,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     print('load all DrugBank compounds in dictionary')
 
@@ -509,7 +509,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load all connection in dictionary')
 
     load_in_all_interaction_connection_from_drugbank_in_dict()
@@ -517,7 +517,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     print('integrate drugbank into hetionet')
 
@@ -526,7 +526,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     print('create cypher queries and cypher file')
 
@@ -535,7 +535,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     print('generate cypher file for interaction')
 
@@ -544,7 +544,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

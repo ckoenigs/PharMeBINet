@@ -496,7 +496,7 @@ def main():
     else:
         sys.exit('need a path')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j_mysql()
@@ -504,7 +504,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load in all drugs from hetionet (+Sider) in a dictionary')
 
     load_compounds_from_hetionet()
@@ -528,7 +528,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load in all drugs from aeolus in a dictionary')
 
     load_drug_aeolus_in_dictionary()
@@ -536,7 +536,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Find drugbank ids with use of the rxcuis and save them in a dictionary')
 
     map_rxnorm_to_drugbank_use_rxnorm_database()
@@ -544,7 +544,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('map with use of rxnorm_to drugbank with mapping using unii and inchikey')
 
     map_rxnorm_to_drugbank_with_use_inchikeys_and_unii()
@@ -552,7 +552,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('map with rxnorm to drugbank with use of mapping file with name')
 
     map_name_rxnorm_to_drugbank()
@@ -560,7 +560,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('map with mesh to chemical')
 
     map_to_mesh_chemical()
@@ -568,7 +568,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Map the drugbank id from the aeolus drug to the chemicals in hetionet')
 
     map_aeolus_drugs_to_hetionet()
@@ -576,7 +576,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate tsv of mapped drugs')
 
     integrate_aeolus_drugs_into_hetionet()
@@ -584,7 +584,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate cypher')
 
     generate_cypher_file()
@@ -592,7 +592,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":
