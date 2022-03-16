@@ -7,13 +7,13 @@ path_neo4j=$1
 path_to_project=$2
 
 #download go
-wget  -O ./go-basic.obo "purl.obolibrary.org/obo/go/go-basic.obo"
+wget  -O data/go-basic.obo "purl.obolibrary.org/obo/go/go-basic.obo"
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo parse obo file
 
-python3 ../EFO/transform_obo_to_tsv_and_cypher_file.py go-basic.obo GO go $path_to_project > output/output_generate_integration_file.txt
+python3 ../EFO/transform_obo_to_tsv_and_cypher_file.py data/go-basic.obo GO go $path_to_project > output/output_generate_integration_file.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
