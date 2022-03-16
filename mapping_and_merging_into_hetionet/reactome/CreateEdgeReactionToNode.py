@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Apr 18 12:41:20 2018
-
-@author: ckoenigs
-"""
 
 from py2neo import Graph
 import datetime
@@ -65,7 +59,7 @@ def check_relationships_and_generate_file(new_relationship, node_reactome_label,
     print(
         '###########################################################################################################################')
 
-    print(datetime.now)
+    print(datetime.datetime.now())
     print('Load all relationships from hetionet_failedReaction and hetionet_nodes into a dictionary')
     # file for mapped or not mapped identifier
     file_name = directory + '/mapped_Reaction_to_' + node_reactome_label + '_' + rela_name + '.tsv'
@@ -83,7 +77,7 @@ def check_relationships_and_generate_file(new_relationship, node_reactome_label,
     print(
         '###########################################################################################################################')
 
-    print(datetime.now)
+    print(datetime.datetime.now())
 
     print('Integrate new relationships and connect them ')
 
@@ -96,7 +90,7 @@ def main():
         path_of_directory = sys.argv[1]
         license = sys.argv[2]
     else:
-        sys.exit('need a path reactome raction')
+        sys.exit('need a path reactome reaction and license')
 
     global cypher_file
     print(datetime.datetime.now())
