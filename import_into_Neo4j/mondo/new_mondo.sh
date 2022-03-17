@@ -11,7 +11,7 @@ wget  -O data/mondo.obo "http://purl.obolibrary.org/obo/mondo.obo"
 
 
 
-python3 ../EFO/transform_obo_to_tsv_and_cypher_file.py data/mondo.obo mondo disease $path_to_project > output_generate_integration_file.txt
+python3 ../EFO/transform_obo_to_tsv_and_cypher_file.py data/mondo.obo mondo disease $path_to_project > output/output_generate_integration_file.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
