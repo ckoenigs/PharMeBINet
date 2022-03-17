@@ -5,13 +5,15 @@ import json
 from pathlib import Path
 import sys
 import shutil
+import csv, datetime
 
 
 class directory_maker():
     def __init__(self):
         pass
 
-    """ Erstellt die Verzeichnisse. """
+    """ Erstellt die Verzeichnisse.
+        directories: Name des Verzeichnisses. """
     def make_directory(self, directories):
         for directory in directories:
             print("Creating directory " + directory + " ...")
@@ -25,7 +27,8 @@ class downloader():
     def __init__(self, parser):
         self.parser = parser
 
-    """ Ändert den Namen der Dateien. """
+    """ Ändert den Namen der Dateien.
+        s: Name der Dateien als String. """
     def trim(self, s):
         return s.replace(
                     " (all)",
@@ -39,9 +42,14 @@ class downloader():
                     "All",
                     "all")
 
-    """ Downloaded und speichert die Datei, wenn diese noch nicht vorhanden ist. """
+    """ Downloaded und speichert die Datei, wenn diese noch nicht vorhanden ist.
+        files: Alle Dateien im Verzeichnis.
+        directories: Das Oberverzeichnis.
+        entry: Die Datei die gedownloaded werden soll.
+        directory_name: Das Unterverzeichnis. """
     def make_file(self, files, directories, entry, directory_name):
         name = self.trim(entry["display_name"])
+        # Prüft, ob die Datei bereits gedownloadet ist. Sonst wird sie gedownloaded.
         if not (str(Path(directories[directory_name]).name) + "_" + name + ".json.zip").replace("__", "_") in files:
             r = requests.get(entry["file"], allow_redirects=True)
             open((directories[directory_name] +
@@ -51,21 +59,15 @@ class downloader():
                   name +
                   ".json.zip").replace("__", "_"), 'wb').write(r.content)
 
-    """ Filtert die Download-Links aus der download.json. """
+    """ Filtert die Download-Links aus der download.json.
+        f: Die download.json.
+        directories: Das Oberverzeichnis. """
     def download(self, f, directories):
         dictionary = self.parser.parse(f)
         dictionary = dictionary["results"]
-        animal = dictionary["animalandveterinary"]
         drug = dictionary["drug"]
-        device = dictionary["device"]
         food = dictionary["food"]
         other = dictionary["other"]
-        tobacco = dictionary["tobacco"]
-        if "AnimalAndVeterinaryAdverseEvents" in directories.keys():
-            files = os.listdir(directories["AnimalAndVeterinaryAdverseEvents"])
-            for entry in animal["event"]["partitions"]:
-                print("Downloading " + "\"" + entry["file"] + "\"" + " ...")
-                self.make_file(files, directories, entry, "AnimalAndVeterinaryAdverseEvents")
 
         if "CAERSReports" in directories:
             files = os.listdir(directories["CAERSReports"])
@@ -73,65 +75,11 @@ class downloader():
                 print("Downloading " + "\"" + entry["file"] + "\"" + " ...")
                 self.make_file(files, directories, entry, "CAERSReports")
 
-        if "COVID19SerologicalTestingEvaluations" in directories:
-            files = os.listdir(
-                directories["COVID19SerologicalTestingEvaluations"])
-            for entry in device["covid19serology"]["partitions"]:
-                print("Downloading " + "\"" + entry["file"] + "\"" + " ...")
-                self.make_file(files, directories, entry, "COVID19SerologicalTestingEvaluations")
-
-        if "Device510" in directories:
-            files = os.listdir(directories["Device510"])
-            for entry in device["510k"]["partitions"]:
-                print("Downloading " + "\"" + entry["file"] + "\"" + " ...")
-                self.make_file(files, directories, entry, "Device510")
-        if "DeviceAdverseEvents" in directories:
-            files = os.listdir(directories["DeviceAdverseEvents"])
-            for entry in device["event"]["partitions"]:
-                print("Downloading " + "\"" + entry["file"] + "\"" + " ...")
-                self.make_file(files, directories, entry, "DeviceAdverseEvents")
-
-        if "DeviceClassification" in directories:
-            files = os.listdir(directories["DeviceClassification"])
-            for entry in device["classification"]["partitions"]:
-                print("Downloading " + "\"" + entry["file"] + "\"" + " ...")
-                self.make_file(files, directories, entry, "DeviceClassification")
-
-        if "DevicePremarketApproval" in directories:
-            files = os.listdir(directories["DevicePremarketApproval"])
-            for entry in device["pma"]["partitions"]:
-                print("Downloading " + "\"" + entry["file"] + "\"" + " ...")
-                self.make_file(files, directories, entry, "DevicePremarketApproval")
-
-        if "DeviceRecallEnforcementReports" in directories:
-            files = os.listdir(directories["DeviceRecallEnforcementReports"])
-            for entry in device["enforcement"]["partitions"]:
-                print("Downloading " + "\"" + entry["file"] + "\"" + " ...")
-                self.make_file(files, directories, entry, "DeviceRecallEnforcementReports")
-
-        if "DeviceRecalls" in directories:
-            files = os.listdir(directories["DeviceRecalls"])
-            for entry in device["recall"]["partitions"]:
-                print("Downloading " + "\"" + entry["file"] + "\"" + " ...")
-                self.make_file(files, directories, entry, "DeviceRecalls")
-
-        if "DeviceRegistrationsAndListings" in directories:
-            files = os.listdir(directories["DeviceRegistrationsAndListings"])
-            for entry in device["registrationlisting"]["partitions"]:
-                print("Downloading " + "\"" + entry["file"] + "\"" + " ...")
-                self.make_file(files, directories, entry, "DeviceRegistrationsAndListings")
-
         if "DrugAdverseEvents" in directories:
             files = os.listdir(directories["DrugAdverseEvents"])
             for entry in drug["event"]["partitions"]:
                 print("Downloading " + "\"" + entry["file"] + "\"" + " ...")
                 self.make_file(files, directories, entry, "DrugAdverseEvents")
-
-        if "DrugLabeling" in directories:
-            files = os.listdir(directories["DrugLabeling"])
-            for entry in drug["label"]["partitions"]:
-                print("Downloading " + "\"" + entry["file"] + "\"" + " ...")
-                self.make_file(files, directories, entry, "DrugLabeling")
 
         if "DrugRecallEnforcementReports" in directories:
             files = os.listdir(directories["DrugRecallEnforcementReports"])
@@ -151,29 +99,11 @@ class downloader():
                 print("Downloading " + "\"" + entry["file"] + "\"" + " ...")
                 self.make_file(files, directories, entry, "NationalDrugCodeDirectory")
 
-        if "NSDE" in directories:
-            files = os.listdir(directories["NSDE"])
-            for entry in other["nsde"]["partitions"]:
-                print("Downloading " + "\"" + entry["file"] + "\"" + " ...")
-                self.make_file(files, directories, entry, "NSDE")
-
         if "SubstanceData" in directories:
             files = os.listdir(directories["SubstanceData"])
             for entry in other["substance"]["partitions"]:
                 print("Downloading " + "\"" + entry["file"] + "\"" + " ...")
                 self.make_file(files, directories, entry, "SubstanceData")
-
-        if "TabaccoProblemReports" in directories:
-            files = os.listdir(directories["TabaccoProblemReports"])
-            for entry in tobacco["problem"]["partitions"]:
-                print("Downloading " + "\"" + entry["file"] + "\"" + " ...")
-                self.make_file(files, directories, entry, "TabaccoProblemReports")
-
-        if "UniqueDeviceIdentifier" in directories:
-            files = os.listdir(directories["UniqueDeviceIdentifier"])
-            for entry in device["udi"]["partitions"]:
-                print("Downloading " + "\"" + entry["file"] + "\"" + " ...")
-                self.make_file(files, directories, entry, "UniqueDeviceIdentifier")
 
 
 class unzipper:
@@ -182,71 +112,46 @@ class unzipper:
 
     """ Entzippt die Dateien und speichert sie unter neuem Namen.
         Anschließend werden sie in das richtige Verzeichnis kopiert.
-        Das temporär erstellte Verzeichnis wird gelöscht. """
-    def unzip(self, directory, f, count):
+        Das temporär erstellte Verzeichnis wird gelöscht.
+        directory: Das Verzeichnis in der die Datei 'f' liegt.
+        f: Eine zip-Datei. """
+    def unzip(self, directory, f):
         print("Unzipping " + "\"" + f + "\" ...")
-        subcount = 1
         with zipfile.ZipFile(f, 'r') as zipped:
+            # Infos über die Zip-Datei.
             zipinfos = zipped.infolist()
             if(len(zipinfos) == 1):
+                # Festlegen des richtigen Dateinamens und Verzeichnisses.
                 zipinfo = zipinfos[0]
-                zipinfo.filename = os.path.basename(os.path.abspath(directory)) + '/' + os.path.splitext(
-                    zipinfo.filename)[0] + '_' + str(count) + os.path.splitext(zipinfo.filename)[1]
-                zipped.extract(zipinfo)
-                shutil.move(zipinfo.filename, directory+'\\'+os.path.basename(zipinfo.filename))
-                os.rmdir(os.path.dirname(zipinfo.filename))
-            else:
-                for zipinfo in zipinfos:
-                    zipinfo.filename = os.path.basename(os.path.abspath(directory)) + '/' + os.path.splitext(
-                        zipinfo.filename)[0] + '_' + str(count) + '_' + str(subcount) + os.path.splitext(zipinfo.filename)[1]
-                    subcount += 1
+                name = os.path.basename(f).split(".")
+                name = name[0] + '.' + name[1]
+                zipinfo.filename = os.path.basename(os.path.abspath(directory)) + '/' + name
+                # Prüft, ob die Datei nicht schon entzippt wurde. Sonst wird sie entzippt.
+                if name not in os.listdir(directory):
+                    # Entzippen der Datei in einen Ordner des momentanen Verzeichnisses des Programms.
                     zipped.extract(zipinfo)
+                    # Verschieben der Datei in das Verzeichnis am richtigen Ort.
+                    shutil.move(zipinfo.filename, directory+'/'+os.path.basename(zipinfo.filename))
+                    # Löschen des Verzeichnisses im Ordner des Programms.
+                    os.rmdir(os.path.dirname(zipinfo.filename))
         zipped.close()
 
-    """ Unzipped alle Dateien im Verzeichnis,
-        wenn die Anzahl der gezippten Dateien nicht der
-        der ungezippten Dateien entspricht. """
+    """ Unzipped alle Dateien im Verzeichnis.
+        directory: Das Verziechnis in dem alle zip-Dateien entpackt werden sollen. """
     def unzipall(self, directory):
+        # Entzippt alle Zip-Dateien im Verzeichnis.
         files = os.listdir(directory)
-        zipped = 0
-        unzipped = 0
         for f in files:
             if(f.endswith('.zip')):
-                zipped += 1
-            elif(f.endswith('.json')):
-                unzipped += 1
-        if(zipped != unzipped):
-            count = 1
-            for f in files:
-                if(f.endswith('.zip')):
-                    self.unzip(directory, directory + '/' + f, count)
-                    count += 1
+                self.unzip(directory, directory + '/' + f)
 
 
 class parser:
     def __init__(self):
         pass
-    """This is a function found on the internet.
-       It flattens a dictionary. """
 
-    def flatten_json(self, y):
-        out = {}
-
-        def flatten(x, name=''):
-            if isinstance(x, dict):
-                for a in x:
-                    flatten(x[a], name + a + '_')
-            elif isinstance(x, list):
-                i = 0
-                for a in x:
-                    flatten(a, name + str(i) + '_')
-                    i += 1
-            else:
-                out[name[:-1]] = x
-        flatten(y)
-        return out
-
-    """ Lädt die Datei in ein Dictionary. """
+    """ Lädt die Datei in ein Dictionary.
+        path: Der Dateipfad der json-Datei die geparsed werden soll. """
     def parse(self, path):
         print("Parsing " + "\"" + path + "\" ...")
         with open(path, 'r') as f:
@@ -260,757 +165,1013 @@ class reader:
         self.parser = parser
         self.former = former
 
-    """ Geht alle Dateien des Verzeichnis durch. """
+    """ Geht alle Dateien des Verzeichnis durch.
+        directory: Das Verzeichnis in dem die json-Dateien liegen. """
     def readall(self, directory):
         files = os.listdir(directory)
+        jsons = []
         for f in files:
+            if(f.endswith('.json')):
+                jsons.append(f)
+        jsons.sort()
+        jsons_old = []
+        jsons_new = []
+        # Prüft, ob das Programm schon einmal mit json-Dateien ausgeführt wurde
+        if("jsons.txt" in files):
+            fl = open(directory+"/"+"jsons.txt", 'r', encoding="utf-8")
+            for f in fl:
+                jsons_old.append(f.replace("\n", ""))
+            fl.close()
+            # 2 Fälle
+            # 1. Eine json-Datei aus einem vorheringen Aufruf fehlt
+            # In diesem Fall werden die tsv-Dateien gelöscht, da sie keine
+            # nicht vorhandenen json-Einträge enthalten sollen
+            continue_ = True
+            for f in jsons_old:
+                if f not in jsons:
+                    continue_ = False
+                    os.remove(directory+"/"+"jsons.txt")
+                    for tsv in files:
+                        if tsv.endswith('.tsv'):
+                            os.remove(directory+"/"+tsv)
+                    break
+            # Anschließend werden die jetzt verwendeten json-Dateien in jsons.txt geschrieben
+            if not continue_:
+                jsons.sort()
+                fl = open(directory+"/"+"jsons.txt", 'w', encoding="utf-8")
+                for f in jsons:
+                    jsons_new.append(f)
+                    fl.write(f+'\n')
+                fl.close()
+            # Es wurde keine bereits vorhandene Datei gelöscht
+            if continue_:
+                # 2. Eine oder mehrere json-Dateien sind hinzugekommen
+                # Die bereits verwendeten json-Dateien werden als erstes hinzugefügt
+                for f in jsons_old:
+                    jsons_new.append(f)
+                # Die neuen json-Dateien werden hinzugefügt
+                for f in jsons:
+                    if f not in jsons_new:
+                        jsons_new.append(f)
+                # Die jetzt verwendeten json-Dateien werden in jsons.txt geschrieben
+                fl = open(directory+"/"+"jsons.txt", 'w', encoding="utf-8")
+                for json in jsons_new:
+                    fl.write(json+'\n')
+                fl.close()
+        # Wird das Programm das erste Mal ausgeführt, werden die vorhandenen json-Dateien
+        # in jsons.txt geschrieben
+        else:
+            fl = open(directory+"/"+"jsons.txt", 'w', encoding="utf-8")
+            for json in jsons:
+                fl.write(json+'\n')
+                jsons_new.append(json)
+            fl.close()
+        # Es wird in über die json-Dateien geloopt, in der Reihenfolge, wie sie in jsons.txt stehen
+        # Dabei werden jsons aus vorherigen Programmaufrufen zuerst verwendet, da diese dann nicht erneut
+        # in die tsv-Dateien geschrieben werden
+        counter=0
+        for f in jsons_new:
             self.read(directory, f)
+            counter+=1
+            if counter==50:
+                break
+        # Die tsv-Dateien mit den einzigartigen Einträgen und die id1_id2-tsv-Datei werden erstellt
+        # nachdem alle anderen tsv-Dateien erzeugt wurden
+        self.former.make_key_files(directory)
 
     """ Wenn die Datei eine json-Datei ist, wird sie geparsed.
-        Anschließend werden ihre Daten in eine csv-Datei geschrieben. """
+        Anschließend werden ihre Daten in eine tsv-Datei geschrieben.
+        directory: Das Verzeichnis in dem die Datei 'f' liegt.
+        f: Die Datei die geparsed und in tsv-Form geschrieben werden soll. """
     def read(self, directory, f):
         if(f.endswith('.json')):
             data = self.parser.parse(directory + '/' + f)
-            self.former.to_csv(data, directory)
+            self.former.to_tsv(data, directory)
 
 
 class former:
     def __init__(self, parser):
-        self.csv_path = {}
-        self.csv_header = {}
+        self.tsv_path = {}
+        self.tsv_header = {}
+        self.lists = {}
         self.parser = parser
-        self.animal_drug_keys = []
-        self.animal_reaction_keys = []
-        self.animal_event_keys = []
-        self.animal_id = 1
+        self.caers_reaction_keys = []
+        self.caers_product_keys = []
         self.caers_keys = []
-        self.caers_id = 1
+        self.caers_reaction_list = []
+        self.caers_product_list = []
+        self.caers_list = []
+        self.caers_id = [1]
+        self.caers_is_id = [0]
         self.drugadverseevent_reaction_keys = []
         self.drugadverseevent_drug_keys = []
+        self.drugadverseevent_drug_openfda_keys = []
+        self.drugadverseevent_patient_keys = []
         self.drugadverseevent_keys = []
-        self.drugadverseevent_id = 1
+        self.drugadverseevent_reaction_list = []
+        self.drugadverseevent_drug_list = []
+        self.drugadverseevent_drug_openfda_list = []
+        self.drugadverseevent_patient_list = []
+        self.drugadverseevent_list = []
+        self.drugadverseevent_id = [1]
+        self.drugadverseevent_is_id = [0]
         self.drugrecallenforcementreports_openfda_keys = []
         self.drugrecallenforcementreports_keys = []
-        self.drugrecallenforcementreports_id = 1
+        self.drugrecallenforcementreports_openfda_list = []
+        self.drugrecallenforcementreports_list = []
+        self.drugrecallenforcementreports_id = [1]
+        self.drugrecallenforcementreports_is_id = [0]
         self.foodrecallenforcementreports_keys = []
-        self.foodrecallenforcementreports_id = 1
+        self.foodrecallenforcementreports_list = []
+        self.foodrecallenforcementreports_id = [1]
+        self.foodrecallenforcementreports_is_id = [0]
         self.nationaldrugcodedirectory_activeingredients_keys = []
         self.nationaldrugcodedirectory_keys = []
-        self.nationaldrugcodedirectory_id = 1
-        self.substancedata_names_keys = []
+        self.nationaldrugcodedirectory_activeingredients_list = []
+        self.nationaldrugcodedirectory_list = []
+        self.nationaldrugcodedirectory_id = [1]
+        self.nationaldrugcodedirectory_is_id = [0]
+        self.substancedata_relationships_keys = []
+        self.substancedata_relationships_substance_keys = []
+        self.substancedata_moieties_keys = []
+        self.substancedata_mixture_keys = []
+        self.substancedata_component_keys = []
+        self.substancedata_substance_keys = []
         self.substancedata_keys = []
-        self.substancedata_id = 1
+        self.substancedata_relationships_list = []
+        self.substancedata_relationships_substance_list = []
+        self.substancedata_moieties_list = []
+        self.substancedata_mixture_list = []
+        self.substancedata_component_list = []
+        self.substancedata_substance_list = []
+        self.substancedata_list = []
+        self.substancedata_id = [1]
+        self.substancedata_is_id = [0]
+        # Überprüft, ob neue Einträge für die jeweilige Kategorie hinzugekommen sind
+        # Andernfalls wird make_files nicht ausgeführt
+        self.changed = False
 
-    """ Trimmet einen String. """
+    """ Trimmet einen String.
+        s: Der zu trimmende String. """
     def trim(self, s):
-        return s.replace("\"", "\'").replace(",", "").replace("\\", "").replace("\n", "")
+        return s.replace("\"", "\'").replace("\n", "").replace("\\", "")
 
-    """ Überprüft erst, welche Kategorie über Dictionary gegeben ist.
-        Filtert die Keys aus den Daten und schreibt sie als Header in eine csv-Datei.
-        Anschließend wird jeder Eintrag der Datei in die csv-Datei geschrieben.
-        Vor jeden Eintrag wird eine ID gesetzt.
-        Die Keys, sowie die Dateipfade werden zum Erstellen der cypher-Datei gespeichert. """
-    def to_csv(self, dicts, directory):
-        print("Creating csv ...")
-        if("AnimalAndVeterinaryAdverseEvents" in directory):
-            if not os.path.isfile(directory + "/AnimalAndVeterinaryAdverseEvent_drug.csv"):
-                for dictionary in dicts["results"]:
-                    for key in dictionary["drug"][0].keys():
-                        if key not in self.animal_drug_keys:
-                            self.animal_drug_keys.append(key)
-                header = "\"id\","
-                for key in self.animal_drug_keys:
-                    header = header + "\"" + key + "\"" + ','
-                header = header[:len(header) - 1] + '\n'
-                f = open(directory + "/AnimalAndVeterinaryAdverseEvent_drug.csv", 'w', encoding="utf-8")
-                f.write(header)
-                f.close()
-            if not os.path.isfile(directory + "/AnimalAndVeterinaryAdverseEvent_reaction.csv"):
-                for dictionary in dicts["results"]:
-                    for d in dictionary["reaction"]:
-                        for key in d:
-                            if key not in self.animal_reaction_keys:
-                                self.animal_reaction_keys.append(key)
-                header = "\"id\","
-                for key in self.animal_reaction_keys:
-                    header = header + "\"" + key + "\"" + ','
-                header = header[:len(header) - 1] + '\n'
-                f = open(directory + "/AnimalAndVeterinaryAdverseEvent_reaction.csv", 'w', encoding="utf-8")
-                f.write(header)
-                f.close()
-            if not os.path.isfile(directory +
-                                  "/AnimalAndVeterinaryAdverseEvent.csv"):
-                for dictionary in dicts["results"]:
-                    for key in dictionary.keys():
-                        if key not in self.animal_event_keys:
-                            self.animal_event_keys.append(key)
-                header = "\"id\","
-                for key in self.animal_event_keys:
-                    header = header + "\"" + key + "\"" + ','
-                header = header[:len(header) - 1] + '\n'
-                f = open(
-                    directory +
-                    "/AnimalAndVeterinaryAdverseEvent.csv",
-                    'w',
-                    encoding="utf-8")
-                f.write(header)
-                f.close()
-            line = ""
-            reaction = ""
-            event = ""
-            for dictionary in dicts["results"]:
-                line = line + "\"" + str(self.animal_id) + "\"" + ','
-                event = event + "\"" + str(self.animal_id) + "\"" + ','
-                for key in self.animal_drug_keys:
-                    if key in dictionary["drug"][0].keys() and len(str(dictionary["drug"][0][key])) < 2000000:
-                        line = line + "\"" + \
-                            self.trim(str(dictionary["drug"][0][key])) + "\"" + ','
-                    else:
-                        line = line + "\"" + "\"" + ','
-                line = line[:len(line) - 1] + '\n'
-                try:
-                    for d in dictionary["reaction"]:
-                        reaction = reaction + "\"" + \
-                            str(self.animal_id) + "\"" + ','
-                        for key in self.animal_reaction_keys:
-                            if key in d and len(str(d[key])) < 2000000:
-                                reaction = reaction + "\"" + \
-                                    self.trim(str(d[key])) + "\"" + ','
+    """ Erstellt die Key-Arrays aus den Hadern bereits vorhandener tsv-Dateien.
+        keys: Liste mit den Headern einer tsv-Datei.
+        tsv: Die tsv-Datei deren Header ausgelesen werden sollen."""
+    def make_keys(self, keys, tsv):
+        f = open(directory+tsv, 'r', encoding="utf-8")
+        csv_reader = csv.reader(f, delimiter='\t')
+        header = next(csv_reader)
+        header.remove("id")
+        for entry in header:
+            keys.append(entry.replace("\"", "").replace("\n", ""))
+        f.close()
+
+    """ Prüft, welche Einträge Listen enthalten. Benötigt für das spätere Erstellen der cypher-Datei.
+        lists: Die Liste welche alle Attribute enthält, die als Listen gespeichert sind.
+        tsv_: Die tsv-Datei die nach Listen-Attributen durchsucht wird. """
+    def make_lists(self, lists, tsv_):
+        f = open(directory+tsv_, 'r', encoding="utf-8")
+        csv_reader = csv.reader(f, delimiter='\t')
+        header = next(csv_reader)
+        for entry in csv_reader:
+            for i in range(len(entry)):
+                if '|' in entry[i]:
+                    if header[i] not in lists:
+                        lists.append(header[i])
+        f.close()
+
+    """ Erstellt die ids-Dateien und die der Oberthemen.
+        directory: Das Verzeichnis in dem die tsv-Dateien gespeichert werden.
+        dicts: Die Einträge der json-Datei als Dictionary.
+        entries: Die Attribute der einzelnen Kategorien die erstellt werden. """
+    def make_files(self, directory, dicts, entries):
+        for entry in entries:
+            if not os.path.isfile(directory + entry["tsv"]):
+                if "single_header" in entry:
+                    entry["keys"].append(entry["single_header"])
+                else:
+                    for dictionary in dicts["results"]:
+                        try:
+                            if "is_special" in entry:
+                                my_dict = []
+                                for i in dictionary[entry["one_key"]][entry["two_key"]]:
+                                    my_dict.append(i[entry["three_key"]])
+                                dictionary = my_dict
+                            elif "is_special2" in entry:
+                                head_dict = []
+                                for i in dictionary[entry["one_key"]]:
+                                    head_dict.append(i[entry["two_key"]])
+                                dictionary = head_dict
+                            elif "is_special3" in entry:
+                                head_dict = []
+                                x = 0
+                                for i in dictionary[entry["one_key"]]:
+                                    head_dict.append({})
+                                    for j in entry["two_key"]:
+                                        head_dict[x][j] = i[j]
+                                    x += 1
+                                dictionary = head_dict
+                            elif "three_key" in entry:
+                                dictionary = dictionary[entry["one_key"]][entry["two_key"]][entry["three_key"]]
+                            elif "two_key" in entry:
+                                dictionary = dictionary[entry["one_key"]][entry["two_key"]]
+                            elif "one_key" in entry:
+                                dictionary = dictionary[entry["one_key"]]
                             else:
-                                reaction = reaction + "\"" + "\"" + ','
-                        reaction = reaction[:len(reaction) - 1] + '\n'
-                    reaction = reaction[:len(reaction) - 1] + '\n'
+                                dictionary = dictionary
+                            if "is_list" in entry:
+                                for d in dictionary:
+                                    for key in d.keys():
+                                        if key not in entry["keys"]:
+                                            entry["keys"].append(key)
+                            else:
+                                for key in dictionary.keys():
+                                    if key not in entry["keys"]:
+                                        entry["keys"].append(key)
+                        except:
+                            pass
+                header = "\"id\"\t"
+                if "remove_keys" in entry:
+                    for i in entry["remove_keys"]:
+                        try:
+                            entry["keys"].remove(i)
+                        except BaseException:
+                            pass
+                try:
+                    entry["keys"].remove("id")
                 except BaseException:
                     pass
-                for key in self.animal_event_keys:
-                    if key in dictionary.keys() and len(str(dictionary[key])) < 2000000:
-                        event = event + "\"" + \
-                            self.trim(str(dictionary[key])) + "\"" + ','
-                    else:
-                        event = event + "\"" + "\"" + ','
-                event = event[:len(event) - 1] + '\n'
-                f = open(directory + "/AnimalAndVeterinaryAdverseEvent_drug.csv", 'a', encoding="utf-8")
-                f.write(line)
-                f.close()
-                f = open(directory + "/AnimalAndVeterinaryAdverseEvent_reaction.csv", 'a', encoding="utf-8")
-                f.write(reaction)
-                f.close()
-                f = open(
-                    directory +
-                    "/AnimalAndVeterinaryAdverseEvent.csv",
-                    'a',
-                    encoding="utf-8")
-                f.write(event)
-                f.close()
-                line = ""
-                reaction = ""
-                event = ""
-                self.animal_id += 1
-            if "AnimalAndVeterinaryAdverseEvent_drug" not in self.csv_path:
-                self.csv_path["AnimalAndVeterinaryAdverseEvent_drug"] = directory + "/AnimalAndVeterinaryAdverseEvent_drug.csv"
-            if "AnimalAndVeterinaryAdverseEvent_reaction" not in self.csv_path:
-                self.csv_path["AnimalAndVeterinaryAdverseEvent_reaction"] = directory + "/AnimalAndVeterinaryAdverseEvent_reaction.csv"
-            if "AnimalAndVeterinaryAdverseEvent" not in self.csv_path:
-                self.csv_path["AnimalAndVeterinaryAdverseEvent"] = directory + \
-                    "/AnimalAndVeterinaryAdverseEvent.csv"
-            if "AnimalAndVeterinaryAdverseEvent_drug" not in self.csv_header:
-                self.csv_header["AnimalAndVeterinaryAdverseEvent_drug"] = ["id"] + self.animal_drug_keys
-            if "AnimalAndVeterinaryAdverseEvent_reaction" not in self.csv_header:
-                self.csv_header["AnimalAndVeterinaryAdverseEvent_reaction"] = [
-                    "id"] + self.animal_reaction_keys
-            if "AnimalAndVeterinaryAdverseEvent" not in self.csv_header:
-                self.csv_header["AnimalAndVeterinaryAdverseEvent"] = [
-                    "id"] + self.animal_event_keys
-
-        if("CAERSReports" in directory):
-            if not os.path.isfile(directory + "/CAERSReport.csv"):
-                for dictionary in dicts["results"]:
-                    for key in dictionary.keys():
-                        if key not in self.caers_keys:
-                            self.caers_keys.append(key)
-                header = "\"id\","
-                for key in self.caers_keys:
-                    header = header + "\"" + key + "\"" + ','
+                for key in entry["keys"]:
+                    header = header + "\"" + key + "\"" + '\t'
                 header = header[:len(header) - 1] + '\n'
-                f = open(
-                    directory +
-                    "/CAERSReport.csv",
-                    'w',
-                    encoding="utf-8")
+                f = open(directory + entry["tsv"], 'w', encoding="utf-8")
                 f.write(header)
                 f.close()
-            report = ""
-            for dictionary in dicts["results"]:
-                report = report + "\"" + str(self.caers_id) + "\"" + ','
-                for key in self.caers_keys:
-                    if key in dictionary.keys() and len(str(dictionary[key])) < 2000000:
-                        report = report + "\"" + self.trim(str(dictionary[key])) + "\"" + ','
-                    else:
-                        report = report + "\"" + "\"" + ','
-                report = report[:len(report) - 1] + '\n'
-                f = open(
-                    directory +
-                    "/CAERSReport.csv",
-                    'a',
-                    encoding="utf-8")
-                f.write(report)
+            elif not entry["keys"]:
+                self.make_keys(entry["keys"], entry["tsv"])
+                f = open(directory + entry["tsv"], 'r', encoding="utf-8")
+                entries[len(entries)-1]["id"][0] = sum(1 for line in f)
                 f.close()
-                report = ""
-                self.caers_id += 1
-            if "CAERSReport" not in self.csv_path:
-                self.csv_path["CAERSReport"] = directory + "/CAERSReport.csv"
-            if "CAERSReport" not in self.csv_header:
-                self.csv_header["CAERSReport"] = ["id"] + self.caers_keys
+                self.make_lists(entry["lists"], entry["tsv"])
+        fields = []
+        for dictionary in dicts["results"]:
+            entries[len(entries)-1]["is_id"][0] = entries[len(entries)-1]["is_id"][0] + 1
+            if entries[len(entries)-1]["is_id"][0] < entries[len(entries)-1]["id"][0]:
+                continue
+            self.changed = True
+            identifier = entries[len(entries)-1]["id"][0]
+            head_dict = dictionary
+            for entry in entries:
+                f = open(directory + entry["tsv"], 'a', encoding="utf-8")
+                csv_writer = csv.writer(f, delimiter='\t', lineterminator='\n', quoting=csv.QUOTE_NONE, escapechar='', quotechar='')
+                try:
+                    if "is_special" in entry:
+                        head_dict = []
+                        for i in dictionary[entry["one_key"]][entry["two_key"]]:
+                            head_dict.append(i[entry["three_key"]])
+                    elif "is_special2" in entry:
+                        head_dict = []
+                        for i in dictionary[entry["one_key"]]:
+                            head_dict.append(i[entry["two_key"]])
+                    elif "is_special3" in entry:
+                        head_dict = []
+                        x = 0
+                        for i in dictionary[entry["one_key"]]:
+                            head_dict.append({})
+                            for j in entry["two_key"]:
+                                head_dict[x][j] = i[j]
+                            x += 1
+                    elif "three_key" in entry:
+                        head_dict = dictionary[entry["one_key"]][entry["two_key"]][entry["three_key"]]
+                    elif "two_key" in entry:
+                        head_dict = dictionary[entry["one_key"]][entry["two_key"]]
+                    elif "one_key" in entry:
+                        head_dict = dictionary[entry["one_key"]]
+                    elif "is_single" in entry:
+                        head_dict = dictionary[entry["single_header"]]
+                    else:
+                        head_dict = dictionary
+                    if "is_single" in entry:
+                        for d in head_dict:
+                            fields.append("\""+str(identifier)+"\"")
+                            if len(d) < 2000000:
+                                fields.append("\""+self.trim(str(d))+"\"")
+    
+                            else:
+                                fields.append("")
+                            for i in range(len(fields)):
+                                fields[i] = fields[i].replace("\"\"", "").replace("\"[]\"", "").replace("\"{}\"", "").replace("\t", " ")
+                            csv_writer.writerow(fields)
+                            fields = []
+                    elif "is_list" in entry:
+                        for d in head_dict:
+                            fields.append("\""+str(identifier)+"\"")
+                            for key in entry["keys"]:
+                                if key in d and len(str(d[key])) < 2000000:
+                                    if isinstance(d[key], list):
+                                        length = len(d[key])
+                                        d[key] = [str(entry).replace("|", "") for entry in d[key]]
+                                        d[key] = "|".join(str(elem) for elem in d[key])
+                                        if key not in entry["lists"] and length > 1:
+                                            entry["lists"].append(key)
+                                    elif isinstance(d[key], dict):
+                                        d[key] = json.dumps(d[key])
+                                        d[key] = d[key].replace("|", "")
+                                    else:
+                                        d[key] = str(d[key]).replace("|", "")
+                                    fields.append("\""+self.trim(str(d[key]))+"\"")
+    
+                                else:
+                                    fields.append("")
+                            for i in range(len(fields)):
+                                fields[i] = fields[i].replace("\"\"", "").replace("\"[]\"", "").replace("\"{}\"", "").replace("\t", " ")
+                            csv_writer.writerow(fields)
+                            fields = []
+                    elif "is_head" in entry:
+                        fields.append("\""+str(identifier)+"\"")
+                        for key in entry["keys"]:
+                            if key in head_dict.keys() and len(str(head_dict[key])) < 2000000:
+                                if isinstance(head_dict[key], list):
+                                    length = len(head_dict[key])
+                                    head_dict[key] = [str(entry).replace("|", "") for entry in head_dict[key]]
+                                    head_dict[key] = "|".join(str(elem) for elem in head_dict[key])
+                                    if key not in entry["lists"] and length > 1:
+                                        entry["lists"].append(key)
+                                elif isinstance(head_dict[key], dict):
+                                    head_dict[key] = json.dumps(head_dict[key])
+                                    head_dict[key] = head_dict[key].replace("|", "")
+                                else:
+                                    head_dict[key] = str(head_dict[key]).replace("|", "")
+                                fields.append("\""+self.trim(str(head_dict[key]))+"\"")
+                            else:
+                                fields.append("")
+                        for i in range(len(fields)):
+                            fields[i] = fields[i].replace("\"\"", "").replace("\"[]\"", "").replace("\"{}\"", "").replace("\t", " ")
+                        csv_writer.writerow(fields)
+                except BaseException:
+                    pass
+                f.close()
+                fields = []
+            entries[len(entries)-1]["id"][0] += 1
+
+        for entry in entries:
+            if isinstance(entry["keys"], str):
+                entry["keys"] = [entry["keys"]]
+            if not entry["name"] in tsv_paths:
+                self.tsv_path[entry["name"]] = directory + entry["tsv"]
+            if not entry["name"] in tsv_headers:
+                self.tsv_header[entry["name"]] = ["id"] + entry["keys"]
+            self.lists[entry["list_name"]] = entry["lists"]
+
+    """ Erstellt die unique-Dateien und die id1-id2-Dateien.
+        directory: Das Verzeichnis in dem die tsv-Dateien liegen und gespeichert werden.
+        ids_tsv: Die tsv-Datei die die originalen Einträge aus der json-Datei enthält.
+        unique_tsv: Die tsv-Datei die nur die einzigartigen Einträge enthalten wird.
+        id1_id2_tsv: Die Datei die die ids zum matchen der Kategorien enthält.
+        keys: Die Liste die alle Attribute des Headers der 'ids_tsv'-Datei enthält. """
+    def make_unique_files(self, directory, ids_tsv, unique_tsv, id1_id2_tsv, keys):
+        if self.changed:
+            # Erstellt die Datei mit den einzigartigen Einträgen, indem
+            # diese aus der ids-Datei gelesen werden
+            f = open(directory+'/'+ids_tsv+'.tsv', 'r', encoding="utf-8")
+            reactions = []
+            header = f.readline()
+            csv_reader = csv.reader(f, delimiter="\t")
+            for line in csv_reader:
+                line = line[1:]
+                for i in range(len(line)):
+                    line[i] = "\""+line[i]+"\""
+                line = "\t".join(line)
+                reactions.append(line)
+            f.close()
+            reactions = set(reactions)
+            if "" in reactions:
+                reactions.remove("")
+            f = open(directory+'/'+unique_tsv+'.tsv', 'w', encoding="utf-8")
+            f.write(header)
+            csv_writer = csv.writer(f, delimiter='\t', lineterminator='\n', quoting=csv.QUOTE_NONE, escapechar='', quotechar='')
+            identifier = 1
+            for entry in reactions:
+                csv_writer.writerow(["\""+str(identifier)+"\""]+str(entry).split("\t"))
+                identifier += 1
+            f.close()
+            # Erstellt die Datei, welche den Haupteintrag mit den einzigartigen Einträgen
+            # über ids matched
+            f_id = open(directory+'/'+ids_tsv+'.tsv', 'r', encoding="utf-8")
+            header = f_id.readline()
+            header = ["\"id\"","\"id2\""]
+            csv_reader = csv.reader(f_id, delimiter="\t")
+            lines = []
+            for line in csv_reader:
+                l = line[1:]
+                for i in range(len(l)):
+                    l[i] = "\""+l[i]+"\""
+                l = "\t".join(l)
+                if l != "":
+                    lines.append([line[0], l])
+            f_id.close()
+            reactions = list(reactions)
+            reactions_dict = {}
+            for i in range(len(reactions)):
+                reactions_dict[reactions[i]] = i+1
+            f = open(directory+'/'+id1_id2_tsv+'.tsv', 'w', encoding="utf-8")
+            csv_writer = csv.writer(f, delimiter='\t', lineterminator='\n', quoting=csv.QUOTE_NONE, escapechar='', quotechar='')
+            csv_writer.writerow(header)
+            # id1 ist die id des Haupteintrags
+            # id2 ist die id des einzigartigen Eintrags
+            for line in lines:
+                    id1 = line[0]
+                    id2 = reactions_dict[line[1]]
+                    csv_writer.writerow([str(id1), "\""+str(id2)+"\""])
+            f.close()
+        if unique_tsv not in self.tsv_path:
+            self.tsv_path[unique_tsv] = directory + '/' + unique_tsv + '.tsv'
+        if unique_tsv not in self.tsv_header:
+            self.tsv_header[unique_tsv] = ["id"] + keys
+        if id1_id2_tsv not in self.tsv_path:
+            self.tsv_path[id1_id2_tsv] = directory + '/' + id1_id2_tsv + '.tsv'
+        if id1_id2_tsv not in self.tsv_header:
+            self.tsv_header[id1_id2_tsv] = ["id1", "id2"]
+
+    """ Erstellt speziell die Dateien die zwei ids brauchen.
+        Das sind jene, die als Kanten genutzt werden.
+        directory: Das Verzeichnis in dem die tsv-Dateien liegen und gespeichert werden.
+        category: Die ids-Datei mit den originalen Einträgen.
+        name: Der Name der Datei in der die _id1_id2 ids zum matchen der Kategorien gespeichert sind."""
+    def make_id_files(self, directory, category, name):
+        f1 = open(directory+'/'+category+".tsv", 'r', encoding="utf-8")
+        f2 = open(directory+'/'+name+".tsv", 'w', encoding="utf-8")
+        header = f1.readline()
+        csv_reader = csv.reader(f1, delimiter="\t")
+        csv_writer = csv.writer(f2, delimiter='\t', lineterminator='\n', quoting=csv.QUOTE_NONE, escapechar='', quotechar='')
+        header = ["\"id\"","\"id2\""]
+        csv_writer.writerow(header)
+        identifier = 1
+        for line in csv_reader:
+            line = "\""+line[0]+"\""
+            csv_writer.writerow([line,"\""+str(identifier)+"\""])
+            identifier += 1
+        f1.close()
+        f2.close()
+        if name not in self.tsv_path:
+            self.tsv_path[name] = directory + '/' + name + '.tsv'
+
+    """ Erstellt speziell die Dateien die eine id brauchen.
+        directory: Das Verzeichnis in dem die tsv-Dateien liegen und gespeichert werden.
+        category: Die ids-Datei mit den originalen Einträgen.
+        name: Die tsv-Dateien die die Einträge aus den ids-Dateien enthalten, aber neue, einzigartige ids bekommen.
+        keys: Die Liste die alle Attribute des Headers der 'ids_tsv'-Datei enthält. """
+    def make_special_files(self, directory, category, name, keys):
+        f1 = open(directory+'/'+category+".tsv", 'r', encoding="utf-8")
+        f2 = open(directory+'/'+name+".tsv", 'w', encoding="utf-8")
+        header = f1.readline()
+        f2.write(header)
+        csv_reader = csv.reader(f1, delimiter="\t")
+        csv_writer = csv.writer(f2, delimiter='\t', lineterminator='\n', quoting=csv.QUOTE_NONE, escapechar='', quotechar='')
+        identifier = 1
+        for line in csv_reader:
+            csv_writer.writerow(["\""+str(identifier)+"\""]+line[1:])
+            identifier += 1
+        f1.close()
+        f2.close()
+        if name not in self.tsv_path:
+            self.tsv_path[name] = directory + '/' + name + '.tsv'
+        if name not in self.tsv_header:
+            self.tsv_header[name] = ["id"] + keys
+
+    """ Spezielle Funktion zu Erstellen der DrugAdverseEvent_drug_openfda.tsv.
+        directory: Das Verzeichnis für DrugAdverseEvents.
+        openfda: Die openfda_ids-Datei.
+        drug_ids: Die drug_ids-Datei.
+        id1_id2: Die Datei zum matchen der openfdas mit den drugs. """
+    def make_openfda_file(self, directory, openfda, drug_ids, id1_id2, name, keys):
+        f = open(directory+'/'+openfda+".tsv", 'r', encoding="utf-8")
+        header = f.readline()
+        csv_reader = csv.reader(f, delimiter="\t")
+        fda = []
+        fda_dict = {}
+        count_unique = 1
+        for line in csv_reader:
+            l = line[1:]
+            for i in range(len(l)):
+                l[i] = "\""+l[i]+"\""
+            l = "\t".join(l)
+            if l not in fda_dict:
+                fda_dict[l] = count_unique
+                count_unique += 1
+            fda.append(["\""+line[0]+"\"", fda_dict[l]])
+        f.close()
+        fda_dict_new = {}
+        for entry in fda_dict:
+            fda_dict_new[fda_dict[entry]] = entry
+        f = open(directory+'/'+name+".tsv", 'w', encoding="utf-8")
+        f.write(header)
+        for i in range(len(fda_dict_new)):
+            f.write("\""+str(i+1)+"\""+'\t'+str(fda_dict_new[i+1])+'\n')
+        f.close()
+        f = open(directory+'/'+drug_ids+".tsv", 'r', encoding="utf-8")
+        header = f.readline()
+        csv_reader = csv.reader(f, delimiter="\t")
+        drugs = []
+        for line in csv_reader:
+            drugs.append("\""+line[0]+"\"")
+        f = open(directory+'/'+id1_id2+".tsv", 'w', encoding="utf-8")
+        csv_writer = csv.writer(f, delimiter='\t', lineterminator='\n', quoting=csv.QUOTE_NONE, escapechar='', quotechar='')
+        csv_writer.writerow(["\"id\"","\"id2\""])
+        j = 0
+        count = 0
+        for entry in drugs:
+            count += 1
+            try:
+                if fda[j][0] == entry:
+                    csv_writer.writerow(["\""+str(count)+"\"", "\""+str(fda[j][1])+"\""])
+                    j += 1
+            except BaseException:
+                pass
+        f.close()
+        if id1_id2 not in self.tsv_path:
+            self.tsv_path[id1_id2] = directory + '/' + id1_id2 + '.tsv'
+        if name not in self.tsv_path:
+            self.tsv_path[name] = directory + '/' + name + '.tsv'
+        if name not in self.tsv_header:
+            self.tsv_header[name] = ["id"] + keys
+
+    """ Erstellt die Dateien, die nur einzigartige Einträge enthalten.
+        directory: Das jeweilige Verzeichnis. """
+    def make_key_files(self, directory):
+        if("CAERSReports" in directory):
+            self.make_unique_files(directory, "CAERSReport_reaction_ids", "CAERSReport_reaction", "CAERSReport_reaction_id1_id2", self.caers_reaction_keys)
+            self.make_unique_files(directory, "CAERSReport_product_ids", "CAERSReport_product", "CAERSReport_product_id1_id2", self.caers_product_keys)
 
         if("DrugAdverseEvents" in directory):
-            if not os.path.isfile(
-                    directory + "/DrugAdverseEvent_reaction.csv"):
-                for dictionary in dicts["results"]:
-                    for d in dictionary["patient"]["reaction"]:
-                        for key in d:
-                            if key not in self.drugadverseevent_reaction_keys:
-                                self.drugadverseevent_reaction_keys.append(key)
-                header = "\"id\","
-                for key in self.drugadverseevent_reaction_keys:
-                    header = header + "\"" + key + "\"" + ','
-                header = header[:len(header) - 1] + '\n'
-                f = open(
-                    directory +
-                    "/DrugAdverseEvent_reaction.csv",
-                    'w',
-                    encoding="utf-8")
-                f.write(header)
-                f.close()
-            if not os.path.isfile(directory + "/DrugAdverseEvent_drug.csv"):
-                for dictionary in dicts["results"]:
-                    for d in dictionary["patient"]["drug"]:
-                        for key in d:
-                            if key not in self.drugadverseevent_drug_keys:
-                                self.drugadverseevent_drug_keys.append(key)
-                header = "\"id\","
-                for key in self.drugadverseevent_drug_keys:
-                    header = header + "\"" + key + "\"" + ','
-                header = header[:len(header) - 1] + '\n'
-                f = open(
-                    directory +
-                    "/DrugAdverseEvent_drug.csv",
-                    'w',
-                    encoding="utf-8")
-                f.write(header)
-                f.close()
-            if not os.path.isfile(directory + "/DrugAdverseEvent.csv"):
-                for dictionary in dicts["results"]:
-                    for key in dictionary.keys():
-                        if key not in self.drugadverseevent_keys:
-                            self.drugadverseevent_keys.append(key)
-                header = "\"id\","
-                for key in self.drugadverseevent_keys:
-                    header = header + "\"" + key + "\"" + ','
-                header = header[:len(header) - 1] + '\n'
-                f = open(
-                    directory +
-                    "/DrugAdverseEvent.csv",
-                    'w',
-                    encoding="utf-8")
-                f.write(header)
-                f.close()
-            reaction = ""
-            drug = ""
-            drugadverseevent = ""
-            for dictionary in dicts["results"]:
-                for d in dictionary["patient"]["reaction"]:
-                    reaction = reaction + "\"" + \
-                        str(self.drugadverseevent_id) + "\"" + ','
-                    for key in self.drugadverseevent_reaction_keys:
-                        if key in d and len(str(d[key])) < 2000000:
-                            reaction = reaction + "\"" + \
-                                self.trim(str(d[key])) + "\"" + ','
-                        else:
-                            reaction = reaction + "\"" + "\"" + ','
-                    reaction = reaction[:len(reaction) - 1] + '\n'
-                reaction = reaction[:len(reaction) - 1] + '\n'
-                for d in dictionary["patient"]["drug"]:
-                    drug = drug + "\"" + \
-                        str(self.drugadverseevent_id) + "\"" + ','
-                    for key in self.drugadverseevent_drug_keys:
-                        if key in d and len(str(d[key])) < 2000000:
-                            drug = drug + "\"" + \
-                                self.trim(str(d[key])) + "\"" + ','
-                        else:
-                            drug = drug + "\"" + "\"" + ','
-                    drug = drug[:len(drug) - 1] + '\n'
-                drug = drug[:len(drug) - 1] + '\n'
-                drugadverseevent = drugadverseevent + "\"" + \
-                    str(self.drugadverseevent_id) + "\"" + ','
-                for key in self.drugadverseevent_keys:
-                    if key in dictionary.keys() and len(str(dictionary[key])) < 2000000:
-                        drugadverseevent = drugadverseevent + "\"" + \
-                            self.trim(str(dictionary[key])) + "\"" + ','
-                    else:
-                        drugadverseevent = drugadverseevent + "\"" + "\"" + ','
-                drugadverseevent = drugadverseevent[:len(
-                    drugadverseevent) - 1] + '\n'
-                f = open(
-                    directory +
-                    "/DrugAdverseEvent_reaction.csv",
-                    'a',
-                    encoding="utf-8")
-                f.write(reaction)
-                f.close()
-                f = open(
-                    directory +
-                    "/DrugAdverseEvent_drug.csv",
-                    'a',
-                    encoding="utf-8")
-                f.write(drug)
-                f.close()
-                f = open(
-                    directory +
-                    "/DrugAdverseEvent.csv",
-                    'a',
-                    encoding="utf-8")
-                f.write(drugadverseevent)
-                f.close()
-                reaction = ""
-                drug = ""
-                drugadverseevent = ""
-                self.drugadverseevent_id += 1
-            if "DrugAdverseEvent_reaction" not in self.csv_path:
-                self.csv_path["DrugAdverseEvent_reaction"] = directory + \
-                    "/DrugAdverseEvent_reaction.csv"
-            if "DrugAdverseEvent_drug" not in self.csv_path:
-                self.csv_path["DrugAdverseEvent_drug"] = directory + \
-                    "/DrugAdverseEvent_drug.csv"
-            if "DrugAdverseEvent" not in self.csv_path:
-                self.csv_path["DrugAdverseEvent"] = directory + \
-                    "/DrugAdverseEvent.csv"
-            if "DrugAdverseEvent_reaction" not in self.csv_header:
-                self.csv_header["DrugAdverseEvent_reaction"] = ["id"] + \
-                    self.drugadverseevent_reaction_keys
-            if "DrugAdverseEvent_drug" not in self.csv_header:
-                self.csv_header["DrugAdverseEvent_drug"] = ["id"] + \
-                    self.drugadverseevent_drug_keys
-            if "DrugAdverseEvent" not in self.csv_header:
-                self.csv_header["DrugAdverseEvent"] = [
-                    "id"] + self.drugadverseevent_keys
+            self.make_unique_files(directory, "DrugAdverseEvent_reaction_ids", "DrugAdverseEvent_reaction", "DrugAdverseEvent_reaction_id1_id2", self.drugadverseevent_reaction_keys)
+            self.make_id_files(directory, "DrugAdverseEvent_drug_ids", "DrugAdverseEvent_drug_id1_id2")
+            self.make_special_files(directory, "DrugAdverseEvent_drug_ids", "DrugAdverseEvent_drug", self.drugadverseevent_drug_keys)
+            self.make_openfda_file(directory, "DrugAdverseEvent_drug_openfda_ids", "DrugAdverseEvent_drug_ids", "DrugAdverseEvent_drug_openfda_id1_id2", "DrugAdverseEvent_drug_openfda", self.drugadverseevent_drug_openfda_keys)
 
         if("DrugRecallEnforcementReports" in directory):
-            if not os.path.isfile(directory +
-                                  "/DrugRecallEnforcementReport_openfda.csv"):
-                for dictionary in dicts["results"]:
-                    for key in dictionary["openfda"]:
-                        if key not in self.drugrecallenforcementreports_openfda_keys:
-                            self.drugrecallenforcementreports_openfda_keys.append(
-                                key)
-                header = "\"id\","
-                for key in self.drugrecallenforcementreports_openfda_keys:
-                    header = header + "\"" + key + "\"" + ','
-                header = header[:len(header) - 1] + '\n'
-                f = open(
-                    directory +
-                    "/DrugRecallEnforcementReport_openfda.csv",
-                    'w',
-                    encoding="utf-8")
-                f.write(header)
-                f.close()
-            if not os.path.isfile(
-                    directory + "/DrugRecallEnforcementReport.csv"):
-                for dictionary in dicts["results"]:
-                    for key in dictionary.keys():
-                        if key not in self.drugrecallenforcementreports_keys:
-                            self.drugrecallenforcementreports_keys.append(key)
-                header = "\"id\","
-                for key in self.drugrecallenforcementreports_keys:
-                    header = header + "\"" + key + "\"" + ','
-                header = header[:len(header) - 1] + '\n'
-                f = open(
-                    directory +
-                    "/DrugRecallEnforcementReport.csv",
-                    'w',
-                    encoding="utf-8")
-                f.write(header)
-                f.close()
-            drugrecallenforcementreport_openfda = ""
-            drugrecallenforcementreport = ""
-            for dictionary in dicts["results"]:
-                drugrecallenforcementreport_openfda = drugrecallenforcementreport_openfda + \
-                    "\"" + str(self.drugrecallenforcementreports_id) + "\"" + ','
-                for key in self.drugrecallenforcementreports_openfda_keys:
-                    if key in dictionary["openfda"].keys() and len(str(dictionary["openfda"][key])) < 2000000:
-                        drugrecallenforcementreport_openfda = drugrecallenforcementreport_openfda + "\"" + \
-                            self.trim(str(dictionary["openfda"][key])) + "\"" + ','
-                    else:
-                        drugrecallenforcementreport_openfda = drugrecallenforcementreport_openfda + "\"" + "\"" + ','
-                drugrecallenforcementreport_openfda = drugrecallenforcementreport_openfda[:len(
-                    drugrecallenforcementreport_openfda) - 1] + '\n'
-                drugrecallenforcementreport = drugrecallenforcementreport + \
-                    "\"" + str(self.drugrecallenforcementreports_id) + "\"" + ','
-                for key in self.drugrecallenforcementreports_keys:
-                    if key in dictionary.keys() and len(str(dictionary[key])) < 2000000:
-                        drugrecallenforcementreport = drugrecallenforcementreport + "\"" + \
-                            self.trim(str(dictionary[key])) + "\"" + ','
-                    else:
-                        drugrecallenforcementreport = drugrecallenforcementreport + "\"" + "\"" + ','
-                drugrecallenforcementreport = drugrecallenforcementreport[:len(
-                    drugrecallenforcementreport) - 1] + '\n'
-                f = open(
-                    directory +
-                    "/DrugRecallEnforcementReport_openfda.csv",
-                    'a',
-                    encoding="utf-8")
-                f.write(drugrecallenforcementreport_openfda)
-                f.close()
-                f = open(
-                    directory +
-                    "/DrugRecallEnforcementReport.csv",
-                    'a',
-                    encoding="utf-8")
-                f.write(drugrecallenforcementreport)
-                f.close()
-                drugrecallenforcementreport_openfda = ""
-                drugrecallenforcementreport = ""
-                self.drugrecallenforcementreports_id += 1
-            if "DrugRecallEnforcementReport_openfda" not in self.csv_path:
-                self.csv_path["DrugRecallEnforcementReport_openfda"] = directory + \
-                    "/DrugRecallEnforcementReport_openfda.csv"
-            if "DrugRecallEnforcementReports" not in self.csv_path:
-                self.csv_path["DrugRecallEnforcementReport"] = directory + \
-                    "/DrugRecallEnforcementReport.csv"
-            if "DrugRecallEnforcementReport_openfda" not in self.csv_header:
-                self.csv_header["DrugRecallEnforcementReport_openfda"] = ["id"] + \
-                    self.drugrecallenforcementreports_openfda_keys
-            if "DrugRecallEnforcementReport" not in self.csv_header:
-                self.csv_header["DrugRecallEnforcementReport"] = [
-                    "id"] + self.drugrecallenforcementreports_keys
+            self.make_unique_files(directory, "DrugRecallEnforcementReport_openfda_ids", "DrugRecallEnforcementReport_openfda", "DrugRecallEnforcementReport_openfda_id1_id2", self.drugrecallenforcementreports_openfda_keys)
+
+        if("NationalDrugCodeDirectory" in directory):
+            self.make_unique_files(directory, "NationalDrugCodeDirectory_activeingredients_ids", "NationalDrugCodeDirectory_activeingredients", "NationalDrugCodeDirectory_activeingredients_id1_id2", self.nationaldrugcodedirectory_activeingredients_keys)
+
+        if("SubstanceData" in directory):
+            self.make_unique_files(directory, "SubstanceData_moieties_ids", "SubstanceData_moieties", "SubstanceData_moieties_id1_id2", self.substancedata_moieties_keys)
+            self.make_id_files(directory, "SubstanceData_substance_ids", "SubstanceData_substance_id1_id2")
+            self.make_special_files(directory, "SubstanceData_substance_ids", "SubstanceData_substance", self.substancedata_substance_keys)
+            self.make_special_files(directory, "SubstanceData_component_ids", "SubstanceData_component", self.substancedata_component_keys)
+            self.make_special_files(directory, "SubstanceData_relationships_ids", "SubstanceData_relationships", self.substancedata_relationships_keys)
+            self.make_special_files(directory, "SubstanceData_relationships_substance_ids", "SubstanceData_relationships_substance", self.substancedata_relationships_substance_keys)
+
+        self.changed = False
+
+    """ Überprüft erst, welche Kategorie über Dictionary gegeben ist.
+        Filtert die Keys aus den Daten und schreibt sie als Header in eine tsv-Datei.
+        Anschließend wird jeder Eintrag der Datei in die tsv-Datei geschrieben.
+        Vor jeden Eintrag wird eine ID gesetzt.
+        Die Keys, sowie die Dateipfade werden zum Erstellen der cypher-Datei gespeichert.
+        dicts: Der Inhalt einer json-Datei als Dictionary.
+        directory: Das jeweilige Verzeichnis. """
+    def to_tsv(self, dicts, directory):
+        # Zuerst wird geprüft, um welche Kategorie es sich handelt.
+        print("Creating tsv ...")
+        if("CAERSReports" in directory):
+            caersreport_reaction = {
+                "name": "CAERSReport_reaction_ids",
+                "list_name": "CAERSReport_reaction",
+                "tsv": "/CAERSReport_reaction_ids.tsv",
+                "keys": self.caers_reaction_keys,
+                "single_header": "reactions",
+                "is_single": True,
+                "id": self.caers_id,
+                "is_id": self.caers_is_id,
+                "is_list": True,
+                "lists": self.caers_reaction_list
+            }
+            caersreport_product = {
+                "name": "CAERSReport_product_ids",
+                "list_name": "CAERSReport_product",
+                "tsv": "/CAERSReport_product_ids.tsv",
+                "keys": self.caers_product_keys,
+                "one_key": "products",
+                "is_list": True,
+                "id": self.caers_id,
+                "is_id": self.caers_is_id,
+                "lists": self.caers_product_list
+            }
+            caersreport = {
+                "name": "CAERSReport",
+                "list_name": "CAERSReport",
+                "tsv": "/CAERSReport.tsv",
+                "keys": self.caers_keys,
+                "remove_keys": ["reactions", "products"],
+                "id": self.caers_id,
+                "is_id": self.caers_is_id,
+                "is_head": True,
+                "lists": self.caers_list
+            }
+            entries = [caersreport_reaction, caersreport_product, caersreport]
+            self.make_files(directory, dicts, entries)
+
+        if("DrugAdverseEvents" in directory):
+            drugadverseevent_reaction = {
+                "name": "DrugAdverseEvent_reaction_ids",
+                "list_name": "DrugAdverseEvent_reaction",
+                "tsv": "/DrugAdverseEvent_reaction_ids.tsv",
+                "keys": self.drugadverseevent_reaction_keys,
+                "one_key": "patient",
+                "two_key": "reaction",
+                "is_list": True,
+                "id": self.drugadverseevent_id,
+                "is_id": self.drugadverseevent_is_id,
+                "lists": self.drugadverseevent_reaction_list
+            }
+            drugadverseevent_drug = {
+                "name": "DrugAdverseEvent_drug_ids",
+                "list_name": "DrugAdverseEvent_drug",
+                "tsv": "/DrugAdverseEvent_drug_ids.tsv",
+                "keys": self.drugadverseevent_drug_keys,
+                "remove_keys": ["openfda"],
+                "one_key": "patient",
+                "two_key": "drug",
+                "is_list": True,
+                "id": self.drugadverseevent_id,
+                "is_id": self.drugadverseevent_is_id,
+                "lists": self.drugadverseevent_drug_list
+            }
+            drugadverseevent_drug_openfda = {
+                "name": "DrugAdverseEvent_drug_openfda_ids",
+                "list_name": "DrugAdverseEvent_drug_openfda",
+                "tsv": "/DrugAdverseEvent_drug_openfda_ids.tsv",
+                "keys": self.drugadverseevent_drug_openfda_keys,
+                "one_key": "patient",
+                "two_key": "drug",
+                "three_key": "openfda",
+                "is_special": True,
+                "is_list": True,
+                "id": self.drugadverseevent_id,
+                "is_id": self.drugadverseevent_is_id,
+                "lists": self.drugadverseevent_drug_openfda_list
+            }
+            drugadverseevent_patient = {
+                "name": "DrugAdverseEvent_patient",
+                "list_name": "DrugAdverseEvent_patient",
+                "tsv": "/DrugAdverseEvent_patient.tsv",
+                "keys": self.drugadverseevent_patient_keys,
+                "remove_keys": ["reaction", "drug"],
+                "one_key": "patient",
+                "id": self.drugadverseevent_id,
+                "is_id": self.drugadverseevent_is_id,
+                "is_head": True,
+                "lists": self.drugadverseevent_patient_list
+            }
+            drugadverseevent = {
+                "name": "DrugAdverseEvent",
+                "list_name": "DrugAdverseEvent",
+                "tsv": "/DrugAdverseEvent.tsv",
+                "keys": self.drugadverseevent_keys,
+                "remove_keys": ["reaction", "drug", "patient"],
+                "id": self.drugadverseevent_id,
+                "is_id": self.drugadverseevent_is_id,
+                "is_head": True,
+                "lists": self.drugadverseevent_list
+            }
+            entries = [drugadverseevent_reaction, drugadverseevent_drug, drugadverseevent_drug_openfda, drugadverseevent_patient, drugadverseevent]
+            self.make_files(directory, dicts, entries)
+
+        if("DrugRecallEnforcementReports" in directory):
+            drugrecallenforcementreport_openfda = {
+                "name": "DrugRecallEnforcementReport_openfda_ids",
+                "list_name": "DrugRecallEnforcementReport_openfda",
+                "tsv": "/DrugRecallEnforcementReport_openfda_ids.tsv",
+                "keys": self.drugrecallenforcementreports_openfda_keys,
+                "one_key": "openfda",
+                "id": self.drugrecallenforcementreports_id,
+                "is_id": self.drugrecallenforcementreports_is_id,
+                "is_head": True,
+                "lists": self.drugrecallenforcementreports_openfda_list
+            }
+            drugrecallenforcementreport = {
+                "name": "DrugRecallEnforcementReport",
+                "list_name": "DrugRecallEnforcementReport",
+                "tsv": "/DrugRecallEnforcementReport.tsv",
+                "keys": self.drugrecallenforcementreports_keys,
+                "remove_keys": ["openfda"],
+                "id": self.drugrecallenforcementreports_id,
+                "is_id": self.drugrecallenforcementreports_is_id,
+                "is_head": True,
+                "lists": self.drugrecallenforcementreports_list
+            }
+            entries = [drugrecallenforcementreport_openfda, drugrecallenforcementreport]
+            self.make_files(directory, dicts, entries)
 
         if ("FoodRecallEnforcementReports" in directory):
-            if not os.path.isfile(
-                    directory + "/FoodRecallEnforcementReport.csv"):
-                for dictionary in dicts["results"]:
-                    for key in dictionary.keys():
-                        if key not in self.foodrecallenforcementreports_keys:
-                            self.foodrecallenforcementreports_keys.append(key)
-                header = "\"id\","
-                for key in self.foodrecallenforcementreports_keys:
-                    header = header + "\"" + key + "\"" + ','
-                header = header[:len(header) - 1] + '\n'
-                f = open(
-                    directory +
-                    "/FoodRecallEnforcementReport.csv",
-                    'w',
-                    encoding="utf-8")
-                f.write(header)
-                f.close()
-            report = ""
-            for dictionary in dicts["results"]:
-                report = report + "\"" + \
-                    str(self.foodrecallenforcementreports_id) + "\"" + ','
-                for key in self.foodrecallenforcementreports_keys:
-                    if key in dictionary.keys() and len(str(dictionary[key])) < 2000000:
-                        report = report + "\"" + \
-                            self.trim(str(dictionary[key])) + "\"" + ','
-                    else:
-                        report = report + "\"" + "\"" + ','
-                report = report[:len(report) - 1] + '\n'
-                f = open(
-                    directory +
-                    "/FoodRecallEnforcementReport.csv",
-                    'a',
-                    encoding="utf-8")
-                f.write(report)
-                f.close()
-                report = ""
-                self.foodrecallenforcementreports_id += 1
-            if "FoodRecallEnforcementReport" not in self.csv_path:
-                self.csv_path["FoodRecallEnforcementReport"] = directory + \
-                    "/FoodRecallEnforcementReport.csv"
-            if "FoodRecallEnforcementReport" not in self.csv_header:
-                self.csv_header["FoodRecallEnforcementReport"] = [
-                    "id"] + self.foodrecallenforcementreports_keys
+            foodrecallenforcementreport = {
+                "name": "FoodRecallEnforcementReport",
+                "list_name": "FoodRecallEnforcementReport",
+                "tsv": "/FoodRecallEnforcementReport.tsv",
+                "keys": self.foodrecallenforcementreports_keys,
+                "id": self.foodrecallenforcementreports_id,
+                "is_id": self.foodrecallenforcementreports_is_id,
+                "is_head": True,
+                "lists": self.foodrecallenforcementreports_list
+            }
+            entries = [foodrecallenforcementreport]
+            self.make_files(directory, dicts, entries)
 
         if ("NationalDrugCodeDirectory" in directory):
-            if not os.path.isfile(
-                    directory + "/NationalDrugCodeDirectory_activeingredients.csv"):
-                for dictionary in dicts["results"]:
-                    try:
-                        for d in dictionary["active_ingredients"]:
-                            for key in d.keys():
-                                if key not in self.nationaldrugcodedirectory_activeingredients_keys:
-                                    self.nationaldrugcodedirectory_activeingredients_keys.append(
-                                        key)
-                    except BaseException:
-                        pass
-                header = "\"id\","
-                for key in self.nationaldrugcodedirectory_activeingredients_keys:
-                    header = header + "\"" + key + "\"" + ','
-                header = header[:len(header) - 1] + '\n'
-                f = open(
-                    directory +
-                    "/NationalDrugCodeDirectory_activeingredients.csv",
-                    'w',
-                    encoding="utf-8")
-                f.write(header)
-                f.close()
-            if not os.path.isfile(
-                    directory + "/NationalDrugCodeDirectory.csv"):
-                for dictionary in dicts["results"]:
-                    for key in dictionary.keys():
-                        if key not in self.nationaldrugcodedirectory_keys:
-                            self.nationaldrugcodedirectory_keys.append(key)
-                header = "\"id\","
-                for key in self.nationaldrugcodedirectory_keys:
-                    header = header + "\"" + key + "\"" + ','
-                header = header[:len(header) - 1] + '\n'
-                f = open(
-                    directory +
-                    "/NationalDrugCodeDirectory.csv",
-                    'w',
-                    encoding="utf-8")
-                f.write(header)
-                f.close()
-            activeingredients = ""
-            nationaldrugcodedirectory = ""
-            for dictionary in dicts["results"]:
-                try:
-                    for d in dictionary["active_ingredients"]:
-                        activeingredients = activeingredients + "\"" + \
-                            str(self.nationaldrugcodedirectory_id) + "\"" + ','
-                        for key in self.nationaldrugcodedirectory_activeingredients_keys:
-                            if key in d and len(str(d[key])) < 2000000:
-                                activeingredients = activeingredients + "\"" + \
-                                    self.trim(str(d[key])) + "\"" + ','
-                            else:
-                                activeingredients = activeingredients + "\"" + "\"" + ','
-                        activeingredients = activeingredients[:len(
-                            activeingredients) - 1] + '\n'
-                    activeingredients = activeingredients[:len(
-                        activeingredients) - 1] + '\n'
-                except BaseException:
-                    activeingredients = activeingredients + "\"" + \
-                        str(self.nationaldrugcodedirectory_id) + "\"" + ','
-                    for key in self.nationaldrugcodedirectory_activeingredients_keys:
-                        activeingredients = activeingredients + "\"" + "\"" + ','
-                    activeingredients = activeingredients[:len(
-                        activeingredients) - 1] + '\n'
-                nationaldrugcodedirectory = nationaldrugcodedirectory + \
-                    "\"" + str(self.nationaldrugcodedirectory_id) + "\"" + ','
-                for key in self.nationaldrugcodedirectory_keys:
-                    if key in dictionary.keys() and len(str(dictionary[key])) < 2000000:
-                        nationaldrugcodedirectory = nationaldrugcodedirectory + "\"" + \
-                            self.trim(str(dictionary[key])) + "\"" + ','
-                    else:
-                        nationaldrugcodedirectory = nationaldrugcodedirectory + "\"" + "\"" + ','
-                nationaldrugcodedirectory = nationaldrugcodedirectory[:len(
-                    nationaldrugcodedirectory) - 1] + '\n'
-                f = open(
-                    directory +
-                    "/NationalDrugCodeDirectory_activeingredients.csv",
-                    'a',
-                    encoding="utf-8")
-                f.write(activeingredients)
-                f.close()
-                f = open(
-                    directory +
-                    "/NationalDrugCodeDirectory.csv",
-                    'a',
-                    encoding="utf-8")
-                f.write(nationaldrugcodedirectory)
-                f.close()
-                activeingredients = ""
-                nationaldrugcodedirectory = ""
-                self.nationaldrugcodedirectory_id += 1
-            if "NationalDrugCodeDirectory_activeingredients" not in self.csv_path:
-                self.csv_path["NationalDrugCodeDirectory_activeingredients"] = directory + \
-                    "/NationalDrugCodeDirectory_activeingredients.csv"
-            if "NationalDrugCodeDirectory" not in self.csv_path:
-                self.csv_path["NationalDrugCodeDirectory"] = directory + \
-                    "/NationalDrugCodeDirectory.csv"
-            if "NationalDrugCodeDirectory_activeingredients" not in self.csv_header:
-                self.csv_header["NationalDrugCodeDirectory_activeingredients"] = [
-                    "id"] + self.nationaldrugcodedirectory_activeingredients_keys
-            if "NationalDrugCodeDirectory" not in self.csv_header:
-                self.csv_header["NationalDrugCodeDirectory"] = [
-                    "id"] + self.nationaldrugcodedirectory_keys
+            nationaldrugcodedirectory_activeingredients = {
+                "name": "NationalDrugCodeDirectory_activeingredients_ids",
+                "list_name": "NationalDrugCodeDirectory_activeingredients",
+                "tsv": "/NationalDrugCodeDirectory_activeingredients_ids.tsv",
+                "keys": self.nationaldrugcodedirectory_activeingredients_keys,
+                "one_key": "active_ingredients",
+                "is_list": True,
+                "id": self.nationaldrugcodedirectory_id,
+                "is_id": self.nationaldrugcodedirectory_is_id,
+                "lists": self.nationaldrugcodedirectory_activeingredients_list
+            }
+            nationaldrugcodedirectory = {
+                "name": "NationalDrugCodeDirectory",
+                "list_name": "NationalDrugCodeDirectory",
+                "tsv": "/NationalDrugCodeDirectory.tsv",
+                "keys": self.nationaldrugcodedirectory_keys,
+                "remove_keys": ["active_ingredients"],
+                "id": self.nationaldrugcodedirectory_id,
+                "is_id": self.nationaldrugcodedirectory_is_id,
+                "is_head": True,
+                "lists": self.nationaldrugcodedirectory_list
+            }
+            entries = [nationaldrugcodedirectory_activeingredients, nationaldrugcodedirectory]
+            self.make_files(directory, dicts, entries)
 
         if ("SubstanceData" in directory):
-            if not os.path.isfile(directory + "/SubstanceData_names.csv"):
-                for dictionary in dicts["results"]:
-                    try:
-                        for d in dictionary["names"]:
-                            for key in d.keys():
-                                if key not in self.substancedata_names_keys:
-                                    self.substancedata_names_keys.append(key)
-                    except BaseException:
-                        pass
-                header = "\"id\","
-                for key in self.substancedata_names_keys:
-                    header = header + "\"" + key + "\"" + ','
-                header = header[:len(header) - 1] + '\n'
-                f = open(
-                    directory +
-                    "/SubstanceData_names.csv",
-                    'w',
-                    encoding="utf-8")
-                f.write(header)
-                f.close()
-            if not os.path.isfile(directory + "/SubstanceData.csv"):
-                for dictionary in dicts["results"]:
-                    for key in dictionary.keys():
-                        if key not in self.substancedata_keys:
-                            self.substancedata_keys.append(key)
-                header = "\"id\","
-                for key in self.substancedata_keys:
-                    header = header + "\"" + key + "\"" + ','
-                header = header[:len(header) - 1] + '\n'
-                f = open(
-                    directory +
-                    "/SubstanceData.csv",
-                    'w',
-                    encoding="utf-8")
-                f.write(header)
-                f.close()
-            names = ""
-            substancedata = ""
-            for dictionary in dicts["results"]:
-                try:
-                    for d in dictionary["names"]:
-                        names = names + "\"" + \
-                            str(self.substancedata_id) + "\"" + ','
-                        for key in self.substancedata_names_keys:
-                            if key in d and len(str(d[key])) < 2000000:
-                                names = names + "\"" + \
-                                    self.trim(str(d[key])) + "\"" + ','
-                            else:
-                                names = names + "\"" + "\"" + ','
-                        names = names[:len(names) - 1] + '\n'
-                    names = names[:len(names) - 1] + '\n'
-                except BaseException:
-                    names = names + "\"" + \
-                        str(self.substancedata_id) + "\"" + ','
-                    for key in self.substancedata_names_keys:
-                        names = names + "\"" + "\"" + ','
-                    names = names[:len(names) - 1] + '\n'
-                substancedata = substancedata + "\"" + \
-                    str(self.substancedata_id) + "\"" + ','
-                for key in self.substancedata_keys:
-                    if key in dictionary.keys() and len(str(dictionary[key])) < 2000000:
-                        substancedata = substancedata + "\"" + self.trim(str(dictionary[key])) + "\"" + ','
-                    else:
-                        substancedata = substancedata + "\"" + "\"" + ','
-                substancedata = substancedata[:len(substancedata) - 1] + '\n'
-                f = open(
-                    directory +
-                    "/SubstanceData_names.csv",
-                    'a',
-                    encoding="utf-8")
-                f.write(names)
-                f.close()
-                f = open(
-                    directory +
-                    "/SubstanceData.csv",
-                    'a',
-                    encoding="utf-8")
-                f.write(substancedata)
-                f.close()
-                names = ""
-                substancedata = ""
-                self.substancedata_id += 1
-            if "SubstanceData_names" not in self.csv_path:
-                self.csv_path["SubstanceData_names"] = directory + "/SubstanceData_names.csv"
-            if "SubstanceData" not in self.csv_path:
-                self.csv_path["SubstanceData"] = directory + \
-                    "/SubstanceData.csv"
-            if "SubstanceData_names" not in self.csv_header:
-                self.csv_header["SubstanceData_names"] = ["id"] + \
-                    self.substancedata_names_keys
-            if "SubstanceData" not in self.csv_header:
-                self.csv_header["SubstanceData"] = [
-                    "id"] + self.substancedata_keys
+            substancedata_relationships = {
+                "name": "SubstanceData_relationships_ids",
+                "list_name": "SubstanceData_relationships",
+                "tsv": "/SubstanceData_relationships_ids.tsv",
+                "keys": self.substancedata_relationships_keys,
+                "remove_keys": ["related_substance"],
+                "one_key": "relationships",
+                "is_list": True,
+                "id": self.substancedata_id,
+                "is_id": self.substancedata_is_id,
+                "lists": self.substancedata_relationships_list
+            }
+            substancedata_relationships_substance = {
+                "name": "SubstanceData_relationships_substance_ids",
+                "list_name": "SubstanceData_relationships_substance",
+                "tsv": "/SubstanceData_relationships_substance_ids.tsv",
+                "keys": self.substancedata_relationships_substance_keys,
+                "one_key": "relationships",
+                "two_key": "related_substance",
+                "is_list": True,
+                "is_special2": True,
+                "id": self.substancedata_id,
+                "is_id": self.substancedata_is_id,
+                "lists": self.substancedata_relationships_substance_list
+            }
+            substancedata_moieties = {
+                "name": "SubstanceData_moieties_ids",
+                "list_name": "SubstanceData_moieties",
+                "tsv": "/SubstanceData_moieties_ids.tsv",
+                "keys": self.substancedata_moieties_keys,
+                "one_key": "moieties",
+                "is_list": True,
+                "id": self.substancedata_id,
+                "is_id": self.substancedata_is_id,
+                "lists": self.substancedata_moieties_list
+            }
+            substancedata_mixture = {
+                "name": "SubstanceData_mixture",
+                "list_name": "SubstanceData_mixture",
+                "tsv": "/SubstanceData_mixture.tsv",
+                "keys": self.substancedata_mixture_keys,
+                "remove_keys": ["components"],
+                "one_key": "mixture",
+                "id": self.substancedata_id,
+                "is_id": self.substancedata_is_id,
+                "is_head": True,
+                "lists": self.substancedata_mixture_list
+            }
+            substancedata_component = {
+                "name": "SubstanceData_components_ids",
+                "list_name": "SubstanceData_component",
+                "tsv": "/SubstanceData_component_ids.tsv",
+                "keys": self.substancedata_component_keys,
+                "remove_keys": ["substance"],
+                "one_key": "mixture",
+                "two_key": "components",
+                "is_list": True,
+                "id": self.substancedata_id,
+                "is_id": self.substancedata_is_id,
+                "is_head": True,
+                "lists": self.substancedata_component_list
+            }
+            substancedata_substance = {
+                "name": "SubstanceData_substance_ids",
+                "list_name": "SubstanceData_substance",
+                "tsv": "/SubstanceData_substance_ids.tsv",
+                "keys": self.substancedata_substance_keys,
+                "one_key": "mixture",
+                "two_key": "components",
+                "three_key": "substance",
+                "id": self.substancedata_id,
+                "is_id": self.substancedata_is_id,
+                "is_list": True,
+                "lists": self.substancedata_substance_list,
+                "is_special": True
+            }
+            substancedata = {
+                "name": "SubstanceData",
+                "list_name": "SubstanceData",
+                "tsv": "/SubstanceData.tsv",
+                "keys": self.substancedata_keys,
+                "remove_keys": ["relationships", "moieties", "mixture"],
+                "id": self.substancedata_id,
+                "is_id": self.substancedata_is_id,
+                "is_head": True,
+                "lists": self.substancedata_list
+            }
+            entries = [substancedata_relationships, substancedata_relationships_substance, substancedata_moieties, substancedata_mixture, substancedata_component, substancedata_substance, substancedata]
+            self.make_files(directory, dicts, entries)
+
+    def remove_lists(self):
+        self.__init__(self.parser)
 
 
 class cypher_creator:
+
     def __init__(self):
         self.script = ""
+        self.cypher_path = ""
 
-    """ Erstellt einen neuen Knoten. """
-    def create(self, file_path, header, name):
-        statement = ":auto USING PERIODIC COMMIT 100 LOAD CSV WITH HEADERS FROM 'file:///" + \
-           str(file_path[name]).replace('\\', '/') + "' AS row FIELDTERMINATOR ',' CREATE "
+    """ Erstellt einen neuen Knoten.
+        file_path: Das Dict mit den Dateipfaden.
+        header: Das Dict mit den Knoten-Attributen.
+        name: Der Name der Datei aus der die Knoten erstellt werden sollen.
+        lists: Dict von Attributen die als Liste gespeichert werden sollen. """
+    def create(self, file_path, header, name, lists):
+        statement = "USING PERIODIC COMMIT 1000 LOAD CSV WITH HEADERS FROM 'file:///" + \
+           str(file_path[name]).replace('\\', '/') + "' AS row FIELDTERMINATOR '\\t' CREATE "
         obj = "(" + name + \
             ":" + name + " "
         attributes = "{"
         for head in header[name]:
-            attributes = attributes + \
-                str(head).replace("\"", "") + ": row." + str(head).replace("\"", "") + ", "
+            if head not in lists[name]:
+                attributes = attributes + \
+	                str(head).replace("\"", "") + ": row." + str(head).replace("\"", "") + ", "
+            else:
+                attributes = attributes + \
+                    str(head).replace("\"", "") + ": split(row." + str(head).replace("\"", "") + ",'|')" + ", "
         attributes = attributes[:len(attributes) - 2] + "}"
         statement = statement + obj + attributes + ");" + '\n'
-        f = open("load-cypher.cypher", 'a', encoding="utf-8")
+        f = open(self.cypher_path, 'a', encoding="utf-8")
         f.write(statement)
         f.close()
 
-    """ Erstellt einen neuen Constraint. """
-    def constraint(self, name1, name2):
-        statement = '\n' + \
-            "CREATE CONSTRAINT " + name1 + " IF NOT EXISTS ON (n: " + name2 + ") ASSERT n.id IS UNIQUE;"
-        f = open("load-cypher.cypher", 'a', encoding="utf-8")
+    """ Erstellt einen neuen Constraint.
+        name1: Name des Constraints.
+        name2: Name des Knotens.
+        id1: Attribut auf das der Constraint erzeugt werden soll. """
+    def constraint(self, name1, name2, id1):
+        statement = "CREATE CONSTRAINT " + name1 + " IF NOT EXISTS ON (n: " + name2 + ") ASSERT n." + str(id1) + " IS UNIQUE;"
+        statement = statement + '\n'
+        f = open(self.cypher_path, 'a', encoding="utf-8")
         f.write(statement)
         f.close()
 
-    """ Matched zwei Knoten. """
-    def match(self, name1, name2):
-        statement = '\n' + \
-            "MATCH (n: " + name1 + "), (m: " + name2 + ") WHERE n.id = m.id MERGE (n)-[:Event]->(m);"
-        f = open("load-cypher.cypher", 'a', encoding="utf-8")
+    """ Matched zwei Knoten 'n' -> 'm'.
+        name1: Name des Knotens 'n'.
+        name2: Name des Knotens 'm'.
+        id1: 'n' id.
+        id2: 'm' id. """
+    def match(self, name1, name2, id1, id2):
+        statement = "MATCH (n: " + name1 + "), (m: " + name2 + ") WHERE n." + id1 + " = m." + id2 + " CREATE (n)-[:Event]->(m);"
+        statement = statement + '\n'
+        f = open(self.cypher_path, 'a', encoding="utf-8")
+        f.write(statement)
+        f.close()
+
+    """ Setzt Kantenattribute für Kante 'n' -> 'm'.
+        file_path: Das Dict mit den Dateipfaden.
+        header: Das Dict mit den Knoten-Attributen.
+        lists: Dict von Attributen die als Liste gespeichert werden sollen.
+        name: Name der Datei aus der die Kanten-Attribute ausgelesen werden sollen.
+        name1: Name des Knotens 'n'.
+        name2: Name des Knotens 'm'.
+        id1: 'n' id.
+        id2: Id in der Kanten-Datei. """
+    def set_properties(self, file_path, header, lists, name, name1, name2, id1, id2):
+        statement = "USING PERIODIC COMMIT 1000 LOAD CSV WITH HEADERS FROM 'file:///" + \
+            str(file_path[name]).replace('\\', '/') + "'AS row FIELDTERMINATOR '\\t'"
+        obj = " MATCH (n:" + name1 + ")-[e:Event]->(m:" + name2 + ")"
+        obj2 = " WHERE n." + str(id1) + " = row." + str(id2)
+        obj3 = " SET e = "
+        attributes = "{"
+        for head in header[name]:
+            if head not in lists[name]:
+                attributes = attributes + \
+                    str(head).replace("\"", "") + ": row." + str(head).replace("\"", "") + ", "
+            else:
+                attributes = attributes + \
+                    str(head).replace("\"", "") + ": split(row." + str(head).replace("\"", "") + ",'|')" + ", "
+        attributes = attributes[:len(attributes) - 2] + "};"
+        statement = statement + obj + obj2 + obj3 + attributes + '\n'
+        f = open(self.cypher_path, 'a', encoding="utf-8")
+        f.write(statement)
+        f.close()
+
+    """ Matched zwei Knoten über ids in einer Datei.
+        file_path: Das Dict mit den Dateipfaden.
+        name: Name der Datei in der die ids stehen.
+        name1: Name des Knotens 'n'.
+        name2: Name des Knotens 'm'. """
+    def match_from_file(self, file_path, name, name1, name2):
+        statement = "USING PERIODIC COMMIT 1000 LOAD CSV WITH HEADERS FROM 'file:///" + \
+            str(file_path[name]).replace('\\', '/') + "' AS row FIELDTERMINATOR '\\t'"
+        obj = " MATCH (n:" + name1 + "), (m:" + name2 + ") WHERE n." + "id" + " = row." + "id2 AND m." + "id" + " = row." + "id"
+        statement = statement + obj + " CREATE (n)-[:Event]->(m);" + '\n'
+        f = open(self.cypher_path, 'a', encoding="utf-8")
         f.write(statement)
         f.close()
 
     """ Überprüft über Directory, welche Kategorie gegeben ist.
-        Anschließend werden die jeweiligen Knoten, Constraints und Merges erstellt. """
-    def create_cypher(self, file_path, header, directory):
+        Anschließend werden die jeweiligen Knoten, Constraints und Merges erstellt.
+        file_path: Das Dict mit den Dateipfaden.
+        header: Das Dict mit den Knoten-Attributen.
+        directory: Das Verzeichnis.
+        lists: Dict von Attributen die als Liste gespeichert werden sollen. """
+    def create_cypher(self, file_path, header, directory, lists):
         print("Creating Cypher-File ...")
-        if "AnimalAndVeterinaryAdverseEvents" in directory:
-            self.create(file_path, header, "AnimalAndVeterinaryAdverseEvent_drug")
-            self.create(file_path, header, "AnimalAndVeterinaryAdverseEvent_reaction")
-            self.create(file_path, header, "AnimalAndVeterinaryAdverseEvent")
-            self.constraint("AnimalAndVeterinaryAdverseEvent_drug_constraint", "AnimalAndVeterinaryAdverseEvent_drug")
-            self.constraint("AnimalAndVeterinaryAdverseEvent_constraint", "AnimalAndVeterinaryAdverseEvent")
-            self.match("AnimalAndVeterinaryAdverseEvent_drug", "AnimalAndVeterinaryAdverseEvent")
-            self.match("AnimalAndVeterinaryAdverseEvent_reaction", "AnimalAndVeterinaryAdverseEvent")
-
+        self.cypher_path = os.path.split(directory)[0] + '/' + "load-cypher.cypher"
+        # Hier werden die vorher gespeicherten Dictionaries mit den Dateipfaden und
+        # Headern verwendet.
+        # Die Dateien mit _id1_id2 enthalten nur die IDs zum matchen der Haupteinträge
+        # mit den Untereinträgen
         if "CAERSReports" in directory:
-            self.create(file_path, header, "CAERSReport")
-            self.constraint("CAERSReport_constraint", "CAERSReport")
+            self.create(file_path, header, "CAERSReport_reaction", lists)
+            self.create(file_path, header, "CAERSReport_product", lists)
+            self.create(file_path, header, "CAERSReport", lists)
+            self.constraint("CAERSReport_constraint", "CAERSReport", "id")
+            self.constraint("CAERSReport_reaction_constraint", "CAERSReport_reaction", "id")
+            self.constraint("CAERSReport_product_constraint", "CAERSReport_product", "id")
+            self.match_from_file(file_path, "CAERSReport_reaction_id1_id2", "CAERSReport_reaction", "CAERSReport")
+            self.match_from_file(file_path, "CAERSReport_product_id1_id2", "CAERSReport_product", "CAERSReport")
 
         if "DrugAdverseEvents" in directory:
-            self.create(file_path, header, "DrugAdverseEvent_reaction")
-            self.create(file_path, header, "DrugAdverseEvent_drug")
-            self.create(file_path, header, "DrugAdverseEvent")
-            self.constraint("DrugAdverseEvent_constraint", "DrugAdverseEvent")
-            self.match("DrugAdverseEvent_reaction", "DrugAdverseEvent")
-            self.match("DrugAdverseEvent_drug", "DrugAdverseEvent")
+            self.create(file_path, header, "DrugAdverseEvent_reaction", lists)
+            self.create(file_path, header, "DrugAdverseEvent_drug", lists)
+            self.create(file_path, header, "DrugAdverseEvent_drug_openfda", lists)
+            self.create(file_path, header, "DrugAdverseEvent_patient", lists)
+            self.create(file_path, header, "DrugAdverseEvent", lists)
+            self.constraint("DrugAdverseEvent_constraint", "DrugAdverseEvent", "id")
+            self.constraint("DrugAdverseEvent_reaction_constraint", "DrugAdverseEvent_reaction", "id")
+            self.constraint("DrugAdverseEvent_patient_constraint", "DrugAdverseEvent_patient", "id")
+            self.constraint("DrugAdverseEvent_drug_constraint", "DrugAdverseEvent_drug", "id")
+            self.constraint("DrugAdverseEvent_drug_openfda_constraint", "DrugAdverseEvent_drug_openfda", "id")
+            self.match("DrugAdverseEvent_patient", "DrugAdverseEvent", "id", "id")
+            self.match_from_file(file_path, "DrugAdverseEvent_drug_id1_id2", "DrugAdverseEvent_drug", "DrugAdverseEvent_patient")
+            self.match_from_file(file_path, "DrugAdverseEvent_reaction_id1_id2", "DrugAdverseEvent_reaction", "DrugAdverseEvent_patient")
+            self.match_from_file(file_path, "DrugAdverseEvent_drug_openfda_id1_id2", "DrugAdverseEvent_drug_openfda", "DrugAdverseEvent_drug")
 
         if "DrugRecallEnforcementReports" in directory:
-            self.create(file_path, header, "DrugRecallEnforcementReport_openfda")
-            self.create(file_path, header, "DrugRecallEnforcementReport")
-            self.constraint("DrugRecallEnforcementReport_constraint", "DrugRecallEnforcementReport_openfda")
-            self.constraint("DrugRecallEnforcementReport_constraint", "DrugRecallEnforcementReport")
-            self.match("DrugRecallEnforcementReport_openfda", "DrugRecallEnforcementReport")
+            self.create(file_path, header, "DrugRecallEnforcementReport_openfda", lists)
+            self.create(file_path, header, "DrugRecallEnforcementReport", lists)
+            self.constraint("DrugRecallEnforcementReport_openfda_constraint", "DrugRecallEnforcementReport_openfda", "id")
+            self.constraint("DrugRecallEnforcementReport_constraint", "DrugRecallEnforcementReport", "id")
+            self.match_from_file(file_path, "DrugRecallEnforcementReport_openfda_id1_id2", "DrugRecallEnforcementReport_openfda", "DrugRecallEnforcementReport")
 
         if "FoodRecallEnforcementReports" in directory:
-            self.create(file_path, header, "FoodRecallEnforcementReport")
-            self.constraint("FoodRecallEnforcementReport_constraint", "FoodRecallEnforcementReport")
+            self.create(file_path, header, "FoodRecallEnforcementReport", lists)
+            self.constraint("FoodRecallEnforcementReport_constraint", "FoodRecallEnforcementReport", "id")
 
         if "NationalDrugCodeDirectory" in directory:
-            self.create(file_path, header, "NationalDrugCodeDirectory_activeingredients")
-            self.create(file_path, header, "NationalDrugCodeDirectory")
-            self.constraint("NationalDrugCodeDirectory_constraint", "NationalDrugCodeDirectory")
-            self.match("NationalDrugCodeDirectory_activeingredients", "NationalDrugCodeDirectory")
+            self.create(file_path, header, "NationalDrugCodeDirectory_activeingredients", lists)
+            self.create(file_path, header, "NationalDrugCodeDirectory", lists)
+            self.constraint("NationalDrugCodeDirectory_activeingredients_constraint", "NationalDrugCodeDirectory_activeingredients", "id")
+            self.constraint("NationalDrugCodeDirectory_constraint", "NationalDrugCodeDirectory", "id")
+            self.match_from_file(file_path, "NationalDrugCodeDirectory_activeingredients_id1_id2", "NationalDrugCodeDirectory_activeingredients", "NationalDrugCodeDirectory")
 
         if "SubstanceData" in directory:
-            self.create(file_path, header, "SubstanceData_names")
-            self.create(file_path, header, "SubstanceData")
-            self.constraint("SubstanceData_constraint", "SubstanceData")
-            self.match("SubstanceData_names", "SubstanceData")
+            self.create(file_path, header, "SubstanceData_relationships_substance", lists)
+            self.create(file_path, header, "SubstanceData_moieties", lists)
+            self.create(file_path, header, "SubstanceData_mixture", lists)
+            self.create(file_path, header, "SubstanceData_substance", lists)
+            self.create(file_path, header, "SubstanceData", lists)
+            self.constraint("SubstanceData_relationships_substance_constraint", "SubstanceData_relationships_substance", "id")
+            self.constraint("SubstanceData_moieties_constraint", "SubstanceData_moieties", "id")
+            self.constraint("SubstanceData_mixture_constraint", "SubstanceData_mixture", "id")
+            self.constraint("SubstanceData_substance_constraint", "SubstanceData_substance", "id")
+            self.constraint("SubstanceData_constraint", "SubstanceData", "id")
+            self.match("SubstanceData_relationships_substance", "SubstanceData", "id", "id")
+            self.match("SubstanceData_mixture", "SubstanceData", "id", "id")
+            self.match_from_file(file_path, "SubstanceData_moieties_id1_id2", "SubstanceData_moieties", "SubstanceData")
+            self.match_from_file(file_path, "SubstanceData_substance_id1_id2", "SubstanceData_substance", "SubstanceData_mixture")
+            self.set_properties(file_path, header, lists, "SubstanceData_relationships", "SubstanceData_relationships_substance", "SubstanceData", "id", "id")
+            self.set_properties(file_path, header, lists, "SubstanceData_component", "SubstanceData_substance", "SubstanceData_mixture", "id", "id")
 
 directory_maker = directory_maker()
 parser = parser()
@@ -1023,7 +1184,7 @@ cypher_creator = cypher_creator()
 # Prüfe, ob ein Pfad über die Konsole übergeben wurde, sonst wird das Verzeichnis des Programms benutzt.
 if len(sys.argv) > 1:
     try:
-        path = sys.argv[1]
+        path = str(sys.argv[1])
     except BaseException:
         path = os.path.dirname(os.path.abspath(__file__)) + '/'
 else:
@@ -1034,8 +1195,8 @@ print("Path is: " + path)
 # Alle möglichen Verzeichnisse der FDA-Datenbank.
 # directories = ["AnimalAndVeterinaryAdverseEvents","CAERSReports","COVID19SerologicalTestingEvaluations","Device510","DeviceAdverseEvents","DeviceClassification","DevicePremarketApproval","DeviceRecallEnforcementReports","DeviceRecalls","DeviceRegistrationsAndListings","DrugAdverseEvents","DrugLabeling","DrugRecallEnforcementReports","FoodRecallEnforcementReports","NationalDrugCodeDirectory","NSDE","SubstanceData","TabaccoProblemReports","UniqueDeviceIdentifier"];
 # Alle relevanten Verzeichnisse der FDA-Datenbank.
+
 directories = [
-    "AnimalAndVeterinaryAdverseEvents",
     "CAERSReports",
     "DrugAdverseEvents",
     "DrugRecallEnforcementReports",
@@ -1058,21 +1219,41 @@ f = open(path+'download.json', 'w')
 f.write(r.content.decode("utf-8"))
 f.close()
 
+# Die load-cypher.cypher löschen
+try:
+    os.remove(path+'load-cypher.cypher')
+except BaseException:
+    pass
+
 # Arrays für das Erstellen der Cypher-Datei.
-csv_paths = []
-csv_headers = []
+tsv_paths = []
+tsv_headers = []
 # Erstellen der Verzeichnisse.
 directory_maker.make_directory(directories)
+print('download',datetime.datetime.now())
 # Die Dateien aus der Datenbank werden gedownloaded.
 downloader.download(path + "download.json", dicts)
+
+csv.field_size_limit(2000000)
+
 for directory in directories:
+    print('unzip', datetime.datetime.now())
     # Die Dateien des jeweiligen Verzeichnisses werden entpackt.
     unzipper.unzipall(directory)
-    # Die Dateien werden einzeln eingelesen und anschließend zu einer csv-Datei verarbeitet.
+
+    print('read all', datetime.datetime.now())
+    # Die Dateien werden einzeln eingelesen und anschließend zu einer tsv-Datei verarbeitet.
     reader.readall(directory)
-    csv_paths = former.csv_path
-    csv_headers = former.csv_header
+
+    print('generate files', datetime.datetime.now())
+    # Dateipfade und Datei-Header werden gespeichert, um sie in der cypher-Datei zu verwenden.
+    tsv_paths = former.tsv_path
+    tsv_headers = former.tsv_header
+    lists = former.lists
+    # Löschen der Listen in Former.
+    former.remove_lists()
     # Die Cypher-Datei wird erstellt.
-    cypher_creator.create_cypher(csv_paths, csv_headers, directory)
-    csv_paths = []
-    csv_headers = []
+    cypher_creator.create_cypher(tsv_paths, tsv_headers, directory, lists)
+    tsv_paths = []
+    tsv_headers = []
+    lists = []
