@@ -67,7 +67,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo 'Edge disgenet gene/variant-disease'
 
-python3 mapping_gene_disease_edge_disgenet.py $path_to_project > gene_disease_edge/output.txt
+python3 mapping_gene_variant_to_disease_symptome_edge_disgenet.py $path_to_project > gene_disease_edge/output.txt
 
 
 now=$(date +"%F %T")
