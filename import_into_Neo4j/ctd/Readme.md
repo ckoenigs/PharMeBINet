@@ -9,6 +9,7 @@ However, for gene, I prepare a dictionary from gene symbol to gene id.
  In the CTD disease-go is the relationship file between gene and go terms generated.
  Also, the exposure files are separated into different files because the exposures are nodes with their own identifier.
  In the end in the cypher file will be queries added which removed all nodes from CTD which has no relationships except chemical.
+ Additional, it is possible to execute the program with a reduced integration form it remove from CTD gene-disease and chemical-disease all inference edges. Also, all other inferences or enriched edges are removed from the integration.
 
 The schema is shown below:
 ![er_diagram](picture/ctd.png)
