@@ -34,12 +34,12 @@ def load_edges_from_database_and_add_to_dict(label, other_label):
 
     dict_pairs_to_info = {}
     count = 0
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     for gene_id, rela, disease_id, in results:
         count += 1
         if count % 5000 == 0:
             print(f"process: {count}")
-            print(datetime.datetime.utcnow())
+            print(datetime.datetime.now())
         if (gene_id, disease_id) in dict_pairs_to_info and dict_pairs_to_info[(gene_id, disease_id)] != rela:
             print('------ohje------')
             print(gene_id)
@@ -152,14 +152,6 @@ def get_DisGeNet_information(type='Disease', cyphermode='w', other_label='Gene')
         [f'{other_label.lower()}_id', other_id, 'resource', 'sources', 'EI', 'pmid', 'NofSnps', 'score',
          'associationType', 'sentence'])
 
-    # Neo4j query
-    # edge = 'r' if type == 'Disease' else 's'
-    query = f"MATCH (n:{type})--(:disease_DisGeNet)-[r]-(a:{other_label.lower()}_DisGeNet)--(p:{other_label}) WHERE r.NofPmids<>'0' RETURN n.identifier, r, p.identifier , a.snpId "
-    results = g.run(query)
-
-    counter_not_mapped = 0
-    counter_all = 0
-
     # Create tsv for NON-existing edges
     file2_name = f'new_{other_label.lower()}_{type.lower()}_edges.tsv'
     not_mapped_path = os.path.join(path_of_directory, file2_name)
@@ -169,6 +161,15 @@ def get_DisGeNet_information(type='Disease', cyphermode='w', other_label='Gene')
     writer.writerow(
         [f'{other_label.lower()}_id', other_id, 'sources', 'EI', 'pmid', 'NofSnps', 'score', 'associationType',
          'sentence', 'snp_id'])
+
+    # Neo4j query
+    # edge = 'r' if type == 'Disease' else 's'
+    query = f"MATCH (n:{type})--(:disease_DisGeNet)-[r]-(a:{other_label.lower()}_DisGeNet)--(p:{other_label}) WHERE r.NofPmids<>'0' RETURN n.identifier, r, p.identifier , a.snpId "
+    results = g.run(query)
+
+    counter_not_mapped = 0
+    counter_all = 0
+
 
     # 1. Dict erstellen, doppelte Einträge kombinieren
     # mehrfach vorkommende Vebrindungen suchen und als dict ausgeben
@@ -262,18 +263,18 @@ def main():
     home = os.getcwd()
     source = os.path.join(home, 'output')
 
+    print(datetime.datetime.now())
+    print('create connection with neo4j')
+
+    create_connection_with_neo4j()
+
     for first_label in ['Gene', 'Variant']:
         path_of_directory = os.path.join(home, first_label.lower() + '_disease_edge/')
-
-        print(datetime.datetime.utcnow())
-        print('create connection with neo4j')
-
-        create_connection_with_neo4j()
 
         for label in ['Disease', 'Symptom']:
             print('##########################################################################')
 
-            print(datetime.datetime.utcnow())
+            print(datetime.datetime.now())
             print(f'gather all information of the {first_label}/' + label)
 
             load_edges_from_database_and_add_to_dict(label, first_label)
@@ -284,7 +285,7 @@ def main():
             get_DisGeNet_information(label, 'a', first_label)
 
     print('##########################################################################')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":
