@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Jan 19 11:46:22 2018
-
-@author: Cassandra
-"""
 
 import sys
 import datetime, csv
@@ -65,16 +59,17 @@ def add_information_to_dictionary(dict_all_info, key_term, value):
         # print(key_term, value)
         splitted_value=value.split(' {')
         value=splitted_value[0]
-        if 'superClassOf' in splitted_value[1] and key_term=='xref':
-            print('removed', splitted_value)
-            return
+        if len(splitted_value)>1:
+            if  key_term=='xref' and not ('equivalentTo'  in splitted_value[1] or 'xref=' in splitted_value[1]): # ('superClassOf' in splitted_value[1] or 'subClassOf' in splitted_value[1]) and
+                print('removed', splitted_value)
+                return
     # for some properties more than one value appears
     if not key_term in dict_all_info:
-        dict_all_info[key_term] = value.replace('"', '').replace("'", "").replace("\\", "")
+        dict_all_info[key_term] = value.replace("\\", "")
     # if more than one value appears for a key the key is add to the list of multi values keys
     # also the values are connected with a |
     else:
-        dict_all_info[key_term] += '|' + value.replace('"', '').replace("'", "").replace("\\", "")
+        dict_all_info[key_term] += '|' + value.replace("\\", "")
         set_list_properties.add(key_term)
 
 
@@ -312,25 +307,25 @@ def generate_cypher_file():
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('gather symptoms information ')
 
     gather_information_from_obo()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('put all relationship and node information into a tsv and create a cypher file')
 
     generate_cypher_file()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":
