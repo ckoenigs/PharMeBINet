@@ -44,6 +44,14 @@ def create_connection_with_neo4j_mysql():
     global con
     con = create_connection_to_databases.database_connection_umls()
 
+def correct_string_for_query(name):
+    """
+    Prepare string for mysql query
+    :param name: string
+    :return: string
+    """
+    return name.replace("'","\\'")
+
 
 # dictionary of all symptoms from hetionet, with mesh_id/ umls cui as key and value is class Symptom
 dict_symptoms = {}
@@ -230,7 +238,7 @@ def load_all_symptoms_in_a_dict():
         # get first hte umls with the same name
         cur = con.cursor()
         query = ("Select CUI From MRCONSO Where STR='%s';")
-        query = query % (name)
+        query = query % (correct_string_for_query(name))
         rows_counter = cur.execute(query)
         if rows_counter > 0:
             found_with_umls = True
@@ -380,7 +388,7 @@ def load_and_map_disease():
             if not mapped:
                 cur = con.cursor()
                 query = ('Select CUI,LAT,STR From MRCONSO Where  STR= "%s";')
-                query = query % (name)
+                query = query % (correct_string_for_query(name))
                 rows_counter = cur.execute(query)
                 mapped_with_umls = False
                 if rows_counter > 0:
@@ -471,7 +479,7 @@ def load_and_map_phenotype():
             if not mapped:
                 cur = con.cursor()
                 query = ('Select CUI,LAT,STR From MRCONSO Where  STR= "%s";')
-                query = query % (name)
+                query = query % (correct_string_for_query(name))
                 rows_counter = cur.execute(query)
                 mapped_with_umls = False
                 if rows_counter > 0:
