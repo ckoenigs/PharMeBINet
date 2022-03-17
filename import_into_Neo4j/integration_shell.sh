@@ -122,26 +122,8 @@ echo "Current time: $now"
 # cd  Uberon
 # echo Uberon
 
-# #download uberon
-# wget -O data/ext.obo "http://purl.obolibrary.org/obo/uberon/ext.obo"
 
-
-# python3 ../EFO/transform_obo_to_csv_and_cypher_file.py data/ext.obo Uberon uberon_extend $path_to_project > output_generate_integration_file.txt
-
-# now=$(date +"%F %T")
-# echo "Current time: $now"
-
-# echo integrate uberon into neo4j
-
-# $path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher > output_cypher_integration.txt 2>&1
-
-# sleep 60
-
-# $path_neo4j/neo4j restart
-
-
-# sleep 120
-
+# ./script_uberon.sh  $path_neo4j $path_to_project  > output.txt
 
 # cd ..
 
@@ -165,6 +147,18 @@ cd  hpo
 echo hpo
 
 ./hpo_integration.sh $path_neo4j $path_to_project > output_hpo.txt
+
+cd ..
+
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+
+cd  openFDA
+echo openFDA
+
+#./script_open_fda.sh $path_neo4j > output_openFDA.txt
 
 cd ..
 
