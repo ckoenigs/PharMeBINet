@@ -1,6 +1,7 @@
 import csv
 import sys
 import datetime
+from collections import defaultdict
 
 sys.path.append("../..")
 import create_connection_to_databases
@@ -17,41 +18,44 @@ def create_connection_with_neo4j():
     g = create_connection_to_databases.database_connection_neo4j()
 
 
-def integrate_information_into_dict(dict_node_id_to_resource, label):
+def integrate_information_into_dict(dict_node_id_to_resource, label, dict_alternative_id_to_identifiers):
     """
     get all node ids from the database
     :return:
     """
-    query = '''MATCH (n:%s) RETURN n.identifier, n.resource'''
+    query = '''MATCH (n:%s) RETURN n.identifier, n.resource, n.alternative_ids'''
     query = query % (label)
     results = g.run(query)
 
-    for identifier, resource, in results:
+    for identifier, resource, alternative_ids, in results:
         dict_node_id_to_resource[identifier] = resource
+        if alternative_ids:
+            for alternative_id in alternative_ids:
+                dict_alternative_id_to_identifiers[alternative_id].add(identifier)
 
     print('number of', label, 'in database', len(dict_node_id_to_resource))
 
 
 def prepare_query(file_name, db_label, adrecs_label, adrecs_id):
-    cypher_file = open(db_label.lower() + '/cypher.cypher', 'w', encoding='utf-8')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/%s/%s" As line Fieldterminator '\\t' MATCH (n:%s{identifier:line.identifier}), (g:%s{%s:line.identifier}) Set n.resource=split(line.resource,"|") Create (n)-[:equal_adrecs_target_%s]->(g);\n'''
+    cypher_file = open( 'output/cypher.cypher', 'a', encoding='utf-8')
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/%s/%s" As line Fieldterminator '\\t' MATCH (n:%s{identifier:line.identifier}), (g:%s{%s:line.identifier_adrecst_target}) Set n.resource=split(line.resource,"|") Create (n)-[:equal_adrecs_target_%s{how_mapped:line.how_mapped}]->(g);\n'''
     query = query % (director, file_name, db_label, adrecs_label, adrecs_id, db_label.lower())
     cypher_file.write(query)
 
 
-def get_all_adrecs_target_and_map(db_label, adrecs_label, adrecs_id, dict_node_id_to_resource):
+def get_all_adrecs_target_and_map(db_label, adrecs_label, adrecs_id, dict_node_id_to_resource, dict_alternative_ids_to_identifiers):
     """
     prepare files and write information into files
     :return:
     """
 
     # prepare files
-    file_name = db_label.lower() + '/mapping.csv'
+    file_name = db_label.lower() + '/mapping.tsv'
     mapping_file = open(file_name, 'w', encoding='utf-8')
     csv_mapping = csv.writer(mapping_file, delimiter='\t')
-    csv_mapping.writerow(['identifier', 'resource'])
+    csv_mapping.writerow(['identifier', 'identifier_adrecst_target','resource', 'how_mapped'])
 
-    file_not_name = db_label.lower() + '/not_mapping.csv'
+    file_not_name = db_label.lower() + '/not_mapping.tsv'
     not_mapping_file = open(file_not_name, 'w', encoding='utf-8')
     csv_not_mapping = csv.writer(not_mapping_file, delimiter='\t')
     csv_not_mapping.writerow(['identifier', 'name'])
@@ -73,7 +77,14 @@ def get_all_adrecs_target_and_map(db_label, adrecs_label, adrecs_id, dict_node_i
             resource = dict_node_id_to_resource[identifier]
             resource.append('ADReCS-Target')
             resource = sorted(resource)
-            csv_mapping.writerow([identifier, '|'.join(resource)])
+            csv_mapping.writerow([identifier, identifier, '|'.join(resource),'identifier'])
+        elif identifier in dict_alternative_ids_to_identifiers:
+            counter_mapped += 1
+            for real_id in dict_alternative_ids_to_identifiers[identifier]:
+                resource = dict_node_id_to_resource[real_id]
+                resource.append('ADReCS-Target')
+                resource = sorted(resource)
+                csv_mapping.writerow([real_id,identifier, '|'.join(resource), 'alternative identifier'])
         else:
             # print(db_label, ' not in database :O')
             # print(identifier)
@@ -84,7 +95,7 @@ def get_all_adrecs_target_and_map(db_label, adrecs_label, adrecs_id, dict_node_i
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     global path_of_directory, director
     if len(sys.argv) > 2:
@@ -95,14 +106,14 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('create connection to neo4j')
 
     create_connection_with_neo4j()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('prepare for each label the files')
 
     dict_label_to_at_label = {
@@ -114,23 +125,25 @@ def main():
         # dict node id to resource
         dict_node_id_to_resource = {}
 
+        dict_alternative_ids_to_identifiers= defaultdict(set)
+
         print('##########################################################################')
 
-        print(datetime.datetime.utcnow())
+        print(datetime.datetime.now())
         print('get all genes from database')
 
-        integrate_information_into_dict(dict_node_id_to_resource, db_label)
+        integrate_information_into_dict(dict_node_id_to_resource, db_label, dict_alternative_ids_to_identifiers)
 
         print('##########################################################################')
 
-        print(datetime.datetime.utcnow())
+        print(datetime.datetime.now())
         print('prepare file and write information of mapping in it')
 
-        get_all_adrecs_target_and_map(db_label,adrecs_target_label_and_identifier_name[0],adrecs_target_label_and_identifier_name[1],dict_node_id_to_resource)
+        get_all_adrecs_target_and_map(db_label,adrecs_target_label_and_identifier_name[0],adrecs_target_label_and_identifier_name[1],dict_node_id_to_resource, dict_alternative_ids_to_identifiers)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":
