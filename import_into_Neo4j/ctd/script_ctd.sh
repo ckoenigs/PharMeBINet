@@ -35,7 +35,7 @@ echo prepare ctd data
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-python3 integrate_whole_CTD_into_neo4j_with_tsv.py $path_to_ctd_data > output_integration.txt
+python3 integrate_whole_CTD_into_neo4j_with_tsv.py $path_to_ctd_data True > output_integration.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -79,8 +79,6 @@ sleep 120
 
 cd ..
 
-echo remove csv and csv.gz files
-#rm ctd_data/*.csv*
 
 
 
