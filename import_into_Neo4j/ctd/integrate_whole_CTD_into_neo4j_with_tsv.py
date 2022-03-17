@@ -14,15 +14,6 @@ cypher_file_nodes = open('cypher/nodes_' + str(node_file_number) + '.cypher', 'w
 # cypher file for all relationships
 cypher_file_edges = open('cypher/edges_' + str(edges_file_number) + '.cypher', 'w')
 
-# count the number of queries of node generation
-counter_nodes_queries = 0
-# count the number of queries of node generation
-counter_edges_queries = 0
-# number of queries in a commit block
-constraint_number = 20000
-# number of queries in a cypher file
-max_queries_for_a_file = 300000
-
 '''
 load ctd chemical file and generate cypher file for the nodes with properties:
     0:ChemicalName
@@ -39,7 +30,6 @@ furthermore it test if already nodes are in Neo4j and only add the new ones
 
 
 def load_chemicals_and_add_to_cypher_file():
-    global counter_nodes_queries, cypher_file_nodes, node_file_number
     # say if in neo4j already ctd chemicals exists
     cypher_file_nodes.write(':begin\n')
     # depending if chemicals are in neo4j or not the nodes need to be merged or created
@@ -67,7 +57,6 @@ furthermore it test if already nodes are in Neo4j and only add the new ones
 
 
 def load_disease_and_add_to_cypher_file():
-    global counter_nodes_queries, cypher_file_nodes, node_file_number
 
     cypher_file_nodes.write(':begin\n')
 
@@ -87,9 +76,6 @@ furthermore it test if already nodes are in Neo4j and only add the new ones
 
 
 def load_pathway_and_add_to_cypher_file():
-    global counter_nodes_queries, cypher_file_nodes, node_file_number
-    # say if in neo4j already ctd chemicals exists
-    exists_ctd_pathway_already_in_neo4j = False
 
     cypher_file_nodes.write(':begin\n')
     cypher_file_nodes.write('Create Constraint On (node:CTD_pathway) Assert node.pathway_id Is Unique;\n')
@@ -116,7 +102,6 @@ furthermore it test if already nodes are in Neo4j and only add the new ones
 
 
 def load_anatomy_and_add_to_cypher_file():
-    global counter_nodes_queries, cypher_file_nodes, node_file_number
 
     cypher_file_nodes.write(':begin\n')
     cypher_file_nodes.write('Create Constraint On (node:CTD_anatomy) Assert node.anatomy_id Is Unique;\n')
@@ -144,7 +129,6 @@ furthermore it test if already nodes are in Neo4j and only add the new ones
 
 
 def load_gene_and_add_to_cypher_file():
-    global counter_nodes_queries, cypher_file_nodes, node_file_number
     # say if in neo4j already ctd chemicals exists
     exists_ctd_gene_already_in_neo4j = False
 
@@ -192,12 +176,14 @@ and gather the information
 
 
 def load_chemical_go_enriched():
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/CTD_chem_go_enriched.tsv" As line FIELDTERMINATOR '\\t' Merge (c:CTD_chemical{ chemical_id:line.ChemicalID }) On Create Set  c.casRN=line.CasRN, c.name=line.ChemicalName;\n '''
-    cypher_file_nodes.write(query)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/CTD_chem_go_enriched.tsv" As line FIELDTERMINATOR '\\t' Match (c:CTD_chemical{ chemical_id:line.ChemicalID }), (g:CTD_GO{ go_id:line.GOTermID }) Create (c)-[a:affects_CGO{unbiased:True, pValue:line.PValue, correctedPValue:line.CorrectedPValue, targetMatchQty:line.TargetMatchQty, targetTotalQty:line.TargetTotalQty, backgroundMatchQty:line.BackgroundMatchQty, backgroundTotalQty:line.BackgroundTotalQty, url:"http://ctdbase.org/detail.go?type=chem&acc="+line.ChemicalID}]->(g);\n '''
+    if not reduced:
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/CTD_chem_go_enriched.tsv" As line FIELDTERMINATOR '\\t' Merge (c:CTD_chemical{ chemical_id:line.ChemicalID }) On Create Set  c.casRN=line.CasRN, c.name=line.ChemicalName;\n '''
+        cypher_file_nodes.write(query)
 
-    cypher_file_edges.write(query)
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/CTD_chem_go_enriched.tsv" As line FIELDTERMINATOR '\\t' Match (c:CTD_chemical{ chemical_id:line.ChemicalID }), (g:CTD_GO{ go_id:line.GOTermID }) Create (c)-[a:affects_CGO{unbiased:True, pValue:line.PValue, correctedPValue:line.CorrectedPValue, targetMatchQty:line.TargetMatchQty, targetTotalQty:line.TargetTotalQty, backgroundMatchQty:line.BackgroundMatchQty, backgroundTotalQty:line.BackgroundTotalQty, url:"http://ctdbase.org/detail.go?type=chem&acc="+line.ChemicalID}]->(g);\n '''
+
+        cypher_file_edges.write(query)
 
     dict_counter_go = {}
 
@@ -298,53 +284,6 @@ dict_disease_go = {}
 dict_gene_go = {}
 
 '''
-gather information from disease-go inference
-load ctd disease-go enriched files for biological process, molecular function and cellular componenet
-    0:DiseaseName
-    1:DiseaseID
-    2:GOName
-    3:GOID
-    4:InferenceGeneQty
-    5:InferenceGeneSymbols
-'''
-
-
-def gather_information_from_disease_go_inferencen(file, ontology):
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/''' + file + '''" As line FIELDTERMINATOR '\\t' Match (d:CTD_disease{ disease_id:line.DiseaseID}), (g:CTD_GO{ go_id:line.GOID }) Create (d)-[a:affects_DGO{unbiased:True, inferenceGeneSymbols:line.InferenceGeneSymbols, inferenceGeneQty:line.InferenceGeneQty, url:"http://ctdbase.org/detail.go?type=disease&acc="+line.DiseaseID}]->(g);\n'''
-
-    cypher_file_edges.write(query)
-
-    with open(path_of_ctd_data + '/ctd_data/' + file) as tsvfile:
-        reader = csv.reader(tsvfile, delimiter='\t')
-        i = 0
-        for row in reader:
-
-            if i > 0:
-                disease_id = row[1]
-                goName = row[2]
-                goId = row[3]
-                inferenceGeneQty = row[4]
-                inferenceGeneSymbols = row[5].split('|')
-
-                if not goId in dict_Go_properties:
-                    dict_Go_properties[goId] = [goName, ontology, '']
-
-                dict_disease_go[(disease_id, goId)] = [inferenceGeneSymbols, inferenceGeneQty]
-
-                for gene_symbol in inferenceGeneSymbols:
-                    gene_id = dict_gene_symbol_to_gene_id[gene_symbol]
-                    if (gene_id, goId) not in dict_gene_go:
-                        dict_gene_go[(gene_id, goId)] = [gene_symbol]
-                if i % 20000 == 0:
-                    print(i)
-
-            i += 1
-
-    print('number of gene-go pairs:' + str(len(dict_gene_go)))
-    print('number of disease-go pairs:' + str(len(dict_disease_go)))
-
-
-'''
 gather information from phenotyp disease-go inference
 
     0:GOName
@@ -360,9 +299,10 @@ gather information from phenotyp disease-go inference
 
 
 def gather_information_from_disease_phenotyp_go_inference(file, ontology):
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/''' + file + '''" As line FIELDTERMINATOR '\\t' Match (d:CTD_disease{ disease_id:split(line.DiseaseID,':')[1]}), (g:CTD_GO{ go_id:line.GOID }) Create (d)-[a:affects_DGO{unbiased:True, inferenceGeneSymbols:line.InferenceGeneSymbols, inferenceGeneQty:line.InferenceGeneQty, url:"http://ctdbase.org/detail.go?type=disease&acc="+split(line.DiseaseID,':')[1]}]->(g);\n'''
+    if not reduced:
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/''' + file + '''" As line FIELDTERMINATOR '\\t' Match (d:CTD_disease{ disease_id:split(line.DiseaseID,':')[1]}), (g:CTD_GO{ go_id:line.GOID }) Create (d)-[a:affects_DGO{unbiased:True, inferenceGeneSymbols:line.InferenceGeneSymbols, inferenceGeneQty:line.InferenceGeneQty, url:"http://ctdbase.org/detail.go?type=disease&acc="+split(line.DiseaseID,':')[1]}]->(g);\n'''
 
-    cypher_file_edges.write(query)
+        cypher_file_edges.write(query)
 
     with open(path_of_ctd_data + '/ctd_data/' + file) as tsvfile:
         reader = csv.reader(tsvfile, delimiter='\t')
@@ -409,34 +349,19 @@ gather the information from  the different go files to get all go information
 '''
 
 
-def load_disease_go_inference(file_d_cc, file_d_mf, file_d_bp, old):
-    if old:
-        print('start Cellular Component')
-        print(datetime.datetime.utcnow())
-        gather_information_from_disease_go_inferencen(file_d_cc,
-                                                      'Cellular Component')
-        print('start Molecular Function')
-        print(datetime.datetime.utcnow())
-        gather_information_from_disease_go_inferencen(file_d_mf,
-                                                      'Molecular Function')
-        print('start Biological Process')
-        print(datetime.datetime.utcnow())
-        gather_information_from_disease_go_inferencen(file_d_bp,
-                                                      'Biological Process')
-    else:
-
-        print('start Cellular Component')
-        print(datetime.datetime.utcnow())
-        gather_information_from_disease_phenotyp_go_inference(file_d_cc,
-                                                              'Cellular Component')
-        print('start Molecular Function')
-        print(datetime.datetime.utcnow())
-        gather_information_from_disease_phenotyp_go_inference(file_d_mf,
-                                                              'Molecular Function')
-        print('start Biological Process')
-        print(datetime.datetime.utcnow())
-        gather_information_from_disease_phenotyp_go_inference(file_d_bp,
-                                                              'Biological Process')
+def load_disease_go_inference(file_d_cc, file_d_mf, file_d_bp):
+    print('start Cellular Component')
+    print(datetime.datetime.now())
+    gather_information_from_disease_phenotyp_go_inference(file_d_cc,
+                                                          'Cellular Component')
+    print('start Molecular Function')
+    print(datetime.datetime.now())
+    gather_information_from_disease_phenotyp_go_inference(file_d_mf,
+                                                          'Molecular Function')
+    print('start Biological Process')
+    print(datetime.datetime.now())
+    gather_information_from_disease_phenotyp_go_inference(file_d_bp,
+                                                          'Biological Process')
     print(len(dict_Go_properties))
 
 
@@ -446,9 +371,6 @@ Add GO to the node cypher file
 
 
 def add_go_to_cypher_file():
-    global counter_nodes_queries, cypher_file_nodes, node_file_number
-    # say if in neo4j already ctd chemicals exists
-    exists_ctd_go_already_in_neo4j = False
 
     cypher_file_nodes.write(':begin\n')
     cypher_file_nodes.write('Create Constraint On (node:CTD_GO) Assert node.go_id Is Unique;\n')
@@ -499,15 +421,13 @@ def load_gene_pathway():
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/CTD_genes_pathways.tsv" As line FIELDTERMINATOR '\\t' Merge (g:CTD_pathway{ pathway_id:split(line.PathwayID,':')[1] }) On Create Set g.name=line.PathwayName ;\n'''
     cypher_file_nodes.write(query)
 
-    global counter_edges_queries, cypher_file_edges, edges_file_number
-
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/CTD_genes_pathways.tsv" As line FIELDTERMINATOR '\\t' Match (c:CTD_gene{ gene_id:line.GeneID }), (g:CTD_pathway{ pathway_id:split(line.PathwayID,':')[1] }) Create (c)-[a:participates_GP{unbiases:false, url:"http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID}]->(g) ;\n'''
 
     cypher_file_edges.write(query)
 
 
 '''
-load ctd gene-pathway file:
+load ctd disease-pathway file:
     0:DiseaseName
     1:DiseaseID
     2:PathwayName
@@ -518,19 +438,21 @@ and gather the information
 
 
 def load_disease_pathway():
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/CTD_diseases_pathways.tsv" As line FIELDTERMINATOR '\\t' Merge (c:CTD_disease{ disease_id:split(line.DiseaseID,':')[1] }) On Create Set  c.name=line.DiseaseName;\n'''
-    cypher_file_nodes.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/CTD_diseases_pathways.tsv" As line FIELDTERMINATOR '\\t' Merge  (g:CTD_pathway{ pathway_id:line.PathwayID })  On Create Set g.name=line.PathwayName;\n'''
-    cypher_file_nodes.write(query)
-    global counter_edges_queries, cypher_file_edges, edges_file_number
+    if not reduced:
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/CTD_diseases_pathways.tsv" As line FIELDTERMINATOR '\\t' Merge (c:CTD_disease{ disease_id:split(line.DiseaseID,':')[1] }) On Create Set  c.name=line.DiseaseName;\n'''
+        cypher_file_nodes.write(query)
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/CTD_diseases_pathways.tsv" As line FIELDTERMINATOR '\\t' Merge  (g:CTD_pathway{ pathway_id:line.PathwayID })  On Create Set g.name=line.PathwayName;\n'''
+        cypher_file_nodes.write(query)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/CTD_diseases_pathways.tsv" As line FIELDTERMINATOR '\\t' Match (c:CTD_disease{ disease_id:split(line.DiseaseID,':')[1] }), (g:CTD_pathway{ pathway_id:split(line.PathwayID,':')[1] })  Create (c)-[:associates_DP{inferenceGeneSymbol:line.InferenceGeneSymbol, url:"http://ctdbase.org/detail.go?type=disease&acc="+split(line.DiseaseID,':')[1]}]->(g);\n'''
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/CTD_diseases_pathways.tsv" As line FIELDTERMINATOR '\\t' Match (c:CTD_disease{ disease_id:split(line.DiseaseID,':')[1] }), (g:CTD_pathway{ pathway_id:split(line.PathwayID,':')[1] })  Create (c)-[:associates_DP{inferenceGeneSymbol:line.InferenceGeneSymbol, url:"http://ctdbase.org/detail.go?type=disease&acc="+split(line.DiseaseID,':')[1]}]->(g);\n'''
 
-    cypher_file_edges.write(query)
+        cypher_file_edges.write(query)
+
+
 
 
 '''
-load ctd gene-pathway file:
+load ctd chemical-gene file:
     0:ChemicalName                        
     1:ChemicalID
     2:CasRN
@@ -550,8 +472,6 @@ and gather the information
 def load_chemical_gene():
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/CTD_chem_gene_ixns.tsv" As line FIELDTERMINATOR '\\t' Merge (c:CTD_chemical{ chemical_id:line.ChemicalID }) On Create Set c.casRN=line.CasRN, c.name=line.ChemicalName;\n'''
     cypher_file_nodes.write(query)
-
-    global counter_edges_queries, cypher_file_edges, edges_file_number
 
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/CTD_chem_gene_ixns.tsv" As line FIELDTERMINATOR '\\t' Match (c:CTD_chemical{ chemical_id:line.ChemicalID }), (g:CTD_gene{ gene_id:line.GeneID }) Create (c)-[:associates_CG{unbiased:false, gene_forms:split(line.GeneForms,'|'), organism:line.Organism, organism_id:line.OrganismID, interaction_text:line.Interaction, interactions_actions:split(line.InteractionActions,'|'), pubMed_ids:split(line.PubMedIDs,'|'), url:" http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID }]->(g);\n'''
 
@@ -578,16 +498,15 @@ and gather the information
 
 
 def load_chemical_pathway_enriched():
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/CTD_chem_pathways_enriched.tsv" As line FIELDTERMINATOR '\\t' Merge (c:CTD_chemical{ chemical_id:line.ChemicalID }) On Create Set c.casRN=line.CasRN, c.name=line.ChemicalName ;\n'''
-    cypher_file_nodes.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/CTD_chem_pathways_enriched.tsv" As line FIELDTERMINATOR '\\t' Merge (g:CTD_pathway{ pathway_id:split(line.PathwayID,':')[1] }) On Create Set g.name=line.PathwayName;\n'''
-    cypher_file_nodes.write(query)
+    if not reduced:
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/CTD_chem_pathways_enriched.tsv" As line FIELDTERMINATOR '\\t' Merge (c:CTD_chemical{ chemical_id:line.ChemicalID }) On Create Set c.casRN=line.CasRN, c.name=line.ChemicalName ;\n'''
+        cypher_file_nodes.write(query)
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/CTD_chem_pathways_enriched.tsv" As line FIELDTERMINATOR '\\t' Merge (g:CTD_pathway{ pathway_id:split(line.PathwayID,':')[1] }) On Create Set g.name=line.PathwayName;\n'''
+        cypher_file_nodes.write(query)
 
-    global counter_edges_queries, cypher_file_edges, edges_file_number
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/CTD_chem_pathways_enriched.tsv" As line FIELDTERMINATOR '\\t' Match (c:CTD_chemical{ chemical_id:line.ChemicalID }), (g:CTD_pathway{ pathway_id:split(line.PathwayID,':')[1]}) Create (c)-[:associates_CP{url:"http://ctdbase.org/detail.go?type=chem&acc="+line.ChemicalID ,unbiased:True, pValue:line.PValue, correctedPValue:line.CorrectedPValue, targetMatchQty:line.TargetMatchQty, targetTotalQty:line.TargetTotalQty, backgroundMatchQty:line.BackgroundMatchQty, backgroundTotalQty:line.BackgroundTotalQty }]->(g);\n'''
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/CTD_chem_pathways_enriched.tsv" As line FIELDTERMINATOR '\\t' Match (c:CTD_chemical{ chemical_id:line.ChemicalID }), (g:CTD_pathway{ pathway_id:split(line.PathwayID,':')[1]}) Create (c)-[:associates_CP{url:"http://ctdbase.org/detail.go?type=chem&acc="+line.ChemicalID ,unbiased:True, pValue:line.PValue, correctedPValue:line.CorrectedPValue, targetMatchQty:line.TargetMatchQty, targetTotalQty:line.TargetTotalQty, backgroundMatchQty:line.BackgroundMatchQty, backgroundTotalQty:line.BackgroundTotalQty }]->(g);\n'''
-
-    cypher_file_edges.write(query)
+        cypher_file_edges.write(query)
 
 
 '''
@@ -607,12 +526,34 @@ and gather the information
 
 
 def load_chemical_disease():
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/CTD_chemicals_diseases.tsv" As line FIELDTERMINATOR '\\t' Merge (c:CTD_chemical{ chemical_id:line.ChemicalID }) On Create  Set  c.casRN=line.CasRN, c.name=line.ChemicalName;\n'''
-    cypher_file_nodes.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/CTD_chemicals_diseases.tsv" As line FIELDTERMINATOR '\\t' Merge (g:CTD_disease{ disease_id:split(line.DiseaseID,':')[1]}) On Create Set  g.name=line.DiseaseName;\n'''
-    cypher_file_nodes.write(query)
+    file_name = '/ctd_data/CTD_chemicals_diseases.tsv'
+    if reduced:
+        file = open(path_of_ctd_data + file_name, 'r', encoding='utf-8')
+        csv_reader = csv.DictReader(file, delimiter='\t')
 
-    global counter_edges_queries, cypher_file_edges, edges_file_number
+        generated_header = False
+        file_name = '/ctd_data/CTD_chemicals_diseases_reduced.tsv'
+        write_file = open(path_of_ctd_data + file_name, 'w', encoding='utf-8')
+        counter = 0
+        counter_evidence_line = 0
+        for line_dict in csv_reader:
+            if not generated_header:
+                csv_writer = csv.DictWriter(write_file, fieldnames=list(line_dict.keys()), delimiter='\t')
+                csv_writer.writeheader()
+                generated_header=True
+            if line_dict['DirectEvidence'] != '':
+                csv_writer.writerow(line_dict)
+                counter_evidence_line += 1
+            counter += 1
+            if counter % 5000000 == 0:
+                print(counter, datetime.datetime.now(), counter_evidence_line)
+        file.close()
+        write_file.close()
+
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + file_name + '''" As line FIELDTERMINATOR '\\t' Merge (c:CTD_chemical{ chemical_id:line.ChemicalID }) On Create  Set  c.casRN=line.CasRN, c.name=line.ChemicalName;\n'''
+    cypher_file_nodes.write(query)
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + file_name + '''" As line FIELDTERMINATOR '\\t' Merge (g:CTD_disease{ disease_id:split(line.DiseaseID,':')[1]}) On Create Set  g.name=line.DiseaseName;\n'''
+    cypher_file_nodes.write(query)
 
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/CTD_chemicals_diseases.tsv" As line FIELDTERMINATOR '\\t' Match (c:CTD_chemical{ chemical_id:line.ChemicalID }), (g:CTD_disease{ disease_id:split(line.DiseaseID,':')[1] }) Create (c)-[:associates_CD{ url:"http://ctdbase.org/detail.go?type=chem&acc="+line.ChemicalID ,directEvidence:line.DirectEvidence, inferenceGeneSymbol:line.InferenceGeneSymbol, inferenceScore:line.InferenceScore, omimIDs:split(line.OmimIDs,'|'), pubMed_ids:split(line.PubMedIDs,'|') }]->(g);\n'''
 
@@ -635,12 +576,33 @@ and gather the information
 
 
 def load_gene_disease():
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/CTD_genes_diseases.tsv" As line FIELDTERMINATOR '\\t' Merge (g:CTD_disease{ disease_id:split(line.DiseaseID,':')[1] }) On Create Set g.name=line.DiseaseName;\n'''
+    file_name = '/ctd_data/CTD_genes_diseases.tsv'
+    if reduced:
+        file = open(path_of_ctd_data + file_name, 'r', encoding='utf-8')
+        csv_reader = csv.DictReader(file, delimiter='\t')
+
+        generated_header = False
+        file_name = '/ctd_data/CTD_genes_diseases_reduced.tsv'
+        write_file = open(path_of_ctd_data + file_name, 'w', encoding='utf-8')
+        counter = 0
+        counter_evidence_line = 0
+        for line_dict in csv_reader:
+            if not generated_header:
+                csv_writer = csv.DictWriter(write_file, fieldnames=list(line_dict.keys()), delimiter='\t')
+                csv_writer.writeheader()
+                generated_header=True
+            if line_dict['DirectEvidence'] != '':
+                csv_writer.writerow(line_dict)
+                counter_evidence_line += 1
+            counter += 1
+            if counter % 5000000 == 0:
+                print(counter, datetime.datetime.now(), counter_evidence_line)
+        file.close()
+        write_file.close()
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + file_name + '''" As line FIELDTERMINATOR '\\t' Merge (g:CTD_disease{ disease_id:split(line.DiseaseID,':')[1] }) On Create Set g.name=line.DiseaseName;\n'''
     cypher_file_nodes.write(query)
 
-    global counter_edges_queries, cypher_file_edges, edges_file_number
-
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/CTD_genes_diseases.tsv" As line FIELDTERMINATOR '\\t' Match (c:CTD_gene{ gene_id:line.GeneID }), (g:CTD_disease{ disease_id:split(line.DiseaseID,':')[1] }) Create (c)-[:associates_GD{ url:"http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , directEvidence:line.DirectEvidence, inferenceChemicalName:line.InferenceChemicalName, inferenceScore:line.InferenceScore, omimIDs:split(line.OmimIDs,'|'), pubMed_ids:split(line.PubMedIDs,'|') }]->(g);\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + file_name + '''" As line FIELDTERMINATOR '\\t' Match (c:CTD_gene{ gene_id:line.GeneID }), (g:CTD_disease{ disease_id:split(line.DiseaseID,':')[1] }) Create (c)-[:associates_GD{ url:"http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , directEvidence:line.DirectEvidence, inferenceChemicalName:line.InferenceChemicalName, inferenceScore:line.InferenceScore, omimIDs:split(line.OmimIDs,'|'), pubMed_ids:split(line.PubMedIDs,'|') }]->(g);\n'''
 
     cypher_file_edges.write(query)
 
@@ -771,7 +733,7 @@ def genereate_rela_file_event(file_name, dict_rela_to_file, rela, label, label_i
 def prepare_exposure():
     global cypher_file_nodes
     file = open(path_of_ctd_data + '/ctd_data/CTD_exposure_events.tsv', 'r', encoding='utf-8')
-    csv_reader = csv.DictReader(file)
+    csv_reader = csv.DictReader(file, delimiter='\t')
 
     header = csv_reader.fieldnames
     exposure_id = 0
@@ -884,152 +846,153 @@ path_of_ctd_data = ''
 
 
 def main():
-    global path_of_ctd_data
-    if len(sys.argv) > 1:
-        path_of_ctd_data = sys.argv[1]
-    else:
-        sys.exit('need a path to ctd data')
+    global path_of_ctd_data, reduced
 
-    print(datetime.datetime.utcnow())
+    reduced = False
+    if len(sys.argv) == 2:
+        path_of_ctd_data = sys.argv[1]
+    elif len(sys.argv) > 1:
+
+        path_of_ctd_data = sys.argv[1]
+        reduced = True
+
+    else:
+        sys.exit('need a path to ctd data and maybe reduced True')
+
+    print(reduced, len(sys.argv))
+    print(datetime.datetime.now())
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load in ctd chemical and add to cypher file')
 
     load_chemicals_and_add_to_cypher_file()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load in ctd pathway and add to cypher file')
 
     load_pathway_and_add_to_cypher_file()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load in ctd anatomy and add to cypher file')
 
     load_anatomy_and_add_to_cypher_file()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load in ctd gene and add to cypher file')
 
     load_gene_and_add_to_cypher_file()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load in ctd disease and add to cypher file')
 
     load_disease_and_add_to_cypher_file()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load in ctd chemical-go and gather the information')
 
     load_chemical_go_enriched()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load in ctd chemical-phenotype and gather the information')
 
     load_chemical_phenotype()
 
-    # print('##########################################################################')
-    #
-    # print(datetime.datetime.utcnow())
-    # print('load in ctd disease-go and gather the information')
-    #
-    # load_disease_go_inference('CTD_Disease-GO_cellular_component_associations.csv','CTD_Disease-GO_molecular_function_associations.csv','CTD_Disease-GO_biological_process_associations.csv',True)
-
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load in ctd phenotype disease-go and gather the information')
 
     load_disease_go_inference('CTD_Phenotype-Disease_cellular_component_associations.tsv',
                               'CTD_Phenotype-Disease_molecular_function_associations.tsv',
-                              'CTD_Phenotype-Disease_biological_process_associations.tsv', False)
+                              'CTD_Phenotype-Disease_biological_process_associations.tsv')
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('add go to node cypher file')
 
     add_go_to_cypher_file()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('add gene-go relationship to cypher file')
 
     gene_go_into_cypher_file()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('add gene-pathway relationship to cypher file')
 
     load_gene_pathway()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('add disease-pathway relationship to cypher file')
 
     load_disease_pathway()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('add chemical-gene relationship to cypher file')
 
     load_chemical_gene()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('add chemical-pathway relationship to cypher file')
 
     load_chemical_pathway_enriched()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('add chemical-disease relationship to cypher file')
 
     load_chemical_disease()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
-    print('add chemical-disease relationship to cypher file')
+    print(datetime.datetime.now())
+    print('add gene-disease relationship to cypher file')
 
     load_gene_disease()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('add exposure study and relas')
 
-    # prepare_exposure_studies()
+    prepare_exposure_studies()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('add exposure event and relas')
 
-    # prepare_exposure()
+    prepare_exposure()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('delete nodes with no realtionships')
 
     delete_nodes_with_no_relationship('CTD_GO')
@@ -1040,7 +1003,7 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":
