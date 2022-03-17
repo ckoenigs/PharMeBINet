@@ -209,12 +209,12 @@ def main():
 
     dict_label_to_infos = {
         'Metabolite': [['Metabolite_HMDB', 'Pathway_HMDB', 'Pathway', '<-', '-', 'ASSOCIATES_PWaP']],
-        'Protein': [
-            ['Protein_HMDB', 'Pathway_HMDB', 'Pathway', '<-', '-', 'ASSOCIATES_PWaP'],
-            ['Protein_HMDB', 'Biologicalprocess_HMDB', 'BiologicalProcess', '-', '->', 'PARTICIPATES_PpBP'],
-            ['Protein_HMDB', 'Cellularcomponent_HMDB', 'CellularComponent', '-', '->', 'PARTICIPATES_PpCC'],
-            ['Protein_HMDB', 'Molecularfunction_HMDB', 'MolecularFunction', '-', '->', 'PARTICIPATES_PpMF']
-        ]
+        # 'Protein': [
+        #     ['Protein_HMDB', 'Pathway_HMDB', 'Pathway', '<-', '-', 'ASSOCIATES_PWaP'],
+        #     ['Protein_HMDB', 'Biologicalprocess_HMDB', 'BiologicalProcess', '-', '->', 'PARTICIPATES_PpBP'],
+        #     ['Protein_HMDB', 'Cellularcomponent_HMDB', 'CellularComponent', '-', '->', 'PARTICIPATES_PpCC'],
+        #     ['Protein_HMDB', 'Molecularfunction_HMDB', 'MolecularFunction', '-', '->', 'PARTICIPATES_PpMF']
+        # ]
     }
 
     directory = 'edge_protein_metabolite_without_info'

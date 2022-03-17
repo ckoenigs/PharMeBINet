@@ -34,13 +34,15 @@ The HMDB disease is mapped to disease and symptom:
 
 The data are merged into the database with the Neo4j cypher shell.
 
-Next, the preparation of all edges without information is prepared (protein-pathway/BP/CC/MF and metabolite-pathway):
+Next, the preparation of all edges without information is prepared (protein-pathway/BP/CC/MF and) metabolite-pathway:
     First, the cypher file is generated.
     For each combination the same steps take place:
         First, a TSV file is prepared for existing pairs and not existing pairs.
         The existing pairs in the database are loaded into dictionaries.
         Then, all existing and not existing pairs of HMDB are written in the different TSV files. 
         Then the cypher queries are generated and written into the cypher file.
+    
+    Currently only the metabolite-pathway edges are integrated because they come from KEGG and METACYC (https://hmdb.ca/sources). The edges to GO are not used because they are from GO (already included) and automatic generated. The edge protein-pathway are from KEGG and UniProt, however, the UniProt edges are Semiautomatic geenerated.
 
 In the last program, prepare the edges from HMDB which includes information (metabolite-protein/disease):
     Both edges are not in the database. So for each combination, only the edges with reference information are taken.
