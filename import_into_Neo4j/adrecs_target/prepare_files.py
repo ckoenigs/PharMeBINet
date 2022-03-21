@@ -188,10 +188,6 @@ def prepare_dictionary(dictionary):
         new_dict[key] = value
     return new_dict
 
-
-# set of ditop2 ids
-set_ditop2_ids = set()
-
 # set of ditop and adr pairs
 dict_ditop_to_other_entities = {}
 
@@ -230,6 +226,11 @@ def check_on_adr_information(identifier, dict_of_properties):
                 print(dict_adr_id_to_dict_infos[identifier][key])
                 sys.exit()
 
+# dictionary ditop id to ditop infos
+dict_ditop_id_to_ditop_infos={}
+
+# ditop header
+header_ditop = ['DITOP2_ID', 'ORGAISM', 'DATA_SOURCE', 'Link', 'PMID']
 
 def prepare_adrs():
     """"
@@ -259,7 +260,6 @@ def prepare_adrs():
                                                             as_dict=True)
 
     # ditop2 information
-    header_ditop = ['DITOP2_ID', 'ORGAISM', 'DATA_SOURCE']
     prepare_file_and_query_for_node('ditop2', 'ditop2', header_ditop, [], ';', 'DITOP2_ID')
 
     # toxity information
@@ -282,10 +282,21 @@ def prepare_adrs():
     for index, row in adrs.iterrows():
 
         ditop2 = row['DITOP2_ID']
-        if ditop2 not in set_ditop2_ids:
-            ditop_list = [row[x] for x in header_ditop]
-            dict_label_to_csv_writer['ditop2'].writerow(ditop_list)
-        set_ditop2_ids.add(ditop2)
+        if ditop2 not in dict_ditop_id_to_ditop_infos:
+            ditop_info={}
+            for head in header_ditop:
+                if head in row:
+                    ditop_info[head]=row[head]
+            dict_ditop_id_to_ditop_infos[ditop2]= ditop_info
+            # dict_label_to_csv_writer['ditop2'].writerow(ditop_list)
+        else:
+            for head in header_ditop:
+                if head in row:
+                    if dict_ditop_id_to_ditop_infos[ditop2][head]!=row[head]:
+                        print(head, ditop2)
+                        print(dict_ditop_id_to_ditop_infos[ditop2][head])
+                        print(row[head])
+                        sys.exit('different information')
 
         toxicity = row['TOXICITY_DETAIL']
 
@@ -319,7 +330,7 @@ def prepare_adrs():
         check_on_adr_information(identifier, dict_of_properties)
 
     print(set_of_all_protein_ids_where_difference)
-    print('length of ditop', len(set_ditop2_ids))
+    print('length of ditop', len(dict_ditop_id_to_ditop_infos))
     print('length name', len(dict_adr_id_to_dict_infos))
 
 
@@ -354,7 +365,7 @@ def prepare_drug():
         drug_name = row['Drug Name'].lower()
         row['Drug Name'] = drug_name
         ditop2_id = row['Target_ID']
-        if ditop2_id not in set_ditop2_ids:
+        if ditop2_id not in dict_ditop_id_to_ditop_infos:
             print('not in ditpot :O')
             print(ditop2_id)
 
@@ -424,13 +435,16 @@ def prepare_variants():
     variant_properties.remove('Gene_Name')
     variant_properties.remove('Gene_ID')
     variant_properties.remove('Uniprot_ID')
+    variant_properties.remove('PMID')
+    variant_properties.remove('Link')
+    variant_properties.remove('Data_Source')
     # prepare dataframe
     variants = prepare_dataframe(variants)
 
     # variant information
 
     dict_old_to_new_label = prepare_file_and_query_for_node('variants', 'variant', variant_properties,
-                                                            ['PMID', 'Link', 'Data_Source'], ';', 'Variation_ID',
+                                                            [], ';', 'Variation_ID',
                                                             as_dict=True)
 
     # all variants where some difference appears which were not considered
@@ -454,9 +468,22 @@ def prepare_variants():
     for index, row in variants.iterrows():
 
         badd_tid = row['BADD_TID']
-        if badd_tid not in set_ditop2_ids:
+        if badd_tid not in dict_ditop_id_to_ditop_infos:
             print('not in ditpot :O')
             print(badd_tid)
+        else:
+            for head in header_ditop:
+                if head in row:
+                    if head !='PMID':
+                        row_info=row[head]
+                    else:
+                        row_info=str(int(row[head])) if row[head]!='' else row[head]
+                    if head in dict_ditop_id_to_ditop_infos[badd_tid] and dict_ditop_id_to_ditop_infos[badd_tid][head]!=row_info:
+                        print(dict_ditop_id_to_ditop_infos[badd_tid])
+                        print(row[head])
+                        sys.exit('different infos in '+ head)
+                    else:
+                        dict_ditop_id_to_ditop_infos[badd_tid][head] = row_info
 
         # variant node
         variant_id = row['Variation_ID']
@@ -503,24 +530,24 @@ def prepare_variants():
         else:
 
             for key, value in dict_of_properties.items():
-                if key == 'PMID':
-                    if type(dict_variant_id_to_infos[variant_id][key]) != set:
-                        if dict_variant_id_to_infos[variant_id][key] == '':
-                            dict_variant_id_to_infos[variant_id][key] = set()
-                        else:
-                            dict_variant_id_to_infos[variant_id][key] = set(
-                                [int(dict_variant_id_to_infos[variant_id][key])])
-                    if value == '':
-                        continue
-                    dict_variant_id_to_infos[variant_id][key].add(int(value))
-                    continue
-                if key in ['Link', 'Data_Source']:
-                    if type(dict_variant_id_to_infos[variant_id][key]) != set:
-                        dict_variant_id_to_infos[variant_id][key] = set(
-                            [dict_variant_id_to_infos[variant_id][key]])
-
-                    dict_variant_id_to_infos[variant_id][key].add(value)
-                    continue
+                # if key == 'PMID':
+                #     if type(dict_variant_id_to_infos[variant_id][key]) != set:
+                #         if dict_variant_id_to_infos[variant_id][key] == '':
+                #             dict_variant_id_to_infos[variant_id][key] = set()
+                #         else:
+                #             dict_variant_id_to_infos[variant_id][key] = set(
+                #                 [int(dict_variant_id_to_infos[variant_id][key])])
+                #     if value == '':
+                #         continue
+                #     dict_variant_id_to_infos[variant_id][key].add(int(value))
+                #     continue
+                # if key in ['Link', 'Data_Source']:
+                #     if type(dict_variant_id_to_infos[variant_id][key]) != set:
+                #         dict_variant_id_to_infos[variant_id][key] = set(
+                #             [dict_variant_id_to_infos[variant_id][key]])
+                #
+                #     dict_variant_id_to_infos[variant_id][key].add(value)
+                #     continue
 
                 # manual checked the position and strand
                 if key in ['ChromEnd', 'ChromStart']:
@@ -599,7 +626,7 @@ def prepare_proteins():
     for index, row in protein.iterrows():
 
         rid = row['RID']
-        if not rid in set_ditop2_ids:
+        if not rid in dict_ditop_id_to_ditop_infos:
             print('not in ditop')
             print(rid)
 
@@ -674,7 +701,7 @@ def prepare_protein_drug_adr():
     for index, row in protein_drug_adr.iterrows():
 
         ditop = row['BADD_TID']
-        if not ditop in set_ditop2_ids:
+        if not ditop in dict_ditop_id_to_ditop_infos:
             print('not in ditop')
             print(ditop)
 
@@ -727,7 +754,7 @@ def prepare_variant_drug_adr():
     for index, row in protein_drug_adr.iterrows():
 
         ditop = row['BADD_TID']
-        if not ditop in set_ditop2_ids:
+        if not ditop in dict_ditop_id_to_ditop_infos:
             print('not in ditop')
             print(ditop)
 
@@ -825,8 +852,18 @@ def prepare_adr_gene_drug_rela():
         # write rela between gene and association
         dict_rela_to_tsv['association_drug'].writerow([counter_triple_relationship, drug_name])
 
+def prepare_ditop_tsv_file_information():
+    for dict_ditop in dict_ditop_id_to_ditop_infos.values():
+        ditop_list=[]
+        for head in header_ditop:
+            if head in dict_ditop:
+                ditop_list.append(dict_ditop[head])
+            else:
+                ditop_list.append('')
+        dict_label_to_csv_writer['ditop2'].writerow(ditop_list)
 
-def write_adr_csv_file():
+
+def write_adr_tsv_file():
     """
     Because information for adr are combined in the end the information are need to be written down
     :return:
@@ -907,7 +944,14 @@ def main():
     print(datetime.datetime.now())
     print('write adr information into tsv')
 
-    write_adr_csv_file()
+    prepare_ditop_tsv_file_information()
+
+    print('##########################################################################')
+
+    print(datetime.datetime.now())
+    print('write adr information into tsv')
+
+    write_adr_tsv_file()
 
     print('##########################################################################')
 
