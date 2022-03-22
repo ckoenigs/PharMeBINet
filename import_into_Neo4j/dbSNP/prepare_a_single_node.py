@@ -169,7 +169,8 @@ def add_information_from_one_dict_to_another(from_dict, to_dict, key):
         if key in to_dict and from_dict[key] != to_dict[key]:
             # some have multiple possibilities for the insertion
             if key == 'inserted_sequence':
-                to_dict[key] += '/' + from_dict[key]
+                if not from_dict[key] in to_dict[key]:
+                    to_dict[key] += '/' + from_dict[key]
                 return
             if type(from_dict[key]) == str and (from_dict[key] == '' or to_dict[key] == ''):
                 return
