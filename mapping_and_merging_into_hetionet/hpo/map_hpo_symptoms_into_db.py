@@ -138,7 +138,7 @@ def generate_cypher_queries_and_tsv_files():
     query_create = query_create % (path_of_directory, file_name_new, ontology_date)
     cypher_file.write(query_create)
 
-    query = '''Match (s1:Symptom)--(:HPO_symptom)-[:is_a]->(:HPO_symptom)--(s2:Symptom) Where not ID(s1)=ID(s2) Merge (s1)-[:IS_A_SiS{license:"HPO", source:"HPO", resource:["HPO"], hpo:"yes"}]->(s2);\n'''
+    query = '''Match (s1:Symptom)--(:HPO_symptom)-[:is_a]->(:HPO_symptom)--(s2:Symptom) Where not ID(s1)=ID(s2) Merge (s1)-[:IS_A_SiaS{license:"HPO", source:"HPO", resource:["HPO"], hpo:"yes"}]->(s2);\n'''
     cypher_file.write(query)
 
     return csv_symptom_mapped, csv_symptom_new
