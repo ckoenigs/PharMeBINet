@@ -45,9 +45,9 @@ def generate_rela_files(label, rela_name, query_start):
     csv_file.writerow(['anno_id', 'other_id'])
     dict_rela_partner_to_tsv_file[label] = csv_file
 
-    query_rela = query_start + ' (b:VariantAnnotation{identifier:line.anno_id}), (c:%s{identifier:line.other_id}) Create (b)-[:%s]->(c);\n'
+    query_rela = query_start + ' (b:VariantAnnotation{identifier:line.anno_id}), (c:%s{identifier:line.other_id}) Create (b)-[:%s{pharmgkb:"yes", source:"PharmGKB", resource:["PharmGKB"], license:"%s"}]->(c);\n'
     rela_name = rela_name % ('VA')
-    query_rela = query_rela % (file_name, label, rela_name)
+    query_rela = query_rela % (file_name, label, rela_name, license)
     cypher_file.write(query_rela)
 
 
@@ -122,7 +122,7 @@ def prepare_files(label, query_start):
         else:
             query_meta_node += 'identifier:toString(n.' + property + '), '
 
-    query_meta_node += ' study_parameters:split(line.study_parameters,"|"), guideline_urls:split(line.guideline_urls,"|"), pubMed_ids:split(line.PubMed_ids,"|"),pubMed_Central_ids:split(line.PubMed_Central_ids,"|") , source:"PharmGKB", resource:["PharmGKB"], node_edge:true, url:"https://www.pharmgkb.org/variantAnnotation/"+line.identifier, license:"%s"}) Create (n)<-[:equal_metadata]-(b);\n'
+    query_meta_node += ' study_parameters:split(line.study_parameters,"|"), guideline_urls:split(line.guideline_urls,"|"), pubMed_ids:split(line.PubMed_ids,"|"),pubMed_Central_ids:split(line.PubMed_Central_ids,"|") , source:"PharmGKB", resource:["PharmGKB"], node_edge:true, url:"https://www.pharmgkb.org/variantAnnotation/"+line.identifier, license:"%s", pharmgkb:"yes"}) Create (n)<-[:equal_metadata]-(b);\n'
     query_meta_node = query_meta_node % (file_name, label, label.split('_')[1], license)
     cypher_file.write(query_meta_node)
     if not add_constraint:
@@ -251,8 +251,8 @@ def fill_the_rela_files(label_node):
     :param label_node: string
     :return:
     """
-    query = 'Match (n:VariantAnnotation)--(:%s)-[r]-(:PharmGKB_ClinicalAnnotation)--(b:ClinicalAnnotation) Create (n)<-[h:HAS_EVIDENCE_CAheVA]-(b) Set h=r, h.pubMed_ids=[r.pmid] Remove h.pmid;\n'
-    query = query % (label_node)
+    query = 'Match (n:VariantAnnotation)--(:%s)-[r]-(:PharmGKB_ClinicalAnnotation)--(b:ClinicalAnnotation) Create (n)<-[h:HAS_EVIDENCE_CAheVA{pharmgkb:"yes",source:"PharmGKB", resource:["PharmGKB"], license:"%s"}]-(b) Set h=r, h.pubMed_ids=[r.pmid] Remove h.pmid;\n'
+    query = query % (label_node, license)
     cypher_file.write(query)
     query_general = 'Match (n:%s)--(:%s)--(m:%s) Return Distinct n.id, m.identifier'
     for pharmGKB_label, label in dict_pGKB_label_to_label.items():
