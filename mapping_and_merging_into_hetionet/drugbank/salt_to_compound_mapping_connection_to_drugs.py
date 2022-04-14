@@ -89,7 +89,7 @@ def create_cypher_and_tsv_files():
     csv_node.writeheader()
     cypher_rela = open('output/cypher_rela.cypher', 'a', encoding='utf-8')
     rela_header = ['salt_id', 'compound_id']
-    query_rela = query_start + ' (b:Compound :Salt{identifier:line.salt_id}), (a:Compound {identifier:line.compound_id}) Create (a)-[r:PART_OF_CpSA{license:"%s", url:"https://go.drugbank.com/drugs/"+line.compound_id, source:"DrugBank", resource:["DrugBank"], drugbank:"yes" }]->(b);\n'
+    query_rela = query_start + ' (b:Compound :Salt{identifier:line.salt_id}), (a:Compound {identifier:line.compound_id}) Create (a)-[r:PART_OF_CpoSA{license:"%s", url:"https://go.drugbank.com/drugs/"+line.compound_id, source:"DrugBank", resource:["DrugBank"], drugbank:"yes" }]->(b);\n'
     query_rela = query_rela % (file_rela, license)
     cypher_rela.write(query_rela)
     cypher_rela.close()
