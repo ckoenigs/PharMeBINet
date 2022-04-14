@@ -147,8 +147,8 @@ def load_all_rela_drug_response_and_finish_the_files():
     print(query)
     counter_rela = 0
     for variant_id, rela_info, rela_type, respose_name, chemical_id, in results:
-        print(variant_id)
-        print(chemical_id)
+        # print(variant_id)
+        # print(chemical_id)
         counter_rela += 1
 
         rela_info = dict(rela_info)
@@ -361,11 +361,11 @@ dict_rela_type_to_new_name = {
 
 # dictionary rela name to end
 dict_rela_name_to_rela_end = {
-    "ASSOCIATES": "_VaCH",
-    "CONFERS_RESISTANCE": "_VcrCH",
-    "IS_RISK_FACTOR_WITH": "_VirfwCH",
-    "CONFERS_RESISTANCE": "_VcrCH",
-    'CONFERS_SENSITIVITY': '_VcsCH'
+    "ASSOCIATES": "_V%sCH",
+    "CONFERS_RESISTANCE": "_V%sCH",
+    "IS_RISK_FACTOR_WITH": "_V%sCH",
+    "CONFERS_RESISTANCE": "_V%sCH",
+    'CONFERS_SENSITIVITY': '_V%sCH'
 }
 
 
@@ -382,7 +382,10 @@ def prepare_tsv_file():
             if additional_information != '' and additional_information.lower() != 'other':
                 rela_type = rela_type + '_TO_' + additional_information.replace('|', '_').upper()
                 rela_type = rela_type.replace(' ', '').replace('/', '_')
+            abbreviation = ''.join([x.lower()[0] for x in rela_type.split('_')])
+            rela_end = rela_end %(abbreviation)
             rela_type += rela_end
+
         else:
             print(rela_type)
 
