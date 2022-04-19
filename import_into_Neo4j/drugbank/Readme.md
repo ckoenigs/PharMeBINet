@@ -1,7 +1,7 @@
 # DrugBank to Neo4j
 This integrates all open-source data of DrugBank into Neo4j.
 
-Version: 5.1.8
+Version: 5.1.9
 
 The first step of the DrugBank integration script is to get all DrugBank categories from the API.
 The next step is to prepare the SDF files into CSV files.

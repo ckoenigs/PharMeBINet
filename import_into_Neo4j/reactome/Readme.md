@@ -1,6 +1,6 @@
 https://reactome.org/
 
-Version: October 01, 2021
+Version: March 31, 2022
 
 First, the script starts the Reactome Neo4j database.
 Then get all constraints/indices from Reactome.
