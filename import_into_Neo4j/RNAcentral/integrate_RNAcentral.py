@@ -1,8 +1,10 @@
-import csv
+import csv, sys, datetime
 import pandas as pd
 import json
-import gzip, sys
-import datetime
+import gzip
+import os
+from pathlib import Path
+import urllib.request
 
 # cypher file
 cypher_file=open("cypher.cypher","w",encoding="utf-8")
@@ -41,6 +43,36 @@ def genome_coordinates():
     file.to_csv("homo_sapiens_RNACentral.tsv", sep='\t', index=False)
     print("########### End: genome_coordinates() ###############")
 
+def get_json():
+    try:
+        from BeautifulSoup import BeautifulSoup
+    except ImportError:
+        from bs4 import BeautifulSoup
+
+    def get_website_source(url: str) -> str:
+        request_headers = {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) ' +
+                          'Chrome/35.0.1916.47 Safari/537.36'
+        }
+        request = urllib.request.Request(url, headers=request_headers)
+        with urllib.request.urlopen(request) as response:
+            # print(response.read())
+            return response.read().decode('utf-8')
+
+    print('Download page ')
+    source = get_website_source('http://ftp.ebi.ac.uk/pub/databases/RNAcentral/current_release/json/')
+
+    # print(source)
+    parsed_html = BeautifulSoup(source, "lxml")
+
+
+    names_json= []
+    for row in parsed_html.find_all('a'):
+        href = row['href']
+        if 'ensembl-xref-' in href:
+            names_json.append(href)
+
+    return names_json
 
 def homo_json():
     '''
@@ -54,48 +86,23 @@ def homo_json():
     taxon_id         - identifer for a taxon in the Taxonomy Database by the NCBI
     xrefs            - []
     '''
-    #
+
     print("########### Start: homo_json() ###############")
-    numbers = [100001,300001,500001,600001,
-               1000001,1100001,1300001,1400001,1500001,1600001,1700001,
-               2200001,2300001,2500001,2600001,2800001,2900001,3400001]
+
+    # Creates a folder in which only the human information from each json file is stored.
+    try:
+        os.makedirs(path+"json_homo")
+    except FileExistsError:
+        pass
 
     all_json = pd.DataFrame()
+    names_json= get_json()
 
-    i=0
-
-    while (i<18):
-        url = "http://ftp.ebi.ac.uk/pub/databases/RNAcentral/current_release/json/ensembl-xref-" + str(numbers[i]) + "-" + str(numbers[i]+ 100000) + ".json"
-        file_json = pd.read_json(url)
-        df_homo = file_json['taxon_id'] == 9606         # filter according to the NCBI taxonomy id for Homo sapiens (9606)
-        df_homo = file_json[df_homo]
-        del df_homo['taxon_id'], df_homo['rna_type']
-        all_json=all_json.append(df_homo)
-        i+=1
-        print(i, len(all_json))
-
-    print(datetime.datetime.now(),'first json files')
-    i = 3900001
-    while (i <= 36200001):
-        url = "http://ftp.ebi.ac.uk/pub/databases/RNAcentral/current_release/json/ensembl-xref-" + str(i) + "-" + str(i + 100000) + ".json"
-        file_json = pd.read_json(url)
-        df_homo = file_json['taxon_id'] == 9606         # filter according to the NCBI taxonomy id for Homo sapiens (9606)
-        df_homo = file_json[df_homo]
-        del df_homo['taxon_id'], df_homo['rna_type']
-        all_json=all_json.append(df_homo)
-
-        i+=100000
-        print(i, len(all_json))
-        if (i-1)%1000000==0:
-            print(datetime.datetime.now())
-    print(datetime.datetime.now(), 'second json files')
-
-    url = "http://ftp.ebi.ac.uk/pub/databases/RNAcentral/current_release/json/ensembl-xref-36300001-36366056.json"
-    file_json = pd.read_json(url)
-    df_homo = file_json['taxon_id'] == 9606             # filter according to the NCBI taxonomy id for Homo sapiens (9606)
-    df_homo = file_json[df_homo]
-    del df_homo['taxon_id'], df_homo['rna_type']
-    all_json=all_json.append(df_homo)
+    for i in names_json:
+        filepath = path+"json_homo/" + str(i) + ".tsv"
+        print(i)
+        json = json_url(i, filepath)
+        all_json = all_json.append(json)
 
     # Merging the genome coordinates dataframe and the json dataframe together into one by aligning the rows from each based on the common attribute RNACentralID
     # The “outer” merge combines all the rows for left and right dataframes with NaN when there are no matched values in the rows.
@@ -104,7 +111,22 @@ def homo_json():
 
     file_coordinates.to_csv('homo_sapiens_coord_json.tsv', sep='\t')
 
-    print("########### End: json() ###############")
+    print("########### End: homo_json() ###############")
+
+
+def json_url(name_json, filepath):
+    try:
+        file_homo= pd.read_csv(filepath, sep='\t')
+    except FileNotFoundError:
+        print('File does not exist')
+        url = "http://ftp.ebi.ac.uk/pub/databases/RNAcentral/current_release/json/"+ str(name_json)
+        file_json = pd.read_json(url)
+        file_homo = file_json['taxon_id'] == 9606  # filter according to the NCBI taxonomy id for Homo sapiens (9606)
+        file_homo = file_json[file_homo]
+        del file_homo['taxon_id'], file_homo['rna_type']
+        file_homo.to_csv(filepath, sep='\t', index=False)
+    return file_homo
+
 
 def id_mapping():
     '''
@@ -119,20 +141,21 @@ def id_mapping():
     with gzip.open(path+'id_mapping.tsv.gz','rt') as tsv_datei:
         reader = csv.reader(tsv_datei, delimiter='\t')
         for row in reader:
-            if (row[3] == "9606" and (row[0]+'_9606' in d) == False):
-                d[row[0]+'_9606'] = {}
-                d[row[0]+'_9606']['geneName'] = row[5]
+            if (row[3] == "9606" and (row[0] + '_9606' in d) == False):
+                d[row[0] + '_9606'] = {}
+                d[row[0] + '_9606']['geneName'] = row[5]
+                d[row[0] + '_9606']["type1"] = row[4]
 
-                if (row[2].startswith(row[1]) == True):
-                    d[row[0]+'_9606']['xrefs'] = row[2]
-                else:
-                    d[row[0]+'_9606']['xrefs'] = row[1] + ":" + row[2]
+                xref= row[2]
+                xref = xref.replace(":"+row[0] + '_9606', "")
+                xref = xref.replace(row[1]+":", "")
+                d[row[0] + '_9606']['xrefs'] = row[1] + ":" + xref
 
-            elif (row[3] == "9606" and (row[0]+'_9606' in d) == True):
-                if (row[2].startswith(row[1]) == True):
-                    d[row[0]+'_9606']['xrefs'] = d[row[0]+'_9606']['xrefs'] + "|" + row[2]
-                else:
-                    d[row[0]+'_9606']['xrefs'] = d[row[0]+'_9606']['xrefs'] + "|" + row[1] + ":" + row[2]
+            elif (row[3] == "9606" and (row[0] + '_9606' in d) == True):
+                xref= row[2]
+                xref = xref.replace(":"+row[0] + '_9606', "")
+                xref = xref.replace(row[1]+":", "")
+                d[row[0] + '_9606']['xrefs'] = d[row[0] + '_9606']['xrefs'] + "|" + row[1] + ":" + xref
 
     print("########### End: id_mapping() ###############")
 
@@ -183,11 +206,11 @@ def complete_dictionary(d_map):
     edges = ["rnacentral_id", "id"]
     nodes2 =['id','chromName','chromStart','chromEnd', 'strand', 'thickStart','thickEnd', 'blockCount', 'blockSizes','blockStarts']
 
-    file_name_node1='output/RNACentral_nodes1.tsv'
-    file_name_node2='output/RNACentral_nodes2.tsv'
-    file_name_edge='output/RNACentral_edges.tsv'
+    file_name_node1 = 'output/RNACentral_nodes1.tsv'
+    file_name_node2 = 'output/RNACentral_nodes2.tsv'
+    file_name_edge = 'output/RNACentral_edges.tsv'
     with open(file_name_node1, 'w',newline='') as tsv_file1:
-        with open(file_name_edge, 'w', newline='') as tsv_file2:
+        with open('RNACentral_edges.tsv', 'w', newline='') as tsv_file2:
             with open(file_name_node2, 'w', newline='') as tsv_file3:
                 writer1,writer2, writer3 = csv.writer(tsv_file1),csv.writer(tsv_file2), csv.writer(tsv_file3)
                 writer1.writerow(nodes1), writer2.writerow(edges), writer3.writerow(nodes2)
@@ -259,7 +282,6 @@ def main():
         path_of_directory = sys.argv[1]
     else:
         sys.exit('need a path rnaCentral')
-
 
     print(
         '#################################################################################################################################################################')
