@@ -9,7 +9,7 @@ import_tool=$2
 # path to reactome graphml
 path_to_reactome='/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/reactome/'
 
-path_neo4j_other='/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/neo4j/neo4j-community-4.3.10/bin'
+path_neo4j_other='/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/neo4j/neo4j-community-4.3.11/bin'
 
 $path_neo4j/restart_neo4j.sh graph stop
 $path_neo4j_other/restart_neo4j.sh reactome restart
