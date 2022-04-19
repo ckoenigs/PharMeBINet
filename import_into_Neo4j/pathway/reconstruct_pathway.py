@@ -127,7 +127,6 @@ def pathway_commons():
         genes.discard(None)
         if not genes:
             continue
-
         # Add pathway
         i += 1
         row = PC_Row(
@@ -186,7 +185,7 @@ def wikipathways():
     # Parse WikiPathways
 
     # download WikiPathways
-    url = 'http://data.wikipathways.org/20211110/gmt/wikipathways-20211110-gmt-Homo_sapiens.gmt'
+    url = 'http://data.wikipathways.org/20220410/gmt/wikipathways-20220410-gmt-Homo_sapiens.gmt'
     filename = wget.download(url, out='data/')
 
     gmt_generator = read_gmt(filename)
