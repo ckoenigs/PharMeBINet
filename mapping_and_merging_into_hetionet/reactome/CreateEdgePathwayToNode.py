@@ -110,11 +110,11 @@ def main():
     # 3: name of node in Hetionet;   4: name of new relationship
     list_of_combinations = [
          ['precedingEvent', 'BlackBoxEvent_reactome', 'equal_to_reactome_blackBoxEvent', 'BlackBoxEvent',
-         'PRECEDING_REACTION_PWpB'],
+         'PRECEDING_REACTION_PWprB'],
         ['precedingEvent', 'Reaction_reactome', 'equal_to_reactome_reaction', 'Reaction',
-         'PRECEDING_REACTION_PWpR'],
+         'PRECEDING_REACTION_PWprR'],
         ['precedingEvent', 'Pathway_reactome', 'equal_to_reactome_pathway', 'Pathway',
-         'PRECEDING_REACTION_PWpPW'],
+         'PRECEDING_REACTION_PWprPW'],
         ['hasEncapsulatedEvent', 'Pathway_reactome', 'equal_to_reactome_pathway', 'Pathway',
          'HAS_ENCAPSULATED_EVENT_PWheePW'],
         ['normalPathway', 'Pathway_reactome', 'equal_to_reactome_pathway', 'Pathway',
@@ -130,7 +130,7 @@ def main():
         ['hasEvent', 'FailedReaction_reactome', 'equal_to_reactome_failedreaction', 'FailedReaction',
          'PARTICIPATES_IN_PWpiF'],
         ['goBiologicalProcess', 'GO_BiologicalProcess_reactome', 'equal_to_reactome_gobiolproc', 'BiologicalProcess',
-         'OCCURS_IN_GO_BIOLOGICAL_PROCESS_PWoigbpBP'],
+         'OCCURS_IN_PWoiBP'],
         ['hasEvent', 'Reaction_reactome', 'equal_to_reactome_reaction', 'Reaction', 'PARTICIPATES_IN_PWpiR'],
         ['compartment', 'GO_CellularComponent_reactome', 'equal_to_reactome_gocellcomp', 'CellularComponent',
          'IN_COMPARTMENT_PWicCC'],

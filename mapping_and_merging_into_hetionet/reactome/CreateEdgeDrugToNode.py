@@ -123,13 +123,13 @@ def main():
     # 6: compartment
     list_of_combinations = [
         ['input', 'Reaction_reactome', 'equal_to_reactome_reaction', 'Reaction',
-         'HAS_INPUT_RiCH', '<-', '-' ],
+         'HAS_INPUT_RhiCH', '<-', '-' ],
         ['input', 'FailedReaction_reactome', 'equal_to_reactome_failedreaction', 'FailedReaction',
-         'HAS_INPUT_FiCH', '<-',  '-'],
+         'HAS_INPUT_FhiCH', '<-',  '-'],
         ['input', 'BlackBoxEvent_reactome', 'equal_to_reactome_blackBoxEvent', 'BlackBoxEvent',
-         'HAS_INPUT_BiCH', '<-',  '-'],
+         'HAS_INPUT_BhiCH', '<-',  '-'],
         ['output', 'Reaction_reactome', 'equal_to_reactome_reaction', 'Reaction',
-         'HAS_OUTPUT_RoCH', '<-', '-']
+         'HAS_OUTPUT_RhoCH', '<-', '-']
     ]
 
     directory = 'DrugEdges'

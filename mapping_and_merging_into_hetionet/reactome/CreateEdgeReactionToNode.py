@@ -101,9 +101,9 @@ def main():
     # 0: old relationship;           1: name of node in Reactome;        2: relationship equal to Hetionet-node
     # 3: name of node in Hetionet;   4: name of new relationship
     list_of_combinations = [
-        ['disease', 'Disease_reactome', 'equal_to_reactome_disease', 'Disease', 'LEADS_TO_DISEASE_RltdD'],
+        ['disease', 'Disease_reactome', 'equal_to_reactome_disease', 'Disease', 'LEADS_TO_RltD'],
         ['compartment', 'GO_CellularComponent_reactome', 'equal_to_reactome_gocellcomp', 'CellularComponent',
-         'IN_COMPARTMENT_RcCC'],
+         'IN_COMPARTMENT_RicCC'],
         ['precedingEvent', 'Pathway_reactome', 'equal_to_reactome_pathway', 'Pathway', 'PRECEDING_REACTION_RprPW'],
         ['precedingEvent', 'BlackBoxEvent_reactome', 'equal_to_reactome_blackBoxEvent', 'BlackBoxEvent',
          'PRECEDING_REACTION_RprB'],
@@ -115,12 +115,12 @@ def main():
         ['inferredTo', 'Reaction_reactome', 'equal_to_reactome_reaction', 'Reaction', 'HAS_EFFECT_ON_RheoR'],
         ['inferredTo', 'BlackBoxEvent_reactome', 'equal_to_reactome_blackBoxEvent', 'BlackBoxEvent',
          'HAS_EFFECT_ON_RheoB'],
-        ['normalReaction', 'Reaction_reactome', 'equal_to_reactome_reaction', 'Reaction', 'IS_NORMAL_REACTION_RnrR'],
+        ['normalReaction', 'Reaction_reactome', 'equal_to_reactome_reaction', 'Reaction', 'IS_NORMAL_REACTION_RinrR'],
         ['normalReaction', 'BlackBoxEvent_reactome', 'equal_to_reactome_blackBoxEvent', 'BlackBoxEvent',
-         'IS_NORMAL_REACTION_RnrB'],
+         'IS_NORMAL_REACTION_RinrB'],
         ['reverseReaction', 'Reaction_reactome', 'equal_to_reactome_reaction', 'Reaction', 'REVERSE_REACTION_RrrR'],
         ['goBiologicalProcess', 'GO_BiologicalProcess_reactome', 'equal_to_reactome_gobiolproc', 'BiologicalProcess',
-         'OCCURS_IN_GO_BIOLOGICAL_PROCESS_RoigbpBP']
+         'OCCURS_IN_RoiBP']
     ]
 
     directory = 'FailedReactionEdges'

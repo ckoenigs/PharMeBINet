@@ -142,9 +142,9 @@ def check_if_identifier_in_hetionet(identifier, label_go, namespace, node, xrefs
 
 # dictionary for relationship ends
 dict_relationship_ends = {
-    "biological_process": 'BPiBP',
-    "molecular_function": 'MFiMF',
-    "cellular_component": 'CCiCC'
+    "biological_process": 'BPiaBP',
+    "molecular_function": 'MFiaMF',
+    "cellular_component": 'CCiaCC'
 }
 
 '''
@@ -162,7 +162,7 @@ def get_is_a_relationships_and_add_to_tsv(namespace):
     tsv_file.writerow(['identifier_1', 'identifier_2'])
 
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/go/%s" As line FIELDTERMINATOR '\\t' 
-    Match (a1:%s{identifier:line.identifier_1}), (a2:%s{identifier:line.identifier_2}) Create (a1)-[:IS_A_%s{license:"%s", source:"Gene Ontology", unbiased:false, resource:["GO"],  url:"http://purl.obolibrary.org/obo/"+line.identifier_1}]->(a2);\n'''
+    Match (a1:%s{identifier:line.identifier_1}), (a2:%s{identifier:line.identifier_2}) Create (a1)-[:IS_A_%s{license:"%s", source:"Gene Ontology", unbiased:false, resource:["GO"], go:'yes', url:"http://purl.obolibrary.org/obo/"+line.identifier_1}]->(a2);\n'''
     query = query % (file_name, dict_go_to_hetionet_label[namespace], dict_go_to_hetionet_label[namespace],
                      dict_relationship_ends[namespace], license)
     cypher_file.write(query)

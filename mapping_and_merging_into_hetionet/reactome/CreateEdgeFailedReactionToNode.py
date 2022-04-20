@@ -110,8 +110,8 @@ def main():
         ['disease', 'Disease_reactome', 'equal_to_reactome_disease', 'Disease',
          'LEADS_TO_DISEASE_FltdD'],
         ['compartment', 'GO_CellularComponent_reactome', 'equal_to_reactome_gocellcomp', 'CellularComponent', 'IN_COMPARTMENT_FicCC'],
-        ['normalReaction', 'Reaction_reactome', 'equal_to_reactome_reaction', 'Reaction', 'IS_NORMAL_REACTION_FnrR'],
-        ['normalReaction', 'BlackBoxEvent_reactome', 'equal_to_reactome_blackBoxEvent', 'BlackBoxEvent', 'IS_NORMAL_REACTION_FnrB'],
+        ['normalReaction', 'Reaction_reactome', 'equal_to_reactome_reaction', 'Reaction', 'IS_NORMAL_REACTION_FinrR'],
+        ['normalReaction', 'BlackBoxEvent_reactome', 'equal_to_reactome_blackBoxEvent', 'BlackBoxEvent', 'IS_NORMAL_REACTION_FinrB'],
         ['precedingEvent', 'Reaction_reactome', 'equal_to_reactome_reaction', 'Reaction', 'PRECEDING_REACTION_FprR'],
         ['inferredTo', 'FailedReaction_reactome', 'equal_to_reactome_failedreaction', 'FailedReaction', 'HAS_EFFECT_ON_FheoF']
     ]
