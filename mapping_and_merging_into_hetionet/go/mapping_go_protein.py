@@ -121,7 +121,7 @@ Load all pharmacologic class of drugbank and map to the pc from my database and 
 
 
 def load_all_protein_form_go_and_map_and_write_to_file():
-    cypher_file = open('output/cypher_protein.cypher', 'w', encoding='utf-8')
+    cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
     tsv_writer, tsv_not_mapped=generate_files('Protein', cypher_file)
     tsv_writer_gene, tsv_not_mapped_gene=generate_files('Gene', cypher_file)
 

@@ -133,50 +133,16 @@ def write_rela_info_into_file(go_id, other_id, rela, go_label, other_label, rela
 dict_label_to_label_to_rela_type_pairs_to_rela_info = defaultdict(dict)
 
 
-def decide_for_write_into_seperate_or_not(dict_first, dict_new_rela_info, go_id, other_id, go_label, other_label,
-                                          rela_type, key):
+
+def check_for_difference_in_rela_information(dict_first, dict_new_rela_info, go_id, other_id):
     """
-    check if a specific property in in one or both property and decide if it is written seperated or not
-    :param dict_first: dictionary
-    :param dict_new_rela_info: dictionary
-    :param go_id: string
-    :param other_id: string
-    :param go_label: string
-    :param other_label: string
-    :param rela_type: string
-    :param key: string
-    :return: boolean
+
+    :param dict_first:
+    :param dict_new_rela_info:
+    :param go_id:
+    :param other_id:
+    :return:
     """
-    return_seperate = False
-
-    if key in dict_first and key in dict_new_rela_info:
-        print('-' in dict_new_rela_info[key] and '-' == dict_new_rela_info[key][-2], dict_new_rela_info[key])
-        if dict_first[key] != dict_new_rela_info[key]:
-            write_rela_info_into_file(go_id, other_id, dict_new_rela_info, go_label, other_label, rela_type)
-            return_seperate = True
-    elif key in dict_first:
-        write_rela_info_into_file(go_id, other_id, dict_new_rela_info, go_label, other_label, rela_type)
-        return_seperate = True
-    elif key in dict_new_rela_info:
-        print('-' in dict_new_rela_info[key] and '-' == dict_new_rela_info[key][-2], dict_new_rela_info[key])
-        write_rela_info_into_file(go_id, other_id, dict_new_rela_info, go_label, other_label, rela_type)
-        return_seperate = True
-    return return_seperate
-
-
-def check_for_difference_in_rela_information(dict_first, dict_new_rela_info, go_id, other_id, go_label, other_label,
-                                             rela_type):
-    # seperated_rela=decide_for_write_into_seperate_or_not(dict_first, dict_new_rela_info, go_id, other_id, go_label, other_label,
-    #                                       rela_type, 'gene_product_id')
-    # if seperated_rela:
-    #     print(go_id, other_id, rela_type, 'gene product')
-    #     return
-    # seperated_rela = decide_for_write_into_seperate_or_not(dict_first, dict_new_rela_info, go_id, other_id, go_label,
-    #                                                        other_label,
-    #                                                        rela_type, 'with_from')
-    # if seperated_rela:
-    #     print(go_id, other_id, rela_type, 'with_from')
-    #     return
 
     for key, value in dict_new_rela_info.items():
         if key in dict_first and value != dict_first[key]:
@@ -223,7 +189,7 @@ def get_all_relationship_pairs(go_label, other_label):
         if (go_id, other_id) in dict_label_to_label_to_rela_type_pairs_to_rela_info[go_label][other_label][rela_type]:
             check_for_difference_in_rela_information(
                 dict_label_to_label_to_rela_type_pairs_to_rela_info[go_label][other_label][rela_type][
-                    (go_id, other_id)], rela, go_id, other_id, go_label, other_label, rela_type)
+                    (go_id, other_id)], rela, go_id, other_id)
             counter_double += 1
             continue
         dict_label_to_label_to_rela_type_pairs_to_rela_info[go_label][other_label][rela_type][(go_id, other_id)] = rela
