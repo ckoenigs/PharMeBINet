@@ -34,7 +34,7 @@ echo "Current time: $now"
 cd bioGrid 
 echo bioGrid
 
-./script_biogrid.sh $path_neo4j $path_to_project > output.txt
+# ./script_biogrid.sh $path_neo4j $path_to_project > output.txt
 
 
 cd ..
@@ -45,7 +45,7 @@ echo "Current time: $now"
 cd smpdb 
 echo smpdb
 
-./script_integrat_smpdb.sh $path_neo4j $path_to_project > output.txt
+# ./script_integrat_smpdb.sh $path_neo4j $path_to_project > output.txt
 
 
 cd ..
@@ -56,7 +56,7 @@ echo "Current time: $now"
 cd DDinter 
 echo DDinter
 
-./script_integrated_ddinter.sh $path_neo4j $path_to_project > output.txt
+# ./script_integrated_ddinter.sh $path_neo4j $path_to_project > output.txt
 
 
 cd ..
@@ -67,7 +67,7 @@ echo "Current time: $now"
 cd hmdb 
 echo HMDB
 
-./script_integrate_hmdb.sh $path_neo4j $path_to_project > output.txt
+# ./script_integrate_hmdb.sh $path_neo4j $path_to_project > output.txt
 
 
 cd ..
@@ -90,7 +90,7 @@ echo "Current time: $now"
 cd  DisGeNET
 echo disgenet
 
-./script_integrated_disgenet.sh $path_neo4j $path_to_project > output.txt
+# ./script_integrated_disgenet.sh $path_neo4j $path_to_project > output.txt
 
 cd ..
 
@@ -99,7 +99,7 @@ echo "Current time: $now"
 cd  med_rt
 echo med-rt
 
-./script_med_rt_integration.sh $path_neo4j $path_to_project > output.txt
+# ./script_med_rt_integration.sh $path_neo4j $path_to_project > output.txt
 
 cd ..
 
@@ -158,7 +158,7 @@ echo "Current time: $now"
 cd  openFDA
 echo openFDA
 
-#./script_open_fda.sh $path_neo4j > output_openFDA.txt
+# ./script_open_fda.sh $path_neo4j # > output_openFDA.txt
 
 cd ..
 
@@ -169,6 +169,17 @@ cd aeolus
 echo aeolus
 
 ./script_aeolus.sh $path_neo4j $path_to_project > output_script.txt
+
+
+cd ..
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+cd RNAcentral
+echo RNACentral
+
+# ./script_rna_central.sh $path_neo4j $path_to_project > output_script.txt
 
 
 cd ..
@@ -229,7 +240,7 @@ echo "Current time: $now"
 cd  adrecs_target
 echo adrecs-target
 
-./script_adrecs_target.sh $path_neo4j $path_to_project > output_script.txt
+# ./script_adrecs_target.sh $path_neo4j $path_to_project > output_script.txt
 
 cd ..
 
@@ -261,7 +272,7 @@ echo "Current time: $now"
 cd  rnainter
 echo RNAinter
 
-./script_integrate_rna_inter.sh $path_neo4j $path_to_project > output.txt
+# ./script_integrate_rna_inter.sh $path_neo4j $path_to_project > output.txt
 
 cd ..
 
@@ -287,7 +298,7 @@ echo drugcentral
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-./integrate_drugcentral.sh $path_neo4j $name_of_import_tool > output/script_output.txt
+# ./integrate_drugcentral.sh $path_neo4j $name_of_import_tool > output/script_output.txt
 
 cd ..
 
