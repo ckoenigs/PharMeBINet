@@ -482,7 +482,7 @@ def integrate_aeolus_drugs_into_hetionet():
             resource = dict_all_drug[mapped_id].resource
             resource.append('AEOLUS')
             resource = list(set(resource))
-            resource = '|'.join(resource)
+            resource = '|'.join(resource.sort())
             csv_writer.writerow([drug_concept_id, mapped_id, mapped_ids_string, how_mapped, resource, xrefs_string])
 
     print('all aeolus drug which are map to drugbank, where some drugbank id are not existing:' + str(counter))

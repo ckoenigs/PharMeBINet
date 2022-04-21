@@ -34,10 +34,9 @@ Second, the SIDER drugs are mapped to chemicals.
 Then, the mapping information and the new nodes are integrated into the database with the cypher-shell.
 
 In the last program, the drug-SE edges are prepared for integration.
-               First, get all existing chemical-SE pairs from the database.
-               Next, get all chemical-SE pairs connected with the drug-SE from SIDER and write the information into a dictionary.
-               Then, the cypher file and the cypher queries for integrate new and update existing edges are generated.
-               Next, the TSV files are generated for the new and the updated edges.
+               First,  get all chemical-SE pairs connected with the drug-SE from SIDER and write the information into a dictionary.
+               Then, the cypher file and the cypher query for integrate new edges are generated.
+               Next, the TSV files are generated for the new edges.
                First, for all pairs, the lowest frequency is computed. Then go through all frequencies try t get a value and compute the average else take a word. Next, the upper frequency is computed. The same is done for the placebo frequencies. The pairs are written into the different TSV files deepening on they exist already in the database or not.
 
 Finally, the cypher-shell integrates the edge information into the database.
