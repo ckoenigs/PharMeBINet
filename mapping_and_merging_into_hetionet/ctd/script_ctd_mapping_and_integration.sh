@@ -110,7 +110,7 @@ sleep 180
 $path_neo4j/neo4j restart
 sleep 120
 
-# I decide against it because the connection commes from different species and this can not be checked.
+# I decide against it because the connection comes from different species and this can not be checked.
 # now=$(date +"%F %T")
 # echo "Current time: $now"
 # echo integrate gene-particitates-go
