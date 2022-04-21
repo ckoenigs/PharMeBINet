@@ -293,6 +293,7 @@ def integrate_ndf_rt_disease_into_hetionet():
             resource = dict_diseases_hetionet[mondo_id].resource
             resource.append('NDF-RT')
             resource = list(set(resource))
+            resource.sort()
             resource = "|".join(resource)
             csv_writer.writerow([code, mondo_id, mondo_strings, how_mapped, resource])
 
