@@ -251,7 +251,7 @@ def fill_the_rela_files(label_node):
     :param label_node: string
     :return:
     """
-    query = 'Match (n:VariantAnnotation)--(:%s)-[r]-(:PharmGKB_ClinicalAnnotation)--(b:ClinicalAnnotation) Create (n)<-[h:HAS_EVIDENCE_CAheVA{pharmgkb:"yes",source:"PharmGKB", resource:["PharmGKB"], license:"%s"}]-(b) Set h=r, h.pubMed_ids=[r.pmid] Remove h.pmid;\n'
+    query = 'Match (n:VariantAnnotation)--(:%s)-[r]-(:PharmGKB_ClinicalAnnotation)--(b:ClinicalAnnotation) Create (n)<-[h:HAS_EVIDENCE_CAheVA]-(b) Set h=r, h.pubMed_ids=[r.pmid],  h.pharmgkb="yes", h.source="PharmGKB", h.resource=["PharmGKB"], h.license="%s" Remove h.pmid;\n'
     query = query % (label_node, license)
     cypher_file.write(query)
     query_general = 'Match (n:%s)--(:%s)--(m:%s) Return Distinct n.id, m.identifier'
