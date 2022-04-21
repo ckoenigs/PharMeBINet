@@ -61,7 +61,7 @@ def search_for_id_and_write_into_file(gene_id, gene_node):
 
         # gather all xrefs information and add to dictionary
         pharmGKBIDs = gene_node['pharmGKBIDs'] if 'pharmGKBIDs' in gene_node else []
-        pharmGKBIDs = ['pharmGKB:' + id for id in pharmGKBIDs]
+        pharmGKBIDs = ['PharmGKB:' + id for id in pharmGKBIDs]
         bioGRIDIDs = gene_node['bioGRIDIDs'] if 'bioGRIDIDs' in gene_node else []
         bioGRIDIDs = ['bioGRID:' + id for id in bioGRIDIDs]
         # uniProtIDs = gene_node['uniProtIDs'] if 'uniProtIDs' in gene_node else []

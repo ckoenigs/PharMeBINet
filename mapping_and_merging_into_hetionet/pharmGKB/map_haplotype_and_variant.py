@@ -5,6 +5,10 @@ from collections import defaultdict
 sys.path.append("../..")
 import create_connection_to_databases
 
+
+sys.path.append("..")
+from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
+
 '''
 create connection to neo4j 
 '''
@@ -17,6 +21,9 @@ def create_connection_with_neo4j():
 
 # dictionary of all node ids to resource
 dict_node_to_resource = {}
+
+# dictionary of all node ids to xrefs
+dict_node_to_xrefs = {}
 
 # dictionary ndbSnp id to node id
 dict_dbSNP_to_id={}
@@ -50,6 +57,7 @@ def load_db_info_in():
 
     for identifier,  xrefs, resource, name, synonyms, in results:
         dict_node_to_resource[identifier] = resource if resource else []
+        dict_node_to_xrefs[identifier] = xrefs if xrefs else []
         if identifier.startswith('rs'):
             add_value_to_dictionary(dict_dbSNP_to_id, identifier, identifier)
         # if xrefs:
@@ -68,23 +76,27 @@ def load_db_info_in():
     print('length of chemical in db:' + str(len(dict_node_to_resource)))
 
 
-def add_information_to_file(drugbank_id, identifier, csv_writer, how_mapped, tuple_set, dict_to_resource):
+def add_information_to_file(variant_id, identifier, csv_writer, how_mapped, tuple_set, dict_to_resource):
     """
     add mapper to file if not already is added!
-    :param drugbank_id:
+    :param variant_id:
     :param identifier:
     :param csv_writer:
     :param how_mapped:
     :param tuple_set:
     :return:
     """
-    if (drugbank_id, identifier) in tuple_set:
+    if (variant_id, identifier) in tuple_set:
         return
-    tuple_set.add((drugbank_id, identifier))
-    resource = dict_to_resource[drugbank_id]
+    tuple_set.add((variant_id, identifier))
+    resource = dict_to_resource[variant_id]
     resource.append('PharmGKB')
     resource = "|".join(sorted(set(resource)))
-    csv_writer.writerow([drugbank_id, identifier, resource, how_mapped])
+    xrefs=dict_node_to_xrefs[variant_id]
+    if identifier.startswith('PA'):
+        xrefs.append('PharmGKB:'+identifier)
+    xrefs = go_through_xrefs_and_change_if_needed_source_name(xrefs,'Variant')
+    csv_writer.writerow([variant_id, identifier, resource, how_mapped, '|'.join(xrefs)])
 
 
 def load_pharmgkb_in(label, directory, mapped_label):
@@ -101,13 +113,13 @@ def load_pharmgkb_in(label, directory, mapped_label):
     file_name = directory+'/mapping_' + label.split('_')[1] + '.tsv'
     file = open(file_name, 'w', encoding='utf-8')
     csv_writer = csv.writer(file, delimiter='\t')
-    csv_writer.writerow(['identifier', 'pharmgkb_id', 'resource', 'how_mapped'])
+    csv_writer.writerow(['identifier', 'pharmgkb_id', 'resource', 'how_mapped','xrefs'])
 
     # tsv_file for new
     file_name_new = directory + '/new_' + label.split('_')[1] + '.tsv'
     file_new = open(file_name_new, 'w', encoding='utf-8')
     csv_writer_new = csv.writer(file_new, delimiter='\t')
-    csv_writer_new.writerow(['identifier', 'dbid', 'how_mapped'])
+    csv_writer_new.writerow(['identifier', 'dbid', 'how_mapped', 'xrefs'])
 
     # tsv file for not mapping
     not_mapped_file = open(directory+'/not_mapping_' + label.split('_')[1] + '.tsv', 'w', encoding='utf-8')
@@ -160,7 +172,10 @@ def load_pharmgkb_in(label, directory, mapped_label):
             counter_not_mapped += 1
             csv_writer_not.writerow([identifier, result['name'], result['types']])
             if name.startswith('rs') and name[2].isdigit():
-                csv_writer_new.writerow([identifier,name,  'new'])
+                xrefs=['dbSNP:'+name]
+                if identifier:
+                    xrefs.append('PharmGKB:'+identifier)
+                csv_writer_new.writerow([identifier,name,  'new', '|'.join(xrefs)])
 
     print('number of variant which mapped:', counter_map)
     print('number of mapped:', len(set_of_all_tuples) )
@@ -176,10 +191,10 @@ def generate_cypher_file(file_name, label, mapped_label, mapped=True):
     """
     cypher_file = open('output/cypher.cypher', 'a')
     if mapped:
-        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/pharmGKB/%s" As line  FIELDTERMINATOR '\\t'  MATCH (n:%s), (c:%s{identifier:line.identifier}) Where n.id=line.pharmgkb_id or n.name=line.pharmgkb_id  Set c.pharmgkb='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_%s_phamrgkb{how_mapped:line.how_mapped}]->(n); \n'''
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/pharmGKB/%s" As line  FIELDTERMINATOR '\\t'  MATCH (n:%s), (c:%s{identifier:line.identifier}) Where n.id=line.pharmgkb_id or n.name=line.pharmgkb_id  Set c.pharmgkb='yes', c.resource=split(line.resource,'|'), c.xrefs=split(line.xrefs,'|') Create (c)-[:equal_to_%s_phamrgkb{how_mapped:line.how_mapped}]->(n); \n'''
         query = query % (file_name, label,  mapped_label, label.split('_')[1].lower())
     else:
-        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/pharmGKB/%s" As line  FIELDTERMINATOR '\\t'  MATCH (n:%s) Where n.id=line.identifier or n.name=line.identifier   Create (c:%s :GeneVariant{identifier:line.dbid, name:n.name, synonyms:n.synonyms, location:n.location, pharmgkb:'yes', resource:["PharmGBK"], xrefs:["dbSNP:"+line.dbid] ,license:"%s" , source:"dbSNP from PharmGKB"})-[:equal_to_%s_phamrgkb{how_mapped:line.how_mapped}]->(n);\n '''
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/pharmGKB/%s" As line  FIELDTERMINATOR '\\t'  MATCH (n:%s) Where n.id=line.identifier or n.name=line.identifier   Create (c:%s :GeneVariant{identifier:line.dbid, name:n.name, synonyms:n.synonyms, location:n.location, pharmgkb:'yes', resource:["PharmGBK"], xrefs:split(line.xrefs,"|") ,license:"%s" , source:"dbSNP from PharmGKB"})-[:equal_to_%s_phamrgkb{how_mapped:line.how_mapped}]->(n);\n '''
         query = query % (file_name, label, mapped_label, license, label.split('_')[1].lower())
     cypher_file.write(query)
     cypher_file.close()

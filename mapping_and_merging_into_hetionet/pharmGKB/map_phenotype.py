@@ -21,17 +21,26 @@ def create_connection_with_neo4j():
 # dictionary of all disease ids to resource
 dict_disease_to_resource = {}
 
+# dictionary of all disease ids to xrefs
+dict_disease_to_xrefs = {}
+
 # dictionary disease name to disease id
 dict_disease_name_to_disease_id = {}
 
 # dictionary of all symptom ids to resource
 dict_symptom_to_resource = {}
 
+# dictionary of all symptom ids to xrefs
+dict_symptom_to_xrefs = {}
+
 # dictionary symptom name to symptom id
 dict_symptom_name_to_symptom_id = {}
 
 # dictionary of all se ids to resource
 dict_se_to_resource = {}
+
+# dictionary of all se ids to xrefs
+dict_se_to_xrefs = {}
 
 # dictionary se name to se id
 dict_se_name_to_se_id = {}
@@ -82,13 +91,14 @@ load in all compound from hetionet in a dictionary
 
 
 def load_db_nodes_in(label, dict_node_to_resource, dict_node_name_to_node_id, dict_xrefs_to_dict_xref_id_to_identifier,
-                     identifier_umls=False):
+                     dict_node_to_xrefs, identifier_umls=False):
     query = '''MATCH (n:%s) RETURN n.identifier, n.name ,n.synonyms, n.resource, n.xrefs'''
     query = query % (label)
     results = g.run(query)
 
     for identifier, name, synonyms, resource, xrefs, in results:
         dict_node_to_resource[identifier] = set(resource) if resource else set()
+        dict_node_to_xrefs[identifier] = set(xrefs) if xrefs else set()
 
         name = name.lower()
         add_entry_to_dictionary(dict_node_name_to_node_id, name, identifier)
@@ -130,7 +140,7 @@ dict_source_to_pair = {}
 
 
 def check_for_mapping(dict_source_to_ids, source, source_extra, dict_source_to_disease_ids, csv_writer, identifier,
-                      dictionary_node_to_resource):
+                      dictionary_node_to_resource, dict_node_to_xrefs, label):
     """
     go through all cui_ids of the different sources and check if the are in the dictionary to disease id. If so add
     them into tsv file.
@@ -151,10 +161,15 @@ def check_for_mapping(dict_source_to_ids, source, source_extra, dict_source_to_d
             for disease_id in dict_source_to_disease_ids[cui]:
                 if (disease_id, identifier) in dict_source_to_pair[source_extra]:
                     continue
+                print(disease_id)
                 resource = dictionary_node_to_resource[disease_id]
+                print(resource)
                 resource.add("PharmGKB")
                 resource = "|".join(sorted(resource))
-                csv_writer.writerow([disease_id, identifier, resource, source_extra.lower()])
+                xrefs=dict_node_to_xrefs[disease_id]
+                xrefs.add('PharmGKB:'+identifier)
+                xrefs= go_through_xrefs_and_change_if_needed_source_name(xrefs, label)
+                csv_writer.writerow([disease_id, identifier, resource, source_extra.lower(), '|'.join(xrefs)])
                 dict_source_to_pair[source_extra].add((disease_id, identifier))
     return found_mapping
 
@@ -192,7 +207,7 @@ def load_pharmgkb_phenotypes_in():
         if 'name' in dict_names:
             found_a_mapping = check_for_mapping(dict_names, 'name', 'name_disease', dict_disease_name_to_disease_id,
                                                 dict_csv_map['Disease'],
-                                                identifier, dict_disease_to_resource)
+                                                identifier, dict_disease_to_resource, dict_disease_to_xrefs, 'Disease')
 
         if found_a_mapping:
             counter_map += 1
@@ -201,7 +216,7 @@ def load_pharmgkb_phenotypes_in():
         if 'SnoMedCT' in dict_source_to_ids:
             found_a_mapping = check_for_mapping(dict_source_to_ids, 'SnoMedCT', 'SnoMedCT_disease',
                                                 dict_xrefs_to_dict_xref_to_disease['snomed'],
-                                                dict_csv_map['Disease'], identifier, dict_disease_to_resource)
+                                                dict_csv_map['Disease'], identifier, dict_disease_to_resource, dict_disease_to_xrefs, 'Disease')
 
         if found_a_mapping:
             counter_map += 1
@@ -210,7 +225,7 @@ def load_pharmgkb_phenotypes_in():
         if 'UMLS' in dict_source_to_ids:
             found_a_mapping = check_for_mapping(dict_source_to_ids, 'UMLS', 'UMLS_disease',
                                                 dict_xrefs_to_dict_xref_to_disease['umls'],
-                                                dict_csv_map['Disease'], identifier, dict_disease_to_resource)
+                                                dict_csv_map['Disease'], identifier, dict_disease_to_resource, dict_disease_to_xrefs, 'Disease')
 
         if found_a_mapping:
             counter_map += 1
@@ -219,7 +234,7 @@ def load_pharmgkb_phenotypes_in():
         if 'name' in dict_names:
             found_a_mapping = check_for_mapping(dict_names, 'name', 'name_symptom', dict_symptom_name_to_symptom_id,
                                                 dict_csv_map['Symptom'],
-                                                identifier, dict_symptom_to_resource)
+                                                identifier, dict_symptom_to_resource, dict_symptom_to_xrefs, 'Symptom')
 
         if found_a_mapping:
             counter_map += 1
@@ -228,7 +243,7 @@ def load_pharmgkb_phenotypes_in():
         # if 'SnoMedCT' in dict_source_to_ids:
         #     found_a_mapping = check_for_mapping(dict_source_to_ids, 'SnoMedCT', 'Snomed_symptom',
         #                                         dict_xrefs_to_dict_xref_to_symptom['snomed'],
-        #                                         dict_csv_map['Symptom'], identifier, dict_symptom_to_resource)
+        #                                         dict_csv_map['Symptom'], identifier, dict_symptom_to_resource,dict_symptom_to_xrefs )
         #
         # if found_a_mapping:
         #     counter_map += 1
@@ -237,18 +252,17 @@ def load_pharmgkb_phenotypes_in():
         if 'UMLS' in dict_source_to_ids:
             found_a_mapping = check_for_mapping(dict_source_to_ids, 'UMLS', 'UMLS_symptom',
                                                 dict_xrefs_to_dict_xref_to_symptom['umls'],
-                                                dict_csv_map['Symptom'], identifier, dict_symptom_to_resource)
+                                                dict_csv_map['Symptom'], identifier, dict_symptom_to_resource, dict_symptom_to_xrefs, 'Symptom')
 
         if found_a_mapping:
             counter_map += 1
             continue
 
-
         if 'name' in dict_names:
             found_a_mapping = check_for_mapping(dict_names, 'name', 'name_se',
                                                 dict_se_name_to_se_id, dict_csv_map['SideEffect'],
                                                 identifier,
-                                                dict_se_to_resource)
+                                                dict_se_to_resource, dict_se_to_xrefs, 'SideEffect')
 
         if found_a_mapping:
             counter_map += 1
@@ -257,7 +271,7 @@ def load_pharmgkb_phenotypes_in():
         if 'UMLS' in dict_source_to_ids:
             found_a_mapping = check_for_mapping(dict_source_to_ids, 'UMLS', 'UMLS_se',
                                                 dict_xrefs_to_dict_xref_to_se['umls'],
-                                                dict_csv_map['SideEffect'], identifier, dict_se_to_resource)
+                                                dict_csv_map['SideEffect'], identifier, dict_se_to_resource, dict_se_to_xrefs, 'SideEffect')
 
         if found_a_mapping:
             counter_map += 1
@@ -270,7 +284,7 @@ def load_pharmgkb_phenotypes_in():
         #     found_a_mapping = check_for_mapping(dict_names, 'name', 'alternate_names_and_name_se',
         #                                        dict_se_name_to_se_id, dict_csv_map['SideEffect'],
         #                                        identifier,
-        #                                        dict_se_to_resource)
+        #                                        dict_se_to_resource, dict_se_to_xrefs)
 
         if found_a_mapping:
             counter_map += 1
@@ -293,9 +307,10 @@ def load_pharmgkb_phenotypes_in():
 
         # I do not want to add a node which is named adverse events!
         if identifier != 'PA166151827':
+            external_identifiers.append('pharmGKB:' + identifier)
             xrefs = '|'.join(
                 go_through_xrefs_and_change_if_needed_source_name([x.rsplit('(', 1)[0] for x in external_identifiers],
-                                                                  'phenotype'))
+                                                                  'Phenotype'))
             csv_new.writerow([identifier, xrefs])
 
         print(name)
@@ -319,9 +334,9 @@ def generate_cypher_file():
         file_name = 'disease/mapping_' + label + '.tsv'
         file = open(file_name, 'w', encoding='utf-8')
         csv_writer = csv.writer(file, delimiter='\t')
-        csv_writer.writerow(['disease_id', 'pharmgkb_id', 'resource', 'how_mapped'])
+        csv_writer.writerow(['disease_id', 'pharmgkb_id', 'resource', 'how_mapped', 'xrefs'])
         dict_label_to_tsv_mapping[label] = csv_writer
-        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/pharmGKB/%s" As line  FIELDTERMINATOR '\\t'  MATCH (n:PharmGKB_Phenotype{id:line.pharmgkb_id}), (c:%s{identifier:line.disease_id})   Set c.pharmgkb='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_disease_pharmgkb{how_mapped:line.how_mapped}]->(n); \n'''
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/pharmGKB/%s" As line  FIELDTERMINATOR '\\t'  MATCH (n:PharmGKB_Phenotype{id:line.pharmgkb_id}), (c:%s{identifier:line.disease_id})   Set c.pharmgkb='yes', c.xrefs=split(line.xrefs,"|"),  c.resource=split(line.resource,'|') Create (c)-[:equal_to_disease_pharmgkb{how_mapped:line.how_mapped}]->(n); \n'''
 
         query = query % (file_name, label)
         cypher_file.write(query)
@@ -353,13 +368,13 @@ def main():
     print('Load in disease and symptom from hetionet')
 
     load_db_nodes_in('Disease', dict_disease_to_resource, dict_disease_name_to_disease_id,
-                     dict_xrefs_to_dict_xref_to_disease)
+                     dict_xrefs_to_dict_xref_to_disease, dict_disease_to_xrefs)
 
     load_db_nodes_in('Symptom', dict_symptom_to_resource, dict_symptom_name_to_symptom_id,
-                     dict_xrefs_to_dict_xref_to_symptom)
+                     dict_xrefs_to_dict_xref_to_symptom, dict_symptom_to_xrefs)
 
     load_db_nodes_in('SideEffect', dict_se_to_resource, dict_se_name_to_se_id,
-                     dict_xrefs_to_dict_xref_to_se, identifier_umls=True)
+                     dict_xrefs_to_dict_xref_to_se, dict_se_to_xrefs, identifier_umls=True)
 
     print(
         '###########################################################################################################################')
