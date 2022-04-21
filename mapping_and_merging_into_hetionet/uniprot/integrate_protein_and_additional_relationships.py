@@ -23,45 +23,6 @@ def create_connection_with_neo4j():
     g = create_connection_to_databases.database_connection_neo4j()
 
 
-# dictionary of biological process key is the id and value the name
-dict_bp_to_resource = {}
-# dictionary of cellular component key is the id and value the name
-dict_cc_to_resource = {}
-# dictionary of molecular function key is the id and value the name
-dict_mf_to_resource = {}
-
-# dictionary of biological process key is the alt id and value the id
-dict_alt_bp_to_id = {}
-# dictionary of cellular component key is the alt id and value the id
-dict_alt_cc_to_id = {}
-# dictionary of molecular function key is the alt id and value the id
-dict_alt_mf_to_id = {}
-
-
-# function integrate identifier and name into the right dictionary
-def integrate_information_into_dict(entity_name, dict_go, dict_alt_go_to_go):
-    query = '''MATCH (n:''' + entity_name + ''') RETURN n.identifier, n.name, n.alternative_ids, n.resource'''
-    results = g.run(query)
-
-    counter_entities = 0
-    for identifier, name, alt_go_ids, resource, in results:
-        dict_go[identifier] = set(resource)
-        counter_entities += 1
-        if alt_go_ids:
-            for alt_go_id in alt_go_ids:
-                dict_alt_go_to_go[alt_go_id] = identifier
-
-    print('It exists ' + str(counter_entities) + ' ' + entity_name)
-    print(len(dict_go))
-
-
-# load all information of biological process, cellular component and molecular function and put this information into a dictionary
-def load_bp_cc_mf_information():
-    integrate_information_into_dict('BiologicalProcess', dict_bp_to_resource, dict_alt_bp_to_id)
-    integrate_information_into_dict('CellularComponent', dict_cc_to_resource, dict_alt_cc_to_id)
-    integrate_information_into_dict('MolecularFunction', dict_mf_to_resource, dict_alt_mf_to_id)
-
-
 # dictionary from uniprot to gene id from hetionet information
 dict_uniprot_to_gene_id = {}
 
@@ -166,7 +127,7 @@ def get_all_genes():
 file_uniprots_gene_rela = open('uniprot_gene/db_uniprot_to_gene_rela.tsv', 'w')
 writer_rela = csv.writer(file_uniprots_gene_rela, delimiter='\t')
 writer_rela.writerow(
-    ['uniprot_id', 'gene_id', 'alternative_ids', 'name_mapping', 'uniprot', 'resource', 'resource_node'])
+    ['uniprot_id', 'gene_id', 'alternative_ids', 'name_mapping',   'resource_node'])
 
 # list of all uniprot ids which where wrong mapped and already found in the program to avoid duplication in the file
 list_already_included = []
@@ -183,15 +144,14 @@ if not integrate them into the tsv
 '''
 
 
-def check_and_add_rela_pair(identifier, uniprot_id, gene_ids, secondary_uniprot_ids, name_mapping,
-                            uniprot_mapping, map_resource):
+def check_and_add_rela_pair(identifier, uniprot_id, gene_ids, secondary_uniprot_ids, name_mapping):
     for gene_id in gene_ids:
         if gene_id not in dict_gene_id_to_resource:
             print('gene problem', gene_id)
             continue
         if not (identifier, gene_id) in list_already_integrated_pairs_gene_protein:
             writer_rela.writerow(
-                [identifier, gene_id, secondary_uniprot_ids, name_mapping, uniprot_mapping, map_resource,
+                [identifier, gene_id, secondary_uniprot_ids, name_mapping,
                  add_resource(dict_gene_id_to_resource[gene_id])])
             list_already_integrated_pairs_gene_protein.append(
                 (identifier, gene_id))
@@ -227,8 +187,7 @@ def check_and_write_uniprot_ids(uniprot_id, name, identifier, secondary_uniprot_
         # check out if the mapping gene ids are good by checking the name
         # but it seems that even if the name are not the same they map correct
         if gene_ids:
-            check_and_add_rela_pair(identifier, uniprot_id, gene_ids, secondary_uniprot_ids,
-                                    '', 'yes', 'UniProt')
+            check_and_add_rela_pair(identifier, uniprot_id, gene_ids, secondary_uniprot_ids, '')
             return True, gene_ids
             # if name.lower() in dict_gene_name_to_id:
             #     list_gene_id_from_name = [str(x) for x in dict_gene_name_to_id[name.lower()]]
@@ -254,8 +213,7 @@ def check_and_write_uniprot_ids(uniprot_id, name, identifier, secondary_uniprot_
                 text = 'synonyms'
             if len(gene_ids_from_symbol) > 0:
                 check_and_add_rela_pair(identifier, uniprot_id, gene_ids_from_symbol,
-                                        secondary_uniprot_ids,
-                                        'yes', '', 'PrimaryGeneSymbol ' + text)
+                                        secondary_uniprot_ids, 'yes')
                 return True, genes
         elif gene_names:
             gene_ids_from_symbol = []
@@ -271,8 +229,7 @@ def check_and_write_uniprot_ids(uniprot_id, name, identifier, secondary_uniprot_
                     text = 'synonyms'
             if len(gene_ids_from_symbol) > 0:
                 check_and_add_rela_pair(identifier, uniprot_id, gene_ids_from_symbol,
-                                        secondary_uniprot_ids,
-                                        'yes', '', 'GeneSymbol ' + text)
+                                        secondary_uniprot_ids, 'yes')
                 return True, genes
 
         # check if mapping is possible with gene symbol
@@ -292,7 +249,7 @@ def check_and_write_uniprot_ids(uniprot_id, name, identifier, secondary_uniprot_
         # the multiple mapping with gene symbol are not the best only 4 of 14 this make sense but for the other it would be manual mapping
         if len(list_of_possible_mapped_gene_ids) == 1:
             check_and_add_rela_pair(identifier, uniprot_id, list_of_possible_mapped_gene_ids,
-                                    secondary_uniprot_ids, 'yes', '', 'GeneSymbolMapping')
+                                    secondary_uniprot_ids, 'yes')
 
             # print(identifier)
             # print(list_of_possible_mapped_gene_ids)
@@ -302,8 +259,7 @@ def check_and_write_uniprot_ids(uniprot_id, name, identifier, secondary_uniprot_
         else:
             if name.lower() in dict_gene_name_to_id:
                 check_and_add_rela_pair(identifier, uniprot_id, dict_gene_name_to_id[name.lower()],
-                                        secondary_uniprot_ids,
-                                        'yes', '', 'NameMapping')
+                                        secondary_uniprot_ids, 'yes')
 
                 genes = dict_gene_name_to_id[name.lower()]
                 return True, genes
@@ -368,16 +324,9 @@ def write_cypher_file():
     #              Set g.uniProtIDs=filterdList;\n '''
     # file_cypher.write(query)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_gene/db_uniprot_to_gene_rela.tsv" As line FIELDTERMINATOR "\\t" MATCH (n:Protein{identifier:line.uniprot_id}), (g:Gene{identifier:line.gene_id}) Set g.resource=split(line.resource_node,'|'), g.uniprot='yes' Create (g)-[:PRODUCES_GpP{name_mapping:line.name_mapping, uniprot:line.uniprot,resource:split(line.resource,'|'),license:'CC BY 4.0', url:'https://www.uniprot.org/uniprot/'+line.uniprot_id, source:"UniProt"}]->(n);\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_gene/db_uniprot_to_gene_rela.tsv" As line FIELDTERMINATOR "\\t" MATCH (n:Protein{identifier:line.uniprot_id}), (g:Gene{identifier:line.gene_id}) Set g.resource=split(line.resource_node,'|'), g.uniprot='yes' Create (g)-[:PRODUCES_GpP{name_mapping:line.name_mapping, uniprot:"yes" ,resource:['UniProt'],license:'CC BY 4.0', url:'https://www.uniprot.org/uniprot/'+line.uniprot_id, source:"UniProt"}]->(n);\n'''
     file_cypher.write(query)
 
-    # # the queries to integrate rela to bc, cc and mf
-    # query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_go/db_uniprots_to_bc.tsv" As line FIELDTERMINATOR "\\t" MATCH (g:Protein{identifier:line.uniprot_ids}),(b:BiologicalProcess{identifier:line.go}) Set b.resource=split(line.resource,'|'), b.uniprot='yes' Create (g)-[:PARTICIPATES_PpBP{resource:['UniProt'],source:'UniProt', uniprot:'yes', license:'CC BY 4.0', url:'https://www.uniprot.org/uniprot/'+line.uniprot_ids}]->(b);\n'''
-    # file_cypher.write(query)
-    # query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_go/db_uniprots_to_cc.tsv" As line FIELDTERMINATOR "\\t" MATCH (g:Protein{identifier:line.uniprot_ids}),(b:CellularComponent{identifier:line.go}) Set b.resource=split(line.resource,'|'), b.uniprot='yes' Create (g)-[:PARTICIPATES_PpCC{resource:['UniProt'],source:'UniProt', uniprot:'yes', license:'CC BY 4.0', url:'https://www.uniprot.org/uniprot/'+line.uniprot_ids}]->(b);\n'''
-    # file_cypher.write(query)
-    # query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/uniprot_go/db_uniprots_to_mf.tsv" As line FIELDTERMINATOR "\\t" MATCH (g:Protein{identifier:line.uniprot_ids}),(b:MolecularFunction{identifier:line.go}) Set b.resource=split(line.resource,'|'), b.uniprot='yes' Create (g)-[:PARTICIPATES_PpMF{resource:['UniProt'],source:'UniProt', uniprot:'yes', license:'CC BY 4.0', url:'https://www.uniprot.org/uniprot/'+line.uniprot_ids}]->(b);\n'''
-    # file_cypher.write(query)
 
 
 def add_resource(set_resource):
@@ -412,21 +361,6 @@ def get_gather_protein_info_and_generate_relas():
     file_uniprots_genes = open('uniprot_gene/db_uniprots_to_genes_multi_map.tsv', 'w')
     writer_uniprots_genes_multi_mapps = csv.writer(file_uniprots_genes,delimiter='\t')
     writer_uniprots_genes_multi_mapps.writerow(['uniprot_ids', 'gene_id'])
-
-    # generate a file with all uniprots to bc
-    file_uniprots_bc = open('uniprot_go/db_uniprots_to_bc.tsv', 'w')
-    writer_uniprots_bc = csv.writer(file_uniprots_bc, delimiter='\t')
-    writer_uniprots_bc.writerow(['uniprot_ids', 'go', 'resource'])
-
-    # generate a file with all uniprots to cc
-    file_uniprots_cc = open('uniprot_go/db_uniprots_to_cc.tsv', 'w')
-    writer_uniprots_cc = csv.writer(file_uniprots_cc,delimiter='\t')
-    writer_uniprots_cc.writerow(['uniprot_ids', 'go', 'resource'])
-
-    # generate a file with all uniprots to mf
-    file_uniprots_mf = open('uniprot_go/db_uniprots_to_mf.tsv', 'w')
-    writer_uniprots_mf = csv.writer(file_uniprots_mf,delimiter='\t')
-    writer_uniprots_mf.writerow(['uniprot_ids', 'go', 'resource'])
 
     # query to get all Protein information {identifier:'P0DMV0'} {identifier:'Q05066'} {identifier:'P0DPK4'} {identifier:'E5RIL1'} {identifier:'P01009'}
     query = '''MATCH (n:Protein_Uniprot) RETURN n '''
@@ -499,64 +433,11 @@ def get_gather_protein_info_and_generate_relas():
                 set_list_mapped_genes = ';'.join(set_list_mapped_genes)
                 writer_uniprots_genes_multi_mapps.writerow([overlap_uniprot_ids, set_list_mapped_genes])
 
-        # to find also relationships to biological processes, cellular component and moleculare functions
-        if 'go_classifiers' in node:
-            for go_id in node['go_classifiers']:
-                source_id = go_id.split(':', 1)
-                if source_id[0] == 'GO':
-                    if source_id[1] in dict_bp_to_resource:
-                        counter_gos_bc += 1
-                        if (identifier, source_id[1]) in dict_go_label_to_pairs['bp']:
-                            continue
-                        dict_go_label_to_pairs['bp'].add((identifier, source_id[1]))
-                        writer_uniprots_bc.writerow(
-                            [identifier, source_id[1], add_resource(dict_bp_to_resource[source_id[1]])])
-                    elif source_id[1] in dict_cc_to_resource:
-                        counter_gos_cc += 1
-                        if (identifier, source_id[1]) in dict_go_label_to_pairs['cc']:
-                            continue
-                        dict_go_label_to_pairs['cc'].add((identifier, source_id[1]))
-                        writer_uniprots_cc.writerow(
-                            [identifier, source_id[1], add_resource(dict_cc_to_resource[source_id[1]])])
-                    elif source_id[1] in dict_mf_to_resource:
-                        counter_gos_mf += 1
-                        if (identifier, source_id[1]) in dict_go_label_to_pairs['mf']:
-                            continue
-                        dict_go_label_to_pairs['mf'].add((identifier, source_id[1]))
-                        writer_uniprots_mf.writerow(
-                            [identifier, source_id[1], add_resource(dict_mf_to_resource[source_id[1]])])
-                    elif source_id[1] in dict_alt_bp_to_id:
-                        counter_gos_bc += 1
-                        if (identifier, dict_alt_bp_to_id[source_id[1]]) in dict_go_label_to_pairs['bp']:
-                            continue
-                        dict_go_label_to_pairs['bp'].add((identifier, dict_alt_bp_to_id[source_id[1]]))
-                        writer_uniprots_bc.writerow([identifier, dict_alt_bp_to_id[source_id[1]], add_resource(
-                            dict_bp_to_resource[dict_alt_bp_to_id[source_id[1]]])])
-                    elif source_id[1] in dict_alt_cc_to_id:
-                        counter_gos_cc += 1
-                        if (identifier, dict_alt_cc_to_id[source_id[1]]) in dict_go_label_to_pairs['cc']:
-                            continue
-                        dict_go_label_to_pairs['cc'].add((identifier, dict_alt_cc_to_id[source_id[1]]))
-                        writer_uniprots_cc.writerow([identifier, dict_alt_cc_to_id[source_id[1]], add_resource(
-                            dict_cc_to_resource[dict_alt_cc_to_id[source_id[1]]])])
-                    elif source_id[1] in dict_alt_mf_to_id:
-                        counter_gos_mf += 1
-                        if (identifier, dict_alt_mf_to_id[source_id[1]]) in dict_go_label_to_pairs['mf']:
-                            continue
-                        dict_go_label_to_pairs['mf'].add((identifier, dict_alt_mf_to_id[source_id[1]]))
-                        writer_uniprots_mf.writerow([identifier, dict_alt_mf_to_id[source_id[1]], add_resource(
-                            dict_mf_to_resource[dict_alt_mf_to_id[source_id[1]]])])
-
-                    else:
-                        print('GO not found:' + source_id[1])
         new_xrefs = '|'.join(go_through_xrefs_and_change_if_needed_source_name(xrefs, 'Protein'))
         writer_uniprots_ids.writerow([identifier, new_xrefs])
 
     print('number of existing gene protein rela:' + str(counter_existing_gene_protein_rela))
     print('number of all proteins:' + str(counter_all_proteins))
-    print('rela to one of the bcs:' + str(counter_gos_bc))
-    print('rela to one of the ccs:' + str(counter_gos_cc))
-    print('rela to one of the mfs:' + str(counter_gos_mf))
 
 
 # path to directory
@@ -584,13 +465,6 @@ def main():
 
     get_all_genes()
 
-    print(
-        '#################################################################################################################################################################')
-
-    print(datetime.datetime.now())
-    print('gather all information of the hetionet Bp,CC and MF')
-
-    load_bp_cc_mf_information()
 
     print(
         '#################################################################################################################################################################')
