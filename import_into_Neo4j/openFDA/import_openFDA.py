@@ -50,7 +50,12 @@ class downloader():
     def make_file(self, files, directories, entry, directory_name):
         name = self.trim(entry["display_name"])
         # Prüft, ob die Datei bereits gedownloadet ist. Sonst wird sie gedownloaded.
-        if not (str(Path(directories[directory_name]).name) + "_" + name + ".json.zip").replace("__", "_") in files:
+        n = (str(Path(directories[directory_name]).name) + "_" + name + ".json.zip").replace("__", "_")
+        z = True
+        for f in files:
+            if f.endswith(".zip") or f.endswith(".json"):
+                z = False
+        if n not in files and z:
             r = requests.get(entry["file"], allow_redirects=True)
             open((directories[directory_name] +
                   "/" +
@@ -229,12 +234,8 @@ class reader:
         # Es wird in über die json-Dateien geloopt, in der Reihenfolge, wie sie in jsons.txt stehen
         # Dabei werden jsons aus vorherigen Programmaufrufen zuerst verwendet, da diese dann nicht erneut
         # in die tsv-Dateien geschrieben werden
-        counter=0
         for f in jsons_new:
             self.read(directory, f)
-            counter+=1
-            if counter==50:
-                break
         # Die tsv-Dateien mit den einzigartigen Einträgen und die id1_id2-tsv-Datei werden erstellt
         # nachdem alle anderen tsv-Dateien erzeugt wurden
         self.former.make_key_files(directory)
@@ -418,12 +419,34 @@ class former:
         fields = []
         for dictionary in dicts["results"]:
             entries[len(entries)-1]["is_id"][0] = entries[len(entries)-1]["is_id"][0] + 1
+            if "DrugAdverseEvents" in directory:
+                a = False
+                try:
+                    for d in dictionary["patient"]["reaction"]:
+                        if d["reactionmeddrapt"] == "No adverse event":
+                            a = True
+                    if len(dictionary["patient"]["drug"]) > 1 and not a:
+                        a = True
+                except BaseException:
+                    a = True
+                if a:
+                    entries[len(entries)-1]["id"][0] = entries[len(entries)-1]["id"][0] + 1
             if entries[len(entries)-1]["is_id"][0] < entries[len(entries)-1]["id"][0]:
                 continue
             self.changed = True
             identifier = entries[len(entries)-1]["id"][0]
             head_dict = dictionary
             for entry in entries:
+                write = True
+                if "DrugAdverseEvents" in directory:
+                    try:
+                        for d in dictionary["patient"]["reaction"]:
+                            if d["reactionmeddrapt"] == "No adverse event":
+                                write = False
+                        if len(dictionary["patient"]["drug"]) > 1:
+                            write = False
+                    except BaseException:
+                        write = False
                 f = open(directory + entry["tsv"], 'a', encoding="utf-8")
                 csv_writer = csv.writer(f, delimiter='\t', lineterminator='\n', quoting=csv.QUOTE_NONE, escapechar='', quotechar='')
                 try:
@@ -458,12 +481,12 @@ class former:
                             fields.append("\""+str(identifier)+"\"")
                             if len(d) < 2000000:
                                 fields.append("\""+self.trim(str(d))+"\"")
-    
                             else:
                                 fields.append("")
                             for i in range(len(fields)):
                                 fields[i] = fields[i].replace("\"\"", "").replace("\"[]\"", "").replace("\"{}\"", "").replace("\t", " ")
-                            csv_writer.writerow(fields)
+                            if write:
+                                csv_writer.writerow(fields)
                             fields = []
                     elif "is_list" in entry:
                         for d in head_dict:
@@ -482,12 +505,12 @@ class former:
                                     else:
                                         d[key] = str(d[key]).replace("|", "")
                                     fields.append("\""+self.trim(str(d[key]))+"\"")
-    
                                 else:
                                     fields.append("")
                             for i in range(len(fields)):
                                 fields[i] = fields[i].replace("\"\"", "").replace("\"[]\"", "").replace("\"{}\"", "").replace("\t", " ")
-                            csv_writer.writerow(fields)
+                            if write:
+                                csv_writer.writerow(fields)
                             fields = []
                     elif "is_head" in entry:
                         fields.append("\""+str(identifier)+"\"")
@@ -509,7 +532,8 @@ class former:
                                 fields.append("")
                         for i in range(len(fields)):
                             fields[i] = fields[i].replace("\"\"", "").replace("\"[]\"", "").replace("\"{}\"", "").replace("\t", " ")
-                        csv_writer.writerow(fields)
+                        if write:
+                            csv_writer.writerow(fields)
                 except BaseException:
                     pass
                 f.close()
@@ -542,7 +566,8 @@ class former:
             for line in csv_reader:
                 line = line[1:]
                 for i in range(len(line)):
-                    line[i] = "\""+line[i]+"\""
+                    if line[i] != "":
+                        line[i] = "\""+line[i]+"\""
                 line = "\t".join(line)
                 reactions.append(line)
             f.close()
@@ -561,13 +586,14 @@ class former:
             # über ids matched
             f_id = open(directory+'/'+ids_tsv+'.tsv', 'r', encoding="utf-8")
             header = f_id.readline()
-            header = ["\"id\"","\"id2\""]
+            header = ["\"id\"", "\"id2\""]
             csv_reader = csv.reader(f_id, delimiter="\t")
             lines = []
             for line in csv_reader:
                 l = line[1:]
                 for i in range(len(l)):
-                    l[i] = "\""+l[i]+"\""
+                    if l[i] != "":
+                        l[i] = "\""+l[i]+"\""
                 l = "\t".join(l)
                 if l != "":
                     lines.append([line[0], l])
@@ -606,12 +632,12 @@ class former:
         header = f1.readline()
         csv_reader = csv.reader(f1, delimiter="\t")
         csv_writer = csv.writer(f2, delimiter='\t', lineterminator='\n', quoting=csv.QUOTE_NONE, escapechar='', quotechar='')
-        header = ["\"id\"","\"id2\""]
+        header = ["\"id\"", "\"id2\""]
         csv_writer.writerow(header)
         identifier = 1
         for line in csv_reader:
             line = "\""+line[0]+"\""
-            csv_writer.writerow([line,"\""+str(identifier)+"\""])
+            csv_writer.writerow([line, "\""+str(identifier)+"\""])
             identifier += 1
         f1.close()
         f2.close()
@@ -641,6 +667,24 @@ class former:
         if name not in self.tsv_header:
             self.tsv_header[name] = ["id"] + keys
 
+    """ Erstellt eine Datei über die zwei Knoten in neo4j gematcht werden. """
+    def make_match_file(self, directory, category, name):
+        f1 = open(directory+'/'+category+".tsv", 'r', encoding="utf-8")
+        f2 = open(directory+'/'+name+".tsv", 'w', encoding="utf-8")
+        header = f1.readline()
+        csv_reader = csv.reader(f1, delimiter="\t")
+        csv_writer = csv.writer(f2, delimiter='\t', lineterminator='\n', quoting=csv.QUOTE_NONE, escapechar='', quotechar='')
+        header = ["\"id\"", "\"id2\""]
+        csv_writer.writerow(header)
+        for line in csv_reader:
+            csv_writer.writerow(["\""+line[0]+"\""]+["\""+line[0]+"\""])
+        f1.close()
+        f2.close()
+        if name not in self.tsv_path:
+            self.tsv_path[name] = directory + '/' + name + '.tsv'
+        if name not in self.tsv_header:
+            self.tsv_header[name] = ["id1", "id2"]
+
     """ Spezielle Funktion zu Erstellen der DrugAdverseEvent_drug_openfda.tsv.
         directory: Das Verzeichnis für DrugAdverseEvents.
         openfda: Die openfda_ids-Datei.
@@ -656,7 +700,8 @@ class former:
         for line in csv_reader:
             l = line[1:]
             for i in range(len(l)):
-                l[i] = "\""+l[i]+"\""
+                if l[i] != "":
+                    l[i] = "\""+l[i]+"\""
             l = "\t".join(l)
             if l not in fda_dict:
                 fda_dict[l] = count_unique
@@ -679,7 +724,7 @@ class former:
             drugs.append("\""+line[0]+"\"")
         f = open(directory+'/'+id1_id2+".tsv", 'w', encoding="utf-8")
         csv_writer = csv.writer(f, delimiter='\t', lineterminator='\n', quoting=csv.QUOTE_NONE, escapechar='', quotechar='')
-        csv_writer.writerow(["\"id\"","\"id2\""])
+        csv_writer.writerow(["\"id\"", "\"id2\""])
         j = 0
         count = 0
         for entry in drugs:
@@ -706,6 +751,7 @@ class former:
             self.make_unique_files(directory, "CAERSReport_product_ids", "CAERSReport_product", "CAERSReport_product_id1_id2", self.caers_product_keys)
 
         if("DrugAdverseEvents" in directory):
+            self.make_match_file(directory, "DrugAdverseEvent_patient", "DrugAdverseEvent_patient_id1_id2")
             self.make_unique_files(directory, "DrugAdverseEvent_reaction_ids", "DrugAdverseEvent_reaction", "DrugAdverseEvent_reaction_id1_id2", self.drugadverseevent_reaction_keys)
             self.make_id_files(directory, "DrugAdverseEvent_drug_ids", "DrugAdverseEvent_drug_id1_id2")
             self.make_special_files(directory, "DrugAdverseEvent_drug_ids", "DrugAdverseEvent_drug", self.drugadverseevent_drug_keys)
@@ -1013,11 +1059,11 @@ class cypher_creator:
         header: Das Dict mit den Knoten-Attributen.
         name: Der Name der Datei aus der die Knoten erstellt werden sollen.
         lists: Dict von Attributen die als Liste gespeichert werden sollen. """
-    def create(self, file_path, header, name, lists):
+    def create(self, file_path, header, name, node_name, lists):
         statement = "USING PERIODIC COMMIT 1000 LOAD CSV WITH HEADERS FROM 'file:///" + \
            str(file_path[name]).replace('\\', '/') + "' AS row FIELDTERMINATOR '\\t' CREATE "
-        obj = "(" + name + \
-            ":" + name + " "
+        obj = "(" + node_name + \
+            ":" + node_name + " "
         attributes = "{"
         for head in header[name]:
             if head not in lists[name]:
@@ -1112,66 +1158,66 @@ class cypher_creator:
         # Die Dateien mit _id1_id2 enthalten nur die IDs zum matchen der Haupteinträge
         # mit den Untereinträgen
         if "CAERSReports" in directory:
-            self.create(file_path, header, "CAERSReport_reaction", lists)
-            self.create(file_path, header, "CAERSReport_product", lists)
-            self.create(file_path, header, "CAERSReport", lists)
-            self.constraint("CAERSReport_constraint", "CAERSReport", "id")
-            self.constraint("CAERSReport_reaction_constraint", "CAERSReport_reaction", "id")
-            self.constraint("CAERSReport_product_constraint", "CAERSReport_product", "id")
-            self.match_from_file(file_path, "CAERSReport_reaction_id1_id2", "CAERSReport_reaction", "CAERSReport")
-            self.match_from_file(file_path, "CAERSReport_product_id1_id2", "CAERSReport_product", "CAERSReport")
+            self.create(file_path, header, "CAERSReport_reaction", "CAERSReport_reaction_openFDA", lists)
+            self.create(file_path, header, "CAERSReport_product", "CAERSReport_product_openFDA", lists)
+            self.create(file_path, header, "CAERSReport", "CAERSReport_openFDA", lists)
+            self.constraint("CAERSReport_openFDA_constraint", "CAERSReport_openFDA", "id")
+            self.constraint("CAERSReport_reaction_openFDA_constraint", "CAERSReport_reaction_openFDA", "id")
+            self.constraint("CAERSReport_product_openFDA_constraint", "CAERSReport_product_openFDA", "id")
+            self.match_from_file(file_path, "CAERSReport_reaction_id1_id2", "CAERSReport_reaction_openFDA", "CAERSReport_openFDA")
+            self.match_from_file(file_path, "CAERSReport_product_id1_id2", "CAERSReport_product_openFDA", "CAERSReport_openFDA")
 
         if "DrugAdverseEvents" in directory:
-            self.create(file_path, header, "DrugAdverseEvent_reaction", lists)
-            self.create(file_path, header, "DrugAdverseEvent_drug", lists)
-            self.create(file_path, header, "DrugAdverseEvent_drug_openfda", lists)
-            self.create(file_path, header, "DrugAdverseEvent_patient", lists)
-            self.create(file_path, header, "DrugAdverseEvent", lists)
-            self.constraint("DrugAdverseEvent_constraint", "DrugAdverseEvent", "id")
-            self.constraint("DrugAdverseEvent_reaction_constraint", "DrugAdverseEvent_reaction", "id")
-            self.constraint("DrugAdverseEvent_patient_constraint", "DrugAdverseEvent_patient", "id")
-            self.constraint("DrugAdverseEvent_drug_constraint", "DrugAdverseEvent_drug", "id")
-            self.constraint("DrugAdverseEvent_drug_openfda_constraint", "DrugAdverseEvent_drug_openfda", "id")
-            self.match("DrugAdverseEvent_patient", "DrugAdverseEvent", "id", "id")
-            self.match_from_file(file_path, "DrugAdverseEvent_drug_id1_id2", "DrugAdverseEvent_drug", "DrugAdverseEvent_patient")
-            self.match_from_file(file_path, "DrugAdverseEvent_reaction_id1_id2", "DrugAdverseEvent_reaction", "DrugAdverseEvent_patient")
-            self.match_from_file(file_path, "DrugAdverseEvent_drug_openfda_id1_id2", "DrugAdverseEvent_drug_openfda", "DrugAdverseEvent_drug")
+            self.create(file_path, header, "DrugAdverseEvent_reaction", "DrugAdverseEvent_reaction_openFDA", lists)
+            self.create(file_path, header, "DrugAdverseEvent_drug", "DrugAdverseEvent_drug_openFDA", lists)
+            self.create(file_path, header, "DrugAdverseEvent_drug_openfda", "DrugAdverseEvent_drug_openfda_openFDA", lists)
+            self.create(file_path, header, "DrugAdverseEvent_patient", "DrugAdverseEvent_patient_openFDA", lists)
+            self.create(file_path, header, "DrugAdverseEvent", "DrugAdverseEvent_openFDA", lists)
+            self.constraint("DrugAdverseEvent_openFDA_constraint", "DrugAdverseEvent_openFDA", "id")
+            self.constraint("DrugAdverseEvent_reaction_openFDA_constraint", "DrugAdverseEvent_reaction_openFDA", "id")
+            self.constraint("DrugAdverseEvent_patient_openFDA_constraint", "DrugAdverseEvent_patient_openFDA", "id")
+            self.constraint("DrugAdverseEvent_drug_openFDA_constraint", "DrugAdverseEvent_drug_openFDA", "id")
+            self.constraint("DrugAdverseEvent_drug_openfda_openFDA_constraint", "DrugAdverseEvent_drug_openfda_openFDA", "id")
+            self.match_from_file(file_path, "DrugAdverseEvent_patient_id1_id2", "DrugAdverseEvent_patient_openFDA", "DrugAdverseEvent_openFDA")
+            self.match_from_file(file_path, "DrugAdverseEvent_drug_id1_id2", "DrugAdverseEvent_drug_openFDA", "DrugAdverseEvent_patient_openFDA")
+            self.match_from_file(file_path, "DrugAdverseEvent_reaction_id1_id2", "DrugAdverseEvent_reaction_openFDA", "DrugAdverseEvent_patient_openFDA")
+            self.match_from_file(file_path, "DrugAdverseEvent_drug_openfda_id1_id2", "DrugAdverseEvent_drug_openfda_openFDA", "DrugAdverseEvent_drug_openFDA")
 
         if "DrugRecallEnforcementReports" in directory:
-            self.create(file_path, header, "DrugRecallEnforcementReport_openfda", lists)
-            self.create(file_path, header, "DrugRecallEnforcementReport", lists)
-            self.constraint("DrugRecallEnforcementReport_openfda_constraint", "DrugRecallEnforcementReport_openfda", "id")
-            self.constraint("DrugRecallEnforcementReport_constraint", "DrugRecallEnforcementReport", "id")
-            self.match_from_file(file_path, "DrugRecallEnforcementReport_openfda_id1_id2", "DrugRecallEnforcementReport_openfda", "DrugRecallEnforcementReport")
+            self.create(file_path, header, "DrugRecallEnforcementReport_openfda", "DrugRecallEnforcementReport_openfda_openFDA", lists)
+            self.create(file_path, header, "DrugRecallEnforcementReport", "DrugRecallEnforcementReport_openFDA", lists)
+            self.constraint("DrugRecallEnforcementReport_openfda_openFDA_constraint", "DrugRecallEnforcementReport_openfda_openFDA", "id")
+            self.constraint("DrugRecallEnforcementReport_openFDA_constraint", "DrugRecallEnforcementReport_openFDA", "id")
+            self.match_from_file(file_path, "DrugRecallEnforcementReport_openfda_id1_id2", "DrugRecallEnforcementReport_openfda_openFDA", "DrugRecallEnforcementReport_openFDA")
 
         if "FoodRecallEnforcementReports" in directory:
-            self.create(file_path, header, "FoodRecallEnforcementReport", lists)
-            self.constraint("FoodRecallEnforcementReport_constraint", "FoodRecallEnforcementReport", "id")
+            self.create(file_path, header, "FoodRecallEnforcementReport", "FoodRecallEnforcementReport_openFDA", lists)
+            self.constraint("FoodRecallEnforcementReport_openFDA_constraint", "FoodRecallEnforcementReport_openFDA", "id")
 
         if "NationalDrugCodeDirectory" in directory:
-            self.create(file_path, header, "NationalDrugCodeDirectory_activeingredients", lists)
-            self.create(file_path, header, "NationalDrugCodeDirectory", lists)
-            self.constraint("NationalDrugCodeDirectory_activeingredients_constraint", "NationalDrugCodeDirectory_activeingredients", "id")
-            self.constraint("NationalDrugCodeDirectory_constraint", "NationalDrugCodeDirectory", "id")
-            self.match_from_file(file_path, "NationalDrugCodeDirectory_activeingredients_id1_id2", "NationalDrugCodeDirectory_activeingredients", "NationalDrugCodeDirectory")
+            self.create(file_path, header, "NationalDrugCodeDirectory_activeingredients", "NationalDrugCodeDirectory_activeingredients_openFDA", lists)
+            self.create(file_path, header, "NationalDrugCodeDirectory", "NationalDrugCodeDirectory_openFDA", lists)
+            self.constraint("NationalDrugCodeDirectory_activeingredients_openFDA_constraint", "NationalDrugCodeDirectory_activeingredients_openFDA", "id")
+            self.constraint("NationalDrugCodeDirectory_openFDA_constraint", "NationalDrugCodeDirectory_openFDA", "id")
+            self.match_from_file(file_path, "NationalDrugCodeDirectory_activeingredients_id1_id2", "NationalDrugCodeDirectory_activeingredients_openFDA", "NationalDrugCodeDirectory_openFDA")
 
         if "SubstanceData" in directory:
-            self.create(file_path, header, "SubstanceData_relationships_substance", lists)
-            self.create(file_path, header, "SubstanceData_moieties", lists)
-            self.create(file_path, header, "SubstanceData_mixture", lists)
-            self.create(file_path, header, "SubstanceData_substance", lists)
-            self.create(file_path, header, "SubstanceData", lists)
-            self.constraint("SubstanceData_relationships_substance_constraint", "SubstanceData_relationships_substance", "id")
-            self.constraint("SubstanceData_moieties_constraint", "SubstanceData_moieties", "id")
-            self.constraint("SubstanceData_mixture_constraint", "SubstanceData_mixture", "id")
-            self.constraint("SubstanceData_substance_constraint", "SubstanceData_substance", "id")
-            self.constraint("SubstanceData_constraint", "SubstanceData", "id")
-            self.match("SubstanceData_relationships_substance", "SubstanceData", "id", "id")
-            self.match("SubstanceData_mixture", "SubstanceData", "id", "id")
-            self.match_from_file(file_path, "SubstanceData_moieties_id1_id2", "SubstanceData_moieties", "SubstanceData")
-            self.match_from_file(file_path, "SubstanceData_substance_id1_id2", "SubstanceData_substance", "SubstanceData_mixture")
-            self.set_properties(file_path, header, lists, "SubstanceData_relationships", "SubstanceData_relationships_substance", "SubstanceData", "id", "id")
-            self.set_properties(file_path, header, lists, "SubstanceData_component", "SubstanceData_substance", "SubstanceData_mixture", "id", "id")
+            self.create(file_path, header, "SubstanceData_relationships_substance", "SubstanceData_relationships_substance_openFDA", lists)
+            self.create(file_path, header, "SubstanceData_moieties", "SubstanceData_moieties_openFDA", lists)
+            self.create(file_path, header, "SubstanceData_mixture", "SubstanceData_mixture_openFDA", lists)
+            self.create(file_path, header, "SubstanceData_substance", "SubstanceData_substance_openFDA", lists)
+            self.create(file_path, header, "SubstanceData", "SubstanceData_openFDA", lists)
+            self.constraint("SubstanceData_relationships_substance_openFDA_constraint", "SubstanceData_relationships_substance_openFDA", "id")
+            self.constraint("SubstanceData_moieties_openFDA_constraint", "SubstanceData_moieties_openFDA", "id")
+            self.constraint("SubstanceData_mixture_openFDA_constraint", "SubstanceData_mixture_openFDA", "id")
+            self.constraint("SubstanceData_substance_openFDA_constraint", "SubstanceData_substance_openFDA", "id")
+            self.constraint("SubstanceData_openFDA_constraint", "SubstanceData_openFDA", "id")
+            self.match("SubstanceData_relationships_substance_openFDA", "SubstanceData_openFDA", "id", "id")
+            self.match("SubstanceData_mixture_openFDA", "SubstanceData_openFDA", "id", "id")
+            self.match_from_file(file_path, "SubstanceData_moieties_id1_id2", "SubstanceData_moieties_openFDA", "SubstanceData_openFDA")
+            self.match_from_file(file_path, "SubstanceData_substance_id1_id2", "SubstanceData_substance_openFDA", "SubstanceData_mixture_openFDA")
+            self.set_properties(file_path, header, lists, "SubstanceData_relationships", "SubstanceData_relationships_substance_openFDA", "SubstanceData_openFDA", "id", "id")
+            self.set_properties(file_path, header, lists, "SubstanceData_component", "SubstanceData_substance_openFDA", "SubstanceData_mixture_openFDA", "id", "id")
 
 directory_maker = directory_maker()
 parser = parser()
@@ -1240,18 +1286,18 @@ for directory in directories:
     print('unzip', datetime.datetime.now())
     # Die Dateien des jeweiligen Verzeichnisses werden entpackt.
     unzipper.unzipall(directory)
-
     print('read all', datetime.datetime.now())
     # Die Dateien werden einzeln eingelesen und anschließend zu einer tsv-Datei verarbeitet.
     reader.readall(directory)
-
     print('generate files', datetime.datetime.now())
     # Dateipfade und Datei-Header werden gespeichert, um sie in der cypher-Datei zu verwenden.
     tsv_paths = former.tsv_path
     tsv_headers = former.tsv_header
     lists = former.lists
+    print('remove lists', datetime.datetime.now())
     # Löschen der Listen in Former.
     former.remove_lists()
+    print('create cypher', datetime.datetime.now())
     # Die Cypher-Datei wird erstellt.
     cypher_creator.create_cypher(tsv_paths, tsv_headers, directory, lists)
     tsv_paths = []
