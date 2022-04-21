@@ -124,9 +124,13 @@ def create_cypher_query(header, from_label, to_label, file_name):
         short_second = 'SE'
     else:
         short_second = to_label[0]
+    if from_label =='Phenotype':
+        short_first ='PT'
+    else:
+        short_first=from_label[0]
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/connectSideEffect_Sympom_Disease/%s" As line FIELDTERMINATOR '\\t' 
                 Match (first:%s {identifier:line.%s}), (second:%s {identifier:line.%s})  Create (first)-[:EQUAL_%se%s{how_mapped:line.%s, pharmebinet:'yes'}]->(second);\n'''
-    query = query % (file_name, from_label, header[0], to_label, header[1], from_label[0], short_second, header[2])
+    query = query % (file_name, from_label, header[0], to_label, header[1], short_first, short_second, header[2])
     cypher.write(query)
 
 
