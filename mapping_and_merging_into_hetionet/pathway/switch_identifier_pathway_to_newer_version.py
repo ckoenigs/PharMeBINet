@@ -305,7 +305,7 @@ def generate_rela_tsv_and_cypher_queries():
         else:
             query_rela_middle += '(p:Pathway{identifier:line.' + head + '}) ,'
     query_rela = query_start + query_rela_middle[
-                               :-2] + ' Create (g)-[:PARTICIPATES_GpPW{license:p.license, source:p.source, unbiased:false, url:p.url, resource:p.resource, combined_wikipathway_and_pathway_common:"yes"}]->(p);\n'
+                               :-2] + ' Create (g)-[:PARTICIPATES_IN_GpiPW{license:p.license, source:p.source, unbiased:false, url:p.url, resource:p.resource, combined_wikipathway_and_pathway_common:"yes"}]->(p);\n'
     query_rela = query_rela % ('rela')
     cypher_file.write(query_rela)
 
