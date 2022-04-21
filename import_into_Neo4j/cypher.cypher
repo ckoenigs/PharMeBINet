@@ -9,7 +9,7 @@ Match (g:Gene) Set g.identifier=toString(g.identifier);
 MATCH (n:Symptom) Set n.xrefs=["MESH:"+n.identifier];
 Match ()-[r]->() Where exists(r.sources) Set r.source=apoc.text.join(r.sources, ',') Remove r.sources;
 Match (:Compound)-[r]->(:Compound) Where exists(r.similarity) Set r.similarity_dice_and_ecfp=r.similarity Remove r.similarity;
-Match (a:Compound)-[r:CAUSES_CcSE]->(b) Create (a)-[h:CAUSES_CHcSE]->(b) Set h=r Delete r;
+Match (a:Compound)-[r:CAUSES_CcSE]->(b) Delete r;
 Match (a:Compound)-[r:BINDS_CbG]->(b) Create (a)-[h:BINDS_CHbG]->(b) Set h=r Delete r;
 Match (a:Compound)-[r:DOWNREGULATES_CdG]->(b) Create (a)-[h:DOWNREGULATES_CHdG]->(b) Set h=r Delete r;
 Match (a:Compound)-[r:UPREGULATES_CuG]->(b) Create (a)-[h:UPREGULATES_CHuG]->(b) Set h=r Delete r;
