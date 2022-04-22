@@ -104,7 +104,7 @@ def main():
     # 0: old relationship;           1: name of node in Reactome;        2: relationship equal to Hetionet-node
     # 3: name of node in Hetionet;   4: name of directory                5: name of new relationship
     list_of_combinations = [
-        ['equal_to_reactome_uniprot', 'Protein', 'IS_INPUT_OF_PiioR']
+        ['equal_to_reactome_uniprot', 'Protein', 'IS_INPUT_OF_PiioRLE']
     ]
 
     directory = 'physikalEntityEdges'
