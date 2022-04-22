@@ -72,8 +72,9 @@ def get_all_non_human_ids():
     Get all non human disease (MONDO:0005583) nodes and add them to a set
     :return:
     """
-    # disease with id MONDO:0005583  is "non-human animal disease"
-    query = '''Match p=(n:disease{id:'MONDO:0005583'})<-[:is_a*]-(a:disease) Return Distinct a.identifier '''
+    # disease with id MONDO:0005583  is "non-human animal disease" nearly all are only animal disease, but I found out
+    # that the one with DOID are animal disease which a human can also have.
+    query = '''Match p=(n:disease{id:'MONDO:0005583'})<-[:is_a*]-(a:disease)  Where Not ANY(x in a.xrefs Where x starts with 'DOID') Return Distinct a.id '''
     set_of_non_human_ids.add('MONDO:0005583')
     results = g.run(query)
     for identifier, in results:
@@ -247,7 +248,7 @@ def generate_cypher_queries():
     query_new = query_start + 'Create (n:Disease{' + query_new + 'mondo:"yes", resource:["MonDO"], url:"https://monarchinitiative.org/disease/"+ line.identifier , license:"CC-BY-SA 3.0", source:"MonDO"}) ' + query_end
     query_new = query_new % ('new_nodes')
     cypher_file.write(query_new)
-    query_rela = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/monDO/output/%s.tsv" As line FIELDTERMINATOR '\\t' Match (a:Disease{identifier:line.id_1}),(b:Disease{identifier:line.id_2}) Merge (a)-[r:IS_A_DiD]->(b) On CREATE Set r.unbiased=false, r.url="https://monarchinitiative.org/disease/"+ line.id_1,  r.source="Monarch Disease Ontology", r.resource=['MonDO'] , r.mondo='yes', r.license="CC-BY-SA 3.0" On Match Set r.resource=r.resource+'MonDO', r.mondo='yes' ;\n'''
+    query_rela = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/monDO/output/%s.tsv" As line FIELDTERMINATOR '\\t' Match (a:Disease{identifier:line.id_1}),(b:Disease{identifier:line.id_2}) Merge (a)-[r:IS_A_DiaD]->(b) On CREATE Set r.unbiased=false, r.url="https://monarchinitiative.org/disease/"+ line.id_1,  r.source="Monarch Disease Ontology", r.resource=['MonDO'] , r.mondo='yes', r.license="CC-BY-SA 3.0" On Match Set r.resource=r.resource+'MonDO', r.mondo='yes' ;\n'''
     query_rela = query_rela % ('rela')
     cypher_file.write(query_rela)
 
@@ -533,15 +534,13 @@ def divide_external_list(monDO_xref):
 
 
 '''
-First gather the do and mondo information and combine them to one
-then prepare the dictionary for putting the combined data of mondo and do into the tsv file 
+First gather  mondo information in a dictionary.
+Then write the dictionary into the tsv file 
 '''
 
 
 def gather_information_of_mondo_and_do_then_prepare_dict_for_csv(monDo, info, monDO_xref):
     doid = list(dict_monDo_to_DO_only_doid[monDo])[0]
-    # if doid =='DOID:0060073':
-    #     print('ohe')
     if monDo == 'MONDO:0006883':
         print('fjfjfjf')
     monDO_synonyms = info['synonyms'] if 'synonyms' in info else []
@@ -549,40 +548,16 @@ def gather_information_of_mondo_and_do_then_prepare_dict_for_csv(monDo, info, mo
 
     umls_cuis_monDO, other_xrefs_monDO = divide_external_list(monDO_xref)
 
-    # combined information from monDO and DO
-    do_synonyms = dict_DO_to_info[doid]['synonyms'] if 'synonyms' in dict_DO_to_info[doid] else []
-    if type(monDO_synonyms) == list:
-
-        monDO_synonyms.extend(do_synonyms)
-    else:
-        do_synonyms.append(monDO_synonyms)
-        monDO_synonyms = dict_DO_to_info[doid]['synonyms'] if 'synonyms' in dict_DO_to_info[doid] else []
     info['synonyms'] = monDO_synonyms
 
-    # prepare definition
-    info['def'] = dict_DO_to_info[doid]['definition'] + '[FROM DOID]. ' + monDo_def if 'definition' in \
-                                                                                       dict_DO_to_info[
-                                                                                           doid] else monDo_def
+    info['def'] =  monDo_def
     info['def'] = info['def'].replace('\t', ' ')
 
-    alternative_ids = dict_DO_to_info[doid]['alternative_ids'] if 'alternative_ids' in dict_DO_to_info[doid] else []
-    alternative_ids.append(doid)
-
-    # the alternative id get at least a ''  if their exist no alternative id, that's why they had to be
-    # removed from the list
-    if alternative_ids[0] == '':
-        alternative_ids.remove('')
-    info['doids'] = alternative_ids
-
-    # other_xrefs_monDO= other_xrefs_monDO.union(dict_DO_to_xref[doid])
-    other_xrefs_monDO.remove('') if '' in other_xrefs_monDO else other_xrefs_monDO
 
     other_xrefs_monDO = go_through_xrefs_and_change_if_needed_source_name(
         other_xrefs_monDO, 'Disease')
     info['xrefs'] = list(other_xrefs_monDO)
 
-    doid_umls = dict_DO_to_info[doid]['umls_cuis'] if 'umls_cuis' in dict_DO_to_info[doid] else []
-    umls_cuis_monDO.union(doid_umls)
     umls_cuis_monDO.remove('') if '' in umls_cuis_monDO else umls_cuis_monDO
     info['umls_cuis'] = list(umls_cuis_monDO)
 
