@@ -5,9 +5,9 @@ First, the HPO diseases are mapped to disease:
                All pairs that are mapped are written into TSV files.
 
 Next, the HPO phenotypes are mapped to Symptoms:
-               First, the mapped and new node files are generated. Additionally, the cypher queries to integrate the different nodes.
-I took from HPO only the phenotypes which are part of the Phenotypic abnormality hierarchy as symptoms to map and the ones that do not map generate a new node with HPO id as an identifier. The mapping is based on mapping of HPO external reference UMLS Cui to UMLS name to symptom mesh identifier. The next mapping method is to get for the HPO phenotype the UMLS Cui from UMLS based on name to the name base UMLS Cuis od the symptoms. The last mapping method is based on name mapping. All pairs are written into a dictionary. The not mapped nodes are written into the new node TSV file.
- The mapped pairs are written into the other TSV file.
+            First, the mapped and new node files are generated. Additionally, the cypher queries to integrate the different nodes.
+            I took from HPO only the phenotypes which are part of the Phenotypic abnormality hierarchy as symptoms to map and the ones that do not map generate a new node with HPO id as an identifier. The mapping is based on mapping of HPO external reference UMLS Cui to UMLS name to symptom mesh identifier. The next mapping method is to get for the HPO phenotype the UMLS Cui from UMLS based on name to the name base UMLS Cuis od the symptoms. The last mapping method is based on name mapping. All pairs are written into a dictionary. The not mapped nodes are written into the new node TSV file.
+            The mapped pairs are written into the other TSV file.
 
 The cypher-shell integrates the merged node information into the database.
 Now the different kinds of relationships between disease and symptoms are prepared.

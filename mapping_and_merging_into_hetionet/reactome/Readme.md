@@ -33,6 +33,10 @@ Then Reactome BP is mapped to BP.
 The same goes for Reactome CC to CC.
                 This has the same steps as BP mapping only with CC.
 
+
+The same goes for Reactome MF to MF.
+                This has the same steps as BP mapping only with MF.
+
 The cypher-shell integrates the mapped information and the new nodes.
 Next, the cypher-shell integrates with another cypher file the nodes of ReactionLikeEvent (reaction, polymerization, depolymerization, black box event, failed reaction). But only human ReactionLike Event and such that have a pubmed ids.
 
@@ -65,7 +69,7 @@ First, the Reactome drug and physical entity are tried to be mapped chemical.
                Next, all chemical information is loaded into dictionaries. Also, prepare a dictionary from IUPHAR identifier to chemical identifier with the use of InChI.
                Then, the ReferenceEntities of Reactome is loaded and tried to map.
                The first mapping method is based on the IUPHAR identifier to chemical id (dictionary-IUPHAR to chemical id).
-               Next, the other external reference to chemical external reference.
+               Next, the other external reference to chemical external reference (ChEBI, KEGG Compound, PubChem Compound).
                Then, try to map with ReferenceEntity inn to chemical name.
                The last mapping method is based on mapping the ReferenceEntity names to chemical name. But check for strings with some HTML code inside and change to normal string.
                All mapped pairs are written into the TSV file.

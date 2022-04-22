@@ -15,23 +15,23 @@ Then the focus on mapping on CTD pathway:
                All mapping pairs are written into a TSV file and a cypher query is generated to integrate the information.
 
 Then CTD disease to disease:
-This needs different mapping methods because CTD disease has OMIM or MESH as an identifier:
-First, mapped with MESH and OMIM to disease external identifier
-Next, use the alternative MESH and OMIM CTD identifier to disease external identifier
-CTD disease also contains DOIDs and they are mapped to disease DOIDs.
-For the one that still did not map in UMLS, they search for a UMLS CUI for MESH or OMIM identifier and map it to disease external references.
-The last mapping possibility is mapping the CTD disease name to the disease names and synonyms.
-For all mapping pairs, a TSV file is generated and a cypher query to integrate this information into the disease.
+                This needs different mapping methods because CTD disease has OMIM or MESH as an identifier:
+                First, mapped with MESH and OMIM to disease external identifier
+                Next, use the alternative MESH and OMIM CTD identifier to disease external identifier
+                CTD disease also contains DOIDs and they are mapped to disease DOIDs.
+                For the one that still did not map in UMLS, they search for a UMLS CUI for MESH or OMIM identifier and map it to disease external references.
+                The last mapping possibility is mapping the CTD disease name to the disease names and synonyms.
+                For all mapping pairs, a TSV file is generated and a cypher query to integrate this information into the disease.
 
 
 The last label is CTD chemical to compound and all not mapped chemicals generate new nodes with label chemical:
-There are different mapping methods used:
-    1.	map CTD chemical cas-number with compound cas-number
-    2.	Map the MESH ID to UMLS Cui with UMLS, which contains MESH ID. Further UMLS contains DrugBank IDs, so the UMLS Cui is mapped to DrugBank ID.
-    3.	Map the Mesh ID to RxNorm CUI with RxNorm, which contains a MESH identifier. In RxNorm the RxNorm Cui is mapped to DrugBank IDs, which are also in RxNorm.
-    4.	Use the RxNorm-DrugBank table, which is constructed with unii and InChIKey, to map.
-    5.	Map with name and synonyms of CTD to name and synonyms of DrugBank.
-The mapped pairs are written into a TSV file. Additionally, all not mapped are written also in a TSV file. For both is a cypher query generated and add to the cypher file.
+    There are different mapping methods used:
+        1.	map CTD chemical cas-number with compound cas-number
+        2.	Map the MESH ID to UMLS Cui with UMLS, which contains MESH ID. Further UMLS contains DrugBank IDs, so the UMLS Cui is mapped to DrugBank ID.
+        3.	Map the Mesh ID to RxNorm CUI with RxNorm, which contains a MESH identifier. In RxNorm the RxNorm Cui is mapped to DrugBank IDs, which are also in RxNorm.
+        4.	Use the RxNorm-DrugBank table, which is constructed with unii and InChIKey, to map.
+        5.	Map with name and synonyms of CTD to name and synonyms of DrugBank.
+    The mapped pairs are written into a TSV file. Additionally, all not mapped are written also in a TSV file. For both is a cypher query generated and add to the cypher file.
 
 Now, all node mapping information is integrated into the database with the cypher shell.
 
