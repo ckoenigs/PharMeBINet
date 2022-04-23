@@ -456,8 +456,8 @@ def generate_tsv_file(list_of_delet_index, list_not_mapped, concept_code, diseas
         resource_disease = dict_mondo_to_xrefs_and_resource[disease_id][1] if \
             dict_mondo_to_xrefs_and_resource[disease_id][1] is not None else []
         resource_disease.append("AEOLUS")
-        resource_disease = list(set(resource_disease))
-        resource_string = '|'.join(resource_disease.sort())
+        resource_disease = set(resource_disease)
+        resource_string = '|'.join(sorted(resource_disease))
 
         xref_disease = dict_mondo_to_xrefs_and_resource[disease_id][0] if \
             dict_mondo_to_xrefs_and_resource[disease_id][0] is not None else []
