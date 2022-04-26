@@ -6,7 +6,7 @@ path_neo4j=$1
 #path to project
 path_to_project=$2
 
-echo 'Integrate Disease Ontology into Hetionet'
+echo 'Mapping Disease Ontology into PharMeBINet'
 
 python3 fusion_of_disease_ontology_in_hetionet_final_2.py $path_to_project > output_do.txt
 
