@@ -1,6 +1,6 @@
 The script first mapped the IID protein to protein and then integrate the protein-protein interaction.
 
-The program map theIID protein to protein:
+The program map the IID protein to protein:
                First, generate the mapping TSV file, the cypher file, and the cypher query to integrate the information into the database.
                Then, the IID proteins are mapped to the Uniprot identifier and alternative UniProt identifier of the protein.
 

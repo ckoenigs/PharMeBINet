@@ -4,10 +4,8 @@ https://www.biostars.org/p/155342/
 
 The SIDER script prepares the mapping and the integration of SE-drug relationships.
 First, the SIDER SEs are mapped and add new nodes to the database.
-               First, the TSV files for the mapping pairs and the new nodes are generated.
-               Then, load the SE information from the database into a dictionary.
-               Next, the SIDER SE is mapped to the SE. The mapping method is based on UMLS CUI from SIDER to UMLS CUI from the SE.
-               All mapped pairs are written into the TSV file. All not mapped are written into the new node TSV file.
+               First, the TSV files for the new nodes is generated.
+               Next, the SIDER SE information is prepared and written into the new node TSV file.
                In the last step, the cypher file and cypher query are generated.
 
 Second, the SIDER drugs are mapped to chemicals.
