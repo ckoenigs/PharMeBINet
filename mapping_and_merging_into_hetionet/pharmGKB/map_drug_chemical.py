@@ -108,7 +108,7 @@ load in all compound from hetionet in a dictionary
 
 
 def load_db_info_in():
-    query = '''MATCH (n:Chemical) Where not n:Product RETURN n.identifier,n.inchi, n.xrefs, n.resource, n.name, n.synonyms, n.alternative_ids'''
+    query = '''MATCH (n:Chemical)  RETURN n.identifier,n.inchi, n.xrefs, n.resource, n.name, n.synonyms, n.alternative_ids'''
     results = g.run(query)
 
     for identifier, inchi, xrefs, resource, name, synonyms, alternative_drug_ids, in results:

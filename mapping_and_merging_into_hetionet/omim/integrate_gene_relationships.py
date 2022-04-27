@@ -48,7 +48,7 @@ def prepare_cypher_query(file, header_start, to_label):
     query_merge = query_merge[:-2]
     combine_cypher = query_start
     combine_cypher = combine_cypher % (
-        path_of_directory, file, header_start[0], to_label, header_start[1], to_label[0], query_merge, query_merge)
+        path_of_directory, file, header_start[0], to_label, header_start[1], dict_first_letter_to_rela_letter[to_label[0]], query_merge, query_merge)
 
     cypher_file.write(combine_cypher)
 
