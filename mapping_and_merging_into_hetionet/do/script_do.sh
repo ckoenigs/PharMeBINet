@@ -8,7 +8,7 @@ path_to_project=$2
 
 echo 'Mapping Disease Ontology into PharMeBINet'
 
-python3 fusion_of_disease_ontology_in_hetionet_final_2.py $path_to_project > output_do.txt
+python3 map_disease_ontology_to_disease.py $path_to_project > output_do.txt
 
 
 now=$(date +"%F %T")
