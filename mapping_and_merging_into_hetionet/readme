@@ -14,7 +14,7 @@ Here is an overview of the different mapping methods:
 |Compound (CH)| | | | | | | | | | |DrugBank| |CAS-number, UMLS, RxNorm, UNII, InChIKey, name, MESH| | | | | |
 |Pathway (PW)| | | | | | | | |Reactome, name| | | |Reactome,  name| | | | | |
 |Phenotype (PT)| | | | | | | | | | | | | | | | | | |
-|Disease (D)|DOID|DOID,...| |OMIM| |OMIM| | |DOID, name| | |name, OMIM, UMLS, ORPHA|MESH, OMIM, DOID, UMLS, name|UMLS, MESH, name| | |name, SnoMed, UMLS| |
+|Disease (D)|DOID|DOID,name, OMIM| |OMIM| |OMIM| | |DOID, name| | |name, OMIM, UMLS, ORPHA|MESH, OMIM, DOID, UMLS, name|UMLS, MESH, name| | |name, SnoMed, UMLS| |
 |Symptom (S)| | | | | | | | | | | |name, UMLS, MESH| | | | |name, UMLS| |
 |SideEffect (SE)| | | | | | | | | | | | | | |UMLS|UMLS (BioPortal), name|name, UMLS| |
 |PharmacologicalClass (PC)| | | | | | | | | | | | | | | | |NDF-RT, name| |
