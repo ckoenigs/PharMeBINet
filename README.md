@@ -10,25 +10,25 @@ Included Data:
 | Data source   |      Version      |  License | URL |
 |----------|:-------------:|------|---------------|
 | AEOLUS |  2017-04-08 | CC0 1.0 Universal (CC0 1.0) Public Domain Dedication license  | [Link](http://datadryad.org/resource/doi:10.5061/dryad.8q0s4) |
-| ClinVar |    2021-11   |   https://www.ncbi.nlm.nih.gov/home/about/policies/ | [Link](https://www.ncbi.nlm.nih.gov/clinvar/) |
-| CTD | 2021-11 | © 2002-2012 MDI Biological Laboratory. All rights reserved. © 2012-2021 NC State University. All rights reserved. | [Link](http://ctdbase.org/) |
+| ClinVar |    2022-04-07   |   https://www.ncbi.nlm.nih.gov/home/about/policies/ | [Link](https://www.ncbi.nlm.nih.gov/clinvar/) |
+| CTD | 2022-04 | © 2002-2012 MDI Biological Laboratory. All rights reserved. © 2012-2021 NC State University. All rights reserved. | [Link](http://ctdbase.org/) |
 | dbSNP |    2021-05-25  |   https://www.ncbi.nlm.nih.gov/home/about/policies/policies/ | [Link](https://www.ncbi.nlm.nih.gov/snp/) |
-| DO |    2021-11-17   |   CC0 1.0 Universal | [Link](https://disease-ontology.org/) |
-| DrugBank |    5.1.8   |   Creative Common's Attribution-NonCommercial 4.0 International License | [Link](https://go.drugbank.com/) |
-| Entrez Gene |    2021-11-29   |   https://www.ncbi.nlm.nih.gov/home/about/policies/ | [Link](https://www.ncbi.nlm.nih.gov/gene) |
-| GO |    2021-11-16   |   CC0 4.0 International | [Link](http://geneontology.org/) |
+| DO |    2022-04-28   |   CC0 1.0 Universal | [Link](https://disease-ontology.org/) |
+| DrugBank |    5.1.9   |   Creative Common's Attribution-NonCommercial 4.0 International License | [Link](https://go.drugbank.com/) |
+| Entrez Gene |    2022-04-28   |   https://www.ncbi.nlm.nih.gov/home/about/policies/ | [Link](https://www.ncbi.nlm.nih.gov/gene) |
+| GO |    2022-03-22   |   CC0 4.0 International | [Link](http://geneontology.org/) |
 | Hetionet |    V1.0  |   CC0 1.0 Universal (CC0 1.0) Public Domain Dedication  | [Link](https://het.io/) |
-| HPO |    2021-10-10   |   This service/product uses the Human Phenotype Ontology (version information). Find out more at http://www.human-phenotype-ontology.org We request that the HPO logo be included as well. | [Link](https://hpo.jax.org) |
+| HPO |    2022-04-14   |   This service/product uses the Human Phenotype Ontology (version information). Find out more at http://www.human-phenotype-ontology.org We request that the HPO logo be included as well. | [Link](https://hpo.jax.org) |
 | IID |    2021-05   |   Free to use for academic purposes | [Link](http://iid.ophid.utoronto.ca/) |
-| MONDO |    2021-11-01   |   CC BY 4.0 | [Link](https://github.com/monarch-initiative/mondo) |
+| MONDO |    2022-04-04   |   CC BY 4.0 | [Link](https://github.com/monarch-initiative/mondo) |
 | NDF-RT |    2018-02-05   |   UMLS license, available at https://uts.nlm.nih.gov/license.html | [Link](https://evs.nci.nih.gov/ftp1/NDF-RT/) |
-| OMIM |    2021-11-09   |   https://www.omim.org/help/agreement | [Link](https://www.omim.org/) |
+| OMIM |    2022-04-14   |   https://www.omim.org/help/agreement | [Link](https://www.omim.org/) |
 | Pathway Commons |    V 12   |   License of the different sources | [Link](https://www.pathwaycommons.org/) |
-| PharmGKB |    2021-11-05   |   Creative Commons Attribution-ShareALike 4.0 license | [Link](https://www.pharmgkb.org/) |
-| Reactome |    2021-10-01   |   Creative Commons Attribution 4.0 International (CC BY 4.0) License | [Link](https://reactome.org/) |
+| PharmGKB |    2022-04-05   |   Creative Commons Attribution-ShareALike 4.0 license | [Link](https://www.pharmgkb.org/) |
+| Reactome |    2022-03-31   |   Creative Commons Attribution 4.0 International (CC BY 4.0) License | [Link](https://reactome.org/) |
 | SIDER |    V 4.1   |   Creative Commons Attribution-Noncommercial-Share Alike 4.0 License | [Link](http://sideeffects.embl.de/) |
-| UniProt |    2021-04   |   CC BY 4.0 | [Link](https://www.uniprot.org/) |
-| WikiPathway |    2021-11-10   |   CC BY 3.0 | [Link](https://www.wikipathways.org/index.php/WikiPathways) |
+| UniProt |    2022-01   |   CC BY 4.0 | [Link](https://www.uniprot.org/) |
+| WikiPathway |    2022-04-10   |   CC BY 3.0 | [Link](https://www.wikipathways.org/index.php/WikiPathways) |
 
 The shell script do the integration into neo4j and the mapping and merging to Hetionet.
 
