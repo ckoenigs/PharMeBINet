@@ -22,36 +22,13 @@ list_side_effect_in_hetionet = []
 #  with id as key and as value a class SideEffect
 dict_all_side_effect = {}
 
-# create tsv for sider se effects which includes the already existing nodes which need to be updated and the new generated nodes
-file_update_node = open('output/se_update.tsv', 'w')
+# header for file
 header = ["name", "identifier", "meddraType", "conceptName"]
-csv_writer_update = csv.DictWriter(file_update_node, delimiter='\t', fieldnames=header)
-csv_writer_update.writeheader()
 
+# tsv for new se
 file_new_node = open('output/se_new.tsv', 'w')
 csv_writer_new = csv.DictWriter(file_new_node, delimiter='\t', fieldnames=header)
 csv_writer_new.writeheader()
-
-'''
-load in all side effects from hetionet
-has properties:
-    license
-    identifier
-    name
-    source
-    url
-'''
-
-
-def load_side_effects_from_hetionet_in_dict():
-    query = '''MATCH (n:SideEffect) RETURN n '''
-    results = g.run(query)
-    for result, in results:
-        list_side_effect_in_hetionet.append(result['identifier'])
-        sideEffect = dict(result)
-        dict_all_side_effect[result['identifier']] = sideEffect
-    print('size of side effects before the sider is add:' + str(len(list_side_effect_in_hetionet)))
-
 
 '''
 load all new and old information for side effects in
@@ -76,13 +53,8 @@ def load_sider_in_dict():
         name = result['name']
 
         dict_info = {"name": name, "identifier": umlsIDmeddra, "meddraType": meddraType, "conceptName": conceptName}
-        if not umlsIDmeddra in dict_all_side_effect:
-            sideEffect = ('CC BY-NC-SA 4.0', umlsIDmeddra, name, 'UMLS via SIDER 4.1',
-                          'http://identifiers.org/umls/' + umlsIDmeddra)
-            csv_writer_new.writerow(dict_info)
-            counter_new += 1
-        else:
-            csv_writer_update.writerow(dict_info)
+        csv_writer_new.writerow(dict_info)
+        counter_new += 1
 
     print('size of side effects after the sider is add:' + str(len(list_side_effect_in_hetionet) + counter_new))
 
@@ -96,24 +68,13 @@ def generate_cypher_file():
     cypher_file = open('output/cypher.cypher', 'w')
     query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/sider/output/%s.tsv" As line FIELDTERMINATOR '\\t' '''
     query_new = ''
-    query_update = ''
     for head in header:
         query_new += head + ':line.' + head + ', '
-        if not head == 'identifier':
-            query_update += 'n.' + head + '=line.' + head + ', '
-    query_update = query_start + ' Match (b:se_Sider{umlsIDmeddra:line.identifier}), (n:SideEffect{identifier:line.identifier}) Set ' + query_update + ' n.sider="yes", n.resource=n.resource+"SIDER" Create (n)-[:equal_to_SE]->(b);\n'
-    query_update = query_update % ('se_update')
-    cypher_file.write(query_update)
     query_new = query_start + ' Match (b:se_Sider{umlsIDmeddra:line.identifier}) Create (n:SideEffect{' + query_new + ' sider:"yes", url:"http://identifiers.org/umls/"+line.identifier, resource:["SIDER"],  source: "UMLS via SIDER 4.1", license:"CC BY-NC-SA 4.0"}) Create (n)-[:equal_to_SE]->(b);\n'
     query_new = query_new % ('se_new')
     cypher_file.write(query_new)
     cypher_file.close()
 
-    # add query to update disease nodes with do='no'
-    cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')
-    query = ''':begin\n Match (n:SideEffect) Where not exists(n.sider) Set n.sider="no";\n :commit\n '''
-    cypher_general.write(query)
-    cypher_general.close()
 
 
 '''
@@ -127,11 +88,6 @@ def integrate_side_effects():
         path_of_directory = sys.argv[1]
     else:
         sys.exit('need a path sider se')
-
-    print(datetime.datetime.now())
-    print('Load in all side effect from hetionet in dictionary')
-
-    load_side_effects_from_hetionet_in_dict()
 
     print(
         '###########################################################################################################################')
