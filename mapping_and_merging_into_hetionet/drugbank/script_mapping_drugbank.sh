@@ -57,13 +57,13 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo 'integrate Drugbank pathway'
 
-python3 mapping_pathway.py "$license" $path_to_project > pathway/output.txt
+# python3 mapping_pathway.py "$license" $path_to_project > pathway/output.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo 'integrate Drugbank metabolite'
 
-python3 mapping_drugbank_metabolite.py "$license" $path_to_project > metabolite/output.txt
+# python3 mapping_drugbank_metabolite.py "$license" $path_to_project > metabolite/output.txt
 
 
 now=$(date +"%F %T")
@@ -123,7 +123,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo 'calculate similarities'
 
-python3 similarity.py  $path_to_project > compound_interaction/output.txt
+# python3 similarity.py  $path_to_project > compound_interaction/output.txt
 
 
 now=$(date +"%F %T")
