@@ -30,6 +30,12 @@ echo 'integrate Drugbank protein-compound rela '
 
 python3 integrate_protein_compound_rela.py "${license}" $path_to_project > rela_protein/output_integration_file_generation_rela.txt
 
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo 'integrate Drugbank reaction '
+
+# python3 prepare_drugbank_reaction.py "${license}" $path_to_project > reaction/output_integration_file_generation_rela.txt
+
 
 now=$(date +"%F %T")
 echo "Current time: $now"
