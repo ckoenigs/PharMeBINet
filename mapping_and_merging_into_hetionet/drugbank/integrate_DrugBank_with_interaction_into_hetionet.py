@@ -365,7 +365,7 @@ def create_cypher_file():
     # cypher file
     cypher_file = open('compound_interaction/cypher.cypher', 'w', encoding='utf-8')
 
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/drugbank/output/%s.tsv" As line Fieldterminator '\\t' Match (a:%s{identifier:line.identifier})'''
+    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/drugbank/output/%s.tsv" As line Fieldterminator '\\t' Match (a:%s{identifier:line.identifier})'''
     query_create = ''
     query_update = ''
     for property in all_properties:
@@ -409,7 +409,7 @@ def generation_of_interaction_file():
     csv_writer = csv.writer(g_csv, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     csv_writer.writerow(['db1', 'db2', 'description'])
     cypherfile = open('output/cypher_rela.cypher', 'w', encoding='utf-8')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/drugbank/compound_interaction/interaction.tsv" As line  Fieldterminator '\\t' Match (c1:Compound{identifier:line.db1}), (c2:Compound{identifier:line.db2}) Create (c1)-[:INTERACTS_CiC{source:"DrugBank", url:"http://www.drugbank.ca/drugs/"+line.db1, unbiased:false, resource:['DrugBank'], drugbank:'yes', url:line.url, license:'%s', descriptions:split(line.description,'||')}]->(c2);\n '''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/drugbank/compound_interaction/interaction.tsv" As line  Fieldterminator '\\t' Match (c1:Compound{identifier:line.db1}), (c2:Compound{identifier:line.db2}) Create (c1)-[:INTERACTS_CiC{source:"DrugBank", url:"http://www.drugbank.ca/drugs/"+line.db1, unbiased:false, resource:['DrugBank'], drugbank:'yes', url:line.url, license:'%s', descriptions:split(line.description,'||')}]->(c2);\n '''
     query = query % (license)
     cypherfile.write(query)
     cypherfile.close()

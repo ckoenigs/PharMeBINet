@@ -51,7 +51,7 @@ def generate_files(path_of_directory):
     csv_mapping.writerow(header)
 
     cypher_file_path = os.path.join(source, 'cypher.cypher')
-    # master_database_change/mapping_and_merging_into_hetionet/DisGeNet/
+    # mapping_and_merging_into_hetionet/DisGeNet/
     query = f'Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:{file_path}" As line FIELDTERMINATOR "\\t" \
         Match (n:gene_DisGeNet{{geneId:line.DisGeNet_gene_id}}), (v:Gene{{identifier:line.gene_id}}) Set v.disgenet="yes", v.resource=split(line.resource,"|") Create (v)-[:equal_to_DisGeNet_gene{{mapped_with:line.mapping_method}}]->(n);\n'
     mode = 'a' if os.path.exists(cypher_file_path) else 'w'
@@ -104,7 +104,7 @@ def main():
     else:
         sys.exit('need a path disgenet gene')
 
-    os.chdir(path_of_directory + 'master_database_change/mapping_and_merging_into_hetionet/disgenet')
+    os.chdir(path_of_directory + 'mapping_and_merging_into_hetionet/disgenet')
     home = os.getcwd()
     source = os.path.join(home, 'output')
     path_of_directory = os.path.join(home, 'gene/')

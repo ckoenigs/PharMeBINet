@@ -595,7 +595,7 @@ def integrate_aeolus_into_hetionet():
     csv_existing.writerow(['aSE', 'SE', 'cuis', 'resources'])
 
     # query for mapping
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/aeolus/output/%s.tsv" As line FIELDTERMINATOR '\\t' Match (a:Aeolus_Outcome{concept_code:line.aSE})'''
+    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/aeolus/output/%s.tsv" As line FIELDTERMINATOR '\\t' Match (a:Aeolus_Outcome{concept_code:line.aSE})'''
     cypher_file = open('output/cypher.cypher', 'w')
 
     # query for the update nodes and relationship

@@ -209,7 +209,7 @@ cypher_file = open('output/cypher.cypher', 'a',encoding='utf-8')
 # query='''begin\n MATCH p=()-[r:equal_to_CTD_go]->() Delete r;\n commit\n'''
 # cypher_file.write(query)
 # add ontology to ctd go
-query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/GO/nodes_without_ontology.tsv" As line  FIELDTERMINATOR '\\t' Match (n:CTD_GO{go_id:line.id}) SET n.ontology=line.ontology ;\n'''
+query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''mapping_and_merging_into_hetionet/ctd/GO/nodes_without_ontology.tsv" As line  FIELDTERMINATOR '\\t' Match (n:CTD_GO{go_id:line.id}) SET n.ontology=line.ontology ;\n'''
 cypher_file.write(query)
 
 def add_resource(go_id):
@@ -240,7 +240,7 @@ def generate_files(file_name_addition, ontology, dict_ctd_in_hetionet,dict_ctd_i
         for ctd_id, hetionet_id in dict_ctd_in_hetionet_alternative.items():
             writer.writerow([ctd_id, hetionet_id,'',add_resource(hetionet_id)])
 
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/GO/mapping_%s.tsv" As line  FIELDTERMINATOR '\\t' Match (c:%s{ identifier:line.GOIDHetionet}), (n:CTD_GO{go_id:line.GOIDCTD}) SET  c.url_ctd=" http://ctdbase.org/detail.go?type=go&acc="+line.GOIDCTD, c.highestGOLevel=n.highestGOLevel, c.ctd="yes", c.resource=split(line.resource,"|") Create (c)-[:equal_to_CTD_go]->(n);\n'''
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''mapping_and_merging_into_hetionet/ctd/GO/mapping_%s.tsv" As line  FIELDTERMINATOR '\\t' Match (c:%s{ identifier:line.GOIDHetionet}), (n:CTD_GO{go_id:line.GOIDCTD}) SET  c.url_ctd=" http://ctdbase.org/detail.go?type=go&acc="+line.GOIDCTD, c.highestGOLevel=n.highestGOLevel, c.ctd="yes", c.resource=split(line.resource,"|") Create (c)-[:equal_to_CTD_go]->(n);\n'''
     query = query % (file_name_addition, ontology)
     cypher_file.write(query)
 

@@ -125,7 +125,7 @@ generate connection between mapping gocellcomp of reactome and hetionet and gene
 def create_cypher_file():
     cypher_file = open('output/cypher.cypher', 'a', encoding="utf-8")
     # mappt die Knoten, die es in hetionet und reactome gibt und fügt die properties hinzu
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/reactome/gocellcomp/mapped_gocellcomp.tsv" As line FIELDTERMINATOR "\\t"
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/reactome/gocellcomp/mapped_gocellcomp.tsv" As line FIELDTERMINATOR "\\t"
      Match (d: CellularComponent{identifier: line.id_hetionet}),(c:GO_CellularComponent_reactome{accession:line.id}) Create (d)-[: equal_to_reactome_gocellcomp]->(c) SET d.resource = split(line.resource, '|'), d.reactome = "yes";\n'''
     query = query % (path_of_directory)
     cypher_file.write(query)

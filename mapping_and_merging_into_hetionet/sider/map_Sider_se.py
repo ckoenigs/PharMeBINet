@@ -66,7 +66,7 @@ Generate cypher file for side effect nodes
 
 def generate_cypher_file():
     cypher_file = open('output/cypher.cypher', 'w')
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/sider/output/%s.tsv" As line FIELDTERMINATOR '\\t' '''
+    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/sider/output/%s.tsv" As line FIELDTERMINATOR '\\t' '''
     query_new = ''
     for head in header:
         query_new += head + ':line.' + head + ', '

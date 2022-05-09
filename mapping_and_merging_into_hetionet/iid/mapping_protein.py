@@ -61,7 +61,7 @@ def generate_files(path_of_directory):
     csv_mapping.writerow(header)
     cypher_file = open('protein/cypher.cypher', 'w', encoding='utf-8')
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/iid/%s.tsv" As line FIELDTERMINATOR '\\t' 
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/iid/%s.tsv" As line FIELDTERMINATOR '\\t' 
         Match (n:protein_IID{identifier:line.iid_uniprot_id}), (v:Protein{identifier:line.uniprot_id}) Set v.iid='yes', v.resource=split(line.resource,"|") Create (v)-[:equal_to_iid_protein{mapped_with:line.mapped_with}]->(n);'''
     query = query % (path_of_directory, file_name)
     cypher_file.write(query)

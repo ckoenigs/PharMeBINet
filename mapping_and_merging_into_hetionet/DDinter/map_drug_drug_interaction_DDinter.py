@@ -103,11 +103,11 @@ def generate_cypher_file(file_name, file_name_new):
     :param file_name_new: string
     :return:
     """
-    query = '''Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/DDinter/%s" As line  FIELDTERMINATOR '\\t'  MATCH (n:Chemical{identifier:line.chemical1}), (c:Chemical{identifier:line.chemical2}) Match (n)-[r:INTERACTS_CiC]->(c)  Set r.resource=split(line.resource,"|"), r.ddinter="yes", r.level=line.level, r.rela_infos=split(line.rela_infos,"|"); \n'''
+    query = '''Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/DDinter/%s" As line  FIELDTERMINATOR '\\t'  MATCH (n:Chemical{identifier:line.chemical1}), (c:Chemical{identifier:line.chemical2}) Match (n)-[r:INTERACTS_CiC]->(c)  Set r.resource=split(line.resource,"|"), r.ddinter="yes", r.level=line.level, r.rela_infos=split(line.rela_infos,"|"); \n'''
     query = query % (file_name)
     cypher_file.write(query)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/DDinter/%s" As line  FIELDTERMINATOR '\\t'  MATCH (n:Chemical{identifier:line.chemical1}), (c:Chemical{identifier:line.chemical2}) Create (n)-[r:INTERACTS_CiC{source:"DDinter", resource:["DDinter"], source:"DDinter", ddinter:"yes" , license:"%s", level:line.level, rela_infos:split(line.rela_infos,"|")}]->(c) ; \n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/DDinter/%s" As line  FIELDTERMINATOR '\\t'  MATCH (n:Chemical{identifier:line.chemical1}), (c:Chemical{identifier:line.chemical2}) Create (n)-[r:INTERACTS_CiC{source:"DDinter", resource:["DDinter"], source:"DDinter", ddinter:"yes" , license:"%s", level:line.level, rela_infos:split(line.rela_infos,"|")}]->(c) ; \n'''
     query = query % (file_name_new, license)
     cypher_file.write(query)
 

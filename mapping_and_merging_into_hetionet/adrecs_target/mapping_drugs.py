@@ -58,7 +58,7 @@ def prepare_query(file_name, db_label, adrecs_label, db_id,adrecs_id_internal, a
     :return:
     """
     cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/%s/%s" As line Fieldterminator '\\t' MATCH (n:%s{identifier:line.%s}), (g:%s{%s:line.%s}) Set n.resource=split(line.resource,"|"), n.adrecs_target='yes' Create (n)-[:equal_adrecs_target_%s{how_mapped:line.how_mapped}]->(g);\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/%s/%s" As line Fieldterminator '\\t' MATCH (n:%s{identifier:line.%s}), (g:%s{%s:line.%s}) Set n.resource=split(line.resource,"|"), n.adrecs_target='yes' Create (n)-[:equal_adrecs_target_%s{how_mapped:line.how_mapped}]->(g);\n'''
     query = query % (director, file_name, db_label, db_id,adrecs_label, adrecs_id_internal, adrecs_id, db_label.lower())
     cypher_file.write(query)
 

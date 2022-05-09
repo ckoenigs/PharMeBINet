@@ -71,7 +71,7 @@ def create_cypher_and_tsv_files():
     query = query % (label_of_salt)
     result = g.run(query)
     header = []
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/drugbank/salts/%s.tsv" As line Fieldterminator '\\t' Match '''
+    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/drugbank/salts/%s.tsv" As line Fieldterminator '\\t' Match '''
     part = query_start + '''(a:%s {identifier:line.identifier}) Create (b:Compound :Salt{'''
     part = part % (file_node, label_of_salt)
     for property, in result:

@@ -115,7 +115,7 @@ def generate_files(path_of_directory):
     file_name = 'DisGeNet_disease_to_disease'
 
     cypher_file_path = os.path.join(source, 'cypher.cypher')
-    # master_database_change/mapping_and_merging_into_hetionet/DisGeNet/
+    # mapping_and_merging_into_hetionet/DisGeNet/
     query = f'Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:{path_of_directory}{file_name}.tsv" As line FIELDTERMINATOR "\\t" \
         Match (n:disease_DisGeNet{{diseaseId:line.DisGeNet_diseaseId}}), (v:Disease{{identifier:line.identifier}}) Set v.disgenet="yes", v.resource=split(line.resource,"|") Create (v)-[:equal_to_DisGeNet_disease{{mapped_with:split(line.mapping_method, "|")}}]->(n);\n'
     mode = 'a' if os.path.exists(cypher_file_path) else 'w'
@@ -131,7 +131,7 @@ def generate_files(path_of_directory):
 def resource(identifier):
     resource = set(dict_disease_id_to_resource[identifier])
     resource.add('DisGeNet')
-    return '|'.join(resource)
+    return '|'.join(sorted(resource))
 
 def check_for_multiple_mapping_and_try_to_reduce_multiple_mapping(name, mapping_ids):
     """
@@ -300,7 +300,7 @@ def main():
     else:
         sys.exit('need a path disgenet disease')
 
-    os.chdir(path_of_directory + 'master_database_change/mapping_and_merging_into_hetionet/disgenet')
+    os.chdir(path_of_directory + 'mapping_and_merging_into_hetionet/disgenet')
     home = os.getcwd()
     source = os.path.join(home, 'output')
     path_of_directory = os.path.join(home, 'disease/')

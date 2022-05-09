@@ -41,7 +41,7 @@ def write_files(label, direction_1, direction_2, rela_name):
     csv_rela.writerow(header_rela)
 
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/ndf-rt/%s" As line FIELDTERMINATOR '\\t' 
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/ndf-rt/%s" As line FIELDTERMINATOR '\\t' 
             Match (c:%s{identifier:line.chemical_id}), (p:PharmacologicClass{identifier:line.pharmacological_class_id}) Merge (c)%s[r:%s]%s(p) On Create Set r.source=line.source, r.resource=['NDF-RT'], r.url='http://purl.bioontology.org/ontology/NDFRT/'+line.pharmacological_class_id , r.license='UMLS license, available at https://uts.nlm.nih.gov/license.html', r.unbiased=false, r.ndf_rt='yes' On Match Set r.resource=r.resource+'NDF-RT' , r.ndf_rt='yes';'''
     query = query % (path_of_directory, file_name, label, direction_1, rela_name, direction_2)
     cypher_file.write(query)

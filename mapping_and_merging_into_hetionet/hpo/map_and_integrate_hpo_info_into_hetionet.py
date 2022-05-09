@@ -502,7 +502,7 @@ csv_disease.writerow(['hpo_id', 'hetionet_id', 'resource'])
 cypher_file = open('cypher/cypher.cypher', 'w')
 
 # the general query start
-query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/hpo/%s" As line FIELDTERMINATOR '\\t' 
+query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/hpo/%s" As line FIELDTERMINATOR '\\t' 
     Match'''
 
 '''

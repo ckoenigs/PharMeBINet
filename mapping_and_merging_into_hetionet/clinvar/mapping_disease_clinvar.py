@@ -58,7 +58,7 @@ def load_genes_from_database_and_add_to_dict():
 
 cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
 
-query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/clinvar/disease/%s.tsv" As line FIELDTERMINATOR '\\t' 
+query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/clinvar/disease/%s.tsv" As line FIELDTERMINATOR '\\t' 
     Match '''
 
 

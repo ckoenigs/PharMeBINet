@@ -279,7 +279,7 @@ def generate_rela_tsv_and_cypher_queries():
             all_existing_pairs.add((gene_id, dict_old_pc_to_new[identifier]))
 
     # general start of queries
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/pathway/output/%s.tsv" As line FIELDTERMINATOR '\\t' '''
+    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/pathway/output/%s.tsv" As line FIELDTERMINATOR '\\t' '''
     # generate cypher for node creation
     query_node_middle = 'Create (n:Pathway{'
     for head in header:

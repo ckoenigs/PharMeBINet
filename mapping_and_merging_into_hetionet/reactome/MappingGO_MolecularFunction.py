@@ -102,7 +102,7 @@ generate connection between mapping gomolfunc of reactome and hetionet and gener
 
 def create_cypher_file():
     cypher_file = open('output/cypher.cypher', 'a', encoding="utf-8")
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/reactome/gomolfunc/mapped_gomolfunc.tsv" As line FIELDTERMINATOR "\\t"
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/reactome/gomolfunc/mapped_gomolfunc.tsv" As line FIELDTERMINATOR "\\t"
      Match (d: MolecularFunction {identifier: line.id_hetionet}),(c:GO_MolecularFunction_reactome{accession:line.id}) Create (d)-[:equal_to_reactome_gomolfunc]->(c)  SET d.resource = split(line.resource, '|'), d.reactome = "yes";\n'''
     query = query %(path_of_directory)
     cypher_file.write(query)

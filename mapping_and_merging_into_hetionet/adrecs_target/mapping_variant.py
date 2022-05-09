@@ -73,11 +73,11 @@ def integrate_information_into_dict(dict_node_id_to_resource):
 
 def prepare_query(file_name, file_name_new, db_label, adrecs_label):
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/%s/%s" As line Fieldterminator '\\t' MATCH (n:%s{identifier:line.variant_id}), (g:%s{Variation_ID:line.adr_variant_id}) Set n.resource=split(line.resource,"|"), n.adrecs_target='yes' Create (n)-[:equal_adrecs_target_variant{how_mapped:line.how_mapped}]->(g);\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/%s/%s" As line Fieldterminator '\\t' MATCH (n:%s{identifier:line.variant_id}), (g:%s{Variation_ID:line.adr_variant_id}) Set n.resource=split(line.resource,"|"), n.adrecs_target='yes' Create (n)-[:equal_adrecs_target_variant{how_mapped:line.how_mapped}]->(g);\n'''
     query = query % (director, file_name, db_label, adrecs_label)
     cypher_file.write(query)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/%s/%s" As line Fieldterminator '\\t' MATCH (g:%s{Variation_ID:line.identifier}) Create (c:Variant :GeneVariant{identifier:line.identifier, adrecstarget:'yes', resource:["ADReCS-Target"], xrefs:["dbSNP:"+line.identifier] ,license:"%s" , source:"dbSNP from ADReCSV-Target"})-[:equal_adrecs_target_variant{how_mapped:'new'}]->(g);\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/%s/%s" As line Fieldterminator '\\t' MATCH (g:%s{Variation_ID:line.identifier}) Create (c:Variant :GeneVariant{identifier:line.identifier, adrecstarget:'yes', resource:["ADReCS-Target"], xrefs:["dbSNP:"+line.identifier] ,license:"%s" , source:"dbSNP from ADReCSV-Target"})-[:equal_adrecs_target_variant{how_mapped:'new'}]->(g);\n'''
     query = query % (director, file_name_new, adrecs_label, 'license')
     cypher_file.write(query)
 

@@ -119,7 +119,7 @@ def create_cypher_query_and_tsv_file(rela_name, rela_direction, label_from):
     # file name
     file_name = rela_name + '_Compound_' + label_from
 
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/drugbank/rela_protein/%s.tsv" As line Fieldterminator '\\t' Match (a:%s{identifier:line.identifier1}),  (c:Chemical{identifier:line.identifier2}) '''
+    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/drugbank/rela_protein/%s.tsv" As line Fieldterminator '\\t' Match (a:%s{identifier:line.identifier1}),  (c:Chemical{identifier:line.identifier2}) '''
     query_start = query_start % (file_name, label_from)
     query_create = ''
     query_update = ''

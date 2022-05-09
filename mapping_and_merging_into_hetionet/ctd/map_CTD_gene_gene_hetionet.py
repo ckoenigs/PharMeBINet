@@ -111,7 +111,7 @@ Generate cypher and tsv for generating the new nodes and the relationships
 def generate_files():
     # generate cyoher file
     cypher_file = open('output/cypher.cypher', 'w',encoding='utf-8')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ctd/gene/mapping.tsv" As line  FIELDTERMINATOR '\\t' Match (c:Gene{ identifier:line.GeneIDHetionet}), (n:CTD_gene{gene_id:line.GeneIDCTD}) Create (c)-[:equal_to_CTD_gene]->(n) Set c.ctd="yes", c.resource=c.resource+"CTD", c.xrefs=split(line.xrefs,'|'), c.url_ctd=" http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/ctd/gene/mapping.tsv" As line  FIELDTERMINATOR '\\t' Match (c:Gene{ identifier:line.GeneIDHetionet}), (n:CTD_gene{gene_id:line.GeneIDCTD}) Create (c)-[:equal_to_CTD_gene]->(n) Set c.ctd="yes", c.resource=c.resource+"CTD", c.xrefs=split(line.xrefs,'|'), c.url_ctd=" http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID;\n'''
     cypher_file.write(query)
 
     global writer

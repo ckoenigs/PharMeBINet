@@ -118,11 +118,11 @@ def create_cypher_file(file_name, file_name_new, label):
     :return:
     """
     # b.resource=split(line.resource,'|'),
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/%s" As line FIELDTERMINATOR "\\t" Match (g:Protein{identifier:line.node_id_2}),(b:%s{identifier:line.node_id_1}) Set  b.uniprot='yes' Create (g)-[:PARTICIPATES_Pp%s{resource:['UniProt'],source:'UniProt', uniprot:'yes', license:'CC BY 4.0', url:'https://www.uniprot.org/uniprot/'+line.node_id_2}]->(b);\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/uniprot/%s" As line FIELDTERMINATOR "\\t" Match (g:Protein{identifier:line.node_id_2}),(b:%s{identifier:line.node_id_1}) Set  b.uniprot='yes' Create (g)-[:PARTICIPATES_Pp%s{resource:['UniProt'],source:'UniProt', uniprot:'yes', license:'CC BY 4.0', url:'https://www.uniprot.org/uniprot/'+line.node_id_2}]->(b);\n'''
     query = query % (file_name_new, label, dict_label_to_rela_short[label])
     cypher_file.write(query)
 
-    query = '''LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/uniprot/%s" As line FIELDTERMINATOR "\\t" MATCH (d:%s{identifier:line.node_id_1})-[r]-(c:Protein{identifier:line.node_id_2}) Where not exists(r.not) and type(r) in ["%s"] Set  r.resource=split(line.resource,'|'), r.uniprot='yes';\n'''
+    query = '''LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/uniprot/%s" As line FIELDTERMINATOR "\\t" MATCH (d:%s{identifier:line.node_id_1})-[r]-(c:Protein{identifier:line.node_id_2}) Where not exists(r.not) and type(r) in ["%s"] Set  r.resource=split(line.resource,'|'), r.uniprot='yes';\n'''
     query = query % (path_of_directory, file_name, label, '","'.join(dict_go_to_rela_types[label]))
     cypher_file.write(query)
 

@@ -51,7 +51,7 @@ def generate_files(label, cypher_file):
     tsv_not_mapping.writerow(header)
 
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/go/%s.tsv" As line FIELDTERMINATOR '\\t' 
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/go/%s.tsv" As line FIELDTERMINATOR '\\t' 
         Match (n:protein_go{identifier:line.identifier}), (v:%s{identifier:line.other_id}) Set v.go='yes', v.resource=split(line.resource,"|") Create (v)-[:equal_to_go_%s{how_mapped:line.mapped_with}]->(n);\n'''
     query = query % (path_of_directory, file_name, label, label.lower())
     cypher_file.write(query)

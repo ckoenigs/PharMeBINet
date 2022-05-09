@@ -83,17 +83,17 @@ def write_files(path_of_directory):
     header_new = [ 'id']
     csv_new.writerow(header_new)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/atc/%s" As line FIELDTERMINATOR '\\t' 
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/atc/%s" As line FIELDTERMINATOR '\\t' 
             Match (n:atc{identifier:line.id}), (v:Compound{identifier:line.compound_id}) Create (v)-[:equal_to_atc]->(n);\n'''
     query = query % (path_of_directory, file_name_mapped)
     cypher_file.write(query)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/atc/%s" As line FIELDTERMINATOR '\\t' 
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/atc/%s" As line FIELDTERMINATOR '\\t' 
                 Match (n:atc{identifier:line.id}), (v:PharmacologicClass{identifier:line.pc_id}) Set v.atc_codes=[line.id], v.resource=split(line.resource,"|"), v.drugbank="yes" Create (v)-[:equal_to_atc]->(n);\n'''
     query = query % (path_of_directory, file_name_mapped_pc)
     cypher_file.write(query)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/atc/%s" As line FIELDTERMINATOR '\\t' 
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/atc/%s" As line FIELDTERMINATOR '\\t' 
                 Match (n:atc{identifier:line.id}) Create (v:PharmacologicClass{identifier:line.id, drugbank:'yes', resource:['DrugBank'], source:'ATC from DrugBankT', url:'http://identifiers.org/atc:'+line.id, name:n.name, license:'Attribution-NonCommercial 4.0 International', class_type:["ATC code"], atc_codes:[line.id]}) Create (v)-[:equal_to_atc]->(n);\n'''
     query = query % (path_of_directory, file_name_new)
     cypher_file.write(query)

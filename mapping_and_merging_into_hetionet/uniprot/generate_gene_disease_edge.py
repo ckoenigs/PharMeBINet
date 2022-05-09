@@ -70,11 +70,11 @@ def get_pairs_information():
     # query gene-disease association
 
     file_cypher = open('output/cypher_edge.cypher', 'w')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/%s" As line FIELDTERMINATOR "\\t" MATCH (b:Disease{identifier:line.disease_id})-[r:ASSOCIATES_DaG]->(g:Gene{identifier:line.gene_ids}) Where not exists(r.pubMed_ids) Set r.pubMed_ids=[] ;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/uniprot/%s" As line FIELDTERMINATOR "\\t" MATCH (b:Disease{identifier:line.disease_id})-[r:ASSOCIATES_DaG]->(g:Gene{identifier:line.gene_ids}) Where not exists(r.pubMed_ids) Set r.pubMed_ids=[] ;\n'''
     query = query % (file_name)
     file_cypher.write(query)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/%s" As line FIELDTERMINATOR "\\t" MATCH (g:Gene{identifier:line.gene_ids}),(b:Disease{identifier:line.disease_id}) Merge (b)-[r:ASSOCIATES_DaG]->(g) On Create Set r.source="UniProt", r.resource=["UniProt"], r.uniprot='yes', r.kind_of_rela=split(line.notes,'|'), r.references=split(r.references,'|'), r.pubMed_ids=split(line.pubmeds,'|'), r.sources=split(line.source,"|"), r.url="https://www.uniprot.org/uniprot/"+line.uniprot_ids, r.license='CC BY 4.0' On Match Set r.uniprot="yes", r.resource=r.resource+"UniProt",  r.pubMed_ids=r.pubMed_ids+split(line.pubmeds,'|'), r.kind_of_rela=split(line.notes,'|'), r.references=split(r.references,'|') ;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/uniprot/%s" As line FIELDTERMINATOR "\\t" MATCH (g:Gene{identifier:line.gene_ids}),(b:Disease{identifier:line.disease_id}) Merge (b)-[r:ASSOCIATES_DaG]->(g) On Create Set r.source="UniProt", r.resource=["UniProt"], r.uniprot='yes', r.kind_of_rela=split(line.notes,'|'), r.references=split(r.references,'|'), r.pubMed_ids=split(line.pubmeds,'|'), r.sources=split(line.source,"|"), r.url="https://www.uniprot.org/uniprot/"+line.uniprot_ids, r.license='CC BY 4.0' On Match Set r.uniprot="yes", r.resource=r.resource+"UniProt",  r.pubMed_ids=r.pubMed_ids+split(line.pubmeds,'|'), r.kind_of_rela=split(line.notes,'|'), r.references=split(r.references,'|') ;\n'''
     query =query %(file_name)
     file_cypher.write(query)
 

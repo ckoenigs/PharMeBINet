@@ -67,7 +67,7 @@ Load all variation sort the ids into the right tsv, generate the queries, and ad
 def load_all_drug_response_and_finish_the_files():
     cypher_file = open('drug/cypher_drug.cypher', 'w', encoding='utf-8')
 
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/clinvar/drug/%s.tsv" As line FIELDTERMINATOR '\\t' 
+    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/clinvar/drug/%s.tsv" As line FIELDTERMINATOR '\\t' 
         Match (c:Chemical{identifier:line.chemical_id}), (t:trait_DrugResponse_ClinVar{identifier:line.clinvar_id}) Set c.clinvar='yes', c.resource=split(line.resource,"|") Create (c)-[:equal_to_clinvar_drug]->(t);\n '''
     query_start = query_start % (path_of_directory, 'chemical_drug')
     cypher_file.write(query_start)

@@ -117,7 +117,7 @@ def generate_cypher_file(file_name):
     :return:
     """
     cypher_file = open('output/cypher.cypher', 'w')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/drugcentral/%s" As line  FIELDTERMINATOR '\\t'  MATCH (n:DC_Product), (c:Product{identifier:line.id_hetionet}) Where ID(n)= ToInteger(line.node_id)  Set c.drugcentral='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_Product_drugcentral{how_mappeds:line.how_mapped}]->(n); \n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/drugcentral/%s" As line  FIELDTERMINATOR '\\t'  MATCH (n:DC_Product), (c:Product{identifier:line.id_hetionet}) Where ID(n)= ToInteger(line.node_id)  Set c.drugcentral='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_Product_drugcentral{how_mappeds:line.how_mapped}]->(n); \n'''
     query = query % (path_of_directory, file_name)
     cypher_file.write(query)
     cypher_file.close()

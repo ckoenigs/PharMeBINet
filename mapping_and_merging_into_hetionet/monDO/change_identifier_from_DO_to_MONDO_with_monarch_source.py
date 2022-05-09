@@ -211,7 +211,7 @@ generate cypher queries to integrate and merge disease nodes and create the subc
 
 
 def generate_cypher_queries():
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/monDO/output/%s.tsv" As line FIELDTERMINATOR '\\t' Match (a:disease{id:line.id}) '''
+    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/monDO/output/%s.tsv" As line FIELDTERMINATOR '\\t' Match (a:disease{id:line.id}) '''
 
     query_end = '''Create (n)-[:equal_to_monDO]->(a); \n'''
     query_update = ''
@@ -248,7 +248,7 @@ def generate_cypher_queries():
     query_new = query_start + 'Create (n:Disease{' + query_new + 'mondo:"yes", resource:["MonDO"], url:"https://monarchinitiative.org/disease/"+ line.identifier , license:"CC-BY-SA 3.0", source:"MonDO"}) ' + query_end
     query_new = query_new % ('new_nodes')
     cypher_file.write(query_new)
-    query_rela = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/monDO/output/%s.tsv" As line FIELDTERMINATOR '\\t' Match (a:Disease{identifier:line.id_1}),(b:Disease{identifier:line.id_2}) Merge (a)-[r:IS_A_DiaD]->(b) On CREATE Set r.unbiased=false, r.url="https://monarchinitiative.org/disease/"+ line.id_1,  r.source="Monarch Disease Ontology", r.resource=['MonDO'] , r.mondo='yes', r.license="CC-BY-SA 3.0" On Match Set r.resource=r.resource+'MonDO', r.mondo='yes' ;\n'''
+    query_rela = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/monDO/output/%s.tsv" As line FIELDTERMINATOR '\\t' Match (a:Disease{identifier:line.id_1}),(b:Disease{identifier:line.id_2}) Merge (a)-[r:IS_A_DiaD]->(b) On CREATE Set r.unbiased=false, r.url="https://monarchinitiative.org/disease/"+ line.id_1,  r.source="Monarch Disease Ontology", r.resource=['MonDO'] , r.mondo='yes', r.license="CC-BY-SA 3.0" On Match Set r.resource=r.resource+'MonDO', r.mondo='yes' ;\n'''
     query_rela = query_rela % ('rela')
     cypher_file.write(query_rela)
 

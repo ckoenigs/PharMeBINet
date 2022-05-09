@@ -336,11 +336,11 @@ def generate_cypher_file():
         csv_writer = csv.writer(file, delimiter='\t')
         csv_writer.writerow(['disease_id', 'pharmgkb_id', 'resource', 'how_mapped', 'xrefs'])
         dict_label_to_tsv_mapping[label] = csv_writer
-        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/pharmGKB/%s" As line  FIELDTERMINATOR '\\t'  MATCH (n:PharmGKB_Phenotype{id:line.pharmgkb_id}), (c:%s{identifier:line.disease_id})   Set c.pharmgkb='yes', c.xrefs=split(line.xrefs,"|"),  c.resource=split(line.resource,'|') Create (c)-[:equal_to_disease_pharmgkb{how_mapped:line.how_mapped}]->(n); \n'''
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/pharmGKB/%s" As line  FIELDTERMINATOR '\\t'  MATCH (n:PharmGKB_Phenotype{id:line.pharmgkb_id}), (c:%s{identifier:line.disease_id})   Set c.pharmgkb='yes', c.xrefs=split(line.xrefs,"|"),  c.resource=split(line.resource,'|') Create (c)-[:equal_to_disease_pharmgkb{how_mapped:line.how_mapped}]->(n); \n'''
 
         query = query % (file_name, label)
         cypher_file.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/pharmGKB/%s" As line  FIELDTERMINATOR '\\t'  MATCH (n:PharmGKB_Phenotype{id:line.pharmgkb_id}) Create (c:Phenotype{identifier:line.pharmgkb_id, name:n.name, synonyms:n.alternate_names ,xrefs:split(line.xrefs,'|'), source:"PharmGKB", url:'https://www.pharmgkb.org/disease/'+line.pharmgkb_id , license:"%s", pharmgkb:'yes', resource:['PharmGKB']})  Create (c)-[:equal_to_disease_pharmgkb{how_mapped:'new'}]->(n); \n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/pharmGKB/%s" As line  FIELDTERMINATOR '\\t'  MATCH (n:PharmGKB_Phenotype{id:line.pharmgkb_id}) Create (c:Phenotype{identifier:line.pharmgkb_id, name:n.name, synonyms:n.alternate_names ,xrefs:split(line.xrefs,'|'), source:"PharmGKB", url:'https://www.pharmgkb.org/disease/'+line.pharmgkb_id , license:"%s", pharmgkb:'yes', resource:['PharmGKB']})  Create (c)-[:equal_to_disease_pharmgkb{how_mapped:'new'}]->(n); \n'''
 
     query = query % (file_name_new, license)
     cypher_file.write(query)

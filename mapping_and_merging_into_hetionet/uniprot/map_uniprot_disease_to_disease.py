@@ -75,7 +75,7 @@ def gather_uniprot_disease_infos_and_add_to_file():
     # query gene-disease association
 
     file_cypher = open('output/cypher.cypher', 'a')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/%s" As line FIELDTERMINATOR "\\t" MATCH (g:Disease_Uniprot{identifier:line.uniprot_disease_id}),(b:Disease{identifier:line.disease_id}) Create (b)-[r:equal_to_uniprot_disease]->(g) Set b.resource=split(line.resource,"|"), b.uniprot='yes' ;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/uniprot/%s" As line FIELDTERMINATOR "\\t" MATCH (g:Disease_Uniprot{identifier:line.uniprot_disease_id}),(b:Disease{identifier:line.disease_id}) Create (b)-[r:equal_to_uniprot_disease]->(g) Set b.resource=split(line.resource,"|"), b.uniprot='yes' ;\n'''
     query =query %(file_name)
     file_cypher.write(query)
 

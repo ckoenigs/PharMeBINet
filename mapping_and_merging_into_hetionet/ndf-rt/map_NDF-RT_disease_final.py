@@ -275,7 +275,7 @@ all Disease which are not mapped with a ndf-rt disease get the propertie no
 
 def integrate_ndf_rt_disease_into_hetionet():
     cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ndf-rt/disease/mapped.tsv" As line FIELDTERMINATOR '\\t'  MATCH (n:NDFRT_DISEASE_KIND{code:line.code}), (d:Disease{identifier:line.disease_id}) Set n.MONDO_IDs=split(line.mondo_ids,'|'), n.how_mapped=line.how_mapped, d.resource=split(line.resource,'|'), d.ndf_rt='yes'  Create (d)-[:equal_to_Disease_NDF_RT]->(n);\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/ndf-rt/disease/mapped.tsv" As line FIELDTERMINATOR '\\t'  MATCH (n:NDFRT_DISEASE_KIND{code:line.code}), (d:Disease{identifier:line.disease_id}) Set n.MONDO_IDs=split(line.mondo_ids,'|'), n.how_mapped=line.how_mapped, d.resource=split(line.resource,'|'), d.ndf_rt='yes'  Create (d)-[:equal_to_Disease_NDF_RT]->(n);\n'''
     cypher_file.write(query)
     cypher_file.close()
     file = open('disease/mapped.tsv', 'w', encoding='utf-8')

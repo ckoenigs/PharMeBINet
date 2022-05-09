@@ -189,7 +189,7 @@ def path_to_rela_and_add_to_dict(rela, first, second):
 
     query_to_check_if_this_rela_exist_in_hetionet = '''Match p=(b:Chemical)'''
 
-    query_first_part = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ctd/''' + path + '''" As line  FIELDTERMINATOR '\\t' Match (b:Chemical{identifier:line.ChemicalID}), '''
+    query_first_part = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/ctd/''' + path + '''" As line  FIELDTERMINATOR '\\t' Match (b:Chemical{identifier:line.ChemicalID}), '''
     if first == 'gene' or second == 'gene':
         query_middle_1 = ''' (n:Gene{identifier:line.GeneID})'''
         part = '''(n:Gene)'''

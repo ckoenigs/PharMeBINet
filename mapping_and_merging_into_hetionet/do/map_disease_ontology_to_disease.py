@@ -152,7 +152,7 @@ Also create cypher query for generate is a relationships between Diseases
 
 def generate_cypher_file():
     cypher_file = open('cypher.cypher', 'w', encoding='utf-8')
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/do/output/%s.tsv" As line FIELDTERMINATOR '\\t' '''
+    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/do/output/%s.tsv" As line FIELDTERMINATOR '\\t' '''
 
     query_middel_set = ''
     query_middel_set_alt = ''

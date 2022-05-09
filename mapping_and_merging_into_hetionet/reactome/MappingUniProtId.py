@@ -99,7 +99,7 @@ generate connection between mapping ReferenceEntity of reactome and Protein heti
 
 def create_cypher_file():
     cypher_file = open('output/cypher_mapping2.cypher','a', encoding="utf-8")
-    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/reactome/uniprotIDs/mapped_uniprotIDs.tsv" As line FIELDTERMINATOR "\\t" MATCH (d:Protein{identifier:line.id_hetionet}),(c:ReferenceEntity_reactome{identifier:line.id}) CREATE (d)-[: equal_to_reactome_uniprot]->(c) SET d.resource = split(line.resource, '|'), d.reactome = "yes";\n'''
+    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/reactome/uniprotIDs/mapped_uniprotIDs.tsv" As line FIELDTERMINATOR "\\t" MATCH (d:Protein{identifier:line.id_hetionet}),(c:ReferenceEntity_reactome{identifier:line.id}) CREATE (d)-[: equal_to_reactome_uniprot]->(c) SET d.resource = split(line.resource, '|'), d.reactome = "yes";\n'''
     query= query %(path_of_directory)
     cypher_file.write(query)
 

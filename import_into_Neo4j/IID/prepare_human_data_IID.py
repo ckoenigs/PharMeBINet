@@ -88,7 +88,7 @@ def node_into_file(identifier, symbols, csv_file):
     if identifier not in set_protein_ids:
         symbols = symbols.replace(';', '|')
         if '-' == symbols:
-            symbols == ''
+            symbols = ''
         csv_file.writerow([identifier, symbols])
         set_protein_ids.add(identifier)
 

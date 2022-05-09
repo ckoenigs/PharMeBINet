@@ -67,7 +67,7 @@ def write_info_into_tsv_file():
     # query gene-disease association
 
     file_cypher = open('output/cypher_edge.cypher', 'a')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/uniprot/%s" As line FIELDTERMINATOR '\\t' 
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/uniprot/%s" As line FIELDTERMINATOR '\\t' 
             Match (p1:Protein{identifier:line.protein_id1}), (p2:Protein{identifier:line.protein_id2}) Create (p1)-[:INTERACTS_PiI{source:"UniProt", license:"CC BY 4.0", resource:["UniProt"], uniprot:'yes'}]->(b:Interaction{source:"UniProt", identifier:line.interaction_id,  license:"CC BY 4.0", resource:["UniProt"], uniprot:'yes', iso_of_protein_from:line.iso_of_protein_from, url:"https://www.uniprot.org/uniprot/"+p1.protein_id1 , iso_of_protein_to:line.iso_of_protein_to, interaction_ids:split(line.interaction_ids, "|"), experiments:split(line.experiments, "|"), node_edge:true})-[:INTERACTS_IiP{source:"UniProt", license:"CC BY 4.0", resource:["UniProt"], uniprot:'yes'}]->(p2);\n '''
     query = query % (path_of_directory, file_name)
     file_cypher.write(query)

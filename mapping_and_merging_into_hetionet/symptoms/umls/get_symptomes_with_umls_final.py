@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Thu May 18 09:18:08 2017
-
 @author: Cassandra
 """
 sys.path.append("../..")
@@ -11,6 +10,7 @@ import sys
 import datetime
 import threading
 import time
+import csv
 
 # encoding=utf8
 reload(sys)
@@ -25,7 +25,7 @@ dict_type_name_in_mrconso = {
 }
 
 
-# class of thread
+# class of thread for finding synonyms
 class synonymThread(threading.Thread):
     def __init__(self, threadID, name, key):
         threading.Thread.__init__(self)
@@ -37,6 +37,7 @@ class synonymThread(threading.Thread):
         #      print "Starting " + self.name
         # Get lock to synchronize threads
         threadLock1.acquire()
+        # the function for finding synonyms
         find_synonyms(self.key)
         #      print "Ending " + self.name
         #      print_time(self.name, self.counter, 3)
@@ -44,7 +45,7 @@ class synonymThread(threading.Thread):
         threadLock1.release()
 
 
-# class of thread
+# class of thread for get symptoms
 class symptomFinderThread(threading.Thread):
     def __init__(self, threadID, name, key_cui, list_cui_with_synonyms):
         threading.Thread.__init__(self)
@@ -64,6 +65,26 @@ class symptomFinderThread(threading.Thread):
         threadLock2.release()
 
 
+# class of thread for
+class styThread(threading.Thread):
+    def __init__(self, threadID, mondo_id, umls_cuis, umls_string):
+        threading.Thread.__init__(self)
+        self.threadID = threadID
+        self.mondo_id = mondo_id
+        self.umls_cuis = umls_cuis
+        self.umls_string = umls_string
+
+    def run(self):
+        #      print "Starting " + self.name
+        # Get lock to synchronize threads
+        threadLock3.acquire()
+        take_disease_umls_cui_and_find_sty(self.mondo_id, self.umls_cuis, self.umls_string)
+        #      print "Ending " + self.name
+        #      print_time(self.name, self.counter, 3)
+        # Free lock to release next thread
+        threadLock3.release()
+
+
 # combine two list without duplication
 def combin(a, b):
     combinList = a + [i for i in b if i not in a]
@@ -75,11 +96,12 @@ def combin(a, b):
 def database_connection():
     # create connection with mysql database
     global con
-    con = mdb.connect('127.0.0.1', 'root', 'Za8p7Tf', 'umls')
+    con = mdb.connect('127.0.0.1', 'root', 'dadmin17', 'umls')
+    # con = mdb.connect('127.0.0.1', 'root', 'Za8p7Tf', 'umls')
 
-    authenticate("localhost:7474", "neo4j", "test")
+    authenticate("bimi:7475", "ckoenigs", "test")
     global g
-    g = Graph("http://localhost:7474/db/data/")
+    g = Graph("http://bimi:7475/db/data/",bolt=False)
 
 
 # dictionary of all diseases in hetionet with cui as key and mondo as value
@@ -108,59 +130,128 @@ dict_sty_counter = {}
 # dictionary cui to sty
 dict_cui_to_sty = {}
 
+#dictinonary of mond to name
+dict_mondo_to_name={}
+
+# maximal thread number
+max_thread_number=2000
+
+# list of not mapped with xref
+list_not_mapped_xref=[]
+
+# file with cuis with multiple mondos
+file_cui_with_multiple_mondos= open('cui_with_multiple_mondos.txt','w')
+file_cui_with_multiple_mondos.write('cui\tmondos\tnames\n')
+
+'''
+take one umls for every disease but remember all the other cuis
+the for the umls cui find the semantic type and write this infromation into a file
+and in the last step add the umls cui with the mondo id in the diseases dictionary
+'''
+
+
+def take_disease_umls_cui_and_find_sty(mondo, umls_cuis, umls_string):
+    global counter, time_sty, count_cuis_double
+    counter += 1
+
+    # the strings umls cuis are from form umls:xxxxxx and only the xxxxx are needed
+    list_umls_set_cuis = set([])
+    if umls_string:
+        for umls_cui in umls_cuis:
+            if umls_cui == '':
+                continue
+            cui = umls_cui.split(':')[1]
+            list_umls_set_cuis.add(cui)
+            cui = umls_cuis[0].split(':')[1]
+    else:
+        list_umls_set_cuis = set(umls_cuis)
+        cui = umls_cuis[0]
+
+    # remeber all cuis for a mondo
+    dict_mondo_to_umls_cuis[mondo] = list(list_umls_set_cuis)
+
+    start_sty = time.time()
+    # find the semantic type of the first cui
+    cur = con.cursor()
+    query = ("SELECT sty FROM MRSTY WHERE cui='%s' ; ") % (cui)
+    rows_counter = cur.execute(query)
+    if rows_counter > 0:
+        for sty, in cur:
+            file_types.write(cui + '\t' + sty + '\n')
+            if sty in dict_sty_counter:
+                dict_sty_counter[sty] += 1
+            else:
+                dict_sty_counter[sty] = 1
+            if cui in dict_cui_to_sty:
+                dict_cui_to_sty[cui].add(sty)
+            else:
+                dict_cui_to_sty[cui] = set([sty])
+    time_sty += time.time() - start_sty
+    # add cui to the dictionary of diseases with mondo as values
+    if not cui in dict_of_all_diseases:
+        dict_of_all_diseases[cui] = [mondo]
+    else:
+        count_cuis_double += 1
+        dict_of_all_diseases[cui].append(mondo)
+
+
 '''
 load from hetionet all disease in and make a dictionary with the mondo and umls cui
-use only the first cui, because the othere will befound with the search of the synonyms
+use only the first cui, because the other will be found with the search of the synonyms
 Where n.identifier='DOID:6898' or n.identifier='DOID:0050879'
 '''
 
 
 def load_in_hetionet_disease_in_dictionary():
-    query = '''MATCH (n:Disease) Where not n.identifier in ['MONDO:0000001','MONDO:0002254'] RETURN n.identifier,n.umls_cuis , n.xrefs Limit 10000'''
+    # get all disease from neo4j with exception disease (MONDO:0000001) and synodrome (MONDO:0002254)
+    query = '''MATCH (n:Disease) Where not n.identifier in ['MONDO:0000001','MONDO:0002254'] RETURN n.identifier,n.umls_cuis , n.xrefs, n.name '''
     results = g.run(query)
+
+    global counter, count_cuis_double, time_sty, file_types, list_diseases_cuis
+    # count the number of disease which have a umls cui
     counter = 0
+    # count how many mondos mapped to the same cuu
     count_cuis_double = 0
+    # generate file with all semantic types
     file_types = open('cui_types_of_disease.txt', 'w')
     file_types.write('cui\tsty\n')
     start = time.time()
-    time_sty=0.0
-    for mondo, umls_cuis, xrefs, in results:
+    time_sty = 0.0
+
+    global threadLock3
+    threadLock3 = threading.Lock()
+
+    # all threads
+    threads_sty = []
+
+    thread_id = 1
+
+    # counter all mondos
+    counter_mondos=0
+
+    #go through all results from the neo4j query
+    for mondo, umls_cuis, xrefs, name, in results:
+        counter_mondos+=1
         #        print(mondo)
         #        print(umls_cuis)
 
+        # add all mondos with umls cui into a dictionary
         if len(umls_cuis) > 0 and not umls_cuis[0] == '':
-            counter += 1
-
-            list_umls_set_cuis = set([])
-            for umls_cui in umls_cuis:
-                if umls_cui == '':
-                    continue
-                cui = umls_cui.split(':')[1]
-                list_umls_set_cuis.add(cui)
-
-            dict_mondo_to_umls_cuis[mondo] = list(list_umls_set_cuis)
-            cui = umls_cuis[0].split(':')[1]
-            start_sty = time.time()
-            cur = con.cursor()
-            query = ("SELECT sty FROM MRSTY WHERE cui='%s' ; ") % (cui)
-            rows_counter = cur.execute(query)
-            if rows_counter > 0:
-                for sty, in cur:
-                    file_types.write(cui + '\t' + sty + '\n')
-                    if sty in dict_sty_counter:
-                        dict_sty_counter[sty] += 1
-                    else:
-                        dict_sty_counter[sty] = 1
-                    if cui in dict_cui_to_sty:
-                        dict_cui_to_sty[cui].add(sty)
-                    else:
-                        dict_cui_to_sty[cui] = set([sty])
-            time_sty+= time.time()-start_sty
-            if not cui in dict_of_all_diseases:
-                dict_of_all_diseases[cui] = [mondo]
-            else:
-                count_cuis_double += 1
-                dict_of_all_diseases[cui].append(mondo)
+            # create thread
+            thread = styThread(thread_id, mondo, umls_cuis, True)
+            # start thread
+            thread.start()
+            # add to list
+            threads_sty.append(thread)
+            # increase thread id
+            thread_id += 1
+            if thread_id%max_thread_number==0:
+                # wait for all threads
+                for t in threads_sty:
+                    t.join()
+                # print(thread_id)
+                # print('waited')
+        # if not remember the xref
         else:
             #            print('ne')
             #            print(mondo)
@@ -169,12 +260,18 @@ def load_in_hetionet_disease_in_dictionary():
                 dict_mondo_to_xrefs[mondo] = xrefs
             else:
                 list_mondo_without_refs.append(mondo)
+        dict_mondo_to_name[mondo]=name
+
+    # wait for all threads
+    for t in threads_sty:
+        t.join()
 
     print('how often a cuis is found:' + str(counter))
     print('how often a cui appears double:' + str(count_cuis_double))
     print('length of dict with cui and list of mondos:' + str(len(dict_of_all_diseases)))
     print('length of dict wit mondo and xref list:' + str(len(dict_mondo_to_xrefs)))
     print('length of disease ontology without a ref:' + str(len(list_mondo_without_refs)))
+    print('number of mondos:'+str(counter_mondos))
     print('\t neo4j with sty : %.4f seconds' % (time.time() - start))
     print('\t neo4j only sty : %.4f seconds' % (time_sty))
 
@@ -184,101 +281,70 @@ def load_in_hetionet_disease_in_dictionary():
     print(list_doi[0:5])
     j = 0
     start = time.time()
+    # count name mapping
+    count_name_mapping=0
+    #count not name mapped
+    count_not_name_mapped=0
+    # count all steps
+    count_steps_map_with_xref=0
+    # counter map with xref
+    counter_map_with_xref=0
+    # counter not map with xref
+    counter_not_map_with_xref=0
+    # go through all mondos without umls cui  and try to get umls cui with the xrefs
     for mondo, xrefs in dict_mondo_to_xrefs.items():
-        has_found_a_cui = False
+        count_steps_map_with_xref+=1
+        # variable which shows if something was founded with xref
+        found_cui_with_xref = False
         for xref in xrefs:
-            if has_found_a_cui:
-                break
             splitted = xref.split(':')
             if len(splitted) == 2:
                 sab = xref.split(':')[0]
                 code = xref.split(':')[1]
                 cur = con.cursor()
                 if sab in dict_type_name_in_mrconso:
-
                     types = dict_type_name_in_mrconso[sab]
                     typstring = '","'.join(types)
-                    query = ('Select CUI From MRCONSO Where SAB in ("%s") AND CODE= "%s" ')
+                    query = ('Select CUI From MRCONSO Where SAB in ("%s") AND CODE= "%s"; ')
                     query = query % (typstring, code)
                 else:
                     if len(sab.split(',')) > 1:
                         sab = sab.split(',')[len(sab.split(',')) - 1].split("'")[1]
-                    query = ('Select CUI From MRCONSO Where SAB= "%s" AND CODE= "%s" ')
+                    query = ('Select CUI From MRCONSO Where SAB= "%s" AND CODE= "%s"; ')
                     query = query % (sab, code)
                 #                    print(mondo)
                 #                    print(code)
                 #                    print(query)
+		# print(query)
                 rows_counter = cur.execute(query)
                 if rows_counter > 0:
+                    counter_map_with_xref+=1
+                    umls_cui = []
                     for cui, in cur:
-                        i += 1
-                        dict_mondo_to_umls_cuis[mondo] = [cui]
-                        cur = con.cursor()
-                        query = ("SELECT sty FROM MRSTY WHERE cui='%s' ; ") % (cui)
-                        rows_counter = cur.execute(query)
-                        if rows_counter > 0:
-                            for sty, in cur:
-                                file_types.write(cui + '\t' + sty + '\n')
-                                if sty in dict_sty_counter:
-                                    dict_sty_counter[sty] += 1
-                                else:
-                                    dict_sty_counter[sty] = 1
-                                if cui in dict_cui_to_sty:
-                                    dict_cui_to_sty[cui].add(sty)
-                                else:
-                                    dict_cui_to_sty[cui] = set([sty])
-                        if not cui in dict_of_all_diseases:
-                            dict_of_all_diseases[cui] = [mondo]
+                        umls_cui.append(cui)
 
-                            has_found_a_cui = True
-                            break
-                        else:
-                            dict_of_all_diseases[cui].append(mondo)
-                            has_found_a_cui = True
-                            break
+                    take_disease_umls_cui_and_find_sty( mondo, umls_cuis, False)
+                    found_cui_with_xref=True
+                    break
+
+        if not found_cui_with_xref:
+            counter_not_map_with_xref+=1
+            query= ('Select CUI FROM MRCONSO WHERE STR="%s";')
+            query=query %(dict_mondo_to_name[mondo])
+            cur = con.cursor()
+            rows_counter=cur.execute(query)
+            if rows_counter>0:
+                count_name_mapping+=1
+                umls_cui = []
+                found_cui_with_xref = True
+                for cui, in cur:
+                    umls_cui.append(cui)
+
+                take_disease_umls_cui_and_find_sty(mondo, umls_cuis, False)
             else:
-                #                 print(xref)
-                # some of the xref has a strange form and have to be changed
-                xref = xref.replace("'", "")
-                refs = xref.split(',')
-                for ref in refs:
-                    if has_found_a_cui:
-                        break
-                    #                    print(ref)
-                    if len(ref.split(':')) == 2:
-                        sab = ref.split(':')[0]
-                        code = ref.split(':')[1]
-                        cur = con.cursor()
-                        if sab in dict_type_name_in_mrconso:
+                count_not_name_mapped+=1
 
-                            types = dict_type_name_in_mrconso[sab]
-                            typstring = '","'.join(types)
-                            query = ('Select CUI From MRCONSO Where SAB in ("%s") AND CODE= "%s" ')
-                            query = query % (typstring, code)
-                        else:
-                            if len(sab.split(',')) > 1:
-                                sab = sab.split(',')[len(sab.split(',')) - 1].split("'")[1]
-                            query = ("Select CUI From MRCONSO Where SAB= '%s' AND CODE= '%s' ")
-                            query = query % (sab, code)
-                        #                            print(mondo)
-                        #                            print(code)
-                        #                            print(query)
-                        #                            print('blub')
-                        rows_counter = cur.execute(query)
-                        if rows_counter > 0:
-                            for cui, in cur:
-                                i += 1
-                                dict_mondo_to_umls_cuis[mondo] = [cui]
-                                if not cui is dict_of_all_diseases:
-                                    dict_of_all_diseases[cui] = [mondo]
-                                    has_found_a_cui = True
-                                    break
-                                else:
-                                    dict_of_all_diseases[cui].append(mondo)
-                                    has_found_a_cui = True
-                                    break
-        j += 1
-    global list_diseases_cuis
+
     list_diseases_cuis = dict_of_all_diseases.keys()
 
     print('how often a cuis is found:' + str(counter))
@@ -288,10 +354,29 @@ def load_in_hetionet_disease_in_dictionary():
     print('length of disease ontology without a ref:' + str(len(list_mondo_without_refs)))
     print('length of dict with cui and list of mondos after use of xref:' + str(len(dict_of_all_diseases)))
     print(dict_sty_counter)
+    print('number of mapped with name:'+str(count_name_mapping))
+    print('number of not name mapped:'+ str(count_not_name_mapped))
     print('\t xref with sty : %.4f seconds' % (time.time() - start))
+    print('number of steps with xref: '+str(count_steps_map_with_xref))
+    print('number of mapped mondos with xref:'+str(counter_map_with_xref))
+    print('number of not mapped mondos with xref:'+str(counter_not_map_with_xref))
+
 
 
 #    print(i)
+
+
+'''
+generate a file with all cuis which are multiple mapped from mondo
+'''
+def generate_multiple_mapped_cuis_file():
+    for cui, mondos in dict_of_all_diseases.items():
+        if len(mondos)>1:
+            name_string=''
+            for mondo in mondos:
+                name_string+=dict_mondo_to_name[mondo]+'|'
+            mondos_string='|'.join(mondos)
+            file_cui_with_multiple_mondos.write(cui+'\t'+mondos_string+'\t'+name_string[0:-1]+'\n')
 
 
 # search for the name of a given cui in the dictionary of the MRCONSO. It take the
@@ -336,7 +421,7 @@ def get_name(cui):
             # only names without an english name
             query = ("Select * From MRCONSO Where CUI = %s")
             rows_counter = cur.execute(query, (cui,))
-            print('This %s has no english term' % (cui))
+            # print('This %s has no english term' % (cui))
             for name in cur:
                 # position11 tty
                 if name[12] == 'PN':
@@ -381,6 +466,9 @@ list_rela_rb_synonym = ['contained_in', 'precise_ingredient_of']
 list_rela_rn_synonym_string = "','".join(list_rela_rn_synonym)
 list_rela_rb_synonym_string = "','".join(list_rela_rb_synonym)
 
+#counter of not existing cui
+counter_disease_with_not_existing_cuis=0
+
 ''' 
 search for all synonyms of all diseases of hetionet. 
 it generate for every disease a csv file with all synonyms,with form cui1;name1;cui2;name2;rel;rela;mondo \n   
@@ -392,10 +480,12 @@ be the first value and by PAR it has to be the second.
 
 
 def find_synonyms(key):
+    global counter_disease_with_not_existing_cuis
     start = time.time()
     f = open('synonyms/synonyms' + key + '.csv', 'w')
     key_name = get_name(key)
     list_synonyms_cuis_from_mondo_do = set([])
+
 
     mondo_ids = dict_of_all_diseases[key]
     for mondo in mondo_ids:
@@ -405,15 +495,30 @@ def find_synonyms(key):
         dictionary_umls_cui_to_name[key] = key_name
         list_synonyms_cuis_from_mondo_do.add(key)
     elif len(list(list_synonyms_cuis_from_mondo_do)) > 0:
+        found_new_existing_cui=False
         for synonym_cui in list(list_synonyms_cuis_from_mondo_do):
             cui_name = get_name(synonym_cui)
             if cui_name != 'is not in UMLS':
+                found_new_existing_cui=True
                 dict_cui_to_cui_not_in_umls[synonym_cui] = key
                 key = synonym_cui
                 dictionary_umls_cui_to_name[key] = cui_name
                 break
+        if not found_new_existing_cui:
+            counter_disease_with_not_existing_cuis+=1
+            print(key)
+            print('other cuis are also not existing')
+            print(dict_of_all_diseases[key])
+            return
+        else:
+            dict_of_all_diseases[key]=mondo_ids
+
 
     else:
+        counter_disease_with_not_existing_cuis+=1
+        print(key)
+        print('other cuis are also not existing')
+        print(dict_of_all_diseases[key])
         return
 
     if key in dict_cui_to_sty:
@@ -430,7 +535,6 @@ def find_synonyms(key):
     synonym = set([])
     # synonym.add(key)
     cur = con.cursor()
-
 
     query = (
         "SELECT cui1, rel, cui2,rela FROM MRREL WHERE ( cui1= '%s' and ( REL in ('SY','CHD') or (rel = 'RL' and rela = 'mapped_to') or (rel = 'RN' and ((not rela in ('%s') and not rela = 'has_alternative') or rela is Null)) or ( rel = 'RB' and rela in ('%s') ) ) ) or ( cui2='%s' and ( rel in ('PAR','SY') or (rel = 'RL' and rela = 'mapped_from') or (rel = 'RN' and rela in ('%s') ) or (rel = 'RB' and ((not rela in ('%s') and not rela = 'alternative_of' ) or rela is Null  )) ) );")
@@ -467,7 +571,7 @@ def find_synonyms(key):
         #     mondo = dict_of_all_diseases[cui2]
         mondo = '|'.join(mondo_ids)
 
-        synonym_cui = cui2 if cui1==key else cui1
+        synonym_cui = cui2 if cui1 == key else cui1
 
         synonym.add(synonym_cui)
         if rela is None:
@@ -595,8 +699,8 @@ def find_symptoms(key, synonym):
     g = open('symptomes/ready/symptoms_' + key + '.csv', 'w')
     g.write(name_key + ';' + mondos_string + '\n')
     g.write('cui;name;rel;rela;sab; \n')
-    print(key)
-    start = time.time()
+    # print(key)
+    # start = time.time()
     symptomes = set()
     cur = con.cursor(mdb.cursors.SSCursor)
 
@@ -604,7 +708,7 @@ def find_symptoms(key, synonym):
     #     "SELECT cui1, rel, cui2,rela, sab FROM MRREL WHERE (cui2 in (%s) OR cui1 in (%s)) and (rela<>'inverse_isa' or rela IS NULL); ")
 
     query = (
-        "SELECT cui1, rel, cui2,rela, sab FROM MRREL WHERE (cui2 in ('%s') and (  (rel = 'RO' and ( rela ='associated_disease'  or rela in ('%s'))) or rel = 'RL' or rel = 'PAR' or (rel = 'RB' and (not rela in ('mapped_from', 'inverse_was_a', 'alternative_of') or rela is Null))  or (rel = 'RQ' and (rela='clinically_similar' or rela is Null or rela in ('%s')))  ) )  or ( cui1 in ('%s') and ( (rel = 'RO' and (rela ='associated_disease' or rela in ('%s') ))  or rel = 'RL or rel = 'CHD' or (rel = 'RN' and (not rela in ('mapped_to', 'was_a', 'has_alternative') or rela is Null)) or (rel = 'RQ' and ( rela='clinically_similar' or rela is Null or rela in ('%s') ))   )  )  ; ")
+        "SELECT cui1, rel, cui2,rela, sab FROM MRREL WHERE (cui2 in ('%s') and (  (rel = 'RO' and ( rela ='associated_disease'  or rela in ('%s'))) or rel = 'RL' or rel = 'PAR' or (rel = 'RB' and (not rela in ('mapped_from', 'inverse_was_a', 'alternative_of') or rela is Null))  or (rel = 'RQ' and (rela='clinically_similar' or rela is Null or rela in ('%s')))  ) )  or ( cui1 in ('%s') and ( (rel = 'RO' and (rela ='associated_disease' or rela in ('%s') ))  or rel = 'RL' or rel = 'CHD' or (rel = 'RN' and (not rela in ('mapped_to', 'was_a', 'has_alternative') or rela is Null)) or (rel = 'RQ' and ( rela='clinically_similar' or rela is Null or rela in ('%s') ))   )  )  ; ")
     # query = (
     #     "SELECT cui1, rel, cui2,rela, sab FROM MRREL WHERE (cui2 in ('%s') and ( (rel = 'RO' and (rela not in ('%s') or rela in ('%s') )) or rel = 'CHD' or (rel = 'RN' and rela in ('mapped_to', 'was_a', 'has_alternative')) or (rel = 'RQ' and ( rela not in ('%s') or rela in ('%s') ))  ) ) or ( cui1 in ('%s') and  ( (rel = 'RO' and ( rela not in ('%s')  or rela in ('%s'))) or rel = 'PAR' or (rel = 'RB' and rela in ('mapped_from', 'inverse_was_a', 'alternative_of')) or (rel = 'RQ' and (rela not in ('%s') or not rela is Null or rela in ('%s')))  ) ) ; ")
 
@@ -617,8 +721,8 @@ def find_symptoms(key, synonym):
     list_rela_rq_symptoms_cui2_string = "','".join(list_rela_rq_symptoms_cui2)
 
     query = query % (
-    synonyms_string, list_rela_ro_symptoms_cui1_string, list_rela_rq_symptoms_cui1_string, synonyms_string,
-    list_rela_ro_symptoms_cui2_string, list_rela_rq_symptoms_cui2_string)
+        synonyms_string, list_rela_ro_symptoms_cui1_string, list_rela_rq_symptoms_cui1_string, synonyms_string,
+        list_rela_ro_symptoms_cui2_string, list_rela_rq_symptoms_cui2_string)
 
     # print(query)
 
@@ -626,7 +730,7 @@ def find_symptoms(key, synonym):
 
     count_finding = 0
     count_symptom = 0
-    print('\t Query anfrage: %.4f seconds' % (time.time() - start))
+    # print('\t Query anfrage: %.4f seconds' % (time.time() - start))
     rows_counter = cur.execute(query)
     start = time.time()
     time_ifs = 0.000
@@ -702,6 +806,9 @@ def find_symptoms(key, synonym):
                 if rel == 'RL' and dict_all_possible_symptoms_from_filter[cui] != 'Sign or Symptom':
                     continue
 
+                if cui not in dict_symptoms_cuis:
+                    dict_symptoms_cuis[cui]= name
+
                 # if not key in dict_all_info_rel:
                 #     dict_all_info_rel[key] = {cui: information}
                 # elif not cui in dict_all_info_rel[key]:
@@ -730,9 +837,9 @@ def find_symptoms(key, synonym):
                 g.write(text)
                 symptomes.add(cui)
 
-    time_ifs += (time.time() - start_filter)
-    print('\t Ifs filter: %.4f seconds' % (time_ifs))
-    print('\t Python filter: %.4f seconds' % (time.time() - start))
+    # time_ifs += (time.time() - start_filter)
+    # print('\t Ifs filter: %.4f seconds' % (time_ifs))
+    # print('\t Python filter: %.4f seconds' % (time.time() - start))
     dict_disease_symptomes[key] = list(symptomes)
     cur.close()
     f.close()
@@ -838,8 +945,9 @@ def generate_cypher_file_for_relationships():
     counter_new_connection = 0
     counter_connection_already_in_hetionet = 0
     i = 1
-    h = open('intigrate_symptoms_and_relationships_' + str(i) + '.cypher', 'w')
-    h.write('begin \n')
+    h = open('integrate_symptoms_and_relationships_' + str(i) + '.cypher', 'w')
+
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/symptoms/umls/relationship.csv" As line MATCH (d:Disease{identifier:"%s"}),(s:Symptom{identifier:"%s"}) Merge (d)-[l:PRESENTS_DpS]->(s) On Create Set d.umls='yes', l.license='UMLS',l.unbiased=false,l.source='UMLS',l.resource=['UMLS'], l.hetionet='no',l.do='no', l.hpo='no', l.umls='yes' On Merge Set l.umls='yes', d.umls='yes', l.resource=l.resource+'UMLS' ;\n'''
     i += 1
     # counter of connection queries
     counter_connection = 0
@@ -847,53 +955,22 @@ def generate_cypher_file_for_relationships():
     constrain_number = 20000
     # number of quereies in on cypher file
     creation_max = 500000
-    for cui, symptoms in dict_disease_symptomes.items():
-        mondo_ids = dict_of_all_diseases[cui]
-        for mondo in mondo_ids:
-            for symptom in symptoms:
 
-                if not symptom in dict_umls_cui_to_mesh_or_umls_cui:
-                    query = '''MATCH (n:Disease{identifier:"%s"}), (s:Symptom{identifier:"%s"}) 
-                    Set n.umls='yes'
-                    Create (n)-[:PRESENTS_DpS{license:'UMLS ',unbiased:false,source:'UMLS', resource:['UMLS'],hetionet:'no',do:'no', hpo:'no', umls:'yes'}]->(s); \n'''
-                    query = query % (mondo, symptom)
-                    counter_new_connection += 1
-                else:
-                    mesh_or_cui = dict_umls_cui_to_mesh_or_umls_cui[symptom]
-                    query = '''MATCH (n:Disease{identifier:"%s"})-[l:PRESENTS_DpS]->(s:Symptom{identifier:"%s"}) Return l  '''
-                    query = query % (mondo, mesh_or_cui)
-                    result = g.run(query)
-                    first_entry = result.evaluate()
-                    if first_entry == None:
-                        query = '''MATCH (n:Disease{identifier:"%s"}),(s:Symptom{identifier:"%s"}) 
-                        Set n.umls='yes', 
-                        Create (n)-[:PRESENTS_DpS{license:'UMLS',unbiased:false,source:'UMLS',resource:['UMLS'],hetionet:'no',do:'no', hpo:'no', umls:'yes'}]->(s); \n'''
-                        query = query % (mondo, mesh_or_cui)
-                        counter_new_connection += 1
+    with open('relationship.csv','wb') as csvfile:
+        writer = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        writer.writerow(['DiseaseId', 'SymptomID'])
+        for cui, symptoms in dict_disease_symptomes.items():
+            mondo_ids = dict_of_all_diseases[cui]
+            for mondo in mondo_ids:
+                for symptom in symptoms:
 
+                    if not symptom in dict_umls_cui_to_mesh_or_umls_cui:
+                        writer.writerow([mondo, symptom])
                     else:
-                        resource = first_entry['resource'] if 'resource' in first_entry else []
-                        resource.append("UMLS")
-                        resource = list(set(resource))
-                        string_resource = '","'.join(resource)
-                        query = '''MATCH (n:Disease{identifier:"%s"})-[l:PRESENTS_DpS]->(s:Symptom{identifier:"%s"})
-                        Set l.umls='yes', n.umls='yes', l.resource=["%s"] ; \n'''
 
-                        query = query % (mondo, mesh_or_cui, string_resource)
-                        counter_connection_already_in_hetionet += 1
-
-                counter_connection += 1
-                h.write(query)
-                if counter_connection % constrain_number == 0:
-                    h.write('commit \n')
-                    if counter_connection % creation_max == 0:
-                        h.close()
-                        h = open('cypher/map_connection_of_ctd_in_hetionet_' + str(i) + '.cypher', 'w')
-                        h.write('begin \n')
-                        i += 1
-                    else:
-                        h.write('begin \n')
-    h.write('commit \n begin \n')
+                        mesh_or_cui = dict_umls_cui_to_mesh_or_umls_cui[symptom]
+                        writer.writerow([mondo, mesh_or_cui])
+    h.write('begin \n')
     query = '''MATCH (n:Disease)-[l:PRESENTS_DpS]->(s:Symptom}) Where not exists(l.umls) Set l.umls='no'; \n  '''
     h.write(query)
     h.write('commit')
@@ -1078,6 +1155,14 @@ def all_possible_symptomes_from_filter(filter_file):
 
 
 def main():
+
+    global path_of_directory
+    if len(sys.argv) > 1:
+        path_of_directory = sys.argv[1]
+    else:
+        sys.exit('need a path')
+
+
     print(datetime.datetime.now())
 
     print('##########################################################################')
@@ -1085,7 +1170,6 @@ def main():
     print(datetime.datetime.now())
     print('connection to db')
     database_connection()
-
 
     print(get_name('C0005396'))
 
@@ -1095,6 +1179,15 @@ def main():
     print('load in cui diseases')
 
     load_in_hetionet_disease_in_dictionary()
+
+
+
+    print('##########################################################################')
+
+    print(datetime.datetime.now())
+    print('generate file with multiple mapped cuis')
+
+    generate_multiple_mapped_cuis_file()
 
 
     print('##########################################################################')
@@ -1146,6 +1239,10 @@ def main():
         threads_synonyms.append(thread)
         # increase thread id
         thread_id += 1
+        if thread_id % max_thread_number == 0:
+            # wait for all threads
+            for t in threads_synonyms:
+                t.join()
 
     # wait for all threads
     for t in threads_synonyms:
@@ -1216,10 +1313,16 @@ def main():
         threads.append(thread)
         # increase thread id
         thread_id += 1
+        if thread_id % max_thread_number == 0:
+            # wait for all threads
+            for t in threads:
+                t.join()
 
     # wait for all threads
     for t in threads:
         t.join()
+
+    print('number of not existing cuis:'+str(counter_disease_with_not_existing_cuis))
 
     print(list(list_rel_of_possible_symptoms))
     print('###########################################################################################')
@@ -1237,33 +1340,20 @@ def main():
         file_rela = open('rel/rela/' + rela + '.txt', 'w')
         file_rela.write('\n'.join(list(list_set_cuis)) + '\n')
 
-    #    find_symptoms()
-
-    #    print('##########################################################################')
-    #
-    #    print(datetime.datetime.now())
-    #    print('get all symptoms for every diseases')
-    #    generate_file_for_symptoms()
-
-    #    print('##########################################################################')
-    #
-    #    print('get all rel')
-    #    print(datetime.datetime.now())
-    # all_rel_in_files()
 
     print('##########################################################################')
 
     print(datetime.datetime.now())
     print('integrate into symptoms into hetionet')
 
-    #    integrate_symptoms_into_hetionet()
+    integrate_symptoms_into_hetionet()
 
     print('##########################################################################')
 
     print(datetime.datetime.now())
     print('create cypher file for connections')
 
-    #    generate_cypher_file_for_relationships()
+    generate_cypher_file_for_relationships()
 
     print('##########################################################################')
 
@@ -1276,6 +1366,3 @@ if __name__ == "__main__":
     # execute only if run as a script
     main()
 
-# d=[[1,2],[2,3]]
-# c=list(map(lambda x: x[0]+4,d))
-# c=list(map(lambda x: x[0]+4 if x[1]=='3' else None,d))

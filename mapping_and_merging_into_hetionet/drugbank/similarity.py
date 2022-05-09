@@ -120,7 +120,7 @@ def generate_cypher(header, file_name):
     cypherfile = open('compound_interaction/cypher_resemble.cypher', 'w', encoding='utf-8')
     query='''Match (c1:Compound)-[r:RESEMBLES_CrC]->(c2:Compound) Delete r;\n '''
     cypherfile.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/drugbank/compound_interaction/%s" As line  Fieldterminator '\\t' Match (c1:Compound{identifier:line.id1}), (c2:Compound{identifier:line.id2}) Create (c1)-[:RESEMBLES_CrC{source:"Open Babel and rdKit", unbiased:false, resource:['OpenBabel','rdKit'], open_babel_and_rdkit:'yes', license:'%s', '''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/drugbank/compound_interaction/%s" As line  Fieldterminator '\\t' Match (c1:Compound{identifier:line.id1}), (c2:Compound{identifier:line.id2}) Create (c1)-[:RESEMBLES_CrC{source:"Open Babel and rdKit", unbiased:false, resource:['OpenBabel','rdKit'], open_babel_and_rdkit:'yes', license:'%s', '''
     for head in header:
         query+= head+':toFloat(line.'+head+'), '
     query = query % (file_name,'CC0 1.0')

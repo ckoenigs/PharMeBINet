@@ -70,7 +70,7 @@ generate new relationships between Compound of hetionet and Drug of hetionet nod
 
 
 def create_cypher_file(directory, file_path, node_label, rela_name, direction1, direction2):
-    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/reactome/%s" As line FIELDTERMINATOR "\\t" MATCH (d:Chemical{identifier:line.id_hetionet_Compound}),(c:%s{identifier:line.id_hetionet_node}) CREATE (d)%s[: %s{order:line.order, stoichiometry:line.stoichiometry, compartments: split(line.compartment, "|"), resource: ['Reactome'], reactome: "yes", license:"%s", source:"Reactome", url:"https://reactome.org/content/detail/"+line.stid}]%s(c);\n'''
+    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/reactome/%s" As line FIELDTERMINATOR "\\t" MATCH (d:Chemical{identifier:line.id_hetionet_Compound}),(c:%s{identifier:line.id_hetionet_node}) CREATE (d)%s[: %s{order:line.order, stoichiometry:line.stoichiometry, compartments: split(line.compartment, "|"), resource: ['Reactome'], reactome: "yes", license:"%s", source:"Reactome", url:"https://reactome.org/content/detail/"+line.stid}]%s(c);\n'''
     query = query % (path_of_directory, file_path, node_label, direction1, rela_name, license, direction2)
     cypher_file.write(query)
 

@@ -614,7 +614,7 @@ def integrate_sider_drugs_into_hetionet():
     # cypher file
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/sider/output/mapped_drug.tsv" As line Fieldterminator '\\t' Match (c:Chemical{identifier:line.chemical_id}), (d:drug_Sider{stitchIDstereo:line.sider_id}) Set c.xrefs=split(line.xrefs,'|'), c.sider="yes", c.resource=split(line.resource,'|'), d.name=line.name, d.how_mapped=line.how_mapped
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/sider/output/mapped_drug.tsv" As line Fieldterminator '\\t' Match (c:Chemical{identifier:line.chemical_id}), (d:drug_Sider{stitchIDstereo:line.sider_id}) Set c.xrefs=split(line.xrefs,'|'), c.sider="yes", c.resource=split(line.resource,'|'), d.name=line.name, d.how_mapped=line.how_mapped
                     Create (c)-[:equal_to_drug_Sider]->(d);\n'''
     cypher_file.write(query)
     cypher_file.close()
