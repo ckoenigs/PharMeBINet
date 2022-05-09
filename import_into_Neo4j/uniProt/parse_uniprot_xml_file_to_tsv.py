@@ -766,7 +766,7 @@ def prepare_node_cypher_query(file_name, label, properties, list_properties):
     :param list_properties: list
     :return:
     """
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/uniProt/%s" As line Fieldterminator '\\t' Create (n:%s_Uniprot{ '''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/uniProt/%s" As line Fieldterminator '\\t' Create (n:%s_Uniprot{ '''
 
     query = query % (file_name, label.capitalize())
 
@@ -794,7 +794,7 @@ def prepare_edge_cypher_query(file_name, label, rela_name, properties, list_prop
     :param list_properties: list
     :return:
     """
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/uniProt/%s" As line Fieldterminator '\\t' Match (n:Protein_Uniprot{identifier:line.%s}), (b:%s_Uniprot{%s:line.%s}) Create (n)-[:%s'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/uniProt/%s" As line Fieldterminator '\\t' Match (n:Protein_Uniprot{identifier:line.%s}), (b:%s_Uniprot{%s:line.%s}) Create (n)-[:%s'''
 
     query = query + '{' if len(properties) > 2 else query
     if label in ['protein', 'disease']:

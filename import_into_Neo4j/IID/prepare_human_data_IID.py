@@ -29,7 +29,7 @@ def generate_node_and_rela_file_and_query(header_rela):
     csv_node.writerow(['id', 'symbols'])
 
     cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/IID/%s" As line fieldterminator '\\t' '''
+    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/IID/%s" As line fieldterminator '\\t' '''
     query = query_start + 'Create (p:protein_IID{identifier:line.id, symbols:split(line.symbols,"|")});\n'
     query = query % (node_file_name)
     cypher_file.write(query)

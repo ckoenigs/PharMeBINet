@@ -13,7 +13,7 @@ def cypher_node(filename, label, properties, unique_property):
     :param unique_property: identifier (e.g. diseaseId)
     """
 
-    query_start = f'Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:{path_of_directory}master_database_change/import_into_Neo4j/rnainter/{filename}" As line fieldterminator "\\t" '
+    query_start = f'Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:{path_of_directory}import_into_Neo4j/rnainter/{filename}" As line fieldterminator "\\t" '
 
     query = query_start + 'Create (p:%s_RNAInter{' % (label)
     for x in properties:
@@ -36,7 +36,7 @@ def cypher_edge(filename, label, properties, edge_name):
     :param edge_name: specifies how the connection btw. two nodes is called
     """
 
-    query_start = f'Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:{path_of_directory}master_database_change/import_into_Neo4j/rnainter/{filename}" As line fieldterminator "\\t" '
+    query_start = f'Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:{path_of_directory}import_into_Neo4j/rnainter/{filename}" As line fieldterminator "\\t" '
     query = query_start + f'Match (p1:rna_RNAInter{{Raw_ID:line.Raw_ID1}}),(p2:{label}_RNAInter{{Raw_ID:line.Raw_ID2}}) Create (p1)-[:{edge_name}{{  '
     for header in properties:
         # ignore key labels (wie diseaseId)

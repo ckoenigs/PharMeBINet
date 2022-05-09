@@ -80,7 +80,7 @@ def generate_csv_file_and_prepare_cypher_queries_edge(file_name, label, unique_i
 
 
 # query start
-query_start = """Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/import_into_Neo4j/smpdb/%s" As line FIELDTERMINATOR '\\t'"""
+query_start = """Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%simport_into_Neo4j/smpdb/%s" As line FIELDTERMINATOR '\\t'"""
 
 # dictionary old property name to new
 dict_old_porperty_to_new = {

@@ -45,7 +45,7 @@ def combine_query(labels, file_name, query_end, identifier):
     :param file_name: string
     :param query_end: string
     """
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/adrecs_target/%s" As line FIELDTERMINATOR '\\t' Create (p:%s {''' + query_end
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/adrecs_target/%s" As line FIELDTERMINATOR '\\t' Create (p:%s {''' + query_end
     join_addition = addition + ' :'
     query = query % (file_name, join_addition.join(labels) + addition)
     cypher_file.write(query)
@@ -93,7 +93,7 @@ def prepare_query_rela(labe11, label2, file_name, id1, id2, rela_type, list_of_p
     :param list_of_properties: list
     :return:
     """
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/adrecs_target/%s" As line FIELDTERMINATOR '\t' Match (p:%s{%s:line.%s}), (b:%s{%s:line.%s}) Create (p)-[:%s %s]->(b);\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/adrecs_target/%s" As line FIELDTERMINATOR '\t' Match (p:%s{%s:line.%s}), (b:%s{%s:line.%s}) Create (p)-[:%s %s]->(b);\n'''
     if len(list_of_properties) > 0:
         properties = '{'
         for prop in list_of_properties:

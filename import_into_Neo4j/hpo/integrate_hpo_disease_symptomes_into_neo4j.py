@@ -43,7 +43,7 @@ csv_writer_rela.writerow(list_of_rela_properties)
 
 # cypher file
 cypher_file = open('cypher.cypher', 'a')
-query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/hpo/output/disease.tsv" As line  Fieldterminator '\\t' Create (:HPO_disease{'''
+query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/hpo/output/disease.tsv" As line  Fieldterminator '\\t' Create (:HPO_disease{'''
 for property in list_of_disease_properties:
     if property == 'name':
         query += property + 's:split(line.' + property + ',"|"), '
@@ -55,7 +55,7 @@ cypher_file.write(':begin\n')
 cypher_file.write('Create Constraint On (node:HPO_disease) Assert node.id Is Unique; \n')
 cypher_file.write(':commit \n')
 # query for relationships
-query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/hpo/output/rela_disease_phenotyp.tsv" As line  Fieldterminator '\\t' MATCH (n:HPO_disease{id:line.disease_id}),(s:HPO_symptom{id:line.phenotype_id}) Create (n)-[:present{'''
+query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/hpo/output/rela_disease_phenotyp.tsv" As line  Fieldterminator '\\t' MATCH (n:HPO_disease{id:line.disease_id}),(s:HPO_symptom{id:line.phenotype_id}) Create (n)-[:present{'''
 
 for property in list_of_rela_properties:
     if property in ['disease_id', 'phenotype_id']:

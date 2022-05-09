@@ -223,7 +223,7 @@ cypher_file = open('cypher_med.cypher', 'w', encoding='utf-8')
 cypher_file_delete = open('cypher_delete.cypher', 'w', encoding='utf-8')
 
 # query sstart (FIELDTERMINATOR '\\t')
-query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/import_into_Neo4j/med_rt/%s" As line  Fieldterminator '\\t' '''
+query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%simport_into_Neo4j/med_rt/%s" As line  Fieldterminator '\\t' '''
 
 
 def generate_node_csv_files(file_name):

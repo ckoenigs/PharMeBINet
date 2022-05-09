@@ -129,7 +129,7 @@ def check_on_gene_id(gene_id, gene):
 
 
 # query start
-query_start = """Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/import_into_Neo4j/bioGrid/%s" As line FIELDTERMINATOR '\\t'"""
+query_start = """Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%simport_into_Neo4j/bioGrid/%s" As line FIELDTERMINATOR '\\t'"""
 
 
 def generate_files_for_gene_chemical_interaction():

@@ -243,7 +243,7 @@ def complete_dictionary(d_map):
     cypher_node(nodes1, file_name_node1, "rna1", 'rnacentral_id')
     cypher_node(nodes2, file_name_node2, "rna2", 'id')
 
-    query_start = f'Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:{path_of_directory}master_database_change/import_into_Neo4j/RNAcentral/{file_name_edge}" As line fieldterminator "," '
+    query_start = f'Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:{path_of_directory}import_into_Neo4j/RNAcentral/{file_name_edge}" As line fieldterminator "," '
     query = query_start + f'Match (p1:rna1_RNACentral{{rnacentral_id:line.rnacentral_id}}),(p2:rna2_RNACentral{{id:line.id}}) Create (p1)-[:associate{{  '
     query = query[:-2]+'}]->(p2);\n'
     cypher_file.write(query)
@@ -259,7 +259,7 @@ def cypher_node(keys, file_name, label, unique_identifier):
     :param unique_identifier: string
     '''
 
-    query_start = f'Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:{path_of_directory}master_database_change/import_into_Neo4j/RNAcentral/{file_name}" As line fieldterminator "," '
+    query_start = f'Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:{path_of_directory}import_into_Neo4j/RNAcentral/{file_name}" As line fieldterminator "," '
     query = query_start + 'Create (p:%s_RNACentral{' % (label)
     for x in keys:
         if x in ['blockSizes','blockStarts','itemRgb','xrefs','databases']:  # properties that are lists must be splitted

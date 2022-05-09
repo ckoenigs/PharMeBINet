@@ -339,7 +339,7 @@ def main():
 
     # get current working directories
     destination = 'output/'
-    os.chdir(path_of_directory + 'master_database_change/import_into_Neo4j/DisGeNET')
+    os.chdir(path_of_directory + 'import_into_Neo4j/DisGeNET')
     home = os.getcwd()
     source = os.path.join(home, 'data')
 

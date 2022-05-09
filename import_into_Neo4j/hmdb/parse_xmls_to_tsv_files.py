@@ -83,7 +83,7 @@ def prepare_node_cypher_query(file_name, label, properties, list_properties):
     :param list_properties: list
     :return:
     """
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/hmdb/%s" As line Fieldterminator '\\t' Create (n:%s_HMDB{ '''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/hmdb/%s" As line Fieldterminator '\\t' Create (n:%s_HMDB{ '''
 
     query = query % (file_name, label.capitalize())
 
@@ -108,7 +108,7 @@ def prepare_edge_cypher_query(file_name, label_from, label, rela_name, propertie
     :param list_properties: list
     :return:
     """
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/hmdb/%s" As line Fieldterminator '\\t' Match (n:%s_HMDB{identifier:line.%s}), (b:%s_HMDB{%s:line.%s}) Create (n)-[:%s'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/hmdb/%s" As line Fieldterminator '\\t' Match (n:%s_HMDB{identifier:line.%s}), (b:%s_HMDB{%s:line.%s}) Create (n)-[:%s'''
 
     query = query + '{' if len(properties) > 2 else query
     query = query % (

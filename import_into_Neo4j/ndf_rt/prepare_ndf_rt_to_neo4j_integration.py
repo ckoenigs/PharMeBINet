@@ -75,7 +75,7 @@ def load_ndf_rt_xml_inferred_in():
         csv_writer = csv.writer(entity_file, delimiter='\t', quotechar='"', lineterminator='\n')
         csv_writer.writerow(properties_of_node)
         dict_entity_to_file[code] = csv_writer
-        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ndf_rt/%s" AS line FIELDTERMINATOR '\\t' Create (n: NDFRT_''' + entity_name + '{'
+        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''import_into_Neo4j/ndf_rt/%s" AS line FIELDTERMINATOR '\\t' Create (n: NDFRT_''' + entity_name + '{'
         # print(query)
         # print(file_name)
         query = query % (file_name)
@@ -124,7 +124,7 @@ def load_ndf_rt_xml_inferred_in():
             csv_writer = csv.writer(entity_file, delimiter='\t', quotechar='"',lineterminator='\n')
             csv_writer.writerow(rela_info_list)
             dict_rela_file_name_to_file[file_name]=csv_writer
-            query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ndf_rt/%s" AS line FIELDTERMINATOR '\\t' Match (start: NDFRT_''' + dict_entities[start_node_code] + '''{code:line.'''+ rela_info_list[0]+ '''}), (end: NDFRT_''' + dict_entities[end_node_code] + '''{code:line.'''+rela_info_list[1]+'''}) Create (start)-[:%s{source:line.source}]->(end);\n'''
+            query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''import_into_Neo4j/ndf_rt/%s" AS line FIELDTERMINATOR '\\t' Match (start: NDFRT_''' + dict_entities[start_node_code] + '''{code:line.'''+ rela_info_list[0]+ '''}), (end: NDFRT_''' + dict_entities[end_node_code] + '''{code:line.'''+rela_info_list[1]+'''}) Create (start)-[:%s{source:line.source}]->(end);\n'''
             # print(query)
             query=query% (file_name, name)
 
@@ -189,7 +189,7 @@ def load_ndf_rt_xml_inferred_in():
     association_file = open('results/associates_file.tsv', 'w', encoding='utf-8')
     csv_writer = csv.writer(association_file, delimiter='\t', quotechar='"', lineterminator='\n')
     csv_writer.writerow(['code1','code2'])
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ndf_rt/results/associates_file.tsv" AS line FIELDTERMINATOR '\\t' Match (start: NDFRT_DRUG_KIND{code:line.code1}), (end: NDFRT_DRUG_KIND {code:line.code2}) Create (start)-[:product_of]->(end);\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/ndf_rt/results/associates_file.tsv" AS line FIELDTERMINATOR '\\t' Match (start: NDFRT_DRUG_KIND{code:line.code1}), (end: NDFRT_DRUG_KIND {code:line.code2}) Create (start)-[:product_of]->(end);\n'''
     cypher_file.write(query)
     for (code1, code2), association_name in dict_association_pair.items():
         csv_writer.writerow([code1,code2])

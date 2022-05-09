@@ -14,7 +14,7 @@ dict_file_name_value = {
 }
 
 # query start
-query_start = """Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/import_into_Neo4j/DDinter/%s" As line FIELDTERMINATOR '\\t'"""
+query_start = """Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%simport_into_Neo4j/DDinter/%s" As line FIELDTERMINATOR '\\t'"""
 cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
 
 # dictionary drug id to name

@@ -1225,7 +1225,7 @@ path_of_directory = sys.argv[1]
 
 cypher_file = open('cypher_atc.cypher', 'w', encoding='utf-8')
 
-query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/drugbank/%s" As line FIELDTERMINATOR '\t' '''
+query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/drugbank/%s" As line FIELDTERMINATOR '\t' '''
 
 # write info into tsv file
 atc_file_name = 'atc_node.tsv'
