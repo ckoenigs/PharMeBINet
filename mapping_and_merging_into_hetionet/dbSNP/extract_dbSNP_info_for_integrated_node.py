@@ -173,8 +173,8 @@ def load_dbSNP_data_for_nodes_with_dbSNP_in_db():
     csv_writer.writerow(['rs_id','clinvar_id', 'license'])
 
     cypher_file=open('output/cypher_dbSNP_clinVar.cypher','w',encoding='utf-8')
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/dbSNP/%s" As line FIELDTERMINATOR '\\t' Match (n:Variant{identifier:line.rs_id}), (m:Variant{identifier:line.clinvar_id}) Create (m)-[:IS_ALLEL_OF_ViaoV{url:"https://www.ncbi.nlm.nih.gov/clinvar/variation/"+line.clinvar_id, license:"https://www.ncbi.nlm.nih.gov/home/about/policies/", source:"external identifier from ClinVar", resource:["ClinVar"], clinvar:"yes"}]->(n);\n'''
-    query=query %(path_of_directory, file_name)
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%s%s" As line FIELDTERMINATOR '\\t' Match (n:Variant{identifier:line.rs_id}), (m:Variant{identifier:line.clinvar_id}) Create (m)-[:IS_ALLEL_OF_ViaoV{url:"https://www.ncbi.nlm.nih.gov/clinvar/variation/"+line.clinvar_id, license:"https://www.ncbi.nlm.nih.gov/home/about/policies/", source:"external identifier from ClinVar", resource:["ClinVar"], clinvar:"yes"}]->(n);\n'''
+    query=query %(path_of_directory_dbSNP, file_name)
     cypher_file.write(query)
 
     # get nodes which should get dbSNP information
@@ -206,8 +206,8 @@ def load_dbSNP_data_for_nodes_with_dbSNP_in_db():
                 add_information_from_api_dictionary_to_files(dict_nodes_to_list)
                 # print(dict_nodes_to_list)
                 string_of_ids=''
-            # if counter_to_seek % 5000 == 0:
-            #     break
+            if counter_to_seek % 5000 == 0:
+                break
 
         elif not rs_id in set_not_existing_dbSNP_ids :
             set_dbSnp_in_PharMeBiNEt_and_already_downloaded.add(rs_id)
@@ -246,7 +246,7 @@ def main():
     global path_of_directory, license, path_of_directory_dbSNP
     if len(sys.argv) > 2:
         path_of_directory = sys.argv[1]
-        path_of_directory_dbSNP = sys.argv[1] +'master_database_change/mapping_and_merging_into_hetionet/dbSNP/'
+        path_of_directory_dbSNP = sys.argv[1] +'mapping_and_merging_into_hetionet/dbSNP/'
         license = sys.argv[2]
     else:
         sys.exit('need a path and license')

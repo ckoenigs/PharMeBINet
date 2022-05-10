@@ -82,7 +82,7 @@ def generate_files(path_of_directory):
 
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/drugbank/%s" As line FIELDTERMINATOR '\\t' 
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/drugbank/%s" As line FIELDTERMINATOR '\\t' 
         Match (n:Metabolite{identifier:line.metabolite_id}), (v:Metabolite_DrugBank{identifier:line.metabolite_db_id}) Create (n)-[r:equal_to_metabolite_drugbank{how_mapped:line.how_mapped}]->(v) Set n.drugbank="yes", n.resource=split(line.resource,"|") ;\n'''
     query = query % (path_of_directory, file_name)
     cypher_file.write(query)

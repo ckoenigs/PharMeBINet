@@ -61,7 +61,7 @@ def generate_cypher_file(file_name):
     :param label: string
     :return:
     """
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/pharmGKB/%s" As line  FIELDTERMINATOR '\\t'  MATCH (n:Variant{identifier:line.variant_id}), (c:Gene{identifier:line.gene_id}) Merge (c)-[r:HAS_GhV]->(n) On Create Set r.source="PharmGKB", r.resource=["PharmGKB"], r.pharmgkb="yes" , r.license="%s" On Match Set r.resource=r.resource + "PharmGKB", r.pharmgkb="yes"; \n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/pharmGKB/%s" As line  FIELDTERMINATOR '\\t'  MATCH (n:Variant{identifier:line.variant_id}), (c:Gene{identifier:line.gene_id}) Merge (c)-[r:HAS_GhV]->(n) On Create Set r.source="PharmGKB", r.resource=["PharmGKB"], r.pharmgkb="yes" , r.license="%s" On Match Set r.resource=r.resource + "PharmGKB", r.pharmgkb="yes"; \n'''
     query = query % (file_name, license)
     cypher_file.write(query)
 

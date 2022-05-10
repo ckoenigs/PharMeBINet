@@ -76,7 +76,7 @@ def generate_files(path_of_directory, label):
     header = ['identifier', 'other_id', 'resource', 'mapped_with']
     csv_mapping.writerow(header)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/smpdb/%s.tsv" As line FIELDTERMINATOR '\\t' 
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/smpdb/%s.tsv" As line FIELDTERMINATOR '\\t' 
         Match (n:protein_smpdb{identifier:line.identifier}), (v:%s{identifier:line.other_id}) Set v.smpdb='yes', v.resource=split(line.resource,"|") Create (v)-[:equal_to_smpdb_%s{how_mapped:line.mapped_with}]->(n);\n'''
     query = query % (path_of_directory, file_name, label, label.lower())
     cypher_file.write(query)

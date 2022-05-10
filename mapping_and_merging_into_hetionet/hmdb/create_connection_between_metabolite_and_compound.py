@@ -82,7 +82,7 @@ def get_all_metabolites_with_xrefs():
     csv_writer_rela = csv.writer(file_rela, delimiter='\t')
     csv_writer_rela.writerow(['identifier', 'drug_id','how_mapped'])
 
-    cypher_query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/hmdb/%s" As line FIELDTERMINATOR '\\t' Match (n:Metabolite{identifier:line.identifier}), (m:Compound{identifier:line.drug_id})  Create (n)-[:EQUAL_MeC{source:line.how_mapped, license:'CC0 1.0'}]->(m);\n'''
+    cypher_query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/hmdb/%s" As line FIELDTERMINATOR '\\t' Match (n:Metabolite{identifier:line.identifier}), (m:Compound{identifier:line.drug_id})  Create (n)-[:EQUAL_MeC{source:line.how_mapped, license:'CC0 1.0'}]->(m);\n'''
     cypher_query = cypher_query % (path_of_directory, file_name_rela)
     cypher_file.write(cypher_query)
 

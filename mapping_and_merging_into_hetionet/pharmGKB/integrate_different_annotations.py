@@ -335,7 +335,7 @@ def main():
     load_additional_information_into_dictionary()
 
     # query start
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/pharmGKB/%s" As line  FIELDTERMINATOR '\\t'  MATCH '''
+    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/pharmGKB/%s" As line  FIELDTERMINATOR '\\t'  MATCH '''
 
     # prepare the meta_nodes
     for label in ['PharmGKB_VariantDrugAnnotation', 'PharmGKB_VariantFunctionalAnalysisAnnotation',

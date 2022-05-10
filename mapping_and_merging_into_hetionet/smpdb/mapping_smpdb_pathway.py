@@ -92,12 +92,12 @@ def generate_files(path_of_directory):
 
     cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/smpdb/%s" As line FIELDTERMINATOR '\\t' 
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/smpdb/%s" As line FIELDTERMINATOR '\\t' 
         Match (n:Pathway{identifier:line.pathway_id}), (v:pathway_smpdb{smpdb_id:line.pathway_smpdb_id}) Create (n)-[r:equal_to_pathway_smpdb{how_mapped:line.how_mapped}]->(v) Set n.smpdb="yes", n.resource=split(line.resource,"|") , n.description=v.description, n.xrefs= split(line.xrefs,"|"), n.category=v.category, n.source= n.source+', SMPDB', n.license=n.license+'SMPDB is offered to the public as a freely available resource. Use and re-distribution of the data, in whole or in part, for commercial purposes requires explicit permission of the authors and explicit acknowledgment of the source material (SMPDB) and the original publication.';\n'''
     query = query % (path_of_directory, file_name)
     cypher_file.write(query)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/smpdb/%s" As line FIELDTERMINATOR '\\t' 
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/smpdb/%s" As line FIELDTERMINATOR '\\t' 
             Match  (v:pathway_smpdb{smpdb_id:line.pathway_smpdb_id}) Create (n:Pathway{identifier:line.new_id, smpdb:"yes", resource:["SMPDB"], source:"SMPDB", license:"SMPDB is offered to the public as a freely available resource. Use and re-distribution of the data, in whole or in part, for commercial purposes requires explicit permission of the authors and explicit acknowledgment of the source material (SMPDB) and the original publication",category:v.category, description:v.description, name:v.name, xrefs:split(line.xrefs,'|'), url:"https://smpdb.ca/view/"+line.pathway_smpdb_id }) Create (n)-[r:equal_to_pathway_smpdb]->(v);\n'''
     query = query % (path_of_directory, file_name_not)
     cypher_file.write(query)

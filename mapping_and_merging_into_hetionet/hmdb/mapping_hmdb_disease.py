@@ -107,7 +107,7 @@ generate connection between mapping disease of reactome and hetionet and generat
 
 def create_cypher_file(label, file_name):
     cypher_file = open('output/cypher_part2.cypher', 'a', encoding="utf-8")
-    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/hmdb/%s" As line FIELDTERMINATOR "\\t" MATCH (d:%s{identifier:line.id_own_db}),(c:Disease_HMDB{identifier:line.id}) CREATE (d)-[: equal_to_hmdb_disease{how_mapped:line.how_mapped}]->(c) SET d.resource = split(line.resource, '|'), d.hmdb = "yes";\n'''
+    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/hmdb/%s" As line FIELDTERMINATOR "\\t" MATCH (d:%s{identifier:line.id_own_db}),(c:Disease_HMDB{identifier:line.id}) CREATE (d)-[: equal_to_hmdb_disease{how_mapped:line.how_mapped}]->(c) SET d.resource = split(line.resource, '|'), d.hmdb = "yes";\n'''
     query = query % (path_of_directory, file_name, label)
     cypher_file.write(query)
 

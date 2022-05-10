@@ -101,7 +101,7 @@ def create_cypher_file(file_name, label):
     :return:
     """
 
-    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/hmdb/%s" As line FIELDTERMINATOR "\\t" MATCH (d:%s{identifier:line.node_id_1}),(c:Metabolite{identifier:line.node_id_2}) CREATE (d)-[: ASSOCIATES_%saM{ resource: ['HMDB'], hmdb: "yes", url:"https://hmdb.ca/metabolites/"+line.node_id_2, source:"HMDB", pubMed_ids:split(line.pubmed_ids,"|"), urls:split(line.urls,"|"), references:split(line.references,"|"), license:"Creative Commons (CC) Attribution-NonCommercial (NC) 4.0 International Licensing "}]->(c);\n'''
+    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/hmdb/%s" As line FIELDTERMINATOR "\\t" MATCH (d:%s{identifier:line.node_id_1}),(c:Metabolite{identifier:line.node_id_2}) CREATE (d)-[: ASSOCIATES_%saM{ resource: ['HMDB'], hmdb: "yes", url:"https://hmdb.ca/metabolites/"+line.node_id_2, source:"HMDB", pubMed_ids:split(line.pubmed_ids,"|"), urls:split(line.urls,"|"), references:split(line.references,"|"), license:"Creative Commons (CC) Attribution-NonCommercial (NC) 4.0 International Licensing "}]->(c);\n'''
     query = query % (path_of_directory, file_name, label, label[0])
     cypher_file.write(query)
 

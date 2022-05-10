@@ -55,7 +55,7 @@ def generate_files(path_of_directory):
 
     results = g.run(information_query)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/dbSNP/%s.tsv" As line FIELDTERMINATOR '\\t' 
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/dbSNP/%s.tsv" As line FIELDTERMINATOR '\\t' 
         Match (n:snp_dbSNP{identifier:line.dbsnp_id}), (v:Variant{identifier:line.variant_id}) Set '''
     for property, in results:
         if property in ['is_alt', 'license', 'is_top_level', 'last_update_build_id', 'deleted_sequence', 'identifier',
@@ -96,7 +96,7 @@ def generate_label_tsv_and_query(variant_type):
     csv_writer.writerow(['identifier'])
     dict_variant_typ_to_tsv_file[variant_type] = csv_writer
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/dbSNP/%s" As line FIELDTERMINATOR '\\t' 
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/dbSNP/%s" As line FIELDTERMINATOR '\\t' 
             Match (v:Variant{identifier:line.identifier}) Set v:%s;\n'''
     if variant_type in dict_variant_typ_to_label:
         label = dict_variant_typ_to_label[variant_type]

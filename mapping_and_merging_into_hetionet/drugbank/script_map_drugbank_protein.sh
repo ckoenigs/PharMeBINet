@@ -34,7 +34,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo 'integrate Drugbank reaction '
 
-# python3 prepare_drugbank_reaction.py "${license}" $path_to_project > reaction/output_integration_file_generation_rela.txt
+python3 prepare_drugbank_reaction.py "${license}" $path_to_project > reaction/output_integration_file_generation_rela.txt
 
 
 now=$(date +"%F %T")

@@ -34,11 +34,11 @@ load in all complex-data from hetionet in a dictionary
 
 def load_hetionet_complex_hetionet_node_in(csv_file, dict_complex_hetionet_node_hetionet,
                                            new_relationship,
-                                           node_reactome_label, rela_equal_name, node_hetionet_label, direction1,
+                                           node_reactome_label,  node_hetionet_label, direction1,
                                            direction2):
-    query = '''MATCH (p:MolecularComplex)-[:equal_to_reactome_complex]-(r:Complex_reactome)%s[v:%s]%s(n:%s)-[:%s]-(b:%s) RETURN p.identifier, b.identifier, v.order, v.stoichiometry, n.displayName'''
+    query = '''MATCH (p:MolecularComplex)-[:equal_to_reactome_complex]-(r:Complex_reactome)%s[v:%s]%s(n:%s)-[]-(b:%s) RETURN p.identifier, b.identifier, v.order, v.stoichiometry, n.displayName'''
     query = query % (
-        direction1, new_relationship, direction2, node_reactome_label, rela_equal_name, node_hetionet_label)
+        direction1, new_relationship, direction2, node_reactome_label,  node_hetionet_label)
     results = graph_database.run(query)
     print(query)
     # for id1, id2, order, stoichiometry, in results:
@@ -76,14 +76,14 @@ generate new relationships between complex of hetionet and complex of hetionet n
 
 def create_cypher_file(file_path, node_label, rela_name, direction1, direction2):
     if node_label == "Protein" or node_label == "Chemical":
-        query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/reactome/%s" As line FIELDTERMINATOR "\\t" MATCH (d:MolecularComplex{identifier:line.id_hetionet_Complex}),(c:%s{identifier:line.id_hetionet_node}) CREATE (d)%s[:%s{order:line.order, stoichiometry:line.stoichiometry, source:'Reactome', url:"https://reactome.org/content/detail/"+line.id_hetionet_Complex, compartments: split(line.compartment, "|"), resource: ['Reactome'], reactome: "yes"}]%s(c);\n'''
+        query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/reactome/%s" As line FIELDTERMINATOR "\\t" MATCH (d:MolecularComplex{identifier:line.id_hetionet_Complex}),(c:%s{identifier:line.id_hetionet_node}) CREATE (d)%s[:%s{order:line.order, stoichiometry:line.stoichiometry, source:'Reactome', url:"https://reactome.org/content/detail/"+line.id_hetionet_Complex, compartments: split(line.compartment, "|"), resource: ['Reactome'], reactome: "yes"}]%s(c);\n'''
     else:
-        query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/reactome/%s" As line FIELDTERMINATOR "\\t" MATCH (d:MolecularComplex{identifier:line.id_hetionet_Complex}),(c:%s{identifier:line.id_hetionet_node}) CREATE (d)%s[:%s{order:line.order, stoichiometry:line.stoichiometry, resource: ['Reactome'], reactome: "yes", source:'Reactome', url:"https://reactome.org/content/detail/"+line.id_hetionet_Complex}]%s(c);\n'''
+        query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/reactome/%s" As line FIELDTERMINATOR "\\t" MATCH (d:MolecularComplex{identifier:line.id_hetionet_Complex}),(c:%s{identifier:line.id_hetionet_node}) CREATE (d)%s[:%s{order:line.order, stoichiometry:line.stoichiometry, resource: ['Reactome'], reactome: "yes", source:'Reactome', url:"https://reactome.org/content/detail/"+line.id_hetionet_Complex}]%s(c);\n'''
     query = query % (path_of_directory, file_path, node_label, direction1, rela_name, direction2)
     cypher_file.write(query)
 
 
-def check_relationships_and_generate_file(new_relationship, node_reactome_label, rela_equal_name, node_hetionet_label,
+def check_relationships_and_generate_file(new_relationship, node_reactome_label,  node_hetionet_label,
                                           directory, rela_name, direction1, direction2):
     print(
         '___~(  )(°^)o_o(^°)(  )~_____~(  )(°^)o_o(^°)(  )~_____~(  )(°^)o_o(^°)(  )~_____~(  )(°^)o_o(^°)(  )~__')
@@ -103,8 +103,7 @@ def check_relationships_and_generate_file(new_relationship, node_reactome_label,
     dict_Complex_node = {}
 
     load_hetionet_complex_hetionet_node_in(csv_mapped, dict_Complex_node, new_relationship,
-                                           node_reactome_label,
-                                           rela_equal_name, node_hetionet_label, direction1, direction2)
+                                           node_reactome_label, node_hetionet_label, direction1, direction2)
 
     print(
         '°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°')
@@ -129,59 +128,37 @@ def main():
 
     create_connection_with_neo4j()
 
-    # 0: old relationship;           1: name of node in Reactome;        2: relationship equal to Hetionet-node
-    # 3: name of node in Hetionet;   4: name of directory                5: name of new relationship
+    # 0: old relationship;           1: name of node in Reactome;
+    # 2: name of node in PharMeBINet;   3: name of directory        4: name of new relationship
     list_of_combinations = [
-        ['input', 'Reaction_reactome', 'equal_to_reactome_reaction', 'Reaction', 'IS_INPUT_RiiCo', '<-', '-'],
-        ['input', 'Polymerisation_reactome', 'equal_to_reactome_polymerisation', 'Polymerisation', 'IS_INPUT_PiiCo',
-         '<-', '-'],
-        ['input', 'BlackBoxEvent_reactome', 'equal_to_reactome_blackBoxEvent', 'BlackBoxEvent', 'IS_INPUT_BiiCo', '<-',
-         '-'],
-        ['input', 'FailedReaction_reactome', 'equal_to_reactome_failedreaction', 'FailedReaction', 'IS_INPUT_FiiCo',
-         '<-', '-'],
-        ['input', 'Depolymerisation_reactome', 'equal_to_reactome_depolymerisation', 'Depolymerisation',
-         'IS_INPUT_DiiCo', '<-', '-'],
+        ['input', 'ReactionLikeEvent_reactome', 'ReactionLikeEvent', 'IS_INPUT_RLEiiMC', '<-', '-'],
 
-        ['output', 'Reaction_reactome', 'equal_to_reactome_reaction', 'Reaction', 'IS_OUTPUT_RioCo', '<-', '-'],
-        ['output', 'Polymerisation_reactome', 'equal_to_reactome_polymerisation', 'Polymerisation', 'IS_OUTPUT_PioCo',
-         '<-', '-'],
-        ['output', 'BlackBoxEvent_reactome', 'equal_to_reactome_blackBoxEvent', 'BlackBoxEvent', 'IS_OUTPUT_BioCo',
-         '<-', '-'],
-        ['output', 'Depolymerisation_reactome', 'equal_to_reactome_depolymerisation', 'Depolymerisation',
-         'IS_OUTPUT_DioCo', '<-', '-'],
+        ['output', 'ReactionLikeEvent_reactome', 'ReactionLikeEvent', 'IS_OUTPUT_RLEioMC', '<-', '-'],
 
-        ['requiredInputComponent', 'Reaction_reactome', 'equal_to_reactome_reaction', 'Reaction',
-         'IS_REQUIRED_INPUT_COMPONENT_RiricCo', '<-', '-'],
-        ['requiredInputComponent', 'Polymerisation_reactome', 'equal_to_reactome_polymerisation', 'Polymerisation',
-         'IS_REQUIRED_INPUT_COMPONENT_PiricCo', '<-', '-'],
-        ['requiredInputComponent', 'BlackBoxEvent_reactome', 'equal_to_reactome_blackBoxEvent', 'BlackBoxEvent',
-         'IS_REQUIRED_INPUT_COMPONENT_BiricCo', '<-', '-'],
-        ['requiredInputComponent', 'FailedReaction_reactome', 'equal_to_reactome_failedreaction', 'FailedReaction',
-         'IS_REQUIRED_INPUT_COMPONENT_FiricCo', '<-', '-'],
+        ['requiredInputComponent', 'ReactionLikeEvent_reactome', 'ReactionLikeEvent',
+         'IS_REQUIRED_INPUT_COMPONENT_RLEiricMC', '<-', '-'],
 
-        ['compartment', 'GO_CellularComponent_reactome', 'equal_to_reactome_gocellcomp', 'CellularComponent',
-         'IS_IN_COMPARTMENT_CoiicCe', '-', '->'],
-        ['includedLocation', 'GO_CellularComponent_reactome', 'equal_to_reactome_gocellcomp', 'CellularComponent',
-         'IS_INCLUDED_LOCATION_CoiiLCe', '-', '->'],
-        ['goCellularComponent', 'GO_CellularComponent_reactome', 'equal_to_reactome_gocellcomp', 'CellularComponent',
-         'IS_CELLULAR_COMPONENT_CoiccCe', '-', '->'],
+        ['compartment', 'GO_CellularComponent_reactome', 'CellularComponent',
+         'IS_IN_COMPARTMENT_CCiicMC', '-', '->'],
+        ['includedLocation', 'GO_CellularComponent_reactome', 'CellularComponent',
+         'IS_INCLUDED_LOCATION_CCiilMC', '-', '->'],
+        ['goCellularComponent', 'GO_CellularComponent_reactome', 'CellularComponent',
+         'IS_CELLULAR_COMPONENT_CCiccMC', '-', '->'],
 
-        ['hasComponent', 'PhysicalEntity_reactome)--(:ReferenceEntity_reactome', 'equal_to_reactome_drug', 'Chemical',
-         'HAS_COMPONENT_CoirC', '-', '->'],
-        ['hasComponent', 'PhysicalEntity_reactome)--(:ReferenceEntity_reactome', 'equal_to_reactome_uniprot', 'Protein',
-         'HAS_COMPONENT_CoirP', '-', '->'],
-        ['hasComponent', 'Complex_reactome', 'equal_to_reactome_complex', 'MolecularComplex',
-         'HAS_COMPONENT_CoirCo', '-', '->'],
+        ['hasComponent', 'PhysicalEntity_reactome)--(:ReferenceEntity_reactome', 'Chemical',
+         'HAS_COMPONENT_MChcCH', '-', '->'],
+        ['hasComponent', 'PhysicalEntity_reactome)--(:ReferenceEntity_reactome', 'Protein',
+         'HAS_COMPONENT_MChcP', '-', '->'],
+        ['hasComponent', 'Complex_reactome', 'MolecularComplex',
+         'HAS_COMPONENT_MChcMC', '-', '->'],
 
-        ['inferredTo', 'Complex_reactome', 'equal_to_reactome_complex', 'MolecularComplex',
-         'HAS_EFFECT_ON_CoheoCo', '-', '->'],
+        ['inferredTo', 'Complex_reactome', 'MolecularComplex',
+         'HAS_EFFECT_ON_MCheMC', '-', '->'],
 
-        ['regulator', 'Regulation_reactome', 'equal_to_reactome_regulation', 'Regulation',
-         'HAS_REGULATOR_RGhrCo', '<-', '-'],
-        ['activeUnit', 'Regulation_reactome', 'equal_to_reactome_regulation', 'Regulation',
-         'HAS_ACTIVE_UNIT_RGhauCo', '<-', '-'],
+        ['regulator', 'Regulation_reactome', 'Regulation', 'HAS_REGULATOR_RGhrMC', '<-', '-'],
+        ['activeUnit', 'Regulation_reactome', 'Regulation', 'HAS_ACTIVE_UNIT_RGhauMC', '<-', '-'],
 
-        ['disease', 'Disease_reactome', 'equal_to_reactome_disease', 'Disease', 'LEADS_TO_ColtD', '-', '->'],
+        ['disease', 'Disease_reactome', 'Disease', 'LEADS_TO_MCltD', '-', '->'],
     ]
 
     directory = 'ComplexEdges'
@@ -190,12 +167,11 @@ def main():
     for list_element in list_of_combinations:
         new_relationship = list_element[0]
         node_reactome_label = list_element[1]
-        rela_equal_name = list_element[2]
-        node_hetionet_label = list_element[3]
-        rela_name = list_element[4]
-        direction1 = list_element[5]
-        direction2 = list_element[6]
-        check_relationships_and_generate_file(new_relationship, node_reactome_label, rela_equal_name,
+        node_hetionet_label = list_element[2]
+        rela_name = list_element[3]
+        direction1 = list_element[4]
+        direction2 = list_element[5]
+        check_relationships_and_generate_file(new_relationship, node_reactome_label,
                                               node_hetionet_label, directory,
                                               rela_name, direction1, direction2)
     cypher_file.close()

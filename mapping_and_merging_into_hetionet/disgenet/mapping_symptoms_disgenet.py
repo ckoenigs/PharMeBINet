@@ -97,7 +97,7 @@ def generate_files(path_of_directory):
     csv_mapping = csv.writer(file, delimiter='\t')
     csv_mapping.writerow(header)
 
-    # master_database_change/mapping_and_merging_into_hetionet/DisGeNet/
+    # mapping_and_merging_into_hetionet/DisGeNet/
     query = f'Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:{path_of_directory}{file_name}.tsv" As line FIELDTERMINATOR "\\t" \
         Match (n:disease_DisGeNet{{diseaseId:line.DisGeNet_diseaseId}}), (v:Symptom{{identifier:line.identifier}}) Set v.disgenet="yes", v.resource=split(line.resource,"|") Create (v)-[:equal_to_DisGeNet_disease{{mapped_with:line.mapping_method}}]->(n);\n'
 
@@ -107,7 +107,7 @@ def generate_files(path_of_directory):
 def resource(identifier):
     resource = set(dict_symptom_id_to_resource[identifier])
     resource.add('DisGeNet')
-    return '|'.join(resource)
+    return '|'.join(sorted(resource))
 
 
 def load_all_unmapped_DisGeNet_disease_and_finish_the_files(name,umls_id,xrefs):

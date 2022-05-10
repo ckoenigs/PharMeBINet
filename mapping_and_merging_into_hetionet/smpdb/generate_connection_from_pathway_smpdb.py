@@ -50,7 +50,7 @@ generate new relationships between pathways and nodes that have edges in smpdb
 
 
 def create_cypher_file( file_path, node_label, rela_name):
-    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/smpdb/%s" As line FIELDTERMINATOR "\\t" MATCH (d:Pathway{identifier:line.pathway_id}),(c:%s{identifier:line.node_id}) CREATE (d)-[: %s{ resource: ['SMPDB'], smpdb: "yes", license:"SMPDB is offered to the public as a freely available resource. Use and re-distribution of the data, in whole or in part, for commercial purposes requires explicit permission of the authors and explicit acknowledgment of the source material (SMPDB) and the original publication", url:"https://smpdb.ca/view/"+line.smpdb_pathway_id, source:"SMPDB"}]->(c);\n'''
+    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/smpdb/%s" As line FIELDTERMINATOR "\\t" MATCH (d:Pathway{identifier:line.pathway_id}),(c:%s{identifier:line.node_id}) CREATE (d)-[: %s{ resource: ['SMPDB'], smpdb: "yes", license:"SMPDB is offered to the public as a freely available resource. Use and re-distribution of the data, in whole or in part, for commercial purposes requires explicit permission of the authors and explicit acknowledgment of the source material (SMPDB) and the original publication", url:"https://smpdb.ca/view/"+line.smpdb_pathway_id, source:"SMPDB"}]->(c);\n'''
     query = query % (path_of_directory, file_path, node_label, rela_name)
     cypher_file.write(query)
 

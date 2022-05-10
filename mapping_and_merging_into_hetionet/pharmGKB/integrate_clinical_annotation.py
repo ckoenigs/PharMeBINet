@@ -79,7 +79,7 @@ def prepare_files(directory):
     csv_file = csv.writer(file, delimiter='\t')
     csv_file.writerow(['identifier', 'allele_infos'])
 
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/pharmGKB/%s" As line  FIELDTERMINATOR '\\t'  MATCH '''
+    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/pharmGKB/%s" As line  FIELDTERMINATOR '\\t'  MATCH '''
 
     query_meta_node = query_start + '(n:PharmGKB_ClinicalAnnotation{id:toInteger(line.identifier)}) Create (b:ClinicalAnnotation{'
     query = 'MATCH (p:PharmGKB_ClinicalAnnotation) WITH DISTINCT keys(p) AS keys UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields RETURN allfields;'

@@ -85,7 +85,7 @@ def generate_files(path_of_directory):
 
     cypher_file = open('output/cypher_part2.cypher', 'w', encoding='utf-8')
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/hmdb/%s" As line FIELDTERMINATOR '\\t' 
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/hmdb/%s" As line FIELDTERMINATOR '\\t' 
         Match (n:Pathway{identifier:line.pathway_id}), (v:Pathway_HMDB{identifier:line.pathway_hmdb_id}) Create (n)-[r:equal_to_pathway_hmdb{how_mapped:line.how_mapped}]->(v) Set n.hmdb="yes", n.resource=split(line.resource,"|") ;\n'''
     query = query % (path_of_directory, file_name)
     cypher_file.write(query)

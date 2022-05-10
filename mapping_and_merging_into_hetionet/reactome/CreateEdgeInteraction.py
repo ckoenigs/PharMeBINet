@@ -210,14 +210,14 @@ generate connection between mapping interactions of reactome and hetionet and ge
 
 
 def create_cypher_file(label_1, label_2, csv_mapped_name, csv_not_mapped_name, rela_label):
-    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/reactome/%s" As line FIELDTERMINATOR "\\t" MATCH (d:%s{identifier:line.interactor1_het_id})-[b:%s]->(c:%s{identifier:line.interactor2_het_id}) where ((b.iso_of_protein_from = line.iso_from and not line.iso_from is NULL) or (line.iso_from is NULL and not exists(b.iso_of_protein_from))) and ((b.iso_of_protein_to = line.iso_to and not line.iso_to is NULL) or (line.iso_to is NULL and not exists(b.iso_of_protein_to))) SET b.resource = split(line.resource, '|'), b.reactome = "yes", b.interaction_ids = split(line.interaction_ids_EBI, "|"), b.pubMed_ids = split(line.pubmed_ids, "|");\n'''
+    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/reactome/%s" As line FIELDTERMINATOR "\\t" MATCH (d:%s{identifier:line.interactor1_het_id})-[b:%s]->(c:%s{identifier:line.interactor2_het_id}) where ((b.iso_of_protein_from = line.iso_from and not line.iso_from is NULL) or (line.iso_from is NULL and not exists(b.iso_of_protein_from))) and ((b.iso_of_protein_to = line.iso_to and not line.iso_to is NULL) or (line.iso_to is NULL and not exists(b.iso_of_protein_to))) SET b.resource = split(line.resource, '|'), b.reactome = "yes", b.interaction_ids = split(line.interaction_ids_EBI, "|"), b.pubMed_ids = split(line.pubmed_ids, "|");\n'''
     query = query % (path_of_directory, csv_mapped_name, label_1, rela_label, label_2)
     # because of a crazy error that I do not what happend with the protein-protein interaction and periodic commit
     if label_2 == label_1 and label_2 == 'Protein':
         query = query[28:]
     cypher_file.write(query)
     # new interactions
-    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/reactome/%s" As line FIELDTERMINATOR "\\t" MATCH (d:%s{identifier:line.interactor1_het_id}),(c:%s{identifier:line.interactor2_het_id}) CREATE (d)-[:%s{interaction_ids: split(line.accession, "|"), iso_of_protein_from:line.iso_from, iso_of_protein_to:line.iso_to, resource:["Reactome"], reactome:"yes", source:"Reactome", pubMed_ids : split(line.pubmed_ids, "|")}]->(c);\n'''
+    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/reactome/%s" As line FIELDTERMINATOR "\\t" MATCH (d:%s{identifier:line.interactor1_het_id}),(c:%s{identifier:line.interactor2_het_id}) CREATE (d)-[:%s{interaction_ids: split(line.accession, "|"), iso_of_protein_from:line.iso_from, iso_of_protein_to:line.iso_to, resource:["Reactome"], reactome:"yes", source:"Reactome", pubMed_ids : split(line.pubmed_ids, "|")}]->(c);\n'''
     query = query % (path_of_directory, csv_not_mapped_name, label_1, label_2, rela_label)
     cypher_file.write(query)
 
@@ -254,9 +254,9 @@ def main():
         ['Protein)-[:equal_to_reactome_uniprot', 'equal_to_reactome_uniprot]-(q:Protein)', 'Protein', 'Protein',
          'protein_to_protein', 'INTERACTS_PiP'],
         ['Chemical)-[:equal_to_reactome_drug', 'equal_to_reactome_uniprot]-(q:Protein)', 'Chemical', 'Protein',
-         'chemical_to_protein', 'INTERACTS_CiP'],
+         'chemical_to_protein', 'INTERACTS_CHiP'],
         ['Chemical)-[:equal_to_reactome_drug', 'equal_to_reactome_drug]-(q:Chemical)', 'Chemical', 'Chemical',
-         'chemical_to_chemical', 'INTERACTS_CiC']
+         'chemical_to_chemical', 'INTERACTS_CHiCH']
     ]
     for list_element in list_of_combinations:
         pathlabel_1 = list_element[0]

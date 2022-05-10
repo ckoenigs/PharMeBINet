@@ -120,7 +120,7 @@ def main():
     else:
         sys.exit('need a path disgenet gene-variant')
 
-    os.chdir(path_of_directory + 'master_database_change/mapping_and_merging_into_hetionet/disgenet')
+    os.chdir(path_of_directory + 'mapping_and_merging_into_hetionet/disgenet')
     home = os.getcwd()
     source = os.path.join(home, 'output')
     path_of_directory = os.path.join(home, 'gene_variant_edge/')
