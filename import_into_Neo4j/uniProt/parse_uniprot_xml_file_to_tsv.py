@@ -150,10 +150,6 @@ def prepare_evidence(attrib, protein_id, parent=None):
         if type(value) in [set,list]:
             dict_pair[key]='||'.join(value)
     dict_node_type_to_tsv['protein_evidence'].writerow(dict_pair)
-    # dict_pair={'uniprot_id':protein_id,'evidence_id':evidence_id}
-    # dict_pair.update(dict_evidence_protein_pairs_to_info[(evidence_id, protein_id)])
-    # dict_pair=prepare_tsv_dictionary(dict_pair)
-    # dict_node_type_to_tsv['protein_evidence'].writerow(dict_pair)
 
 
 def preparation_gene_location(dictionary, attributes, node=None):
@@ -834,18 +830,6 @@ def generates_rela_tsv_file_and_cypher(label, properties, rela_name, list_proper
     prepare_edge_cypher_query(file_name, label, rela_name, properties, list_properties)
 
 
-def write_evidence_rela_info_into_tsv():
-    """
-    Go through all evidence-protein pairs. Prepare the dictionaries for write into the TSV.
-    The pairs appear multiple times with different information. That is why it is run at the end.
-    :return:
-    """
-    for (evidence_id, protein_id), dict_infos in dict_evidence_protein_pairs_to_info.items():
-        dict_pair = {'uniprot_id': protein_id, 'evidence_id': evidence_id}
-        dict_pair.update(dict_infos)
-        dict_pair = prepare_tsv_dictionary(dict_pair)
-        dict_node_type_to_tsv['protein_evidence'].writerow(dict_pair)
-
 
 def check_for_protein(protein_id):
     """
@@ -902,12 +886,6 @@ def main():
     print('parse xml data ')
 
     run_trough_xml_and_parse_data()
-
-    print('#############################################################')
-    print(datetime.datetime.now())
-    print('write evidence-protein pairs into tsv file')
-
-    # write_evidence_rela_info_into_tsv()
 
     print('#############################################################')
     print(datetime.datetime.now())
