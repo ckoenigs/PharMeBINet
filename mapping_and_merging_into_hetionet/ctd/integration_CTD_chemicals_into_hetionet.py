@@ -630,7 +630,7 @@ def map_rxcui_to_drugbank_with_rxnorm():
 load map rxnorm id to drugbank _id from dhimmel inchikey and use this to map the rest
 properties:
     0:rxcui
-    1:drugbank ids seperated with |
+    1:drugbank ids separated with |
 '''
 
 
