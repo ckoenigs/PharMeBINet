@@ -61,6 +61,7 @@ def add_entry_to_dictionary(key, value, dictionary):
         dictionary[key]=set()
     dictionary[key].add(value)
 
+
 '''
 load all disease in the dictionary
 has properties:
@@ -93,7 +94,6 @@ def load_all_disease_in_dictionary():
 
         list_diseases_in_pharmebinet.append(identifier)
         disease = dict(disease)
-        # dict_diseases_in_pharmebinet['huh']=disease
         dict_diseases_in_pharmebinet[identifier] = disease
     print('size of diseases before the rest of disease ontology was add: ' + str(len(dict_diseases_in_pharmebinet)))
     output.write(

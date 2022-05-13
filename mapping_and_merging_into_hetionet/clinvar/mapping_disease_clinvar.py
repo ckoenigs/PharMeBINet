@@ -66,7 +66,7 @@ def add_query_to_cypher_file():
     '''
     add query for a specific tsv to cypher file
     '''
-    this_start_query = query_start + "(n:trait_Disease_ClinVar {identifier:line.trait_id}), (m:Disease{identifier:line.disease_id}) Set m.clinvar='yes' Create (m)-[:equal_to_clinvar_disease{mapping_methode:split(line.mapping_method,'|')}]->(n);\n"
+    this_start_query = query_start + "(n:trait_Disease_ClinVar {identifier:line.trait_id}), (m:Disease{identifier:line.disease_id}) Set m.clinvar='yes', m.resource=split(line.resource,'|') Create (m)-[:equal_to_clinvar_disease{mapping_methode:split(line.mapping_method,'|')}]->(n);\n"
     query = this_start_query % (path_of_directory, 'mapping')
     cypher_file.write(query)
 
@@ -203,9 +203,9 @@ def write_into_tsv_file(disease_id, trait_id, trait_name, tuple_pair, csv_mappin
                                                                           dict_disease_id_to_disease_node[
                                                                               disease_id] else ''
     mapping_set = dict_of_mapped_tuples[tuple_pair] if tuple_pair in dict_of_mapped_tuples else mapped_with
-    reource=set(dict_disease_id_to_resource[disease_id])
-    reource.add('ClinVar')
-    csv_mapping_writer.writerow([trait_id, disease_id, "|".join(list(mapping_set)), '|'.join(sorted(reource)), trait_name, disease_name])
+    resource=set(dict_disease_id_to_resource[disease_id])
+    resource.add('ClinVar')
+    csv_mapping_writer.writerow([trait_id, disease_id, "|".join(list(mapping_set)), '|'.join(sorted(resource)), trait_name, disease_name])
 
 
 def check_for_mapping_and_write_in_tsv_file(name, dictionary, counter_new_mapped, trait_id, mapped_ids, mapped_with):

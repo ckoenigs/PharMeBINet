@@ -188,7 +188,7 @@ def load_all_ingredients_and_map():
 def write_mapping_into_file(csv_map):
     for (identifier, chemical_id), how_mapped in dict_mapping_pairs.items():
         resource = set(dict_chemical_id_to_resource[chemical_id])
-        resource.add('NDR-RT')
+        resource.add('NDF-RT')
         csv_map.writerow([identifier, chemical_id, '|'.join(sorted(resource)), ';'.join(how_mapped)])
 
 
