@@ -681,14 +681,6 @@ def integrate_sider_drugs_into_hetionet():
             name = ''
         csv_writer.writerow([stitch_stereo, stitch_flat, name])
 
-    # all drugs which are not mapped with sider get the property sider:'no'
-
-    # the general cypher file to update all chemicals and relationship which are not from aeolus
-    cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')
-    query = '''Match (c:Compound) Where not Exists(c.sider) 
-    Set  c.sider='no';\n'''
-    cypher_general.write(query)
-    cypher_general.close()
 
 
 def main():

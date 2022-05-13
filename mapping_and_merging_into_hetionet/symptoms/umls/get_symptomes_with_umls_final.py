@@ -914,7 +914,7 @@ def integrate_symptoms_into_hetionet():
         if first_entry == None:
             url = 'http://identifiers.org/umls/' + symptom_cui
             query = '''
-            Create (s:Symptom{identifier:"%s",type:'cui',license:'UMLS license', name:"%s", resource:['UMLS'], source:'UMLS', url:"%s", hetionet:'no', do:'no', hpo:'no', umls:'yes'});     '''
+            Create (s:Symptom{identifier:"%s",type:'cui',license:'UMLS license', name:"%s", resource:['UMLS'], source:'UMLS', url:"%s",  umls:'yes'});     '''
             query = query % (symptom_cui, name, url)
             counter_new_symptoms += 1
         else:
@@ -930,8 +930,6 @@ def integrate_symptoms_into_hetionet():
             counter_already_in_hetionet_symptoms += 1
         g.run(query)
 
-    query = '''MATCH (s:Symptom) Where not exists(s.umls) Set s.umls='no' '''
-    g.run(query)
     print('number of new symptoms:' + str(counter_new_symptoms))
     print('number of symptoms which are already in hetionet:' + str(counter_already_in_hetionet_symptoms))
 
@@ -947,7 +945,7 @@ def generate_cypher_file_for_relationships():
     i = 1
     h = open('integrate_symptoms_and_relationships_' + str(i) + '.cypher', 'w')
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/symptoms/umls/relationship.csv" As line MATCH (d:Disease{identifier:"%s"}),(s:Symptom{identifier:"%s"}) Merge (d)-[l:PRESENTS_DpS]->(s) On Create Set d.umls='yes', l.license='UMLS',l.unbiased=false,l.source='UMLS',l.resource=['UMLS'], l.hetionet='no',l.do='no', l.hpo='no', l.umls='yes' On Merge Set l.umls='yes', d.umls='yes', l.resource=l.resource+'UMLS' ;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/symptoms/umls/relationship.csv" As line MATCH (d:Disease{identifier:"%s"}),(s:Symptom{identifier:"%s"}) Merge (d)-[l:PRESENTS_DpS]->(s) On Create Set d.umls='yes', l.license='UMLS',l.unbiased=false,l.source='UMLS',l.resource=['UMLS'],  l.umls='yes' On Merge Set l.umls='yes', d.umls='yes', l.resource=l.resource+'UMLS' ;\n'''
     i += 1
     # counter of connection queries
     counter_connection = 0
@@ -970,10 +968,7 @@ def generate_cypher_file_for_relationships():
 
                         mesh_or_cui = dict_umls_cui_to_mesh_or_umls_cui[symptom]
                         writer.writerow([mondo, mesh_or_cui])
-    h.write('begin \n')
-    query = '''MATCH (n:Disease)-[l:PRESENTS_DpS]->(s:Symptom}) Where not exists(l.umls) Set l.umls='no'; \n  '''
-    h.write(query)
-    h.write('commit')
+
 
     print('number of new connection in Hetionet:' + str(counter_new_connection))
     print('number of already integrated connection in Hetionet:' + str(counter_connection_already_in_hetionet))

@@ -162,7 +162,7 @@ list_new_add_umls_cuis = []
 '''
 generate symptoms and generate connection from disease to symptoms
 also generate file with disease symptoms
-Create (s:Symptom{identifier:"%s",type:'cui',license:'UMLS license', name:"%s", source:'UMLS', url:"%s", hetionet:'no', umls:'yes'}) 
+Create (s:Symptom{identifier:"%s",type:'cui',license:'UMLS license', name:"%s", source:'UMLS', url:"%s", umls:'yes'}) 
 '''
 
 
@@ -191,7 +191,7 @@ def integrate_infromation_into_hetionet():
             #            print(cui)
             url = 'http://identifiers.org/umls/' + cui
             query = '''
-            Create (s:Symptom{identifier:"%s",type:'cui',license:'UMLS license', name:"%s", resource:['Disease Ontology'], source:'UMLS', url:"%s", hetionet:'no', do:'yes'});     '''
+            Create (s:Symptom{identifier:"%s",type:'cui',license:'UMLS license', name:"%s", resource:['Disease Ontology'], source:'UMLS', url:"%s",  do:'yes'});     '''
             query = query % (cui, symptom, url)
             counter_new_symptoms += 1
             list_new_add_umls_cuis.append(cui)
@@ -206,7 +206,7 @@ def integrate_infromation_into_hetionet():
             counter_already_in_hetionet_symptoms += 1
         g.run(query)
 
-    query = '''Match (s:Symptom) Where not exists(s.do) Set s.hetionet='yes', s.do='no', s.resource=['hetionet'] '''
+    query = '''Match (s:Symptom) Where not exists(s.do) Set s.hetionet='yes',  s.resource=['hetionet'] '''
     g.run(query)
 
     print('number of new symptoms:' + str(counter_new_symptoms))
@@ -256,7 +256,7 @@ def integrate_infromation_into_hetionet():
                 if not cui in dict_cui_to_mesh:
                     f.write(symptom_term + '\t' + cui + '\t' + '\n')
                     query = ''' MATCH (n:Disease{identifier:"%s"}),(s:Symptom{identifier:"%s"}) 
-                    Create (n)-[:PRESENTS_DpS{license:'CC BY 3.0',unbiased:false,source:'DO', source_id:'%s',hetionet:'no',do:'yes', resource:['Disease Ontology']}]->(s); \n '''
+                    Create (n)-[:PRESENTS_DpS{license:'CC BY 3.0',unbiased:false,source:'DO', source_id:'%s',do:'yes', resource:['Disease Ontology']}]->(s); \n '''
                     query = query % (doid, cui, doid)
                     count_new_connection += 1
 
@@ -268,7 +268,7 @@ def integrate_infromation_into_hetionet():
                     first_entry = result.evaluate()
                     if first_entry == None:
                         query = '''MATCH (n:Disease{identifier:"%s"}),(s:Symptom{identifier:"%s"}) 
-                        Create (n)-[:PRESENTS_DpS{license:'CC BY 3.0',unbiased:false,source:'DO', source_id:'%s', resource:['Disease Ontology'],hetionet:'no',do:'yes'}]->(s); \n '''
+                        Create (n)-[:PRESENTS_DpS{license:'CC BY 3.0',unbiased:false,source:'DO', source_id:'%s', resource:['Disease Ontology'],do:'yes'}]->(s); \n '''
                         count_new_connection += 1
 
                     else:
@@ -295,7 +295,7 @@ def integrate_infromation_into_hetionet():
         f.close()
 
     cypher_file.write('commit \n begin \n')
-    query = ''' MATCH ()-[l:PRESENTS_DpS]->(s:Symptom) Where not exists(l.do) Set l.do='no', l.hetionet='yes'; \n '''
+    query = ''' MATCH ()-[l:PRESENTS_DpS]->(s:Symptom) Where not exists(l.do) Set, l.hetionet='yes'; \n '''
     cypher_file.write(query)
     cypher_file.write('commit')
 
