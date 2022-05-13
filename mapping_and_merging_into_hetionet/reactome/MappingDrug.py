@@ -254,11 +254,6 @@ def create_cypher_file():
     query = query %(path_of_directory)
     cypher_file.write(query)
 
-    # cypher_file.write(':begin\n')
-    # query = '''MATCH (d:ReferenceEntity_reactome) WHERE NOT  exists(d.reactome) SET d.reactome="no";\n '''
-    # cypher_file.write(query)
-    # cypher_file.write(':commit\n')
-
 
 def main():
     global path_of_directory

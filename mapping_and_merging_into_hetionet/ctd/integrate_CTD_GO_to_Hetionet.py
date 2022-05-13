@@ -244,12 +244,6 @@ def generate_files(file_name_addition, ontology, dict_ctd_in_hetionet,dict_ctd_i
     query = query % (file_name_addition, ontology)
     cypher_file.write(query)
 
-    # add query to update disease nodes with do='no'
-    cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')
-    query = ''':begin\n Match (n:%s) Where not exists(n.ctd) Set n.ctd="no";\n :commit\n '''
-    query= query %(ontology)
-    cypher_general.write(query)
-    cypher_general.close()
 
 
 # dictionary from ctd ontology to label and file name

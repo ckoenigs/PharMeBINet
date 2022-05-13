@@ -342,7 +342,7 @@ def integrate_disease_into_hetionet():
             name = dict_CTD_disease[disease_id].name.replace("'", "")
             query = '''Match  (n:CTD_disease) Where  n.disease_id='%s'
             Set n.cui='%s'
-            Create (s:SideEffect{identifier:'%s', umls_label:'', aeolus:'no', sider:'no', url:'%s', hetionet:'no', source:'UMLS via CTD', name:'%s', conceptName:'',license:'Copyright 2012-2017 MDI Biological Laboratory & NC State University. All rights reserved.', meddraType:'', resource:['CTD'], ctd:'yes', ctd_url:'http://ctdbase.org/detail.go?type=disease&acc=%s'}) 
+            Create (s:SideEffect{identifier:'%s', umls_label:'', url:'%s',  source:'UMLS via CTD', name:'%s', conceptName:'',license:'Copyright 2012-2017 MDI Biological Laboratory & NC State University. All rights reserved.', meddraType:'', resource:['CTD'], ctd:'yes', ctd_url:'http://ctdbase.org/detail.go?type=disease&acc=%s'}) 
             Create (s)-[:equal_to_SE_Disease_CTD]->(n);
             '''
             query = query % (disease_id, cui, cui, url, name, dict_CTD_disease[disease_id].idType + ':' + disease_id)
@@ -353,9 +353,6 @@ def integrate_disease_into_hetionet():
             '''
             query = query % (cui, disease_id, cui)
         g.run(query)
-
-    query = ''' Match  (s:SideEffect) Where not exists(s.ctd) Set s.ctd='no',s.ctd_url="" '''
-    g.run(query)
 
 
 def main():

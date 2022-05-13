@@ -106,10 +106,6 @@ def create_cypher_file():
      Match (d: MolecularFunction {identifier: line.id_hetionet}),(c:GO_MolecularFunction_reactome{accession:line.id}) Create (d)-[:equal_to_reactome_gomolfunc]->(c)  SET d.resource = split(line.resource, '|'), d.reactome = "yes";\n'''
     query = query %(path_of_directory)
     cypher_file.write(query)
-    # cypher_file.write(':begin\n')
-    # query = '''Match (d:MolecularFunction) Where not  exists(d.reactome) Set d.reactome="no";\n '''
-    # cypher_file.write(query)
-    # cypher_file.write(':commit')
 
 
 def main():

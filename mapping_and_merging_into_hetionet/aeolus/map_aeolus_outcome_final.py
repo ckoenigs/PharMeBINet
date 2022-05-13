@@ -651,13 +651,6 @@ def integrate_aeolus_into_hetionet():
                 csv_new.writerow([outcome_concept, cui, '|'.join(dict_aeolus_SE_with_CUIs[outcome_concepts[0]]),
                                   'MedDRA:' + '|MedDRA:'.join(outcome_concepts)])
 
-    # search for all side effect that did not mapped with aeolus and give them the property aeolus:'no'
-    # add query to update disease nodes with do='no'
-    cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')
-    query = ''':begin\n Match (n:SideEffect) Where not exists(n.aeolus) Set n.aeolus="no";\n :commit\n '''
-    cypher_general.write(query)
-    cypher_general.close()
-
 
 def main():
     global path_of_directory

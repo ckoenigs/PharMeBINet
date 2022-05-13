@@ -287,12 +287,6 @@ def generate_cypher_file_for_connection(cypher_file):
         rela_info = change_list_values_to_string(rela_info)
         csv_rela_new.writerow(rela_info)
 
-    # query = ''' MATCH ()-[l:PRESENTS_DpS]->(s:Symptom) Where not exists(l.hpo) Set l.hpo='no'; \n '''
-    # cypher_file.write(query)
-    # cypher_file.write('commit \n')
-    #                   ' begin \n')
-    # cypher_file.write('Match (n:Disease) Where not exists(n.hpo) Set n.hpo="no"; \n')
-    # cypher_file.write('commit')
 
     print('number of new connection:' + str(count_new_connection))
     print('number of update connection:' + str(count_update_connection))

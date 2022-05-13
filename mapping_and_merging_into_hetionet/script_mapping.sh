@@ -8,12 +8,6 @@ path_to_project=$2
 
 echo $path_to_project
 
-#generate cypher file for adding things to database
-echo "" > cypher_general.cypher
-
-
-
-
 
 
 cd monDO

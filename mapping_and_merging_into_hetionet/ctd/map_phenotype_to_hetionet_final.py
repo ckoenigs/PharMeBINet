@@ -293,7 +293,7 @@ def integrate_phenotype_into_hetionet():
         if first_node == None:
             query = '''Match  (n:CTDphenotype) Where  n.go_id='%s'
             Set n.cui='%s'
-            Create (s:SideEffect{identifier:'%s', umls_label:'', aeolus:'no', sider:'no', url:'%s', hetionet:'no', source:'UMLS via CTD', name:'%s',phenotype:'yes', only_phenotype:'yes', conceptName:'',license:'Copyright 2012-2017 MDI Biological Laboratory & NC State University. All rights reserved.', meddraType:'', resource:['CTD'], ctd:'yes', ctd_url:'http://ctdbase.org/detail.go?type=go&acc=GO:%s'}) 
+            Create (s:SideEffect{identifier:'%s', umls_label:'', url:'%s',  source:'UMLS via CTD', name:'%s',phenotype:'yes', only_phenotype:'yes', conceptName:'',license:'Copyright 2012-2017 MDI Biological Laboratory & NC State University. All rights reserved.', meddraType:'', resource:['CTD'], ctd:'yes', ctd_url:'http://ctdbase.org/detail.go?type=go&acc=GO:%s'}) 
             Create (s)-[:equal_to_SE_CTD]->(n);
             '''
             query = query % (id_without_go, cui, cui, url, dict_CTD_phenotypes[go_id].name, id_without_go)

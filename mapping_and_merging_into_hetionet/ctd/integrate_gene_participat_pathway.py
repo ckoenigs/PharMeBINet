@@ -33,13 +33,6 @@ def take_all_relationships_of_gene_pathway():
     cypherfile.write(query)
     cypherfile.close()
 
-    # the general cypher file to update all chemicals and relationship which are not from aeolus
-    cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')
-    cypher_general.write(':begin\n')
-    cypher_general.write('Match (n:Gene)-[r:PARTICIPATES_GpPW]->(b:Pathway) Where not exists(r.ctd) Set r.ctd="no";\n')
-    cypher_general.write(':commit')
-    cypher_general.close()
-
     csvfile = open('gene_pathway/relationships.tsv', 'w')
     writer = csv.writer(csvfile, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     writer.writerow(['GeneID', 'PathwayID'])

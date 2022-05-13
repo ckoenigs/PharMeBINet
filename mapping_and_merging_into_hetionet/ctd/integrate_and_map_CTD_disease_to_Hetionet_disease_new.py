@@ -659,12 +659,6 @@ def integrate_disease_into_hetionet():
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/ctd/disease_Disease/ctd_hetionet.tsv" As line  FIELDTERMINATOR '\\t' MATCH (n:CTD_disease{disease_id:line.CTD_diseaseID}), (d:Disease{identifier:line.HetionetDiseaseId}) Merge (d)-[:equal_CTD_disease]->(n) Set  n.mondos=split(line.mondos, '|') With line, d, n Where not exists(d.ctd) Set d.resource=split(line.resource,"|") , d.ctd='yes', d.ctd_url='http://ctdbase.org/detail.go?type=disease&acc='+line.CTD_diseaseID;\n '''
     cypher_file.write(query)
 
-    # add query to update disease nodes with do='no'
-    cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')
-    query = ''':begin\n MATCH (n:Disease) Where not exists(n.ctd) Set n.ctd="no";\n :commit\n '''
-    cypher_general.write(query)
-    cypher_general.close()
-
     # set mondo value where not existing
     cypher_file.write(':begin\n')
     # set all ctd disease which are not mapped the mondo as empty

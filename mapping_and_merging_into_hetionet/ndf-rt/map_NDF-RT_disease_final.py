@@ -305,11 +305,6 @@ def integrate_ndf_rt_disease_into_hetionet():
         csv_writer_not_mapped.writerow([code, dict_diseases_NDF_RT[code].name, dict_diseases_NDF_RT[code].umls_cuis,
                                         dict_diseases_NDF_RT[code].properties])
 
-    # add query to update disease nodes with do='no'
-    cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')
-    query = ''':begin\n MATCH (n:Disease) Where Not Exists(n.ndf_rt) Set n.ndf_rt="no";\n :commit\n '''
-    cypher_general.write(query)
-    cypher_general.close()
 
 
 def main():

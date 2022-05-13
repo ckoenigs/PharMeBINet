@@ -436,19 +436,6 @@ def generate_cypher_file():
 
     cypher_file.close()
 
-    # the general cypher file to update all chemicals and relationship which are not from aeolus
-    cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')
-
-    # all compounds which are not mapped from aeolus get as property aeolus='no'
-    query = ''':begin\n Match (n:Chemical)  Where not exists(n.aeolus) Set n.aeolus="no";\n :commit\n '''
-    cypher_general.write(query)
-
-    # all the causes relationship which are not in aeolus get the property aeolus='no'
-    query = ''':begin\n Match (a:Chemical)-[l:CAUSES_CcSE]-(:SideEffect) Where not exists(l.aeolus) Set l.aeolus='no'; \n :commit\n  '''
-    cypher_general.write(query)
-
-    cypher_general.close()
-
 
 # tsv for mapped aeolus pairs
 file = open('drug/mapped.tsv', 'w', encoding='utf-8')

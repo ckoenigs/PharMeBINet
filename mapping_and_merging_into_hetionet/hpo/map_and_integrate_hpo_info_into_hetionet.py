@@ -527,12 +527,6 @@ def integrate_mapping_of_disease_into_hetionet():
             # fill mapped dictionary
             dict_mondo_to_hpo_ids[mondo].append(hpo_id)
 
-    # query = '''Match (d:disease{identifier:"%s"}) Where exists(d.hpo) Set d.resource=d.resource+"HPO";\n '''
-    # cypher_file.write(query)
-    #
-    # query = '''Match (d:disease{identifier:"%s"}) Where not exists(d.hpo) Set d.hpo="no";\n '''
-    # cypher_file.write(query)
-
 
 # dictionary of frequency of occurrence
 dict_frequency = {}

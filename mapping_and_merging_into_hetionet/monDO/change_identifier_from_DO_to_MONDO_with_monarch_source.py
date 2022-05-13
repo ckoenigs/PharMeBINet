@@ -256,10 +256,6 @@ def generate_cypher_queries():
     query = '''Match (d:Disease) Where not exists(d.mondo) Detach Delete d;\n'''
     cypher_file_end.write(query)
 
-    # add the disease ontology property to the nodes without
-    query = '''Match (d:Disease) Where not exists(d.diseaseOntology) Set d.diseaseOntology='no' ;\n'''
-    cypher_file_end.write(query)
-
     # combin merged id with doids
     query = '''MATCH (n:Disease) Where exists(n.merged_identifier) Set n.doids=n.doids+ n.merged_identifier Remove n.merged_identifier;\n'''
     cypher_file_end.write(query)

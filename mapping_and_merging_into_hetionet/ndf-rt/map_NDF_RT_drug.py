@@ -693,13 +693,6 @@ def integration_of_ndf_rt_drugs_into_hetionet():
             list_of_values = [code, string_drugbank_ids, how_mapped, drugbank_id, string_resource]
             csv_writer.writerow(list_of_values)
 
-    # the general cypher file to update all chemicals and relationship which are not from ndfrt
-    cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')
-    # all not mapped compound get as property ndf-rt='no'
-    query = ''':begin \n Match (c:Chemical) Where not exists(c.ndf_rt) 
-            Set c.ndf_rt="no"; \n :commit '''
-    cypher_general.write(query)
-    cypher_general.close()
 
 
 def main():

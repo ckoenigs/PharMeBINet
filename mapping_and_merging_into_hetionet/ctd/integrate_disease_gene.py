@@ -64,15 +64,8 @@ def take_all_relationships_of_gene_disease():
     # generate cypher file
     cypherfile = open('output/cypher_edge.cypher', 'a', encoding='utf-8')
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + \
-            '''mapping_and_merging_into_hetionet/ctd/gene_disease/relationships.tsv" As line  FIELDTERMINATOR '\\t' Match (n:Gene{identifier:line.GeneID}), (b:Disease{identifier:line.DiseaseID}) Merge (b)-[r:ASSOCIATES_DaG]->(n) On Create Set r.hetionet='no', r.ctd='yes', r.url="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.resource=["CTD"], r.source="CTD", r.inferences=split(line.inferences,'|'), r.pubMed_ids=split(line.pubMed_ids,'|'), r.directEvidences=split(line.directEvidence,'|') ,r.omimIDs=split(line.omimIDs,'|'), r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2021 NC State University. All rights reserved.", r.unbiased=toBoolean(line.unbiased) On Match SET r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.unbiased=toBoolean(line.unbiased), r.inferences=split(line.inferences,'|'), r.pubMed_ids=split(line.pubMed_ids,'|'), r.directEvidences=split(line.directEvidence,'|') ,r.omimIDs=split(line.omimIDs,'|'), r.resource=split(line.resources,'|') ;\n '''
+            '''mapping_and_merging_into_hetionet/ctd/gene_disease/relationships.tsv" As line  FIELDTERMINATOR '\\t' Match (n:Gene{identifier:line.GeneID}), (b:Disease{identifier:line.DiseaseID}) Merge (b)-[r:ASSOCIATES_DaG]->(n) On Create Set  r.ctd='yes', r.url="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.resource=["CTD"], r.source="CTD", r.inferences=split(line.inferences,'|'), r.pubMed_ids=split(line.pubMed_ids,'|'), r.directEvidences=split(line.directEvidence,'|') ,r.omimIDs=split(line.omimIDs,'|'), r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2021 NC State University. All rights reserved.", r.unbiased=toBoolean(line.unbiased) On Match SET r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.unbiased=toBoolean(line.unbiased), r.inferences=split(line.inferences,'|'), r.pubMed_ids=split(line.pubMed_ids,'|'), r.directEvidences=split(line.directEvidence,'|') ,r.omimIDs=split(line.omimIDs,'|'), r.resource=split(line.resources,'|') ;\n '''
     cypherfile.write(query)
-
-    # the general cypher file to update all chemicals and relationship which are not from aeolus
-    cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')
-    cypher_general.write(':begin\n')
-    cypher_general.write('Match (n:Disease)-[r:ASSOCIATES_DaG]->(b:Gene) Where not exists(r.ctd) Set r.ctd="no";\n')
-    cypher_general.write(':commit')
-    cypher_general.close()
 
     csvfile = open('gene_disease/relationships.tsv', 'w', encoding='utf-8')
     writer = csv.writer(csvfile, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)

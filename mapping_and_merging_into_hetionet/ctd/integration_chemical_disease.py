@@ -65,19 +65,11 @@ also generate a cypher file to integrate this information
 def generate_cypher():
     list_file_name_rela_name = [('induces', 'INDUCES_CHiD'), ('treat', 'TREATS_CHtD'), ('associated', 'ASSOCIATES_CHaD')]
 
-    # the general cypher file to update all chemicals and relationship which are not from aeolus
-    cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')
-
     for (file_name, rela_name) in list_file_name_rela_name:
         query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/ctd/chemical_disease/%s.tsv" As line  FIELDTERMINATOR '\\t' Match  (n:Chemical{identifier:line.ChemicalID}), (b:Disease{identifier:line.DiseaseID}) Merge (n)-[r:%s]->(b) On Match Set r.resource=r.resource+'CTD', r.ctd='yes', r.directEvidences=split(line.directEvidences,'|'),  r.inferenceGeneSymbol=split(line.inferenceGeneSymbols,'|'), r.inferenceScore=split(line.inferenceScores,'|'), r.pubMed_ids=split(line.pubMed_ids,'|'), r.url_ctd='http://ctdbase.org/detail.go?type=chem&acc='+line.ChemicalID On Create Set r.directEvidences=split(line.directEvidences,'|'), r.ctd='yes', r.pubMed_ids=split(line.pubMed_ids,'|'), r.resource=["CTD"], r.inferenceGeneSymbol=split(line.inferenceGeneSymbols,'|'), r.inferenceScore=split(line.inferenceScores,'|') , r.url='http://ctdbase.org/detail.go?type=chem&acc='+line.ChemicalID, r.source="CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2021 NC State University. All rights reserved.", r.unbiased=true ;\n '''
         query = query % (file_name, rela_name)
         cypherfile.write(query)
 
-        cypher_general.write(':begin\n')
-        cypher_general.write(
-            'Match (n:Chemical)-[r:' + rela_name + ']->(b:Disease) Where not exists(r.ctd) Set r.ctd="no";\n')
-        cypher_general.write(':commit\n')
-    cypher_general.close()
 
 
 '''

@@ -132,10 +132,6 @@ def create_cypher_file():
      Match (d: BiologicalProcess {identifier: line.id_hetionet}),(c:GO_BiologicalProcess_reactome{accession:line.id}) Create (d)-[: equal_to_reactome_gobiolproc]->(c)  SET d.resource = split(line.resource, '|'), d.reactome = "yes";\n'''
     query = query % (path_of_directory)
     cypher_file.write(query)
-    # cypher_file.write(':begin\n')
-    # query = '''Match (d:BiologicalProcess) Where not  exists(d.reactome) Set d.reactome="no";\n '''
-    # cypher_file.write(query)
-    # cypher_file.write(':commit\n')
 
 
 def main():
