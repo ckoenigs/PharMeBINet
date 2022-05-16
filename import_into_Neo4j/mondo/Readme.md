@@ -1,6 +1,6 @@
 The JSON file of MONDO is downloaded from http://purl.obolibrary.org/obo/mondo.json.
 
-Version: 2022-04-04
+Version: 2022-05-02
 
 The script first downloads the latest version of MONDO as a OBO file.
 Then the OBO file from the Disease Ontology will be transformed into node and relationship TSV with the program of EFO/transform_obo_to_tsv_and_cypher_file.py data/mondo.obo mondo disease
