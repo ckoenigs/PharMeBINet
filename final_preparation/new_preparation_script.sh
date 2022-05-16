@@ -26,6 +26,14 @@ $path_neo4j/neo4j restart
 sleep 120
 
 
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo 'prepare graphML import with index'
+
+python3 prepare_shell_for_graphml_import.py > output/output_preparation_graphml_import.txt
+
+
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo 'remove not used data'
@@ -33,11 +41,6 @@ echo 'remove not used data'
 python3 prepare_graphML_pharmebinet.py > output/output_preparation.txt
 
 
-now=$(date +"%F %T")
-echo "Current time: $now"
-echo 'prepare graphML import with index'
-
-python3 prepare_shell_for_graphml_import.py > output/output_preparation_graphml_import.txt
 
 sleep 120
 
