@@ -129,7 +129,7 @@ def create_cypher_query(header, from_label, to_label, file_name):
     else:
         short_first=from_label[0]
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/connectSideEffect_Sympom_Disease/%s" As line FIELDTERMINATOR '\\t' 
-                Match (first:%s {identifier:line.%s}), (second:%s {identifier:line.%s})  Create (first)-[:EQUAL_%se%s{how_mapped:line.%s, pharmebinet:'yes'}]->(second);\n'''
+                Match (first:%s {identifier:line.%s}), (second:%s {identifier:line.%s})  Create (first)-[:EQUAL_%se%s{how_mapped:line.%s, pharmebinet:'yes', resource:["PharMeBINet"], license:"CC0 1.0"}]->(second);\n'''
     query = query % (file_name, from_label, header[0], to_label, header[1], short_first, short_second, header[2])
     cypher.write(query)
 
