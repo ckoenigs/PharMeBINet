@@ -14,20 +14,6 @@ import gzip
 import requests
 import pandas, sys
 
-sys.path.append("../..")
-import create_connection_to_databases
-
-'''
-create connection to neo4j 
-'''
-
-
-def create_connection_with_neo4j():
-    # create connection with neo4j
-    # authenticate("localhost:7474", )
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
-
 
 '''
 Get Gene informaation from Entrez-gene from latest version which is already integrated into Neo4j
@@ -36,16 +22,24 @@ Get Gene informaation from Entrez-gene from latest version which is already inte
 
 def use_of_entrez_gene():
     global human_coding_genes, human_genes, symbol_to_entrez
+
+
     human_genes = set()
     human_coding_genes = set()
     symbol_to_entrez = {}
-    query = 'MATCH (n:Gene_Ncbi) RETURN n.identifier, n.symbol, n.type_of_gene'
-    results = g.run(query)
-    for identifier, symbol, type_of_gene, in results:
-        human_genes.add(identifier)
-        if type_of_gene == 'protein-coding':
-            human_coding_genes.add(identifier)
-        symbol_to_entrez[symbol] = identifier
+
+    gene_file_name='../ncbi_genes/output_data/genes.tsv'
+
+    with open(gene_file_name,'r',encoding='utf-8') as gene_file:
+        csv_reader=csv.DictReader(gene_file,delimiter='\t')
+        for line in csv_reader:
+            identifier=line['GeneID']
+            symbol=line['Symbol']
+            type_of_gene= line['type_of_gene']
+            human_genes.add(identifier)
+            if type_of_gene == 'protein-coding':
+                human_coding_genes.add(identifier)
+            symbol_to_entrez[symbol] = identifier
 
 
 # gmt function
@@ -231,27 +225,31 @@ Combine the both data from the different source to one big one and generate a cy
 def combine_both_source():
     # Merge resources into a pathway dataframe
     pathway_df = pandas.concat([wikipath_df, pc_df], sort=True)
-    print(pathway_df)
     pathway_df = pathway_df[['identifier', 'synonyms', 'url', 'source', 'license', 'genes', 'xrefs']]
     print(len(pathway_df))
 
     # Remove duplicate pathways
     pathway_df.genes = pathway_df.genes.map(frozenset)
-    pathway_df = pathway_df.drop_duplicates(['genes'])
+    print(pathway_df['synonyms'])
+    pathway_df_without_duplicated = pathway_df.drop_duplicates(['genes'])
     print(len(pathway_df))
 
-    pathway_df['coding_genes'] = pathway_df.genes.map(lambda x: x & human_coding_genes)
+    test=pandas.concat([pathway_df, pathway_df_without_duplicated]).drop_duplicates(keep=False)
+    print('difference',test)
+    test.to_csv('test.csv')
 
-    pathway_df.insert(3, 'n_genes', pathway_df.genes.map(len))
-    pathway_df.insert(4, 'n_coding_genes', pathway_df.coding_genes.map(len))
+    pathway_df_without_duplicated['coding_genes'] = pathway_df_without_duplicated.genes.map(lambda x: x & human_coding_genes)
 
-    pathway_df = pathway_df.sort_values('identifier')
-    print(pathway_df.head())
+    pathway_df_without_duplicated.insert(3, 'n_genes', pathway_df_without_duplicated.genes.map(len))
+    pathway_df_without_duplicated.insert(4, 'n_coding_genes', pathway_df_without_duplicated.coding_genes.map(len))
 
-    print(pathway_df.source.value_counts())
+    pathway_df_without_duplicated = pathway_df_without_duplicated.sort_values('identifier')
+    print(pathway_df_without_duplicated.head())
+
+    print(pathway_df_without_duplicated.source.value_counts())
 
     # Create a dataframe for writing as a tsv. Multi-element fields are pipe delimited.
-    write_df = pathway_df.copy()
+    write_df = pathway_df_without_duplicated.copy()
     join = lambda x: '|'.join(map(str, sorted(x)))
     for column in 'genes', 'coding_genes':
         write_df[column] = write_df[column].map(join)
@@ -260,7 +258,7 @@ def combine_both_source():
 
     # generate cypher file
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/pathway/output/pathways.tsv" As line fieldterminator '\\t' Create (c1:pathway_multi{'''
-    for property in pathway_df:
+    for property in pathway_df_without_duplicated:
         if property not in properties_which_are_list:
             query += property + ':line.' + property + ', '
         else:
@@ -283,11 +281,6 @@ def main():
         path_of_directory = sys.argv[1]
     else:
         sys.exit('need a path')
-
-    print(datetime.datetime.now())
-    print('connect to neo4j')
-
-    create_connection_with_neo4j()
 
     print(
         '#################################################################################################################################################################')
