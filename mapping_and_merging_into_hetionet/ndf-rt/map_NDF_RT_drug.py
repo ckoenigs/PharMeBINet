@@ -444,7 +444,7 @@ def map_with_unii_to_chemical():
 load map rxnorm id to drugbank _id from dhimmel inchikey and use this to map the rest
 properties:
     0:rxcui
-    1:drugbank ids seperated with |
+    1:drugbank ids separated with |
 '''
 
 

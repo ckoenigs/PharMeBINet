@@ -17,8 +17,8 @@ dict_unii_to_rxcui = {}
 go through the file new_rxcui_uniis_inchkeys.tsv and add the information to the different dictionaries
 properties:
     0:rxcui
-    1: uniis seperated with |
-    2: inchikeys seperated with |
+    1: uniis separated with |
+    2: inchikeys separated with |
 '''
 
 

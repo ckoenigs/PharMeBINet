@@ -37,7 +37,7 @@ In here we have the name of the column between ", a short description, following
 23: "submitted_as_date":	'2018-03-30 13:31:56
 24: "submitted_as_public_report_url" urls, if there are any:	
 25: "submitted_as_notes" sometimes notes:	
-26: "submitted_as_pmids" pmids,sometimes lists seperated by ',' :	 "24939586, 25862627, 27942422"
+26: "submitted_as_pmids" pmids,sometimes lists separated by ',' :	 "24939586, 25862627, 27942422"
 27: "submitted_as_assertion_criteria_url" sometimes URLS to pdfs, sometimes random stuff: "PMID: 28106320" 
 28: "submitted_as_submission_id": "1034" or "000104.pa48.v1.73.hgnc23336.m1.p1"
 29: "submitted_run_date":	'2020-12-24
@@ -101,7 +101,7 @@ gencc_uuid_dict contains: #0, 24,25,26,27
 00: "uuid" ID-stuff, for example: GENCC_000101-HGNC_10896-OMIM_182212-HP_0000006-GENCC_100001
 24: "submitted_as_public_report_url" urls, if there are any:	
 25: "submitted_as_notes" sometimes notes:	
-26: "submitted_as_pmids" pmids,sometimes lists seperated by ',' :	 "24939586, 25862627, 27942422"
+26: "submitted_as_pmids" pmids,sometimes lists separated by ',' :	 "24939586, 25862627, 27942422"
 27: "submitted_as_assertion_criteria_url" sometimes URLS to pdfs, sometimes random stuff: "PMID: 28106320" 
 
 gencc_disease_mondo_dict:  #3, 4, 5, 6, 7, 8

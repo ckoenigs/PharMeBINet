@@ -233,7 +233,7 @@ map with use of map rxcui-drugbank id table with inchikeys and unii
 idea form himmelstein
 prioperties:
     0:rxcui
-    1:drugbank ids seperated with |
+    1:drugbank ids separated with |
 '''
 
 
