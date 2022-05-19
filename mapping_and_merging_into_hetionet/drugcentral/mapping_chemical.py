@@ -266,7 +266,7 @@ def load_structure_in():
         resource = set(dict_chemical_to_resource[chemical_id])
         resource.add('DrugCentral')
         resource = '|'.join(resource)
-        csv_mapped_chemical.writerow([identifier, chemical_id, resource, methodes])
+        csv_mapped_chemical.writerow([chem_id, chemical_id, resource, methodes])
 
 
 
@@ -293,9 +293,9 @@ def generate_cypher_file(file_name):
     :param label: string
     :return:
     """
-    cypher_file = open('output/cypher.cypher', 'w')
+    cypher_file = open('output/cypher.cypher', 'a')
     # es gibt keine mappings zu Chemical, daher ist der cypher file nur für Pharmacological class erstellt
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/drugcentral/chemical/%s" As line  FIELDTERMINATOR '\\t'  MATCH (n:DC_Structure), (c:Chemical{identifier:line.id_hetionet}) Where ID(n)= ToInteger(line.node_id)  Set c.drugcentral='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_Structure_drugcentral{how_mapped:line.how_mapped}]->(n); \n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/drugcentral/chemical/%s" As line  FIELDTERMINATOR '\\t'  MATCH (n:DC_Structure), (c:Chemical{identifier:line.id_hetionet}) Where ID(n)= ToInteger(line.node_id)  Set c.drugcentral='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_Structure_drugcentral{how_mapped:line.how_mapped}]->(n); \n'''
     query = query % (path_of_directory,file_name)
     cypher_file.write(query)
     cypher_file.close()
