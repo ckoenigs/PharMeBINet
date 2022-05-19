@@ -6,7 +6,7 @@ sys.path.append("../..")
 import create_connection_to_databases
 
 # disease ontology license
-license = 'CC0 4.0 International'
+license = 'CC BY 4.0'
 
 '''
 create a connection with neo4j

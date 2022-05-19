@@ -9,7 +9,7 @@ sys.path.append("..")
 from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
 
 # disease ontology license
-license = 'CC0 4.0 International'
+license = 'CC BY 4.0'
 
 '''
 create a connection with neo4j

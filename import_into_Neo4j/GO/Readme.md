@@ -19,4 +19,4 @@ The schema is shown here:
 
 ![er_diagram](go.png)
 
-License: CC0 4.0 International
+License: CC BY 4.0
