@@ -15,7 +15,7 @@ def database_connection():
 
 
 # the general query start
-query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/hpo/%s" As line FIELDTERMINATOR '\\t' 
+query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/hpo/%s" As line FIELDTERMINATOR '\\t' 
     Match'''
 
 # cypher file for mapping and integration
@@ -221,7 +221,7 @@ def generate_cypher_file_for_connection(cypher_file):
     count_update_connection = 0
     counter_connection = 0
 
-    # csv file for relationship symptom- disease
+    # tsv file for relationship symptom- disease
     file_rela_new = open('mapping_files/rela_new.tsv', 'w', encoding='utf-8')
     csv_rela_new = csv.writer(file_rela_new, delimiter='\t')
 
@@ -287,12 +287,6 @@ def generate_cypher_file_for_connection(cypher_file):
         rela_info = change_list_values_to_string(rela_info)
         csv_rela_new.writerow(rela_info)
 
-    # query = ''' MATCH ()-[l:PRESENTS_DpS]->(s:Symptom) Where not exists(l.hpo) Set l.hpo='no'; \n '''
-    # cypher_file.write(query)
-    # cypher_file.write('commit \n')
-    #                   ' begin \n')
-    # cypher_file.write('Match (n:Disease) Where not exists(n.hpo) Set n.hpo="no"; \n')
-    # cypher_file.write('commit')
 
     print('number of new connection:' + str(count_new_connection))
     print('number of update connection:' + str(count_update_connection))
@@ -321,7 +315,7 @@ def get_inheritance_information_for_disease():
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     global path_of_directory, hpo_date
     if len(sys.argv) > 2:
@@ -332,41 +326,41 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('connection to db')
     database_connection()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load in hpo symptoms')
 
     load_all_hpo_symptoms_in_dictionary()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('get all existing relationships')
 
     get_all_already_existing_relationships()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('put all relationship information into a cypher file')
 
     generate_cypher_file_for_connection(cypher_file)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('inheritances')
 
     get_inheritance_information_for_disease()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

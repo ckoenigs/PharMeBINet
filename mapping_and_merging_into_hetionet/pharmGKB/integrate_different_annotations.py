@@ -20,8 +20,8 @@ def create_connection_with_neo4j():
     g = create_connection_to_databases.database_connection_neo4j()
 
 
-# dictionary rela partner to csv file
-dict_rela_partner_to_csv_file = {}
+# dictionary rela partner to tsv file
+dict_rela_partner_to_tsv_file = {}
 
 # directory of save the data
 directory = 'annotation_variant_edge'
@@ -43,11 +43,11 @@ def generate_rela_files(label, rela_name, query_start):
     file = open(file_name, 'w')
     csv_file = csv.writer(file, delimiter='\t')
     csv_file.writerow(['anno_id', 'other_id'])
-    dict_rela_partner_to_csv_file[label] = csv_file
+    dict_rela_partner_to_tsv_file[label] = csv_file
 
-    query_rela = query_start + ' (b:VariantAnnotation{identifier:line.anno_id}), (c:%s{identifier:line.other_id}) Create (b)-[:%s]->(c);\n'
+    query_rela = query_start + ' (b:VariantAnnotation{identifier:line.anno_id}), (c:%s{identifier:line.other_id}) Create (b)-[:%s{pharmgkb:"yes", source:"PharmGKB", resource:["PharmGKB"], license:"%s"}]->(c);\n'
     rela_name = rela_name % ('VA')
-    query_rela = query_rela % (file_name, label, rela_name)
+    query_rela = query_rela % (file_name, label, rela_name, license)
     cypher_file.write(query_rela)
 
 
@@ -122,7 +122,7 @@ def prepare_files(label, query_start):
         else:
             query_meta_node += 'identifier:toString(n.' + property + '), '
 
-    query_meta_node += ' study_parameters:split(line.study_parameters,"|"), guideline_urls:split(line.guideline_urls,"|"), pubMed_ids:split(line.PubMed_ids,"|"),pubMed_Central_ids:split(line.PubMed_Central_ids,"|") , source:"PharmGKB", resource:["PharmGKB"], node_edge:true, url:"https://www.pharmgkb.org/variantAnnotation/"+line.identifier, license:"%s"}) Create (n)<-[:equal_metadata]-(b);\n'
+    query_meta_node += ' study_parameters:split(line.study_parameters,"|"), guideline_urls:split(line.guideline_urls,"|"), pubMed_ids:split(line.PubMed_ids,"|"),pubMed_Central_ids:split(line.PubMed_Central_ids,"|") , source:"PharmGKB", resource:["PharmGKB"], node_edge:true, url:"https://www.pharmgkb.org/variantAnnotation/"+line.identifier, license:"%s", pharmgkb:"yes"}) Create (n)<-[:equal_metadata]-(b);\n'
     query_meta_node = query_meta_node % (file_name, label, label.split('_')[1], license)
     cypher_file.write(query_meta_node)
     if not add_constraint:
@@ -212,7 +212,7 @@ def load_db_info_in(label, csv_writer):
     """
     First generate the files and the queries. Then prepare clinical annotation meta data. Therefor take only where the
     chemical and variants are mapped. Also fusion the clinical_annotation into the node and write the information in a
-    csv file.
+    tsv file.
     :param label: string
     :param csv_writer: csv writer
     :return:
@@ -251,8 +251,8 @@ def fill_the_rela_files(label_node):
     :param label_node: string
     :return:
     """
-    query = 'Match (n:VariantAnnotation)--(:%s)-[r]-(:PharmGKB_ClinicalAnnotation)--(b:ClinicalAnnotation) Create (n)<-[h:HAS_EVIDENCE_CAheVA]-(b) Set h=r, h.pubMed_ids=[r.pmid] Remove h.pmid;\n'
-    query = query % (label_node)
+    query = 'Match (n:VariantAnnotation)--(:%s)-[r]-(:PharmGKB_ClinicalAnnotation)--(b:ClinicalAnnotation) Create (n)<-[h:HAS_EVIDENCE_CAheVA]-(b) Set h=r, h.pubMed_ids=[r.pmid],  h.pharmgkb="yes", h.source="PharmGKB", h.resource=["PharmGKB"], h.license="%s" Remove h.pmid;\n'
+    query = query % (label_node, license)
     cypher_file.write(query)
     query_general = 'Match (n:%s)--(:%s)--(m:%s) Return Distinct n.id, m.identifier'
     for pharmGKB_label, label in dict_pGKB_label_to_label.items():
@@ -263,7 +263,7 @@ def fill_the_rela_files(label_node):
             # counter_specific = 0
             for meta_id, other_id, in results:
                 counter += 1
-                dict_rela_partner_to_csv_file[label].writerow([meta_id, other_id])
+                dict_rela_partner_to_tsv_file[label].writerow([meta_id, other_id])
                 # if meta_id in dict_annotation_to_study_parameters:
                 #     counter_specific += 1
         else:
@@ -274,7 +274,7 @@ def fill_the_rela_files(label_node):
                 counter_specific = 0
                 for meta_id, other_id, in results:
                     counter += 1
-                    dict_rela_partner_to_csv_file[single_label].writerow([meta_id, other_id])
+                    dict_rela_partner_to_tsv_file[single_label].writerow([meta_id, other_id])
                     # if meta_id in dict_annotation_to_study_parameters:
                     #     counter_specific += 1
         print('count rela with ' + pharmGKB_label + ':', counter)
@@ -304,7 +304,7 @@ def main():
     else:
         sys.exit('need a path and license')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j')
 
     create_connection_with_neo4j()
@@ -312,7 +312,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('get all VA ids wher not all connections exists')
 
     list_of_labels = [
@@ -329,13 +329,13 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load additional information of literature and study parameters into dictionaries')
 
     load_additional_information_into_dictionary()
 
     # query start
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/pharmGKB/%s" As line  FIELDTERMINATOR '\\t'  MATCH '''
+    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/pharmGKB/%s" As line  FIELDTERMINATOR '\\t'  MATCH '''
 
     # prepare the meta_nodes
     for label in ['PharmGKB_VariantDrugAnnotation', 'PharmGKB_VariantFunctionalAnalysisAnnotation',
@@ -343,7 +343,7 @@ def main():
         print(
             '###########################################################################################################################')
 
-        print(datetime.datetime.utcnow())
+        print(datetime.datetime.now())
         print('Generate genration file for node')
 
         csv_writer = prepare_files(label, query_start)
@@ -351,14 +351,14 @@ def main():
         print(
             '###########################################################################################################################')
 
-        print(datetime.datetime.utcnow())
+        print(datetime.datetime.now())
         print('Load in ' + label + ' from neo4j')
 
         load_db_info_in(label, csv_writer)
 
     print(
         '###########################################################################################################################')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Prepare relationship files')
 
     for label, rela_name in dict_label_to_rela_name.items():
@@ -367,7 +367,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Fill rela files')
 
     fill_the_rela_files('PharmGKB_VariantAnnotation')
@@ -375,7 +375,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('prepare delete queries')
 
     prepare_delete_variant_annotation()
@@ -383,7 +383,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

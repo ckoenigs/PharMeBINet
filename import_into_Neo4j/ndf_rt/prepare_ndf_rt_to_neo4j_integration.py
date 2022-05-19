@@ -60,9 +60,9 @@ cypher_file_delete = open('cypher_file_delete.cypher', 'w', encoding='utf-8')
 dict_rela_to_list_of_code_tuples={}
 
 def load_ndf_rt_xml_inferred_in():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     tree = dom.parse("NDFRT_Public_2018.02.05_TDE.xml")
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     terminology = tree.documentElement
 
@@ -75,7 +75,7 @@ def load_ndf_rt_xml_inferred_in():
         csv_writer = csv.writer(entity_file, delimiter='\t', quotechar='"', lineterminator='\n')
         csv_writer.writerow(properties_of_node)
         dict_entity_to_file[code] = csv_writer
-        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ndf_rt/%s" AS line FIELDTERMINATOR '\\t' Create (n: NDFRT_''' + entity_name + '{'
+        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''import_into_Neo4j/ndf_rt/%s" AS line FIELDTERMINATOR '\\t' Create (n: NDFRT_''' + entity_name + '{'
         # print(query)
         # print(file_name)
         query = query % (file_name)
@@ -124,7 +124,7 @@ def load_ndf_rt_xml_inferred_in():
             csv_writer = csv.writer(entity_file, delimiter='\t', quotechar='"',lineterminator='\n')
             csv_writer.writerow(rela_info_list)
             dict_rela_file_name_to_file[file_name]=csv_writer
-            query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ndf_rt/%s" AS line FIELDTERMINATOR '\\t' Match (start: NDFRT_''' + dict_entities[start_node_code] + '''{code:line.'''+ rela_info_list[0]+ '''}), (end: NDFRT_''' + dict_entities[end_node_code] + '''{code:line.'''+rela_info_list[1]+'''}) Create (start)-[:%s{source:line.source}]->(end);\n'''
+            query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''import_into_Neo4j/ndf_rt/%s" AS line FIELDTERMINATOR '\\t' Match (start: NDFRT_''' + dict_entities[start_node_code] + '''{code:line.'''+ rela_info_list[0]+ '''}), (end: NDFRT_''' + dict_entities[end_node_code] + '''{code:line.'''+rela_info_list[1]+'''}) Create (start)-[:%s{source:line.source}]->(end);\n'''
             # print(query)
             query=query% (file_name, name)
 
@@ -144,7 +144,7 @@ def load_ndf_rt_xml_inferred_in():
         ndf_rt_id = concept.getElementsByTagName('id')[0].childNodes[0].nodeValue
         dict_code_to_type[code]=entity_code
 
-        # go through all possible Role (Relationships) and add the to the different csv files
+        # go through all possible Role (Relationships) and add the to the different tsv files
         definitionRoles = concept.getElementsByTagName('definingRoles')[0]
         if definitionRoles.hasChildNodes() == True:
             roles = definitionRoles.getElementsByTagName('role')
@@ -189,7 +189,7 @@ def load_ndf_rt_xml_inferred_in():
     association_file = open('results/associates_file.tsv', 'w', encoding='utf-8')
     csv_writer = csv.writer(association_file, delimiter='\t', quotechar='"', lineterminator='\n')
     csv_writer.writerow(['code1','code2'])
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/ndf_rt/results/associates_file.tsv" AS line FIELDTERMINATOR '\\t' Match (start: NDFRT_DRUG_KIND{code:line.code1}), (end: NDFRT_DRUG_KIND {code:line.code2}) Create (start)-[:product_of]->(end);\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/ndf_rt/results/associates_file.tsv" AS line FIELDTERMINATOR '\\t' Match (start: NDFRT_DRUG_KIND{code:line.code1}), (end: NDFRT_DRUG_KIND {code:line.code2}) Create (start)-[:product_of]->(end);\n'''
     cypher_file.write(query)
     for (code1, code2), association_name in dict_association_pair.items():
         csv_writer.writerow([code1,code2])
@@ -209,13 +209,13 @@ def main():
 
     # start the function to load in the xml file and save the importen values in list and dictionaries
     print('#############################################################')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load in the xml data')
     load_ndf_rt_xml_inferred_in()
 
 
     print('#############################################################')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

@@ -17,8 +17,8 @@ def create_connection_with_neo4j_mysql():
 # dictionary pair to relatype
 dict_pair_to_rela_type = {}
 
-# dictionary_rela type to csv file
-dict_rela_type_to_csv_file = {}
+# dictionary_rela type to tsv file
+dict_rela_type_to_tsv_file = {}
 
 # dictionary rela type to rela label
 dict_type_to_label = {
@@ -34,7 +34,7 @@ cypher_file = open('relationships/cypher.cypher', 'w', encoding='utf-8')
 
 '''
 load all connection types from ndf-rt between drug and disease
-and integrate them in different csv files
+and integrate them in different tsv files
 '''
 
 
@@ -46,7 +46,7 @@ def integrate_connection_into_hetionet(label):
     # count all mapped codes
     count_code = 0
 
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ndf-rt/%s" As line FIELDTERMINATOR '\\t' Match (a:%s{identifier:line.chemical_id}), (b:Disease{identifier:line.disease_id})  '''
+    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/ndf-rt/%s" As line FIELDTERMINATOR '\\t' Match (a:%s{identifier:line.chemical_id}), (b:Disease{identifier:line.disease_id})  '''
 
 
     counter_contraindication_double = 0
@@ -61,13 +61,13 @@ def integrate_connection_into_hetionet(label):
     dict_rela_to_pairs={}
 
     for chemical_id, rela_type,rela_source, disease_id, in result:
-        if (rela_type,label) not in dict_rela_type_to_csv_file:
+        if (rela_type,label) not in dict_rela_type_to_tsv_file:
             dict_rela_to_pairs[rela_type]=[]
             file_name='rela_' + rela_type +'_' + label+'.tsv'
             file = open('relationships/'+file_name, 'w', encoding='utf-8')
             csv_writer = csv.writer(file, delimiter='\t')
             csv_writer.writerow(['chemical_id', 'disease_id', 'source'])
-            dict_rela_type_to_csv_file[(rela_type,label)] = csv_writer
+            dict_rela_type_to_tsv_file[(rela_type,label)] = csv_writer
             query_check = 'Match p=(:%s)-[:%s]-(:Disease) Return p Limit 1' % (label,dict_type_to_label[rela_type])
             if label=="Chemical":
                 letter='CH'
@@ -87,7 +87,7 @@ def integrate_connection_into_hetionet(label):
         count_code += 1
         source= 'NDF-RT' if rela_source=='NDFRT' else rela_source+' via NDF-RT'
         if not (chemical_id,disease_id) in dict_rela_to_pairs[rela_type]:
-            dict_rela_type_to_csv_file[(rela_type,label)].writerow([chemical_id, disease_id, source])
+            dict_rela_type_to_tsv_file[(rela_type,label)].writerow([chemical_id, disease_id, source])
             dict_rela_to_pairs[rela_type].append((chemical_id,disease_id))
         else:
             sys.exit('multiple edges for the same pair!')
@@ -96,7 +96,7 @@ def integrate_connection_into_hetionet(label):
     print('number of induces connections:' + str(count_induces))
     print('double of contra indicates connection:' + str(counter_contraindication_double))
     print('double of induces connection:' + str(counter_induces_double))
-    print(dict_rela_type_to_csv_file.keys())
+    print(dict_rela_type_to_tsv_file.keys())
 
 
 def main():
@@ -106,7 +106,7 @@ def main():
     else:
         sys.exit('need a path')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j_mysql()
@@ -114,7 +114,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load in chemical from hetionet')
 
     for label in ['Chemical', 'PharmacologicClass']:
@@ -124,7 +124,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

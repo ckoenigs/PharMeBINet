@@ -62,19 +62,19 @@ Load all uniprots ids of the proteins and check out which appears also in the un
 
 def get_pairs_information():
     # generate a file with all uniprots to
-    file_name='uniprot_disease/db_gene_to_disease.csv'
+    file_name='uniprot_disease/db_gene_to_disease.tsv'
     file_gene_disease = open(file_name, 'w')
-    csv_gene_disease = csv.writer(file_gene_disease)
+    csv_gene_disease = csv.writer(file_gene_disease, delimiter='\t')
     csv_gene_disease.writerow(['gene_ids', 'disease_id','notes', 'pubmeds', 'references'])
 
     # query gene-disease association
 
     file_cypher = open('output/cypher_edge.cypher', 'w')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/%s" As line MATCH (b:Disease{identifier:line.disease_id})-[r:ASSOCIATES_DaG]->(g:Gene{identifier:line.gene_ids}) Where not exists(r.pubMed_ids) Set r.pubMed_ids=[] ;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/uniprot/%s" As line FIELDTERMINATOR "\\t" MATCH (b:Disease{identifier:line.disease_id})-[r:ASSOCIATES_DaG]->(g:Gene{identifier:line.gene_ids}) Where not exists(r.pubMed_ids) Set r.pubMed_ids=[] ;\n'''
     query = query % (file_name)
     file_cypher.write(query)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/%s" As line MATCH (g:Gene{identifier:line.gene_ids}),(b:Disease{identifier:line.disease_id}) Merge (b)-[r:ASSOCIATES_DaG]->(g) On Create Set r.source="UniProt", r.resource=["UniProt"], r.uniprot='yes', r.kind_of_rela=split(line.notes,'|'), r.references=split(r.references,'|'), r.pubMed_ids=split(line.pubmeds,'|'), r.sources=split(line.source,"|"), r.url="https://www.uniprot.org/uniprot/"+line.uniprot_ids, r.license='CC BY 4.0' On Match Set r.uniprot="yes", r.resource=r.resource+"UniProt",  r.pubMed_ids=r.pubMed_ids+split(line.pubmeds,'|'), r.kind_of_rela=split(line.notes,'|'), r.references=split(r.references,'|') ;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/uniprot/%s" As line FIELDTERMINATOR "\\t" MATCH (g:Gene{identifier:line.gene_ids}),(b:Disease{identifier:line.disease_id}) Merge (b)-[r:ASSOCIATES_DaG]->(g) On Create Set r.source="UniProt", r.resource=["UniProt"], r.uniprot='yes', r.kind_of_rela=split(line.notes,'|'), r.references=split(r.references,'|'), r.pubMed_ids=split(line.pubmeds,'|'), r.sources=split(line.source,"|"), r.url="https://www.uniprot.org/uniprot/"+line.uniprot_ids, r.license='CC BY 4.0' On Match Set r.uniprot="yes", r.resource=r.resource+"UniProt",  r.pubMed_ids=r.pubMed_ids+split(line.pubmeds,'|'), r.kind_of_rela=split(line.notes,'|'), r.references=split(r.references,'|') ;\n'''
     query =query %(file_name)
     file_cypher.write(query)
 
@@ -141,7 +141,7 @@ def main():
     else:
         sys.exit('need a path')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('create connection with neo4j')
 
     create_connection_with_neo4j()
@@ -149,7 +149,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load all pubmeds')
 
     load_all_pubmed_ids_for_proteins()
@@ -157,7 +157,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('gather all information of the proteins')
 
     get_pairs_information()
@@ -166,7 +166,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

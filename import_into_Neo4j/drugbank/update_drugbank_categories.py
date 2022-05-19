@@ -105,9 +105,9 @@ while page_number <= last_page_num:
     page_number += 1
     time.sleep(random.randint(1, 1))
 
-with io.open(os.path.join(os.path.dirname(__file__), 'drugbank/categories.csv'), 'w', encoding='utf-8',
+with io.open(os.path.join(os.path.dirname(__file__), 'drugbank/categories.tsv'), 'w', encoding='utf-8',
              newline='') as f:
-    writer = csv.writer(f, delimiter=',', quotechar='"')
+    writer = csv.writer(f, delimiter='\t', quotechar='"')
     writer.writerow(['id', 'name'])
     for _id in categories:
         writer.writerow([_id, categories[_id]])

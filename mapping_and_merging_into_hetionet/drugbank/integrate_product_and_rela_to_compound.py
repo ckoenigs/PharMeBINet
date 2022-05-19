@@ -38,7 +38,7 @@ def prepare_cypher_query(file_name):
     results = g.run(query)
 
 
-    query_start='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/drugbank/%s" As line FIELDTERMINATOR '\\t' 
+    query_start='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/drugbank/%s" As line FIELDTERMINATOR '\\t' 
     Match (n:Product_DrugBank{identifier:line.identifier}) Create (v:Product {'''
     for product_property, in results:
         query_start+= product_property +':n.'+product_property+', '
@@ -94,7 +94,7 @@ def laod_all_products():
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     global path_of_directory
     if len(sys.argv) < 2:
@@ -105,21 +105,21 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('connection to db')
 
     create_connection_with_neo4j()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all products from drugbank')
 
     laod_all_products()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

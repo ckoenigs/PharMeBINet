@@ -102,14 +102,10 @@ generate connection between mapping gomolfunc of reactome and hetionet and gener
 
 def create_cypher_file():
     cypher_file = open('output/cypher.cypher', 'a', encoding="utf-8")
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/reactome/gomolfunc/mapped_gomolfunc.tsv" As line FIELDTERMINATOR "\\t"
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/reactome/gomolfunc/mapped_gomolfunc.tsv" As line FIELDTERMINATOR "\\t"
      Match (d: MolecularFunction {identifier: line.id_hetionet}),(c:GO_MolecularFunction_reactome{accession:line.id}) Create (d)-[:equal_to_reactome_gomolfunc]->(c)  SET d.resource = split(line.resource, '|'), d.reactome = "yes";\n'''
     query = query %(path_of_directory)
     cypher_file.write(query)
-    # cypher_file.write(':begin\n')
-    # query = '''Match (d:MolecularFunction) Where not  exists(d.reactome) Set d.reactome="no";\n '''
-    # cypher_file.write(query)
-    # cypher_file.write(':commit')
 
 
 def main():
@@ -118,7 +114,7 @@ def main():
         path_of_directory = sys.argv[1]
     else:
         sys.exit('need a path reactome mf')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j_mysql()
@@ -126,7 +122,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all MolecularFunction from hetionet into a dictionary')
 
     load_hetionet_gomolfunc_in()
@@ -134,7 +130,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all reactome GO_MolecularFunction from neo4j into a dictionary')
 
     load_reactome_gomolfunc_in()
@@ -142,7 +138,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Integrate new GO_MolecularFunction and connect them to reactome ')
 
     create_cypher_file()
@@ -150,7 +146,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

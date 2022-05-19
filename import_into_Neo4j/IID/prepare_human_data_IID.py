@@ -19,7 +19,7 @@ dict_number_to_number = {
 
 def generate_node_and_rela_file_and_query(header_rela):
     """
-    generate csv file for rela and node and also the cypher file with queries
+    generate tsv file for rela and node and also the cypher file with queries
     :param header_rela: list of strings
     :return:  csv writer for node and rela
     """
@@ -29,7 +29,7 @@ def generate_node_and_rela_file_and_query(header_rela):
     csv_node.writerow(['id', 'symbols'])
 
     cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/IID/%s" As line fieldterminator '\\t' '''
+    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/IID/%s" As line fieldterminator '\\t' '''
     query = query_start + 'Create (p:protein_IID{identifier:line.id, symbols:split(line.symbols,"|")});\n'
     query = query % (node_file_name)
     cypher_file.write(query)
@@ -88,7 +88,7 @@ def node_into_file(identifier, symbols, csv_file):
     if identifier not in set_protein_ids:
         symbols = symbols.replace(';', '|')
         if '-' == symbols:
-            symbols == ''
+            symbols = ''
         csv_file.writerow([identifier, symbols])
         set_protein_ids.add(identifier)
 
@@ -111,7 +111,7 @@ def transform_empty_values_into_real_empty_values(dictionary):
         key = prepare_header(key)
         new_dict[key] = value
     if 'directions' in dictionary and dictionary['directions']=='<':
-        print(dictionary['directions'])
+        # print(dictionary['directions'])
         uniprot1=dictionary['uniprot1']
         new_dict['uniprot1']=dictionary['uniprot2']
         new_dict['uniprot2']= uniprot1
@@ -121,13 +121,15 @@ def transform_empty_values_into_real_empty_values(dictionary):
     return new_dict
 
 
-def load_and_prepare_IID_human_data():
-    # download Pathway Commons v11
+def load_and_prepare_IID_human_data(evidence_type_filter):
+    # download IID PP interaction
     url = 'http://iid.ophid.utoronto.ca/static/download/human_annotated_PPIs.txt.gz'
     filename = wget.download(url, out='data/')
     filename_without_gz = filename.rsplit('.', 1)[0]
     # file=open(filename_without_gz,'wb')
     counter_edges=0
+
+    counter_other_type=0
     with gzip.open(filename, 'rt') as f:
         csv_file = csv.DictReader(f, delimiter='\t')
         print(csv_file.fieldnames)
@@ -136,15 +138,18 @@ def load_and_prepare_IID_human_data():
             node_into_file(rela_info['uniprot1'], rela_info['symbol1'], csv_node)
             node_into_file(rela_info['uniprot2'], rela_info['symbol2'], csv_node)
 
-            # evidence_types=rela_info['evidence type'].split(';')
+            evidence_types=rela_info['evidence_type'].split('|') # 'evidence_type'
             rela_info = transform_empty_values_into_real_empty_values(rela_info)
-            csv_rela.writerow(rela_info)
-            # if 'exp' in evidence_types:
-            #     rela_info=dict(rela_info)
-            #     rela_info=transform_empty_values_into_real_empty_values(rela_info)
-            #     csv_rela.writerow(rela_info)
+            if evidence_type_filter=='':
+                csv_rela.writerow(rela_info)
+            elif evidence_type_filter in evidence_types:
+                csv_rela.writerow(rela_info)
+            else:
+                counter_other_type+=1
+                # print('evidence types',evidence_types)
             counter_edges+=1
     print('it has a total number of edges:',counter_edges)
+    print('number of edges with other evidence types:',counter_other_type)
 
 
 # path to directory
@@ -153,20 +158,24 @@ path_of_directory = ''
 
 def main():
     global path_of_directory
+    #evidence type filter
+    evidence_type_filter=''
     if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]
+        if len(sys.argv)==3:
+            evidence_type_filter=sys.argv[2]
     else:
-        sys.exit('need a path')
+        sys.exit('need a path and a optional filter like exp, pred, ortho')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load IID human data')
 
-    load_and_prepare_IID_human_data()
+    load_and_prepare_IID_human_data(evidence_type_filter)
 
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

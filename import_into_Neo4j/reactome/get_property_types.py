@@ -34,7 +34,7 @@ def get_label_property_type_inforamtion():
         dict_labels_to_propety_type[labels][node_property]=property_type
 
     # print(dict_labels_to_propety_type)
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     write = shelve.open('label_to_property_type')
 
@@ -48,25 +48,25 @@ def get_label_property_type_inforamtion():
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('create connection')
 
     create_connection_with_neo4j()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('get types')
 
     get_label_property_type_inforamtion()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

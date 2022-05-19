@@ -62,9 +62,9 @@ def open_json_file_write_into_csv(path_to_data):
     files = glob.glob(path_to_data + '/refsnp-chr*.json.bz2')
     for file in files:
         print(file)
-        print(datetime.datetime.utcnow())
+        print(datetime.datetime.now())
         json_file = bz2.open(file, "rb")
-        print(datetime.datetime.utcnow())
+        print(datetime.datetime.now())
         chr=file.split('refsnp-')[1].split('.json')[0]
         prepare_a_single_node.run_through_list_of_nodes_as_json_string(path_of_directory, path_to_data, json_file,chr )
         # counter = 0
@@ -76,7 +76,7 @@ def open_json_file_write_into_csv(path_to_data):
         #     # prepare_json_information_to_tsv(line, chr)
         #     if counter % 10000 == 0:
         #         print(counter)
-        #         print(datetime.datetime.utcnow())
+        #         print(datetime.datetime.now())
         sys.exit()
 
 
@@ -90,11 +90,11 @@ def main():
         sys.exit('need path to project (dbsnp)')
 
     print('load json and prepare files')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     open_json_file_write_into_csv(path_to_data)
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

@@ -46,11 +46,10 @@ def load_protein_from_database_and_add_to_dict():
             #     dict_alternativeId_to_identifiers[alternative_id] = set()
             dict_alternativeId_to_identifiers[alternative_id].add(identifier)
 
-
 def generate_files(path_of_directory):
     """
-    generate cypher file and csv file
-    :return: csv file
+    generate cypher file and tsv file
+    :return: tsv file
     """
     file_name = 'DisGeNet_protein_to_protein'
     file = open(os.path.join(path_of_directory, file_name) + '.tsv', 'w', encoding='utf-8')
@@ -59,9 +58,9 @@ def generate_files(path_of_directory):
     csv_mapping.writerow(header)
     cypher_file = open(os.path.join(source, 'cypher.cypher'), 'w', encoding='utf-8')
 
-    # master_database_change/mapping_and_merging_into_hetionet/DisGeNet/
+    # mapping_and_merging_into_hetionet/DisGeNet/
     query = f'Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:{path_of_directory}{file_name}.tsv" As line FIELDTERMINATOR "\\t" \
-        Match (n:protein_DisGeNet{{UniProtKB:line.DisGeNet_uniprot_id}}), (v:Protein{{identifier:line.uniprot_id}}) Set v.DisGeNet="yes", v.resource=split(line.resource,"|") Create (v)-[:equal_to_DisGeNet_protein{{mapped_with:line.mapping_method}}]->(n);\n'
+        Match (n:protein_DisGeNet{{UniProtKB:line.DisGeNet_uniprot_id}}), (v:Protein{{identifier:line.uniprot_id}}) Set v.disgenet="yes", v.resource=split(line.resource,"|") Create (v)-[:equal_to_DisGeNet_protein{{mapped_with:line.mapping_method}}]->(n);\n'
     cypher_file.write(query)
 
     return csv_mapping
@@ -75,7 +74,7 @@ def resource(identifier):
 
 def load_all_DisGeNet_protein_and_finish_the_files(csv_mapping):
     """
-    Load all variation sort the ids into the right csv, generate the queries, and add rela to the rela csv
+    Load all variation sort the ids into the right tsv, generate the queries, and add rela to the rela tsv
     """
 
     query = "MATCH (n:protein_DisGeNet) RETURN n"
@@ -92,27 +91,14 @@ def load_all_DisGeNet_protein_and_finish_the_files(csv_mapping):
             for uniprot_id in dict_alternativeId_to_identifiers[identifier]:
                 csv_mapping.writerow([identifier, uniprot_id, resource(uniprot_id), 'alternative_id'])
         else:
-            # gene_symbols= node['symbols'] if 'symbols' in node else []
-            # set_of_mapped_uniprot_ids=set()
-            # found_a_map=False
-            # for gene_symbol in gene_symbols:
-            #     if gene_symbol in dict_gene_symbol_to_id:
-            #         for protein_id in dict_gene_symbol_to_id[gene_symbol]:
-            #             if protein_id not in set_of_mapped_uniprot_ids:
-            #                 csv_mapping.writerow([identifier, protein_id, resource(protein_id),
-            #                                       'gene symbol'])
-            #                 set_of_mapped_uniprot_ids.add(protein_id)
-            # #                 found_a_map=True
-            # if not found_a_map:
             counter_not_mapped += 1
             print(identifier)
     print('number of not-mapped proteins:', counter_not_mapped)
     print('number of all proteins:', counter_all)
 
 
-######### MAIN #########
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     global home
     global path_of_directory
@@ -123,32 +109,32 @@ def main():
     else:
         sys.exit('need a path disgenet protein')
 
-    os.chdir(path_of_directory + 'master_database_change/mapping_and_merging_into_hetionet/disgenet')
+    os.chdir(path_of_directory + 'mapping_and_merging_into_hetionet/disgenet')
     home = os.getcwd()
     source = os.path.join(home, 'output')
     path_of_directory = os.path.join(home, 'protein/')
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('connection to db')
     create_connection_with_neo4j()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all Proteins from database')
     load_protein_from_database_and_add_to_dict()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
-    print('Generate cypher and csv file')
+    print(datetime.datetime.now())
+    print('Generate cypher and tsv file')
     csv_mapping = generate_files(path_of_directory)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all DisGeNet proteins from database')
     load_all_DisGeNet_protein_and_finish_the_files(csv_mapping)
 

@@ -1,8 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Apr 18 12:41:20 2018
-@author: ckoenigs
-"""
+
 
 import datetime
 import csv
@@ -158,14 +154,9 @@ generate connection between mapping pathways of ctd and hetionet and generate ne
 
 def create_cypher_file():
     cypher_file = open('output/cypher.cypher', 'a',encoding='utf-8')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ctd/pathway/mapped_pathways.tsv" As line FIELDTERMINATOR '\\t' Match (d:Pathway{identifier:line.id_hetionet}),(c:CTD_pathway{pathway_id:line.id}) Create (d)-[:equal_to_CTD_pathway{how_mapped:line.mapped}]->(c) Set d.resource= split(line.resource, "|") , d.ctd="yes", d.ctd_url="http://ctdbase.org/detail.go?type=pathway&acc=%"+line.id, c.hetionet_id=line.id_hetionet;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/ctd/pathway/mapped_pathways.tsv" As line FIELDTERMINATOR '\\t' Match (d:Pathway{identifier:line.id_hetionet}),(c:CTD_pathway{pathway_id:line.id}) Create (d)-[:equal_to_CTD_pathway{how_mapped:line.mapped}]->(c) Set d.resource= split(line.resource, "|") , d.ctd="yes", d.ctd_url="http://ctdbase.org/detail.go?type=pathway&acc=%"+line.id, c.hetionet_id=line.id_hetionet;\n'''
     cypher_file.write(query)
 
-    # add query to update disease nodes with do='no'
-    cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')
-    query = ''':begin\n MATCH (n:Pathway) Where not exists(n.ctd) Set n.ctd="no";\n :commit\n '''
-    cypher_general.write(query)
-    cypher_general.close()
 
 
 # path to directory
@@ -179,7 +170,7 @@ def main():
     else:
         sys.exit('need a path')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j_mysql()
@@ -187,7 +178,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all pathways from hetionet into a dictionary')
 
     load_hetionet_pathways_in()
@@ -195,7 +186,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all ctd pathways from neo4j into a dictionary')
 
     load_ctd_pathways_in()
@@ -203,7 +194,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Integrate new pathways and connect them to ctd ')
 
     create_cypher_file()
@@ -211,7 +202,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

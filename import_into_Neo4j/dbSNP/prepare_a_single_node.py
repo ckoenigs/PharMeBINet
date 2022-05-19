@@ -98,7 +98,7 @@ header_snp_list = ['frequencies_list',  'sequence_position_deletion_insertions',
 
 def generate_csv_file_and_add_to_dictionary(label, header):
     """
-    generate for a given label a csv file and add it to dictionary
+    generate for a given label a tsv file and add it to dictionary
     todo generate the fitting query
     :param label: string
     :param header: list of stings
@@ -169,7 +169,8 @@ def add_information_from_one_dict_to_another(from_dict, to_dict, key):
         if key in to_dict and from_dict[key] != to_dict[key]:
             # some have multiple possibilities for the insertion
             if key == 'inserted_sequence':
-                to_dict[key] += '/' + from_dict[key]
+                if not from_dict[key] in to_dict[key]:
+                    to_dict[key] += '/' + from_dict[key]
                 return
             if type(from_dict[key]) == str and (from_dict[key] == '' or to_dict[key] == ''):
                 return
@@ -205,7 +206,7 @@ def generate_files_with_node_and_rela(label_node, label_other_node, node_propert
     :return:
     """
     if label_node not in dict_label_to_tsv_file:
-        # generate csv file for rna
+        # generate tsv file for rna
         file_name = generate_csv_file_and_add_to_dictionary(label_node, node_properties)
         generate_cypher_queries(file_name, label_node, node_properties, [])
 
@@ -577,7 +578,7 @@ def prepare_json_information_to_tsv(data, chromosome_number=None):
                                                 properties_gene = ['identifier', 'name', 'locus',
                                                                    'is_pseudo',
                                                                    'orientation']
-                                                # generate csv file for gene
+                                                # generate tsv file for gene
                                                 file_name = generate_csv_file_and_add_to_dictionary('gene',
                                                                                                     properties_gene)
                                                 generate_cypher_queries(file_name, 'gene', properties_gene, [])
@@ -780,11 +781,11 @@ def prepare_json_information_to_tsv(data, chromosome_number=None):
 
 def prepare_snp_file():
     """
-    prepare snp csv file and cypher query
+    prepare snp tsv file and cypher query
     :return:
     """
     if not 'snp' in dict_label_to_tsv_file:
-        # #the node csv file for generating snp nodes
+        # #the node tsv file for generating snp nodes
         file_name = generate_csv_file_and_add_to_dictionary('snp', header_snp)
 
         generate_cypher_queries(file_name, 'snp', header_snp, header_snp_list)
@@ -796,7 +797,7 @@ def run_through_list_of_nodes_as_json_string(path_directory, path_data, json_fil
     path_to_data = path_data
 
     if not 'snp' in dict_label_to_tsv_file:
-        # #the node csv file for generating snp nodes
+        # #the node tsv file for generating snp nodes
         file_name = generate_csv_file_and_add_to_dictionary('snp', header_snp)
 
         generate_cypher_queries(file_name, 'snp', header_snp, header_snp_list)
@@ -813,4 +814,4 @@ def run_through_list_of_nodes_as_json_string(path_directory, path_data, json_fil
         # prepare_json_information_to_tsv(line, chr)
         if counter % 10000 == 0:
             print(counter)
-            print(datetime.datetime.utcnow())
+            print(datetime.datetime.now())

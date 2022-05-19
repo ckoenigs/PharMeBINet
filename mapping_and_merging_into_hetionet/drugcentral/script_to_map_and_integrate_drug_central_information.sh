@@ -8,6 +8,13 @@ path_to_project=$2
 
 license='Attribution-NonCommercial 4.0 International'
 
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo 'integrate Drugcentral product'
+
+python3 mapping_product_drugcentral.py $path_to_project > product/output.txt
+
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo 'integrate Durgcentral protein'
@@ -17,9 +24,16 @@ python3 mapping_protein_drugcentral.py $path_to_project > protein/output.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
+echo 'integrate Drugcentral go'
+
+python3 mapping_GOterm_drugcentral.py $path_to_project > goTerm/output.txt
+
+
+now=$(date +"%F %T")
+echo "Current time: $now"
 echo 'integrate Drugcentral product'
 
-python3 mapping_product_drugcentral.py $path_to_project > product/output.txt
+python3 mapping_chemical.py $path_to_project > chemical/output.txt
 
 
 now=$(date +"%F %T")

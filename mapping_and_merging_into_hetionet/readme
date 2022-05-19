@@ -1,3 +1,23 @@
 All programs which are used to map and merge the different databases into Hetionet.
 
 All this can be executed with the shell script.
+
+Here is an overview of the different mapping methods:
+
+|Label|MONDO|DO|Entrez Gene|OMIM|Pathway Commons&WikiPathways|UniProt|GO|IID|Reactome|ClinVar|DrugBank|HPO|CTD|NDF-RT|SIDER|AEOLUS|PharmGKB|dbSNP|
+|:----|:----|:----|:----|:----|:----|:----|:----|:----|:----|:----|:----|:----|:----|:----|:----|:----|:----|:----|
+|Protein (P)| | | | | | |UniProt|UniProt|UniProt| |UniProt| | | | | | | |
+|Variant (V)| | | | | | | | | | |dbSNP| | | | | |dbSNP, name| |
+|GeneVariant (GV)| | | | | | | | | | | | | | | | | |dbSNP|
+|Gene (G)| | |Entrez|Entrez|Gene Symbol|Entrez, Gene Symbol, name|Gene Symbol, name| | | | | |Entrez| | | |Entrez, Gene Symbol, name|Entrez|
+|Chemical (C)| | | | | | | | |IUPHAR, InChI, name, ChEBI, KEGG, PubChem|name| | | |UMLS, RxNorm, UNII, InChIKey, name|STITCH, PubChem, InChIKey, DurgBank, ChEMBL, name|RxNorm, UNII, InChiKey, MeSH, name|InChI, PubChem, RxNorm, MeSH, name, UMLS| |
+|Compound (CH)| | | | | | | | | | |DrugBank| |CAS-number, UMLS, RxNorm, UNII, InChIKey, name, MESH| | | | | |
+|Pathway (PW)| | | | | | | | |Reactome, name| | | |Reactome,  name| | | | | |
+|Phenotype (PT)| | | | | | | | | | | | | | | | | | |
+|Disease (D)|DOID|DOID,name, OMIM| |OMIM| |OMIM| | |DOID, name| | |name, OMIM, UMLS, ORPHA|MESH, OMIM, DOID, UMLS, name|UMLS, MESH, name| | |name, SnoMed, UMLS| |
+|Symptom (S)| | | | | | | | | | | |name, UMLS, MESH| | | | |name, UMLS| |
+|SideEffect (SE)| | | | | | | | | | | | | | |UMLS|UMLS (BioPortal), name|name, UMLS| |
+|PharmacologicalClass (PC)| | | | | | | | | | | | | | | | |NDF-RT, name| |
+|BiologicalProcess (BP)| | | | | | | | |GO| | | |GO| | | | | |
+|CellularComponent (CC)| | | | | | | | |GO| | | |GO| | | | | |
+|MolecularFunction (MF)| | | | | | | | |GO| | | |GO| | | | | |

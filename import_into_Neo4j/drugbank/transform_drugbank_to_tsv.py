@@ -18,11 +18,11 @@ import pandas
 dict_category_name_to_id = {}
 
 try:
-    file = open('drugbank/categories.csv', 'r', encoding='utf-8')
+    file = open('drugbank/categories.tsv', 'r', encoding='utf-8')
 except:
     import update_drugbank_categories
 
-    file = open('drugbank/categories.csv', 'r')
+    file = open('drugbank/categories.tsv', 'r')
 
 # generate a file for "proteins" to show which are proteinss and which are not
 decision_protein_file = open('maybe_protein_manual_checked.tsv', 'w', encoding='utf-8')
@@ -35,7 +35,7 @@ dict_atc_nodes = {}
 set_atc_edges = set()
 
 # get the information for the drugbank categroies
-csv_reader = csv.reader(file)
+csv_reader = csv.reader(file, delimiter='\t')
 next(csv_reader)
 for row in csv_reader:
     if row[1] in dict_category_name_to_id:
@@ -49,13 +49,13 @@ for row in csv_reader:
 xml_file = os.path.join('full database.xml')
 # xml_file = os.path.join('part.xml')
 # xml_file = os.path.join('drugbank_all_full_database_dezember.xml/test.xml')
-print(datetime.datetime.utcnow())
+print(datetime.datetime.now())
 
 # parse it to usable formart
 tree = ET.parse(xml_file)
 root = tree.getroot()
 
-print(datetime.datetime.utcnow())
+print(datetime.datetime.now())
 
 # templates to extract some information from drugbank xml
 ns = '{http://www.drugbank.ca}'
@@ -674,7 +674,7 @@ for i, drug in enumerate(root):
         row['prices_description_cost_unit'].append(combined)
 
     """ 
-    The category ids are from the csv file but get additional information like mesh id and name.
+    The category ids are from the tsv file but get additional information like mesh id and name.
     Add also relationship between drug and category.
     """
     for part in drug.iterfind('{ns}categories/{ns}category'.format(ns=ns)):
@@ -755,7 +755,7 @@ for i, drug in enumerate(root):
         "{ns}sequences/{ns}sequence".format(ns=ns)) != None else []
 
     counter = 0
-    # prepare the sequence such they would not make problems in csv files
+    # prepare the sequence such they would not make problems in tsv files
     for all_spliter in all_seq:
         all_spliter[0] = all_spliter[0].replace(' ', '_').replace('|', '/')
         all_spliter[1] = all_spliter[1].replace('\n', '')
@@ -849,7 +849,7 @@ for i, drug in enumerate(root):
 
     """
     Reaction is an edge-node. This means it is an edge, but because it is not a one-to-one relationship it get there own
-    csv file. A reaction has as property a self generated id and a sequence.  Then the Reaction has a left element and
+    tsv file. A reaction has as property a self generated id and a sequence.  Then the Reaction has a left element and
     a right element. The left and right element can be a metabolite or a drug. This generate the relationships.
     Howevere, the metabolite get his properties identifier and name from here. However, reaction has also enzymes in the
     reaction to produce out of the left the right element. These relationships are also added.
@@ -1027,7 +1027,7 @@ for i, drug in enumerate(root):
 #        break
 
 print('number of entries in drugbank:' + str(counter))
-print(datetime.datetime.utcnow())
+print(datetime.datetime.now())
 
 
 def collapse_list_values(row):
@@ -1065,7 +1065,7 @@ def preparation(list_information):
     return list_information
 
 
-print(datetime.datetime.utcnow())
+print(datetime.datetime.now())
 print('preparation of information lists')
 # prepare the information from the different different dictionaries
 rows = preparation(rows)
@@ -1106,9 +1106,9 @@ def generate_tsv_file(columns, list_information, file_name):
     drugbank_information.to_csv(path, sep='\t', index=False, encoding='utf-8')
 
 
-print(datetime.datetime.utcnow())
+print(datetime.datetime.now())
 print('malsehen')
-# csv header
+# tsv header
 columns = ['drugbank_id', 'alternative_ids', 'name', 'cas_number', 'unii', 'atc_codes',
            'state', 'groups', 'general_references_links_reference_id_title_url',
            'general_references_attachment_reference_id_title_url',
@@ -1131,7 +1131,7 @@ columns = ['drugbank_id', 'alternative_ids', 'name', 'cas_number', 'unii', 'atc_
 drugbank_df = pandas.DataFrame.from_dict(rows)[columns]
 drugbank_df.head()
 
-# the different csv header for the different csv files
+# the different tsv header for the different tsv files
 columns_drug_interaction = ['DB_ID1', 'DB_ID2', 'description']
 # drugbank_df_drug_interaction = pandas.DataFrame.from_dict(drug_interactions)[columns_drug_interaction]
 # drugbank_df_drug_interaction.head()
@@ -1184,7 +1184,7 @@ drugbank_df.to_csv(path, sep='\t', index=False, encoding='utf-8-sig')
 path = os.path.join('drugbank', 'drugbank-slim2_drug.tsv')
 drugbank_slim_df.to_csv(path, sep='\t', index=False, encoding='utf-8')
 
-# generate the csv gor alld the different dictionaries and csv headers
+# generate the tsv for all the different dictionaries and tsv headers
 generate_tsv_file(columns_drug_interaction, drug_interactions, 'drugbank_interaction.tsv')
 generate_tsv_file(columns_drug_pathway, drug_pathways, 'drugbank_drug_pathway.tsv')
 generate_tsv_file(columns_pathway_enzymes, pathway_enzymes, 'drugbank_pathway_enzymes.tsv')
@@ -1225,9 +1225,9 @@ path_of_directory = sys.argv[1]
 
 cypher_file = open('cypher_atc.cypher', 'w', encoding='utf-8')
 
-query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/drugbank/%s" As line FIELDTERMINATOR '\t' '''
+query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/drugbank/%s" As line FIELDTERMINATOR '\t' '''
 
-# write info into csv file
+# write info into tsv file
 atc_file_name = 'atc_node.tsv'
 atc_file = open(atc_file_name, 'w', encoding='utf-8')
 csv_atc = csv.writer(atc_file, delimiter='\t')
@@ -1257,7 +1257,7 @@ query = query_start + " Match (n:atc{identifier:line.id_upper}), (m:atc{identifi
 query = query % (atc_file_name)
 cypher_file.write(query)
 
-print(datetime.datetime.utcnow())
+print(datetime.datetime.now())
 
 # write drugbank tsv
 # path = os.path.join('drugbank', 'drugbank_interaction.tsv')

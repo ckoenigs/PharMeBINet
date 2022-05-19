@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Aug 22 15:15:37 2017
-
-@author: ckoenigs
-"""
-
 import datetime
 import sys, csv
 
@@ -282,11 +275,11 @@ all Disease which are not mapped with a ndf-rt disease get the propertie no
 
 def integrate_ndf_rt_disease_into_hetionet():
     cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ndf-rt/disease/mapped.csv" As line MATCH (n:NDFRT_DISEASE_KIND{code:line.code}), (d:Disease{identifier:line.disease_id}) Set n.MONDO_IDs=split(line.mondo_ids,'|'), n.how_mapped=line.how_mapped, d.resource=split(line.resource,'|'), d.ndf_rt='yes'  Create (d)-[:equal_to_Disease_NDF_RT]->(n);\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/ndf-rt/disease/mapped.tsv" As line FIELDTERMINATOR '\\t'  MATCH (n:NDFRT_DISEASE_KIND{code:line.code}), (d:Disease{identifier:line.disease_id}) Set n.MONDO_IDs=split(line.mondo_ids,'|'), n.how_mapped=line.how_mapped, d.resource=split(line.resource,'|'), d.ndf_rt='yes'  Create (d)-[:equal_to_Disease_NDF_RT]->(n);\n'''
     cypher_file.write(query)
     cypher_file.close()
-    file = open('disease/mapped.csv', 'w', encoding='utf-8')
-    csv_writer = csv.writer(file)
+    file = open('disease/mapped.tsv', 'w', encoding='utf-8')
+    csv_writer = csv.writer(file, delimiter='\t')
     header = ['code', 'disease_id', 'mondo_ids', 'how_mapped', 'resource']
     csv_writer.writerow(header)
     for code, mondo_ids in dict_mapped.items():
@@ -300,22 +293,18 @@ def integrate_ndf_rt_disease_into_hetionet():
             resource = dict_diseases_hetionet[mondo_id].resource
             resource.append('NDF-RT')
             resource = list(set(resource))
+            resource.sort()
             resource = "|".join(resource)
             csv_writer.writerow([code, mondo_id, mondo_strings, how_mapped, resource])
 
     # write file with all not mapped disease
-    file_not_mapped = open('disease/not_mapped.csv', 'w', encoding='utf-8')
-    csv_writer_not_mapped = csv.writer(file_not_mapped)
+    file_not_mapped = open('disease/not_mapped.tsv', 'w', encoding='utf-8')
+    csv_writer_not_mapped = csv.writer(file_not_mapped, delimiter='\t')
     csv_writer_not_mapped.writerow(['code', 'name', 'properties'])
     for code in list_code_not_mapped:
         csv_writer_not_mapped.writerow([code, dict_diseases_NDF_RT[code].name, dict_diseases_NDF_RT[code].umls_cuis,
                                         dict_diseases_NDF_RT[code].properties])
 
-    # add query to update disease nodes with do='no'
-    cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')
-    query = ''':begin\n MATCH (n:Disease) Where Not Exists(n.ndf_rt) Set n.ndf_rt="no";\n :commit\n '''
-    cypher_general.write(query)
-    cypher_general.close()
 
 
 def main():
@@ -325,7 +314,7 @@ def main():
     else:
         sys.exit('need a path')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j()
@@ -333,7 +322,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load in diseases from hetionet')
 
     load_hetionet_diseases_in()
@@ -341,7 +330,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load in diseases from ndf-rt')
 
     load_ndf_rt_diseases_in()
@@ -349,7 +338,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('map round one, check the cuis from disease ontology to cuis in ndf-rt')
 
     map_with_cuis_go_through_all()
@@ -357,7 +346,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('map with name ndf-rt to name or synonym od DO')
 
     map_with_name()
@@ -365,7 +354,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('integrate ndf-rt into hetionet')
 
     integrate_ndf_rt_disease_into_hetionet()
@@ -373,7 +362,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

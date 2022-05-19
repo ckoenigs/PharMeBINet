@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Sep 15 11:41:20 2017
-
-@author: ckoenigs
-"""
 
 import datetime
 import csv, sys
@@ -27,7 +21,7 @@ def create_connection_with_neo4j_mysql():
 dict_gene_pathway = {}
 
 '''
-get all relationships between gene and pathway, take the hetionet identifier an save all important information in a csv
+get all relationships between gene and pathway, take the hetionet identifier an save all important information in a tsv
 also generate a cypher file to integrate this information 
 '''
 
@@ -35,19 +29,12 @@ also generate a cypher file to integrate this information
 def take_all_relationships_of_gene_pathway():
     # generate cypher file
     cypherfile = open('output/cypher_edge.cypher', 'w',encoding='utf-8')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ctd/gene_pathway/relationships.csv" As line Match (n:Gene{identifier:line.GeneID}), (b:Pathway{identifier:line.PathwayID}) Merge (n)-[r:PARTICIPATES_GpPW]->(b) On Create Set r.ctd='yes', r.url="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.source="CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2021 NC State University. All rights reserved.", r.unbiased=false, r.resource=["CTD"] On Match SET r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.resource=r.resource+"CTD";\n '''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/ctd/gene_pathway/relationships.tsv" As line  FIELDTERMINATOR '\\t' Match (n:Gene{identifier:line.GeneID}), (b:Pathway{identifier:line.PathwayID}) Merge (n)-[r:PARTICIPATES_IN_GpiPW]->(b) On Create Set r.ctd='yes', r.url="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.source="CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2021 NC State University. All rights reserved.", r.unbiased=false, r.resource=["CTD"] On Match SET r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.resource=r.resource+"CTD";\n '''
     cypherfile.write(query)
     cypherfile.close()
 
-    # the general cypher file to update all chemicals and relationship which are not from aeolus
-    cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')
-    cypher_general.write(':begin\n')
-    cypher_general.write('Match (n:Gene)-[r:PARTICIPATES_GpPW]->(b:Pathway) Where not exists(r.ctd) Set r.ctd="no";\n')
-    cypher_general.write(':commit')
-    cypher_general.close()
-
-    csvfile = open('gene_pathway/relationships.csv', 'w')
-    writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+    csvfile = open('gene_pathway/relationships.tsv', 'w')
+    writer = csv.writer(csvfile, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     writer.writerow(['GeneID', 'PathwayID'])
 
     query = '''MATCH (gene:CTD_gene)-[r:participates_GP]->(pathway:CTD_pathway) Where ()-[:equal_to_CTD_gene]->(gene)  RETURN gene.gene_id, r, pathway.hetionet_id'''
@@ -90,7 +77,7 @@ def main():
     else:
         sys.exit('need a path')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j_mysql()
@@ -98,15 +85,15 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
-    print('Take all gene-pathway relationships and generate csv and cypher file')
+    print(datetime.datetime.now())
+    print('Take all gene-pathway relationships and generate tsv and cypher file')
 
     take_all_relationships_of_gene_pathway()
 
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

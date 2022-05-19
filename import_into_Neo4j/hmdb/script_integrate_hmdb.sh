@@ -10,7 +10,7 @@ echo "Current time: $now"
 
 echo prepare hmdb
 
-python3 parse_xmls_to_csv_files.py $path_to_project > output/outputfile.txt
+python3 parse_xmls_to_tsv_files.py $path_to_project > output/outputfile.txt
 
 
 now=$(date +"%F %T")

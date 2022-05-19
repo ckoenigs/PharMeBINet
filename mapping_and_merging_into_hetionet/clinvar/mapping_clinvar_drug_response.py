@@ -41,9 +41,6 @@ def load_chemicals_from_database_and_add_to_dict():
             dict_chemical_name_to_chemical_id[synonym].add(identifier)
 
 
-# dictionary tuple of lables to csv file
-dict_tuple_of_labels_to_csv_files = {}
-
 # file from relationship between gene and variant
 file_rela = open('drug/chemical_drug.tsv', 'w', encoding='utf-8')
 csv_rela = csv.writer(file_rela, delimiter='\t')
@@ -63,14 +60,14 @@ def split_name_to_to_only_name(name):
 
 
 '''
-Load all variation sort the ids into the right csv, generate the queries, and add rela to the rela csv
+Load all variation sort the ids into the right tsv, generate the queries, and add rela to the rela tsv
 '''
 
 
 def load_all_drug_response_and_finish_the_files():
     cypher_file = open('drug/cypher_drug.cypher', 'w', encoding='utf-8')
 
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/clinvar/drug/%s.tsv" As line FIELDTERMINATOR '\\t' 
+    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/clinvar/drug/%s.tsv" As line FIELDTERMINATOR '\\t' 
         Match (c:Chemical{identifier:line.chemical_id}), (t:trait_DrugResponse_ClinVar{identifier:line.clinvar_id}) Set c.clinvar='yes', c.resource=split(line.resource,"|") Create (c)-[:equal_to_clinvar_drug]->(t);\n '''
     query_start = query_start % (path_of_directory, 'chemical_drug')
     cypher_file.write(query_start)
@@ -98,7 +95,7 @@ def load_all_drug_response_and_finish_the_files():
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     global path_of_directory
     if len(sys.argv) > 1:
@@ -108,28 +105,28 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('connection to db')
 
     database_connection()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all chemicals from database')
 
     load_chemicals_from_database_and_add_to_dict()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('get all kind of properties of the drug response')
 
     load_all_drug_response_and_finish_the_files()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

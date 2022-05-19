@@ -61,16 +61,36 @@ python3 CreateEdgeDrugToNode.py $path_to_project "${license}" > DrugEdges/output
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo Regulation relationships
-# todo the two below need to be checked!
-#python3 CreateEdgeRegulationToNode.py $path_to_project "${license}" > RegulationEdges/output.txt
+
+# python3 CreateEdgeRegulationToNode.py $path_to_project "${license}" > RegulationEdges/output.txt
 
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo Interaction relationships
 
-#python3 CreateEdgeInteraction.py $path_to_project "${license}" > RegulationEdges/output.txt
+# python3 CreateEdgeInteraction.py $path_to_project "${license}" > interactions/output.txt
 
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo Complex relationships
+
+# python3 CreateComplexEdges.py $path_to_project "${license}" > ComplexEdges/output.txt
+
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo Catalyst activity relationships
+
+# python3 CreateEdgeCatalystActivity.py $path_to_project "${license}" > CatalystActivityEdges/output.txt
+
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo Catalyst activity relationships to MF
+
+# python3 CreateEdgeCatalystActivityGO.py $path_to_project "${license}" > CatalystActivityGOEdges/output.txt
 
 echo integrate connection with neo4j shell
 now=$(date +"%F %T")

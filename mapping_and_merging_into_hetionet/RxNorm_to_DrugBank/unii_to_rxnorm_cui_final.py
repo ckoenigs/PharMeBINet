@@ -33,13 +33,13 @@ file has properties:
 
 
 def load_all_inchikey_and_rxnorm_in_dict():
-    f = open('unii/unii_data.txt', 'r')
+    f = open('unii/unii_data.txt', 'r', encoding='utf-8')
     csv_reader=csv.DictReader(f,delimiter='\t',)
-    g = open('results/UNIIs_with_RXCUI.tsv', 'w')
+    g = open('results/UNIIs_with_RXCUI.tsv', 'w', encoding='utf-8')
     csv_writer=csv.writer(g, delimiter='\t')
     csv_writer.writerow(['unii','rxcui'])
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     i = 0
     for line in csv_reader:
         unii=line['UNII']
@@ -48,18 +48,18 @@ def load_all_inchikey_and_rxnorm_in_dict():
             csv_writer.writerow([unii,rxcui])
 
 
-print (datetime.datetime.utcnow())
+print (datetime.datetime.now())
 
 
 def main():
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     print('load all information over rxcui and inchikey in a dictionary and generate a file with unii and rxnorm')
 
     load_all_inchikey_and_rxnorm_in_dict()
 
     print(
     '###########################################################################################################################')
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
 
 
 if __name__ == "__main__":

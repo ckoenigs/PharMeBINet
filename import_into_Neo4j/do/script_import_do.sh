@@ -10,7 +10,7 @@ path_to_project=$2
 wget  -O data/HumanDO.obo "https://raw.githubusercontent.com/DiseaseOntology/HumanDiseaseOntology/main/src/ontology/doid.obo"
 
 
-python3 ../EFO/transform_obo_to_csv_and_cypher_file.py data/HumanDO.obo do diseaseontology $path_to_project > output_generate_integration_file.txt
+python3 ../EFO/transform_obo_to_tsv_and_cypher_file.py data/HumanDO.obo do diseaseontology $path_to_project > output/output_generate_integration_file.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"

@@ -1,8 +1,4 @@
-"""
-Created on Tue Feb 04 08:40:47 2020
 
-@author: ckoenigs
-"""
 import datetime
 import sys, csv
 from collections import defaultdict
@@ -38,39 +34,28 @@ def generate_cypher_file():
     # relationship queries
     cypher_file = open('output/cypher_rela.cypher', 'w', encoding='utf-8')
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/aeolus/drug/new_rela_se.csv" As line Match (c:Chemical{identifier:line.chemical_id}),(r:SideEffect{identifier:line.disease_sideeffect_id})  Create (c)-[:MIGHT_CAUSES_CHmcSE{license:"CC0 1.0",unbiased:false,source:'AEOLUS',countA:line.countA, prr_95_percent_upper_confidence_limit:line.prr_95_percent_upper_confidence_limit, prr:line.prr, countB:line.countB, prr_95_percent_lower_confidence_limit:line.prr_95_percent_lower_confidence_limit, ror:line.ror, ror_95_percent_upper_confidence_limit:line.ror_95_percent_upper_confidence_limit, ror_95_percent_lower_confidence_limit:line.ror_95_percent_lower_confidence_limit, countC:line.countC, drug_outcome_pair_count:line.drug_outcome_pair_count, countD:line.countD, ror_min:line.ror_min, ror_max:line.ror_max, prr_min:line.prr_min, prr_max:line.prr_max,  aeolus:'yes', resource:['AEOLUS']}]->(r); \n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/aeolus/drug/new_rela_se.tsv" As line  Fieldterminator '\\t' Match (c:Chemical{identifier:line.chemical_id}),(r:SideEffect{identifier:line.disease_sideeffect_id})  Create (c)-[:MIGHT_CAUSES_CHmcSE{license:"CC0 1.0",unbiased:false,source:'AEOLUS',countA:line.countA, prr_95_percent_upper_confidence_limit:line.prr_95_percent_upper_confidence_limit, prr:line.prr, countB:line.countB, prr_95_percent_lower_confidence_limit:line.prr_95_percent_lower_confidence_limit, ror:line.ror, ror_95_percent_upper_confidence_limit:line.ror_95_percent_upper_confidence_limit, ror_95_percent_lower_confidence_limit:line.ror_95_percent_lower_confidence_limit, countC:line.countC, drug_outcome_pair_count:line.drug_outcome_pair_count, countD:line.countD, ror_min:line.ror_min, ror_max:line.ror_max, prr_min:line.prr_min, prr_max:line.prr_max,  aeolus:'yes', resource:['AEOLUS']}]->(r); \n'''
     cypher_file.write(query)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/aeolus/drug/new_rela_disease.csv" As line Match (c:Chemical{identifier:line.chemical_id}),(r:Disease{identifier:line.disease_sideeffect_id})  Create (c)-[:MIGHT_INDUCES_CHmiD{license:"CC0 1.0",unbiased:false,source:'AEOLUS',countA:line.countA, prr_95_percent_upper_confidence_limit:line.prr_95_percent_upper_confidence_limit, prr:line.prr, countB:line.countB, prr_95_percent_lower_confidence_limit:line.prr_95_percent_lower_confidence_limit, ror:line.ror, ror_95_percent_upper_confidence_limit:line.ror_95_percent_upper_confidence_limit, ror_95_percent_lower_confidence_limit:line.ror_95_percent_lower_confidence_limit, countC:line.countC, drug_outcome_pair_count:line.drug_outcome_pair_count, countD:line.countD, ror_min:line.ror_min, ror_max:line.ror_max, prr_min:line.prr_min, prr_max:line.prr_max,  aeolus:'yes', resource:['AEOLUS']}]->(r); \n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/aeolus/drug/new_rela_disease.tsv" As line Fieldterminator '\\t' Match (c:Chemical{identifier:line.chemical_id}),(r:Disease{identifier:line.disease_sideeffect_id})  Create (c)-[:MIGHT_INDUCES_CHmiD{license:"CC0 1.0",unbiased:false,source:'AEOLUS',countA:line.countA, prr_95_percent_upper_confidence_limit:line.prr_95_percent_upper_confidence_limit, prr:line.prr, countB:line.countB, prr_95_percent_lower_confidence_limit:line.prr_95_percent_lower_confidence_limit, ror:line.ror, ror_95_percent_upper_confidence_limit:line.ror_95_percent_upper_confidence_limit, ror_95_percent_lower_confidence_limit:line.ror_95_percent_lower_confidence_limit, countC:line.countC, drug_outcome_pair_count:line.drug_outcome_pair_count, countD:line.countD, ror_min:line.ror_min, ror_max:line.ror_max, prr_min:line.prr_min, prr_max:line.prr_max,  aeolus:'yes', resource:['AEOLUS']}]->(r); \n'''
     cypher_file.write(query)
 
     cypher_file.close()
 
-    # # the general cypher file to update all chemicals and relationship which are not from aeolus
-    # cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')
-    #
-    # # # all the cuases relationship which are not in aeolus get the property aeolus='no'
-    # # query = ''':begin\n Match (a:Chemical)-[l:CAUSES_CcSE]-(:SideEffect) Where not exists(l.aeolus) Set l.aeolus='no'; \n :commit\n  '''
-    # # cypher_general.write(query)
-    # #
-    # # query = ''':begin\n Match (a:Chemical)-[l:INDUCES_CiD]-(:Disease) Where not exists(l.aeolus) Set l.aeolus='no'; \n :commit\n  '''
-    # # cypher_general.write(query)
-    # #
-    # # cypher_general.close()
 
 
-# rela csv files
-file_mapped = open('drug/mapped_rela_se.csv', 'w', encoding='utf-8')
-csv_mapped = csv.writer(file_mapped)
+# rela tsv files
+file_mapped = open('drug/mapped_rela_se.tsv', 'w', encoding='utf-8')
+csv_mapped = csv.writer(file_mapped, delimiter='\t')
 
-file_new = open('drug/new_rela_se.csv', 'w', encoding='utf-8')
-csv_new = csv.writer(file_new)
+file_new = open('drug/new_rela_se.tsv', 'w', encoding='utf-8')
+csv_new = csv.writer(file_new,delimiter='\t')
 
-file_mapped_disease = open('drug/mapped_rela_disease.csv', 'w', encoding='utf-8')
-csv_mapped_disease = csv.writer(file_mapped_disease)
+file_mapped_disease = open('drug/mapped_rela_disease.tsv', 'w', encoding='utf-8')
+csv_mapped_disease = csv.writer(file_mapped_disease,delimiter='\t')
 
-file_new_disease = open('drug/new_rela_disease.csv', 'w', encoding='utf-8')
-csv_new_disease = csv.writer(file_new_disease)
+file_new_disease = open('drug/new_rela_disease.tsv', 'w', encoding='utf-8')
+csv_new_disease = csv.writer(file_new_disease, delimiter='\t')
 
 header = ['chemical_id', 'disease_sideeffect_id', "countA", "prr_95_percent_upper_confidence_limit", "prr", "countB",
           "prr_95_percent_lower_confidence_limit", "ror", "ror_95_percent_upper_confidence_limit",
@@ -276,12 +261,12 @@ def main():
     else:
         sys.exit('need a path')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j()
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate cypher file')
 
     generate_cypher_file()
@@ -307,7 +292,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('get the aeolus information')
 
     get_aeolus_connection_information_in_dict('SideEffect', dict_connection_information,
@@ -317,7 +302,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     get_aeolus_connection_information_in_dict('Disease', dict_connection_information_to_disease,
                                               number_of_compounds_at_once, 'integrated_disease',
@@ -326,27 +311,27 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Integrate connection into hetionet')
 
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
-    print('integrate aeolus connection into csv for integration into  hetionet')
+    print(datetime.datetime.now())
+    print('integrate aeolus connection into tsv for integration into  hetionet')
     integrate_connection_from_aeolus_in_hetionet(dict_connection_information, csv_new)
 
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     integrate_connection_from_aeolus_in_hetionet(dict_connection_information_to_disease, csv_new_disease)
 
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

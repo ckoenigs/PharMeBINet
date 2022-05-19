@@ -1,9 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Aug 22 15:16:45 2017
 
-@author: Cassandra
-"""
 import datetime
 import sys, csv
 from collections import defaultdict
@@ -619,7 +614,7 @@ def integrate_sider_drugs_into_hetionet():
     # cypher file
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/sider/output/mapped_drug.tsv" As line Fieldterminator '\t' Match (c:Chemical{identifier:line.chemical_id}), (d:drug_Sider{stitchIDstereo:line.sider_id}) Set c.xrefs=split(line.xrefs,'|'), c.sider="yes", c.resource=split(line.resource,'|'), d.name=line.name, d.how_mapped=line.how_mapped
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/sider/output/mapped_drug.tsv" As line Fieldterminator '\\t' Match (c:Chemical{identifier:line.chemical_id}), (d:drug_Sider{stitchIDstereo:line.sider_id}) Set c.xrefs=split(line.xrefs,'|'), c.sider="yes", c.resource=split(line.resource,'|'), d.name=line.name, d.how_mapped=line.how_mapped
                     Create (c)-[:equal_to_drug_Sider]->(d);\n'''
     cypher_file.write(query)
     cypher_file.close()
@@ -668,7 +663,7 @@ def integrate_sider_drugs_into_hetionet():
 
     file.close()
 
-    # write all drugs from sider that did not mape in a csv file
+    # write all drugs from sider that did not map in a tsv file
     file = open('output/not_mapped_drugs.tsv', 'w', encoding='utf-8')
     csv_writer = csv.writer(file, delimiter='\t')
     csv_writer.writerow(['stereo', 'flat', 'name'])
@@ -686,14 +681,6 @@ def integrate_sider_drugs_into_hetionet():
             name = ''
         csv_writer.writerow([stitch_stereo, stitch_flat, name])
 
-    # all drugs which are not mapped with sider get the property sider:'no'
-
-    # the general cypher file to update all chemicals and relationship which are not from aeolus
-    cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')
-    query = '''Match (c:Compound) Where not Exists(c.sider) 
-    Set  c.sider='no';\n'''
-    cypher_general.write(query)
-    cypher_general.close()
 
 
 def main():
@@ -703,7 +690,7 @@ def main():
     else:
         sys.exit('need a path sider')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j')
 
     create_connection_with_neo4j()
@@ -711,13 +698,13 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Map drugs from sider to hetionet')
 
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load in all compounds from hetionet in dictionary')
 
     load_chemicals_from_database()
@@ -725,7 +712,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load in all drugs from sider in dictionary')
 
     load_sider_drug_in_dict()
@@ -733,7 +720,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load in stitch names')
 
     load_in_stitch_name()
@@ -741,7 +728,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Map with  drugbank pubchem xref')
 
     map_with_pubchem_id()
@@ -749,7 +736,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all for all stereo the inchikey and map to chemical ids')
 
     load_in_stitch_inchikeys()
@@ -757,7 +744,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print(
         'Load in all important information from the short from of chemical.source.v5.0.tsv and add them in dictionary')
 
@@ -766,7 +753,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load in stitch name and map to chemical ids')
 
     map_with_names()
@@ -774,14 +761,14 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Integrate sider drugs into hetionet')
 
     integrate_sider_drugs_into_hetionet()
 
     print(
         '###########################################################################################################################')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

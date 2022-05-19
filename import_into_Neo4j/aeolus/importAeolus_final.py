@@ -98,17 +98,17 @@ if len(sys.argv) > 1:
 else:
     sys.exit('need some arguments (aeolus)')
 
-
 # concept dictionary
 # key:concept_id
 # value: 0:concept_name,1:domain_id,2:vocabulary_id,3:concept_class_id,4:standard_concept,5:concept_code
 dict_concept = {}
 
 # dictionary primary_id to drug concept id
-dict_primaryid_to_concept_id={}
+dict_primaryid_to_concept_id = {}
 
 # dictionary isr to drug concept id
-dict_isr_to_concept_id={}
+dict_isr_to_concept_id = {}
+
 
 def check_for_entry(dictionary, case_id, drug_seq, drug_concept_id):
     """
@@ -120,8 +120,8 @@ def check_for_entry(dictionary, case_id, drug_seq, drug_concept_id):
     """
     if not case_id in dictionary:
         dictionary[case_id] = {}
-        dictionary[case_id][drug_seq]=set([drug_concept_id])
-    elif  drug_seq not in dictionary[case_id]:
+        dictionary[case_id][drug_seq] = set([drug_concept_id])
+    elif drug_seq not in dictionary[case_id]:
         dictionary[case_id][drug_seq] = set([drug_concept_id])
     else:
         dictionary[case_id][drug_seq].add(drug_concept_id)
@@ -136,21 +136,25 @@ properties file:
     4: role_cod
     5: standard concept id
 """
+
+
 def load_standard_case_drug():
-    file=open(filepath+'standard_case_drug.tsv','r',encoding='utf-8')
-    csv_reader=csv.reader(file, delimiter='\t')
+    file = open(filepath + 'standard_case_drug.tsv', 'r', encoding='utf-8')
+    csv_reader = csv.reader(file, delimiter='\t')
     for line in csv_reader:
-        primaryid=line[0]
-        isr=line[1]
-        drug_seq=line[2]
-        concept_id=line[4]
-        if primaryid!='':
-            check_for_entry(dict_primaryid_to_concept_id,primaryid, drug_seq, concept_id)
+        primaryid = line[0]
+        isr = line[1]
+        drug_seq = line[2]
+        concept_id = line[4]
+        if primaryid != '':
+            check_for_entry(dict_primaryid_to_concept_id, primaryid, drug_seq, concept_id)
         else:
-            check_for_entry(dict_isr_to_concept_id,isr, drug_seq, concept_id)
+            check_for_entry(dict_isr_to_concept_id, isr, drug_seq, concept_id)
+
 
 # to have every induce tuple only one time
-set_induce_tuples=set()
+set_induce_tuples = set()
+
 
 def check_for_drug_concepts_and_write_into_file(dictionary, case_id, csv_writer, drug_seq, indication_concept_id):
     """
@@ -169,7 +173,8 @@ def check_for_drug_concepts_and_write_into_file(dictionary, case_id, csv_writer,
                 if (drug_concept_id, indication_concept_id) in set_induce_tuples:
                     continue
                 csv_writer.writerow([drug_concept_id, indication_concept_id])
-                set_induce_tuples.add((drug_concept_id,indication_concept_id))
+                set_induce_tuples.add((drug_concept_id, indication_concept_id))
+
 
 """
 import standard_case_indication.tsv and put all information into the dictionary
@@ -181,21 +186,26 @@ properties file:
     4: indication concept id
     5: snomed indication concept id
 """
+
+
 def load_standard_case_indication():
-    file=open(filepath+'standard_case_indication.tsv','r',encoding='utf-8')
-    csv_reader=csv.reader(file, delimiter='\t')
-    write_file=open('output/indications.csv','w',encoding='utf-8')
-    csv_writer=csv.writer(write_file)
-    csv_writer.writerow(['drug_concept_id','indication_concept_id'])
+    file = open(filepath + 'standard_case_indication.tsv', 'r', encoding='utf-8')
+    csv_reader = csv.reader(file, delimiter='\t')
+    write_file = open('output/indications.tsv', 'w', encoding='utf-8')
+    csv_writer = csv.writer(write_file)
+    csv_writer.writerow(['drug_concept_id', 'indication_concept_id'])
     for line in csv_reader:
-        primaryid=line[0]
-        isr=line[1]
-        drug_seq=line[2]
-        indication_concept_id=line[4]
-        if primaryid!='':
-            check_for_drug_concepts_and_write_into_file(dict_primaryid_to_concept_id, primaryid,csv_writer, drug_seq, indication_concept_id)
+        primaryid = line[0]
+        isr = line[1]
+        drug_seq = line[2]
+        indication_concept_id = line[4]
+        if primaryid != '':
+            check_for_drug_concepts_and_write_into_file(dict_primaryid_to_concept_id, primaryid, csv_writer, drug_seq,
+                                                        indication_concept_id)
         else:
-            check_for_drug_concepts_and_write_into_file(dict_isr_to_concept_id, isr,csv_writer, drug_seq, indication_concept_id)
+            check_for_drug_concepts_and_write_into_file(dict_isr_to_concept_id, isr, csv_writer, drug_seq,
+                                                        indication_concept_id)
+
 
 #
 '''
@@ -216,7 +226,7 @@ properties file:
 
 def load_concept():
     # fobj=open(filepath+ "test_concept.tsv")
-    fobj = open(filepath + "concept.tsv", 'r' , encoding='utf-8')
+    fobj = open(filepath + "concept.tsv", 'r', encoding='utf-8')
     i = 1
     j = 1
     for line in fobj:
@@ -312,7 +322,7 @@ properties of file:
 
 def load_contingency_table():
     # fobj=open(filepath+ "test_standard_drug_outcome_contingency_table.tsv")
-    fobj = open(filepath + "standard_drug_outcome_contingency_table.tsv","r" ,encoding='utf-8')
+    fobj = open(filepath + "standard_drug_outcome_contingency_table.tsv", "r", encoding='utf-8')
 
     for line in fobj:
         splitted = line.split('\t')
@@ -320,43 +330,43 @@ def load_contingency_table():
         #        print(splitted)
         drug_concept_id = splitted[0]
         outcome_concept_id = splitted[1]
-        if drug_concept_id=='766814' and outcome_concept_id=='37520987':
+        if drug_concept_id == '766814' and outcome_concept_id == '37520987':
             print('huu')
         count_a = splitted[2]
         count_b = splitted[3]
         count_c = splitted[4]
         if drug_concept_id == '800878':
-            if count_c=='':
+            if count_c == '':
                 print(outcome_concept_id)
         count_d = splitted[5].replace('\n', '')
 
         dict_edge[(drug_concept_id, outcome_concept_id)].set_contingence_table(count_a, count_b, count_c, count_d)
 
 
+'''
+generate tsv files in form to use the neo4j-shell and generate cypher file
+'''
 
-'''
-generate csv files in form to use the neo4j-shell and generate cypher file
-'''
 
 def create_csv_and_cypher_file_neo4j():
     # cypher file to integrate aeolus into Neo4j
-    cypher_file=open('output/cypher.cypher','w', encoding='utf-8')
+    cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
 
     print('drug Create')
-    print (datetime.datetime.utcnow())
-    file_name_outcome='output/outcome.csv'
+    print(datetime.datetime.now())
+    file_name_outcome = 'output/outcome.tsv'
     # f = open(file_name_outcome, 'w', newline='', encoding='utf-8')
     f = open(file_name_outcome, 'w', encoding='utf-8')
 
     # add cypher wuery to cypher file to integrate outcome
-    cypher_outcome='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/aeolus/'''+file_name_outcome+'''" As line Create (:Aeolus_Outcome{outcome_concept_id:line.outcome_concept_id , concept_code: line.concept_code,  name: line.name, snomed_outcome_concept_id: line.snomed_outcome_concept_id, vocabulary_id: line.vocabulary_id });\n'''
+    cypher_outcome = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/aeolus/''' + file_name_outcome + '''" As line FIELDTERMINATOR '\\t' Create (:Aeolus_Outcome{outcome_concept_id:line.outcome_concept_id , concept_code: line.concept_code,  name: line.name, snomed_outcome_concept_id: line.snomed_outcome_concept_id, vocabulary_id: line.vocabulary_id });\n'''
     cypher_file.write(cypher_outcome)
     cypher_file.write(':begin \n')
     cypher_file.write('Create Constraint On (node:Aeolus_Outcome) Assert node.outcome_concept_id Is Unique; \n')
     cypher_file.write(':commit \n Call db.awaitIndexes(300) ; \n ')
-    # csv file for outcome
+    # tsv file for outcome
     try:
-        writer = csv.writer(f, quoting=csv.QUOTE_NONNUMERIC)
+        writer = csv.writer(f, delimiter='\t', quoting=csv.QUOTE_NONNUMERIC)
         writer.writerow(('outcome_concept_id', 'concept_code', 'name', 'snomed_outcome_concept_id',
                          'vocabulary_id'))
         for key, value in dict_outcomes.items():
@@ -372,21 +382,21 @@ def create_csv_and_cypher_file_neo4j():
         f.close()
 
     print('drug Create')
-    print (datetime.datetime.utcnow())
-    file_name_drug='output/drug.csv'
+    print(datetime.datetime.now())
+    file_name_drug = 'output/drug.tsv'
     f = open(file_name_drug, 'w', encoding='utf-8')
 
     # add cypher query to cypher file for integration of drugs
     # add cypher wuery to cypher file to integrate outcome
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/aeolus/''' + file_name_drug + '''" As line Create (:Aeolus_Drug{drug_concept_id: line.drug_concept_id, concept_code: line.concept_code, name: line.name, vocabulary_id: line.vocabulary_id });\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/aeolus/''' + file_name_drug + '''" As line FIELDTERMINATOR '\\t' Create (:Aeolus_Drug{drug_concept_id: line.drug_concept_id, concept_code: line.concept_code, name: line.name, vocabulary_id: line.vocabulary_id });\n'''
     cypher_file.write(query)
     cypher_file.write(' :begin \n')
     cypher_file.write('Create Constraint On (node:Aeolus_Drug) Assert node.drug_concept_id Is Unique; \n')
     cypher_file.write(':commit \n Call db.awaitIndexes(300) ; \n ')
 
-    # csv file for drugs
+    # tsv file for drugs
     try:
-        writer = csv.writer(f, quoting=csv.QUOTE_NONNUMERIC)
+        writer = csv.writer(f, delimiter='\t', quoting=csv.QUOTE_NONNUMERIC)
         writer.writerow(('drug_concept_id', 'concept_code', 'name', 'vocabulary_id'))
 
         for key, value in dict_drugs.items():
@@ -395,19 +405,19 @@ def create_csv_and_cypher_file_neo4j():
         f.close()
 
     print('rel Create')
-    print (datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
-    # csv for relationships
-    file_name_drug_outcome='output/drug_outcome_relation.csv'
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/aeolus/''' + file_name_drug_outcome + '''" As line Match (n1:Aeolus_Drug {drug_concept_id: line.drug_id}), (n2:Aeolus_Outcome {outcome_concept_id: line.adr_id}) Create (n1)-[:Causes{countA: line.countA , countB: line.countB , countC: line.countC , countD: line.countD, drug_outcome_pair_count: line.drug_outcome_pair_count, prr: line.prr, prr_95_percent_upper_confidence_limit: line.prr_95_percent_upper_confidence_limit , prr_95_percent_lower_confidence_limit: line.prr_95_percent_lower_confidence_limit , ror: line.ror , ror_95_percent_upper_confidence_limit: line.ror_95_percent_upper_confidence_limit , ror_95_percent_lower_confidence_limit: line.ror_95_percent_lower_confidence_limit}]->(n2); \n'''
+    # tsv for relationships
+    file_name_drug_outcome = 'output/drug_outcome_relation.tsv'
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/aeolus/''' + file_name_drug_outcome + '''" As line FIELDTERMINATOR '\\t' Match (n1:Aeolus_Drug {drug_concept_id: line.drug_id}), (n2:Aeolus_Outcome {outcome_concept_id: line.adr_id}) Create (n1)-[:Causes{countA: line.countA , countB: line.countB , countC: line.countC , countD: line.countD, drug_outcome_pair_count: line.drug_outcome_pair_count, prr: line.prr, prr_95_percent_upper_confidence_limit: line.prr_95_percent_upper_confidence_limit , prr_95_percent_lower_confidence_limit: line.prr_95_percent_lower_confidence_limit , ror: line.ror , ror_95_percent_upper_confidence_limit: line.ror_95_percent_upper_confidence_limit , ror_95_percent_lower_confidence_limit: line.ror_95_percent_lower_confidence_limit}]->(n2); \n'''
     cypher_file.write(query)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/aeolus/output/indications.csv" As line Match (n1:Aeolus_Drug {drug_concept_id: line.drug_concept_id}), (n2:Aeolus_Outcome {outcome_concept_id: line.indication_concept_id}) Create (n1)-[:Indicates]->(n2); \n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/aeolus/output/indications.tsv" As line FIELDTERMINATOR '\\t' Match (n1:Aeolus_Drug {drug_concept_id: line.drug_concept_id}), (n2:Aeolus_Outcome {outcome_concept_id: line.indication_concept_id}) Create (n1)-[:Indicates]->(n2); \n'''
     cypher_file.write(query)
 
     f = open(file_name_drug_outcome, 'w', encoding='utf-8')
     try:
-        writer = csv.writer(f, quoting=csv.QUOTE_NONNUMERIC)
+        writer = csv.writer(f, quoting=csv.QUOTE_NONNUMERIC, delimiter='\t')
         writer.writerow(('drug_id', 'countA', 'countB', 'countC', 'countD', 'drug_outcome_pair_count',
                          'prr', 'prr_95_percent_upper_confidence_limit', 'prr_95_percent_lower_confidence_limit', 'ror',
                          'ror_95_percent_upper_confidence_limit', 'ror_95_percent_lower_confidence_limit',
@@ -424,11 +434,10 @@ def create_csv_and_cypher_file_neo4j():
         f.close()
 
     print('end')
-    print (datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 def main():
-
     print('start load in case drug ')
     load_standard_case_drug()
 
@@ -436,22 +445,22 @@ def main():
     load_standard_case_indication()
 
     print('start load in concept ')
-    print (datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     load_concept()
 
     print("start drug outcome statistic ")
-    print (datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     load_drug_outcome_statistic()
 
     print("start drug outcome contigency table")
-    print (datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     load_contingency_table()
 
-    print('create csv and cypher file to integrate aeolus int neo4j')
-    print (datetime.datetime.utcnow())
+    print('create tsv and cypher file to integrate aeolus int neo4j')
+    print(datetime.datetime.now())
     create_csv_and_cypher_file_neo4j()
 
 

@@ -186,37 +186,37 @@ def main():
     # list from  the other with to the specific node  (rela_type,dict_rela,node_labels,dict_node)
     list_other_to_node = []
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('connection to db')
     database_connection()
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('add resources to merged node')
 
     merge_resource_to_node(old_id, label, into)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('generate dictionary for labels with unique property ')
 
     generate_dictionary_for_labels()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('get all information for the node that is merged into another node ')
 
     get_rela_info_and_add_cypher_queries(old_id, label, into)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('delete merged node')
 
     # delete_merged_node('DB13390', 'Compound')
@@ -224,7 +224,7 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

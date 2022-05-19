@@ -8,19 +8,6 @@ path_to_project=$2
 
 echo $path_to_project
 
-#generate cypher file for adding things to database
-echo "" > cypher_general.cypher
-
-
-
-cd do
-now=$(date +"%F %T")
-echo "Current time: $now"
-echo do
-./script_do.sh $path_neo4j $path_to_project > output_script.txt
-
-
-cd ..
 
 
 cd monDO
@@ -32,6 +19,31 @@ echo 'change disease identifier to monDO identifier'
 
 
 cd ..
+
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo extract disease info before do
+
+# $path_neo4j/cypher-shell -u neo4j -p test -f cypher_export_disease_before_do.cypher 
+
+
+cd do
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo do
+
+./script_do.sh $path_neo4j $path_to_project > output_script.txt
+
+
+cd ..
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo extract disease info after do
+
+# $path_neo4j/cypher-shell -u neo4j -p test -f cypher_export_disease_after_do.cypher 
+
 
 cd ncbi_gene
 now=$(date +"%F %T")
@@ -54,14 +66,7 @@ echo OMIM
 
 ./script_omim.sh $path_neo4j $path_to_project > output_script.txt
 
-cd ..
 
-cd go
-now=$(date +"%F %T")
-echo "Current time: $now"
-echo GO
-
-./go_integration.sh $path_neo4j $path_to_project > output_script.txt
 
 cd ..
 
@@ -87,21 +92,13 @@ cd ..
 cd go
 now=$(date +"%F %T")
 echo "Current time: $now"
-echo GO protein and relationships 
+echo GO
 
-./go_protein_and_edges_integration.sh $path_neo4j $path_to_project > output_script.txt
+./go_integration.sh $path_neo4j $path_to_project > output_script.txt
+
 
 cd ..
 
-
-cd uniprot
-now=$(date +"%F %T")
-echo "Current time: $now"
-echo 'integrat uniprot proteins-go rela'
-
-./integration_protein_go_from_uniprot.sh $path_neo4j $path_to_project > output_mapping_and_integration_go_edge.txt 
-
-cd ..
 
 cd iid
 now=$(date +"%F %T")
@@ -126,7 +123,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo hmdb protein, go, metabolite
 
-#./script_hmdb_mapping_and_merging.sh $path_neo4j $path_to_project > output_script_part_1.txt
+# ./script_hmdb_mapping_and_merging.sh $path_neo4j $path_to_project > output_script_part_1.txt
 
 cd ..
 
@@ -135,7 +132,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo smpdb
 
-#./script_to_mapping_smpdb.sh $path_neo4j $path_to_project > output_script.txt
+# ./script_to_mapping_smpdb.sh $path_neo4j $path_to_project > output_script.txt
 
 cd ..
 
@@ -188,7 +185,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo hmdb pathway, disease
 
-#./script_hmdb_mapping_and_merging_part2.sh $path_neo4j $path_to_project > output_script_part_2.txt
+# ./script_hmdb_mapping_and_merging_part2.sh $path_neo4j $path_to_project > output_script_part_2.txt
 
 cd ..
 
@@ -220,6 +217,15 @@ echo ndf-rt
 cd ..
 
 
+cd DDinter
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo DDinter
+
+# ./script_execute_DDinter.sh $path_neo4j $path_to_project > output_script.txt
+
+cd ..
+
 cd reactome
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -229,14 +235,6 @@ echo reactome drug
 
 cd ..
 
-cd atc
-now=$(date +"%F %T")
-echo "Current time: $now"
-echo 'atc'
-
-./script_atc.sh $path_neo4j/ $path_to_project > output_script.txt
-
-cd ..
 
 cd clinvar
 
@@ -260,6 +258,15 @@ cd drugbank
 
 cd ..
 
+cd atc
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo 'atc'
+
+./script_atc.sh $path_neo4j/ $path_to_project > output_script.txt
+
+cd ..
+
 cd sider
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -274,7 +281,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo DisGeNet
 
-#./script_to_integrate_disgenet.sh $path_neo4j $path_to_project #> output_script.txt
+# ./script_to_integrate_disgenet.sh $path_neo4j $path_to_project > output_script.txt
 
 cd ..
 
@@ -285,6 +292,16 @@ echo Aeolus
 cd aeolus
 
 ./script_aeolus.sh $path_neo4j/ $path_to_project > output_script.txt
+
+cd ..
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo ADReCS-Target  
+
+cd adrecs_target
+
+# ./script_to_integrate_ADReCS_Target.sh $path_neo4j $path_to_project > output_script.txt
 
 cd ..
 
@@ -302,7 +319,7 @@ echo "Current time: $now"
 echo DrugCentral
 cd drugcentral
 
-#./script_to_map_and_integrate_drug_central_information.sh $path_neo4j $path_to_project > output_script.txt
+# ./script_to_map_and_integrate_drug_central_information.sh $path_neo4j $path_to_project > output_script.txt
 
 cd ..
 

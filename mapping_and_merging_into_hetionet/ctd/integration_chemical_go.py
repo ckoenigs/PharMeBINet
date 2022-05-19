@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Sep 15 11:41:20 2017
-
-@author: ckoenigs
-"""
 
 import datetime
 import csv, time, sys
@@ -27,17 +21,17 @@ def create_connection_with_neo4j_mysql():
     # g = Graph("http://bimi:7475/db/data/", bolt=False)
 
 
-# csv files for bp. mf, cc
-bp_file = open('chemical_go/bp.csv', 'w')
-bp_writer = csv.writer(bp_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+# tsv files for bp. mf, cc
+bp_file = open('chemical_go/bp.tsv', 'w')
+bp_writer = csv.writer(bp_file, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 bp_writer.writerow(['ChemicalID', 'GOID', 'targetTotalQty', 'backgroundTotalQty','backgroundMatchQty','correctedPValue','pValue','targetMatchQty','chemicalID'])
 
-mf_file = open('chemical_go/mf.csv', 'w')
-mf_writer = csv.writer(mf_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+mf_file = open('chemical_go/mf.tsv', 'w')
+mf_writer = csv.writer(mf_file, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 mf_writer.writerow(['ChemicalID', 'GOID',  'targetTotalQty', 'backgroundTotalQty','backgroundMatchQty','correctedPValue','pValue','targetMatchQty','chemicalID'])
 
-cc_file = open('chemical_go/cc.csv', 'w')
-cc_writer = csv.writer(cc_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+cc_file = open('chemical_go/cc.tsv', 'w')
+cc_writer = csv.writer(cc_file, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 cc_writer.writerow(['ChemicalID', 'GOID',  'targetTotalQty', 'backgroundTotalQty','backgroundMatchQty','correctedPValue','pValue','targetMatchQty','chemicalID'])
 
 # dictionary with for biological_process, cellular_component, molecular_function the right file
@@ -55,12 +49,12 @@ dict_processe_counter = {
 }
 
 '''
-put the information in the right csv file
+put the information in the right tsv file
 'ChemicalID', 'GOID', 'targetTotalQtys', 'backgroundTotalQtys','backgroundMatchQtys','correctedPValues','pValues','targetMatchQtys','chemicalID'
 '''
 
 
-def add_information_into_te_different_csv_files(chemical_id, go_id, information, csvfile):
+def add_information_into_te_different_tsv_files(chemical_id, go_id, information, csvfile):
     correctedPValues = list(information[0])
     targetTotalQtys = list(information[1])
     backgroundMatchQtys = list(information[2])
@@ -83,7 +77,7 @@ def add_information_into_te_different_csv_files(chemical_id, go_id, information,
 dict_durgbank_drugs={}
 
 '''
-get all relationships between gene and pathway, take the hetionet identifier an save all important information in a csv
+get all relationships between gene and pathway, take the hetionet identifier an save all important information in a tsv
 also generate a cypher file to integrate this information 
 '''
 
@@ -91,15 +85,15 @@ also generate a cypher file to integrate this information
 def take_all_relationships_of_gene_pathway():
     # generate cypher file
     cypherfile = open('chemical_go/cypher_bp.cypher', 'w')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Documents/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/chemical_go/bp.csv" As line Match (n:Chemical{identifier:line.ChemicalID}), (b:BiologicalProcess{identifier:line.GOID}) Merge (n)-[r:ASSOCIATES_CHaBP]->(b) On Create Set r.hetionet='no', r.targetTotalQty=split(line.targetTotalQty, '|'), r.backgroundTotalQty=split(line.backgroundTotalQty,'|'), r.backgroundMatchQty=split(line.backgroundMatchQty,'|'), r.correctedPValue=split(line.correctedPValue,'|'), r.pValue=split(line.pValue,'|'), r.targetMatchQty=split(line.targetMatchQty,'|'), r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=chem&acc="+line.ChemicalID, r.source="CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2021 NC State University. All rights reserved.", r.unbiased=false On Match SET r.targetTotalQty=split(line.targetTotalQty, '|'), r.backgroundTotalQty=split(line.backgroundTotalQty,'|'), r.backgroundMatchQty=split(line.backgroundMatchQty,'|'), r.correctedPValue=split(line.correctedPValue,'|'), r.pValue=split(line.pValue,'|'), r.targetMatchQty=split(line.targetMatchQty,'|'), r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=chem&acc="+line.ChemicalID;\n '''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/ctd/chemical_go/bp.tsv" As line  FIELDTERMINATOR '\\t' Match (n:Chemical{identifier:line.ChemicalID}), (b:BiologicalProcess{identifier:line.GOID}) Merge (n)-[r:ASSOCIATES_CHaBP]->(b) On Create Set  r.targetTotalQty=split(line.targetTotalQty, '|'), r.backgroundTotalQty=split(line.backgroundTotalQty,'|'), r.backgroundMatchQty=split(line.backgroundMatchQty,'|'), r.correctedPValue=split(line.correctedPValue,'|'), r.pValue=split(line.pValue,'|'), r.targetMatchQty=split(line.targetMatchQty,'|'), r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=chem&acc="+line.ChemicalID, r.source="CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2021 NC State University. All rights reserved.", r.unbiased=false On Match SET r.targetTotalQty=split(line.targetTotalQty, '|'), r.backgroundTotalQty=split(line.backgroundTotalQty,'|'), r.backgroundMatchQty=split(line.backgroundMatchQty,'|'), r.correctedPValue=split(line.correctedPValue,'|'), r.pValue=split(line.pValue,'|'), r.targetMatchQty=split(line.targetMatchQty,'|'), r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=chem&acc="+line.ChemicalID;\n '''
     cypherfile.write(query)
     cypherfile.close()
     cypherfile = open('chemical_go/cypher_mf.cypher', 'w')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Documents/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/chemical_go/mf.csv" As line Match (n:Chemical{identifier:line.ChemicalID}), (b:MolecularFunction{identifier:line.GOID}) Merge (n)-[r:ASSOCIATES_CHaMF]->(b) On Create Set r.hetionet='no', r.targetTotalQty=split(line.targetTotalQty, '|'), r.backgroundTotalQty=split(line.backgroundTotalQty,'|'), r.backgroundMatchQty=split(line.backgroundMatchQty,'|'), r.correctedPValue=split(line.correctedPValue,'|'), r.pValue=split(line.pValue,'|'), r.targetMatchQty=split(line.targetMatchQty,'|'), r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=chem&acc="+line.ChemicalID, r.source="CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2021 NC State University. All rights reserved.", r.unbiased=false On Match SET r.targetTotalQty=split(line.targetTotalQty, '|'), r.backgroundTotalQty=split(line.backgroundTotalQty,'|'), r.backgroundMatchQty=split(line.backgroundMatchQty,'|'), r.correctedPValue=split(line.correctedPValue,'|'), r.pValue=split(line.pValue,'|'), r.targetMatchQty=split(line.targetMatchQty,'|'), r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=chem&acc="+line.ChemicalID;\n '''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/ctd/chemical_go/mf.tsv" As line  FIELDTERMINATOR '\\t' Match (n:Chemical{identifier:line.ChemicalID}), (b:MolecularFunction{identifier:line.GOID}) Merge (n)-[r:ASSOCIATES_CHaMF]->(b) On Create Set  r.targetTotalQty=split(line.targetTotalQty, '|'), r.backgroundTotalQty=split(line.backgroundTotalQty,'|'), r.backgroundMatchQty=split(line.backgroundMatchQty,'|'), r.correctedPValue=split(line.correctedPValue,'|'), r.pValue=split(line.pValue,'|'), r.targetMatchQty=split(line.targetMatchQty,'|'), r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=chem&acc="+line.ChemicalID, r.source="CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2021 NC State University. All rights reserved.", r.unbiased=false On Match SET r.targetTotalQty=split(line.targetTotalQty, '|'), r.backgroundTotalQty=split(line.backgroundTotalQty,'|'), r.backgroundMatchQty=split(line.backgroundMatchQty,'|'), r.correctedPValue=split(line.correctedPValue,'|'), r.pValue=split(line.pValue,'|'), r.targetMatchQty=split(line.targetMatchQty,'|'), r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=chem&acc="+line.ChemicalID;\n '''
     cypherfile.write(query)
     cypherfile.close()
     cypherfile = open('chemical_go/cypher_cc.cypher', 'w')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Documents/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/chemical_go/cc.csv" As line Match (n:Chemical{identifier:line.ChemicalID}), (b:CellularComponent{identifier:line.GOID}) Merge (n)-[r:ASSOCIATES_CHaCC]->(b) On Create Set r.hetionet='no', r.targetTotalQty=split(line.targetTotalQty, '|'), r.backgroundTotalQty=split(line.backgroundTotalQty,'|'), r.backgroundMatchQty=split(line.backgroundMatchQty,'|'), r.correctedPValue=split(line.correctedPValue,'|'), r.pValue=split(line.pValue,'|'), r.targetMatchQty=split(line.targetMatchQty,'|'), r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=chem&acc="+line.ChemicalID, r.source="CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2021 NC State University. All rights reserved.", r.unbiased=false On Match SET r.targetTotalQty=split(line.targetTotalQty, '|'), r.backgroundTotalQty=split(line.backgroundTotalQty,'|'), r.backgroundMatchQty=split(line.backgroundMatchQty,'|'), r.correctedPValue=split(line.correctedPValue,'|'), r.pValue=split(line.pValue,'|'), r.targetMatchQty=split(line.targetMatchQty,'|'), r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=chem&acc="+line.ChemicalID;\n '''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/ctd/chemical_go/cc.tsv" As line  FIELDTERMINATOR '\\t' Match (n:Chemical{identifier:line.ChemicalID}), (b:CellularComponent{identifier:line.GOID}) Merge (n)-[r:ASSOCIATES_CHaCC]->(b) On Create Set  r.targetTotalQty=split(line.targetTotalQty, '|'), r.backgroundTotalQty=split(line.backgroundTotalQty,'|'), r.backgroundMatchQty=split(line.backgroundMatchQty,'|'), r.correctedPValue=split(line.correctedPValue,'|'), r.pValue=split(line.pValue,'|'), r.targetMatchQty=split(line.targetMatchQty,'|'), r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=chem&acc="+line.ChemicalID, r.source="CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2021 NC State University. All rights reserved.", r.unbiased=false On Match SET r.targetTotalQty=split(line.targetTotalQty, '|'), r.backgroundTotalQty=split(line.backgroundTotalQty,'|'), r.backgroundMatchQty=split(line.backgroundMatchQty,'|'), r.correctedPValue=split(line.correctedPValue,'|'), r.pValue=split(line.pValue,'|'), r.targetMatchQty=split(line.targetMatchQty,'|'), r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=chem&acc="+line.ChemicalID;\n '''
     cypherfile.write(query)
     cypherfile.close()
 
@@ -119,7 +113,7 @@ def take_all_relationships_of_gene_pathway():
     list_durgbank_mesh = []
     list_mesh = []
 
-    #dictionary of all drugbank id go id ppair to avoid multiple entries in the csv
+    #dictionary of all drugbank id go id ppair to avoid multiple entries in the tsv
     dict_drugbank_id_go_id={}
 
 
@@ -301,7 +295,7 @@ def take_all_relationships_of_gene_pathway():
                 start = time.time()
                 print('number of chemicals:'+str(counter_of_used_chemical))
                 if counter % 1000000:
-                    print(datetime.datetime.utcnow())
+                    print(datetime.datetime.now())
 
         print('number of relationships:' + str(counter))
         time_measurement = time.time() - start
@@ -329,7 +323,7 @@ def take_all_relationships_of_gene_pathway():
                     dict_rela_ontology[ontology]+=1
                 else:
                     dict_rela_ontology[ontology]=1
-                add_information_into_te_different_csv_files(chemical_id,go_id,information,dict_processe[ontology])
+                add_information_into_te_different_tsv_files(chemical_id,go_id,information,dict_processe[ontology])
 
         print('new relas:'+str(counter_rela))
 
@@ -361,7 +355,13 @@ def take_all_relationships_of_gene_pathway():
 
 
 def main():
-    print (datetime.datetime.utcnow())
+    global path_of_directory
+    if len(sys.argv) > 1:
+        path_of_directory = sys.argv[1]
+    else:
+        sys.exit('need a path')
+
+    print (datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j_mysql()
@@ -369,15 +369,15 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
-    print('Take all chemical-go relationships and generate csv and cypher file')
+    print (datetime.datetime.now())
+    print('Take all chemical-go relationships and generate tsv and cypher file')
 
     take_all_relationships_of_gene_pathway()
 
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
 
 
 if __name__ == "__main__":

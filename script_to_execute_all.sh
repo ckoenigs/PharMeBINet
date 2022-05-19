@@ -39,7 +39,7 @@ $path_neo4j/neo4j stop
 
 sleep 120
 
-# cp -r /mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/neo4j_databases/hetionet /mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/neo4j_databases/inte.db
+cp -r /mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/neo4j_databases/hetionet /mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/neo4j_databases/inte.db
 
 $path_neo4j/neo4j restart
 
@@ -56,9 +56,7 @@ cd mapping_and_merging_into_hetionet
 cd ..
 
 
-now=$(date +"%F %T")
-echo "Current time: $now"
-#exit 1
+# exit 1
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo cp database
@@ -67,6 +65,12 @@ sleep 120
 $path_neo4j/neo4j stop
 
 sleep 180
+
+if [ -d "/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/neo4j_databases/withsource" ]; then 
+    rm -r /mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/neo4j_databases/withsource
+
+fi
+
 
 cp -r /mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/neo4j_databases/hetionet /mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/neo4j_databases/withsource
 

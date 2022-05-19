@@ -25,7 +25,7 @@ def load_pharmgkb_in(label, directory):
     :return:
     """
 
-    # csv_file
+    # tsv_file
     file_name = directory + '/integrate_' + label.split('_')[1] + '.tsv'
     file = open(file_name, 'w', encoding='utf-8')
     csv_writer = csv.writer(file, delimiter='\t')
@@ -61,7 +61,7 @@ def generate_cypher_file(file_name):
     :param label: string
     :return:
     """
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/pharmGKB/%s" As line  FIELDTERMINATOR '\\t'  MATCH (n:Variant{identifier:line.variant_id}), (c:Gene{identifier:line.gene_id}) Merge (c)-[r:HAS_GhV]->(n) On Create Set r.source="PharmGKB", r.resource=["PharmGKB"], r.pharmgkb="yes" , r.license="%s" On Match Set r.resource=r.resource + "PharmGKB", r.pharmgkb="yes"; \n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/pharmGKB/%s" As line  FIELDTERMINATOR '\\t'  MATCH (n:Variant{identifier:line.variant_id}), (c:Gene{identifier:line.gene_id}) Merge (c)-[r:HAS_GhV]->(n) On Create Set r.source="PharmGKB", r.resource=["PharmGKB"], r.pharmgkb="yes" , r.license="%s" On Match Set r.resource=r.resource + "PharmGKB", r.pharmgkb="yes"; \n'''
     query = query % (file_name, license)
     cypher_file.write(query)
 
@@ -74,7 +74,7 @@ def main():
     else:
         sys.exit('need a path and license')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j')
 
     create_connection_with_neo4j()
@@ -83,7 +83,7 @@ def main():
         print(
             '###########################################################################################################################')
 
-        print(datetime.datetime.utcnow())
+        print(datetime.datetime.now())
         print('Load in %s from pharmgb in' % (label))
 
         load_pharmgkb_in(label, 'variant_gene')
@@ -91,7 +91,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

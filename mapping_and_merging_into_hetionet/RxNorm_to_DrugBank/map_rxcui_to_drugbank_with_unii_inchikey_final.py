@@ -17,16 +17,16 @@ dict_unii_to_rxcui = {}
 go through the file new_rxcui_uniis_inchkeys.tsv and add the information to the different dictionaries
 properties:
     0:rxcui
-    1: uniis seperated with |
-    2: inchikeys seperated with |
+    1: uniis separated with |
+    2: inchikeys separated with |
 '''
 
 
 def load_all_inchikey_and_rxnorm_in_dict():
-    f = open('results/new_rxcui_uniis_inchkeys.tsv', 'r')
+    f = open('results/new_rxcui_uniis_inchkeys.tsv', 'r',encoding='utf-8')
     csv_reader=csv.DictReader(f,delimiter='\t')
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     i = 0
     for line in csv_reader:
         rxcui = line['rxcui']
@@ -48,7 +48,7 @@ def load_all_inchikey_and_rxnorm_in_dict():
     print('number of unii:' + str(len(dict_unii_to_rxcui)))
 
 
-print (datetime.datetime.utcnow())
+print (datetime.datetime.now())
 
 # dictionary rxnorm to drugbank id
 dict_rxnorm_to_drugbank_id = {}
@@ -62,7 +62,7 @@ properties:
 
 
 def map_with_inchikeys_to_drugbank():
-    f = open('results/map_unii_to_drugbank_id_and_inchikey.tsv', 'r')
+    f = open('results/map_unii_to_drugbank_id_and_inchikey.tsv', 'r', encoding='utf-8')
     csv_reader=csv.DictReader(f, delimiter='\t')
     i = 0
     count_map_with_unii = 0
@@ -107,7 +107,7 @@ generate file rxnorm to drugbank
 
 
 def generate_file_rxnorm_to_drugbank():
-    f = open('results/map_rxnorm_to_drugbank_with_use_of_unii_and_inchikey.tsv', 'w')
+    f = open('results/map_rxnorm_to_drugbank_with_use_of_unii_and_inchikey.tsv', 'w', encoding='utf-8')
     csv_writer=csv.writer(f, delimiter='\t')
     csv_writer.writerow(['rxcui','drugbank_ids'])
     print(len(dict_rxnorm_to_drugbank_id))
@@ -119,7 +119,7 @@ def generate_file_rxnorm_to_drugbank():
 
 
 def main():
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     print('load all information over rxcui, unii and inchikey in a dictionary')
 
     load_all_inchikey_and_rxnorm_in_dict()
@@ -127,7 +127,7 @@ def main():
     print(
     '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     print('Map with inchikey rxnorm to drugbank')
 
     map_with_inchikeys_to_drugbank()
@@ -135,14 +135,14 @@ def main():
     print(
     '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     print('generate file map rxcui drugbank')
 
     generate_file_rxnorm_to_drugbank()
 
     print(
     '###########################################################################################################################')
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
 
 
 if __name__ == "__main__":

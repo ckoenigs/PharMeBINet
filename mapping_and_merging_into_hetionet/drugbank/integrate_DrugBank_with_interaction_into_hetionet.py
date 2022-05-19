@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Jan 23 16:07:43 2018
-
-@author: ckoenig
-"""
-
 import datetime
 import sys, csv
 
@@ -53,11 +46,11 @@ neo4j_interaction_rela_label = 'interacts_CiC'
 set_of_list_properties = set([])
 
 '''
-Get all properties of the hetionet compounds and drugbank compounds and use them to generate the csv files
+Get all properties of the hetionet compounds and drugbank compounds and use them to generate the tsv files
 '''
 
 
-def get_properties_and_generate_csv_files():
+def get_properties_and_generate_tsv_files():
     # get the properties of the compounds in hetionet
     query = '''MATCH (p:Compound) WITH DISTINCT keys(p) AS keys
         UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields
@@ -82,21 +75,21 @@ def get_properties_and_generate_csv_files():
     # generate csv files
     global csv_update, csv_new, csv_update_alt
 
-    new_nodes = open('output/new_nodes.csv', 'w', encoding='utf-8')
+    new_nodes = open('output/new_nodes.tsv', 'w', encoding='utf-8')
     csv_new = csv.DictWriter(new_nodes, delimiter='\t', fieldnames=all_properties)
     csv_new.writeheader()
 
     all_properties_and_additional = all_properties[:]
     all_properties_and_additional.append('doid')
 
-    update_nodes = open('output/update_nodes.csv', 'w', encoding='utf-8')
+    update_nodes = open('output/update_nodes.tsv', 'w', encoding='utf-8')
     csv_update = csv.DictWriter(update_nodes, delimiter='\t', fieldnames=all_properties_and_additional)
     csv_update.writeheader()
 
     all_properties_alternative = all_properties[:]
     all_properties_alternative.append('alternative_id')
 
-    update_nodes_alt = open('output/update_nodes_alt.csv', 'w', encoding='utf-8')
+    update_nodes_alt = open('output/update_nodes_alt.tsv', 'w', encoding='utf-8')
     csv_update_alt = csv.DictWriter(update_nodes_alt, delimiter='\t', fieldnames=all_properties_alternative)
     csv_update_alt.writeheader()
 
@@ -165,7 +158,7 @@ def load_in_all_interaction_connection_from_drugbank_in_dict():
     query = query % (neo4j_label_drugbank, neo4j_label_drugbank)
     print(query)
     results = g.run(query)
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     counter_interactions = 0
     counter_multiple = 0
     for compound1_id, description, compound2_id, in results:
@@ -372,7 +365,7 @@ def create_cypher_file():
     # cypher file
     cypher_file = open('compound_interaction/cypher.cypher', 'w', encoding='utf-8')
 
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/drugbank/output/%s.csv" As line Fieldterminator '\\t' Match (a:%s{identifier:line.identifier})'''
+    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/drugbank/output/%s.tsv" As line Fieldterminator '\\t' Match (a:%s{identifier:line.identifier})'''
     query_create = ''
     query_update = ''
     for property in all_properties:
@@ -400,7 +393,7 @@ def create_cypher_file():
 
 
 '''
-Generate the the interaction file and the cypher file to integrate the information from the csv into neo4j
+Generate the the interaction file and the cypher file to integrate the information from the tsv into neo4j
 '''
 
 
@@ -412,11 +405,11 @@ def generation_of_interaction_file():
     one_alternative = 0
     count_no_alternative = 0
 
-    g_csv = open('compound_interaction/interaction.csv', 'w', encoding='utf-8')
-    csv_writer = csv.writer(g_csv, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+    g_csv = open('compound_interaction/interaction.tsv', 'w', encoding='utf-8')
+    csv_writer = csv.writer(g_csv, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     csv_writer.writerow(['db1', 'db2', 'description'])
     cypherfile = open('output/cypher_rela.cypher', 'w', encoding='utf-8')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/drugbank/compound_interaction/interaction.csv" As line Match (c1:Compound{identifier:line.db1}), (c2:Compound{identifier:line.db2}) Create (c1)-[:INTERACTS_CiC{source:"DrugBank", unbiased:false, resource:['DrugBank'], url:line.url, license:'%s', descriptions:split(line.description,'||')}]->(c2);\n '''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/drugbank/compound_interaction/interaction.tsv" As line  Fieldterminator '\\t' Match (c1:Compound{identifier:line.db1}), (c2:Compound{identifier:line.db2}) Create (c1)-[:INTERACTS_CiC{source:"DrugBank", url:"http://www.drugbank.ca/drugs/"+line.db1, unbiased:false, resource:['DrugBank'], drugbank:'yes', url:line.url, license:'%s', descriptions:split(line.description,'||')}]->(c2);\n '''
     query = query % (license)
     cypherfile.write(query)
     cypherfile.close()
@@ -483,7 +476,7 @@ def main():
     path_of_directory = sys.argv[2]
     print(sys.argv)
     print(path_of_directory)
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('create connection with neo4j')
 
     create_connection_with_neo4j()
@@ -491,15 +484,15 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
-    print('load all properties of compound and drugbank compound and use the information to genreate csv files')
+    print(datetime.datetime.now())
+    print('load all properties of compound and drugbank compound and use the information to generate tsv files')
 
-    get_properties_and_generate_csv_files()
+    get_properties_and_generate_tsv_files()
 
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load all hetionet compound in dictionary')
 
     load_all_hetionet_compound_in_dictionary()
@@ -507,7 +500,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     print('load all DrugBank compounds in dictionary')
 
@@ -516,7 +509,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load all connection in dictionary')
 
     load_in_all_interaction_connection_from_drugbank_in_dict()
@@ -524,7 +517,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     print('integrate drugbank into hetionet')
 
@@ -533,7 +526,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     print('create cypher queries and cypher file')
 
@@ -542,7 +535,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     print('generate cypher file for interaction')
 
@@ -551,7 +544,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

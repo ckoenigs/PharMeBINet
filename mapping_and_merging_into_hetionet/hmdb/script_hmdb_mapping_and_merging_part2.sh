@@ -47,6 +47,12 @@ echo prepare edges without any own information between metabolite/protein and pa
 python3 edge_protein_without_infos.py $path_to_project > edge_protein_metabolite_without_info/output.txt
 
 
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo prepare edges without any own information between metabolite and disease/protein
+
+python3 integrated_edge_between_disease_or_protein_and_metabolite.py $path_to_project > metabolite_disease_protein/output.txt
+
 
 now=$(date +"%F %T")
 echo "Current time: $now"

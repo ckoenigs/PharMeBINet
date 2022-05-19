@@ -60,6 +60,9 @@ def add_to_dictionary_with_set(dictionary, key, value):
         dictionary[key] = set()
     dictionary[key].add(value)
 
+# dictionary disease identifier to omim counter
+dict_disease_id_to_omim_count={}
+
 
 '''
 load in all disease from hetionet in a dictionary
@@ -74,11 +77,13 @@ def load_hetionet_labels_in(label, dict_label_id_to_resource, dict_name_to_ids, 
     #  run through results
     for identifier, name, xrefs, synonyms, resource, in results:
         dict_label_id_to_resource[identifier] = set(resource)
+        dict_disease_id_to_omim_count[identifier]=0
         if xrefs:
             for xref in xrefs:
                 if xref.startswith('OMIM:'):
                     omim_id = xref.split(':')[1]
                     add_to_dictionary_with_set(dict_xref_id_to_ids, omim_id, identifier)
+                    dict_disease_id_to_omim_count[identifier]+=1
 
         if name:
             add_to_dictionary_with_set(dict_name_to_ids, name.lower(), identifier)
@@ -102,7 +107,7 @@ generate connection between mapping disease of reactome and hetionet and generat
 
 def create_cypher_file(label, file_name):
     cypher_file = open('output/cypher_part2.cypher', 'a', encoding="utf-8")
-    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/hmdb/%s" As line FIELDTERMINATOR "\\t" MATCH (d:%s{identifier:line.id_own_db}),(c:Disease_HMDB{identifier:line.id}) CREATE (d)-[: equal_to_hmdb_disease{how_mapped:line.how_mapped}]->(c) SET d.resource = split(line.resource, '|'), d.hmdb = "yes";\n'''
+    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/hmdb/%s" As line FIELDTERMINATOR "\\t" MATCH (d:%s{identifier:line.id_own_db}),(c:Disease_HMDB{identifier:line.id}) CREATE (d)-[: equal_to_hmdb_disease{how_mapped:line.how_mapped}]->(c) SET d.resource = split(line.resource, '|'), d.hmdb = "yes";\n'''
     query = query % (path_of_directory, file_name, label)
     cypher_file.write(query)
 
@@ -203,15 +208,27 @@ def load_hmdb_disease_and_map():
         if disease_id in dict_omim_id_to_disease_ids:
             counter_map_with_id += 1
             is_mapped = True
+            mondo_diseases=set()
+            lowest_count=100
             for database_identifier in dict_omim_id_to_disease_ids[disease_id]:
-                csv_writer_disease.writerow([disease_id, database_identifier,
-                                     prepare_resource(dict_disease_id_to_resource[database_identifier]), 'omim id'])
+                omim_ids_of_the_id=dict_disease_id_to_omim_count[database_identifier]
+                if lowest_count> omim_ids_of_the_id:
+                    mondo_diseases = set([database_identifier])
+                    lowest_count=omim_ids_of_the_id
+                elif lowest_count==omim_ids_of_the_id:
+                    mondo_diseases.add(database_identifier)
+
+            for mondo_disease in mondo_diseases:
+                csv_writer_disease.writerow([disease_id, mondo_disease,
+                                             prepare_resource(dict_disease_id_to_resource[mondo_disease]), 'omim_id'])
+            if lowest_count!=1:
+                print(lowest_count, mondo_diseases)
+                print(dict_omim_id_to_disease_ids[disease_id])
+                print(disease_id, disease_name)
 
         if is_mapped:
             continue
 
-        if is_mapped:
-            continue
 
         counter_not_mapped += 1
         csv_not_mapped.writerow([disease_id, disease_name])
@@ -231,7 +248,7 @@ def main():
         path_of_directory = sys.argv[1]
     else:
         sys.exit('need a path hmdb disease')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j()
@@ -239,7 +256,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all disease and symptom from hetionet into a dictionary')
 
     load_hetionet_labels_in('Disease', dict_disease_id_to_resource, dict_disease_name_to_disease_ids,
@@ -251,7 +268,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all hmdb disease from neo4j into a dictionary')
 
     load_hmdb_disease_and_map()
@@ -259,7 +276,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

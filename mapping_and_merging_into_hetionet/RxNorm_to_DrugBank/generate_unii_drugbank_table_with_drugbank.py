@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Sep 27 13:05:35 2017
-
-@author: Cassandra
-"""
 import datetime
 import sys, csv
 sys.path.append("../..")
@@ -27,7 +21,7 @@ generate af file with only drugbank and unii IDs
 
 def generate_tsv_file():
     # generate csv file
-    file_map = open('results/map_unii_to_drugbank_id_and_inchikey.tsv', 'w')
+    file_map = open('results/map_unii_to_drugbank_id_and_inchikey.tsv', 'w', encoding='utf-8')
     csv_writer=csv.writer(file_map,delimiter='\t')
     csv_writer.writerow(['unii','drugbank_id','inchikey'])
 
@@ -46,7 +40,7 @@ def generate_tsv_file():
 
 def main():
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('create connection with neo4j')
 
     create_connection_with_neo4j()
@@ -54,15 +48,15 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
-    print('load all properties of compound and drugbank compound and use the information to genreate csv files')
+    print(datetime.datetime.now())
+    print('load all properties of compound and drugbank compound and use the information to genreate tsv files')
 
     generate_tsv_file()
 
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import csv
 import datetime
 import sys
@@ -57,13 +56,13 @@ dict_activate_name_text_action_name = {
 
 # grouped actions to rela name
 dict_file_action_group_to_edge_name = {
-    'chemical_gene/action_to_rela/metabolic_processing_action.csv': 'metabolic_processing',
-    'chemical_gene/action_to_rela/degradation.csv': 'degeneration',
-    'chemical_gene/action_to_rela/general.csv': 'association',
-    'chemical_gene/action_to_rela/cellular_level.csv': 'cellular_actions',
-    'chemical_gene/action_to_rela/binding.csv': 'binding',
-    'chemical_gene/action_to_rela/protein_level.csv': 'protein_actions',
-    'chemical_gene/action_to_rela/DNA_level.csv': 'actions_on_DNA'
+    'chemical_gene/action_to_rela/metabolic_processing_action.tsv': 'metabolic_processing',
+    'chemical_gene/action_to_rela/degradation.tsv': 'degeneration',
+    'chemical_gene/action_to_rela/general.tsv': 'association',
+    'chemical_gene/action_to_rela/cellular_level.tsv': 'cellular_actions',
+    'chemical_gene/action_to_rela/binding.tsv': 'binding',
+    'chemical_gene/action_to_rela/protein_level.tsv': 'protein_actions',
+    'chemical_gene/action_to_rela/DNA_level.tsv': 'actions_on_DNA'
 }
 
 # rela TSV header
@@ -88,12 +87,12 @@ dict_xtd_rela_to_database_rela_name = {
 }
 
 # prepare the action type to rela name
-files = glob.glob("chemical_gene/action_to_rela/*.csv")
+files = glob.glob("chemical_gene/action_to_rela/*.tsv")
 for file in files:
     if file in dict_file_action_group_to_edge_name:
         rela_name = dict_file_action_group_to_edge_name[file]
         open_file = open(file, 'r')
-        csv_reader = csv.reader(open_file)
+        csv_reader = csv.reader(open_file,delimiter='\t')
         for line in csv_reader:
             action_type = line[0]
             if 'degeneration' == rela_name:
@@ -159,38 +158,36 @@ for label_gene_or_protein in [gene, protein]:
 dict_rela_to_file = {}
 
 '''
-generate csv file with the columns fo a path
+generate tsv file with the columns fo a path
 '''
 
 
 def generate_csv(path):
     csvfile = open(path, 'w', encoding='utf-8')
-    writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+    writer = csv.writer(csvfile, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     writer.writerow(columns)
     return writer
 
 
-# open the cypher file for the last changes
-cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')
 
 # dictionary from rela name to tuples to pubmeds
 dict_rela_name_to_tuples_to_pubmeds=defaultdict(dict)
 
 '''
-generate the path to csv and generate the csv, add csv to dictionary
+generate the path to tsv and generate the tsv, add tsv to dictionary
 also generate cypher query
 '''
 
 
 def path_to_rela_and_add_to_dict(rela, first, second):
     rela_full = rela + '_' + first + '_' + second
-    path = 'chemical_gene/relationships_' + rela_full + '.csv'
+    path = 'chemical_gene/relationships_' + rela_full + '.tsv'
     writer = generate_csv(path)
     dict_rela_to_file[rela_full] = writer
 
     query_to_check_if_this_rela_exist_in_hetionet = '''Match p=(b:Chemical)'''
 
-    query_first_part = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ctd/''' + path + '''" As line Match (b:Chemical{identifier:line.ChemicalID}), '''
+    query_first_part = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/ctd/''' + path + '''" As line  FIELDTERMINATOR '\\t' Match (b:Chemical{identifier:line.ChemicalID}), '''
     if first == 'gene' or second == 'gene':
         query_middle_1 = ''' (n:Gene{identifier:line.GeneID})'''
         part = '''(n:Gene)'''
@@ -213,14 +210,9 @@ def path_to_rela_and_add_to_dict(rela, first, second):
     # however, for the relationships which already exists in the general file new queries are added to say which are not in ctd
     if result:
 
-        query_last_part = ''' On Create Set r.hetionet='no', r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.resource=["CTD"], r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2021 NC State University. All rights reserved.", r.unbiased=toBoolean(line.unbiased), r.interaction_texts=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubMed_ids=split(line.pubMed_ids,'|'), r.interactions_actions=split(line.interactions_actions,'|') On Match SET r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.resource=["CTD","Hetionet"], r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2021 NC State University. All rights reserved.", r.unbiased=toBoolean(line.unbiased), r.interaction_texts=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubMed_ids=split(line.pubMed_ids,'|'), r.interactions_actions=split(line.interactions_actions,'|');\n '''
+        query_last_part = ''' On Create Set  r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.resource=["CTD"], r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2021 NC State University. All rights reserved.", r.unbiased=toBoolean(line.unbiased), r.interaction_texts=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubMed_ids=split(line.pubMed_ids,'|'), r.interactions_actions=split(line.interactions_actions,'|') On Match SET r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.resource=["CTD","Hetionet"], r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2021 NC State University. All rights reserved.", r.unbiased=toBoolean(line.unbiased), r.interaction_texts=split(line.interaction_text,'|'), r.gene_forms=split(line.gene_forms,'|'), r.pubMed_ids=split(line.pubMed_ids,'|'), r.interactions_actions=split(line.interactions_actions,'|');\n '''
         query = query_first_part + query_middle_1 + query_middle_2 + query_last_part
 
-        query_for_update_not_used_relationships = query_to_check_if_this_rela_exist_in_hetionet.split('Return')[
-                                                      0] + ' Where not exists(r.ctd) Set r.ctd="no";\n'
-
-        query_general = ''':begin\n ''' + query_for_update_not_used_relationships + ''':commit\n '''
-        cypher_general.write(query_general)
 
         dict_tuples_to_pubmeds=dict_rela_name_to_tuples_to_pubmeds[rela_full]
         for chemical_id, node_id, pubMed_ids, in results:
@@ -233,7 +225,7 @@ def path_to_rela_and_add_to_dict(rela, first, second):
 
         query_middle_2_parts = query_middle_2.split(']')
 
-        query_last_part = '''{hetionet:'no', ctd:'yes', url_ctd:"http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID ,source:"CTD", resource:["CTD"], license:"© 2002–2012 MDI Biological Laboratory. © 2012–2021 NC State University. All rights reserved.", unbiased:toBoolean(line.unbiased), interaction_texts:split(line.interaction_text,'|'), gene_forms:split(line.gene_forms,'|'), pubMed_ids:split(line.pubMed_ids,'|'), interactions_actions:split(line.interactions_actions,'|')}]'''
+        query_last_part = '''{ ctd:'yes', url_ctd:"http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID ,source:"CTD", resource:["CTD"], license:"© 2002–2012 MDI Biological Laboratory. © 2012–2021 NC State University. All rights reserved.", unbiased:toBoolean(line.unbiased), interaction_texts:split(line.interaction_text,'|'), gene_forms:split(line.gene_forms,'|'), pubMed_ids:split(line.pubMed_ids,'|'), interactions_actions:split(line.interactions_actions,'|')}]'''
         query = query_first_part + query_middle_1 + query_middle_2_parts[0].replace('Merge',
                                                                                     'Create') + query_last_part + \
                 query_middle_2_parts[1] + ';\n'
@@ -247,7 +239,7 @@ generate dictionary for every possible rela combination
 '''
 
 
-def generate_csv_file_for_different_rela_types():
+def generate_tsv_file_for_different_rela_types():
     for rela in set_of_rela_names:
         path_to_rela_and_add_to_dict(rela, chemical, gene)
         path_to_rela_and_add_to_dict(rela, gene, chemical)
@@ -411,7 +403,7 @@ def add_pair_to_dict(chemical_id, drugbank_ids, gene_id, interaction_text, inter
 
 
 '''
-get all relationships between gene and chemical, take the hetionet identifier an save all important information in a csv
+get all relationships between gene and chemical, take the hetionet identifier an save all important information in a tsv
 also generate a cypher file to integrate this information 
 '''
 
@@ -599,13 +591,13 @@ def find_shortest_list_and_indeces(list_of_lists):
 
 
 '''
-now go through all rela types and add every pair to the right csv
+now go through all rela types and add every pair to the right tsv
 but only take the shortest interaction text and the associated intereaction actions and gene forms
 'ChemicalID', 'GeneID', 'interaction_text', 'gene_forms', 'pubMedIds', 'interactions_actions', 'unbiased'
 '''
 
 
-def fill_the_csv_files():
+def fill_the_tsv_files():
     for rela_full, dict_chemical_gene_pair in dict_rela_to_drug_gene_protein_pair.items():
         for (chemical_id, gene_id), list_of_information in dict_chemical_gene_pair.items():
             pubMedIds = list_of_information[2]
@@ -656,7 +648,7 @@ def main():
     else:
         sys.exit('need a path')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j()
@@ -664,31 +656,31 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
-    print(' generate csv and cypher file')
+    print(datetime.datetime.now())
+    print(' generate tsv and cypher file')
 
-    generate_csv_file_for_different_rela_types()
+    generate_tsv_file_for_different_rela_types()
 
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
-    print('Take all gene-chemical relationships and generate csv and cypher file')
+    print(datetime.datetime.now())
+    print('Take all gene-chemical relationships and generate tsv and cypher file')
 
     take_all_relationships_of_gene_chemical()
 
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
-    print('write into csv files')
+    print(datetime.datetime.now())
+    print('write into tsv files')
 
-    fill_the_csv_files()
+    fill_the_tsv_files()
 
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

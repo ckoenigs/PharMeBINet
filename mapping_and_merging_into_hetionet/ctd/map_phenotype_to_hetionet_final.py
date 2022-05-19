@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Aug 29 10:03:28 2017
-
-@author: ckoenigs
-"""
-
 import datetime
 import MySQLdb as mdb
 import sys
@@ -300,7 +293,7 @@ def integrate_phenotype_into_hetionet():
         if first_node == None:
             query = '''Match  (n:CTDphenotype) Where  n.go_id='%s'
             Set n.cui='%s'
-            Create (s:SideEffect{identifier:'%s', umls_label:'', aeolus:'no', sider:'no', url:'%s', hetionet:'no', source:'UMLS via CTD', name:'%s',phenotype:'yes', only_phenotype:'yes', conceptName:'',license:'Copyright 2012-2017 MDI Biological Laboratory & NC State University. All rights reserved.', meddraType:'', resource:['CTD'], ctd:'yes', ctd_url:'http://ctdbase.org/detail.go?type=go&acc=GO:%s'}) 
+            Create (s:SideEffect{identifier:'%s', umls_label:'', url:'%s',  source:'UMLS via CTD', name:'%s',phenotype:'yes', only_phenotype:'yes', conceptName:'',license:'Copyright 2012-2017 MDI Biological Laboratory & NC State University. All rights reserved.', meddraType:'', resource:['CTD'], ctd:'yes', ctd_url:'http://ctdbase.org/detail.go?type=go&acc=GO:%s'}) 
             Create (s)-[:equal_to_SE_CTD]->(n);
             '''
             query = query % (id_without_go, cui, cui, url, dict_CTD_phenotypes[go_id].name, id_without_go)
@@ -317,7 +310,7 @@ def integrate_phenotype_into_hetionet():
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j_mysql()
@@ -325,7 +318,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all side effect from hetionet into a dictionary')
 
     load_side_effects_from_hetionet_in_dict()
@@ -333,7 +326,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all ctd phenotypes from neo4j into a dictionary')
 
     load_phenotpypes_CTD()
@@ -341,7 +334,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Map go id to cui with use of umls')
 
     map_phenotype_to_cui()
@@ -349,7 +342,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Map phenotype to hetionet with use of cui')
 
     map_phenotype_to_hetionet()
@@ -357,7 +350,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('integrate phenotype into hetionet')
 
     integrate_phenotype_into_hetionet()
@@ -365,7 +358,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

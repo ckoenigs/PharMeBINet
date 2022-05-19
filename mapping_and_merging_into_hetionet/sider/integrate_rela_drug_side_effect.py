@@ -14,20 +14,6 @@ def create_connection_with_neo4j():
     g = create_connection_to_databases.database_connection_neo4j()
 
 
-# set of chemical side effect pairs
-set_chemical_side_effect_pair = set()
-
-'''
-load all existing chemical-side effect relas in set
-'''
-
-
-def get_all_chemical_side_effect_pairs():
-    query = '''Match (a:Chemical)-[r]-(b:SideEffect) Return Distinct a.identifier, b.identifier'''
-    results = g.run(query)
-    for chemical_id, side_effect_id, in results:
-        set_chemical_side_effect_pair.add((chemical_id, side_effect_id))
-
 
 '''
 dictionary with compound-Se as key and value is a list of all different information
@@ -96,10 +82,7 @@ def integrate_relationship_from_sider_into_hetionet():
 
     # cypher file
     cypher_file = open('output/cypher_rela.cypher', 'w', encoding='utf-8')
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/sider/output/%s.tsv" As line FIELDTERMINATOR '\t' Match (a:Chemical{identifier:line.chemical_id})'''
-    query = query_start + '''-[r:CAUSES_CHcSE]->(b:SideEffect{identifier:line.se_id}) Set r.upperFrequency=line.upperFrequency, r.placebo=line.placebo, r.avg_frequency=line.avg_frequency, r.lowerFrequency=line.lowerFrequency, r.placeboAvgFrequency= line.placeboAvgFrequency, r.resource=r.resource+"SIDER" , r.placeboLowerFrequency= line.placeboLowerFrequency, r.placeboUpperFrequency= line.placeboUpperFrequency,  r.sider="yes"; \n'''
-    query = query % 'mapped_rela_se'
-    cypher_file.write(query)
+    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/sider/output/%s.tsv" As line FIELDTERMINATOR '\\t' Match (a:Chemical{identifier:line.chemical_id})'''
 
     query = query_start + ''', (b:SideEffect{identifier:line.se_id}) Create (a)-[r:CAUSES_CHcSE{upperFrequency:line.upperFrequency, placebo:line.placebo, avg_frequency:line.avg_frequency, lowerFrequency:line.lowerFrequency, placeboAvgFrequency: line.placeboAvgFrequency, resource:["SIDER"] , placeboLowerFrequency: line.placeboLowerFrequency, placeboUpperFrequency: line.placeboUpperFrequency, url:"http://sideeffects.embl.de/se/"+ line.se_id ,  sider:"yes", license:"CC BY-NC-SA 4.0"}]->(b) ; \n'''
     query = query % 'new_rela_se'
@@ -108,9 +91,6 @@ def integrate_relationship_from_sider_into_hetionet():
 
     header = ['chemical_id', 'se_id', 'upperFrequency', 'placebo', 'avg_frequency', 'lowerFrequency',
               'placeboAvgFrequency', 'placeboLowerFrequency', 'placeboUpperFrequency']
-    file = open('output/mapped_rela_se.tsv', 'w', encoding='utf-8')
-    csv_writer = csv.writer(file, delimiter='\t')
-    csv_writer.writerow(header)
 
     file_new = open('output/new_rela_se.tsv', 'w', encoding='utf-8')
     csv_writer_new = csv.writer(file_new, delimiter='\t')
@@ -192,16 +172,8 @@ def integrate_relationship_from_sider_into_hetionet():
         placeboLowerFreq = str(min(list_of_information[4]))
         placeboUpperFreq = str(max(list_of_information[6]))
 
-        if (chemical_id, umlsId) in set_chemical_side_effect_pair:
-            number_of_update_connection += 1
-            csv_writer.writerow([chemical_id, umlsId, upperFreq, placebo, freq, lowerFreq,
-                                 placeboFreq,
-                                 placeboLowerFreq, placeboUpperFreq])
-        else:
-            number_of_new_connection += 1
-            csv_writer_new.writerow([chemical_id, umlsId, upperFreq, placebo, freq, lowerFreq,
-                                     placeboFreq,
-                                     placeboLowerFreq, placeboUpperFreq])
+        csv_writer_new.writerow(
+            [chemical_id, umlsId, upperFreq, placebo, freq, lowerFreq, placeboFreq, placeboLowerFreq, placeboUpperFreq])
 
     print('Number of possible new connection:' + str(number_of_in_new_connection))
     print('Number of new connection:' + str(number_of_new_connection))
@@ -216,7 +188,7 @@ def main():
     else:
         sys.exit('need a path')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j')
 
     create_connection_with_neo4j()
@@ -224,15 +196,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
-    print('Load all pairs in a set')
-
-    get_all_chemical_side_effect_pairs()
-
-    print(
-        '###########################################################################################################################')
-
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Merge the edge information')
 
     find_all_compound_SE_pairs_of_sider()
@@ -240,14 +204,14 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
-    print('Integrate sider connection into hetionet')
+    print(datetime.datetime.now())
+    print('Integrate sider connection into database')
 
     integrate_relationship_from_sider_into_hetionet()
 
     print(
         '###########################################################################################################################')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

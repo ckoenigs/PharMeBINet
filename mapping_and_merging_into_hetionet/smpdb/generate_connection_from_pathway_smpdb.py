@@ -50,7 +50,7 @@ generate new relationships between pathways and nodes that have edges in smpdb
 
 
 def create_cypher_file( file_path, node_label, rela_name):
-    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/smpdb/%s" As line FIELDTERMINATOR "\\t" MATCH (d:Pathway{identifier:line.pathway_id}),(c:%s{identifier:line.node_id}) CREATE (d)-[: %s{ resource: ['SMPDB'], smpdb: "yes", license:"SMPDB is offered to the public as a freely available resource. Use and re-distribution of the data, in whole or in part, for commercial purposes requires explicit permission of the authors and explicit acknowledgment of the source material (SMPDB) and the original publication", url:"https://smpdb.ca/view/"+line.smpdb_pathway_id, source:"SMPDB"}]->(c);\n'''
+    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/smpdb/%s" As line FIELDTERMINATOR "\\t" MATCH (d:Pathway{identifier:line.pathway_id}),(c:%s{identifier:line.node_id}) CREATE (d)-[: %s{ resource: ['SMPDB'], smpdb: "yes", license:"SMPDB is offered to the public as a freely available resource. Use and re-distribution of the data, in whole or in part, for commercial purposes requires explicit permission of the authors and explicit acknowledgment of the source material (SMPDB) and the original publication", url:"https://smpdb.ca/view/"+line.smpdb_pathway_id, source:"SMPDB"}]->(c);\n'''
     query = query % (path_of_directory, file_path, node_label, rela_name)
     cypher_file.write(query)
 
@@ -62,7 +62,7 @@ def check_relationships_and_generate_file( node_smpdb_label, node_pharmebinet_la
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all relationships from pathway-node and hetionet_nodes into a dictionary')
     # file for mapped or not mapped identifier
     file_name= directory + '/edge_pathway_to_'+node_smpdb_label+'_'+rela_name+'.tsv'
@@ -79,7 +79,7 @@ def check_relationships_and_generate_file( node_smpdb_label, node_pharmebinet_la
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     print('Integrate new relationships and connect them ')
 
@@ -94,7 +94,7 @@ def main():
         sys.exit('need a path smpdb pathway_edge')
 
     global cypher_file
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j()
@@ -118,7 +118,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

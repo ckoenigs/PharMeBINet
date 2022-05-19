@@ -30,9 +30,9 @@ cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
 cypher_file_edge = open('output/cypher_edges.cypher', 'w', encoding='utf-8')
 
 
-def generate_csv_files(keys, file_name):
+def generate_tsv_files(keys, file_name):
     """
-    generate csv file with header and file name
+    generate tsv file with header and file name
     :param keys: string
     :param file_name:  string
     :return: csv writer
@@ -44,7 +44,7 @@ def generate_csv_files(keys, file_name):
     return csv_writer
 
 
-def generate_csv_file_and_prepare_cypher_queries(keys, file_name, label, unique_identifier):
+def generate_tsv_file_and_prepare_cypher_queries(keys, file_name, label, unique_identifier):
     """
     generate node file as csv. Additionaly, generate cpher query to integrate node into neo4j with index.
     :param keys: list strings
@@ -53,7 +53,7 @@ def generate_csv_file_and_prepare_cypher_queries(keys, file_name, label, unique_
     :param unique_identifier: string
     :return: csv writer
     """
-    csv_writer = generate_csv_files(keys, file_name)
+    csv_writer = generate_tsv_files(keys, file_name)
 
     # generate node query and indices
     query = query_start + """ Create (n:%s{ """
@@ -72,16 +72,16 @@ def generate_csv_file_and_prepare_cypher_queries(keys, file_name, label, unique_
     return csv_writer
 
 
-def generate_csv_file_and_prepare_cypher_queries_for_edges(keys, file_name, label1, label2, rela_type):
+def generate_tsv_file_and_prepare_cypher_queries_for_edges(keys, file_name, label1, label2, rela_type):
     """
-    generate node file as csv. Additionaly, generate cpher query to integrate node into neo4j with index.
+    generate node file as tsv. Additionaly, generate cpher query to integrate node into neo4j with index.
     :param keys: list strings
     :param file_name: string
     :param label: string
     :param unique_identifier: string
     :return: csv writer
     """
-    csv_writer = generate_csv_files(keys, file_name)
+    csv_writer = generate_tsv_files(keys, file_name)
 
     # generate node query and indices
     query = query_start + """ Match  (n:%s{ """ + keys[0] + ":line." + keys[
@@ -98,7 +98,7 @@ def generate_csv_file_and_prepare_cypher_queries_for_edges(keys, file_name, labe
 def prepare_gene_info(line, list_of_properties):
     """
     prepare gene dictionary
-    :param line: csv line
+    :param line: tsv line
     :param list_of_properties: list of string
     :return: dictionary
     """
@@ -129,12 +129,12 @@ def check_on_gene_id(gene_id, gene):
 
 
 # query start
-query_start = """Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/import_into_Neo4j/bioGrid/%s" As line FIELDTERMINATOR '\\t'"""
+query_start = """Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%simport_into_Neo4j/bioGrid/%s" As line FIELDTERMINATOR '\\t'"""
 
 
 def generate_files_for_gene_chemical_interaction():
     """
-    Prepare the csv files and the queries for integration for chemical-gene interaction
+    Prepare the tsv files and the queries for integration for chemical-gene interaction
     :return: csv writers
     """
     head_rela_file = ['gene_id', 'chemical_id', 'interaction_type', 'action']
@@ -168,7 +168,7 @@ def generate_files_for_gene_chemical_interaction():
     query = query % (path_of_directory, file_name)
     cypher_file_edge.write(query)
 
-    csv_drug = generate_csv_file_and_prepare_cypher_queries(
+    csv_drug = generate_tsv_file_and_prepare_cypher_queries(
         ['chemical_id', 'name', 'synonyms', 'brands', 'source', 'source_id', 'molecular_formula', 'type', 'atc_codes',
          'cas_nummer', 'inchikey'], 'output/drug.tsv', 'bioGrid_chemical', 'chemical_id')
 
@@ -293,7 +293,7 @@ def load_chemical_interaction_and_seperate_information():
 def prepare_split_line_dictionary(line, header):
     """
     Prepare ontology information of line into a dictionary
-    :param line: csv line
+    :param line: tsv line
     :param header: list of strings
     :return: dictionary
     """
@@ -324,8 +324,8 @@ set_of_ontology_nodes = set([])
 # dictionary category to csv-writer
 dict_category_to_csv_writer = {}
 
-# dictionary category edges to csv file
-dict_category_to_edge_csv_file = {}
+# dictionary category edges to tsv file
+dict_category_to_edge_tsv_file = {}
 
 # dictionary category to dictionary node id to node information
 dict_category_to_dict_node_id_to_properties = {}
@@ -351,7 +351,7 @@ def prepare_ontology_infos(line, interaction_id):
             if category not in set_ontologies_categories:
                 header_ontology = ['id', 'category', 'name']
                 category_replace = category.replace(' ', '_')
-                csv_node = generate_csv_file_and_prepare_cypher_queries(header_ontology,
+                csv_node = generate_tsv_file_and_prepare_cypher_queries(header_ontology,
                                                                         'output/' + category_replace + '.tsv',
                                                                         'bioGrid_' + category_replace, 'id')
                 dict_category_to_csv_writer[category] = csv_node
@@ -359,12 +359,12 @@ def prepare_ontology_infos(line, interaction_id):
                 dict_category_to_dict_node_id_to_properties[category] = {}
 
                 edge_keys = ['interaction_id', 'id', 'type', 'qualifier_names', 'qualifier_ids']
-                csv_edge = generate_csv_file_and_prepare_cypher_queries_for_edges(edge_keys,
+                csv_edge = generate_tsv_file_and_prepare_cypher_queries_for_edges(edge_keys,
                                                                                   'output/interaction_' + category_replace + '.tsv',
                                                                                   'bioGrid_interaction',
                                                                                   'bioGrid_' + category_replace,
                                                                                   'associates')
-                dict_category_to_edge_csv_file[category] = csv_edge
+                dict_category_to_edge_tsv_file[category] = csv_edge
             dict_edge = {
                 'interaction_id': interaction_id,
                 'id': node_id
@@ -373,7 +373,7 @@ def prepare_ontology_infos(line, interaction_id):
                 if prop in dict_node:
                     dict_edge[prop] = dict_node[prop]
                     del dict_node[prop]
-            dict_category_to_edge_csv_file[category].writerow(dict_edge)
+            dict_category_to_edge_tsv_file[category].writerow(dict_edge)
 
             set_of_ontology_nodes = set_of_ontology_nodes.union(dict_node.keys())
             if node_id not in dict_category_to_dict_node_id_to_properties[category]:
@@ -407,7 +407,7 @@ dict_gene_gene_interaction_file_name_to_neo4j_property = {
 def prepare_file_and_query_for_gene_gene_interaction():
     """
     Prepare gene-gene interaction file and the cypher query
-    :return: csv file
+    :return: csv writer
     """
     head_rela_file = ['gene_id1', 'gene_id2']
     head_rela_file.extend(dict_gene_gene_interaction_file_name_to_neo4j_property.values())
@@ -545,13 +545,13 @@ def prepare_gene_file():
     header = ['gene_id', 'gene_id_entrez', 'name', 'gene_symbol', 'synonyms', 'organism_id', 'organism',
               'swissprot_ids',
               'TREMBL_accessions', 'REFSEQ_accessions']
-    csv_gene = generate_csv_file_and_prepare_cypher_queries(header, 'output/gene.tsv', 'bioGrid_gene', 'gene_id')
+    csv_gene = generate_tsv_file_and_prepare_cypher_queries(header, 'output/gene.tsv', 'bioGrid_gene', 'gene_id')
     for gene_id, dict_gene in dict_gene_infos.items():
         csv_gene.writerow(dict_gene)
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     global path_of_directory
     if len(sys.argv) > 1:
@@ -561,28 +561,28 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load chemical-gene interaction')
 
     load_chemical_interaction_and_seperate_information()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load gene-gene interaction')
 
     load_protein_interaction_and_seperate_information()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('generate gene file')
 
     prepare_gene_file()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

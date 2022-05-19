@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Aug 30 11:55:50 2017
-
-@author: ckoenigs
-"""
 
 import datetime
 import sys, time, csv
@@ -636,7 +630,7 @@ def map_rxcui_to_drugbank_with_rxnorm():
 load map rxnorm id to drugbank _id from dhimmel inchikey and use this to map the rest
 properties:
     0:rxcui
-    1:drugbank ids seperated with |
+    1:drugbank ids separated with |
 '''
 
 
@@ -851,9 +845,9 @@ def map_ctd_to_hetionet_compound():
 # dictionary how_mapped mit delete number
 dict_how_mapped_delete_counter = {}
 
-# add the chemicals which are not in compounds in a csv file
-csvfile = io.open('chemical/chemicals.csv', 'w', encoding='utf-8', newline='')
-writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+# add the chemicals which are not in compounds in a tsv file
+csvfile = io.open('chemical/chemicals.tsv', 'w', encoding='utf-8', newline='')
+writer = csv.writer(csvfile, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 writer.writerow(['ChemicalID'])
 
 '''
@@ -868,8 +862,8 @@ def integration_of_ctd_chemicals_into_hetionet_compound():
     counter_illegal_drugbank_ids = 0
 
     # file with all chemical_mapped to compound and used to integrated them into Hetionet
-    csvfile_db = io.open('chemical/chemicals_drugbank.csv', 'w', encoding='utf-8', newline='')
-    writer_compound = csv.writer(csvfile_db, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+    csvfile_db = io.open('chemical/chemicals_drugbank.tsv', 'w', encoding='utf-8', newline='')
+    writer_compound = csv.writer(csvfile_db, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     writer_compound.writerow(
         ['ChemicalID', 'Drugbank_id', 'url', 'string_resource', 'string_drugbank_ids', 'string_xml','how_mapped'])
 
@@ -904,24 +898,19 @@ def integration_of_ctd_chemicals_into_hetionet_compound():
 
 
 '''
-add all not mapped ctd chemicals to csv and then integrate into neo4j as chemicals
+add all not mapped ctd chemicals to tsv and then integrate into neo4j as chemicals
 '''
 def generate_cypher_file():
 
     cypher_file= open('output/cypher.cypher','a',encoding='utf-8')
     cypher_file.write(''':begin\nMatch (n:Compound) Set n:Chemical;\n:Commit\n''')
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/chemical/chemicals_drugbank.csv" As line  MATCH (n:CTD_chemical{chemical_id:line.ChemicalID}), (c:Compound{identifier:line.Drugbank_id}) Set c.ctd="yes", c.ctd_url=line.url, c.resource=split(line.string_resource,'|'), c.xrefs=split(line.string_xml,'|'), n.drugBankIDs=split(line.string_drugbank_ids,'|')  Create (c)-[:equal_chemical_CTD{how_mapped:line.how_mapped}]->(n);\n'''
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''mapping_and_merging_into_hetionet/ctd/chemical/chemicals_drugbank.tsv" As line   FIELDTERMINATOR '\\t' MATCH (n:CTD_chemical{chemical_id:line.ChemicalID}), (c:Compound{identifier:line.Drugbank_id}) Set c.ctd="yes", c.ctd_url=line.url, c.resource=split(line.string_resource,'|'), c.xrefs=split(line.string_xml,'|'), n.drugBankIDs=split(line.string_drugbank_ids,'|')  Create (c)-[:equal_chemical_CTD{how_mapped:line.how_mapped}]->(n);\n'''
     cypher_file.write(query)
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/mapping_and_merging_into_hetionet/ctd/chemical/chemicals.csv" As line MATCH (n:CTD_chemical{chemical_id:line.ChemicalID}) Create (d:Chemical{identifier:line.ChemicalID, parentIDs:n.parentIDs, parentTreeNumbers:n.parentTreeNumbers, treeNumbers:n.treeNumbers, definition:n.definition, synonyms:n.synonyms, name:n.name, cas_number:n.casRN, resource:['CTD'], ctd:'yes', ctd_url:'http://ctdbase.org/detail.go?type=chem&acc='+line.ChemicalID, url:"https://meshb.nlm.nih.gov/record/ui?ui="+line.ChemicalID,  license:"Copyright 2002-2012 MDI Biological Laboratory. All rights reserved. Copyright 2012-2021 NC State University. All rights reserved.", source:"MeSH via CTD" }) With d, n Create (d)-[:equal_to_CTD_chemical]->(n);\n '''
+    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''mapping_and_merging_into_hetionet/ctd/chemical/chemicals.tsv" As line  FIELDTERMINATOR '\\t' MATCH (n:CTD_chemical{chemical_id:line.ChemicalID}) Create (d:Chemical{identifier:line.ChemicalID, parentIDs:n.parentIDs, parentTreeNumbers:n.parentTreeNumbers, treeNumbers:n.treeNumbers, definition:n.definition, synonyms:n.synonyms, name:n.name, cas_number:n.casRN, resource:['CTD'], ctd:'yes', ctd_url:'http://ctdbase.org/detail.go?type=chem&acc='+line.ChemicalID, url:"https://meshb.nlm.nih.gov/record/ui?ui="+line.ChemicalID,  license:"Copyright 2002-2012 MDI Biological Laboratory. All rights reserved. Copyright 2012-2021 NC State University. All rights reserved.", source:"MeSH via CTD" }) With d, n Create (d)-[:equal_to_CTD_chemical]->(n);\n '''
     cypher_file.write(query)
     cypher_file.write(':begin\n Create Constraint On (node:Chemical) Assert node.identifier Is Unique;\n :commit\n')
     cypher_file.close()
 
-    # add query to update disease nodes with do='no'
-    cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')
-    query = ''':begin\n MATCH (n:Chemical) Where not exists(n.ctd) Set n.ctd="no";\n :commit\n '''
-    cypher_general.write(query)
-    cypher_general.close()
 
 # says if chemicals exists or not so need to create chemicals or merge
 exists_chemicals=False
@@ -937,14 +926,14 @@ def main():
         sys.exit('need a path')
 
     global exists_chemicals
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j_mysql()
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     print('Load all compounds from hetionet into a dictionary')
 
     load_compounds_from_hetionet()
@@ -952,7 +941,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     print('Load all mesh drugbank ids from file in dictionary and prepare file')
 
 
@@ -961,7 +950,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     print('Load all drugs from ctd into dictionaries depending on the drugbank id exist or not ')
 
     load_drugs_from_CTD()
@@ -969,17 +958,17 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     print('Map with use of cas')
 
     map_with_cas_number_to_drugbank()
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
 
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     print('Find cuis for the ctd mesh terms ')
 
     find_cui_for_ctd_drugs()
@@ -987,7 +976,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     print('Find drugbank ids with use of the cuis in umls ')
 
     map_cui_to_drugbank_with_umls()
@@ -995,7 +984,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     print('Find rxcuis for the ctd mesh terms  ')
 
     find_rxcui_for_ctd_drugs()
@@ -1003,7 +992,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     print('Find drugbank ids with use of the rxcuis in rxnorm ')
 
     map_rxcui_to_drugbank_with_rxnorm()
@@ -1011,7 +1000,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     print('Find drugbank ids with use of the rxnorm drugbank table which is generated with unii and inchikeys ')
 
     map_use_dhimmel_rxnorm_drugbank_map_unii_inchikey()
@@ -1019,7 +1008,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     print('Find drugbank ids with use of the name mapping')
 
     map_with_name_to_drugbank()
@@ -1027,7 +1016,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     print('Map ctd chemical to hetionet compound ')
 
     map_ctd_to_hetionet_compound()
@@ -1036,7 +1025,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     print('Integrate CTD chemicals into hetionet')
 
     integration_of_ctd_chemicals_into_hetionet_compound()
@@ -1045,7 +1034,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     print('generate cypher file for integration of chemical')
 
     generate_cypher_file()
@@ -1053,7 +1042,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
 
 
 if __name__ == "__main__":

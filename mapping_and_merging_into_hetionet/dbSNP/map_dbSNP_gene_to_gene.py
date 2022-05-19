@@ -35,7 +35,7 @@ cypher_file = open('output_mapping/cypher.cypher', 'a', encoding='utf-8')
 
 def generate_files(path_of_directory):
     """
-    generate cypher file and csv file
+    generate cypher file and tsv file
     :return: csv file
     """
     # file from relationship between gene and variant
@@ -45,7 +45,7 @@ def generate_files(path_of_directory):
     header = ['dbsnp_gene_id', 'gene_id', 'resource']
     csv_mapping.writerow(header)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/dbSNP/%s.tsv" As line FIELDTERMINATOR '\\t' 
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/dbSNP/%s.tsv" As line FIELDTERMINATOR '\\t' 
         Match (n:gene_dbSNP{identifier:line.dbsnp_gene_id}), (v:Gene{identifier:line.gene_id}) Set v.dbsnp="yes", v.resource=split(line.resource,"|") Create (v)-[:equal_to_drugbank_variant]->(n);\n'''
 
     query = query % (path_of_directory, file_name)
@@ -55,7 +55,7 @@ def generate_files(path_of_directory):
 
 
 '''
-Load all dbSNP gene ids  and map them. The integrate them into the right csv, generate the queries
+Load all dbSNP gene ids  and map them. The integrate them into the right tsv, generate the queries
 '''
 
 
@@ -84,35 +84,35 @@ def load_all_dbSnp_gene_and_finish_the_files(csv_mapping):
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     global path_of_directory, license
     if len(sys.argv) < 2:
         sys.exit('need  path to directory gene variant and license')
     path_of_directory = sys.argv[1]
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('connection to db')
 
     create_connection_with_neo4j()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all Gene from database')
 
     load_gene_from_database_and_add_to_dict()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
-    print('Generate cypher and csv file')
+    print(datetime.datetime.now())
+    print('Generate cypher and tsv file')
 
     csv_mapping = generate_files(path_of_directory)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all variation from database')
 
     load_all_dbSnp_gene_and_finish_the_files(csv_mapping)
@@ -120,7 +120,7 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

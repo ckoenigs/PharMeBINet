@@ -51,7 +51,7 @@ def load_protein_from_database_and_add_to_dict():
 
 def generate_files(path_of_directory, label):
     """
-    generate cypher file and csv file
+    generate cypher file and tsv file
     :return: csv file
     """
     # file from relationship between gene and variant
@@ -61,7 +61,7 @@ def generate_files(path_of_directory, label):
     header = ['identifier', 'other_id', 'resource', 'mapped_with']
     csv_mapping.writerow(header)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/hmdb/%s.tsv" As line FIELDTERMINATOR '\\t' 
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/hmdb/%s.tsv" As line FIELDTERMINATOR '\\t' 
         Match (n:Protein_HMDB{identifier:line.identifier}), (v:%s{identifier:line.other_id}) Set v.hmdb='yes', v.resource=split(line.resource,"|") Create (v)-[:equal_to_hmdb_%s{how_mapped:line.mapped_with}]->(n);\n'''
     query = query % (path_of_directory, file_name, label, label.lower())
     cypher_file.write(query)
@@ -76,7 +76,7 @@ def resource(resource):
 
 
 '''
-Load all variation sort the ids into the right csv, generate the queries, and add rela to the rela csv
+Load all variation sort the ids into the right tsv, generate the queries, and add rela to the rela tsv
 '''
 
 
@@ -118,7 +118,7 @@ def load_all_hmdb_protein_and_map(csv_mapping_protein):
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     global path_of_directory, cypher_file
     if len(sys.argv) > 1:
@@ -130,35 +130,35 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('connection to db')
 
     create_connection_with_neo4j()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all Protein from database')
 
     load_protein_from_database_and_add_to_dict()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
-    print('Generate cypher and csv file')
+    print(datetime.datetime.now())
+    print('Generate cypher and tsv file')
 
     csv_mapping_protein = generate_files(path_of_directory, 'Protein')
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all hmdb protein from database')
 
     load_all_hmdb_protein_and_map(csv_mapping_protein)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

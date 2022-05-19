@@ -60,7 +60,7 @@ def generate_csv_file_and_prepare_cypher_queries_edge(file_name, label, rela_typ
 
 
 # query start
-query_start = """Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/import_into_Neo4j/GO/%s" As line FIELDTERMINATOR '\\t'"""
+query_start = """Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%simport_into_Neo4j/GO/%s" As line FIELDTERMINATOR '\\t'"""
 
 dict_evidence_code_to_evidence = {
     # experimental evidence
@@ -127,7 +127,7 @@ dict_label_rela_name_to_dataframe = {}
 def prepare_geo_annotation_file(go_annotation_file_name):
     """
     firs extract and pars the gzip csv file into a pandas dataframe. Add header. Get the label of the other node. Then
-    prepare the node csv by make it identifier unique and write it into  csv and generate cypher query. The prepare
+    prepare the node csv by make it identifier unique and write it into  tsv and generate cypher query. The prepare
     different rela type files.
     :param go_annotation_file_name: string
     :return:
@@ -217,7 +217,7 @@ def generate_edges_files_and_cypher_queries():
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     global path_of_directory
     if len(sys.argv) > 1:
@@ -227,31 +227,31 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load')
 
     for go_annotation_file_name in ['goa_human', 'goa_human_complex', 'goa_human_isoform', 'goa_human_rna']:
-        print(datetime.datetime.utcnow())
+        print(datetime.datetime.now())
         print('load ' + go_annotation_file_name)
         prepare_geo_annotation_file(go_annotation_file_name)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('generate node files and queries')
 
     generate_nodes_files_and_cypher_queries()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('generate edge files and queries')
 
     generate_edges_files_and_cypher_queries()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

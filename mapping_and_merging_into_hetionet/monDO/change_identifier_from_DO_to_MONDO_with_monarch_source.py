@@ -63,16 +63,34 @@ list_of_not_mapped_doids = []
 # mondo properties
 mondo_prop = []
 
+# set of excluded mondo ids which are not human ids
+set_of_non_human_ids = set()
+
+
+def get_all_non_human_ids():
+    """
+    Get all non human disease (MONDO:0005583) nodes and add them to a set
+    :return:
+    """
+    # disease with id MONDO:0005583  is "non-human animal disease" nearly all are only animal disease, but I found out
+    # that the one with DOID are animal disease which a human can also have.
+    query = '''Match p=(n:disease{id:'MONDO:0005583'})<-[:is_a*]-(a:disease)  Where Not ANY(x in a.xrefs Where x starts with 'DOID') Return Distinct a.id '''
+    set_of_non_human_ids.add('MONDO:0005583')
+    results = g.run(query)
+    for identifier, in results:
+        set_of_non_human_ids.add(identifier)
+
+
 # list of excluded properties from mondo
 list_exclude_properties = ['related', 'creation_date', 'created_by', 'seeAlso']
 
 '''
-Get all properties of the mondo disease and create the csv files
+Get all properties of the mondo disease and create the tsv files
 '''
 
 
 def get_mondo_properties_and_generate_csv_files():
-    query = '''MATCH (p:disease) WITH DISTINCT keys(p) AS keys
+    query = '''MATCH (p:disease) Where not exists(p.is_obsolete) WITH DISTINCT keys(p) AS keys
         UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields
         RETURN allfields;'''
     result = g.run(query)
@@ -82,25 +100,25 @@ def get_mondo_properties_and_generate_csv_files():
     # mondo get an additional property
     mondo_prop.append('umls_cuis')
 
-    # generate csv files
-    global csv_new_nodes, csv_map_nodes, csv_rela
-    # csv with new nodes
-    new_node_file = open('output/new_nodes.csv', 'w', encoding='utf-8')
-    csv_new_nodes = csv.DictWriter(new_node_file, delimiter='\t', fieldnames=mondo_prop)
-    csv_new_nodes.writeheader()
+    # generate tsv files
+    global tsv_new_nodes, tsv_map_nodes, tsv_rela
+    # tsv with new nodes
+    new_node_file = open('output/new_nodes.tsv', 'w', encoding='utf-8')
+    tsv_new_nodes = csv.DictWriter(new_node_file, delimiter='\t', fieldnames=mondo_prop)
+    tsv_new_nodes.writeheader()
 
-    # csv with nodes which needs to be updated
-    map_node_file = open('output/map_nodes.csv', 'w', encoding='utf-8')
+    # tsv with nodes which needs to be updated
+    map_node_file = open('output/map_nodes.tsv', 'w', encoding='utf-8')
     mondo_prop_mapped = mondo_prop[:]
     mondo_prop_mapped.append('doid')
     mondo_prop_mapped.append('doids')
-    csv_map_nodes = csv.DictWriter(map_node_file, delimiter='\t', fieldnames=mondo_prop_mapped)
-    csv_map_nodes.writeheader()
+    tsv_map_nodes = csv.DictWriter(map_node_file, delimiter='\t', fieldnames=mondo_prop_mapped)
+    tsv_map_nodes.writeheader()
 
-    # csv with relatioships
-    rela_file = open('output/rela.csv', 'w', encoding='utf-8')
-    csv_rela = csv.writer(rela_file, delimiter='\t')
-    csv_rela.writerow(['id_1', 'id_2'])
+    # tsv with relatioships
+    rela_file = open('output/rela.tsv', 'w', encoding='utf-8')
+    tsv_rela = csv.writer(rela_file, delimiter='\t')
+    tsv_rela.writerow(['id_1', 'id_2'])
 
 
 '''
@@ -134,8 +152,10 @@ def fill_dict_with_external_identifier_to_mondo(xrefs, monDo_id):
         else:
             dict_external_ids_monDO[xrefs] = [monDo_id]
 
+
 # dictionary mondo id to mondo name
-dict_mondo_id_to_name={}
+dict_mondo_id_to_name = {}
+
 
 def add_entry_to_dict(dictionary, key, value):
     """
@@ -146,8 +166,9 @@ def add_entry_to_dict(dictionary, key, value):
     :return:
     """
     if key not in dictionary:
-        dictionary[key]=set()
+        dictionary[key] = set()
     dictionary[key].add(value)
+
 
 '''
 Load MonDO disease in dictionary
@@ -156,16 +177,18 @@ Where n.`http://www.geneontology.org/formats/oboInOwl#id` ='MONDO:0010168'
 
 
 def load_in_all_monDO_in_dictionary():
-    query = ''' MATCH (n:disease)  RETURN n'''
+    query = ''' MATCH (n:disease) Where not exists(n.is_obsolete) RETURN n'''
     results = g.run(query)
     for disease, in results:
-        monDo_id = disease['identifier']
-        name= disease['name'].lower()
-        add_entry_to_dict(dict_mondo_id_to_name,monDo_id,name)
-        synonyms= disease['synonyms']
+        monDo_id = disease['id']
+        if monDo_id in set_of_non_human_ids:
+            continue
+        name = disease['name'].lower()
+        add_entry_to_dict(dict_mondo_id_to_name, monDo_id, name)
+        synonyms = disease['synonyms']
         if synonyms:
             for synonym in synonyms:
-                synonym=synonym.rsplit(' [')[0].lower()
+                synonym = synonym.rsplit(' [')[0].lower()
                 add_entry_to_dict(dict_mondo_id_to_name, monDo_id, synonym)
         disease_info = dict(disease)
         dict_monDO_info[monDo_id] = disease_info
@@ -188,20 +211,35 @@ generate cypher queries to integrate and merge disease nodes and create the subc
 
 
 def generate_cypher_queries():
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/monDO/output/%s.csv" As line FIELDTERMINATOR '\\t' Match (a:disease{identifier:line.identifier}) '''
+    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/monDO/output/%s.tsv" As line FIELDTERMINATOR '\\t' Match (a:disease{id:line.id}) '''
 
     query_end = '''Create (n)-[:equal_to_monDO]->(a); \n'''
     query_update = ''
     query_new = ''
     for property in mondo_prop:
         if property not in list_of_list_prop:
+            if property in ['created_by', 'subsets']:
+                continue
             if property == 'iri':
                 query_new += 'url:line.' + property + ', '
                 query_update += 'n.url=line.' + property + ', '
                 continue
+            if property == 'id':
+                query_new += 'identifier:line.' + property + ', '
+                query_update += 'n.identifier=line.' + property + ', '
+                continue
+            if property == 'def':
+                query_new += 'definition:line.' + property + ', '
+                query_update += 'n.definition=line.' + property + ', '
+                continue
+
             query_new += property + ':line.' + property + ', '
             query_update += 'n.' + property + '=line.' + property + ', '
         else:
+            if property == 'alt_ids':
+                query_new += 'alternative_ids:split(line.' + property + ', "|"), '
+                query_update += 'n.alternative_ids=split(line.' + property + ', "|"), '
+                continue
             query_new += property + ':split(line.' + property + ', "|"), '
             query_update += 'n.' + property + '=split(line.' + property + ', "|"), '
     query_update = query_start + ', (n:Disease{identifier:line.doid}) Set ' + query_update + 'n.mondo="yes", n.license=" CC-BY-SA 3.0", n.resource=n.resource+"MonDO", n.doids=split(line.doids,"|") ' + query_end
@@ -210,29 +248,37 @@ def generate_cypher_queries():
     query_new = query_start + 'Create (n:Disease{' + query_new + 'mondo:"yes", resource:["MonDO"], url:"https://monarchinitiative.org/disease/"+ line.identifier , license:"CC-BY-SA 3.0", source:"MonDO"}) ' + query_end
     query_new = query_new % ('new_nodes')
     cypher_file.write(query_new)
-    query_rela = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/monDO/output/%s.csv" As line FIELDTERMINATOR '\\t' Match (a:Disease{identifier:line.id_1}),(b:Disease{identifier:line.id_2}) Merge (a)-[r:IS_A_DiD]->(b) On CREATE Set r.unbiased=false, r.url="https://monarchinitiative.org/disease/"+ line.id_1,  r.source="Monarch Disease Ontology", r.resource=['MonDO'] , r.mondo='yes', r.license="CC-BY-SA 3.0" On Match Set r.resource=['MonDO'], r.mondo='yes' ;\n'''
+    query_rela = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/monDO/output/%s.tsv" As line FIELDTERMINATOR '\\t' Match (a:Disease{identifier:line.id_1}),(b:Disease{identifier:line.id_2}) Merge (a)-[r:IS_A_DiaD]->(b) On CREATE Set r.unbiased=false, r.url="https://monarchinitiative.org/disease/"+ line.id_1,  r.source="Monarch Disease Ontology", r.resource=['MonDO'] , r.mondo='yes', r.license="CC-BY-SA 3.0" On Match Set r.resource=r.resource+'MonDO', r.mondo='yes' ;\n'''
     query_rela = query_rela % ('rela')
     cypher_file.write(query_rela)
 
     # query to delete disease which are not in Mondo
     query = '''Match (d:Disease) Where not exists(d.mondo) Detach Delete d;\n'''
-    cypher_file.write(query)
-
-    # add the disease ontology property to the nodes without
-    query = '''Match (d:Disease) Where not exists(d.diseaseOntology) Set d.diseaseOntology='no' ;\n'''
-    cypher_file.write(query)
+    cypher_file_end.write(query)
 
     # combin merged id with doids
     query = '''MATCH (n:Disease) Where exists(n.merged_identifier) Set n.doids=n.doids+ n.merged_identifier Remove n.merged_identifier;\n'''
     cypher_file_end.write(query)
 
+
 # #dictionary doid to multiple remove not fitting mondo
 # # manual checked
-dict_doid_to_multi_remove={
-    'DOID:0080626':set(['MONDO:0020489']),
-    'DOID:0111365': set(['MONDO:0006450']),
-    'DOID:0111649': set(['MONDO:0021849']),
-    'DOID:0111564': set(['MONDO:0018052','MONDO:0020306']),
+dict_doid_to_multi_remove = {
+    'DOID:0080626': ['MONDO:0020489'],
+    'DOID:0111365': ['MONDO:0006450'],
+    'DOID:0111649': ['MONDO:0021849'],
+    'DOID:0111564': ['MONDO:0018052', 'MONDO:0020306'],
+    'DOID:0050608': ['MONDO:0012817'],  # map to MONDO:0006094
+    'DOID:0060536': ['MONDO:0100224'],  # map to MONDO:0100133
+    'DOID:0110305': ['MONDO:0018098'],  # map to MONDO:0021018
+    'DOID:1799': ['MONDO:0019954'],  # map to MONDO:0005815
+    'DOID:688': ['MONDO:0005040'],  # map to MONDO:0005564
+    'DOID:707': ['MONDO:0004949'],  # map to MONDO:0004095
+    'DOID:7188': ['MONDO:0005623'],  # map to MONDO:0007699
+    'DOID:9212': ['MONDO:0008251'],  # map to MONDO:0100017
+    'DOID:0080130': ['MONDO:0014959'],  # map to MONDO:0014175
+    'DOID:676': ['MONDO:0005185'],  # map to MONDO:0011429
+
 }
 
 '''
@@ -244,8 +290,8 @@ also check for mapping between do and mondo
 def load_in_all_DO_in_dictionary():
     # file mapped doid but not the same name
     not_direct_name_matching_file = open('output/not_direct_name_matching_file.tsv', 'w', encoding='utf-8')
-    csv_not_direct_name_matching_file = csv.writer(not_direct_name_matching_file, delimiter='\t')
-    csv_not_direct_name_matching_file.writerow(['monDO', 'DOID', 'name monDO', 'name DOID'])
+    tsv_not_direct_name_matching_file = csv.writer(not_direct_name_matching_file, delimiter='\t')
+    tsv_not_direct_name_matching_file.writerow(['monDO', 'DOID', 'name monDO', 'name DOID'])
     counter_name_not_matching = 0
 
     query = ''' MATCH (n:Disease) RETURN n'''
@@ -254,7 +300,7 @@ def load_in_all_DO_in_dictionary():
         doid = disease['identifier']
         # if doid == 'DOID:0060073':
         #     print('ok')
-        name=disease['name'].lower()
+        name = disease['name'].lower()
         dict_DO_to_info[doid] = dict(disease)
         alternative_id = disease['alternative_ids'] if 'alternative_ids' in disease else []
         dict_do_to_alternative_do[doid] = alternative_id
@@ -263,17 +309,19 @@ def load_in_all_DO_in_dictionary():
         dict_DO_to_xref[doid] = xrefs
         if doid in dict_external_ids_monDO:
             if len(dict_external_ids_monDO[doid]) > 1:
-                list_of_name_mapped_mondo_ids=[]
-                for mondo_id in  dict_external_ids_monDO[doid]:
-                    mondo_names=dict_mondo_id_to_name[mondo_id]
+                list_of_name_mapped_mondo_ids = []
+                for mondo_id in dict_external_ids_monDO[doid]:
+                    mondo_names = dict_mondo_id_to_name[mondo_id]
                     for mondo_name in mondo_names:
-                        if mondo_name==name:
+                        if mondo_name == name:
                             list_of_name_mapped_mondo_ids.append(mondo_id)
-                if len(list_of_name_mapped_mondo_ids)==1:
-                    dict_external_ids_monDO[doid]=list_of_name_mapped_mondo_ids
+                if len(list_of_name_mapped_mondo_ids) == 1:
+                    dict_external_ids_monDO[doid] = list_of_name_mapped_mondo_ids
                 else:
-                    if doid  in dict_doid_to_multi_remove:
-                        dict_external_ids_monDO[doid] = list(set(dict_external_ids_monDO[doid]).difference(dict_doid_to_multi_remove[doid]))
+                    if doid in dict_doid_to_multi_remove:
+                        test = list(set(dict_external_ids_monDO[doid]).difference(dict_doid_to_multi_remove[doid]))
+                        dict_external_ids_monDO[doid] = list(
+                            set(dict_external_ids_monDO[doid]).difference(dict_doid_to_multi_remove[doid]))
                 if len(dict_external_ids_monDO[doid]) > 1:
                     print(doid)
                     print(dict_external_ids_monDO[doid])
@@ -288,7 +336,7 @@ def load_in_all_DO_in_dictionary():
                     doid] else ''
                 if monDOname != do_name:
                     counter_name_not_matching += 1
-                    csv_not_direct_name_matching_file.writerow([
+                    tsv_not_direct_name_matching_file.writerow([
                         monDO, doid, monDOname, do_name])
 
                 # fill the dictionary monDo to DO
@@ -321,7 +369,7 @@ def load_in_all_DO_in_dictionary():
                         do_name = dict_DO_to_info[doid]['name'].lower().replace("'", '')
                         if monDOname != do_name:
                             counter_name_not_matching += 1
-                            csv_not_direct_name_matching_file.writerow([
+                            tsv_not_direct_name_matching_file.writerow([
                                 monDO, doid, dict_monDO_info[monDO]['name'],
                                 dict_DO_to_info[doid]['name']])
                         # fill the dictionary monDo to DO
@@ -355,22 +403,23 @@ def load_in_all_DO_in_dictionary():
     # print('number of mapped monDO:' + str(len(dict_monDo_to_DO)))
 
     # generate file with not mapped doids
-    file_not_mapped_doids = open('output/not_mapped_DOIDs.txt', 'w', encoding='utf-8')
-    file_not_mapped_doids.write('doid \t name \n')
+    file_not_mapped_doids = open('output/not_mapped_DOIDs.tsv', 'w', encoding='utf-8')
+    tsv_not_mapped = csv.writer(file_not_mapped_doids, delimiter='\t')
+    tsv_not_mapped.writerow(['doid', 'name'])
     for doid in list_of_not_mapped_doids:
-        file_not_mapped_doids.write(doid + '\t' + dict_DO_to_info[doid]['name'] + '\n')
+        tsv_not_mapped.writerow([doid, dict_DO_to_info[doid]['name']])
 
     file_not_mapped_doids.close()
 
     # file for multiple mapped monDO IDs
     file_mondo_to_multiple_doids = open('output/multiple_doids_for_monDO.tsv', 'w')
-    file_mondo_to_multiple_doids.write('monDO\t monDO name\t doids \t doid names\n')
+    tsv_muliplt_doids = csv.writer(file_mondo_to_multiple_doids, delimiter='\t')
+    tsv_muliplt_doids.writerow(['monDO', 'monDO name', 'doids', 'doid names'])
     for monDO, doids in dict_monDo_to_DO_only_doid.items():
         if len(doids) > 1:
-            text = monDO + '\t' + dict_monDO_info[monDO]['name'] + '\t' + '|'.join(doids) + '\t'
-            for doid in doids:
-                text = text + dict_DO_to_info[doid]['name'] + '|'
-            file_mondo_to_multiple_doids.write(text[0:-1] + '\n')
+            text = [monDO, dict_monDO_info[monDO]['name'], '|'.join(doids),
+                    '|'.join([dict_DO_to_info[doid]['name'] for doid in doids])]
+            tsv_muliplt_doids.writerow(text)
 
 
 '''
@@ -380,33 +429,36 @@ Generate mapping files
 
 def mapping_files():
     multi_mondo_for_do = open('mapping/multi_mondo_for_a_doid.tsv', 'w', encoding='utf-8')
-    csv_multi_mondp_for_do=csv.writer(multi_mondo_for_do, delimiter='\t')
-    csv_multi_mondp_for_do.writerow(['doid','name','mondos','mondo_names'])
+    tsv_multi_mondo_for_do = csv.writer(multi_mondo_for_do, delimiter='\t')
+    tsv_multi_mondo_for_do.writerow(['doid', 'name', 'mondos', 'mondo_names'])
     for doid, mondos in dict_DO_to_monDOs_only_DO.items():
-        f = open('mapping/Do_to_monDO/' + doid + '.txt', 'w', encoding='utf-8')
+        f = open('mapping/Do_to_monDO/' + doid + '.tsv', 'w', encoding='utf-8')
+        tsv_f = csv.writer(f, delimiter='\t')
         name = dict_DO_to_info[doid]['name'] if 'name' in dict_DO_to_info[doid] else ''
-        f.write(doid + '\t' + name + '\n')
-        f.write('monDO ID \t name \n')
+        tsv_f.writerow([doid, name])
+        tsv_f.writerow(['monDO ID', 'name'])
         if len(mondos) > 1:
             string_mondos = ",".join(mondos)
-            line = doid + '\t' + name + '\t' + string_mondos + '\t'
+            line = [doid, name, string_mondos]
             liste_names = []
             for mondo in mondos:
                 liste_names.append(dict_monDO_info[mondo]['name'])
             list_name_string = ",".join(liste_names)
-            csv_multi_mondp_for_do.write([line , list_name_string ])
+            line.append(list_name_string)
+            tsv_multi_mondo_for_do.writerow(line)
         for mondo in mondos:
             mondo_name = dict_monDO_info[mondo]['name'] if 'name' in dict_monDO_info[mondo] else ''
-            f.write(mondo + '\t' + mondo_name + '\n')
+            tsv_f.writerow([mondo, mondo_name])
         f.close()
 
     for monDo, doids in dict_monDo_to_DO_only_doid.items():
-        g = open('mapping/monDO_to_DO/without_xref/' + monDo + '.txt', 'w', encoding='utf-8')
+        g = open('mapping/monDO_to_DO/without_xref/' + monDo + '.tsv', 'w', encoding='utf-8')
+        g_tsv = csv.writer(g, delimiter='\t')
         mondo_name = dict_monDO_info[mondo]['name'] if 'name' in dict_monDO_info[mondo] else ''
-        g.write(monDo + '\t' + mondo_name + '\n')
-        g.write('DOID \t name \n')
+        g_tsv.writerow([monDo, mondo_name])
+        g_tsv.writerow(['DOID', 'name'])
         for doid in doids:
-            g.write(doid + '\t' + name + '\n')
+            g_tsv.writerow([doid, name])
         g.close()
 
 
@@ -423,7 +475,7 @@ dict_self_decision_mondo_multiple_doid = {
 }
 
 '''
-This get an dictionary and preperate this that it can be integrated into the csv file
+This get an dictionary and preperate this that it can be integrated into the tsv file
 '''
 
 
@@ -478,65 +530,41 @@ def divide_external_list(monDO_xref):
 
 
 '''
-First gather the do and mondo information and combine them to one
-then prepare the dictionary for putting the combined data of mondo and do into the csv file 
+First gather  mondo information in a dictionary.
+Then write the dictionary into the tsv file 
 '''
 
 
 def gather_information_of_mondo_and_do_then_prepare_dict_for_csv(monDo, info, monDO_xref):
     doid = list(dict_monDo_to_DO_only_doid[monDo])[0]
-    # if doid =='DOID:0060073':
-    #     print('ohe')
     if monDo == 'MONDO:0006883':
         print('fjfjfjf')
     monDO_synonyms = info['synonyms'] if 'synonyms' in info else []
-    monDo_def = info['definition'] if 'definition' in info else ''
+    monDo_def = info['def'] if 'def' in info else ''
 
     umls_cuis_monDO, other_xrefs_monDO = divide_external_list(monDO_xref)
 
-    # combined information from monDO and DO
-    do_synonyms = dict_DO_to_info[doid]['synonyms'] if 'synonyms' in dict_DO_to_info[doid] else []
-    if type(monDO_synonyms) == list:
-
-        monDO_synonyms.extend(do_synonyms)
-    else:
-        do_synonyms.append(monDO_synonyms)
-        monDO_synonyms = dict_DO_to_info[doid]['synonyms'] if 'synonyms' in dict_DO_to_info[doid] else []
     info['synonyms'] = monDO_synonyms
 
-    info['definition'] = dict_DO_to_info[doid]['definition'] + '[FROM DOID]. ' + monDo_def if 'definition' in \
-                                                                                              dict_DO_to_info[
-                                                                                                  doid] else monDo_def
+    info['def'] =  monDo_def
+    info['def'] = info['def'].replace('\t', ' ')
 
-    alternative_ids = dict_DO_to_info[doid]['alternative_ids'] if 'alternative_ids' in dict_DO_to_info[doid] else []
-    alternative_ids.append(doid)
-
-    # the alternative id get at least a ''  if their exist no alternative id, that's why they had to be
-    # removed from the list
-    if alternative_ids[0] == '':
-        alternative_ids.remove('')
-    info['doids'] = alternative_ids
-
-    other_xrefs_monDO.union(dict_DO_to_xref[doid])
-    other_xrefs_monDO.remove('') if '' in other_xrefs_monDO else other_xrefs_monDO
 
     other_xrefs_monDO = go_through_xrefs_and_change_if_needed_source_name(
         other_xrefs_monDO, 'Disease')
     info['xrefs'] = list(other_xrefs_monDO)
 
-    doid_umls = dict_DO_to_info[doid]['umls_cuis'] if 'umls_cuis' in dict_DO_to_info[doid] else []
-    umls_cuis_monDO.union(doid_umls)
     umls_cuis_monDO.remove('') if '' in umls_cuis_monDO else umls_cuis_monDO
     info['umls_cuis'] = list(umls_cuis_monDO)
 
     dict_info_csv = prepare_dict_for_csv_file(info)
     dict_info_csv['doid'] = doid
-    csv_map_nodes.writerow(dict_info_csv)
+    tsv_map_nodes.writerow(dict_info_csv)
 
 
 # bash shell for merge doids into the mondo nodes
 bash_shell = open('merge_nodes.sh', 'w', encoding='utf-8')
-bash_start='''#!/bin/bash
+bash_start = '''#!/bin/bash
 #define path to neo4j bin
 path_neo4j=$1\n\n'''
 bash_shell.write(bash_start)
@@ -585,7 +613,7 @@ def integrate_mondo_change_identifier():
             for doid in doids:
                 dict_merged_nodes[monDo].append(doid)
                 text = 'python ../add_info_from_removed_node_to_other_node.py %s %s %s\n' % (
-                doid, monDo, 'Disease')
+                    doid, monDo, 'Disease')
                 bash_shell.write(text)
                 text = '$path_neo4j/cypher-shell -u neo4j -p test -f cypher_merge.cypher \n\n'
                 bash_shell.write(text)
@@ -640,17 +668,15 @@ def integrate_mondo_change_identifier():
                         print('int list')
                         print(property)
                 else:
-                    if key == 'id':
-                        continue
                     if type(property) == int:
                         print('int')
                         print(key)
                     dict_info_csv[key] = property
-            csv_new_nodes.writerow(dict_info_csv)
+            tsv_new_nodes.writerow(dict_info_csv)
 
     print('number of new nodes:' + str(counter_new_nodes))
     print('number of switched nodes:' + str(counter_switched_nodes))
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     print(dict_merged_nodes)
     print(len(dict_merged_nodes))
@@ -663,16 +689,16 @@ add the rela information into
 
 def generate_csv_file_for_relationship():
     # query to get the rela information
-    query = ''' Match (a)-[r:is_a]->(b) Return a.identifier, b.identifier, r'''
+    query = ''' Match (a)-[r:is_a]->(b) Return a.id, b.id, r'''
     results = g.run(query)
 
     # counter of relationship
     counter_of_relationships = 0
 
-    # go through all rela and add the information into the csv file
+    # go through all rela and add the information into the tsv file
     for child_id, parent_id, rela, in results:
         counter_of_relationships += 1
-        csv_rela.writerow([child_id, parent_id])
+        tsv_rela.writerow([child_id, parent_id])
 
     print('number of relationships:' + str(counter_of_relationships))
 
@@ -688,66 +714,73 @@ def main():
     else:
         sys.exit('need a path')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('connection to db')
     database_connection()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
-    print('gather all properties from mondo and put them as header into the csv files ')
+    print(datetime.datetime.now())
+    print('generate list of non human disease')
+
+    get_all_non_human_ids()
+
+    print('##########################################################################')
+
+    print(datetime.datetime.now())
+    print('gather all properties from mondo and put them as header into the tsv files ')
 
     get_mondo_properties_and_generate_csv_files()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load in MonDO diseases ')
 
     load_in_all_monDO_in_dictionary()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load in DO diseases and map with DOID ')
 
     load_in_all_DO_in_dictionary()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('generate the mapping files ')
 
     mapping_files()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('integrate and switch the nodes but ignore the multiple mapped monDO ids ')
 
     integrate_mondo_change_identifier()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('generate cypher file')
 
     generate_cypher_queries()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('generate cypher file for subclassof relationship  ')
 
     generate_csv_file_for_relationship()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

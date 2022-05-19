@@ -69,7 +69,7 @@ def load_and_check_chembl_drugbank_mapping():
 
 
 def main():
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     print('create connection')
 
     create_connection_with_neo4j_mysql()
@@ -78,7 +78,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     print('generate shell script')
 
     load_and_check_chembl_drugbank_mapping()
@@ -86,7 +86,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
 
 
 if __name__ == "__main__":

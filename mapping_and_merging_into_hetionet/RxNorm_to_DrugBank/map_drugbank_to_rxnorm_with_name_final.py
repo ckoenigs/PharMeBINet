@@ -37,7 +37,7 @@ con = create_connection_to_databases.database_connection_RxNorm()
 # dictionary with drugbank as key and value is a list of rxcuis
 dict_drugbank_to_rxnorm = {}
 
-print(datetime.datetime.utcnow())
+print(datetime.datetime.now())
 
 '''
 go through all drugbank entries and search for the name in rxnorm 
@@ -115,4 +115,4 @@ for chunk in synonym_chunks:
 print('number of drugbank ids:', count_drugbank_ids)
 print('number of differnt rxnorm ids:', len(list_rxnorm_id))
 
-print(datetime.datetime.utcnow())
+print(datetime.datetime.now())

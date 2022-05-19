@@ -45,8 +45,8 @@ def load_pc_from_database():
 
 def generate_files(path_of_directory):
     """
-    generate cypher file and csv file
-    :return: csv file
+    generate cypher file and tsv file
+    :return: csv writer
     """
     # file from relationship between gene and variant
     file_name = 'compound_to_variant'
@@ -57,7 +57,7 @@ def generate_files(path_of_directory):
 
     cypher_file = open('output/cypher_rela.cypher', 'a', encoding='utf-8')
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/drugbank/gene_variant/%s.tsv" As line FIELDTERMINATOR '\\t' 
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/drugbank/gene_variant/%s.tsv" As line FIELDTERMINATOR '\\t' 
         Match (n:Compound{identifier:line.compound_id}), (v:Variant{identifier:line.variant_id}) MERGE (v)-[r:COMBINATION_CAUSES_ADR_VccaC]->(n) On Create set r.type=line.type, r.license=line.license, r.description=line.description, r.pubmed_id=split(line.pubMed_ids,"|"), r.drugbank="yes", r.resource=["DrugBank"], r.url="https://go.drugbank.com/drugs/"+line.compound_id On Match Set r.drugbank="yes", r.resource=r.resource+"DrugBank" ;\n'''
     query = query % (path_of_directory, file_name)
     cypher_file.write(query)
@@ -104,7 +104,7 @@ def load_all_drugbank_pc_and_map():
     print('number of not mapped node:', counter_not_mapped)
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     global path_of_directory, license
     if len(sys.argv) < 3:
         sys.exit('need path anf license pc drugbank')
@@ -113,35 +113,35 @@ def main():
     license = sys.argv[2]
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('connection to db')
 
     create_connection_with_neo4j()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load pc from neo4j')
 
     load_pc_from_database()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
-    print('Generate cypher and csv file')
+    print(datetime.datetime.now())
+    print('Generate cypher and tsv file')
 
     # csv_mapping = generate_files(path_of_directory)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load pc from drugbank and map')
 
     load_all_drugbank_pc_and_map()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

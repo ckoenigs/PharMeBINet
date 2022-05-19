@@ -1,54 +1,51 @@
-
+import csv
 import datetime
-import sys, csv, wget
-import gzip, io, requests
-
-url_data='ftp://ftp.ncbi.nih.gov/gene/DATA/GENE_INFO/Mammalia/Homo_sapiens.gene_info.gz'
-
-# list of found genes
-found_gene_ids=[]
+import gzip
+import io
+import os
+import sys
+import urllib.request
 
 '''
-load ncbi tsv file in and write only the important lines into a new csv file for integration into Neo4j
+load ncbi tsv file in and write only the important lines into a new tsv file for integration into Neo4j
 '''
+
+
 def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
-    counter_tries=0
-    got_file=False
-    while not got_file and counter_tries<11:
+    file_url = 'https://ftp.ncbi.nih.gov/gene/DATA/GENE_INFO/Mammalia/Homo_sapiens.gene_info.gz'
+    file_name = 'data/Homo_sapiens.gene_info.gz'
+    for path in ['./data', './output_data']:
+        if not os.path.exists(path):
+            os.makedirs(path)
+    counter_tries = 0
+    got_file = False
+    while not got_file and counter_tries < 11:
         try:
             # download ncbi human genes
-            filename = wget.download(url_data, out='data/')
-            got_file=True
+            with urllib.request.urlopen(file_url) as response, open(file_name, 'wb') as f:
+                f.write(response.read())
+            got_file = True
         except:
-            counter_tries+=1
+            counter_tries += 1
             print(counter_tries)
-    if counter_tries>=11:
-        sys.exit('did not get any connection to url in ncbi integration\n\n huhuhu\n')
+    if counter_tries >= 11:
+        sys.exit('did not get any connection to url in ncbi integration\n\n')
 
-
-    filename_without_gz = filename.rsplit('.', 1)[0]
-    # file = open(filename_without_gz, 'wb')
-    with io.TextIOWrapper(gzip.open(filename, 'rb')) as f:
-        csv_reader=csv.DictReader(f,delimiter='\t')
-
-        unzip_file = open('data/Homo_sapiens.gene_info', 'w', encoding='utf-8')
-        csv_unzip = csv.DictWriter(unzip_file, fieldnames=csv_reader.fieldnames, delimiter='\t')
-        csv_unzip.writeheader()
+    with io.TextIOWrapper(gzip.open(file_name, 'rb')) as f:
+        csv_reader = csv.DictReader(f, delimiter='\t')
 
         # create cypher file
-        cypher_file = open('cypher_node.cypher', 'w')
-        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''master_database_change/import_into_Neo4j/ncbi_genes/output_data/genes.csv" As line Fieldterminator '\\t' Create (n:Gene_Ncbi {'''
+        cypher_file = open('cypher_node.cypher', 'w', newline='')
+        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/ncbi_genes/output_data/genes.tsv" As line Fieldterminator '\\t' Create (n:Gene_Ncbi {'''
 
-
-
-        dict_header={}
+        dict_header = {}
         # add properties to query and fill dictionary
         for header_property in csv_reader.fieldnames:
-            #fill dictionary
-            if header_property=='#tax_id':
-                dict_header[header_property]='tax_id'
+            # fill dictionary
+            if header_property == '#tax_id':
+                dict_header[header_property] = 'tax_id'
             else:
-                dict_header[header_property]=header_property
+                dict_header[header_property] = header_property
             # add property depending if list or not or int into query
 
             if header_property in ['Synonyms', 'dbXrefs', 'map_location', 'Feature_type', 'Other_designations']:
@@ -67,68 +64,56 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
         cypher_file.write(query)
 
         # file for integration into hetionet
-        file = open('output_data/genes.csv', 'w')
-        writer = csv.DictWriter(file, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL, fieldnames=csv_reader.fieldnames)
+        file = open('output_data/genes.tsv', 'w', newline='')
+        writer = csv.DictWriter(file, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL,
+                                fieldnames=csv_reader.fieldnames)
         # writer.writeheader()
         writer.writerow(dict_header)
 
         # file with all gene from hetionet which are not human
-        file_nH = open('output_data/genes_not_human.csv', 'w')
+        file_nH = open('output_data/genes_not_human.tsv', 'w', newline='')
         writer_not_human = csv.DictWriter(file_nH, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL,
-                                fieldnames=csv_reader.fieldnames)
+                                          fieldnames=csv_reader.fieldnames)
         writer_not_human.writeheader()
 
+        # count all row in the file
+        counter_all = 0
+        # count all row which will be integrated
+        counter_included = 0
 
-        #count all row in the file
-        counter_all=0
-        #count all row which will be integrated
-        counter_included=0
-        #counter all gene which are human and in hetionet
-        counter_gene_in_hetionet_and_human=0
+        counter_not_same_name_and_description = 0
 
-
-        counter_not_same_name_and_description=0
-
-        # generate human gene csv
+        # generate human gene tsv
         for row in csv_reader:
-            new_row={}
-            for  key, value  in  row.items():
-                if value=='-':
-                    new_row[key]=''
-                else:
-                    new_row[key]=value
-            csv_unzip.writerow(new_row)
+            new_row = {key: ('' if value == '-' else value) for key, value in row.items()}
 
-            counter_all+=1
-            gene_id =new_row['GeneID']
-            name=new_row['Full_name_from_nomenclature_authority']
-            description=new_row['description']
-
-
-            #tax id 9606 is human
-            tax_id=new_row['#tax_id']
-
-            if name!=description and name != '':
-                counter_not_same_name_and_description+=1
+            counter_all += 1
+            gene_id = new_row['GeneID']
+            name = new_row['Full_name_from_nomenclature_authority']
+            description = new_row['description']
+            # tax id 9606 is human
+            tax_id = new_row['#tax_id']
+            # check for mismatches between name and description
+            if name != description and name != '':
+                counter_not_same_name_and_description += 1
                 if tax_id == '9606':
+                    print('Found name <> description mismatch for gene id', gene_id)
                     print(name)
                     print(description)
-                    print(gene_id)
-
-            if tax_id!='9606':
+            # write the row to the respective output file
+            if tax_id != '9606':
                 writer_not_human.writerow(new_row)
-                found_gene_ids.append(int(gene_id))
             else:
-                counter_gene_in_hetionet_and_human+=1
-                counter_included+=1
+                counter_included += 1
                 writer.writerow(new_row)
-                found_gene_ids.append(int(gene_id))
 
-    print(len(found_gene_ids))
-    print('all rows in ncbi gene_info file:'+str(counter_all))
-    print('all included ncbi gene_info rows in new file:'+str(counter_included))
-    print('all genes which are in hetionet and human:'+str(counter_gene_in_hetionet_and_human))
-    print('number of name and description not equal:'+str(counter_not_same_name_and_description))
+    file.close()
+    file_nH.close()
+    cypher_file.close()
+
+    print('all rows in ncbi gene_info file:', counter_all)
+    print('all included ncbi gene_info rows in new file:', counter_included)
+    print('number of name and description not equal:', counter_not_same_name_and_description)
 
 
 # path to directory
@@ -142,15 +127,14 @@ def main():
     else:
         sys.exit('need a path')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('generate a tsv file with only the human genes')
 
     load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes()
 
-    print(
-        '#################################################################################################################################################################')
+    print('#' * 100)
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

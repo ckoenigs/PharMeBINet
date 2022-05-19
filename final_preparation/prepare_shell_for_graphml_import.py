@@ -29,13 +29,16 @@ import_tool=$1
 # define path to pharmebinet
 path_to_pharmebinet=$2\n\n''')
 
-    import_tool='java -jar $import_tool.jar -i $path_to_pharmebinet"PharMeBiNet.graphml"  -e bolt://localhost:7687 --username neo4j --password test  --modify-edge-labels false --indices "%s"'
+    import_tool='java -jar $import_tool.jar -i $path_to_pharmebinet"PharMeBiNet_finished.graphml"  -e bolt://localhost:7687 --username neo4j --password test  --modify-edge-labels false --indices "%s"'
 
     query='''CALL db.indexes ''' # also possible after 4.2.x: SHOW INDEXES
     results= g.run(query)
     list_indices=[]
     for id, name, state, populationPercent, uniqueness, type, entityType, labelsOrTypes, properties, provider, in results:
         for label in labelsOrTypes:
+            if '_' in label or not label[0].isupper():
+                continue
+            print(label)
             for property in properties:
                 list_indices.append(label+'.'+property)
     import_tool= import_tool %(';'.join(list_indices))
@@ -45,25 +48,25 @@ path_to_pharmebinet=$2\n\n''')
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('create connection')
 
     create_connection_with_neo4j()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('get constraints')
 
     get_the_constraints_and_write_into_file()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

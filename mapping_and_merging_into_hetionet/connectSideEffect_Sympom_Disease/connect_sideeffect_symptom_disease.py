@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Sep  4 10:55:05 2017
-
-@author: ckoenigs
-"""
-
 import datetime
 import sys, csv
 
@@ -50,6 +43,14 @@ def create_connection_with_neo4j_mysql():
     # create connection with mysql database
     global con
     con = create_connection_to_databases.database_connection_umls()
+
+def correct_string_for_query(name):
+    """
+    Prepare string for mysql query
+    :param name: string
+    :return: string
+    """
+    return name.replace("'","\\'")
 
 
 # dictionary of all symptoms from hetionet, with mesh_id/ umls cui as key and value is class Symptom
@@ -123,15 +124,19 @@ def create_cypher_query(header, from_label, to_label, file_name):
         short_second = 'SE'
     else:
         short_second = to_label[0]
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/connectSideEffect_Sympom_Disease/%s" As line FIELDTERMINATOR '\\t' 
-                Match (first:%s {identifier:line.%s}), (second:%s {identifier:line.%s})  Create (first)-[:EQUAL_%se%s{how_mapped:line.%s}]->(second);\n'''
-    query = query % (file_name, from_label, header[0], to_label, header[1], from_label[0], short_second, header[2])
+    if from_label =='Phenotype':
+        short_first ='PT'
+    else:
+        short_first=from_label[0]
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/connectSideEffect_Sympom_Disease/%s" As line FIELDTERMINATOR '\\t' 
+                Match (first:%s {identifier:line.%s}), (second:%s {identifier:line.%s})  Create (first)-[:EQUAL_%se%s{how_mapped:line.%s, pharmebinet:'yes', resource:["PharMeBINet"], license:"CC0 1.0"}]->(second);\n'''
+    query = query % (file_name, from_label, header[0], to_label, header[1], short_first, short_second, header[2])
     cypher.write(query)
 
 
 def create_mapping_file(directory, file_name, header, from_label, to_label):
     """
-    generate the csv writer for the mapping file and additionaly also the
+    generate the tsv writer for the mapping file and additionaly also the
     :param directory:
     :param file_name:
     :param header:
@@ -237,7 +242,7 @@ def load_all_symptoms_in_a_dict():
         # get first hte umls with the same name
         cur = con.cursor()
         query = ("Select CUI From MRCONSO Where STR='%s';")
-        query = query % (name)
+        query = query % (correct_string_for_query(name))
         rows_counter = cur.execute(query)
         if rows_counter > 0:
             found_with_umls = True
@@ -387,7 +392,7 @@ def load_and_map_disease():
             if not mapped:
                 cur = con.cursor()
                 query = ('Select CUI,LAT,STR From MRCONSO Where  STR= "%s";')
-                query = query % (name)
+                query = query % (correct_string_for_query(name))
                 rows_counter = cur.execute(query)
                 mapped_with_umls = False
                 if rows_counter > 0:
@@ -478,7 +483,7 @@ def load_and_map_phenotype():
             if not mapped:
                 cur = con.cursor()
                 query = ('Select CUI,LAT,STR From MRCONSO Where  STR= "%s";')
-                query = query % (name)
+                query = query % (correct_string_for_query(name))
                 rows_counter = cur.execute(query)
                 mapped_with_umls = False
                 if rows_counter > 0:
@@ -503,7 +508,7 @@ def main():
     else:
         sys.exit('need a path for connection of se,s,d')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j_mysql()
@@ -511,7 +516,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load in side effects from hetionet')
 
     load_all_sideEffects_in_a_dict()
@@ -519,7 +524,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load in symptoms from hetionet and map to se')
 
     load_all_symptoms_in_a_dict()
@@ -527,7 +532,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load disease an map to se and symptom')
 
     load_and_map_disease()
@@ -535,7 +540,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load phenotype an map to se and symptom')
 
     load_and_map_phenotype()
@@ -543,7 +548,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

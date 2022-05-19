@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Sep 15 11:41:20 2017
-
-@author: ckoenigs
-"""
-
 import datetime
 import csv, sys
 
@@ -59,19 +52,19 @@ def take_all_relationships_of_gene_disease():
 
 
 '''
-Generate the csv and cypher file
+Generate the tsv and cypher file
 '''
 
 
-def generate_csv_and_cypher_file():
+def generate_tsv_and_cypher_file():
     # generate cypher file
     cypherfile = open('disease_pathway/cypher.cypher', 'w')
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ctd/disease_pathway/relationships.csv" As line Match (n:Pathway{identifier:line.PathwayID}), (b:Disease{identifier:line.DiseaseID}) Merge (b)-[r:ASSOCIATES_DaP]->(n) On Create Set r.hetionet='no', r.inferenceGeneSymbol=split(line.inferenceGeneSymbol,'|') , r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=disease&acc="+line.DiseaseID , r.source="CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2021 NC State University. All rights reserved.", r.unbiased=false On Match SET r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=disease&acc="+line.DiseaseID, r.inferenceGeneSymbol=split(line.inferenceGeneSymbol,'|') ;\n '''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/ctd/disease_pathway/relationships.tsv" As line  FIELDTERMINATOR '\\t' Match (n:Pathway{identifier:line.PathwayID}), (b:Disease{identifier:line.DiseaseID}) Merge (b)-[r:ASSOCIATES_DaP]->(n) On Create Set  r.inferenceGeneSymbol=split(line.inferenceGeneSymbol,'|') , r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=disease&acc="+line.DiseaseID , r.source="CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2021 NC State University. All rights reserved.", r.unbiased=false On Match SET r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=disease&acc="+line.DiseaseID, r.inferenceGeneSymbol=split(line.inferenceGeneSymbol,'|') ;\n '''
     cypherfile.write(query)
 
-    csvfile = open('disease_pathway/relationships.csv', 'wb')
-    writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+    csvfile = open('disease_pathway/relationships.tsv', 'wb')
+    writer = csv.writer(csvfile, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     writer.writerow(['PathwayID', 'DiseaseID', 'inferenceGeneSymbol'])
 
     for (pathway_id, mondo), inferenceGeneSymbols in dict_disease_pathway.items():
@@ -90,7 +83,7 @@ def main():
     else:
         sys.exit('need a path')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j_mysql()
@@ -98,23 +91,23 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
-    print('Take all gene-pathway relationships and generate csv and cypher file')
+    print(datetime.datetime.now())
+    print('Take all gene-pathway relationships and generate tsv and cypher file')
 
     take_all_relationships_of_gene_disease()
 
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
-    print('generate csv and cypher file')
+    print(datetime.datetime.now())
+    print('generate tsv and cypher file')
 
-    generate_csv_and_cypher_file()
+    generate_tsv_and_cypher_file()
 
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

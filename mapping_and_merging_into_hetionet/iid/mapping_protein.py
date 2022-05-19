@@ -50,8 +50,8 @@ def load_protein_from_database_and_add_to_dict():
 
 def generate_files(path_of_directory):
     """
-    generate cypher file and csv file
-    :return: csv file
+    generate cypher file and tsv file
+    :return: csv writer
     """
     # file from relationship between gene and variant
     file_name = 'protein/iid_protein_to_protein'
@@ -61,7 +61,7 @@ def generate_files(path_of_directory):
     csv_mapping.writerow(header)
     cypher_file = open('protein/cypher.cypher', 'w', encoding='utf-8')
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/iid/%s.tsv" As line FIELDTERMINATOR '\\t' 
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/iid/%s.tsv" As line FIELDTERMINATOR '\\t' 
         Match (n:protein_IID{identifier:line.iid_uniprot_id}), (v:Protein{identifier:line.uniprot_id}) Set v.iid='yes', v.resource=split(line.resource,"|") Create (v)-[:equal_to_iid_protein{mapped_with:line.mapped_with}]->(n);'''
     query = query % (path_of_directory, file_name)
     cypher_file.write(query)
@@ -75,7 +75,7 @@ def resource(identifier):
 
 
 '''
-Load all variation sort the ids into the right csv, generate the queries, and add rela to the rela csv
+Load all variation sort the ids into the right tsv, generate the queries, and add rela to the rela tsv
 '''
 
 
@@ -114,7 +114,7 @@ def load_all_iid_protein_and_finish_the_files(csv_mapping):
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     global path_of_directory
     if len(sys.argv) > 1:
@@ -124,35 +124,35 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('connection to db')
 
     create_connection_with_neo4j()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all Protein from database')
 
     load_protein_from_database_and_add_to_dict()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
-    print('Generate cypher and csv file')
+    print(datetime.datetime.now())
+    print('Generate cypher and tsv file')
 
     csv_mapping = generate_files(path_of_directory)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all iid protein from database')
 
     load_all_iid_protein_and_finish_the_files(csv_mapping)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

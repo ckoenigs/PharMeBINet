@@ -1,12 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thr Sep 26 12:52:43 2017
-
-@author: ckoenig
-"""
-
-'''integrate the other diseases and relationships from disease ontology in hetionet'''
-
 import datetime
 import sys, csv
 from collections import defaultdict
@@ -15,7 +6,7 @@ sys.path.append("../..")
 import create_connection_to_databases
 
 # disease ontology license
-license = 'CC0 4.0 International'
+license = 'CC BY 4.0'
 
 '''
 create a connection with neo4j
@@ -29,10 +20,10 @@ def create_connection_with_neo4j():
     g = create_connection_to_databases.database_connection_neo4j()
 
 
-# dictionary csv files
-dict_label_to_label_to_rela_to_csv = defaultdict(dict)
+# dictionary tsv files
+dict_label_to_label_to_rela_to_tsv = defaultdict(dict)
 
-# header of csv file
+# header of tsv file
 header = ['go_id', 'other_id']
 
 # cypher file
@@ -50,12 +41,12 @@ dict_relationship_ends = {
 
 def get_go_rela_properties():
     """
-    Get the rela properties and prepare the rela cypher query and the csv header list.
+    Get the rela properties and prepare the rela cypher query and the tsv header list.
     :return:
     """
     query = '''MATCH (:protein_go)-[p]-(:go) WITH DISTINCT keys(p) AS keys UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields RETURN allfields;'''
     result = g.run(query)
-    query_nodes_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/go/%s" As line FIELDTERMINATOR '\\t' '''
+    query_nodes_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/go/%s" As line FIELDTERMINATOR '\\t' '''
 
     part = ''' Match (b:%s{identifier:line.go_id}), (c:%s{identifier:line.other_id}) Create (c)-[:%s{'''
     for property, in result:
@@ -82,9 +73,9 @@ def get_go_rela_properties():
     query_rela = query_nodes_start + part + 'resource:["GO"], go:"yes", source:"Gene Ontology", url:"http://purl.obolibrary.org/obo/"+line.go_id, license:"' + license + '"}]->(b);\n'
 
 
-def create_csv_file(go_label, other_label, rela_type):
+def create_tsv_file(go_label, other_label, rela_type):
     """
-    Generate csv files for given labels and rela type. Also the cypher query is prepared and add to the cypher file.
+    Generate tsv files for given labels and rela type. Also the cypher query is prepared and add to the cypher file.
     :param go_label: string
     :param other_label: string
     :param rela_type: string
@@ -101,12 +92,12 @@ def create_csv_file(go_label, other_label, rela_type):
     query = query_rela % (file_name, go_label, other_label, rela_type_neo4j)
     cypher_file.write(query)
 
-    dict_label_to_label_to_rela_to_csv[go_label][other_label][rela_type] = csv_writer
+    dict_label_to_label_to_rela_to_tsv[go_label][other_label][rela_type] = csv_writer
 
 
 def write_rela_info_into_file(go_id, other_id, rela, go_label, other_label, rela_type):
     """
-    Prepare rela information and write into csv file
+    Prepare rela information and write into tsv file
     :param go_id: string
     :param other_id: string
     :param rela: dictionary
@@ -135,57 +126,23 @@ def write_rela_info_into_file(go_id, other_id, rela, go_label, other_label, rela
 
         dict_rela[prop] = value
 
-    dict_label_to_label_to_rela_to_csv[go_label][other_label][rela_type].writerow(dict_rela)
+    dict_label_to_label_to_rela_to_tsv[go_label][other_label][rela_type].writerow(dict_rela)
 
 
 # dictionary label to other label to rela type_to_pairs_ to rela info
 dict_label_to_label_to_rela_type_pairs_to_rela_info = defaultdict(dict)
 
 
-def decide_for_write_into_seperate_or_not(dict_first, dict_new_rela_info, go_id, other_id, go_label, other_label,
-                                          rela_type, key):
+
+def check_for_difference_in_rela_information(dict_first, dict_new_rela_info, go_id, other_id):
     """
-    check if a specific property in in one or both property and decide if it is written seperated or not
-    :param dict_first: dictionary
-    :param dict_new_rela_info: dictionary
-    :param go_id: string
-    :param other_id: string
-    :param go_label: string
-    :param other_label: string
-    :param rela_type: string
-    :param key: string
-    :return: boolean
+
+    :param dict_first:
+    :param dict_new_rela_info:
+    :param go_id:
+    :param other_id:
+    :return:
     """
-    return_seperate = False
-
-    if key in dict_first and key in dict_new_rela_info:
-        print('-' in dict_new_rela_info[key] and '-' == dict_new_rela_info[key][-2], dict_new_rela_info[key])
-        if dict_first[key] != dict_new_rela_info[key]:
-            write_rela_info_into_file(go_id, other_id, dict_new_rela_info, go_label, other_label, rela_type)
-            return_seperate = True
-    elif key in dict_first:
-        write_rela_info_into_file(go_id, other_id, dict_new_rela_info, go_label, other_label, rela_type)
-        return_seperate = True
-    elif key in dict_new_rela_info:
-        print('-' in dict_new_rela_info[key] and '-' == dict_new_rela_info[key][-2], dict_new_rela_info[key])
-        write_rela_info_into_file(go_id, other_id, dict_new_rela_info, go_label, other_label, rela_type)
-        return_seperate = True
-    return return_seperate
-
-
-def check_for_difference_in_rela_information(dict_first, dict_new_rela_info, go_id, other_id, go_label, other_label,
-                                             rela_type):
-    # seperated_rela=decide_for_write_into_seperate_or_not(dict_first, dict_new_rela_info, go_id, other_id, go_label, other_label,
-    #                                       rela_type, 'gene_product_id')
-    # if seperated_rela:
-    #     print(go_id, other_id, rela_type, 'gene product')
-    #     return
-    # seperated_rela = decide_for_write_into_seperate_or_not(dict_first, dict_new_rela_info, go_id, other_id, go_label,
-    #                                                        other_label,
-    #                                                        rela_type, 'with_from')
-    # if seperated_rela:
-    #     print(go_id, other_id, rela_type, 'with_from')
-    #     return
 
     for key, value in dict_new_rela_info.items():
         if key in dict_first and value != dict_first[key]:
@@ -221,18 +178,18 @@ def get_all_relationship_pairs(go_label, other_label):
     query = '''Match (n:%s)--(:go)-[r]-(:protein_go)--(m:%s) Return n.identifier, m.identifier, type(r), r''' % (
         go_label, other_label)
     result = g.run(query)
-    dict_label_to_label_to_rela_to_csv[go_label][other_label] = {}
+    dict_label_to_label_to_rela_to_tsv[go_label][other_label] = {}
     dict_label_to_label_to_rela_type_pairs_to_rela_info[go_label][other_label] = {}
     counter_double = 0
     for go_id, other_id, rela_type, rela, in result:
-        if rela_type not in dict_label_to_label_to_rela_to_csv[go_label][other_label]:
-            create_csv_file(go_label, other_label, rela_type)
+        if rela_type not in dict_label_to_label_to_rela_to_tsv[go_label][other_label]:
+            create_tsv_file(go_label, other_label, rela_type)
             dict_label_to_label_to_rela_type_pairs_to_rela_info[go_label][other_label][rela_type] = {}
         rela = dict(rela)
         if (go_id, other_id) in dict_label_to_label_to_rela_type_pairs_to_rela_info[go_label][other_label][rela_type]:
             check_for_difference_in_rela_information(
                 dict_label_to_label_to_rela_type_pairs_to_rela_info[go_label][other_label][rela_type][
-                    (go_id, other_id)], rela, go_id, other_id, go_label, other_label, rela_type)
+                    (go_id, other_id)], rela, go_id, other_id)
             counter_double += 1
             continue
         dict_label_to_label_to_rela_type_pairs_to_rela_info[go_label][other_label][rela_type][(go_id, other_id)] = rela
@@ -241,7 +198,7 @@ def get_all_relationship_pairs(go_label, other_label):
 
 def write_the_combined_rela_into_files():
     """
-    Write the combined rela information into the right csv files
+    Write the combined rela information into the right tsv files
     :return:
     """
     for go_label, dict_other_label_to_rela_type_pairs_to_rela_info in dict_label_to_label_to_rela_type_pairs_to_rela_info.items():
@@ -262,21 +219,21 @@ def main():
     else:
         sys.exit('need a path')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('create connection with neo4j')
 
     create_connection_with_neo4j()
 
     print(
         '#################################################################################################################################################################')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('get all rela properties and prepare query')
 
     get_go_rela_properties()
 
     print(
         '#################################################################################################################################################################')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('go through all gos rela in dictionary')
 
     for go_label in ['BiologicalProcess', 'MolecularFunction', 'CellularComponent']:
@@ -289,15 +246,15 @@ def main():
 
     print(
         '#################################################################################################################################################################')
-    print(datetime.datetime.utcnow())
-    print('write combined rela information into csv files')
+    print(datetime.datetime.now())
+    print('write combined rela information into tsv files')
 
     write_the_combined_rela_into_files()
 
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

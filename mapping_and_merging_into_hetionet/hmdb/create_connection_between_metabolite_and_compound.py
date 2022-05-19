@@ -60,7 +60,7 @@ def load_compounds():
 # set of metabolite compound pairs
 set_metabolite_compound_pairs=set()
 
-def write_rela_into_csv_file(dict_to_compund_id, key, identifier, csv_writer, mapped):
+def write_rela_into_tsv_file(dict_to_compund_id, key, identifier, csv_writer, mapped):
     """
     get the compound id and check if pair is not written into tsv file. If not write into file and add to set.
     :param dict_to_compund_id: dictionary
@@ -82,7 +82,7 @@ def get_all_metabolites_with_xrefs():
     csv_writer_rela = csv.writer(file_rela, delimiter='\t')
     csv_writer_rela.writerow(['identifier', 'drug_id','how_mapped'])
 
-    cypher_query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/hmdb/%s" As line FIELDTERMINATOR '\\t' Match (n:Metabolite{identifier:line.identifier}), (m:Compound{identifier:line.drug_id})  Create (n)-[:EQUAL_MeC{source:line.how_mapped, license:'CC0 1.0'}]->(m);\n'''
+    cypher_query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/hmdb/%s" As line FIELDTERMINATOR '\\t' Match (n:Metabolite{identifier:line.identifier}), (m:Compound{identifier:line.drug_id})  Create (n)-[:EQUAL_MeC{source:line.how_mapped, license:'CC0 1.0'}]->(m);\n'''
     cypher_query = cypher_query % (path_of_directory, file_name_rela)
     cypher_file.write(cypher_query)
 
@@ -92,7 +92,7 @@ def get_all_metabolites_with_xrefs():
         is_mapped=False
         if inchikey:
             if inchikey in dict_inchiKey_to_compound_id:
-                write_rela_into_csv_file(dict_inchiKey_to_compound_id,inchikey,identifier,csv_writer_rela,'inchikey')
+                write_rela_into_tsv_file(dict_inchiKey_to_compound_id,inchikey,identifier,csv_writer_rela,'inchikey')
                 is_mapped=True
 
         if xrefs:
@@ -116,12 +116,12 @@ def get_all_metabolites_with_xrefs():
                 intersection=drugbank_ids_by_names.intersection(drugbank_ids_hmdb)
                 if len(intersection)>0:
                     for db_id in intersection:
-                        write_rela_into_csv_file(dict_db_id_to_real_db_id, db_id, identifier, csv_writer_rela,
+                        write_rela_into_tsv_file(dict_db_id_to_real_db_id, db_id, identifier, csv_writer_rela,
                                                          'drugbank_id_and_name')
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     global path_of_directory, cypher_file
     if len(sys.argv) > 1:
@@ -133,28 +133,28 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('connection to db')
 
     create_connection_with_neo4j()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load the compounds')
 
     load_compounds()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
-    print('Load all hmdb Metabolite from database and write prepared information into csv file')
+    print(datetime.datetime.now())
+    print('Load all hmdb Metabolite from database and write prepared information into tsv file')
 
     get_all_metabolites_with_xrefs()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

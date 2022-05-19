@@ -6,8 +6,8 @@ if len(sys.argv) > 1:
     # for windows
     # filepath = "file:///" + sys.argv[1]
     # for linux
-    filepath= sys.argv[1]
-    #path to project
+    filepath = sys.argv[1]
+    # path to project
     path_of_directory = sys.argv[2]
 else:
     # filepath="file:///c:/Users/Cassandra/Documents/uni/Master/test/"
@@ -82,7 +82,7 @@ class Edge(object):
         self.placeboFreq = []
         self.placeboLowerFreq = []
         self.placeboUpperFreq = []
-        self.methodDetection=[]
+        self.methodDetection = []
 
     def set_frequence(self, placebo, freq, lowerFreq, upperFreq):
         self.placebo = placebo
@@ -124,7 +124,7 @@ properties:
 
 def import_meddra_all_se():
     fobj = open(filepath + "meddra_all_se.tsv")
-    csv_reader= csv.reader(fobj, delimiter='\t')
+    csv_reader = csv.reader(fobj, delimiter='\t')
     for splitted in csv_reader:
         stitchIDflat = splitted[0]
         stitchIDstereo = splitted[1]
@@ -168,8 +168,6 @@ def import_meddra_all_se():
     fobj.close()
 
 
-
-
 '''
 import meddra_all_label_indications.tsv and add information into dictionaries
 # 1: source labelindication
@@ -186,7 +184,7 @@ import meddra_all_label_indications.tsv and add information into dictionaries
 
 def import_meddra_all_lable_indication():
     fobj = open(filepath + "meddra_all_label_indications.tsv")
-    csv_reader= csv.reader(fobj, delimiter='\t')
+    csv_reader = csv.reader(fobj, delimiter='\t')
     for splitted in csv_reader:
         sourceLableIndi = splitted[0]
         stitchIDflat = splitted[1]
@@ -235,6 +233,7 @@ def import_meddra_all_lable_indication():
 
         # dict_edges[(stitchIDstereo, umlsIDmeddra)].set_methodDetection(sourceLableIndi)
 
+
 '''
 import meddra_all_indications.tsv and add information into dictionaries
 # 1: STITCH compund IDs (flat)
@@ -245,10 +244,12 @@ import meddra_all_indications.tsv and add information into dictionaries
 # 6: UMLS concept id (MedDRA term)
 # 7: MedDRA concept name 
 '''
+
+
 def import_meddra_all_indication():
     fobj = open(filepath + "meddra_all_indications.tsv")
     counter = 0
-    csv_reader= csv.reader(fobj, delimiter='\t')
+    csv_reader = csv.reader(fobj, delimiter='\t')
     for splitted in csv_reader:
         stitchIDflat = splitted[0]
         umlsIDlable = splitted[1]
@@ -257,7 +258,6 @@ def import_meddra_all_indication():
         meddraType = splitted[4]
         umlsIDmeddra = splitted[5]
         name = splitted[6]
-
 
         # if the side effect has no UMLS ID for meddera use the UMLS ID for lable
         if len(umlsIDmeddra) == 0:
@@ -311,7 +311,7 @@ import meddra_freq.tsv and add information into the dictionaries
 
 def import_meddra_freq():
     fobj = open(filepath + "meddra_freq.tsv")
-    csv_reader= csv.reader(fobj, delimiter='\t')
+    csv_reader = csv.reader(fobj, delimiter='\t')
     for splitted in csv_reader:
         stitchIDflat = splitted[0]
         stitchIDstereo = splitted[1]
@@ -353,14 +353,14 @@ def import_meddra_freq():
                     dict_sideEffects[umlsIDmeddra] = sideEffect
 
         # generate the edge and add to dictionary if not existing, also add the properties for frequence
-        found_tuple=False
-        if  (stitchIDstereo, umlsIDmeddra) in dict_edges_side_effects:
+        found_tuple = False
+        if (stitchIDstereo, umlsIDmeddra) in dict_edges_side_effects:
             dict_edges_side_effects[(stitchIDstereo, umlsIDmeddra)].set_frequence(placebo, freq, lowerFreq, upperFreq)
-            found_tuple=True
+            found_tuple = True
         if (stitchIDstereo, umlsIDmeddra) in dict_edges_indications:
             print('in indication')
             dict_edges_indications[(stitchIDstereo, umlsIDmeddra)].set_frequence(placebo, freq, lowerFreq, upperFreq)
-            found_tuple=True
+            found_tuple = True
         if not found_tuple:
             print('not in one of them ')
             # edge = Edge(stitchIDstereo, umlsIDmeddra)
@@ -379,15 +379,16 @@ def generate_file_umls_id_label():
     for cui, name in dict_cui_which_use_label_id.items():
         g.write(cui + '\t' + name + '\n')
 
+
 def write_rela_in_csv(file_name, dictionary):
     """
-    Generate csv file for relationship and prepare the different frequency information and write into csv file.
+    Generate tsv file for relationship and prepare the different frequency information and write into tsv file.
     :param file_name: string
     :param dictionary: dictionary
     :return:
     """
-    writer = open('output/'+file_name+'.csv', 'w')
-    csv_writer = csv.writer(writer)
+    writer = open('output/' + file_name + '.tsv', 'w')
+    csv_writer = csv.writer(writer, delimiter='\t')
     csv_writer.writerow(['stitchIDstereo', 'umlsIDmeddra', 'placebo', 'freq', 'lowerFreq', 'upperFreq', 'placeboFreq',
                          'placeboLowerFreq', 'placeboUpperFreq', 'method_of_detection'])
 
@@ -469,42 +470,41 @@ def write_rela_in_csv(file_name, dictionary):
             [value.drugID, value.sideEffectID, value.placebo, freq, lowerFreq, upperFreq, placeboFreq, placeboLowerFreq,
              placeboUpperFreq, '|'.join(set(value.methodDetection))])
 
+
 '''
-Generate cypher file and csv files for import in neo4j
+Generate cypher file and tsv files for import in neo4j
 '''
 
 
 def generate_cypher_file():
-
-
     # first add all queries with sider drugs
     counter_create = 0
     print('drug Create')
-    print (datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     # create cypher file
-    cypher_file= open('output/cypher.cypher','w')
-    #query for drugs
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'master_database_change/import_into_Neo4j/sider/output/drug.csv" As line Create (:drug_Sider{stitchIDflat: line.stitchIDflat , stitchIDstereo: line.stitchIDstereo, PubChem_Coupound_ID: line.PubChem_Coupound_ID} ); \n'
+    cypher_file = open('output/cypher.cypher', 'w')
+    # query for drugs
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + 'import_into_Neo4j/sider/output/drug.tsv" As line fieldterminator "\\t" Create (:drug_Sider{stitchIDflat: line.stitchIDflat , stitchIDstereo: line.stitchIDstereo, PubChem_Coupound_ID: line.PubChem_Coupound_ID} ); \n'
     cypher_file.write(query)
     cypher_file.write(':begin\n')
     cypher_file.write('Create Constraint On (node:drug_Sider) Assert node.stitchIDstereo Is Unique; \n')
     cypher_file.write(':commit \n Call db.awaitIndexes(300);  \n ')
-    #query for side effects
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'master_database_change/import_into_Neo4j/sider/output/se.csv" As line Create (:se_Sider{meddraType: line.meddraType , conceptName: line.conceptName, umlsIDmeddra: line.umlsIDmeddra, name: line.name, umls_concept_id: line.umls_concept_id} ); \n'
+    # query for side effects
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + 'import_into_Neo4j/sider/output/se.tsv" As line fieldterminator "\\t" Create (:se_Sider{meddraType: line.meddraType , conceptName: line.conceptName, umlsIDmeddra: line.umlsIDmeddra, name: line.name, umls_concept_id: line.umls_concept_id} ); \n'
     cypher_file.write(query)
     cypher_file.write(':begin\n')
     cypher_file.write('Create Constraint On (node:se_Sider) Assert node.umlsIDmeddra Is Unique; \n')
     cypher_file.write(':commit \n Call db.awaitIndexes(300); \n ')
-    #query for relationships relationships
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'master_database_change/import_into_Neo4j/sider/output/rela.csv" As line Match (drug:drug_Sider{stitchIDstereo: line.stitchIDstereo}), (se:se_Sider{umlsIDmeddra: line.umlsIDmeddra}) Create (drug)-[:Causes{placebo: line.placebo , freq: line.freq, lowerFreq: line.lowerFreq , upperFreq: line.upperFreq, placeboFreq: line.placeboFreq, placeboLowerFreq: line.placeboLowerFreq, placeboUpperFreq: line.placeboUpperFreq, method_of_detection:split(line.method_of_detection,"|")}] ->(se); \n'
+    # query for relationships relationships
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + 'import_into_Neo4j/sider/output/rela.tsv" As line fieldterminator "\\t" Match (drug:drug_Sider{stitchIDstereo: line.stitchIDstereo}), (se:se_Sider{umlsIDmeddra: line.umlsIDmeddra}) Create (drug)-[:Causes{placebo: line.placebo , freq: line.freq, lowerFreq: line.lowerFreq , upperFreq: line.upperFreq, placeboFreq: line.placeboFreq, placeboLowerFreq: line.placeboLowerFreq, placeboUpperFreq: line.placeboUpperFreq, method_of_detection:split(line.method_of_detection,"|")}] ->(se); \n'
     cypher_file.write(query)
 
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'master_database_change/import_into_Neo4j/sider/output/rela_indicates.csv" As line Match (drug:drug_Sider{stitchIDstereo: line.stitchIDstereo}), (se:se_Sider{umlsIDmeddra: line.umlsIDmeddra}) Create (drug)-[:Indicates{placebo: line.placebo , freq: line.freq, lowerFreq: line.lowerFreq , upperFreq: line.upperFreq, placeboFreq: line.placeboFreq, placeboLowerFreq: line.placeboLowerFreq, placeboUpperFreq: line.placeboUpperFreq, method_of_detection:split(line.method_of_detection,"|")}] ->(se); \n'
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + 'import_into_Neo4j/sider/output/rela_indicates.tsv" As line fieldterminator "\\t" Match (drug:drug_Sider{stitchIDstereo: line.stitchIDstereo}), (se:se_Sider{umlsIDmeddra: line.umlsIDmeddra}) Create (drug)-[:Indicates{placebo: line.placebo , freq: line.freq, lowerFreq: line.lowerFreq , upperFreq: line.upperFreq, placeboFreq: line.placeboFreq, placeboLowerFreq: line.placeboLowerFreq, placeboUpperFreq: line.placeboUpperFreq, method_of_detection:split(line.method_of_detection,"|")}] ->(se); \n'
     cypher_file.write(query)
 
-    #create drug csv
-    writer=open('output/drug.csv','w')
-    csv_writer=csv.writer(writer)
+    # create drug tsv
+    writer = open('output/drug.tsv', 'w')
+    csv_writer = csv.writer(writer, delimiter='\t')
     csv_writer.writerow(['stitchIDflat', 'stitchIDstereo', 'PubChem_Coupound_ID'])
     for key, value in dict_drug.items():
         csv_writer.writerow([value.stitchIDflat, value.stitchIDstereo, value.PubChemID])
@@ -512,22 +512,21 @@ def generate_cypher_file():
 
     # add queries for side effect
     print('side effect Create')
-    print (datetime.datetime.utcnow())
-    #create side effect csv
-    writer=open('output/se.csv','w')
-    csv_writer=csv.writer(writer)
-    csv_writer.writerow(['meddraType' , 'conceptName', 'umlsIDmeddra', 'name', 'umls_concept_id'])
+    print(datetime.datetime.now())
+    # create side effect tsv
+    writer = open('output/se.tsv', 'w')
+    csv_writer = csv.writer(writer, delimiter='\t')
+    csv_writer.writerow(['meddraType', 'conceptName', 'umlsIDmeddra', 'name', 'umls_concept_id'])
     for key, value in dict_sideEffects.items():
         csv_writer.writerow([value.meddraType, value.conceptName, value.umlsIDmeddra, value.name, value.umlsIDlable])
     writer.close()
 
     # make statistics and add query for relationship to file
     print('edges Create')
-    print (datetime.datetime.utcnow())
-    #create side effect csv
+    print(datetime.datetime.now())
+    # create side effect tsv
     write_rela_in_csv('rela', dict_edges_side_effects)
     write_rela_in_csv('rela_indicates', dict_edges_indications)
-
 
 
 # DatabaseError: At c:\Users\Cassandra\Documents\uni\Master\test\meddra.tsv:21724 -  there's a field starting with a quote and whereas it ends that quote there seems to be characters in that field after that ending quote. That isn't supported. This is what I read: 'Ventilation"'
@@ -535,23 +534,21 @@ def generate_cypher_file():
 
 
 def main():
-
-    print (datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('import meddra_all_se.tsv')
-
 
     import_meddra_all_se()
 
     print('number of drug afte the second file:' + str(len(dict_drug)))
 
     print('#############################################################')
-    print (datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('import meddra_all_lable_indication.tsv')
 
     import_meddra_all_lable_indication()
 
     print('#############################################################')
-    print (datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('import meddra_all_indication.tsv')
 
     import_meddra_all_indication()
@@ -559,7 +556,7 @@ def main():
     print('number of drug afte the first file:' + str(len(dict_drug)))
 
     print('#############################################################')
-    print (datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('import meddra_freq.tsv')
 
     import_meddra_freq()
@@ -572,18 +569,18 @@ def main():
     print('number of relationships in the end indication:' + str(len(dict_edges_indications)))
 
     print('#############################################################')
-    print (datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('generate file where are cuis use form umlsIdLabel')
 
     generate_file_umls_id_label()
 
     print('#############################################################')
-    print (datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('generate cypher file')
     generate_cypher_file()
 
     print('#############################################################')
-    print (datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

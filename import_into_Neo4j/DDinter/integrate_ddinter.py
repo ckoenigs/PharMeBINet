@@ -14,7 +14,7 @@ dict_file_name_value = {
 }
 
 # query start
-query_start = """Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/import_into_Neo4j/DDinter/%s" As line FIELDTERMINATOR '\\t'"""
+query_start = """Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%simport_into_Neo4j/DDinter/%s" As line FIELDTERMINATOR '\\t'"""
 cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
 
 # dictionary drug id to name
@@ -60,7 +60,7 @@ def load_data(letter, csv_writer):
 
 def generate_drug_file(edge_file_name):
     """
-    Write durg into csv file
+    Write durg into tsv file
     :edge_file_name: string
     :return:
     """
@@ -84,7 +84,7 @@ def generate_drug_file(edge_file_name):
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     global path_of_directory
     if len(sys.argv) > 1:
@@ -94,7 +94,7 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load DDinter data')
 
 
@@ -110,14 +110,14 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('write drug file')
 
     generate_drug_file(file_name)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

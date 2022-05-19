@@ -62,8 +62,8 @@ def load_pathway_from_database():
 
 def generate_files(path_of_directory):
     """
-    generate cypher file and csv file
-    :return: csv files
+    generate cypher file and tsv file
+    :return: csv writers
     """
     # file from relationship between gene and variant
     file_name = 'pathway/mapping_pathway.tsv'
@@ -81,7 +81,7 @@ def generate_files(path_of_directory):
 
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/drugbank/%s" As line FIELDTERMINATOR '\\t' 
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/drugbank/%s" As line FIELDTERMINATOR '\\t' 
         Match (n:Pathway{identifier:line.pathway_id}), (v:Pathway_DrugBank{identifier:line.pathway_db_id}) Create (n)-[r:equal_to_pathway_drugbank]->(v) Set n.drugbank="yes", n.resource=split(line.resource,"|") ;\n'''
     query = query % (path_of_directory, file_name)
     cypher_file.write(query)
@@ -151,7 +151,7 @@ def load_all_drugbank_pc_and_map(csv_mapping, csv_not_mapped):
 def generate_edge_files():
     """
     Prepare pathway compound edge file and cypher query.
-    :return: csv file
+    :return: csv writer
     """
     file_name = 'pathway/edge_pathway_compound.tsv'
     file = open(file_name, 'w', encoding='utf-8')
@@ -162,7 +162,7 @@ def generate_edge_files():
 
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/drugbank/%s" As line FIELDTERMINATOR '\\t' 
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/drugbank/%s" As line FIELDTERMINATOR '\\t' 
             Match (n:Pathway{identifier:line.pathway_id}), (v:Compound{identifier:line.compound_id}) Create (v)-[r:ASSOCIATES_CaPW{license:"%s", source:"DrugBank", drugbank:"yes", resource:["DrugBank"], url:"https://go.drugbank.com/drugs/"+line.compound_id}]->(n) ;\n'''
     query = query % (path_of_directory, file_name, license)
     cypher_file.write(query)
@@ -185,7 +185,7 @@ def prepare_edges_to_compound():
                 csv_edge.writerow([pathway_id, compound_id])
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     global path_of_directory, license
     if len(sys.argv) < 3:
         sys.exit('need path anf license pathway drugbank')
@@ -194,42 +194,42 @@ def main():
     license = sys.argv[1]
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('connection to db')
 
     create_connection_with_neo4j()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load pathway from neo4j')
 
     load_pathway_from_database()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
-    print('Generate cypher and csv file')
+    print(datetime.datetime.now())
+    print('Generate cypher and tsv file')
 
     csv_mapping, csv_not_mapped = generate_files(path_of_directory)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load pathways from drugbank and map')
 
     load_all_drugbank_pc_and_map(csv_mapping, csv_not_mapped)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Prepare pathway-compound edge')
 
     prepare_edges_to_compound()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

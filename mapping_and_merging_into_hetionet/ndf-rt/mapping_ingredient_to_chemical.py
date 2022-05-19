@@ -135,7 +135,7 @@ def write_files(path_of_directory):
 
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/ndf-rt/%s" As line FIELDTERMINATOR '\\t' 
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/ndf-rt/%s" As line FIELDTERMINATOR '\\t' 
             Match (n:NDFRT_INGREDIENT_KIND{code:line.code}), (v:Chemical{identifier:line.chemical_id}) Set v.ndf_rt='yes', v.resource=split(line.resource,'|') Create (v)-[:equal_to_ingredient_ndf_rt{how_mapped:line.how_mapped}]->(n);'''
     query = query % (path_of_directory, file_name)
     cypher_file.write(query)
@@ -188,12 +188,12 @@ def load_all_ingredients_and_map():
 def write_mapping_into_file(csv_map):
     for (identifier, chemical_id), how_mapped in dict_mapping_pairs.items():
         resource = set(dict_chemical_id_to_resource[chemical_id])
-        resource.add('NDR-RT')
+        resource.add('NDF-RT')
         csv_map.writerow([identifier, chemical_id, '|'.join(sorted(resource)), ';'.join(how_mapped)])
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]
@@ -202,42 +202,42 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('connection to db')
 
     create_connection_with_neo4j_and_mysql()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate files')
 
     csv_writer = write_files(path_of_directory)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all Chemicals from database')
 
     load_chemical_from_database_and_add_to_dict()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all ingredients from database')
 
     load_all_ingredients_and_map()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Write mapping into file')
 
     write_mapping_into_file(csv_writer)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

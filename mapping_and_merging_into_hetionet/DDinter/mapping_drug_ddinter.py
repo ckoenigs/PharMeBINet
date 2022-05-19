@@ -1,6 +1,7 @@
 import csv
 import sys
 import datetime
+from collections import defaultdict
 
 sys.path.append("../..")
 import create_connection_to_databases
@@ -19,7 +20,10 @@ def create_connection_with_neo4j():
 
 
 # dictionary name to ids
-dict_name_to_id = {}
+dict_name_to_id = defaultdict(set)
+
+# dictionary synonyms to ids
+dict_synonyms_to_id = defaultdict(set)
 
 
 def integrate_information_into_dict(dict_node_id_to_resource):
@@ -34,15 +38,11 @@ def integrate_information_into_dict(dict_node_id_to_resource):
         dict_node_id_to_resource[identifier] = resource
 
         name = name.lower()
-        if name not in dict_name_to_id:
-            dict_name_to_id[name] = set()
         dict_name_to_id[name].add(identifier)
 
         if synonyms:
             for synonym in synonyms:
                 synonym = synonym.lower()
-                if synonym not in dict_name_to_id:
-                    dict_name_to_id[synonym] = set()
                 dict_name_to_id[synonym].add(identifier)
 
     print('number of Chemical in database', len(dict_node_id_to_resource))
@@ -55,14 +55,14 @@ def prepare_query(file_name):
     :return:
     """
     cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/%s" As line Fieldterminator '\\t' MATCH (n:Chemical{identifier:line.db_id}), (g:drug_ddinter{identifier:line.ddinter_id}) Set n.resource=split(line.resource,"|"), n.ddinter='yes' Create (n)-[:equal_ddinter_chemical}]->(g);\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/DDinter/%s" As line Fieldterminator '\\t' MATCH (n:Chemical{identifier:line.db_id}), (g:drug_ddinter{identifier:line.ddinter_id}) Set n.resource=split(line.resource,"|"), n.ddinter='yes' Create (n)-[:equal_ddinter_chemical{how_mapped:line.how_mapped}]->(g);\n'''
     query = query % (file_name)
     cypher_file.write(query)
 
 
-def add_to_file(dict_node_id_to_resource, identifier_db, identifier_act_id, csv_mapping):
+def add_to_file(dict_node_id_to_resource, identifier_db, identifier_act_id, csv_mapping, how_mapped):
     """
-    add resource and write mapping pair in csv file
+    add resource and write mapping pair in tsv file
     :param dict_node_id_to_resource: dictionary
     :param identifier_db: string
     :param identifier_act_id: string
@@ -72,7 +72,7 @@ def add_to_file(dict_node_id_to_resource, identifier_db, identifier_act_id, csv_
     resource = set(dict_node_id_to_resource[identifier_db])
     resource.add('DDinter')
     resource = sorted(resource)
-    csv_mapping.writerow([identifier_db, identifier_act_id, '|'.join(resource)])
+    csv_mapping.writerow([identifier_db, identifier_act_id, '|'.join(resource), how_mapped])
 
 
 def get_all_ddinter_and_map(dict_node_id_to_resource):
@@ -82,10 +82,10 @@ def get_all_ddinter_and_map(dict_node_id_to_resource):
     """
 
     # prepare files
-    file_name = 'output/mapping.csv'
+    file_name = 'output/mapping.tsv'
     mapping_file = open(file_name, 'w', encoding='utf-8')
     csv_mapping = csv.writer(mapping_file, delimiter='\t')
-    csv_mapping.writerow(['db_id', 'ddinter_id', 'resource'])
+    csv_mapping.writerow(['db_id', 'ddinter_id', 'resource', 'how_mapped'])
 
     prepare_query(file_name)
 
@@ -103,7 +103,11 @@ def get_all_ddinter_and_map(dict_node_id_to_resource):
         if name in dict_name_to_id:
             counter_mapping += 1
             for drugbank_id in dict_name_to_id[name]:
-                add_to_file(dict_node_id_to_resource, drugbank_id, identifier, csv_mapping)
+                add_to_file(dict_node_id_to_resource, drugbank_id, identifier, csv_mapping,'name_mapping')
+        elif name in dict_synonyms_to_id:
+            counter_mapping += 1
+            for drugbank_id in dict_synonyms_to_id[name]:
+                add_to_file(dict_node_id_to_resource, drugbank_id, identifier, csv_mapping,'synonyms_mapping')
 
         else:
             counter_not_mapped += 1
@@ -114,7 +118,7 @@ def get_all_ddinter_and_map(dict_node_id_to_resource):
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     global path_of_directory, director
     if len(sys.argv) > 1:
@@ -124,35 +128,35 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('create connection to neo4j')
 
     create_connection_with_neo4j()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('prepare for each label the files')
 
     dict_node_id_to_resource = {}
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('get all drugs from database')
 
     integrate_information_into_dict(dict_node_id_to_resource)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('prepare file and write information of mapping in it')
 
     get_all_ddinter_and_map(dict_node_id_to_resource)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

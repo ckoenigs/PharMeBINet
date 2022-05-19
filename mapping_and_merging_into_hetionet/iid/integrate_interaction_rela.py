@@ -80,7 +80,7 @@ def add_entry_to_dictionary(dictionary, key, value):
 
 def generate_file_and_cypher():
     """
-    generate cypher file and csv file
+    generate cypher file and tsv file
     :return:
     """
     query = '''MATCH (:protein_IID)-[p:interacts]->(:protein_IID) WITH DISTINCT keys(p) AS keys
@@ -93,8 +93,8 @@ def generate_file_and_cypher():
 
     cypher_file = open('interaction/cypher.cypher', 'w', encoding='utf-8')
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/iid/%s.tsv" As line FIELDTERMINATOR '\\t' 
-            Match (p1:Protein{identifier:line.protein_id_1}), (p2:Protein{identifier:line.protein_id_2}) Create (p1)-[:INTERACTS_PiI]->(b:Interaction{ '''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/iid/%s.tsv" As line FIELDTERMINATOR '\\t' 
+            Match (p1:Protein{identifier:line.protein_id_1}), (p2:Protein{identifier:line.protein_id_2}) Create (p1)-[:INTERACTS_PiI{iid:'yes', source:'Integrated Interactions Database', resource:['IID'], license:"free to use for academic purposes"}]->(b:Interaction{ '''
     query = query % (path_of_directory, file_name)
 
     header = ['protein_id_1', 'protein_id_2', 'id']
@@ -113,11 +113,11 @@ def generate_file_and_cypher():
         else:
             query += head + ':line.' + head + ', '
 
-    query += ' license:"free to use for academic purposes", iid:"yes", source:"Integrated Interactions Database", resource:["IID"], url:"http://iid.ophid.utoronto.ca/", identifier:"IPP_"+line.id, node_edge:true})-[:INTERACTS_IiP]->(p2);\n'
+    query += ' license:"free to use for academic purposes", iid:"yes", source:"Integrated Interactions Database", resource:["IID"], url:"http://iid.ophid.utoronto.ca/", identifier:"IPP_"+line.id, node_edge:true})-[:INTERACTS_IiP{iid:"yes", source:"Integrated Interactions Database", resource:["IID"], license:"free to use for academic purposes"}]->(p2);\n'
     cypher_file.write(query)
     cypher_file.write('Create Constraint On (node:Interaction) Assert node.identifier Is Unique;\n')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/iid/%s.tsv" As line FIELDTERMINATOR '\\t' 
-                Match (i:Interaction{identifier:"IPP_"+line.id}), (c:CellularComponent{identifier:line.go_id}) Set i.subcellular_location="GO term enrichment" Create (i)-[:MIGHT_SUBCELLULAR_LOCATES_ImslCC]->(c);\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/iid/%s.tsv" As line FIELDTERMINATOR '\\t' 
+                Match (i:Interaction{identifier:"IPP_"+line.id}), (c:CellularComponent{identifier:line.go_id}) Set i.subcellular_location="GO term enrichment" Create (i)-[:MIGHT_SUBCELLULAR_LOCATES_ImslCC{license:"free to use for academic purposes", iid:"yes", source:"Integrated Interactions Database", resource:["IID"]}]->(c);\n'''
     query = query % (path_of_directory, file_name_go)
     cypher_file.write(query)
     cypher_file.close()
@@ -244,28 +244,28 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('generate connection to neo4j')
 
     create_connection_with_neo4j()
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load go ')
 
     get_go_cellular_component_id()
 
     print(
         '#################################################################################################################################################################')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load IID human data')
 
     load_and_prepare_IID_human_data()
 
     print(
         '#################################################################################################################################################################')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('prepare files')
 
     write_info_into_files()
@@ -273,7 +273,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

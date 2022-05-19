@@ -34,11 +34,11 @@ load in all pathways from hetionet in a dictionary
 
 def load_hetionet_regulation_hetionet_node_in(csv_file, dict_regulation_hetionet_node_hetionet,
                                               new_relationship,
-                                              node_reactome_label, rela_equal_name, node_hetionet_label, direction1,
+                                              node_reactome_label,  node_hetionet_label, direction1,
                                               direction2):
-    query = '''MATCH (p:Regulation)-[:equal_to_reactome_regulation]-(r:Regulation_reactome)%s[v:%s]%s(n:%s)-[:%s]-(b:%s) RETURN p.identifier, b.identifier, v.order, v.stoichiometry, r.schemaClass, n.stId'''
+    query = '''MATCH (p:Regulation)-[:equal_to_reactome_regulation]-(r:Regulation_reactome)%s[v:%s]%s(n:%s)-[]-(b:%s) RETURN p.identifier, b.identifier, v.order, v.stoichiometry, r.schemaClass, n.stId'''
     query = query % (
-    direction1, new_relationship, direction2, node_reactome_label, rela_equal_name, node_hetionet_label)
+    direction1, new_relationship, direction2, node_reactome_label,  node_hetionet_label)
     print(query)
     results = graph_database.run(query)
     # for id1, id2, order, stoichiometry, in results:
@@ -58,17 +58,17 @@ generate new relationships between pathways of hetionet and Regulation of hetion
 
 
 def create_cypher_file(file_path, node_label, rela_name, direction1, direction2):
-    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/reactome/%s" As line FIELDTERMINATOR "\\t" MATCH (d:Regulation{identifier:toInteger(line.id_hetionet_Regulation)}),(c:%s{identifier:line.id_hetionet_node}) CREATE (d)%s[:%s{order:line.order, stoichiometry:line.stoichiometry, knownAction:line.knownAction, resource: ['Reactome'], source:"Reactome", reactome: "yes", license:"%s", url:"https://reactome.org/content/detail/"+line.stid}]%s(c);\n'''
+    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/reactome/%s" As line FIELDTERMINATOR "\\t" MATCH (d:Regulation{identifier:line.id_hetionet_Regulation}),(c:%s{identifier:line.id_hetionet_node}) CREATE (d)%s[:%s{order:line.order, stoichiometry:line.stoichiometry, knownAction:line.knownAction, resource: ['Reactome'], source:"Reactome", reactome: "yes", license:"%s", url:"https://reactome.org/content/detail/"+line.stid}]%s(c);\n'''
     query = query % (path_of_directory, file_path, node_label, direction1, rela_name, license, direction2)
     cypher_file.write(query)
 
 
-def check_relationships_and_generate_file(new_relationship, node_reactome_label, rela_equal_name, node_hetionet_label,
+def check_relationships_and_generate_file(new_relationship, node_reactome_label,  node_hetionet_label,
                                           directory, rela_name, direction1, direction2):
     print(
         '___(o\'-\'o)___°( ^.^ )°___°(.,.)°___~°(o\'.\'o)°___`(o^.^o)´___(o\'-\'o)___°( ^.^ )°___°(.,.)°___~°(o\'.\'o)°___`(o^.^o)´___')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all relationships from hetionet_Regulation and hetionet_nodes into a dictionary')
     # file for mapped or not mapped identifier
     file_name = directory + '/mapped_Regulation_to_' + node_reactome_label[0:24] + '_' + rela_name + '.tsv'
@@ -81,12 +81,12 @@ def check_relationships_and_generate_file(new_relationship, node_reactome_label,
 
     load_hetionet_regulation_hetionet_node_in(csv_mapped, dict_Regulation_node, new_relationship,
                                               node_reactome_label,
-                                              rela_equal_name, node_hetionet_label, direction1, direction2)
+                                              node_hetionet_label, direction1, direction2)
 
     print(
         '°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     print('Integrate new relationships and connect them ')
 
@@ -102,7 +102,7 @@ def main():
         sys.exit('need a path and license reactome edge regulation')
 
     global cypher_file
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j()
@@ -110,24 +110,18 @@ def main():
     # 0: old relationship;           1: name of node in Reactome;        2: relationship equal to Hetionet-node
     # 3: name of node in Hetionet;   4: name of directory                5: name of new relationship
     list_of_combinations = [
-        ['regulatedBy', 'Reaction_reactome', 'equal_to_reactome_reaction', 'Reaction', 'IS_REGULATED_BY_RGirbR', '<-',
+        ['regulatedBy', 'ReactionLikeEvent_reactome',  'ReactionLikeEvent', 'IS_REGULATED_BY_RGirbRLE', '<-',
          '-'],
-        ['regulatedBy', 'FailedReaction_reactome', 'equal_to_reactome_failedreaction', 'FailedReaction',
-         'IS_REGULATED_BY_RGirbF', '<-', '-'],
-        ['regulatedBy', 'BlackBoxEvent_reactome', 'equal_to_reactome_blackBoxEvent', 'BlackBoxEvent',
-         'IS_REGULATED_BY_RGirbB', '<-', '-'],
-        ['regulatedBy', 'Polymerisation_reactome', 'equal_to_reactome_polymerisation', 'Polymerisation',
-         'IS_REGULATED_BY_RGirbP', '<-', '-'],
         # ['regulator', 'PhysicalEntity_reactome)--(:ReferenceEntity_reactome', 'equal_to_reactome_drug', 'Chemical', 'HAS_REGULATOR_RGirCH', '-', '->'], do not exists anymore
-        ['activeUnit', 'PhysicalEntity_reactome)--(:ReferenceEntity_reactome', 'equal_to_reactome_drug', 'Chemical',
+        ['activeUnit', 'PhysicalEntity_reactome)--(:ReferenceEntity_reactome',  'Chemical',
          'HAS_ACTIVE_UNIT_RGiauCH', '-', '->'],
-        ['goBiologicalProcess', 'GO_BiologicalProcess_reactome', 'equal_to_reactome_gobiolproc', 'BiologicalProcess',
-         'OCCURS_IN_GO_BIOLOGICAL_PROCESS_RGoigbpB', '-', '->'],
-        ['activity', 'GO_MolecularFunction_reactome', 'equal_to_reactome_gomolfunc', 'MolecularFunction',
-         'HAS_ACTIVITY_RGhaM', '-', '->'],
-        ['activeUnit', 'PhysicalEntity_reactome)--(:ReferenceEntity_reactome', 'equal_to_reactome_uniprot', 'Protein',
+        ['goBiologicalProcess', 'GO_BiologicalProcess_reactome',  'BiologicalProcess',
+         'OCCURS_IN_GO_BIOLOGICAL_PROCESS_RGoigbpBP', '-', '->'],
+        ['activity', 'GO_MolecularFunction_reactome',  'MolecularFunction',
+         'HAS_ACTIVITY_RGhaMF', '-', '->'],
+        ['activeUnit', 'PhysicalEntity_reactome)--(:ReferenceEntity_reactome', 'Protein',
          'HAS_ACTIVE_UNIT_RGhauP', '-', '->'],
-        ['regulator', 'PhysicalEntity_reactome)--(:ReferenceEntity_reactome', 'equal_to_reactome_uniprot', 'Protein',
+        ['regulator', 'PhysicalEntity_reactome)--(:ReferenceEntity_reactome',  'Protein',
          'HAS_REGULATOR_RGhrP', '-', '->']
     ]
 
@@ -137,12 +131,11 @@ def main():
     for list_element in list_of_combinations:
         new_relationship = list_element[0]
         node_reactome_label = list_element[1]
-        rela_equal_name = list_element[2]
-        node_hetionet_label = list_element[3]
-        rela_name = list_element[4]
-        direction1 = list_element[5]
-        direction2 = list_element[6]
-        check_relationships_and_generate_file(new_relationship, node_reactome_label, rela_equal_name,
+        node_hetionet_label = list_element[2]
+        rela_name = list_element[3]
+        direction1 = list_element[4]
+        direction2 = list_element[5]
+        check_relationships_and_generate_file(new_relationship, node_reactome_label,
                                               node_hetionet_label, directory,
                                               rela_name, direction1, direction2)
     cypher_file.close()
@@ -150,7 +143,7 @@ def main():
     print(
         '___(o\'-\'o)___°( ^.^ )°___°(.,.)°___~°(o\'.\'o)°___`(o^.^o)´___(o\'-\'o)___°( ^.^ )°___°(.,.)°___~°(o\'.\'o)°___`(o^.^o)´___')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

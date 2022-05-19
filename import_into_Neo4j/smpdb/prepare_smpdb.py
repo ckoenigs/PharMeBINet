@@ -21,7 +21,7 @@ cypher_file_edge = open('output/cypher_edge.cypher', 'w', encoding='utf-8')
 
 def generate_csv_files(keys, file_name):
     """
-    generate csv file with header and file name
+    generate tsv file with header and file name
     :param keys: string
     :param file_name:  string
     :return: csv writer
@@ -35,7 +35,7 @@ def generate_csv_files(keys, file_name):
 
 def generate_csv_file_and_prepare_cypher_queries(keys, file_name, label, unique_identifier):
     """
-    generate node file as csv. Additionaly, generate cpher query to integrate node into neo4j with index.
+    generate node file as tsv. Additionaly, generate cpher query to integrate node into neo4j with index.
     :param keys: list strings
     :param file_name: string
     :param label: string
@@ -63,7 +63,7 @@ def generate_csv_file_and_prepare_cypher_queries(keys, file_name, label, unique_
 
 def generate_csv_file_and_prepare_cypher_queries_edge(file_name, label, unique_identifier):
     """
-    generate edge file as csv. Additionaly, generate cpher query to integrate the edge into neo4j.
+    generate edge file as tsv. Additionaly, generate cpher query to integrate the edge into neo4j.
     :param file_name: string
     :param label: string
     :param unique_identifier: string
@@ -80,7 +80,7 @@ def generate_csv_file_and_prepare_cypher_queries_edge(file_name, label, unique_i
 
 
 # query start
-query_start = """Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/import_into_Neo4j/smpdb/%s" As line FIELDTERMINATOR '\\t'"""
+query_start = """Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%simport_into_Neo4j/smpdb/%s" As line FIELDTERMINATOR '\\t'"""
 
 # dictionary old property name to new
 dict_old_porperty_to_new = {
@@ -122,8 +122,8 @@ def load_pathway_information():
     with ZipFile(BytesIO(request.content), 'r') as zipObj:
         f = zipObj.open(zipObj.filelist[0], 'r')
         csv_reader = csv.DictReader(io.TextIOWrapper(f, 'utf-8'))
-    # file = open('smpdb_pathways.csv', 'r', encoding='utf-8')
-    # csv_reader = csv.DictReader(file)
+        # file = open('smpdb_pathways.csv', 'r', encoding='utf-8')
+        # csv_reader = csv.DictReader(file)
         for line in csv_reader:
             smpdb_id = line['SMPDB ID']
             if smpdb_id in set_smpdb_id:
@@ -136,10 +136,10 @@ def load_pathway_information():
 
             dict_line = {}
             for key, value in dict_old_porperty_to_new.items():
-                if key!='Description':
+                if key != 'Description':
                     dict_line[value] = line[key]
                 else:
-                    dict_line[value] = line[key].replace('\n',' ')
+                    dict_line[value] = line[key].replace('\n', ' ')
             csv_writer.writerow(dict_line)
 
 
@@ -182,14 +182,14 @@ def combine_other_node_information(dict_node, identifier, dict_nodes):
 def extract_info_rela_and_other_node(csv_edge, csv_writer, url_file, identifier_name, dict_old_porperty_to_new_node,
                                      dict_node_id_to_node_info, set_pathway_node_pair):
     request = get(url_file)
-    count_csv_files=0
-    all_pathway_ids=set()
+    count_csv_files = 0
+    all_pathway_ids = set()
     with ZipFile(BytesIO(request.content), 'r') as zipObj:
-    # with ZipFile(zip_name, 'r') as zipObj:
+        # with ZipFile(zip_name, 'r') as zipObj:
         for zip_info in zipObj.filelist:
             f = zipObj.open(zip_info, 'r')
             csv_reader = csv.DictReader(io.TextIOWrapper(f, 'utf-8'))
-            count_csv_files+=1
+            count_csv_files += 1
             for line in csv_reader:
                 # print(line)
                 # get an identifier for node (in protein at least some have only dugbank id
@@ -210,18 +210,18 @@ def extract_info_rela_and_other_node(csv_edge, csv_writer, url_file, identifier_
                     print('ohje, a pathway which is not in pathways :(')
                 all_pathway_ids.add(pathway_id)
 
-                # do not write duplicate edges in csv
+                # do not write duplicate edges in tsv
                 if (pathway_id, identifier) in set_pathway_node_pair:
                     # print('double pair pathway_protein')
                     # print(pathway_id, identifier)
                     continue
 
-                # prepare edge information and write into csv
+                # prepare edge information and write into tsv
                 set_pathway_node_pair.add((pathway_id, identifier))
                 edge = {'pathway_id': pathway_id, 'other_id': identifier}
                 csv_edge.writerow(edge)
 
-    # write node information into csv file
+    # write node information into tsv file
     for dict_node in dict_node_id_to_node_info.values():
         csv_writer.writerow(dict_node)
 
@@ -250,9 +250,9 @@ Locus:protein
 """
 
 
-def prepare_pathway_protein_csv():
+def prepare_pathway_protein_tsv():
     """
-    Generate csv file for Protein with additional cypher query. Then prepare csv file and query for pathway-protein.
+    Generate tsv file for Protein with additional cypher query. Then prepare tsv file and query for pathway-protein.
     Next, extract informationform zip and add to node and edge.
     :return:
     """
@@ -270,7 +270,7 @@ def prepare_pathway_protein_csv():
                                      set_pathway_protein_pair)
 
 
-# dictionary property from csv to property in new csv file
+# dictionary property from csv to property in new tsv file
 dict_old_porperty_to_new_metabolite = {
     'Metabolite ID': 'metabolite_id',
     'Metabolite Name': 'name',
@@ -285,7 +285,6 @@ dict_old_porperty_to_new_metabolite = {
     'InChI': 'inchi',
     'InChI Key': 'inchi_key'
 }
-
 
 # set of metabolite ids to metabolite infos
 dict_metabolite_id_to_info = {}
@@ -316,7 +315,7 @@ InChI Key: metabolite
 
 def prepare_pathway_metabolite_csv():
     """
-    Generate csv file for Protein with additional cypher query. Then prepare csv file and query for pathway-protein.
+    Generate tsv file for Protein with additional cypher query. Then prepare tsv file and query for pathway-protein.
     Next, extract informationform zip and add to node and edge.
     :return:
     """
@@ -326,16 +325,17 @@ def prepare_pathway_metabolite_csv():
     header_node.append('identifier')
     csv_writer = generate_csv_file_and_prepare_cypher_queries(header_node, 'output/metabolite.tsv',
                                                               'metabolite', 'identifier')
-    csv_edge = generate_csv_file_and_prepare_cypher_queries_edge('output/pathway_metabolite.tsv', 'metabolite', 'identifier')
+    csv_edge = generate_csv_file_and_prepare_cypher_queries_edge('output/pathway_metabolite.tsv', 'metabolite',
+                                                                 'identifier')
 
     # 'smpdb_metabolites.csv.zip'
     extract_info_rela_and_other_node(csv_edge, csv_writer, url_file, ['Metabolite ID', ''],
                                      dict_old_porperty_to_new_metabolite, dict_metabolite_id_to_info,
-                                     set_pathway_metabolite_pair) # DrugBank ID
+                                     set_pathway_metabolite_pair)  # DrugBank ID
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     global path_of_directory
     if len(sys.argv) > 1:
@@ -345,28 +345,28 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load pathway information')
 
     load_pathway_information()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load pathway-metabolite interaction')
 
     prepare_pathway_metabolite_csv()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load pathway-protein interaction')
 
-    prepare_pathway_protein_csv()
+    prepare_pathway_protein_tsv()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

@@ -52,18 +52,18 @@ def find_not_mapped_compounds_and_add_to_dict():
 # label of salt
 label_of_salt = 'Salt_DrugBank'
 
-# name of the csv file
+# name of the tsv file
 file_node = 'salt_compound'
 
 # name rela file
 file_rela = 'salt_compound_rela'
 
 '''
-Create cypher and csv files for nodes and relationships
+Create cypher and tsv files for nodes and relationships
 '''
 
 
-def create_cypher_and_csv_files():
+def create_cypher_and_tsv_files():
     # open cypher file
     cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
     # get properties of salt nodes
@@ -71,7 +71,7 @@ def create_cypher_and_csv_files():
     query = query % (label_of_salt)
     result = g.run(query)
     header = []
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/drugbank/salts/%s.csv" As line Fieldterminator '\\t' Match '''
+    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/drugbank/salts/%s.tsv" As line Fieldterminator '\\t' Match '''
     part = query_start + '''(a:%s {identifier:line.identifier}) Create (b:Compound :Salt{'''
     part = part % (file_node, label_of_salt)
     for property, in result:
@@ -82,14 +82,14 @@ def create_cypher_and_csv_files():
 
     cypher_file.write(query)
     cypher_file.close()
-    node_file = open('salts/' + file_node + '.csv', 'w')
-    rela_file = open('salts/' + file_rela + '.csv', 'w')
+    node_file = open('salts/' + file_node + '.tsv', 'w')
+    rela_file = open('salts/' + file_rela + '.tsv', 'w')
     global csv_node, csv_rela
     csv_node = csv.DictWriter(node_file, fieldnames=header, delimiter='\t')
     csv_node.writeheader()
     cypher_rela = open('output/cypher_rela.cypher', 'a', encoding='utf-8')
     rela_header = ['salt_id', 'compound_id']
-    query_rela = query_start + ' (b:Compound :Salt{identifier:line.salt_id}), (a:Compound {identifier:line.compound_id}) Create (a)-[r:PART_OF_CpSA{license:"%s", url:"https://go.drugbank.com/drugs/"+line.compound_id, source:"DrugBank", resource:["DrugBank"], drugbank:"yes" }]->(b);\n'
+    query_rela = query_start + ' (b:Compound :Salt{identifier:line.salt_id}), (a:Compound {identifier:line.compound_id}) Create (a)-[r:PART_OF_CpoSA{license:"%s", url:"https://go.drugbank.com/drugs/"+line.compound_id, source:"DrugBank", resource:["DrugBank"], drugbank:"yes" }]->(b);\n'
     query_rela = query_rela % (file_rela, license)
     cypher_rela.write(query_rela)
     cypher_rela.close()
@@ -135,16 +135,16 @@ def add_merge_to_sh_file(dict_not_mapped, mapped_value, node_id):
 
 
 '''
-Gather all salt and make a new csv to integrate them as compound into neo4j
+Gather all salt and make a new tsv to integrate them as compound into neo4j
 also check if a salt is on of the not mapped compounds 
-Prepare the csv for salt integration, because they are not in hetionet they can be directly integrated
+Prepare the tsv for salt integration, because they are not in hetionet they can be directly integrated
 also check on the drugs which did not mapped, because some of them might be now salts
 
 {identifier:"DBSALT002847"}
 '''
 
 
-def prepare_node_csv():
+def prepare_node_tsv():
     query = '''MATCH (n:Salt_DrugBank) RETURN n'''
     result = g.run(query)
     for node, in result:
@@ -164,11 +164,11 @@ def prepare_node_csv():
 
 
 '''
-Generate fill the rela csv file
+Generate fill the rela tsv file
 '''
 
 
-def fill_rela_csv():
+def fill_rela_tsv():
     query = '''MATCH (n:Salt_DrugBank)-[:has_ChS]-(b:Compound_DrugBank) RETURN n.identifier, b.identifier'''
     result = g.run(query)
     for salt_id, compound_id, in result:
@@ -183,7 +183,7 @@ def main():
     global license
     license = sys.argv[1]
     path_of_directory = sys.argv[2]
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('create connection with neo4j')
 
     create_connection_with_neo4j()
@@ -191,7 +191,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('get compound which are not ind drugbank drugs')
 
     find_not_mapped_compounds_and_add_to_dict()
@@ -199,32 +199,32 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
-    print('open and create cypher and csv files')
+    print(datetime.datetime.now())
+    print('open and create cypher and tsv files')
 
-    create_cypher_and_csv_files()
-
-    print(
-        '#################################################################################################################################################################')
-
-    print(datetime.datetime.utcnow())
-
-    print('prepare node csv and make bash for merging not mapped compounds to salt')
-
-    prepare_node_csv()
+    create_cypher_and_tsv_files()
 
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
+
+    print('prepare node tsv and make bash for merging not mapped compounds to salt')
+
+    prepare_node_tsv()
+
+    print(
+        '#################################################################################################################################################################')
+
+    print(datetime.datetime.now())
     print('create rela')
 
-    fill_rela_csv()
+    fill_rela_tsv()
 
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

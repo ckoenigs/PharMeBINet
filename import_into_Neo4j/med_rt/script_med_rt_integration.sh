@@ -6,7 +6,7 @@ path_neo4j=$1
 #path to project
 path_to_project=$2
 
-python3 parse_med_rt_to_csv.py $path_to_project > output_integration_ndf_rt.txt
+python3 parse_med_rt_to_tsv.py $path_to_project > output/output_integration_ndf_rt.txt
 
 
 now=$(date +"%F %T")

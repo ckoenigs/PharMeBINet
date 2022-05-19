@@ -1,4 +1,3 @@
-from py2neo import Graph
 import datetime
 import csv
 import sys
@@ -66,8 +65,8 @@ def load_pair_edges(csv_mapped, csv_new, label, dict_pair_to_resource):
     :param dict_pair_to_resource: dictionary
     :return:
     """
-    file = open('uniprot_go/db_uniprots_to_' + dict_go[label] + '.csv', 'r')
-    csv_reader = csv.reader(file, delimiter=',')
+    file = open('uniprot_go/db_uniprots_to_' + dict_go[label] + '.tsv', 'r')
+    csv_reader = csv.reader(file, delimiter='\t')
     next(csv_reader)
 
     # set of all hmdb pairs
@@ -119,11 +118,11 @@ def create_cypher_file(file_name, file_name_new, label):
     :return:
     """
     # b.resource=split(line.resource,'|'),
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/uniprot/%s" As line FIELDTERMINATOR "\\t" Match (g:Protein{identifier:line.node_id_2}),(b:%s{identifier:line.node_id_1}) Set  b.uniprot='yes' Create (g)-[:PARTICIPATES_Pp%s{resource:['UniProt'],source:'UniProt', uniprot:'yes', license:'CC BY 4.0', url:'https://www.uniprot.org/uniprot/'+line.node_id_2}]->(b);\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/uniprot/%s" As line FIELDTERMINATOR "\\t" Match (g:Protein{identifier:line.node_id_2}),(b:%s{identifier:line.node_id_1}) Set  b.uniprot='yes' Create (g)-[:PARTICIPATES_Pp%s{resource:['UniProt'],source:'UniProt', uniprot:'yes', license:'CC BY 4.0', url:'https://www.uniprot.org/uniprot/'+line.node_id_2}]->(b);\n'''
     query = query % (file_name_new, label, dict_label_to_rela_short[label])
     cypher_file.write(query)
 
-    query = '''LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/uniprot/%s" As line FIELDTERMINATOR "\\t" MATCH (d:%s{identifier:line.node_id_1})-[r]-(c:Protein{identifier:line.node_id_2}) Where not exists(r.not) and type(r) in ["%s"] Set  r.resource=split(line.resource,'|'), r.uniprot='yes';\n'''
+    query = '''LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/uniprot/%s" As line FIELDTERMINATOR "\\t" MATCH (d:%s{identifier:line.node_id_1})-[r]-(c:Protein{identifier:line.node_id_2}) Where not exists(r.not) and type(r) in ["%s"] Set  r.resource=split(line.resource,'|'), r.uniprot='yes';\n'''
     query = query % (path_of_directory, file_name, label, '","'.join(dict_go_to_rela_types[label]))
     cypher_file.write(query)
 
@@ -138,7 +137,7 @@ def check_relationships_and_generate_file(label):
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all relationships from metabolite/protein-node and hetionet_nodes into a dictionary')
     global dict_go_protein_to_rela_type
     # dictionary_go_protein_pair_to_rela_type
@@ -160,7 +159,7 @@ def check_relationships_and_generate_file(label):
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all relationships from pairs from pharmebinet into a set')
 
     dict_pair_to_resource = {}
@@ -170,7 +169,7 @@ def check_relationships_and_generate_file(label):
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all relationships pairs of uniprot')
 
     load_pair_edges(csv_edge, csv_edge_new, label, dict_pair_to_resource)
@@ -178,7 +177,7 @@ def check_relationships_and_generate_file(label):
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     print('Integrate new relationships and connect them ')
 
@@ -193,7 +192,7 @@ def main():
         sys.exit('need a path uniprot-go edges')
 
     global cypher_file
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j')
 
     create_connection_with_neo4j()
@@ -201,7 +200,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('prepare for the different gos')
 
     cypher_file = open('output/cypher_edge_go.cypher', 'w', encoding="utf-8")
@@ -215,7 +214,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

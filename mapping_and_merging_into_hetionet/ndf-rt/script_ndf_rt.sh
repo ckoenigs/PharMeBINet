@@ -7,7 +7,9 @@ path_neo4j=$1
 path_to_project=$2
 
 echo ndf-rt
-
+sleep 180
+$path_neo4j/neo4j restart
+sleep 120
 
 now=$(date +"%F %T")
 echo "Current time: $now"

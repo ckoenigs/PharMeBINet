@@ -35,14 +35,14 @@ def load_genes_from_database_and_add_to_dict():
 
 cypher_file = open('output/cypher_gene_phenotype.cypher', 'w', encoding='utf-8')
 
-query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/omim/%s" As line FIELDTERMINATOR '\\t' 
+query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/omim/%s" As line FIELDTERMINATOR '\\t' 
     Match '''
 
 
 def add_query_to_cypher_file(omim_label, database_label, rela_name_addition, file_name, is_gene=False,
                              additional_labels=[]):
     """
-    add query for a specific csv to cypher file
+    add query for a specific tsv to cypher file
     """
     if is_gene:
         part = "(n{identifier:line.identifier}), (m:%s{identifier:line.database_id}) Where n:%s or n:%s or n:%s "
@@ -51,8 +51,8 @@ def add_query_to_cypher_file(omim_label, database_label, rela_name_addition, fil
         part = "(n:%s {identifier:line.identifier}), (m:%s{identifier:line.database_id}) " % (
             omim_label, database_label)
     this_start_query = query_start + part
-    this_start_query += "Set m.resource=split(line.resource,'|'), m.omim='yes' , m.xrefs=split(line.xrefs,'|')  Create (m)-[:equal_to_omim_%s{mapping_methode:split(line.mapping_method,'|')}]->(n);\n"
-    query = this_start_query % (path_of_directory, file_name, rela_name_addition)
+    this_start_query += "Set m.resource=split(line.resource,'|'), m.omim='yes' %s  Create (m)-[:equal_to_omim_%s{how_mapped:line.how_mapped}]->(n);\n"
+    query = this_start_query % (path_of_directory, file_name,  ', m.xrefs=split(line.xrefs,"|")' if database_label=='Gene' else '', rela_name_addition)
     cypher_file.write(query)
 
 
@@ -66,12 +66,12 @@ dict_of_mapped_tuples = {}
 set_not_mapped_ids = set()
 
 # file header
-file_header = ['identifier', 'database_id', 'resource', 'xrefs']
+file_header = ['identifier', 'database_id', 'resource', 'xrefs', 'how_mapped']
 
 
-def prepare_csv_files(file_name, file_header):
+def prepare_tsv_files(file_name, file_header):
     """
-    generate a csv file in a given path with a given header
+    generate a tsv file in a given path with a given header
     :param file_name: string
     :param file_header: string
     :return:
@@ -83,15 +83,16 @@ def prepare_csv_files(file_name, file_header):
     return csv_writer
 
 
-def add_mapped_one_to_csv_file(dict_node_info, omim_id, mapped_id, csv_writer, mapping_dict, is_gene=False):
+def add_mapped_one_to_tsv_file(dict_node_info, omim_id, mapped_id, csv_writer, mapping_dict, how_mapped, is_gene=False):
     """
-
+    Get the xrefs information from the existing nodes. Add the omim id to the xrefs. Also, add OMIM to resource and write information into tsv file.
     :param dict_node_info:
     :param omim_id: string
-    :param mapped_id:
-    :param csv_writer:
-    :param mapping_dict:
+    :param mapped_id:string
+    :param csv_writer:csv writer
+    :param mapping_dict: dictionary
     :param is_gene: boolean
+    :param how_mapped:string
     :return:
     """
     dict_node = dict_node_info[mapped_id]
@@ -105,7 +106,7 @@ def add_mapped_one_to_csv_file(dict_node_info, omim_id, mapped_id, csv_writer, m
     resource = dict_node['resource']
     resource.append('OMIM')
     resource = list(set(resource))
-    csv_writer.writerow([omim_id, mapped_id, "|".join(resource), "|".join(xrefs)])
+    csv_writer.writerow([omim_id, mapped_id, "|".join(resource), "|".join(xrefs), how_mapped])
     mapping_dict[(omim_id, mapped_id)] = 1
 
 
@@ -116,12 +117,12 @@ def load_all_omim_gene_and_start_mapping():
     query = "MATCH (n:gene_omim) RETURN n, labels(n)"
     results = g.run(query)
     counter_mapped = 0
-    # csv file
+    # tsv file
     file_name = "gene/mapping.tsv"
-    csv_writer = prepare_csv_files(file_name, file_header)
+    csv_writer = prepare_tsv_files(file_name, file_header)
 
     file_name_not_mapped = "gene/not_mapping.tsv"
-    csv_writer_not = prepare_csv_files(file_name_not_mapped, ['identifier', 'name'])
+    csv_writer_not = prepare_tsv_files(file_name_not_mapped, ['identifier', 'name'])
     # generate query
     add_query_to_cypher_file('gene_omim', 'Gene', 'gene', file_name, is_gene=True,
                              additional_labels=['phenotype_omim', 'predominantly_phenotypes_omim'])
@@ -152,8 +153,8 @@ def load_all_omim_gene_and_start_mapping():
                         # print((identifier, ncbi_id))
                         counter_different_symbol += 1
                     if (identifier, ncbi_id) not in dict_of_mapped_tuples:
-                        add_mapped_one_to_csv_file(dict_gene_id_to_gene_node, identifier, ncbi_id, csv_writer,
-                                                   dict_of_mapped_tuples, is_gene=True)
+                        add_mapped_one_to_tsv_file(dict_gene_id_to_gene_node, identifier, ncbi_id, csv_writer,
+                                                   dict_of_mapped_tuples, 'gene_id', is_gene=True)
                         found_at_least_one_mapping = True
 
         if found_at_least_one_mapping:
@@ -177,6 +178,9 @@ dict_disease_id_to_disease_node = {}
 # dictionary omim id to disease ids
 dict_omim_id_to_disease_ids = {}
 
+# dictionary name to disease ids
+dict_name_to_disease_ids = {}
+
 
 def load_disease_from_database_and_add_to_dict():
     """
@@ -194,6 +198,17 @@ def load_disease_from_database_and_add_to_dict():
                 if omim_id not in dict_omim_id_to_disease_ids:
                     dict_omim_id_to_disease_ids[omim_id] = []
                 dict_omim_id_to_disease_ids[omim_id].append(identifier)
+        name = node['name'].lower()
+        if name not in dict_name_to_disease_ids:
+            dict_name_to_disease_ids[name] = set()
+        dict_name_to_disease_ids[name].add(identifier)
+        if 'synonyms' in node:
+            for synonym in node['synonyms']:
+                synonym = synonym.lower()
+                if synonym not in dict_name_to_disease_ids:
+                    dict_name_to_disease_ids[synonym] = set()
+                dict_name_to_disease_ids[synonym].add(identifier)
+
     print("number of omim to disease:" + str(len(dict_omim_id_to_disease_ids)))
 
 
@@ -209,12 +224,12 @@ def create_query_for_phenotype(label, file_name):
     query = query % label
     results = g.run(query)
     for property, in results:
-        if property!='alternative_names':
+        if property != 'alternative_names':
 
             query_create += property + ':n.' + property + ', '
         else:
             query_create += 'synonyms:n.' + property + ', '
-    query_create += ' license:"https://www.omim.org/help/agreement", source:"OMIM", resource:["OMIM"], omim:"yes"}) Create (p)-[:equal_to_omim]->(n);\n'
+    query_create += ' license:"https://www.omim.org/help/agreement",  url:"https://www.omim.org/entry/"+line.identifier, source:"OMIM", resource:["OMIM"], omim:"yes"}) Create (p)-[:equal_to_omim{how_mapped:"new"}]->(n);\n'
     query_create = query_create % (path_of_directory, file_name, label)
     cypher_file.write(query_create)
 
@@ -235,13 +250,13 @@ def load_phenotype_from_omim_and_map(gene_writer):
     query = "MATCH (n:phenotype_omim) RETURN n, labels(n)"
     results = g.run(query)
 
-    # generate csv file
+    # generate tsv file
 
     file_name = "disease/mapping.tsv"
-    csv_writer = prepare_csv_files(file_name, file_header)
+    csv_writer = prepare_tsv_files(file_name, file_header)
 
     file_name_not_mapped = "disease/not_mapping.tsv"
-    csv_writer_not = prepare_csv_files(file_name_not_mapped, ['identifier', 'name', 'detail_information', 'xrefs'])
+    csv_writer_not = prepare_tsv_files(file_name_not_mapped, ['identifier', 'name', 'detail_information', 'xrefs'])
 
     counter_mapped = 0
     counter_not_mapped = 0
@@ -267,34 +282,52 @@ def load_phenotype_from_omim_and_map(gene_writer):
                                                                                             ncbi_id] else []
 
                     if (identifier, ncbi_id) not in dict_of_mapped_tuples:
-                        add_mapped_one_to_csv_file(dict_gene_id_to_gene_node, identifier, ncbi_id, gene_writer,
-                                                   dict_of_mapped_tuples, is_gene=True)
+                        add_mapped_one_to_tsv_file(dict_gene_id_to_gene_node, identifier, ncbi_id, gene_writer,
+                                                   dict_of_mapped_tuples, 'gene_id', is_gene=True)
 
         dict_omim_id_to_phenotype[identifier] = dict(node)
+        mondos_from_name = set()
+        for synonym in synonyms:
+            if synonym in dict_name_to_disease_ids:
+                mondos_from_name = mondos_from_name.union(dict_name_to_disease_ids[synonym])
+
         if identifier in dict_omim_id_to_disease_ids:
             counter_mapped += 1
-            for mondo_id in dict_omim_id_to_disease_ids[identifier]:
-                disease_node = dict_disease_id_to_disease_node[mondo_id]
-                disease_synoynms = [x.lower() for x in disease_node['synonyms']] if 'synonyms' in disease_node else []
-                if 'name' in disease_node:
-                    disease_synoynms.append(disease_node['name'].lower())
-                if len(set(synonyms).intersection(disease_synoynms)) == 0:
-                    counter_different_names += 1
-                    # print('different names')
-                    # print(synonyms)
-                    # print(disease_synoynms)
-                    # print((identifier,mondo_id))
-                add_mapped_one_to_csv_file(dict_disease_id_to_disease_node, identifier, mondo_id, csv_writer,
-                                           dict_mapped_phenotype_disease_tuple)
+            mondos_from_omim = dict_omim_id_to_disease_ids[identifier]
+
+            intersection = mondos_from_name.intersection(mondos_from_omim)
+
+            if len(intersection) > 0:
+
+                for mondo_id in intersection:
+                    add_mapped_one_to_tsv_file(dict_disease_id_to_disease_node, identifier, mondo_id, csv_writer,
+                                               dict_mapped_phenotype_disease_tuple, 'omim_id_and_synonyms')
+            else:
+
+                counter_different_names += 1
+                for mondo_id in mondos_from_omim:
+                    add_mapped_one_to_tsv_file(dict_disease_id_to_disease_node, identifier, mondo_id, csv_writer,
+                                               dict_mapped_phenotype_disease_tuple, 'omim_id')
         else:
             # already considered as gene
             if identifier in dict_omim_id_to_node:
                 continue
-            counter_not_mapped += 1
-            name = node['name'] if 'name' in node else ''
-            xrefs = node['xrefs'] if 'xrefs' in node else []
-            detail_information = node['detail_information'] if 'detail_information' in node else []
-            csv_writer_not.writerow([identifier, name, detail_information, xrefs])
+
+            if name in dict_name_to_disease_ids:
+                counter_mapped += 1
+                for mondo_id in dict_name_to_disease_ids[name]:
+                    add_mapped_one_to_tsv_file(dict_disease_id_to_disease_node, identifier, mondo_id, csv_writer,
+                                               dict_mapped_phenotype_disease_tuple, 'name')
+            elif len(mondos_from_name) > 0:
+                counter_mapped += 1
+                for mondo_id in mondos_from_name:
+                    add_mapped_one_to_tsv_file(dict_disease_id_to_disease_node, identifier, mondo_id, csv_writer,
+                                               dict_mapped_phenotype_disease_tuple, 'name_and_synonyms')
+            else:
+                counter_not_mapped += 1
+                xrefs = node['xrefs'] if 'xrefs' in node else []
+                detail_information = node['detail_information'] if 'detail_information' in node else []
+                csv_writer_not.writerow([identifier, name, detail_information, xrefs])
     print('number of mapped phenotypes:' + str(counter_mapped))
     print('number of not mapped phenotypes:' + str(counter_not_mapped))
     print('number of different names:', counter_different_names)
@@ -308,14 +341,14 @@ def mapping_genes():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all gene from database')
 
     load_genes_from_database_and_add_to_dict()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all gene omim from database')
 
     gene_writer = load_all_omim_gene_and_start_mapping()
@@ -326,7 +359,7 @@ def mapping_genes():
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     global path_of_directory
     if len(sys.argv) > 1:
@@ -336,34 +369,34 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('connection to db')
     database_connection()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Gene mapping')
 
     gene_writer = mapping_genes()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all disease from database')
 
     load_disease_from_database_and_add_to_dict()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all omim phenotypes from database and map')
 
     load_phenotype_from_omim_and_map(gene_writer)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

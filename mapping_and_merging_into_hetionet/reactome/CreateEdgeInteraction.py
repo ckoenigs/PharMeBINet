@@ -188,18 +188,20 @@ def generate_file(csv_mapped):
         resource = list(set(resource))
         resource = '|'.join(resource)
         # csv_mapped.writerow([interactor1_rea_id, interactor2_rea_id, resource, '|'.join(dict_iso_interaction_ids['interaction_ids']), '|'.join(dict_iso_interaction_ids['iso_from']), '|'.join(dict_iso_interaction_ids['iso_to'])])
-        csv_mapped.writerow(
-            [interactor1_rea_id, interactor2_rea_id, resource, '|'.join(dict_iso_interaction_ids['interaction_ids']),
-             variantIdentifier_1, variantIdentifier_2, '|'.join(dict_iso_interaction_ids['pubmed_ids'])])
+        if len(dict_iso_interaction_ids['pubmed_ids'])>0:
+            csv_mapped.writerow(
+                [interactor1_rea_id, interactor2_rea_id, resource, '|'.join(dict_iso_interaction_ids['interaction_ids']),
+                 variantIdentifier_1, variantIdentifier_2, '|'.join(dict_iso_interaction_ids['pubmed_ids'])])
 
 
 def generate_file_else(csv_not_mapped):
     for (interactor2_rea_id, interactor1_rea_id, variantIdentifier_2,
          variantIdentifier_1), dict_iso_interaction_ids in dict_protein_ids_to_iso_from_and_to_2.items():
         # csv_not_mapped.writerow([interactor2_rea_id, interactor1_rea_id, '|'.join(dict_iso_interaction_ids['interaction_ids']), '|'.join(dict_iso_interaction_ids['iso_from']), '|'.join(dict_iso_interaction_ids['iso_to']), resource])
-        csv_not_mapped.writerow(
-            [interactor1_rea_id, interactor2_rea_id, '|'.join(dict_iso_interaction_ids['interaction_ids']),
-             variantIdentifier_1, variantIdentifier_2, '|'.join(dict_iso_interaction_ids['pubmed_ids'])])
+        if len(dict_iso_interaction_ids['pubmed_ids'])>0:
+            csv_not_mapped.writerow(
+                [interactor1_rea_id, interactor2_rea_id, '|'.join(dict_iso_interaction_ids['interaction_ids']),
+                 variantIdentifier_1, variantIdentifier_2, '|'.join(dict_iso_interaction_ids['pubmed_ids'])])
 
 
 '''
@@ -208,14 +210,14 @@ generate connection between mapping interactions of reactome and hetionet and ge
 
 
 def create_cypher_file(label_1, label_2, csv_mapped_name, csv_not_mapped_name, rela_label):
-    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/reactome/%s" As line FIELDTERMINATOR "\\t" MATCH (d:%s{identifier:line.interactor1_het_id})-[b:%s]->(c:%s{identifier:line.interactor2_het_id}) where ((b.iso_of_protein_from = line.iso_from and not line.iso_from is NULL) or (line.iso_from is NULL and not exists(b.iso_of_protein_from))) and ((b.iso_of_protein_to = line.iso_to and not line.iso_to is NULL) or (line.iso_to is NULL and not exists(b.iso_of_protein_to))) SET b.resource = split(line.resource, '|'), b.reactome = "yes", b.interaction_ids = split(line.interaction_ids_EBI, "|"), b.pubMed_ids = split(line.pubmed_ids, "|");\n'''
+    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/reactome/%s" As line FIELDTERMINATOR "\\t" MATCH (d:%s{identifier:line.interactor1_het_id})-[b:%s]->(c:%s{identifier:line.interactor2_het_id}) where ((b.iso_of_protein_from = line.iso_from and not line.iso_from is NULL) or (line.iso_from is NULL and not exists(b.iso_of_protein_from))) and ((b.iso_of_protein_to = line.iso_to and not line.iso_to is NULL) or (line.iso_to is NULL and not exists(b.iso_of_protein_to))) SET b.resource = split(line.resource, '|'), b.reactome = "yes", b.interaction_ids = split(line.interaction_ids_EBI, "|"), b.pubMed_ids = split(line.pubmed_ids, "|");\n'''
     query = query % (path_of_directory, csv_mapped_name, label_1, rela_label, label_2)
     # because of a crazy error that I do not what happend with the protein-protein interaction and periodic commit
     if label_2 == label_1 and label_2 == 'Protein':
         query = query[28:]
     cypher_file.write(query)
     # new interactions
-    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/reactome/%s" As line FIELDTERMINATOR "\\t" MATCH (d:%s{identifier:line.interactor1_het_id}),(c:%s{identifier:line.interactor2_het_id}) CREATE (d)-[:%s{interaction_ids: split(line.accession, "|"), iso_of_protein_from:line.iso_from, iso_of_protein_to:line.iso_to, resource:["Reactome"], reactome:"yes", source:"Reactome", pubMed_ids : split(line.pubmed_ids, "|")}]->(c);\n'''
+    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/reactome/%s" As line FIELDTERMINATOR "\\t" MATCH (d:%s{identifier:line.interactor1_het_id}),(c:%s{identifier:line.interactor2_het_id}) CREATE (d)-[:%s{interaction_ids: split(line.accession, "|"), iso_of_protein_from:line.iso_from, iso_of_protein_to:line.iso_to, resource:["Reactome"], reactome:"yes", source:"Reactome", pubMed_ids : split(line.pubmed_ids, "|")}]->(c);\n'''
     query = query % (path_of_directory, csv_not_mapped_name, label_1, label_2, rela_label)
     cypher_file.write(query)
 
@@ -230,14 +232,14 @@ def main():
         sys.exit('need a path and license reactome edge interaction')
 
     cypher_file = open('output/cypher_drug_edge.cypher', 'a', encoding="utf-8")
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j_mysql()
     print(
         '°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all interactions from hetionet into a dictionary')
 
     load_hetionet_interactions_in()
@@ -245,16 +247,16 @@ def main():
     print(
         '°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all reactome interactions from neo4j into a dictionary')
 
     list_of_combinations = [
         ['Protein)-[:equal_to_reactome_uniprot', 'equal_to_reactome_uniprot]-(q:Protein)', 'Protein', 'Protein',
          'protein_to_protein', 'INTERACTS_PiP'],
         ['Chemical)-[:equal_to_reactome_drug', 'equal_to_reactome_uniprot]-(q:Protein)', 'Chemical', 'Protein',
-         'chemical_to_protein', 'INTERACTS_CiP'],
+         'chemical_to_protein', 'INTERACTS_CHiP'],
         ['Chemical)-[:equal_to_reactome_drug', 'equal_to_reactome_drug]-(q:Chemical)', 'Chemical', 'Chemical',
-         'chemical_to_chemical', 'INTERACTS_CiC']
+         'chemical_to_chemical', 'INTERACTS_CHiCH']
     ]
     for list_element in list_of_combinations:
         pathlabel_1 = list_element[0]
@@ -268,7 +270,7 @@ def main():
         print(
             '__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-._')
 
-        print(datetime.datetime.utcnow())
+        print(datetime.datetime.now())
 
         # file for mapped or not mapped identifier
         file_name_not_mapped = 'interactions/not_mapped_interactions_' + file_name + '.tsv'
@@ -284,23 +286,23 @@ def main():
             ['interactor1_het_id', 'interactor2_het_id', 'resource', 'interaction_ids_EBI', 'iso_from', 'iso_to',
              'pubmed_ids'])
 
-        print('Generate file mapped_interactions.csv with properties')
+        print('Generate file mapped_interactions.tsv with properties')
 
         generate_file(csv_mapped)
 
         print(
             '°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°')
 
-        print(datetime.datetime.utcnow())
+        print(datetime.datetime.now())
 
-        print('Generate file not_mapped_interactions.csv with properties')
+        print('Generate file not_mapped_interactions.tsv with properties')
 
         generate_file_else(csv_not_mapped)
 
         print(
             '°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°')
 
-        print(datetime.datetime.utcnow())
+        print(datetime.datetime.now())
 
         print('Integrate new interactions')
 
@@ -308,7 +310,7 @@ def main():
 
         print(
             '__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-._')
-        print(datetime.datetime.utcnow())
+        print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

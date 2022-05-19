@@ -30,7 +30,7 @@ def write_files(path_of_directory, addition_name, label):
     header_new = ['code', 'id', 'xrefs', 'synonyms']
     csv_new.writerow(header_new)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/ndf-rt/%s" As line FIELDTERMINATOR '\\t' 
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/ndf-rt/%s" As line FIELDTERMINATOR '\\t' 
                 Match (n:%s{code:line.code}) Create (v:PharmacologicClass{identifier:line.id, ndf_rt:'yes', xrefs:split(line.xrefs,'|'), synonyms:split(line.synonyms,'|'), resource:['NDF-RT'], source:'NDF-RT', url:'http://purl.bioontology.org/ontology/NDFRT/'+line.id, name:split(n.name," [")[0], license:'UMLS license, available at https://uts.nlm.nih.gov/license.html', class_type:["%s"]}) Create (v)-[:equal_to_ndf_rt{how_mapped:'new'}]->(n);\n'''
     query = query % (path_of_directory, file_name_new, label,
                      addition_name.replace('_', ' ').replace(' kind', '').title().replace('Of', 'of'))
@@ -95,12 +95,12 @@ def write_files_drug(path_of_directory, addition_name, label):
     header_other = ['code', 'id']
     csv_other.writerow(header_other)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/ndf-rt/%s" As line FIELDTERMINATOR '\\t' 
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/ndf-rt/%s" As line FIELDTERMINATOR '\\t' 
                 Match (n:%s{code:line.code}), (v:PharmacologicClass{identifier:line.id}) Set v.class_type=v.class_type+"Established Pharmacologic Class"  Create (v)-[:equal_to_%s_ndf_rt{how_mapped:'ndf-rt id'}]->(n);\n'''
     query = query % (path_of_directory, file_name_other, label, addition_name)
     cypher_file.write(query)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/ndf-rt/%s" As line FIELDTERMINATOR '\\t' 
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/ndf-rt/%s" As line FIELDTERMINATOR '\\t' 
                 Match (n:%s{code:line.code}) Create (v:PharmacologicClass{identifier:line.id, ndf_rt:'yes', xrefs:split(line.xrefs,'|'), synonyms:split(line.synonyms,'|'), resource:['NDF-RT'], source:'NDF-RT', url:'http://purl.bioontology.org/ontology/NDFRT/'+line.id, name:split(n.name," [")[0], license:'UMLS license, available at https://uts.nlm.nih.gov/license.html', class_type:["Established Pharmacologic Class"]}) Create (v)-[:equal_to_%s_ndf_rt{how_mapped:'new'}]->(n);\n'''
     query = query % (path_of_directory, file_name_new, label,
                      addition_name)
@@ -145,7 +145,7 @@ def load_all_label_and_map_drug_to_pc(csv_new, csv_other):
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]
@@ -154,14 +154,14 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('connection to db')
 
     create_connection_to_neo4j()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate files')
 
     for label in ['NDFRT_MECHANISM_OF_ACTION_KIND', 'NDFRT_PHYSIOLOGIC_EFFECT_KIND', 'NDFRT_PHARMACOKINETICS_KIND',
@@ -172,14 +172,14 @@ def main():
 
         print('##########################################################################')
 
-        print(datetime.datetime.utcnow())
+        print(datetime.datetime.now())
         print('Load all label from database')
 
         load_all_label_and_map(label, csv_new)
 
         print('##########################################################################')
 
-        print(datetime.datetime.utcnow())
+        print(datetime.datetime.now())
 
     label = 'NDFRT_DRUG_KIND'
     name_without_ndf_and_lowercase = label.replace('NDFRT_', '').lower()
@@ -187,7 +187,7 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all label from database for drug to pc')
 
     load_all_label_and_map_drug_to_pc(csv_new, csv_other)

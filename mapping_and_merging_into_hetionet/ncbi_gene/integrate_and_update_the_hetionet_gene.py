@@ -69,13 +69,13 @@ def add_value_into_dict_with_list_or_not(dict_insert, head, question_header, dic
 
 
 '''
-load ncbi tsv file in and write only the important lines into a new csv file for integration into Neo4j
+load ncbi tsv file in and write only the important lines into a new tsv file for integration into Neo4j
 '''
 
 
 def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
     # file for integration into hetionet
-    file = open('output_data/genes_merge.csv', 'w')
+    file = open('output_data/genes_merge.tsv', 'w')
     header = ['identifier', 'name', 'description', 'chromosome', 'gene_symbols', 'synonyms', 'feature_type',
               'type_of_gene', 'map_location', 'xrefs']
     writer = csv.DictWriter(file, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL,
@@ -83,7 +83,7 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
     writer.writeheader()
 
     cypher_file = open('output_data/cypher_merge.cypher', 'w')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ncbi_gene/output_data/genes_merge.csv" As line Fieldterminator '\\t' Match (n:Gene_Ncbi {identifier:line.identifier}) Merge (g:Gene{identifier:line.identifier }) On Match Set '''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/ncbi_gene/output_data/genes_merge.tsv" As line Fieldterminator '\\t' Match (n:Gene_Ncbi {identifier:line.identifier}) Merge (g:Gene{identifier:line.identifier }) On Match Set '''
 
     on_create_string = ''' On Create SET '''
     for head in header:
@@ -257,7 +257,7 @@ def main():
     else:
         sys.exit('need a path')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('create connection with neo4j')
 
     create_connetion_with_neo4j()
@@ -265,7 +265,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('gather all information of the hetionet genes')
 
     get_all_ncbi_ids_form_hetionet_genes()
@@ -273,7 +273,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('gnerate a tsv file with only the hetionet genes')
 
     load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes()
@@ -281,7 +281,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

@@ -34,30 +34,30 @@ def add_entry_to_dictionary(dictionary, key, value):
 
 def generate_files(label, cypher_file):
     """
-    generate cypher file and csv file
-    :return: csv file
+    generate cypher file and tsv file
+    :return: csv writer
     """
     # file from relationship between gene and variant
     file_name = 'protein/go_protein_to_%s' % label
     file = open(file_name + '.tsv', 'w', encoding='utf-8')
-    csv_mapping = csv.writer(file, delimiter='\t')
+    tsv_mapping = csv.writer(file, delimiter='\t')
     header = ['identifier', 'other_id', 'resource', 'mapped_with']
-    csv_mapping.writerow(header)
+    tsv_mapping.writerow(header)
 
     file_name_not = 'protein/not_go_protein_to_%s' % label
     file_not = open(file_name_not + '.tsv', 'w', encoding='utf-8')
-    csv_not_mapping = csv.writer(file_not, delimiter='\t')
+    tsv_not_mapping = csv.writer(file_not, delimiter='\t')
     header = ['identifier', 'name']
-    csv_not_mapping.writerow(header)
+    tsv_not_mapping.writerow(header)
 
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/go/%s.tsv" As line FIELDTERMINATOR '\\t' 
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/go/%s.tsv" As line FIELDTERMINATOR '\\t' 
         Match (n:protein_go{identifier:line.identifier}), (v:%s{identifier:line.other_id}) Set v.go='yes', v.resource=split(line.resource,"|") Create (v)-[:equal_to_go_%s{how_mapped:line.mapped_with}]->(n);\n'''
     query = query % (path_of_directory, file_name, label, label.lower())
     cypher_file.write(query)
 
 
-    return csv_mapping, csv_not_mapping
+    return tsv_mapping, tsv_not_mapping
 '''
 Load all Genes from my database  and add them into a dictionary
 '''
@@ -121,9 +121,9 @@ Load all pharmacologic class of drugbank and map to the pc from my database and 
 
 
 def load_all_protein_form_go_and_map_and_write_to_file():
-    cypher_file = open('output/cypher_protein.cypher', 'w', encoding='utf-8')
-    csv_writer, csv_not_mapped=generate_files('Protein', cypher_file)
-    csv_writer_gene, csv_not_mapped_gene=generate_files('Gene', cypher_file)
+    cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
+    tsv_writer, tsv_not_mapped=generate_files('Protein', cypher_file)
+    tsv_writer_gene, tsv_not_mapped_gene=generate_files('Gene', cypher_file)
 
     query = "MATCH (n:protein_go) RETURN n"
     results = g.run(query)
@@ -135,13 +135,13 @@ def load_all_protein_form_go_and_map_and_write_to_file():
         counter += 1
         identifier = node['identifier']
         if identifier in dict_uniprot_id_to_resource:
-            csv_writer.writerow([identifier, identifier, resource(dict_uniprot_id_to_resource[identifier]),'id_mapped'])
+            tsv_writer.writerow([identifier, identifier, resource(dict_uniprot_id_to_resource[identifier]),'id_mapped'])
         elif identifier in dict_alternativ_uniprot_id_to_identifiers:
             for real_id in dict_alternativ_uniprot_id_to_identifiers[identifier]:
-                csv_writer.writerow([identifier, real_id, resource(dict_uniprot_id_to_resource[real_id]),'alt_id_mapped'])
+                tsv_writer.writerow([identifier, real_id, resource(dict_uniprot_id_to_resource[real_id]),'alt_id_mapped'])
         else:
             counter_not_mapped+=1
-            csv_not_mapped.writerow([identifier, node['name']])
+            tsv_not_mapped.writerow([identifier, node['name']])
 
         symbol= node['symbol'].lower() if 'symbol' in node else None
         if not symbol:
@@ -149,14 +149,14 @@ def load_all_protein_form_go_and_map_and_write_to_file():
         if symbol in dict_symbol_to_gene_ids:
             count_mapped_symbol+=1
             for gene_id in dict_symbol_to_gene_ids[symbol]:
-                csv_writer_gene.writerow([identifier,gene_id,  resource(dict_gene_id_to_resource[gene_id]),'symbol'])
+                tsv_writer_gene.writerow([identifier,gene_id,  resource(dict_gene_id_to_resource[gene_id]),'symbol'])
         elif symbol in dict_synonyms_to_gene_ids:
             count_mapped_symbol += 1
             for gene_id in dict_synonyms_to_gene_ids[symbol]:
-                csv_writer_gene.writerow([identifier, gene_id, resource(dict_gene_id_to_resource[gene_id]), 'symbol_with_synonyms'])
+                tsv_writer_gene.writerow([identifier, gene_id, resource(dict_gene_id_to_resource[gene_id]), 'symbol_with_synonyms'])
         else:
             count_not_mapped_gene+=1
-            csv_not_mapped_gene.writerow([identifier, symbol])
+            tsv_not_mapped_gene.writerow([identifier, symbol])
 
     print('all:',counter)
     print('not mapped:',counter_not_mapped)
@@ -165,7 +165,7 @@ def load_all_protein_form_go_and_map_and_write_to_file():
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     global path_of_directory
     if len(sys.argv) > 1:
@@ -175,35 +175,35 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('connection to db')
 
     create_connection_with_neo4j()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all protein from database')
 
     load_protein_and_add_to_dictionary()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all gene from database')
 
     load_gene_and_add_to_dictionary()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all protein from go and map')
 
     load_all_protein_form_go_and_map_and_write_to_file()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

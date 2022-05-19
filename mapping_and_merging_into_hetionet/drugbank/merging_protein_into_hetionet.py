@@ -105,7 +105,7 @@ This information where manual checked by me.
 
 
 def load_manual_checked_proteins_or_not():
-    csv_file = open('protein/maybe_proteins_manual_checked.tsv.csv', 'r')
+    csv_file = open('protein/maybe_proteins_manual_checked.tsv', 'r')
     reader = csv.DictReader(csv_file, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     for row in reader:
         identifier = row['identifier']
@@ -165,41 +165,41 @@ list_of_all_properties_of_proteins = ["allfields", "locus", "synonyms", "pfams",
                                       "gene_sequence", "identifier", "specific_function", "chromosome_location",
                                       "transmembrane_regions", "signal_regions"]
 
-# generation of the csv file for the different labels
-generate_csv_carrier = open('protein/proteins_carrier.csv', 'w')
-writer_carrier = csv.writer(generate_csv_carrier, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+# generation of the tsv file for the different labels
+generate_csv_carrier = open('protein/proteins_carrier.tsv', 'w')
+writer_carrier = csv.writer(generate_csv_carrier, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 writer_carrier.writerow(['id'])
 
-generate_csv_enzyme = open('protein/proteins_enzyme.csv', 'w')
-writer_enzyme = csv.writer(generate_csv_enzyme, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+generate_csv_enzyme = open('protein/proteins_enzyme.tsv', 'w')
+writer_enzyme = csv.writer(generate_csv_enzyme, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 writer_enzyme.writerow(['id'])
 
-generate_csv_target = open('protein/proteins_target.csv', 'w')
-writer_target = csv.writer(generate_csv_target, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+generate_csv_target = open('protein/proteins_target.tsv', 'w')
+writer_target = csv.writer(generate_csv_target, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 writer_target.writerow(['id'])
 
-generate_csv_transporter = open('protein/proteins_transporter.csv', 'w')
-writer_transporter = csv.writer(generate_csv_transporter, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+generate_csv_transporter = open('protein/proteins_transporter.tsv', 'w')
+writer_transporter = csv.writer(generate_csv_transporter, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 writer_transporter.writerow(['id'])
 
 # dictionary of drugbank labels to hetionet labels:
-dict_db_labels_to_csv_label_file = {
+dict_db_labels_to_tsv_label_file = {
     'Enzyme_DrugBank': writer_enzyme,
     'Transporter_DrugBank': writer_transporter,
     'Carrier_DrugBank': writer_carrier,
     'Target_DrugBank': writer_target}
 
 # protein csv which should be updated
-generate_csv = open('protein/proteins.csv', 'w')
+generate_csv = open('protein/proteins.tsv', 'w')
 writer = csv.writer(generate_csv, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 writer.writerow(['id', 'uniport', 'resource', 'sequences'])
 
 '''
-preparation of the csv for merging for a given node
+preparation of the tsv for merging for a given node
 '''
 
 
-def integrate_infos_into_csv(part_dict, protein_hetionet, list_input_protein):
+def integrate_infos_into_tsv(part_dict, protein_hetionet, list_input_protein):
     # first check on the as sequences and combine the if they are not the same, because they are isoforms
     # or  have only small changes like one as is changed
     # print(protein_hetionet)
@@ -224,10 +224,10 @@ def integrate_infos_into_csv(part_dict, protein_hetionet, list_input_protein):
             as_seq_part = as_seq.split(' ')[1]
         else:
             as_seq_part = as_seq.split(':')[1]
-        if as_seq_part=='':
+        if as_seq_part == '':
             print('empyt as')
             print(as_seq)
-        if as_seq_hetionet_seq != as_seq_part and as_seq_part!='':
+        if as_seq_hetionet_seq != as_seq_part and as_seq_part != '':
             list_as_sequnces.append(as_seq_part)
     # print(list_as_sequnces)
     list_as_sequnces = '|'.join(list_as_sequnces)
@@ -273,7 +273,7 @@ def not_mapped_proteins(node, identifier, name, synonyms, labels, counter_not_a_
     :param synonyms: list of string
     :param labels: list of string
     :param counter_not_a_protein: int
-    :param writer_not_mapped: csv.Dictionarywriter
+    :param writer_not_mapped: csv Dictionary writer
     :return:
     """
     drugbank_id = node['drugbank_id']
@@ -312,33 +312,33 @@ def load_proteins_from_drugbank_into_dict():
     # query = '''Match (n:Protein) Where exists(n.as_sequence) Set n.as_sequence=split(n.as_sequence,':')[1];\n'''
     # cypherfile.write(query)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/proteins.csv" As line Fieldterminator '\\t' MATCH (n:Protein_DrugBank{identifier:line.id}) ,(p:Protein{identifier:line.uniport}) Create (p)-[:equal_to_DB_protein]->(n) Set p.drugbank='yes', p.resource=split(line.resource,"|"), p.locus=n.locus, p.molecular_weight=n.molecular_weight, p.as_sequences=split(line.sequences,'|'),p.pfams=split(line.pfams,'|') ;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/drugbank/protein/proteins.tsv" As line Fieldterminator '\\t' MATCH (n:Protein_DrugBank{identifier:line.id}) ,(p:Protein{identifier:line.uniport}) Create (p)-[:equal_to_DB_protein]->(n) Set p.drugbank='yes', p.resource=split(line.resource,"|"), p.locus=n.locus, p.molecular_weight=n.molecular_weight, p.as_sequences=split(line.sequences,'|'),p.pfams=split(line.pfams,'|') ;\n'''
 
     cypherfile.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/mapping_chemical_target.tsv" As line Fieldterminator '\\t' MATCH (n:Protein_DrugBank{identifier:line.id}) ,(p:Chemical{identifier:line.chemical_id}) Create (p)-[:equal_to_DB_target]->(n) Set p.drugbank='yes', p:Target, p.resource=split(line.resource,"|") ;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/drugbank/protein/mapping_chemical_target.tsv" As line Fieldterminator '\\t' MATCH (n:Protein_DrugBank{identifier:line.id}) ,(p:Chemical{identifier:line.chemical_id}) Create (p)-[:equal_to_DB_target]->(n) Set p.drugbank='yes', p:Target, p.resource=split(line.resource,"|") ;\n'''
 
     cypherfile.write(query)
     # all queries which are used to integrate Protein with the extra labels into Hetionet
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/proteins_carrier.csv" As line Fieldterminator '\\t' MATCH (g:Protein{identifier:line.id}) Set g:Carrier ;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/drugbank/protein/proteins_carrier.tsv" As line Fieldterminator '\\t' MATCH (g:Protein{identifier:line.id}) Set g:Carrier ;\n'''
     cypherfile.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/proteins_enzyme.csv" As line Fieldterminator '\\t' MATCH (g:Protein{identifier:line.id}) Set g:Enzyme ;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/drugbank/protein/proteins_enzyme.tsv" As line Fieldterminator '\\t' MATCH (g:Protein{identifier:line.id}) Set g:Enzyme ;\n'''
     cypherfile.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/proteins_target.csv" As line Fieldterminator '\\t' MATCH (g:Protein{identifier:line.id}) Set g:Target ;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/drugbank/protein/proteins_target.tsv" As line Fieldterminator '\\t' MATCH (g:Protein{identifier:line.id}) Set g:Target ;\n'''
     cypherfile.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/proteins_transporter.csv" As line Fieldterminator '\\t' MATCH (g:Protein{identifier:line.id}) Set g:Transporter ;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/drugbank/protein/proteins_transporter.tsv" As line Fieldterminator '\\t' MATCH (g:Protein{identifier:line.id}) Set g:Transporter ;\n'''
     cypherfile.write(query)
     cypherfile.close()
 
-    file_uniprots_with_multiple = open('protein/uniprot_gene/db_uniprot_to_multi_genes.csv', 'w')
-    writer_multi = csv.writer(file_uniprots_with_multiple)
+    file_uniprots_with_multiple = open('protein/uniprot_gene/db_uniprot_to_multi_genes.tsv', 'w')
+    writer_multi = csv.writer(file_uniprots_with_multiple, delimiter='\t')
     writer_multi.writerow(['uniprot_id', 'protein_name', 'genes', 'alternative_ids'])
 
-    file_uniprots_without_rela = open('protein/uniprot_gene/db_uniprot_without_rela.csv', 'w')
-    writer_without_rela = csv.writer(file_uniprots_without_rela)
+    file_uniprots_without_rela = open('protein/uniprot_gene/db_uniprot_without_rela.tsv', 'w')
+    writer_without_rela = csv.writer(file_uniprots_without_rela, delimiter='\t')
     writer_without_rela.writerow(['uniprot_id', 'name'])
 
-    file_uniprots_gene_with_alternative = open('protein/uniprot_gene/db_uniprot_to_gene_with_alternative.csv', 'w')
-    writer_rela_with_alternative = csv.writer(file_uniprots_gene_with_alternative)
+    file_uniprots_gene_with_alternative = open('protein/uniprot_gene/db_uniprot_to_gene_with_alternative.tsv', 'w')
+    writer_rela_with_alternative = csv.writer(file_uniprots_gene_with_alternative, delimiter='\t')
     writer_rela_with_alternative.writerow(['uniprot_id', 'alternative id', 'gene(s)'])
 
     header_not_mapped = ["gene_name", "pfams", "synonyms", "id_source", "amino_acid_sequence", "gene_sequence",
@@ -379,7 +379,7 @@ def load_proteins_from_drugbank_into_dict():
 
             labels.remove('Protein_DrugBank')
             for label in labels:
-                dict_db_labels_to_csv_label_file[label].writerow([identifier])
+                dict_db_labels_to_tsv_label_file[label].writerow([identifier])
             dict_proteins[identifier] = labels
 
             if identifier in dict_hetionet_protein:
@@ -388,7 +388,7 @@ def load_proteins_from_drugbank_into_dict():
                     protein_hetionet = dict_hetionet_protein[identifier][0]
                     list_input_protein.append(protein_hetionet['identifier'])
 
-                    integrate_infos_into_csv(part_dict, protein_hetionet, list_input_protein)
+                    integrate_infos_into_tsv(part_dict, protein_hetionet, list_input_protein)
 
                 else:
                     print(len(dict_hetionet_protein[identifier]))
@@ -398,7 +398,7 @@ def load_proteins_from_drugbank_into_dict():
                         list_multiple_input.append(identifier)
                         list_multiple_input.append(protein_hetionet['identifier'])
                         print(protein_hetionet['identifier'])
-                        integrate_infos_into_csv(part_dict, protein_hetionet, list_multiple_input)
+                        integrate_infos_into_tsv(part_dict, protein_hetionet, list_multiple_input)
                     print('multiple mapping')
             elif identifier in dict_be_identifier_sort_to_protein_or_not:
                 print('protein without uniprot id')
@@ -436,18 +436,18 @@ def load_proteins_from_drugbank_into_dict():
 cypher_rela = open('protein/cypher_protein_rela.cypher', 'w')
 
 '''
-Generate csv with component relationships
+Generate tsv with component relationships
 '''
 
 
-def generate_csv_componet_rela():
+def generate_tsv_componet_rela():
     query = 'MATCH p=(a:Protein_DrugBank)-[r:has_component_PIhcPI]->(b:Protein_DrugBank) RETURN a.identifier, b.identifier'
     result = g.run(query)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/drugbank/protein/proteins_rela_component.csv" As line Fieldterminator '\\t' MATCH (g:Protein{identifier:line.id1}),(b:Protein{identifier:line.id2}) Create (g)-[:HAS_COMPONENT_PRhcPR]->(b);\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/drugbank/protein/proteins_rela_component.tsv" As line Fieldterminator '\\t' MATCH (g:Protein{identifier:line.id1}),(b:Protein{identifier:line.id2}) Create (g)-[:HAS_COMPONENT_PRhcPR]->(b);\n'''
     cypher_rela.write(query)
 
-    csv_file = open('protein/proteins_rela_component.csv', 'w')
+    csv_file = open('protein/proteins_rela_component.tsv', 'w')
     writer_csv = csv.writer(csv_file, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     writer_csv.writerow(['id1', 'id2'])
 
@@ -468,7 +468,7 @@ def main():
     license = sys.argv[1]
     path_of_directory = sys.argv[2]
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('create connection with neo4j')
 
     create_connection_with_neo4j()
@@ -476,7 +476,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load all chemicals in a dictionary name to chemical id')
 
     load_all_chemicals_and_generate_dictionary()
@@ -484,7 +484,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load all information to the nodes where I was not sure if they are protein or not')
 
     load_manual_checked_proteins_or_not()
@@ -492,7 +492,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     print('load all Protein and gather the information ')
 
@@ -501,7 +501,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     print('load all DrugBank proteins in dictionary')
 
@@ -510,16 +510,16 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
-    print('load all DrugBank has component rela and write them in csv and generate cypher file for integration')
+    print('load all DrugBank has component rela and write them in tsv and generate cypher file for integration')
 
-    generate_csv_componet_rela()
+    generate_tsv_componet_rela()
 
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

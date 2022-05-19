@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import csv
 import datetime
 import sys
@@ -27,13 +26,13 @@ cypherfile = open('output/cypher_edge.cypher', 'a', encoding='utf-8')
 dict_rela_to_drug_go_pair = {}
 
 '''
-generate csv file with the columns fo a path
+generate tsv file with the columns fo a path
 '''
 
 
-def generate_csv(path, head):
+def generate_tsv(path, head):
     csvfile = open(path, 'w', encoding='utf-8')
-    writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+    writer = csv.writer(csvfile, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     writer.writerow(head)
     return writer
 
@@ -236,7 +235,7 @@ def check_for_rela_type(interactions_actions, rela_name, chemical_id, drugbank_i
 
 
 '''
-get all relationships between go and chemical, take the hetionet identifier an save all important information in a csv
+get all relationships between go and chemical, take the hetionet identifier an save all important information in a tsv
 also generate a cypher file to integrate this information 
 '''
 
@@ -315,7 +314,7 @@ generate cypher queries
 
 
 def generate_cypher_queries(file_name, label, rela, start_node, end_node):
-    query_first_part = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ctd/''' + file_name + '''" As line Fieldterminator '\\t' Match (b:Chemical{identifier:line.chemical_id}), (go:%s{identifier:line.go_id}) Create (%s)-[:%s {'''
+    query_first_part = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/ctd/''' + file_name + '''" As line Fieldterminator '\\t' Match (b:Chemical{identifier:line.chemical_id}), (go:%s{identifier:line.go_id}) Create (%s)-[:%s {'''
     query_first_part = query_first_part % (label, start_node, rela)
     query_end = 'ctd:"yes", source:"CTD", ctd_url:"http://ctdbase.org/detail.go?type=chem&acc="+line.chemical_id ,resource:["CTD"], license:"© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved"}]->(%s);\n'
     for property in header:
@@ -332,7 +331,7 @@ def generate_cypher_queries(file_name, label, rela, start_node, end_node):
     cypherfile.write(query)
 
 
-# header for csv files
+# header for tsv files
 header = ['chemical_id', 'go_id', 'interaction_text', 'pubMed_ids', 'interaction_actions', 'unbiased', 'anatomy_terms',
           'comentioned_terms']
 
@@ -362,13 +361,13 @@ def prepare_list_of_list(list_of_information, index, indices):
 
 
 '''
-now go through all rela types and add every pair to the right csv
+now go through all rela types and add every pair to the right tsv
 but only take the shortest interaction text and the associated intereaction actions and go forms
 'ChemicalID', 'goID', 'interaction_text', 'go_forms', 'pubMedIds', 'interactions_actions', 'unbiased'
 '''
 
 
-def fill_the_csv_files():
+def fill_the_tsv_files():
     for (rela_full, label, from_chemical), dict_chemical_go_pair in dict_rela_to_drug_go_pair.items():
         short_form_label = dict_go_term_to_short_form[label]
         if from_chemical:
@@ -411,7 +410,7 @@ def main():
     else:
         sys.exit('need a path')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('generate connection with neo4j and mysql')
 
     create_connection_with_neo4j()
@@ -419,23 +418,23 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
-    print('Take all go-chemical relationships and generate csv and cypher file')
+    print(datetime.datetime.now())
+    print('Take all go-chemical relationships and generate tsv and cypher file')
 
     take_all_relationships_of_go_chemical()
 
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
-    print('write into csv files')
+    print(datetime.datetime.now())
+    print('write into tsv files')
 
-    fill_the_csv_files()
+    fill_the_tsv_files()
 
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

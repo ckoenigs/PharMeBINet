@@ -54,8 +54,8 @@ def load_variant_from_database_and_add_to_dict():
 
 def generate_files(path_of_directory):
     """
-    generate cypher file and csv file
-    :return: csv file
+    generate cypher file and tsv file
+    :return: csv writer
     """
     # file from relationship between gene and variant
     file_name = 'gene_variant_to_variant'
@@ -72,12 +72,12 @@ def generate_files(path_of_directory):
     csv_new.writerow(header)
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/drugbank/gene_variant/%s.tsv" As line FIELDTERMINATOR '\\t' 
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/drugbank/gene_variant/%s.tsv" As line FIELDTERMINATOR '\\t' 
         Match (n:Mutated_protein_gene_DrugBank{identifier:line.gene_variant_drugbank}), (v:Variant{identifier:line.variant_id}) Set v.drugbank="yes", v.resource=v.resource+"DrugBank" Create (v)-[:equal_to_drugbank_variant]->(n);\n'''
     query = query % (path_of_directory, file_name)
     cypher_file.write(query)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/drugbank/gene_variant/%s.tsv" As line FIELDTERMINATOR '\\t' 
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/drugbank/gene_variant/%s.tsv" As line FIELDTERMINATOR '\\t' 
             Match (n:Mutated_protein_gene_DrugBank{identifier:line.variant_id}) Create (v:Variant :GeneVariant{identifier:line.variant_id, defining_change:n.defining_change, gene_symbol:n.gene_symbol, license:"%s", allele:n.allele, protein_name:n.protein_name, drugbank:"yes",  source:"dbSNP from DrugBank", resource:["DrugBank"] ,xrefs:split(line.xrefs,"|"), url:'https://www.ncbi.nlm.nih.gov/snp/'+line.variant_id }) Create (v)-[:equal_to_drugbank_variant]->(n);\n'''
     query = query % (path_of_directory, file_name_new, license)
     cypher_file.write(query)
@@ -86,7 +86,7 @@ def generate_files(path_of_directory):
 
 
 '''
-Load all variation sort the ids into the right csv, generate the queries, and add rela to the rela csv
+Load all variation sort the ids into the right tsv, generate the queries, and add rela to the rela tsv
 '''
 
 
@@ -131,7 +131,7 @@ def load_all_variants_and_finish_the_files(csv_mapping, csv_new):
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     global path_of_directory
     if len(sys.argv) < 2:
         print(len(sys.argv))
@@ -141,35 +141,35 @@ def main():
     path_of_directory = sys.argv[2]
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('connection to db')
 
     create_connection_with_neo4j()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all Variant from database')
 
     load_variant_from_database_and_add_to_dict()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
-    print('Generate cypher and csv file')
+    print(datetime.datetime.now())
+    print('Generate cypher and tsv file')
 
     csv_mapping, csv_new = generate_files(path_of_directory)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all variation from database')
 
     load_all_variants_and_finish_the_files(csv_mapping, csv_new)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

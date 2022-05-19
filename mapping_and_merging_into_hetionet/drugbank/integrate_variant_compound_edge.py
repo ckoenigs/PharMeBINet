@@ -18,8 +18,8 @@ def create_connection_with_neo4j():
 
 def generate_files(path_of_directory):
     """
-    generate cypher file and csv file
-    :return: csv file
+    generate cypher file and tsv file
+    :return: csv writer
     """
     # file from relationship between gene and variant
     file_name = 'compound_to_variant'
@@ -30,8 +30,8 @@ def generate_files(path_of_directory):
 
     cypher_file = open('output/cypher_rela.cypher', 'a', encoding='utf-8')
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/drugbank/gene_variant/%s.tsv" As line FIELDTERMINATOR '\\t' 
-        Match (n:Compound{identifier:line.compound_id}), (v:Variant{identifier:line.variant_id}) MERGE (v)-[r:COMBINATION_CAUSES_ADR_VccaCH]->(n) On Create set r.type=line.type, r.license=line.license, r.description=line.description, r.pubMed_ids=split(line.pubmed_ids,"|"), r.drugbank="yes", r.resource=["DrugBank"], r.url="https://go.drugbank.com/drugs/"+line.compound_id On Match Set r.drugbank="yes", r.resource=r.resource+"DrugBank" ;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/drugbank/gene_variant/%s.tsv" As line FIELDTERMINATOR '\\t' 
+        Match (n:Compound{identifier:line.compound_id}), (v:Variant{identifier:line.variant_id}) MERGE (v)-[r:COMBINATION_CAUSES_ADR_VccaCH]->(n) On Create set r.type=line.type, r.license=line.license, r.description=line.description, r.pubMed_ids=split(line.pubmed_ids,"|"), r.source="DrugBank", r.drugbank="yes", r.resource=["DrugBank"], r.url="https://go.drugbank.com/drugs/"+line.compound_id On Match Set r.drugbank="yes", r.resource=r.resource+"DrugBank" ;\n'''
     query = query % (path_of_directory, file_name)
     cypher_file.write(query)
 
@@ -39,7 +39,7 @@ def generate_files(path_of_directory):
 
 
 '''
-Load all variation sort the ids into the right csv, generate the queries, and add rela to the rela csv
+Load all variation sort the ids into the right tsv, generate the queries, and add rela to the rela tsv
 '''
 
 
@@ -79,7 +79,7 @@ def load_all_pair_and_prepare_for_dictionary(csv_mapping):
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     global path_of_directory, license
     if len(sys.argv) < 3:
         sys.exit('need path to directory gene variant')
@@ -88,28 +88,28 @@ def main():
     license = sys.argv[2]
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('connection to db')
 
     create_connection_with_neo4j()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
-    print('Generate cypher and csv file')
+    print(datetime.datetime.now())
+    print('Generate cypher and tsv file')
 
     csv_mapping = generate_files(path_of_directory)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all variation from database')
 
     load_all_pair_and_prepare_for_dictionary(csv_mapping)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

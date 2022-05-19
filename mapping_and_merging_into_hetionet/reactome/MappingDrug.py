@@ -250,14 +250,9 @@ generate connection between mapping drug of reactome and hetionet and generate n
 
 def create_cypher_file():
     cypher_file = open('output/cypher_mapping2.cypher', 'w', encoding="utf-8")
-    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/reactome/drug/mapped_drug.tsv" As line FIELDTERMINATOR "\\t" MATCH (d:Chemical{identifier:line.id_hetionet}),(c:ReferenceEntity_reactome{dbId:toInteger(line.id)}) CREATE (d)-[:equal_to_reactome_drug{how_mapped:line.how_mapped}]->(c) SET d.resource = split(line.resource, '|'), d.reactome = "yes";\n'''
+    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/reactome/drug/mapped_drug.tsv" As line FIELDTERMINATOR "\\t" MATCH (d:Chemical{identifier:line.id_hetionet}),(c:ReferenceEntity_reactome{dbId:toInteger(line.id)}) CREATE (d)-[:equal_to_reactome_drug{how_mapped:line.how_mapped}]->(c) SET d.resource = split(line.resource, '|'), d.reactome = "yes";\n'''
     query = query %(path_of_directory)
     cypher_file.write(query)
-
-    # cypher_file.write(':begin\n')
-    # query = '''MATCH (d:ReferenceEntity_reactome) WHERE NOT  exists(d.reactome) SET d.reactome="no";\n '''
-    # cypher_file.write(query)
-    # cypher_file.write(':commit\n')
 
 
 def main():
@@ -266,14 +261,14 @@ def main():
         path_of_directory = sys.argv[1]
     else:
         sys.exit('need a path reactome drug')
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j_mysql()
     print(
         '°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all iuphar ids into a dictionary')
 
     load_iuphar_ids_in()
@@ -281,7 +276,7 @@ def main():
     print(
         '__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-._')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all drugs from hetionet into a dictionary')
 
     load_hetionet_drug_in()
@@ -289,7 +284,7 @@ def main():
     print(
         '°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all reactome drug from neo4j into a dictionary')
 
     for label in ["Drug_reactome", "PhysicalEntity_reactome"]:
@@ -298,7 +293,7 @@ def main():
     print(
         '__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-._')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Integrate new drug and connect them to reactome ')
 
     create_cypher_file()
@@ -306,7 +301,7 @@ def main():
     print(
         '°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

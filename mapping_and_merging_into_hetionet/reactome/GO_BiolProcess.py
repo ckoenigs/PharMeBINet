@@ -128,14 +128,10 @@ generate connection between mapping gobiolproc of reactome and hetionet and gene
 def create_cypher_file():
     cypher_file = open('output/cypher.cypher', 'a', encoding="utf-8")
     # mappt die Knoten, die es in hetionet und reactome gibt und fügt die properties hinzu
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/reactome/gobiolproc/mapped_gobiolproc.tsv" As line FIELDTERMINATOR "\\t"
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/reactome/gobiolproc/mapped_gobiolproc.tsv" As line FIELDTERMINATOR "\\t"
      Match (d: BiologicalProcess {identifier: line.id_hetionet}),(c:GO_BiologicalProcess_reactome{accession:line.id}) Create (d)-[: equal_to_reactome_gobiolproc]->(c)  SET d.resource = split(line.resource, '|'), d.reactome = "yes";\n'''
     query = query % (path_of_directory)
     cypher_file.write(query)
-    # cypher_file.write(':begin\n')
-    # query = '''Match (d:BiologicalProcess) Where not  exists(d.reactome) Set d.reactome="no";\n '''
-    # cypher_file.write(query)
-    # cypher_file.write(':commit\n')
 
 
 def main():
@@ -144,7 +140,7 @@ def main():
         path_of_directory = sys.argv[1]
     else:
         sys.exit('need a path reactome protein')
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j()
@@ -152,7 +148,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all BiologicalProcess from hetionet into a dictionary')
 
     load_hetionet_gobiolproc_in()
@@ -160,7 +156,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all reactome GO_BiologicalProcess from neo4j into a dictionary')
 
     load_reactome_gobiolproc_in()
@@ -168,7 +164,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Integrate new GO_BiologicalProcess and connect them to reactome ')
 
     create_cypher_file()
@@ -176,7 +172,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

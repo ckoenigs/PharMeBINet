@@ -83,25 +83,25 @@ def write_files(path_of_directory):
     header_new = [ 'id']
     csv_new.writerow(header_new)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/atc/%s" As line FIELDTERMINATOR '\\t' 
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/atc/%s" As line FIELDTERMINATOR '\\t' 
             Match (n:atc{identifier:line.id}), (v:Compound{identifier:line.compound_id}) Create (v)-[:equal_to_atc]->(n);\n'''
     query = query % (path_of_directory, file_name_mapped)
     cypher_file.write(query)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/atc/%s" As line FIELDTERMINATOR '\\t' 
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/atc/%s" As line FIELDTERMINATOR '\\t' 
                 Match (n:atc{identifier:line.id}), (v:PharmacologicClass{identifier:line.pc_id}) Set v.atc_codes=[line.id], v.resource=split(line.resource,"|"), v.drugbank="yes" Create (v)-[:equal_to_atc]->(n);\n'''
     query = query % (path_of_directory, file_name_mapped_pc)
     cypher_file.write(query)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/atc/%s" As line FIELDTERMINATOR '\\t' 
-                Match (n:atc{identifier:line.id}) Create (v:PharmacologicClass{identifier:line.id, drugbank:'yes', resource:['DrugBank'], source:'ATC from DrugBankT', url:'http://identifiers.org/atc:'+line.id, name:n.name, license:'Attribution-NonCommercial 4.0 International', class_type:["ATC code"], atc_codes:[line.id]}) Create (v)-[:equal_to_atc]->(n);\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/atc/%s" As line FIELDTERMINATOR '\\t' 
+                Match (n:atc{identifier:line.id}) Create (v:PharmacologicClass{identifier:line.id, drugbank:'yes', resource:['DrugBank'], source:'ATC from DrugBankT', url:'http://identifiers.org/atc:'+line.id, name:n.name, license:"Creative Common's Attribution-NonCommercial 4.0 International", class_type:["ATC code"], atc_codes:[line.id]}) Create (v)-[:equal_to_atc]->(n);\n'''
     query = query % (path_of_directory, file_name_new)
     cypher_file.write(query)
 
     list_of_labels=['Compound','PharmacologicClass']
 
     for [label_1, label_2] in [[x,y] for x in list_of_labels for y in list_of_labels]:
-        query= "MATCH p=(n:%s)--(:atc)-[]->(:atc)--(b:%s) Merge (n)-[r:BELONGS_TO_%sbt%s]->(b) On Create Set r.source='ATC from DrugBank', r.resource=['DrugBank'], r.drugbank='yes';\n"
+        query= '''MATCH p=(n:%s)--(:atc)-[]->(:atc)--(b:%s) Merge (n)-[r:BELONGS_TO_%sbt%s]->(b) On Create Set r.source='ATC from DrugBank', r.resource=['DrugBank'], r.drugbank='yes', r.license="Creative Common's Attribution-NonCommercial 4.0 International License";\n'''
         query=query %( label_1,label_2, dict_first_letter_to_rela_letter[label_1[0]], dict_first_letter_to_rela_letter[label_2[0]])
         cypher_file.write(query)
     return csv_mapped, csv_new, csv_mapped_pc
@@ -187,7 +187,7 @@ def to_avoid_multiple_mapping(csv_mapped_pc,csv_new):
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]
@@ -196,49 +196,49 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('connection to db')
 
     create_connection_with_neo4j_and_mysql()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all Pharmacologic classes from database')
 
     load_pharmacologic_class_from_database_and_add_to_dict()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all compounds from database')
 
     load_compounds_from_database_and_add_to_dict()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate files')
 
     csv_mapper, csv_new, csv_mapped_pc = write_files(path_of_directory)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all label from database')
 
     load_all_label_and_map(csv_mapper, csv_new)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('map only to one for pc')
 
     to_avoid_multiple_mapping(csv_mapped_pc, csv_new)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

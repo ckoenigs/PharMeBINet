@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Aug  4 12:14:16 2017
-
-@author: Cassandra
-"""
-
 import datetime
 import sys, csv
 import urllib.request, urllib.error, urllib.parse
@@ -452,19 +445,19 @@ dict_outcome_to_disease = {}
 dict_new_node_cui_to_concept = {}
 
 '''
-get the mapped thins and add them to the dictionary and also write all mappings into the csv file
+get the mapped thins and add them to the dictionary and also write all mappings into the tsv file
 '''
 
 
-def generate_csv_file(list_of_delet_index, list_not_mapped, concept_code, diseases, mapping_method, csv_writer):
+def generate_tsv_file(list_of_delet_index, list_not_mapped, concept_code, diseases, mapping_method, csv_writer):
     list_of_delet_index.append(list_not_mapped.index(concept_code))
     dict_outcome_to_disease[concept_code] = list(diseases)
     for disease_id in diseases:
         resource_disease = dict_mondo_to_xrefs_and_resource[disease_id][1] if \
             dict_mondo_to_xrefs_and_resource[disease_id][1] is not None else []
         resource_disease.append("AEOLUS")
-        resource_disease = list(set(resource_disease))
-        resource_string = '|'.join(resource_disease)
+        resource_disease = set(resource_disease)
+        resource_string = '|'.join(sorted(resource_disease))
 
         xref_disease = dict_mondo_to_xrefs_and_resource[disease_id][0] if \
             dict_mondo_to_xrefs_and_resource[disease_id][0] is not None else []
@@ -501,7 +494,7 @@ def mapping_to_disease():
     for concept_code in list_not_mapped_to_hetionet:
         counter_of_mapping_tries += 1
         if concept_code in dict_meddra_to_mondo:
-            generate_csv_file(list_of_delete_index_with_cui, list_not_mapped_to_hetionet, concept_code,
+            generate_tsv_file(list_of_delete_index_with_cui, list_not_mapped_to_hetionet, concept_code,
                               dict_meddra_to_mondo[concept_code], 'meddra mapping',
                               csv_writer)
 
@@ -523,23 +516,23 @@ def mapping_to_disease():
 
             find_intersection = mapped_name_disease.intersection(mapped_cuis_disease)
             if len(find_intersection) > 0:
-                generate_csv_file(list_of_delete_index_with_cui, list_not_mapped_to_hetionet, concept_code,
+                generate_tsv_file(list_of_delete_index_with_cui, list_not_mapped_to_hetionet, concept_code,
                                   find_intersection, 'intersection name and cui mapping',
                                   csv_writer)
                 if len(find_intersection) > 1:
                     print('intersection is greater than one')
             elif len(mapped_cuis_disease) > 0 and len(mapped_name_disease) == 0:
-                generate_csv_file(list_of_delete_index_with_cui, list_not_mapped_to_hetionet, concept_code,
+                generate_tsv_file(list_of_delete_index_with_cui, list_not_mapped_to_hetionet, concept_code,
                                   mapped_cuis_disease, 'cui mapping',
                                   csv_writer)
             elif len(mapped_cuis_disease) == 0 and len(mapped_name_disease) > 0:
-                generate_csv_file(list_of_delete_index_with_cui, list_not_mapped_to_hetionet, concept_code,
+                generate_tsv_file(list_of_delete_index_with_cui, list_not_mapped_to_hetionet, concept_code,
                                   mapped_name_disease, 'name mapping',
                                   csv_writer)
 
             elif len(mapped_cuis_disease) > 0 and len(mapped_name_disease) > 0:
                 # take the name mapping because this is better
-                generate_csv_file(list_of_delete_index_with_cui, list_not_mapped_to_hetionet, concept_code,
+                generate_tsv_file(list_of_delete_index_with_cui, list_not_mapped_to_hetionet, concept_code,
                                   mapped_name_disease, 'name mapping, but both did mapped',
                                   csv_writer)
                 print(concept_code)
@@ -567,12 +560,12 @@ def mapping_to_disease():
         counter_of_mapping_tries += 1
         name = dict_side_effects_aeolus[concept_code].name.lower()
         if concept_code in dict_meddra_to_mondo:
-            generate_csv_file(list_of_delete_index_without_cui, list_aeolus_outcome_without_cui, concept_code,
+            generate_tsv_file(list_of_delete_index_without_cui, list_aeolus_outcome_without_cui, concept_code,
                               dict_meddra_to_mondo[concept_code], 'meddra mapping',
                               csv_writer)
 
         if name in dict_disease_name_to_id:
-            generate_csv_file(list_of_delete_index_without_cui, list_aeolus_outcome_without_cui, concept_code,
+            generate_tsv_file(list_of_delete_index_without_cui, list_aeolus_outcome_without_cui, concept_code,
                               mapped_name_disease, 'meddra mapping',
                               csv_writer)
 
@@ -602,7 +595,7 @@ def integrate_aeolus_into_hetionet():
     csv_existing.writerow(['aSE', 'SE', 'cuis', 'resources'])
 
     # query for mapping
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/aeolus/output/%s.tsv" As line FIELDTERMINATOR '\\t' Match (a:Aeolus_Outcome{concept_code:line.aSE})'''
+    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/aeolus/output/%s.tsv" As line FIELDTERMINATOR '\\t' Match (a:Aeolus_Outcome{concept_code:line.aSE})'''
     cypher_file = open('output/cypher.cypher', 'w')
 
     # query for the update nodes and relationship
@@ -658,13 +651,6 @@ def integrate_aeolus_into_hetionet():
                 csv_new.writerow([outcome_concept, cui, '|'.join(dict_aeolus_SE_with_CUIs[outcome_concepts[0]]),
                                   'MedDRA:' + '|MedDRA:'.join(outcome_concepts)])
 
-    # search for all side effect that did not mapped with aeolus and give them the property aeolus:'no'
-    # add query to update disease nodes with do='no'
-    cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')
-    query = ''':begin\n Match (n:SideEffect) Where not exists(n.aeolus) Set n.aeolus="no";\n :commit\n '''
-    cypher_general.write(query)
-    cypher_general.close()
-
 
 def main():
     global path_of_directory
@@ -673,7 +659,7 @@ def main():
     else:
         sys.exit('need a path aeolus se')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j()
@@ -681,7 +667,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load api key')
 
     load_api_key()
@@ -689,7 +675,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load already mapped from api cache')
 
     cache_api()
@@ -697,7 +683,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load in all Side effects from hetionet in a dictionary')
 
     load_side_effects_from_hetionet_in_dict()
@@ -705,7 +691,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load in all Side effects from AEOLUS in a dictionary')
 
     load_side_effects_aeolus_in_dictionary()
@@ -713,7 +699,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load in all disease from hetionet in a dictionary')
 
     load_disease_infos()
@@ -721,7 +707,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Find cuis for aeolus side effects')
 
     search_with_api_bioportal()
@@ -729,7 +715,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Map round one')
 
     map_first_round()
@@ -738,7 +724,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Map round two to disease')
 
     mapping_to_disease()
@@ -746,7 +732,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('intergarte aeolus outcome to hetionet(+Sider)')
 
     integrate_aeolus_into_hetionet()
@@ -754,7 +740,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Apr 18 12:41:20 2018
-
-@author: ckoenigs
-"""
-
 import datetime
 import csv
 import sys
@@ -51,14 +44,14 @@ def load_genes_into_dict():
     print('number of pathway nodes in hetionet:' + str(len(dict_genes_hetionet)))
 
 
-# header of the node csv
+# header of the node tsv
 header = []
 
 # extra property
 extra_property = 'all_mapped_ids'
 
 '''
-get the properties of pathway and make the list for the header of the csv file
+get the properties of pathway and make the list for the header of the tsv file
 however ignore the properties with genes, because this information will be in the relationships 
 '''
 
@@ -90,7 +83,7 @@ dict_own_id_to_pcid_and_other = {}
 # dictionary of identifier to nodes information
 dict_id_to_node = {}
 
-# csv files for nodes and relationship
+# tsv files for nodes and relationship
 file_node = open('output/node.tsv', 'w', encoding='utf-8')
 csv_node = csv.writer(file_node, delimiter='\t')
 
@@ -218,18 +211,18 @@ def fill_the_list_of_properties(head, value, identifiers, resource, name, list_i
     elif head == 'resource':
         value = resource
 
-    # prepare the value for csv
+    # prepare the value for tsv
     value = prepare_value(value, head, combine_node)
     list_info.append(value)
     return identifiers, name, resource
 
 
 '''
-fill the node csv file by going through the name dictionary and maybe they nodes with the same name will be merges to one node
+fill the node tsv file by going through the name dictionary and maybe they nodes with the same name will be merges to one node
 '''
 
 
-def generate_node_csv():
+def generate_node_tsv():
     csv_node.writerow(header)
 
     counter_double_names = 0
@@ -271,13 +264,13 @@ def generate_node_csv():
 all_existing_pairs = set()
 
 '''
-generate rela csv and cypher file
+generate rela tsv and cypher file
 '''
 
 
-def generate_rela_csv_and_cypher_queries():
+def generate_rela_tsv_and_cypher_queries():
     for (gene_id, identifier) in dict_rela.keys():
-        # depending if the identifier is removed or not the correct identifier is written into the csv file
+        # depending if the identifier is removed or not the correct identifier is written into the tsv file
         if not identifier in dict_old_pc_to_new and not (gene_id, identifier) in all_existing_pairs:
             csv_rela.writerow([gene_id, identifier])
             all_existing_pairs.add((gene_id, identifier))
@@ -286,7 +279,7 @@ def generate_rela_csv_and_cypher_queries():
             all_existing_pairs.add((gene_id, dict_old_pc_to_new[identifier]))
 
     # general start of queries
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/pathway/output/%s.tsv" As line FIELDTERMINATOR '\\t' '''
+    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/pathway/output/%s.tsv" As line FIELDTERMINATOR '\\t' '''
     # generate cypher for node creation
     query_node_middle = 'Create (n:Pathway{'
     for head in header:
@@ -312,7 +305,7 @@ def generate_rela_csv_and_cypher_queries():
         else:
             query_rela_middle += '(p:Pathway{identifier:line.' + head + '}) ,'
     query_rela = query_start + query_rela_middle[
-                               :-2] + ' Create (g)-[:PARTICIPATES_GpPW{license:p.license, source:p.source, unbiased:false, url:p.url, resource:p.resource, combined_wikipathway_and_pathway_common:"yes"}]->(p);\n'
+                               :-2] + ' Create (g)-[:PARTICIPATES_IN_GpiPW{license:p.license, source:p.source, unbiased:false, url:p.url, resource:p.resource, combined_wikipathway_and_pathway_common:"yes"}]->(p);\n'
     query_rela = query_rela % ('rela')
     cypher_file.write(query_rela)
 
@@ -329,7 +322,7 @@ def main():
     else:
         sys.exit('need a path')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j_mysql()
@@ -337,7 +330,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all pathways from hetionet into a dictionary')
 
     load_genes_into_dict()
@@ -345,7 +338,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load pathway properties')
 
     get_pathway_properties()
@@ -353,7 +346,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all pathways from neo4j into a dictionary')
 
     load_in_all_pathways()
@@ -361,23 +354,23 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
-    print('Generate csv for switch identifier and ')
+    print(datetime.datetime.now())
+    print('Generate tsv for switch identifier and ')
 
-    generate_node_csv()
-
-    print(
-        '###########################################################################################################################')
-
-    print(datetime.datetime.utcnow())
-    print('Generate csv for rela ')
-
-    generate_rela_csv_and_cypher_queries()
+    generate_node_tsv()
 
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
+    print('Generate tsv for rela ')
+
+    generate_rela_tsv_and_cypher_queries()
+
+    print(
+        '###########################################################################################################################')
+
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

@@ -6,7 +6,7 @@ path_to_ctd_data=$1
 # path to neo4j
 path_neo4j=$2
 
-file=$path_to_ctd_data/ctd_data/CTD_genes.csv
+file=$path_to_ctd_data/ctd_data/CTD_genes.tsv
 
 if [ ! -f "$file" ];
 then
@@ -24,18 +24,18 @@ then
     echo "Current time: $now"
     # cd path_to_ctd_data/ctd_data
 
-    for i in $path_to_ctd_data/ctd_data/*.csv; do
-    $path_to_ctd_data/ctd_data/delete_the_head.sh $i
+    for i in $path_to_ctd_data/ctd_data/*.tsv; do
+      $path_to_ctd_data/ctd_data/delete_the_head.sh $i
     done
 
     #cd ..
 fi
 
-echo python3
+echo prepare ctd data
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-python3 integrate_whole_CTD_into_neo4j_with_csv.py $path_to_ctd_data > output_integration.txt
+python3 integrate_whole_CTD_into_neo4j_with_tsv.py $path_to_ctd_data True > output_integration.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -79,8 +79,6 @@ sleep 120
 
 cd ..
 
-echo remove csv and csv.gz files
-#rm ctd_data/*.csv*
 
 
 

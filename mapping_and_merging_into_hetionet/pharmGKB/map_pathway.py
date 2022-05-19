@@ -53,7 +53,7 @@ def load_db_pathways_in():
 def check_for_mapping(dict_source_to_ids, source, dict_source_to_pathway_ids, csv_writer, identifier):
     """
     go through all cui_ids of the different sources and check if the are in the dictionary to pathway id. If so add
-    them into csv file.
+    them into tsv file.
     :param dict_source_to_ids:
     :param source:
     :param dict_source_to_pathway_ids:
@@ -78,7 +78,7 @@ def load_pharmgkb_phathways_in():
     mapp pathway pharmgkb to pathway
     :return:
     """
-    # csv_file
+    # tsv_file
     file_name = 'pathway/mapping.tsv'
     file = open(file_name, 'w', encoding='utf-8')
     csv_writer = csv.writer(file, delimiter='\t')
@@ -119,7 +119,7 @@ def load_pharmgkb_phathways_in():
 
 def pathwayrate_cypher_file(file_name):
     cypher_file = open('output/cypher.cypher', 'a')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/pharmGKB/%s" As line  FIELDTERMINATOR '\\t'  MATCH (n:PharmGKB_pathway{id:line.pharmgkb_id}), (c:pathway{identifier:line.pathway_id})  Set c.pharmgkb='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_pathway_pharmgkb{how_mapped:line.how_mapped}]->(n); \n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/pharmGKB/%s" As line  FIELDTERMINATOR '\\t'  MATCH (n:PharmGKB_pathway{id:line.pharmgkb_id}), (c:pathway{identifier:line.pathway_id})  Set c.pharmgkb='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_pathway_pharmgkb{how_mapped:line.how_mapped}]->(n); \n'''
     query = query % (file_name)
     cypher_file.write(query)
     cypher_file.close()
@@ -132,7 +132,7 @@ def main():
     else:
         sys.exit('need a path')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('pathwayrate connection with neo4j')
 
     create_connection_with_neo4j()
@@ -140,7 +140,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load in pathway from hetionet')
 
     load_db_pathways_in()
@@ -148,7 +148,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load in pathway from pharmgb in')
 
     load_pharmgkb_phathways_in()
@@ -156,7 +156,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

@@ -16,7 +16,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo prepare drugbank categories
 
-# python3 update_drugbank_categories.py > out_categories.txt
+python3 update_drugbank_categories.py > out_categories.txt
 
 
 
@@ -26,7 +26,7 @@ echo extract sdf information
 
 cd sdf
 
-#./script_sdf.sh $path_to_drugbank_data > output.txt
+./script_sdf.sh $path_to_drugbank_data > output.txt
 
 cd ..
 

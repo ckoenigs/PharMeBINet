@@ -1,8 +1,0 @@
-https://www.uniprot.org/
-
-Version: 2021_04
-
-Parse a part of the SwissProt xml file to a csv file and generate a cypher file. However, only human proteins are prepared and integrated into Noe4j with neo4j cypher-shell.
-It extracts information such as the ID, entry, status, sequence length, all AC-numbers, synonyms, general function, pathways, subcellular location, protein existence, external references, gene name, gene id, GO classifier, AS sequence, and more.
-
-License: CC BY 4.0

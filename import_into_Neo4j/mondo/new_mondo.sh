@@ -6,16 +6,17 @@ path_neo4j=$1
 #path to project
 path_to_project=$2
 
-#download json file
-wget  -O data/mondo.json "http://purl.obolibrary.org/obo/mondo.json"
+#download obo file
+wget  -O data/mondo.obo "http://purl.obolibrary.org/obo/mondo.obo"
 
-echo generation of csv from json file
-python3 parse_mondo_json_to_csv.py $path_to_project > output_disease.txt
+
+
+python3 ../EFO/transform_obo_to_tsv_and_cypher_file.py data/mondo.obo mondo disease $path_to_project > output/output_generate_integration_file.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-echo integrate mondo into neo4j
+echo integrate do into neo4j
 
 $path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher 
 
@@ -25,4 +26,5 @@ $path_neo4j/neo4j restart
 
 
 sleep 120
+
 

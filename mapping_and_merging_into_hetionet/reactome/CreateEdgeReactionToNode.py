@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Apr 18 12:41:20 2018
-
-@author: ckoenigs
-"""
 
 from py2neo import Graph
 import datetime
@@ -34,9 +28,9 @@ load in all pathways from hetionet in a dictionary
 
 def load_hetionet_failedreaction_hetionet_node_in(csv_file, dict_failedReaction_hetionet_node_hetionet,
                                                   new_relationship,
-                                                  node_reactome_label, rela_equal_name, node_hetionet_label):
-    query = '''MATCH (p:Reaction)-[:equal_to_reactome_reaction]-(r:Reaction_reactome)-[v:%s]->(n:%s)-[:%s]-(b:%s) RETURN p.identifier, b.identifier, v.order, v.stoichiometry'''
-    query = query % (new_relationship, node_reactome_label, rela_equal_name, node_hetionet_label)
+                                                  node_reactome_label,  node_hetionet_label):
+    query = '''MATCH (p:Reaction)-[:equal_to_reactome_reaction]-(r:Reaction_reactome)-[v:%s]->(n:%s)-[]-(b:%s) RETURN p.identifier, b.identifier, v.order, v.stoichiometry'''
+    query = query % (new_relationship, node_reactome_label,  node_hetionet_label)
     results = graph_database.run(query)
     # for id1, id2, order, stoichiometry, in results:
     for failedreaction_id, node_id, order, stoichiometry, in results:
@@ -55,17 +49,17 @@ generate new relationships between pathways of hetionet and FailedReaction of he
 
 
 def create_cypher_file(directory, file_path, node_label, rela_name):
-    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smaster_database_change/mapping_and_merging_into_hetionet/reactome/%s" As line FIELDTERMINATOR "\\t" MATCH (d:Reaction{identifier:line.id_hetionet_Reaction}),(c:%s{identifier:line.id_hetionet_node}) CREATE (d)-[: %s{order:line.order, stoichiometry:line.stoichiometry, resource: ['Reactome'], reactome: "yes", license:"%s", source:"Reactome", url:"https://reactome.org/content/detail/"+line.id_hetionet_Reaction}]->(c);\n'''
+    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/reactome/%s" As line FIELDTERMINATOR "\\t" MATCH (d:Reaction{identifier:line.id_hetionet_Reaction}),(c:%s{identifier:line.id_hetionet_node}) CREATE (d)-[: %s{order:line.order, stoichiometry:line.stoichiometry, resource: ['Reactome'], reactome: "yes", license:"%s", source:"Reactome", url:"https://reactome.org/content/detail/"+line.id_hetionet_Reaction}]->(c);\n'''
     query = query % (path_of_directory, file_path, node_label, rela_name, license)
     cypher_file.write(query)
 
 
-def check_relationships_and_generate_file(new_relationship, node_reactome_label, rela_equal_name, node_hetionet_label,
+def check_relationships_and_generate_file(new_relationship, node_reactome_label,  node_hetionet_label,
                                           directory, rela_name):
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load all relationships from hetionet_failedReaction and hetionet_nodes into a dictionary')
     # file for mapped or not mapped identifier
     file_name = directory + '/mapped_Reaction_to_' + node_reactome_label + '_' + rela_name + '.tsv'
@@ -78,12 +72,12 @@ def check_relationships_and_generate_file(new_relationship, node_reactome_label,
 
     load_hetionet_failedreaction_hetionet_node_in(csv_mapped, dict_failedReaction_node, new_relationship,
                                                   node_reactome_label,
-                                                  rela_equal_name, node_hetionet_label)
+                                                   node_hetionet_label)
 
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     print('Integrate new relationships and connect them ')
 
@@ -96,10 +90,10 @@ def main():
         path_of_directory = sys.argv[1]
         license = sys.argv[2]
     else:
-        sys.exit('need a path reactome raction')
+        sys.exit('need a path reactome reaction and license')
 
     global cypher_file
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j()
@@ -107,26 +101,15 @@ def main():
     # 0: old relationship;           1: name of node in Reactome;        2: relationship equal to Hetionet-node
     # 3: name of node in Hetionet;   4: name of new relationship
     list_of_combinations = [
-        ['disease', 'Disease_reactome', 'equal_to_reactome_disease', 'Disease', 'LEADS_TO_DISEASE_RltdD'],
-        ['compartment', 'GO_CellularComponent_reactome', 'equal_to_reactome_gocellcomp', 'CellularComponent',
-         'IN_COMPARTMENT_RcCC'],
-        ['precedingEvent', 'Pathway_reactome', 'equal_to_reactome_pathway', 'Pathway', 'PRECEDING_REACTION_RprPW'],
-        ['precedingEvent', 'BlackBoxEvent_reactome', 'equal_to_reactome_blackBoxEvent', 'BlackBoxEvent',
-         'PRECEDING_REACTION_RprB'],
-        ['precedingEvent', 'Depolymerisation_reactome', 'equal_to_reactome_depolymerisation', 'Depolymerisation',
-         'PRECEDING_REACTION_RprDP'],
-        ['precedingEvent', 'FailedReaction_reactome', 'equal_to_reactome_failedreaction', 'FailedReaction',
-         'PRECEDING_REACTION_RprF'],
-        ['precedingEvent', 'Reaction_reactome', 'equal_to_reactome_reaction', 'Reaction', 'PRECEDING_REACTION_RprR'],
-        ['inferredTo', 'Reaction_reactome', 'equal_to_reactome_reaction', 'Reaction', 'HAS_EFFECT_ON_RheoR'],
-        ['inferredTo', 'BlackBoxEvent_reactome', 'equal_to_reactome_blackBoxEvent', 'BlackBoxEvent',
-         'HAS_EFFECT_ON_RheoB'],
-        ['normalReaction', 'Reaction_reactome', 'equal_to_reactome_reaction', 'Reaction', 'IS_NORMAL_REACTION_RnrR'],
-        ['normalReaction', 'BlackBoxEvent_reactome', 'equal_to_reactome_blackBoxEvent', 'BlackBoxEvent',
-         'IS_NORMAL_REACTION_RnrB'],
-        ['reverseReaction', 'Reaction_reactome', 'equal_to_reactome_reaction', 'Reaction', 'REVERSE_REACTION_RrrR'],
-        ['goBiologicalProcess', 'GO_BiologicalProcess_reactome', 'equal_to_reactome_gobiolproc', 'BiologicalProcess',
-         'OCCURS_IN_GO_BIOLOGICAL_PROCESS_RoigbpBP']
+        ['disease', 'Disease_reactome',  'Disease', 'LEADS_TO_RLEltD'],
+        ['compartment', 'GO_CellularComponent_reactome',  'CellularComponent',
+         'IN_COMPARTMENT_RLEicCC'],
+        ['precedingEvent', 'Pathway_reactome',  'Pathway', 'PRECEDING_REACTION_RLEprPW'],
+        ['precedingEvent', 'ReactionLikeEvent_reactome', 'ReactionLikeEvent', 'PRECEDING_REACTION_RLEprRLE'],
+        ['inferredTo', 'ReactionLikeEvent_reactome',  'ReactionLikeEvent', 'HAS_EFFECT_ON_RLEheoRLE'],
+        ['normalReaction', 'ReactionLikeEvent_reactome',  'ReactionLikeEvent', 'IS_NORMAL_REACTION_RLEinrRLE'],
+        ['reverseReaction', 'ReactionLikeEvent_reactome',  'ReactionLikeEvent', 'REVERSE_REACTION_RLErrRLE'],
+        ['goBiologicalProcess', 'GO_BiologicalProcess_reactome',  'BiologicalProcess', 'OCCURS_IN_RLEoiBP']
     ]
 
     directory = 'FailedReactionEdges'
@@ -135,10 +118,9 @@ def main():
     for list_element in list_of_combinations:
         new_relationship = list_element[0]
         node_reactome_label = list_element[1]
-        rela_equal_name = list_element[2]
-        node_hetionet_label = list_element[3]
-        rela_name = list_element[4]
-        check_relationships_and_generate_file(new_relationship, node_reactome_label, rela_equal_name,
+        node_hetionet_label = list_element[2]
+        rela_name = list_element[3]
+        check_relationships_and_generate_file(new_relationship, node_reactome_label,
                                               node_hetionet_label, directory,
                                               rela_name)
     cypher_file.close()
@@ -146,7 +128,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

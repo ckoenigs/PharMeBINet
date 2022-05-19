@@ -15,10 +15,10 @@ dict_prefix_to_label = {
 # dictionary omim number to dictionary of the different sources
 dict_omim_number_to_dict_of_information = {}
 
-# set header for csv
-set_of_headers = set(['identifier', 'other_cyto_location'])
+# set header for tsv
+set_of_headers = {'identifier', 'other_cyto_location'}
 
-# set header rela for csv
+# set header rela for tsv
 set_of_headers_rela = set()
 
 
@@ -46,18 +46,19 @@ def prepare_string_to_dictionary(multi_list_string, property_extra, dictionary):
     for list_string in multi_list_string:
         list_string = split_and_return_name_and_symbol(list_string)
         for key, value in list_string.items():
-            if property_extra + key + 's' not in dictionary:
-                set_of_headers.add(property_extra + key + 's')
-                dictionary[property_extra + key + 's'] = set()
+            extended_key = property_extra + key + 's'
+            if extended_key not in dictionary:
+                set_of_headers.add(extended_key)
+                dictionary[extended_key] = set()
             if type(value) == str:
-                dictionary[property_extra + key + 's'].add(value)
+                dictionary[extended_key].add(value)
             else:
-                dictionary[property_extra + key + 's'] = dictionary[property_extra + key + 's'].union(value)
+                dictionary[extended_key].update(value)
 
 
 def split_and_return_name_and_symbol(string):
     """
-    generate dictioary from string seperated by ;
+    generate dictionary from string separated by ;
     :param string: string
     :return: dictionary with name and symbol
     """
@@ -100,25 +101,23 @@ def load_in_mim_titles():
     :return:
     """
     file = open('data/mimTitles.txt', 'r', encoding='utf-8')
-    # file = open('data/part_mimitles.txt', 'r', encoding='utf-8')
     csv_reader = csv.reader(file, delimiter='\t')
     next(csv_reader)
     for line in csv_reader:
-
         dict_title = {}
         prefix = dict_prefix_to_label[line[0]]
         dict_title['detail_information'] = prefix
         set_of_headers.add('detail_information')
 
-        prefered = split_and_return_name_and_symbol(line[2])
+        preferred = split_and_return_name_and_symbol(line[2])
         # print(line[2])
-        if len(prefered) == 2:
-            dict_title['name'] = prefered['name']
-            dict_title['symbol'] = prefered['symbol'][0]
-            if len(prefered['symbol']) > 1:
-                dict_title['alternative_symbols'] = set(prefered['symbol'][1:])
+        if len(preferred) == 2:
+            dict_title['name'] = preferred['name']
+            dict_title['symbol'] = preferred['symbol'][0]
+            if len(preferred['symbol']) > 1:
+                dict_title['alternative_symbols'] = set(preferred['symbol'][1:])
         else:
-            dict_title['name'] = prefered['name'] if 'name' in prefered else ''
+            dict_title['name'] = preferred['name'] if 'name' in preferred else ''
 
         set_of_headers.add('name')
         set_of_headers.add('symbol')
@@ -130,11 +129,12 @@ def load_in_mim_titles():
 
         omim_id = line[1]
         check_for_omim_and_add_dictionary(omim_id, dict_title)
+    file.close()
 
 
 def check_and_add_with_xref_source(xref, xref_label, list_to_add):
     """
-    check if it has an value
+    check if it has a value
     if so add to list with source name
     :param xref: string
     :param xref_label: string
@@ -154,13 +154,12 @@ def load_in_mim2gene():
     :return:
     """
     file = open('data/mim2gene.txt', 'r', encoding='utf-8')
-    # file = open('data/part_mim2gene.txt', 'r', encoding='utf-8')
     csv_reader = csv.reader(file, delimiter='\t')
     next(csv_reader)
     for line in csv_reader:
-        dict_mim2gene = {}
-
-        dict_mim2gene['labels'] = line[1]
+        dict_mim2gene = {
+            'labels': line[1]
+        }
 
         xref_list = []
 
@@ -173,6 +172,7 @@ def load_in_mim2gene():
 
         omim_id = line[0]
         check_for_omim_and_add_dictionary(omim_id, dict_mim2gene)
+    file.close()
 
 
 def add_information_to_dictionary(string, property_name, dictionary):
@@ -261,7 +261,7 @@ def check_for_omim_id(string):
 
 def check_before_the_bracket(string):
     """
-    check for the string in  front of the bracket for name and omim id information
+    check for the string in front of the bracket for name and omim id information
     :param string: string
     :return: return part of name and omim id
     """
@@ -283,11 +283,12 @@ def work_with_name_omim_and_mapping_key(omim_key_part, name, dict_rela, omim_id,
     :param omim_key_part: string
     :param name: string
     :param dict_rela: dictionary
+    :param omim_id: omim id from the gene
     :return: omim id of phenotype
     """
-    global unkown_counter
-    dict_phenotype = {}
-    dict_phenotype['labels'] = 'phenotype'
+    dict_phenotype = {
+        'labels': 'phenotype'
+    }
     omim_id_phenotype_and_mapping_key = omim_key_part.split(' (')
     name_part, omim_id_phenotype = check_before_the_bracket(omim_id_phenotype_and_mapping_key[0])
     is_digital = True
@@ -302,8 +303,7 @@ def work_with_name_omim_and_mapping_key(omim_key_part, name, dict_rela, omim_id,
 
         # print(omim_id_phenotype)
         # print('thought a string is a omim id ;(')
-        unkown_counter += 1
-        omim_id_phenotype = 'unkown_' + str(unkown_counter)
+        omim_id_phenotype = omim_id
 
     # rela
     prepare_the_mapping_key(omim_id_phenotype_and_mapping_key[1], dict_rela)
@@ -311,10 +311,11 @@ def work_with_name_omim_and_mapping_key(omim_key_part, name, dict_rela, omim_id,
     # name
     name = prepare_name_and_markers_and_add_to_dict(name, dict_phenotype, dict_rela)
     if not is_digital:
-        if name.lower() not in dict_unknown_phenotype_name_to_id:
-            dict_unknown_phenotype_name_to_id[name.lower()] = omim_id_phenotype
-        else:
-            omim_id_phenotype = dict_unknown_phenotype_name_to_id[name.lower()]
+        # if name.lower() not in dict_unknown_phenotype_name_to_id:
+        #     dict_unknown_phenotype_name_to_id[name.lower()] = omim_id_phenotype
+        # else:
+        #     omim_id_phenotype = dict_unknown_phenotype_name_to_id[name.lower()]
+        omim_id_phenotype = omim_id
 
     check_for_omim_and_add_dictionary(omim_id_phenotype, dict_phenotype)
     return omim_id_phenotype
@@ -339,18 +340,16 @@ def separate_information_of_string(string, dict_rela, omim_id):
         return separate_information_of_string(splitted_string[0], dict_rela, omim_id)
 
 
-# dictionary_of_unkown_pehnotype_name_to_new_id
+# dictionary_of_unknown_phenotype_name_to_new_id
 dict_unknown_phenotype_name_to_id = {}
-
-# counter for generate unknown ids
-unkown_counter = 0
 
 
 def prepare_phenotype_gene_relationships(omim_id, phenotypes, comments):
     if phenotypes != '':
         for phenotype in phenotypes.split('; '):
-            dict_rela = {}
-            dict_rela['comments'] = comments
+            dict_rela = {
+                'comments': comments
+            }
             set_of_headers_rela.add('comments')
             # phenotype: name (can contain ,), omim_id (number)[, Inheritance ]
             split_name_omim_or_inheritance = phenotype.rsplit(', ', 1)
@@ -405,8 +404,9 @@ def load_in_genemap2():
     counter = 0
     for line in csv_reader:
         counter += 1
-        dict_genemap2 = {}
-        dict_genemap2['labels'] = 'gene'
+        dict_genemap2 = {
+            'labels': 'gene'
+        }
         # print(line)
 
         add_information_to_dictionary(line[0], 'chromosome', dict_genemap2)
@@ -418,10 +418,7 @@ def load_in_genemap2():
         add_information_to_dictionary(line[8], 'symbol', dict_genemap2)
 
         if line[6] != '':
-            set_symobls = set()
-            for symbol in line[6].split(', '):
-                set_symobls.add(symbol)
-            dict_genemap2['alternative_symbols'] = set_symobls
+            dict_genemap2['alternative_symbols'] = set(line[6].split(', '))
 
         xref_list = []
         check_and_add_with_xref_source(line[9], 'NCBI_GENE', xref_list)
@@ -463,11 +460,11 @@ def check_for_name_in_dictionary_if_same_id(omim_id, name):
                         omim_id_phenotype = omim_id
                         return omim_id_phenotype
         if omim_id_phenotype == '':
-            if name.lower() in dict_unknown_phenotype_name_to_id:
-                omim_id_phenotype = dict_unknown_phenotype_name_to_id[name.lower()]
-                return omim_id_phenotype
-            else:
-                print('not mapped to omim id')
+            # if name.lower() in dict_unknown_phenotype_name_to_id:
+            #     omim_id_phenotype = dict_unknown_phenotype_name_to_id[name.lower()]
+            #     return omim_id_phenotype
+            # else:
+            print('not mapped to omim id')
     else:
         print('omim not existing')
         sys.exit('not mapped to omim id')
@@ -513,12 +510,10 @@ def separate_in_name_omim_marker(phenotype, dict_rela, dict_node):
 
 def load_in_morbidmap():
     """
-
-    0:Phenotype
-    1:Gene Symbols
-    2:MIM Number
-    3:Cyto Location
-    :return:
+    0: Phenotype
+    1: Gene Symbols
+    2: MIM Number
+    3: Cyto Location
     """
     file = open('data/morbidmap.txt', 'r', encoding='utf-8')
     # file = open('data/part_morbidmap.txt', 'r', encoding='utf-8')
@@ -526,22 +521,21 @@ def load_in_morbidmap():
     next(csv_reader)
     for line in csv_reader:
         dict_rela = {}
-        dict_phenotype = {}
-        dict_phenotype['labels'] = 'phenotype'
+        dict_phenotype = {
+            'labels': 'phenotype'
+        }
 
         omim_id = line[2]
-
         phenotype = line[0]
         name, omim_id_phenotype = separate_in_name_omim_marker(phenotype, dict_rela, dict_phenotype)
-
-
         gene_symbols = line[1].split(', ')
         cyto_location = line[3]
 
-        dict_gene = {}
-        dict_gene['labels'] = 'gene'
-        dict_gene['alternative_symbols'] = gene_symbols
-        dict_gene['cyto_location'] = cyto_location
+        dict_gene = {
+            'labels': 'gene',
+            'alternative_symbols': gene_symbols,
+            'cyto_location': cyto_location
+        }
 
         check_for_omim_and_add_dictionary(omim_id, dict_gene)
 
@@ -608,7 +602,7 @@ def prepare_labels(label):
     """
     run_through = set()
     if type(label) == set:
-        run_through = run_through.union(label)
+        run_through.update(label)
     else:
         run_through = set([label])
     new_labels = set()
@@ -641,20 +635,20 @@ def add_node_query_to_cypher(labels, query_node, file_name):
     query_node = query_node % (file_name, string_labels)
     cypher_file.write(query_node)
     for label in labels:
-        if not label in set_of_existing_constrains:
+        if label not in set_of_existing_constrains:
             one_constraint = query_constraint % label
             cypher_file.write(one_constraint)
             set_of_existing_constrains.add(label)
 
 
-# dictionary labels to csv file
+# dictionary labels to tsv file
 dict_labels_to_csv = {}
 
 
 def dict_to_csv(dict_node, labels, query_node, omim_id):
     """
-    add the different dictionaries to csv file
-    if the tuple of labels do not exists a new csv file is generated and also the cypher query
+    add the different dictionaries to tsv file
+    if the tuple of labels do not exist a new tsv file is generated and also the cypher query
     :param dict_node: dictionary
     :param labels: list of strings
     :param query_node: string
@@ -703,7 +697,7 @@ dict_omim_id_to_node = {}
 
 def combine_the_node_information(query_node):
     """
-    combine the information from the different files to one dictionary and add to csv file, also if not exist add the
+    combine the information from the different files to one dictionary and add to tsv file, also if not exist add the
     fitting cypher query to cypher file
     :param query_node: string
     :return:
@@ -734,7 +728,7 @@ def combine_the_node_information(query_node):
                         dict_node['cyto_location'] = value
                         continue
                     if key == 'labels':
-                        if not type(dict_node['labels'])==set:
+                        if not type(dict_node['labels']) == set:
                             dict_node['labels'] = set([dict_node['labels']])
                         dict_node['labels'].add(value)
                         continue
@@ -805,7 +799,7 @@ def check_labels_if_removed(labels_gene, omim_id):
     return dict_omim_id_to_labels, removed
 
 
-# dictionary label pair to the csv file
+# dictionary label pair to the tsv file
 dict_label_pair_to_csv_file = {}
 
 
@@ -816,8 +810,8 @@ def add_rela_query(file_name, label_1, label_2, query_rela):
 
 def write_to_csv_rela(omim_id, labels, phenotype_omim_id, phenotype_labels, dict_combined_rela, query_rela):
     """
-    prepare the dictionary with the ids and add to csv file
-    generate the csv file for each label tuple and add cypher query to cypher file
+    prepare the dictionary with the ids and add to tsv file
+    generate the tsv file for each label tuple and add cypher query to cypher file
     :param omim_id: string
     :param labels: list
     :param phenotype_omim_id: string
@@ -894,7 +888,7 @@ def prepare_and_add_relationships(query_edge):
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     global path_of_directory
     if len(sys.argv) > 1:
@@ -904,58 +898,62 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load mimTitles in dictionary')
     load_in_mim_titles()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load mim2genes')
 
     load_in_mim2gene()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load genemap2')
 
     load_in_genemap2()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load morbidmap')
 
     load_in_morbidmap()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Prepare the cypher queries')
 
     # query start
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/import_into_Neo4j/OMIM/%s"  As line FIELDTERMINATOR '\t' '''
+    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/OMIM/%s"  As line FIELDTERMINATOR '\\t' '''
 
     query_node, query_edge = prepare_queries(query_start)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Combine node information')
 
     combine_the_node_information(query_node)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Combine rela information')
 
     prepare_and_add_relationships(query_edge)
 
+    # Remove nodes without relationships for the following labels
+    for label in ['gene', 'predominantly_phenotypes', 'phenotype']:
+        cypher_file.write('MATCH (n:%s_omim) WHERE NOT (n)--() DELETE n;\n' % label)
+
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

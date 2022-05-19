@@ -105,11 +105,11 @@ def load_all_protein_chemical_pairs(direction, from_chemical):
 
 
 '''
-Create cypher query and the csv file for the different relationships
+Create cypher query and the tsv file for the different relationships
 '''
 
 
-def create_cypher_query_and_csv_file(rela_name, rela_direction, label_from):
+def create_cypher_query_and_tsv_file(rela_name, rela_direction, label_from):
     query = 'Match p=(:%s)%s(:Chemical) Return p Limit 1' % (label_from, rela_direction)
     results = g.run(query)
     result = results.evaluate()
@@ -119,7 +119,7 @@ def create_cypher_query_and_csv_file(rela_name, rela_direction, label_from):
     # file name
     file_name = rela_name + '_Compound_' + label_from
 
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/drugbank/rela_protein/%s.tsv" As line Fieldterminator '\\t' Match (a:%s{identifier:line.identifier1}),  (c:Chemical{identifier:line.identifier2}) '''
+    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/drugbank/rela_protein/%s.tsv" As line Fieldterminator '\\t' Match (a:%s{identifier:line.identifier1}),  (c:Chemical{identifier:line.identifier2}) '''
     query_start = query_start % (file_name, label_from)
     query_create = ''
     query_update = ''
@@ -147,7 +147,7 @@ def create_cypher_query_and_csv_file(rela_name, rela_direction, label_from):
         list_of_properties.append(property)
     list_of_properties.append('unbiased')
 
-    # create csv file
+    # create tsv file
     file = open('rela_protein/' + file_name + '.tsv', 'w', encoding='utf-8')
     csv_writer = csv.writer(file, delimiter='\t')
     csv_writer.writerow(list_of_properties)
@@ -176,27 +176,31 @@ def run_through_dictionary_to_add_to_tsv_and_cypher():
             else:
                 rela_direction = '-[r:%s]->'
             rela_direction = rela_direction % (rela_name)
-            csv_writer, list_of_properties = create_cypher_query_and_csv_file(rela_name, rela_direction, label)
+            csv_writer, list_of_properties = create_cypher_query_and_tsv_file(rela_name, rela_direction, label)
             for (identifier1, compound_id), list_rela in dict_pairs.items():
-                csv_list = [identifier1, compound_id]
+                tsv_list = [identifier1, compound_id]
                 if len(list_rela) == 1:
                     rela_infos = list_rela[0]
                     contain_ref = False
                     for property in list_of_properties[2:]:
                         if property in rela_infos:
+                            value= rela_infos[property]
                             if property.startswith('ref'):
                                 contain_ref = True
-                            csv_list.append(rela_infos[property])
+                            if type(value)==list:
+                                # print(property)
+                                value='|'.join(value)
+                            tsv_list.append(value)
                         elif property == 'unbiased':
-                            csv_list.append('true') if contain_ref else csv_list.append('false')
+                            tsv_list.append('true') if contain_ref else tsv_list.append('false')
                         else:
-                            csv_list.append('')
+                            tsv_list.append('')
 
                 else:
                     contain_ref = False
                     for property in list_of_properties[2:]:
                         if property == 'unbiased':
-                            csv_list.append('true') if contain_ref else csv_list.append('false')
+                            tsv_list.append('true') if contain_ref else tsv_list.append('false')
                             continue
                         set_of_info_for_this_property = set()
                         for rela_infos in list_rela:
@@ -212,15 +216,15 @@ def run_through_dictionary_to_add_to_tsv_and_cypher():
                                                                                'interaction_with_form']):
                                 print('ohje, something which I do not expact to be a list is a list')
                                 print(property)
-                                print(csv_list)
+                                print(tsv_list)
                                 print(set_of_info_for_this_property)
-                            csv_list.append("|".join(set_of_info_for_this_property))
+                            tsv_list.append("|".join(set_of_info_for_this_property))
                         elif len(set_of_info_for_this_property) == 1:
-                            csv_list.append(set_of_info_for_this_property.pop())
+                            tsv_list.append(set_of_info_for_this_property.pop())
                         else:
-                            csv_list.append('')
+                            tsv_list.append('')
 
-                csv_writer.writerow(csv_list)
+                csv_writer.writerow(tsv_list)
 
 
 # path to directory
@@ -236,7 +240,7 @@ def main():
     path_of_directory = sys.argv[2]
     print(sys.argv)
     print(path_of_directory)
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('create connection with neo4j')
 
     create_connection_with_neo4j()
@@ -244,7 +248,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load all rela and add to dictionary')
 
     load_all_protein_chemical_pairs('-[r]->', False)
@@ -253,7 +257,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load all hetionet compound in dictionary')
 
     run_through_dictionary_to_add_to_tsv_and_cypher()
@@ -261,7 +265,7 @@ def main():
     print(
         '#################################################################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

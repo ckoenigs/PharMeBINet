@@ -23,7 +23,7 @@ dict_first_letter_to_rela_letter = {
     'P': 'PT'
 }
 
-query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/omim/%s" As line FIELDTERMINATOR '\\t' 
+query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/omim/%s" As line FIELDTERMINATOR '\\t' 
     Match (g:Gene{identifier:line.%s}),(to:%s{identifier:line.%s}) Merge (g)<-[r:ASSOCIATES_%saG]-(to) On Create Set r.resource=['OMIM'], r.source='OMIM', r.omim='yes', r.license='https://www.omim.org/help/agreement', %s On Match Set r.resource=r.resource+'OMIM', r.omim="yes", %s ;\n'''
 
 
@@ -48,14 +48,14 @@ def prepare_cypher_query(file, header_start, to_label):
     query_merge = query_merge[:-2]
     combine_cypher = query_start
     combine_cypher = combine_cypher % (
-        path_of_directory, file, header_start[0], to_label, header_start[1], to_label[0], query_merge, query_merge)
+        path_of_directory, file, header_start[0], to_label, header_start[1], dict_first_letter_to_rela_letter[to_label[0]], query_merge, query_merge)
 
     cypher_file.write(combine_cypher)
 
 
-def prepare_csv_files(label):
+def prepare_tsv_files(label):
     """
-    generate a csv file in a given path with a given header
+    generate a tsv file in a given path with a given header
     :param label: string
     :return:
     """
@@ -134,14 +134,14 @@ def prepare_set_to_string(set_of_lists):
     return "|".join(list(set_of_lists))
 
 
-def generate_csv_and_cypher_file(label, dictionary):
+def generate_tsv_and_cypher_file(label, dictionary):
     """
-    generate csv and fill it and also generate cypher query
+    generate tsv and fill it and also generate cypher query
     :param label: string
     :param dictionary: dictionary
     :return:
     """
-    csv_writer, header = prepare_csv_files(label)
+    csv_writer, header = prepare_tsv_files(label)
     for (gene_id, to_id), properties in dictionary.items():
         list_information = [gene_id, to_id]
         # add properties in the right order
@@ -152,7 +152,7 @@ def generate_csv_and_cypher_file(label, dictionary):
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     global path_of_directory
     if len(sys.argv) > 1:
@@ -162,34 +162,34 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('connection to db')
     database_connection()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Gene mapping')
 
     load_all_omim_gene_phenotypes()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
-    print('Prepare rela to disease as cypher query and csv file')
+    print(datetime.datetime.now())
+    print('Prepare rela to disease as cypher query and tsv file')
 
-    generate_csv_and_cypher_file('Disease', dict_gene_disease)
-
-    print('##########################################################################')
-
-    print(datetime.datetime.utcnow())
-    print('Prepare rela to phenotyp as cypher query and csv file')
-
-    generate_csv_and_cypher_file('Phenotype', dict_gene_phenotype)
+    generate_tsv_and_cypher_file('Disease', dict_gene_disease)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
+    print('Prepare rela to phenotyp as cypher query and tsv file')
+
+    generate_tsv_and_cypher_file('Phenotype', dict_gene_phenotype)
+
+    print('##########################################################################')
+
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

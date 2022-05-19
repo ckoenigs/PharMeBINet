@@ -20,7 +20,7 @@ def database_connection():
 
 
 # the general query start
-query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/hpo/%s" As line FIELDTERMINATOR '\\t' '''
+query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/hpo/%s" As line FIELDTERMINATOR '\\t' '''
 
 
 def cui_to_mesh(cui):
@@ -69,7 +69,7 @@ def name_to_umls_cui(name):
 
 def prepare_dictionary_for_file(dictionary):
     """
-    prepare dictionary for writing into csv file. This means list and sets are transformed to string
+    prepare dictionary for writing into tsv file. This means list and sets are transformed to string
     :param dictionary: dictionary
     :return:
     """
@@ -81,19 +81,19 @@ def prepare_dictionary_for_file(dictionary):
     return new_dict
 
 
-def generate_cypher_queries_and_csv_files():
+def generate_cypher_queries_and_tsv_files():
     """
-    generate cypher queries and csv files
+    generate cypher queries and tsv files
     :return: csv writer for mapping and new
     """
     set_header_for_files = ['hpo_id', 'hetionet_id', 'xrefs', 'mesh_ids', 'resource', 'umls_ids', 'how_mapped']
-    # csv file for mapping disease
+    # tsv file for mapping disease
     file_name_mapped = 'mapping_files/symptom_mapped.tsv'
     file_symptom_mapped = open(file_name_mapped, 'w', encoding='utf-8')
     csv_symptom_mapped = csv.DictWriter(file_symptom_mapped, delimiter='\t', fieldnames=set_header_for_files)
     csv_symptom_mapped.writeheader()
 
-    # csv file for mapping disease
+    # tsv file for mapping disease
     file_name_new = 'mapping_files/symptom_new.tsv'
     file_symptom_new = open(file_name_new, 'w', encoding='utf-8')
     csv_symptom_new = csv.DictWriter(file_symptom_new, delimiter='\t', fieldnames=set_header_for_files)
@@ -138,7 +138,7 @@ def generate_cypher_queries_and_csv_files():
     query_create = query_create % (path_of_directory, file_name_new, ontology_date)
     cypher_file.write(query_create)
 
-    query = '''Match (s1:Symptom)--(:HPO_symptom)-[:is_a]->(:HPO_symptom)--(s2:Symptom) Where not ID(s1)=ID(s2) Merge (s1)-[:IS_A_SiS{license:"HPO", source:"HPO", resource:["HPO"], hpo:"yes"}]->(s2);\n'''
+    query = '''Match (s1:Symptom)--(:HPO_symptom)-[:is_a]->(:HPO_symptom)--(s2:Symptom) Where not ID(s1)=ID(s2) Merge (s1)-[:IS_A_SiaS{license:"HPO", source:"HPO", resource:["HPO"], hpo:"yes"}]->(s2);\n'''
     cypher_file.write(query)
 
     return csv_symptom_mapped, csv_symptom_new
@@ -390,7 +390,7 @@ def map_hpo_symptoms_and_to_hetionet(csv_new):
 
 def prepare_mapped_nodes_for_file(csv_mapped):
     """
-    write the information into csv file.
+    write the information into tsv file.
     :param csv_mapped: csv writer
     :return:
     """
@@ -410,7 +410,7 @@ def prepare_mapped_nodes_for_file(csv_mapped):
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     global path_of_directory, ontology_date
     if len(sys.argv) > 2:
@@ -421,41 +421,41 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('connection to db')
     database_connection()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('generate dictionary from symptoms of hetionet')
 
     get_all_symptoms_and_add_to_dict()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('generate dictionary from symptoms of hetionet')
 
-    csv_mapped, csv_new = generate_cypher_queries_and_csv_files()
+    csv_mapped, csv_new = generate_cypher_queries_and_tsv_files()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('map hpo symptoms to mesh or umls cui and integrated them into hetionet')
 
     map_hpo_symptoms_and_to_hetionet(csv_new)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('The mapped nodes are wrote into file')
 
     prepare_mapped_nodes_for_file(csv_mapped)
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     con.close()
 

@@ -124,47 +124,47 @@ list_not_mapped_disease_ids_to_mondo = []
 dict_disease_id_to_mondos = {}
 
 # files for the different mapping steps of disease
-file_decipher_name = open('mapping_files/disease/map_decipher_with_name.txt', 'w', encoding='utf-8')
+file_decipher_name = open('mapping_files/disease/map_decipher_with_name.tsv', 'w', encoding='utf-8')
 csv_decipher_name = csv.writer(file_decipher_name, delimiter='\t')
 csv_decipher_name.writerow(['decipher id', 'decipher name', 'mondo', 'db_type'])
 
-file_decipher_name_umls = open('mapping_files/disease/map_decipher_with_name_umls_cui.txt', 'w', encoding='utf-8')
+file_decipher_name_umls = open('mapping_files/disease/map_decipher_with_name_umls_cui.tsv', 'w', encoding='utf-8')
 csv_decipher_name_umls = csv.writer(file_decipher_name_umls, delimiter='\t')
 csv_decipher_name_umls.writerow(['decipher id', 'decipher name', 'umls cuis', 'mondo', 'db_type'])
 
-file_decipher_name_split = open('mapping_files/disease/map_decipher_with_name_split.txt', 'w', encoding='utf-8')
+file_decipher_name_split = open('mapping_files/disease/map_decipher_with_name_split.tsv', 'w', encoding='utf-8')
 csv_decipher_name_split = csv.writer(file_decipher_name_split, delimiter='\t')
 csv_decipher_name_split.writerow(['decipher id', 'decipher name', 'mondo', 'db_type'])
 
-file_not_map_decipher = open('mapping_files/disease/not_map_decipher.txt', 'w', encoding='utf-8')
+file_not_map_decipher = open('mapping_files/disease/not_map_decipher.tsv', 'w', encoding='utf-8')
 csv_decipher_not_mapped = csv.writer(file_not_map_decipher, delimiter='\t')
 csv_decipher_not_mapped.writerow(['decipher id', 'decipher name', 'db_type'])
 
-file_omim_omim = open('mapping_files/disease/map_omim_with_omim.txt', 'w', encoding='utf-8')
+file_omim_omim = open('mapping_files/disease/map_omim_with_omim.tsv', 'w', encoding='utf-8')
 csv_omim_omim = csv.writer(file_omim_omim, delimiter='\t')
 csv_omim_omim.writerow(['omim id', 'omim name', 'mondos'])
 
-file_omim_umls_cui = open('mapping_files/disease/map_omim_with_umls_cui.txt', 'w', encoding='utf-8')
+file_omim_umls_cui = open('mapping_files/disease/map_omim_with_umls_cui.tsv', 'w', encoding='utf-8')
 csv_omim_cui = csv.writer(file_omim_umls_cui, delimiter='\t')
 csv_omim_cui.writerow(['omim id', 'omim name', 'umls cuis', 'mondos'])
 
-file_omim_name = open('mapping_files/disease/map_omim_with_name.txt', 'w', encoding='utf-8')
+file_omim_name = open('mapping_files/disease/map_omim_with_name.tsv', 'w', encoding='utf-8')
 csv_omim_name = csv.writer(file_omim_name, delimiter='\t')
 csv_omim_name.writerow(['omim id', 'omim name', 'mondos'])
 
-file_not_map_orpha = open('mapping_files/disease/not_map_orpha.txt', 'w', encoding='utf-8')
+file_not_map_orpha = open('mapping_files/disease/not_map_orpha.tsv', 'w', encoding='utf-8')
 csv_not_mapped_orpha = csv.writer(file_not_map_orpha, delimiter='\t')
 csv_not_mapped_orpha.writerow(['orpha id', 'orpha name', 'mondos'])
 
-file_orpha_orpha = open('mapping_files/disease/map_orpha_with_orpha.txt', 'w', encoding='utf-8')
+file_orpha_orpha = open('mapping_files/disease/map_orpha_with_orpha.tsv', 'w', encoding='utf-8')
 csv_orpha_orpha = csv.writer(file_orpha_orpha, delimiter='\t')
 csv_orpha_orpha.writerow(['orpha id', 'orpha name', 'mondos'])
 
-file_orpha_name = open('mapping_files/disease/map_orpha_with_name.txt', 'w', encoding='utf-8')
+file_orpha_name = open('mapping_files/disease/map_orpha_with_name.tsv', 'w', encoding='utf-8')
 csv_orpha_name = csv.writer(file_orpha_name, delimiter='\t')
 csv_orpha_name.writerow(['orpha id', 'orpha name', 'mondos'])
 
-file_not_map_omim = open('mapping_files/disease/not_map_omim.txt', 'w', encoding='utf-8')
+file_not_map_omim = open('mapping_files/disease/not_map_omim.tsv', 'w', encoding='utf-8')
 csv_omim_not_mapped = csv.writer(file_not_map_omim, delimiter='\t')
 csv_omim_not_mapped.writerow(['omim id', 'omim name'])
 
@@ -344,7 +344,7 @@ def map_hpo_disease_to_mondo(db_disease_id, db_disease_names, db_disease_source)
 
     counter += 1
     if counter % 5000 == 0:
-        print(datetime.datetime.utcnow())
+        print(datetime.datetime.now())
         print(counter)
         print('number of decipher:' + str(counter_decipher))
         print('number of not mapped decipher:' + str(counter_decipher_not_mapped))
@@ -502,7 +502,7 @@ csv_disease.writerow(['hpo_id', 'hetionet_id', 'resource'])
 cypher_file = open('cypher/cypher.cypher', 'w')
 
 # the general query start
-query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smaster_database_change/mapping_and_merging_into_hetionet/hpo/%s" As line FIELDTERMINATOR '\\t' 
+query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/hpo/%s" As line FIELDTERMINATOR '\\t' 
     Match'''
 
 '''
@@ -515,7 +515,7 @@ def integrate_mapping_of_disease_into_hetionet():
     query = query_start + ''' (n:HPO_disease{id: line.hpo_id}), (d:Disease{identifier:line.hetionet_id}) Set d.hpo="yes", d.resource=split(line.resource,"|") Create (d)-[:equal_to_hpo_disease]->(n);\n '''
     query = query % (path_of_directory, 'mapping_files/disease_mapped.tsv')
     cypher_file.write(query)
-    # write mapping in csv file
+    # write mapping in tsv file
     for hpo_id, mondos in dict_disease_id_to_mondos.items():
         for mondo in mondos:
             resources = set(dict_mondo_to_node[mondo]['resource'])
@@ -527,19 +527,13 @@ def integrate_mapping_of_disease_into_hetionet():
             # fill mapped dictionary
             dict_mondo_to_hpo_ids[mondo].append(hpo_id)
 
-    # query = '''Match (d:disease{identifier:"%s"}) Where exists(d.hpo) Set d.resource=d.resource+"HPO";\n '''
-    # cypher_file.write(query)
-    #
-    # query = '''Match (d:disease{identifier:"%s"}) Where not exists(d.hpo) Set d.hpo="no";\n '''
-    # cypher_file.write(query)
-
 
 # dictionary of frequency of occurrence
 dict_frequency = {}
 
 
 def main():
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     global path_of_directory
     if len(sys.argv) > 1:
@@ -549,20 +543,20 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('connection to db')
     database_connection()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('load in diseases information in dictionaries')
 
     get_all_disease_information_from_hetionet()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('map hpo disease to mondo')
 
     # create a lock, is used to synchronized threads
@@ -616,14 +610,14 @@ def main():
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('integrate mapping into hetionet for disease')
 
     integrate_mapping_of_disease_into_hetionet()
 
     print('##########################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
     con.close()
 

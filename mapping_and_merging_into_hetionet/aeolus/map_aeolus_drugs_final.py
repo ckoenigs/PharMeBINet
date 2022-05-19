@@ -1,9 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Aug 18 08:40:47 2017
 
-@author: ckoenigs
-"""
 import datetime
 import sys, csv
 
@@ -238,7 +233,7 @@ map with use of map rxcui-drugbank id table with inchikeys and unii
 idea form himmelstein
 prioperties:
     0:rxcui
-    1:drugbank ids seperated with |
+    1:drugbank ids separated with |
 '''
 
 
@@ -435,29 +430,16 @@ Generate cypher file to update or create the relationships in hetionet
 def generate_cypher_file():
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/aeolus/drug/mapped.csv" As line Match (a:Aeolus_Drug{drug_concept_id:line.aeolus_id}),(n:Chemical{identifier:line.chemical_id}) Set a.mapped_id=split(line.mapped_ids,'|'), a.how_mapped=line.how_mapped ,  n.aeolus="yes",n.resource= split(line.resource,'|') , n.xrefs=split(line.xrefs,'|') Create (n)-[:equal_to_Aeolus_drug]->(a); \n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/aeolus/drug/mapped.tsv" As line Fieldterminator '\\t' Match (a:Aeolus_Drug{drug_concept_id:line.aeolus_id}),(n:Chemical{identifier:line.chemical_id}) Set a.mapped_id=split(line.mapped_ids,'|'), a.how_mapped=line.how_mapped ,  n.aeolus="yes",n.resource= split(line.resource,'|') , n.xrefs=split(line.xrefs,'|') Create (n)-[:equal_to_Aeolus_drug]->(a); \n'''
 
     cypher_file.write(query)
 
     cypher_file.close()
 
-    # the general cypher file to update all chemicals and relationship which are not from aeolus
-    cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')
 
-    # all compounds which are not mapped from aeolus get as property aeolus='no'
-    query = ''':begin\n Match (n:Chemical)  Where not exists(n.aeolus) Set n.aeolus="no";\n :commit\n '''
-    cypher_general.write(query)
-
-    # all the causes relationship which are not in aeolus get the property aeolus='no'
-    query = ''':begin\n Match (a:Chemical)-[l:CAUSES_CcSE]-(:SideEffect) Where not exists(l.aeolus) Set l.aeolus='no'; \n :commit\n  '''
-    cypher_general.write(query)
-
-    cypher_general.close()
-
-
-# csv for mapped aeolus pairs
-file = open('drug/mapped.csv', 'w', encoding='utf-8')
-csv_writer = csv.writer(file)
+# tsv for mapped aeolus pairs
+file = open('drug/mapped.tsv', 'w', encoding='utf-8')
+csv_writer = csv.writer(file, delimiter='\t')
 header = ['aeolus_id', 'chemical_id', 'mapped_ids', 'how_mapped', 'resource', 'xrefs']
 csv_writer.writerow(header)
 
@@ -482,12 +464,12 @@ def integrate_aeolus_drugs_into_hetionet():
         mapped_ids_string = '|'.join(mapped_ids)
         for mapped_id in mapped_ids:
             index += 1
-            xrefs = go_through_xrefs_and_change_if_needed_source_name(dict_all_drug[mapped_id].xrefs,'chemical')
+            xrefs = go_through_xrefs_and_change_if_needed_source_name(dict_all_drug[mapped_id].xrefs, 'chemical')
             xrefs_string = '|'.join(xrefs)
             resource = dict_all_drug[mapped_id].resource
             resource.append('AEOLUS')
             resource = list(set(resource))
-            resource = '|'.join(resource)
+            resource = '|'.join(sorted(resource))
             csv_writer.writerow([drug_concept_id, mapped_id, mapped_ids_string, how_mapped, resource, xrefs_string])
 
     print('all aeolus drug which are map to drugbank, where some drugbank id are not existing:' + str(counter))
@@ -501,7 +483,7 @@ def main():
     else:
         sys.exit('need a path')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j_mysql()
@@ -509,7 +491,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load in all drugs from hetionet (+Sider) in a dictionary')
 
     load_compounds_from_hetionet()
@@ -533,7 +515,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load in all drugs from aeolus in a dictionary')
 
     load_drug_aeolus_in_dictionary()
@@ -541,7 +523,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Find drugbank ids with use of the rxcuis and save them in a dictionary')
 
     map_rxnorm_to_drugbank_use_rxnorm_database()
@@ -549,7 +531,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('map with use of rxnorm_to drugbank with mapping using unii and inchikey')
 
     map_rxnorm_to_drugbank_with_use_inchikeys_and_unii()
@@ -557,7 +539,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('map with rxnorm to drugbank with use of mapping file with name')
 
     map_name_rxnorm_to_drugbank()
@@ -565,7 +547,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('map with mesh to chemical')
 
     map_to_mesh_chemical()
@@ -573,7 +555,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Map the drugbank id from the aeolus drug to the chemicals in hetionet')
 
     map_aeolus_drugs_to_hetionet()
@@ -581,15 +563,15 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
-    print('Generate csv of mapped drugs')
+    print(datetime.datetime.now())
+    print('Generate tsv of mapped drugs')
 
     integrate_aeolus_drugs_into_hetionet()
 
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate cypher')
 
     generate_cypher_file()
@@ -597,7 +579,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

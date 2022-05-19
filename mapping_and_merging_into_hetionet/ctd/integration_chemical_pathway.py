@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Sep 15 11:41:20 2017
-
-@author: ckoenigs
-"""
 
 import datetime, time
 import csv, sys
@@ -31,11 +25,11 @@ def take_all_relationships_of_gene_disease():
     # generate cypher file
     cypherfile = open('chemical_pathway/cypher.cypher', 'w')
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:/home/cassandra/Documents/Project/master_database_change/mapping_and_merging_into_hetionet/ctd/chemical_pathway/relationships.csv" As line Match (n:Pathway{identifier:line.PathwayID}), (b:Chemical{identifier:line.ChemicalID}) Merge (b)-[r:ASSOCIATES_CaP]->(n) On Create Set r.hetionet='no', r.ctd='yes', r.correctedPValues=split(line.correctedPValues,'|') , r.targetTotalQtys=split(line.targetTotalQtys,'|'), r.backgroundMatchQtys=split(line.backgroundMatchQtys,'|'), r.targetMatchQtys=split(line.targetMatchQtys,'|'), r.pValues=split(line.pValues,'|'), r.backgroundTotalQtys=split(line.backgroundTotalQtys,'|'), r.url_ctd="http://ctdbase.org/detail.go?type=chem&acc="+line.ChemicalID , r.source="CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2021 NC State University. All rights reserved.", r.unbiased=false On Match SET r.ctd='yes', r.correctedPValues=split(line.correctedPValues,'|') , r.targetTotalQtys=split(line.targetTotalQtys,'|'), r.backgroundMatchQtys=split(line.backgroundMatchQtys,'|'), r.targetMatchQtys=split(line.targetMatchQtys,'|'), r.pValues=split(line.pValues,'|'), r.backgroundTotalQtys=split(line.backgroundTotalQtys,'|'), r.url_ctd="http://ctdbase.org/detail.go?type=disease&acc="+line.DiseaseID ;\n '''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/ctd/chemical_pathway/relationships.tsv" As line  FIELDTERMINATOR '\\t' Match (n:Pathway{identifier:line.PathwayID}), (b:Chemical{identifier:line.ChemicalID}) Merge (b)-[r:ASSOCIATES_CaP]->(n) On Create Set  r.ctd='yes', r.correctedPValues=split(line.correctedPValues,'|') , r.targetTotalQtys=split(line.targetTotalQtys,'|'), r.backgroundMatchQtys=split(line.backgroundMatchQtys,'|'), r.targetMatchQtys=split(line.targetMatchQtys,'|'), r.pValues=split(line.pValues,'|'), r.backgroundTotalQtys=split(line.backgroundTotalQtys,'|'), r.url_ctd="http://ctdbase.org/detail.go?type=chem&acc="+line.ChemicalID , r.source="CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2021 NC State University. All rights reserved.", r.unbiased=false On Match SET r.ctd='yes', r.correctedPValues=split(line.correctedPValues,'|') , r.targetTotalQtys=split(line.targetTotalQtys,'|'), r.backgroundMatchQtys=split(line.backgroundMatchQtys,'|'), r.targetMatchQtys=split(line.targetMatchQtys,'|'), r.pValues=split(line.pValues,'|'), r.backgroundTotalQtys=split(line.backgroundTotalQtys,'|'), r.url_ctd="http://ctdbase.org/detail.go?type=disease&acc="+line.DiseaseID ;\n '''
     cypherfile.write(query)
 
-    csvfile = open('chemical_pathway/relationships.csv', 'wb')
-    writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+    csvfile = open('chemical_pathway/relationships.tsv', 'wb')
+    writer = csv.writer(csvfile, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     writer.writerow(
         ['PathwayID', 'ChemicalID', 'correctedPValues', 'targetTotalQtys', 'backgroundMatchQtys', 'targetMatchQtys',
          'pValues', 'backgroundTotalQtys'])
@@ -179,7 +173,7 @@ def take_all_relationships_of_gene_disease():
                     print('relas')
                     print(count_possible_relas)
                     print(counter_all)
-                    print (datetime.datetime.utcnow())
+                    print (datetime.datetime.now())
                     print(counter_number_of_used_chemicals)
 
         for (pathway_id, mondo), [correctedPValues, targetTotalQtys, backgroundMatchQtys, targetMatchQtys, pValues,
@@ -212,7 +206,14 @@ def take_all_relationships_of_gene_disease():
 
 
 def main():
-    print (datetime.datetime.utcnow())
+
+    global path_of_directory
+    if len(sys.argv) > 1:
+        path_of_directory = sys.argv[1]
+    else:
+        sys.exit('need a path')
+
+    print (datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j_mysql()
@@ -220,15 +221,15 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
-    print('Take all gene-pathway relationships and generate csv and cypher file')
+    print (datetime.datetime.now())
+    print('Take all gene-pathway relationships and generate tsv and cypher file')
 
     take_all_relationships_of_gene_disease()
 
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.utcnow())
+    print (datetime.datetime.now())
 
 
 if __name__ == "__main__":

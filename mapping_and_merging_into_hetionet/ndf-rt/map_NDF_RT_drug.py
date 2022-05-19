@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Aug 22 15:15:37 2017
-
-@author: ckoenigs
-"""
 
 import datetime
 import sys, csv
@@ -450,7 +444,7 @@ def map_with_unii_to_chemical():
 load map rxnorm id to drugbank _id from dhimmel inchikey and use this to map the rest
 properties:
     0:rxcui
-    1:drugbank ids seperated with |
+    1:drugbank ids separated with |
 '''
 
 
@@ -615,7 +609,7 @@ write a file with all ndf-rt drugs mapped to drugbank and a file with all not ma
 '''
 
 
-def generate_csv_for_mapped_and_not_mapped_ndf_rts():
+def generate_tsv_for_mapped_and_not_mapped_ndf_rts():
     for code in list_codes_with_drugbank_ids:
         drugbank_ids = dict_drug_NDF_RT[code]['mapped_ids']
         mapped_drugbanks = []
@@ -675,12 +669,12 @@ def integration_of_ndf_rt_drugs_into_hetionet():
     delete_code = []
 
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''master_database_change/mapping_and_merging_into_hetionet/ndf-rt/drug/mapping_drug.csv" As line  FIELDTERMINATOR '\\t'  MATCH (n:NDFRT_DRUG_KIND{code:line.code}), (c:Chemical{identifier:line.Chemical_id})  Set n.mapped_ids=split(line.mapped_ids,'|'), n.how_mapped=line.how_mapped, c.ndf_rt='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_drug_ndf_rt]->(n); \n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/ndf-rt/drug/mapping_drug.tsv" As line  FIELDTERMINATOR '\\t'  MATCH (n:NDFRT_DRUG_KIND{code:line.code}), (c:Chemical{identifier:line.Chemical_id})  Set n.mapped_ids=split(line.mapped_ids,'|'), n.how_mapped=line.how_mapped, c.ndf_rt='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_drug_ndf_rt]->(n); \n'''
     cypher_file.write(query)
-    query='''Match (b:Chemical)--(:NDFRT_DRUG_KIND)-[:effect_may_be_inhibited_by]->(:NDFRT_DRUG_KIND)--(c:Chemical) Merge (b)-[r:INTERACTS_CiC]->(c)  On Match Set r.resource=r.resource+'NDF-RT' On Create set r.resource=['NDF-RT'], r.source='NDF-RT', r.license='ndf-rt license'; '''
+    query='''Match (b:Chemical)--(:NDFRT_DRUG_KIND)-[:effect_may_be_inhibited_by]->(:NDFRT_DRUG_KIND)--(c:Chemical) Merge (b)-[r:INTERACTS_CiC]->(c)  On Match Set r.resource=r.resource+'NDF-RT', r.ndf_rt='yes' On Create set r.resource=['NDF-RT'], r.source='NDF-RT', r.ndf_rt='yes', r.license='UMLS license, available at https://uts.nlm.nih.gov/license.html';\n '''
     cypher_file.write(query)
     cypher_file.close()
-    writer = open('drug/mapping_drug.csv', 'w')
+    writer = open('drug/mapping_drug.tsv', 'w')
     csv_writer = csv.writer(writer, delimiter='\t')
     header = ['code', 'mapped_ids', 'how_mapped', 'Chemical_id', 'resource']
     csv_writer.writerow(header)
@@ -699,13 +693,6 @@ def integration_of_ndf_rt_drugs_into_hetionet():
             list_of_values = [code, string_drugbank_ids, how_mapped, drugbank_id, string_resource]
             csv_writer.writerow(list_of_values)
 
-    # the general cypher file to update all chemicals and relationship which are not from ndfrt
-    cypher_general = open('../cypher_general.cypher', 'a', encoding='utf-8')
-    # all not mapped compound get as property ndf-rt='no'
-    query = ''':begin \n Match (c:Chemical) Where not exists(c.ndf_rt) 
-            Set c.ndf_rt="no"; \n :commit '''
-    cypher_general.write(query)
-    cypher_general.close()
 
 
 def main():
@@ -715,7 +702,7 @@ def main():
     else:
         sys.exit('need a path')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j_mysql()
@@ -723,7 +710,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load in chemical from hetionet')
 
     load_hetionet_chemical_in()
@@ -731,7 +718,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('Load in drug from ndf-rt')
 
     load_ndf_rt_drug_in()
@@ -739,7 +726,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('map rxcui to drugbank ids with use of rxnorm')
 
     map_rxnorm_to_drugbank_use_rxnorm_database()
@@ -747,7 +734,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('map unii to drugbank ids')
 
     map_with_unii_to_chemical()
@@ -755,7 +742,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('map rxcui to drugbank ids with use of rxnorm-drugbank table with unii and inchikey from dhimmel')
 
     map_use_dhimmel_rxnorm_drugbank_map_unii_inchikey()
@@ -763,7 +750,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('map rxcui to drugbank ids with use of rxnorm-drugbank table with name mapping')
 
     # map_use_name_mapped_rxnorm_drugbank()
@@ -771,7 +758,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('name mapping')
 
     name_mapping()
@@ -779,7 +766,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('umls mapping')
 
     umls_cui_mapping()
@@ -787,7 +774,7 @@ def main():
     # print(
     #     '###########################################################################################################################')
     #
-    # print (datetime.datetime.utcnow())
+    # print (datetime.datetime.now())
     # print('map with use of the ingredient')
     #
     # map_to_drugbank_id_with_ingredient_from()
@@ -795,15 +782,15 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
-    print('create csv files for mapped and not mapped ndf-rt drugs')
+    print(datetime.datetime.now())
+    print('create tsv files for mapped and not mapped ndf-rt drugs')
 
-    generate_csv_for_mapped_and_not_mapped_ndf_rts()
+    generate_tsv_for_mapped_and_not_mapped_ndf_rts()
 
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
     print('integrate ndf-rt drugs into hetionet')
 
     integration_of_ndf_rt_drugs_into_hetionet()
@@ -811,7 +798,7 @@ def main():
     # print(
     #     '###########################################################################################################################')
     #
-    # print (datetime.datetime.utcnow())
+    # print (datetime.datetime.now())
     # print('integrate ndf-rt connection into hetionet')
     #
     # integrate_connection_into_hetionet()
@@ -819,7 +806,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print(datetime.datetime.utcnow())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":
