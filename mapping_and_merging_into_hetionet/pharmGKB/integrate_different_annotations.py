@@ -218,7 +218,7 @@ def load_db_info_in(label, csv_writer):
     :return:
     """
 
-    query = '''MATCH (d:%s) Where d.significance<>'no'  Return Distinct d.id '''
+    query = '''MATCH (d:%s) Where d.significance='yes'  Return Distinct d.id '''
     query = query % (label)
     results = g.run(query)
 
