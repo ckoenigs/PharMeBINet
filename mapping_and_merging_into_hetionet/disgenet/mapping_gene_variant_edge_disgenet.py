@@ -2,7 +2,8 @@ import datetime
 import os
 import sys
 import csv
-from collections import defaultdict
+sys.path.append("..")
+from useful_functions import *
 
 sys.path.append("../..")
 import create_connection_to_databases
@@ -79,12 +80,8 @@ def get_DisGeNet_information():
         counter_all += 1
         # mapping of existing edges
         if (gene_id, variant_id) in dict_pairs_to_info:
-            # resource-info aus dict auslesen, und resource um "DisGeNet" erweitern
-            resource = dict_pairs_to_info[(gene_id, variant_id)]
-            resource = [resource] if isinstance(resource, str) else resource
-            resource.append("DisGeNet")
             # 4 columns: Id, Var_id, SourceId, resource, sourceS
-            csv_gene_variant.writerow([gene_id, variant_id,  '|'.join(resource), '|'.join(rela['sourceId'])])
+            csv_gene_variant.writerow([gene_id, variant_id, resource_add_and_prepare(dict_pairs_to_info[(gene_id, variant_id)], "DisGeNet"), '|'.join(rela['sourceId'])])
         else:
             counter_not_mapped += 1
             writer.writerow([gene_id, variant_id, '|'.join(rela['sourceId']), snp_id])

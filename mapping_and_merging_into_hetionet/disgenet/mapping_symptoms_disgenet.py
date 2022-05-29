@@ -2,8 +2,9 @@ import datetime
 import os
 import sys
 import csv
-import pandas as pd
 from collections import defaultdict
+sys.path.append("..")
+from useful_functions import *
 
 
 
@@ -104,11 +105,6 @@ def generate_files(path_of_directory):
     return  query
 
 
-def resource(identifier):
-    resource = set(dict_symptom_id_to_resource[identifier])
-    resource.add('DisGeNet')
-    return '|'.join(sorted(resource))
-
 
 def load_all_unmapped_DisGeNet_disease_and_finish_the_files(name,umls_id,xrefs):
     """
@@ -124,14 +120,14 @@ def load_all_unmapped_DisGeNet_disease_and_finish_the_files(name,umls_id,xrefs):
         identifiers = dict_umls_id_to_identifier[umls_id]
         reduced_identifier= check_for_multiple_mapping_and_try_to_reduce_multiple_mapping(name,identifiers)
         for identifier in reduced_identifier:
-            csv_mapping.writerow([umls_id, identifier, resource(identifier), 'umls'])
+            csv_mapping.writerow([umls_id, identifier, resource_add_and_prepare(dict_symptom_id_to_resource[identifier],"DisGeNet"), 'umls'])
         return  True
 
     # name mapping
     if name:
         if name in dict_name_to_identifier:
             for identifier in dict_name_to_identifier[name]:
-                csv_mapping.writerow([umls_id, identifier, resource(identifier), 'name'])
+                csv_mapping.writerow([umls_id, identifier, resource_add_and_prepare(dict_symptom_id_to_resource[identifier],"DisGeNet"), 'name'])
             return True
 
     # mapping via xrefs
@@ -148,7 +144,7 @@ def load_all_unmapped_DisGeNet_disease_and_finish_the_files(name,umls_id,xrefs):
                 identifiers = dict_xrefs_to_identifier[equ_id]
                 reduced_identifier = check_for_multiple_mapping_and_try_to_reduce_multiple_mapping(name, identifiers)
                 for ident in reduced_identifier:  # in case of several values for one id
-                    csv_mapping.writerow([umls_id, ident, resource(ident), equivalent_id_map[name].lower()])
+                    csv_mapping.writerow([umls_id, ident, resource_add_and_prepare(dict_symptom_id_to_resource[ident],"DisGeNet"), equivalent_id_map[name].lower()])
         return found_mapping
 
     else:

@@ -1,5 +1,4 @@
 import datetime
-from distutils.command.sdist import sdist
 import os
 import sys
 import csv
@@ -8,6 +7,8 @@ from collections import defaultdict
 
 sys.path.append("../..")
 import create_connection_to_databases
+sys.path.append("..")
+from useful_functions import *
 
 
 def create_connection_with_neo4j():
@@ -207,9 +208,7 @@ def get_DisGeNet_information(type='Disease', cyphermode='w', other_label='Gene')
         # mapping of existing edges
         if (gene_id, disease_id) in dict_pairs_to_info:
             # Verschiedene infos aus beiden Kanten kombinieren
-            resource = set(dict_pairs_to_info[(gene_id, disease_id)]['resource'])
-            resource.add("DisGeNet")
-            resource = '|'.join(resource)
+            resource = resource_add_and_prepare(dict_pairs_to_info[(gene_id, disease_id)]['resource'],"DisGeNet")
 
             pubmed_id_existing = set(dict_pairs_to_info[(gene_id, disease_id)]['pubMed_ids']) if 'pubMed_ids' in \
                                                                                                  dict_pairs_to_info[(

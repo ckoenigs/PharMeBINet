@@ -7,6 +7,8 @@ from collections import defaultdict
 import mapping_symptoms_disgenet
 sys.path.append("../..")
 import create_connection_to_databases
+sys.path.append("..")
+from useful_functions import *
 
 
 def create_connection_with_neo4j():
@@ -126,13 +128,6 @@ def generate_files(path_of_directory):
     cypher_file.write(query)
     cypher_file.close()
 
-
-
-def resource(identifier):
-    resource = set(dict_disease_id_to_resource[identifier])
-    resource.add('DisGeNet')
-    return '|'.join(sorted(resource))
-
 def check_for_multiple_mapping_and_try_to_reduce_multiple_mapping(name, mapping_ids):
     """
     Try to reduce multiple mapping be also consider name mapping ids intersection
@@ -203,7 +198,7 @@ def load_all_DisGeNet_disease_and_finish_the_files():
             for identifier in maybe_reduced_ids:
                 found_mappping=True
                 # csv_mapping.writerow([umls_id, identifier, resource(identifier), 'umls'])
-                curr_series = pd.Series([umls_id, identifier, resource(identifier), 'umls'], index=mapping_df.columns)
+                curr_series = pd.Series([umls_id, identifier, resource_add_and_prepare(dict_disease_id_to_resource[identifier],'DisGeNet'), 'umls'], index=mapping_df.columns)
                 mapping_df = mapping_df.append(curr_series, ignore_index=True)
 
         if found_mappping:
@@ -213,7 +208,7 @@ def load_all_DisGeNet_disease_and_finish_the_files():
             if name in dict_name_to_identifier:
                 for mondo_id in dict_name_to_identifier[name]:
                     found_mappping=True
-                    curr_series = pd.Series([umls_id, mondo_id, resource(mondo_id), 'name'], index=mapping_df.columns)
+                    curr_series = pd.Series([umls_id, mondo_id, resource_add_and_prepare(dict_disease_id_to_resource[mondo_id],'DisGeNet'), 'name'], index=mapping_df.columns)
                     mapping_df = mapping_df.append(curr_series, ignore_index=True)
 
 
@@ -231,7 +226,7 @@ def load_all_DisGeNet_disease_and_finish_the_files():
                 if mondo_id in dict_disease_id_to_resource:
                     found_mappping=True
                     # csv_mapping.writerow([umls_id, mondo_id, resource(mondo_id), 'id'])
-                    curr_series = pd.Series([umls_id, mondo_id, resource(mondo_id), 'umls from umls'], index=mapping_df.columns)
+                    curr_series = pd.Series([umls_id, mondo_id, resource_add_and_prepare(dict_disease_id_to_resource[mondo_id],'DisGeNet'), 'umls from umls'], index=mapping_df.columns)
                     mapping_df = mapping_df.append(curr_series, ignore_index=True)
 
         # if found_mappping:
@@ -242,7 +237,7 @@ def load_all_DisGeNet_disease_and_finish_the_files():
         #         if mondo_id in dict_disease_id_to_resource:
         #             found_mappping=True
         #             # csv_mapping.writerow([umls_id, mondo_id, resource(mondo_id), 'id'])
-        #             curr_series = pd.Series([umls_id, mondo_id, resource(mondo_id), 'id'], index=mapping_df.columns)
+        #             curr_series = pd.Series([umls_id, mondo_id, resource_add_and_prepare(dict_disease_id_to_resource[mondo_id],'DisGeNet'), 'id'], index=mapping_df.columns)
         #             mapping_df = mapping_df.append(curr_series, ignore_index=True)
 
 
@@ -259,7 +254,7 @@ def load_all_DisGeNet_disease_and_finish_the_files():
                     identifier = dict_xrefs_to_identifier[equ_id]
                     for ident in identifier:  # in case of several values for one id
                         # csv_mapping.writerow([umls_id, ident, resource(ident), equivalent_id_map[name].lower()])
-                        curr_series = pd.Series([umls_id, ident, resource(ident), equivalent_id_map[name].lower()],
+                        curr_series = pd.Series([umls_id, ident, resource_add_and_prepare(dict_disease_id_to_resource[ident],'DisGeNet') , equivalent_id_map[name].lower()],
                                                 index=mapping_df.columns)
                         mapping_df = mapping_df.append(curr_series, ignore_index=True)
 

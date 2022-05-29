@@ -7,6 +7,8 @@ import csv
 sys.path.append("../..")
 import create_connection_to_databases
 from collections import defaultdict
+sys.path.append("..")
+from useful_functions import *
 
 
 def create_connection_with_neo4j():
@@ -78,10 +80,10 @@ def generate_files(path_of_directory):
     return csv_mapping
 
 
-def resource(identifier):
-    resource = set(dict_variant_id_to_resource[identifier])
-    resource.add('DisGeNet')
-    return '|'.join(resource)
+# def resource(identifier):
+#     resource = set(dict_variant_id_to_resource[identifier])
+#     resource.add('DisGeNet')
+#     return '|'.join(resource)
 
 
 def load_all_DisGeNet_variants_and_finish_the_files(csv_mapping):
@@ -105,7 +107,7 @@ def load_all_DisGeNet_variants_and_finish_the_files(csv_mapping):
         # mapping
         if identifier in dict_snp_id_to_identifier:
             variant_id = dict_snp_id_to_identifier[identifier]
-            csv_mapping.writerow([identifier, variant_id, resource(variant_id), 'external_references'])
+            csv_mapping.writerow([identifier, variant_id, resource_add_and_prepare(dict_variant_id_to_resource[variant_id],"DisGeNet"), 'external_references'])
         else:
             counter_not_mapped += 1
             # print(identifier)

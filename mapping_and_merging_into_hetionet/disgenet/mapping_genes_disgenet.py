@@ -4,6 +4,8 @@ import sys, os
 import csv
 sys.path.append("../..")
 import create_connection_to_databases
+sys.path.append("..")
+from useful_functions import *
 
 def create_connection_with_neo4j():
     """
@@ -61,12 +63,6 @@ def generate_files(path_of_directory):
     return csv_mapping
 
 
-def resource(identifier):
-    resource = set(dict_gene_id_to_resource[identifier])
-    resource.add('DisGeNet')
-    return '|'.join(resource)
-
-
 def load_all_DisGeNet_genes_and_finish_the_files(csv_mapping):
     """
     Load all variation sort the ids into the right tsv, generate the queries, and add rela to the rela tsv
@@ -82,7 +78,7 @@ def load_all_DisGeNet_genes_and_finish_the_files(csv_mapping):
         # mapping
         if identifier in dict_gene_id_to_resource:
             csv_mapping.writerow(
-                [identifier, identifier, resource(identifier), 'id'])
+                [identifier, identifier, resource_add_and_prepare(dict_gene_id_to_resource[identifier],"DisGeNet"), 'id'])
         else:
             counter_not_mapped += 1
             print(identifier)

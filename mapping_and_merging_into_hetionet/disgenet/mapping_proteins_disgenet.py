@@ -3,6 +3,8 @@ import os, sys
 import csv
 from collections import defaultdict
 
+sys.path.append("..")
+from useful_functions import *
 sys.path.append("../..")
 import create_connection_to_databases
 
@@ -66,12 +68,6 @@ def generate_files(path_of_directory):
     return csv_mapping
 
 
-def resource(identifier):
-    resource = set(dict_protein_id_to_resource[identifier])
-    resource.add('DisGeNet')
-    return '|'.join(resource)
-
-
 def load_all_DisGeNet_protein_and_finish_the_files(csv_mapping):
     """
     Load all variation sort the ids into the right tsv, generate the queries, and add rela to the rela tsv
@@ -86,10 +82,10 @@ def load_all_DisGeNet_protein_and_finish_the_files(csv_mapping):
         identifier = node['UniProtKB']
         # mapping
         if identifier in dict_protein_id_to_resource:
-            csv_mapping.writerow([identifier, identifier, resource(identifier), 'id'])
+            csv_mapping.writerow([identifier, identifier,  resource_add_and_prepare(dict_protein_id_to_resource[identifier],"DisGeNet"), 'id'])
         elif identifier in dict_alternativeId_to_identifiers:
             for uniprot_id in dict_alternativeId_to_identifiers[identifier]:
-                csv_mapping.writerow([identifier, uniprot_id, resource(uniprot_id), 'alternative_id'])
+                csv_mapping.writerow([identifier, uniprot_id, resource_add_and_prepare(dict_protein_id_to_resource[uniprot_id],"DisGeNet"), 'alternative_id'])
         else:
             counter_not_mapped += 1
             print(identifier)
