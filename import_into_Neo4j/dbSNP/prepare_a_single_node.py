@@ -99,7 +99,6 @@ header_snp_list = ['frequencies_list',  'sequence_position_deletion_insertions',
 def generate_csv_file_and_add_to_dictionary(label, header):
     """
     generate for a given label a tsv file and add it to dictionary
-    todo generate the fitting query
     :param label: string
     :param header: list of stings
     :return: file name
@@ -447,9 +446,6 @@ def prepare_json_information_to_tsv(data, chromosome_number=None):
                                     dict_node['hgvs_list'] = set()
                                 dict_node['hgvs_list'].add(allele['hgvs'])
                                 set_headers_node.add('hgvs_list')
-                        # todo have to think if the information can be combined
-                        # I combinded them
-                        # dict_node['placements_with_allele'] = list_of_alleles
                     continue
 
                 # allele annotation ready

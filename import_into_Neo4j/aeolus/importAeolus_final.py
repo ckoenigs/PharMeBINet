@@ -24,30 +24,6 @@ class Outcome(object):
         self.outcome_concept_id = outcome_concept_id
         self.snomed_outcome_concept_id = snomed_outcome_concept_id
 
-    def set_rest_propertys(self, name, vocabulary_id, concept_code):
-        self.name = name
-        self.vocabulary_id = vocabulary_id
-        self.concept_code = concept_code
-
-
-class Drug(object):
-    """
-    Attribute:
-        concept_code: string (RxNorm CUI)
-        drug_concept_id: string (OHDSI ID)
-        name: string
-        vocabulary_id: string (here evertime RxNorm)
-    """
-
-    def __init__(self, drug_concept_id):
-        self.drug_concept_id = drug_concept_id
-
-    def set_name(self, name, vocabulary_id, concept_code):
-        self.name = name
-        self.vocabulary_id = vocabulary_id
-        self.concept_code = concept_code
-
-
 class Edge(object):
     """
     Attribute:
@@ -248,7 +224,7 @@ def load_concept():
 
 # dictionary of all edges with (drug_concept_id, outcome_concept_id) as key and class Edge as value
 dict_edge = {}
-# dictionary with drug_concept_id as key and class drug as value
+# dictionary with drug_concept_id as key and dictionary as value
 dict_drugs = {}
 # dictionary with outcome_concept_id as key and class outcome as value
 dict_outcomes = {}
@@ -288,8 +264,7 @@ def load_drug_outcome_statistic():
         ror_95_percent_upper_confidence_limit = splitted[8]
         ror_95_percent_lower_confidence_limit = splitted[9].replace('\n', '')
 
-        drug = Drug(drug_concept_id)
-        dict_drugs[drug_concept_id] = drug
+        dict_drugs[drug_concept_id] = {'concept_id':drug_concept_id}
 
         outcome = Outcome(outcome_concept_id, snomed_outcome_concept_id)
         dict_outcomes[outcome_concept_id] = outcome
@@ -372,11 +347,9 @@ def create_csv_and_cypher_file_neo4j():
         for key, value in dict_outcomes.items():
             if value.snomed_outcome_concept_id == '-':
                 writer.writerow((key, dict_concept[key][5], dict_concept[key][0], '', dict_concept[key][2]))
-            # append_query='''CREATE (out%s:Aeolus_Outcome{concept_code: '%s', name: '%s', outcome_concept_id: %s, vocabulary_id: '%s'}) \n''' %(key,dict_concept[key][5],dict_concept[key][0],key,dict_concept[key][2] )
             else:
                 writer.writerow((key, dict_concept[key][5], dict_concept[key][0], value.snomed_outcome_concept_id,
                                  dict_concept[key][2]))
-            # append_query='''CREATE (out%s:Aeolus_Outcome{concept_code: '%s', name: '%s', outcome_concept_id: %s, snomed_outcome_concept_id: %s, vocabulary_id: '%s'}) \n''' %(key,dict_concept[key][5],dict_concept[key][0],key,value.snomed_outcome_concept_id,dict_concept[key][2] )
 
     finally:
         f.close()
@@ -404,7 +377,7 @@ def create_csv_and_cypher_file_neo4j():
     finally:
         f.close()
 
-    print('rel Create')
+    print('rela Create')
     print(datetime.datetime.now())
 
     # tsv for relationships
