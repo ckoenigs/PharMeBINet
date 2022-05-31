@@ -92,7 +92,7 @@ load all reactome pathways and check if they are in hetionet or not
 
 def load_reactome_pathways_in():
     global highest_identifier
-    query = '''MATCH (n:Pathway_reactome) RETURN n'''
+    query = '''MATCH (n:Pathway_reactome)-[r]-(s:Species_reactome) WHERE s.taxId = "9606" RETURN Distinct n'''
     results = graph_database.run(query)
 
     # zähler wie oft id mapt und und oft der name mapt
