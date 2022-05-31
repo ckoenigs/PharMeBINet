@@ -4,6 +4,8 @@ from collections import defaultdict
 
 sys.path.append("../..")
 import create_connection_to_databases
+sys.path.append("..")
+from useful_functions import *
 
 '''
 create connection to neo4j 
@@ -73,14 +75,12 @@ def load_ddinter_interaction( directory):
         rela_infos=set(rela_infos)
         if (chemical_id1,chemical_id2) in dict_existing_drug_interaction_to_resource:
             print('chemical 1; chemical 2')
-            resource=set(dict_existing_drug_interaction_to_resource[(chemical_id1,chemical_id2)])
-            resource.add('DDinter')
-            csv_writer_mapped.writerow([chemical_id1,chemical_id2,levels.pop(),'|'.join(rela_infos), '|'.join(resource)])
+            csv_writer_mapped.writerow([chemical_id1,chemical_id2,levels.pop(),'|'.join(rela_infos), resource_add_and_prepare(dict_existing_drug_interaction_to_resource[(chemical_id1,chemical_id2)],"DDinter")])
         elif (chemical_id2,chemical_id1) in dict_existing_drug_interaction_to_resource:
             print(';P')
             resource=set(dict_existing_drug_interaction_to_resource[(chemical_id2,chemical_id1)])
             resource.add('DDinter')
-            csv_writer_mapped.writerow([chemical_id2,chemical_id1,levels.pop(),'|'.join(rela_infos), '|'.join(resource)])
+            csv_writer_mapped.writerow([chemical_id2,chemical_id1,levels.pop(),'|'.join(rela_infos), resource_add_and_prepare(dict_existing_drug_interaction_to_resource[(chemical_id2,chemical_id1)],"DDinter")])
         else:
             counter_new+=1
             csv_writer_new.writerow(

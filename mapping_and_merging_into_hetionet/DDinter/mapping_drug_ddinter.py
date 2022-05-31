@@ -5,6 +5,8 @@ from collections import defaultdict
 
 sys.path.append("../..")
 import create_connection_to_databases
+sys.path.append("..")
+from useful_functions import *
 
 '''
 create a connection with neo4j
@@ -69,10 +71,7 @@ def add_to_file(dict_node_id_to_resource, identifier_db, identifier_act_id, csv_
     :param csv_mapping: csv writer
     :return:
     """
-    resource = set(dict_node_id_to_resource[identifier_db])
-    resource.add('DDinter')
-    resource = sorted(resource)
-    csv_mapping.writerow([identifier_db, identifier_act_id, '|'.join(resource), how_mapped])
+    csv_mapping.writerow([identifier_db, identifier_act_id, resource_add_and_prepare(dict_node_id_to_resource[identifier_db],"DDinter") , how_mapped])
 
 
 def get_all_ddinter_and_map(dict_node_id_to_resource):
