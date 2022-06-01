@@ -1,10 +1,11 @@
 import csv
-import datetime
 import gzip
 import io
 import os
 import sys
-import urllib.request
+# Import pharmebinet utils without proper module structure
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
+import pharmebinetutils
 
 '''
 load ncbi tsv file in and write only the important lines into a new tsv file for integration into Neo4j
@@ -13,22 +14,11 @@ load ncbi tsv file in and write only the important lines into a new tsv file for
 
 def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
     file_url = 'https://ftp.ncbi.nih.gov/gene/DATA/GENE_INFO/Mammalia/Homo_sapiens.gene_info.gz'
-    file_name = 'data/Homo_sapiens.gene_info.gz'
     for path in ['./data', './output_data']:
         if not os.path.exists(path):
             os.makedirs(path)
-    counter_tries = 0
-    got_file = False
-    while not got_file and counter_tries < 11:
-        try:
-            # download ncbi human genes
-            with urllib.request.urlopen(file_url) as response, open(file_name, 'wb') as f:
-                f.write(response.read())
-            got_file = True
-        except:
-            counter_tries += 1
-            print(counter_tries)
-    if counter_tries >= 11:
+    file_name = pharmebinetutils.download_file(file_url, './data')
+    if not file_name:
         sys.exit('did not get any connection to url in ncbi integration\n\n')
 
     with io.TextIOWrapper(gzip.open(file_name, 'rb')) as f:
@@ -127,14 +117,13 @@ def main():
     else:
         sys.exit('need a path')
 
-    print(datetime.datetime.now())
+    pharmebinetutils.print_timestamp()
     print('generate a tsv file with only the human genes')
 
     load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes()
 
-    print('#' * 100)
-
-    print(datetime.datetime.now())
+    pharmebinetutils.print_hline()
+    pharmebinetutils.print_timestamp()
 
 
 if __name__ == "__main__":

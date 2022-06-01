@@ -1,8 +1,11 @@
 import csv
 import datetime
-import wget
 import gzip
+import os
 import sys
+# Import pharmebinet utils without proper module structure
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
+import pharmebinetutils
 
 
 def prepare_header(header):
@@ -122,15 +125,16 @@ def transform_empty_values_into_real_empty_values(dictionary):
 
 
 def load_and_prepare_IID_human_data(evidence_type_filter):
+    for path in ['./data', './output']:
+        if not os.path.exists(path):
+            os.makedirs(path)
     # download IID PP interaction
-    url = 'http://iid.ophid.utoronto.ca/static/download/human_annotated_PPIs.txt.gz'
-    filename = wget.download(url, out='data/')
-    filename_without_gz = filename.rsplit('.', 1)[0]
-    # file=open(filename_without_gz,'wb')
+    file_url = 'http://iid.ophid.utoronto.ca/static/download/human_annotated_PPIs.txt.gz'
+    file_name = pharmebinetutils.download_file(file_url, './data')
     counter_edges=0
 
     counter_other_type=0
-    with gzip.open(filename, 'rt') as f:
+    with gzip.open(file_name, 'rt') as f:
         csv_file = csv.DictReader(f, delimiter='\t')
         print(csv_file.fieldnames)
         csv_node, csv_rela = generate_node_and_rela_file_and_query(csv_file.fieldnames)
@@ -158,24 +162,22 @@ path_of_directory = ''
 
 def main():
     global path_of_directory
-    #evidence type filter
-    evidence_type_filter=''
+    # evidence type filter
+    evidence_type_filter = ''
     if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]
-        if len(sys.argv)==3:
-            evidence_type_filter=sys.argv[2]
+        if len(sys.argv) == 3:
+            evidence_type_filter = sys.argv[2]
     else:
         sys.exit('need a path and a optional filter like exp, pred, ortho')
 
-    print(datetime.datetime.now())
+    pharmebinetutils.print_timestamp()
     print('load IID human data')
 
     load_and_prepare_IID_human_data(evidence_type_filter)
 
-    print(
-        '#################################################################################################################################################################')
-
-    print(datetime.datetime.now())
+    pharmebinetutils.print_hline()
+    pharmebinetutils.print_timestamp()
 
 
 if __name__ == "__main__":
