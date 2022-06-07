@@ -80,6 +80,8 @@ def prepare_dbReference(dict_protein, attributes):
     dict_protein['xrefs'].add(combine_xrefs(attributes))
     evidence = attributes['evidence'] if 'evidence' in attributes else ''
 
+# set of empty properties
+set_of_empty_properties=set()
 
 def prepare_tsv_dictionary(dictionary):
     """
@@ -93,8 +95,10 @@ def prepare_tsv_dictionary(dictionary):
         if type(value) in [set, list]:
             value = list(value)
             if len(value) == 0:
-                print('empty values')
-                print(key, value)
+                if key not in set_of_empty_properties:
+                    print('empty values')
+                    print(key, value)
+                    set_of_empty_properties.add(key)
                 continue
             if type(value[0]) != str:
                 value = [json.dumps(x) for x in value]
@@ -240,7 +244,7 @@ def run_trough_xml_and_parse_data():
 
     generates_node_tsv_file_and_cypher('protein',
                                        ['identifier', 'polymorphism', 'developmental_stage', 'synonyms', 'name',
-                                        'xrefs_with_infos', 'mass', 'RNA_editing', 'pathway', 'xrefs',
+                                        'xrefs_with_infos', 'mass', 'RNA_editing', 'pathway', 'xrefs','entry_name',
                                         'tissue_specificity', 'gene_name', 'protein_existence', 'domain',
                                         'miscellaneous', 'catalytic_activity', 'as_sequence', 'sequenceLength',
                                         'online_information', 'function', 'activity_regulation', 'caution', 'subunit',
@@ -713,9 +717,9 @@ def run_trough_xml_and_parse_data():
         # print(dict_protein)
         # print('This is the identifier:', identifier)
         # prepare name
-        dict_protein['synonyms'] = dict_protein['name']
+        dict_protein['entry_name'] = dict_protein['name']
         dict_protein['name'] = dict_protein['protein_name'][0]
-        dict_protein['synonyms'].extend(dict_protein['protein_name'][1:])
+        dict_protein['synonyms']=dict_protein['protein_name'][1:]
         del dict_protein['protein_name']
 
         set_of_protein_propertie = set_of_protein_propertie.union(dict_protein.keys())
