@@ -56,3 +56,35 @@ sleep 120
 now=$(date +"%F %T")
 echo "Current time: $now"
 
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo 'modification as of data'
+
+$path_neo4j/cypher-shell -u neo4j -p test -f pathway_modification.cypher
+
+sleep 120
+
+$path_neo4j/neo4j restart
+
+
+sleep 120
+
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo ' merge two nodes '
+
+# nodes which are double except of the dbid and id
+python3 merge_nodes.py 2011833 1247632 Disease_reactome dbId True > output_merge.txt
+
+# only 3134792 exist now
+# python3 merge_nodes.py 9611565 3134792 Disease_reactome dbId True > output_merge.txt  
+
+
+sleep 60
+
+$path_neo4j/neo4j restart
+
+
+sleep 120
