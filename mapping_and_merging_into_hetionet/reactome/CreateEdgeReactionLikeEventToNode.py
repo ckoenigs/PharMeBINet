@@ -103,8 +103,8 @@ def main():
 
     create_connection_with_neo4j()
 
-    # 0: old relationship;           1: name of node in Reactome;        2: relationship equal to Hetionet-node
-    # 3: name of node in Hetionet;   4: name of new relationship
+    # 0: old relationship;           1: name of node in Reactome;
+    # 2: name of node in Hetionet;   3: name of new relationship
     list_of_combinations = [
         ['disease', 'Disease_reactome', 'Disease', 'LEADS_TO_RLEltdD'],
         ['compartment', 'GO_CellularComponent_reactome', 'CellularComponent', 'IN_COMPARTMENT_RLEicCC'],

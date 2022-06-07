@@ -129,7 +129,8 @@ def main():
     create_connection_with_neo4j()
 
     # 0: old relationship;           1: name of node in Reactome;
-    # 2: name of node in PharMeBINet;   3: name of directory        4: name of new relationship
+    # 2: name of node in PharMeBINet;       3: name of new relationship  4: relationship direction left
+    # 5: relationship direction right
     list_of_combinations = [
         ['input', 'ReactionLikeEvent_reactome', 'ReactionLikeEvent', 'IS_INPUT_RLEiiMC', '<-', '-'],
 

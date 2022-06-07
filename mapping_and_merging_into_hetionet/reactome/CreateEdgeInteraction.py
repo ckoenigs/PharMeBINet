@@ -250,6 +250,8 @@ def main():
     print(datetime.datetime.now())
     print('Load all reactome interactions from neo4j into a dictionary')
 
+    # 0: query start;   1: query path end    2: label in PharMeBINet;
+    # 3: label in PharMeBINet;  4: file name;  5: relationship name
     list_of_combinations = [
         ['Protein)-[:equal_to_reactome_uniprot', 'equal_to_reactome_uniprot]-(q:Protein)', 'Protein', 'Protein',
          'protein_to_protein', 'INTERACTS_PiP'],

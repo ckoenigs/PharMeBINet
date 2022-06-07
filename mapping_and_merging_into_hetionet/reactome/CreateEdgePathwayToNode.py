@@ -106,8 +106,8 @@ def main():
 
     create_connection_with_neo4j()
 
-    # 0: old relationship;           1: name of node in Reactome;        2: relationship equal to Hetionet-node
-    # 3: name of node in Hetionet;   4: name of new relationship
+    # 0: old relationship;           1: name of node in Reactome;
+    # 2: name of node in Hetionet;   3: name of new relationship
     list_of_combinations = [
         ['precedingEvent', 'ReactionLikeEvent_reactome', 'ReactionLikeEvent', 'PRECEDING_REACTION_PWprRLE'],
         ['precedingEvent', 'Pathway_reactome', 'Pathway', 'PRECEDING_REACTION_PWprPW'],

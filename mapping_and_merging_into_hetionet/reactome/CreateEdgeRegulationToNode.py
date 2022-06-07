@@ -107,8 +107,8 @@ def main():
 
     create_connection_with_neo4j()
 
-    # 0: old relationship;           1: name of node in Reactome;        2: relationship equal to Hetionet-node
-    # 3: name of node in Hetionet;   4: name of directory                5: name of new relationship
+    # 0: old relationship;    1: name of node in Reactome; 2 : name of node in Hetionet;  3: name of new relationship
+    # 4: direction left; 5: direction right;
     list_of_combinations = [
         ['regulatedBy', 'ReactionLikeEvent_reactome',  'ReactionLikeEvent', 'IS_REGULATED_BY_RGirbRLE', '<-',
          '-'],
