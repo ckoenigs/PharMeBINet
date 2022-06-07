@@ -3,8 +3,8 @@ import os
 import sys
 import csv
 from collections import defaultdict
-sys.path.append("..")
-from useful_functions import *
+sys.path.append("../..")
+from pharmebinetutils import *
 
 
 

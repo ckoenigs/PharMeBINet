@@ -2,11 +2,10 @@ import datetime
 import os
 import sys
 import csv
-sys.path.append("..")
-from useful_functions import *
 
 sys.path.append("../..")
 import create_connection_to_databases
+from pharmebinetutils import *
 
 
 def create_connection_with_neo4j():

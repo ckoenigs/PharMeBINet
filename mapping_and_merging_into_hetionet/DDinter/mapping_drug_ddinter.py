@@ -5,8 +5,7 @@ from collections import defaultdict
 
 sys.path.append("../..")
 import create_connection_to_databases
-sys.path.append("..")
-from useful_functions import *
+from pharmebinetutils import *
 
 '''
 create a connection with neo4j
