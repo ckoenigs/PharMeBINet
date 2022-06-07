@@ -5,6 +5,7 @@ import json
 
 sys.path.append("../..")
 import create_connection_to_databases
+from pharmebinetutils import *
 
 sys.path.append("..")
 from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
@@ -74,6 +75,7 @@ def create_connection_with_neo4j():
     global g
     g = create_connection_to_databases.database_connection_neo4j()
 
+
 def load_api_key():
     """
     Load api key for BioPortal
@@ -106,9 +108,6 @@ def cache_api():
         cache_file = open('cache_api_results.tsv', 'w', encoding='utf-8')
         csv_writer = csv.writer(cache_file, delimiter='\t')
         csv_writer.writerow(header)
-
-
-
 
 
 '''
@@ -167,7 +166,6 @@ def load_side_effects_from_hetionet_in_dict():
             add_entries_into_dict(result['conceptName'].lower(), result['identifier'], dict_se_name_to_ids)
 
     print('size of side effects before the aeolus is add:' + str(len(dict_all_side_effect)))
-
 
 
 # dictionary with all aeolus side effects outcome_concept_id (OHDSI ID) as key and value is the class SideEffect_Aeolus
@@ -279,7 +277,6 @@ def load_disease_infos():
                         dict_meddra_to_mondo[meddra_id].add(identifier)
                     else:
                         dict_meddra_to_mondo[meddra_id] = set([identifier])
-
 
 
 # dictionary with for every key outcome_concept a list of umls cuis as value
@@ -455,17 +452,16 @@ def generate_tsv_file(list_of_delet_index, list_not_mapped, concept_code, diseas
     for disease_id in diseases:
         resource_disease = dict_mondo_to_xrefs_and_resource[disease_id][1] if \
             dict_mondo_to_xrefs_and_resource[disease_id][1] is not None else []
-        resource_disease.append("AEOLUS")
-        resource_disease = set(resource_disease)
-        resource_string = '|'.join(sorted(resource_disease))
 
         xref_disease = dict_mondo_to_xrefs_and_resource[disease_id][0] if \
             dict_mondo_to_xrefs_and_resource[disease_id][0] is not None else []
         xref_disease.append("MedDRA:" + concept_code)
-        xref_disease = go_through_xrefs_and_change_if_needed_source_name(xref_disease,'disease')
+        xref_disease = go_through_xrefs_and_change_if_needed_source_name(xref_disease, 'disease')
         xref_string = '|'.join(xref_disease)
 
-        csv_writer.writerow([concept_code, disease_id, mapping_method, resource_string, xref_string])
+        csv_writer.writerow(
+            [concept_code, disease_id, mapping_method, resource_add_and_prepare(resource_disease, "AEOLUS"),
+             xref_string])
 
 
 '''

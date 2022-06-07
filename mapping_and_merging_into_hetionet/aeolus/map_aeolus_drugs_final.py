@@ -1,9 +1,9 @@
-
 import datetime
 import sys, csv
 
 sys.path.append("../..")
 import create_connection_to_databases
+from pharmebinetutils import *
 
 sys.path.append("..")
 from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
@@ -466,11 +466,8 @@ def integrate_aeolus_drugs_into_hetionet():
             index += 1
             xrefs = go_through_xrefs_and_change_if_needed_source_name(dict_all_drug[mapped_id].xrefs, 'chemical')
             xrefs_string = '|'.join(xrefs)
-            resource = dict_all_drug[mapped_id].resource
-            resource.append('AEOLUS')
-            resource = list(set(resource))
-            resource = '|'.join(sorted(resource))
-            csv_writer.writerow([drug_concept_id, mapped_id, mapped_ids_string, how_mapped, resource, xrefs_string])
+            csv_writer.writerow([drug_concept_id, mapped_id, mapped_ids_string, how_mapped,
+                                 resource_add_and_prepare(dict_all_drug[mapped_id].resource, "AEOLUS"), xrefs_string])
 
     print('all aeolus drug which are map to drugbank, where some drugbank id are not existing:' + str(counter))
     print(dict_how_mapped_delete_counter)
