@@ -11,44 +11,6 @@ license="CC BY-SA 4.0"
 
 now=$(date +"%F %T")
 echo "Current time: $now"
-echo 'modification as of data'
-
-$path_neo4j/cypher-shell -u neo4j -p test -f pathway_modification.cypher
-
-sleep 120
-
-$path_neo4j/neo4j restart
-
-
-sleep 120
-
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-echo 'delete some nodes'
-
-python3 deleteNodes.py > output_delete.txt
-
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-echo ' merge two nodes '
-
-# nodes which are double except of the dbid and id
-python3 merge_nodes.py 2011833 1247632 Disease_reactome dbId True > output_merge.txt
-
-
-python3 merge_nodes.py 9611565 3134792 Disease_reactome dbId True > output_merge.txt
-
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-echo ' all nodes and relationships of Taxon/Species, which are not homo sapiens '
-
-python3 deleteNodesSpecies.py > output_delete_species.txt
-
-now=$(date +"%F %T")
-echo "Current time: $now"
 echo pathway
 
 python3 MappingPathway.py $path_to_project > pathway/output_map.txt
@@ -92,11 +54,6 @@ $path_neo4j/neo4j restart
 
 sleep 120
 
-#//Delete douplication of relationships
-#//MATCH (s:Disease)-[r:equal_to_reactome_disease]->(e:Disease_reactome)
-#//WITH s,e,type(r) as typ, tail(collect(r)) as coll
-#//foreach(x in coll | delete x)
-
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -117,7 +74,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo multi edges of Failedreaction integration
 
-python3 CreateEdgeFailedReactionToNode.py $path_to_project "${license}" > FailedReactionEdges/output_map.txt
+python3 CreateEdgeReactionLikeEventToNode.py $path_to_project "${license}" > reactionLikeEventEdge/output_map.txt
 
 
 now=$(date +"%F %T")
@@ -125,12 +82,6 @@ echo "Current time: $now"
 echo multi edges of Pathway integration
 
 python3 CreateEdgePathwayToNode.py $path_to_project "${license}" > PathwayEdges/output_map.txt
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-echo multi edges of Reaction integration
-
-python3 CreateEdgeReactionToNode.py $path_to_project "${license}" > PathwayEdges/output_map.txt
 
 echo integrate connection with neo4j shell
 now=$(date +"%F %T")
