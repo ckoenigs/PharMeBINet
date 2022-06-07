@@ -66,7 +66,7 @@ python3 integrate_gene_variant_rela.py $path_to_project  > output_mapping/output
 
 now=$(date +"%F %T")
 echo "Current time: $now"
-echo integrat mapping dbSNP information into Neo4j
+echo integrat mapping edge dbSNP information into Neo4j
 
 $path_neo4j/cypher-shell -u neo4j -p test -f output_mapping/cypher_edge.cypher 
 
