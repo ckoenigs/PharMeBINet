@@ -28,15 +28,15 @@ load in all complex-data from hetionet in a dictionary
 
 def load_hetionet_complex_hetionet_node_in(csv_file, dict_complex_hetionet_node_hetionet,
                                               start_label, new_relationship,
-                                              node_reactome_label, rela_equal_name, node_hetionet_label, direction1,
+                                              node_reactome_label,  node_hetionet_label, direction1,
                                               direction2):
     #list = ["(p:MolecularComplex)-[:equal_to_reactome_complex]-(r:Complex_reactome)", "(p:Protein)-[:equal_to_reactome_uniprot]-(:ReferenceEntity_reactome)--(:PhysicalEntity_reactome)"]
     #for item in list:
     query2 = '''MATCH (a:CatalystActivity_reactome)--(f:CatalystActivityReference_reactome) RETURN a.dbId, f.displayName, f.pubMed_ids, f.books'''
-    query = '''MATCH %s%s[v:%s]%s(n:%s)-[:%s]-(b:%s) RETURN p.identifier, b.identifier, v.order, v.stoichiometry, f.displayName, f.dbId'''
+    query = '''MATCH %s%s[v:%s]%s(n:%s)-[]-(b:%s) RETURN p.identifier, b.identifier, v.order, v.stoichiometry, f.displayName, f.dbId'''
 
 
-    query = query % (start_label, direction1, new_relationship, direction2, node_reactome_label, rela_equal_name, node_hetionet_label)
+    query = query % (start_label, direction1, new_relationship, direction2, node_reactome_label,  node_hetionet_label)
     results = graph_database.run(query)
     print(query)
 
@@ -92,7 +92,7 @@ def create_cypher_file(directory, file_path, node_label, rela_name, direction1, 
     cypher_file.write(query)
 
 
-def check_relationships_and_generate_file(start_label, new_relationship, node_reactome_label, rela_equal_name, node_hetionet_label,
+def check_relationships_and_generate_file(start_label, new_relationship, node_reactome_label,  node_hetionet_label,
                                           directory, rela_name, direction1, direction2):
     print(
         '___~(  )(°^)o_o(^°)(  )~_____~(  )(°^)o_o(^°)(  )~_____~(  )(°^)o_o(^°)(  )~_____~(  )(°^)o_o(^°)(  )~__')
@@ -112,8 +112,7 @@ def check_relationships_and_generate_file(start_label, new_relationship, node_re
     dict_Complex_node = {}
 
     load_hetionet_complex_hetionet_node_in(csv_mapped, dict_Complex_node, start_label, new_relationship,
-                                              node_reactome_label,
-                                              rela_equal_name, node_hetionet_label, direction1, direction2)
+                                              node_reactome_label, node_hetionet_label, direction1, direction2)
 
     print(
         '°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°')
@@ -138,18 +137,18 @@ def main():
 
     create_connection_with_neo4j()
 
-    # 0: old relationship;           1: name of node in Reactome;        2: relationship equal to Hetionet-node
-    # 3: name of node in Hetionet;   4: name of directory                5: name of new relationship
+    # 0: query start;   1: rela in reactome; 2: node(s) in reactome     3: label in PharMeBINet;
+    # 4: relationship PharMeBINet;  5: direction left;  6: direction left
     list_of_combinations = [
 
         [
             '(p:MolecularComplex)-[:equal_to_reactome_complex]-(r:Complex_reactome)-[:activeUnit]-(f:CatalystActivity_reactome)',
-            'activity', 'GO_MolecularFunction_reactome', 'equal_to_reactome_gomolfunc', 'MolecularFunction',
+            'activity', 'GO_MolecularFunction_reactome',  'MolecularFunction',
             'HAS_MOLECULAR_FUNCTION_MChmfMF', '-', '->'],
         [
             '(p:Protein)-[:equal_to_reactome_uniprot]-(:ReferenceEntity_reactome)--(:PhysicalEntity_reactome)-[:activeUnit]-(f:CatalystActivity_reactome)',
             'activity',
-            'GO_MolecularFunction_reactome', 'equal_to_reactome_gomolfunc', 'MolecularFunction',
+            'GO_MolecularFunction_reactome',  'MolecularFunction',
             'HAS_MOLECULAR_FUNCTION_PhmfMF', '-', '->'],
     ]
 
@@ -160,12 +159,11 @@ def main():
         start_label = list_element[0]
         new_relationship = list_element[1]
         node_reactome_label = list_element[2]
-        rela_equal_name = list_element[3]
-        node_hetionet_label = list_element[4]
-        rela_name = list_element[5]
-        direction1 = list_element[6]
-        direction2 = list_element[7]
-        check_relationships_and_generate_file(start_label, new_relationship, node_reactome_label, rela_equal_name,
+        node_hetionet_label = list_element[3]
+        rela_name = list_element[4]
+        direction1 = list_element[5]
+        direction2 = list_element[6]
+        check_relationships_and_generate_file(start_label, new_relationship, node_reactome_label,
                                               node_hetionet_label, directory,
                                               rela_name, direction1, direction2)
     cypher_file.close()
