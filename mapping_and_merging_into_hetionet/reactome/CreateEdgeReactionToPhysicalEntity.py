@@ -32,10 +32,10 @@ load in Reaction from hetionet in a dictionary
 '''
 
 
-def load_hetionet_reaction_hetionet_protein_in(csv_file, dict_reaction_hetionet_protein_hetionet,
-                                                   rela_equal_name, node_hetionet_label):
-    query = '''MATCH (p:Reaction)--(o:ReactionLikeEvent_reactome)--(m:PhysicalEntity_reactome)-[a:referenceEntity]-(r:ReferenceEntity_reactome)-[v:%s]-(n:%s) RETURN distinct p.identifier, n.identifier, v.order, v.stoichiometry'''
-    query = query % (rela_equal_name, node_hetionet_label)
+def load_hetionet_reaction_hetionet_protein_in(csv_file, rela, dict_reaction_hetionet_protein_hetionet,
+                                                    node_hetionet_label):
+    query = '''MATCH (p:ReactionLikeEvent)--(o:ReactionLikeEvent_reactome)-[:%s]-(m:PhysicalEntity_reactome)-[a:referenceEntity]-(r:ReferenceEntity_reactome)-[v]-(n:%s) RETURN distinct p.identifier, n.identifier, v.order, v.stoichiometry'''
+    query = query % ( rela, node_hetionet_label)
     results = graph_database.run(query)
     # for id1, id2, order, stoichiometry, in results:
     for reaction_id, protein_id, order, stoichiometry, in results:
@@ -58,8 +58,8 @@ def create_cypher_file( file_path, node_label, rela_name):
     cypher_file.write(query)
 
 
-def check_relationships_and_generate_file(rela_equal_name, node_hetionet_label,
-                                          directory, rela_name):
+def check_relationships_and_generate_file( node_hetionet_label,
+                                          directory, rela_name, rela):
     print(
         '###...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...###')
 
@@ -74,8 +74,7 @@ def check_relationships_and_generate_file(rela_equal_name, node_hetionet_label,
 
     dict_reaction_node = {}
 
-    load_hetionet_reaction_hetionet_protein_in(csv_mapped, dict_reaction_node,
-                                                  rela_equal_name, node_hetionet_label)
+    load_hetionet_reaction_hetionet_protein_in(csv_mapped, rela, dict_reaction_node, node_hetionet_label)
 
     print(
         '###...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...###')
@@ -101,22 +100,23 @@ def main():
 
     create_connection_with_neo4j()
 
-    # 0: old relationship;           1: name of node in Reactome;        2: relationship equal to Hetionet-node
-    # 3: name of node in Hetionet;   4: name of directory                5: name of new relationship
+    # 0: rela in reactome; 1: node in PharMeBINet; 2: name of new relationship
     list_of_combinations = [
-        ['equal_to_reactome_uniprot', 'Protein', 'IS_INPUT_OF_PiioRLE']
+        ['input','Protein', 'IS_INPUT_OF_PiioRLE'],
+        ['output', 'Protein', 'IS_OUTPUT_OF_PiooRLE'],
+        ['input','Chemical', 'IS_INPUT_OF_CHiioRLE'],
+        ['output', 'Chemical', 'IS_OUTPUT_OF_CHiooRLE']
     ]
 
     directory = 'physikalEntityEdges'
     cypher_file = open('output/cypher_drug_edge.cypher', 'a', encoding="utf-8")
 
     for list_element in list_of_combinations:
-        rela_equal_name = list_element[0]
+        rela_reactome= list_element[0]
         node_hetionet_label = list_element[1]
         rela_name = list_element[2]
-        check_relationships_and_generate_file(rela_equal_name,
-                                              node_hetionet_label, directory,
-                                              rela_name)
+
+        check_relationships_and_generate_file(node_hetionet_label, directory, rela_name, rela_reactome)
     cypher_file.close()
 
     print(
