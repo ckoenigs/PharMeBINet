@@ -141,9 +141,9 @@ def id_mapping():
     with gzip.open(path+'id_mapping.tsv.gz','rt') as tsv_datei:
         reader = csv.reader(tsv_datei, delimiter='\t')
         for row in reader:
-            if (row[3] == "9606" and (row[0] + '_9606' in d) == False):
+            if row[3] == "9606" and row[0] + '_9606' not in d:
                 d[row[0] + '_9606'] = {}
-                d[row[0] + '_9606']['geneName'] = row[5]
+                d[row[0] + '_9606']['geneName'] = set([row[5]]) if row[5]!='' else set()
                 d[row[0] + '_9606']["type1"] = row[4]
 
                 xref= row[2]
@@ -151,7 +151,10 @@ def id_mapping():
                 xref = xref.replace(row[1]+":", "")
                 d[row[0] + '_9606']['xrefs'] = row[1] + ":" + xref
 
-            elif (row[3] == "9606" and (row[0] + '_9606' in d) == True):
+            elif row[3] == "9606" and row[0] + '_9606' in d:
+                if row[5] != '':
+                    d[row[0] + '_9606']['geneName'].add(row[5])
+                d[row[0] + '_9606']["type1"] = d[row[0] + '_9606']["type1"]+ '|' + row[4] if row[4]!= d[row[0] + '_9606']["type1"] else d[row[0] + '_9606']["type1"]
                 xref= row[2]
                 xref = xref.replace(":"+row[0] + '_9606', "")
                 xref = xref.replace(row[1]+":", "")
@@ -187,7 +190,7 @@ def complete_dictionary(d_map):
                     d[row['rnacentral_id']][global_i][names[i]] = row[names[i]]
 
             if (row['rnacentral_id'] in d_map.keys()):
-                d[row['rnacentral_id']]['geneName'] = d_map[row['rnacentral_id']]['geneName']
+                d[row['rnacentral_id']]['geneName'] = "|".join(d_map[row['rnacentral_id']]['geneName'])
                 d[row['rnacentral_id']]['xrefs'] = d_map[row['rnacentral_id']]['xrefs']
 
             global_i += 1
@@ -210,9 +213,9 @@ def complete_dictionary(d_map):
     file_name_node2 = 'output/RNACentral_nodes2.tsv'
     file_name_edge = 'output/RNACentral_edges.tsv'
     with open(file_name_node1, 'w',newline='') as tsv_file1:
-        with open('RNACentral_edges.tsv', 'w', newline='') as tsv_file2:
+        with open(file_name_edge, 'w', newline='') as tsv_file2:
             with open(file_name_node2, 'w', newline='') as tsv_file3:
-                writer1,writer2, writer3 = csv.writer(tsv_file1),csv.writer(tsv_file2), csv.writer(tsv_file3)
+                writer1,writer2, writer3 = csv.writer(tsv_file1, delimiter='\t'),csv.writer(tsv_file2, delimiter='\t'), csv.writer(tsv_file3, delimiter='\t')
                 writer1.writerow(nodes1), writer2.writerow(edges), writer3.writerow(nodes2)
 
                 for key in d:
@@ -243,7 +246,7 @@ def complete_dictionary(d_map):
     cypher_node(nodes1, file_name_node1, "rna1", 'rnacentral_id')
     cypher_node(nodes2, file_name_node2, "rna2", 'id')
 
-    query_start = f'Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:{path_of_directory}import_into_Neo4j/RNAcentral/{file_name_edge}" As line fieldterminator "," '
+    query_start = f'Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:{path_of_directory}import_into_Neo4j/RNAcentral/{file_name_edge}" As line fieldterminator "\\t" '
     query = query_start + f'Match (p1:rna1_RNACentral{{rnacentral_id:line.rnacentral_id}}),(p2:rna2_RNACentral{{id:line.id}}) Create (p1)-[:associate{{  '
     query = query[:-2]+'}]->(p2);\n'
     cypher_file.write(query)
@@ -259,10 +262,10 @@ def cypher_node(keys, file_name, label, unique_identifier):
     :param unique_identifier: string
     '''
 
-    query_start = f'Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:{path_of_directory}import_into_Neo4j/RNAcentral/{file_name}" As line fieldterminator "," '
+    query_start = f'Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:{path_of_directory}import_into_Neo4j/RNAcentral/{file_name}" As line fieldterminator "\\t" '
     query = query_start + 'Create (p:%s_RNACentral{' % (label)
     for x in keys:
-        if x in ['blockSizes','blockStarts','itemRgb','xrefs','databases']:  # properties that are lists must be splitted
+        if x in ['blockSizes','blockStarts','itemRgb','xrefs','databases','geneName']:  # properties that are lists must be splitted
             query += x + ':split(line.' + x + ',"|"), '
         else:
             query += x + ':line.' + x + ', '
