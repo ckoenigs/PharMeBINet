@@ -28,7 +28,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo 'Map DDinter node mapping'
 
-python3 map_drug_drug_interaction_DDinter.py $path_to_project > output/output_edge_mapping.txt
+python3 map_drug_drug_interaction_DDinter.py $path_to_project "Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International" > output/output_edge_mapping.txt
 
 
 now=$(date +"%F %T")
