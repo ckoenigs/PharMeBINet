@@ -106,19 +106,19 @@ def generate_cypher_file(file_name, file_name_new):
     query = query % (file_name)
     cypher_file.write(query)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/DDinter/%s" As line  FIELDTERMINATOR '\\t'  MATCH (n:Chemical{identifier:line.chemical1}), (c:Chemical{identifier:line.chemical2}) Create (n)-[r:INTERACTS_CiC{source:"DDinter", resource:["DDinter"], source:"DDinter", ddinter:"yes" , license:"%s", level:line.level, rela_infos:split(line.rela_infos,"|")}]->(c) ; \n'''
-    query = query % (file_name_new, license)
+    query = get_query_start(path_of_directory + "mapping_and_merging_into_hetionet/DDinter", file_name_new) + '''MATCH (n:Chemical{identifier:line.chemical1}), (c:Chemical{identifier:line.chemical2}) Create (n)-[r:INTERACTS_CiC{source:"DDinter", resource:["DDinter"], source:"DDinter", ddinter:"yes" , license:"%s", level:line.level, rela_infos:split(line.rela_infos,"|")}]->(c) ; \n'''
+    query = query % ( license)
     cypher_file.write(query)
 
 
 def main():
     global path_of_directory, license
-    license='blub'
+    license=''
     if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]
-        # license = sys.argv[2]
+        license = sys.argv[2]
     else:
-        sys.exit('need a path and license')
+        sys.exit('need a path and license ')
 
     print(datetime.datetime.now())
     print('Generate connection with neo4j')
