@@ -221,10 +221,13 @@ def get_DisGeNet_information(type='Disease', cyphermode='w', other_label='Gene')
                  prepare_info_of_rela_property_to_string(combined_info, 'sentence')])
         else:
             counter_not_mapped += 1
-            writer.writerow([gene_id, disease_id, sources, ei, pmid, nofsnps, score,
+            # writer.writerow([gene_id, disease_id, sources, ei, pmid, nofsnps, score,
+            #                  prepare_info_of_rela_property_to_string(combined_info, 'associationType'),
+            #                  prepare_info_of_rela_property_to_string(combined_info, 'sentence'),
+            #                  combined_info['snp_id']])
+            csv_gene_other.writerow([gene_id, disease_id,'DisGeNet' ,sources, ei, pmid, nofsnps, score,
                              prepare_info_of_rela_property_to_string(combined_info, 'associationType'),
-                             prepare_info_of_rela_property_to_string(combined_info, 'sentence'),
-                             combined_info['snp_id']])
+                             prepare_info_of_rela_property_to_string(combined_info, 'sentence')])
 
     # create/open cypher-query file
     cypher_path = os.path.join(source, 'cypher_edge.cypher')
@@ -234,12 +237,13 @@ def get_DisGeNet_information(type='Disease', cyphermode='w', other_label='Gene')
     file_gene_other.close()
 
     # 1. Set…
-    query = f'USING PERIODIC COMMIT 10000 LOAD CSV WITH HEADERS FROM "file:{path_of_directory}{file_name}" AS line  FIELDTERMINATOR "\\t"  Match (n:{type}{{identifier:line.{other_id}}}), (v:{other_label}{{identifier:line.{other_label.lower()}_id}}) Merge (n)-[r:{edge_type}]->(v) On Match Set r.disgenet = "yes", r.sources = split(line.sources, "|"), r.resource = split(line.resource, "|"),  r.EI = line.EI, r.pubMed_ids = split(line.pmid, "|"),r.NofSnps=split(line.NofSnps,"|"), r.associationType=split(line.associationType,"|"), r.sentences=split(line.sentence,"|") , r.score=line.score; \n'
+    url = '"https://www.disgenet.org/browser/2/1/0/"+line.snp_id' if other_label == 'Variant' else '"https://www.disgenet.org/browser/1/1/1/"+line.gene_id'
+
+    query = get_query_start(path_of_directory, file_name ) + f'  Match (n:{type}{{identifier:line.{other_id}}}), (v:{other_label}{{identifier:line.{other_label.lower()}_id}}) Merge (n)-[r:{edge_type}]->(v) On Match Set r.disgenet = "yes", r.sources = split(line.sources, "|"), r.resource = split(line.resource, "|"),  r.EI = line.EI, r.pubMed_ids = split(line.pmid, "|"),r.NofSnps=split(line.NofSnps,"|"), r.associationType=split(line.associationType,"|"), r.sentences=split(line.sentence,"|") , r.score=line.score On Create Set r.source="DisGeNet", r.sources=split(line.sources,"|"), r.score=line.score,  r.resource=["DisGeNet"], r.disgenet="yes",  r.EI=line.EI, r.pubMed_ids=split(line.pmid,"|"), r.NofSnps=split(line.NofSnps,"|"), r.associationType=split(line.associationType,"|"), r.sentences=split(line.sentence,"|") , r.url={url}; \n'
     file_cypher.write(query)
     # 2. Create… (finde beide KNOTEN)
-    url = '"https://www.disgenet.org/browser/2/1/0/"+line.snp_id' if other_label == 'Variant' else '"https://www.disgenet.org/browser/1/1/1/"+line.gene_id'
-    query = f'USING PERIODIC COMMIT 10000 LOAD CSV WITH HEADERS FROM "file:{path_of_directory}{file2_name}" AS line FIELDTERMINATOR "\\t"  Match (n:{type}{{identifier:line.{other_id}}}), (v:{other_label}{{identifier:line.{other_label.lower()}_id}}) Create (n)-[:{edge_type}{{source:"DisGeNet", sources:split(line.sources,"|"), score:line.score,  resource:["DisGeNet"], disgenet:"yes",  EI:line.EI, pubMed_ids:split(line.pmid,"|"), NofSnps:split(line.NofSnps,"|"), associationType:split(line.associationType,"|"), sentences:split(line.sentence,"|") , url:{url}}}]->(v); \n'
-    file_cypher.write(query)
+    # query =get_query_start(path_of_directory, file_name + '.tsv') + f' Match (n:{type}{{identifier:line.{other_id}}}), (v:{other_label}{{identifier:line.{other_label.lower()}_id}}) Create (n)-[:{edge_type}{{source:"DisGeNet", sources:split(line.sources,"|"), score:line.score,  resource:["DisGeNet"], disgenet:"yes",  EI:line.EI, pubMed_ids:split(line.pmid,"|"), NofSnps:split(line.NofSnps,"|"), associationType:split(line.associationType,"|"), sentences:split(line.sentence,"|") , url:{url}}}]->(v); \n'
+    # file_cypher.write(query)
     file_cypher.close()
 
     print('number of new edges:', counter_not_mapped)

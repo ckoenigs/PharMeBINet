@@ -99,8 +99,7 @@ def generate_files(path_of_directory):
     csv_mapping.writerow(header)
 
     # mapping_and_merging_into_hetionet/DisGeNet/
-    query = f'Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:{path_of_directory}{file_name}.tsv" As line FIELDTERMINATOR "\\t" \
-        Match (n:disease_DisGeNet{{diseaseId:line.DisGeNet_diseaseId}}), (v:Symptom{{identifier:line.identifier}}) Set v.disgenet="yes", v.resource=split(line.resource,"|") Create (v)-[:equal_to_DisGeNet_disease{{mapped_with:line.mapping_method}}]->(n);\n'
+    query = get_query_start(path_of_directory, file_name + '.tsv') + f' Match (n:disease_DisGeNet{{diseaseId:line.DisGeNet_diseaseId}}), (v:Symptom{{identifier:line.identifier}}) Set v.disgenet="yes", v.resource=split(line.resource,"|") Create (v)-[:equal_to_DisGeNet_disease{{mapped_with:line.mapping_method}}]->(n);\n'
 
     return  query
 
