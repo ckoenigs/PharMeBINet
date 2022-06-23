@@ -5,6 +5,7 @@ import csv
 
 sys.path.append("../..")
 import create_connection_to_databases
+from pharmebinetutils import *
 
 
 def create_connection_with_neo4j():
@@ -42,8 +43,8 @@ def get_pairs_information():
 
     # I check manually on the new edges between gene and protein and most are not accurate, so only the existing are
     # updated
-    # query = '''Match (n:Gene)--(:gene_DisGeNet)-[k]-(:protein_DisGeNet)--(p:Protein) Merge (n)-[r:PRODUCES_GpP]->(p) On Create Set r.source="DisGeNet", r.resource=["DisGeNet"], r.disgenet="yes", r.license="CC BY 4.0" On Match Set r.resource=r.resource+"DisGeNet" r.disgenet="yes";'''
-    query = f'''USING PERIODIC COMMIT 10000 LOAD CSV WITH HEADERS FROM "file:{file_path}" AS line FIELDTERMINATOR "\\t"   Match (n:Protein{{identifier:line.protein_id}})-[r:PRODUCES_GpP]-(v:Gene{{identifier:line.gene_id}})  Set r.resource=r.resource+"DisGeNet", r.disgenet="yes";\n'''
+    query = get_query_start(path_of_directory,
+                            file_name) + f' Match (n:Protein{{identifier:line.protein_id}})-[r:PRODUCES_GpP]-(v:Gene{{identifier:line.gene_id}})  Set r.resource="DisGeNet"+r.resource, r.disgenet="yes";\n'''
     cypher_edge.write(query)
     cypher_edge.close()
 
