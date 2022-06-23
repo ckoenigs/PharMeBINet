@@ -25,7 +25,7 @@ def load_edges_from_database_and_add_to_dict():
     '''
     print("query_started--------")
     # TODO: LIMIT to 10.000?
-    query = "MATCH (n:Gene)-[r:HAS_GhV]-(p:Variant) RETURN n.identifier,r.resource,p.identifier"
+    query = "MATCH (n:Gene)-[r:HAS_GhGV]-(p:Variant) RETURN n.identifier,r.resource,p.identifier"
     results = g.run(query)
     print("query_ended----------")
 
@@ -95,12 +95,12 @@ def get_DisGeNet_information():
     mode = 'a' if os.path.exists(cypher_path) else 'w'
     file_cypher = open(cypher_path, mode, encoding='utf-8')
     # 1. Set…
-    query = f'USING PERIODIC COMMIT 10000 LOAD CSV WITH HEADERS FROM "file:{path_of_directory}{file_name}" AS line FIELDTERMINATOR "\\t"   Match (n:Variant{{identifier:line.variant_id}})-[r:HAS_GhV]-(v:Gene{{identifier:line.gene_id}}) Set r.disgenet="yes",  r.resource = split(line.resource,"|"), r.sources = split(line.sources,"|") ;\n'
+    query = get_query_start(path_of_directory, file_name) + f' Match (n:Variant{{identifier:line.variant_id}})-[r:HAS_GhGV]-(v:Gene{{identifier:line.gene_id}}) Set r.disgenet="yes",  r.resource = split(line.resource,"|"), r.sources = split(line.sources,"|") ;\n'
     file_cypher.write(query)
 
     # 2. Create… (finde beide KNOTEN)
     # url:"https://www.disgenet.org/browser/2/1/0/"+line.variant_id
-    query = f'USING PERIODIC COMMIT 10000 LOAD CSV WITH HEADERS FROM "file:{path_of_directory}{file_name_not_mapped}" AS line FIELDTERMINATOR "\\t"  Match (n:Variant{{identifier:line.variant_id}}), (v:Gene{{identifier:line.gene_id}}) Create (v)-[:HAS_GhV{{source:"DisGeNet", resource:["DisGeNet"] , sources:split(line.sources,"|"), disgenet:"yes", url:"https://www.disgenet.org/browser/0/0/2/0/0/25/snpid__"+line.snp_id+"-source__CURATED/_b./"}}]->(n);\n'
+    query = get_query_start(path_of_directory, file_name_not_mapped) + f' Match (n:Variant{{identifier:line.variant_id}}), (v:Gene{{identifier:line.gene_id}}) Create (v)-[:HAS_GhGV{{source:"DisGeNet", resource:["DisGeNet"] , sources:split(line.sources,"|"), disgenet:"yes", url:"https://www.disgenet.org/browser/0/0/2/0/0/25/snpid__"+line.snp_id+"-source__CURATED/_b./"}}]->(n);\n'
     file_cypher.write(query)
     file_cypher.close()
 

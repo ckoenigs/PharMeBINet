@@ -43,7 +43,7 @@ def load_variants_from_database_and_add_to_dict():
 
         _, snp_id = node['xrefs'][snp_id_idx[0]].split(':')
         # put snp_id as identifier if 'dbSNP' exists in xrefs
-        dict_snp_id_to_identifier[snp_id] = identifier
+        dict_snp_id_to_identifier[identifier] = identifier
 
 
 def generate_files(path_of_directory):
