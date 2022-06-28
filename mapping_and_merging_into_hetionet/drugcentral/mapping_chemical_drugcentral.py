@@ -120,19 +120,6 @@ def load_structure_in():
 
     for identifier, inchikey, smiles, name, resource, in results:
 
-        # #inchi
-        # if inchi:
-        #     # inchis = inchi.split('=', 1)
-        #     if inchi in dict_chemical_inchi:
-        #         chemicals = dict_chemical_inchi[inchi]
-        #         for chemical_id in chemicals:
-        #             dict_nodes_to_chemical[identifier] = chemical_id
-        #
-        #             if identifier not in dict_node_to_methode:
-        #                 dict_node_to_methode[identifier] = set()
-        #             dict_node_to_methode[identifier].add('inchi')
-        #             mapped_chemicals.add(identifier)
-
         #inchikey
         if inchikey in dict_chemical_inchikey:
             chemicals = dict_chemical_inchikey[inchikey]
@@ -158,8 +145,6 @@ def load_structure_in():
         #name
 
         name = name.lower()
-        if name == "tryparsamide":
-            print("****")
         if name in dict_chemical_name:
             chemicals = dict_chemical_name[name]
             for chemical_id in chemicals:
