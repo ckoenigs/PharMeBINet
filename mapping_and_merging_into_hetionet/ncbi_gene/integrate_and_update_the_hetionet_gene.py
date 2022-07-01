@@ -41,7 +41,7 @@ def get_all_ncbi_ids_form_hetionet_genes():
 # ditionary from ncbi property to hetionet property name
 dict_ncbi_property_to_hetionet_property = {
     "full_name_from_nomenclature_authority": 'name',
-    "symbol": 'gene_symbols',
+    "symbol": 'gene_symbol',
     "symbol_from_nomenclature_authority": 'gene_symbols',
     "dbXrefs": 'xrefs'
 }
@@ -77,7 +77,7 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
     # file for integration into hetionet
     file = open('output_data/genes_merge.tsv', 'w')
     header = ['identifier', 'name', 'description', 'chromosome', 'gene_symbols', 'synonyms', 'feature_type',
-              'type_of_gene', 'map_location', 'xrefs']
+              'type_of_gene', 'map_location', 'xrefs', 'gene_symbol']
     writer = csv.DictWriter(file, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL,
                             fieldnames=header)
     writer.writeheader()
@@ -139,10 +139,11 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
                 gene_symbol.add(value)
             elif property == 'symbol' and value != '-':
                 gene_symbol.add(value)
+                node[property]=value
+
 
         # make one list
         node['symbol_from_nomenclature_authority'] = list(gene_symbol)
-        node['symbol'] = list(gene_symbol)
         symbols_ncbi = [x.lower() for x in list(gene_symbol)]
         synonyms = node['synonyms'] if 'synonyms' in node else []
         synonyms = list(set_of_synoynmys_from_designation.union(synonyms))
