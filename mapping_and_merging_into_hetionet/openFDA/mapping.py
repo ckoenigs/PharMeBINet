@@ -80,7 +80,8 @@ def fill_files(FDA_name, CAT_name, FDA_attr, CAT_attr, _map, map_file_name, nonm
                     mapped[entry[FDA_attr[j][0]]] = ""
                 # Sonst wird dem Punkt how_mapped das attribut hinzugefügt.
                 else:
-                    mapping_arr[(entry[FDA_attr[j][0]], _CAT[j][entry[_map[j]]][0])][2] = mapping_arr[(entry[FDA_attr[j][0]], _CAT[j][entry[_map[j]]][0])][2] + "," + _map[j]
+                    if _map[j] not in mapping_arr[(entry[FDA_attr[j][0]], _CAT[j][entry[_map[j]]][0])][2]:
+                        mapping_arr[(entry[FDA_attr[j][0]], _CAT[j][entry[_map[j]]][0])][2] = mapping_arr[(entry[FDA_attr[j][0]], _CAT[j][entry[_map[j]]][0])][2] + "," + _map[j]
             # Sonst kann der Knoten nicht gemappt werden.
             else:
                 nonmapped_arr[nonmap_file_name[j]].append([entry[FDA_attr[j][0]], entry[_map[j]]])
@@ -122,13 +123,17 @@ def map_others(cur, _CAT, nonmap_name, map_name):
     # Speichert jeden Eintrag der noch nicht gemappt werden konnte als Dictionary.
     # nonmapped: {"reaction": id, ...}
     for line in reader:
-        nonmapped[line[1]] = line[0]
+        if line[1] in nonmapped:
+            line[1] = line[1].capitalize()
+            nonmapped[line[1]] = line[0]
+        else:
+            nonmapped[line[1]] = line[0]
     f.close()
     db = {}
     # Iteriert über jeden Eintrag der umls Datenbank und speichert ihn als Dictionary.
     # db: {"reaction": CUI, ...}
     for (cui_, str_) in cur:
-        db[str_] = cui_
+        db[str_.lower()] = cui_
     ids = {}
     # Iteriert über jeden Eintrag der zu mappenden Kategorie und speichert ihn als Dictionary.
     # ids: {"identifier of SideEffect (CUI)": "resource", ...}
@@ -167,23 +172,24 @@ def map_others(cur, _CAT, nonmap_name, map_name):
         # Existiert das Attribut in der Datenbank und die CUI ist noch nicht in SideEffects,
         # dann wird ein neuer SideEffect Knoten erstellt.
         # Außerdem wird der openFDA Knoten mit diesem gemappt.
-        if entry in db and db[entry] not in ids:
+        lower_entry=entry.lower()
+        if lower_entry in db and db[lower_entry] not in ids:
             # Checkt, ob ein Knoten mit der CUI schon erstellt wurde.
-            if db[entry] not in unique_cuis:
-                writer.writerow([db[entry], entry, "openFDA"])
-                writer2.writerow([nonmapped[entry], db[entry], "new", "openFDA"])
-                unique_cuis.add(db[entry])
+            if db[lower_entry] not in unique_cuis:
+                writer.writerow([db[lower_entry], lower_entry, "openFDA"])
+                writer2.writerow([nonmapped[entry], db[lower_entry], "new", "openFDA"])
+                unique_cuis.add(db[lower_entry])
             else:
-                writer2.writerow([nonmapped[entry], db[entry], "new", "openFDA"])
+                writer2.writerow([nonmapped[entry], db[lower_entry], "new", "openFDA"])
         # Existiert das Attribut in der Datenbank und die CUI ist schon in SideEffects,
         # dann wird der openFDA Knoten über die CUI mit dem SideEffect Knoten gemappt.
-        elif entry in db and db[entry] in ids:
-            resource = ids[db[entry]]
+        elif lower_entry in db and db[lower_entry] in ids:
+            resource = ids[db[lower_entry]]
             resource.append("openFDA")
             resource = "|".join(sorted(set(resource), key=lambda s: s.lower()))
-            writer2.writerow([nonmapped[entry], db[entry], "name,umls", resource])
+            writer2.writerow([nonmapped[entry], db[lower_entry], "name,umls", resource])
         else:
-            writer3.writerow([nonmapped[entry], entry])
+            writer3.writerow([nonmapped[lower_entry], lower_entry])
     f.close()
     f2.close()
     f3.close()
