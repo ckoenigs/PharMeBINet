@@ -67,3 +67,15 @@ def get_query_start(base_path: str, file_path: str) -> str:
     base_path = base_path.rstrip('/')
     return """USING PERIODIC COMMIT 10000 LOAD CSV WITH HEADERS FROM "file:%s/%s" AS line FIELDTERMINATOR '\\t'""" % (
         base_path, file_path)
+
+
+def resource_add_and_prepare(resource, source):
+    """
+    add to resource a new source and generate a sort join string
+    :param resource: list/set
+    :param source: string
+    :return: string
+    """
+    resource = set(resource)
+    resource.add(source)
+    return '|'.join(sorted(resource, key=lambda s: s.lower()))
