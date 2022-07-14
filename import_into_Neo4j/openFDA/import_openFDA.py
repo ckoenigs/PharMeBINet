@@ -786,6 +786,25 @@ class former:
         if name not in self.tsv_header:
             self.tsv_header[name] = ["id"] + keys
 
+    """ Setzt die Attribute in DrugAdverseEvent_drug_indication auf lower-case.
+        directory: Das Verzeichnis für DrugAdverseEvents.
+        f: Name der Datei. """
+
+    def make_lower_files(self, directory, f):
+        f1 = open(directory + '/' + f + ".tsv", 'r', encoding="utf-8")
+        header = f1.readline()
+        reader = csv.reader(f1, delimiter="\t")
+        arr = []
+        for line in reader:
+            arr.append([line[0], line[1].lower()])
+        f1.close()
+        f1 = open(directory + '/' + f + ".tsv", 'w', encoding="utf-8")
+        f1.write(header)
+        writer = csv.writer(f1, delimiter="\t", lineterminator="\n")
+        for line in arr:
+            writer.writerow(line)
+        f1.close()
+
     """ Erstellt die Dateien, die nur einzigartige Einträge enthalten.
         directory: Das jeweilige Verzeichnis. """
 
@@ -802,6 +821,7 @@ class former:
             self.make_id_files(directory, "DrugAdverseEvent_drug_ids", "DrugAdverseEvent_drug_id1_id2")
             self.make_special_files(directory, "DrugAdverseEvent_drug_ids", "DrugAdverseEvent_drug",
                                     self.drugadverseevent_drug_keys)
+            self.make_lower_files(directory, "DrugAdverseEvent_drug_indication_ids")
             self.make_openfda_file(directory, "DrugAdverseEvent_drug_indication_ids", "DrugAdverseEvent_drug_ids",
                                    "DrugAdverseEvent_drug_indication_id1_id2", "DrugAdverseEvent_drug_indication",
                                    self.drugadverseevent_drug_indication_keys)
