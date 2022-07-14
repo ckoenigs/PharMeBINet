@@ -3,7 +3,7 @@
 #define path to neo4j bin
 path_neo4j=$1
 
-python3 import_openFDA.py '/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/openFDA/' > output_generate_integration_file.txt
+python3 import_openFDA.py '/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/openFDA/' > output/output_generate_integration_file.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
