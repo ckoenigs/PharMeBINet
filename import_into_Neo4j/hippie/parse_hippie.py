@@ -94,15 +94,25 @@ def add_check_if_entry_is_empty(value):
 def extract_info_from_mitab_file():
     for line in csv_reader:
         id1 = line['ID Interactor A']
+        if id1 =='-':
+            if line['Alt IDs Interactor A']!='-':
+                id1 = line['Alt IDs Interactor A']
+            else:
+                print('A',line)
         id2 = line['ID Interactor B']
+        if id2 =='-':
+            if line['Alt IDs Interactor B']!='-':
+                id2 = line['Alt IDs Interactor B']
+            else:
+                print('B',line)
         if id1 not in set_ids:
-            csv_node.writerow([line['ID Interactor A'], add_check_if_entry_is_empty(line['Alt IDs Interactor A']),
+            csv_node.writerow([id1, add_check_if_entry_is_empty(line['Alt IDs Interactor A']),
                                add_check_if_entry_is_empty(line['Aliases Interactor A']),
                                add_check_if_entry_is_empty(line['Taxid Interactor A']),
                                add_check_if_entry_is_empty(line['Gene Name Interactor A'])])
             set_ids.add(id1)
         if id2 not in set_ids:
-            csv_node.writerow([line['ID Interactor B'], add_check_if_entry_is_empty(line['Alt IDs Interactor B']),
+            csv_node.writerow([id2, add_check_if_entry_is_empty(line['Alt IDs Interactor B']),
                                add_check_if_entry_is_empty(line['Aliases Interactor B']),
                                add_check_if_entry_is_empty(line['Taxid Interactor B']),
                                add_check_if_entry_is_empty(line['Gene Name Interactor B'])])
