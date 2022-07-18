@@ -1,10 +1,6 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Sep 21 08:35:25 2017
-
-@author: Cassandra
-"""
 import csv, datetime
+from zipfile import ZipFile
+import io, os
 
 # dictionary with key rxnorm cui and value unii list
 dict_rxcui_to_unii = {}
@@ -99,17 +95,25 @@ find for all unii a inchikey in fda-srs
 
 '''
 def generate_unii_inchikey_connection():
-    h = open('unii/unii_data.txt', 'r', encoding='utf-8')
-    csv_writer=csv.DictReader(h, delimiter='\t')
-    for line in csv_writer:
-        unii = line['UNII']
-        inchikey = line['INCHIKEY']
-        if inchikey != '':
-            if unii in dict_unii_to_rxcui:
-                if not unii in dict_unii_to_inchi_key:
-                    dict_unii_to_inchi_key[unii] = inchikey
+    zip_file_name = ''
+    for file in os.listdir('.'):
+        if file.endswith('.zip'):
+            zip_file_name = file
+    print(zip_file_name)
+    with ZipFile(zip_file_name, 'r') as zipObj:
+        for name in zipObj.namelist():
+            if name.startswith('UNII'):
+                f = zipObj.open(name, 'r')
+                csv_reader = csv.DictReader(io.TextIOWrapper(f, 'LATIN1'), delimiter='\t')
+                for line in csv_reader:
+                    unii = line['UNII']
+                    inchikey = line['INCHIKEY']
+                    if inchikey != '':
+                        if unii in dict_unii_to_rxcui:
+                            if not unii in dict_unii_to_inchi_key:
+                                dict_unii_to_inchi_key[unii] = inchikey
 
-    h.close()
+                f.close()
     print(len(dict_unii_to_inchi_key))
 
 '''

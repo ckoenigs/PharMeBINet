@@ -1,11 +1,6 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Sep 11 08:30:30 2017
-
-@author: Cassandra
-"""
-
 import datetime, csv
+from zipfile import ZipFile
+import io, os
 
 # dictionary inchikey to rxnorm_ids
 dict_inchikey_to_rxnorm_ids = {}
@@ -33,19 +28,29 @@ file has properties:
 
 
 def load_all_inchikey_and_rxnorm_in_dict():
-    f = open('unii/unii_data.txt', 'r', encoding='utf-8')
-    csv_reader=csv.DictReader(f,delimiter='\t',)
-    g = open('results/UNIIs_with_RXCUI.tsv', 'w', encoding='utf-8')
-    csv_writer=csv.writer(g, delimiter='\t')
-    csv_writer.writerow(['unii','rxcui'])
+    zip_file_name=''
+    for file in os.listdir('.'):
+        if file.endswith('.zip'):
+            zip_file_name=file
+    print(zip_file_name)
+    with ZipFile(zip_file_name, 'r') as zipObj:
+        for name in zipObj.namelist():
+            if name.startswith('UNII'):
+                f = zipObj.open(name,'r')
+                csv_reader=csv.DictReader(io.TextIOWrapper(f, 'LATIN1'),delimiter='\t')
+                g = open('results/UNIIs_with_RXCUI.tsv', 'w', encoding='utf-8')
+                csv_writer=csv.writer(g, delimiter='\t')
+                csv_writer.writerow(['unii','rxcui'])
 
-    print (datetime.datetime.now())
-    i = 0
-    for line in csv_reader:
-        unii=line['UNII']
-        rxcui=line['RXCUI']
-        if rxcui!='':
-            csv_writer.writerow([unii,rxcui])
+                print (datetime.datetime.now())
+                for line in csv_reader:
+                    unii=line['UNII']
+                    rxcui=line['RXCUI']
+                    if rxcui!='':
+                        csv_writer.writerow([unii,rxcui])
+                g.close()
+                f.close()
+                break
 
 
 print (datetime.datetime.now())

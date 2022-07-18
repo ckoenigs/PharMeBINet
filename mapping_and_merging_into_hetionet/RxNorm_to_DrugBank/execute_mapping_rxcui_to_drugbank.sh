@@ -4,16 +4,9 @@ counter_of_connection_tries=0
 worked_url=false
 now=$(date +"%F %T")
 echo "Current time: $now"
-echo down load fda file
+echo download fda file
 
 python3 download_unii_data.py
-
-
-unzip UNII_Data*.zip -d unii/
-cd unii
-# unzip UNII_Data.zip -d .
-mv UNII_Records* unii_data.txt
-cd ..
 
 
 now=$(date +"%F %T")
@@ -53,12 +46,11 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 
 echo map drugbank to rxnorm with names
-#take a lot of time
+
 python3 map_drugbank_to_rxnorm_with_name_final.py >  output/output_map_drugbank_to_rxnorm_with_name.txt
 
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-rm unii/*
 rm UNII_Data*.zip
