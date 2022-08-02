@@ -63,7 +63,7 @@ def load_DC_product_in():
 
     for node, node_id, in results:
         prod_ndc = node["ndc_product_code"]
-        product_name = node["product_name"]
+        product_name = node["product_name"] if 'product_name' in node else ''
         product_name = product_name.lower()
 
         if prod_ndc in dict_ndc_pc:
@@ -92,8 +92,7 @@ def generate_tsv_files():
     :return:
     """
     global csv_mapped, csv_not_mapped
-    # file for mapped or not mapped identifier
-    # erstellt neue TSV, überschreibt auch bestehende und leert sie wieder
+    # file for not mapped identifier
     file_not_mapped_protein = open('product/not_mapped_product.tsv', 'w', encoding="utf-8")
     # Dateiformat wird gesetzt mit Trenner: Tabulator
     csv_not_mapped = csv.writer(file_not_mapped_protein, delimiter='\t', lineterminator='\n')
