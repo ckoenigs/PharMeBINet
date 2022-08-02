@@ -7,7 +7,7 @@ path_neo4j=$1
 import_tool=$2
 
 # define bioDWH2 tool
-biodwh2='BioDWH2-v0.4.0'
+biodwh2=$3
 
 
 echo load latest version of pharmGKB and generat GraphML file
@@ -18,13 +18,13 @@ dir=./sources/
 if [ ! -d "$dir" ]; 
 then
     echo generate workspace in directory
-    java -jar $biodwh2.jar -c .
+    java -jar ../$biodwh2.jar -c .
 
-    java -jar $biodwh2.jar --add-data-source . PharmGKB
+    java -jar ../$biodwh2.jar --add-data-source . PharmGKB
 
 fi
 
-java -jar BioDWH2-v0.4.0.jar -u .
+java -jar ../$biodwh2.jar -u .
 
 echo $import_tool
 

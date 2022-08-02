@@ -6,12 +6,34 @@ path_neo4j=$1
 # define import tool
 import_tool=$2
 
+# define bioDWH2 tool
+biodwh2=$3
+
+
+echo load latest version of DrugCentral and generat GraphML file
+
+dir=./sources/
+
+# prepare workspace and add DrugCentral to bioDWB2 tool
+if [ ! -d "$dir" ]; 
+then
+    echo generate workspace in directory
+    java -jar ../$biodwh2.jar -c .
+
+    java -jar ../$biodwh2.jar --add-data-source . DrugCentral
+    # if not all is exported then the config need to be changed
+    # dataSourceProperties: "DrugCentral" : { "forceExport" : false, "skipLINCSSignatures" : true, "skipFAERSReports" : true, "skipDrugLabelFullTexts" : true }
+
+fi
+
+java -jar ../$biodwh2.jar -u .
+
 echo $import_tool
+
 
 echo integrate DurgCentral into neo4j
 
-java -jar ../$import_tool.jar -i intermediate.graphml  -e bolt://localhost:7687 --username neo4j --password test --label-prefix DC_ > output/import_tool_output.txt
-#  --indices "PharmGKB_Chemical.id;PharmGKB_ClinicalAnnotation.id;PharmGKB_ClinicalAnnotationMetadata.id;PharmGKB_DrugLabel.id;PharmGKB_Gene.id;PharmGKB_Haplotype.id;PharmGKB_HaplotypeSet.id;PharmGKB_Literature.id;PharmGKB_Pathway.id;PharmGKB_Phenotype.id;PharmGKB_StudyParameters.id;PharmGKB_Variant.id;PharmGKB_VariantAnnotation.id"
+java -jar ../$import_tool.jar -i sources/DrugCentral/intermediate.graphml  -e bolt://localhost:7687 --username neo4j --password test --label-prefix DC_ > output/import_tool_output.txt
 
 sleep 120
 
