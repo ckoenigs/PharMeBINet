@@ -34,16 +34,24 @@ load in Reaction from hetionet in a dictionary
 
 def load_hetionet_reaction_hetionet_protein_in(csv_file, rela, dict_reaction_hetionet_protein_hetionet,
                                                     node_hetionet_label):
-    query = '''MATCH (p:ReactionLikeEvent)--(o:ReactionLikeEvent_reactome)-[:%s]-(m:PhysicalEntity_reactome)-[a:referenceEntity]-(r:ReferenceEntity_reactome)-[v]-(n:%s) RETURN distinct p.identifier, n.identifier, v.order, v.stoichiometry'''
+    query = '''MATCH (p:ReactionLikeEvent)--(o:ReactionLikeEvent_reactome)-[:%s]-(m:PhysicalEntity_reactome)-[a:referenceEntity]-(r:ReferenceEntity_reactome)-[v]-(n:%s) RETURN distinct p.identifier, n.identifier, v.order, v.stoichiometry, m.displayName'''
     query = query % ( rela, node_hetionet_label)
+    print(query)
     results = graph_database.run(query)
     # for id1, id2, order, stoichiometry, in results:
-    for reaction_id, protein_id, order, stoichiometry, in results:
+    for reaction_id, protein_id, order, stoichiometry, name, in results:
         if (reaction_id, protein_id) in dict_reaction_hetionet_protein_hetionet:
             print(reaction_id, protein_id)
-            sys.exit("Doppelte reaction-protein kombination")
-        dict_reaction_hetionet_protein_hetionet[(reaction_id, protein_id)] = [stoichiometry, order]
-        csv_file.writerow([reaction_id, protein_id, order, stoichiometry])
+            print("Doppelte reaction-protein kombination")
+
+            dict_reaction_hetionet_protein_hetionet[(reaction_id, protein_id)][2].add(name)
+
+        else:
+            dict_reaction_hetionet_protein_hetionet[(reaction_id, protein_id)] = [stoichiometry, order, set([name])]
+        # csv_file.writerow([reaction_id, protein_id, order, stoichiometry, name])
+
+    for (reaction_id, node_id), list_of_property in dict_reaction_hetionet_protein_hetionet.items():
+        csv_file.writerow([reaction_id, node_id, list_of_property[1], list_of_property[0], '|'.join(list_of_property[2])])
     print('relationships in hetionet:' + str(len(dict_reaction_hetionet_protein_hetionet)))
 
 
@@ -53,7 +61,7 @@ generate new relationships between reaction of hetionet and protein of hetionet 
 
 
 def create_cypher_file( file_path, node_label, rela_name):
-    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/reactome/%s" As line FIELDTERMINATOR "\\t" MATCH (d:Reaction{identifier:line.id_hetionet_Reaction}),(c:%s{identifier:line.id_hetionet_node}) CREATE (c)-[: %s{order:line.order, stoichiometry:line.stoichiometry, source:"Reactome", resource: ['Reactome'], reactome: "yes", license:"%s", url:"https://reactome.org/content/detail/"+line.id_hetionet_Reaction}]->(d);\n'''
+    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/reactome/%s" As line FIELDTERMINATOR "\\t" MATCH (d:Reaction{identifier:line.id_hetionet_Reaction}),(c:%s{identifier:line.id_hetionet_node}) CREATE (c)-[: %s{order:line.order, stoichiometry:line.stoichiometry, from_names:split(line.from_name,"|") , source:"Reactome", resource: ['Reactome'], reactome: "yes", license:"%s", url:"https://reactome.org/content/detail/"+line.id_hetionet_Reaction}]->(d);\n'''
     query = query % (path_of_directory, file_path, node_label, rela_name, license)
     cypher_file.write(query)
 
@@ -70,7 +78,7 @@ def check_relationships_and_generate_file( node_hetionet_label,
 
     file_mapped_reaction_to_node = open(file_name,'w', encoding="utf-8")
     csv_mapped = csv.writer(file_mapped_reaction_to_node, delimiter='\t', lineterminator='\n')
-    csv_mapped.writerow(['id_hetionet_Reaction', 'id_hetionet_node', 'order', 'stoichiometry'])
+    csv_mapped.writerow(['id_hetionet_Reaction', 'id_hetionet_node', 'order', 'stoichiometry', "from_name"])
 
     dict_reaction_node = {}
 
