@@ -9,7 +9,7 @@ from mapping import *
 if len(sys.argv) > 1:
     path_of_directory = sys.argv[1]
 else:
-    sys.exit('need a path rnaCentral')
+    sys.exit('need a path openFDA')
 make_dir()
 #######################################################################
 print(datetime.datetime.utcnow())
@@ -20,9 +20,11 @@ g = create_connection_to_databases.database_connection_neo4j()
 # Speichert die Daten aus FDA.
 FDA1 = []
 FDA2 = []
+FDA3 = []
 # Speichert die Daten aus Category.
 CAT1 = {}
 CAT2 = {}
+CAT3 = {}
 #######################################################################
 cypher_file_name = "cypher.cypher"
 map_file_name = "mapped_SubstanceData_substance_Chemical.tsv"
@@ -38,7 +40,7 @@ a = list(g.run(query))
 print(datetime.datetime.utcnow())
 print("Fetching data for Chemical ...")
 # Category Daten abrufen und anschließend als Dictionary speichern.
-query = "MATCH (n:Chemical) RETURN n.identifier, n.unii, toLower(n.name), n.resource;"
+query = "MATCH (n:Chemical) RETURN n.identifier, n.unii, toLower(n.name),n.synonyms, n.resource;"
 b = list(g.run(query))
 #######################################################################
 for entry in a:
@@ -50,6 +52,7 @@ for entry in a:
         attr_ = entry["toLower(n.name)"]
         if attr_ is not None:
             FDA2.append({"id": id_, "name": attr_})
+            FDA3.append({"id": id_, "synonym": attr_})
 for entry in b:
     id_ = entry["n.identifier"]
     if id_ is not None:
@@ -62,13 +65,21 @@ for entry in b:
         attr_ = entry["toLower(n.name)"]
         if attr_ is not None:
             CAT2[attr_] = [id_, source_]
+        attr_ = entry["n.synonyms"]
+        if attr_ is not None:
+            for attr in attr_:
+                attr = attr.lower()
+                CAT3[attr] = [id_, source_]
 #######################################################################
 FDA_name = "SubstanceData_substance_openFDA"
 CAT_name = "Chemical"
-FDA_attr = [["id", "unii"], ["id", "name"]]
-CAT_attr = [["identifier", "unii"], ["identifier", "name"]]
-_map = ["unii", "name"]
-nonmap_file_name = ["nonmapped_SubstanceData_substance_unii.tsv", "nonmapped_SubstanceData_substance_name.tsv"]
+FDA_attr = [["id", "unii"], ["id", "name"], ["id", "synonym"]]
+CAT_attr = [["identifier", "unii"], ["identifier", "name"], ["identifier", "synonym"]]
+_map = ["unii", "name", "synonym"]
+nonmap_file_name = ["nonmapped_SubstanceData_substance_unii.tsv", "nonmapped_SubstanceData_substance_name.tsv",
+                    "nonmapped_SubstanceData_substance_synonym.tsv"]
 make_mapping_file(map_file_name, "id", "identifier")
-fill_files(FDA_name, CAT_name, FDA_attr, CAT_attr, _map, map_file_name, nonmap_file_name, [FDA1, FDA2], [CAT1, CAT2])
-make_cypher_file(FDA_name, CAT_name, "id", "identifier", "unii_name", cypher_file_name, map_file_name, path_of_directory)
+fill_files(FDA_name, CAT_name, FDA_attr, CAT_attr, _map, map_file_name, nonmap_file_name, [FDA1, FDA2, FDA3],
+           [CAT1, CAT2, CAT3])
+make_cypher_file(FDA_name, CAT_name, "id", "identifier", "unii_name", cypher_file_name, map_file_name,
+                 path_of_directory)
