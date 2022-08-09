@@ -19,7 +19,7 @@ g = create_connection_to_databases.database_connection_neo4j()
 print(datetime.datetime.now())
 print("Fetching data ...")
 
-f = open("FDA_mappings/DrugAdverseEvent_Chemical_SideEffect_Edge.tsv", 'w', encoding="utf-8", newline='')
+f = open("FDA_edges/DrugAdverseEvent_Chemical_SideEffect_Edge.tsv", 'w', encoding="utf-8", newline='')
 writer = csv.writer(f, delimiter="\t")
 writer.writerow(["chemical", "sideeffect", "nodes", "count"])
 
@@ -51,8 +51,8 @@ while len(a) > 0:
 f.close()
 
 # Cypher query erstellen
-cypher = f'USING PERIODIC COMMIT 1000 LOAD CSV WITH HEADERS FROM "file:{path_of_directory}mapping_and_merging_into_hetionet/openFDA/FDA_mappings/DrugAdverseEvent_Chemical_SideEffect_Edge.tsv" AS row FIELDTERMINATOR "\t" MATCH (n:Chemical), (m:SideEffect) WHERE n.identifier = row.chemical AND m.identifier = row.sideeffect CREATE (n)-[:openFDA{{nodes:split(row.nodes,"|"), count:row.count}}]->(m);\n'
-f = open("FDA_mappings/edge_cypher.cypher", 'a', encoding="utf-8")
+cypher = f'USING PERIODIC COMMIT 1000 LOAD CSV WITH HEADERS FROM "file:{path_of_directory}mapping_and_merging_into_hetionet/openFDA/FDA_edges/DrugAdverseEvent_Chemical_SideEffect_Edge.tsv" AS row FIELDTERMINATOR "\t" MATCH (n:Chemical), (m:SideEffect) WHERE n.identifier = row.chemical AND m.identifier = row.sideeffect CREATE (n)-[:openFDA{{nodes:split(row.nodes,"|"), count:row.count, openfda="yes"}}]->(m);\n'
+f = open("FDA_edges/edge_cypher.cypher", 'a', encoding="utf-8")
 f.write(cypher)
 
 print(datetime.datetime.now())

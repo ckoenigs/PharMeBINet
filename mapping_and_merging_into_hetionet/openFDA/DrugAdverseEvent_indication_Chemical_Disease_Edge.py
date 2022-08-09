@@ -1,5 +1,4 @@
 import datetime
-import create_connection_to_databases
 import csv, sys
 
 sys.path.append("../..")
@@ -19,11 +18,11 @@ g = create_connection_to_databases.database_connection_neo4j()
 print(datetime.datetime.utcnow())
 print("Fetching data ...")
 
-f = open("FDA_mappings/DrugAdverseEvent_indication_Chemical_Disease_Edge.tsv", 'w', encoding="utf-8", newline='')
+f = open("FDA_edges/DrugAdverseEvent_indication_Chemical_Disease_Edge.tsv", 'w', encoding="utf-8", newline='')
 writer = csv.writer(f, delimiter="\t")
 writer.writerow(["chemical", "disease", "nodes", "count", "resource"])
 f.close()
-f = open("FDA_mappings/DrugAdverseEvent_indication_Chemical_Disease_Edge_append.tsv", 'w', encoding="utf-8", newline='')
+f = open("FDA_edges/DrugAdverseEvent_indication_Chemical_Disease_Edge_append.tsv", 'w', encoding="utf-8", newline='')
 writer = csv.writer(f, delimiter="\t")
 writer.writerow(["chemical", "disease", "nodes", "count", "resource"])
 f.close()
@@ -59,7 +58,7 @@ while len(a) > 0:
         l = l[:-1]
         c = len(entry["hu"])
         if entry["c.identifier"]+"_"+entry["s.identifier"] in arr:
-            f = open("FDA_mappings/DrugAdverseEvent_indication_Chemical_Disease_Edge_append.tsv", 'a', encoding="utf-8", newline='')
+            f = open("FDA_edges/DrugAdverseEvent_indication_Chemical_Disease_Edge_append.tsv", 'a', encoding="utf-8", newline='')
             writer = csv.writer(f, delimiter="\t")
             resource = ""
             for a in arr[entry["c.identifier"]+"_"+entry["s.identifier"]]:
@@ -71,7 +70,7 @@ while len(a) > 0:
             writer.writerow([entry["c.identifier"], entry["s.identifier"], l, c, resource])
             f.close()
         else:
-            f = open("FDA_mappings/DrugAdverseEvent_indication_Chemical_Disease_Edge.tsv", 'a', encoding="utf-8", newline='')
+            f = open("FDA_edges/DrugAdverseEvent_indication_Chemical_Disease_Edge.tsv", 'a', encoding="utf-8", newline='')
             writer = csv.writer(f, delimiter="\t")
             writer.writerow([entry["c.identifier"], entry["s.identifier"], l, c, "openFDA"])
             f.close()
@@ -82,9 +81,9 @@ while len(a) > 0:
 f.close()
 
 # Cypher query erstellen
-cypher = f'USING PERIODIC COMMIT 1000 LOAD CSV WITH HEADERS FROM "file:{path_of_directory}mapping_and_merging_into_hetionet/openFDA/FDA_mappings/DrugAdverseEvent_indication_Chemical_Disease_Edge.tsv" AS row FIELDTERMINATOR "\t" MATCH (n:Chemical), (m:Disease) WHERE n.identifier = row.chemical AND m.identifier = row.disease CREATE (n)-[:TREATS_CHtD{{nodes:split(row.nodes,"|"), count:row.count, resource:split(row.resource,"|"), source:row.resource}}]->(m);\n'
-cypher2 = f'USING PERIODIC COMMIT 1000 LOAD CSV WITH HEADERS FROM "file:{path_of_directory}mapping_and_merging_into_hetionet/openFDA/FDA_mappings/DrugAdverseEvent_indication_Chemical_Disease_Edge_append.tsv" AS row FIELDTERMINATOR "\t" MATCH (n:Chemical)-[e:TREATS_CHtD]->(m:Disease) WHERE n.identifier = row.chemical AND m.identifier = row.disease SET e.nodes = split(row.nodes,"|"), e.count = row.count, e.openfda="yes", e.resource = split(row.resource,"|");\n'
-f = open("FDA_mappings/edge_cypher.cypher", 'w', encoding="utf-8")
+cypher = f'USING PERIODIC COMMIT 1000 LOAD CSV WITH HEADERS FROM "file:{path_of_directory}mapping_and_merging_into_hetionet/openFDA/FDA_edges/DrugAdverseEvent_indication_Chemical_Disease_Edge.tsv" AS row FIELDTERMINATOR "\t" MATCH (n:Chemical), (m:Disease) WHERE n.identifier = row.chemical AND m.identifier = row.disease CREATE (n)-[:TREATS_CHtD{{nodes:split(row.nodes,"|"), count:row.count, resource:split(row.resource,"|"), source:row.resource, openfda:"yes"}}]->(m);\n'
+cypher2 = f'USING PERIODIC COMMIT 1000 LOAD CSV WITH HEADERS FROM "file:{path_of_directory}mapping_and_merging_into_hetionet/openFDA/FDA_edges/DrugAdverseEvent_indication_Chemical_Disease_Edge_append.tsv" AS row FIELDTERMINATOR "\t" MATCH (n:Chemical)-[e:TREATS_CHtD]->(m:Disease) WHERE n.identifier = row.chemical AND m.identifier = row.disease SET e.nodes = split(row.nodes,"|"), e.count = row.count, e.openfda="yes", e.resource = split(row.resource,"|");\n'
+f = open("FDA_edges/edge_cypher.cypher", 'w', encoding="utf-8")
 f.write(cypher)
 f.write(cypher2)
 f.close()
