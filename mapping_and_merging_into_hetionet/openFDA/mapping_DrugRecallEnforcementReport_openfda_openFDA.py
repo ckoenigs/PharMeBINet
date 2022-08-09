@@ -6,11 +6,10 @@ sys.path.append("../..")
 import create_connection_to_databases
 from mapping import *
 
-
 if len(sys.argv) > 1:
     path_of_directory = sys.argv[1]
 else:
-    sys.exit('need a path rnaCentral')
+    sys.exit('need a path openFDA')
 make_dir()
 #######################################################################
 print(datetime.datetime.utcnow())
@@ -19,12 +18,10 @@ global g
 g = create_connection_to_databases.database_connection_neo4j()
 #######################################################################
 # Speichert die Daten aus FDA.
-FDA1 = []
 FDA2 = []
 FDA3 = []
 FDA4 = []
 # Speichert die Daten aus Category.
-CAT1 = {}
 CAT2 = {}
 CAT3 = {}
 CAT4 = {}
@@ -38,21 +35,17 @@ map_file_name = "mapped_DrugRecallEnforcementReport_openfda_Chemical.tsv"
 print(datetime.datetime.utcnow())
 print("Fetching data for DrugRecallEnforcementReport_openfda_openFDA ...")
 # FDA Daten abrufen und anschließend als Dictionary speichern.
-query = "MATCH (n:DrugRecallEnforcementReport_openfda_openFDA) RETURN n.id, n.unii, n.generic_name, n.product_ndc;"
+query = "MATCH (n:DrugRecallEnforcementReport_openfda_openFDA) RETURN n.id,  n.generic_name, n.product_ndc;"
 a = list(g.run(query))
 print(datetime.datetime.utcnow())
 print("Fetching data for Chemical ...")
 # Category Daten abrufen und anschließend als Dictionary speichern.
-query = "MATCH (n:Chemical) RETURN n.identifier, n.unii, toLower(n.name), n.synonyms, n.resource;"
+query = "MATCH (n:Chemical) RETURN n.identifier, toLower(n.name), n.synonyms, n.resource;"
 b = list(g.run(query))
 #######################################################################
 for entry in a:
     id_ = entry["n.id"]
     if id_ is not None:
-        attr_ = entry["n.unii"]
-        if attr_ is not None:
-            for attr in attr_:
-                FDA1.append({"id": id_, "unii": attr})
         attr_ = entry["n.generic_name"]
         if attr_ is not None:
             for attr in attr_:
@@ -69,9 +62,6 @@ for entry in b:
         source_ = entry["n.resource"]
         if source_ is None:
             source_ = []
-        attr_ = entry["n.unii"]
-        if attr_ is not None:
-            CAT1[attr_] = [id_, source_]
         attr_ = entry["toLower(n.name)"]
         if attr_ is not None:
             CAT2[attr_] = [id_, source_]
@@ -83,13 +73,15 @@ for entry in b:
 #######################################################################
 FDA_name = "DrugRecallEnforcementReport_openfda_openFDA"
 CAT_name = "Chemical"
-FDA_attr = [["id", "unii"], ["id", "name"], ["id", "synonym"]]
-CAT_attr = [["identifier", "unii"], ["identifier", "name"], ["identifier", "synonym"]]
-_map = ["unii", "name", "synonym"]
-nonmap_file_name = ["nonmapped_DrugRecallEnforcementReport_openfda_unii.tsv", "nonmapped_DrugRecallEnforcementReport_openfda_name.tsv", "nonmapped_DrugRecallEnforcementReport_openfda_synonyms.tsv"]
+FDA_attr = [["id", "name"], ["id", "synonym"]]
+CAT_attr = [["identifier", "name"], ["identifier", "synonym"]]
+_map = ["name", "synonym"]
+nonmap_file_name = ["nonmapped_DrugRecallEnforcementReport_openfda_name.tsv",
+                    "nonmapped_DrugRecallEnforcementReport_openfda_synonyms.tsv"]
 make_mapping_file(map_file_name, "id", "identifier")
-fill_files(FDA_name, CAT_name, FDA_attr, CAT_attr, _map, map_file_name, nonmap_file_name, [FDA1, FDA2, FDA4], [CAT1, CAT2, CAT4])
-make_cypher_file(FDA_name, CAT_name, "id", "identifier", "unii_name_synonym", cypher_file_name, map_file_name, path_of_directory)
+fill_files(FDA_name, CAT_name, FDA_attr, CAT_attr, _map, map_file_name, nonmap_file_name, [FDA2, FDA4], [CAT2, CAT4])
+make_cypher_file(FDA_name, CAT_name, "id", "identifier", "name_synonym", cypher_file_name, map_file_name,
+                 path_of_directory)
 #######################################################################
 print(datetime.datetime.utcnow())
 print("Fetching data for Product ...")
@@ -116,4 +108,5 @@ _map = ["product_ndc"]
 nonmap_file_name = ["nonmapped_DrugRecallEnforcementReport_openfda_ndc.tsv"]
 make_mapping_file(map_file_name, "id", "identifier")
 fill_files(FDA_name, CAT_name, FDA_attr, CAT_attr, _map, map_file_name, nonmap_file_name, [FDA3], [CAT3])
-make_cypher_file(FDA_name, CAT_name, "id", "identifier", "product_ndc", cypher_file_name, map_file_name, path_of_directory)
+make_cypher_file(FDA_name, CAT_name, "id", "identifier", "product_ndc", cypher_file_name, map_file_name,
+                 path_of_directory)

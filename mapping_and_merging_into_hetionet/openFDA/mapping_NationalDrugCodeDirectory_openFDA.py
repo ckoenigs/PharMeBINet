@@ -43,7 +43,7 @@ a = list(g.run(query))
 print(datetime.datetime.utcnow())
 print("Fetching data for Chemical ...")
 # Category Daten abrufen und anschließend als Dictionary speichern.
-query = "MATCH (n:Chemical) RETURN n.identifier, toLower(n.name), n.synonyms, n.unii, n.resource;"
+query = "MATCH (n:Chemical) RETURN n.identifier, toLower(n.name), n.synonyms, n.resource;"
 b = list(g.run(query))
 #######################################################################
 for entry in a:
@@ -53,21 +53,21 @@ for entry in a:
         if attr_ is not None:
             FDA1.append({"id": id_, "name": attr_})
             FDA4.append({"id": id_, "synonym": attr_})
-        attr_ = entry["n.openfda"]
-        if attr_ is not None:
-            # openfda entwinden.
-            attr_ = attr_.split(":")
-            boolean1 = False
-            for a in attr_:
-                a = a.replace("'", "").replace(" ", "")
-                if boolean1:
-                    a1 = a.replace("}", "").replace("[", "").replace("]", "")
-                    a1 = a1.split(",")
-                    for attr in a1:
-                        FDA2.append({"id": id_, "unii": attr})
-                    boolean1 = False
-                if a.endswith("unii"):
-                    boolean1 = True
+        # attr_ = entry["n.openfda"]
+        # if attr_ is not None:
+        #     # openfda entwinden.
+        #     attr_ = attr_.split(":")
+        #     boolean1 = False
+        #     for a in attr_:
+        #         a = a.replace("'", "").replace(" ", "")
+        #         if boolean1:
+        #             a1 = a.replace("}", "").replace("[", "").replace("]", "")
+        #             a1 = a1.split(",")
+        #             for attr in a1:
+        #                 FDA2.append({"id": id_, "unii": attr})
+        #             boolean1 = False
+        #         if a.endswith("unii"):
+        #             boolean1 = True
         attr_ = entry["n.product_ndc"]
         if attr_ is not None:
             FDA3.append({"id": id_, "product_ndc": attr_})
@@ -80,9 +80,6 @@ for entry in b:
             source_ = []
         if attr_ is not None:
             CAT1[attr_] = [id_, source_]
-        attr_ = entry["n.unii"]
-        if attr_ is not None:
-            CAT2[attr_] = [id_, source_]
         attr_ = entry["n.synonyms"]
         if attr_ is not None:
             for attr in attr_:
@@ -91,12 +88,12 @@ for entry in b:
 #######################################################################
 FDA_name = "NationalDrugCodeDirectory_openFDA"
 CAT_name = "Chemical"
-FDA_attr = [["id", "name"], ["id", "unii"], ["id", "synonym"]]
-CAT_attr = [["identifier", "name"], ["identifier", "unii"], ["identifier", "synonym"]]
-_map = ["name", "unii", "synonym"]
-nonmap_file_name = ["nonmapped_NationalDrugCodeDirectory_name.tsv", "nonmapped_NationalDrugCodeDirectory_unii.tsv", "nonmapped_NationalDrugCodeDirectory_synonyms.tsv"]
+FDA_attr = [["id", "name"], ["id", "synonym"]]
+CAT_attr = [["identifier", "name"],["identifier", "synonym"]]
+_map = ["name", "synonym"]
+nonmap_file_name = ["nonmapped_NationalDrugCodeDirectory_name.tsv", "nonmapped_NationalDrugCodeDirectory_synonyms.tsv"]
 make_mapping_file(map_file_name, "id", "identifier")
-fill_files(FDA_name, CAT_name, FDA_attr, CAT_attr, _map, map_file_name, nonmap_file_name, [FDA1, FDA2, FDA4], [CAT1, CAT2, CAT4])
+fill_files(FDA_name, CAT_name, FDA_attr, CAT_attr, _map, map_file_name, nonmap_file_name, [FDA1,  FDA4], [CAT1,  CAT4])
 make_cypher_file(FDA_name, CAT_name, "id", "identifier", "unii_name_synonym", cypher_file_name, map_file_name,path_of_directory)
 #######################################################################
 print(datetime.datetime.utcnow())

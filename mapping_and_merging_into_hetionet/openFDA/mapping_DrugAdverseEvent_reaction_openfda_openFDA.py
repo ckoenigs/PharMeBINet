@@ -43,6 +43,7 @@ for entry in a:
     id_ = entry["n.id"]
     attr_ = entry["toLower(n.reactionmeddrapt)"]
     if id_ is not None and attr_ is not None:
+        attr_ = attr_.replace("^", "'")
         FDA.append({"id": id_, "name": attr_})
 for entry in b:
     id_ = entry["n.identifier"]
