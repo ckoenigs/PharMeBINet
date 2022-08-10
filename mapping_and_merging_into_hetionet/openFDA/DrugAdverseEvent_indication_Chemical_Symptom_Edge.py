@@ -18,6 +18,7 @@ g = create_connection_to_databases.database_connection_neo4j()
 print(datetime.datetime.utcnow())
 print("Fetching data ...")
 
+# create tsv file with header
 f = open("FDA_edges/DrugAdverseEvent_indication_Chemical_Symptom_Edge.tsv", 'w', encoding="utf-8", newline='')
 writer = csv.writer(f, delimiter="\t")
 writer.writerow(["chemical", "symptom", "nodes", "count"])
@@ -27,6 +28,10 @@ LIMIT = 1000
 count = 0
 
 a = [1]
+
+# Chemical - DrugAdverseEvent_drug_openfda - DrugAdverseEvent_drug - DrugAdverseEvent_drug_indication - Symptom
+# get treat path from openFDA between chemical-symptom. Gather number of path exists and remember at least around 100
+# # DrugAdverseEvent_drug_openFDA and write pair to tsv file.
 while len(a) > 0:
     query = f'MATCH z=(c:Chemical)-[e1:name_synonym_merge]->(o:DrugAdverseEvent_drug_openfda_openFDA)-[e2:Event]->(d:DrugAdverseEvent_drug_openFDA)<-[e3:Event]-(r:DrugAdverseEvent_drug_indication_openFDA)<-[e4:name_synonym_merge]-(s:Symptom) WITH c,collect(d) as hu,s SKIP {str(count)} LIMIT {LIMIT} RETURN c.identifier, s.identifier, hu'
     a = list(g.run(query))
@@ -34,6 +39,7 @@ while len(a) > 0:
     for entry in a:
         l = ""
         length = 0
+        # save all DrugAdverseEvent_drug_openFDA als string of Dicts with | seperated and only less than 100
         for e in entry["hu"]:
             if length < 100:
                 d = {}
@@ -49,7 +55,7 @@ while len(a) > 0:
 
 f.close()
 
-# Cypher query erstellen
+# create Cypher query
 cypher = f'USING PERIODIC COMMIT 1000 LOAD CSV WITH HEADERS FROM "file:{path_of_directory}mapping_and_merging_into_hetionet/openFDA/FDA_edges/DrugAdverseEvent_indication_Chemical_Symptom_Edge.tsv" AS row FIELDTERMINATOR "\t" MATCH (n:Chemical), (m:Symptom) WHERE n.identifier = row.chemical AND m.identifier = row.symptom CREATE (n)-[:TREATS_CHtS{{nodes:split(row.nodes,"|"), count:row.count, openfda:"yes", source:"openFDA", resource:["openFDA"]}}]->(m);'
 f = open("FDA_edges/edge_cypher.cypher", 'a', encoding="utf-8")
 f.write(cypher)
