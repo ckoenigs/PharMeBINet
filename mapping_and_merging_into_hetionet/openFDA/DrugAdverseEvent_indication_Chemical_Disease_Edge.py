@@ -18,6 +18,7 @@ g = create_connection_to_databases.database_connection_neo4j()
 print(datetime.datetime.utcnow())
 print("Fetching data ...")
 
+# create the tsv files for existing and not existing edges
 f = open("FDA_edges/DrugAdverseEvent_indication_Chemical_Disease_Edge.tsv", 'w', encoding="utf-8", newline='')
 writer = csv.writer(f, delimiter="\t")
 writer.writerow(["chemical", "disease", "nodes", "count", "resource"])
@@ -31,6 +32,7 @@ f.close()
 LIMIT = 10000
 count = 0
 
+# gather the existing treat paths between chemical and disease and write them into a dictionary
 query = f'MATCH (c:Chemical)-[e:TREATS_CHtD]->(d:Disease) RETURN c.identifier, e, d.identifier'
 b = list(g.run(query))
 arr = {}
@@ -41,6 +43,9 @@ for entry in b:
     arr[c+"_"+d] = e["resource"];
 
 a = [1]
+# Chemical - DrugAdverseEvent_drug_openfda - DrugAdverseEvent_drug - DrugAdverseEvent_drug_indication - Disease
+# get treat path from openFDA between chemical-disease . Gather number of path exists and remember at least around 100
+# DrugAdverseEvent_drug_openFDA. The check if pair exist or not and write in the right tsv file.
 while len(a) > 0:
     query = f'MATCH z=(c:Chemical)-[e1:name_synonym_merge]->(o:DrugAdverseEvent_drug_openfda_openFDA)-[e2:Event]->(d:DrugAdverseEvent_drug_openFDA)<-[e3:Event]-(r:DrugAdverseEvent_drug_indication_openFDA)<-[e4:name_synonym_merge]-(s:Disease) WITH c,collect(d) as hu,s SKIP {str(count)} LIMIT {LIMIT} RETURN c.identifier, s.identifier, hu'
     a = list(g.run(query))
@@ -49,14 +54,18 @@ while len(a) > 0:
         l = ""
         length = 0
         for e in entry["hu"]:
+            # save all DrugAdverseEvent_drug_openFDA als string of Dicts with | seperated and only less than 100
             if length < 100:
                 d = {}
                 for a in e:
                     d[a] = e[a]
                 l += str(d) + "|"
+            else:
+                break
             length += 1
         l = l[:-1]
         c = len(entry["hu"])
+        #  Check if pair already exist or not and write into the right file
         if entry["c.identifier"]+"_"+entry["s.identifier"] in arr:
             f = open("FDA_edges/DrugAdverseEvent_indication_Chemical_Disease_Edge_append.tsv", 'a', encoding="utf-8", newline='')
             writer = csv.writer(f, delimiter="\t")
