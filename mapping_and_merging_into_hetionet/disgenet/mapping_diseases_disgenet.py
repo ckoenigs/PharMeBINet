@@ -72,7 +72,7 @@ def load_disease_from_database_and_add_to_dict():
 
         synonyms= node['synonyms'] if 'synonyms' in node else []
         for synonym in synonyms:
-            synonym= synonym.rsplit('[',1)[0].lower()
+            synonym= prepare_obo_synonyms(synonym).lower()
             dict_name_to_identifier[synonym].add(identifier)
 
         if 'xrefs' in node:

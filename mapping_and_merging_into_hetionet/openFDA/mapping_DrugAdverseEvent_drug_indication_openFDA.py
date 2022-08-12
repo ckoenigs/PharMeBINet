@@ -4,13 +4,13 @@ import datetime, sys
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 from mapping import *
 
 if len(sys.argv) > 1:
     path_of_directory = sys.argv[1]
 else:
     sys.exit('need a path openFDA')
-
 
 make_dir()
 #######################################################################
@@ -52,7 +52,7 @@ for entry in a:
     id_ = entry["n.id"]
     attr_ = entry["toLower(n.drugindication)"]
     if id_ is not None and attr_ is not None:
-        attr_ = attr_.replace("^","'")
+        attr_ = attr_.replace("^", "'")
         FDA.append({"id": id_, "name": attr_})
         FDA2.append({"id": id_, "synonym": attr_})
 for entry in b:
@@ -68,7 +68,7 @@ for entry in b:
         if attr_ is not None:
             for attr in attr_:
                 attr = attr.lower()
-                attr = attr.split('"')[1]
+                attr = pharmebinetutils.prepare_obo_synonyms(attr)
                 CAT2[attr] = [id_, source_]
         attr_ = entry["n.umls_cuis"]
         if attr_ is not None:
@@ -81,11 +81,13 @@ CAT_name = "Disease"
 FDA_attr = [["id", "name"], ["id", "synonym"]]
 CAT_attr = [["identifier", "name"], ["identifier", "synonym"]]
 _map = ["name", "synonym"]
-nonmap_file_name = ["nonmapped_DrugAdverseEvent_drug_indication_name.tsv", "nonmapped_DrugAdverseEvent_drug_indication_synonyms.tsv"]
+nonmap_file_name = ["nonmapped_DrugAdverseEvent_drug_indication_name.tsv",
+                    "nonmapped_DrugAdverseEvent_drug_indication_synonyms.tsv"]
 make_mapping_file(map_file_name, "id", "identifier")
 fill_files(FDA_name, CAT_name, FDA_attr, CAT_attr, _map, map_file_name, nonmap_file_name, [FDA, FDA2], [CAT, CAT2])
 #######################################################################
-make_cypher_file(FDA_name, CAT_name, "id", "identifier", "name_synonym", cypher_file_name, map_file_name, path_of_directory)
+make_cypher_file(FDA_name, CAT_name, "id", "identifier", "name_synonym", cypher_file_name, map_file_name,
+                 path_of_directory)
 
 #######################################################################
 print(datetime.datetime.utcnow())
@@ -116,7 +118,7 @@ for entry in b:
         if attr_ is not None:
             for attr in attr_:
                 attr = attr.lower()
-                attr = attr.split('"')[1]
+                attr = pharmebinetutils.prepare_obo_synonyms(attr)
                 CAT4[attr] = [id_, source_]
 #######################################################################
 FDA_name = "DrugAdverseEvent_drug_indication_openFDA"
@@ -124,10 +126,12 @@ CAT_name = "Symptom"
 FDA_attr = [["id", "name"], ["id", "synonym"]]
 CAT_attr = [["identifier", "name"], ["identifier", "synonym"]]
 _map = ["name", "synonym"]
-nonmap_file_name = ["nonmapped_DrugAdverseEvent_drug_indication_name2.tsv", "nonmapped_DrugAdverseEvent_drug_indication_synonyms2.tsv"]
+nonmap_file_name = ["nonmapped_DrugAdverseEvent_drug_indication_name2.tsv",
+                    "nonmapped_DrugAdverseEvent_drug_indication_synonyms2.tsv"]
 make_mapping_file(map_file_name, "id", "identifier")
 fill_files(FDA_name, CAT_name, FDA_attr, CAT_attr, _map, map_file_name, nonmap_file_name, [FDA3, FDA4], [CAT3, CAT4])
-make_cypher_file(FDA_name, CAT_name, "id", "identifier", "name_synonym", cypher_file_name, map_file_name, path_of_directory)
+make_cypher_file(FDA_name, CAT_name, "id", "identifier", "name_synonym", cypher_file_name, map_file_name,
+                 path_of_directory)
 #######################################################################
 f = open("FDA_mappings/nonmapped_DrugAdverseEvent_drug_indication_name.tsv", 'r', encoding="utf-8")
 header = f.readline()
@@ -153,7 +157,7 @@ f = open("FDA_mappings/mapped_DrugAdverseEvent_drug_indication_Disease.tsv", 'a'
 writer = csv.writer(f, delimiter="\t")
 f2 = open("FDA_mappings/nonmapped_DrugAdverseEvent_drug_indication_name.tsv", 'w', encoding="utf-8", newline='')
 writer2 = csv.writer(f2, delimiter="\t")
-writer2.writerow(["id","name"])
+writer2.writerow(["id", "name"])
 for entry in FDA:
     if entry in CUI:
         if CUI[entry] in CAT5:

@@ -7,6 +7,7 @@ from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_cha
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 
 def database_connection():
@@ -161,7 +162,7 @@ def load_disease_from_database_and_add_to_dict():
         dict_name_to_disease_ids[name].add(identifier)
         if 'synonyms' in node:
             for synonym in node['synonyms']:
-                synonym = synonym.lower()
+                synonym = pharmebinetutils.prepare_obo_synonyms(synonym).lower()
                 if synonym not in dict_name_to_disease_ids:
                     dict_name_to_disease_ids[synonym] = set()
                 dict_name_to_disease_ids[synonym].add(identifier)

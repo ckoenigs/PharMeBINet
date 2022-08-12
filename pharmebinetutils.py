@@ -79,3 +79,14 @@ def resource_add_and_prepare(resource, source):
     resource = set(resource)
     resource.add(source)
     return '|'.join(sorted(resource, key=lambda s: s.lower()))
+
+def prepare_obo_synonyms(synonym):
+    """
+    Prepare the somtimes synonyms looking like '"synonym" [source]' and to get only the synonym information this split
+    for [ and remove the first " and last " fom synonyms.
+    :param synonym:
+    :return:
+    """
+    if ' [' in synonym:
+        synonym = synonym.rsplit(' [', 1)[0][1:-1]
+    return synonym

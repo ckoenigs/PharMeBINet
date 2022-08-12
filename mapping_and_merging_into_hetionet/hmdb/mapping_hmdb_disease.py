@@ -11,6 +11,7 @@ import sys
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 '''
 create a connection with neo4j
@@ -90,7 +91,7 @@ def load_hetionet_labels_in(label, dict_label_id_to_resource, dict_name_to_ids, 
 
         if synonyms:
             for synonym in synonyms:
-                synonym=synonym.rsplit(' [',1)[0]
+                synonym=pharmebinetutils.prepare_obo_synonyms(synonym)
                 add_to_dictionary_with_set(dict_synonyms_to_ids, synonym.lower(), identifier)
 
     print('number of disease nodes in hetionet:' + str(len(dict_label_id_to_resource)))

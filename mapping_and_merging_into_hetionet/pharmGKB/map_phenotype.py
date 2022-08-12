@@ -1,9 +1,9 @@
 import datetime
 import sys, csv
-from collections import defaultdict
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 sys.path.append("..")
 from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
@@ -110,7 +110,7 @@ def load_db_nodes_in(label, dict_node_to_resource, dict_node_name_to_node_id, di
 
         if synonyms:
             for synonym in synonyms:
-                synonym = synonym.lower() if ' [' not in synonym else synonym.rsplit(' [', 1)[0].lower()
+                synonym = pharmebinetutils.prepare_obo_synonyms(synonym).lower()
                 add_entry_to_dictionary(dict_node_name_to_node_id, synonym, identifier)
 
         if xrefs:
@@ -166,9 +166,9 @@ def check_for_mapping(dict_source_to_ids, source, source_extra, dict_source_to_d
                 print(resource)
                 resource.add("PharmGKB")
                 resource = "|".join(sorted(resource))
-                xrefs=dict_node_to_xrefs[disease_id]
-                xrefs.add('PharmGKB:'+identifier)
-                xrefs= go_through_xrefs_and_change_if_needed_source_name(xrefs, label)
+                xrefs = dict_node_to_xrefs[disease_id]
+                xrefs.add('PharmGKB:' + identifier)
+                xrefs = go_through_xrefs_and_change_if_needed_source_name(xrefs, label)
                 csv_writer.writerow([disease_id, identifier, resource, source_extra.lower(), '|'.join(xrefs)])
                 dict_source_to_pair[source_extra].add((disease_id, identifier))
     return found_mapping
@@ -216,7 +216,8 @@ def load_pharmgkb_phenotypes_in():
         if 'SnoMedCT' in dict_source_to_ids:
             found_a_mapping = check_for_mapping(dict_source_to_ids, 'SnoMedCT', 'SnoMedCT_disease',
                                                 dict_xrefs_to_dict_xref_to_disease['snomed'],
-                                                dict_csv_map['Disease'], identifier, dict_disease_to_resource, dict_disease_to_xrefs, 'Disease')
+                                                dict_csv_map['Disease'], identifier, dict_disease_to_resource,
+                                                dict_disease_to_xrefs, 'Disease')
 
         if found_a_mapping:
             counter_map += 1
@@ -225,7 +226,8 @@ def load_pharmgkb_phenotypes_in():
         if 'UMLS' in dict_source_to_ids:
             found_a_mapping = check_for_mapping(dict_source_to_ids, 'UMLS', 'UMLS_disease',
                                                 dict_xrefs_to_dict_xref_to_disease['umls'],
-                                                dict_csv_map['Disease'], identifier, dict_disease_to_resource, dict_disease_to_xrefs, 'Disease')
+                                                dict_csv_map['Disease'], identifier, dict_disease_to_resource,
+                                                dict_disease_to_xrefs, 'Disease')
 
         if found_a_mapping:
             counter_map += 1
@@ -252,7 +254,8 @@ def load_pharmgkb_phenotypes_in():
         if 'UMLS' in dict_source_to_ids:
             found_a_mapping = check_for_mapping(dict_source_to_ids, 'UMLS', 'UMLS_symptom',
                                                 dict_xrefs_to_dict_xref_to_symptom['umls'],
-                                                dict_csv_map['Symptom'], identifier, dict_symptom_to_resource, dict_symptom_to_xrefs, 'Symptom')
+                                                dict_csv_map['Symptom'], identifier, dict_symptom_to_resource,
+                                                dict_symptom_to_xrefs, 'Symptom')
 
         if found_a_mapping:
             counter_map += 1
@@ -271,7 +274,8 @@ def load_pharmgkb_phenotypes_in():
         if 'UMLS' in dict_source_to_ids:
             found_a_mapping = check_for_mapping(dict_source_to_ids, 'UMLS', 'UMLS_se',
                                                 dict_xrefs_to_dict_xref_to_se['umls'],
-                                                dict_csv_map['SideEffect'], identifier, dict_se_to_resource, dict_se_to_xrefs, 'SideEffect')
+                                                dict_csv_map['SideEffect'], identifier, dict_se_to_resource,
+                                                dict_se_to_xrefs, 'SideEffect')
 
         if found_a_mapping:
             counter_map += 1
