@@ -9,7 +9,7 @@ path_to_project=$2
 # import tool
 name_of_import_tool='Neo4j-GraphML-Importer-v1.1.5'
 
-name_of_biodwh2_tool='BioDWH2-v0.4.2'
+name_of_biodwh2_tool='BioDWH2-v0.4.3'
 
 echo $name_of_import_tool
 
