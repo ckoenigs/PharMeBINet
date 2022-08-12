@@ -1,16 +1,10 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Apr 18 12:41:20 2018
-
-@author: ckoenigs
-"""
-
 import datetime
 import csv
 import sys
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 '''
 create a connection with neo4j
@@ -22,21 +16,29 @@ def create_connection_with_neo4j():
     global graph_database
     graph_database = create_connection_to_databases.database_connection_neo4j()
 
-
-# dictionary with hetionet disease with identifier as key and value the name
-dict_disease_hetionet = {}
-
-# dictionary with hetionet disease with identifier as key and value the xrefs
-dict_disease_hetionet_xrefs = {}
-
 # dictionary with hetionet disease with name as key and value the identifier
 dict_disease_hetionet_names = {}
+
+# dictionary with hetionet disease with synonym as key and value set of identifiers
+dict_disease_hetionet_synonyms = {}
 
 #dictionary from own id to new identifier
 dict_doid_id_to_identifier = {}
 
-#dictionary from pathway_id to resource
+#dictionary from disease_id to resource
 dict_diseaseId_to_resource = {}
+
+def add_to_dict(dictionary, key, one_value):
+    """
+    add information to a dictionary of form key to set
+    :param dictionary: dictionary
+    :param key: any key
+    :param one_value: any value
+    :return:
+    """
+    if not key in dictionary:
+        dictionary[key]= set()
+    dictionary[key].add(one_value)
 
 '''
 load in all disease from hetionet in a dictionary
@@ -44,47 +46,51 @@ load in all disease from hetionet in a dictionary
 
 
 def load_hetionet_disease_in():
-    #query ist ein String
-    query = '''MATCH (n:Disease) RETURN n.identifier, n.name, n.doids, n.resource'''
-    #Where not (n:ExternalOntology)
-    #graph_database.run(query) führt den Befehl aus query aus, Ergebnisse sind in results als Liste gespeichert
-    #n.synonyms als liste durchlaufen und vergleichen um letzten Hit noch zu bekommen?!
+    query = '''MATCH (n:Disease) RETURN n.identifier, n.name, n.alternative_ids, n.resource, n.synonyms'''
     results = graph_database.run(query)
 
-    #results werden einzeln durchlaufen
-    for identifier, name, doids, resource, in results:
+    #run through results
+    for identifier, name, alternative_ids, resource, synonyms, in results:
         # if identifier == "MONDO:0005244":
         #     print("Egal was")
-        #im dictionary werden passend zu den Identifiern die Namen und die idOwns gespeichert
-        dict_disease_hetionet[identifier] = name
         dict_diseaseId_to_resource[identifier] = resource
-        dict_disease_hetionet_xrefs[identifier] = doids
-        if doids:
-            #geht die Liste idOwns in neo4j durch und baut das dictionary auf an identifiern (von externen Identifier ist idOwn
-            for doid in doids:
-                #if-scheife kann auch gelöscht werden, wenn niemals der else-Fall eintritt
-                if not doid in dict_doid_id_to_identifier:
-                    doid = doid.replace("DOID:", "")
-                    dict_doid_id_to_identifier[doid] = identifier
-                else:
-                    print(doid)
+        # run through alternative ids and prepare with the doid identifier a dictionary
+        if alternative_ids:
+            for doid in alternative_ids:
+                if not doid.startswith('DOID:'):
+                    continue
+                doid = doid.replace("DOID:", "")
+                add_to_dict(dict_doid_id_to_identifier,doid, identifier)
 
         if name:
             dict_disease_hetionet_names[name.lower()] = identifier
 
-    print('number of disease nodes in hetionet:' + str(len(dict_disease_hetionet)))
+        if synonyms:
+            for synonym in synonyms:
+                synonym = pharmebinetutils.prepare_obo_synonyms(synonym).lower()
+                add_to_dict(dict_disease_hetionet_synonyms,synonym, identifier)
+
+
+    print('number of disease nodes in hetionet:' + str(len(dict_diseaseId_to_resource)))
 
 # file for mapped or not mapped identifier
-#erstellt neue TSV, überschreibt auch bestehende und leert sie wieder
 file_not_mapped_disease = open('disease/not_mapped_disease.tsv', 'w', encoding="utf-8")
-#Dateiformat wird gesetzt mit Trenner: Tabulator
 csv_not_mapped = csv.writer(file_not_mapped_disease,delimiter='\t', lineterminator='\n')
-#Header setzen
 csv_not_mapped.writerow(['id','name'])
 
 file_mapped_disease = open('disease/mapped_disease.tsv', 'w', encoding="utf-8")
 csv_mapped = csv.writer(file_mapped_disease,delimiter='\t', lineterminator='\n')
-csv_mapped.writerow(['id','id_hetionet', 'resource', 'reactome_name','pathway_name'])
+csv_mapped.writerow(['id','id_hetionet', 'resource', 'how_mapped'])
+
+def prepare_and_write_information_into_tsv(disease_id,identifier, how_mapped):
+    """
+    Prepare resource and write information into tsv file.
+    :param disease_id: identifier of reactome
+    :param identifier: identifier of pharmebinet
+    :param how_mapped: string
+    :return:
+    """
+    csv_mapped.writerow([disease_id, identifier, pharmebinetutils.resource_add_and_prepare(dict_diseaseId_to_resource[identifier],'Reactome'), how_mapped])
 
 '''
 load all reatome disease and check if they are in hetionet or not
@@ -96,51 +102,50 @@ def load_reactome_disease_in():
     query = '''MATCH (n:Disease_reactome) RETURN n'''
     results = graph_database.run(query)
 
-    #zähler wie oft id mapt und und oft der name mapt
+    #count the different mappings
     counter_map_with_id = 0
     counter_map_with_name = 0
+    counter_map_with_synonyms=0
     for disease_node, in results:
         disease_id = disease_node['identifier']
         if disease_id=='104':
             print('huh')
         disease_name = disease_node['displayName'].lower()
-        # if disease_id == "0060053":
-        #     print("Egal was 2")
-        # check if the reactome pathway id is part in the hetionet idOwn
-        #mapping nach dem identifier
+        mapped_with_name_or_id=False
+        #mapping with doid
         if disease_id in dict_doid_id_to_identifier:
             counter_map_with_id += 1
-            disease_names = dict_disease_hetionet[dict_doid_id_to_identifier[disease_id]]
-            #PC_11_Zahl Nummer wird im Dictionary nachgeschaut
-            hetionet_identifier=dict_doid_id_to_identifier[disease_id]
-            #Liste von idOwns wird nach dem PC_11_Zahl durchsucht und als String aneinandergehängt (join)
-            #als Trennungssymbol wird | genutzt
-            resource = set(dict_diseaseId_to_resource[hetionet_identifier])
-            resource.add('Reactome')
-            resource = '|'.join(sorted(resource))
-            csv_mapped.writerow([disease_id, hetionet_identifier, resource])
+            mapped_with_name_or_id=True
+            for pharmebinet_identifier in dict_doid_id_to_identifier[disease_id]:
+                prepare_and_write_information_into_tsv(disease_id,pharmebinet_identifier,'disease_id')
 
-        #mapping nach dem Namen
+        #mapping with name
         elif disease_name in dict_disease_hetionet_names:
+            mapped_with_name_or_id=True
             counter_map_with_name += 1
             print(disease_id)
             print('mapped with name')
             print(dict_disease_hetionet_names[disease_name])
             print(disease_name)
-            hetionet_identifier = dict_disease_hetionet_names[disease_name]
-            resource = set(dict_diseaseId_to_resource[hetionet_identifier])
-            resource.add('Reactome')
-            resource = '|'.join(sorted(resource))
-            disease_names = dict_disease_hetionet[dict_disease_hetionet_names[disease_name]]
-            csv_mapped.writerow([disease_id,hetionet_identifier, resource, disease_name,disease_names ])
+            pharmebinet_identifier = dict_disease_hetionet_names[disease_name]
+            prepare_and_write_information_into_tsv(disease_id,pharmebinet_identifier,'name')
 
-        #übrige Knoten, die nicht mappen, werden neu erstellt und bekommen neuen Identifier PC_11_Zahl
-        #dafür braucht man die höchte Zahl +1, damit keiner überschrieben wird
+        if mapped_with_name_or_id:
+            continue
+        # mapping with synonyms
+        if disease_name in dict_disease_hetionet_synonyms:
+            counter_map_with_synonyms+=1
+            for pharmebinet_identifier in dict_disease_hetionet_synonyms[disease_name]:
+                prepare_and_write_information_into_tsv(disease_id, pharmebinet_identifier, 'synonyms')
+
+
+        #not mapped node are writen in other tsv file
         else:
             csv_not_mapped.writerow([disease_id, disease_name])
 
     print('number of mapping with name:' + str(counter_map_with_name))
     print('number of mapping with id:' + str(counter_map_with_id))
+    print('number of mapping with synonyms:' + str(counter_map_with_synonyms))
 
 '''
 generate connection between mapping disease of reactome and hetionet and generate new hetionet nodes for the not existing nodes
@@ -148,11 +153,15 @@ generate connection between mapping disease of reactome and hetionet and generat
 
 
 def create_cypher_file():
+    """
+    prepare cypher query to integrate mapping and write query into cypher file
+    :return:
+    """
     cypher_file = open('output/cypher.cypher', 'a', encoding="utf-8")
-    #mappt die Knoten, die es in hetionet und reactome gibt und fügt die properties hinzu
-    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/reactome/disease/mapped_disease.tsv" As line FIELDTERMINATOR "\\t" MATCH (d:Disease{identifier:line.id_hetionet}),(c:Disease_reactome{identifier:line.id}) CREATE (d)-[: equal_to_reactome_disease]->(c) SET d.resource = split(line.resource, '|'), d.reactome = "yes";\n'''
+    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/reactome/disease/mapped_disease.tsv" As line FIELDTERMINATOR "\\t" MATCH (d:Disease{identifier:line.id_hetionet}),(c:Disease_reactome{identifier:line.id}) CREATE (d)-[: equal_to_reactome_disease{how_mapped:line.how_mapped}]->(c) SET d.resource = split(line.resource, '|'), d.reactome = "yes";\n'''
     query= query % (path_of_directory)
     cypher_file.write(query)
+    cypher_file.close()
 
 
 def main():
