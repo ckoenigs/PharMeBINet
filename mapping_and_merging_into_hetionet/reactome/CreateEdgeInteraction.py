@@ -217,7 +217,7 @@ def create_cypher_file(label_1, label_2, csv_mapped_name, csv_not_mapped_name, r
         query = query[28:]
     cypher_file.write(query)
     # new interactions
-    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/reactome/%s" As line FIELDTERMINATOR "\\t" MATCH (d:%s{identifier:line.interactor1_het_id}),(c:%s{identifier:line.interactor2_het_id}) CREATE (d)-[:%s{interaction_ids: split(line.accession, "|"), iso_of_protein_from:line.iso_from, iso_of_protein_to:line.iso_to, resource:["Reactome"], reactome:"yes", source:"Reactome", pubMed_ids : split(line.pubmed_ids, "|")}]->(c);\n'''
+    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/reactome/%s" As line FIELDTERMINATOR "\\t" MATCH (d:%s{identifier:line.interactor1_het_id}),(c:%s{identifier:line.interactor2_het_id}) CREATE (d)-[:%s{interaction_ids: split(line.accession, "|"), iso_of_protein_from:line.iso_from, iso_of_protein_to:line.iso_to, resource:["Reactome"], reactome:"yes", source:"Reactome", pubMed_ids : split(line.pubmed_ids, "|"), license:"CC BY 4.0"}]->(c);\n'''
     query = query % (path_of_directory, csv_not_mapped_name, label_1, label_2, rela_label)
     cypher_file.write(query)
 
