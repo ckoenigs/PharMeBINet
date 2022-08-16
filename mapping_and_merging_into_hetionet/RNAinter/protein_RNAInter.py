@@ -16,7 +16,7 @@ def create_connection_with_neo4j():
 
 
 # cypher file
-cypher_file = open("cypher.cypher", "w", encoding="utf-8")
+cypher_file = open("output/cypher.cypher", "a", encoding="utf-8")
 
 
 def protein_RNAInter():
