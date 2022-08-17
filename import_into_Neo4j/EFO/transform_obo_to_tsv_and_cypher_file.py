@@ -122,6 +122,9 @@ def extract_information_from_block(group, is_type):
                             addtional_info_and_xrefs = first_part_synonym_second_addtional_information[1].split("[", 1)
                             if len(addtional_info_and_xrefs[1]) > 1:
                                 synonym += ' [' + addtional_info_and_xrefs[1]
+                            else:
+                                if synonym.startswith('"') and synonym[-1]=='"':
+                                    synonym=synonym[1:-1]
 
                     if not found_type:
                         print(value)
