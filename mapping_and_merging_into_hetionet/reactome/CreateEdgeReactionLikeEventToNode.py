@@ -36,12 +36,19 @@ def load_hetionet_reactionLikeEvent_hetionet_node_in(csv_file, dict_reactionLike
                                                   new_relationship, node_reactome_label, node_hetionet_label):
     query = '''MATCH (p:ReactionLikeEvent)-[]-(r:ReactionLikeEvent_reactome)-[v:%s]->(n:%s)-[]-(b:%s) RETURN p.identifier, b.identifier, v.order, v.stoichiometry'''
     query = query % (new_relationship, node_reactome_label, node_hetionet_label)
+    print(query)
     results = graph_database.run(query)
     # for id1, id2, order, stoichiometry, in results:
     for reactionLikeEvent_id, node_id, order, stoichiometry, in results:
         if (reactionLikeEvent_id, node_id) in dict_reactionLikeEvent_hetionet_node_hetionet:
             print(reactionLikeEvent_id, node_id)
-            sys.exit("Doppelte reactionLikeEvent-Disease Kombination")
+            print(dict_reactionLikeEvent_hetionet_node_hetionet[(reactionLikeEvent_id, node_id)])
+            print(order, stoichiometry)
+            print("Doppelte reactionLikeEvent-"+node_hetionet_label+" Kombination")
+            if node_hetionet_label=='Disease':
+                continue
+            else:
+                sys.exit("Doppelte reactionLikeEvent-"+node_hetionet_label+" Kombination")
         dict_reactionLikeEvent_hetionet_node_hetionet[(reactionLikeEvent_id, node_id)] = [stoichiometry, order]
         csv_file.writerow([reactionLikeEvent_id, node_id, order, stoichiometry])
     print('number of reactionLikeEvent-' + node_reactome_label + ' relationships in hetionet:' + str(
