@@ -3,6 +3,7 @@ import sys, csv
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 
 class Symptom:
@@ -119,6 +120,13 @@ def mapping(from_mapper, from_identifier, dictionary, map_file, how_mapped, set_
     return False
 
 
+dict_label_to_url_label={
+    'Disease':'diseases',
+    'SideEffect':'sideeffects',
+    'Symptom':'symptoms',
+    'Phenotype':'phenotypes'
+}
+
 def create_cypher_query(header, from_label, to_label, file_name):
     if to_label == 'SideEffect':
         short_second = 'SE'
@@ -129,8 +137,8 @@ def create_cypher_query(header, from_label, to_label, file_name):
     else:
         short_first=from_label[0]
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/connectSideEffect_Sympom_Disease/%s" As line FIELDTERMINATOR '\\t' 
-                Match (first:%s {identifier:line.%s}), (second:%s {identifier:line.%s})  Create (first)-[:EQUAL_%se%s{how_mapped:line.%s, pharmebinet:'yes', resource:["PharMeBINet"], license:"CC0 1.0"}]->(second);\n'''
-    query = query % (file_name, from_label, header[0], to_label, header[1], short_first, short_second, header[2])
+                Match (first:%s {identifier:line.%s}), (second:%s {identifier:line.%s})  Create (first)-[:EQUAL_%se%s{how_mapped:line.%s, pharmebinet:'yes', resource:["PharMeBINet"], url:"https://pharmebi.net/#/%s/"+line.%s , source:"PharMeBINet", license:"CC0 1.0"}]->(second);\n'''
+    query = query % (file_name, from_label, header[0], to_label, header[1], short_first, short_second, header[2], dict_label_to_url_label[from_label], header[0])
     cypher.write(query)
 
 
@@ -381,9 +389,7 @@ def load_and_map_disease():
             if not mapped:
                 synonyms = disease['synonyms'] if 'synonyms' in disease else []
                 for synonym in synonyms:
-                    if '[' in synonym:
-                        synonym = synonym.rsplit(' [', 1)[0]
-                    synonym = synonym.lower()
+                    synonym = pharmebinetutils.prepare_obo_synonyms(synonym).lower()
                     mapped_syn = mapping(synonym, identifier, dict_name_ids_to_sideeffect_ids, csv_mapping_d_to_se,
                                          'mapped with synonyms', set_disease_side_effect)
                     if mapped_syn:
