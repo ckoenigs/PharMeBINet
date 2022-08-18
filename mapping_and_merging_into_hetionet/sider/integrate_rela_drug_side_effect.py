@@ -84,7 +84,7 @@ def integrate_relationship_from_sider_into_hetionet():
     cypher_file = open('output/cypher_rela.cypher', 'w', encoding='utf-8')
     query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/sider/output/%s.tsv" As line FIELDTERMINATOR '\\t' Match (a:Chemical{identifier:line.chemical_id})'''
 
-    query = query_start + ''', (b:SideEffect{identifier:line.se_id}) Create (a)-[r:CAUSES_CHcSE{upperFrequency:line.upperFrequency, placebo:line.placebo, avg_frequency:line.avg_frequency, lowerFrequency:line.lowerFrequency, placeboAvgFrequency: line.placeboAvgFrequency, resource:["SIDER"] , placeboLowerFrequency: line.placeboLowerFrequency, placeboUpperFrequency: line.placeboUpperFrequency, url:"http://sideeffects.embl.de/se/"+ line.se_id ,  sider:"yes", license:"CC BY-NC-SA 4.0"}]->(b) ; \n'''
+    query = query_start + ''', (b:SideEffect{identifier:line.se_id}) Create (a)-[r:CAUSES_CHcSE{upperFrequency:line.upperFrequency, placebo:line.placebo, avg_frequency:line.avg_frequency, lowerFrequency:line.lowerFrequency, placeboAvgFrequency: line.placeboAvgFrequency, resource:["SIDER"] , placeboLowerFrequency: line.placeboLowerFrequency, placeboUpperFrequency: line.placeboUpperFrequency, url:"http://sideeffects.embl.de/se/"+ line.se_id , source:"SIDER",   sider:"yes", license:"CC BY-NC-SA 4.0"}]->(b) ; \n'''
     query = query % 'new_rela_se'
     cypher_file.write(query)
     cypher_file.close()
