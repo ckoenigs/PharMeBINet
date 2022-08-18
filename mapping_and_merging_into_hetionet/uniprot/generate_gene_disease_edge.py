@@ -53,7 +53,7 @@ def write_rela_in_file(csv_writer, dict_pairs_to_info):
     :return:
     """
     for (gene_id,disease_id), info_list in dict_pairs_to_info.items():
-        csv_writer.writerow([gene_id,disease_id, '|'.join(info_list[0]), '|'.join(info_list[1]), '|'.join(info_list[2])])
+        csv_writer.writerow([gene_id,disease_id, '|'.join(info_list[0]), '|'.join(info_list[1]), '|'.join(info_list[2]), info_list[3]])
 
 
 '''
@@ -65,7 +65,7 @@ def get_pairs_information():
     file_name='uniprot_disease/db_gene_to_disease.tsv'
     file_gene_disease = open(file_name, 'w')
     csv_gene_disease = csv.writer(file_gene_disease, delimiter='\t')
-    csv_gene_disease.writerow(['gene_ids', 'disease_id','notes', 'pubmeds', 'references'])
+    csv_gene_disease.writerow(['gene_ids', 'disease_id','notes', 'pubmeds', 'references','uniprot_id'])
 
     # query gene-disease association
 
@@ -74,7 +74,7 @@ def get_pairs_information():
     query = query % (file_name)
     file_cypher.write(query)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/uniprot/%s" As line FIELDTERMINATOR "\\t" MATCH (g:Gene{identifier:line.gene_ids}),(b:Disease{identifier:line.disease_id}) Merge (b)-[r:ASSOCIATES_DaG]->(g) On Create Set r.source="UniProt", r.resource=["UniProt"], r.uniprot='yes', r.kind_of_rela=split(line.notes,'|'), r.references=split(r.references,'|'), r.pubMed_ids=split(line.pubmeds,'|'), r.sources=split(line.source,"|"), r.url="https://www.uniprot.org/uniprot/"+line.uniprot_ids, r.license='CC BY 4.0' On Match Set r.uniprot="yes", r.resource=r.resource+"UniProt",  r.pubMed_ids=r.pubMed_ids+split(line.pubmeds,'|'), r.kind_of_rela=split(line.notes,'|'), r.references=split(r.references,'|') ;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/uniprot/%s" As line FIELDTERMINATOR "\\t" MATCH (g:Gene{identifier:line.gene_ids}),(b:Disease{identifier:line.disease_id}) Merge (b)-[r:ASSOCIATES_DaG]->(g) On Create Set r.source="UniProt", r.resource=["UniProt"], r.uniprot='yes', r.kind_of_rela=split(line.notes,'|'), r.references=split(r.references,'|'), r.pubMed_ids=split(line.pubmeds,'|'), r.sources=split(line.source,"|"), r.url="https://www.uniprot.org/uniprot/"+line.uniprot_id, r.license='CC BY 4.0' On Match Set r.uniprot="yes", r.resource=r.resource+"UniProt",  r.pubMed_ids=r.pubMed_ids+split(line.pubmeds,'|'), r.kind_of_rela=split(line.notes,'|'), r.references=split(r.references,'|') ;\n'''
     query =query %(file_name)
     file_cypher.write(query)
 
@@ -111,7 +111,7 @@ def get_pairs_information():
         if len(pubmeds)>0:
             counter_added+=1
             # csv_gene_disease.writerow([gene_id,disease_id,rela['text']])
-            dict_pairs_to_info[(gene_id,disease_id)]=[set([rela['text']]), pubmeds, references]
+            dict_pairs_to_info[(gene_id,disease_id)]=[set([rela['text']]), pubmeds, references, protein_id]
         elif len(references)>0:
             counter_without_references+=1
             print(disease_id, gene_id, protein_id)
