@@ -245,7 +245,7 @@ def generate_cypher_queries():
     query_update = query_start + ', (n:Disease{identifier:line.doid}) Set ' + query_update + 'n.mondo="yes", n.license=" CC-BY-SA 3.0", n.resource=n.resource+"MonDO", n.doids=split(line.doids,"|") ' + query_end
     query_update = query_update % ('map_nodes')
     cypher_file.write(query_update)
-    query_new = query_start + 'Create (n:Disease{' + query_new + 'mondo:"yes", resource:["MonDO"], url:"https://monarchinitiative.org/disease/"+ line.identifier , license:"CC-BY-SA 3.0", source:"MonDO"}) ' + query_end
+    query_new = query_start + 'Create (n:Disease{' + query_new + 'mondo:"yes", resource:["MonDO"], url:"https://monarchinitiative.org/disease/"+ line.id , license:"CC-BY-SA 3.0", source:"MonDO"}) ' + query_end
     query_new = query_new % ('new_nodes')
     cypher_file.write(query_new)
     query_rela = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/monDO/output/%s.tsv" As line FIELDTERMINATOR '\\t' Match (a:Disease{identifier:line.id_1}),(b:Disease{identifier:line.id_2}) Merge (a)-[r:IS_A_DiaD]->(b) On CREATE Set r.unbiased=false, r.url="https://monarchinitiative.org/disease/"+ line.id_1,  r.source="Monarch Disease Ontology", r.resource=['MonDO'] , r.mondo='yes', r.license="CC-BY-SA 3.0" On Match Set r.resource=r.resource+'MonDO', r.mondo='yes' ;\n'''
