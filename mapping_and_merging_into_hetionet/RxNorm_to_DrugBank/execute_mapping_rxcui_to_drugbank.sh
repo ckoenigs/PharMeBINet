@@ -6,7 +6,20 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo download fda file
 
-python3 download_unii_data.py
+#$counter_of_connection_tries -lt 11 && 
+while  ! $worked_url && (("$counter_of_connection_tries" < "11")) ; do
+    wget -O ./UNII_Data.zip "https://precision.fda.gov/uniisearch/archive/latest/UNII_Data.zip" 
+    worked_url=true
+    counter_of_connection_tries=$((counter_of_connection_tries+1))
+    echo $counter_of_connection_tries
+done
+if (("$counter_of_connection_tries" >= "11"))
+    then
+        echo could not download the file
+        exit 1;
+fi
+
+# python3 download_unii_data.py
 
 
 now=$(date +"%F %T")
