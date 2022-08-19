@@ -163,15 +163,16 @@ def create_cypher_file():
     cypher_file.write(query)
 
     # Neue Knoten werden erzeugt, von denen die nicht mappen
-    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/reactome/pathway/not_mapped_pathways.tsv" As line FIELDTERMINATOR "\\t" MATCH (c:Pathway_reactome{stId:line.id}) CREATE (d:Pathway{identifier:line.newId, resource:['Reactome'], reactome:"yes", name:c.displayName, synonyms:apoc.convert.fromJsonList(c.name), xrefs:["reactome:"+c.stId],  alternative_id:c.oldStId, books:c.books, pubMed_ids:c.pubMed_ids, figure_urls:c.figure_urls, publication_urls:c.publication_urls, doi:c.doi, definition:c.definition, source:"Reactome", url:"https://reactome.org/content/detail/"+line.id}) CREATE (d)-[: equal_to_reactome_pathway]->(c) ;\n'''
-    query = query % (path_of_directory)
+    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/reactome/pathway/not_mapped_pathways.tsv" As line FIELDTERMINATOR "\\t" MATCH (c:Pathway_reactome{stId:line.id}) CREATE (d:Pathway{identifier:line.newId, resource:['Reactome'], reactome:"yes", name:c.displayName, synonyms:apoc.convert.fromJsonList(c.name), xrefs:["reactome:"+c.stId],  alternative_id:c.oldStId, books:c.books, pubMed_ids:c.pubMed_ids, figure_urls:c.figure_urls, publication_urls:c.publication_urls, doi:c.doi, definition:c.definition, source:"Reactome", url:"https://reactome.org/content/detail/"+line.id, license:"%s"}) CREATE (d)-[: equal_to_reactome_pathway]->(c) ;\n'''
+    query = query % (path_of_directory, license)
     cypher_file.write(query)
 
 
 def main():
-    global path_of_directory
-    if len(sys.argv) > 1:
+    global path_of_directory, license
+    if len(sys.argv) > 2:
         path_of_directory = sys.argv[1]
+        license=sys.argv[2]
     else:
         sys.exit('need a path reactome protein')
 
