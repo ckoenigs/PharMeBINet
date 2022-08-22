@@ -138,6 +138,8 @@ node_modules/
 *.jar
 *.tmp
 *.db
+*.html
+*.sql
 
 wget-log
 wget-log.*
