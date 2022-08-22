@@ -2,10 +2,10 @@ The OMIM script mapped the OMIM gene and phenotypes to gene and disease and inte
 
 The OMIM gene/phenotype is mapped to gene/disease.
                First, the gene mapping file is generated. Then, the fitting query to integrate is added to the cypher file.
-               The OMIM genes are mapped to genes with the external reference NCBI gene id. The pairs are written into the TSV file.
+               The OMIM genes are mapped to genes with the external reference from NCBI gene id (OMIM ids). The pairs are written into the TSV file.
                Next, the mapping and not mapping files for disease mapping are generated. Then, the query for the mapping between OMIM phenotype and disease is generated. Additionally, a cypher query for integrated not mapped phenotypes as phenotype into the database.
-               The OMIM phenotypes are mapped to genes with external reference NCBI gene identifiers.
-               The OMIM phenotypes are mapped to disease with the OMIM identifier to disease external reference OMIM identifier.
+               The OMIM phenotypes are mapped to genes with external reference from NCBI gene identifiers (OMIM ids).
+               The OMIM phenotypes are mapped to disease with the OMIM identifier to disease external reference OMIM identifier. Also, mapped with OMIM name to name and synonyms of PharMeBINet disease.
                All mapped pairs are written in the different TSV files. All not mapped phenotypes are written into the not mapped file.
 
 The OMIM predominantly phenotypes are mapped to gene/disease.
