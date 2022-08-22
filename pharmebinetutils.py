@@ -59,6 +59,19 @@ def print_timestamp():
     print(datetime.datetime.now())
 
 
+def add_entry_to_dict_to_set(dictionary, key, value):
+    """
+    Add key and value to a dictionary.
+    :param dictionary: dictionary
+    :param key: any
+    :param value: any but no list or dict
+    :return:
+    """
+    if key not in dictionary:
+        dictionary[key]=set()
+    dictionary[key].add(value)
+
+
 def print_hline():
     print('#' * 100)
 

@@ -25,17 +25,6 @@ dict_gene_id_to_gene_node = {}
 #dictionary omim id to gene id
 dict_omim_id_to_gene_id={}
 
-def add_entry_to_dict_to_set(dictionary, key, value):
-    """
-    Add key and value to a dictionary.
-    :param dictionary: dictionary
-    :param key: any
-    :param value: any but no list or dict
-    :return:
-    """
-    if key not in dictionary:
-        dictionary[key]=set()
-    dictionary[key].add(value)
 
 
 def load_genes_from_database_and_add_to_dict():
@@ -50,7 +39,7 @@ def load_genes_from_database_and_add_to_dict():
         xrefs= gene['xrefs'] if 'xrefs' in gene else []
         for xref in xrefs:
             if xref.startswith('OMIM:'):
-                add_entry_to_dict_to_set(dict_omim_id_to_gene_id,xref.split(':',1)[1], identifier)
+                pharmebinetutils.add_entry_to_dict_to_set(dict_omim_id_to_gene_id,xref.split(':',1)[1], identifier)
 
 
 cypher_file = open('output/cypher_gene_phenotype.cypher', 'w', encoding='utf-8')
@@ -224,14 +213,14 @@ def load_disease_from_database_and_add_to_dict():
         for xref in xrefs:
             if xref.startswith('OMIM:'):
                 omim_id = xref.split(':')[1]
-                add_entry_to_dict_to_set(dict_omim_id_to_disease_ids, omim_id,identifier)
+                pharmebinetutils.add_entry_to_dict_to_set(dict_omim_id_to_disease_ids, omim_id,identifier)
         name = node['name'].lower()
 
-        add_entry_to_dict_to_set(dict_name_to_disease_ids, name, identifier)
+        pharmebinetutils.add_entry_to_dict_to_set(dict_name_to_disease_ids, name, identifier)
         if 'synonyms' in node:
             for synonym in node['synonyms']:
                 synonym = pharmebinetutils.prepare_obo_synonyms(synonym).lower()
-                add_entry_to_dict_to_set(dict_name_to_disease_ids, synonym, identifier)
+                pharmebinetutils.add_entry_to_dict_to_set(dict_name_to_disease_ids, synonym, identifier)
 
     print("number of omim to disease:" + str(len(dict_omim_id_to_disease_ids)))
 
