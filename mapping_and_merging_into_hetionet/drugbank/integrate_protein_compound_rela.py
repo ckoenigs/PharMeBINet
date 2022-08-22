@@ -159,7 +159,7 @@ def create_cypher_query_and_tsv_file(rela_name, rela_direction, label_from):
         if rela_direction.startswith('<'):
             query_create = "<-[:" + rela_name + ' {' + query_create + ' interaction_with_form:split(line.interaction_with_form,"|"), unbiased:toBoolean(line.unbiased), source:"DrugBank", resource:["DrugBank"], url:"https://go.drugbank.com/drugs/"+line.identifier2, drugbank:"yes", license:"' + license + '"}]-'
         else:
-            query_create = "-[:" + rela_name + ' {' + query_create + 'interaction_with_form:split(line.interaction_with_form,"|") , source:"DrugBank", resource:["DrugBank"], drugbank:"yes", license:"' + license + '"}]->'
+            query_create = "-[:" + rela_name + ' {' + query_create + 'interaction_with_form:split(line.interaction_with_form,"|") , source:"DrugBank", resource:["DrugBank"], drugbank:"yes", url:"https://go.drugbank.com/drugs/"+line.identifier2, license:"' + license + '"}]->'
         query = query_start + " Create (a)" + query_create + '(c);\n'
     else:
         query = query_start + ' Merge (a)' + rela_direction + '(c) On Create Set ' + query_update + ' r.interaction_with_form=split(line.interaction_with_form,"|"), r.source="DrugBank", r.drugbank="yes", r.resource=["DrugBank"], r.url="https://go.drugbank.com/drugs/"+line.identifier2, r.license="' + license + '" On Match Set ' + query_update + ' r.drugbank="yes",  r.resource=r.resource+"DrugBank";\n'
