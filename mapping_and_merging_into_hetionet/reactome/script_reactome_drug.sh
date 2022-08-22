@@ -84,7 +84,14 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo Catalyst activity relationships to MF
 
-python3 CreateEdgeCatalystActivityGO.py $path_to_project "${license}" > CatalystActivityGOEdges/output.txt
+python3 CreateEdgeCatalystActivityGO.py $path_to_project "${license}" > CatalystActivityEdges/GO_output.txt
+
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo Catalyst activity relationships to PE to PE
+
+python3 CreateCatalystActivityPEtoPE.py $path_to_project "${license}" > CatalystActivityEdges/PE_PE_output.txt
 
 echo integrate connection with neo4j shell
 now=$(date +"%F %T")
