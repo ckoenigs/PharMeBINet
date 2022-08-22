@@ -43,7 +43,7 @@ def generate_rela_files(directory, rela, rela_name, query_start):
     csv_file.writerow(['meta_id', 'other_id'])
     dict_rela_partner_to_tsv_file[rela] = csv_file
 
-    query_rela = query_start + ' (b:ClinicalAnnotation{identifier:line.meta_id}), (c:%s{identifier:line.other_id}) Create (b)-[:%s{ pharmgkb:"yes", source:"PharmGKB", resource:["PharmGKB"], license:"%s"}]->(c);\n'
+    query_rela = query_start + ' (b:ClinicalAnnotation{identifier:line.meta_id}), (c:%s{identifier:line.other_id}) Create (b)-[:%s{ pharmgkb:"yes", source:"PharmGKB", url:"https://www.pharmgkb.org/clinicalAnnotation/"+line.meta_id, resource:["PharmGKB"], license:"%s"}]->(c);\n'
     rela_name = rela_name % ('CA')
     query_rela = query_rela % (file_name, rela, rela_name, license)
     cypher_file.write(query_rela)
