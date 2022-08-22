@@ -24,7 +24,7 @@ dict_first_letter_to_rela_letter = {
 }
 
 query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/omim/%s" As line FIELDTERMINATOR '\\t' 
-    Match (g:Gene{identifier:line.%s}),(to:%s{identifier:line.%s}) Merge (g)<-[r:ASSOCIATES_%saG]-(to) On Create Set r.resource=['OMIM'], r.source='OMIM', r.omim='yes', r.license='https://www.omim.org/help/agreement', %s On Match Set r.resource=r.resource+'OMIM', r.omim="yes", %s ;\n'''
+    Match (g:Gene{identifier:line.%s}),(to:%s{identifier:line.%s}) Merge (g)<-[r:ASSOCIATES_%saG]-(to) On Create Set r.resource=['OMIM'], r.source='OMIM', r.url="https://www.omim.org/entry/"+line.%s , r.omim='yes', r.license='https://www.omim.org/help/agreement', %s On Match Set r.resource=r.resource+'OMIM', r.omim="yes", %s ;\n'''
 
 
 def prepare_cypher_query(file, header_start, to_label):
@@ -48,7 +48,7 @@ def prepare_cypher_query(file, header_start, to_label):
     query_merge = query_merge[:-2]
     combine_cypher = query_start
     combine_cypher = combine_cypher % (
-        path_of_directory, file, header_start[0], to_label, header_start[1], dict_first_letter_to_rela_letter[to_label[0]], query_merge, query_merge)
+        path_of_directory, file, header_start[0], to_label, header_start[1], dict_first_letter_to_rela_letter[to_label[0]],'omim_id', query_merge, query_merge)
 
     cypher_file.write(combine_cypher)
 
@@ -62,7 +62,7 @@ def prepare_tsv_files(label):
     file_name = 'rela/gene_' + label + '_rela.tsv'
     file = open(file_name, 'w', encoding='utf-8')
     csv_writer = csv.writer(file, delimiter='\t')
-    file_header = ['gene_id', 'to_id']
+    file_header = ['gene_id', 'to_id', 'omim_id']
     prepare_cypher_query(file_name, file_header, label)
     csv_writer.writerow(file_header)
 
@@ -76,13 +76,14 @@ dict_gene_disease = {}
 dict_gene_phenotype = {}
 
 
-def put_pair_in_dictionary(gene_id, rela, to_id, dictionary):
+def put_pair_in_dictionary(gene_id, rela, to_id, dictionary, omim_id):
     """
     add gene-x pair in the dictionary with value the relationship infos
     :param gene_id: string
     :param rela: dictionary/object
     :param to_id: string
     :param dictionary: dictionary
+    :param omim_id: string
     :return:
     """
     if not (gene_id, to_id) in dictionary:
@@ -92,7 +93,7 @@ def put_pair_in_dictionary(gene_id, rela, to_id, dictionary):
                 new_dictionary_rela[key] = set(value)
             else:
                 new_dictionary_rela[key] = set([value])
-
+        new_dictionary_rela['omim_id']= omim_id
         dictionary[(gene_id, to_id)] = new_dictionary_rela
     else:
         print('ohje multiple edges')
@@ -115,14 +116,14 @@ def load_all_omim_gene_phenotypes():
     load all genes, association rela, disease or phenotype id and the labels
     """
     # {identifier:'604260'}
-    query = "MATCH (g:Gene)--(n:gene_omim)-[r:associates]-(h)--(p) Where 'Disease' in labels(p) or 'Phenotype' in labels(p) RETURN g.identifier, r, p.identifier, labels(p)"
+    query = "MATCH (g:Gene)--(n:gene_omim)-[r:associates]-(h)--(p) Where 'Disease' in labels(p) or 'Phenotype' in labels(p) RETURN g.identifier, r, p.identifier, labels(p), n.identifier"
     results = g.run(query)
 
-    for gene_id, rela, to_id, to_labels in results:
+    for gene_id, rela, to_id, to_labels, omim_id in results:
         if 'Disease' in to_labels:
-            put_pair_in_dictionary(gene_id, rela, to_id, dict_gene_disease)
+            put_pair_in_dictionary(gene_id, rela, to_id, dict_gene_disease, omim_id)
         else:
-            put_pair_in_dictionary(gene_id, rela, to_id, dict_gene_phenotype)
+            put_pair_in_dictionary(gene_id, rela, to_id, dict_gene_phenotype, omim_id)
 
 
 def prepare_set_to_string(set_of_lists):
@@ -143,9 +144,9 @@ def generate_tsv_and_cypher_file(label, dictionary):
     """
     csv_writer, header = prepare_tsv_files(label)
     for (gene_id, to_id), properties in dictionary.items():
-        list_information = [gene_id, to_id]
+        list_information = [gene_id, to_id,properties['omim_id'] ]
         # add properties in the right order
-        for key in header[2:]:
+        for key in header[3:]:
             list_information.append(
                 prepare_set_to_string(properties[key])) if key in properties else list_information.append('')
         csv_writer.writerow(list_information)
