@@ -41,13 +41,13 @@ def generate_file_and_cypher():
     cypher_file = open('output/cypher_drug_edge.cypher', 'w', encoding='utf-8')
 
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/reactome/%s.tsv" As line FIELDTERMINATOR '\\t'
-            Match (p1:Chemical{identifier:line.drug_reactome_id}), (p2:Disease{identifier:line.disease_reactome_id}) Create (p1)-[:TREATS_CHtT{license:"%s", reactome:"yes", source:"Reactome", resource:["Reactome"]}]->(b:Treatment{license:"%s", reactome:"yes", source:"Reactome", resource:["Reactome"], url:"https://reactome.org/content/detail/"+line.stid, stoichiometry: line.stoichiometry , order:line.order , identifier:"T_"+line.id, node_edge:true})-[:TREATS_TtD{license:"%s", reactome:"yes", source:"Reactome", resource:["Reactome"]}]->(p2);\n '''
+            Match (p1:Chemical{identifier:line.drug_reactome_id}), (p2:Disease{identifier:line.disease_reactome_id}) Create (p1)-[:TREATS_CHtT{license:"%s", reactome:"yes", source:"Reactome", url:"https://reactome.org/content/detail/"+line.stid,resource:["Reactome"]}]->(b:Treatment{license:"%s", reactome:"yes", source:"Reactome", resource:["Reactome"], url:"https://reactome.org/content/detail/"+line.stid, stoichiometry: line.stoichiometry , order:line.order , identifier:"T_"+line.id, node_edge:true})-[:TREATS_TtD{license:"%s", url:"https://reactome.org/content/detail/"+line.stid,reactome:"yes", source:"Reactome", resource:["Reactome"]}]->(p2);\n '''
     query = query % (path_of_directory, file_name, license, license, license)
     header = ['drug_reactome_id', 'disease_reactome_id', 'id', 'stoichiometry', 'order', 'stid']
     cypher_file.write(query)
     cypher_file.write('Create Constraint On (node:Treatment) Assert node.identifier Is Unique;\n')
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/reactome/%s.tsv" As line FIELDTERMINATOR '\\t'
-                Match (i:Treatment{identifier:"T_"+line.id}), (c:CellularComponent{identifier:line.go_id}) Set i.subcellular_location="GO term enrichment" Create (i)-[:IS_LOCALIZED_IN_TiliCC{license:"%s", reactome:"yes", source:"Reactome", resource:["Reactome"]}]->(c);\n'''
+                Match (i:Treatment{identifier:"T_"+line.id}), (c:CellularComponent{identifier:line.go_id}) Set i.subcellular_location="GO term enrichment" Create (i)-[:IS_LOCALIZED_IN_TiliCC{license:"%s", url:i.url, reactome:"yes", source:"Reactome", resource:["Reactome"]}]->(c);\n'''
     query = query % (path_of_directory, file_name_go, license)
     cypher_file.write(query)
     cypher_file.close()
