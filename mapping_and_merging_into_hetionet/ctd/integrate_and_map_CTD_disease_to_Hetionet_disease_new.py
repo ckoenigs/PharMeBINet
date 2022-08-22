@@ -1,16 +1,10 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Sep 15 11:41:20 2017
-
-@author: ckoenigs
-"""
-
 import datetime
 import sys
 import csv
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 
 class DiseaseHetionet:
@@ -125,31 +119,19 @@ def load_hetionet_diseases_in():
         name_formed = name.lower().split(' exact ')[0] if name else ''
         dict_hetionet_id_to_name[identifier] = name
         if name_formed not in dict_name_synonym_to_mondo_id:
-            dict_name_synonym_to_mondo_id[name_formed] = [identifier]
+            dict_name_synonym_to_mondo_id[name_formed] = set([identifier])
         else:
-            dict_name_synonym_to_mondo_id[name_formed].append(identifier)
-            part_list = set(dict_name_synonym_to_mondo_id[name_formed])
-            dict_name_synonym_to_mondo_id[name_formed] = list(part_list)
+            dict_name_synonym_to_mondo_id[name_formed].add(identifier)
 
         # add the differnt synonyms with mondo to dictionary
         if synonyms:
             for synonym in synonyms:
-                synonym = synonym.split(':')[0].lower().split(' exact ')[0]
-                additional_synonym_names = synonym.split(';')
-                if len(additional_synonym_names) > 1:
-                    synonym = additional_synonym_names[0]
-                    if additional_synonym_names[1] not in dict_name_synonym_to_mondo_id:
-                        dict_name_synonym_to_mondo_id[additional_synonym_names[1]] = [identifier]
-                    else:
-                        dict_name_synonym_to_mondo_id[additional_synonym_names[1]].append(identifier)
-                        part_list = set(dict_name_synonym_to_mondo_id[additional_synonym_names[1]])
-                        dict_name_synonym_to_mondo_id[additional_synonym_names[1]] = list(part_list)
+                synonym = pharmebinetutils.prepare_obo_synonyms(synonym).lower()
+
                 if synonym not in dict_name_synonym_to_mondo_id:
-                    dict_name_synonym_to_mondo_id[synonym] = [identifier]
+                    dict_name_synonym_to_mondo_id[synonym] = set([identifier])
                 else:
-                    dict_name_synonym_to_mondo_id[synonym].append(identifier)
-                    part_list = set(dict_name_synonym_to_mondo_id[synonym])
-                    dict_name_synonym_to_mondo_id[synonym] = list(part_list)
+                    dict_name_synonym_to_mondo_id[synonym].add(identifier)
         else:
             synonyms = []
 
@@ -508,7 +490,7 @@ def map_with_name():
             dict_CTD_disease[ctd_disease_id].set_mondos(dict_name_synonym_to_mondo_id[name.lower()])
             dict_CTD_disease[ctd_disease_id].set_mapping_id('')
             delete_map_mondo.append(list_not_mapped_to_mondo.index(ctd_disease_id))
-            dict_CTD_disease[ctd_disease_id].set_how_mapped('string match')
+            dict_CTD_disease[ctd_disease_id].set_how_mapped('string_match')
             list_mapped_to_mondo.add(ctd_disease_id)
 
     # delete mapped ctd IDs from list with not mapped CTD identifiers
@@ -558,7 +540,7 @@ multiple_mapped_ctd_disease.writerow(otherheader)
 dict_how_mapped_to_file = {
     'map with Mesh or OMIM to mondo id': map_mesh_omim_to_mondo,
     'map with Mesh or OMIM to mondo id with alternativ id': map_mesh_omim_to_mondo_with_alt,
-    'string match': map_mesh_omim_to_mondo_with_name,
+    'string_match': map_mesh_omim_to_mondo_with_name,
     'map with DOID to mondo id': map_doid_to_mondo,
     'cui match': map_cui_to_mondo
 }
@@ -567,7 +549,7 @@ dict_how_mapped_to_file = {
 dict_how_mapped_to_multiple_mapping = {
     'map with Mesh or OMIM to mondo id': 0,
     'map with Mesh or OMIM to mondo id with alternativ id': 0,
-    'string match': 0,
+    'string_match': 0,
     'map with DOID to mondo id': 0,
     'cui match': 0
 }
@@ -589,7 +571,7 @@ def integrate_disease_into_hetionet():
     counter_with_mondos = 0
     csvfile_ctd_hetionet_disease = open('disease_Disease/ctd_hetionet.tsv', 'w', encoding='utf-8')
     writer = csv.writer(csvfile_ctd_hetionet_disease, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-    writer.writerow(['CTD_diseaseID', 'HetionetDiseaseId', 'mondos', 'resource'])
+    writer.writerow(['CTD_diseaseID', 'HetionetDiseaseId', 'mondos', 'resource', 'how_mapped'])
 
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
     cypher_file.write(':begin\n')
@@ -614,24 +596,24 @@ def integrate_disease_into_hetionet():
         if len(mondos) > 0:
             counter_with_mondos += 1
             how_mapped = ctd_disease.how_mapped
-            string_mondos = "|".join(mondos).encode('utf-8')
+            string_mondos = "|".join(mondos)
             names = ''
 
             mapping_ids = ctd_disease.mapping
-            mapping_ids_string = '|'.join(mapping_ids).encode('utf-8')
+            mapping_ids_string = '|'.join(mapping_ids)
 
-            for mondo in mondos:
-                names += dict_hetionet_id_to_name[mondo] + '|'
+            names= '|'.join([dict_hetionet_id_to_name[mondo] for mondo in mondos])
+
             idType = ctd_disease.idType
-            name = name.encode('utf-8')
+
             if len(mondos) > 1:
                 dict_how_mapped_to_multiple_mapping[how_mapped] += 1
-                multiple_mapped_ctd_disease.writerow([ctd_disease_id, idType, name, string_mondos, names[:-1]
+                multiple_mapped_ctd_disease.writerow([ctd_disease_id, idType, name, string_mondos, names
                                                          , how_mapped])
             # print([ctd_disease_id ,idType , name , string_mondos , names[:-1] ,
             #                                            mapping_ids_string ])
-            names = names.encode('utf-8')
-            dict_how_mapped_to_file[how_mapped].writerow([ctd_disease_id, idType, name, string_mondos, names[:-1],
+
+            dict_how_mapped_to_file[how_mapped].writerow([ctd_disease_id, idType, name, string_mondos, names,
                                                           mapping_ids_string])
             string_mondos = "|".join(mondos)
             # set in neo4j the mondos for the ctd disease
@@ -644,7 +626,7 @@ def integrate_disease_into_hetionet():
                 disease_class=dict_diseases_hetionet[mondo]
                 resource=set(disease_class.resource)
                 resource.add('CTD')
-                writer.writerow([ctd_disease_id, mondo, string_mondos,'|'.join(resource)])
+                writer.writerow([ctd_disease_id, mondo, string_mondos,'|'.join(resource),how_mapped])
         else:
             counter_not_mapped += 1
             if ctd_disease_id not in list_not_mapped_to_mondo:
@@ -656,7 +638,7 @@ def integrate_disease_into_hetionet():
     print('number of mapped ctd disease:' + str(counter_with_mondos))
     print('counter intersection mondos:' + str(counter_intersection))
     print(dict_how_mapped_to_multiple_mapping)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/ctd/disease_Disease/ctd_hetionet.tsv" As line  FIELDTERMINATOR '\\t' MATCH (n:CTD_disease{disease_id:line.CTD_diseaseID}), (d:Disease{identifier:line.HetionetDiseaseId}) Merge (d)-[:equal_CTD_disease]->(n) Set  n.mondos=split(line.mondos, '|') With line, d, n Where not exists(d.ctd) Set d.resource=split(line.resource,"|") , d.ctd='yes', d.ctd_url='http://ctdbase.org/detail.go?type=disease&acc='+line.CTD_diseaseID;\n '''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/ctd/disease_Disease/ctd_hetionet.tsv" As line  FIELDTERMINATOR '\\t' MATCH (n:CTD_disease{disease_id:line.CTD_diseaseID}), (d:Disease{identifier:line.HetionetDiseaseId}) Merge (d)-[:equal_CTD_disease{how_mapped:line.how_mapped}]->(n) Set  n.mondos=split(line.mondos, '|') With line, d, n Where not exists(d.ctd) Set d.resource=split(line.resource,"|") , d.ctd='yes', d.ctd_url='http://ctdbase.org/detail.go?type=disease&acc='+line.CTD_diseaseID;\n '''
     cypher_file.write(query)
 
     # set mondo value where not existing
