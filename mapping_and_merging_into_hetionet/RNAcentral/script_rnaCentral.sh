@@ -6,6 +6,8 @@ path_neo4j=$1
 #path to project
 path_to_project=$2
 
+now=$(date +"%F %T")
+echo "Current time: $now"
 echo perparation
 
 python3 integrate_rna_rnacentral.py $path_to_project > output/output_map.txt
