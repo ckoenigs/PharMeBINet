@@ -11,6 +11,6 @@ f = open("FDA_mappings/cypher.cypher", 'w', encoding="utf-8")
 create = "USING PERIODIC COMMIT 1000 LOAD CSV WITH HEADERS FROM 'file:"
 create += path_of_directory + "mapping_and_merging_into_hetionet/openFDA/FDA_mappings/to_SideEffect.tsv"
 create += "' AS row FIELDTERMINATOR '\\t' CREATE"
-create += " (SideEffect:SideEffect {identifier: row.identifier, name: row.name, resource: split(row.resource,'|')});\n"
+create += " (SideEffect:SideEffect {identifier: row.identifier, name: row.name, resource: split(row.resource,'|'), source:'UMLS via openFDA', openfda:'yes', url:'http://identifiers.org/umls/'+line,identifier});\n"
 f.write(create)
 f.close()
