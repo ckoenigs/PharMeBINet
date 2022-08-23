@@ -13,7 +13,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo pathway
 
-python3 MappingPathway.py $path_to_project > pathway/output_map.txt
+python3 MappingPathway.py $path_to_project "${license}" > pathway/output_map.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
