@@ -43,7 +43,7 @@ dict_ncbi_property_to_hetionet_property = {
     "full_name_from_nomenclature_authority": 'name',
     "symbol": 'gene_symbol',
     "symbol_from_nomenclature_authority": 'gene_symbols',
-    "dbXrefs": 'xrefs'
+    "dbxrefs": 'xrefs'
 }
 
 dict_hetionet_property_to_ncbi_property = dict(map(reversed, dict_ncbi_property_to_hetionet_property.items()))
@@ -62,7 +62,6 @@ def add_value_into_dict_with_list_or_not(dict_insert, head, question_header, dic
             if head == 'xrefs':
                 dict_with_values[question_header] = go_through_xrefs_and_change_if_needed_source_name(
                     dict_with_values[question_header], 'Gene')
-            dict_insert[head] = '|'.join(dict_with_values[question_header])
             dict_insert[head] = '|'.join(dict_with_values[question_header])
         else:
             dict_insert[head] = dict_with_values[question_header]
