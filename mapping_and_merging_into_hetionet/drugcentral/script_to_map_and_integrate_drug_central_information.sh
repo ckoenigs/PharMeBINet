@@ -30,10 +30,17 @@ python3 mapping_GOterm_drugcentral.py $path_to_project > goTerm/output.txt
 
 
 now=$(date +"%F %T")
-echo "Current time: $now"
-echo 'integrate Drugcentral product'
+echo 'integrate Drugcentral chemical'
 
-python3 mapping_chemical.py $path_to_project > chemical/output.txt
+echo "Current time: $now"
+python3 mapping_chemical_drugcentral.py $path_to_project > chemical/output.txt
+
+
+now=$(date +"%F %T")
+echo 'integrate Drugcentral atc'
+
+echo "Current time: $now"
+python3 mapping_atc_drugcentral.py $path_to_project > atc/output.txt
 
 
 now=$(date +"%F %T")
