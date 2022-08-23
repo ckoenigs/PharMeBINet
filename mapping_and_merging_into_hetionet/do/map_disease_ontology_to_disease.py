@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Jul 26 09:52:43 2017
-
-@author: ckoenig
-"""
-
 '''integrate the other diseases and relationships from disease ontology in pharmebinet'''
 import datetime
 import sys, csv
@@ -14,6 +7,7 @@ from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_cha
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 # file to put all information in it
 output = open('output_fusion.txt', 'w', encoding='utf-8')
@@ -45,22 +39,8 @@ dict_doid_to_mondo_ids = {}
 # dict_omim_to_mondo_ids
 dict_omim_to_mondo_ids = {}
 
-
 # dict_name_to_mondo_ids
 dict_name_to_mondo_ids = {}
-
-def add_entry_to_dictionary(key, value, dictionary):
-    """
-    Add information into dictionary with ste as values
-    :param key: string
-    :param value: string
-    :param dictionary: dictionary
-    :return:
-    """
-    if key not in dictionary:
-        dictionary[key]=set()
-    dictionary[key].add(value)
-
 
 '''
 load all disease in the dictionary
@@ -81,23 +61,22 @@ def load_all_disease_in_dictionary():
         xrefs = disease['xrefs'] if 'xrefs' in disease else []
         for xref in xrefs:
             if xref.startswith('DOID:'):
-                add_entry_to_dictionary(xref,identifier, dict_doid_to_mondo_ids)
-        name= disease['name'].lower()
-        add_entry_to_dictionary(name, identifier, dict_name_to_mondo_ids)
+                pharmebinetutils.add_entry_to_dict_to_set(dict_doid_to_mondo_ids, xref, identifier)
+        name = disease['name'].lower()
+        pharmebinetutils.add_entry_to_dict_to_set(dict_name_to_mondo_ids, name, identifier)
 
-        synonyms= disease['synonyms'] if 'synonyms' in disease else []
+        synonyms = disease['synonyms'] if 'synonyms' in disease else []
         for synonym in synonyms:
-            if synonym[-1]==']':
-                synonym=synonym.rsplit('[',1)[0]
-            synonym=synonym.lower()
-            add_entry_to_dictionary(synonym, identifier, dict_name_to_mondo_ids)
+            synonym = pharmebinetutils.prepare_obo_synonyms(synonym).lower()
+            pharmebinetutils.add_entry_to_dict_to_set(dict_name_to_mondo_ids, synonym, identifier)
 
         list_diseases_in_pharmebinet.append(identifier)
         disease = dict(disease)
         dict_diseases_in_pharmebinet[identifier] = disease
     print('size of diseases before the rest of disease ontology was add: ' + str(len(dict_diseases_in_pharmebinet)))
     output.write(
-        'size of diseases before the rest of disease ontology was add: ' + str(len(dict_diseases_in_pharmebinet)) + '\n')
+        'size of diseases before the rest of disease ontology was add: ' + str(
+            len(dict_diseases_in_pharmebinet)) + '\n')
 
     # try consider only the lowest level omim so it should not have a with to general omim mapping od do
     query = '''Match (n:Disease) Where not ()-[:IS_A_DiaD]->(n) Return n'''
@@ -107,7 +86,7 @@ def load_all_disease_in_dictionary():
         xrefs = disease['xrefs'] if 'xrefs' in disease else []
         for xref in xrefs:
             if xref.startswith('OMIM:'):
-                add_entry_to_dictionary(xref, identifier, dict_omim_to_mondo_ids)
+                pharmebinetutils.add_entry_to_dict_to_set(dict_omim_to_mondo_ids, xref, identifier)
 
 
 # in pharmebinet is a alternative doid used: dictionary with alternative id as key and original id in disease ontology
@@ -116,10 +95,10 @@ dict_alternative_id = {}
 
 # dictionary from disease ontology properties name to pharmebinet properties names
 dict_DO_prop_to_pharmebinet_prop = {'id': 'identifier',
-                                 "synonym": "synonyms",
-                                 "def": "definition",
-                                 "alt_id": "alternative_ids",
-                                 }
+                                    "synonym": "synonyms",
+                                    "def": "definition",
+                                    "alt_id": "alternative_ids",
+                                    }
 
 dict_pharmebinet_prop_to_DO_prop = {y: x for x, y in dict_DO_prop_to_pharmebinet_prop.items()}
 
@@ -130,16 +109,16 @@ do_name = "Disease Ontology"
 do_label = 'diseaseontology'
 
 # generate tsv files for integration
-header_nodes = ['identifier', 'mondo_id', 'definition', "synonyms", "umls_cuis",  "alternative_ids", 'resource', 'how_mapped']
+header_nodes = ['identifier', 'mondo_id', 'definition', "synonyms", "umls_cuis", "alternative_ids", 'resource',
+                'how_mapped']
 # tsv file for DOID which are already in pharmebinet
 file_included = open('output/mapped.tsv', 'w', encoding='utf-8')
 csv_writer_included = csv.DictWriter(file_included, delimiter='\t', fieldnames=header_nodes)
 csv_writer_included.writeheader()
 
-
 # tsv for relationship
 # header of rela
-header_rela = ['child', 'parent','doid']
+header_rela = ['child', 'parent', 'doid']
 file_rela = open('output/new_rela.tsv', 'w', encoding='utf-8')
 csv_writer_rela = csv.DictWriter(file_rela, delimiter='\t', fieldnames=header_rela)
 csv_writer_rela.writeheader()
@@ -157,7 +136,7 @@ def generate_cypher_file():
     query_middel_set = ''
     query_middel_set_alt = ''
     for header in header_nodes:
-        if header in ['how_mapped','mondo_id', 'identifier']:
+        if header in ['how_mapped', 'mondo_id', 'identifier']:
             continue
         if header in ['synonyms', 'alternative_ids', 'umls_cuis', 'resource']:
             query_middel_set += 'n.' + header + '=split(line.' + header + ',"|"), '
@@ -176,10 +155,11 @@ def generate_cypher_file():
 
 
 # dictionary from disease ontology node id to mondos set
-dict_mapping_do_to_mondo={}
+dict_mapping_do_to_mondo = {}
 
 # dictionary mondo id to update information
-dict_mondo_id_update_info={}
+dict_mondo_id_update_info = {}
+
 
 def gather_mappings(mondo, dict_info):
     """
@@ -189,9 +169,8 @@ def gather_mappings(mondo, dict_info):
     :return:
     """
     if not mondo in dict_mondo_id_update_info:
-        dict_mondo_id_update_info[mondo]=[]
+        dict_mondo_id_update_info[mondo] = []
     dict_mondo_id_update_info[mondo].append(dict_info)
-    
 
 
 def prepare_mapped_data(disease, identifier, alternative_ids, how_mapped, overlap, dict_some_identifier_to_mondo_ids):
@@ -237,9 +216,10 @@ def prepare_mapped_data(disease, identifier, alternative_ids, how_mapped, overla
         for mondo in dict_some_identifier_to_mondo_ids[other_identifier]:
             gather_mappings(mondo, dict_of_information)
 
+
 # dictionary manual mapping from DOID to OMIM
-dict_doid_to_omim_id={'DOID:0080869':'OMIM:616947',
-                      'DOID:0080735':'OMIM:614557'}
+dict_doid_to_omim_id = {'DOID:0080869': 'OMIM:616947',
+                        'DOID:0080735': 'OMIM:614557'}
 
 '''
 load the do information in the dictionary
@@ -260,7 +240,7 @@ DOID:9917 war nur als alternative id da
 def load_disease_ontologie_in_pharmebinet():
     query = '''Match (n:%s) Where not exists(n.is_obsolete) and not ()-[:is_a]->(n) RETURN n.id''' % (do_label)
     results = g.run(query)
-    set_doid_which_are_leaves=set()
+    set_doid_which_are_leaves = set()
     for identifier, in results:
         set_doid_which_are_leaves.add(identifier)
 
@@ -271,62 +251,62 @@ def load_disease_ontologie_in_pharmebinet():
     counter_mapped = 0
     counter_all = 0
     for disease, in results:
-        identifier=disease['id']
+        identifier = disease['id']
         counter_all += 1
         if disease['id'] == 'DOID:10210':
             print('blub')
         alternative_ids = disease['alt_ids'] if 'alt_ids' in disease else []
         alternative_ids.append(identifier)
-        overlap = list(set(alternative_ids).intersection( set_of_all_doids))
+        overlap = list(set(alternative_ids).intersection(set_of_all_doids))
         has_overlap_between_do_and_mondo = True if len(overlap) > 0 else False
 
-        mapped_already=False
+        mapped_already = False
 
-        if  has_overlap_between_do_and_mondo:
-
-            prepare_mapped_data(disease, identifier, alternative_ids,'doid',overlap,dict_doid_to_mondo_ids)
-            mapped_already=True
+        if has_overlap_between_do_and_mondo:
+            prepare_mapped_data(disease, identifier, alternative_ids, 'doid', overlap, dict_doid_to_mondo_ids)
+            mapped_already = True
 
         if mapped_already:
-            counter_mapped+=1
+            counter_mapped += 1
             continue
 
-        name= disease['name'].lower()
+        name = disease['name'].lower()
 
         if name in dict_name_to_mondo_ids:
             prepare_mapped_data(disease, identifier, alternative_ids, 'name', [name], dict_name_to_mondo_ids)
             mapped_already = True
 
         if mapped_already:
-            counter_mapped+=1
+            counter_mapped += 1
             continue
 
-        synonyms= disease['synonyms'] if 'synonyms' in disease else []
+        synonyms = disease['synonyms'] if 'synonyms' in disease else []
 
-        mapped_synonyms=set()
+        mapped_synonyms = set()
         for synonym in synonyms:
-            synonym=synonym.lower()
+            synonym = pharmebinetutils.prepare_obo_synonyms(synonym).lower()
             if synonym in dict_name_to_mondo_ids:
                 mapped_synonyms.add(synonym)
                 mapped_already = True
 
         if mapped_already:
-            counter_mapped+=1
-            prepare_mapped_data(disease, identifier, alternative_ids, 'synonyms', mapped_synonyms, dict_name_to_mondo_ids)
+            counter_mapped += 1
+            prepare_mapped_data(disease, identifier, alternative_ids, 'synonyms', mapped_synonyms,
+                                dict_name_to_mondo_ids)
             continue
 
-        xrefs= disease['xrefs'] if 'xrefs' in disease else []
-        omim_set=set()
+        xrefs = disease['xrefs'] if 'xrefs' in disease else []
+        omim_set = set()
         for xref in xrefs:
             if xref.startswith('OMIM:'):
                 omim_set.add(xref)
-        if len(omim_set)==1 and identifier in set_doid_which_are_leaves:
+        if len(omim_set) == 1 and identifier in set_doid_which_are_leaves:
             # manual mapped doid to mondo
             if identifier in dict_doid_to_omim_id:
-                omim_set=set([dict_doid_to_omim_id[identifier]])
-            overlap= omim_set.intersection(dict_omim_to_mondo_ids.keys())
-            if len(overlap)>0:
-                prepare_mapped_data(disease, identifier, alternative_ids,'omim',overlap,dict_omim_to_mondo_ids)
+                omim_set = set([dict_doid_to_omim_id[identifier]])
+            overlap = omim_set.intersection(dict_omim_to_mondo_ids.keys())
+            if len(overlap) > 0:
+                prepare_mapped_data(disease, identifier, alternative_ids, 'omim', overlap, dict_omim_to_mondo_ids)
 
     print('Number of mapped DO: ' + str(counter_mapped))
     output.write(
@@ -344,16 +324,16 @@ def combine_information(list_of_info_dict, mondo):
     :param mondo: string
     :return: dict_of_information
     """
-    dict_of_information={}
+    dict_of_information = {}
     mondo_disease = dict_diseases_in_pharmebinet[mondo]
-    counter=0
+    counter = 0
     for dict_info in list_of_info_dict:
         for key, value in dict_info.items():
-            if counter==0:
+            if counter == 0:
                 if key == 'identifier':
                     dict_of_information[key] = set([value])
                     continue
-                if key in mondo_disease :
+                if key in mondo_disease:
                     if type(value) == str:
                         if key == 'definition':
                             # print(value, mondo_disease[key])
@@ -384,7 +364,7 @@ def combine_information(list_of_info_dict, mondo):
                     else:
                         dict_of_information[key] = dict_of_information[key].union(value)
                 else:
-                    if key in mondo_disease :
+                    if key in mondo_disease:
                         if type(value) == str:
                             if key == 'definition':
                                 # print(value, mondo_disease[key])
@@ -404,39 +384,39 @@ def combine_information(list_of_info_dict, mondo):
                                 dict_of_information[key] = value
                         else:
                             dict_of_information[key] = set(value)
-        counter+=1
+        counter += 1
     return dict_of_information
 
 
 def prepare_data_for_tsv():
-    counter_multiple_edges=0
+    counter_multiple_edges = 0
     # prepare the information which are written into tsv file
     for mondo_id, list_of_dict_of_information in dict_mondo_id_update_info.items():
 
         disease_mondo = dict_diseases_in_pharmebinet[mondo_id]
 
-        if len(list_of_dict_of_information)==1:
-            dict_of_information= combine_information(list_of_dict_of_information, mondo_id)
+        if len(list_of_dict_of_information) == 1:
+            dict_of_information = combine_information(list_of_dict_of_information, mondo_id)
 
         else:
-            filter_list_of_dict_info=[]
-            counter_multiple_edges+=1
-            how_mapped_set=set()
+            filter_list_of_dict_info = []
+            counter_multiple_edges += 1
+            how_mapped_set = set()
             for dict_info in list_of_dict_of_information:
                 how_mapped_set.add(dict_info['how_mapped'])
-                if dict_info['how_mapped']=='doid':
+                if dict_info['how_mapped'] == 'doid':
                     filter_list_of_dict_info.append(dict_info)
-            if len(filter_list_of_dict_info)==len(list_of_dict_of_information):
+            if len(filter_list_of_dict_info) == len(list_of_dict_of_information):
                 print('same number')
-            if len(filter_list_of_dict_info) ==0:
+            if len(filter_list_of_dict_info) == 0:
                 print('all mappings removed')
                 print(list_of_dict_of_information)
-                filter_list_of_dict_info=list_of_dict_of_information
-                if list_of_dict_of_information[0]['how_mapped']=='omim' and len(how_mapped_set)==1:
+                filter_list_of_dict_info = list_of_dict_of_information
+                if list_of_dict_of_information[0]['how_mapped'] == 'omim' and len(how_mapped_set) == 1:
                     print(mondo_id)
                     print([x['identifier'] for x in filter_list_of_dict_info])
                     sys.exit('multiple mapping only omim was a problem so far')
-            dict_of_information= combine_information(filter_list_of_dict_info, mondo_id)
+            dict_of_information = combine_information(filter_list_of_dict_info, mondo_id)
 
         dict_of_information['mondo_id'] = mondo_id
 
@@ -449,19 +429,18 @@ def prepare_data_for_tsv():
         for key in header_nodes:
             # need in case in DO are no information the mondo information else this information will be empty
             if key not in dict_of_information and key in disease_mondo:
-                dict_of_information[key]=disease_mondo[key]
+                dict_of_information[key] = disease_mondo[key]
 
             # prepare list/set information
-            if key in dict_of_information and type(dict_of_information[key])!=str and key!='identifier':
+            if key in dict_of_information and type(dict_of_information[key]) != str and key != 'identifier':
                 # print(dict_of_information[key], key)
-                dict_of_information[key]='|'.join(dict_of_information[key])
+                dict_of_information[key] = '|'.join(dict_of_information[key])
         for doid in dict_of_information['identifier']:
-            copy_dict=dict_of_information.copy()
-            copy_dict['identifier']=doid
+            copy_dict = dict_of_information.copy()
+            copy_dict['identifier'] = doid
             csv_writer_included.writerow(copy_dict)
 
-    print('number of multiple mappings:',counter_multiple_edges)
-
+    print('number of multiple mappings:', counter_multiple_edges)
 
 
 '''
@@ -472,7 +451,7 @@ load connection from Disease ontolegy in dictionary and check if the alternative
 def load_in_all_connection_from_disease_ontology():
     counter = 0
 
-    set_of_child_parent_pairs=set()
+    set_of_child_parent_pairs = set()
 
     query = ''' Match (n:%s)-[r:is_a]->(p:%s) Return n.id,p.id ''' % (do_label, do_label)
     results = g.run(query)
@@ -480,13 +459,13 @@ def load_in_all_connection_from_disease_ontology():
         if child_id in dict_doid_to_mondo_ids and parent_id in dict_doid_to_mondo_ids:
             for mondo_child in dict_doid_to_mondo_ids[child_id]:
                 for mondo_parent in dict_doid_to_mondo_ids[parent_id]:
-                    if (mondo_child,mondo_parent) in set_of_child_parent_pairs:
+                    if (mondo_child, mondo_parent) in set_of_child_parent_pairs:
                         continue
                     # dictionary with relationship infos
-                    dict_rela_info = {'child': mondo_child, 'parent': mondo_parent, 'doid':child_id}
+                    dict_rela_info = {'child': mondo_child, 'parent': mondo_parent, 'doid': child_id}
                     csv_writer_rela.writerow(dict_rela_info)
                     counter += 1
-                    set_of_child_parent_pairs.add((mondo_child,mondo_parent))
+                    set_of_child_parent_pairs.add((mondo_child, mondo_parent))
 
     print('number of relationships:' + str(counter))
 
