@@ -78,7 +78,7 @@ Find mapping between genes and proteins
 
 
 def get_all_genes():
-    query = '''MATCH (n:Gene) RETURN n.identifier,  n.geneSymbol, n.name, n.synonyms, n.resource'''
+    query = '''MATCH (n:Gene) RETURN n.identifier,  n.gene_symbols, n.name, n.synonyms, n.resource'''
     results = g.run(query)
     counter_uniprot_to_multiple_genes = 0
     counter_all_genes = 0
@@ -127,7 +127,7 @@ def get_all_genes():
 file_uniprots_gene_rela = open('uniprot_gene/db_uniprot_to_gene_rela.tsv', 'w')
 writer_rela = csv.writer(file_uniprots_gene_rela, delimiter='\t')
 writer_rela.writerow(
-    ['uniprot_id', 'gene_id', 'alternative_ids', 'name_mapping',   'resource_node'])
+    ['uniprot_id', 'gene_id', 'alternative_ids', 'name_mapping', 'resource_node','how_mapped'])
 
 # list of all uniprot ids which where wrong mapped and already found in the program to avoid duplication in the file
 list_already_included = []
@@ -144,7 +144,7 @@ if not integrate them into the tsv
 '''
 
 
-def check_and_add_rela_pair(identifier, uniprot_id, gene_ids, secondary_uniprot_ids, name_mapping):
+def check_and_add_rela_pair(identifier, uniprot_id, gene_ids, secondary_uniprot_ids, name_mapping, how_mapped):
     for gene_id in gene_ids:
         if gene_id not in dict_gene_id_to_resource:
             print('gene problem', gene_id)
@@ -152,7 +152,7 @@ def check_and_add_rela_pair(identifier, uniprot_id, gene_ids, secondary_uniprot_
         if not (identifier, gene_id) in list_already_integrated_pairs_gene_protein:
             writer_rela.writerow(
                 [identifier, gene_id, secondary_uniprot_ids, name_mapping,
-                 add_resource(dict_gene_id_to_resource[gene_id])])
+                 add_resource(dict_gene_id_to_resource[gene_id]), how_mapped])
             list_already_integrated_pairs_gene_protein.append(
                 (identifier, gene_id))
             list_already_included.append(uniprot_id)
@@ -187,18 +187,19 @@ def check_and_write_uniprot_ids(uniprot_id, name, identifier, secondary_uniprot_
         # check out if the mapping gene ids are good by checking the name
         # but it seems that even if the name are not the same they map correct
         if gene_ids:
-            check_and_add_rela_pair(identifier, uniprot_id, gene_ids, secondary_uniprot_ids, '')
-            return True, gene_ids
-            # if name.lower() in dict_gene_name_to_id:
-            #     list_gene_id_from_name = [str(x) for x in dict_gene_name_to_id[name.lower()]]
-            #     intersection = set(gene_ids).intersection(list_gene_id_from_name)
-            #     if len(intersection) > 0:
-            #         check_and_add_rela_pair(identifier, uniprot_id, intersection, secondary_uniprot_ids,
-            #                                 'yes', 'yes', 'UniProt')
-            #         genes = list(intersection)
-            #         return True, genes
-            # else:
-            #     print('only gene id mapping')
+            # check_and_add_rela_pair(identifier, uniprot_id, gene_ids, secondary_uniprot_ids, '')
+            # return True, gene_ids
+            if primary_gene_symbol.lower() in dict_gene_symbol_to_gene_id:
+                list_gene_id_from_name = [str(x) for x in dict_gene_symbol_to_gene_id[primary_gene_symbol.lower()]]
+                intersection = set(gene_ids).intersection(list_gene_id_from_name)
+                if len(intersection) > 0:
+                    check_and_add_rela_pair(identifier, uniprot_id, intersection, secondary_uniprot_ids, 'yes', 'ncbi_id_and_gene_symbol')
+                    genes = list(intersection)
+                    return True, genes
+            else:
+                print('only gene id mapping')
+                check_and_add_rela_pair(identifier, uniprot_id, gene_ids, secondary_uniprot_ids, '', 'ncbi_id')
+                return True, gene_ids
         elif primary_gene_symbol:
             primary_gene_symbol = primary_gene_symbol.lower()
             gene_ids_from_symbol = []
@@ -213,7 +214,7 @@ def check_and_write_uniprot_ids(uniprot_id, name, identifier, secondary_uniprot_
                 text = 'synonyms'
             if len(gene_ids_from_symbol) > 0:
                 check_and_add_rela_pair(identifier, uniprot_id, gene_ids_from_symbol,
-                                        secondary_uniprot_ids, 'yes')
+                                        secondary_uniprot_ids, 'yes', text+'_primary_gene_symbol')
                 return True, genes
         elif gene_names:
             gene_ids_from_symbol = []
@@ -229,7 +230,7 @@ def check_and_write_uniprot_ids(uniprot_id, name, identifier, secondary_uniprot_
                     text = 'synonyms'
             if len(gene_ids_from_symbol) > 0:
                 check_and_add_rela_pair(identifier, uniprot_id, gene_ids_from_symbol,
-                                        secondary_uniprot_ids, 'yes')
+                                        secondary_uniprot_ids, 'yes', text+'_gene_names')
                 return True, genes
 
         # check if mapping is possible with gene symbol
@@ -249,20 +250,13 @@ def check_and_write_uniprot_ids(uniprot_id, name, identifier, secondary_uniprot_
         # the multiple mapping with gene symbol are not the best only 4 of 14 this make sense but for the other it would be manual mapping
         if len(list_of_possible_mapped_gene_ids) == 1:
             check_and_add_rela_pair(identifier, uniprot_id, list_of_possible_mapped_gene_ids,
-                                    secondary_uniprot_ids, 'yes')
+                                    secondary_uniprot_ids, 'yes','multiple_name_mapping')
 
             # print(identifier)
             # print(list_of_possible_mapped_gene_ids)
             found_at_least_on = True
             # no mapping from the gene or protein and no gene symbol
-        # the last possible mapping try is with  name mapping
-        else:
-            if name.lower() in dict_gene_name_to_id:
-                check_and_add_rela_pair(identifier, uniprot_id, dict_gene_name_to_id[name.lower()],
-                                        secondary_uniprot_ids, 'yes')
 
-                genes = dict_gene_name_to_id[name.lower()]
-                return True, genes
 
     return found_at_least_on, genes
 
@@ -311,7 +305,7 @@ def write_cypher_file():
             query += property + ':split(line.' + property + ',"|"), '
         elif property == 'accessions':
             query += 'alternative_ids:p.' + property + ', '
-        elif property =='as_sequence':
+        elif property == 'as_sequence':
             query += property + 's:[p.' + property + '], '
         else:
             query += property + ':p.' + property + ', '
@@ -326,7 +320,6 @@ def write_cypher_file():
 
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/uniprot/uniprot_gene/db_uniprot_to_gene_rela.tsv" As line FIELDTERMINATOR "\\t" MATCH (n:Protein{identifier:line.uniprot_id}), (g:Gene{identifier:line.gene_id}) Set g.resource=split(line.resource_node,'|'), g.uniprot='yes' Create (g)-[:PRODUCES_GpP{name_mapping:line.name_mapping, uniprot:"yes" ,resource:['UniProt'],license:'CC BY 4.0', url:'https://www.uniprot.org/uniprot/'+line.uniprot_id, source:"UniProt"}]->(n);\n'''
     file_cypher.write(query)
-
 
 
 def add_resource(set_resource):
@@ -359,7 +352,7 @@ def get_gather_protein_info_and_generate_relas():
 
     # generate a file with all uniprots which mapped to multiple genes
     file_uniprots_genes = open('uniprot_gene/db_uniprots_to_genes_multi_map.tsv', 'w')
-    writer_uniprots_genes_multi_mapps = csv.writer(file_uniprots_genes,delimiter='\t')
+    writer_uniprots_genes_multi_mapps = csv.writer(file_uniprots_genes, delimiter='\t')
     writer_uniprots_genes_multi_mapps.writerow(['uniprot_ids', 'gene_id'])
 
     # query to get all Protein information {identifier:'P0DMV0'} {identifier:'Q05066'} {identifier:'P0DPK4'} {identifier:'E5RIL1'} {identifier:'P01009'}
@@ -393,8 +386,6 @@ def get_gather_protein_info_and_generate_relas():
         # get the Uniprot id
         identifier = node['identifier']
         # print(identifier)
-        if identifier == 'Q2M2I8':
-            print('ok')
 
         # get the name of the node
         name = node['name']
@@ -464,7 +455,6 @@ def main():
     print('gather all information of the hetionet genes')
 
     get_all_genes()
-
 
     print(
         '#################################################################################################################################################################')
