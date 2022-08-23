@@ -9,7 +9,7 @@ path_to_project=$2
 # import tool
 name_of_import_tool='Neo4j-GraphML-Importer-v1.1.5'
 
-name_of_biodwh2_tool='BioDWH2-v0.4.3'
+name_of_biodwh2_tool='BioDWH2-v0.4.4'
 
 echo $name_of_import_tool
 
@@ -172,7 +172,7 @@ echo "Current time: $now"
 cd  openFDA
 echo openFDA
 
-./script_open_fda.sh $path_neo4j > output_openFDA.txt
+# ./script_open_fda.sh $path_neo4j > output_openFDA.txt
 
 cd ..
 
@@ -313,6 +313,19 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 
 ./integrate_drugcentral.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool > output/script_output.txt
+
+cd ..
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+cd  adrecs
+echo ADReCS
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+./integrate_adrecs.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool > output/script_output.txt
 
 cd ..
 
