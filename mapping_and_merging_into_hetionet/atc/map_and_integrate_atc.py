@@ -101,7 +101,7 @@ def write_files(path_of_directory):
     list_of_labels=['Compound','PharmacologicClass']
 
     for [label_1, label_2] in [[x,y] for x in list_of_labels for y in list_of_labels]:
-        query= '''MATCH p=(n:%s)--(:atc)-[]->(:atc)--(b:%s) Merge (n)-[r:BELONGS_TO_%sbt%s]->(b) On Create Set r.source='ATC from DrugBank', r.resource=['DrugBank'], r.drugbank='yes', r.license="Creative Common's Attribution-NonCommercial 4.0 International License";\n'''
+        query= '''MATCH p=(n:%s)--(:atc)-[]->(a:atc)--(b:%s) Merge (n)-[r:BELONGS_TO_%sbt%s]->(b) On Create Set r.source='ATC from DrugBank', r.url="http://identifiers.org/atc:"+a.identifier , r.resource=['DrugBank'], r.drugbank='yes', r.license="Creative Common's Attribution-NonCommercial 4.0 International License";\n'''
         query=query %( label_1,label_2, dict_first_letter_to_rela_letter[label_1[0]], dict_first_letter_to_rela_letter[label_2[0]])
         cypher_file.write(query)
     return csv_mapped, csv_new, csv_mapped_pc

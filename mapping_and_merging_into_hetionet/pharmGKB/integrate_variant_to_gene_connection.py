@@ -29,11 +29,11 @@ def load_pharmgkb_in(label, directory):
     file_name = directory + '/integrate_' + label.split('_')[1] + '.tsv'
     file = open(file_name, 'w', encoding='utf-8')
     csv_writer = csv.writer(file, delimiter='\t')
-    csv_writer.writerow(['variant_id', 'gene_id'])
+    csv_writer.writerow(['variant_id', 'gene_id', 'pGKB_id'])
 
     generate_cypher_file(file_name)
 
-    query = '''MATCH (a:Variant)--(:%s)-[:PharmGKB_HAS_VARIANT]-(:PharmGKB_Gene)--(b:Gene) RETURN a.identifier, b.identifier'''
+    query = '''MATCH (a:Variant)--(z:%s)-[:PharmGKB_HAS_VARIANT]-(:PharmGKB_Gene)--(b:Gene) RETURN a.identifier, z.id,  b.identifier'''
     query = query % (label)
     results = g.run(query)
 
@@ -43,11 +43,11 @@ def load_pharmgkb_in(label, directory):
     # set of variant gene pairs
     set_of_variant_gene_pair = set()
 
-    for variant_id, gene_id, in results:
+    for variant_id, pGKB_id, gene_id, in results:
         if (variant_id,gene_id) in set_of_variant_gene_pair:
             continue
         set_of_variant_gene_pair.add((variant_id,gene_id))
-        csv_writer.writerow([variant_id, gene_id])
+        csv_writer.writerow([variant_id, gene_id, pGKB_id])
 
 
 # cypher file generation
@@ -61,7 +61,7 @@ def generate_cypher_file(file_name):
     :param label: string
     :return:
     """
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/pharmGKB/%s" As line  FIELDTERMINATOR '\\t'  MATCH (n:Variant{identifier:line.variant_id}), (c:Gene{identifier:line.gene_id}) Merge (c)-[r:HAS_GhV]->(n) On Create Set r.source="PharmGKB", r.resource=["PharmGKB"], r.pharmgkb="yes" , r.license="%s" On Match Set r.resource=r.resource + "PharmGKB", r.pharmgkb="yes"; \n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/pharmGKB/%s" As line  FIELDTERMINATOR '\\t'  MATCH (n:Variant{identifier:line.variant_id}), (c:Gene{identifier:line.gene_id}) Merge (c)-[r:HAS_GhV]->(n) On Create Set r.source="PharmGKB", r.resource=["PharmGKB"], r.pharmgkb="yes" , r.license="%s", r.url="https://www.pharmgkb.org/variant/"+line.pGKB_id On Match Set r.resource=r.resource + "PharmGKB", r.pharmgkb="yes"; \n'''
     query = query % (file_name, license)
     cypher_file.write(query)
 

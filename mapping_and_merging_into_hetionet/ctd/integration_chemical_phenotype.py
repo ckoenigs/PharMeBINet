@@ -26,18 +26,6 @@ cypherfile = open('output/cypher_edge.cypher', 'a', encoding='utf-8')
 dict_rela_to_drug_go_pair = {}
 
 '''
-generate tsv file with the columns fo a path
-'''
-
-
-def generate_tsv(path, head):
-    csvfile = open(path, 'w', encoding='utf-8')
-    writer = csv.writer(csvfile, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-    writer.writerow(head)
-    return writer
-
-
-'''
 search for chemical
 '''
 
@@ -87,7 +75,7 @@ sort the information into the right dictionary and add the infomation
 
 
 def sort_into_dictionary_and_add(dict_action, chemical_id, go_id, interaction_text, pubMedIds,
-                                 interactions_actions, anatomy_terms, inference_gene_symbols, comentioned_terms):
+                                 interactions_actions, anatomy_terms, inference_gene_symbols, comentioned_terms, ctd_chemical_id):
     if (chemical_id, go_id) in dict_action:
         dict_action[(chemical_id, go_id)][0].append(interaction_text)
         dict_action[(chemical_id, go_id)][1] = dict_action[(chemical_id, go_id)][1].union(pubMedIds)
@@ -98,7 +86,7 @@ def sort_into_dictionary_and_add(dict_action, chemical_id, go_id, interaction_te
     else:
         dict_action[(chemical_id, go_id)] = [[interaction_text], set(pubMedIds),
                                              [interactions_actions], [anatomy_terms], [inference_gene_symbols],
-                                             [comentioned_terms]]
+                                             [comentioned_terms], ctd_chemical_id]
 
 
 '''
@@ -119,12 +107,12 @@ def add_pair_to_dict(chemical_id, drugbank_ids, go_id, interaction_text, interac
             sort_into_dictionary_and_add(dict_rela_to_drug_go_pair[(rela_full, label, from_chemical)],
                                          drugbank_id, go_id, interaction_text,
                                          pubMedIds, interactions_actions, anatomy_terms, inference_gene_symbols,
-                                         comentioned_terms)
+                                         comentioned_terms, chemical_id)
     else:
         sort_into_dictionary_and_add(dict_rela_to_drug_go_pair[(rela_full, label, from_chemical)],
                                      chemical_id, go_id, interaction_text,
                                      pubMedIds, interactions_actions, anatomy_terms, inference_gene_symbols,
-                                     comentioned_terms)
+                                     comentioned_terms, chemical_id)
 
 
 dict_rela_name_to_text_name = {
@@ -316,7 +304,7 @@ generate cypher queries
 def generate_cypher_queries(file_name, label, rela, start_node, end_node):
     query_first_part = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/ctd/''' + file_name + '''" As line Fieldterminator '\\t' Match (b:Chemical{identifier:line.chemical_id}), (go:%s{identifier:line.go_id}) Create (%s)-[:%s {'''
     query_first_part = query_first_part % (label, start_node, rela)
-    query_end = 'ctd:"yes", source:"CTD", ctd_url:"http://ctdbase.org/detail.go?type=chem&acc="+line.chemical_id ,resource:["CTD"], license:"© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved"}]->(%s);\n'
+    query_end = 'ctd:"yes", source:"CTD", ctd_url:"http://ctdbase.org/detail.go?type=chem&acc="+line.ctd_chemical_id, url:"http://ctdbase.org/detail.go?type=chem&acc="+line.ctd_chemical_id ,resource:["CTD"], license:"© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved"}]->(%s);\n'
     for property in header:
         if property in ['chemical_id', 'go_id']:
             continue
@@ -333,7 +321,7 @@ def generate_cypher_queries(file_name, label, rela, start_node, end_node):
 
 # header for tsv files
 header = ['chemical_id', 'go_id', 'interaction_text', 'pubMed_ids', 'interaction_actions', 'unbiased', 'anatomy_terms',
-          'comentioned_terms']
+          'co_mentioned_terms','ctd_chemical_id']
 
 # dictionary from go term to shor form
 dict_go_term_to_short_form = {
@@ -400,7 +388,7 @@ def fill_the_tsv_files():
             csv_writer.writerow(
                 [chemical_id, go_id, shortest_interaction_text, pubMedIds,
                  shortest_interaction_actions
-                    , unbiased, shortest_anatomy, shortest_conditional])
+                    , unbiased, shortest_anatomy, shortest_conditional, list_of_information[6]])
 
 
 def main():

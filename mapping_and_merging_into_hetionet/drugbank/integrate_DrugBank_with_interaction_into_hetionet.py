@@ -383,11 +383,11 @@ def create_cypher_file():
     query_update_alternative = query_update_alternative % ('update_nodes_alt', neo4j_label_drugbank, license)
     cypher_file.write(query_update_alternative)
 
-    query_update = query_start + ', (b:Compound{identifier:line.identifier}) Set b.drugbank="yes", ' + query_update + 'b.resource=b.resource+"DrugBank", b.url="http://www.drugbank.ca/drugs/"+line.identifier, b.license="%s" Create (b)-[:equal_to_drugbank]->(a);\n'
+    query_update = query_start + ', (b:Compound{identifier:line.identifier}) Set b.drugbank="yes", ' + query_update + 'b.resource=b.resource+"DrugBank", b.source="DrugBank", b.url="http://www.drugbank.ca/drugs/"+line.identifier, b.license="%s" Create (b)-[:equal_to_drugbank]->(a);\n'
     query_update = query_update % ('update_nodes', neo4j_label_drugbank, license)
     cypher_file.write(query_update)
 
-    query_create = query_start + 'Create (b:Compound{identifier:line.identifier, drugbank:"yes", ' + query_create + 'resource:["DrugBank"], url:"http://www.drugbank.ca/drugs/"+line.identifier, license:"%s"}) Create (b)-[:equal_to_drugbank]->(a);\n'
+    query_create = query_start + 'Create (b:Compound{identifier:line.identifier, drugbank:"yes", ' + query_create + 'resource:["DrugBank"], source:"DrugBank", url:"http://www.drugbank.ca/drugs/"+line.identifier, license:"%s"}) Create (b)-[:equal_to_drugbank]->(a);\n'
     query_create = query_create % ('new_nodes', neo4j_label_drugbank, license)
     cypher_file.write(query_create)
 
@@ -409,7 +409,7 @@ def generation_of_interaction_file():
     csv_writer = csv.writer(g_csv, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     csv_writer.writerow(['db1', 'db2', 'description'])
     cypherfile = open('output/cypher_rela.cypher', 'w', encoding='utf-8')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/drugbank/compound_interaction/interaction.tsv" As line  Fieldterminator '\\t' Match (c1:Compound{identifier:line.db1}), (c2:Compound{identifier:line.db2}) Create (c1)-[:INTERACTS_CiC{source:"DrugBank", url:"http://www.drugbank.ca/drugs/"+line.db1, unbiased:false, resource:['DrugBank'], drugbank:'yes', url:line.url, license:'%s', descriptions:split(line.description,'||')}]->(c2);\n '''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/drugbank/compound_interaction/interaction.tsv" As line  Fieldterminator '\\t' Match (c1:Compound{identifier:line.db1}), (c2:Compound{identifier:line.db2}) Create (c1)-[:INTERACTS_CiC{source:"DrugBank", url:"http://www.drugbank.ca/drugs/"+line.db1, unbiased:false, resource:['DrugBank'], drugbank:'yes',  license:'%s', descriptions:split(line.description,'||')}]->(c2);\n '''
     query = query % (license)
     cypherfile.write(query)
     cypherfile.close()
