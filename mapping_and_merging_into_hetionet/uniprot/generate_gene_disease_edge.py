@@ -113,7 +113,9 @@ def get_pairs_information():
             # csv_gene_disease.writerow([gene_id,disease_id,rela['text']])
             dict_pairs_to_info[(gene_id,disease_id)]=[set([rela['text']]), pubmeds, references, protein_id]
         elif len(references)>0:
-            counter_without_references+=1
+            counter_added+=1
+            dict_pairs_to_info[(gene_id,disease_id)]=[set([rela['text']]), pubmeds, references, protein_id]
+            print('has refernce ')
             print(disease_id, gene_id, protein_id)
             print(disease_name, dict(rela))
             print(references)
