@@ -139,7 +139,7 @@ def map_others(cur, _CAT, nonmap_name, map_name):
     # ids: {"identifier of SideEffect (CUI)": "resource", ...}
     for entry in _CAT:
         ids[_CAT[entry][0]] = _CAT[entry][1]
-    unique_cuis = []
+    unique_cuis = set()
     # Iteriert über jeden Eintrag in to_SideEffect und speichert die CUIs ab, die schon neue
     # SideEffect Knoten erstellen sollen.
     # unique_cuis: ["CUI", ...] set
@@ -149,12 +149,11 @@ def map_others(cur, _CAT, nonmap_name, map_name):
         reader = csv.reader(f, delimiter="\t")
         # Speichert die CUIs die schon erstellt werden.
         for entry in reader:
-            unique_cuis.append(entry[0])
+            unique_cuis.add(entry[0])
         f.close()
         head = False
     else:
         head = True
-    unique_cuis = set(unique_cuis)
     # Datei die die neuen SideEffect Knoten enthält.
     f = open("FDA_mappings/to_SideEffect.tsv", 'a', encoding="utf-8", newline='')
     writer = csv.writer(f, delimiter="\t")
