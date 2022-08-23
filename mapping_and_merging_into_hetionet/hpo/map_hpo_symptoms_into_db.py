@@ -4,6 +4,7 @@ import csv
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 
 sys.path.append("..")
@@ -138,7 +139,7 @@ def generate_cypher_queries_and_tsv_files():
     query_create = query_create % (path_of_directory, file_name_new, ontology_date)
     cypher_file.write(query_create)
 
-    query = '''Match (s1:Symptom)--(:HPO_symptom)-[:is_a]->(:HPO_symptom)--(s2:Symptom) Where not ID(s1)=ID(s2) Merge (s1)-[:IS_A_SiaS{license:"HPO", source:"HPO", resource:["HPO"], hpo:"yes"}]->(s2);\n'''
+    query = '''Match (s1:Symptom)--(a:HPO_symptom)-[:is_a]->(:HPO_symptom)--(s2:Symptom) Where not ID(s1)=ID(s2) Merge (s1)-[:IS_A_SiaS{license:"HPO", source:"HPO", resource:["HPO"], hpo:"yes", url:"https://hpo.jax.org/app/browse/term/"+a.id}]->(s2);\n'''
     cypher_file.write(query)
 
     return csv_symptom_mapped, csv_symptom_new
@@ -171,6 +172,7 @@ def get_all_symptoms_and_add_to_dict():
         if name not in dict_name_to_symptom_id:
             dict_name_to_symptom_id[name] = set()
         dict_name_to_symptom_id[name].add(identifier)
+
 
         umls_cuis = name_to_umls_cui(name)
         for cui in umls_cuis:
@@ -248,6 +250,32 @@ def check_on_mapping_of_umls_cuis(umls_cuis, node_id, xrefs, how_mapped):
                     dict_mapped_mesh[mesh_id] = dict_node
     return found_one
 
+def map_names(name, how_mapped, node_id, xrefs):
+    found_one=False
+    if name in dict_name_to_symptom_id:
+        found_one = True
+        for mesh_id in dict_name_to_symptom_id[name]:
+            resource = dict_of_hetionet_symptoms[mesh_id]['resource'] if 'resource' in \
+                                                                         dict_of_hetionet_symptoms[
+                                                                             mesh_id] else []
+            resource.append('HPO')
+            resource = list(set(resource))
+            xrefs_mesh = dict_of_hetionet_symptoms[mesh_id]['xrefs'] if 'xrefs' in dict_of_hetionet_symptoms[
+                mesh_id] else []
+            xrefs_mesh = set(xrefs_mesh).union(xrefs)
+            if mesh_id in dict_mapped_mesh:
+                # dict_mapped_mesh[mesh_id]['how_mapped'].append('name')
+                dict_mapped_mesh[mesh_id]['hpos_how_mapped'].add((node_id, how_mapped))
+                dict_mapped_mesh[mesh_id]['xrefs'] = dict_mapped_mesh[mesh_id]['xrefs'].union(xrefs)
+            else:
+                dict_node = {
+                    # 'how_mapped': ['name'],
+                    'hpos_how_mapped': set([(node_id, how_mapped)]),
+                    'resource': resource,
+                    'xrefs': xrefs_mesh
+                }
+                dict_mapped_mesh[mesh_id] = dict_node
+    return found_one
 
 # dictionary mapped mesh ids to infos
 dict_mapped_mesh = {}
@@ -262,7 +290,7 @@ def map_hpo_symptoms_and_to_hetionet(csv_new):
     # query = '''MATCH (n:HPO_symptom) WHERE (n)-[:is_a*1..50]->(:HPO_symptom {id: "HP:0000118"}) and not exists(n.is_obsolete)  RETURN  n.id, n.name, n.xrefs'''
     # results = g.run(query)
 
-    query_nodes = 'MATCH (n:HPO_symptom) WHERE (n)-[:is_a*%s]->(:HPO_symptom {id: "HP:0000118"}) and not exists(n.is_obsolete) RETURN n.id, n.name, n.xrefs'
+    query_nodes = 'MATCH (n:HPO_symptom) WHERE (n)-[:is_a*%s]->(:HPO_symptom {id: "HP:0000118"}) and not exists(n.is_obsolete) RETURN n.id, n.name, n.xrefs, n.synonyms'
 
     count_mapped = 0
     counter_new = 0
@@ -273,7 +301,7 @@ def map_hpo_symptoms_and_to_hetionet(csv_new):
         new_query = query_nodes
         new_query = new_query % (str(i))
         results = g.run(new_query)
-        for node_id, name, xrefs, in results:
+        for node_id, name, xrefs, synonyms, in results:
             if node_id in dict_nodes:
                 continue
             dict_nodes[node_id] = (name, xrefs)
@@ -285,11 +313,7 @@ def map_hpo_symptoms_and_to_hetionet(csv_new):
                         mesh_ids.add(xref.split(':')[1])
 
                     elif xref[0:4] == 'UMLS':
-                        has_at_least_one_umls = True
                         umls_cuis.add(xref.split(':')[1])
-                    # else:
-                    #     print('other xref then umls :O')
-                    #     print(xref)
             else:
                 xrefs = []
 
@@ -314,21 +338,21 @@ def map_hpo_symptoms_and_to_hetionet(csv_new):
             #     count_mapped += 1
             #     continue
 
-            if len(umls_cuis) > 0:
-                found_one = check_on_mapping_of_umls_cuis(umls_cuis, node_id, xrefs, 'umls')
-
-            if found_one:
-                count_mapped += 1
-                continue
+            # if len(umls_cuis) > 0:
+            #     found_one = check_on_mapping_of_umls_cuis(umls_cuis, node_id, xrefs, 'umls')
+            #
+            # if found_one:
+            #     count_mapped += 1
+            #     continue
 
             # get umls id with str mapping
-            cur = con.cursor()
-            query = 'SELECT DISTINCT CUI FROM MRCONSO WHERE STR = "%s";' % name
-            rows_counter = cur.execute(query)
-            new_umls_cuis = []
-            if rows_counter > 0:
-                for (cui,) in cur:
-                    new_umls_cuis.append(cui)
+            # cur = con.cursor()
+            # query = 'SELECT DISTINCT CUI FROM MRCONSO WHERE STR = "%s";' % name
+            # rows_counter = cur.execute(query)
+            # new_umls_cuis = []
+            # if rows_counter > 0:
+            #     for (cui,) in cur:
+            #         new_umls_cuis.append(cui)
 
             # if len(umls_cuis) > 0:
             #     umls_cuis_string_for_mysql = "','".join(new_umls_cuis)
@@ -339,37 +363,24 @@ def map_hpo_symptoms_and_to_hetionet(csv_new):
             #     count_mapped += 1
             #     continue
 
-            if len(umls_cuis) > 0:
-                found_one = check_on_mapping_of_mesh_ids(new_umls_cuis, node_id, xrefs, 'name with umls')
+            # if len(umls_cuis) > 0:
+            #     found_one = check_on_mapping_of_mesh_ids(new_umls_cuis, node_id, xrefs, 'name with umls')
+            #
+            # if found_one:
+            #     count_mapped += 1
+            #     continue
 
+            name = name.lower()
+            found_one= map_names(name, 'name', node_id, xrefs)
             if found_one:
                 count_mapped += 1
                 continue
 
-            name = name.lower()
-            if name in dict_name_to_symptom_id:
-                found_one = True
-                for mesh_id in dict_name_to_symptom_id[name]:
-                    resource = dict_of_hetionet_symptoms[mesh_id]['resource'] if 'resource' in \
-                                                                                 dict_of_hetionet_symptoms[
-                                                                                     mesh_id] else []
-                    resource.append('HPO')
-                    resource = list(set(resource))
-                    xrefs_mesh = dict_of_hetionet_symptoms[mesh_id]['xrefs'] if 'xrefs' in dict_of_hetionet_symptoms[
-                        mesh_id] else []
-                    xrefs_mesh = set(xrefs_mesh).union(xrefs)
-                    if mesh_id in dict_mapped_mesh:
-                        # dict_mapped_mesh[mesh_id]['how_mapped'].append('name')
-                        dict_mapped_mesh[mesh_id]['hpos_how_mapped'].add((node_id, 'name'))
-                        dict_mapped_mesh[mesh_id]['xrefs'] = dict_mapped_mesh[mesh_id]['xrefs'].union(xrefs)
-                    else:
-                        dict_node = {
-                            # 'how_mapped': ['name'],
-                            'hpos_how_mapped': set([(node_id, 'name')]),
-                            'resource': resource,
-                            'xrefs': xrefs_mesh
-                        }
-                        dict_mapped_mesh[mesh_id] = dict_node
+            if synonyms:
+                for synonym in synonyms:
+                    synonym=pharmebinetutils.prepare_obo_synonyms(synonym).lower()
+                    found_one= map_names(synonym, 'synonyms', node_id, xrefs) or found_one
+
             if found_one:
                 count_mapped += 1
                 continue
