@@ -10,9 +10,15 @@ license='Attribution-NonCommercial 4.0 International'
 
 now=$(date +"%F %T")
 echo "Current time: $now"
-echo 'mapp Drugbank protein '
+echo 'map Drugbank protein '
 
 python3 merging_protein_into_hetionet.py "${license}" $path_to_project > protein/output_integration_file_generation.txt
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo 'map Drugbank pc '
+
+python3 integrate_pc.py $path_to_project "${license}" > pharmacological_class/output_integration_file_generation.txt
 
 
 now=$(date +"%F %T")
@@ -34,7 +40,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo 'integrate Drugbank reaction '
 
-# python3 prepare_drugbank_reaction.py "${license}" $path_to_project > reaction/output_integration_file_generation_rela.txt
+python3 prepare_drugbank_reaction.py "${license}" $path_to_project > reaction/output_integration_file_generation_rela.txt
 
 
 now=$(date +"%F %T")
