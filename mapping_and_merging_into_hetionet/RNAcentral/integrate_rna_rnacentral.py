@@ -38,23 +38,28 @@ def load_from_database():
 
     print(rna2_RNACentral['URS00019A6210_9606'])
     properties = []
+    properties_i = []
     query = "MATCH (p:rna1_RNACentral) WITH DISTINCT keys(p) AS keys UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields RETURN allfields"
     result = g.run(query)
     for property, in result:
+
         properties.append(property)
+        if property != 'rnacentral_id':
+            properties_i.append(property)
+        else:
+            properties_i.append('identifier')
     properties.append('locations')
+    properties_i.append('locations')
 
     print(datetime.datetime.now())
     print("######### Start: generate TSV #########")
 
-    query = "MATCH (n:rna1_RNACentral) RETURN n, n.rnacentral_id"
+    query = "MATCH (n:rna1_RNACentral) RETURN n, n.rnacentral_id "
     result = g.run(query)
 
     file_name = 'output/RNACentral.tsv'
     with open(file_name, 'w', newline='') as tsv_file:
         writer = csv.writer(tsv_file, delimiter='\t')
-        properties_i = properties.copy()
-        properties_i[2] = "identifier"
         writer.writerow(properties_i)
 
         for node, rnacentral_id in result:
@@ -95,7 +100,8 @@ def cypher(keys, file_name, label, unique_identifier):
     query = query + 'Create (p:%s{' % (label)
 
     for x in keys:
-        if x in ['itemRgb', 'xrefs', 'databases', 'locations']:  # properties that are lists must be splitted
+        if x in ['itemRgb', 'xrefs', 'databases', 'locations',
+                 'geneName']:  # properties that are lists must be splitted
             query += x + ':split(line.' + x + ',"|"), '
         else:
             query += x + ':line.' + x + ', '
