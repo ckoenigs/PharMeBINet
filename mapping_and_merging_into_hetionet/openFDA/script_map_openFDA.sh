@@ -17,7 +17,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo gene and disease
 
-python3 mapping_CAERSReport_reaction_openFDA.py $path_to_project > output/output_map_CAERSReport.txt
+# python3 mapping_CAERSReport_reaction_openFDA.py $path_to_project > output/output_map_CAERSReport.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -36,12 +36,12 @@ python3 mapping_DrugAdverseEvent_reaction_openfda_openFDA.py $path_to_project > 
 
 now=$(date +"%F %T")
 echo "Current time: $now"
-# currently no use for this
+# currently no use for this because no edges can be extracted
 #python3 mapping_DrugRecallEnforcementReport_openfda_openFDA.py $path_to_project > output/output_map_DrugRecall.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
-# currently no use for this
+# currently no use for this because no edge information can be extract from this
 #python3 mapping_NationalDrugCodeDirectory_openFDA.py $path_to_project > output/output_mapping_National.txt
 
 now=$(date +"%F %T")
