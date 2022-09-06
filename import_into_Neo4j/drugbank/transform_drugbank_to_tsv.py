@@ -860,6 +860,7 @@ for i, drug in enumerate(root):
         # information for reaction node
         reaction['sequence'] = part.findtext("{ns}sequence".format(ns=ns))
         reaction['id'] = counter_reaction_ids
+        reaction['start_drugbank_id']=db_ID
         reaction_id = counter_reaction_ids
         counter_reaction_ids += 1
         left = part.findtext("{ns}left-element/{ns}drugbank-id".format(ns=ns))
@@ -1161,7 +1162,7 @@ columns_metabolites = ['drugbank_id', 'name']
 columns_has_component = ['target_id', 'petide_id']
 columns_drug_pharmacologic_class = ['drugbank_id', 'category']
 columns_pharmacologic_class = ['id', 'name', 'mesh_id']
-columns_reaction = ['id', 'sequence']
+columns_reaction = ['id', 'sequence', 'start_drugbank_id']
 columns_reaction_left_db = ['reaction_id', 'drug_id']
 columns_reaction_left_dbmet = ['reaction_id', 'meta_id']
 columns_reaction_right_db = ['reaction_id', 'drug_id']
