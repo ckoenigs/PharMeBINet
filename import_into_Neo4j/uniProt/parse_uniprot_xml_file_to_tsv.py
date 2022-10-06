@@ -502,10 +502,10 @@ def run_trough_xml_and_parse_data():
                             if 'protein_protein' not in dict_node_type_to_tsv:
                                 generates_rela_tsv_file_and_cypher('protein',
                                                                    ['protein_id', 'protein_id_2', 'organismsDiffer',
-                                                                    'experiments', 'interaction_ids',
+                                                                    'number_of_experiments', 'interaction_ids',
                                                                     'iso_of_protein_from', 'iso_of_protein_to'],
                                                                    'interaction',
-                                                                   ['interaction_ids','experiments'])
+                                                                   ['interaction_ids','number_of_experiments'])
                             interact_id = subchild.attrib['intactId']
                             add_key_value_to_dictionary_as_list(dict_comment, 'interaction_ids', interact_id)
                             interacter_uniprot_id_element = subchild.find("{ns}id".format(ns=ns))
@@ -626,7 +626,10 @@ def run_trough_xml_and_parse_data():
                             dict_attributes = dict(subchild.attrib)
                             dict_comment.update(dict_attributes)
                         elif sub_tag in ['organismsDiffer', 'experiments']:
-                            dict_comment[sub_tag] = subchild.text
+                            if "experiments"==sub_tag:
+                                dict_comment['number_of_experiments']=subchild.text
+                            else:
+                                dict_comment[sub_tag] = subchild.text
 
                         else:
                             print("%s - %s - %s" % (sub_tag, subchild.text, subchild.attrib))
