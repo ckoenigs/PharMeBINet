@@ -138,7 +138,7 @@ def get_data():
         url = "http://www.rnadisease.org/static/download/RNADiseasev4.0_RNA-disease_experiment_all.zip"
         wget.download(url, out='data/')
         archive = zipfile.ZipFile(file_name, 'r')
-        
+
     file = archive.open('RNADiseasev4.0_RNA-disease_experiment_all.xlsx')
     df = pd.read_excel(file)
 
