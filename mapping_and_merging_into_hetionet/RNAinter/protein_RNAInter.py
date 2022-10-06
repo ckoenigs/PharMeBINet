@@ -68,7 +68,7 @@ def protein_RNAInter():
     file_name='output/Proteinedges.tsv'
     with open(file_name, 'w', newline='') as tsv_file:
         writer = csv.writer(tsv_file, delimiter='\t')
-        line = ["Raw_ID", "identifier"]
+        line = ["identifier", "Raw_ID", "resource"]
         writer.writerow(line)
         for key, value in Protein_RNAInter.items():
             list = []
