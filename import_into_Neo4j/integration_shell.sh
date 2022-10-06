@@ -45,6 +45,17 @@ cd ..
 now=$(date +"%F %T")
 echo "Current time: $now"
 
+cd gencc
+echo gencc
+
+./script_integrate_gencc.sh $path_neo4j $path_to_project > output.txt
+
+
+cd ..
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
 cd smpdb 
 echo smpdb
 
@@ -195,6 +206,19 @@ echo RNACentral
 
 ./script_rna_central.sh $path_neo4j $path_to_project > output_script.txt
 
+
+cd ..
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+cd  RNAdisease
+echo RNAdisease
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+./script_rnadisease.sh $path_neo4j $path_to_project > output/script_output.txt
 
 cd ..
 
