@@ -38,7 +38,7 @@ python3 generate_gene_disease_edge.py $path_to_project > uniprot_disease/output_
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo 'protein-protein interaction'
-python3 prepare_interaction_edges.py $path_to_project > output/output_disease.txt
+python3 prepare_interaction_edges.py $path_to_project > output/output_edges.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
