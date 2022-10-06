@@ -37,7 +37,7 @@ load in all compound from hetionet in a dictionary
 
 
 def load_db_genes_in():
-    query = '''MATCH (n:Gene) RETURN n.identifier,n.geneSymbol, n.resource, n.synonyms, n.xrefs'''
+    query = '''MATCH (n:Gene) RETURN n.identifier,n.gene_symbols, n.resource, n.synonyms, n.xrefs'''
     results = g.run(query)
 
     for identifier, gene_symbols, resource, synonyms, xrefs, in results:
