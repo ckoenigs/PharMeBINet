@@ -294,7 +294,7 @@ def write_cypher_file():
 
     results = g.run(query_property)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/uniprot/db_uniprot_ids.tsv" As line FIELDTERMINATOR "\\t" MATCH (p:Protein_Uniprot{identifier:line.uniprot_id}) Create (p)<-[:equal_to_uniprot]-(:Protein{'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/uniprot/output/db_uniprot_ids.tsv" As line FIELDTERMINATOR "\\t" MATCH (p:Protein_Uniprot{identifier:line.uniprot_id}) Create (p)<-[:equal_to_uniprot]-(:Protein{'''
 
     for property, in results:
         # the go classifiers are in the rela to bc, cc and mf and the gene information are in the rela to gene
@@ -346,7 +346,7 @@ Load all uniprots ids of the proteins and check out which appears also in the un
 
 def get_gather_protein_info_and_generate_relas():
     # file with every uniprot identifier
-    file_uniprots_ids = open('db_uniprot_ids.tsv', 'w')
+    file_uniprots_ids = open('output/db_uniprot_ids.tsv', 'w')
     writer_uniprots_ids = csv.writer(file_uniprots_ids, delimiter='\t')
     writer_uniprots_ids.writerow(['uniprot_id', 'xrefs'])
 
