@@ -6,7 +6,7 @@ path_neo4j=$1
 #path to project
 path_to_project=$2
 
-# python3 integrate_RNAcentral.py $path_to_project > output/output_integration_aeolus.txt 
+# python3 integrate_RNAcentral.py $path_to_project > output/output_integration_rnacentral.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
