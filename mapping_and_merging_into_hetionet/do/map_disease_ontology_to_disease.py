@@ -136,9 +136,9 @@ def generate_cypher_file():
     query_middel_set = ''
     query_middel_set_alt = ''
     for header in header_nodes:
-        if header in ['how_mapped', 'mondo_id', 'identifier']:
+        if header in ['how_mapped', 'mondo_id', 'umls_cuis', 'identifier']:
             continue
-        if header in ['synonyms', 'alternative_ids', 'umls_cuis', 'resource']:
+        if header in ['synonyms', 'alternative_ids',  'resource']:
             query_middel_set += 'n.' + header + '=split(line.' + header + ',"|"), '
             continue
         query_middel_set += 'n.' + header + '=line.' + header + ', '
