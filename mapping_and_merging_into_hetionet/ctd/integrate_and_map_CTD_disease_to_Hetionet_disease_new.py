@@ -503,6 +503,85 @@ def map_with_name():
     print('number of not mapped ctd disease:' + str(len(list_not_mapped_to_mondo)))
 
 
+# dictionary symptom id to resource
+dict_symptom_id_to_resource={}
+
+# dictionary symptom id to resource
+dict_symptom_name_to_ids={}
+
+# dictionary symptom id to resource
+dict_symptom_mesh_to_ids={}
+
+def load_symptoms_information():
+    query= "Match (n:Symptom) Return n.identifier, n.name, n.synonyms, n.xrefs, n.resource"
+    results=g.run(query)
+    for identifier, name, synonyms, xrefs, resource, in results:
+        dict_symptom_id_to_resource[identifier]=resource
+        pharmebinetutils.add_entry_to_dict_to_set(dict_name_synonym_to_mondo_id, name.lower(), identifier)
+        if synonyms:
+            for synonym in synonyms:
+                pharmebinetutils.add_entry_to_dict_to_set(dict_name_synonym_to_mondo_id, synonym.lower(), identifier)
+        if xrefs:
+            for xref in xrefs:
+                if xref.startswith('MESH'):
+                    pharmebinetutils.add_entry_to_dict_to_set(dict_symptom_mesh_to_ids, xref.split(':')[1], identifier)
+
+
+
+
+def map_to_symptoms():
+    # all mesh and omim identifier which are mapped in this function
+    delete_map_mondo = []
+    file = open("disease_Disease/mapped_to_symptoms.tsv",'w', encoding='utf-8')
+    csv_writer= csv.writer(file, delimiter='\t')
+    header=['ctd_id', 'node_id', 'mondos','resource', 'how_mapped']
+    csv_writer.writerow(header)
+    counter_mapped=0
+    for ctd_disease_id in list_not_mapped_to_mondo:
+        name = dict_CTD_disease[ctd_disease_id].name.lower()
+
+        found_mapping=False
+
+
+
+        if name in dict_name_synonym_to_mondo_id:
+            found_mapping = True
+            mapped_ids = dict_name_synonym_to_mondo_id[name]
+            mapping_ids_string = '|'.join(mapped_ids)
+            for mapped_id in mapped_ids:
+                csv_writer.writerow(
+                    [ctd_disease_id, mapped_id, mapping_ids_string, '|'.join(dict_symptom_id_to_resource[mapped_id]),
+                     'name'])
+
+        if found_mapping:
+            counter_mapped+=1
+            continue
+
+        # mapping from Melanosis [D008548] to Freckling is wrong
+        # the same goes for:
+        # "Choristoma"	"D002828" to	"Gray matter heterotopia"
+        # "Dermatitis, Perioral"	"D019557" to	"Chapped lip"
+        if ctd_disease_id in ["D008548", "D002828", "D019557"]:
+            continue
+
+        if ctd_disease_id in dict_symptom_mesh_to_ids:
+            found_mapping = True
+            mapped_ids = dict_symptom_mesh_to_ids[ctd_disease_id]
+            mapping_ids_string = '|'.join(mapped_ids)
+            for mapped_id in mapped_ids:
+                csv_writer.writerow(
+                    [ctd_disease_id, mapped_id, mapping_ids_string, '|'.join(dict_symptom_id_to_resource[mapped_id]),
+                     'mesh'])
+
+        if found_mapping:
+            counter_mapped+=1
+
+
+    print('From the number of not mapped:' , len(list_not_mapped_to_mondo)," are now so many mapped:", counter_mapped)
+
+
+
+
 # files for the different map strategies
 map_mesh_omim_to_mondo_file = open('disease_Disease/map_CTD_disease_mesh_omim_to_mondo.tsv', 'w', encoding='utf-8')
 header = ['CTD MESH/OMIM', 'type', 'name', 'Monarch Disease Ontology divided by |', 'mondo names', 'map_id']
@@ -640,13 +719,9 @@ def integrate_disease_into_hetionet():
     print(dict_how_mapped_to_multiple_mapping)
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/ctd/disease_Disease/ctd_hetionet.tsv" As line  FIELDTERMINATOR '\\t' MATCH (n:CTD_disease{disease_id:line.CTD_diseaseID}), (d:Disease{identifier:line.HetionetDiseaseId}) Merge (d)-[:equal_CTD_disease{how_mapped:line.how_mapped}]->(n) Set  n.mondos=split(line.mondos, '|') With line, d, n Where not exists(d.ctd) Set d.resource=split(line.resource,"|") , d.ctd='yes', d.ctd_url='http://ctdbase.org/detail.go?type=disease&acc='+line.CTD_diseaseID;\n '''
     cypher_file.write(query)
-
-    # set mondo value where not existing
-    cypher_file.write(':begin\n')
-    # set all ctd disease which are not mapped the mondo as empty
-    query = '''MATCH (n:CTD_disease) Where Not Exists(n.mondos) SET n.mondos=[];\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/ctd/disease_Disease/mapped_to_symptoms.tsv" As line  FIELDTERMINATOR '\\t' MATCH (n:CTD_disease{disease_id:line.ctd_id}), (d:Symptom{identifier:line.node_id}) Merge (d)-[:equal_CTD_disease{how_mapped:line.how_mapped}]->(n) Set  n.mondos=split(line.mondos, '|') With line, d, n Where not exists(d.ctd) Set d.resource=split(line.resource,"|") , d.ctd='yes', d.ctd_url='http://ctdbase.org/detail.go?type=disease&acc='+line.CTD_diseaseID;\n '''
     cypher_file.write(query)
-    cypher_file.write(':commit\n')
+
 
     # generate a file with all not mapped diseases from ctd
     file_not_map = open('disease_Disease/not_map_CTD_disease.tsv', 'w', encoding='utf-8')
@@ -733,6 +808,22 @@ def main():
     print('Map ctd disease name to mondo name and synonyms')
 
     map_with_name()
+
+    print(
+        '###########################################################################################################################')
+
+    print(datetime.datetime.now())
+    print('Load symptoms information into dictionary')
+
+    load_symptoms_information()
+
+    print(
+        '###########################################################################################################################')
+
+    print(datetime.datetime.now())
+    print('Map the not mapped to symptoms')
+
+    map_to_symptoms()
 
     print(
         '###########################################################################################################################')
