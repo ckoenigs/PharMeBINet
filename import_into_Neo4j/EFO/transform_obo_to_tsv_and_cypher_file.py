@@ -61,7 +61,7 @@ def add_information_to_dictionary(dict_all_info, key_term, value):
         value=splitted_value[0]
         if len(splitted_value)>1:
             if  key_term=='xref' and not ('equivalentTo'  in splitted_value[1] or 'xref=' in splitted_value[1]): # ('superClassOf' in splitted_value[1] or 'subClassOf' in splitted_value[1]) and
-                print('removed', splitted_value)
+                # print('removed', splitted_value)
                 return
     # for some properties more than one value appears
     if not key_term in dict_all_info:
@@ -167,6 +167,7 @@ def extract_information_from_block(group, is_type):
                     print('test')
                 counter_rela += 1
                 splitted_parent_id = parent_id.split(' ')
+                key_term = key_term.replace('-','_')
                 if len(splitted_parent_id) > 1:
                     # should be only intersection_of
                     if len(splitted_parent_id) == 2:
@@ -185,7 +186,7 @@ def extract_information_from_block(group, is_type):
         # is a relationship but depending on the type it is add to a different set
         else:
             rela_info = value.split('!')[0].split(' ')
-            rela_type = rela_info[0]
+            rela_type = rela_info[0].replace('-','_')
             parent_id = rela_info[1]
             if parent_id == 'DOID:4606':
                 print('test')
@@ -281,7 +282,7 @@ def generate_cypher_file():
                     # because a typedef can have multiple names only one is needed
                     if len(type_def[rela_type]['name'].split('|')) > 1:
                         type_def[rela_type]['name'] = type_def[rela_type]['name'].split('|')[0]
-                    rela_type = type_def[rela_type]['name'].replace(' ', '_') if not '/' in type_def[rela_type][
+                    rela_type = type_def[rela_type]['name'].replace(' ', '_').replace('-','_') if not '/' in type_def[rela_type][
                         'name'] else rela_type
 
 
@@ -290,7 +291,7 @@ def generate_cypher_file():
         file = open('output/' + file_name, 'w')
         csv_writer = csv.writer(file, delimiter='\t')
         list_of_infos = list(list_of_infos)
-        # depending if the relationships contains also information about a relationships type the qury and the csv file is a bit different
+        # depending if the relationships contains also information about a relationships type the query and the csv file is a bit different
         if len(list_of_infos[0]) == 2:
             query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/%s/output/%s" As line Fieldterminator '\\t' Match (a:%s{id:line.child_id}), (b:%s{id:line.parent_id}) Create (a)-[:%s]->(b); \n'''
             csv_writer.writerow(header_for_two)
