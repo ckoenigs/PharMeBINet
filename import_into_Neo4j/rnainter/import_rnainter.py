@@ -39,9 +39,10 @@ def cypher_edge(filename, label, properties, edge_name):
     query_start = f'Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:{path_of_directory}import_into_Neo4j/rnainter/{filename}" As line fieldterminator "\\t" '
     query = query_start + f'Match (p1:rna_RNAInter{{Raw_ID:line.Raw_ID1}}),(p2:{label}_RNAInter{{Raw_ID:line.Raw_ID2}}) Create (p1)-[:{edge_name}{{  '
     for header in properties:
-        # ignore key labels (wie diseaseId)
-
-        query += f'{header}:line.{header}, '
+        if header in ['strong', 'weak', 'predict']:
+            query += header + ':split(line.' + header + ',"|"), '
+        else:
+            query += f'{header}:line.{header}, '
 
     query = query[:-2] + '}]->(p2);\n'
     cypher_file.write(query)
@@ -63,6 +64,8 @@ def edges(file, name):
 
     edge["Raw_ID1"].fillna(edge["Interactor1"], inplace=True)
     edge["Raw_ID2"].fillna(edge["Interactor2"], inplace=True)
+
+    edge = edge.replace(to_replace="//", value="|", regex=True)
     edge = edge.set_index("RNAInterID")
     file_name = "output/rna_" + name + ".tsv"
     edge.to_csv(file_name, sep='\t')
@@ -119,11 +122,12 @@ def main():
 
     d = {"rna": "Download_data_RR.tar.gz", "protein": "Download_data_RP.tar.gz",
          "dna": "Download_data_RD.tar.gz", "compound": "Download_data_RC.tar.gz",
-         "histone": "Download_data_RH.tar.gz"
-         }
+         "histone": "Download_data_RH.tar.gz"}
 
     print('##################################################################################')
     print(datetime.datetime.now())
+
+    # pd.concat(d)
 
     rna = pd.DataFrame()
     file_name_rna = "output/rna.tsv"
@@ -141,13 +145,11 @@ def main():
         a = nodes(csv, i)
         rna = pd.concat([rna, a])
         edges(csv, i)
-        # break
 
     rna["Raw_ID1"].fillna(rna["Interactor1"], inplace=True)
     rna = rna.drop_duplicates(subset=['Raw_ID1'])
     rna = rna.set_index('Raw_ID1')
     rna.to_csv(file_name_rna, sep='\t')
-
     print('##################################################################################')
     print(datetime.datetime.now())
 
