@@ -8,4 +8,4 @@ First, download the HIPPIE txt file and open it as a TSV file. Next, the TSV fil
 
 Then the script executes the cypher file with Neo4j cypher-shell.
 
-License:Creative Commons Attribution-ShareAlike 4.0 International Public License
+License:Free to use for academic purposes
