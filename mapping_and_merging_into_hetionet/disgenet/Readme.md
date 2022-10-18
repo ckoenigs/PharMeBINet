@@ -2,7 +2,7 @@ The script to merge DisGeNET information into the database contains one script:
 First, the DisGeNET proteins are mapped to Protein. 
     Therefore, first, the identifiers and alternative identifiers of protein are loaded.
     Then the TSV file and the cypher file are generated with the additional cypher query. 
-    Next, the DIsGeNET proteins are loaded and mapped with the UniProt id to the identifier and alternative id. All mapped pairs are written into the TSV file.
+    Next, the DisGeNET proteins are loaded and mapped with the UniProt id to the identifier and alternative id. All mapped pairs are written into the TSV file.
 
 Next, the DisGeNET variants are mapped to Variant:
     First, all variants with dbSNP as xref are loaded and written into a dictionary.
@@ -15,7 +15,19 @@ Then the DisGeNET gene mapping:
     In the last step, The DisGeNet genes are loaded and mapped to genes with NCBI identifiers. All mapping pairs are written into the TSV file.
 
 The last mapping is DisGeNET disease to disease/symptom:
-    TODO
+    First, the disease and symptom information is loaded into different dictionaries. For diseases in UMLS, a UMLS cui is searched based on the name.
+    Then, the cypher queries are prepared for DisGeNet disease to disease or symptom.
+    In the following, the DisGeNet diseases are loaded:
+        the first mapping is with the UMLS from DisGenet to UMLS id of disease with additional name mapping to improve quality.
+        Next, mapping with DisGeNet disease name to disease name and synonyms.
+        Then, mapping with the UMLS from DisGenet to UMLS id of symptoms with additional name mapping to improve quality.
+        Next, mapping with DisGeNet disease name to symptom name and synonyms.
+        The last mapping to symptom is with the HPO xref of DisGeNet disease to symptom HPO xref.
+        In the following, the DisGeNet disease UMLS cui is mapped to the disease UMLS cuis from UMLS with a name search.
+        The last mapping is between the DisGeNet disease xrefs and the disease xrefs for "OMIM", "NCIT",  "ICD10": "ICD10", "ICD9" and "DOID".
+    The mapping pairs are written into TSV files.
+
+
 
 Then the mapping information is integrated into the database with the Neo4j cypher shell.
 

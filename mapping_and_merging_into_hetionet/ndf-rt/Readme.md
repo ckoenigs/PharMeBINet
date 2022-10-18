@@ -1,9 +1,11 @@
 The NDF-RT script contains a lot of mapping script merge the information into the database and also prepared the relationships for the integration.
 
-First, the NDF-RT disease is mapped to disease.
-    First, all information for mapping is loaded from NDF-RT disease and disease.
-    Then the first mapping is the NDF-RT disease external reference UMLS Cui and MESH id to disease external reference UMLS Cui and MESH id.
-    The next mapping method I based on NDF-RT disease name to disease name and synonyms.
+First, the NDF-RT disease is mapped by disease and symptom.
+    First, all information for mapping is loaded from NDF-RT disease, disease, and symptom.
+        Then the first mapping is the NDF-RT disease external reference UMLS Cui and MESH id to disease external reference UMLS Cui and MESH id.
+        The next mapping method is based on NDF-RT disease name to disease name and synonyms.
+        The following mapping is with NDF-RT disease name to symptom name and synonyms.
+        The last mapping method is the NDF-RT disease external reference UMLS Cui and MESH id to symptom external reference UMLS Cui and MESH id.
     In the last step, the cypher query that integrates NDF-RT information into the database is added to the cypher file.
 
 Then, the NDF-RT drugs are mapped to the chemical.
