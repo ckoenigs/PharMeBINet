@@ -28,13 +28,32 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo map rna
 
-# python3 rna_RNAInter.py $path_to_project > output/rna_map.txt
+python3 rna_RNAInter.py $path_to_project > output/rna_map.txt
 
 echo integrate connection with neo4j shell
 now=$(date +"%F %T")
 echo "Current time: $now"
 
 $path_neo4j/cypher-shell -u neo4j -p test -f output/cypher.cypher 
+
+sleep 60
+
+$path_neo4j/neo4j restart
+
+
+sleep 120
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo map edge
+
+python3 RNAedges.py $path_to_project > output/rna_edge.txt
+
+echo integrate connection with neo4j shell
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher_edge.cypher
 
 sleep 60
 
