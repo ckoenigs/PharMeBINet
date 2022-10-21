@@ -9,10 +9,12 @@ import csv, sys
 cypher_file=open("cypher.cypher","w",encoding="utf-8")
 
 
-def nodes_edges(file):
+def nodes_edges(df):
     print("########### Start: nodes_edges() ###############")
     rnanodes = {}
     diseasenodes={}
+
+    file = df.loc[:, ["species", "RNA_Symbol", "RNA_Type", "Disease_Name", "DO_ID", "MeSH_ID", "KEGG_disease_ID"]]
     file = file.replace(np.nan, '')
 
     for index, row in file.iterrows():
@@ -60,8 +62,11 @@ def nodes_edges(file):
     cypher_node(['RNA_Symbol','RNA_Type'], file_name_rna,'RNA_Symbol', 'rna_RNADisease')
     cypher_node(["Disease_Name","DO_ID",'MeSH_ID','KEGG_disease_ID'], file_name_disease, "Disease_Name", 'disease_RNADisease')
 
-    edges = file[["RNA_Symbol", "Disease_Name", "RDID","PMID","score"]]
+    edges = df.loc[:,["RNA_Symbol", "Disease_Name", "RDID","PMID","score"]]
     edges.drop_duplicates()
+    edges["PMID"] = edges["PMID"].replace(np.nan, -1)
+    edges["PMID"] = edges["PMID"].astype(int)
+    edges["PMID"] = edges["PMID"].replace(-1, '')
     file_name_edge="output/rna_disease_RNADisease.tsv"
     edges.to_csv(file_name_edge, sep='\t', index=False)
     cypher_edge(file_name_edge, 'rna_RNADisease', 'disease_RNADisease', ["RDID","PMID","score"], 'associate_rna_disease')
