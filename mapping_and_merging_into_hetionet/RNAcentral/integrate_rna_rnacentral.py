@@ -3,6 +3,7 @@ import json, sys
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 '''
 create a connection with neo4j
@@ -17,6 +18,34 @@ def create_connection_with_neo4j():
 
 # cypher file
 cypher_file = open("output/cypher.cypher", "w", encoding="utf-8")
+
+# dictionary hgnc to gene ids
+dict_hgnc_to_ids={}
+
+# dictionary ensembl to gene ids
+dict_ensmbl_to_ids={}
+
+# dictionary gene_symbol to gene ids
+dict_gene_symbol_to_ids={}
+
+# dictionary gene id to resource
+dict_gene_id_to_resource={}
+
+def load_gene_into_dictionary():
+    query="Match (a:Gene) Return a.identifier, a.xrefs, a.resource, a.gene_symbols"
+    result=g.run(query)
+    for gene_id, xrefs, resource, gene_symbols,  in result:
+        dict_gene_id_to_resource[gene_id]=resource
+        for gene_symbol in gene_symbols:
+            pharmebinetutils.add_entry_to_dict_to_set(dict_gene_symbol_to_ids, gene_symbol.lower(), gene_id)
+
+        if xrefs:
+            for xref in xrefs:
+                if xref.startswith("HGNC"):
+                    pharmebinetutils.add_entry_to_dict_to_set(dict_hgnc_to_ids, xref.split(':')[1], gene_id)
+                elif xref.startswith("Ensembl"):
+                    pharmebinetutils.add_entry_to_dict_to_set(dict_ensmbl_to_ids, xref.split(':')[1], gene_id)
+
 
 
 def load_from_database():
@@ -58,11 +87,25 @@ def load_from_database():
     result = g.run(query)
 
     file_name = 'output/RNACentral.tsv'
+    counter=0
     with open(file_name, 'w', newline='') as tsv_file:
         writer = csv.writer(tsv_file, delimiter='\t')
         writer.writerow(properties_i)
-
         for node, rnacentral_id in result:
+            if "geneName" in node:
+                for gene_name in node["geneName"]:
+                    if gene_name.startswith("ENSG"):
+                        if gene_name in dict_ensmbl_to_ids:
+                            counter+=1
+                    elif gene_name.lower() in dict_gene_symbol_to_ids:
+                        counter+=1
+
+            if "xrefs" in node:
+                for xref in node["xrefs"]:
+                    if xref.startswith("HGNC"):
+                        hgnc_id=xref.split(':')[-1]
+                        if hgnc_id in dict_hgnc_to_ids:
+                            counter+=1
             list = []
             for i in properties:
                 if i == "locations" and rnacentral_id in rna2_RNACentral:
@@ -79,6 +122,7 @@ def load_from_database():
             writer.writerow(list)
     tsv_file.close()
     print(datetime.datetime.now())
+    print('mapping to gene:', counter)
     print("######### End: generate TSV #########")
 
     cypher(properties_i, file_name, "RNA", 'identifier')
@@ -122,9 +166,17 @@ def main():
     else:
         sys.exit('need a path rnaCentral')
 
+    print(datetime.datetime.now())
+    print('#########################################################################')
     print('Generate connection to Neo4j')
     print(datetime.datetime.now())
     create_connection_with_neo4j()
+
+    print(datetime.datetime.now())
+    print('#########################################################################')
+    print('Load gene information')
+
+    load_gene_into_dictionary()
 
     print('Generate connection to Neo4j')
     print(datetime.datetime.now())
