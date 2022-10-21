@@ -49,7 +49,7 @@ def dna_RNAInter():
     query = "MATCH (n:Gene) RETURN n.identifier, n.resource"
     result = g.run(query)
 
-    file_name = 'output/DNAedges.tsv'
+    file_name = 'output/DNA_mapping.tsv'
     with open(file_name, 'w', newline='') as tsv_file:
         writer = csv.writer(tsv_file, delimiter='\t')
         line = ["identifier", "Raw_ID", "resource"]

@@ -65,7 +65,7 @@ def compound_RNAInter():
     CompoundChemical = {}
 
     # save the identifier and the Raw_ID in a tsv file
-    file_name='output/Compoundedges.tsv'
+    file_name='output/Compound_mapping.tsv'
     with open(file_name, 'w', newline='') as tsv_file:
         writer = csv.writer(tsv_file, delimiter='\t')
         line = [ "Raw_ID","identifier", "resource", "how_mapped"]

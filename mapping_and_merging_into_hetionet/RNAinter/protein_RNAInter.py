@@ -65,7 +65,7 @@ def protein_RNAInter():
             Protein_RNAInter[protein]["resource"] = newresource
 
     # save the identifier and the Raw_ID in a tsv file
-    file_name='output/Proteinedges.tsv'
+    file_name='output/Protein_mapping.tsv'
     with open(file_name, 'w', newline='') as tsv_file:
         writer = csv.writer(tsv_file, delimiter='\t')
         line = ["identifier", "Raw_ID", "resource"]
