@@ -40,7 +40,7 @@ def genome_coordinates():
                   inplace=True)
     del file['-']
     file = file.replace(",", "|", regex=True)
-    file.to_csv("homo_sapiens_RNACentral.tsv", sep='\t', index=False)
+    file.to_csv("output/homo_sapiens_RNACentral.tsv", sep='\t', index=False)
     print("########### End: genome_coordinates() ###############")
 
 def get_json():
@@ -106,10 +106,10 @@ def homo_json():
 
     # Merging the genome coordinates dataframe and the json dataframe together into one by aligning the rows from each based on the common attribute RNACentralID
     # The “outer” merge combines all the rows for left and right dataframes with NaN when there are no matched values in the rows.
-    file_coordinates = pd.read_csv("homo_sapiens_RNACentral.tsv", sep='\t')
+    file_coordinates = pd.read_csv("output/homo_sapiens_RNACentral.tsv", sep='\t')
     file_coordinates = file_coordinates.merge(all_json, how='outer')
 
-    file_coordinates.to_csv('homo_sapiens_coord_json.tsv', sep='\t')
+    file_coordinates.to_csv('output/homo_sapiens_coord_json.tsv', sep='\t')
 
     print("########### End: homo_json() ###############")
 
@@ -131,7 +131,13 @@ def json_url(name_json, filepath):
 def id_mapping():
     '''
     Prepares the id mapping file by saving the relevant information into a dictionary
-    file: id_mapping.tsv.gz - RNAcentral id, corresponding external id, NCBI taxon id, RNA type (according to INSDC classification), gene name
+    file: id_mapping.tsv.gz -
+    0: RNAcentral id,
+    1: database
+    2: corresponding external id,
+    3: NCBI taxon id,
+    4: RNA type (according to INSDC classification),
+    5: gene name
     :return dictionary
     '''
 
@@ -166,7 +172,7 @@ def id_mapping():
 
 def complete_dictionary(d_map):
     print("########### Start: complete_dictionary() ###############")
-    df = pd.read_csv('homo_sapiens_coord_json.tsv', sep='\t')
+    df = pd.read_csv('output/homo_sapiens_coord_json.tsv', sep='\t')
 
     # generates a final dictionary
     d = {}
