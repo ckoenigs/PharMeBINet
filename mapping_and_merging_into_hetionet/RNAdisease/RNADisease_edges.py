@@ -30,13 +30,18 @@ def cypher_edge(file_name, label1, label2,properties, edge_name):
     query_start = f'Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:{path_of_directory}mapping_and_merging_into_hetionet/RNAdisease/{file_name}" As line fieldterminator "\t" '
     query = query_start + f'Match (p1:{label1}{{identifier:line.id1}}),(p2:{label2}{{identifier:line.id2}}) Create (p1)-[:{edge_name}{{ '
     for header in properties:
-            query += f'{header}:split(line.{header},"|")}}]->(p2);\n'
+        if header in ["RDID", "PMID"]:
+            query += header + ':split(line.' + header + ',"|"), '
+        else:
+            query += f'{header}:line.{header}, '
+
+    query = query[:-2]+'}]->(p2);\n'
     cypher_file.write(query)
 
 
 def edges():
     names = ["Disease","Symptom"]
-    score = 0.8
+    score = 0.5
     i = 0
 
     LIMIT = 20000
@@ -47,32 +52,37 @@ def edges():
         counter = 0
         with open(file_name, 'w', newline='') as tsv_file:
             writer = csv.writer(tsv_file, delimiter='\t')
-            writer.writerow(["id1", "id2", "associate"])
+            writer.writerow(["id1", "id2", "score", "RDID", "PMID"])
             current_counter = LIMIT
             index = 0
             while current_counter == LIMIT:
-                query = "MATCH (n:RNA)--(:rna_RNADisease)-[r]-(:disease_RNADisease)--(m:%s) WHERE toFloat(r.score) >= %s WITH n, collect(r) as edge, m  SKIP %s Limit %s  RETURN n.identifier, m.identifier, edge" % (names[i],score, str(index * LIMIT), str(LIMIT))
+                query = "MATCH (n:RNA)--(:rna_RNADisease)-[r]-(:disease_RNADisease)--(m:%s) WHERE toFloat(r.score) >= %s WITH n, collect(r) as edge, m SKIP %s Limit %s RETURN n.identifier, m.identifier, edge " % (names[i],score, str(index * LIMIT), str(LIMIT))
 
                 a = list(g.run(query))
                 current_counter = 0
                 index += 1
-
                 for entry in a:
                     current_counter += 1
                     counter += 1
-                    t = ""
-                    for e in entry["edge"]:
-                        b = dict(e)
-                        t = t + "|" + json.dumps(b)
+                    entry_score=0
+                    list_id1=list_id2=""
 
-                    writer.writerow([entry['n.identifier'], entry['m.identifier'], t[1:]])
+                    for x in entry["edge"]:
+                        e=dict(x)
+                        if "RDID" in e.keys():
+                            list_id1= list_id1 + "|" + e["RDID"]
+                        if "PMID" in e.keys():
+                            list_id2= list_id2 + "|" + e["PMID"]
+                        entry_score=entry_score+float(e["score"])
+
+                    writer.writerow([entry['n.identifier'], entry['m.identifier'],(entry_score/len(entry["edge"])), list_id1[1:],list_id2[1:]])
 
                     if counter % 100000 == 0:
                         print(counter)
                         print(datetime.datetime.now())
 
 
-        cypher_edge(file_name, "RNA",  names[i], ["associate"], "associate_RNA_" + names[i])
+        cypher_edge(file_name, "RNA",  names[i], ["score","RDID", "PMID"], "associate_RNA_" + names[i])
         i += 1
         print("number of edges", counter)
 
