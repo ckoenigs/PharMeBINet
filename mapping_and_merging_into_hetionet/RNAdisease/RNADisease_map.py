@@ -107,6 +107,7 @@ def disease_RNAdisease():
             query = "MATCH (n:disease_RNADisease) RETURN n.DO_ID, n.MeSH_ID, n.Disease_Name"
             result = g.run(query)
             for doid, mesh, name, in result:
+                map = False
 
                 if name.lower() in DiseaseName:
                     map = True
@@ -118,7 +119,6 @@ def disease_RNAdisease():
                 if name.lower() in ['inflammation']:
                     continue
                 if map == False and mesh is not None:
-                    map = False
                     for y in mesh:
                         if y in DiseaseXref:
                             map = True
@@ -161,16 +161,10 @@ def rna_RNAdisease():
         if xrefs is not None:
             for x in xrefs:
                 result = x.split(":")[1]
-                if result not in RNAXref:
-                    RNAXref[result] = [id]
-                elif id not in RNAXref[result]:
-                    RNAXref[result].append(id)
+                pharmebinetutils.add_entry_to_dict_to_set(RNAXref,result, id)
         if name is not None:
             for n in name:
-                if n not in RNAname:
-                    RNAname[n]=[id]
-                elif id not in RNAname[n]:
-                    RNAname[n].append(id)
+                pharmebinetutils.add_entry_to_dict_to_set(RNAname,n, id)
 
     file_name='rna/rna_RNADiseaseedges.tsv'
     with open(file_name, 'w', newline='') as tsv_file:
@@ -181,10 +175,13 @@ def rna_RNAdisease():
         query = "MATCH (n:rna_RNADisease) RETURN n.RNA_Symbol"
         result = g.run(query)
         for symbol, in result:
-            if symbol in RNAXref:
-                write_infos_into_file(writer, symbol, RNAXref[symbol], 'Symbol-Xrefs', RNA)
-            elif symbol in RNAname:
+            if symbol in RNAname:
                 write_infos_into_file(writer, symbol, RNAname[symbol], 'Symbol-Gene_Name',RNA)
+            elif symbol in RNAXref:
+                # the AC identifier mapping is not good
+                if symbol.startswith('AC'):
+                    continue
+                write_infos_into_file(writer, symbol, RNAXref[symbol], 'Symbol-Xrefs', RNA)
 
 
         tsv_file.close()
