@@ -306,7 +306,7 @@ class former:
         self.substancedata_moieties_keys = []
         self.substancedata_mixture_keys = []
         self.substancedata_component_keys = []
-        self.substancedata_names_keys = []
+        # self.substancedata_names_keys = []
         self.substancedata_substance_keys = []
         self.substancedata_keys = []
         self.substancedata_relationships_list = []
@@ -314,7 +314,7 @@ class former:
         self.substancedata_moieties_list = []
         self.substancedata_mixture_list = []
         self.substancedata_component_list = []
-        self.substancedata_names_list = []
+        # self.substancedata_names_list = []
         self.substancedata_substance_list = []
         self.substancedata_list = []
         self.substancedata_id = [1]
@@ -844,12 +844,13 @@ class former:
             self.make_unique_files(directory, "SubstanceData_moieties_ids", "SubstanceData_moieties",
                                    "SubstanceData_moieties_id1_id2", self.substancedata_moieties_keys)
             self.make_id_files(directory, "SubstanceData_substance_ids", "SubstanceData_substance_id1_id2")
+            # self.make_id_files(directory, "SubstanceData_names_ids", "SubstanceData_name_id1_id2")
             self.make_special_files(directory, "SubstanceData_substance_ids", "SubstanceData_substance",
                                     self.substancedata_substance_keys)
             self.make_special_files(directory, "SubstanceData_component_ids", "SubstanceData_component",
                                     self.substancedata_component_keys)
-            self.make_special_files(directory, "SubstanceData_names_ids", "SubstanceData_names",
-                                    self.substancedata_names_keys)
+            # self.make_special_files(directory, "SubstanceData_names_ids", "SubstanceData_names",
+            #                         self.substancedata_names_keys)
             self.make_special_files(directory, "SubstanceData_relationships_ids", "SubstanceData_relationships",
                                     self.substancedata_relationships_keys)
             self.make_special_files(directory, "SubstanceData_relationships_substance_ids",
@@ -1104,17 +1105,17 @@ class former:
                 "is_head": True,
                 "lists": self.substancedata_component_list
             }
-            substancedata_names = {
-                "name": "SubstanceData_names_ids",
-                "list_name": "SubstanceData_names",
-                "tsv": "/SubstanceData_names_ids.tsv",
-                "keys": self.substancedata_names_keys,
-                "one_key": "names",
-                "is_list": True,
-                "id": self.substancedata_id,
-                "is_id": self.substancedata_is_id,
-                "lists": self.substancedata_names_list
-            }
+            # substancedata_names = {
+            #     "name": "SubstanceData_names_ids",
+            #     "list_name": "SubstanceData_names",
+            #     "tsv": "/SubstanceData_names_ids.tsv",
+            #     "keys": self.substancedata_names_keys,
+            #     "one_key": "names",
+            #     "is_list": True,
+            #     "id": self.substancedata_id,
+            #     "is_id": self.substancedata_is_id,
+            #     "lists": self.substancedata_names_list
+            # }
             substancedata_substance = {
                 "name": "SubstanceData_substance_ids",
                 "list_name": "SubstanceData_substance",
@@ -1141,8 +1142,8 @@ class former:
                 "lists": self.substancedata_list
             }
             entries = [substancedata_relationships, substancedata_relationships_substance, substancedata_moieties,
-                       substancedata_mixture, substancedata_component, substancedata_names, substancedata_substance,
-                       substancedata]
+                       substancedata_mixture, substancedata_component,  substancedata_substance,
+                       substancedata] # substancedata_names,
             self.make_files(directory, dicts, entries)
 
     def remove_lists(self):
@@ -1334,14 +1335,14 @@ class cypher_creator:
             self.create(file_path, header, "SubstanceData_moieties", "SubstanceData_moieties_openFDA", lists)
             self.create(file_path, header, "SubstanceData_mixture", "SubstanceData_mixture_openFDA", lists)
             self.create(file_path, header, "SubstanceData_substance", "SubstanceData_substance_openFDA", lists)
-            self.create(file_path, header, "SubstanceData_names", "SubstanceData_names_openFDA", lists)
+            # self.create(file_path, header, "SubstanceData_names", "SubstanceData_names_openFDA", lists)
             self.create(file_path, header, "SubstanceData", "SubstanceData_openFDA", lists)
             self.constraint("SubstanceData_relationships_substance_openFDA_constraint",
                             "SubstanceData_relationships_substance_openFDA", "id")
             self.constraint("SubstanceData_moieties_openFDA_constraint", "SubstanceData_moieties_openFDA", "id")
             self.constraint("SubstanceData_mixture_openFDA_constraint", "SubstanceData_mixture_openFDA", "id")
             self.constraint("SubstanceData_substance_openFDA_constraint", "SubstanceData_substance_openFDA", "id")
-            self.constraint("SubstanceData_names_openFDA_constraint", "SubstanceData_names_openFDA", "id")
+            # self.constraint("SubstanceData_names_openFDA_constraint", "SubstanceData_names_openFDA", "id")
             self.constraint("SubstanceData_openFDA_constraint", "SubstanceData_openFDA", "id")
             self.match("SubstanceData_relationships_substance_openFDA", "SubstanceData_openFDA", "id", "id")
             self.match("SubstanceData_mixture_openFDA", "SubstanceData_openFDA", "id", "id")
@@ -1349,6 +1350,8 @@ class cypher_creator:
                                  "SubstanceData_openFDA")
             self.match_from_file(file_path, "SubstanceData_substance_id1_id2", "SubstanceData_substance_openFDA",
                                  "SubstanceData_mixture_openFDA")
+            # self.match_from_file(file_path, "SubstanceData_name_id1_id2", "SubstanceData_names_openFDA",
+            #                      "SubstanceData_openFDA")
             self.set_properties(file_path, header, lists, "SubstanceData_relationships",
                                 "SubstanceData_relationships_substance_openFDA", "SubstanceData_openFDA", "id", "id")
             self.set_properties(file_path, header, lists, "SubstanceData_component", "SubstanceData_substance_openFDA",
@@ -1379,21 +1382,18 @@ print("Path is: " + path)
 # Alle relevanten Verzeichnisse der FDA-Datenbank.
 
 directories = [
-    "CAERSReports",
-    "DrugAdverseEvents",
-    "DrugRecallEnforcementReports",
-    "FoodRecallEnforcementReports",
-    "NationalDrugCodeDirectory",
+    # "CAERSReports",
+    # "DrugAdverseEvents",
+    # "DrugRecallEnforcementReports",
+    # "FoodRecallEnforcementReports",
+    # "NationalDrugCodeDirectory",
     "SubstanceData"]
 
 # Vor jedes Verzeichnis wird der angegebene Pfad gesetzt.
 dicts = {}
-i = 0
-for directory in directories:
-    dicts[directory] = path + directories[i]
-    i += 1
 for j in range(len(directories)):
     directories[j] = path + directories[j]
+    dicts[directories[j]] = path + directories[j]
 
 # Die Datei mit den Links zu den Dateien der Datenbank wird heruntergeladen.
 r = requests.get('https://api.fda.gov/download.json', allow_redirects=True)

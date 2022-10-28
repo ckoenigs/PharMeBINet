@@ -14,4 +14,9 @@ The for each directory the folowing steps were executed:
 
 Then the script executes the cypher file with Neo4j cypher-shell.
 
+
+This should have the form:
+
+![er_diagram](picture/openFDA.png)
+
 License:CC0 1.0 Universal
