@@ -3,6 +3,7 @@ import sys, csv
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 # names of go terms in iid
 set_of_gos = set(
@@ -65,17 +66,29 @@ def get_go_cellular_component_id():
     print('number of gos:', len(dict_go_name_to_id))
 
 
-def add_entry_to_dictionary(dictionary, key, value):
+# dictionary protein pair to dictionary with resource and interaction id and other information
+dict_protein_pair_to_dictionary = {}
+
+
+def get_information_from_pharmebinet():
     """
-    prepare dictionary with value
-    :param dictionary: dictionary
-    :param key: string
-    :param value: string
+    Get pharmebinet protein-protein-interaction information
     :return:
     """
-    if key not in dictionary:
-        dictionary[key] = set()
-    dictionary[key].add(value)
+    global maximal_id
+
+    query = '''MATCH (n:Protein)-->(a:Interaction)-->(m:Protein) Where not (exists(a.iso_of_protein_from) or exists(a.iso_of_protein_to))  RETURN n.identifier, m.identifier, a.resource, a.identifier, a.interaction_ids;'''
+    results = g.run(query)
+
+    for interactor1_het_id, interactor2_het_id, resource, interaction_id, interaction_ids_EBI, in results:
+        dict_protein_pair_to_dictionary[
+            (interactor1_het_id, interactor2_het_id)] = {'resource': resource,
+                                                         'interaction_ids_EBI': interaction_ids_EBI,
+                                                         'interaction_id': interaction_id}
+
+    query = 'MATCH (n:Interaction) With toInteger(n.identifier ) as int_id RETURN max(int_id)'
+
+    maximal_id = g.run(query).evaluate()
 
 
 def generate_file_and_cypher():
@@ -89,22 +102,29 @@ def generate_file_and_cypher():
     results = g.run(query)
 
     file_name = 'interaction/rela'
+    file_name_update = 'interaction/rela_match'
     file_name_go = 'interaction/rela_go'
 
     cypher_file = open('interaction/cypher.cypher', 'w', encoding='utf-8')
 
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/iid/%s.tsv" As line FIELDTERMINATOR '\\t' 
-            Match (p1:Protein{identifier:line.protein_id_1}), (p2:Protein{identifier:line.protein_id_2}) Create (p1)-[:INTERACTS_PiI{iid:'yes', source:'Integrated Interactions Database', resource:['IID'], url:"http://iid.ophid.utoronto.ca/" ,license:"free to use for academic purposes"}]->(b:Interaction{ '''
+            Match (p1:Protein{identifier:line.protein_id_1}), (p2:Protein{identifier:line.protein_id_2}) Create (p1)-[:INTERACTS_PiI{iid:'yes', source:'Integrated Interactions Database', resource:['IID'], url:"http://iid.ophid.utoronto.ca/" ,license:"free to use for academic purposes"}]->(b:Interaction{ identifier:line.id, '''
     query = query % (path_of_directory, file_name)
+
+    query_update = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/iid/%s.tsv" As line FIELDTERMINATOR '\\t' 
+            Match (p1:Protein{identifier:line.protein_id_1})-[a:INTERACTS_PiI]->(m:Interaction{identifier:line.id})-[b:INTERACTS_IiP]->(p2:Protein{identifier:line.protein_id_2}) Set '''
+    query_update = query_update % (path_of_directory, file_name_update)
 
     header = ['protein_id_1', 'protein_id_2', 'id']
     for head, in results:
         header.append(head)
-        if head in ['evidence_type', 'dbs', 'methods', 'pmids']:
+        if head in ['evidence_types', 'dbs', 'methods', 'pmids','db_with_ppis','drugs_targeting_one_or_both_proteins']:
             if head != 'pmids':
                 query += head + ':split(line.' + head + ',"|"), '
+                query_update += 'm.' + head + '=split(line.' + head + ',"|"), '
             else:
                 query += 'pubMed_ids:split(line.' + head + ',"|"), '
+                query_update += 'm.pubMed_ids=split(line.' + head + ',"|"), '
         elif head in ['targeting_drugs', 'enzymes', 'ion_channels', 'receptors_transporters', 'drug_targets',
                       'orthologs_are_drug_targets', 'drugs targeting orthologs']:
             continue
@@ -112,12 +132,14 @@ def generate_file_and_cypher():
             continue
         else:
             query += head + ':line.' + head + ', '
+            query_update += 'm.' + head + '=line.' + head + ', '
 
-    query += ' license:"free to use for academic purposes", iid:"yes", source:"Integrated Interactions Database", resource:["IID"], url:"http://iid.ophid.utoronto.ca/", identifier:"IPP_"+line.id, node_edge:true})-[:INTERACTS_IiP{iid:"yes", source:"Integrated Interactions Database", url:"http://iid.ophid.utoronto.ca/", resource:["IID"], license:"free to use for academic purposes"}]->(p2);\n'
+    query += ' license:"free to use for academic purposes", iid:"yes", source:"Integrated Interactions Database", resource:["IID"], url:"http://iid.ophid.utoronto.ca/",  node_edge:true})-[:INTERACTS_IiP{iid:"yes", source:"Integrated Interactions Database", url:"http://iid.ophid.utoronto.ca/", resource:["IID"], license:"free to use for academic purposes"}]->(p2);\n'
     cypher_file.write(query)
-    cypher_file.write('Create Constraint On (node:Interaction) Assert node.identifier Is Unique;\n')
+    query_update += ' a.iid="yes", a.resource=split(line.resource,"|"), m.iid="yes", m.resource=split(line.resource,"|"), b.iid="yes", b.resource=split(line.resource,"|");\n'
+    cypher_file.write(query_update)
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/iid/%s.tsv" As line FIELDTERMINATOR '\\t' 
-                Match (i:Interaction{identifier:"IPP_"+line.id}), (c:CellularComponent{identifier:line.go_id}) Set i.subcellular_location="GO term enrichment" Create (i)-[:MIGHT_SUBCELLULAR_LOCATES_ImslCC{license:"free to use for academic purposes", iid:"yes", source:"Integrated Interactions Database", url:"http://iid.ophid.utoronto.ca/" ,resource:["IID"]}]->(c);\n'''
+                Match (i:Interaction{identifier:line.id}), (c:CellularComponent{identifier:line.go_id}) Set i.subcellular_location="GO term enrichment" Create (i)-[:MIGHT_SUBCELLULAR_LOCATES_ImslCC{license:"free to use for academic purposes", iid:"yes", source:"Integrated Interactions Database", url:"http://iid.ophid.utoronto.ca/" ,resource:["IID"]}]->(c);\n'''
     query = query % (path_of_directory, file_name_go)
     cypher_file.write(query)
     cypher_file.close()
@@ -126,10 +148,16 @@ def generate_file_and_cypher():
     csv_writer = csv.DictWriter(file, fieldnames=header, delimiter='\t')
     csv_writer.writeheader()
 
+    header_merge = header.copy()
+    header_merge.append('resource')
+    file_merge = open(file_name_update + '.tsv', 'w', encoding='utf-8')
+    csv_writer_merge = csv.DictWriter(file_merge, fieldnames=header_merge, delimiter='\t')
+    csv_writer_merge.writeheader()
+
     file_go = open(file_name_go + '.tsv', 'w', encoding='utf-8')
     csv_writer_go = csv.writer(file_go, delimiter='\t')
     csv_writer_go.writerow(['id', 'go_id'])
-    return csv_writer, csv_writer_go
+    return csv_writer, csv_writer_go, csv_writer_merge
 
 
 def prepare_dictionary(dictionary, counter):
@@ -149,7 +177,6 @@ def prepare_dictionary(dictionary, counter):
 
 # dictionary rela pairs to infos
 dict_pair_to_infos = {}
-
 
 # dictionary pair to go
 dict_pair_to_go_ids = {}
@@ -193,39 +220,56 @@ def load_and_prepare_IID_human_data():
     run_through_results_and_add_to_dictionary(results)
 
 
+def prepare_multiple_edges_between_same_pairs(list_of_dict, p1, p2):
+    new_dict = {}
+    for dictionary in list_of_dict:
+        for key, value in dictionary.items():
+            if not key in new_dict:
+                new_dict[key] = value
+            elif new_dict[key] != value:
+                print(p1)
+                print(p2)
+                print(key)
+                print(value)
+                print(new_dict[key])
+                if type(value) == list:
+                    set_value = set(value)
+                    set_value = set_value.union(new_dict[key])
+                    new_dict[key] = list(set_value)
+                else:
+                    print('also different type problem')
+    return new_dict
+
+
 def write_info_into_files():
-    csv_writer, csv_writer_go = generate_file_and_cypher()
-    counter = 0
+    csv_writer, csv_writer_go, csv_merge = generate_file_and_cypher()
+    counter = maximal_id
     for (p1, p2), list_of_dict in dict_pair_to_infos.items():
-        counter += 1
+        if (p1, p2) in dict_protein_pair_to_dictionary:
+            identifier = dict_protein_pair_to_dictionary[(p1, p2)]['interaction_id']
+            if len(list_of_dict) == 1:
+                final_dictionary = list_of_dict[0]
+            else:
+                print('multi')
+                final_dictionary = prepare_multiple_edges_between_same_pairs(list_of_dict, p1, p2)
+            final_dictionary['resource'] = pharmebinetutils.resource_add_and_prepare(
+                dict_protein_pair_to_dictionary[(p1, p2)]['resource'],'IID')
+            csv_merge.writerow(prepare_dictionary(final_dictionary, identifier))
+        else:
+            counter += 1
+            identifier = counter
+            if len(list_of_dict) == 1:
+                final_dictionary = list_of_dict[0]
+            else:
+                print('multi')
+                final_dictionary = prepare_multiple_edges_between_same_pairs(list_of_dict, p1, p2)
+
+            csv_writer.writerow(prepare_dictionary(final_dictionary, identifier))
 
         if (p1, p2) in dict_pair_to_go_ids:
             for go in dict_pair_to_go_ids[(p1, p2)]:
-                csv_writer_go.writerow([counter, go])
+                csv_writer_go.writerow([identifier, go])
 
-        if len(list_of_dict) == 1:
-            csv_writer.writerow(prepare_dictionary(list_of_dict[0], counter))
-        else:
-            print('multi')
-            new_dict = {}
-            for dictionary in list_of_dict:
-                for key, value in dictionary.items():
-                    if not key in new_dict:
-                        new_dict[key] = value
-                    elif new_dict[key] != value:
-                        print(p1)
-                        print(p2)
-                        print(key)
-                        print(value)
-                        print(new_dict[key])
-                        if type(value) == list:
-                            set_value = set(value)
-                            set_value = set_value.union(new_dict[key])
-                            new_dict[key] = list(set_value)
-                        else:
-                            print('also different type problem')
-
-            csv_writer.writerow(prepare_dictionary(new_dict, counter))
         if counter % 10000 == 0:
             print(counter)
 
@@ -255,6 +299,13 @@ def main():
     print('load go ')
 
     get_go_cellular_component_id()
+    print(
+        '#################################################################################################################################################################')
+
+    print(datetime.datetime.now())
+    print('get ppi information')
+
+    get_information_from_pharmebinet()
 
     print(
         '#################################################################################################################################################################')
