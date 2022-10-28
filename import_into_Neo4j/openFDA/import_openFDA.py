@@ -1383,7 +1383,7 @@ print("Path is: " + path)
 
 directories = [
     # "CAERSReports",
-    # "DrugAdverseEvents",
+    "DrugAdverseEvents",
     # "DrugRecallEnforcementReports",
     # "FoodRecallEnforcementReports",
     # "NationalDrugCodeDirectory",
