@@ -42,6 +42,11 @@ set_of_disease_with_ = set(
      'neuroblastoma', 'diabetes_mellitus', 'multiple_myeloma', 'asthma', 'lymphoma', 'atherosclerosis',
      'hypertension', 'chronic_lymphocytic_leukemia'])
 
+# iid set of species
+set_of_species = set(
+    ["alpaca", "cat", "chicken", "cow", "dog", "duck", "fly", "guinea_pig", "horse", "mouse", "pig", "rabbit", "rat",
+     "sheep", "turkey", "worm", "yeast"])
+
 '''
 create a connection with neo4j
 '''
@@ -118,7 +123,8 @@ def generate_file_and_cypher():
     header = ['protein_id_1', 'protein_id_2', 'id']
     for head, in results:
         header.append(head)
-        if head in ['evidence_types', 'dbs', 'methods', 'pmids','db_with_ppis','drugs_targeting_one_or_both_proteins']:
+        if head in ['evidence_types', 'dbs', 'methods', 'pmids', 'db_with_ppis',
+                    'drugs_targeting_one_or_both_proteins']:
             if head != 'pmids':
                 query += head + ':split(line.' + head + ',"|"), '
                 query_update += 'm.' + head + '=split(line.' + head + ',"|"), '
@@ -128,7 +134,7 @@ def generate_file_and_cypher():
         elif head in ['targeting_drugs', 'enzymes', 'ion_channels', 'receptors_transporters', 'drug_targets',
                       'orthologs_are_drug_targets', 'drugs targeting orthologs']:
             continue
-        elif head in set_of_disease_categories_with_ or head in set_of_disease_with_ or head in set_of_gos_with_:
+        elif head in set_of_disease_categories_with_ or head in set_of_disease_with_ or head in set_of_gos_with_ or head in set_of_species:
             continue
         else:
             query += head + ':line.' + head + ', '
@@ -253,7 +259,7 @@ def write_info_into_files():
                 print('multi')
                 final_dictionary = prepare_multiple_edges_between_same_pairs(list_of_dict, p1, p2)
             final_dictionary['resource'] = pharmebinetutils.resource_add_and_prepare(
-                dict_protein_pair_to_dictionary[(p1, p2)]['resource'],'IID')
+                dict_protein_pair_to_dictionary[(p1, p2)]['resource'], 'IID')
             csv_merge.writerow(prepare_dictionary(final_dictionary, identifier))
         else:
             counter += 1
