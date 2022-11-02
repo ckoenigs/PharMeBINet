@@ -83,7 +83,7 @@ def generate_file_and_cypher(file_name_mapped, file_name_new):
             continue
         else:
             query += head + ':line.' + head + ', '
-            query_update+= 'i.'+ head + ':line.' + head + ', '
+            query_update+= 'i.'+ head + '=line.' + head + ', '
 
     query += ' license:"free to use for academic purposes", identifier:line.id,url:"http://cbdm-01.zdv.uni-mainz.de/~mschaefer/hippie/query.php?s="+line.protein_id_1, source:"HIPPIE", node_edge:true, hippie:"yes", resource:["HIPPIE"]})-[:INTERACTS_IiP{hippie:"yes", source:"HIPPIE", resource:["HIPPIE"], url:"http://cbdm-01.zdv.uni-mainz.de/~mschaefer/hippie/query.php?s="+line.protein_id_1 ,license:"free to use for academic purposes"}]->(p2);\n'
     cypher_file.write(query)
