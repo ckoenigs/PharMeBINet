@@ -227,6 +227,13 @@ def load_and_prepare_IID_human_data():
 
 
 def prepare_multiple_edges_between_same_pairs(list_of_dict, p1, p2):
+    """
+    Prepare if multiple edges exists for a pair a combined information edge.
+    :param list_of_dict: list of dicitonaries
+    :param p1: string
+    :param p2: string
+    :return:
+    """
     new_dict = {}
     for dictionary in list_of_dict:
         for key, value in dictionary.items():
@@ -247,21 +254,45 @@ def prepare_multiple_edges_between_same_pairs(list_of_dict, p1, p2):
     return new_dict
 
 
+def prepareMappedEdges(p1,p2,list_of_dict, csv_merge):
+    """
+    Prepare the mapped information to one edge and writ it into a csv file
+    :param p1: string
+    :param p2: string
+    :param list_of_dict:list of dictionaries
+    :param csv_merge: csv writer
+    :return:
+    """
+    identifier = dict_protein_pair_to_dictionary[(p1, p2)]['interaction_id']
+    if len(list_of_dict) == 1:
+        final_dictionary = list_of_dict[0]
+    else:
+        print('multi')
+        final_dictionary = prepare_multiple_edges_between_same_pairs(list_of_dict, p1, p2)
+    final_dictionary['resource'] = pharmebinetutils.resource_add_and_prepare(
+        dict_protein_pair_to_dictionary[(p1, p2)]['resource'], 'IID')
+    csv_merge.writerow(prepare_dictionary(final_dictionary, identifier))
+    return identifier
+
+# set of added pairs
+set_of_added_pair=set()
+
 def write_info_into_files():
+    """
+    Check if a pair exist already in Pharmebinet or not and prepare the information for this.
+    :return:
+    """
     csv_writer, csv_writer_go, csv_merge = generate_file_and_cypher()
     counter = maximal_id
     for (p1, p2), list_of_dict in dict_pair_to_infos.items():
         if (p1, p2) in dict_protein_pair_to_dictionary:
-            identifier = dict_protein_pair_to_dictionary[(p1, p2)]['interaction_id']
-            if len(list_of_dict) == 1:
-                final_dictionary = list_of_dict[0]
-            else:
-                print('multi')
-                final_dictionary = prepare_multiple_edges_between_same_pairs(list_of_dict, p1, p2)
-            final_dictionary['resource'] = pharmebinetutils.resource_add_and_prepare(
-                dict_protein_pair_to_dictionary[(p1, p2)]['resource'], 'IID')
-            csv_merge.writerow(prepare_dictionary(final_dictionary, identifier))
+            identifier=prepareMappedEdges(p1,p2,list_of_dict, csv_merge)
+        elif (p2, p1) in dict_protein_pair_to_dictionary:
+            identifier=prepareMappedEdges(p2,p1,list_of_dict, csv_merge)
         else:
+            # consider only one direction
+            if (p1,p2) in set_of_added_pair or (p2,p1) in set_of_added_pair:
+                continue
             counter += 1
             identifier = counter
             if len(list_of_dict) == 1:
@@ -271,6 +302,7 @@ def write_info_into_files():
                 final_dictionary = prepare_multiple_edges_between_same_pairs(list_of_dict, p1, p2)
 
             csv_writer.writerow(prepare_dictionary(final_dictionary, identifier))
+            set_of_added_pair.add((p1,p2))
 
         if (p1, p2) in dict_pair_to_go_ids:
             for go in dict_pair_to_go_ids[(p1, p2)]:
