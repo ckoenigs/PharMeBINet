@@ -125,6 +125,13 @@ dict_pair_to_infos = {}
 # dictionary mapped pair to interaction id
 dict_mapped_pair_to_interaction_id = {}
 
+def addMappedEdgeInformation(p1_id,p2_id,rela_info ):
+    interaction_id = dict_protein_pair_to_interaction_id[(p1_id, p2_id)]
+    if (p1_id, p2_id, interaction_id) not in dict_mapped_pair_to_interaction_id:
+        dict_mapped_pair_to_interaction_id[(p1_id, p2_id, interaction_id)] = []
+    dict_mapped_pair_to_interaction_id[
+        (p1_id, p2_id, dict_protein_pair_to_interaction_id[(p1_id, p2_id)])].append(rela_info)
+
 
 def run_through_results_and_add_to_dictionary(results):
     """
@@ -136,10 +143,13 @@ def run_through_results_and_add_to_dictionary(results):
         rela_info = dict(rela)
         if type(rela_info['publication_id'])==set:
             print('crazy')
+        # use as now directed edges
         if (p1_id, p2_id) in dict_protein_pair_to_interaction_id:
-            dict_mapped_pair_to_interaction_id[
-                (p1_id, p2_id, dict_protein_pair_to_interaction_id[(p1_id, p2_id)])] = rela_info
+            addMappedEdgeInformation(p1_id,p2_id,rela_info)
             continue
+        # elif (p2_id,p1_id) in dict_protein_pair_to_interaction_id:
+        #     addMappedEdgeInformation(p2_id ,p1_id,rela_info)
+        #     continue
         # print(p1_id,p2_id)
         if (p1_id, p2_id) not in dict_pair_to_infos:
             dict_pair_to_infos[(p1_id, p2_id)] = []
@@ -243,12 +253,13 @@ def write_info_into_files():
     print('############################################ mapping ##################################################')
 
     #  detection_methods==methods, publication_id==pubMed_ids
-    for (protein_1, protein_2, interaction_id), rela_information in dict_mapped_pair_to_interaction_id.items():
+    for (protein_1, protein_2, interaction_id), list_rela_information in dict_mapped_pair_to_interaction_id.items():
         publications= dict_interaction_id_to_interaction_dicitonary[interaction_id]['pubmed_ids']
-        prepare_pubmed_information(rela_information,publications)
 
         methods= dict_interaction_id_to_interaction_dicitonary[interaction_id]['methods']
-        prepare_method_information(rela_information, methods)
+        for rela_information in list_rela_information:
+            prepare_pubmed_information(rela_information,publications)
+            prepare_method_information(rela_information, methods)
 
         csv_writer_mapping.writerow([interaction_id, pharmebinetutils.resource_add_and_prepare(
             dict_interaction_id_to_interaction_dicitonary[interaction_id]['resource'], 'Hippie'), protein_1,
