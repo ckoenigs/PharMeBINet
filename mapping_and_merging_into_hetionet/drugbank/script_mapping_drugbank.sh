@@ -9,7 +9,7 @@ path_to_project=$2
 license='Attribution-NonCommercial 4.0 International'
 
 
-sleep 120
+sleep 60
 $path_neo4j/neo4j restart
 sleep 120
 
@@ -31,7 +31,7 @@ chmod 775 merge_nodes.sh
 ./merge_nodes.sh $path_neo4j > output_merge_compound.txt
 
 
-sleep 120
+sleep 60
 $path_neo4j/neo4j restart
 sleep 120
 
@@ -71,7 +71,7 @@ echo "Current time: $now"
 
 $path_neo4j/cypher-shell -u neo4j -p test -f output/cypher.cypher
 
-sleep 180
+sleep 60
 $path_neo4j/neo4j restart
 sleep 120
 
@@ -85,7 +85,7 @@ chmod 775 merge_nodes_salt.sh
 ./merge_nodes_salt.sh $path_neo4j > output/output_merge_compound.txt
 
 
-sleep 120
+sleep 60
 $path_neo4j/neo4j restart
 sleep 120
 
@@ -102,7 +102,7 @@ echo rela
 
 $path_neo4j/cypher-shell -u neo4j -p test -f output/cypher_rela.cypher 
 
-sleep 180
+sleep 60
 $path_neo4j/neo4j restart
 sleep 120
 
@@ -113,7 +113,7 @@ echo delete compounds which did not mapped
 
 $path_neo4j/cypher-shell -u neo4j -p test -f cypher_delete_compound.cypher > output_delete_cypher.txt
 
-sleep 180
+sleep 120
 $path_neo4j/neo4j restart
 sleep 120
 
@@ -131,7 +131,7 @@ echo "Current time: $now"
 
 $path_neo4j/cypher-shell -u neo4j -p test -f compound_interaction/cypher_resemble.cypher
 
-sleep 180
+sleep 120
 $path_neo4j/neo4j restart
 sleep 120
 
