@@ -120,9 +120,9 @@ def main():
     else:
         sys.exit('need a path rna_inter')
 
-    d = {"rna": "Download_data_RR.tar.gz", "protein": "Download_data_RP.tar.gz",
+    d = {"rna": "Download_data_RR.tar.gz",
          "dna": "Download_data_RD.tar.gz", "compound": "Download_data_RC.tar.gz",
-         "histone": "Download_data_RH.tar.gz"}
+         "histone": "Download_data_RH.tar.gz", "protein": "Download_data_RP.tar.gz",}
 
     print('##################################################################################')
     print(datetime.datetime.now())
@@ -142,6 +142,7 @@ def main():
                 csv = csv[(csv.Species1 == species) & (csv.Species2 == species)]
             else:
                 csv = csv[(csv.Species1 == species)]
+        csv = csv[(csv['Interactor1.Symbol']!='Interactor1.Symbol')]
         a = nodes(csv, i)
         rna = pd.concat([rna, a])
         edges(csv, i)
