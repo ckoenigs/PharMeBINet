@@ -49,7 +49,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo edge physicalentity-reactionLikeEvent
 
-python3 CreateEdgeReactionToPhysicalEntity.py $path_to_project "${license}" > physikalEntityEdges/output.txt
+python3 CreateEdgeReactionLikeEventToPhysicalEntity.py $path_to_project "${license}" > physikalEntityEdges/output.txt
 
 
 now=$(date +"%F %T")
@@ -64,6 +64,13 @@ echo "Current time: $now"
 echo Interaction relationships
 
 python3 CreateEdgeInteraction.py $path_to_project "${license}" > interactions/output.txt
+
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo Interaction relationships
+
+python3 MergeProteinProteinInteraction.py $path_to_project "${license}" > interactions/output_ppi.txt
 
 
 now=$(date +"%F %T")
