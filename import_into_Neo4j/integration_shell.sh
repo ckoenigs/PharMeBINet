@@ -11,6 +11,8 @@ name_of_import_tool='Neo4j-GraphML-Importer-v1.1.5'
 
 name_of_biodwh2_tool='BioDWH2-v0.4.4'
 
+path_to_other_place_of_data='/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/'
+
 echo $name_of_import_tool
 
 now=$(date +"%F %T")
@@ -406,7 +408,7 @@ echo "Current time: $now"
 cd  ClinVar
 echo ClinVar
 
-./script_clinvar.sh $path_neo4j $path_to_project  > output_script.txt
+./script_clinvar.sh $path_neo4j $path_to_project $path_to_other_place_of_data > output_script.txt
 
 cd ..
 
@@ -416,7 +418,7 @@ echo "Current time: $now"
 cd ctd
 echo ctd
 
-./script_ctd.sh /mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases $path_neo4j > output.txt
+./script_ctd.sh $path_to_other_place_of_data $path_neo4j > output.txt
 
 
 cd ..
