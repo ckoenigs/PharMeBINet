@@ -70,14 +70,14 @@ def load_reactome_drug_in(label_1, label_2):
     global highest_identifier, dict_protein_ids_to_iso_from_and_to, dict_protein_ids_to_iso_from_and_to_2
     dict_protein_ids_to_iso_from_and_to = {}
     dict_protein_ids_to_iso_from_and_to_2 = {}
-    query = '''MATCH (p:%s]-(r:ReferenceEntity_reactome)<-[:interactor]-(n:Interaction_reactome)-[:interactor]->(s:ReferenceEntity_reactome)-[:%s RETURN p.identifier, r.schemaClass, r.variantIdentifier, q.identifier, s.schemaClass, s.variantIdentifier, n.accession, n.pubmed;'''
+    query = '''MATCH (p:%s]-(r:ReferenceEntity_reactome)<-[:interactor]-(n:Interaction_reactome)-[:interactor]->(s:ReferenceEntity_reactome)-[:%s RETURN p.identifier, r.identifier, r.schemaClass, r.variantIdentifier, q.identifier, s.schemaClass, s.variantIdentifier, n.accession, n.pubmed;'''
     # query = '''MATCH (p:Protein)-[:equal_to_reactome_uniprot]-(r:ReferenceEntity_reactome)<-[:interactor]-(n:Interaction_reactome)-[:interactor]->(s:ReferenceEntity_reactome)-[:equal_to_reactome_uniprot]-(q:Protein) RETURN r.identifier, r.schemaClass, r.variantIdentifier, s.identifier, s.schemaClass, s.variantIdentifier, n.accession;'''
     query = query % (label_1, label_2)
     print(query)
     results = graph_database.run(query)
     counter_map_with_id = 0
 
-    for interactor1_rea_id, schemaClass_1, variantIdentifier_1, interactor2_rea_id, schemaClass_2, variantIdentifier_2, accession, pubmed_ids, in results:
+    for interactor1_rea_id, reactome_identifier, schemaClass_1, variantIdentifier_1, interactor2_rea_id, schemaClass_2, variantIdentifier_2, accession, pubmed_ids, in results:
         mapped = False
         if schemaClass_1 != "ReferenceIsoform":
             variantIdentifier_1 = ""
@@ -175,7 +175,7 @@ def load_reactome_drug_in(label_1, label_2):
             else:
                 dict_protein_ids_to_iso_from_and_to_2[
                     (interactor2_rea_id, interactor1_rea_id, variantIdentifier_2, variantIdentifier_1)] = {
-                    'interaction_ids': interaction_ids, 'pubmed_ids': set(pubmed_ids)}
+                    'interaction_ids': interaction_ids, 'pubmed_ids': set(pubmed_ids), 'interaction_id':reactome_identifier}
 
 
 def generate_file(csv_mapped):
@@ -192,6 +192,8 @@ def generate_file(csv_mapped):
                  '|'.join(dict_iso_interaction_ids['interaction_ids']),
                  '|'.join(dict_iso_interaction_ids['pubmed_ids']), dict_identifier_to_resource[
                      (interactor1_rea_id, interactor2_rea_id, variantIdentifier_1, variantIdentifier_2)][
+                     'interaction_id'],dict_identifier_to_resource[
+                     (interactor1_rea_id, interactor2_rea_id, variantIdentifier_1, variantIdentifier_2)][
                      'interaction_id']])
 
 
@@ -204,7 +206,7 @@ def generate_file_else(csv_not_mapped):
             counter += 1
             csv_not_mapped.writerow(
                 [interactor1_rea_id, interactor2_rea_id, '|'.join(dict_iso_interaction_ids['interaction_ids']),
-                 variantIdentifier_1, variantIdentifier_2, '|'.join(dict_iso_interaction_ids['pubmed_ids']), counter])
+                 variantIdentifier_1, variantIdentifier_2, '|'.join(dict_iso_interaction_ids['pubmed_ids']), counter,dict_iso_interaction_ids['interaction_id']])
 
 
 '''
@@ -220,7 +222,7 @@ def create_cypher_file(label_1, label_2, csv_mapped_name, csv_not_mapped_name):
         query = query[28:]
     cypher_file.write(query)
     # new interactions
-    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/reactome/%s" As line FIELDTERMINATOR "\\t" MATCH (d:%s{identifier:line.interactor1_het_id}),(c:%s{identifier:line.interactor2_het_id}) CREATE (d)-[:INTERACTS_PiI{ resource:["Reactome"], reactome:"yes", source:"Reactome",  license:"CC BY 4.0"}]->(:Interaction{interaction_ids: split(line.accession, "|"), iso_of_protein_from:line.iso_from, iso_of_protein_to:line.iso_to, resource:["Reactome"], reactome:"yes", source:"Reactome", pubMed_ids : split(line.pubmed_ids, "|"), license:"CC BY 4.0"})-[:INTERACTS_IiP{ resource:["Reactome"], reactome:"yes", source:"Reactome",  license:"CC BY 4.0"}]->(c);\n'''
+    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/reactome/%s" As line FIELDTERMINATOR "\\t" MATCH (d:%s{identifier:line.interactor1_het_id}),(c:%s{identifier:line.interactor2_het_id}) CREATE (d)-[:INTERACTS_PiI{ resource:["Reactome"], url:"https://reactome.org/content/detail/interactor/"+ line.reactome_identifier, reactome:"yes", source:"Reactome",  license:"CC BY 4.0"}]->(:Interaction{interaction_ids: split(line.accession, "|"), url:"https://reactome.org/content/detail/interactor/"+ line.reactome_identifier, iso_of_protein_from:line.iso_from, iso_of_protein_to:line.iso_to, resource:["Reactome"], reactome:"yes", source:"Reactome", pubMed_ids : split(line.pubmed_ids, "|"), license:"CC BY 4.0"})-[:INTERACTS_IiP{ resource:["Reactome"], reactome:"yes", source:"Reactome",  license:"CC BY 4.0", url:"https://reactome.org/content/detail/interactor/"+ line.reactome_identifier}]->(c);\n'''
     query = query % (path_of_directory, csv_not_mapped_name, label_1, label_2)
     cypher_file.write(query)
 
@@ -279,7 +281,7 @@ def main():
         csv_not_mapped = csv.writer(file_not_mapped_interactions, delimiter='\t', lineterminator='\n')
         csv_not_mapped.writerow(
             ['interactor1_het_id', 'interactor2_het_id', 'accession', 'iso_from', 'iso_to', 'pubmed_ids',
-             'interaction_id'])
+             'interaction_id','reactome_identifier'])
 
         file_name_mapped = 'interactions/mapped_interactions_' + file_name + '.tsv'
         file_mapped_interactions = open(file_name_mapped, 'w', encoding="utf-8")
