@@ -551,7 +551,7 @@ def gather_information_of_mondo_and_do_then_prepare_dict_for_csv(monDo, info, mo
 
 
     other_xrefs_monDO = go_through_xrefs_and_change_if_needed_source_name(
-        other_xrefs_monDO, 'Disease')
+        monDO_xref, 'Disease')
     info['xrefs'] = list(other_xrefs_monDO)
 
     umls_cuis_monDO.remove('') if '' in umls_cuis_monDO else umls_cuis_monDO
