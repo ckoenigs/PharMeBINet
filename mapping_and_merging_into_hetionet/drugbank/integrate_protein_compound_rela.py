@@ -104,6 +104,19 @@ def load_all_protein_chemical_pairs(direction, from_chemical):
     print('number of edges:', counter)
 
 
+def get_compound_protein_pair_of_with_pubmed_for_rela_type(direction):
+    """
+    Get pubmed information of existing edges
+    :param direction:
+    :return:
+    """
+    query=f'Match (m:Protein){direction}(n:Compound) Where exists(r.pubMed_ids) Return m.identifier, n.identifier, r.pubMed_ids'
+    results=g.run(query)
+    dict_protein_compound_to_pubmed_ids={}
+    for protein_id, compound_id, pubmed_ids, in results:
+        dict_protein_compound_to_pubmed_ids[(protein_id,compound_id)]=pubmed_ids
+    return dict_protein_compound_to_pubmed_ids
+
 '''
 Create cypher query and the tsv file for the different relationships
 '''
@@ -138,6 +151,11 @@ def create_cypher_query_and_tsv_file(rela_name, rela_direction, label_from):
                 list_of_properties.append(property)
             continue
         if property.startswith('ref') or property in ['actions', 'position', 'known_action']:
+            if property=='ref_article':
+                query_create +='pubMed_ids:split(line.' + property + ',"|"), '
+                query_update += 'r.pubMed_ids=split(line.' + property + ',"|"), '
+                list_of_properties.append(property)
+                continue
             prop_first= property+'s' if property[-1]!='s' else property
             query_create += prop_first + ':split(line.' + property + ',"|"), '
             query_update += 'r.' + prop_first + '=split(line.' + property + ',"|"), '
@@ -145,19 +163,18 @@ def create_cypher_query_and_tsv_file(rela_name, rela_direction, label_from):
             query_create += property + ':line.' + property + ', '
             query_update += 'r.' + property + '=line.' + property + ', '
         list_of_properties.append(property)
-    list_of_properties.append('unbiased')
 
     # create tsv file
     file = open('rela_protein/' + file_name + '.tsv', 'w', encoding='utf-8')
     csv_writer = csv.writer(file, delimiter='\t')
     csv_writer.writerow(list_of_properties)
 
-    query_update += 'r.drugbank="yes", r.unbiased=toBoolean(line.unbiased), '
+    query_update += 'r.drugbank="yes", '
 
     if not exists:
 
         if rela_direction.startswith('<'):
-            query_create = "<-[:" + rela_name + ' {' + query_create + ' interaction_with_form:split(line.interaction_with_form,"|"), unbiased:toBoolean(line.unbiased), source:"DrugBank", resource:["DrugBank"], url:"https://go.drugbank.com/drugs/"+line.identifier2, drugbank:"yes", license:"' + license + '"}]-'
+            query_create = "<-[:" + rela_name + ' {' + query_create + ' interaction_with_form:split(line.interaction_with_form,"|"),  source:"DrugBank", resource:["DrugBank"], url:"https://go.drugbank.com/drugs/"+line.identifier2, drugbank:"yes", license:"' + license + '"}]-'
         else:
             query_create = "-[:" + rela_name + ' {' + query_create + 'interaction_with_form:split(line.interaction_with_form,"|") , source:"DrugBank", resource:["DrugBank"], drugbank:"yes", url:"https://go.drugbank.com/drugs/"+line.identifier2, license:"' + license + '"}]->'
         query = query_start + " Create (a)" + query_create + '(c);\n'
@@ -177,31 +194,34 @@ def run_through_dictionary_to_add_to_tsv_and_cypher():
                 rela_direction = '-[r:%s]->'
             rela_direction = rela_direction % (rela_name)
             csv_writer, list_of_properties = create_cypher_query_and_tsv_file(rela_name, rela_direction, label)
+            dict_protein_compound_to_pubmeds=get_compound_protein_pair_of_with_pubmed_for_rela_type(rela_direction)
+            contain_ref = False
             for (identifier1, compound_id), list_rela in dict_pairs.items():
                 tsv_list = [identifier1, compound_id]
                 if len(list_rela) == 1:
                     rela_infos = list_rela[0]
-                    contain_ref = False
                     for property in list_of_properties[2:]:
                         if property in rela_infos:
                             value= rela_infos[property]
                             if property.startswith('ref'):
                                 contain_ref = True
-                            if type(value)==list:
+                            if property=='ref_article':
+                                pubmed_ids = set() if (identifier1,
+                                                       compound_id) not in dict_protein_compound_to_pubmeds else set(
+                                    dict_protein_compound_to_pubmeds[(identifier1, compound_id)])
+                                for ref in rela_infos[property]:
+                                    split_ref=ref.split('::')
+                                    pubmed_ids.add(split_ref[1])
+                                value=pubmed_ids
+                            if type(value) in [list, set]:
                                 # print(property)
                                 value='|'.join(value)
                             tsv_list.append(value)
-                        elif property == 'unbiased':
-                            tsv_list.append('true') if contain_ref else tsv_list.append('false')
                         else:
                             tsv_list.append('')
 
                 else:
-                    contain_ref = False
                     for property in list_of_properties[2:]:
-                        if property == 'unbiased':
-                            tsv_list.append('true') if contain_ref else tsv_list.append('false')
-                            continue
                         set_of_info_for_this_property = set()
                         for rela_infos in list_rela:
                             if property in rela_infos:
@@ -218,13 +238,22 @@ def run_through_dictionary_to_add_to_tsv_and_cypher():
                                 print(property)
                                 print(tsv_list)
                                 print(set_of_info_for_this_property)
+                            if property=='ref_article':
+                                pubmed_ids = set() if (identifier1,
+                                                       compound_id) not in dict_protein_compound_to_pubmeds else set(
+                                    dict_protein_compound_to_pubmeds[(identifier1, compound_id)])
+                                for ref in set_of_info_for_this_property:
+                                    split_ref=ref.split('::')
+                                    pubmed_ids.add(split_ref[1])
+                                set_of_info_for_this_property=pubmed_ids
                             tsv_list.append("|".join(set_of_info_for_this_property))
                         elif len(set_of_info_for_this_property) == 1:
                             tsv_list.append(set_of_info_for_this_property.pop())
                         else:
                             tsv_list.append('')
-
-                csv_writer.writerow(tsv_list)
+                # only edges with references
+                if contain_ref:
+                    csv_writer.writerow(tsv_list)
 
 
 # path to directory
