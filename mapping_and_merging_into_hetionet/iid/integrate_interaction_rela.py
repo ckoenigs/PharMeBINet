@@ -196,24 +196,31 @@ def run_through_results_and_add_to_dictionary(results):
     """
     for p1_id, rela, p2_id, in results:
         rela_info = dict(rela)
-        if (p1_id, p2_id) not in dict_pair_to_infos:
+        if (p1_id, p2_id) not in dict_pair_to_infos and  (p2_id,p1_id) not in dict_pair_to_infos:
             dict_pair_to_infos[(p1_id, p2_id)] = []
             dict_pair_to_go_ids[(p1_id, p2_id)] = set()
+        if (p1_id, p2_id)  in dict_pair_to_infos:
+            for property, value in rela_info.items():
+                property = property.lower()
+                if property in dict_go_name_to_id:
+                    dict_pair_to_go_ids[(p1_id, p2_id)].add(dict_go_name_to_id[property])
 
-        for property, value in rela_info.items():
-            property = property.lower()
-            if property in dict_go_name_to_id:
-                dict_pair_to_go_ids[(p1_id, p2_id)].add(dict_go_name_to_id[property])
 
-        rela_info['protein_id_1'] = p1_id
-        rela_info['protein_id_2'] = p2_id
+            dict_pair_to_infos[(p1_id, p2_id)].append(rela_info)
+        else:
+            for property, value in rela_info.items():
+                property = property.lower()
+                if property in dict_go_name_to_id:
+                    dict_pair_to_go_ids[(p2_id, p1_id)].add(dict_go_name_to_id[property])
 
-        dict_pair_to_infos[(p1_id, p2_id)].append(rela_info)
+
+            dict_pair_to_infos[(p2_id, p1_id)].append(rela_info)
 
 
 def load_and_prepare_IID_human_data():
     """
     write only rela with exp into file
+    and p1.identifier in ['Q9NRW4', 'P45985'] and p2.identifier in ['Q9NRW4', 'P45985']
     """
 
     query = '''Match (p1:Protein)-[:equal_to_iid_protein]-(d:protein_IID)-[r:interacts]->(:protein_IID)-[:equal_to_iid_protein]-(p2:Protein) Where 'exp' in r.evidence_types Return p1.identifier, r, p2.identifier '''
@@ -271,6 +278,8 @@ def prepareMappedEdges(p1,p2,list_of_dict, csv_merge):
         final_dictionary = prepare_multiple_edges_between_same_pairs(list_of_dict, p1, p2)
     final_dictionary['resource'] = pharmebinetutils.resource_add_and_prepare(
         dict_protein_pair_to_dictionary[(p1, p2)]['resource'], 'IID')
+    final_dictionary['protein_id_1'] = p1
+    final_dictionary['protein_id_2'] = p2
     csv_merge.writerow(prepare_dictionary(final_dictionary, identifier))
     return identifier
 
@@ -282,6 +291,7 @@ def write_info_into_files():
     Check if a pair exist already in Pharmebinet or not and prepare the information for this.
     :return:
     """
+    print_one_example_other_way_around=False
     csv_writer, csv_writer_go, csv_merge = generate_file_and_cypher()
     counter = maximal_id
     for (p1, p2), list_of_dict in dict_pair_to_infos.items():
@@ -289,6 +299,8 @@ def write_info_into_files():
             identifier=prepareMappedEdges(p1,p2,list_of_dict, csv_merge)
         elif (p2, p1) in dict_protein_pair_to_dictionary:
             identifier=prepareMappedEdges(p2,p1,list_of_dict, csv_merge)
+            if not print_one_example_other_way_around:
+                print_one_example_other_way_around=True
         else:
             # consider only one direction
             if (p1,p2) in set_of_added_pair or (p2,p1) in set_of_added_pair:
@@ -337,13 +349,6 @@ def main():
     print('load go ')
 
     get_go_cellular_component_id()
-    print(
-        '#################################################################################################################################################################')
-
-    print(datetime.datetime.now())
-    print('get ppi information')
-
-    get_information_from_pharmebinet()
 
     print(
         '#################################################################################################################################################################')
@@ -351,6 +356,14 @@ def main():
     print('load IID human data')
 
     load_and_prepare_IID_human_data()
+
+    print(
+        '#################################################################################################################################################################')
+
+    print(datetime.datetime.now())
+    print('get ppi information')
+
+    get_information_from_pharmebinet()
 
     print(
         '#################################################################################################################################################################')
