@@ -32,6 +32,12 @@ def load_all_proteins():
     for identifier, in results:
         set_protein_identifier.add(identifier)
 
+dict_label_to_url={
+    'Metabolite':'https://go.drugbank.com/metabolites/',
+    'Compound':'https://go.drugbank.com/drugs/',
+    'Protein':'https://go.drugbank.com/bio_entities/'
+}
+
 def prepare_cypher_query_rela(file_name, label, direction):
     """
     Prepare the different cypher queries for the different edge types.
@@ -39,9 +45,10 @@ def prepare_cypher_query_rela(file_name, label, direction):
     :param label: string
     :param direction: string
     :return:
+
     """
     query_new = query_start % (file_name)
-    query_new+= ' Match (n:Reaction{identifier:line.reaction_id}), (m:%s{identifier:line.other_id}) Create (n)%s[:%s{url:"", license:"%s"}]%s(m);\n'
+    query_new+= f' Match (n:Reaction{{identifier:line.reaction_id}}), (m:%s{{identifier:line.other_id}}) Create (n)%s[:%s{{url:"{dict_label_to_url[label]}"+line.drugbank_id, license:"%s", source:"DrugBank", resource:["DrugBank"]}}]%s(m);\n'
     if direction=='right':
         query_new= query_new %(label,'-','RESULTS_IN_Rri'+label[0],license,'->')
     elif direction=='left':
@@ -56,7 +63,7 @@ dict_label_to_direction_to_tsv_file = {}
 
 def create_files():
     """
-    This prepare the different TSV files for the Reaction nodes and the reaction edges.Additionally, the cypher queries
+    This prepares the different TSV files for the Reaction nodes and the reaction edges.Additionally, the cypher queries
     are prepared.
     :return:
     """
@@ -67,7 +74,7 @@ def create_files():
     csv_writer.writerow(['identifier'])
 
     query=query_start %(file_name)
-    query+= ' Match (m:Reaction_DrugBank{identifier:line.identifier})  Create (m)<-[:equal_to_reaction_drugbank]-(n:Reaction{identifier:line.identifier, license:m.license, sequence:m.sequence, node_edge:true });\n'
+    query+= ' Match (m:Reaction_DrugBank{identifier:line.identifier})  Create (m)<-[:equal_to_reaction_drugbank]-(n:Reaction{identifier:line.identifier, license:m.license, sequence:m.sequence, node_edge:true, url:"https://go.drugbank.com/drugs/"+m.start_drugbank_id, source:"DrugBank", resource:["DrugBank"], drugbank:"yes" });\n'
     cypher_file.write(query)
 
     for label in ['Metabolite', 'Compound']:
@@ -78,7 +85,7 @@ def create_files():
             dict_label_to_direction_to_pairs[label][direction] = set()
             file_reaction_direction = open(file_name_reaction_direction, 'w', encoding='utf-8')
             csv_writer_reaction_direction = csv.writer(file_reaction_direction, delimiter='\t')
-            csv_writer_reaction_direction.writerow(['reaction_id', 'other_id'])
+            csv_writer_reaction_direction.writerow(['reaction_id', 'other_id','drugbank_id'])
             prepare_cypher_query_rela(file_name_reaction_direction, label, direction)
             dict_label_to_direction_to_tsv_file[label][direction] = csv_writer_reaction_direction
 
@@ -90,7 +97,7 @@ def create_files():
     dict_label_to_direction_to_pairs[label][direction] = set()
     file_reaction_direction = open(file_name_reaction_direction, 'w', encoding='utf-8')
     csv_writer_reaction_direction = csv.writer(file_reaction_direction, delimiter='\t')
-    csv_writer_reaction_direction.writerow(['reaction_id', 'other_id'])
+    csv_writer_reaction_direction.writerow(['reaction_id', 'other_id', 'drugbank_id'])
     prepare_cypher_query_rela(file_name_reaction_direction, label, direction)
     dict_label_to_direction_to_tsv_file[label][direction] = csv_writer_reaction_direction
 
@@ -98,7 +105,7 @@ def create_files():
 dict_label_to_direction_to_pairs = {}
 
 
-def check_direction_and_write_into_tsv_writer(rela_type, reaction_id, node_id, label):
+def check_direction_and_write_into_tsv_writer(rela_type, reaction_id, node_id, label, drugbank_id):
     """
     First check out the direction from reaction to node. The add to tsv file if pair is not already added.
     :param rela_type: string
@@ -114,7 +121,7 @@ def check_direction_and_write_into_tsv_writer(rela_type, reaction_id, node_id, l
     else:
         direction= 'part'
     if (reaction_id, node_id) not in dict_label_to_direction_to_pairs[label][direction]:
-        dict_label_to_direction_to_tsv_file[label][direction].writerow([reaction_id, node_id])
+        dict_label_to_direction_to_tsv_file[label][direction].writerow([reaction_id, node_id,drugbank_id])
         dict_label_to_direction_to_pairs[label][direction].add((reaction_id, node_id))
 
 
@@ -130,12 +137,12 @@ def load_all_reaction_pairs(label1, label2):
     :param label2: string
     :return:
     """
-    query = '''Match p=(c:%s)--(:%s_DrugBank)-[r1]->(a:Reaction_DrugBank)-[r2]->(:%s_DrugBank)--(b:%s)  Where not (a)--(:Protein_DrugBank) Return c.identifier ,type(r1), a.identifier,type(r2),b.identifier '''
+    query = '''Match p=(c:%s)--(c2:%s_DrugBank)-[r1]->(a:Reaction_DrugBank)-[r2]->(b2:%s_DrugBank)--(b:%s)  Where not (a)--(:Protein_DrugBank) Return c.identifier, c2.identifier ,type(r1), a.identifier,type(r2),b.identifier, b2.identifier '''
     query = query % (label1, label1, label2, label2)
     results = g.run(query)
-    for node_1, rela_type1, reaction_id, rela_type2, node_2, in results:
-        check_direction_and_write_into_tsv_writer(rela_type1, reaction_id, node_1, label1)
-        check_direction_and_write_into_tsv_writer(rela_type2, reaction_id, node_2, label2)
+    for node_1, drugbank_id1, rela_type1, reaction_id, rela_type2, node_2, drugbank_id2,  in results:
+        check_direction_and_write_into_tsv_writer(rela_type1, reaction_id, node_1, label1, drugbank_id1)
+        check_direction_and_write_into_tsv_writer(rela_type2, reaction_id, node_2, label2, drugbank_id2)
         if reaction_id not in set_reaction_ids:
             csv_writer.writerow([reaction_id])
             set_reaction_ids.add(reaction_id)
@@ -149,19 +156,22 @@ def load_all_reaction_pairs_with_enzymes(label1, label2):
     :param label2: string
     :return:
     """
-    query = '''Match p=(c:%s)--(:%s_DrugBank)-[r1]->(a:Reaction_DrugBank)-[r2]->(:%s_DrugBank)--(b:%s)  Where  (a)--(:Protein_DrugBank) With c,r1,a,r2,b Match (a)--(t:Protein_DrugBank) With c, r1,a,r2,b , collect(t.identifier) as por Return c.identifier ,type(r1), a.identifier,type(r2),b.identifier,  por '''
+    query = '''Match p=(c:%s)--(c2:%s_DrugBank)-[r1]->(a:Reaction_DrugBank)-[r2]->(b2:%s_DrugBank)--(b:%s)  Where  (a)--(:Protein_DrugBank) With c,c2, r1,a,r2,b, b2 Match (a)--(t:Protein_DrugBank) With c, c2, r1,a,r2,b , b2, collect({identifier:t.identifier, db_id:t.drugbank_id}) as por Return c.identifier, c2.identifier ,type(r1), a.identifier,type(r2),b.identifier, b2.identifier, por '''
     query = query % (label1, label1, label2, label2)
     results = g.run(query)
-    for node_1, rela_type1, reaction_id, rela_type2, node_2, proteins, in results:
-        proteins = set(proteins)
+    for node_1, drugbank_id1, rela_type1, reaction_id, rela_type2, node_2, drugbank_id2, proteins, in results:
+
+        dict_uniprot_id_to_db_id={x['identifier']:x['db_id'] for x in proteins}
+
+        proteins = set(dict_uniprot_id_to_db_id.keys())
         length_protein = len(proteins)
         intersection = proteins.intersection(set_protein_identifier)
         if len(intersection) != length_protein:
             continue
-        check_direction_and_write_into_tsv_writer(rela_type1, reaction_id, node_1, label1)
-        check_direction_and_write_into_tsv_writer(rela_type2, reaction_id, node_2, label2)
+        check_direction_and_write_into_tsv_writer(rela_type1, reaction_id, node_1, label1, drugbank_id1)
+        check_direction_and_write_into_tsv_writer(rela_type2, reaction_id, node_2, label2, drugbank_id2)
         for protein_id in proteins:
-            check_direction_and_write_into_tsv_writer('part', reaction_id, protein_id, 'Protein')
+            check_direction_and_write_into_tsv_writer('part', reaction_id, protein_id, 'Protein', dict_uniprot_id_to_db_id[protein_id])
         if reaction_id not in set_reaction_ids:
             csv_writer.writerow([reaction_id])
             set_reaction_ids.add(reaction_id)
