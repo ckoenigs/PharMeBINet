@@ -2,6 +2,7 @@ import csv
 import datetime
 import gzip
 import json
+import os.path
 import re
 import sys
 from typing import Dict, List, Union
@@ -49,10 +50,6 @@ dict_measure_set_properties_which_are_sets = set()
 # dictionary of genotype properties which are list
 dict_genotype_properties_which_are_list = set()
 
-if len(sys.argv) > 1:
-    path_of_directory = sys.argv[1]
-else:
-    sys.exit('need a path clinvar')
 
 
 def prepare_for_file_name_and_label(type_name):
@@ -580,7 +577,7 @@ def prepare_rela_between_variations(node, variant_id, id_name, tag_name, from_ty
             dict_tsv_edge_variations[(from_type, to_type)] = csv_writer
 
             query = query_edge_variation % (
-                prepare_for_file_name_and_label(from_type), prepare_for_file_name_and_label(to_type), prepare_for_file_name_and_label(from_type), id_name,
+                path_of_directory,prepare_for_file_name_and_label(from_type), prepare_for_file_name_and_label(to_type), prepare_for_file_name_and_label(from_type), id_name,
                 prepare_for_file_name_and_label(to_type), 'other_id')
             cypher_file_edges.write(query)
         if (variant_id, single_variation_id) not in edge_between_variations[(from_type, to_type)]:
@@ -839,10 +836,14 @@ extract relationships information from full release
 
 
 def get_information_from_full_relase():
-    url = 'https://ftp.ncbi.nlm.nih.gov/pub/clinvar/xml/ClinVarFullRelease_00-latest.xml.gz'
-    filename = wget.download(url, out='data/')
-    filename = 'data/ClinVarFullRelease_00-latest.xml.gz'
+    print(datetime.datetime.now(), 'start download')
+
+    filename = path_of_clinvar_data+'clinvar/ClinVarFullRelease_00-latest.xml.gz'
+    if not os.path.exists(filename):
+        url = 'https://ftp.ncbi.nlm.nih.gov/pub/clinvar/xml/ClinVarFullRelease_00-latest.xml.gz'
+        filename = wget.download(url, out=path_of_clinvar_data+'clinvar/')
     file = gzip.open(filename, 'rb')
+    print(datetime.datetime.now(), 'end download')
     # file = open('ClinVarFullRelease_00-latest.xml', 'rb')
     # file = open('big_head.xml', 'rb')
 
@@ -979,7 +980,7 @@ def get_information_from_full_relase():
                                     dict_tsv_edge_variations[(type_measure_set, measure_type)] = csv_writer
 
                                     query = query_edge_variation % (
-                                        prepare_for_file_name_and_label(type_measure_set), prepare_for_file_name_and_label(measure_type),
+                                        path_of_directory, prepare_for_file_name_and_label(type_measure_set), prepare_for_file_name_and_label(measure_type),
                                         prepare_for_file_name_and_label(type_measure_set), 'haplo',
                                         prepare_for_file_name_and_label(measure_type), 'other_id')
                                     cypher_file_edges.write(query)
@@ -1056,7 +1057,7 @@ def get_information_from_full_relase():
                         dict_tsv_edge_variations[(trait_set_type, trait_type)] = csv_writer
 
                         query = query_edge_variation % (
-                            prepare_for_file_name_and_label(trait_set_type), prepare_for_file_name_and_label(trait_type),
+                            path_of_directory, prepare_for_file_name_and_label(trait_set_type), prepare_for_file_name_and_label(trait_type),
                             'trait_set_' + prepare_for_file_name_and_label(trait_set_type),
                             'trait_set_id', 'trait_' + prepare_for_file_name_and_label(trait_type), 'trait_id')
                         cypher_file_edges.write(query)
@@ -1240,8 +1241,7 @@ def get_information_from_full_relase():
     print('number of not human edges:', counter_not_human)
 
 
-query_edge_variation_trait_set = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/ClinVar/data/edges/edges_%s_%s_%s.tsv"  As line FIELDTERMINATOR '\\t' Match (g:%s_ClinVar{identifier:line.%s}), (o:%s_ClinVar{identifier:line.%s}) Create (g)-[:%s{'''
-# query_edge_variation_trait_set = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''/data/edges/edges_%s_%s_%s.tsv"  As line FIELDTERMINATOR '\t' Match (g:%s_ClinVar{identifier:line.%s}), (o:%s_ClinVar{identifier:line.%s}) Create (g)-[:%s{'''
+query_edge_variation_trait_set = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%simport_into_Neo4j/ClinVar/data/edges/edges_%s_%s_%s.tsv"  As line FIELDTERMINATOR '\\t' Match (g:%s_ClinVar{identifier:line.%s}), (o:%s_ClinVar{identifier:line.%s}) Create (g)-[:%s{'''
 '''
 prepare query for edges between variation and trait sets
 '''
@@ -1252,7 +1252,7 @@ def perpare_query_for_edges():
         # print(query_edge_variation_trait_set)
         final_assertion = '_'.join(final_assertion.split(' '))
         query = query_edge_variation_trait_set % (
-            general_type, trait_set_type, final_assertion, general_type, 'variant_id', 'trait_set_' + trait_set_type,
+            path_of_directory, general_type, trait_set_type, final_assertion, general_type, 'variant_id', 'trait_set_' + trait_set_type,
             'trait_set_id', final_assertion)
         end_query = ' Set '
         for head in edge_information:
@@ -1410,8 +1410,7 @@ list_header_measures = ['identifier', 'accession', 'name', 'synonyms', 'symbols'
                         'cytogenetic_location', 'measure_relationships', 'sequence_location', 'frequencies',
                         'global_minor_allele_frequency', 'genes', 'citations_info']
 # query for variation edges
-query_edge_variation = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/ClinVar/data/edge_%s_%s.tsv"  As line FIELDTERMINATOR '\t' Match (g:%s_ClinVar{identifier:line.%s}), (o:%s_ClinVar{identifier:line.%s}) Create (g)-[:has]->(o);\n'''
-# query_edge_variation = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''/data/edge_%s_%s.tsv"  As line FIELDTERMINATOR '\t' Match (g:%s_ClinVar{identifier:line.%s}), (o:%s_ClinVar{identifier:line.%s}) Create (g)-[:has]->(o);\n'''
+query_edge_variation = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%simport_into_Neo4j/ClinVar/data/edge_%s_%s.tsv"  As line FIELDTERMINATOR '\t' Match (g:%s_ClinVar{identifier:line.%s}), (o:%s_ClinVar{identifier:line.%s}) Create (g)-[:has]->(o);\n'''
 
 # dictionary tsv file for variation
 dict_tsv_file_variation = {}
@@ -1424,10 +1423,16 @@ get the node information for variations
 
 
 def extract_node_info_for_variations():
-    url = 'https://ftp.ncbi.nlm.nih.gov/pub/clinvar/xml/clinvar_variation/ClinVarVariationRelease_00-latest.xml.gz'
-    filename = wget.download(url, out='data/')
-    filename = 'data/ClinVarVariationRelease_00-latest.xml.gz'
+    print(datetime.datetime.now(),'start download')
+    filename = path_of_clinvar_data+'clinvar/ClinVarVariationRelease_00-latest.xml.gz'
+    if not os.path.exists(filename):
+        url = 'https://ftp.ncbi.nlm.nih.gov/pub/clinvar/xml/clinvar_variation/ClinVarVariationRelease_00-latest.xml.gz'
+        path_combi=path_of_clinvar_data+'clinvar/'
+        print(path_combi)
+        filename = wget.download(url, out=path_combi)
+
     file = gzip.open(filename, 'rb')
+    print('end download',datetime.datetime.now())
     # file = open('ClinVarVariationRelease_2020-0302.xml', 'rb')
     # file = open('big_head_variation.xml', 'rb')
     for event, node in etree.iterparse(file, events=('end',), tag='VariationArchive'):
@@ -1531,24 +1536,48 @@ def generate_node_cypher(dict_variation_to_node_ids, list_head, extra_name=None,
         cypher_file_nodes.write(query_constraint)
 
 
-print(datetime.datetime.now())
-print('extract information from ClinVarVariationRelease')
-extract_node_info_for_variations()
-print(datetime.datetime.now())
-print(dict_specific_to_general_type)
-print('extract information from Full release')
-get_information_from_full_relase()
-
-# measure set nodes queries
-generate_node_cypher(dict_variation_to_node_ids, header_variation, is_Varient=True)
-
-generate_node_cypher(dict_trait_set_type_dictionary, list_head_trait, extra_name='trait_set_')
-generate_node_cypher(dict_trait_type_dictionary, list_head_trait, extra_name='trait_')
-
-# prepare the important edge queries
-perpare_query_for_edges()
 
 
-print(set_of_species)
-print(dict_rela_type_pair_to_count)
-print(datetime.datetime.now())
+def main():
+    print(datetime.datetime.now())
+    print('download files')
+    global path_of_clinvar_data, path_of_directory
+    if len(sys.argv) > 2:
+
+        path_of_directory = sys.argv[1]
+        path_of_clinvar_data = sys.argv[2]
+    else:
+        sys.exit('need a path nd clinvar path')
+
+    print(datetime.datetime.now())
+    print('extract information from ClinVarVariationRelease')
+    extract_node_info_for_variations()
+    print(datetime.datetime.now())
+    print(dict_specific_to_general_type)
+    print('extract information from Full release')
+    get_information_from_full_relase()
+
+    # measure set nodes queries
+    generate_node_cypher(dict_variation_to_node_ids, header_variation, is_Varient=True)
+
+    generate_node_cypher(dict_trait_set_type_dictionary, list_head_trait, extra_name='trait_set_')
+    generate_node_cypher(dict_trait_type_dictionary, list_head_trait, extra_name='trait_')
+
+    # prepare the important edge queries
+    perpare_query_for_edges()
+
+    print(set_of_species)
+    print(dict_rela_type_pair_to_count)
+    print(datetime.datetime.now())
+
+
+    print('#' * 100)
+
+    print(datetime.datetime.now())
+
+
+if __name__ == "__main__":
+    # execute only if run as a script
+    main()
+
+
