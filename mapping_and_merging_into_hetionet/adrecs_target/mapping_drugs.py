@@ -11,8 +11,6 @@ create a connection with neo4j
 
 
 def create_connection_with_neo4j():
-    # set up authentication parameters and connection
-    # authenticate("localhost:7474", "neo4j", "test")
     global g
     g = create_connection_to_databases.database_connection_neo4j()
 
@@ -24,7 +22,7 @@ def integrate_information_into_dict(dict_node_id_to_resource):
     get all node ids from the database
     :return:
     """
-    query = '''MATCH (n:Chemical) Where not n:Product RETURN n.identifier, n.name, n.synonyms, n.resource'''
+    query = '''MATCH (n:Chemical) RETURN n.identifier, n.name, n.synonyms, n.resource'''
     results = g.run(query)
 
     for identifier, name, synonyms, resource, in results:
@@ -48,7 +46,7 @@ def integrate_information_into_dict(dict_node_id_to_resource):
 
 def prepare_query(file_name, db_label, adrecs_label, db_id,adrecs_id_internal, adrecs_id):
     """
-    prepare query fro integration
+    prepare query for integration
     :param file_name:string
     :param db_label: string
     :param adrecs_label: string
