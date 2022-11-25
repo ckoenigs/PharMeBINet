@@ -74,7 +74,7 @@ def main():
     # the file without gzip
     separate_url = url_start + separate
     request = urllib.request.Request(separate_url, headers=request_headers)
-    with urllib.request.urlopen(request) as response, open(path_of_ctd_data + '/ctd_data/' + separate, 'wb') as f:
+    with urllib.request.urlopen(request) as response, open(path_of_ctd_data + 'ctd_data/' + separate, 'wb') as f:
         f.write(response.read())
 
     # download all gz files from ctd
