@@ -231,7 +231,7 @@ def combine_both_source():
     # Remove duplicate pathways
     pathway_df.genes = pathway_df.genes.map(frozenset)
     print(pathway_df['synonyms'])
-    pathway_df_without_duplicated = pathway_df.drop_duplicates(['genes'])
+    pathway_df_without_duplicated = pathway_df.drop_duplicates(['genes']).copy()
     print(len(pathway_df))
 
     test=pandas.concat([pathway_df, pathway_df_without_duplicated]).drop_duplicates(keep=False)
