@@ -121,7 +121,7 @@ def main():
     print('diseaserate cypher and tsv file')
 
     csv_mapping = general_function_bioGrid.generate_files(path_of_directory, 'mapping_disease.tsv', source,
-                                                             'bioGrid_disease', 'Disease', 'id')
+                                                             'bioGrid_disease', 'Disease', ['id'])
 
     print('##########################################################################')
 

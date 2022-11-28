@@ -118,7 +118,7 @@ def main():
 
         csv_mapping = general_function_bioGrid.generate_files(path_of_directory, 'mapping_%s.tsv' % label, source,
                                                               biogrid_label,
-                                                              label, 'id')
+                                                              label, ['id'])
 
         print('##########################################################################')
 

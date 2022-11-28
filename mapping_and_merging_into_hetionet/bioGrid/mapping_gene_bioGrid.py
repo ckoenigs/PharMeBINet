@@ -135,7 +135,7 @@ def main():
     print('Generate cypher and tsv file')
 
     csv_mapping = general_function_bioGrid.generate_files(path_of_directory, 'mapping_gene.tsv', source, 'bioGrid_gene',
-                                                          'Gene', 'gene_id')
+                                                          'Gene', ['gene_id'])
 
     print('##########################################################################')
 

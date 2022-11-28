@@ -4,7 +4,7 @@ sys.path.append("../..")
 import pharmebinetutils
 
 
-def generate_files(path_of_directory, file_name, source, label_biogrid, label_pharmebinet, id_property_biogrid):
+def generate_files(path_of_directory, file_name, source, label_biogrid, label_pharmebinet, id_property_biogrids):
     """
     generate cypher file and tsv file
     :return: tsv file
@@ -23,8 +23,11 @@ def generate_files(path_of_directory, file_name, source, label_biogrid, label_ph
 
     cypher_file_path = os.path.join(source, 'cypher.cypher')
     # mapping_and_merging_into_hetionet/DisGeNet/
+    prepare_where_string=''
+    for id_property_biogrid in id_property_biogrids:
+        prepare_where_string+=f'n.{id_property_biogrid}=line.node_id or '
     query = pharmebinetutils.get_query_start(path_of_directory,
-                                             file_name) + f' Match (n:{label_biogrid}{{{id_property_biogrid}:line.node_id}}), (v:{label_pharmebinet}{{identifier:line.pharmebinet_node_id}}) Set v.biogrid="yes", v.resource=split(line.resource,"|") Create (v)-[:equal_to_bioGrid_{label_pharmebinet.lower()}{{mapped_with:line.mapping_method}}]->(n);\n'
+                                             file_name) + f' Match (n:{label_biogrid}), (v:{label_pharmebinet}{{identifier:line.pharmebinet_node_id}}) Where {prepare_where_string[:-3]} Set v.biogrid="yes", v.resource=split(line.resource,"|") Create (v)-[:equal_to_bioGrid_{label_pharmebinet.lower()}{{mapped_with:line.mapping_method}}]->(n);\n'
     mode = 'a' if os.path.exists(cypher_file_path) else 'w'
     cypher_file = open(cypher_file_path, mode, encoding='utf-8')
     cypher_file.write(query)
