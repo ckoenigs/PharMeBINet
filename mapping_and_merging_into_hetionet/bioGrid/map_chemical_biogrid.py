@@ -52,6 +52,7 @@ def load_chemical_from_database_and_add_to_dict():
 def load_all_BioGrid_chemical_and_finish_the_files(csv_mapping):
     """
     Load all chamical and generate the queries, and add rela to the rela tsv
+    Where (n)--(:bioGrid_interaction)
     """
 
     query = "MATCH (n:bioGrid_chemical) RETURN n"
@@ -60,9 +61,14 @@ def load_all_BioGrid_chemical_and_finish_the_files(csv_mapping):
     counter_all = 0
     for node, in results:
         counter_all += 1
-        identifier = node['chemical_id']
-        source = node['source'] if 'source' in node else ''
-        source_id = node['source_id'] if 'source_id' in node else ''
+        if 'chemical_id' in node:
+            identifier = node['chemical_id']
+            source = node['source'] if 'source' in node else ''
+            source_id = node['source_id'] if 'source_id' in node else ''
+        else:
+            identifier = node['id']
+            source = identifier.split(':')[0]
+            source_id = identifier.split(':')[1]
         name = node['name'].lower()
 
         # mapping
@@ -159,7 +165,7 @@ def main():
     print(datetime.datetime.now())
     print('Generate cypher and tsv file')
     csv_mapping = general_function_bioGrid.generate_files(path_of_directory, 'mapped_chemical.tsv', source,
-                                                          'bioGrid_chemical', 'Chemical', 'chemical_id')
+                                                          'bioGrid_chemical', 'Chemical', ['chemical_id','id'])
 
     print('##########################################################################')
 
