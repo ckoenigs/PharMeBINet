@@ -64,7 +64,7 @@ load all disease with symptoms in the definiton in a dictionary
 '''
 
 
-def load_in_hetionet_disease_in_dictionary():
+def load_in_pharmebinet_disease_in_dictionary():
     # counter not mapped symptoms
     counter_not_mapped_symptoms = 0
 
@@ -171,7 +171,7 @@ def integrate_infromation_into_hetionet():
     counter_new_symptoms = 0
 
     # counter already in hetionet symptoms
-    counter_already_in_hetionet_symptoms = 0
+    counter_already_in_pharmebinet_symptoms = 0
 
     for symptom, cui in dict_symptom_to_umls_cui.items():
         if cui in list_new_add_umls_cuis:
@@ -203,14 +203,14 @@ def integrate_infromation_into_hetionet():
             query = query % (mesh)
             dict_cui_to_mesh[cui] = mesh
 
-            counter_already_in_hetionet_symptoms += 1
+            counter_already_in_pharmebinet_symptoms += 1
         g.run(query)
 
     query = '''Match (s:Symptom) Where not exists(s.do) Set s.hetionet='yes',  s.resource=['hetionet'] '''
     g.run(query)
 
     print('number of new symptoms:' + str(counter_new_symptoms))
-    print('number of already in hetionet symptoms:' + str(counter_already_in_hetionet_symptoms))
+    print('number of already in hetionet symptoms:' + str(counter_already_in_pharmebinet_symptoms))
 
     print('##########################################################################')
 
@@ -318,7 +318,7 @@ def main():
     print(datetime.datetime.now())
     print('load in cui diseases')
 
-    load_in_hetionet_disease_in_dictionary()
+    load_in_pharmebinet_disease_in_dictionary()
 
     print('##########################################################################')
 

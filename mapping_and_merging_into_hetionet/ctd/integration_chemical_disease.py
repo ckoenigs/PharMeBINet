@@ -17,7 +17,7 @@ def create_connection_with_neo4j_mysql():
     g = create_connection_to_databases.database_connection_neo4j()
 
 
-# tsv files for integrate the different realtionships into hetionet
+# tsv files for integrate the different realtionships into pharmebinet
 csvfile_induces = open('chemical_disease/induces.tsv', 'w', encoding='utf-8')
 writer_induces = csv.writer(csvfile_induces, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 writer_induces.writerow(
@@ -57,7 +57,7 @@ def add_information_into_te_different_tsv_files(chemical_id, disease_id, informa
 cypherfile = open('output/cypher_edge.cypher', 'a', encoding='utf-8')
 
 '''
-get all relationships between gene and pathway, take the hetionet identifier an save all important information in a tsv
+get all relationships between gene and pathway, take the pharmebinet identifier an save all important information in a tsv
 also generate a cypher file to integrate this information 
 '''
 

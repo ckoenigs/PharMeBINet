@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Sep 17 16:07:43 2019
-
-@author: ckoenigs
-"""
 
 import datetime
 import sys, csv
@@ -137,7 +131,7 @@ def add_merge_to_sh_file(dict_not_mapped, mapped_value, node_id):
 '''
 Gather all salt and make a new tsv to integrate them as compound into neo4j
 also check if a salt is on of the not mapped compounds 
-Prepare the tsv for salt integration, because they are not in hetionet they can be directly integrated
+Prepare the tsv for salt integration, because they are not in pharmebinet they can be directly integrated
 also check on the drugs which did not mapped, because some of them might be now salts
 
 {identifier:"DBSALT002847"}

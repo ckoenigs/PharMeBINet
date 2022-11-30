@@ -86,7 +86,7 @@ def prepare_and_integrate_information_into_dictionary(xref, dict_xrefs_to_dict_x
 
 
 '''
-load in all compound from hetionet in a dictionary
+load in all compound from pharmebinet in a dictionary
 '''
 
 
@@ -369,7 +369,7 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
-    print('Load in disease and symptom from hetionet')
+    print('Load in disease and symptom from pharmebinet')
 
     load_db_nodes_in('Disease', dict_disease_to_resource, dict_disease_name_to_disease_id,
                      dict_xrefs_to_dict_xref_to_disease, dict_disease_to_xrefs)

@@ -25,7 +25,7 @@ get all relationships between gene and pathway, take the hetionet identifier and
 
 
 def take_all_relationships_of_gene_disease():
-    query = '''MATCH (disease)-[r:associates_DP]->(pathway) RETURN pathway.hetionet_id, r, disease.mondos '''
+    query = '''MATCH (disease)-[r:associates_DP]->(pathway) RETURN pathway.pharmebinet_id, r, disease.mondos '''
     results = g.run(query)
     count_multiple_pathways = 0
     count_possible_relas = 0

@@ -32,7 +32,7 @@ dict_synonym_to_gene_id = {}
 dict_gene_id_to_xrefs = {}
 
 '''
-load in all compound from hetionet in a dictionary
+load in all compound from pharmebinet in a dictionary
 '''
 
 
@@ -161,7 +161,7 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
-    print('Load in gene from hetionet')
+    print('Load in gene from pharmebinet')
 
     load_db_genes_in()
 

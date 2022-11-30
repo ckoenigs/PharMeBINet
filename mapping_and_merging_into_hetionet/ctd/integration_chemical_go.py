@@ -126,8 +126,8 @@ def take_all_relationships_of_gene_pathway():
     dict_rela_ontology = {}
     counter_rela = 0
 
-    counter_ctd_more_than_hetionet_chemical=0
-    counter_hetionet_more_than_ctd_chemical=0
+    counter_ctd_more_than_pharmebinet_chemical=0
+    counter_pharmebinet_more_than_ctd_chemical=0
 
     old_number = 100000000000000
     old_counter=0
@@ -213,9 +213,9 @@ def take_all_relationships_of_gene_pathway():
 
         if counter_of_used_chemical>len(dict_chemical_id_chemical):
             print('multiple hetionet map to the same ctd')
-            counter_hetionet_more_than_ctd_chemical+=1
+            counter_pharmebinet_more_than_ctd_chemical+=1
         elif counter_of_used_chemical<len(dict_chemical_id_chemical):
-            counter_ctd_more_than_hetionet_chemical+=1
+            counter_ctd_more_than_pharmebinet_chemical+=1
             print('multiple ctd map to the same hetionet')
 
 
@@ -341,8 +341,8 @@ def take_all_relationships_of_gene_pathway():
     g.run(query)
 
     print('###############')
-    print('number where ctd chemicals are more than hetionet:'+str(counter_ctd_more_than_hetionet_chemical))
-    print('number where hetionet chemicals are more than ctd:' + str(counter_hetionet_more_than_ctd_chemical))
+    print('number where ctd chemicals are more than hetionet:'+str(counter_ctd_more_than_pharmebinet_chemical))
+    print('number where hetionet chemicals are more than ctd:' + str(counter_pharmebinet_more_than_ctd_chemical))
     print('############')
 
     print('Average finding chemical:' + str(np.mean(list_time_all_finding_chemical)))

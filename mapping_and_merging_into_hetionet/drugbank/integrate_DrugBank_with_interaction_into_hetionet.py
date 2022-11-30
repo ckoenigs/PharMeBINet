@@ -24,10 +24,10 @@ def create_connection_with_neo4j():
 # alternative ids
 dict_compounds = {}
 
-# list drugbank ids of all compounds which are already in Hetionet in hetionet
+# list drugbank ids of all compounds which are already in pharmebinet in pharmebinet
 list_compounds_in_hetionet = []
 
-# dictionary drugbank ids of all compounds which are already in Hetionet in hetionet with the resource list
+# dictionary drugbank ids of all compounds which are already in pharmebinet in pharmebinet with the resource list
 dict_compounds_in_hetionet = {}
 
 # old_properties
@@ -46,12 +46,12 @@ neo4j_interaction_rela_label = 'interacts_CiC'
 set_of_list_properties = set([])
 
 '''
-Get all properties of the hetionet compounds and drugbank compounds and use them to generate the tsv files
+Get all properties of the pharmebinet compounds and drugbank compounds and use them to generate the tsv files
 '''
 
 
 def get_properties_and_generate_tsv_files():
-    # get the properties of the compounds in hetionet
+    # get the properties of the compounds in pharmebinet
     query = '''MATCH (p:Compound) WITH DISTINCT keys(p) AS keys
         UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields
         RETURN allfields;'''
@@ -59,7 +59,7 @@ def get_properties_and_generate_tsv_files():
     for property, in result:
         old_properties.append(property)
 
-    # fill the list with all properties in drugbank and not in Hetionet
+    # fill the list with all properties in drugbank and not in pharmebinet
     query = '''MATCH (p:%s) WITH DISTINCT keys(p) AS keys
             UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields
             RETURN allfields;''' % (neo4j_label_drugbank)
@@ -105,13 +105,13 @@ url
 '''
 
 
-def load_all_hetionet_compound_in_dictionary():
+def load_all_pharmebinet_compound_in_dictionary():
     query = '''Match (n:Compound) RETURN n '''
     results = g.run(query)
     for compound, in results:
         list_compounds_in_hetionet.append(compound['identifier'])
         dict_compounds_in_hetionet[compound['identifier']] = dict(compound)
-    print('size of compound in Hetionet before the rest of DrugBank is added: ' + str(len(list_compounds_in_hetionet)))
+    print('size of compound in pharmebinet before the rest of DrugBank is added: ' + str(len(list_compounds_in_hetionet)))
 
 
 # the new table for unii drugbank pairs
@@ -183,14 +183,14 @@ bash_shell.write('#!/bin/bash\n #define path to neo4j bin\npath_neo4j=$1\n\n')
 
 # label_of_alternative_ids='alternative_ids' old one
 label_of_alternative_ids = 'alternative_ids'
-# dictionary of drugbank id and to the used ids in Hetionet
+# dictionary of drugbank id and to the used ids in pharmebinet
 dict_drugbank_to_alternatives = {}
 
 # show wich properties are not in the old compounds or in the new compounds
 list_not_fiting_properties = set([])
 
 '''
-Integrate all DrugBank id into Hetionet
+Integrate all DrugBank id into pharmebinet
 '''
 
 
@@ -200,14 +200,14 @@ def integrate_DB_compound_information_into_hetionet():
     # count all new drugbank compounds
     counter_new_compound = 0
 
-    # show which nodes are multiple time in hetionet
+    # show which nodes are multiple time in pharmebinet
     file_combined_drugbanks = open('compound_interaction/combine_file.txt', 'w', encoding='utf-8')
     list_set_key_with_values_length_1 = set([])
 
     # merge list of xrefs
     list_merge_xrefs = ['external_identifiers', 'xrefs']
 
-    # integrate or add Hetionet compounds
+    # integrate or add pharmebinet compounds
     for drugbank_id, information in dict_compounds.items():
         list_merge_xref_values = set([])
         if drugbank_id == 'DB01148':
@@ -495,7 +495,7 @@ def main():
     print(datetime.datetime.now())
     print('load all hetionet compound in dictionary')
 
-    load_all_hetionet_compound_in_dictionary()
+    load_all_pharmebinet_compound_in_dictionary()
 
     print(
         '#################################################################################################################################################################')

@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Jan 26 13:31:43 2018
-
-@author: ckoenigs
-"""
 
 import sys, csv
 import datetime
@@ -570,7 +564,7 @@ path_neo4j=$1\n\n'''
 bash_shell.write(bash_start)
 
 '''
-integrate mondo into hetionet and change identifier
+integrate mondo into pharmebinet and change identifier
 '''
 
 

@@ -185,7 +185,7 @@ def path_to_rela_and_add_to_dict(rela, first, second):
     writer = generate_csv(path)
     dict_rela_to_file[rela_full] = writer
 
-    query_to_check_if_this_rela_exist_in_hetionet = '''Match p=(b:Chemical)'''
+    query_to_check_if_this_rela_exist_in_pharmebinet = '''Match p=(b:Chemical)'''
 
     query_first_part = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/ctd/''' + path + '''" As line  FIELDTERMINATOR '\\t' Match (b:Chemical{identifier:line.ChemicalID}), '''
     if first == 'gene' or second == 'gene':
@@ -197,14 +197,14 @@ def path_to_rela_and_add_to_dict(rela, first, second):
 
     if first == 'chemical':
         query_middle_2 = ''' Merge (b)-[r:%s]->(n)'''
-        query_to_check_if_this_rela_exist_in_hetionet += '-[r:%s]->' + part + ' Return b.identifier, n.identifier, r.pubMed_ids'
+        query_to_check_if_this_rela_exist_in_pharmebinet += '-[r:%s]->' + part + ' Return b.identifier, n.identifier, r.pubMed_ids'
     else:
         query_middle_2 = ''' Merge (b)<-[r:%s]-(n)'''
-        query_to_check_if_this_rela_exist_in_hetionet += '<-[r:%s]-' + part + ' Return p Limit 1'
+        query_to_check_if_this_rela_exist_in_pharmebinet += '<-[r:%s]-' + part + ' Return p Limit 1'
 
-    query_to_check_if_this_rela_exist_in_hetionet = query_to_check_if_this_rela_exist_in_hetionet % (
+    query_to_check_if_this_rela_exist_in_pharmebinet = query_to_check_if_this_rela_exist_in_pharmebinet % (
         dict_file_name_to_rela_name[rela_full])
-    results = g.run(query_to_check_if_this_rela_exist_in_hetionet)
+    results = g.run(query_to_check_if_this_rela_exist_in_pharmebinet)
     result = results.evaluate()
     # if this relationship exists currently only merge is used maybe I will change this to match and create
     # however, for the relationships which already exists in the general file new queries are added to say which are not in ctd
@@ -403,7 +403,7 @@ def add_pair_to_dict(chemical_id, drugbank_ids, gene_id, interaction_text, inter
 
 
 '''
-get all relationships between gene and chemical, take the hetionet identifier an save all important information in a tsv
+get all relationships between gene and chemical, take the pharmebinet identifier an save all important information in a tsv
 also generate a cypher file to integrate this information 
 '''
 

@@ -1,4 +1,3 @@
-from py2neo import Graph
 import datetime
 import csv
 import sys
@@ -40,7 +39,7 @@ def load_pathway_node_edge_info(csv_file, dict_pathway_node_to_rela_info,
             continue
         dict_pathway_node_to_rela_info[(pathway_id, node_id)] = edge
         csv_file.writerow([pathway_id, node_id, smpdb_pathway_id])
-    print('number of pathway-'+node_smpdb_label+' relationships in hetionet:' + str(
+    print('number of pathway-'+node_smpdb_label+' relationships in pharmebinet:' + str(
         len(dict_pathway_node_to_rela_info)))
 
 
@@ -63,7 +62,7 @@ def check_relationships_and_generate_file( node_smpdb_label, node_pharmebinet_la
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
-    print('Load all relationships from pathway-node and hetionet_nodes into a dictionary')
+    print('Load all relationships from pathway-node and pharmebinet_nodes into a dictionary')
     # file for mapped or not mapped identifier
     file_name= directory + '/edge_pathway_to_'+node_smpdb_label+'_'+rela_name+'.tsv'
 

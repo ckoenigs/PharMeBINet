@@ -55,7 +55,7 @@ def load_existing_gene_disease_pairs():
 
 
 '''
-get all relationships between gene and pathway, take the hetionet identifier an save all important information in a tsv
+get all relationships between gene and pathway, take the pharmebinet identifier an save all important information in a tsv
 also generate a cypher file to integrate this information 
 '''
 

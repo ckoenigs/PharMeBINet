@@ -23,7 +23,7 @@ def create_connection_with_neo4j():
     g = create_connection_to_databases.database_connection_neo4j()
 
 
-# dictionary from uniprot to gene id from hetionet information
+# dictionary from uniprot to gene id from pharmebinet information
 dict_uniprot_to_gene_id = {}
 
 # dictionary gene id to gene symbol/name
@@ -169,7 +169,7 @@ gene_ids are the gene ids which from uniprot
 
 
 def check_and_write_uniprot_ids(uniprot_id, name, identifier, secondary_uniprot_ids, gene_names, gene_ids,
-                                primary_gene_symbol):
+                                primary_gene_symbols):
     global count_not_mapping_gene_name
     found_at_least_on = False
 
@@ -189,29 +189,55 @@ def check_and_write_uniprot_ids(uniprot_id, name, identifier, secondary_uniprot_
         if gene_ids:
             # check_and_add_rela_pair(identifier, uniprot_id, gene_ids, secondary_uniprot_ids, '')
             # return True, gene_ids
-            if primary_gene_symbol.lower() in dict_gene_symbol_to_gene_id:
-                list_gene_id_from_name = [str(x) for x in dict_gene_symbol_to_gene_id[primary_gene_symbol.lower()]]
+            lower_primary_gene_symbols={x.lower() for x in primary_gene_symbols}
+            symbol_interaction= lower_primary_gene_symbols.intersection(dict_gene_symbol_to_gene_id.keys())
+            if len(symbol_interaction)>0:
+                list_gene_id_from_name=set()
+                for symbol in symbol_interaction:
+                    list_gene_id_from_name=list_gene_id_from_name.union(dict_gene_symbol_to_gene_id[symbol])
                 intersection = set(gene_ids).intersection(list_gene_id_from_name)
                 if len(intersection) > 0:
                     check_and_add_rela_pair(identifier, uniprot_id, intersection, secondary_uniprot_ids, 'yes', 'ncbi_id_and_gene_symbol')
                     genes = list(intersection)
                     return True, genes
+                else:
+                    symbol_synonym_interaction= lower_primary_gene_symbols.intersection(dict_synonyms_to_gene_ids.keys())
+                    list_gene_id_from_synonyms=set()
+                    for symbol in symbol_synonym_interaction:
+                        list_gene_id_from_synonyms=list_gene_id_from_synonyms.union(dict_synonyms_to_gene_ids[symbol])
+                    intersection = set(gene_ids).intersection(list_gene_id_from_synonyms)
+                    if len(intersection) > 0:
+                        check_and_add_rela_pair(identifier, uniprot_id, intersection, secondary_uniprot_ids, 'yes',
+                                                'ncbi_id_and_gene_symbol_synonym')
+                        genes = list(intersection)
+                        return True, genes
+                    else:
+                        print('use only the symbol gene ids')
+                        check_and_add_rela_pair(identifier, uniprot_id, list_gene_id_from_name, secondary_uniprot_ids, 'yes',
+                                                'ncbi_id_but_only_gene_symbol')
+                        genes = list(intersection)
+                        return True, genes
             else:
                 print('only gene id mapping')
                 check_and_add_rela_pair(identifier, uniprot_id, gene_ids, secondary_uniprot_ids, '', 'ncbi_id')
                 return True, gene_ids
-        elif primary_gene_symbol:
-            primary_gene_symbol = primary_gene_symbol.lower()
+        elif primary_gene_symbols:
+            lower_primary_gene_symbols={x.lower() for x in primary_gene_symbols}
             gene_ids_from_symbol = []
-            if primary_gene_symbol in dict_gene_symbol_to_gene_id:
-                gene_ids_from_name = dict_gene_symbol_to_gene_id[primary_gene_symbol]
-                gene_ids_from_symbol.extend(gene_ids_from_name)
-                # print('ok gene symbol works primary')
-                text = 'direct'
-            elif primary_gene_symbol in dict_synonyms_to_gene_ids:
-                gene_ids_from_symbol.extend(dict_synonyms_to_gene_ids[primary_gene_symbol])
-                # print('only name and id is not existing primary')
-                text = 'synonyms'
+            symbol_interaction= lower_primary_gene_symbols.intersection(dict_gene_symbol_to_gene_id.keys())
+            symbol_synonym_interaction= lower_primary_gene_symbols.intersection(dict_synonyms_to_gene_ids.keys())
+
+            if len(symbol_interaction)>0:
+                for symbol in symbol_interaction:
+                    gene_ids_from_name = dict_gene_symbol_to_gene_id[symbol]
+                    gene_ids_from_symbol.extend(gene_ids_from_name)
+                    # print('ok gene symbol works primary')
+                    text = 'direct'
+            elif len(symbol_synonym_interaction)>0:
+                for symbol in symbol_synonym_interaction:
+                    gene_ids_from_symbol.extend(dict_synonyms_to_gene_ids[symbol])
+                    # print('only name and id is not existing primary')
+                    text = 'synonyms'
             if len(gene_ids_from_symbol) > 0:
                 check_and_add_rela_pair(identifier, uniprot_id, gene_ids_from_symbol,
                                         secondary_uniprot_ids, 'yes', text+'_primary_gene_symbol')
@@ -318,7 +344,7 @@ def write_cypher_file():
     #              Set g.uniProtIDs=filterdList;\n '''
     # file_cypher.write(query)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/uniprot/uniprot_gene/db_uniprot_to_gene_rela.tsv" As line FIELDTERMINATOR "\\t" MATCH (n:Protein{identifier:line.uniprot_id}), (g:Gene{identifier:line.gene_id}) Set g.resource=split(line.resource_node,'|'), g.uniprot='yes' Create (g)-[:PRODUCES_GpP{name_mapping:line.name_mapping, uniprot:"yes" ,resource:['UniProt'],license:'CC BY 4.0', url:'https://www.uniprot.org/uniprot/'+line.uniprot_id, source:"UniProt"}]->(n);\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/uniprot/uniprot_gene/db_uniprot_to_gene_rela.tsv" As line FIELDTERMINATOR "\\t" MATCH (n:Protein{identifier:line.uniprot_id}), (g:Gene{identifier:line.gene_id}) Set g.resource=split(line.resource_node,'|'), g.uniprot='yes' Create (g)-[:PRODUCES_GpP{name_mapping:line.name_mapping, uniprot:"yes" ,resource:['UniProt'],license:'CC BY 4.0', url:'https://www.uniprot.org/uniprot/'+line.uniprot_id, source:"UniProt", how_mapped:line.how_mapped}]->(n);\n'''
     file_cypher.write(query)
 
 
@@ -394,13 +420,13 @@ def get_gather_protein_info_and_generate_relas():
 
         # the gene symbol
         geneSymbols = node['gene_name'] if 'gene_name' in node else []
-        primary_gene_symbol = ''
+        primary_gene_symbols =set()
         set_gene_symbol = set()
         for geneSymbol in geneSymbols:
             splitted_genesymbol = geneSymbol.split(':')
             set_gene_symbol.add(splitted_genesymbol[1])
             if splitted_genesymbol[0] == 'primary':
-                primary_gene_symbol = splitted_genesymbol[1]
+                primary_gene_symbols.add(splitted_genesymbol[1])
 
         # the gene ids
         gene_ids = [x.replace('GeneID:', '') for x in node['gene_id']] if 'gene_id' in node else []
@@ -409,7 +435,7 @@ def get_gather_protein_info_and_generate_relas():
         # also check if it has multiple genes or not
         # print(identifier)
         in_list, genes = check_and_write_uniprot_ids(identifier, name, identifier, '', set_gene_symbol, gene_ids,
-                                                     primary_gene_symbol)
+                                                     primary_gene_symbols)
         if in_list:
             found_at_least_on = True
             overlap_uniprot_ids.add(identifier)
@@ -452,7 +478,7 @@ def main():
         '#################################################################################################################################################################')
 
     print(datetime.datetime.now())
-    print('gather all information of the hetionet genes')
+    print('gather all information of the pharmebinet genes')
 
     get_all_genes()
 

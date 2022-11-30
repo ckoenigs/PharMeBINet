@@ -287,7 +287,7 @@ def main():
         '#################################################################################################################################################################')
 
     print(datetime.datetime.now())
-    print('load all hetionet compound in dictionary')
+    print('load all pharmebinet compound in dictionary')
 
     run_through_dictionary_to_add_to_tsv_and_cypher()
 

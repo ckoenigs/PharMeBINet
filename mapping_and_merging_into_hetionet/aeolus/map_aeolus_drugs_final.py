@@ -68,10 +68,6 @@ def create_connection_with_neo4j_mysql():
     global g
     g = create_connection_to_databases.database_connection_neo4j()
 
-    # create connection with mysql database
-    global con
-    con = create_connection_to_databases.database_connection_umls()
-
     # generate connection to mysql to RxNorm database
     global conRxNorm
     conRxNorm = create_connection_to_databases.database_connection_RxNorm()
@@ -81,7 +77,7 @@ def create_connection_with_neo4j_mysql():
 dict_rxcui_to_Drugbank_with_xref = {}
 
 '''
-load in all compounds from hetionet in dictionary
+load in all compounds from pharmebinet in dictionary
 properties:
     license
     identifier
@@ -116,7 +112,7 @@ def load_compounds_from_hetionet():
 
         dict_all_drug[identifier] = drug
 
-    print('In hetionet:' + str(len(dict_all_drug)) + ' drugs')
+    print('In pharmebinet:' + str(len(dict_all_drug)) + ' drugs')
 
 
 # dictionary to translate rxnorm id to drug_concept_id
@@ -331,9 +327,9 @@ def map_to_mesh_chemical():
     print('length of list with cui but no drugbank:' + str(len(list_aeolus_drugs_without_drugbank_id)))
 
 
-# list of drug_concept_ids which are map to hetionet
+# list of drug_concept_ids which are map to pharmebinet
 list_map_to_hetionet = []
-# list of al drug_concept_ids that has a drugbank id but not mapped to hetionet
+# list of al drug_concept_ids that has a drugbank id but not mapped to pharmebinet
 list_not_mapped = []
 
 # genertate file for the different map methods
@@ -375,7 +371,7 @@ multiple_drugbankids = open('drug/aeolus_multiple_drugbank_ids.tsv', 'w')
 multiple_drugbankids.write('rxnorm_cui \t drugbank_ids with | as seperator \t where are it from \n')
 
 '''
-map aeolus drug in hetionet compound
+map aeolus drug in pharmebinet compound
 '''
 
 
@@ -411,7 +407,7 @@ def map_aeolus_drugs_to_hetionet():
             list_map_to_hetionet.append(drug_concept_id)
         else:
             list_not_mapped.append(drug_concept_id)
-    print('Mapped to hetionet:' + str(len(list_map_to_hetionet)))
+    print('Mapped to pharmebinet:' + str(len(list_map_to_hetionet)))
     print('Will generate new nodes:' + str(len(list_not_mapped)))
 
     for drug_concept_id, drug in dict_aeolus_drugs.items():
@@ -423,7 +419,7 @@ def map_aeolus_drugs_to_hetionet():
 dict_how_mapped_delete_counter = {}
 
 '''
-Generate cypher file to update or create the relationships in hetionet
+Generate cypher file to update or create the relationships in pharmebinet
 '''
 
 
@@ -444,8 +440,8 @@ header = ['aeolus_id', 'chemical_id', 'mapped_ids', 'how_mapped', 'resource', 'x
 csv_writer.writerow(header)
 
 '''
-integrate aeolus drugs in hetiont, by map generate a edge from hetionet to the mapped aeolus node
-if no hetionet node is found, then generate a new node for compound
+integrate aeolus drugs in hetiont, by map generate a edge from pharmebinet to the mapped aeolus node
+if no pharmebinet node is found, then generate a new node for compound
 '''
 
 
@@ -489,7 +485,7 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
-    print('Load in all drugs from hetionet (+Sider) in a dictionary')
+    print('Load in all drugs from pharmebinet (+Sider) in a dictionary')
 
     load_compounds_from_hetionet()
 

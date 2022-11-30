@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Apr 18 12:41:20 2018
-
-@author: ckoenigs
-"""
-
 import datetime
 import csv
 import sys
@@ -61,40 +54,41 @@ def add_to_dictionary_with_set(dictionary, key, value):
         dictionary[key] = set()
     dictionary[key].add(value)
 
+
 # dictionary disease identifier to omim counter
-dict_disease_id_to_omim_count={}
-
+dict_disease_id_to_omim_count = {}
 
 '''
-load in all disease from hetionet in a dictionary
+load in all disease from pharmebinet in a dictionary
 '''
 
 
-def load_hetionet_labels_in(label, dict_label_id_to_resource, dict_name_to_ids, dict_synonyms_to_ids,
-                            dict_xref_id_to_ids):
+def load_pharmebinet_labels_in(label, dict_label_id_to_resource, dict_name_to_ids, dict_synonyms_to_ids,
+                               dict_xref_id_to_ids):
     query = '''MATCH (n:%s) RETURN n.identifier, n.name, n.xrefs, n.synonyms, n.resource''' % label
     results = graph_database.run(query)
 
     #  run through results
     for identifier, name, xrefs, synonyms, resource, in results:
         dict_label_id_to_resource[identifier] = set(resource)
-        dict_disease_id_to_omim_count[identifier]=0
+        dict_disease_id_to_omim_count[identifier] = 0
         if xrefs:
             for xref in xrefs:
                 if xref.startswith('OMIM:'):
                     omim_id = xref.split(':')[1]
                     add_to_dictionary_with_set(dict_xref_id_to_ids, omim_id, identifier)
-                    dict_disease_id_to_omim_count[identifier]+=1
+                    dict_disease_id_to_omim_count[identifier] += 1
 
         if name:
             add_to_dictionary_with_set(dict_name_to_ids, name.lower(), identifier)
 
         if synonyms:
             for synonym in synonyms:
-                synonym=pharmebinetutils.prepare_obo_synonyms(synonym)
+                synonym = pharmebinetutils.prepare_obo_synonyms(synonym)
                 add_to_dictionary_with_set(dict_synonyms_to_ids, synonym.lower(), identifier)
 
-    print('number of disease nodes in hetionet:' + str(len(dict_label_id_to_resource)))
+    print('number of disease nodes in pharmebinet:' + str(len(dict_label_id_to_resource)))
+
 
 # file for mapped or not mapped identifier
 file_not_mapped_disease = open('disease/not_mapped_disease.tsv', 'w', encoding="utf-8")
@@ -102,7 +96,7 @@ csv_not_mapped = csv.writer(file_not_mapped_disease, delimiter='\t', linetermina
 csv_not_mapped.writerow(['id', 'name'])
 
 '''
-generate connection between mapping disease of reactome and hetionet and generate new hetionet nodes for the not existing nodes
+generate connection between mapping disease of reactome and pharmebinet and generate new pharmebinet nodes for the not existing nodes
 '''
 
 
@@ -112,13 +106,14 @@ def create_cypher_file(label, file_name):
     query = query % (path_of_directory, file_name, label)
     cypher_file.write(query)
 
+
 def create_files(label):
     """
     prepare mapping file for label and generate cypher query
     :param label: string
     :return: csv writer
     """
-    file_name='disease/mapped_'+label+'.tsv'
+    file_name = 'disease/mapped_' + label + '.tsv'
     file_mapped_disease = open(file_name, 'w', encoding="utf-8")
     csv_mapped = csv.writer(file_mapped_disease, delimiter='\t', lineterminator='\n')
     csv_mapped.writerow(['id', 'id_own_db', 'resource', 'how_mapped'])
@@ -127,13 +122,8 @@ def create_files(label):
     return csv_mapped
 
 
-def prepare_resource(set_of_resource):
-    set_of_resource.add('HMDB')
-    return '|'.join(sorted(set_of_resource))
-
-
 '''
-load all hmdb disease and check if they are in hetionet or not
+load all hmdb disease and check if they are in pharmebinet or not
 '''
 
 
@@ -141,7 +131,7 @@ def load_hmdb_disease_and_map():
     query = '''MATCH (n:Disease_HMDB) RETURN n'''
     results = graph_database.run(query)
 
-    csv_writer_disease= create_files('Disease')
+    csv_writer_disease = create_files('Disease')
     csv_writer_symptom = create_files('Symptom')
 
     # count for the different mapping methods
@@ -156,7 +146,6 @@ def load_hmdb_disease_and_map():
         # boolean for mapping
         is_mapped = False
 
-
         # mapping with name
         if disease_name in dict_disease_name_to_disease_ids:
             counter_map_with_name += 1
@@ -164,7 +153,8 @@ def load_hmdb_disease_and_map():
 
             for database_identifier in dict_disease_name_to_disease_ids[disease_name]:
                 csv_writer_disease.writerow([disease_id, database_identifier,
-                                     prepare_resource(dict_disease_id_to_resource[database_identifier]), 'name'])
+                                             pharmebinetutils.resource_add_and_prepare(
+                                                 dict_disease_id_to_resource[database_identifier], 'HMDB'), 'name'])
 
         if is_mapped:
             continue
@@ -176,8 +166,9 @@ def load_hmdb_disease_and_map():
 
             for database_identifier in dict_synonym_to_disease_id[disease_name]:
                 csv_writer_disease.writerow([disease_id, database_identifier,
-                                     prepare_resource(dict_disease_id_to_resource[database_identifier]),
-                                     'name_to_synonyms'])
+                                             pharmebinetutils.resource_add_and_prepare(
+                                                 dict_disease_id_to_resource[database_identifier], 'HMDB'),
+                                             'name_to_synonyms'])
 
         if is_mapped:
             continue
@@ -189,7 +180,8 @@ def load_hmdb_disease_and_map():
 
             for database_identifier in dict_symptom_name_to_symptom_ids[disease_name]:
                 csv_writer_symptom.writerow([disease_id, database_identifier,
-                                             prepare_resource(dict_symptom_id_to_resource[database_identifier]),
+                                             pharmebinetutils.resource_add_and_prepare(
+                                                 dict_symptom_id_to_resource[database_identifier], 'HMDB'),
                                              'name'])
 
         if is_mapped:
@@ -202,34 +194,35 @@ def load_hmdb_disease_and_map():
 
             for database_identifier in dict_synonym_to_symptom_id[disease_name]:
                 csv_writer_symptom.writerow([disease_id, database_identifier,
-                                             prepare_resource(dict_symptom_id_to_resource[database_identifier]),
+                                             pharmebinetutils.resource_add_and_prepare(
+                                                 dict_symptom_id_to_resource[database_identifier], 'HMDB'),
                                              'name_to_synonyms'])
 
         # mapping with omim identifier
         if disease_id in dict_omim_id_to_disease_ids:
             counter_map_with_id += 1
             is_mapped = True
-            mondo_diseases=set()
-            lowest_count=100
+            mondo_diseases = set()
+            lowest_count = 100
             for database_identifier in dict_omim_id_to_disease_ids[disease_id]:
-                omim_ids_of_the_id=dict_disease_id_to_omim_count[database_identifier]
-                if lowest_count> omim_ids_of_the_id:
+                omim_ids_of_the_id = dict_disease_id_to_omim_count[database_identifier]
+                if lowest_count > omim_ids_of_the_id:
                     mondo_diseases = set([database_identifier])
-                    lowest_count=omim_ids_of_the_id
-                elif lowest_count==omim_ids_of_the_id:
+                    lowest_count = omim_ids_of_the_id
+                elif lowest_count == omim_ids_of_the_id:
                     mondo_diseases.add(database_identifier)
 
             for mondo_disease in mondo_diseases:
                 csv_writer_disease.writerow([disease_id, mondo_disease,
-                                             prepare_resource(dict_disease_id_to_resource[mondo_disease]), 'omim_id'])
-            if lowest_count!=1:
+                                             pharmebinetutils.resource_add_and_prepare(
+                                                 dict_disease_id_to_resource[mondo_disease], 'HMDB'), 'omim_id'])
+            if lowest_count != 1:
                 print(lowest_count, mondo_diseases)
                 print(dict_omim_id_to_disease_ids[disease_id])
                 print(disease_id, disease_name)
 
         if is_mapped:
             continue
-
 
         counter_not_mapped += 1
         csv_not_mapped.writerow([disease_id, disease_name])
@@ -238,9 +231,6 @@ def load_hmdb_disease_and_map():
     print('number of mapping with synonyms:' + str(counter_synonym_mapping))
     print('number of mapping with id:' + str(counter_map_with_id))
     print('number of not mapped nodes:', counter_not_mapped)
-
-
-
 
 
 def main():
@@ -258,13 +248,13 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
-    print('Load all disease and symptom from hetionet into a dictionary')
+    print('Load all disease and symptom from pharmebinet into a dictionary')
 
-    load_hetionet_labels_in('Disease', dict_disease_id_to_resource, dict_disease_name_to_disease_ids,
-                            dict_synonym_to_disease_id, dict_omim_id_to_disease_ids)
+    load_pharmebinet_labels_in('Disease', dict_disease_id_to_resource, dict_disease_name_to_disease_ids,
+                               dict_synonym_to_disease_id, dict_omim_id_to_disease_ids)
 
-    load_hetionet_labels_in('Symptom', dict_symptom_id_to_resource, dict_symptom_name_to_symptom_ids,
-                            dict_synonym_to_symptom_id, dict_omim_id_to_symptom_ids)
+    load_pharmebinet_labels_in('Symptom', dict_symptom_id_to_resource, dict_symptom_name_to_symptom_ids,
+                               dict_synonym_to_symptom_id, dict_omim_id_to_symptom_ids)
 
     print(
         '###########################################################################################################################')

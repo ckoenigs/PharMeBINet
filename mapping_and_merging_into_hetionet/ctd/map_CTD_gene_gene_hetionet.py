@@ -25,7 +25,7 @@ load in all genes from hetionet in a dictionary
 '''
 
 
-def load_hetionet_genes_in():
+def load_pharmebinet_genes_in():
     query = '''MATCH (n:Gene) RETURN n'''
     results = g.run(query)
 
@@ -54,7 +54,7 @@ and return found gene in hetionet True or false
 def search_for_id_and_write_into_file(gene_id, gene_node):
     if gene_id in dict_genes_hetionet:
         gene_name = gene_node['name']
-        hetionet_node = dict_genes_hetionet[gene_id]
+        pharmebinet_node = dict_genes_hetionet[gene_id]
         if gene_name != dict_genes_hetionet[gene_id]['name']:
             print(gene_id)
             print('not the same name')
@@ -65,7 +65,7 @@ def search_for_id_and_write_into_file(gene_id, gene_node):
         bioGRIDIDs = gene_node['bioGRIDIDs'] if 'bioGRIDIDs' in gene_node else []
         bioGRIDIDs = ['bioGRID:' + id for id in bioGRIDIDs]
         # uniProtIDs = gene_node['uniProtIDs'] if 'uniProtIDs' in gene_node else []
-        xrefs = set(pharmGKBIDs).union(hetionet_node['xrefs']) if 'xrefs' in hetionet_node else set(pharmGKBIDs)
+        xrefs = set(pharmGKBIDs).union(pharmebinet_node['xrefs']) if 'xrefs' in pharmebinet_node else set(pharmGKBIDs)
         xrefs = xrefs.union(bioGRIDIDs)
         # xrefs = xrefs.union(uniProtIDs)
         xrefs = '|'.join(xrefs)
@@ -152,7 +152,7 @@ def main():
     print(datetime.datetime.now())
     print('Load all genes from hetionet into a dictionary')
 
-    load_hetionet_genes_in()
+    load_pharmebinet_genes_in()
 
     print(
         '###########################################################################################################################')

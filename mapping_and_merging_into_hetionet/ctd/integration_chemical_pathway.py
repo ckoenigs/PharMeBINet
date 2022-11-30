@@ -17,7 +17,7 @@ def create_connection_with_neo4j_mysql():
 
 
 '''
-get all relationships between gene and pathway, take the hetionet identifier and gaather all information in a dictionary 
+get all relationships between gene and pathway, take the pharmebinet identifier and gaather all information in a dictionary 
 '''
 
 
@@ -113,11 +113,11 @@ def take_all_relationships_of_gene_disease():
 
         # counter_number_of_used_chemicals+=limit_number
         all_chemicals_id = '","'.join(all_chemicals_id)
-        query = '''MATCH (chemical)-[r:associates_CP]->(pathway) Where chemical.chemical_id in ["''' + all_chemicals_id + '''"]  With  collect({pwid:pathway.hetionet_id, backgroundTotalQty: r.backgroundTotalQty, pValue:r.pValue, targetMatchQty:r.targetMatchQty, backgroundMatchQty:r.backgroundMatchQty, targetTotalQty:r.targetTotalQty, correctedPValue:r.correctedPValue }) As relas, chemical RETURN  chemical.chemical_id, chemical.drugBankIDs, relas '''
-        # query = '''MATCH (chemical)-[r:associates_CP]->(pathway) Where chemical.chemical_id in ["''' + all_chemicals_id + '''"]  With  collect({pwid:pathway.hetionet_id, backgroundTotalQty: r.backgroundTotalQty, pValue:r.pValue, targetMatchQty:r.targetMatchQty, backgroundMatchQty:r.backgroundMatchQty, targetTotalQty:r.targetTotalQty, correctedPValue:r.correctedPValue }) As relas, chemical Limit ''' + str(
+        query = '''MATCH (chemical)-[r:associates_CP]->(pathway) Where chemical.chemical_id in ["''' + all_chemicals_id + '''"]  With  collect({pwid:pathway.pharmebinet_id, backgroundTotalQty: r.backgroundTotalQty, pValue:r.pValue, targetMatchQty:r.targetMatchQty, backgroundMatchQty:r.backgroundMatchQty, targetTotalQty:r.targetTotalQty, correctedPValue:r.correctedPValue }) As relas, chemical RETURN  chemical.chemical_id, chemical.drugBankIDs, relas '''
+        # query = '''MATCH (chemical)-[r:associates_CP]->(pathway) Where chemical.chemical_id in ["''' + all_chemicals_id + '''"]  With  collect({pwid:pathway.pharmebinet_id, backgroundTotalQty: r.backgroundTotalQty, pValue:r.pValue, targetMatchQty:r.targetMatchQty, backgroundMatchQty:r.backgroundMatchQty, targetTotalQty:r.targetTotalQty, correctedPValue:r.correctedPValue }) As relas, chemical Limit ''' + str(
         #     limit_number) + ''' Set chemical.integrated='yes'  RETURN  chemical.chemical_id, chemical.drugBankIDs, relas '''
-        # query ='''MATCH (chemical)-[r:associates_CP]->(pathway) Where not exists(chemical.integrated) and chemical.chemical_id='D006844' With  collect({pwid:pathway.hetionet_id, backgroundTotalQty: r.backgroundTotalQty, pValue:pathway.pValue, targetMatchQty:pathway.targetMatchQty, backgroundMatchQty:pathway.backgroundMatchQty, targetTotalQty:pathway.targetTotalQty, correctedPValue:pathway.correctedPValue }) As relas, chemical Limit '''+str(limit_number)+''' Set chemical.integrated='yes'  RETURN  chemical.chemical_id, chemical.drugBankIDs, relas '''
-        # query = '''MATCH (chemical)-[r:associates_CP]->(pathway) Where not exists(chemical.integrated) and chemical.chemical_id='D006844' With chemical, r, pathway Limit '''+str(limit_number)+''' Set chemical.integrated='yes' RETURN pathway.hetionet_id, r, chemical.chemical_id, chemical.drugBankIDs '''
+        # query ='''MATCH (chemical)-[r:associates_CP]->(pathway) Where not exists(chemical.integrated) and chemical.chemical_id='D006844' With  collect({pwid:pathway.pharmebinet_id, backgroundTotalQty: r.backgroundTotalQty, pValue:pathway.pValue, targetMatchQty:pathway.targetMatchQty, backgroundMatchQty:pathway.backgroundMatchQty, targetTotalQty:pathway.targetTotalQty, correctedPValue:pathway.correctedPValue }) As relas, chemical Limit '''+str(limit_number)+''' Set chemical.integrated='yes'  RETURN  chemical.chemical_id, chemical.drugBankIDs, relas '''
+        # query = '''MATCH (chemical)-[r:associates_CP]->(pathway) Where not exists(chemical.integrated) and chemical.chemical_id='D006844' With chemical, r, pathway Limit '''+str(limit_number)+''' Set chemical.integrated='yes' RETURN pathway.pharmebinet_id, r, chemical.chemical_id, chemical.drugBankIDs '''
         # print(query)
         results = g.run(query)
         time_measurement = time.time() - start

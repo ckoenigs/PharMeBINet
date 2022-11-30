@@ -153,7 +153,7 @@ has properties:
 '''
 
 
-def load_side_effects_from_hetionet_in_dict():
+def load_side_effects_from_pharmebinet_in_dict():
     query = '''MATCH (n:SideEffect) RETURN n '''
     results = g.run(query)
     for result, in results:
@@ -682,7 +682,7 @@ def main():
     print(datetime.datetime.now())
     print('Load in all Side effects from hetionet in a dictionary')
 
-    load_side_effects_from_hetionet_in_dict()
+    load_side_effects_from_pharmebinet_in_dict()
 
     print(
         '###########################################################################################################################')

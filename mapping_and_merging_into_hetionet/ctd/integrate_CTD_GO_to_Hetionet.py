@@ -60,7 +60,7 @@ load in all biological process, molecular function and cellular components from 
 '''
 
 
-def load_hetionet_go_in():
+def load_pharmebinet_go_in():
     # fill dict for biological process
     get_information_and_add_to_dict('BiologicalProcess',dict_biological_process_hetionet, dict_biological_process_alternative_hetionet)
 
@@ -85,29 +85,29 @@ check if go is in hetionet or not
 '''
 
 
-def check_if_new_or_part_of_hetionet(hetionet_label, go_id, go_name,highestGOLevel):
+def check_if_new_or_part_of_hetionet(pharmebinet_label, go_id, go_name,highestGOLevel):
     # is only used if the ontology is not existing
     found_with_alternative_id = False
-    if hetionet_label is None:
+    if pharmebinet_label is None:
         if go_id in dict_biological_process_hetionet:
-            hetionet_label='Biological Process'
+            pharmebinet_label='Biological Process'
         elif go_id in dict_cellular_component_hetionet:
-            hetionet_label="Cellular Component"
+            pharmebinet_label="Cellular Component"
         elif go_id in dict_molecular_function_hetionet:
-            hetionet_label='Molecular Function'
+            pharmebinet_label='Molecular Function'
         elif go_id in dict_biological_process_alternative_hetionet:
             found_with_alternative_id=True
-            hetionet_label = 'Biological Process'
+            pharmebinet_label = 'Biological Process'
             alternative_id=go_id
             normal_id=dict_biological_process_alternative_hetionet[alternative_id]
         elif go_id in dict_cellular_component_alternative_hetionet:
             found_with_alternative_id=True
-            hetionet_label = 'Cellular Component'
+            pharmebinet_label = 'Cellular Component'
             alternative_id=go_id
             normal_id=dict_cellular_component_alternative_hetionet[alternative_id]
         elif go_id in dict_molecular_function_alternative_hetionet:
             found_with_alternative_id=True
-            hetionet_label = 'Molecular Function'
+            pharmebinet_label = 'Molecular Function'
             alternative_id=go_id
             normal_id=dict_molecular_function_alternative_hetionet[alternative_id]
         # if this is not found in hetionet then this is an old go id
@@ -116,8 +116,8 @@ def check_if_new_or_part_of_hetionet(hetionet_label, go_id, go_name,highestGOLev
             # print(go_id)
             return
             # sys.exit(go_id)
-        csv_without_ontology.writerow([go_id,hetionet_label])
-    [dict_hetionet, dict_alternative_id_to_hetionet, dict_ctd_in_hetionet_alternative, dict_ctd_in_hetionet] = dict_process[hetionet_label]
+        csv_without_ontology.writerow([go_id,pharmebinet_label])
+    [dict_hetionet, dict_alternative_id_to_hetionet, dict_ctd_in_pharmebinet_alternative, dict_ctd_in_hetionet] = dict_process[pharmebinet_label]
 
     # check if this id is hetionet
     if go_id in dict_hetionet:
@@ -132,17 +132,17 @@ def check_if_new_or_part_of_hetionet(hetionet_label, go_id, go_name,highestGOLev
     # check if it is replaced by a new go id (this id will appear in the alternative ids of the new node)
     # is add to the alternative mapped dictionary
     elif go_id in dict_alternative_id_to_hetionet:
-        dict_ctd_in_hetionet_alternative[go_id]=dict_alternative_id_to_hetionet[go_id]
+        dict_ctd_in_pharmebinet_alternative[go_id]=dict_alternative_id_to_hetionet[go_id]
     # if the ontology was unknown  then the  id is add to the alternative mapped dictionary and in the tsv
     # to set the ontology
     elif found_with_alternative_id:
-        dict_ctd_in_hetionet_alternative[alternative_id]=normal_id
-        csv_without_ontology.writerow([alternative_id, hetionet_label])
+        dict_ctd_in_pharmebinet_alternative[alternative_id]=normal_id
+        csv_without_ontology.writerow([alternative_id, pharmebinet_label])
     # nodes which are not in go anymore
     else:
         return
         # print(go_id)
-        # print(hetionet_label)
+        # print(pharmebinet_label)
         # print('not good')
 
 '''
@@ -177,23 +177,23 @@ dict_ctd_cellular_component_in_hetionet = {}
 dict_ctd_molecular_function_in_hetionet = {}
 
 # dictionary of ctd biological_process which are in hetionet with properties: name
-dict_ctd_biological_process_in_hetionet_alternative = {}
+dict_ctd_biological_process_in_pharmebinet_alternative = {}
 
 # dictionary of ctd cellular_component which are in hetionet with properties: name
-dict_ctd_cellular_component_in_hetionet_alternative = {}
+dict_ctd_cellular_component_in_pharmebinet_alternative = {}
 
 # dictionary of ctd molecular_function which are in hetionet with properties: name
-dict_ctd_molecular_function_in_hetionet_alternative = {}
+dict_ctd_molecular_function_in_pharmebinet_alternative = {}
 
 # dictionary with for biological_process, cellular_component, molecular_function the right dictionaries
 # first dictionary has all identifier in hetionet, the second has all alternative hetionet ids to there identifier,
 # third list of all ctd ids which map with alternative ids, fourth dict of all ctd which mapped directly to hetionet
 dict_process = {
-    "Biological Process": [dict_biological_process_hetionet, dict_biological_process_alternative_hetionet, dict_ctd_biological_process_in_hetionet_alternative,
+    "Biological Process": [dict_biological_process_hetionet, dict_biological_process_alternative_hetionet, dict_ctd_biological_process_in_pharmebinet_alternative,
                            dict_ctd_biological_process_in_hetionet],
-    "Molecular Function": [dict_molecular_function_hetionet, dict_molecular_function_alternative_hetionet, dict_ctd_molecular_function_in_hetionet_alternative,
+    "Molecular Function": [dict_molecular_function_hetionet, dict_molecular_function_alternative_hetionet, dict_ctd_molecular_function_in_pharmebinet_alternative,
                            dict_ctd_molecular_function_in_hetionet],
-    "Cellular Component": [dict_cellular_component_hetionet,dict_cellular_component_alternative_hetionet, dict_ctd_cellular_component_in_hetionet_alternative,
+    "Cellular Component": [dict_cellular_component_hetionet,dict_cellular_component_alternative_hetionet, dict_ctd_cellular_component_in_pharmebinet_alternative,
                            dict_ctd_cellular_component_in_hetionet]
 }
 
@@ -227,7 +227,7 @@ Generate cypher and tsv for generating the new nodes and the relationships
 '''
 
 
-def generate_files(file_name_addition, ontology, dict_ctd_in_hetionet,dict_ctd_in_hetionet_alternative ):
+def generate_files(file_name_addition, ontology, dict_ctd_in_hetionet,dict_ctd_in_pharmebinet_alternative ):
     # generate mapped csv
     with open('GO/mapping_' + file_name_addition + '.tsv', 'w') as csvfile:
         writer = csv.writer(csvfile, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
@@ -237,8 +237,8 @@ def generate_files(file_name_addition, ontology, dict_ctd_in_hetionet,dict_ctd_i
         for go_id, name in dict_ctd_in_hetionet.items():
             writer.writerow([go_id, go_id,'',add_resource(go_id)])
 
-        for ctd_id, hetionet_id in dict_ctd_in_hetionet_alternative.items():
-            writer.writerow([ctd_id, hetionet_id,'',add_resource(hetionet_id)])
+        for ctd_id, pharmebinet_id in dict_ctd_in_pharmebinet_alternative.items():
+            writer.writerow([ctd_id, pharmebinet_id,'',add_resource(pharmebinet_id)])
 
     query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''mapping_and_merging_into_hetionet/ctd/GO/mapping_%s.tsv" As line  FIELDTERMINATOR '\\t' Match (c:%s{ identifier:line.GOIDHetionet}), (n:CTD_GO{go_id:line.GOIDCTD}) SET  c.url_ctd=" http://ctdbase.org/detail.go?type=go&acc="+line.GOIDCTD, c.highestGOLevel=n.highestGOLevel, c.ctd="yes", c.resource=split(line.resource,"|") Create (c)-[:equal_to_CTD_go]->(n);\n'''
     query = query % (file_name_addition, ontology)
@@ -269,7 +269,7 @@ def main():
     print (datetime.datetime.now())
     print('Load all go from hetionet into a dictionary')
 
-    load_hetionet_go_in()
+    load_pharmebinet_go_in()
 
     print(
         '###########################################################################################################################')
@@ -285,10 +285,10 @@ def main():
     print (datetime.datetime.now())
     print('Map generate tsv and cypher file for all three labels ')
 
-    for ontology, [dict_in_hetionet, dict_in_hetionet_alternative, dict_ctd_in_hetionet_alternative,
+    for ontology, [dict_in_hetionet, dict_in_pharmebinet_alternative, dict_ctd_in_pharmebinet_alternative,
                            dict_ctd_in_hetionet] in dict_process.items():
-        file_name,hetionet_label=dict_ctd_ontology_to_file_and_label[ontology]
-        generate_files(file_name,hetionet_label, dict_ctd_in_hetionet, dict_ctd_in_hetionet_alternative)
+        file_name,pharmebinet_label=dict_ctd_ontology_to_file_and_label[ontology]
+        generate_files(file_name,pharmebinet_label, dict_ctd_in_hetionet, dict_ctd_in_pharmebinet_alternative)
 
     # delete the node which did not mapped because they are obsoleted
     cypher='MATCH (n:CTD_GO) where not (n)<-[:equal_to_CTD_go]-() Detach Delete n;\n'

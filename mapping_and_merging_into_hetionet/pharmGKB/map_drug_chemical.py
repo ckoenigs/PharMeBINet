@@ -103,7 +103,7 @@ dict_mesh_db_id_to_chemical_id = {}
 dict_alter_id_to_id = {}
 
 '''
-load in all compound from hetionet in a dictionary
+load in all compound from pharmebinet in a dictionary
 '''
 
 
@@ -453,7 +453,7 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
-    print('Load in chemical from hetionet')
+    print('Load in chemical from pharmebinet')
 
     load_db_info_in()
 
@@ -461,7 +461,7 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
-    print('Load in pharmacological class from hetionet')
+    print('Load in pharmacological class from pharmebinet')
 
     load_pharmacological_class()
 

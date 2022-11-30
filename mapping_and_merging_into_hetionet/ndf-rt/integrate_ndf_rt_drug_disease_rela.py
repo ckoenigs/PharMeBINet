@@ -38,7 +38,7 @@ and integrate them in different tsv files
 '''
 
 
-def integrate_connection_into_hetionet(label):
+def integrate_connection_into_pharmebinet(label):
     # count of integrated contra-indication relationship
     count_contra_indicate = 0
     # count of integrated induces relationships
@@ -115,11 +115,11 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
-    print('Load in chemical from hetionet')
+    print('Load in chemical from pharmebinet')
 
     for label in ['Chemical', 'PharmacologicClass']:
 
-        integrate_connection_into_hetionet(label)
+        integrate_connection_into_pharmebinet(label)
 
     print(
         '###########################################################################################################################')

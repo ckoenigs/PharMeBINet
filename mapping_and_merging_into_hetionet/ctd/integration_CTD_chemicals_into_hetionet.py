@@ -729,7 +729,7 @@ map drugbank id from ctd to compound in hetionet
 '''
 
 
-def map_ctd_to_hetionet_compound():
+def map_ctd_to_pharmebinet_compound():
 
     # all not mapped ctd chemicals
     not_mapped_file = open('chemical/not_mapped_drugs.tsv', 'w', encoding='utf-8')
@@ -855,7 +855,7 @@ integration of ctd chemicals in hetionet
 '''
 
 
-def integration_of_ctd_chemicals_into_hetionet_compound():
+def integration_of_ctd_chemicals_into_pharmebinet_compound():
     # count all mesh ids which are mapped to a drugbank id
     counter = 0
     # count mapped to drugbank id, but the drugbank id is old or has no chemical information
@@ -1019,7 +1019,7 @@ def main():
     print (datetime.datetime.now())
     print('Map ctd chemical to hetionet compound ')
 
-    map_ctd_to_hetionet_compound()
+    map_ctd_to_pharmebinet_compound()
 
     #
     print(
@@ -1028,7 +1028,7 @@ def main():
     print (datetime.datetime.now())
     print('Integrate CTD chemicals into hetionet')
 
-    integration_of_ctd_chemicals_into_hetionet_compound()
+    integration_of_ctd_chemicals_into_pharmebinet_compound()
 
 
     print(

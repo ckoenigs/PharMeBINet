@@ -104,13 +104,13 @@ def database_connection():
     g = Graph("http://bimi:7475/db/data/",bolt=False)
 
 
-# dictionary of all diseases in hetionet with cui as key and mondo as value
+# dictionary of all diseases in pharmebinet with cui as key and mondo as value
 '''
 cui1: mondo
 '''
 dict_of_all_diseases = {}
 
-# list of all cuis of the diseases in hetionet
+# list of all cuis of the diseases in pharmebinet
 list_diseases_cuis = []
 # list_diseases_cuis=['C0005396']
 
@@ -196,13 +196,13 @@ def take_disease_umls_cui_and_find_sty(mondo, umls_cuis, umls_string):
 
 
 '''
-load from hetionet all disease in and make a dictionary with the mondo and umls cui
+load from pharmebinet all disease in and make a dictionary with the mondo and umls cui
 use only the first cui, because the other will be found with the search of the synonyms
 Where n.identifier='DOID:6898' or n.identifier='DOID:0050879'
 '''
 
 
-def load_in_hetionet_disease_in_dictionary():
+def load_in_pharmebinet_disease_in_dictionary():
     # get all disease from neo4j with exception disease (MONDO:0000001) and synodrome (MONDO:0002254)
     query = '''MATCH (n:Disease) Where not n.identifier in ['MONDO:0000001','MONDO:0002254'] RETURN n.identifier,n.umls_cuis , n.xrefs, n.name '''
     results = g.run(query)
@@ -470,7 +470,7 @@ list_rela_rb_synonym_string = "','".join(list_rela_rb_synonym)
 counter_disease_with_not_existing_cuis=0
 
 ''' 
-search for all synonyms of all diseases of hetionet. 
+search for all synonyms of all diseases of pharmebinet. 
 it generate for every disease a csv file with all synonyms,with form cui1;name1;cui2;name2;rel;rela;mondo \n   
 all so save the list of synonyms of a key in the list list_synonyms.
 To get the information it search for every disease in mysql MRREL table for synonyms and take only
@@ -889,17 +889,17 @@ def cui_to_mesh(cui):
 
 #            sys.exit()
 
-# dictionary symptom umls cui to mesh id or umls cui, if the mesh id or umls cui is already integrated into hetionet
+# dictionary symptom umls cui to mesh id or umls cui, if the mesh id or umls cui is already integrated into pharmebinet
 dict_umls_cui_to_mesh_or_umls_cui = {}
 
 '''
-integrate the symptoms into Hetionet
+integrate the symptoms into pharmebinet
 '''
 
 
-def integrate_symptoms_into_hetionet():
+def integrate_symptoms_into_pharmebinet():
     counter_new_symptoms = 0
-    counter_already_in_hetionet_symptoms = 0
+    counter_already_in_pharmebinet_symptoms = 0
     for symptom_cui, name in dict_symptoms_cuis.items():
         mesh_cui_ids = cui_to_mesh(symptom_cui)
         mesh_cui_ids.append(symptom_cui)
@@ -927,11 +927,11 @@ def integrate_symptoms_into_hetionet():
                 Set   s.umls='yes', s.cui="%s", s.resource=["%s"] '''
             query = query % (mesh_or_cui, symptom_cui, string_resource)
             dict_umls_cui_to_mesh_or_umls_cui[symptom_cui] = mesh_or_cui
-            counter_already_in_hetionet_symptoms += 1
+            counter_already_in_pharmebinet_symptoms += 1
         g.run(query)
 
     print('number of new symptoms:' + str(counter_new_symptoms))
-    print('number of symptoms which are already in hetionet:' + str(counter_already_in_hetionet_symptoms))
+    print('number of symptoms which are already in pharmebinet:' + str(counter_already_in_pharmebinet_symptoms))
 
 
 '''
@@ -941,7 +941,7 @@ check if possible symptom cui_to_meshes are symptomes and append them to dict_di
 
 def generate_cypher_file_for_relationships():
     counter_new_connection = 0
-    counter_connection_already_in_hetionet = 0
+    counter_connection_already_in_pharmebinet = 0
     i = 1
     h = open('integrate_symptoms_and_relationships_' + str(i) + '.cypher', 'w')
 
@@ -970,8 +970,8 @@ def generate_cypher_file_for_relationships():
                         writer.writerow([mondo, mesh_or_cui])
 
 
-    print('number of new connection in Hetionet:' + str(counter_new_connection))
-    print('number of already integrated connection in Hetionet:' + str(counter_connection_already_in_hetionet))
+    print('number of new connection in pharmebinet:' + str(counter_new_connection))
+    print('number of already integrated connection in pharmebinet:' + str(counter_connection_already_in_pharmebinet))
     print('all connection:' + str(counter_connection))
 
 
@@ -1173,7 +1173,7 @@ def main():
     print(datetime.datetime.now())
     print('load in cui diseases')
 
-    load_in_hetionet_disease_in_dictionary()
+    load_in_pharmebinet_disease_in_dictionary()
 
 
 
@@ -1339,7 +1339,7 @@ def main():
     print('##########################################################################')
 
     print(datetime.datetime.now())
-    print('integrate into symptoms into hetionet')
+    print('integrate into symptoms into pharmebinet')
 
     integrate_symptoms_into_hetionet()
 

@@ -26,7 +26,7 @@ class SymptomThread(threading.Thread):
         # print "Starting " + self.name
         # Get lock to synchronize threads
         threadLock.acquire()
-        load_in_hetionet_disease_in_dictionary(self.disease_id,  self.disease_definition)
+        load_in_pharmebinet_disease_in_dictionary(self.disease_id,  self.disease_definition)
         #      print "Ending " + self.name
         #      print_time(self.name, self.counter, 3)
         # Free lock to release next thread
@@ -98,7 +98,7 @@ disease in dictionary. Extract symptoms from definition and map symptoms to umls
 '''
 
 
-def load_in_hetionet_disease_in_dictionary(mondo,  definition):
+def load_in_pharmebinet_disease_in_dictionary(mondo,  definition):
     global counter_map_with_changed_order, counter_not_mapped_symptoms
 
     splitted = definition.split('has_symptom ')
@@ -200,7 +200,7 @@ def integrate_information_into_hetionet():
     counter_new_symptoms = 0
 
     # counter already in hetionet symptoms
-    counter_already_in_hetionet_symptoms = 0
+    counter_already_in_pharmebinet_symptoms = 0
 
     for symptom, cui in dict_symptom_to_umls_cui.items():
         if cui in list_new_add_umls_cuis:
@@ -232,7 +232,7 @@ def integrate_information_into_hetionet():
             query = query % (mesh, cui)
             dict_cui_to_mesh[cui] = mesh
 
-            counter_already_in_hetionet_symptoms += 1
+            counter_already_in_pharmebinet_symptoms += 1
         # g.run(query)
 
     # all symptoms which not appeare in DO get the information
@@ -240,7 +240,7 @@ def integrate_information_into_hetionet():
     g.run(query)
 
     print('number of new symptoms:' + str(counter_new_symptoms))
-    print('number of already in hetionet symptoms:' + str(counter_already_in_hetionet_symptoms))
+    print('number of already in hetionet symptoms:' + str(counter_already_in_pharmebinet_symptoms))
 
     print('##########################################################################')
 
