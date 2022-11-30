@@ -11,7 +11,7 @@ sys.path.append("../..")
 sys.path.append("..")
 import create_connection_to_databases
 
-# dictionary with the differences sources as and the name as property in Hetionet
+# dictionary with the differences sources as and the name as property in pharmebinet
 dict_resources = {
     'AEOLUS': 'aeolus',
     'ClinVar':'clinvar',

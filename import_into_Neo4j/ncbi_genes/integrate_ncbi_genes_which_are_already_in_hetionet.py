@@ -53,7 +53,7 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
         query = 'Create Constraint On (node:Gene_Ncbi) Assert node.identifier Is Unique;\n'
         cypher_file.write(query)
 
-        # file for integration into hetionet
+        # file for integration into pharmebinet
         file = open('output_data/genes.tsv', 'w', newline='')
         writer = csv.DictWriter(file, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL,
                                 fieldnames=csv_reader.fieldnames)

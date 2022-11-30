@@ -462,7 +462,7 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
         query = 'Create Constraint On (node:Gene_Ncbi) Assert node.identifier Is Unique;\n'
         cypher_file.write(query)
 
-        # file for integration into hetionet
+        # file for integration into pharmebinet
         file = open('output_data/genes.csv', 'w')
         writer = csv.DictWriter(file, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL, fieldnames=csv_reader.fieldnames)
         # writer.writeheader()
@@ -480,7 +480,7 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
         #count all row which will be integrated
         counter_included=0
         #counter all gene which are human and in hetionet
-        counter_gene_in_hetionet_and_human=0
+        counter_gene_in_pharmebinet_and_human=0
 
 
         counter_not_same_name_and_description=0
@@ -508,7 +508,7 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
                 writer_not_human.writerow(row)
                 found_gene_ids.append(int(gene_id))
             else:
-                counter_gene_in_hetionet_and_human+=1
+                counter_gene_in_pharmebinet_and_human+=1
                 counter_included+=1
                 writer.writerow(row)
                 found_gene_ids.append(int(gene_id))
@@ -516,7 +516,7 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
     print(len(found_gene_ids))
     print('all rows in ncbi gene_info file:'+str(counter_all))
     print('all included ncbi gene_info rows in new file:'+str(counter_included))
-    print('all genes which are in hetionet and human:'+str(counter_gene_in_hetionet_and_human))
+    print('all genes which are in hetionet and human:'+str(counter_gene_in_pharmebinet_and_human))
     print('number of name and description not equal:'+str(counter_not_same_name_and_description))
 
 

@@ -11,7 +11,7 @@ import datetime
 import threading
 import types
 
-# dictionary with the differences sources as and the name as property in Hetionet
+# dictionary with the differences sources as and the name as property in pharmebinet
 dict_resources = {
     'AEOLUS': 'aeolus',
     'CTD': 'ctd',

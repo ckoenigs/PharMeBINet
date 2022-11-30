@@ -4,7 +4,7 @@ sys.path.append("../..")
 sys.path.append("..")
 import create_connection_to_databases
 
-# dictionary with the differences sources as and the name as property in Hetionet
+# dictionary with the differences sources as and the name as property in pharmebinet
 dict_resources = {
     'AEOLUS': 'aeolus',
     'CTD': 'ctd',
@@ -176,7 +176,7 @@ def add_this_information_to_the_merged_node(identifier, label, delete_node_id):
         query = query % (label, identifier, merged_identifier_string)
         g.run(query)
 
-    # integrate the new relationships from this node to the other nodes into for this node into Hetionet
+    # integrate the new relationships from this node to the other nodes into for this node into pharmebinet
     count_new_relationships_from_this_node = 0
     length_list_node_other = len(list_node_to_other)
     for [rela_type, dict_rela, node_labels, node] in list_node_to_other:
@@ -226,7 +226,7 @@ def add_this_information_to_the_merged_node(identifier, label, delete_node_id):
             g.run(query)
 
     length_list_other_node = len(list_other_to_node)
-    # integrate the new relationships from other nodes to this nodes into for this node into Hetionet
+    # integrate the new relationships from other nodes to this nodes into for this node into pharmebinet
     count_new_relationships_to_this_node = 0
     for [rela_type, dict_rela, node_labels, node] in list_other_to_node:
 
