@@ -468,7 +468,7 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
         # writer.writeheader()
         writer.writerow(dict_header)
 
-        # file with all gene from hetionet which are not human
+        # file with all gene from pharmebinet which are not human
         file_nH = open('output_data/genes_not_human.csv', 'w')
         writer_not_human = csv.DictWriter(file_nH, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL,
                                 fieldnames=csv_reader.fieldnames)
@@ -479,7 +479,7 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
         counter_all=0
         #count all row which will be integrated
         counter_included=0
-        #counter all gene which are human and in hetionet
+        #counter all gene which are human and in pharmebinet
         counter_gene_in_pharmebinet_and_human=0
 
 
@@ -516,7 +516,7 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
     print(len(found_gene_ids))
     print('all rows in ncbi gene_info file:'+str(counter_all))
     print('all included ncbi gene_info rows in new file:'+str(counter_included))
-    print('all genes which are in hetionet and human:'+str(counter_gene_in_pharmebinet_and_human))
+    print('all genes which are in pharmebinet and human:'+str(counter_gene_in_pharmebinet_and_human))
     print('number of name and description not equal:'+str(counter_not_same_name_and_description))
 
 

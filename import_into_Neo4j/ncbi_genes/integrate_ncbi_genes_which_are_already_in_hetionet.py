@@ -60,7 +60,7 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
         # writer.writeheader()
         writer.writerow(dict_header)
 
-        # file with all gene from hetionet which are not human
+        # file with all gene from pharmebinet which are not human
         file_nH = open('output_data/genes_not_human.tsv', 'w', newline='')
         writer_not_human = csv.DictWriter(file_nH, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL,
                                           fieldnames=csv_reader.fieldnames)

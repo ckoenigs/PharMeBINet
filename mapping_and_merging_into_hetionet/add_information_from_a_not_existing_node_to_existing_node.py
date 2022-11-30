@@ -325,7 +325,7 @@ def merge_information_from_one_node_to_another(delete_node_id, merged_node_id, n
     print('##########################################################################')
 
     print(datetime.datetime.now())
-    print('integrate this into Hetionet')
+    print('integrate this into pharmebinet')
 
     add_this_information_to_the_merged_node(merged_node_id, node_label, delete_node_id)
 
@@ -389,7 +389,7 @@ def main():
     print('##########################################################################')
 
     print(datetime.datetime.now())
-    print('integrate this into Hetionet')
+    print('integrate this into pharmebinet')
 
     # add_this_information_to_the_merged_node('DB06723', 'Compound','DB13390')
     add_this_information_to_the_merged_node(into, label, old_id)

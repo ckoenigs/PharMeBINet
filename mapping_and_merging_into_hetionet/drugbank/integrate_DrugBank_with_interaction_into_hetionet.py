@@ -25,10 +25,10 @@ def create_connection_with_neo4j():
 dict_compounds = {}
 
 # list drugbank ids of all compounds which are already in pharmebinet in pharmebinet
-list_compounds_in_hetionet = []
+list_compounds_in_pharmebinet = []
 
 # dictionary drugbank ids of all compounds which are already in pharmebinet in pharmebinet with the resource list
-dict_compounds_in_hetionet = {}
+dict_compounds_in_pharmebinet = {}
 
 # old_properties
 old_properties = []
@@ -109,9 +109,9 @@ def load_all_pharmebinet_compound_in_dictionary():
     query = '''Match (n:Compound) RETURN n '''
     results = g.run(query)
     for compound, in results:
-        list_compounds_in_hetionet.append(compound['identifier'])
-        dict_compounds_in_hetionet[compound['identifier']] = dict(compound)
-    print('size of compound in pharmebinet before the rest of DrugBank is added: ' + str(len(list_compounds_in_hetionet)))
+        list_compounds_in_pharmebinet.append(compound['identifier'])
+        dict_compounds_in_pharmebinet[compound['identifier']] = dict(compound)
+    print('size of compound in pharmebinet before the rest of DrugBank is added: ' + str(len(list_compounds_in_pharmebinet)))
 
 
 # the new table for unii drugbank pairs
@@ -194,7 +194,7 @@ Integrate all DrugBank id into pharmebinet
 '''
 
 
-def integrate_DB_compound_information_into_hetionet():
+def integrate_DB_compound_information_into_pharmebinet():
     # count already existing compound
     counter_already_existing_compound = 0
     # count all new drugbank compounds
@@ -220,9 +220,9 @@ def integrate_DB_compound_information_into_hetionet():
         else:
             alternative_ids = []
         alternative_ids.append(drugbank_id)
-        # search for intersection between new db id + alternative ids and hetionet compounds ids
-        intersection = list(set(alternative_ids).intersection(list_compounds_in_hetionet))
-        # at least on of the new drugbank ids is in hetionet
+        # search for intersection between new db id + alternative ids and pharmebinet compounds ids
+        intersection = list(set(alternative_ids).intersection(list_compounds_in_pharmebinet))
+        # at least on of the new drugbank ids is in pharmebinet
         if len(intersection) > 0:
             counter_already_existing_compound += 1
 
@@ -278,10 +278,10 @@ def integrate_DB_compound_information_into_hetionet():
 
                 if type(property) == list:
                     set_of_list_properties.add(key)
-                    if key in dict_compounds_in_hetionet[drug_id]:
+                    if key in dict_compounds_in_pharmebinet[drug_id]:
                         # this is only for one time, because I integrated the food interaction  sometimes wrong
                         # if key != 'food_interaction':
-                        property.extend(dict_compounds_in_hetionet[drug_id][key])
+                        property.extend(dict_compounds_in_pharmebinet[drug_id][key])
                         property = list(set(property))
                     elif key not in list_new_properties and key not in old_properties:
                         list_not_fiting_properties.add(key)
@@ -290,14 +290,14 @@ def integrate_DB_compound_information_into_hetionet():
                         property = list(set(property))
                     dict_info_prepared[key] = '||'.join(property).replace('"', "'")
                 else:
-                    if key in dict_compounds_in_hetionet[drug_id]:
+                    if key in dict_compounds_in_pharmebinet[drug_id]:
                         # in the most cases if the values are different take the newest on
-                        if dict_compounds_in_hetionet[drug_id][key] != property:
+                        if dict_compounds_in_pharmebinet[drug_id][key] != property:
 
                             if key == 'unii':
                                 # only this three the older fits better
                                 if drug_id in ['DB11200', 'DB10360', 'DB09561']:
-                                    property = dict_compounds_in_hetionet[drug_id][key]
+                                    property = dict_compounds_in_pharmebinet[drug_id][key]
                         # else:
                         #     print('same property')
                         # print('for a key')

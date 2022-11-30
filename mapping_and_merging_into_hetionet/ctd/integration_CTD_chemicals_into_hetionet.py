@@ -15,7 +15,7 @@ from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_cha
 
 
 
-class DrugHetionet:
+class Drugpharmebinet:
     """
     identifier:string (Drugbank ID)
     inchikey: string

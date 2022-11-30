@@ -9,7 +9,7 @@ sys.path.append("..")
 from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
 
 
-class DrugHetionet:
+class Drugpharmebinet:
     """
     license: string
     identifier: string (Drugbank ID)
@@ -53,7 +53,7 @@ class Drug_Aeolus:
         self.how_mapped = how_mapped
 
 
-# dictionary with all compounds with id (drugbank id) as key and class DrugHetionet as value
+# dictionary with all compounds with id (drugbank id) as key and class Drugpharmebinet as value
 dict_all_drug = {}
 
 # dictionary with all aeolus drugs with key drug_concept_id (OHDSI ID) and value is class Drug_Aeolus
@@ -89,7 +89,7 @@ properties:
 '''
 
 
-def load_compounds_from_hetionet():
+def load_compounds_from_pharmebinet():
     query = 'MATCH (n:Chemical) RETURN n '
     results = g.run(query)
 
@@ -108,7 +108,7 @@ def load_compounds_from_hetionet():
                     dict_rxcui_to_Drugbank_with_xref[rxcui] = set()
                 dict_rxcui_to_Drugbank_with_xref[rxcui].add(identifier)
 
-        drug = DrugHetionet(licenses, identifier, inchikey, inchi, name, resource, xrefs)
+        drug = Drugpharmebinet(licenses, identifier, inchikey, inchi, name, resource, xrefs)
 
         dict_all_drug[identifier] = drug
 
@@ -328,7 +328,7 @@ def map_to_mesh_chemical():
 
 
 # list of drug_concept_ids which are map to pharmebinet
-list_map_to_hetionet = []
+list_map_to_pharmebinet = []
 # list of al drug_concept_ids that has a drugbank id but not mapped to pharmebinet
 list_not_mapped = []
 
@@ -375,7 +375,7 @@ map aeolus drug in pharmebinet compound
 '''
 
 
-def map_aeolus_drugs_to_hetionet():
+def map_aeolus_drugs_to_pharmebinet():
     for drug_concept_id, mapped_ids in dict_aeolus_drug_mapped_ids.items():
         has_one = False
         has_two = False

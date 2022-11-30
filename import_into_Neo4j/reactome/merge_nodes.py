@@ -200,7 +200,7 @@ def add_this_information_to_the_merged_node(identifier, label, delete_node_id, i
         query = query % (label, identifier_name, identifier, merged_identifier_string)
         g.run(query)
 
-    # integrate the new relationships from this node to the other nodes into for this node into Hetionet
+    # integrate the new relationships from this node to the other nodes into for this node into pharmebinet
     count_new_relationships_from_this_node = 0
     length_list_node_other=len(list_node_to_other)
     for [rela_type, dict_rela, node_labels, node] in list_node_to_other:
