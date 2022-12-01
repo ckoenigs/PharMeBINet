@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Apr 18 12:41:20 2018
-
-@author: ckoenigs
-"""
 
 from py2neo import Graph
 import datetime
@@ -24,63 +18,63 @@ def create_connection_with_neo4j():
     graph_database = create_connection_to_databases.database_connection_neo4j()
 
 
-# dictionary with hetionet Pathway with identifier as key and value the name
-dict_pathway_hetionet_node_hetionet = {}
+# dictionary with pharmebinet Pathway with identifier as key and value the name
+dict_pathway_pharmebinet_node_pharmebinet = {}
 
 '''
-load in all pathways from hetionet in a dictionary
+load in all pathways from pharmebinet in a dictionary
 '''
 
 
-def load_hetionet_pathways_hetionet_node_in(csv_file, dict_pathway_hetionet_node_hetionet, new_relationship,
-                                            node_reactome_label, node_hetionet_label):
+def load_pharmebinet_pathways_pharmebinet_node_in(csv_file, dict_pathway_pharmebinet_node_pharmebinet, new_relationship,
+                                            node_reactome_label, node_pharmebinet_label):
     query = '''MATCH (p:Pathway)-[:equal_to_reactome_pathway]-(r:Pathway_reactome)-[v:%s]->(n:%s)-[]-(b:%s) RETURN p.identifier, b.identifier, v.order, v.stoichiometry, r.stId'''
-    query = query % (new_relationship, node_reactome_label, node_hetionet_label)
+    query = query % (new_relationship, node_reactome_label, node_pharmebinet_label)
     results = graph_database.run(query)
     # for id1, id2, order, stoichiometry, in results:
     for pathway_id, node_id, order, stoichiometry, stid, in results:
-        if (pathway_id, node_id) in dict_pathway_hetionet_node_hetionet:
+        if (pathway_id, node_id) in dict_pathway_pharmebinet_node_pharmebinet:
             print(pathway_id, node_id)
             print(node_reactome_label)
             print("Doppelte Pathway-Node Kombination")
-            # if dict_pathway_hetionet_node_hetionet[(pathway_id, node_id)][0]!=stoichiometry or dict_pathway_hetionet_node_hetionet[(pathway_id, node_id)][1]!=order:
+            # if dict_pathway_pharmebinet_node_pharmebinet[(pathway_id, node_id)][0]!=stoichiometry or dict_pathway_pharmebinet_node_pharmebinet[(pathway_id, node_id)][1]!=order:
             # sys.exit("")
             # sys.exit("Doppelte Pathway-Node Kombination")
 
-        dict_pathway_hetionet_node_hetionet[(pathway_id, node_id)] = [stoichiometry, order]
+        dict_pathway_pharmebinet_node_pharmebinet[(pathway_id, node_id)] = [stoichiometry, order]
         csv_file.writerow([pathway_id, node_id, order, stoichiometry, stid])
-    print('number of Pathway-Nodes relationships in hetionet:' + str(len(dict_pathway_hetionet_node_hetionet)))
+    print('number of Pathway-Nodes relationships in pharmebinet:' + str(len(dict_pathway_pharmebinet_node_pharmebinet)))
 
 
 '''
-generate new relationships between pathways of hetionet and hetionet nodes that mapped to reactome 
+generate new relationships between pathways of pharmebinet and pharmebinet nodes that mapped to reactome 
 '''
 
 
 def create_cypher_file(file_name, node_label, rela_name):
-    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/reactome/%s" As line FIELDTERMINATOR "\\t" MATCH (d:Pathway{identifier:line.id_hetionet_pathway}),(c:%s{identifier:line.id_hetionet_node}) CREATE (d)-[: %s{order:line.order, stoichiometry:line.stoichiometry, resource: ['Reactome'], reactome: "yes", source:"Reactome", license:"%s", url:"https://reactome.org/content/detail/"+line.stid}]->(c);\n'''
+    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/reactome/%s" As line FIELDTERMINATOR "\\t" MATCH (d:Pathway{identifier:line.id_pharmebinet_pathway}),(c:%s{identifier:line.id_pharmebinet_node}) CREATE (d)-[: %s{order:line.order, stoichiometry:line.stoichiometry, resource: ['Reactome'], reactome: "yes", source:"Reactome", license:"%s", url:"https://reactome.org/content/detail/"+line.stid}]->(c);\n'''
     query = query % (path_of_directory, file_name, node_label, rela_name, license)
     cypher_file.write(query)
 
 
-def check_relationships_and_generate_file(new_relationship, node_reactome_label, node_hetionet_label,
+def check_relationships_and_generate_file(new_relationship, node_reactome_label, node_pharmebinet_label,
                                           directory, rela_name):
     print(
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
-    print('Load all relationships from hetionet_pathway and hetionet_nodes into a dictionary')
+    print('Load all relationships from pharmebinet_pathway and pharmebinet_nodes into a dictionary')
     # file for mapped or not mapped identifier
     file_name = directory + '/mapped_pathway_to_' + node_reactome_label + '_' + rela_name + '.tsv'
     file_mapped_pathway_to_node = open(file_name,
                                        'w', encoding="utf-8")
     csv_mapped = csv.writer(file_mapped_pathway_to_node, delimiter='\t', lineterminator='\n')
-    csv_mapped.writerow(['id_hetionet_pathway', 'id_hetionet_node', 'order', 'stoichiometry', 'stid'])
+    csv_mapped.writerow(['id_pharmebinet_pathway', 'id_pharmebinet_node', 'order', 'stoichiometry', 'stid'])
 
     dict_pathway_node = {}
 
-    load_hetionet_pathways_hetionet_node_in(csv_mapped, dict_pathway_node, new_relationship, node_reactome_label,
-                                            node_hetionet_label)
+    load_pharmebinet_pathways_pharmebinet_node_in(csv_mapped, dict_pathway_node, new_relationship, node_reactome_label,
+                                            node_pharmebinet_label)
 
     print(
         '###########################################################################################################################')
@@ -89,7 +83,7 @@ def check_relationships_and_generate_file(new_relationship, node_reactome_label,
 
     print('Integrate new relationships and connect them ')
 
-    create_cypher_file(file_name, node_hetionet_label, rela_name)
+    create_cypher_file(file_name, node_pharmebinet_label, rela_name)
 
 
 def main():
@@ -107,7 +101,7 @@ def main():
     create_connection_with_neo4j()
 
     # 0: old relationship;           1: name of node in Reactome;
-    # 2: name of node in Hetionet;   3: name of new relationship
+    # 2: name of node in pharmebinet;   3: name of new relationship
     list_of_combinations = [
         ['precedingEvent', 'ReactionLikeEvent_reactome', 'ReactionLikeEvent', 'PRECEDING_REACTION_PWprRLE'],
         ['precedingEvent', 'Pathway_reactome', 'Pathway', 'PRECEDING_REACTION_PWprPW'],
@@ -126,10 +120,10 @@ def main():
     for list_element in list_of_combinations:
         new_relationship = list_element[0]
         node_reactome_label = list_element[1]
-        node_hetionet_label = list_element[2]
+        node_pharmebinet_label = list_element[2]
         rela_name = list_element[3]
         check_relationships_and_generate_file(new_relationship, node_reactome_label,
-                                              node_hetionet_label, directory,
+                                              node_pharmebinet_label, directory,
                                               rela_name)
     cypher_file.close()
 

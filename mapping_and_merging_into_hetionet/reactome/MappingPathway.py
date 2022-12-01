@@ -19,14 +19,14 @@ def create_connection_with_neo4j():
     graph_database = create_connection_to_databases.database_connection_neo4j()
 
 
-# dictionary with hetionet pathways with identifier as key and value the name
-dict_pathway_hetionet = {}
+# dictionary with pharmebinet pathways with identifier as key and value the name
+dict_pathway_pharmebinet = {}
 
-# dictionary with hetionet pathways with identifier as key and value the xrefs
-dict_pathway_hetionet_xrefs = {}
+# dictionary with pharmebinet pathways with identifier as key and value the xrefs
+dict_pathway_pharmebinet_xrefs = {}
 
-# dictionary with hetionet pathways with name as key and value the identifier
-dict_pathway_hetionet_names = {}
+# dictionary with pharmebinet pathways with name as key and value the identifier
+dict_pathway_pharmebinet_names = {}
 
 # dictionary from own id to new identifier
 dict_own_id_to_identifier = {}
@@ -38,11 +38,11 @@ dict_pathwayId_to_resource = {}
 highest_identifier = 0
 
 '''
-load in all pathways from hetionet in a dictionary
+load in all pathways from pharmebinet in a dictionary
 '''
 
 
-def load_hetionet_pathways_in():
+def load_pharmebinet_pathways_in():
     global highest_identifier
     # query ist ein String
     query = '''MATCH (n:Pathway) RETURN n.identifier, n.name, n.source, n.xrefs, n.resource'''
@@ -51,14 +51,14 @@ def load_hetionet_pathways_in():
     results = graph_database.run(query)
     # results werden einzeln durchlaufen
     for identifier, name, source, idOwns, resource, in results:
-        # identifier von hetionet (PC_11_) herausbekommen, der die größte Zahl hat, damit keiner überschrieben wird
+        # identifier von pharmebinet (PC_11_) herausbekommen, der die größte Zahl hat, damit keiner überschrieben wird
         if int(identifier.split("_", -1)[1]) > highest_identifier:
             # teilt den String PC_11_Zahl in PC_11_ und Zahl (durch -1 trennt er bei dem zweiten _
             # [1] gibt an, dass der zweite Teil als highest_identifier gespeichert wird
             highest_identifier = int(identifier.split("_", -1)[1])
         # im dictionary werden passend zu den Identifiern die Namen und die idOwns gespeichert
-        dict_pathway_hetionet[identifier] = name
-        dict_pathway_hetionet_xrefs[identifier] = idOwns
+        dict_pathway_pharmebinet[identifier] = name
+        dict_pathway_pharmebinet_xrefs[identifier] = idOwns
         dict_pathwayId_to_resource[identifier] = resource
         if idOwns:
             # geht die Liste idOwns in neo4j durch und baut das dictionary auf an identifiern (von externen Identifier ist idOwn
@@ -68,9 +68,9 @@ def load_hetionet_pathways_in():
                     dict_own_id_to_identifier[idOwn] = identifier
                 else:
                     print(idOwn)
-        dict_pathway_hetionet_names[name.lower()] = identifier
+        dict_pathway_pharmebinet_names[name.lower()] = identifier
 
-    print('number of pathway nodes in hetionet:' + str(len(dict_pathway_hetionet)))
+    print('number of pathway nodes in pharmebinet:' + str(len(dict_pathway_pharmebinet)))
 
 
 # file for mapped or not mapped identifier
@@ -83,10 +83,10 @@ csv_not_mapped.writerow(['newId', 'id', 'name'])
 
 file_mapped_pathways = open('pathway/mapped_pathways.tsv', 'w', encoding="utf-8")
 csv_mapped = csv.writer(file_mapped_pathways, delimiter='\t', lineterminator='\n')
-csv_mapped.writerow(['id', 'id_hetionet', 'ownId', 'resource', 'Pathway_name', 'Pathway_names'])
+csv_mapped.writerow(['id', 'id_pharmebinet', 'ownId', 'resource', 'Pathway_name', 'Pathway_names'])
 
 '''
-load all reactome pathways and check if they are in hetionet or not
+load all reactome pathways and check if they are in pharmebinet or not
 '''
 
 
@@ -101,43 +101,43 @@ def load_reactome_pathways_in():
     for pathways_node, in results:
         pathways_id = pathways_node['stId']
         pathways_name = pathways_node['displayName'].lower()
-        # check if the reactome pathway id is part in the hetionet idOwn
+        # check if the reactome pathway id is part in the pharmebinet idOwn
         # mapping nach dem identifier
         if pathways_id in dict_own_id_to_identifier:
             counter_map_with_id += 1
             # print('id')
             # print(dict_own_id_to_identifier[pathways_id])
-            pathway_names = dict_pathway_hetionet[dict_own_id_to_identifier[pathways_id]]
+            pathway_names = dict_pathway_pharmebinet[dict_own_id_to_identifier[pathways_id]]
             # PC_11_Zahl Nummer wird im Dictionary nachgeschaut
-            hetionet_identifier = dict_own_id_to_identifier[pathways_id]
+            pharmebinet_identifier = dict_own_id_to_identifier[pathways_id]
             # Liste von idOwns wird nach dem PC_11_Zahl durchsucht und als String aneinandergehängt (join)
             # als Trennungssymbol wird | genutzt
-            own_ids = dict_pathway_hetionet_xrefs[hetionet_identifier]
+            own_ids = dict_pathway_pharmebinet_xrefs[pharmebinet_identifier]
             own_ids.append('reactome:'+pathways_id)
             string_own_ids = '|'.join(go_through_xrefs_and_change_if_needed_source_name(own_ids,'pathway'))
-            resource = set(dict_pathwayId_to_resource[hetionet_identifier])
+            resource = set(dict_pathwayId_to_resource[pharmebinet_identifier])
             resource.add('Reactome')
             resource = '|'.join(sorted(resource))
-            csv_mapped.writerow([pathways_id, hetionet_identifier, string_own_ids, resource, pathways_name])
+            csv_mapped.writerow([pathways_id, pharmebinet_identifier, string_own_ids, resource, pathways_name])
 
         # mapping nach dem Namen
-        elif pathways_name in dict_pathway_hetionet_names:
+        elif pathways_name in dict_pathway_pharmebinet_names:
             counter_map_with_name += 1
             print(pathways_id)
             print('mapped with name')
-            print(dict_pathway_hetionet_names[pathways_name])
+            print(dict_pathway_pharmebinet_names[pathways_name])
             print(pathways_name)
 
-            hetionet_identifier = dict_pathway_hetionet_names[pathways_name]
-            own_ids = dict_pathway_hetionet_xrefs[hetionet_identifier]
+            pharmebinet_identifier = dict_pathway_pharmebinet_names[pathways_name]
+            own_ids = dict_pathway_pharmebinet_xrefs[pharmebinet_identifier]
             own_ids.append('reactome:'+pathways_id)
             string_own_ids = '|'.join(go_through_xrefs_and_change_if_needed_source_name(own_ids,'pathway'))
-            resource = set(dict_pathwayId_to_resource[hetionet_identifier])
+            resource = set(dict_pathwayId_to_resource[pharmebinet_identifier])
             resource.add('Reactome')
             resource = '|'.join(sorted(resource))
-            pathway_names = dict_pathway_hetionet[dict_pathway_hetionet_names[pathways_name]]
+            pathway_names = dict_pathway_pharmebinet[dict_pathway_pharmebinet_names[pathways_name]]
             csv_mapped.writerow(
-                [pathways_id, hetionet_identifier, string_own_ids, resource, pathways_name, pathway_names])
+                [pathways_id, pharmebinet_identifier, string_own_ids, resource, pathways_name, pathway_names])
 
         # übrige Knoten, die nicht mappen, werden neu erstellt und bekommen neuen Identifier PC_11_Zahl
         # dafür braucht man die höchte Zahl +1, damit keiner überschrieben wird
@@ -151,14 +151,14 @@ def load_reactome_pathways_in():
 
 
 '''
-generate connection between mapping pathways of reactome and hetionet and generate new hetionet nodes for the not existing nodes
+generate connection between mapping pathways of reactome and pharmebinet and generate new pharmebinet nodes for the not existing nodes
 '''
 
 
 def create_cypher_file():
     cypher_file = open('output/cypher.cypher', 'w', encoding="utf-8")
-    # mappt die Knoten, die es in hetionet und reactome gibt und fügt die properties hinzu
-    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/reactome/pathway/mapped_pathways.tsv" As line FIELDTERMINATOR "\\t" MATCH (d:Pathway{identifier:line.id_hetionet}),(c:Pathway_reactome{stId:line.id}) CREATE (d)-[: equal_to_reactome_pathway]->(c) SET d.resource = split(line.resource, '|'), d.reactome = "yes", d.name = c.displayName, d.synonyms = apoc.convert.fromJsonList(c.name), d.alternative_id = c.oldStId, d.books = c.books, d.pubMed_ids = c.pubMed_ids, d.figure_urls = c.figure_urls, d.publication_urls = c.publication_urls, d.doi = c.doi, d.definition = c.definition, d.xrefs = split(line.ownId,"|");\n'''
+    # mappt die Knoten, die es in pharmebinet und reactome gibt und fügt die properties hinzu
+    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/reactome/pathway/mapped_pathways.tsv" As line FIELDTERMINATOR "\\t" MATCH (d:Pathway{identifier:line.id_pharmebinet}),(c:Pathway_reactome{stId:line.id}) CREATE (d)-[: equal_to_reactome_pathway]->(c) SET d.resource = split(line.resource, '|'), d.reactome = "yes", d.name = c.displayName, d.synonyms = apoc.convert.fromJsonList(c.name), d.alternative_id = c.oldStId, d.books = c.books, d.pubMed_ids = c.pubMed_ids, d.figure_urls = c.figure_urls, d.publication_urls = c.publication_urls, d.doi = c.doi, d.definition = c.definition, d.xrefs = split(line.ownId,"|");\n'''
     query = query % (path_of_directory)
     cypher_file.write(query)
 
@@ -185,9 +185,9 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
-    print('Load all pathways from hetionet into a dictionary')
+    print('Load all pathways from pharmebinet into a dictionary')
 
-    load_hetionet_pathways_in()
+    load_pharmebinet_pathways_in()
 
     print(
         '###########################################################################################################################')

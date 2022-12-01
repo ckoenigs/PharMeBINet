@@ -23,14 +23,14 @@ def create_connection_with_neo4j_mysql():
     g = create_connection_to_databases.database_connection_neo4j()
 
 
-# dictionary with hetionet genes with identifier as key and value the name
-dict_genes_hetionet = {}
+# dictionary with pharmebinet genes with identifier as key and value the name
+dict_genes_pharmebinet = {}
 
 # label of pathways
 label_pathway = 'pathway_multi'
 
 '''
-load in all pathways from hetionet in a dictionary
+load in all pathways from pharmebinet in a dictionary
 '''
 
 
@@ -39,9 +39,9 @@ def load_genes_into_dict():
     results = g.run(query)
 
     for identifier, name, in results:
-        dict_genes_hetionet[identifier] = name
+        dict_genes_pharmebinet[identifier] = name
 
-    print('number of pathway nodes in hetionet:' + str(len(dict_genes_hetionet)))
+    print('number of pathway nodes in pharmebinet:' + str(len(dict_genes_pharmebinet)))
 
 
 # header of the node tsv
@@ -121,7 +121,7 @@ def load_in_all_pathways():
 
         for gene_id in node['genes']:
             gene_id = gene_id
-            if gene_id in dict_genes_hetionet:
+            if gene_id in dict_genes_pharmebinet:
                 dict_rela[(str(gene_id), identifier)] = 1
                 # csv_rela.writerow([str(gene_id),identifier])
 
@@ -331,7 +331,7 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
-    print('Load all pathways from hetionet into a dictionary')
+    print('Load all pathways from pharmebinet into a dictionary')
 
     load_genes_into_dict()
 

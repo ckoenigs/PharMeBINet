@@ -16,11 +16,11 @@ def create_connection_with_neo4j():
     global graph_database
     graph_database = create_connection_to_databases.database_connection_neo4j()
 
-# dictionary with hetionet disease with name as key and value the identifier
-dict_disease_hetionet_names = {}
+# dictionary with pharmebinet disease with name as key and value the identifier
+dict_disease_pharmebinet_names = {}
 
-# dictionary with hetionet disease with synonym as key and value set of identifiers
-dict_disease_hetionet_synonyms = {}
+# dictionary with pharmebinet disease with synonym as key and value set of identifiers
+dict_disease_pharmebinet_synonyms = {}
 
 #dictionary from own id to new identifier
 dict_doid_id_to_identifier = {}
@@ -41,11 +41,11 @@ def add_to_dict(dictionary, key, one_value):
     dictionary[key].add(one_value)
 
 '''
-load in all disease from hetionet in a dictionary
+load in all disease from pharmebinet in a dictionary
 '''
 
 
-def load_hetionet_disease_in():
+def load_pharmebinet_disease_in():
     query = '''MATCH (n:Disease) RETURN n.identifier, n.name, n.alternative_ids, n.resource, n.synonyms'''
     results = graph_database.run(query)
 
@@ -63,15 +63,15 @@ def load_hetionet_disease_in():
                 add_to_dict(dict_doid_id_to_identifier,doid, identifier)
 
         if name:
-            dict_disease_hetionet_names[name.lower()] = identifier
+            dict_disease_pharmebinet_names[name.lower()] = identifier
 
         if synonyms:
             for synonym in synonyms:
                 synonym = pharmebinetutils.prepare_obo_synonyms(synonym).lower()
-                add_to_dict(dict_disease_hetionet_synonyms,synonym, identifier)
+                add_to_dict(dict_disease_pharmebinet_synonyms,synonym, identifier)
 
 
-    print('number of disease nodes in hetionet:' + str(len(dict_diseaseId_to_resource)))
+    print('number of disease nodes in pharmebinet:' + str(len(dict_diseaseId_to_resource)))
 
 # file for mapped or not mapped identifier
 file_not_mapped_disease = open('disease/not_mapped_disease.tsv', 'w', encoding="utf-8")
@@ -80,7 +80,7 @@ csv_not_mapped.writerow(['id','name'])
 
 file_mapped_disease = open('disease/mapped_disease.tsv', 'w', encoding="utf-8")
 csv_mapped = csv.writer(file_mapped_disease,delimiter='\t', lineterminator='\n')
-csv_mapped.writerow(['id','id_hetionet', 'resource', 'how_mapped'])
+csv_mapped.writerow(['id','id_pharmebinet', 'resource', 'how_mapped'])
 
 def prepare_and_write_information_into_tsv(disease_id,identifier, how_mapped):
     """
@@ -93,7 +93,7 @@ def prepare_and_write_information_into_tsv(disease_id,identifier, how_mapped):
     csv_mapped.writerow([disease_id, identifier, pharmebinetutils.resource_add_and_prepare(dict_diseaseId_to_resource[identifier],'Reactome'), how_mapped])
 
 '''
-load all reatome disease and check if they are in hetionet or not
+load all reatome disease and check if they are in pharmebinet or not
 '''
 
 
@@ -120,22 +120,22 @@ def load_reactome_disease_in():
                 prepare_and_write_information_into_tsv(disease_id,pharmebinet_identifier,'disease_id')
 
         #mapping with name
-        elif disease_name in dict_disease_hetionet_names:
+        elif disease_name in dict_disease_pharmebinet_names:
             mapped_with_name_or_id=True
             counter_map_with_name += 1
             print(disease_id)
             print('mapped with name')
-            print(dict_disease_hetionet_names[disease_name])
+            print(dict_disease_pharmebinet_names[disease_name])
             print(disease_name)
-            pharmebinet_identifier = dict_disease_hetionet_names[disease_name]
+            pharmebinet_identifier = dict_disease_pharmebinet_names[disease_name]
             prepare_and_write_information_into_tsv(disease_id,pharmebinet_identifier,'name')
 
         if mapped_with_name_or_id:
             continue
         # mapping with synonyms
-        if disease_name in dict_disease_hetionet_synonyms:
+        if disease_name in dict_disease_pharmebinet_synonyms:
             counter_map_with_synonyms+=1
-            for pharmebinet_identifier in dict_disease_hetionet_synonyms[disease_name]:
+            for pharmebinet_identifier in dict_disease_pharmebinet_synonyms[disease_name]:
                 prepare_and_write_information_into_tsv(disease_id, pharmebinet_identifier, 'synonyms')
 
 
@@ -148,7 +148,7 @@ def load_reactome_disease_in():
     print('number of mapping with synonyms:' + str(counter_map_with_synonyms))
 
 '''
-generate connection between mapping disease of reactome and hetionet and generate new hetionet nodes for the not existing nodes
+generate connection between mapping disease of reactome and pharmebinet and generate new pharmebinet nodes for the not existing nodes
 '''
 
 
@@ -158,7 +158,7 @@ def create_cypher_file():
     :return:
     """
     cypher_file = open('output/cypher.cypher', 'a', encoding="utf-8")
-    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/reactome/disease/mapped_disease.tsv" As line FIELDTERMINATOR "\\t" MATCH (d:Disease{identifier:line.id_hetionet}),(c:Disease_reactome{identifier:line.id}) CREATE (d)-[: equal_to_reactome_disease{how_mapped:line.how_mapped}]->(c) SET d.resource = split(line.resource, '|'), d.reactome = "yes";\n'''
+    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/reactome/disease/mapped_disease.tsv" As line FIELDTERMINATOR "\\t" MATCH (d:Disease{identifier:line.id_pharmebinet}),(c:Disease_reactome{identifier:line.id}) CREATE (d)-[: equal_to_reactome_disease{how_mapped:line.how_mapped}]->(c) SET d.resource = split(line.resource, '|'), d.reactome = "yes";\n'''
     query= query % (path_of_directory)
     cypher_file.write(query)
     cypher_file.close()
@@ -179,9 +179,9 @@ def main():
         '###########################################################################################################################')
 
     print (datetime.datetime.now())
-    print('Load all disease from hetionet into a dictionary')
+    print('Load all disease from pharmebinet into a dictionary')
 
-    load_hetionet_disease_in()
+    load_pharmebinet_disease_in()
 
 
     print(

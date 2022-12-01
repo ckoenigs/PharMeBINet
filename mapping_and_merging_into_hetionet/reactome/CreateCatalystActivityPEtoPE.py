@@ -22,7 +22,7 @@ load in all connected PE from Pharmebinet which are connected through CA where a
 '''
 
 
-def load_hetionet_complex_hetionet_node_in(csv_file, set_node1_node2_pharmebinet, start_label, end_label ):
+def load_pharmebinet_complex_pharmebinet_node_in(csv_file, set_node1_node2_pharmebinet, start_label, end_label ):
    
 
     query = '''MATCH (%s)--(:PhysicalEntity_reactome)-[:activeUnit]-(m:CatalystActivity_reactome)-[:physicalEntity]-(:PhysicalEntity_reactome)--(%s) Where (m)--(:CatalystActivityReference_reactome) RETURN p.identifier, b.identifier'''
@@ -41,7 +41,7 @@ def load_hetionet_complex_hetionet_node_in(csv_file, set_node1_node2_pharmebinet
 
 
 '''
-generate new relationships between complex of hetionet and complex of hetionet nodes that mapped to reactome 
+generate new relationships between complex of pharmebinet and complex of pharmebinet nodes that mapped to reactome 
 '''
 
 
@@ -59,7 +59,7 @@ def check_relationships_and_generate_file(start_label, end_label, node_label_pha
         '___~(  )(°^)o_o(^°)(  )~_____~(  )(°^)o_o(^°)(  )~_____~(  )(°^)o_o(^°)(  )~_____~(  )(°^)o_o(^°)(  )~__')
 
     print(datetime.datetime.now())
-    print('Load all relationships from hetionet_Complex and hetionet_nodes into a dictionary')
+    print('Load all relationships from pharmebinet_Complex and pharmebinet_nodes into a dictionary')
     file_name = directory + '/edge_' + rela_name + '.tsv'
 
     file_mapped_complex_to_node = open(file_name, 'w', encoding="utf-8")
@@ -68,7 +68,7 @@ def check_relationships_and_generate_file(start_label, end_label, node_label_pha
         ['id_1', 'id_2'])
 
     set_pairs = set()
-    load_hetionet_complex_hetionet_node_in(csv_mapped, set_pairs,start_label,end_label)
+    load_pharmebinet_complex_pharmebinet_node_in(csv_mapped, set_pairs,start_label,end_label)
 
     print(
         '°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°')

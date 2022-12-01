@@ -1,9 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Apr 18 12:41:20 2018
 
-@author: ckoenigs
-"""
 
 from py2neo import Graph
 import datetime
@@ -24,64 +19,64 @@ def create_connection_with_neo4j():
     graph_database = create_connection_to_databases.database_connection_neo4j()
 
 
-# dictionary with hetionet failedReaction with identifier as key and value the name
-dict_regulation_hetionet_node_hetionet = {}
+# dictionary with pharmebinet failedReaction with identifier as key and value the name
+dict_regulation_pharmebinet_node_pharmebinet = {}
 
 '''
-load in all pathways from hetionet in a dictionary
+load in all pathways from pharmebinet in a dictionary
 '''
 
 
-def load_hetionet_regulation_hetionet_node_in(csv_file, dict_regulation_hetionet_node_hetionet,
+def load_pharmebinet_regulation_pharmebinet_node_in(csv_file, dict_regulation_pharmebinet_node_pharmebinet,
                                               new_relationship,
-                                              node_reactome_label,  node_hetionet_label, direction1,
+                                              node_reactome_label,  node_pharmebinet_label, direction1,
                                               direction2):
     query = '''MATCH (p:Regulation)-[:equal_to_reactome_regulation]-(r:Regulation_reactome)%s[v:%s]%s(n:%s)-[]-(b:%s) RETURN p.identifier, b.identifier, v.order, v.stoichiometry, r.schemaClass, n.stId'''
     query = query % (
-    direction1, new_relationship, direction2, node_reactome_label,  node_hetionet_label)
+    direction1, new_relationship, direction2, node_reactome_label,  node_pharmebinet_label)
     print(query)
     results = graph_database.run(query)
     # for id1, id2, order, stoichiometry, in results:
     for regulation_id, node_id, order, stoichiometry, knownAction, stid, in results:
-        if (regulation_id, node_id) in dict_regulation_hetionet_node_hetionet:
+        if (regulation_id, node_id) in dict_regulation_pharmebinet_node_pharmebinet:
             print(regulation_id, node_id)
             sys.exit("Doppelte Kombination")
-        dict_regulation_hetionet_node_hetionet[(regulation_id, node_id)] = [stoichiometry, order]
+        dict_regulation_pharmebinet_node_pharmebinet[(regulation_id, node_id)] = [stoichiometry, order]
         csv_file.writerow([regulation_id, node_id, order, stoichiometry, knownAction, stid])
-    print('number of regulation-' + node_reactome_label + ' relationships in hetionet:' + str(
-        len(dict_regulation_hetionet_node_hetionet)))
+    print('number of regulation-' + node_reactome_label + ' relationships in pharmebinet:' + str(
+        len(dict_regulation_pharmebinet_node_pharmebinet)))
 
 
 '''
-generate new relationships between pathways of hetionet and Regulation of hetionet nodes that mapped to reactome 
+generate new relationships between pathways of pharmebinet and Regulation of pharmebinet nodes that mapped to reactome 
 '''
 
 
 def create_cypher_file(file_path, node_label, rela_name, direction1, direction2):
-    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/reactome/%s" As line FIELDTERMINATOR "\\t" MATCH (d:Regulation{identifier:line.id_hetionet_Regulation}),(c:%s{identifier:line.id_hetionet_node}) CREATE (d)%s[:%s{order:line.order, stoichiometry:line.stoichiometry, knownAction:line.knownAction, resource: ['Reactome'], source:"Reactome", reactome: "yes", license:"%s", url:"https://reactome.org/content/detail/"+line.stid}]%s(c);\n'''
+    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/reactome/%s" As line FIELDTERMINATOR "\\t" MATCH (d:Regulation{identifier:line.id_pharmebinet_Regulation}),(c:%s{identifier:line.id_pharmebinet_node}) CREATE (d)%s[:%s{order:line.order, stoichiometry:line.stoichiometry, knownAction:line.knownAction, resource: ['Reactome'], source:"Reactome", reactome: "yes", license:"%s", url:"https://reactome.org/content/detail/"+line.stid}]%s(c);\n'''
     query = query % (path_of_directory, file_path, node_label, direction1, rela_name, license, direction2)
     cypher_file.write(query)
 
 
-def check_relationships_and_generate_file(new_relationship, node_reactome_label,  node_hetionet_label,
+def check_relationships_and_generate_file(new_relationship, node_reactome_label,  node_pharmebinet_label,
                                           directory, rela_name, direction1, direction2):
     print(
         '___(o\'-\'o)___°( ^.^ )°___°(.,.)°___~°(o\'.\'o)°___`(o^.^o)´___(o\'-\'o)___°( ^.^ )°___°(.,.)°___~°(o\'.\'o)°___`(o^.^o)´___')
 
     print(datetime.datetime.now())
-    print('Load all relationships from hetionet_Regulation and hetionet_nodes into a dictionary')
+    print('Load all relationships from pharmebinet_Regulation and pharmebinet_nodes into a dictionary')
     # file for mapped or not mapped identifier
     file_name = directory + '/mapped_Regulation_to_' + node_reactome_label[0:24] + '_' + rela_name + '.tsv'
 
     file_mapped_regulation_to_node = open(file_name, 'w', encoding="utf-8")
     csv_mapped = csv.writer(file_mapped_regulation_to_node, delimiter='\t', lineterminator='\n')
-    csv_mapped.writerow(['id_hetionet_Regulation', 'id_hetionet_node', 'order', 'stoichiometry', 'knownAction', 'stid'])
+    csv_mapped.writerow(['id_pharmebinet_Regulation', 'id_pharmebinet_node', 'order', 'stoichiometry', 'knownAction', 'stid'])
 
     dict_Regulation_node = {}
 
-    load_hetionet_regulation_hetionet_node_in(csv_mapped, dict_Regulation_node, new_relationship,
+    load_pharmebinet_regulation_pharmebinet_node_in(csv_mapped, dict_Regulation_node, new_relationship,
                                               node_reactome_label,
-                                              node_hetionet_label, direction1, direction2)
+                                              node_pharmebinet_label, direction1, direction2)
 
     print(
         '°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°')
@@ -90,7 +85,7 @@ def check_relationships_and_generate_file(new_relationship, node_reactome_label,
 
     print('Integrate new relationships and connect them ')
 
-    create_cypher_file(file_name, node_hetionet_label, rela_name, direction1, direction2)
+    create_cypher_file(file_name, node_pharmebinet_label, rela_name, direction1, direction2)
 
 
 def main():
@@ -107,7 +102,7 @@ def main():
 
     create_connection_with_neo4j()
 
-    # 0: old relationship;    1: name of node in Reactome; 2 : name of node in Hetionet;  3: name of new relationship
+    # 0: old relationship;    1: name of node in Reactome; 2 : name of node in pharmebinet;  3: name of new relationship
     # 4: direction left; 5: direction right;
     list_of_combinations = [
         ['regulatedBy', 'ReactionLikeEvent_reactome',  'ReactionLikeEvent', 'IS_REGULATED_BY_RGirbRLE', '<-',
@@ -131,12 +126,12 @@ def main():
     for list_element in list_of_combinations:
         new_relationship = list_element[0]
         node_reactome_label = list_element[1]
-        node_hetionet_label = list_element[2]
+        node_pharmebinet_label = list_element[2]
         rela_name = list_element[3]
         direction1 = list_element[4]
         direction2 = list_element[5]
         check_relationships_and_generate_file(new_relationship, node_reactome_label,
-                                              node_hetionet_label, directory,
+                                              node_pharmebinet_label, directory,
                                               rela_name, direction1, direction2)
     cypher_file.close()
 
