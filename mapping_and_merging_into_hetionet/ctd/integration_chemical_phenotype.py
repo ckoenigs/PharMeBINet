@@ -223,7 +223,7 @@ def check_for_rela_type(interactions_actions, rela_name, chemical_id, drugbank_i
 
 
 '''
-get all relationships between go and chemical, take the hetionet identifier an save all important information in a tsv
+get all relationships between go and chemical, take the pharmebinet identifier an save all important information in a tsv
 also generate a cypher file to integrate this information 
 '''
 

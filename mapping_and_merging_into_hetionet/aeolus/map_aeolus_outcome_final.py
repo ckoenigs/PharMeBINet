@@ -63,7 +63,7 @@ class SideEffect_Aeolus():
         self.cuis = cuis
 
 
-# dictionary with all side effects from hetionet with umls cui as key and as value a class SideEffect
+# dictionary with all side effects from pharmebinet with umls cui as key and as value a class SideEffect
 dict_all_side_effect = {}
 
 '''
@@ -139,7 +139,7 @@ def add_entries_into_dict(key, value, dictionary):
 
 
 '''
-load in all side effects from hetionet into a dictionary
+load in all side effects from pharmebinet into a dictionary
 has properties:
     license
     identifier
@@ -213,21 +213,21 @@ def load_side_effects_aeolus_in_dictionary():
                 list_of_ids = []
 
         if result['name'].lower() in dict_se_name_to_ids:
-            list_map_to_hetionet.append(result['concept_code'])
+            list_map_to_pharmebinet.append(result['concept_code'])
             set_concept_ids_mapped.add(result['concept_code'])
             cuis = dict_se_name_to_ids[result['name'].lower()]
             for cui in cuis:
                 # check if the mapping appears multiple time
                 # also set the mapped cui into the class aeolus
-                if cui not in dict_mapped_cuis_hetionet:
-                    dict_mapped_cuis_hetionet[cui] = []
-                dict_mapped_cuis_hetionet[cui].append(result['concept_code'])
+                if cui not in dict_mapped_cuis_pharmebinet:
+                    dict_mapped_cuis_pharmebinet[cui] = []
+                dict_mapped_cuis_pharmebinet[cui].append(result['concept_code'])
                 add_cui_information_to_class(result['concept_code'], cui)
 
     list_of_list_of_meddra_ids.append(list_of_ids)
 
     print('Size of Aoelus side effects:' + str(len(dict_side_effects_aeolus)))
-    print('number of mapped:', len(dict_mapped_cuis_hetionet))
+    print('number of mapped:', len(dict_mapped_cuis_pharmebinet))
 
 
 # dictionary disease name to identifier
@@ -377,13 +377,13 @@ def search_with_api_bioportal():
 
 
 # list with all outcome_concept from aeolus that did not map direkt
-list_not_mapped_to_hetionet = []
+list_not_mapped_to_pharmebinet = []
 
 # list with all mapped outcome_concept
-list_map_to_hetionet = []
+list_map_to_pharmebinet = []
 
 # list with all mapped cuis:
-dict_mapped_cuis_hetionet = {}
+dict_mapped_cuis_pharmebinet = {}
 
 '''
 add cui information into aeolus se class
@@ -400,7 +400,7 @@ def add_cui_information_to_class(key, cui):
 
 
 '''
-map direct to hetionet and remember which did not map in list
+map direct to pharmebinet and remember which did not map in list
 '''
 
 
@@ -412,27 +412,27 @@ def map_first_round():
         for cui in cuis:
             if cui in dict_all_side_effect:
 
-                list_map_to_hetionet.append(key)
+                list_map_to_pharmebinet.append(key)
 
                 # check if the mapping appears multiple time
                 # also set the mapped cui into the class aeolus
-                if cui in dict_mapped_cuis_hetionet:
+                if cui in dict_mapped_cuis_pharmebinet:
 
-                    dict_mapped_cuis_hetionet[cui].append(key)
+                    dict_mapped_cuis_pharmebinet[cui].append(key)
                     add_cui_information_to_class(key, cui)
                 else:
-                    dict_mapped_cuis_hetionet[cui] = [key]
+                    dict_mapped_cuis_pharmebinet[cui] = [key]
 
                     add_cui_information_to_class(key, cui)
 
                 has_one = True
         # remember not mapped aeolus se
         if has_one == False:
-            list_not_mapped_to_hetionet.append(key)
+            list_not_mapped_to_pharmebinet.append(key)
 
-    print('length of list which are mapped to hetionet:' + str(len(list_map_to_hetionet)))
-    print('lenth of list which has a cui but are not mapped to hetionet:' + str(len(list_not_mapped_to_hetionet)))
-    print('the number of nodes to which they are mapped:' + str(len(dict_mapped_cuis_hetionet)))
+    print('length of list which are mapped to pharmebinet:' + str(len(list_map_to_pharmebinet)))
+    print('lenth of list which has a cui but are not mapped to pharmebinet:' + str(len(list_not_mapped_to_pharmebinet)))
+    print('the number of nodes to which they are mapped:' + str(len(dict_mapped_cuis_pharmebinet)))
 
 
 # dictionary mapped aeolus outcomet to disease ids
@@ -487,10 +487,10 @@ def mapping_to_disease():
     counter_of_mapping_tries = 0
     counter_of_not_mapped = 0
     # fist outcome with cui but did not mapped
-    for concept_code in list_not_mapped_to_hetionet:
+    for concept_code in list_not_mapped_to_pharmebinet:
         counter_of_mapping_tries += 1
         if concept_code in dict_meddra_to_mondo:
-            generate_tsv_file(list_of_delete_index_with_cui, list_not_mapped_to_hetionet, concept_code,
+            generate_tsv_file(list_of_delete_index_with_cui, list_not_mapped_to_pharmebinet, concept_code,
                               dict_meddra_to_mondo[concept_code], 'meddra mapping',
                               csv_writer)
 
@@ -512,23 +512,23 @@ def mapping_to_disease():
 
             find_intersection = mapped_name_disease.intersection(mapped_cuis_disease)
             if len(find_intersection) > 0:
-                generate_tsv_file(list_of_delete_index_with_cui, list_not_mapped_to_hetionet, concept_code,
+                generate_tsv_file(list_of_delete_index_with_cui, list_not_mapped_to_pharmebinet, concept_code,
                                   find_intersection, 'intersection name and cui mapping',
                                   csv_writer)
                 if len(find_intersection) > 1:
                     print('intersection is greater than one')
             elif len(mapped_cuis_disease) > 0 and len(mapped_name_disease) == 0:
-                generate_tsv_file(list_of_delete_index_with_cui, list_not_mapped_to_hetionet, concept_code,
+                generate_tsv_file(list_of_delete_index_with_cui, list_not_mapped_to_pharmebinet, concept_code,
                                   mapped_cuis_disease, 'cui mapping',
                                   csv_writer)
             elif len(mapped_cuis_disease) == 0 and len(mapped_name_disease) > 0:
-                generate_tsv_file(list_of_delete_index_with_cui, list_not_mapped_to_hetionet, concept_code,
+                generate_tsv_file(list_of_delete_index_with_cui, list_not_mapped_to_pharmebinet, concept_code,
                                   mapped_name_disease, 'name mapping',
                                   csv_writer)
 
             elif len(mapped_cuis_disease) > 0 and len(mapped_name_disease) > 0:
                 # take the name mapping because this is better
-                generate_tsv_file(list_of_delete_index_with_cui, list_not_mapped_to_hetionet, concept_code,
+                generate_tsv_file(list_of_delete_index_with_cui, list_not_mapped_to_pharmebinet, concept_code,
                                   mapped_name_disease, 'name mapping, but both did mapped',
                                   csv_writer)
                 print(concept_code)
@@ -546,7 +546,7 @@ def mapping_to_disease():
 
     list_of_delete_index_with_cui = sorted(list_of_delete_index_with_cui, reverse=True)
     for index in list_of_delete_index_with_cui:
-        list_not_mapped_to_hetionet.pop(index)
+        list_not_mapped_to_pharmebinet.pop(index)
 
     print('number of mapping tries:' + str(counter_of_mapping_tries))
     print('number of not mapped:' + str(counter_of_not_mapped))
@@ -579,12 +579,12 @@ def mapping_to_disease():
 
 
 '''
-integrate aeolus in hetiont, by map generate a edge from hetionet to the mapped aeolus node
-if no hetionet node is found, then generate a new node for side effects
+integrate aeolus in hetiont, by map generate a edge from pharmebinet to the mapped aeolus node
+if no pharmebinet node is found, then generate a new node for side effects
 '''
 
 
-def integrate_aeolus_into_hetionet():
+def integrate_aeolus_into_pharmebinet():
     # file for already existing se
     file_existing = open('output/se_existing.tsv', 'w', encoding='utf-8')
     csv_existing = csv.writer(file_existing, delimiter='\t')
@@ -604,9 +604,9 @@ def integrate_aeolus_into_hetionet():
     query_update = query_update % ("se_disease_mapping")
     cypher_file.write(query_update)
 
-    # update and generate connection between mapped aeolus outcome and hetionet side effect
+    # update and generate connection between mapped aeolus outcome and pharmebinet side effect
     counter_mapped = 0
-    for outcome_concept in list_map_to_hetionet:
+    for outcome_concept in list_map_to_pharmebinet:
         if outcome_concept not in dict_side_effects_aeolus:
             continue
         cuis = dict_side_effects_aeolus[outcome_concept].cuis
@@ -634,7 +634,7 @@ def integrate_aeolus_into_hetionet():
     query_new = query_new % ("se_new")
     cypher_file.write(query_new)
 
-    # generate new hetionet side effects and connect the with the aeolus outcome
+    # generate new pharmebinet side effects and connect the with the aeolus outcome
     for cui, outcome_concepts in dict_new_node_cui_to_concept.items():
         if len(outcome_concepts) == 1:
             csv_new.writerow([outcome_concepts[0], cui, '|'.join(dict_aeolus_SE_with_CUIs[outcome_concepts[0]]),
@@ -680,7 +680,7 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
-    print('Load in all Side effects from hetionet in a dictionary')
+    print('Load in all Side effects from pharmebinet in a dictionary')
 
     load_side_effects_from_pharmebinet_in_dict()
 
@@ -696,7 +696,7 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
-    print('Load in all disease from hetionet in a dictionary')
+    print('Load in all disease from pharmebinet in a dictionary')
 
     load_disease_infos()
 
@@ -729,9 +729,9 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
-    print('intergarte aeolus outcome to hetionet(+Sider)')
+    print('intergarte aeolus outcome to pharmebinet(+Sider)')
 
-    integrate_aeolus_into_hetionet()
+    integrate_aeolus_into_pharmebinet()
 
     print(
         '###########################################################################################################################')

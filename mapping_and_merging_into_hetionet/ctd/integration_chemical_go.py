@@ -77,7 +77,7 @@ def add_information_into_te_different_tsv_files(chemical_id, go_id, information,
 dict_durgbank_drugs={}
 
 '''
-get all relationships between gene and pathway, take the hetionet identifier an save all important information in a tsv
+get all relationships between gene and pathway, take the pharmebinet identifier an save all important information in a tsv
 also generate a cypher file to integrate this information 
 '''
 
@@ -212,11 +212,11 @@ def take_all_relationships_of_gene_pathway():
         counter_of_used_chemical += counter_chemicals_without_db
 
         if counter_of_used_chemical>len(dict_chemical_id_chemical):
-            print('multiple hetionet map to the same ctd')
+            print('multiple pharmebinet map to the same ctd')
             counter_pharmebinet_more_than_ctd_chemical+=1
         elif counter_of_used_chemical<len(dict_chemical_id_chemical):
             counter_ctd_more_than_pharmebinet_chemical+=1
-            print('multiple ctd map to the same hetionet')
+            print('multiple ctd map to the same pharmebinet')
 
 
         time_measurement = time.time() - start
@@ -341,8 +341,8 @@ def take_all_relationships_of_gene_pathway():
     g.run(query)
 
     print('###############')
-    print('number where ctd chemicals are more than hetionet:'+str(counter_ctd_more_than_pharmebinet_chemical))
-    print('number where hetionet chemicals are more than ctd:' + str(counter_pharmebinet_more_than_ctd_chemical))
+    print('number where ctd chemicals are more than pharmebinet:'+str(counter_ctd_more_than_pharmebinet_chemical))
+    print('number where pharmebinet chemicals are more than ctd:' + str(counter_pharmebinet_more_than_ctd_chemical))
     print('############')
 
     print('Average finding chemical:' + str(np.mean(list_time_all_finding_chemical)))

@@ -6,7 +6,7 @@ from collections import defaultdict
 sys.path.append("../..")
 import create_connection_to_databases
 
-# dictionary with all compounds with id (drugbank id) as key and class DrugHetionet as value
+# dictionary with all compounds with id (drugbank id) as key and class Drugpharmebinet as value
 dict_all_drug = {}
 
 # dictionary with all aeolus drugs with key drug_concept_id (OHDSI ID) and value is class Drug_Aeolus
@@ -26,7 +26,7 @@ def create_connection_with_neo4j():
 path_of_directory = ''
 
 '''
-Generate cypher file to update or create the relationships in hetionet
+Generate cypher file to update or create the relationships in pharmebinet
 '''
 
 
@@ -186,7 +186,7 @@ def get_aeolus_connection_information_in_dict(label_search, dict_connection_info
 '''
 update and generate the relationship CAUSES_CcSE.
 go through all drugbank ID identifier pairs anf combine the information of multiple drugbank Id identifier pairs
-Next step is to check if this connection already exists in Hetionet, if true then update the relationship
+Next step is to check if this connection already exists in pharmebinet, if true then update the relationship
 if false generate the connection with the properties license, unbiased, source, url, the other properties that aeolus has
 countA	
 prr_95_percent_upper_confidence_limit	
@@ -206,7 +206,7 @@ countD
 '''
 
 
-def integrate_connection_from_aeolus_in_hetionet(dict_connection_information_for,  csv_new):
+def integrate_connection_from_aeolus_in_pharmebinet(dict_connection_information_for,  csv_new):
     number_of_new_connection = 0
 
     count = 0
@@ -312,21 +312,21 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
-    print('Integrate connection into hetionet')
+    print('Integrate connection into pharmebinet')
 
     print(
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
-    print('integrate aeolus connection into tsv for integration into  hetionet')
-    integrate_connection_from_aeolus_in_hetionet(dict_connection_information, csv_new)
+    print('integrate aeolus connection into tsv for integration into  pharmebinet')
+    integrate_connection_from_aeolus_in_pharmebinet(dict_connection_information, csv_new)
 
     print(
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
 
-    integrate_connection_from_aeolus_in_hetionet(dict_connection_information_to_disease, csv_new_disease)
+    integrate_connection_from_aeolus_in_pharmebinet(dict_connection_information_to_disease, csv_new_disease)
 
     print(
         '###########################################################################################################################')

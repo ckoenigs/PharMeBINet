@@ -7,7 +7,7 @@ import create_connection_to_databases
 import pharmebinetutils
 
 
-class DiseaseHetionet:
+class Diseasepharmebinet:
     """
     identifier: string (mondo)
     umls_cuis: list
@@ -64,8 +64,8 @@ class DiseaseCTD:
 # dictionary with all CTD diseases, which has a relationship  treats or induces with a drug
 dict_CTD_disease = {}
 
-# dictionary for hetionet diseases with mondo as key and value is class DiseaseHetionet
-dict_diseases_hetionet = {}
+# dictionary for pharmebinet diseases with mondo as key and value is class Diseasepharmebinet
+dict_diseases_pharmebinet = {}
 
 # dictionary mesh to mondos, information from Monarch Disease Ontology
 dict_mesh_to_mondo = {}
@@ -82,8 +82,8 @@ dict_doid_to_mondo = {}
 # dictionary with name/synonyms to mondo
 dict_name_synonym_to_mondo_id = {}
 
-# dictionary for hetionet identifier with name as value
-dict_hetionet_id_to_name = {}
+# dictionary for pharmebinet identifier with name as value
+dict_pharmebinet_id_to_name = {}
 
 '''
 create connection to neo4j and mysql
@@ -102,11 +102,11 @@ def create_connection_with_neo4j_mysql():
 
 
 '''
-load in all diseases from hetionet in a dictionary
+load in all diseases from pharmebinet in a dictionary
 '''
 
 
-def load_hetionet_diseases_in():
+def load_pharmebinet_diseases_in():
     query = '''MATCH (n:Disease) RETURN n.identifier,n.name, n.synonyms, n.xrefs, n.umls_cuis, n.resource, n.doids'''
     results = g.run(query)
 
@@ -117,7 +117,7 @@ def load_hetionet_diseases_in():
         #     print('BLUB')
         # add name with mondo to dictionary
         name_formed = name.lower().split(' exact ')[0] if name else ''
-        dict_hetionet_id_to_name[identifier] = name
+        dict_pharmebinet_id_to_name[identifier] = name
         if name_formed not in dict_name_synonym_to_mondo_id:
             dict_name_synonym_to_mondo_id[name_formed] = set([identifier])
         else:
@@ -173,11 +173,11 @@ def load_hetionet_diseases_in():
                         dict_omim_to_mondo[xref.split(':')[1]].append(identifier)
                         dict_omim_to_mondo[xref.split(':')[1]] = list(set(dict_omim_to_mondo[xref.split(':')[1]]))
 
-        # generate class DiseaseHetionet and add to dictionary
-        disease = DiseaseHetionet(identifier, synonyms, umls_cuis_without_label, xrefs, resource)
-        dict_diseases_hetionet[identifier] = disease
+        # generate class Diseasepharmebinet and add to dictionary
+        disease = Diseasepharmebinet(identifier, synonyms, umls_cuis_without_label, xrefs, resource)
+        dict_diseases_pharmebinet[identifier] = disease
     print('length of counter:',counter)
-    print('length of disease in hetionet:' + str(len(dict_diseases_hetionet)))
+    print('length of disease in pharmebinet:' + str(len(dict_diseases_pharmebinet)))
     print('number of different MESH in mondo:' + str(len(dict_mesh_to_mondo)))
     print('number of different OMIM in mondo:' + str(len(dict_omim_to_mondo)))
     print('number of different UMLS CUI in mondo' + str(len(dict_umls_cui_to_mondo)))
@@ -241,10 +241,10 @@ def mondo_to_class(disease_id, dict_mesh_or_omim_to_mondo, name_ctd):
     if disease_id in dict_mesh_or_omim_to_mondo:
         mondos_ids = dict_mesh_or_omim_to_mondo[disease_id]
         if len(mondos_ids) > 1:
-            names_hetionet = {dict_hetionet_id_to_name[x]: x for x in mondos_ids}
-            if name_ctd in names_hetionet:
+            names_pharmebinet = {dict_pharmebinet_id_to_name[x]: x for x in mondos_ids}
+            if name_ctd in names_pharmebinet:
                 print('find only one string that fits and remove multiple mapping')
-                mondos_ids = [names_hetionet[name_ctd]]
+                mondos_ids = [names_pharmebinet[name_ctd]]
 
         dict_CTD_disease[disease_id].set_mondos(mondos_ids)
         dict_CTD_disease[disease_id].set_mapping_id(disease_id)
@@ -410,7 +410,7 @@ mapping with cui?
 '''
 
 
-def map_to_cui_and_try_to_map_to_hetionet():
+def map_to_cui_and_try_to_map_to_pharmebinet():
     counter_map = 0
     counter_map_but_not = 0
     # all mesh and omim identifier which are mapped in this function
@@ -634,23 +634,23 @@ dict_how_mapped_to_multiple_mapping = {
 }
 
 '''
-integrate disease into hetionet:
-The ctd disease in neo4j gett a connection to the hetionet disease.
+integrate disease into pharmebinet:
+The ctd disease in neo4j gett a connection to the pharmebinet disease.
 Further they get the list of mondos as properties.
-The mapped hetionet disease  will get additional properties.
+The mapped pharmebinet disease  will get additional properties.
 '''
 
 
-def integrate_disease_into_hetionet():
+def integrate_disease_into_pharmebinet():
     counter_all = 0
     counter_not_mapped = 0
 
     counter_intersection = 0
     # count the number of mapped ctd disease
     counter_with_mondos = 0
-    csvfile_ctd_hetionet_disease = open('disease_Disease/ctd_hetionet.tsv', 'w', encoding='utf-8')
-    writer = csv.writer(csvfile_ctd_hetionet_disease, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-    writer.writerow(['CTD_diseaseID', 'HetionetDiseaseId', 'mondos', 'resource', 'how_mapped'])
+    csvfile_ctd_pharmebinet_disease = open('disease_Disease/ctd_pharmebinet.tsv', 'w', encoding='utf-8')
+    writer = csv.writer(csvfile_ctd_pharmebinet_disease, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+    writer.writerow(['CTD_diseaseID', 'pharmebinetDiseaseId', 'mondos', 'resource', 'how_mapped'])
 
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
     cypher_file.write(':begin\n')
@@ -681,7 +681,7 @@ def integrate_disease_into_hetionet():
             mapping_ids = ctd_disease.mapping
             mapping_ids_string = '|'.join(mapping_ids)
 
-            names= '|'.join([dict_hetionet_id_to_name[mondo] for mondo in mondos])
+            names= '|'.join([dict_pharmebinet_id_to_name[mondo] for mondo in mondos])
 
             idType = ctd_disease.idType
 
@@ -700,9 +700,9 @@ def integrate_disease_into_hetionet():
             # query = query % (ctd_disease_id, string_mondos)
             # g.run(query)
 
-            # generate for all mapped mondos a connection and add new properties to Hetionet disease
+            # generate for all mapped mondos a connection and add new properties to pharmebinet disease
             for mondo in mondos:
-                disease_class=dict_diseases_hetionet[mondo]
+                disease_class=dict_diseases_pharmebinet[mondo]
                 resource=set(disease_class.resource)
                 resource.add('CTD')
                 writer.writerow([ctd_disease_id, mondo, string_mondos,'|'.join(resource),how_mapped])
@@ -717,7 +717,7 @@ def integrate_disease_into_hetionet():
     print('number of mapped ctd disease:' + str(counter_with_mondos))
     print('counter intersection mondos:' + str(counter_intersection))
     print(dict_how_mapped_to_multiple_mapping)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/ctd/disease_Disease/ctd_hetionet.tsv" As line  FIELDTERMINATOR '\\t' MATCH (n:CTD_disease{disease_id:line.CTD_diseaseID}), (d:Disease{identifier:line.HetionetDiseaseId}) Merge (d)-[:equal_CTD_disease{how_mapped:line.how_mapped}]->(n) Set  n.mondos=split(line.mondos, '|') With line, d, n Where not exists(d.ctd) Set d.resource=split(line.resource,"|") , d.ctd='yes', d.ctd_url='http://ctdbase.org/detail.go?type=disease&acc='+line.CTD_diseaseID;\n '''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/ctd/disease_Disease/ctd_pharmebinet.tsv" As line  FIELDTERMINATOR '\\t' MATCH (n:CTD_disease{disease_id:line.CTD_diseaseID}), (d:Disease{identifier:line.pharmebinetDiseaseId}) Merge (d)-[:equal_CTD_disease{how_mapped:line.how_mapped}]->(n) Set  n.mondos=split(line.mondos, '|') With line, d, n Where not exists(d.ctd) Set d.resource=split(line.resource,"|") , d.ctd='yes', d.ctd_url='http://ctdbase.org/detail.go?type=disease&acc='+line.CTD_diseaseID;\n '''
     cypher_file.write(query)
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/ctd/disease_Disease/mapped_to_symptoms.tsv" As line  FIELDTERMINATOR '\\t' MATCH (n:CTD_disease{disease_id:line.ctd_id}), (d:Symptom{identifier:line.node_id}) Merge (d)-[:equal_CTD_disease{how_mapped:line.how_mapped}]->(n) Set  n.mondos=split(line.mondos, '|') With line, d, n Where not exists(d.ctd) Set d.resource=split(line.resource,"|") , d.ctd='yes', d.ctd_url='http://ctdbase.org/detail.go?type=disease&acc='+line.CTD_diseaseID;\n '''
     cypher_file.write(query)
@@ -755,9 +755,9 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
-    print('Load all disease from hetionet into a dictionary')
+    print('Load all disease from pharmebinet into a dictionary')
 
-    load_hetionet_diseases_in()
+    load_pharmebinet_diseases_in()
 
     # print(dict_name_synonym_to_mondo_id['Combined Oxidative Phosphorylation Deficiency type 5'.lower()])
 
@@ -799,7 +799,7 @@ def main():
     print(datetime.datetime.now())
     print('Map ctd disease cui to Disease ')
 
-    map_to_cui_and_try_to_map_to_hetionet()
+    map_to_cui_and_try_to_map_to_pharmebinet()
 
     print(
         '###########################################################################################################################')
@@ -829,9 +829,9 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
-    print('integrate disease into hetionet')
+    print('integrate disease into pharmebinet')
 
-    integrate_disease_into_hetionet()
+    integrate_disease_into_pharmebinet()
 
     print(
         '###########################################################################################################################')

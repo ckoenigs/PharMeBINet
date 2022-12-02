@@ -11,11 +11,6 @@ create connection to neo4j
 
 def create_connection_with_neo4j_mysql():
     # create connection with neo4j
-    # authenticate("localhost:7474", "neo4j", "test")
-    # global g
-    # g = Graph("http://localhost:7474/db/data/")
-
-    # authenticate("bimi:7475", "ckoenigs", "test")
     global g
     g = create_connection_to_databases.database_connection_neo4j()
 
@@ -51,7 +46,7 @@ dict_processe_counter = {
 }
 
 '''
-get all relationships between gene and pathway, take the hetionet identifier an save all important information in a tsv
+get all relationships between gene and pathway, take the pharmebinet identifier an save all important information in a tsv
 also generate a cypher file to integrate this information 
 '''
 

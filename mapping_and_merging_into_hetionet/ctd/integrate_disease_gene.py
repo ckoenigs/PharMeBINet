@@ -5,8 +5,6 @@ import numpy as np
 sys.path.append("../..")
 import create_connection_to_databases
 
-# change socket time out
-# http.socket_timeout = 9999
 
 '''
 create connection to neo4j 

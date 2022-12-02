@@ -6,7 +6,7 @@ sys.path.append("../..")
 import create_connection_to_databases
 
 
-class SideEffectHetionet:
+class SideEffectpharmebinet:
     """
     identifier: string (UMLS cui)
     resource: list
@@ -46,8 +46,8 @@ class DiseaseCTD:
 # the key is the MESH or OMIM and value is class diseaseCTD
 dict_CTD_disease = {}
 
-# dictionary for hetionet side effects with cui as key and value is class SideEffectHetionet
-dict_side_effects_hetionet = {}
+# dictionary for pharmebinet side effects with cui as key and value is class SideEffectpharmebinet
+dict_side_effects_pharmebinet = {}
 
 '''
 create connection to neo4j and mysql
@@ -65,7 +65,7 @@ def create_connection_with_neo4j_mysql():
 
 
 '''
-load all side effects from hetionet in a dictionary
+load all side effects from pharmebinet in a dictionary
 '''
 
 
@@ -75,9 +75,9 @@ def load_side_effects_from_pharmebinet_in_dict():
 
     # go through all results from the neo4j query
     for result, in results:
-        sideEffect = SideEffectHetionet(result['identifier'], result['name'], result['resource'])
-        dict_side_effects_hetionet[result['identifier']] = sideEffect
-    print('size of side effects before the disease ctd is add:' + str(len(dict_side_effects_hetionet)))
+        sideEffect = SideEffectpharmebinet(result['identifier'], result['name'], result['resource'])
+        dict_side_effects_pharmebinet[result['identifier']] = sideEffect
+    print('size of side effects before the disease ctd is add:' + str(len(dict_side_effects_pharmebinet)))
 
 
 '''
@@ -243,12 +243,12 @@ def get_name(cui):
                     break
 
 
-# dictionary with all disease_ids which are mapped to hetionet 'map with Mesh or OMIM to cui'side effects, key is 
+# dictionary with all disease_ids which are mapped to pharmebinet 'map with Mesh or OMIM to cui'side effects, key is
 # disease_id and value is a list of cuis
-dict_diseaseID_to_hetionet = {}
+dict_diseaseID_to_pharmebinet = {}
 
-# list of go ids which are not mapped to hetionet
-list_diseaseId_not_mapped_to_hetionet = []
+# list of go ids which are not mapped to pharmebinet
+list_diseaseId_not_mapped_to_pharmebinet = []
 
 # map files for the different how_mappeds
 map_MO_and_name = open('disease_SE/ctd_disease_to_side_MESH_OMIM_to_cui_and_filter_with_name.tsv', 'w')
@@ -267,11 +267,11 @@ dict_how_mapped_to_file = {
     'map with name to cui ': map_name}
 
 '''
-map disease to side effect form hetionet, by using the cui
+map disease to side effect form pharmebinet, by using the cui
 '''
 
 
-def map_disease_to_hetionet():
+def map_disease_to_pharmebinet():
     for key, disease in dict_CTD_disease.items():
         if not key in list_not_map_to_cui:
             cuis = disease.cuis
@@ -285,35 +285,35 @@ def map_disease_to_hetionet():
             dict_how_mapped_to_file[disease.how_mapped].write(
                 key + '\t' + disease.idType + '\t' + string_cuis + '\t' + names[:-1] + '\n')
             for cui in cuis:
-                if cui in dict_side_effects_hetionet:
+                if cui in dict_side_effects_pharmebinet:
                     one_is_mapped = True
                     mapped_cui.append(cui)
             if one_is_mapped:
-                dict_diseaseID_to_hetionet[key] = mapped_cui
+                dict_diseaseID_to_pharmebinet[key] = mapped_cui
                 if len(mapped_cui) > 1:
                     print(key)
                     print(mapped_cui)
             else:
-                list_diseaseId_not_mapped_to_hetionet.append(key)
+                list_diseaseId_not_mapped_to_pharmebinet.append(key)
 
-    print('number of mapped to hetionet:' + str(len(dict_diseaseID_to_hetionet)))
-    print('number of not mapped to hetionet:' + str(len(list_diseaseId_not_mapped_to_hetionet)))
-    print(list_diseaseId_not_mapped_to_hetionet[0:10])
+    print('number of mapped to pharmebinet:' + str(len(dict_diseaseID_to_pharmebinet)))
+    print('number of not mapped to pharmebinet:' + str(len(list_diseaseId_not_mapped_to_pharmebinet)))
+    print(list_diseaseId_not_mapped_to_pharmebinet[0:10])
 
 
 '''
-integrate ctd disease into hetionet side effects:
+integrate ctd disease into pharmebinet side effects:
 the mapped on will get new properties
 the not mapped one will create new SideEffect nodes
 '''
 
 
-def integrate_disease_into_hetionet():
-    # side effects which are already in hetionet
-    for disease_id, cuis in dict_diseaseID_to_hetionet.items():
+def integrate_disease_into_pharmebinet():
+    # side effects which are already in pharmebinet
+    for disease_id, cuis in dict_diseaseID_to_pharmebinet.items():
 
         if len(cuis) == 1:
-            resource = dict_side_effects_hetionet[cuis[0]].resource
+            resource = dict_side_effects_pharmebinet[cuis[0]].resource
             resource.append('CTD')
             resource = list(set(resource))
             resource = "','".join(resource)
@@ -329,7 +329,7 @@ def integrate_disease_into_hetionet():
             g.run(query)
 
     # all new side effects
-    for disease_id in list_diseaseId_not_mapped_to_hetionet:
+    for disease_id in list_diseaseId_not_mapped_to_pharmebinet:
 
         cui = dict_CTD_disease[disease_id].cuis[0]
         url = 'http://identifiers.org/umls/' + cui
@@ -365,7 +365,7 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
-    print('Load all side effect from hetionet into a dictionary')
+    print('Load all side effect from pharmebinet into a dictionary')
 
     load_side_effects_from_pharmebinet_in_dict()
 
@@ -389,17 +389,17 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
-    print('Map disease to hetionet with use of cui')
+    print('Map disease to pharmebinet with use of cui')
 
-    map_disease_to_hetionet()
+    map_disease_to_pharmebinet()
 
     print(
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
-    print('integrate disease into hetionet')
+    print('integrate disease into pharmebinet')
 
-    integrate_disease_into_hetionet()
+    integrate_disease_into_pharmebinet()
 
     print(
         '###########################################################################################################################')

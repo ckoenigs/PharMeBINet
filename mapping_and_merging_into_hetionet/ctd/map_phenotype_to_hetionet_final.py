@@ -6,7 +6,7 @@ sys.path.append("../..")
 import create_connection_to_databases
 
 
-class SideEffectHetionet:
+class SideEffectpharmebinet:
     """
     identifier: string (UMLS cui)
     resource: list
@@ -42,8 +42,8 @@ class PhenotypeCTD:
 # the key is the GO id and value is class PhenotypeCTD
 dict_CTD_phenotypes = {}
 
-# dictionary for hetionet side effects with umls cui as key and value is class SideEffectHetionet
-dict_side_effects_hetionet = {}
+# dictionary for pharmebinet side effects with umls cui as key and value is class SideEffectpharmebinet
+dict_side_effects_pharmebinet = {}
 
 '''
 create connection to neo4j and mysql
@@ -60,7 +60,7 @@ def create_connection_with_neo4j_mysql():
 
 
 '''
-load all side effects from hetionet in a dictionary
+load all side effects from pharmebinet in a dictionary
 '''
 
 
@@ -68,10 +68,10 @@ def load_side_effects_from_pharmebinet_in_dict():
     query = '''MATCH (n:SideEffect) RETURN n '''
     results = g.run(query)
     for result, in results:
-        #        list_side_effect_in_hetionet.append(result['identifier'])
-        sideEffect = SideEffectHetionet(result['identifier'], result['name'], result['resource'])
-        dict_side_effects_hetionet[result['identifier']] = sideEffect
-    print('size of side effects before the phenotype ctd is add:' + str(len(dict_side_effects_hetionet)))
+        #        list_side_effect_in_pharmebinet.append(result['identifier'])
+        sideEffect = SideEffectpharmebinet(result['identifier'], result['name'], result['resource'])
+        dict_side_effects_pharmebinet[result['identifier']] = sideEffect
+    print('size of side effects before the phenotype ctd is add:' + str(len(dict_side_effects_pharmebinet)))
 
 
 '''
@@ -200,12 +200,12 @@ def get_name(cui):
                     break
 
 
-# dictionary with all go_ids which are mapped to hetionet side effects, key is
+# dictionary with all go_ids which are mapped to pharmebinet side effects, key is
 # go_id and value is a list of umls cuis
-dict_goID_to_hetionet = {}
+dict_goID_to_pharmebinet = {}
 
-# list of go ids which are not mapped to hetionet
-list_goid_not_mapped_to_hetionet = []
+# list of go ids which are not mapped to pharmebinet
+list_goid_not_mapped_to_pharmebinet = []
 
 # file for  the different how_mapped
 map_GO = open('phenotype/ctd_phenotyp_to_sideEffect_map_use_Go_id_to_cui.tsv', 'w')
@@ -224,11 +224,11 @@ dict_how_mapped_file = {
     'Go to cui addition name map': map_Go_name}
 
 '''
-map phenotype to side effect form hetionet, by using the umls cui
+map phenotype to side effect form pharmebinet, by using the umls cui
 '''
 
 
-def map_phenotype_to_hetionet():
+def map_phenotype_to_pharmebinet():
     for key, phenotype in dict_CTD_phenotypes.items():
         cuis = phenotype.cuis
         mapped_cui = []
@@ -241,33 +241,33 @@ def map_phenotype_to_hetionet():
             names = names + name + '|'
         dict_how_mapped_file[how_mapped].write(key + '\t' + string_cuis + '\t' + names[:-1] + '\n')
         for cui in cuis:
-            if cui in dict_side_effects_hetionet:
+            if cui in dict_side_effects_pharmebinet:
                 one_is_mapped = True
                 mapped_cui.append(cui)
         if one_is_mapped:
-            dict_goID_to_hetionet[key] = mapped_cui
+            dict_goID_to_pharmebinet[key] = mapped_cui
         else:
-            list_goid_not_mapped_to_hetionet.append(key)
+            list_goid_not_mapped_to_pharmebinet.append(key)
 
-    print('number of mapped to hetionet:' + str(len(dict_goID_to_hetionet)))
-    print('number of not mapped to hetionet:' + str(len(list_goid_not_mapped_to_hetionet)))
-    print(list_goid_not_mapped_to_hetionet[0:10])
+    print('number of mapped to pharmebinet:' + str(len(dict_goID_to_pharmebinet)))
+    print('number of not mapped to pharmebinet:' + str(len(list_goid_not_mapped_to_pharmebinet)))
+    print(list_goid_not_mapped_to_pharmebinet[0:10])
 
 
 '''
-integrate phenotype into hetionet:
+integrate phenotype into pharmebinet:
 the mapped on will get new properties
 the not mapped one will create new SideEffect nodes
 '''
 
 
-def integrate_phenotype_into_hetionet():
-    # all ctd phenotypes which are mapped to hetionet side effects
-    for go_id, cuis in dict_goID_to_hetionet.items():
+def integrate_phenotype_into_pharmebinet():
+    # all ctd phenotypes which are mapped to pharmebinet side effects
+    for go_id, cuis in dict_goID_to_pharmebinet.items():
         id_without_go = go_id.split(':')[1]
 
         if len(cuis) == 1:
-            resource = set(dict_side_effects_hetionet[cuis[0]].resource)
+            resource = set(dict_side_effects_pharmebinet[cuis[0]].resource)
             resource.add('CTD')
             resource = "','".join(sorted(resource))
             query = '''Match (s:SideEffect), (n:CTDphenotype) Where s.identifier='%s' And n.go_id='%s'
@@ -280,8 +280,8 @@ def integrate_phenotype_into_hetionet():
             print('ohje')
             sys.exit()
 
-    # ctd phenotypes which have umls cui but are not mapped to a hetionet side effect generate new side effect
-    for go_id in list_goid_not_mapped_to_hetionet:
+    # ctd phenotypes which have umls cui but are not mapped to a pharmebinet side effect generate new side effect
+    for go_id in list_goid_not_mapped_to_pharmebinet:
         id_without_go = go_id.split(':')[1]
         cui = dict_CTD_phenotypes[go_id].cuis[0]
         url = 'http://identifiers.org/umls/' + cui
@@ -319,7 +319,7 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
-    print('Load all side effect from hetionet into a dictionary')
+    print('Load all side effect from pharmebinet into a dictionary')
 
     load_side_effects_from_pharmebinet_in_dict()
 
@@ -343,17 +343,17 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
-    print('Map phenotype to hetionet with use of cui')
+    print('Map phenotype to pharmebinet with use of cui')
 
-    map_phenotype_to_hetionet()
+    map_phenotype_to_pharmebinet()
 
     print(
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
-    print('integrate phenotype into hetionet')
+    print('integrate phenotype into pharmebinet')
 
-    integrate_phenotype_into_hetionet()
+    integrate_phenotype_into_pharmebinet()
 
     print(
         '###########################################################################################################################')

@@ -54,13 +54,13 @@ def correct_string_for_query(name):
     return name.replace("'","\\'")
 
 
-# dictionary of all symptoms from hetionet, with mesh_id/ umls cui as key and value is class Symptom
+# dictionary of all symptoms from pharmebinet, with mesh_id/ umls cui as key and value is class Symptom
 dict_symptoms = {}
 
 # list with all mesh id which has no umls cui
 list_mesh_without_cui = []
 
-# dictionary with all side effects from hetionet with umls cui as key and class SideEffect as value
+# dictionary with all side effects from pharmebinet with umls cui as key and class SideEffect as value
 dict_side_effects = {}
 
 # dictionary name/umls_id/meddra_id to set of sideeffects id
@@ -181,7 +181,7 @@ def load_all_sideEffects_in_a_dict():
             for xref in xrefs:
                 add_element_to_dictionary(xref, cui, dict_name_ids_to_sideeffect_ids)
 
-    print('size of side effects in hetionet:' + str(len(dict_side_effects)))
+    print('size of side effects in pharmebinet:' + str(len(dict_side_effects)))
 
 
 # dictionary name/mesh to set of symptom ids
@@ -318,7 +318,7 @@ def load_all_symptoms_in_a_dict():
         dict_symptoms[identifier] = symptom
 
     print('Number of Symptoms without a umls cui and now from umls',len(list_mesh_without_cui))
-    print('Number of symptoms in hetionet:' + str(len(dict_symptoms)))
+    print('Number of symptoms in pharmebinet:' + str(len(dict_symptoms)))
     print('mapped with mesh and name:' + str(counter_with_name))
     print('mapped only with mesh:' + str(counter_without_name))
 
@@ -523,7 +523,7 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
-    print('Load in side effects from hetionet')
+    print('Load in side effects from pharmebinet')
 
     load_all_sideEffects_in_a_dict()
 
@@ -531,7 +531,7 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
-    print('Load in symptoms from hetionet and map to se')
+    print('Load in symptoms from pharmebinet and map to se')
 
     load_all_symptoms_in_a_dict()
 

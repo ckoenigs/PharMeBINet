@@ -4,7 +4,6 @@ import sys
 import glob
 from collections import defaultdict
 
-from setuptools._distutils.command.check import check
 
 sys.path.append("../..")
 import create_connection_to_databases

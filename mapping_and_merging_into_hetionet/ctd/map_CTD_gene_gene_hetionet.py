@@ -17,11 +17,11 @@ def create_connection_with_neo4j_mysql():
     g = create_connection_to_databases.database_connection_neo4j()
 
 
-# dictionary with hetionet genes with identifier as key and value node as dictionary
-dict_genes_hetionet = {}
+# dictionary with pharmebinet genes with identifier as key and value node as dictionary
+dict_genes_pharmebinet = {}
 
 '''
-load in all genes from hetionet in a dictionary
+load in all genes from pharmebinet in a dictionary
 '''
 
 
@@ -31,31 +31,31 @@ def load_pharmebinet_genes_in():
 
     for node, in results:
         identifier = node['identifier']
-        dict_genes_hetionet[identifier] = dict(node)
+        dict_genes_pharmebinet[identifier] = dict(node)
 
-    print('number of gene nodes in hetionet:' + str(len(dict_genes_hetionet)))
+    print('number of gene nodes in pharmebinet:' + str(len(dict_genes_pharmebinet)))
 
 
-# dictionary of genes which are not in hetionet with they properties: [gene_name,altGeneIDs,pharmGKBIDs,bioGRIDIDs,geneSymbol,synonyms,uniProtIDs]
-dict_ctd_gene_not_in_hetionet = {}
+# dictionary of genes which are not in pharmebinet with they properties: [gene_name,altGeneIDs,pharmGKBIDs,bioGRIDIDs,geneSymbol,synonyms,uniProtIDs]
+dict_ctd_gene_not_in_pharmebinet = {}
 
-# dictionary of ctd genes which are in hetionet with properties: [gene_name,altGeneIDs,pharmGKBIDs,bioGRIDIDs,geneSymbol,synonyms,uniProtIDs]
-dict_ctd_gene_in_hetionet = {}
+# dictionary of ctd genes which are in pharmebinet with properties: [gene_name,altGeneIDs,pharmGKBIDs,bioGRIDIDs,geneSymbol,synonyms,uniProtIDs]
+dict_ctd_gene_in_pharmebinet = {}
 
 '''
-check if gene id is in hetionet
+check if gene id is in pharmebinet
 check if name is equal
-combine hetionet xrefs with pharmGKB, bioGRID and UniProt Ids
+combine pharmebinet xrefs with pharmGKB, bioGRID and UniProt Ids
 last step write information into file
-and return found gene in hetionet True or false
+and return found gene in pharmebinet True or false
 '''
 
 
 def search_for_id_and_write_into_file(gene_id, gene_node):
-    if gene_id in dict_genes_hetionet:
+    if gene_id in dict_genes_pharmebinet:
         gene_name = gene_node['name']
-        pharmebinet_node = dict_genes_hetionet[gene_id]
-        if gene_name != dict_genes_hetionet[gene_id]['name']:
+        pharmebinet_node = dict_genes_pharmebinet[gene_id]
+        if gene_name != dict_genes_pharmebinet[gene_id]['name']:
             print(gene_id)
             print('not the same name')
 
@@ -76,14 +76,14 @@ def search_for_id_and_write_into_file(gene_id, gene_node):
 
 
 '''
-load all ctd genes and check if they are in hetionet or not
+load all ctd genes and check if they are in pharmebinet or not
 '''
 
 
 def load_ctd_genes_in():
     # take only human genes
     # query = '''MATCH (n:CTD_gene) Where ()-[:associates_CG{organism_id:'9606'}]->(n)  RETURN n'''
-    # because ncbi only the human genes are in hetionet it is ok to take all ctd genes
+    # because ncbi only the human genes are in pharmebinet it is ok to take all ctd genes
     query = '''MATCH (n:CTD_gene) RETURN n'''
     results = g.run(query)
 
@@ -100,7 +100,7 @@ def load_ctd_genes_in():
         else:
             counter += 1
 
-    print('number of ctd genes which are also in hetionet: ' + str(counter))
+    print('number of ctd genes which are also in pharmebinet: ' + str(counter))
 
 
 '''
@@ -111,13 +111,13 @@ Generate cypher and tsv for generating the new nodes and the relationships
 def generate_files():
     # generate cyoher file
     cypher_file = open('output/cypher.cypher', 'w',encoding='utf-8')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/ctd/gene/mapping.tsv" As line  FIELDTERMINATOR '\\t' Match (c:Gene{ identifier:line.GeneIDHetionet}), (n:CTD_gene{gene_id:line.GeneIDCTD}) Create (c)-[:equal_to_CTD_gene]->(n) Set c.ctd="yes", c.resource=c.resource+"CTD", c.xrefs=split(line.xrefs,'|'), c.url_ctd=" http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID;\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/ctd/gene/mapping.tsv" As line  FIELDTERMINATOR '\\t' Match (c:Gene{ identifier:line.GeneIDpharmebinet}), (n:CTD_gene{gene_id:line.GeneIDCTD}) Create (c)-[:equal_to_CTD_gene]->(n) Set c.ctd="yes", c.resource=c.resource+"CTD", c.xrefs=split(line.xrefs,'|'), c.url_ctd=" http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID;\n'''
     cypher_file.write(query)
 
     global writer
     csvfile = open('gene/mapping.tsv', 'w')
     writer = csv.writer(csvfile, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-    writer.writerow(['GeneIDCTD', 'GeneIDHetionet', 'xrefs'])
+    writer.writerow(['GeneIDCTD', 'GeneIDpharmebinet', 'xrefs'])
 
 
 
@@ -150,7 +150,7 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
-    print('Load all genes from hetionet into a dictionary')
+    print('Load all genes from pharmebinet into a dictionary')
 
     load_pharmebinet_genes_in()
 

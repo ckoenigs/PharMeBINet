@@ -21,7 +21,7 @@ def create_connection_with_neo4j_mysql():
 dict_gene_pathway = {}
 
 '''
-get all relationships between gene and pathway, take the hetionet identifier an save all important information in a tsv
+get all relationships between gene and pathway, take the pharmebinet identifier an save all important information in a tsv
 also generate a cypher file to integrate this information 
 '''
 
@@ -37,17 +37,17 @@ def take_all_relationships_of_gene_pathway():
     writer = csv.writer(csvfile, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     writer.writerow(['GeneID', 'PathwayID'])
 
-    query = '''MATCH (gene:CTD_gene)-[r:participates_GP]->(pathway:CTD_pathway) Where ()-[:equal_to_CTD_gene]->(gene)  RETURN gene.gene_id, r, pathway.hetionet_id'''
+    query = '''MATCH (gene:CTD_gene)-[r:participates_GP]->(pathway:CTD_pathway) Where ()-[:equal_to_CTD_gene]->(gene)  RETURN gene.gene_id, r, pathway.pharmebinet_id'''
     results = g.run(query)
     count_multiple_pathways = 0
     count_possible_relas = 0
-    for gene_id, rela, pathway_hetionet_id, in results:
+    for gene_id, rela, pathway_pharmebinet_id, in results:
         rela = dict(rela)
         if len(rela) > 1:
             print('change integration of properties')
-        if not (gene_id, pathway_hetionet_id) in dict_gene_pathway:
-            dict_gene_pathway[(gene_id, pathway_hetionet_id)] = rela
-            writer.writerow([gene_id, pathway_hetionet_id])
+        if not (gene_id, pathway_pharmebinet_id) in dict_gene_pathway:
+            dict_gene_pathway[(gene_id, pathway_pharmebinet_id)] = rela
+            writer.writerow([gene_id, pathway_pharmebinet_id])
             count_possible_relas += 1
         else:
             count_multiple_pathways += 1
@@ -55,12 +55,12 @@ def take_all_relationships_of_gene_pathway():
             print(count_possible_relas)
 
         # query='''MATCH p=(gene:Gene{identifier:%s})-[r:PARTICIPATES_GpPW]->(pathway:Pathway{identifier:"%s"}) Return p'''
-        # query=query%(gene_id,pathway_hetionet_id)
+        # query=query%(gene_id,pathway_pharmebinet_id)
         # match_result=g.run(query)
         # has_one_enty=match_result.evaluate()
         # if has_one_enty==None:
         #     print('no entry')
-        #     print(gene_id,pathway_hetionet_id)
+        #     print(gene_id,pathway_pharmebinet_id)
 
     print('number of new rela:' + str(count_possible_relas))
     print('number of relationships which appears multiple time:' + str(count_multiple_pathways))

@@ -20,7 +20,7 @@ def create_connection_with_neo4j_mysql():
 dict_disease_pathway = {}
 
 '''
-get all relationships between gene and pathway, take the hetionet identifier and gaather all information in a dictionary 
+get all relationships between gene and pathway, take the pharmebinet identifier and gaather all information in a dictionary 
 '''
 
 

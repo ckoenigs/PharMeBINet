@@ -402,12 +402,12 @@ def map_aeolus_drugs_to_pharmebinet():
                     dict_aeolus_drugs[drug_concept_id].set_drugbank_id([drug_id])
                 has_one = True
         if has_two:
-            list_map_to_hetionet.append(drug_concept_id)
+            list_map_to_pharmebinet.append(drug_concept_id)
         elif has_one:
-            list_map_to_hetionet.append(drug_concept_id)
+            list_map_to_pharmebinet.append(drug_concept_id)
         else:
             list_not_mapped.append(drug_concept_id)
-    print('Mapped to pharmebinet:' + str(len(list_map_to_hetionet)))
+    print('Mapped to pharmebinet:' + str(len(list_map_to_pharmebinet)))
     print('Will generate new nodes:' + str(len(list_not_mapped)))
 
     for drug_concept_id, drug in dict_aeolus_drugs.items():
@@ -445,7 +445,7 @@ if no pharmebinet node is found, then generate a new node for compound
 '''
 
 
-def integrate_aeolus_drugs_into_hetionet():
+def integrate_aeolus_drugs_into_pharmebinet():
     # count all possible mapped aeolus drug
     counter = 0
     # count all aeolus which are only mapped to illegal drugbank ids
@@ -487,7 +487,7 @@ def main():
     print(datetime.datetime.now())
     print('Load in all drugs from pharmebinet (+Sider) in a dictionary')
 
-    load_compounds_from_hetionet()
+    load_compounds_from_pharmebinet()
 
     # dictionary with all aeolus drugs with key drug_concept_id and value is class Drug_Aeolus
     global dict_aeolus_drugs
@@ -549,9 +549,9 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
-    print('Map the drugbank id from the aeolus drug to the chemicals in hetionet')
+    print('Map the drugbank id from the aeolus drug to the chemicals in pharmebinet')
 
-    map_aeolus_drugs_to_hetionet()
+    map_aeolus_drugs_to_pharmebinet()
 
     print(
         '###########################################################################################################################')
@@ -559,7 +559,7 @@ def main():
     print(datetime.datetime.now())
     print('Generate tsv of mapped drugs')
 
-    integrate_aeolus_drugs_into_hetionet()
+    integrate_aeolus_drugs_into_pharmebinet()
 
     print(
         '###########################################################################################################################')
