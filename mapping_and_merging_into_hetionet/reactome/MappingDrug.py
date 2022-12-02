@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Apr 18 12:41:20 2018
-
-@author: ckoenigs
-"""
-
 from py2neo import Graph
 import datetime
 import csv
@@ -26,16 +19,16 @@ def create_connection_with_neo4j_mysql():
     graph_database = create_connection_to_databases.database_connection_neo4j()
 
 
-# dictionary with hetionet drug with drugbank identifier as key and value the name
-dict_drug_hetionet = {}
+# dictionary with pharmebinet drug with drugbank identifier as key and value the name
+dict_drug_pharmebinet = {}
 
-dict_hetionet = {}
+dict_pharmebinet = {}
 
-# dictionary with hetionet drug with drugbank identifier as key and value the inchis
-dict_hetionet_inchi_drugbank_identifier = {}
+# dictionary with pharmebinet drug with drugbank identifier as key and value the inchis
+dict_pharmebinet_inchi_drugbank_identifier = {}
 
-# dictionary with hetionet ddrug with name as key and value the identifier
-dict_drug_hetionet_names = {}
+# dictionary with pharmebinet ddrug with name as key and value the identifier
+dict_drug_pharmebinet_names = {}
 
 # dictionary from inchi to identifier
 dict_inchi_to_identifier = {}
@@ -49,15 +42,15 @@ dict_inchi_to_iuphar_id = {}
 # dictionary from iuphar_reactome to identifier
 dict_iuphar_reactome_to_identifier = {}
 
-dict_iuphar_to_inchi_hetionet = {}
+dict_iuphar_to_inchi_pharmebinet = {}
 
 dict_inchiKey_to_iuphar_id = {}
 
 # dictionary from xref (ChEBI) to identifer (DrugBankIdentifier)
-dict_identifier_hetionet_xref = {}
+dict_identifier_pharmebinet_xref = {}
 
 '''
-load all iuphar ids and check if they are in hetionet or not 
+load all iuphar ids and check if they are in pharmebinet or not 
 '''
 
 
@@ -73,41 +66,41 @@ def load_iuphar_ids_in():
 
 
 '''
-load in all disease from hetionet in a dictionary
+load in all disease from pharmebinet in a dictionary
 '''
 
 
-def load_hetionet_drug_in():
-    query = '''MATCH (n:Chemical) WHERE not n:Product RETURN n.identifier, n.name, n.inchi, n.resource, n.xrefs;'''
+def load_pharmebinet_drug_in():
+    query = '''MATCH (n:Chemical) RETURN n.identifier, n.name, n.inchi, n.resource, n.xrefs;'''
     results = graph_database.run(query)
 
-    for hetionet_identifier, name, inchi_hetionet, resource, xrefs, in results:
-        dict_drug_hetionet[hetionet_identifier] = name.lower()
-        dict_identifier_to_resource[hetionet_identifier] = resource
-        dict_hetionet_inchi_drugbank_identifier[inchi_hetionet] = hetionet_identifier
+    for pharmebinet_identifier, name, inchi_pharmebinet, resource, xrefs, in results:
+        dict_drug_pharmebinet[pharmebinet_identifier] = name.lower()
+        dict_identifier_to_resource[pharmebinet_identifier] = resource
+        dict_pharmebinet_inchi_drugbank_identifier[inchi_pharmebinet] = pharmebinet_identifier
 
-        if inchi_hetionet:
-            if not inchi_hetionet in dict_inchi_to_identifier:
-                dict_inchi_to_identifier[inchi_hetionet] = hetionet_identifier
+        if inchi_pharmebinet:
+            if not inchi_pharmebinet in dict_inchi_to_identifier:
+                dict_inchi_to_identifier[inchi_pharmebinet] = pharmebinet_identifier
             else:
-                print(inchi_hetionet)
+                print(inchi_pharmebinet)
 
         if name:
-            dict_drug_hetionet_names[name.lower()] = hetionet_identifier
+            dict_drug_pharmebinet_names[name.lower()] = pharmebinet_identifier
 
-        if inchi_hetionet in dict_inchi_to_iuphar_id:
-            iuphar = dict_inchi_to_iuphar_id[inchi_hetionet]
-            dict_iuphar_to_inchi_hetionet[iuphar] = inchi_hetionet
+        if inchi_pharmebinet in dict_inchi_to_iuphar_id:
+            iuphar = dict_inchi_to_iuphar_id[inchi_pharmebinet]
+            dict_iuphar_to_inchi_pharmebinet[iuphar] = inchi_pharmebinet
         # ChEBI, KEGG, PubChem mappen
         if xrefs:
             for xref in xrefs:
                 if xref.startswith('ChEBI:'):
-                    dict_identifier_hetionet_xref[xref] = hetionet_identifier
+                    dict_identifier_pharmebinet_xref[xref] = pharmebinet_identifier
                 elif xref.startswith('KEGG Compound:'):
-                    dict_identifier_hetionet_xref[xref] = hetionet_identifier
+                    dict_identifier_pharmebinet_xref[xref] = pharmebinet_identifier
                 elif xref.startswith('PubChem Compound:'):
-                    dict_identifier_hetionet_xref[xref] = hetionet_identifier
-    print('number of drug nodes in hetionet:' + str(len(dict_drug_hetionet)))
+                    dict_identifier_pharmebinet_xref[xref] = pharmebinet_identifier
+    print('number of drug nodes in pharmebinet:' + str(len(dict_drug_pharmebinet)))
 
 
 # file for mapped or not mapped identifier
@@ -117,10 +110,10 @@ csv_not_mapped.writerow(['id', 'name'])
 
 file_mapped_drug = open('drug/mapped_drug.tsv', 'w', encoding="utf-8")
 csv_mapped = csv.writer(file_mapped_drug, delimiter='\t', lineterminator='\n')
-csv_mapped.writerow(['id', 'id_hetionet', 'resource', 'how_mapped' ,'databaseName'])
+csv_mapped.writerow(['id', 'id_pharmebinet', 'resource', 'how_mapped' ,'databaseName'])
 
 '''
-load all reactome drug and check if they are in hetionet or not
+load all reactome drug and check if they are in pharmebinet or not
 '''
 
 set_pair = set()
@@ -151,65 +144,65 @@ def load_reactome_drug_in(label):
 
         # mapping IUPHAR
         if databaseName == "IUPHAR" or databaseName=='Guide to Pharmacology':
-            if identifier_reactome in dict_iuphar_to_inchi_hetionet:
-                hetionet_identifier = dict_hetionet_inchi_drugbank_identifier[
-                    dict_iuphar_to_inchi_hetionet[identifier_reactome]]
-                if (hetionet_identifier, dbId) in set_pair:
+            if identifier_reactome in dict_iuphar_to_inchi_pharmebinet:
+                pharmebinet_identifier = dict_pharmebinet_inchi_drugbank_identifier[
+                    dict_iuphar_to_inchi_pharmebinet[identifier_reactome]]
+                if (pharmebinet_identifier, dbId) in set_pair:
                     continue
                 counter_map_with_id += 1
-                resource = set(dict_identifier_to_resource[hetionet_identifier])
+                resource = set(dict_identifier_to_resource[pharmebinet_identifier])
                 resource.add('Reactome')
                 resource = '|'.join(sorted(resource))
-                csv_mapped.writerow([dbId, hetionet_identifier, resource, 'IUPHAR', drug_name, databaseName])
+                csv_mapped.writerow([dbId, pharmebinet_identifier, resource, 'IUPHAR', drug_name, databaseName])
                 mapped = True
-                set_pair.add((hetionet_identifier, dbId))
+                set_pair.add((pharmebinet_identifier, dbId))
 
 
         # mapping xrefs: ChEBI, KEGG & PubChem
         elif (databaseName == "ChEBI" or databaseName == "COMPOUND" or databaseName == "PubChem Compound") \
-                and database_identifier in dict_identifier_hetionet_xref:
-            hetionet_identifier = dict_identifier_hetionet_xref[database_identifier]
-            if (hetionet_identifier, dbId) in set_pair:
+                and database_identifier in dict_identifier_pharmebinet_xref:
+            pharmebinet_identifier = dict_identifier_pharmebinet_xref[database_identifier]
+            if (pharmebinet_identifier, dbId) in set_pair:
                 continue
             counter_map_with_id += 1
-            resource = set(dict_identifier_to_resource[hetionet_identifier])
+            resource = set(dict_identifier_to_resource[pharmebinet_identifier])
             resource.add('Reactome')
             resource = '|'.join(sorted(resource))
-            csv_mapped.writerow([dbId, hetionet_identifier, resource, databaseName, drug_name, databaseName])
+            csv_mapped.writerow([dbId, pharmebinet_identifier, resource, databaseName, drug_name, databaseName])
             mapped = True
-            set_pair.add((hetionet_identifier, dbId))
+            set_pair.add((pharmebinet_identifier, dbId))
 
         # mapping with name
-        if drug_name in dict_drug_hetionet_names and not  mapped:
-            hetionet_identifier = dict_drug_hetionet_names[drug_name]
-            if (hetionet_identifier, dbId) in set_pair:
+        if drug_name in dict_drug_pharmebinet_names and not  mapped:
+            pharmebinet_identifier = dict_drug_pharmebinet_names[drug_name]
+            if (pharmebinet_identifier, dbId) in set_pair:
                 continue
             counter_map_with_name += 1
-            resource = set(dict_identifier_to_resource[hetionet_identifier])
+            resource = set(dict_identifier_to_resource[pharmebinet_identifier])
             resource.add('Reactome')
             resource = '|'.join(sorted(resource))
-            drug_names = dict_drug_hetionet[dict_drug_hetionet_names[drug_name]]
-            csv_mapped.writerow([dbId, hetionet_identifier, resource, "NAME", drug_name, drug_names])
+            drug_names = dict_drug_pharmebinet[dict_drug_pharmebinet_names[drug_name]]
+            csv_mapped.writerow([dbId, pharmebinet_identifier, resource, "NAME", drug_name, drug_names])
             mapped = True
-            set_pair.add((hetionet_identifier, dbId))
+            set_pair.add((pharmebinet_identifier, dbId))
 
 
         # mapping with alternative_names
         if not mapped:
             for name in alternative_drug_name:
                 name=name.lower()
-                if name in dict_drug_hetionet_names:
-                    hetionet_identifier = dict_drug_hetionet_names[name]
-                    if (hetionet_identifier, dbId) in set_pair:
+                if name in dict_drug_pharmebinet_names:
+                    pharmebinet_identifier = dict_drug_pharmebinet_names[name]
+                    if (pharmebinet_identifier, dbId) in set_pair:
                         continue
                     counter_map_with_name += 1
-                    resource = set(dict_identifier_to_resource[hetionet_identifier])
+                    resource = set(dict_identifier_to_resource[pharmebinet_identifier])
                     resource.add('Reactome')
                     resource = '|'.join(sorted(resource))
-                    drug_names = dict_drug_hetionet[dict_drug_hetionet_names[name]]
-                    csv_mapped.writerow([dbId, hetionet_identifier, resource, "NAME_DRUG", name, drug_names])
+                    drug_names = dict_drug_pharmebinet[dict_drug_pharmebinet_names[name]]
+                    csv_mapped.writerow([dbId, pharmebinet_identifier, resource, "NAME_DRUG", name, drug_names])
                     mapped = True
-                    set_pair.add((hetionet_identifier, dbId))
+                    set_pair.add((pharmebinet_identifier, dbId))
 
         # html-exceptions in reactome
         if len(drug_names) > 0 and not mapped:
@@ -221,18 +214,18 @@ def load_reactome_drug_in(label):
                 if name == 'Li<sup>+</sup>':                    # IUPHAR:5212; DB01356
                     name = name.replace("Li<sup>+</sup>", "Lithium cation")
                 name = name.lower()
-                if name in dict_drug_hetionet_names:
-                    hetionet_identifier = dict_drug_hetionet_names[name]
-                    if (hetionet_identifier, dbId) in set_pair:
+                if name in dict_drug_pharmebinet_names:
+                    pharmebinet_identifier = dict_drug_pharmebinet_names[name]
+                    if (pharmebinet_identifier, dbId) in set_pair:
                         continue
                     counter_map_with_name += 1
-                    resource = set(dict_identifier_to_resource[hetionet_identifier])
+                    resource = set(dict_identifier_to_resource[pharmebinet_identifier])
                     resource.add('Reactome')
                     resource = '|'.join(sorted(resource))
-                    drug_names = dict_drug_hetionet[dict_drug_hetionet_names[name]]
-                    csv_mapped.writerow([dbId, hetionet_identifier, resource, "NAME_HTML", drug_name, drug_names])
+                    drug_names = dict_drug_pharmebinet[dict_drug_pharmebinet_names[name]]
+                    csv_mapped.writerow([dbId, pharmebinet_identifier, resource, "NAME_HTML", drug_name, drug_names])
                     mapped = True
-                    set_pair.add((hetionet_identifier, dbId))
+                    set_pair.add((pharmebinet_identifier, dbId))
 
             if not mapped:
                 csv_not_mapped.writerow([identifier_reactome, drug_name, drug_names, databaseName])
@@ -245,12 +238,12 @@ def load_reactome_drug_in(label):
     print('----------------------------------------------------------------------------------------')
 
 '''
-generate connection between mapping drug of reactome and hetionet and generate new hetionet nodes for the not existing nodes
+generate connection between mapping drug of reactome and pharmebinet and generate new pharmebinet nodes for the not existing nodes
 '''
 
 def create_cypher_file():
     cypher_file = open('output/cypher_mapping2.cypher', 'w', encoding="utf-8")
-    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/reactome/drug/mapped_drug.tsv" As line FIELDTERMINATOR "\\t" MATCH (d:Chemical{identifier:line.id_hetionet}),(c:ReferenceEntity_reactome{dbId:toInteger(line.id)}) CREATE (d)-[:equal_to_reactome_drug{how_mapped:line.how_mapped}]->(c) SET d.resource = split(line.resource, '|'), d.reactome = "yes";\n'''
+    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/reactome/drug/mapped_drug.tsv" As line FIELDTERMINATOR "\\t" MATCH (d:Chemical{identifier:line.id_pharmebinet}),(c:ReferenceEntity_reactome{dbId:toInteger(line.id)}) CREATE (d)-[:equal_to_reactome_drug{how_mapped:line.how_mapped}]->(c) SET d.resource = split(line.resource, '|'), d.reactome = "yes";\n'''
     query = query %(path_of_directory)
     cypher_file.write(query)
 
@@ -277,9 +270,9 @@ def main():
         '__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-._')
 
     print(datetime.datetime.now())
-    print('Load all drugs from hetionet into a dictionary')
+    print('Load all drugs from pharmebinet into a dictionary')
 
-    load_hetionet_drug_in()
+    load_pharmebinet_drug_in()
 
     print(
         '°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°')

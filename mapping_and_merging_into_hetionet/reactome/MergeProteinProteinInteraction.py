@@ -18,8 +18,8 @@ def create_connection_with_neo4j():
     graph_database = create_connection_to_databases.database_connection_neo4j()
 
 
-# dictionary with hetionet interactions between proteins with interactor1_id as key and value interactor2_id
-dict_interactions_hetionet = {}
+# dictionary with pharmebinet interactions between proteins with interactor1_id as key and value interactor2_id
+dict_interactions_pharmebinet = {}
 
 # dictionary from identifier to resource_1
 dict_identifier_to_resource = {}
@@ -34,11 +34,11 @@ dict_protein_ids_to_iso_from_and_to = {}
 dict_protein_ids_to_iso_from_and_to_2 = {}
 
 '''
-load in all Interactions from hetionet into dictionary
+load in all Interactions from pharmebinet into dictionary
 '''
 
 
-def load_hetionet_interactions_in():
+def load_pharmebinet_interactions_in():
     global maximal_id
     query = '''MATCH (n:Protein)-->(a:Interaction)-->(m:Protein) RETURN n.identifier, m.identifier, a.resource, a.identifier, a.interaction_ids, a.iso_of_protein_from, a.iso_of_protein_to;'''
     results = graph_database.run(query)
@@ -55,12 +55,12 @@ def load_hetionet_interactions_in():
 
     maximal_id = graph_database.run(query).evaluate()
 
-    print('number of interactions in hetionet: ' + str(
+    print('number of interactions in pharmebinet: ' + str(
         len(dict_identifier_to_resource)))
 
 
 '''
-load all reactome interactions and check if they are in hetionet or not
+load all reactome interactions and check if they are in pharmebinet or not
 '''
 
 set_pair = set()
@@ -210,7 +210,7 @@ def generate_file_else(csv_not_mapped):
 
 
 '''
-generate connection between mapping interactions of reactome and hetionet and generate new hetionet interaction edges
+generate connection between mapping interactions of reactome and pharmebinet and generate new pharmebinet interaction edges
 '''
 
 
@@ -246,9 +246,9 @@ def main():
         '°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°')
 
     print(datetime.datetime.now())
-    print('Load all interactions from hetionet into a dictionary')
+    print('Load all interactions from pharmebinet into a dictionary')
 
-    load_hetionet_interactions_in()
+    load_pharmebinet_interactions_in()
 
     print(
         '°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°')
