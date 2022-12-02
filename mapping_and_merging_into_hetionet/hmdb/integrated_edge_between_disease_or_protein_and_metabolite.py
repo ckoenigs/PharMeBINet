@@ -1,4 +1,3 @@
-from py2neo import Graph
 import datetime
 import csv
 import sys, json
@@ -74,7 +73,7 @@ def load_pair_edges(label):
             dict_of_used_pairs[(node_id_1, node_id_2)][0]= dict_of_used_pairs[(node_id_1,node_id_2)][0].union(pubmed_ids)
             dict_of_used_pairs[(node_id_1, node_id_2)][1] = dict_of_used_pairs[(node_id_1, node_id_2)][1].union(urls)
             dict_of_used_pairs[(node_id_1, node_id_2)][2] = dict_of_used_pairs[(node_id_1, node_id_2)][2].union(references_set)
-    print('number of disease  and metabolite relationships in hetionet:' ,
+    print('number of disease  and metabolite relationships in pharmebinet:' ,
         len(dict_of_used_pairs))
     print('number of edges:', counter)
     print(len(set_distinct_reference_text))

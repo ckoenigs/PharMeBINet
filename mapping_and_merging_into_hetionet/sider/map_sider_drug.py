@@ -42,7 +42,7 @@ class drug_Sider:
         self.how_mapped = how_mapped
 
 
-class DrugHetionet:
+class Drugpharmebinet:
     """
     license: string
     identifier: string (Drugbank Id)
@@ -63,10 +63,10 @@ class DrugHetionet:
         self.xrefs = xrefs
 
 
-# list all compound ids in hetionet
-list_compound_in_hetionet = []
+# list all compound ids in pharmebinet
+list_compound_in_pharmebinet = []
 
-# dictionary with all compounds with drugbank id as key and class DrugHetionet as value
+# dictionary with all compounds with drugbank id as key and class Drugpharmebinet as value
 dict_all_drug = {}
 
 # dictionary with all drugs from sider with the stereo id as key and class drug_Sider as value
@@ -98,7 +98,7 @@ def create_connection_with_neo4j():
 
 
 '''
-load in all compounds from hetionet in a dictionary
+load in all compounds from pharmebinet in a dictionary
 properties:
     license: string
     identifier: string (Drugbank ID)
@@ -170,7 +170,7 @@ def load_chemicals_from_database():
         if chembl_id != '':
             dict_chembl_to_drugbank_id[chembl_id].append(identifier)
 
-        drug = DrugHetionet(identifier, inchikey, inchi, name, resource, xrefs)
+        drug = Drugpharmebinet(identifier, inchikey, inchi, name, resource, xrefs)
         dict_all_drug[identifier] = drug
 
 
@@ -604,13 +604,13 @@ def map_with_names():
 
 
 '''
-integrate sider drugs into hetionet directly. For the compound which are already in hetionet only some properties 
-are add and a connection to the sider drug is generated. Further new compound for hetionet a gerneted which has also a
+integrate sider drugs into pharmebinet directly. For the compound which are already in pharmebinet only some properties 
+are add and a connection to the sider drug is generated. Further new compound for pharmebinet a gerneted which has also a
  connection to  the sider drug.  
 '''
 
 
-def integrate_sider_drugs_into_hetionet():
+def integrate_sider_drugs_into_pharmebinet():
     # cypher file
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
 
@@ -624,9 +624,9 @@ def integrate_sider_drugs_into_hetionet():
     csv_writer = csv.writer(file, delimiter='\t')
     csv_writer.writerow(header)
 
-    # go through all mapped sider drugs and integrate them into hetionet
+    # go through all mapped sider drugs and integrate them into pharmebinet
     for pubchem_stereo, chemical_ids in dict_sider_drug_with_chemical_ids.items():
-        # if one of the drugbank ids are in hetionet
+        # if one of the drugbank ids are in pharmebinet
         # print(chemical_ids)
         # print(dict_sider_drug[pubchem_stereo].how_mapped)
         chemical_ids = list(set(chemical_ids))
@@ -699,13 +699,13 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
-    print('Map drugs from sider to hetionet')
+    print('Map drugs from sider to pharmebinet')
 
     print(
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
-    print('Load in all compounds from hetionet in dictionary')
+    print('Load in all compounds from pharmebinet in dictionary')
 
     load_chemicals_from_database()
 
@@ -762,9 +762,9 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
-    print('Integrate sider drugs into hetionet')
+    print('Integrate sider drugs into pharmebinet')
 
-    integrate_sider_drugs_into_hetionet()
+    integrate_sider_drugs_into_pharmebinet()
 
     print(
         '###########################################################################################################################')

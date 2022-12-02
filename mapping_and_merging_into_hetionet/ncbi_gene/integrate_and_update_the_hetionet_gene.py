@@ -20,38 +20,38 @@ def create_connetion_with_neo4j():
 
 
 # dictionary with all gene ids to there name
-dict_hetionet_gene_ids_to_name = {}
+dict_pharmebinet_gene_ids_to_name = {}
 
 '''
 load all ncbi identifier from the gene ides into a dictionary (or list)
 '''
 
 
-def get_all_ncbi_ids_form_hetionet_genes():
+def get_all_ncbi_ids_form_pharmebinet_genes():
     query = '''Match (g:Gene) Return g;'''
     results = g.run(query)
     for node, in results:
         identifier = node['identifier']
 
-        dict_hetionet_gene_ids_to_name[identifier] = dict(node)
+        dict_pharmebinet_gene_ids_to_name[identifier] = dict(node)
 
-    print('number of genes in hetionet:' + str(len(dict_hetionet_gene_ids_to_name)))
+    print('number of genes in pharmebinet:' + str(len(dict_pharmebinet_gene_ids_to_name)))
 
 
-# ditionary from ncbi property to hetionet property name
-dict_ncbi_property_to_hetionet_property = {
+# ditionary from ncbi property to pharmebinet property name
+dict_ncbi_property_to_pharmebinet_property = {
     "full_name_from_nomenclature_authority": 'name',
     "symbol": 'gene_symbol',
     "symbol_from_nomenclature_authority": 'gene_symbols',
     "dbxrefs": 'xrefs'
 }
 
-dict_hetionet_property_to_ncbi_property = dict(map(reversed, dict_ncbi_property_to_hetionet_property.items()))
+dict_pharmebinet_property_to_ncbi_property = dict(map(reversed, dict_ncbi_property_to_pharmebinet_property.items()))
 
 # list of properties  which have a list element
 list_properties_with_list_elements = ['gene_symbols', 'synonyms', 'xrefs', 'map_location', 'feature_type']
 
-# list of found gene ids, because i think not all gene ids from hetionet exists anymore
+# list of found gene ids, because i think not all gene ids from pharmebinet exists anymore
 found_gene_ids = []
 
 
@@ -73,7 +73,7 @@ load ncbi tsv file in and write only the important lines into a new tsv file for
 
 
 def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
-    # file for integration into hetionet
+    # file for integration into pharmebinet
     file = open('output_data/genes_merge.tsv', 'w')
     header = ['identifier', 'name', 'description', 'chromosome', 'gene_symbols', 'synonyms', 'feature_type',
               'type_of_gene', 'map_location', 'xrefs', 'gene_symbol']
@@ -108,7 +108,7 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
     results = g.run(query)
     counter_not_same_name = 0
     counter_all = 0
-    counter_all_in_hetionet = 0
+    counter_all_in_pharmebinet = 0
     for gene_id, name, node, in results:
         counter_all += 1
         # make a dictionary from the node
@@ -156,38 +156,38 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
             node['full_name_from_nomenclature_authority'] = node['description']
             name = node['description']
 
-        if gene_id in dict_hetionet_gene_ids_to_name:
-            counter_all_in_hetionet += 1
-            if 'name' in dict_hetionet_gene_ids_to_name[gene_id]:
+        if gene_id in dict_pharmebinet_gene_ids_to_name:
+            counter_all_in_pharmebinet += 1
+            if 'name' in dict_pharmebinet_gene_ids_to_name[gene_id]:
                 if gene_id == '26083':
                     print('ok')
-                hetionet_gene_name = dict_hetionet_gene_ids_to_name[gene_id]['name'].lower()
+                pharmebinet_gene_name = dict_pharmebinet_gene_ids_to_name[gene_id]['name'].lower()
                 description = node['description'].lower()
-                hetionet_gene_description = dict_hetionet_gene_ids_to_name[gene_id]['description'].lower()
-                if not name == hetionet_gene_name:
+                pharmebinet_gene_description = dict_pharmebinet_gene_ids_to_name[gene_id]['description'].lower()
+                if not name == pharmebinet_gene_name:
 
-                    if description == hetionet_gene_name:
+                    if description == pharmebinet_gene_name:
 
                         print(gene_id)
                         print(node['description'])
                         print(' are same description')
-                    elif hetionet_gene_description == name:
+                    elif pharmebinet_gene_description == name:
                         print(gene_id)
-                        print('hetionet description match ncbi name')
-                    elif hetionet_gene_description == description:
+                        print('pharmebinet description match ncbi name')
+                    elif pharmebinet_gene_description == description:
                         print(gene_id)
                         print('equal description')
-                    elif len(synonyms) > 0 and hetionet_gene_name in synonyms:
+                    elif len(synonyms) > 0 and pharmebinet_gene_name in synonyms:
                         print(gene_id)
                         print('equal to synonyms')
-                    elif len(symbols_ncbi) > 0 and hetionet_gene_name in symbols_ncbi:
+                    elif len(symbols_ncbi) > 0 and pharmebinet_gene_name in symbols_ncbi:
                         print(gene_id)
                         print('equal to gene symbol')
                     else:
                         counter_not_same_name += 1
                         print(gene_id)
                         print(name)
-                        print(dict_hetionet_gene_ids_to_name[gene_id]['name'])
+                        print(dict_pharmebinet_gene_ids_to_name[gene_id]['name'])
                         # print(node)
                         print('kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk')
 
@@ -199,24 +199,24 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
                 counter_not_same_name += 1
                 print(gene_id)
                 print(name)
-                print(dict_hetionet_gene_ids_to_name[gene_id])
+                print(dict_pharmebinet_gene_ids_to_name[gene_id])
                 node['full_name_from_nomenclature_authority'] = list(gene_symbol)[0]
                 print('nonamenonamenonamenonamenonamenonamenonamenonamenonamenonamenoname')
 
-            if 'chromosome' in dict_hetionet_gene_ids_to_name[gene_id] and 'chromosome' in node:
-                chromosome_hetionet = dict_hetionet_gene_ids_to_name[gene_id]['chromosome']
-                if chromosome_hetionet != node['chromosome'] and chromosome_hetionet != '':
+            if 'chromosome' in dict_pharmebinet_gene_ids_to_name[gene_id] and 'chromosome' in node:
+                chromosome_pharmebinet = dict_pharmebinet_gene_ids_to_name[gene_id]['chromosome']
+                if chromosome_pharmebinet != node['chromosome'] and chromosome_pharmebinet != '':
                     print('chromosome ;(')
-                    print(dict_hetionet_gene_ids_to_name[gene_id]['chromosome'])
+                    print(dict_pharmebinet_gene_ids_to_name[gene_id]['chromosome'])
                     print(node['chromosome'])
                     print(gene_id)
                     # sys.exit(gene_id)
 
             dict_for_insert_into_tsv = {}
             for head in header:
-                if head in dict_hetionet_property_to_ncbi_property:
+                if head in dict_pharmebinet_property_to_ncbi_property:
                     add_value_into_dict_with_list_or_not(dict_for_insert_into_tsv, head,
-                                                         dict_hetionet_property_to_ncbi_property[head], node)
+                                                         dict_pharmebinet_property_to_ncbi_property[head], node)
 
                 else:
                     if head in node:
@@ -225,16 +225,16 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
             writer.writerow(dict_for_insert_into_tsv)
 
         else:
-            print('not in hetionet')
+            print('not in pharmebinet')
             print(gene_id)
             if name == '-' or name is None:
                 node['full_name_from_nomenclature_authority'] = node['description']
 
             dict_for_insert_into_tsv = {}
             for head in header:
-                if head in dict_hetionet_property_to_ncbi_property:
+                if head in dict_pharmebinet_property_to_ncbi_property:
                     add_value_into_dict_with_list_or_not(dict_for_insert_into_tsv, head,
-                                                         dict_hetionet_property_to_ncbi_property[head], node)
+                                                         dict_pharmebinet_property_to_ncbi_property[head], node)
 
                 else:
                     if head in node:
@@ -242,7 +242,7 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
                                                              head, node)
             writer.writerow(dict_for_insert_into_tsv)
     print('number of all genes:' + str(counter_all))
-    print('counter of all genes already in hetionet:' + str(counter_all_in_hetionet))
+    print('counter of all genes already in pharmebinet:' + str(counter_all_in_pharmebinet))
     print('counter not the same name:' + str(counter_not_same_name))
 
 
@@ -266,15 +266,15 @@ def main():
         '#################################################################################################################################################################')
 
     print(datetime.datetime.now())
-    print('gather all information of the hetionet genes')
+    print('gather all information of the pharmebinet genes')
 
-    get_all_ncbi_ids_form_hetionet_genes()
+    get_all_ncbi_ids_form_pharmebinet_genes()
 
     print(
         '#################################################################################################################################################################')
 
     print(datetime.datetime.now())
-    print('gnerate a tsv file with only the hetionet genes')
+    print('gnerate a tsv file with only the pharmebinet genes')
 
     load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes()
 

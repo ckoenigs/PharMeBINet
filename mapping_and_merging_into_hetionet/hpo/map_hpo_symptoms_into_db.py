@@ -87,7 +87,7 @@ def generate_cypher_queries_and_tsv_files():
     generate cypher queries and tsv files
     :return: csv writer for mapping and new
     """
-    set_header_for_files = ['hpo_id', 'hetionet_id', 'xrefs', 'mesh_ids', 'resource', 'umls_ids', 'how_mapped']
+    set_header_for_files = ['hpo_id', 'pharmebinet_id', 'xrefs', 'mesh_ids', 'resource', 'umls_ids', 'how_mapped']
     # tsv file for mapping disease
     file_name_mapped = 'mapping_files/symptom_mapped.tsv'
     file_symptom_mapped = open(file_name_mapped, 'w', encoding='utf-8')
@@ -108,8 +108,8 @@ def generate_cypher_queries_and_tsv_files():
         RETURN allfields;'''
     results = g.run(query)
 
-    query_start_match = query_start + '''Match (s:Symptom{identifier:line.hetionet_id }) , (n:HPO_symptom{id:line.hpo_id}) Set s.hpo='yes', s.umls_cuis=split(line.umls_cuis,"|"),  s.resource=split(line.resource,"|") , s.hpo_release='%s', s.url_HPO="https://hpo.jax.org/app/browse/term/"+line.hpo_id, n.mesh_ids=split(line.mesh_ids,'|'), s.xrefs=s.xrefs + line.hpo_id, '''
-    query_start_create = query_start + '''Match (n:HPO_symptom{id:line.hpo_id}) Create (s:Symptom{identifier:line.hetionet_id, umls_cuis:split(line.umls_cuis,"|") ,source:'HPO',license:'This service/product uses the Human Phenotype Ontology (April 2021). Find out more at http://www.human-phenotype-ontology.org We request that the HPO logo be included as well.', resource:['HPO'], source:'HPO', hpo:'yes', hpo_release:'%s', url:"https://hpo.jax.org/app/browse/term/"+line.hpo_id, xrefs:split(line.xrefs,"|"), '''
+    query_start_match = query_start + '''Match (s:Symptom{identifier:line.pharmebinet_id }) , (n:HPO_symptom{id:line.hpo_id}) Set s.hpo='yes', s.umls_cuis=split(line.umls_cuis,"|"),  s.resource=split(line.resource,"|") , s.hpo_release='%s', s.url_HPO="https://hpo.jax.org/app/browse/term/"+line.hpo_id, n.mesh_ids=split(line.mesh_ids,'|'), s.xrefs=s.xrefs + line.hpo_id, '''
+    query_start_create = query_start + '''Match (n:HPO_symptom{id:line.hpo_id}) Create (s:Symptom{identifier:line.pharmebinet_id, umls_cuis:split(line.umls_cuis,"|") ,source:'HPO',license:'This service/product uses the Human Phenotype Ontology (April 2021). Find out more at http://www.human-phenotype-ontology.org We request that the HPO logo be included as well.', resource:['HPO'], source:'HPO', hpo:'yes', hpo_release:'%s', url:"https://hpo.jax.org/app/browse/term/"+line.hpo_id, xrefs:split(line.xrefs,"|"), '''
 
     for property, in results:
         if property in ['name', 'id', 'created_by', 'creation_date', 'is_obsolete', 'replaced_by', 'subset',
@@ -146,7 +146,7 @@ def generate_cypher_queries_and_tsv_files():
 
 
 ## dictionary of symptoms
-dict_of_hetionet_symptoms = {}
+dict_of_pharmebinet_symptoms = {}
 
 # dictionary name_to_symptom
 dict_name_to_symptom_id = {}
@@ -157,7 +157,7 @@ dict_umls_cui_to_mesh = {}
 
 def get_all_symptoms_and_add_to_dict():
     """
-    Get al symptoms from hetionet and put this information into a dictionary
+    Get al symptoms from pharmebinet and put this information into a dictionary
     :return:
     """
     query = '''MATCH (n:Symptom) RETURN n  '''
@@ -166,7 +166,7 @@ def get_all_symptoms_and_add_to_dict():
     # add all symptoms to dictioanry
     for result, in results:
         identifier = result['identifier']
-        dict_of_hetionet_symptoms[identifier] = dict(result)
+        dict_of_pharmebinet_symptoms[identifier] = dict(result)
 
         name = result['name'].lower()
         if name not in dict_name_to_symptom_id:
@@ -191,13 +191,13 @@ def check_on_mapping_of_mesh_ids(mesh_ids, node_id, xrefs, how_mapped):
     """
     found_one = False
     for mesh_id in mesh_ids:
-        if mesh_id in dict_of_hetionet_symptoms:
+        if mesh_id in dict_of_pharmebinet_symptoms:
             found_one = True
-            resource = dict_of_hetionet_symptoms[mesh_id]['resource'] if 'resource' in dict_of_hetionet_symptoms[
+            resource = dict_of_pharmebinet_symptoms[mesh_id]['resource'] if 'resource' in dict_of_pharmebinet_symptoms[
                 mesh_id] else []
             resource.append('HPO')
             resource = list(set(resource))
-            xrefs_mesh = dict_of_hetionet_symptoms[mesh_id]['xrefs'] if 'xrefs' in dict_of_hetionet_symptoms[
+            xrefs_mesh = dict_of_pharmebinet_symptoms[mesh_id]['xrefs'] if 'xrefs' in dict_of_pharmebinet_symptoms[
                 mesh_id] else []
             xrefs_mesh = set(xrefs_mesh).union(xrefs)
             if mesh_id in dict_mapped_mesh:
@@ -229,11 +229,11 @@ def check_on_mapping_of_umls_cuis(umls_cuis, node_id, xrefs, how_mapped):
         if umls_cui in dict_umls_cui_to_mesh:
             found_one = True
             for mesh_id in dict_umls_cui_to_mesh[umls_cui]:
-                resource = dict_of_hetionet_symptoms[mesh_id]['resource'] if 'resource' in dict_of_hetionet_symptoms[
+                resource = dict_of_pharmebinet_symptoms[mesh_id]['resource'] if 'resource' in dict_of_pharmebinet_symptoms[
                     mesh_id] else []
                 resource.append('HPO')
                 resource = list(set(resource))
-                xrefs_mesh = dict_of_hetionet_symptoms[mesh_id]['xrefs'] if 'xrefs' in dict_of_hetionet_symptoms[
+                xrefs_mesh = dict_of_pharmebinet_symptoms[mesh_id]['xrefs'] if 'xrefs' in dict_of_pharmebinet_symptoms[
                     mesh_id] else []
                 xrefs_mesh = set(xrefs_mesh).union(xrefs)
                 if mesh_id in dict_mapped_mesh:
@@ -255,12 +255,12 @@ def map_names(name, how_mapped, node_id, xrefs):
     if name in dict_name_to_symptom_id:
         found_one = True
         for mesh_id in dict_name_to_symptom_id[name]:
-            resource = dict_of_hetionet_symptoms[mesh_id]['resource'] if 'resource' in \
-                                                                         dict_of_hetionet_symptoms[
+            resource = dict_of_pharmebinet_symptoms[mesh_id]['resource'] if 'resource' in \
+                                                                         dict_of_pharmebinet_symptoms[
                                                                              mesh_id] else []
             resource.append('HPO')
             resource = list(set(resource))
-            xrefs_mesh = dict_of_hetionet_symptoms[mesh_id]['xrefs'] if 'xrefs' in dict_of_hetionet_symptoms[
+            xrefs_mesh = dict_of_pharmebinet_symptoms[mesh_id]['xrefs'] if 'xrefs' in dict_of_pharmebinet_symptoms[
                 mesh_id] else []
             xrefs_mesh = set(xrefs_mesh).union(xrefs)
             if mesh_id in dict_mapped_mesh:
@@ -281,7 +281,7 @@ def map_names(name, how_mapped, node_id, xrefs):
 dict_mapped_mesh = {}
 
 
-def map_hpo_symptoms_and_to_hetionet(csv_new):
+def map_hpo_symptoms_and_to_pharmebinet(csv_new):
     """
     Map hpo symptomes to umls cui or mesh and generate connection between symptoms and hpo symptoms. Further the
     hpo symptoms get the mapped umls_cui or mesh as property.
@@ -322,7 +322,7 @@ def map_hpo_symptoms_and_to_hetionet(csv_new):
             # add hpo to xrefs
             xrefs.append('HPO:' + node_id)
 
-            # check if mesh ids from hpo map to hetionet mesh
+            # check if mesh ids from hpo map to pharmebinet mesh
             # found_one = check_on_mapping_of_mesh_ids(mesh_ids, node_id, xrefs, 'mesh')
             #
             # if found_one:
@@ -387,7 +387,7 @@ def map_hpo_symptoms_and_to_hetionet(csv_new):
 
             dict_node = {
                 'hpo_id': node_id,
-                'hetionet_id': node_id,
+                'pharmebinet_id': node_id,
                 'xrefs': '|'.join(go_through_xrefs_and_change_if_needed_source_name(xrefs,'symptom')),
                 'mesh_ids': '|'.join(mesh_ids),
                 'umls_ids': '|'.join(umls_cuis),
@@ -407,7 +407,7 @@ def prepare_mapped_nodes_for_file(csv_mapped):
     """
     for mesh_id, dict_info in dict_mapped_mesh.items():
         dict_node = {
-            'hetionet_id': mesh_id,
+            'pharmebinet_id': mesh_id,
             'xrefs': '|'.join(go_through_xrefs_and_change_if_needed_source_name(dict_info['xrefs'], 'symptom')),
             'resource': '|'.join(dict_info['resource'])
             # 'how_mapped': '|'.join(set(dict_info['how_mapped']))
@@ -439,23 +439,23 @@ def main():
     print('##########################################################################')
 
     print(datetime.datetime.now())
-    print('generate dictionary from symptoms of hetionet')
+    print('generate dictionary from symptoms of pharmebinet')
 
     get_all_symptoms_and_add_to_dict()
 
     print('##########################################################################')
 
     print(datetime.datetime.now())
-    print('generate dictionary from symptoms of hetionet')
+    print('generate dictionary from symptoms of pharmebinet')
 
     csv_mapped, csv_new = generate_cypher_queries_and_tsv_files()
 
     print('##########################################################################')
 
     print(datetime.datetime.now())
-    print('map hpo symptoms to mesh or umls cui and integrated them into hetionet')
+    print('map hpo symptoms to mesh or umls cui and integrated them into pharmebinet')
 
-    map_hpo_symptoms_and_to_hetionet(csv_new)
+    map_hpo_symptoms_and_to_pharmebinet(csv_new)
 
     print('##########################################################################')
 

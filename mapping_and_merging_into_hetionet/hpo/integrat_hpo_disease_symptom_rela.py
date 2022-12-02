@@ -25,7 +25,7 @@ cypher_file = open('cypher/cypher_edge.cypher', 'w')
 list_new_disease_symptom_pairs = []
 
 # dictionary disease-symptom with resource as value
-dict_disease_symptom_pair_hetionet = {}
+dict_disease_symptom_pair_pharmebinet = {}
 
 # dictionary  mapped pair to info
 dict_mapped_pair_to_info = {}
@@ -80,13 +80,13 @@ def change_list_values_to_string(list_of_values):
 
 def get_all_already_existing_relationships():
     """
-    Get all already existing relationships from hetionet
+    Get all already existing relationships from pharmebinet
     :return:
     """
     query = '''MATCH p=(b:Disease)-[r:PRESENTS_DpS]->(a:Symptom) RETURN  b.identifier, r.resource, a.identifier;'''
     results = g.run(query)
     for disease_id, resource, symptom_id, in results:
-        dict_disease_symptom_pair_hetionet[(disease_id, symptom_id)] = resource
+        dict_disease_symptom_pair_pharmebinet[(disease_id, symptom_id)] = resource
 
 
 def prepare_all_relationships_infos(properties, connection, mondo_id, symptom_id):
@@ -271,9 +271,9 @@ def generate_cypher_file_for_connection(cypher_file):
     # fill the files
     for mondo, relationship, symptom_id, in results:
         rela_information_list = prepare_all_relationships_infos(properties, relationship, mondo, symptom_id)
-        if (mondo, symptom_id) in dict_disease_symptom_pair_hetionet:
+        if (mondo, symptom_id) in dict_disease_symptom_pair_pharmebinet:
             check_for_pair_in_dictionary(mondo, symptom_id, rela_information_list, dict_mapped_pair_to_info,
-                                         add_resource=dict_disease_symptom_pair_hetionet[(mondo, symptom_id)])
+                                         add_resource=dict_disease_symptom_pair_pharmebinet[(mondo, symptom_id)])
         else:
             check_for_pair_in_dictionary(mondo, symptom_id, rela_information_list, dict_new_pair_to_info)
 

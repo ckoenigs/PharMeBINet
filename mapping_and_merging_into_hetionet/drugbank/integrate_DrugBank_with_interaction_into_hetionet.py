@@ -456,9 +456,9 @@ def generation_of_interaction_file():
                 counter_connection += 1
 
     print(counter_connection)
-    print('one has the alternative id in Hetionet:' + str(one_alternative))
-    print('both have the alternative id in Hetionet:' + str(counter_both_alternative))
-    print('both are in Hetionet with normal id:' + str(count_no_alternative))
+    print('one has the alternative id in pharmebinet:' + str(one_alternative))
+    print('both have the alternative id in pharmebinet:' + str(counter_both_alternative))
+    print('both are in pharmebinet with normal id:' + str(count_no_alternative))
     print('counter of all interaction:' + str(counter_all_interaction))
     print(set_alt)
 
@@ -493,7 +493,7 @@ def main():
         '#################################################################################################################################################################')
 
     print(datetime.datetime.now())
-    print('load all hetionet compound in dictionary')
+    print('load all pharmebinet compound in dictionary')
 
     load_all_pharmebinet_compound_in_dictionary()
 
@@ -519,9 +519,9 @@ def main():
 
     print(datetime.datetime.now())
 
-    print('integrate drugbank into hetionet')
+    print('integrate drugbank into pharmebinet')
 
-    integrate_DB_compound_information_into_hetionet()
+    integrate_DB_compound_information_into_pharmebinet()
 
     print(
         '#################################################################################################################################################################')

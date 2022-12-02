@@ -47,7 +47,7 @@ def add_value_to_dictionary(dictionary, key, value):
 
 
 '''
-load in all compound from hetionet in a dictionary
+load in all compound from pharmebinet in a dictionary
 '''
 
 
@@ -217,7 +217,7 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
-    print('Load in variant from hetionet')
+    print('Load in variant from pharmebinet')
 
     load_db_info_in()
 

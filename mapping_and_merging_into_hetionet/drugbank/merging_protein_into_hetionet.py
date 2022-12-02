@@ -53,8 +53,8 @@ def load_all_chemicals_and_generate_dictionary():
                 add_name_to_dict(synonym, chemical_id, dict_name_to_chemical_id)
 
 
-# dictionary hetionet protein with uniprot identifier as key and value is the whole node as dictionary
-dict_hetionet_protein = {}
+# dictionary pharmebinet protein with uniprot identifier as key and value is the whole node as dictionary
+dict_pharmebinet_protein = {}
 
 # dictionary name/synonym to protein id
 dict_name_to_protein_id = {}
@@ -63,17 +63,17 @@ dict_name_to_protein_id = {}
 dict_protein_id_to_resource = {}
 
 '''
-gather all hetionet proteins in a dictionary
+gather all pharmebinet proteins in a dictionary
 '''
 
 
-def load_all_hetionet_proteins_in_dictionary():
+def load_all_pharmebinet_proteins_in_dictionary():
     query = '''MATCH (n:Protein) RETURN n.identifier, n ;'''
     results = g.run(query)
     counter_multiple_identifier = 0
     for identifier, node, in results:
         alternative_ids = node['alternative_ids'] if 'alternative_ids' in node else []
-        dict_hetionet_protein[identifier] = [dict(node)]
+        dict_pharmebinet_protein[identifier] = [dict(node)]
         name = node['name'] if 'name' in node else ''
         synonyms = node['synonyms'] if 'synonyms' in node else []
         resource = node['resource']
@@ -83,13 +83,13 @@ def load_all_hetionet_proteins_in_dictionary():
             add_name_to_dict(synonym, identifier, dict_name_to_protein_id)
 
         for alternative_id in alternative_ids:
-            if not alternative_id in dict_hetionet_protein:
-                dict_hetionet_protein[alternative_id] = [dict(node)]
+            if not alternative_id in dict_pharmebinet_protein:
+                dict_pharmebinet_protein[alternative_id] = [dict(node)]
             else:
                 counter_multiple_identifier += 1
-                dict_hetionet_protein[alternative_id].append(dict(node))
+                dict_pharmebinet_protein[alternative_id].append(dict(node))
                 # print(alternative_id)
-                # print(dict_hetionet_protein[alternative_id])
+                # print(dict_pharmebinet_protein[alternative_id])
                 # print(node)
     print('number of identifier which appears multiple times:' + str(counter_multiple_identifier))
 
@@ -182,7 +182,7 @@ generate_csv_transporter = open('protein/proteins_transporter.tsv', 'w')
 writer_transporter = csv.writer(generate_csv_transporter, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 writer_transporter.writerow(['id'])
 
-# dictionary of drugbank labels to hetionet labels:
+# dictionary of drugbank labels to pharmebinet labels:
 dict_db_labels_to_tsv_label_file = {
     'Enzyme_DrugBank': writer_enzyme,
     'Transporter_DrugBank': writer_transporter,
@@ -199,25 +199,25 @@ preparation of the tsv for merging for a given node
 '''
 
 
-def integrate_infos_into_tsv(part_dict, protein_hetionet, list_input_protein):
+def integrate_infos_into_tsv(part_dict, protein_pharmebinet, list_input_protein):
     # first check on the as sequences and combine the if they are not the same, because they are isoforms
     # or  have only small changes like one as is changed
-    # print(protein_hetionet)
-    resource = set(protein_hetionet['resource'])
+    # print(protein_pharmebinet)
+    resource = set(protein_pharmebinet['resource'])
     resource.add('DrugBank')
     resource = sorted(resource)
     list_input_protein.append("|".join(resource))
 
     as_seqs = part_dict['amino_acid_sequence'] if 'amino_acid_sequence' in part_dict else ''
 
-    as_seq_hetionet = protein_hetionet['as_sequences'] if 'as_sequences' in protein_hetionet else []
-    if ':' in as_seq_hetionet[0]:
-        as_seq_hetionet_seq = as_seq_hetionet[0].split(':')[1]
+    as_seq_pharmebinet = protein_pharmebinet['as_sequences'] if 'as_sequences' in protein_pharmebinet else []
+    if ':' in as_seq_pharmebinet[0]:
+        as_seq_pharmebinet_seq = as_seq_pharmebinet[0].split(':')[1]
     else:
-        as_seq_hetionet_seq = as_seq_hetionet[0]
+        as_seq_pharmebinet_seq = as_seq_pharmebinet[0]
     list_as_sequnces = []
-    list_as_sequnces.append(as_seq_hetionet_seq)
-    # list_as_sequnces.extend(as_seq_hetionet_seq)
+    list_as_sequnces.append(as_seq_pharmebinet_seq)
+    # list_as_sequnces.extend(as_seq_pharmebinet_seq)
     for as_seq in as_seqs:
 
         if as_seq.startswith('>'):
@@ -227,7 +227,7 @@ def integrate_infos_into_tsv(part_dict, protein_hetionet, list_input_protein):
         if as_seq_part == '':
             print('empyt as')
             print(as_seq)
-        if as_seq_hetionet_seq != as_seq_part and as_seq_part != '':
+        if as_seq_pharmebinet_seq != as_seq_part and as_seq_part != '':
             list_as_sequnces.append(as_seq_part)
     # print(list_as_sequnces)
     list_as_sequnces = '|'.join(list_as_sequnces)
@@ -237,7 +237,7 @@ def integrate_infos_into_tsv(part_dict, protein_hetionet, list_input_protein):
     # to many were not correct and around 230 have to be checked
     # pfam_db= part_dict['pfams'] if 'pfams' in part_dict else []
     # pfam_db= [ x.replace('::',':') for x in pfam_db]
-    # pfam_protein= protein_hetionet['pfam'] if 'pfam' in protein_hetionet else []
+    # pfam_protein= protein_pharmebinet['pfam'] if 'pfam' in protein_pharmebinet else []
     # pfam_protein= set(pfam_protein)
     # #this were manual check pfams which were not correct
     # if identifier not in ['Q6NUM9','P07307','O94760','P63151','O95865']:
@@ -252,11 +252,11 @@ def integrate_infos_into_tsv(part_dict, protein_hetionet, list_input_protein):
     # list_input_protein.append(pfam_protein)
 
     # check on gene names are the same
-    # hetionet_gene_names=protein_hetionet['gene_name'] if 'gene_name' in protein_hetionet else []
+    # pharmebinet_gene_names=protein_pharmebinet['gene_name'] if 'gene_name' in protein_pharmebinet else []
     # db_gene_name=part_dict['gene_name'] if 'gene_name' in part_dict else ''
-    # if not db_gene_name in hetionet_gene_names:
+    # if not db_gene_name in pharmebinet_gene_names:
     #     print(part_dict['identifier'])
-    #     print(hetionet_gene_names)
+    #     print(pharmebinet_gene_names)
     #     print(db_gene_name)
     #     print('ohje gene name')
 
@@ -318,7 +318,7 @@ def load_proteins_from_drugbank_into_dict():
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/drugbank/protein/mapping_chemical_target.tsv" As line Fieldterminator '\\t' MATCH (n:Protein_DrugBank{identifier:line.id}) ,(p:Chemical{identifier:line.chemical_id}) Create (p)-[:equal_to_DB_target]->(n) Set p.drugbank='yes', p:Target, p.resource=split(line.resource,"|") ;\n'''
 
     cypherfile.write(query)
-    # all queries which are used to integrate Protein with the extra labels into Hetionet
+    # all queries which are used to integrate Protein with the extra labels into pharmebinet
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/drugbank/protein/proteins_carrier.tsv" As line Fieldterminator '\\t' MATCH (g:Protein{identifier:line.id}) Set g:Carrier ;\n'''
     cypherfile.write(query)
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/drugbank/protein/proteins_enzyme.tsv" As line Fieldterminator '\\t' MATCH (g:Protein{identifier:line.id}) Set g:Enzyme ;\n'''
@@ -382,23 +382,23 @@ def load_proteins_from_drugbank_into_dict():
                 dict_db_labels_to_tsv_label_file[label].writerow([identifier])
             dict_proteins[identifier] = labels
 
-            if identifier in dict_hetionet_protein:
+            if identifier in dict_pharmebinet_protein:
                 counter_mapped += 1
-                if len(dict_hetionet_protein[identifier]) == 1:
-                    protein_hetionet = dict_hetionet_protein[identifier][0]
-                    list_input_protein.append(protein_hetionet['identifier'])
+                if len(dict_pharmebinet_protein[identifier]) == 1:
+                    protein_pharmebinet = dict_pharmebinet_protein[identifier][0]
+                    list_input_protein.append(protein_pharmebinet['identifier'])
 
-                    integrate_infos_into_tsv(part_dict, protein_hetionet, list_input_protein)
+                    integrate_infos_into_tsv(part_dict, protein_pharmebinet, list_input_protein)
 
                 else:
-                    print(len(dict_hetionet_protein[identifier]))
+                    print(len(dict_pharmebinet_protein[identifier]))
                     print(identifier)
-                    for protein_hetionet in dict_hetionet_protein[identifier]:
+                    for protein_pharmebinet in dict_pharmebinet_protein[identifier]:
                         list_multiple_input = []
                         list_multiple_input.append(identifier)
-                        list_multiple_input.append(protein_hetionet['identifier'])
-                        print(protein_hetionet['identifier'])
-                        integrate_infos_into_tsv(part_dict, protein_hetionet, list_multiple_input)
+                        list_multiple_input.append(protein_pharmebinet['identifier'])
+                        print(protein_pharmebinet['identifier'])
+                        integrate_infos_into_tsv(part_dict, protein_pharmebinet, list_multiple_input)
                     print('multiple mapping')
             elif identifier in dict_be_identifier_sort_to_protein_or_not:
                 print('protein without uniprot id')
@@ -496,7 +496,7 @@ def main():
 
     print('load all Protein and gather the information ')
 
-    load_all_hetionet_proteins_in_dictionary()
+    load_all_pharmebinet_proteins_in_dictionary()
 
     print(
         '#################################################################################################################################################################')

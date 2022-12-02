@@ -15,10 +15,10 @@ def create_connection_with_neo4j():
     g = create_connection_to_databases.database_connection_neo4j()
 
 
-# list of all side effect ids which are in hetionet
-list_side_effect_in_hetionet = []
+# list of all side effect ids which are in pharmebinet
+list_side_effect_in_pharmebinet = []
 
-# dictionary with all side effects from hetionet and the new ones from sider
+# dictionary with all side effects from pharmebinet and the new ones from sider
 #  with id as key and as value a class SideEffect
 dict_all_side_effect = {}
 
@@ -56,7 +56,7 @@ def load_sider_in_dict():
         csv_writer_new.writerow(dict_info)
         counter_new += 1
 
-    print('size of side effects after the sider is add:' + str(len(list_side_effect_in_hetionet) + counter_new))
+    print('size of side effects after the sider is add:' + str(len(list_side_effect_in_pharmebinet) + counter_new))
 
 
 '''
@@ -101,7 +101,7 @@ def integrate_side_effects():
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
-    print('map sider to hetionet per cypher')
+    print('map sider to pharmebinet per cypher')
 
     generate_cypher_file()
 
@@ -119,7 +119,7 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
-    print('Integrate sider side effects into hetionet')
+    print('Integrate sider side effects into pharmebinet')
 
     integrate_side_effects()
 

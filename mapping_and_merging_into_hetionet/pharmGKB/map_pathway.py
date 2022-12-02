@@ -28,7 +28,7 @@ def add_entry_to_dictionary(dictionary, key, value):
     dictionary[key].add(value)
 
 '''
-load in all compound from hetionet in a dictionary
+load in all compound from pharmebinet in a dictionary
 '''
 
 
@@ -141,7 +141,7 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
-    print('Load in pathway from hetionet')
+    print('Load in pathway from pharmebinet')
 
     load_db_pathways_in()
 

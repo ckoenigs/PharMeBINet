@@ -261,7 +261,7 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
-    print('Load in metadata from hetionet')
+    print('Load in metadata from pharmebinet')
 
     load_db_info_in()
 

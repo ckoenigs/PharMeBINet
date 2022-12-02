@@ -96,13 +96,13 @@ create the tsv files
 
 
 def create_tsv_files():
-    for label in dict_go_to_hetionet_label:
+    for label in dict_go_to_pharmebinet_label:
         # delete the old nodes
-        query_delete = '''Match (a:%s)  Detach Delete a;\n''' %dict_go_to_hetionet_label[label]
+        query_delete = '''Match (a:%s)  Detach Delete a;\n''' %dict_go_to_pharmebinet_label[label]
         cypher_file.write(query_delete)
         # prepare file and queries for new nodes
         file_name = 'output/integrate_go_' + label + '.tsv'
-        query = query_new % (file_name, dict_go_to_hetionet_label[label])
+        query = query_new % (file_name, dict_go_to_pharmebinet_label[label])
         cypher_file.write(query)
         file = open(file_name, 'w')
         tsv_file = csv.writer(file, delimiter='\t')
@@ -116,8 +116,8 @@ dict_go_namespace_to_nodes = {}
 
 
 
-# dictionary go label to hetionet label
-dict_go_to_hetionet_label = {
+# dictionary go label to pharmebinet label
+dict_go_to_pharmebinet_label = {
     'molecular_function': 'MolecularFunction',
     'biological_process': 'BiologicalProcess',
     'cellular_component': 'CellularComponent'
@@ -128,7 +128,7 @@ check if id is in a dictionary
 '''
 
 
-def check_if_identifier_in_hetionet(identifier, label_go, namespace, node, xrefs):
+def check_if_identifier_in_pharmebinet(identifier, label_go, namespace, node, xrefs):
     found_id = False
     xref_string = "|".join(go_through_xrefs_and_change_if_needed_source_name(xrefs, label_go))
     
@@ -163,7 +163,7 @@ def get_is_a_relationships_and_add_to_tsv(namespace):
 
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/go/%s" As line FIELDTERMINATOR '\\t' 
     Match (a1:%s{identifier:line.identifier_1}), (a2:%s{identifier:line.identifier_2}) Create (a1)-[:IS_A_%s{license:"%s", source:"Gene Ontology", unbiased:false, resource:["GO"], go:'yes', url:"http://purl.obolibrary.org/obo/"+line.identifier_1}]->(a2);\n'''
-    query = query % (file_name, dict_go_to_hetionet_label[namespace], dict_go_to_hetionet_label[namespace],
+    query = query % (file_name, dict_go_to_pharmebinet_label[namespace], dict_go_to_pharmebinet_label[namespace],
                      dict_relationship_ends[namespace], license)
     cypher_file.write(query)
 
@@ -204,7 +204,7 @@ def go_through_go():
                 new_xref.add(splitted_xref[0])
             else:
                 new_xref.add(xref)
-        check_if_identifier_in_hetionet(identifier, label_go, namespace, node, new_xref)
+        check_if_identifier_in_pharmebinet(identifier, label_go, namespace, node, new_xref)
 
 
 # path to directory
@@ -243,7 +243,7 @@ def main():
         '#################################################################################################################################################################')
 
     print(datetime.datetime.now())
-    print('generate hetionet dictionary')
+    print('generate pharmebinet dictionary')
 
     prepare_go_internal_relationships()
 

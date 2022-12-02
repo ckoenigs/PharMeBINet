@@ -7,7 +7,7 @@ sys.path.append("../..")
 import create_connection_to_databases
 
 # dictionary with chemical id as key and the whole node as value
-dict_chemical_hetionet = {}
+dict_chemical_pharmebinet = {}
 
 # dictionary with code as key and value is class DrugNDF_RT
 dict_drug_NDF_RT = {}
@@ -94,16 +94,16 @@ def check_for_rxcui(name, rxcui):
         return other_id
 
 '''
-load in all compound from hetionet in a dictionary
+load in all compound from pharmebinet in a dictionary
 '''
 
 
-def load_hetionet_chemical_in():
+def load_pharmebinet_chemical_in():
     query = '''MATCH (n:Chemical) RETURN n.identifier,n'''
     results = g.run(query)
 
     for identifier, node, in results:
-        dict_chemical_hetionet[identifier] = dict(node)
+        dict_chemical_pharmebinet[identifier] = dict(node)
         if 'unii' in node:
             if node['unii'] in dict_unii_to_chemical_id:
                 sys.exit('ohje unii')
@@ -146,7 +146,7 @@ def load_hetionet_chemical_in():
                     dict_umls_cui_to_chemical_id[cui] = set()
                 dict_umls_cui_to_chemical_id[cui].add(identifier)
 
-    print('length of compound in hetionet:' + str(len(dict_chemical_hetionet)))
+    print('length of compound in pharmebinet:' + str(len(dict_chemical_pharmebinet)))
 
 
 '''
@@ -320,12 +320,12 @@ def map_rxnorm_to_drugbank_use_rxnorm_database():
             mapped_chemical = set()
             # check the mapped drugbank ids
             for drugbank in drugbank_ids:
-                if drugbank in dict_chemical_hetionet:
+                if drugbank in dict_chemical_pharmebinet:
                     in_drugbank = True
                     mapped_drugs.add(drugbank)
             # check the mapped mesh ids
             for mesh in mesh_ids:
-                if mesh in dict_chemical_hetionet:
+                if mesh in dict_chemical_pharmebinet:
                     in_chemical = True
                     mapped_chemical.add(mesh)
             dict_code_to_mapped = {}
@@ -334,11 +334,11 @@ def map_rxnorm_to_drugbank_use_rxnorm_database():
                 print(mesh_ids)
                 dict_mesh_name_to_mesh_id = {}
                 for mesh_id in mapped_chemical:
-                    dict_mesh_name_to_mesh_id[dict_chemical_hetionet[mesh_id]['name'].lower()] = [mesh_id]
+                    dict_mesh_name_to_mesh_id[dict_chemical_pharmebinet[mesh_id]['name'].lower()] = [mesh_id]
                 print(drugbank_ids)
                 dict_drug_name_to_db_id = {}
                 for drugbank_id in mapped_drugs:
-                    dict_drug_name_to_db_id[dict_chemical_hetionet[drugbank_id]['name'].lower()] = [drugbank_id]
+                    dict_drug_name_to_db_id[dict_chemical_pharmebinet[drugbank_id]['name'].lower()] = [drugbank_id]
                 print(codes)
                 find_a_mapping = False
                 for code in codes:
@@ -591,11 +591,11 @@ dict_cui_to_codes = {}
 # list of rxnorms without a cui
 list_rxnorm_without_cui = []
 
-# dictionary umls cuis that are mapped to hetionet, as key umls cui and value is a list of drugbank ids
-dict_map_cui_to_hetionet_drugbank_ids = {}
+# dictionary umls cuis that are mapped to pharmebinet, as key umls cui and value is a list of drugbank ids
+dict_map_cui_to_pharmebinet_drugbank_ids = {}
 
 # list of cuis that are not mapped
-list_not_map_to_hetionet_with_drugbank_ids = []
+list_not_map_to_pharmebinet_with_drugbank_ids = []
 
 # dictionary of how_mapped with file as value
 dict_how_mapped_file = {}
@@ -629,12 +629,12 @@ def generate_tsv_for_mapped_and_not_mapped_ndf_rts():
             multiple_drugbankids.write(code + '\t' + string_drugbank_ids + '\t' + how_mapped + '\t' + name + '\n')
 
         if len(drugbank_ids) >= 1:
-            dict_map_cui_to_hetionet_drugbank_ids[code] = mapped_drugbanks
+            dict_map_cui_to_pharmebinet_drugbank_ids[code] = mapped_drugbanks
         else:
-            list_not_map_to_hetionet_with_drugbank_ids.append(code)
+            list_not_map_to_pharmebinet_with_drugbank_ids.append(code)
 
-    print('number of map to hetionet:' + str(len(dict_map_cui_to_hetionet_drugbank_ids)))
-    print('number with drugbank but not mapped to hetionet:' + str(len(list_not_map_to_hetionet_with_drugbank_ids)))
+    print('number of map to pharmebinet:' + str(len(dict_map_cui_to_pharmebinet_drugbank_ids)))
+    print('number with drugbank but not mapped to pharmebinet:' + str(len(list_not_map_to_pharmebinet_with_drugbank_ids)))
 
     # generate a file with all not mapped ndf-rt drugs
     g = open('drug/drugs_that_did_not_get_a_drugbank_id.tsv', 'w')
@@ -653,12 +653,12 @@ def generate_tsv_for_mapped_and_not_mapped_ndf_rts():
 dict_how_mapped_delete_counter = {}
 
 '''
-integrate the ndf-rt drugs into hetionet for the drugs which are map to drugbank and generate a cypher file 
-a connection between compounds in hetionet and ndf-rt drug.
+integrate the ndf-rt drugs into pharmebinet for the drugs which are map to drugbank and generate a cypher file 
+a connection between compounds in pharmebinet and ndf-rt drug.
 '''
 
 
-def integration_of_ndf_rt_drugs_into_hetionet():
+def integration_of_ndf_rt_drugs_into_pharmebinet():
     # count all possible mapped ndf-rt codes
     counter = 0
     # count all ndf-rt codes which has illegal drugbank ids
@@ -687,7 +687,7 @@ def integration_of_ndf_rt_drugs_into_hetionet():
         how_mapped = dict_drug_NDF_RT[code]['how_mapped']
 
         for drugbank_id in drugbank_ids:
-            resources = set(dict_chemical_hetionet[drugbank_id]['resource'])
+            resources = set(dict_chemical_pharmebinet[drugbank_id]['resource'])
             resources.add('NDF-RT')
             string_resource = '|'.join(list(resources))
             list_of_values = [code, string_drugbank_ids, how_mapped, drugbank_id, string_resource]
@@ -711,9 +711,9 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
-    print('Load in chemical from hetionet')
+    print('Load in chemical from pharmebinet')
 
-    load_hetionet_chemical_in()
+    load_pharmebinet_chemical_in()
 
     print(
         '###########################################################################################################################')
@@ -791,17 +791,17 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
-    print('integrate ndf-rt drugs into hetionet')
+    print('integrate ndf-rt drugs into pharmebinet')
 
-    integration_of_ndf_rt_drugs_into_hetionet()
+    integration_of_ndf_rt_drugs_into_pharmebinet()
     #
     # print(
     #     '###########################################################################################################################')
     #
     # print (datetime.datetime.now())
-    # print('integrate ndf-rt connection into hetionet')
+    # print('integrate ndf-rt connection into pharmebinet')
     #
-    # integrate_connection_into_hetionet()
+    # integrate_connection_into_pharmebinet()
 
     print(
         '###########################################################################################################################')

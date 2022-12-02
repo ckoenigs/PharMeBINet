@@ -29,7 +29,7 @@ information :
 dict_compound_SE_connection_informations = {}
 
 '''
-find all connection drug-se from sider for every compound-Se in hetionet and save all the information in a dictionary
+find all connection drug-se from sider for every compound-Se in pharmebinet and save all the information in a dictionary
 '''
 
 
@@ -68,11 +68,11 @@ def find_all_compound_SE_pairs_of_sider():
 list_tuple_compound_SE = []
 
 '''
-integration of relationship from sider into hetionet for the sider drugs which are mapped to drugbank id
+integration of relationship from sider into pharmebinet for the sider drugs which are mapped to drugbank id
 '''
 
 
-def integrate_relationship_from_sider_into_hetionet():
+def integrate_relationship_from_sider_into_pharmebinet():
     # counter of the new compound-se connection
     number_of_new_connection = 0
     # counter of updated connection
@@ -207,7 +207,7 @@ def main():
     print(datetime.datetime.now())
     print('Integrate sider connection into database')
 
-    integrate_relationship_from_sider_into_hetionet()
+    integrate_relationship_from_sider_into_pharmebinet()
 
     print(
         '###########################################################################################################################')

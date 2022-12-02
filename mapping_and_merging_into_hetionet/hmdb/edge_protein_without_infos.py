@@ -1,4 +1,3 @@
-from py2neo import Graph
 import datetime
 import csv
 import sys
@@ -91,7 +90,7 @@ def load_pair_edges(csv_mapped, csv_new, label, own_label_hmdb, other_hmdb_label
             counter_new += 1
             csv_new.writerow([node_id_1, node_id_2, hmdb_id])
 
-    print('number of ' + label + '  and ' + other_label + ' relationships in hetionet:' + str(
+    print('number of ' + label + '  and ' + other_label + ' relationships in pharmebinet:' + str(
         len(set_of_used_pairs)))
     print('number of mapped edges:', counter_mapped)
     print('number of new edges:', counter_new)
@@ -150,7 +149,7 @@ def check_relationships_and_generate_file(label, own_hmdb_label, other_node_hmdb
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
-    print('Load all relationships from metabolite/protein-node and hetionet_nodes into a dictionary')
+    print('Load all relationships from metabolite/protein-node and pharmebinet_nodes into a dictionary')
     # file for mapped or not mapped identifier
     file_name = directory + '/edge_' + label + '_to_' + other_node_hmdb_label + '.tsv'
 
@@ -208,7 +207,7 @@ def main():
     create_connection_with_neo4j()
 
     dict_label_to_infos = {
-        'Metabolite': [['Metabolite_HMDB', 'Pathway_HMDB', 'Pathway', '<-', '-', 'ASSOCIATES_PWaP']],
+        'Metabolite': [['Metabolite_HMDB', 'Pathway_HMDB', 'Pathway', '<-', '-', 'ASSOCIATES_PWaM']],
         # 'Protein': [
         #     ['Protein_HMDB', 'Pathway_HMDB', 'Pathway', '<-', '-', 'ASSOCIATES_PWaP'],
         #     ['Protein_HMDB', 'Biologicalprocess_HMDB', 'BiologicalProcess', '-', '->', 'PARTICIPATES_PpBP'],

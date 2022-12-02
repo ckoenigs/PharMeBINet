@@ -95,7 +95,7 @@ def load_pair_edges(csv_mapped, csv_new, label, dict_pair_to_resource):
             counter_new += 1
             csv_new.writerow([go_id, uniprot_id])
 
-    print('number of ' + label + '  and Protein relationships in hetionet:' + str(
+    print('number of ' + label + '  and Protein relationships in pharmebinet:' + str(
         len(set_of_used_pairs)))
     print('number of mapped edges:', counter_mapped)
     print('number of new edges:', counter_new)
@@ -138,7 +138,7 @@ def check_relationships_and_generate_file(label):
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
-    print('Load all relationships from metabolite/protein-node and hetionet_nodes into a dictionary')
+    print('Load all relationships from metabolite/protein-node and pharmebinet_nodes into a dictionary')
     global dict_go_protein_to_rela_type
     # dictionary_go_protein_pair_to_rela_type
     dict_go_protein_to_rela_type = {}

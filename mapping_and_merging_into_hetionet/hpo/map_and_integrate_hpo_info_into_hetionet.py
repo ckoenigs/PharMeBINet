@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Dec  5 12:14:27 2017
-
-@author: cassandra
-"""
-
 import sys
 import datetime
 import threading, csv
@@ -61,11 +54,11 @@ dict_orphanet_to_mondo = {}
 dict_mondo_to_node = {}
 
 '''
-load all disease from hetionet and remember all name, synonym, umls cui and omim id
+load all disease from pharmebinet and remember all name, synonym, umls cui and omim id
 '''
 
 
-def get_all_disease_information_from_hetionet():
+def get_all_disease_information_from_pharmebinet():
     query = ''' Match (d:Disease) Return d.identifier, d.name, d.synonyms, d.xrefs, d.umls_cuis, d'''
     results = g.run(query)
     for mondo, name, synonyms, xrefs, umls_cuis, node, in results:
@@ -496,7 +489,7 @@ dict_mondo_to_hpo_ids = defaultdict(list)
 # csv file for mapping disease
 file_disease = open('mapping_files/disease_mapped.tsv', 'w', encoding='utf-8')
 csv_disease = csv.writer(file_disease, delimiter='\t')
-csv_disease.writerow(['hpo_id', 'hetionet_id', 'resource'])
+csv_disease.writerow(['hpo_id', 'pharmebinet_id', 'resource'])
 
 # cypher file for mapping and integration
 cypher_file = open('cypher/cypher.cypher', 'w')
@@ -510,9 +503,9 @@ Integrate mapping connection between disease and HPO_disease and make a dictiona
 '''
 
 
-def integrate_mapping_of_disease_into_hetionet():
+def integrate_mapping_of_disease_into_pharmebinet():
     # query for mapping disease and written into file
-    query = query_start + ''' (n:HPO_disease{id: line.hpo_id}), (d:Disease{identifier:line.hetionet_id}) Set d.hpo="yes", d.resource=split(line.resource,"|") Create (d)-[:equal_to_hpo_disease]->(n);\n '''
+    query = query_start + ''' (n:HPO_disease{id: line.hpo_id}), (d:Disease{identifier:line.pharmebinet_id}) Set d.hpo="yes", d.resource=split(line.resource,"|") Create (d)-[:equal_to_hpo_disease]->(n);\n '''
     query = query % (path_of_directory, 'mapping_files/disease_mapped.tsv')
     cypher_file.write(query)
     # write mapping in tsv file
@@ -552,7 +545,7 @@ def main():
     print(datetime.datetime.now())
     print('load in diseases information in dictionaries')
 
-    get_all_disease_information_from_hetionet()
+    get_all_disease_information_from_pharmebinet()
 
     print('##########################################################################')
 
@@ -611,9 +604,9 @@ def main():
     print('##########################################################################')
 
     print(datetime.datetime.now())
-    print('integrate mapping into hetionet for disease')
+    print('integrate mapping into pharmebinet for disease')
 
-    integrate_mapping_of_disease_into_hetionet()
+    integrate_mapping_of_disease_into_pharmebinet()
 
     print('##########################################################################')
 
