@@ -78,7 +78,7 @@ def generate_file_and_cypher():
         query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/bioGrid/%s.tsv" As line FIELDTERMINATOR '\\t' 
                     Match (p1:Chemical{identifier:line.id_1}), (p2:Protein{identifier:line.id_2}) Create (p1)-[:%s{biogrid:'yes', source:'BioGRID', resource:['BioGRID'], url:"https://thebiogrid.org/"+line.gene_id ,license:"The MIT License", '''
         query = query % (path_of_directory, rename_file_name, rela_type)
-        query += query_middle[:-2] + '}]->(p1);\n'
+        query += query_middle[:-2] + '}]->(p2);\n'
         cypher_file.write(query)
 
         rename_file_name_update = file_name_update + rela_type
@@ -204,7 +204,8 @@ def prepareMappedEdges(p1, p2, rela_type, list_of_dict):
         final_dictionary = prepare_multiple_edges_between_same_pairs(list_of_dict, p1, p2)
     final_dictionary['resource'] = pharmebinetutils.resource_add_and_prepare(
         dict_pair_chemical_protein_to_resource_and_pubmed[(p1, p2, rela_type)]['resource'], 'BioGRID')
-    gene_id = final_dictionary['gene_id'] if type(final_dictionary['gene_id']) == str else final_dictionary['gene_id'].pop()
+    gene_id = final_dictionary['gene_id'] if type(final_dictionary['gene_id']) == str else final_dictionary[
+        'gene_id'].pop()
     if type(final_dictionary['pubmed_id']) != str:
         for pubmed_id in final_dictionary['pubmed_id']:
             pubmed_ids.add(pubmed_id)
@@ -232,7 +233,7 @@ def write_info_into_files():
     for (p1, p2, protein_action_type, chemical_action_type), list_of_dict in dict_pair_to_infos.items():
         rela_type = dict_chemical_type_to_rela_type[chemical_action_type]
         if (p1, p2, rela_type) in dict_pair_chemical_protein_to_resource_and_pubmed:
-            identifier = prepareMappedEdges(p1, p2, rela_type, list_of_dict)
+            prepareMappedEdges(p1, p2, rela_type, list_of_dict)
         else:
             if len(list_of_dict) == 1:
                 final_dictionary = list_of_dict[0]

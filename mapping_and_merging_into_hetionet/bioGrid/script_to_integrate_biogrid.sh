@@ -23,6 +23,12 @@ python3 map_chemical_biogrid.py $path_to_project > chemical/output.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
+echo 'Map bioGrid disease'
+
+python3 mapping_disease_biogrid.py $path_to_project > disease/output.txt
+
+now=$(date +"%F %T")
+echo "Current time: $now"
 echo 'Map bioGrid chemical'
 
 python3 map_go_bioGrid.py $path_to_project > GO/output.txt
@@ -34,7 +40,30 @@ echo integrate mappings into neo4j
 
 $path_neo4j/cypher-shell -u neo4j -p test -f output/cypher.cypher 
 
-sleep 120
+sleep 60
 $path_neo4j/neo4j restart
-sleep 180
+sleep 120
 
+
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo 'Merge ppi'
+
+python3 merge_ppi.py $path_to_project > interaction/output.txt
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo 'Merge biogrid protein-chemical'
+
+python3 merge_protein_chemical_interaction.py $path_to_project > interaction/output_c_p.txt
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo integrate rela into neo4j
+
+$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher_edge.cypher
+
+sleep 60
+$path_neo4j/neo4j restart
+sleep 120
