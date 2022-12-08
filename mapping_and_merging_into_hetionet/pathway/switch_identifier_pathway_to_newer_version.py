@@ -105,6 +105,7 @@ def load_in_all_pathways():
     query = '''MATCH (n:%s) RETURN n ''' % (label_pathway)
     results = g.run(query)
 
+    untitle_name_id=0
     for node, in results:
         identifier = node['identifier']
         dict_id_to_node[identifier] = dict(node)
@@ -113,6 +114,9 @@ def load_in_all_pathways():
         names = node['synonyms']
         for name in names:
             name = name.lower()
+            if name=='untitled':
+                name=untitle_name_id
+                untitle_name_id+=1
             if not name in dict_name_to_pc_or_wp_identifier:
                 dict_name_to_pc_or_wp_identifier[name] = [dict(node)]
             else:
@@ -203,6 +207,7 @@ def fill_the_list_of_properties(head, value, identifiers, resource, name, list_i
             resource = [value]
     elif head == 'synonyms':
         name = value.pop()
+        name=name if name!='untitled' else ''
     elif head == 'url':
         if type(value) != str:
             value = ' , '.join(value)
