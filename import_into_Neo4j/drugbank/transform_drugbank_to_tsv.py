@@ -469,8 +469,7 @@ for i, drug in enumerate(root):
 
         for general_atc in atc_code.findall("{ns}level".format(ns=ns)):
             atc_id = general_atc.get('code')
-            if atc_id not in dict_atc_nodes:
-                dict_atc_nodes[atc_id] = general_atc.text
+            dict_atc_nodes[atc_id] = general_atc.text
             set_atc_edges.add((atc_id, atc_before))
             atc_before = atc_id
 
