@@ -92,7 +92,7 @@ def compound_RNAInter():
 
     print("######### Start: Cypher #########")
     query_start = f'Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:{path_of_directory}mapping_and_merging_into_hetionet/RNAinter/{file_name}" As line fieldterminator "\t" '
-    query = query_start + f'Match (p1:compound_RNAInter{{Raw_ID:line.Raw_ID}}),(p2:Chemical{{identifier:line.identifier}}) SET p2.resource = split(line.resource,"|") Create (p1)-[:associateCompoundRNAInter{{how_mapped:line.how_mapped }}]->(p2);\n'
+    query = query_start + f'Match (p1:compound_RNAInter{{Raw_ID:line.Raw_ID}}),(p2:Chemical{{identifier:line.identifier}}) SET p2.resource = split(line.resource,"|"), p2.rnainter="yes" Create (p1)-[:associateCompoundRNAInter{{how_mapped:line.how_mapped }}]->(p2);\n'
     cypher_file.write(query)
 
     print("######### End: Cypher #########")
