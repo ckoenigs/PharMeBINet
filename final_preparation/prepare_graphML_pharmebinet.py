@@ -2,9 +2,10 @@
 import sys, datetime
 import lxml.etree as ET
 
-TODELETE = {'sider', 'ctd', 'ndfrt', 'aeolus', 'drugbank', 'ncbi', 'efo', 'hpo', 'uniprot', 'multi', 'go', 'dc',
-            'diseaseontology', 'mondo', 'clinvar', 'omim', 'reactome', 'adrecstarget', 'iid', 'medrt', 'pharmgkb',
-            'biogrid', 'dbsnp', 'hmdb', 'smpdb'}
+TODELETE = {'adrecs', 'adrecstarget', 'aeolus', 'atc', 'biogrid', 'clinvar', 'ctd', 'dbsnp', 'dc', 'diseaseontology',
+            'drugbank', 'ddinter' 'efo', 'gencc', 'go', 'hmdb', 'hpo', 'iid', 'ncbi', 'ndfrt', 'medrt', 'mondo',
+            'multi', 'omim', 'pharmgkb', 'reactome', 'rnacentral', 'rnadisease', 'rnainter', 'sider', 'smpdb',
+            'uniprot'}
 
 
 # def
@@ -27,9 +28,11 @@ def check_source_info_in_label(label):
 
 ns = '{http://graphml.graphdrawing.org/xmlns}'
 
+
 def add_atrributes(tree, attributs):
-    for key,value in attributs.items():
-        tree.attrib[key.replace(ns,'')]=value
+    for key, value in attributs.items():
+        tree.attrib[key.replace(ns, '')] = value
+
 
 # other_root = ET.Element('graphml', nsmap={None: 'http://graphml.graphdrawing.org/xmlns'})
 # # add attributes
@@ -38,24 +41,27 @@ def add_atrributes(tree, attributs):
 
 
 print(datetime.datetime.now())
-print('###########################################################################################################################################')
+print(
+    '###########################################################################################################################################')
 
-set_of_added_ids=set()
-counter_all_nodes=0
-counter_selected_node=0
+set_of_added_ids = set()
+counter_all_nodes = 0
+counter_selected_node = 0
 
-counter_key=0
+counter_key = 0
+
+counter_all_edges = 0
+counter_selected_edge = 0
+
+file_name_from = '/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/PharMeBiNet/wholedata.graphml'
 
 
-counter_all_edges=0
-counter_selected_edge=0
-
-file_name_from='/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/PharMeBiNet/wholedata.graphml'
 # file_name_from='/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/PharMeBiNet/query.graphml'
 
 
-def clear_attributes(text: str)->str:
-    return text.replace('xmlns="http://graphml.graphdrawing.org/xmlns"', '').replace('xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"', '').replace('  ', ' ').replace('  ', ' ')
+def clear_attributes(text: str) -> str:
+    return text.replace('xmlns="http://graphml.graphdrawing.org/xmlns"', '').replace(
+        'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"', '').replace('  ', ' ').replace('  ', ' ')
 
 
 filename = "/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/PharMeBiNet/PharMeBiNet_finished.graphml"
@@ -118,11 +124,10 @@ print('from all edges', counter_all_edges, 'are real edges', counter_selected_ed
 
 print('finished xml parser')
 print(datetime.datetime.now())
-print('###########################################################################################################################################')
-
+print(
+    '###########################################################################################################################################')
 
 sys.exit()
-
 
 # TODELETE = {'sider', 'ctd', 'ndfrt', 'aeolus', 'drugbank', 'ncbi', 'efo', 'hpo', 'uniprot', 'multi', 'go', 'dc',
 #             'diseaseontology', 'mondo', 'clinvar', 'omim', 'reactome', 'adrecstarget', 'iid', 'medrt', 'pharmgkb',
@@ -230,4 +235,3 @@ sys.exit()
 #
 # print('from all nodes', counter_nodes_all, 'are real nodes', counter_nodes_add)
 # print('from all edges', counter_edges_all, 'are real edges', counter_edges_added)
-
