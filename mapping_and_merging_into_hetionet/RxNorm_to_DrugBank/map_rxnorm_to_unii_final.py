@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Aug 23 10:00:16 2017
-
-@author: ckoenigs
-"""
 
 import csv, sys
 

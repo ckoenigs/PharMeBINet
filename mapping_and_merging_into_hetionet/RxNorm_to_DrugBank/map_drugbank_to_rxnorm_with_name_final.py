@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Aug 28 15:10:41 2017
-
-@author: ckoenigs
-"""
-
 import datetime, csv, sys
 
 sys.path.append("../..")

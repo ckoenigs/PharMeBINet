@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Sep 11 08:30:30 2017
-
-@author: Cassandra
-"""
-
 import datetime,csv
 
 # dictionary inchikey to rxnorm_ids
