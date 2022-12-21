@@ -71,6 +71,7 @@ def write_info_into_tsv_file():
             Match (p1:Protein{identifier:line.protein_id1}), (p2:Protein{identifier:line.protein_id2}) Create (p1)-[:INTERACTS_PiI{source:"UniProt", license:"CC BY 4.0", url:"https://www.uniprot.org/uniprot/"+line.protein_id1, resource:["UniProt"], uniprot:'yes'}]->(b:Interaction{source:"UniProt", identifier:line.interaction_id,  license:"CC BY 4.0", resource:["UniProt"], uniprot:'yes', iso_of_protein_from:line.iso_of_protein_from, url:"https://www.uniprot.org/uniprot/"+line.protein_id1 , iso_of_protein_to:line.iso_of_protein_to, interaction_ids:split(line.interaction_ids, "|"), number_of_experiments:split(line.number_of_experiments, "|"), node_edge:true})-[:INTERACTS_IiP{source:"UniProt", license:"CC BY 4.0", resource:["UniProt"], url:"https://www.uniprot.org/uniprot/"+line.protein_id1, uniprot:'yes'}]->(p2);\n '''
     query = query % (path_of_directory, file_name)
     file_cypher.write(query)
+    file_cypher.write('Create Constraint On (node:Interaction) Assert node.identifier Is Unique;\n')
 
     counter=0
 
