@@ -60,15 +60,15 @@ load all gencc genes and check if they are in pharmebinet or not
 
 def load_gencc_genes_in():
     # take only human genes
-    query = '''MATCH (n:gencc_gene_curie) RETURN n'''
+    query = '''MATCH (n:GenCC_Gene) RETURN n'''
     results = g.run(query)
 
     counter = 0
     counter_mapped=0
     for gene_node, in results:
         counter+=1
-        gene_id = gene_node['gene_curie']
-        gene_symbols = gene_node['gene_symbol'] if 'gene_symbol' in gene_node else []
+        gene_id = gene_node['id']
+        gene_symbol = gene_node['symbol']
         if gene_id in dict_hgnc_id_to_gene_ids:
             counter_mapped+=1
             for identifier in dict_hgnc_id_to_gene_ids[gene_id]:
@@ -76,12 +76,11 @@ def load_gencc_genes_in():
                 writer.writerow([gene_id,identifier,resource,'hgnc'])
 
         else:
-            for gene_symbol in gene_symbols:
-                if gene_symbol in dict_gene_symbol_to_set_of_ids:
-                    counter_mapped+=1
-                    for identifier in dict_gene_symbol_to_set_of_ids[gene_symbol]:
-                        resource = pharmebinetutils.resource_add_and_prepare(dict_gene_to_resource[identifier], 'GENCC')
-                        writer.writerow([gene_id, identifier, resource, 'symbol'])
+            if gene_symbol in dict_gene_symbol_to_set_of_ids:
+                counter_mapped+=1
+                for identifier in dict_gene_symbol_to_set_of_ids[gene_symbol]:
+                    resource = pharmebinetutils.resource_add_and_prepare(dict_gene_to_resource[identifier], 'GENCC')
+                    writer.writerow([gene_id, identifier, resource, 'symbol'])
 
     print('number of gencc genes which are also in pharmebinet: ' + str(counter_mapped))
     print('number of gencc genes : ' + str(counter))
@@ -95,7 +94,7 @@ Generate cypher and tsv for generating the new nodes and the relationships
 def generate_files():
     # generate cypher file
     cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/gencc/gene/mapping.tsv" As line  FIELDTERMINATOR '\\t' Match (c:Gene{ identifier:line.GeneIDPharmebinet}), (n:gencc_gene_curie{gene_curie:line.GeneIDGencc}) Create (c)-[:equal_to_GENCC_gene{how_mapped:line.how_mapped}]->(n) Set c.gencc="yes", c.resource=split(line.resource,"|");\n'''
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/gencc/gene/mapping.tsv" As line  FIELDTERMINATOR '\\t' Match (c:Gene{ identifier:line.GeneIDPharmebinet}), (n:GenCC_Gene{id:line.GeneIDGencc}) Create (c)-[:equal_to_GENCC_gene{how_mapped:line.how_mapped}]->(n) Set c.gencc="yes", c.resource=split(line.resource,"|");\n'''
     cypher_file.write(query)
 
     global writer
