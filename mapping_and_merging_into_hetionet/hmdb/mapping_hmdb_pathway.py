@@ -48,8 +48,9 @@ def load_pw_from_database():
     for node, in results:
         identifier = node['identifier']
         dict_pathway_id_to_resource[identifier]=set(node['resource'])
-        name = node['name'].lower()
-        add_entry_to_dictionary(dict_name_to_pathway_ids, name, identifier)
+        name = node['name']
+        if name is not None:
+            add_entry_to_dictionary(dict_name_to_pathway_ids, name.lower(), identifier)
 
         synonyms = node['synonyms'] if 'synonyms' in node else []
         for synonym in synonyms:
