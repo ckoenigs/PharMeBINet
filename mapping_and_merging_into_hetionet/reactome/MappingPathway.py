@@ -4,6 +4,7 @@ import sys
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 sys.path.append("..")
 from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
@@ -19,8 +20,6 @@ def create_connection_with_neo4j():
     graph_database = create_connection_to_databases.database_connection_neo4j()
 
 
-# dictionary with pharmebinet pathways with identifier as key and value the name
-dict_pathway_pharmebinet = {}
 
 # dictionary with pharmebinet pathways with identifier as key and value the xrefs
 dict_pathway_pharmebinet_xrefs = {}
@@ -29,12 +28,12 @@ dict_pathway_pharmebinet_xrefs = {}
 dict_pathway_pharmebinet_names = {}
 
 # dictionary from own id to new identifier
-dict_own_id_to_identifier = {}
+dict_reactome_it_to_identifier = {}
 
 # dictionary from pathway_id to resource
 dict_pathwayId_to_resource = {}
 
-# Höchste Zahl des Identifiers um neue Identifier zu vergeben (PC_11_...)
+# highest id for new pathway ids (PC_13_...)
 highest_identifier = 0
 
 '''
@@ -44,41 +43,33 @@ load in all pathways from pharmebinet in a dictionary
 
 def load_pharmebinet_pathways_in():
     global highest_identifier
-    # query ist ein String
     query = '''MATCH (n:Pathway) RETURN n.identifier, n.name, n.source, n.xrefs, n.resource'''
-    # query = '''MATCH (n:Pathway) RETURN n.identifier,n.names, n.source, n.idOwns'''
-    # graph_database.run(query) führt den Befehl aus query aus, Ergebnisse sind in results als Liste gespeichert
     results = graph_database.run(query)
-    # results werden einzeln durchlaufen
-    for identifier, name, source, idOwns, resource, in results:
-        # identifier von pharmebinet (PC_11_) herausbekommen, der die größte Zahl hat, damit keiner überschrieben wird
+    # run through results
+    for identifier, name, source, xrefs, resource, in results:
+        # try to get the highest existing pathway id
         if int(identifier.split("_", -1)[1]) > highest_identifier:
-            # teilt den String PC_11_Zahl in PC_11_ und Zahl (durch -1 trennt er bei dem zweiten _
-            # [1] gibt an, dass der zweite Teil als highest_identifier gespeichert wird
             highest_identifier = int(identifier.split("_", -1)[1])
-        # im dictionary werden passend zu den Identifiern die Namen und die idOwns gespeichert
-        dict_pathway_pharmebinet[identifier] = name
-        dict_pathway_pharmebinet_xrefs[identifier] = idOwns
+        dict_pathway_pharmebinet_xrefs[identifier] = set(xrefs)
         dict_pathwayId_to_resource[identifier] = resource
-        if idOwns:
-            # geht die Liste idOwns in neo4j durch und baut das dictionary auf an identifiern (von externen Identifier ist idOwn
-            for idOwn in idOwns:
-                idOwn = idOwn.split(':', 1)[1]
-                if not idOwn in dict_own_id_to_identifier:
-                    dict_own_id_to_identifier[idOwn] = identifier
-                else:
-                    print(idOwn)
-        dict_pathway_pharmebinet_names[name.lower()] = identifier
+        if xrefs:
+            # go through all xrefs and prepare dictionary with reactome ids
+            for xref in xrefs:
+                xref = xref.split(':', 1)
+                if xref[0]=='reactome':
+                    if not xref[1] in dict_reactome_it_to_identifier:
+                        dict_reactome_it_to_identifier[xref[1]] = identifier
+                    else:
+                        print(xref)
+        if name is not None:
+            dict_pathway_pharmebinet_names[name.lower()] = identifier
 
-    print('number of pathway nodes in pharmebinet:' + str(len(dict_pathway_pharmebinet)))
+    print('number of pathway nodes in pharmebinet:' + str(len(dict_pathwayId_to_resource)))
 
 
 # file for mapped or not mapped identifier
-# erstellt neue TSV, überschreibt auch bestehende und leert sie wieder
 file_not_mapped_pathways = open('pathway/not_mapped_pathways.tsv', 'w', encoding="utf-8")
-# Dateiformat wird gesetzt mit Trenner: Tabulator
 csv_not_mapped = csv.writer(file_not_mapped_pathways, delimiter='\t', lineterminator='\n')
-# Header setzen
 csv_not_mapped.writerow(['newId', 'id', 'name'])
 
 file_mapped_pathways = open('pathway/mapped_pathways.tsv', 'w', encoding="utf-8")
@@ -95,49 +86,59 @@ def load_reactome_pathways_in():
     query = '''MATCH (n:Pathway_reactome)-[r]-(s:Species_reactome) WHERE s.taxId = "9606" RETURN Distinct n'''
     results = graph_database.run(query)
 
-    # zähler wie oft id mapt und und oft der name mapt
+    # count how often map with name or with name
     counter_map_with_id = 0
     counter_map_with_name = 0
     for pathways_node, in results:
         pathways_id = pathways_node['stId']
         pathways_name = pathways_node['displayName'].lower()
-        # check if the reactome pathway id is part in the pharmebinet idOwn
-        # mapping nach dem identifier
-        if pathways_id in dict_own_id_to_identifier:
+        synonyms= pathways_node['name'] if 'name' in pathways_node else []
+        #boolean to chek if a mapping happend or not
+        found_mapping=False
+        # check if the reactome pathway id is part in the pharmebinet xref
+        # mapping with identifier
+        if pathways_id in dict_reactome_it_to_identifier:
             counter_map_with_id += 1
-            # print('id')
-            # print(dict_own_id_to_identifier[pathways_id])
-            pathway_names = dict_pathway_pharmebinet[dict_own_id_to_identifier[pathways_id]]
-            # PC_11_Zahl Nummer wird im Dictionary nachgeschaut
-            pharmebinet_identifier = dict_own_id_to_identifier[pathways_id]
-            # Liste von idOwns wird nach dem PC_11_Zahl durchsucht und als String aneinandergehängt (join)
-            # als Trennungssymbol wird | genutzt
-            own_ids = dict_pathway_pharmebinet_xrefs[pharmebinet_identifier]
-            own_ids.append('reactome:'+pathways_id)
-            string_own_ids = '|'.join(go_through_xrefs_and_change_if_needed_source_name(own_ids,'pathway'))
-            resource = set(dict_pathwayId_to_resource[pharmebinet_identifier])
-            resource.add('Reactome')
-            resource = '|'.join(sorted(resource))
-            csv_mapped.writerow([pathways_id, pharmebinet_identifier, string_own_ids, resource, pathways_name])
+            found_mapping=True
+            pharmebinet_identifier = dict_reactome_it_to_identifier[pathways_id]
+            xrefs = dict_pathway_pharmebinet_xrefs[pharmebinet_identifier]
+            xrefs.add('reactome:'+pathways_id)
+            string_xrefs = '|'.join(go_through_xrefs_and_change_if_needed_source_name(xrefs,'pathway'))
 
-        # mapping nach dem Namen
+            csv_mapped.writerow([pathways_id, pharmebinet_identifier, string_xrefs, pharmebinetutils.resource_add_and_prepare(dict_pathwayId_to_resource[pharmebinet_identifier],'reactome'), pathways_name])
+
+        # mapping with Namen
         elif pathways_name in dict_pathway_pharmebinet_names:
             counter_map_with_name += 1
-            print(pathways_id)
-            print('mapped with name')
-            print(dict_pathway_pharmebinet_names[pathways_name])
-            print(pathways_name)
-
+            found_mapping=True
             pharmebinet_identifier = dict_pathway_pharmebinet_names[pathways_name]
-            own_ids = dict_pathway_pharmebinet_xrefs[pharmebinet_identifier]
-            own_ids.append('reactome:'+pathways_id)
-            string_own_ids = '|'.join(go_through_xrefs_and_change_if_needed_source_name(own_ids,'pathway'))
-            resource = set(dict_pathwayId_to_resource[pharmebinet_identifier])
-            resource.add('Reactome')
-            resource = '|'.join(sorted(resource))
-            pathway_names = dict_pathway_pharmebinet[dict_pathway_pharmebinet_names[pathways_name]]
+            xrefs = dict_pathway_pharmebinet_xrefs[pharmebinet_identifier]
+            xrefs.add('reactome:'+pathways_id)
+            string_xrefs = '|'.join(go_through_xrefs_and_change_if_needed_source_name(xrefs,'pathway'))
             csv_mapped.writerow(
-                [pathways_id, pharmebinet_identifier, string_own_ids, resource, pathways_name, pathway_names])
+                [pathways_id, pharmebinet_identifier, string_xrefs, pharmebinetutils.resource_add_and_prepare(dict_pathwayId_to_resource[pharmebinet_identifier],'reactome'), pathways_name])
+
+        if found_mapping:
+            continue
+
+        multiple_mappings_list=set()
+        for synonym in synonyms:
+            synonym=synonym.lower()
+
+            if synonym in dict_pathway_pharmebinet_names:
+                found_mapping=True
+                pharmebinet_identifier = dict_pathway_pharmebinet_names[synonym]
+                xrefs = dict_pathway_pharmebinet_xrefs[pharmebinet_identifier]
+                xrefs.add('reactome:' + pathways_id)
+                string_xrefs = '|'.join(go_through_xrefs_and_change_if_needed_source_name(xrefs, 'pathway'))
+                csv_mapped.writerow(
+                    [pathways_id, pharmebinet_identifier, string_xrefs,
+                     pharmebinetutils.resource_add_and_prepare(dict_pathwayId_to_resource[pharmebinet_identifier],
+                                                               'reactome'), pathways_name])
+
+        if found_mapping :
+            counter_map_with_name+=1
+
 
         # übrige Knoten, die nicht mappen, werden neu erstellt und bekommen neuen Identifier PC_11_Zahl
         # dafür braucht man die höchte Zahl +1, damit keiner überschrieben wird
@@ -174,7 +175,7 @@ def main():
         path_of_directory = sys.argv[1]
         license=sys.argv[2]
     else:
-        sys.exit('need a path reactome protein')
+        sys.exit('need a path  and license reactome protein')
 
     print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
