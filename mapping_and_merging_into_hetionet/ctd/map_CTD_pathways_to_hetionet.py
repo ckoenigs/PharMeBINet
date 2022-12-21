@@ -53,9 +53,10 @@ def load_pharmebinet_pathways_in():
             for id in xrefs:
                 if not id in dict_own_id_to_identifier:
                     dict_own_id_to_identifier[id] = identifier
-        if not name in dict_pathway_pharmebinet_names:
-            dict_pathway_pharmebinet_names[name.lower()] = set()
-        dict_pathway_pharmebinet_names[name.lower()].add(identifier)
+        if name is not None:
+            if not name in dict_pathway_pharmebinet_names:
+                dict_pathway_pharmebinet_names[name.lower()] = set()
+            dict_pathway_pharmebinet_names[name.lower()].add(identifier)
         # else:
         #     sys.exit('double name not considered')
         for synonym in synonyms:
