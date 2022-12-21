@@ -24,7 +24,7 @@ python3 integrate_pc.py $path_to_project "${license}" > pharmacological_class/ou
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p test -f protein/cypher_protein.cypher 
+$path_neo4j/cypher-shell -u neo4j -p test -f protein/cypher_protein.cypher
 
 sleep 120
 $path_neo4j/neo4j restart
@@ -42,12 +42,18 @@ echo 'integrate Drugbank reaction '
 
 python3 prepare_drugbank_reaction.py "${license}" $path_to_project > reaction/output_integration_file_generation_rela.txt
 
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo 'integrate Drugbank compound-pc '
+
+python3 integrate_compound_pc_rela.py $path_to_project "${license}" > compound_pc/output_integration_file_generation_rela.txt
+
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 
 $path_neo4j/cypher-shell -u neo4j -p test -f rela_protein/cypher.cypher 
 
-sleep 180
-$path_neo4j/neo4j restart
 sleep 120
+$path_neo4j/neo4j restart
+sleep 60
