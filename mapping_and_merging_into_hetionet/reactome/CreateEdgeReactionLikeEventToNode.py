@@ -92,11 +92,11 @@ def check_relationships_and_generate_file(new_relationship, node_reactome_label,
 
 def main():
     global path_of_directory, license
-    if len(sys.argv) > 1:
+    if len(sys.argv) > 2:
         path_of_directory = sys.argv[1]
         license = sys.argv[2]
     else:
-        sys.exit('need a path reactome protein')
+        sys.exit('need a path and license reactome edge')
 
     global cypher_file
     print(datetime.datetime.now())
