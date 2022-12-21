@@ -13,7 +13,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo pathway
 
-python3 mapping_smpdb_pathway.py $path_to_project > pathway/output_integration_metabolite.txt
+python3 mapping_smpdb_pathway.py $path_to_project > pathway/output_integration_pathway.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -25,7 +25,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo metabolite
 
-python3 mapping_smpdb_metabolite.py $path_to_project > pathway/output_integration_metabolite.txt
+python3 mapping_smpdb_metabolite.py $path_to_project > metabolite/output_integration_metabolite.txt
 
 
 
