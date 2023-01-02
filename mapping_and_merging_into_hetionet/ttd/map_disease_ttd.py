@@ -74,8 +74,9 @@ def load_disease_or_symptom_information(label, dictionary_label_to_mapper_to_key
 
         if synonyms is not None:
             for synonym in synonyms:
+                synonym = pharmebinetutils.prepare_obo_synonyms(synonym).lower()
                 pharmebinetutils.add_entry_to_dict_to_set(dictionary_label_to_mapper_to_key_values[label]['name'],
-                                                          synonym.lower(), identifier)
+                                                          synonym, identifier)
 
 
 def compound_ttd_mapping():
@@ -136,17 +137,17 @@ def compound_ttd_mapping():
             if mapping_found:
                 continue
 
-            if icd10s:
-                for icd10 in icd10s:
-                    if icd10 in dictionary_label_to_mapper_to_key_values['Disease']['icd10']:
-                        counter_mapped += 1
-                        mapping_found = True
-                        write_infos_into_file(writer, node_id,
-                                          dictionary_label_to_mapper_to_key_values['Disease']['icd10'][icd10], 'icd10',
-                                          dict_disease_id_to_resource)
-
-            if mapping_found:
-                continue
+            # if icd10s:
+            #     for icd10 in icd10s:
+            #         if icd10 in dictionary_label_to_mapper_to_key_values['Disease']['icd10']:
+            #             counter_mapped += 1
+            #             mapping_found = True
+            #             write_infos_into_file(writer, node_id,
+            #                               dictionary_label_to_mapper_to_key_values['Disease']['icd10'][icd10], 'icd10',
+            #                               dict_disease_id_to_resource)
+            #
+            # if mapping_found:
+            #     continue
 
             if icd10s:
                 for icd10 in icd10s:
@@ -160,14 +161,14 @@ def compound_ttd_mapping():
             if mapping_found:
                 continue
 
-            if icd9s:
-                for icd9 in icd9s:
-                    if icd9 in dictionary_label_to_mapper_to_key_values['Disease']['icd9']:
-                        counter_mapped += 1
-                        mapping_found = True
-                        write_infos_into_file(writer, node_id,
-                                          dictionary_label_to_mapper_to_key_values['Disease']['icd9'][icd9], 'icd9',
-                                          dict_disease_id_to_resource)
+            # if icd9s:
+            #     for icd9 in icd9s:
+            #         if icd9 in dictionary_label_to_mapper_to_key_values['Disease']['icd9']:
+            #             counter_mapped += 1
+            #             mapping_found = True
+            #             write_infos_into_file(writer, node_id,
+            #                               dictionary_label_to_mapper_to_key_values['Disease']['icd9'][icd9], 'icd9',
+            #                               dict_disease_id_to_resource)
 
             if mapping_found:
                 counter_mapped += 1
@@ -204,7 +205,8 @@ def compound_ttd_mapping():
 
 
 def main():
-    global path_of_directory, dictionary_label_to_mapper_to_key_values, dict_symptom_id_to_resource, dict_disease_id_to_resource
+    global path_of_directory, dictionary_label_to_mapper_to_key_values, dict_symptom_id_to_resource
+    global dict_disease_id_to_resource
     if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]
     else:
