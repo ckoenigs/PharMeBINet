@@ -5,6 +5,7 @@ from collections import defaultdict
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 '''
 create a connection with neo4j
@@ -49,9 +50,7 @@ def load_product_in():
 
         # name
         name = name.lower()
-        if name not in dict_product_name:
-            dict_product_name[name] = set()
-        dict_product_name[name].add(identifier)
+        pharmebinetutils.add_entry_to_dict_to_set(dict_product_name, name, identifier)
 
         if ndc_pc != "":
             dict_ndc_pc[ndc_pc].add(identifier)
@@ -66,23 +65,18 @@ def load_DC_product_in():
     results = graph_database.run(query)
 
     mapped_products = set()
-    dict_nodes_to_product = {}
-    dict_node_to_methode = {}
 
     for node, node_id, in results:
         prod_ndc = node["ndc_product_code"]
-        product_name = node["product_name"] if 'product_name'  in node else ''
-        product_name = product_name.lower()
-
+        product_name = node["product_name"]
 
         if prod_ndc in dict_ndc_pc:
             products = dict_ndc_pc[prod_ndc]
             for product_id in products:
-                if node_id not in dict_node_to_methode:
+                if product_id not in dict_product_mapping[node_id]:
                     dict_product_mapping[node_id][product_id] = set()
                 dict_product_mapping[node_id][product_id].add('ndc_pc')
                 mapped_products.add(node_id)
-
 
         if node_id not in mapped_products:
             csv_not_mapped.writerow([node_id, prod_ndc, product_name])
@@ -90,10 +84,9 @@ def load_DC_product_in():
     for node_id in mapped_products:
         for product_id in dict_product_mapping[node_id]:
             methodes = list(dict_product_mapping[node_id][product_id])
-            resource = set(dict_productId_to_resource[product_id])
-            resource.add('DrugCentral')
-            resource = '|'.join(resource)
-        csv_mapped.writerow([node_id, product_id, resource, methodes])
+            csv_mapped.writerow([node_id, product_id,
+                             pharmebinetutils.resource_add_and_prepare(dict_productId_to_resource[product_id],
+                                                                       'DrugCentral'), '|'.join(methodes)])
 
 
 def generate_tsv_files():
@@ -109,10 +102,10 @@ def generate_tsv_files():
     # Header setzen
     csv_not_mapped.writerow(['id', 'ndc', 'name'])
     # prepare mapped file
-    file_name='product/mapped_product.tsv'
+    file_name = 'product/mapped_product.tsv'
     file_mapped_protein = open(file_name, 'w', encoding="utf-8")
     csv_mapped = csv.writer(file_mapped_protein, delimiter='\t', lineterminator='\n')
-    csv_mapped.writerow(['node_id', 'id_hetionet', 'resource', 'how_mapped'])
+    csv_mapped.writerow(['node_id', 'id_pharmebinet', 'resource', 'how_mapped'])
     generate_cypher_file(file_name)
 
 
@@ -124,8 +117,8 @@ def generate_cypher_file(file_name):
     :return:
     """
     cypher_file = open('output/cypher.cypher', 'w')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/drugcentral/%s" As line  FIELDTERMINATOR '\\t'  MATCH (n:DC_Product), (c:Product{identifier:line.id_hetionet}) Where ID(n)= ToInteger(line.node_id)  Set c.drugcentral='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_Product_drugcentral{how_mapped:line.how_mapped}]->(n); \n'''
-    query = query % (path_of_directory,file_name)
+    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/drugcentral/%s" As line  FIELDTERMINATOR '\\t'  MATCH (n:DC_Product), (c:Product{identifier:line.id_pharmebinet}) Where ID(n)= ToInteger(line.node_id)  Set c.drugcentral='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_Product_drugcentral{how_mapped:line.how_mapped}]->(n); \n'''
+    query = query % (path_of_directory, file_name)
     cypher_file.write(query)
     cypher_file.close()
 
@@ -162,7 +155,6 @@ def main():
     print(datetime.datetime.now())
     print("load DC_product_in")
     load_DC_product_in()
-
 
     print(
         '###########################################################################################################################')
