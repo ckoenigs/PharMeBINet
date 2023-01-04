@@ -1,4 +1,3 @@
-
 from py2neo import Graph
 import datetime
 import csv
@@ -6,6 +5,7 @@ import sys
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 '''
 create a connection with neo4j
@@ -92,16 +92,19 @@ def load_reactome_gocellcomp_in():
             # if len(dict_own_id_to_pcid_and_other[pathways_id]) > 1:
             #     print('multiple für identifier')
             print('id')
-            resource = set(dict_gocellcompId_to_resource["GO:" + gocellcomp_id])
-            resource.add('Reactome')
-            resource = '|'.join(sorted(resource))
             csv_mapped.writerow(
-                [gocellcomp_id, "GO:" + gocellcomp_id, resource])  # erster eintrag reactome, zweiter pharmebinet
+                [gocellcomp_id, "GO:" + gocellcomp_id,
+                 pharmebinetutils.resource_add_and_prepare(dict_gocellcompId_to_resource["GO:" + gocellcomp_id],
+                                                           'Reactome')])  # erster eintrag reactome, zweiter pharmebinet
         elif gocellcomp_id in dict_gocellcomp_pharmebinet_alt_ids:
             resource = set(dict_gocellcompId_to_resource["GO:" + dict_gocellcomp_pharmebinet_alt_ids[gocellcomp_id]])
             resource.add('Reactome')
             resource = '|'.join(sorted(resource))
-            csv_mapped.writerow([gocellcomp_id, "GO:" + gocellcomp_id, resource])
+            csv_mapped.writerow([gocellcomp_id, "GO:" + gocellcomp_id,
+                                 pharmebinetutils.resource_add_and_prepare(dict_gocellcompId_to_resource["GO:" +
+                                                                                                         dict_gocellcomp_pharmebinet_alt_ids[
+                                                                                                             gocellcomp_id]],
+                                                                           'Reactome')])
         else:
             csv_not_mapped.writerow([gocellcomp_id])
             # file_not_mapped_pathways.write(pathways_id+ '\t' +pathways_name+ '\t' + pathways_id_type+ '\n' )

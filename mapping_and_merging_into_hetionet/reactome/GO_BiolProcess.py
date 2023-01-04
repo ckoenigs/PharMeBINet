@@ -1,4 +1,3 @@
-
 from py2neo import Graph
 import datetime
 import csv
@@ -6,6 +5,7 @@ import sys
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 '''
 create a connection with neo4j
@@ -30,7 +30,7 @@ dict_gobiolproc_pharmebinet_alt_ids = {}
 # dictionary from own id to new identifier
 dict_own_id_to_identifier = {}
 
-#dictionary from gobiolprocId_id to resource
+# dictionary from gobiolprocId_id to resource
 dict_gobiolprocId_to_resource = {}
 
 '''
@@ -54,7 +54,7 @@ def load_pharmebinet_gobiolproc_in():
         dict_gobiolproc_pharmebinet_identifier[identifier] = 1
         if alt_ids:
             for alt_id in alt_ids:
-                dict_gobiolproc_pharmebinet_alt_ids[alt_id.replace("GO:","")] = identifier
+                dict_gobiolproc_pharmebinet_alt_ids[alt_id.replace("GO:", "")] = identifier
 
     print('number of gobiolproc nodes in pharmebinet:' + str(len(dict_gobiolproc_pharmebinet_identifier)))
     print('number of gobiolproc nodes in pharmebinet:' + str(len(dict_gobiolproc_pharmebinet_identifier)))
@@ -96,15 +96,12 @@ def load_reactome_gobiolproc_in():
             # if len(dict_own_id_to_pcid_and_other[pathways_id]) > 1:
             #     print('multiple für identifier')
 
-            resource = set(dict_gobiolprocId_to_resource["GO:" + gobiolproc_id])
-            resource.add('Reactome')
-            resource = '|'.join(sorted(resource))
-            csv_mapped.writerow([gobiolproc_id, "GO:" + gobiolproc_id, resource])  # erster eintrag reactome, zweiter pharmebinet
+            csv_mapped.writerow([gobiolproc_id, "GO:" + gobiolproc_id, pharmebinetutils.resource_add_and_prepare(
+                dict_gobiolprocId_to_resource["GO:" + gobiolproc_id],
+                'Reactome')])  # erster eintrag reactome, zweiter pharmebinet
         elif gobiolproc_id in dict_gobiolproc_pharmebinet_alt_ids:
-            resource = set(dict_gobiolprocId_to_resource["GO:" + dict_gobiolproc_pharmebinet_alt_ids[gobiolproc_id]])
-            resource.add('Reactome')
-            resource = '|'.join(sorted(resource))
-            csv_mapped.writerow([gobiolproc_id, "GO:" + gobiolproc_id, resource])
+            csv_mapped.writerow([gobiolproc_id, "GO:" + gobiolproc_id, pharmebinetutils.resource_add_and_prepare(
+                dict_gobiolprocId_to_resource["GO:" + dict_gobiolproc_pharmebinet_alt_ids[gobiolproc_id]], 'Reactome')])
         else:
             csv_not_mapped.writerow([gobiolproc_id])
             # file_not_mapped_pathways.write(pathways_id+ '\t' +pathways_name+ '\t' + pathways_id_type+ '\n' )
@@ -134,7 +131,7 @@ def main():
         path_of_directory = sys.argv[1]
     else:
         sys.exit('need a path reactome protein')
-    print (datetime.datetime.now())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j()

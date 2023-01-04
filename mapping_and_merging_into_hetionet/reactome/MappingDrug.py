@@ -1,12 +1,11 @@
-from py2neo import Graph
 import datetime
 import csv
 import sys
-import html
 import ast
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 '''
 create connection to neo4j 
@@ -110,13 +109,15 @@ csv_not_mapped.writerow(['id', 'name'])
 
 file_mapped_drug = open('drug/mapped_drug.tsv', 'w', encoding="utf-8")
 csv_mapped = csv.writer(file_mapped_drug, delimiter='\t', lineterminator='\n')
-csv_mapped.writerow(['id', 'id_pharmebinet', 'resource', 'how_mapped' ,'databaseName'])
+csv_mapped.writerow(['id', 'id_pharmebinet', 'resource', 'how_mapped', 'databaseName'])
 
 '''
 load all reactome drug and check if they are in pharmebinet or not
 '''
 
 set_pair = set()
+
+
 def load_reactome_drug_in(label):
     global highest_identifier
     query = '''MATCH (n:ReferenceEntity_reactome)--(h:%s) WHERE n.databaseName in [ "ChEBI", "IUPHAR" , "COMPOUND", "PubChem Compound", "Guide to Pharmacology"] RETURN n, h'''
@@ -143,17 +144,16 @@ def load_reactome_drug_in(label):
             database_identifier = "PubChem Compound:" + identifier_reactome
 
         # mapping IUPHAR
-        if databaseName == "IUPHAR" or databaseName=='Guide to Pharmacology':
+        if databaseName == "IUPHAR" or databaseName == 'Guide to Pharmacology':
             if identifier_reactome in dict_iuphar_to_inchi_pharmebinet:
                 pharmebinet_identifier = dict_pharmebinet_inchi_drugbank_identifier[
                     dict_iuphar_to_inchi_pharmebinet[identifier_reactome]]
                 if (pharmebinet_identifier, dbId) in set_pair:
                     continue
                 counter_map_with_id += 1
-                resource = set(dict_identifier_to_resource[pharmebinet_identifier])
-                resource.add('Reactome')
-                resource = '|'.join(sorted(resource))
-                csv_mapped.writerow([dbId, pharmebinet_identifier, resource, 'IUPHAR', drug_name, databaseName])
+                csv_mapped.writerow([dbId, pharmebinet_identifier, pharmebinetutils.resource_add_and_prepare(
+                    dict_identifier_to_resource[pharmebinet_identifier], 'Reactome'), 'IUPHAR', drug_name,
+                                     databaseName])
                 mapped = True
                 set_pair.add((pharmebinet_identifier, dbId))
 
@@ -165,42 +165,35 @@ def load_reactome_drug_in(label):
             if (pharmebinet_identifier, dbId) in set_pair:
                 continue
             counter_map_with_id += 1
-            resource = set(dict_identifier_to_resource[pharmebinet_identifier])
-            resource.add('Reactome')
-            resource = '|'.join(sorted(resource))
-            csv_mapped.writerow([dbId, pharmebinet_identifier, resource, databaseName, drug_name, databaseName])
+            csv_mapped.writerow([dbId, pharmebinet_identifier, pharmebinetutils.resource_add_and_prepare(
+                    dict_identifier_to_resource[pharmebinet_identifier], 'Reactome'), databaseName, drug_name, databaseName])
             mapped = True
             set_pair.add((pharmebinet_identifier, dbId))
 
         # mapping with name
-        if drug_name in dict_drug_pharmebinet_names and not  mapped:
+        if drug_name in dict_drug_pharmebinet_names and not mapped:
             pharmebinet_identifier = dict_drug_pharmebinet_names[drug_name]
             if (pharmebinet_identifier, dbId) in set_pair:
                 continue
             counter_map_with_name += 1
-            resource = set(dict_identifier_to_resource[pharmebinet_identifier])
-            resource.add('Reactome')
-            resource = '|'.join(sorted(resource))
             drug_names = dict_drug_pharmebinet[dict_drug_pharmebinet_names[drug_name]]
-            csv_mapped.writerow([dbId, pharmebinet_identifier, resource, "NAME", drug_name, drug_names])
+            csv_mapped.writerow([dbId, pharmebinet_identifier, pharmebinetutils.resource_add_and_prepare(
+                    dict_identifier_to_resource[pharmebinet_identifier], 'Reactome'), "NAME", drug_name, drug_names])
             mapped = True
             set_pair.add((pharmebinet_identifier, dbId))
-
 
         # mapping with alternative_names
         if not mapped:
             for name in alternative_drug_name:
-                name=name.lower()
+                name = name.lower()
                 if name in dict_drug_pharmebinet_names:
                     pharmebinet_identifier = dict_drug_pharmebinet_names[name]
                     if (pharmebinet_identifier, dbId) in set_pair:
                         continue
                     counter_map_with_name += 1
-                    resource = set(dict_identifier_to_resource[pharmebinet_identifier])
-                    resource.add('Reactome')
-                    resource = '|'.join(sorted(resource))
                     drug_names = dict_drug_pharmebinet[dict_drug_pharmebinet_names[name]]
-                    csv_mapped.writerow([dbId, pharmebinet_identifier, resource, "NAME_DRUG", name, drug_names])
+                    csv_mapped.writerow([dbId, pharmebinet_identifier, pharmebinetutils.resource_add_and_prepare(
+                    dict_identifier_to_resource[pharmebinet_identifier], 'Reactome'), "NAME_DRUG", name, drug_names])
                     mapped = True
                     set_pair.add((pharmebinet_identifier, dbId))
 
@@ -211,7 +204,7 @@ def load_reactome_drug_in(label):
                     name = name.replace("IFN-&beta;1a (recombinant human)", "Interferon beta-1a")
                 if name == 'IFN-&beta;1b (recombinant human)':  # IUPHAR:8340; DB00068
                     name = name.replace("IFN-&beta;1b (recombinant human)", "Interferon beta-1b")
-                if name == 'Li<sup>+</sup>':                    # IUPHAR:5212; DB01356
+                if name == 'Li<sup>+</sup>':  # IUPHAR:5212; DB01356
                     name = name.replace("Li<sup>+</sup>", "Lithium cation")
                 name = name.lower()
                 if name in dict_drug_pharmebinet_names:
@@ -219,11 +212,9 @@ def load_reactome_drug_in(label):
                     if (pharmebinet_identifier, dbId) in set_pair:
                         continue
                     counter_map_with_name += 1
-                    resource = set(dict_identifier_to_resource[pharmebinet_identifier])
-                    resource.add('Reactome')
-                    resource = '|'.join(sorted(resource))
                     drug_names = dict_drug_pharmebinet[dict_drug_pharmebinet_names[name]]
-                    csv_mapped.writerow([dbId, pharmebinet_identifier, resource, "NAME_HTML", drug_name, drug_names])
+                    csv_mapped.writerow([dbId, pharmebinet_identifier, pharmebinetutils.resource_add_and_prepare(
+                    dict_identifier_to_resource[pharmebinet_identifier], 'Reactome'), "NAME_HTML", drug_name, drug_names])
                     mapped = True
                     set_pair.add((pharmebinet_identifier, dbId))
 
@@ -237,14 +228,16 @@ def load_reactome_drug_in(label):
     print('number of mapping with id:' + str(counter_map_with_id))
     print('----------------------------------------------------------------------------------------')
 
+
 '''
 generate connection between mapping drug of reactome and pharmebinet and generate new pharmebinet nodes for the not existing nodes
 '''
 
+
 def create_cypher_file():
     cypher_file = open('output/cypher_mapping2.cypher', 'w', encoding="utf-8")
     query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/reactome/drug/mapped_drug.tsv" As line FIELDTERMINATOR "\\t" MATCH (d:Chemical{identifier:line.id_pharmebinet}),(c:ReferenceEntity_reactome{dbId:toInteger(line.id)}) CREATE (d)-[:equal_to_reactome_drug{how_mapped:line.how_mapped}]->(c) SET d.resource = split(line.resource, '|'), d.reactome = "yes";\n'''
-    query = query %(path_of_directory)
+    query = query % (path_of_directory)
     cypher_file.write(query)
 
 

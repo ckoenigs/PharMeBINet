@@ -5,6 +5,8 @@ import sys
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
+
 '''
 create connection to neo4j
 '''
@@ -28,7 +30,7 @@ dict_gomolfunc_pharmebinet_alt_ids = {}
 # dictionary from own id to new identifier
 dict_own_id_to_identifier = {}
 
-#dictionary from gomolfuncId_id to resource
+# dictionary from gomolfuncId_id to resource
 dict_gomolfunc_to_resource = {}
 
 '''
@@ -42,13 +44,13 @@ def load_pharmebinet_gomolfunc_in():
     results = graph_database.run(query)
 
     #
-    for identifier,  alt_ids, resource, in results:
+    for identifier, alt_ids, resource, in results:
         dict_gomolfunc_to_resource[identifier] = resource
         identifier = identifier.replace("GO:", "")
         dict_gomolfunc_pharmebinet_identifier[identifier] = 1
         if alt_ids:
             for alt_id in alt_ids:
-                dict_gomolfunc_pharmebinet_alt_ids[alt_id.replace("GO:","")] = identifier
+                dict_gomolfunc_pharmebinet_alt_ids[alt_id.replace("GO:", "")] = identifier
 
     print('number of gomolfunc nodes in pharmebinet:' + str(len(dict_gomolfunc_pharmebinet_identifier)))
 
@@ -79,16 +81,12 @@ def load_reactome_gomolfunc_in():
         # check if the reactome pathway id is part in the pharmebinet idOwn
         if gomolfunc_id in dict_gomolfunc_pharmebinet_identifier:
             counter_map_with_id += 1
-            resource = set(dict_gomolfunc_to_resource["GO:" + gomolfunc_id])
-            resource.add('Reactome')
-            resource = '|'.join(sorted(resource))
-            csv_mapped.writerow([gomolfunc_id, "GO:" + gomolfunc_id, resource])
+            csv_mapped.writerow([gomolfunc_id, "GO:" + gomolfunc_id, pharmebinetutils.resource_add_and_prepare(
+                dict_gomolfunc_to_resource["GO:" + gomolfunc_id], 'Reactome')])
         elif gomolfunc_id in dict_gomolfunc_pharmebinet_alt_ids:
             real_go_identifier = "GO:" + dict_gomolfunc_pharmebinet_alt_ids[gomolfunc_id]
-            resource = set(dict_gomolfunc_to_resource[real_go_identifier])
-            resource.add('Reactome')
-            resource = '|'.join(sorted(resource))
-            csv_mapped.writerow([gomolfunc_id, real_go_identifier, resource])
+            csv_mapped.writerow([gomolfunc_id, real_go_identifier,  pharmebinetutils.resource_add_and_prepare(
+                dict_gomolfunc_to_resource[real_go_identifier], 'Reactome')])
         else:
             csv_not_mapped.writerow([gomolfunc_id, resource])
 
@@ -104,7 +102,7 @@ def create_cypher_file():
     cypher_file = open('output/cypher.cypher', 'a', encoding="utf-8")
     query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/reactome/gomolfunc/mapped_gomolfunc.tsv" As line FIELDTERMINATOR "\\t"
      Match (d: MolecularFunction {identifier: line.id_pharmebinet}),(c:GO_MolecularFunction_reactome{accession:line.id}) Create (d)-[:equal_to_reactome_gomolfunc]->(c)  SET d.resource = split(line.resource, '|'), d.reactome = "yes";\n'''
-    query = query %(path_of_directory)
+    query = query % (path_of_directory)
     cypher_file.write(query)
 
 
