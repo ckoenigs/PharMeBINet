@@ -23,7 +23,7 @@ highest_interaction_id = 0
 dict_protein_pair_to_interaction_id = {}
 
 # dictionary interaction id to resource
-dict_interaction_id_to_interaction_dicitonary = {}
+dict_interaction_id_to_interaction_dictionary = {}
 
 
 def load_existing_interactions():
@@ -38,7 +38,7 @@ def load_existing_interactions():
         dict_protein_pair_to_interaction_id[(protein1, protein2)] = interaction_id
         methods = set(methods) if methods is not None else set()
         pubmed_ids = set(pubmed_ids) if pubmed_ids is not None else set()
-        dict_interaction_id_to_interaction_dicitonary[interaction_id] = {"resource": resource, "pubmed_ids": pubmed_ids,
+        dict_interaction_id_to_interaction_dictionary[interaction_id] = {"resource": resource, "pubmed_ids": pubmed_ids,
                                                                          "methods": methods}
 
     query = 'MATCH (n:Interaction) With toInteger(n.identifier ) as int_id RETURN max(int_id)'
@@ -254,15 +254,15 @@ def write_info_into_files():
 
     #  detection_methods==methods, publication_id==pubMed_ids
     for (protein_1, protein_2, interaction_id), list_rela_information in dict_mapped_pair_to_interaction_id.items():
-        publications= dict_interaction_id_to_interaction_dicitonary[interaction_id]['pubmed_ids']
+        publications= dict_interaction_id_to_interaction_dictionary[interaction_id]['pubmed_ids']
 
-        methods= dict_interaction_id_to_interaction_dicitonary[interaction_id]['methods']
+        methods= dict_interaction_id_to_interaction_dictionary[interaction_id]['methods']
         for rela_information in list_rela_information:
             prepare_pubmed_information(rela_information,publications)
             prepare_method_information(rela_information, methods)
 
         csv_writer_mapping.writerow([interaction_id, pharmebinetutils.resource_add_and_prepare(
-            dict_interaction_id_to_interaction_dicitonary[interaction_id]['resource'], 'Hippie'), protein_1,
+            dict_interaction_id_to_interaction_dictionary[interaction_id]['resource'], 'Hippie'), protein_1,
                                      protein_2, '|'.join(publications), '|'.join(methods)])
 
 
