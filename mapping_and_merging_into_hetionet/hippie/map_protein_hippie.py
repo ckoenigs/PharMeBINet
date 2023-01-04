@@ -88,6 +88,22 @@ def load_and_map_hippie_protein():
     for node, in results:
         counter+=1
         identifier=node['identifier']
+        found_mapping= False
+
+
+        if identifier.startswith('entrez gene:'):
+            entrez_id = identifier.split(':')[1]
+            if entrez_id in dict_gene_id_to_protein_id:
+                found_mapping=True
+                for protein_id in dict_gene_id_to_protein_id[entrez_id]:
+                    csv_writer.writerow([identifier, protein_id,
+                                         pharmebinetutils.resource_add_and_prepare(
+                                             dict_protein_id_to_resource[protein_id], 'HIPPIE'),
+                                         'gene_to_protein'])
+
+        if found_mapping:
+            continue
+
         if 'alternative_ids' in node:
             alternative_ids = node['alternative_ids']
             if alternative_ids.startswith('uniprotkb:'):
@@ -97,22 +113,10 @@ def load_and_map_hippie_protein():
                     protein_id= dict_protein_entry_to_protein_ids[uniprot_entry]
                     csv_writer.writerow([identifier, protein_id, pharmebinetutils.resource_add_and_prepare(dict_protein_id_to_resource[protein_id],'HIPPIE'),'uniprot_entry'])
                     counter_mapped+=1
-                else:
-                    if identifier.startswith('entrez gene:'):
-                        entrez_id= identifier.split(':')[1]
-                        if entrez_id in dict_gene_id_to_protein_id:
-                            for protein_id in dict_gene_id_to_protein_id[entrez_id]:
-                                csv_writer.writerow([identifier, protein_id,
-                                                     pharmebinetutils.resource_add_and_prepare(
-                                                         dict_protein_id_to_resource[protein_id], 'HIPPIE'),
-                                                     'gene_to_protein'])
-                            counter_mapped += 1
-                        else:
-                            print('still not mapping', node)
-                    else:
-                        print('different identifier', node)
-            else:
-                print(alternative_ids)
+                    found_mapping=True
+
+        if found_mapping:
+            continue
         # else:
         #     print('no alternative ids')
         #     print(node)
