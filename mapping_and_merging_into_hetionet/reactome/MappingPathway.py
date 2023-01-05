@@ -20,7 +20,6 @@ def create_connection_with_neo4j():
     graph_database = create_connection_to_databases.database_connection_neo4j()
 
 
-
 # dictionary with pharmebinet pathways with identifier as key and value the xrefs
 dict_pathway_pharmebinet_xrefs = {}
 
@@ -56,7 +55,7 @@ def load_pharmebinet_pathways_in():
             # go through all xrefs and prepare dictionary with reactome ids
             for xref in xrefs:
                 xref = xref.split(':', 1)
-                if xref[0]=='reactome':
+                if xref[0] == 'reactome':
                     if not xref[1] in dict_reactome_it_to_identifier:
                         dict_reactome_it_to_identifier[xref[1]] = identifier
                     else:
@@ -92,41 +91,44 @@ def load_reactome_pathways_in():
     for pathways_node, in results:
         pathways_id = pathways_node['stId']
         pathways_name = pathways_node['displayName'].lower()
-        synonyms= pathways_node['name'] if 'name' in pathways_node else []
-        #boolean to chek if a mapping happend or not
-        found_mapping=False
+        synonyms = pathways_node['name'] if 'name' in pathways_node else []
+        # boolean to chek if a mapping happend or not
+        found_mapping = False
         # check if the reactome pathway id is part in the pharmebinet xref
         # mapping with identifier
         if pathways_id in dict_reactome_it_to_identifier:
             counter_map_with_id += 1
-            found_mapping=True
+            found_mapping = True
             pharmebinet_identifier = dict_reactome_it_to_identifier[pathways_id]
             xrefs = dict_pathway_pharmebinet_xrefs[pharmebinet_identifier]
-            xrefs.add('reactome:'+pathways_id)
-            string_xrefs = '|'.join(go_through_xrefs_and_change_if_needed_source_name(xrefs,'pathway'))
+            xrefs.add('reactome:' + pathways_id)
+            string_xrefs = '|'.join(go_through_xrefs_and_change_if_needed_source_name(xrefs, 'pathway'))
 
-            csv_mapped.writerow([pathways_id, pharmebinet_identifier, string_xrefs, pharmebinetutils.resource_add_and_prepare(dict_pathwayId_to_resource[pharmebinet_identifier],'reactome'), pathways_name])
+            csv_mapped.writerow([pathways_id, pharmebinet_identifier, string_xrefs,
+                                 pharmebinetutils.resource_add_and_prepare(
+                                     dict_pathwayId_to_resource[pharmebinet_identifier], 'Reactome'), pathways_name])
 
         # mapping with Namen
         elif pathways_name in dict_pathway_pharmebinet_names:
             counter_map_with_name += 1
-            found_mapping=True
+            found_mapping = True
             pharmebinet_identifier = dict_pathway_pharmebinet_names[pathways_name]
             xrefs = dict_pathway_pharmebinet_xrefs[pharmebinet_identifier]
-            xrefs.add('reactome:'+pathways_id)
-            string_xrefs = '|'.join(go_through_xrefs_and_change_if_needed_source_name(xrefs,'pathway'))
+            xrefs.add('reactome:' + pathways_id)
+            string_xrefs = '|'.join(go_through_xrefs_and_change_if_needed_source_name(xrefs, 'pathway'))
             csv_mapped.writerow(
-                [pathways_id, pharmebinet_identifier, string_xrefs, pharmebinetutils.resource_add_and_prepare(dict_pathwayId_to_resource[pharmebinet_identifier],'reactome'), pathways_name])
+                [pathways_id, pharmebinet_identifier, string_xrefs,
+                 pharmebinetutils.resource_add_and_prepare(dict_pathwayId_to_resource[pharmebinet_identifier],
+                                                           'Reactome'), pathways_name])
 
         if found_mapping:
             continue
 
-        multiple_mappings_list=set()
         for synonym in synonyms:
-            synonym=synonym.lower()
+            synonym = synonym.lower()
 
             if synonym in dict_pathway_pharmebinet_names:
-                found_mapping=True
+                found_mapping = True
                 pharmebinet_identifier = dict_pathway_pharmebinet_names[synonym]
                 xrefs = dict_pathway_pharmebinet_xrefs[pharmebinet_identifier]
                 xrefs.add('reactome:' + pathways_id)
@@ -134,10 +136,10 @@ def load_reactome_pathways_in():
                 csv_mapped.writerow(
                     [pathways_id, pharmebinet_identifier, string_xrefs,
                      pharmebinetutils.resource_add_and_prepare(dict_pathwayId_to_resource[pharmebinet_identifier],
-                                                               'reactome'), pathways_name])
+                                                               'Reactome'), pathways_name])
 
-        if found_mapping :
-            counter_map_with_name+=1
+        if found_mapping:
+            counter_map_with_name += 1
 
 
         # übrige Knoten, die nicht mappen, werden neu erstellt und bekommen neuen Identifier PC_11_Zahl
@@ -173,7 +175,7 @@ def main():
     global path_of_directory, license
     if len(sys.argv) > 2:
         path_of_directory = sys.argv[1]
-        license=sys.argv[2]
+        license = sys.argv[2]
     else:
         sys.exit('need a path  and license reactome protein')
 

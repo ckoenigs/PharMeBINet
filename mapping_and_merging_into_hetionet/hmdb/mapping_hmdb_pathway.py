@@ -3,6 +3,7 @@ import sys, csv
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 '''
 create a connection with neo4j
@@ -32,10 +33,10 @@ def add_entry_to_dictionary(dictionary, key, value):
 dict_name_to_pathway_ids = {}
 
 # dictionary pathway id to resource
-dict_pathway_id_to_resource={}
+dict_pathway_id_to_resource = {}
 
 # dictionary hmdb id to pathway id
-dict_hmdb_id_to_pathway_ids={}
+dict_hmdb_id_to_pathway_ids = {}
 
 
 def load_pw_from_database():
@@ -47,7 +48,7 @@ def load_pw_from_database():
     results = g.run(query)
     for node, in results:
         identifier = node['identifier']
-        dict_pathway_id_to_resource[identifier]=set(node['resource'])
+        dict_pathway_id_to_resource[identifier] = set(node['resource'])
         name = node['name']
         if name is not None:
             add_entry_to_dictionary(dict_name_to_pathway_ids, name.lower(), identifier)
@@ -56,12 +57,12 @@ def load_pw_from_database():
         for synonym in synonyms:
             add_entry_to_dictionary(dict_name_to_pathway_ids, synonym.lower(), identifier)
 
-        xrefs= node['xrefs'] if 'xrefs' in node else []
+        xrefs = node['xrefs'] if 'xrefs' in node else []
         for xref in xrefs:
-            split_xrefs=xref.split(':',1)
-            if split_xrefs[0]=='pathbank':
+            split_xrefs = xref.split(':', 1)
+            if split_xrefs[0] == 'pathbank':
                 add_entry_to_dictionary(dict_hmdb_id_to_pathway_ids, split_xrefs[1], identifier)
-            elif split_xrefs[0]=='smpdb':
+            elif split_xrefs[0] == 'smpdb':
                 add_entry_to_dictionary(dict_hmdb_id_to_pathway_ids, split_xrefs[1], identifier)
 
 
@@ -93,15 +94,6 @@ def generate_files(path_of_directory):
 
     return csv_mapping, csv_not_mapped
 
-def add_source_to_resource_and_prepare_string(resource):
-    """
-    prepare resource to string
-    :param resource:
-    :return:
-    """
-    resource.add('HMDB')
-    return '|'.join(sorted(resource))
-
 
 # dictionary mapping db pathway and pathway to how mapped
 dict_db_pathway_pathway_to_how_mapped = {}
@@ -117,16 +109,17 @@ def load_all_hmdb_pw_and_map(csv_mapping, csv_not_mapped):
     counter_not_mapped = 0
 
     for node, in results:
-        identifier= node['identifier']
-        smpdb_id = node['smpdb_id'].replace('P','P00') if 'smpdb_id' in node else ''
+        identifier = node['identifier']
+        smpdb_id = node['smpdb_id'].replace('P', 'P00') if 'smpdb_id' in node else ''
         name = node['name'].lower()
         found_mapping = False
         if smpdb_id in dict_hmdb_id_to_pathway_ids:
-            found_mapping=True
+            found_mapping = True
             for pathway_id in dict_hmdb_id_to_pathway_ids[smpdb_id]:
                 if (identifier, pathway_id) not in dict_db_pathway_pathway_to_how_mapped:
                     dict_db_pathway_pathway_to_how_mapped[(identifier, pathway_id)] = 'smpdb_id_mapped'
-                    csv_mapping.writerow([identifier, pathway_id, add_source_to_resource_and_prepare_string(dict_pathway_id_to_resource[pathway_id]),'smpdb_id_mapped'])
+                    csv_mapping.writerow([identifier, pathway_id, pharmebinetutils.resource_add_and_prepare(
+                        dict_pathway_id_to_resource[pathway_id], 'HMDB'), 'smpdb_id_mapped'])
                 else:
                     print('multy mapping')
         if found_mapping:
@@ -138,7 +131,8 @@ def load_all_hmdb_pw_and_map(csv_mapping, csv_not_mapped):
             for pathway_id in dict_name_to_pathway_ids[name]:
                 if (identifier, pathway_id) not in dict_db_pathway_pathway_to_how_mapped:
                     dict_db_pathway_pathway_to_how_mapped[(identifier, pathway_id)] = 'name_mapped'
-                    csv_mapping.writerow([identifier, pathway_id, add_source_to_resource_and_prepare_string(dict_pathway_id_to_resource[pathway_id]),'name_mapped'])
+                    csv_mapping.writerow([identifier, pathway_id, pharmebinetutils.resource_add_and_prepare(
+                        dict_pathway_id_to_resource[pathway_id], 'HMDB'), 'name_mapped'])
                 else:
                     print('multy mapping with name')
         if found_mapping:
