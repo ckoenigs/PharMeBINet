@@ -49,7 +49,7 @@ def generate_csv_file_and_prepare_cypher_queries_edge(file_name, label, rela_typ
     for head in rela_properties:
         if head in ['identifier_node1', 'go_id']:
             continue
-        if head in ['db_reference', 'with_from', 'annotation_extension', 'assigned_by', 'gene_product_id','date']:
+        if head in ['db_reference', 'with_from', 'annotation_extension', 'assigned_by', 'gene_product_id', 'date']:
             query += head + ":split(line." + head + ",'|'), "
         else:
             query += head + ":line." + head + ", "
@@ -124,7 +124,7 @@ dict_label_rela_name_to_dataframe = {}
 """
 
 
-def prepare_geo_annotation_file(go_annotation_file_name):
+def prepare_go_annotation_file(go_annotation_file_name):
     """
     firs extract and pars the gzip csv file into a pandas dataframe. Add header. Get the label of the other node. Then
     prepare the node csv by make it identifier unique and write it into  tsv and generate cypher query. The prepare
@@ -164,7 +164,10 @@ def prepare_geo_annotation_file(go_annotation_file_name):
     if label not in dict_label_to_node_dataframe:
         dict_label_to_node_dataframe[label] = node1_frame
     else:
-        dict_label_to_node_dataframe[label] = dict_label_to_node_dataframe[label].append(node1_frame).drop_duplicates(
+        # dict_label_to_node_dataframe[label] = dict_label_to_node_dataframe[label].append(node1_frame).drop_duplicates(
+        #     subset=['identifier_node1'])
+        dict_label_to_node_dataframe[label] = pd.concat(
+            [dict_label_to_node_dataframe[label], node1_frame]).drop_duplicates(
             subset=['identifier_node1'])
 
     # remove node 1, node 2 (except of identifier) and taxon infos of rela csv
@@ -189,8 +192,11 @@ def prepare_geo_annotation_file(go_annotation_file_name):
             dict_label_rela_name_to_dataframe[(label, rela_type)] = part_dataframe
         else:
             # print('number of row, columns before:',dict_label_rela_name_to_dataframe[(label, rela_type)].shape , rela_type)
-            dict_label_rela_name_to_dataframe[(label, rela_type)] = dict_label_rela_name_to_dataframe[
-                (label, rela_type)].append(part_dataframe).drop_duplicates()
+            # dict_label_rela_name_to_dataframe[(label, rela_type)] = dict_label_rela_name_to_dataframe[
+            #     (label, rela_type)].append(part_dataframe).drop_duplicates()
+            dict_label_rela_name_to_dataframe[(label, rela_type)] = pd.concat([dict_label_rela_name_to_dataframe[
+                                                                                   (label, rela_type)],
+                                                                               part_dataframe]).drop_duplicates()
             # print('number of row, columns after:' , dict_label_rela_name_to_dataframe[(label, rela_type)].shape)
 
 
@@ -233,7 +239,7 @@ def main():
     for go_annotation_file_name in ['goa_human', 'goa_human_complex', 'goa_human_isoform', 'goa_human_rna']:
         print(datetime.datetime.now())
         print('load ' + go_annotation_file_name)
-        prepare_geo_annotation_file(go_annotation_file_name)
+        prepare_go_annotation_file(go_annotation_file_name)
 
     print('##########################################################################')
 

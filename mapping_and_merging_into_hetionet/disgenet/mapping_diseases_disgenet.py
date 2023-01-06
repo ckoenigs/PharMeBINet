@@ -5,6 +5,7 @@ import csv
 import pandas as pd
 from collections import defaultdict
 import mapping_symptoms_disgenet
+
 sys.path.append("../..")
 import create_connection_to_databases
 from pharmebinetutils import *
@@ -18,7 +19,6 @@ def create_connection_with_neo4j():
     global g
     g = create_connection_to_databases.database_connection_neo4j()
 
-
     # create connection with mysql database
     global con
     con = create_connection_to_databases.database_connection_umls()
@@ -30,14 +30,15 @@ dict_umls_id_to_identifier = defaultdict(set)
 # dictionary umls id to Disease identifier
 dict_umls_id_from_umls_to_identifier = defaultdict(set)
 
-#dictionary from disease id to resource
+# dictionary from disease id to resource
 dict_disease_id_to_resource = defaultdict(set)
 
-#dict for alternative_ids
+# dict for alternative_ids
 dict_xrefs_to_identifier = defaultdict(set)
 
-#dict for name
+# dict for name
 dict_name_to_identifier = defaultdict(set)
+
 
 def try_to_get_umls_ids_with_UMLS(name):
     cur = con.cursor()
@@ -45,7 +46,7 @@ def try_to_get_umls_ids_with_UMLS(name):
     query = query % (name)
     rows_counter = cur.execute(query)
 
-    list_of_cuis=[]
+    list_of_cuis = []
 
     if rows_counter > 0:
         # add found cuis
@@ -64,22 +65,22 @@ def load_disease_from_database_and_add_to_dict():
 
     for node, in results:
         identifier = node['identifier']
-        #for mapping with MONDO
-        dict_disease_id_to_resource[identifier] = node['resource'] 
+        # for mapping with MONDO
+        dict_disease_id_to_resource[identifier] = node['resource']
 
-        name= node['name'].lower()
+        name = node['name'].lower()
         dict_name_to_identifier[name].add(identifier)
 
-        synonyms= node['synonyms'] if 'synonyms' in node else []
+        synonyms = node['synonyms'] if 'synonyms' in node else []
         for synonym in synonyms:
-            synonym= prepare_obo_synonyms(synonym).lower()
+            synonym = prepare_obo_synonyms(synonym).lower()
             dict_name_to_identifier[synonym].add(identifier)
 
         if 'xrefs' in node:
             # find index of xrefs "UMLS" entry
             umls_id_idx = [item for item in node['xrefs'] if item.startswith('UMLS')]
             # save all relevant xrefs (for alternative mapping)
-            xrefs = [nr for nr in node['xrefs'] if nr.startswith(('NCIT'))] #'ICD', , 'DOID',  'OMIM'
+            xrefs = [nr for nr in node['xrefs'] if nr.startswith(('NCIT'))]  # 'ICD', , 'DOID',  'OMIM'
             for xref in xrefs:
                 dict_xrefs_to_identifier[xref].add(identifier)
         else:
@@ -94,14 +95,13 @@ def load_disease_from_database_and_add_to_dict():
         if umls_id_idx:
             # _, umls_id = node['xrefs'][umls_id_idx[0]].split(':')
             for umls_id in umls_id_idx:
-                umls_id= umls_id.split(':')[1]
+                umls_id = umls_id.split(':')[1]
                 # put umls_id as identifier if 'UMLS' exists in xrefs
                 dict_umls_id_to_identifier[umls_id].add(identifier)
         else:
-            umls_cuis= try_to_get_umls_ids_with_UMLS(name)
+            umls_cuis = try_to_get_umls_ids_with_UMLS(name)
             for umls_id in umls_cuis:
                 dict_umls_id_from_umls_to_identifier[umls_id].add(identifier)
-
 
 
 def generate_files(path_of_directory):
@@ -116,14 +116,16 @@ def generate_files(path_of_directory):
     file_name = 'DisGeNet_disease_to_disease'
 
     cypher_file_path = os.path.join(source, 'cypher.cypher')
-    query = get_query_start(path_of_directory, file_name+'.tsv') +  f' Match (n:disease_DisGeNet{{diseaseId:line.DisGeNet_diseaseId}}), (v:Disease{{identifier:line.identifier}}) Set v.disgenet="yes", v.resource=split(line.resource,"|") Create (v)-[:equal_to_DisGeNet_disease{{mapped_with:split(line.mapping_method, "|")}}]->(n);\n'
+    query = get_query_start(path_of_directory,
+                            file_name + '.tsv') + f' Match (n:disease_DisGeNet{{diseaseId:line.DisGeNet_diseaseId}}), (v:Disease{{identifier:line.identifier}}) Set v.disgenet="yes", v.resource=split(line.resource,"|") Create (v)-[:equal_to_DisGeNet_disease{{mapped_with:split(line.mapping_method, "|")}}]->(n);\n'
     mode = 'a' if os.path.exists(cypher_file_path) else 'w'
     cypher_file = open(cypher_file_path, mode, encoding='utf-8')
     cypher_file.write(query)
 
-    query= mapping_symptoms_disgenet.generate_files(path_of_directory)
+    query = mapping_symptoms_disgenet.generate_files(path_of_directory)
     cypher_file.write(query)
     cypher_file.close()
+
 
 def check_for_multiple_mapping_and_try_to_reduce_multiple_mapping(name, mapping_ids):
     """
@@ -132,10 +134,10 @@ def check_for_multiple_mapping_and_try_to_reduce_multiple_mapping(name, mapping_
     :param mapping_ids: set of mapped ids
     :return: set of ids
     """
-    if len(mapping_ids)>1 and name in dict_name_to_identifier:
-        name_mapped_ids=dict_name_to_identifier[name]
-        intersection= name_mapped_ids.intersection(mapping_ids)
-        if len(intersection)>0:
+    if len(mapping_ids) > 1 and name in dict_name_to_identifier:
+        name_mapped_ids = dict_name_to_identifier[name]
+        intersection = name_mapped_ids.intersection(mapping_ids)
+        if len(intersection) > 0:
             return intersection
 
     return mapping_ids
@@ -150,8 +152,9 @@ def find_mondo(node):
 
 def find_code(node):
     # return all relevant alternative-ids that are listed in disease_disGeNet under 'code'
-    code_lst = [i for i in node['code'] if i.startswith(('NCI'))] # 'ICD', , 'DO',  'OMIM'
+    code_lst = [i for i in node['code'] if i.startswith(('NCI'))]  # 'ICD', , 'DO',  'OMIM'
     return code_lst
+
 
 def load_all_DisGeNet_disease_and_finish_the_files():
     """
@@ -162,7 +165,8 @@ def load_all_DisGeNet_disease_and_finish_the_files():
     results = g.run(query)
     counter_not_mapped = 0
     counter_all = 0
-    equivalent_id_map = {"OMIM": "OMIM", "NCI": "NCIT", "ICD10CM": "ICD10", "ICD10": "ICD10", "ICD9CM": "ICD9", "ICD9":"ICD9", "DO":"DOID"}
+    equivalent_id_map = {"OMIM": "OMIM", "NCI": "NCIT", "ICD10CM": "ICD10", "ICD10": "ICD10", "ICD9CM": "ICD9",
+                         "ICD9": "ICD9", "DO": "DOID"}
 
     not_mapped_path = os.path.join(path_of_directory, 'not_mapped.tsv')
     header = ['DisGeNet_diseaseId', 'diseaseName', 'xrefs']
@@ -183,20 +187,23 @@ def load_all_DisGeNet_disease_and_finish_the_files():
             mondo_ids = []
             code_ids = []
 
+        name = node['diseaseName'].lower()
 
-        name=node['diseaseName'].lower()
-
-        found_mappping=False
+        found_mappping = False
         # mapping via UMLS
         # print("umls " + umls_id)
         if umls_id in dict_umls_id_to_identifier:
-            ids_with_umls= dict_umls_id_to_identifier[umls_id]
-            maybe_reduced_ids=check_for_multiple_mapping_and_try_to_reduce_multiple_mapping(name,ids_with_umls)
-            for identifier in maybe_reduced_ids:
-                found_mappping=True
+            ids_with_umls = dict_umls_id_to_identifier[umls_id]
+            maybe_reduced_ids = check_for_multiple_mapping_and_try_to_reduce_multiple_mapping(name, ids_with_umls)
+            for mondo_id in maybe_reduced_ids:
+                found_mappping = True
                 # csv_mapping.writerow([umls_id, identifier, resource(identifier), 'umls'])
-                curr_series = pd.Series([umls_id, identifier, resource_add_and_prepare(dict_disease_id_to_resource[identifier],'DisGeNet'), 'umls'], index=mapping_df.columns)
-                mapping_df = mapping_df.append(curr_series, ignore_index=True)
+                # curr_series = pd.Series([umls_id, mondo_id, resource_add_and_prepare(dict_disease_id_to_resource[identifier],'DisGeNet'), 'umls'], index=mapping_df.columns)
+                # mapping_df = mapping_df.append(curr_series, ignore_index=True)
+                curr_df = pd.DataFrame([[umls_id, mondo_id,
+                                         resource_add_and_prepare(dict_disease_id_to_resource[mondo_id], 'DisGeNet'),
+                                         'umls']], columns=mapping_df.columns)
+                mapping_df = pd.concat([mapping_df, curr_df])
 
         if found_mappping:
             continue
@@ -204,27 +211,33 @@ def load_all_DisGeNet_disease_and_finish_the_files():
         elif name:
             if name in dict_name_to_identifier:
                 for mondo_id in dict_name_to_identifier[name]:
-                    found_mappping=True
-                    curr_series = pd.Series([umls_id, mondo_id, resource_add_and_prepare(dict_disease_id_to_resource[mondo_id],'DisGeNet'), 'name'], index=mapping_df.columns)
-                    mapping_df = mapping_df.append(curr_series, ignore_index=True)
-
+                    found_mappping = True
+                    # curr_series = pd.Series([umls_id, mondo_id, resource_add_and_prepare(dict_disease_id_to_resource[mondo_id],'DisGeNet'), 'name'], index=mapping_df.columns)
+                    # mapping_df = mapping_df.append(curr_series, ignore_index=True)
+                    curr_df = pd.DataFrame([[umls_id, mondo_id,
+                                             resource_add_and_prepare(dict_disease_id_to_resource[mondo_id],
+                                                                      'DisGeNet'), 'name']], columns=mapping_df.columns)
+                    mapping_df = pd.concat([mapping_df, curr_df])
 
         if found_mappping:
             continue
         # mapping symptoms
-        found_mappping= mapping_symptoms_disgenet.load_all_unmapped_DisGeNet_disease_and_finish_the_files(name, umls_id, node['code'])
-
+        found_mappping = mapping_symptoms_disgenet.load_all_unmapped_DisGeNet_disease_and_finish_the_files(name,
+                                                                                                           umls_id,
+                                                                                                           node['code'])
 
         if found_mappping:
             continue
         # mapping via umls
         elif umls_id in dict_umls_id_from_umls_to_identifier:
             for mondo_id in dict_umls_id_from_umls_to_identifier[umls_id]:
-                if mondo_id in dict_disease_id_to_resource:
-                    found_mappping=True
-                    # csv_mapping.writerow([umls_id, mondo_id, resource(mondo_id), 'id'])
-                    curr_series = pd.Series([umls_id, mondo_id, resource_add_and_prepare(dict_disease_id_to_resource[mondo_id],'DisGeNet'), 'umls from umls'], index=mapping_df.columns)
-                    mapping_df = mapping_df.append(curr_series, ignore_index=True)
+                found_mappping = True
+                # curr_series = pd.Series([umls_id, mondo_id, resource_add_and_prepare(dict_disease_id_to_resource[mondo_id],'DisGeNet'), 'umls from umls'], index=mapping_df.columns)
+                # mapping_df = mapping_df.append(curr_series, ignore_index=True)
+                curr_df = pd.DataFrame([[umls_id, mondo_id,
+                                         resource_add_and_prepare(dict_disease_id_to_resource[mondo_id], 'DisGeNet'),
+                                         'name']], columns=mapping_df.columns)
+                mapping_df = pd.concat([mapping_df, curr_df])
 
         # if found_mappping:
         #     continue
@@ -237,7 +250,6 @@ def load_all_DisGeNet_disease_and_finish_the_files():
         #             curr_series = pd.Series([umls_id, mondo_id, resource_add_and_prepare(dict_disease_id_to_resource[mondo_id],'DisGeNet'), 'id'], index=mapping_df.columns)
         #             mapping_df = mapping_df.append(curr_series, ignore_index=True)
 
-
         if found_mappping:
             continue
         # mapping via xrefs
@@ -247,14 +259,20 @@ def load_all_DisGeNet_disease_and_finish_the_files():
                 # generate equivalent ID (which might be a possible entry in Disease-dictionnary [dict_xrefs_to_id])
                 equ_id = equivalent_id_map[name] + ":" + id_num  # if name in equivalent_id_map.keys() else name
                 if equ_id in dict_xrefs_to_identifier:
-                    found_mappping=True
-                    identifier = dict_xrefs_to_identifier[equ_id]
-                    for ident in identifier:  # in case of several values for one id
+                    found_mappping = True
+                    mondo_ids = dict_xrefs_to_identifier[equ_id]
+                    for mondo_id in mondo_ids:  # in case of several values for one id
                         # csv_mapping.writerow([umls_id, ident, resource(ident), equivalent_id_map[name].lower()])
-                        curr_series = pd.Series([umls_id, ident, resource_add_and_prepare(dict_disease_id_to_resource[ident],'DisGeNet') , equivalent_id_map[name].lower()],
-                                                index=mapping_df.columns)
-                        mapping_df = mapping_df.append(curr_series, ignore_index=True)
+                        # curr_series = pd.Series([umls_id, ident, resource_add_and_prepare(dict_disease_id_to_resource[ident],'DisGeNet') , equivalent_id_map[name].lower()],
+                        #                         index=mapping_df.columns)
+                        # mapping_df = mapping_df.append(curr_series, ignore_index=True)
 
+                        curr_df = pd.DataFrame([[umls_id, mondo_id,
+                                                 resource_add_and_prepare(dict_disease_id_to_resource[mondo_id],
+                                                                          'DisGeNet'),
+                                                 equivalent_id_map[name].lower()]],
+                                               columns=mapping_df.columns)
+                        mapping_df = pd.concat([mapping_df, curr_df])
 
         if found_mappping:
             continue
@@ -277,7 +295,6 @@ def load_all_DisGeNet_disease_and_finish_the_files():
     print('number of all disease_ids:', counter_all)
 
 
-
 ######### MAIN #########
 def main():
     print(datetime.datetime.now())
@@ -285,7 +302,6 @@ def main():
     global home
     global path_of_directory
     global source
-
 
     if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]
