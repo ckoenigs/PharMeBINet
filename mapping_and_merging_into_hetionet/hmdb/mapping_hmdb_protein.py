@@ -3,6 +3,7 @@ import sys, csv
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 '''
 create a connection with neo4j
@@ -45,8 +46,7 @@ def load_protein_from_database_and_add_to_dict():
             if gene_symbol not in dict_gene_symbol_to_id:
                 dict_gene_symbol_to_id[gene_symbol] = set()
             dict_gene_symbol_to_id[gene_symbol].add(identifier)
-    print('number of proteins:',len(dict_protein_id_to_resource))
-
+    print('number of proteins:', len(dict_protein_id_to_resource))
 
 
 def generate_files(path_of_directory, label):
@@ -69,12 +69,6 @@ def generate_files(path_of_directory, label):
     return csv_mapping
 
 
-def resource(resource):
-    resource = set(resource)
-    resource.add('HMDB')
-    return '|'.join(resource)
-
-
 '''
 Load all variation sort the ids into the right tsv, generate the queries, and add rela to the rela tsv
 '''
@@ -86,24 +80,26 @@ def load_all_hmdb_protein_and_map(csv_mapping_protein):
     counter_not_mapped = 0
     counter_all = 0
 
-    file_not_mapped=open('protein/not_mapped.tsv','w',encoding='utf-8')
-    csv_not_mapped= csv.writer(file_not_mapped, delimiter='\t')
-    csv_not_mapped.writerow(['identifier','name', 'xrefs'])
+    file_not_mapped = open('protein/not_mapped.tsv', 'w', encoding='utf-8')
+    csv_not_mapped = csv.writer(file_not_mapped, delimiter='\t')
+    csv_not_mapped.writerow(['identifier', 'name', 'xrefs'])
     for node, in results:
         counter_all += 1
         identifier = node['identifier']
-        xrefs= node['xrefs'] if 'xrefs' in node else []
-        uniprot_name=node['uniprot_name']
+        xrefs = node['xrefs'] if 'xrefs' in node else []
+        uniprot_name = node['uniprot_name']
 
-        found_mapping=False
+        found_mapping = False
         for xref in xrefs:
-            split_xref=xref.split(':')
-            if split_xref[0]=='uniprot_id':
-                uniprot_id=split_xref[1]
+            split_xref = xref.split(':')
+            if split_xref[0] == 'uniprot_id':
+                uniprot_id = split_xref[1]
                 if uniprot_id in dict_protein_id_to_resource:
-                    found_mapping=True
+                    found_mapping = True
                     csv_mapping_protein.writerow(
-                        [identifier, uniprot_id, resource(dict_protein_id_to_resource[uniprot_id]), 'id'])
+                        [identifier, uniprot_id,
+                         pharmebinetutils.resource_add_and_prepare(dict_protein_id_to_resource[uniprot_id], 'HMDB'),
+                         'id'])
                 # elif uniprot_id in dict_alt_id_to_id:
                 #     found_mapping=True
                 #     for protein_id in dict_alt_id_to_id[uniprot_id]:
