@@ -55,9 +55,9 @@ def edges(file, name):
     :param name: string
     :return:
     """
-    file.set_axis(["RNAInterID", "Interactor1", "Category1", "Species1",
+    file=file.set_axis(["RNAInterID", "Interactor1", "Category1", "Species1",
                    "Interactor2", "Category2", "Species2", "Raw_ID1",
-                   "Raw_ID2", "score", "strong", "weak", "predict"], axis=1, inplace=True)
+                   "Raw_ID2", "score", "strong", "weak", "predict"], axis=1, copy=True)
 
     edge_set = ("RNAInterID", "Raw_ID1", "Raw_ID2", "Interactor1", "Interactor2", "score", "strong", "weak", "predict")
     edge = file.loc[:, edge_set]
@@ -75,16 +75,16 @@ def edges(file, name):
 def nodes(file, name):
     """
     Prepare the node information to node files and rna
-    :param file: string
+    :param file: dataframe
     :param name: string
     :return:
     """
     edge_set1 = ("Raw_ID1", "Interactor1", "Category1", "Species1")
     edge_set2 = ("Raw_ID2", "Interactor2", "Category2", "Species2")
 
-    file.set_axis(["RNAInterID", "Interactor1", "Category1", "Species1",
+    file=file.set_axis(["RNAInterID", "Interactor1", "Category1", "Species1",
                    "Interactor2", "Category2", "Species2", "Raw_ID1",
-                   "Raw_ID2", "score", "strong", "weak", "predict"], axis=1, inplace=True)
+                   "Raw_ID2", "score", "strong", "weak", "predict"], axis=1, copy=True)
 
     if (name == "rna"):
         rna = file.loc[:, edge_set2]
