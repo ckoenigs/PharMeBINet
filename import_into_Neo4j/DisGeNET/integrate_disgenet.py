@@ -104,7 +104,6 @@ def prepare_sqllite_info_and_combine(query, properties, on_properties, integrate
     cur = con.cursor()
     list_of_rows = []
     for row in cur.execute(query):
-        # list_of_rows.append([str(x) for x in row])
         list_of_rows.append(list(row))
 
     test_dataframe = pd.DataFrame(np.array(list_of_rows), columns=properties)
@@ -132,6 +131,7 @@ def get_geneInfo(gene_ids):
     file1 = pd.read_csv(os.path.join(source, name1), compression='gzip', sep='\t').convert_dtypes()
     file2 = pd.read_csv(os.path.join(source, name2), compression='gzip', sep='\t').convert_dtypes()
     file3 = pd.read_csv(os.path.join(source, name3), compression='gzip', sep='\t').convert_dtypes()
+
 
     # combine all sources to get list of unique gene_ids
     unique_gene_ids = pd.DataFrame()
@@ -305,7 +305,8 @@ def get_diseaseInfo(disease_ids_genetbl, disease_ids_vartbl, disease_df_genetbl,
     unique_ids['diseaseId'] = list(set(file1['diseaseId']).union(*[set(disease_ids_genetbl), set(disease_ids_vartbl)]))
     # CHECK diseaseType, Class, semanticType (für gleiche diseaseID unterschiedlich?) --> dann liste für die verschiedenen types
     # check: file2[file2['diseaseName'] == 'Heart Diseases']
-    disease_df = disease_df_genetbl.append(disease_df_vartbl).drop_duplicates(keep='first')
+    disease_df= pd.concat([disease_df_genetbl,disease_df_vartbl])
+    disease_df=disease_df.drop_duplicates(keep='first')
     # merge the collected disease-info (disease_df) onto unique disease-ID's
     unique_ids = unique_ids.merge(disease_df, how='left', on=['diseaseId'], copy=False, sort=True)
 
