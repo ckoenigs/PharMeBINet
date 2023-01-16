@@ -82,16 +82,15 @@ load all reactome pathways and check if they are in pharmebinet or not
 
 def load_reactome_pathways_in():
     global highest_identifier
-    query = '''MATCH (n:Pathway_reactome)-[r]-(s:Species_reactome) WHERE s.taxId = "9606" RETURN Distinct n'''
+    query = '''MATCH (n:Pathway_reactome)-[r]-(s:Species_reactome) WHERE s.taxId = "9606" RETURN Distinct n.stId, n.displayName, apoc.convert.fromJsonList(n.name)'''
     results = graph_database.run(query)
 
     # count how often map with name or with name
     counter_map_with_id = 0
     counter_map_with_name = 0
-    for pathways_node, in results:
-        pathways_id = pathways_node['stId']
-        pathways_name = pathways_node['displayName'].lower()
-        synonyms = pathways_node['name'] if 'name' in pathways_node else []
+    for pathways_id, pathways_name, synonyms, in results:
+        pathways_name = pathways_name.lower()
+        synonyms = synonyms if synonyms is not None else []
         # boolean to chek if a mapping happend or not
         found_mapping = False
         # check if the reactome pathway id is part in the pharmebinet xref
