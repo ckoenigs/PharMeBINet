@@ -18,6 +18,12 @@ path_neo4j=$1
 
 #path to project
 path_project=$2
+
+# path to import tool
+name_of_import_tool='../Neo4j-GraphML-Importer-v1.1.5'
+
+password='test1234'
+
 echo $path_project
 
 now=$(date +"%F %T")
@@ -27,7 +33,7 @@ echo integration of the database into hetionet
 # ths python scripts executed on windows with python 3.5.3
 cd import_into_Neo4j
 
-./integration_shell.sh $path_neo4j $path_project #> output_all_integration.txt
+./integration_shell.sh $path_neo4j $path_project $name_of_import_tool $password #> output_all_integration.txt
 
 cd ..
 
@@ -51,12 +57,12 @@ echo "Current time: $now"
 echo mapping and integration
 cd mapping_and_merging_into_hetionet
 
-./script_mapping.sh $path_neo4j $path_project #> output_mapping.txt
+./script_mapping.sh $path_neo4j $path_project $password #> output_mapping.txt
 
 cd ..
 
 
-# exit 1
+exit 1
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo cp database
@@ -86,7 +92,7 @@ echo "Current time: $now"
 
 cd final_preparation
 
-./new_preparation_script.sh $path_neo4j #> output_delete_source.txt
+./new_preparation_script.sh $path_neo4j $name_of_import_tool #> output_delete_source.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
