@@ -68,7 +68,7 @@ def add_entry_to_dict_to_set(dictionary, key, value):
     :return:
     """
     if key not in dictionary:
-        dictionary[key]=set()
+        dictionary[key] = set()
     dictionary[key].add(value)
 
 
@@ -76,10 +76,30 @@ def print_hline():
     print('#' * 100)
 
 
+USE_VERSION_5 = True
+
+
 def get_query_start(base_path: str, file_path: str) -> str:
     base_path = base_path.rstrip('/')
     return """USING PERIODIC COMMIT 10000 LOAD CSV WITH HEADERS FROM "file:%s/%s" AS line FIELDTERMINATOR '\\t'""" % (
         base_path, file_path)
+
+
+def get_query_import(base_path: str, file_path: str, query: str) -> str:
+    base_path = base_path.rstrip('/')
+    if USE_VERSION_5:
+        return """LOAD CSV WITH HEADERS FROM "file:%s/%s" AS line FIELDTERMINATOR '\\t' Call { with line %s } IN TRANSACTIONS OF 10000 ROWS;\n""" % (
+            base_path, file_path, query)
+    else:
+        return """USING PERIODIC COMMIT 10000 LOAD CSV WITH HEADERS FROM "file:%s/%s" AS line FIELDTERMINATOR '\\t' %s ;\n""" % (
+            base_path, file_path, query)
+
+
+def prepare_index_query(label: str, prop: str, additional_index: str = '') -> str:
+    if USE_VERSION_5:
+        return 'CREATE INDEX index%s%s FOR (node:%s) ON (node.%s);\n' % (label, additional_index, label, prop)
+    else:
+        return 'Create Constraint On (node:%s) Assert node.%s Is Unique;\n' % (label, prop)
 
 
 def resource_add_and_prepare(resource, source):
@@ -92,6 +112,7 @@ def resource_add_and_prepare(resource, source):
     resource = set(resource)
     resource.add(source)
     return '|'.join(sorted(resource, key=lambda s: s.lower()))
+
 
 def prepare_obo_synonyms(synonym):
     """
