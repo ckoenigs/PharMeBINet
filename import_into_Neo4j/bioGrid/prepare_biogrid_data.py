@@ -5,6 +5,9 @@ import io
 from requests import get
 from zipfile import ZipFile
 
+sys.path.append("../..")
+import pharmebinetutils
+
 # # dict gene id to infos
 dict_gene_infos = {}
 
@@ -44,7 +47,7 @@ def generate_tsv_files(keys, file_name):
     return csv_writer
 
 
-def generate_tsv_file_and_prepare_cypher_queries(keys, file_name, label, unique_identifier):
+def generate_tsv_file_and_prepare_cypher_queries(keys, file_name, label, unique_identifier, additional_index=''):
     """
     generate node file as csv. Additionaly, generate cpher query to integrate node into neo4j with index.
     :param keys: list strings
@@ -56,17 +59,17 @@ def generate_tsv_file_and_prepare_cypher_queries(keys, file_name, label, unique_
     csv_writer = generate_tsv_files(keys, file_name)
 
     # generate node query and indices
-    query = query_start + """ Create (n:%s{ """
-    query = query % (path_of_directory, file_name, label)
+    query = """ Create (n:%s{ """
+    query = query % (label)
     for head in keys:
         if head in ['synonyms', 'TREMBL_accessions', 'REFSEQ_accessions', 'swissprot_ids', 'brands', 'atc_codes']:
             query += head + ":split(line." + head + ",'|'), "
         else:
             query += head + ":line." + head + ", "
-    query = query[:-2] + "});\n"
+    query = query[:-2] + "})"
+    query = pharmebinetutils.get_query_import(path_of_directory, f'import_into_Neo4j/bioGrid/{file_name}', query)
     cypher_file.write(query)
-    query = 'Create Constraint On (node:%s) Assert node.%s Is Unique;\n'
-    query = query % (label, unique_identifier)
+    query = pharmebinetutils.prepare_index_query(label, unique_identifier, additional_index)
     cypher_file.write(query)
 
     return csv_writer
@@ -84,12 +87,13 @@ def generate_tsv_file_and_prepare_cypher_queries_for_edges(keys, file_name, labe
     csv_writer = generate_tsv_files(keys, file_name)
 
     # generate node query and indices
-    query = query_start + """ Match  (n:%s{ """ + keys[0] + ":line." + keys[
+    query = """ Match  (n:%s{ """ + keys[0] + ":line." + keys[
         0] + "}), (b:%s{%s:line.%s}) Create (n)-[:%s{"
-    query = query % (path_of_directory, file_name, label1, label2, keys[1], keys[1], rela_type)
+    query = query % (label1, label2, keys[1], keys[1], rela_type)
     for head in keys[2:]:
         query += head + ':line.' + head + ', '
-    query = query[:-2] + '}]->(b);\n'
+    query = query[:-2] + '}]->(b)'
+    query = pharmebinetutils.get_query_import(path_of_directory, f'import_into_Neo4j/bioGrid/{file_name}', query)
     cypher_file_edge.write(query)
 
     return csv_writer
@@ -128,10 +132,6 @@ def check_on_gene_id(gene_id, gene):
                 dict_gene_infos[gene_id][key] = value
 
 
-# query start
-query_start = """Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%simport_into_Neo4j/bioGrid/%s" As line FIELDTERMINATOR '\\t'"""
-
-
 def generate_files_for_gene_chemical_interaction():
     """
     Prepare the tsv files and the queries for integration for chemical-gene interaction
@@ -146,17 +146,17 @@ def generate_files_for_gene_chemical_interaction():
     csv_writer = csv.writer(file, delimiter='\t')
     csv_writer.writerow(head_rela_file)
 
-    query = query_start + ' Match (n1:bioGrid_gene{gene_id:line.gene_id}), (n2:bioGrid_chemical{chemical_id:line.chemical_id})  Create (n1)<-[:interacts{interaction_type:line.interaction_type}]-(m:bioGrid_interaction_with_chemical{'
-    query = query % (path_of_directory, file_name)
+    query = ' Match (n1:bioGrid_gene{gene_id:line.gene_id}), (n2:bioGrid_chemical{chemical_id:line.chemical_id})  Create (n1)<-[:interacts{interaction_type:line.interaction_type}]-(m:bioGrid_interaction_with_chemical{'
+
     for head in interaction_properties:
         if head in ["notes"]:
             query += head + ":split(line.`" + head + "`,'|'), "
         else:
             query += head + ":line.`" + head + "`, "
-    query = query[:-2] + "})<-[:interacts{action:line.action}]-(n2);\n"
+    query = query[:-2] + "})<-[:interacts{action:line.action}]-(n2)"
+    query = pharmebinetutils.get_query_import(path_of_directory, f'import_into_Neo4j/bioGrid/{file_name}', query)
     cypher_file_edge.write(query)
-    query = 'Create Constraint On (node:%s) Assert node.%s Is Unique;\n'
-    query = query % ('bioGrid_interaction_with_chemical', 'interaction_id')
+    query = pharmebinetutils.prepare_index_query('bioGrid_interaction_with_chemical', 'interaction_id')
     cypher_file_edge.write(query)
 
     file_name = 'output/interaction_related_gene.tsv'
@@ -164,8 +164,8 @@ def generate_files_for_gene_chemical_interaction():
     csv_writer_interaction_related = csv.writer(file, delimiter='\t')
     csv_writer_interaction_related.writerow(["gene_id", "interaction_id", "interaction_type"])
 
-    query = query_start + ' Match (n1:bioGrid_gene{gene_id:line.gene_id}), (m:bioGrid_interaction_with_chemical{interaction_id:line.interaction_id}) Create (m)-[:related_gene{interaction_type:line.interaction_type}]->(n1) ;\n'
-    query = query % (path_of_directory, file_name)
+    query = ' Match (n1:bioGrid_gene{gene_id:line.gene_id}), (m:bioGrid_interaction_with_chemical{interaction_id:line.interaction_id}) Create (m)-[:related_gene{interaction_type:line.interaction_type}]->(n1) '
+    query = pharmebinetutils.get_query_import(path_of_directory, f'import_into_Neo4j/bioGrid/{file_name}', query)
     cypher_file_edge.write(query)
 
     csv_drug = generate_tsv_file_and_prepare_cypher_queries(
@@ -219,8 +219,7 @@ file: BIOGRID-CHEMICALS-4.4.198.chemtab
 
 
 def load_chemical_interaction_and_seperate_information():
-    url_file='https://downloads.thebiogrid.org/Download/BioGRID/Release-Archive/BIOGRID-4.4.213/BIOGRID-CHEMICALS-4.4.213.chemtab.zip'
-
+    url_file = 'https://downloads.thebiogrid.org/Download/BioGRID/Release-Archive/BIOGRID-4.4.213/BIOGRID-CHEMICALS-4.4.213.chemtab.zip'
 
     csv_writer, csv_drug, csv_related_interaction = generate_files_for_gene_chemical_interaction()
 
@@ -233,7 +232,7 @@ def load_chemical_interaction_and_seperate_information():
         csv_reader = csv.DictReader(io.TextIOWrapper(f, 'utf-8'), delimiter='\t')
 
         counter = 0
-        counter_human=0
+        counter_human = 0
         for line in csv_reader:
             counter += 1
             if counter % 5000 == 0:
@@ -269,25 +268,28 @@ def load_chemical_interaction_and_seperate_information():
 
             gene_id_2 = line['Related BioGRID Gene ID']
             gene_properties_2 = ['Related BioGRID Gene ID', 'Related Entrez Gene ID', 'Related Systematic Name',
-                                 'Related Official Symbol', 'Related Synonyms', 'Related Organism ID', 'Related Organism']
+                                 'Related Official Symbol', 'Related Synonyms', 'Related Organism ID',
+                                 'Related Organism']
             gene_2 = prepare_gene_info(line, gene_properties_2)
-            if gene_2['organism_id'] != '9606' and gene_2['organism_id']!='':
+            if gene_2['organism_id'] != '9606' and gene_2['organism_id'] != '':
                 continue
             check_on_gene_id(gene_id_2, gene_2)
 
             list_of_rela_gene_chemical = [gene_id_1, chemical_id, interaction_type, action]
-            for prop in ["#BioGRID Chemical Interaction ID", "Author", "Pubmed ID", "BioGRID Publication ID", "Curated By",
+            for prop in ["#BioGRID Chemical Interaction ID", "Author", "Pubmed ID", "BioGRID Publication ID",
+                         "Curated By",
                          "Method", "Method Description", "Notes"]:
                 list_of_rela_gene_chemical.append(check_if_value_exist(line, prop))
             csv_writer.writerow(list_of_rela_gene_chemical)
 
-            if gene_id_2!='-':
-                csv_related_interaction.writerow([gene_id_2, line["#BioGRID Chemical Interaction ID"], line['Related Type']])
-            counter_human+=1
+            if gene_id_2 != '-':
+                csv_related_interaction.writerow(
+                    [gene_id_2, line["#BioGRID Chemical Interaction ID"], line['Related Type']])
+            counter_human += 1
     print(interaction_types)
     print(actions)
-    print('number of interaction:',counter)
-    print('counter interaction all human:',counter_human)
+    print('number of interaction:', counter)
+    print('counter interaction all human:', counter_human)
 
 
 def prepare_split_line_dictionary(line, header):
@@ -353,7 +355,7 @@ def prepare_ontology_infos(line, interaction_id):
                 category_replace = category.replace(' ', '_')
                 csv_node = generate_tsv_file_and_prepare_cypher_queries(header_ontology,
                                                                         'output/' + category_replace + '.tsv',
-                                                                        'bioGrid_' + category_replace, 'id')
+                                                                        'bioGrid_' + category_replace, 'id', '2')
                 dict_category_to_csv_writer[category] = csv_node
                 set_ontologies_categories.add(category)
                 dict_category_to_dict_node_id_to_properties[category] = {}
@@ -416,17 +418,17 @@ def prepare_file_and_query_for_gene_gene_interaction():
     csv_writer = csv.writer(file, delimiter='\t')
     csv_writer.writerow(head_rela_file)
 
-    query = query_start + ' Match (n1:bioGrid_gene{gene_id:line.gene_id1}), (n2:bioGrid_gene{gene_id:line.gene_id2})   Create (n1)-[:interacts]->(m:bioGrid_interaction{'
-    query = query % (path_of_directory, file_name)
+    query = ' Match (n1:bioGrid_gene{gene_id:line.gene_id1}), (n2:bioGrid_gene{gene_id:line.gene_id2})   Create (n1)-[:interacts]->(m:bioGrid_interaction{'
     for head in dict_gene_gene_interaction_file_name_to_neo4j_property.values():
         if head in ["throughput", "qualifications", "tags"]:
             query += head + ":split(line." + head + ",'|'), "
         else:
             query += head + ":line." + head + ", "
-    query = query[:-2] + "})-[:interacts]->(n2);\n"
+    query = query[:-2] + "})-[:interacts]->(n2)"
+    query = pharmebinetutils.get_query_import(path_of_directory, f'import_into_Neo4j/bioGrid/{file_name}', query)
     cypher_file_edge.write(query)
-    query = 'Create Constraint On (node:%s) Assert node.%s Is Unique;\n'
-    query = query % ('bioGrid_interaction', 'interaction_id')
+
+    query = pharmebinetutils.prepare_index_query('bioGrid_interaction', 'interaction_id')
     cypher_file_edge.write(query)
 
     return csv_writer
@@ -481,15 +483,15 @@ def load_protein_interaction_and_seperate_information():
     Parse the Biogrid-organism-homo sapiens
     :return:
     """
-    url_file='https://downloads.thebiogrid.org/Download/BioGRID/Release-Archive/BIOGRID-4.4.213/BIOGRID-ORGANISM-4.4.213.tab3.zip'
+    url_file = 'https://downloads.thebiogrid.org/Download/BioGRID/Release-Archive/BIOGRID-4.4.213/BIOGRID-ORGANISM-4.4.213.tab3.zip'
 
     csv_writer_interaction = prepare_file_and_query_for_gene_gene_interaction()
 
     counter = 0
-    counter_human=0
+    counter_human = 0
     request = get(url_file)
     with ZipFile(BytesIO(request.content), 'r') as zipObj:
-        file_name='BIOGRID-ORGANISM-Homo_sapiens-4.4.213.tab3.txt'
+        file_name = 'BIOGRID-ORGANISM-Homo_sapiens-4.4.213.tab3.txt'
         # for zip_info in zipObj.filelist:
         #     if zip_info.filename!=file_name:
         #         continue
@@ -518,11 +520,11 @@ def load_protein_interaction_and_seperate_information():
                 continue
             check_on_gene_id(gene_id_2, gene_2)
 
-            counter_human+=1
+            counter_human += 1
 
             list_interaction_info = [gene_id_1, gene_id_2]
             for key in dict_gene_gene_interaction_file_name_to_neo4j_property.keys():
-                list_interaction_info.append(check_if_value_exist(line,key))
+                list_interaction_info.append(check_if_value_exist(line, key))
             csv_writer_interaction.writerow(list_interaction_info)
 
             edge_id = line['#BioGRID Interaction ID']
@@ -533,8 +535,8 @@ def load_protein_interaction_and_seperate_information():
     print(set_ontologies_categories)
     print(set_of_ontology_nodes)
 
-    print('number of interaction:',counter)
-    print('counter interaction all human:',counter_human)
+    print('number of interaction:', counter)
+    print('counter interaction all human:', counter_human)
 
 
 def prepare_gene_file():

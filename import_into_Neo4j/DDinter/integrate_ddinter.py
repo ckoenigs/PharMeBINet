@@ -1,6 +1,9 @@
 import sys, datetime, csv
 from requests import get
 
+sys.path.append("../..")
+import pharmebinetutils
+
 dict_file_name_value = {
     'A': 'Interaction involving alimentary tract and metabolism drugs',
     'B': 'Interaction involving blood and blood forming organs drugs',
@@ -13,8 +16,6 @@ dict_file_name_value = {
 
 }
 
-# query start
-query_start = """Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%simport_into_Neo4j/DDinter/%s" As line FIELDTERMINATOR '\\t'"""
 cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
 
 # dictionary drug id to name
@@ -70,13 +71,12 @@ def generate_drug_file(edge_file_name):
     csv_writer = csv.writer(file, delimiter='\t')
     csv_writer.writerow(['id', 'name'])
 
-    query = query_start + ' Create (d:drug_ddinter{identifier:line.id, name:line.name});\n'
-    query = query % (path_of_directory, file_name)
+    query = ' Create (d:drug_ddinter{identifier:line.id, name:line.name})'
+    query = pharmebinetutils.get_query_import(path_of_directory, 'import_into_Neo4j/DDinter/' + file_name, query)
     cypher_file.write(query)
-    query = 'Create Constraint On (node:drug_ddinter) Assert node.identifier Is Unique;\n'
-    cypher_file.write(query)
-    query = query_start + ' Match (d1:drug_ddinter{identifier:line.id1}), (d2:drug_ddinter{identifier:line.id2}) Create (d1)-[:interacts{level:line.level,rela_info:line.rela_info}]->(d2);\n'
-    query = query % (path_of_directory, edge_file_name)
+    cypher_file.write(pharmebinetutils.prepare_index_query('drug_ddinter', 'identifier'))
+    query = ' Match (d1:drug_ddinter{identifier:line.id1}), (d2:drug_ddinter{identifier:line.id2}) Create (d1)-[:interacts{level:line.level,rela_info:line.rela_info}]->(d2)'
+    query = pharmebinetutils.get_query_import(path_of_directory, 'import_into_Neo4j/DDinter/' + edge_file_name, query)
     cypher_file.write(query)
 
     for id, name in dict_drug_id_to_name.items():
@@ -97,12 +97,10 @@ def main():
     print(datetime.datetime.now())
     print('load DDinter data')
 
-
     file_name = 'output/edges.tsv'
     file = open(file_name, 'w', encoding='utf-8')
     csv_writer = csv.writer(file, delimiter='\t')
     csv_writer.writerow(['id1', 'id2', 'level', 'rela_info'])
-
 
     for letter in dict_file_name_value:
         load_data(letter, csv_writer)

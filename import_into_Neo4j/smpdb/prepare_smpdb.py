@@ -5,8 +5,8 @@ import io
 from requests import get
 from zipfile import ZipFile
 
-# # dict gene id to infos
-from _socket import herror
+sys.path.append("../..")
+import pharmebinetutils
 
 dict_gene_infos = {}
 
@@ -45,17 +45,18 @@ def generate_csv_file_and_prepare_cypher_queries(keys, file_name, label, unique_
     csv_writer = generate_csv_files(keys, file_name)
 
     # generate node query and indices
-    query = query_start + """ Create (n:%s_smpdb{  """
-    query = query % (path_of_directory, file_name, label)
+    query = """ Create (n:%s_smpdb{  """
+    query = query % (label)
     for head in keys:
         if head in []:
             query += head + ":split(line." + head + ",'|'), "
         else:
             query += head + ":line." + head + ", "
-    query = query[:-2] + "});\n"
+    query = query[:-2] + "})"
+    query = pharmebinetutils.get_query_import(path_of_directory, f'import_into_Neo4j/smpdb/{file_name}', query)
     cypher_file.write(query)
-    query = 'Create Constraint On (node:%s_smpdb) Assert node.%s Is Unique;\n'
-    query = query % (label, unique_identifier)
+
+    query = pharmebinetutils.prepare_index_query(label + '_smpdb', unique_identifier)
     cypher_file.write(query)
 
     return csv_writer
@@ -72,15 +73,13 @@ def generate_csv_file_and_prepare_cypher_queries_edge(file_name, label, unique_i
     csv_writer = generate_csv_files(['pathway_id', 'other_id'], file_name)
 
     # generate node query and indices
-    query = query_start + """ Match (n:pathway_smpdb{ smpdb_id:line.pathway_id}), (m:%s_smpdb {%s:line.other_id}) Create (n)-[:associates]->(m);\n """
-    query = query % (path_of_directory, file_name, label, unique_identifier)
+    query = """ Match (n:pathway_smpdb{ smpdb_id:line.pathway_id}), (m:%s_smpdb {%s:line.other_id}) Create (n)-[:associates]->(m) """
+    query = query % (label, unique_identifier)
+    query = pharmebinetutils.get_query_import(path_of_directory, f'import_into_Neo4j/smpdb/{file_name}', query)
     cypher_file_edge.write(query)
 
     return csv_writer
 
-
-# query start
-query_start = """Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%simport_into_Neo4j/smpdb/%s" As line FIELDTERMINATOR '\\t'"""
 
 # dictionary old property name to new
 dict_old_porperty_to_new = {
