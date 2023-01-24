@@ -1,6 +1,9 @@
 import datetime
 import sys, csv
 
+sys.path.append("../..")
+import pharmebinetutils
+
 # path to data 
 if len(sys.argv) > 1:
     # for windows
@@ -484,22 +487,33 @@ def generate_cypher_file():
     # create cypher file
     cypher_file = open('output/cypher.cypher', 'w')
     # query for drugs
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + 'import_into_Neo4j/sider/output/drug.tsv" As line fieldterminator "\\t" Create (:drug_Sider{stitchIDflat: line.stitchIDflat , stitchIDstereo: line.stitchIDstereo, PubChem_Coupound_ID: line.PubChem_Coupound_ID} ); \n'
+    query = ' Create (:drug_Sider{stitchIDflat: line.stitchIDflat , stitchIDstereo: line.stitchIDstereo, PubChem_Coupound_ID: line.PubChem_Coupound_ID} )'
+    query = pharmebinetutils.get_query_import(path_of_directory, 'import_into_Neo4j/sider/output/drug.tsv',
+                                                        query)
+    # query=pharmebinetutils.get_query_import(path_of_directory, 'import_into_Neo4j/sider/output/drug.tsv', query)
     cypher_file.write(query)
-    cypher_file.write(':begin\n')
-    cypher_file.write('Create Constraint On (node:drug_Sider) Assert node.stitchIDstereo Is Unique; \n')
-    cypher_file.write(':commit \n Call db.awaitIndexes(300);  \n ')
+    # cypher_file.write(pharmebinetutils.prepare_index_query('drug_Sider','stitchIDstereo'))
+    cypher_file.write(pharmebinetutils.prepare_index_query('drug_Sider', 'stitchIDstereo'))
     # query for side effects
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + 'import_into_Neo4j/sider/output/se.tsv" As line fieldterminator "\\t" Create (:se_Sider{meddraType: line.meddraType , conceptName: line.conceptName, umlsIDmeddra: line.umlsIDmeddra, name: line.name, umls_concept_id: line.umls_concept_id} ); \n'
+    query = 'Create (:se_Sider{meddraType: line.meddraType , conceptName: line.conceptName, umlsIDmeddra: line.umlsIDmeddra, name: line.name, umls_concept_id: line.umls_concept_id} )'
+    query = pharmebinetutils.get_query_import(path_of_directory, 'import_into_Neo4j/sider/output/se.tsv',
+                                                        query)
+    # query=pharmebinetutils.get_query_import(path_of_directory, 'import_into_Neo4j/sider/output/se.tsv', query)
     cypher_file.write(query)
-    cypher_file.write(':begin\n')
-    cypher_file.write('Create Constraint On (node:se_Sider) Assert node.umlsIDmeddra Is Unique; \n')
-    cypher_file.write(':commit \n Call db.awaitIndexes(300); \n ')
+    # cypher_file.write(pharmebinetutils.prepare_index_query('se_Sider','umlsIDmeddra'))
+    cypher_file.write(pharmebinetutils.prepare_index_query('se_Sider', 'umlsIDmeddra'))
     # query for relationships relationships
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + 'import_into_Neo4j/sider/output/rela.tsv" As line fieldterminator "\\t" Match (drug:drug_Sider{stitchIDstereo: line.stitchIDstereo}), (se:se_Sider{umlsIDmeddra: line.umlsIDmeddra}) Create (drug)-[:Causes{placebo: line.placebo , freq: line.freq, lowerFreq: line.lowerFreq , upperFreq: line.upperFreq, placeboFreq: line.placeboFreq, placeboLowerFreq: line.placeboLowerFreq, placeboUpperFreq: line.placeboUpperFreq, method_of_detection:split(line.method_of_detection,"|")}] ->(se); \n'
+    query = 'Match (drug:drug_Sider{stitchIDstereo: line.stitchIDstereo}), (se:se_Sider{umlsIDmeddra: line.umlsIDmeddra}) Create (drug)-[:Causes{placebo: line.placebo , freq: line.freq, lowerFreq: line.lowerFreq , upperFreq: line.upperFreq, placeboFreq: line.placeboFreq, placeboLowerFreq: line.placeboLowerFreq, placeboUpperFreq: line.placeboUpperFreq, method_of_detection:split(line.method_of_detection,"|")}] ->(se)'
+    query = pharmebinetutils.get_query_import(path_of_directory, 'import_into_Neo4j/sider/output/rela.tsv',
+                                                        query)
+    # query=pharmebinetutils.get_query_import(path_of_directory, 'import_into_Neo4j/sider/output/rela.tsv', query)
     cypher_file.write(query)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + 'import_into_Neo4j/sider/output/rela_indicates.tsv" As line fieldterminator "\\t" Match (drug:drug_Sider{stitchIDstereo: line.stitchIDstereo}), (se:se_Sider{umlsIDmeddra: line.umlsIDmeddra}) Create (drug)-[:Indicates{placebo: line.placebo , freq: line.freq, lowerFreq: line.lowerFreq , upperFreq: line.upperFreq, placeboFreq: line.placeboFreq, placeboLowerFreq: line.placeboLowerFreq, placeboUpperFreq: line.placeboUpperFreq, method_of_detection:split(line.method_of_detection,"|")}] ->(se); \n'
+    query = 'Match (drug:drug_Sider{stitchIDstereo: line.stitchIDstereo}), (se:se_Sider{umlsIDmeddra: line.umlsIDmeddra}) Create (drug)-[:Indicates{placebo: line.placebo , freq: line.freq, lowerFreq: line.lowerFreq , upperFreq: line.upperFreq, placeboFreq: line.placeboFreq, placeboLowerFreq: line.placeboLowerFreq, placeboUpperFreq: line.placeboUpperFreq, method_of_detection:split(line.method_of_detection,"|")}] ->(se)'
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                                        'import_into_Neo4j/sider/output/rela_indicates.tsv',
+                                                        query)
+    # query=pharmebinetutils.get_query_import(path_of_directory, 'import_into_Neo4j/sider/output/rela_indicates.tsv', query)
     cypher_file.write(query)
 
     # create drug tsv
