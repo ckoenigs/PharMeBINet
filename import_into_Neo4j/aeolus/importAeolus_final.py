@@ -1,13 +1,10 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Apr 25 20:05:54 2017
-
-@author: Cassandra
-"""
 import datetime
 import sys
 
 import csv
+
+sys.path.append("../..")
+import pharmebinetutils
 
 
 class Outcome(object):
@@ -23,6 +20,7 @@ class Outcome(object):
     def __init__(self, outcome_concept_id, snomed_outcome_concept_id):
         self.outcome_concept_id = outcome_concept_id
         self.snomed_outcome_concept_id = snomed_outcome_concept_id
+
 
 class Edge(object):
     """
@@ -264,7 +262,7 @@ def load_drug_outcome_statistic():
         ror_95_percent_upper_confidence_limit = splitted[8]
         ror_95_percent_lower_confidence_limit = splitted[9].replace('\n', '')
 
-        dict_drugs[drug_concept_id] = {'concept_id':drug_concept_id}
+        dict_drugs[drug_concept_id] = {'concept_id': drug_concept_id}
 
         outcome = Outcome(outcome_concept_id, snomed_outcome_concept_id)
         dict_outcomes[outcome_concept_id] = outcome
@@ -334,11 +332,11 @@ def create_csv_and_cypher_file_neo4j():
     f = open(file_name_outcome, 'w', encoding='utf-8')
 
     # add cypher wuery to cypher file to integrate outcome
-    cypher_outcome = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/aeolus/''' + file_name_outcome + '''" As line FIELDTERMINATOR '\\t' Create (:Aeolus_Outcome{outcome_concept_id:line.outcome_concept_id , concept_code: line.concept_code,  name: line.name, snomed_outcome_concept_id: line.snomed_outcome_concept_id, vocabulary_id: line.vocabulary_id });\n'''
+    cypher_outcome = '''Create (:Aeolus_Outcome{outcome_concept_id:line.outcome_concept_id , concept_code: line.concept_code,  name: line.name, snomed_outcome_concept_id: line.snomed_outcome_concept_id, vocabulary_id: line.vocabulary_id })'''
+    cypher_outcome = pharmebinetutils.get_query_import(path_of_directory,
+                                                       f'import_into_Neo4j/aeolus/{file_name_outcome}', cypher_outcome)
     cypher_file.write(cypher_outcome)
-    cypher_file.write(':begin \n')
-    cypher_file.write('Create Constraint On (node:Aeolus_Outcome) Assert node.outcome_concept_id Is Unique; \n')
-    cypher_file.write(':commit \n Call db.awaitIndexes(300) ; \n ')
+    cypher_file.write(pharmebinetutils.prepare_index_query('Aeolus_Outcome', 'outcome_concept_id'))
     # tsv file for outcome
     try:
         writer = csv.writer(f, delimiter='\t', quoting=csv.QUOTE_NONNUMERIC)
@@ -361,11 +359,11 @@ def create_csv_and_cypher_file_neo4j():
 
     # add cypher query to cypher file for integration of drugs
     # add cypher wuery to cypher file to integrate outcome
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/aeolus/''' + file_name_drug + '''" As line FIELDTERMINATOR '\\t' Create (:Aeolus_Drug{drug_concept_id: line.drug_concept_id, concept_code: line.concept_code, name: line.name, vocabulary_id: line.vocabulary_id });\n'''
+    query = '''Create (:Aeolus_Drug{drug_concept_id: line.drug_concept_id, concept_code: line.concept_code, name: line.name, vocabulary_id: line.vocabulary_id })'''
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'import_into_Neo4j/aeolus/{file_name_drug}', query)
     cypher_file.write(query)
-    cypher_file.write(' :begin \n')
-    cypher_file.write('Create Constraint On (node:Aeolus_Drug) Assert node.drug_concept_id Is Unique; \n')
-    cypher_file.write(':commit \n Call db.awaitIndexes(300) ; \n ')
+    cypher_file.write(pharmebinetutils.prepare_index_query('Aeolus_Drug', 'drug_concept_id'))
 
     # tsv file for drugs
     try:
@@ -382,10 +380,14 @@ def create_csv_and_cypher_file_neo4j():
 
     # tsv for relationships
     file_name_drug_outcome = 'output/drug_outcome_relation.tsv'
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/aeolus/''' + file_name_drug_outcome + '''" As line FIELDTERMINATOR '\\t' Match (n1:Aeolus_Drug {drug_concept_id: line.drug_id}), (n2:Aeolus_Outcome {outcome_concept_id: line.adr_id}) Create (n1)-[:Causes{countA: line.countA , countB: line.countB , countC: line.countC , countD: line.countD, drug_outcome_pair_count: line.drug_outcome_pair_count, prr: line.prr, prr_95_percent_upper_confidence_limit: line.prr_95_percent_upper_confidence_limit , prr_95_percent_lower_confidence_limit: line.prr_95_percent_lower_confidence_limit , ror: line.ror , ror_95_percent_upper_confidence_limit: line.ror_95_percent_upper_confidence_limit , ror_95_percent_lower_confidence_limit: line.ror_95_percent_lower_confidence_limit}]->(n2); \n'''
+    query = ''' Match (n1:Aeolus_Drug {drug_concept_id: line.drug_id}), (n2:Aeolus_Outcome {outcome_concept_id: line.adr_id}) Create (n1)-[:Causes{countA: line.countA , countB: line.countB , countC: line.countC , countD: line.countD, drug_outcome_pair_count: line.drug_outcome_pair_count, prr: line.prr, prr_95_percent_upper_confidence_limit: line.prr_95_percent_upper_confidence_limit , prr_95_percent_lower_confidence_limit: line.prr_95_percent_lower_confidence_limit , ror: line.ror , ror_95_percent_upper_confidence_limit: line.ror_95_percent_upper_confidence_limit , ror_95_percent_lower_confidence_limit: line.ror_95_percent_lower_confidence_limit}]->(n2)'''
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'import_into_Neo4j/aeolus/{file_name_drug_outcome}', query)
     cypher_file.write(query)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/aeolus/output/indications.tsv" As line FIELDTERMINATOR '\\t' Match (n1:Aeolus_Drug {drug_concept_id: line.drug_concept_id}), (n2:Aeolus_Outcome {outcome_concept_id: line.indication_concept_id}) Create (n1)-[:Indicates]->(n2); \n'''
+    query = ''' Match (n1:Aeolus_Drug {drug_concept_id: line.drug_concept_id}), (n2:Aeolus_Outcome {outcome_concept_id: line.indication_concept_id}) Create (n1)-[:Indicates]->(n2)'''
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'import_into_Neo4j/aeolus/output/indications.tsv', query)
     cypher_file.write(query)
 
     f = open(file_name_drug_outcome, 'w', encoding='utf-8')

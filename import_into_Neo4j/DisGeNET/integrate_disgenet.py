@@ -5,6 +5,9 @@ import numpy as np
 import pandas as pd
 import sqlite3
 
+sys.path.append("../..")
+import pharmebinetutils
+
 
 def create_connection_to_sqllite():
     """
@@ -24,21 +27,18 @@ def cypher_node(cypher_file, filename, label, properties, unique_property):
     :param unique_property: identifier (e.g. diseaseId)
     """
 
-    query_start = 'Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:' + os.path.join(home,
-                                                                                                  destination + filename) + '" As line fieldterminator "\\t" '
-
-    query = query_start + 'Create (p:%s_DisGeNet{' % (label)
+    query = 'Create (p:%s_DisGeNet{' % (label)
     for x in properties:
         if x in ['synonyms', 'code']:  # properties that are lists must be splitted
             query += x + ':split(line.' + x + ',"|"), '
         else:
             query += x + ':line.' + x + ', '
     # delete last comma
-    query = query[:-2] + '});\n'
+    query = query[:-2] + '})'
+    query = pharmebinetutils.get_query_import(home, destination + filename, query)
     cypher_file.write(query)
 
-    query2 = 'Create Constraint On (node:%s_DisGeNet) Assert node.%s Is Unique; \n' % (label, unique_property)
-    cypher_file.write(query2)
+    cypher_file.write(pharmebinetutils.prepare_index_query(label+'_DisGeNet',unique_property))
     # write everything in same file
 
 
@@ -52,19 +52,19 @@ def cypher_edge(cypher_file, filename, label, properties, id_list, edge_name):
     :param edge_name: specifies how the connection btw. two nodes is called
     """
 
-    query_start = 'Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:' + os.path.join(home,
-                                                                                                  destination + filename) + '" As line fieldterminator "\\t" '
-    query = query_start + f'Match (p1:{label[0]}_DisGeNet{{{id_list[0]}:line.{id_list[0]}}}),(p2:{label[1]}_DisGeNet{{{id_list[1]}:line.{id_list[1]}}}) Create (p1)-[:{edge_name}{{  '
+    query = f'Match (p1:{label[0]}_DisGeNet{{{id_list[0]}:line.{id_list[0]}}}),(p2:{label[1]}_DisGeNet{{{id_list[1]}:line.{id_list[1]}}}) Create (p1)-[:{edge_name}{{  '
     for header in properties:
         # ignore key labels (wie diseaseId)
         if header in id_list:
             continue
-        elif header in ['pmid', 'sourceId','associationType','sentence']:  # properties that are lists must be splitted
+        elif header in ['pmid', 'sourceId', 'associationType',
+                        'sentence']:  # properties that are lists must be splitted
             query += f'{header}:split(line.{header},"|"), '
         else:
             query += f'{header}:line.{header}, '
 
-    query = query[:-2] + '}]->(p2);\n'
+    query = query[:-2] + '}]->(p2)'
+    query = pharmebinetutils.get_query_import(home, destination + filename, query)
     cypher_file.write(query)
 
 
@@ -131,7 +131,6 @@ def get_geneInfo(gene_ids):
     file1 = pd.read_csv(os.path.join(source, name1), compression='gzip', sep='\t').convert_dtypes()
     file2 = pd.read_csv(os.path.join(source, name2), compression='gzip', sep='\t').convert_dtypes()
     file3 = pd.read_csv(os.path.join(source, name3), compression='gzip', sep='\t').convert_dtypes()
-
 
     # combine all sources to get list of unique gene_ids
     unique_gene_ids = pd.DataFrame()
@@ -305,8 +304,8 @@ def get_diseaseInfo(disease_ids_genetbl, disease_ids_vartbl, disease_df_genetbl,
     unique_ids['diseaseId'] = list(set(file1['diseaseId']).union(*[set(disease_ids_genetbl), set(disease_ids_vartbl)]))
     # CHECK diseaseType, Class, semanticType (für gleiche diseaseID unterschiedlich?) --> dann liste für die verschiedenen types
     # check: file2[file2['diseaseName'] == 'Heart Diseases']
-    disease_df= pd.concat([disease_df_genetbl,disease_df_vartbl])
-    disease_df=disease_df.drop_duplicates(keep='first')
+    disease_df = pd.concat([disease_df_genetbl, disease_df_vartbl])
+    disease_df = disease_df.drop_duplicates(keep='first')
     # merge the collected disease-info (disease_df) onto unique disease-ID's
     unique_ids = unique_ids.merge(disease_df, how='left', on=['diseaseId'], copy=False, sort=True)
 

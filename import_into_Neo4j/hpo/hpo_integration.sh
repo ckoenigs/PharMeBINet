@@ -6,6 +6,9 @@ path_neo4j=$1
 #path to project
 path_to_project=$2
 
+#password
+password=$3
+
 
 #download obo file
 wget  -O data/hpo.obo "http://purl.obolibrary.org/obo/hp.obo"
@@ -31,7 +34,7 @@ echo "Current time: $now"
 
 echo integrate hpo into neo4j
 
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher 
+$path_neo4j/cypher-shell -u neo4j -p $password -f cypher.cypher
 
 sleep 60
 

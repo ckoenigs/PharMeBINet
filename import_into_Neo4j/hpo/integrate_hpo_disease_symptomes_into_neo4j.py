@@ -1,16 +1,8 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Dec  5 12:14:27 2017
-
-@author: cassandra
-"""
-
 import sys
 import datetime, csv
 
-# reload(sys)
-# set default encoding on utf-8
-# sys.setdefaultencoding('utf-8')
+sys.path.append("../..")
+import pharmebinetutils
 
 # dictionary with pair(disease_id, HPO id) and qualifier, db_reference, evidence code, frequency modifier
 dict_disease_symptom_hpo_pair_to_information = {}
@@ -43,28 +35,29 @@ csv_writer_rela.writerow(list_of_rela_properties)
 
 # cypher file
 cypher_file = open('cypher.cypher', 'a')
-query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/hpo/output/disease.tsv" As line  Fieldterminator '\\t' Create (:HPO_disease{'''
+query = ''' Create (:HPO_disease{'''
 for property in list_of_disease_properties:
     if property == 'name':
         query += property + 's:split(line.' + property + ',"|"), '
         continue
     query += property + ':line.' + property + ', '
-query = query[:-2] + '});\n'
+query = query[:-2] + '})'
+query = pharmebinetutils.get_query_import(path_of_directory, 'import_into_Neo4j/hpo/output/disease.tsv', query)
 cypher_file.write(query)
-cypher_file.write(':begin\n')
-cypher_file.write('Create Constraint On (node:HPO_disease) Assert node.id Is Unique; \n')
-cypher_file.write(':commit \n')
+cypher_file.write(pharmebinetutils.prepare_index_query('HPO_disease', 'id'))
 # query for relationships
-query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/hpo/output/rela_disease_phenotyp.tsv" As line  Fieldterminator '\\t' MATCH (n:HPO_disease{id:line.disease_id}),(s:HPO_symptom{id:line.phenotype_id}) Create (n)-[:present{'''
+query = ''' MATCH (n:HPO_disease{id:line.disease_id}),(s:HPO_symptom{id:line.phenotype_id}) Create (n)-[:present{'''
 
 for property in list_of_rela_properties:
     if property in ['disease_id', 'phenotype_id']:
         continue
-    if property !='qualifier':
-        query+= property+':split(line.'+property+',"|"), '
+    if property != 'qualifier':
+        query += property + ':split(line.' + property + ',"|"), '
     else:
         query += property + 's:split(line.' + property + ',"|"), '
-query= query[:-2]+'''}]->(s); \n '''
+query = query[:-2] + '''}]->(s)'''
+query = pharmebinetutils.get_query_import(path_of_directory, 'import_into_Neo4j/hpo/output/rela_disease_phenotyp.tsv',
+                                          query)
 cypher_file.write(query)
 
 # dictionary with all hpo identifier for frequency
@@ -143,7 +136,8 @@ def gather_all_disease_symptom_information_from_HPO():
                 'evidence_code'].add(evidence_code)
             dict_disease_symptom_hpo_pair_to_information[(db_disease_id, hpo_id)]['sex'].add(sex)
             dict_disease_symptom_hpo_pair_to_information[(db_disease_id, hpo_id)]['onset'].add(onset)
-            dict_disease_symptom_hpo_pair_to_information[(db_disease_id, hpo_id)]['frequency_modifier'].add(frequency_modi)
+            dict_disease_symptom_hpo_pair_to_information[(db_disease_id, hpo_id)]['frequency_modifier'].add(
+                frequency_modi)
             dict_disease_symptom_hpo_pair_to_information[(db_disease_id, hpo_id)]['aspect'].add(aspect)
             dict_disease_symptom_hpo_pair_to_information[(db_disease_id, hpo_id)]['biocuration'] = \
                 dict_disease_symptom_hpo_pair_to_information[(db_disease_id, hpo_id)][
@@ -190,8 +184,8 @@ def write_rela_info_into_csv():
         for property in list_of_rela_properties:
             if property in ['disease_id', 'phenotype_id']:
                 continue
-            elif property=='sources':
-                property='reference_id'
+            elif property == 'sources':
+                property = 'reference_id'
             info_list.append('|'.join(filter(None, dict_rela_info[property])))
         csv_writer_rela.writerow(info_list)
 

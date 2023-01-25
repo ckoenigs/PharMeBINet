@@ -9,6 +9,9 @@ import_tool=$2
 # define bioDWH2 tool
 biodwh2=$3
 
+#password
+password=$4
+
 
 echo load latest version of DrugCentral and generat GraphML file
 
@@ -33,7 +36,7 @@ echo $import_tool
 
 echo integrate DurgCentral into neo4j
 
-java -jar ../$import_tool.jar -i sources/DrugCentral/intermediate.graphml  -e bolt://localhost:7687 --username neo4j --password test --label-prefix DC_ > output/import_tool_output.txt
+java -jar ../$import_tool.jar -i sources/DrugCentral/intermediate.graphml  -e bolt://localhost:7687 --username neo4j --password $password --label-prefix DC_ > output/import_tool_output.txt
 
 sleep 120
 

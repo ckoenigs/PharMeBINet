@@ -1,8 +1,10 @@
 import sys, datetime
 from io import BytesIO
-import io
 from requests import get
 import pandas as pd
+
+sys.path.append("../..")
+import pharmebinetutils
 
 # cypher file
 cypher_file = open('cypher.cypher', 'a', encoding='utf-8')
@@ -20,19 +22,18 @@ def generate_csv_file_and_prepare_cypher_queries(keys, file_name, label, unique_
     """
 
     # generate node query and indices
-    query = query_start + """ Create (n:%s_go{  """
-    query = query % (path_of_directory, file_name, label)
+    query = """ Create (n:%s_go{  """
+    query = query % (label)
     for head in keys:
         head_short = head.split('_')[0]
         if head_short in ['synonyms']:
             query += head_short + ":split(line." + head + ",'|'), "
         else:
             query += head_short + ":line." + head + ", "
-    query = query[:-2] + "});\n"
+    query = query[:-2] + "})"
+    query = pharmebinetutils.get_query_import(path_of_directory, f'import_into_Neo4j/GO/{file_name}', query)
     cypher_file.write(query)
-    query = 'Create Constraint On (node:%s_go) Assert node.%s Is Unique;\n'
-    query = query % (label, unique_identifier)
-    cypher_file.write(query)
+    cypher_file.write(pharmebinetutils.prepare_index_query(label + '_go', unique_identifier))
 
 
 def generate_csv_file_and_prepare_cypher_queries_edge(file_name, label, rela_type, rela_properties):
@@ -45,7 +46,7 @@ def generate_csv_file_and_prepare_cypher_queries_edge(file_name, label, rela_typ
     """
 
     # generate node query and indices
-    query = query_start + """ Match (n:go{ id:line.go_id}), (m:%s_go {identifier:line.identifier_node1}) Create (m)-[:%s{"""
+    query = """ Match (n:go{ id:line.go_id}), (m:%s_go {identifier:line.identifier_node1}) Create (m)-[:%s{"""
     for head in rela_properties:
         if head in ['identifier_node1', 'go_id']:
             continue
@@ -54,13 +55,11 @@ def generate_csv_file_and_prepare_cypher_queries_edge(file_name, label, rela_typ
         else:
             query += head + ":line." + head + ", "
 
-    query = query[:-2] + "}]->(n);\n "
-    query = query % (path_of_directory, file_name, label, rela_type)
+    query = query[:-2] + "}]->(n)"
+    query = query % (label, rela_type)
+    query = pharmebinetutils.get_query_import(path_of_directory, f'import_into_Neo4j/GO/{file_name}', query)
     cypher_file_edge.write(query)
 
-
-# query start
-query_start = """Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%simport_into_Neo4j/GO/%s" As line FIELDTERMINATOR '\\t'"""
 
 dict_evidence_code_to_evidence = {
     # experimental evidence

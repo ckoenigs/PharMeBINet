@@ -1,8 +1,10 @@
-
 import sys
 import datetime, csv
 from itertools import groupby
 from collections import defaultdict
+
+sys.path.append("../..")
+import pharmebinetutils
 
 
 # use to delimit between the blocks
@@ -55,12 +57,13 @@ counter_rela = 0
 
 
 def add_information_to_dictionary(dict_all_info, key_term, value):
-    if value[-1]=='}':
+    if value[-1] == '}':
         # print(key_term, value)
-        splitted_value=value.split(' {')
-        value=splitted_value[0]
-        if len(splitted_value)>1:
-            if  key_term=='xref' and not ('equivalentTo'  in splitted_value[1] or 'xref=' in splitted_value[1]): # ('superClassOf' in splitted_value[1] or 'subClassOf' in splitted_value[1]) and
+        splitted_value = value.split(' {')
+        value = splitted_value[0]
+        if len(splitted_value) > 1:
+            if key_term == 'xref' and not ('equivalentTo' in splitted_value[1] or 'xref=' in splitted_value[
+                1]):  # ('superClassOf' in splitted_value[1] or 'subClassOf' in splitted_value[1]) and
                 # print('removed', splitted_value)
                 return
     # for some properties more than one value appears
@@ -123,8 +126,8 @@ def extract_information_from_block(group, is_type):
                             if len(addtional_info_and_xrefs[1]) > 1:
                                 synonym += ' [' + addtional_info_and_xrefs[1]
                             else:
-                                if synonym.startswith('"') and synonym[-1]=='"':
-                                    synonym=synonym[1:-1]
+                                if synonym.startswith('"') and synonym[-1] == '"':
+                                    synonym = synonym[1:-1]
 
                     if not found_type:
                         print(value)
@@ -167,7 +170,7 @@ def extract_information_from_block(group, is_type):
                     print('test')
                 counter_rela += 1
                 splitted_parent_id = parent_id.split(' ')
-                key_term = key_term.replace('-','_')
+                key_term = key_term.replace('-', '_')
                 if len(splitted_parent_id) > 1:
                     # should be only intersection_of
                     if len(splitted_parent_id) == 2:
@@ -186,7 +189,7 @@ def extract_information_from_block(group, is_type):
         # is a relationship but depending on the type it is add to a different set
         else:
             rela_info = value.split('!')[0].split(' ')
-            rela_type = rela_info[0].replace('-','_')
+            rela_type = rela_info[0].replace('-', '_')
             parent_id = rela_info[1]
             if parent_id == 'DOID:4606':
                 print('test')
@@ -208,8 +211,8 @@ def gather_information_from_obo():
     with open(file_name, encoding='utf-8') as f:
         # group lines together which are in a block and go through every block
         f.readline()
-        line_2=f.readline()
-        file=open('version_obo.txt','w')
+        line_2 = f.readline()
+        file = open('version_obo.txt', 'w')
         file.write(line_2)
         file.close()
         for (key, group) in groupby(f, contains_information):
@@ -242,18 +245,18 @@ generate cypher file
 def generate_cypher_file():
     # create cypher file
     cypher_file = open('cypher.cypher', 'w')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/''' + directory + '''/output/node.tsv" As line Fieldterminator '\\t' Create (:''' + neo4j_label + '''{'''
+    query = ''' Create (:''' + neo4j_label + '''{'''
     for property in set_all_properties_in_database:
         if not property in set_list_properties:
             query += property + ':line.' + property + ', '
         # add a 's' at the end of a list property, because they have multiple values :D
         else:
             query += property + 's:split(line.' + property + ',"|"), '
-    query = query[:-2] + '});\n'
+    query = query[:-2] + '})'
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              '''import_into_Neo4j/''' + directory + '/output/node.tsv', query)
     cypher_file.write(query)
-    cypher_file.write(':begin\n')
-    cypher_file.write('Create Constraint On (node:' + neo4j_label + ') Assert node.id Is Unique; \n')
-    cypher_file.write(':commit\n')
+    cypher_file.write(pharmebinetutils.prepare_index_query(neo4j_label, 'id'))
 
     # create node tsv
     file = open('output/node.tsv', 'w', encoding='utf-8')
@@ -282,9 +285,9 @@ def generate_cypher_file():
                     # because a typedef can have multiple names only one is needed
                     if len(type_def[rela_type]['name'].split('|')) > 1:
                         type_def[rela_type]['name'] = type_def[rela_type]['name'].split('|')[0]
-                    rela_type = type_def[rela_type]['name'].replace(' ', '_').replace('-','_') if not '/' in type_def[rela_type][
+                    rela_type = type_def[rela_type]['name'].replace(' ', '_').replace('-', '_') if not '/' in type_def[
+                        rela_type][
                         'name'] else rela_type
-
 
         # create csv for relationships
         file_name = 'rela_' + rela_type + '.tsv'
@@ -293,14 +296,16 @@ def generate_cypher_file():
         list_of_infos = list(list_of_infos)
         # depending if the relationships contains also information about a relationships type the query and the csv file is a bit different
         if len(list_of_infos[0]) == 2:
-            query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/%s/output/%s" As line Fieldterminator '\\t' Match (a:%s{id:line.child_id}), (b:%s{id:line.parent_id}) Create (a)-[:%s]->(b); \n'''
+            query = ''' Match (a:%s{id:line.child_id}), (b:%s{id:line.parent_id}) Create (a)-[:%s]->(b)'''
             csv_writer.writerow(header_for_two)
         else:
             print(rela_type)
-            query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/%s/output/%s" As line Fieldterminator '\\t' Match (a:%s{id:line.child_id}), (b:%s{id:line.parent_id}) Create (a)-[:%s{relationship:line.rela}]->(b); \n'''
+            query = ''' Match (a:%s{id:line.child_id}), (b:%s{id:line.parent_id}) Create (a)-[:%s{relationship:line.rela}]->(b)'''
             csv_writer.writerow(heeader_for_three)
         # fill the query ND WRITE INTO FILE
-        query = query % (directory, file_name, neo4j_label, neo4j_label, rela_type)
+        query = query % (neo4j_label, neo4j_label, rela_type)
+        query = pharmebinetutils.get_query_import(path_of_directory,
+                                                  f'import_into_Neo4j/{directory}/output/{file_name}', query)
         cypher_file.write(query)
 
         # write information into the csv file

@@ -20,7 +20,7 @@ path_neo4j=$1
 path_project=$2
 
 # path to import tool
-name_of_import_tool='../Neo4j-GraphML-Importer-v1.1.5'
+name_of_import_tool='../Neo4j-GraphML-Importer-v1.2.0'
 
 password='test1234'
 

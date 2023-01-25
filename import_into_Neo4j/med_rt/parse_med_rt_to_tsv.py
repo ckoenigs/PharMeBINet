@@ -2,6 +2,9 @@ import xml.etree.ElementTree as ET
 from collections import defaultdict
 import os, sys, csv
 
+sys.path.append("../..")
+import pharmebinetutils
+
 
 def transform_label(text):
     """
@@ -113,9 +116,10 @@ def generate_rela_file_and_query(filename, from_label, to_label, path):
     csv_writer = csv.DictWriter(file, fieldnames=header, delimiter='\t')
     csv_writer.writeheader()
 
-    query_rela = query % (path_of_directory, combinde_name)
-    query_rela += 'MAtch (from:%s {id: line.from_code}), (to:%s {id: line.to_code}) Create (from)-[:%s {qualifier: line.qualifier}]->(to);\n'
+    query_rela = 'MAtch (from:%s {id: line.from_code}), (to:%s {id: line.to_code}) Create (from)-[:%s {qualifier: line.qualifier}]->(to)'
     query_rela = query_rela % (dict_short_to_full_name[from_label], dict_short_to_full_name[to_label], filename)
+    query_rela = pharmebinetutils.get_query_import(path_of_directory, f'import_into_Neo4j/med_rt/{combinde_name}',
+                                                   query_rela)
     cypher_file.write(query_rela)
 
     return csv_writer
@@ -155,7 +159,7 @@ def prepare_rela_and_add_to_file(root, dic, fIDName, path):
     as_dic = defaultdict(dict)
 
     with open(fIDName, 'a+', encoding='utf-8') as fID:
-        csv_writer = csv.writer(fID,delimiter='\t')
+        csv_writer = csv.writer(fID, delimiter='\t')
         csv_writer.writerow(["ID", "name", "namespace"])
         for ass in root.iter('association'):
             filename = ass.find('name').text
@@ -222,9 +226,6 @@ cypher_file = open('cypher_med.cypher', 'w', encoding='utf-8')
 # cypher file delete
 cypher_file_delete = open('cypher_delete.cypher', 'w', encoding='utf-8')
 
-# query sstart (FIELDTERMINATOR '\\t')
-query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%simport_into_Neo4j/med_rt/%s" As line  Fieldterminator '\\t' '''
-
 
 def generate_node_csv_files(file_name):
     """
@@ -238,19 +239,19 @@ def generate_node_csv_files(file_name):
     csv_writer = csv.DictWriter(file, fieldnames=header, delimiter='\t')
     csv_writer.writeheader()
 
-    query_node = query % (path_of_directory, file_name_short)
-    query_node += 'Create (n:%s {'
+    query_node = 'Create (n:%s {'
     for head in header:
         if head in ['synonyms', 'propertys']:
             query_node += head + ': split(line.' + head + ',"|"), '
         else:
             query_node += head + ': line.' + head + ', '
 
-    query_node = query_node[:-2] + '});\n'
+    query_node = query_node[:-2] + '})'
     query_node = query_node % (dict_short_to_full_name[file_name])
+    query_node = pharmebinetutils.get_query_import(path_of_directory, f'import_into_Neo4j/med_rt/{file_name_short}',
+                                                   query_node)
     cypher_file.write(query_node)
-    query_constraint = '''CREATE CONSTRAINT ON (n:%s) ASSERT n.id IS UNIQUE;\n''' % (dict_short_to_full_name[file_name])
-    cypher_file.write(query_constraint)
+    cypher_file.write(pharmebinetutils.prepare_index_query(dict_short_to_full_name[file_name], 'id'))
 
     query_delete = 'Match (s:%s) Where not (s)--() Delete s;\n' % (dict_short_to_full_name[file_name])
     cypher_file_delete.write(query_delete)

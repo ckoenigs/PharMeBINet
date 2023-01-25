@@ -36,29 +36,32 @@ def create_tsv_files():
 
 def create_cypher_queries():
     cypher_file = open('cypher.cypher', 'w', encoding='utf-8')
-    query_start = f'Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:{path_of_directory}import_into_Neo4j/hippie/%s" As line FIELDTERMINATOR "\\t" '
 
-    query_node = query_start + ' Create (n:Protein_Hippie{ '
+    query_node = ' Create (n:Protein_Hippie{ '
     for property in header_node:
         query_node += property + ': line.' + property + ', '
-    query_node = query_node[:-2] + '});\n'
-    query_node = query_node % (node_file_name)
+    query_node = query_node[:-2] + '})'
+    query_node = pharmebinetutils.get_query_import(path_of_directory, f'import_into_Neo4j/hippie/{node_file_name}',
+                                                   query_node)
     cypher_file.write(query_node)
 
-    query = 'Create Constraint On (node:Protein_Hippie) Assert node.identifier Is Unique;\n'
-    cypher_file.write(query)
+    cypher_file.write(pharmebinetutils.prepare_index_query('Protein_Hippie', 'identifier'))
+    cypher_file.close()
+    cypher_file = open('cypher_edge.cypher', 'w', encoding='utf-8')
 
-    query_edge = query_start + ' Match (n:Protein_Hippie{identifier:line.id1}),(m:Protein_Hippie{identifier:line.id2}) Create (n)-[:INTERACTS{ '
+    query_edge = ' Match (n:Protein_Hippie{identifier:line.id1}),(m:Protein_Hippie{identifier:line.id2}) Create (n)-[:INTERACTS{ '
     for property in header_edge[2:]:
         if property not in ['confidence_value']:
             query_edge += property + ': split(line.' + property + ', "|"), '
         else:
             query_edge += property + ': line.' + property + ', '
 
-    query_edge = query_edge[:-2] + '}]->(m);\n'
-    query_edge = query_edge % (edge_file_name)
+    query_edge = query_edge[:-2] + '}]->(m)'
+    query_edge = pharmebinetutils.get_query_import(path_of_directory, f'import_into_Neo4j/hippie/{edge_file_name}',
+                                                   query_edge)
 
     cypher_file.write(query_edge)
+    cypher_file.close()
 
 
 set_ids = set()
@@ -94,17 +97,17 @@ def add_check_if_entry_is_empty(value):
 def extract_info_from_mitab_file():
     for line in csv_reader:
         id1 = line['ID Interactor A']
-        if id1 =='-':
-            if line['Alt IDs Interactor A']!='-':
+        if id1 == '-':
+            if line['Alt IDs Interactor A'] != '-':
                 id1 = line['Alt IDs Interactor A']
             else:
-                print('A',line)
+                print('A', line)
         id2 = line['ID Interactor B']
-        if id2 =='-':
-            if line['Alt IDs Interactor B']!='-':
+        if id2 == '-':
+            if line['Alt IDs Interactor B'] != '-':
                 id2 = line['Alt IDs Interactor B']
             else:
-                print('B',line)
+                print('B', line)
         if id1 not in set_ids:
             csv_node.writerow([id1, add_check_if_entry_is_empty(line['Alt IDs Interactor A']),
                                add_check_if_entry_is_empty(line['Aliases Interactor A']),

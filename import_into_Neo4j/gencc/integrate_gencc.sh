@@ -9,6 +9,9 @@ import_tool=$2
 # define bioDWH2 tool
 biodwh2=$3
 
+#password
+password=$4
+
 
 echo load latest version of GenCC and generat GraphML file
 
@@ -33,7 +36,7 @@ echo $import_tool
 
 echo integrate GenCC into neo4j
 
-java -jar ../$import_tool.jar -i sources/GenCC/intermediate.graphml  -e bolt://localhost:7687 --username neo4j --password test --label-prefix GenCC_ > output/import_tool_output.txt
+java -jar ../$import_tool.jar -i sources/GenCC/intermediate.graphml  -e bolt://localhost:7687 --username neo4j --password $password --label-prefix GenCC_ > output/import_tool_output.txt
 
 sleep 120
 

@@ -1,14 +1,9 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Jul 14 10:34:41 2017
-
-@author: Cassandra
-"""
-
 import xml.dom.minidom as dom
 
 import datetime, csv, sys
 
+sys.path.append("../..")
+import pharmebinetutils
 
 # dictionary of all entities with code as key and value is the entity
 dict_entities = {}
@@ -35,7 +30,7 @@ dict_entity_to_file = {}
 dict_rela_to_file = {}
 
 # dictionary filename to file
-dict_rela_file_name_to_file={}
+dict_rela_file_name_to_file = {}
 
 '''
 add all information into a given dictionary
@@ -57,7 +52,8 @@ cypher_file = open('cypher_file.cypher', 'w', encoding='utf-8')
 cypher_file_delete = open('cypher_file_delete.cypher', 'w', encoding='utf-8')
 
 # dictionary rela file name to code combination
-dict_rela_to_list_of_code_tuples={}
+dict_rela_to_list_of_code_tuples = {}
+
 
 def load_ndf_rt_xml_inferred_in():
     print(datetime.datetime.now())
@@ -70,26 +66,23 @@ def load_ndf_rt_xml_inferred_in():
     extract_and_add_info_into_dictionary(dict_entities, terminology, 'kindDef')
     properties_of_node = ['code', "name", "id", "properties"]
     for code, entity_name in dict_entities.items():
-        file_name = 'results/'+entity_name + '_file.tsv'
-        entity_file = open(file_name, 'w',encoding='utf-8')
+        file_name = 'results/' + entity_name + '_file.tsv'
+        entity_file = open(file_name, 'w', encoding='utf-8')
         csv_writer = csv.writer(entity_file, delimiter='\t', quotechar='"', lineterminator='\n')
         csv_writer.writerow(properties_of_node)
         dict_entity_to_file[code] = csv_writer
-        query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''import_into_Neo4j/ndf_rt/%s" AS line FIELDTERMINATOR '\\t' Create (n: NDFRT_''' + entity_name + '{'
-        # print(query)
-        # print(file_name)
-        query = query % (file_name)
+        query = ''' Create (n: NDFRT_''' + entity_name + '{'
         for propertie in properties_of_node:
             if not propertie in ['properties']:
                 query += propertie + ':line.' + propertie + ','
             else:
                 query += propertie + ':split(line.' + propertie + ',"|"),'
-        query = query[:-1] + '});\n'
+        query = query[:-1] + '})'
+        query = pharmebinetutils.get_query_import(path_of_directory, f'import_into_Neo4j/ndf_rt/{file_name}', query)
         cypher_file.write(query)
-        #create index on code of all ndf-rt enities
-        query='Create Constraint On (node:NDFRT_' + entity_name+') Assert node.code Is Unique; \n'
-        cypher_file.write(query)
-        query='''Match (n: NDFRT_'''+entity_name+''') Where not (n)-[]-() Delete n;\n '''
+        # create index on code of all ndf-rt enities
+        cypher_file.write(pharmebinetutils.prepare_index_query('NDFRT_' + entity_name, 'code'))
+        query = '''Match (n: NDFRT_''' + entity_name + ''') Where not (n)-[]-() Delete n; \n'''
         cypher_file_delete.write(query)
 
     # save for all properties the code and name in a dictionary
@@ -103,57 +96,62 @@ def load_ndf_rt_xml_inferred_in():
 
     # save all association in a dictionary and generate the different cypher queries for the different relationships
     element_list = terminology.getElementsByTagName('roleDef')
-    rela_info_list=['start_node','end_node','source']
+    rela_info_list = ['start_node', 'end_node', 'source']
     for combined_element in element_list:
         name_source = combined_element.getElementsByTagName('name')[0].childNodes[0].nodeValue
-        name_source=name_source.split(' {')
-        name=name_source[0]
-        source=name_source[1].replace('}','')
+        name_source = name_source.split(' {')
+        name = name_source[0]
+        source = name_source[1].replace('}', '')
         code = combined_element.getElementsByTagName('code')[0].childNodes[0].nodeValue
-        dict_relationships[code] = [name,source]
+        dict_relationships[code] = [name, source]
 
         # this part is for generating and adding the cypher queries
         start_node_code = combined_element.getElementsByTagName('domain')[0].childNodes[0].nodeValue
         end_node_code = combined_element.getElementsByTagName('range')[0].childNodes[0].nodeValue
 
-        file_name ='results/'+ name + '_file.tsv'
+        file_name = 'results/' + name + '_file.tsv'
         dict_rela_to_file[code] = file_name
         if file_name not in dict_rela_file_name_to_file:
-            dict_rela_to_list_of_code_tuples[file_name]=[]
-            entity_file = open(file_name, 'w',encoding='utf-8')
-            csv_writer = csv.writer(entity_file, delimiter='\t', quotechar='"',lineterminator='\n')
+            dict_rela_to_list_of_code_tuples[file_name] = []
+            entity_file = open(file_name, 'w', encoding='utf-8')
+            csv_writer = csv.writer(entity_file, delimiter='\t', quotechar='"', lineterminator='\n')
             csv_writer.writerow(rela_info_list)
-            dict_rela_file_name_to_file[file_name]=csv_writer
-            query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''import_into_Neo4j/ndf_rt/%s" AS line FIELDTERMINATOR '\\t' Match (start: NDFRT_''' + dict_entities[start_node_code] + '''{code:line.'''+ rela_info_list[0]+ '''}), (end: NDFRT_''' + dict_entities[end_node_code] + '''{code:line.'''+rela_info_list[1]+'''}) Create (start)-[:%s{source:line.source}]->(end);\n'''
+            dict_rela_file_name_to_file[file_name] = csv_writer
+            query = ''' Match (start: NDFRT_''' + \
+                    dict_entities[start_node_code] + '''{code:line.''' + rela_info_list[0] + '''}), (end: NDFRT_''' + \
+                    dict_entities[end_node_code] + '''{code:line.''' + rela_info_list[
+                        1] + '''}) Create (start)-[:%s{source:line.source}]->(end)'''
             # print(query)
-            query=query% (file_name, name)
+            query = query % (name)
+            query = pharmebinetutils.get_query_import(path_of_directory, f'import_into_Neo4j/ndf_rt/{file_name}', query)
 
             cypher_file.write(query)
 
     # get all important concepts
     concepts = terminology.getElementsByTagName('conceptDef')
     # dictionary code to type
-    dict_code_to_type={}
+    dict_code_to_type = {}
     # dictionary association pairs
-    dict_association_pair={}
+    dict_association_pair = {}
     for concept in concepts:
         # gete information about node
-        entity_code=concept.getElementsByTagName('kind')[0].childNodes[0].nodeValue
+        entity_code = concept.getElementsByTagName('kind')[0].childNodes[0].nodeValue
         name = concept.getElementsByTagName('name')[0].childNodes[0].nodeValue
         code = concept.getElementsByTagName('code')[0].childNodes[0].nodeValue
         ndf_rt_id = concept.getElementsByTagName('id')[0].childNodes[0].nodeValue
-        dict_code_to_type[code]=entity_code
+        dict_code_to_type[code] = entity_code
 
         # go through all possible Role (Relationships) and add the to the different tsv files
         definitionRoles = concept.getElementsByTagName('definingRoles')[0]
         if definitionRoles.hasChildNodes() == True:
             roles = definitionRoles.getElementsByTagName('role')
             for role in roles:
-                rela_code=role.getElementsByTagName('name')[0].childNodes[0].nodeValue
-                to_code=role.getElementsByTagName('value')[0].childNodes[0].nodeValue
-                if (code,to_code) not in dict_rela_to_list_of_code_tuples[dict_rela_to_file[rela_code]]:
-                    dict_rela_file_name_to_file[dict_rela_to_file[rela_code]].writerow([code,to_code,dict_relationships[rela_code][1]])
-                    dict_rela_to_list_of_code_tuples[dict_rela_to_file[rela_code]].append((code,to_code))
+                rela_code = role.getElementsByTagName('name')[0].childNodes[0].nodeValue
+                to_code = role.getElementsByTagName('value')[0].childNodes[0].nodeValue
+                if (code, to_code) not in dict_rela_to_list_of_code_tuples[dict_rela_to_file[rela_code]]:
+                    dict_rela_file_name_to_file[dict_rela_to_file[rela_code]].writerow(
+                        [code, to_code, dict_relationships[rela_code][1]])
+                    dict_rela_to_list_of_code_tuples[dict_rela_to_file[rela_code]].append((code, to_code))
 
         # go through all properties of this drug and generate a list of string
         prop = concept.getElementsByTagName('properties')[0]
@@ -166,7 +164,7 @@ def load_ndf_rt_xml_inferred_in():
             text = dict_properties[name_property] + ':' + value
             properties_list.append(text)
 
-        properties_string='|'.join(properties_list)
+        properties_string = '|'.join(properties_list)
 
         # go through association of this drug and generate a list of string
         association_list = []
@@ -181,18 +179,20 @@ def load_ndf_rt_xml_inferred_in():
                     value = association.getElementsByTagName('value')[0].childNodes[0].nodeValue
                     text = dict_associations[name_association] + ':' + value
                     association_list.append(text)
-                    dict_association_pair[(code,value)]=dict_associations[name_association]
+                    dict_association_pair[(code, value)] = dict_associations[name_association]
         # association_string='|'.join(association_list)
 
         dict_entity_to_file[entity_code].writerow([code, name, ndf_rt_id, properties_string])
 
     association_file = open('results/associates_file.tsv', 'w', encoding='utf-8')
     csv_writer = csv.writer(association_file, delimiter='\t', quotechar='"', lineterminator='\n')
-    csv_writer.writerow(['code1','code2'])
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/ndf_rt/results/associates_file.tsv" AS line FIELDTERMINATOR '\\t' Match (start: NDFRT_DRUG_KIND{code:line.code1}), (end: NDFRT_DRUG_KIND {code:line.code2}) Create (start)-[:product_of]->(end);\n'''
+    csv_writer.writerow(['code1', 'code2'])
+    query = ''' Match (start: NDFRT_DRUG_KIND{code:line.code1}), (end: NDFRT_DRUG_KIND {code:line.code2}) Create (start)-[:product_of]->(end)'''
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'import_into_Neo4j/ndf_rt/results/associates_file.tsv', query)
     cypher_file.write(query)
     for (code1, code2), association_name in dict_association_pair.items():
-        csv_writer.writerow([code1,code2])
+        csv_writer.writerow([code1, code2])
     association_file.close()
 
 
@@ -212,7 +212,6 @@ def main():
     print(datetime.datetime.now())
     print('load in the xml data')
     load_ndf_rt_xml_inferred_in()
-
 
     print('#############################################################')
     print(datetime.datetime.now())
