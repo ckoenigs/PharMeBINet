@@ -6,6 +6,9 @@ import wget
 import lxml.etree as etree
 from zipfile import ZipFile
 
+sys.path.append("../..")
+import pharmebinetutils
+
 ns = '{http://www.hmdb.ca}'
 
 
@@ -71,7 +74,8 @@ def generate_tsv_file(label, properties):
 
 
 # cypher file
-cypherfile = open('output/cypher.cypher', 'w')
+cypher_file = open('output/cypher.cypher', 'w')
+cypher_file_edge = open('output/cypher_edge.cypher', 'w')
 
 
 def prepare_node_cypher_query(file_name, label, properties, list_properties):
@@ -83,20 +87,20 @@ def prepare_node_cypher_query(file_name, label, properties, list_properties):
     :param list_properties: list
     :return:
     """
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/hmdb/%s" As line Fieldterminator '\\t' Create (n:%s_HMDB{ '''
+    query = ''' Create (n:%s_HMDB{ '''
 
-    query = query % (file_name, label.capitalize())
+    query = query % (label.capitalize())
 
     for property in properties:
         if property in list_properties:
             query += property + ':split(line.' + property + ',"||"), '
         else:
             query += property + ':line.' + property + ', '
-    query = query[:-2] + '});\n'
-    cypherfile.write(query)
-    query = 'Create Constraint On (node:%s_HMDB) Assert node.%s Is Unique;\n'
-    query = query % (label.capitalize(), properties[0])
-    cypherfile.write(query)
+    query = query[:-2] + '})'
+    query = pharmebinetutils.get_query_import(path_of_directory, f'import_into_Neo4j/hmdb/{file_name}', query)
+    cypher_file.write(query)
+    query = pharmebinetutils.prepare_index_query(label.capitalize() + '_HMDB', properties[0])
+    cypher_file.write(query)
 
 
 def prepare_edge_cypher_query(file_name, label_from, label, rela_name, properties, list_properties):
@@ -108,11 +112,10 @@ def prepare_edge_cypher_query(file_name, label_from, label, rela_name, propertie
     :param list_properties: list
     :return:
     """
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/hmdb/%s" As line Fieldterminator '\\t' Match (n:%s_HMDB{identifier:line.%s}), (b:%s_HMDB{%s:line.%s}) Create (n)-[:%s'''
+    query = ''' Match (n:%s_HMDB{identifier:line.%s}), (b:%s_HMDB{%s:line.%s}) Create (n)-[:%s'''
 
     query = query + '{' if len(properties) > 2 else query
-    query = query % (
-        file_name, label_from.capitalize(), properties[0], label.capitalize(), 'identifier', properties[1], rela_name)
+    query = query % (label_from.capitalize(), properties[0], label.capitalize(), 'identifier', properties[1], rela_name)
     # if label in ['pathway', 'disease']:
     #     query = query % (file_name,label_from.capitalize(), properties[0], label.capitalize(), 'identifier', properties[1], rela_name)
     # else:
@@ -122,8 +125,9 @@ def prepare_edge_cypher_query(file_name, label_from, label, rela_name, propertie
             query += property + ':split(line.' + property + ',"||"), '
         else:
             query += property + ':line.' + property + ', '
-    query = query[:-2] + '}]->(b);\n' if len(properties) > 2 else query + ']->(b);\n'
-    cypherfile.write(query)
+    query = query[:-2] + '}]->(b)' if len(properties) > 2 else query + ']->(b)'
+    query = pharmebinetutils.get_query_import(path_of_directory, f'import_into_Neo4j/hmdb/{file_name}', query)
+    cypher_file_edge.write(query)
 
 
 def generates_node_tsv_file_and_cypher(label, properties, list_properties):
@@ -208,9 +212,9 @@ def prepare_reference(reference):
     dict_reference = {}
     for reference_info in reference.iterchildren():
         reference_info_tag = reference_info.tag.replace(ns, '')
-        if  reference_info.text is None:
+        if reference_info.text is None:
             continue
-        dict_reference[reference_info_tag] = reference_info.text.replace('"','\'')
+        dict_reference[reference_info_tag] = reference_info.text.replace('"', '\'')
     return dict_reference
 
 
@@ -276,8 +280,10 @@ def prepare_cypher_files_and_tsv():
                                        'associates', ['references'])
     generates_rela_tsv_file_and_cypher('ontology', 'ontology', ['ontology_id1', 'ontology_id2'], 'associates', [])
 
+
 # to avoid double edges without information
-set_protein_pathway=set()
+set_protein_pathway = set()
+
 
 def run_trough_xml_and_parse_data_protein():
     # counter of human entries
@@ -355,7 +361,7 @@ def run_trough_xml_and_parse_data_protein():
                                                 subsubchild_tag = subsubchild.tag.replace(ns, '')
                                                 # subtags.add(subsubchild_tag)
                                                 print("%s - %s - %s" % (
-                                                subsubchild_tag, subsubchild.text, subsubchild.attrib))
+                                                    subsubchild_tag, subsubchild.text, subsubchild.attrib))
                                                 print(len(subsubchild))
                                                 print(identifier)
                                                 sys.exit('ohno protein or gene properties')
@@ -372,7 +378,7 @@ def run_trough_xml_and_parse_data_protein():
                                 if not (identifier, pathway_identifier) in set_protein_pathway:
                                     dict_node_type_to_tsv['protein_pathway'].writerow(
                                         {'protein_id': identifier, 'pathway_id': pathway_identifier})
-                                    set_protein_pathway.add((identifier,pathway_identifier))
+                                    set_protein_pathway.add((identifier, pathway_identifier))
 
                         elif tag == 'metabolite_associations':
                             for subchild in child.iterchildren():
@@ -728,7 +734,7 @@ def main():
 
     print('#############################################################')
     print(datetime.datetime.now())
-    print('prepare cypherfile and tsv files ')
+    print('prepare cypher_file and tsv files ')
 
     prepare_cypher_files_and_tsv()
 
