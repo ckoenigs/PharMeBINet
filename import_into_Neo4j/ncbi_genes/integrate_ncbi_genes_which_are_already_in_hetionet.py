@@ -3,6 +3,7 @@ import gzip
 import io
 import os
 import sys
+
 # Import pharmebinet utils without proper module structure
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
 import pharmebinetutils
@@ -26,7 +27,7 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
 
         # create cypher file
         cypher_file = open('cypher_node.cypher', 'w', newline='')
-        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/ncbi_genes/output_data/genes.tsv" As line Fieldterminator '\\t' Create (n:Gene_Ncbi {'''
+        query = ''' Create (n:Gene_Ncbi {'''
 
         dict_header = {}
         # add properties to query and fill dictionary
@@ -48,10 +49,11 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
             else:
                 query += header_property.lower() + ':line.' + header_property + ' ,'
 
-        query = query + ' license:"CC0 1.0"});\n'
+        query = query + ' license:"CC0 1.0"})'
+        query = pharmebinetutils.get_query_import(path_of_directory,
+                                                  'import_into_Neo4j/ncbi_genes/output_data/genes.tsv', query)
         cypher_file.write(query)
-        query = 'Create Constraint On (node:Gene_Ncbi) Assert node.identifier Is Unique;\n'
-        cypher_file.write(query)
+        cypher_file.write(pharmebinetutils.prepare_index_query('Gene_Ncbi', 'identifier'))
 
         # file for integration into pharmebinet
         file = open('output_data/genes.tsv', 'w', newline='')

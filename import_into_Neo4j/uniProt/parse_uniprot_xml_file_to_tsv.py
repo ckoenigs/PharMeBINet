@@ -3,8 +3,11 @@ import csv, json
 import datetime
 import sys
 import wget
-import gzip, io
+import gzip
 import lxml.etree as etree
+
+sys.path.append("../..")
+import pharmebinetutils
 
 ns = '{http://uniprot.org/uniprot}'
 
@@ -80,8 +83,10 @@ def prepare_dbReference(dict_protein, attributes):
     dict_protein['xrefs'].add(combine_xrefs(attributes))
     evidence = attributes['evidence'] if 'evidence' in attributes else ''
 
+
 # set of empty properties
-set_of_empty_properties=set()
+set_of_empty_properties = set()
+
 
 def prepare_tsv_dictionary(dictionary):
     """
@@ -139,8 +144,8 @@ def prepare_evidence(attrib, protein_id, parent=None):
     if parent is not None:
         for child in parent.iterchildren():
             tag = child.tag.replace(ns, '')
-            if tag=='source':
-                tag='sources'
+            if tag == 'source':
+                tag = 'sources'
             if tag not in dict_pair:
                 dict_pair[tag] = set()
             for dbRefs in child.iterchildren():
@@ -151,8 +156,8 @@ def prepare_evidence(attrib, protein_id, parent=None):
             if len(child.attrib) > 0:
                 dict_pair[tag].add('ref:' + child.attrib['ref'])
     for key, value in dict_pair.items():
-        if type(value) in [set,list]:
-            dict_pair[key]='||'.join(value)
+        if type(value) in [set, list]:
+            dict_pair[key] = '||'.join(value)
     dict_node_type_to_tsv['protein_evidence'].writerow(dict_pair)
 
 
@@ -244,7 +249,7 @@ def run_trough_xml_and_parse_data():
 
     generates_node_tsv_file_and_cypher('protein',
                                        ['identifier', 'polymorphism', 'developmental_stage', 'synonyms', 'name',
-                                        'xrefs_with_infos', 'mass', 'RNA_editing', 'pathway', 'xrefs','entry_name',
+                                        'xrefs_with_infos', 'mass', 'RNA_editing', 'pathway', 'xrefs', 'entry_name',
                                         'tissue_specificity', 'gene_name', 'protein_existence', 'domain',
                                         'miscellaneous', 'catalytic_activity', 'as_sequence', 'sequenceLength',
                                         'online_information', 'function', 'activity_regulation', 'caution', 'subunit',
@@ -505,7 +510,7 @@ def run_trough_xml_and_parse_data():
                                                                     'number_of_experiments', 'interaction_ids',
                                                                     'iso_of_protein_from', 'iso_of_protein_to'],
                                                                    'interaction',
-                                                                   ['interaction_ids','number_of_experiments'])
+                                                                   ['interaction_ids', 'number_of_experiments'])
                             interact_id = subchild.attrib['intactId']
                             add_key_value_to_dictionary_as_list(dict_comment, 'interaction_ids', interact_id)
                             interacter_uniprot_id_element = subchild.find("{ns}id".format(ns=ns))
@@ -626,8 +631,8 @@ def run_trough_xml_and_parse_data():
                             dict_attributes = dict(subchild.attrib)
                             dict_comment.update(dict_attributes)
                         elif sub_tag in ['organismsDiffer', 'experiments']:
-                            if "experiments"==sub_tag:
-                                dict_comment['number_of_experiments']=subchild.text
+                            if "experiments" == sub_tag:
+                                dict_comment['number_of_experiments'] = subchild.text
                             else:
                                 dict_comment[sub_tag] = subchild.text
 
@@ -722,7 +727,7 @@ def run_trough_xml_and_parse_data():
         # prepare name
         dict_protein['entry_name'] = dict_protein['name']
         dict_protein['name'] = dict_protein['protein_name'][0]
-        dict_protein['synonyms']=dict_protein['protein_name'][1:]
+        dict_protein['synonyms'] = dict_protein['protein_name'][1:]
         del dict_protein['protein_name']
 
         set_of_protein_propertie = set_of_protein_propertie.union(dict_protein.keys())
@@ -769,9 +774,9 @@ def prepare_node_cypher_query(file_name, label, properties, list_properties):
     :param list_properties: list
     :return:
     """
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/uniProt/%s" As line Fieldterminator '\\t' Create (n:%s_Uniprot{ '''
+    query = '''Create (n:%s_Uniprot{ '''
 
-    query = query % (file_name, label.capitalize())
+    query = query % (label.capitalize())
 
     for property in properties:
         if property in list_properties:
@@ -781,10 +786,10 @@ def prepare_node_cypher_query(file_name, label, properties, list_properties):
                 query += property + ':split(line.' + property + ',"||"), '
         else:
             query += property + ':line.' + property + ', '
-    query = query[:-2] + '});\n'
+    query = query[:-2] + '})'
+    query = pharmebinetutils.get_query_import(path_of_directory, f'import_into_Neo4j/uniProt/{file_name}', query)
     cypherfile.write(query)
-    query = 'Create Constraint On (node:%s_Uniprot) Assert node.%s Is Unique;\n'
-    query = query % (label.capitalize(), properties[0])
+    query = pharmebinetutils.prepare_index_query(label.capitalize() + '_Uniprot', properties[0])
     cypherfile.write(query)
 
 
@@ -797,19 +802,20 @@ def prepare_edge_cypher_query(file_name, label, rela_name, properties, list_prop
     :param list_properties: list
     :return:
     """
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/uniProt/%s" As line Fieldterminator '\\t' Match (n:Protein_Uniprot{identifier:line.%s}), (b:%s_Uniprot{%s:line.%s}) Create (n)-[:%s'''
+    query = '''Match (n:Protein_Uniprot{identifier:line.%s}), (b:%s_Uniprot{%s:line.%s}) Create (n)-[:%s'''
 
     query = query + '{' if len(properties) > 2 else query
     if label in ['protein', 'disease']:
-        query = query % (file_name, properties[0], label.capitalize(), 'identifier', properties[1], rela_name)
+        query = query % (properties[0], label.capitalize(), 'identifier', properties[1], rela_name)
     else:
-        query = query % (file_name, properties[0], label.capitalize(), 'id', properties[1], rela_name)
+        query = query % (properties[0], label.capitalize(), 'id', properties[1], rela_name)
     for property in properties[2:]:
         if property in list_properties:
             query += property + ':split(line.' + property + ',"||"), '
         else:
             query += property + ':line.' + property + ', '
-    query = query[:-2] + '}]->(b);\n' if len(properties) > 2 else query + ']->(b);\n'
+    query = query[:-2] + '}]->(b)' if len(properties) > 2 else query + ']->(b)'
+    query = pharmebinetutils.get_query_import(path_of_directory, f'import_into_Neo4j/uniProt/{file_name}', query)
     cypherfile.write(query)
 
 
@@ -835,7 +841,6 @@ def generates_rela_tsv_file_and_cypher(label, properties, rela_name, list_proper
     file_name = generate_tsv_file('protein_' + label, properties)
 
     prepare_edge_cypher_query(file_name, label, rela_name, properties, list_properties)
-
 
 
 def check_for_protein(protein_id):
