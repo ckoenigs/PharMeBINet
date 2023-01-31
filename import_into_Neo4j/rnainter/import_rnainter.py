@@ -1,51 +1,53 @@
 import datetime, sys
 import pandas as pd
 
+sys.path.append("../..")
+import pharmebinetutils
+
 cypher_file = open("output/cypher.cypher", "w", encoding="utf-8")
+cypher_file_edge = open("output/cypher_edge.cypher", "w", encoding="utf-8")
 
 
-def cypher_node(filename, label, properties, unique_property):
+def cypher_node(file_name, label, properties, unique_property):
     """
     Generate cypher query and index for node and add to cypher file.
-    :param filename: name of source file
+    :param file_name: name of source file
     :param label: e.g. gene, protein_db
     :param properties: columns der Tabelle (auf Leerzeichen achten)
     :param unique_property: identifier (e.g. diseaseId)
     """
 
-    query_start = f'Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:{path_of_directory}import_into_Neo4j/rnainter/{filename}" As line fieldterminator "\\t" '
-
-    query = query_start + 'Create (p:%s_RNAInter{' % (label)
+    query = 'Create (p:%s_RNAInter{' % (label)
     for x in properties:
         query += x[0:-1] + ':line.' + x + ', '
     # delete last comma
-    query = query[:-2] + '});\n'
+    query = query[:-2] + '})'
+    query = pharmebinetutils.get_query_import(path_of_directory, f'import_into_Neo4j/rnainter/{file_name}', query)
     cypher_file.write(query)
 
-    query2 = 'Create Constraint On (node:%s_RNAInter) Assert node.%s Is Unique; \n' % (label, unique_property)
-    cypher_file.write(query2)
+    cypher_file.write(pharmebinetutils.prepare_index_query(label + '_RNAInter', unique_property))
     # write everything in same file
 
 
-def cypher_edge(filename, label, properties, edge_name):
+def cypher_edge(file_name, label, properties, edge_name):
     """
     Prepre Rna-other node edges and add to cypher file
-    :param filename: name of source file
+    :param file_name: name of source file
     :param label: list of connecting nodes, e.g. ['variant', 'disease']
     :param properties: columns der Tabelle (auf Leerzeichen achten)
     :param edge_name: specifies how the connection btw. two nodes is called
     """
 
-    query_start = f'Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:{path_of_directory}import_into_Neo4j/rnainter/{filename}" As line fieldterminator "\\t" '
-    query = query_start + f'Match (p1:rna_RNAInter{{Raw_ID:line.Raw_ID1}}),(p2:{label}_RNAInter{{Raw_ID:line.Raw_ID2}}) Create (p1)-[:{edge_name}{{  '
+    query = f'Match (p1:rna_RNAInter{{Raw_ID:line.Raw_ID1}}),(p2:{label}_RNAInter{{Raw_ID:line.Raw_ID2}}) Create (p1)-[:{edge_name}{{  '
     for header in properties:
         if header in ['strong', 'weak', 'predict']:
             query += header + ':split(line.' + header + ',"|"), '
         else:
             query += f'{header}:line.{header}, '
 
-    query = query[:-2] + '}]->(p2);\n'
-    cypher_file.write(query)
+    query = query[:-2] + '}]->(p2)'
+    query = pharmebinetutils.get_query_import(path_of_directory, f'import_into_Neo4j/rnainter/{file_name}', query)
+    cypher_file_edge.write(query)
 
 
 def edges(file, name):
@@ -55,9 +57,9 @@ def edges(file, name):
     :param name: string
     :return:
     """
-    file=file.set_axis(["RNAInterID", "Interactor1", "Category1", "Species1",
-                   "Interactor2", "Category2", "Species2", "Raw_ID1",
-                   "Raw_ID2", "score", "strong", "weak", "predict"], axis=1, copy=True)
+    file = file.set_axis(["RNAInterID", "Interactor1", "Category1", "Species1",
+                          "Interactor2", "Category2", "Species2", "Raw_ID1",
+                          "Raw_ID2", "score", "strong", "weak", "predict"], axis=1, copy=True)
 
     edge_set = ("RNAInterID", "Raw_ID1", "Raw_ID2", "Interactor1", "Interactor2", "score", "strong", "weak", "predict")
     edge = file.loc[:, edge_set]
@@ -82,9 +84,9 @@ def nodes(file, name):
     edge_set1 = ("Raw_ID1", "Interactor1", "Category1", "Species1")
     edge_set2 = ("Raw_ID2", "Interactor2", "Category2", "Species2")
 
-    file=file.set_axis(["RNAInterID", "Interactor1", "Category1", "Species1",
-                   "Interactor2", "Category2", "Species2", "Raw_ID1",
-                   "Raw_ID2", "score", "strong", "weak", "predict"], axis=1, copy=True)
+    file = file.set_axis(["RNAInterID", "Interactor1", "Category1", "Species1",
+                          "Interactor2", "Category2", "Species2", "Raw_ID1",
+                          "Raw_ID2", "score", "strong", "weak", "predict"], axis=1, copy=True)
 
     if (name == "rna"):
         rna = file.loc[:, edge_set2]
@@ -122,7 +124,7 @@ def main():
 
     d = {"rna": "Download_data_RR.tar.gz",
          "dna": "Download_data_RD.tar.gz", "compound": "Download_data_RC.tar.gz",
-         "histone": "Download_data_RH.tar.gz", "protein": "Download_data_RP.tar.gz",}
+         "histone": "Download_data_RH.tar.gz", "protein": "Download_data_RP.tar.gz", }
 
     print('##################################################################################')
     print(datetime.datetime.now())
@@ -142,7 +144,7 @@ def main():
                 csv = csv[(csv.Species1 == species) & (csv.Species2 == species)]
             else:
                 csv = csv[(csv.Species1 == species)]
-        csv = csv[(csv['Interactor1.Symbol']!='Interactor1.Symbol')]
+        csv = csv[(csv['Interactor1.Symbol'] != 'Interactor1.Symbol')]
         a = nodes(csv, i)
         rna = pd.concat([rna, a])
         edges(csv, i)

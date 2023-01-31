@@ -14,6 +14,8 @@ import gzip
 import requests
 import pandas, sys
 
+sys.path.append("../..")
+import pharmebinetutils
 
 '''
 Get Gene informaation from Entrez-gene from latest version which is already integrated into Neo4j
@@ -23,19 +25,18 @@ Get Gene informaation from Entrez-gene from latest version which is already inte
 def use_of_entrez_gene():
     global human_coding_genes, human_genes, symbol_to_entrez
 
-
     human_genes = set()
     human_coding_genes = set()
     symbol_to_entrez = {}
 
-    gene_file_name='../ncbi_genes/output_data/genes.tsv'
+    gene_file_name = '../ncbi_genes/output_data/genes.tsv'
 
-    with open(gene_file_name,'r',encoding='utf-8') as gene_file:
-        csv_reader=csv.DictReader(gene_file,delimiter='\t')
+    with open(gene_file_name, 'r', encoding='utf-8') as gene_file:
+        csv_reader = csv.DictReader(gene_file, delimiter='\t')
         for line in csv_reader:
-            identifier=line['GeneID']
-            symbol=line['Symbol']
-            type_of_gene= line['type_of_gene']
+            identifier = line['GeneID']
+            symbol = line['Symbol']
+            type_of_gene = line['type_of_gene']
             human_genes.add(identifier)
             if type_of_gene == 'protein-coding':
                 human_coding_genes.add(identifier)
@@ -44,7 +45,7 @@ def use_of_entrez_gene():
 
 # gmt function
 def read_gmt(path):
-    read_file = open(path,'r' ,encoding='utf-8')
+    read_file = open(path, 'r', encoding='utf-8')
     reader = csv.reader(read_file, delimiter='\t')
     for row in reader:
         if not row or len(row) < 3:
@@ -124,8 +125,7 @@ def pathway_commons():
         # Add pathway
         i += 1
         row = PC_Row(
-            # identifier='PC7_{}'.format(i),
-            identifier='PC12_{}'.format(i),
+            identifier='PC13_{}'.format(i),
             synonyms=name,
             source=description['datasource'],
             genes=genes,
@@ -139,6 +139,7 @@ def pathway_commons():
     print(pc_df.head(2))
     print(pc_df['source'].unique())
     print(pc_df.source.value_counts())
+    print(pc_df.synonyms.value_counts())
 
     # wikipathways: CC BY 3.0
     # reactome: CC BY 4.0
@@ -163,7 +164,7 @@ def pathway_commons():
         'netpath': 'CC BY 2.5',
         'inoh': 'unknown',
         'humancyc': 'acedemic',
-        'pathbank':'PathBank is offered to the public as a freely available resource. Use and re-distribution of the data, in whole or in part, for commercial purposes requires explicit permission of the authors and explicit acknowledgment of the source material (PathBank) and the original publication. '
+        'pathbank': 'PathBank is offered to the public as a freely available resource. Use and re-distribution of the data, in whole or in part, for commercial purposes requires explicit permission of the authors and explicit acknowledgment of the source material (PathBank) and the original publication. '
     }
 
     # add license to the different sources
@@ -179,7 +180,7 @@ def wikipathways():
     # Parse WikiPathways
 
     # download WikiPathways
-    url = 'http://data.wikipathways.org/20220410/gmt/wikipathways-20220410-gmt-Homo_sapiens.gmt'
+    url = 'http://data.wikipathways.org/20221110/gmt/wikipathways-20221110-gmt-Homo_sapiens.gmt'
     filename = wget.download(url, out='data/')
 
     gmt_generator = read_gmt(filename)
@@ -191,7 +192,7 @@ def wikipathways():
         print('wikipathway ulr is not working anymore')
         sys.exit('wikipathway ulr is not working anymore')
     print(i)
-    wikipath_df['identifier'] = ['PC12_{}'.format(j) for j in range(i + 1, i + 1 + len(wikipath_df))]
+    wikipath_df['identifier'] = ['PC13_{}'.format(j) for j in range(i + 1, i + 1 + len(wikipath_df))]
     print(len(wikipath_df))
     # print(j)
 
@@ -234,11 +235,8 @@ def combine_both_source():
     pathway_df_without_duplicated = pathway_df.drop_duplicates(['genes']).copy()
     print(len(pathway_df))
 
-    test=pandas.concat([pathway_df, pathway_df_without_duplicated]).drop_duplicates(keep=False)
-    print('difference',test)
-    test.to_csv('test.csv')
-
-    pathway_df_without_duplicated['coding_genes'] = pathway_df_without_duplicated.genes.map(lambda x: x & human_coding_genes)
+    pathway_df_without_duplicated['coding_genes'] = pathway_df_without_duplicated.genes.map(
+        lambda x: x & human_coding_genes)
 
     pathway_df_without_duplicated.insert(3, 'n_genes', pathway_df_without_duplicated.genes.map(len))
     pathway_df_without_duplicated.insert(4, 'n_coding_genes', pathway_df_without_duplicated.coding_genes.map(len))
@@ -257,18 +255,18 @@ def combine_both_source():
     write_df.to_csv('output/pathways.tsv', index=False, sep='\t', encoding='utf-8')
 
     # generate cypher file
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/pathway/output/pathways.tsv" As line fieldterminator '\\t' Create (c1:pathway_multi{'''
+    query = ''' Create (c1:pathway_multi{'''
     for property in pathway_df_without_duplicated:
         if property not in properties_which_are_list:
             query += property + ':line.' + property + ', '
         else:
             query += property + ':split(line.' + property + ',"|"), '
 
-    query = query[:-2] + '''});\n '''
+    query = query[:-2] + '''}) '''
+    query = pharmebinetutils.get_query_import(path_of_directory, 'import_into_Neo4j/pathway/output/pathways.tsv', query)
     with open('output/cypher.cypher', 'w') as file:
         file.write(query)
-        query = 'Create Constraint On (node:pathway_multi) Assert node.identifier Is Unique; \n'
-        file.write(query)
+        file.write(pharmebinetutils.prepare_index_query('pathway_multi', 'identifier'))
 
 
 # path to directory

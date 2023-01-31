@@ -3,6 +3,7 @@ import datetime
 import gzip
 import os
 import sys
+
 # Import pharmebinet utils without proper module structure
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
 import pharmebinetutils
@@ -32,12 +33,10 @@ def generate_node_and_rela_file_and_query(header_rela):
     csv_node.writerow(['id', 'symbols'])
 
     cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/IID/%s" As line fieldterminator '\\t' '''
-    query = query_start + 'Create (p:protein_IID{identifier:line.id, symbols:split(line.symbols,"|")});\n'
-    query = query % (node_file_name)
+    query = 'Create (p:protein_IID{identifier:line.id, symbols:split(line.symbols,"|")})'
+    query = pharmebinetutils.get_query_import(path_of_directory, f'import_into_Neo4j/IID/{node_file_name}', query)
     cypher_file.write(query)
-    query = 'Create Constraint On (node:protein_IID) Assert node.identifier Is Unique; \n'
-    cypher_file.write(query)
+    cypher_file.write(pharmebinetutils.prepare_index_query('protein_IID', 'identifier'))
 
     # to avoid the problem with spaces
     header_rela = [prepare_header(x) for x in header_rela]
@@ -47,7 +46,7 @@ def generate_node_and_rela_file_and_query(header_rela):
     csv_rela = csv.DictWriter(rela_file, delimiter='\t', fieldnames=header_rela)
     csv_rela.writeheader()
 
-    query = query_start + 'Match (p1:protein_IID{identifier:line.uniprot1}),(p2:protein_IID{identifier:line.uniprot2}) Create (p1)-[:interacts{'
+    query = 'Match (p1:protein_IID{identifier:line.uniprot1}),(p2:protein_IID{identifier:line.uniprot2}) Create (p1)-[:interacts{'
     for header in header_rela:
         if header in ['uniprot1', 'uniprot2', 'symbol1', 'symbol2']:
             continue
@@ -58,7 +57,7 @@ def generate_node_and_rela_file_and_query(header_rela):
                         'decreasing_strength_mutations', "disrupting_mutations", "disrupting_rate_mutations",
                         "disrupting_strength_mutations", "increasing_mutations", "increasing_rate_mutations",
                         "increasing_strength_mutations", "no_effect_mutations", "unknown_effect_mutations"]:
-            if header in ['evidence_type', 'db_with_ppi','experiments']:
+            if header in ['evidence_type', 'db_with_ppi', 'experiments']:
                 query += header + 's:split(line.`' + header + '`,"|"), '
             else:
                 query += header + ':split(line.`' + header + '`,"|"), '
@@ -70,8 +69,8 @@ def generate_node_and_rela_file_and_query(header_rela):
                 query += header.replace(first_letter, dict_number_to_number[first_letter]) + ':line.`' + header + '`, '
             else:
                 query += prepare_header(header) + ':line.`' + header + '`, '
-    query = query[:-2] + '}]->(p2);\n'
-    query = query % (rela_file_name)
+    query = query[:-2] + '}]->(p2)'
+    query = pharmebinetutils.get_query_import(path_of_directory, f'import_into_Neo4j/IID/{rela_file_name}', query)
     cypher_file.write(query)
 
     return csv_node, csv_rela
@@ -113,13 +112,13 @@ def transform_empty_values_into_real_empty_values(dictionary):
             value = 'true'
         key = prepare_header(key)
         new_dict[key] = value
-    if 'directions' in dictionary and dictionary['directions']=='<':
+    if 'directions' in dictionary and dictionary['directions'] == '<':
         # print(dictionary['directions'])
-        uniprot1=dictionary['uniprot1']
-        new_dict['uniprot1']=dictionary['uniprot2']
-        new_dict['uniprot2']= uniprot1
+        uniprot1 = dictionary['uniprot1']
+        new_dict['uniprot1'] = dictionary['uniprot2']
+        new_dict['uniprot2'] = uniprot1
         del new_dict['directions']
-    elif 'directions' in dictionary and dictionary['directions']=='>':
+    elif 'directions' in dictionary and dictionary['directions'] == '>':
         del new_dict['directions']
     return new_dict
 
@@ -131,9 +130,9 @@ def load_and_prepare_IID_human_data(evidence_type_filter):
     # download IID PP interaction
     file_url = 'http://iid.ophid.utoronto.ca/static/download/human_annotated_PPIs.txt.gz'
     file_name = pharmebinetutils.download_file(file_url, './data')
-    counter_edges=0
+    counter_edges = 0
 
-    counter_other_type=0
+    counter_other_type = 0
     with gzip.open(file_name, 'rt') as f:
         csv_file = csv.DictReader(f, delimiter='\t')
         print(csv_file.fieldnames)
@@ -142,18 +141,18 @@ def load_and_prepare_IID_human_data(evidence_type_filter):
             node_into_file(rela_info['uniprot1'], rela_info['symbol1'], csv_node)
             node_into_file(rela_info['uniprot2'], rela_info['symbol2'], csv_node)
 
-            evidence_types=rela_info['evidence_type'].split('|') # 'evidence_type'
+            evidence_types = rela_info['evidence_type'].split('|')  # 'evidence_type'
             rela_info = transform_empty_values_into_real_empty_values(rela_info)
-            if evidence_type_filter=='':
+            if evidence_type_filter == '':
                 csv_rela.writerow(rela_info)
             elif evidence_type_filter in evidence_types:
                 csv_rela.writerow(rela_info)
             else:
-                counter_other_type+=1
+                counter_other_type += 1
                 # print('evidence types',evidence_types)
-            counter_edges+=1
-    print('it has a total number of edges:',counter_edges)
-    print('number of edges with other evidence types:',counter_other_type)
+            counter_edges += 1
+    print('it has a total number of edges:', counter_edges)
+    print('number of edges with other evidence types:', counter_other_type)
 
 
 # path to directory

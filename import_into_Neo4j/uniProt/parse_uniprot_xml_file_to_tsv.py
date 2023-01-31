@@ -763,6 +763,7 @@ def generate_tsv_file(label, properties):
 
 # cypher file
 cypherfile = open('output/cypher.cypher', 'w')
+cypherfile_edge = open('output/cypher_edge.cypher', 'w')
 
 
 def prepare_node_cypher_query(file_name, label, properties, list_properties):
@@ -816,7 +817,7 @@ def prepare_edge_cypher_query(file_name, label, rela_name, properties, list_prop
             query += property + ':line.' + property + ', '
     query = query[:-2] + '}]->(b)' if len(properties) > 2 else query + ']->(b)'
     query = pharmebinetutils.get_query_import(path_of_directory, f'import_into_Neo4j/uniProt/{file_name}', query)
-    cypherfile.write(query)
+    cypherfile_edge.write(query)
 
 
 def generates_node_tsv_file_and_cypher(label, properties, list_properties):

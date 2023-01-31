@@ -3,6 +3,9 @@ import sys
 import datetime
 import pandas as pd
 
+sys.path.append("../..")
+import pharmebinetutils
+
 cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
 
 cypher_file_rela = open('output/cypher_rela.cypher', 'w', encoding='utf-8')
@@ -45,13 +48,12 @@ def combine_query(labels, file_name, query_end, identifier):
     :param file_name: string
     :param query_end: string
     """
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/adrecs_target/%s" As line FIELDTERMINATOR '\\t' Create (p:%s {''' + query_end
     join_addition = addition + ' :'
-    query = query % (file_name, join_addition.join(labels) + addition)
+    query = f'Create (p:{join_addition.join(labels) + addition} {{' + query_end
+    query = pharmebinetutils.get_query_import(path_of_directory, f'import_into_Neo4j/adrecs_target/{file_name}', query)
     cypher_file.write(query)
 
-    query = ''':begin \n Create Constraint On (node:%s) Assert node.%s Is Unique; \n :commit \n '''
-    query = query % (join_addition.join(labels) + addition, identifier)
+    query = pharmebinetutils.prepare_index_query(join_addition.join(labels) + addition, identifier)
     cypher_file.write(query)
 
 
@@ -76,7 +78,7 @@ def prepare_query(labels, file_name, header, header_list, seperater, identifier)
             query_end += head + ':split(line.' + head + ',"' + seperater + '"), '
         else:
             query_end += head + ':line.' + head + ', '
-    query_end = query_end[:-2] + '});\n'
+    query_end = query_end[:-2] + '})'
     dict_label_to_identifier[labels[0]] = identifier
     combine_query(labels, file_name, query_end, identifier)
 
@@ -93,7 +95,6 @@ def prepare_query_rela(labe11, label2, file_name, id1, id2, rela_type, list_of_p
     :param list_of_properties: list
     :return:
     """
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/adrecs_target/%s" As line FIELDTERMINATOR '\t' Match (p:%s{%s:line.%s}), (b:%s{%s:line.%s}) Create (p)-[:%s %s]->(b);\n'''
     if len(list_of_properties) > 0:
         properties = '{'
         for prop in list_of_properties:
@@ -102,8 +103,10 @@ def prepare_query_rela(labe11, label2, file_name, id1, id2, rela_type, list_of_p
     else:
         properties = ''
 
-    query = query % (file_name, labe11 + addition, dict_label_to_identifier[labe11], id1, label2 + addition,
-                     dict_label_to_identifier[label2], id2, rela_type, properties)
+    query = ''' Match (p:%s{%s:line.%s}), (b:%s{%s:line.%s}) Create (p)-[:%s %s]->(b)''' % (
+    labe11 + addition, dict_label_to_identifier[labe11], id1, label2 + addition,
+    dict_label_to_identifier[label2], id2, rela_type, properties)
+    query = pharmebinetutils.get_query_import(path_of_directory, f'import_into_Neo4j/adrecs_target/{file_name}', query)
     cypher_file_rela.write(query)
 
 
@@ -188,6 +191,7 @@ def prepare_dictionary(dictionary):
         new_dict[key] = value
     return new_dict
 
+
 # set of ditop and adr pairs
 dict_ditop_to_other_entities = {}
 
@@ -226,11 +230,13 @@ def check_on_adr_information(identifier, dict_of_properties):
                 print(dict_adr_id_to_dict_infos[identifier][key])
                 sys.exit()
 
+
 # dictionary ditop id to ditop infos
-dict_ditop_id_to_ditop_infos={}
+dict_ditop_id_to_ditop_infos = {}
 
 # ditop header
 header_ditop = ['DITOP2_ID', 'ORGAISM', 'DATA_SOURCE', 'Link', 'PMID']
+
 
 def prepare_adrs():
     """"
@@ -283,16 +289,16 @@ def prepare_adrs():
 
         ditop2 = row['DITOP2_ID']
         if ditop2 not in dict_ditop_id_to_ditop_infos:
-            ditop_info={}
+            ditop_info = {}
             for head in header_ditop:
                 if head in row:
-                    ditop_info[head]=row[head]
-            dict_ditop_id_to_ditop_infos[ditop2]= ditop_info
+                    ditop_info[head] = row[head]
+            dict_ditop_id_to_ditop_infos[ditop2] = ditop_info
             # dict_label_to_csv_writer['ditop2'].writerow(ditop_list)
         else:
             for head in header_ditop:
                 if head in row:
-                    if dict_ditop_id_to_ditop_infos[ditop2][head]!=row[head]:
+                    if dict_ditop_id_to_ditop_infos[ditop2][head] != row[head]:
                         print(head, ditop2)
                         print(dict_ditop_id_to_ditop_infos[ditop2][head])
                         print(row[head])
@@ -474,14 +480,15 @@ def prepare_variants():
         else:
             for head in header_ditop:
                 if head in row:
-                    if head !='PMID':
-                        row_info=row[head]
+                    if head != 'PMID':
+                        row_info = row[head]
                     else:
-                        row_info=str(int(row[head])) if row[head]!='' else row[head]
-                    if head in dict_ditop_id_to_ditop_infos[badd_tid] and dict_ditop_id_to_ditop_infos[badd_tid][head]!=row_info:
+                        row_info = str(int(row[head])) if row[head] != '' else row[head]
+                    if head in dict_ditop_id_to_ditop_infos[badd_tid] and dict_ditop_id_to_ditop_infos[badd_tid][
+                        head] != row_info:
                         print(dict_ditop_id_to_ditop_infos[badd_tid])
                         print(row[head])
-                        sys.exit('different infos in '+ head)
+                        sys.exit('different infos in ' + head)
                     else:
                         dict_ditop_id_to_ditop_infos[badd_tid][head] = row_info
 
@@ -498,7 +505,7 @@ def prepare_variants():
             counter = 0
             for gene_id in str(gene_ids).split(';'):
                 if not int(gene_id) in set_of_gene_ids:
-                    dict_label_to_csv_writer['gene'].writerow([ gene_id, '' ,row['Gene_Name']])
+                    dict_label_to_csv_writer['gene'].writerow([gene_id, '', row['Gene_Name']])
                     set_of_gene_ids.add(int(gene_id))
                 if not (variant_id, gene_id) in dict_variant_rela_pairs['variant_gene']:
                     dict_variant_rela_pairs['variant_gene'].add((variant_id, gene_id))
@@ -639,7 +646,7 @@ def prepare_proteins():
         gene_id = row['GeneID']
         if gene_id != '':
             if not int(gene_id) in set_of_gene_ids:
-                dict_label_to_csv_writer['gene'].writerow([ gene_id])
+                dict_label_to_csv_writer['gene'].writerow([gene_id])
                 set_of_gene_ids.add(int(gene_id))
             if not (protein_id, gene_id) in dict_protein_rela_pairs['protein_gene']:
                 dict_protein_rela_pairs['protein_gene'].add((protein_id, gene_id))
@@ -834,7 +841,7 @@ def prepare_adr_gene_drug_rela():
         gene_id = row['GeneID']
 
         if not int(gene_id) in set_of_gene_ids:
-            dict_label_to_csv_writer['gene'].writerow([ gene_id])
+            dict_label_to_csv_writer['gene'].writerow([gene_id])
             set_of_gene_ids.add(int(gene_id))
 
         # write rela between gene and association
@@ -842,7 +849,7 @@ def prepare_adr_gene_drug_rela():
 
         # check on drug
         drug_name = row['Drug_Name'].lower()
-        if drug_name=='':
+        if drug_name == '':
             continue
 
         if drug_name not in dict_drug_name_to_information:
@@ -852,9 +859,10 @@ def prepare_adr_gene_drug_rela():
         # write rela between gene and association
         dict_rela_to_tsv['association_drug'].writerow([counter_triple_relationship, drug_name])
 
+
 def prepare_ditop_tsv_file_information():
     for dict_ditop in dict_ditop_id_to_ditop_infos.values():
-        ditop_list=[]
+        ditop_list = []
         for head in header_ditop:
             if head in dict_ditop:
                 ditop_list.append(dict_ditop[head])
