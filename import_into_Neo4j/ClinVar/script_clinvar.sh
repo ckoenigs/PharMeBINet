@@ -9,6 +9,9 @@ path_to_project=$2
 # path to clinvar saved data
 path_to_clinvar_data=$3
 
+#password
+password=$4
+
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo prepare clinvar data
@@ -20,7 +23,7 @@ echo "Current time: $now"
 
 echo integrate clinvar into neo4j
 
-$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher_file_node.cypher
+$path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_file_node.cypher
 
 sleep 60
 
@@ -29,7 +32,7 @@ $path_neo4j/neo4j restart
 
 sleep 120
 
-$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher_file_edges.cypher
+$path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_file_edges.cypher
 
 sleep 60
 

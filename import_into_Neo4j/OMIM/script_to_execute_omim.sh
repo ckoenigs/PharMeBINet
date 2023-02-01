@@ -7,6 +7,9 @@ path_to_project=$1
 # path to neo4j
 path_neo4j=$2
 
+#password
+password=$3
+
 echo download omim files if needed
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -35,7 +38,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 
 
-$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher.cypher
+$path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher.cypher
 
 now=$(date +"%F %T")
 echo "Current time: $now"

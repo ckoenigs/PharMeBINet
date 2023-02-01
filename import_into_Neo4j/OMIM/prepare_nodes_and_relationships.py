@@ -2,6 +2,9 @@ import sys
 import datetime
 import csv
 
+sys.path.append("../..")
+import pharmebinetutils
+
 # dictionary from omim prefix to label
 dict_prefix_to_label = {
     "Asterisk": ["gene"],
@@ -436,7 +439,7 @@ def load_in_genemap2():
             print(counter)
             print(len(dict_relationships))
             print('huhu')
-        print('number of rela:'+str(len(dict_relationships)))
+        print('number of rela:' + str(len(dict_relationships)))
 
 
 def check_for_name_in_dictionary_if_same_id(omim_id, name):
@@ -575,19 +578,21 @@ list_of_list_elements_node = ['alternative_names', 'alternative_symbols', 'inclu
                               'included_symbols', 'xrefs', 'detail_information']
 
 
-def prepare_queries(query_start):
+def prepare_queries():
     """
     generate the different queries
     :return: node query and edge query
     """
-    query_node = query_start + " Create (n:%s_omim {"
+    query_node = " Create (n:%s_omim {"
     query_node = add_properties_to_query(set_of_headers, query_node, list_of_list_elements_node)
-    query_node += '});\n'
+    query_node += '})'
+    query_node = pharmebinetutils.get_query_import(path_of_directory, 'import_into_Neo4j/OMIM/%s', query_node)
 
-    query_edge = query_start + ' Match (a:%s_omim{identifier:line.id_1}), (b:%s_omim{identifier:line.id_2}) Create (a)-[:%s{'
+    query_edge = ' Match (a:%s_omim{identifier:line.id_1}), (b:%s_omim{identifier:line.id_2}) Create (a)-[:%s{'
     query_edge = add_properties_to_query(set_of_headers_rela, query_edge,
                                          ['inheritance', 'kind_of_rela', 'phenotype_mapping_key', 'comments'])
-    query_edge += '}]->(b);\n'
+    query_edge += '}]->(b)'
+    query_edge = pharmebinetutils.get_query_import(path_of_directory, 'import_into_Neo4j/OMIM/%s', query_edge)
     set_of_headers_rela.add('id_1')
     set_of_headers_rela.add('id_2')
 
@@ -610,7 +615,7 @@ def prepare_labels(label):
         if '/' in label:
             labels = label.split('/')
             labels = [label.replace(' ', '_') for label in labels]
-            new_labels=new_labels.union(labels)
+            new_labels = new_labels.union(labels)
         else:
             label = label.replace(' ', '_')
             new_labels.add(label)
@@ -619,7 +624,6 @@ def prepare_labels(label):
 
 # cypher file
 cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
-query_constraint = '''Create Constraint On (node:%s_omim) Assert node.identifier Is Unique;\n'''
 set_of_existing_constrains = set()
 
 
@@ -636,8 +640,7 @@ def add_node_query_to_cypher(labels, query_node, file_name):
     cypher_file.write(query_node)
     for label in labels:
         if label not in set_of_existing_constrains:
-            one_constraint = query_constraint % label
-            cypher_file.write(one_constraint)
+            cypher_file.write(pharmebinetutils.prepare_index_query(label+'_omim','identifier'))
             set_of_existing_constrains.add(label)
 
 
@@ -928,10 +931,7 @@ def main():
     print(datetime.datetime.now())
     print('Prepare the cypher queries')
 
-    # query start
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/OMIM/%s"  As line FIELDTERMINATOR '\\t' '''
-
-    query_node, query_edge = prepare_queries(query_start)
+    query_node, query_edge = prepare_queries()
 
     print('##########################################################################')
 

@@ -1,15 +1,8 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Jan 26 13:31:43 2018
-
-@author: ckoenigs
-"""
-
-from py2neo import Graph#, authenticate
 import sys
 import datetime
-import threading
-import types
+
+sys.path.append("../..")
+import create_connection_to_databases
 
 # dictionary with the differences sources as and the name as property in pharmebinet
 dict_resources = {
@@ -21,17 +14,17 @@ dict_resources = {
     'hetionet': 'hetionet',
     'NDF-RT': 'ndf_rt',
     'SIDER': 'sider',
-    'MonDO':'mondo',
-    'DO':'do',
-    "HPO":'hpo'
+    'MonDO': 'mondo',
+    'DO': 'do',
+    "HPO": 'hpo'
 }
 
 
 # connect with the neo4j database AND MYSQL
 def database_connection():
-
-    global g
-    g = Graph("http://localhost:7474/db/data/", auth=("neo4j", "test"))
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 # dictionary with label as key and value is the constraint property
@@ -43,16 +36,26 @@ Get for all label the unique property, after a : is the label and after a . is t
 
 
 def generate_dictionary_for_labels():
-    query = '''CALL db.constraints'''
+    query='SHOW INDEXES'
     results = g.run(query)
     # version <=4.0
+    # query = '''CALL db.constraints'''
     # for name, constraint_string, in results:
-    for name, constraint_string, details, in results:
+    for record in results:
+        # [name, constraint_string, details] = record.values()
+        # label = constraint_string.split(':')[1].split(' )')[0]
+        # unique_property = constraint_string.split('.')[1].split(' ')[0]
+        # dict_label_to_unique_prop[label] = unique_property
+        [id,name,state,populationPercent,type,entityType,labelsOrTypes,properties,indexProvider,owningConstraint] = record.values()
+        if labelsOrTypes:
+            if len(labelsOrTypes)>1:
+                sys.exit('ohno, multiple labels')
+            if len(properties)>1:
+                sys.exit('ohno multiple properties')
+            dict_label_to_unique_prop[labelsOrTypes[0]] = properties[0]
+
         # print(constraint_string)
-        label = constraint_string.split(':')[1].split(' )')[0]
-        unique_property = constraint_string.split('.')[1].split(' ')[0]
-        dict_label_to_unique_prop[label] = unique_property
-    dict_label_to_unique_prop['DatabaseObject_reactome']='dbId'
+    dict_label_to_unique_prop['DatabaseObject_reactome'] = 'dbId'
 
     # print(dict_label_to_unique_prop)
 
@@ -62,7 +65,7 @@ add the resource to merged node
 '''
 
 
-def merge_resource_to_node(delete_node, label, merged_node,identifier_name, is_int):
+def merge_resource_to_node(delete_node, label, merged_node, identifier_name, is_int):
     # get all resources of a node
     if type(delete_node) == int or is_int:
         query = '''Match (s:%s{%s:%s}) Return s'''
@@ -71,13 +74,14 @@ def merge_resource_to_node(delete_node, label, merged_node,identifier_name, is_i
     query = query % (label, identifier_name, delete_node)
     results = g.run(query)
     dict_delete_node = {}
-    for node, in results:
+    for record in results:
+        node = record.data()['s']
         dict_delete_node = dict(node)
     resources_list = dict_delete_node['resource'] if 'resource' in dict_delete_node else []
     url_ctd = dict_delete_node['ctd_url'] if 'ctd_url' in dict_delete_node else ''
 
-    print('delete node:'+delete_node)
-    print('merged node:'+merged_node)
+    print('delete node:' + delete_node)
+    print('merged node:' + merged_node)
 
     # make all this source to a yes in the merged node
     if len(resources_list) != 0:
@@ -86,14 +90,14 @@ def merge_resource_to_node(delete_node, label, merged_node,identifier_name, is_i
             query = '''Match (s:%s{%s:%s}) Set'''
         else:
             query = '''Match (s:%s{%s:"%s"}) Set'''
-        query = query % (label,identifier_name, merged_node)
+        query = query % (label, identifier_name, merged_node)
         for source in resources_list:
             add_query = ''' s.%s="yes",''' % (dict_resources[source])
             query += add_query
 
         query = query[0:-1] + ''' Return s'''
         results = g.run(query)
-        result = results.evaluate()
+        result = results.single()
         resources_merged_node_list = result['resource'] if 'resource' in result else []
         combined_resource = list(set().union(resources_list, resources_merged_node_list))
         combined_resource_string = '","'.join(combined_resource)
@@ -102,7 +106,7 @@ def merge_resource_to_node(delete_node, label, merged_node,identifier_name, is_i
             query = '''Match (s:%s{%s:%s}) Set s.resource=["%s"],'''
         else:
             query = '''Match (s:%s{%s:"%s"}) Set s.resource=["%s"],'''
-        query = query % (label,identifier_name, merged_node, combined_resource_string)
+        query = query % (label, identifier_name, merged_node, combined_resource_string)
 
         # if it comes from CTD also add the ctd url
         if url_ctd != '':
@@ -110,18 +114,16 @@ def merge_resource_to_node(delete_node, label, merged_node,identifier_name, is_i
             if ctd_url_merged == '':
                 add_query = ''' s.url_ctd="%s" ''' % (url_ctd)
                 query += add_query
-        for property,value in result:
-            if type(value)==list:
-                value=set(value)
+        for property, value in result:
+            if type(value) == list:
+                value = set(value)
                 if property in dict_delete_node:
-                    other_value=set(dict_delete_node[property])
-                    value=value.union(other_value)
-                    add_query='s.%s = ["%s"], ' %(property,'","'.join(list(value)))
+                    other_value = set(dict_delete_node[property])
+                    value = value.union(other_value)
+                    add_query = 's.%s = ["%s"], ' % (property, '","'.join(list(value)))
                     query += add_query
 
         g.run(query[0:-1])
-
-
 
 
 '''
@@ -138,7 +140,8 @@ def get_the_information_and_the_direction(identifier, label, merged_node_id, ide
     query = query % (label, identifier_name, identifier)
     # print(query)
     results = g.run(query)
-    for rela_type, rela, node_labels, node, in results:
+    for record in results:
+        [rela_type, rela, node_labels, node] = record.values()
         dict_rela = {}
         # this is to avoid loops
         other_node_id = node['identifier'] if 'identifier' in node else ''
@@ -152,7 +155,7 @@ def get_the_information_and_the_direction(identifier, label, merged_node_id, ide
 
         list_node_to_other.append([rela_type, dict_rela, node_labels, node])
 
-    print('number of rela from node to other:'+str(len(list_node_to_other)))
+    print('number of rela from node to other:' + str(len(list_node_to_other)))
 
     if not is_int:
         query = '''Match (c:%s{%s:"%s"})<-[r]-(a) Return Type(r), r, labels(a), a '''
@@ -161,7 +164,8 @@ def get_the_information_and_the_direction(identifier, label, merged_node_id, ide
     query = query % (label, identifier_name, identifier)
     # print(query)
     results = g.run(query)
-    for rela_type, rela, node_labels, node, in results:
+    for record in results:
+        [rela_type, rela, node_labels, node] = record.values()
         dict_rela = {}
         # this is to avoid loops
         other_node_id = node['identifier'] if 'identifier' in node else ''
@@ -178,7 +182,6 @@ def get_the_information_and_the_direction(identifier, label, merged_node_id, ide
     print('number of rela from other to node:' + str(len(list_other_to_node)))
 
 
-
 '''
 The node that get the information 
 '''
@@ -192,7 +195,8 @@ def add_this_information_to_the_merged_node(identifier, label, delete_node_id, i
         query = '''Match (node:%s{%s:%s}) Return node'''
     query = query % (label, identifier_name, identifier)
     results = g.run(query)
-    for node, in results:
+    for record in results:
+        node = record.data()['node']
         merged_identifier = set(node['merged_identifier']) if 'merged_identifier' in node else set([])
         merged_identifier.add(delete_node_id)
         merged_identifier_string = '","'.join(list(merged_identifier))
@@ -202,13 +206,13 @@ def add_this_information_to_the_merged_node(identifier, label, delete_node_id, i
 
     # integrate the new relationships from this node to the other nodes into for this node into pharmebinet
     count_new_relationships_from_this_node = 0
-    length_list_node_other=len(list_node_to_other)
+    length_list_node_other = len(list_node_to_other)
     for [rela_type, dict_rela, node_labels, node] in list_node_to_other:
         # test if not a relationship already exists
         if not node_labels[0] in dict_label_to_unique_prop:
-            print('The rela  to this label node has to be manual integrated:'+ node_labels[0])
+            print('The rela  to this label node has to be manual integrated:' + node_labels[0])
             print(node)
-            print('Rela type:'+rela_type)
+            print('Rela type:' + rela_type)
             print(dict_rela)
             continue
         if not is_int:
@@ -222,11 +226,12 @@ def add_this_information_to_the_merged_node(identifier, label, delete_node_id, i
                 query = ''' Match (a:%s{%s:%s})-[r:%s]->(b:%s{%s:%s})  Return r'''
             else:
                 query = ''' Match (a:%s{%s:%s})-[r:%s]->(b:%s{%s:"%s"})  Return r'''
-        query = query % (label, identifier_name, identifier, rela_type, node_labels[0], dict_label_to_unique_prop[node_labels[0]],
-                         node[dict_label_to_unique_prop[node_labels[0]]])
+        query = query % (
+            label, identifier_name, identifier, rela_type, node_labels[0], dict_label_to_unique_prop[node_labels[0]],
+            node[dict_label_to_unique_prop[node_labels[0]]])
         # print(query)
         results = g.run(query)
-        result = results.evaluate()
+        result = results.single()
         # if not generate the connection
         if result == None:
             if not is_int:
@@ -243,8 +248,9 @@ def add_this_information_to_the_merged_node(identifier, label, delete_node_id, i
                 else:
                     query = ''' Match (a:%s{%s:%s}), (b:%s{%s:"%s"})
                                         Create (a)-[r:%s{ '''
-            query = query % (label, identifier_name, identifier, node_labels[0], dict_label_to_unique_prop[node_labels[0]],
-                             node[dict_label_to_unique_prop[node_labels[0]]], rela_type)
+            query = query % (
+                label, identifier_name, identifier, node_labels[0], dict_label_to_unique_prop[node_labels[0]],
+                node[dict_label_to_unique_prop[node_labels[0]]], rela_type)
 
             for key, property in dict_rela.items():
                 if type(property) != list:
@@ -276,10 +282,11 @@ def add_this_information_to_the_merged_node(identifier, label, delete_node_id, i
                 query = ''' Match (a:%s{%s:%s})<-[r:%s]-(b:%s{%s:%s})  Return r'''
             else:
                 query = ''' Match (a:%s{%s:%s})<-[r:%s]-(b:%s{%s:"%s"})  Return r'''
-        query = query % (label, identifier_name, identifier, rela_type, node_labels[0], dict_label_to_unique_prop[node_labels[0]],
-                         node[dict_label_to_unique_prop[node_labels[0]]])
+        query = query % (
+            label, identifier_name, identifier, rela_type, node_labels[0], dict_label_to_unique_prop[node_labels[0]],
+            node[dict_label_to_unique_prop[node_labels[0]]])
         results = g.run(query)
-        result = results.evaluate()
+        result = results.single()
 
         # if not generate the connection
         if result == None:
@@ -299,8 +306,9 @@ def add_this_information_to_the_merged_node(identifier, label, delete_node_id, i
                     query = ''' Match (a:%s{%s:%s}), (b:%s{%s:"%s"})
                                  Create (a)<-[r:%s {'''
 
-            query = query % (label, identifier_name, identifier, node_labels[0], dict_label_to_unique_prop[node_labels[0]],
-                             node[dict_label_to_unique_prop[node_labels[0]]], rela_type)
+            query = query % (
+                label, identifier_name, identifier, node_labels[0], dict_label_to_unique_prop[node_labels[0]],
+                node[dict_label_to_unique_prop[node_labels[0]]], rela_type)
             for key, property in dict_rela.items():
                 if type(property) != list:
                     query = query + '''%s:"%s",'''
@@ -324,7 +332,7 @@ delete the merged node
 '''
 
 
-def delete_merged_node(identifier, label,identifier_name, is_int):
+def delete_merged_node(identifier, label, identifier_name, is_int):
     if not is_int:
         query = ''' Match (n:%s{%s:"%s"}) Detach Delete n'''
     else:
@@ -335,15 +343,14 @@ def delete_merged_node(identifier, label,identifier_name, is_int):
 
 #
 def main():
-
-    if len(sys.argv)<3:
+    if len(sys.argv) < 3:
         return
 
-    old_id =sys.argv[1]
-    into=sys.argv[2]
-    label=sys.argv[3]
-    identifier_name=sys.argv[4]
-    is_int=True if sys.argv[5] in ['true','True'] else False
+    old_id = sys.argv[1]
+    into = sys.argv[2]
+    label = sys.argv[3]
+    identifier_name = sys.argv[4]
+    is_int = True if sys.argv[5] in ['true', 'True'] else False
 
     global list_other_to_node, list_node_to_other
     # list from the specific node to the other with (rela_type,dict_rela,node_labels,dict_node)
@@ -364,7 +371,7 @@ def main():
     print(datetime.datetime.now())
     print('add resources to merged node')
 
-    merge_resource_to_node(old_id, label, into, identifier_name,is_int)
+    merge_resource_to_node(old_id, label, into, identifier_name, is_int)
 
     print('##########################################################################')
 
@@ -387,7 +394,7 @@ def main():
     print('integrate this into Hetionet')
 
     # add_this_information_to_the_merged_node('DB06723', 'Compound','DB13390')
-    add_this_information_to_the_merged_node(into , label, old_id, identifier_name, is_int)
+    add_this_information_to_the_merged_node(into, label, old_id, identifier_name, is_int)
 
     print('##########################################################################')
 
@@ -397,10 +404,11 @@ def main():
     # delete_merged_node('DB13390', 'Compound')
     delete_merged_node(old_id, label, identifier_name, is_int)
 
+    driver.close()
+
     print('##########################################################################')
 
     print(datetime.datetime.now())
-
 
 
 if __name__ == "__main__":
