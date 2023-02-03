@@ -6,6 +6,9 @@ path_to_project=$1
 # path to neo4j
 path_neo4j=$2
 
+#password
+password=$3
+
 # path to drugbank
 path_to_drugbank_data="/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/Drugbank_database/drugbank_files_without_preperation/"
 
@@ -16,7 +19,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo prepare drugbank categories
 
-python3 update_drugbank_categories.py > out_categories.txt
+#python3 update_drugbank_categories.py > out_categories.txt
 
 
 
@@ -62,9 +65,9 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo integration with cypher shell
 
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher_file.cypher
+$path_neo4j/cypher-shell -u neo4j -p $password -f cypher_file.cypher
 
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher_rela_file.cypher
+$path_neo4j/cypher-shell -u neo4j -p $password -f cypher_rela_file.cypher
 
-$path_neo4j/cypher-shell -u neo4j -p test -f ../cypher_atc.cypher
+$path_neo4j/cypher-shell -u neo4j -p $password -f ../cypher_atc.cypher
 
