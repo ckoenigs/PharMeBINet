@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Created on Wed Aug  9 13:25:13 2017
 
@@ -13,6 +12,9 @@ import datetime
 import sys, html
 
 import pandas
+
+sys.path.append("../..")
+import pharmebinetutils
 
 # dictionary category name to category id
 dict_category_name_to_id = {}
@@ -861,7 +863,7 @@ for i, drug in enumerate(root):
         # information for reaction node
         reaction['sequence'] = part.findtext("{ns}sequence".format(ns=ns))
         reaction['id'] = counter_reaction_ids
-        reaction['start_drugbank_id']=db_ID
+        reaction['start_drugbank_id'] = db_ID
         reaction_id = counter_reaction_ids
         counter_reaction_ids += 1
         left = part.findtext("{ns}left-element/{ns}drugbank-id".format(ns=ns))
@@ -1227,8 +1229,6 @@ path_of_directory = sys.argv[1]
 
 cypher_file = open('cypher_atc.cypher', 'w', encoding='utf-8')
 
-query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/drugbank/%s" As line FIELDTERMINATOR '\t' '''
-
 # write info into tsv file
 atc_file_name = 'atc_node.tsv'
 atc_file = open(atc_file_name, 'w', encoding='utf-8')
@@ -1239,12 +1239,10 @@ for identifier, name in dict_atc_nodes.items():
 atc_file.close()
 
 # prepare act node queries
-query = query_start + " Create (n:atc{identifier:line.id, name:line.name});\n"
-query = query % (atc_file_name)
+query = " Create (n:atc{identifier:line.id, name:line.name})"
+query = pharmebinetutils.get_query_import(path_of_directory , 'import_into_Neo4j/drugbank/' + atc_file_name, query)
 cypher_file.write(query)
-cypher_file.write(':begin\n')
-cypher_file.write('Create Constraint On (node:atc) Assert node.identifier Is Unique; \n')
-cypher_file.write(':commit\n')
+cypher_file.write(pharmebinetutils.prepare_index_query('atc', 'identifier'))
 
 # prepare atc edge file
 atc_file_name = 'atc_edge.tsv'
@@ -1255,8 +1253,8 @@ for (identifier_upper, identifier_down) in set_atc_edges:
     csv_atc.writerow([identifier_upper, identifier_down])
 atc_file.close()
 # prepare atc edge query
-query = query_start + " Match (n:atc{identifier:line.id_upper}), (m:atc{identifier:line.id_down}) Create (n)<-[:is_a]-(m);\n"
-query = query % (atc_file_name)
+query = " Match (n:atc{identifier:line.id_upper}), (m:atc{identifier:line.id_down}) Create (n)<-[:is_a]-(m)"
+query = pharmebinetutils.get_query_import(path_of_directory , 'import_into_Neo4j/drugbank/' + atc_file_name, query)
 cypher_file.write(query)
 
 print(datetime.datetime.now())

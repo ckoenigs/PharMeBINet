@@ -1,17 +1,14 @@
-# -*- coding: utf-8 -*-
 # this file go through all csv,fasta and sdf filed from the DrugBank download site and test  if the information are already
 # in the xml file or not. Also if some information are not included then they are combinded withe the other files.
 
-import sys, io
+import sys
 import os, csv
 
 from itertools import groupby
 import datetime
 
-# encoding=utf8
-# reload(sys)
-# sys.setdefaultencoding('utf8')
-
+sys.path.append("../..")
+import pharmebinetutils
 
 # dictionary with every uniprot id and and every property
 dict_uniprot = {}
@@ -411,7 +408,7 @@ def drugs_combination_and_check(neo4j_label):
         output_file_drug = open('output/drugbank_drug.tsv', 'w', encoding='utf-8')
         writer_drug = csv.writer(output_file_drug, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
         writer_drug.writerow(header)
-        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/drugbank/output/drugbank_drug.tsv" As line FIELDTERMINATOR '\\t' Create (b:''' + neo4j_label + '''{ '''
+        query = ''' Create (b:''' + neo4j_label + '''{ '''
         new_header = []
 
         # list properties which are lists
@@ -443,11 +440,11 @@ def drugs_combination_and_check(neo4j_label):
         new_header.append(':LABEL')
         writer.writerow(new_header)
 
-        query = query + '''license:"''' + drugbank_license + '''"});\n'''
+        query = query + '''license:"''' + drugbank_license + '''"})'''
+        query = pharmebinetutils.get_query_import(path_of_directory,
+                                                  'import_into_Neo4j/drugbank/output/drugbank_drug.tsv', query)
         cypher_file.write(query)
-        cypher_file.write(':begin\n')
-        cypher_file.write('Create Constraint On (node:' + neo4j_label + ') Assert node.identifier Is Unique;\n')
-        cypher_file.write(':commit\n')
+        cypher_file.write(pharmebinetutils.prepare_index_query(neo4j_label, 'identifier'))
 
         counter_uniprot_title = 0
 
@@ -1355,7 +1352,7 @@ def generate_combined_csv_files(header_new, neo4j_general_label, special_label_l
             sub_query += head + ':line.' + head + ', '
             header_import_tool.append(head)
 
-    sub_query = sub_query + '''license:"''' + drugbank_license + '''"});\n'''
+    sub_query = sub_query + '''license:"''' + drugbank_license + '''"})'''
     header_import_tool.append('license')
     header_import_tool.append(':LABEL')
     writer.writerow(header_import_tool)
@@ -1372,11 +1369,13 @@ def generate_combined_csv_files(header_new, neo4j_general_label, special_label_l
             dict_label_to_file[label_string] = writer_output
             writer_output.writerow(header_new)
             writer_output.writerow(property)
-            query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/drugbank/''' + file_path + '''" As line FIELDTERMINATOR '\\t' Create (b'''
+            query = ''' Create (b'''
             for neo4j_label in label_list:
-                query += ''':''' + neo4j_label + ' '
-            query += ''':''' + neo4j_general_label + '''{ '''
+                query += ':' + neo4j_label + ' '
+            query += ':' + neo4j_general_label + '{ '
             query += sub_query
+            query = pharmebinetutils.get_query_import(path_of_directory, 'import_into_Neo4j/drugbank/' + file_path,
+                                                      query)
             cypher_file.write(query)
         new_entry = []
         counter = 0
@@ -1400,7 +1399,7 @@ def generate_combined_csv_files(header_new, neo4j_general_label, special_label_l
 
     # for neo4j_label in special_label_list:
     cypher_file.write(':begin\n')
-    cypher_file.write('Create Constraint On (node:' + neo4j_general_label + ') Assert node.identifier Is Unique;\n')
+    cypher_file.write(pharmebinetutils.prepare_index_query(neo4j_general_label, 'identifier'))
     cypher_file.write(':commit\n')
 
 
@@ -1478,7 +1477,7 @@ def check_and_maybe_generate_a_new_drug_target_file(file, dict_drug_targets_exte
         if first:
             writer_tool.writerow(header_tool)
             import_string += ' --relationships ' + tool_path
-        query_end += '''license:"''' + drugbank_license + '''"}]->(g) ;\n'''
+        query_end += '''license:"''' + drugbank_license + '''"}]->(g)'''
 
         # go through all relationships and add them to a dictionary, also combine multiple relationships
         for row in reader:
@@ -1558,13 +1557,14 @@ def check_and_maybe_generate_a_new_drug_target_file(file, dict_drug_targets_exte
         writer_output = csv.writer(output_file, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
         # query for cypher-shell
-        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/drugbank/output/''' + \
-                file.split('/')[
-                    1] + '_' + rela_type + '''.tsv" As line FIELDTERMINATOR '\\t' Match (c:''' + neo4j_label_drug \
+        query = ''' Match (c:''' + neo4j_label_drug \
                 + '''{ identifier: line.drugbank_id}), (g:''' + neo4j_label_target + '''{ identifier:line.targets_id })  Create (c)-[a:''' + rela_type + '_C' + \
                 rela_type[0] + short_form_label + '''{ '''
 
         query += query_end
+        query = pharmebinetutils.get_query_import(path_of_directory,
+                                                  'import_into_Neo4j/drugbank/output/' + file.split('/')[
+                                                      1] + '_' + rela_type + '.tsv', query)
         cypher_rela_file.write(query)
 
         writer_output.writerow(header_new)
@@ -1771,18 +1771,18 @@ def gather_all_metabolite_information_and_generate_a_new_file(neo4j_label):
         header_new.insert(0, 'DRUGBANK_ID')
         header_new = [x.lower() for x in header_new]
         writer_drug.writerow(header_new)
-        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/drugbank/output/drugbank_metabolites.tsv" As line FIELDTERMINATOR '\\t' Create (b:''' + neo4j_label + '''{ '''
+        query = ''' Create (b:''' + neo4j_label + '''{ '''
         for head in header_new:
             if head == 'drugbank_id':
                 query += '''identifier:line.''' + head + ', '
             else:
                 query += head + ':line.' + head + ', '
 
-        query = query + '''license:"''' + drugbank_license + '''"});\n'''
+        query = query + '''license:"''' + drugbank_license + '''"})'''
+        query = pharmebinetutils.get_query_import(path_of_directory,
+                                                  'import_into_Neo4j/drugbank/output/drugbank_metabolites.tsv', query)
         cypher_file.write(query)
-        cypher_file.write(':begin\n')
-        cypher_file.write('Create Constraint On (node:Metabolite_DrugBank) Assert node.identifier Is Unique;\n')
-        cypher_file.write(':commit\n')
+        cypher_file.write(pharmebinetutils.prepare_index_query('Metabolite_DrugBank', 'identifier'))
         header_new = [x.upper() for x in header_new]
         counter_not_in = 0
         dict_sfd_metabolite_ids = {}
@@ -1845,18 +1845,17 @@ def add_general_to_cypher_node(path, label, special_name):
     with open(path) as csvfile:
         reader = csv.DictReader(csvfile, delimiter='\t')
         header = reader.fieldnames
-        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/drugbank/''' + path + '''" As line FIELDTERMINATOR '\\t' Create (b:''' + label + '''{ '''
+        query = ''' Create (b:''' + label + '''{ '''
         for head in header:
             if head == special_name:
                 query += 'identifier: line.' + head + ', '
             else:
                 query += head + ':line.' + head + ', '
 
-        query = query + '''license:"''' + drugbank_license + '''"});\n'''
+        query = query + '''license:"''' + drugbank_license + '''"})'''
+        query = pharmebinetutils.get_query_import(path_of_directory, 'import_into_Neo4j/drugbank/' + path, query)
         cypher_file.write(query)
-        cypher_file.write(':begin\n')
-        cypher_file.write('Create Constraint On (node:' + label + ') Assert node.identifier Is Unique;\n')
-        cypher_file.write(':commit\n')
+        cypher_file.write(pharmebinetutils.prepare_index_query(label, 'identifier'))
 
 
 '''
@@ -1869,13 +1868,14 @@ def add_rela_to_cypher(path, label_left, label_right, id_name_left, id_name_righ
         reader = csv.DictReader(csvfile, delimiter='\t')
         header = reader.fieldnames
 
-        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/drugbank/''' + path + '''" As line FIELDTERMINATOR '\\t' Match (b:''' + label_left + '''{ identifier: line.''' + id_name_left + '''}),'''
+        query = ''' Match (b:''' + label_left + '''{ identifier: line.''' + id_name_left + '''}),'''
         query += '''(c:''' + label_right + '''{ identifier: line.''' + id_name_right + '''}) Create (b)-[:''' + rela_label + '''{'''
         for head in header:
             if head not in [id_name_right, id_name_left]:
                 query += head + ':line.' + head + ', '
 
-        query = query + '''license:"''' + drugbank_license + '''"}]->(c);\n'''
+        query = query + '''license:"''' + drugbank_license + '''"}]->(c)'''
+        query = pharmebinetutils.get_query_import(path_of_directory, '''import_into_Neo4j/drugbank/''' + path, query)
         cypher_rela_file.write(query)
 
 
@@ -1886,7 +1886,7 @@ prepare the import file for nodes
 
 def import_tool_preparation_node(file_path, id_name, labels):
     global import_string
-    output_file = open('output/neo4j_import/' + file_path.split('/')[1].replace('tsv','csv'), 'w', encoding='utf-8')
+    output_file = open('output/neo4j_import/' + file_path.split('/')[1].replace('tsv', 'csv'), 'w', encoding='utf-8')
     import_string += ' --nodes ' + 'output/neo4j_import/' + file_path.split('/')[1]
     writer = csv.writer(output_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     with open(file_path) as csvfile:
@@ -1924,7 +1924,7 @@ prepare the import file for nodes and generate the a new connect target to mutat
 def import_tool_preparation_new_generated_rela(file_path, labels, label_targer, label_mutated_gene_protein):
     global import_string
     file_name = 'drugbank_target_mutated.tsv'
-    output_file = open('output/neo4j_import/' + file_name.replace('tsv','csv'), 'w', encoding='utf-8')
+    output_file = open('output/neo4j_import/' + file_name.replace('tsv', 'csv'), 'w', encoding='utf-8')
 
     import_string += ' --relationships ' + 'output/neo4j_import/' + file_name
 
@@ -1936,8 +1936,10 @@ def import_tool_preparation_new_generated_rela(file_path, labels, label_targer, 
     writer = csv.writer(output_file_cypher, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     writer.writerow([header_name_target, header_name_mutated])
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''import_into_Neo4j/drugbank/output/''' + file_name + '''" As line FIELDTERMINATOR '\\t' Match (b:''' + label_targer + '''{ identifier: line.''' + header_name_target + '''}),'''
-    query += '''(c:''' + label_mutated_gene_protein + '''{ identifier: line.''' + header_name_mutated + '''}) Create (b)-[:''' + labels + ''']->(c);\n'''
+    query = ''' Match (b:''' + label_targer + '''{ identifier: line.''' + header_name_target + '''}),'''
+    query += '''(c:''' + label_mutated_gene_protein + '''{ identifier: line.''' + header_name_mutated + '''}) Create (b)-[:''' + labels + ''']->(c)'''
+    query = pharmebinetutils.get_query_import(path_of_directory, '''import_into_Neo4j/drugbank/output/''' + file_name,
+                                              query)
     cypher_rela_file.write(query)
 
     with open(file_path) as csvfile:
@@ -1995,7 +1997,7 @@ generate files for import tool for rela
 
 def generation_of_files_for_import_tool(left_label, right_label, input_path, neo4j_label):
     global import_string
-    output_file = open('output/neo4j_import/' + input_path.split('/')[1].replace('tsv','csv'), 'w', encoding='utf-8')
+    output_file = open('output/neo4j_import/' + input_path.split('/')[1].replace('tsv', 'csv'), 'w', encoding='utf-8')
     import_string += ' --relationships ' + 'output/neo4j_import/' + input_path.split('/')[1]
     writer = csv.writer(output_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     with open(input_path) as csvfile:
@@ -2032,7 +2034,7 @@ generate files for import tool for rela for drug drug interaction
 
 def generation_of_files_for_import_tool_interaction(left_label, right_label, input_path, neo4j_label):
     global import_string
-    output_file = open('output/neo4j_import/' + input_path.split('/')[1].replace('tsv','csv'), 'w', encoding='utf-8')
+    output_file = open('output/neo4j_import/' + input_path.split('/')[1].replace('tsv', 'csv'), 'w', encoding='utf-8')
     import_string += ' --relationships ' + 'output/neo4j_import/' + input_path.split('/')[1]
     writer = csv.writer(output_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     with open(input_path) as csvfile:
