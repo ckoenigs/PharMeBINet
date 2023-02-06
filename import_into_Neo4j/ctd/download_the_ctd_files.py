@@ -38,13 +38,12 @@ def download_and_unzip(file_name):
             time.sleep(60 * 5)
 
 
-url_start = 'http://ctdbase.org/reports/'
+url_start = 'https://ctdbase.org/reports/'
 list_of_ctd_file_names = [
     'CTD_chem_gene_ixns.tsv.gz',
     'CTD_chemicals_diseases.tsv.gz',
     'CTD_chem_go_enriched.tsv.gz',
     'CTD_chem_pathways_enriched.tsv.gz',
-    'CTD_genes_diseases.tsv.gz',  # need to be add manually
     'CTD_genes_pathways.tsv.gz',
     'CTD_diseases_pathways.tsv.gz',
     'CTD_pheno_term_ixns.tsv.gz',
@@ -57,9 +56,10 @@ list_of_ctd_file_names = [
     'CTD_diseases.tsv.gz',
     'CTD_genes.tsv.gz',
     'CTD_pathways.tsv.gz',
-    'CTD_anatomy.tsv.gz'
+    'CTD_anatomy.tsv.gz',
+    'CTD_genes_diseases.tsv.gz'  # need to be add manually
 ]
-separate = 'CTD_chem_gene_ixn_types.csv'
+separate = 'CTD_chem_gene_ixn_types.tsv'
 
 
 def main():
