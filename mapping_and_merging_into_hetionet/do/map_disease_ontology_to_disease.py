@@ -23,8 +23,9 @@ create a connection with neo4j
 def create_connetion_with_neo4j():
     # set up authentication parameters and connection
     # authenticate("localhost:7474", "neo4j", "test")
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 # dictionary of all diseases in pharmebinet with key the disease ontology and value class Disease
@@ -56,7 +57,8 @@ url
 def load_all_disease_in_dictionary():
     query = '''Match (n:Disease) RETURN n '''
     results = g.run(query)
-    for disease, in results:
+    for record in results:
+        disease = record.data()['n']
         identifier = disease['identifier']
         xrefs = disease['xrefs'] if 'xrefs' in disease else []
         for xref in xrefs:
@@ -81,7 +83,8 @@ def load_all_disease_in_dictionary():
     # try consider only the lowest level omim so it should not have a with to general omim mapping od do
     query = '''Match (n:Disease) Where not ()-[:IS_A_DiaD]->(n) Return n'''
     results = g.run(query)
-    for disease, in results:
+    for record in results:
+        disease = record.data()['n']
         identifier = disease['identifier']
         xrefs = disease['xrefs'] if 'xrefs' in disease else []
         for xref in xrefs:
@@ -131,25 +134,30 @@ Also create cypher query for generate is a relationships between Diseases
 
 def generate_cypher_file():
     cypher_file = open('cypher.cypher', 'w', encoding='utf-8')
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/do/output/%s.tsv" As line FIELDTERMINATOR '\\t' '''
 
     query_middel_set = ''
     query_middel_set_alt = ''
     for header in header_nodes:
         if header in ['how_mapped', 'mondo_id', 'umls_cuis', 'identifier']:
             continue
-        if header in ['synonyms', 'alternative_ids',  'resource']:
+        if header in ['synonyms', 'alternative_ids', 'resource']:
             query_middel_set += 'n.' + header + '=split(line.' + header + ',"|"), '
             continue
         query_middel_set += 'n.' + header + '=line.' + header + ', '
 
-    query_set = query_start + ' Match (n:Disease{identifier:line.mondo_id}), (b:%s{id:line.identifier}) Set ' + query_middel_set + ' n.diseaseOntology="yes" Create (n)-[:equal_to {how_mapped:line.how_mapped}]->(b);\n'
+    query_set = ' Match (n:Disease{identifier:line.mondo_id}), (b:%s{id:line.identifier}) Set ' + query_middel_set + ' n.diseaseOntology="yes" Create (n)-[:equal_to {how_mapped:line.how_mapped}]->(b)'
     print(query_set)
-    query_set = query_set % ("mapped", do_label)
+    query_set = query_set % (do_label)
+    query_set = pharmebinetutils.get_query_import(path_of_directory,
+                                                  f'mapping_and_merging_into_hetionet/do/output/mapped.tsv',
+                                                  query_set)
     cypher_file.write(query_set)
 
-    query_rela = query_start + '''Match (d:Disease {identifier:line.child}), (d2:Disease {identifier:line.parent}) Merge (d)-[r:IS_A_DiaD]->(d2) On Create Set r.license="%s", r.source="%s", r.unbiased=false, r.resource=["Disease Ontology"] ,r.diseaseOntology='yes', r.url="http://purl.obolibrary.org/obo/DOID_"+line.doid  On Match Set r.resource="Disease Ontology"+ r.resource ,r.diseaseOntology='yes' ;\n '''
-    query_rela = query_rela % ("new_rela", license, do_name)
+    query_rela = '''Match (d:Disease {identifier:line.child}), (d2:Disease {identifier:line.parent}) Merge (d)-[r:IS_A_DiaD]->(d2) On Create Set r.license="%s", r.source="%s", r.unbiased=false, r.resource=["Disease Ontology"] ,r.diseaseOntology='yes', r.url="http://purl.obolibrary.org/obo/DOID_"+line.doid  On Match Set r.resource="Disease Ontology"+ r.resource ,r.diseaseOntology='yes'  '''
+    query_rela = query_rela % (license, do_name)
+    query_rela = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/do/output/new_rela.tsv',
+                                              query_rela)
     cypher_file.write(query_rela)
     cypher_file.close()
 
@@ -185,7 +193,7 @@ def prepare_mapped_data(disease, identifier, alternative_ids, how_mapped, overla
     :return:
     """
     # add the other information to the disease
-    xrefs = disease['xrefs'] if disease['xrefs'] != None else ''
+    xrefs = disease['xrefs'] if 'xrefs' in disease else []
     xref_umls_cuis = []
     xref_other = []
     omim_ids = set()
@@ -238,19 +246,21 @@ DOID:9917 war nur als alternative id da
 
 
 def load_disease_ontologie_in_pharmebinet():
-    query = '''Match (n:%s) Where not exists(n.is_obsolete) and not ()-[:is_a]->(n) RETURN n.id''' % (do_label)
+    query = '''Match (n:%s) Where n.is_obsolete is NULL and not ()-[:is_a]->(n) RETURN n.id''' % (do_label)
     results = g.run(query)
     set_doid_which_are_leaves = set()
-    for identifier, in results:
+    for record in results:
+        [identifier] = record.values()
         set_doid_which_are_leaves.add(identifier)
 
-    query = '''Match (n:%s) Where not exists(n.is_obsolete) RETURN n''' % (do_label)
+    query = '''Match (n:%s) Where n.is_obsolete is NULL RETURN n''' % (do_label)
     results = g.run(query)
     set_of_all_doids = set(dict_doid_to_mondo_ids.keys())
 
     counter_mapped = 0
     counter_all = 0
-    for disease, in results:
+    for record in results:
+        disease = record.data()['n']
         identifier = disease['id']
         counter_all += 1
         if disease['id'] == 'DOID:10210':
@@ -455,7 +465,8 @@ def load_in_all_connection_from_disease_ontology():
 
     query = ''' Match (n:%s)-[r:is_a]->(p:%s) Return n.id,p.id ''' % (do_label, do_label)
     results = g.run(query)
-    for child_id, parent_id, in results:
+    for record in results:
+        [child_id, parent_id] = record.values()
         if child_id in dict_doid_to_mondo_ids and parent_id in dict_doid_to_mondo_ids:
             for mondo_child in dict_doid_to_mondo_ids[child_id]:
                 for mondo_parent in dict_doid_to_mondo_ids[parent_id]:
@@ -551,6 +562,8 @@ def main():
     output.write('load all connection in dictionary')
 
     load_in_all_connection_from_disease_ontology()
+
+    driver.close()
 
     print(
         '#################################################################################################################################################################')

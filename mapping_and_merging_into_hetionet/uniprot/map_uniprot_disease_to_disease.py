@@ -13,8 +13,9 @@ create a connection with neo4j
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
     # authenticate("localhost:7474", "neo4j", "test")
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 # dictionary omim to disease
@@ -37,20 +38,21 @@ def load_all_disease_information():
     """
     query = 'Match (n:Disease) Return n'
     results = g.run(query)
-    for node, in results:
+    for record in results:
+        node = record.data()['n']
         identifier = node['identifier']
         resource = node['resource']
         dict_id_to_resource[identifier] = resource
         xrefs = node['xrefs'] if 'xrefs' in node else []
         name = node['name'].lower()
         dict_disease_id_to_set_of_name_and_synonyms[identifier] = {name}
-        pharmebinetutils.add_entry_to_dict_to_set(dict_name_to_disease_ids,name,identifier)
+        pharmebinetutils.add_entry_to_dict_to_set(dict_name_to_disease_ids, name, identifier)
 
         synonyms = node['synonyms'] if 'synonyms' in node else []
         for synonym in synonyms:
             synonym = pharmebinetutils.prepare_obo_synonyms(synonym).lower()
             dict_disease_id_to_set_of_name_and_synonyms[identifier].add(synonym)
-            pharmebinetutils.add_entry_to_dict_to_set(dict_name_to_disease_ids,synonym,identifier)
+            pharmebinetutils.add_entry_to_dict_to_set(dict_name_to_disease_ids, synonym, identifier)
 
         for xref in xrefs:
             if xref.startswith('OMIM'):
@@ -81,8 +83,10 @@ def gather_uniprot_disease_infos_and_add_to_file():
     # query gene-disease association
 
     file_cypher = open('output/cypher.cypher', 'a')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/uniprot/%s" As line FIELDTERMINATOR "\\t" MATCH (g:Disease_Uniprot{identifier:line.uniprot_disease_id}),(b:Disease{identifier:line.disease_id}) Create (b)-[r:equal_to_uniprot_disease{how_mapped:line.how_mapped}]->(g) Set b.resource=split(line.resource,"|"), b.uniprot='yes' ;\n'''
-    query = query % (file_name)
+    query = '''MATCH (g:Disease_Uniprot{identifier:line.uniprot_disease_id}),(b:Disease{identifier:line.disease_id}) Create (b)-[r:equal_to_uniprot_disease{how_mapped:line.how_mapped}]->(g) Set b.resource=split(line.resource,"|"), b.uniprot='yes' '''
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/uniprot/{file_name}',
+                                              query)
     file_cypher.write(query)
 
     query = """Match (n:Disease_Uniprot) Return n """
@@ -90,7 +94,8 @@ def gather_uniprot_disease_infos_and_add_to_file():
 
     counter_all = 0
     counter_mapped = 0
-    for node, in results:
+    for record in results:
+        node = record.data()['n']
         counter_all += 1
         identifier = node['identifier']
         xrefs = node['xrefs']
@@ -131,7 +136,6 @@ def gather_uniprot_disease_infos_and_add_to_file():
             for disease_id in disease_ids_with_similar_name:
                 write_pair_into_file(disease_id, identifier, csv_disease, 'name')
 
-
     print('number of mapped diseases:', counter_mapped)
     print('number of all diseases:', counter_all)
 
@@ -164,6 +168,8 @@ def main():
     print('gather all information of the proteins')
 
     gather_uniprot_disease_infos_and_add_to_file()
+
+    driver.close()
 
     print(
         '#################################################################################################################################################################')

@@ -6,6 +6,7 @@ from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_cha
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 '''
 create a connection with neo4j
@@ -14,9 +15,9 @@ create a connection with neo4j
 
 def create_connetion_with_neo4j():
     # set up authentication parameters and connection
-    # authenticate("localhost:7474", )
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 # dictionary with all gene ids to there name
@@ -30,7 +31,8 @@ load all ncbi identifier from the gene ides into a dictionary (or list)
 def get_all_ncbi_ids_form_pharmebinet_genes():
     query = '''Match (g:Gene) Return g;'''
     results = g.run(query)
-    for node, in results:
+    for record in results:
+        node = record.data()['g']
         identifier = node['identifier']
 
         dict_pharmebinet_gene_ids_to_name[identifier] = dict(node)
@@ -82,7 +84,7 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
     writer.writeheader()
 
     cypher_file = open('output_data/cypher_merge.cypher', 'w')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/ncbi_gene/output_data/genes_merge.tsv" As line Fieldterminator '\\t' Match (n:Gene_Ncbi {identifier:line.identifier}) Merge (g:Gene{identifier:line.identifier }) On Match Set '''
+    query = '''Match (n:Gene_Ncbi {identifier:line.identifier}) Merge (g:Gene{identifier:line.identifier }) On Match Set '''
 
     on_create_string = ''' On Create SET '''
     for head in header:
@@ -98,7 +100,10 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
             query += part
             on_create_string += part
 
-    query += 'g.ncbi="yes", g.resource=g.resource+"NCBI" ' + on_create_string + '''  g.source="Entrez Gene", g.resource="NCBI", g.license="https://www.ncbi.nlm.nih.gov/home/about/policies/", g.url="http://identifiers.org/ncbigene/"+line.identifier, g.ncbi='yes', g.resource=["NCBI"] Create (n)<-[:equal_to_ncbi_gene]-(g);\n'''
+    query += 'g.ncbi="yes", g.resource=g.resource+"NCBI" ' + on_create_string + '''  g.source="Entrez Gene", g.resource="NCBI", g.license="https://www.ncbi.nlm.nih.gov/home/about/policies/", g.url="http://identifiers.org/ncbigene/"+line.identifier, g.ncbi='yes', g.resource=["NCBI"] Create (n)<-[:equal_to_ncbi_gene]-(g)'''
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/ncbi_gene/output_data/genes_merge.tsv',
+                                              query)
     cypher_file.write(query)
     query = '''MATCH (a:Gene) Where not  (a)-[:equal_to_ncbi_gene]->() Detach Delete a;'''
     cypher_file.write(query)
@@ -109,7 +114,9 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
     counter_not_same_name = 0
     counter_all = 0
     counter_all_in_pharmebinet = 0
-    for gene_id, name, node, in results:
+    counter_mapped_and_similar_names=0
+    for record in results:
+        [gene_id, name, node] = record.values()
         counter_all += 1
         # make a dictionary from the node
         node = dict(node)
@@ -138,8 +145,7 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
                 gene_symbol.add(value)
             elif property == 'symbol' and value != '-':
                 gene_symbol.add(value)
-                node[property]=value
-
+                node[property] = value
 
         # make one list
         node['symbol_from_nomenclature_authority'] = list(gene_symbol)
@@ -149,7 +155,7 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
         synonyms = [x.lower() for x in synonyms]
 
         if name is None or name == '-':
-            print('has no name')
+            # print('has no name')
             if 'description' not in node or node['description'] == '-' or node['description'] == '':
                 print('description is also empty')
                 node['description'] = ''
@@ -167,22 +173,26 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
                 if not name == pharmebinet_gene_name:
 
                     if description == pharmebinet_gene_name:
-
-                        print(gene_id)
-                        print(node['description'])
-                        print(' are same description')
+                        counter_mapped_and_similar_names+=1
+                        # print(gene_id)
+                        # print(node['description'])
+                        # print(' are same description')
                     elif pharmebinet_gene_description == name:
-                        print(gene_id)
-                        print('pharmebinet description match ncbi name')
+                        counter_mapped_and_similar_names+=1
+                        # print(gene_id)
+                        # print('pharmebinet description match ncbi name')
                     elif pharmebinet_gene_description == description:
-                        print(gene_id)
-                        print('equal description')
+                        counter_mapped_and_similar_names+=1
+                        # print(gene_id)
+                        # print('equal description')
                     elif len(synonyms) > 0 and pharmebinet_gene_name in synonyms:
-                        print(gene_id)
-                        print('equal to synonyms')
+                        counter_mapped_and_similar_names+=1
+                        # print(gene_id)
+                        # print('equal to synonyms')
                     elif len(symbols_ncbi) > 0 and pharmebinet_gene_name in symbols_ncbi:
-                        print(gene_id)
-                        print('equal to gene symbol')
+                        counter_mapped_and_similar_names+=1
+                        # print(gene_id)
+                        # print('equal to gene symbol')
                     else:
                         counter_not_same_name += 1
                         print(gene_id)
@@ -192,8 +202,9 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
                         print('kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk')
 
                 else:
-                    print(gene_id)
-                    print('has same name')
+                    counter_mapped_and_similar_names+=1
+                    # print(gene_id)
+                    # print('has same name')
 
             else:
                 counter_not_same_name += 1
@@ -225,8 +236,8 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
             writer.writerow(dict_for_insert_into_tsv)
 
         else:
-            print('not in pharmebinet')
-            print(gene_id)
+            # print('not in pharmebinet')
+            # print(gene_id)
             if name == '-' or name is None:
                 node['full_name_from_nomenclature_authority'] = node['description']
 
@@ -277,6 +288,8 @@ def main():
     print('gnerate a tsv file with only the pharmebinet genes')
 
     load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes()
+
+    driver.close()
 
     print(
         '#################################################################################################################################################################')

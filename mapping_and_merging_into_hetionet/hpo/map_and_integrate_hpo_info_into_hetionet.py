@@ -5,6 +5,7 @@ from _collections import defaultdict
 
 sys.path.append("../..")
 import create_connection_to_databases  # , authenticate
+import pharmebinetutils
 
 
 # class of thread
@@ -34,8 +35,9 @@ def database_connection():
     global con
     con = create_connection_to_databases.database_connection_umls()
 
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 # dictionary with the names as key and value is the mondo
@@ -61,7 +63,8 @@ load all disease from pharmebinet and remember all name, synonym, umls cui and o
 def get_all_disease_information_from_pharmebinet():
     query = ''' Match (d:Disease) Return d.identifier, d.name, d.synonyms, d.xrefs, d.umls_cuis, d'''
     results = g.run(query)
-    for mondo, name, synonyms, xrefs, umls_cuis, node, in results:
+    for record in results:
+        [mondo, name, synonyms, xrefs, umls_cuis, node] = record.values()
         dict_mondo_to_node[mondo] = dict(node)
         if name:
             dict_name_to_mondo[name.lower()] = mondo
@@ -494,10 +497,6 @@ csv_disease.writerow(['hpo_id', 'pharmebinet_id', 'resource'])
 # cypher file for mapping and integration
 cypher_file = open('cypher/cypher.cypher', 'w')
 
-# the general query start
-query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/hpo/%s" As line FIELDTERMINATOR '\\t' 
-    Match'''
-
 '''
 Integrate mapping connection between disease and HPO_disease and make a dictionary mondo to hpo id
 '''
@@ -505,8 +504,10 @@ Integrate mapping connection between disease and HPO_disease and make a dictiona
 
 def integrate_mapping_of_disease_into_pharmebinet():
     # query for mapping disease and written into file
-    query = query_start + ''' (n:HPO_disease{id: line.hpo_id}), (d:Disease{identifier:line.pharmebinet_id}) Set d.hpo="yes", d.resource=split(line.resource,"|") Create (d)-[:equal_to_hpo_disease]->(n);\n '''
-    query = query % (path_of_directory, 'mapping_files/disease_mapped.tsv')
+    query = '''Match (n:HPO_disease{id: line.hpo_id}), (d:Disease{identifier:line.pharmebinet_id}) Set d.hpo="yes", d.resource=split(line.resource,"|") Create (d)-[:equal_to_hpo_disease]->(n) '''
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/hpo/mapping_files/disease_mapped.tsv',
+                                              query)
     cypher_file.write(query)
     # write mapping in tsv file
     for hpo_id, mondos in dict_disease_id_to_mondos.items():
@@ -562,9 +563,10 @@ def main():
     thread_id = 1
 
     # search for hpo disease, but exclude old entries
-    query = ''' Match (d:HPO_disease) Where not exists(d.is_obsolete)  Return d.id, d.names, d.source'''
+    query = ''' Match (d:HPO_disease) Where d.is_obsolete is NULL  Return d.id, d.names, d.source'''
     results = g.run(query)
-    for db_disease_id, db_disease_name, db_disease_source, in results:
+    for record in results:
+        [db_disease_id, db_disease_name, db_disease_source] = record.values()
         # create thread
         thread = diseaseMapThread(thread_id, 'thread_' + str(thread_id), db_disease_id, db_disease_name,
                                   db_disease_source)
@@ -613,6 +615,7 @@ def main():
     print(datetime.datetime.now())
 
     con.close()
+    driver.close()
 
 
 if __name__ == "__main__":

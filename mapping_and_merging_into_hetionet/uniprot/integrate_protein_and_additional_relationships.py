@@ -7,6 +7,7 @@ import json
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 sys.path.append("..")
 from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
@@ -19,8 +20,9 @@ create a connection with neo4j
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
     # authenticate("localhost:7474", "neo4j", "test")
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 # dictionary from uniprot to gene id from pharmebinet information
@@ -83,7 +85,8 @@ def get_all_genes():
     counter_uniprot_to_multiple_genes = 0
     counter_all_genes = 0
     list_double_names = set([])
-    for gene_id, genesymbols, name, synonyms, resource, in results:
+    for record in results:
+        [gene_id, genesymbols, name, synonyms, resource] = record.values()
         counter_all_genes += 1
         dict_gene_id_to_resource[gene_id] = set(resource)
 
@@ -127,7 +130,7 @@ def get_all_genes():
 file_uniprots_gene_rela = open('uniprot_gene/db_uniprot_to_gene_rela.tsv', 'w')
 writer_rela = csv.writer(file_uniprots_gene_rela, delimiter='\t')
 writer_rela.writerow(
-    ['uniprot_id', 'gene_id', 'alternative_ids', 'name_mapping', 'resource_node','how_mapped'])
+    ['uniprot_id', 'gene_id', 'alternative_ids', 'name_mapping', 'resource_node', 'how_mapped'])
 
 # list of all uniprot ids which where wrong mapped and already found in the program to avoid duplication in the file
 list_already_included = []
@@ -189,22 +192,24 @@ def check_and_write_uniprot_ids(uniprot_id, name, identifier, secondary_uniprot_
         if gene_ids:
             # check_and_add_rela_pair(identifier, uniprot_id, gene_ids, secondary_uniprot_ids, '')
             # return True, gene_ids
-            lower_primary_gene_symbols={x.lower() for x in primary_gene_symbols}
-            symbol_interaction= lower_primary_gene_symbols.intersection(dict_gene_symbol_to_gene_id.keys())
-            if len(symbol_interaction)>0:
-                list_gene_id_from_name=set()
+            lower_primary_gene_symbols = {x.lower() for x in primary_gene_symbols}
+            symbol_interaction = lower_primary_gene_symbols.intersection(dict_gene_symbol_to_gene_id.keys())
+            if len(symbol_interaction) > 0:
+                list_gene_id_from_name = set()
                 for symbol in symbol_interaction:
-                    list_gene_id_from_name=list_gene_id_from_name.union(dict_gene_symbol_to_gene_id[symbol])
+                    list_gene_id_from_name = list_gene_id_from_name.union(dict_gene_symbol_to_gene_id[symbol])
                 intersection = set(gene_ids).intersection(list_gene_id_from_name)
                 if len(intersection) > 0:
-                    check_and_add_rela_pair(identifier, uniprot_id, intersection, secondary_uniprot_ids, 'yes', 'ncbi_id_and_gene_symbol')
+                    check_and_add_rela_pair(identifier, uniprot_id, intersection, secondary_uniprot_ids, 'yes',
+                                            'ncbi_id_and_gene_symbol')
                     genes = list(intersection)
                     return True, genes
                 else:
-                    symbol_synonym_interaction= lower_primary_gene_symbols.intersection(dict_synonyms_to_gene_ids.keys())
-                    list_gene_id_from_synonyms=set()
+                    symbol_synonym_interaction = lower_primary_gene_symbols.intersection(
+                        dict_synonyms_to_gene_ids.keys())
+                    list_gene_id_from_synonyms = set()
                     for symbol in symbol_synonym_interaction:
-                        list_gene_id_from_synonyms=list_gene_id_from_synonyms.union(dict_synonyms_to_gene_ids[symbol])
+                        list_gene_id_from_synonyms = list_gene_id_from_synonyms.union(dict_synonyms_to_gene_ids[symbol])
                     intersection = set(gene_ids).intersection(list_gene_id_from_synonyms)
                     if len(intersection) > 0:
                         check_and_add_rela_pair(identifier, uniprot_id, intersection, secondary_uniprot_ids, 'yes',
@@ -213,7 +218,8 @@ def check_and_write_uniprot_ids(uniprot_id, name, identifier, secondary_uniprot_
                         return True, genes
                     else:
                         print('use only the symbol gene ids')
-                        check_and_add_rela_pair(identifier, uniprot_id, list_gene_id_from_name, secondary_uniprot_ids, 'yes',
+                        check_and_add_rela_pair(identifier, uniprot_id, list_gene_id_from_name, secondary_uniprot_ids,
+                                                'yes',
                                                 'ncbi_id_but_only_gene_symbol')
                         genes = list(intersection)
                         return True, genes
@@ -222,25 +228,25 @@ def check_and_write_uniprot_ids(uniprot_id, name, identifier, secondary_uniprot_
                 check_and_add_rela_pair(identifier, uniprot_id, gene_ids, secondary_uniprot_ids, '', 'ncbi_id')
                 return True, gene_ids
         elif primary_gene_symbols:
-            lower_primary_gene_symbols={x.lower() for x in primary_gene_symbols}
+            lower_primary_gene_symbols = {x.lower() for x in primary_gene_symbols}
             gene_ids_from_symbol = []
-            symbol_interaction= lower_primary_gene_symbols.intersection(dict_gene_symbol_to_gene_id.keys())
-            symbol_synonym_interaction= lower_primary_gene_symbols.intersection(dict_synonyms_to_gene_ids.keys())
+            symbol_interaction = lower_primary_gene_symbols.intersection(dict_gene_symbol_to_gene_id.keys())
+            symbol_synonym_interaction = lower_primary_gene_symbols.intersection(dict_synonyms_to_gene_ids.keys())
 
-            if len(symbol_interaction)>0:
+            if len(symbol_interaction) > 0:
                 for symbol in symbol_interaction:
                     gene_ids_from_name = dict_gene_symbol_to_gene_id[symbol]
                     gene_ids_from_symbol.extend(gene_ids_from_name)
                     # print('ok gene symbol works primary')
                     text = 'direct'
-            elif len(symbol_synonym_interaction)>0:
+            elif len(symbol_synonym_interaction) > 0:
                 for symbol in symbol_synonym_interaction:
                     gene_ids_from_symbol.extend(dict_synonyms_to_gene_ids[symbol])
                     # print('only name and id is not existing primary')
                     text = 'synonyms'
             if len(gene_ids_from_symbol) > 0:
                 check_and_add_rela_pair(identifier, uniprot_id, gene_ids_from_symbol,
-                                        secondary_uniprot_ids, 'yes', text+'_primary_gene_symbol')
+                                        secondary_uniprot_ids, 'yes', text + '_primary_gene_symbol')
                 return True, genes
         elif gene_names:
             gene_ids_from_symbol = []
@@ -256,7 +262,7 @@ def check_and_write_uniprot_ids(uniprot_id, name, identifier, secondary_uniprot_
                     text = 'synonyms'
             if len(gene_ids_from_symbol) > 0:
                 check_and_add_rela_pair(identifier, uniprot_id, gene_ids_from_symbol,
-                                        secondary_uniprot_ids, 'yes', text+'_gene_names')
+                                        secondary_uniprot_ids, 'yes', text + '_gene_names')
                 return True, genes
 
         # check if mapping is possible with gene symbol
@@ -276,13 +282,12 @@ def check_and_write_uniprot_ids(uniprot_id, name, identifier, secondary_uniprot_
         # the multiple mapping with gene symbol are not the best only 4 of 14 this make sense but for the other it would be manual mapping
         if len(list_of_possible_mapped_gene_ids) == 1:
             check_and_add_rela_pair(identifier, uniprot_id, list_of_possible_mapped_gene_ids,
-                                    secondary_uniprot_ids, 'yes','multiple_name_mapping')
+                                    secondary_uniprot_ids, 'yes', 'multiple_name_mapping')
 
             # print(identifier)
             # print(list_of_possible_mapped_gene_ids)
             found_at_least_on = True
             # no mapping from the gene or protein and no gene symbol
-
 
     return found_at_least_on, genes
 
@@ -316,13 +321,14 @@ def write_cypher_file():
 
     query_property = '''MATCH (p:Protein_Uniprot) WITH DISTINCT keys(p) AS keys
         UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields
-        RETURN allfields;'''
+        RETURN allfields as l;'''
 
     results = g.run(query_property)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/uniprot/output/db_uniprot_ids.tsv" As line FIELDTERMINATOR "\\t" MATCH (p:Protein_Uniprot{identifier:line.uniprot_id}) Create (p)<-[:equal_to_uniprot]-(:Protein{'''
+    query = '''MATCH (p:Protein_Uniprot{identifier:line.uniprot_id}) Create (p)<-[:equal_to_uniprot]-(:Protein{'''
 
-    for property, in results:
+    for property in results:
+        property = property.data()['l']
         # the go classifiers are in the rela to bc, cc and mf and the gene information are in the rela to gene
         if property in ['go_classifiers', 'gene_name', 'gene_id']:
             continue
@@ -335,16 +341,21 @@ def write_cypher_file():
             query += property + 's:[p.' + property + '], '
         else:
             query += property + ':p.' + property + ', '
-    query += 'uniprot:"yes", url:"https://www.uniprot.org/uniprot/"+p.identifier, source:"UniProt", resource:["UniProt"], license:"CC BY 4.0"});\n '
+    query += 'uniprot:"yes", url:"https://www.uniprot.org/uniprot/"+p.identifier, source:"UniProt", resource:["UniProt"], license:"CC BY 4.0"}) '
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/uniprot/output/db_uniprot_ids.tsv',
+                                              query)
     file_cypher.write(query)
-    query = 'Create Constraint On (node:Protein) Assert node.identifier Is Unique;\n'
-    file_cypher.write(query)
+    file_cypher.write(pharmebinetutils.prepare_index_query('Protein', 'identifier'))
 
     # query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/uniprot/uniprot_gene/db_gene_uniprot_delete.tsv" As line FIELDTERMINATOR "\\t" Match (g:Gene{identifier:line.gene_id}) With g,[x IN g.uniProtIDs WHERE x <> line.uniprot_id]  as filterdList
-    #              Set g.uniProtIDs=filterdList;\n '''
+    #              Set g.uniProtIDs=filterdList '''
     # file_cypher.write(query)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/uniprot/uniprot_gene/db_uniprot_to_gene_rela.tsv" As line FIELDTERMINATOR "\\t" MATCH (n:Protein{identifier:line.uniprot_id}), (g:Gene{identifier:line.gene_id}) Set g.resource=split(line.resource_node,'|'), g.uniprot='yes' Create (g)-[:PRODUCES_GpP{name_mapping:line.name_mapping, uniprot:"yes" ,resource:['UniProt'],license:'CC BY 4.0', url:'https://www.uniprot.org/uniprot/'+line.uniprot_id, source:"UniProt", how_mapped:line.how_mapped}]->(n);\n'''
+    query = ''' MATCH (n:Protein{identifier:line.uniprot_id}), (g:Gene{identifier:line.gene_id}) Set g.resource=split(line.resource_node,'|'), g.uniprot='yes' Create (g)-[:PRODUCES_GpP{name_mapping:line.name_mapping, uniprot:"yes" ,resource:['UniProt'],license:'CC BY 4.0', url:'https://www.uniprot.org/uniprot/'+line.uniprot_id, source:"UniProt", how_mapped:line.how_mapped}]->(n)'''
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/uniprot/uniprot_gene/db_uniprot_to_gene_rela.tsv',
+                                              query)
     file_cypher.write(query)
 
 
@@ -391,15 +402,11 @@ def get_gather_protein_info_and_generate_relas():
     # counter all proteins
     counter_all_proteins = 0
 
-    # counter protein to gos
-    counter_gos_bc = 0
-    counter_gos_cc = 0
-    counter_gos_mf = 0
-
     # go through all Proteins
     # find overlap between protein and genes
     # maybe check out the go information to generate further relationships to go
-    for node, in results:
+    for record in results:
+        node = record.data()['n']
         counter_all_proteins += 1
         # get true if on of the uniprot of this nodes are in the dictionary uniprot to gene
         found_at_least_on = False
@@ -420,7 +427,7 @@ def get_gather_protein_info_and_generate_relas():
 
         # the gene symbol
         geneSymbols = node['gene_name'] if 'gene_name' in node else []
-        primary_gene_symbols =set()
+        primary_gene_symbols = set()
         set_gene_symbol = set()
         for geneSymbol in geneSymbols:
             splitted_genesymbol = geneSymbol.split(':')
@@ -497,6 +504,8 @@ def main():
     print('gather all information of the proteins')
 
     get_gather_protein_info_and_generate_relas()
+
+    driver.close()
 
     print('number of not matching gene names between protein and gene:' + str(count_not_mapping_gene_name))
 

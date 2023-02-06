@@ -6,6 +6,9 @@ path_neo4j=$1
 #path to project
 path_to_project=$2
 
+#password
+password=$3
+
 echo 'Mapping Disease Ontology into PharMeBINet'
 
 python3 map_disease_ontology_to_disease.py $path_to_project > output_do.txt
@@ -14,7 +17,7 @@ python3 map_disease_ontology_to_disease.py $path_to_project > output_do.txt
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher 
+$path_neo4j/cypher-shell -u neo4j -p $password -f cypher.cypher
 
 sleep 60
 $path_neo4j/neo4j restart

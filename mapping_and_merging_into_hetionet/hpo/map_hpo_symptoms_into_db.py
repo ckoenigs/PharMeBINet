@@ -6,9 +6,9 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-
 sys.path.append("..")
 from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
+
 
 # connect with the neo4j database AND MYSQL
 def database_connection():
@@ -16,12 +16,9 @@ def database_connection():
     global con
     con = create_connection_to_databases.database_connection_umls()
 
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
-
-
-# the general query start
-query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/hpo/%s" As line FIELDTERMINATOR '\\t' '''
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 def cui_to_mesh(cui):
@@ -105,13 +102,14 @@ def generate_cypher_queries_and_tsv_files():
 
     query = '''MATCH (p:HPO_symptom) WITH DISTINCT keys(p) AS keys
         UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields
-        RETURN allfields;'''
+        RETURN allfields as l;'''
     results = g.run(query)
 
-    query_start_match = query_start + '''Match (s:Symptom{identifier:line.pharmebinet_id }) , (n:HPO_symptom{id:line.hpo_id}) Set s.hpo='yes', s.umls_cuis=split(line.umls_cuis,"|"),  s.resource=split(line.resource,"|") , s.hpo_release='%s', s.url_HPO="https://hpo.jax.org/app/browse/term/"+line.hpo_id, n.mesh_ids=split(line.mesh_ids,'|'), s.xrefs=s.xrefs + line.hpo_id, '''
-    query_start_create = query_start + '''Match (n:HPO_symptom{id:line.hpo_id}) Create (s:Symptom{identifier:line.pharmebinet_id, umls_cuis:split(line.umls_cuis,"|") ,source:'HPO',license:'This service/product uses the Human Phenotype Ontology (April 2021). Find out more at http://www.human-phenotype-ontology.org We request that the HPO logo be included as well.', resource:['HPO'], source:'HPO', hpo:'yes', hpo_release:'%s', url:"https://hpo.jax.org/app/browse/term/"+line.hpo_id, xrefs:split(line.xrefs,"|"), '''
+    query_start_match = '''Match (s:Symptom{identifier:line.pharmebinet_id }) , (n:HPO_symptom{id:line.hpo_id}) Set s.hpo='yes', s.umls_cuis=split(line.umls_cuis,"|"),  s.resource=split(line.resource,"|") , s.hpo_release='%s', s.url_HPO="https://hpo.jax.org/app/browse/term/"+line.hpo_id, n.mesh_ids=split(line.mesh_ids,'|'), s.xrefs=s.xrefs + line.hpo_id, '''
+    query_start_create = '''Match (n:HPO_symptom{id:line.hpo_id}) Create (s:Symptom{identifier:line.pharmebinet_id, umls_cuis:split(line.umls_cuis,"|") ,source:'HPO',license:'This service/product uses the Human Phenotype Ontology (April 2021). Find out more at http://www.human-phenotype-ontology.org We request that the HPO logo be included as well.', resource:['HPO'], source:'HPO', hpo:'yes', hpo_release:'%s', url:"https://hpo.jax.org/app/browse/term/"+line.hpo_id, xrefs:split(line.xrefs,"|"), '''
 
-    for property, in results:
+    for record in results:
+        property = record.data()['l']
         if property in ['name', 'id', 'created_by', 'creation_date', 'is_obsolete', 'replaced_by', 'subset',
                         'considers']:
             if property == 'name':
@@ -131,15 +129,21 @@ def generate_cypher_queries_and_tsv_files():
             query_start_create += property + ':n.' + property + ', '
             query_start_match += 's.' + property + '=n.' + property + ', '
 
-    query_match = query_start_match[:-2] + ' Create (s)-[:equal_to_hpo_symptoms{how_mapped:line.how_mapped}]->(n);\n'
-    query_match = query_match % (path_of_directory, file_name_mapped, ontology_date)
+    query_match = query_start_match[:-2] + ' Create (s)-[:equal_to_hpo_symptoms{how_mapped:line.how_mapped}]->(n)'
+    query_match = query_match % (ontology_date)
+    query_match = pharmebinetutils.get_query_import(path_of_directory,
+                                                    f'mapping_and_merging_into_hetionet/hpo/{file_name_mapped}',
+                                                    query_match)
     cypher_file.write(query_match)
 
-    query_create = query_start_create[:-2] + '})-[:equal_to_hpo_symptoms{how_mapped:line.how_mapped}]->(n) ;\n '
-    query_create = query_create % (path_of_directory, file_name_new, ontology_date)
+    query_create = query_start_create[:-2] + '})-[:equal_to_hpo_symptoms{how_mapped:line.how_mapped}]->(n)  '
+    query_create = query_create % (ontology_date)
+    query_create = pharmebinetutils.get_query_import(path_of_directory,
+                                                     f'mapping_and_merging_into_hetionet/hpo/{file_name_new}',
+                                                     query_create)
     cypher_file.write(query_create)
 
-    query = '''Match (s1:Symptom)--(a:HPO_symptom)-[:is_a]->(:HPO_symptom)--(s2:Symptom) Where not ID(s1)=ID(s2) Merge (s1)-[:IS_A_SiaS{license:"HPO", source:"HPO", resource:["HPO"], hpo:"yes", url:"https://hpo.jax.org/app/browse/term/"+a.id}]->(s2);\n'''
+    query = '''Match (s1:Symptom)--(a:HPO_symptom)-[:is_a]->(:HPO_symptom)--(s2:Symptom) Where not ID(s1)=ID(s2) Merge (s1)-[:IS_A_SiaS{license:"HPO", source:"HPO", resource:["HPO"], hpo:"yes", url:"https://hpo.jax.org/app/browse/term/"+a.id}]->(s2)'''
     cypher_file.write(query)
 
     return csv_symptom_mapped, csv_symptom_new
@@ -164,7 +168,8 @@ def get_all_symptoms_and_add_to_dict():
     results = g.run(query)
 
     # add all symptoms to dictioanry
-    for result, in results:
+    for record in results:
+        result = record.data()['n']
         identifier = result['identifier']
         dict_of_pharmebinet_symptoms[identifier] = dict(result)
 
@@ -172,7 +177,6 @@ def get_all_symptoms_and_add_to_dict():
         if name not in dict_name_to_symptom_id:
             dict_name_to_symptom_id[name] = set()
         dict_name_to_symptom_id[name].add(identifier)
-
 
         umls_cuis = name_to_umls_cui(name)
         for cui in umls_cuis:
@@ -229,8 +233,9 @@ def check_on_mapping_of_umls_cuis(umls_cuis, node_id, xrefs, how_mapped):
         if umls_cui in dict_umls_cui_to_mesh:
             found_one = True
             for mesh_id in dict_umls_cui_to_mesh[umls_cui]:
-                resource = dict_of_pharmebinet_symptoms[mesh_id]['resource'] if 'resource' in dict_of_pharmebinet_symptoms[
-                    mesh_id] else []
+                resource = dict_of_pharmebinet_symptoms[mesh_id]['resource'] if 'resource' in \
+                                                                                dict_of_pharmebinet_symptoms[
+                                                                                    mesh_id] else []
                 resource.append('HPO')
                 resource = list(set(resource))
                 xrefs_mesh = dict_of_pharmebinet_symptoms[mesh_id]['xrefs'] if 'xrefs' in dict_of_pharmebinet_symptoms[
@@ -250,14 +255,15 @@ def check_on_mapping_of_umls_cuis(umls_cuis, node_id, xrefs, how_mapped):
                     dict_mapped_mesh[mesh_id] = dict_node
     return found_one
 
+
 def map_names(name, how_mapped, node_id, xrefs):
-    found_one=False
+    found_one = False
     if name in dict_name_to_symptom_id:
         found_one = True
         for mesh_id in dict_name_to_symptom_id[name]:
             resource = dict_of_pharmebinet_symptoms[mesh_id]['resource'] if 'resource' in \
-                                                                         dict_of_pharmebinet_symptoms[
-                                                                             mesh_id] else []
+                                                                            dict_of_pharmebinet_symptoms[
+                                                                                mesh_id] else []
             resource.append('HPO')
             resource = list(set(resource))
             xrefs_mesh = dict_of_pharmebinet_symptoms[mesh_id]['xrefs'] if 'xrefs' in dict_of_pharmebinet_symptoms[
@@ -277,6 +283,7 @@ def map_names(name, how_mapped, node_id, xrefs):
                 dict_mapped_mesh[mesh_id] = dict_node
     return found_one
 
+
 # dictionary mapped mesh ids to infos
 dict_mapped_mesh = {}
 
@@ -287,10 +294,10 @@ def map_hpo_symptoms_and_to_pharmebinet(csv_new):
     hpo symptoms get the mapped umls_cui or mesh as property.
     :return:
     """
-    # query = '''MATCH (n:HPO_symptom) WHERE (n)-[:is_a*1..50]->(:HPO_symptom {id: "HP:0000118"}) and not exists(n.is_obsolete)  RETURN  n.id, n.name, n.xrefs'''
+    # query = '''MATCH (n:HPO_symptom) WHERE (n)-[:is_a*1..50]->(:HPO_symptom {id: "HP:0000118"}) and n.is_obsolete is NULL  RETURN  n.id, n.name, n.xrefs'''
     # results = g.run(query)
 
-    query_nodes = 'MATCH (n:HPO_symptom) WHERE (n)-[:is_a*%s]->(:HPO_symptom {id: "HP:0000118"}) and not exists(n.is_obsolete) RETURN n.id, n.name, n.xrefs, n.synonyms'
+    query_nodes = 'MATCH (n:HPO_symptom) WHERE (n)-[:is_a*%s]->(:HPO_symptom {id: "HP:0000118"}) and n.is_obsolete is NULL RETURN n.id, n.name, n.xrefs, n.synonyms'
 
     count_mapped = 0
     counter_new = 0
@@ -301,7 +308,8 @@ def map_hpo_symptoms_and_to_pharmebinet(csv_new):
         new_query = query_nodes
         new_query = new_query % (str(i))
         results = g.run(new_query)
-        for node_id, name, xrefs, synonyms, in results:
+        for record in results:
+            [node_id, name, xrefs, synonyms] = record.values()
             if node_id in dict_nodes:
                 continue
             dict_nodes[node_id] = (name, xrefs)
@@ -371,15 +379,15 @@ def map_hpo_symptoms_and_to_pharmebinet(csv_new):
             #     continue
 
             name = name.lower()
-            found_one= map_names(name, 'name', node_id, xrefs)
+            found_one = map_names(name, 'name', node_id, xrefs)
             if found_one:
                 count_mapped += 1
                 continue
 
             if synonyms:
                 for synonym in synonyms:
-                    synonym=pharmebinetutils.prepare_obo_synonyms(synonym).lower()
-                    found_one= map_names(synonym, 'synonyms', node_id, xrefs) or found_one
+                    synonym = pharmebinetutils.prepare_obo_synonyms(synonym).lower()
+                    found_one = map_names(synonym, 'synonyms', node_id, xrefs) or found_one
 
             if found_one:
                 count_mapped += 1
@@ -388,7 +396,7 @@ def map_hpo_symptoms_and_to_pharmebinet(csv_new):
             dict_node = {
                 'hpo_id': node_id,
                 'pharmebinet_id': node_id,
-                'xrefs': '|'.join(go_through_xrefs_and_change_if_needed_source_name(xrefs,'symptom')),
+                'xrefs': '|'.join(go_through_xrefs_and_change_if_needed_source_name(xrefs, 'symptom')),
                 'mesh_ids': '|'.join(mesh_ids),
                 'umls_ids': '|'.join(umls_cuis),
                 'how_mapped': 'new'
@@ -463,6 +471,8 @@ def main():
     print('The mapped nodes are wrote into file')
 
     prepare_mapped_nodes_for_file(csv_mapped)
+
+    driver.close()
 
     print('##########################################################################')
 

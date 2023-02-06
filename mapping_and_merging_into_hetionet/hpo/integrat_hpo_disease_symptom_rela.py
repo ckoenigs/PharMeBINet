@@ -4,19 +4,17 @@ import csv
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 
 # connect with the neo4j database AND MYSQL
 def database_connection():
     # create connection with neo4j database
 
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
-
-# the general query start
-query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/hpo/%s" As line FIELDTERMINATOR '\\t' 
-    Match'''
 
 # cypher file for mapping and integration
 cypher_file = open('cypher/cypher_edge.cypher', 'w')
@@ -59,7 +57,8 @@ def load_all_hpo_symptoms_in_dictionary():
     """
     query = '''Match (n:HPO_symptom) Return n'''
     results = g.run(query)
-    for node, in results:
+    for record in results:
+        node = record.data()['n']
         identifier = node['id']
         dict_hpo_symptom_to_info[identifier] = dict(node)
 
@@ -85,7 +84,8 @@ def get_all_already_existing_relationships():
     """
     query = '''MATCH p=(b:Disease)-[r:PRESENTS_DpS]->(a:Symptom) RETURN  b.identifier, r.resource, a.identifier;'''
     results = g.run(query)
-    for disease_id, resource, symptom_id, in results:
+    for record in results:
+        [disease_id, resource, symptom_id] = record.values()
         dict_disease_symptom_pair_pharmebinet[(disease_id, symptom_id)] = resource
 
 
@@ -231,12 +231,13 @@ def generate_cypher_file_for_connection(cypher_file):
     properties = ['disease_id', 'symptom']
 
     # get all properties
-    query = 'MATCH (n:HPO_disease)-[p:present]-(:HPO_symptom) WITH DISTINCT keys(p) AS keys UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields RETURN allfields;'
+    query = 'MATCH (n:HPO_disease)-[p:present]-(:HPO_symptom) WITH DISTINCT keys(p) AS keys UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields RETURN allfields as l;'
     results = g.run(query)
-    query_exist = ''' (n:Disease{identifier: line.disease_id})-[r:PRESENTS_DpS]-(s:Symptom{identifier:line.symptom}) Set '''
-    query_new = ''' (n:Disease{identifier: line.disease_id}), (s:Symptom{identifier:line.symptom}) Create (n)-[r:PRESENTS_DpS{'''
-    for result, in results:
-        if result=='sources':
+    query_exist = '''Match  (n:Disease{identifier: line.disease_id})-[r:PRESENTS_DpS]-(s:Symptom{identifier:line.symptom}) Set '''
+    query_new = '''Match (n:Disease{identifier: line.disease_id}), (s:Symptom{identifier:line.symptom}) Create (n)-[r:PRESENTS_DpS{'''
+    for result in results:
+        result = result.data()['l']
+        if result == 'sources':
             properties.append(result)
             continue
         if result != 'frequency_modifier':
@@ -254,14 +255,22 @@ def generate_cypher_file_for_connection(cypher_file):
     other_properties = properties[:]
     other_properties.append('resource')
     csv_rela_update.writerow(other_properties)
-    query_exists = query_start + query_exist + "r.hpo='yes', r.version='phenotype_annotation.tab %s', r.resource=split(line.resource,'|'), r.url='https://hpo.jax.org/app/browse/disease/'+split(line.sources,'|')[0]; \n"
-    query_exists = query_exists % (path_of_directory, "mapping_files/rela_update.tsv", hpo_date)
+    query_exists = query_exist + "r.hpo='yes', r.version='phenotype_annotation.tab %s', r.resource=split(line.resource,'|'), r.url='https://hpo.jax.org/app/browse/disease/'+split(line.sources,'|')[0]"
+    query_exists = query_exists % (hpo_date)
+
+    query_exists = pharmebinetutils.get_query_import(path_of_directory,
+                                                     f'mapping_and_merging_into_hetionet/hpo/mapping_files/rela_update.tsv',
+                                                     query_exists)
     cypher_file.write(query_exists)
-    # query = '''Match (n:Disease)-[r:PRESENTS_DpS]-(s:Symptom) Where r.hpo='yes SET r.resource=r.resource+'HPO';\n '''
+    # query = '''Match (n:Disease)-[r:PRESENTS_DpS]-(s:Symptom) Where r.hpo='yes SET r.resource=r.resource+'HPO' '''
     # cypher_file.write(query)
 
-    query_new = query_start + query_new + '''version:'phenotype_annotation.tab %s',unbiased:false,source:'Human Phenontype Ontology', license:'This service/product uses the Human Phenotype Ontology (April 2021). Find out more at http://www.human-phenotype-ontology.org We request that the HPO logo be included as well.', resource:['HPO'], hpo:'yes', sources:split(line.sources,'|'),  url:'https://hpo.jax.org/app/browse/disease/'+split(line.sources,'|')[0]}]->(s);\n'''
-    query_new = query_new % (path_of_directory, "mapping_files/rela_new.tsv", hpo_date)
+    query_new = query_new + '''version:'phenotype_annotation.tab %s',unbiased:false,source:'Human Phenontype Ontology', license:'This service/product uses the Human Phenotype Ontology (April 2021). Find out more at http://www.human-phenotype-ontology.org We request that the HPO logo be included as well.', resource:['HPO'], hpo:'yes', sources:split(line.sources,'|'),  url:'https://hpo.jax.org/app/browse/disease/'+split(line.sources,'|')[0]}]->(s)'''
+    query_new = query_new % (hpo_date)
+
+    query_new = pharmebinetutils.get_query_import(path_of_directory,
+                                                  f'mapping_and_merging_into_hetionet/hpo/mapping_files/rela_new.tsv',
+                                                  query_new)
     cypher_file.write(query_new)
 
     print(properties)
@@ -269,7 +278,8 @@ def generate_cypher_file_for_connection(cypher_file):
     query = '''Match (d:Disease)--(:HPO_disease)-[p:present]-(:HPO_symptom)--(s:Symptom) Where 'P' in p.aspect Return d.identifier, p, s.identifier'''
     results = g.run(query)
     # fill the files
-    for mondo, relationship, symptom_id, in results:
+    for record in results:
+        [mondo, relationship, symptom_id] = record.values()
         rela_information_list = prepare_all_relationships_infos(properties, relationship, mondo, symptom_id)
         if (mondo, symptom_id) in dict_disease_symptom_pair_pharmebinet:
             check_for_pair_in_dictionary(mondo, symptom_id, rela_information_list, dict_mapped_pair_to_info,
@@ -287,30 +297,33 @@ def generate_cypher_file_for_connection(cypher_file):
         rela_info = change_list_values_to_string(rela_info)
         csv_rela_new.writerow(rela_info)
 
-
     print('number of new connection:' + str(count_new_connection))
     print('number of update connection:' + str(count_update_connection))
     print(counter_connection)
 
+
 def get_inheritance_information_for_disease():
-    query='Match (d:Disease)--(:HPO_disease)-[r]-(s:HPO_symptom) Where "I" in r.aspect Return Distinct d.identifier, s.name, r.sources'
-    results=g.run(query)
-    dict_disease_id_to_inheritances={}
-    for disease_id, inheritance, sources, in results:
-        if not disease_id in  dict_disease_id_to_inheritances:
-            dict_disease_id_to_inheritances[disease_id]=set()
-        dict_disease_id_to_inheritances[disease_id].add((inheritance,tuple(sources)))
+    query = 'Match (d:Disease)--(:HPO_disease)-[r]-(s:HPO_symptom) Where "I" in r.aspect Return Distinct d.identifier, s.name, r.sources'
+    results = g.run(query)
+    dict_disease_id_to_inheritances = {}
+    for record in results:
+        [disease_id, inheritance, sources] = record.values()
+        if not disease_id in dict_disease_id_to_inheritances:
+            dict_disease_id_to_inheritances[disease_id] = set()
+        dict_disease_id_to_inheritances[disease_id].add((inheritance, tuple(sources)))
 
-    file_name='output/inheritances.tsv'
-    file=open(file_name,'w')
-    csv_writer=csv.writer(file,delimiter='\t')
-    csv_writer.writerow(['disease_id','inheritances'])
+    file_name = 'output/inheritances.tsv'
+    file = open(file_name, 'w')
+    csv_writer = csv.writer(file, delimiter='\t')
+    csv_writer.writerow(['disease_id', 'inheritances'])
     for disease_id, inheritances_and_source in dict_disease_id_to_inheritances.items():
-        inheritances='|'.join([ x[0]+' ('+','.join(x[1])+')' for x in inheritances_and_source])
-        csv_writer.writerow([disease_id,inheritances])
+        inheritances = '|'.join([x[0] + ' (' + ','.join(x[1]) + ')' for x in inheritances_and_source])
+        csv_writer.writerow([disease_id, inheritances])
 
-    query= query_start+ '(d:Disease{identifier:line.disease_id}) Set d.inheritance=split(line.inheritances,"|");\n'
-    query = query % (path_of_directory, file_name)
+    query = 'Match (d:Disease{identifier:line.disease_id}) Set d.inheritance=split(line.inheritances,"|")'
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/hpo/{file_name}',
+                                              query)
     cypher_file.write(query)
 
 
@@ -357,6 +370,7 @@ def main():
     print('inheritances')
 
     get_inheritance_information_for_disease()
+    driver.close()
 
     print('##########################################################################')
 

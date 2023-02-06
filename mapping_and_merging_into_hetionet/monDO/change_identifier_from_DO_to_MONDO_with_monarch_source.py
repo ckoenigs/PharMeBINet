@@ -1,24 +1,18 @@
-
 import sys, csv
 import datetime
-from types import *
 
 sys.path.append("..")
 from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 
-# reload(sys)
-# sys.setdefaultencoding("utf-8")
-
-
-# connect with the neo4j database
 def database_connection():
-    # authenticate("localhost:7474", )
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 # dictionary monarch DO to information: name
@@ -70,8 +64,10 @@ def get_all_non_human_ids():
     # that the one with DOID are animal disease which a human can also have.
     query = '''Match p=(n:disease{id:'MONDO:0005583'})<-[:is_a*]-(a:disease)  Where Not ANY(x in a.xrefs Where x starts with 'DOID') Return Distinct a.id '''
     set_of_non_human_ids.add('MONDO:0005583')
+    print(query)
     results = g.run(query)
-    for identifier, in results:
+    for record in results:
+        [identifier] = record.values()
         set_of_non_human_ids.add(identifier)
 
 
@@ -84,12 +80,12 @@ Get all properties of the mondo disease and create the tsv files
 
 
 def get_mondo_properties_and_generate_csv_files():
-    query = '''MATCH (p:disease) Where not exists(p.is_obsolete) WITH DISTINCT keys(p) AS keys
+    query = '''MATCH (n:disease) Where n.is_obsolete is NULL WITH DISTINCT keys(n) AS keys
         UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields
         RETURN allfields;'''
     result = g.run(query)
-    for property, in result:
-        mondo_prop.append(property)
+    for property in result:
+        mondo_prop.append(property.data()['allfields'])
 
     # mondo get an additional property
     mondo_prop.append('umls_cuis')
@@ -171,19 +167,19 @@ Where n.`http://www.geneontology.org/formats/oboInOwl#id` ='MONDO:0010168'
 
 
 def load_in_all_monDO_in_dictionary():
-    query = ''' MATCH (n:disease) Where not exists(n.is_obsolete) RETURN n'''
+    query = ''' MATCH (n:disease) Where n.is_obsolete is NULL RETURN n'''
     results = g.run(query)
-    for disease, in results:
+    for record in results:
+        disease = record.data()['n']
         monDo_id = disease['id']
         if monDo_id in set_of_non_human_ids:
             continue
         name = disease['name'].lower()
         add_entry_to_dict(dict_mondo_id_to_name, monDo_id, name)
-        synonyms = disease['synonyms']
-        if synonyms:
-            for synonym in synonyms:
-                synonym = synonym.rsplit(' [')[0].lower()
-                add_entry_to_dict(dict_mondo_id_to_name, monDo_id, synonym)
+        synonyms = disease['synonyms'] if 'synonyms' in disease else []
+        for synonym in synonyms:
+            synonym = pharmebinetutils.prepare_obo_synonyms(synonym).lower()
+            add_entry_to_dict(dict_mondo_id_to_name, monDo_id, synonym)
         disease_info = dict(disease)
         dict_monDO_info[monDo_id] = disease_info
         xrefs = disease_info['xrefs'] if 'xrefs' in disease_info else []
@@ -205,9 +201,9 @@ generate cypher queries to integrate and merge disease nodes and create the subc
 
 
 def generate_cypher_queries():
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/monDO/output/%s.tsv" As line FIELDTERMINATOR '\\t' Match (a:disease{id:line.id}) '''
+    query_start = ''' Match (a:disease{id:line.id}) '''
 
-    query_end = '''Create (n)-[:equal_to_monDO]->(a); \n'''
+    query_end = '''Create (n)-[:equal_to_monDO]->(a)'''
     query_update = ''
     query_new = ''
     for property in mondo_prop:
@@ -237,21 +233,28 @@ def generate_cypher_queries():
             query_new += property + ':split(line.' + property + ', "|"), '
             query_update += 'n.' + property + '=split(line.' + property + ', "|"), '
     query_update = query_start + ', (n:Disease{identifier:line.doid}) Set ' + query_update + 'n.mondo="yes", n.license=" CC-BY-SA 3.0", n.resource=n.resource+"MonDO", n.doids=split(line.doids,"|") ' + query_end
-    query_update = query_update % ('map_nodes')
+    query_update = pharmebinetutils.get_query_import(path_of_directory,
+                                                     f'mapping_and_merging_into_hetionet/monDO/output/map_nodes.tsv',
+                                                     query_update)
+
     cypher_file.write(query_update)
     query_new = query_start + 'Create (n:Disease{' + query_new + 'mondo:"yes", resource:["MonDO"], url:"https://monarchinitiative.org/disease/"+ line.id , license:"CC-BY-SA 3.0", source:"MonDO"}) ' + query_end
-    query_new = query_new % ('new_nodes')
+    query_new = pharmebinetutils.get_query_import(path_of_directory,
+                                                  f'mapping_and_merging_into_hetionet/monDO/output/new_nodes.tsv',
+                                                  query_new)
     cypher_file.write(query_new)
-    query_rela = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/monDO/output/%s.tsv" As line FIELDTERMINATOR '\\t' Match (a:Disease{identifier:line.id_1}),(b:Disease{identifier:line.id_2}) Merge (a)-[r:IS_A_DiaD]->(b) On CREATE Set r.unbiased=false, r.url="https://monarchinitiative.org/disease/"+ line.id_1,  r.source="Monarch Disease Ontology", r.resource=['MonDO'] , r.mondo='yes', r.license="CC-BY-SA 3.0" On Match Set r.resource=r.resource+'MonDO', r.mondo='yes' ;\n'''
-    query_rela = query_rela % ('rela')
+    query_rela = ''' Match (a:Disease{identifier:line.id_1}),(b:Disease{identifier:line.id_2}) Merge (a)-[r:IS_A_DiaD]->(b) On CREATE Set r.unbiased=false, r.url="https://monarchinitiative.org/disease/"+ line.id_1,  r.source="Monarch Disease Ontology", r.resource=['MonDO'] , r.mondo='yes', r.license="CC-BY-SA 3.0" On Match Set r.resource=r.resource+'MonDO', r.mondo='yes' '''
+    query_rela = pharmebinetutils.get_query_import(path_of_directory,
+                                                   f'mapping_and_merging_into_hetionet/monDO/output/rela.tsv',
+                                                   query_rela)
     cypher_file.write(query_rela)
 
     # query to delete disease which are not in Mondo
-    query = '''Match (d:Disease) Where not exists(d.mondo) Detach Delete d;\n'''
+    query = '''Match (d:Disease) Where d.mondo is NULL Detach Delete d;\n'''
     cypher_file_end.write(query)
 
     # combin merged id with doids
-    query = '''MATCH (n:Disease) Where exists(n.merged_identifier) Set n.doids=n.doids+ n.merged_identifier Remove n.merged_identifier;\n'''
+    query = '''MATCH (n:Disease) Where n.merged_identifier is not NULL Set n.doids=n.doids+ n.merged_identifier Remove n.merged_identifier;\n '''
     cypher_file_end.write(query)
 
 
@@ -290,7 +293,8 @@ def load_in_all_DO_in_dictionary():
 
     query = ''' MATCH (n:Disease) RETURN n'''
     results = g.run(query)
-    for disease, in results:
+    for record in results:
+        disease = record.data()['n']
         doid = disease['identifier']
         # if doid == 'DOID:0060073':
         #     print('ok')
@@ -540,9 +544,8 @@ def gather_information_of_mondo_and_do_then_prepare_dict_for_csv(monDo, info, mo
 
     info['synonyms'] = monDO_synonyms
 
-    info['def'] =  monDo_def
+    info['def'] = monDo_def
     info['def'] = info['def'].replace('\t', ' ')
-
 
     other_xrefs_monDO = go_through_xrefs_and_change_if_needed_source_name(
         monDO_xref, 'Disease')
@@ -609,7 +612,7 @@ def integrate_mondo_change_identifier():
                 text = 'python ../add_info_from_removed_node_to_other_node.py %s %s %s\n' % (
                     doid, monDo, 'Disease')
                 bash_shell.write(text)
-                text = '$path_neo4j/cypher-shell -u neo4j -p test -f cypher_merge.cypher \n\n'
+                text = '$path_neo4j/cypher-shell -u neo4j -p $password -f cypher_merge.cypher \n\n'
                 bash_shell.write(text)
                 text = '''now=$(date +"%F %T")
                     echo "Current time: $now"\n'''
@@ -683,14 +686,15 @@ add the rela information into
 
 def generate_csv_file_for_relationship():
     # query to get the rela information
-    query = ''' Match (a)-[r:is_a]->(b) Return a.id, b.id, r'''
+    query = ''' Match (a)-[r:is_a]->(b) Return a.id, b.id'''
     results = g.run(query)
 
     # counter of relationship
     counter_of_relationships = 0
 
     # go through all rela and add the information into the tsv file
-    for child_id, parent_id, rela, in results:
+    for record in results:
+        [child_id, parent_id] = record.values()
         counter_of_relationships += 1
         tsv_rela.writerow([child_id, parent_id])
 
@@ -771,6 +775,8 @@ def main():
     print('generate cypher file for subclassof relationship  ')
 
     generate_csv_file_for_relationship()
+
+    driver.close()
 
     print('##########################################################################')
 
