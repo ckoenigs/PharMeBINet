@@ -489,7 +489,7 @@ def generate_cypher_file():
     # query for drugs
     query = ' Create (:drug_Sider{stitchIDflat: line.stitchIDflat , stitchIDstereo: line.stitchIDstereo, PubChem_Coupound_ID: line.PubChem_Coupound_ID} )'
     query = pharmebinetutils.get_query_import(path_of_directory, 'import_into_Neo4j/sider/output/drug.tsv',
-                                                        query)
+                                              query)
     # query=pharmebinetutils.get_query_import(path_of_directory, 'import_into_Neo4j/sider/output/drug.tsv', query)
     cypher_file.write(query)
     # cypher_file.write(pharmebinetutils.prepare_index_query('drug_Sider','stitchIDstereo'))
@@ -497,24 +497,27 @@ def generate_cypher_file():
     # query for side effects
     query = 'Create (:se_Sider{meddraType: line.meddraType , conceptName: line.conceptName, umlsIDmeddra: line.umlsIDmeddra, name: line.name, umls_concept_id: line.umls_concept_id} )'
     query = pharmebinetutils.get_query_import(path_of_directory, 'import_into_Neo4j/sider/output/se.tsv',
-                                                        query)
+                                              query)
     # query=pharmebinetutils.get_query_import(path_of_directory, 'import_into_Neo4j/sider/output/se.tsv', query)
     cypher_file.write(query)
     # cypher_file.write(pharmebinetutils.prepare_index_query('se_Sider','umlsIDmeddra'))
     cypher_file.write(pharmebinetutils.prepare_index_query('se_Sider', 'umlsIDmeddra'))
+    cypher_file.close()
+    cypher_file = open('output/cypher_edge.cypher', 'w')
     # query for relationships relationships
     query = 'Match (drug:drug_Sider{stitchIDstereo: line.stitchIDstereo}), (se:se_Sider{umlsIDmeddra: line.umlsIDmeddra}) Create (drug)-[:Causes{placebo: line.placebo , freq: line.freq, lowerFreq: line.lowerFreq , upperFreq: line.upperFreq, placeboFreq: line.placeboFreq, placeboLowerFreq: line.placeboLowerFreq, placeboUpperFreq: line.placeboUpperFreq, method_of_detection:split(line.method_of_detection,"|")}] ->(se)'
     query = pharmebinetutils.get_query_import(path_of_directory, 'import_into_Neo4j/sider/output/rela.tsv',
-                                                        query)
+                                              query)
     # query=pharmebinetutils.get_query_import(path_of_directory, 'import_into_Neo4j/sider/output/rela.tsv', query)
     cypher_file.write(query)
 
     query = 'Match (drug:drug_Sider{stitchIDstereo: line.stitchIDstereo}), (se:se_Sider{umlsIDmeddra: line.umlsIDmeddra}) Create (drug)-[:Indicates{placebo: line.placebo , freq: line.freq, lowerFreq: line.lowerFreq , upperFreq: line.upperFreq, placeboFreq: line.placeboFreq, placeboLowerFreq: line.placeboLowerFreq, placeboUpperFreq: line.placeboUpperFreq, method_of_detection:split(line.method_of_detection,"|")}] ->(se)'
     query = pharmebinetutils.get_query_import(path_of_directory,
-                                                        'import_into_Neo4j/sider/output/rela_indicates.tsv',
-                                                        query)
+                                              'import_into_Neo4j/sider/output/rela_indicates.tsv',
+                                              query)
     # query=pharmebinetutils.get_query_import(path_of_directory, 'import_into_Neo4j/sider/output/rela_indicates.tsv', query)
     cypher_file.write(query)
+    cypher_file.close()
 
     # create drug tsv
     writer = open('output/drug.tsv', 'w')
