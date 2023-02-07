@@ -1,6 +1,6 @@
 http://ctdbase.org/
 
-Version: 2022-04
+Version: 2023-02
 
 There is a script that downloads the file from CTD and prepared the CSV files such that the header on each CSV file is removed. Then run in the program and generated for each file of chemical, disease, gene, anatomy, and pathway the cypher query to integrate the node into neo4j.
 

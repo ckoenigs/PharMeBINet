@@ -2,6 +2,9 @@ import sys
 import datetime
 import csv
 
+sys.path.append("../..")
+import pharmebinetutils
+
 # cypher file for all nodes
 cypher_file_nodes = open('cypher/nodes_1.cypher', 'w', encoding='utf-8')
 # cypher file for all relationships
@@ -21,10 +24,9 @@ def load_chemicals_and_add_to_cypher_file():
         7: Synonyms
         # 8: DrugBankID is excluded
     """
-    cypher_file_nodes.write(':begin\n')
-    cypher_file_nodes.write('Create Constraint On (node:CTD_chemical) Assert node.chemical_id Is Unique;\n')
-    cypher_file_nodes.write(':commit\n')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/CTD_chemicals.tsv" As line FIELDTERMINATOR '\\t' Create (c:CTD_chemical{ chemical_id:split(line.ChemicalID,':')[1] , casRN:line.CasRN, synonyms:split(line.Synonyms,'|'),  parentIDs:split(line.ParentIDs,'|'), parentTreeNumbers:split(line.ParentTreeNumbers,'|'), treeNumbers:split(line.TreeNumbers,'|'), definition:line.Definition, name:line.ChemicalName, url:"http://ctdbase.org/detail.go?type=chem&acc="+ split(line.ChemicalID,':')[1]});\n '''
+    cypher_file_nodes.write(pharmebinetutils.prepare_index_query('CTD_chemical', 'chemical_id'))
+    query = ''' Create (c:CTD_chemical{ chemical_id:split(line.ChemicalID,':')[1] , casRN:line.CasRN, synonyms:split(line.Synonyms,'|'),  parentIDs:split(line.ParentIDs,'|'), parentTreeNumbers:split(line.ParentTreeNumbers,'|'), treeNumbers:split(line.TreeNumbers,'|'), definition:line.Definition, name:line.ChemicalName, url:"http://ctdbase.org/detail.go?type=chem&acc="+ split(line.ChemicalID,':')[1]}) '''
+    query = pharmebinetutils.get_query_import(path_of_ctd_data, 'ctd_data/CTD_chemicals.tsv', query)
     cypher_file_nodes.write(query)
 
 
@@ -41,10 +43,9 @@ def load_disease_and_add_to_cypher_file():
         7: Synonyms
         8: SlimMappings
     """
-    cypher_file_nodes.write(':begin\n')
-    cypher_file_nodes.write('Create Constraint On (node:CTD_disease) Assert node.disease_id Is Unique;\n')
-    cypher_file_nodes.write(':commit\n')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/CTD_diseases.tsv" As line FIELDTERMINATOR '\\t' Create (c:CTD_disease{ disease_id:split(line.DiseaseID,':')[1], altDiseaseIDs:split(line.AltDiseaseIDs,"|"), idType:split(line.DiseaseID,':')[0] , synonyms:split(line.Synonyms,'|'), slimMappings:split(line.SlimMappings,'|'), parentIDs:split(line.ParentIDs,'|'), parentTreeNumbers:split(line.ParentTreeNumbers,'|'), treeNumbers:split(line.TreeNumbers,'|'), definition:line.Definition, name:line.DiseaseName, url:"http://ctdbase.org/detail.go?type=disease&acc="+ split(line.DiseaseID,':')[1]}) ;\n '''
+    cypher_file_nodes.write(pharmebinetutils.prepare_index_query('CTD_disease_chemical', 'disease_id'))
+    query = ''' Create (c:CTD_disease{ disease_id:split(line.DiseaseID,':')[1], altDiseaseIDs:split(line.AltDiseaseIDs,"|"), idType:split(line.DiseaseID,':')[0] , synonyms:split(line.Synonyms,'|'), slimMappings:split(line.SlimMappings,'|'), parentIDs:split(line.ParentIDs,'|'), parentTreeNumbers:split(line.ParentTreeNumbers,'|'), treeNumbers:split(line.TreeNumbers,'|'), definition:line.Definition, name:line.DiseaseName, url:"http://ctdbase.org/detail.go?type=disease&acc="+ split(line.DiseaseID,':')[1]})  '''
+    query = pharmebinetutils.get_query_import(path_of_ctd_data, 'ctd_data/CTD_diseases.tsv', query)
     cypher_file_nodes.write(query)
 
 
@@ -54,10 +55,10 @@ def load_pathway_and_add_to_cypher_file():
         0: PathwayName
         1: PathwayID
     """
-    cypher_file_nodes.write(':begin\n')
-    cypher_file_nodes.write('Create Constraint On (node:CTD_pathway) Assert node.pathway_id Is Unique;\n')
-    cypher_file_nodes.write(':commit\n')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/CTD_pathways.tsv" As line FIELDTERMINATOR '\\t' Create (c:CTD_pathway{ pathway_id:split(line.PathwayID,':')[1], name:line.PathwayName, id_type:split(line.PathwayID,':')[0], url:" http://ctdbase.org/detail.go?type=pathway&acc="+split(line.PathwayID,':')[1]}) ;\n '''
+    query = ''' Create (c:CTD_pathway{ pathway_id:split(line.PathwayID,':')[1], name:line.PathwayName, id_type:split(line.PathwayID,':')[0], url:" http://ctdbase.org/detail.go?type=pathway&acc="+split(line.PathwayID,':')[1]})'''
+
+    cypher_file_nodes.write(pharmebinetutils.prepare_index_query('CTD_pathway', 'pathway_id'))
+    query = pharmebinetutils.get_query_import(path_of_ctd_data, 'ctd_data/CTD_pathways.tsv', query)
     cypher_file_nodes.write(query)
 
 
@@ -74,10 +75,9 @@ def load_anatomy_and_add_to_cypher_file():
         7: Synonyms ('|'-delimited list)
         8: ExternalSynonyms ('|'-delimited list)
     """
-    cypher_file_nodes.write(':begin\n')
-    cypher_file_nodes.write('Create Constraint On (node:CTD_anatomy) Assert node.anatomy_id Is Unique;\n')
-    cypher_file_nodes.write(':commit\n')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/CTD_anatomy.tsv" As line FIELDTERMINATOR '\\t' Create (c:CTD_anatomy{ anatomy_id:split(line.AnatomyID,':')[1], name:line.AnatomyName, id_type:split(line.AnatomyID,':')[0], definition:line.Definition,  alternative_ids:split(line.AltAnatomyIDs,'|'), parent_id:split(line.ParentIDs,'|'), tree_numbers:split(line.TreeNumbers,'|'), parent_tree_numbers:split(line.ParentTreeNumbers,'|'), synonyms:split(line.Synonyms,'|'), externamSynonyms:split(line.ExternalSynonyms,'|'), url:"http://ctdbase.org/detail.go?type=anatomy&acc="+split(line.AnatomyID,':')[1] }) ;\n '''
+    query = '''Create (c:CTD_anatomy{ anatomy_id:split(line.AnatomyID,':')[1], name:line.AnatomyName, id_type:split(line.AnatomyID,':')[0], definition:line.Definition,  alternative_ids:split(line.AltAnatomyIDs,'|'), parent_id:split(line.ParentIDs,'|'), tree_numbers:split(line.TreeNumbers,'|'), parent_tree_numbers:split(line.ParentTreeNumbers,'|'), synonyms:split(line.Synonyms,'|'), externamSynonyms:split(line.ExternalSynonyms,'|'), url:"http://ctdbase.org/detail.go?type=anatomy&acc="+split(line.AnatomyID,':')[1] }) '''
+    cypher_file_nodes.write(pharmebinetutils.prepare_index_query('CTD_anatomy', 'anatomy_id'))
+    query = pharmebinetutils.get_query_import(path_of_ctd_data, 'ctd_data/CTD_anatomy.tsv', query)
     cypher_file_nodes.write(query)
 
 
@@ -98,10 +98,9 @@ def load_gene_and_add_to_cypher_file():
         7: UniProtIDs
     """
     number_of_genes = 0
-    cypher_file_nodes.write(':begin\n')
-    cypher_file_nodes.write('Create Constraint On (node:CTD_gene) Assert node.gene_id Is Unique;\n')
-    cypher_file_nodes.write(':commit\n')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/CTD_genes.tsv" As line FIELDTERMINATOR '\\t' Create (c:CTD_gene{ gene_id:line.GeneID, altGeneIDs:split(line.AltGeneIDs,'|'), synonyms:split(line.Synonyms,'|'), bioGRIDIDs:split(line.BioGRIDIDs,'|'), pharmGKBIDs:split(line.PharmGKBIDs,'|'), uniProtIDs:split(line.UniProtIDs,'|'),  geneSymbol:line.GeneSymbol, name:line.GeneName, url:" http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID}) ;\n '''
+    query = ''' Create (c:CTD_gene{ gene_id:line.GeneID, altGeneIDs:split(line.AltGeneIDs,'|'), synonyms:split(line.Synonyms,'|'), bioGRIDIDs:split(line.BioGRIDIDs,'|'), pharmGKBIDs:split(line.PharmGKBIDs,'|'), uniProtIDs:split(line.UniProtIDs,'|'),  geneSymbol:line.GeneSymbol, name:line.GeneName, url:" http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID})'''
+    cypher_file_nodes.write(pharmebinetutils.prepare_index_query('CTD_gene', 'gene_id'))
+    query = pharmebinetutils.get_query_import(path_of_ctd_data, 'ctd_data/CTD_genes.tsv', query)
     cypher_file_nodes.write(query)
 
     # add the chemical nodes to cypher file
@@ -137,15 +136,14 @@ def load_chemical_go_enriched(reduced: bool):
     and gather the information
     """
     if not reduced:
-        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/CTD_chem_go_enriched.tsv" As line FIELDTERMINATOR '\\t' Merge (c:CTD_chemical{ chemical_id:line.ChemicalID }) On Create Set  c.casRN=line.CasRN, c.name=line.ChemicalName;\n '''
-        cypher_file_nodes.write(query)
-        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/CTD_chem_go_enriched.tsv" As line FIELDTERMINATOR '\\t' Match (c:CTD_chemical{ chemical_id:line.ChemicalID }), (g:CTD_GO{ go_id:line.GOTermID }) Create (c)-[a:affects_CGO{unbiased:True, pValue:line.PValue, correctedPValue:line.CorrectedPValue, targetMatchQty:line.TargetMatchQty, targetTotalQty:line.TargetTotalQty, backgroundMatchQty:line.BackgroundMatchQty, backgroundTotalQty:line.BackgroundTotalQty, url:"http://ctdbase.org/detail.go?type=chem&acc="+line.ChemicalID}]->(g);\n '''
+        query = '''Match (c:CTD_chemical{ chemical_id:line.ChemicalID }), (g:CTD_GO{ go_id:line.GOTermID }) Create (c)-[a:affects_CGO{unbiased:True, pValue:line.PValue, correctedPValue:line.CorrectedPValue, targetMatchQty:line.TargetMatchQty, targetTotalQty:line.TargetTotalQty, backgroundMatchQty:line.BackgroundMatchQty, backgroundTotalQty:line.BackgroundTotalQty, url:"http://ctdbase.org/detail.go?type=chem&acc="+line.ChemicalID}]->(g) '''
+        query = pharmebinetutils.get_query_import(path_of_ctd_data, 'ctd_data/CTD_chem_go_enriched.tsv', query)
         cypher_file_edges.write(query)
 
     dict_counter_go = {}
 
     # gather information from CTD chemical-go enriched
-    with open(path_of_ctd_data + '/ctd_data/CTD_chem_go_enriched.tsv') as tsv_file:
+    with open(path_of_ctd_data + 'ctd_data/CTD_chem_go_enriched.tsv') as tsv_file:
         reader = csv.reader(tsv_file, quotechar='"', delimiter='\t')
         i = 0
         for row in reader:
@@ -189,9 +187,8 @@ def load_chemical_phenotype():
         12: pubmedids
     and gather the information
     """
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/CTD_pheno_term_ixns.tsv" As line FIELDTERMINATOR '\\t' Merge (c:CTD_chemical{ chemical_id:line.chemicalid }) On Create Set  c.casRN=line.casrn, c.name=line.chemicalname;\n '''
-    cypher_file_nodes.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/CTD_pheno_term_ixns.tsv" As line FIELDTERMINATOR '\\t' Match (c:CTD_chemical{ chemical_id:line.chemicalid }), (g:CTD_GO{ go_id:line.phenotypeid }) Create (c)-[a:phenotype{unbiased:True, organismid:line.organismid, comentionedterms:split(line.comentionedterms,'|'), interaction:line.interaction, interactionactions:split(line.interactionactions,'|'), anatomyterms:split(line.anatomyterms,'|'), pubMed_ids:split(line.pubmedids,'|'), inferencegenesymbols:split(line.inferencegenesymbols,'|'), url:"http://ctdbase.org/detail.go?type=chem&acc="+line.chemicalid}]->(g);\n '''
+    query = ''' Match (c:CTD_chemical{ chemical_id:line.chemicalid }), (g:CTD_GO{ go_id:line.phenotypeid }) Create (c)-[a:phenotype{unbiased:True, organismid:line.organismid, comentionedterms:split(line.comentionedterms,'|'), interaction:line.interaction, interactionactions:split(line.interactionactions,'|'), anatomyterms:split(line.anatomyterms,'|'), pubMed_ids:split(line.pubmedids,'|'), inferencegenesymbols:split(line.inferencegenesymbols,'|'), url:"http://ctdbase.org/detail.go?type=chem&acc="+line.chemicalid}]->(g)'''
+    query = pharmebinetutils.get_query_import(path_of_ctd_data, 'ctd_data/CTD_pheno_term_ixns.tsv', query)
     cypher_file_edges.write(query)
 
     dict_counter_go = {}
@@ -247,7 +244,8 @@ def gather_information_from_disease_phenotype_go_inference(file, ontology, reduc
         7: InferenceGeneSymbols ('|' delimited list)
     """
     if not reduced:
-        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/''' + file + '''" As line FIELDTERMINATOR '\\t' Match (d:CTD_disease{ disease_id:split(line.DiseaseID,':')[1]}), (g:CTD_GO{ go_id:line.GOID }) Create (d)-[a:affects_DGO{unbiased:True, inferenceGeneSymbols:line.InferenceGeneSymbols, inferenceGeneQty:line.InferenceGeneQty, url:"http://ctdbase.org/detail.go?type=disease&acc="+split(line.DiseaseID,':')[1]}]->(g);\n'''
+        query = '''Match (d:CTD_disease{ disease_id:split(line.DiseaseID,':')[1]}), (g:CTD_GO{ go_id:line.GOID }) Create (d)-[a:affects_DGO{unbiased:True, inferenceGeneSymbols:line.InferenceGeneSymbols, inferenceGeneQty:line.InferenceGeneQty, url:"http://ctdbase.org/detail.go?type=disease&acc="+split(line.DiseaseID,':')[1]}]->(g)'''
+        query = pharmebinetutils.get_query_import(path_of_ctd_data, f'ctd_data/{file}', query)
         cypher_file_edges.write(query)
 
     with open(path_of_ctd_data + '/ctd_data/' + file) as tsv_file:
@@ -309,10 +307,9 @@ def add_go_to_cypher_file():
     """
     Add GO to the node cypher file
     """
-    cypher_file_nodes.write(':begin\n')
-    cypher_file_nodes.write('Create Constraint On (node:CTD_GO) Assert node.go_id Is Unique;\n')
-    cypher_file_nodes.write(':commit\n')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/CTD_GO.tsv" As line FIELDTERMINATOR '\\t' Create (c:CTD_GO{ go_id:line.GOID, ontology:line.Ontology, highestGOLevel:line.HighestGOLevel, name:line.GOName, url:" http://ctdbase.org/detail.go?type=go&acc="+line.GOID});\n'''
+    cypher_file_nodes.write(pharmebinetutils.prepare_index_query('CTD_GO', 'go_id'))
+    query = '''Create (c:CTD_GO{ go_id:line.GOID, ontology:line.Ontology, highestGOLevel:line.HighestGOLevel, name:line.GOName, url:" http://ctdbase.org/detail.go?type=go&acc="+line.GOID})'''
+    query = pharmebinetutils.get_query_import(path_of_ctd_data, f'ctd_data/CTD_GO.tsv', query)
 
     cypher_file_nodes.write(query)
 
@@ -328,7 +325,8 @@ def gene_go_into_cypher_file():
     """
     add gene-go relationship to cypher file
     """
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/CTD_Gene_GO.tsv" As line FIELDTERMINATOR '\\t' Match (c:CTD_gene{ gene_id:line.GeneID }), (g:CTD_GO{ go_id:line.GOID }) Create (c)-[a:associates_GGO{unbiases:false, url:"http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID}]->(g) ;\n'''
+    query = ''' Match (c:CTD_gene{ gene_id:line.GeneID }), (g:CTD_GO{ go_id:line.GOID }) Create (c)-[a:associates_GGO{unbiases:false, url:"http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID}]->(g) '''
+    query = pharmebinetutils.get_query_import(path_of_ctd_data, f'ctd_data/CTD_Gene_GO.tsv', query)
     cypher_file_edges.write(query)
 
     with open(path_of_ctd_data + '/ctd_data/CTD_Gene_GO.tsv', 'w', encoding='utf-8', newline='') as tsv_file:
@@ -348,11 +346,8 @@ def load_gene_pathway():
         3: PathwayID
     and gather the information
     """
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/CTD_genes_pathways.tsv" As line FIELDTERMINATOR '\\t' Merge (c:CTD_gene{ gene_id:line.GeneID }) On Create Set  c.geneSymbol=line.GeneSymbol;\n'''
-    cypher_file_nodes.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/CTD_genes_pathways.tsv" As line FIELDTERMINATOR '\\t' Merge (g:CTD_pathway{ pathway_id:split(line.PathwayID,':')[1] }) On Create Set g.name=line.PathwayName ;\n'''
-    cypher_file_nodes.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/CTD_genes_pathways.tsv" As line FIELDTERMINATOR '\\t' Match (c:CTD_gene{ gene_id:line.GeneID }), (g:CTD_pathway{ pathway_id:split(line.PathwayID,':')[1] }) Create (c)-[a:participates_GP{unbiases:false, url:"http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID}]->(g) ;\n'''
+    query = ''' Match (c:CTD_gene{ gene_id:line.GeneID }), (g:CTD_pathway{ pathway_id:split(line.PathwayID,':')[1] }) Create (c)-[a:participates_GP{unbiases:false, url:"http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID}]->(g) '''
+    query = pharmebinetutils.get_query_import(path_of_ctd_data, f'ctd_data/CTD_genes_pathways.tsv', query)
     cypher_file_edges.write(query)
 
 
@@ -367,11 +362,8 @@ def load_disease_pathway(reduced: bool):
     and gather the information
     """
     if not reduced:
-        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/CTD_diseases_pathways.tsv" As line FIELDTERMINATOR '\\t' Merge (c:CTD_disease{ disease_id:split(line.DiseaseID,':')[1] }) On Create Set  c.name=line.DiseaseName;\n'''
-        cypher_file_nodes.write(query)
-        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/CTD_diseases_pathways.tsv" As line FIELDTERMINATOR '\\t' Merge  (g:CTD_pathway{ pathway_id:line.PathwayID })  On Create Set g.name=line.PathwayName;\n'''
-        cypher_file_nodes.write(query)
-        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/CTD_diseases_pathways.tsv" As line FIELDTERMINATOR '\\t' Match (c:CTD_disease{ disease_id:split(line.DiseaseID,':')[1] }), (g:CTD_pathway{ pathway_id:split(line.PathwayID,':')[1] })  Create (c)-[:associates_DP{inferenceGeneSymbol:line.InferenceGeneSymbol, url:"http://ctdbase.org/detail.go?type=disease&acc="+split(line.DiseaseID,':')[1]}]->(g);\n'''
+        query = '''Match (c:CTD_disease{ disease_id:split(line.DiseaseID,':')[1] }), (g:CTD_pathway{ pathway_id:split(line.PathwayID,':')[1] })  Create (c)-[:associates_DP{inferenceGeneSymbol:line.InferenceGeneSymbol, url:"http://ctdbase.org/detail.go?type=disease&acc="+split(line.DiseaseID,':')[1]}]->(g)'''
+        query = pharmebinetutils.get_query_import(path_of_ctd_data, f'ctd_data/CTD_diseases_pathways.tsv', query)
         cypher_file_edges.write(query)
 
 
@@ -392,10 +384,10 @@ def load_chemical_gene():
         10: PubMedIDs
     and gather the information
     """
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/CTD_chem_gene_ixns.tsv" As line FIELDTERMINATOR '\\t' Merge (c:CTD_chemical{ chemical_id:line.ChemicalID }) On Create Set c.casRN=line.CasRN, c.name=line.ChemicalName;\n'''
-    cypher_file_nodes.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/CTD_chem_gene_ixns.tsv" As line FIELDTERMINATOR '\\t' Match (c:CTD_chemical{ chemical_id:line.ChemicalID }), (g:CTD_gene{ gene_id:line.GeneID }) Create (c)-[:associates_CG{unbiased:false, gene_forms:split(line.GeneForms,'|'), organism:line.Organism, organism_id:line.OrganismID, interaction_text:line.Interaction, interactions_actions:split(line.InteractionActions,'|'), pubMed_ids:split(line.PubMedIDs,'|'), url:" http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID }]->(g);\n'''
+    query = '''Match (c:CTD_chemical{ chemical_id:line.ChemicalID }), (g:CTD_gene{ gene_id:line.GeneID }) Create (c)-[:associates_CG{unbiased:false, gene_forms:split(line.GeneForms,'|'), organism:line.Organism, organism_id:line.OrganismID, interaction_text:line.Interaction, interactions_actions:split(line.InteractionActions,'|'), pubMed_ids:split(line.PubMedIDs,'|'), url:" http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID }]->(g)'''
+    query = pharmebinetutils.get_query_import(path_of_ctd_data, f'ctd_data/CTD_chem_gene_ixns.tsv', query)
     cypher_file_edges.write(query)
+
 
 # ChemicalName	ChemicalID	CasRN	PathwayName	PathwayID	PValue	CorrectedPValue	TargetMatchQty	TargetTotalQty	BackgroundMatchQty	BackgroundTotalQty
 
@@ -417,12 +409,8 @@ def load_chemical_pathway_enriched(reduced: bool):
     and gather the information
     """
     if not reduced:
-        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/CTD_chem_pathways_enriched.tsv" As line FIELDTERMINATOR '\\t' Merge (c:CTD_chemical{ chemical_id:line.ChemicalID }) On Create Set c.casRN=line.CasRN, c.name=line.ChemicalName ;\n'''
-        cypher_file_nodes.write(query)
-        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/CTD_chem_pathways_enriched.tsv" As line FIELDTERMINATOR '\\t' Merge (g:CTD_pathway{ pathway_id:split(line.PathwayID,':')[1] }) On Create Set g.name=line.PathwayName;\n'''
-        cypher_file_nodes.write(query)
-
-        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/CTD_chem_pathways_enriched.tsv" As line FIELDTERMINATOR '\\t' Match (c:CTD_chemical{ chemical_id:line.ChemicalID }), (g:CTD_pathway{ pathway_id:split(line.PathwayID,':')[1]}) Create (c)-[:associates_CP{url:"http://ctdbase.org/detail.go?type=chem&acc="+line.ChemicalID ,unbiased:True, pValue:line.PValue, correctedPValue:line.CorrectedPValue, targetMatchQty:line.TargetMatchQty, targetTotalQty:line.TargetTotalQty, backgroundMatchQty:line.BackgroundMatchQty, backgroundTotalQty:line.BackgroundTotalQty }]->(g);\n'''
+        query = '''Match (c:CTD_chemical{ chemical_id:line.ChemicalID }), (g:CTD_pathway{ pathway_id:split(line.PathwayID,':')[1]}) Create (c)-[:associates_CP{url:"http://ctdbase.org/detail.go?type=chem&acc="+line.ChemicalID ,unbiased:True, pValue:line.PValue, correctedPValue:line.CorrectedPValue, targetMatchQty:line.TargetMatchQty, targetTotalQty:line.TargetTotalQty, backgroundMatchQty:line.BackgroundMatchQty, backgroundTotalQty:line.BackgroundTotalQty }]->(g)'''
+        query = pharmebinetutils.get_query_import(path_of_ctd_data, f'ctd_data/CTD_chem_pathways_enriched.tsv', query)
 
         cypher_file_edges.write(query)
 
@@ -466,11 +454,8 @@ def load_chemical_disease(reduced: bool):
         file.close()
         write_file.close()
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + file_name + '''" As line FIELDTERMINATOR '\\t' Merge (c:CTD_chemical{ chemical_id:line.ChemicalID }) On Create  Set  c.casRN=line.CasRN, c.name=line.ChemicalName;\n'''
-    cypher_file_nodes.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + file_name + '''" As line FIELDTERMINATOR '\\t' Merge (g:CTD_disease{ disease_id:split(line.DiseaseID,':')[1]}) On Create Set  g.name=line.DiseaseName;\n'''
-    cypher_file_nodes.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/CTD_chemicals_diseases.tsv" As line FIELDTERMINATOR '\\t' Match (c:CTD_chemical{ chemical_id:line.ChemicalID }), (g:CTD_disease{ disease_id:split(line.DiseaseID,':')[1] }) Create (c)-[:associates_CD{ url:"http://ctdbase.org/detail.go?type=chem&acc="+line.ChemicalID ,directEvidence:line.DirectEvidence, inferenceGeneSymbol:line.InferenceGeneSymbol, inferenceScore:line.InferenceScore, omimIDs:split(line.OmimIDs,'|'), pubMed_ids:split(line.PubMedIDs,'|') }]->(g);\n'''
+    query = ''' Match (c:CTD_chemical{ chemical_id:line.ChemicalID }), (g:CTD_disease{ disease_id:split(line.DiseaseID,':')[1] }) Create (c)-[:associates_CD{ url:"http://ctdbase.org/detail.go?type=chem&acc="+line.ChemicalID ,directEvidence:line.DirectEvidence, inferenceGeneSymbol:line.InferenceGeneSymbol, inferenceScore:line.InferenceScore, omimIDs:split(line.OmimIDs,'|'), pubMed_ids:split(line.PubMedIDs,'|') }]->(g)'''
+    query = pharmebinetutils.get_query_import(path_of_ctd_data, file_name[1:], query)
     cypher_file_edges.write(query)
 
 
@@ -511,9 +496,8 @@ def load_gene_disease(reduced: bool):
                 print(counter, datetime.datetime.now(), counter_evidence_line)
         file.close()
         write_file.close()
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + file_name + '''" As line FIELDTERMINATOR '\\t' Merge (g:CTD_disease{ disease_id:split(line.DiseaseID,':')[1] }) On Create Set g.name=line.DiseaseName;\n'''
-    cypher_file_nodes.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + file_name + '''" As line FIELDTERMINATOR '\\t' Match (c:CTD_gene{ gene_id:line.GeneID }), (g:CTD_disease{ disease_id:split(line.DiseaseID,':')[1] }) Create (c)-[:associates_GD{ url:"http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , directEvidence:line.DirectEvidence, inferenceChemicalName:line.InferenceChemicalName, inferenceScore:line.InferenceScore, omimIDs:split(line.OmimIDs,'|'), pubMed_ids:split(line.PubMedIDs,'|') }]->(g);\n'''
+    query = '''Match (c:CTD_gene{ gene_id:line.GeneID }), (g:CTD_disease{ disease_id:split(line.DiseaseID,':')[1] }) Create (c)-[:associates_GD{ url:"http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , directEvidence:line.DirectEvidence, inferenceChemicalName:line.InferenceChemicalName, inferenceScore:line.InferenceScore, omimIDs:split(line.OmimIDs,'|'), pubMed_ids:split(line.PubMedIDs,'|') }]->(g)'''
+    query = pharmebinetutils.get_query_import(path_of_ctd_data, file_name[1:], query)
     cypher_file_edges.write(query)
 
 
@@ -532,7 +516,8 @@ def generate_rela_file(file_name, dict_rela_to_file, rela, label, label_id, rela
 
     global cypher_file_edges
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/''' + file_name + '''.tsv" As line FIELDTERMINATOR '\\t' Match (c:%s{ %s:line.Id }), (g:CTD_exposureStudy{ reference:line.reference}) Create (g)-[:%s %s]->(c);\n'''
+    query = '''Match (c:%s{ %s:line.Id }), (g:CTD_exposureStudy{ reference:line.reference}) Create (g)-[:%s %s]->(c)'''
+    query = pharmebinetutils.get_query_import(path_of_ctd_data, 'ctd_data/' + file_name + '.tsv', query)
     query = query % (label, label_id, rela_name, rela_properties)
     cypher_file_edges.write(query)
 
@@ -560,13 +545,10 @@ def prepare_exposure_studies():
 
     exposure_header = [x for x in header if x not in other_properties]
 
-    cypher_file_nodes.write(':begin\n')
     # depending if chemicals are in neo4j or not the nodes need to be merged or created
+    cypher_file_nodes.write(pharmebinetutils.prepare_index_query('CTD_exposureStudy', 'reference'))
 
-    cypher_file_nodes.write('Create Constraint On (node:CTD_exposureStudy) Assert node.reference Is Unique;\n')
-    cypher_file_nodes.write(':commit\n')
-
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/CTD_exposure_studies.tsv" As line FIELDTERMINATOR '\\t'  Create (g:CTD_exposureStudy{ '''
+    query = ''' Create (g:CTD_exposureStudy{ '''
     for exposure_head in exposure_header:
         if exposure_head == '':
             continue
@@ -574,7 +556,8 @@ def prepare_exposure_studies():
             query += exposure_head + ':split(line.' + exposure_head + ', "|"), '
         else:
             query += exposure_head + ':line.' + exposure_head + ', '
-    query += "url:'http://ctdbase.org/detail.go?type=reference&acc='+ line.reference});\n"
+    query += "url:'http://ctdbase.org/detail.go?type=reference&acc='+ line.reference})"
+    query = pharmebinetutils.get_query_import(path_of_ctd_data, 'ctd_data/CTD_exposure_studies.tsv', query)
     cypher_file_nodes.write(query)
 
     dict_rela_to_file = {}
@@ -631,8 +614,9 @@ def generate_rela_file_event(file_name, dict_rela_to_file, rela, label, label_id
     global cypher_file_edges
 
     rela_property = '{ ' + rela_property + ':line.' + rela_property + '}' if rela_property != '' else ''
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/''' + file_name + '''.tsv" As line FIELDTERMINATOR '\\t' Match (c:%s{ %s:line.Id }), (g:CTD_exposureEvents{ id:line.exposureId}) Create (g)-[:%s %s]->(c);\n'''
+    query = '''Match (c:%s{ %s:line.Id }), (g:CTD_exposureEvents{ id:line.exposureId}) Create (g)-[:%s %s]->(c)'''
     query = query % (label, label_id, rela_name.lower(), rela_property)
+    query = pharmebinetutils.get_query_import(path_of_ctd_data, 'ctd_data/' + file_name + '.tsv', query)
     cypher_file_edges.write(query)
 
 
@@ -654,13 +638,11 @@ def prepare_exposure():
     exposure_header = [x for x in header if x not in other_properties]
     exposure_header.append('id')
 
-    cypher_file_nodes.write(':begin\n')
     # depending if chemicals are in neo4j or not the nodes need to be merged or created
 
-    cypher_file_nodes.write('Create Constraint On (node:CTD_exposureEvents) Assert node.id Is Unique;\n')
-    cypher_file_nodes.write(':commit\n')
+    cypher_file_nodes.write(pharmebinetutils.prepare_index_query('CTD_exposureEvents', 'id'))
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_ctd_data + '''/ctd_data/exposure.tsv" As line Fieldterminator "\\t" Create  (g:CTD_exposureEvents{ '''
+    query = ''' Create  (g:CTD_exposureEvents{ '''
     for exposure_head in exposure_header:
         if exposure_head == '':
             continue
@@ -668,7 +650,8 @@ def prepare_exposure():
             query += exposure_head + ':split(line.' + exposure_head + ', "|"), '
         else:
             query += exposure_head + ':line.' + exposure_head + ', '
-    query += "url:'http://ctdbase.org/detail.go?type=chem&acc='+line.chemicalID});\n"
+    query += "url:'http://ctdbase.org/detail.go?type=chem&acc='+line.chemicalID})"
+    query = pharmebinetutils.get_query_import(path_of_ctd_data, 'ctd_data/exposure.tsv', query)
     cypher_file_nodes.write(query)
 
     exposure_header.append('chemicalID')
@@ -886,9 +869,7 @@ def main():
 
     with open('cypher/nodes_delete.cypher', 'w', encoding='utf-8') as f:
         for label in ['GO', 'disease', 'gene', 'pathway']:  # chemical
-            f.write(':begin\n')
             f.write('''MATCH (n:CTD_%s) Where not (n)--() Delete n;\n''' % label)
-            f.write(':commit\n')
 
     print('##########################################################################')
 
