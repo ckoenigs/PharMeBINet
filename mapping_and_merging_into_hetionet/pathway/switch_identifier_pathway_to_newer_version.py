@@ -5,6 +5,7 @@ from collections import defaultdict
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 # sys.path.append('../../drugbank/')
 
@@ -18,9 +19,9 @@ create connection to neo4j
 
 def create_connection_with_neo4j_mysql():
     # create connection with neo4j
-    # authenticate("localhost:7474", )
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 # dictionary with pharmebinet genes with identifier as key and value the name
@@ -38,7 +39,8 @@ def load_genes_into_dict():
     query = '''MATCH (n:Gene) RETURN n.identifier,n.name'''
     results = g.run(query)
 
-    for identifier, name, in results:
+    for record in results:
+        [identifier, name] = record.values()
         dict_genes_pharmebinet[identifier] = name
 
     print('number of pathway nodes in pharmebinet:' + str(len(dict_genes_pharmebinet)))
@@ -57,10 +59,11 @@ however ignore the properties with genes, because this information will be in th
 
 
 def get_pathway_properties():
-    query = '''MATCH (p:%s) WITH DISTINCT keys(p) AS keys UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields RETURN allfields;'''
+    query = '''MATCH (p:%s) WITH DISTINCT keys(p) AS keys UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields RETURN allfields as l;'''
     query = query % (label_pathway)
     result = g.run(query)
-    for property, in result:
+    for property in result:
+        property = property.data()['l']
         if property.find('gene') == -1:
             header.append(property)
     header.append('name')
@@ -105,8 +108,9 @@ def load_in_all_pathways():
     query = '''MATCH (n:%s) RETURN n ''' % (label_pathway)
     results = g.run(query)
 
-    untitle_name_id=0
-    for node, in results:
+    untitle_name_id = 0
+    for record in results:
+        node = record.data()['n']
         identifier = node['identifier']
         dict_id_to_node[identifier] = dict(node)
 
@@ -114,9 +118,9 @@ def load_in_all_pathways():
         names = node['synonyms']
         for name in names:
             name = name.lower()
-            if name=='untitled':
-                name=untitle_name_id
-                untitle_name_id+=1
+            if name == 'untitled':
+                name = untitle_name_id
+                untitle_name_id += 1
             if not name in dict_name_to_pc_or_wp_identifier:
                 dict_name_to_pc_or_wp_identifier[name] = [dict(node)]
             else:
@@ -207,7 +211,7 @@ def fill_the_list_of_properties(head, value, identifiers, resource, name, list_i
             resource = [value]
     elif head == 'synonyms':
         name = value.pop()
-        name=name if name!='untitled' else ''
+        name = name if name != 'untitled' else ''
     elif head == 'url':
         if type(value) != str:
             value = ' , '.join(value)
@@ -284,7 +288,6 @@ def generate_rela_tsv_and_cypher_queries():
             all_existing_pairs.add((gene_id, dict_old_pc_to_new[identifier]))
 
     # general start of queries
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/pathway/output/%s.tsv" As line FIELDTERMINATOR '\\t' '''
     # generate cypher for node creation
     query_node_middle = 'Create (n:Pathway{'
     for head in header:
@@ -292,14 +295,18 @@ def generate_rela_tsv_and_cypher_queries():
             query_node_middle += head + ':split(line.' + head + ',"|"), '
         else:
             query_node_middle += head + ':line.' + head + ', '
-    query_node = query_start + query_node_middle[:-2] + ', combined_wikipathway_and_pathway_common:"yes"});\n'
-    query_node = query_node % ('node')
-
+    query_node = query_node_middle[:-2] + ', combined_wikipathway_and_pathway_common:"yes"})'
+    query_node = pharmebinetutils.get_query_import(path_of_directory,
+                                                   f'mapping_and_merging_into_hetionet/pathway/output/node.tsv',
+                                                   query_node)
     cypher_file.write(query_node)
 
     # query equal to
-    query_equal = query_start + ' Match (b:%s ), (n:Pathway{identifier:line.identifier}) Where b.identifier in split(line.%s,"|") Create (n)-[:equal_to_multi_pathways]->(b);\n'
-    query_equal = query_equal % ('node', label_pathway, extra_property)
+    query_equal = ' Match (b:%s ), (n:Pathway{identifier:line.identifier}) Where b.identifier in split(line.%s,"|") Create (n)-[:equal_to_multi_pathways]->(b)'
+    query_equal = query_equal % (label_pathway, extra_property)
+    query_equal = pharmebinetutils.get_query_import(path_of_directory,
+                                                    f'mapping_and_merging_into_hetionet/pathway/output/node.tsv',
+                                                    query_equal)
     cypher_file.write(query_equal)
 
     # cypher query for relationships
@@ -309,9 +316,11 @@ def generate_rela_tsv_and_cypher_queries():
             query_rela_middle += '(g:Gene{identifier:line.' + head + '}) ,'
         else:
             query_rela_middle += '(p:Pathway{identifier:line.' + head + '}) ,'
-    query_rela = query_start + query_rela_middle[
-                               :-2] + ' Create (g)-[:PARTICIPATES_IN_GpiPW{license:p.license, source:p.source, unbiased:false, url:p.url, resource:p.resource, combined_wikipathway_and_pathway_common:"yes"}]->(p);\n'
-    query_rela = query_rela % ('rela')
+    query_rela = query_rela_middle[
+                 :-2] + ' Create (g)-[:PARTICIPATES_IN_GpiPW{license:p.license, source:p.source, unbiased:false, url:p.url, resource:p.resource, combined_wikipathway_and_pathway_common:"yes"}]->(p)'
+    query_rela = pharmebinetutils.get_query_import(path_of_directory,
+                                                   f'mapping_and_merging_into_hetionet/pathway/output/rela.tsv',
+                                                   query_rela)
     cypher_file.write(query_rela)
 
 
@@ -371,6 +380,8 @@ def main():
     print('Generate tsv for rela ')
 
     generate_rela_tsv_and_cypher_queries()
+
+    driver.close()
 
     print(
         '###########################################################################################################################')
