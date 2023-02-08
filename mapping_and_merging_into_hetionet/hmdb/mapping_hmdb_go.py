@@ -12,8 +12,9 @@ create connection to neo4j and mysql
 
 def create_connection_with_neo4j_mysql():
     # create connection with neo4j
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 '''
@@ -26,7 +27,8 @@ def get_information_and_add_to_dict(label, dict_pharmebinet, dict_alternative_id
     query = query % (label)
     results = g.run(query)
 
-    for identifier, name, alternative_ids, resource, in results:
+    for record in results:
+        [identifier, name, alternative_ids, resource] = record.values()
         dict_pharmebinet[identifier] = resource
         if alternative_ids:
             for alternative_id in alternative_ids:
@@ -56,7 +58,8 @@ def load_hmdb_data_in_an_map_to_database(label, dict_pharmebinet, dict_alternati
     counter_mapped = 0
     counter_not_mapped = 0
 
-    for go_node, in results:
+    for record in results:
+        go_node = record.data()['n']
         go_id = go_node['identifier']
         go_name = go_node['description']
 
@@ -68,7 +71,7 @@ def load_hmdb_data_in_an_map_to_database(label, dict_pharmebinet, dict_alternati
             counter_mapped += 1
             for real_go_id in dict_alternative_ids_pharmebinet[go_id]:
                 csv_writer.writerow([go_id, real_go_id, 'alternative_id',
-                                 pharmebinetutils.resource_add_and_prepare(dict_pharmebinet[real_go_id], 'HMDB')])
+                                     pharmebinetutils.resource_add_and_prepare(dict_pharmebinet[real_go_id], 'HMDB')])
         else:
             counter_not_mapped += 1
             csv_without_ontology.writerow([go_id, label, go_name])
@@ -94,8 +97,12 @@ def generate_files(label, label_hmdb):
     writer = csv.writer(file, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     writer.writerow(['GOIDHMDB', 'GOIDpharmebinet', 'how_mapped', 'resource'])
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/hmdb/%s" As line  Fieldterminator '\\t'  Match (c:%s{ identifier:line.GOIDpharmebinet}), (n:%s{identifier:line.GOIDHMDB}) SET  c.hmdb="yes", c.resource=split(line.resource,"|") Create (c)-[:equal_to_hmdb_go{how_mapped:line.how_mapped}]->(n);\n'''
-    query = query % (file_name, label, label_hmdb)
+    query = ''' Match (c:%s{ identifier:line.GOIDpharmebinet}), (n:%s{identifier:line.GOIDHMDB}) SET  c.hmdb="yes", c.resource=split(line.resource,"|") Create (c)-[:equal_to_hmdb_go{how_mapped:line.how_mapped}]->(n)'''
+    query = query % (label, label_hmdb)
+
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/hmdb/{file_name}',
+                                              query)
     cypher_file.write(query)
 
     return writer
@@ -147,6 +154,7 @@ def main():
 
         load_hmdb_data_in_an_map_to_database(hmdb_label, dict_pharmebinet, dict_alternative_ids_pharmebinet, csv_writer)
 
+    driver.close()
     print(
         '###########################################################################################################################')
 

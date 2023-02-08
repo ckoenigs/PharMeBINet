@@ -4,6 +4,7 @@ from collections import defaultdict
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 # disease ontology license
 license = 'CC BY 4.0'
@@ -16,8 +17,9 @@ create a connection with neo4j
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
     # authenticate("localhost:7474", "neo4j", "test")
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 # dictionary tsv files
@@ -44,12 +46,12 @@ def get_go_rela_properties():
     Get the rela properties and prepare the rela cypher query and the tsv header list.
     :return:
     """
-    query = '''MATCH (:protein_go)-[p]-(:go) WITH DISTINCT keys(p) AS keys UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields RETURN allfields;'''
+    query = '''MATCH (:protein_go)-[p]-(:go) WITH DISTINCT keys(p) AS keys UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields RETURN allfields as l;'''
     result = g.run(query)
-    query_nodes_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/go/%s" As line FIELDTERMINATOR '\\t' '''
 
     part = ''' Match (b:%s{identifier:line.go_id}), (c:%s{identifier:line.other_id}) Create (c)-[:%s{'''
-    for property, in result:
+    for record in result:
+        property = record.data()['l']
         if property in ['db_reference', 'with_from', 'annotation_extension', 'xrefs', 'gene_product_id', 'date',
                         'assigned_by', 'evidence']:
             if property == 'db_reference':
@@ -70,7 +72,7 @@ def get_go_rela_properties():
     global query_rela
 
     # combine the important parts of node creation
-    query_rela = query_nodes_start + part + 'resource:["GO"], go:"yes", source:"Gene Ontology", url:"http://purl.obolibrary.org/obo/"+line.go_id, license:"' + license + '"}]->(b);\n'
+    query_rela = part + 'resource:["GO"], go:"yes", source:"Gene Ontology", url:"http://purl.obolibrary.org/obo/"+line.go_id, license:"' + license + '"}]->(b)'
 
 
 def create_tsv_file(go_label, other_label, rela_type):
@@ -89,7 +91,10 @@ def create_tsv_file(go_label, other_label, rela_type):
     rela_type_neo4j = rela_type.upper() + '_' + dict_relationship_ends[other_label] + ''.join(
         [x[0].lower() for x in rela_type.split('_')]) + dict_relationship_ends[go_label]
 
-    query = query_rela % (file_name, go_label, other_label, rela_type_neo4j)
+    query = query_rela % (go_label, other_label, rela_type_neo4j)
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/go/{file_name}',
+                                              query)
     cypher_file.write(query)
 
     dict_label_to_label_to_rela_to_tsv[go_label][other_label][rela_type] = csv_writer
@@ -133,7 +138,6 @@ def write_rela_info_into_file(go_id, other_id, rela, go_label, other_label, rela
 dict_label_to_label_to_rela_type_pairs_to_rela_info = defaultdict(dict)
 
 
-
 def check_for_difference_in_rela_information(dict_first, dict_new_rela_info, go_id, other_id):
     """
 
@@ -147,7 +151,7 @@ def check_for_difference_in_rela_information(dict_first, dict_new_rela_info, go_
     for key, value in dict_new_rela_info.items():
         if key in dict_first and value != dict_first[key]:
             if key in ['db_reference', 'annotation_extension', 'assigned_by', 'with_from', 'gene_product_id',
-                        'date']:
+                       'date']:
                 dict_first[key].extend(value)
                 continue
             elif key in ['evidence'] and type(dict_first[key]) != set:
@@ -181,7 +185,8 @@ def get_all_relationship_pairs(go_label, other_label):
     dict_label_to_label_to_rela_to_tsv[go_label][other_label] = {}
     dict_label_to_label_to_rela_type_pairs_to_rela_info[go_label][other_label] = {}
     counter_double = 0
-    for go_id, other_id, rela_type, rela, in result:
+    for record in result:
+        [go_id, other_id, rela_type, rela] = record.values()
         if rela_type not in dict_label_to_label_to_rela_to_tsv[go_label][other_label]:
             create_tsv_file(go_label, other_label, rela_type)
             dict_label_to_label_to_rela_type_pairs_to_rela_info[go_label][other_label][rela_type] = {}
@@ -241,8 +246,6 @@ def main():
             print(go_label, other_label)
 
             get_all_relationship_pairs(go_label, other_label)
-        #     break
-        # break
 
     print(
         '#################################################################################################################################################################')
@@ -250,6 +253,8 @@ def main():
     print('write combined rela information into tsv files')
 
     write_the_combined_rela_into_files()
+
+    driver.close()
 
     print(
         '#################################################################################################################################################################')

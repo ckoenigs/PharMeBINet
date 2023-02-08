@@ -4,6 +4,7 @@ from collections import defaultdict
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 sys.path.append("..")
 from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
@@ -19,8 +20,9 @@ create a connection with neo4j
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
     # authenticate("localhost:7474", "neo4j", "test")
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 # label of go nodes
@@ -52,16 +54,14 @@ Get the  properties of go
 
 
 def get_go_properties():
-
-    
-    query = '''MATCH (p:go) WITH DISTINCT keys(p) AS keys UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields RETURN allfields;'''
+    query = '''MATCH (p:go) WITH DISTINCT keys(p) AS keys UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields RETURN allfields as l;'''
     result = g.run(query)
-    query_nodes_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/go/%s" As line FIELDTERMINATOR '\\t' '''
 
     part = ''' Match (b:%s{id:line.identifier})''' % (label_go)
-    query_nodes_start = query_nodes_start + part
+    query_nodes_start = part
     query_middle_new = ' Create (a:%s{'
-    for property, in result:
+    for record in result:
+        property = record.data()['l']
         if property in ['def', 'id', 'alt_ids', 'xrefs']:
             if property == 'id':
                 query_middle_new += 'identifier:b.' + property + ', '
@@ -76,18 +76,12 @@ def get_go_properties():
             continue
         else:
             query_middle_new += property + ':b.' + property + ', '
-    query_end = ''' Create (a)-[:equal_to_go]->(b);\n'''
-    global query_new,  query_delete
+    query_end = ''' Create (a)-[:equal_to_go]->(b)'''
+    global query_new, query_delete
 
     # combine the important parts of node creation
     query_new = query_nodes_start + query_middle_new + 'resource:["GO"], go:"yes", source:"Gene Ontology", url:"http://purl.obolibrary.org/obo/"+line.identifier, license:"' + license + '"})' + query_end
 
-    # query_delete=query_nodes_start+ query_delete_middle
-
-    # delete the obsolete nodes of go
-    query_delete_go = ''' Match (b:%s) Where exists(b.is_obsolete) Detach Delete b;\n'''
-    query_delete_go = query_delete_go % (label_go)
-    cypher_file_delete.write(query_delete_go)
 
 
 '''
@@ -98,11 +92,14 @@ create the tsv files
 def create_tsv_files():
     for label in dict_go_to_pharmebinet_label:
         # delete the old nodes
-        query_delete = '''Match (a:%s)  Detach Delete a;\n''' %dict_go_to_pharmebinet_label[label]
+        query_delete = '''Match (a:%s)  Detach Delete a;\n''' % dict_go_to_pharmebinet_label[label]
         cypher_file.write(query_delete)
         # prepare file and queries for new nodes
         file_name = 'output/integrate_go_' + label + '.tsv'
-        query = query_new % (file_name, dict_go_to_pharmebinet_label[label])
+        query = query_new % (dict_go_to_pharmebinet_label[label])
+        query = pharmebinetutils.get_query_import(path_of_directory,
+                                                  f'mapping_and_merging_into_hetionet/go/{file_name}',
+                                                  query)
         cypher_file.write(query)
         file = open(file_name, 'w')
         tsv_file = csv.writer(file, delimiter='\t')
@@ -110,11 +107,8 @@ def create_tsv_files():
         dict_label_to_mapped_to_tsv[label] = tsv_file
 
 
-
 # dictionary go namespace to node dictionary
 dict_go_namespace_to_nodes = {}
-
-
 
 # dictionary go label to pharmebinet label
 dict_go_to_pharmebinet_label = {
@@ -128,10 +122,10 @@ check if id is in a dictionary
 '''
 
 
-def check_if_identifier_in_pharmebinet(identifier, label_go, namespace, node, xrefs):
+def write_into_tsv_if_not_obsolete(identifier, label_go, namespace, node, xrefs):
     found_id = False
     xref_string = "|".join(go_through_xrefs_and_change_if_needed_source_name(xrefs, label_go))
-    
+
     if 'is_obsolete' in node:
         print('need to be delete')
         return found_id
@@ -161,14 +155,17 @@ def get_is_a_relationships_and_add_to_tsv(namespace):
     tsv_file = csv.writer(file, delimiter='\t')
     tsv_file.writerow(['identifier_1', 'identifier_2'])
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/go/%s" As line FIELDTERMINATOR '\\t' 
-    Match (a1:%s{identifier:line.identifier_1}), (a2:%s{identifier:line.identifier_2}) Create (a1)-[:IS_A_%s{license:"%s", source:"Gene Ontology", unbiased:false, resource:["GO"], go:'yes', url:"http://purl.obolibrary.org/obo/"+line.identifier_1}]->(a2);\n'''
-    query = query % (file_name, dict_go_to_pharmebinet_label[namespace], dict_go_to_pharmebinet_label[namespace],
+    query = '''Match (a1:%s{identifier:line.identifier_1}), (a2:%s{identifier:line.identifier_2}) Create (a1)-[:IS_A_%s{license:"%s", source:"Gene Ontology", unbiased:false, resource:["GO"], go:'yes', url:"http://purl.obolibrary.org/obo/"+line.identifier_1}]->(a2)'''
+    query = query % ( dict_go_to_pharmebinet_label[namespace], dict_go_to_pharmebinet_label[namespace],
                      dict_relationship_ends[namespace], license)
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/go/{file_name}',
+                                              query)
     cypher_file.write(query)
 
     # go through the results
-    for id1, id2, in results:
+    for record in results:
+        [id1, id2] = record.values()
         tsv_file.writerow([id1, id2])
 
 
@@ -190,8 +187,9 @@ go through all go nodes and sort them into the dictionary
 
 def go_through_go():
     query = '''Match (n:%s) Return n''' % (label_go)
-    result = g.run(query)
-    for node, in result:
+    results = g.run(query)
+    for record in results:
+        node = record.data()['n']
         identifier = node['id']
         if identifier == 'GO:0099403':
             print('jupp')
@@ -204,7 +202,7 @@ def go_through_go():
                 new_xref.add(splitted_xref[0])
             else:
                 new_xref.add(xref)
-        check_if_identifier_in_pharmebinet(identifier, label_go, namespace, node, new_xref)
+        write_into_tsv_if_not_obsolete(identifier, label_go, namespace, node, new_xref)
 
 
 # path to directory
@@ -253,6 +251,8 @@ def main():
     print('go through all gos in dictionary')
 
     go_through_go()
+
+    driver.close()
 
     print(
         '#################################################################################################################################################################')

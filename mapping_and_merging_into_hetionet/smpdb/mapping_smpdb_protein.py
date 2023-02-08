@@ -3,6 +3,7 @@ import sys, csv
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 '''
 create a connection with neo4j
@@ -11,8 +12,9 @@ create a connection with neo4j
 
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 # dictionary protein id to resource
@@ -32,7 +34,8 @@ Load all Genes from my database  and add them into a dictionary
 def load_protein_from_database_and_add_to_dict():
     query = "MATCH (n:Protein) RETURN n"
     results = g.run(query)
-    for node, in results:
+    for record in results:
+        node = record.data()['n']
         identifier = node['identifier']
         dict_protein_id_to_resource[identifier] = node['resource']
         alternative_ids = node['alternative_ids'] if 'alternative_ids' in node else []
@@ -45,7 +48,7 @@ def load_protein_from_database_and_add_to_dict():
             if gene_symbol not in dict_gene_symbol_to_id:
                 dict_gene_symbol_to_id[gene_symbol] = set()
             dict_gene_symbol_to_id[gene_symbol].add(identifier)
-    print('number of proteins:',len(dict_protein_id_to_resource))
+    print('number of proteins:', len(dict_protein_id_to_resource))
 
 
 # dictionary compound id to name and resource
@@ -59,7 +62,8 @@ def load_compound_from_database_and_add_to_dict():
     """
     query = "MATCH (n:Compound) RETURN n.identifier, n.name, n.resource"
     results = g.run(query)
-    for identifier, name, resource, in results:
+    for record in results:
+        [identifier, name, resource] = record.values()
         dict_compound_id_to_name[identifier] = {'name': name, 'resource': resource}
     print('number of compound:', len(dict_compound_id_to_name))
 
@@ -76,9 +80,11 @@ def generate_files(path_of_directory, label):
     header = ['identifier', 'other_id', 'resource', 'mapped_with']
     csv_mapping.writerow(header)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/smpdb/%s.tsv" As line FIELDTERMINATOR '\\t' 
-        Match (n:protein_smpdb{identifier:line.identifier}), (v:%s{identifier:line.other_id}) Set v.smpdb='yes', v.resource=split(line.resource,"|") Create (v)-[:equal_to_smpdb_%s{how_mapped:line.mapped_with}]->(n);\n'''
-    query = query % (path_of_directory, file_name, label, label.lower())
+    query = ''' Match (n:protein_smpdb{identifier:line.identifier}), (v:%s{identifier:line.other_id}) Set v.smpdb='yes', v.resource=split(line.resource,"|") Create (v)-[:equal_to_smpdb_%s{how_mapped:line.mapped_with}]->(n)'''
+    query = query % (label, label.lower())
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/smpdb/{file_name}.tsv',
+                                              query)
     cypher_file.write(query)
 
     return csv_mapping
@@ -100,7 +106,8 @@ def load_all_smpdb_protein_and_finish_the_files(csv_mapping_protein, csv_mapping
     results = g.run(query)
     counter_not_mapped = 0
     counter_all = 0
-    for node, in results:
+    for record in results:
+        node = record.data()['n']
         counter_all += 1
         identifier = node['identifier']
         uniprot_id = node['uniprot_id'] if 'uniprot_id' in node else ''
@@ -186,6 +193,8 @@ def main():
     print('Load all smpdb protein from database')
 
     load_all_smpdb_protein_and_finish_the_files(csv_mapping_protein, csv_mapping_compound)
+
+    driver.close()
 
     print('##########################################################################')
 

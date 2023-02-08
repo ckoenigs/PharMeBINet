@@ -12,8 +12,9 @@ create a connection with neo4j
 
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 # dictionary protein id to resource
@@ -33,7 +34,8 @@ Load all Genes from my database  and add them into a dictionary
 def load_protein_from_database_and_add_to_dict():
     query = "MATCH (n:Protein) RETURN n"
     results = g.run(query)
-    for node, in results:
+    for record in results:
+        node = record.data()['n']
         identifier = node['identifier']
         dict_protein_id_to_resource[identifier] = node['resource']
         alternative_ids = node['alternative_ids'] if 'alternative_ids' in node else []
@@ -61,9 +63,11 @@ def generate_files(path_of_directory, label):
     header = ['identifier', 'other_id', 'resource', 'mapped_with']
     csv_mapping.writerow(header)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/hmdb/%s.tsv" As line FIELDTERMINATOR '\\t' 
-        Match (n:Protein_HMDB{identifier:line.identifier}), (v:%s{identifier:line.other_id}) Set v.hmdb='yes', v.resource=split(line.resource,"|") Create (v)-[:equal_to_hmdb_%s{how_mapped:line.mapped_with}]->(n);\n'''
-    query = query % (path_of_directory, file_name, label, label.lower())
+    query = '''Match (n:Protein_HMDB{identifier:line.identifier}), (v:%s{identifier:line.other_id}) Set v.hmdb='yes', v.resource=split(line.resource,"|") Create (v)-[:equal_to_hmdb_%s{how_mapped:line.mapped_with}]->(n)'''
+    query = query % (label, label.lower())
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/hmdb/{file_name}.tsv',
+                                              query)
     cypher_file.write(query)
 
     return csv_mapping
@@ -83,11 +87,12 @@ def load_all_hmdb_protein_and_map(csv_mapping_protein):
     file_not_mapped = open('protein/not_mapped.tsv', 'w', encoding='utf-8')
     csv_not_mapped = csv.writer(file_not_mapped, delimiter='\t')
     csv_not_mapped.writerow(['identifier', 'name', 'xrefs'])
-    for node, in results:
+    for record in results:
+        node = record.data()['n']
         counter_all += 1
         identifier = node['identifier']
         xrefs = node['xrefs'] if 'xrefs' in node else []
-        uniprot_name = node['uniprot_name']
+        uniprot_name = node['uniprot_name'] if 'uniprot_name' in node else ''
 
         found_mapping = False
         for xref in xrefs:
@@ -151,6 +156,8 @@ def main():
     print('Load all hmdb protein from database')
 
     load_all_hmdb_protein_and_map(csv_mapping_protein)
+
+    driver.close()
 
     print('##########################################################################')
 

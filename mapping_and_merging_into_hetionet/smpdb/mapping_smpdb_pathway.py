@@ -12,8 +12,9 @@ create a connection with neo4j
 
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 # dictionary name/synonym to pc ids
@@ -38,14 +39,15 @@ def load_pw_from_database():
     query = '''Match (n:Pathway) Return n'''
     results = g.run(query)
     highest_identifier = 0
-    for node, in results:
+    for record in results:
+        node = record.data()['n']
         identifier = node['identifier']
         dict_pathway_id_to_resource[identifier] = set(node['resource'])
         # find the highest number
         if int(identifier.split("_", -1)[1]) > highest_identifier:
             highest_identifier = int(identifier.split("_", -1)[1])
 
-        name = node['name']
+        name = node['name'] if 'name' in node else ''
         if name is not None:
             pharmebinetutils.add_entry_to_dict_to_set(dict_name_to_pathway_ids, name.lower(), identifier)
 
@@ -82,14 +84,16 @@ def generate_files(path_of_directory):
 
     cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/smpdb/%s" As line FIELDTERMINATOR '\\t' 
-        Match (n:Pathway{identifier:line.pathway_id}), (v:pathway_smpdb{smpdb_id:line.pathway_smpdb_id}) Create (n)-[r:equal_to_pathway_smpdb{how_mapped:line.how_mapped}]->(v) Set n.smpdb="yes", n.resource=split(line.resource,"|") , n.description=v.description, n.xrefs= split(line.xrefs,"|"), n.category=v.category, n.source= n.source+', SMPDB', n.license=n.license+'SMPDB is offered to the public as a freely available resource. Use and re-distribution of the data, in whole or in part, for commercial purposes requires explicit permission of the authors and explicit acknowledgment of the source material (SMPDB) and the original publication.';\n'''
-    query = query % (path_of_directory, file_name)
+    query = '''Match (n:Pathway{identifier:line.pathway_id}), (v:pathway_smpdb{smpdb_id:line.pathway_smpdb_id}) Create (n)-[r:equal_to_pathway_smpdb{how_mapped:line.how_mapped}]->(v) Set n.smpdb="yes", n.resource=split(line.resource,"|") , n.description=v.description, n.xrefs= split(line.xrefs,"|"), n.category=v.category, n.source= n.source+', SMPDB', n.license=n.license+'SMPDB is offered to the public as a freely available resource. Use and re-distribution of the data, in whole or in part, for commercial purposes requires explicit permission of the authors and explicit acknowledgment of the source material (SMPDB) and the original publication.' '''
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/smpdb/{file_name}',
+                                              query)
     cypher_file.write(query)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/smpdb/%s" As line FIELDTERMINATOR '\\t' 
-            Match  (v:pathway_smpdb{smpdb_id:line.pathway_smpdb_id}) Merge (n:Pathway{identifier:line.new_id}) On Create Set  n.smpdb="yes", n.resource=["SMPDB"], n.source="SMPDB", n.license="SMPDB is offered to the public as a freely available resource. Use and re-distribution of the data, in whole or in part, for commercial purposes requires explicit permission of the authors and explicit acknowledgment of the source material (SMPDB) and the original publication",n.category=v.category, n.description=v.description, n.name=v.name, n.xrefs=split(line.xrefs,'|'), n.url="https://smpdb.ca/view/"+line.pathway_smpdb_id  Create (n)-[r:equal_to_pathway_smpdb]->(v);\n'''
-    query = query % (path_of_directory, file_name_not)
+    query = '''Match  (v:pathway_smpdb{smpdb_id:line.pathway_smpdb_id}) Merge (n:Pathway{identifier:line.new_id}) On Create Set  n.smpdb="yes", n.resource=["SMPDB"], n.source="SMPDB", n.license="SMPDB is offered to the public as a freely available resource. Use and re-distribution of the data, in whole or in part, for commercial purposes requires explicit permission of the authors and explicit acknowledgment of the source material (SMPDB) and the original publication",n.category=v.category, n.description=v.description, n.name=v.name, n.xrefs=split(line.xrefs,'|'), n.url="https://smpdb.ca/view/"+line.pathway_smpdb_id  Create (n)-[r:equal_to_pathway_smpdb]->(v)'''
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/smpdb/{file_name_not}',
+                                              query)
     cypher_file.write(query)
 
     return csv_mapping, csv_not_mapped
@@ -101,7 +105,7 @@ def add_sources_to_xrefs_and_prepare_string(xrefs, add_list):
     :param xrefs:
     :return:
     """
-    xrefs=xrefs.union(add_list)
+    xrefs = xrefs.union(add_list)
     return '|'.join(sorted(xrefs))
 
 
@@ -120,7 +124,8 @@ def load_all_smpdb_pw_and_map(csv_mapping):
     counter_mapped = 0
     counter_not_mapped = 0
 
-    for node, in results:
+    for record in results:
+        node = record.data()['v']
         identifier = node['smpdb_id']
         name = node['name'].lower()
         path_whiz_id = node['pw_id']
@@ -159,10 +164,10 @@ def load_all_smpdb_pw_and_map(csv_mapping):
             counter_not_mapped += 1
 
             if name not in dict_new_pathway_name_to_pathway_ids:
-                dict_new_pathway_name_to_pathway_ids[name] = [set(),set()]
-            dict_new_pathway_name_to_pathway_ids[name][0].add('smpdb:'+identifier)
-            dict_new_pathway_name_to_pathway_ids[name][0].add('pathwhiz:'+path_whiz_id)
-            dict_new_pathway_name_to_pathway_ids[name][1].add( identifier)
+                dict_new_pathway_name_to_pathway_ids[name] = [set(), set()]
+            dict_new_pathway_name_to_pathway_ids[name][0].add('smpdb:' + identifier)
+            dict_new_pathway_name_to_pathway_ids[name][0].add('pathwhiz:' + path_whiz_id)
+            dict_new_pathway_name_to_pathway_ids[name][1].add(identifier)
 
     print('number of mapped node:', counter_mapped)
     print('number of not mapped node:', counter_not_mapped)
@@ -223,6 +228,8 @@ def main():
     print('Write new pathway nodes in file')
 
     new_pathway_add_to_file(csv_not_mapped)
+
+    driver.close()
 
     print('##########################################################################')
 

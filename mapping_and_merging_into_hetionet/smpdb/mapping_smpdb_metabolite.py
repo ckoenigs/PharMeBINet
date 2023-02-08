@@ -3,6 +3,7 @@ import sys, csv
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 '''
 create a connection with neo4j
@@ -11,8 +12,9 @@ create a connection with neo4j
 
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 def add_entry_to_dictionary(dictionary, key, value):
@@ -42,7 +44,8 @@ Load all Genes from my database  and add them into a dictionary
 def load_metabolites_from_database_and_add_to_dict():
     query = "MATCH (n:Metabolite) RETURN n"
     results = g.run(query)
-    for node, in results:
+    for record in results:
+        node = record.data()['n']
         identifier = node['identifier']
         dict_metabolite_id_to_resource[identifier] = node['resource']
         inchi_key = node['inchikey']
@@ -63,18 +66,14 @@ def generate_files(path_of_directory, label):
     header = ['identifier', 'other_id', 'resource', 'mapped_with']
     csv_mapping.writerow(header)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/smpdb/%s.tsv" As line FIELDTERMINATOR '\\t' 
-        Match (n:metabolite_smpdb{identifier:line.identifier}), (v:%s{identifier:line.other_id}) Set v.smpdb='yes', v.resource=split(line.resource,"|") Create (v)-[:equal_to_smpdb_%s{how_mapped:line.mapped_with}]->(n);\n'''
-    query = query % (path_of_directory, file_name, label, label.lower())
+    query = ''' Match (n:metabolite_smpdb{identifier:line.identifier}), (v:%s{identifier:line.other_id}) Set v.smpdb='yes', v.resource=split(line.resource,"|") Create (v)-[:equal_to_smpdb_%s{how_mapped:line.mapped_with}]->(n)'''
+    query = query % (label, label.lower())
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/smpdb/{file_name}.tsv',
+                                              query)
     cypher_file.write(query)
 
     return csv_mapping
-
-
-def resource(resource):
-    resource = set(resource)
-    resource.add('SMPDB')
-    return '|'.join(resource)
 
 
 '''
@@ -87,7 +86,8 @@ def load_all_smpdb_metabolite_and_finish_the_files(csv_mapping_metabolite, csv_n
     results = g.run(query)
     counter_not_mapped = 0
     counter_all = 0
-    for node, in results:
+    for record in results:
+        node = record.data()['n']
         counter_all += 1
         identifier = node['identifier']
         hmdb_id = node['hmdb_id'] if 'hmdb_id' in node else ''
@@ -97,7 +97,9 @@ def load_all_smpdb_metabolite_and_finish_the_files(csv_mapping_metabolite, csv_n
             if hmdb_id in dict_metabolite_id_to_resource:
                 has_mapped = True
                 csv_mapping_metabolite.writerow(
-                    [identifier, hmdb_id, resource(dict_metabolite_id_to_resource[hmdb_id]), 'hmdb_id'])
+                    [identifier, hmdb_id,
+                     pharmebinetutils.resource_add_and_prepare(dict_metabolite_id_to_resource[hmdb_id], 'SMPDB'),
+                     'hmdb_id'])
         if has_mapped:
             continue
 
@@ -106,7 +108,7 @@ def load_all_smpdb_metabolite_and_finish_the_files(csv_mapping_metabolite, csv_n
                 has_mapped = True
                 for metabolite_id in dict_inchi_key_to_metabolite_ids[inchi_key]:
                     csv_mapping_metabolite.writerow(
-                        [identifier, metabolite_id, resource(dict_metabolite_id_to_resource[metabolite_id]),
+                        [identifier, metabolite_id, pharmebinetutils.resource_add_and_prepare(dict_metabolite_id_to_resource[metabolite_id],'SMPDB'),
                          'inchi_key'])
 
         if has_mapped:
@@ -159,6 +161,8 @@ def main():
     print('Load all smpdb metabolite from database')
 
     load_all_smpdb_metabolite_and_finish_the_files(csv_mapping_metabolite, csv_not_mapped)
+
+    driver.close()
 
     print('##########################################################################')
 
