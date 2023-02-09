@@ -22,7 +22,7 @@ $path_neo4j/restart_neo4j.sh graph stop
 #$path_neo4j_other/restart_neo4j.sh reactome restart
 $path_neo4j/restart_neo4j.sh reactome restart
 
-sleep 60
+sleep 30
 
 suffix="_reactome"
 
@@ -39,13 +39,13 @@ echo 'extract as graphml'
 # $path_neo4j_other/cypher-shell -u neo4j -p $password -f export_reactome.cypher
 $path_neo4j/cypher-shell -u neo4j -p $password -f export_reactome.cypher
 
-sleep 60
+sleep 30
 
 #$path_neo4j_other/neo4j stop
 $path_neo4j/neo4j stop
 
 
-sleep 60
+sleep 30
 
 $path_neo4j/restart_neo4j.sh graph restart
 
@@ -57,11 +57,11 @@ echo 'import with tool'
 
 java -jar ../$import_tool.jar -i $path_to_reactome"pathwaydata.graphml"  -e bolt://localhost:7687 --username neo4j --password $password --label-suffix $suffix --modify-edge-labels false --indices "DatabaseObject_reactome.dbId;EntitySet_reactome.dbId;DatabaseObject_reactome.stId;PhysicalEntity_reactome.stId;Species_reactome.taxId;DatabaseObject_reactome.oldStId;Taxon_reactome.taxId;Reaction_reactome.stId;ReactionLikeEvent_reactome.stId;EntitySet_reactome.stId;PhysicalEntity_reactome.dbId;ReactionLikeEvent_reactome.dbId;ReferenceEntity_reactome.stId;Complex_reactome.stId;Pathway_reactome.dbId;Event_reactome.dbId;ReferenceEntity_reactome.dbId;Pathway_reactome.stId;Event_reactome.stId;GenomeEncodedEntity_reactome.stId;Reaction_reactome.dbId;GenomeEncodedEntity_reactome.dbId;Complex_reactome.dbId;LiteratureReference_reactome.pubMedIdentifier;Person_reactome.orcidId;ReferenceEntity_reactome.variantIdentifier;ReferenceIsoform_reactome.variantIdentifier;ReferenceEntity_reactome.identifier;ReferenceIsoform_reactome.identifier" > output/import_tool_output.txt
 
-sleep 60
+sleep 30
 
 $path_neo4j/neo4j restart
 
-sleep 60
+sleep 30
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -73,12 +73,12 @@ echo 'modification as of data'
 
 $path_neo4j/cypher-shell -u neo4j -p $password -f pathway_modification.cypher
 
-sleep 60
+sleep 20
 
 $path_neo4j/neo4j restart
 
 
-sleep 60
+sleep 30
 
 
 now=$(date +"%F %T")
@@ -92,7 +92,7 @@ python3 merge_nodes.py 2011833 1247632 Disease_reactome dbId True > output_merge
 # python3 merge_nodes.py 9611565 3134792 Disease_reactome dbId True > output_merge.txt  
 
 
-sleep 60
+sleep 20
 
 $path_neo4j/neo4j restart
 

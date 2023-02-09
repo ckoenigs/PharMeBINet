@@ -324,6 +324,7 @@ generate tsv files in form to use the neo4j-shell and generate cypher file
 def create_csv_and_cypher_file_neo4j():
     # cypher file to integrate aeolus into Neo4j
     cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
+    cypher_file_edge = open('output/cypher_edge.cypher', 'w', encoding='utf-8')
 
     print('drug Create')
     print(datetime.datetime.now())
@@ -388,7 +389,7 @@ def create_csv_and_cypher_file_neo4j():
     query = ''' Match (n1:Aeolus_Drug {drug_concept_id: line.drug_concept_id}), (n2:Aeolus_Outcome {outcome_concept_id: line.indication_concept_id}) Create (n1)-[:Indicates]->(n2)'''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'import_into_Neo4j/aeolus/output/indications.tsv', query)
-    cypher_file.write(query)
+    cypher_file_edge.write(query)
 
     f = open(file_name_drug_outcome, 'w', encoding='utf-8')
     try:

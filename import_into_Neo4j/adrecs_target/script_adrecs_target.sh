@@ -40,9 +40,9 @@ echo integrate adrecs target rela into neo4j
 
 $path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_rela.cypher 
 
-sleep 60
+sleep 30
 
 $path_neo4j/neo4j restart
 
 
-sleep 120
+sleep 30

@@ -1560,7 +1560,6 @@ def generate_node_cypher(dict_variation_to_node_ids, list_head, extra_name=None,
 
 def main():
     print(datetime.datetime.now())
-    print('download files')
     global path_of_clinvar_data, path_of_directory
     if len(sys.argv) > 2:
 
@@ -1569,7 +1568,6 @@ def main():
     else:
         sys.exit('need a path nd clinvar path')
 
-    print(datetime.datetime.now())
     print('extract information from ClinVarVariationRelease')
     extract_node_info_for_variations()
     print(datetime.datetime.now())

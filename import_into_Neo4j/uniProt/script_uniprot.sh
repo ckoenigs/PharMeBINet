@@ -23,12 +23,12 @@ echo integrate uniprot into neo4j
 
 $path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher.cypher
 
-sleep 60
+sleep 30
 
 $path_neo4j/neo4j restart
 
 
-sleep 60
+sleep 30
 now=$(date +"%F %T")
 echo "Current time: $now"
 
@@ -36,7 +36,7 @@ echo integrate uniprot edge into neo4j
 
 $path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_edge.cypher
 
-sleep 60
+sleep 30
 
 $path_neo4j/neo4j restart
 

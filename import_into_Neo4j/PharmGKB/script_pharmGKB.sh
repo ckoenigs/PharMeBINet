@@ -38,12 +38,12 @@ java -jar ../$import_tool.jar -i sources/PharmGKB/intermediate.graphml  -e bolt:
 
 $path_neo4j/cypher-shell -u neo4j -p $password -f cypher_add_label.cypher
 
-sleep 120
+sleep 30
 
 $path_neo4j/neo4j restart
 
 
-sleep 120
+sleep 30
 
 
 

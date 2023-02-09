@@ -8,7 +8,7 @@ import pharmebinetutils
 
 # cypher file
 cypher_file = open('cypher.cypher', 'a', encoding='utf-8')
-cypher_file_edge = open('output/cypher_edge.cypher', 'w', encoding='utf-8')
+cypher_file_edge = open('cypher_edge.cypher', 'a', encoding='utf-8')
 
 
 def generate_csv_file_and_prepare_cypher_queries(keys, file_name, label, unique_identifier):

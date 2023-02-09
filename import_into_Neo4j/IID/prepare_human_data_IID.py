@@ -33,6 +33,7 @@ def generate_node_and_rela_file_and_query(header_rela):
     csv_node.writerow(['id', 'symbols'])
 
     cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
+    cypher_file_edge = open('output/cypher_edge.cypher', 'w', encoding='utf-8')
     query = 'Create (p:protein_IID{identifier:line.id, symbols:split(line.symbols,"|")})'
     query = pharmebinetutils.get_query_import(path_of_directory, f'import_into_Neo4j/IID/{node_file_name}', query)
     cypher_file.write(query)
@@ -71,7 +72,7 @@ def generate_node_and_rela_file_and_query(header_rela):
                 query += prepare_header(header) + ':line.`' + header + '`, '
     query = query[:-2] + '}]->(p2)'
     query = pharmebinetutils.get_query_import(path_of_directory, f'import_into_Neo4j/IID/{rela_file_name}', query)
-    cypher_file.write(query)
+    cypher_file_edge.write(query)
 
     return csv_node, csv_rela
 

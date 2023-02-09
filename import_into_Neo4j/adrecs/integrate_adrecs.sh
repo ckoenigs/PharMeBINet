@@ -36,12 +36,12 @@ echo integrate ADReCS into neo4j
 
 java -jar ../$import_tool.jar -i sources/ADReCS/intermediate.graphml  -e bolt://localhost:7687 --username neo4j --password $password --label-prefix ADReCS_ > output/import_tool_output.txt
 
-sleep 120
+sleep 30
 
 $path_neo4j/neo4j restart
 
 
-sleep 120
+sleep 30
 
 
 

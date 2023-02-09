@@ -9,6 +9,9 @@ path_to_project=$2
 #password
 password=$3
 
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo start download
 
 #download obo file
 wget  -O data/hpo.obo "http://purl.obolibrary.org/obo/hp.obo"
@@ -23,6 +26,10 @@ cd data
 
 cd ..
 
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo start parse data
+
 #python3 integrate_hpo_disease_symptomes_into_neo4j.py  > output_integration_hpo.txt
 python3 ../EFO/transform_obo_to_tsv_and_cypher_file.py data/hpo.obo hpo HPO_symptom $path_to_project > output/output_generate_integration_file.txt
 
@@ -36,9 +43,17 @@ echo integrate hpo into neo4j
 
 $path_neo4j/cypher-shell -u neo4j -p $password -f cypher.cypher
 
-sleep 60
+sleep 30
 
 $path_neo4j/neo4j restart
 
 
-sleep 120
+sleep 30
+$path_neo4j/cypher-shell -u neo4j -p $password -f cypher_edge.cypher
+
+sleep 30
+
+$path_neo4j/neo4j restart
+
+
+sleep 30

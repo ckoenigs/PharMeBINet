@@ -624,6 +624,7 @@ def prepare_labels(label):
 
 # cypher file
 cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
+cypher_file_edge = open('output/cypher_edge.cypher', 'w', encoding='utf-8')
 set_of_existing_constrains = set()
 
 
@@ -640,7 +641,7 @@ def add_node_query_to_cypher(labels, query_node, file_name):
     cypher_file.write(query_node)
     for label in labels:
         if label not in set_of_existing_constrains:
-            cypher_file.write(pharmebinetutils.prepare_index_query(label+'_omim','identifier'))
+            cypher_file.write(pharmebinetutils.prepare_index_query(label + '_omim', 'identifier'))
             set_of_existing_constrains.add(label)
 
 
@@ -808,7 +809,7 @@ dict_label_pair_to_csv_file = {}
 
 def add_rela_query(file_name, label_1, label_2, query_rela):
     query_rela = query_rela % (file_name, label_1, label_2, 'associates')
-    cypher_file.write(query_rela)
+    cypher_file_edge.write(query_rela)
 
 
 def write_to_csv_rela(omim_id, labels, phenotype_omim_id, phenotype_labels, dict_combined_rela, query_rela):
@@ -949,7 +950,7 @@ def main():
 
     # Remove nodes without relationships for the following labels
     for label in ['gene', 'predominantly_phenotypes', 'phenotype']:
-        cypher_file.write('MATCH (n:%s_omim) WHERE NOT (n)--() DELETE n;\n' % label)
+        cypher_file_edge.write('MATCH (n:%s_omim) WHERE NOT (n)--() DELETE n;\n' % label)
 
     print('##########################################################################')
 

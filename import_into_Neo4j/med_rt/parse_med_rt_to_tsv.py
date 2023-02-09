@@ -120,7 +120,7 @@ def generate_rela_file_and_query(filename, from_label, to_label, path):
     query_rela = query_rela % (dict_short_to_full_name[from_label], dict_short_to_full_name[to_label], filename)
     query_rela = pharmebinetutils.get_query_import(path_of_directory, f'import_into_Neo4j/med_rt/{combinde_name}',
                                                    query_rela)
-    cypher_file.write(query_rela)
+    cypher_file_edge.write(query_rela)
 
     return csv_writer
 
@@ -222,6 +222,7 @@ dict_of_file_names = {}
 
 # cypher file
 cypher_file = open('cypher_med.cypher', 'w', encoding='utf-8')
+cypher_file_edge = open('cypher_med_edge.cypher', 'w', encoding='utf-8')
 
 # cypher file delete
 cypher_file_delete = open('cypher_delete.cypher', 'w', encoding='utf-8')

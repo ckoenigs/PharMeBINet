@@ -35,6 +35,7 @@ csv_writer_rela.writerow(list_of_rela_properties)
 
 # cypher file
 cypher_file = open('cypher.cypher', 'a')
+cypher_file_edge = open('cypher_edge.cypher', 'a')
 query = ''' Create (:HPO_disease{'''
 for property in list_of_disease_properties:
     if property == 'name':
@@ -58,7 +59,7 @@ for property in list_of_rela_properties:
 query = query[:-2] + '''}]->(s)'''
 query = pharmebinetutils.get_query_import(path_of_directory, 'import_into_Neo4j/hpo/output/rela_disease_phenotyp.tsv',
                                           query)
-cypher_file.write(query)
+cypher_file_edge.write(query)
 
 # dictionary with all hpo identifier for frequency
 dict_hpo_frequency = {}

@@ -50,7 +50,7 @@ def cypher_edge(file_name, label, properties, edge_name):
     cypher_file_edge.write(query)
 
 
-def edges(file, name):
+def edges(file, name, reduced):
     """
     Prepare file for relationships and generate cypher query
     :param file: string
@@ -68,6 +68,8 @@ def edges(file, name):
     edge["Raw_ID2"].fillna(edge["Interactor2"], inplace=True)
 
     edge = edge.replace(to_replace="//", value="|", regex=True)
+    if reduced:
+        edge= edge[edge['score'] >= 0.5]
     edge = edge.set_index("RNAInterID")
     file_name = "output/rna_" + name + ".tsv"
     edge.to_csv(file_name, sep='\t')
@@ -114,6 +116,8 @@ def main():
     species_condition = False
     # "Homo sapiens"
     species = ''
+    #boolean if reduced number of edges should be integrated
+    reduced=True
     if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]
         if len(sys.argv) == 3:
@@ -147,7 +151,7 @@ def main():
         csv = csv[(csv['Interactor1.Symbol'] != 'Interactor1.Symbol')]
         a = nodes(csv, i)
         rna = pd.concat([rna, a])
-        edges(csv, i)
+        edges(csv, i, reduced)
 
     rna["Raw_ID1"].fillna(rna["Interactor1"], inplace=True)
     rna = rna.drop_duplicates(subset=['Raw_ID1'])

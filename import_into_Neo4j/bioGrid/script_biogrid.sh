@@ -24,11 +24,18 @@ echo integrate biogrid into neo4j
 
 $path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher.cypher
 
-$path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_edges.cypher
-
-sleep 60
+sleep 10
 
 $path_neo4j/neo4j restart
 
 
-sleep 120
+sleep 20
+
+$path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_edges.cypher
+
+sleep 10
+
+$path_neo4j/neo4j restart
+
+
+sleep 20

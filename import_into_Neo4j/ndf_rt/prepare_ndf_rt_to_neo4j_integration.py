@@ -47,6 +47,7 @@ def extract_and_add_info_into_dictionary(dictionary, terminology, element):
 
 # cypher file to integrate nodes and relationships
 cypher_file = open('cypher_file.cypher', 'w', encoding='utf-8')
+cypher_file_edge = open('cypher_file_edge.cypher', 'w', encoding='utf-8')
 
 # cypher file to delte nodes without relationships
 cypher_file_delete = open('cypher_file_delete.cypher', 'w', encoding='utf-8')
@@ -125,7 +126,7 @@ def load_ndf_rt_xml_inferred_in():
             query = query % (name)
             query = pharmebinetutils.get_query_import(path_of_directory, f'import_into_Neo4j/ndf_rt/{file_name}', query)
 
-            cypher_file.write(query)
+            cypher_file_edge.write(query)
 
     # get all important concepts
     concepts = terminology.getElementsByTagName('conceptDef')

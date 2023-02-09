@@ -22,9 +22,16 @@ echo integrate do into neo4j
 
 $path_neo4j/cypher-shell -u neo4j -p $password -f cypher.cypher
 
-sleep 60
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+echo integrate do into neo4j
+
+$path_neo4j/cypher-shell -u neo4j -p $password -f cypher_edge.cypher
+
+sleep 20
 
 $path_neo4j/neo4j restart
 
 
-sleep 120
+sleep 30
