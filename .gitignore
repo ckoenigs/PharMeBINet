@@ -140,6 +140,7 @@ node_modules/
 *.db
 *.html
 *.sql
+*/sources/*.png
 
 wget-log
 wget-log.*

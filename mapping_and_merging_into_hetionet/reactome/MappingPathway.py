@@ -16,8 +16,9 @@ create a connection with neo4j
 
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
-    global graph_database
-    graph_database = create_connection_to_databases.database_connection_neo4j()
+    global graph_database, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    graph_database = driver.session()
 
 
 # dictionary with pharmebinet pathways with identifier as key and value the xrefs
@@ -45,7 +46,8 @@ def load_pharmebinet_pathways_in():
     query = '''MATCH (n:Pathway) RETURN n.identifier, n.name, n.source, n.xrefs, n.resource'''
     results = graph_database.run(query)
     # run through results
-    for identifier, name, source, xrefs, resource, in results:
+    for record in results:
+        [identifier, name, source, xrefs, resource] = record.values()
         # try to get the highest existing pathway id
         if int(identifier.split("_", -1)[1]) > highest_identifier:
             highest_identifier = int(identifier.split("_", -1)[1])
@@ -88,7 +90,8 @@ def load_reactome_pathways_in():
     # count how often map with name or with name
     counter_map_with_id = 0
     counter_map_with_name = 0
-    for pathways_id, pathways_name, synonyms, in results:
+    for record in results:
+        [pathways_id, pathways_name, synonyms] = record
         pathways_name = pathways_name.lower()
         synonyms = synonyms if synonyms is not None else []
         # boolean to chek if a mapping happend or not
@@ -160,13 +163,17 @@ generate connection between mapping pathways of reactome and pharmebinet and gen
 def create_cypher_file():
     cypher_file = open('output/cypher.cypher', 'w', encoding="utf-8")
     # mappt die Knoten, die es in pharmebinet und reactome gibt und fügt die properties hinzu
-    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/reactome/pathway/mapped_pathways.tsv" As line FIELDTERMINATOR "\\t" MATCH (d:Pathway{identifier:line.id_pharmebinet}),(c:Pathway_reactome{stId:line.id}) CREATE (d)-[: equal_to_reactome_pathway]->(c) SET d.resource = split(line.resource, '|'), d.reactome = "yes", d.name = c.displayName, d.synonyms = apoc.convert.fromJsonList(c.name), d.alternative_id = c.oldStId, d.books = c.books, d.pubMed_ids = c.pubMed_ids, d.figure_urls = c.figure_urls, d.publication_urls = c.publication_urls, d.doi = c.doi, d.definition = c.definition, d.xrefs = split(line.ownId,"|");\n'''
-    query = query % (path_of_directory)
+    query = ''' MATCH (d:Pathway{identifier:line.id_pharmebinet}),(c:Pathway_reactome{stId:line.id}) CREATE (d)-[: equal_to_reactome_pathway]->(c) SET d.resource = split(line.resource, '|'), d.reactome = "yes", d.name = c.displayName, d.synonyms = apoc.convert.fromJsonList(c.name), d.alternative_id = c.oldStId, d.books = c.books, d.pubMed_ids = c.pubMed_ids, d.figure_urls = c.figure_urls, d.publication_urls = c.publication_urls, d.doi = c.doi, d.definition = c.definition, d.xrefs = split(line.ownId,"|")'''
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/reactome/pathway/mapped_pathways.tsv',
+                                              query)
     cypher_file.write(query)
 
     # Neue Knoten werden erzeugt, von denen die nicht mappen
-    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/reactome/pathway/not_mapped_pathways.tsv" As line FIELDTERMINATOR "\\t" MATCH (c:Pathway_reactome{stId:line.id}) CREATE (d:Pathway{identifier:line.newId, resource:['Reactome'], reactome:"yes", name:c.displayName, synonyms:apoc.convert.fromJsonList(c.name), xrefs:["reactome:"+c.stId],  alternative_id:c.oldStId, books:c.books, pubMed_ids:c.pubMed_ids, figure_urls:c.figure_urls, publication_urls:c.publication_urls, doi:c.doi, definition:c.definition, source:"Reactome", url:"https://reactome.org/content/detail/"+line.id, license:"%s"}) CREATE (d)-[: equal_to_reactome_pathway]->(c) ;\n'''
-    query = query % (path_of_directory, license)
+    query = ''' MATCH (c:Pathway_reactome{stId:line.id}) CREATE (d:Pathway{identifier:line.newId, resource:['Reactome'], reactome:"yes", name:c.displayName, synonyms:apoc.convert.fromJsonList(c.name), xrefs:["reactome:"+c.stId],  alternative_id:c.oldStId, books:c.books, pubMed_ids:c.pubMed_ids, figure_urls:c.figure_urls, publication_urls:c.publication_urls, doi:c.doi, definition:c.definition, source:"Reactome", url:"https://reactome.org/content/detail/"+line.id, license:"%s"}) CREATE (d)-[: equal_to_reactome_pathway]->(c) '''
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/reactome/pathway/not_mapped_pathways.tsv',
+                                              query)
     cypher_file.write(query)
 
 
@@ -206,6 +213,8 @@ def main():
     print('Integrate new pathways and connect them to reactome ')
 
     create_cypher_file()
+
+    driver.close()
 
     print(
         '###########################################################################################################################')

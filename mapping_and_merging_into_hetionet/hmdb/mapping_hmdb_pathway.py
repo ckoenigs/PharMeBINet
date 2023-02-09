@@ -12,8 +12,9 @@ create a connection with neo4j
 
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 def add_entry_to_dictionary(dictionary, key, value):
@@ -46,10 +47,11 @@ def load_pw_from_database():
     """
     query = '''Match (n:Pathway) Return n'''
     results = g.run(query)
-    for node, in results:
+    for record in results:
+        node = record.data()['n']
         identifier = node['identifier']
         dict_pathway_id_to_resource[identifier] = set(node['resource'])
-        name = node['name']
+        name = node['name'] if 'name' in node else ''
         if name is not None:
             add_entry_to_dictionary(dict_name_to_pathway_ids, name.lower(), identifier)
 
@@ -87,9 +89,10 @@ def generate_files(path_of_directory):
 
     cypher_file = open('output/cypher_part2.cypher', 'w', encoding='utf-8')
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/hmdb/%s" As line FIELDTERMINATOR '\\t' 
-        Match (n:Pathway{identifier:line.pathway_id}), (v:Pathway_HMDB{identifier:line.pathway_hmdb_id}) Create (n)-[r:equal_to_pathway_hmdb{how_mapped:line.how_mapped}]->(v) Set n.hmdb="yes", n.resource=split(line.resource,"|") ;\n'''
-    query = query % (path_of_directory, file_name)
+    query = '''Match (n:Pathway{identifier:line.pathway_id}), (v:Pathway_HMDB{identifier:line.pathway_hmdb_id}) Create (n)-[r:equal_to_pathway_hmdb{how_mapped:line.how_mapped}]->(v) Set n.hmdb="yes", n.resource=split(line.resource,"|") '''
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/hmdb/{file_name}',
+                                              query)
     cypher_file.write(query)
 
     return csv_mapping, csv_not_mapped
@@ -108,7 +111,8 @@ def load_all_hmdb_pw_and_map(csv_mapping, csv_not_mapped):
     counter_mapped = 0
     counter_not_mapped = 0
 
-    for node, in results:
+    for record in results:
+        node = record.data()['v']
         identifier = node['identifier']
         smpdb_id = node['smpdb_id'].replace('P', 'P00') if 'smpdb_id' in node else ''
         name = node['name'].lower()
@@ -178,6 +182,8 @@ def main():
     print('Load pc from hmdb and map')
 
     load_all_hmdb_pw_and_map(csv_mapping, csv_not_mapped)
+
+    driver.close()
 
     print('##########################################################################')
 

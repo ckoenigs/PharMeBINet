@@ -105,7 +105,7 @@ def load_tsv_ncbi_infos_and_generate_new_file_with_only_the_important_genes():
                                               f'mapping_and_merging_into_hetionet/ncbi_gene/output_data/genes_merge.tsv',
                                               query)
     cypher_file.write(query)
-    query = '''MATCH (a:Gene) Where not  (a)-[:equal_to_ncbi_gene]->() Detach Delete a;'''
+    query = '''MATCH (a:Gene) Where not  (a)-[:equal_to_ncbi_gene]->() Detach Delete a;\n'''
     cypher_file.write(query)
     cypher_file.close()
 

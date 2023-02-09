@@ -563,7 +563,8 @@ def gather_information_of_mondo_and_do_then_prepare_dict_for_csv(monDo, info, mo
 bash_shell = open('merge_nodes.sh', 'w', encoding='utf-8')
 bash_start = '''#!/bin/bash
 #define path to neo4j bin
-path_neo4j=$1\n\n'''
+path_neo4j=$1\n\n
+password=$2\n\n'''
 bash_shell.write(bash_start)
 
 '''

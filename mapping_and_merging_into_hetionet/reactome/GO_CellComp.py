@@ -14,8 +14,9 @@ create a connection with neo4j
 
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
-    global graph_database
-    graph_database = create_connection_to_databases.database_connection_neo4j()
+    global graph_database, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    graph_database = driver.session()
 
 
 # dictionary with pharmebinet gocellcomp with identifier as key and value the name
@@ -45,7 +46,8 @@ def load_pharmebinet_gocellcomp_in():
     results = graph_database.run(query)
 
     # results werden einzeln durchlaufen
-    for identifier, alt_ids, resource, in results:
+    for record in results:
+        [identifier, alt_ids, resource] = record.values()
         # im dictionary werden passend zu den Identifiern die Namen und die idOwns gespeichert
         # dict_gobiolproc_pharmebinet_identifier[identifier] = names
         dict_gocellcompId_to_resource[identifier] = resource
@@ -82,9 +84,9 @@ def load_reactome_gocellcomp_in():
     # zähler wie oft id mapt
     counter_map_with_id = 0
     # counter_map_with_name = 0
-    for gocellcomp_node, in results:
+    for gocellcomp_node in results:
+        gocellcomp_node = gocellcomp_node.data()['n']
         gocellcomp_id = gocellcomp_node['accession']  # hier ist nur die nr...?
-        resource = gocellcomp_node['resource']
 
         # check if the reactome pathway id is part in the pharmebinet idOwn
         if gocellcomp_id in dict_gocellcomp_pharmebinet_identifier:
@@ -122,9 +124,10 @@ generate connection between mapping gocellcomp of reactome and pharmebinet and g
 def create_cypher_file():
     cypher_file = open('output/cypher.cypher', 'a', encoding="utf-8")
     # mappt die Knoten, die es in pharmebinet und reactome gibt und fügt die properties hinzu
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/reactome/gocellcomp/mapped_gocellcomp.tsv" As line FIELDTERMINATOR "\\t"
-     Match (d: CellularComponent{identifier: line.id_pharmebinet}),(c:GO_CellularComponent_reactome{accession:line.id}) Create (d)-[: equal_to_reactome_gocellcomp]->(c) SET d.resource = split(line.resource, '|'), d.reactome = "yes";\n'''
-    query = query % (path_of_directory)
+    query = ''' Match (d: CellularComponent{identifier: line.id_pharmebinet}),(c:GO_CellularComponent_reactome{accession:line.id}) Create (d)-[: equal_to_reactome_gocellcomp]->(c) SET d.resource = split(line.resource, '|'), d.reactome = "yes"'''
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/reactome/gocellcomp/mapped_gocellcomp.tsv',
+                                              query)
     cypher_file.write(query)
 
 
@@ -162,6 +165,8 @@ def main():
     print('Integrate new GO_CellularComponent and connect them to reactome ')
 
     create_cypher_file()
+
+    driver.close()
 
     print(
         '###########################################################################################################################')

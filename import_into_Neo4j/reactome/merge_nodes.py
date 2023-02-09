@@ -334,9 +334,9 @@ delete the merged node
 
 def delete_merged_node(identifier, label, identifier_name, is_int):
     if not is_int:
-        query = ''' Match (n:%s{%s:"%s"}) Detach Delete n'''
+        query = ''' Match (n:%s{%s:"%s"}) Detach Delete n;\n'''
     else:
-        query = ''' Match (n:%s{%s:%s}) Detach Delete n'''
+        query = ''' Match (n:%s{%s:%s}) Detach Delete n;\n'''
     query = query % (label, identifier_name, identifier)
     g.run(query)
 

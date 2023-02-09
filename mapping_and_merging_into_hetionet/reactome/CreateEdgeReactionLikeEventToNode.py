@@ -1,11 +1,10 @@
-
-from py2neo import Graph
 import datetime
 import csv
 import sys
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 '''
 create a connection with neo4j
@@ -14,8 +13,9 @@ create a connection with neo4j
 
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
-    global graph_database
-    graph_database = create_connection_to_databases.database_connection_neo4j()
+    global graph_database, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    graph_database = driver.session()
 
 
 # dictionary with pharmebinet reactionLikeEvent with identifier as key and value the name
@@ -26,23 +26,26 @@ load in all pathways from pharmebinet in a dictionary
 '''
 
 
-def load_pharmebinet_reactionLikeEvent_pharmebinet_node_in(csv_file, dict_reactionLikeEvent_pharmebinet_node_pharmebinet,
-                                                  new_relationship, node_reactome_label, node_pharmebinet_label):
+def load_pharmebinet_reactionLikeEvent_pharmebinet_node_in(csv_file,
+                                                           dict_reactionLikeEvent_pharmebinet_node_pharmebinet,
+                                                           new_relationship, node_reactome_label,
+                                                           node_pharmebinet_label):
     query = '''MATCH (p:ReactionLikeEvent)-[]-(r:ReactionLikeEvent_reactome)-[v:%s]->(n:%s)-[]-(b:%s) RETURN p.identifier, b.identifier, v.order, v.stoichiometry'''
     query = query % (new_relationship, node_reactome_label, node_pharmebinet_label)
     print(query)
     results = graph_database.run(query)
     # for id1, id2, order, stoichiometry, in results:
-    for reactionLikeEvent_id, node_id, order, stoichiometry, in results:
+    for record in results:
+        [reactionLikeEvent_id, node_id, order, stoichiometry] = record.values()
         if (reactionLikeEvent_id, node_id) in dict_reactionLikeEvent_pharmebinet_node_pharmebinet:
             print(reactionLikeEvent_id, node_id)
             print(dict_reactionLikeEvent_pharmebinet_node_pharmebinet[(reactionLikeEvent_id, node_id)])
             print(order, stoichiometry)
-            print("Doppelte reactionLikeEvent-"+node_pharmebinet_label+" Kombination")
-            if node_pharmebinet_label=='Disease':
+            print("Doppelte reactionLikeEvent-" + node_pharmebinet_label + " Kombination")
+            if node_pharmebinet_label == 'Disease':
                 continue
             else:
-                sys.exit("Doppelte reactionLikeEvent-"+node_pharmebinet_label+" Kombination")
+                sys.exit("Doppelte reactionLikeEvent-" + node_pharmebinet_label + " Kombination")
         dict_reactionLikeEvent_pharmebinet_node_pharmebinet[(reactionLikeEvent_id, node_id)] = [stoichiometry, order]
         csv_file.writerow([reactionLikeEvent_id, node_id, order, stoichiometry])
     print('number of reactionLikeEvent-' + node_reactome_label + ' relationships in pharmebinet:' + str(
@@ -55,8 +58,11 @@ generate new relationships between pathways of pharmebinet and reactionLikeEvent
 
 
 def create_cypher_file(directory, file_path, node_label, rela_name):
-    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/reactome/%s" As line FIELDTERMINATOR "\\t" MATCH (d:ReactionLikeEvent{identifier:line.id_pharmebinet_reactionLikeEvent}),(c:%s{identifier:line.id_pharmebinet_node}) CREATE (d)-[: %s{order:line.order, stoichiometry:line.stoichiometry, resource: ['Reactome'], reactome: "yes", license:"%s", url:"https://reactome.org/content/detail/"+line.id_pharmebinet_reactionLikeEvent, source:"Reactome"}]->(c);\n'''
-    query = query % (path_of_directory, file_path, node_label, rela_name, license)
+    query = ''' MATCH (d:ReactionLikeEvent{identifier:line.id_pharmebinet_reactionLikeEvent}),(c:%s{identifier:line.id_pharmebinet_node}) CREATE (d)-[: %s{order:line.order, stoichiometry:line.stoichiometry, resource: ['Reactome'], reactome: "yes", license:"%s", url:"https://reactome.org/content/detail/"+line.id_pharmebinet_reactionLikeEvent, source:"Reactome"}]->(c)'''
+    query = query % (node_label, rela_name, license)
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/reactome/{file_path}',
+                                              query)
     cypher_file.write(query)
 
 
@@ -77,8 +83,8 @@ def check_relationships_and_generate_file(new_relationship, node_reactome_label,
     dict_reactionLikeEvent_node = {}
 
     load_pharmebinet_reactionLikeEvent_pharmebinet_node_in(csv_mapped, dict_reactionLikeEvent_node, new_relationship,
-                                                  node_reactome_label,
-                                                  node_pharmebinet_label)
+                                                           node_reactome_label,
+                                                           node_pharmebinet_label)
 
     print(
         '###########################################################################################################################')
@@ -109,13 +115,13 @@ def main():
     list_of_combinations = [
         ['disease', 'Disease_reactome', 'Disease', 'LEADS_TO_RLEltdD'],
         ['compartment', 'GO_CellularComponent_reactome', 'CellularComponent', 'IN_COMPARTMENT_RLEicCC'],
-        ['precedingEvent', 'Pathway_reactome',  'Pathway', 'PRECEDING_REACTION_RLEprPW'],
+        ['precedingEvent', 'Pathway_reactome', 'Pathway', 'PRECEDING_REACTION_RLEprPW'],
         ['normalReaction', 'ReactionLikeEvent_reactome', 'ReactionLikeEvent', 'IS_NORMAL_REACTION_RLEinrRLE'],
         ['precedingEvent', 'ReactionLikeEvent_reactome', 'ReactionLikeEvent', 'PRECEDING_REACTION_RLEprRLE'],
-        ['inferredTo', 'ReactionLikeEvent_reactome',  'ReactionLikeEvent', 'HAS_EFFECT_ON_RLEheoRLE'],
-        ['reverseReaction', 'ReactionLikeEvent_reactome',  'ReactionLikeEvent', 'REVERSE_REACTION_RLErrRLE'],
+        ['inferredTo', 'ReactionLikeEvent_reactome', 'ReactionLikeEvent', 'HAS_EFFECT_ON_RLEheoRLE'],
+        ['reverseReaction', 'ReactionLikeEvent_reactome', 'ReactionLikeEvent', 'REVERSE_REACTION_RLErrRLE'],
         ['inferredTo', 'ReactionLikeEvent_reactome', 'ReactionLikeEvent', 'HAS_EFFECT_ON_RLEheoRLRLE'],
-        ['goBiologicalProcess', 'GO_BiologicalProcess_reactome',  'BiologicalProcess', 'OCCURS_IN_RLEoiBP']
+        ['goBiologicalProcess', 'GO_BiologicalProcess_reactome', 'BiologicalProcess', 'OCCURS_IN_RLEoiBP']
     ]
 
     directory = 'reactionLikeEventEdge'
@@ -129,6 +135,7 @@ def main():
         check_relationships_and_generate_file(new_relationship, node_reactome_label, node_pharmebinet_label, directory,
                                               rela_name)
     cypher_file.close()
+    driver.close()
 
     print(
         '###########################################################################################################################')

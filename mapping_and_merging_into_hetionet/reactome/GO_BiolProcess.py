@@ -14,8 +14,9 @@ create a connection with neo4j
 
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
-    global graph_database
-    graph_database = create_connection_to_databases.database_connection_neo4j()
+    global graph_database, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    graph_database = driver.session()
 
 
 # dictionary with pharmebinet gobiolproc with identifier as key and value the name
@@ -46,7 +47,8 @@ def load_pharmebinet_gobiolproc_in():
     results = graph_database.run(query)
 
     # results werden einzeln durchlaufen
-    for identifier, alt_ids, resource, in results:
+    for record in results:
+        [identifier, alt_ids, resource] = record.values()
         # im dictionary werden passend zu den Identifiern die Namen und die idOwns gespeichert
         # dict_gobiolproc_pharmebinet_identifier[identifier] = names
         dict_gobiolprocId_to_resource[identifier] = resource
@@ -84,9 +86,9 @@ def load_reactome_gobiolproc_in():
     # zähler wie oft id mapt
     counter_map_with_id = 0
     # counter_map_with_name = 0
-    for gobiolproc_node, in results:
+    for record in results:
+        gobiolproc_node = record.data()['n']
         gobiolproc_id = gobiolproc_node['accession']  # hier ist nur die nr...?
-        resource = gobiolproc_node['resource']
         # pathways_name = pathways_node['displayName'].lower()
         # pathways_name=pathways_name.encode("utf-8")
 
@@ -119,9 +121,10 @@ generate connection between mapping gobiolproc of reactome and pharmebinet and g
 def create_cypher_file():
     cypher_file = open('output/cypher.cypher', 'a', encoding="utf-8")
     # mappt die Knoten, die es in pharmebinet und reactome gibt und fügt die properties hinzu
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/reactome/gobiolproc/mapped_gobiolproc.tsv" As line FIELDTERMINATOR "\\t"
-     Match (d: BiologicalProcess {identifier: line.id_pharmebinet}),(c:GO_BiologicalProcess_reactome{accession:line.id}) Create (d)-[: equal_to_reactome_gobiolproc]->(c)  SET d.resource = split(line.resource, '|'), d.reactome = "yes";\n'''
-    query = query % (path_of_directory)
+    query = '''Match (d: BiologicalProcess {identifier: line.id_pharmebinet}),(c:GO_BiologicalProcess_reactome{accession:line.id}) Create (d)-[: equal_to_reactome_gobiolproc]->(c)  SET d.resource = split(line.resource, '|'), d.reactome = "yes"'''
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/reactome/gobiolproc/mapped_gobiolproc.tsv',
+                                              query)
     cypher_file.write(query)
 
 
@@ -159,6 +162,8 @@ def main():
     print('Integrate new GO_BiologicalProcess and connect them to reactome ')
 
     create_cypher_file()
+
+    driver.close()
 
     print(
         '###########################################################################################################################')

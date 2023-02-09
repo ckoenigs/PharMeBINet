@@ -13,8 +13,9 @@ create a connection with neo4j
 
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
-    global graph_database
-    graph_database = create_connection_to_databases.database_connection_neo4j()
+    global graph_database, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    graph_database = driver.session()
 
 
 # dictionary disease id to resource
@@ -69,7 +70,8 @@ def load_pharmebinet_labels_in(label, dict_label_id_to_resource, dict_name_to_id
     results = graph_database.run(query)
 
     #  run through results
-    for identifier, name, xrefs, synonyms, resource, in results:
+    for record in results:
+        [identifier, name, xrefs, synonyms, resource] = record.values()
         dict_label_id_to_resource[identifier] = set(resource)
         dict_disease_id_to_omim_count[identifier] = 0
         if xrefs:
@@ -102,8 +104,12 @@ generate connection between mapping disease of reactome and pharmebinet and gene
 
 def create_cypher_file(label, file_name):
     cypher_file = open('output/cypher_part2.cypher', 'a', encoding="utf-8")
-    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/hmdb/%s" As line FIELDTERMINATOR "\\t" MATCH (d:%s{identifier:line.id_own_db}),(c:Disease_HMDB{identifier:line.id}) CREATE (d)-[: equal_to_hmdb_disease{how_mapped:line.how_mapped}]->(c) SET d.resource = split(line.resource, '|'), d.hmdb = "yes";\n'''
-    query = query % (path_of_directory, file_name, label)
+    query = ''' MATCH (d:%s{identifier:line.id_own_db}),(c:Disease_HMDB{identifier:line.id}) CREATE (d)-[: equal_to_hmdb_disease{how_mapped:line.how_mapped}]->(c) SET d.resource = split(line.resource, '|'), d.hmdb = "yes"'''
+    query = query % (label)
+
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/hmdb/{file_name}',
+                                              query)
     cypher_file.write(query)
 
 
@@ -139,7 +145,8 @@ def load_hmdb_disease_and_map():
     counter_map_with_name = 0
     counter_synonym_mapping = 0
     counter_not_mapped = 0
-    for disease_node, in results:
+    for record in results:
+        disease_node = record.data()['n']
         disease_id = disease_node['identifier']
         disease_name = disease_node['name'].lower()
 
@@ -263,6 +270,8 @@ def main():
     print('Load all hmdb disease from neo4j into a dictionary')
 
     load_hmdb_disease_and_map()
+
+    driver.close()
 
     print(
         '###########################################################################################################################')
