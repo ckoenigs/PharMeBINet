@@ -245,6 +245,7 @@ generate cypher file
 def generate_cypher_file():
     # create cypher file
     cypher_file = open('cypher.cypher', 'w')
+    cypher_file_edge = open('cypher_edge.cypher', 'w')
     query = ''' Create (:''' + neo4j_label + '''{'''
     for property in set_all_properties_in_database:
         if not property in set_list_properties:
@@ -306,7 +307,7 @@ def generate_cypher_file():
         query = query % (neo4j_label, neo4j_label, rela_type)
         query = pharmebinetutils.get_query_import(path_of_directory,
                                                   f'import_into_Neo4j/{directory}/output/{file_name}', query)
-        cypher_file.write(query)
+        cypher_file_edge.write(query)
 
         # write information into the csv file
         for info in list_of_infos:
