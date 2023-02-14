@@ -1,9 +1,9 @@
-
 import datetime
 import sys, csv
 
 sys.path.append("../..")
 import create_connection_to_databases  # , authenticate
+import pharmebinetutils
 
 '''
 create a connection with neo4j
@@ -13,8 +13,9 @@ create a connection with neo4j
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
     # authenticate("localhost:7474", "neo4j", "test")
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 # dictionary of not mapped compound inchikey to node
@@ -30,9 +31,10 @@ and also in a dictionary where the name is the key
 
 
 def find_not_mapped_compounds_and_add_to_dict():
-    query = '''MATCH (n:Compound) WHere not exists(n.drugbank) RETURN n'''
+    query = '''MATCH (n:Compound) WHere n.drugbank is NULL RETURN n'''
     result = g.run(query)
-    for node, in result:
+    for record in result:
+        node = record.data()['n']
         # print(node)
         inchikey = node['inchikey'] if 'inchikey' in node else ''
         # print(inchikey)
@@ -61,19 +63,21 @@ def create_cypher_and_tsv_files():
     # open cypher file
     cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
     # get properties of salt nodes
-    query = '''MATCH (p:%s) WITH DISTINCT keys(p) AS keys UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields RETURN allfields;'''
+    query = '''MATCH (p:%s) WITH DISTINCT keys(p) AS keys UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields RETURN allfields as l;'''
     query = query % (label_of_salt)
     result = g.run(query)
     header = []
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/drugbank/salts/%s.tsv" As line Fieldterminator '\\t' Match '''
-    part = query_start + '''(a:%s {identifier:line.identifier}) Create (b:Compound :Salt{'''
-    part = part % (file_node, label_of_salt)
-    for property, in result:
+    part = '''Match (a:%s {identifier:line.identifier}) Create (b:Compound :Salt{'''
+    part = part % (label_of_salt)
+    for record in result:
+        property = record.data()['l']
         part += property + ':line.' + property + ', '
         header.append(property)
-    query = part + ' source:"DrugBank", license:"%s" ,drugbank:"yes", resource:["DrugBank"], url:"https://www.drugbank.ca/salts/"+line.identifier}) Create (b)-[:equal_to_drugbank]->(a);\n'
+    query = part + ' source:"DrugBank", license:"%s" ,drugbank:"yes", resource:["DrugBank"], url:"https://www.drugbank.ca/salts/"+line.identifier}) Create (b)-[:equal_to_drugbank]->(a)'
     query = query % (license)
-
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/drugbank/salts/{file_node}.tsv',
+                                              query)
     cypher_file.write(query)
     cypher_file.close()
     node_file = open('salts/' + file_node + '.tsv', 'w')
@@ -83,8 +87,11 @@ def create_cypher_and_tsv_files():
     csv_node.writeheader()
     cypher_rela = open('output/cypher_rela.cypher', 'a', encoding='utf-8')
     rela_header = ['salt_id', 'compound_id']
-    query_rela = query_start + ' (b:Compound :Salt{identifier:line.salt_id}), (a:Compound {identifier:line.compound_id}) Create (a)-[r:PART_OF_CpoSA{license:"%s", url:"https://go.drugbank.com/drugs/"+line.compound_id, source:"DrugBank", resource:["DrugBank"], drugbank:"yes" }]->(b);\n'
-    query_rela = query_rela % (file_rela, license)
+    query_rela = 'Match (b:Compound :Salt{identifier:line.salt_id}), (a:Compound {identifier:line.compound_id}) Create (a)-[r:PART_OF_CpoSA{license:"%s", url:"https://go.drugbank.com/drugs/"+line.compound_id, source:"DrugBank", resource:["DrugBank"], drugbank:"yes" }]->(b)'
+    query_rela = query_rela % (license)
+    query_rela = pharmebinetutils.get_query_import(path_of_directory,
+                                                   f'mapping_and_merging_into_hetionet/drugbank/salts/{file_rela}.tsv',
+                                                   query_rela)
     cypher_rela.write(query_rela)
     cypher_rela.close()
     csv_rela = csv.writer(rela_file, delimiter='\t')
@@ -93,16 +100,17 @@ def create_cypher_and_tsv_files():
     # delete compound nodes which are whether drugbank compound nor salt
     # this must be the last step of the compound integration, because else the merge nodes are also removed and this would be a problem
     cypher_delete_file = open('cypher_delete_compound.cypher', 'w')
-    query = '''Match (c:Compound) Where not exists(c.drugbank) Detach Delete c;'''
+    query = '''Match (c:Compound) Where c.drugbank is NULL Detach Delete c;\n'''
     cypher_delete_file.write(query)
     cypher_delete_file.close()
 
 
 # bash shell for merge doids into the mondo nodes
 bash_shell = open('merge_nodes_salt.sh', 'w')
-bash_start='''#!/bin/bash
+bash_start = '''#!/bin/bash
 #define path to neo4j bin
-path_neo4j=$1\n\n'''
+path_neo4j=$1\n\n
+password=$2\n\n'''
 bash_shell.write(bash_start)
 
 # the new table for unii drugbank pairs
@@ -122,7 +130,7 @@ def add_merge_to_sh_file(dict_not_mapped, mapped_value, node_id):
     text = 'python3 ../add_info_from_removed_node_to_other_node.py %s %s %s\n' % (
         compound_id, node_id, 'Compound')
     bash_shell.write(text)
-    text = '$path_neo4j/cypher-shell -u neo4j -p test -f cypher_merge.cypher \n\n'
+    text = '$path_neo4j/cypher-shell -u neo4j -p $password -f cypher_merge.cypher \n\n'
     bash_shell.write(text)
     text = '''now=$(date +"%F %T")\n echo "Current time: $now"\n'''
     bash_shell.write(text)
@@ -141,10 +149,11 @@ also check on the drugs which did not mapped, because some of them might be now 
 def prepare_node_tsv():
     query = '''MATCH (n:Salt_DrugBank) RETURN n'''
     result = g.run(query)
-    for node, in result:
+    for record in result:
+        node = record.data()['n']
         csv_node.writerow(node)
         node_id = node['identifier']
-        inchikey = node['inchikey']
+        inchikey = node['inchikey'] if 'inchikey' in node else ''
         name = node['name'].lower()
         if 'unii' in node:
             unii = node['unii']
@@ -165,7 +174,8 @@ Generate fill the rela tsv file
 def fill_rela_tsv():
     query = '''MATCH (n:Salt_DrugBank)-[:has_ChS]-(b:Compound_DrugBank) RETURN n.identifier, b.identifier'''
     result = g.run(query)
-    for salt_id, compound_id, in result:
+    for record in result:
+        [salt_id, compound_id] = record.values()
         csv_rela.writerow([salt_id, compound_id])
 
 
@@ -214,6 +224,8 @@ def main():
     print('create rela')
 
     fill_rela_tsv()
+
+    driver.close()
 
     print(
         '#################################################################################################################################################################')

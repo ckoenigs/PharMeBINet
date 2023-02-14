@@ -1,10 +1,10 @@
-
 import datetime
 import sys, csv
 from collections import defaultdict
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 # dictionary with chemical id as key and the whole node as value
 dict_chemical_pharmebinet = {}
@@ -33,8 +33,9 @@ create connection to neo4j and mysql
 
 
 def create_connection_with_neo4j_mysql():
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
     # create connection with mysql database
     global con
@@ -93,6 +94,7 @@ def check_for_rxcui(name, rxcui):
     else:
         return other_id
 
+
 '''
 load in all compound from pharmebinet in a dictionary
 '''
@@ -102,7 +104,8 @@ def load_pharmebinet_chemical_in():
     query = '''MATCH (n:Chemical) RETURN n.identifier,n'''
     results = g.run(query)
 
-    for identifier, node, in results:
+    for record in results:
+        [identifier, node] = record.values()
         dict_chemical_pharmebinet[identifier] = dict(node)
         if 'unii' in node:
             if node['unii'] in dict_unii_to_chemical_id:
@@ -131,7 +134,7 @@ def load_pharmebinet_chemical_in():
         for xref in xrefs:
             if xref.startswith('RxNorm_CUI:'):
                 xref = xref.split(':', 1)[1]
-                rxcuis=check_for_rxcui(name, xref)
+                rxcuis = check_for_rxcui(name, xref)
                 for rxcui in rxcuis:
                     if rxcui not in dict_rnxnorm_to_chemical_id:
                         dict_rnxnorm_to_chemical_id[rxcui] = set()
@@ -162,13 +165,14 @@ def load_ndf_rt_drug_in():
     i = 0
     count_name_map = 0
 
-    for result, in results:
+    for record in results:
+        result = record.data()['n']
         count += 1
         code = result['code']
         properties = result['properties']
         name = result['name']
         properties = properties.split(',') if not type(properties) == list else properties
-        association = result['association'] if result['association'] != '' else ''
+        association = result['association'] if 'association' in result else ''
         umls_cuis = set()
         rxnorm_cuis = []
         uniis = set()
@@ -634,7 +638,8 @@ def generate_tsv_for_mapped_and_not_mapped_ndf_rts():
             list_not_map_to_pharmebinet_with_drugbank_ids.append(code)
 
     print('number of map to pharmebinet:' + str(len(dict_map_cui_to_pharmebinet_drugbank_ids)))
-    print('number with drugbank but not mapped to pharmebinet:' + str(len(list_not_map_to_pharmebinet_with_drugbank_ids)))
+    print(
+        'number with drugbank but not mapped to pharmebinet:' + str(len(list_not_map_to_pharmebinet_with_drugbank_ids)))
 
     # generate a file with all not mapped ndf-rt drugs
     g = open('drug/drugs_that_did_not_get_a_drugbank_id.tsv', 'w')
@@ -669,9 +674,12 @@ def integration_of_ndf_rt_drugs_into_pharmebinet():
     delete_code = []
 
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/ndf-rt/drug/mapping_drug.tsv" As line  FIELDTERMINATOR '\\t'  MATCH (n:NDFRT_DRUG_KIND{code:line.code}), (c:Chemical{identifier:line.Chemical_id})  Set n.mapped_ids=split(line.mapped_ids,'|'), n.how_mapped=line.how_mapped, c.ndf_rt='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_drug_ndf_rt]->(n); \n'''
+    query = '''  MATCH (n:NDFRT_DRUG_KIND{code:line.code}), (c:Chemical{identifier:line.Chemical_id})  Set n.mapped_ids=split(line.mapped_ids,'|'), n.how_mapped=line.how_mapped, c.ndf_rt='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_drug_ndf_rt]->(n)'''
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/ndf-rt/drug/mapping_drug.tsv',
+                                              query)
     cypher_file.write(query)
-    query='''Match (b:Chemical)--(:NDFRT_DRUG_KIND)-[:effect_may_be_inhibited_by]->(:NDFRT_DRUG_KIND)--(c:Chemical) Merge (b)-[r:INTERACTS_CiC]->(c)  On Match Set r.resource=r.resource+'NDF-RT', r.ndf_rt='yes' On Create set r.resource=['NDF-RT'], r.source='NDF-RT', r.ndf_rt='yes', r.license='UMLS license, available at https://uts.nlm.nih.gov/license.html';\n '''
+    query = '''Match (b:Chemical)--(:NDFRT_DRUG_KIND)-[:effect_may_be_inhibited_by]->(:NDFRT_DRUG_KIND)--(c:Chemical) Merge (b)-[r:INTERACTS_CiC]->(c)  On Match Set r.resource=r.resource+'NDF-RT', r.ndf_rt='yes' On Create set r.resource=['NDF-RT'], r.source='NDF-RT', r.ndf_rt='yes', r.license='UMLS license, available at https://uts.nlm.nih.gov/license.html';\n '''
     cypher_file.write(query)
     cypher_file.close()
     writer = open('drug/mapping_drug.tsv', 'w')
@@ -692,7 +700,6 @@ def integration_of_ndf_rt_drugs_into_pharmebinet():
             string_resource = '|'.join(list(resources))
             list_of_values = [code, string_drugbank_ids, how_mapped, drugbank_id, string_resource]
             csv_writer.writerow(list_of_values)
-
 
 
 def main():
@@ -794,14 +801,8 @@ def main():
     print('integrate ndf-rt drugs into pharmebinet')
 
     integration_of_ndf_rt_drugs_into_pharmebinet()
-    #
-    # print(
-    #     '###########################################################################################################################')
-    #
-    # print (datetime.datetime.now())
-    # print('integrate ndf-rt connection into pharmebinet')
-    #
-    # integrate_connection_into_pharmebinet()
+
+    driver.close()
 
     print(
         '###########################################################################################################################')

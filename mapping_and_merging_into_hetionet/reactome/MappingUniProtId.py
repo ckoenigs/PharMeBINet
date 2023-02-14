@@ -13,8 +13,9 @@ create connection to neo4j
 
 def create_connection_with_neo4j_mysql():
     # create connection with neo4j
-    global graph_database
-    graph_database = create_connection_to_databases.database_connection_neo4j()
+    global graph_database, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    graph_database = driver.session()
 
 
 # dictionary with name pharmebinet as key and uniprotID as value
@@ -40,7 +41,8 @@ def load_pharmebinet_uniprotIDs_in():
     query = '''MATCH (n:Protein) RETURN n.identifier, n.name, n.alternative_ids, n.resource'''
     results = graph_database.run(query)
 
-    for identifier, name, alternative_ids, resource, in results:
+    for record in results:
+        [identifier, name, alternative_ids, resource] = record.values()
         dict_uniprot_id_to_name[identifier] = name.lower()
         dict_uniprot_to_resource[identifier] = resource if resource else []
         if alternative_ids:
@@ -71,7 +73,8 @@ def load_reactome_referenceEntity_in():
     results = graph_database.run(query)
     set_pairs = set()
     counter_map_with_id = 0
-    for identifier, names, physicalEntityNames in results:
+    for record in results:
+        [identifier, names, physicalEntityNames] = record.values()
         name = names[0].lower() if names else physicalEntityNames[0].lower()
         if identifier in dict_uniprot_id_to_name:
             if not (identifier, identifier) in set_pairs:
@@ -85,8 +88,9 @@ def load_reactome_referenceEntity_in():
             pharmebinet_uniprotID = dict_alternative_id_to_protein_id[identifier]
             if not (identifier, pharmebinet_uniprotID) in set_pairs:
                 csv_mapped.writerow([identifier, pharmebinet_uniprotID,
-                                     pharmebinetutils.resource_add_and_prepare(dict_uniprot_to_resource[pharmebinet_uniprotID],
-                                                                               'Reactome')])
+                                     pharmebinetutils.resource_add_and_prepare(
+                                         dict_uniprot_to_resource[pharmebinet_uniprotID],
+                                         'Reactome')])
                 set_pairs.add((identifier, pharmebinet_uniprotID))
         else:
             csv_not_mapped.writerow([identifier, name])
@@ -101,8 +105,10 @@ generate connection between mapping ReferenceEntity of reactome and Protein phar
 
 def create_cypher_file():
     cypher_file = open('output/cypher_mapping2.cypher', 'a', encoding="utf-8")
-    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/reactome/uniprotIDs/mapped_uniprotIDs.tsv" As line FIELDTERMINATOR "\\t" MATCH (d:Protein{identifier:line.id_pharmebinet}),(c:ReferenceEntity_reactome{identifier:line.id}) CREATE (d)-[: equal_to_reactome_uniprot]->(c) SET d.resource = split(line.resource, '|'), d.reactome = "yes";\n'''
-    query = query % (path_of_directory)
+    query = ''' MATCH (d:Protein{identifier:line.id_pharmebinet}),(c:ReferenceEntity_reactome{identifier:line.id}) CREATE (d)-[: equal_to_reactome_uniprot]->(c) SET d.resource = split(line.resource, '|'), d.reactome = "yes"'''
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/reactome/uniprotIDs/mapped_uniprotIDs.tsv',
+                                              query)
     cypher_file.write(query)
 
 
@@ -141,6 +147,8 @@ def main():
     print('Integrate new edges to reactome ')
 
     create_cypher_file()
+
+    driver.close()
 
     print(
         '###...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...*...###')

@@ -14,8 +14,9 @@ create a connection with neo4j
 
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
-    global graph_database
-    graph_database = create_connection_to_databases.database_connection_neo4j()
+    global graph_database, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    graph_database = driver.session()
 
 
 # dictionary with pharmebinet interactions between proteins with interactor1_id as key and value interactor2_id
@@ -43,7 +44,9 @@ def load_pharmebinet_interactions_in():
     query = '''MATCH (n:Protein)-->(a:Interaction)-->(m:Protein) RETURN n.identifier, m.identifier, a.resource, a.identifier, a.interaction_ids, a.iso_of_protein_from, a.iso_of_protein_to;'''
     results = graph_database.run(query)
 
-    for interactor1_het_id, interactor2_het_id, resource, interaction_id, interaction_ids_EBI, iso_of_protein_from, iso_of_protein_to, in results:
+    for record in results:
+        [interactor1_het_id, interactor2_het_id, resource, interaction_id, interaction_ids_EBI, iso_of_protein_from,
+         iso_of_protein_to] = record.values()
         iso_of_protein_from = iso_of_protein_from if iso_of_protein_from is not None else ""
         iso_of_protein_to = iso_of_protein_to if iso_of_protein_to is not None else ""
         interaction_ids_EBI = interaction_ids_EBI if not interaction_ids_EBI is None else []
@@ -51,9 +54,9 @@ def load_pharmebinet_interactions_in():
             (interactor1_het_id, interactor2_het_id, iso_of_protein_from, iso_of_protein_to)] = {'resource': resource,
                                                                                                  'interaction_ids_EBI': interaction_ids_EBI,
                                                                                                  'interaction_id': interaction_id}
-    query = 'MATCH (n:Interaction) With toInteger(n.identifier ) as int_id RETURN max(int_id)'
+    query = 'MATCH (n:Interaction) With toInteger(n.identifier ) as int_id RETURN max(int_id) as v'
 
-    maximal_id = graph_database.run(query).evaluate()
+    maximal_id = graph_database.run(query).single()['v']
 
     print('number of interactions in pharmebinet: ' + str(
         len(dict_identifier_to_resource)))
@@ -77,7 +80,9 @@ def load_reactome_drug_in(label_1, label_2):
     results = graph_database.run(query)
     counter_map_with_id = 0
 
-    for interactor1_rea_id, reactome_identifier, schemaClass_1, variantIdentifier_1, interactor2_rea_id, schemaClass_2, variantIdentifier_2, accession, pubmed_ids, in results:
+    for record in results:
+        [interactor1_rea_id, reactome_identifier, schemaClass_1, variantIdentifier_1, interactor2_rea_id, schemaClass_2,
+         variantIdentifier_2, accession, pubmed_ids] = record.values()
         mapped = False
         if schemaClass_1 != "ReferenceIsoform":
             variantIdentifier_1 = ""
@@ -175,7 +180,8 @@ def load_reactome_drug_in(label_1, label_2):
             else:
                 dict_protein_ids_to_iso_from_and_to_2[
                     (interactor2_rea_id, interactor1_rea_id, variantIdentifier_2, variantIdentifier_1)] = {
-                    'interaction_ids': interaction_ids, 'pubmed_ids': set(pubmed_ids), 'interaction_id':reactome_identifier}
+                    'interaction_ids': interaction_ids, 'pubmed_ids': set(pubmed_ids),
+                    'interaction_id': reactome_identifier}
 
 
 def generate_file(csv_mapped):
@@ -192,7 +198,7 @@ def generate_file(csv_mapped):
                  '|'.join(dict_iso_interaction_ids['interaction_ids']),
                  '|'.join(dict_iso_interaction_ids['pubmed_ids']), dict_identifier_to_resource[
                      (interactor1_rea_id, interactor2_rea_id, variantIdentifier_1, variantIdentifier_2)][
-                     'interaction_id'],dict_identifier_to_resource[
+                     'interaction_id'], dict_identifier_to_resource[
                      (interactor1_rea_id, interactor2_rea_id, variantIdentifier_1, variantIdentifier_2)][
                      'interaction_id']])
 
@@ -206,7 +212,8 @@ def generate_file_else(csv_not_mapped):
             counter += 1
             csv_not_mapped.writerow(
                 [interactor1_rea_id, interactor2_rea_id, '|'.join(dict_iso_interaction_ids['interaction_ids']),
-                 variantIdentifier_1, variantIdentifier_2, '|'.join(dict_iso_interaction_ids['pubmed_ids']), counter,dict_iso_interaction_ids['interaction_id']])
+                 variantIdentifier_1, variantIdentifier_2, '|'.join(dict_iso_interaction_ids['pubmed_ids']), counter,
+                 dict_iso_interaction_ids['interaction_id']])
 
 
 '''
@@ -215,15 +222,18 @@ generate connection between mapping interactions of reactome and pharmebinet and
 
 
 def create_cypher_file(label_1, label_2, csv_mapped_name, csv_not_mapped_name):
-    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/reactome/%s" As line FIELDTERMINATOR "\\t" MATCH (a:%s{identifier:line.interactor1_het_id})-[b]->(m:Interaction{identifier:line.interaction_id})-[d]->(c:%s{identifier:line.interactor2_het_id}) SET b.resource = split(line.resource, '|'), b.reactome = "yes", m.resource = split(line.resource, '|'), m.reactome = "yes", m.interaction_ids = split(line.interaction_ids_EBI, "|"), m.pubMed_ids = split(line.pubmed_ids, "|"), d.resource = split(line.resource, '|'), d.reactome = "yes";\n'''
-    query = query % (path_of_directory, csv_mapped_name, label_1, label_2)
-    # because of a crazy error that I do not what happend with the protein-protein interaction and periodic commit
-    if label_2 == label_1 and label_2 == 'Protein':
-        query = query[28:]
+    query = ''' MATCH (a:%s{identifier:line.interactor1_het_id})-[b]->(m:Interaction{identifier:line.interaction_id})-[d]->(c:%s{identifier:line.interactor2_het_id}) SET b.resource = split(line.resource, '|'), b.reactome = "yes", m.resource = split(line.resource, '|'), m.reactome = "yes", m.interaction_ids = split(line.interaction_ids_EBI, "|"), m.pubMed_ids = split(line.pubmed_ids, "|"), d.resource = split(line.resource, '|'), d.reactome = "yes"'''
+    query = query % (label_1, label_2)
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/reactome/{csv_mapped_name}',
+                                              query)
     cypher_file.write(query)
     # new interactions
-    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/reactome/%s" As line FIELDTERMINATOR "\\t" MATCH (d:%s{identifier:line.interactor1_het_id}),(c:%s{identifier:line.interactor2_het_id}) CREATE (d)-[:INTERACTS_PiI{ resource:["Reactome"], url:"https://reactome.org/content/detail/interactor/"+ line.reactome_identifier, reactome:"yes", source:"Reactome",  license:"CC BY 4.0"}]->(:Interaction{interaction_ids: split(line.accession, "|"), url:"https://reactome.org/content/detail/interactor/"+ line.reactome_identifier, iso_of_protein_from:line.iso_from, iso_of_protein_to:line.iso_to, resource:["Reactome"], reactome:"yes", source:"Reactome", pubMed_ids : split(line.pubmed_ids, "|"), license:"CC BY 4.0"})-[:INTERACTS_IiP{ resource:["Reactome"], reactome:"yes", source:"Reactome",  license:"CC BY 4.0", url:"https://reactome.org/content/detail/interactor/"+ line.reactome_identifier}]->(c);\n'''
-    query = query % (path_of_directory, csv_not_mapped_name, label_1, label_2)
+    query = '''MATCH (d:%s{identifier:line.interactor1_het_id}),(c:%s{identifier:line.interactor2_het_id}) CREATE (d)-[:INTERACTS_PiI{ resource:["Reactome"], url:"https://reactome.org/content/detail/interactor/"+ line.reactome_identifier, reactome:"yes", source:"Reactome",  license:"CC BY 4.0"}]->(:Interaction{interaction_ids: split(line.accession, "|"), url:"https://reactome.org/content/detail/interactor/"+ line.reactome_identifier, iso_of_protein_from:line.iso_from, iso_of_protein_to:line.iso_to, resource:["Reactome"], reactome:"yes", source:"Reactome", pubMed_ids : split(line.pubmed_ids, "|"), license:"CC BY 4.0"})-[:INTERACTS_IiP{ resource:["Reactome"], reactome:"yes", source:"Reactome",  license:"CC BY 4.0", url:"https://reactome.org/content/detail/interactor/"+ line.reactome_identifier}]->(c)'''
+    query = query % (label_1, label_2)
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/reactome/{csv_not_mapped_name}',
+                                              query)
     cypher_file.write(query)
 
 
@@ -281,7 +291,7 @@ def main():
         csv_not_mapped = csv.writer(file_not_mapped_interactions, delimiter='\t', lineterminator='\n')
         csv_not_mapped.writerow(
             ['interactor1_het_id', 'interactor2_het_id', 'accession', 'iso_from', 'iso_to', 'pubmed_ids',
-             'interaction_id','reactome_identifier'])
+             'interaction_id', 'reactome_identifier'])
 
         file_name_mapped = 'interactions/mapped_interactions_' + file_name + '.tsv'
         file_mapped_interactions = open(file_name_mapped, 'w', encoding="utf-8")
@@ -311,6 +321,8 @@ def main():
         print('Integrate new interactions')
 
         create_cypher_file(label_1, label_2, file_name_mapped, file_name_not_mapped)
+
+        driver.close()
 
         print(
             '__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-._')

@@ -5,6 +5,7 @@ import sys
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 '''
 create a connection with neo4j
@@ -13,8 +14,9 @@ create a connection with neo4j
 
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
-    global graph_database
-    graph_database = create_connection_to_databases.database_connection_neo4j()
+    global graph_database, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    graph_database = driver.session()
 
 
 '''
@@ -22,19 +24,18 @@ load in all connected PE from Pharmebinet which are connected through CA where a
 '''
 
 
-def load_pharmebinet_complex_pharmebinet_node_in(csv_file, set_node1_node2_pharmebinet, start_label, end_label ):
-   
-
+def load_pharmebinet_complex_pharmebinet_node_in(csv_file, set_node1_node2_pharmebinet, start_label, end_label):
     query = '''MATCH (%s)--(:PhysicalEntity_reactome)-[:activeUnit]-(m:CatalystActivity_reactome)-[:physicalEntity]-(:PhysicalEntity_reactome)--(%s) Where (m)--(:CatalystActivityReference_reactome) RETURN p.identifier, b.identifier'''
 
     query = query % (start_label, end_label)
     results = graph_database.run(query)
     print(query)
     # for id1, id2, order, stoichiometry, in results:
-    for node_id1, node_id2,   in results:
-        if not (node_id1,node_id2) in set_node1_node2_pharmebinet:
-            csv_file.writerow([node_id1,node_id2])
-            set_node1_node2_pharmebinet.add((node_id1,node_id2))
+    for record in results:
+        [node_id1, node_id2] = record.values()
+        if not (node_id1, node_id2) in set_node1_node2_pharmebinet:
+            csv_file.writerow([node_id1, node_id2])
+            set_node1_node2_pharmebinet.add((node_id1, node_id2))
 
     print('number of CatalystActivity_reactome relationships in pharmebinet:' + str(
         len(set_node1_node2_pharmebinet)))
@@ -45,16 +46,22 @@ generate new relationships between complex of pharmebinet and complex of pharmeb
 '''
 
 
-def create_cypher_file(file_name, node_label_pharmebinet1, node_label_pharmebinet2, rela_name, direction1, direction2, rela_note_exists):
-    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/reactome/%s" As line FIELDTERMINATOR "\\t" MATCH (d:%s{identifier:line.id_1}),(c:%s{identifier:line.id_2}) Where not (d)-[:%s]-(c) CREATE (d)%s[:%s{resource: ['Reactome'], url:"https://reactome.org/content/detail/"+line.id_2, reactome: "yes", source:"Reactome", type:"has_component", license:"%s"}]%s(c);\n'''
+def create_cypher_file(file_name, node_label_pharmebinet1, node_label_pharmebinet2, rela_name, direction1, direction2,
+                       rela_note_exists):
+    query = ''' MATCH (d:%s{identifier:line.id_1}),(c:%s{identifier:line.id_2}) Where not (d)-[:%s]-(c) CREATE (d)%s[:%s{resource: ['Reactome'], url:"https://reactome.org/content/detail/"+line.id_2, reactome: "yes", source:"Reactome", type:"has_component", license:"%s"}]%s(c)'''
 
-    query = query % (path_of_directory, file_name, node_label_pharmebinet1,node_label_pharmebinet2 ,rela_note_exists,  direction1, rela_name, license, direction2)
+    query = query % (node_label_pharmebinet1, node_label_pharmebinet2, rela_note_exists, direction1,
+                     rela_name, license, direction2)
+
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/reactome/{file_name}',
+                                              query)
     cypher_file.write(query)
 
 
 def check_relationships_and_generate_file(start_label, end_label, node_label_pharmebinet1,
-                                              node_label_pharmebinet2, directory,
-                                              rela_name, direction1, direction2, rela_note_exists):
+                                          node_label_pharmebinet2, directory,
+                                          rela_name, direction1, direction2, rela_note_exists):
     print(
         '___~(  )(°^)o_o(^°)(  )~_____~(  )(°^)o_o(^°)(  )~_____~(  )(°^)o_o(^°)(  )~_____~(  )(°^)o_o(^°)(  )~__')
 
@@ -68,7 +75,7 @@ def check_relationships_and_generate_file(start_label, end_label, node_label_pha
         ['id_1', 'id_2'])
 
     set_pairs = set()
-    load_pharmebinet_complex_pharmebinet_node_in(csv_mapped, set_pairs,start_label,end_label)
+    load_pharmebinet_complex_pharmebinet_node_in(csv_mapped, set_pairs, start_label, end_label)
 
     print(
         '°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°')
@@ -77,14 +84,15 @@ def check_relationships_and_generate_file(start_label, end_label, node_label_pha
 
     print('Integrate new relationships and connect them ')
 
-    create_cypher_file(file_name, node_label_pharmebinet1, node_label_pharmebinet2, rela_name, direction1, direction2, rela_note_exists)
+    create_cypher_file(file_name, node_label_pharmebinet1, node_label_pharmebinet2, rela_name, direction1, direction2,
+                       rela_note_exists)
 
 
 def main():
     global path_of_directory, license
     if len(sys.argv) > 2:
         path_of_directory = sys.argv[1]
-        license= sys.argv[2]
+        license = sys.argv[2]
     else:
         sys.exit('need a path reactome reaction and license')
 
@@ -94,16 +102,15 @@ def main():
 
     create_connection_with_neo4j()
 
-
     # 0: query start;   1: rela in reactome; 2: node(s) in reactome     3: label in PharMeBINet;
     # 4: relationship PharMeBINet;  5: direction left;  6: direction left
     list_of_combinations = [
         ['p:MolecularComplex', 'b:MolecularComplex',
-          'MolecularComplex', 'MolecularComplex',
-         'ASSOCIATES_MCaMC', '<-', '-','HAS_COMPONENT_MChcMC'],
+         'MolecularComplex', 'MolecularComplex',
+         'ASSOCIATES_MCaMC', '<-', '-', 'HAS_COMPONENT_MChcMC'],
         ['p:Protein)-[:equal_to_reactome_uniprot]-(:ReferenceEntity_reactome', 'b:MolecularComplex',
-          'Protein', 'MolecularComplex',
-         'ASSOCIATES_MCaP', '<-', '-','HAS_COMPONENT_MChcP'],
+         'Protein', 'MolecularComplex',
+         'ASSOCIATES_MCaP', '<-', '-', 'HAS_COMPONENT_MChcP'],
     ]
 
     directory = 'CatalystActivityEdges'
@@ -120,8 +127,9 @@ def main():
         rela_note_exists = list_element[7]
         check_relationships_and_generate_file(start_label, end_label, node_label_pharmebinet1,
                                               node_label_pharmebinet2, directory,
-                                              rela_name, direction1, direction2,rela_note_exists )
+                                              rela_name, direction1, direction2, rela_note_exists)
     cypher_file.close()
+    driver.close()
 
     print(
         '___~(  )(°^)o_o(^°)(  )~_____~(  )(°^)o_o(^°)(  )~_____~(  )(°^)o_o(^°)(  )~_____~(  )(°^)o_o(^°)(  )~__')

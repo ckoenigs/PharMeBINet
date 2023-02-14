@@ -1,10 +1,10 @@
-
 import datetime
 import csv, time, sys
 import numpy as np
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 '''
 create connection to neo4j 
@@ -13,8 +13,9 @@ create connection to neo4j
 
 def create_connection_with_neo4j_mysql():
     # create connection with neo4j
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 # tsv files for integrate the different realtionships into pharmebinet
@@ -63,13 +64,17 @@ also generate a cypher file to integrate this information
 
 
 def generate_cypher():
-    list_file_name_rela_name = [('induces', 'INDUCES_CHiD'), ('treat', 'TREATS_CHtD'), ('associated', 'ASSOCIATES_CHaD')]
+    list_file_name_rela_name = [('induces', 'INDUCES_CHiD'), ('treat', 'TREATS_CHtD'),
+                                ('associated', 'ASSOCIATES_CHaD')]
 
     for (file_name, rela_name) in list_file_name_rela_name:
-        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/ctd/chemical_disease/%s.tsv" As line  FIELDTERMINATOR '\\t' Match  (n:Chemical{identifier:line.ChemicalID}), (b:Disease{identifier:line.DiseaseID}) Merge (n)-[r:%s]->(b) On Match Set r.resource=r.resource+'CTD', r.ctd='yes', r.directEvidences=split(line.directEvidences,'|'),  r.inferenceGeneSymbol=split(line.inferenceGeneSymbols,'|'), r.inferenceScore=split(line.inferenceScores,'|'), r.pubMed_ids=split(line.pubMed_ids,'|'), r.url_ctd='http://ctdbase.org/detail.go?type=chem&acc='+line.ChemicalID On Create Set r.directEvidences=split(line.directEvidences,'|'), r.ctd='yes', r.pubMed_ids=split(line.pubMed_ids,'|'), r.resource=["CTD"], r.inferenceGeneSymbol=split(line.inferenceGeneSymbols,'|'), r.inferenceScore=split(line.inferenceScores,'|') , r.url='http://ctdbase.org/detail.go?type=chem&acc='+line.ChemicalID, r.source="CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2021 NC State University. All rights reserved.", r.unbiased=true ;\n '''
-        query = query % (file_name, rela_name)
-        cypherfile.write(query)
+        query = ''' Match  (n:Chemical{identifier:line.ChemicalID}), (b:Disease{identifier:line.DiseaseID}) Merge (n)-[r:%s]->(b) On Match Set r.resource=r.resource+'CTD', r.ctd='yes', r.directEvidences=split(line.directEvidences,'|'),  r.inferenceGeneSymbol=split(line.inferenceGeneSymbols,'|'), r.inferenceScore=split(line.inferenceScores,'|'), r.pubMed_ids=split(line.pubMed_ids,'|'), r.url_ctd='http://ctdbase.org/detail.go?type=chem&acc='+line.ChemicalID On Create Set r.directEvidences=split(line.directEvidences,'|'), r.ctd='yes', r.pubMed_ids=split(line.pubMed_ids,'|'), r.resource=["CTD"], r.inferenceGeneSymbol=split(line.inferenceGeneSymbols,'|'), r.inferenceScore=split(line.inferenceScores,'|') , r.url='http://ctdbase.org/detail.go?type=chem&acc='+line.ChemicalID, r.source="CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2021 NC State University. All rights reserved.", r.unbiased=true  '''
+        query = query % (rela_name)
 
+        query = pharmebinetutils.get_query_import(path_of_directory,
+                                                  f'mapping_and_merging_into_hetionet/ctd/chemical_disease/{file_name}.tsv',
+                                                  query)
+        cypherfile.write(query)
 
 
 '''
@@ -91,7 +96,6 @@ def get_all_important_relationships_and_write_into_files():
     counter_association = 0
     # counter marker/mechanism
     counter_marker = 0
-
 
     # sys.exit()
     number_of_compound_to_work_with = 10
@@ -120,7 +124,8 @@ def get_all_important_relationships_and_write_into_files():
     count_chemicals_drugbank = 0
 
     # go through the results
-    for chemical_id, ctd_chemical_id, in results:
+    for record in results:
+        [chemical_id, ctd_chemical_id] = record.values()
 
         count_chemicals_drugbank += 1
         # fill the chemical id to drugbank id dictionary
@@ -128,7 +133,6 @@ def get_all_important_relationships_and_write_into_files():
             dict_chemical_to_drugbank[ctd_chemical_id].append(chemical_id)
         else:
             dict_chemical_to_drugbank[ctd_chemical_id] = [chemical_id]
-
 
     # print(dict_chemical_id_chemical)
     time_measurement = time.time() - start
@@ -142,7 +146,7 @@ def get_all_important_relationships_and_write_into_files():
 
     def sort_into_dictionary(chemical_id, mondo, omimIDs, directEvidence, pubMed_ids, inferenceScore,
                              inferenceGeneSymbol, disease_id):
-        tuple_ids=(chemical_id, mondo)
+        tuple_ids = (chemical_id, mondo)
         if tuple_ids in dict_chemical_disease:
             dict_chemical_disease[tuple_ids][0].extend(omimIDs)
             dict_chemical_disease[tuple_ids][0] = list(
@@ -164,10 +168,10 @@ def get_all_important_relationships_and_write_into_files():
                 set(dict_chemical_disease[tuple_ids][5]))
         else:
             dict_chemical_disease[tuple_ids] = [omimIDs, [directEvidence], pubMed_ids,
-                                                           [inferenceScore], [inferenceGeneSymbol], [disease_id],
-                                                           []]
+                                                [inferenceScore], [inferenceGeneSymbol], [disease_id],
+                                                []]
 
-    query = '''MATCH (chemical:CTD_chemical)-[r:associates_CD]->(disease:CTD_disease) Where (disease)--(:Disease) and exists(r.directEvidence) and exists(r.pubMed_ids) RETURN chemical.chemical_id,   r, disease.mondos, disease.disease_id '''
+    query = '''MATCH (chemical:CTD_chemical)-[r:associates_CD]->(disease:CTD_disease) Where (disease)--(:Disease) and r.directEvidence is not NULL and r.pubMed_ids is not NULL RETURN chemical.chemical_id,   r, disease.mondos, disease.disease_id '''
     results = g.run(query)
 
     time_measurement = time.time() - start
@@ -179,7 +183,8 @@ def get_all_important_relationships_and_write_into_files():
     # dictionary with all pairs and properties as value
     dict_chemical_disease = {}
 
-    for chemical_id,  rela, mondos, disease_id, in results:
+    for record in results:
+        [chemical_id, rela, mondos, disease_id] = record.values()
         counter += 1
         # if disease_id=='605552':
         #     print('blub')
@@ -188,7 +193,6 @@ def get_all_important_relationships_and_write_into_files():
         directEvidence = rela['directEvidence']
         pubMed_ids = rela['pubMed_ids'] if 'pubMed_ids' in rela else []
         inferenceScore = rela['inferenceScore'] if 'inferenceScore' in rela else ''
-
 
         counter_of_used_rela += 1
 
@@ -203,7 +207,6 @@ def get_all_important_relationships_and_write_into_files():
                     sort_into_dictionary(drugbank_id, mondo, omimIDs, directEvidence, pubMed_ids, inferenceScore,
                                          inferenceGeneSymbol, disease_id)
 
-
         # print('number of relationships:' + str(counter))
         # print('number of used rela:' + str(counter_of_used_rela))
         # print('number of relas over 100:' + str(counter_over_100))
@@ -212,8 +215,8 @@ def get_all_important_relationships_and_write_into_files():
         list_time_dict_association.append(time_measurement)
         start = time.time()
 
-        if counter%10000==0:
-            print('had now 10000 again:',counter)
+        if counter % 10000 == 0:
+            print('had now 10000 again:', counter)
             print(datetime.datetime.now())
 
         # print(len(dict_chemical_disease))
@@ -239,12 +242,9 @@ def get_all_important_relationships_and_write_into_files():
             counter_association += 1
             add_information_into_te_different_tsv_files(chemical_id, disease_id, information, writer_associated)
 
-
     time_measurement = time.time() - start
     # print('\t Add information to file: %.4f seconds' % (time_measurement))
     list_time_add_to_file.append(time_measurement)
-
-
 
     print('integrated relas:' + str(counter_integrated_in_file_rela))
     print('Number of directEvidence:' + str(counter_direct_evidence))
@@ -288,6 +288,8 @@ def main():
     print('Take all chemical-disease relationships and generate tsv')
 
     get_all_important_relationships_and_write_into_files()
+
+    driver.close()
 
     print(
         '###########################################################################################################################')

@@ -1,5 +1,4 @@
 import datetime
-import MySQLdb as mdb
 import sys
 
 sys.path.append("../..")
@@ -51,8 +50,9 @@ create connection to neo4j and mysql
 
 
 def create_connection_with_neo4j_mysql():
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
     # create connection with mysql database
     global con
@@ -67,8 +67,8 @@ load all side effects from pharmebinet in a dictionary
 def load_side_effects_from_pharmebinet_in_dict():
     query = '''MATCH (n:SideEffect) RETURN n '''
     results = g.run(query)
-    for result, in results:
-        #        list_side_effect_in_pharmebinet.append(result['identifier'])
+    for record in results:
+        result = record.data()['n']
         sideEffect = SideEffectpharmebinet(result['identifier'], result['name'], result['resource'])
         dict_side_effects_pharmebinet[result['identifier']] = sideEffect
     print('size of side effects before the phenotype ctd is add:' + str(len(dict_side_effects_pharmebinet)))
@@ -82,7 +82,8 @@ load in all ctd phenotypes from neo4j in a dictionary
 def load_phenotpypes_CTD():
     query = ''' MATCH (n:CTDphenotype) RETURN n'''
     results = g.run(query)
-    for result, in results:
+    for record in results:
+        result=record.data()['n']
         go_id = 'GO:' + result['go_id']
         name = result['name']
         phenotype = PhenotypeCTD(go_id, name)
@@ -289,7 +290,7 @@ def integrate_phenotype_into_pharmebinet():
         query = '''Match (s:SideEffect{identifier:"%s"}) Return s'''
         query = query % (cui)
         node_exist = g.run(query)
-        first_node = node_exist.evaluate()
+        first_node = node_exist.single()
         if first_node == None:
             query = '''Match  (n:CTDphenotype) Where  n.go_id='%s'
             Set n.cui='%s'
@@ -354,6 +355,8 @@ def main():
     print('integrate phenotype into pharmebinet')
 
     integrate_phenotype_into_pharmebinet()
+
+    driver.close()
 
     print(
         '###########################################################################################################################')

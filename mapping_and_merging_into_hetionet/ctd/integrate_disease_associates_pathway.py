@@ -3,6 +3,7 @@ import csv, sys
 
 sys.path.append("../..")
 import create_connection_to_databases  # , authenticate
+import pharmebinetutils
 
 '''
 create connection to neo4j 
@@ -11,9 +12,9 @@ create connection to neo4j
 
 def create_connection_with_neo4j_mysql():
     # create connection with neo4j
-    # authenticate("localhost:7474", )
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 # dictionary with all pairs and properties as value
@@ -30,7 +31,8 @@ def take_all_relationships_of_gene_disease():
     count_multiple_pathways = 0
     count_possible_relas = 0
     counter_all = 0
-    for pathway_id, rela, disease_mondos, in results:
+    for record in results:
+        [pathway_id, rela, disease_mondos] = record.values()
         counter_all += 1
         rela = dict(rela)
         inferenceGeneSymbol = rela['inferenceGeneSymbol'] if 'inferenceGeneSymbol' in rela else ''
@@ -60,7 +62,11 @@ def generate_tsv_and_cypher_file():
     # generate cypher file
     cypherfile = open('disease_pathway/cypher.cypher', 'w')
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/ctd/disease_pathway/relationships.tsv" As line  FIELDTERMINATOR '\\t' Match (n:Pathway{identifier:line.PathwayID}), (b:Disease{identifier:line.DiseaseID}) Merge (b)-[r:ASSOCIATES_DaP]->(n) On Create Set  r.inferenceGeneSymbol=split(line.inferenceGeneSymbol,'|') , r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=disease&acc="+line.DiseaseID , r.source="CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2021 NC State University. All rights reserved.", r.unbiased=false On Match SET r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=disease&acc="+line.DiseaseID, r.inferenceGeneSymbol=split(line.inferenceGeneSymbol,'|') ;\n '''
+    query = '''Match (n:Pathway{identifier:line.PathwayID}), (b:Disease{identifier:line.DiseaseID}) Merge (b)-[r:ASSOCIATES_DaP]->(n) On Create Set  r.inferenceGeneSymbol=split(line.inferenceGeneSymbol,'|') , r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=disease&acc="+line.DiseaseID , r.source="CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2021 NC State University. All rights reserved.", r.unbiased=false On Match SET r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=disease&acc="+line.DiseaseID, r.inferenceGeneSymbol=split(line.inferenceGeneSymbol,'|')  '''
+
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/ctd/disease_pathway/relationships.tsv',
+                                              query)
     cypherfile.write(query)
 
     csvfile = open('disease_pathway/relationships.tsv', 'wb')
@@ -103,6 +109,8 @@ def main():
     print('generate tsv and cypher file')
 
     generate_tsv_and_cypher_file()
+
+    driver.close()
 
     print(
         '###########################################################################################################################')

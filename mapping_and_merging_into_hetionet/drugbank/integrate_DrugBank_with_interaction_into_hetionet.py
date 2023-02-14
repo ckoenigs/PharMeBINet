@@ -6,6 +6,7 @@ from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_cha
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 '''
 create a connection with neo4j
@@ -14,10 +15,9 @@ create a connection with neo4j
 
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
-    # authenticate("localhost:7474", "neo4j", "test")
-    global g
-    create_connection_to_databases.database_connection_neo4j()
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 # dictionary of all compounds with key the drugbank id and list of url, name, inchi, inchikey, food interaction,
@@ -54,17 +54,19 @@ def get_properties_and_generate_tsv_files():
     # get the properties of the compounds in pharmebinet
     query = '''MATCH (p:Compound) WITH DISTINCT keys(p) AS keys
         UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields
-        RETURN allfields;'''
+        RETURN allfields as l;'''
     result = g.run(query)
-    for property, in result:
+    for record in result:
+        property = record.data()['l']
         old_properties.append(property)
 
     # fill the list with all properties in drugbank and not in pharmebinet
     query = '''MATCH (p:%s) WITH DISTINCT keys(p) AS keys
             UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields
-            RETURN allfields;''' % (neo4j_label_drugbank)
+            RETURN allfields as l;''' % (neo4j_label_drugbank)
     result = g.run(query)
-    for property, in result:
+    for record in result:
+        property = record.data()['l']
         if property not in old_properties:
             list_new_properties.append(property)
 
@@ -108,10 +110,12 @@ url
 def load_all_pharmebinet_compound_in_dictionary():
     query = '''Match (n:Compound) RETURN n '''
     results = g.run(query)
-    for compound, in results:
+    for record in results:
+        compound = record.data()['n']
         list_compounds_in_pharmebinet.append(compound['identifier'])
         dict_compounds_in_pharmebinet[compound['identifier']] = dict(compound)
-    print('size of compound in pharmebinet before the rest of DrugBank is added: ' + str(len(list_compounds_in_pharmebinet)))
+    print('size of compound in pharmebinet before the rest of DrugBank is added: ' + str(
+        len(list_compounds_in_pharmebinet)))
 
 
 # the new table for unii drugbank pairs
@@ -130,7 +134,8 @@ def load_all_DrugBank_compound_in_dictionary():
     query = '''Match (n:''' + neo4j_label_drugbank + ''')  RETURN n '''
     print(query)
     results = g.run(query)
-    for compound, in results:
+    for record in results:
+        compound = record.data()['n']
         all_information = dict(compound)
         id = compound['identifier']
         if id == 'DB05381':
@@ -161,7 +166,8 @@ def load_in_all_interaction_connection_from_drugbank_in_dict():
     print(datetime.datetime.now())
     counter_interactions = 0
     counter_multiple = 0
-    for compound1_id, description, compound2_id, in results:
+    for record in results:
+        [compound1_id, description, compound2_id] = record.values()
         counter_interactions += 1
         if (compound1_id, compound2_id) in dict_interact_relationships_with_infos:
             dict_interact_relationships_with_infos[(compound1_id, compound2_id)].append(description)
@@ -179,7 +185,7 @@ def load_in_all_interaction_connection_from_drugbank_in_dict():
 
 # bash shell for merge doids into the mondo nodes
 bash_shell = open('merge_nodes.sh', 'w', encoding='utf-8')
-bash_shell.write('#!/bin/bash\n #define path to neo4j bin\npath_neo4j=$1\n\n')
+bash_shell.write('#!/bin/bash\n #define path to neo4j bin\npath_neo4j=$1\n\npassword=$2\n\n')
 
 # label_of_alternative_ids='alternative_ids' old one
 label_of_alternative_ids = 'alternative_ids'
@@ -263,7 +269,7 @@ def integrate_DB_compound_information_into_pharmebinet():
                     text = 'python3 ../add_info_from_removed_node_to_other_node.py %s %s %s\n' % (
                         alternative_drug_id, drugbank_id, 'Compound')
                     bash_shell.write(text)
-                    text = '$path_neo4j/cypher-shell -u neo4j -p test -f cypher_merge.cypher \n\n'
+                    text = '$path_neo4j/cypher-shell -u neo4j -p $password -f cypher_merge.cypher \n\n'
                     bash_shell.write(text)
                     text = '''now=$(date +"%F %T")
                         echo "Current time: $now"\n'''
@@ -339,14 +345,14 @@ def integrate_DB_compound_information_into_pharmebinet():
                 else:
                     dict_info_prepared[key] = property.replace('"', "'")
 
-            list_merge_xref_values=go_through_xrefs_and_change_if_needed_source_name(list_merge_xref_values,
-                                                              'Compound')
+            list_merge_xref_values = go_through_xrefs_and_change_if_needed_source_name(list_merge_xref_values,
+                                                                                       'Compound')
             combinded_merge_string = '||'.join(list_merge_xref_values)
-            set_of_list_properties.add('xrefs')
             dict_info_prepared['xrefs'] = combinded_merge_string
 
             csv_new.writerow(dict_info_prepared)
 
+    set_of_list_properties.add('xrefs')
     print(list_set_key_with_values_length_1)
     print('already existing compound:' + str(counter_already_existing_compound))
     print('new compound:' + str(counter_new_compound))
@@ -365,7 +371,7 @@ def create_cypher_file():
     # cypher file
     cypher_file = open('compound_interaction/cypher.cypher', 'w', encoding='utf-8')
 
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/drugbank/output/%s.tsv" As line Fieldterminator '\\t' Match (a:%s{identifier:line.identifier})'''
+    query_start = ''' Match (a:%s{identifier:line.identifier})'''
     query_create = ''
     query_update = ''
     for property in all_properties:
@@ -379,16 +385,28 @@ def create_cypher_file():
             query_create += property + ':line.' + property + ', '
             query_update += 'b.' + property + '=line.' + property + ', '
 
-    query_update_alternative = query_start + ', (b:Compound{identifier:line.alternative_id}) Set b.drugbank="yes", ' + query_update + 'b.resource=b.resource+"DrugBank", b.url="http://www.drugbank.ca/drugs/"+line.identifier, b.license="%s" Create (b)-[:equal_to_drugbank]->(a);\n'
-    query_update_alternative = query_update_alternative % ('update_nodes_alt', neo4j_label_drugbank, license)
+    query_update_alternative = query_start + ', (b:Compound{identifier:line.alternative_id}) Set b.drugbank="yes", ' + query_update + 'b.resource=b.resource+"DrugBank", b.url="http://www.drugbank.ca/drugs/"+line.identifier, b.license="%s" Create (b)-[:equal_to_drugbank]->(a)'
+    query_update_alternative = query_update_alternative % (neo4j_label_drugbank, license)
+
+    query_update_alternative = pharmebinetutils.get_query_import(path_of_directory,
+                                                                 f'mapping_and_merging_into_hetionet/drugbank/output/update_nodes_alt.tsv',
+                                                                 query_update_alternative)
     cypher_file.write(query_update_alternative)
 
-    query_update = query_start + ', (b:Compound{identifier:line.identifier}) Set b.drugbank="yes", ' + query_update + 'b.resource=b.resource+"DrugBank", b.source="DrugBank", b.url="http://www.drugbank.ca/drugs/"+line.identifier, b.license="%s" Create (b)-[:equal_to_drugbank]->(a);\n'
-    query_update = query_update % ('update_nodes', neo4j_label_drugbank, license)
+    query_update = query_start + ', (b:Compound{identifier:line.identifier}) Set b.drugbank="yes", ' + query_update + 'b.resource=b.resource+"DrugBank", b.source="DrugBank", b.url="http://www.drugbank.ca/drugs/"+line.identifier, b.license="%s" Create (b)-[:equal_to_drugbank]->(a)'
+    query_update = query_update % (neo4j_label_drugbank, license)
+
+    query_update = pharmebinetutils.get_query_import(path_of_directory,
+                                                     f'mapping_and_merging_into_hetionet/drugbank/output/update_nodes.tsv',
+                                                     query_update)
     cypher_file.write(query_update)
 
-    query_create = query_start + 'Create (b:Compound{identifier:line.identifier, drugbank:"yes", ' + query_create + 'resource:["DrugBank"], source:"DrugBank", url:"http://www.drugbank.ca/drugs/"+line.identifier, license:"%s"}) Create (b)-[:equal_to_drugbank]->(a);\n'
-    query_create = query_create % ('new_nodes', neo4j_label_drugbank, license)
+    query_create = query_start + 'Create (b:Compound{identifier:line.identifier, drugbank:"yes", ' + query_create + 'resource:["DrugBank"], source:"DrugBank", url:"http://www.drugbank.ca/drugs/"+line.identifier, license:"%s"}) Create (b)-[:equal_to_drugbank]->(a)'
+    query_create = query_create % (neo4j_label_drugbank, license)
+
+    query_create = pharmebinetutils.get_query_import(path_of_directory,
+                                                     f'mapping_and_merging_into_hetionet/drugbank/output/new_nodes.tsv',
+                                                     query_create)
     cypher_file.write(query_create)
 
 
@@ -409,8 +427,11 @@ def generation_of_interaction_file():
     csv_writer = csv.writer(g_csv, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     csv_writer.writerow(['db1', 'db2', 'description'])
     cypherfile = open('output/cypher_rela.cypher', 'w', encoding='utf-8')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/drugbank/compound_interaction/interaction.tsv" As line  Fieldterminator '\\t' Match (c1:Compound{identifier:line.db1}), (c2:Compound{identifier:line.db2}) Create (c1)-[:INTERACTS_CiC{source:"DrugBank", url:"http://www.drugbank.ca/drugs/"+line.db1, unbiased:false, resource:['DrugBank'], drugbank:'yes',  license:'%s', descriptions:split(line.description,'||')}]->(c2);\n '''
+    query = ''' Match (c1:Compound{identifier:line.db1}), (c2:Compound{identifier:line.db2}) Create (c1)-[:INTERACTS_CiC{source:"DrugBank", url:"http://www.drugbank.ca/drugs/"+line.db1, unbiased:false, resource:['DrugBank'], drugbank:'yes',  license:'%s', descriptions:split(line.description,'||')}]->(c2) '''
     query = query % (license)
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/drugbank/compound_interaction/interaction.tsv',
+                                              query)
     cypherfile.write(query)
     cypherfile.close()
 
@@ -540,6 +561,8 @@ def main():
     print('generate cypher file for interaction')
 
     generation_of_interaction_file()
+
+    driver.close()
 
     print(
         '#################################################################################################################################################################')

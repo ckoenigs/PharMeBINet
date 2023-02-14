@@ -3,6 +3,7 @@ import csv, sys
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 '''
 create connection to neo4j 
@@ -11,9 +12,9 @@ create connection to neo4j
 
 def create_connection_with_neo4j_mysql():
     # create connection with neo4j
-    # authenticate("localhost:7474", )
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 # dictionary with all pairs and properties as value
@@ -62,9 +63,12 @@ also generate a cypher file to integrate this information
 def take_all_relationships_of_gene_go():
     # generate cypher file
     cypherfile = open('output/cypher_edge.cypher', 'a', encoding='utf-8')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/ctd/gene_go/%s.tsv" As line  FIELDTERMINATOR '\\t' Match (n:Gene{identifier:line.GeneID}), (b:%s{identifier:line.GOID}) Merge (n)-[r:PARTICIPATES_Gp%s]->(b) On Create Set  r.ctd='yes', r.url="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.source="CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2021 NC State University. All rights reserved.", r.unbiased=false, r.resource=['CTD'] On Match SET r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.resource=r.resource+'CTD';\n '''
+    query = ''' Match (n:Gene{identifier:line.GeneID}), (b:%s{identifier:line.GOID}) Merge (n)-[r:PARTICIPATES_Gp%s]->(b) On Create Set  r.ctd='yes', r.url="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.source="CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2021 NC State University. All rights reserved.", r.unbiased=false, r.resource=['CTD'] On Match SET r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.resource=r.resource+'CTD' '''
     for label, file_name in dict_labels_go_to_file_name.items():
-        label_query = query % (file_name, label, file_name.upper())
+        label_query = query % (label, file_name.upper())
+        query = pharmebinetutils.get_query_import(path_of_directory,
+                                                  f'mapping_and_merging_into_hetionet/ctd/gene_go/{file_name}.tsv',
+                                                  query)
         cypherfile.write(label_query)
     cypherfile.close()
 
@@ -72,7 +76,8 @@ def take_all_relationships_of_gene_go():
     results = g.run(query)
     count_multiple_pathways = 0
     count_possible_relas = 0
-    for gene_id, rela, go_id, ontology in results:
+    for record in results:
+        [gene_id, rela, go_id, ontology] = record.values()
         rela = dict(rela)
         if len(rela) > 1:
             print('change integration of properties')
@@ -115,6 +120,8 @@ def main():
     print('Take all gene-go relationships and generate tsv files and cypher file')
 
     take_all_relationships_of_gene_go()
+
+    driver.close()
 
     print(
         '###########################################################################################################################')

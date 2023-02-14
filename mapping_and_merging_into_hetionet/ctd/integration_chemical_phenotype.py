@@ -2,11 +2,11 @@ import csv
 import datetime
 import sys
 from collections import defaultdict
-import re
 from typing import List
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 '''
 create connection to neo4j 
@@ -15,8 +15,9 @@ create connection to neo4j
 
 def create_connection_with_neo4j():
     # create connection with neo4j
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 # generate cypher file
@@ -75,7 +76,8 @@ sort the information into the right dictionary and add the infomation
 
 
 def sort_into_dictionary_and_add(dict_action, chemical_id, go_id, interaction_text, pubMedIds,
-                                 interactions_actions, anatomy_terms, inference_gene_symbols, comentioned_terms, ctd_chemical_id):
+                                 interactions_actions, anatomy_terms, inference_gene_symbols, comentioned_terms,
+                                 ctd_chemical_id):
     if (chemical_id, go_id) in dict_action:
         dict_action[(chemical_id, go_id)][0].append(interaction_text)
         dict_action[(chemical_id, go_id)][1] = dict_action[(chemical_id, go_id)][1].union(pubMedIds)
@@ -144,6 +146,8 @@ def check_for_go_and_chemical_in_string(string, found_chemical_synonym, go_name,
     found_together = False
     part = string.lower()
     positions_chemical_new = find_multiple_occurrences(' ' + found_chemical_synonym + ' ', part)
+    if '[' in go_name:
+        go_name=go_name.replace('[','[ ').replace(']',' ]')
     position_go_new = part.find(' ' + go_name + ' ')
     position_rela_new = part.find(' ' + dict_rela_name_to_text_name[rela_name] + ' ')
     length_of_phenotyp_string = len(go_name)
@@ -192,6 +196,7 @@ def check_for_rela_type(interactions_actions, rela_name, chemical_id, drugbank_i
 
         if not found_together:
             print('something went really wrong')
+            print(interactions_actions)
             print(chemical_id)
             print(go_id)
             print(interaction_text_with_spaces)
@@ -232,10 +237,11 @@ def take_all_relationships_of_go_chemical():
     counter_all_rela = 0
 
     #  Where chemical.chemical_id='D000077212' and go.go_id='0006915'; Where chemical.chemical_id='C057693' and go.go_id='4128' Where chemical.chemical_id='D001564' and go.go_id='9429'  Where chemical.chemical_id='D004976' and go.go_id='2950' Where chemical.chemical_id='D015741' and go.go_id='367'
-    query = '''MATCH (chemical:CTD_chemical)-[r:phenotype{organismid:'9606'}]->(cgo:CTD_GO)-[:equal_to_CTD_go]-(go) Where exists(r.pubMed_ids) RETURN cgo.go_id, cgo.name, labels(go), r, chemical.chemical_id, chemical.name, chemical.synonyms, chemical.drugBankIDs'''
+    query = '''MATCH (chemical:CTD_chemical)-[r:phenotype{organismid:'9606'}]->(cgo:CTD_GO)-[:equal_to_CTD_go]-(go) Where r.pubMed_ids is not NULL RETURN cgo.go_id, cgo.name, labels(go), r, chemical.chemical_id, chemical.name, chemical.synonyms, chemical.drugBankIDs'''
     results = g.run(query)
 
-    for go_id, go_name, go_labels, rela, chemical_id, chemical_name, chemical_synonyms, drugbank_ids, in results:
+    for record in results:
+        [go_id, go_name, go_labels, rela, chemical_id, chemical_name, chemical_synonyms, drugbank_ids] = record.values()
         go_label = go_labels[0]
         go_name = go_name.lower()
         counter_all_rela += 1
@@ -302,26 +308,29 @@ generate cypher queries
 
 
 def generate_cypher_queries(file_name, label, rela, start_node, end_node):
-    query_first_part = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/ctd/''' + file_name + '''" As line Fieldterminator '\\t' Match (b:Chemical{identifier:line.chemical_id}), (go:%s{identifier:line.go_id}) Create (%s)-[:%s {'''
+    query_first_part = '''Match (b:Chemical{identifier:line.chemical_id}), (go:%s{identifier:line.go_id}) Create (%s)-[:%s {'''
     query_first_part = query_first_part % (label, start_node, rela)
-    query_end = 'ctd:"yes", source:"CTD", ctd_url:"http://ctdbase.org/detail.go?type=chem&acc="+line.ctd_chemical_id, url:"http://ctdbase.org/detail.go?type=chem&acc="+line.ctd_chemical_id ,resource:["CTD"], license:"© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved"}]->(%s);\n'
+    query_end = 'ctd:"yes", source:"CTD", ctd_url:"http://ctdbase.org/detail.go?type=chem&acc="+line.ctd_chemical_id, url:"http://ctdbase.org/detail.go?type=chem&acc="+line.ctd_chemical_id ,resource:["CTD"], license:"© 2002–2012 MDI Biological Laboratory. © 2012–2018 MDI Biological Laboratory & NC State University. All rights reserved"}]->(%s)'
     for property in header:
         if property in ['chemical_id', 'go_id']:
             continue
         if property not in ['interaction_text', 'unbiased']:
             query_first_part += property + ':split(line.' + property + ',"|"), '
         else:
-            if  property=='unbiased':
+            if property == 'unbiased':
                 query_first_part += property + ':toBoolean(line.' + property + '), '
                 continue
             query_first_part += property + ':line.' + property + ', '
     query = query_first_part + query_end % end_node
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/ctd/{file_name}',
+                                              query)
     cypherfile.write(query)
 
 
 # header for tsv files
 header = ['chemical_id', 'go_id', 'interaction_text', 'pubMed_ids', 'interaction_actions', 'unbiased', 'anatomy_terms',
-          'co_mentioned_terms','ctd_chemical_id']
+          'co_mentioned_terms', 'ctd_chemical_id']
 
 # dictionary from go term to shor form
 dict_go_term_to_short_form = {
@@ -418,6 +427,8 @@ def main():
     print('write into tsv files')
 
     fill_the_tsv_files()
+
+    driver.close()
 
     print(
         '###########################################################################################################################')

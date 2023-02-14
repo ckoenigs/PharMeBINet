@@ -1,9 +1,9 @@
-
 import datetime
 import csv, sys
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 '''
 create connection to neo4j and mysql
@@ -13,8 +13,9 @@ create connection to neo4j and mysql
 def create_connection_with_neo4j_mysql():
     # create connection with neo4j
     # authenticate("localhost:7474", "neo4j", "test")
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 # dictionary with pharmebinet genes with identifier as key and value node as dictionary
@@ -29,7 +30,8 @@ def load_pharmebinet_genes_in():
     query = '''MATCH (n:Gene) RETURN n'''
     results = g.run(query)
 
-    for node, in results:
+    for record in results:
+        node = record.data()['n']
         identifier = node['identifier']
         dict_genes_pharmebinet[identifier] = dict(node)
 
@@ -53,7 +55,7 @@ and return found gene in pharmebinet True or false
 
 def search_for_id_and_write_into_file(gene_id, gene_node):
     if gene_id in dict_genes_pharmebinet:
-        gene_name = gene_node['name']
+        gene_name = gene_node['name'] if 'name' in gene_node else ''
         pharmebinet_node = dict_genes_pharmebinet[gene_id]
         if gene_name != dict_genes_pharmebinet[gene_id]['name']:
             print(gene_id)
@@ -88,7 +90,8 @@ def load_ctd_genes_in():
     results = g.run(query)
 
     counter = 0
-    for gene_node, in results:
+    for record in results:
+        gene_node=record.data()['n']
         gene_id = gene_node['gene_id']
         altGeneIDs = gene_node['altGeneIDs'] if 'altGeneIDs' in gene_node else []
         if not search_for_id_and_write_into_file(gene_id, gene_node):
@@ -110,15 +113,17 @@ Generate cypher and tsv for generating the new nodes and the relationships
 
 def generate_files():
     # generate cyoher file
-    cypher_file = open('output/cypher.cypher', 'w',encoding='utf-8')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/ctd/gene/mapping.tsv" As line  FIELDTERMINATOR '\\t' Match (c:Gene{ identifier:line.GeneIDpharmebinet}), (n:CTD_gene{gene_id:line.GeneIDCTD}) Create (c)-[:equal_to_CTD_gene]->(n) Set c.ctd="yes", c.resource=c.resource+"CTD", c.xrefs=split(line.xrefs,'|'), c.url_ctd=" http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID;\n'''
+    cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
+    query = ''' Match (c:Gene{ identifier:line.GeneIDpharmebinet}), (n:CTD_gene{gene_id:line.GeneIDCTD}) Create (c)-[:equal_to_CTD_gene]->(n) Set c.ctd="yes", c.resource=c.resource+"CTD", c.xrefs=split(line.xrefs,'|'), c.url_ctd=" http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID'''
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/ctd/gene/mapping.tsv',
+                                              query)
     cypher_file.write(query)
 
     global writer
     csvfile = open('gene/mapping.tsv', 'w')
     writer = csv.writer(csvfile, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     writer.writerow(['GeneIDCTD', 'GeneIDpharmebinet', 'xrefs'])
-
 
 
 # path to directory
@@ -161,6 +166,8 @@ def main():
     print('Load all ctd genes from neo4j into a dictionary')
 
     load_ctd_genes_in()
+
+    driver.close()
 
     print(
         '###########################################################################################################################')

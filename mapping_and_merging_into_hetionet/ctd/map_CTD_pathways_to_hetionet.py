@@ -6,6 +6,7 @@ import sys
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 '''
 create connection to neo4j 
@@ -14,9 +15,9 @@ create connection to neo4j
 
 def create_connection_with_neo4j_mysql():
     # create connection with neo4j
-    # authenticate("localhost:7474", )
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 # dictionary with pharmebinet pathways with identifier as key and value the name
@@ -40,7 +41,8 @@ def load_pharmebinet_pathways_in():
     query = '''MATCH (n:Pathway) RETURN n.identifier,n.name, n.synonyms, n.source, n.xrefs, n.resource'''
     results = g.run(query)
 
-    for identifier, name, synonyms, source, xrefs, resource, in results:
+    for record in results:
+        [identifier, name, synonyms, source, xrefs, resource]=record.values()
         dict_pathway_id_to_resource[identifier]=resource
         # print(identifier)
         # print(name)
@@ -111,7 +113,8 @@ def load_ctd_pathways_in():
     counter_map_with_id = 0
     counter_map_with_name = 0
     counter_not_mapped = 0
-    for pathways_node, in results:
+    for record in results:
+        pathways_node=record.data()['n']
         pathways_id = pathways_node['pathway_id']
         pathways_name = pathways_node['name'].lower()
         pathways_id_type = pathways_node['id_type']
@@ -155,7 +158,10 @@ generate connection between mapping pathways of ctd and pharmebinet and generate
 
 def create_cypher_file():
     cypher_file = open('output/cypher.cypher', 'a',encoding='utf-8')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/ctd/pathway/mapped_pathways.tsv" As line FIELDTERMINATOR '\\t' Match (d:Pathway{identifier:line.id_pharmebinet}),(c:CTD_pathway{pathway_id:line.id}) Create (d)-[:equal_to_CTD_pathway{how_mapped:line.mapped}]->(c) Set d.resource= split(line.resource, "|") , d.ctd="yes", d.ctd_url="http://ctdbase.org/detail.go?type=pathway&acc=%"+line.id, c.pharmebinet_id=line.id_pharmebinet;\n'''
+    query = ''' Match (d:Pathway{identifier:line.id_pharmebinet}),(c:CTD_pathway{pathway_id:line.id}) Create (d)-[:equal_to_CTD_pathway{how_mapped:line.mapped}]->(c) Set d.resource= split(line.resource, "|") , d.ctd="yes", d.ctd_url="http://ctdbase.org/detail.go?type=pathway&acc=%"+line.id, c.pharmebinet_id=line.id_pharmebinet'''
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/ctd/pathway/mapped_pathways.tsv',
+                                              query)
     cypher_file.write(query)
 
 
@@ -199,6 +205,8 @@ def main():
     print('Integrate new pathways and connect them to ctd ')
 
     create_cypher_file()
+
+    driver.close()
 
     print(
         '###########################################################################################################################')

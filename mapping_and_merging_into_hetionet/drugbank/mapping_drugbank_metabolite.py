@@ -4,6 +4,7 @@ from collections import defaultdict
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 '''
 create a connection with neo4j
@@ -12,8 +13,10 @@ create a connection with neo4j
 
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
+
 
 def add_entry_to_dictionary(dictionary, key, value):
     """
@@ -24,41 +27,42 @@ def add_entry_to_dictionary(dictionary, key, value):
     :return:
     """
     if key not in dictionary:
-        dictionary[key]=set()
+        dictionary[key] = set()
     dictionary[key].add(value)
 
+
 # dictionary for the different mapping methods
-dict_different_mapping_methods=defaultdict(dict)
+dict_different_mapping_methods = defaultdict(dict)
 
 # dictionary metabolite_id to resource
-dict_metabolite_id_to_resource={}
+dict_metabolite_id_to_resource = {}
+
 
 def load_metabolite_from_database():
     """
     Load all pc into different mapping dictionaries
     :return:
     """
-    query='''Match (n:Metabolite) Return n'''
-    results=g.run(query)
-    for node, in results:
-        identifier= node['identifier']
-        dict_metabolite_id_to_resource[identifier]=set(node['resource'])
-        name=node['name'].lower()
-        add_entry_to_dictionary(dict_different_mapping_methods['name'],name,identifier)
+    query = '''Match (n:Metabolite) Return n'''
+    results = g.run(query)
+    for record in results:
+        node = record.data()['n']
+        identifier = node['identifier']
+        dict_metabolite_id_to_resource[identifier] = set(node['resource'])
+        name = node['name'].lower()
+        add_entry_to_dictionary(dict_different_mapping_methods['name'], name, identifier)
 
         # synonyms= node['synonyms'] if 'synonyms' in node else []
         # for synonym in synonyms:
         #     add_entry_to_dictionary(dict_different_mapping_methods['name'],synonym.lower(), identifier)
 
-        inchikey=node['inchikey']
+        inchikey = node['inchikey']
         if inchikey:
             add_entry_to_dictionary(dict_different_mapping_methods['inchikey'], inchikey, identifier)
 
         smiles = node['smiles']
         if inchikey:
             add_entry_to_dictionary(dict_different_mapping_methods['smiles'], smiles, identifier)
-
-
 
 
 def generate_files(path_of_directory):
@@ -69,7 +73,7 @@ def generate_files(path_of_directory):
     # file from relationship between gene and variant
     file_name = 'metabolite/mapping_metabolite.tsv'
     file = open(file_name, 'w', encoding='utf-8')
-    header = [ 'metabolite_db_id', 'metabolite_id','resource', 'how_mapped']
+    header = ['metabolite_db_id', 'metabolite_id', 'resource', 'how_mapped']
     csv_mapping = csv.writer(file, delimiter='\t')
     csv_mapping.writerow(header)
 
@@ -82,19 +86,21 @@ def generate_files(path_of_directory):
 
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/drugbank/%s" As line FIELDTERMINATOR '\\t' 
-        Match (n:Metabolite{identifier:line.metabolite_id}), (v:Metabolite_DrugBank{identifier:line.metabolite_db_id}) Create (n)-[r:equal_to_metabolite_drugbank{how_mapped:line.how_mapped}]->(v) Set n.drugbank="yes", n.resource=split(line.resource,"|") ;\n'''
-    query = query % (path_of_directory, file_name)
+    query = '''Match (n:Metabolite{identifier:line.metabolite_id}), (v:Metabolite_DrugBank{identifier:line.metabolite_db_id}) Create (n)-[r:equal_to_metabolite_drugbank{how_mapped:line.how_mapped}]->(v) Set n.drugbank="yes", n.resource=split(line.resource,"|") '''
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/drugbank/{file_name}',
+                                              query)
     cypher_file.write(query)
     cypher_file.close()
 
     return csv_mapping, csv_not_mapped
 
+
 # set of  mapping db metabolite and metabolite
-set_of_metabolite_pairs=set()
+set_of_metabolite_pairs = set()
 
 # dictionary db metabolite to metabolite_ids
-dict_db_metabolite_id_to_metabolite_ids={}
+dict_db_metabolite_id_to_metabolite_ids = {}
 
 
 def add_resource(set_resource):
@@ -106,30 +112,35 @@ def add_resource(set_resource):
     set_resource.add('DrugBank')
     return '|'.join(sorted(set_resource))
 
+
 def load_all_drugbank_pc_and_map(csv_mapping, csv_not_mapped):
     query = "MATCH (v:Metabolite_DrugBank) RETURN v"
     results = g.run(query)
 
     # counter
-    counter_mapped=0
-    counter_not_mapped=0
+    counter_mapped = 0
+    counter_not_mapped = 0
 
-    for node, in results:
-        identifier=node['identifier']
-        name=node['name'].lower()
-        inchi_key = node['inchi_key']
-        smiles=node['smiles']
-        found_mapping=False
-        if inchi_key in dict_different_mapping_methods['inchikey']:
-            found_mapping = True
-            dict_db_metabolite_id_to_metabolite_ids[identifier] = dict_different_mapping_methods['inchikey'][inchi_key]
-            for metabolite_id in dict_different_mapping_methods['inchikey'][inchi_key]:
-                if (identifier, metabolite_id) not in set_of_metabolite_pairs:
-                    set_of_metabolite_pairs.add((identifier, metabolite_id))
-                    csv_mapping.writerow(
-                        [identifier, metabolite_id, add_resource(dict_metabolite_id_to_resource[metabolite_id]),'inchi_key'])
-                else:
-                    print('multy mapping with inchikey')
+    for record in results:
+        node = record.data()['v']
+        identifier = node['identifier']
+        name = node['name'].lower()
+        inchi_key = node['inchi_key'] if 'inchi_key' in node else ''
+        smiles = node['smiles'] if 'smiles' in node else ''
+        found_mapping = False
+        if inchi_key:
+            if inchi_key in dict_different_mapping_methods['inchikey']:
+                found_mapping = True
+                dict_db_metabolite_id_to_metabolite_ids[identifier] = dict_different_mapping_methods['inchikey'][
+                    inchi_key]
+                for metabolite_id in dict_different_mapping_methods['inchikey'][inchi_key]:
+                    if (identifier, metabolite_id) not in set_of_metabolite_pairs:
+                        set_of_metabolite_pairs.add((identifier, metabolite_id))
+                        csv_mapping.writerow(
+                            [identifier, metabolite_id, add_resource(dict_metabolite_id_to_resource[metabolite_id]),
+                             'inchi_key'])
+                    else:
+                        print('multy mapping with inchikey')
 
         if found_mapping:
             counter_mapped += 1
@@ -142,7 +153,8 @@ def load_all_drugbank_pc_and_map(csv_mapping, csv_not_mapped):
                 if (identifier, metabolite_id) not in set_of_metabolite_pairs:
                     set_of_metabolite_pairs.add((identifier, metabolite_id))
                     csv_mapping.writerow(
-                        [identifier, metabolite_id, add_resource(dict_metabolite_id_to_resource[metabolite_id]),'smiles'])
+                        [identifier, metabolite_id, add_resource(dict_metabolite_id_to_resource[metabolite_id]),
+                         'smiles'])
                 else:
                     print('multy mapping with smiles')
 
@@ -157,18 +169,19 @@ def load_all_drugbank_pc_and_map(csv_mapping, csv_not_mapped):
                 if (identifier, metabolite_id) not in set_of_metabolite_pairs:
                     set_of_metabolite_pairs.add((identifier, metabolite_id))
                     csv_mapping.writerow(
-                        [identifier, metabolite_id, add_resource(dict_metabolite_id_to_resource[metabolite_id]),'name'])
+                        [identifier, metabolite_id, add_resource(dict_metabolite_id_to_resource[metabolite_id]),
+                         'name'])
                 else:
                     print('multy mapping with name')
-
 
         if found_mapping:
             counter_mapped += 1
         else:
             counter_not_mapped += 1
             csv_not_mapped.writerow([identifier, name])
-    print('number of mapped node:',counter_mapped)
+    print('number of mapped node:', counter_mapped)
     print('number of not mapped node:', counter_not_mapped)
+
 
 def main():
     print(datetime.datetime.now())
@@ -205,6 +218,8 @@ def main():
     print('Load metabolites from drugbank and map')
 
     load_all_drugbank_pc_and_map(csv_mapping, csv_not_mapped)
+
+    driver.close()
 
     print('##########################################################################')
 

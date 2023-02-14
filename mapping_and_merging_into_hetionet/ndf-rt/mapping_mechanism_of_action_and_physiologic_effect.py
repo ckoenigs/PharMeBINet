@@ -3,6 +3,7 @@ import sys, csv
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 sys.path.append("..")
 from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
@@ -14,8 +15,9 @@ create a connection with neo4j
 
 def create_connection_to_neo4j():
     # set up authentication parameters and connection
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
@@ -30,10 +32,11 @@ def write_files(path_of_directory, addition_name, label):
     header_new = ['code', 'id', 'xrefs', 'synonyms']
     csv_new.writerow(header_new)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/ndf-rt/%s" As line FIELDTERMINATOR '\\t' 
-                Match (n:%s{code:line.code}) Create (v:PharmacologicClass{identifier:line.id, ndf_rt:'yes', xrefs:split(line.xrefs,'|'), synonyms:split(line.synonyms,'|'), resource:['NDF-RT'], source:'NDF-RT', url:'http://purl.bioontology.org/ontology/NDFRT/'+line.id, name:split(n.name," [")[0], license:'UMLS license, available at https://uts.nlm.nih.gov/license.html', class_type:["%s"]}) Create (v)-[:equal_to_ndf_rt{how_mapped:'new'}]->(n);\n'''
-    query = query % (path_of_directory, file_name_new, label,
-                     addition_name.replace('_', ' ').replace(' kind', '').title().replace('Of', 'of'))
+    query = '''Match (n:%s{code:line.code}) Create (v:PharmacologicClass{identifier:line.id, ndf_rt:'yes', xrefs:split(line.xrefs,'|'), synonyms:split(line.synonyms,'|'), resource:['NDF-RT'], source:'NDF-RT', url:'http://purl.bioontology.org/ontology/NDFRT/'+line.id, name:split(n.name," [")[0], license:'UMLS license, available at https://uts.nlm.nih.gov/license.html', class_type:["%s"]}) Create (v)-[:equal_to_ndf_rt{how_mapped:'new'}]->(n)'''
+    query = query % (label, addition_name.replace('_', ' ').replace(' kind', '').title().replace('Of', 'of'))
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/ndf-rt/{file_name_new}',
+                                              query)
     cypher_file.write(query)
 
     return csv_new
@@ -51,7 +54,8 @@ def load_all_label_and_map(label, csv_new):
     """
     query = "MATCH (n:%s) RETURN n" % (label)
     results = g.run(query)
-    for node, in results:
+    for record in results:
+        node = record.data()['n']
         identifier = node['code']
         name = node['name'].lower()
         name = name.split(' [')[0]
@@ -95,15 +99,18 @@ def write_files_drug(path_of_directory, addition_name, label):
     header_other = ['code', 'id']
     csv_other.writerow(header_other)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/ndf-rt/%s" As line FIELDTERMINATOR '\\t' 
-                Match (n:%s{code:line.code}), (v:PharmacologicClass{identifier:line.id}) Set v.class_type=v.class_type+"Established Pharmacologic Class"  Create (v)-[:equal_to_%s_ndf_rt{how_mapped:'ndf-rt id'}]->(n);\n'''
-    query = query % (path_of_directory, file_name_other, label, addition_name)
+    query = '''Match (n:%s{code:line.code}), (v:PharmacologicClass{identifier:line.id}) Set v.class_type=v.class_type+"Established Pharmacologic Class"  Create (v)-[:equal_to_%s_ndf_rt{how_mapped:'ndf-rt id'}]->(n)'''
+    query = query % (label, addition_name)
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/ndf-rt/{file_name_other}',
+                                              query)
     cypher_file.write(query)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/ndf-rt/%s" As line FIELDTERMINATOR '\\t' 
-                Match (n:%s{code:line.code}) Create (v:PharmacologicClass{identifier:line.id, ndf_rt:'yes', xrefs:split(line.xrefs,'|'), synonyms:split(line.synonyms,'|'), resource:['NDF-RT'], source:'NDF-RT', url:'http://purl.bioontology.org/ontology/NDFRT/'+line.id, name:split(n.name," [")[0], license:'UMLS license, available at https://uts.nlm.nih.gov/license.html', class_type:["Established Pharmacologic Class"]}) Create (v)-[:equal_to_%s_ndf_rt{how_mapped:'new'}]->(n);\n'''
-    query = query % (path_of_directory, file_name_new, label,
-                     addition_name)
+    query = ''' Match (n:%s{code:line.code}) Create (v:PharmacologicClass{identifier:line.id, ndf_rt:'yes', xrefs:split(line.xrefs,'|'), synonyms:split(line.synonyms,'|'), resource:['NDF-RT'], source:'NDF-RT', url:'http://purl.bioontology.org/ontology/NDFRT/'+line.id, name:split(n.name," [")[0], license:'UMLS license, available at https://uts.nlm.nih.gov/license.html', class_type:["Established Pharmacologic Class"]}) Create (v)-[:equal_to_%s_ndf_rt{how_mapped:'new'}]->(n)'''
+    query = query % (label, addition_name)
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/ndf-rt/{file_name_new}',
+                                              query)
     cypher_file.write(query)
 
     return csv_new, csv_other
@@ -117,7 +124,8 @@ def load_all_label_and_map_drug_to_pc(csv_new, csv_other):
     """
     query = "MATCH  (n:NDFRT_DRUG_KIND) Where n.name contains \"[EPC]\"  RETURN n"
     results = g.run(query)
-    for node, in results:
+    for record in results:
+        node = record.data()['n']
         identifier = node['code']
         name = node['name'].lower().split(' [')[0]
 
@@ -191,6 +199,8 @@ def main():
     print('Load all label from database for drug to pc')
 
     load_all_label_and_map_drug_to_pc(csv_new, csv_other)
+
+    driver.close()
 
 
 if __name__ == "__main__":

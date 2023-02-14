@@ -3,6 +3,7 @@ import sys, csv
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 sys.path.append("..")
 from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
@@ -14,8 +15,9 @@ create a connection with neo4j
 
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 # dictionary name/synonym and dbsnp id to clinvar ids
@@ -30,8 +32,8 @@ def load_variant_from_database_and_add_to_dict():
     # Where not n.identifier starts with 'rs'
     query = "MATCH (n:Variant)  RETURN n.identifier, n.name, n.synonyms, n.xrefs"
     results = g.run(query)
-    for identifier, name, synonyms, xrefs,  in results:
-
+    for record in results:
+        [identifier, name, synonyms, xrefs] = record.values()
         name = name.lower() if name else ''
         if name not in dict_name_dbsnp_id_to_clinvar_id:
             dict_name_dbsnp_id_to_clinvar_id[name] = set()
@@ -72,14 +74,16 @@ def generate_files(path_of_directory):
     csv_new.writerow(header)
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/drugbank/gene_variant/%s.tsv" As line FIELDTERMINATOR '\\t' 
-        Match (n:Mutated_protein_gene_DrugBank{identifier:line.gene_variant_drugbank}), (v:Variant{identifier:line.variant_id}) Set v.drugbank="yes", v.resource=v.resource+"DrugBank" Create (v)-[:equal_to_drugbank_variant]->(n);\n'''
-    query = query % (path_of_directory, file_name)
+    query = '''Match (n:Mutated_protein_gene_DrugBank{identifier:line.gene_variant_drugbank}), (v:Variant{identifier:line.variant_id}) Set v.drugbank="yes", v.resource=v.resource+"DrugBank" Create (v)-[:equal_to_drugbank_variant]->(n)'''
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/drugbank/gene_variant/{file_name}.tsv',
+                                              query)
     cypher_file.write(query)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/drugbank/gene_variant/%s.tsv" As line FIELDTERMINATOR '\\t' 
-            Match (n:Mutated_protein_gene_DrugBank{identifier:line.variant_id}) Create (v:Variant :GeneVariant{identifier:line.variant_id, defining_change:n.defining_change, gene_symbol:n.gene_symbol, license:"%s", allele:n.allele, protein_name:n.protein_name, drugbank:"yes",  source:"dbSNP from DrugBank", resource:["DrugBank"] ,xrefs:split(line.xrefs,"|"), url:'https://www.ncbi.nlm.nih.gov/snp/'+line.variant_id }) Create (v)-[:equal_to_drugbank_variant]->(n);\n'''
-    query = query % (path_of_directory, file_name_new, license)
+    query = '''Match (n:Mutated_protein_gene_DrugBank{identifier:line.variant_id}) Create (v:Variant :GeneVariant{identifier:line.variant_id, defining_change:n.defining_change, gene_symbol:n.gene_symbol, license:"%s", allele:n.allele, protein_name:n.protein_name, drugbank:"yes",  source:"dbSNP from DrugBank", resource:["DrugBank"] ,xrefs:split(line.xrefs,"|"), url:'https://www.ncbi.nlm.nih.gov/snp/'+line.variant_id }) Create (v)-[:equal_to_drugbank_variant]->(n)'''
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/drugbank/gene_variant/{file_name_new}.tsv',
+                                              query)
     cypher_file.write(query)
 
     return csv_mapping, csv_new
@@ -96,10 +100,12 @@ def load_all_variants_and_finish_the_files(csv_mapping, csv_new):
     counter_map = 0
     counter_not_mapped = 0
     counter_new = 0
-    for node, in results:
+    for record in results:
+        node = record.data()['n']
         identifier = node['identifier']
         defining_change = node['defining_change'].lower() if 'defining_change' in node else ''
-        if identifier in dict_name_dbsnp_id_to_clinvar_id and not (defining_change=='' or  ' or ' in defining_change or  'allelle' in defining_change or '>' in defining_change):
+        if identifier in dict_name_dbsnp_id_to_clinvar_id and not (
+                defining_change == '' or ' or ' in defining_change or 'allelle' in defining_change or '>' in defining_change):
             counter_map += 1
             for variant in dict_name_dbsnp_id_to_clinvar_id[identifier]:
                 csv_mapping.writerow([identifier, variant])
@@ -166,6 +172,8 @@ def main():
     print('Load all variation from database')
 
     load_all_variants_and_finish_the_files(csv_mapping, csv_new)
+
+    driver.close()
 
     print('##########################################################################')
 

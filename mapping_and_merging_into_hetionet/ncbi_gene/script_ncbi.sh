@@ -19,9 +19,9 @@ echo "Current time: $now"
 
 $path_neo4j/cypher-shell -u neo4j -p $password -f output_data/cypher_merge.cypher
 
-sleep 120
+sleep 20
 
 $path_neo4j/neo4j restart
 
 
-sleep 120
+sleep 30

@@ -54,8 +54,9 @@ create a connection with neo4j
 
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 def get_go_cellular_component_id():
@@ -66,7 +67,8 @@ def get_go_cellular_component_id():
     query = 'Match (n:CellularComponent) Where toLower(n.name) in ["%s"] Return n.name, n.identifier'
     query = query % ('","'.join(set_of_gos))
     results = g.run(query)
-    for name, identifier, in results:
+    for record in results:
+        [name, identifier] = record.values()
         dict_go_name_to_id[name.lower()] = identifier
     print('number of gos:', len(dict_go_name_to_id))
 
@@ -82,18 +84,19 @@ def get_information_from_pharmebinet():
     """
     global maximal_id
 
-    query = '''MATCH (n:Protein)-->(a:Interaction)-->(m:Protein) Where not (exists(a.iso_of_protein_from) or exists(a.iso_of_protein_to))  RETURN n.identifier, m.identifier, a.resource, a.identifier, a.interaction_ids;'''
+    query = '''MATCH (n:Protein)-->(a:Interaction)-->(m:Protein) Where not (a.iso_of_protein_from is not NULL or a.iso_of_protein_to  is not NULL)  RETURN n.identifier, m.identifier, a.resource, a.identifier, a.interaction_ids;'''
     results = g.run(query)
 
-    for interactor1_het_id, interactor2_het_id, resource, interaction_id, interaction_ids_EBI, in results:
+    for record in results:
+        [interactor1_het_id, interactor2_het_id, resource, interaction_id, interaction_ids_EBI] = record.values()
         dict_protein_pair_to_dictionary[
             (interactor1_het_id, interactor2_het_id)] = {'resource': resource,
                                                          'interaction_ids_EBI': interaction_ids_EBI,
                                                          'interaction_id': interaction_id}
 
-    query = 'MATCH (n:Interaction) With toInteger(n.identifier ) as int_id RETURN max(int_id)'
+    query = 'MATCH (n:Interaction) With toInteger(n.identifier ) as int_id RETURN max(int_id) as v'
 
-    maximal_id = g.run(query).evaluate()
+    maximal_id = g.run(query).single()['v']
 
 
 def generate_file_and_cypher():
@@ -103,7 +106,7 @@ def generate_file_and_cypher():
     """
     query = '''MATCH (:protein_IID)-[p:interacts]->(:protein_IID) WITH DISTINCT keys(p) AS keys
         UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields
-        RETURN allfields; '''
+        RETURN allfields as l; '''
     results = g.run(query)
 
     file_name = 'interaction/rela'
@@ -112,16 +115,13 @@ def generate_file_and_cypher():
 
     cypher_file = open('interaction/cypher.cypher', 'w', encoding='utf-8')
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/iid/%s.tsv" As line FIELDTERMINATOR '\\t' 
-            Match (p1:Protein{identifier:line.protein_id_1}), (p2:Protein{identifier:line.protein_id_2}) Create (p1)-[:INTERACTS_PiI{iid:'yes', source:'Integrated Interactions Database', resource:['IID'], url:"http://iid.ophid.utoronto.ca/" ,license:"free to use for academic purposes"}]->(b:Interaction{ identifier:line.id, '''
-    query = query % (path_of_directory, file_name)
+    query = '''Match (p1:Protein{identifier:line.protein_id_1}), (p2:Protein{identifier:line.protein_id_2}) Create (p1)-[:INTERACTS_PiI{iid:'yes', source:'Integrated Interactions Database', resource:['IID'], url:"http://iid.ophid.utoronto.ca/" ,license:"free to use for academic purposes"}]->(b:Interaction{ identifier:line.id, '''
 
-    query_update = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/iid/%s.tsv" As line FIELDTERMINATOR '\\t' 
-            Match (p1:Protein{identifier:line.protein_id_1})-[a:INTERACTS_PiI]->(m:Interaction{identifier:line.id})-[b:INTERACTS_IiP]->(p2:Protein{identifier:line.protein_id_2}) Set '''
-    query_update = query_update % (path_of_directory, file_name_update)
+    query_update = '''Match (p1:Protein{identifier:line.protein_id_1})-[a:INTERACTS_PiI]->(m:Interaction{identifier:line.id})-[b:INTERACTS_IiP]->(p2:Protein{identifier:line.protein_id_2}) Set '''
 
     header = ['protein_id_1', 'protein_id_2', 'id']
-    for head, in results:
+    for head in results:
+        head = head.data()['l']
         header.append(head)
         if head in ['evidence_types', 'dbs', 'methods', 'pmids', 'db_with_ppis',
                     'drugs_targeting_one_or_both_proteins']:
@@ -140,13 +140,21 @@ def generate_file_and_cypher():
             query += head + ':line.' + head + ', '
             query_update += 'm.' + head + '=line.' + head + ', '
 
-    query += ' license:"free to use for academic purposes", iid:"yes", source:"Integrated Interactions Database", resource:["IID"], url:"http://iid.ophid.utoronto.ca/",  node_edge:true})-[:INTERACTS_IiP{iid:"yes", source:"Integrated Interactions Database", url:"http://iid.ophid.utoronto.ca/", resource:["IID"], license:"free to use for academic purposes"}]->(p2);\n'
+    query += ' license:"free to use for academic purposes", iid:"yes", source:"Integrated Interactions Database", resource:["IID"], url:"http://iid.ophid.utoronto.ca/",  node_edge:true})-[:INTERACTS_IiP{iid:"yes", source:"Integrated Interactions Database", url:"http://iid.ophid.utoronto.ca/", resource:["IID"], license:"free to use for academic purposes"}]->(p2)'
+
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/iid/{file_name}.tsv',
+                                              query)
     cypher_file.write(query)
-    query_update += ' a.iid="yes", a.resource=split(line.resource,"|"), m.iid="yes", m.resource=split(line.resource,"|"), b.iid="yes", b.resource=split(line.resource,"|");\n'
+    query_update += ' a.iid="yes", a.resource=split(line.resource,"|"), m.iid="yes", m.resource=split(line.resource,"|"), b.iid="yes", b.resource=split(line.resource,"|")'
+    query_update = pharmebinetutils.get_query_import(path_of_directory,
+                                                     f'mapping_and_merging_into_hetionet/iid/{file_name_update}.tsv',
+                                                     query_update)
     cypher_file.write(query_update)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/iid/%s.tsv" As line FIELDTERMINATOR '\\t' 
-                Match (i:Interaction{identifier:line.id}), (c:CellularComponent{identifier:line.go_id}) Set i.subcellular_location="GO term enrichment" Create (i)-[:MIGHT_SUBCELLULAR_LOCATES_ImslCC{license:"free to use for academic purposes", iid:"yes", source:"Integrated Interactions Database", url:"http://iid.ophid.utoronto.ca/" ,resource:["IID"]}]->(c);\n'''
-    query = query % (path_of_directory, file_name_go)
+    query = '''Match (i:Interaction{identifier:line.id}), (c:CellularComponent{identifier:line.go_id}) Set i.subcellular_location="GO term enrichment" Create (i)-[:MIGHT_SUBCELLULAR_LOCATES_ImslCC{license:"free to use for academic purposes", iid:"yes", source:"Integrated Interactions Database", url:"http://iid.ophid.utoronto.ca/" ,resource:["IID"]}]->(c)'''
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/iid/{file_name_go}.tsv',
+                                              query)
     cypher_file.write(query)
     cypher_file.close()
 
@@ -194,17 +202,17 @@ def run_through_results_and_add_to_dictionary(results):
     :param results: neo4j result
     :return:
     """
-    for p1_id, rela, p2_id, in results:
+    for record in results:
+        [p1_id, rela, p2_id] = record.values()
         rela_info = dict(rela)
-        if (p1_id, p2_id) not in dict_pair_to_infos and  (p2_id,p1_id) not in dict_pair_to_infos:
+        if (p1_id, p2_id) not in dict_pair_to_infos and (p2_id, p1_id) not in dict_pair_to_infos:
             dict_pair_to_infos[(p1_id, p2_id)] = []
             dict_pair_to_go_ids[(p1_id, p2_id)] = set()
-        if (p1_id, p2_id)  in dict_pair_to_infos:
+        if (p1_id, p2_id) in dict_pair_to_infos:
             for property, value in rela_info.items():
                 property = property.lower()
                 if property in dict_go_name_to_id:
                     dict_pair_to_go_ids[(p1_id, p2_id)].add(dict_go_name_to_id[property])
-
 
             dict_pair_to_infos[(p1_id, p2_id)].append(rela_info)
         else:
@@ -212,7 +220,6 @@ def run_through_results_and_add_to_dictionary(results):
                 property = property.lower()
                 if property in dict_go_name_to_id:
                     dict_pair_to_go_ids[(p2_id, p1_id)].add(dict_go_name_to_id[property])
-
 
             dict_pair_to_infos[(p2_id, p1_id)].append(rela_info)
 
@@ -222,15 +229,28 @@ def load_and_prepare_IID_human_data():
     write only rela with exp into file
     and p1.identifier in ['Q9NRW4', 'P45985'] and p2.identifier in ['Q9NRW4', 'P45985']
     """
-
-    query = '''Match (p1:Protein)-[:equal_to_iid_protein]-(d:protein_IID)-[r:interacts]->(:protein_IID)-[:equal_to_iid_protein]-(p2:Protein) Where 'exp' in r.evidence_types Return p1.identifier, r, p2.identifier '''
-    results = g.run(query)
-    run_through_results_and_add_to_dictionary(results)
+    query = "Match l=(p1:Protein)-[:equal_to_iid_protein]-(d:protein_IID)-[r:interacts]->(:protein_IID)-[:equal_to_iid_protein]-(p2:Protein) Where 'exp' in r.evidence_types Return count(l)"
+    number_of_edges = g.run(query).single().values()[0]
+    print(number_of_edges)
+    max_number_of_results = 50000
+    counter = 0
+    while counter < number_of_edges:
+        query = f'Match (p1:Protein)-[:equal_to_iid_protein]-(d:protein_IID)-[r:interacts]->(:protein_IID)-[:equal_to_iid_protein]-(p2:Protein) Where "exp" in r.evidence_types With p1,r,p2 Skip {counter} Limit {max_number_of_results} Return p1.identifier, r, p2.identifier '
+        print(query)
+        results = g.run(query)
+        run_through_results_and_add_to_dictionary(results)
+        counter += max_number_of_results
+        print(counter)
 
     # to check for selfloops interaction
-    query = '''Match p=(a:Protein)-[:equal_to_iid_protein]->(d:protein_IID)-[r:interacts]-(d) Where 'exp' in r.evidence_types Return  a.identifier as p1 , r, a.identifier as p2 '''
-    results = g.run(query)
-    run_through_results_and_add_to_dictionary(results)
+    query = "Match l=(a:Protein)-[:equal_to_iid_protein]->(d:protein_IID)-[r:interacts]-(d) Where 'exp' in r.evidence_types Return count(l)"
+    number_of_edges = g.run(query).single().values()[0]
+    counter = 0
+    while counter < number_of_edges:
+        query = f'Match p=(a:Protein)-[:equal_to_iid_protein]->(d:protein_IID)-[r:interacts]-(d) Where "exp" in r.evidence_types With a,r Skip {counter} Limit {max_number_of_results} Return  a.identifier as p1 , r, a.identifier as p2 '
+        results = g.run(query)
+        run_through_results_and_add_to_dictionary(results)
+        counter += max_number_of_results
 
 
 def prepare_multiple_edges_between_same_pairs(list_of_dict, p1, p2):
@@ -261,7 +281,7 @@ def prepare_multiple_edges_between_same_pairs(list_of_dict, p1, p2):
     return new_dict
 
 
-def prepareMappedEdges(p1,p2,list_of_dict, csv_merge):
+def prepareMappedEdges(p1, p2, list_of_dict, csv_merge):
     """
     Prepare the mapped information to one edge and writ it into a csv file
     :param p1: string
@@ -283,27 +303,29 @@ def prepareMappedEdges(p1,p2,list_of_dict, csv_merge):
     csv_merge.writerow(prepare_dictionary(final_dictionary, identifier))
     return identifier
 
+
 # set of added pairs
-set_of_added_pair=set()
+set_of_added_pair = set()
+
 
 def write_info_into_files():
     """
     Check if a pair exist already in Pharmebinet or not and prepare the information for this.
     :return:
     """
-    print_one_example_other_way_around=False
+    print_one_example_other_way_around = False
     csv_writer, csv_writer_go, csv_merge = generate_file_and_cypher()
     counter = maximal_id
     for (p1, p2), list_of_dict in dict_pair_to_infos.items():
         if (p1, p2) in dict_protein_pair_to_dictionary:
-            identifier=prepareMappedEdges(p1,p2,list_of_dict, csv_merge)
+            identifier = prepareMappedEdges(p1, p2, list_of_dict, csv_merge)
         elif (p2, p1) in dict_protein_pair_to_dictionary:
-            identifier=prepareMappedEdges(p2,p1,list_of_dict, csv_merge)
+            identifier = prepareMappedEdges(p2, p1, list_of_dict, csv_merge)
             if not print_one_example_other_way_around:
-                print_one_example_other_way_around=True
+                print_one_example_other_way_around = True
         else:
             # consider only one direction
-            if (p1,p2) in set_of_added_pair or (p2,p1) in set_of_added_pair:
+            if (p1, p2) in set_of_added_pair or (p2, p1) in set_of_added_pair:
                 continue
             counter += 1
             identifier = counter
@@ -314,7 +336,7 @@ def write_info_into_files():
                 final_dictionary = prepare_multiple_edges_between_same_pairs(list_of_dict, p1, p2)
 
             csv_writer.writerow(prepare_dictionary(final_dictionary, identifier))
-            set_of_added_pair.add((p1,p2))
+            set_of_added_pair.add((p1, p2))
 
         if (p1, p2) in dict_pair_to_go_ids:
             for go in dict_pair_to_go_ids[(p1, p2)]:
@@ -371,6 +393,8 @@ def main():
     print('prepare files')
 
     write_info_into_files()
+
+    driver.close()
 
     print(
         '#################################################################################################################################################################')

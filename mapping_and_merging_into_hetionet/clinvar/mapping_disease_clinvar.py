@@ -5,14 +5,16 @@ from itertools import groupby
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 
 def database_connection():
     '''
     create connection to neo4j
     '''
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 # dictionary disease id to disease node
@@ -28,7 +30,7 @@ dict_disease_name_to_ids = {}
 dict_disease_name_synonyms_to_ids = {}
 
 # dictionary disease id to resource
-dict_disease_id_to_resource={}
+dict_disease_id_to_resource = {}
 
 
 def load_genes_from_database_and_add_to_dict():
@@ -37,11 +39,12 @@ def load_genes_from_database_and_add_to_dict():
     '''
     query = "MATCH (n:Disease) RETURN n"
     results = g.run(query)
-    for disease, in results:
+    for record in results:
+        disease = record.data()['n']
         identifier = disease['identifier']
         dict_disease_id_to_disease_node[identifier] = dict(disease)
         xrefs = disease['xrefs'] if 'xrefs' in disease else []
-        dict_disease_id_to_resource[identifier]= disease['resource']
+        dict_disease_id_to_resource[identifier] = disease['resource']
         for xref in xrefs:
             if xref not in dict_xref_to_disease_id:
                 dict_xref_to_disease_id[xref] = set()
@@ -58,16 +61,15 @@ def load_genes_from_database_and_add_to_dict():
 
 cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
 
-query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/clinvar/disease/%s.tsv" As line FIELDTERMINATOR '\\t' 
-    Match '''
-
 
 def add_query_to_cypher_file():
     '''
     add query for a specific tsv to cypher file
     '''
-    this_start_query = query_start + "(n:trait_Disease_ClinVar {identifier:line.trait_id}), (m:Disease{identifier:line.disease_id}) Set m.clinvar='yes', m.resource=split(line.resource,'|') Create (m)-[:equal_to_clinvar_disease{mapping_methode:split(line.mapping_method,'|')}]->(n);\n"
-    query = this_start_query % (path_of_directory, 'mapping')
+    this_start_query = "Match (n:trait_Disease_ClinVar {identifier:line.trait_id}), (m:Disease{identifier:line.disease_id}) Set m.clinvar='yes', m.resource=split(line.resource,'|') Create (m)-[:equal_to_clinvar_disease{mapping_methode:split(line.mapping_method,'|')}]->(n)"
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/clinvar/disease/mapping.tsv',
+                                              this_start_query)
     cypher_file.write(query)
 
 
@@ -99,7 +101,8 @@ def load_all_clinvar_disease_and_start_mapping():
     query = "MATCH (n:trait_Disease_ClinVar) RETURN n"
     results = g.run(query)
     counter_mapped = 0
-    for node, in results:
+    for record in results:
+        node = record.data()['n']
         identifier = node['identifier']
 
         dict_clinvar_id_to_node[identifier] = dict(node)
@@ -203,9 +206,10 @@ def write_into_tsv_file(disease_id, trait_id, trait_name, tuple_pair, csv_mappin
                                                                           dict_disease_id_to_disease_node[
                                                                               disease_id] else ''
     mapping_set = dict_of_mapped_tuples[tuple_pair] if tuple_pair in dict_of_mapped_tuples else mapped_with
-    resource=set(dict_disease_id_to_resource[disease_id])
+    resource = set(dict_disease_id_to_resource[disease_id])
     resource.add('ClinVar')
-    csv_mapping_writer.writerow([trait_id, disease_id, "|".join(list(mapping_set)), '|'.join(sorted(resource)), trait_name, disease_name])
+    csv_mapping_writer.writerow(
+        [trait_id, disease_id, "|".join(list(mapping_set)), '|'.join(sorted(resource)), trait_name, disease_name])
 
 
 def check_for_mapping_and_write_in_tsv_file(name, dictionary, counter_new_mapped, trait_id, mapped_ids, mapped_with):
@@ -245,7 +249,7 @@ def mapping_with_name():
     for trait_id in set_not_mapped_ids:
         if 'name' in dict_clinvar_id_to_node[trait_id]:
             name = dict_clinvar_id_to_node[trait_id]['name']
-            name = name.replace(' (disease)','')
+            name = name.replace(' (disease)', '')
             found, counter_new_mapped = check_for_mapping_and_write_in_tsv_file(name, dict_disease_name_to_ids,
                                                                                 counter_new_mapped, trait_id,
                                                                                 mapped_ids, ['name'])
@@ -386,6 +390,8 @@ def main():
     print('Write the tsv')
 
     write_in_tsv_files()
+
+    driver.close()
 
     print('##########################################################################')
 

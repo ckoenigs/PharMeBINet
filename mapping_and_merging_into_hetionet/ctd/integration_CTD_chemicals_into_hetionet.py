@@ -1,4 +1,3 @@
-
 import datetime
 import sys, time, csv
 import io
@@ -6,13 +5,11 @@ from collections import defaultdict
 from typing import Any
 
 sys.path.append("../..")
-import create_connection_to_databases#
-
+import create_connection_to_databases
+import pharmebinetutils
 
 sys.path.append("..")
 from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
-
-
 
 
 class Drugpharmebinet:
@@ -23,15 +20,15 @@ class Drugpharmebinet:
     name :string
     """
 
-    def __init__(self, identifier, inchikey, inchi, name, cas_number, xrefs, resources,synonyms):
+    def __init__(self, identifier, inchikey, inchi, name, cas_number, xrefs, resources, synonyms):
         self.identifier = identifier
         self.inchikey = inchikey
         self.inchi = inchi
         self.name = name
-        self.cas_number=cas_number
-        self.xrefs=xrefs
-        self.resources=resources
-        self.synonyms=synonyms
+        self.cas_number = cas_number
+        self.xrefs = xrefs
+        self.resources = resources
+        self.synonyms = synonyms
 
 
 class DrugCTD:
@@ -44,72 +41,79 @@ class DrugCTD:
     how_mapped: string
     """
 
-    def __init__(self, idType, chemical_id, synonyms,  name,  casRN):
+    def __init__(self, idType, chemical_id, synonyms, name, casRN):
         self.idType = idType
         self.chemical_id = chemical_id
         self.synonyms = synonyms
         self.name = name
-        self.casRN=casRN
+        self.casRN = casRN
 
     def set_drugbankIDs(self, drugbank_ids):
-        self.drugBankIDs= drugbank_ids
+        self.drugBankIDs = drugbank_ids
 
     def set_how_mapped(self, how_mapped):
         self.how_mapped = how_mapped
 
-#dictionary of mesh mapping to drugbank from umls
-dict_mesh_to_drugbank_with_umls={}
 
-#dictionary of mesh mapping to drugbank from rxnorm
-dict_mesh_to_drugbank_with_rxnorm={}
+# dictionary of mesh mapping to drugbank from umls
+dict_mesh_to_drugbank_with_umls = {}
+
+# dictionary of mesh mapping to drugbank from rxnorm
+dict_mesh_to_drugbank_with_rxnorm = {}
 
 '''
 try to open file
 '''
+
+
 def try_to_open_file_and_read_information_into_dict(file, header, dictionary):
     try:
-        cache_file=open(file,'r', encoding='utf-8')
-        csv_reader=csv.DictReader(cache_file,delimiter='\t')
+        cache_file = open(file, 'r', encoding='utf-8')
+        csv_reader = csv.DictReader(cache_file, delimiter='\t')
         for row in csv_reader:
-            drugbank_ids=[]
+            drugbank_ids = []
             for drugbank_id in row['drugbank_ids'].split('|'):
                 if drugbank_id in dict_drugs_pharmebinet:
                     drugbank_ids.append(drugbank_id)
-            if len(drugbank_ids) >0:
-                dictionary[row['mesh_id']]=list(set(row['drugbank_ids'].split('|')))
+            if len(drugbank_ids) > 0:
+                dictionary[row['mesh_id']] = list(set(row['drugbank_ids'].split('|')))
         cache_file.close()
         cache_file = open(file, 'a', encoding='utf-8')
         csv_writer = csv.writer(cache_file, delimiter='\t')
         return csv_writer
 
     except:
-        cache_file=open(file,'w',encoding='utf-8')
-        csv_writer=csv.writer(cache_file,delimiter='\t')
+        cache_file = open(file, 'w', encoding='utf-8')
+        csv_writer = csv.writer(cache_file, delimiter='\t')
         csv_writer.writerow(header)
         return csv_writer
+
 
 '''
 Create mapping files or open and load mapping results
 '''
 
+
 def get_umls_mapping_result_or_generate_new_file():
     # header of cache file
-    header=['mesh_id','drugbank_ids']
+    header = ['mesh_id', 'drugbank_ids']
 
     # umls mapping
     global csv_writer_umls
-    csv_writer_umls=try_to_open_file_and_read_information_into_dict('chemical/mapping_results_umls.tsv',header,dict_mesh_to_drugbank_with_umls)
+    csv_writer_umls = try_to_open_file_and_read_information_into_dict('chemical/mapping_results_umls.tsv', header,
+                                                                      dict_mesh_to_drugbank_with_umls)
 
     # rxnorm mapping
     global csv_writer_rxnorm
-    csv_writer_rxnorm=try_to_open_file_and_read_information_into_dict('chemical/mapping_results_rxnorm.tsv',header,dict_mesh_to_drugbank_with_rxnorm)
+    csv_writer_rxnorm = try_to_open_file_and_read_information_into_dict('chemical/mapping_results_rxnorm.tsv', header,
+                                                                        dict_mesh_to_drugbank_with_rxnorm)
 
 
 # dictionary with all compounds from pharmebinet and  key is drugbank id and value is class Drugpharmebinet
 dict_drugs_pharmebinet = {}
 
 # dictionary with all alternative drugbank ids to original one
-dict_alternative_to_drugbank_id={}
+dict_alternative_to_drugbank_id = {}
 
 # dictionary from ctd with all drugs that has a drugbank id, key is chemical id and value is class DrugCTD
 dict_drugs_CTD_with_drugbankIDs = {}
@@ -127,8 +131,9 @@ create connection to neo4j and mysql
 
 def create_connection_with_neo4j_mysql():
     # authenticate("localhost:7474", "neo4j", "test")
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
     # create connection with mysql database
     global con
@@ -138,18 +143,21 @@ def create_connection_with_neo4j_mysql():
     global conRxNorm
     conRxNorm = create_connection_to_databases.database_connection_RxNorm()
 
+
 # dictionary cas number to drugbank
-dict_cas_to_drugbank={}
+dict_cas_to_drugbank = {}
 
 # list of removed multiple cas number
-list_multi_cas=[]
+list_multi_cas = []
 
-#dictionary from drugbank synonym to drugbank id
-dict_synonym_to_drugbank_id=defaultdict(set)
+# dictionary from drugbank synonym to drugbank id
+dict_synonym_to_drugbank_id = defaultdict(set)
 
 '''
 remove all mapped mesh ids from not_mapped list
 '''
+
+
 def remove_mesh_ids_from_not_mapped_list(delete_mapped_mesh_ids):
     delete_mapped_mesh_ids = list(set(delete_mapped_mesh_ids))
     delete_mapped_mesh_ids.sort()
@@ -157,9 +165,12 @@ def remove_mesh_ids_from_not_mapped_list(delete_mapped_mesh_ids):
     for index in delete_mapped_mesh_ids:
         list_drug_CTD_without_drugbank_id.pop(index)
 
+
 '''
 remove all mapped mesh ids from not_mapped cuis list
 '''
+
+
 #
 def remove_all_mapped_mesh_ids_from_not_mapped_cui_list(delete_cui):
     delete_cui = list(set(delete_cui))
@@ -189,38 +200,39 @@ def load_compounds_from_pharmebinet():
     results = g.run(query)
     i = 0
 
-    for result, in results:
+    for record in results:
+        result = record.data()['n']
         i += 1
         identifier = result['identifier']
-        inchikey = result['inchikey']
-        inchi = result['inchi']
+        inchikey = result['inchikey'] if 'inchikey' in result else ''
+        inchi = result['inchi'] if 'inchi' in result else ''
         name = result['name'].lower()
-        cas_number= result['cas_number'] if 'cas_number' in result else ''
-        alternative_ids=result['alternative_ids'] if 'alternative_ids' in result else []
-        alternative_ids=list(filter(bool,alternative_ids))
-        synonyms=[x.lower() for x in result['synonyms']] if 'synonyms' in result else []
-        xrefs= result['xrefs'] if 'xrefs' in result else []
+        cas_number = result['cas_number'] if 'cas_number' in result else ''
+        alternative_ids = result['alternative_ids'] if 'alternative_ids' in result else []
+        alternative_ids = list(filter(bool, alternative_ids))
+        synonyms = [x.lower() for x in result['synonyms']] if 'synonyms' in result else []
+        xrefs = result['xrefs'] if 'xrefs' in result else []
         resource = result['resource'] if 'resource' in result else []
 
-        #generate name/synonym dictionary to drugbank identifier
-        dict_synonym_to_drugbank_id[name].add(identifier) if  name is not None else print('no name')
+        # generate name/synonym dictionary to drugbank identifier
+        dict_synonym_to_drugbank_id[name].add(identifier) if name is not None else print('no name')
 
         for synonym in synonyms:
             dict_synonym_to_drugbank_id[synonym].add(identifier)
         #        resource=result['resource']
 
-        drug = Drugpharmebinet(identifier, inchikey, inchi, name, cas_number, xrefs, resource,synonyms)
+        drug = Drugpharmebinet(identifier, inchikey, inchi, name, cas_number, xrefs, resource, synonyms)
 
         dict_drugs_pharmebinet[identifier] = drug
         for alt_drugbank_id in alternative_ids:
             # if alt_drugbank_id in dict_alternative_to_drugbank_id:
             #     print(alt_drugbank_id)
             #     sys.exit()
-            dict_alternative_to_drugbank_id[alt_drugbank_id]=identifier
+            dict_alternative_to_drugbank_id[alt_drugbank_id] = identifier
 
-        if cas_number!='':
-            if not cas_number in dict_cas_to_drugbank :
-                dict_cas_to_drugbank[cas_number]=[identifier]
+        if cas_number != '':
+            if not cas_number in dict_cas_to_drugbank:
+                dict_cas_to_drugbank[cas_number] = [identifier]
             else:
                 dict_cas_to_drugbank[cas_number].append(identifier)
                 print('multi cas')
@@ -231,12 +243,12 @@ def load_compounds_from_pharmebinet():
 
 # dictionary wrong multiple mapped ctd
 # manual checked
-dict_wrong_multiple_mapped_ctd={
-    'D012978':u'DB01440',
-    'D006493':u'DB00407',
-    'C030290':u'DB02201',
-    'D002955':u'DB03256',
-    'D014191':u'DB02665'
+dict_wrong_multiple_mapped_ctd = {
+    'D012978': u'DB01440',
+    'D006493': u'DB00407',
+    'C030290': u'DB02201',
+    'D002955': u'DB03256',
+    'D014191': u'DB02665'
 }
 
 file_not_same_cas = open('chemical/not_same_cas.tsv', 'w')
@@ -247,16 +259,18 @@ csv_not_the_same_cas.writerow(['mesh', 'cas-mesh', 'drugbank', 'cas-db', 'mappin
 check if the external reference of ctd drugbank id has the same cas number
 add the mapped ctd in dictionary
 '''
-def check_and_add_the_mapping(chemical_id, drug, drugBankID,casRN,name,synonyms):
+
+
+def check_and_add_the_mapping(chemical_id, drug, drugBankID, casRN, name, synonyms):
     dict_drugs_CTD_with_drugbankIDs[chemical_id] = drug
-    drugbank_ids=set()
-    drugbank_ids_name=[]
+    drugbank_ids = set()
+    drugbank_ids_name = []
     if name in dict_synonym_to_drugbank_id:
-        drugbank_ids_name=list(dict_synonym_to_drugbank_id[name])
+        drugbank_ids_name = list(dict_synonym_to_drugbank_id[name])
     if dict_drugs_pharmebinet[drugBankID].cas_number != casRN and casRN != '' and dict_drugs_pharmebinet[
         drugBankID].cas_number != '':
         if casRN in dict_cas_to_drugbank:
-            drug_string='|'.join(dict_cas_to_drugbank[casRN])
+            drug_string = '|'.join(dict_cas_to_drugbank[casRN])
             csv_not_the_same_cas.writerow([
                 chemical_id, casRN, drugBankID, dict_drugs_pharmebinet[
                     drugBankID].cas_number, drug_string])
@@ -266,20 +280,21 @@ def check_and_add_the_mapping(chemical_id, drug, drugBankID,casRN,name,synonyms)
             #     dict_drugs_CTD_with_drugbankIDs[chemical_id].set_how_mapped('drugbank ids from ctd')
             #     return False, [drugBankID]
 
-            ctd_names=set([name])
-            ctd_names=ctd_names.union(synonyms)
-            fitting_drugbank_ids=set()
+            ctd_names = set([name])
+            ctd_names = ctd_names.union(synonyms)
+            fitting_drugbank_ids = set()
             for drugbank_id in set(dict_cas_to_drugbank[casRN]):
-                drugbank_id_names=set([dict_drugs_pharmebinet[drugbank_id].name])
-                drugbank_id_names=drugbank_id_names.union(dict_drugs_pharmebinet[drugbank_id].synonyms)
-                if len(ctd_names.intersection(drugbank_id_names))>0:
+                drugbank_id_names = set([dict_drugs_pharmebinet[drugbank_id].name])
+                drugbank_id_names = drugbank_id_names.union(dict_drugs_pharmebinet[drugbank_id].synonyms)
+                if len(ctd_names.intersection(drugbank_id_names)) > 0:
                     fitting_drugbank_ids.add(drugbank_id)
 
-            drugbank_ids =fitting_drugbank_ids
+            drugbank_ids = fitting_drugbank_ids
             dict_drugs_CTD_with_drugbankIDs[chemical_id].set_how_mapped('cas-id from ctd')
         else:
-            csv_not_the_same_cas.writerow([chemical_id, casRN, drugBankID, dict_drugs_pharmebinet[drugBankID].cas_number])
-    if len(drugbank_ids)==0:
+            csv_not_the_same_cas.writerow(
+                [chemical_id, casRN, drugBankID, dict_drugs_pharmebinet[drugBankID].cas_number])
+    if len(drugbank_ids) == 0:
         drugbank_ids.add(drugBankID)
         drugbank_ids.union(drugbank_ids_name)
         dict_drugs_CTD_with_drugbankIDs[chemical_id].set_how_mapped('drugbank ids and name from ctd')
@@ -308,22 +323,22 @@ properties:
 def load_drugs_from_CTD():
     query = 'MATCH (n:CTD_chemical) RETURN n'
     results = g.run(query)
-    counter_drugbank=0
+    counter_drugbank = 0
 
-    for result, in results:
-        idType = result['idType']
+    for record in results:
+        result = record.data()['n']
+        idType = result['idType'] if 'idType' in result else ''
         chemical_id = result['chemical_id']
-        if chemical_id=='D012978':
+        if chemical_id == 'D012978':
             print('huhu')
         synonyms = [x.lower() for x in result['synonyms']] if 'synonyms' in result else []
 
-        casRN= result['casRN'] if 'casRN' in result else ''
+        casRN = result['casRN'] if 'casRN' in result else ''
         name = result['name'].lower()
-        drug = DrugCTD(idType, chemical_id, synonyms,  name,casRN)
-
+        drug = DrugCTD(idType, chemical_id, synonyms, name, casRN)
 
         # manual
-        if chemical_id=='C007420':
+        if chemical_id == 'C007420':
             dict_drugs_CTD_without_drugbankIDs[chemical_id] = drug
             list_drug_CTD_without_drugbank_id.append(chemical_id)
 
@@ -331,25 +346,27 @@ def load_drugs_from_CTD():
         dict_drugs_CTD_without_drugbankIDs[chemical_id] = drug
         list_drug_CTD_without_drugbank_id.append(chemical_id)
 
-
     print(counter_drugbank)
     print('In ctd drugs without drugbank ids:' + str(len(dict_drugs_CTD_without_drugbankIDs)))
     print('In ctd drugs with drugbank ids:' + str(len(dict_drugs_CTD_with_drugbankIDs)))
 
+
 # list with all mesh that did not mapp with cas
-list_not_mapped_with_cas=[]
+list_not_mapped_with_cas = []
 
 '''
 mapping with cas number
 '''
+
+
 def map_with_cas_number_to_drugbank():
-    delete_mapped_mesh_ids=[]
-    counter_map_with_cas=0
+    delete_mapped_mesh_ids = []
+    counter_map_with_cas = 0
     for mesh_id, information in dict_drugs_CTD_without_drugbankIDs.items():
-        casRN= information.casRN
+        casRN = information.casRN
 
         if casRN in dict_cas_to_drugbank:
-            counter_map_with_cas+=1
+            counter_map_with_cas += 1
             dict_drugs_CTD_with_drugbankIDs[mesh_id] = dict_drugs_CTD_without_drugbankIDs[mesh_id]
             dict_drugs_CTD_with_drugbankIDs[mesh_id].set_drugbankIDs(dict_cas_to_drugbank[casRN])
             dict_drugs_CTD_with_drugbankIDs[mesh_id].set_how_mapped('use cas number to map to drugbank ids')
@@ -360,11 +377,10 @@ def map_with_cas_number_to_drugbank():
     # remove all mapped mesh ids from not_mapped list
     remove_mesh_ids_from_not_mapped_list(delete_mapped_mesh_ids)
 
-    print('number of mappings with cas:'+str(counter_map_with_cas))
+    print('number of mappings with cas:' + str(counter_map_with_cas))
     print(len(list_drug_CTD_without_drugbank_id))
     print(len(list_not_mapped_with_cas))
     print('In ctd drugs with drugbank ids:' + str(len(dict_drugs_CTD_with_drugbankIDs)))
-
 
 
 # dictionary with all mesh id, which have not a drugbank id, and value are the umls cuis
@@ -385,25 +401,24 @@ def find_cui_for_ctd_drugs():
     count_map_with_name = 0
     for mesh_id in list_not_mapped_with_cas:
 
-        found_mapping=False
+        found_mapping = False
         if mesh_id in dict_mesh_to_drugbank_with_umls:
-            mesh_name=dict_drugs_CTD_without_drugbankIDs[mesh_id].name.lower()
-            drugbank_ids=set()
+            mesh_name = dict_drugs_CTD_without_drugbankIDs[mesh_id].name.lower()
+            drugbank_ids = set()
             if mesh_name in dict_synonym_to_drugbank_id:
-                drugbank_ids=drugbank_ids.union(dict_synonym_to_drugbank_id[mesh_name])
-            mesh_synonyms=dict_drugs_CTD_without_drugbankIDs[mesh_id].synonyms
+                drugbank_ids = drugbank_ids.union(dict_synonym_to_drugbank_id[mesh_name])
+            mesh_synonyms = dict_drugs_CTD_without_drugbankIDs[mesh_id].synonyms
             for synonym in mesh_synonyms:
-                synonym=synonym.lower()
+                synonym = synonym.lower()
                 if synonym in dict_synonym_to_drugbank_id:
                     drugbank_ids = drugbank_ids.union(dict_synonym_to_drugbank_id[synonym])
 
-            if len(drugbank_ids.intersection(dict_mesh_to_drugbank_with_umls[mesh_id]))>0:
-
+            if len(drugbank_ids.intersection(dict_mesh_to_drugbank_with_umls[mesh_id])) > 0:
                 dict_drugs_CTD_with_drugbankIDs[mesh_id] = dict_drugs_CTD_without_drugbankIDs[mesh_id]
                 dict_drugs_CTD_with_drugbankIDs[mesh_id].set_drugbankIDs(dict_mesh_to_drugbank_with_umls[mesh_id])
                 dict_drugs_CTD_with_drugbankIDs[mesh_id].set_how_mapped('use umls cui to map to drugbank ids')
                 delete_mapped_mesh_ids.append(list_drug_CTD_without_drugbank_id.index(mesh_id))
-                found_mapping=True
+                found_mapping = True
 
         if not found_mapping:
 
@@ -426,8 +441,8 @@ def find_cui_for_ctd_drugs():
                 cur = con.cursor()
                 # if not mapped map the name to umls cui
                 query = ('Select CUI,LAT,CODE,SAB From MRCONSO Where STR= "%s" And SAB="MSH" ;')
-                query= query % (dict_drugs_CTD_without_drugbankIDs[mesh_id].name.lower())
-                rows_counter = cur.execute(query )
+                query = query % (dict_drugs_CTD_without_drugbankIDs[mesh_id].name.lower())
+                rows_counter = cur.execute(query)
                 if rows_counter > 0:
                     count_map_with_name += 1
                     list_cuis = []
@@ -441,7 +456,6 @@ def find_cui_for_ctd_drugs():
     print('number of name mapped:' + str(count_map_with_name))
     print('number of mesh with cuis:' + str(len(dict_mesh_to_cuis)))
     print('number of mesh without cuis:' + str(len(list_mesh_without_cui)))
-
 
     # remove all mapped mesh ids from not_mapped list
     remove_mesh_ids_from_not_mapped_list(delete_mapped_mesh_ids)
@@ -459,7 +473,7 @@ def map_cui_to_drugbank_with_umls():
     # mesh ids which are mapped to drugbank in this step
     delete_mapped_mesh = []
     for mesh_id, cuis in dict_mesh_to_cuis.items():
-        #manula not mapped
+        # manula not mapped
         if mesh_id in ['C006012']:
             list_cuis_not_mapped_drugbank_id.append(mesh_id)
             continue
@@ -475,13 +489,13 @@ def map_cui_to_drugbank_with_umls():
                 if code in dict_drugs_pharmebinet:
                     drugbank_ids.append(code)
             drugbank_ids = list(set(drugbank_ids))
-            if len(drugbank_ids)>0:
-                drugbank_ids_name=[]
+            if len(drugbank_ids) > 0:
+                drugbank_ids_name = []
                 if dict_drugs_CTD_without_drugbankIDs[mesh_id].name in dict_synonym_to_drugbank_id:
                     drugbank_ids_name = dict_synonym_to_drugbank_id[dict_drugs_CTD_without_drugbankIDs[mesh_id].name]
-                drugbank_ids=list(set(drugbank_ids).union(drugbank_ids_name))
-                drugbank_string='|'.join(drugbank_ids)
-                csv_writer_umls.writerow([mesh_id,drugbank_string])
+                drugbank_ids = list(set(drugbank_ids).union(drugbank_ids_name))
+                drugbank_string = '|'.join(drugbank_ids)
+                csv_writer_umls.writerow([mesh_id, drugbank_string])
                 dict_drugs_CTD_with_drugbankIDs[mesh_id] = dict_drugs_CTD_without_drugbankIDs[mesh_id]
                 delete_mapped_mesh.append(list_drug_CTD_without_drugbank_id.index(mesh_id))
                 dict_drugs_CTD_with_drugbankIDs[mesh_id].set_drugbankIDs(drugbank_ids)
@@ -580,7 +594,7 @@ def map_rxcui_to_drugbank_with_rxnorm():
     for mesh_id, rxcuis in dict_mesh_to_rxcuis.items():
 
         # manual map not well
-        if mesh_id in ['C018375','C006012']:
+        if mesh_id in ['C018375', 'C006012']:
             list_rxcuis_not_mapped_drugbank_id.append(mesh_id)
             continue
 
@@ -595,13 +609,13 @@ def map_rxcui_to_drugbank_with_rxnorm():
                 if code in dict_drugs_pharmebinet:
                     drugbank_ids.append(code)
             drugbank_ids = list(set(drugbank_ids))
-            if len(drugbank_ids)>0:
-                drugbank_ids_name=[]
+            if len(drugbank_ids) > 0:
+                drugbank_ids_name = []
                 if dict_drugs_CTD_without_drugbankIDs[mesh_id].name in dict_synonym_to_drugbank_id:
                     drugbank_ids_name = dict_synonym_to_drugbank_id[dict_drugs_CTD_without_drugbankIDs[mesh_id].name]
-                drugbank_ids=list(set(drugbank_ids).union(drugbank_ids_name))
-                drugbank_string='|'.join(drugbank_ids)
-                csv_writer_rxnorm.writerow([mesh_id,drugbank_string])
+                drugbank_ids = list(set(drugbank_ids).union(drugbank_ids_name))
+                drugbank_string = '|'.join(drugbank_ids)
+                csv_writer_rxnorm.writerow([mesh_id, drugbank_string])
                 dict_drugs_CTD_with_drugbankIDs[mesh_id] = dict_drugs_CTD_without_drugbankIDs[mesh_id]
                 delete_mapped_mesh_ids.append(list_drug_CTD_without_drugbank_id.index(mesh_id))
                 dict_drugs_CTD_with_drugbankIDs[mesh_id].set_drugbankIDs(drugbank_ids)
@@ -676,15 +690,18 @@ def map_use_dhimmel_rxnorm_drugbank_map_unii_inchikey():
     print('length of list of cuis without drugbank ids from umls:' + str(len(list_cuis_not_mapped_drugbank_id)))
     print('number of mesh ids which are not mapped:' + str(len(list_drug_CTD_without_drugbank_id)))
 
+
 '''
 map with name or synonyms to drugbank but with the value in pharmebinet (Drugbank drugs are all integrated into pharmebinet)
 '''
+
+
 def map_with_name_to_drugbank():
     delete_cui = []
     delete_mapped_mesh_ids = []
     for ctd_id in list_drug_CTD_without_drugbank_id:
-        name=dict_drugs_CTD_without_drugbankIDs[ctd_id].name
-        synonyms=dict_drugs_CTD_without_drugbankIDs[ctd_id].synonyms
+        name = dict_drugs_CTD_without_drugbankIDs[ctd_id].name
+        synonyms = dict_drugs_CTD_without_drugbankIDs[ctd_id].synonyms
 
         if name in dict_synonym_to_drugbank_id:
             dict_drugs_CTD_with_drugbankIDs[ctd_id] = dict_drugs_CTD_without_drugbankIDs[ctd_id]
@@ -710,7 +727,6 @@ def map_with_name_to_drugbank():
     print('number of mesh ids which are not mapped:' + str(len(list_drug_CTD_without_drugbank_id)))
 
 
-
 # dictionary for all ctd mesh ids which are mapped to pharmebinet with mesh as key and value are drugbank ids
 dict_ctd_to_compound = {}
 
@@ -730,20 +746,19 @@ map drugbank id from ctd to compound in pharmebinet
 
 
 def map_ctd_to_pharmebinet_compound():
-
     # all not mapped ctd chemicals
     not_mapped_file = open('chemical/not_mapped_drugs.tsv', 'w', encoding='utf-8')
-    not_mapped_csv=csv.writer(not_mapped_file,delimiter='\t')
-    not_mapped_csv.writerow(['mesh id','name', 'synonyms'])
+    not_mapped_csv = csv.writer(not_mapped_file, delimiter='\t')
+    not_mapped_csv.writerow(['mesh id', 'name', 'synonyms'])
 
     for mesh, drug in dict_drugs_CTD_with_drugbankIDs.items():
         drugbank_ids = set(drug.drugBankIDs)
 
         mapped = []
-        if mesh=='D000068759':
+        if mesh == 'D000068759':
             print('ohje ')
         # manual mapped
-        if mesh=='C025314':
+        if mesh == 'C025314':
             drugbank_ids.add('DB13949')
         # check if the mesh id is mapped to the wrond drugbank id
         elif mesh in dict_wrong_multiple_mapped_ctd:
@@ -754,31 +769,30 @@ def map_ctd_to_pharmebinet_compound():
         how_mapped = drug.how_mapped
 
         if how_mapped not in dict_how_mapped_file:
-            map_with = open('chemical/ctd_chemical_to_compound_map_use_'+how_mapped.replace(' ','_')+'.tsv', 'w')
+            map_with = open('chemical/ctd_chemical_to_compound_map_use_' + how_mapped.replace(' ', '_') + '.tsv', 'w')
             csv_mapped = csv.writer(map_with, delimiter='\t')
             csv_mapped.writerow(['MESH', 'drugbank_ids with | as seperator'])
-            dict_how_mapped_file[how_mapped]=csv_mapped
-        dict_how_mapped_file[how_mapped].writerow([mesh , string_drugbank_ids] )
+            dict_how_mapped_file[how_mapped] = csv_mapped
+        dict_how_mapped_file[how_mapped].writerow([mesh, string_drugbank_ids])
 
         if len(drugbank_ids) > 1:
             multiple_drugbankids.write(mesh + '\t' + string_drugbank_ids + '\t' + how_mapped + '\n')
 
-        delete_drugbank_id_and_add_element={}
+        delete_drugbank_id_and_add_element = {}
 
         # check out which which are alternative ids
         for drugbank_id in drugbank_ids:
             if drugbank_id in dict_alternative_to_drugbank_id:
-                delete_drugbank_id_and_add_element[drugbank_id]=dict_alternative_to_drugbank_id[drugbank_id]
+                delete_drugbank_id_and_add_element[drugbank_id] = dict_alternative_to_drugbank_id[drugbank_id]
                 mapped.append(dict_alternative_to_drugbank_id[drugbank_id])
             else:
                 mapped.append(drugbank_id)
 
         # make the list so that only the first drugbank ids are in the list and not the alternative ids
-        if len(delete_drugbank_id_and_add_element)>0:
+        if len(delete_drugbank_id_and_add_element) > 0:
             for delete_id, add_id in delete_drugbank_id_and_add_element.items():
                 drugbank_ids.remove(delete_id)
                 drugbank_ids.add(add_id)
-
 
         # check out if they have at least one drugbank id and will merge with a compound or will be a chemical
         if len(mapped) > 0:
@@ -787,28 +801,28 @@ def map_ctd_to_pharmebinet_compound():
         else:
             list_drug_CTD_without_drugbank_id.append(mesh)
             # list_new_compounds.append((mesh,drugbank_ids))
-            drugbank_ids=set()
+            drugbank_ids = set()
             writer.writerow([mesh])
 
         # check if ctd map to multiple nodes and if then find intersection with name mapping
-        if len(drugbank_ids)>1:
-            name=drug.name
-            name_drugbank_ids=set()
-            synonyms=drug.synonyms
+        if len(drugbank_ids) > 1:
+            name = drug.name
+            name_drugbank_ids = set()
+            synonyms = drug.synonyms
             if name in dict_synonym_to_drugbank_id:
                 name_drugbank_ids.update(list(dict_synonym_to_drugbank_id[name]))
             for synonym in synonyms:
-                synonym=synonym.lower()
+                synonym = synonym.lower()
                 if synonym in dict_synonym_to_drugbank_id:
                     name_drugbank_ids.update(list(dict_synonym_to_drugbank_id[synonym]))
 
-            if len(name_drugbank_ids)>0:
-                intersection_drugbank_ids=name_drugbank_ids.intersection(drugbank_ids)
-                if len(intersection_drugbank_ids)>0:
-                    drugbank_ids=intersection_drugbank_ids
+            if len(name_drugbank_ids) > 0:
+                intersection_drugbank_ids = name_drugbank_ids.intersection(drugbank_ids)
+                if len(intersection_drugbank_ids) > 0:
+                    drugbank_ids = intersection_drugbank_ids
                     print('intersection worked')
                     print(mesh)
-                    if len(drugbank_ids)>1:
+                    if len(drugbank_ids) > 1:
                         print(name_drugbank_ids)
                         print(drugbank_ids)
                         print(how_mapped)
@@ -823,10 +837,9 @@ def map_ctd_to_pharmebinet_compound():
                 print(mesh)
 
         drug.set_drugbankIDs(list(drugbank_ids))
-        dict_drugs_CTD_with_drugbankIDs[mesh]=drug
+        dict_drugs_CTD_with_drugbankIDs[mesh] = drug
 
     print('mapped to pharmebinet compound:' + str(len(dict_ctd_to_compound)))
-
 
     for chemical_id, drug in dict_drugs_CTD_without_drugbankIDs.items():
         if not chemical_id in dict_drugs_CTD_with_drugbankIDs:
@@ -834,10 +847,10 @@ def map_ctd_to_pharmebinet_compound():
             #            print(chemical_id)
             #            print(drug.name)
             #            print(drug.synonyms.encode('utf-8'))
-            synonyms=','.join(drug.synonyms)
+            synonyms = ','.join(drug.synonyms)
             synonym = synonyms
             #            print(synonym+'\n'+drug.name.encode('utf-8'))
-            not_mapped_csv.writerow([chemical_id , drug.name, synonym ])
+            not_mapped_csv.writerow([chemical_id, drug.name, synonym])
     not_mapped_file.close()
     # sys.exit()
 
@@ -865,9 +878,7 @@ def integration_of_ctd_chemicals_into_pharmebinet_compound():
     csvfile_db = io.open('chemical/chemicals_drugbank.tsv', 'w', encoding='utf-8', newline='')
     writer_compound = csv.writer(csvfile_db, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     writer_compound.writerow(
-        ['ChemicalID', 'Drugbank_id', 'url', 'string_resource', 'string_drugbank_ids', 'string_xml','how_mapped'])
-
-
+        ['ChemicalID', 'Drugbank_id', 'url', 'string_resource', 'string_drugbank_ids', 'string_xml', 'how_mapped'])
 
     for mesh_id, drug in dict_drugs_CTD_with_drugbankIDs.items():
         counter += 1
@@ -875,45 +886,49 @@ def integration_of_ctd_chemicals_into_pharmebinet_compound():
         how_mapped = drug.how_mapped
         drugbank_ids = drug.drugBankIDs
         for drugbank_id in drugbank_ids:
-
-
             index += 1
             resource = set(dict_drugs_pharmebinet[drugbank_id].resources)
             resource.add("CTD")
             string_resource = '|'.join(resource)
-            string_dbs='|'.join(drugbank_ids)
+            string_dbs = '|'.join(drugbank_ids)
 
             xrefs = dict_drugs_pharmebinet[drugbank_id].xrefs
-            xrefs.append("MESH:"+mesh_id)
+            print(drugbank_id)
+            xrefs.append("MESH:" + mesh_id)
             xrefs = go_through_xrefs_and_change_if_needed_source_name(xrefs, 'chemical')
             string_xrefs = '|'.join(xrefs)
 
             url = 'http://ctdbase.org/detail.go?type=chem&acc=' + mesh_id
-            writer_compound.writerow([mesh_id, drugbank_id, url, string_resource,string_dbs, string_xrefs,how_mapped])
-
+            writer_compound.writerow([mesh_id, drugbank_id, url, string_resource, string_dbs, string_xrefs, how_mapped])
 
     print('number of ctd drug which has no legal drugbank id:' + str(counter_illegal_drugbank_ids))
     print('number of all ctd which are mapped include the one with illegal drugbank ids:' + str(counter))
 
 
-
 '''
 add all not mapped ctd chemicals to tsv and then integrate into neo4j as chemicals
 '''
-def generate_cypher_file():
 
-    cypher_file= open('output/cypher.cypher','a',encoding='utf-8')
-    cypher_file.write(''':begin\nMatch (n:Compound) Set n:Chemical;\n:Commit\n''')
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''mapping_and_merging_into_hetionet/ctd/chemical/chemicals_drugbank.tsv" As line   FIELDTERMINATOR '\\t' MATCH (n:CTD_chemical{chemical_id:line.ChemicalID}), (c:Compound{identifier:line.Drugbank_id}) Set c.ctd="yes", c.ctd_url=line.url, c.resource=split(line.string_resource,'|'), c.xrefs=split(line.string_xml,'|'), n.drugBankIDs=split(line.string_drugbank_ids,'|')  Create (c)-[:equal_chemical_CTD{how_mapped:line.how_mapped}]->(n);\n'''
+
+def generate_cypher_file():
+    cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
+    cypher_file.write('''Match (n:Compound) Set n:Chemical;\n''')
+    query = '''MATCH (n:CTD_chemical{chemical_id:line.ChemicalID}), (c:Compound{identifier:line.Drugbank_id}) With n, c,line Set c.ctd="yes", c.ctd_url=line.url, c.resource=split(line.string_resource,'|'), c.xrefs=split(line.string_xml,'|'), n.drugBankIDs=split(line.string_drugbank_ids,'|')  Create (c)-[:equal_chemical_CTD{how_mapped:line.how_mapped}]->(n)'''
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/ctd/chemical/chemicals_drugbank.tsv',
+                                              query)
     cypher_file.write(query)
-    query='''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:'''+path_of_directory+'''mapping_and_merging_into_hetionet/ctd/chemical/chemicals.tsv" As line  FIELDTERMINATOR '\\t' MATCH (n:CTD_chemical{chemical_id:line.ChemicalID}) Create (d:Chemical{identifier:line.ChemicalID, parentIDs:n.parentIDs, parentTreeNumbers:n.parentTreeNumbers, treeNumbers:n.treeNumbers, definition:n.definition, synonyms:n.synonyms, name:n.name, cas_number:n.casRN, resource:['CTD'], ctd:'yes', ctd_url:'http://ctdbase.org/detail.go?type=chem&acc='+line.ChemicalID, url:"https://meshb.nlm.nih.gov/record/ui?ui="+line.ChemicalID,  license:"Copyright 2002-2012 MDI Biological Laboratory. All rights reserved. Copyright 2012-2021 NC State University. All rights reserved.", source:"MeSH via CTD" }) With d, n Create (d)-[:equal_to_CTD_chemical]->(n);\n '''
+    query = '''MATCH (n:CTD_chemical{chemical_id:line.ChemicalID}) Create (d:Chemical{identifier:line.ChemicalID, parentIDs:n.parentIDs, parentTreeNumbers:n.parentTreeNumbers, treeNumbers:n.treeNumbers, definition:n.definition, synonyms:n.synonyms, name:n.name, cas_number:n.casRN, resource:['CTD'], ctd:'yes', ctd_url:'http://ctdbase.org/detail.go?type=chem&acc='+line.ChemicalID, url:"https://meshb.nlm.nih.gov/record/ui?ui="+line.ChemicalID,  license:"Copyright 2002-2012 MDI Biological Laboratory. All rights reserved. Copyright 2012-2021 NC State University. All rights reserved.", source:"MeSH via CTD" }) With d, n Create (d)-[:equal_to_CTD_chemical]->(n) '''
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/ctd/chemical/chemicals.tsv',
+                                              query)
     cypher_file.write(query)
-    cypher_file.write(':begin\n Create Constraint On (node:Chemical) Assert node.identifier Is Unique;\n :commit\n')
+    cypher_file.write(pharmebinetutils.prepare_index_query('Chemical', 'identifier'))
     cypher_file.close()
 
 
 # says if chemicals exists or not so need to create chemicals or merge
-exists_chemicals=False
+exists_chemicals = False
 
 
 def main():
@@ -926,14 +941,14 @@ def main():
         sys.exit('need a path')
 
     global exists_chemicals
-    print (datetime.datetime.now())
+    print(datetime.datetime.now())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j_mysql()
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.now())
+    print(datetime.datetime.now())
     print('Load all compounds from pharmebinet into a dictionary')
 
     load_compounds_from_pharmebinet()
@@ -941,16 +956,15 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.now())
+    print(datetime.datetime.now())
     print('Load all mesh drugbank ids from file in dictionary and prepare file')
-
 
     get_umls_mapping_result_or_generate_new_file()
 
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.now())
+    print(datetime.datetime.now())
     print('Load all drugs from ctd into dictionaries depending on the drugbank id exist or not ')
 
     load_drugs_from_CTD()
@@ -958,17 +972,17 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.now())
+    print(datetime.datetime.now())
     print('Map with use of cas')
 
     map_with_cas_number_to_drugbank()
 
-    print (datetime.datetime.now())
+    print(datetime.datetime.now())
 
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.now())
+    print(datetime.datetime.now())
     print('Find cuis for the ctd mesh terms ')
 
     find_cui_for_ctd_drugs()
@@ -976,7 +990,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.now())
+    print(datetime.datetime.now())
     print('Find drugbank ids with use of the cuis in umls ')
 
     map_cui_to_drugbank_with_umls()
@@ -984,7 +998,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.now())
+    print(datetime.datetime.now())
     print('Find rxcuis for the ctd mesh terms  ')
 
     find_rxcui_for_ctd_drugs()
@@ -992,7 +1006,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.now())
+    print(datetime.datetime.now())
     print('Find drugbank ids with use of the rxcuis in rxnorm ')
 
     map_rxcui_to_drugbank_with_rxnorm()
@@ -1000,7 +1014,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.now())
+    print(datetime.datetime.now())
     print('Find drugbank ids with use of the rxnorm drugbank table which is generated with unii and inchikeys ')
 
     map_use_dhimmel_rxnorm_drugbank_map_unii_inchikey()
@@ -1008,7 +1022,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.now())
+    print(datetime.datetime.now())
     print('Find drugbank ids with use of the name mapping')
 
     map_with_name_to_drugbank()
@@ -1016,7 +1030,7 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.now())
+    print(datetime.datetime.now())
     print('Map ctd chemical to pharmebinet compound ')
 
     map_ctd_to_pharmebinet_compound()
@@ -1025,24 +1039,25 @@ def main():
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.now())
+    print(datetime.datetime.now())
     print('Integrate CTD chemicals into pharmebinet')
 
     integration_of_ctd_chemicals_into_pharmebinet_compound()
 
-
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.now())
+    print(datetime.datetime.now())
     print('generate cypher file for integration of chemical')
 
     generate_cypher_file()
 
+    driver.close()
+
     print(
         '###########################################################################################################################')
 
-    print (datetime.datetime.now())
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":

@@ -3,6 +3,7 @@ import sys, csv
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 '''
 create a connection with neo4j
@@ -11,8 +12,9 @@ create a connection with neo4j
 
 def create_connection_with_neo4j_and_mysql():
     # set up authentication parameters and connection
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
     # create connection with mysql database
     global con
@@ -77,7 +79,8 @@ Load all Chemical from my database  and add them into a dictionary
 def load_chemical_from_database_and_add_to_dict():
     query = "MATCH (n:Chemical) RETURN n, labels(n)"
     results = g.run(query)
-    for node, labels, in results:
+    for record in results:
+        [node, labels] = record.values()
         identifier = node['identifier']
         resource = node['resource']
         dict_chemical_id_to_resource[identifier] = resource
@@ -135,9 +138,10 @@ def write_files(path_of_directory):
 
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/ndf-rt/%s" As line FIELDTERMINATOR '\\t' 
-            Match (n:NDFRT_INGREDIENT_KIND{code:line.code}), (v:Chemical{identifier:line.chemical_id}) Set v.ndf_rt='yes', v.resource=split(line.resource,'|') Create (v)-[:equal_to_ingredient_ndf_rt{how_mapped:line.how_mapped}]->(n);'''
-    query = query % (path_of_directory, file_name)
+    query = '''Match (n:NDFRT_INGREDIENT_KIND{code:line.code}), (v:Chemical{identifier:line.chemical_id}) Set v.ndf_rt='yes', v.resource=split(line.resource,'|') Create (v)-[:equal_to_ingredient_ndf_rt{how_mapped:line.how_mapped}]->(n)'''
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/ndf-rt/{file_name}',
+                                              query)
     cypher_file.write(query)
     cypher_file.close()
 
@@ -164,7 +168,8 @@ def load_all_ingredients_and_map():
     """
     query = "MATCH (n:NDFRT_INGREDIENT_KIND) RETURN n"
     results = g.run(query)
-    for node, in results:
+    for record in results:
+        node = record.data()['n']
         identifier = node['code']
         name = node['name'].split(' [Chemical/Ingredient')[0].lower()
         try_to_map(identifier, name, dict_name_to_chemical_id, 'name_mapping')
@@ -234,6 +239,8 @@ def main():
     print('Write mapping into file')
 
     write_mapping_into_file(csv_writer)
+
+    driver.close()
 
     print('##########################################################################')
 

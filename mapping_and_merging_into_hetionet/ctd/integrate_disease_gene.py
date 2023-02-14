@@ -4,7 +4,7 @@ import numpy as np
 
 sys.path.append("../..")
 import create_connection_to_databases
-
+import pharmebinetutils
 
 '''
 create connection to neo4j 
@@ -13,8 +13,9 @@ create connection to neo4j
 
 def create_connection_with_neo4j_mysql():
     # create connection with neo4j
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 # dictionary with all pairs and properties as value
@@ -46,7 +47,8 @@ def load_existing_gene_disease_pairs():
     """
     query = 'Match (b:Disease)-[r:ASSOCIATES_DaG]->(n:Gene) Return b.identifier, n.identifier, r.pubMed_ids, r.resource'
     results = g.run(query)
-    for disease_id, gene_id, pubmed_ids, resources, in results:
+    for record in results:
+        [disease_id, gene_id, pubmed_ids, resources] = record.values()
         dict_disease_gene_to_pubmeds_and_resources[(disease_id, gene_id)] = [set(pubmed_ids),
                                                                              set(resources)] if pubmed_ids is not None else [
             set(), set(resources)]
@@ -61,13 +63,16 @@ also generate a cypher file to integrate this information
 def take_all_relationships_of_gene_disease():
     # generate cypher file
     cypherfile = open('output/cypher_edge.cypher', 'a', encoding='utf-8')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + \
-            '''mapping_and_merging_into_hetionet/ctd/gene_disease/relationships.tsv" As line  FIELDTERMINATOR '\\t' Match (n:Gene{identifier:line.GeneID}), (b:Disease{identifier:line.DiseaseID}) Merge (b)-[r:ASSOCIATES_DaG]->(n) On Create Set  r.ctd='yes', r.url="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.resource=["CTD"], r.source="CTD", r.inferences=split(line.inferences,'|'), r.pubMed_ids=split(line.pubMed_ids,'|'), r.directEvidences=split(line.directEvidence,'|') ,r.omimIDs=split(line.omimIDs,'|'), r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2021 NC State University. All rights reserved.", r.unbiased=toBoolean(line.unbiased) On Match SET r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.unbiased=toBoolean(line.unbiased), r.inferences=split(line.inferences,'|'), r.pubMed_ids=split(line.pubMed_ids,'|'), r.directEvidences=split(line.directEvidence,'|') ,r.omimIDs=split(line.omimIDs,'|'), r.resource=split(line.resources,'|') ;\n '''
+    query = '''Match (n:Gene{identifier:line.GeneID}), (b:Disease{identifier:line.DiseaseID}) Merge (b)-[r:ASSOCIATES_DaG]->(n) On Create Set  r.ctd='yes', r.url="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID , r.resource=["CTD"], r.source="CTD", r.inferences=split(line.inferences,'|'), r.pubMed_ids=split(line.pubMed_ids,'|'), r.directEvidences=split(line.directEvidence,'|') ,r.omimIDs=split(line.omimIDs,'|'), r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2021 NC State University. All rights reserved.", r.unbiased=toBoolean(line.unbiased) On Match SET r.ctd='yes', r.url_ctd="http://ctdbase.org/detail.go?type=gene&acc="+line.GeneID, r.unbiased=toBoolean(line.unbiased), r.inferences=split(line.inferences,'|'), r.pubMed_ids=split(line.pubMed_ids,'|'), r.directEvidences=split(line.directEvidence,'|') ,r.omimIDs=split(line.omimIDs,'|'), r.resource=split(line.resources,'|')  '''
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/ctd/gene_disease/relationships.tsv',
+                                              query)
     cypherfile.write(query)
 
     csvfile = open('gene_disease/relationships.tsv', 'w', encoding='utf-8')
     writer = csv.writer(csvfile, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-    writer.writerow(['GeneID', 'DiseaseID', 'inferences', 'pubMed_ids', 'directEvidence', 'omimIDs', 'unbiased', 'resources'])
+    writer.writerow(
+        ['GeneID', 'DiseaseID', 'inferences', 'pubMed_ids', 'directEvidence', 'omimIDs', 'unbiased', 'resources'])
 
     # counter directEvidence
     counter_directEvidence = 0
@@ -97,7 +102,8 @@ def take_all_relationships_of_gene_disease():
 
     dict_disease_id_mondo = {}
     start = time.time()
-    for mondo, ctd_disease_id, in results:
+    for record in results:
+        [mondo, ctd_disease_id] = record.values()
         if ctd_disease_id in dict_disease_id_mondo:
             dict_disease_id_mondo[ctd_disease_id].append(mondo)
         else:
@@ -111,7 +117,7 @@ def take_all_relationships_of_gene_disease():
 
     # print(dict_disease_id_mondo)
 
-    query = '''MATCH (disease:CTD_disease)<-[r:associates_GD]-(gene:CTD_gene) Where (gene)--(:Gene) and (disease)--(:Disease) and exists(r.directEvidence) and exists(r.pubMed_ids)  RETURN Distinct gene.gene_id, r, disease.disease_id '''
+    query = '''MATCH (disease:CTD_disease)<-[r:associates_GD]-(gene:CTD_gene) Where (gene)--(:Gene) and (disease)--(:Disease) and r.directEvidence is not NULL and r.pubMed_ids is not NULL  RETURN Distinct gene.gene_id, r, disease.disease_id '''
     results = g.run(query)
 
     time_measurement = time.time() - start
@@ -121,7 +127,8 @@ def take_all_relationships_of_gene_disease():
     # dictionary with all pairs and properties as value
     dict_disease_gene = {}
 
-    for gene_id, rela, disease_id, in results:
+    for record in results:
+        [gene_id, rela, disease_id] = record.values()
         counter_all += 1
         rela = dict(rela)
         inferenceChemicalName = rela['inferenceChemicalName'] if 'inferenceChemicalName' in rela else ''
@@ -145,10 +152,10 @@ def take_all_relationships_of_gene_disease():
                 inference_info = inferenceChemicalName + ':' + inferenceScore
 
             if not (gene_id, mondo) in dict_disease_gene:
-                resource=set(['CTD'])
-                if (mondo,gene_id) in dict_disease_gene_to_pubmeds_and_resources:
-                    resource=resource.union(dict_disease_gene_to_pubmeds_and_resources[(mondo,gene_id)][1])
-                    pubMed_ids=pubMed_ids.union(dict_disease_gene_to_pubmeds_and_resources[(mondo,gene_id)][0])
+                resource = set(['CTD'])
+                if (mondo, gene_id) in dict_disease_gene_to_pubmeds_and_resources:
+                    resource = resource.union(dict_disease_gene_to_pubmeds_and_resources[(mondo, gene_id)][1])
+                    pubMed_ids = pubMed_ids.union(dict_disease_gene_to_pubmeds_and_resources[(mondo, gene_id)][0])
 
                 dict_disease_gene[tuple_ids] = [{inference_info},
                                                 {directEvidence}, pubMed_ids, omimIDs, resource]
@@ -156,8 +163,8 @@ def take_all_relationships_of_gene_disease():
             else:
                 dict_disease_gene[tuple_ids][0].add(inference_info)
                 dict_disease_gene[tuple_ids][1].add(directEvidence)
-                dict_disease_gene[tuple_ids][2]=dict_disease_gene[tuple_ids][2].union(pubMed_ids)
-                dict_disease_gene[tuple_ids][3]=dict_disease_gene[tuple_ids][3].union(omimIDs)
+                dict_disease_gene[tuple_ids][2] = dict_disease_gene[tuple_ids][2].union(pubMed_ids)
+                dict_disease_gene[tuple_ids][3] = dict_disease_gene[tuple_ids][3].union(omimIDs)
 
                 count_multiple_pathways += 1
 
@@ -168,12 +175,12 @@ def take_all_relationships_of_gene_disease():
     print('\t Generate dictionary disease gene: %.4f seconds' % (time_measurement))
     list_time_dict_association.append(time_measurement)
     start = time.time()
-    for (gene_id, mondo), [inferences, directEvidence, pubMed_ids, omimIDs,resources] in dict_disease_gene.items():
+    for (gene_id, mondo), [inferences, directEvidence, pubMed_ids, omimIDs, resources] in dict_disease_gene.items():
         inferences_string = '|'.join(filter(bool, inferences))
         directEvidence_string = '|'.join(filter(bool, directEvidence))
         pubMed_ids_string = '|'.join(filter(bool, pubMed_ids))
         omimIDs_string = '|'.join(filter(bool, omimIDs))
-        resources='|'.join(sorted(resources))
+        resources = '|'.join(sorted(resources))
 
         if len(directEvidence) == 0:
             sys.exit('if this happend that it has an error in disease-gene edge')
@@ -237,6 +244,8 @@ def main():
     print('Take all gene-disease relationships and generate tsv and cypher file')
 
     take_all_relationships_of_gene_disease()
+
+    driver.close()
 
     print(
         '###########################################################################################################################')

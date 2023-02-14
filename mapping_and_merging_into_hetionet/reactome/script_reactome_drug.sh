@@ -6,6 +6,9 @@ path_neo4j=$1
 #path to project
 path_to_project=$2
 
+#password
+password=$3
+
 # license
 license="CC BY-SA 4.0"
 
@@ -27,7 +30,7 @@ echo integrate mapping node with neo4j shell
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher_mapping2.cypher
+$path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_mapping2.cypher
 
 sleep 60
 
@@ -104,7 +107,7 @@ echo integrate connection with neo4j shell
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher_drug_edge.cypher
+$path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_drug_edge.cypher
 
 sleep 60
 

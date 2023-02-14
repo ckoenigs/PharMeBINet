@@ -3,6 +3,7 @@ import sys, csv
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 '''
 create a connection with neo4j
@@ -11,8 +12,9 @@ create a connection with neo4j
 
 def create_connection_with_neo4j_and_mysql():
     # set up authentication parameters and connection
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 # open cypher file
@@ -40,9 +42,11 @@ def write_files(label, direction_1, direction_2, rela_name):
     header_rela = ['chemical_id', 'ingredient_chemical_id', 'source']
     csv_rela.writerow(header_rela)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/ndf-rt/%s" As line FIELDTERMINATOR '\\t' 
-            Match (c:%s{identifier:line.chemical_id}), (p:Chemical{identifier:line.ingredient_chemical_id}) Merge (c)%s[r:%s]%s(p) On Create Set r.source=line.source, r.resource=['NDF-RT'], r.url='http://purl.bioontology.org/ontology/NDFRT/'+line.ingredient_chemical_id , r.license='UMLS license, available at https://uts.nlm.nih.gov/license.html', r.unbiased=false, r.ndf_rt='yes' On Match Set r.resource=r.resource+'NDF-RT' , r.ndf_rt='yes';\n'''
-    query = query % (path_of_directory, file_name, label, direction_1, rela_name, direction_2)
+    query = '''Match (c:%s{identifier:line.chemical_id}), (p:Chemical{identifier:line.ingredient_chemical_id}) Merge (c)%s[r:%s]%s(p) On Create Set r.source=line.source, r.resource=['NDF-RT'], r.url='http://purl.bioontology.org/ontology/NDFRT/'+line.ingredient_chemical_id , r.license='UMLS license, available at https://uts.nlm.nih.gov/license.html', r.unbiased=false, r.ndf_rt='yes' On Match Set r.resource=r.resource+'NDF-RT' , r.ndf_rt='yes' '''
+    query = query % (label, direction_1, rela_name, direction_2)
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/ndf-rt/{file_name}',
+                                              query)
     cypher_file.write(query)
 
     return csv_rela
@@ -72,7 +76,8 @@ def load_connections(label):
     query = "Match (c:%s)--(:NDFRT_DRUG_KIND)-[t]-(:NDFRT_INGREDIENT_KIND)--(d:Chemical) Return c.identifier, type(t), t, d.identifier"
     query = query % (label)
     results = g.run(query)
-    for chemical_id, rela_type, rela, ingredient_chemical_id, in results:
+    for record in results:
+        [chemical_id, rela_type, rela, ingredient_chemical_id] = record.values()
         source = rela['source'] if 'source' in rela else ''
         # remove the different suffix
         if rela_type.count('_') == 1:
@@ -122,6 +127,8 @@ def main():
 
     for label in ['Chemical', 'PharmacologicClass']:
         load_connections(label)
+
+    driver.close()
 
     print('##########################################################################')
 

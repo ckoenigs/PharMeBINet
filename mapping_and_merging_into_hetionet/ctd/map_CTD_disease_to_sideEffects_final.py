@@ -4,6 +4,7 @@ import sys
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 
 class SideEffectpharmebinet:
@@ -56,8 +57,9 @@ create connection to neo4j and mysql
 
 def create_connection_with_neo4j_mysql():
     # create connection with neo4j
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
     # create connection with mysql database
     global con
@@ -74,7 +76,8 @@ def load_side_effects_from_pharmebinet_in_dict():
     results = g.run(query)
 
     # go through all results from the neo4j query
-    for result, in results:
+    for record in results:
+        result=record.data()['n']
         sideEffect = SideEffectpharmebinet(result['identifier'], result['name'], result['resource'])
         dict_side_effects_pharmebinet[result['identifier']] = sideEffect
     print('size of side effects before the disease ctd is add:' + str(len(dict_side_effects_pharmebinet)))
@@ -101,7 +104,8 @@ def load_disease_CTD():
     results = g.run(query)
 
     # go through all results from the query
-    for result, in results:
+    for record in results:
+        result=record.data()['n']
         idType = result['idType']
         name = result['name']
         altDiseaseIDs = result['altDiseaseIDs']
@@ -337,7 +341,7 @@ def integrate_disease_into_pharmebinet():
         query = '''Match (s:SideEffect{identifier:"%s"}) Return s'''
         query = query % (cui)
         node_exist = g.run(query)
-        first_node = node_exist.evaluate()
+        first_node = node_exist.single()
         if first_node == None:
             name = dict_CTD_disease[disease_id].name.replace("'", "")
             query = '''Match  (n:CTD_disease) Where  n.disease_id='%s'
@@ -400,6 +404,8 @@ def main():
     print('integrate disease into pharmebinet')
 
     integrate_disease_into_pharmebinet()
+
+    driver.close()
 
     print(
         '###########################################################################################################################')

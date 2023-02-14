@@ -6,6 +6,9 @@ path_neo4j=$1
 # path to project
 path_to_project=$2
 
+#password
+password=$3
+
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo map and integrate gene
@@ -44,7 +47,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo integrate nodes into database
 
-$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher.cypher 
+$path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher.cypher
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -101,12 +104,17 @@ python3 integrate_disease_gene.py $path_to_project > gene_disease/output.txt
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher_edge.cypher
+$path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_edge.cypher
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-sleep 180
+sleep 60
+$path_neo4j/neo4j restart
+sleep 120
+
+
+sleep 60 
 $path_neo4j/neo4j restart
 sleep 120
 
@@ -130,7 +138,7 @@ sleep 120
 #now=$(date +"%F %T")
 #echo "Current time: $now"
 
-#$path_neo4j/cypher-shell -u neo4j -p test -f disease_go/cypher.cypher > disease_go/output_cypher.txt
+#$path_neo4j/cypher-shell -u neo4j -p $password -f disease_go/cypher.cypher > disease_go/output_cypher.txt
 
 #now=$(date +"%F %T")
 #echo "Current time: $now"
@@ -149,7 +157,7 @@ sleep 120
 #now=$(date +"%F %T")
 #echo "Current time: $now"
 
-#$path_neo4j/cypher-shell -u neo4j -p test -f disease_pathway/cypher.cypher > disease_pathway/output_cypher.txt
+#$path_neo4j/cypher-shell -u neo4j -p $password -f disease_pathway/cypher.cypher > disease_pathway/output_cypher.txt
 
 #now=$(date +"%F %T")
 #echo "Current time: $now"
@@ -169,7 +177,7 @@ sleep 120
 #now=$(date +"%F %T")
 #echo "Current time: $now"
 
-#$path_neo4j/cypher-shell -u neo4j -p test -f chemical_pathway/cypher.cypher > chemical_pathway/output_cypher.txt
+#$path_neo4j/cypher-shell -u neo4j -p $password -f chemical_pathway/cypher.cypher > chemical_pathway/output_cypher.txt
 
 #now=$(date +"%F %T")
 #echo "Current time: $now"
@@ -190,7 +198,7 @@ sleep 120
 #now=$(date +"%F %T")
 #echo "Current time: $now"
 
-#$path_neo4j/cypher-shell -u neo4j -p test -f chemical_go/cypher.cypher > chemical_go/output_cypher.txt
+#$path_neo4j/cypher-shell -u neo4j -p $password -f chemical_go/cypher.cypher > chemical_go/output_cypher.txt
 
 #now=$(date +"%F %T")
 #echo "Current time: $now"

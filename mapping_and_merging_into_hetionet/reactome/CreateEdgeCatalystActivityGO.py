@@ -4,6 +4,7 @@ import sys
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 '''
 create a connection with neo4j
@@ -12,13 +13,15 @@ create a connection with neo4j
 
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
-    global graph_database
-    graph_database = create_connection_to_databases.database_connection_neo4j()
+    global graph_database, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    graph_database = driver.session()
 
 
 # dictionary with pharmebinetet failedReaction with identifier as key and value the name
 dict_complex_pharmebinet_node_pharmebinet = {}
 dict_catAct_id_to_catActRef_info = {}
+
 
 def prepare_CA_with_reference_infos():
     """
@@ -29,7 +32,8 @@ def prepare_CA_with_reference_infos():
 
     results2 = graph_database.run(query2)
 
-    for catAct_id, displayName, pubMed_ids, books, in results2:
+    for record in results2:
+        [catAct_id, displayName, pubMed_ids, books] = record.values()
         displayName = displayName.split("]")
         name = displayName[0] + "]"
         description = displayName[1]
@@ -46,10 +50,9 @@ load in all complex-data from pharmebinet in a dictionary
 
 
 def load_pharmebinet_complex_pharmebinet_node_in(csv_file, dict_complex_pharmebinet_node_pharmebinet,
-                                              start_label, new_relationship,
-                                              node_reactome_label,  node_pharmebinet_label, direction1,
-                                              direction2):
-
+                                                 start_label, new_relationship,
+                                                 node_reactome_label, node_pharmebinet_label, direction1,
+                                                 direction2):
     query = '''MATCH %s%s[v:%s]%s(n:%s)-[]-(b:%s) RETURN p.identifier, b.identifier, v.order, v.stoichiometry, f.displayName, f.dbId, r.stId'''
 
     query = query % (start_label, direction1, new_relationship, direction2, node_reactome_label, node_pharmebinet_label)
@@ -57,7 +60,8 @@ def load_pharmebinet_complex_pharmebinet_node_in(csv_file, dict_complex_pharmebi
     print(query)
 
     # for id1, id2, order, stoichiometry, in results:
-    for complex_id, node_id, order, stoichiometry, displayName, catACT_id, physicalEntity_id, in results:
+    for record in results:
+        [complex_id, node_id, order, stoichiometry, displayName, catACT_id, physicalEntity_id] = record.values()
         if catACT_id in dict_catAct_id_to_catActRef_info:
             name = dict_catAct_id_to_catActRef_info[catACT_id][0]
             description = dict_catAct_id_to_catActRef_info[catACT_id][1]
@@ -65,18 +69,21 @@ def load_pharmebinet_complex_pharmebinet_node_in(csv_file, dict_complex_pharmebi
             books = dict_catAct_id_to_catActRef_info[catACT_id][3]
             if (complex_id, node_id) not in dict_complex_pharmebinet_node_pharmebinet:
                 dict_complex_pharmebinet_node_pharmebinet[(complex_id, node_id)] = [stoichiometry, order, set([name]),
-                                                                              set([description]), set(pubMed_ids), set(books), physicalEntity_id]
+                                                                                    set([description]), set(pubMed_ids),
+                                                                                    set(books), physicalEntity_id]
                 continue
             else:
-                #print(complex_id, node_id)
+                # print(complex_id, node_id)
                 dict_complex_pharmebinet_node_pharmebinet[(complex_id, node_id)][2].add(name)
                 dict_complex_pharmebinet_node_pharmebinet[(complex_id, node_id)][3].add(description)
                 dict_complex_pharmebinet_node_pharmebinet[(complex_id, node_id)][4].union(pubMed_ids)
                 dict_complex_pharmebinet_node_pharmebinet[(complex_id, node_id)][5].union(books)
 
-
-    for (complex_id,node_id),[stoichiometry, order, name, description, pubMed_ids, books, physicalEntity_id] in dict_complex_pharmebinet_node_pharmebinet.items():
-        csv_file.writerow([complex_id, node_id, order, stoichiometry, "|".join(name), "|".join(description), "|".join(pubMed_ids), "|".join(books), physicalEntity_id])
+    for (complex_id, node_id), [stoichiometry, order, name, description, pubMed_ids, books,
+                                physicalEntity_id] in dict_complex_pharmebinet_node_pharmebinet.items():
+        csv_file.writerow(
+            [complex_id, node_id, order, stoichiometry, "|".join(name), "|".join(description), "|".join(pubMed_ids),
+             "|".join(books), physicalEntity_id])
 
     print('number of complex-' + node_reactome_label + ' relationships in pharmebinet:' + str(
         len(dict_complex_pharmebinet_node_pharmebinet)))
@@ -89,15 +96,18 @@ generate new relationships between complex of pharmebinet and complex of pharmeb
 
 def create_cypher_file(directory, file_path, node_label, rela_name, direction1, direction2, start_label):
     if "Complex" in start_label:
-        query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/reactome/%s" As line FIELDTERMINATOR "\\t" MATCH (d:MolecularComplex{identifier:line.id_pharmebinet_Complex}),(c:%s{identifier:line.id_pharmebinet_node}) CREATE (d)%s[:%s{order:line.order, stoichiometry:line.stoichiometry, name:split(line.displayName,"|"), description:split(line.description,"|"), pubMed_ids:split(line.pubMed_ids,"|"), books:split(line.books,"|"), resource: ['Reactome'], reactome: "yes", source:"Reactome", license:"CC BY 4.0", url:"https://reactome.org/content/detail/"+line.id_pharmebinet_Complex}]%s(c);\n'''
+        query = ''' MATCH (d:MolecularComplex{identifier:line.id_pharmebinet_Complex}),(c:%s{identifier:line.id_pharmebinet_node}) CREATE (d)%s[:%s{order:line.order, stoichiometry:line.stoichiometry, name:split(line.displayName,"|"), description:split(line.description,"|"), pubMed_ids:split(line.pubMed_ids,"|"), books:split(line.books,"|"), resource: ['Reactome'], reactome: "yes", source:"Reactome", license:"CC BY 4.0", url:"https://reactome.org/content/detail/"+line.id_pharmebinet_Complex}]%s(c)'''
     else:
-        query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/reactome/%s" As line FIELDTERMINATOR "\\t" MATCH (d:Protein{identifier:line.id_pharmebinet_Complex}),(c:%s{identifier:line.id_pharmebinet_node}) CREATE (d)%s[:%s{order:line.order, stoichiometry:line.stoichiometry, name:split(line.displayName,"|"), description:split(line.description,"|"), pubMed_ids:split(line.pubMed_ids,"|"), books:split(line.books,"|"), resource: ['Reactome'], reactome: "yes", source:"Reactome", license:"CC BY 4.0", url:"https://reactome.org/content/detail/"+line.physicalEntity_id}]%s(c);\n'''
+        query = ''' MATCH (d:Protein{identifier:line.id_pharmebinet_Complex}),(c:%s{identifier:line.id_pharmebinet_node}) CREATE (d)%s[:%s{order:line.order, stoichiometry:line.stoichiometry, name:split(line.displayName,"|"), description:split(line.description,"|"), pubMed_ids:split(line.pubMed_ids,"|"), books:split(line.books,"|"), resource: ['Reactome'], reactome: "yes", source:"Reactome", license:"CC BY 4.0", url:"https://reactome.org/content/detail/"+line.physicalEntity_id}]%s(c)'''
 
-    query = query % (path_of_directory, file_path, node_label, direction1, rela_name, direction2)
+    query = query % (node_label, direction1, rela_name, direction2)
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/reactome/{file_path}',
+                                              query)
     cypher_file.write(query)
 
 
-def check_relationships_and_generate_file(start_label, new_relationship, node_reactome_label,  node_pharmebinet_label,
+def check_relationships_and_generate_file(start_label, new_relationship, node_reactome_label, node_pharmebinet_label,
                                           directory, rela_name, direction1, direction2):
     print(
         '___~(  )(°^)o_o(^°)(  )~_____~(  )(°^)o_o(^°)(  )~_____~(  )(°^)o_o(^°)(  )~_____~(  )(°^)o_o(^°)(  )~__')
@@ -112,12 +122,14 @@ def check_relationships_and_generate_file(start_label, new_relationship, node_re
 
     file_mapped_complex_to_node = open(file_name, 'w', encoding="utf-8")
     csv_mapped = csv.writer(file_mapped_complex_to_node, delimiter='\t', lineterminator='\n')
-    csv_mapped.writerow(['id_pharmebinet_Complex', 'id_pharmebinet_node', 'order', 'stoichiometry', 'displayName' ,'description', 'pubMed_ids', 'books','physicalEntity_id'])
+    csv_mapped.writerow(
+        ['id_pharmebinet_Complex', 'id_pharmebinet_node', 'order', 'stoichiometry', 'displayName', 'description',
+         'pubMed_ids', 'books', 'physicalEntity_id'])
 
     dict_Complex_node = {}
 
     load_pharmebinet_complex_pharmebinet_node_in(csv_mapped, dict_Complex_node, start_label, new_relationship,
-                                              node_reactome_label, node_pharmebinet_label, direction1, direction2)
+                                                 node_reactome_label, node_pharmebinet_label, direction1, direction2)
 
     print(
         '°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°-.__.-°')
@@ -153,12 +165,12 @@ def main():
 
         [
             '(p:MolecularComplex)-[:equal_to_reactome_complex]-(r:Complex_reactome)-[:activeUnit]-(f:CatalystActivity_reactome)',
-            'activity', 'GO_MolecularFunction_reactome',  'MolecularFunction',
+            'activity', 'GO_MolecularFunction_reactome', 'MolecularFunction',
             'HAS_MOLECULAR_FUNCTION_MChmfMF', '-', '->'],
         [
             '(p:Protein)-[:equal_to_reactome_uniprot]-(:ReferenceEntity_reactome)--(r:PhysicalEntity_reactome)-[:activeUnit]-(f:CatalystActivity_reactome)',
             'activity',
-            'GO_MolecularFunction_reactome',  'MolecularFunction',
+            'GO_MolecularFunction_reactome', 'MolecularFunction',
             'HAS_MOLECULAR_FUNCTION_PhmfMF', '-', '->'],
     ]
 
@@ -177,6 +189,7 @@ def main():
                                               node_pharmebinet_label, directory,
                                               rela_name, direction1, direction2)
     cypher_file.close()
+    driver.close()
 
     print(
         '___~(  )(°^)o_o(^°)(  )~_____~(  )(°^)o_o(^°)(  )~_____~(  )(°^)o_o(^°)(  )~_____~(  )(°^)o_o(^°)(  )~__')
