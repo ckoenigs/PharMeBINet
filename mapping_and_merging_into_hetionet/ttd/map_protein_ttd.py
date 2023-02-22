@@ -13,8 +13,9 @@ create a connection with neo4j
 
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
-    global graph_database
-    graph_database = create_connection_to_databases.database_connection_neo4j()
+    global graph_database, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    graph_database = driver.session()
 
 
 # dictionary
@@ -32,7 +33,8 @@ def load_protein_in():
     query = '''MATCH (n:Protein) RETURN n'''
     results = graph_database.run(query)
 
-    for node, in results:
+    for record in results:
+        node = record.data()['n']
         identifier = node["identifier"]
         resource = node["resource"]
         prot_name = node["name"].lower()
@@ -46,9 +48,9 @@ def load_protein_in():
 
         dict_protein_uniProt_to_id[uniProt] = identifier
         # synonyms
-        for name in synonyms:
-            name = name.lower()
-            pharmebinetutils.add_entry_to_dict_to_set(dict_protein_name_ids, name, identifier)
+        # for name in synonyms:
+        #     name = name.lower()
+        #     pharmebinetutils.add_entry_to_dict_to_set(dict_protein_name_ids, name, identifier)
 
 
 # dictionary gene_symbol to protein ids
@@ -62,7 +64,8 @@ def load_gene_to_protein_ids():
     """
     query = "MATCH (r:Gene)--(n:Protein) RETURN r.gene_symbol,n.identifier"
     results = graph_database.run(query)
-    for gene_symbol, protein_id, in results:
+    for record in results:
+        [gene_symbol, protein_id] = record.values()
         pharmebinetutils.add_entry_to_dict_to_set(dict_gene_symbol_to_protein_ids, gene_symbol, protein_id)
 
 
@@ -72,35 +75,11 @@ def load_and_map_ttd_protein(csv_mapped, csv_not_mapped):
 
     counter = 0
     counter_mapped = 0
-    for node_id, name, synonyms, uniprot_accssion, gene_name, in results:
+    for record in results:
+        [node_id, name, synonyms, uniprot_accssion, gene_name] = record.values()
         counter += 1
 
         found_mapping = False
-
-
-        if gene_name in dict_gene_symbol_to_protein_ids:
-            counter_mapped+=1
-            found_mapping=True
-            for protein_id in dict_gene_symbol_to_protein_ids[gene_name]:
-                csv_mapped.writerow([node_id, protein_id,
-                                     pharmebinetutils.resource_add_and_prepare(dict_proteinId_to_resource[protein_id],
-                                                                               'TTD'), 'gene_symbol'])
-        if found_mapping:
-            continue
-
-        if name is not None:
-            name=name.lower()
-            name=name.rsplit(' (',1)[0]
-            if name in dict_protein_name_ids:
-                counter_mapped+=1
-                found_mapping=True
-                for protein_id in dict_protein_name_ids[name]:
-                    csv_mapped.writerow([node_id, protein_id,
-                                         pharmebinetutils.resource_add_and_prepare(dict_proteinId_to_resource[protein_id],
-                                                                               'TTD'), 'name'])
-        if found_mapping:
-            continue
-
 
         if uniprot_accssion in dict_protein_uniProt_to_id:
             counter_mapped += 1
@@ -113,19 +92,30 @@ def load_and_map_ttd_protein(csv_mapped, csv_not_mapped):
         if found_mapping:
             continue
 
-        if synonyms is not None:
-            for synonym in synonyms:
-                if synonym in dict_protein_name_ids:
-                    counter_mapped += 1
-                    found_mapping = True
-                    for protein_id in dict_protein_name_ids[synonym]:
-                        csv_mapped.writerow([node_id, protein_id,
-                                             pharmebinetutils.resource_add_and_prepare(
-                                                 dict_proteinId_to_resource[protein_id],
-                                                 'TTD'), 'synonym'])
+        if name is not None:
+            name = name.lower()
+            name = name.rsplit(' (', 1)[0]
+            if name in dict_protein_name_ids:
+                counter_mapped += 1
+                found_mapping = True
+                for protein_id in dict_protein_name_ids[name]:
+                    csv_mapped.writerow([node_id, protein_id,
+                                         pharmebinetutils.resource_add_and_prepare(
+                                             dict_proteinId_to_resource[protein_id],
+                                             'TTD'), 'name'])
         if found_mapping:
             continue
-            
+
+        if gene_name in dict_gene_symbol_to_protein_ids:
+            counter_mapped += 1
+            found_mapping = True
+            for protein_id in dict_gene_symbol_to_protein_ids[gene_name]:
+                csv_mapped.writerow([node_id, protein_id,
+                                     pharmebinetutils.resource_add_and_prepare(dict_proteinId_to_resource[protein_id],
+                                                                               'TTD'), 'gene_symbol'])
+        if found_mapping:
+            continue
+
         csv_not_mapped.writerow([node_id, uniprot_accssion, name])
     print('number of mapped nodes:', counter_mapped)
     print('number of nodes:', counter)
@@ -139,8 +129,10 @@ def generate_cypher_file(file_nameProtein):
     """
     cypher_file = open('output/cypher.cypher', 'a')
 
-    query_Protein = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/ttd/%s" As line  FIELDTERMINATOR '\\t'  MATCH (n:TTD_Target{id:line.node_id}), (c:Protein{identifier:line.id_pharmebinet})  Set c.ttd='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_protein_ttd{how_mapped:line.how_mapped}]->(n); \n'''
-    query_Protein = query_Protein % (path_of_directory, file_nameProtein)
+    query_Protein = ''' MATCH (n:TTD_Target{id:line.node_id}), (c:Protein{identifier:line.id_pharmebinet})  Set c.ttd='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_protein_ttd{how_mapped:line.how_mapped}]->(n)'''
+    query_Protein = pharmebinetutils.get_query_import(path_of_directory,
+                                                      f'mapping_and_merging_into_hetionet/ttd/{file_nameProtein}',
+                                                      query_Protein)
     cypher_file.write(query_Protein)
 
     cypher_file.close()
@@ -200,6 +192,8 @@ def main():
     print(datetime.datetime.utcnow())
     print("load and map ttd protein")
     load_and_map_ttd_protein(csv_mapped, csv_not_mapped)
+
+    driver.close()
 
     print(
         '###########################################################################################################################')

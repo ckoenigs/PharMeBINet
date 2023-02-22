@@ -1,10 +1,9 @@
 import datetime
 import sys, csv
-from collections import defaultdict
 
 sys.path.append("../..")
 import create_connection_to_databases
-
+import pharmebinetutils
 
 sys.path.append("..")
 from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
@@ -15,8 +14,9 @@ create connection to neo4j
 
 
 def create_connection_with_neo4j():
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 # dictionary of all gene ids to resource
@@ -40,7 +40,8 @@ def load_db_genes_in():
     query = '''MATCH (n:Gene) RETURN n.identifier,n.gene_symbols, n.resource, n.synonyms, n.xrefs'''
     results = g.run(query)
 
-    for identifier, gene_symbols, resource, synonyms, xrefs, in results:
+    for record in results:
+        [identifier, gene_symbols, resource, synonyms, xrefs] = record.values()
         dict_gene_to_resource[identifier] = resource if resource else []
         dict_gene_id_to_xrefs[identifier] = xrefs if xrefs else []
 
@@ -53,13 +54,13 @@ def load_db_genes_in():
 
         if synonyms:
             for synonym in synonyms:
-                synonym=synonym.lower()
+                synonym = synonym.lower()
                 if synonym not in dict_synonym_to_gene_id:
                     dict_synonym_to_gene_id[synonym] = set()
                 dict_synonym_to_gene_id[synonym].add(identifier)
 
-
     print('length of gene in db:' + str(len(dict_gene_to_resource)))
+
 
 def add_information_to_file(gene_id, identifier, csv_writer, how_mapped):
     """
@@ -75,12 +76,13 @@ def add_information_to_file(gene_id, identifier, csv_writer, how_mapped):
     resource = "|".join(sorted(resource))
 
     xrefs = dict_gene_id_to_xrefs[gene_id]
-    xrefs.append('PharmGKB:'+identifier)
+    xrefs.append('PharmGKB:' + identifier)
     # print(xrefs)
     xrefs = go_through_xrefs_and_change_if_needed_source_name(xrefs, 'Gene')
     # print(xrefs)
 
     csv_writer.writerow([gene_id, identifier, resource, how_mapped, '|'.join(xrefs)])
+
 
 def load_pharmgkb_genes_in():
     """
@@ -103,7 +105,8 @@ def load_pharmgkb_genes_in():
     counter_map = 0
     counter_not_mapped = 0
 
-    for result, in results:
+    for record in results:
+        result = record.data()['n']
         identifier = result['id']
         ncbi_gene_ids = result['ncbi_gene_ids'] if 'ncbi_gene_ids' in result else []
 
@@ -111,16 +114,15 @@ def load_pharmgkb_genes_in():
         for ncbi_gene_id in ncbi_gene_ids:
             if ncbi_gene_id in dict_gene_to_resource:
                 found_a_mapping = True
-                add_information_to_file(ncbi_gene_id, identifier, csv_writer,'id')
+                add_information_to_file(ncbi_gene_id, identifier, csv_writer, 'id')
 
         symbol = result['symbol'].lower() if 'symbol' in result else ''
         if not found_a_mapping:
 
             if len(symbol) > 0 and symbol in dict_gene_symbol_to_gene_id:
-                found_a_mapping=True
+                found_a_mapping = True
                 for gene_id in dict_gene_symbol_to_gene_id[symbol]:
                     add_information_to_file(gene_id, identifier, csv_writer, 'symbol')
-
 
         if found_a_mapping:
             counter_map += 1
@@ -139,8 +141,10 @@ def load_pharmgkb_genes_in():
 
 def generate_cypher_file(file_name):
     cypher_file = open('output/cypher.cypher', 'w')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/pharmGKB/%s" As line  FIELDTERMINATOR '\\t'  MATCH (n:PharmGKB_Gene{id:line.pharmgkb_id}), (c:Gene{identifier:line.gene_id})  Set c.pharmgkb='yes', c.xrefs=split(line.xrefs,"|"), c.resource=split(line.resource,'|') Create (c)-[:equal_to_gene_pharmgkb{how_mapped:line.how_mapped}]->(n); \n'''
-    query = query % (file_name)
+    query = '''  MATCH (n:PharmGKB_Gene{id:line.pharmgkb_id}), (c:Gene{identifier:line.gene_id})  Set c.pharmgkb='yes', c.xrefs=split(line.xrefs,"|"), c.resource=split(line.resource,'|') Create (c)-[:equal_to_gene_pharmgkb{how_mapped:line.how_mapped}]->(n)'''
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/pharmGKB/{file_name}',
+                                              query)
     cypher_file.write(query)
     cypher_file.close()
 
@@ -172,6 +176,8 @@ def main():
     print('Load in gene from pharmgb in')
 
     load_pharmgkb_genes_in()
+
+    driver.close()
 
     print(
         '###########################################################################################################################')

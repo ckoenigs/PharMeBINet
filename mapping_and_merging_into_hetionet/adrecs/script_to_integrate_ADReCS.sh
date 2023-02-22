@@ -9,28 +9,25 @@ path_to_project=$2
 #password
 password=$3
 
-echo gencc
+path_to_datasource="adrecs"
+
 
 now=$(date +"%F %T")
 echo "Current time: $now"
-echo map gene
-
-python3 mapping_gene_gencc.py $path_to_project > gene/output_integration.txt
-
-now=$(date +"%F %T")
-echo "Current time: $now"
-echo map disease
-
-python3 mapping_disease_gencc.py $path_to_project > disease/output_integration.txt
+echo drug mapping
+python3 mapping_drug_adrecs.py $path_to_project $path_to_datasource > chemical/output.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
-echo integration of gencc mapping and nodes into hetionet
+echo SE mapping
+python3 mapping_adr_adrecs.py $path_to_project $path_to_datasource > sideeffect/output.txt
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo integrate map drug and outcome
 
 $path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher.cypher
 
 sleep 30
 $path_neo4j/neo4j restart
 sleep 30
-
-

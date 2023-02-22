@@ -271,7 +271,7 @@ def load_chemical_interaction_and_seperate_information():
                                  'Related Official Symbol', 'Related Synonyms', 'Related Organism ID',
                                  'Related Organism']
             gene_2 = prepare_gene_info(line, gene_properties_2)
-            if gene_2['organism_id'] != '9606' and gene_2['organism_id'] != '':
+            if gene_2['organism_id'] != '9606' or gene_2['organism_id'] != '':
                 continue
             check_on_gene_id(gene_id_2, gene_2)
 

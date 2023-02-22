@@ -11,28 +11,33 @@ create a connection with neo4j
 
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
+
 
 # cypher file
-cypher_file=open("output/cypher.cypher","a",encoding="utf-8")
+cypher_file = open("output/cypher.cypher", "a", encoding="utf-8")
+
 
 def write_infos_into_file(csv_writer, raw_id, mapped_ids, how_mapped):
     for map_id in mapped_ids:
-        csv_writer.writerow([raw_id, map_id, pharmebinetutils.resource_add_and_prepare(Chemical[map_id], "RNAInter"), how_mapped])
+        csv_writer.writerow(
+            [raw_id, map_id, pharmebinetutils.resource_add_and_prepare(Chemical[map_id], "RNAInter"), how_mapped])
 
 
 def compound_RNAInter():
     print("######### load_from_database ##################")
     global Chemical
     Chemical = {}
-    ChemicalXref={}
-    ChemicalName={}
+    ChemicalXref = {}
+    ChemicalName = {}
 
     query = "MATCH (n:Chemical) RETURN n.identifier, n.xrefs, n.resource, n.name, n.synonyms"
     result = g.run(query)
 
-    for id, xref, resource, name, syn, in result:
+    for record in result:
+        [id, xref, resource, name, syn] = record.values()
 
         Chemical[id] = resource
 
@@ -52,7 +57,6 @@ def compound_RNAInter():
             else:
                 ChemicalName[name.lower()].append(id)
 
-
         if syn is not None:
             for s in syn:
                 if s.lower() in ChemicalName and (s.lower() != name.lower()):
@@ -61,38 +65,39 @@ def compound_RNAInter():
                 elif s.lower() not in ChemicalName:
                     ChemicalName[s.lower()] = [id]
 
-
     CompoundChemical = {}
 
     # save the identifier and the Raw_ID in a tsv file
-    file_name='output/Compound_mapping.tsv'
+    file_name = 'output/Compound_mapping.tsv'
     with open(file_name, 'w', newline='') as tsv_file:
         writer = csv.writer(tsv_file, delimiter='\t')
-        line = [ "Raw_ID","identifier", "resource", "how_mapped"]
+        line = ["Raw_ID", "identifier", "resource", "how_mapped"]
         writer.writerow(line)
         query = "MATCH (n:compound_RNAInter) RETURN n.Raw_ID, n.Interactor"
         result = g.run(query)
 
-        for raw_id, inter, in result:
+        for record in result:
+            [raw_id, inter] = record.values()
             rid = raw_id.split(":", 1)
             if len(rid) == 2:
-                rid=rid[1]
+                rid = rid[1]
             else:
-                rid=raw_id
+                rid = raw_id
 
             if rid in Chemical:
-                write_infos_into_file(writer,raw_id, [rid], 'raw_id')
+                write_infos_into_file(writer, raw_id, [rid], 'raw_id')
             elif rid in ChemicalXref:
-                write_infos_into_file(writer,raw_id, ChemicalXref[rid], 'xrefs')
+                write_infos_into_file(writer, raw_id, ChemicalXref[rid], 'xrefs')
             elif rid.lower() in ChemicalName:
-                write_infos_into_file(writer,raw_id, ChemicalName[rid.lower()], 'raw_id_name')
+                write_infos_into_file(writer, raw_id, ChemicalName[rid.lower()], 'raw_id_name')
             elif inter.lower() in ChemicalName:
-                write_infos_into_file(writer,raw_id, ChemicalName[inter.lower()], 'name')
-
+                write_infos_into_file(writer, raw_id, ChemicalName[inter.lower()], 'name')
 
     print("######### Start: Cypher #########")
-    query_start = f'Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:{path_of_directory}mapping_and_merging_into_hetionet/RNAinter/{file_name}" As line fieldterminator "\t" '
-    query = query_start + f'Match (p1:compound_RNAInter{{Raw_ID:line.Raw_ID}}),(p2:Chemical{{identifier:line.identifier}}) SET p2.resource = split(line.resource,"|"), p2.rnainter="yes" Create (p1)-[:associateCompoundRNAInter{{how_mapped:line.how_mapped }}]->(p2);\n'
+    query = f'Match (p1:compound_RNAInter{{Raw_ID:line.Raw_ID}}),(p2:Chemical{{identifier:line.identifier}}) SET p2.resource = split(line.resource,"|"), p2.rnainter="yes" Create (p1)-[:associateCompoundRNAInter{{how_mapped:line.how_mapped }}]->(p2)'
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/RNAinter/{file_name}',
+                                              query)
     cypher_file.write(query)
 
     print("######### End: Cypher #########")
@@ -107,6 +112,8 @@ def main():
 
     create_connection_with_neo4j()
     compound_RNAInter()
+    driver.close()
+
 
 if __name__ == "__main__":
     # execute only if run as a script

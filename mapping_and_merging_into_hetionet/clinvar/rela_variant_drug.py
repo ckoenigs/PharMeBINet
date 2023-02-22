@@ -5,12 +5,14 @@ import re
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 
 # connect with the neo4j database AND MYSQL
 def database_connection():
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 def go_through_a_dictionary_add_info_into_another(from_dict, to_dictionary, additional_name='', asString=False):
@@ -146,9 +148,8 @@ def load_all_rela_drug_response_and_finish_the_files():
     results = g.run(query)
     print(query)
     counter_rela = 0
-    for variant_id, rela_info, rela_type, respose_name, chemical_id, in results:
-        # print(variant_id)
-        # print(chemical_id)
+    for record in results:
+        [variant_id, rela_info, rela_type, respose_name, chemical_id] = record.values()
         counter_rela += 1
 
         rela_info = dict(rela_info)
@@ -326,8 +327,7 @@ def generate_cypher_file_and_tsv(rela_type):
     csv_writer = csv.DictWriter(file, fieldnames=list(set_of_rela_properties), delimiter='\t')
     csv_writer.writeheader()
 
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/clinvar/%s" As line FIELDTERMINATOR '\\t' 
-            Match (c:Chemical{identifier:line.chemical_id}), (t:Variant{identifier:line.variant_id})  Create (c)<-[:%s {'''
+    query_start = '''Match (c:Chemical{identifier:line.chemical_id}), (t:Variant{identifier:line.variant_id})  Create (c)<-[:%s {'''
     for property in set_of_rela_properties:
         if property in ['variant_id', 'chemical_id']:
             continue
@@ -343,8 +343,11 @@ def generate_cypher_file_and_tsv(rela_type):
         else:
             query_start += property + ':line.' + property + ', '
 
-    query = query_start + '''resource:['ClinVar'], source:'ClinVar', clinvar:'yes', license:'https://www.ncbi.nlm.nih.gov/home/about/policies/', url:"https://www.ncbi.nlm.nih.gov/clinvar/variation/"+line.variant_id}]-(t);\n '''
-    query = query % (path_of_directory, file_name, rela_type)
+    query = query_start + '''resource:['ClinVar'], source:'ClinVar', clinvar:'yes', license:'https://www.ncbi.nlm.nih.gov/home/about/policies/', url:"https://www.ncbi.nlm.nih.gov/clinvar/variation/"+line.variant_id}]-(t) '''
+    query = query % (rela_type)
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/clinvar/{file_name}',
+                                              query)
     cypher_file.write(query)
 
     return csv_writer
@@ -374,7 +377,7 @@ def prepare_tsv_file():
     prepare the different rela files and generate cypher queries
     :return:
     """
-    counter_not_used_edges=0
+    counter_not_used_edges = 0
     for (variant_id, chemical_id, rela_type, additional_information), list_of_dict in dict_pair_to_rela_info.items():
         if rela_type in dict_rela_type_to_new_name:
             rela_type = dict_rela_type_to_new_name[rela_type]
@@ -383,7 +386,7 @@ def prepare_tsv_file():
                 rela_type = rela_type + '_TO_' + additional_information.replace('|', '_').upper()
                 rela_type = rela_type.replace(' ', '').replace('/', '_')
             abbreviation = ''.join([x.lower()[0] for x in rela_type.split('_')])
-            rela_end = rela_end %(abbreviation)
+            rela_end = rela_end % (abbreviation)
             rela_type += rela_end
 
         else:
@@ -399,7 +402,7 @@ def prepare_tsv_file():
             if "no assertion criteria provided" not in dict_info['clinical_significance_review_status']:
                 dict_rela_type_to_tsv[rela_type].writerow(prepare_dictionary_with_strings_values(dict_info))
             else:
-                counter_not_used_edges+=1
+                counter_not_used_edges += 1
 
         else:
             combinde_dictionary = {}
@@ -436,9 +439,9 @@ def prepare_tsv_file():
             if "no assertion criteria provided" not in combinde_dictionary['clinical_significance_review_status']:
                 dict_rela_type_to_tsv[rela_type].writerow(prepare_dictionary_with_strings_values(combinde_dictionary))
             else:
-                counter_not_used_edges+=1
+                counter_not_used_edges += 1
     print(set_of_list_properties)
-    print('number of edges which are not used:',counter_not_used_edges)
+    print('number of edges which are not used:', counter_not_used_edges)
 
 
 def main():
@@ -470,6 +473,8 @@ def main():
     print('get all kind of properties of the drug response')
 
     prepare_tsv_file()
+
+    driver.close()
 
     print('##########################################################################')
 

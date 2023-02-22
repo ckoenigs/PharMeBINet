@@ -6,6 +6,9 @@ path_neo4j=$1
 #path to project
 path_to_project=$2
 
+#password
+password=$3
+
 echo smpdb
 
 
@@ -23,25 +26,49 @@ python3  map_protein_ttd.py $path_to_project > protein/output_mapping_proteins.t
 
 now=$(date +"%F %T")
 echo "Current time: $now"
-echo metabolite
+echo drug
 
 python3 map_drug_ttd.py $path_to_project > drug/output_integration_drug.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
-echo metabolite
+echo compound
 
 python3 map_compound_ttd.py $path_to_project > drug/output_integration_compound.txt
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo disease
+
+python3 map_disease_ttd.py $path_to_project > disease/output_integration_compound.txt
 
 
 
 now=$(date +"%F %T")
 echo "Current time: $now"
-echo integration of smpdb mapping and nodes into hetionet
+echo integration of ttd mapping and nodes into hetionet
 
-$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher.cypher
+$path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher.cypher
 
-sleep 60
+sleep 30
 $path_neo4j/neo4j restart
-sleep 120
+sleep 30
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo drug-disease treat
+
+python3 merge_drug_disease_indicates_edges.py $path_to_project > disease/output_integration_compound.txt
+
+
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo integration of ttd edges
+
+$path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_edges.cypher
+
+sleep 30
+$path_neo4j/neo4j restart
+sleep 30
 

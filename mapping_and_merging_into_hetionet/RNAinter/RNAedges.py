@@ -7,7 +7,7 @@ import create_connection_to_databases
 import pharmebinetutils
 
 # cypher file
-cypher_file=open("output/cypher_edge.cypher","w",encoding="utf-8")
+cypher_file = open("output/cypher_edge.cypher", "w", encoding="utf-8")
 
 '''
 create a connection with neo4j
@@ -16,8 +16,10 @@ create a connection with neo4j
 
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
+
 
 def cypher_edge(file_name, label1, label2, properties, edge_name):
     """
@@ -29,15 +31,17 @@ def cypher_edge(file_name, label1, label2, properties, edge_name):
     :param edge_name: specifies how the connection btw. two nodes is called
     """
 
-    query_start = f'Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:{path_of_directory}mapping_and_merging_into_hetionet/RNAinter/{file_name}" As line fieldterminator "\t" '
-    query = query_start + f'Match (p1:{label1}{{identifier:line.id1}}),(p2:{label2}{{identifier:line.id2}}) Create (p1)-[:{edge_name}{{ '
+    query = f'Match (p1:{label1}{{identifier:line.id1}}),(p2:{label2}{{identifier:line.id2}}) Create (p1)-[:{edge_name}{{ '
     for header in properties:
         if header in ["strong", "weak", "predict", "RNAInterID"]:
             query += header + ':split(line.' + header + ',"|"), '
         else:
             query += f'{header}:line.{header}, '
 
-    query = query[:-2]+'}]->(p2);\n'
+    query = query + ' source:"RNAinter", resource:["RNAinter"], license:"Provide data for non-commercial use, distribution, or reproduction in any medium, only if you properly cite the original work.",rnainter:"yes", url:"http://www.rnainter.org/"}]->(p2)'
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/RNAinter/{file_name}',
+                                              query)
     cypher_file.write(query)
 
 
@@ -59,7 +63,8 @@ def edges_new():
             current_counter = LIMIT
             index = 0
             while current_counter == LIMIT:
-                query = 'MATCH z=(m:RNA)--(:rna_RNAInter)-[r]-(:%s_RNAInter)--(n:%s) WHERE toFloat(r.score) >= %s WITH m, collect(r) as edge, n  SKIP %s Limit %s  RETURN n.identifier, m.identifier, edge' % (names[i], names[i + 1], score, str(index * LIMIT), str(LIMIT))
+                query = 'MATCH z=(m:RNA)--(:rna_RNAInter)-[r]-(:%s_RNAInter)--(n:%s) WHERE toFloat(r.score) >= %s WITH m, collect(r) as edge, n  SKIP %s Limit %s  RETURN n.identifier, m.identifier, edge' % (
+                    names[i], names[i + 1], score, str(index * LIMIT), str(LIMIT))
                 a = list(g.run(query))
                 current_counter = 0
                 index += 1
@@ -67,35 +72,36 @@ def edges_new():
                 for entry in a:
                     current_counter += 1
                     counter += 1
-                    entry_score=0
-                    list_strong=list_weak=list_predict=list_id=""
+                    entry_score = 0
+                    list_strong = list_weak = list_predict = list_id = ""
 
                     for x in entry["edge"]:
-                        e=dict(x)
+                        e = dict(x)
                         if "strong" in e.keys():
                             for s in e["strong"]:
                                 if s not in list_strong:
-                                    list_strong= list_strong + "|" + s
+                                    list_strong = list_strong + "|" + s
                         if "weak" in e.keys():
                             for s in e["weak"]:
                                 if s not in list_weak:
-                                    list_weak= list_weak + "|" + s
+                                    list_weak = list_weak + "|" + s
                         if "predict" in e.keys():
                             for s in e["predict"]:
                                 if s not in list_predict:
-                                    list_predict= list_predict + "|" + s
+                                    list_predict = list_predict + "|" + s
 
-                        list_id= list_id + "|" + e["RNAInterID"]
-                        entry_score=entry_score+float(e["score"])
+                        list_id = list_id + "|" + e["RNAInterID"]
+                        entry_score = entry_score + float(e["score"])
 
-                    writer.writerow([entry['n.identifier'], entry['m.identifier'],(entry_score/len(entry["edge"])), list_strong[1:],list_weak[1:],list_predict[1:],list_id[1:]])
-
+                    writer.writerow([entry['n.identifier'], entry['m.identifier'], (entry_score / len(entry["edge"])),
+                                     list_strong[1:], list_weak[1:], list_predict[1:], list_id[1:]])
 
                     if counter % 500000 == 0:
                         print(counter)
                         print(datetime.datetime.now())
 
-        cypher_edge(file_name, names[i + 1], "RNA", ["score", "strong", "weak", "predict", "RNAInterID"], "associate_RNA_" + names[i + 1])
+        cypher_edge(file_name, names[i + 1], "RNA", ["score", "strong", "weak", "predict", "RNAInterID"],
+                    "associate_RNA_" + names[i + 1])
         i += 2
         print("number of edges", counter)
 
@@ -108,6 +114,7 @@ def main():
         sys.exit('need a path rnadinter edge')
     create_connection_with_neo4j()
     edges_new()
+    driver.close()
 
 
 if __name__ == "__main__":

@@ -12,8 +12,9 @@ create connection to neo4j and mysql
 
 def create_connection_with_neo4j():
     # create connection with neo4j
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 # dictionary with pharmebinet genes with identifier as key and value node as dictionary
@@ -34,7 +35,8 @@ def load_pharmebinet_genes_in():
     query = '''MATCH (n:Gene) RETURN n.identifier, n.resource, n.xrefs, n.gene_symbols'''
     results = g.run(query)
 
-    for identifier, resource, xrefs, gene_symbols, in results:
+    for record in results:
+        [identifier, resource, xrefs, gene_symbols] = record.values()
         dict_gene_to_resource[identifier] = resource
         for gene_symbol in gene_symbols:
             pharmebinetutils.add_entry_to_dict_to_set(dict_gene_symbol_to_set_of_ids, gene_symbol, identifier)
@@ -64,20 +66,21 @@ def load_gencc_genes_in():
     results = g.run(query)
 
     counter = 0
-    counter_mapped=0
-    for gene_node, in results:
-        counter+=1
+    counter_mapped = 0
+    for record in results:
+        gene_node = record.data()['n']
+        counter += 1
         gene_id = gene_node['id']
         gene_symbol = gene_node['symbol']
         if gene_id in dict_hgnc_id_to_gene_ids:
-            counter_mapped+=1
+            counter_mapped += 1
             for identifier in dict_hgnc_id_to_gene_ids[gene_id]:
-                resource=pharmebinetutils.resource_add_and_prepare(dict_gene_to_resource[identifier],'GENCC')
-                writer.writerow([gene_id,identifier,resource,'hgnc'])
+                resource = pharmebinetutils.resource_add_and_prepare(dict_gene_to_resource[identifier], 'GENCC')
+                writer.writerow([gene_id, identifier, resource, 'hgnc'])
 
         else:
             if gene_symbol in dict_gene_symbol_to_set_of_ids:
-                counter_mapped+=1
+                counter_mapped += 1
                 for identifier in dict_gene_symbol_to_set_of_ids[gene_symbol]:
                     resource = pharmebinetutils.resource_add_and_prepare(dict_gene_to_resource[identifier], 'GENCC')
                     writer.writerow([gene_id, identifier, resource, 'symbol'])
@@ -94,7 +97,10 @@ Generate cypher and tsv for generating the new nodes and the relationships
 def generate_files():
     # generate cypher file
     cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/gencc/gene/mapping.tsv" As line  FIELDTERMINATOR '\\t' Match (c:Gene{ identifier:line.GeneIDPharmebinet}), (n:GenCC_Gene{id:line.GeneIDGencc}) Create (c)-[:equal_to_GENCC_gene{how_mapped:line.how_mapped}]->(n) Set c.gencc="yes", c.resource=split(line.resource,"|");\n'''
+    query = ''' Match (c:Gene{ identifier:line.GeneIDPharmebinet}), (n:GenCC_Gene{id:line.GeneIDGencc}) Create (c)-[:equal_to_GENCC_gene{how_mapped:line.how_mapped}]->(n) Set c.gencc="yes", c.resource=split(line.resource,"|")'''
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/gencc/gene/mapping.tsv',
+                                              query)
     cypher_file.write(query)
 
     global writer
@@ -143,6 +149,8 @@ def main():
     print('Load all gencc genes from neo4j into a dictionary')
 
     load_gencc_genes_in()
+
+    driver.close()
 
     print(
         '###########################################################################################################################')

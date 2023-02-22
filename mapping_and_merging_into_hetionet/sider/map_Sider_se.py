@@ -1,9 +1,9 @@
-
 import datetime
 import sys, csv
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 '''
 create connection to neo4j
@@ -11,8 +11,9 @@ create connection to neo4j
 
 
 def create_connection_with_neo4j():
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 # list of all side effect ids which are in pharmebinet
@@ -45,10 +46,11 @@ def load_sider_in_dict():
     results = g.run(query)
     k = 0
     counter_new = 0
-    for result, in results:
+    for record in results:
+        result = record.data()['n']
         k += 1
-        meddraType = result['meddraType']
-        conceptName = result['conceptName']
+        meddraType = result['meddraType'] if 'meddraType' in result else ''
+        conceptName = result['conceptName'] if 'conceptName' in result else ''
         umlsIDmeddra = result['umlsIDmeddra']
         name = result['name']
 
@@ -66,15 +68,23 @@ Generate cypher file for side effect nodes
 
 def generate_cypher_file():
     cypher_file = open('output/cypher.cypher', 'w')
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/sider/output/%s.tsv" As line FIELDTERMINATOR '\\t' '''
     query_new = ''
     for head in header:
+        if head == 'conceptName':
+            continue
+            query_new += 'synonyms:[line.' + head + '], '
         query_new += head + ':line.' + head + ', '
-    query_new = query_start + ' Match (b:se_Sider{umlsIDmeddra:line.identifier}) Create (n:SideEffect{' + query_new + ' sider:"yes", url:"http://identifiers.org/umls/"+line.identifier, resource:["SIDER"],  source: "UMLS via SIDER 4.1", license:"CC BY-NC-SA 4.0"}) Create (n)-[:equal_to_SE]->(b);\n'
-    query_new = query_new % ('se_new')
+    query_new = ' Match (b:se_Sider{umlsIDmeddra:line.identifier}) Create (n:SideEffect{' + query_new + ' sider:"yes", url:"http://identifiers.org/umls/"+line.identifier, resource:["SIDER"],  source: "UMLS via SIDER 4.1", license:"CC BY-NC-SA 4.0"}) Create (n)-[:equal_to_SE]->(b)'
+    query_new = pharmebinetutils.get_query_import(path_of_directory,
+                                                  f'mapping_and_merging_into_hetionet/sider/output/se_new.tsv',
+                                                  query_new)
+    cypher_file.write(query_new)
+    query_new = ' Match  (n:SideEffect{identifier:"line.identifier"}) Where line.conceptName is not NULL Set n.synonyms=[line.conceptName]'
+    query_new = pharmebinetutils.get_query_import(path_of_directory,
+                                                  f'mapping_and_merging_into_hetionet/sider/output/se_new.tsv',
+                                                  query_new)
     cypher_file.write(query_new)
     cypher_file.close()
-
 
 
 '''
@@ -122,6 +132,8 @@ def main():
     print('Integrate sider side effects into pharmebinet')
 
     integrate_side_effects()
+
+    driver.close()
 
 
 if __name__ == "__main__":

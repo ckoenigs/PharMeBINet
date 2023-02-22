@@ -13,9 +13,9 @@ create connection to neo4j
 
 def create_connection_with_neo4j_mysql():
     # create connection with neo4j
-    # authenticate("localhost:7474", )
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 # dictionary with pharmebinet pathways with identifier as key and value the name
@@ -26,6 +26,9 @@ dict_pathway_pharmebinet_names = {}
 
 # dictionary from own id to new identifier
 dict_own_id_to_identifier = {}
+
+# dictionary from own id to xrefs
+dict_own_id_to_xrefs = {}
 
 # dictionary pathway id to resource
 dict_pathway_id_to_resource = {}
@@ -39,10 +42,12 @@ def load_pharmebinet_pathways_in():
     query = '''MATCH (n:Pathway) RETURN n.identifier,n.name, n.synonyms, n.source, n.xrefs, n.resource'''
     results = g.run(query)
 
-    for identifier, name, synonyms, source, xrefs, resource, in results:
+    for record in results:
+        [identifier, name, synonyms, source, xrefs, resource] = record.values()
         dict_pathway_id_to_resource[identifier] = resource
         synonyms = synonyms if not synonyms is None else []
         if xrefs:
+            dict_own_id_to_xrefs[identifier] = set(xrefs)
             for id in xrefs:
                 split_source_id = id.split(':', 1)
                 source = split_source_id[0]
@@ -73,31 +78,15 @@ csv_not_mapped.writerow(['id', 'name', 'source'])
 
 file_mapped_pathways = open('pathway/mapped_pathways.tsv', 'w')
 csv_mapped = csv.writer(file_mapped_pathways, delimiter='\t')
-csv_mapped.writerow(['id', 'id_pharmebinet', 'mapped', 'resource'])
-
-file_multiple_mapped_pathways = open('pathway/multiple_mapped_pathways.tsv', 'w')
-csv_mapped_multi = csv.writer(file_multiple_mapped_pathways, delimiter='\t')
-csv_mapped_multi.writerow(['id_s', 'name', 'source_sources', 'id_pharmebinet', 'source_himmelstein'])
-
-# dictionary where a ttd pathway mapped to multiple pc or wp ids
-dict_ttd_to_multiple_pc_or_wp_ids = {}
-
-
-def map_with_xref(pathway_id, source):
-    if pathway_id in dict_own_id_to_identifier[source]:
-        for identifier in dict_own_id_to_identifier[source][pathway_id]:
-            csv_mapped.writerow([pathway_id, identifier, source,
-                                 pharmebinetutils.resource_add_and_prepare(dict_pathway_id_to_resource[pathway_id],
-                                                                           'TTD')])
-
+csv_mapped.writerow(['id', 'id_pharmebinet', 'mapped', 'resource', 'xrefs'])
 
 dict_source_ttd_to_source_pharmebinet = {
     'Reactome': 'reactome',
     'PANTHER Pathway': 'panther',
     'WikiPathway': 'wikipathways',
     # the netpathway ids looks different
-    #'NetPathway': 'netpath',
-    'PathWhiz Pathway':'pathwhiz'
+    # 'NetPathway': 'netpath',
+    'PathWhiz Pathway': 'pathwhiz'
 }
 
 '''
@@ -112,7 +101,8 @@ def load_ttd_pathways_in():
     counter_map_with_id = 0
     counter_map_with_name = 0
     counter_not_mapped = 0
-    for pathway_id, name, source, in results:
+    for record in results:
+        [pathway_id, name, source] = record.values()
         name = name.lower()
         found_mapping = False
         if source in dict_source_ttd_to_source_pharmebinet:
@@ -121,10 +111,13 @@ def load_ttd_pathways_in():
                 found_mapping = True
                 counter_map_with_id += 1
                 for identifier in dict_own_id_to_identifier[other_source_name][pathway_id]:
+                    xrefs = dict_own_id_to_xrefs[identifier]
+                    if source == 'NetPathway':
+                        xrefs.add('netpath:' + identifier)
                     csv_mapped.writerow([pathway_id, identifier, other_source_name,
                                          pharmebinetutils.resource_add_and_prepare(
                                              dict_pathway_id_to_resource[identifier],
-                                             'TTD')])
+                                             'TTD'), '|'.join(xrefs)])
         if found_mapping:
             continue
 
@@ -134,9 +127,12 @@ def load_ttd_pathways_in():
             print(dict_pathway_pharmebinet_names[name])
             print('mapped with name')
             for identifier in dict_pathway_pharmebinet_names[name]:
+                xrefs = dict_own_id_to_xrefs[identifier]
+                if source == 'NetPathway':
+                    xrefs.add('netpath:' + pathway_id)
                 csv_mapped.writerow([pathway_id, identifier, 'name', pharmebinetutils.resource_add_and_prepare(
                     dict_pathway_id_to_resource[identifier],
-                    'TTD')])
+                    'TTD'), '|'.join(xrefs)])
 
 
         else:
@@ -156,7 +152,10 @@ generate connection between mapping pathways of ttd and pharmebinet and generate
 
 def create_cypher_file():
     cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/ttd/pathway/mapped_pathways.tsv" As line FIELDTERMINATOR '\\t' Match (d:Pathway{identifier:line.id_pharmebinet}),(c:TTD_Pathway{id:line.id}) Create (d)-[:equal_to_ttd_pathway{how_mapped:line.mapped}]->(c) Set d.resource= split(line.resource, "|") , d.ttd="yes";\n'''
+    query = ''' Match (d:Pathway{identifier:line.id_pharmebinet}),(c:TTD_Pathway{id:line.id}) Create (d)-[:equal_to_ttd_pathway{how_mapped:line.mapped}]->(c) Set d.resource= split(line.resource, "|"), d.xrefs=split(line.xrefs,"|") , d.ttd="yes"'''
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/ttd/pathway/mapped_pathways.tsv',
+                                              query)
     cypher_file.write(query)
 
 
@@ -199,6 +198,8 @@ def main():
     print('Integrate new pathways and connect them to ttd ')
 
     create_cypher_file()
+
+    driver.close()
 
     print(
         '###########################################################################################################################')

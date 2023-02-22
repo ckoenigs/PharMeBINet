@@ -37,7 +37,7 @@ sleep 60
 $path_neo4j/neo4j restart
 
 
-sleep 120
+sleep 60
 
 
 # relationships!

@@ -53,9 +53,9 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 
 
-sleep 180
+sleep 120
 $path_neo4j/neo4j restart
-sleep 180
+sleep 120
 
 sleep 120
 $path_neo4j/neo4j restart

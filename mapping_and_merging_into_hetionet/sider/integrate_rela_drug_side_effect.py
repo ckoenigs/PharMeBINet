@@ -3,6 +3,7 @@ import sys, csv
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 '''
 create connection to neo4j
@@ -10,9 +11,9 @@ create connection to neo4j
 
 
 def create_connection_with_neo4j():
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
-
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 '''
@@ -36,7 +37,8 @@ find all connection drug-se from sider for every compound-Se in pharmebinet and 
 def find_all_compound_SE_pairs_of_sider():
     query = '''Match (a:Chemical)--(:drug_Sider)-[l:Causes]->(:se_Sider)--(b:SideEffect) Return a.identifier, l, b.identifier'''
     results = g.run(query)
-    for chemical_id, connection, umlsId, in results:
+    for record in results:
+        [chemical_id, connection, umlsId] = record.values()
         lowerFreq = connection['lowerFreq'] if not connection['lowerFreq'] is None else ''
         freq = connection['freq'] if not connection['freq'] is None else ''
         placebo = connection['placebo'] if not connection['placebo'] is None else ''
@@ -82,10 +84,12 @@ def integrate_relationship_from_sider_into_pharmebinet():
 
     # cypher file
     cypher_file = open('output/cypher_rela.cypher', 'w', encoding='utf-8')
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/sider/output/%s.tsv" As line FIELDTERMINATOR '\\t' Match (a:Chemical{identifier:line.chemical_id})'''
+    query_start = ''' Match (a:Chemical{identifier:line.chemical_id})'''
 
-    query = query_start + ''', (b:SideEffect{identifier:line.se_id}) Create (a)-[r:CAUSES_CHcSE{upperFrequency:line.upperFrequency, placebo:line.placebo, avg_frequency:line.avg_frequency, lowerFrequency:line.lowerFrequency, placeboAvgFrequency: line.placeboAvgFrequency, resource:["SIDER"] , placeboLowerFrequency: line.placeboLowerFrequency, placeboUpperFrequency: line.placeboUpperFrequency, url:"http://sideeffects.embl.de/se/"+ line.se_id , source:"SIDER",   sider:"yes", license:"CC BY-NC-SA 4.0"}]->(b) ; \n'''
-    query = query % 'new_rela_se'
+    query = query_start + ''', (b:SideEffect{identifier:line.se_id}) Create (a)-[r:CAUSES_CHcSE{upperFrequency:line.upperFrequency, placebo:line.placebo, avg_frequency:line.avg_frequency, lowerFrequency:line.lowerFrequency, placeboAvgFrequency: line.placeboAvgFrequency, resource:["SIDER"] , placeboLowerFrequency: line.placeboLowerFrequency, placeboUpperFrequency: line.placeboUpperFrequency, url:"http://sideeffects.embl.de/se/"+ line.se_id , source:"SIDER",   sider:"yes", license:"CC BY-NC-SA 4.0"}]->(b) '''
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/sider/output/new_rela_se.tsv',
+                                              query)
     cypher_file.write(query)
     cypher_file.close()
 
@@ -208,6 +212,7 @@ def main():
     print('Integrate sider connection into database')
 
     integrate_relationship_from_sider_into_pharmebinet()
+    driver.close()
 
     print(
         '###########################################################################################################################')

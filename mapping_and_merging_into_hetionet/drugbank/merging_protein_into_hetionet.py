@@ -5,6 +5,7 @@ import sys, csv
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 '''
 create a connection with neo4j
@@ -13,8 +14,9 @@ create a connection with neo4j
 
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 # dictionary of name/synonym to chemical (not compound)
@@ -45,7 +47,8 @@ def load_all_chemicals_and_generate_dictionary():
     """
     query = 'Match (c:Chemical) Return c.identifier, c.name, c.synonyms, c.resource;'
     result = g.run(query)
-    for chemical_id, name, synonyms, resources in result:
+    for record in result:
+        [chemical_id, name, synonyms, resources] = record.values()
         add_name_to_dict(name, chemical_id, dict_name_to_chemical_id)
         dict_chemical_to_resource[chemical_id] = resources
         if synonyms:
@@ -71,7 +74,8 @@ def load_all_pharmebinet_proteins_in_dictionary():
     query = '''MATCH (n:Protein) RETURN n.identifier, n ;'''
     results = g.run(query)
     counter_multiple_identifier = 0
-    for identifier, node, in results:
+    for record in results:
+        [identifier, node] = record.values()
         alternative_ids = node['alternative_ids'] if 'alternative_ids' in node else []
         dict_pharmebinet_protein[identifier] = [dict(node)]
         name = node['name'] if 'name' in node else ''
@@ -309,23 +313,39 @@ def load_proteins_from_drugbank_into_dict():
     # conncet the
     cypherfile = open('protein/cypher_protein.cypher', 'w')
     # this is only for the first time to have only the sequences as property and not with header
-    # query = '''Match (n:Protein) Where exists(n.as_sequence) Set n.as_sequence=split(n.as_sequence,':')[1];\n'''
+    # query = '''Match (n:Protein) Where exists(n.as_sequence) Set n.as_sequence=split(n.as_sequence,':')[1]'''
     # cypherfile.write(query)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/drugbank/protein/proteins.tsv" As line Fieldterminator '\\t' MATCH (n:Protein_DrugBank{identifier:line.id}) ,(p:Protein{identifier:line.uniport}) Create (p)-[:equal_to_DB_protein]->(n) Set p.drugbank='yes', p.resource=split(line.resource,"|"), p.locus=n.locus, p.molecular_weight=n.molecular_weight, p.as_sequences=split(line.sequences,'|'),p.pfams=split(line.pfams,'|') ;\n'''
-
+    query = ''' MATCH (n:Protein_DrugBank{identifier:line.id}) ,(p:Protein{identifier:line.uniport}) Create (p)-[:equal_to_DB_protein]->(n) Set p.drugbank='yes', p.resource=split(line.resource,"|"), p.locus=n.locus, p.molecular_weight=n.molecular_weight, p.as_sequences=split(line.sequences,'|'),p.pfams=split(line.pfams,'|') '''
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/drugbank/protein/proteins.tsv',
+                                              query)
     cypherfile.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/drugbank/protein/mapping_chemical_target.tsv" As line Fieldterminator '\\t' MATCH (n:Protein_DrugBank{identifier:line.id}) ,(p:Chemical{identifier:line.chemical_id}) Create (p)-[:equal_to_DB_target]->(n) Set p.drugbank='yes', p:Target, p.resource=split(line.resource,"|") ;\n'''
-
+    query = ''' MATCH (n:Protein_DrugBank{identifier:line.id}) ,(p:Chemical{identifier:line.chemical_id}) Create (p)-[:equal_to_DB_target]->(n) Set p.drugbank='yes', p:Target, p.resource=split(line.resource,"|") '''
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/drugbank/protein/mapping_chemical_target.tsv',
+                                              query)
     cypherfile.write(query)
     # all queries which are used to integrate Protein with the extra labels into pharmebinet
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/drugbank/protein/proteins_carrier.tsv" As line Fieldterminator '\\t' MATCH (g:Protein{identifier:line.id}) Set g:Carrier ;\n'''
+    query = ''' MATCH (g:Protein{identifier:line.id}) Set g:Carrier '''
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/drugbank/protein/proteins_carrier.tsv',
+                                              query)
     cypherfile.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/drugbank/protein/proteins_enzyme.tsv" As line Fieldterminator '\\t' MATCH (g:Protein{identifier:line.id}) Set g:Enzyme ;\n'''
+    query = ''' MATCH (g:Protein{identifier:line.id}) Set g:Enzyme '''
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/drugbank/protein/proteins_enzyme.tsv',
+                                              query)
     cypherfile.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/drugbank/protein/proteins_target.tsv" As line Fieldterminator '\\t' MATCH (g:Protein{identifier:line.id}) Set g:Target ;\n'''
+    query = ''' MATCH (g:Protein{identifier:line.id}) Set g:Target '''
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/drugbank/protein/proteins_target.tsv',
+                                              query)
     cypherfile.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/drugbank/protein/proteins_transporter.tsv" As line Fieldterminator '\\t' MATCH (g:Protein{identifier:line.id}) Set g:Transporter ;\n'''
+    query = ''' MATCH (g:Protein{identifier:line.id}) Set g:Transporter '''
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/drugbank/protein/proteins_transporter.tsv',
+                                              query)
     cypherfile.write(query)
     cypherfile.close()
 
@@ -358,7 +378,8 @@ def load_proteins_from_drugbank_into_dict():
     counter_human_not_found = 0
 
     counter_uniprot_with_no_gene_ids = 0
-    for node, labels, in results:
+    for record in results:
+        [node, labels] = record.values()
         counter_proteins_in_total += 1
 
         # input list for protein
@@ -444,7 +465,10 @@ def generate_tsv_componet_rela():
     query = 'MATCH p=(a:Protein_DrugBank)-[r:has_component_PIhcPI]->(b:Protein_DrugBank) RETURN a.identifier, b.identifier'
     result = g.run(query)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/drugbank/protein/proteins_rela_component.tsv" As line Fieldterminator '\\t' MATCH (g:Protein{identifier:line.id1}),(b:Protein{identifier:line.id2}) Create (g)-[:HAS_COMPONENT_PRhcPR]->(b);\n'''
+    query = ''' MATCH (g:Protein{identifier:line.id1}),(b:Protein{identifier:line.id2}) Create (g)-[:HAS_COMPONENT_PRhcPR]->(b)'''
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/drugbank/protein/proteins_rela_component.tsv',
+                                              query)
     cypher_rela.write(query)
 
     csv_file = open('protein/proteins_rela_component.tsv', 'w')
@@ -452,7 +476,8 @@ def generate_tsv_componet_rela():
     writer_csv.writerow(['id1', 'id2'])
 
     counter_component_rela = 0
-    for identifier1, identifier2, in result:
+    for record in result:
+        [identifier1, identifier2] = record.values()
         print(identifier1)
         counter_component_rela += 1
         writer_csv.writerow([identifier1, identifier2])
@@ -515,6 +540,8 @@ def main():
     print('load all DrugBank has component rela and write them in tsv and generate cypher file for integration')
 
     generate_tsv_componet_rela()
+
+    driver.close()
 
     print(
         '#################################################################################################################################################################')

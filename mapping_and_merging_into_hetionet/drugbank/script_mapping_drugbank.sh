@@ -6,12 +6,15 @@ path_neo4j=$1
 #path to project
 path_to_project=$2
 
+#password
+password=$3
+
 license='Attribution-NonCommercial 4.0 International'
 
 
 sleep 60
 $path_neo4j/neo4j restart
-sleep 120
+sleep 60
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -22,18 +25,18 @@ python3 integrate_DrugBank_with_interaction_into_hetionet.py "${license}" $path_
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p test -f compound_interaction/cypher.cypher
+$path_neo4j/cypher-shell -u neo4j -p $password -f compound_interaction/cypher.cypher
 
 
 echo merge
 chmod 775 merge_nodes.sh
 
-./merge_nodes.sh $path_neo4j > output_merge_compound.txt
+./merge_nodes.sh $path_neo4j $password > output_merge_compound.txt
 
 
 sleep 60
 $path_neo4j/neo4j restart
-sleep 120
+sleep 60
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -69,11 +72,11 @@ python3 mapping_drugbank_metabolite.py "$license" $path_to_project > metabolite/
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher.cypher
+$path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher.cypher
 
 sleep 60
 $path_neo4j/neo4j restart
-sleep 120
+sleep 60
 
 
 now=$(date +"%F %T")
@@ -82,12 +85,12 @@ echo merge nodes
 
 chmod 775 merge_nodes_salt.sh
 
-./merge_nodes_salt.sh $path_neo4j > output/output_merge_compound.txt
+./merge_nodes_salt.sh $path_neo4j $password > output/output_merge_compound.txt
 
 
 sleep 60
 $path_neo4j/neo4j restart
-sleep 120
+sleep 60
 
 
 now=$(date +"%F %T")
@@ -100,7 +103,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo rela
 
-$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher_rela.cypher 
+$path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_rela.cypher
 
 sleep 60
 $path_neo4j/neo4j restart
@@ -111,9 +114,9 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo delete compounds which did not mapped
 
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher_delete_compound.cypher > output_delete_cypher.txt
+$path_neo4j/cypher-shell -u neo4j -p $password -f cypher_delete_compound.cypher > output_delete_cypher.txt
 
-sleep 120
+sleep 60
 $path_neo4j/neo4j restart
 sleep 120
 
@@ -129,11 +132,11 @@ echo 'calculate similarities'
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p test -f compound_interaction/cypher_resemble.cypher
+$path_neo4j/cypher-shell -u neo4j -p $password -f compound_interaction/cypher_resemble.cypher
 
-sleep 120
+sleep 60
 $path_neo4j/neo4j restart
-sleep 120
+sleep 60
 
 
 

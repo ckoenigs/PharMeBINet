@@ -12,8 +12,9 @@ create a connection with neo4j
 
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 def write_infos_into_file(csv_writer, raw_id, mapped_ids, how_mapped):
@@ -47,7 +48,8 @@ def load_chemical_information():
     query = "MATCH (n:Chemical) RETURN n.identifier, n.xrefs, n.resource"
     result = g.run(query)
 
-    for identifier, xref, resource, in result:
+    for record in result:
+        [identifier, xref, resource] = record.values()
 
         dict_chemical_id_to_resource[identifier] = resource
 
@@ -57,6 +59,7 @@ def load_chemical_information():
                     pubchem_compound = x.split(':', 1)[1]
                     pharmebinetutils.add_entry_to_dict_to_set(dict_pubchem_c_ids_to_identifier, pubchem_compound,
                                                               identifier)
+
 
 def compound_ttd_mapping():
     # save the identifier and the Raw_ID in a tsv file
@@ -70,20 +73,19 @@ def compound_ttd_mapping():
 
         counter = 0
         counter_mapped = 0
-        for node_id, pubchem_cid, in result:
+        for record in result:
+            [node_id, pubchem_cid] = record.values()
             counter += 1
             mapping_found = False
-
 
             if pubchem_cid is not None:
                 if pubchem_cid in dict_pubchem_c_ids_to_identifier:
                     mapping_found = True
-                    write_infos_into_file(writer,node_id,dict_pubchem_c_ids_to_identifier[pubchem_cid],'pubchem')
+                    write_infos_into_file(writer, node_id, dict_pubchem_c_ids_to_identifier[pubchem_cid], 'pubchem')
 
             if mapping_found:
                 counter_mapped += 1
                 continue
-
 
     print('number of nodes:', counter)
     print('number of mapped nodes:', counter_mapped)
@@ -91,8 +93,11 @@ def compound_ttd_mapping():
 
     # cypher file
     with open("output/cypher.cypher", "a", encoding="utf-8") as cypher_file:
-        query_start = f'Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:{path_of_directory}mapping_and_merging_into_hetionet/ttd/{file_name}" As line fieldterminator "\t" '
-        query = query_start + f'Match (p1:TTD_Compound{{id:line.node_id}}),(p2:Chemical{{identifier:line.identifier}}) SET p2.resource = split(line.resource,"|"), p2.ttd="yes" Create (p1)-[:equal_to_ttd_drug{{how_mapped:line.how_mapped }}]->(p2);\n'
+
+        query = f'Match (p1:TTD_Compound{{id:line.node_id}}),(p2:Chemical{{identifier:line.identifier}}) SET p2.resource = split(line.resource,"|"), p2.ttd="yes" Create (p1)-[:equal_to_ttd_drug{{how_mapped:line.how_mapped }}]->(p2)'
+        query = pharmebinetutils.get_query_import(path_of_directory,
+                                                  f'mapping_and_merging_into_hetionet/ttd/{file_name}',
+                                                  query)
         cypher_file.write(query)
 
     print("######### End: Cypher #########")
@@ -118,6 +123,8 @@ def main():
     print(datetime.datetime.now())
     print('map compound')
     compound_ttd_mapping()
+
+    driver.close()
 
 
 if __name__ == "__main__":

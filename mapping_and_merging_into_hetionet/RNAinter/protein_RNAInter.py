@@ -1,4 +1,5 @@
 import csv, sys
+import datetime
 
 sys.path.append("../..")
 import create_connection_to_databases
@@ -11,8 +12,9 @@ create a connection with neo4j
 
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 # cypher file
@@ -28,7 +30,8 @@ def protein_RNAInter():
     Identifier = []
     query = "MATCH (n:protein_RNAInter) RETURN n.Raw_ID "
     result = g.run(query)
-    for raw_id, in result:
+    for record in result:
+        [raw_id] = record.values()
         id = raw_id.split(":", 1)
         if len(id) == 2:
             if id[0] not in proteinRNAInter:
@@ -45,10 +48,11 @@ def protein_RNAInter():
     Protein_RNAInter = {}
     query = "MATCH (n:Protein) RETURN n.identifier, n.resource"
     result = g.run(query)
-    for id, resource, in result:
+    for record in result:
+        [id, resource] = record.values()
         if id in proteinRNAInter["UniProt"]:
             Protein_RNAInter[id] = {}
-            Protein_RNAInter[id]["rawid"] =proteinRNAInter["UniProt"][id]
+            Protein_RNAInter[id]["rawid"] = proteinRNAInter["UniProt"][id]
             newresource = pharmebinetutils.resource_add_and_prepare(resource, "RNAInter")
             Protein_RNAInter[id]["resource"] = newresource
 
@@ -57,15 +61,16 @@ def protein_RNAInter():
     identifier = "','".join(Identifier)
     query = "MATCH a=(m:Gene)--(b:Protein) WHERE m.identifier in ['" + identifier + "'] RETURN m.identifier,b.identifier, b.resource"
     result = g.run(query)
-    for gene, protein, resource, in result:
+    for record in result:
+        [gene, protein, resource] = record.values()
         if protein not in Protein_RNAInter:
-            Protein_RNAInter[protein]={}
-            Protein_RNAInter[protein]["rawid"] ="NCBI:"+gene
+            Protein_RNAInter[protein] = {}
+            Protein_RNAInter[protein]["rawid"] = "NCBI:" + gene
             newresource = pharmebinetutils.resource_add_and_prepare(resource, "RNAInter")
             Protein_RNAInter[protein]["resource"] = newresource
 
     # save the identifier and the Raw_ID in a tsv file
-    file_name='output/Protein_mapping.tsv'
+    file_name = 'output/Protein_mapping.tsv'
     with open(file_name, 'w', newline='') as tsv_file:
         writer = csv.writer(tsv_file, delimiter='\t')
         line = ["identifier", "Raw_ID", "resource"]
@@ -79,23 +84,27 @@ def protein_RNAInter():
     tsv_file.close()
 
     print("######### Start: Cypher #########")
-    query_start = f'Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:{path_of_directory}mapping_and_merging_into_hetionet/RNAinter/{file_name}" As line fieldterminator "\t" '
-    query = query_start + f'Match (p1:protein_RNAInter{{Raw_ID:line.Raw_ID}}),(p2:Protein{{identifier:line.identifier}}) SET p2.resource = split(line.resource,"|"), p2.RNAInter = "yes" Create (p1)-[:associateProteinRNAInter{{  '
-    query = query[:-2] + '}]->(p2);\n'
+    query = f'Match (p1:protein_RNAInter{{Raw_ID:line.Raw_ID}}),(p2:Protein{{identifier:line.identifier}}) SET p2.resource = split(line.resource,"|"), p2.RNAInter = "yes" Create (p1)-[:associateProteinRNAInter{{  '
+    query = query[:-2] + '}]->(p2)'
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/RNAinter/{file_name}',
+                                              query)
     cypher_file.write(query)
     print("######### End: Cypher #########")
 
 
 def main():
-
     global path_of_directory
     if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]
     else:
         sys.exit('need a path rnaInter')
 
+    print(datetime.datetime.now())
     create_connection_with_neo4j()
+    print(datetime.datetime.now())
     protein_RNAInter()
+    driver.close()
 
 
 if __name__ == "__main__":

@@ -14,8 +14,9 @@ create connection to neo4j
 
 
 def create_connection_with_neo4j():
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 # dictionary of all disease ids to resource
@@ -96,7 +97,8 @@ def load_db_nodes_in(label, dict_node_to_resource, dict_node_name_to_node_id, di
     query = query % (label)
     results = g.run(query)
 
-    for identifier, name, synonyms, resource, xrefs, in results:
+    for record in results:
+        [identifier, name, synonyms, resource, xrefs] = record.values()
         dict_node_to_resource[identifier] = set(resource) if resource else set()
         dict_node_to_xrefs[identifier] = set(xrefs) if xrefs else set()
 
@@ -190,7 +192,8 @@ def load_pharmgkb_phenotypes_in():
     counter_map = 0
     counter_not_mapped = 0
 
-    for result, in results:
+    for record in results:
+        result = record.data()['n']
         identifier = result['id']
         dict_names = {}
         name = result['name'].lower() if 'name' in result else ''
@@ -340,13 +343,19 @@ def generate_cypher_file():
         csv_writer = csv.writer(file, delimiter='\t')
         csv_writer.writerow(['disease_id', 'pharmgkb_id', 'resource', 'how_mapped', 'xrefs'])
         dict_label_to_tsv_mapping[label] = csv_writer
-        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/pharmGKB/%s" As line  FIELDTERMINATOR '\\t'  MATCH (n:PharmGKB_Phenotype{id:line.pharmgkb_id}), (c:%s{identifier:line.disease_id})   Set c.pharmgkb='yes', c.xrefs=split(line.xrefs,"|"),  c.resource=split(line.resource,'|') Create (c)-[:equal_to_disease_pharmgkb{how_mapped:line.how_mapped}]->(n); \n'''
+        query = '''  MATCH (n:PharmGKB_Phenotype{id:line.pharmgkb_id}), (c:%s{identifier:line.disease_id})   Set c.pharmgkb='yes', c.xrefs=split(line.xrefs,"|"),  c.resource=split(line.resource,'|') Create (c)-[:equal_to_disease_pharmgkb{how_mapped:line.how_mapped}]->(n)'''
 
-        query = query % (file_name, label)
+        query = query % (label)
+        query = pharmebinetutils.get_query_import(path_of_directory,
+                                                  f'mapping_and_merging_into_hetionet/pharmGKB/{file_name}',
+                                                  query)
         cypher_file.write(query)
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/pharmGKB/%s" As line  FIELDTERMINATOR '\\t'  MATCH (n:PharmGKB_Phenotype{id:line.pharmgkb_id}) Create (c:Phenotype{identifier:line.pharmgkb_id, name:n.name, synonyms:n.alternate_names ,xrefs:split(line.xrefs,'|'), source:"PharmGKB", url:'https://www.pharmgkb.org/disease/'+line.pharmgkb_id , license:"%s", pharmgkb:'yes', resource:['PharmGKB']})  Create (c)-[:equal_to_disease_pharmgkb{how_mapped:'new'}]->(n); \n'''
+    query = ''' MATCH (n:PharmGKB_Phenotype{id:line.pharmgkb_id}) Create (c:Phenotype{identifier:line.pharmgkb_id, name:n.name, synonyms:n.alternate_names ,xrefs:split(line.xrefs,'|'), source:"PharmGKB", url:'https://www.pharmgkb.org/disease/'+line.pharmgkb_id , license:"%s", pharmgkb:'yes', resource:['PharmGKB']})  Create (c)-[:equal_to_disease_pharmgkb{how_mapped:'new'}]->(n)'''
 
-    query = query % (file_name_new, license)
+    query = query % (license)
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/pharmGKB/{file_name_new}',
+                                              query)
     cypher_file.write(query)
     cypher_file.close()
     return dict_label_to_tsv_mapping, csv_writer_new
@@ -387,6 +396,8 @@ def main():
     print('Load in disease from pharmgb in')
 
     load_pharmgkb_phenotypes_in()
+
+    driver.close()
 
     print(
         '###########################################################################################################################')

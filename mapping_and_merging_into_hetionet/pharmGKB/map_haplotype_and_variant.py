@@ -1,10 +1,9 @@
 import datetime
 import sys, csv
-from collections import defaultdict
 
 sys.path.append("../..")
 import create_connection_to_databases
-
+import pharmebinetutils
 
 sys.path.append("..")
 from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
@@ -15,8 +14,9 @@ create connection to neo4j
 
 
 def create_connection_with_neo4j():
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 # dictionary of all node ids to resource
@@ -26,10 +26,10 @@ dict_node_to_resource = {}
 dict_node_to_xrefs = {}
 
 # dictionary ndbSnp id to node id
-dict_dbSNP_to_id={}
+dict_dbSNP_to_id = {}
 
 # dictionary  name to node id
-dict_name_to_node_id={}
+dict_name_to_node_id = {}
 
 
 def add_value_to_dictionary(dictionary, key, value):
@@ -45,7 +45,6 @@ def add_value_to_dictionary(dictionary, key, value):
     dictionary[key].add(value)
 
 
-
 '''
 load in all compound from pharmebinet in a dictionary
 '''
@@ -55,7 +54,8 @@ def load_db_info_in():
     query = '''MATCH (n:Variant) RETURN n.identifier, n.xrefs, n.resource, n.name, n.synonyms'''
     results = g.run(query)
 
-    for identifier,  xrefs, resource, name, synonyms, in results:
+    for record in results:
+        [identifier, xrefs, resource, name, synonyms] = record.values()
         dict_node_to_resource[identifier] = resource if resource else []
         dict_node_to_xrefs[identifier] = xrefs if xrefs else []
         if identifier.startswith('rs'):
@@ -63,7 +63,7 @@ def load_db_info_in():
         # if xrefs:
         #     for xref in xrefs:
         #         if xref.startswith('dbSNP'):
-                    # add_value_to_dictionary(dict_dbSNP_to_id, xref.split(':')[1], identifier)
+        # add_value_to_dictionary(dict_dbSNP_to_id, xref.split(':')[1], identifier)
         if name:
             name = name.lower()
             add_value_to_dictionary(dict_name_to_node_id, name, identifier)
@@ -92,10 +92,10 @@ def add_information_to_file(variant_id, identifier, csv_writer, how_mapped, tupl
     resource = dict_to_resource[variant_id]
     resource.append('PharmGKB')
     resource = "|".join(sorted(set(resource)))
-    xrefs=dict_node_to_xrefs[variant_id]
+    xrefs = dict_node_to_xrefs[variant_id]
     if identifier.startswith('PA'):
-        xrefs.append('PharmGKB:'+identifier)
-    xrefs = go_through_xrefs_and_change_if_needed_source_name(xrefs,'Variant')
+        xrefs.append('PharmGKB:' + identifier)
+    xrefs = go_through_xrefs_and_change_if_needed_source_name(xrefs, 'Variant')
     csv_writer.writerow([variant_id, identifier, resource, how_mapped, '|'.join(xrefs)])
 
 
@@ -110,10 +110,10 @@ def load_pharmgkb_in(label, directory, mapped_label):
     """
 
     # tsv_file
-    file_name = directory+'/mapping_' + label.split('_')[1] + '.tsv'
+    file_name = directory + '/mapping_' + label.split('_')[1] + '.tsv'
     file = open(file_name, 'w', encoding='utf-8')
     csv_writer = csv.writer(file, delimiter='\t')
-    csv_writer.writerow(['identifier', 'pharmgkb_id', 'resource', 'how_mapped','xrefs'])
+    csv_writer.writerow(['identifier', 'pharmgkb_id', 'resource', 'how_mapped', 'xrefs'])
 
     # tsv_file for new
     file_name_new = directory + '/new_' + label.split('_')[1] + '.tsv'
@@ -122,7 +122,7 @@ def load_pharmgkb_in(label, directory, mapped_label):
     csv_writer_new.writerow(['identifier', 'dbid', 'how_mapped', 'xrefs'])
 
     # tsv file for not mapping
-    not_mapped_file = open(directory+'/not_mapping_' + label.split('_')[1] + '.tsv', 'w', encoding='utf-8')
+    not_mapped_file = open(directory + '/not_mapping_' + label.split('_')[1] + '.tsv', 'w', encoding='utf-8')
     csv_writer_not = csv.writer(not_mapped_file, delimiter='\t')
     csv_writer_not.writerow(['pharmgkb_id', 'name'])
     # generate cypher file
@@ -139,11 +139,10 @@ def load_pharmgkb_in(label, directory, mapped_label):
     # set of all tuples
     set_of_all_tuples = set()
 
-
-    for result, in results:
-        name= result['name']
+    for record in results:
+        result = record.data()['n']
+        name = result['name']
         identifier = result['id'] if 'id' in result else name
-
 
         mapped = False
 
@@ -167,18 +166,17 @@ def load_pharmgkb_in(label, directory, mapped_label):
             if mapped:
                 continue
 
-
         if not mapped:
             counter_not_mapped += 1
-            csv_writer_not.writerow([identifier, result['name'], result['types']])
+            csv_writer_not.writerow([identifier, result['name']])
             if name.startswith('rs') and name[2].isdigit():
-                xrefs=['dbSNP:'+name]
+                xrefs = ['dbSNP:' + name]
                 if identifier:
-                    xrefs.append('PharmGKB:'+identifier)
-                csv_writer_new.writerow([identifier,name,  'new', '|'.join(xrefs)])
+                    xrefs.append('PharmGKB:' + identifier)
+                csv_writer_new.writerow([identifier, name, 'new', '|'.join(xrefs)])
 
     print('number of variant which mapped:', counter_map)
-    print('number of mapped:', len(set_of_all_tuples) )
+    print('number of mapped:', len(set_of_all_tuples))
     print('number of variant which not mapped:', counter_not_mapped)
 
 
@@ -191,11 +189,14 @@ def generate_cypher_file(file_name, label, mapped_label, mapped=True):
     """
     cypher_file = open('output/cypher.cypher', 'a')
     if mapped:
-        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/pharmGKB/%s" As line  FIELDTERMINATOR '\\t'  MATCH (n:%s), (c:%s{identifier:line.identifier}) Where n.id=line.pharmgkb_id or n.name=line.pharmgkb_id  Set c.pharmgkb='yes', c.resource=split(line.resource,'|'), c.xrefs=split(line.xrefs,'|') Create (c)-[:equal_to_%s_phamrgkb{how_mapped:line.how_mapped}]->(n); \n'''
-        query = query % (file_name, label,  mapped_label, label.split('_')[1].lower())
+        query = '''  MATCH (n:%s), (c:%s{identifier:line.identifier}) Where n.id=line.pharmgkb_id or n.name=line.pharmgkb_id  Set c.pharmgkb='yes', c.resource=split(line.resource,'|'), c.xrefs=split(line.xrefs,'|') Create (c)-[:equal_to_%s_phamrgkb{how_mapped:line.how_mapped}]->(n)'''
+        query = query % (label, mapped_label, label.split('_')[1].lower())
     else:
-        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/pharmGKB/%s" As line  FIELDTERMINATOR '\\t'  MATCH (n:%s) Where n.id=line.identifier or n.name=line.identifier   Create (c:%s :GeneVariant{identifier:line.dbid, name:n.name, synonyms:n.synonyms, location:n.location, pharmgkb:'yes', resource:["PharmGKB"], xrefs:split(line.xrefs,"|") ,license:"%s" , source:"dbSNP from PharmGKB"})-[:equal_to_%s_phamrgkb{how_mapped:line.how_mapped}]->(n);\n '''
-        query = query % (file_name, label, mapped_label, license, label.split('_')[1].lower())
+        query = '''  MATCH (n:%s) Where n.id=line.identifier or n.name=line.identifier   Create (c:%s :GeneVariant{identifier:line.dbid, name:n.name, synonyms:n.synonyms, location:n.location, pharmgkb:'yes', resource:["PharmGKB"], xrefs:split(line.xrefs,"|") ,license:"%s" , source:"dbSNP from PharmGKB"})-[:equal_to_%s_phamrgkb{how_mapped:line.how_mapped}]->(n) '''
+        query = query % (label, mapped_label, license, label.split('_')[1].lower())
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/pharmGKB/{file_name}',
+                                              query)
     cypher_file.write(query)
     cypher_file.close()
 
@@ -204,7 +205,7 @@ def main():
     global path_of_directory, license
     if len(sys.argv) > 2:
         path_of_directory = sys.argv[1]
-        license=sys.argv[2]
+        license = sys.argv[2]
     else:
         sys.exit('need a path and license')
 
@@ -228,7 +229,9 @@ def main():
         print(datetime.datetime.now())
         print('Load in %s from pharmgb in' % (label))
 
-        load_pharmgkb_in(label, 'variant','Variant')
+        load_pharmgkb_in(label, 'variant', 'Variant')
+
+    driver.close()
 
     print(
         '###########################################################################################################################')

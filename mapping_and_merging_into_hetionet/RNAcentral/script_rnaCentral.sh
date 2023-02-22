@@ -26,4 +26,4 @@ sleep 60
 $path_neo4j/neo4j restart
 
 
-sleep 6ß
+sleep 30

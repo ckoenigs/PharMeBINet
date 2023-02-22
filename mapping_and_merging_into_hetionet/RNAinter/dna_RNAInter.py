@@ -1,5 +1,6 @@
 import csv, sys
 import datetime
+
 sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
@@ -11,8 +12,9 @@ create a connection with neo4j
 
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 def resource_add_and_prepare(resource, source):
@@ -35,7 +37,8 @@ def dna_RNAInter():
     # structure dictionary => { "database": { "ID" : "Raw_ID"}
     query = "MATCH (n:dna_RNAInter) RETURN n.Raw_ID "
     result = g.run(query)
-    for raw_id, in result:
+    for recod in result:
+        [raw_id] = recod.values()
         id = raw_id.split(":", 1)
         if len(id) == 2:
             if id[0] not in dnaRNAInter:
@@ -54,7 +57,8 @@ def dna_RNAInter():
         writer = csv.writer(tsv_file, delimiter='\t')
         line = ["identifier", "Raw_ID", "resource"]
         writer.writerow(line)
-        for id, resource, in result:
+        for record in result:
+            [id, resource] = record.values()
             if id in dnaRNAInter["NCBI"]:
                 list = []
                 list.append(id), list.append(dnaRNAInter["NCBI"][id])
@@ -66,11 +70,12 @@ def dna_RNAInter():
     # cypher file
     cypher_file = open("output/cypher.cypher", "w", encoding="utf-8")
     print("######### Start: Cypher #########")
-    query_start = f'Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:{path_of_directory}mapping_and_merging_into_hetionet/RNAinter/{file_name}" As line fieldterminator "\t" '
-    query = query_start + f'Match (p1:dna_RNAInter{{Raw_ID:line.Raw_ID}}),(p2:Gene{{identifier:line.identifier}})  SET p2.rnainter="yes", p2.resource = split(line.resource,"|") Create (p1)-[:associateGeneDnaRNAInter]->(p2);\n  '
+    query = f'Match (p1:dna_RNAInter{{Raw_ID:line.Raw_ID}}),(p2:Gene{{identifier:line.identifier}})  SET p2.rnainter="yes", p2.resource = split(line.resource,"|") Create (p1)-[:associateGeneDnaRNAInter]->(p2)  '
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/RNAinter/{file_name}',
+                                              query)
     cypher_file.write(query)
     cypher_file.close()
-
 
 
 def main():
@@ -88,9 +93,10 @@ def main():
     print(datetime.datetime.now(), 'mapping')
     dna_RNAInter()
 
+    driver.close()
+
     print('###########################################################################')
     print(datetime.datetime.now())
-
 
 
 if __name__ == "__main__":

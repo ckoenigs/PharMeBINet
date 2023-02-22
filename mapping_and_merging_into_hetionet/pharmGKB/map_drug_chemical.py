@@ -1,9 +1,9 @@
 import datetime
 import sys, csv
-from collections import defaultdict
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 sys.path.append("..")
 from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
@@ -14,8 +14,9 @@ create connection to neo4j
 
 
 def create_connection_with_neo4j_and_mysql():
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
     # create connection with mysql database
     global con
@@ -70,7 +71,8 @@ def load_pharmacological_class():
     """
     query = '''Match (n:PharmacologicClass) Return n.identifier, n.name, n.synonyms, n.resource, n.atc_codes '''
 
-    for identifier, name, synonyms, resource, atc_codes, in g.run(query):
+    for record in g.run(query):
+        [identifier, name, synonyms, resource, atc_codes] = record.values()
         dict_pc_to_resource[identifier] = resource
         dict_identifier_to_pharmacologic_class[identifier] = identifier
         if atc_codes:
@@ -111,7 +113,8 @@ def load_db_info_in():
     query = '''MATCH (n:Chemical)  RETURN n.identifier,n.inchi, n.xrefs, n.resource, n.name, n.synonyms, n.alternative_ids'''
     results = g.run(query)
 
-    for identifier, inchi, xrefs, resource, name, synonyms, alternative_drug_ids, in results:
+    for record in results:
+        [identifier, inchi, xrefs, resource, name, synonyms, alternative_drug_ids] = record.values()
         dict_chemical_to_resource[identifier] = resource if resource else []
         dict_mesh_db_id_to_chemical_id[identifier] = set([identifier])
         if inchi:
@@ -146,7 +149,8 @@ def load_db_info_in():
 
     query = '''MATCH (n:Chemical)--(m:Salt) RETURN n.identifier, m.identifier'''
     results = g.run(query)
-    for compound_id, salt_id, in results:
+    for record in results:
+        [compound_id, salt_id] = record.values()
         if compound_id not in dict_compound_id_to_salts_id:
             dict_compound_id_to_salts_id[compound_id] = set()
         dict_compound_id_to_salts_id[compound_id].add(salt_id)
@@ -233,13 +237,14 @@ def load_pharmgkb_in(label):
     # set of all tuple to pc
     set_of_all_tuples_with_pc = set()
 
-    for result, in results:
+    for record in results:
+        result = record.data()['n']
         identifier = result['id']
 
         mapped = False
         inchi = result['inchi'] if 'inchi' in result else ''
         name = result['name'].lower() if 'name' in result else ''
-        types = result['types']
+        types = result['types'] if 'types' in result else []
 
         if inchi in dict_inchi_to_chemical_id:
             mapped = True
@@ -365,7 +370,7 @@ def load_pharmgkb_in(label):
         if mapped:
             continue
 
-        generic_names = result['generic_names']
+        generic_names = result['generic_names'] if 'generic_names' in result else []
         if generic_names:
             for generic_name in generic_names:
                 if generic_name in dict_name_to_chemical_id:
@@ -383,7 +388,7 @@ def load_pharmgkb_in(label):
             cur = con.cursor()
             # if not mapped map the name to umls cui
             query = ('Select Distinct CUI From MRCONSO Where STR= "%s";')
-            query = query % (name.replace('"','\''))
+            query = query % (name.replace('"', '\''))
             # print(query)
             rows_counter = cur.execute(query)
             if rows_counter > 0:
@@ -409,7 +414,7 @@ def load_pharmgkb_in(label):
 
         if not mapped:
             counter_not_mapped += 1
-            csv_writer_not.writerow([identifier, result['name'], result['types']])
+            csv_writer_not.writerow([identifier, result['name'], types])
         else:
             counter_map += 1
 
@@ -431,8 +436,11 @@ def generate_cypher_file(file_name, label, to_label):
     else:
         extra_string = ''
     cypher_file = open('output/cypher.cypher', 'a')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/pharmGKB/%s" As line  FIELDTERMINATOR '\\t'  MATCH (n:%s{id:line.pharmgkb_id}), (c:%s{identifier:line.identifier})  Set c.pharmgkb='yes', c.resource=split(line.resource,'|') %s Create (c)-[:equal_to_%s_phamrgkb{how_mapped:line.how_mapped}]->(n); \n'''
-    query = query % (file_name, label, to_label, extra_string, label.split('_')[1].lower())
+    query = '''  MATCH (n:%s{id:line.pharmgkb_id}), (c:%s{identifier:line.identifier})  Set c.pharmgkb='yes', c.resource=split(line.resource,'|') %s Create (c)-[:equal_to_%s_phamrgkb{how_mapped:line.how_mapped}]->(n)'''
+    query = query % (label, to_label, extra_string, label.split('_')[1].lower())
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/pharmGKB/{file_name}',
+                                              query)
     cypher_file.write(query)
     cypher_file.close()
 
@@ -473,6 +481,8 @@ def main():
         print('Load in %s from pharmgb in' % (label))
 
         load_pharmgkb_in(label)
+
+    driver.close()
 
     print(
         '###########################################################################################################################')

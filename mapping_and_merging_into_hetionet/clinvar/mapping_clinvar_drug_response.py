@@ -4,12 +4,14 @@ import csv
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 
 # connect with the neo4j database
 def database_connection():
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 # dictionary chemical name/synonyms to chemical id
@@ -26,7 +28,8 @@ Load all chemicals from my database  and add them into a dictionary
 def load_chemicals_from_database_and_add_to_dict():
     query = "MATCH (n:Chemical) RETURN n"
     results = g.run(query)
-    for chemical, in results:
+    for record in results:
+        chemical = record.data()['n']
         identifier = chemical['identifier']
         name = chemical['name'].lower()
         dict_chemical_id_to_resource[identifier] = set(chemical['resource'])
@@ -50,7 +53,7 @@ csv_rela.writerow(header_rela)
 # list of splitibale information
 # susceptibility=allergy, susceptibility=
 list_of_splitable_information = [' response', ' hypersensitivity', ' resistance',
-                                 ' susceptibility',', poor metabolism of']  # poor metabolism of
+                                 ' susceptibility', ', poor metabolism of']  # poor metabolism of
 
 
 def split_name_to_to_only_name(name):
@@ -67,9 +70,10 @@ Load all variation sort the ids into the right tsv, generate the queries, and ad
 def load_all_drug_response_and_finish_the_files():
     cypher_file = open('drug/cypher_drug.cypher', 'w', encoding='utf-8')
 
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/clinvar/drug/%s.tsv" As line FIELDTERMINATOR '\\t' 
-        Match (c:Chemical{identifier:line.chemical_id}), (t:trait_DrugResponse_ClinVar{identifier:line.clinvar_id}) Set c.clinvar='yes', c.resource=split(line.resource,"|") Create (c)-[:equal_to_clinvar_drug]->(t);\n '''
-    query_start = query_start % (path_of_directory, 'chemical_drug')
+    query_start = '''Match (c:Chemical{identifier:line.chemical_id}), (t:trait_DrugResponse_ClinVar{identifier:line.clinvar_id}) Set c.clinvar='yes', c.resource=split(line.resource,"|") Create (c)-[:equal_to_clinvar_drug]->(t) '''
+    query_start = pharmebinetutils.get_query_import(path_of_directory,
+                                                    'mapping_and_merging_into_hetionet/clinvar/drug/chemical_drug.tsv',
+                                                    query_start)
     cypher_file.write(query_start)
 
     query = "MATCH (n:trait_DrugResponse_ClinVar) RETURN n"
@@ -77,7 +81,8 @@ def load_all_drug_response_and_finish_the_files():
     all = 0
     counter_disease = 0
     results = g.run(query)
-    for node, in results:
+    for record in results:
+        node = record.data()['n']
         all += 1
         identifier = node['identifier']
         name = node['name'].lower() if 'name' in node else ''
@@ -123,6 +128,7 @@ def main():
     print('get all kind of properties of the drug response')
 
     load_all_drug_response_and_finish_the_files()
+    driver.close()
 
     print('##########################################################################')
 

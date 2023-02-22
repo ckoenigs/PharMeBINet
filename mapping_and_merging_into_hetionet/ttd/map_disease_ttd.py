@@ -12,8 +12,9 @@ create a connection with neo4j
 
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 def write_infos_into_file(csv_writer, raw_id, mapped_ids, how_mapped, dict_resource):
@@ -47,7 +48,8 @@ def load_disease_or_symptom_information(label, dictionary_label_to_mapper_to_key
         'name': {}
     }
 
-    for identifier, xref, resource, name, synonyms, in result:
+    for record in result:
+        [identifier, xref, resource, name, synonyms] = record.values()
 
         dict_id_to_resource[identifier] = resource
 
@@ -82,13 +84,13 @@ def load_disease_or_symptom_information(label, dictionary_label_to_mapper_to_key
 def compound_ttd_mapping():
     # save the identifier and the Raw_ID in a tsv file
     file_name = 'disease/disease_mapping.tsv'
-    file_name_symptom='disease/symptom_mapping.tsv'
+    file_name_symptom = 'disease/symptom_mapping.tsv'
     with open(file_name, 'w', newline='') as tsv_file:
         writer = csv.writer(tsv_file, delimiter='\t')
         line = ["node_id", "identifier", "resource", "how_mapped"]
         writer.writerow(line)
-        tsv_file_symptom=open(file_name_symptom,'w',encoding='utf-8')
-        writer_symptom=csv.writer(tsv_file_symptom, delimiter='\t')
+        tsv_file_symptom = open(file_name_symptom, 'w', encoding='utf-8')
+        writer_symptom = csv.writer(tsv_file_symptom, delimiter='\t')
         writer_symptom.writerow(line)
 
         query = "MATCH (n:TTD_Disease) RETURN n.id,  n.name, n.ICD9, n.ICD10 ,n.ICD11"
@@ -96,7 +98,8 @@ def compound_ttd_mapping():
 
         counter = 0
         counter_mapped = 0
-        for node_id, name, icd9s, icd10s, icd11s, in result:
+        for record in result:
+            [node_id, name, icd9s, icd10s, icd11s] = record.values()
             counter += 1
             mapping_found = False
 
@@ -131,8 +134,9 @@ def compound_ttd_mapping():
                         counter_mapped += 1
                         mapping_found = True
                         write_infos_into_file(writer, node_id,
-                                          dictionary_label_to_mapper_to_key_values['Disease']['icd11'][icd11], 'icd11',
-                                          dict_disease_id_to_resource)
+                                              dictionary_label_to_mapper_to_key_values['Disease']['icd11'][icd11],
+                                              'icd11',
+                                              dict_disease_id_to_resource)
 
             if mapping_found:
                 continue
@@ -155,8 +159,9 @@ def compound_ttd_mapping():
                         counter_mapped += 1
                         mapping_found = True
                         write_infos_into_file(writer_symptom, node_id,
-                                          dictionary_label_to_mapper_to_key_values['Symptom']['icd10'][icd10], 'icd10',
-                                          dict_symptom_id_to_resource)
+                                              dictionary_label_to_mapper_to_key_values['Symptom']['icd10'][icd10],
+                                              'icd10',
+                                              dict_symptom_id_to_resource)
 
             if mapping_found:
                 continue
@@ -180,8 +185,8 @@ def compound_ttd_mapping():
                         counter_mapped += 1
                         mapping_found = True
                         write_infos_into_file(writer_symptom, node_id,
-                                          dictionary_label_to_mapper_to_key_values['Symptom']['icd9'][icd9], 'icd9',
-                                          dict_symptom_id_to_resource)
+                                              dictionary_label_to_mapper_to_key_values['Symptom']['icd9'][icd9], 'icd9',
+                                              dict_symptom_id_to_resource)
 
             if mapping_found:
                 counter_mapped += 1
@@ -194,11 +199,15 @@ def compound_ttd_mapping():
 
     # cypher file
     with open("output/cypher.cypher", "a", encoding="utf-8") as cypher_file:
-        query_start = f'Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:{path_of_directory}mapping_and_merging_into_hetionet/ttd/{file_name}" As line fieldterminator "\t" '
-        query = query_start + f'Match (p1:TTD_Disease{{id:line.node_id}}),(p2:Disease{{identifier:line.identifier}}) SET p2.resource = split(line.resource,"|"), p2.ttd="yes" Create (p1)-[:equal_to_ttd_disease{{how_mapped:line.how_mapped }}]->(p2);\n'
+        query = f'Match (p1:TTD_Disease{{id:line.node_id}}),(p2:Disease{{identifier:line.identifier}}) SET p2.resource = split(line.resource,"|"), p2.ttd="yes" Create (p1)-[:equal_to_ttd_disease{{how_mapped:line.how_mapped }}]->(p2)'
+        query = pharmebinetutils.get_query_import(path_of_directory,
+                                                  f'mapping_and_merging_into_hetionet/ttd/{file_name}',
+                                                  query)
         cypher_file.write(query)
-        query_start = f'Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:{path_of_directory}mapping_and_merging_into_hetionet/ttd/{file_name_symptom}" As line fieldterminator "\t" '
-        query = query_start + f'Match (p1:TTD_Disease{{id:line.node_id}}),(p2:Symptom{{identifier:line.identifier}}) SET p2.resource = split(line.resource,"|"), p2.ttd="yes" Create (p1)-[:equal_to_ttd_disease{{how_mapped:line.how_mapped }}]->(p2);\n'
+        query = f'Match (p1:TTD_Disease{{id:line.node_id}}),(p2:Symptom{{identifier:line.identifier}}) SET p2.resource = split(line.resource,"|"), p2.ttd="yes" Create (p1)-[:equal_to_ttd_disease{{how_mapped:line.how_mapped }}]->(p2)'
+        query = pharmebinetutils.get_query_import(path_of_directory,
+                                                  f'mapping_and_merging_into_hetionet/ttd/{file_name_symptom}',
+                                                  query)
         cypher_file.write(query)
 
     print("######### End: Cypher #########")
@@ -231,6 +240,8 @@ def main():
     print(datetime.datetime.now())
     print('map compound')
     compound_ttd_mapping()
+
+    driver.close()
 
 
 if __name__ == "__main__":

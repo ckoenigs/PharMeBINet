@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Oct 17 07:38:13 2017
-
-@author: Cassandra
-"""
-
 # load in drugbank and make a new file with all drugbank entries which has at least a chemical fromular or a sequence
 drugbank_file = open('data/drugbank_with_synonyms_uniis_extern_ids_molecular_seq_formular.tsv', 'r')
 drugbank_file_new = open('data/durgbank_without_entries_which has_no_chemical_formular_or_sequence.tsv', 'w')

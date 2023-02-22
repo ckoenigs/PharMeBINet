@@ -1,4 +1,5 @@
 import csv, sys
+import datetime
 
 sys.path.append("../..")
 import create_connection_to_databases
@@ -14,8 +15,9 @@ create a connection with neo4j
 
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
     return g
 
@@ -41,7 +43,8 @@ def disease_RNAdisease():
     query = "MATCH (n:Disease) RETURN n.identifier, n.alternative_ids, n.xrefs, n.resource, n.name, n.synonyms"
     result = g.run(query)
 
-    for id, ids, xrefs, resource, name, synonym, in result:
+    for record in result:
+        [id, ids, xrefs, resource, name, synonym] = record.values()
         Disease[id] = resource
 
         if xrefs is not None:
@@ -79,7 +82,8 @@ def disease_RNAdisease():
     query = "MATCH (n:Symptom) RETURN n.identifier, n.resource, n.name, n.synonyms, n.xrefs"
     result = g.run(query)
 
-    for id, resource, name, synonym, xref, in result:
+    for record in result:
+        [id, resource, name, synonym, xref] = record.values()
         Symptom[id] = resource
 
         if name is not None:
@@ -114,7 +118,8 @@ def disease_RNAdisease():
 
             query = "MATCH (n:disease_RNADisease) RETURN n.DO_ID, n.MeSH_ID, n.Disease_Name"
             result = g.run(query)
-            for doid, mesh, name, in result:
+            for record in result:
+                [doid, mesh, name] = record.values()
                 map = False
 
                 if name.lower() in DiseaseName:
@@ -130,7 +135,7 @@ def disease_RNAdisease():
                     for x in mesh:
                         if x in Symptom:
                             map = True
-                            write_infos_into_file(writer1, name,[x], "Disease_Mesh-Symptom_ID", Symptom)
+                            write_infos_into_file(writer1, name, [x], "Disease_Mesh-Symptom_ID", Symptom)
 
                 # not good mapping ids
                 if name.lower() in ['inflammation']:
@@ -150,12 +155,17 @@ def disease_RNAdisease():
         tsv_file1.close()
 
     print("######### Start: Cypher #########")
-    query_start = f'Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:{path_of_directory}mapping_and_merging_into_hetionet/RNAdisease/{file_name}" As line fieldterminator "\t" '
-    query = query_start + f'Match (p1:disease_RNADisease{{Disease_Name:line.id1}}),(p2:Disease{{identifier:line.id2}}) SET p2.resource = split(line.resource,"|"), p2.rnadisease = "yes" Create (p1)-[:associateRNADisease_disease{{how_mapped:line.how_mapped}}]->(p2);\n'
+    query = f'Match (p1:disease_RNADisease{{Disease_Name:line.id1}}),(p2:Disease{{identifier:line.id2}}) SET p2.resource = split(line.resource,"|"), p2.rnadisease = "yes" Create (p1)-[:associateRNADisease_disease{{how_mapped:line.how_mapped}}]->(p2)'
+
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/RNAdisease/{file_name}',
+                                              query)
     cypher_file.write(query)
 
-    query_start = f'Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:{path_of_directory}mapping_and_merging_into_hetionet/RNAdisease/{file_name_symptom}" As line fieldterminator "\t" '
-    query = query_start + f'Match (p1:disease_RNADisease{{Disease_Name:line.id1}}),(p2:Symptom{{identifier:line.id2}}) SET p2.resource = split(line.resource,"|"), p2.rnadisease = "yes" Create (p1)-[:associateRNADisease_Symptom{{how_mapped:line.how_mapped}}]->(p2);\n'
+    query = f'Match (p1:disease_RNADisease{{Disease_Name:line.id1}}),(p2:Symptom{{identifier:line.id2}}) SET p2.resource = split(line.resource,"|"), p2.rnadisease = "yes" Create (p1)-[:associateRNADisease_Symptom{{how_mapped:line.how_mapped}}]->(p2)'
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/RNAdisease/{file_name_symptom}',
+                                              query)
     cypher_file.write(query)
     print("######### End: Cypher #########")
 
@@ -174,7 +184,8 @@ def rna_RNAdisease():
     query = "MATCH (n:RNA) RETURN n.identifier, n.geneName, n.xrefs, n.resource"
     result = g.run(query)
 
-    for id, name, xrefs, resource, in result:
+    for record in result:
+        [id, name, xrefs, resource] = record.values()
         RNA[id] = resource
 
         if xrefs is not None:
@@ -193,7 +204,8 @@ def rna_RNAdisease():
 
         query = "MATCH (n:rna_RNADisease) RETURN n.RNA_Symbol"
         result = g.run(query)
-        for symbol, in result:
+        for record in result:
+            [symbol] = record.values()
             if symbol in RNAname:
                 write_infos_into_file(writer, symbol, RNAname[symbol], 'Symbol-Gene_Name', RNA)
             elif symbol in RNAXref:
@@ -205,8 +217,10 @@ def rna_RNAdisease():
         tsv_file.close()
 
     print("######### Start: Cypher #########")
-    query_start = f'Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:{path_of_directory}mapping_and_merging_into_hetionet/RNAdisease/{file_name}" As line fieldterminator "\t" '
-    query = query_start + f'Match (p1:rna_RNADisease{{RNA_Symbol:line.id1}}),(p2:RNA{{identifier:line.id2}}) SET p2.resource = split(line.resource,"|"), p2.rnadisease = "yes" Create (p1)-[:associateRNADisease_rna{{how_mapped:line.how_mapped}}]->(p2);\n'
+    query =  f'Match (p1:rna_RNADisease{{RNA_Symbol:line.id1}}),(p2:RNA{{identifier:line.id2}}) SET p2.resource = split(line.resource,"|"), p2.rnadisease = "yes" Create (p1)-[:associateRNADisease_rna{{how_mapped:line.how_mapped}}]->(p2)'
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/RNAdisease/{file_name}',
+                                              query)
     cypher_file.write(query)
     print("######### End: Cypher #########")
 
@@ -218,9 +232,14 @@ def main():
     else:
         sys.exit('need a path rnadisease')
 
+    print(datetime.datetime.now(), '#' * 20)
     create_connection_with_neo4j()
+    print(datetime.datetime.now(), '#' * 20)
     disease_RNAdisease()
+    print(datetime.datetime.now(), '#' * 20)
     rna_RNAdisease()
+
+    driver.close()
 
 
 if __name__ == "__main__":

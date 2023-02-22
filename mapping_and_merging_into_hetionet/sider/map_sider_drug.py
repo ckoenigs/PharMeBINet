@@ -1,4 +1,3 @@
-
 import datetime
 import sys, csv
 from collections import defaultdict
@@ -6,9 +5,11 @@ import gzip
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 sys.path.append("..")
 from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
+
 
 class drug_Sider:
     """
@@ -93,8 +94,9 @@ create connection to neo4j
 
 
 def create_connection_with_neo4j():
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 '''
@@ -114,29 +116,30 @@ def load_chemicals_from_database():
     query = 'MATCH (n:Chemical) RETURN n '
     results = g.run(query)
 
-    for result, in results:
+    for record in results:
+        result = record.data()['n']
         identifier = result['identifier']
         inchikey = result['inchikey'] if 'inchikey' in result else ''
         if not inchikey in dict_inchikey_to_compound and inchikey != '':
             dict_inchikey_to_compound[inchikey] = [identifier]
         elif not inchikey == '':
             dict_inchikey_to_compound[inchikey].append(identifier)
-        inchi = result['inchi']
+        inchi = result['inchi'] if 'inchi' in result else ''
         name = result['name'].lower() if 'name' in result else ''
         if not name in dict_name_to_chemical and name != '':
             dict_name_to_chemical[name] = set([identifier])
         elif name != '':
             dict_name_to_chemical[name].add(identifier)
 
-        synonyms = result['synonyms']
-        if synonyms:
+        if 'synonyms' in result:
+            synonyms = result['synonyms']
             for synonym in synonyms:
                 synonym = synonym.lower()
                 if not synonym in dict_synonyms_to_chemicals_ids:
                     dict_synonyms_to_chemicals_ids[synonym] = set()
                 dict_synonyms_to_chemicals_ids[synonym].add(identifier)
-        brand_name_and_companys = result['international_brands_name_company']
-        if brand_name_and_companys:
+        if 'international_brands_name_company' in result:
+            brand_name_and_companys = result['international_brands_name_company']
             for brand_name_and_company in brand_name_and_companys:
                 brand_name = brand_name_and_company.split('::')[0]
                 brand_name = brand_name.lower()
@@ -190,7 +193,8 @@ def load_sider_drug_in_dict():
     query = 'MATCH (n:drug_Sider) RETURN n '
     results = g.run(query)
 
-    for result, in results:
+    for record in results:
+        result = record.data()['n']
 
         stitchIDflat = result['stitchIDflat']
         stitchIDstereo = result['stitchIDstereo']
@@ -614,8 +618,11 @@ def integrate_sider_drugs_into_pharmebinet():
     # cypher file
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/sider/output/mapped_drug.tsv" As line Fieldterminator '\\t' Match (c:Chemical{identifier:line.chemical_id}), (d:drug_Sider{stitchIDstereo:line.sider_id}) Set c.xrefs=split(line.xrefs,'|'), c.sider="yes", c.resource=split(line.resource,'|'), d.name=line.name, d.how_mapped=line.how_mapped
-                    Create (c)-[:equal_to_drug_Sider]->(d);\n'''
+    query = ''' Match (c:Chemical{identifier:line.chemical_id}), (d:drug_Sider{stitchIDstereo:line.sider_id}) Set c.xrefs=split(line.xrefs,'|'), c.sider="yes", c.resource=split(line.resource,'|'), d.name=line.name, d.how_mapped=line.how_mapped
+                    Create (c)-[:equal_to_drug_Sider]->(d)'''
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/sider/output/mapped_drug.tsv',
+                                              query)
     cypher_file.write(query)
     cypher_file.close()
 
@@ -657,7 +664,7 @@ def integrate_sider_drugs_into_pharmebinet():
 
             xrefs = dict_all_drug[chemical_id].xrefs
             xrefs.append('PubChem Compound:' + str(pubchem_stereo))
-            xrefs=go_through_xrefs_and_change_if_needed_source_name(xrefs,'chemical')
+            xrefs = go_through_xrefs_and_change_if_needed_source_name(xrefs, 'chemical')
             xrefs = '|'.join(xrefs)
             csv_writer.writerow([chemical_id, xrefs, resource, stitch_stereo, name, how_mapped])
 
@@ -680,7 +687,6 @@ def integrate_sider_drugs_into_pharmebinet():
         else:
             name = ''
         csv_writer.writerow([stitch_stereo, stitch_flat, name])
-
 
 
 def main():
@@ -765,6 +771,8 @@ def main():
     print('Integrate sider drugs into pharmebinet')
 
     integrate_sider_drugs_into_pharmebinet()
+
+    driver.close()
 
     print(
         '###########################################################################################################################')

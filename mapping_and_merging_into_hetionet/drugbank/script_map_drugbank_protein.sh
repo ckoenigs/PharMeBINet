@@ -6,6 +6,9 @@ path_neo4j=$1
 #path to project
 path_to_project=$2
 
+#password
+password=$3
+
 license='Attribution-NonCommercial 4.0 International'
 
 now=$(date +"%F %T")
@@ -24,11 +27,11 @@ python3 integrate_pc.py $path_to_project "${license}" > pharmacological_class/ou
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p test -f protein/cypher_protein.cypher
+$path_neo4j/cypher-shell -u neo4j -p $password -f protein/cypher_protein.cypher
 
-sleep 120
+sleep 30
 $path_neo4j/neo4j restart
-sleep 120
+sleep 30
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -52,8 +55,8 @@ python3 integrate_compound_pc_rela.py $path_to_project "${license}" > compound_p
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p test -f rela_protein/cypher.cypher 
+$path_neo4j/cypher-shell -u neo4j -p $password -f rela_protein/cypher.cypher
 
-sleep 120
+sleep 60
 $path_neo4j/neo4j restart
 sleep 60

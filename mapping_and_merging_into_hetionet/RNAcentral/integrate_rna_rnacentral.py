@@ -66,7 +66,7 @@ def load_from_database():
         else:
             rna2_RNACentral[rnacentral_id].append(json.dumps(a))
 
-    print(rna2_RNACentral['URS00019A6210_9606'])
+    # print(rna2_RNACentral['URS00019A6210_9606'])
     properties = []
     properties_i = []
     query = "MATCH (p:rna1_RNACentral) WITH DISTINCT keys(p) AS keys UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields RETURN allfields as l"

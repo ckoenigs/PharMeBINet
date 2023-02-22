@@ -13,8 +13,9 @@ create a connection with neo4j
 
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
-    global graph_database
-    graph_database = create_connection_to_databases.database_connection_neo4j()
+    global graph_database, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    graph_database = driver.session()
 
 
 # dictionary disease id to resource
@@ -36,12 +37,12 @@ def add_to_dictionary_with_set(dictionary, key, value):
         dictionary[key] = set()
     dictionary[key].add(value)
 
+
 # dictionary disease identifier to omim counter
-dict_disease_id_to_omim_count={}
+dict_disease_id_to_omim_count = {}
 
 # dictionary from source to source id to set of disease ids
-dict_xref_to_xref_id_to_disease_ids={'OMIM':{},'Orphanet':{}}
-
+dict_xref_to_xref_id_to_disease_ids = {'OMIM': {}, 'Orphanet': {}}
 
 '''
 load in all disease from pharmebinet in a dictionary
@@ -53,7 +54,8 @@ def load_pharmebinet_labels_in(label, dict_label_id_to_resource, dict_name_to_id
     results = graph_database.run(query)
 
     #  run through results
-    for identifier, name, xrefs, synonyms, resource, in results:
+    for record in results:
+        [identifier, name, xrefs, synonyms, resource] = record.values()
         dict_label_id_to_resource[identifier] = set(resource)
         if xrefs:
             for xref in xrefs:
@@ -67,13 +69,13 @@ def load_pharmebinet_labels_in(label, dict_label_id_to_resource, dict_name_to_id
         if name:
             add_to_dictionary_with_set(dict_name_to_ids, name.lower(), identifier)
 
-
         if synonyms:
             for synonym in synonyms:
                 synonym = pharmebinetutils.prepare_obo_synonyms(synonym)
                 add_to_dictionary_with_set(dict_name_to_ids, synonym.lower(), identifier)
 
     print('number of disease nodes in pharmebinet:' + str(len(dict_label_id_to_resource)))
+
 
 # file for mapped or not mapped identifier
 file_not_mapped_disease = open('disease/not_mapped_disease.tsv', 'w', encoding="utf-8")
@@ -87,9 +89,13 @@ generate connection between mapping disease of reactome and pharmebinet and gene
 
 def create_cypher_file(label, file_name):
     cypher_file = open('output/cypher.cypher', 'a', encoding="utf-8")
-    query = '''Using Periodic Commit 10000 LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/gencc/%s" As line FIELDTERMINATOR "\\t" MATCH (d:%s{identifier:line.id_own_db}),(c:gencc_disease_mondo_dict{disease_curie:line.id}) CREATE (d)-[: equal_to_gencc_disease{how_mapped:line.how_mapped}]->(c) SET d.resource = split(line.resource, '|'), d.gencc = "yes";\n'''
-    query = query % (path_of_directory, file_name, label)
+    query = ''' MATCH (d:%s{identifier:line.id_own_db}),(c:GenCC_Disease{id:line.id}) CREATE (d)-[: equal_to_gencc_disease{how_mapped:line.how_mapped}]->(c) SET d.resource = split(line.resource, '|'), d.gencc = "yes"'''
+    query = query % (label)
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/gencc/{file_name}',
+                                              query)
     cypher_file.write(query)
+
 
 def create_files(label):
     """
@@ -97,7 +103,7 @@ def create_files(label):
     :param label: string
     :return: csv writer
     """
-    file_name='disease/mapped_'+label+'.tsv'
+    file_name = 'disease/mapped_' + label + '.tsv'
     file_mapped_disease = open(file_name, 'w', encoding="utf-8")
     csv_mapped = csv.writer(file_mapped_disease, delimiter='\t', lineterminator='\n')
     csv_mapped.writerow(['id', 'id_own_db', 'resource', 'how_mapped'])
@@ -106,6 +112,26 @@ def create_files(label):
     return csv_mapped
 
 
+# dictionary node id to synonyms
+dict_node_id_to_synonyms = {}
+
+# dictionary from node id to xref to identifier
+dict_node_id_to_resource_to_ids = {}
+
+
+def load_extantion_information_from_gencc_edges():
+    query = 'MATCH p=(n:GenCC_Disease)-[r]-(:GenCC_Gene)  Return ID(n), r.disease_original_curie, r.disease_original_title'
+    results = graph_database.run(query)
+    for record in results:
+        [node_id, xref, synonym] = record.values()
+        pharmebinetutils.add_entry_to_dict_to_set(dict_node_id_to_synonyms, node_id, synonym)
+        source_id = xref.split(':', 1)
+        if node_id not in dict_node_id_to_resource_to_ids:
+            dict_node_id_to_resource_to_ids[node_id] = {}
+        if source_id[0] not in dict_node_id_to_resource_to_ids[node_id]:
+            dict_node_id_to_resource_to_ids[node_id][source_id[0]] = set()
+        dict_node_id_to_resource_to_ids[node_id][source_id[0]].add(source_id[1])
+
 
 '''
 load all gencc disease and check if they are in pharmebinet or not
@@ -113,26 +139,27 @@ load all gencc disease and check if they are in pharmebinet or not
 
 
 def load_gencc_disease_and_map():
-    query = '''MATCH (n:gencc_disease_mondo_dict) RETURN n'''
+    query = '''MATCH (n:GenCC_Disease) RETURN n, ID(n)'''
     results = graph_database.run(query)
 
-    csv_writer_disease= create_files('Disease')
+    csv_writer_disease = create_files('Disease')
 
     # count for the different mapping methods
     counter_map_with_id = 0
     counter_map_with_name = 0
     counter_synonym_mapping = 0
     counter_not_mapped = 0
-    for disease_node, in results:
-        disease_id = disease_node['disease_curie']
-        disease_names = disease_node['disease_title']
+    for record in results:
+        [disease_node, node_id] = record.values()
+        disease_id = disease_node['id']
+        disease_name = disease_node['title']
 
         # boolean for mapping
         is_mapped = False
 
         if disease_id in dict_disease_id_to_resource:
             is_mapped = True
-            counter_map_with_id+=1
+            counter_map_with_id += 1
             csv_writer_disease.writerow([disease_id, disease_id,
                                          pharmebinetutils.resource_add_and_prepare(
                                              dict_disease_id_to_resource[disease_id], 'GENCC'), 'id'])
@@ -140,62 +167,50 @@ def load_gencc_disease_and_map():
             continue
 
         # mapping with name
-        if disease_names:
-            for disease_name in disease_names:
-                disease_name=disease_name.lower()
-                if disease_name in dict_disease_name_to_disease_ids:
-                    counter_map_with_name += 1
-                    is_mapped = True
+        if disease_name:
+            disease_name = disease_name.lower()
+            if disease_name in dict_disease_name_to_disease_ids:
+                counter_map_with_name += 1
+                is_mapped = True
 
-                    for database_identifier in dict_disease_name_to_disease_ids[disease_name]:
-                        csv_writer_disease.writerow([disease_id, database_identifier,
-                                             pharmebinetutils.resource_add_and_prepare(dict_disease_id_to_resource[database_identifier],'GENCC'), 'name'])
-
-        if is_mapped:
-            continue
-
-
-        xrefs=disease_node['disease_original_curie']
-        omim_ids=set()
-        orphanet_ids=set()
-        for xref in xrefs:
-            if xref.startswith('OMIM:'):
-                omim_id = xref.split(':')[1]
-                omim_ids.add(omim_id)
-            elif xref.startswith('Orphanet:'):
-                orphanet_id = xref.split(':')[1]
-                orphanet_ids.add(orphanet_id)
-
-        if len(orphanet_ids)>0:
-            for ref in orphanet_ids:
-                if ref in dict_xref_to_xref_id_to_disease_ids['Orphanet']:
-                    counter_map_with_name += 1
-                    is_mapped = True
-
-                    for database_identifier in dict_xref_to_xref_id_to_disease_ids['Orphanet'][ref]:
-                        csv_writer_disease.writerow([disease_id, database_identifier,
-                                                     pharmebinetutils.resource_add_and_prepare(
-                                                         dict_disease_id_to_resource[database_identifier], 'GENCC'),
-                                                     'orphanet'])
+                for database_identifier in dict_disease_name_to_disease_ids[disease_name]:
+                    csv_writer_disease.writerow([disease_id, database_identifier,
+                                                 pharmebinetutils.resource_add_and_prepare(
+                                                     dict_disease_id_to_resource[database_identifier], 'GENCC'),
+                                                 'name'])
 
         if is_mapped:
             continue
 
-        if len(omim_ids)>0:
-            for ref in omim_ids:
-                if ref in dict_xref_to_xref_id_to_disease_ids['OMIM']:
-                    counter_map_with_name += 1
-                    is_mapped = True
+        # if node_id in dict_node_id_to_resource_to_ids and 'Orphanet' in dict_node_id_to_resource_to_ids[node_id]:
+        #     for ref in dict_node_id_to_resource_to_ids[node_id]['Orphanet']:
+        #         if ref in dict_xref_to_xref_id_to_disease_ids['Orphanet']:
+        #             counter_map_with_name += 1
+        #             is_mapped = True
+        #
+        #             for database_identifier in dict_xref_to_xref_id_to_disease_ids['Orphanet'][ref]:
+        #                 csv_writer_disease.writerow([disease_id, database_identifier,
+        #                                              pharmebinetutils.resource_add_and_prepare(
+        #                                                  dict_disease_id_to_resource[database_identifier], 'GENCC'),
+        #                                              'orphanet'])
+        #
+        # if is_mapped:
+        #     continue
 
-                    for database_identifier in dict_xref_to_xref_id_to_disease_ids['OMIM'][ref]:
-                        csv_writer_disease.writerow([disease_id, database_identifier,
-                                                     pharmebinetutils.resource_add_and_prepare(
-                                                         dict_disease_id_to_resource[database_identifier], 'GENCC'),
-                                                     'omim'])
-
-        if is_mapped:
-            continue
-
+        # if node_id in dict_node_id_to_resource_to_ids and 'OMIM' in dict_node_id_to_resource_to_ids[node_id]:
+        #     for ref in dict_node_id_to_resource_to_ids[node_id]['OMIM']:
+        #         if ref in dict_xref_to_xref_id_to_disease_ids['OMIM']:
+        #             counter_map_with_name += 1
+        #             is_mapped = True
+        #
+        #             for database_identifier in dict_xref_to_xref_id_to_disease_ids['OMIM'][ref]:
+        #                 csv_writer_disease.writerow([disease_id, database_identifier,
+        #                                              pharmebinetutils.resource_add_and_prepare(
+        #                                                  dict_disease_id_to_resource[database_identifier], 'GENCC'),
+        #                                              'omim'])
+        #
+        # if is_mapped:
+        #     continue
 
         counter_not_mapped += 1
         csv_not_mapped.writerow([disease_id, disease_name])
@@ -204,9 +219,6 @@ def load_gencc_disease_and_map():
     print('number of mapping with synonyms:' + str(counter_synonym_mapping))
     print('number of mapping with id:' + str(counter_map_with_id))
     print('number of not mapped nodes:', counter_not_mapped)
-
-
-
 
 
 def main():
@@ -232,9 +244,19 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
+    print('Load all gencc disease extansion information from the gencc edge')
+
+    load_extantion_information_from_gencc_edges()
+
+    print(
+        '###########################################################################################################################')
+
+    print(datetime.datetime.now())
     print('Load all gencc disease from neo4j into a dictionary')
 
     load_gencc_disease_and_map()
+
+    driver.close()
 
     print(
         '###########################################################################################################################')
