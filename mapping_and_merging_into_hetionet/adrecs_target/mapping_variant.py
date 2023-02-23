@@ -4,6 +4,7 @@ import datetime
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 '''
 create a connection with neo4j
@@ -11,8 +12,9 @@ create a connection with neo4j
 
 
 def create_connection_with_neo4j():
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 # dict rs id to identifier
@@ -45,7 +47,8 @@ def integrate_information_into_dict(dict_node_id_to_resource):
 
     print(datetime.datetime.now())
 
-    for identifier, name, synonyms, alternative_ids, resource, in results:
+    for record in results:
+        [identifier, name, synonyms, alternative_ids, resource] = record.values()
         dict_node_id_to_resource[identifier] = resource
 
         name = name.lower() if name else ''
@@ -73,12 +76,16 @@ def integrate_information_into_dict(dict_node_id_to_resource):
 
 def prepare_query(file_name, file_name_new, db_label, adrecs_label):
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/%s/%s" As line Fieldterminator '\\t' MATCH (n:%s{identifier:line.variant_id}), (g:%s{Variation_ID:line.adr_variant_id}) Set n.resource=split(line.resource,"|"), n.adrecs_target='yes' Create (n)-[:equal_adrecs_target_variant{how_mapped:line.how_mapped}]->(g);\n'''
-    query = query % (director, file_name, db_label, adrecs_label)
+    query = ''' MATCH (n:%s{identifier:line.variant_id}), (g:%s{Variation_ID:line.adr_variant_id}) Set n.resource=split(line.resource,"|"), n.adrecs_target='yes' Create (n)-[:equal_adrecs_target_variant{how_mapped:line.how_mapped}]->(g)'''
+    query = query % (db_label, adrecs_label)
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/{director}/{file_name}', query)
     cypher_file.write(query)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/%s/%s" As line Fieldterminator '\\t' MATCH (g:%s{Variation_ID:line.identifier}) Create (c:Variant :GeneVariant{identifier:line.identifier, adrecstarget:'yes', resource:["ADReCS-Target"], xrefs:["dbSNP:"+line.identifier] ,license:"%s" , source:"dbSNP from ADReCSV-Target"})-[:equal_adrecs_target_variant{how_mapped:'new'}]->(g);\n'''
-    query = query % (director, file_name_new, adrecs_label, 'license')
+    query = ''' MATCH (g:%s{Variation_ID:line.identifier}) Create (c:Variant :GeneVariant{identifier:line.identifier, adrecstarget:'yes', resource:["ADReCS-Target"], xrefs:["dbSNP:"+line.identifier] ,license:"%s" , source:"dbSNP from ADReCSV-Target"})-[:equal_adrecs_target_variant{how_mapped:'new'}]->(g)'''
+    query = query % (adrecs_label, 'license')
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/{director}/{file_name_new}', query)
     cypher_file.write(query)
 
     cypher_file.close()
@@ -131,7 +138,8 @@ def get_all_adrecs_target_and_map(db_label, dict_node_id_to_resource):
     counter_mapping = 0
     # counter not mapped
     counter_not_mapped = 0
-    for node, in results:
+    for record in results:
+        node = record.data()['n']
         # rs or a name
         identifier = node['Variation_ID'].lower()
         if identifier in dict_rs_to_ids:

@@ -5,7 +5,7 @@ from collections import defaultdict
 
 sys.path.append("../..")
 import create_connection_to_databases
-from pharmebinetutils import *
+import pharmebinetutils
 
 
 def create_connection_with_neo4j():
@@ -13,8 +13,9 @@ def create_connection_with_neo4j():
     create a connection with neo4j
     '''
     # set up authentication parameters and connection
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 # dictionary protein id to resource
@@ -32,7 +33,8 @@ def load_protein_from_database_and_add_to_dict():
     query = "MATCH (n:Protein) RETURN n"
     results = g.run(query)
 
-    for node, in results:
+    for record in results:
+        node = record.data()['n']
         identifier = node['identifier']
         dict_protein_id_to_resource[identifier] = node['resource']
         gene_symbols = node['gene_name'] if 'gene_name' in node else []
@@ -47,6 +49,7 @@ def load_protein_from_database_and_add_to_dict():
             #     dict_alternativeId_to_identifiers[alternative_id] = set()
             dict_alternativeId_to_identifiers[alternative_id].add(identifier)
 
+
 def generate_files(path_of_directory):
     """
     generate cypher file and tsv file
@@ -60,7 +63,10 @@ def generate_files(path_of_directory):
     cypher_file = open(os.path.join(source, 'cypher.cypher'), 'w', encoding='utf-8')
 
     # mapping_and_merging_into_hetionet/DisGeNet/
-    query = get_query_start(path_of_directory, file_name + '.tsv') + f' Match (n:protein_DisGeNet{{UniProtKB:line.DisGeNet_uniprot_id}}), (v:Protein{{identifier:line.uniprot_id}}) Set v.disgenet="yes", v.resource=split(line.resource,"|") Create (v)-[:equal_to_DisGeNet_protein{{mapped_with:line.mapping_method}}]->(n);\n'
+    query = f' Match (n:protein_DisGeNet{{UniProtKB:line.DisGeNet_uniprot_id}}), (v:Protein{{identifier:line.uniprot_id}}) Set v.disgenet="yes", v.resource=split(line.resource,"|") Create (v)-[:equal_to_DisGeNet_protein{{mapped_with:line.mapping_method}}]->(n)'
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              file_name+'.tsv',
+                                              query)
     cypher_file.write(query)
 
     return csv_mapping
@@ -75,15 +81,22 @@ def load_all_DisGeNet_protein_and_finish_the_files(csv_mapping):
     results = g.run(query)
     counter_not_mapped = 0
     counter_all = 0
-    for node, in results:
+    for record in results:
+        node = record.data()['n']
         counter_all += 1
         identifier = node['UniProtKB']
         # mapping
         if identifier in dict_protein_id_to_resource:
-            csv_mapping.writerow([identifier, identifier,  resource_add_and_prepare(dict_protein_id_to_resource[identifier],"DisGeNet"), 'id'])
+            csv_mapping.writerow(
+                [identifier, identifier,
+                 pharmebinetutils.resource_add_and_prepare(dict_protein_id_to_resource[identifier], "DisGeNet"),
+                 'id'])
         elif identifier in dict_alternativeId_to_identifiers:
             for uniprot_id in dict_alternativeId_to_identifiers[identifier]:
-                csv_mapping.writerow([identifier, uniprot_id, resource_add_and_prepare(dict_protein_id_to_resource[uniprot_id],"DisGeNet"), 'alternative_id'])
+                csv_mapping.writerow([identifier, uniprot_id,
+                                      pharmebinetutils.resource_add_and_prepare(dict_protein_id_to_resource[uniprot_id],
+                                                                                "DisGeNet"),
+                                      'alternative_id'])
         else:
             counter_not_mapped += 1
             print(identifier)
@@ -131,6 +144,8 @@ def main():
     print(datetime.datetime.now())
     print('Load all DisGeNet proteins from database')
     load_all_DisGeNet_protein_and_finish_the_files(csv_mapping)
+
+    driver.close()
 
 
 if __name__ == "__main__":

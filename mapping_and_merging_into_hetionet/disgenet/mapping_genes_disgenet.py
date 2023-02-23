@@ -1,25 +1,28 @@
-
 import datetime
 import sys, os
 import csv
+
 sys.path.append("../..")
 import create_connection_to_databases
-from pharmebinetutils import *
+import pharmebinetutils
+
 
 def create_connection_with_neo4j():
     """
     create a connection with neo4j
     """
     # set up authentication parameters and connection
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 # dictionary gene id to resource
 dict_gene_id_to_resource = {}
 
-#dictionary from gene id to gene id
+# dictionary from gene id to gene id
 dict_gene_id_to_gene_id = {}
+
 
 def load_genes_from_database_and_add_to_dict():
     """
@@ -28,7 +31,8 @@ def load_genes_from_database_and_add_to_dict():
     query = "MATCH (n:Gene) RETURN n"
     results = g.run(query)
 
-    for node, in results:
+    for record in results:
+        node = record.data()['n']
         identifier = node['identifier']
         dict_gene_id_to_resource[identifier] = node['resource']
 
@@ -53,8 +57,9 @@ def generate_files(path_of_directory):
 
     cypher_file_path = os.path.join(source, 'cypher.cypher')
     # mapping_and_merging_into_hetionet/DisGeNet/
-    query = get_query_start(path_of_directory, file_name + '.tsv') + f' Match (n:gene_DisGeNet{{geneId:line.DisGeNet_gene_id}}), (v:Gene{{identifier:line.gene_id}}) Set v.disgenet="yes", v.resource=split(line.resource,"|") Create (v)-[:equal_to_DisGeNet_gene{{mapped_with:line.mapping_method}}]->(n);\n'
+    query = f' Match (n:gene_DisGeNet{{geneId:line.DisGeNet_gene_id}}), (v:Gene{{identifier:line.gene_id}}) Set v.disgenet="yes", v.resource=split(line.resource,"|") Create (v)-[:equal_to_DisGeNet_gene{{mapped_with:line.mapping_method}}]->(n)'
     mode = 'a' if os.path.exists(cypher_file_path) else 'w'
+    query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
     cypher_file = open(cypher_file_path, mode, encoding='utf-8')
     cypher_file.write(query)
 
@@ -70,13 +75,16 @@ def load_all_DisGeNet_genes_and_finish_the_files(csv_mapping):
     results = g.run(query)
     counter_not_mapped = 0
     counter_all = 0
-    for node, in results:
+    for record in results:
+        node = record.data()['n']
         counter_all += 1
         identifier = node['geneId']
         # mapping
         if identifier in dict_gene_id_to_resource:
             csv_mapping.writerow(
-                [identifier, identifier, resource_add_and_prepare(dict_gene_id_to_resource[identifier],"DisGeNet"), 'id'])
+                [identifier, identifier,
+                 pharmebinetutils.resource_add_and_prepare(dict_gene_id_to_resource[identifier], "DisGeNet"),
+                 'id'])
         else:
             counter_not_mapped += 1
             print(identifier)
@@ -92,7 +100,6 @@ def main():
     global path_of_directory
     global source
 
-
     if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]
     else:
@@ -102,7 +109,6 @@ def main():
     home = os.getcwd()
     source = os.path.join(home, 'output')
     path_of_directory = os.path.join(home, 'gene/')
-
 
     print('##########################################################################')
 
@@ -127,6 +133,8 @@ def main():
     print(datetime.datetime.now())
     print('Load all DisGeNet genes from database')
     load_all_DisGeNet_genes_and_finish_the_files(csv_mapping)
+
+    driver.close()
 
 
 if __name__ == "__main__":

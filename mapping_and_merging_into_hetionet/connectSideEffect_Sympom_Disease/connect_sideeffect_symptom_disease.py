@@ -38,12 +38,14 @@ create connection to neo4j and mysql
 
 
 def create_connection_with_neo4j_mysql():
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
     # create connection with mysql database
     global con
     con = create_connection_to_databases.database_connection_umls()
+
 
 def correct_string_for_query(name):
     """
@@ -51,7 +53,7 @@ def correct_string_for_query(name):
     :param name: string
     :return: string
     """
-    return name.replace("'","\\'")
+    return name.replace("'", "\\'")
 
 
 # dictionary of all symptoms from pharmebinet, with mesh_id/ umls cui as key and value is class Symptom
@@ -120,25 +122,29 @@ def mapping(from_mapper, from_identifier, dictionary, map_file, how_mapped, set_
     return False
 
 
-dict_label_to_url_label={
-    'Disease':'diseases',
-    'SideEffect':'sideeffects',
-    'Symptom':'symptoms',
-    'Phenotype':'phenotypes'
+dict_label_to_url_label = {
+    'Disease': 'diseases',
+    'SideEffect': 'sideeffects',
+    'Symptom': 'symptoms',
+    'Phenotype': 'phenotypes'
 }
+
 
 def create_cypher_query(header, from_label, to_label, file_name):
     if to_label == 'SideEffect':
         short_second = 'SE'
     else:
         short_second = to_label[0]
-    if from_label =='Phenotype':
-        short_first ='PT'
+    if from_label == 'Phenotype':
+        short_first = 'PT'
     else:
-        short_first=from_label[0]
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/connectSideEffect_Sympom_Disease/%s" As line FIELDTERMINATOR '\\t' 
-                Match (first:%s {identifier:line.%s}), (second:%s {identifier:line.%s})  Create (first)-[:EQUAL_%se%s{how_mapped:line.%s, pharmebinet:'yes', resource:["PharMeBINet"], url:"https://pharmebi.net/#/%s/"+line.%s , source:"PharMeBINet", license:"CC0 1.0"}]->(second);\n'''
-    query = query % (file_name, from_label, header[0], to_label, header[1], short_first, short_second, header[2], dict_label_to_url_label[from_label], header[0])
+        short_first = from_label[0]
+    query = '''Match (first:%s {identifier:line.%s}), (second:%s {identifier:line.%s})  Create (first)-[:EQUAL_%se%s{how_mapped:line.%s, pharmebinet:'yes', resource:["PharMeBINet"], url:"https://pharmebi.net/#/%s/"+line.%s , source:"PharMeBINet", license:"CC0 1.0"}]->(second)'''
+    query = query % (from_label, header[0], to_label, header[1], short_first, short_second, header[2],
+                     dict_label_to_url_label[from_label], header[0])
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/connectSideEffect_Sympom_Disease/{file_name}',
+                                              query)
     cypher.write(query)
 
 
@@ -169,7 +175,8 @@ function that load all side effects in a dictionary
 def load_all_sideEffects_in_a_dict():
     query = '''MATCH (n:SideEffect) RETURN n.name, n.identifier, n.xrefs '''
     results = g.run(query)
-    for name, cui, xrefs, in results:
+    for record in results:
+        [name, cui, xrefs] = record.values()
         name = name.lower()
         side_effect = SideEffect(cui, name)
         dict_side_effects[cui] = side_effect
@@ -208,14 +215,14 @@ def load_all_symptoms_in_a_dict():
     # create mapping file to side effect and cypher query
     csv_mapping_s_to_se = create_mapping_file('mapping_symptom_sideeffect', 'map_s_to_se.tsv',
                                               ['symptom_id', 'side_effect_id', 'how_mapped'], 'Symptom', 'SideEffect')
-    for result, in results:
+    for record in results:
+        result = record.data()['n']
         name = result['name'].lower()
         identifier = result['identifier']
-        xrefs= result['xrefs'] if 'xrefs' in result else []
+        xrefs = result['xrefs'] if 'xrefs' in result else []
 
         symptom = Symptom(identifier, name, [])
         add_element_to_dictionary(name, identifier, dict_name_and_mesh_ids_to_symptom_ids)
-
 
         mapped_with_name = mapping(name, identifier, dict_name_ids_to_sideeffect_ids, csv_mapping_s_to_se,
                                    'mapped with name', set_symptom_side_effect)
@@ -223,20 +230,19 @@ def load_all_symptoms_in_a_dict():
             counter_with_name += 1
 
         set_mesh = set()
-        cuis=set()
+        cuis = set()
         for xref in xrefs:
             if xref.startswith('MESH'):
-                mesh_id=xref.split(':')[1]
+                mesh_id = xref.split(':')[1]
                 set_mesh.add(mesh_id)
                 add_element_to_dictionary(mesh_id, identifier, dict_name_and_mesh_ids_to_symptom_ids)
             elif xref.startswith('UMLS'):
-                umls_cui=xref.split(':')[1]
+                umls_cui = xref.split(':')[1]
                 cuis.add(umls_cui)
                 # add_element_to_dictionary(umls_cui, identifier, dict_umls_id_to_symptom_ids)
             elif xref.startswith('HPO'):
-                hpo_id=xref.split(':',1)[1]
+                hpo_id = xref.split(':', 1)[1]
                 add_element_to_dictionary(hpo_id, identifier, dict_hpo_ids_to_symptom_ids)
-
 
         # manual checked with wrong mapping with umls
         if identifier in ['D004881']:
@@ -244,8 +250,8 @@ def load_all_symptoms_in_a_dict():
             print(identifier)
             continue
 
-        found_with_umls=False
-        cuis_from_umls=set()
+        found_with_umls = False
+        cuis_from_umls = set()
 
         # get first hte umls with the same name
         cur = con.cursor()
@@ -263,14 +269,14 @@ def load_all_symptoms_in_a_dict():
                 cuis_from_umls.add(cui)
         # because sometimes when I checked the umls cuis of HPO they were not so good. So, they are validated with umls
         # information.
-        if len(set_mesh)>0 and len(cuis_from_umls)==0:
+        if len(set_mesh) > 0 and len(cuis_from_umls) == 0:
             for mesh_id in set_mesh:
                 cur = con.cursor()
                 query = ("Select CUI,LAT,STR From MRCONSO Where SAB='MSH' and CODE= '%s';")
                 query = query % (mesh_id)
                 rows_counter = cur.execute(query)
                 if rows_counter > 0:
-                    found_with_umls=True
+                    found_with_umls = True
                     # list of all umls cuis which has the mesh id
                     list_cuis = []
                     same_name = False
@@ -291,17 +297,17 @@ def load_all_symptoms_in_a_dict():
 
         # check compare hpo umls cui and umls cui from umls with mesh and/or name
         # if overlap exists this is used else the one from umls nad only noting else exists the umls cuis from HPO
-        intersection= cuis.intersection(cuis_from_umls)
-        found_intersection=False
-        if len(intersection)>0:
-            cuis=intersection
+        intersection = cuis.intersection(cuis_from_umls)
+        found_intersection = False
+        if len(intersection) > 0:
+            cuis = intersection
         else:
-            cuis=cuis_from_umls if len(cuis_from_umls)>0 else cuis
+            cuis = cuis_from_umls if len(cuis_from_umls) > 0 else cuis
 
         for cui in cuis:
             add_element_to_dictionary(cui, identifier, dict_umls_id_to_symptom_ids)
             list_cuis_mapped = set()
-            mapped_with='xrefs umls cui' if not found_with_umls else 'mapped with umls cui with umls and/or xref'
+            mapped_with = 'xrefs umls cui' if not found_with_umls else 'mapped with umls cui with umls and/or xref'
             if not mapped_with_name:
                 mapping(cui, identifier, dict_name_ids_to_sideeffect_ids, csv_mapping_s_to_se,
                         mapped_with, set_symptom_side_effect)
@@ -310,14 +316,14 @@ def load_all_symptoms_in_a_dict():
                 if len(list_cuis_mapped) > 0:
                     # dict_mesh_map_to_cui[identifier] = list_cuis_mapped
                     symptom.set_how_mapped('map with all cuis of mesh id')
-        if len(cuis)==0:
+        if len(cuis) == 0:
             list_mesh_without_cui.append(identifier)
 
             # print(identifier)
 
         dict_symptoms[identifier] = symptom
 
-    print('Number of Symptoms without a umls cui and now from umls',len(list_mesh_without_cui))
+    print('Number of Symptoms without a umls cui and now from umls', len(list_mesh_without_cui))
     print('Number of symptoms in pharmebinet:' + str(len(dict_symptoms)))
     print('mapped with mesh and name:' + str(counter_with_name))
     print('mapped only with mesh:' + str(counter_without_name))
@@ -337,15 +343,16 @@ def load_and_map_disease():
     counter_mapped_se = 0
     counter_mapped_symp = 0
 
-    for disease, in results:
+    for record in results:
+        disease = record.data()['n']
         name = disease['name'].lower() if 'name' in disease else ''
         identifier = disease['identifier']
 
         mapped_to_sideeffect = False
         mapped_to_symptom = False
         xrefs = disease['xrefs'] if 'xrefs' in disease else []
-        umls_cuis=[]
-        mesh_ids=[]
+        umls_cuis = []
+        mesh_ids = []
         for xref in xrefs:
             if xref.lower().startswith('umls'):
                 umls = xref.split(':')[1]
@@ -426,10 +433,11 @@ def load_and_map_disease():
         #         if mapped:
         #             mapped_to_symptom = True
         #             counter_mapped_symp += 1
-                # break
+        # break
 
         if not mapped_to_symptom:
-            mapped = mapping(name, identifier, dict_name_and_mesh_ids_to_symptom_ids, csv_mapping_d_to_s, 'mapped with name',
+            mapped = mapping(name, identifier, dict_name_and_mesh_ids_to_symptom_ids, csv_mapping_d_to_s,
+                             'mapped with name',
                              set_disease_symptom)
             if mapped:
                 counter_mapped_symp += 1
@@ -437,19 +445,22 @@ def load_and_map_disease():
     print('number of mapped disease to se:', counter_mapped_se)
     print('number of mapped disease to symptom:', counter_mapped_symp)
 
+
 def load_and_map_phenotype():
     query = "MATCH (n:Phenotype) Where size(labels(n))=1 RETURN n"
     results = g.run(query)
 
     # create mapping file to side effect and cypher query
     csv_mapping_p_to_se = create_mapping_file('mapping_phenotype_mapping', 'map_p_to_se.tsv',
-                                              ['phenotype_id', 'side_effect_id', 'how_mapped'], 'Phenotype', 'SideEffect')
+                                              ['phenotype_id', 'side_effect_id', 'how_mapped'], 'Phenotype',
+                                              'SideEffect')
 
-    set_phenotype_se=set()
+    set_phenotype_se = set()
 
     counter_mapped_se = 0
 
-    for phenotype, in results:
+    for record in results:
+        phenotype = record.data()['n']
         name = phenotype['name'].lower() if 'name' in phenotype else ''
         identifier = phenotype['identifier']
 
@@ -502,8 +513,8 @@ def load_and_map_phenotype():
             if mapped:
                 counter_mapped_se += 1
 
-
     print('number of mapped phenotype to se:', counter_mapped_se)
+
 
 def main():
     global path_of_directory
@@ -550,6 +561,8 @@ def main():
     print('Load phenotype an map to se and symptom')
 
     load_and_map_phenotype()
+
+    driver.close()
 
     print(
         '###########################################################################################################################')

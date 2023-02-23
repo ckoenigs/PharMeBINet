@@ -1,4 +1,3 @@
-
 import datetime
 import sys
 import os
@@ -7,7 +6,7 @@ import csv
 sys.path.append("../..")
 import create_connection_to_databases
 from collections import defaultdict
-from pharmebinetutils import *
+import pharmebinetutils
 
 
 def create_connection_with_neo4j():
@@ -15,12 +14,12 @@ def create_connection_with_neo4j():
     create a connection with neo4j
     '''
     # set up authentication parameters and connection
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
-
-#dict for alternative_ids
+# dict for alternative_ids
 dict_snp_id_to_identifier = defaultdict(str)
 
 # dictionary variant id to resource
@@ -34,7 +33,8 @@ def load_variants_from_database_and_add_to_dict():
     query = "MATCH (n:Variant) WHERE any(x in n.xrefs WHERE x =~ 'dbSNP:.*') RETURN n"
     results = g.run(query)
 
-    for node, in results:
+    for record in results:
+        node = record.data()['n']
         identifier = node['identifier']
         dict_variant_id_to_resource[identifier] = node['resource']
 
@@ -55,32 +55,31 @@ def generate_files(path_of_directory):
     if not os.path.exists(path_of_directory):
         os.mkdir(path_of_directory)
 
-
     file_name = 'DisGeNet_variant_to_Variant'
-    file_path = os.path.join(path_of_directory, file_name) +'.tsv'
+    file_path = os.path.join(path_of_directory, file_name) + '.tsv'
     header = ['DisGeNet_snp_id', 'identifier', 'resource', 'mapping_method']
     # 'w+' creates file, 'w' opens file for writing
     mode = 'w' if os.path.exists(file_path) else 'w+'
     file = open(file_path, mode, encoding='utf-8')
     csv_mapping = csv.writer(file, delimiter='\t')
     csv_mapping.writerow(header)
-    
+
     cypher_file_path = os.path.join(source, 'cypher.cypher')
     # mapping_and_merging_into_hetionet/DisGeNet/
-    query =get_query_start(path_of_directory, file_name + '.tsv') + f'Match (n:variant_DisGeNet{{snpId:line.DisGeNet_snp_id}}), (v:Variant{{identifier:line.identifier}}) Set v.disgenet="yes", v.resource=split(line.resource,"|") Create (v)-[:equal_to_DisGeNet_variant{{mapped_with:line.mapping_method}}]->(n);\n'
+    query = f'Match (n:variant_DisGeNet{{snpId:line.DisGeNet_snp_id}}), (v:Variant{{identifier:line.identifier}}) Set v.disgenet="yes", v.resource=split(line.resource,"|") Create (v)-[:equal_to_DisGeNet_variant{{mapped_with:line.mapping_method}}]->(n)'
     mode = 'a' if os.path.exists(cypher_file_path) else 'w'
     cypher_file = open(cypher_file_path, mode, encoding='utf-8')
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              file_name + '.tsv',
+                                              query)
     cypher_file.write(query)
-    query = get_query_start(path_of_directory,  'not_mapped.tsv') + f' Match (n:variant_DisGeNet{{snpId:line.identifier}}) Create (p:Variant :GeneVariant{{identifier:n.snpId, chromosome:n.chromosome, position:n.position, resource:["DisGeNet"], xrefs:["dbSNP:"+n.snpId], disgenet:"yes", source:"dbSNP from DisGeNet" }}) Create (p)-[:equal_to_DisGeNet_variant{{mapped_with:"new"}}]->(n);\n'
+    query = f' Match (n:variant_DisGeNet{{snpId:line.identifier}}) Create (p:Variant :GeneVariant{{identifier:n.snpId, chromosome:n.chromosome, position:n.position, resource:["DisGeNet"], xrefs:["dbSNP:"+n.snpId], disgenet:"yes", source:"dbSNP from DisGeNet" }}) Create (p)-[:equal_to_DisGeNet_variant{{mapped_with:"new"}}]->(n)'
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              'not_mapped.tsv',
+                                              query)
     cypher_file.write(query)
 
     return csv_mapping
-
-
-# def resource(identifier):
-#     resource = set(dict_variant_id_to_resource[identifier])
-#     resource.add('DisGeNet')
-#     return '|'.join(resource)
 
 
 def load_all_DisGeNet_variants_and_finish_the_files(csv_mapping):
@@ -98,14 +97,18 @@ def load_all_DisGeNet_variants_and_finish_the_files(csv_mapping):
     file = open(not_mapped_path, mode, encoding='utf-8')
     writer = csv.writer(file, delimiter='\t')
     writer.writerow(['identifier'])
- 
-    for node, in results:
+
+    for record in results:
+        node = record.data()['n']
         counter_all += 1
         identifier = node['snpId']
         # mapping
         if identifier in dict_snp_id_to_identifier:
             variant_id = dict_snp_id_to_identifier[identifier]
-            csv_mapping.writerow([identifier, variant_id, resource_add_and_prepare(dict_variant_id_to_resource[variant_id],"DisGeNet"), 'external_references'])
+            csv_mapping.writerow(
+                [identifier, variant_id,
+                 pharmebinetutils.resource_add_and_prepare(dict_variant_id_to_resource[variant_id], "DisGeNet"),
+                 'external_references'])
         else:
             counter_not_mapped += 1
             # print(identifier)
@@ -123,7 +126,6 @@ def main():
     global path_of_directory
     global source
 
-
     if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]
     else:
@@ -133,7 +135,6 @@ def main():
     home = os.getcwd()
     source = os.path.join(home, 'output')
     path_of_directory = os.path.join(home, 'variant/')
-
 
     print('##########################################################################')
 
@@ -159,8 +160,11 @@ def main():
     print('Load all DisGeNet variants from database')
     load_all_DisGeNet_variants_and_finish_the_files(csv_mapping)
 
+    driver.close()
+
     print('##########################################################################')
     print(datetime.datetime.now())
+
 
 if __name__ == "__main__":
     # execute only if run as a script

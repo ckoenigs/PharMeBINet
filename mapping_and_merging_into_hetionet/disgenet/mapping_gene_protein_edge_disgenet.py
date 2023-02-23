@@ -5,7 +5,7 @@ import csv
 
 sys.path.append("../..")
 import create_connection_to_databases
-from pharmebinetutils import *
+import pharmebinetutils
 
 
 def create_connection_with_neo4j():
@@ -14,8 +14,9 @@ def create_connection_with_neo4j():
     '''
     # set up authentication parameters and connection
     # authenticate("localhost:7474", "neo4j", "test")
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 def open_file(file_path):
@@ -43,8 +44,10 @@ def get_pairs_information():
 
     # I check manually on the new edges between gene and protein and most are not accurate, so only the existing are
     # updated
-    query = get_query_start(path_of_directory,
-                            file_name) + f' Match (n:Protein{{identifier:line.protein_id}})-[r:PRODUCES_GpP]-(v:Gene{{identifier:line.gene_id}})  Set r.resource="DisGeNet"+r.resource, r.disgenet="yes";\n'''
+    query =  f' Match (n:Protein{{identifier:line.protein_id}})-[r:PRODUCES_GpP]-(v:Gene{{identifier:line.gene_id}})  Set r.resource="DisGeNet"+r.resource, r.disgenet="yes"'''
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              file_name,
+                                              query)
     cypher_edge.write(query)
     cypher_edge.close()
 
@@ -53,7 +56,8 @@ def get_pairs_information():
     # dictionary pairs to info
     set_pairs = set()
 
-    for gene_id, protein_id, in results:
+    for record in results:
+        [gene_id, protein_id] = record.values()
         if (gene_id, protein_id) in set_pairs:
             continue
         gene_to_protein_writer.writerow([gene_id, protein_id])
@@ -89,6 +93,8 @@ def main():
     print('gather all information of the genes/proteins')
 
     get_pairs_information()
+
+    driver.close()
 
     print('##########################################################################')
 

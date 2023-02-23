@@ -8,7 +8,7 @@ import mapping_symptoms_disgenet
 
 sys.path.append("../..")
 import create_connection_to_databases
-from pharmebinetutils import *
+import pharmebinetutils
 
 
 def create_connection_with_neo4j():
@@ -16,8 +16,9 @@ def create_connection_with_neo4j():
     create a connection with neo4j
     '''
     # set up authentication parameters and connection
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
     # create connection with mysql database
     global con
@@ -63,7 +64,8 @@ def load_disease_from_database_and_add_to_dict():
     query = "MATCH (n:Disease) RETURN n"
     results = g.run(query)
 
-    for node, in results:
+    for record in results:
+        node = record.data()['n']
         identifier = node['identifier']
         # for mapping with MONDO
         dict_disease_id_to_resource[identifier] = node['resource']
@@ -73,7 +75,7 @@ def load_disease_from_database_and_add_to_dict():
 
         synonyms = node['synonyms'] if 'synonyms' in node else []
         for synonym in synonyms:
-            synonym = prepare_obo_synonyms(synonym).lower()
+            synonym = pharmebinetutils.prepare_obo_synonyms(synonym).lower()
             dict_name_to_identifier[synonym].add(identifier)
 
         if 'xrefs' in node:
@@ -116,13 +118,16 @@ def generate_files(path_of_directory):
     file_name = 'DisGeNet_disease_to_disease'
 
     cypher_file_path = os.path.join(source, 'cypher.cypher')
-    query = get_query_start(path_of_directory,
-                            file_name + '.tsv') + f' Match (n:disease_DisGeNet{{diseaseId:line.DisGeNet_diseaseId}}), (v:Disease{{identifier:line.identifier}}) Set v.disgenet="yes", v.resource=split(line.resource,"|") Create (v)-[:equal_to_DisGeNet_disease{{mapped_with:split(line.mapping_method, "|")}}]->(n);\n'
+    query = f' Match (n:disease_DisGeNet{{diseaseId:line.DisGeNet_diseaseId}}), (v:Disease{{identifier:line.identifier}}) Set v.disgenet="yes", v.resource=split(line.resource,"|") Create (v)-[:equal_to_DisGeNet_disease{{mapped_with:split(line.mapping_method, "|")}}]->(n)'
     mode = 'a' if os.path.exists(cypher_file_path) else 'w'
     cypher_file = open(cypher_file_path, mode, encoding='utf-8')
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              file_name + '.tsv',
+                                              query)
     cypher_file.write(query)
 
     query = mapping_symptoms_disgenet.generate_files(path_of_directory)
+
     cypher_file.write(query)
     cypher_file.close()
 
@@ -177,7 +182,8 @@ def load_all_DisGeNet_disease_and_finish_the_files():
 
     mapping_df = pd.DataFrame(columns=['DisGeNet_diseaseId', 'identifier', 'resource', 'mapping_method'])
 
-    for node, in results:
+    for record in results:
+        node = record.data()['n']
         counter_all += 1
         umls_id = node['diseaseId']
         if 'code' in node:
@@ -201,7 +207,8 @@ def load_all_DisGeNet_disease_and_finish_the_files():
                 # curr_series = pd.Series([umls_id, mondo_id, resource_add_and_prepare(dict_disease_id_to_resource[identifier],'DisGeNet'), 'umls'], index=mapping_df.columns)
                 # mapping_df = mapping_df.append(curr_series, ignore_index=True)
                 curr_df = pd.DataFrame([[umls_id, mondo_id,
-                                         resource_add_and_prepare(dict_disease_id_to_resource[mondo_id], 'DisGeNet'),
+                                         pharmebinetutils.resource_add_and_prepare(
+                                             dict_disease_id_to_resource[mondo_id], 'DisGeNet'),
                                          'umls']], columns=mapping_df.columns)
                 mapping_df = pd.concat([mapping_df, curr_df])
 
@@ -215,16 +222,19 @@ def load_all_DisGeNet_disease_and_finish_the_files():
                     # curr_series = pd.Series([umls_id, mondo_id, resource_add_and_prepare(dict_disease_id_to_resource[mondo_id],'DisGeNet'), 'name'], index=mapping_df.columns)
                     # mapping_df = mapping_df.append(curr_series, ignore_index=True)
                     curr_df = pd.DataFrame([[umls_id, mondo_id,
-                                             resource_add_and_prepare(dict_disease_id_to_resource[mondo_id],
-                                                                      'DisGeNet'), 'name']], columns=mapping_df.columns)
+                                             pharmebinetutils.resource_add_and_prepare(
+                                                 dict_disease_id_to_resource[mondo_id],
+                                                 'DisGeNet'), 'name']], columns=mapping_df.columns)
                     mapping_df = pd.concat([mapping_df, curr_df])
 
         if found_mappping:
             continue
+
+        refs=node['code'] if 'code' in node else []
         # mapping symptoms
         found_mappping = mapping_symptoms_disgenet.load_all_unmapped_DisGeNet_disease_and_finish_the_files(name,
                                                                                                            umls_id,
-                                                                                                           node['code'])
+                                                                                                           refs)
 
         if found_mappping:
             continue
@@ -235,7 +245,8 @@ def load_all_DisGeNet_disease_and_finish_the_files():
                 # curr_series = pd.Series([umls_id, mondo_id, resource_add_and_prepare(dict_disease_id_to_resource[mondo_id],'DisGeNet'), 'umls from umls'], index=mapping_df.columns)
                 # mapping_df = mapping_df.append(curr_series, ignore_index=True)
                 curr_df = pd.DataFrame([[umls_id, mondo_id,
-                                         resource_add_and_prepare(dict_disease_id_to_resource[mondo_id], 'DisGeNet'),
+                                         pharmebinetutils.resource_add_and_prepare(
+                                             dict_disease_id_to_resource[mondo_id], 'DisGeNet'),
                                          'name']], columns=mapping_df.columns)
                 mapping_df = pd.concat([mapping_df, curr_df])
 
@@ -268,8 +279,9 @@ def load_all_DisGeNet_disease_and_finish_the_files():
                         # mapping_df = mapping_df.append(curr_series, ignore_index=True)
 
                         curr_df = pd.DataFrame([[umls_id, mondo_id,
-                                                 resource_add_and_prepare(dict_disease_id_to_resource[mondo_id],
-                                                                          'DisGeNet'),
+                                                 pharmebinetutils.resource_add_and_prepare(
+                                                     dict_disease_id_to_resource[mondo_id],
+                                                     'DisGeNet'),
                                                  equivalent_id_map[name].lower()]],
                                                columns=mapping_df.columns)
                         mapping_df = pd.concat([mapping_df, curr_df])
@@ -279,7 +291,7 @@ def load_all_DisGeNet_disease_and_finish_the_files():
         else:
             counter_not_mapped += 1
             # codes = '|'.join(n for n in node['code']) if 'code' in node else None
-            writer.writerow([umls_id, node['diseaseName'], node['code']])
+            writer.writerow([umls_id, node['diseaseName'], refs])
 
     file.close()
     # aggregate the entries that were mapped several times
@@ -336,6 +348,8 @@ def main():
     print(datetime.datetime.now())
     print('Generate cypher and tsv file')
     generate_files(path_of_directory)
+
+    driver.close()
 
     print('##########################################################################')
 

@@ -7,15 +7,16 @@ from collections import defaultdict
 
 sys.path.append("../..")
 import create_connection_to_databases
-from pharmebinetutils import *
+import pharmebinetutils
 
 
 def create_connection_with_neo4j():
     '''
     create a connection with neo4j
     '''
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 # dictionary pairs to info
@@ -35,7 +36,9 @@ def load_edges_from_database_and_add_to_dict(label, other_label):
     dict_pairs_to_info = {}
     count = 0
     print(datetime.datetime.now())
-    for gene_id, rela, disease_id, in results:
+    for record in results:
+        [gene_id, rela, disease_id] = record.values()
+        rela = dict(rela)
         count += 1
         if count % 5000 == 0:
             print(f"process: {count}")
@@ -60,6 +63,7 @@ def prepare_sources_information(rela):
         comb["EI"] = rela["EI"]
     return comb
 
+
 def combine_possible_properties(rela_old, rela, name):
     if name in rela_old or name in rela:
         association_type_old = set(rela_old[name]) if name in rela_old else set()
@@ -70,7 +74,9 @@ def combine_possible_properties(rela_old, rela, name):
 def check_for_double_entries(results):
     double_check_dict = defaultdict()
 
-    for disease_id, rela, gene_id, snp_id, in results:
+    for record in results:
+        [disease_id, rela, gene_id, snp_id] = record.values()
+        rela = dict(rela)
         if (gene_id, disease_id) in double_check_dict and double_check_dict[(gene_id, disease_id)] != rela:
             rela_old = double_check_dict[(gene_id, disease_id)]
             # if disease_id=='MONDO:0013000' and gene_id=='210':
@@ -89,9 +95,8 @@ def check_for_double_entries(results):
                 if rela_old['NofSnps']:
                     rela_old['NofSnps'].add(rela['NofSnps'])
 
-            combine_possible_properties(rela_old, rela,'associationType')
+            combine_possible_properties(rela_old, rela, 'associationType')
             combine_possible_properties(rela_old, rela, 'sentence')
-
 
             # Check3: combine "source, score, YearFinal, Yearinitial" in JSON-string and append to list "sources"
             # e.g. sources = ["{source:'' score:'', YearFinal:, YearInitial:}"]
@@ -170,7 +175,6 @@ def get_DisGeNet_information(type='Disease', cyphermode='w', other_label='Gene')
     counter_not_mapped = 0
     counter_all = 0
 
-
     # 1. Dict erstellen, doppelte Einträge kombinieren
     # mehrfach vorkommende Vebrindungen suchen und als dict ausgeben
     combined_dict = check_for_double_entries(results)
@@ -190,7 +194,7 @@ def get_DisGeNet_information(type='Disease', cyphermode='w', other_label='Gene')
 
         if 'NofSnps' in combined_info:
             if isinstance(combined_info['NofSnps'], set):
-                nofsnps= list(combined_info['NofSnps'])
+                nofsnps = list(combined_info['NofSnps'])
                 try:
                     while True:
                         nofsnps.remove('0')
@@ -207,7 +211,8 @@ def get_DisGeNet_information(type='Disease', cyphermode='w', other_label='Gene')
         # mapping of existing edges
         if (gene_id, disease_id) in dict_pairs_to_info:
             # Verschiedene infos aus beiden Kanten kombinieren
-            resource = resource_add_and_prepare(dict_pairs_to_info[(gene_id, disease_id)]['resource'],"DisGeNet")
+            resource = pharmebinetutils.resource_add_and_prepare(dict_pairs_to_info[(gene_id, disease_id)]['resource'],
+                                                                 "DisGeNet")
 
             pubmed_id_existing = set(dict_pairs_to_info[(gene_id, disease_id)]['pubMed_ids']) if 'pubMed_ids' in \
                                                                                                  dict_pairs_to_info[(
@@ -225,9 +230,9 @@ def get_DisGeNet_information(type='Disease', cyphermode='w', other_label='Gene')
             #                  prepare_info_of_rela_property_to_string(combined_info, 'associationType'),
             #                  prepare_info_of_rela_property_to_string(combined_info, 'sentence'),
             #                  combined_info['snp_id']])
-            csv_gene_other.writerow([gene_id, disease_id,'DisGeNet' ,sources, ei, pmid, nofsnps, score,
-                             prepare_info_of_rela_property_to_string(combined_info, 'associationType'),
-                             prepare_info_of_rela_property_to_string(combined_info, 'sentence')])
+            csv_gene_other.writerow([gene_id, disease_id, 'DisGeNet', sources, ei, pmid, nofsnps, score,
+                                     prepare_info_of_rela_property_to_string(combined_info, 'associationType'),
+                                     prepare_info_of_rela_property_to_string(combined_info, 'sentence')])
 
     # create/open cypher-query file
     cypher_path = os.path.join(source, 'cypher_edge.cypher')
@@ -239,10 +244,13 @@ def get_DisGeNet_information(type='Disease', cyphermode='w', other_label='Gene')
     # 1. Set…
     url = '"https://www.disgenet.org/browser/2/1/0/"+line.snp_id' if other_label == 'Variant' else '"https://www.disgenet.org/browser/1/1/1/"+line.gene_id'
 
-    query = get_query_start(path_of_directory, file_name ) + f'  Match (n:{type}{{identifier:line.{other_id}}}), (v:{other_label}{{identifier:line.{other_label.lower()}_id}}) Merge (n)-[r:{edge_type}]->(v) On Match Set r.disgenet = "yes", r.sources = split(line.sources, "|"), r.resource = split(line.resource, "|"),  r.EI = line.EI, r.pubMed_ids = split(line.pmid, "|"),r.NofSnps=split(line.NofSnps,"|"), r.associationType=split(line.associationType,"|"), r.sentences=split(line.sentence,"|") , r.score=line.score On Create Set r.source="DisGeNet", r.sources=split(line.sources,"|"), r.score=line.score,  r.resource=["DisGeNet"], r.disgenet="yes",  r.EI=line.EI, r.pubMed_ids=split(line.pmid,"|"), r.NofSnps=split(line.NofSnps,"|"), r.associationType=split(line.associationType,"|"), r.sentences=split(line.sentence,"|") , r.url={url}; \n'
+    query = f'  Match (n:{type}{{identifier:line.{other_id}}}), (v:{other_label}{{identifier:line.{other_label.lower()}_id}}) Merge (n)-[r:{edge_type}]->(v) On Match Set r.disgenet = "yes", r.sources = split(line.sources, "|"), r.resource = split(line.resource, "|"),  r.EI = line.EI, r.pubMed_ids = split(line.pmid, "|"),r.NofSnps=split(line.NofSnps,"|"), r.associationType=split(line.associationType,"|"), r.sentences=split(line.sentence,"|") , r.score=line.score On Create Set r.source="DisGeNet", r.sources=split(line.sources,"|"), r.score=line.score,  r.resource=["DisGeNet"], r.disgenet="yes",  r.EI=line.EI, r.pubMed_ids=split(line.pmid,"|"), r.NofSnps=split(line.NofSnps,"|"), r.associationType=split(line.associationType,"|"), r.sentences=split(line.sentence,"|") , r.url={url}'
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              file_name,
+                                              query)
     file_cypher.write(query)
     # 2. Create… (finde beide KNOTEN)
-    # query =get_query_start(path_of_directory, file_name + '.tsv') + f' Match (n:{type}{{identifier:line.{other_id}}}), (v:{other_label}{{identifier:line.{other_label.lower()}_id}}) Create (n)-[:{edge_type}{{source:"DisGeNet", sources:split(line.sources,"|"), score:line.score,  resource:["DisGeNet"], disgenet:"yes",  EI:line.EI, pubMed_ids:split(line.pmid,"|"), NofSnps:split(line.NofSnps,"|"), associationType:split(line.associationType,"|"), sentences:split(line.sentence,"|") , url:{url}}}]->(v); \n'
+    # query =get_query_start(path_of_directory, file_name + '.tsv') + f' Match (n:{type}{{identifier:line.{other_id}}}), (v:{other_label}{{identifier:line.{other_label.lower()}_id}}) Create (n)-[:{edge_type}{{source:"DisGeNet", sources:split(line.sources,"|"), score:line.score,  resource:["DisGeNet"], disgenet:"yes",  EI:line.EI, pubMed_ids:split(line.pmid,"|"), NofSnps:split(line.NofSnps,"|"), associationType:split(line.associationType,"|"), sentences:split(line.sentence,"|") , url:{url}}}]->(v)'
     # file_cypher.write(query)
     file_cypher.close()
 
@@ -286,6 +294,7 @@ def main():
 
             get_DisGeNet_information(label, 'a', first_label)
 
+    driver.close()
     print('##########################################################################')
     print(datetime.datetime.now())
 
