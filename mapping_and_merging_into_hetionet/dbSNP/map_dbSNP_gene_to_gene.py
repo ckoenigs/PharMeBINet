@@ -3,7 +3,7 @@ import sys, csv
 
 sys.path.append("../..")
 import create_connection_to_databases
-
+import pharmebinetutils
 
 '''
 create a connection with neo4j
@@ -12,8 +12,9 @@ create a connection with neo4j
 
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 # dictionary variant identifier to resources and xrefs
@@ -27,11 +28,14 @@ Load all Genes from my database  and add them into a dictionary
 def load_gene_from_database_and_add_to_dict():
     query = "MATCH (n:Gene) RETURN n.identifier, n.resource"
     results = g.run(query)
-    for identifier, resource,  in results:
+    for record in results:
+        [identifier, resource] = record.values()
         dict_identifier_to_resource[identifier] = resource
+
 
 # cypher file
 cypher_file = open('output_mapping/cypher.cypher', 'a', encoding='utf-8')
+
 
 def generate_files(path_of_directory):
     """
@@ -40,15 +44,16 @@ def generate_files(path_of_directory):
     """
     # file from relationship between gene and variant
     file_name = 'output_mapping/gene_to_gene'
-    file = open( file_name + '.tsv', 'w', encoding='utf-8')
+    file = open(file_name + '.tsv', 'w', encoding='utf-8')
     csv_mapping = csv.writer(file, delimiter='\t')
     header = ['dbsnp_gene_id', 'gene_id', 'resource']
     csv_mapping.writerow(header)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/dbSNP/%s.tsv" As line FIELDTERMINATOR '\\t' 
-        Match (n:gene_dbSNP{identifier:line.dbsnp_gene_id}), (v:Gene{identifier:line.gene_id}) Set v.dbsnp="yes", v.resource=split(line.resource,"|") Create (v)-[:equal_to_drugbank_variant]->(n);\n'''
+    query = ''' Match (n:gene_dbSNP{identifier:line.dbsnp_gene_id}), (v:Gene{identifier:line.gene_id}) Set v.dbsnp="yes", v.resource=split(line.resource,"|") Create (v)-[:equal_to_drugbank_variant]->(n)'''
 
-    query = query % (path_of_directory, file_name)
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/dbSNP/{file_name}.tsv',
+                                              query)
     cypher_file.write(query)
 
     return csv_mapping
@@ -64,20 +69,20 @@ def load_all_dbSnp_gene_and_finish_the_files(csv_mapping):
     results = g.run(query)
     counter_map = 0
     counter_not_mapped = 0
-    for node, in results:
+    for record in results:
+        node = record.data()['n']
         identifier = node['identifier']
 
         if identifier in dict_identifier_to_resource:
-            counter_map+=1
+            counter_map += 1
             resource = dict_identifier_to_resource[identifier]
             resource.append('dbSNP')
-            resource='|'.join(sorted(set(resource)))
+            resource = '|'.join(sorted(set(resource)))
 
             csv_mapping.writerow([identifier, identifier, resource])
         else:
-            counter_not_mapped+=1
+            counter_not_mapped += 1
             print(identifier)
-
 
     print('not mapped:', counter_not_mapped)
     print('counter mapped:', counter_map)
@@ -117,7 +122,7 @@ def main():
 
     load_all_dbSnp_gene_and_finish_the_files(csv_mapping)
 
-
+    driver.close()
     print('##########################################################################')
 
     print(datetime.datetime.now())

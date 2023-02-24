@@ -1,8 +1,8 @@
 import datetime
 import sys, csv
+
 sys.path.append("../..")
 import create_connection_to_databases
-
 
 '''
 create a connection with neo4j
@@ -12,34 +12,36 @@ create a connection with neo4j
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
     # authenticate("localhost:7474", "neo4j", "test")
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
+
 
 '''
 generate af file with only drugbank and unii IDs
 '''
 
+
 def generate_tsv_file():
     # generate csv file
     file_map = open('results/map_unii_to_drugbank_id_and_inchikey.tsv', 'w', encoding='utf-8')
-    csv_writer=csv.writer(file_map,delimiter='\t')
-    csv_writer.writerow(['unii','drugbank_id','inchikey'])
+    csv_writer = csv.writer(file_map, delimiter='\t')
+    csv_writer.writerow(['unii', 'drugbank_id', 'inchikey'])
 
     # query for getting the information
-    query='''MATCH (n:Compound_DrugBank) RETURN n.identifier, n.unii, n.inchikey '''
-    result=g.run(query)
+    query = '''MATCH (n:Compound_DrugBank) RETURN n.identifier, n.unii, n.inchikey '''
+    result = g.run(query)
 
     # run through the results and fill file
-    for  identifier, unii, inchikey, in result:
-        csv_writer.writerow([unii,identifier, inchikey])
+    for record in result:
+        [identifier, unii, inchikey] = record.values()
+        csv_writer.writerow([unii, identifier, inchikey])
 
     # file map close
     file_map.close()
 
 
-
 def main():
-
     print(datetime.datetime.now())
     print('create connection with neo4j')
 
@@ -52,6 +54,8 @@ def main():
     print('load all properties of compound and drugbank compound and use the information to genreate tsv files')
 
     generate_tsv_file()
+
+    driver.close()
 
     print(
         '#################################################################################################################################################################')

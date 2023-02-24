@@ -2,12 +2,8 @@ import datetime
 import sys, csv
 import json
 
-'''
-for the clinical annotation levels of evidence https://www.pharmgkb.org/page/clinAnnLevels
-
-'''
-
 sys.path.append("../..")
+import pharmebinetutils
 import create_connection_to_databases
 
 '''
@@ -16,8 +12,9 @@ create connection to neo4j
 
 
 def create_connection_with_neo4j():
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 # dictionary rela partner to tsv file
@@ -30,13 +27,12 @@ directory = 'annotation_variant_edge'
 cypher_file = open('output/cypher_edge.cypher', 'a')
 
 
-def generate_rela_files(label, rela_name, query_start):
+def generate_rela_files(label, rela_name):
     """
     Generate cyper query and file for rela
     :param directory: string
     :param rela: string
     :param rela_name: string
-    :param query_start: string
     :return:
     """
     file_name = directory + '/rela_' + label + '.tsv'
@@ -45,9 +41,13 @@ def generate_rela_files(label, rela_name, query_start):
     csv_file.writerow(['anno_id', 'other_id'])
     dict_rela_partner_to_tsv_file[label] = csv_file
 
-    query_rela = query_start + ' (b:VariantAnnotation{identifier:line.anno_id}), (c:%s{identifier:line.other_id}) Create (b)-[:%s{pharmgkb:"yes", url:"https://www.pharmgkb.org/variantAnnotation/"+line.anno_id, source:"PharmGKB", resource:["PharmGKB"], license:"%s" }]->(c);\n'
+    query_rela = 'Match (b:VariantAnnotation{identifier:line.anno_id}), (c:%s{identifier:line.other_id}) Create (b)-[:%s{pharmgkb:"yes", url:"https://www.pharmgkb.org/variantAnnotation/"+line.anno_id, source:"PharmGKB", resource:["PharmGKB"], license:"%s" }]->(c)'
     rela_name = rela_name % ('VA')
-    query_rela = query_rela % (file_name, label, rela_name, license)
+    query_rela = query_rela % (label, rela_name, license)
+
+    query_rela = pharmebinetutils.get_query_import(path_of_directory,
+                                                   f'mapping_and_merging_into_hetionet/pharmGKB/{file_name}',
+                                                   query_rela)
     cypher_file.write(query_rela)
 
 
@@ -71,7 +71,6 @@ dict_label_to_rela_name = {
 # add constraint
 add_constraint = False
 
-
 # set of all VA ids where not all connections exists
 set_of_all_VA_ids_without_all_connections = set()
 
@@ -86,8 +85,10 @@ def check_for_connection(label, label_to):
     query = '''Match (d:PharmGKB_VariantAnnotation)--(a:%s) Where not (a)--(:%s) Return d.id; '''
     query = query % (label, label_to)
     results = g.run(query)
-    for identifier, in results:
+    for record in results:
+        [identifier] = record.values()
         set_of_all_VA_ids_without_all_connections.add(identifier)
+
 
 def check_for_connection_chemical():
     """
@@ -96,14 +97,15 @@ def check_for_connection_chemical():
     """
     query = '''Match (d:PharmGKB_VariantAnnotation)--(a:PharmGKB_Chemical) Where not ((a)--(:Chemical) or (a)--(:PharmacologicClass)) Return d.id; '''
     results = g.run(query)
-    for identifier, in results:
+    for record in results:
+        [identifier] = record.values()
         set_of_all_VA_ids_without_all_connections.add(identifier)
 
-def prepare_files(label, query_start):
+
+def prepare_files(label):
     """
     generate tsv file for nodes. Prepare cypher query and add to cypher file. Constraint is only one time added.
     :param label: string
-    :param query_start: string
     :return:
     """
     global add_constraint
@@ -112,21 +114,25 @@ def prepare_files(label, query_start):
     csv_file = csv.writer(file, delimiter='\t')
     csv_file.writerow(['identifier', 'study_parameters', 'guideline_urls', 'PubMed_ids', 'PubMed_Central_ids'])
 
-    query_meta_node = query_start + '(n:%s{id:toInteger(line.identifier)}) Create (b:VariantAnnotation :%s {'
-    query = 'MATCH (p:%s) WITH DISTINCT keys(p) AS keys UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields RETURN allfields;'
+    query_meta_node = 'Match (n:%s{id:toInteger(line.identifier)}) Create (b:VariantAnnotation :%s {'
+    query = 'MATCH (p:%s) WITH DISTINCT keys(p) AS keys UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields RETURN allfields as l;'
     query = query % (label)
     results = g.run(query)
-    for property, in results:
+    for property in results:
+        property = property.data()['l']
         if property != 'id':
             query_meta_node += property + ':n.' + property + ', '
         else:
             query_meta_node += 'identifier:toString(n.' + property + '), '
 
-    query_meta_node += ' study_parameters:split(line.study_parameters,"|"), guideline_urls:split(line.guideline_urls,"|"), pubMed_ids:split(line.PubMed_ids,"|"),pubMed_Central_ids:split(line.PubMed_Central_ids,"|") , source:"PharmGKB", resource:["PharmGKB"], node_edge:true, url:"https://www.pharmgkb.org/variantAnnotation/"+line.identifier, license:"%s", pharmgkb:"yes"}) Create (n)<-[:equal_metadata]-(b);\n'
-    query_meta_node = query_meta_node % (file_name, label, label.split('_')[1], license)
+    query_meta_node += ' study_parameters:split(line.study_parameters,"|"), guideline_urls:split(line.guideline_urls,"|"), pubMed_ids:split(line.PubMed_ids,"|"),pubMed_Central_ids:split(line.PubMed_Central_ids,"|") , source:"PharmGKB", resource:["PharmGKB"], node_edge:true, url:"https://www.pharmgkb.org/variantAnnotation/"+line.identifier, license:"%s", pharmgkb:"yes"}) Create (n)<-[:equal_metadata]-(b)'
+    query_meta_node = query_meta_node % (label, label.split('_')[1], license)
+    query_meta_node = pharmebinetutils.get_query_import(path_of_directory,
+                                                        f'mapping_and_merging_into_hetionet/pharmGKB/{file_name}',
+                                                        query_meta_node)
     cypher_file.write(query_meta_node)
     if not add_constraint:
-        cypher_file.write('Create Constraint On (node:VariantAnnotation) Assert node.identifier Is Unique;\n')
+        cypher_file.write(pharmebinetutils.prepare_index_query('VariantAnnotation', 'identifier'))
         add_constraint = True
 
     return csv_file
@@ -159,8 +165,8 @@ def add_check_and_add_info(property_in_pGKB, literature, property_name, dictiona
         value = str(literature[property_in_pGKB])
         if property_name not in dictionary:
             dictionary[property_name] = set()
-        if property_name=='guideline_urls':
-            value='https://www.pharmgkb.org/literature/'+value
+        if property_name == 'guideline_urls':
+            value = 'https://www.pharmgkb.org/literature/' + value
         dictionary[property_name].add(value)
 
 
@@ -178,14 +184,16 @@ def load_additional_information_into_dictionary():
     """
     query = '''Match (d:PharmGKB_VariantAnnotation)--(e:PharmGKB_StudyParameters) Return d.id, e'''
     results = g.run(query)
-    for identifier, study_parameter, in results:
+    for record in results:
+        [identifier, study_parameter] = record.values()
         if identifier not in dict_annotation_to_study_parameters:
             dict_annotation_to_study_parameters[identifier] = []
         dict_annotation_to_study_parameters[identifier].append(dict(study_parameter))
 
     query = '''Match (d:PharmGKB_VariantAnnotation)--(e:PharmGKB_Literature) Return d.id, e'''
     results = g.run(query)
-    for identifier, literatur, in results:
+    for record in results:
+        [identifier, literatur] = record.values()
         if identifier not in dict_annotation_to_literatur:
             dict_annotation_to_literatur[identifier] = {}
 
@@ -223,11 +231,12 @@ def load_db_info_in(label, csv_writer):
     results = g.run(query)
 
     counter_meta_edges = 0
-    counter_of_integrated_edges=0
-    for identifier, in results:
+    counter_of_integrated_edges = 0
+    for record in results:
+        [identifier] = record.values()
         counter_meta_edges += 1
         if identifier not in set_of_all_VA_ids_without_all_connections:
-            counter_of_integrated_edges+=1
+            counter_of_integrated_edges += 1
             if identifier in dict_annotation_to_study_parameters:
                 list_of_study_parameters_as_json = [json.dumps(x).replace('"', '\'') for x in
                                                     dict_annotation_to_study_parameters[identifier]]
@@ -261,7 +270,8 @@ def fill_the_rela_files(label_node):
             results = g.run(query)
             counter = 0
             # counter_specific = 0
-            for meta_id, other_id, in results:
+            for record in results:
+                [meta_id, other_id] = record.values()
                 counter += 1
                 dict_rela_partner_to_tsv_file[label].writerow([meta_id, other_id])
                 # if meta_id in dict_annotation_to_study_parameters:
@@ -272,7 +282,8 @@ def fill_the_rela_files(label_node):
                 results = g.run(query)
                 counter = 0
                 counter_specific = 0
-                for meta_id, other_id, in results:
+                for record in results:
+                    [meta_id, other_id] = record.values()
                     counter += 1
                     dict_rela_partner_to_tsv_file[single_label].writerow([meta_id, other_id])
                     # if meta_id in dict_annotation_to_study_parameters:
@@ -333,10 +344,6 @@ def main():
     print('Load additional information of literature and study parameters into dictionaries')
 
     load_additional_information_into_dictionary()
-
-    # query start
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/pharmGKB/%s" As line  FIELDTERMINATOR '\\t'  MATCH '''
-
     # prepare the meta_nodes
     for label in ['PharmGKB_VariantDrugAnnotation', 'PharmGKB_VariantFunctionalAnalysisAnnotation',
                   'PharmGKB_VariantPhenotypeAnnotation']:
@@ -346,7 +353,7 @@ def main():
         print(datetime.datetime.now())
         print('Generate genration file for node')
 
-        csv_writer = prepare_files(label, query_start)
+        csv_writer = prepare_files(label)
 
         print(
             '###########################################################################################################################')
@@ -362,7 +369,7 @@ def main():
     print('Prepare relationship files')
 
     for label, rela_name in dict_label_to_rela_name.items():
-        generate_rela_files(label, rela_name, query_start)
+        generate_rela_files(label, rela_name)
 
     print(
         '###########################################################################################################################')
@@ -379,6 +386,8 @@ def main():
     print('prepare delete queries')
 
     prepare_delete_variant_annotation()
+
+    driver.close()
 
     print(
         '###########################################################################################################################')

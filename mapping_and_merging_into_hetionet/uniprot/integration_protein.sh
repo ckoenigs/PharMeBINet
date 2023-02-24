@@ -6,6 +6,9 @@ path_neo4j=$1
 #path to project
 path_to_project=$2
 
+#password
+password=$3
+
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo 'integrate proteins with interaction into Hetionet'
@@ -22,11 +25,12 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo node cypher
 
-$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher.cypher 
+$path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher.cypher
+$path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_gene.cypher
 
-sleep 120
+sleep 20
 $path_neo4j/neo4j restart
-sleep 120
+sleep 30
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -44,8 +48,8 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo node cypher
 
-$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher_edge.cypher 
+$path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_edge.cypher
 
-sleep 120
+sleep 20
 $path_neo4j/neo4j restart
-sleep 120
+sleep 30

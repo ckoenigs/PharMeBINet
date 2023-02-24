@@ -12,8 +12,9 @@ def database_connection():
     '''
     create connection to neo4j
     '''
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 # dictionary disease id to disease node
@@ -51,7 +52,8 @@ def load_genes_from_database_and_add_to_dict():
     '''
     query = "MATCH (n:Disease) RETURN n"
     results = g.run(query)
-    for disease, in results:
+    for record in results:
+        disease = record.data()['n']
         identifier = disease['identifier']
         dict_disease_id_to_disease_node[identifier] = dict(disease)
         xrefs = disease['xrefs'] if 'xrefs' in disease else []
@@ -77,16 +79,16 @@ def load_genes_from_database_and_add_to_dict():
 
 cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
 
-query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/dbsnp/%s" As line FIELDTERMINATOR '\\t' 
-    Match '''
-
 
 def add_query_to_cypher_file(file_name):
     '''
     add query for a specific tsv to cypher file
     '''
-    this_start_query = query_start + "(n:disease_dbSNP {identifier:line.identifier}), (m:Disease{identifier:line.disease_id}) Set m.dbSNP='yes', m.resource=split(line.resource,'|') Create (m)-[:equal_to_dbsnp_disease{how_mapped:split(line.how_mapped,'|')}]->(n);\n"
-    query = this_start_query % (path_of_directory, file_name)
+    this_start_query = "Match (n:disease_dbSNP {identifier:line.identifier}), (m:Disease{identifier:line.disease_id}) Set m.dbSNP='yes', m.resource=split(line.resource,'|') Create (m)-[:equal_to_dbsnp_disease{how_mapped:split(line.how_mapped,'|')}]->(n)"
+
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/dbSNP/{file_name}',
+                                              this_start_query)
     cypher_file.write(query)
 
 
@@ -138,7 +140,8 @@ def load_all_dbsnp_disease_and_map():
     file = open('disease/not_mapped.tsv', 'w', encoding='utf-8')
     csv_not_mapped = csv.writer(file, delimiter='\t')
     csv_not_mapped.writerow(['identifier', 'name'])
-    for node, in results:
+    for record in results:
+        node = record.data()['n']
         identifier = node['identifier']
 
         dict_dbsnp_id_to_node[identifier] = dict(node)

@@ -1,7 +1,10 @@
 import csv
-import ujson
+import ujson, sys
 from typing import Dict, Set, Tuple
 import datetime
+
+sys.path.append("../..")
+import pharmebinetutils
 
 # generate cypher file
 cypher_file = open('output/cypher.cypher', 'w')
@@ -16,21 +19,20 @@ def generate_cypher_queries(file_name, label, properties, list_properties):
     :param list_properties: list of string
     :return:
     """
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%s" As line FIELDTERMINATOR '\\t' '''
-    query_node = query_start + ' Create (n:%s_dbSNP{'
-    for filename in properties:
-        if filename in list_properties:
-            query_node += filename + ':split(line.' + filename + ',"||"), '
+    query_node = ' Create (n:%s_dbSNP{'
+    for x in properties:
+        if x in list_properties:
+            query_node += x + ':split(line.' + x + ',"||"), '
         else:
-            query_node += filename + ':line.' + filename + ', '
+            query_node += x + ':line.' + x + ', '
 
-    query_node = query_node + ' license:"https://www.ncbi.nlm.nih.gov/home/about/policies/"});\n'
-    query_node = query_node % (file_name, label)
+    query_node = query_node + ' license:"https://www.ncbi.nlm.nih.gov/home/about/policies/"})'
+    query_node = query_node % (label)
+    file_name_split = file_name.split('/', 1)
+    query_node = pharmebinetutils.get_query_import(file_name_split[0], file_name_split[1], query_node)
     cypher_file.write(query_node)
 
-    cypher_file.write(':begin \n')
-    cypher_file.write('Create Constraint On (node:' + label + '_dbSNP) Assert node.identifier Is Unique; \n')
-    cypher_file.write(':commit \n')
+    cypher_file.write(pharmebinetutils.prepare_index_query(label + '_dbSNP', 'identifier'))
 
 
 def generate_cypher_queries_for_relationships(file_name, label1, label2, rela_name, properties, list_properties):
@@ -44,16 +46,17 @@ def generate_cypher_queries_for_relationships(file_name, label1, label2, rela_na
     :param list_properties: list of string
     :return:
     """
-    query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%s" As line FIELDTERMINATOR '\\t' '''
-    query_node = query_start + ' Match (n:%s_dbSNP{identifier:line.%s}), (m:%s_dbSNP{identifier:line.%s}) Create (n)-[:%s{'
-    for filename in properties[2:]:
-        if filename in list_properties:
-            query_node += filename + ':split(line.' + filename + ',"||"), '
+    query_node = ' Match (n:%s_dbSNP{identifier:line.%s}), (m:%s_dbSNP{identifier:line.%s}) Create (n)-[:%s{'
+    for x in properties[2:]:
+        if x in list_properties:
+            query_node += x + ':split(line.' + x + ',"||"), '
         else:
-            query_node += filename + ':line.' + filename + ', '
+            query_node += x + ':line.' + x + ', '
 
-    query_node = query_node + ' license:"CC0 1.0"}]->(m);\n'
-    query_node = query_node % (file_name, label1, properties[0], label2, properties[1], rela_name)
+    query_node = query_node + ' license:"CC0 1.0"}]->(m)'
+    query_node = query_node % (label1, properties[0], label2, properties[1], rela_name)
+    file_name_split = file_name.split('/', 1)
+    query_node = pharmebinetutils.get_query_import(file_name_split[0], file_name_split[1], query_node)
     cypher_file.write(query_node)
 
 
@@ -80,7 +83,7 @@ def add_id_to_label_set_of_ids_if_not_exists(label: str, _id: str) -> bool:
 dict_label_to_tsv_file = {}
 
 # test
-path_to_data =''
+path_to_data = ''
 
 # header snp
 header_snp = ['is_top_level', 'is_chromosome', 'supporting_subsnps', 'position', 'is_alt', 'deleted_sequence',
@@ -91,7 +94,7 @@ header_snp = ['is_top_level', 'is_chromosome', 'supporting_subsnps', 'position',
               'chromosome']
 
 # header snp where the property is a list
-header_snp_list = ['frequencies_list',  'sequence_position_deletion_insertions', 'xrefs',
+header_snp_list = ['frequencies_list', 'sequence_position_deletion_insertions', 'xrefs',
                    'other_rsids_in_cur_release', 'hgvs_list', 'clinical_variant_ids', 'dbsnp1_merges', 'citations',
                    'supporting_subsnps', 'subsnps']
 
@@ -313,7 +316,8 @@ def prepare_dict_node_to_be_string(dict_node):
 # counter not used nodes
 counter_not_used_nodes = 0
 
-def add_to_node_information(key,value, dict_node):
+
+def add_to_node_information(key, value, dict_node):
     """
     add only values which should be add into dictionary
     :param key:
@@ -322,7 +326,7 @@ def add_to_node_information(key,value, dict_node):
     :return:
     """
     if key in header_snp:
-        dict_node[key]=value
+        dict_node[key] = value
 
 
 def prepare_json_information_to_tsv(data, chromosome_number=None):
@@ -344,26 +348,26 @@ def prepare_json_information_to_tsv(data, chromosome_number=None):
             if key == 'refsnp_id':
                 key = 'identifier'
                 snp_id = value
-            add_to_node_information(key,value, dict_node)
+            add_to_node_information(key, value, dict_node)
             set_headers_node.add(key)
             continue
         # pubmed citations
         if key == 'citations':
-            add_to_node_information(key,value, dict_node)
+            add_to_node_information(key, value, dict_node)
             set_headers_node.add(key)
             continue
 
         # the merged ids
         if key == 'dbsnp1_merges':
             list_merge_ids = [x['merged_rsid'] for x in value]
-            add_to_node_information(key,list_merge_ids, dict_node)
+            add_to_node_information(key, list_merge_ids, dict_node)
             set_headers_node.add(key)
             continue
         if key == 'primary_snapshot_data':
             # print(value.keys())
             for property, values in value.items():
                 if type(values) == str:
-                    add_to_node_information(property,values, dict_node)
+                    add_to_node_information(property, values, dict_node)
                     set_headers_node.add(property)
                     continue
                 # contains only subsnp, frequency and clinvar
@@ -514,7 +518,8 @@ def prepare_json_information_to_tsv(data, chromosome_number=None):
                                                                                   ['snp_id', 'disease_id',
                                                                                    'clinical_significances', 'origins',
                                                                                    'collection_method', 'citations',
-                                                                                   'review_status'], ['citations','origins'])
+                                                                                   'review_status'],
+                                                                                  ['citations', 'origins'])
                                     disease_id, disease_xrefs, disease_name, disease_synonyms = find_disease_id_generate_xref_name_and_synonyms(
                                         clinical['disease_names'], clinical['disease_ids'])
 
@@ -605,13 +610,15 @@ def prepare_json_information_to_tsv(data, chromosome_number=None):
                                                                                                            'orientation')
                                             dict_label_to_tsv_file['gene'].writerow(dict_gene)
 
-                                        if (snp_id, gene_id, return_seq_ontology_names(gene)) not in dict_rela_label_to_pairs['snp_gene']:
+                                        if (snp_id, gene_id, return_seq_ontology_names(gene)) not in \
+                                                dict_rela_label_to_pairs['snp_gene']:
                                             dict_snp_gene = {}
                                             dict_snp_gene['snp_id'] = snp_id
                                             dict_snp_gene['gene_id'] = gene_id
                                             dict_snp_gene['sequence_ontology'] = return_seq_ontology_names(gene)
                                             dict_label_to_tsv_file['snp_gene'].writerow(dict_snp_gene)
-                                            dict_rela_label_to_pairs['snp_gene'].add((snp_id, gene_id, return_seq_ontology_names(gene)))
+                                            dict_rela_label_to_pairs['snp_gene'].add(
+                                                (snp_id, gene_id, return_seq_ontology_names(gene)))
 
                                         if add_label_set_of_ids_if_not_exists('rna'):
                                             generate_files_with_node_and_rela('rna', 'gene',
@@ -774,6 +781,7 @@ def prepare_json_information_to_tsv(data, chromosome_number=None):
 
     prepare_dict_node_to_be_string(dict_node)
     dict_label_to_tsv_file['snp'].writerow(dict_node)
+
 
 def prepare_snp_file():
     """

@@ -3,7 +3,7 @@ import sys, csv
 
 sys.path.append("../..")
 import create_connection_to_databases
-
+import pharmebinetutils
 
 '''
 create a connection with neo4j
@@ -12,11 +12,13 @@ create a connection with neo4j
 
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
+
 
 # set of rela pairs
-set_of_rela_pairs=set()
+set_of_rela_pairs = set()
 
 '''
 Get all gene-varinat pairs and write into file
@@ -26,14 +28,16 @@ Get all gene-varinat pairs and write into file
 def load_rela_from_database_and_add_to_dict(csv_writter):
     query = "MATCH (n:Gene)--(:gene_dbSNP)--(:snp_dbSNP)--(b:Variant) RETURN n.identifier, b.identifier"
     results = g.run(query)
-    for identifier, variant_id,  in results:
-        if not (identifier,variant_id) in set_of_rela_pairs:
-            csv_writter.writerow([identifier,variant_id])
-            set_of_rela_pairs.add((identifier,variant_id))
+    for record in results:
+        [identifier, variant_id] = record.values()
+        if not (identifier, variant_id) in set_of_rela_pairs:
+            csv_writter.writerow([identifier, variant_id])
+            set_of_rela_pairs.add((identifier, variant_id))
 
 
 # cypher file
 cypher_file = open('output_mapping/cypher_edge.cypher', 'w', encoding='utf-8')
+
 
 def generate_files(path_of_directory):
     """
@@ -42,19 +46,18 @@ def generate_files(path_of_directory):
     """
     # file from relationship between gene and variant
     file_name = 'output_mapping/gene_variant'
-    file = open( file_name + '.tsv', 'w', encoding='utf-8')
+    file = open(file_name + '.tsv', 'w', encoding='utf-8')
     csv_mapping = csv.writer(file, delimiter='\t')
     header = ['gene_id', 'variant_id']
     csv_mapping.writerow(header)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/dbSNP/%s.tsv" As line FIELDTERMINATOR '\\t' 
-        Match (n:Gene{identifier:line.gene_id}), (v:Variant{identifier:line.variant_id}) Merge (n)-[r:HAS_GhV]->(v)  On Match Set  r.dbsnp="yes", r.resource=r.resource+"dbSNP"  On Create Set r.dbsnp="yes", r.resource=["dbSNP"], r.url="https://www.ncbi.nlm.nih.gov/snp/"+line.variant_id , r.source="dbSNP", r.license="https://www.ncbi.nlm.nih.gov/home/about/policies/";\n'''
-
-    query = query % (path_of_directory, file_name)
+    query = '''Match (n:Gene{identifier:line.gene_id}), (v:Variant{identifier:line.variant_id}) Merge (n)-[r:HAS_GhGV]->(v)  On Match Set  r.dbsnp="yes", r.resource=r.resource+"dbSNP"  On Create Set r.dbsnp="yes", r.resource=["dbSNP"], r.url="https://www.ncbi.nlm.nih.gov/snp/"+line.variant_id , r.source="dbSNP", r.license="https://www.ncbi.nlm.nih.gov/home/about/policies/"'''
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                               f'mapping_and_merging_into_hetionet/dbSNP/{file_name}.tsv',
+                                              query)
     cypher_file.write(query)
 
     return csv_mapping
-
 
 
 def main():
@@ -84,7 +87,7 @@ def main():
 
     load_rela_from_database_and_add_to_dict(csv_mapping)
 
-
+    driver.close()
     print('##########################################################################')
 
     print(datetime.datetime.now())

@@ -1,9 +1,9 @@
 import datetime
 import sys, csv
-from collections import defaultdict
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 '''
 create connection to neo4j 
@@ -11,8 +11,9 @@ create connection to neo4j
 
 
 def create_connection_with_neo4j():
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 def load_pharmgkb_in(label, directory):
@@ -43,10 +44,11 @@ def load_pharmgkb_in(label, directory):
     # set of variant gene pairs
     set_of_variant_gene_pair = set()
 
-    for variant_id, pGKB_id, gene_id, in results:
-        if (variant_id,gene_id) in set_of_variant_gene_pair:
+    for record in results:
+        [variant_id, pGKB_id, gene_id] = record.values()
+        if (variant_id, gene_id) in set_of_variant_gene_pair:
             continue
-        set_of_variant_gene_pair.add((variant_id,gene_id))
+        set_of_variant_gene_pair.add((variant_id, gene_id))
         csv_writer.writerow([variant_id, gene_id, pGKB_id])
 
 
@@ -61,8 +63,11 @@ def generate_cypher_file(file_name):
     :param label: string
     :return:
     """
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/pharmGKB/%s" As line  FIELDTERMINATOR '\\t'  MATCH (n:Variant{identifier:line.variant_id}), (c:Gene{identifier:line.gene_id}) Merge (c)-[r:HAS_GhV]->(n) On Create Set r.source="PharmGKB", r.resource=["PharmGKB"], r.pharmgkb="yes" , r.license="%s", r.url="https://www.pharmgkb.org/variant/"+line.pGKB_id On Match Set r.resource=r.resource + "PharmGKB", r.pharmgkb="yes"; \n'''
-    query = query % (file_name, license)
+    query = '''  MATCH (n:Variant{identifier:line.variant_id}), (c:Gene{identifier:line.gene_id}) Merge (c)-[r:HAS_GhGV]->(n) On Create Set r.source="PharmGKB", r.resource=["PharmGKB"], r.pharmgkb="yes" , r.license="%s", r.url="https://www.pharmgkb.org/variant/"+line.pGKB_id On Match Set r.resource=r.resource + "PharmGKB", r.pharmgkb="yes"'''
+    query = query % (license)
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/pharmGKB/{file_name}',
+                                              query)
     cypher_file.write(query)
 
 
@@ -87,6 +92,8 @@ def main():
         print('Load in %s from pharmgb in' % (label))
 
         load_pharmgkb_in(label, 'variant_gene')
+
+    driver.close()
 
     print(
         '###########################################################################################################################')

@@ -3,15 +3,11 @@ import datetime, csv, sys
 sys.path.append("../..")
 import create_connection_to_databases
 
-'''
-create a connection with neo4j
-'''
-
-
-def create_connection_with_neo4j():
-    # set up authentication parameters and connection
-    # authenticate("localhost:7474", "neo4j", "test")
-    return create_connection_to_databases.database_connection_neo4j()
+# set up authentication parameters and connection
+# authenticate("localhost:7474", "neo4j", "test")
+global g, driver
+driver = create_connection_to_databases.database_connection_neo4j_driver()
+graph = driver.session()
 
 
 def chunks(lst, n):
@@ -63,13 +59,13 @@ list_rxnorm_id = set()
 g = open('results/name_map_drugbank_to_rxnorm.tsv', 'w', encoding='utf-8')
 csv_writer = csv.writer(g, delimiter='\t')
 csv_writer.writerow(['drugbank_id', 'rxnorm_cui'])
-graph = create_connection_with_neo4j()
 
 synonym_to_drugbank_ids = {}
 
 query = '''Match (c:Compound) Where not c:Product Return c.identifier, c.name, c.synonyms'''
 result = graph.run(query)
-for drugbank_id, name, synonyms, in result:
+for record in result:
+    [drugbank_id, name, synonyms] = record.values()
     count_drugbank_ids += 1
 
     name = name.replace("'", "").lower()

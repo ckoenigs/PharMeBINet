@@ -318,6 +318,7 @@ def write_cypher_file():
 
     # cypher file for nodes and relas
     file_cypher = open('output/cypher.cypher', 'w')
+    file_cypher_edge = open('output/cypher_gene.cypher', 'w')
 
     query_property = '''MATCH (p:Protein_Uniprot) WITH DISTINCT keys(p) AS keys
         UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields
@@ -356,7 +357,7 @@ def write_cypher_file():
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/uniprot/uniprot_gene/db_uniprot_to_gene_rela.tsv',
                                               query)
-    file_cypher.write(query)
+    file_cypher_edge.write(query)
 
 
 def add_resource(set_resource):

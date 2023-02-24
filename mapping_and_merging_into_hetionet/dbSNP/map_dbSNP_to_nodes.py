@@ -3,6 +3,7 @@ import sys, csv
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 sys.path.append("..")
 from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
@@ -14,8 +15,9 @@ create a connection with neo4j
 
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 # dictionary variant identifier to resources and xrefs
@@ -29,7 +31,8 @@ Load all Genes from my database  and add them into a dictionary
 def load_variant_from_database_and_add_to_dict():
     query = "MATCH (n:GeneVariant) RETURN n.identifier, n.resource, n.xrefs"
     results = g.run(query)
-    for identifier, resource, xrefs, in results:
+    for record in results:
+        [identifier, resource, xrefs] = record.values()
         dict_identifier_to_resource_and_xrefs[identifier] = [resource, xrefs]
 
 
@@ -51,21 +54,23 @@ def generate_files(path_of_directory):
 
     information_query = '''MATCH (p:snp_dbSNP) WITH DISTINCT keys(p) AS keys
     UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields
-    RETURN allfields;'''
+    RETURN allfields as l;'''
 
     results = g.run(information_query)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/dbSNP/%s.tsv" As line FIELDTERMINATOR '\\t' 
-        Match (n:snp_dbSNP{identifier:line.dbsnp_id}), (v:Variant{identifier:line.variant_id}) Set '''
-    for property, in results:
+    query = '''Match (n:snp_dbSNP{identifier:line.dbsnp_id}), (v:Variant{identifier:line.variant_id}) Set '''
+    for record in results:
+        property = record.data()['l']
         if property in ['is_alt', 'license', 'is_top_level', 'last_update_build_id', 'deleted_sequence', 'identifier',
                         'is_patch', 'is_chromosome', 'xrefs', 'clinical_variant_ids']:
             continue
         query += 'v.' + property + '=n.' + property + ', '
 
-    query += '''v.dbsnp="yes", v.url="https://www.ncbi.nlm.nih.gov/snp/"+line.dbsnp_id, v.resource=split(line.resource,"|"), v.source='dbSNP', v.license='https://www.ncbi.nlm.nih.gov/home/about/policies/' ,v.xrefs=split(line.xrefs,"|") Create (v)-[:equal_to_drugbank_variant]->(n);\n'''
+    query += '''v.dbsnp="yes", v.url="https://www.ncbi.nlm.nih.gov/snp/"+line.dbsnp_id, v.resource=split(line.resource,"|"), v.source='dbSNP', v.license='https://www.ncbi.nlm.nih.gov/home/about/policies/' ,v.xrefs=split(line.xrefs,"|") Create (v)-[:equal_to_drugbank_variant]->(n)'''
 
-    query = query % (path_of_directory, file_name)
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/dbSNP/{file_name}.tsv',
+                                              query)
     cypher_file.write(query)
 
     return csv_mapping
@@ -96,14 +101,16 @@ def generate_label_tsv_and_query(variant_type):
     csv_writer.writerow(['identifier'])
     dict_variant_typ_to_tsv_file[variant_type] = csv_writer
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/dbSNP/%s" As line FIELDTERMINATOR '\\t' 
-            Match (v:Variant{identifier:line.identifier}) Set v:%s;\n'''
+    query = '''Match (v:Variant{identifier:line.identifier}) Set v:%s'''
     if variant_type in dict_variant_typ_to_label:
         label = dict_variant_typ_to_label[variant_type]
     else:
         print(variant_type)
         sys.exit('need a label')
-    query = query % (path_of_directory, file_name, label)
+    query = query % (label)
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/dbSNP/{file_name}',
+                                              query)
     cypher_file.write(query)
 
 
@@ -118,7 +125,8 @@ def load_all_variants_and_finish_the_files(csv_mapping):
     counter_map = 0
     counter_not_mapped = 0
     counter_new = 0
-    for node, in results:
+    for record in results:
+        node = record.data()['n']
         identifier = node['identifier']
         [resource, xrefs] = dict_identifier_to_resource_and_xrefs['rs' + identifier]
         variant_type = node['variant_type']
@@ -178,8 +186,10 @@ def main():
     load_all_variants_and_finish_the_files(csv_mapping)
 
     # delete the Variant nodes which have an not real dbSNP or a merged rs id (is not known which is which only for the drugbank one)
-    query = '''Match p=(n:Variant) Where n.identifier starts with 'rs' and not (n)--(:snp_dbSNP) and not exists(n.drugbank) Detach Delete n;\n'''
+    query = '''Match p=(n:Variant) Where n.identifier starts with 'rs' and not (n)--(:snp_dbSNP) and n.drugbank is NULL Detach Delete n;\n'''
     cypher_file.write(query)
+
+    driver.close()
 
     print('##########################################################################')
 

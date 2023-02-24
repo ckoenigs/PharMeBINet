@@ -6,6 +6,9 @@ path_neo4j=$1
 #path to project
 path_to_project=$2
 
+#password
+password=$3
+
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo 'integrate proteins-go from uniprot'
@@ -17,7 +20,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo edge cypher
 
-$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher_edge_go.cypher 
+$path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_edge_go.cypher
 
 sleep 120
 $path_neo4j/neo4j restart

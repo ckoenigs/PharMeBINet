@@ -4,6 +4,7 @@ import csv
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 
 def database_connection():
@@ -11,8 +12,9 @@ def database_connection():
     create connection to neo4j
     :return:
     """
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 cypher_file = open('output/cypher_rela.cypher', 'w', encoding='utf-8')
@@ -23,8 +25,7 @@ dict_first_letter_to_rela_letter = {
     'P': 'PT'
 }
 
-query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/omim/%s" As line FIELDTERMINATOR '\\t' 
-    Match (g:Gene{identifier:line.%s}),(to:%s{identifier:line.%s}) Merge (g)<-[r:ASSOCIATES_%saG]-(to) On Create Set r.resource=['OMIM'], r.source='OMIM', r.url="https://www.omim.org/entry/"+line.%s , r.omim='yes', r.license='https://www.omim.org/help/agreement', %s On Match Set r.resource=r.resource+'OMIM', r.omim="yes", %s ;\n'''
+query_start = '''Match (g:Gene{identifier:line.%s}),(to:%s{identifier:line.%s}) Merge (g)<-[r:ASSOCIATES_%saG]-(to) On Create Set r.resource=['OMIM'], r.source='OMIM', r.url="https://www.omim.org/entry/"+line.%s , r.omim='yes', r.license='https://www.omim.org/help/agreement', %s On Match Set r.resource=r.resource+'OMIM', r.omim="yes", %s '''
 
 
 def prepare_cypher_query(file, header_start, to_label):
@@ -37,18 +38,24 @@ def prepare_cypher_query(file, header_start, to_label):
     """
     query = '''MATCH (n:gene_omim)-[p]-(h) Where 'phenotype_omim' in labels(h) or 'predominantly_phenotypes_omim' in labels(h) WITH DISTINCT keys(p) AS keys
         UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields
-        RETURN allfields; '''
-    result = g.run(query)
+        RETURN allfields as l; '''
+    results = g.run(query)
 
     query_merge = ""
-    for key, in result:
+    for record in results:
+        key = record.data()['l']
         query_merge += "r." + key + '=split(line.' + key + ",'|'), "
         header_start.append(key)
 
     query_merge = query_merge[:-2]
     combine_cypher = query_start
-    combine_cypher = combine_cypher % (
-        path_of_directory, file, header_start[0], to_label, header_start[1], dict_first_letter_to_rela_letter[to_label[0]],'omim_id', query_merge, query_merge)
+    combine_cypher = combine_cypher % (header_start[0], to_label, header_start[1],
+                                       dict_first_letter_to_rela_letter[to_label[0]], 'omim_id', query_merge,
+                                       query_merge)
+
+    combine_cypher = pharmebinetutils.get_query_import(path_of_directory,
+                                                       f'mapping_and_merging_into_hetionet/omim/{file}',
+                                                       combine_cypher)
 
     cypher_file.write(combine_cypher)
 
@@ -93,7 +100,7 @@ def put_pair_in_dictionary(gene_id, rela, to_id, dictionary, omim_id):
                 new_dictionary_rela[key] = set(value)
             else:
                 new_dictionary_rela[key] = set([value])
-        new_dictionary_rela['omim_id']= omim_id
+        new_dictionary_rela['omim_id'] = omim_id
         dictionary[(gene_id, to_id)] = new_dictionary_rela
     else:
         print('ohje multiple edges')
@@ -119,7 +126,8 @@ def load_all_omim_gene_phenotypes():
     query = "MATCH (g:Gene)--(n:gene_omim)-[r:associates]-(h)--(p) Where 'Disease' in labels(p) or 'Phenotype' in labels(p) RETURN g.identifier, r, p.identifier, labels(p), n.identifier"
     results = g.run(query)
 
-    for gene_id, rela, to_id, to_labels, omim_id in results:
+    for record in results:
+        [gene_id, rela, to_id, to_labels, omim_id] = record.values()
         if 'Disease' in to_labels:
             put_pair_in_dictionary(gene_id, rela, to_id, dict_gene_disease, omim_id)
         else:
@@ -144,7 +152,7 @@ def generate_tsv_and_cypher_file(label, dictionary):
     """
     csv_writer, header = prepare_tsv_files(label)
     for (gene_id, to_id), properties in dictionary.items():
-        list_information = [gene_id, to_id,properties['omim_id'] ]
+        list_information = [gene_id, to_id, properties['omim_id']]
         # add properties in the right order
         for key in header[3:]:
             list_information.append(
@@ -187,6 +195,8 @@ def main():
     print('Prepare rela to phenotyp as cypher query and tsv file')
 
     generate_tsv_and_cypher_file('Phenotype', dict_gene_phenotype)
+
+    driver.close()
 
     print('##########################################################################')
 

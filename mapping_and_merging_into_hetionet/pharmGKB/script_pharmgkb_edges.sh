@@ -6,6 +6,9 @@ path_neo4j=$1
 #path to project
 path_to_project=$2
 
+#password
+password=$3
+
 license="CC BY-SA 4.0"
 
 
@@ -31,8 +34,8 @@ python3 integrate_different_annotations.py $path_to_project "${license}" > annot
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher_edge.cypher 
+$path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_edge.cypher
 
-sleep 120
+sleep 30
 $path_neo4j/neo4j restart
-sleep 120
+sleep 30

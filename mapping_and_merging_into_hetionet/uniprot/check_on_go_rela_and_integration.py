@@ -4,6 +4,7 @@ import sys
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 '''
 create a connection with neo4j
@@ -12,8 +13,9 @@ create a connection with neo4j
 
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
-    global graph_database
-    graph_database = create_connection_to_databases.database_connection_neo4j()
+    global graph_database, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    graph_database = driver.session()
 
 
 # dictionary go to short form
@@ -36,10 +38,11 @@ def load_existing_pairs(label, dict_pair_to_resource):
     :param dict_pair_to_resource: dictionary
     :return:
     """
-    query = 'Match (n:%s)-[r]-(m:%s) Where  not exists(r.not) and type(r) in ["%s"] Return n.identifier, m.identifier, r.resource, type(r)' % (
+    query = 'Match (n:%s)-[r]-(m:%s) Where  r.not is NULL and type(r) in ["%s"] Return n.identifier, m.identifier, r.resource, type(r)' % (
         label, 'Protein', '","'.join(dict_go_to_rela_types[label]))
     results = graph_database.run(query)
-    for node_id_1, node_id_2, resource, rela_type, in results:
+    for record in results:
+        [node_id_1, node_id_2, resource, rela_type] = record.values()
         dict_pair_to_resource[(node_id_1, node_id_2)] = set(resource)
         if (node_id_1, node_id_2) not in dict_go_protein_to_rela_type:
             dict_go_protein_to_rela_type[(node_id_1, node_id_2)] = set()
@@ -118,12 +121,18 @@ def create_cypher_file(file_name, file_name_new, label):
     :return:
     """
     # b.resource=split(line.resource,'|'),
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/uniprot/%s" As line FIELDTERMINATOR "\\t" Match (g:Protein{identifier:line.node_id_2}),(b:%s{identifier:line.node_id_1}) Set  b.uniprot='yes' Create (g)-[:PARTICIPATES_Pp%s{resource:['UniProt'],source:'UniProt', uniprot:'yes', license:'CC BY 4.0', url:'https://www.uniprot.org/uniprot/'+line.node_id_2}]->(b);\n'''
-    query = query % (file_name_new, label, dict_label_to_rela_short[label])
+    query = ''' Match (g:Protein{identifier:line.node_id_2}),(b:%s{identifier:line.node_id_1}) Set  b.uniprot='yes' Create (g)-[:PARTICIPATES_Pp%s{resource:['UniProt'],source:'UniProt', uniprot:'yes', license:'CC BY 4.0', url:'https://www.uniprot.org/uniprot/'+line.node_id_2}]->(b)'''
+    query = query % (label, dict_label_to_rela_short[label])
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/uniprot/{file_name_new}',
+                                              query)
     cypher_file.write(query)
 
-    query = '''LOAD CSV  WITH HEADERS FROM "file:%smapping_and_merging_into_hetionet/uniprot/%s" As line FIELDTERMINATOR "\\t" MATCH (d:%s{identifier:line.node_id_1})-[r]-(c:Protein{identifier:line.node_id_2}) Where not exists(r.not) and type(r) in ["%s"] Set  r.resource=split(line.resource,'|'), r.uniprot='yes';\n'''
-    query = query % (path_of_directory, file_name, label, '","'.join(dict_go_to_rela_types[label]))
+    query = ''' MATCH (d:%s{identifier:line.node_id_1})-[r]-(c:Protein{identifier:line.node_id_2}) Where r.not is NULL and type(r) in ["%s"] Set  r.resource=split(line.resource,'|'), r.uniprot='yes' '''
+    query = query % (label, '","'.join(dict_go_to_rela_types[label]))
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/uniprot/{file_name}',
+                                              query)
     cypher_file.write(query)
 
 
@@ -210,6 +219,7 @@ def main():
         check_relationships_and_generate_file(label)
 
     cypher_file.close()
+    driver.close()
 
     print(
         '###########################################################################################################################')

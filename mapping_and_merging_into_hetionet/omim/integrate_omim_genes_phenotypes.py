@@ -15,16 +15,16 @@ def database_connection():
     create connection to neo4j
     :return:
     """
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 # dictionary gene id to gene node
 dict_gene_id_to_gene_node = {}
 
-#dictionary omim id to gene id
-dict_omim_id_to_gene_id={}
-
+# dictionary omim id to gene id
+dict_omim_id_to_gene_id = {}
 
 
 def load_genes_from_database_and_add_to_dict():
@@ -33,19 +33,17 @@ def load_genes_from_database_and_add_to_dict():
     """
     query = "MATCH (n:Gene) RETURN n"
     results = g.run(query)
-    for gene, in results:
+    for record in results:
+        gene = record.data()['n']
         identifier = gene['identifier']
         dict_gene_id_to_gene_node[identifier] = dict(gene)
-        xrefs= gene['xrefs'] if 'xrefs' in gene else []
+        xrefs = gene['xrefs'] if 'xrefs' in gene else []
         for xref in xrefs:
             if xref.startswith('OMIM:'):
-                pharmebinetutils.add_entry_to_dict_to_set(dict_omim_id_to_gene_id,xref.split(':',1)[1], identifier)
+                pharmebinetutils.add_entry_to_dict_to_set(dict_omim_id_to_gene_id, xref.split(':', 1)[1], identifier)
 
 
-cypher_file = open('output/cypher_gene_phenotype.cypher', 'w', encoding='utf-8')
-
-query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/omim/%s" As line FIELDTERMINATOR '\\t' 
-    Match '''
+cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
 
 
 def add_query_to_cypher_file(omim_label, database_label, rela_name_addition, file_name, is_gene=False,
@@ -54,14 +52,18 @@ def add_query_to_cypher_file(omim_label, database_label, rela_name_addition, fil
     add query for a specific tsv to cypher file
     """
     if is_gene:
-        part = "(n{identifier:line.identifier}), (m:%s{identifier:line.database_id}) Where n:%s or n:%s or n:%s "
+        part = "Match (n{identifier:line.identifier}), (m:%s{identifier:line.database_id}) Where n:%s or n:%s or n:%s "
         part = part % (database_label, omim_label, additional_labels[0], additional_labels[1])
     else:
-        part = "(n:%s {identifier:line.identifier}), (m:%s{identifier:line.database_id}) " % (
+        part = "Match (n:%s {identifier:line.identifier}), (m:%s{identifier:line.database_id}) " % (
             omim_label, database_label)
-    this_start_query = query_start + part
-    this_start_query += "Set m.resource=split(line.resource,'|'), m.omim='yes' %s  Create (m)-[:equal_to_omim_%s{how_mapped:line.how_mapped}]->(n);\n"
-    query = this_start_query % (path_of_directory, file_name,  ', m.xrefs=split(line.xrefs,"|")' if database_label=='Gene' else '', rela_name_addition)
+    this_start_query = part
+    this_start_query += "Set m.resource=split(line.resource,'|'), m.omim='yes' %s  Create (m)-[:equal_to_omim_%s{how_mapped:line.how_mapped}]->(n)"
+    query = this_start_query % (', m.xrefs=split(line.xrefs,"|")' if database_label == 'Gene' else '',
+                                rela_name_addition)
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/omim/{file_name}',
+                                              query)
     cypher_file.write(query)
 
 
@@ -137,7 +139,8 @@ def load_all_omim_gene_and_start_mapping():
                              additional_labels=['phenotype_omim', 'predominantly_phenotypes_omim'])
 
     counter_different_symbol = 0
-    for node, labels, in results:
+    for record in results:
+        [node, labels] = record.values()
         identifier = node['identifier']
 
         dict_omim_id_to_node[identifier] = dict(node)
@@ -146,7 +149,7 @@ def load_all_omim_gene_and_start_mapping():
         found_at_least_one_mapping = False
 
         if identifier in dict_omim_id_to_gene_id:
-            found_at_least_one_mapping=True
+            found_at_least_one_mapping = True
             for ncbi_id in dict_omim_id_to_gene_id[identifier]:
                 add_mapped_one_to_tsv_file(dict_gene_id_to_gene_node, identifier, ncbi_id, csv_writer,
                                            dict_of_mapped_tuples, 'omim_xrefs', is_gene=True)
@@ -206,14 +209,15 @@ def load_disease_from_database_and_add_to_dict():
     """
     query = "MATCH (n:Disease) RETURN n"
     results = g.run(query)
-    for node, in results:
+    for record in results:
+        node = record.data()['n']
         identifier = node['identifier']
         dict_disease_id_to_disease_node[identifier] = dict(node)
         xrefs = node['xrefs'] if 'xrefs' in node else []
         for xref in xrefs:
             if xref.startswith('OMIM:'):
                 omim_id = xref.split(':')[1]
-                pharmebinetutils.add_entry_to_dict_to_set(dict_omim_id_to_disease_ids, omim_id,identifier)
+                pharmebinetutils.add_entry_to_dict_to_set(dict_omim_id_to_disease_ids, omim_id, identifier)
         name = node['name'].lower()
 
         pharmebinetutils.add_entry_to_dict_to_set(dict_name_to_disease_ids, name, identifier)
@@ -232,18 +236,22 @@ def create_query_for_phenotype(label, file_name):
     :param file_name:string
     :return:
     """
-    query_create = query_start + ' (n:%s {identifier:line.identifier}) Create (p:Phenotype {'
-    query = 'MATCH (p:%s) WITH DISTINCT keys(p) AS keys UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields RETURN allfields;'
+    query_create = 'Match (n:%s {identifier:line.identifier}) Create (p:Phenotype {'
+    query = 'MATCH (p:%s) WITH DISTINCT keys(p) AS keys UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields RETURN allfields as l;'
     query = query % label
     results = g.run(query)
-    for property, in results:
+    for record in results:
+        property = record.data()['l']
         if property != 'alternative_names':
 
             query_create += property + ':n.' + property + ', '
         else:
             query_create += 'synonyms:n.' + property + ', '
-    query_create += ' license:"https://www.omim.org/help/agreement",  url:"https://www.omim.org/entry/"+line.identifier, source:"OMIM", resource:["OMIM"], omim:"yes"}) Create (p)-[:equal_to_omim{how_mapped:"new"}]->(n);\n'
-    query_create = query_create % (path_of_directory, file_name, label)
+    query_create += ' license:"https://www.omim.org/help/agreement",  url:"https://www.omim.org/entry/"+line.identifier, source:"OMIM", resource:["OMIM"], omim:"yes"}) Create (p)-[:equal_to_omim{how_mapped:"new"}]->(n)'
+    query_create = query_create % label
+    query_create = pharmebinetutils.get_query_import(path_of_directory,
+                                                     f'mapping_and_merging_into_hetionet/omim/{file_name}',
+                                                     query_create)
     cypher_file.write(query_create)
 
 
@@ -277,11 +285,11 @@ def load_phenotype_from_omim_and_map(gene_writer):
     add_query_to_cypher_file('phenotype_omim', 'Disease', 'disease', file_name)
     create_query_for_phenotype('phenotype_omim', file_name_not_mapped)
 
-
     query = "MATCH (n:phenotype_omim) RETURN Distinct n, labels(n)"
     results = g.run(query)
 
-    for node, labels, in results:
+    for record in results:
+        [node, labels] = record.values()
         identifier = node['identifier']
         name = node['name'].lower() if 'name' in node else ''
         synonyms = [x.lower() for x in node['alternative_names']] if 'alternative_names' in node else []
@@ -396,6 +404,8 @@ def main():
     print('Load all omim phenotypes from database and map')
 
     load_phenotype_from_omim_and_map(gene_writer)
+
+    driver.close()
 
     print('##########################################################################')
 
