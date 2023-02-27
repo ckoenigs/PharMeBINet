@@ -6,10 +6,13 @@ path_neo4j=$1
 #path to project
 path_to_project=$2
 
+#password
+password=$3
 
-sleep 180
+
+sleep 60
 $path_neo4j/neo4j restart
-sleep 180
+sleep 60
 
 echo aeolus outcome mapping
 python3 map_aeolus_outcome_final.py $path_to_project > output/output_map_aeolus_outcome.txt
@@ -29,11 +32,11 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo integrate map drug and outcome
 
-$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher.cypher
+$path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher.cypher
 
-sleep 120
+sleep 30
 $path_neo4j/neo4j restart
-sleep 120
+sleep 60
 
 echo relationships
 python3  integrate_aeolus_relationships.py $path_to_project > output/output_aeolus_rela.txt
@@ -42,8 +45,8 @@ python3  integrate_aeolus_relationships.py $path_to_project > output/output_aeol
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher_rela.cypher
+$path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_rela.cypher
 
-sleep 120
+sleep 30
 $path_neo4j/neo4j restart
-sleep 120
+sleep 60

@@ -3,7 +3,7 @@ import sys, csv
 
 sys.path.append("../..")
 import create_connection_to_databases
-from pharmebinetutils import *
+import pharmebinetutils
 
 sys.path.append("..")
 from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
@@ -65,8 +65,9 @@ create connection to neo4j and mysql
 
 
 def create_connection_with_neo4j_mysql():
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
     # generate connection to mysql to RxNorm database
     global conRxNorm
@@ -93,7 +94,8 @@ def load_compounds_from_pharmebinet():
     query = 'MATCH (n:Chemical) RETURN n '
     results = g.run(query)
 
-    for result, in results:
+    for record in results:
+        result= record.data()['n']
         licenses = result['license']
         identifier = result['identifier']
         inchikey = result['inchikey'] if 'inchikey' in result else ''
@@ -132,7 +134,8 @@ def load_drug_aeolus_in_dictionary():
     query = '''MATCH (n:Aeolus_Drug)  RETURN n'''
 
     results = g.run(query)
-    for result, in results:
+    for record in results:
+        result = record.data()['n']
         if result['vocabulary_id'] != 'RxNorm':
             print('ohje')
         rxcui = result['concept_code']
@@ -426,8 +429,9 @@ Generate cypher file to update or create the relationships in pharmebinet
 def generate_cypher_file():
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/aeolus/drug/mapped.tsv" As line Fieldterminator '\\t' Match (a:Aeolus_Drug{drug_concept_id:line.aeolus_id}),(n:Chemical{identifier:line.chemical_id}) Set a.mapped_id=split(line.mapped_ids,'|'), a.how_mapped=line.how_mapped ,  n.aeolus="yes",n.resource= split(line.resource,'|') , n.xrefs=split(line.xrefs,'|') Create (n)-[:equal_to_Aeolus_drug]->(a); \n'''
-
+    query = ''' Match (a:Aeolus_Drug{drug_concept_id:line.aeolus_id}),(n:Chemical{identifier:line.chemical_id}) Set a.mapped_id=split(line.mapped_ids,'|'), a.how_mapped=line.how_mapped ,  n.aeolus="yes",n.resource= split(line.resource,'|') , n.xrefs=split(line.xrefs,'|') Create (n)-[:equal_to_Aeolus_drug]->(a)'''
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/aeolus/drug/mapped.tsv', query)
     cypher_file.write(query)
 
     cypher_file.close()
@@ -463,7 +467,7 @@ def integrate_aeolus_drugs_into_pharmebinet():
             xrefs = go_through_xrefs_and_change_if_needed_source_name(dict_all_drug[mapped_id].xrefs, 'chemical')
             xrefs_string = '|'.join(xrefs)
             csv_writer.writerow([drug_concept_id, mapped_id, mapped_ids_string, how_mapped,
-                                 resource_add_and_prepare(dict_all_drug[mapped_id].resource, "AEOLUS"), xrefs_string])
+                                 pharmebinetutils.resource_add_and_prepare(dict_all_drug[mapped_id].resource, "AEOLUS"), xrefs_string])
 
     print('all aeolus drug which are map to drugbank, where some drugbank id are not existing:' + str(counter))
     print(dict_how_mapped_delete_counter)
@@ -569,6 +573,7 @@ def main():
 
     generate_cypher_file()
 
+    driver.close()
     print(
         '###########################################################################################################################')
 

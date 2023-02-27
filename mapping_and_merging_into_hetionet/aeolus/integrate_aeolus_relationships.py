@@ -1,10 +1,9 @@
-
 import datetime
 import sys, csv
-from collections import defaultdict
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 # dictionary with all compounds with id (drugbank id) as key and class Drugpharmebinet as value
 dict_all_drug = {}
@@ -18,8 +17,9 @@ create connection to neo4j and mysql
 
 
 def create_connection_with_neo4j():
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 # path to directory
@@ -34,14 +34,18 @@ def generate_cypher_file():
     # relationship queries
     cypher_file = open('output/cypher_rela.cypher', 'w', encoding='utf-8')
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/aeolus/drug/new_rela_se.tsv" As line  Fieldterminator '\\t' Match (c:Chemical{identifier:line.chemical_id}),(r:SideEffect{identifier:line.disease_sideeffect_id})  Create (c)-[:MIGHT_CAUSES_CHmcSE{license:"CC0 1.0",unbiased:false,source:'AEOLUS',countA:line.countA, prr_95_percent_upper_confidence_limit:line.prr_95_percent_upper_confidence_limit, prr:line.prr, countB:line.countB, prr_95_percent_lower_confidence_limit:line.prr_95_percent_lower_confidence_limit, ror:line.ror, ror_95_percent_upper_confidence_limit:line.ror_95_percent_upper_confidence_limit, ror_95_percent_lower_confidence_limit:line.ror_95_percent_lower_confidence_limit, countC:line.countC, drug_outcome_pair_count:line.drug_outcome_pair_count, countD:line.countD, ror_min:line.ror_min, ror_max:line.ror_max, prr_min:line.prr_min, prr_max:line.prr_max,  aeolus:'yes', resource:['AEOLUS']}]->(r); \n'''
+    query = ''' Match (c:Chemical{identifier:line.chemical_id}),(r:SideEffect{identifier:line.disease_sideeffect_id})  Create (c)-[:MIGHT_CAUSES_CHmcSE{license:"CC0 1.0",unbiased:false,source:'AEOLUS',countA:line.countA, prr_95_percent_upper_confidence_limit:line.prr_95_percent_upper_confidence_limit, prr:line.prr, countB:line.countB, prr_95_percent_lower_confidence_limit:line.prr_95_percent_lower_confidence_limit, ror:line.ror, ror_95_percent_upper_confidence_limit:line.ror_95_percent_upper_confidence_limit, ror_95_percent_lower_confidence_limit:line.ror_95_percent_lower_confidence_limit, countC:line.countC, drug_outcome_pair_count:line.drug_outcome_pair_count, countD:line.countD, ror_min:line.ror_min, ror_max:line.ror_max, prr_min:line.prr_min, prr_max:line.prr_max,  aeolus:'yes', resource:['AEOLUS']}]->(r)'''
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/aeolus/drug/new_rela_se.tsv', query)
     cypher_file.write(query)
 
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/aeolus/drug/new_rela_disease.tsv" As line Fieldterminator '\\t' Match (c:Chemical{identifier:line.chemical_id}),(r:Disease{identifier:line.disease_sideeffect_id})  Create (c)-[:MIGHT_INDUCES_CHmiD{license:"CC0 1.0",unbiased:false,source:'AEOLUS',countA:line.countA, prr_95_percent_upper_confidence_limit:line.prr_95_percent_upper_confidence_limit, prr:line.prr, countB:line.countB, prr_95_percent_lower_confidence_limit:line.prr_95_percent_lower_confidence_limit, ror:line.ror, ror_95_percent_upper_confidence_limit:line.ror_95_percent_upper_confidence_limit, ror_95_percent_lower_confidence_limit:line.ror_95_percent_lower_confidence_limit, countC:line.countC, drug_outcome_pair_count:line.drug_outcome_pair_count, countD:line.countD, ror_min:line.ror_min, ror_max:line.ror_max, prr_min:line.prr_min, prr_max:line.prr_max,  aeolus:'yes', resource:['AEOLUS']}]->(r); \n'''
+    query = ''' Match (c:Chemical{identifier:line.chemical_id}),(r:Disease{identifier:line.disease_sideeffect_id})  Create (c)-[:MIGHT_INDUCES_CHmiD{license:"CC0 1.0",unbiased:false,source:'AEOLUS',countA:line.countA, prr_95_percent_upper_confidence_limit:line.prr_95_percent_upper_confidence_limit, prr:line.prr, countB:line.countB, prr_95_percent_lower_confidence_limit:line.prr_95_percent_lower_confidence_limit, ror:line.ror, ror_95_percent_upper_confidence_limit:line.ror_95_percent_upper_confidence_limit, ror_95_percent_lower_confidence_limit:line.ror_95_percent_lower_confidence_limit, countC:line.countC, drug_outcome_pair_count:line.drug_outcome_pair_count, countD:line.countD, ror_min:line.ror_min, ror_max:line.ror_max, prr_min:line.prr_min, prr_max:line.prr_max,  aeolus:'yes', resource:['AEOLUS']}]->(r)'''
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/aeolus/drug/new_rela_disease.tsv',
+                                              query)
     cypher_file.write(query)
 
     cypher_file.close()
-
 
 
 # rela tsv files
@@ -49,10 +53,10 @@ file_mapped = open('drug/mapped_rela_se.tsv', 'w', encoding='utf-8')
 csv_mapped = csv.writer(file_mapped, delimiter='\t')
 
 file_new = open('drug/new_rela_se.tsv', 'w', encoding='utf-8')
-csv_new = csv.writer(file_new,delimiter='\t')
+csv_new = csv.writer(file_new, delimiter='\t')
 
 file_mapped_disease = open('drug/mapped_rela_disease.tsv', 'w', encoding='utf-8')
-csv_mapped_disease = csv.writer(file_mapped_disease,delimiter='\t')
+csv_mapped_disease = csv.writer(file_mapped_disease, delimiter='\t')
 
 file_new_disease = open('drug/new_rela_disease.tsv', 'w', encoding='utf-8')
 csv_new_disease = csv.writer(file_new_disease, delimiter='\t')
@@ -76,17 +80,20 @@ dict_chemical_to_diseases = {}
 # dictionary chemical to side effects
 dict_chemical_to_side_effects = {}
 
+
 def get_indications(label, set_of_tuples):
     """
     get all pair which has an indication connection and add to set
     :param label: string
     """
-    query=''' Match (c)-[:equal_to_Aeolus_drug]-(r:Aeolus_Drug)-[l:Indicates]-(:Aeolus_Outcome)--(d:%s)  Return  c.identifier,  d.identifier '''
-    query = query %(label)
-    results=g.run(query)
+    query = ''' Match (c)-[:equal_to_Aeolus_drug]-(r:Aeolus_Drug)-[l:Indicates]-(:Aeolus_Outcome)--(d:%s)  Return  c.identifier,  d.identifier '''
+    query = query % (label)
+    results = g.run(query)
 
-    for chemical_id, outcome_id, in results:
-        set_of_tuples.add((chemical_id,outcome_id))
+    for record in results:
+        [chemical_id, outcome_id] = record.values()
+        set_of_tuples.add((chemical_id, outcome_id))
+
 
 '''       
 dictionary connection (drug ID , SE) and list of information
@@ -113,12 +120,14 @@ def get_aeolus_connection_information_in_dict(label_search, dict_connection_info
                                               dict_chemical_to_the_other_thing, set_of_indication_pairs):
     # and toFloat(l.countA)/(toFloat(l.countA)+toFloat(l.countC))>0.0001
     query = '''Match (c:Chemical{aeolus:'yes'}) With c  Match (c)-[:equal_to_Aeolus_drug]-(r:Aeolus_Drug)-[l:Causes]-(:Aeolus_Outcome)--(d:%s) Where toInteger(l.countA)>100 and toFloat(l.countA)/(toFloat(l.countA)+toFloat(l.countB))>0.001  Return c.identifier, l, d.identifier '''
-    query = query % ( label_search)
+    query = query % (label_search)
     results = g.run(query)
     found_something_with_query = False
-    counter_all_rela=0
-    for mapped_id, connection, identifier, in results:
-        counter_all_rela+=1
+    counter_all_rela = 0
+    for record in results:
+        [mapped_id, connection, identifier] = record.values()
+        connection = dict(connection)
+        counter_all_rela += 1
         # has oppsite rela!
         if (mapped_id, identifier) in set_of_indication_pairs:
             # print(mapped_id, identifier)
@@ -128,7 +137,7 @@ def get_aeolus_connection_information_in_dict(label_search, dict_connection_info
             dict_chemical_to_the_other_thing[mapped_id].add(identifier)
         else:
             dict_chemical_to_the_other_thing[mapped_id] = set([identifier])
-        countA = int(connection['countA']) if connection['countA'] != "\\N" and connection[''] != '' else 0
+        countA = int(connection['countA']) if connection['countA'] != "\\N" and connection['countA'] != '' else 0
         prr_95_percent_upper_confidence_limit = float(connection['prr_95_percent_upper_confidence_limit']) if \
             connection['prr_95_percent_upper_confidence_limit'] != "\\N" and connection[
                 'prr_95_percent_upper_confidence_limit'] != '' else 0
@@ -148,7 +157,7 @@ def get_aeolus_connection_information_in_dict(label_search, dict_connection_info
         drug_outcome_pair_count = float(connection['drug_outcome_pair_count']) if connection[
                                                                                       'drug_outcome_pair_count'] != "\\N" and \
                                                                                   connection[
-                                                                                      ''] != 'drug_outcome_pair_count' else 0
+                                                                                      'drug_outcome_pair_count'] != '' else 0
         countD = float(connection['countD']) if connection['countD'] != "\\N" and connection['countD'] != '' else 0
 
         #            mapped_id=dict_aeolus_drugs[drug_concept_id].mapped_id
@@ -206,43 +215,60 @@ countD
 '''
 
 
-def integrate_connection_from_aeolus_in_pharmebinet(dict_connection_information_for,  csv_new):
+def integrate_connection_from_aeolus_in_pharmebinet(dict_connection_information_for, csv_new):
     number_of_new_connection = 0
 
     count = 0
 
     for (mapped_id, identifier), information_lists in dict_connection_information_for.items():
         count += 1
+        more_than_one_entry = True if len(information_lists[1]) > 1 else False
         # average of count A
-        countA = str(sum(information_lists[0]) / float(len(information_lists[0])))
+        countA = str(sum(information_lists[0]) / float(len(information_lists[0]))) if more_than_one_entry else str(
+            sum(information_lists[0]))
         # average prr 95% upper
-        prr_95_percent_upper_confidence_limit = str(sum(information_lists[1]) / float(len(information_lists[1])))
+        prr_95_percent_upper_confidence_limit = str(
+            sum(information_lists[1]) / float(len(information_lists[1]))) if more_than_one_entry else str(
+            sum(information_lists[1]))
         # average prr
-        prr = str(sum(information_lists[2]) / float(len(information_lists[2])))
+        prr = str(sum(information_lists[2]) / float(len(information_lists[2]))) if more_than_one_entry else str(
+            sum(information_lists[2]))
         # minmum prr
         prr_min = str(min(information_lists[2]))
         # maximu prr
         prr_max = str(max(information_lists[2]))
         # average of count B
-        countB = str(sum(information_lists[3]) / float(len(information_lists[3])))
+        countB = str(sum(information_lists[3]) / float(len(information_lists[3]))) if more_than_one_entry else str(
+            sum(information_lists[3]))
         # average prr 95 % lower
-        prr_95_percent_lower_confidence_limit = str(sum(information_lists[4]) / float(len(information_lists[4])))
+        prr_95_percent_lower_confidence_limit = str(
+            sum(information_lists[4]) / float(len(information_lists[4]))) if more_than_one_entry else str(
+            sum(information_lists[4]))
         # average ror
-        ror = str(sum(information_lists[5]) / float(len(information_lists[5])))
+        ror = str(sum(information_lists[5]) / float(len(information_lists[5]))) if more_than_one_entry else str(
+            sum(information_lists[5]))
         # minmum ror
         ror_min = str(min(information_lists[5]))
         # maximum ror
         ror_max = str(max(information_lists[5]))
         # average of ror 95% lower
-        ror_95_percent_upper_confidence_limit = str(sum(information_lists[6]) / float(len(information_lists[6])))
+        ror_95_percent_upper_confidence_limit = str(
+            sum(information_lists[6]) / float(len(information_lists[6]))) if more_than_one_entry else str(
+            sum(information_lists[6]))
         # average of ror 95% lower
-        ror_95_percent_lower_confidence_limit = str(sum(information_lists[7]) / float(len(information_lists[7])))
+        ror_95_percent_lower_confidence_limit = str(
+            sum(information_lists[7]) / float(len(information_lists[7]))) if more_than_one_entry else str(
+            sum(information_lists[7]))
         # average of count C
-        countC = str(sum(information_lists[8]) / float(len(information_lists[8])))
+        countC = str(sum(information_lists[8]) / float(len(information_lists[8]))) if more_than_one_entry else str(
+            sum(information_lists[8]))
         # average of drug outcome pair
-        drug_outcome_pair_count = str(sum(information_lists[9]) / float(len(information_lists[9])))
+        drug_outcome_pair_count = str(
+            sum(information_lists[9]) / float(len(information_lists[9]))) if more_than_one_entry else str(
+            sum(information_lists[9]))
         # average of count D
-        countD = str(sum(information_lists[10]) / float(len(information_lists[10])))
+        countD = str(sum(information_lists[10]) / float(len(information_lists[10]))) if more_than_one_entry else str(
+            sum(information_lists[10]))
 
         csv_new.writerow([mapped_id, identifier, countA, prr_95_percent_upper_confidence_limit, prr, countB,
                           prr_95_percent_lower_confidence_limit, ror, ror_95_percent_upper_confidence_limit,
@@ -250,8 +276,8 @@ def integrate_connection_from_aeolus_in_pharmebinet(dict_connection_information_
                           ror_min, ror_max, prr_min, prr_max])
         number_of_new_connection += 1
 
-    print('number of new connection:' + str(number_of_new_connection))
-    print('all rela:', count)
+        print('number of new connection:' + str(number_of_new_connection))
+        print('all rela:', count)
 
 
 def main():
@@ -271,16 +297,10 @@ def main():
 
     generate_cypher_file()
 
-    query = '''Match (c:Chemical{aeolus:'yes'}) Return count(c) '''
-    number_of_compound_nodes_which_are_connect_with_aeolus = 0
-    results = g.run(query)
-    for number, in results:
-        number_of_compound_nodes_which_are_connect_with_aeolus = number
-
     number_of_compounds_at_once = 100
 
-    set_of_indication_pairs=set()
-    get_indications('Disease',set_of_indication_pairs)
+    set_of_indication_pairs = set()
+    get_indications('Disease', set_of_indication_pairs)
     get_indications('SideEffect', set_of_indication_pairs)
 
     global dict_connection_information, dict_connection_information_to_disease, dict_chemical_to_side_effects, dict_chemical_to_diseases
