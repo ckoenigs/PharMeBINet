@@ -1,7 +1,7 @@
 https://www.pathwaycommons.org/
 https://www.wikipathways.org/index.php/WikiPathways
 
-Version: Pathway Commons Version 12 and WikiPathways 2022-04-10
+Version: Pathway Commons Version 13 and WikiPathways 2023-02-10
 
 The program was based on https://github.com/dhimmel/pathways/blob/master/merge-resources.ipynb but was changed.
 First, the Entrez Gene information is used from my integrated Entrez gene Infos because these are up-to-date. This gets only human gene ids and which are coding and a dictionary from symbol to gene id.

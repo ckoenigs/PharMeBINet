@@ -2,7 +2,7 @@
 
 https://hmdb.ca/
 
-Version: 4.0
+Version: 5.0
 
 First, the tsv and cypher queries for the integration are generated for all nodes and relationships.
 Then, the HMDB protein zip is downloaded.
