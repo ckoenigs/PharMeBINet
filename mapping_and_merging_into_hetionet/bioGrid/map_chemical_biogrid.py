@@ -11,9 +11,9 @@ def create_connection_with_neo4j():
     """
     create a connection with neo4j
     """
-    # set up authentication parameters and connection
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 # dictionary chemical id to resource
@@ -33,7 +33,8 @@ def load_chemical_from_database_and_add_to_dict():
     query = "MATCH (n:Chemical) RETURN n"
     results = g.run(query)
 
-    for node, in results:
+    for record in results:
+        node=record.data()['n']
         identifier = node['identifier']
         dict_chemical_id_to_resource[identifier] = node['resource']
 
@@ -59,7 +60,8 @@ def load_all_BioGrid_chemical_and_finish_the_files(csv_mapping):
     results = g.run(query)
     counter_not_mapped = 0
     counter_all = 0
-    for node, in results:
+    for record in results:
+        node = record.data()['n']
         counter_all += 1
         if 'chemical_id' in node:
             identifier = node['chemical_id']
@@ -172,6 +174,8 @@ def main():
     print(datetime.datetime.now())
     print('Load all bioGrid chemicals from database')
     load_all_BioGrid_chemical_and_finish_the_files(csv_mapping)
+
+    driver.close()
 
 
 if __name__ == "__main__":

@@ -11,9 +11,9 @@ def create_connection_with_neo4j():
     """
     create a connection with neo4j
     """
-    # set up authentication parameters and connection
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 # dictionary gene id to resource
@@ -30,7 +30,8 @@ def load_nodes_from_database_and_add_to_dict(label):
     query = "MATCH (n:%s) RETURN n" % (label)
     results = g.run(query)
 
-    for node, in results:
+    for record in results:
+        node = record.data()['n']
         identifier = node['identifier']
         dict_node_id_to_resource[identifier] = node['resource']
         alternative_ids = node['alternative_ids'] if 'alternative_ids' in node else []
@@ -47,7 +48,8 @@ def load_all_bioGrid_genes_and_finish_the_files(csv_mapping, label):
     results = g.run(query)
     counter_not_mapped = 0
     counter_all = 0
-    for node, in results:
+    for record in results:
+        node = record.data()['n']
         counter_all += 1
         identifier = node['id']
 
@@ -124,6 +126,8 @@ def main():
         print(datetime.datetime.now())
         print('Load all DisGeNet %s from database' % label)
         load_all_bioGrid_genes_and_finish_the_files(csv_mapping, biogrid_label)
+
+        driver.close()
 
 
 if __name__ == "__main__":

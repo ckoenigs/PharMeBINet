@@ -12,8 +12,9 @@ create a connection with neo4j
 
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
 
 
 # dictionary protein pair to dictionary with resource and interaction id and other information
@@ -30,7 +31,8 @@ def get_information_from_pharmebinet():
     query = '''MATCH (n:Chemical)-[a]->(m:Protein)  RETURN n.identifier, m.identifier, a.resource,  a.pubMed_ids, type(a);'''
     results = g.run(query)
 
-    for chemical_id, protein_id, resource, pubMed_ids, type_rela, in results:
+    for record in results:
+        [chemical_id, protein_id, resource, pubMed_ids, type_rela] = record
         pubMed_ids = pubMed_ids if pubMed_ids is not None else []
         dict_pair_chemical_protein_to_resource_and_pubmed[
             (chemical_id, protein_id, type_rela)] = {'resource': resource, 'pubmed_ids': pubMed_ids}
@@ -58,7 +60,8 @@ def generate_file_and_cypher():
     query_middle = ''
     query_middle_update = ''
     header = ['id_1', 'id_2', 'gene_id']
-    for head, in results:
+    for record in results:
+        head = record.data()['allfields']
         header.append(head)
         if head in ['pubmed_id', 'notes']:
             if head != 'pubmed_id':
@@ -75,17 +78,23 @@ def generate_file_and_cypher():
 
     for rela_type in dict_chemical_type_to_rela_type.values():
         rename_file_name = file_name + rela_type
-        query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/bioGrid/%s.tsv" As line FIELDTERMINATOR '\\t' 
-                    Match (p1:Chemical{identifier:line.id_1}), (p2:Protein{identifier:line.id_2}) Create (p1)-[:%s{biogrid:'yes', source:'BioGRID', resource:['BioGRID'], url:"https://thebiogrid.org/"+line.gene_id ,license:"The MIT License", '''
-        query = query % (path_of_directory, rename_file_name, rela_type)
-        query += query_middle[:-2] + '}]->(p2);\n'
+        query = '''Match (p1:Chemical{identifier:line.id_1}), (p2:Protein{identifier:line.id_2}) Create (p1)-[:%s{biogrid:'yes', source:'BioGRID', resource:['BioGRID'], url:"https://thebiogrid.org/"+line.gene_id ,license:"The MIT License", '''
+        query = query % (rela_type)
+
+        query += query_middle[:-2] + '}]->(p2)'
+
+        query = pharmebinetutils.get_query_import(path_of_directory,
+                                                  'mapping_and_merging_into_hetionet/bioGrid/' + rename_file_name + '.tsv',
+                                                  query)
         cypher_file.write(query)
 
         rename_file_name_update = file_name_update + rela_type
-        query_update = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/bioGrid/%s.tsv" As line FIELDTERMINATOR '\\t' 
-                    Match (p1:Chemical{identifier:line.id_1})-[a:%s]->(p2:Protein{identifier:line.id_2}) Set '''
-        query_update = query_update % (path_of_directory, rename_file_name_update, rela_type)
-        query_update += query_middle_update + 'a.biogrid="yes",  a.resource=split(line.resource,"|");\n'
+        query_update = '''Match (p1:Chemical{identifier:line.id_1})-[a:%s]->(p2:Protein{identifier:line.id_2}) Set '''
+        query_update = query_update % (rela_type)
+        query_update += query_middle_update + 'a.biogrid="yes",  a.resource=split(line.resource,"|")'
+        query_update = pharmebinetutils.get_query_import(path_of_directory,
+                                                         'mapping_and_merging_into_hetionet/bioGrid/' + rename_file_name_update + '.tsv',
+                                                         query_update)
         cypher_file.write(query_update)
 
         file = open(rename_file_name + '.tsv', 'w', encoding='utf-8')
@@ -138,7 +147,8 @@ def load_and_prepare_biogrid_human_data():
 
     query = '''Match p=(s:Protein)--(:Gene)--(n:bioGrid_gene)-[o:interacts]-(r:bioGrid_interaction_with_chemical)-[q]-(:bioGrid_chemical)--(m:Chemical) Where r.curated_by<>'DRUGBANK' and not (r)-[:related_gene]-(:bioGrid_gene) Return s.identifier,m.identifier, o.interaction_type, q.action, r, n.gene_id'''
     results = g.run(query)
-    for protein_id, chemical_id, protein_action_type, chemical_action_type, rela, gene_id, in results:
+    for record in results:
+        [protein_id, chemical_id, protein_action_type, chemical_action_type, rela, gene_id] = record.values()
         if protein_action_type != 'target':
             sys.exit('other protein action type );')
 
@@ -300,6 +310,7 @@ def main():
     print('prepare files')
 
     write_info_into_files()
+    driver.close()
 
     print(
         '#################################################################################################################################################################')
