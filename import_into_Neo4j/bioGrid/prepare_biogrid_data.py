@@ -219,7 +219,7 @@ file: BIOGRID-CHEMICALS-4.4.198.chemtab
 
 
 def load_chemical_interaction_and_seperate_information():
-    url_file = 'https://downloads.thebiogrid.org/Download/BioGRID/Release-Archive/BIOGRID-4.4.213/BIOGRID-CHEMICALS-4.4.213.chemtab.zip'
+    url_file = 'https://downloads.thebiogrid.org/Download/BioGRID/Release-Archive/BIOGRID-4.4.218/BIOGRID-CHEMICALS-4.4.218.chemtab.zip'
 
     csv_writer, csv_drug, csv_related_interaction = generate_files_for_gene_chemical_interaction()
 
@@ -271,9 +271,10 @@ def load_chemical_interaction_and_seperate_information():
                                  'Related Official Symbol', 'Related Synonyms', 'Related Organism ID',
                                  'Related Organism']
             gene_2 = prepare_gene_info(line, gene_properties_2)
-            if gene_2['organism_id'] != '9606' or gene_2['organism_id'] != '':
+            if gene_2['organism_id'] != '9606' and gene_id_2 !='-':
                 continue
-            check_on_gene_id(gene_id_2, gene_2)
+            if gene_id_2 !='-':
+                check_on_gene_id(gene_id_2, gene_2)
 
             list_of_rela_gene_chemical = [gene_id_1, chemical_id, interaction_type, action]
             for prop in ["#BioGRID Chemical Interaction ID", "Author", "Pubmed ID", "BioGRID Publication ID",
@@ -483,7 +484,7 @@ def load_protein_interaction_and_seperate_information():
     Parse the Biogrid-organism-homo sapiens
     :return:
     """
-    url_file = 'https://downloads.thebiogrid.org/Download/BioGRID/Release-Archive/BIOGRID-4.4.213/BIOGRID-ORGANISM-4.4.213.tab3.zip'
+    url_file = 'https://downloads.thebiogrid.org/Download/BioGRID/Release-Archive/BIOGRID-4.4.218/BIOGRID-ORGANISM-4.4.218.tab3.zip'
 
     csv_writer_interaction = prepare_file_and_query_for_gene_gene_interaction()
 
@@ -491,7 +492,7 @@ def load_protein_interaction_and_seperate_information():
     counter_human = 0
     request = get(url_file)
     with ZipFile(BytesIO(request.content), 'r') as zipObj:
-        file_name = 'BIOGRID-ORGANISM-Homo_sapiens-4.4.213.tab3.txt'
+        file_name = 'BIOGRID-ORGANISM-Homo_sapiens-4.4.218.tab3.txt'
         # for zip_info in zipObj.filelist:
         #     if zip_info.filename!=file_name:
         #         continue
