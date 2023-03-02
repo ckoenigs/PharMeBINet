@@ -6,6 +6,9 @@ path_neo4j=$1
 # path to project
 path_to_project=$2
 
+#password
+password=$3
+
 # license
 license="https://www.ncbi.nlm.nih.gov/home/about/policies/"
 
@@ -19,21 +22,34 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo integrat dbSNP information into Neo4j
 
-$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher.cypher 
+$path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher.cypher
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+
+sleep 30
+$path_neo4j/neo4j restart
+sleep 30
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo integrat dbSNP clinvar rela
 
-$path_neo4j/cypher-shell -u neo4j -p test -f output/cypher_dbSNP_clinVar.cypher 
+$path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_edge.cypher
+
 
 now=$(date +"%F %T")
 echo "Current time: $now"
+echo integrat dbSNP clinvar rela
+
+$path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_dbSNP_clinVar.cypher
 
 
-sleep 120
+
+sleep 30
 $path_neo4j/neo4j restart
-sleep 120
+sleep 30
 
 
 now=$(date +"%F %T")
@@ -53,7 +69,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo integrat mapping dbSNP information into Neo4j
 
-$path_neo4j/cypher-shell -u neo4j -p test -f output_mapping/cypher.cypher
+$path_neo4j/cypher-shell -u neo4j -p $password -f output_mapping/cypher.cypher
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -68,13 +84,13 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo integrat mapping edge dbSNP information into Neo4j
 
-$path_neo4j/cypher-shell -u neo4j -p test -f output_mapping/cypher_edge.cypher 
+$path_neo4j/cypher-shell -u neo4j -p $password -f output_mapping/cypher_edge.cypher
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 
 
 
-sleep 120
+sleep 30
 $path_neo4j/neo4j restart
-sleep 120
+sleep 60

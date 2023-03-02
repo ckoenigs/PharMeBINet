@@ -8,6 +8,7 @@ import pharmebinetutils
 
 # generate cypher file
 cypher_file = open('output/cypher.cypher', 'w')
+cypher_file_edge = open('output/cypher_edge.cypher', 'w')
 
 
 def generate_cypher_queries(file_name, label, properties, list_properties):
@@ -57,7 +58,7 @@ def generate_cypher_queries_for_relationships(file_name, label1, label2, rela_na
     query_node = query_node % (label1, properties[0], label2, properties[1], rela_name)
     file_name_split = file_name.split('/', 1)
     query_node = pharmebinetutils.get_query_import(file_name_split[0], file_name_split[1], query_node)
-    cypher_file.write(query_node)
+    cypher_file_edge.write(query_node)
 
 
 # dict_label_to_set_of_ids
