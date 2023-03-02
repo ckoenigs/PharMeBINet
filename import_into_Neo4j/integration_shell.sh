@@ -7,9 +7,12 @@ path_neo4j=$1
 path_to_project=$2
 
 # import tool
-name_of_import_tool='Neo4j-GraphML-Importer-v1.1.5'
+name_of_import_tool=$3
 
-name_of_biodwh2_tool='BioDWH2-v0.4.4'
+# password neo4j
+password=$4
+
+name_of_biodwh2_tool='BioDWH2-v0.4.8'
 
 path_to_other_place_of_data='/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/'
 
@@ -19,7 +22,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo add hetionet and resource to nodes
 
-$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher 
+$path_neo4j/cypher-shell -u neo4j -p $password -f cypher.cypher 
 
 
 now=$(date +"%F %T")
@@ -28,7 +31,7 @@ echo "Current time: $now"
 cd sider 
 echo sider
 
-./script_sider.sh $path_neo4j $path_to_project > output.txt
+./script_sider.sh $path_neo4j $path_to_project $password > output.txt
 
 
 cd ..
@@ -39,7 +42,7 @@ echo "Current time: $now"
 cd bioGrid 
 echo bioGrid
 
-./script_biogrid.sh $path_neo4j $path_to_project > output.txt
+./script_biogrid.sh $path_neo4j $path_to_project $password > output.txt
 
 
 cd ..
@@ -50,7 +53,8 @@ echo "Current time: $now"
 cd gencc
 echo gencc
 
-./script_integrate_gencc.sh $path_neo4j $path_to_project > output.txt
+# ./script_integrate_gencc.sh $path_neo4j $path_to_project > output.txt
+./integrate_gencc.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool $password > output/script_output.txt
 
 
 cd ..
@@ -61,7 +65,7 @@ echo "Current time: $now"
 cd smpdb 
 echo smpdb
 
-./script_integrat_smpdb.sh $path_neo4j $path_to_project > output.txt
+./script_integrat_smpdb.sh $path_neo4j $path_to_project $password > output.txt
 
 
 cd ..
@@ -72,7 +76,7 @@ echo "Current time: $now"
 cd DDinter 
 echo DDinter
 
-./script_integrated_ddinter.sh $path_neo4j $path_to_project > output.txt
+./script_integrated_ddinter.sh $path_neo4j $path_to_project $password > output.txt
 
 
 cd ..
@@ -83,7 +87,7 @@ echo "Current time: $now"
 cd hmdb 
 echo HMDB
 
-./script_integrate_hmdb.sh $path_neo4j $path_to_project > output.txt
+./script_integrate_hmdb.sh $path_neo4j $path_to_project $password > output.txt
 
 
 cd ..
@@ -94,7 +98,7 @@ echo "Current time: $now"
 cd hippie 
 echo HIPPIE
 
-./script_hippie_integration.sh $path_neo4j $path_to_project > output.txt
+./script_hippie_integration.sh $path_neo4j $path_to_project $password > output.txt
 
 
 cd ..
@@ -106,7 +110,7 @@ echo "Current time: $now"
 cd  ndf_rt
 echo ndf-rt
 
-./script_import_ndf_rt.sh $path_neo4j $path_to_project > output.txt
+./script_import_ndf_rt.sh $path_neo4j $path_to_project $password > output.txt
 
 cd ..
 
@@ -117,7 +121,7 @@ echo "Current time: $now"
 cd  DisGeNET
 echo disgenet
 
-./script_integrated_disgenet.sh $path_neo4j $path_to_project > output.txt
+./script_integrated_disgenet.sh $path_neo4j $path_to_project $password > output.txt
 
 cd ..
 
@@ -126,7 +130,7 @@ echo "Current time: $now"
 cd  med_rt
 echo med-rt
 
-./script_med_rt_integration.sh $path_neo4j $path_to_project > output.txt
+./script_med_rt_integration.sh $path_neo4j $path_to_project $password > output.txt
 
 cd ..
 
@@ -137,7 +141,7 @@ echo "Current time: $now"
 cd  do
 echo do
 
-./script_import_do.sh $path_neo4j $path_to_project  > output.txt
+./script_import_do.sh $path_neo4j $path_to_project $password > output.txt
 
 
 cd ..
@@ -150,7 +154,7 @@ echo "Current time: $now"
 # echo Uberon
 
 
-# ./script_uberon.sh  $path_neo4j $path_to_project  > output.txt
+# ./script_uberon.sh  $path_neo4j $path_to_project $password > output.txt
 
 # cd ..
 
@@ -162,7 +166,7 @@ echo "Current time: $now"
 cd  GO
 echo go
 
-./script_to_integrate_go.sh $path_neo4j $path_to_project  > output.txt
+./script_to_integrate_go.sh $path_neo4j $path_to_project $password > output.txt
 
 cd ..
 
@@ -173,7 +177,7 @@ echo "Current time: $now"
 cd  hpo
 echo hpo
 
-./hpo_integration.sh $path_neo4j $path_to_project > output_hpo.txt
+./hpo_integration.sh $path_neo4j $path_to_project $password > output_hpo.txt
 
 cd ..
 
@@ -185,7 +189,7 @@ echo "Current time: $now"
 cd  openFDA
 echo openFDA
 
-# ./script_open_fda.sh $path_neo4j > output_openFDA.txt
+./script_open_fda.sh $path_neo4j $password > output_openFDA.txt
 
 cd ..
 
@@ -195,7 +199,7 @@ echo "Current time: $now"
 cd aeolus
 echo aeolus
 
-./script_aeolus.sh $path_neo4j $path_to_project > output_script.txt
+./script_aeolus.sh $path_neo4j $path_to_project $password > output_script.txt
 
 
 cd ..
@@ -206,7 +210,7 @@ echo "Current time: $now"
 cd RNAcentral
 echo RNACentral
 
-./script_rna_central.sh $path_neo4j $path_to_project > output_script.txt
+./script_rna_central.sh $path_neo4j $path_to_project $password > output_script.txt
 
 
 cd ..
@@ -220,7 +224,7 @@ echo RNAdisease
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-./script_rnadisease.sh $path_neo4j $path_to_project > output/script_output.txt
+./script_rnadisease.sh $path_neo4j $path_to_project $password > output/script_output.txt
 
 cd ..
 
@@ -230,7 +234,7 @@ echo "Current time: $now"
 cd uniProt
 echo UniProt
 
-./script_uniprot.sh $path_neo4j $path_to_project > output_script.txt
+./script_uniprot.sh $path_neo4j $path_to_project $password > output_script.txt
 
 
 cd ..
@@ -241,7 +245,7 @@ echo "Current time: $now"
 cd  drugbank
 echo drugbank
 
-./script_to_start_program_and_integrate_into_neo4j.sh $path_to_project $path_neo4j > output_script.txt
+./script_to_start_program_and_integrate_into_neo4j.sh $path_to_project $path_neo4j $password > output_script.txt
 
 
 cd ..
@@ -262,7 +266,7 @@ echo EFO
 
 # echo integrate efo into neo4j
 
-# $path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher > output_cypher_integration.txt 2>&1
+# $path_neo4j/cypher-shell -u neo4j -p $password -f cypher.cypher > output_cypher_integration.txt 2>&1
 
 # sleep 60
 
@@ -280,7 +284,7 @@ echo "Current time: $now"
 cd  adrecs_target
 echo adrecs-target
 
-./script_adrecs_target.sh $path_neo4j $path_to_project > output_script.txt
+./script_adrecs_target.sh $path_neo4j $path_to_project $password > output_script.txt
 
 cd ..
 
@@ -290,7 +294,7 @@ echo "Current time: $now"
 cd  ncbi_genes
 echo NCBI
 
-./script_ncbi_gene.sh $path_neo4j $path_to_project > output.txt
+./script_ncbi_gene.sh $path_neo4j $path_to_project $password > output.txt
 
 cd ..
 
@@ -301,7 +305,7 @@ echo "Current time: $now"
 cd  IID
 echo IID
 
-./script_iid.sh $path_neo4j $path_to_project > output.txt
+./script_iid.sh $path_neo4j $path_to_project $password > output.txt
 
 cd ..
 
@@ -312,7 +316,7 @@ echo "Current time: $now"
 cd  rnainter
 echo RNAinter
 
-./script_integrate_rna_inter.sh $path_neo4j $path_to_project > output.txt
+./script_integrate_rna_inter.sh $path_neo4j $path_to_project $password > output.txt
 
 cd ..
 
@@ -325,7 +329,7 @@ echo PharmGKB
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-./script_pharmGKB.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool > output/script_output.txt
+./script_pharmGKB.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool $password > output/script_output.txt
 
 cd ..
 
@@ -338,7 +342,7 @@ echo drugcentral
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-./integrate_drugcentral.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool > output/script_output.txt
+./integrate_drugcentral.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool $password > output/script_output.txt
 
 cd ..
 
@@ -351,7 +355,20 @@ echo ADReCS
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-./integrate_adrecs.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool > output/script_output.txt
+./integrate_adrecs.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool $password > output/script_output.txt
+
+cd ..
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+cd  ttd
+echo TTD
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+./integrate_ttd.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool $password > output/script_output.txt
 
 cd ..
 
@@ -361,7 +378,7 @@ echo "Current time: $now"
 cd  pathway
 echo pathway
 
-./script_pathway.sh $path_neo4j $path_to_project > output.txt
+./script_pathway.sh $path_neo4j $path_to_project $password > output.txt
 
 cd ..
 
@@ -373,7 +390,7 @@ echo "Current time: $now"
 cd  reactome
 echo reactome
 
-./script_import_recatome_with_graphml.sh $path_neo4j $name_of_import_tool > output_reactome.txt
+./script_import_recatome_with_graphml.sh $path_neo4j $name_of_import_tool $password > output_reactome.txt
 
 cd ..
 
@@ -384,7 +401,7 @@ cd  mondo
 echo mondo
 
 
-./new_mondo.sh $path_neo4j $path_to_project > output_integration_of_everything.txt
+./new_mondo.sh $path_neo4j $path_to_project $password > output_integration_of_everything.txt
 
 
 cd ..
@@ -397,7 +414,7 @@ cd  OMIM
 echo omim
 
 
-./script_to_execute_omim.sh $path_to_project $path_neo4j  > output/output_integration_of_everything.txt
+./script_to_execute_omim.sh $path_to_project $path_neo4j $password > output/output_integration_of_everything.txt
 
 
 cd ..
@@ -408,7 +425,7 @@ echo "Current time: $now"
 cd  ClinVar
 echo ClinVar
 
-./script_clinvar.sh $path_neo4j $path_to_project $path_to_other_place_of_data > output_script.txt
+./script_clinvar.sh $path_neo4j $path_to_project $path_to_other_place_of_data $password > output_script.txt
 
 cd ..
 
@@ -418,7 +435,7 @@ echo "Current time: $now"
 cd ctd
 echo ctd
 
-./script_ctd.sh $path_to_other_place_of_data $path_neo4j > output.txt
+./script_ctd.sh $path_to_other_place_of_data $path_neo4j $password > output.txt
 
 
 cd ..
@@ -433,7 +450,7 @@ cd ..
 
 # echo integrate efo into neo4j
 
-# #$path_neo4j/cypher-shell -u neo4j -p test -f cypher.cypher > output/output_cypher_node.txt 2>&1
+# #$path_neo4j/cypher-shell -u neo4j -p $password -f cypher.cypher > output/output_cypher_node.txt 2>&1
 
 # sleep 60
 
