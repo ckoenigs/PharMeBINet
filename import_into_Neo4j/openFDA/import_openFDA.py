@@ -7,6 +7,9 @@ import sys
 import shutil
 import csv, datetime
 
+sys.path.append("../..")
+import pharmebinetutils
+
 
 class directory_maker():
     def __init__(self):
@@ -1142,8 +1145,8 @@ class former:
                 "lists": self.substancedata_list
             }
             entries = [substancedata_relationships, substancedata_relationships_substance, substancedata_moieties,
-                       substancedata_mixture, substancedata_component,  substancedata_substance,
-                       substancedata] # substancedata_names,
+                       substancedata_mixture, substancedata_component, substancedata_substance,
+                       substancedata]  # substancedata_names,
             self.make_files(directory, dicts, entries)
 
     def remove_lists(self):
@@ -1155,6 +1158,7 @@ class cypher_creator:
     def __init__(self):
         self.script = ""
         self.cypher_path = ""
+        self.cypher_path_edge = ""
 
     """ Erstellt einen neuen Knoten.
         file_path: Das Dict mit den Dateipfaden.
@@ -1163,20 +1167,22 @@ class cypher_creator:
         lists: Dict von Attributen die als Liste gespeichert werden sollen. """
 
     def create(self, file_path, header, name, node_name, lists):
-        statement = "USING PERIODIC COMMIT 1000 LOAD CSV WITH HEADERS FROM 'file:///" + \
-                    str(file_path[name]).replace('\\', '/') + "' AS row FIELDTERMINATOR '\\t' CREATE "
+        statement = " CREATE "
         obj = "(" + node_name + \
               ":" + node_name + " "
         attributes = "{"
         for head in header[name]:
             if head not in lists[name]:
                 attributes = attributes + \
-                             str(head).replace("\"", "") + ": row." + str(head).replace("\"", "") + ", "
+                             str(head).replace("\"", "") + ": line." + str(head).replace("\"", "") + ", "
             else:
                 attributes = attributes + \
-                             str(head).replace("\"", "") + ": split(row." + str(head).replace("\"", "") + ",'|')" + ", "
+                             str(head).replace("\"", "") + ": split(line." + str(head).replace("\"",
+                                                                                               "") + ",'|')" + ", "
         attributes = attributes[:len(attributes) - 2] + "}"
-        statement = statement + obj + attributes + ");" + '\n'
+        statement = statement + obj + attributes + ")"
+        file_split = str(file_path[name]).replace('\\', '/').split('/', 1)
+        statement = pharmebinetutils.get_query_import(file_split[0], file_split[1], statement)
         f = open(self.cypher_path, 'a', encoding="utf-8")
         f.write(statement)
         f.close()
@@ -1187,11 +1193,8 @@ class cypher_creator:
         id1: Attribut auf das der Constraint erzeugt werden soll. """
 
     def constraint(self, name1, name2, id1):
-        statement = "CREATE CONSTRAINT " + name1 + " IF NOT EXISTS ON (n: " + name2 + ") ASSERT n." + str(
-            id1) + " IS UNIQUE;"
-        statement = statement + '\n'
         f = open(self.cypher_path, 'a', encoding="utf-8")
-        f.write(statement)
+        f.write(pharmebinetutils.prepare_index_query(name2, str(id1)))
         f.close()
 
     """ Matched zwei Knoten 'n' -> 'm'.
@@ -1203,7 +1206,7 @@ class cypher_creator:
     def match(self, name1, name2, id1, id2):
         statement = "MATCH (n: " + name1 + "), (m: " + name2 + ") WHERE n." + id1 + " = m." + id2 + " CREATE (n)-[:Event]->(m);"
         statement = statement + '\n'
-        f = open(self.cypher_path, 'a', encoding="utf-8")
+        f = open(self.cypher_path_edge, 'a', encoding="utf-8")
         f.write(statement)
         f.close()
 
@@ -1218,22 +1221,23 @@ class cypher_creator:
         id2: Id in der Kanten-Datei. """
 
     def set_properties(self, file_path, header, lists, name, name1, name2, id1, id2):
-        statement = "USING PERIODIC COMMIT 1000 LOAD CSV WITH HEADERS FROM 'file:///" + \
-                    str(file_path[name]).replace('\\', '/') + "'AS row FIELDTERMINATOR '\\t'"
         obj = " MATCH (n:" + name1 + ")-[e:Event]->(m:" + name2 + ")"
-        obj2 = " WHERE n." + str(id1) + " = row." + str(id2)
+        obj2 = " WHERE n." + str(id1) + " = line." + str(id2)
         obj3 = " SET e = "
         attributes = "{"
         for head in header[name]:
             if head not in lists[name]:
                 attributes = attributes + \
-                             str(head).replace("\"", "") + ": row." + str(head).replace("\"", "") + ", "
+                             str(head).replace("\"", "") + ": line." + str(head).replace("\"", "") + ", "
             else:
                 attributes = attributes + \
-                             str(head).replace("\"", "") + ": split(row." + str(head).replace("\"", "") + ",'|')" + ", "
-        attributes = attributes[:len(attributes) - 2] + "};"
-        statement = statement + obj + obj2 + obj3 + attributes + '\n'
-        f = open(self.cypher_path, 'a', encoding="utf-8")
+                             str(head).replace("\"", "") + ": split(line." + str(head).replace("\"",
+                                                                                               "") + ",'|')" + ", "
+        attributes = attributes[:len(attributes) - 2] + "}"
+        statement = obj + obj2 + obj3 + attributes
+        file_split = str(file_path[name]).replace('\\', '/').split('/', 1)
+        statement = pharmebinetutils.get_query_import(file_split[0], file_split[1], statement)
+        f = open(self.cypher_path_edge, 'a', encoding="utf-8")
         f.write(statement)
         f.close()
 
@@ -1244,11 +1248,11 @@ class cypher_creator:
         name2: Name des Knotens 'm'. """
 
     def match_from_file(self, file_path, name, name1, name2):
-        statement = "USING PERIODIC COMMIT 1000 LOAD CSV WITH HEADERS FROM 'file:///" + \
-                    str(file_path[name]).replace('\\', '/') + "' AS row FIELDTERMINATOR '\\t'"
-        obj = " MATCH (n:" + name1 + "), (m:" + name2 + ") WHERE n." + "id" + " = row." + "id2 AND m." + "id" + " = row." + "id"
-        statement = statement + obj + " CREATE (n)-[:Event]->(m);" + '\n'
-        f = open(self.cypher_path, 'a', encoding="utf-8")
+        obj = " MATCH (n:" + name1 + "), (m:" + name2 + ") WHERE n." + "id" + " = line." + "id2 AND m." + "id" + " = line." + "id"
+        statement = obj + " CREATE (n)-[:Event]->(m)"
+        file_split = str(file_path[name]).replace('\\', '/').split('/', 1)
+        statement = pharmebinetutils.get_query_import(file_split[0], file_split[1], statement)
+        f = open(self.cypher_path_edge, 'a', encoding="utf-8")
         f.write(statement)
         f.close()
 
@@ -1262,6 +1266,7 @@ class cypher_creator:
     def create_cypher(self, file_path, header, directory, lists):
         print("Creating Cypher-File ...")
         self.cypher_path = os.path.split(directory)[0] + '/' + "load-cypher.cypher"
+        self.cypher_path_edge = os.path.split(directory)[0] + '/' + "load-cypher-edge.cypher"
         # Hier werden die vorher gespeicherten Dictionaries mit den Dateipfaden und
         # Headern verwendet.
         # Die Dateien mit _id1_id2 enthalten nur die IDs zum matchen der Haupteinträge
