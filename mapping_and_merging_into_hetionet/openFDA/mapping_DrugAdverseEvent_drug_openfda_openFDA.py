@@ -1,5 +1,3 @@
-import csv
-import os
 import datetime, sys
 
 sys.path.append("../..")
@@ -15,8 +13,9 @@ make_dir()
 #######################################################################
 print(datetime.datetime.utcnow())
 print("Connecting to database neo4j ...")
-global g
-g = create_connection_to_databases.database_connection_neo4j()
+global g, driver
+driver = create_connection_to_databases.database_connection_neo4j_driver()
+g = driver.session()
 #######################################################################
 # Speichert die Daten aus FDA.
 FDA2 = []
@@ -79,7 +78,8 @@ CAT_name = "Chemical"
 FDA_attr = [["id", "name"], ["id", "synonym"]]
 CAT_attr = [["identifier", "name"], ["identifier", "synonym"]]
 _map = ["name", "synonym"]
-nonmap_file_name = ["nonmapped_DrugAdverseEvent_drug_openfda_name.tsv", "nonmapped_DrugAdverseEvent_drug_openfda_synonym.tsv"]
+nonmap_file_name = ["nonmapped_DrugAdverseEvent_drug_openfda_name.tsv",
+                    "nonmapped_DrugAdverseEvent_drug_openfda_synonym.tsv"]
 make_mapping_file(map_file_name, "id", "identifier")
 fill_files(FDA_name, CAT_name, FDA_attr, CAT_attr, _map, map_file_name, nonmap_file_name, [FDA2, FDA4], [CAT2, CAT4])
 make_cypher_file(FDA_name, CAT_name, "id", "identifier", "name_synonym", cypher_file_name, map_file_name,
@@ -112,3 +112,4 @@ make_mapping_file(map_file_name, "id", "identifier")
 fill_files(FDA_name, CAT_name, FDA_attr, CAT_attr, _map, map_file_name, nonmap_file_name, [FDA3], [CAT3])
 make_cypher_file(FDA_name, CAT_name, "id", "identifier", "product_ndc", cypher_file_name, map_file_name,
                  path_of_directory)
+driver.close()

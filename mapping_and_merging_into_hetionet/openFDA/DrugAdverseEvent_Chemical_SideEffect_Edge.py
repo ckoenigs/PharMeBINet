@@ -4,6 +4,7 @@ import json, sys
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 from mapping import *
 
 if len(sys.argv) > 1:
@@ -13,8 +14,9 @@ else:
 
 print(datetime.datetime.now())
 print("Connecting to database neo4j ...")
-global g
-g = create_connection_to_databases.database_connection_neo4j()
+global g, driver
+driver = create_connection_to_databases.database_connection_neo4j_driver()
+g = driver.session()
 
 print(datetime.datetime.now())
 print("Fetching data ...")
@@ -48,18 +50,23 @@ while len(a) > 0:
             lenght += 1
         l = l[:-1]
         writer.writerow([entry["c.identifier"], entry["s.identifier"], l, c])
-    
+
     count += LIMIT
     print("Done: " + str(count))
-    if count%100000==0:
+    if count % 100000 == 0:
         print(datetime.datetime.now())
 
 f.close()
 
 # create cypher query
-cypher = f'USING PERIODIC COMMIT 1000 LOAD CSV WITH HEADERS FROM "file:{path_of_directory}mapping_and_merging_into_hetionet/openFDA/FDA_edges/DrugAdverseEvent_Chemical_SideEffect_Edge.tsv" AS row FIELDTERMINATOR "\t" MATCH (n:Chemical), (m:SideEffect) WHERE n.identifier = row.chemical AND m.identifier = row.sideeffect CREATE (n)-[:openFDA{{nodes:split(row.nodes,"|"), count:row.count, openfda="yes"}}]->(m);\n'
+cypher = f' MATCH (n:Chemical), (m:SideEffect) WHERE n.identifier = line.chemical AND m.identifier = line.sideeffect CREATE (n)-[:openFDA{{nodes:split(line.nodes,"|"), count:line.count, openfda:"yes"}}]->(m)'
 f = open("FDA_edges/edge_cypher.cypher", 'a', encoding="utf-8")
+
+cypher = pharmebinetutils.get_query_import(path_of_directory,
+                                          f'mapping_and_merging_into_hetionet/openFDA/FDA_edges/DrugAdverseEvent_Chemical_SideEffect_Edge.tsv',
+                                          cypher)
 f.write(cypher)
 
-print(datetime.datetime.now())
+driver.close()
 
+print(datetime.datetime.now())

@@ -1,6 +1,9 @@
 import csv
-import os
+import os, sys
 import datetime
+
+sys.path.append("../..")
+import pharmebinetutils
 
 # Erstellt das Verzeichnis in dem der Output liegen wird.
 # Der Output sind alle mapping, nonmapping und cypher files.
@@ -32,13 +35,13 @@ def make_cypher_file(FDA_name, CAT_name, FDA_attr, CAT_attr, _map, cypher_file_n
     # Cypher-Datei erstellen.
     file_name = "FDA_mappings/" + cypher_file_name
     f = open(file_name, 'a', encoding="utf-8")
-    match = "USING PERIODIC COMMIT 1000 LOAD CSV WITH HEADERS FROM 'file:"
-    match += path_of_directory + "mapping_and_merging_into_hetionet/openFDA/FDA_mappings/" + map_file_name
-    match += "' AS row FIELDTERMINATOR '\\t' MATCH "
-    match += "(n:" + FDA_name + "), (m:" + CAT_name + ") WHERE "
-    match += "n." + FDA_attr + " = row." + FDA_attr + " AND m." + CAT_attr + " = row." + CAT_attr
-    match += " SET m.resource = split(row.resource,'|')"
-    match += " CREATE (m)-[:" + _map + "_merge{how_mapped:row.how_mapped}]->(n);\n"
+    match = "Match (n:" + FDA_name + "), (m:" + CAT_name + ") WHERE "
+    match += "n." + FDA_attr + " = line." + FDA_attr + " AND m." + CAT_attr + " = line." + CAT_attr
+    match += " SET m.resource = split(line.resource,'|')"
+    match += " CREATE (m)-[:" + _map + "_merge{how_mapped:line.how_mapped}]->(n)"
+    match = pharmebinetutils.get_query_import(path_of_directory,
+                                              f'mapping_and_merging_into_hetionet/openFDA/FDA_mappings/{map_file_name}',
+                                              match)
     f.write(match)
     f.close()
 

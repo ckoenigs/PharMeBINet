@@ -14,8 +14,9 @@ make_dir()
 #######################################################################
 print(datetime.datetime.utcnow())
 print("Connecting to database neo4j ...")
-global g
-g = create_connection_to_databases.database_connection_neo4j()
+global g, driver
+driver = create_connection_to_databases.database_connection_neo4j_driver()
+g = driver.session()
 #######################################################################
 # Speichert die Daten aus FDA.
 FDA = []
@@ -59,7 +60,7 @@ for entry in a:
                 for a in attr:
                     a = a.replace("'", "")
                     if boolean1:
-                        a1 = str(a.split(",")[:-1]).replace("'","")[2:-1]
+                        a1 = str(a.split(",")[:-1]).replace("'", "")[2:-1]
                         a1 = a1.lower()
                         FDA2.append({"id": id_, "name": a1})
                         FDA3.append({"id": id_, "synonym": a1})
@@ -73,7 +74,7 @@ for entry in a:
             for a in attr_:
                 a = a.replace("'", "")
                 if boolean2:
-                    a1 = str(a.split(",")[:-1]).replace("'","")[2:-1]
+                    a1 = str(a.split(",")[:-1]).replace("'", "")[2:-1]
                     FDA4.append({"id": id_, "smiles": a1})
                     boolean2 = False
                 if a.endswith("smiles"):
@@ -104,10 +105,14 @@ for entry in b:
 #######################################################################
 FDA_name = "SubstanceData_openFDA"
 CAT_name = "Chemical"
-FDA_attr = [["id", "unii"],["id", "name"], ["id", "synonym"], ["id", "smiles"]]
+FDA_attr = [["id", "unii"], ["id", "name"], ["id", "synonym"], ["id", "smiles"]]
 CAT_attr = [["identifier", "unii"], ["identifier", "name"], ["identifier", "synonym"], ["identifier", "smiles"]]
 _map = ["unii", "name", "synonym", "smiles"]
-nonmap_file_name = ["nonmapped_SubstanceData_unii.tsv", "nonmapped_SubstanceData_name.tsv", "nonmapped_SubstanceData_synonym.tsv", "nonmapped_SubstanceData_smiles.tsv"]
+nonmap_file_name = ["nonmapped_SubstanceData_unii.tsv", "nonmapped_SubstanceData_name.tsv",
+                    "nonmapped_SubstanceData_synonym.tsv", "nonmapped_SubstanceData_smiles.tsv"]
 make_mapping_file(map_file_name, "id", "identifier")
-fill_files(FDA_name, CAT_name, FDA_attr, CAT_attr, _map, map_file_name, nonmap_file_name, [FDA, FDA2, FDA3, FDA4], [CAT, CAT2, CAT3, CAT4])
-make_cypher_file(FDA_name, CAT_name, "id", "identifier", "unii_name_synonym_smiles", cypher_file_name, map_file_name, path_of_directory)
+fill_files(FDA_name, CAT_name, FDA_attr, CAT_attr, _map, map_file_name, nonmap_file_name, [FDA, FDA2, FDA3, FDA4],
+           [CAT, CAT2, CAT3, CAT4])
+make_cypher_file(FDA_name, CAT_name, "id", "identifier", "unii_name_synonym_smiles", cypher_file_name, map_file_name,
+                 path_of_directory)
+driver.close()

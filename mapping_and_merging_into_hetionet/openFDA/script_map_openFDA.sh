@@ -6,6 +6,9 @@ path_neo4j=$1
 #path to project
 path_to_project=$2
 
+#password
+password=$3
+
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -69,7 +72,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 
 
-$path_neo4j/cypher-shell -u neo4j -p test -f FDA_mappings/cypher.cypher
+$path_neo4j/cypher-shell -u neo4j -p $password -f FDA_mappings/cypher.cypher
 
 sleep 60
 
@@ -110,7 +113,7 @@ echo "Current time: $now"
 echo integrate connection with cypher shell
 
 
-$path_neo4j/cypher-shell -u neo4j -p test -f FDA_edges/edge_cypher.cypher
+$path_neo4j/cypher-shell -u neo4j -p $password -f FDA_edges/edge_cypher.cypher
 
 sleep 60
 

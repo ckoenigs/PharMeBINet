@@ -1,5 +1,3 @@
-import csv
-import os
 import datetime, sys
 
 sys.path.append("../..")
@@ -14,8 +12,9 @@ make_dir()
 #######################################################################
 print(datetime.datetime.utcnow())
 print("Connecting to database neo4j ...")
-global g
-g = create_connection_to_databases.database_connection_neo4j()
+global g, driver
+driver = create_connection_to_databases.database_connection_neo4j_driver()
+g = driver.session()
 #######################################################################
 # Speichert die Daten aus FDA.
 FDA1 = []
@@ -83,3 +82,4 @@ fill_files(FDA_name, CAT_name, FDA_attr, CAT_attr, _map, map_file_name, nonmap_f
            [CAT1, CAT2, CAT3])
 make_cypher_file(FDA_name, CAT_name, "id", "identifier", "unii_name", cypher_file_name, map_file_name,
                  path_of_directory)
+driver.close()

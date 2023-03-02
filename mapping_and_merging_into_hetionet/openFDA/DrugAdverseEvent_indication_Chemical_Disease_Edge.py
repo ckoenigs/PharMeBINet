@@ -3,6 +3,7 @@ import csv, sys
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 from mapping import *
 
 if len(sys.argv) > 1:
@@ -12,8 +13,9 @@ else:
 
 print(datetime.datetime.utcnow())
 print("Connecting to database neo4j ...")
-global g
-g = create_connection_to_databases.database_connection_neo4j()
+global g, driver
+driver = create_connection_to_databases.database_connection_neo4j_driver()
+g = driver.session()
 
 print(datetime.datetime.utcnow())
 print("Fetching data ...")
@@ -40,7 +42,7 @@ for entry in b:
     c = entry["c.identifier"]
     d = entry["d.identifier"]
     e = entry["e"]
-    arr[c+"_"+d] = e["resource"];
+    arr[c + "_" + d] = e["resource"];
 
 a = [1]
 # Chemical - DrugAdverseEvent_drug_openfda - DrugAdverseEvent_drug - DrugAdverseEvent_drug_indication - Disease
@@ -66,11 +68,12 @@ while len(a) > 0:
         l = l[:-1]
         c = len(entry["hu"])
         #  Check if pair already exist or not and write into the right file
-        if entry["c.identifier"]+"_"+entry["s.identifier"] in arr:
-            f = open("FDA_edges/DrugAdverseEvent_indication_Chemical_Disease_Edge_append.tsv", 'a', encoding="utf-8", newline='')
+        if entry["c.identifier"] + "_" + entry["s.identifier"] in arr:
+            f = open("FDA_edges/DrugAdverseEvent_indication_Chemical_Disease_Edge_append.tsv", 'a', encoding="utf-8",
+                     newline='')
             writer = csv.writer(f, delimiter="\t")
             resource = ""
-            for a in arr[entry["c.identifier"]+"_"+entry["s.identifier"]]:
+            for a in arr[entry["c.identifier"] + "_" + entry["s.identifier"]]:
                 resource += a + "|"
             if "openFDA" in resource:
                 resource = resource[:-1]
@@ -79,20 +82,29 @@ while len(a) > 0:
             writer.writerow([entry["c.identifier"], entry["s.identifier"], l, c, resource])
             f.close()
         else:
-            f = open("FDA_edges/DrugAdverseEvent_indication_Chemical_Disease_Edge.tsv", 'a', encoding="utf-8", newline='')
+            f = open("FDA_edges/DrugAdverseEvent_indication_Chemical_Disease_Edge.tsv", 'a', encoding="utf-8",
+                     newline='')
             writer = csv.writer(f, delimiter="\t")
             writer.writerow([entry["c.identifier"], entry["s.identifier"], l, c, "openFDA"])
             f.close()
-            
+
     count += LIMIT
     print("Done: " + str(count))
 
 f.close()
 
 # Cypher query erstellen
-cypher = f'USING PERIODIC COMMIT 1000 LOAD CSV WITH HEADERS FROM "file:{path_of_directory}mapping_and_merging_into_hetionet/openFDA/FDA_edges/DrugAdverseEvent_indication_Chemical_Disease_Edge.tsv" AS row FIELDTERMINATOR "\t" MATCH (n:Chemical), (m:Disease) WHERE n.identifier = row.chemical AND m.identifier = row.disease CREATE (n)-[:TREATS_CHtD{{nodes:split(row.nodes,"|"), count:row.count, resource:split(row.resource,"|"), source:row.resource, openfda:"yes"}}]->(m);\n'
-cypher2 = f'USING PERIODIC COMMIT 1000 LOAD CSV WITH HEADERS FROM "file:{path_of_directory}mapping_and_merging_into_hetionet/openFDA/FDA_edges/DrugAdverseEvent_indication_Chemical_Disease_Edge_append.tsv" AS row FIELDTERMINATOR "\t" MATCH (n:Chemical)-[e:TREATS_CHtD]->(m:Disease) WHERE n.identifier = row.chemical AND m.identifier = row.disease SET e.nodes = split(row.nodes,"|"), e.count = row.count, e.openfda="yes", e.resource = split(row.resource,"|");\n'
+cypher = f' MATCH (n:Chemical), (m:Disease) WHERE n.identifier = line.chemical AND m.identifier = line.disease CREATE (n)-[:TREATS_CHtD{{nodes:split(line.nodes,"|"), count:line.count, resource:split(line.resource,"|"), source:line.resource, openfda:"yes"}}]->(m)'
+cypher = pharmebinetutils.get_query_import(path_of_directory,
+                                           f'mapping_and_merging_into_hetionet/openFDA/FDA_edges/DrugAdverseEvent_indication_Chemical_Disease_Edge.tsv',
+                                           cypher)
+cypher2 = f' MATCH (n:Chemical)-[e:TREATS_CHtD]->(m:Disease) WHERE n.identifier = line.chemical AND m.identifier = line.disease SET e.nodes = split(line.nodes,"|"), e.count = line.count, e.openfda="yes", e.resource = split(line.resource,"|")'
+cypher2 = pharmebinetutils.get_query_import(path_of_directory,
+                                            f'mapping_and_merging_into_hetionet/openFDA/FDA_edges/DrugAdverseEvent_indication_Chemical_Disease_Edge_append.tsv',
+                                            cypher2)
 f = open("FDA_edges/edge_cypher.cypher", 'w', encoding="utf-8")
 f.write(cypher)
 f.write(cypher2)
 f.close()
+
+driver.close()

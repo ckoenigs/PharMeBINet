@@ -1,4 +1,8 @@
-import os,sys
+import os, sys
+
+sys.path.append("../..")
+import pharmebinetutils
+
 if len(sys.argv) > 1:
     path_of_directory = sys.argv[1]
 else:
@@ -8,9 +12,10 @@ if os.path.exists("FDA_mappings/to_SideEffect.tsv"):
     os.remove("FDA_mappings/to_SideEffect.tsv")
 # Query zum Erstellen der neuen SideEffect Knoten.
 f = open("FDA_mappings/cypher.cypher", 'w', encoding="utf-8")
-create = "USING PERIODIC COMMIT 1000 LOAD CSV WITH HEADERS FROM 'file:"
-create += path_of_directory + "mapping_and_merging_into_hetionet/openFDA/FDA_mappings/to_SideEffect.tsv"
-create += "' AS row FIELDTERMINATOR '\\t' CREATE"
-create += " (SideEffect:SideEffect {identifier: row.identifier, name: row.name, resource: split(row.resource,'|'), source:'UMLS via openFDA', openfda:'yes', url:'http://identifiers.org/umls/'+line,identifier});\n"
+create = " Create (SideEffect:SideEffect {identifier: line.identifier, name: line.name, resource: split(line.resource,'|'), source:'UMLS via openFDA', openfda:'yes', url:'http://identifiers.org/umls/'+line.identifier})"
+
+create = pharmebinetutils.get_query_import(path_of_directory,
+                                           f'mapping_and_merging_into_hetionet/openFDA/FDA_mappings/to_SideEffect.tsv',
+                                           create)
 f.write(create)
 f.close()
