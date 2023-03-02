@@ -12,7 +12,7 @@ password=$3
 license='Attribution-NonCommercial 4.0 International'
 
 
-sleep 60
+sleep 30
 $path_neo4j/neo4j restart
 sleep 60
 
@@ -34,9 +34,9 @@ chmod 775 merge_nodes.sh
 ./merge_nodes.sh $path_neo4j $password > output_merge_compound.txt
 
 
-sleep 60
+sleep 30
 $path_neo4j/neo4j restart
-sleep 60
+sleep 30
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -74,7 +74,7 @@ echo "Current time: $now"
 
 $path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher.cypher
 
-sleep 60
+sleep 30
 $path_neo4j/neo4j restart
 sleep 60
 
@@ -88,9 +88,9 @@ chmod 775 merge_nodes_salt.sh
 ./merge_nodes_salt.sh $path_neo4j $password > output/output_merge_compound.txt
 
 
-sleep 60
+sleep 30
 $path_neo4j/neo4j restart
-sleep 60
+sleep 30
 
 
 now=$(date +"%F %T")
@@ -105,9 +105,9 @@ echo rela
 
 $path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_rela.cypher
 
-sleep 60
+sleep 30
 $path_neo4j/neo4j restart
-sleep 120
+sleep 60
 
 
 now=$(date +"%F %T")
@@ -116,9 +116,9 @@ echo delete compounds which did not mapped
 
 $path_neo4j/cypher-shell -u neo4j -p $password -f cypher_delete_compound.cypher > output_delete_cypher.txt
 
-sleep 60
+sleep 20
 $path_neo4j/neo4j restart
-sleep 120
+sleep 20
 
 
 
@@ -134,7 +134,7 @@ echo "Current time: $now"
 
 $path_neo4j/cypher-shell -u neo4j -p $password -f compound_interaction/cypher_resemble.cypher
 
-sleep 60
+sleep 30
 $path_neo4j/neo4j restart
 sleep 60
 

@@ -10,9 +10,9 @@ path_to_project=$2
 password=$3
 
 
-sleep 60
+sleep 30
 $path_neo4j/neo4j restart
-sleep 60
+sleep 30
 
 echo aeolus outcome mapping
 python3 map_aeolus_outcome_final.py $path_to_project > output/output_map_aeolus_outcome.txt

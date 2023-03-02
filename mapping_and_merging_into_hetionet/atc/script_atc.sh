@@ -16,6 +16,6 @@ python3 map_and_integrate_atc.py $path_to_project > output/output.txt
 
 $path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher.cypher
 
-sleep 120
+sleep 30
 $path_neo4j/neo4j restart
-sleep 120
+sleep 30

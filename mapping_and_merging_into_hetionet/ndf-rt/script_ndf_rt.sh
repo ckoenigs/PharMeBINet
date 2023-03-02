@@ -10,9 +10,9 @@ path_to_project=$2
 password=$3
 
 echo ndf-rt
-sleep 180
+sleep 30
 $path_neo4j/neo4j restart
-sleep 120
+sleep 60
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -47,9 +47,9 @@ echo integration of ndf-rt connection into hetionet
 
 $path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher.cypher
 
-sleep 120
+sleep 30
 $path_neo4j/neo4j restart
-sleep 120
+sleep 30
 
 
 
@@ -80,6 +80,6 @@ echo integration of ndf-rt connection into hetionet
 
 $path_neo4j/cypher-shell -u neo4j -p $password -f relationships/cypher.cypher
 
-sleep 120
+sleep 30
 $path_neo4j/neo4j restart
-sleep 120
+sleep 60

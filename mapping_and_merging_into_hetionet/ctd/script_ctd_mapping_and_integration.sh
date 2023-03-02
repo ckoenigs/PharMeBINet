@@ -53,13 +53,13 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 
 
-sleep 120
+sleep 30
 $path_neo4j/neo4j restart
-sleep 120
+sleep 60
 
-sleep 120
+sleep 30
 $path_neo4j/neo4j restart
-sleep 120
+sleep 60
 
 
 #############################################################################################################################
@@ -103,20 +103,21 @@ python3 integrate_disease_gene.py $path_to_project > gene_disease/output.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
+echo integrate ctd edges
 
 $path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_edge.cypher
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 
+sleep 30
+$path_neo4j/neo4j restart
 sleep 60
-$path_neo4j/neo4j restart
-sleep 120
 
 
-sleep 60 
+sleep 30 
 $path_neo4j/neo4j restart
-sleep 120
+sleep 30
 
 # I decide against it because the connection comes from different species and this can not be checked.
 # now=$(date +"%F %T")

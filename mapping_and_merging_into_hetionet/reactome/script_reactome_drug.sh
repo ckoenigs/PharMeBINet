@@ -32,12 +32,12 @@ echo "Current time: $now"
 
 $path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_mapping2.cypher
 
-sleep 60
+sleep 30
 
 $path_neo4j/neo4j restart
 
 
-sleep 60
+sleep 30
 
 
 # relationships!
@@ -109,9 +109,9 @@ echo "Current time: $now"
 
 $path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_drug_edge.cypher
 
-sleep 60
+sleep 30
 
 $path_neo4j/neo4j restart
 
 
-sleep 120
+sleep 60

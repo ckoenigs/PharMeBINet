@@ -10,10 +10,10 @@ path_to_project=$2
 password=$3
 
 # hpo date annotated
-hpo_annotated_date='2022-06-11'
+hpo_annotated_date='2023-01-27'
 
 # hpo date ontology
-hpo_ontology_date='2022-06-11'
+hpo_ontology_date='2023-01-27'
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -26,15 +26,15 @@ python3 map_hpo_symptoms_into_db.py $path_to_project $hpo_ontology_date > output
 
 $path_neo4j/cypher-shell -u neo4j -p $password -f cypher/cypher.cypher
 
-sleep 120
+sleep 30
 $path_neo4j/neo4j restart
-sleep 120
+sleep 30
 
 python3 integrat_hpo_disease_symptom_rela.py $path_to_project $hpo_annotated_date > output/output_hpo_symptomes_rela.txt
 
 $path_neo4j/cypher-shell -u neo4j -p $password -f cypher/cypher_edge.cypher
 
-sleep 120
+sleep 30
 $path_neo4j/neo4j restart
-sleep 120
+sleep 30
 
