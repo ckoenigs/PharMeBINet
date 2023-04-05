@@ -1,13 +1,12 @@
 import csv, sys, datetime
 import pandas as pd
-import json
 import gzip
 import os
-from pathlib import Path
 import urllib.request
 
-# cypher file
-cypher_file=open("cypher.cypher","w",encoding="utf-8")
+sys.path.append("../..")
+import pharmebinetutils
+
 
 def genome_coordinates():
     '''
@@ -33,15 +32,16 @@ def genome_coordinates():
     '''
 
     print("########### Start: genome_coordinates() ###############")
-    file = pd.read_csv(path+'homo_sapiens.GRCh38.bed.gz', compression='gzip', sep='\t')
-    file.set_axis(["chromName", "chromStart", "chromEnd", "rnacentral_id",
-                   "score", "strand", "thickStart", "thickEnd",
-                   "itemRgb", "blockCount", "blockSizes", "blockStarts", "-", "type", "databases"], axis=1,
-                  inplace=True)
+    file = pd.read_csv(path + 'homo_sapiens.GRCh38.bed.gz', compression='gzip', sep='\t')
+    file = file.set_axis(["chromName", "chromStart", "chromEnd", "rnacentral_id",
+                          "score", "strand", "thickStart", "thickEnd",
+                          "itemRgb", "blockCount", "blockSizes", "blockStarts", "-", "type", "databases"], axis=1,
+                         copy=True)
     del file['-']
     file = file.replace(",", "|", regex=True)
     file.to_csv("output/homo_sapiens_RNACentral.tsv", sep='\t', index=False)
     print("########### End: genome_coordinates() ###############")
+
 
 def get_json():
     try:
@@ -65,14 +65,14 @@ def get_json():
     # print(source)
     parsed_html = BeautifulSoup(source, "lxml")
 
-
-    names_json= []
+    names_json = []
     for row in parsed_html.find_all('a'):
         href = row['href']
         if 'ensembl-xref-' in href:
             names_json.append(href)
 
     return names_json
+
 
 def homo_json():
     '''
@@ -91,18 +91,18 @@ def homo_json():
 
     # Creates a folder in which only the human information from each json file is stored.
     try:
-        os.makedirs(path+"json_homo")
+        os.makedirs(path + "json_homo")
     except FileExistsError:
         pass
 
     all_json = pd.DataFrame()
-    names_json= get_json()
+    names_json = get_json()
 
     for i in names_json:
-        filepath = path+"json_homo/" + str(i) + ".tsv"
+        filepath = path + "json_homo/" + str(i) + ".tsv"
         print(i)
         json = json_url(i, filepath)
-        all_json = all_json.append(json)
+        all_json = pd.concat([all_json, json])
 
     # Merging the genome coordinates dataframe and the json dataframe together into one by aligning the rows from each based on the common attribute RNACentralID
     # The “outer” merge combines all the rows for left and right dataframes with NaN when there are no matched values in the rows.
@@ -116,10 +116,10 @@ def homo_json():
 
 def json_url(name_json, filepath):
     try:
-        file_homo= pd.read_csv(filepath, sep='\t')
+        file_homo = pd.read_csv(filepath, sep='\t')
     except FileNotFoundError:
         print('File does not exist')
-        url = "http://ftp.ebi.ac.uk/pub/databases/RNAcentral/current_release/json/"+ str(name_json)
+        url = "http://ftp.ebi.ac.uk/pub/databases/RNAcentral/current_release/json/" + str(name_json)
         file_json = pd.read_json(url)
         file_homo = file_json['taxon_id'] == 9606  # filter according to the NCBI taxonomy id for Homo sapiens (9606)
         file_homo = file_json[file_homo]
@@ -144,43 +144,47 @@ def id_mapping():
     print("########### Start: id_mapping() ###############")
     d = {}
 
-    with gzip.open(path+'id_mapping.tsv.gz','rt') as tsv_datei:
+    with gzip.open(path + 'id_mapping.tsv.gz', 'rt') as tsv_datei:
         reader = csv.reader(tsv_datei, delimiter='\t')
         for row in reader:
             if row[3] == "9606" and row[0] + '_9606' not in d:
                 d[row[0] + '_9606'] = {}
-                d[row[0] + '_9606']['geneName'] = set([row[5]]) if row[5]!='' else set()
+                d[row[0] + '_9606']['geneName'] = set([row[5]]) if row[5] != '' else set()
                 d[row[0] + '_9606']["type1"] = row[4]
 
-                xref= row[2]
-                xref = xref.replace(":"+row[0] + '_9606', "")
-                xref = xref.replace(row[1]+":", "")
+                xref = row[2]
+                xref = xref.replace(":" + row[0] + '_9606', "")
+                xref = xref.replace(row[1] + ":", "")
                 d[row[0] + '_9606']['xrefs'] = row[1] + ":" + xref
 
             elif row[3] == "9606" and row[0] + '_9606' in d:
                 if row[5] != '':
                     d[row[0] + '_9606']['geneName'].add(row[5])
-                d[row[0] + '_9606']["type1"] = d[row[0] + '_9606']["type1"]+ '|' + row[4] if row[4]!= d[row[0] + '_9606']["type1"] else d[row[0] + '_9606']["type1"]
-                xref= row[2]
-                xref = xref.replace(":"+row[0] + '_9606', "")
-                xref = xref.replace(row[1]+":", "")
+                d[row[0] + '_9606']["type1"] = d[row[0] + '_9606']["type1"] + '|' + row[4] if row[4] != \
+                                                                                              d[row[0] + '_9606'][
+                                                                                                  "type1"] else \
+                    d[row[0] + '_9606']["type1"]
+                xref = row[2]
+                xref = xref.replace(":" + row[0] + '_9606', "")
+                xref = xref.replace(row[1] + ":", "")
                 d[row[0] + '_9606']['xrefs'] = d[row[0] + '_9606']['xrefs'] + "|" + row[1] + ":" + xref
 
     print("########### End: id_mapping() ###############")
 
-    return(d)
+    return (d)
+
 
 def complete_dictionary(d_map):
-    print("########### Start: complete_dictionary() ###############")
+    print("########### Start: complete_dictionary() ###############", datetime.datetime.now())
     df = pd.read_csv('output/homo_sapiens_coord_json.tsv', sep='\t')
 
     # generates a final dictionary
     d = {}
-    names = ['score', 'itemRgb',  'type', 'databases','description', 'sequence', 'md5',
-             'chromName','chromStart','chromEnd', 'strand', 'thickStart',
-             'thickEnd', 'blockCount', 'blockSizes','blockStarts']
+    names = ['score', 'itemRgb', 'type', 'databases', 'description', 'sequence', 'md5',
+             'chromName', 'chromStart', 'chromEnd', 'strand', 'thickStart',
+             'thickEnd', 'blockCount', 'blockSizes', 'blockStarts']
 
-    global_i=1
+    global_i = 1
 
     for index, row in df.iterrows():
         if ((row['rnacentral_id'] in d) == False):
@@ -190,9 +194,9 @@ def complete_dictionary(d_map):
                 d[row['rnacentral_id']][global_i] = {}
 
             for i in range(0, 16):
-                if(pd.isna(row[names[i]]) == False and i <7):
+                if (pd.isna(row[names[i]]) == False and i < 7):
                     d[row['rnacentral_id']][names[i]] = row[names[i]]
-                elif(pd.isna(row[names[i]]) == False and i >=7):
+                elif (pd.isna(row[names[i]]) == False and i >= 7):
                     d[row['rnacentral_id']][global_i][names[i]] = row[names[i]]
 
             if (row['rnacentral_id'] in d_map.keys()):
@@ -208,34 +212,38 @@ def complete_dictionary(d_map):
                 if (pd.isna(row[names[i]]) == False):
                     d[row['rnacentral_id']][global_i][names[i]] = row[names[i]]
 
-            global_i+= 1
+            global_i += 1
 
     # generate the three tsv files with the information of the nodes and edges
-    nodes1 = ['rnacentral_id', 'score', 'itemRgb', 'type', 'databases', 'description', 'sequence', 'md5','geneName', 'xrefs']
+    nodes1 = ['rnacentral_id', 'score', 'itemRgb', 'type', 'databases', 'description', 'sequence', 'md5', 'geneName',
+              'xrefs']
     edges = ["rnacentral_id", "id"]
-    nodes2 =['id','chromName','chromStart','chromEnd', 'strand', 'thickStart','thickEnd', 'blockCount', 'blockSizes','blockStarts']
+    nodes2 = ['id', 'chromName', 'chromStart', 'chromEnd', 'strand', 'thickStart', 'thickEnd', 'blockCount',
+              'blockSizes', 'blockStarts']
 
     file_name_node1 = 'output/RNACentral_nodes1.tsv'
     file_name_node2 = 'output/RNACentral_nodes2.tsv'
     file_name_edge = 'output/RNACentral_edges.tsv'
-    with open(file_name_node1, 'w',newline='') as tsv_file1:
+    with open(file_name_node1, 'w', newline='') as tsv_file1:
         with open(file_name_edge, 'w', newline='') as tsv_file2:
             with open(file_name_node2, 'w', newline='') as tsv_file3:
-                writer1,writer2, writer3 = csv.writer(tsv_file1, delimiter='\t'),csv.writer(tsv_file2, delimiter='\t'), csv.writer(tsv_file3, delimiter='\t')
+                writer1, writer2, writer3 = csv.writer(tsv_file1, delimiter='\t'), csv.writer(tsv_file2,
+                                                                                              delimiter='\t'), csv.writer(
+                    tsv_file3, delimiter='\t')
                 writer1.writerow(nodes1), writer2.writerow(edges), writer3.writerow(nodes2)
 
                 for key in d:
-                    l1=[]
+                    l1 = []
                     l1.append(key)
                     for i in nodes1:
-                        if i in d[key].keys() :
+                        if i in d[key].keys():
                             l1.append(d[key][i])
                         elif i != nodes1[0]:
                             l1.append('')
                     writer1.writerow(l1)
 
                     for i in list(filter(lambda e: isinstance(e, int), list(d[key]))):
-                        l2, l3 =[],[]
+                        l2, l3 = [], []
                         l2.append(key), l2.append(i), writer2.writerow(l2)
                         l3.append(i)
                         for j in nodes2:
@@ -252,12 +260,23 @@ def complete_dictionary(d_map):
     cypher_node(nodes1, file_name_node1, "rna1", 'rnacentral_id')
     cypher_node(nodes2, file_name_node2, "rna2", 'id')
 
-    query_start = f'Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:{path_of_directory}import_into_Neo4j/RNAcentral/{file_name_edge}" As line fieldterminator "\\t" '
-    query = query_start + f'Match (p1:rna1_RNACentral{{rnacentral_id:line.rnacentral_id}}),(p2:rna2_RNACentral{{id:line.id}}) Create (p1)-[:associate{{  '
-    query = query[:-2]+'}]->(p2);\n'
-    cypher_file.write(query)
+    # cypher file
+    cypher_file_edge = open("cypher_edge.cypher", "w", encoding="utf-8")
 
-    print("########### End: complete_dictionary() ###############")
+    query = f'Match (p1:rna1_RNACentral{{rnacentral_id:line.rnacentral_id}}),(p2:rna2_RNACentral{{id:line.id}}) Create (p1)-[:associate{{  '
+    query = query[:-2] + '}]->(p2)'
+    query = pharmebinetutils.get_query_import(path_of_directory, f'import_into_Neo4j/RNAcentral/{file_name_edge}',
+                                              query)
+    cypher_file_edge.write(query)
+
+    cypher_file_edge.close()
+
+    print("########### End: complete_dictionary() ###############", datetime.datetime.now())
+
+
+# cypher file
+cypher_file = open("cypher.cypher", "w", encoding="utf-8")
+
 
 def cypher_node(keys, file_name, label, unique_identifier):
     '''
@@ -268,21 +287,24 @@ def cypher_node(keys, file_name, label, unique_identifier):
     :param unique_identifier: string
     '''
 
-    query_start = f'Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:{path_of_directory}import_into_Neo4j/RNAcentral/{file_name}" As line fieldterminator "\\t" '
-    query = query_start + 'Create (p:%s_RNACentral{' % (label)
+    query = 'Create (p:%s_RNACentral{' % (label)
     for x in keys:
-        if x in ['blockSizes','blockStarts','itemRgb','xrefs','databases','geneName']:  # properties that are lists must be splitted
+        if x in ['blockSizes', 'blockStarts', 'itemRgb', 'xrefs', 'databases',
+                 'geneName']:  # properties that are lists must be splitted
             query += x + ':split(line.' + x + ',"|"), '
         else:
             query += x + ':line.' + x + ', '
 
-    query = query[:-2] + '});\n'
+    query = query[:-2] + '})'
+    query = pharmebinetutils.get_query_import(path_of_directory, f'import_into_Neo4j/RNAcentral/{file_name}',
+                                              query)
     cypher_file.write(query)
 
-    query2 = 'Create Constraint On (node:%s_RNACentral) Assert node.%s Is Unique; \n' % (label, unique_identifier)
-    cypher_file.write(query2)
+    cypher_file.write(pharmebinetutils.prepare_index_query(label + '_RNACentral', unique_identifier))
 
-path='/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/RNAcentral/'
+
+path = '/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/RNAcentral/'
+
 
 def main():
     global path_of_directory
@@ -299,7 +321,6 @@ def main():
     print('genome coordination')
     genome_coordinates()
 
-
     print(
         '#################################################################################################################################################################')
 
@@ -307,14 +328,12 @@ def main():
     print('json')
     homo_json()
 
-
     print(
         '#################################################################################################################################################################')
 
     print(datetime.datetime.now())
     print('id mapping file')
     d_map = id_mapping()
-
 
     print(
         '#################################################################################################################################################################')
