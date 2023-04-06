@@ -14,6 +14,8 @@ sleep 30
 $path_neo4j/neo4j restart
 sleep 30
 
+now=$(date +"%F %T")
+echo "Current time: $now"
 echo aeolus outcome mapping
 python3 map_aeolus_outcome_final.py $path_to_project > output/output_map_aeolus_outcome.txt
 

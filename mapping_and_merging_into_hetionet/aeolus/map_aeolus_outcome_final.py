@@ -58,6 +58,10 @@ class SideEffect_Aeolus():
         self.outcome_concept_id = outcome_concept_id
         self.concept_code = concept_code
         self.cuis = None
+        self.mapping = ''
+
+    def set_mapping(self, mapping):
+        self.mapping = mapping
 
     def set_cuis_id(self, cuis):
         self.cuis = cuis
@@ -162,7 +166,8 @@ def load_side_effects_from_pharmebinet_in_dict():
         synonyms = result['synonyms'] if 'synonyms' in result else []
         umls_label = result['umls_label'] if 'umls_label' in result else ''
         meddraType = result['meddraType'] if 'meddraType' in result else ''
-        sideEffect = SideEffect(result['license'], result['identifier'], result['name'], result['source'],
+        license = result['license'] if 'license' in result else ''
+        sideEffect = SideEffect(license, result['identifier'], result['name'], result['source'],
                                 result['url'], meddraType, synonyms, umls_label,
                                 result['resource'])
         dict_all_side_effect[result['identifier']] = sideEffect
@@ -230,7 +235,7 @@ def load_side_effects_aeolus_in_dictionary():
                 if cui not in dict_mapped_cuis_pharmebinet:
                     dict_mapped_cuis_pharmebinet[cui] = []
                 dict_mapped_cuis_pharmebinet[cui].append(result['concept_code'])
-                add_cui_information_to_class(result['concept_code'], cui)
+                add_cui_information_to_class(result['concept_code'], cui, 'name_mapped')
 
     list_of_list_of_meddra_ids.append(list_of_ids)
 
@@ -399,11 +404,12 @@ add cui information into aeolus se class
 '''
 
 
-def add_cui_information_to_class(key, cui):
+def add_cui_information_to_class(key, cui, mapped):
     if key not in dict_side_effects_aeolus:
         return
     if dict_side_effects_aeolus[key].cuis is None:
         dict_side_effects_aeolus[key].set_cuis_id([cui])
+        dict_side_effects_aeolus[key].set_mapping(mapped)
     else:
         dict_side_effects_aeolus[key].cuis.append(cui)
 
@@ -428,11 +434,11 @@ def map_first_round():
                 if cui in dict_mapped_cuis_pharmebinet:
 
                     dict_mapped_cuis_pharmebinet[cui].append(key)
-                    add_cui_information_to_class(key, cui)
+                    add_cui_information_to_class(key, cui, 'api_umls_cui')
                 else:
                     dict_mapped_cuis_pharmebinet[cui] = [key]
 
-                    add_cui_information_to_class(key, cui)
+                    add_cui_information_to_class(key, cui, 'api_umls_cui')
 
                 has_one = True
         # remember not mapped aeolus se
@@ -599,7 +605,7 @@ def integrate_aeolus_into_pharmebinet():
     # file for already existing se
     file_existing = open('output/se_existing.tsv', 'w', encoding='utf-8')
     csv_existing = csv.writer(file_existing, delimiter='\t')
-    csv_existing.writerow(['aSE', 'SE', 'cuis', 'resources'])
+    csv_existing.writerow(['aSE', 'SE', 'cuis', 'resources', 'mapping_method'])
 
     # query for mapping
     query_start = ''' Match (a:Aeolus_Outcome{concept_code:line.aSE})'''
@@ -607,6 +613,11 @@ def integrate_aeolus_into_pharmebinet():
     cypher_file = open('output/cypher.cypher', 'w')
 
     # query for the update nodes and relationship
+    query='Match (n:SideEffect{identifier:line.SE}) Where n.xrefs is NULL Set n.xrefs=[]'
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                                     f'mapping_and_merging_into_hetionet/aeolus/output/se_existing.tsv',
+                                                     query)
+    cypher_file.write(query)
     query_update = query_start + ' , (n:SideEffect{identifier:line.SE}) Set a.cuis=split(line.cuis,"|"), n.resource=split(line.resources,"|") , n.aeolus="yes", n.xrefs=n.xrefs+("MedDRA:"+line.aSE) Create (n)-[:equal_to_Aeolus_SE{mapping_method:line.mapping_method}]->(a)'
     query_update = pharmebinetutils.get_query_import(path_of_directory,
                                                      f'mapping_and_merging_into_hetionet/aeolus/output/se_existing.tsv',
@@ -634,7 +645,7 @@ def integrate_aeolus_into_pharmebinet():
             resource = list(set(resource))
             resources = '|'.join(resource)
 
-            csv_existing.writerow([outcome_concept, cui, cuis_string, resources])
+            csv_existing.writerow([outcome_concept, cui, cuis_string, resources, dict_side_effects_aeolus[outcome_concept].mapping])
     print('number of mapped:', counter_mapped)
 
     # close file
