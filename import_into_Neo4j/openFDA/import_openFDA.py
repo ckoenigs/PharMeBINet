@@ -1406,9 +1406,10 @@ f = open(path + 'download.json', 'w')
 f.write(r.content.decode("utf-8"))
 f.close()
 
-# Die load-cypher.cypher löschen
+# Die load-cypher.cypher and load-cypher-edge.cypher löschen
 try:
     os.remove(path + 'load-cypher.cypher')
+    os.remove(path + 'load-cypher-edge.cypher')
 except BaseException:
     pass
 
