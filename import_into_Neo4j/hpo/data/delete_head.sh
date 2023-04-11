@@ -1,5 +1,5 @@
 #!/bin/bash
-file_line=$( grep  -n '#DatabaseID' $1 | grep -Eo '^[^:]+')
+file_line=$( grep  -n 'database_id' $1 | grep -Eo '^[^:]+')
 # header is the line 
 echo $file_line
 #tail -n +28 $1 > text.tsv
