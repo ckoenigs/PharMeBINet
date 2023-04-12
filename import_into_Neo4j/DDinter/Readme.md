@@ -2,7 +2,7 @@
 
 http://ddinter.scbdd.com/
 
-Version: DDinter 1.0 
+Version: DDinter 1.0 (2020-09-04 )
 
 The script first prepares the DDinter:
     First, the edge TSV file and cypher file are generated.

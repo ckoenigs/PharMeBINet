@@ -8,4 +8,4 @@ Schema is below:
 
 ![er_diagram](schema.png)
 
-License:
+License: no license
