@@ -33,18 +33,30 @@ $path_neo4j/neo4j restart
 
 sleep 60
 
-sleep 30
+sleep 120
 
 $path_neo4j/neo4j restart
 
+sleep 180
 
 sleep 60
+
+$path_neo4j/neo4j restart
+
+sleep 60
+
 now=$(date +"%F %T")
 echo "Current time: $now"
 
 $path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_edge.cypher
 
-sleep 30
+sleep 60
+
+$path_neo4j/neo4j restart
+
+
+sleep 120
+sleep 60
 
 $path_neo4j/neo4j restart
 

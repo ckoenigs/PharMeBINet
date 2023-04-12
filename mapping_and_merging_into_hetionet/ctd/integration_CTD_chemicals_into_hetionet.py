@@ -893,7 +893,6 @@ def integration_of_ctd_chemicals_into_pharmebinet_compound():
             string_dbs = '|'.join(drugbank_ids)
 
             xrefs = dict_drugs_pharmebinet[drugbank_id].xrefs
-            print(drugbank_id)
             xrefs.append("MESH:" + mesh_id)
             xrefs = go_through_xrefs_and_change_if_needed_source_name(xrefs, 'chemical')
             string_xrefs = '|'.join(xrefs)

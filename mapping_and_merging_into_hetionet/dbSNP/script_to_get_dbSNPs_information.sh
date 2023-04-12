@@ -32,6 +32,10 @@ sleep 30
 $path_neo4j/neo4j restart
 sleep 30
 
+sleep 60
+$path_neo4j/neo4j restart
+sleep 120
+
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo integrat dbSNP clinvar rela
