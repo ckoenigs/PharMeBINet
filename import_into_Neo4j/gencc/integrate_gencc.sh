@@ -36,7 +36,7 @@ echo $import_tool
 
 echo integrate GenCC into neo4j
 
-java -jar ../$import_tool.jar -i sources/GenCC/intermediate.graphml  -e bolt://localhost:7687 --username neo4j --password $password --label-prefix GenCC_ > output/import_tool_output.txt
+java -jar ../$import_tool.jar -i sources/GenCC/intermediate.graphml  -e bolt://localhost:7687 --username neo4j --password $password --label-prefix GenCC_ --indices "GenCC_Disease.id;GenCC_Gene.id" > output/import_tool_output.txt
 
 sleep 120
 
