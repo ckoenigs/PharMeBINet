@@ -31,39 +31,32 @@ def rna_RNAInter():
     print("######### load_from_database ##################")
     global RNA
     RNA = {}
-    RNAXref = {}
-    RNAName = {}
+    dict_mirBase_to_identifiers = {}
+    dict_ensembl_to_identifiers = {}
+    dict_name_to_identifiers = {}
+    dict_gene_to_identifier = {}
 
-    query = "MATCH (n:RNA) RETURN n.identifier, n.geneName,n.xrefs, n.resource"
+    query = "MATCH (n:RNA) RETURN n.identifier, n.name,n.xrefs, n.resource, n.gene"
     result = g.run(query)
 
     for record in result:
-        [id, names, xref, resource] = record.values()
+        [identifier, name, xref, resource, gene] = record.values()
 
-        RNA[id] = resource
+        RNA[identifier] = resource
 
-        if names is not None:
-            for name in names:
-                if name.lower() not in RNAName:
-                    RNAName[name.lower()] = [id]
-                else:
-                    RNAName[name.lower()].append(id)
-
+        if name is not None:
+            pharmebinetutils.add_entry_to_dict_to_set(dict_name_to_identifiers, name.lower(), identifier)
+            
+        dict_gene_to_identifier[gene] = identifier
         if xref is not None:
             for x in xref:
 
-                if "MIRBASE:" in x:
-                    pubid = x[8:]
-                    if pubid not in RNAXref:
-                        RNAXref[pubid] = [id]
-                    else:
-                        RNAXref[pubid].append(id)
-                elif "ENSEMBL:" in x:
-                    pubid = x[8:]
-                    if pubid not in RNAXref:
-                        RNAXref[pubid] = [id]
-                    else:
-                        RNAXref[pubid].append(id)
+                pubid = x.split(':', 1)[1]
+
+                if x.startswith('miRBase'):
+                    pharmebinetutils.add_entry_to_dict_to_set(dict_mirBase_to_identifiers, pubid, identifier)
+                elif x.startswith('Ensembl'):
+                    pharmebinetutils.add_entry_to_dict_to_set(dict_ensembl_to_identifiers, pubid, identifier)
 
     # save the identifier and the Raw_ID in a tsv file
     file_name = 'output/RNA_mapping.tsv'
@@ -75,27 +68,35 @@ def rna_RNAInter():
         query = "MATCH (n:rna_RNAInter) RETURN n.Raw_ID, n.Interactor"
         result = g.run(query)
 
+        counter=0
+        counter_mapped=0
         for record in result:
             [raw_id, inter] = record.values()
-
+            counter+=1
+            source = ''
             if raw_id is not None:
                 rid = raw_id.split(":", 1)
                 if len(rid) == 2 and len(rid[1]) > 2:
                     rid = rid[1]
                 else:
                     rid = raw_id
+                source = rid[0]
+            if source == 'Ensembl' and rid in dict_ensembl_to_identifiers:
+                counter_mapped+=1
+                write_infos_into_file(writer, raw_id, dict_ensembl_to_identifiers[rid], 'ensembl')
+            elif source == 'miRBase' and rid in dict_mirBase_to_identifiers:
+                counter_mapped+=1
+                write_infos_into_file(writer, raw_id, dict_mirBase_to_identifiers[rid], 'mirbase')
+            elif raw_id in dict_gene_to_identifier:
+                counter_mapped+=1
+                write_infos_into_file(writer, raw_id, [dict_gene_to_identifier[raw_id]], 'raw_id_gene')
+            elif raw_id in dict_name_to_identifiers:
+                counter_mapped+=1
+                write_infos_into_file(writer, raw_id, dict_name_to_identifiers[rid], 'name')
 
-            if rid in RNA:
-                write_infos_into_file(writer, raw_id, [rid], 'raw_id-identifier')
-            elif rid in RNAXref:
-                write_infos_into_file(writer, raw_id, RNAXref[rid], 'raw_id-xrefs')
-            elif rid.lower() in RNAName:
-                write_infos_into_file(writer, raw_id, RNAName[rid.lower()], 'raw_id-name')
-            elif inter is not None and inter.lower() in RNAName:
-                write_infos_into_file(writer, raw_id, RNAName[inter.lower()], 'interactor-name')
-            elif inter is not None and inter.lower() in RNAXref:
-                write_infos_into_file(writer, raw_id, RNAXref[inter.lower()], 'interactor-xrefs')
     tsv_file.close()
+    print('number of nodes',counter)
+    print('number of mapped nodes',counter_mapped)
 
     print("######### Start: Cypher #########")
     query = f'Match (p1:rna_RNAInter{{Raw_ID:line.Raw_ID}}),(p2:RNA{{identifier:line.identifier}}) SET p2.resource = split(line.resource,"|"), p2.RNAInter = "yes" Create (p1)-[:associateRNA{{how_mapped:line.how_mapped  }}]->(p2)'
