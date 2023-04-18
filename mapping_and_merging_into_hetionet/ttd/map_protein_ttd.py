@@ -22,6 +22,7 @@ def create_connection_with_neo4j():
 dict_protein_name_ids = {}
 dict_proteinId_to_resource = {}
 dict_protein_uniProt_to_id = {}
+dict_seq_to_ids = {}
 
 
 def load_protein_in():
@@ -40,10 +41,19 @@ def load_protein_in():
         prot_name = node["name"].lower()
         pharmebinetutils.add_entry_to_dict_to_set(dict_protein_name_ids, prot_name, identifier)
         uniProt = node["entry_name"]
+        sequences = node["as_sequences"] if 'as_sequences' in node else []
+        for seq in sequences:
 
-        xrefs = node['xrefs'] if "xrefs" in node else []
+            # multiple proteins have the same sequence :O
+            # if seq in dict_seq_to_ids:
+            #     print('ohje')
+            #     print(dict_seq_to_ids[seq])
+            #     print(identifier)
+            if not seq in dict_seq_to_ids:
+                dict_seq_to_ids[seq] = set()
 
-        synonyms = node["synonyms"] if "synonyms" in node else []
+            dict_seq_to_ids[seq].add(identifier)
+
         dict_proteinId_to_resource[identifier] = resource
 
         dict_protein_uniProt_to_id[uniProt] = identifier
@@ -70,24 +80,28 @@ def load_gene_to_protein_ids():
 
 
 def load_and_map_ttd_protein(csv_mapped, csv_not_mapped):
-    query = '''MATCH (n:TTD_Target) RETURN n.id, n.name, n.synonyms, n.uniprot_id, n.gene_name  '''
+    query = '''MATCH (n:TTD_Target) RETURN n.id, n.name,  n.uniprot_ids, n.gene_names, n.sequence  '''
     results = graph_database.run(query)
 
     counter = 0
     counter_mapped = 0
     for record in results:
-        [node_id, name, synonyms, uniprot_accssion, gene_name] = record.values()
+        [node_id, name, uniprot_accssions, gene_names, sequence] = record.values()
         counter += 1
 
         found_mapping = False
 
-        if uniprot_accssion in dict_protein_uniProt_to_id:
-            counter_mapped += 1
-            found_mapping = True
-            protein_id = dict_protein_uniProt_to_id[uniprot_accssion]
-            csv_mapped.writerow([node_id, protein_id,
-                                 pharmebinetutils.resource_add_and_prepare(dict_proteinId_to_resource[protein_id],
-                                                                           'TTD'), 'uniprot_accession'])
+        if uniprot_accssions:
+            if len(uniprot_accssions) == 1:
+                uniprot_accssion = uniprot_accssions[0]
+                if uniprot_accssion in dict_protein_uniProt_to_id:
+                    counter_mapped += 1
+                    found_mapping = True
+                    protein_id = dict_protein_uniProt_to_id[uniprot_accssion]
+                    csv_mapped.writerow([node_id, protein_id,
+                                         pharmebinetutils.resource_add_and_prepare(
+                                             dict_proteinId_to_resource[protein_id],
+                                             'TTD'), 'uniprot_accession'])
 
         if found_mapping:
             continue
@@ -106,17 +120,32 @@ def load_and_map_ttd_protein(csv_mapped, csv_not_mapped):
         if found_mapping:
             continue
 
-        if gene_name in dict_gene_symbol_to_protein_ids:
-            counter_mapped += 1
-            found_mapping = True
-            for protein_id in dict_gene_symbol_to_protein_ids[gene_name]:
-                csv_mapped.writerow([node_id, protein_id,
-                                     pharmebinetutils.resource_add_and_prepare(dict_proteinId_to_resource[protein_id],
-                                                                               'TTD'), 'gene_symbol'])
+        if gene_names:
+            if len(gene_names) == 1:
+                gene_name = gene_names[0]
+                if gene_name in dict_gene_symbol_to_protein_ids:
+                    counter_mapped += 1
+                    found_mapping = True
+                    for protein_id in dict_gene_symbol_to_protein_ids[gene_name]:
+                        csv_mapped.writerow([node_id, protein_id,
+                                             pharmebinetutils.resource_add_and_prepare(
+                                                 dict_proteinId_to_resource[protein_id],
+                                                 'TTD'), 'gene_symbol'])
         if found_mapping:
             continue
 
-        csv_not_mapped.writerow([node_id, uniprot_accssion, name])
+        # the sequences are not specific
+        # if sequence in dict_seq_to_ids:
+        #     counter_mapped += 1
+        #     found_mapping = True
+        #     for protein_id in dict_seq_to_ids[sequence]:
+        #         csv_mapped.writerow([node_id, protein_id,
+        #                              pharmebinetutils.resource_add_and_prepare(dict_proteinId_to_resource[protein_id],
+        #                                                                        'TTD'), 'sequences'])
+        # if found_mapping:
+        #     continue
+
+        csv_not_mapped.writerow([node_id, uniprot_accssions, name])
     print('number of mapped nodes:', counter_mapped)
     print('number of nodes:', counter)
 
