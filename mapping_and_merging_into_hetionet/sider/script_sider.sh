@@ -27,11 +27,11 @@ $path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher.cypher
 sleep 30
 
 $path_neo4j/neo4j restart
-sleep 30
+sleep 60
 
 now=$(date +"%F %T")
 echo "Current time: $now"
-echo drug
+echo drug-se edges
 python3 integrate_rela_drug_side_effect.py $path_to_project > output/output_map_rela.txt
 
 echo integrate relationships
