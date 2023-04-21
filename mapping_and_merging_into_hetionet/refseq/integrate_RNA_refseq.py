@@ -1,7 +1,7 @@
 import datetime
 import csv
 import sys
-from collections import defaultdict
+import general_function_refseq
 
 sys.path.append("../..")
 import create_connection_to_databases
@@ -62,10 +62,10 @@ def generate_tsv_and_query(label, additional_label, id_property_name):
     :param id_property_name:
     :return:
     """
-    file_name = f'output/{additional_label}.tsv'
+    file_name = f'rna/{additional_label}.tsv'
     file = open(file_name, 'w', encoding='utf-8')
     csv_writer = csv.writer(file, delimiter='\t')
-    csv_writer.writerow(['id'])
+    csv_writer.writerow(['id', 'url'])
     query = get_node_properties_and_prepare_query(label, additional_label, id_property_name)
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/refseq/{file_name}',
@@ -90,7 +90,8 @@ def load_in_all_pre_miRNA(query, label, additional_label, property_name):
     counter = 0
     for record in results:
         identifier = record.data()['n.id']
-        csv_writer.writerow([identifier])
+
+        csv_writer.writerow([identifier, general_function_refseq.prepare_url_id(identifier)])
         counter += 1
     file.close()
 
@@ -109,7 +110,7 @@ def prepare_different_nodes():
                       "refSeq_vaultRNA", "refSeq_telomeraseRNA", "refSeq_ncRNA"
                       ]
     for label in list_of_labels:
-        query =f'MATCH (n:{label})  RETURN  n.id'
+        query = f'MATCH (n:{label})  RETURN  n.id'
 
         load_in_all_pre_miRNA(query, label, label.split('_')[1], 'id')
     cypher_file.close()
@@ -120,25 +121,25 @@ def prepare_edge():
     perpare rela tsv and cypher file and query
     :return:
     """
-    file_name = 'output/edge_rna.tsv'
+    file_name = 'rna/edge_rna.tsv'
     file = open(file_name, 'w', encoding='utf-8')
     csv_writer = csv.writer(file, delimiter='\t')
-    csv_writer.writerow(['pre_id', 'mirna_id', 'from', 'to'])
-    query = '''MATCH (n:miRBase_miRNA)-[rela]-(m:miRBase_pre_miRNA) RETURN  n.id, m.id,rela.from, rela.to  '''
+    csv_writer.writerow(['pre_id', 'mirna_id', 'start', 'end', 'url'])
+    query = '''MATCH p=(n:refseq_RNA)-[r]->(m:refseq_RNA) RETURN  n.id, m.id,r.start, r.end, r.strand, r.source  '''
     results = g.run(query)
 
     counter = 0
     for record in results:
-        [mi_id, pre_id, from_info, to_info] = record.values()
-        csv_writer.writerow([pre_id, mi_id, from_info, to_info])
+        [pre_id, mi_id, start, end, strand, source] = record.values()
+        csv_writer.writerow([pre_id, mi_id, start, end, strand, source, general_function_refseq.prepare_url_id(pre_id)])
         counter += 1
 
     print('number of edges', counter)
 
     with open('output/cypher_edge.cypher', 'w', encoding='utf-8') as cypher_file_edge:
-        query = 'MATCH (n:miRNA{identifier:line.mirna_id}),(m:pre_miRNA{identifier:line.pre_id}) Create (m)-[:CLEAVES_TO_RctR{from:line.from, to:line.to, source:"miRBase", resource:["miRBase"], license:"CC0 with attribution", url:"https://www.mirbase.org/cgi-bin/mirna_entry.pl?acc="+line.pre_id, mirbase:"yes"}]->(n)'
+        query = 'MATCH (n:RNA{identifier:line.mi_id}),(m:RNA{identifier:line.pre_id}) Create (m)-[:CLEAVES_TO_RctR{start:line.start, end:line.end, strand:line.strand, source:"RefSeq via "+line.source, resource:["RefSeq"], license:"https://www.ncbi.nlm.nih.gov/home/about/policies/", url:"https://identifiers.org/refseq:"+line.url, refseq:"yes"}]->(n)'
         query = pharmebinetutils.get_query_import(path_of_directory,
-                                                  f'mapping_and_merging_into_hetionet/miRBase/{file_name}',
+                                                  f'mapping_and_merging_into_hetionet/refseq/{file_name}',
                                                   query)
         cypher_file_edge.write(query)
 
@@ -170,7 +171,7 @@ def main():
     print(datetime.datetime.now())
     print('prepare edge information')
 
-    # prepare_edge()
+    prepare_edge()
 
     driver.close()
 

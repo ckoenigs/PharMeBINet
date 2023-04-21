@@ -38,7 +38,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo create rna-gene edge
 
-python3 perpare_gene_rna_edges.py $path_to_project > output/rna_edge.txt
+python3 prepare_gene_rna_edges.py $path_to_project > output/rna_edge.txt
 
 echo integrate connection with neo4j shell
 now=$(date +"%F %T")
