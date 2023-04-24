@@ -58,7 +58,13 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo drug-disease treat
 
-python3 merge_drug_disease_indicates_edges.py $path_to_project > disease/output_integration_compound.txt
+python3 merge_drug_disease_indicates_edges.py $path_to_project > edges/output_integration_compound_indicates.txt
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo drug-target edge
+
+python3 merge_chemical_target_edges.py $path_to_project > edges/output_integration_chemical_target.txt
 
 
 
