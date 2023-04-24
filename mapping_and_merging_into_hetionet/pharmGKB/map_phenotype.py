@@ -163,9 +163,7 @@ def check_for_mapping(dict_source_to_ids, source, source_extra, dict_source_to_d
             for disease_id in dict_source_to_disease_ids[cui]:
                 if (disease_id, identifier) in dict_source_to_pair[source_extra]:
                     continue
-                print(disease_id)
                 resource = dictionary_node_to_resource[disease_id]
-                print(resource)
                 resource.add("PharmGKB")
                 resource = "|".join(sorted(resource))
                 xrefs = dict_node_to_xrefs[disease_id]
@@ -186,7 +184,7 @@ def load_pharmgkb_phenotypes_in():
     # generate cypher file
     dict_csv_map, csv_new = generate_cypher_file()
 
-    query = '''MATCH (n:PharmGKB_Phenotype)--() RETURN Distinct n'''
+    query = '''MATCH (n:PharmGKB_Phenotype) Where (n)--() RETURN Distinct n'''
     results = g.run(query)
 
     counter_map = 0
