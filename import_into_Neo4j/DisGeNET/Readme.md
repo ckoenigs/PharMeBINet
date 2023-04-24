@@ -2,7 +2,7 @@
 
 https://www.disgenet.org/
 
-Version: DisGeNET v7.0
+Version: DisGeNET v7.0 (2020)
 
 First, a connection to DisGeNET SQLlite is generated.
 Then from the file mapa_geneid_4_uniprot_crossref.tsv.gz (UniProt_id, Gene_id) the protein TSV and the edge protein-gene TSV are generated. And the gene_ids are returned as a list.

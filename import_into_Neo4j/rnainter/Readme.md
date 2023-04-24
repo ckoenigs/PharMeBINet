@@ -1,6 +1,6 @@
 http://www.rnainter.org/
 
-Version: RNAinter v4.0
+Version: RNAinter v4.0 (2021-10-12)
 
 The script executes import_rnainter with species condition 'Homo sapiens'.
 First, the RNA cypher query is added to the cypher file.

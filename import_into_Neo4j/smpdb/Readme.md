@@ -1,6 +1,6 @@
 https://smpdb.ca/
 
-Version: 2.75
+Version: 2.75 (2018-09-14)
 
 First, generate a cypher file.
 Then, the SMPDB pathway TSV and cypher query are generated. Then the smpdb_pathways.csv.zip is downloaded (SMPDB ID, PW ID, Name, Subject, Description) and the information is prepared and written into the TSV file.

@@ -1,6 +1,6 @@
 https://www.uniprot.org/
 
-Version: 2022-05
+Version: 2023-01
 
 First, prepare the TSV and cypher query for the protein node information.
 Depending on if the SwissProt file is there or not the file is downloaded or not.

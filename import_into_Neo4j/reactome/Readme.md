@@ -1,6 +1,26 @@
 https://reactome.org/
 
-Version: 2022-11-24
+Version: 2023-03-15
+
+## Preparation of Neo4j :
+
+1. Download latest Neo4j V4
+2. Start reactome in Neo4j V4
+   JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/ ./restart_neo4j.sh reactome restart
+
+3. Stop Neo4j.
+
+4. Generate dump:
+   JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/ ./neo4j-admin dump --database=reactome --to=reactome.dump
+
+5. Load dump into Neo4j 5.3:
+
+   ./neo4j-admin database load --from-path=/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/neo4j/neo4j-community-5.3.0 reactome
+
+    ./neo4j-admin database migrate --force-btree-indexes-to-range reactome
+
+
+## Perpare import into other Neo4j database
 
 First, the script starts the Reactome Neo4j database.
 Then get all constraints/indices from Reactome.
