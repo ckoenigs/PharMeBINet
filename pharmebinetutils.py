@@ -7,7 +7,9 @@ import pharmebinetutils
 """
 import os
 import datetime
+import shutil
 import urllib.request
+from urllib.error import HTTPError
 from urllib.parse import urlparse
 
 
@@ -45,9 +47,19 @@ def download_file(url: str, out: str = './', file_name: str or None = None, retr
     while True:
         try:
             with urllib.request.urlopen(url) as response, open(output_file_path, 'wb') as f:
-                f.write(response.read())
+                shutil.copyfileobj(response, f)
             return output_file_path
-        except:
+        except HTTPError as ex:
+            if ex.code == 308:
+                if 'Location' in ex.headers.keys():
+                    url = ex.headers.get('Location')
+            else:
+                counter_tries += 1
+                if counter_tries >= retries:
+                    return False
+                if not silent:
+                    print('Download failed, retry %s/%s' % (counter_tries, retries))
+        except Exception as ex:
             counter_tries += 1
             if counter_tries >= retries:
                 return False
