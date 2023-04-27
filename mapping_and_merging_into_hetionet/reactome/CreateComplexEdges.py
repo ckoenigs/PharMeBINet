@@ -1,4 +1,3 @@
-from py2neo import Graph
 import datetime
 import csv
 import sys
