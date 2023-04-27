@@ -2,7 +2,9 @@ import re
 import json
 import requests
 from datetime import datetime
-import wget
+import sys
+sys.path.append('../..')
+import pharmebinetutils
 
 headers = {'User-Agent': 'DataSource-Status Fetcher'}
 source = requests.get('https://precision.fda.gov/uniisearch/archive', headers=headers).content.decode('utf-8')
@@ -23,10 +25,13 @@ for file_name in file_names_pattern.finditer(source):
         print(date_object)
 
 print(latest_date)
-print(final_name)
+print('final name',final_name)
 
-source = requests.get('https://qnyqxh695c.execute-api.us-east-1.amazonaws.com/production/v1/get-file/' + final_name, headers=headers).content.decode('utf-8')
-download_url = json.loads(source)['url']
+#source = requests.get('https://qnyqxh695c.execute-api.us-east-1.amazonaws.com/production/v1/get-file/' + final_name, headers=headers).content.decode('utf-8')
+#download_url = json.loads(source)['url']
+download_url='https://precision.fda.gov/uniisearch/archive/'+final_name
 print(download_url)
+print('blub')
 
-wget.download(download_url, out='.')
+#wget.download(download_url, out='.')
+pharmebinetutils.download_file(download_url)

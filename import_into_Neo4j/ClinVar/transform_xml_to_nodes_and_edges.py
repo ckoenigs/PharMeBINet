@@ -11,7 +11,6 @@ sys.path.append("../..")
 import pharmebinetutils
 
 import lxml.etree as etree
-import wget
 
 # dictionary of trait set
 dict_trait_sets = {}
@@ -850,7 +849,7 @@ def get_information_from_full_relase():
     filename = path_of_clinvar_data + 'clinvar/ClinVarFullRelease_00-latest.xml.gz'
     if not os.path.exists(filename):
         url = 'https://ftp.ncbi.nlm.nih.gov/pub/clinvar/xml/ClinVarFullRelease_00-latest.xml.gz'
-        filename = wget.download(url, out=path_of_clinvar_data + 'clinvar/')
+        filename = pharmebinetutils.download_file(url,out=path_of_clinvar_data + 'clinvar/')
     file = gzip.open(filename, 'rb')
     print(datetime.datetime.now(), 'end download')
     # file = open('ClinVarFullRelease_00-latest.xml', 'rb')
@@ -1447,7 +1446,7 @@ def extract_node_info_for_variations():
         url = 'https://ftp.ncbi.nlm.nih.gov/pub/clinvar/xml/clinvar_variation/ClinVarVariationRelease_00-latest.xml.gz'
         path_combi = path_of_clinvar_data + 'clinvar/'
         print(path_combi)
-        filename = wget.download(url, out=path_combi)
+        filename=pharmebinetutils.download_file(url,out=path_combi)
 
     file = gzip.open(filename, 'rb')
     print('end download', datetime.datetime.now())

@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
 import zipfile
-import wget
 import csv, sys
 
 sys.path.append("../..")
@@ -144,7 +143,7 @@ def get_data():
     except FileNotFoundError:
         print('File does not exist')
         url = "http://www.rnadisease.org/static/download/RNADiseasev4.0_RNA-disease_experiment_all.zip"
-        wget.download(url, out='data/')
+        pharmebinetutils.download_file(url, 'data/')
         archive = zipfile.ZipFile(file_name, 'r')
 
     file = archive.open('RNADiseasev4.0_RNA-disease_experiment_all.xlsx')

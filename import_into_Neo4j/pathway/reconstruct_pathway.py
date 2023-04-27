@@ -8,10 +8,8 @@ import csv
 import collections
 import re, datetime
 import html
-import wget
 import gzip
 
-import requests
 import pandas, sys
 
 sys.path.append("../..")
@@ -76,7 +74,7 @@ Pathway Commons V11 download and information extraction
 def pathway_commons():
     # download Pathway Commons v12
     url = 'https://www.pathwaycommons.org/archives/PC2/v12/PathwayCommons12.All.hgnc.gmt.gz'
-    filename = wget.download(url, out='data/')
+    filename = pharmebinetutils.download_file(url, out='data/')
     filename_without_gz = filename.rsplit('.', 1)[0]
     file = open(filename_without_gz, 'wb')
     with gzip.open(filename, 'rb') as f:
@@ -180,8 +178,8 @@ def wikipathways():
     # Parse WikiPathways
 
     # download WikiPathways
-    url = 'http://data.wikipathways.org/20230210/gmt/wikipathways-20230210-gmt-Homo_sapiens.gmt'
-    filename = wget.download(url, out='data/')
+    url = 'http://data.wikipathways.org/20230410/gmt/wikipathways-20230410-gmt-Homo_sapiens.gmt'
+    filename = pharmebinetutils.download_file(url, out='data/')
 
     gmt_generator = read_gmt(filename)
 

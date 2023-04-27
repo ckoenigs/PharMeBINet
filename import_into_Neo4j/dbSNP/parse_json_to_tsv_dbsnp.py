@@ -5,10 +5,10 @@ import glob
 import bz2
 import urllib.request
 import os.path
-import wget
 
-sys.path.append(".")
+sys.path.append("../..")
 import prepare_a_single_node
+import pharmebinetutils
 
 request_headers = {
 
@@ -44,7 +44,7 @@ def open_json_file_write_into_csv(path_to_data):
         for chr in list_chromosome:
             url_file = url % (chr)
             print(url_file)
-            filename = wget.download(url_file, out=path_to_data + '/')
+            pharmebinetutils.download_file(url_file, out=path_to_data + '/')
             # request= urllib.request.Request(url_file, headers=request_headers)
             # with urllib.request.urlopen(request) as response, open(path_to_data+'/'+url_file.rsplit('/',1)[1], 'wb') as f:
             #     f.write(response.read())
