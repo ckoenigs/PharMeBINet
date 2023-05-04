@@ -45,7 +45,7 @@ def get_node_properties_and_prepare_query(label, additional_label, id_property_n
             else:
                 list_of_properties.append('name:m.' + property)
 
-    query = f'Match (m:{label}{{id:line.id}}) Create (n:RNA :{additional_label} {{ {", ".join(list_of_properties)}, resource:["RefSeq"], source:"RefSeq", license:"CC0 with attribution", refseq:"yes", url:""+line.id}}) Create (n)-[:equals_rna_refseq]->(m)'
+    query = f'Match (m:{label}{{id:line.id}}) Create (n:RNA :{additional_label} {{ {", ".join(list_of_properties)}, resource:["RefSeq"], source:"RefSeq", license:"CC0 with attribution", refseq:"yes", url:"https://identifiers.org/refseq:"+line.url}}) Create (n)-[:equals_rna_refseq]->(m)'
     return query
 
 
@@ -124,7 +124,7 @@ def prepare_edge():
     file_name = 'rna/edge_rna.tsv'
     file = open(file_name, 'w', encoding='utf-8')
     csv_writer = csv.writer(file, delimiter='\t')
-    csv_writer.writerow(['pre_id', 'mirna_id', 'start', 'end', 'url'])
+    csv_writer.writerow(['pre_id', 'mirna_id', 'start', 'end','strand', 'source' ,'url'])
     query = '''MATCH p=(n:refseq_RNA)-[r]->(m:refseq_RNA) RETURN  n.id, m.id,r.start, r.end, r.strand, r.source  '''
     results = g.run(query)
 
@@ -137,7 +137,7 @@ def prepare_edge():
     print('number of edges', counter)
 
     with open('output/cypher_edge.cypher', 'w', encoding='utf-8') as cypher_file_edge:
-        query = 'MATCH (n:RNA{identifier:line.mi_id}),(m:RNA{identifier:line.pre_id}) Create (m)-[:CLEAVES_TO_RctR{start:line.start, end:line.end, strand:line.strand, source:"RefSeq via "+line.source, resource:["RefSeq"], license:"https://www.ncbi.nlm.nih.gov/home/about/policies/", url:"https://identifiers.org/refseq:"+line.url, refseq:"yes"}]->(n)'
+        query = 'MATCH (n:RNA{identifier:line.mirna_id}),(m:RNA{identifier:line.pre_id}) Create (m)-[:CLEAVES_TO_RctR{start:line.start, end:line.end, strand:line.strand, source:"RefSeq via "+line.source, resource:["RefSeq"], license:"https://www.ncbi.nlm.nih.gov/home/about/policies/", url:"https://identifiers.org/refseq:"+line.url, refseq:"yes"}]->(n)'
         query = pharmebinetutils.get_query_import(path_of_directory,
                                                   f'mapping_and_merging_into_hetionet/refseq/{file_name}',
                                                   query)
