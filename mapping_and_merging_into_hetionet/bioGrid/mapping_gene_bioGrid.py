@@ -23,6 +23,9 @@ dict_gene_id_to_resource = {}
 # dictionary gene_symbol to gene id
 dict_gene_symbol_to_gene_ids = {}
 
+# dictionary original gene_symbol to gene id
+dict_unique_gene_symbol_to_gene_ids = {}
+
 # dictionary synonym to gene id
 dict_gene_synonym_to_gene_ids = {}
 
@@ -38,6 +41,8 @@ def load_genes_from_database_and_add_to_dict():
         node = record.data()['n']
         identifier = node['identifier']
         dict_gene_id_to_resource[identifier] = node['resource']
+        gene_symbol = node['gene_symbol']
+        pharmebinetutils.add_entry_to_dict_to_set(dict_unique_gene_symbol_to_gene_ids, gene_symbol, identifier)
         gene_symbols = node['gene_symbols']
         for gene_symbol in gene_symbols:
             pharmebinetutils.add_entry_to_dict_to_set(dict_gene_symbol_to_gene_ids, gene_symbol, identifier)
@@ -73,7 +78,18 @@ def load_all_bioGrid_genes_and_finish_the_files(csv_mapping):
             csv_mapping.writerow(
                 [identifier, gene_id_entrez,
                  pharmebinetutils.resource_add_and_prepare(dict_gene_id_to_resource[gene_id_entrez], "bioGrid"), 'id'])
-        elif gene_symbol in dict_gene_symbol_to_gene_ids:
+        elif gene_symbol in dict_unique_gene_symbol_to_gene_ids:
+            found_mapping = True
+            for gene_id in dict_unique_gene_symbol_to_gene_ids[gene_symbol]:
+                csv_mapping.writerow(
+                    [identifier, gene_id,
+                     pharmebinetutils.resource_add_and_prepare(dict_gene_id_to_resource[gene_id], "bioGrid"),
+                     'gene_symbol_unique'])
+
+        if found_mapping:
+            continue
+
+        if gene_symbol in dict_gene_symbol_to_gene_ids:
             found_mapping = True
             for gene_id in dict_gene_symbol_to_gene_ids[gene_symbol]:
                 csv_mapping.writerow(
