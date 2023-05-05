@@ -2,7 +2,6 @@ import os
 import csv, json
 import datetime
 import sys
-import wget
 import gzip
 import lxml.etree as etree
 
@@ -277,7 +276,7 @@ def run_trough_xml_and_parse_data():
         # url_data = 'ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.dat.gz'
         url_path = 'ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/taxonomic_divisions/uniprot_sprot_human.xml.gz'
         # download ncbi human genes
-        filename = wget.download(url_path, out='database/')
+        filename = pharmebinetutils.download_file(url_path, out='database/')
     else:
         filename = 'database/uniprot_sprot_human.xml.gz'
 
