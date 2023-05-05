@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Jan 26 13:31:43 2018
-
-@author: ckoenigs
-"""
-
 import sys
 import datetime
 
