@@ -387,7 +387,7 @@ def prepare_json_information_to_tsv(data, chromosome_number=None):
                             add_information_from_one_dict_to_another(placement_annot, dict_node, 'seq_type')
                             add_information_from_one_dict_to_another(placement_annot, dict_node, 'mol_type')
                             if len(placement_annot['seq_id_traits_by_assembly']) > 1:
-                                print('is logger than  1 ;(')
+                                print('is longer than  1 ;(')
                                 print(placement_annot['seq_id_traits_by_assembly'])
                             if len(placement_annot['seq_id_traits_by_assembly']) == 1:
                                 add_information_from_one_dict_to_another(

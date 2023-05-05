@@ -2,7 +2,6 @@ import os
 import csv, json
 import datetime
 import sys
-import wget
 import lxml.etree as etree
 from zipfile import ZipFile
 
@@ -236,7 +235,7 @@ def prepare_cypher_files_and_tsv():
     generates_node_tsv_file_and_cypher('protein',
                                        ['identifier', 'creation_date', 'version', 'gene_name', 'protein_type',
                                         'update_date', 'xrefs', "uniprot_name", "general_function", "specific_function",
-                                        'secondary_accessions', 'synonyms', 'pdb_ids',
+                                        'secondary_accessions', 'synonyms', 'pdb_ids', 'name',
                                         'gene_properties_chromosome_location', 'gene_properties_gene_sequence',
                                         'gene_properties_locus', 'protein_properties_theoretical_pi',
                                         'protein_properties_molecular_weight',
@@ -286,20 +285,14 @@ set_protein_pathway = set()
 
 
 def run_trough_xml_and_parse_data_protein():
-    # counter of human entries
-    counter_human = 0
-
     # set_of_protein_properties
     set_of_protein_propertie = set()
-
-    # download file
-    # download url of swissprot
 
     if not os.path.exists('database/hmdb_proteins.zip'):
         print('download')
         url_path = 'https://hmdb.ca/system/downloads/current/hmdb_proteins.zip'
         # download ncbi human genes
-        filename = wget.download(url_path, out='database/')
+        filename = pharmebinetutils.download_file(url_path, out='database/')
     else:
         filename = 'database/hmdb_proteins.zip'
 
@@ -430,7 +423,7 @@ def run_trough_xml_and_parse_data_protein():
                             sys.exit('with child protein problem')
                     else:
                         if tag in ["version", "creation_date", "update_date", "protein_type", "gene_name",
-                                   "uniprot_name",
+                                   "uniprot_name", "name",
                                    "general_function", "specific_function"]:
                             dict_protein[tag] = child.text
                         elif tag in ["hgnc_id", "geneatlas_id", "genbank_gene_id", "genecard_id", "genbank_protein_id",
@@ -448,7 +441,7 @@ def run_trough_xml_and_parse_data_protein():
                         else:
                             print('not')
                             print("%s - %s - %s" % (tag, child.text, child.attrib))
-                            sys.exit()
+                            sys.exit('error hmdb protein')
                 # print(dict_protein)
                 # print('This is the identifier:', identifier)
                 # prepare name
@@ -463,11 +456,8 @@ def run_trough_xml_and_parse_data_protein():
                 dict_node_type_to_tsv['protein'].writerow(dict_protein)
                 node.clear()
 
-                # if counter_human > 1500:
-                #     break
     print('set of protein properties')
     print(set_of_protein_propertie)
-    print("number of human proteins:", counter_human)
     print('pfams tags', subtags)
 
 
@@ -526,7 +516,8 @@ def run_trough_xml_and_parse_data_metabolite():
         print('download')
         url_path = 'https://hmdb.ca/system/downloads/current/hmdb_metabolites.zip'
         # download ncbi human genes
-        filename = wget.download(url_path, out='database/')
+        filename = pharmebinetutils.download_file(url_path, out='database/')
+
     else:
         filename = 'database/hmdb_metabolites.zip'
 
@@ -676,14 +667,14 @@ def run_trough_xml_and_parse_data_metabolite():
                         # tags from tags with childs but no childs are there
                         elif tag in ["experimental_properties", "spectra", "diseases", "normal_concentrations",
                                      "protein_associations", "abnormal_concentrations", "ontology",
-                                     "general_references",
+                                     "general_references", "predicted_properties",
                                      "synonyms", "taxonomy", "secondary_accessions"]:
                             continue
                         else:
                             print('not')
                             print("%s - %s - %s" % (tag, child.text, child.attrib))
                             print(identifier)
-                            sys.exit()
+                            sys.exit('problem with hmdb metabolite')
 
                 set_of_metabolite_properties = set_of_metabolite_properties.union(dict_node.keys())
                 dict_node = prepare_tsv_dictionary(dict_node)
