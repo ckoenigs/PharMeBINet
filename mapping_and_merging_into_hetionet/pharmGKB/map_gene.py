@@ -25,6 +25,9 @@ dict_gene_to_resource = {}
 # dictionary gene symbol to gene id
 dict_gene_symbol_to_gene_id = {}
 
+# dictionary hgnc id to gene id
+dict_hgnc_id_to_gene_id = {}
+
 # dictionary synonym to gene id
 dict_synonym_to_gene_id = {}
 
@@ -37,27 +40,29 @@ load in all compound from pharmebinet in a dictionary
 
 
 def load_db_genes_in():
-    query = '''MATCH (n:Gene) RETURN n.identifier,n.gene_symbols, n.resource, n.synonyms, n.xrefs'''
+    query = '''MATCH (n:Gene) RETURN n.identifier,n.gene_symbols, n.gene_symbol, n.resource, n.synonyms, n.xrefs'''
     results = g.run(query)
 
     for record in results:
-        [identifier, gene_symbols, resource, synonyms, xrefs] = record.values()
+        [identifier, gene_symbols, gene_symbol, resource, synonyms, xrefs] = record.values()
         dict_gene_to_resource[identifier] = resource if resource else []
         dict_gene_id_to_xrefs[identifier] = xrefs if xrefs else []
+
+        if xrefs:
+            for xref in xrefs:
+                if xref.startswith('HGNC'):
+                    hgnc_id=xref.split(':',1)[1]
+                    pharmebinetutils.add_entry_to_dict_to_set(dict_hgnc_id_to_gene_id,hgnc_id,identifier)
 
         if gene_symbols:
             for gene_symbol in gene_symbols:
                 gene_symbol = gene_symbol.lower()
-                if gene_symbol not in dict_gene_symbol_to_gene_id:
-                    dict_gene_symbol_to_gene_id[gene_symbol] = set()
-                dict_gene_symbol_to_gene_id[gene_symbol].add(identifier)
+                pharmebinetutils.add_entry_to_dict_to_set(dict_gene_symbol_to_gene_id,gene_symbol,identifier)
 
         if synonyms:
             for synonym in synonyms:
                 synonym = synonym.lower()
-                if synonym not in dict_synonym_to_gene_id:
-                    dict_synonym_to_gene_id[synonym] = set()
-                dict_synonym_to_gene_id[synonym].add(identifier)
+                pharmebinetutils.add_entry_to_dict_to_set(dict_synonym_to_gene_id,synonym,identifier)
 
     print('length of gene in db:' + str(len(dict_gene_to_resource)))
 
@@ -116,13 +121,27 @@ def load_pharmgkb_genes_in():
                 found_a_mapping = True
                 add_information_to_file(ncbi_gene_id, identifier, csv_writer, 'id')
 
-        symbol = result['symbol'].lower() if 'symbol' in result else ''
-        if not found_a_mapping:
+        if found_a_mapping:
+            counter_map+=1
+            continue
 
-            if len(symbol) > 0 and symbol in dict_gene_symbol_to_gene_id:
+        hgnc_ids=result['hgnc_ids'] if 'hgnc_ids' in result else []
+        for hgnc_id in hgnc_ids:
+            if hgnc_id in dict_hgnc_id_to_gene_id:
                 found_a_mapping = True
-                for gene_id in dict_gene_symbol_to_gene_id[symbol]:
-                    add_information_to_file(gene_id, identifier, csv_writer, 'symbol')
+                for gene_id in dict_hgnc_id_to_gene_id[hgnc_id]:
+                    add_information_to_file(gene_id, identifier, csv_writer, 'hgnc')
+
+        if found_a_mapping:
+            counter_map += 1
+            continue
+
+        symbol = result['symbol'].lower() if 'symbol' in result else ''
+
+        if len(symbol) > 0 and symbol in dict_gene_symbol_to_gene_id:
+            found_a_mapping = True
+            for gene_id in dict_gene_symbol_to_gene_id[symbol]:
+                add_information_to_file(gene_id, identifier, csv_writer, 'symbol')
 
         if found_a_mapping:
             counter_map += 1

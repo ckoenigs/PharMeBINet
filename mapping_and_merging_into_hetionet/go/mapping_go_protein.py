@@ -92,6 +92,9 @@ dict_gene_id_to_resource = {}
 # dictionary gene symbol to gene ids
 dict_symbol_to_gene_ids = {}
 
+# dictionary offical gene symbol to gene ids
+dict_unique_gene_symbol_to_gene_ids = {}
+
 # dictionary synonym to gene ids
 dict_synonyms_to_gene_ids = {}
 
@@ -108,6 +111,8 @@ def load_gene_and_add_to_dictionary():
         identifier = node['identifier']
 
         dict_gene_id_to_resource[identifier] = node['resource']
+        gene_symbol = node['gene_symbol']
+        pharmebinetutils.add_entry_to_dict_to_set(dict_unique_gene_symbol_to_gene_ids, gene_symbol.lower(), identifier)
         gene_symbols = node['gene_symbols'] if 'gene_symbols' in node else []
         for gene_symbol in gene_symbols:
             add_entry_to_dictionary(dict_symbol_to_gene_ids, gene_symbol.lower(), identifier)
@@ -159,7 +164,11 @@ def load_all_protein_form_go_and_map_and_write_to_file():
         symbol = node['symbol'].lower() if 'symbol' in node else None
         if not symbol:
             continue
-        if symbol in dict_symbol_to_gene_ids:
+        if symbol in dict_unique_gene_symbol_to_gene_ids:
+            count_mapped_symbol += 1
+            for gene_id in dict_unique_gene_symbol_to_gene_ids[symbol]:
+                tsv_writer_gene.writerow([identifier, gene_id, resource(dict_gene_id_to_resource[gene_id]), 'unique_symbol'])
+        elif symbol in dict_symbol_to_gene_ids:
             count_mapped_symbol += 1
             for gene_id in dict_symbol_to_gene_ids[symbol]:
                 tsv_writer_gene.writerow([identifier, gene_id, resource(dict_gene_id_to_resource[gene_id]), 'symbol'])
