@@ -56,11 +56,11 @@ def load_metabolite_from_database():
         # for synonym in synonyms:
         #     add_entry_to_dictionary(dict_different_mapping_methods['name'],synonym.lower(), identifier)
 
-        inchikey = node['inchikey']
+        inchikey = node['inchikey'] if 'inchikey' in node else None
         if inchikey:
             add_entry_to_dictionary(dict_different_mapping_methods['inchikey'], inchikey, identifier)
 
-        smiles = node['smiles']
+        smiles = node['smiles'] if 'smiles' in node else None
         if inchikey:
             add_entry_to_dictionary(dict_different_mapping_methods['smiles'], smiles, identifier)
 
@@ -187,7 +187,7 @@ def main():
     print(datetime.datetime.now())
     global path_of_directory, license
     if len(sys.argv) < 3:
-        sys.exit('need path anf license metabolite drugbank')
+        sys.exit('need path and license metabolite drugbank')
 
     path_of_directory = sys.argv[2]
     license = sys.argv[1]

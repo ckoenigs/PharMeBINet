@@ -48,7 +48,7 @@ def load_metabolites_from_database_and_add_to_dict():
         node = record.data()['n']
         identifier = node['identifier']
         dict_metabolite_id_to_resource[identifier] = node['resource']
-        inchi_key = node['inchikey']
+        inchi_key = node['inchikey'] if 'inchikey' in node else None
         if inchi_key:
             add_entry_to_dictionary(dict_inchi_key_to_metabolite_ids, inchi_key, identifier)
     print('number of metabolites:', len(dict_metabolite_id_to_resource))
