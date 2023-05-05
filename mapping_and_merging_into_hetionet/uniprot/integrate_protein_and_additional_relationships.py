@@ -41,6 +41,9 @@ dict_gene_id_to_resource = {}
 dict_gene_symbol_to_gene_without_uniprot = {}
 dict_gene_symbol_to_gene_id = {}
 
+# dictionary hgnc id to gene identifiers
+dict_hgnc_id_to_gene_id = {}
+
 # list of all gene symbols which appears in multiple genes
 list_double_gene_symbol_for_genes_without_uniprot_id = set([])
 
@@ -80,15 +83,21 @@ Find mapping between genes and proteins
 
 
 def get_all_genes():
-    query = '''MATCH (n:Gene) RETURN n.identifier,  n.gene_symbols, n.name, n.synonyms, n.resource'''
+    query = '''MATCH (n:Gene) RETURN n.identifier,  n.gene_symbols, n.xrefs, n.name, n.synonyms, n.resource'''
     results = g.run(query)
     counter_uniprot_to_multiple_genes = 0
     counter_all_genes = 0
     list_double_names = set([])
     for record in results:
-        [gene_id, genesymbols, name, synonyms, resource] = record.values()
+        [gene_id, genesymbols, xrefs, name, synonyms, resource] = record.values()
         counter_all_genes += 1
         dict_gene_id_to_resource[gene_id] = set(resource)
+
+        if xrefs:
+            for xref in xrefs:
+                if xref.startswith('HGNC'):
+                    hgnc_id = xref.split(':', 1)[1]
+                    pharmebinetutils.add_entry_to_dict_to_set(dict_hgnc_id_to_gene_id, hgnc_id, gene_id)
 
         if gene_id == '28299':
             print('ok')
@@ -172,7 +181,7 @@ gene_ids are the gene ids which from uniprot
 
 
 def check_and_write_uniprot_ids(uniprot_id, name, identifier, secondary_uniprot_ids, gene_names, gene_ids,
-                                primary_gene_symbols):
+                                primary_gene_symbols, hgnc_ids):
     global count_not_mapping_gene_name
     found_at_least_on = False
 
@@ -202,7 +211,6 @@ def check_and_write_uniprot_ids(uniprot_id, name, identifier, secondary_uniprot_
                 if len(intersection) > 0:
                     check_and_add_rela_pair(identifier, uniprot_id, intersection, secondary_uniprot_ids, 'yes',
                                             'ncbi_id_and_gene_symbol')
-                    genes = list(intersection)
                     return True, genes
                 else:
                     symbol_synonym_interaction = lower_primary_gene_symbols.intersection(
@@ -214,56 +222,65 @@ def check_and_write_uniprot_ids(uniprot_id, name, identifier, secondary_uniprot_
                     if len(intersection) > 0:
                         check_and_add_rela_pair(identifier, uniprot_id, intersection, secondary_uniprot_ids, 'yes',
                                                 'ncbi_id_and_gene_symbol_synonym')
-                        genes = list(intersection)
                         return True, genes
                     else:
                         print('use only the symbol gene ids')
                         check_and_add_rela_pair(identifier, uniprot_id, list_gene_id_from_name, secondary_uniprot_ids,
                                                 'yes',
                                                 'ncbi_id_but_only_gene_symbol')
-                        genes = list(intersection)
                         return True, genes
             else:
                 print('only gene id mapping')
                 check_and_add_rela_pair(identifier, uniprot_id, gene_ids, secondary_uniprot_ids, '', 'ncbi_id')
                 return True, gene_ids
-        elif primary_gene_symbols:
+
+        if len(hgnc_ids) > 0:
+            gene_ids_from_hgnc = set()
+            for hgnc_id in hgnc_ids:
+                if hgnc_id in dict_hgnc_id_to_gene_id:
+                    gene_ids_from_hgnc = gene_ids_from_hgnc.union(dict_hgnc_id_to_gene_id[hgnc_id])
+            if len(gene_ids_from_hgnc) > 0:
+                check_and_add_rela_pair(identifier, uniprot_id, gene_ids_from_hgnc,
+                                        secondary_uniprot_ids, 'yes', 'hgnc_mapping')
+                return True, gene_ids_from_hgnc
+        if primary_gene_symbols:
             lower_primary_gene_symbols = {x.lower() for x in primary_gene_symbols}
-            gene_ids_from_symbol = []
+            gene_ids_from_symbol = set()
             symbol_interaction = lower_primary_gene_symbols.intersection(dict_gene_symbol_to_gene_id.keys())
             symbol_synonym_interaction = lower_primary_gene_symbols.intersection(dict_synonyms_to_gene_ids.keys())
 
             if len(symbol_interaction) > 0:
                 for symbol in symbol_interaction:
                     gene_ids_from_name = dict_gene_symbol_to_gene_id[symbol]
-                    gene_ids_from_symbol.extend(gene_ids_from_name)
+                    gene_ids_from_symbol = gene_ids_from_symbol.union(gene_ids_from_name)
                     # print('ok gene symbol works primary')
                     text = 'direct'
             elif len(symbol_synonym_interaction) > 0:
                 for symbol in symbol_synonym_interaction:
-                    gene_ids_from_symbol.extend(dict_synonyms_to_gene_ids[symbol])
+                    gene_ids_from_symbol = gene_ids_from_symbol.union(dict_synonyms_to_gene_ids[symbol])
                     # print('only name and id is not existing primary')
                     text = 'synonyms'
             if len(gene_ids_from_symbol) > 0:
                 check_and_add_rela_pair(identifier, uniprot_id, gene_ids_from_symbol,
                                         secondary_uniprot_ids, 'yes', text + '_primary_gene_symbol')
-                return True, genes
-        elif gene_names:
-            gene_ids_from_symbol = []
+                return True, gene_ids_from_symbol
+
+        if gene_names:
+            gene_ids_from_symbol = set()
             for gene_name in gene_names:
                 if gene_name in dict_gene_symbol_to_gene_id:
                     gene_ids_from_name = dict_gene_symbol_to_gene_id[gene_name]
-                    gene_ids_from_symbol.extend(gene_ids_from_name)
+                    gene_ids_from_symbol = gene_ids_from_symbol.union(gene_ids_from_name)
                     print('ok gene symbol works', uniprot_id, gene_ids, gene_names)
                     text = 'direct'
                 elif gene_name in dict_synonyms_to_gene_ids:
-                    gene_ids_from_symbol.extend(dict_synonyms_to_gene_ids[gene_name])
+                    gene_ids_from_symbol = gene_ids_from_symbol.union(dict_synonyms_to_gene_ids[gene_name])
                     print('only name and id is not existing', uniprot_id, gene_ids, gene_names)
                     text = 'synonyms'
             if len(gene_ids_from_symbol) > 0:
                 check_and_add_rela_pair(identifier, uniprot_id, gene_ids_from_symbol,
                                         secondary_uniprot_ids, 'yes', text + '_gene_names')
-                return True, genes
+                return True, gene_ids_from_symbol
 
         # check if mapping is possible with gene symbol
         ## I have to check this out more but it seems like it works
@@ -436,6 +453,11 @@ def get_gather_protein_info_and_generate_relas():
             if splitted_genesymbol[0] == 'primary':
                 primary_gene_symbols.add(splitted_genesymbol[1])
 
+        hgnc_ids = set()
+        for xref in xrefs:
+            if xref.startswith('HGNC'):
+                hgnc_ids.add(xref.split(':', 1)[1])
+
         # the gene ids
         gene_ids = [x.replace('GeneID:', '') for x in node['gene_id']] if 'gene_id' in node else []
 
@@ -443,7 +465,7 @@ def get_gather_protein_info_and_generate_relas():
         # also check if it has multiple genes or not
         # print(identifier)
         in_list, genes = check_and_write_uniprot_ids(identifier, name, identifier, '', set_gene_symbol, gene_ids,
-                                                     primary_gene_symbols)
+                                                     primary_gene_symbols, hgnc_ids)
         if in_list:
             found_at_least_on = True
             overlap_uniprot_ids.add(identifier)
