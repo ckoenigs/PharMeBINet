@@ -164,7 +164,7 @@ def load_all_omim_gene_and_start_mapping():
                 ncbi_id = xref.split(':')[1]
                 if ncbi_id in dict_gene_id_to_gene_node:
                     gene_symbol = [x.lower() for x in
-                                   dict_gene_id_to_gene_node[ncbi_id]['geneSymbol']] if 'geneSymbol' in \
+                                   dict_gene_id_to_gene_node[ncbi_id]['gene_symbols']] if 'gene_symbols' in \
                                                                                         dict_gene_id_to_gene_node[
                                                                                             ncbi_id] else []
                     if symbol not in gene_symbol and len(set(gene_symbol).intersection(alternati_symbols)) == 0:
