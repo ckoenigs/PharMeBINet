@@ -111,6 +111,7 @@ def prepare_string_to_right_json_string(res_string):
     res_string = res_string.replace('}{"refsnp_id"', '},{"refsnp_id"')
     return res_string
 
+print_a_real_error=False
 
 def ask_api_and_prepare_return(ids):
     """
@@ -118,6 +119,7 @@ def ask_api_and_prepare_return(ids):
     :param ids: string
     :return: dictionary {nodes:[node, node,...]}
     """
+    global print_a_real_error
     dict_nodes_new = {}
     counter_not_found = 0
     if len(ids) > 0:
@@ -125,11 +127,16 @@ def ask_api_and_prepare_return(ids):
         url = url % (ids)
         res = requests.get(url)
         res_json_string = res.text
-        if 'error' in res_json_string:
+        if '"error":"error forwarding request"' in res_json_string :
+            if not print_a_real_error:
+                print(res_json_string)
+                print_a_real_error=False
             time.sleep(10)
             res = requests.get(url)
             res_json_string = res.text
-        if 'error' in res_json_string:
+        #
+        if '"error":"error forwarding request"' in res_json_string :
+            print('start error')
             print(res_json_string, url)
             sys.exit('second error')
         if res_json_string == '' and not ',' in ids:
@@ -155,7 +162,7 @@ def ask_api_and_prepare_return(ids):
 
 def add_information_from_api_dictionary_to_files(dict_nodes_to_list):
     """
-    Check if the api give some information and then pasre every node information into files
+    Check if the api give some information and then parse every node information into files
     :param dict_nodes_to_list: dictionary
     :return:
     """
