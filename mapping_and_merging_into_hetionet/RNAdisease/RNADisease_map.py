@@ -179,13 +179,14 @@ def rna_RNAdisease():
     global RNA
     RNA = {}
     RNAXref = {}
-    RNAname = {}
+    dict_gene_name_to_identifiers = {}
+    dict_product_name_to_identifiers = {}
 
-    query = "MATCH (n:RNA) RETURN n.identifier, n.geneName, n.xrefs, n.resource"
+    query = "MATCH (n:RNA) RETURN n.identifier, n.gene, n.product, n.xrefs, n.resource"
     result = g.run(query)
 
     for record in result:
-        [id, name, xrefs, resource] = record.values()
+        [id, name, product, xrefs, resource] = record.values()
         RNA[id] = resource
 
         if xrefs is not None:
@@ -193,8 +194,21 @@ def rna_RNAdisease():
                 result = x.split(":")[1]
                 pharmebinetutils.add_entry_to_dict_to_set(RNAXref, result, id)
         if name is not None:
-            for n in name:
-                pharmebinetutils.add_entry_to_dict_to_set(RNAname, n, id)
+            pharmebinetutils.add_entry_to_dict_to_set(dict_gene_name_to_identifiers, name, id)
+        if product is not None:
+            pharmebinetutils.add_entry_to_dict_to_set(dict_product_name_to_identifiers, product, id)
+
+    dict_gene_symbol_to_identifiers = {}
+
+    query = "MATCH (m:Gene)--(n:RNA) RETURN n.identifier, m.gene_symbols"
+    result = g.run(query)
+
+    for record in result:
+        [id, gene_symbols] = record.values()
+
+        if gene_symbols :
+            for x in gene_symbols:
+                pharmebinetutils.add_entry_to_dict_to_set(dict_gene_symbol_to_identifiers, x, id)
 
     file_name = 'rna/rna_RNADiseaseedges.tsv'
     with open(file_name, 'w', newline='') as tsv_file:
@@ -204,20 +218,32 @@ def rna_RNAdisease():
 
         query = "MATCH (n:rna_RNADisease) RETURN n.RNA_Symbol"
         result = g.run(query)
+        counter = 0
+        counter_mapped = 0
         for record in result:
+            counter += 1
             [symbol] = record.values()
-            if symbol in RNAname:
-                write_infos_into_file(writer, symbol, RNAname[symbol], 'Symbol-Gene_Name', RNA)
-            elif symbol in RNAXref:
-                # the AC identifier mapping is not good
-                if symbol.startswith('AC'):
-                    continue
-                write_infos_into_file(writer, symbol, RNAXref[symbol], 'Symbol-Xrefs', RNA)
+            if symbol in dict_gene_name_to_identifiers:
+                counter_mapped += 1
+                write_infos_into_file(writer, symbol, dict_gene_name_to_identifiers[symbol], 'Symbol_Gene_Name', RNA)
+            elif symbol in dict_product_name_to_identifiers:
+                counter_mapped += 1
+                write_infos_into_file(writer, symbol, dict_product_name_to_identifiers[symbol], 'Symbol_Product_Name', RNA)
+            elif symbol in dict_gene_symbol_to_identifiers:
+                counter_mapped += 1
+                write_infos_into_file(writer, symbol, dict_gene_symbol_to_identifiers[symbol], 'Symbol_Gene_Symbol_to_rna', RNA)
 
+            # elif symbol in RNAXref:
+            #     # the AC identifier mapping is not good
+            #     if symbol.startswith('AC'):
+            #         continue
+            #     write_infos_into_file(writer, symbol, RNAXref[symbol], 'Symbol-Xrefs', RNA)
+        print('number of rnas', counter)
+        print('number of mapped rnas', counter_mapped)
         tsv_file.close()
 
     print("######### Start: Cypher #########")
-    query =  f'Match (p1:rna_RNADisease{{RNA_Symbol:line.id1}}),(p2:RNA{{identifier:line.id2}}) SET p2.resource = split(line.resource,"|"), p2.rnadisease = "yes" Create (p1)-[:associateRNADisease_rna{{how_mapped:line.how_mapped}}]->(p2)'
+    query = f'Match (p1:rna_RNADisease{{RNA_Symbol:line.id1}}),(p2:RNA{{identifier:line.id2}}) SET p2.resource = split(line.resource,"|"), p2.rnadisease = "yes" Create (p1)-[:associateRNADisease_rna{{how_mapped:line.how_mapped}}]->(p2)'
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/RNAdisease/{file_name}',
                                               query)
