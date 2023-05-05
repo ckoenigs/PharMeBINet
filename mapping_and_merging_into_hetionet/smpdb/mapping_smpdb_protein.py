@@ -23,9 +23,6 @@ dict_protein_id_to_resource = {}
 # dictionary alternative protein id to ids
 dict_alt_id_to_id = {}
 
-# dictionary from gene symbol to protein id
-dict_gene_symbol_to_id = {}
-
 '''
 Load all Genes from my database  and add them into a dictionary
 '''
@@ -43,11 +40,6 @@ def load_protein_from_database_and_add_to_dict():
             if alternative_id not in dict_alt_id_to_id:
                 dict_alt_id_to_id[alternative_id] = set()
             dict_alt_id_to_id[alternative_id].add(identifier)
-        gene_symbols = node['gene_name'] if 'gene_name' in node else []
-        for gene_symbol in gene_symbols:
-            if gene_symbol not in dict_gene_symbol_to_id:
-                dict_gene_symbol_to_id[gene_symbol] = set()
-            dict_gene_symbol_to_id[gene_symbol].add(identifier)
     print('number of proteins:', len(dict_protein_id_to_resource))
 
 
@@ -121,18 +113,6 @@ def load_all_smpdb_protein_and_finish_the_files(csv_mapping_protein, csv_mapping
                     csv_mapping_protein.writerow(
                         [identifier, protein_id, resource(dict_protein_id_to_resource[protein_id]), 'alternative id'])
             else:
-                # gene_symbols= node['symbols'] if 'symbols' in node else []
-                # set_of_mapped_uniprot_ids=set()
-                # found_a_map=False
-                # for gene_symbol in gene_symbols:
-                #     if gene_symbol in dict_gene_symbol_to_id:
-                #         for protein_id in dict_gene_symbol_to_id[gene_symbol]:
-                #             if protein_id not in set_of_mapped_uniprot_ids:
-                #                 csv_mapping.writerow([identifier, protein_id, resource(protein_id),
-                #                                       'gene symbol'])
-                #                 set_of_mapped_uniprot_ids.add(protein_id)
-                # #                 found_a_map=True
-                # if not found_a_map:
                 counter_not_mapped += 1
                 print(identifier)
         elif drugbank_id != '':
