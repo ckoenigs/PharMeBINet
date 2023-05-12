@@ -26,6 +26,8 @@ def create_connection_with_neo4j():
 
 # dictionary name to ids
 dict_name_to_id = {}
+# dictionary meddra to ids
+dict_meddra_to_id = {}
 
 
 def integrate_information_into_dict(dict_node_id_to_resource, dict_node_id_to_xrefs):
@@ -41,21 +43,23 @@ def integrate_information_into_dict(dict_node_id_to_resource, dict_node_id_to_xr
         dict_node_id_to_resource[identifier] = resource
         dict_node_id_to_xrefs[identifier] = xrefs if xrefs else []
         name = name.lower() if name else ''
-        if name not in dict_name_to_id:
-            dict_name_to_id[name] = set()
-        dict_name_to_id[name].add(identifier)
+        pharmebinetutils.add_entry_to_dict_to_set(dict_name_to_id,name,identifier)
 
         if synonyms:
             for synonym in synonyms:
                 synonym = synonym.lower()
-                if synonym not in dict_name_to_id:
-                    dict_name_to_id[synonym] = set()
-                dict_name_to_id[synonym].add(identifier)
+                pharmebinetutils.add_entry_to_dict_to_set(dict_name_to_id,synonym,identifier)
+
+        for xref in dict_node_id_to_xrefs[identifier]:
+            if xref.startswith('MedDRA'):
+                meddra_id=xref.split(':')[1]
+                pharmebinetutils.add_entry_to_dict_to_set(dict_meddra_to_id,meddra_id,identifier)
+
 
     print('number of Side effects in database', len(dict_node_id_to_resource))
 
 
-def prepare_query(file_name, file_name_new, db_label, adrecs_label, db_id, adrecs_id_internal, adrecs_id):
+def prepare_query(file_name, file_name_new_mapped, file_name_new, db_label, adrecs_label, db_id, adrecs_id_internal, adrecs_id):
     """
     prepare query for integration
     :param file_name:string
@@ -67,15 +71,21 @@ def prepare_query(file_name, file_name_new, db_label, adrecs_label, db_id, adrec
     :return:
     """
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
-    query = ''' MATCH (n:%s{identifier:line.%s}), (g:%s{%s:line.%s, adrecs_id:line.other_adrecs_id}) Set n.resource=split(line.resource,"|"), n.adrecs='yes' Create (n)-[:equal_adrecs_%s{how_mapped:line.how_mapped}]->(g)'''
+    query = ''' MATCH (n:%s{identifier:line.%s}), (g:%s{%s:line.%s, adrecs_id:line.other_adrecs_id}) Set n.resource=split(line.resource,"|"), n.adrecs='yes', n.xrefs=split(line.xrefs,"|") Create (n)-[:equal_adrecs_%s{how_mapped:line.how_mapped}]->(g)'''
     query = query % (db_label, db_id, adrecs_label, adrecs_id_internal, adrecs_id, db_label.lower())
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/{director}/{file_name}', query)
     cypher_file.write(query)
 
-    query_start = f' Match (g:{adrecs_label}{{{adrecs_id_internal}:line.{adrecs_id}, adrecs_id:line.other_adrecs_id}})  Merge (n:SideEffect{{identifier:line.umls_id}}) On Create Set  n.name=g.term, n.synonyms=g.synonyms, n.source="UMLS via ADReCS", n.resource=["ADReCS"], n.license="", n.url="http://bioinf.xmu.edu.cn/ADReCS/adrSummary.jsp?adr_id="+g.id Create (n)<-[:equal_to_adrecs_adr]-(g)'
+    query_start = f' Create (n:SideEffect{{identifier:line.umls_id, name:line.name, synonyms:split(line.synonyms,"|"), source:"UMLS via ADReCS", resource:["ADReCS"], license:"", url:"http://bioinf.xmu.edu.cn/ADReCS/adrSummary.jsp?adr_id="+line.id, xrefs:split(line.xrefs,"|")}})  '
     query_start = pharmebinetutils.get_query_import(path_of_directory,
                                                     f'mapping_and_merging_into_hetionet/{director}/{file_name_new}',
+                                                    query_start)
+    cypher_file.write(query_start)
+
+    query_start = f' Match (g:{adrecs_label}{{{adrecs_id_internal}:line.{adrecs_id}, adrecs_id:line.other_adrecs_id}}), (n:SideEffect{{identifier:line.umls_id}})  Create (n)<-[:equal_to_adrecs_adr]-(g)'
+    query_start = pharmebinetutils.get_query_import(path_of_directory,
+                                                    f'mapping_and_merging_into_hetionet/{director}/{file_name_new_mapped}',
                                                     query_start)
     cypher_file.write(query_start)
 
@@ -110,16 +120,23 @@ def get_all_adrecs_and_map(db_label, dict_node_id_to_resource, dict_node_id_to_x
     csv_mapping = csv.writer(mapping_file, delimiter='\t')
     csv_mapping.writerow(['db_id', 'act_id', 'other_adrecs_id', 'resource', 'how_mapped', 'xrefs'])
 
+    file_name_new_mapped = db_label.lower() + '/new_map.tsv'
+    new_file_mapped = open(file_name_new_mapped, 'w', encoding='utf-8')
+    csv_new_mapped = csv.writer(new_file_mapped, delimiter='\t')
+    csv_new_mapped.writerow(['umls_id', 'act_id', 'other_adrecs_id'])
+
     file_name_new = db_label.lower() + '/new.tsv'
     new_file = open(file_name_new, 'w', encoding='utf-8')
     csv_new = csv.writer(new_file, delimiter='\t')
-    csv_new.writerow(['umls_id', 'act_id', 'other_adrecs_id', 'xrefs'])
+    csv_new.writerow(['umls_id', 'name', 'synonyms', 'id', 'xrefs'])
 
-    prepare_query(file_name, file_name_new, db_label, 'ADReCS_ADR', 'db_id', 'id', 'act_id')
+    prepare_query(file_name, file_name_new_mapped, file_name_new, db_label, 'ADReCS_ADR', 'db_id', 'id', 'act_id')
 
     # get data
     query = '''MATCH (n:ADReCS_ADR) RETURN n'''
     results = g.run(query)
+
+    dict_new_node_id_to_properties = {}
 
     # counter mapping
     counter_mapping = 0
@@ -130,11 +147,13 @@ def get_all_adrecs_and_map(db_label, dict_node_id_to_resource, dict_node_id_to_x
         name = node['term'].lower()
         identifier = node['id']
         adrecs_id = node['adrecs_id']
+        meddra_id= node['meddra_code']
         if name in dict_name_to_id:
             counter_mapping += 1
             for other_identifier in dict_name_to_id[name]:
                 add_to_file(dict_node_id_to_resource, other_identifier, identifier, adrecs_id, csv_mapping,
                             'name_mapping', dict_node_id_to_xrefs[other_identifier])
+
 
         else:
             # print(' not in database :O')
@@ -146,6 +165,7 @@ def get_all_adrecs_and_map(db_label, dict_node_id_to_resource, dict_node_id_to_x
             rows_counter = cur.execute(query)
             mapped_cuis = set()
             new_cuis = set()
+            mapped=False
             if rows_counter > 0:
                 for (cui,) in cur:
                     if cui in dict_node_id_to_resource:
@@ -153,18 +173,46 @@ def get_all_adrecs_and_map(db_label, dict_node_id_to_resource, dict_node_id_to_x
                     else:
                         new_cuis.add(cui)
                 if len(mapped_cuis) > 0:
+                    mapped=True
                     counter_mapping += 1
                     for other_identifier in mapped_cuis:
                         add_to_file(dict_node_id_to_resource, other_identifier, identifier, adrecs_id, csv_mapping,
                                     'cui_mapping', dict_node_id_to_xrefs[other_identifier])
+
+            if mapped:
+                continue
+
+            if meddra_id in dict_meddra_to_id:
+                counter_mapping += 1
+                mapped=True
+                for other_identifier in dict_meddra_to_id[meddra_id]:
+                    add_to_file(dict_node_id_to_resource, other_identifier, identifier, adrecs_id, csv_mapping,
+                                'meddra_mapping', dict_node_id_to_xrefs[other_identifier])
+            if mapped:
+                continue
+
+            if len(new_cuis)>0:
+                counter_not_mapped += 1
+                umls_cui = new_cuis.pop()
+                csv_new_mapped.writerow([umls_cui, identifier, adrecs_id])
+                synonyms = node['synonyms'] if 'synonyms' in node else []
+                if umls_cui in dict_new_node_id_to_properties:
+                    dict_new_node_id_to_properties[umls_cui]['synonyms'] = dict_new_node_id_to_properties[umls_cui][
+                        'synonyms'].union(synonyms)
+                    dict_new_node_id_to_properties[umls_cui]['synonyms'].add(node['term'])
+                    dict_new_node_id_to_properties[umls_cui]['xrefs'].add("ADReCS:" + adrecs_id)
                 else:
-                    counter_not_mapped += 1
-                    umls_cui = new_cuis.pop()
-                    csv_new.writerow([umls_cui, identifier, adrecs_id])
+                    dict_new_node_id_to_properties[umls_cui] = {'name': node['term'], 'id': identifier,
+                                                                    'xrefs': set(["ADReCS:" + adrecs_id]),
+                                                                    'synonyms': set(synonyms)}
 
             else:
                 # print('no connection')
                 counter_not_mapped += 1
+
+    for umls_cui, properties in dict_new_node_id_to_properties.items():
+        csv_new.writerow([umls_cui, properties['name'], '|'.join(properties['synonyms']), properties['id'],
+                          '|'.join(properties['xrefs'])])
     print('mapped:', counter_mapping)
     print('number of not mapped adr:', counter_not_mapped)
 
