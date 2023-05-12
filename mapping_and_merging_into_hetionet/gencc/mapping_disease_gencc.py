@@ -44,6 +44,9 @@ dict_disease_id_to_omim_count = {}
 # dictionary from source to source id to set of disease ids
 dict_xref_to_xref_id_to_disease_ids = {'OMIM': {}, 'Orphanet': {}}
 
+# dictionary obsolete mondo id to replaced id
+dict_obsolete_id_to_replace_id={}
+
 '''
 load in all disease from pharmebinet in a dictionary
 '''
@@ -75,6 +78,16 @@ def load_pharmebinet_labels_in(label, dict_label_id_to_resource, dict_name_to_id
                 add_to_dictionary_with_set(dict_name_to_ids, synonym.lower(), identifier)
 
     print('number of disease nodes in pharmebinet:' + str(len(dict_label_id_to_resource)))
+
+    # use the obsolete mondo information for mapping
+    query='Match (n:disease) Where n.is_obsolete="true" and not n.replaced_by is null Return n.id, n.replaced_by '
+    results = graph_database.run(query)
+
+    #  run through results
+    for record in results:
+        [identifier, replaced_by] = record.values()
+        dict_obsolete_id_to_replace_id[identifier]=replaced_by
+
 
 
 # file for mapped or not mapped identifier
@@ -166,6 +179,18 @@ def load_gencc_disease_and_map():
         if is_mapped:
             continue
 
+
+        if disease_id in dict_obsolete_id_to_replace_id:
+            replaced_id= dict_obsolete_id_to_replace_id[disease_id]
+            if replaced_id in dict_disease_id_to_resource:
+                is_mapped = True
+                counter_map_with_id += 1
+                csv_writer_disease.writerow([disease_id, replaced_id,
+                                             pharmebinetutils.resource_add_and_prepare(
+                                                 dict_disease_id_to_resource[replaced_id], 'GENCC'), 'obsolete'])
+        if is_mapped:
+            continue
+
         # mapping with name
         if disease_name:
             disease_name = disease_name.lower()
@@ -181,36 +206,6 @@ def load_gencc_disease_and_map():
 
         if is_mapped:
             continue
-
-        # if node_id in dict_node_id_to_resource_to_ids and 'Orphanet' in dict_node_id_to_resource_to_ids[node_id]:
-        #     for ref in dict_node_id_to_resource_to_ids[node_id]['Orphanet']:
-        #         if ref in dict_xref_to_xref_id_to_disease_ids['Orphanet']:
-        #             counter_map_with_name += 1
-        #             is_mapped = True
-        #
-        #             for database_identifier in dict_xref_to_xref_id_to_disease_ids['Orphanet'][ref]:
-        #                 csv_writer_disease.writerow([disease_id, database_identifier,
-        #                                              pharmebinetutils.resource_add_and_prepare(
-        #                                                  dict_disease_id_to_resource[database_identifier], 'GENCC'),
-        #                                              'orphanet'])
-        #
-        # if is_mapped:
-        #     continue
-
-        # if node_id in dict_node_id_to_resource_to_ids and 'OMIM' in dict_node_id_to_resource_to_ids[node_id]:
-        #     for ref in dict_node_id_to_resource_to_ids[node_id]['OMIM']:
-        #         if ref in dict_xref_to_xref_id_to_disease_ids['OMIM']:
-        #             counter_map_with_name += 1
-        #             is_mapped = True
-        #
-        #             for database_identifier in dict_xref_to_xref_id_to_disease_ids['OMIM'][ref]:
-        #                 csv_writer_disease.writerow([disease_id, database_identifier,
-        #                                              pharmebinetutils.resource_add_and_prepare(
-        #                                                  dict_disease_id_to_resource[database_identifier], 'GENCC'),
-        #                                              'omim'])
-        #
-        # if is_mapped:
-        #     continue
 
         counter_not_mapped += 1
         csv_not_mapped.writerow([disease_id, disease_name])
