@@ -31,6 +31,23 @@ $path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher.cypher
 
 sleep 30
 $path_neo4j/neo4j restart
+sleep 40
+
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo prepare edge integration disease
+
+python3 merge_gene_disease_edges.py $path_to_project > output/output_edges.txt
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo integration of gencc mapping and new edges
+
+$path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_edge.cypher
+
+sleep 30
+$path_neo4j/neo4j restart
 sleep 30
 
 
