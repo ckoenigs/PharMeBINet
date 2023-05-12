@@ -30,4 +30,19 @@ $path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher.cypher
 
 sleep 30
 $path_neo4j/neo4j restart
+sleep 40
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo perpare edge merging
+python3 merge_edge_integration.py $path_to_project > edge/output.txt
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo integrate edges
+
+$path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_edge.cypher
+
+sleep 30
+$path_neo4j/neo4j restart
 sleep 30
