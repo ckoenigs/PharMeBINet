@@ -89,7 +89,7 @@ def edges():
                         print(counter)
                         print(datetime.datetime.now())
 
-        cypher_edge(file_name, "RNA", names[i], ["score", "RDID", "PMID"], "associate_RNA_" + names[i])
+        cypher_edge(file_name, "RNA", names[i], ["score", "RDID", "PMID"], "associates_Ra" + names[i][0])
         i += 1
         print("number of edges", counter)
 
