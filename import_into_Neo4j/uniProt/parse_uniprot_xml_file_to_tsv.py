@@ -780,12 +780,15 @@ def prepare_node_cypher_query(file_name, label, properties, list_properties):
 
     for property in properties:
         if property in list_properties:
-            if property in ['chromosome_location', 'accession']:
+            if property in ['chromosome_location', 'accession', 'function', 'ec_number', 'gene_id', 'gene_name']:
                 query += property + 's:split(line.' + property + ',"||"), '
             else:
                 query += property + ':split(line.' + property + ',"||"), '
         else:
-            query += property + ':line.' + property + ', '
+            if property !='sequenceLength':
+                query += property + ':line.' + property + ', '
+            else:
+                query += property + ':toInteger(line.' + property + '), '
     query = query[:-2] + '})'
     query = pharmebinetutils.get_query_import(path_of_directory, f'import_into_Neo4j/uniProt/{file_name}', query)
     cypherfile.write(query)
