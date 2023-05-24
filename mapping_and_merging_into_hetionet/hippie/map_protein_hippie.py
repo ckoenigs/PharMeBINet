@@ -111,8 +111,8 @@ def load_and_map_hippie_protein():
         if found_mapping:
             continue
 
-        if 'alternative_ids' in node:
-            alternative_ids = node['alternative_ids']
+        if 'alternative_id' in node:
+            alternative_ids = node['alternative_id']
             if alternative_ids.startswith('uniprotkb:'):
 
                 uniprot_entry = alternative_ids.split(':')[1]
