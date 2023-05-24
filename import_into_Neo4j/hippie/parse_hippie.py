@@ -22,7 +22,7 @@ def create_tsv_files():
     node_file_name = 'output/node.tsv'
     node_file = open(node_file_name, 'w', encoding='utf-8')
     csv_node = csv.writer(node_file, delimiter='\t')
-    header_node = ['identifier', 'alternative_ids', 'aliases', 'taxid', 'gene_name']
+    header_node = ['identifier', 'alternative_id', 'aliases', 'taxid', 'gene_name']
     csv_node.writerow(header_node)
 
     global edge_file_name, header_edge, csv_edge
