@@ -351,7 +351,7 @@ def search_with_api_bioportal():
                     continue
                 pref_name = result['prefLabel']
 
-                # check if the the id is really in this list
+                # check if the id is really in this list
                 if not meddra_id in list_ids:
                     print('ohje')
                     print(meddra_id)
