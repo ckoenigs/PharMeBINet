@@ -42,7 +42,7 @@ def add_name_to_dict(name, identifier, dictionary):
 def load_all_chemicals_and_generate_dictionary():
     """
     load all chemicals which are also compounds (they are from drugbank and if the where targetes they had an own
-     drugbank id, but it seem not so) and generate a dictionary of name to chemical id
+     drugbank id, but it seems not so) and generate a dictionary of name to chemical id
     :return:
     """
     query = 'Match (c:Chemical) Return c.identifier, c.name, c.synonyms, c.resource;'
