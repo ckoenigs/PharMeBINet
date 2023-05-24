@@ -32,8 +32,10 @@ def cypher_edge(file_name, label1, label2, properties, edge_name):
 
     query = f'Match (p1:{label1}{{identifier:line.id1}}),(p2:{label2}{{identifier:line.id2}}) Create (p1)-[:{edge_name}{{ '
     for header in properties:
-        if header in ["RDID", "PMID"]:
-            query += header + ':split(line.' + header + ',"|"), '
+        if header=='RDID':
+            query += header + 's:split(line.' + header + ',"|"), '
+        elif header=='PMID':
+            query +=  'pubMed_ids:split(line.' + header + ',"|"), '
         else:
             query += f'{header}:line.{header}, '
 
@@ -89,7 +91,7 @@ def edges():
                         print(counter)
                         print(datetime.datetime.now())
 
-        cypher_edge(file_name, "RNA", names[i], ["score", "RDID", "PMID"], "associates_Ra" + names[i][0])
+        cypher_edge(file_name, "RNA", names[i], ["score", "RDID", "PMID"], "ASSOCIATES_Ra" + names[i][0])
         i += 1
         print("number of edges", counter)
 
