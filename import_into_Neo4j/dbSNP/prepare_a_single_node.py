@@ -281,7 +281,7 @@ def find_disease_id_generate_xref_name_and_synonyms(disease_names, disease_ids):
             final_disease_id = synonyms.pop()
             name = final_disease_id
 
-    if name == '':
+    if name == '' and len(synonyms) > 0:
         name = synonyms.pop()
 
     return final_disease_id, xrefs, name, synonyms
