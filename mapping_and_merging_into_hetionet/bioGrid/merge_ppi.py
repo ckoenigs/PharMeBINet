@@ -96,8 +96,10 @@ def generate_file_and_cypher(labels):
         if head in ['publication_source', 'throughput', 'qualifications', 'experimental_system',
                     'experimental_system_type']:
             if head != 'publication_source':
-                query += head + ':split(line.' + head + ',"|"), '
-                query_update += 'm.' + head + '=split(line.' + head + ',"|"), '
+                query += head + 's:split(line.' + head + ',"|"), ' if head[
+                                                                          -1] != 's' else head + ':split(line.' + head + ',"|"), '
+                query_update += 'm.' + head + 's=split(line.' + head + ',"|"), ' if head[
+                                                                                        -1] != 's' else 'm.' + head + '=split(line.' + head + ',"|"), '
             else:
                 query += 'pubMed_ids:split(line.' + head + ',"|"), '
                 query_update += 'm.pubMed_ids=split(line.' + head + ',"|"), '
@@ -119,7 +121,7 @@ def generate_file_and_cypher(labels):
     cypher_file.write(query_update)
     for label in labels:
         file_name_other = f'interaction/association_{label}.tsv'
-        query = '''Match (i:Interaction{identifier:line.interaction_id}), (c:%s{identifier:line.id}) Create (i)-[:ASSOCIATES_Ia%s{license:"The MIT License (MIT)", bioGrid:"yes", source:"bioGrid", url:'https://thebiogrid.org/'+line.gene_id ,resource:["bioGrid"]}]->(c)'''
+        query = '''Match (i:Interaction{identifier:line.interaction_id}), (c:%s{identifier:line.id}) Create (i)-[:ASSOCIATES_Ia%s{license:"The MIT License (MIT)", bioGrid:"yes", source:"BioGrid", url:'https://thebiogrid.org/'+line.gene_id ,resource:["BioGrid"]}]->(c)'''
         query = query % (label, label[0])
 
         query = pharmebinetutils.get_query_import(path_of_directory,
@@ -373,6 +375,8 @@ def write_info_into_files(labels):
 
             final_dictionary['publication_source'] = pubmed_ids
             final_dictionary['dois'] = dois
+            final_dictionary['protein_id_1'] = p1
+            final_dictionary['protein_id_2'] = p2
 
             csv_writer.writerow(prepare_dictionary(final_dictionary, identifier))
             set_of_added_pair.add((p1, p2))
