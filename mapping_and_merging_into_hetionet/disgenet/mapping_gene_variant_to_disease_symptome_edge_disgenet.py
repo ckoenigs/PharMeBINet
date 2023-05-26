@@ -89,11 +89,12 @@ def check_for_double_entries(results):
 
             # Check2: combine NofSnps in a list
             # difference_snps = list(set(rela['NofSnps']).difference(set(rela_old['NofSnps']))) if rela_old['NofSnps'] else []
-            if 'NofSnps' in rela_old:
-                rela_old['NofSnps'] = set([rela_old['NofSnps']]) if isinstance(rela_old['NofSnps'], str) else rela_old[
-                    'NofSnps']
-                if rela_old['NofSnps']:
-                    rela_old['NofSnps'].add(rela['NofSnps'])
+            if 'NofSnpsString' in rela_old:
+                rela_old['NofSnpsString'] = set([rela_old['NofSnpsString']]) if isinstance(rela_old['NofSnpsString'],
+                                                                                           str) else rela_old[
+                    'NofSnpsString']
+                if rela_old['NofSnpsString']:
+                    rela_old['NofSnpsString'].add(rela['NofSnpsString'])
 
             combine_possible_properties(rela_old, rela, 'associationType')
             combine_possible_properties(rela_old, rela, 'sentence')
@@ -144,7 +145,7 @@ def get_DisGeNet_information(type='Disease', cyphermode='w', other_label='Gene')
     if not os.path.exists(path_of_directory):
         os.mkdir(path_of_directory)
 
-    # Create tsv for existing edges
+    # Create tsv for existing edges and not existing edges
     edge_type = f'ASSOCIATES_Da{other_label[0]}' if type == 'Disease' else f'ASSOCIATES_Sa{other_label[0]}'
     other_id = 'disease_id' if type == 'Disease' else 'symptom_id'
     file_name = f'{other_label.lower()}_{type.lower()}_edges.tsv'
@@ -156,16 +157,6 @@ def get_DisGeNet_information(type='Disease', cyphermode='w', other_label='Gene')
     csv_gene_other.writerow(
         [f'{other_label.lower()}_id', other_id, 'resource', 'sources', 'EI', 'pmid', 'NofSnps', 'score',
          'associationType', 'sentence'])
-
-    # Create tsv for NON-existing edges
-    file2_name = f'new_{other_label.lower()}_{type.lower()}_edges.tsv'
-    not_mapped_path = os.path.join(path_of_directory, file2_name)
-    mode = 'w' if os.path.exists(not_mapped_path) else 'w+'
-    file = open(not_mapped_path, mode, encoding='utf-8')
-    writer = csv.writer(file, delimiter='\t')
-    writer.writerow(
-        [f'{other_label.lower()}_id', other_id, 'sources', 'EI', 'pmid', 'NofSnps', 'score', 'associationType',
-         'sentence', 'snp_id'])
 
     # Neo4j query
     # edge = 'r' if type == 'Disease' else 's'
@@ -192,9 +183,9 @@ def get_DisGeNet_information(type='Disease', cyphermode='w', other_label='Gene')
         score = round(combined_info['score'] / count_combination_edge, 4)
         pmid = '|'.join(combined_info['pmid'])
 
-        if 'NofSnps' in combined_info:
-            if isinstance(combined_info['NofSnps'], set):
-                nofsnps = list(combined_info['NofSnps'])
+        if 'NofSnpsString' in combined_info:
+            if isinstance(combined_info['NofSnpsString'], set):
+                nofsnps = list(combined_info['NofSnpsString'])
                 try:
                     while True:
                         nofsnps.remove('0')
@@ -204,7 +195,7 @@ def get_DisGeNet_information(type='Disease', cyphermode='w', other_label='Gene')
                 #     print('more than 1 no of snps',nofsnps)
                 nofsnps = '|'.join(nofsnps)
             else:
-                nofsnps = combined_info['NofSnps'] if combined_info['NofSnps'] != '0' else ''
+                nofsnps = combined_info['NofSnpsString'] if combined_info['NofSnpsString'] != '0' else ''
         else:
             nofsnps = ''
 
@@ -226,10 +217,6 @@ def get_DisGeNet_information(type='Disease', cyphermode='w', other_label='Gene')
                  prepare_info_of_rela_property_to_string(combined_info, 'sentence')])
         else:
             counter_not_mapped += 1
-            # writer.writerow([gene_id, disease_id, sources, ei, pmid, nofsnps, score,
-            #                  prepare_info_of_rela_property_to_string(combined_info, 'associationType'),
-            #                  prepare_info_of_rela_property_to_string(combined_info, 'sentence'),
-            #                  combined_info['snp_id']])
             csv_gene_other.writerow([gene_id, disease_id, 'DisGeNet', sources, ei, pmid, nofsnps, score,
                                      prepare_info_of_rela_property_to_string(combined_info, 'associationType'),
                                      prepare_info_of_rela_property_to_string(combined_info, 'sentence')])
