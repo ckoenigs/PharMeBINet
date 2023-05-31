@@ -42,7 +42,7 @@ def load_pharmacological_class_in():
         synonyms = node["synonyms"] if "synonyms" in node else []
 
         for atc_code in atc_codes:
-            pharmebinetutils.add_entry_to_dict_to_set(dict_pharma_atc,atc_code, identifier)
+            pharmebinetutils.add_entry_to_dict_to_set(dict_pharma_atc, atc_code, identifier)
 
         for synonym in synonyms:
             synonym = synonym.lower()
@@ -56,30 +56,6 @@ def load_pharmacological_class_in():
         dict_pharma_name[pharma_name].add(identifier)
 
         dict_PharmaClassId_to_resource[identifier] = resource
-
-
-def load_compound_in():
-    query = '''MATCH (n:Compound) RETURN n'''
-    results = graph_database.run(query)
-
-    for record in results:
-        node = record.data()['n']
-        identifier = node["identifier"]
-        resource = node["resource"]
-        atc_codes = node["atc_codes"] if "atc_codes" in node else []
-
-        if atc_codes:
-            for atc_code in atc_codes:
-                if atc_code not in dict_compound_atc:
-                    dict_compound_atc[atc_code] = set()
-                dict_compound_atc[atc_code].add(identifier)
-
-        # compound_name = compound_name.lower()
-        # if compound_name not in dict_pharma_name:
-        #     dict_compound_name[compound_name] = set()
-        # dict_compound_name[compound_name].add(identifier)
-
-        dict_compoundId_to_resource[identifier] = resource
 
 
 def load_atc_in():
@@ -96,17 +72,6 @@ def load_atc_in():
         name = name.lower()
         code = node["code"]
         level = node["level"]
-
-        if level == 5:
-            if code in dict_compound_atc:
-                compound_atc = dict_compound_atc[code]
-                for compound_atc_id in compound_atc:
-                    if compound_atc_id not in dict_compound_mapping[node_id]:
-                        dict_compound_mapping[node_id][compound_atc_id] = set()
-                    dict_compound_mapping[node_id][compound_atc_id].add('code')
-                    mapped_compound_atc.add(node_id)
-        else:
-            continue
 
         if code in dict_pharma_atc:
             pharma_atc = dict_pharma_atc[code]
@@ -137,16 +102,6 @@ def load_atc_in():
             resource = '|'.join(resource)
             csv_mapped_pharma_atc.writerow([node_id, atc_id, resource, methodes])
 
-    # for atc_ID in mapped_compound_atc:
-    for node_id in mapped_compound_atc:
-        for atc_ID in dict_compound_mapping[node_id]:
-            methodes = list(dict_compound_mapping[node_id][atc_ID])
-            methodes = '|'.join(methodes)
-            resource = set(dict_compoundId_to_resource[atc_ID])
-            resource.add('DrugCentral')
-            resource = '|'.join(resource)
-            csv_mapped_compound_atc.writerow([node_id, atc_ID, resource, methodes])
-
 
 # file for mapped or not mapped identifier
 # erstellt neue TSV, überschreibt auch bestehende und leert sie wieder
@@ -159,12 +114,8 @@ file_mapped_pharma_atc = open('atc/mapped_pharma_atc.tsv', 'w', encoding="utf-8"
 csv_mapped_pharma_atc = csv.writer(file_mapped_pharma_atc, delimiter='\t', lineterminator='\n')
 csv_mapped_pharma_atc.writerow(['node_id', 'id_hetionet', 'resource', 'how_mapped'])
 
-file_mapped_compound_atc = open('atc/mapped_compound_atc.tsv', 'w', encoding="utf-8")
-csv_mapped_compound_atc = csv.writer(file_mapped_compound_atc, delimiter='\t', lineterminator='\n')
-csv_mapped_compound_atc.writerow(['node_id', 'id_hetionet', 'resource', 'how_mapped'])
 
-
-def generate_cyper_file(file_namePharma, file_nameCompound):
+def generate_cyper_file(file_namePharma):
     cypher_file = open('output/cypher.cypher', 'a')
 
     query_Pharma = '''MATCH (n:DC_ATC), (c:PharmacologicClass{identifier:line.id_hetionet}) Where ID(n)= ToInteger(line.node_id)  Set c.drugcentral='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_atc_drugcentral{how_mapped:line.how_mapped}]->(n)'''
@@ -172,12 +123,6 @@ def generate_cyper_file(file_namePharma, file_nameCompound):
                                                      "mapping_and_merging_into_hetionet/drugcentral/atc/" + file_namePharma,
                                                      query_Pharma)
     cypher_file.write(query_Pharma)
-
-    query_Compound = '''MATCH (n:DC_ATC), (c:Compound{identifier:line.id_hetionet}) Where ID(n)= ToInteger(line.node_id)  Set c.drugcentral='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_atc_drugcentral{how_mapped:line.how_mapped}]->(n)'''
-    query_Compound = pharmebinetutils.get_query_import(path_of_directory,
-                                                       "mapping_and_merging_into_hetionet/drugcentral/atc/" + file_nameCompound,
-                                                       query_Compound)
-    cypher_file.write(query_Compound)
 
     cypher_file.close()
 
@@ -196,13 +141,10 @@ def main():
     print("load pharmacological Class in")
     load_pharmacological_class_in()
 
-    print("load compound in")
-    load_compound_in()
-
     print("load atc in")
     load_atc_in()
 
-    generate_cyper_file("mapped_pharma_atc.tsv", "mapped_compound_atc.tsv")
+    generate_cyper_file("mapped_pharma_atc.tsv")
 
     print(
         '###########################################################################################################################')
