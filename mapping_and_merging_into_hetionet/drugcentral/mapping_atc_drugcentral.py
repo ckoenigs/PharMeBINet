@@ -19,17 +19,21 @@ def create_connection_with_neo4j():
     graph_database = driver.session()
 
 
+# dictionary pc id to resource
 dict_PharmaClassId_to_resource = {}
-dict_pharma_atc = {}
-dict_pharma_name = {}
-dict_compound_atc = {}
-dict_compoundId_to_resource = {}
-dict_compound_name = {}
+# dictionary atc code to pc ids
+dict_atc_code_to_pc_ids = {}
+# dictionary name to pc ids
+dict_name_to_pc_ids = {}
+# dictionary dc node id to  dictionary mapped pc ids to set of mappings
 dict_atc_mapping = defaultdict(dict)
-dict_compound_mapping = defaultdict(dict)
 
 
 def load_pharmacological_class_in():
+    """
+    Load all PC and add to a dictionary
+    :return:
+    """
     query = '''MATCH (n:PharmacologicClass) RETURN n'''
     results = graph_database.run(query)
 
@@ -42,23 +46,27 @@ def load_pharmacological_class_in():
         synonyms = node["synonyms"] if "synonyms" in node else []
 
         for atc_code in atc_codes:
-            pharmebinetutils.add_entry_to_dict_to_set(dict_pharma_atc, atc_code, identifier)
+            pharmebinetutils.add_entry_to_dict_to_set(dict_atc_code_to_pc_ids, atc_code, identifier)
 
         for synonym in synonyms:
             synonym = synonym.lower()
-            if synonym not in dict_pharma_name:
-                dict_pharma_name[synonym] = set()
-            dict_pharma_name[synonym].add(identifier)
+            if synonym not in dict_name_to_pc_ids:
+                dict_name_to_pc_ids[synonym] = set()
+            dict_name_to_pc_ids[synonym].add(identifier)
 
         pharma_name = pharma_name.lower()
-        if pharma_name not in dict_pharma_name:
-            dict_pharma_name[pharma_name] = set()
-        dict_pharma_name[pharma_name].add(identifier)
+        if pharma_name not in dict_name_to_pc_ids:
+            dict_name_to_pc_ids[pharma_name] = set()
+        dict_name_to_pc_ids[pharma_name].add(identifier)
 
         dict_PharmaClassId_to_resource[identifier] = resource
 
 
 def load_atc_in():
+    """
+    Load atc  and map with atc code to pc. Write the mappings into the tsv file
+    :return:
+    """
     query = '''MATCH (n:DC_ATC) RETURN n, id(n)'''
     results = graph_database.run(query)
 
@@ -71,18 +79,17 @@ def load_atc_in():
         name = node["name"]
         name = name.lower()
         code = node["code"]
-        level = node["level"]
 
-        if code in dict_pharma_atc:
-            pharma_atc = dict_pharma_atc[code]
+        if code in dict_atc_code_to_pc_ids:
+            pharma_atc = dict_atc_code_to_pc_ids[code]
             for pharma_atc_id in pharma_atc:
                 if pharma_atc_id not in dict_atc_mapping[node_id]:
                     dict_atc_mapping[node_id][pharma_atc_id] = set()
                 dict_atc_mapping[node_id][pharma_atc_id].add('code')
                 mapped_pharma_atc.add(node_id)
 
-        elif name in dict_pharma_name:
-            atc_names = dict_pharma_name[name]
+        elif name in dict_name_to_pc_ids:
+            atc_names = dict_name_to_pc_ids[name]
             for atc_id in atc_names:
                 if atc_id not in dict_atc_mapping[node_id]:
                     dict_atc_mapping[node_id][atc_id] = set()
@@ -97,10 +104,8 @@ def load_atc_in():
         for atc_id in dict_atc_mapping[node_id]:
             methodes = list(dict_atc_mapping[node_id][atc_id])
             methodes = '|'.join(methodes)
-            resource = set(dict_PharmaClassId_to_resource[atc_id])
-            resource.add('DrugCentral')
-            resource = '|'.join(resource)
-            csv_mapped_pharma_atc.writerow([node_id, atc_id, resource, methodes])
+            csv_mapped_pharma_atc.writerow([node_id, atc_id, pharmebinetutils.resource_add_and_prepare(
+                dict_PharmaClassId_to_resource[atc_id], 'DrugCentral'), methodes])
 
 
 # file for mapped or not mapped identifier
@@ -115,14 +120,19 @@ csv_mapped_pharma_atc = csv.writer(file_mapped_pharma_atc, delimiter='\t', linet
 csv_mapped_pharma_atc.writerow(['node_id', 'id_hetionet', 'resource', 'how_mapped'])
 
 
-def generate_cyper_file(file_namePharma):
+def generate_cyper_file(file_name_pharma):
+    """
+    prepare the cypher query to integrate the mapping
+    :param file_name_pharma:
+    :return:
+    """
     cypher_file = open('output/cypher.cypher', 'a')
 
-    query_Pharma = '''MATCH (n:DC_ATC), (c:PharmacologicClass{identifier:line.id_hetionet}) Where ID(n)= ToInteger(line.node_id)  Set c.drugcentral='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_atc_drugcentral{how_mapped:line.how_mapped}]->(n)'''
-    query_Pharma = pharmebinetutils.get_query_import(path_of_directory,
-                                                     "mapping_and_merging_into_hetionet/drugcentral/atc/" + file_namePharma,
-                                                     query_Pharma)
-    cypher_file.write(query_Pharma)
+    query_pharma = '''MATCH (n:DC_ATC), (c:PharmacologicClass{identifier:line.id_hetionet}) Where ID(n)= ToInteger(line.node_id)  Set c.drugcentral='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_atc_drugcentral{how_mapped:line.how_mapped}]->(n)'''
+    query_pharma = pharmebinetutils.get_query_import(path_of_directory,
+                                                     "mapping_and_merging_into_hetionet/drugcentral/atc/" + file_name_pharma,
+                                                     query_pharma)
+    cypher_file.write(query_pharma)
 
     cypher_file.close()
 
