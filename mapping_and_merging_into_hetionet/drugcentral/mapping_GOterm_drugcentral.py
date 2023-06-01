@@ -5,6 +5,7 @@ from collections import defaultdict
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 '''
 create a connection with neo4j
@@ -13,197 +14,129 @@ create a connection with neo4j
 
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
-    global graph_database
-    graph_database = create_connection_to_databases.database_connection_neo4j()
+    global graph_database, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    graph_database = driver.session()
 
 
+# dictionaries go to resource and alternative id to go ids
 dict_bioPro_to_resource = {}
-dict_bioPro_to_name = {}
-dict_bioPro_name = {}
-dict_bioPro_altID = defaultdict(set)
+dict_bioPro_alt_ids = defaultdict(set)
 dict_molFu_to_resource = {}
-dict_molFu_to_name = {}
-dict_molFu_name = {}
-dict_molFu_altID = defaultdict(set)
+dict_molFu_alt_ids = defaultdict(set)
 dict_cellCo_to_resource = {}
-dict_cellCo_to_name = {}
-dict_cellCo_name = {}
-dict_cellCo_altID = defaultdict(set)
+dict_cellCo_alt_ids = defaultdict(set)
+# the mapping dictionaries go id of dictionaries mapped go id to set of mapping methods
+dict_cellCo_mapping = defaultdict(dict)
+dict_MolFu_mapping = defaultdict(dict)
+dict_bioPro_mapping = defaultdict(dict)
 
 
-def load_biologicalProcess_in():
+def load_label_in(label, dict_label_to_resource, dict_label_alt_ids):
+    """
+    Load all nodes of a label extract the information and write the in the different dictionaries.
+    :param label:
+    :param dict_label_to_resource:
+    :param dict_label_alt_ids:
+    :return:
+    """
     # query ist ein String
-    query = '''MATCH (n:BiologicalProcess) RETURN n'''
+    query = f'MATCH (n:{label}) RETURN n'
     results = graph_database.run(query)
 
-    # results werden einzeln durchlaufen
-    for node, in results:
+    for record in results:
+        node = record.data()['n']
         identifier = node["identifier"]
         resource = node["resource"]
         name = node["name"]
         alt_ids = node["alternative_ids"] if "alternative_ids" in node else []
 
-        dict_bioPro_to_name[identifier] = name
-        dict_bioPro_to_resource[identifier] = resource
+        dict_label_to_resource[identifier] = resource
 
         for alt_id in alt_ids:
-            dict_bioPro_altID[alt_id].add(identifier)
-
-        # name
-        if name not in dict_bioPro_name:
-            dict_bioPro_name[name] = set()
-        dict_bioPro_name[name].add(identifier)
+            dict_label_alt_ids[alt_id].add(identifier)
 
 
-def load_cellularComponent_in():
-    # query ist ein String
-    query = '''MATCH (n:CellularComponent) RETURN n'''
-    results = graph_database.run(query)
+def map_to_on_label(go_id, node_id, dict_label_to_resource, dict_label_mapping, dict_label_alt_ids):
+    """
+    First try to map the go id to the go id from a given label and the try to map with the alternative ids. The mappings
+    are added to a dictionary.
+    :param go_id:
+    :param node_id:
+    :param dict_label_to_resource:
+    :param dict_label_mapping:
+    :param dict_label_alt_ids:
+    :return:
+    """
+    if go_id in dict_label_to_resource:
+        if node_id not in dict_label_mapping:
+            dict_label_mapping[node_id][go_id] = set()
+        dict_label_mapping[node_id][go_id].add('go_id')
 
-    # results werden einzeln durchlaufen
-    for node, in results:
-        identifier = node["identifier"]
-        resource = node["resource"]
-        name = node["name"]
-        alt_ids = node["alternative_ids"] if "alternative_ids" in node else []
-
-        dict_cellCo_to_name[identifier] = name
-        dict_cellCo_to_resource[identifier] = resource
-
-        for alt_id in alt_ids:
-            dict_molFu_altID[alt_id].add(identifier)
-
-        # name
-        if name not in dict_cellCo_name:
-            dict_cellCo_name[name] = set()
-        dict_cellCo_name[name].add(identifier)
+    # mappend with alternative IDs
+    if go_id in dict_label_alt_ids:
+        go_ids_pharmebinet = dict_label_alt_ids[go_id]
+        for go_id_pharmebinet in go_ids_pharmebinet:
+            if node_id not in dict_label_mapping:
+                dict_label_mapping[node_id][go_id_pharmebinet] = set()
+            dict_label_mapping[node_id][go_id_pharmebinet].add('alt_id')
 
 
-def load_molecularFunction_in():
-    # query ist ein String
-    query = '''MATCH (n:MolecularFunction) return n'''
-    results = graph_database.run(query)
-
-    # results werden einzeln durchlaufen
-    for node, in results:
-        identifier = node["identifier"]
-        resource = node["resource"]
-        name = node["name"]
-        alt_ids = node["alternative_ids"] if "alternative_ids" in node else []
-
-        dict_molFu_to_name[identifier] = name
-        dict_molFu_to_resource[identifier] = resource
-
-        for alt_id in alt_ids:
-            dict_molFu_altID[alt_id].add(identifier)
-
-        # name
-        if name not in dict_molFu_name:
-            dict_molFu_name[name] = set()
-        dict_molFu_name[name].add(identifier)
+def generate_tsv_for_a_label(dict_label_mapped, dict_label_to_resource, csv_mapped):
+    """
+    Go through all mappings and prepare the information for the tsv file and fill content.
+    :param dict_label_mapped:
+    :param dict_label_to_resource:
+    :return:
+    """
+    for node_id, dict_go_id_to_mapping_methods in dict_label_mapped.items():
+        for goTerm_id, methods in dict_go_id_to_mapping_methods.items():
+            methods = '|'.join(methods)
+            csv_mapped.writerow([node_id, goTerm_id,
+                                 pharmebinetutils.resource_add_and_prepare(dict_label_to_resource[goTerm_id],
+                                                                           'DrugCentral'), methods])
 
 
 def load_GO_term_in():
+    """
+    Map the go terms of dc to BP, CC and MF
+    :return:
+    """
     query = '''MATCH (n:DC_GOTerm) RETURN n, id(n)'''
     results = graph_database.run(query)
 
-    mapped_bioPro = set()
-    mapped_cellCo = set()
-    mapped_molFu = set()
-    dict_nodes_to_term = {}
-    dict_node_to_methode = {}
-
-    for node, node_id, in results:
+    for record in results:
+        node = record.data()['n']
+        node_id = record.data()['id(n)']
         type = node["type"]
         term_name = node["term"]
         go_id = node["id"]
-        count = 0
 
         if type is not None:
             # biological Process
             if type == 'P':
-                if go_id in dict_bioPro_to_name:
-                    dict_nodes_to_term[node_id] = set([go_id])
-                    if node_id not in dict_node_to_methode:
-                        dict_node_to_methode[node_id] = set()
-                    dict_node_to_methode[node_id].add('go_id')
-                    mapped_bioPro.add(node_id)
-
-                # mappen mit alternative IDs
-                if go_id in dict_bioPro_altID:
-                    dict_nodes_to_term[node_id] = dict_bioPro_altID[go_id]
-                    if node_id not in dict_node_to_methode:
-                        dict_node_to_methode[node_id] = set()
-                    dict_node_to_methode[node_id].add('alt_id')
-                    mapped_bioPro.add(node_id)
+                map_to_on_label(go_id, node_id, dict_bioPro_to_resource, dict_bioPro_mapping, dict_bioPro_alt_ids)
 
             # cellular Component
             if type == 'C':
-                if go_id in dict_cellCo_to_name:
-                    dict_nodes_to_term[node_id] = set([go_id])
-                    if node_id not in dict_node_to_methode:
-                        dict_node_to_methode[node_id] = set()
-                    dict_node_to_methode[node_id].add('go_id')
-                    mapped_cellCo.add(node_id)
+                map_to_on_label(go_id, node_id, dict_cellCo_to_resource, dict_cellCo_mapping, dict_cellCo_alt_ids)
 
-                # mappen mit alternative ID
-                if go_id in dict_cellCo_altID:
-                    dict_nodes_to_term[node_id] = dict_cellCo_altID[go_id]
-                    if node_id not in dict_node_to_methode:
-                        dict_node_to_methode[node_id] = set()
-                    dict_node_to_methode[node_id].add('alt_id')
-                    mapped_cellCo.add(node_id)
-
-            # moleculaar Function
             if type == 'F':
-                if go_id in dict_molFu_to_name:
-                    dict_nodes_to_term[node_id] = set([go_id])
-                    if node_id not in dict_node_to_methode:
-                        dict_node_to_methode[node_id] = set()
-                    dict_node_to_methode[node_id].add('go_id')
-                    mapped_molFu.add(node_id)
-
-                # mappen mit alternative ID
-                if go_id in dict_molFu_altID:
-                    dict_nodes_to_term[node_id] = dict_molFu_altID[go_id]
-                    if node_id not in dict_node_to_methode:
-                        dict_node_to_methode[node_id] = set()
-                    dict_node_to_methode[node_id].add('alt_id')
-                    mapped_molFu.add(node_id)
+                map_to_on_label(go_id, node_id, dict_molFu_to_resource, dict_MolFu_mapping, dict_molFu_alt_ids)
 
         # not_mapped.tsv erstellen
-        if node_id not in mapped_bioPro:
-            if node_id not in mapped_cellCo:
-                if node_id not in mapped_molFu:
+        if node_id not in dict_bioPro_mapping:
+            if node_id not in dict_MolFu_mapping:
+                if node_id not in dict_cellCo_mapping:
                     csv_not_mapped.writerow([node_id, go_id, type, term_name])
 
     # mapped tsv erstellen
-    for node_id in mapped_bioPro:
-        methodes = list(dict_node_to_methode[node_id])
-        goTerm_ids = dict_nodes_to_term[node_id]
-        for goTerm_id in goTerm_ids:
-            resource = set(dict_bioPro_to_resource[goTerm_id])
-            resource.add('DrugCentral')
-            resource = '|'.join(resource)
-            csv_mapped_bioPro.writerow([node_id, goTerm_id, resource, methodes])
-
-    for node_id in mapped_cellCo:
-        methodes = list(dict_node_to_methode[node_id])
-        goTerm_ids = dict_nodes_to_term[node_id]
-        for goTerm_id in goTerm_ids:
-            resource = set(dict_cellCo_to_resource[goTerm_id])
-            resource.add('DrugCentral')
-            resource = '|'.join(resource)
-            csv_mapped_cellCo.writerow([node_id, goTerm_id, resource, methodes])
-
-    for node_id in mapped_molFu:
-        methodes = list(dict_node_to_methode[node_id])
-        goTerm_ids = dict_nodes_to_term[node_id]
-        for goTerm_id in goTerm_ids:
-            resource = set(dict_molFu_to_resource[goTerm_id])
-            resource.add('DrugCentral')
-            resource = '|'.join(resource)
-            csv_mapped_molFu.writerow([node_id, goTerm_id, resource, methodes])
+    # bp
+    generate_tsv_for_a_label(dict_bioPro_mapping, dict_bioPro_to_resource, csv_mapped_bioPro)
+    # cc
+    generate_tsv_for_a_label(dict_cellCo_mapping, dict_cellCo_to_resource, csv_mapped_cellCo)
+    # mf
+    generate_tsv_for_a_label(dict_MolFu_mapping, dict_molFu_to_resource, csv_mapped_molFu)
 
 
 # file for mapped or not mapped identifier
@@ -235,10 +168,13 @@ def generate_cypher_file(file_name, label):
     :return:
     """
     cypher_file = open('output/cypher.cypher', 'a')
-    query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/drugcentral/goTerm/%s" As line  FIELDTERMINATOR '\\t'  MATCH (n:DC_GOTerm), (c:%s{identifier:line.id_hetionet}) Where ID(n)= ToInteger(line.node_id)  Set c.drugcentral='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_%s_drugcentral{how_mapped:line.how_mapped}]->(n); \n'''
-    query = query % (path_of_directory, file_name, label, label.lower())
+
+    query = '''MATCH (n:DC_GOTerm), (c:%s{identifier:line.id_hetionet}) Where ID(n)= ToInteger(line.node_id)  Set c.drugcentral='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_%s_drugcentral{how_mapped:line.how_mapped}]->(n)'''
+    query = query % (label, label.lower())
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              "mapping_and_merging_into_hetionet/drugcentral/goTerm/" + file_name,
+                                              query)
     cypher_file.write(query)
-    cypher_file.close()
 
 
 def main():
@@ -247,27 +183,27 @@ def main():
     if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]
     else:
-        sys.exit('need a path drugcentral go')
-    print(datetime.datetime.now())
+        sys.exit('dc go noods path')
+    print(datetime.datetime.utcnow())
     print('Generate connection with neo4j and mysql')
-
 
     create_connection_with_neo4j()
 
     print('#####################################################################################')
     print("load biological process in")
     print(datetime.datetime.now())
-    load_biologicalProcess_in()
+    load_label_in('BiologicalProcess', dict_bioPro_to_resource, dict_bioPro_alt_ids, dict_bioPro_name)
 
     print('#####################################################################################')
     print("load cellular Component in")
     print(datetime.datetime.now())
-    load_cellularComponent_in()
+    load_label_in('CellularComponent', dict_cellCo_to_resource, dict_cellCo_alt_ids, dict_cellCo_name)
 
     print('#####################################################################################')
     print("load molecular function in")
     print(datetime.datetime.now())
-    load_molecularFunction_in()
+
+    load_label_in('MolecularFunction', dict_molFu_to_resource, dict_molFu_alt_ids, dict_molFu_name)
 
     print('#####################################################################################')
     print("load GO term")
@@ -276,7 +212,6 @@ def main():
 
     print('#####################################################################################')
 
-    # cypher files für die jeweiligen Entitäten, 2 sind auskommentiert, da alle Fuktionen dieselbe cypher file erstellen
     generate_cypher_file("mapped_bioPro.tsv", 'BiologicalProcess')
     generate_cypher_file("mapped_cellCo.tsv", 'CellularComponent')
     generate_cypher_file("mapped_molFu.tsv", 'MolecularFunction')
