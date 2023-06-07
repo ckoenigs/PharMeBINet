@@ -5,6 +5,7 @@ from collections import defaultdict
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
 
 '''
 create a connection with neo4j
@@ -13,52 +14,57 @@ create a connection with neo4j
 
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
-    global graph_database
-    graph_database = create_connection_to_databases.database_connection_neo4j()
+    global graph_database, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    graph_database = driver.session()
 
 
 # dictionary
-dict_protein = {}
 dict_protein_to_name = {}
 dict_protein_name = {}
-dict_mapping_parameter = {}
 dict_proteinId_to_resource = {}
+dict_protein_pdb = {}
 dict_protein_uniProt = {}
-dict_protein_altIdentifiers = {}
 dict_protein_mapping = defaultdict(dict)
 dict_target_mapping = defaultdict(dict)
 
 
 def load_protein_in():
-    #query ist ein String
+    # query ist ein String
     query = '''MATCH (n:Protein) RETURN n'''
     results = graph_database.run(query)
 
-    #results werden einzeln durchlaufen
-    for node, in results:
+    # results werden einzeln durchlaufen
+    for record in results:
+        node = record.data()['n']
         identifier = node["identifier"]
         resource = node["resource"]
         prot_name = node["name"]
-        uniProt = node["entry_name"]
+        pharmebinetutils.add_entry_to_dict_to_set(dict_protein_name, prot_name.lower(), identifier)
+        uniProt = node["entry_name"] if "entry_name" in node else ""
 
         xrefs = node['xrefs'] if "xrefs" in node else []
 
-        names = node["synonyms"] if "synonyms" in node else[]
-        #xrefs = node["xrefs"] if "xrefs" in node else []
-        #im dictionary werden passend zu den Identifiern die Namen und die idOwns gespeichert
+        names = node["synonyms"] if "synonyms" in node else []
+        # xrefs = node["xrefs"] if "xrefs" in node else []
+        # im dictionary werden passend zu den Identifiern die Namen und die idOwns gespeichert
         dict_protein_to_name[identifier] = prot_name
         dict_proteinId_to_resource[identifier] = resource
-        dict_protein_uniProt[uniProt] = identifier
 
+        if uniProt:
+            dict_protein_uniProt[uniProt] = identifier
 
-
-        #name
+        # synonyms
         for name in names:
-            if name not in dict_protein_name:
-                dict_protein_name[name] = set()
-            dict_protein_name[name].add(identifier)
+            pharmebinetutils.add_entry_to_dict_to_set(dict_protein_name, name.lower(), identifier)
 
-
+        # pdb
+        for ref in xrefs:
+            if ref.startswith("PDB:"):
+                pdb_ref = ref.split(':')
+                if pdb_ref[1] not in dict_protein_pdb:
+                    dict_protein_pdb[pdb_ref[1]] = set()
+                dict_protein_pdb[pdb_ref[1]].add(identifier)
 
 
 def load_bioactivity_in():
@@ -68,7 +74,9 @@ def load_bioactivity_in():
     mapped_proteins = set()
     dict_node_to_methode = {}
 
-    for node, node_id, in results:
+    for record in results:
+        node = record.data()['n']
+        node_id = record.data()['id(n)']
         accession = node["accession"]
         if accession is not None:
             accession_nbrs = accession.split('|')
@@ -110,12 +118,9 @@ def load_bioactivity_in():
     for node_id in mapped_proteins:
         for protein_id in dict_protein_mapping[node_id]:
             methodes = list(dict_protein_mapping[node_id][protein_id])
-            resource = set(dict_proteinId_to_resource[protein_id])
-            # print(resource, protein_id)
-            resource.add('DrugCentral')
-            resource = '|'.join(resource)
-            csv_mapped.writerow([node_id, protein_id, resource, methodes])
-
+            csv_mapped.writerow([node_id, protein_id,
+                                 pharmebinetutils.resource_add_and_prepare(dict_proteinId_to_resource[protein_id],
+                                                                           'DrugCentral'), '|'.join(methodes)])
 
 
 def load_target_in():
@@ -126,14 +131,15 @@ def load_target_in():
     dict_nodes_to_target = {}
     dict_node_to_methode = {}
 
-    for node, node_id, in results:
+    for record in results:
+        node = record.data()['n']
+        node_id = record.data()['id(n)']
         accession = node["accession"]
         swissProt = node["swissprot"]
         if accession is not None:
             accession_nbrs = accession.split('|')
-        protein_name = node["name"]
+        protein_name = node["name"].lower()
         organism = node["organism"]
-
 
         for accession_nr in accession_nbrs:
             if accession_nr in dict_protein_to_name:
@@ -142,14 +148,23 @@ def load_target_in():
                 dict_target_mapping[node_id][accession_nr].add('accession')
                 mapped_target.add(node_id)
 
-
             if swissProt in dict_protein_uniProt:
                 prot_id = dict_protein_uniProt[swissProt]
                 if prot_id not in dict_target_mapping[node_id]:
-                    dict_target_mapping[node_id][prot_id] = set()
+
+                    if protein_name in dict_protein_name:
+                        if prot_id in dict_protein_name[protein_name]:
+                            dict_target_mapping[node_id][prot_id] = set()
+                        else:
+                            print('not same name', prot_id, node_id, swissProt)
+                            csv_not_mapped_target.writerow([node_id, accession_nr, protein_name, organism])
+                            continue
+                    else:
+                        print('not an existing name', prot_id, node_id, swissProt)
+                        csv_not_mapped_target.writerow([node_id, accession_nr, protein_name, organism])
+                        continue
                 dict_target_mapping[node_id][prot_id].add('swissprot')
                 mapped_target.add(node_id)
-
 
         if node_id not in mapped_target:
             # print(node_id, umls_cui, sct_id, disease_name)
@@ -158,38 +173,41 @@ def load_target_in():
     for node_id in mapped_target:
         for protein_id in dict_target_mapping[node_id]:
             methodes = list(dict_target_mapping[node_id][protein_id])
-            resource = set(dict_proteinId_to_resource[protein_id])
-            # print(resource, protein_id)
-            resource.add('DrugCentral')
-            resource = '|'.join(resource)
-            csv_mapped_target.writerow([node_id, protein_id, resource, methodes])
-
-
+            methodes = '|'.join(methodes)
+            csv_mapped_target.writerow([node_id, protein_id, pharmebinetutils.resource_add_and_prepare(
+                dict_proteinId_to_resource[protein_id], 'DrugCentral'), methodes])
 
 
 # file for mapped or not mapped identifier
-#erstellt neue TSV, überschreibt auch bestehende und leert sie wieder
+# erstellt neue TSV, überschreibt auch bestehende und leert sie wieder
 file_not_mapped_protein = open('protein/not_mapped_protein.tsv', 'w', encoding="utf-8")
-#Dateiformat wird gesetzt mit Trenner: Tabulator
-csv_not_mapped = csv.writer(file_not_mapped_protein,delimiter='\t', lineterminator='\n')
-#Header setzen
+# Dateiformat wird gesetzt mit Trenner: Tabulator
+csv_not_mapped = csv.writer(file_not_mapped_protein, delimiter='\t', lineterminator='\n')
+# Header setzen
 csv_not_mapped.writerow(['id', 'accession_number', 'name', 'organismus'])
 
 file_mapped_protein = open('protein/mapped_protein.tsv', 'w', encoding="utf-8")
-csv_mapped = csv.writer(file_mapped_protein,delimiter='\t', lineterminator='\n')
-csv_mapped.writerow(['node_id','id_pharmebinet', 'resource', 'how_mapped'])
+csv_mapped = csv.writer(file_mapped_protein, delimiter='\t', lineterminator='\n')
+csv_mapped.writerow(['node_id', 'id_hetionet', 'resource', 'how_mapped'])
+
+file_not_mapped_pdb = open('protein/not_mapped_pdb.tsv', 'w', encoding="utf-8")
+csv_not_mapped_pdb = csv.writer(file_not_mapped_pdb, delimiter='\t', lineterminator='\n')
+csv_not_mapped_pdb.writerow(['id', 'accession_number', 'name'])
+
+file_mapped_pdb = open('protein/mapped_pdb.tsv', 'w', encoding="utf-8")
+csv_mapped_pdb = csv.writer(file_mapped_pdb, delimiter='\t', lineterminator='\n')
+csv_mapped_pdb.writerow(['node_id', 'id_hetionet', 'resource', 'how_mapped'])
 
 file_not_mapped_target = open('protein/not_mapped_target.tsv', 'w', encoding="utf-8")
-csv_not_mapped_target = csv.writer(file_not_mapped_target,delimiter='\t', lineterminator='\n')
+csv_not_mapped_target = csv.writer(file_not_mapped_target, delimiter='\t', lineterminator='\n')
 csv_not_mapped_target.writerow(['id', 'accession_number', 'name'])
 
 file_mapped_target = open('protein/mapped_target.tsv', 'w', encoding="utf-8")
-csv_mapped_target = csv.writer(file_mapped_target,delimiter='\t', lineterminator='\n')
-csv_mapped_target.writerow(['node_id','id_pharmebinet', 'resource', 'how_mapped'])
+csv_mapped_target = csv.writer(file_mapped_target, delimiter='\t', lineterminator='\n')
+csv_mapped_target.writerow(['node_id', 'id_hetionet', 'resource', 'how_mapped'])
 
 
-
-def generate_cypher_file(file_nameProtein, file_nameTarget):
+def generate_cypher_file(file_nameProtein, file_namePDB, file_nameTarget):
     """
     prepare cypher query and add to cypher file
     :param file_name: string
@@ -198,17 +216,19 @@ def generate_cypher_file(file_nameProtein, file_nameTarget):
     """
     cypher_file = open('output/cypher.cypher', 'a')
 
-
-    query_Protein = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/drugcentral/protein/%s" As line  FIELDTERMINATOR '\\t'  MATCH (n:DC_Bioactivity), (c:Protein{identifier:line.id_pharmebinet}) Where ID(n)= ToInteger(line.node_id)  Set c.drugcentral='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_Bioactivity_drugcentral{how_mapped:line.how_mapped}]->(n); \n'''
-    query_Protein = query_Protein % (path_of_directory, file_nameProtein)
+    query_Protein = '''MATCH (n:DC_Bioactivity), (c:Protein{identifier:line.id_hetionet}) Where ID(n)= ToInteger(line.node_id)  Set c.drugcentral='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_Bioactivity_drugcentral{how_mapped:line.how_mapped}]->(n)'''
+    query_Protein = pharmebinetutils.get_query_import(path_of_directory,
+                                                      "mapping_and_merging_into_hetionet/drugcentral/protein/" + file_nameProtein,
+                                                      query_Protein)
     cypher_file.write(query_Protein)
 
-    query_Target = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/drugcentral/protein/%s" As line  FIELDTERMINATOR '\\t'  MATCH (n:DC_TargetComponent), (c:Protein{identifier:line.id_pharmebinet}) Where ID(n)= ToInteger(line.node_id)  Set c.drugcentral='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_TargetComponent_drugcentral{how_mapped:line.how_mapped}]->(n); \n'''
-    query_Target = query_Target % (path_of_directory,file_nameTarget)
+    query_Target = '''MATCH (n:DC_TargetComponent), (c:Protein{identifier:line.id_hetionet}) Where ID(n)= ToInteger(line.node_id)  Set c.drugcentral='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_TargetComponent_drugcentral{how_mapped:line.how_mapped}]->(n)'''
+    query_Target = pharmebinetutils.get_query_import(path_of_directory,
+                                                     "mapping_and_merging_into_hetionet/drugcentral/protein/" + file_nameTarget,
+                                                     query_Target)
     cypher_file.write(query_Target)
 
     cypher_file.close()
-
 
 
 def main():
@@ -217,8 +237,8 @@ def main():
     if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]
     else:
-        sys.exit('need a path drugcentral protein')
-    print (datetime.datetime.utcnow())
+        sys.exit('need a path dc protein')
+    print(datetime.datetime.utcnow())
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j()
@@ -230,12 +250,12 @@ def main():
     print("load target component in")
     load_target_in()
 
-    print('###########################################################################################################################')
+    print(
+        '###########################################################################################################################')
 
-    generate_cypher_file("mapped_protein.tsv", "mapped_target.tsv")
+    generate_cypher_file("mapped_protein.tsv", "mapped_pdb.tsv", "mapped_target.tsv")
 
-
-    print (datetime.datetime.utcnow())
+    print(datetime.datetime.utcnow())
 
 
 if __name__ == "__main__":

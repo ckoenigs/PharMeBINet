@@ -278,7 +278,7 @@ def prepare_node_and_rela_and_write_to_files(fIDName):
     xml_dic = defaultdict(dict)
     for con in root.iter('concept'):
         propertys = []
-        synonyme = []
+        synonyms = []
         namespace = con.find('namespace').text
         tmp = con.find('name').text.strip(']').split('[')
         # if len(tmp) == 2:
@@ -293,8 +293,8 @@ def prepare_node_and_rela_and_write_to_files(fIDName):
         synonyms = con.findall('synonym')
         for s in synonyms:
             synonym = s.find('to_name').text
-            if synonym not in synonyme:
-                synonyme.append(synonym)
+            if synonym not in synonyms:
+                synonyms.append(synonym)
         prop = con.findall('property')
         for p in prop:
             pnamespace = p.find('namespace').text
@@ -312,7 +312,7 @@ def prepare_node_and_rela_and_write_to_files(fIDName):
         dict_id_to_label[code] = filename
 
         infos = {'id': code, 'status': status, 'namespace': namespace, 'name': name, 'propertys': '|'.join(propertys),
-                 'synonyms': '|'.join(synonyme)}
+                 'synonyms': '|'.join(synonyms)}
         dict_of_file_names[filename].writerow(infos)
 
     # to avoid problems with data
