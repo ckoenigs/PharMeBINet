@@ -60,6 +60,8 @@ def cypher_edge(cypher_file, filename, label, properties, id_list, edge_name):
         elif header in ['pmid', 'sourceId', 'associationType',
                         'sentence']:  # properties that are lists must be splitted
             query += f'{header}:split(line.{header},"|"), '
+        elif header=='NofSnps':
+            query += header + 'String:line.' + header + ', '
         else:
             query += f'{header}:line.{header}, '
 
