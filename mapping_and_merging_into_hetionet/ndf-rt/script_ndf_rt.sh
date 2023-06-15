@@ -37,16 +37,19 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo pharmacologic class mapping
 
-python3  mapping_mechanism_of_action_and_physiologic_effect.py $path_to_project > pharmacologicClass/output_map_ndf_rt.txt
+python3  mapping_to_pc_ndf_rt.py $path_to_project > pharmacologicClass/output_map_ndf_rt.txt
 
 
 
 now=$(date +"%F %T")
 echo "Current time: $now"
-echo integration of ndf-rt connection into hetionet
+echo integration of ndf-rt connection into pharmebinet
 
 $path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher.cypher
 
+sleep 30
+$path_neo4j/neo4j restart
+sleep 30
 sleep 30
 $path_neo4j/neo4j restart
 sleep 30
@@ -76,7 +79,7 @@ python3  integrate_rela_between_chemical_ingredient.py $path_to_project > chemic
 
 now=$(date +"%F %T")
 echo "Current time: $now"
-echo integration of ndf-rt connection into hetionet
+echo integration of ndf-rt connection into pharmebinet
 
 $path_neo4j/cypher-shell -u neo4j -p $password -f relationships/cypher.cypher
 
