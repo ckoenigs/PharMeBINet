@@ -15,11 +15,50 @@ def mysqlconnect():
     return cursor
 
 
+def write_tsv(cursor, table_name):
+    # Retrieve the total number of rows in the table
+    cursor.execute(f"SELECT COUNT(*) FROM {table_name}")
+    total_rows = cursor.fetchone()[0]
+
+    # Retrieve the column names from table metadata
+    cursor.execute(f"DESCRIBE {table_name}")
+    columns = [column[0] for column in cursor.fetchall()]
+
+    # Create the TSV file with the table name as the filename
+    output_file = f"{table_name}.tsv"
+
+    # Write the header with column names to the TSV file
+    with open(output_file, 'w') as file:
+        file.write('\t'.join(columns) + '\n')
+
+        # Batch size for streaming
+        batch_size = 1000
+
+        # Retrieve and write the data in batches
+        offset = 0
+        while offset < total_rows:
+            # Fetch a batch of data using LIMIT and OFFSET
+            query = f"SELECT * FROM {table_name} LIMIT {batch_size} OFFSET {offset}"
+            cursor.execute(query)
+            rows = cursor.fetchall()
+
+            # Write the batch of rows to the TSV file
+            for row in rows:
+                file.write('\t'.join(str(value) for value in row) + '\n')
+
+            # Increment the offset for the next batch
+            offset += batch_size
+            print("I'm at ", offset)
+    print(f"done {table_name}")
+
+
+
 def get_np(cursor, table_name):
     batch_size = 1000
     offset = 0
     data_batches = []
     column_names = []
+    file_name = table_name + ".tsv"
     while True:
         query = f"SELECT * FROM {table_name} LIMIT {batch_size} OFFSET {offset}"
         cursor.execute(query)
@@ -32,7 +71,7 @@ def get_np(cursor, table_name):
         batch_array = np.array(rows)
         data_batches.append(batch_array)
         offset += batch_size
-        print("I'm at ", offset)
+        #print("I'm at ", offset)
     data_array = np.concatenate(data_batches, axis=0)
     data_array = np.vstack([column_names, data_array])
     return data_array
@@ -87,50 +126,7 @@ if __name__ == "__main__":
     monomer = "MONOMER"
     monomer_name = "MONO_NAME"
     cur = mysqlconnect()
-    #polymer_array = get_np(cur, polymer)
-    #polymer_name_array = get_np(cur, polymer_name)
-    #complex_array = get_np(cur, complex)
-    #complex_name_array = get_np(cur, complex_name)
-    #cobweb_array = get_np(cur, "COBWEB_BDB")
-    #np.savetxt('COBWEB_BDB.tsv', cobweb_array, delimiter='\t', fmt='%s')
-    #enzyme_array = get_np(cur, "ENZYME_REACTANT_SET")
-    #np.savetxt('ENZYME_REACTANT_SET.tsv', enzyme_array, delimiter='\t', fmt='%s')
-    ####assay_array = get_np(cur, "ASSAY")
-    ####np.savetxt('ASSAY.tsv', assay_array, delimiter='\t', fmt='%s')
-    #pdb_array = get_np(cur, "PDB_BDB")
-    #np.savetxt('PDB_BDB.tsv', pdb_array, delimiter='\t', fmt='%s')
-    #complex_component_array = get_np(cur, "COMPLEX_COMPONENT")
-    #np.savetxt('COMPLEX_COMPONENT.tsv', complex_component_array, delimiter='\t', fmt='%s')
-    ki_result_array = get_np(cur, "KI_RESULT")
-    np.savetxt('KI_RESULT.tsv', ki_result_array, delimiter='\t', fmt='%s')
-    entry_array = get_np(cur, "ENTRY")
-    np.savetxt('ENTRY.tsv', entry_array, delimiter='\t', fmt='%s')
-    data_fit_meth_array = get_np(cur, "DATA_FIT_METH")
-    np.savetxt('DATA_FIT_METH.tsv', data_fit_meth_array, delimiter='\t', fmt='%s')
-    instrument_array = get_np(cur, "INSTRUMENT")
-    np.savetxt('INSTRUMENT.tsv', instrument_array, delimiter='\t', fmt='%s')
-    itc_result_array = get_np(cur, "ITC_RESULT_A_B_AB")
-    np.savetxt('ITC_RESULT_A_B_AB.tsv', itc_result_array, delimiter='\t', fmt='%s')
-    itc_run_array = get_np(cur, "ITC_RUN_A_B_AB")
-    np.savetxt('ITC_RUN_A_B_AB.tsv', itc_run_array, delimiter='\t', fmt='%s')
-    entry_citation_array = get_np(cur, "ENTRY_CITATION")
-    np.savetxt('ENTRY_CITATION.tsv', entry_citation_array, delimiter='\t', fmt='%s')
-    article_array = get_np(cur, "ARTICLE")
-    np.savetxt('ARTICLE.tsv', article_array, delimiter='\t', fmt='%s')
-    monomer_struct_array = get_np(cur, "MONOMER_STRUCT")
-    np.savetxt('MONOMER_STRUCT.tsv', monomer_struct_array, delimiter='\t', fmt='%s')
-    monomer_array = get_np(cur, monomer)
-    monomer_name_array = get_np(cur, monomer_name)
-    #polymer_name_array_new = names_by_id(polymer_name_array)
-    #complex_name_array_new = names_by_id(complex_name_array)
-    monomer_name_array_new = names_by_id(monomer_name_array)
-    #merged_array = merge_arrays(polymer_array, polymer_name_array_new, 18, 0)
-    #merged_array_complex = merge_arrays(complex_array, complex_name_array_new, 0, 0)
-    merged_array_monomer = merge_arrays(monomer_array, monomer_name_array_new, 11, 0)
-    #print(merged_array_monomer.shape)
-    #np.savetxt('POLYMER_AND_NAMES.tsv', merged_array, delimiter='\t', fmt='%s')
-    #np.savetxt('COMPLEX_AND_NAMES.tsv', merged_array_complex, delimiter='\t', fmt='%s')
-    np.savetxt('MONOMER_AND_NAMES.tsv', merged_array_monomer, delimiter='\t', fmt='%s')
+    write_tsv(cur, "MONO_NAME")
 
 
 
