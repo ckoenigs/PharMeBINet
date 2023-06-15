@@ -2,10 +2,11 @@
 import sys, datetime
 import lxml.etree as ET
 
-TODELETE = {'adrecs', 'adrecstarget', 'aeolus', 'atc', 'biogrid', 'clinvar', 'ctd', 'dbsnp', 'dc', 'diseaseontology',
-            'drugbank', 'ddinter' 'efo', 'gencc', 'go', 'hmdb', 'hpo', 'iid', 'ncbi', 'ndfrt', 'medrt', 'mondo',
-            'multi', 'omim', 'pharmgkb', 'reactome', 'rnacentral', 'rnadisease', 'rnainter', 'sider', 'smpdb',
-            'uniprot'}
+# dc = drugcentral
+TODELETE = {'adrecs', 'adrecstarget', 'aeolus', 'atc', 'biogrid', 'clinvar', 'ctd', 'dbsnp', 'dc', 'ddinter',
+            'disgenet', 'diseaseontology', 'drugbank', 'foodb', 'efo', 'gencc', 'go', 'hgnc', 'hippie', 'hmdb', 'hpo',
+            'iid', 'medrt', 'mirbase', 'mondo', 'ncbi', 'ndfrt', 'multi', 'omim', 'openfda', 'pharmgkb', 'reactome',
+            'refseq', 'rnacentral', 'rnadisease', 'rnainter', 'sider', 'smpdb', 'ttd', 'uberon', 'uniprot'}
 
 
 # def
@@ -126,112 +127,3 @@ print('finished xml parser')
 print(datetime.datetime.now())
 print(
     '###########################################################################################################################################')
-
-sys.exit()
-
-# TODELETE = {'sider', 'ctd', 'ndfrt', 'aeolus', 'drugbank', 'ncbi', 'efo', 'hpo', 'uniprot', 'multi', 'go', 'dc',
-#             'diseaseontology', 'mondo', 'clinvar', 'omim', 'reactome', 'adrecstarget', 'iid', 'medrt', 'pharmgkb',
-#             'biogrid', 'dbsnp', 'hmdb', 'smpdb'}
-# # def
-# def check_source_info_in_label(label):
-#     is_ok_label=False
-#     if label[0].isupper():
-#         splitted = label.lower().split('_')
-#         if len(splitted) == 1:
-#             return True
-#         intersection = TODELETE.intersection(splitted)
-#         if len(intersection) == 0:
-#             print('has a _ but no source?')
-#             print(label)
-#             return True
-#         # elif len(intersection)>1:
-#         #     print(label)
-#         #     print('multiple _ but not a source?')
-#     return is_ok_label
-#
-# file=open('/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/PharMeBiNet/PharMeBiNet.graphml','r',encoding='utf-8')
-# file_final=open('/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/PharMeBiNet/PharMeBiNet_finished.graphml','w',encoding='utf-8')
-#
-# counter_nodes_all=0
-# counter_nodes_add=0
-# counter_edges_all=0
-# counter_edges_added=0
-# set_of_all_node_ids=set()
-# is_ok_before=False
-# is_edge=False
-# for line in file:
-#     splitted=line.split(' ')
-#     if splitted[0].strip() in ['<?xml','<graphml','<key', '<graph','</graph>','</graphml>']:
-#         file_final.write(line)
-#     elif splitted[0]=='<node':
-#         is_ok_before = False
-#         counter_nodes_all+=1
-#         # id="n0"
-#         id_part=splitted[1].split('="')[1][:-1]
-#         labels=splitted[2].split('"')[1]
-#         labels_ok=False
-#         for label in labels.split(':')[1:]:
-#             is_ok_label=check_source_info_in_label(label)
-#             if is_ok_label:
-#                 labels_ok=True
-#
-#         if labels_ok:
-#             is_ok_before = True
-#             file_final.write(line)
-#             set_of_all_node_ids.add(id_part)
-#             counter_nodes_add += 1
-#         else:
-#             is_ok_before = False
-#     elif (len(splitted[0])>0 and splitted[0][0]!='<') or len(splitted[0])==0:
-#         if is_edge:
-#             print(line)
-#         if is_ok_before:
-#             print('missing < or multiple line node?')
-#             print(line)
-#             file_final.write(line)
-#             # sys.exit()
-#
-#     elif splitted[0]=='</data><data' and '</node' in line:
-#
-#         if is_ok_before:
-#             print('weared <data>')
-#             print(line)
-#             file_final.write(line)
-#             sys.exit()
-#     elif splitted[0]=='<edge':
-#         # sys.exit()
-#
-#         is_edge=True
-#         counter_edges_all+=1
-#         source=splitted[2].split('="')[1][:-1]
-#         target = splitted[3].split('="')[1][:-1]
-#         if source in set_of_all_node_ids and target in set_of_all_node_ids:
-#             is_ok_before = True
-#             counter_edges_added+=1
-#             file_final.write(line)
-#         # else:
-#         #     is_ok_before = True
-#             # print(line)
-#             # sys.exit()
-#     else:
-#         print('start of creazy')
-#         print(line)
-#         print(splitted[0])
-#         sys.exit()
-#
-#     if counter_nodes_all % 500000==0 and counter_nodes_all>0:
-#         print(datetime.datetime.now())
-#         print('node',counter_nodes_all)
-#
-#     if counter_edges_all%1000000==0 and counter_edges_all>0:
-#         print(datetime.datetime.now())
-#         print('edges', counter_edges_all)
-#
-#     # if counter_nodes_all % 8859764==0 and counter_nodes_all>0:
-#     #     break
-#
-#     # if counter_edges_all % 1000==0 and counter_edges_all>0:
-#     #     break
-#
-# print('from all nodes', counter_nodes_all, 'are real nodes', counter_nodes_add)
-# print('from all edges', counter_edges_all, 'are real edges', counter_edges_added)
