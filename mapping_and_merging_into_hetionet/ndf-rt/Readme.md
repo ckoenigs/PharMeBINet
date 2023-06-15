@@ -26,10 +26,11 @@ In the following, the NDF-RT ingredients are mapped to chemicals.
     In the last step, all mapped pairs are written into the TSV file.
                
 
-The last mapping, is the NDF-RT drug, mechanism of action, physiologic effect, and pharmacokinetics are mapped to pharmacological class.
-    First, a query is added to the cypher file which deletes all PC from the database.
-    Then for all of the labels (except for drug) the TSF file is generated. Additionally, the cypher query to integrate the information into the database is added to the cypher file. Then the information is loaded into the program and prepared to add to the TSV file.
-    The drug is similar with the exception that the drug is also mapped to the other PC by name. So, instead of one TSV file, there are two one for mapped and one for new nodes.
+The last mapping, is the NDF-RT drug, mechanism of action, physiologic effect, and pharmacokinetics are mapped to pharmacological class (PC).
+    First, all PCs from PharMeBINet are loaded, and the important information is written into a dictionary.
+    Then for each NDF-RT label, first, the TSV file and the cypher query are prepared.
+    Next,  the nodes for each label are loaded and mapped with the NDF-RT id. The second mapping is name mapping. All mapping pairs are written into the TSV file.
+    From the drug only with "\[EPC\]" in their name are mapped to PC with NDF-RT id.
                
 Then the mapping information and new nodes are integrated into the database with the cypher-shell.
 
