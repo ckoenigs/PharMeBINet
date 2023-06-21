@@ -9,7 +9,7 @@ path_to_project=$2
 #password
 password=$3
 
-python3 parse_med_rt_to_tsv.py $path_to_project > output/output_integration_ndf_rt.txt
+python3 parse_med_rt_to_tsv.py $path_to_project > output/output_integration_med_rt.txt
 
 
 now=$(date +"%F %T")

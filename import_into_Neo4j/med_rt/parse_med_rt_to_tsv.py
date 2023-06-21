@@ -82,7 +82,7 @@ def parse_CUI_line(line, xref_start, namespace):
     dict_id_to_label[ID] = filename
 
     synonym = set(synonym1).union(synonym2)
-    info = {'id': ID, 'name': synonym.pop(), 'synonyms': '|'.join(synonym), 'xref': xref_start + ':' + cui}
+    info = {'id': ID, 'name': synonym.pop().rstrip(), 'synonyms': '|'.join(synonym), 'xref': xref_start + ':' + cui}
     dict_of_file_names[filename].writerow(info)
     return ID, {'synonym': synonym, 'cui': cui}
 
@@ -143,7 +143,7 @@ def add_nodes_without_infos(code, name, namespace, filename):
     dict_id_to_label[code] = filename
 
     if not code in set_nodes_from_rela:
-        infos = {'id': code, 'namespace': namespace, 'name': name}
+        infos = {'id': code, 'namespace': namespace, 'name': name.rstrip()}
         dict_of_file_names[filename].writerow(infos)
         set_nodes_from_rela.add(code)
 
@@ -182,7 +182,7 @@ def prepare_rela_and_add_to_file(root, dic, fIDName, path):
                         add_nodes_without_infos(to_code, to_name, to_namespace, 'Chemical_Ingredient')
                     else:
                         add_nodes_without_infos(to_code, to_name, to_namespace, 'other')
-                        csv_writer.writerow([to_code, filename, namespace])
+                        csv_writer.writerow([to_code, filename.rstrip(), namespace])
 
             if from_code[0] != 'N':
                 if from_code in dic:
@@ -196,7 +196,7 @@ def prepare_rela_and_add_to_file(root, dic, fIDName, path):
                         add_nodes_without_infos(from_code, from_name, from_namespace, 'Chemical_Ingredient')
                     else:
                         add_nodes_without_infos(from_code, from_name, from_namespace, 'other')
-                        csv_writer.writerow([from_code, filename, namespace])
+                        csv_writer.writerow([from_code, filename.rstrip(), namespace])
 
             label_from = dict_id_to_label[from_code]
             label_to = dict_id_to_label[to_code]
@@ -215,7 +215,7 @@ def prepare_rela_and_add_to_file(root, dic, fIDName, path):
 dict_id_to_label = {}
 
 # header
-header = ['id', 'status', 'namespace', 'name', 'propertys', 'synonyms', 'xref']
+header = ['id', 'status', 'namespace', 'name', 'properties', 'synonyms', 'xref']
 
 # dictionary of file names to file
 dict_of_file_names = {}
@@ -242,7 +242,7 @@ def generate_node_csv_files(file_name):
 
     query_node = 'Create (n:%s {'
     for head in header:
-        if head in ['synonyms', 'propertys']:
+        if head in ['synonyms', 'properties']:
             query_node += head + ': split(line.' + head + ',"|"), '
         else:
             query_node += head + ': line.' + head + ', '
@@ -277,7 +277,7 @@ def prepare_node_and_rela_and_write_to_files(fIDName):
 
     xml_dic = defaultdict(dict)
     for con in root.iter('concept'):
-        propertys = []
+        properties = []
         synonyms = []
         namespace = con.find('namespace').text
         tmp = con.find('name').text.strip(']').split('[')
@@ -290,17 +290,17 @@ def prepare_node_and_rela_and_write_to_files(fIDName):
         name = tmp[0]
         status = con.find('status').text
         code = con.find('code').text
-        synonyms = con.findall('synonym')
-        for s in synonyms:
+        synonyms_element = con.findall('synonym')
+        synonyms=set()
+        for s in synonyms_element:
             synonym = s.find('to_name').text
-            if synonym not in synonyms:
-                synonyms.append(synonym)
+            synonyms.add(synonym)
         prop = con.findall('property')
         for p in prop:
             pnamespace = p.find('namespace').text
             pname = p.find('name').text
             pvalue = p.find('value').text
-            propertys.append(pnamespace + ':' + pname + ':' + pvalue)
+            properties.append(pnamespace + ':' + pname + ':' + pvalue)
 
             if pname == 'CTY':
                 filename = pvalue
@@ -311,7 +311,7 @@ def prepare_node_and_rela_and_write_to_files(fIDName):
 
         dict_id_to_label[code] = filename
 
-        infos = {'id': code, 'status': status, 'namespace': namespace, 'name': name, 'propertys': '|'.join(propertys),
+        infos = {'id': code, 'status': status, 'namespace': namespace, 'name': name.rstrip(), 'properties': '|'.join(properties),
                  'synonyms': '|'.join(synonyms)}
         dict_of_file_names[filename].writerow(infos)
 
