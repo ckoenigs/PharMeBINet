@@ -12,6 +12,13 @@ password=$3
 # path to pharMeBiNet graphml
 path_to_pharMeBiNet='/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/PharMeBiNet/'
 
+sleep 60
+
+$path_neo4j/neo4j restart
+
+
+sleep 120
+
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo 'export database'
