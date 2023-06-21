@@ -49,7 +49,7 @@ def generate_tsv_files(keys, file_name):
 
 def generate_tsv_file_and_prepare_cypher_queries(keys, file_name, label, unique_identifier, additional_index=''):
     """
-    generate node file as csv. Additionaly, generate cpher query to integrate node into neo4j with index.
+    generate node file as csv. Additionaly, generate cypher query to integrate node into neo4j with index.
     :param keys: list strings
     :param file_name: string
     :param label: string
