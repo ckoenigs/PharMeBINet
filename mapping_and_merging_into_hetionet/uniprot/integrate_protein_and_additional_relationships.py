@@ -212,7 +212,7 @@ def check_and_write_uniprot_ids(uniprot_id, name, identifier, secondary_uniprot_
                     check_and_add_rela_pair(identifier, uniprot_id, intersection, secondary_uniprot_ids, 'yes',
                                             'ncbi_id_and_gene_symbol')
                     return True, genes
-                else:
+                elif len(symbol_interaction)==0:
                     symbol_synonym_interaction = lower_primary_gene_symbols.intersection(
                         dict_synonyms_to_gene_ids.keys())
                     list_gene_id_from_synonyms = set()
@@ -229,6 +229,12 @@ def check_and_write_uniprot_ids(uniprot_id, name, identifier, secondary_uniprot_
                                                 'yes',
                                                 'ncbi_id_but_only_gene_symbol')
                         return True, genes
+                else:
+                    print('use only the symbol gene ids primare for synonyms')
+                    check_and_add_rela_pair(identifier, uniprot_id, list_gene_id_from_name, secondary_uniprot_ids,
+                                            'yes',
+                                            'ncbi_id_but_only_gene_symbol_primary')
+                    return True, genes
             else:
                 print('only gene id mapping')
                 check_and_add_rela_pair(identifier, uniprot_id, gene_ids, secondary_uniprot_ids, '', 'ncbi_id')
@@ -348,7 +354,7 @@ def write_cypher_file():
     for property in results:
         property = property.data()['l']
         # the go classifiers are in the rela to bc, cc and mf and the gene information are in the rela to gene
-        if property in ['go_classifiers', 'gene_name', 'gene_id']:
+        if property in ['go_classifiers', 'gene_names', 'gene_ids']:
             continue
         # to have the prepared xrefs
         elif property == 'xrefs':
@@ -365,10 +371,6 @@ def write_cypher_file():
                                               query)
     file_cypher.write(query)
     file_cypher.write(pharmebinetutils.prepare_index_query('Protein', 'identifier'))
-
-    # query = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:''' + path_of_directory + '''mapping_and_merging_into_hetionet/uniprot/uniprot_gene/db_gene_uniprot_delete.tsv" As line FIELDTERMINATOR "\\t" Match (g:Gene{identifier:line.gene_id}) With g,[x IN g.uniProtIDs WHERE x <> line.uniprot_id]  as filterdList
-    #              Set g.uniProtIDs=filterdList '''
-    # file_cypher.write(query)
 
     query = ''' MATCH (n:Protein{identifier:line.uniprot_id}), (g:Gene{identifier:line.gene_id}) Set g.resource=split(line.resource_node,'|'), g.uniprot='yes' Create (g)-[:PRODUCES_GpP{name_mapping:line.name_mapping, uniprot:"yes" ,resource:['UniProt'],license:'CC BY 4.0', url:'https://www.uniprot.org/uniprot/'+line.uniprot_id, source:"UniProt", how_mapped:line.how_mapped}]->(n)'''
     query = pharmebinetutils.get_query_import(path_of_directory,
@@ -444,7 +446,7 @@ def get_gather_protein_info_and_generate_relas():
         xrefs = node['xrefs'] if 'xrefs' in node else []
 
         # the gene symbol
-        geneSymbols = node['gene_name'] if 'gene_name' in node else []
+        geneSymbols = node['gene_names'] if 'gene_names' in node else []
         primary_gene_symbols = set()
         set_gene_symbol = set()
         for geneSymbol in geneSymbols:
@@ -459,7 +461,7 @@ def get_gather_protein_info_and_generate_relas():
                 hgnc_ids.add(xref.split(':', 1)[1])
 
         # the gene ids
-        gene_ids = [x.replace('GeneID:', '') for x in node['gene_id']] if 'gene_id' in node else []
+        gene_ids = [x.replace('GeneID:', '') for x in node['gene_ids']] if 'gene_ids' in node else []
 
         # first check out the identifier
         # also check if it has multiple genes or not
