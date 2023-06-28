@@ -1,4 +1,4 @@
-# https://www.genome.jp/kegg-bin/get_htext#A1
+# https://www.genome.jp/kegg-bin/get_htext?br08303.keg
 import csv
 import ujson, sys
 import datetime
