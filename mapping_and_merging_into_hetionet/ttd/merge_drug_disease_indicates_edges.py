@@ -32,14 +32,18 @@ def load_existing_pairs():
         dict_chemical_disease_pair_to_resource[(chemical_id, disease_id)] = resource
 
 
-def generate_csv_and_tsv():
-    file_name = 'edges/drug_disease.tsv'
+def generate_csv_and_tsv(label):
+    """
+    Generate tsv file and add cypher query
+    :return:
+    """
+    file_name = f'edges/drug_{label}.tsv'
     file = open(file_name, 'w', encoding='utf-8')
     csv_writer = csv.writer(file, delimiter='\t')
     csv_writer.writerow(['chemical_id', 'disease_id', 'resource', 'ttd_id'])
 
-    cypher_file = open('output/cypher_edges.cypher', 'w', encoding='utf-8')
-    query = ' Match (c:Chemical{identifier:line.chemical_id}), (d:Disease{identifier:line.disease_id}) Merge (c)-[l:TREATS_CHtD]->(d) On Create Set l.ttd="yes", l.resource=["TTD"], l.source="TTD", l.url="https://db.idrblab.net/ttd/data/drug/details/"+line.ttd_id, l.license="" On Match Set l.resource=split(line.resource,"|"), l.ttd="yes" '
+
+    query = f' Match (c:Chemical{{identifier:line.chemical_id}}), (d:{label}{{identifier:line.disease_id}}) Merge (c)-[l:TREATS_CHt{label[0]}]->(d) On Create Set l.ttd="yes", l.resource=["TTD"], l.source="TTD", l.url="https://db.idrblab.net/ttd/data/drug/details/"+line.ttd_id, l.license="No license" On Match Set l.resource=split(line.resource,"|"), l.ttd="yes" '
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/ttd/{file_name}',
                                               query)
@@ -47,16 +51,16 @@ def generate_csv_and_tsv():
     return csv_writer
 
 
-def get_ttd_drug_disease_edge():
+def get_ttd_drug_disease_edge(label):
     """
-
+    Load all pairs and write into tsv file
     :return:
     """
-    csv_writer = generate_csv_and_tsv()
+    csv_writer = generate_csv_and_tsv(label)
 
     set_of_pairs = set()
 
-    query = 'Match p=(a:Chemical)--(b:TTD_Drug)-[r:TTD_INDICATES]-(:TTD_Disease)--(c:Disease) Return Distinct a.identifier, b.id, r.clinical_status, c.identifier'
+    query = f'Match p=(a:Chemical)--(b:TTD_Drug)-[r:TTD_INDICATES]-(:TTD_Disease)--(c:{label}) Return Distinct a.identifier, b.id, r.clinical_status, c.identifier'
     for record in g.run(query):
         [chemical_id, ttd_id, rela_clinical_status, disease_id] = record.values()
         if (chemical_id, disease_id) in set_of_pairs:
@@ -70,11 +74,13 @@ def get_ttd_drug_disease_edge():
 
 
 def main():
-    global path_of_directory
+    global path_of_directory, cypher_file
     if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]
     else:
         sys.exit('need a path ttd ')
+
+    cypher_file = open('output/cypher_edges.cypher', 'w', encoding='utf-8')
 
     print(datetime.datetime.now())
     print('create connection')
@@ -88,7 +94,10 @@ def main():
     print('#' * 50)
     print(datetime.datetime.now())
     print('map compound')
-    get_ttd_drug_disease_edge()
+    for label in ['Disease','Symptom']:
+        get_ttd_drug_disease_edge(label)
+
+    cypher_file.close()
 
     print('#' * 50)
     print(datetime.datetime.now())
