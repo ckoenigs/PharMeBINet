@@ -59,12 +59,12 @@ def load_all_bioGrid_genes_and_finish_the_files(csv_mapping, label):
             found_mapping = True
             csv_mapping.writerow(
                 [identifier, identifier,
-                 pharmebinetutils.resource_add_and_prepare(dict_node_id_to_resource[identifier], "bioGrid"), 'id'])
+                 pharmebinetutils.resource_add_and_prepare(dict_node_id_to_resource[identifier], "BioGrid"), 'id'])
         elif identifier in dict_alternative_ids_to_go_ids:
             for go_id in dict_alternative_ids_to_go_ids[identifier]:
                 csv_mapping.writerow(
                     [identifier, go_id,
-                     pharmebinetutils.resource_add_and_prepare(dict_node_id_to_resource[go_id], "bioGrid"),
+                     pharmebinetutils.resource_add_and_prepare(dict_node_id_to_resource[go_id], "BioGrid"),
                      'alternative_ids'])
 
 

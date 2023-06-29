@@ -69,13 +69,13 @@ def load_all_bioGrid_diseases_and_finish_the_files(csv_mapping):
             for node_id in dict_doid_to_disease_ids[identifier]:
                 csv_mapping.writerow(
                     [identifier, node_id,
-                     pharmebinetutils.resource_add_and_prepare(dict_disease_id_to_resource[node_id], "bioGrid"),
+                     pharmebinetutils.resource_add_and_prepare(dict_disease_id_to_resource[node_id], "BioGrid"),
                      'doid'])
         elif name in dict_synonym_to_ids:
             for node_id in dict_synonym_to_ids[name]:
                 csv_mapping.writerow(
                     [identifier, node_id,
-                     pharmebinetutils.resource_add_and_prepare(dict_disease_id_to_resource[node_id], "bioGrid"),
+                     pharmebinetutils.resource_add_and_prepare(dict_disease_id_to_resource[node_id], "BioGrid"),
                      'name'])
 
 

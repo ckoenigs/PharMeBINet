@@ -133,7 +133,7 @@ def rna_RNAInter():
     print('number of mapped nodes', counter_mapped)
 
     print("######### Start: Cypher #########")
-    query = f'Match (p1:rna_RNAInter{{Raw_ID:line.Raw_ID}}),(p2:RNA{{identifier:line.identifier}}) SET p2.resource = split(line.resource,"|"), p2.RNAInter = "yes" Create (p1)-[:associateRNA{{how_mapped:line.how_mapped  }}]->(p2)'
+    query = f'Match (p1:rna_RNAInter{{Raw_ID:line.Raw_ID}}),(p2:RNA{{identifier:line.identifier}}) SET p2.resource = split(line.resource,"|"), p2.rnainter = "yes" Create (p1)-[:associateRNA{{how_mapped:line.how_mapped  }}]->(p2)'
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/RNAinter/{file_name}',
                                               query)

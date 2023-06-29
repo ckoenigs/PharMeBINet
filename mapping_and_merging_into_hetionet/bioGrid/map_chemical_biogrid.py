@@ -86,7 +86,7 @@ def load_all_BioGrid_chemical_and_finish_the_files(csv_mapping):
                     csv_mapping.writerow(
                         [identifier, chemical_id,
                          pharmebinetutils.resource_add_and_prepare(dict_chemical_id_to_resource[chemical_id],
-                                                                   "bioGrid"),
+                                                                   "BioGrid"),
                          'inchikey'])
         if found_mapping:
             continue
@@ -96,7 +96,7 @@ def load_all_BioGrid_chemical_and_finish_the_files(csv_mapping):
                 found_mapping = True
                 csv_mapping.writerow(
                     [identifier, source_id,
-                     pharmebinetutils.resource_add_and_prepare(dict_chemical_id_to_resource[source_id], "bioGrid"),
+                     pharmebinetutils.resource_add_and_prepare(dict_chemical_id_to_resource[source_id], "BioGrid"),
                      'drugbank_id'])
         if found_mapping:
             continue
@@ -106,7 +106,7 @@ def load_all_BioGrid_chemical_and_finish_the_files(csv_mapping):
             for chemical_id in dict_chemical_synonym_to_chemical_ids[name]:
                 csv_mapping.writerow(
                     [identifier, chemical_id,
-                     pharmebinetutils.resource_add_and_prepare(dict_chemical_id_to_resource[chemical_id], "bioGrid"),
+                     pharmebinetutils.resource_add_and_prepare(dict_chemical_id_to_resource[chemical_id], "BioGrid"),
                      'name'])
         # if found_mapping:
         #     continue
@@ -120,7 +120,7 @@ def load_all_BioGrid_chemical_and_finish_the_files(csv_mapping):
         #             csv_mapping.writerow(
         #                 [identifier, chemical_id,
         #                  pharmebinetutils.resource_add_and_prepare(dict_chemical_id_to_resource[chemical_id],
-        #                                                            "bioGrid"),
+        #                                                            "BioGrid"),
         #                  'synonyms'])
 
         if not found_mapping:
