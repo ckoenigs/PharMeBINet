@@ -77,13 +77,13 @@ def load_all_bioGrid_genes_and_finish_the_files(csv_mapping):
             found_mapping = True
             csv_mapping.writerow(
                 [identifier, gene_id_entrez,
-                 pharmebinetutils.resource_add_and_prepare(dict_gene_id_to_resource[gene_id_entrez], "BioGrid"), 'id'])
+                 pharmebinetutils.resource_add_and_prepare(dict_gene_id_to_resource[gene_id_entrez], "BioGRiD"), 'id'])
         elif gene_symbol in dict_unique_gene_symbol_to_gene_ids:
             found_mapping = True
             for gene_id in dict_unique_gene_symbol_to_gene_ids[gene_symbol]:
                 csv_mapping.writerow(
                     [identifier, gene_id,
-                     pharmebinetutils.resource_add_and_prepare(dict_gene_id_to_resource[gene_id], "BioGrid"),
+                     pharmebinetutils.resource_add_and_prepare(dict_gene_id_to_resource[gene_id], "BioGRiD"),
                      'gene_symbol_unique'])
 
         if found_mapping:
@@ -94,7 +94,7 @@ def load_all_bioGrid_genes_and_finish_the_files(csv_mapping):
             for gene_id in dict_gene_symbol_to_gene_ids[gene_symbol]:
                 csv_mapping.writerow(
                     [identifier, gene_id,
-                     pharmebinetutils.resource_add_and_prepare(dict_gene_id_to_resource[gene_id], "BioGrid"),
+                     pharmebinetutils.resource_add_and_prepare(dict_gene_id_to_resource[gene_id], "BioGRiD"),
                      'gene_symbol'])
 
         if found_mapping:
@@ -104,7 +104,7 @@ def load_all_bioGrid_genes_and_finish_the_files(csv_mapping):
             for gene_id in dict_gene_synonym_to_gene_ids[gene_symbol]:
                 csv_mapping.writerow(
                     [identifier, gene_id,
-                     pharmebinetutils.resource_add_and_prepare(dict_gene_id_to_resource[gene_id], "BioGrid"),
+                     pharmebinetutils.resource_add_and_prepare(dict_gene_id_to_resource[gene_id], "BioGRiD"),
                      'gene_symbol_synonyms'])
 
 
