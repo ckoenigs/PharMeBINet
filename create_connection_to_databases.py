@@ -4,7 +4,7 @@ from neo4j import GraphDatabase
 
 # connect with the neo4j database
 def database_connection_neo4j_driver():
-    driver = GraphDatabase.driver('neo4j://localhost:7687', auth=('neo4j', 'test1234'))
+    driver = GraphDatabase.driver('bolt://localhost:7687', auth=('neo4j', 'test1234'))
     return driver
 
 

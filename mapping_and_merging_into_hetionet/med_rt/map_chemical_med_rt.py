@@ -24,13 +24,13 @@ create connection to neo4j and mysql
 
 
 def create_connection_with_neo4j_mysql():
+    """
+    create connection to neo4j and mysql rxnom database
+    :return:
+    """
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
     g = driver.session()
-
-    # create connection with mysql database
-    global con
-    con = create_connection_to_databases.database_connection_umls()
 
     # generate connection to mysql to RxNorm database
     global conRxNorm
@@ -53,11 +53,11 @@ def check_for_rxcui(name, rxcui):
     found_id = False
     if rows_counter > 0:
         other_id = []
-        for rxnorm_cui in cur:
-            if rxnorm_cui[0] == rxcui:
+        for (rxnorm_cui,) in cur:
+            if rxnorm_cui == rxcui:
                 found_id = True
             else:
-                other_id.append(rxnorm_cui[0])
+                other_id.append(rxnorm_cui)
     else:
         # there is nothing that can found in rxnorm
         found_id = True
@@ -67,12 +67,11 @@ def check_for_rxcui(name, rxcui):
         return other_id
 
 
-'''
-load in all compound from pharmebinet in a dictionary
-'''
-
-
 def load_pharmebinet_chemical_in():
+    """
+    Load the chemical information and add information to dictionaries
+    :return:
+    """
     query = '''MATCH (n:Chemical) RETURN n.identifier,n'''
     results = g.run(query)
 
@@ -120,38 +119,43 @@ def prepare_csv_file_and_cypher_file():
     return csv_writer
 
 
-dict_manual_mapping_identifier={
-    'N0000178919':'DBSALT000845',
-    'N0000179741':'DBSALT001473',
-    'N0000178917':'DBSALT000206',
-    'N0000178915':'DBSALT000267',
-    'N0000179466':'DBSALT001025',
-    'N0000179641':'DBSALT000299',
-    'N0000178961':'DBSALT000999',
-    'N0000178975':'DBSALT000262',
-    'N0000179005':'DBSALT001356',
-    'DBSALT000316':'DBSALT000316',
-    'N0000179512':'DBSALT000991',
-    'N0000005922':'DB00986',
-    'N0000179599':'DBSALT002390',
-    'N0000178984':'DBSALT000726',
-    'N0000179419':'DBSALT000429',
-    'N0000178978':'DBSALT000417',
-    'N0000179299':'DBSALT000264',
-    'N0000179427':'DBSALT000734',
-    'N0000178897':'DBSALT001319',
-    'N0000179746':'DBSALT001341',
-    'N0000179438':'DBSALT001968',
-    'N0000005781':'DBSALT000985',
-    'N0000007469':'DBSALT002769',
-    'N0000145823':'DBSALT002390',
-    'N0000145826':'DBSALT000726',
-    'N0000145824':'DBSALT000299'
+# dictionary manual mapping
+dict_manual_mapping_identifier = {
+    'N0000178919': 'DBSALT000845',
+    'N0000179741': 'DBSALT001473',
+    'N0000178917': 'DBSALT000206',
+    'N0000178915': 'DBSALT000267',
+    'N0000179466': 'DBSALT001025',
+    'N0000179641': 'DBSALT000299',
+    'N0000178961': 'DBSALT000999',
+    'N0000178975': 'DBSALT000262',
+    'N0000179005': 'DBSALT001356',
+    'DBSALT000316': 'DBSALT000316',
+    'N0000179512': 'DBSALT000991',
+    'N0000005922': 'DB00986',
+    'N0000179599': 'DBSALT002390',
+    'N0000178984': 'DBSALT000726',
+    'N0000179419': 'DBSALT000429',
+    'N0000178978': 'DBSALT000417',
+    'N0000179299': 'DBSALT000264',
+    'N0000179427': 'DBSALT000734',
+    'N0000178897': 'DBSALT001319',
+    'N0000179746': 'DBSALT001341',
+    'N0000179438': 'DBSALT001968',
+    'N0000005781': 'DBSALT000985',
+    'N0000007469': 'DBSALT002769',
+    'N0000145823': 'DBSALT002390',
+    'N0000145826': 'DBSALT000726',
+    'N0000145824': 'DBSALT000299'
 
 }
 
 
 def load_med_rt_drug_in():
+    """
+    Load med-rt chemical and map with the different mapping methods and wrote into the tsv file
+    :return:
+    """
     query = '''MATCH (n:Chemical_Ingredient_MEDRT) RETURN n'''
     results = g.run(query)
 
@@ -159,7 +163,7 @@ def load_med_rt_drug_in():
     count = 0
     counter_mapped = 0
 
-    set_mapped_pairs=set()
+    set_mapped_pairs = set()
 
     for record in results:
         result = record.data()['n']
@@ -168,25 +172,27 @@ def load_med_rt_drug_in():
         xref = result['xref'] if 'xref' in result else ''
         name = result['name'].lower()
 
-        synonyms= result['synonyms'] if 'synonyms' in result else []
+        synonyms = result['synonyms'] if 'synonyms' in result else []
 
         mapped = False
 
+        # mapping with Mesh id
         if xref.startswith('MeSH'):
             mesh_id = xref.split(':')[1]
             if mesh_id in dict_mesh_id_to_chemicals_ids:
                 mapped = True
                 counter_mapped += 1
                 for chemical_id in dict_mesh_id_to_chemicals_ids[mesh_id]:
-                    if (identifier,chemical_id) in set_mapped_pairs:
+                    if (identifier, chemical_id) in set_mapped_pairs:
                         continue
-                    set_mapped_pairs.add((identifier,chemical_id))
+                    set_mapped_pairs.add((identifier, chemical_id))
                     csv_writer.writerow([identifier, chemical_id, pharmebinetutils.resource_add_and_prepare(
                         dict_chemical_pharmebinet_to_resource[chemical_id], 'MED-RT'), 'mesh'])
+        # mapping with rxnorm cui
         elif xref.startswith('RxCUI'):
             rx_id = xref.split(':')[1]
             # wrong mapping in rxnorm !!!!!!!!!
-            if rx_id!='1860418':
+            if rx_id != '1860418':
                 if rx_id in dict_rnxnorm_to_chemical_id:
                     mapped = True
                     counter_mapped += 1
@@ -199,16 +205,16 @@ def load_med_rt_drug_in():
 
         if mapped:
             continue
-
+        # manual mapping
         if identifier in dict_manual_mapping_identifier:
-            chemical_id=dict_manual_mapping_identifier[identifier]
-            mapped=True
+            chemical_id = dict_manual_mapping_identifier[identifier]
+            mapped = True
             csv_writer.writerow([identifier, chemical_id, pharmebinetutils.resource_add_and_prepare(
                 dict_chemical_pharmebinet_to_resource[chemical_id], 'MED-RT'), 'manual'])
 
         if mapped:
             continue
-
+        # map rxnorm if the identifier is rxnorm
         if 'namespace' in result:
             # wrong mapping in rxnorm !!!!!!!!! chrysarobin->Hemoglobin
             if identifier != '1860418':
@@ -224,7 +230,7 @@ def load_med_rt_drug_in():
 
         if mapped:
             continue
-
+        # map with name
         if name in dict_synonyms_to_chemicals_ids:
             mapped = True
             counter_mapped += 1
@@ -237,21 +243,21 @@ def load_med_rt_drug_in():
 
         if mapped:
             continue
-
-        if xref.startswith('MeSH') :
+        # map with mesh from rxnorm for mesh scui
+        if xref.startswith('MeSH'):
             query = ('Select Distinct RXCUI, CODE   From RXNCONSO Where SCUI ="%s" and SAB="MSH" ;')
             query = query % (xref.split(':')[1])
 
             cur = conRxNorm.cursor()
             rows_counter = cur.execute(query)
             rxcuis = set()
-            set_real_mesh_xref=set()
+            set_real_mesh_xref = set()
             if rows_counter > 0:
                 for (rxnorm_cui, real_mesh_id) in cur:
                     rxcuis.add(rxnorm_cui)
                     set_real_mesh_xref.add(real_mesh_id)
                     if real_mesh_id in dict_chemical_pharmebinet_to_resource:
-                        mapped=True
+                        mapped = True
                         if (identifier, real_mesh_id) in set_mapped_pairs:
                             continue
                         set_mapped_pairs.add((identifier, real_mesh_id))
@@ -270,7 +276,8 @@ def load_med_rt_drug_in():
             counter_mapped += 1
             continue
 
-        if xref.startswith('MeSH') and len(rxcuis)>0:
+        # map with rxcui from rxnorm
+        if xref.startswith('MeSH') and len(rxcuis) > 0:
             for rxnorm_cui in rxcuis:
 
                 if rxnorm_cui in dict_rnxnorm_to_chemical_id:
@@ -285,8 +292,8 @@ def load_med_rt_drug_in():
         if mapped:
             counter_mapped += 1
             continue
-
-        if xref.startswith('MeSH') and len(rxcuis)>0:
+        # map with thr rxcuis from rxnorm to drugbank with rxnorm
+        if xref.startswith('MeSH') and len(rxcuis) > 0:
             # mapping is not so good
             if identifier in ['N0000179651', 'N0000179713']:
                 continue
@@ -308,7 +315,7 @@ def load_med_rt_drug_in():
         if mapped:
             counter_mapped += 1
             continue
-
+        # map with string from rxnorm for rxcuis
         if xref.startswith('RxCUI') or 'namespace' in result:
             if xref.startswith('RxCUI'):
                 cui = xref.split(':')[1]
@@ -321,7 +328,7 @@ def load_med_rt_drug_in():
             rows_counter = cur.execute(query)
             if rows_counter > 0:
                 for (alternative_name,) in cur:
-                    alternative_name=alternative_name.lower()
+                    alternative_name = alternative_name.lower()
                     if alternative_name in dict_synonyms_to_chemicals_ids:
                         mapped = True
                         for chemical_id in dict_synonyms_to_chemicals_ids[alternative_name]:
@@ -334,9 +341,10 @@ def load_med_rt_drug_in():
         if mapped:
             counter_mapped += 1
 
-        if len(synonyms)>0:
+        # map with synonyms to names/synonyms
+        if len(synonyms) > 0:
             for synonym in synonyms:
-                synonym=synonym.lower()
+                synonym = synonym.lower()
                 if synonym in dict_synonyms_to_chemicals_ids:
                     mapped = True
                     counter_mapped += 1
@@ -349,8 +357,8 @@ def load_med_rt_drug_in():
 
         if mapped:
             continue
-
-        if xref.startswith('MeSH') and len(rxcuis)>0:
+        # map with rxcuis to name from rxnorm to name mapping
+        if xref.startswith('MeSH') and len(rxcuis) > 0:
 
             query = ('Select Distinct STR  From RXNCONSO Where RXCUI  in ("%s") ;')
             query = query % ('","'.join(rxcuis))
@@ -359,7 +367,7 @@ def load_med_rt_drug_in():
             rows_counter = cur.execute(query)
             if rows_counter > 0:
                 for (alternative_name,) in cur:
-                    alternative_name=alternative_name.lower()
+                    alternative_name = alternative_name.lower()
                     if alternative_name in dict_synonyms_to_chemicals_ids:
                         mapped = True
                         for chemical_id in dict_synonyms_to_chemicals_ids[alternative_name]:
@@ -371,8 +379,7 @@ def load_med_rt_drug_in():
 
         if mapped:
             counter_mapped += 1
-
-
+        # map with rxcui for the names with rxnorm
         if xref.startswith('MeSH'):
 
             query = ('Select Distinct RXCUI  From RXNCONSO Where STR ="%s" ;')
@@ -393,20 +400,6 @@ def load_med_rt_drug_in():
 
         if mapped:
             counter_mapped += 1
-
-        # if xref.startswith('MeSH') and len(set_real_mesh_xref)>0:
-        #     for real_mesh_id in set_real_mesh_xref:
-        #         if real_mesh_id in dict_mesh_id_to_chemicals_ids:
-        #             for chemical_id in dict_mesh_id_to_chemicals_ids[real_mesh_id]:
-        #                 if (identifier, chemical_id) in set_mapped_pairs:
-        #                     continue
-        #                 set_mapped_pairs.add((identifier, chemical_id))
-        #                 mapped = True
-        #                 csv_writer.writerow([identifier, chemical_id, pharmebinetutils.resource_add_and_prepare(
-        #                     dict_chemical_pharmebinet_to_resource[chemical_id], 'MED-RT'), 'rxnorm_to_mesh_id_xref'])
-        #
-        # if mapped:
-        #     counter_mapped += 1
 
     print('number of chemicals in med-rt', count)
     print('number of mapped chemicals in med-rt', counter_mapped)
