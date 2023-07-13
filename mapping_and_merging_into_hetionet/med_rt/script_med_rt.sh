@@ -25,6 +25,12 @@ python3  map_chemical_med_rt.py $path_to_project > chemical/output_map_med_rt.tx
 
 now=$(date +"%F %T")
 echo "Current time: $now"
+echo chemical mapping
+
+python3  map_other_to_chemical.py $path_to_project > chemical/output_map_med_rt_other.txt
+
+now=$(date +"%F %T")
+echo "Current time: $now"
 echo disease mapping
 
 python3  map_disease_med_rt.py $path_to_project > disease/output_map_med_rt.txt
