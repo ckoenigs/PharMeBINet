@@ -48,7 +48,6 @@ def load_label_in(label, dict_label_to_resource, dict_label_alt_ids):
         node = record.data()['n']
         identifier = node["identifier"]
         resource = node["resource"]
-        name = node["name"]
         alt_ids = node["alternative_ids"] if "alternative_ids" in node else []
 
         dict_label_to_resource[identifier] = resource
@@ -192,18 +191,18 @@ def main():
     print('#####################################################################################')
     print("load biological process in")
     print(datetime.datetime.now())
-    load_label_in('BiologicalProcess', dict_bioPro_to_resource, dict_bioPro_alt_ids, dict_bioPro_name)
+    load_label_in('BiologicalProcess', dict_bioPro_to_resource, dict_bioPro_alt_ids)
 
     print('#####################################################################################')
     print("load cellular Component in")
     print(datetime.datetime.now())
-    load_label_in('CellularComponent', dict_cellCo_to_resource, dict_cellCo_alt_ids, dict_cellCo_name)
+    load_label_in('CellularComponent', dict_cellCo_to_resource, dict_cellCo_alt_ids)
 
     print('#####################################################################################')
     print("load molecular function in")
     print(datetime.datetime.now())
 
-    load_label_in('MolecularFunction', dict_molFu_to_resource, dict_molFu_alt_ids, dict_molFu_name)
+    load_label_in('MolecularFunction', dict_molFu_to_resource, dict_molFu_alt_ids)
 
     print('#####################################################################################')
     print("load GO term")

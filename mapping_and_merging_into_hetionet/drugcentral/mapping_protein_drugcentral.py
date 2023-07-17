@@ -2,7 +2,6 @@ import datetime
 import csv
 import sys
 from collections import defaultdict
-
 sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
@@ -30,11 +29,13 @@ dict_target_mapping = defaultdict(dict)
 
 
 def load_protein_in():
-    # query ist ein String
+    """
+    Load all protein and write information into dictionaries
+    :return:
+    """
     query = '''MATCH (n:Protein) RETURN n'''
     results = graph_database.run(query)
 
-    # results werden einzeln durchlaufen
     for record in results:
         node = record.data()['n']
         identifier = node["identifier"]
@@ -68,6 +69,10 @@ def load_protein_in():
 
 
 def load_bioactivity_in():
+    """
+    Load Bioativity  and map with different mapping method and in the end the mappings are wrote into the tsv file.
+    :return:
+    """
     query = '''MATCH (n:DC_Bioactivity) RETURN n, id(n)'''
     results = graph_database.run(query)
 
@@ -86,7 +91,7 @@ def load_bioactivity_in():
                 continue
 
         protein_name = node["target_name"]
-        organism = node["organism"]
+        organism = node["organism"] if 'organism' in node else ''
 
         # list of swissprot ids, split at '|', consider only the ones that have a length of 1 in order to
         # prevent mapping to protein subunit
@@ -124,12 +129,15 @@ def load_bioactivity_in():
 
 
 def load_target_in():
+    """
+        Load TargetComponent  and map with different mapping method and in the end the mappings are wrote into the tsv
+        file.
+        :return:
+        """
     query = '''MATCH (n:DC_TargetComponent) RETURN n, id(n)'''
     results = graph_database.run(query)
 
     mapped_target = set()
-    dict_nodes_to_target = {}
-    dict_node_to_methode = {}
 
     for record in results:
         node = record.data()['n']
@@ -179,24 +187,13 @@ def load_target_in():
 
 
 # file for mapped or not mapped identifier
-# erstellt neue TSV, überschreibt auch bestehende und leert sie wieder
 file_not_mapped_protein = open('protein/not_mapped_protein.tsv', 'w', encoding="utf-8")
-# Dateiformat wird gesetzt mit Trenner: Tabulator
 csv_not_mapped = csv.writer(file_not_mapped_protein, delimiter='\t', lineterminator='\n')
-# Header setzen
 csv_not_mapped.writerow(['id', 'accession_number', 'name', 'organismus'])
 
 file_mapped_protein = open('protein/mapped_protein.tsv', 'w', encoding="utf-8")
 csv_mapped = csv.writer(file_mapped_protein, delimiter='\t', lineterminator='\n')
 csv_mapped.writerow(['node_id', 'id_hetionet', 'resource', 'how_mapped'])
-
-file_not_mapped_pdb = open('protein/not_mapped_pdb.tsv', 'w', encoding="utf-8")
-csv_not_mapped_pdb = csv.writer(file_not_mapped_pdb, delimiter='\t', lineterminator='\n')
-csv_not_mapped_pdb.writerow(['id', 'accession_number', 'name'])
-
-file_mapped_pdb = open('protein/mapped_pdb.tsv', 'w', encoding="utf-8")
-csv_mapped_pdb = csv.writer(file_mapped_pdb, delimiter='\t', lineterminator='\n')
-csv_mapped_pdb.writerow(['node_id', 'id_hetionet', 'resource', 'how_mapped'])
 
 file_not_mapped_target = open('protein/not_mapped_target.tsv', 'w', encoding="utf-8")
 csv_not_mapped_target = csv.writer(file_not_mapped_target, delimiter='\t', lineterminator='\n')
@@ -207,7 +204,7 @@ csv_mapped_target = csv.writer(file_mapped_target, delimiter='\t', lineterminato
 csv_mapped_target.writerow(['node_id', 'id_hetionet', 'resource', 'how_mapped'])
 
 
-def generate_cypher_file(file_nameProtein, file_namePDB, file_nameTarget):
+def generate_cypher_file(file_name_protein, file_name_target):
     """
     prepare cypher query and add to cypher file
     :param file_name: string
@@ -216,17 +213,17 @@ def generate_cypher_file(file_nameProtein, file_namePDB, file_nameTarget):
     """
     cypher_file = open('output/cypher.cypher', 'a')
 
-    query_Protein = '''MATCH (n:DC_Bioactivity), (c:Protein{identifier:line.id_hetionet}) Where ID(n)= ToInteger(line.node_id)  Set c.drugcentral='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_Bioactivity_drugcentral{how_mapped:line.how_mapped}]->(n)'''
-    query_Protein = pharmebinetutils.get_query_import(path_of_directory,
-                                                      "mapping_and_merging_into_hetionet/drugcentral/protein/" + file_nameProtein,
-                                                      query_Protein)
-    cypher_file.write(query_Protein)
+    query_protein = '''MATCH (n:DC_Bioactivity), (c:Protein{identifier:line.id_hetionet}) Where ID(n)= ToInteger(line.node_id)  Set c.drugcentral='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_Bioactivity_drugcentral{how_mapped:line.how_mapped}]->(n)'''
+    query_protein = pharmebinetutils.get_query_import(path_of_directory,
+                                                      "mapping_and_merging_into_hetionet/drugcentral/protein/" + file_name_protein,
+                                                      query_protein)
+    cypher_file.write(query_protein)
 
-    query_Target = '''MATCH (n:DC_TargetComponent), (c:Protein{identifier:line.id_hetionet}) Where ID(n)= ToInteger(line.node_id)  Set c.drugcentral='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_TargetComponent_drugcentral{how_mapped:line.how_mapped}]->(n)'''
-    query_Target = pharmebinetutils.get_query_import(path_of_directory,
-                                                     "mapping_and_merging_into_hetionet/drugcentral/protein/" + file_nameTarget,
-                                                     query_Target)
-    cypher_file.write(query_Target)
+    query_target = '''MATCH (n:DC_TargetComponent), (c:Protein{identifier:line.id_hetionet}) Where ID(n)= ToInteger(line.node_id)  Set c.drugcentral='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_TargetComponent_drugcentral{how_mapped:line.how_mapped}]->(n)'''
+    query_target = pharmebinetutils.get_query_import(path_of_directory,
+                                                     "mapping_and_merging_into_hetionet/drugcentral/protein/" + file_name_target,
+                                                     query_target)
+    cypher_file.write(query_target)
 
     cypher_file.close()
 
@@ -242,18 +239,27 @@ def main():
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j()
+
+    print(20 * '##')
+    print(datetime.datetime.utcnow())
     print("load protein in")
     load_protein_in()
+
+    print(20 * '##')
+    print(datetime.datetime.utcnow())
     print("load biodiversity")
     load_bioactivity_in()
 
+    print(20 * '##')
+    print(datetime.datetime.utcnow())
     print("load target component in")
     load_target_in()
 
-    print(
-        '###########################################################################################################################')
+    print(20 * '##')
+    print(datetime.datetime.utcnow())
+    print('create cypher queries')
 
-    generate_cypher_file("mapped_protein.tsv", "mapped_pdb.tsv", "mapped_target.tsv")
+    generate_cypher_file("mapped_protein.tsv", "mapped_target.tsv")
 
     print(datetime.datetime.utcnow())
 

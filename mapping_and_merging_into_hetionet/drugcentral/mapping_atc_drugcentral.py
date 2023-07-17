@@ -21,8 +21,6 @@ def create_connection_with_neo4j():
 
 # dictionary pc id to resource
 dict_PharmaClassId_to_resource = {}
-# dictionary atc code to pc ids
-dict_atc_code_to_pc_ids = {}
 # dictionary name to pc ids
 dict_name_to_pc_ids = {}
 # dictionary dc node id to  dictionary mapped pc ids to set of mappings

@@ -20,10 +20,6 @@ def create_connection_with_neo4j():
 
 
 # dictionary
-dict_product = {}
-dict_product_to_name = {}
-dict_product_name = {}
-dict_mapping_parameter = {}
 dict_productId_to_resource = {}
 dict_ndc_pc = defaultdict(set)
 dict_product_mapping = defaultdict(dict)
@@ -45,14 +41,7 @@ def load_product_in():
         ndc_pc = node["ndc_product_code"] if "ndc_product_code" in node else ""
         name = node["name"]
 
-        # im dictionary werden passend zu den Identifiern die Namen und die idOwns gespeichert
-        dict_product_to_name[identifier] = name
-
         dict_productId_to_resource[identifier] = resource
-
-        # name
-        name = name.lower()
-        pharmebinetutils.add_entry_to_dict_to_set(dict_product_name, name, identifier)
 
         if ndc_pc != "":
             dict_ndc_pc[ndc_pc].add(identifier)
@@ -93,9 +82,8 @@ def load_DC_product_in():
             methodes = list(dict_product_mapping[node_id][product_id])
             methodes = '|'.join(methodes)
             resource = set(dict_productId_to_resource[product_id])
-            resource.add('DrugCentral')
-            resource = '|'.join(resource)
-            csv_mapped.writerow([node_id, product_id, resource, methodes])
+            csv_mapped.writerow(
+                [node_id, product_id, pharmebinetutils.resource_add_and_prepare(resource, 'DrugCentral'), methodes])
 
 
 def generate_tsv_files():
