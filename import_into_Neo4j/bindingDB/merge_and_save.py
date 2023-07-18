@@ -1,10 +1,11 @@
+import shutil
+
 import pymysql
 import numpy as np
 from collections import defaultdict
 import pandas as pd
 import csv
 import re
-
 
 def mysqlconnect():
     # To connect MySQL database
@@ -17,12 +18,50 @@ def mysqlconnect():
     return conn
 
 
+def replace_none_with_empty_string(input_tab):
+    # Specify the file paths
+    #input_file = "input.tsv"
+    input_file = "tsv_from_mysql/" + input_tab + ".tsv"
+    temp_file = "tsv_from_mysql/" + input_tab + "_temp.tsv"
+
+    # Set the batch size
+    batch_size = 1000  # Number of rows to process in each batch
+
+    # Open the input and temporary files
+    with open(input_file, "r", newline="", encoding="utf-8") as f_in, open(temp_file, "w", newline="",
+                                                                           encoding="utf-8") as f_temp:
+        reader = csv.reader(f_in, delimiter="\t")
+        writer = csv.writer(f_temp, delimiter="\t")
+
+        # Process the file in batches
+        batch = []
+        for i, row in enumerate(reader):
+            # Replace "None" strings with empty strings
+            modified_row = ["" if cell == "None" else cell for cell in row]
+            batch.append(modified_row)
+
+            # Write the batch to the temporary file if it reaches the specified size
+            if len(batch) >= batch_size:
+                writer.writerows(batch)
+                batch = []
+
+        # Write any remaining rows to the temporary file
+        if batch:
+            writer.writerows(batch)
+
+    # Replace the original file with the temporary file
+    shutil.move(temp_file, input_file)
+
+
+
+
 def get_np_from_tsv(file_name):
     data_array = pd.read_csv(file_name, sep='\t', low_memory=False)
+    data_array = data_array.replace("\"", "\'", regex=True)
+    #data_array = data_array.replace("None", "", regex=True)
     head = np.array(data_array.columns)
     data_array = data_array.values
     data_array = np.vstack((head, data_array))
-
     return data_array
 
 
@@ -55,7 +94,10 @@ def write_tsv(cursor, table_name):
 
             # Write the batch of rows to the TSV file
             for row in rows:
-                file.write('\t'.join(str(value) for value in row) + '\n')
+                result = '\t'.join(str(value) for value in row) + '\n'
+                if "\"" in result:
+                    result = result.replace("\"", "\'")
+                file.write(result)
 
             # Increment the offset for the next batch
             offset += batch_size
@@ -77,6 +119,7 @@ def get_np(cursor, table_name):
         if offset == 0:
             column_names = [desc[0] for desc in cur.description]
             column_names = np.array(column_names)
+
         batch_array = np.array(rows)
         data_batches.append(batch_array)
         offset += batch_size
@@ -87,7 +130,7 @@ def get_np(cursor, table_name):
 
 
 def names_by_id(tab):
-    # Create a defaultdict to store the names by ID
+    # Create a default dict to store the names by ID
     _names_by_id = defaultdict(list)
 
     # Iterate over each row in the array and group the names by ID
@@ -101,20 +144,43 @@ def names_by_id(tab):
     _names_by_id = dict(_names_by_id)
 
     ids = np.array(list(_names_by_id.keys()))
-    names = np.array(list(_names_by_id.values()), dtype=object)
+    names = np.empty(ids.shape[0], dtype='U7000')
+    #print(names[0])
+    names[0] = "NAMES"
+    for i in range(ids.shape[0]):
+        if i > 0:
+            l = _names_by_id.get(ids[i])
+            if l is None:
+                names[i] = None
+            elif len(l) > 1:
+                length = 0
+                #for x in l:
+                    #length += len(x)
+                #if length > 5000:
+                    #print(length)
+                names[i] = ";".join(l)
+                #print(names[i])
+            elif len(l) == 1:
+                names[i] = l[0]
+
+    #names = np.array(list(_names_by_id.values()), dtype=object)
 
     # Create a 2D NumPy array with IDs and names
     result_array = np.column_stack((ids, names))
-    result_array[0][1] = 'Names'
+    #result_array[0][1] = 'Names'
+    #print(result_array)
     return result_array
 
 
 def merge_arrays_optimized(array1, array2):
     head1 = array1[0].tolist()
     head2 = array2[0].tolist()
+    print(head1)
+    print(head2)
     df1 = pd.DataFrame(array1, columns=head1)
     df2 = pd.DataFrame(array2, columns=head2)
-    df = pd.merge(df1, df2, on='MONOMERID', how='outer')
+    df = pd.merge(df1, df2, on='POLYMERID', how='outer')
+    df = df.replace({'\"': '\''}, regex=True)
     return df
 
 
@@ -229,11 +295,13 @@ def join_monomer(connection):
 if __name__ == "__main__":
     conn = mysqlconnect()
     cur = conn.cursor()
-    tables = ['ARTICLE', 'ASSAY', 'COBWEB', 'COMPLEX_COMPONENT', 'DATA_FIT_METH', 'ENTRY','ENTRY_CITATION',
-              'ENZYME_RECTANT_SET', 'INSTRUMENT', 'ITC_RESULT_A_B_AB', 'ITC_RUN_A_B_AB', 'KI_RESULT', 'PDB_BDB']
+    tables = ['ARTICLE', 'ASSAY', 'COBWEB_BDB', 'COMPLEX_COMPONENT', 'DATA_FIT_METH', 'ENTRY', 'ENTRY_CITATION',
+              'ENZYME_REACTANT_SET', 'INSTRUMENT', 'ITC_RESULT_A_B_AB', 'ITC_RUN_A_B_AB', 'KI_RESULT', 'PDB_BDB']
+    tables_1 = ['ARTICLE', 'ASSAY', 'COBWEB_BDB', 'COMPLEX_COMPONENT', 'DATA_FIT_METH', 'ENTRY', 'ENTRY_CITATION',
+                'ENZYME_REACTANT_SET', 'INSTRUMENT', 'ITC_RESULT_A_B_AB', 'ITC_RUN_A_B_AB', 'KI_RESULT', 'PDB_BDB',
+                'POLYMER_AND_NAMES', 'MONO_STRUCT_NAMES', 'COMPLEX_AND_NAMES']
     for table in tables:
         write_tsv(cur, table)
-
     # merge complex names and polymer
     write_tsv(cur, "COMPLEX")
     complex_name = get_np(cur, 'COMPLEX_NAME')
@@ -242,17 +310,22 @@ if __name__ == "__main__":
     np.savetxt('COMPLEX_AND_NAMES.tsv', complex_and_names, delimiter='\t', fmt='%s')
 
     # merge polymer names and polymer
-    write_tsv(cur, "POLYMER")
-    polymer_name = get_np(cur, 'POLYMER_NAME')
+    polymer_name = get_np(cur, 'POLY_NAME')
     polymer_names_array = names_by_id(polymer_name)
-    polymer_and_names = merge_arrays_optimized(get_np_from_tsv('POLYMER.tsv'), polymer_names_array)
+    polymer_and_names = merge_arrays_optimized(get_np(cur, 'POLYMER'), polymer_names_array)
     np.savetxt('POLYMER_AND_NAMES.tsv', polymer_and_names, delimiter='\t', fmt='%s')
 
     #create a monomer_names table where names are grouped by monomer id
     create_names(conn)
     #join monomer, monomer struct and monomer names
     join_monomer(conn)
+    mono_array = get_np_from_tsv('tsv_from_mysql/MONO_STRUCT_NAMES.tsv')
+    np.savetxt('MONO_STRUCT_NAMES.tsv', mono_array, delimiter='\t', fmt='%s')
 
+    #replace none cells with empty strings for each tsv table
+    for table in tables_1:
+        replace_none_with_empty_string(table)
+        print(table + " finished!")
 
 
 
