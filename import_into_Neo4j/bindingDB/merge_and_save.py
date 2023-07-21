@@ -26,7 +26,7 @@ def prepare_results(row):
     :param row:
     :return:
     """
-    return [str(value).replace("\"", "\'").replace('NULL', '') if not value is None else '' for value in row]
+    return [str(value).replace("\"", "\'").replace('NULL', '').replace('null', '')  if not value is None else '' for value in row]
 
 
 def write_tsv(cursor, table_name):
@@ -146,6 +146,7 @@ def merge_arrays_optimized(array1, array2, merge_id):
     df2 = pd.DataFrame(array2, columns=head2)
     df = pd.merge(df1, df2, on=merge_id, how='outer')
     df = df.replace({'\"': '\''}, regex=True)
+    df = df.fillna('')
     return df
 
 
