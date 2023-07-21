@@ -7,49 +7,13 @@ import re
 import create_connection_to_databases
 import datetime
 
-BATCH_SIZE=100000
-
-def replace_none_with_empty_string(input_tab):
-    # Specify the file paths
-    #input_file = "input.tsv"
-    input_file = "tsv_from_mysql/" + input_tab + ".tsv"
-    temp_file = "tsv_from_mysql/" + input_tab + "_temp.tsv"
-
-    # Set the batch size
-    batch_size = 1000  # Number of rows to process in each batch
-
-    # Open the input and temporary files
-    with open(input_file, "r", newline="", encoding="utf-8") as f_in, open(temp_file, "w", newline="",
-                                                                           encoding="utf-8") as f_temp:
-        reader = csv.reader(f_in, delimiter="\t")
-        writer = csv.writer(f_temp, delimiter="\t")
-
-        # Process the file in batches
-        batch = []
-        for i, row in enumerate(reader):
-            # Replace "None" strings with empty strings
-            modified_row = ["" if cell == "None" else cell for cell in row]
-            batch.append(modified_row)
-
-            # Write the batch to the temporary file if it reaches the specified size
-            if len(batch) >= batch_size:
-                writer.writerows(batch)
-                batch = []
-
-        # Write any remaining rows to the temporary file
-        if batch:
-            writer.writerows(batch)
-
-    # Replace the original file with the temporary file
-    shutil.move(temp_file, input_file)
-
-
+BATCH_SIZE = 100000
 
 
 def get_np_from_tsv(file_name):
     data_array = pd.read_csv(file_name, sep='\t', low_memory=False)
     data_array = data_array.replace("\"", "\'", regex=True)
-    #data_array = data_array.replace("None", "", regex=True)
+    # data_array = data_array.replace("None", "", regex=True)
     head = np.array(data_array.columns)
     data_array = data_array.values
     data_array = np.vstack((head, data_array))
@@ -62,7 +26,7 @@ def prepare_results(row):
     :param row:
     :return:
     """
-    return [str(value).replace("\"", "\'").replace('NULL','') if not value is None else '' for value in row]
+    return [str(value).replace("\"", "\'").replace('NULL', '') if not value is None else '' for value in row]
 
 
 def write_tsv(cursor, table_name):
@@ -81,7 +45,7 @@ def write_tsv(cursor, table_name):
 
     # Write the header with column names to the TSV file
     with open(output_file, 'w', encoding='utf-8') as file:
-        csv_writer=csv.writer(file,delimiter='\t')
+        csv_writer = csv.writer(file, delimiter='\t')
         csv_writer.writerow(columns)
 
         # Retrieve and write the data in batches
@@ -94,12 +58,12 @@ def write_tsv(cursor, table_name):
 
             # Write the batch of rows to the TSV file
             for row in rows:
-                result= prepare_results(row)
+                result = prepare_results(row)
                 csv_writer.writerow(result)
 
             # Increment the offset for the next batch
             offset += BATCH_SIZE
-            if offset%500000==0:
+            if offset % 500000 == 0:
                 print("I'm at ", offset, datetime.datetime.now())
 
     print(f"done {table_name}")
@@ -122,10 +86,12 @@ def get_np(cursor, table_name):
         batch_array = np.array(rows)
         data_batches.append(batch_array)
         offset += BATCH_SIZE
-        if offset%100000==0:
+        if offset % 100000 == 0:
             print(table_name, ": I'm at ", offset, datetime.datetime.now())
     data_array = np.concatenate(data_batches, axis=0)
     data_array = np.vstack([column_names, data_array])
+    data_array[data_array == None] = ''
+    data_array[data_array == 'NULL'] = ''
     return data_array
 
 
@@ -138,7 +104,7 @@ def names_by_id(tab):
     for row in tab:
         id_val, name = row
         _names_by_id[id_val].append(name)
-        if i%1000==0:
+        if i % 1000 == 0:
             print("I'm at ", i)
         i += 1
 
@@ -146,7 +112,7 @@ def names_by_id(tab):
 
     ids = np.array(list(_names_by_id.keys()))
     names = np.empty(ids.shape[0], dtype='U7000')
-    #print(names[0])
+    # print(names[0])
     names[0] = "NAMES"
     for i in range(ids.shape[0]):
         if i > 0:
@@ -155,21 +121,21 @@ def names_by_id(tab):
                 names[i] = None
             elif len(l) > 1:
                 length = 0
-                #for x in l:
-                    #length += len(x)
-                #if length > 5000:
-                    #print(length)
+                # for x in l:
+                # length += len(x)
+                # if length > 5000:
+                # print(length)
                 names[i] = ";".join(l)
-                #print(names[i])
+                # print(names[i])
             elif len(l) == 1:
                 names[i] = l[0]
 
-    #names = np.array(list(_names_by_id.values()), dtype=object)
+    # names = np.array(list(_names_by_id.values()), dtype=object)
 
     # Create a 2D NumPy array with IDs and names
     result_array = np.column_stack((ids, names))
-    #result_array[0][1] = 'Names'
-    #print(result_array)
+    # result_array[0][1] = 'Names'
+    # print(result_array)
     return result_array
 
 
@@ -183,7 +149,7 @@ def merge_arrays_optimized(array1, array2, merge_id):
     return df
 
 
-def get_table_columns(table_name,  connection):
+def get_table_columns(table_name, connection):
     describe_query = f"DESCRIBE {table_name}"
     with connection.cursor() as cursor:
         cursor.execute(describe_query)
@@ -191,10 +157,9 @@ def get_table_columns(table_name,  connection):
     return columns
 
 
-
 def join_monomer_new(connection):
-    batch_size_mono=100000
-    cursor=connection.cursor()
+    batch_size_mono = 100000
+    cursor = connection.cursor()
 
     # Retrieve the total number of rows in the table
     cursor.execute(f"SELECT COUNT(*) FROM MONOMER")
@@ -224,24 +189,22 @@ def join_monomer_new(connection):
            """
 
     output_file = 'tsv_from_mysql/MONO_STRUCT_NAMES.tsv'
-    with open(output_file,'w',encoding='utf-8') as file:
-        csv_writer=csv.writer(file, delimiter='\t')
+    with open(output_file, 'w', encoding='utf-8') as file:
+        csv_writer = csv.writer(file, delimiter='\t')
         csv_writer.writerow(header)
 
         # Retrieve and write the data in batches
         offset = 0
         while offset < total_rows:
             # Fetch a batch of data using LIMIT and OFFSET
-            query = select_query_start +f" LIMIT {batch_size_mono} OFFSET {offset}"
+            query = select_query_start + f" LIMIT {batch_size_mono} OFFSET {offset}"
             cursor.execute(query)
             rows = cursor.fetchall()
-
 
             # Write the batch of rows to the TSV file
             for row in rows:
                 result = prepare_results(row)
                 csv_writer.writerow(result)
-
 
             # Increment the offset for the next batch
             offset += batch_size_mono
@@ -258,16 +221,17 @@ if __name__ == "__main__":
     tables_1 = ['ARTICLE', 'ASSAY', 'COBWEB_BDB', 'COMPLEX_COMPONENT', 'DATA_FIT_METH', 'ENTRY', 'ENTRY_CITATION',
                 'ENZYME_REACTANT_SET', 'INSTRUMENT', 'ITC_RESULT_A_B_AB', 'ITC_RUN_A_B_AB', 'KI_RESULT', 'PDB_BDB',
                 'POLYMER_AND_NAMES', 'MONO_STRUCT_NAMES', 'COMPLEX_AND_NAMES']
-    for table in tables:
-        print('create table', table, datetime.datetime.now())
-        write_tsv(cur, table)
+    # for table in tables:
+    #     print('create table', table, datetime.datetime.now())
+    #     write_tsv(cur, table)
 
     # merge complex names and polymer
     print('start complex', datetime.datetime.now())
     write_tsv(cur, "COMPLEX")
     complex_name = get_np(cur, 'COMPLEX_NAME')
     complex_names_array = names_by_id(complex_name)
-    complex_and_names = merge_arrays_optimized(get_np_from_tsv('tsv_from_mysql/COMPLEX.tsv'), complex_names_array, 'COMPLEXID')
+    complex_and_names = merge_arrays_optimized(get_np_from_tsv('tsv_from_mysql/COMPLEX.tsv'), complex_names_array,
+                                               'COMPLEXID')
     np.savetxt('tsv_from_mysql/COMPLEX_AND_NAMES.tsv', complex_and_names, delimiter='\t', fmt='%s')
 
     # merge polymer names and polymer
@@ -277,29 +241,14 @@ if __name__ == "__main__":
     polymer_and_names = merge_arrays_optimized(get_np(cur, 'POLYMER'), polymer_names_array, 'POLYMERID')
     np.savetxt('tsv_from_mysql/POLYMER_AND_NAMES.tsv', polymer_and_names, delimiter='\t', fmt='%s')
 
-    #create a monomer_names table where names are grouped by monomer id
+    # create a monomer_names table where names are grouped by monomer id
     print('start monomer', datetime.datetime.now())
     # create_names(conn)
 
-    #join monomer, monomer struct and monomer names
+    # join monomer, monomer struct and monomer names
     # join_monomer(conn)
     join_monomer_new(conn)
     mono_array = get_np_from_tsv('tsv_from_mysql/MONO_STRUCT_NAMES.tsv')
     np.savetxt('MONO_STRUCT_NAMES.tsv', mono_array, delimiter='\t', fmt='%s')
 
-    print('end',datetime.datetime.now())
-
-    #replace none cells with empty strings for each tsv table
-    # for table in tables_1:
-    #     replace_none_with_empty_string(table)
-    #     print(table + " finished!")
-
-
-
-
-
-
-
-
-
-
+    print('end', datetime.datetime.now())
