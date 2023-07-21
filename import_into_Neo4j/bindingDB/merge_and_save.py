@@ -221,9 +221,9 @@ if __name__ == "__main__":
     tables_1 = ['ARTICLE', 'ASSAY', 'COBWEB_BDB', 'COMPLEX_COMPONENT', 'DATA_FIT_METH', 'ENTRY', 'ENTRY_CITATION',
                 'ENZYME_REACTANT_SET', 'INSTRUMENT', 'ITC_RESULT_A_B_AB', 'ITC_RUN_A_B_AB', 'KI_RESULT', 'PDB_BDB',
                 'POLYMER_AND_NAMES', 'MONO_STRUCT_NAMES', 'COMPLEX_AND_NAMES']
-    # for table in tables:
-    #     print('create table', table, datetime.datetime.now())
-    #     write_tsv(cur, table)
+    for table in tables:
+        print('create table', table, datetime.datetime.now())
+        write_tsv(cur, table)
 
     # merge complex names and polymer
     print('start complex', datetime.datetime.now())
