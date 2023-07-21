@@ -1,18 +1,41 @@
+import time
 import MySQLdb as mdb
-from neo4j import GraphDatabase
-
+import neo4j
+import pymysql
+mysql_user='ckoenigs'
+mysql_pw='Za8p7Tf$'
 
 # connect with the neo4j database
-def database_connection_neo4j_driver():
-    driver = GraphDatabase.driver('bolt://localhost:7687', auth=('neo4j', 'test1234'))
+def database_connection_neo4j_driver() -> neo4j.Driver:
+    neo4j_address = 'bolt://localhost:7687'
+    username = 'neo4j'
+    password = 'test1234'
+    try:
+        driver = neo4j.GraphDatabase.driver(neo4j_address, auth=(username, password))
+        driver.verify_connectivity()
+    except Exception as ex:
+        print('Error while establishing neo4j connection, trying again in 30 seconds...', ex)
+        time.sleep(30)
+        driver = neo4j.GraphDatabase.driver(neo4j_address, auth=(username, password))
+        driver.verify_connectivity()
     return driver
+
+def mysqlconnect_bindingDB():
+    # To connect MySQL database
+    conn = pymysql.connect(
+        host='localhost',
+        user=mysql_user,
+        password=mysql_pw,
+        db='bindingDB',
+    )
+    return conn
 
 
 def database_connection_RxNorm():
-    conRxNorm = mdb.connect('127.0.0.1', 'ckoenigs', 'Za8p7Tf$', 'RxNorm', charset='utf8')
+    conRxNorm = mdb.connect('127.0.0.1', mysql_user, mysql_pw, 'RxNorm', charset='utf8')
     return conRxNorm
 
 
 def database_connection_umls():
-    con = mdb.connect('127.0.0.1', 'ckoenigs', 'Za8p7Tf$', 'umls', charset='utf8')
+    con = mdb.connect('127.0.0.1', mysql_user, mysql_pw, 'umls', charset='utf8')
     return con
