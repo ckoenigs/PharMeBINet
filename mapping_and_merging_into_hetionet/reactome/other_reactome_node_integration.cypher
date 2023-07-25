@@ -48,6 +48,6 @@ url:"https://reactome.org/content/detail/" + n.stId, source:'Reactome', resource
 CREATE CONSTRAINT ON (a:MolecularComplex) ASSERT a.identifier IS UNIQUE;
 
 MATCH (n:Complex_reactome) WHERE n.speciesName = "Homo sapiens"
-CREATE (m:MolecularComplex{identifier:n.stId, synonyme:n.name, name:n.displayName, alternativeId:n.oldStId, pubMed:n.pubMed,
+CREATE (m:MolecularComplex{identifier:n.stId, synonyms:n.name, name:n.displayName, alternative_id:n.oldStId, pubMed:n.pubMed,
 isInDisease:n.isInDisease, isChimeric:n.isChimeric, systematicName:n.systematicName, stoichiometryKnown: n.stoichiometryKnown,
 url:"https://reactome.org/content/detail/" + n.stId, source:'Reactome', resource:['Reactome'], reactome:'yes', license:'CC BY 4.0'})<-[:equal_to_reactome_complex]-(n);
