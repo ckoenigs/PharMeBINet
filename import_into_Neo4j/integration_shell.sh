@@ -12,7 +12,7 @@ name_of_import_tool=$3
 # password neo4j
 password=$4
 
-name_of_biodwh2_tool='BioDWH2-v0.4.8'
+name_of_biodwh2_tool='BioDWH2-v0.4.13'
 
 path_to_other_place_of_data='/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/'
 
@@ -50,6 +50,17 @@ cd ..
 now=$(date +"%F %T")
 echo "Current time: $now"
 
+cd atc
+echo atc
+
+./script_atc.sh $path_neo4j $path_to_project $password > output.txt
+
+
+cd ..
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
 cd gencc
 echo gencc
 
@@ -77,6 +88,17 @@ cd DDinter
 echo DDinter
 
 ./script_integrated_ddinter.sh $path_neo4j $path_to_project $password > output.txt
+
+
+cd ..
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+cd foodb 
+echo Foodb
+
+./script_foodb.sh $path_neo4j $path_to_project $password > output.txt
 
 
 cd ..
@@ -149,14 +171,13 @@ cd ..
 now=$(date +"%F %T")
 echo "Current time: $now"
 
+cd  Uberon
+echo Uberon
 
-# cd  Uberon
-# echo Uberon
 
+./script_uberon.sh  $path_neo4j $path_to_project $password > output.txt
 
-# ./script_uberon.sh  $path_neo4j $path_to_project $password > output.txt
-
-# cd ..
+cd ..
 
 
 now=$(date +"%F %T")
@@ -189,7 +210,7 @@ echo "Current time: $now"
 cd  openFDA
 echo openFDA
 
-./script_open_fda.sh $path_neo4j $password > output_openFDA.txt
+#./script_open_fda.sh $path_neo4j $password > output_openFDA.txt
 
 cd ..
 
@@ -210,7 +231,7 @@ echo "Current time: $now"
 cd RNAcentral
 echo RNACentral
 
-./script_rna_central.sh $path_neo4j $path_to_project $password > output_script.txt
+#./script_rna_central.sh $path_neo4j $path_to_project $password > output_script.txt
 
 
 cd ..
@@ -256,24 +277,8 @@ echo "Current time: $now"
 cd  EFO
 echo EFO
 
-#download do
-#wget  -O ./efo.obo "https://www.ebi.ac.uk/efo/efo.obo"
 
-# python3 transform_obo_to_csv_and_cypher_file.py efo.obo EFO efo $path_to_project > output_generate_integration_file.txt
-
-# now=$(date +"%F %T")
-# echo "Current time: $now"
-
-# echo integrate efo into neo4j
-
-# $path_neo4j/cypher-shell -u neo4j -p $password -f cypher.cypher > output_cypher_integration.txt 2>&1
-
-# sleep 60
-
-# $path_neo4j/neo4j restart
-
-
-# sleep 120
+./script_efo.sh $path_neo4j $path_to_project $password > output.txt
 
 cd ..
 
@@ -326,9 +331,6 @@ echo "Current time: $now"
 cd  PharmGKB
 echo PharmGKB
 
-now=$(date +"%F %T")
-echo "Current time: $now"
-
 ./script_pharmGKB.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool $password > output/script_output.txt
 
 cd ..
@@ -338,9 +340,6 @@ echo "Current time: $now"
 
 cd  drugcentral
 echo drugcentral
-
-now=$(date +"%F %T")
-echo "Current time: $now"
 
 ./integrate_drugcentral.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool $password > output/script_output.txt
 
@@ -352,9 +351,6 @@ echo "Current time: $now"
 cd  adrecs
 echo ADReCS
 
-now=$(date +"%F %T")
-echo "Current time: $now"
-
 ./integrate_adrecs.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool $password > output/script_output.txt
 
 cd ..
@@ -365,10 +361,37 @@ echo "Current time: $now"
 cd  ttd
 echo TTD
 
+./integrate_ttd.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool $password > output/script_output.txt
+
+cd ..
+
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-./integrate_ttd.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool $password > output/script_output.txt
+cd  miRBase
+echo miRBase
+
+./integrate_mirbase.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool $password > output/script_output.txt
+
+cd ..
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+cd  hgnc
+echo HGNC
+
+./integrate_hgnc.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool $password > output/script_output.txt
+
+cd ..
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+
+cd  refseq
+echo refseq
+
+./integrate_refseq.sh $path_neo4j $name_of_import_tool $name_of_biodwh2_tool $password $path_to_other_place_of_data > output/script_output.txt
 
 cd ..
 
