@@ -158,9 +158,7 @@ load all the is_a relationships from MonDO into a dictionary with the resource
 
 
 def load_in_all_interaction_connection_from_drugbank_in_dict():
-    # query = '''MATCH p=(a)-[r:'''+neo4j_interaction_rela_label+''']->(b) RETURN a.identifier,r.url, r.describtion ,b.identifier  '''
-    query = '''MATCH p=(a:%s)-[r:''' + neo4j_interaction_rela_label + ''']->(b:%s) RETURN a.identifier, r.description ,b.identifier '''
-    query = query % (neo4j_label_drugbank, neo4j_label_drugbank)
+    query = f'MATCH p=(a:{neo4j_label_drugbank})-[r:{neo4j_interaction_rela_label} ]->(b:{neo4j_label_drugbank}) RETURN a.identifier, r.description ,b.identifier '
     print(query)
     results = g.run(query)
     print(datetime.datetime.now())
@@ -177,6 +175,7 @@ def load_in_all_interaction_connection_from_drugbank_in_dict():
             counter_multiple += 1
         else:
             dict_interact_relationships_with_infos[(compound1_id, compound2_id)] = [description]
+    # counter+=1
 
     print(counter_interactions)
     print('number of double interaction:' + str(counter_multiple))
