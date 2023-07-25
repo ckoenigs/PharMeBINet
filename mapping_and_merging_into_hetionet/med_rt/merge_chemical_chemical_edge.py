@@ -16,19 +16,21 @@ def create_connection_with_neo4j_and_mysql():
     driver = create_connection_to_databases.database_connection_neo4j_driver()
     g = driver.session()
 
+
 # dictionary chemical tuple to resource
-dict_chemical_tuple_to_resource={}
+dict_chemical_tuple_to_resource = {}
+
 
 def load_load_interaction_pairs():
     """
     Load all interaction tuple into a dictionary
     :return:
     """
-    query='Match (n:Chemical)-[r:INTERACTS_CiC]->(m:Chemical) Return n.identifier, r.resource, m.identifier'
-    results= g.run(query)
+    query = 'Match (n:Chemical)-[r:INTERACTS_CiC]->(m:Chemical) Return n.identifier, r.resource, m.identifier'
+    results = g.run(query)
     for result in results:
         [chemical_id1, resource, chemical_id2] = result.values()
-        dict_chemical_tuple_to_resource[(chemical_id1,chemical_id2)]=resource
+        dict_chemical_tuple_to_resource[(chemical_id1, chemical_id2)] = resource
 
 
 # open cypher file
@@ -51,7 +53,7 @@ def write_files(label, direction_1, direction_2, rela_name):
     header_rela = ['chemical_id1', 'chemical_id2', 'source', 'resource']
     csv_rela.writerow(header_rela)
 
-    query = '''Match (c:Chemical{identifier:line.chemical_id1}), (p:Chemical{identifier:line.chemical_id2}) Merge (c)%s[r:%s]%s(p) On Create Set r.source=line.source, r.resource=['MED-RT'], r.url='http://purl.bioontology.org/ontology/NDFRT/'+line.pharmacological_class_id , r.license='UMLS license, available at https://uts.nlm.nih.gov/license.html', r.unbiased=false, r.med_rt='yes' On Match Set r.resource=r.resource+'MED-RT' , r.med_rt='yes' '''
+    query = '''Match (c:Chemical{identifier:line.chemical_id1}), (p:Chemical{identifier:line.chemical_id2}) Merge (c)%s[r:%s]%s(p) On Create Set r.source=line.source, r.resource=['MED-RT'], r.url='http://purl.bioontology.org/ontology/NDFRT/'+line.pharmacological_class_id , r.license='UMLS license, available at https://uts.nlm.nih.gov/license.html', r.unbiased=false, r.med_rt='yes' On Match Set r.resource=split(line.resource,"|") , r.med_rt='yes' '''
     query = query % (direction_1, rela_name, direction_2)
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/ndf-rt/{file_name}',
@@ -71,13 +73,13 @@ dict_rela_name_to_other_information = {
 set_of_not_used_pairs = set()
 
 
-def load_connections( label):
+def load_connections(label):
     '''
     Load all connection betweenn chemical and pharmacological class from ndf-rt
     :return:
     '''
 
-    query = f'Match (c:Chemical)--(:Chemical_Ingredient_MEDRT)-[t]->(n:{label})--(d:Chemical) Return c.identifier, type(t), t, n, d.identifier'
+    query = f'Match (c:Chemical)--(:Chemical_Ingredient_MEDRT)-[t]->(n:{label})--(d:Chemical) Return c.identifier, type(t), t, d.identifier'
     results = g.run(query)
 
     # dictionary relationship to tsv
@@ -100,13 +102,13 @@ def load_connections( label):
         if rela_type in dict_rela_name_to_other_information:
             if rela_type not in dict_rela_to_tsv:
                 rela_info = dict_rela_name_to_other_information[rela_type]
-                csv_writer = write_files(label,  rela_info[0], rela_info[1], rela_info[2])
+                csv_writer = write_files(label, rela_info[0], rela_info[1], rela_info[2])
                 dict_rela_to_tsv[rela_type] = csv_writer
                 dict_mapping_pairs[rela_type] = {}
         else:
-            if (rela_type, label1, label2) not in set_of_not_used_pairs:
-                print((rela_type, label1, label2))
-                set_of_not_used_pairs.add((rela_type, label1, label2))
+            if (rela_type, label) not in set_of_not_used_pairs:
+                print((rela_type, label))
+                set_of_not_used_pairs.add((rela_type, label))
             continue
 
         if (chemical_id1, chemical_id2) not in dict_mapping_pairs[rela_type]:
@@ -114,11 +116,27 @@ def load_connections( label):
 
         dict_mapping_pairs[rela_type][(chemical_id1, chemical_id2)].add(source)
 
-    if rela_type in dict_mapping_pairs:
-        for (chemical_id1, chemical_id2), sources in dict_mapping_pairs[rela_type].items():
-            sources = ['MED-RT' if x == 'MED-RT:Authority:MEDRT' else x.split(':')[-1] + ' via MED-RT' for x in sources]
-            dict_rela_to_tsv[rela_type].writerow(
-                [chemical_id1, chemical_id2, ' and '.join(sources)])
+    for rela_type, dict_pairs in dict_mapping_pairs.items():
+        rela_info = dict_rela_name_to_other_information[rela_type]
+        if rela_info == 'INTERACTS_CiC':
+            for (chemical_id1, chemical_id2), sources in dict_pairs.items():
+                if (chemical_id1, chemical_id2) in dict_chemical_tuple_to_resource:
+                    sources = ['MED-RT' if x == 'MED-RT:Authority:MEDRT' else x.split(':')[-1] + ' via MED-RT' for x in
+                               sources]
+                    dict_rela_to_tsv[rela_type].writerow(
+                        [chemical_id1, chemical_id2, ' and '.join(sources), pharmebinetutils.resource_add_and_prepare(
+                            dict_chemical_tuple_to_resource[(chemical_id1, chemical_id2)], 'MED-RT')])
+                elif (chemical_id2, chemical_id1) in dict_chemical_tuple_to_resource:
+                    sources = ['MED-RT' if x == 'MED-RT:Authority:MEDRT' else x.split(':')[-1] + ' via MED-RT' for x in
+                               sources]
+                    dict_rela_to_tsv[rela_type].writerow(
+                        [chemical_id1, chemical_id2, ' and '.join(sources), pharmebinetutils.resource_add_and_prepare(
+                            dict_chemical_tuple_to_resource[(chemical_id2, chemical_id1)], 'MED-RT')])
+                else:
+                    sources = ['MED-RT' if x == 'MED-RT:Authority:MEDRT' else x.split(':')[-1] + ' via MED-RT' for x in
+                               sources]
+                    dict_rela_to_tsv[rela_type].writerow(
+                        [chemical_id1, chemical_id2, ' and '.join(sources)])
 
 
 def main():
@@ -147,7 +165,6 @@ def main():
 
     print(datetime.datetime.now())
     print('Load pairs and generate files')
-
 
     for label in ['other_MEDRT', 'Chemical_Ingredient_MEDRT']:
         load_connections(label)

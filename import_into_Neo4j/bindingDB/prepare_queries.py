@@ -1,7 +1,8 @@
-import pharmebinetutils
 import pandas as pd
 import numpy as np
 import sys
+sys.path.append("../..")
+import pharmebinetutils
 
 tables = ['ARTICLE', 'ASSAY', 'COBWEB_BDB', 'COMPLEX_COMPONENT', 'DATA_FIT_METH', 'ENTRY',
           'ENTRY_CITATION', 'ENZYME_REACTANT_SET', 'INSTRUMENT', 'ITC_RESULT_A_B_AB', 'ITC_RUN_A_B_AB',

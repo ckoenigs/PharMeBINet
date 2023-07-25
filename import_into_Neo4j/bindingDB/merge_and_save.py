@@ -3,9 +3,10 @@ import numpy as np
 from collections import defaultdict
 import pandas as pd
 import csv
-import re
-import create_connection_to_databases
 import datetime
+import sys
+sys.path.append("../..")
+import create_connection_to_databases
 
 BATCH_SIZE = 100000
 
