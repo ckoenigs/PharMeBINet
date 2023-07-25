@@ -39,7 +39,7 @@ def add_entry_to_dictionary(dictionary, key, value):
 dict_rs_id_to_clinvar_ids = {}
 
 
-def get_all_variants_without_rs():
+def get_all_variants_with_rs():
     """
     Get all variant which has rs ids in xrefs
     :return:
@@ -79,11 +79,13 @@ def load_already_extracted_infos_from_file():
             counter_line += 1
             node = ujson.loads(line)
             node_id = node['refsnp_id']
+            # print(node_id)
             set_dbSNP_already_from_api.add(node_id)
             # dict_nodes[node_id] = node
         file_already_downloaded.close()
         file_already_downloaded = open(file_name, 'a')
     except:
+        print('in new')
         file_already_downloaded = open(file_name, 'w')
 
     file_name_not_existing = 'data/not_existing_ids.tsv'
@@ -111,7 +113,9 @@ def prepare_string_to_right_json_string(res_string):
     res_string = res_string.replace('}{"refsnp_id"', '},{"refsnp_id"')
     return res_string
 
-print_a_real_error=False
+
+print_a_real_error = False
+
 
 def ask_api_and_prepare_return(ids):
     """
@@ -127,25 +131,25 @@ def ask_api_and_prepare_return(ids):
         url = url % (ids)
         res = requests.get(url)
         res_json_string = res.text
-        if '"error":"error forwarding request"' in res_json_string :
+        if res.status_code != 200 or '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">' in res_json_string:
             if not print_a_real_error:
-                print(res_json_string)
-                print_a_real_error=False
+                print(res_json_string, res.status_code)
+                print_a_real_error = False
             time.sleep(10)
             res = requests.get(url)
             res_json_string = res.text
         #
-        if '"error":"error forwarding request"' in res_json_string :
+        if res.status_code != 200 or '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">' in res_json_string:
             print('start error')
-            print(res_json_string, url)
+            print(res_json_string, res.status_code, url)
             sys.exit('second error')
-        if res_json_string == '' and not ',' in ids:
+        if res_json_string == '' and ',' not in ids:
             counter_not_found += 1
             csv_file_not_existing_ids.writerow([ids])
             print(ids)
             return dict_nodes_new, counter_not_found
-        # check if nothing is found all ids single, because if one id is not existing in dbSNP anymore then nothing is 
-        # found. Therefore, check every id one by one. 
+        # check if nothing is found all ids single, because if one id is not existing in dbSNP anymore then nothing is
+        # found. Therefore, check every id one by one.
         elif res_json_string == '':
             print('in loop')
             for single_id in ids.split(','):
@@ -157,6 +161,7 @@ def ask_api_and_prepare_return(ids):
         # print(ids, res_json_string)
         res_json_string = prepare_string_to_right_json_string(res_json_string)
         dict_nodes_new = ujson.loads(res_json_string)
+
     return dict_nodes_new, counter_not_found
 
 
@@ -259,13 +264,13 @@ def go_through_downloaded_json_and_add_them_to_tsv():
 
 
 def main():
-    global path_of_directory, license, path_of_directory_dbSNP
+    global license, path_of_directory_dbSNP
     if len(sys.argv) > 2:
         path_of_directory = sys.argv[1]
-        path_of_directory_dbSNP = sys.argv[1] + 'mapping_and_merging_into_hetionet/dbSNP/'
+        path_of_directory_dbSNP = path_of_directory + 'mapping_and_merging_into_hetionet/dbSNP/'
         license = sys.argv[2]
     else:
-        sys.exit('need a path and license')
+        sys.exit('need a path and license ')
 
     print(datetime.datetime.now())
     print('diseaserate connection with neo4j')
@@ -276,9 +281,9 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
-    print('Load variant which are not from dbSNP ')
+    print('Load variant which have a rs id ')
 
-    get_all_variants_without_rs()
+    get_all_variants_with_rs()
 
     print(
         '###########################################################################################################################')
