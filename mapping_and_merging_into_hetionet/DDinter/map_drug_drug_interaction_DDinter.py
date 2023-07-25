@@ -47,7 +47,7 @@ def create_file_and_tsv_writer(file_name):
 
 def load_ddinter_interaction(directory):
     """
-    load all ddintere drug drug interaction an map to existing or else create new edges.
+    load all ddintere drug-drug interaction an map to existing or else create new edges.
     :param directory: directory
     :return:
     """
