@@ -92,7 +92,7 @@ def load_all_hgnc_genes_and_finish_the_files(csv_mapping):
         node = record.data()['n']
         counter_all += 1
 
-        hgnc_id = node['hgnc_id']
+        hgnc_id = node['id']
         if not 'entrez_id' in node:
             print('no entrez id', hgnc_id)
         entrez_id = node['entrez_id'] if 'entrez_id' in node else ''
@@ -165,7 +165,7 @@ def main():
     print('Generate cypher and tsv file')
 
     csv_mapping = generate_files(path_of_directory, 'mapping_gene.tsv', source, 'hgnc_Gene',
-                                 'Gene', 'hgnc_id')
+                                 'Gene', 'id')
 
     print('##########################################################################')
 
