@@ -17,19 +17,20 @@ def create_connection_with_neo4j():
     g = driver.session()
 
 
-def write_infos_into_file(csv_writer, raw_id, mapped_ids, how_mapped):
+def write_infos_into_file(csv_writer, raw_id, mapped_ids, how_mapped, pubchem_id):
     """
     Write mapped pair into the file
     :param csv_writer:
     :param raw_id:
     :param mapped_ids:
     :param how_mapped:
+    :param pubchem_id
     :return:
     """
     for map_id in mapped_ids:
         csv_writer.writerow(
             [raw_id, map_id, pharmebinetutils.resource_add_and_prepare(dict_chemical_id_to_resource[map_id], "TTD"),
-             how_mapped])
+             how_mapped, pubchem_id])
 
 
 def load_chemical_information():
@@ -49,12 +50,12 @@ def load_chemical_information():
     result = g.run(query)
 
     for record in result:
-        [identifier, xref, resource] = record.values()
+        [identifier, xrefs, resource] = record.values()
 
         dict_chemical_id_to_resource[identifier] = resource
 
-        if xref is not None:
-            for x in xref:
+        if xrefs is not None:
+            for x in xrefs:
                 if "PubChem Compound" in x:
                     pubchem_compound = x.split(':', 1)[1]
                     pharmebinetutils.add_entry_to_dict_to_set(dict_pubchem_c_ids_to_identifier, pubchem_compound,
@@ -66,7 +67,7 @@ def compound_ttd_mapping():
     file_name = 'drug/compound_mapping.tsv'
     with open(file_name, 'w', newline='') as tsv_file:
         writer = csv.writer(tsv_file, delimiter='\t')
-        line = ["node_id", "identifier", "resource", "how_mapped"]
+        line = ["node_id", "identifier", "resource", "how_mapped", 'pubchem_cid']
         writer.writerow(line)
         query = "MATCH (n:TTD_Compound) RETURN n.id, n.pubchem_cid"
         result = g.run(query)
@@ -81,7 +82,8 @@ def compound_ttd_mapping():
             if pubchem_cid is not None:
                 if pubchem_cid in dict_pubchem_c_ids_to_identifier:
                     mapping_found = True
-                    write_infos_into_file(writer, node_id, dict_pubchem_c_ids_to_identifier[pubchem_cid], 'pubchem')
+                    write_infos_into_file(writer, node_id, dict_pubchem_c_ids_to_identifier[pubchem_cid], 'pubchem',
+                                          pubchem_cid)
 
             if mapping_found:
                 counter_mapped += 1
