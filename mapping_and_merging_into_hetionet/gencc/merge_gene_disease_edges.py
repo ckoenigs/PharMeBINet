@@ -1,190 +1,223 @@
-import sys
 import datetime
-import csv
+import csv, sys
 
 sys.path.append("../..")
 import create_connection_to_databases
+import pharmebinetutils
+
+'''
+create connection to neo4j and mysql
+'''
 
 
-def database_connection():
+def create_connection_with_neo4j():
+    # create connection with neo4j
+    # authenticate("localhost:7474", "neo4j", "test")
+    global g, driver
+    driver = create_connection_to_databases.database_connection_neo4j_driver()
+    g = driver.session()
+
+
+# ditionary gene-disease pair to rela information
+dict_gene_disease_to_rela = {}
+
+
+def load_existing_association_edges():
     """
-    create connection to neo4j
+    Load all gene disease pairs into a dictionary
     :return:
     """
-    global g
-    g = create_connection_to_databases.database_connection_neo4j()
+    query = 'Match p=(n:Gene)-[r:ASSOCIATES_DaG]-(m:Disease) Return n.identifier, m.identifier, r'
+    results = g.run(query)
+    for result in results:
+        [gene_id, disease_id, rela] = result.values()
+        rela = dict(rela)
+        dict_gene_disease_to_rela[(gene_id, disease_id)] = rela
 
 
-cypher_file = open('output/cypher_rela.cypher', 'w', encoding='utf-8')
-
-
-
-query_start = '''Using Periodic Commit 10000 Load CSV  WITH HEADERS From "file:%smapping_and_merging_into_hetionet/omim/%s" As line FIELDTERMINATOR '\\t' 
-    Match (g:Gene{identifier:line.%s}),(to:Disease{identifier:line.%s}) Merge (g)<-[r:ASSOCIATES_DaG]-(to) On Create Set r.resource=['GENCC'], r.source='GENCC', r.url=""+line.%s , r.gencc='yes', r.license='CC0 1.0 Universal (CC0 1.0) Public Domain Dedication', %s On Match Set r.resource=r.resource+'GENCC', r.gencc="yes", %s ;\n'''
-
-
-def prepare_cypher_query(file, header_start, to_label):
+def add_information_into_dictionary_and_merge(rela, dict_rela_to_info, gene_id, disease_id, hgnc_id, resource,
+                                              pubMed_ids_merge=None, inheritances=None):
     """
-    generate the different cypher files for Disease
-    :param file: string
-    :param header_start: list with two entries
-    :param to_label: string
+    First get the different properties from the relationship. If the rela is not in the dicitionary generate an entry
+    with ['classifications', 'inheritance', 'source','pubmed_ids', 'public_report_url', 'notes',
+    'assertion_criterial_url', 'url']. If exists combine the classification ifnormation, moi title, submitter title and
+    pubmed ids.
+    :param rela:
+    :param dict_rela_to_info:
+    :param gene_id:
+    :param disease_id:
+    :param hgnc_id:
     :return:
     """
-    query = '''MATCH (n:gene_omim)-[p]-(h) Where 'phenotype_omim' in labels(h) or 'predominantly_phenotypes_omim' in labels(h) WITH DISTINCT keys(p) AS keys
-        UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields
-        RETURN allfields; '''
-    result = g.run(query)
+    public_report_url = rela['submitted_as_public_report_url'] if 'submitted_as_public_report_url' in rela else None
+    notes = rela['submitted_as_notes'] if 'submitted_as_notes' in rela else None
+    assertion_criterial_url = rela[
+        'submitted_as_assertion_criteria_url'] if 'submitted_as_assertion_criteria_url' in rela else None
+    pubmed_ids = set([str(x) for x in rela['submitted_as_pmids']]) if 'submitted_as_pmids' in rela else set()
+    if (gene_id, disease_id) not in dict_rela_to_info:
+        moi_titles = set([rela['moi_title']])
+        if pubMed_ids_merge:
+            pubmed_ids = pubmed_ids.union(pubMed_ids_merge)
+        if inheritances:
+            moi_titles = moi_titles.union(inheritances)
+        dict_rela_to_info[(gene_id, disease_id)] = [set([rela['classification_title']]),
+                                                    moi_titles, set([rela['submitter_title']]),
+                                                    pubmed_ids, public_report_url, notes,
+                                                    assertion_criterial_url, hgnc_id, resource]
+    else:
+        dict_rela_to_info[(gene_id, disease_id)][0].add(rela['classification_title'])
+        dict_rela_to_info[(gene_id, disease_id)][1].add(rela['moi_title'])
+        dict_rela_to_info[(gene_id, disease_id)][2].add(rela['submitter_title'])
+        dict_rela_to_info[(gene_id, disease_id)][3] = dict_rela_to_info[(gene_id, disease_id)][3].union(
+            pubmed_ids)
 
-    query_merge = ""
-    for key, in result:
-        query_merge += "r." + key + '=split(line.' + key + ",'|'), "
-        header_start.append(key)
 
-    query_merge = query_merge[:-2]
-    combine_cypher = query_start
-    combine_cypher = combine_cypher % (
-        path_of_directory, file, header_start[0], to_label, header_start[1], dict_first_letter_to_rela_letter[to_label[0]],'omim_id', query_merge, query_merge)
-
-    cypher_file.write(combine_cypher)
-
-
-def prepare_tsv_files(label):
+def generate_cypher_file_with_queries(properties, file_name, file_name_mapped):
     """
-    generate a tsv file in a given path with a given header
-    :param label: string
+    Generate the fitting cypher file and add the mapping and new edge cypher queries.
+    :param properties:
+    :param file_name:
+    :param file_name_mapped:
     :return:
     """
-    file_name = 'rela/gene_' + label + '_rela.tsv'
+    with open('output/cypher_edge.cypher', 'w', encoding='utf-8') as cypher_file_edge:
+        news = []
+        mapped = []
+        for prop in properties:
+            if prop in ['public_report_url', 'notes', 'assertion_criterial_url']:
+                news.append(prop + ':line.' + prop)
+                mapped.append('r.' + prop + '=line.' + prop)
+            elif prop == 'url':
+                news.append(prop + ':"https://search.thegencc.org/genes/"+line.' + prop)
+            elif prop == 'source':
+                news.append(prop + ':line.' + prop + '+" via GenCC"')
+            else:
+                news.append(prop + ':split(line.' + prop + ',"|")')
+                mapped.append('r.' + prop + '=split(line.' + prop + ',"|")')
+
+        query_new = 'MATCH (n:Gene{identifier:line.gene_id}),(m:Disease{identifier:line.disease_id}) Create (m)-[:ASSOCIATES_DaG{'
+        query_new += ', '.join(news) + ', license:"CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",  gencc:"yes" }]->(n)'
+        query_new = pharmebinetutils.get_query_import(path_of_directory,
+                                                      f'mapping_and_merging_into_hetionet/gencc/{file_name}',
+                                                      query_new)
+        cypher_file_edge.write(query_new)
+        query_mapped = 'MATCH (n:Gene{identifier:line.gene_id})<-[r:ASSOCIATES_DaG]-(m:Disease{identifier:line.disease_id}) Set '
+        query_mapped += ', '.join(mapped) + ', r.gencc="yes"'
+        query_mapped = pharmebinetutils.get_query_import(path_of_directory,
+                                                         f'mapping_and_merging_into_hetionet/gencc/{file_name_mapped}',
+                                                         query_mapped)
+        cypher_file_edge.write(query_mapped)
+
+
+def prepare_and_write_information_into_tsv(dictionary_pair_to_infos, csv_writer):
+    for (gene_id, disease_id), list_of_prop in dictionary_pair_to_infos.items():
+        new_prop_list = []
+        counter = 0
+        for prop in list_of_prop:
+            if counter == 2:
+                new_prop_list.append(','.join(prop))
+            elif type(prop) != str and prop is not None:
+                new_prop_list.append('|'.join(prop))
+            else:
+                new_prop_list.append(prop)
+            counter += 1
+        csv_writer.writerow([gene_id, disease_id] + new_prop_list)
+
+
+def prepare_tsv_file_and_cypher_file(dict_mapping_pairs_infos, dict_new_pairs_infos):
+    """
+    Prpare the 2 tsv file for mapping and new edges and the fitting queries.
+    :param dict_mapping_pairs_infos:
+    :param dict_new_pairs_infos:
+    :return:
+    """
+    file_name = 'output/edge_disease_gene_new.tsv'
     file = open(file_name, 'w', encoding='utf-8')
     csv_writer = csv.writer(file, delimiter='\t')
-    file_header = ['gene_id', 'to_id', 'omim_id']
-    prepare_cypher_query(file_name, file_header, label)
-    csv_writer.writerow(file_header)
+    properties = ['classifications', 'inheritance', 'source', 'pubMed_ids', 'public_report_url', 'notes',
+                  'assertion_criterial_url', 'url', 'resource']
+    csv_writer.writerow(['gene_id', 'disease_id'] + properties)
+    file_name_mapped = 'output/edge_disease_gene_mapped.tsv'
+    file_mapped = open(file_name_mapped, 'w', encoding='utf-8')
+    csv_writer_mapped = csv.writer(file_mapped, delimiter='\t')
+    properties = ['classifications', 'inheritance', 'source', 'pubMed_ids', 'public_report_url', 'notes',
+                  'assertion_criterial_url', 'url', 'resource']
+    csv_writer_mapped.writerow(['gene_id', 'disease_id'] + properties)
 
-    return csv_writer, file_header
+    generate_cypher_file_with_queries(properties, file_name, file_name_mapped)
+
+    prepare_and_write_information_into_tsv(dict_mapping_pairs_infos, csv_writer_mapped)
+    prepare_and_write_information_into_tsv(dict_new_pairs_infos, csv_writer)
 
 
-# dictionary gene-disease: rela info
-dict_gene_disease = {}
-
-# dictionary gene-phenotype: rela info
-dict_gene_phenotype = {}
-
-
-def put_pair_in_dictionary(gene_id, rela, to_id, dictionary, omim_id):
+def prepare_edge():
     """
-    add gene-x pair in the dictionary with value the relationship infos
-    :param gene_id: string
-    :param rela: dictionary/object
-    :param to_id: string
-    :param dictionary: dictionary
-    :param omim_id: string
+    perpare rela tsv and cypher file and query
     :return:
     """
-    if not (gene_id, to_id) in dictionary:
-        new_dictionary_rela = {}
-        for key, value in dict(rela).items():
-            if type(value) == list:
-                new_dictionary_rela[key] = set(value)
-            else:
-                new_dictionary_rela[key] = set([value])
-        new_dictionary_rela['omim_id']= omim_id
-        dictionary[(gene_id, to_id)] = new_dictionary_rela
-    else:
-        print('ohje multiple edges')
-        print(gene_id, to_id)
-        for key, value in dict(rela).items():
-            if key in dictionary[(gene_id, to_id)]:
-                if type(value) == list:
-                    dictionary[(gene_id, to_id)][key].union(value)
-                else:
-                    dictionary[(gene_id, to_id)][key].add(value)
-            else:
-                if type(value) == list:
-                    dictionary[(gene_id, to_id)][key] = set(value)
-                else:
-                    dictionary[(gene_id, to_id)][key] = {value}
-
-
-def load_all_omim_gene_phenotypes():
-    """
-    load all genes, association rela, disease or phenotype id and the labels
-    """
-    # {identifier:'604260'}
-    query = "MATCH (g:Gene)--(n:gene_omim)-[r:associates]-(h)--(p) Where 'Disease' in labels(p) or 'Phenotype' in labels(p) RETURN g.identifier, r, p.identifier, labels(p), n.identifier"
+    # take only edges with good evidences
+    query = '''MATCH (n:Gene)--(l:GenCC_Gene)-[rela]-(:GenCC_Disease)--(m:Disease) Where rela.classification_title in ["Supportive","Strong","Definitive","Moderate"] and not rela.submitted_as_pmids is NULL RETURN  n.identifier,  m.identifier , rela, l.id '''
     results = g.run(query)
 
-    for gene_id, rela, to_id, to_labels, omim_id in results:
-        if 'Disease' in to_labels:
-            put_pair_in_dictionary(gene_id, rela, to_id, dict_gene_disease, omim_id)
+    dict_mapping_pairs_infos = {}
+    dict_new_pairs_infos = {}
+
+    counter = 0
+    for record in results:
+        [gene_id, disease_id, rela, hgnc_id] = record.values()
+        rela = dict(rela)
+        if (gene_id, disease_id) in dict_gene_disease_to_rela:
+            rela_mapped = dict_gene_disease_to_rela[(gene_id, disease_id)]
+            inheritances = set(rela_mapped['inheritance']) if 'inheritance' in rela_mapped else None
+            pubMed_ids = set(rela_mapped['pubMed_ids']) if 'pubMed_ids' in rela_mapped else None
+            resource = set(rela_mapped['resource'])
+            resource.add('GenCC')
+            add_information_into_dictionary_and_merge(rela, dict_mapping_pairs_infos, gene_id, disease_id, hgnc_id,
+                                                      resource, pubMed_ids, inheritances)
         else:
-            put_pair_in_dictionary(gene_id, rela, to_id, dict_gene_phenotype, omim_id)
+            add_information_into_dictionary_and_merge(rela, dict_new_pairs_infos, gene_id, disease_id, hgnc_id,
+                                                      set(['GenCC']))
+        counter += 1
+
+    prepare_tsv_file_and_cypher_file(dict_mapping_pairs_infos, dict_new_pairs_infos)
+
+    print('number of edges', counter)
 
 
-def prepare_set_to_string(set_of_lists):
-    """
-    transform set to a list and then to a joined string
-    :param set_of_lists: set
-    :return: string
-    """
-    return "|".join(list(set_of_lists))
-
-
-def generate_tsv_and_cypher_file(label, dictionary):
-    """
-    generate tsv and fill it and also generate cypher query
-    :param label: string
-    :param dictionary: dictionary
-    :return:
-    """
-    csv_writer, header = prepare_tsv_files(label)
-    for (gene_id, to_id), properties in dictionary.items():
-        list_information = [gene_id, to_id,properties['omim_id'] ]
-        # add properties in the right order
-        for key in header[3:]:
-            list_information.append(
-                prepare_set_to_string(properties[key])) if key in properties else list_information.append('')
-        csv_writer.writerow(list_information)
+# path to directory
+path_of_directory = ''
 
 
 def main():
-    print(datetime.datetime.now())
-
     global path_of_directory
     if len(sys.argv) > 1:
+        print(sys.argv)
         path_of_directory = sys.argv[1]
     else:
-        sys.exit('need a path omim')
-
-    print('##########################################################################')
+        sys.exit('need a path')
 
     print(datetime.datetime.now())
-    print('connection to db')
-    database_connection()
+    print('Generate connection with neo4j')
 
-    print('##########################################################################')
-
-    print(datetime.datetime.now())
-    print('Gene mapping')
-
-    load_all_omim_gene_phenotypes()
-
-    print('##########################################################################')
+    create_connection_with_neo4j()
 
     print(datetime.datetime.now())
-    print('Prepare rela to disease as cypher query and tsv file')
+    print('Load existing gene-disease')
 
-    generate_tsv_and_cypher_file('Disease', dict_gene_disease)
+    load_existing_association_edges()
 
-    print('##########################################################################')
+    print(
+        '###########################################################################################################################')
 
     print(datetime.datetime.now())
-    print('Prepare rela to phenotyp as cypher query and tsv file')
+    print('Map generate tsv and cypher file ')
 
-    generate_tsv_and_cypher_file('Phenotype', dict_gene_phenotype)
+    prepare_edge()
 
-    print('##########################################################################')
+    driver.close()
+
+    print(
+        '###########################################################################################################################')
 
     print(datetime.datetime.now())
 
