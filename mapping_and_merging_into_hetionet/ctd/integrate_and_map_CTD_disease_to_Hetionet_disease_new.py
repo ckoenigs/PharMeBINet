@@ -550,7 +550,8 @@ def map_to_symptoms():
             mapping_ids_string = '|'.join(mapped_ids)
             for mapped_id in mapped_ids:
                 csv_writer.writerow(
-                    [ctd_disease_id, mapped_id, mapping_ids_string, '|'.join(dict_symptom_id_to_resource[mapped_id]),
+                    [ctd_disease_id, mapped_id, mapping_ids_string,
+                     pharmebinetutils.resource_add_and_prepare(dict_symptom_id_to_resource[mapped_id], 'CTD'),
                      'name'])
 
         if found_mapping:
@@ -570,7 +571,8 @@ def map_to_symptoms():
             mapping_ids_string = '|'.join(mapped_ids)
             for mapped_id in mapped_ids:
                 csv_writer.writerow(
-                    [ctd_disease_id, mapped_id, mapping_ids_string, '|'.join(dict_symptom_id_to_resource[mapped_id]),
+                    [ctd_disease_id, mapped_id, mapping_ids_string,
+                     pharmebinetutils.resource_add_and_prepare(dict_symptom_id_to_resource[mapped_id], 'CTD'),
                      'mesh'])
 
         if found_mapping:
@@ -699,8 +701,9 @@ def integrate_disease_into_pharmebinet():
             for mondo in mondos:
                 disease_class = dict_diseases_pharmebinet[mondo]
                 resource = set(disease_class.resource)
-                resource.add('CTD')
-                writer.writerow([ctd_disease_id, mondo, string_mondos, '|'.join(resource), how_mapped])
+                writer.writerow(
+                    [ctd_disease_id, mondo, string_mondos, pharmebinetutils.resource_add_and_prepare(resource, 'CTD'),
+                     how_mapped])
         else:
             counter_not_mapped += 1
             if ctd_disease_id not in list_not_mapped_to_mondo:
