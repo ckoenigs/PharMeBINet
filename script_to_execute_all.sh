@@ -45,7 +45,7 @@ $path_neo4j/neo4j stop
 
 sleep 120
 
-cp -r /mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/neo4j_databases/hetionet /mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/neo4j_databases/inte.db
+cp -r /mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/neo4j_databases/graph /mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/neo4j_databases/inte.db
 
 $path_neo4j/neo4j restart
 
@@ -72,27 +72,13 @@ $path_neo4j/neo4j stop
 
 sleep 180
 
-if [ -d "/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/neo4j_databases/withsource" ]; then 
-    rm -r /mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/neo4j_databases/withsource
-
-fi
-
-
-cp -r /mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/neo4j_databases/hetionet /mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/neo4j_databases/withsource
-
-sleep 120
-
-$path_neo4j/neo4j restart
-
-sleep 120
-
 echo delete source nodes
 now=$(date +"%F %T")
 echo "Current time: $now"
 
 cd final_preparation
 
-./new_preparation_script.sh $path_neo4j $name_of_import_tool #> output_delete_source.txt
+./new_preparation_script.sh $path_neo4j $name_of_import_tool $password #> output_delete_source.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
