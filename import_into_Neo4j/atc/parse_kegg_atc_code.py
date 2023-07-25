@@ -8,6 +8,10 @@ import pharmebinetutils
 
 
 def prepare_node_tsv_and_rela_tsv():
+    """
+    Prepare different TSV files and generate cypher file and the fitting cypher queries.
+    :return:
+    """
     file_name = 'output/node.tsv'
     file = open(file_name, 'w', encoding='utf-8')
     csv_writer = csv.writer(file, delimiter='\t')
@@ -40,6 +44,12 @@ def parse_name_to_id_and_name(string_name, csv_node):
 
 
 def load_information_form_json(csv_node, csv_edge):
+    """
+    Open ATC json and extract atc nodes and structures.
+    :param csv_node:
+    :param csv_edge:
+    :return:
+    """
     file = open('data/br08303.json', 'r', encoding='utf-8')
     data = ujson.load(file)
 
