@@ -170,30 +170,6 @@ def load_all_variants_and_finish_the_files():
             dict_tuple_of_labels_to_tsv_files[new_labels].writerow(
                 [identifier, '|'.join(go_through_xrefs_and_change_if_needed_source_name(new_xrefs, 'Variant'))])
 
-            # if 'rela' in node:
-            #     relationship_infos = json.loads(node["rela"].replace('\\"', '"'))
-            #     for rela in relationship_infos:
-            #         symbols = rela['symbols'] if 'symbols' in rela else []
-            #         xrefs = rela['xrefs'] if 'xrefs' in rela else []
-            #         found_gene = False
-            #         for xref in xrefs:
-            #             if xref.startswith('Gene'):
-            #                 gene_id = xref.split(':')[1]
-            #                 if gene_id in dict_gene_id_to_gene_node:
-            #                     gene_symbols = set(dict_gene_id_to_gene_node[gene_id]['geneSymbol'])
-            #                     found_gene = True
-            #                     # in clivar is a different gene symbol which is in the gene synonyms
-            #                     # if len(gene_symbols.intersection(symbols))==0:
-            #                     #     print(identifier)
-            #                     #     print(gene_id)
-            #                     #     print(dict_gene_id_to_gene_node[gene_id])
-            #                     #     print('different gene symbols')
-            #                     csv_rela.writerow([str(gene_id), identifier])
-            # all the not found is because they are linked to removed or replaced genes
-            # if not found_gene:
-            #     print(identifier)
-            #     print('non gene found')
-            #     print(rela)
             if 'genes' in node:
                 possible_genes_rela = node["genes"].replace('\\"', '"')
                 genes_infos = json.loads(possible_genes_rela)
