@@ -43,11 +43,6 @@ def load_protein_from_database_and_add_to_dict():
             if alternative_id not in dict_alt_id_to_id:
                 dict_alt_id_to_id[alternative_id] = set()
             dict_alt_id_to_id[alternative_id].add(identifier)
-        gene_symbols = node['gene_name'] if 'gene_name' in node else []
-        for gene_symbol in gene_symbols:
-            if gene_symbol not in dict_gene_symbol_to_id:
-                dict_gene_symbol_to_id[gene_symbol] = set()
-            dict_gene_symbol_to_id[gene_symbol].add(identifier)
     print('number of proteins:', len(dict_protein_id_to_resource))
 
 
