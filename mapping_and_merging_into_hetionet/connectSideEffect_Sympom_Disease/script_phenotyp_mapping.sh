@@ -19,6 +19,6 @@ echo integration of equal relationship between disease, side effect and symptom
 
 $path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher.cypher
 
-sleep 30
+sleep 40
 $path_neo4j/neo4j restart
 sleep 30
