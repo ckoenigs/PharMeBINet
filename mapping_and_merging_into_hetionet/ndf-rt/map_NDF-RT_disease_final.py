@@ -376,7 +376,7 @@ def integrate_ndf_rt_disease_into_pharmebinet():
         for symptom_id in symptom_ids:
             csv_writer_symptom.writerow([code, symptom_id, symptom_strings, how_mapped,
                                          pharmebinetutils.resource_add_and_prepare(
-                                             dict_diseases_pharmebinet[mondo_id].resource,
+                                             dict_symptom_infos[symptom_id].resource,
                                              'NDF-RT')])
     file_symptom.close()
 
