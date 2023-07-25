@@ -54,8 +54,8 @@ def parse_CUI_line(line, xref_start, namespace):
     :return: string (ID), dictionary
     """
     ID = line[0]
-    tmp = line[1].strip(']').split('[')
-    synonym1 = tmp[0].split(',')
+    tmp = line[1].strip(']').split(' [')
+    name = tmp[0].strip()
     if len(tmp) == 1:
         print(ID)
         print(xref_start)
@@ -78,11 +78,10 @@ def parse_CUI_line(line, xref_start, namespace):
 
     cui = line[2]
     tmp1 = line[3].split('[')
-    synonym2 = tmp1[0].split(',')
+    synonym = tmp1[0]
     dict_id_to_label[ID] = filename
 
-    synonym = set(synonym1).union(synonym2)
-    info = {'id': ID, 'name': synonym.pop().rstrip(), 'synonyms': '|'.join(synonym), 'xref': xref_start + ':' + cui}
+    info = {'id': ID, 'name': name.strip(), 'synonyms': synonym, 'xref': xref_start + ':' + cui}
     dict_of_file_names[filename].writerow(info)
     return ID, {'synonym': synonym, 'cui': cui}
 
@@ -143,7 +142,7 @@ def add_nodes_without_infos(code, name, namespace, filename):
     dict_id_to_label[code] = filename
 
     if not code in set_nodes_from_rela:
-        infos = {'id': code, 'namespace': namespace, 'name': name.rstrip()}
+        infos = {'id': code, 'namespace': namespace, 'name': name.strip()}
         dict_of_file_names[filename].writerow(infos)
         set_nodes_from_rela.add(code)
 
@@ -182,7 +181,7 @@ def prepare_rela_and_add_to_file(root, dic, fIDName, path):
                         add_nodes_without_infos(to_code, to_name, to_namespace, 'Chemical_Ingredient')
                     else:
                         add_nodes_without_infos(to_code, to_name, to_namespace, 'other')
-                        csv_writer.writerow([to_code, filename.rstrip(), namespace])
+                        csv_writer.writerow([to_code, filename.strip(), namespace])
 
             if from_code[0] != 'N':
                 if from_code in dic:
@@ -196,7 +195,7 @@ def prepare_rela_and_add_to_file(root, dic, fIDName, path):
                         add_nodes_without_infos(from_code, from_name, from_namespace, 'Chemical_Ingredient')
                     else:
                         add_nodes_without_infos(from_code, from_name, from_namespace, 'other')
-                        csv_writer.writerow([from_code, filename.rstrip(), namespace])
+                        csv_writer.writerow([from_code, filename.strip(), namespace])
 
             label_from = dict_id_to_label[from_code]
             label_to = dict_id_to_label[to_code]
@@ -293,7 +292,7 @@ def prepare_node_and_rela_and_write_to_files(fIDName):
         synonyms_element = con.findall('synonym')
         synonyms=set()
         for s in synonyms_element:
-            synonym = s.find('to_name').text
+            synonym = s.find('to_name').text.strip()
             synonyms.add(synonym)
         prop = con.findall('property')
         for p in prop:
@@ -311,7 +310,7 @@ def prepare_node_and_rela_and_write_to_files(fIDName):
 
         dict_id_to_label[code] = filename
 
-        infos = {'id': code, 'status': status, 'namespace': namespace, 'name': name.rstrip(), 'properties': '|'.join(properties),
+        infos = {'id': code, 'status': status, 'namespace': namespace, 'name': name.strip(), 'properties': '|'.join(properties),
                  'synonyms': '|'.join(synonyms)}
         dict_of_file_names[filename].writerow(infos)
 
