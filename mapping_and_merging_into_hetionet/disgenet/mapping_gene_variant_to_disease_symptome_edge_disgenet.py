@@ -224,8 +224,7 @@ def get_DisGeNet_information(type='Disease', cyphermode='w', other_label='Gene')
     # create/open cypher-query file
     cypher_path = os.path.join(source, 'cypher_edge.cypher')
     file_cypher = open(cypher_path, cyphermode, encoding='utf-8')
-
-    file.close()
+    
     file_gene_other.close()
 
     # 1. Set…
