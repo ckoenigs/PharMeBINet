@@ -19,16 +19,18 @@ def create_connection_with_neo4j():
     g = driver.session()
 
 
-def prepare_edge():
+def prepare_edge(tuple_label_and_refseq_label):
     """
     perpare rela tsv and cypher file and query
     :return:
     """
-    file_name = 'output/edge_rna_gene.tsv'
+    file_name = f'output/edge_rna_{tuple_label_and_refseq_label[0]}.tsv'
     file = open(file_name, 'w', encoding='utf-8')
     csv_writer = csv.writer(file, delimiter='\t')
     csv_writer.writerow(['identifier', 'pre_id', 'start', 'end', 'strand', 'source', 'url'])
-    query = '''MATCH (n:Gene)--(:refSeq_Gene)-[rela]-(m:refseq_RNA) RETURN  n.identifier,  m.id , rela '''
+    #
+    query = f'''MATCH (n:{tuple_label_and_refseq_label[0]})--(:{tuple_label_and_refseq_label[1]})-[rela]-(m:refSeq_RNA) RETURN  n.identifier,  m.id , rela '''
+    print(query)
     results = g.run(query)
 
     counter = 0
@@ -39,10 +41,13 @@ def prepare_edge():
                              general_function_refseq.prepare_url_id(pre_id)])
         counter += 1
 
+    file.close()
+
     print('number of edges', counter)
 
     with open('output/cypher_edge.cypher', 'a', encoding='utf-8') as cypher_file_edge:
-        query = 'MATCH (n:Gene{identifier:line.identifier}),(m:RNA{identifier:line.pre_id}) Create (n)-[:TRANSCRIBES_TO_GttR{start:line.start, end:line.end, source:"RefSeq from "+line.source, strand:line.strand, resource:["RefSeq"], license:"https://www.ncbi.nlm.nih.gov/home/about/policies/", url:"https://identifiers.org/refseq:"+line.url,  refseq:"yes"}]->(m)'
+        query = f'MATCH (n:{tuple_label_and_refseq_label[0]}{{identifier:line.identifier}}),(m:RNA{{identifier:line.pre_id}}) Create (n)-[:{tuple_label_and_refseq_label[2]}{{start:line.start, end:line.end, source:"RefSeq from "+line.source, strand:line.strand, resource:["RefSeq"], license:"https://www.ncbi.nlm.nih.gov/home/about/policies/", url:"https://identifiers.org/refseq:"+line.url,  refseq:"yes"}}]->(m)'
+
         query = pharmebinetutils.get_query_import(path_of_directory,
                                                   f'mapping_and_merging_into_hetionet/refseq/{file_name}',
                                                   query)
@@ -72,7 +77,8 @@ def main():
     print(datetime.datetime.now())
     print('Map generate tsv and cypher file ')
 
-    prepare_edge()
+    for tuple_label_and_refseq_label in [("Gene", "refSeq_Gene", "TRANSCRIBES_TO_GttR")]:
+        prepare_edge(tuple_label_and_refseq_label)
 
     driver.close()
 
