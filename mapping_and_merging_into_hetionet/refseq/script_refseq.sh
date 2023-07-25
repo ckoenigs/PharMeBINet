@@ -19,7 +19,13 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo map genes
 
-python3 map_gene_refseq.py $path_to_project > output/protein_map.txt
+python3 map_gene_refseq.py $path_to_project > output/gene_map.txt
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo map cds
+
+python3 map_cds_to_protein_refseq.py $path_to_project > output/protein_map.txt
 
 echo integrate connection with neo4j shell
 now=$(date +"%F %T")
@@ -39,6 +45,12 @@ echo "Current time: $now"
 echo create rna-gene edge
 
 python3 prepare_gene_rna_edges.py $path_to_project > output/rna_edge.txt
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo create rna-protein edge
+
+python3 create_rna_protein_edge.py $path_to_project > output/rna_edge.txt
 
 echo integrate connection with neo4j shell
 now=$(date +"%F %T")
