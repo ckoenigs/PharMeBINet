@@ -23,12 +23,14 @@ dict_PharmaClassId_to_resource = {}
 dict_pharma_mesh_cui = {}
 set_pharma_fda = set()
 dict_pharma_name = {}
-dict_pharma_fda = {}
 dict_pharma_mapping = defaultdict(dict)
-dict_pharma_chem_mapping = defaultdict(dict)
 
 
 def load_pharmacological_class_in():
+    """
+    Load PC and generate different pc dictionaries
+    :return:
+    """
     query = '''MATCH (n:PharmacologicClass) RETURN n'''
     results = graph_database.run(query)
 
@@ -64,8 +66,11 @@ def load_pharmacological_class_in():
             dict_pharma_name[name].add(identifier)
 
 
-
 def load_pharmaClass_in():
+    """
+    Load PharmClass and map to PC
+    :return:
+    """
     query = '''MATCH (n:DC_PharmaClass) RETURN n, id(n)'''
     results = graph_database.run(query)
 
@@ -110,20 +115,6 @@ def load_pharmaClass_in():
                     dict_pharma_mapping[node_id][pharma_class_id].add('synonym')
 
         if node_id not in dict_pharma_mapping:
-
-            if source == "CHEBI":
-                if code in dict_chemical_chebi:
-                    chemicals = dict_chemical_chebi[code]
-                    for chemical_id in chemicals:
-                        if chemical_id not in dict_pharma_chem_mapping[node_id]:
-                            dict_pharma_chem_mapping[node_id][chemical_id] = set()
-                        dict_pharma_chem_mapping[node_id][chemical_id].add('chebi')
-
-            if source == "MeSH":
-                if code in dict_chemical_to_resource:
-                    if code not in dict_pharma_chem_mapping[node_id]:
-                        dict_pharma_chem_mapping[node_id][code] = set()
-                    dict_pharma_chem_mapping[node_id][code].add('mesh')
 
             csv_not_mapped.writerow([node_id, code, source, name])
 
@@ -180,17 +171,26 @@ def main():
     print('Generate connection with neo4j and mysql')
 
     create_connection_with_neo4j()
+
+    print(20 * '##')
+    print(datetime.datetime.utcnow())
     print("load pharmacological Class in")
+
     load_pharmacological_class_in()
-    print("load chemical in")
-    load_chemicals_in()
+
+    print(20 * '##')
+    print(datetime.datetime.utcnow())
     print("load pharmaClass in")
+
     load_pharmaClass_in()
+
+    print(20 * '##')
+    print(datetime.datetime.utcnow())
+    print("generate cypher queries")
 
     generate_cypher_file('mapped_pharmaClass.tsv')
 
-    print(
-        '###########################################################################################################################')
+    print(20*'##')
 
     print(datetime.datetime.utcnow())
 
