@@ -12,6 +12,8 @@ import urllib.request
 from urllib.error import HTTPError
 from urllib.parse import urlparse
 
+USE_VERSION_5 = True
+
 
 def download_file(url: str, out: str = './', file_name: str or None = None, retries: int = 10, silent: bool = False,
                   force_download: bool = True) -> str or False:
@@ -88,23 +90,20 @@ def print_hline():
     print('#' * 100)
 
 
-USE_VERSION_5 = True
-
-
 def get_query_start(base_path: str, file_path: str) -> str:
     base_path = base_path.rstrip('/')
     return """USING PERIODIC COMMIT 10000 LOAD CSV WITH HEADERS FROM "file:%s/%s" AS line FIELDTERMINATOR '\\t'""" % (
         base_path, file_path)
 
 
-def get_query_import(base_path: str, file_path: str, query: str) -> str:
+def get_query_import(base_path: str, file_path: str, query: str, delimiter:str = '\\t', batch_number:int= 10000) -> str:
     base_path = base_path.rstrip('/')
     if USE_VERSION_5:
-        return """LOAD CSV WITH HEADERS FROM "file:%s/%s" AS line FIELDTERMINATOR '\\t' Call { with line %s } IN TRANSACTIONS OF 10000 ROWS;\n""" % (
-            base_path, file_path, query)
+        return """LOAD CSV WITH HEADERS FROM "file:%s/%s" AS line FIELDTERMINATOR '%s' Call { with line %s } IN TRANSACTIONS OF %s ROWS;\n""" % (
+            base_path, file_path, delimiter, query, str(batch_number))
     else:
-        return """USING PERIODIC COMMIT 10000 LOAD CSV WITH HEADERS FROM "file:%s/%s" AS line FIELDTERMINATOR '\\t' %s ;\n""" % (
-            base_path, file_path, query)
+        return """USING PERIODIC COMMIT %s LOAD CSV WITH HEADERS FROM "file:%s/%s" AS line FIELDTERMINATOR '%s' %s ;\n""" % (
+            str(batch_number),base_path, file_path,delimiter, query)
 
 
 def prepare_index_query(label: str, prop: str, additional_index: str = '') -> str:
