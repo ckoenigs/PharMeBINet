@@ -111,7 +111,7 @@ def add_to_file(dict_node_id_to_resource, identifier_db, identifier_act_id, csv_
     :return:
     """
     csv_mapping.writerow([identifier_db, identifier_act_id,
-                          pharmebinetutils.resource_add_and_prepare(dict_node_id_to_resource[identifier_db], 'ADReCs'),
+                          pharmebinetutils.resource_add_and_prepare(dict_node_id_to_resource[identifier_db], 'ADReCS'),
                           how_mapped])
 
 

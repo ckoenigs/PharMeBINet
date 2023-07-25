@@ -82,7 +82,7 @@ def prepare_query(file_name, file_name_new, db_label, adrecs_label):
                                               f'mapping_and_merging_into_hetionet/{director}/{file_name}', query)
     cypher_file.write(query)
 
-    query = ''' MATCH (g:%s{Variation_ID:line.identifier}) Create (c:Variant :GeneVariant{identifier:line.identifier, adrecstarget:'yes', resource:["ADReCS-Target"], xrefs:["dbSNP:"+line.identifier] ,license:"%s" , source:"dbSNP from ADReCSV-Target"})-[:equal_adrecs_target_variant{how_mapped:'new'}]->(g)'''
+    query = ''' MATCH (g:%s{Variation_ID:line.identifier}) Create (c:Variant :GeneVariant{identifier:line.identifier, adrecs_target:'yes', resource:["ADReCS-Target"], xrefs:["dbSNP:"+line.identifier] ,license:"%s" , source:"dbSNP from ADReCSV-Target"})-[:equal_adrecs_target_variant{how_mapped:'new'}]->(g)'''
     query = query % (adrecs_label, 'license')
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/{director}/{file_name_new}', query)

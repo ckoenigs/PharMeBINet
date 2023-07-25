@@ -70,7 +70,7 @@ def prepare_query(file_name, file_name_new, db_label, adrecs_label, db_id,adrecs
                                               f'mapping_and_merging_into_hetionet/{director}/{file_name}', query)
     cypher_file.write(query)
 
-    query= f' Match (g:{adrecs_label}{{{adrecs_id_internal}:line.{adrecs_id}}})  Merge (n:SideEffect{{identifier:line.umls_id}}) On Create Set  n.name=g.ADR_TERM, n.source="UMLS via ADReCS-Target", n.resource=["ADReCS-Target"], n.license="", n.url="" Create (n)<-[:equal_to_adrecs_target_adr]-(g)'
+    query= f' Match (g:{adrecs_label}{{{adrecs_id_internal}:line.{adrecs_id}}})  Merge (n:SideEffect{{identifier:line.umls_id}}) On Create Set  n.name=g.ADR_TERM, n.source="UMLS via ADReCS-Target", n.adrecs_target="yes", n.resource=["ADReCS-Target"], n.license="", n.url="" Create (n)<-[:equal_to_adrecs_target_adr]-(g)'
 
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/{director}/{file_name_new}', query)
@@ -121,6 +121,8 @@ def get_all_adrecs_target_and_map(db_label,  dict_node_id_to_resource):
         node=record.data()['n']
         #rs or a name
         name = node['ADR_TERM'].lower()
+        # remove the inclusive and exclusive information from name
+        name= name.split(' (incl')[0].split('  (excl')[0]
         identifier= node['identifier']
         if name  in dict_name_to_id:
             counter_mapping+=1

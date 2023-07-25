@@ -39,7 +39,7 @@ def integrate_information_into_dict(dict_node_id_to_resource, label, dict_altern
 
 def prepare_query(file_name, db_label, adrecs_label, adrecs_id):
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
-    query = ''' MATCH (n:%s{identifier:line.identifier}), (g:%s{%s:line.identifier_adrecst_target}) Set n.resource=split(line.resource,"|"), n.adrecstarget='yes' Create (n)-[:equal_adrecs_target_%s{how_mapped:line.how_mapped}]->(g)'''
+    query = ''' MATCH (n:%s{identifier:line.identifier}), (g:%s{%s:line.identifier_adrecst_target}) Set n.resource=split(line.resource,"|"), n.adrecs_target='yes' Create (n)-[:equal_adrecs_target_%s{how_mapped:line.how_mapped}]->(g)'''
     query = query % (db_label, adrecs_label, adrecs_id, db_label.lower())
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/{director}/{file_name}', query)
