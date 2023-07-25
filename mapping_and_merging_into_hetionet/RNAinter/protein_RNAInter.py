@@ -84,7 +84,7 @@ def protein_RNAInter():
     tsv_file.close()
 
     print("######### Start: Cypher #########")
-    query = f'Match (p1:protein_RNAInter{{Raw_ID:line.Raw_ID}}),(p2:Protein{{identifier:line.identifier}}) SET p2.resource = split(line.resource,"|"), p2.RNAInter = "yes" Create (p1)-[:associateProteinRNAInter{{  '
+    query = f'Match (p1:protein_RNAInter{{Raw_ID:line.Raw_ID}}),(p2:Protein{{identifier:line.identifier}}) SET p2.resource = split(line.resource,"|"), p2.rnainter = "yes" Create (p1)-[:associateProteinRNAInter{{  '
     query = query[:-2] + '}]->(p2)'
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/RNAinter/{file_name}',
