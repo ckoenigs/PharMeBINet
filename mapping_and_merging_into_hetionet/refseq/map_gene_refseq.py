@@ -20,7 +20,7 @@ def create_connection_with_neo4j():
 
 # dictionary with pharmebinet genes with identifier as key and value node as dictionary
 dict_genes_pharmebinet = {}
-
+# dictionary hgnc id to gene ids
 dict_hgnc_to_gene_id = {}
 
 
@@ -39,9 +39,7 @@ def load_pharmebinet_genes_in():
         for xref in xrefs:
             if xref.startswith('HGNC:'):
                 hgnc_id = int(xref.rsplit(':', 1)[1])
-                if not hgnc_id in dict_hgnc_to_gene_id:
-                    dict_hgnc_to_gene_id[hgnc_id] = set()
-                dict_hgnc_to_gene_id[hgnc_id].add(identifier)
+                pharmebinetutils.add_entry_to_dict_to_set(dict_hgnc_to_gene_id, hgnc_id, identifier)
 
     print('number of gene nodes in pharmebinet:' + str(len(dict_genes_pharmebinet)))
 
