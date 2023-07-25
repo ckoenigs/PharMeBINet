@@ -120,7 +120,7 @@ def main():
         ['precedingEvent', 'ReactionLikeEvent_reactome', 'ReactionLikeEvent', 'PRECEDING_REACTION_RLEprRLE'],
         ['inferredTo', 'ReactionLikeEvent_reactome', 'ReactionLikeEvent', 'HAS_EFFECT_ON_RLEheoRLE'],
         ['reverseReaction', 'ReactionLikeEvent_reactome', 'ReactionLikeEvent', 'REVERSE_REACTION_RLErrRLE'],
-        ['inferredTo', 'ReactionLikeEvent_reactome', 'ReactionLikeEvent', 'HAS_EFFECT_ON_RLEheoRLRLE'],
+        ['inferredTo', 'ReactionLikeEvent_reactome', 'ReactionLikeEvent', 'HAS_EFFECT_ON_RLEheoRLE'],
         ['goBiologicalProcess', 'GO_BiologicalProcess_reactome', 'BiologicalProcess', 'OCCURS_IN_RLEoiBP']
     ]
 
