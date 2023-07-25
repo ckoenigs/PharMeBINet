@@ -27,7 +27,7 @@ sleep 30
 
 $path_neo4j/neo4j restart
 
-sleep 30
+sleep 40
 
 python3 prepare_go_gene_and_protein_rela.py $path_to_project > edge_go_protein_gene/output.txt
 

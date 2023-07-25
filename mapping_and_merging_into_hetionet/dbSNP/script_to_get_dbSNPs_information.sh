@@ -12,6 +12,11 @@ password=$3
 # license
 license="https://www.ncbi.nlm.nih.gov/home/about/policies/"
 
+
+sleep 30
+$path_neo4j/neo4j restart
+sleep 30
+
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo "snp information for integrated dbSNP nodes"
@@ -32,9 +37,14 @@ sleep 30
 $path_neo4j/neo4j restart
 sleep 30
 
+
 sleep 60
 $path_neo4j/neo4j restart
 sleep 120
+
+sleep 60
+$path_neo4j/neo4j restart
+sleep 180
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -97,4 +107,4 @@ echo "Current time: $now"
 
 sleep 30
 $path_neo4j/neo4j restart
-sleep 60
+sleep 70

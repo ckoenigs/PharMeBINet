@@ -34,16 +34,22 @@ chmod 775 merge_nodes.sh
 
 ./merge_nodes.sh $path_neo4j > output/output_mergy.txt
 
-sleep 10
+sleep 20
 
 $path_neo4j/neo4j restart
 
-sleep 20
+sleep 30
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 
 $path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_end.cypher
+
+sleep 20
+
+$path_neo4j/neo4j restart
+
+sleep 30
 
 
 

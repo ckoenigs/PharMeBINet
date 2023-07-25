@@ -28,9 +28,9 @@ echo node cypher
 $path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher.cypher
 $path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_gene.cypher
 
-sleep 20
-$path_neo4j/neo4j restart
 sleep 30
+$path_neo4j/neo4j restart
+sleep 60
 
 now=$(date +"%F %T")
 echo "Current time: $now"

@@ -39,7 +39,7 @@ $path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_part2.cypher
 
 sleep 30
 $path_neo4j/neo4j restart
-sleep 30
+sleep 40
 
 # relationships!
 
@@ -63,6 +63,6 @@ echo integration of hmdb edges
 
 $path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_edge.cypher
 
-sleep 30
+sleep 70
 $path_neo4j/neo4j restart
-sleep 60
+sleep 140

@@ -18,6 +18,12 @@ hpo_ontology_date='2023-01-27'
 now=$(date +"%F %T")
 echo "Current time: $now"
 
+
+
+sleep 30
+$path_neo4j/neo4j restart
+sleep 60
+
 echo HPO
 python3 map_and_integrate_hpo_info_into_hetionet.py $path_to_project > output/output_hpo_disease.txt
 
@@ -29,6 +35,9 @@ $path_neo4j/cypher-shell -u neo4j -p $password -f cypher/cypher.cypher
 sleep 30
 $path_neo4j/neo4j restart
 sleep 30
+sleep 30
+$path_neo4j/neo4j restart
+sleep 40
 
 python3 integrat_hpo_disease_symptom_rela.py $path_to_project $hpo_annotated_date > output/output_hpo_symptomes_rela.txt
 

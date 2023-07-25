@@ -18,7 +18,7 @@ $path_neo4j/cypher-shell -u neo4j -p $password -f protein/cypher.cypher
 
 sleep 30
 $path_neo4j/neo4j restart
-sleep 30
+sleep 40
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -31,4 +31,4 @@ $path_neo4j/cypher-shell -u neo4j -p $password -f interaction/cypher.cypher
 
 sleep 30
 $path_neo4j/neo4j restart
-sleep 60
+sleep 90

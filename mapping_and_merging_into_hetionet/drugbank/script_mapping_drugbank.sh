@@ -116,9 +116,9 @@ echo delete compounds which did not mapped
 
 $path_neo4j/cypher-shell -u neo4j -p $password -f cypher_delete_compound.cypher > output_delete_cypher.txt
 
-sleep 20
+sleep 30
 $path_neo4j/neo4j restart
-sleep 20
+sleep 50
 
 
 

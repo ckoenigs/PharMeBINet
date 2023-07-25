@@ -50,9 +50,9 @@ echo integration of ttd mapping and nodes into hetionet
 
 $path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher.cypher
 
-sleep 30
+sleep 60
 $path_neo4j/neo4j restart
-sleep 30
+sleep 100
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -74,7 +74,7 @@ echo integration of ttd edges
 
 $path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_edges.cypher
 
-sleep 30
+sleep 60
 $path_neo4j/neo4j restart
-sleep 30
+sleep 60
 
