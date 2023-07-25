@@ -271,7 +271,7 @@ def write_info_into_files():
             prepare_method_information(rela_information, methods)
 
         csv_writer_mapping.writerow([interaction_id, pharmebinetutils.resource_add_and_prepare(
-            dict_interaction_id_to_interaction_dictionary[interaction_id]['resource'], 'Hippie'), protein_1,
+            dict_interaction_id_to_interaction_dictionary[interaction_id]['resource'], 'HIPPIE'), protein_1,
                                      protein_2, '|'.join(publications), '|'.join(methods)])
 
 
