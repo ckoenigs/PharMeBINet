@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import sys
+
 sys.path.append("../..")
 import pharmebinetutils
 
@@ -51,7 +52,8 @@ def create_node_queries(tab):
                 query = query[:-1]
                 query += "})"
                 query = pharmebinetutils.get_query_import(file_path,
-                                                          "import_into_Neo4j/bindingDB/tsv_from_mysql/" + table + ".tsv", query)
+                                                          "import_into_Neo4j/bindingDB/tsv_from_mysql/" + table + ".tsv",
+                                                          query)
                 file.write(query)
             else:
                 query = "create (:" + table + "{"
@@ -66,7 +68,8 @@ def create_node_queries(tab):
                 query = query[:-1]
                 query += "})"
                 query = pharmebinetutils.get_query_import(file_path,
-                                                          "import_into_Neo4j/bindingDB/tsv_from_mysql/" + table + ".tsv", query)
+                                                          "import_into_Neo4j/bindingDB/tsv_from_mysql/" + table + ".tsv",
+                                                          query)
                 file.write(query)
     print("Queries saved to 'create_nodes.cypher' file.")
 
@@ -90,9 +93,8 @@ def create_edge_queries(simple_edges, edges):
 
             query = pharmebinetutils.get_query_import(file_path,
                                                       'import_into_Neo4j/bindingDB/idx_tsv/ENZYME_REACTANT_SET-' +
-                                                      col + '.tsv', query)
+                                                      col + '.tsv', query, batch_number=1)
             file.write(query)
-
 
         for edge in simple_edges:
             if edge[0] == 'ASSAY' and edge[1] == 'KI_RESULT':
@@ -100,7 +102,7 @@ def create_edge_queries(simple_edges, edges):
                         "{assayid:line.ASSAYID, entryid:line.ENTRYID})\n Create (n1) -[:RELATIONSHIP] -> (n2)"
                 query = pharmebinetutils.get_query_import(file_path,
                                                           'import_into_Neo4j/bindingDB/idx_tsv/ASSAY-KI_RESULT.tsv',
-                                                          query)
+                                                          query, batch_number=500)
                 file.write(query)
             else:
                 file_name = edge[0] + '-' + edge[1] + '.tsv'
@@ -109,14 +111,16 @@ def create_edge_queries(simple_edges, edges):
                             "where n1.reactant_set_id in split(line.REACTANT_SET_ID_STR, ',') " \
                             "\nCreate (n1) -[:RELATIONSHIP] -> (n2)"
                     query = pharmebinetutils.get_query_import(file_path,
-                                                              'import_into_Neo4j/bindingDB/idx_tsv/' + file_name, query)
+                                                              'import_into_Neo4j/bindingDB/idx_tsv/' + file_name, query,
+                                                              batch_number=500)
                     file.write(query)
                 else:
                     query = "MATCH (n1:" + edge[0] + "{" + edge[3].lower() + ":line." + edge[2] + "}), "
                     query = query + "(n2:" + edge[1] + "{" + edge[2].lower() + ":line." + edge[2] + "}) \n"
                     query = query + "Create (n1) -[:RELATIONSHIP] -> (n2)"
                     query = pharmebinetutils.get_query_import(file_path,
-                                                              'import_into_Neo4j/bindingDB/idx_tsv/' + file_name, query)
+                                                              'import_into_Neo4j/bindingDB/idx_tsv/' + file_name, query,
+                                                              batch_number=500)
                     file.write(query)
         for edge in edges:
             query = "MATCH (n1:" + edge[0] + "{"
@@ -176,8 +180,8 @@ def create_index_queries(edges, edges_2):
             query = query + ");\n"
             queries_list.append(query)
         for col in special_col:
-            query = "CREATE INDEX indexENZYME_REACTANT_SET_" + col.lower() +  \
-                    "FOR (node:ENZYME_REACTANT_SET) ON (node." + col.lower() + "); \n"
+            query = "CREATE INDEX indexENZYME_REACTANT_SET_" + col.lower() + \
+                    " FOR (node:ENZYME_REACTANT_SET) ON (node." + col.lower() + "); \n"
             queries_list.append(query)
         queries_list = list(dict.fromkeys(queries_list))
         for q in queries_list:
@@ -238,7 +242,6 @@ def create_idx_tsv(edges_id):
 
         unique_rows.to_csv('idx_tsv/ENZYME_REACTANT_SET-' + col + '.tsv', sep='\t', index=False, header=True)
         print('index saved to ', 'ENZYME_REACTANT_SET-' + col + '.tsv')
-
 
 
 if __name__ == "__main__":

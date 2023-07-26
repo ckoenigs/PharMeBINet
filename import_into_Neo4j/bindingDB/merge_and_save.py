@@ -248,9 +248,8 @@ if __name__ == "__main__":
     # create_names(conn)
 
     # join monomer, monomer struct and monomer names
-    # join_monomer(conn)
     join_monomer_new(conn)
-    mono_array = get_np_from_tsv('tsv_from_mysql/MONO_STRUCT_NAMES.tsv')
-    np.savetxt('MONO_STRUCT_NAMES.tsv', mono_array, delimiter='\t', fmt='%s')
+    # mono_array = get_np_from_tsv('tsv_from_mysql/MONO_STRUCT_NAMES.tsv')
+    # np.savetxt('MONO_STRUCT_NAMES.tsv', mono_array, delimiter='\t', fmt='%s')
 
     print('end', datetime.datetime.now())
