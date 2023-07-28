@@ -220,11 +220,11 @@ header = ['id', 'status', 'namespace', 'name', 'properties', 'synonyms', 'xref']
 dict_of_file_names = {}
 
 # cypher file
-cypher_file = open('cypher_med.cypher', 'w', encoding='utf-8')
-cypher_file_edge = open('cypher_med_edge.cypher', 'w', encoding='utf-8')
+cypher_file = open('output/cypher_med.cypher', 'w', encoding='utf-8')
+cypher_file_edge = open('output/cypher_med_edge.cypher', 'w', encoding='utf-8')
 
 # cypher file delete
-cypher_file_delete = open('cypher_delete.cypher', 'w', encoding='utf-8')
+cypher_file_delete = open('output/cypher_delete.cypher', 'w', encoding='utf-8')
 
 
 def generate_node_csv_files(file_name):

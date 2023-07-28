@@ -17,7 +17,7 @@ echo "Current time: $now"
 
 echo integrate med-rt into neo4j
 
-$path_neo4j/cypher-shell -u neo4j -p $password -f cypher_med.cypher
+$path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_med.cypher
 
 sleep 30
 
@@ -27,8 +27,8 @@ $path_neo4j/neo4j restart
 sleep 30
 echo delete med-rt nodes without relaionships
 
-$path_neo4j/cypher-shell -u neo4j -p $password -f cypher_med_edge.cypher
-$path_neo4j/cypher-shell -u neo4j -p $password -f cypher_delete.cypher
+$path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_med_edge.cypher
+$path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_delete.cypher
 
 sleep 30
 

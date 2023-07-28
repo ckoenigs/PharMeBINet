@@ -22,7 +22,7 @@ def create_connection_with_neo4j_mysql():
     g = Graph("http://localhost:7474/db/data/")
 
 '''
-go through unichem mapping between chembl and drugban and check if they have the same information or new information
+go through unichem mapping between chembl and drugbank and check if they have the same information or new information
 '''
 def load_and_check_chembl_drugbank_mapping():
     file=open('extra/src1src2.txt','r')

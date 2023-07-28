@@ -23,7 +23,7 @@ echo "Current time: $now"
 
 echo integrate hippie into neo4j
 
-$path_neo4j/cypher-shell -u neo4j -p $password -f cypher.cypher
+$path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher.cypher
 
 sleep 60
 
@@ -36,7 +36,7 @@ echo "Current time: $now"
 
 echo integrate hippie into neo4j
 
-$path_neo4j/cypher-shell -u neo4j -p $password -f cypher_edge.cypher
+$path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_edge.cypher
 
 sleep 60
 

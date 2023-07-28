@@ -46,11 +46,11 @@ def extract_and_add_info_into_dictionary(dictionary, terminology, element):
 
 
 # cypher file to integrate nodes and relationships
-cypher_file = open('cypher_file.cypher', 'w', encoding='utf-8')
-cypher_file_edge = open('cypher_file_edge.cypher', 'w', encoding='utf-8')
+cypher_file = open('output/cypher_file.cypher', 'w', encoding='utf-8')
+cypher_file_edge = open('output/cypher_file_edge.cypher', 'w', encoding='utf-8')
 
 # cypher file to delte nodes without relationships
-cypher_file_delete = open('cypher_file_delete.cypher', 'w', encoding='utf-8')
+cypher_file_delete = open('output/cypher_file_delete.cypher', 'w', encoding='utf-8')
 
 # dictionary rela file name to code combination
 dict_rela_to_list_of_code_tuples = {}
@@ -58,7 +58,7 @@ dict_rela_to_list_of_code_tuples = {}
 
 def load_ndf_rt_xml_inferred_in():
     print(datetime.datetime.now())
-    tree = dom.parse("NDFRT_Public_2018.02.05_TDE.xml")
+    tree = dom.parse("data/NDFRT_Public_2018.02.05_TDE.xml")
     print(datetime.datetime.now())
 
     terminology = tree.documentElement

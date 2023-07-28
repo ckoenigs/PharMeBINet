@@ -10,9 +10,9 @@ def download_and_open_file():
     print('download file if not exist', datetime.datetime.now())
     if not os.path.exists('HIPPIE-current.mitab.txt'):
         url = 'http://cbdm-01.zdv.uni-mainz.de/~mschaefer/hippie/HIPPIE-current.mitab.txt'
-        pharmebinetutils.download_file(url)
+        pharmebinetutils.download_file(url,out='data/')
 
-    file = open('HIPPIE-current.mitab.txt', 'r', encoding='utf-8')
+    file = open('data/HIPPIE-current.mitab.txt', 'r', encoding='utf-8')
     csv_reader = csv.DictReader(file, delimiter='\t')
 
 
@@ -35,7 +35,7 @@ def create_tsv_files():
 
 
 def create_cypher_queries():
-    cypher_file = open('cypher.cypher', 'w', encoding='utf-8')
+    cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
 
     query_node = ' Create (n:Protein_Hippie{ '
     for property in header_node:
@@ -47,7 +47,7 @@ def create_cypher_queries():
 
     cypher_file.write(pharmebinetutils.prepare_index_query('Protein_Hippie', 'identifier'))
     cypher_file.close()
-    cypher_file = open('cypher_edge.cypher', 'w', encoding='utf-8')
+    cypher_file = open('output/cypher_edge.cypher', 'w', encoding='utf-8')
 
     query_edge = ' Match (n:Protein_Hippie{identifier:line.id1}),(m:Protein_Hippie{identifier:line.id2}) Create (n)-[:INTERACTS{ '
     for property in header_edge[2:]:
