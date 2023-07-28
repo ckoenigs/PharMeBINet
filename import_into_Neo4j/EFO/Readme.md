@@ -1,7 +1,14 @@
+## Experimental Factor Ontology (EFO)
+
 https://www.ebi.ac.uk/efo/
 
-Version: v3.53.0
+Version: 3.56.0 (2023-7-17)
 
-This integrate only the diseases from EFO (https://www.ebi.ac.uk/efo/efo.obo).
+
+First, the script downloads the latest version of EFO.
+
+Then the OBO file from the EFO will be transformed into node and relationship TSV with the program of EFO/transform_obo_to_tsv_and_cypher_file.py data/efo.obo EFO efo
+All terms are a node in efo all property-value pairs in OBO are a property in the node except for property key='is_a' and 'relationship'. They are for generating different kinds of relationships of the OBO file.
+Additionally, the cypher queries for the node and the different kinds of relationships are generated. After this, the data will be integrated into Neo4j with the Neo4j shell.
 
 License: Apache-2.0

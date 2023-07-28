@@ -2,7 +2,7 @@
 
 https://hpo.jax.org/app/
 
-Version: 2022-04-14
+Version: 2023-04-05
 <!--- Version change need to be done also in the mapping script --->
 
 The script first download the hpo.obo and the phenotype_annotation.hpoa files.

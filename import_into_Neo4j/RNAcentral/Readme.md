@@ -13,7 +13,5 @@ and edge TSV file which connects RNA nodes with RNA subnodes. In the last step, 
 
 Then the script executes the Neo4j cypher-shell to execute the cypher file to integrate the RNAcentral information.
 
-The schema is shown here:
-
 
 License: Creative Commons Zero license (CC0)

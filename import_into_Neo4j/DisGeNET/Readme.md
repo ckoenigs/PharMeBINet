@@ -14,7 +14,6 @@ In the last step, the different queries for the different nodes and edges are pr
 The script integrates DisGeNet into Neo4j with Neo4j cypher-shell and cypher file.
 
 
-
 The schema is shown here:
 
 ![er_diagram](disgenet_graph1.png)

@@ -2,7 +2,7 @@ http://ctdbase.org/
 
 Version: 2023-02
 
-There is a script that downloads the file from CTD and prepared the CSV files such that the header on each CSV file is removed. Then run in the program and generated for each file of chemical, disease, gene, anatomy, and pathway the cypher query to integrate the node into neo4j.
+There is a script that downloads the file from CTD and prepared the CSV files such that the header on each CSV file is removed. Then run in the program and generated for each file of chemical, disease, gene, anatomy, go, exposre study, exposure event and pathway the cypher query to integrate the node into neo4j.
 
 However, for genes, I prepare a dictionary from gene symbol to gene id.
  The cypher queries are generated for the relationships file.
@@ -17,4 +17,4 @@ The ctd nodes are integraten into Neo4j with Neo4j cypher-shell and the cypher f
 The schema is shown below:
 ![er_diagram](picture/ctd.png)
 
-License:© 2002–2012 MDI Biological Laboratory. All rights reserved. © 2012–2022 NC State University. All rights reserved.
+License:© 2002–2012 MDI Biological Laboratory. All rights reserved. © 2012-2023 NC State University. All rights reserved. 
