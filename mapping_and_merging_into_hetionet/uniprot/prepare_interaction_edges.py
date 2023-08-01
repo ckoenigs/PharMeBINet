@@ -5,12 +5,12 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-'''
-create a connection with neo4j
-'''
-
 
 def create_connection_with_neo4j():
+    """
+    create a connection with neo4j
+    :return:
+    """
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
     g = driver.session()
@@ -21,6 +21,12 @@ dict_pairs_to_info = {}
 
 
 def combine_info(tuple_ids_and_iso, rela):
+    """
+    Combine the information
+    :param tuple_ids_and_iso:
+    :param rela:
+    :return:
+    """
     for prop in ['number_of_experiments', 'interaction_ids']:  # ,  'iso_of_protein_to', 'iso_of_protein_from'
         if prop not in ['interaction_ids', 'number_of_experiments']:
             dict_pairs_to_info[tuple_ids_and_iso][prop].add(rela[prop])
@@ -29,12 +35,11 @@ def combine_info(tuple_ids_and_iso, rela):
                 dict_pairs_to_info[tuple_ids_and_iso][prop].union(rela[prop])
 
 
-'''
-Load all uniprots ids of the proteins and check out which appears also in the uniprot gene dictionary
-'''
-
-
 def get_pairs_information():
+    """
+    Load all uniprots ids of the proteins and check out which appears also in the uniprot gene dictionary
+    :return:
+    """
     # only the interaction in the same organism {identifier:'Q13627'}
     query = """Match (n:Protein_Uniprot)-[r]->(p:Protein_Uniprot) Where r.organismsDiffer='false' Return Distinct n.identifier, r, p.identifier """
     results = g.run(query)

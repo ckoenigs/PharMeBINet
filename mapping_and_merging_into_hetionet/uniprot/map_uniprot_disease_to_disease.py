@@ -5,14 +5,12 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-'''
-create a connection with neo4j
-'''
-
 
 def create_connection_with_neo4j():
-    # set up authentication parameters and connection
-    # authenticate("localhost:7474", "neo4j", "test")
+    """
+    create a connection with neo4j
+    :return:
+    """
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
     g = driver.session()
@@ -62,17 +60,23 @@ def load_all_disease_information():
 
 
 def write_pair_into_file(disease_id, identifier, csv_disease, how_mapped):
+    """
+    write  mapping pair in TSV file
+    :param disease_id:
+    :param identifier:
+    :param csv_disease:
+    :param how_mapped:
+    :return:
+    """
     resource = set(dict_id_to_resource[disease_id])
-    resource.add('UniProt')
-    csv_disease.writerow([identifier, disease_id, '|'.join(sorted(resource)), how_mapped])
-
-
-'''
-Load all uniprots ids of the proteins and check out which appears also in the uniprot gene dictionary
-'''
+    csv_disease.writerow(
+        [identifier, disease_id, pharmebinetutils.resource_add_and_prepare(resource, 'UniProt'), how_mapped])
 
 
 def gather_uniprot_disease_infos_and_add_to_file():
+    """
+    Load all uniprots ids of the proteins and check out which appears also in the uniprot gene dictionary
+    """
     # generate a file with all uniprots to
     file_name = 'uniprot_disease/mapping_disease.tsv'
     file_gene_disease = open(file_name, 'w')

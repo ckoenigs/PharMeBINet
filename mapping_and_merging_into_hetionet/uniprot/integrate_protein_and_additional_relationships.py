@@ -44,9 +44,6 @@ dict_gene_symbol_to_gene_id = {}
 # dictionary hgnc id to gene identifiers
 dict_hgnc_id_to_gene_id = {}
 
-# list of all gene symbols which appears in multiple genes
-list_double_gene_symbol_for_genes_without_uniprot_id = set([])
-
 # dictionary gene name to gene id
 dict_gene_name_to_id = defaultdict(list)
 
@@ -111,8 +108,6 @@ def get_all_genes():
                 if not genesymbol in dict_gene_symbol_to_gene_id:
                     dict_gene_symbol_to_gene_id[genesymbol] = [gene_id]
                 else:
-                    list_double_gene_symbol_for_genes_without_uniprot_id.add(genesymbol)
-
                     dict_gene_symbol_to_gene_id[genesymbol].append(gene_id)
         else:
             dict_gene_to_name[gene_id] = [name.lower()]
@@ -135,7 +130,7 @@ def get_all_genes():
     print('number of multiple name:' + str(len(list_double_names)))
 
 
-# files with rela from uniprot protei to gene
+# files with rela from uniprot protein to gene
 file_uniprots_gene_rela = open('uniprot_gene/db_uniprot_to_gene_rela.tsv', 'w')
 writer_rela = csv.writer(file_uniprots_gene_rela, delimiter='\t')
 writer_rela.writerow(
@@ -151,7 +146,7 @@ list_already_integrated_pairs_gene_protein = []
 count_not_mapping_gene_name = 0
 
 '''
-this goes throu a list of mapping gens and check out if they really do not exists already
+this goes through a list of mapping gens and check out if they really do not exists already
 if not integrate them into the tsv
 '''
 
@@ -212,7 +207,7 @@ def check_and_write_uniprot_ids(uniprot_id, name, identifier, secondary_uniprot_
                     check_and_add_rela_pair(identifier, uniprot_id, intersection, secondary_uniprot_ids, 'yes',
                                             'ncbi_id_and_gene_symbol')
                     return True, genes
-                elif len(symbol_interaction)==0:
+                elif len(symbol_interaction) == 0:
                     symbol_synonym_interaction = lower_primary_gene_symbols.intersection(
                         dict_synonyms_to_gene_ids.keys())
                     list_gene_id_from_synonyms = set()
@@ -240,6 +235,7 @@ def check_and_write_uniprot_ids(uniprot_id, name, identifier, secondary_uniprot_
                 check_and_add_rela_pair(identifier, uniprot_id, gene_ids, secondary_uniprot_ids, '', 'ncbi_id')
                 return True, gene_ids
 
+        # try to map with the HGNC ids to the pharmebinet hgnc ids
         if len(hgnc_ids) > 0:
             gene_ids_from_hgnc = set()
             for hgnc_id in hgnc_ids:
@@ -249,6 +245,8 @@ def check_and_write_uniprot_ids(uniprot_id, name, identifier, secondary_uniprot_
                 check_and_add_rela_pair(identifier, uniprot_id, gene_ids_from_hgnc,
                                         secondary_uniprot_ids, 'yes', 'hgnc_mapping')
                 return True, gene_ids_from_hgnc
+
+        # try to map with the primary gene symbol to the gene symbols
         if primary_gene_symbols:
             lower_primary_gene_symbols = {x.lower() for x in primary_gene_symbols}
             gene_ids_from_symbol = set()
@@ -287,30 +285,6 @@ def check_and_write_uniprot_ids(uniprot_id, name, identifier, secondary_uniprot_
                 check_and_add_rela_pair(identifier, uniprot_id, gene_ids_from_symbol,
                                         secondary_uniprot_ids, 'yes', text + '_gene_names')
                 return True, gene_ids_from_symbol
-
-        # check if mapping is possible with gene symbol
-        ## I have to check this out more but it seems like it works
-        list_of_possible_mapped_gene_ids = set([])
-        for gene_name in gene_names:
-            if gene_name in dict_gene_symbol_to_gene_id and not gene_name in list_double_gene_symbol_for_genes_without_uniprot_id:
-                gene_ids_from_name = dict_gene_symbol_to_gene_id[gene_name]
-                list_of_possible_mapped_gene_ids = list_of_possible_mapped_gene_ids.union(gene_ids_from_name)
-                list_already_included.append(uniprot_id)
-            elif gene_name in list_double_gene_symbol_for_genes_without_uniprot_id:
-                print(gene_name)
-                print(identifier)
-                print(dict_gene_symbol_to_gene_id[gene_name])
-                print('multiple name name mapping')
-
-        # the multiple mapping with gene symbol are not the best only 4 of 14 this make sense but for the other it would be manual mapping
-        if len(list_of_possible_mapped_gene_ids) == 1:
-            check_and_add_rela_pair(identifier, uniprot_id, list_of_possible_mapped_gene_ids,
-                                    secondary_uniprot_ids, 'yes', 'multiple_name_mapping')
-
-            # print(identifier)
-            # print(list_of_possible_mapped_gene_ids)
-            found_at_least_on = True
-            # no mapping from the gene or protein and no gene symbol
 
     return found_at_least_on, genes
 

@@ -5,14 +5,12 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-'''
-create a connection with neo4j
-'''
-
 
 def create_connection_with_neo4j():
-    # set up authentication parameters and connection
-    # authenticate("localhost:7474", "neo4j", "test")
+    """
+    create a connection with neo4j
+    :return:
+    """
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
     g = driver.session()
@@ -24,7 +22,7 @@ dict_uniprot_id_to_key_evidence_to_pubmed_id = {}
 
 def load_all_pubmed_ids_for_proteins():
     """
-    Get reference information for the different evidences!
+    Get reference information from the different evidences!
     :return:
     """
     query = '''Match (:Disease_Uniprot)-[r]-(a:Protein_Uniprot)-[h]-(:Evidence_Uniprot) Return a.identifier, h.key, h.sources'''
@@ -63,12 +61,11 @@ def write_rela_in_file(csv_writer, dict_pairs_to_info):
             [gene_id, disease_id, '|'.join(info_list[0]), '|'.join(info_list[1]), '|'.join(info_list[2]), info_list[3]])
 
 
-'''
-Load all uniprots ids of the proteins and check out which appears also in the uniprot gene dictionary
-'''
-
-
 def get_pairs_information():
+    """
+    Load all uniprots ids of the proteins and check out which appears also in the uniprot gene dictionary
+    :return:
+    """
     # generate a file with all uniprots to
     file_name = 'uniprot_disease/db_gene_to_disease.tsv'
     file_gene_disease = open(file_name, 'w')
@@ -89,6 +86,7 @@ def get_pairs_information():
                                               f'mapping_and_merging_into_hetionet/uniprot/{file_name}',
                                               query)
     file_cypher.write(query)
+    file_cypher.close()
 
     query = """Match (n:Disease)--(:Disease_Uniprot)-[r]-(:Protein_Uniprot)--(p:Protein)-[:PRODUCES_GpP]-(g:Gene) Return Distinct p.identifier ,n.identifier, r, g.identifier , n.name """
     results = g.run(query)
