@@ -6,14 +6,12 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-'''
-create connection to neo4j and mysql
-'''
-
 
 def create_connection_with_neo4j():
-    # create connection with neo4j
-    # authenticate("localhost:7474", "neo4j", "test")
+    """
+    create connection to neo4j and mysql
+    :return:
+    """
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
     g = driver.session()
