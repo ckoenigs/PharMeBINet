@@ -7,7 +7,7 @@ First, the old GOs (biological process, cellular component, and molecular functi
 Then the old nodes are deleted and the new information is integrated into the database with the cypher-shell.
 In the last step, the delete nodes cypher is executed to remove all BP, CC, or MF which did not map to GO.
 
-The second script mapped the go protein to protein and gene.
+Next mapped the go protein to protein and gene.
     First, all genes and proteins from my database are loaded into dictionaries.
     Second, the files for mapping gene and protein as tsv are generated and the additional cypher queries are added to the cypher file. 
     All go proteins are loaded and mapped directly to genes and proteins. For the protein mapping the UniProt id where used. For the gene, the gene symbols were used first. Second, the go protein gene symbols were mapped to gene synonyms.
