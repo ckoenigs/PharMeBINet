@@ -32,7 +32,7 @@ The same goes for Reactome MF to MF.
                 This has the same steps as BP mapping only with MF.
 
 The cypher-shell integrates the mapped information and the new nodes.
-Next, the cypher-shell integrates with another cypher file the nodes of ReactionLikeEvent (reaction, polymerization, depolymerization, black box event, failed reaction). But only human ReactionLikeEvent and such have PubMed ids.
+Next, the cypher-shell integrates with another cypher file the nodes of ReactionLikeEvent (reaction, polymerization, depolymerization, black box event, failed reaction), Regulation and MolecularComplex. But only human and such have PubMed ids.
 
 The next program prepares the edges between ReactionLikeEvent and disease/pathway/ReactionLikeEvent/CC/BP.
                 First, generate the cypher file.
@@ -43,12 +43,6 @@ The next program prepares the edges between ReactionLikeEvent and disease/pathwa
 
 The following program prepares the edges between pathway and disease/ ReactionLikeEvent/pathway/BP/CC.
                 For each pathway-label-relationship type, the same steps are done.
-                               First, generate the TSV file for the pair.
-                               Next, load all pairs and check for no duplication. Then, add the pair to the TSV file.
-                              The last step is to generate the cypher query to integrate the relationship into the database and add it to the cypher file.
-
-The last program of the first script prepares the edge between reaction and RLE/pathway/disease/BP/CC.
-                For each reaction-label-relationship type, the same steps are done.
                                First, generate the TSV file for the pair.
                                Next, load all pairs and check for no duplication. Then, add the pair to the TSV file.
                               The last step is to generate the cypher query to integrate the relationship into the database and add it to the cypher file.

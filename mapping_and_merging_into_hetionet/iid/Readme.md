@@ -3,6 +3,7 @@ The script first mapped the IID protein to protein and then integrate the protei
 The program map the IID protein to protein:
                First, generate the mapping TSV file, the cypher file, and the cypher query to integrate the information into the database.
                Then, the IID proteins are mapped to the Uniprot identifier and alternative UniProt identifier of the protein.
+               All mapping pairs are written into TSV.
 
 Then the cypher-shell integrates the mapping.
 
