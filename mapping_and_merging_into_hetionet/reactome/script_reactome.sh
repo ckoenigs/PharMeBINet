@@ -25,7 +25,6 @@ echo disease
 python3 MappingDisease.py $path_to_project > disease/output_map.txt
 
 
-
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo bp

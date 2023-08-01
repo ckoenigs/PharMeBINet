@@ -64,7 +64,7 @@ python3 CreateEdgeRegulationToNode.py $path_to_project "${license}" > Regulation
 
 now=$(date +"%F %T")
 echo "Current time: $now"
-echo Interaction relationships
+echo Interaction relationships drug-drug/protein
 
 python3 CreateEdgeInteraction.py $path_to_project "${license}" > interactions/output.txt
 
