@@ -361,7 +361,7 @@ def map_hpo_disease_to_mondo(db_disease_id, db_disease_names, db_disease_source)
     #     break
     db_disease_names = [x.lower() for x in db_disease_names]
 
-    # depending of the source of the diseases different mapping step's are used
+    # It depends on the source of the diseases different mapping step's are used
     if db_disease_source == 'DECIPHER':
         counter_decipher += 1
         #            print('decipher')
