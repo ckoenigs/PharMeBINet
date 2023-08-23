@@ -6,10 +6,6 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-'''
-create connection to neo4j 
-'''
-
 
 def create_connection_with_neo4j_mysql():
     # create connection with neo4j
@@ -33,12 +29,12 @@ dict_own_id_to_xrefs = {}
 # dictionary pathway id to resource
 dict_pathway_id_to_resource = {}
 
-'''
-load in all pathways from pharmebinet in a dictionary
-'''
-
 
 def load_pharmebinet_pathways_in():
+    """
+    load in all pathways from pharmebinet in a dictionary
+    :return:
+    """
     query = '''MATCH (n:Pathway) RETURN n.identifier,n.name, n.synonyms, n.source, n.xrefs, n.resource'''
     results = g.run(query)
 
@@ -80,6 +76,7 @@ file_mapped_pathways = open('pathway/mapped_pathways.tsv', 'w')
 csv_mapped = csv.writer(file_mapped_pathways, delimiter='\t')
 csv_mapped.writerow(['id', 'id_pharmebinet', 'mapped', 'resource', 'xrefs'])
 
+# dictionary to transform the xrefs name of the pathway to the same as in TTD
 dict_source_ttd_to_source_pharmebinet = {
     'Reactome': 'reactome',
     'PANTHER Pathway': 'panther',
@@ -89,12 +86,12 @@ dict_source_ttd_to_source_pharmebinet = {
     'PathWhiz Pathway': 'pathwhiz'
 }
 
-'''
-load all ttd pathways and check if they are in pharmebinet or not
-'''
-
 
 def load_ttd_pathways_in():
+    """
+    load all ttd pathways and check if they are in pharmebinet or not
+    :return:
+    """
     query = '''MATCH (n:TTD_Pathway) RETURN n.id, n.name, n.source'''
     results = g.run(query)
 
@@ -145,18 +142,18 @@ def load_ttd_pathways_in():
     # print(dict_mapped_source)
 
 
-'''
-generate connection between mapping pathways of ttd and pharmebinet and generate new pharmebinet nodes for the not existing nodes
-'''
-
-
 def create_cypher_file():
+    """
+    Generate cypher file and add cypher query to map TTD pathway to pathway.
+    :return:
+    """
     cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
     query = ''' Match (d:Pathway{identifier:line.id_pharmebinet}),(c:TTD_Pathway{id:line.id}) Create (d)-[:equal_to_ttd_pathway{how_mapped:line.mapped}]->(c) Set d.resource= split(line.resource, "|"), d.xrefs=split(line.xrefs,"|") , d.ttd="yes"'''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/ttd/pathway/mapped_pathways.tsv',
                                               query)
     cypher_file.write(query)
+    cypher_file.close()
 
 
 # path to directory

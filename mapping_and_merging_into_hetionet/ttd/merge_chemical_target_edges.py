@@ -126,7 +126,7 @@ def get_all_pairs_and_write_into_dictionary():
         prepare_dictionary(rela_type, protein_id, chemical_id, moa, activity, highest_clinical_status)
 
 
-def add_etries(set_infos, info):
+def add_entries(set_infos, info):
     """
     add only not None information into the set
     :param set_infos: set
@@ -150,9 +150,9 @@ def prepare_tsv_and_queries():
             activities = set()
             highest_clinical_statuses = set()
             for prop in list_of_prop:
-                add_etries(moas, prop[0])
-                add_etries(activities, prop[1])
-                add_etries(highest_clinical_statuses, prop[2])
+                add_entries(moas, prop[0])
+                add_entries(activities, prop[1])
+                add_entries(highest_clinical_statuses, prop[2])
             csv_writer.writerow(
                 [protein_id, chemical_id, '|'.join(moas), '|'.join(activities), '|'.join(highest_clinical_statuses)])
 

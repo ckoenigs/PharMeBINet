@@ -5,11 +5,6 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-'''
-create a connection with neo4j
-'''
-
-
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
     global g, driver
@@ -81,8 +76,12 @@ def load_disease_or_symptom_information(label, dictionary_label_to_mapper_to_key
                                                           synonym, identifier)
 
 
-def compound_ttd_mapping():
-    # save the identifier and the Raw_ID in a tsv file
+def disease_ttd_mapping():
+    """
+    Create mapping tsv files. Load the TTD disease and map them to disease/symptom. All mappings are written in the
+    fitting tsv file. In the last step, the cypher queries are generated and add to the cypher file.
+    :return:
+    """
     file_name = 'disease/disease_mapping.tsv'
     file_name_symptom = 'disease/symptom_mapping.tsv'
     with open(file_name, 'w', newline='') as tsv_file:
@@ -239,7 +238,7 @@ def main():
     print('#' * 50)
     print(datetime.datetime.now())
     print('map compound')
-    compound_ttd_mapping()
+    disease_ttd_mapping()
 
     driver.close()
 

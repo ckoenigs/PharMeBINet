@@ -16,7 +16,10 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo pathway
 
-python3 map_pathway_ttd.py $path_to_project > pathway/output_integration_pathway.txt
+# it has only connection to target and this edge information are from other source like Wikipathways
+# but I have wikipathways included and there are edges which I do not have which might be because of 
+# an older version. So, I decide against this.
+# python3 map_pathway_ttd.py $path_to_project > pathway/output_integration_pathway.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"

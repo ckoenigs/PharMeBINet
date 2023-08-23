@@ -6,11 +6,6 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-'''
-create a connection with neo4j
-'''
-
-
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
     global graph_database, driver
@@ -18,10 +13,13 @@ def create_connection_with_neo4j():
     graph_database = driver.session()
 
 
-# dictionary
+# dictionary name to protein ids
 dict_protein_name_ids = {}
+# dictionary protein id to resource
 dict_proteinId_to_resource = {}
+# dictionary uniprot entry name to ids
 dict_protein_uniProt_to_id = {}
+# dictionary protein sequence to ids
 dict_seq_to_ids = {}
 
 
@@ -80,6 +78,12 @@ def load_gene_to_protein_ids():
 
 
 def load_and_map_ttd_protein(csv_mapped, csv_not_mapped):
+    """
+    Load all TTD target and map them with uniprot accession, name and gene symbol. Write all mapped into a TSV file.
+    :param csv_mapped:
+    :param csv_not_mapped:
+    :return:
+    """
     query = '''MATCH (n:TTD_Target) RETURN n.id, n.name,  n.uniprot_ids, n.gene_names, n.sequence  '''
     results = graph_database.run(query)
 
@@ -150,17 +154,17 @@ def load_and_map_ttd_protein(csv_mapped, csv_not_mapped):
     print('number of nodes:', counter)
 
 
-def generate_cypher_file(file_nameProtein):
+def generate_cypher_file(file_name):
     """
     prepare cypher query and add to cypher file
     :param file_name: string
     :return:
     """
-    cypher_file = open('output/cypher.cypher', 'a')
+    cypher_file = open('output/cypher.cypher', 'w')
 
     query_Protein = ''' MATCH (n:TTD_Target{id:line.node_id}), (c:Protein{identifier:line.id_pharmebinet})  Set c.ttd='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_protein_ttd{how_mapped:line.how_mapped}]->(n)'''
     query_Protein = pharmebinetutils.get_query_import(path_of_directory,
-                                                      f'mapping_and_merging_into_hetionet/ttd/{file_nameProtein}',
+                                                      f'mapping_and_merging_into_hetionet/ttd/{file_name}',
                                                       query_Protein)
     cypher_file.write(query_Protein)
 

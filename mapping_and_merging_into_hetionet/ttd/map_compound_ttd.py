@@ -5,10 +5,6 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-'''
-create a connection with neo4j
-'''
-
 
 def create_connection_with_neo4j():
     # set up authentication parameters and connection
@@ -63,7 +59,11 @@ def load_chemical_information():
 
 
 def compound_ttd_mapping():
-    # save the identifier and the Raw_ID in a tsv file
+    """
+    Create TSV file. Then load the compounds of TTD and map it to Chemical. The mapped ones are written into the TSV
+    file. In the last step the cypher queryis prepared and written into the cypher file.
+    :return:
+    """
     file_name = 'drug/compound_mapping.tsv'
     with open(file_name, 'w', newline='') as tsv_file:
         writer = csv.writer(tsv_file, delimiter='\t')
