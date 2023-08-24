@@ -57,8 +57,16 @@ dict_rela_to_tsv = {}
 
 # dictionary rela name in med-rt to information needed
 dict_rela_name_to_other_information = {
-    ('has', True): ['<-', '-', 'INCLUDES_PCi%s'],
-    ('has', False): ['-', '->', 'INCLUDES_%siPC'],
+    ('has_SC', False): ['<-', '-', 'HAS_STRUCTURAL_CLASSIFICATION_PChsc%s'],
+    ('has_SC', True): ['-', '->', 'HAS_STRUCTURAL_CLASSIFICATION_%shscPC'],
+    ('has_TC', False): ['<-', '-', 'HAS_THERAPEUTIC_CATEGORY_PChtc%s'],
+    ('has_TC', True): ['-', '->', 'HAS_THERAPEUTIC_CATEGORY_%shtcPC'],
+    ('has_PK', False): ['<-', '-', 'HAS_PHARMACOKINETIC_PChp%s'],
+    ('has_PK', True): ['-', '->', 'HAS_PHARMACOKINETIC_%shpPC'],
+    ('has_PE', False): ['<-', '-', 'HAS_PHYSIOLOGIC_EFFECT_PChpe%s'],
+    ('has_PE', True): ['-', '->', 'HAS_PHYSIOLOGIC_EFFECT_%shpePC'],
+    ('has_MoA', False): ['<-', '-', 'HAS_MECHANISM_OF_ACTION_PChmoa%s'],
+    ('has_MoA', True): ['-', '->', 'HAS_MECHANISM_OF_ACTION_%shmoaPC'],
     ('CI', True): ['-', '->', 'CONTRAINDICATES_%scPC'],
     ('CI', False): ['<-', '-', 'CONTRAINDICATES_PCc%s'],
     ('site_of_metabolism', True): ['<-', '-', 'METABOLIZES_PCm%s'],
@@ -89,7 +97,7 @@ def load_connections(label, directions):
 
         source = rela['qualifier'] if 'qualifier' in rela else ''
         # remove the different suffix
-        if rela_type.count('_') == 1:
+        if rela_type.count('_') == 1 and not rela_type.startswith('has'):
             rela_type = rela_type.split('_')[0]
 
         if (rela_type, to_pc) in dict_rela_name_to_other_information:
