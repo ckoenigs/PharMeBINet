@@ -45,6 +45,24 @@ sleep 30
 $path_neo4j/neo4j restart
 sleep 30
 
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo merge pc-chemical edges mapping
+
+python3  merge_chemical_pc_edges_med_rt.py $path_to_project > chemical_pharmacological/output_map_med_rt.txt
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo merge chemical-chemical edges mapping
+
+python3  merge_chemical_chemical_edge.py $path_to_project > chemical_edge/output_map_med_rt.txt
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo merge chemical-disease edges mapping
+
+python3  map_disease_chemical_edge.py $path_to_project > chemical_edge/output_map_med_rt_disease.txt
+
 
 now=$(date +"%F %T")
 echo "Current time: $now"
