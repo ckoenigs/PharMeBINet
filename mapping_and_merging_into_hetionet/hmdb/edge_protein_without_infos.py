@@ -35,10 +35,10 @@ def load_existing_pairs(label, other_label, dict_pair_to_resource):
     :return:
     """
     if other_label not in dict_go_to_rela_types:
-        query = 'Match (n:%s)-[r]-(m:%s)  Where r.not is NULL Return n.identifier, m.identifier, r.resource' % (
+        query = 'Match (n:%s)-[r]-(m:%s) Return n.identifier, m.identifier, r.resource' % (
             label, other_label)
     else:
-        query = 'Match (n:%s)-[r]-(m:%s) Where  r.not is NULL and type(r) in ["%s"] Return n.identifier, m.identifier, r.resource' % (
+        query = 'Match (n:%s)-[r]-(m:%s) Where type(r) in ["%s"] Return n.identifier, m.identifier, r.resource' % (
             label, other_label, '","'.join(dict_go_to_rela_types[other_label]))
     # query = 'Match (n:%s)-[r:%s]-(m:%s) Return n.identifier, m.identifier, r.resource' % (label, rela_type, other_label)
     results = graph_database.run(query)
@@ -131,11 +131,11 @@ def create_cypher_file(file_name, file_name_new, label, node_pharmebinet_label, 
         cypher_file.write(query)
 
     if node_pharmebinet_label not in dict_go_to_rela_types:
-        query = ''' MATCH (d:%s{identifier:line.node_id_1})-[r]-(c:%s{identifier:line.node_id_2}) Where r.not is NULL Set  r.resource=split(line.resource,'|'), r.hmdb='yes' '''
+        query = ''' MATCH (d:%s{identifier:line.node_id_1})-[r]-(c:%s{identifier:line.node_id_2}) Set  r.resource=split(line.resource,'|'), r.hmdb='yes' '''
         query = query % (label, node_pharmebinet_label)
     else:
         print('GOs')
-        query = '''MATCH (d:%s{identifier:line.node_id_1})-[r]-(c:%s{identifier:line.node_id_2}) Where r.not is NULL and type(r) in ["%s"] Set  r.resource=split(line.resource,'|'), r.hmdb='yes' '''
+        query = '''MATCH (d:%s{identifier:line.node_id_1})-[r]-(c:%s{identifier:line.node_id_2}) Where type(r) in ["%s"] Set  r.resource=split(line.resource,'|'), r.hmdb='yes' '''
         query = query % (label, node_pharmebinet_label,
                          '","'.join(dict_go_to_rela_types[node_pharmebinet_label]))
 
