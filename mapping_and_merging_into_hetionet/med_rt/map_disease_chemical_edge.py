@@ -46,7 +46,7 @@ def integrate_connection_into_pharmebinet(labels):
 
     query_start = ''' Match (a:%s{identifier:line.chemical_id}), (b:Disease{identifier:line.disease_id})  '''
 
-    query = '''MATCH (a:%s)--(n:%s)-[r]-(:Disease_Finding_MEDRT)--(b:Disease{identifier:'MONDO:0005113'}) RETURN Distinct a.identifier, type(r), r.qualifier, b.identifier'''
+    query = '''MATCH (a:%s)--(n:%s)-[r]-(:Disease_Finding_MEDRT)--(b:Disease) RETURN Distinct a.identifier, type(r), r.qualifier, b.identifier'''
     query = query % labels
     label = labels[0]
     result = g.run(query)
