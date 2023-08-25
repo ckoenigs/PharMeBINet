@@ -32,9 +32,9 @@ The same goes for Reactome MF to MF.
                 This has the same steps as BP mapping only with MF.
 
 The cypher-shell integrates the mapped information and the new nodes.
-Next, the cypher-shell integrates with another cypher file the nodes of ReactionLikeEvent (reaction, polymerization, depolymerization, black box event, failed reaction), Regulation and MolecularComplex. But only human and such have PubMed ids.
+Next, the cypher-shell integrates with another cypher file the nodes of ReactionLikeEvent (reaction, polymerization, depolymerization, black box event, failed reaction), Regulation, and MolecularComplex. But only humans and such have PubMed IDs.
 
-The next program prepares the edges between ReactionLikeEvent and disease/pathway/ReactionLikeEvent/CC/BP.
+The next program prepares the edges between ReactionLikeEvent (RLE) and disease/pathway/ReactionLikeEvent/CC/BP.
                 First, generate the cypher file.
                 For each RLE-label-relationship type, the same steps are done.
                                First, generate the TSV file for the pair.
@@ -56,10 +56,10 @@ First, the Reactome drug and physical entity are tried to be mapped chemical.
                Then, IUPHAR data is loaded into dictionaries.
                Next, all chemical information is loaded into dictionaries. Also, prepare a dictionary from IUPHAR identifier to chemical identifier with the use of InChI.
                Then, the ReferenceEntities of Reactome are loaded and tried to map.
-               The first mapping method is based on the IUPHAR identifier to chemical id (dictionary-IUPHAR to chemical id).
+               The first mapping method is based on the IUPHAR identifier to chemical ID (dictionary-IUPHAR to chemical ID).
                Next, the other external reference to chemical external reference (ChEBI, KEGG Compound, PubChem Compound).
-               Then, try to map with ReferenceEntity inn to chemical names.
-               The last mapping method is based on mapping the ReferenceEntity names to chemical names. But check for strings with some HTML code inside and change them to a normal strings.
+               Then, try to map with ReferenceEntity into chemical names.
+               The last mapping method is based on mapping the ReferenceEntity names to chemical names. But check for strings with some HTML code inside and change them to a normal string.
                All mapped pairs are written into the TSV file.
                In the last step, the cypher file is generated, and add the cypher query to integrate the mapping.
 
@@ -74,10 +74,10 @@ Next, the PhysicalEntity is mapped to the protein.
                
 The cypher-shell integrates the mapping methods.
 
-Next, the Reactome treatment edges between drug, disease, and cc are prepared as meta-edge to integrate into the database.
+Next, the Reactome treatment edges between drug, disease, and cc are prepared as meta-edges to integrate into the database.
                First, all pairs of drugs and diseases and all drug-CC are loaded. The different information is added to the different dictionaries.
                Then, the TSV files for relationships between drug-treat-disease and treat-CC are generated. Additionally, the cypher file is generated. The cypher queries to integrate the node and relationships into the database are added to the cypher file.
-               Next, all the disease-drug-treat information is written into the TSV file. The pairs which appear multiple times merge. Also, all treat-CC pairs are added to the other TSV file.
+               Next, all the disease-drug-treat information is written into the TSV file. The pairs that appear multiple times merge. Also, all treat-CC pairs are added to the other TSV file.
                
 The following edge preparation is between PhysikalEntity (drug, protein) and ReactionLikeEvent.
       For each type of PhysikalEntity, the same steps are done.
@@ -85,8 +85,8 @@ The following edge preparation is between PhysikalEntity (drug, protein) and Rea
             Next, load all pairs and write them into the TSV file.
             Create the cypher query to integrate the edge from the TSV file.
 
-The following edge preparation is between Regulation, and chemical, protein, and GO.
-      For each type of edge type and label (chemical, protein, and GO), the same steps are done.
+The following edge preparation is between Regulation, and chemical, RLE, protein, and GO.
+      For each type of edge type and label (chemical, RLE, protein, and GO), the same steps are done.
             First, generate the TSV for the pairs.
             Next, load all pairs and write them into the TSV file.
             Create the cypher query to integrate the edge from the TSV file.
