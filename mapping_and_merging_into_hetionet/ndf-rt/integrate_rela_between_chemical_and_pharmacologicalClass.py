@@ -61,7 +61,12 @@ dict_rela_to_tsv = {}
 # dictionary rela name in ndf-rt to information needed
 # 'site_of_metabolism':['<-', '-', 'METABOLIZES_PCmC']
 dict_rela_name_to_other_information = {
-    'has': ['<-', '-', 'INCLUDES_PCi%s'],
+    # 'has': ['<-', '-', 'INCLUDES_PCi%s'],
+    'has_SC': ['-', '->', 'HAS_STRUCTURAL_CLASSIFICATION_%shscPC'],
+    'has_TC': ['-', '->', 'HAS_THERAPEUTIC_CATEGORY_%shtcPC'],
+    'has_PK': ['-', '->', 'HAS_PHARMACOKINETIC_%shpPC'],
+    'has_PE': ['-', '->', 'HAS_PHYSIOLOGIC_EFFECT_%shpePC'],
+    'has_MoA': ['-', '->', 'HAS_MECHANISM_OF_ACTION_%shmoaPC'],
     'CI': ['-', '->', 'CONTRAINDICATES_%scPC'],
     'site_of_metabolism': ['<-', '-', 'METABOLIZES_PCm%s']
 }
@@ -82,7 +87,7 @@ def load_connections(label):
             continue
         source = rela['source'] if 'source' in rela else ''
         # remove the different suffix
-        if rela_type.count('_') == 1:
+        if rela_type.count('_') == 1 and not rela_type.startswith('has_'):
             rela_type = rela_type.split('_')[0]
 
         if rela_type in dict_rela_name_to_other_information:

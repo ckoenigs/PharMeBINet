@@ -27,7 +27,7 @@ dict_name_to_pharmacologic_class_id = {}
 
 def load_pharmacologic_class_from_database_and_add_to_dict():
     """
-    Load all PC information into dicitonaries.
+    Load all PC information into dictionaries.
     :return:
     """
     query = "MATCH (n:PharmacologicClass) RETURN n"
