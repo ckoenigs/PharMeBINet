@@ -64,8 +64,8 @@ also generate a cypher file to integrate this information
 
 
 def generate_cypher():
-    list_file_name_rela_name = [('induces', 'INDUCES_CHiD'), ('treat', 'TREATS_CHtD'),
-                                ('associated', 'ASSOCIATES_CHaD')]
+    list_file_name_rela_name = [('induces', 'INDUCES_CHiD'),
+                                ('treat', 'TREATS_CHtD')]  # ,('associated', 'ASSOCIATES_CHaD')
 
     for (file_name, rela_name) in list_file_name_rela_name:
         query = ''' Match  (n:Chemical{identifier:line.ChemicalID}), (b:Disease{identifier:line.DiseaseID}) Merge (n)-[r:%s]->(b) On Match Set r.resource=r.resource+'CTD', r.ctd='yes', r.directEvidences=split(line.directEvidences,'|'),  r.inferenceGeneSymbol=split(line.inferenceGeneSymbols,'|'), r.inferenceScore=split(line.inferenceScores,'|'), r.pubMed_ids=split(line.pubMed_ids,'|'), r.url_ctd='http://ctdbase.org/detail.go?type=chem&acc='+line.ChemicalID On Create Set r.directEvidences=split(line.directEvidences,'|'), r.ctd='yes', r.pubMed_ids=split(line.pubMed_ids,'|'), r.resource=["CTD"], r.inferenceGeneSymbol=split(line.inferenceGeneSymbols,'|'), r.inferenceScore=split(line.inferenceScores,'|') , r.url='http://ctdbase.org/detail.go?type=chem&acc='+line.ChemicalID, r.source="CTD", r.license="© 2002–2012 MDI Biological Laboratory. © 2012–2021 NC State University. All rights reserved.", r.unbiased=true  '''

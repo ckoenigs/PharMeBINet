@@ -196,10 +196,10 @@ def path_to_rela_and_add_to_dict(rela, first, second):
 
     if first == 'chemical':
         query_middle_2 = ''' Merge (b)-[r:%s]->(n)'''
-        query_to_check_if_this_rela_exist_in_pharmebinet += '-[r:%s]->' + part + ' Return b.identifier, n.identifier, r.pubMed_ids'
+        query_to_check_if_this_rela_exist_in_pharmebinet += '-[r:%s]->' + part + ' Return b.identifier, n.identifier, r.pubMed_ids Limit 1'
     else:
         query_middle_2 = ''' Merge (b)<-[r:%s]-(n)'''
-        query_to_check_if_this_rela_exist_in_pharmebinet += '<-[r:%s]-' + part + ' Return p Limit 1'
+        query_to_check_if_this_rela_exist_in_pharmebinet += '<-[r:%s]-' + part + ' Return b.identifier, n.identifier, r.pubMed_ids Limit 1'
 
     query_to_check_if_this_rela_exist_in_pharmebinet = query_to_check_if_this_rela_exist_in_pharmebinet % (
         dict_file_name_to_rela_name[rela_full])
@@ -213,6 +213,8 @@ def path_to_rela_and_add_to_dict(rela, first, second):
         query = query_first_part + query_middle_1 + query_middle_2 + query_last_part
 
         dict_tuples_to_pubmeds = dict_rela_name_to_tuples_to_pubmeds[rela_full]
+        query_executed=query_to_check_if_this_rela_exist_in_pharmebinet.replace('Limit 1','')
+        results=g.run(query_executed)
         for chemical_id, node_id, pubMed_ids, in results:
             # if pubMed_ids is None:
             #     print('huhuh')
