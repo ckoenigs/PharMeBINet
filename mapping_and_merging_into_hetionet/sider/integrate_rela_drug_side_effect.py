@@ -5,12 +5,8 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-'''
-create connection to neo4j
-'''
-
-
 def create_connection_with_neo4j():
+    # create connection to neo4j
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
     g = driver.session()
@@ -29,12 +25,10 @@ information :
 '''
 dict_compound_SE_connection_informations = {}
 
-'''
-find all connection drug-se from sider for every compound-Se in pharmebinet and save all the information in a dictionary
-'''
-
 
 def find_all_compound_SE_pairs_of_sider():
+    # find all connection drug-se from sider for every compound-Se in pharmebinet and save all the information in a
+    # dictionary
     query = '''Match (a:Chemical)--(:drug_Sider)-[l:Causes]->(:se_Sider)--(b:SideEffect) Return a.identifier, l, b.identifier'''
     results = g.run(query)
     for record in results:
@@ -69,12 +63,12 @@ def find_all_compound_SE_pairs_of_sider():
 # list of compound side effect tuple which create a new connection
 list_tuple_compound_SE = []
 
-'''
-integration of relationship from sider into pharmebinet for the sider drugs which are mapped to drugbank id
-'''
-
 
 def integrate_relationship_from_sider_into_pharmebinet():
+    """
+    integration of relationship from sider into pharmebinet for the sider drugs which are mapped to drugbank id
+    :return:
+    """
     # counter of the new compound-se connection
     number_of_new_connection = 0
     # counter of updated connection

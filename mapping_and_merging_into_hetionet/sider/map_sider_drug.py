@@ -88,20 +88,18 @@ dict_synonyms_to_chemicals_ids = {}
 # dictionary_pubchem compound id to chemical id
 dict_pubchem_to_chemical_ids = {}
 
-'''
-create connection to neo4j
-'''
-
 
 def create_connection_with_neo4j():
+    # create connection to neo4j
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
     g = driver.session()
 
 
-'''
-load in all compounds from pharmebinet in a dictionary
-properties:
+def load_chemicals_from_database():
+    """
+    load in all compounds from pharmebinet in a dictionary
+    properties:
     license: string
     identifier: string (Drugbank ID)
     inchikey: string
@@ -109,10 +107,8 @@ properties:
     name: string
     source: string
     url: url
-'''
-
-
-def load_chemicals_from_database():
+    :return:
+    """
     query = 'MATCH (n:Chemical) RETURN n '
     results = g.run(query)
 
@@ -183,13 +179,9 @@ list_stitchIDstereo = []
 # dictionary with all flat ids in pubchem form as keys and a list of stereo ids in pubchem form as value
 dict_flat_to_stereo = {}
 
-'''
-load all sider drugs in a dictionary, further generate the PubChem ID from Stitch stereo and flat
-
-'''
-
 
 def load_sider_drug_in_dict():
+    # load all sider drugs in a dictionary, further generate the PubChem ID from Stitch stereo and flat
     query = 'MATCH (n:drug_Sider) RETURN n '
     results = g.run(query)
 
@@ -237,12 +229,9 @@ dict_flat_to_drugbank_same_stereo = defaultdict(list)
 # dictionary with stereo id in pubchem form as key and drugbank ids as values
 dict_sider_drug_with_chemical_ids = defaultdict(list)
 
-'''
-check for name mapping get the same results as the other method
-'''
-
 
 def check_with_name_mapping(pubchem_id, search_value, dict_key_name, dict_something_to_chemical_ids, is_element=False):
+    # check for name mapping get the same results as the other method
     name = dict_key_name[pubchem_id].lower() if pubchem_id in dict_key_name else ''
     splitted_name = name.rsplit('(', 1)[0]
     if len(splitted_name) > 0:
@@ -263,13 +252,8 @@ def check_with_name_mapping(pubchem_id, search_value, dict_key_name, dict_someth
     return True, chemical_ids
 
 
-'''
-function to delete ids from list
-
-'''
-
-
 def delete_elements_from_list(delete_list):
+    # function to delete ids from list
     for entry in delete_list:
         if entry in list_of_not_mapped_stitch_stereo:
             list_of_not_mapped_stitch_stereo.remove(entry)
@@ -281,12 +265,12 @@ list_of_not_mapped_stitch_stereo = set()
 # list of all stitch flat ids in pubchem form which are not mapped
 list_of_not_mapped_stitch_flat = []
 
-'''
-cHECK FOR THE PUBCHEM IDS IN THE DICTIONARY PUBCHEM TO chemical ids 
-'''
-
 
 def map_with_pubchem_id():
+    """
+    cHECK FOR THE PUBCHEM IDS IN THE DICTIONARY PUBCHEM TO chemical ids
+    :return:
+    """
     # list of all index from in this step mapped stereo ids
     delete_list = set()
     for pubchem_id in list_of_not_mapped_stitch_stereo:
@@ -323,20 +307,19 @@ def map_with_pubchem_id():
     print('number not mapped stitch stereo:' + str(len(list_of_not_mapped_stitch_stereo)))
 
 
-'''
-find for the different stitch stereo ids drugbank id with use of chemical.sources_DB.v5.0.tsv
-properties:
-    0:stitch flat id
-    1:stitch stereo id
-    2:source
-    3:source id (drugbank id)
-
-if for the stereo id nothing is found uses the drugbank id which is found for the flat id. Prefer the flat ids where the 
-steroe id is the same as the flat id. 
-'''
-
-
 def give_drugbank_ids_with_use_of_stitch_information():
+    """
+    find for the different stitch stereo ids drugbank id with use of chemical.sources_DB.v5.0.tsv
+    properties:
+        0:stitch flat id
+        1:stitch stereo id
+        2:source
+        3:source id (drugbank id)
+
+    if for the stereo id nothing is found uses the drugbank id which is found for the flat id. Prefer the flat ids where the
+    steroe id is the same as the flat id.
+    :return:
+    """
     # find for the stereo id the drugbank ids and save for all flat ids in sider the drugbank ids
     part_exist = False
     f = None
@@ -467,17 +450,17 @@ dict_name_to_flat_stereo_id = {}
 # dictionary with inchikey as key and value is stitch stereo in pubchem form
 dict_inchikey_to_stitch_stereo = {}
 
-'''
-load from stitch the inchikey in a dictionary for all not mapped sider drugs
-properties of chemicals.inchikeys_part.v5.0.tsv:
-    0:flat_chemical_id 	 
-    1:stereo_chemical_id 	 
-    2:source_cid	 	 
-    3:inchikey 
-'''
-
 
 def load_in_stitch_inchikeys():
+    """
+    load from stitch the inchikey in a dictionary for all not mapped sider drugs
+    properties of chemicals.inchikeys_part.v5.0.tsv:
+        0:flat_chemical_id
+        1:stereo_chemical_id
+        2:source_cid
+        3:inchikey
+    :return:
+    """
     part_exist = False
     f = None
     try:
@@ -531,17 +514,15 @@ def load_in_stitch_inchikeys():
     print('number not mapped stitch stereo:' + str(len(list_of_not_mapped_stitch_stereo)))
 
 
-'''
-load in stitch name and save them in a dictionary
-0:chemical
-1:name    
-2:molecular_weight        
-3:SMILES_string
-
-'''
-
-
 def load_in_stitch_name():
+    """
+    load in stitch name and save them in a dictionary
+        0:chemical
+        1:name
+        2:molecular_weight
+        3:SMILES_string
+    :return:
+    """
     part_exist = False
     f = None
     try:
@@ -580,12 +561,11 @@ def load_in_stitch_name():
     print(len(dict_stereo_key_name))
 
 
-'''
-mapping with only name
-'''
-
-
 def map_with_names():
+    """
+    mapping with only name
+    :return:
+    """
     # list of all index from in this step mapped stereo ids
     delete_list = set()
     for pubchemStereo_ID in list_of_not_mapped_stitch_stereo:
@@ -607,14 +587,13 @@ def map_with_names():
     print('number not mapped stitch stereo:' + str(len(list_of_not_mapped_stitch_stereo)))
 
 
-'''
-integrate sider drugs into pharmebinet directly. For the compound which are already in pharmebinet only some properties 
-are add and a connection to the sider drug is generated. Further new compound for pharmebinet a gerneted which has also a
- connection to  the sider drug.  
-'''
-
-
 def integrate_sider_drugs_into_pharmebinet():
+    """
+    integrate sider drugs into pharmebinet directly. For the compound which are already in pharmebinet only some
+    properties are add and a connection to the sider drug is generated. Further new compound for pharmebinet a generated
+    which has also a connection to  the sider drug.
+    :return:
+    """
     # cypher file
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
 
