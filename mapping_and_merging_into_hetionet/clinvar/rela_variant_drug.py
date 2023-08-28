@@ -8,8 +8,8 @@ import create_connection_to_databases
 import pharmebinetutils
 
 
-# connect with the neo4j database AND MYSQL
 def database_connection():
+    # connect with the neo4j database
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
     g = driver.session()
@@ -131,14 +131,10 @@ set_of_rela_properties = {'variant_id', 'chemical_id', 'additional_rela_infos'}
 list_of_splitable_information = [' response', ' hypersensitivity', ' resistance',
                                  ' susceptibility']  # poor metabolism of
 
-'''
-Load all variation sort the ids into the right tsv, generate the queries, and add rela to the rela tsv
-'''
-
 
 def load_all_rela_drug_response_and_finish_the_files():
     """
-    Go through all information and prepare them for writing into tsv file
+    Load all chemical-varaiant edge information and prepare the information and write them into a dictionary.
     :return:
     """
     global set_of_rela_properties
