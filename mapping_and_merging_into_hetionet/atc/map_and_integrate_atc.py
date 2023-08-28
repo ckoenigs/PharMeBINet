@@ -5,12 +5,9 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-'''
-create a connection with neo4j
-'''
 
-
-def create_connection_with_neo4j_and_mysql():
+def create_connection_with_neo4j():
+    # create a connection with neo4j
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
     g = driver.session()
@@ -22,12 +19,12 @@ dict_name_to_pharmacologic_class_id = {}
 # dictionary pharmacologic class id to resource
 dict_pharmacologic_class_id_to_resource = {}
 
-'''
-Load all PharmacologicClass from my database  and add them into a dictionary
-'''
-
 
 def load_pharmacologic_class_from_database_and_add_to_dict():
+    """
+    Load all PharmacologicClass from my database  and add them into a dictionary
+    :return:
+    """
     query = "MATCH (n:PharmacologicClass) RETURN n"
     results = g.run(query)
     for record in results:
@@ -47,7 +44,7 @@ dict_atc_code_to_compound_ids = {}
 
 def load_compounds_from_database_and_add_to_dict():
     """
-    Load all kegg with atc codes into a dictionary
+    Load all chemical with atc codes into a dictionary
     :return:
     """
     query = "MATCH (n:Compound) Where n.atc_codes is not NULL RETURN n.identifier, n.atc_codes"
@@ -58,6 +55,7 @@ def load_compounds_from_database_and_add_to_dict():
             pharmebinetutils.add_entry_to_dict_to_set(dict_atc_code_to_compound_ids, atc_code, identifier)
 
 
+# open cypher file
 cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
 
 # dictionary first letter to rela letters
@@ -68,6 +66,12 @@ dict_first_letter_to_rela_letter = {
 
 
 def write_files(path_of_directory):
+    """
+    Prepare the different TSV files for mapping and new nodes. Additionally, prepare the different cypher queries to
+    integrate the information PharMeBINet. Also, queries are prepared to generate edges  between the nodes.
+    :param path_of_directory:
+    :return:
+    """
     # file from relationship between gene and variant
     file_name_mapped = 'output/mapping_compound.tsv'
     file_mapped = open(file_name_mapped, 'w', encoding='utf-8')
@@ -159,7 +163,7 @@ def load_all_label_and_map(csv_map_drug, csv_new):
 
 def check_if_id_mapped_to_compound(atc_id, csv_map_drug, pc_id):
     """
-    Get a atc id and check if this is in the compounds and if so write into tsv file.
+    Get an atc id and check if this is in the compounds and if so write into tsv file.
     :param atc_id:
     :param csv_map_drug:
     :param pc_id:
@@ -176,7 +180,7 @@ def to_avoid_multiple_mapping(csv_mapped_pc, csv_new, csv_map_drug):
     :return:
     """
     for pc_id, set_of_atcs in dict_pc_id_to_atc_codes.items():
-        resource = pharmebinetutils.resource_add_and_prepare(dict_pharmacologic_class_id_to_resource[pc_id],'KEGG')
+        resource = pharmebinetutils.resource_add_and_prepare(dict_pharmacologic_class_id_to_resource[pc_id], 'KEGG')
         if len(set_of_atcs) == 1:
             atc_id = set_of_atcs.pop()
             csv_mapped_pc.writerow([pc_id, atc_id, resource])
@@ -204,7 +208,7 @@ def main():
     print(datetime.datetime.now())
     print('connection to db')
 
-    create_connection_with_neo4j_and_mysql()
+    create_connection_with_neo4j()
 
     print('##########################################################################')
 
