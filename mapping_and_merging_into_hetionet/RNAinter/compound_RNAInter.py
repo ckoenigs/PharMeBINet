@@ -4,12 +4,12 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-'''
-create a connection with neo4j
-'''
-
 
 def create_connection_with_neo4j():
+    """
+    create a connection with neo4j
+    :return:
+    """
     # set up authentication parameters and connection
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
@@ -21,17 +21,31 @@ cypher_file = open("output/cypher.cypher", "a", encoding="utf-8")
 
 
 def write_infos_into_file(csv_writer, raw_id, mapped_ids, how_mapped):
+    """
+    Get all mapped compounds and write all information into the TSV file
+    :param csv_writer:
+    :param raw_id:
+    :param mapped_ids:
+    :param how_mapped:
+    :return:
+    """
     for map_id in mapped_ids:
         csv_writer.writerow(
             [raw_id, map_id, pharmebinetutils.resource_add_and_prepare(Chemical[map_id], "RNAInter"), how_mapped])
 
 
 def compound_RNAInter():
+    """
+    First, load all chemicals into different dictionaries. Next, generate TSV file. Then, load the RNAinter compounds
+    and amp the with different method to compound and write information into the TSV file. Last, the cypher query is
+    generated and add to the cypher file.
+    :return:
+    """
     print("######### load_from_database ##################")
     global Chemical
     Chemical = {}
-    ChemicalXref = {}
-    ChemicalName = {}
+    chemical_xrefs = {}
+    chemical_name = {}
 
     query = "MATCH (n:Chemical) RETURN n.identifier, n.xrefs, n.resource, n.name, n.synonyms"
     result = g.run(query)
@@ -46,24 +60,24 @@ def compound_RNAInter():
                 if "PubChem Compound" in x:
                     pubid = x.lstrip("PubChem Compound:")
 
-                    if pubid not in ChemicalXref:
-                        ChemicalXref[pubid] = [id]
+                    if pubid not in chemical_xrefs:
+                        chemical_xrefs[pubid] = [id]
                     else:
-                        ChemicalXref[pubid].append(id)
+                        chemical_xrefs[pubid].append(id)
 
         if name is not None:
-            if name.lower() not in ChemicalName:
-                ChemicalName[name.lower()] = [id]
+            if name.lower() not in chemical_name:
+                chemical_name[name.lower()] = [id]
             else:
-                ChemicalName[name.lower()].append(id)
+                chemical_name[name.lower()].append(id)
 
         if syn is not None:
             for s in syn:
-                if s.lower() in ChemicalName and (s.lower() != name.lower()):
-                    ChemicalName[s.lower()].append(id)
+                if s.lower() in chemical_name and (s.lower() != name.lower()):
+                    chemical_name[s.lower()].append(id)
 
-                elif s.lower() not in ChemicalName:
-                    ChemicalName[s.lower()] = [id]
+                elif s.lower() not in chemical_name:
+                    chemical_name[s.lower()] = [id]
 
     CompoundChemical = {}
 
@@ -86,12 +100,12 @@ def compound_RNAInter():
 
             if rid in Chemical:
                 write_infos_into_file(writer, raw_id, [rid], 'raw_id')
-            elif rid in ChemicalXref:
-                write_infos_into_file(writer, raw_id, ChemicalXref[rid], 'xrefs')
-            elif rid.lower() in ChemicalName:
-                write_infos_into_file(writer, raw_id, ChemicalName[rid.lower()], 'raw_id_name')
-            elif inter.lower() in ChemicalName:
-                write_infos_into_file(writer, raw_id, ChemicalName[inter.lower()], 'name')
+            elif rid in chemical_xrefs:
+                write_infos_into_file(writer, raw_id, chemical_xrefs[rid], 'xrefs')
+            elif rid.lower() in chemical_name:
+                write_infos_into_file(writer, raw_id, chemical_name[rid.lower()], 'raw_id_name')
+            elif inter.lower() in chemical_name:
+                write_infos_into_file(writer, raw_id, chemical_name[inter.lower()], 'name')
 
     print("######### Start: Cypher #########")
     query = f'Match (p1:compound_RNAInter{{Raw_ID:line.Raw_ID}}),(p2:Chemical{{identifier:line.identifier}}) SET p2.resource = split(line.resource,"|"), p2.rnainter="yes" Create (p1)-[:associateCompoundRNAInter{{how_mapped:line.how_mapped }}]->(p2)'

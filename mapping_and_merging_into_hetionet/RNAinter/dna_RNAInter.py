@@ -5,31 +5,25 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-'''
-create a connection with neo4j
-'''
-
 
 def create_connection_with_neo4j():
+    """
+    create a connection with neo4j
+    :return:
+    """
     # set up authentication parameters and connection
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
     g = driver.session()
 
 
-def resource_add_and_prepare(resource, source):
-    """
-    add to resource a new source and generate a sort join string
-    :param resource: list/set
-    :param source: string
-    :return: string
-    """
-    resource = set(resource)
-    resource.add(source)
-    return '|'.join(sorted(resource, key=lambda s: s.lower()))
-
 
 def dna_RNAInter():
+    """
+    Load first all RNAinter DNA and the generate a TSV file. Next, load all gene nodes and map to RNAinter DNA. Write
+    into to TSV file
+    :return:
+    """
     print("######### load_from_database #########")
     dnaRNAInter = {}
 

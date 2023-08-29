@@ -9,12 +9,12 @@ import pharmebinetutils
 # cypher file
 cypher_file = open("output/cypher_edge.cypher", "w", encoding="utf-8")
 
-'''
-create a connection with neo4j
-'''
-
 
 def create_connection_with_neo4j():
+    """nera
+    create a connection with neo4j
+    :return:
+    """
     # set up authentication parameters and connection
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
@@ -50,6 +50,12 @@ def cypher_edge(file_name, label1, label2, properties, edge_name):
 
 
 def edges_new():
+    """
+    FOR each rna-[gne,chemical,protein,rna] pair:
+    Generate a TSV file. Then load the edge in batches and prepare the information and write into the TSV file.
+    In the edge prepare a cypher query and add to cypher file.
+    :return:
+    """
     print("######### load_from_database ##################")
     names = ["dna", "Gene", "compound", "Chemical", "protein", "Protein", "rna", "RNA"]
     score = 0.5

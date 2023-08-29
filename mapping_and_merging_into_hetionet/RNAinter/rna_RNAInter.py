@@ -5,12 +5,12 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-'''
-create a connection with neo4j
-'''
-
 
 def create_connection_with_neo4j():
+    """
+    create a connection with neo4j
+    :return:
+    """
     # set up authentication parameters and connection
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
@@ -22,12 +22,26 @@ cypher_file = open("output/cypher.cypher", "a", encoding="utf-8")
 
 
 def write_infos_into_file(csv_writer, raw_id, mapped_ids, how_mapped):
+    """
+    Get all mapped RNAs and write all information into the TSV file
+    :param csv_writer:
+    :param raw_id:
+    :param mapped_ids:
+    :param how_mapped:
+    :return:
+    """
     for map_id in mapped_ids:
         csv_writer.writerow(
             [raw_id, map_id, pharmebinetutils.resource_add_and_prepare(RNA[map_id], "RNAInter"), how_mapped])
 
 
 def rna_RNAInter():
+    """
+    First, load all RNA information into dictionaries. Next, load gene-rna information to map with ncbi gene id to RNA.
+    Generate a TSV file. Then, load RNAinter RNA and map it to RNA with different mapping methods. Write the information
+    into the TSV file. Last, generate a cypher query and add to cypher file.
+    :return:
+    """
     print("######### load_from_database ##################")
     global RNA
     RNA = {}

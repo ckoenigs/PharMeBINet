@@ -5,12 +5,12 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-'''
-create a connection with neo4j
-'''
-
 
 def create_connection_with_neo4j():
+    """
+    create a connection with neo4j
+    :return:
+    """
     # set up authentication parameters and connection
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
@@ -22,6 +22,13 @@ cypher_file = open("output/cypher.cypher", "a", encoding="utf-8")
 
 
 def protein_RNAInter():
+    """
+    Load, all RNAinter protein and write information into a dictionary. The load all protein information and map with
+    uniprot id to RNAinter protein uniprot id. the mappings are written into a dictionary. The next mapping is with ncbi
+    id to gene to the connected protein. Next, a TSV is generated and the mappings are written into the TSV file. Then,
+    a cypher query is generated and add to cypher file.
+    :return:
+    """
     print("######### load_from_database ##################")
 
     # save the RAW_IDs from protein_RNAInter in a dictionary
