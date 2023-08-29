@@ -58,11 +58,11 @@ Then, the MED-RT chemical-PC edges are added:
 
 Next, the MED-RT chemical-chemical edges are merged:
     First, load existing interaction relationship pairs and write information into dictionaries.
-    Then, for chemical ingredients/others the following steps were executed:
+    Then, for chemical ingredients/others, the following steps were executed:
         Load all chemical-chemical pairs with relationship information.
         Create for each relationship type own TSV file and add a cypher query to the cypher file and a dictionary.
         At each pair to the dictionary of the same relationship type.
-        Afterward, pairs of dictionaries are checked if they are in the interaction list or not, and the information is combined and written into the TSV files.
+        Afterward, the different relationship types have different steps The one with interaction they are checked if they exist or not and is written into the same TSV but with combined information or as a new edge. The other relationship types are all written into one TSV file to generate new edges.
 
 The last program merges disease-chemical/pc edges:
     For chemical ingredients and FDA_Established_Pharmacologic_Classes_MEDRT of med-rt, the following steps are executed:

@@ -65,7 +65,7 @@ def write_files(label, direction_1, direction_2, rela_name, rela_type):
 
 # dictionary rela name in med-rt to information needed
 dict_rela_name_to_other_information = {
-    'CI': ['-', '->', 'INTERACTS_CiC'],
+    'CI': ['-', '->', 'CONTRAINDICATES_CHcCH'],
     'effect_may_be_inhibited_by': ['-', '->', 'INTERACTS_CiC'],
 }
 
@@ -121,8 +121,10 @@ def load_connections(label):
         rela_info = dict_rela_name_to_other_information[rela_type][-1]
         if rela_info == 'INTERACTS_CiC':
             for (chemical_id1, chemical_id2), dict_sources_rela_type in dict_pairs.items():
+
                 sources = ['MED-RT' if x == 'MED-RT:Authority:MEDRT' else x.split(':')[-1] + ' via MED-RT' for x in
                            dict_sources_rela_type['source']]
+
                 rela_types = '|'.join(dict_sources_rela_type['rela'])
                 if (chemical_id1, chemical_id2) in dict_chemical_tuple_to_resource:
 
@@ -136,6 +138,12 @@ def load_connections(label):
                 else:
                     dict_rela_to_tsv[rela_type].writerow(
                         [chemical_id1, chemical_id2, ' and '.join(sources), 'MED-RT',rela_types])
+        else:
+            for (chemical_id1, chemical_id2), dict_sources_rela_type in dict_pairs.items():
+                sources = ['MED-RT' if x == 'MED-RT:Authority:MEDRT' else x.split(':')[-1] + ' via MED-RT' for x in
+                           dict_sources_rela_type['source']]
+                dict_rela_to_tsv[rela_type].writerow(
+                    [chemical_id1, chemical_id2, ' and '.join(sources), 'MED-RT'])
 
 
 def main():
