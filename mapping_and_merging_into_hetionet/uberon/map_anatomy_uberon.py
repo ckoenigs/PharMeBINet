@@ -8,23 +8,29 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-'''
-create a connection with neo4j
-'''
-
 
 def create_connection_with_neo4j():
+    """
+    create a connection with neo4j
+    :return:
+    """
     # set up authentication parameters and connection
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
     g = driver.session()
 
+
 # human xrefs from obo file
 # treat-xrefs-as-reverse-genus-differentia with 9606
-set_human_xrefs=set(['DHBA','EHDAA2','FMA', 'HBA', 'HsapDv'])
+set_human_xrefs = set(['DHBA', 'EHDAA2', 'FMA', 'HBA', 'HsapDv'])
 
 
 def get_properties_and_generate_tsv_files_and_cypher_file():
+    """
+    Create TSV files for new nodes and update nodes. Prepare the additional cypher queries for the nodes and the is-a
+    relationship.
+    :return:
+    """
     # generate csv files
     global csv_update, csv_new
 
@@ -88,6 +94,9 @@ def get_properties_and_generate_tsv_files_and_cypher_file():
 
     query = 'Match (n:Anatomy)--(:uberon_extend)-[:is_a]->(:uberon_extend)--(m:Anatomy) Create (n)-[:IS_A_AisA{uberon:"yes",  url:"http://purl.obolibrary.org/obo/"+ split(n.identifier,":")[0]+"_"+ split(n.identifier,":")[1], license:"CC BY 3.0", source:"UBERON", resource:["UBERON"]}]->(m)'
     cypher_file.write(query)
+
+    query = 'Match (n:Anatomy)--(:uberon_extend)-[:part_of]->(:uberon_extend)--(m:Anatomy) Create (n)-[:PART_OF_ApoA{uberon:"yes",  url:"http://purl.obolibrary.org/obo/"+ split(n.identifier,":")[0]+"_"+ split(n.identifier,":")[1], license:"CC BY 3.0", source:"UBERON", resource:["UBERON"]}]->(m)'
+    cypher_file.write(query)
     cypher_file.close()
 
 
@@ -100,6 +109,10 @@ dict_anatomy_id_to_human = {}
 
 
 def load_all_uberon_with_taxonomy_information():
+    """
+    Get for each node that has a taxon relationship get if it is human or not in a dictionary
+    :return:
+    """
     query = '''Match p=(n:uberon_extend)-[r:present_in_taxon]->(m:uberon_extend) RETURN n.id, m.id '''
     results = g.run(query)
     for record in results:
@@ -113,6 +126,10 @@ def load_all_uberon_with_taxonomy_information():
 
 
 def load_all_pharmebinet_anatomy_in_dictionary():
+    """
+    Load all existing Anatomy nodes into dictionaries
+    :return:
+    """
     query = '''Match (n:Anatomy) RETURN n '''
     results = g.run(query)
     for record in results:
@@ -126,19 +143,32 @@ def load_all_pharmebinet_anatomy_in_dictionary():
 
 def add_nodes_to_different_files(results, set_not_considered_nodes, dict_nodes, set_ids_of_level, counter,
                                  counter_mapped):
+    """
+    Get the result nodes of one hirarchy level. Check if this is a human node, or has no taxonomical information or the
+    xrefs are from human source. These nodes are mapped to anatomy and written into the TSV file. The not mapped are
+    written into the new TSV file.
+    :param results:
+    :param set_not_considered_nodes:
+    :param dict_nodes:
+    :param set_ids_of_level:
+    :param counter:
+    :param counter_mapped:
+    :return:
+    """
     for record in results:
         [node_id, names, xrefs_uberon, synonyms] = record.values()
         if node_id in dict_nodes or node_id in set_not_considered_nodes:
             continue
         counter += 1
-        xrefs_uberon=xrefs_uberon if xrefs_uberon is not None else []
+        xrefs_uberon = xrefs_uberon if xrefs_uberon is not None else []
         set_ids_of_level.add(node_id)
         dict_nodes[node_id] = (names, xrefs_uberon)
 
-        #xref check
-        set_xrefs={x.split(':')[0] for x in xrefs_uberon}
+        # xref check
+        set_xrefs = {x.split(':')[0] for x in xrefs_uberon}
         # consider no human nodes as next generation node but only add nodes to tsv if they are human or without reference
-        if (node_id in dict_anatomy_id_to_human and dict_anatomy_id_to_human[node_id]==False and not bool(set_xrefs & set_human_xrefs)):
+        if (node_id in dict_anatomy_id_to_human and dict_anatomy_id_to_human[node_id] == False and not bool(
+                set_xrefs & set_human_xrefs)):
             continue
         names = set(names)
         # print(type(synonyms), synonyms)
@@ -162,7 +192,11 @@ def add_nodes_to_different_files(results, set_not_considered_nodes, dict_nodes, 
     return counter, counter_mapped
 
 
-def load_all_DrugBank_compound_in_dictionary():
+def load_all_uberon_anatomy_nodes():
+    """
+    Load all nodes below anatomical structure as anatomy nodes. COnsider the below nodes is-a and part-of.
+    :return:
+    """
     query_nodes = 'MATCH (n:uberon_extend)-[:%s]->(m:uberon_extend ) Where n.is_obsolete is NULL and m.id in ["%s"] and n.id starts with "UBERON" RETURN n.id, n.names, n.xrefs, n.synonyms'
 
     dict_nodes = {}
@@ -195,35 +229,6 @@ def load_all_DrugBank_compound_in_dictionary():
             break
         level += 1
         dict_level_to_ids[level] = set_ids_of_level
-
-    # query = '''Match (n:uberon_extend) Where n.id starts with 'UBERON' and n.is_obsolete is null RETURN n '''
-    # print(query)
-
-    # counter = 0
-    # counter_mapped = 0
-    # results = g.run(query)
-    # for record in results:
-    #     counter += 1
-    #     node = record.data()['n']
-    #     id = node['id']
-    #     xrefs_uberon = node['xrefs'] if 'xrefs' in node else set()
-    #     if id in dict_anatomy_id_to_resource:
-    #         counter_mapped += 1
-    #         names = set(node['names'])
-    #         synonyms = node['synonyms'] if 'synonyms' in node else []
-    #         synonyms = names.union(synonyms)
-    #         xrefs = dict_anatomy_id_to_xrefs[id]
-    #         xrefs = xrefs.union(xrefs_uberon)
-    #         resource = dict_anatomy_id_to_resource[id]
-    #         csv_update.writerow(
-    #             [id, '|'.join(synonyms), '|'.join(go_through_xrefs_and_change_if_needed_source_name(xrefs, 'Anatomy')),
-    #              pharmebinetutils.resource_add_and_prepare(resource, 'UBERON')])
-    #     else:
-    #         names = set(node['names'])
-    #         name = names.pop()
-    #         synonyms = node['synonyms'] if 'synonyms' in node else []
-    #         csv_new.writerow([id, name, '|'.join(synonyms),
-    #                              '|'.join(go_through_xrefs_and_change_if_needed_source_name(xrefs_uberon, 'Anatomy'))])
 
     print('number of nodes in uberon: ', counter)
     print('number of mapped nodes in uberon: ', counter_mapped)
@@ -276,7 +281,7 @@ def main():
 
     print('load all DrugBank compounds in dictionary')
 
-    load_all_DrugBank_compound_in_dictionary()
+    load_all_uberon_anatomy_nodes()
 
     driver.close()
 
