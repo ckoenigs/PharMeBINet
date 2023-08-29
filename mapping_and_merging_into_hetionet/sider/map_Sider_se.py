@@ -5,12 +5,9 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-'''
-create connection to neo4j
-'''
-
 
 def create_connection_with_neo4j():
+    # create connection to neo4j
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
     g = driver.session()
@@ -31,17 +28,17 @@ file_new_node = open('output/se_new.tsv', 'w')
 csv_writer_new = csv.DictWriter(file_new_node, delimiter='\t', fieldnames=header)
 csv_writer_new.writeheader()
 
-'''
-load all new and old information for side effects in
-meddraType: string (PT or LLT)
-conceptName: string
-umlsIDmeddra: string (UMLS CUI for MedDRA ID)
-name: string
-umls_concept_id: string (UMLS CUI for label)
-'''
-
 
 def load_sider_in_dict():
+    """
+    load all new and old information for side effects in
+    meddraType: string (PT or LLT)
+    conceptName: string
+    umlsIDmeddra: string (UMLS CUI for MedDRA ID)
+    name: string
+    umls_concept_id: string (UMLS CUI for label)
+    :return:
+    """
     query = '''MATCH (n:se_Sider) RETURN n '''
     results = g.run(query)
     k = 0
@@ -61,12 +58,8 @@ def load_sider_in_dict():
     print('size of side effects after the sider is add:' + str(len(list_side_effect_in_pharmebinet) + counter_new))
 
 
-'''
-Generate cypher file for side effect nodes
-'''
-
-
 def generate_cypher_file():
+    # Generate cypher file for side effect nodes
     cypher_file = open('output/cypher.cypher', 'w')
     query_new = ''
     for head in header:
@@ -87,17 +80,17 @@ def generate_cypher_file():
     cypher_file.close()
 
 
-'''
-this start only the function the are use for generate the map cypher
-'''
-
-
-def integrate_side_effects():
+def main():
     global path_of_directory
     if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]
     else:
         sys.exit('need a path sider se')
+
+    print(datetime.datetime.now())
+    print('Generate connection with neo4j')
+
+    create_connection_with_neo4j()
 
     print(
         '###########################################################################################################################')
@@ -117,21 +110,6 @@ def integrate_side_effects():
 
     print(
         '###########################################################################################################################')
-
-
-def main():
-    print(datetime.datetime.now())
-    print('Generate connection with neo4j')
-
-    create_connection_with_neo4j()
-
-    print(
-        '###########################################################################################################################')
-
-    print(datetime.datetime.now())
-    print('Integrate sider side effects into pharmebinet')
-
-    integrate_side_effects()
 
     driver.close()
 
