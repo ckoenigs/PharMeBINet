@@ -8,12 +8,12 @@ import pharmebinetutils
 sys.path.append("..")
 from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
 
-'''
-create a connection with neo4j
-'''
-
 
 def create_connection_with_neo4j():
+    """
+    create a connection with neo4j
+    :return:
+    """
     # set up authentication parameters and connection
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
@@ -23,12 +23,12 @@ def create_connection_with_neo4j():
 # dictionary name/synonym and dbsnp id to clinvar ids
 dict_name_dbsnp_id_to_clinvar_id = {}
 
-'''
-Load all Variant from my database  and add them into a dictionary
-'''
-
 
 def load_variant_from_database_and_add_to_dict():
+    """
+    Load all Variant from my database  and add them into a dictionary
+    :return:
+    """
     # Where not n.identifier starts with 'rs'
     query = "MATCH (n:Variant)  RETURN n.identifier, n.name, n.synonyms, n.xrefs"
     results = g.run(query)
@@ -89,12 +89,13 @@ def generate_files(path_of_directory):
     return csv_mapping, csv_new
 
 
-'''
-Load all variation sort the ids into the right tsv, generate the queries, and add rela to the rela tsv
-'''
-
-
 def load_all_variants_and_finish_the_files(csv_mapping, csv_new):
+    """
+    Load all variation sort the ids into the right tsv, generate the queries, and add rela to the rela tsv
+    :param csv_mapping:
+    :param csv_new:
+    :return:
+    """
     query = "MATCH (n:Mutated_protein_gene_DrugBank) RETURN n"
     results = g.run(query)
     counter_map = 0

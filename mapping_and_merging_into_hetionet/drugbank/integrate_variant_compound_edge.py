@@ -40,12 +40,12 @@ def generate_files(path_of_directory):
     return csv_mapping
 
 
-'''
-Load all variation sort the ids into the right tsv, generate the queries, and add rela to the rela tsv
-'''
-
-
 def load_all_pair_and_prepare_for_dictionary(csv_mapping):
+    """
+    Load all variation sort the ids into the right tsv, generate the queries, and add rela to the rela tsv
+    :param csv_mapping:
+    :return:
+    """
     query = "MATCH (v:Variant)--(n:Mutated_protein_gene_DrugBank)-[r]-(:Compound_DrugBank)--(c:Compound) RETURN v.identifier, r, c.identifier"
     results = g.run(query)
 

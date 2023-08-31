@@ -8,12 +8,12 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-'''
-create a connection with neo4j
-'''
-
 
 def create_connection_with_neo4j():
+    """
+    create a connection with neo4j
+    :return:
+    """
     # set up authentication parameters and connection
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
@@ -45,12 +45,12 @@ neo4j_interaction_rela_label = 'interacts_CiC'
 # set of properties which are list element
 set_of_list_properties = set([])
 
-'''
-Get all properties of the pharmebinet compounds and drugbank compounds and use them to generate the tsv files
-'''
-
 
 def get_properties_and_generate_tsv_files():
+    """
+    Get all properties of the pharmebinet compounds and drugbank compounds and use them to generate the tsv files
+    :return:
+    """
     # get the properties of the compounds in pharmebinet
     query = '''MATCH (p:Compound) WITH DISTINCT keys(p) AS keys
         UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields
@@ -96,18 +96,17 @@ def get_properties_and_generate_tsv_files():
     csv_update_alt.writeheader()
 
 
-'''
-load all disease in the dictionary
-has properties:
-name 
-identifier
-source
-license
-url
-'''
-
-
 def load_all_pharmebinet_compound_in_dictionary():
+    """
+    load all disease in the dictionary
+    has properties:
+    name
+    identifier
+    source
+    license
+    url
+    :return:
+    """
     query = '''Match (n:Compound) RETURN n '''
     results = g.run(query)
     for record in results:
@@ -123,14 +122,12 @@ unii_drugbank_table_file = open('data/map_unii_to_drugbank_id.tsv', 'w', encodin
 csv_unii_drugbank_table = csv.writer(unii_drugbank_table_file, delimiter='\t')
 csv_unii_drugbank_table.writerow(['unii', 'drugbank_id'])
 
-'''
-Load in all information from DrugBank.
-and generate unii-drugbank table file 
-Where n.identifier="DB13179"
-'''
-
 
 def load_all_DrugBank_compound_in_dictionary():
+    """
+    Load in all information from DrugBank and generate unii-drugbank table file
+    :return:
+    """
     query = '''Match (n:''' + neo4j_label_drugbank + ''')  RETURN n '''
     print(query)
     results = g.run(query)
@@ -152,12 +149,12 @@ def load_all_DrugBank_compound_in_dictionary():
 # dictionary with (durg1, drug2) and url, description
 dict_interact_relationships_with_infos = {}
 
-'''
-load all the is_a relationships from MonDO into a dictionary with the resource
-'''
-
 
 def load_in_all_interaction_connection_from_drugbank_in_dict():
+    """
+    load all the interacts edges between compounds into a dictionary with the resource
+    :return:
+    """
     query = f'MATCH p=(a:{neo4j_label_drugbank})-[r:{neo4j_interaction_rela_label} ]->(b:{neo4j_label_drugbank}) RETURN a.identifier, r.description ,b.identifier '
     print(query)
     results = g.run(query)
@@ -194,12 +191,12 @@ dict_drugbank_to_alternatives = {}
 # show wich properties are not in the old compounds or in the new compounds
 list_not_fiting_properties = set([])
 
-'''
-Integrate all DrugBank id into pharmebinet
-'''
-
 
 def integrate_DB_compound_information_into_pharmebinet():
+    """
+    Integrate all DrugBank id into pharmebinet
+    :return:
+    """
     # count already existing compound
     counter_already_existing_compound = 0
     # count all new drugbank compounds
@@ -361,11 +358,6 @@ def integrate_DB_compound_information_into_pharmebinet():
         sys.exit('not fitting')
 
 
-'''
-Create cypher file
-'''
-
-
 def create_cypher_file():
     # cypher file
     cypher_file = open('compound_interaction/cypher.cypher', 'w', encoding='utf-8')
@@ -409,12 +401,12 @@ def create_cypher_file():
     cypher_file.write(query_create)
 
 
-'''
-Generate the the interaction file and the cypher file to integrate the information from the tsv into neo4j
-'''
-
 
 def generation_of_interaction_file():
+    """
+    Generate the the interaction file and the cypher file to integrate the information from the tsv into neo4j
+    :return:
+    """
     # generate cypher file for interaction
     counter_connection = 0
 

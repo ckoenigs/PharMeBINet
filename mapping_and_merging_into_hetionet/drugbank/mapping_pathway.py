@@ -5,29 +5,16 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-'''
-create a connection with neo4j
-'''
-
 
 def create_connection_with_neo4j():
+    """
+    create a connection with neo4j
+    :return:
+    """
     # set up authentication parameters and connection
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
     g = driver.session()
-
-
-def add_entry_to_dictionary(dictionary, key, value):
-    """
-    prepare entry in dictionary if not exists. Then add new value.
-    :param dictionary: dictionary
-    :param key: string
-    :param value: string
-    :return:
-    """
-    if key not in dictionary:
-        dictionary[key] = set()
-    dictionary[key].add(value)
 
 
 # dictionary name to pc ids
@@ -53,16 +40,16 @@ def load_pathway_from_database():
         dict_pathway_id_to_resource[identifier] = set(node['resource'])
         name = node['name'] if 'name' in node else ''
         if name is not None:
-            add_entry_to_dictionary(dict_name_to_pathway_ids, name.lower(), identifier)
+            pharmebinetutils.add_entry_to_dict_to_set(dict_name_to_pathway_ids, name.lower(), identifier)
 
         synonyms = node['synonyms'] if 'synonyms' in node else []
         for synonym in synonyms:
-            add_entry_to_dictionary(dict_name_to_pathway_ids, synonym.lower(), identifier)
+            pharmebinetutils.add_entry_to_dict_to_set(dict_name_to_pathway_ids, synonym.lower(), identifier)
 
         for xref in node['xrefs']:
             if xref.startswith('smpdb'):
                 smpdb_id = xref.split(':')[1]
-                add_entry_to_dictionary(dict_smpdb_id_to_pathway_ids, smpdb_id, identifier)
+                pharmebinetutils.add_entry_to_dict_to_set(dict_smpdb_id_to_pathway_ids, smpdb_id, identifier)
 
 
 def generate_files(path_of_directory):
@@ -73,7 +60,7 @@ def generate_files(path_of_directory):
     # file from relationship between gene and variant
     file_name = 'pathway/mapping_pathway.tsv'
     file = open(file_name, 'w', encoding='utf-8')
-    header = ['pathway_db_id', 'pathway_id', 'resource']
+    header = ['pathway_db_id', 'pathway_id', 'resource', 'how_mapped']
     csv_mapping = csv.writer(file, delimiter='\t')
     csv_mapping.writerow(header)
 
@@ -86,7 +73,7 @@ def generate_files(path_of_directory):
 
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
 
-    query = '''Match (n:Pathway{identifier:line.pathway_id}), (v:Pathway_DrugBank{identifier:line.pathway_db_id}) Create (n)-[r:equal_to_pathway_drugbank]->(v) Set n.drugbank="yes", n.resource=split(line.resource,"|") '''
+    query = '''Match (n:Pathway{identifier:line.pathway_id}), (v:Pathway_DrugBank{identifier:line.pathway_db_id}) Create (n)-[r:equal_to_pathway_drugbank{how_mapped:line.how_mapped}]->(v) Set n.drugbank="yes", n.resource=split(line.resource,"|") '''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/drugbank/{file_name}',
                                               query)
@@ -101,16 +88,6 @@ dict_db_pathway_pathway_to_how_mapped = {}
 
 # dictionary_smpdb_id_to_pathway_ids
 dict_smpdb_id_from_db_to_pathway_ids = {}
-
-
-def add_resource(set_resource):
-    """
-    Add resource and prepare string
-    :param set_resource: set
-    :return:
-    """
-    set_resource.add('DrugBank')
-    return '|'.join(sorted(set_resource))
 
 
 def load_all_drugbank_pc_and_map(csv_mapping, csv_not_mapped):
@@ -133,7 +110,9 @@ def load_all_drugbank_pc_and_map(csv_mapping, csv_not_mapped):
                 if (identifier, pathway_id) not in dict_db_pathway_pathway_to_how_mapped:
                     dict_db_pathway_pathway_to_how_mapped[(identifier, pathway_id)] = 'smpdb_id'
                     csv_mapping.writerow(
-                        [identifier, pathway_id, add_resource(dict_pathway_id_to_resource[pathway_id])])
+                        [identifier, pathway_id,
+                         pharmebinetutils.resource_add_and_prepare(dict_pathway_id_to_resource[pathway_id], 'DrugBank'),
+                         'smpdb'])
                 else:
                     print('multy mapping with smpdb id')
 
@@ -148,7 +127,9 @@ def load_all_drugbank_pc_and_map(csv_mapping, csv_not_mapped):
                 if (identifier, pathway_id) not in dict_db_pathway_pathway_to_how_mapped:
                     dict_db_pathway_pathway_to_how_mapped[(identifier, pathway_id)] = 'name_mapped'
                     csv_mapping.writerow(
-                        [identifier, pathway_id, add_resource(dict_pathway_id_to_resource[pathway_id])])
+                        [identifier, pathway_id,
+                         pharmebinetutils.resource_add_and_prepare(dict_pathway_id_to_resource[pathway_id], 'DrugBank'),
+                         'name'])
                 else:
                     print('multy mapping with name')
         if found_mapping:

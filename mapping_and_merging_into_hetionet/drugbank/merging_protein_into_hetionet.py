@@ -7,12 +7,12 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-'''
-create a connection with neo4j
-'''
-
 
 def create_connection_with_neo4j():
+    """
+    create a connection with neo4j
+    :return:
+    """
     # set up authentication parameters and connection
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
@@ -65,12 +65,12 @@ dict_name_to_protein_id = {}
 # dictionary protein id to resource
 dict_protein_id_to_resource = {}
 
-'''
-gather all pharmebinet proteins in a dictionary
-'''
-
 
 def load_all_pharmebinet_proteins_in_dictionary():
+    """
+    gather all pharmebinet proteins in a dictionary
+    :return:
+    """
     query = '''MATCH (n:Protein) RETURN n.identifier, n ;'''
     results = g.run(query)
     counter_multiple_identifier = 0
@@ -102,13 +102,14 @@ def load_all_pharmebinet_proteins_in_dictionary():
 # currently 50 are proteins and 63 not, was manual checked
 dict_be_identifier_sort_to_protein_or_not = {}
 
-'''
-load information about the proteins which are proteins or not from the target entities which has no uniprot id and are not connect with one with uniprot id.
-This information where manual checked by me.
-'''
-
 
 def load_manual_checked_proteins_or_not():
+    """
+    load information about the proteins which are proteins or not from the target entities which has no uniprot id and
+    are not connect with one with uniprot id.
+    This information where manual checked by me.
+    :return:
+    """
     csv_file = open('protein/maybe_proteins_manual_checked.tsv', 'r')
     reader = csv.DictReader(csv_file, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     for row in reader:
@@ -198,19 +199,18 @@ generate_csv = open('protein/proteins.tsv', 'w')
 writer = csv.writer(generate_csv, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 writer.writerow(['id', 'uniport', 'resource', 'sequences'])
 
-'''
-preparation of the tsv for merging for a given node
-'''
 
 
 def integrate_infos_into_tsv(part_dict, protein_pharmebinet, list_input_protein):
-    # first check on the as sequences and combine the if they are not the same, because they are isoforms
-    # or  have only small changes like one as is changed
-    # print(protein_pharmebinet)
-    resource = set(protein_pharmebinet['resource'])
-    resource.add('DrugBank')
-    resource = sorted(resource)
-    list_input_protein.append("|".join(resource))
+    """
+    preparation of the tsv for merging for a given node
+    first check on the as sequences and combine the if they are not the same, because they are isoforms or  have only small changes like one as is changed
+    :param part_dict:
+    :param protein_pharmebinet:
+    :param list_input_protein:
+    :return:
+    """
+    list_input_protein.append(pharmebinetutils.resource_add_and_prepare(protein_pharmebinet['resource'],'DrugBank'))
 
     as_seqs = part_dict['amino_acid_sequence'] if 'amino_acid_sequence' in part_dict else ''
 
@@ -304,13 +304,11 @@ def not_mapped_proteins(node, identifier, name, synonyms, labels, counter_not_a_
     return counter_not_a_protein
 
 
-'''
-load all possible proteins from Drugbank and put only all as protein defined proteins into a dictionary
-'''
-
-
 def load_proteins_from_drugbank_into_dict():
-    # conncet the
+    """
+    load all possible proteins from Drugbank and put only all as protein defined proteins into a dictionary
+    :return:
+    """
     cypherfile = open('protein/cypher_protein.cypher', 'w')
     # this is only for the first time to have only the sequences as property and not with header
     # query = '''Match (n:Protein) Where exists(n.as_sequence) Set n.as_sequence=split(n.as_sequence,':')[1]'''
@@ -456,33 +454,33 @@ def load_proteins_from_drugbank_into_dict():
 # file for all rela which should be integrated
 cypher_rela = open('protein/cypher_protein_rela.cypher', 'w')
 
-'''
-Generate tsv with component relationships
-'''
 
-
-def generate_tsv_componet_rela():
-    query = 'MATCH p=(a:Protein_DrugBank)-[r:has_component_PIhcPI]->(b:Protein_DrugBank) RETURN a.identifier, b.identifier'
-    result = g.run(query)
-
-    query = ''' MATCH (g:Protein{identifier:line.id1}),(b:Protein{identifier:line.id2}) Create (g)-[:HAS_COMPONENT_PRhcPR]->(b)'''
-    query = pharmebinetutils.get_query_import(path_of_directory,
-                                              f'mapping_and_merging_into_hetionet/drugbank/protein/proteins_rela_component.tsv',
-                                              query)
-    cypher_rela.write(query)
-
-    csv_file = open('protein/proteins_rela_component.tsv', 'w')
-    writer_csv = csv.writer(csv_file, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-    writer_csv.writerow(['id1', 'id2'])
-
-    counter_component_rela = 0
-    for record in result:
-        [identifier1, identifier2] = record.values()
-        print(identifier1)
-        counter_component_rela += 1
-        writer_csv.writerow([identifier1, identifier2])
-
-    print('number of component rela:' + str(counter_component_rela))
+# def generate_tsv_componet_rela():
+#     """
+#     Generate tsv with component relationships
+#     :return:
+#     """
+#     query = 'MATCH p=(a:Protein_DrugBank)-[r:has_component_PIhcPI]->(b:Protein_DrugBank) RETURN a.identifier, b.identifier'
+#     result = g.run(query)
+#
+#     query = ''' MATCH (g:Protein{identifier:line.id1}),(b:Protein{identifier:line.id2}) Create (g)-[:HAS_COMPONENT_PRhcPR]->(b)'''
+#     query = pharmebinetutils.get_query_import(path_of_directory,
+#                                               f'mapping_and_merging_into_hetionet/drugbank/protein/proteins_rela_component.tsv',
+#                                               query)
+#     cypher_rela.write(query)
+#
+#     csv_file = open('protein/proteins_rela_component.tsv', 'w')
+#     writer_csv = csv.writer(csv_file, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+#     writer_csv.writerow(['id1', 'id2'])
+#
+#     counter_component_rela = 0
+#     for record in result:
+#         [identifier1, identifier2] = record.values()
+#         print(identifier1)
+#         counter_component_rela += 1
+#         writer_csv.writerow([identifier1, identifier2])
+#
+#     print('number of component rela:' + str(counter_component_rela))
 
 
 def main():
@@ -539,7 +537,7 @@ def main():
 
     print('load all DrugBank has component rela and write them in tsv and generate cypher file for integration')
 
-    generate_tsv_componet_rela()
+    # generate_tsv_componet_rela()
 
     driver.close()
 

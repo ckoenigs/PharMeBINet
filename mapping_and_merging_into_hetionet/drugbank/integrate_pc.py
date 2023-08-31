@@ -5,12 +5,12 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-'''
-create a connection with neo4j
-'''
-
 
 def create_connection_with_neo4j_and_mysql():
+    """
+    create a connection with neo4j and mysql
+    :return:
+    """
     # set up authentication parameters and connection
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
@@ -88,6 +88,11 @@ dict_pc_db_to_pc_id = {}
 
 
 def load_all_drugbank_pc_and_map(csv_mapping):
+    """
+    Map drugbank pc to pc with different mapping and write into the TSV file.
+    :param csv_mapping:
+    :return:
+    """
     query = "MATCH (v:PharmacologicClass_DrugBank) RETURN v"
     results = g.run(query)
 

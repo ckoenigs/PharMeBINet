@@ -5,12 +5,12 @@ sys.path.append("../..")
 import create_connection_to_databases  # , authenticate
 import pharmebinetutils
 
-'''
-create a connection with neo4j
-'''
-
 
 def create_connection_with_neo4j():
+    """
+    create a connection with neo4j
+    :return:
+    """
     # set up authentication parameters and connection
     # authenticate("localhost:7474", "neo4j", "test")
     global g, driver
@@ -24,13 +24,13 @@ dict_not_mapped_compound = {}
 # dictionary not mapped compound names to node
 dict_not_mapped_compound_name = {}
 
-'''
-Load all compounds which did not mapped and upload them into a dictionary with inchikey as key
-and also in a dictionary where the name is the key
-'''
-
 
 def find_not_mapped_compounds_and_add_to_dict():
+    """
+    Load all compounds which did not mapped and upload them into a dictionary with inchikey as key
+    and also in a dictionary where the name is the key
+    :return:
+    """
     query = '''MATCH (n:Compound) WHere n.drugbank is NULL RETURN n'''
     result = g.run(query)
     for record in result:
@@ -54,12 +54,12 @@ file_node = 'salt_compound'
 # name rela file
 file_rela = 'salt_compound_rela'
 
-'''
-Create cypher and tsv files for nodes and relationships
-'''
-
 
 def create_cypher_and_tsv_files():
+    """
+    Create cypher and tsv files for nodes and relationships
+    :return:
+    """
     # open cypher file
     cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
     # get properties of salt nodes
@@ -117,12 +117,15 @@ bash_shell.write(bash_start)
 unii_drugbank_table_file = open('data/map_unii_to_drugbank_id.tsv', 'a')
 csv_unii_drugbank_table = csv.writer(unii_drugbank_table_file, delimiter='\t')
 
-'''
-Add a merge to the bash file
-'''
-
 
 def add_merge_to_sh_file(dict_not_mapped, mapped_value, node_id):
+    """
+    Add a merge to the bash file
+    :param dict_not_mapped:
+    :param mapped_value:
+    :param node_id:
+    :return:
+    """
     compound = dict_not_mapped[mapped_value]
     print(compound)
     compound_id = compound['identifier']
@@ -136,17 +139,13 @@ def add_merge_to_sh_file(dict_not_mapped, mapped_value, node_id):
     bash_shell.write(text)
 
 
-'''
-Gather all salt and make a new tsv to integrate them as compound into neo4j
-also check if a salt is on of the not mapped compounds 
-Prepare the tsv for salt integration, because they are not in pharmebinet they can be directly integrated
-also check on the drugs which did not mapped, because some of them might be now salts
-
-{identifier:"DBSALT002847"}
-'''
-
-
 def prepare_node_tsv():
+    """
+    Gather all salt and make a new tsv to integrate them as compound into neo4j also check if a salt is on of the not
+    mapped compounds. Prepare the tsv for salt integration, because they are not in pharmebinet they can be directly
+    integrated, also check on the drugs which did not mapped, because some of them might be now salts
+    :return:
+    """
     query = '''MATCH (n:Salt_DrugBank) RETURN n'''
     result = g.run(query)
     for record in result:
@@ -166,12 +165,11 @@ def prepare_node_tsv():
             add_merge_to_sh_file(dict_not_mapped_compound_name, name, node_id)
 
 
-'''
-Generate fill the rela tsv file
-'''
-
-
 def fill_rela_tsv():
+    """
+    Fill the rela tsv file
+    :return:
+    """
     query = '''MATCH (n:Salt_DrugBank)-[:has_ChS]-(b:Compound_DrugBank) RETURN n.identifier, b.identifier'''
     result = g.run(query)
     for record in result:

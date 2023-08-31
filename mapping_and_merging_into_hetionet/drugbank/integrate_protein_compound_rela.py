@@ -5,12 +5,11 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-'''
-create a connection with neo4j
-'''
-
 
 def create_connection_with_neo4j():
+    """
+    create a connection with neo4j
+    """
     # set up authentication parameters and connection
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
@@ -122,12 +121,14 @@ def get_compound_protein_pair_of_with_pubmed_for_rela_type(direction):
     return dict_protein_compound_to_pubmed_ids
 
 
-'''
-Create cypher query and the tsv file for the different relationships
-'''
-
-
 def create_cypher_query_and_tsv_file(rela_name, rela_direction, label_from):
+    """
+    Create cypher query and the tsv file for the different relationships
+    :param rela_name:
+    :param rela_direction:
+    :param label_from:
+    :return:
+    """
     query = 'Match p=(:%s)%s(:Chemical) Return p Limit 1' % (label_from, rela_direction)
     results = g.run(query)
     result = results.single()
@@ -195,6 +196,10 @@ def create_cypher_query_and_tsv_file(rela_name, rela_direction, label_from):
 
 
 def run_through_dictionary_to_add_to_tsv_and_cypher():
+    """
+    Run through the dictionary with the different relationship and prepare the data for the TSV file
+    :return:
+    """
     for rela_name, values in dict_rela_type_to_dictionary.items():
         for (label, from_chemical), dict_pairs in values.items():
             if from_chemical:

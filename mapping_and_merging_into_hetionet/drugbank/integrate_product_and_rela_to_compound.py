@@ -5,19 +5,19 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-'''
-create a connection with neo4j
-'''
-
 
 def create_connection_with_neo4j():
+    """
+    create a connection with neo4j
+    :return: 
+    """
     # set up authentication parameters and connection
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
     g = driver.session()
 
 
-#
+# dictionary source to url
 dict_source_to_url = {
     "FDA NDC": "https://ndclist.com/ndc/%s/package/%s",  # double id
     "EMA": "https://www.ema.europa.eu/en/medicines/human/EPAR/%s",  # name
@@ -61,6 +61,10 @@ def prepare_cypher_query(file_name):
 
 
 def prepare_file():
+    """
+    prepare TSV file and return csv writer and file name.
+    :return: 
+    """
     file_name = 'product/integration.tsv'
     file = open(file_name, 'w', encoding='utf-8')
     csv_writer = csv.writer(file, delimiter="\t")
@@ -69,12 +73,11 @@ def prepare_file():
     return csv_writer, file_name
 
 
-'''
-Load all Products and add to file
-'''
-
-
-def laod_all_products():
+def load_all_products():
+    """
+    Load all Products and add to file
+    :return: 
+    """
     # generate and get csv writer
     csv_writer, file_name = prepare_file()
 
@@ -119,7 +122,7 @@ def main():
     print(datetime.datetime.now())
     print('Load all products from drugbank')
 
-    laod_all_products()
+    load_all_products()
 
     driver.close()
 

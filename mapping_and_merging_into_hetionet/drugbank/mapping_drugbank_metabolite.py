@@ -6,29 +6,16 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-'''
-create a connection with neo4j
-'''
-
 
 def create_connection_with_neo4j():
+    """
+    create a connection with neo4j
+    :return:
+    """
     # set up authentication parameters and connection
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
     g = driver.session()
-
-
-def add_entry_to_dictionary(dictionary, key, value):
-    """
-    prepare entry in dictionary if not exists. Then add new value.
-    :param dictionary: dictionary
-    :param key: string
-    :param value: string
-    :return:
-    """
-    if key not in dictionary:
-        dictionary[key] = set()
-    dictionary[key].add(value)
 
 
 # dictionary for the different mapping methods
@@ -50,7 +37,7 @@ def load_metabolite_from_database():
         identifier = node['identifier']
         dict_metabolite_id_to_resource[identifier] = set(node['resource'])
         name = node['name'].lower()
-        add_entry_to_dictionary(dict_different_mapping_methods['name'], name, identifier)
+        pharmebinetutils.add_entry_to_dict_to_set(dict_different_mapping_methods['name'], name, identifier)
 
         # synonyms= node['synonyms'] if 'synonyms' in node else []
         # for synonym in synonyms:
@@ -58,11 +45,11 @@ def load_metabolite_from_database():
 
         inchikey = node['inchikey'] if 'inchikey' in node else None
         if inchikey:
-            add_entry_to_dictionary(dict_different_mapping_methods['inchikey'], inchikey, identifier)
+            pharmebinetutils.add_entry_to_dict_to_set(dict_different_mapping_methods['inchikey'], inchikey, identifier)
 
         smiles = node['smiles'] if 'smiles' in node else None
         if inchikey:
-            add_entry_to_dictionary(dict_different_mapping_methods['smiles'], smiles, identifier)
+            pharmebinetutils.add_entry_to_dict_to_set(dict_different_mapping_methods['smiles'], smiles, identifier)
 
 
 def generate_files(path_of_directory):
@@ -103,16 +90,6 @@ set_of_metabolite_pairs = set()
 dict_db_metabolite_id_to_metabolite_ids = {}
 
 
-def add_resource(set_resource):
-    """
-    Add resource and prepare string
-    :param set_resource: set
-    :return:
-    """
-    set_resource.add('DrugBank')
-    return '|'.join(sorted(set_resource))
-
-
 def load_all_drugbank_pc_and_map(csv_mapping, csv_not_mapped):
     query = "MATCH (v:Metabolite_DrugBank) RETURN v"
     results = g.run(query)
@@ -137,7 +114,9 @@ def load_all_drugbank_pc_and_map(csv_mapping, csv_not_mapped):
                     if (identifier, metabolite_id) not in set_of_metabolite_pairs:
                         set_of_metabolite_pairs.add((identifier, metabolite_id))
                         csv_mapping.writerow(
-                            [identifier, metabolite_id, add_resource(dict_metabolite_id_to_resource[metabolite_id]),
+                            [identifier, metabolite_id,
+                             pharmebinetutils.resource_add_and_prepare(dict_metabolite_id_to_resource[metabolite_id],
+                                                                       'DrugBank'),
                              'inchi_key'])
                     else:
                         print('multy mapping with inchikey')
@@ -153,7 +132,9 @@ def load_all_drugbank_pc_and_map(csv_mapping, csv_not_mapped):
                 if (identifier, metabolite_id) not in set_of_metabolite_pairs:
                     set_of_metabolite_pairs.add((identifier, metabolite_id))
                     csv_mapping.writerow(
-                        [identifier, metabolite_id, add_resource(dict_metabolite_id_to_resource[metabolite_id]),
+                        [identifier, metabolite_id,
+                         pharmebinetutils.resource_add_and_prepare(dict_metabolite_id_to_resource[metabolite_id],
+                                                                   'DrugBnk'),
                          'smiles'])
                 else:
                     print('multy mapping with smiles')
@@ -169,7 +150,9 @@ def load_all_drugbank_pc_and_map(csv_mapping, csv_not_mapped):
                 if (identifier, metabolite_id) not in set_of_metabolite_pairs:
                     set_of_metabolite_pairs.add((identifier, metabolite_id))
                     csv_mapping.writerow(
-                        [identifier, metabolite_id, add_resource(dict_metabolite_id_to_resource[metabolite_id]),
+                        [identifier, metabolite_id,
+                         pharmebinetutils.resource_add_and_prepare(dict_metabolite_id_to_resource[metabolite_id],
+                                                                   'DrugBnk'),
                          'name'])
                 else:
                     print('multy mapping with name')

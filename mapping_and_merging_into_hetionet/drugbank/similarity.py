@@ -123,6 +123,12 @@ threshold = 0.75
 
 
 def generate_cypher(header, file_name):
+    """
+    Generate cypher file and add cypher query
+    :param header:
+    :param file_name:
+    :return:
+    """
     cypherfile = open('compound_interaction/cypher_resemble.cypher', 'w', encoding='utf-8')
     query = '''Match (c1:Compound)-[r:RESEMBLES_CrC]->(c2:Compound) Delete r;\n '''
     cypherfile.write(query)
@@ -144,6 +150,10 @@ dict_fp_to_metrics = {}
 
 
 def calculate_similarities_and_write_into_file():
+    """
+    Compute the different similarities and write them into the TSV file
+    :return:
+    """
     set_of_types = set()
     header = ['id1', 'id2', 'morgan bit vec_cosine', 'maccs_dice', 'morgan bit vec_tanimoto', 'morgan bit vec_dice',
               'topologic_tanimoto', 'morgan bit vec_mcconnaughey', 'topologic torsin_tanimoto', 'maccs_rdkit_dice',

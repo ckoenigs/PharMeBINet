@@ -5,12 +5,12 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-'''
-create a connection with neo4j
-'''
-
 
 def create_connection_with_neo4j():
+    """
+    create a connection with neo4j
+    :return:
+    """
     # set up authentication parameters and connection
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
@@ -35,7 +35,7 @@ def load_all_proteins():
         [identifier] = record.values()
         set_protein_identifier.add(identifier)
 
-
+# dictionary label to url
 dict_label_to_url = {
     'Metabolite': 'https://go.drugbank.com/metabolites/',
     'Compound': 'https://go.drugbank.com/drugs/',
