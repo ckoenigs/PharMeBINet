@@ -5,12 +5,12 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-'''
-create a connection with neo4j
-'''
-
 
 def create_connection_with_neo4j():
+    """
+    create a connection with neo4j
+    :return:
+    """
     # set up authentication parameters and connection
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
@@ -31,7 +31,7 @@ def generate_files(path_of_directory):
 
     cypher_file = open('rela_protein/cypher.cypher', 'a', encoding='utf-8')
 
-    query = ''' Match (n:Compound{identifier:line.compound_id}), (v:PharmacologicClass{identifier:line.pc_id}) MERGE (v)-[r:INCLUDES_PCiCH]->(n) On Create set  r.license="%s",  r.source="DrugBank", r.drugbank="yes", r.resource=["DrugBank"], r.url="https://go.drugbank.com/drugs/"+line.compound_id On Match Set r.drugbank="yes", r.resource=r.resource+"DrugBank" '''
+    query = ''' Match (n:Compound{identifier:line.compound_id}), (v:PharmacologicClass{identifier:line.pc_id}) MERGE (v)-[r:INCLUDES_PCiCH]->(n) On Create set  r.license="%s",  r.source="DrugBank", r.drugbank="yes", r.resource=["DrugBank"], r.url="https://go.drugbank.com/drugs/"+line.compound_id On Match Set r.drugbank="yes", r.resource=["DrugBank"]+r.resource '''
     query = query % (license)
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/drugbank/compound_pc/{file_name}.tsv',
@@ -41,12 +41,13 @@ def generate_files(path_of_directory):
     return csv_mapping
 
 
-'''
-Load all variation sort the ids into the right tsv, generate the queries, and add rela to the rela tsv
-'''
-
 
 def load_all_pair_and_prepare_for_dictionary(csv_mapping):
+    """
+    Load all variation sort the ids into the right tsv, generate the queries, and add rela to the rela tsv
+    :param csv_mapping:
+    :return:
+    """
     query = "MATCH (v:PharmacologicClass)--(n:PharmacologicClass_DrugBank)-[r]-(:Compound_DrugBank)--(c:Compound) RETURN v.identifier,  c.identifier"
     results = g.run(query)
 
@@ -55,6 +56,7 @@ def load_all_pair_and_prepare_for_dictionary(csv_mapping):
         [pc_id, drug_id] = record.values()
         if not (pc_id, drug_id) in set_drug_pc_pair:
             csv_mapping.writerow([pc_id, drug_id])
+            set_drug_pc_pair.add((pc_id, drug_id))
 
 
 def main():
