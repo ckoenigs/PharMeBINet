@@ -8,12 +8,12 @@ import pharmebinetutils
 # cypher file
 cypher_file = open("output/cypher.cypher", "w", encoding="utf-8")
 
-'''
-create a connection with neo4j
-'''
-
 
 def create_connection_with_neo4j():
+    """
+    create a connection with neo4j
+    :return:
+    """
     # set up authentication parameters and connection
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
@@ -22,10 +22,19 @@ def create_connection_with_neo4j():
     return g
 
 
-def write_infos_into_file(csv_writer, raw_id, mapped_ids, how_mapped, dic):
+def write_infos_into_file(csv_writer, raw_id, mapped_ids, how_mapped, dictionary):
+    """
+    Each mapping pair is written into the TSV file
+    :param csv_writer:
+    :param raw_id:
+    :param mapped_ids:
+    :param how_mapped:
+    :param dictionary:
+    :return:
+    """
     for map_id in mapped_ids:
         csv_writer.writerow(
-            [raw_id, map_id, pharmebinetutils.resource_add_and_prepare(dic[map_id], "RNADisease"), how_mapped])
+            [raw_id, map_id, pharmebinetutils.resource_add_and_prepare(dictionary[map_id], "RNADisease"), how_mapped])
 
 
 def disease_RNAdisease():
@@ -34,77 +43,75 @@ def disease_RNAdisease():
     '''
 
     print("######### load_from_database ##################")
-    global Disease
-    Disease = {}
-    DiseaseXref = {}
-    DiseaseIds = {}
-    DiseaseName = {}
+    disease = {}
+    disease_xref = {}
+    disease_ids = {}
+    disease_name = {}
 
     query = "MATCH (n:Disease) RETURN n.identifier, n.alternative_ids, n.xrefs, n.resource, n.name, n.synonyms"
     result = g.run(query)
 
     for record in result:
         [id, ids, xrefs, resource, name, synonym] = record.values()
-        Disease[id] = resource
+        disease[id] = resource
 
         if xrefs is not None:
             for x in xrefs:
                 if "MESH:" in x:
                     pubid = x[5:]
-                    if pubid not in DiseaseXref:
-                        DiseaseXref[pubid] = [id]
-                    elif id not in DiseaseXref[pubid]:
-                        DiseaseXref[pubid].append(id)
+                    if pubid not in disease_xref:
+                        disease_xref[pubid] = [id]
+                    elif id not in disease_xref[pubid]:
+                        disease_xref[pubid].append(id)
         if ids is not None:
             for y in ids:
-                if y not in DiseaseIds:
-                    DiseaseIds[y] = [id]
-                elif id not in DiseaseIds[y]:
-                    DiseaseIds[y].append(id)
+                if y not in disease_ids:
+                    disease_ids[y] = [id]
+                elif id not in disease_ids[y]:
+                    disease_ids[y].append(id)
         if name is not None:
-            if name.lower() not in DiseaseName:
-                DiseaseName[name.lower()] = [id]
-            elif id not in DiseaseName[name.lower()]:
-                DiseaseName[name.lower()].append(id)
+            if name.lower() not in disease_name:
+                disease_name[name.lower()] = [id]
+            elif id not in disease_name[name.lower()]:
+                disease_name[name.lower()].append(id)
         if synonym is not None:
             for syn in synonym:
                 syn_name = pharmebinetutils.prepare_obo_synonyms(syn)
-                if syn_name.lower() not in DiseaseName:
-                    DiseaseName[syn_name.lower()] = [id]
-                elif id not in DiseaseName[syn_name.lower()]:
-                    DiseaseName[syn_name.lower()].append(id)
+                if syn_name.lower() not in disease_name:
+                    disease_name[syn_name.lower()] = [id]
+                elif id not in disease_name[syn_name.lower()]:
+                    disease_name[syn_name.lower()].append(id)
 
-    global Symptom
-    Symptom = {}
-    SymptomName = {}
-    SymptomXref = {}
+    symptom = {}
+    symptom_name = {}
+    symptom_xref = {}
 
     query = "MATCH (n:Symptom) RETURN n.identifier, n.resource, n.name, n.synonyms, n.xrefs"
     result = g.run(query)
 
     for record in result:
         [id, resource, name, synonym, xref] = record.values()
-        Symptom[id] = resource
+        symptom[id] = resource
 
         if name is not None:
-            if name.lower() not in SymptomName:
-                SymptomName[name.lower()] = [id]
-            elif id not in SymptomName[name.lower()]:
-                SymptomName[name.lower()].append(id)
+            if name.lower() not in symptom_name:
+                symptom_name[name.lower()] = [id]
+            elif id not in symptom_name[name.lower()]:
+                symptom_name[name.lower()].append(id)
         if synonym is not None:
             for syn in synonym:
-                if syn.lower() not in SymptomName:
-                    SymptomName[syn.lower()] = [id]
-                elif id not in SymptomName[syn.lower()]:
-                    SymptomName[syn.lower()].append(id)
+                if syn.lower() not in symptom_name:
+                    symptom_name[syn.lower()] = [id]
+                elif id not in symptom_name[syn.lower()]:
+                    symptom_name[syn.lower()].append(id)
         if xref is not None:
             for x in xref:
                 if "MESH:" in x:
                     mid = x[5:]
-                    if mid not in SymptomXref:
-                        SymptomXref[mid] = [id]
+                    if mid not in symptom_xref:
+                        symptom_xref[mid] = [id]
                     else:
-                        SymptomXref[mid].append(id)
+                        symptom_xref[mid].append(id)
 
     file_name = 'disease/disease_RNADiseaseedges.tsv'
     file_name_symptom = 'disease/disease_Symptom_edges.tsv'
@@ -122,34 +129,34 @@ def disease_RNAdisease():
                 [doid, mesh, name] = record.values()
                 map = False
 
-                if name.lower() in DiseaseName:
+                if name.lower() in disease_name:
                     map = True
-                    write_infos_into_file(writer, name, DiseaseName[name.lower()], "Disease_Name-Name/Synonyms",
-                                          Disease)
-                elif name.lower() in SymptomName:
+                    write_infos_into_file(writer, name, disease_name[name.lower()], "Disease_Name-Name/Synonyms",
+                                          disease)
+                elif name.lower() in symptom_name:
                     map = True
-                    write_infos_into_file(writer1, name, SymptomName[name.lower()],
-                                          "Disease_Name-Symptom Name/Synonyms", Symptom)
+                    write_infos_into_file(writer1, name, symptom_name[name.lower()],
+                                          "Disease_Name-Symptom Name/Synonyms", symptom)
 
                 if map == False and mesh is not None:
                     for x in mesh:
-                        if x in Symptom:
+                        if x in symptom:
                             map = True
-                            write_infos_into_file(writer1, name, [x], "Disease_Mesh-Symptom_ID", Symptom)
+                            write_infos_into_file(writer1, name, [x], "Disease_Mesh-Symptom_ID", symptom)
 
                 # not good mapping ids
                 if name.lower() in ['inflammation']:
                     continue
                 if map == False and doid is not None:
                     for x in doid:
-                        if x in DiseaseIds:
+                        if x in disease_ids:
                             map = True
-                            write_infos_into_file(writer, name, DiseaseIds[x], 'DO_ID-alternativeids', Disease)
+                            write_infos_into_file(writer, name, disease_ids[x], 'DO_ID-alternativeids', disease)
                 if map == False and mesh is not None:
                     for y in mesh:
-                        if y in DiseaseXref:
+                        if y in disease_xref:
                             map = True
-                            write_infos_into_file(writer, name, DiseaseXref[y], 'Mesh_Id-Diseasexrefs', Disease)
+                            write_infos_into_file(writer, name, disease_xref[y], 'Mesh_Id-Diseasexrefs', disease)
 
         tsv_file.close()
         tsv_file1.close()
@@ -176,9 +183,8 @@ def rna_RNAdisease():
     '''
 
     print("######### load_from_database #########")
-    global RNA
-    RNA = {}
-    RNAXref = {}
+    rna = {}
+    rna_xref = {}
     dict_gene_name_to_identifiers = {}
     dict_product_name_to_identifiers = {}
 
@@ -187,12 +193,12 @@ def rna_RNAdisease():
 
     for record in result:
         [id, name, product, xrefs, resource] = record.values()
-        RNA[id] = resource
+        rna[id] = resource
 
         if xrefs is not None:
             for x in xrefs:
                 result = x.split(":")[1]
-                pharmebinetutils.add_entry_to_dict_to_set(RNAXref, result, id)
+                pharmebinetutils.add_entry_to_dict_to_set(rna_xref, result, id)
         if name is not None:
             pharmebinetutils.add_entry_to_dict_to_set(dict_gene_name_to_identifiers, name, id)
         if product is not None:
@@ -225,13 +231,13 @@ def rna_RNAdisease():
             [symbol] = record.values()
             if symbol in dict_gene_name_to_identifiers:
                 counter_mapped += 1
-                write_infos_into_file(writer, symbol, dict_gene_name_to_identifiers[symbol], 'Symbol_Gene_Name', RNA)
+                write_infos_into_file(writer, symbol, dict_gene_name_to_identifiers[symbol], 'Symbol_Gene_Name', rna)
             elif symbol in dict_product_name_to_identifiers:
                 counter_mapped += 1
-                write_infos_into_file(writer, symbol, dict_product_name_to_identifiers[symbol], 'Symbol_Product_Name', RNA)
+                write_infos_into_file(writer, symbol, dict_product_name_to_identifiers[symbol], 'Symbol_Product_Name', rna)
             elif symbol in dict_gene_symbol_to_identifiers:
                 counter_mapped += 1
-                write_infos_into_file(writer, symbol, dict_gene_symbol_to_identifiers[symbol], 'Symbol_Gene_Symbol_to_rna', RNA)
+                write_infos_into_file(writer, symbol, dict_gene_symbol_to_identifiers[symbol], 'Symbol_Gene_Symbol_to_rna', rna)
 
             # elif symbol in RNAXref:
             #     # the AC identifier mapping is not good
