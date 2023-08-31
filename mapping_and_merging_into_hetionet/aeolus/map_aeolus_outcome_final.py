@@ -70,12 +70,13 @@ class SideEffect_Aeolus():
 # dictionary with all side effects from pharmebinet with umls cui as key and as value a class SideEffect
 dict_all_side_effect = {}
 
-'''
-create connection to neo4j and mysql
-'''
 
 
 def create_connection_with_neo4j():
+    """
+    create connection to neo4j and mysql
+    :return:
+    """
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
     g = driver.session()
@@ -91,12 +92,12 @@ def load_api_key():
     API_KEY = next(file).strip(" \n")
 
 
-'''
-Create cache file or open and load mapping results
-'''
-
 
 def cache_api():
+    """
+    Create cache file or open and load mapping results
+    :return:
+    """
     # header of cache file
     header = ['meddra_id', 'umls_cuis']
     global csv_writer
@@ -115,12 +116,13 @@ def cache_api():
         csv_writer.writerow(header)
 
 
-'''
-get from api results from url
-'''
-
 
 def get_json(url):
+    """
+    get from api results from url
+    :param url:
+    :return:
+    """
     opener = urllib.request.build_opener()
     opener.addheaders = [('Authorization', 'apikey token=' + API_KEY)]
     return json.loads(opener.open(url).read())
@@ -143,22 +145,21 @@ def add_entries_into_dict(key, value, dictionary):
     dictionary[key].add(value)
 
 
-'''
-load in all side effects from pharmebinet into a dictionary
-has properties:
-    license
-    identifier
-    name
-    source
-    url
-    meddraType
-    synonyms
-    umls_label
-    resource
-'''
-
-
 def load_side_effects_from_pharmebinet_in_dict():
+    """
+    load in all side effects from pharmebinet into a dictionary
+    has properties:
+        license
+        identifier
+        name
+        source
+        url
+        meddraType
+        synonyms
+        umls_label
+        resource
+    :return:
+    """
     query = '''MATCH (n:SideEffect) RETURN n '''
     results = g.run(query)
     for record in results:
@@ -191,18 +192,18 @@ number_of_group_size = 200
 # set of mapped meddra ids
 set_concept_ids_mapped = set()
 
-'''
-load all aeolus side effects in a dictionary
-has properties:
-    snomed_outcome_concept_id
-    vocabulary_id: defined the type of the concept_code
-    name
-    outcome_concept_id: OHDSI ID
-    concept_code: MedDRA ID
-'''
-
 
 def load_side_effects_aeolus_in_dictionary():
+    """
+    load all aeolus side effects in a dictionary
+    has properties:
+        snomed_outcome_concept_id
+        vocabulary_id: defined the type of the concept_code
+        name
+        outcome_concept_id: OHDSI ID
+        concept_code: MedDRA ID
+    :return:
+    """
     # {concept_code:'10000031'}
     query = '''MATCH (n:Aeolus_Outcome) RETURN n'''
     results = g.run(query)
@@ -216,7 +217,7 @@ def load_side_effects_aeolus_in_dictionary():
         sideEffect = SideEffect_Aeolus(result['snomed_outcome_concept_id'], result['vocabulary_id'], result['name'],
                                        result['outcome_concept_id'], result['concept_code'])
         dict_side_effects_aeolus[result['concept_code']] = sideEffect
-        # add all meddra ids where no cui is nown in list of a given size
+        # add all meddra ids where no cui is known in list of a given size
         # the list should be not to big because it will be asked with api
         if result['concept_code'] not in dict_aeolus_SE_with_CUIs:
             list_of_ids.append(result['concept_code'])
@@ -255,12 +256,12 @@ dict_meddra_to_mondo = {}
 # ditionary mondo to xrefs and resource
 dict_mondo_to_xrefs_and_resource = {}
 
-'''
-Load all disease with umls, identifier and name (,synonyms?)
-'''
-
 
 def load_disease_infos():
+    """
+    Load all disease with umls, identifier and name (,synonyms?)
+    :return:
+    """
     query = '''Match (n:Disease) Return n.identifier, n.name, n.umls_cuis, n.xrefs, n.resource'''
     results = g.run(query)
 
@@ -304,12 +305,12 @@ csv_multiple_cuis.writerow(['MedDRA id', 'cuis with | as seperator ', 'where are
 # list of concept codes which do not have a cui
 list_aeolus_outcome_without_cui = []
 
-'''
-search for cui with api from bioportal
-'''
-
 
 def search_with_api_bioportal():
+    """
+    search for cui with api from bioportal
+    :return:
+    """
     global csv_writer
     # counter for not equal names
     counter_for_not_equal_names = 0
@@ -399,12 +400,15 @@ list_map_to_pharmebinet = []
 # list with all mapped cuis:
 dict_mapped_cuis_pharmebinet = {}
 
-'''
-add cui information into aeolus se class
-'''
-
 
 def add_cui_information_to_class(key, cui, mapped):
+    """
+    add cui information into aeolus se class
+    :param key:
+    :param cui:
+    :param mapped:
+    :return:
+    """
     if key not in dict_side_effects_aeolus:
         return
     if dict_side_effects_aeolus[key].cuis is None:
@@ -414,12 +418,12 @@ def add_cui_information_to_class(key, cui, mapped):
         dict_side_effects_aeolus[key].cuis.append(cui)
 
 
-'''
-map direct to pharmebinet and remember which did not map in list
-'''
-
 
 def map_first_round():
+    """
+    map direct to pharmebinet and remember which did not map in list
+    :return:
+    """
     for key, cuis in dict_aeolus_SE_with_CUIs.items():
         has_one = False
         if key in set_concept_ids_mapped:
@@ -456,12 +460,18 @@ dict_outcome_to_disease = {}
 # new nodes  dictionary from umls cui to aeolus outcome
 dict_new_node_cui_to_concept = {}
 
-'''
-get the mapped thins and add them to the dictionary and also write all mappings into the tsv file
-'''
-
 
 def generate_tsv_file(list_of_delet_index, list_not_mapped, concept_code, diseases, mapping_method, csv_writer):
+    """
+    get the mapped thins and add them to the dictionary and also write all mappings into the tsv file
+    :param list_of_delet_index:
+    :param list_not_mapped:
+    :param concept_code:
+    :param diseases:
+    :param mapping_method:
+    :param csv_writer:
+    :return:
+    """
     list_of_delet_index.append(list_not_mapped.index(concept_code))
     dict_outcome_to_disease[concept_code] = list(diseases)
     for disease_id in diseases:
@@ -479,12 +489,11 @@ def generate_tsv_file(list_of_delet_index, list_not_mapped, concept_code, diseas
              pharmebinetutils.resource_add_and_prepare(resource_disease, "AEOLUS"), xref_string])
 
 
-'''
-Try to map the not mapped to disease
-'''
-
-
 def mapping_to_disease():
+    """
+    Try to map the not mapped to disease
+    :return:
+    """
     # open file for mapping with disease
     file = open('output/se_disease_mapping.tsv', 'w')
     csv_writer = csv.writer(file, delimiter='\t')
@@ -595,13 +604,13 @@ def mapping_to_disease():
     print('number of not mapped:' + str(counter_of_not_mapped))
 
 
-'''
-integrate aeolus in hetiont, by map generate a edge from pharmebinet to the mapped aeolus node
-if no pharmebinet node is found, then generate a new node for side effects
-'''
-
 
 def integrate_aeolus_into_pharmebinet():
+    """
+    integrate aeolus in hetiont, by map generate a edge from pharmebinet to the mapped aeolus node
+    if no pharmebinet node is found, then generate a new node for side effects
+    :return:
+    """
     # file for already existing se
     file_existing = open('output/se_existing.tsv', 'w', encoding='utf-8')
     csv_existing = csv.writer(file_existing, delimiter='\t')

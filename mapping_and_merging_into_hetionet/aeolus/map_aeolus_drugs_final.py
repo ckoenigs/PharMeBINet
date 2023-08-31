@@ -59,12 +59,12 @@ dict_all_drug = {}
 # dictionary with all aeolus drugs with key drug_concept_id (OHDSI ID) and value is class Drug_Aeolus
 dict_aeolus_drugs = {}
 
-'''
-create connection to neo4j and mysql
-'''
-
 
 def create_connection_with_neo4j_mysql():
+    """
+    create connection to neo4j and mysql
+    :return:
+    """
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
     g = driver.session()
@@ -77,25 +77,25 @@ def create_connection_with_neo4j_mysql():
 # dictionary rxcui to drugbank ids
 dict_rxcui_to_Drugbank_with_xref = {}
 
-'''
-load in all compounds from pharmebinet in dictionary
-properties:
-    license
-    identifier
-    inchikey
-    inchi
-    name
-    source
-    url
-'''
-
 
 def load_compounds_from_pharmebinet():
+    """
+    load in all compounds from pharmebinet in dictionary
+    properties:
+        license
+        identifier
+        inchikey
+        inchi
+        name
+        source
+        url
+    :return:
+    """
     query = 'MATCH (n:Chemical) RETURN n '
     results = g.run(query)
 
     for record in results:
-        result= record.data()['n']
+        result = record.data()['n']
         licenses = result['license']
         identifier = result['identifier']
         inchikey = result['inchikey'] if 'inchikey' in result else ''
@@ -120,17 +120,17 @@ def load_compounds_from_pharmebinet():
 # dictionary to translate rxnorm id to drug_concept_id
 dict_rxnorm_to_drug_concept_id = {}
 
-'''
-load a part of aeolus drugs, which are not integrated, in a dictionary and set the property integrated='yes'
+
+def load_drug_aeolus_in_dictionary():
+    """
+    load a part of aeolus drugs, which are not integrated, in a dictionary and set the property integrated='yes'
 has properties:
     vocabulary_id: defined the type of the concept_code
     name
     drug_concept_id: OHDSI ID
     concept_code: RxNorm CUI
-'''
-
-
-def load_drug_aeolus_in_dictionary():
+    :return:
+    """
     query = '''MATCH (n:Aeolus_Drug)  RETURN n'''
 
     results = g.run(query)
@@ -160,12 +160,16 @@ list_aeolus_drugs_without_drugbank_id = []
 # dictionary with key drug_concept_id and value is a list of drugbank ids
 dict_aeolus_drug_mapped_ids = {}
 
-'''
-Search in RxNorm for mapping
-'''
-
 
 def search_for_mapping_in_rxnorm(sab, rxnorm_id, drug_concept_id, mapping_string):
+    """
+    Search in RxNorm for mapping
+    :param sab:
+    :param rxnorm_id:
+    :param drug_concept_id:
+    :param mapping_string:
+    :return:
+    """
     cur = conRxNorm.cursor()
     query = ("Select RXCUI,LAT,CODE,SAB,STR From RXNCONSO Where SAB = '%s' and RXCUI= '%s' ;")
     query = query % (sab, rxnorm_id)
@@ -200,12 +204,11 @@ def search_for_mapping_in_rxnorm(sab, rxnorm_id, drug_concept_id, mapping_string
     return found_a_mapping
 
 
-'''
-map rxnorm to drugbank with use of the RxNorm database
-'''
-
-
 def map_rxnorm_to_drugbank_use_rxnorm_database():
+    """
+    map rxnorm to drugbank with use of the RxNorm database
+    :return:
+    """
     # for rxnorm_id, drug_concept_id in dict_rxnorm_to_drug_concept_id.items():
     #     if not search_for_mapping_in_rxnorm('DRUGBANK', rxnorm_id, drug_concept_id, 'rxcui map to drugbank'):
     #         list_aeolus_drugs_without_drugbank_id.append(rxnorm_id)
@@ -227,16 +230,16 @@ def map_rxnorm_to_drugbank_use_rxnorm_database():
     print('length of list with cui but no drugbank:' + str(len(list_aeolus_drugs_without_drugbank_id)))
 
 
-'''
-map with use of map rxcui-drugbank id table with inchikeys and unii
-idea form himmelstein
-prioperties:
-    0:rxcui
-    1:drugbank ids separated with |
-'''
-
 
 def map_rxnorm_to_drugbank_with_use_inchikeys_and_unii():
+    """
+    map with use of map rxcui-drugbank id table with inchikeys and unii
+    idea form himmelstein
+    properties:
+        0:rxcui
+        1:drugbank ids separated with |
+    :return:
+    """
     f = open('../RxNorm_to_DrugBank/results/map_rxnorm_to_drugbank_with_use_of_unii_and_inchikey.tsv', 'r')
     next(f)
     # list with all positions of the rxcuis which are  mapped in this step
@@ -269,13 +272,12 @@ def map_rxnorm_to_drugbank_with_use_inchikeys_and_unii():
     print('length of list with rxcui but no drugbank:' + str(len(list_aeolus_drugs_without_drugbank_id)))
 
 
-'''
-use file where rxnorm mapped to drugbank
-used name mapping
-'''
-
 
 def map_name_rxnorm_to_drugbank():
+    """
+    use file where rxnorm mapped to drugbank used name mapping
+    :return:
+    """
     f = open('../RxNorm_to_DrugBank/results/name_map_drugbank_to_rxnorm.tsv', 'r')
     next(f)
     # list with all positions of the rxcuis which are  mapped in this step
@@ -308,12 +310,12 @@ def map_name_rxnorm_to_drugbank():
     print('length of list with cui but no drugbank:' + str(len(list_aeolus_drugs_without_drugbank_id)))
 
 
-'''
-Map aeolus to chemicals with mesh id
-'''
-
 
 def map_to_mesh_chemical():
+    """
+    Map aeolus to chemicals with mesh id
+    :return:
+    """
     # list with all positions of the rxcuis which are  mapped in this step
     delete_list_without_DB = []
     for rxnorm_id in list_aeolus_drugs_without_drugbank_id:
@@ -373,12 +375,12 @@ dict_how_mapped_files = {
 multiple_drugbankids = open('drug/aeolus_multiple_drugbank_ids.tsv', 'w')
 multiple_drugbankids.write('rxnorm_cui \t drugbank_ids with | as seperator \t where are it from \n')
 
-'''
-map aeolus drug in pharmebinet compound
-'''
-
 
 def map_aeolus_drugs_to_pharmebinet():
+    """
+    map aeolus drug in pharmebinet compound
+    :return:
+    """
     for drug_concept_id, mapped_ids in dict_aeolus_drug_mapped_ids.items():
         has_one = False
         has_two = False
@@ -421,12 +423,12 @@ def map_aeolus_drugs_to_pharmebinet():
 # dictionary count deleted drugbank ids fro the different mapping methods
 dict_how_mapped_delete_counter = {}
 
-'''
-Generate cypher file to update or create the relationships in pharmebinet
-'''
-
 
 def generate_cypher_file():
+    """
+    Generate cypher file to update or create the relationships in pharmebinet
+    :return:
+    """
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
 
     query = ''' Match (a:Aeolus_Drug{drug_concept_id:line.aeolus_id}),(n:Chemical{identifier:line.chemical_id}) Set a.mapped_id=split(line.mapped_ids,'|'), a.how_mapped=line.how_mapped ,  n.aeolus="yes",n.resource= split(line.resource,'|') , n.xrefs=split(line.xrefs,'|') Create (n)-[:equal_to_Aeolus_drug]->(a)'''
@@ -443,13 +445,13 @@ csv_writer = csv.writer(file, delimiter='\t')
 header = ['aeolus_id', 'chemical_id', 'mapped_ids', 'how_mapped', 'resource', 'xrefs']
 csv_writer.writerow(header)
 
-'''
-integrate aeolus drugs in hetiont, by map generate a edge from pharmebinet to the mapped aeolus node
-if no pharmebinet node is found, then generate a new node for compound
-'''
-
 
 def integrate_aeolus_drugs_into_pharmebinet():
+    """
+    integrate aeolus drugs in hetiont, by map generate a edge from pharmebinet to the mapped aeolus node
+    if no pharmebinet node is found, then generate a new node for compound
+    :return:
+    """
     # count all possible mapped aeolus drug
     counter = 0
     # count all aeolus which are only mapped to illegal drugbank ids
@@ -467,7 +469,8 @@ def integrate_aeolus_drugs_into_pharmebinet():
             xrefs = go_through_xrefs_and_change_if_needed_source_name(dict_all_drug[mapped_id].xrefs, 'chemical')
             xrefs_string = '|'.join(xrefs)
             csv_writer.writerow([drug_concept_id, mapped_id, mapped_ids_string, how_mapped,
-                                 pharmebinetutils.resource_add_and_prepare(dict_all_drug[mapped_id].resource, "AEOLUS"), xrefs_string])
+                                 pharmebinetutils.resource_add_and_prepare(dict_all_drug[mapped_id].resource, "AEOLUS"),
+                                 xrefs_string])
 
     print('all aeolus drug which are map to drugbank, where some drugbank id are not existing:' + str(counter))
     print(dict_how_mapped_delete_counter)
