@@ -71,7 +71,7 @@ def load_all_label_and_map(label, csv_new):
         for property in node['properties']:
             if property.startswith('MED-RT:NUI:'):
                 id_nui = property.split(':')[2]
-                xrefs.add(id_nui)
+                xrefs.add('NUI:'+id_nui)
             else:
                 property_part=property.split(':')[0]
                 if property_part not in set_properties:
