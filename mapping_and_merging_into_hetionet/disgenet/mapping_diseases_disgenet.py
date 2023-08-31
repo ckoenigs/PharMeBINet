@@ -42,6 +42,11 @@ dict_name_to_identifier = defaultdict(set)
 
 
 def try_to_get_umls_ids_with_UMLS(name):
+    """
+    Try to get umls cuis be search with name in UMLS
+    :param name:
+    :return:
+    """
     cur = con.cursor()
     query = ('Select Distinct CUI From MRCONSO Where STR = "%s";')
     query = query % (name)

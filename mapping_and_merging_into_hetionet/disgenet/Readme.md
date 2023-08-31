@@ -18,7 +18,7 @@ The last mapping is DisGeNET disease to disease/symptom:
     First, the disease and symptom information is loaded into different dictionaries. For diseases in UMLS, a UMLS cui is searched based on the name.
     Then, the cypher queries are prepared for DisGeNet disease to disease or symptom.
     In the following, the DisGeNet diseases are loaded:
-        the first mapping is with the UMLS from DisGenet to UMLS id of disease with additional name mapping to improve quality.
+        The first mapping is with the UMLS from DisGenet to UMLS id of disease with additional name mapping to improve quality.
         Next, mapping with DisGeNet disease name to disease name and synonyms.
         Then, mapping with the UMLS from DisGenet to UMLS id of symptoms with additional name mapping to improve quality.
         Next, mapping with DisGeNet disease name to symptom name and synonyms.

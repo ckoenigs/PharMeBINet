@@ -65,6 +65,13 @@ def prepare_sources_information(rela):
 
 
 def combine_possible_properties(rela_old, rela, name):
+    """
+    Combine information.
+    :param rela_old:
+    :param rela:
+    :param name:
+    :return:
+    """
     if name in rela_old or name in rela:
         association_type_old = set(rela_old[name]) if name in rela_old else set()
         association_type_new = rela[name] if name in rela else []
@@ -72,6 +79,11 @@ def combine_possible_properties(rela_old, rela, name):
 
 
 def check_for_double_entries(results):
+    """
+    go through the results add information to dictionary or combine them.
+    :param results:
+    :return:
+    """
     double_check_dict = defaultdict()
 
     for record in results:
@@ -128,6 +140,12 @@ def check_for_double_entries(results):
 
 
 def prepare_info_of_rela_property_to_string(dictionary, name):
+    """
+    prepare information
+    :param dictionary:
+    :param name:
+    :return:
+    """
     if name in dictionary:
         return '|'.join(dictionary[name])
     return ''
