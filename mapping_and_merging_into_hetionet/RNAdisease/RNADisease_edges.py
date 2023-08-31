@@ -8,12 +8,12 @@ import pharmebinetutils
 # cypher file
 cypher_file = open("output/cypher_edge.cypher", "w", encoding="utf-8")
 
-'''
-create a connection with neo4j
-'''
-
 
 def create_connection_with_neo4j():
+    """
+    create a connection with neo4j
+    :return:
+    """
     # set up authentication parameters and connection
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
@@ -22,6 +22,7 @@ def create_connection_with_neo4j():
 
 def cypher_edge(file_name, label1, label2, properties, edge_name):
     """
+    Prepare the query and write into the cypher query.
     :param cypher_file: destination file to write the queries to
     :param file_name: name of source file
     :param label: list of connecting nodes, e.g. ['variant', 'disease']
@@ -47,15 +48,19 @@ def cypher_edge(file_name, label1, label2, properties, edge_name):
 
 
 def edges():
+    """
+    For disease/symptom the edges are loaded in batched an multiple edge information are combined and written into the
+    TSV file. Additionally, a cypher query is generated for both.
+    :return:
+    """
     names = ["Disease", "Symptom"]
     score = 0.5
-    i = 0
 
     LIMIT = 20000
-    while i < len(names):
-        print(names[i])
+    for name in names:
+        print(name)
         print(datetime.datetime.now())
-        file_name = 'output/RNADisease_RNA_' + names[i] + '_edges.tsv'
+        file_name = 'output/RNADisease_RNA_' + name + '_edges.tsv'
         counter = 0
         with open(file_name, 'w', newline='') as tsv_file:
             writer = csv.writer(tsv_file, delimiter='\t')
@@ -64,7 +69,7 @@ def edges():
             index = 0
             while current_counter == LIMIT:
                 query = "MATCH (n:RNA)--(:rna_RNADisease)-[r]-(:disease_RNADisease)--(m:%s) WHERE toFloat(r.score) >= %s WITH n, collect(r) as edge, m SKIP %s Limit %s RETURN n.identifier, m.identifier, edge " % (
-                    names[i], score, str(index * LIMIT), str(LIMIT))
+                    name, score, str(index * LIMIT), str(LIMIT))
 
                 a = list(g.run(query))
                 current_counter = 0
@@ -91,8 +96,7 @@ def edges():
                         print(counter)
                         print(datetime.datetime.now())
 
-        cypher_edge(file_name, "RNA", names[i], ["score", "RDID", "PMID"], "ASSOCIATES_Ra" + names[i][0])
-        i += 1
+        cypher_edge(file_name, "RNA", name, ["score", "RDID", "PMID"], "ASSOCIATES_Ra" + name[0])
         print("number of edges", counter)
 
 
