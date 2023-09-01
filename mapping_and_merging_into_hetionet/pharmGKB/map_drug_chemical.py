@@ -8,12 +8,12 @@ import pharmebinetutils
 sys.path.append("..")
 from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
 
-'''
-create connection to neo4j 
-'''
-
 
 def create_connection_with_neo4j_and_mysql():
+    """
+    create connection to neo4j  and mysql
+    :return:
+    """
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
     g = driver.session()
@@ -110,6 +110,10 @@ load in all compound from pharmebinet in a dictionary
 
 
 def load_db_info_in():
+    """
+    Load chemical and write information into dictionaries
+    :return:
+    """
     query = '''MATCH (n:Chemical)  RETURN n.identifier,n.inchi, n.xrefs, n.resource, n.name, n.synonyms, n.alternative_ids'''
     results = g.run(query)
 
@@ -171,12 +175,11 @@ def add_information_to_file(drugbank_id, identifier, csv_writer, how_mapped, tup
     if (drugbank_id, identifier) in tuple_set:
         return
     tuple_set.add((drugbank_id, identifier))
-    resource = dict_to_resource[drugbank_id]
-    resource.append('PharmGKB')
-    resource = "|".join(sorted(set(resource)))
     xref.add('PharmGKB:' + identifier)
     xrefs = '|'.join(go_through_xrefs_and_change_if_needed_source_name(xref, 'chemical'))
-    csv_writer.writerow([drugbank_id, identifier, resource, how_mapped, xrefs])
+    csv_writer.writerow(
+        [drugbank_id, identifier, pharmebinetutils.resource_add_and_prepare(dict_to_resource[drugbank_id], 'PharmGKB'),
+         how_mapped, xrefs])
 
 
 def check_if_name_are_correct_or_with_salt(name, drugbank_id):

@@ -8,12 +8,12 @@ import pharmebinetutils
 sys.path.append("..")
 from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
 
-'''
-create connection to neo4j 
-'''
-
 
 def create_connection_with_neo4j():
+    """
+    create connection to neo4j
+    :return:
+    """
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
     g = driver.session()
@@ -34,12 +34,12 @@ dict_synonym_to_gene_id = {}
 # dictionary gene id to xrefs
 dict_gene_id_to_xrefs = {}
 
-'''
-load in all compound from pharmebinet in a dictionary
-'''
-
 
 def load_db_genes_in():
+    """
+    load in all genes from pharmebinet in a dictionary
+    :return:
+    """
     query = '''MATCH (n:Gene) RETURN n.identifier,n.gene_symbols, n.gene_symbol, n.resource, n.synonyms, n.xrefs'''
     results = g.run(query)
 
@@ -51,18 +51,18 @@ def load_db_genes_in():
         if xrefs:
             for xref in xrefs:
                 if xref.startswith('HGNC'):
-                    hgnc_id=xref.split(':',1)[1]
-                    pharmebinetutils.add_entry_to_dict_to_set(dict_hgnc_id_to_gene_id,hgnc_id,identifier)
+                    hgnc_id = xref.split(':', 1)[1]
+                    pharmebinetutils.add_entry_to_dict_to_set(dict_hgnc_id_to_gene_id, hgnc_id, identifier)
 
         if gene_symbols:
             for gene_symbol in gene_symbols:
                 gene_symbol = gene_symbol.lower()
-                pharmebinetutils.add_entry_to_dict_to_set(dict_gene_symbol_to_gene_id,gene_symbol,identifier)
+                pharmebinetutils.add_entry_to_dict_to_set(dict_gene_symbol_to_gene_id, gene_symbol, identifier)
 
         if synonyms:
             for synonym in synonyms:
                 synonym = synonym.lower()
-                pharmebinetutils.add_entry_to_dict_to_set(dict_synonym_to_gene_id,synonym,identifier)
+                pharmebinetutils.add_entry_to_dict_to_set(dict_synonym_to_gene_id, synonym, identifier)
 
     print('length of gene in db:' + str(len(dict_gene_to_resource)))
 
@@ -76,9 +76,6 @@ def add_information_to_file(gene_id, identifier, csv_writer, how_mapped):
     :param how_mapped: string
     :return:
     """
-    resource = dict_gene_to_resource[gene_id]
-    resource.append("PharmGKB")
-    resource = "|".join(sorted(resource))
 
     xrefs = dict_gene_id_to_xrefs[gene_id]
     xrefs.append('PharmGKB:' + identifier)
@@ -86,7 +83,9 @@ def add_information_to_file(gene_id, identifier, csv_writer, how_mapped):
     xrefs = go_through_xrefs_and_change_if_needed_source_name(xrefs, 'Gene')
     # print(xrefs)
 
-    csv_writer.writerow([gene_id, identifier, resource, how_mapped, '|'.join(xrefs)])
+    csv_writer.writerow(
+        [gene_id, identifier, pharmebinetutils.resource_add_and_prepare(dict_gene_to_resource[gene_id], "PharmGKB"),
+         how_mapped, '|'.join(xrefs)])
 
 
 def load_pharmgkb_genes_in():
@@ -122,10 +121,10 @@ def load_pharmgkb_genes_in():
                 add_information_to_file(ncbi_gene_id, identifier, csv_writer, 'id')
 
         if found_a_mapping:
-            counter_map+=1
+            counter_map += 1
             continue
 
-        hgnc_ids=result['hgnc_ids'] if 'hgnc_ids' in result else []
+        hgnc_ids = result['hgnc_ids'] if 'hgnc_ids' in result else []
         for hgnc_id in hgnc_ids:
             if hgnc_id in dict_hgnc_id_to_gene_id:
                 found_a_mapping = True
@@ -159,6 +158,11 @@ def load_pharmgkb_genes_in():
 
 
 def generate_cypher_file(file_name):
+    """
+    perpare cypher file and add cypher query
+    :param file_name:
+    :return:
+    """
     cypher_file = open('output/cypher.cypher', 'w')
     query = '''  MATCH (n:PharmGKB_Gene{id:line.pharmgkb_id}), (c:Gene{identifier:line.gene_id})  Set c.pharmgkb='yes', c.xrefs=split(line.xrefs,"|"), c.resource=split(line.resource,'|') Create (c)-[:equal_to_gene_pharmgkb{how_mapped:line.how_mapped}]->(n)'''
     query = pharmebinetutils.get_query_import(path_of_directory,

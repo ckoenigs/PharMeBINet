@@ -8,12 +8,12 @@ import pharmebinetutils
 sys.path.append("..")
 from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
 
-'''
-create connection to neo4j 
-'''
-
 
 def create_connection_with_neo4j():
+    """
+    create connection to neo4j
+    :return:
+    """
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
     g = driver.session()
@@ -86,13 +86,18 @@ def prepare_and_integrate_information_into_dictionary(xref, dict_xrefs_to_dict_x
     add_entry_to_dictionary(dict_xrefs_to_dict_xref_id_to_identifier[source], xref, identifier)
 
 
-'''
-load in all compound from pharmebinet in a dictionary
-'''
-
-
 def load_db_nodes_in(label, dict_node_to_resource, dict_node_name_to_node_id, dict_xrefs_to_dict_xref_id_to_identifier,
                      dict_node_to_xrefs, identifier_umls=False):
+    """
+    load in all diseases/symptoms/side effects from pharmebinet in a dictionary
+    :param label:
+    :param dict_node_to_resource:
+    :param dict_node_name_to_node_id:
+    :param dict_xrefs_to_dict_xref_id_to_identifier:
+    :param dict_node_to_xrefs:
+    :param identifier_umls:
+    :return:
+    """
     query = '''MATCH (n:%s) RETURN n.identifier, n.name ,n.synonyms, n.resource, n.xrefs'''
     query = query % (label)
     results = g.run(query)
@@ -326,6 +331,10 @@ def load_pharmgkb_phenotypes_in():
 
 
 def generate_cypher_file():
+    """
+    generate TSV files and add cypher queries to cypher file
+    :return:
+    """
     dict_label_to_tsv_mapping = {}
     # new file
     file_name_new = 'disease/new.tsv'

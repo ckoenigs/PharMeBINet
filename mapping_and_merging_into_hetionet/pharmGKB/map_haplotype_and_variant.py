@@ -8,12 +8,12 @@ import pharmebinetutils
 sys.path.append("..")
 from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
 
-'''
-create connection to neo4j 
-'''
-
 
 def create_connection_with_neo4j():
+    """
+    create connection to neo4j
+    :return:
+    """
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
     g = driver.session()
@@ -32,25 +32,11 @@ dict_dbSNP_to_id = {}
 dict_name_to_node_id = {}
 
 
-def add_value_to_dictionary(dictionary, key, value):
+def load_db_info_in():
     """
-    add key to dictionary if not existing and add value to set
-    :param dictionary: dictionary
-    :param key: string
-    :param value: string
+    load in all variants from pharmebinet in a dictionary
     :return:
     """
-    if key not in dictionary:
-        dictionary[key] = set()
-    dictionary[key].add(value)
-
-
-'''
-load in all compound from pharmebinet in a dictionary
-'''
-
-
-def load_db_info_in():
     query = '''MATCH (n:Variant) RETURN n.identifier, n.xrefs, n.resource, n.name, n.synonyms'''
     results = g.run(query)
 
@@ -59,19 +45,19 @@ def load_db_info_in():
         dict_node_to_resource[identifier] = resource if resource else []
         dict_node_to_xrefs[identifier] = xrefs if xrefs else []
         if identifier.startswith('rs'):
-            add_value_to_dictionary(dict_dbSNP_to_id, identifier, identifier)
+            pharmebinetutils.add_entry_to_dict_to_set(dict_dbSNP_to_id, identifier, identifier)
         # if xrefs:
         #     for xref in xrefs:
         #         if xref.startswith('dbSNP'):
-        # add_value_to_dictionary(dict_dbSNP_to_id, xref.split(':')[1], identifier)
+        # pharmebinetutils.add_entry_to_dict_to_set(dict_dbSNP_to_id, xref.split(':')[1], identifier)
         if name:
             name = name.lower()
-            add_value_to_dictionary(dict_name_to_node_id, name, identifier)
+            pharmebinetutils.add_entry_to_dict_to_set(dict_name_to_node_id, name, identifier)
 
         if synonyms:
             for synonym in synonyms:
                 synonym = synonym.lower()
-                add_value_to_dictionary(dict_name_to_node_id, synonym, identifier)
+                pharmebinetutils.add_entry_to_dict_to_set(dict_name_to_node_id, synonym, identifier)
 
     print('length of chemical in db:' + str(len(dict_node_to_resource)))
 
@@ -89,14 +75,13 @@ def add_information_to_file(variant_id, identifier, csv_writer, how_mapped, tupl
     if (variant_id, identifier) in tuple_set:
         return
     tuple_set.add((variant_id, identifier))
-    resource = dict_to_resource[variant_id]
-    resource.append('PharmGKB')
-    resource = "|".join(sorted(set(resource)))
     xrefs = dict_node_to_xrefs[variant_id]
     if identifier.startswith('PA'):
         xrefs.append('PharmGKB:' + identifier)
     xrefs = go_through_xrefs_and_change_if_needed_source_name(xrefs, 'Variant')
-    csv_writer.writerow([variant_id, identifier, resource, how_mapped, '|'.join(xrefs)])
+    csv_writer.writerow(
+        [variant_id, identifier, pharmebinetutils.resource_add_and_prepare(dict_to_resource[variant_id], 'PharmGKB'),
+         how_mapped, '|'.join(xrefs)])
 
 
 def load_pharmgkb_in(label, directory, mapped_label):
