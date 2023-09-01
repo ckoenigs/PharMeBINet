@@ -6,12 +6,13 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-'''
-create a connection with neo4j
-'''
 
 
 def create_connection_with_neo4j():
+    """
+    create a connection with neo4j
+    :return:
+    """
     # set up authentication parameters and connection
     global graph_database, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
@@ -51,12 +52,14 @@ def load_chemical_SE_edge_info(csv_file ):
             frequencies.add(edge['frequency_faers']+' for ' + grade)
         csv_file.writerow([chemical_id, node_id, adrecs_drug_id, '|'.join(frequencies),'|'.join(grades)])
 
-'''
-generate relationships between drug-se that have edges in adrecs 
-'''
-
 
 def create_cypher_file(file_path, rela):
+    """
+    generate relationships between drug-se that have edges in adrecs
+    :param file_path:
+    :param rela:
+    :return:
+    """
     query = ''' MATCH (d:Chemical{identifier:line.chemical_id}),(c:SideEffect{identifier:line.se_id}) Merge (d)-[l: %s]->(c) On Create Set l.resource= ['ADReCS'], l.fears_frequencies=split(line.fears_frequencies,"|"), l.fears_severity_grades=split(line.fears_severity_grades, "|"), l.adrecs= "yes", l.license="CC BY-NC-SA 4.0", l.url="http://bioinf.xmu.edu.cn/ADReCS/drugSummary.jsp?drug_id="+line.adr_id, l.source="ADReCS" On Match Set l.adrecs="yes", l.resource="ADReCS"+l.resource, l.fears_frequencies=split(line.fears_frequencies,"|"), l.fears_severity_grades=split(line.fears_severity_grades, "|")'''
     query = query % (rela)
     query = pharmebinetutils.get_query_import(path_of_directory,

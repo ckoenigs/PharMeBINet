@@ -9,12 +9,12 @@ import create_connection_to_databases
 sys.path.append("..")
 from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
 
-'''
-create a connection with neo4j
-'''
 
-
-def create_connection_with_neo4j():
+def create_connection_with_neo4j_and_mysql():
+    """
+    create a connection with neo4j
+    :return:
+    """
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
     g = driver.session()
@@ -115,20 +115,23 @@ def get_all_adrecs_and_map(db_label, dict_node_id_to_resource, dict_node_id_to_x
     """
 
     # prepare files
+    # mapping file
     file_name = db_label.lower() + '/mapping.tsv'
     mapping_file = open(file_name, 'w', encoding='utf-8')
     csv_mapping = csv.writer(mapping_file, delimiter='\t')
     csv_mapping.writerow(['db_id', 'act_id', 'other_adrecs_id', 'resource', 'how_mapped', 'xrefs'])
 
-    file_name_new_mapped = db_label.lower() + '/new_map.tsv'
-    new_file_mapped = open(file_name_new_mapped, 'w', encoding='utf-8')
-    csv_new_mapped = csv.writer(new_file_mapped, delimiter='\t')
-    csv_new_mapped.writerow(['umls_id', 'act_id', 'other_adrecs_id'])
-
+    # file for new generated SE (without ADReCS node connection)
     file_name_new = db_label.lower() + '/new.tsv'
     new_file = open(file_name_new, 'w', encoding='utf-8')
     csv_new = csv.writer(new_file, delimiter='\t')
     csv_new.writerow(['umls_id', 'name', 'synonyms', 'id', 'xrefs'])
+
+    # for connection between new generated node and the different ADReCS adr nodes (multiple mapping
+    file_name_new_mapped = db_label.lower() + '/new_map.tsv'
+    new_file_mapped = open(file_name_new_mapped, 'w', encoding='utf-8')
+    csv_new_mapped = csv.writer(new_file_mapped, delimiter='\t')
+    csv_new_mapped.writerow(['umls_id', 'act_id', 'other_adrecs_id'])
 
     prepare_query(file_name, file_name_new_mapped, file_name_new, db_label, 'ADReCS_ADR', 'db_id', 'id', 'act_id')
 
@@ -232,7 +235,7 @@ def main():
     print(datetime.datetime.now())
     print('create connection to neo4j')
 
-    create_connection_with_neo4j()
+    create_connection_with_neo4j_and_mysql()
 
     print('##########################################################################')
 
