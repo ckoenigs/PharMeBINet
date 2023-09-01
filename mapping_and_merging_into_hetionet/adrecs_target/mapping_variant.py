@@ -6,12 +6,12 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-'''
-create a connection with neo4j
-'''
-
 
 def create_connection_with_neo4j():
+    """
+    create a connection with neo4j
+    :return:
+    """
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
     g = driver.session()
@@ -75,6 +75,14 @@ def integrate_information_into_dict(dict_node_id_to_resource):
 
 
 def prepare_query(file_name, file_name_new, db_label, adrecs_label):
+    """
+    Prepare cypher queries and add to cypher file
+    :param file_name:
+    :param file_name_new:
+    :param db_label:
+    :param adrecs_label:
+    :return:
+    """
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
     query = ''' MATCH (n:%s{identifier:line.variant_id}), (g:%s{Variation_ID:line.adr_variant_id}) Set n.resource=split(line.resource,"|"), n.adrecs_target='yes' Create (n)-[:equal_adrecs_target_variant{how_mapped:line.how_mapped}]->(g)'''
     query = query % (db_label, adrecs_label)
@@ -100,10 +108,9 @@ def add_to_file(dict_node_id_to_resource, identifier_db, identifier_act_id, csv_
     :param csv_mapping: csv writer
     :return:
     """
-    resource = dict_node_id_to_resource[identifier_db]
-    resource.append('ADReCS-Target')
-    resource = sorted(resource)
-    csv_mapping.writerow([identifier_db, identifier_act_id, '|'.join(resource), how_mapped])
+    csv_mapping.writerow([identifier_db, identifier_act_id,
+                          pharmebinetutils.resource_add_and_prepare(dict_node_id_to_resource[identifier_db],
+                                                                    'ADReCS-Target'), how_mapped])
 
 
 def get_all_adrecs_target_and_map(db_label, dict_node_id_to_resource):

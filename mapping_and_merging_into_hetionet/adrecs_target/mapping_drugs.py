@@ -6,12 +6,12 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-'''
-create a connection with neo4j
-'''
-
 
 def create_connection_with_neo4j():
+    """
+    create a connection with neo4j
+    :return:
+    """
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
     g = driver.session()
@@ -76,10 +76,9 @@ def add_to_file(dict_node_id_to_resource, identifier_db, identifier_act_id, csv_
     :param csv_mapping: csv writer
     :return:
     """
-    resource = set(dict_node_id_to_resource[identifier_db])
-    resource.add('ADReCS-Target')
-    resource = sorted(resource)
-    csv_mapping.writerow([identifier_db, identifier_act_id, '|'.join(resource), how_mapped])
+    csv_mapping.writerow([identifier_db, identifier_act_id,
+                          pharmebinetutils.resource_add_and_prepare(dict_node_id_to_resource[identifier_db],
+                                                                    'ADReCS-Target'), how_mapped])
 
 
 def get_all_adrecs_target_and_map(db_label, dict_node_id_to_resource):
