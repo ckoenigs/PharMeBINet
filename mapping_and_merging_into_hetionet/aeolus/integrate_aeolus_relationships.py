@@ -11,12 +11,12 @@ dict_all_drug = {}
 # dictionary with all aeolus drugs with key drug_concept_id (OHDSI ID) and value is class Drug_Aeolus
 dict_aeolus_drugs = {}
 
-'''
-create connection to neo4j and mysql
-'''
-
 
 def create_connection_with_neo4j():
+    """
+    create connection to neo4j
+    :return:
+    """
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
     g = driver.session()
@@ -25,12 +25,12 @@ def create_connection_with_neo4j():
 # path to directory
 path_of_directory = ''
 
-'''
-Generate cypher file to update or create the relationships in pharmebinet
-'''
-
 
 def generate_cypher_file():
+    """
+    Generate cypher file to update or create the relationships in pharmebinet
+    :return:
+    """
     # relationship queries
     cypher_file = open('output/cypher_rela.cypher', 'w', encoding='utf-8')
 
@@ -95,29 +95,28 @@ def get_indications(label, set_of_tuples):
         set_of_tuples.add((chemical_id, outcome_id))
 
 
-'''       
-dictionary connection (drug ID , SE) and list of information
-0:countA	
-1:prr_95_percent_upper_confidence_limit	
-2:prr	
-3:countB	
-4:prr_95_percent_lower_confidence_limit	
-5:ror	
-6:ror_95_percent_upper_confidence_limit	
-7:ror_95_percent_lower_confidence_limit	
-8:countC	
-9:drug_outcome_pair_count	
-10.countD
-'''
-
-'''
-go through all connection of the mapped aeolus drugs and remember all information in a dictionary
-'''
-
-
 def get_aeolus_connection_information_in_dict(label_search, dict_connection_information_for,
-                                              number_of_compound_to_work_with, property_label,
                                               dict_chemical_to_the_other_thing, set_of_indication_pairs):
+    """
+    dictionary connection (drug ID , SE) and list of information
+    0:countA
+    1:prr_95_percent_upper_confidence_limit
+    2:prr
+    3:countB
+    4:prr_95_percent_lower_confidence_limit
+    5:ror
+    6:ror_95_percent_upper_confidence_limit
+    7:ror_95_percent_lower_confidence_limit
+    8:countC
+    9:drug_outcome_pair_count
+    10.countD
+    go through all connection of the mapped aeolus drugs and remember all information in a dictionary
+    :param label_search:
+    :param dict_connection_information_for:
+    :param dict_chemical_to_the_other_thing:
+    :param set_of_indication_pairs:
+    :return:
+    """
     # and toFloat(l.countA)/(toFloat(l.countA)+toFloat(l.countC))>0.0001
     query = '''Match (c:Chemical{aeolus:'yes'}) With c  Match (c)-[:equal_to_Aeolus_drug]-(r:Aeolus_Drug)-[l:Causes]-(:Aeolus_Outcome)--(d:%s) Where toInteger(l.countA)>100 and toFloat(l.countA)/(toFloat(l.countA)+toFloat(l.countB))>0.001  Return c.identifier, l, d.identifier '''
     query = query % (label_search)
@@ -192,30 +191,31 @@ def get_aeolus_connection_information_in_dict(label_search, dict_connection_info
     print('number of rela:', counter_all_rela)
 
 
-'''
-update and generate the relationship CAUSES_CcSE.
-go through all drugbank ID identifier pairs anf combine the information of multiple drugbank Id identifier pairs
-Next step is to check if this connection already exists in pharmebinet, if true then update the relationship
-if false generate the connection with the properties license, unbiased, source, url, the other properties that aeolus has
-countA	
-prr_95_percent_upper_confidence_limit	
-prr	
-prr_min
-prr_max
-countB	
-prr_95_percent_lower_confidence_limit	
-ror	
-ror_min
-ror_max
-ror_95_percent_upper_confidence_limit	
-ror_95_percent_lower_confidence_limit	
-countC	
-drug_outcome_pair_count	
-countD
-'''
-
-
 def integrate_connection_from_aeolus_in_pharmebinet(dict_connection_information_for, csv_new):
+    """
+    update and generate the relationship CAUSES_CcSE.
+    go through all drugbank ID identifier pairs anf combine the information of multiple drugbank Id identifier pairs
+    Next step is to check if this connection already exists in pharmebinet, if true then update the relationship
+    if false generate the connection with the properties license, unbiased, source, url, the other properties that aeolus has
+    countA
+    prr_95_percent_upper_confidence_limit
+    prr
+    prr_min
+    prr_max
+    countB
+    prr_95_percent_lower_confidence_limit
+    ror
+    ror_min
+    ror_max
+    ror_95_percent_upper_confidence_limit
+    ror_95_percent_lower_confidence_limit
+    countC
+    drug_outcome_pair_count
+    countD
+    :param dict_connection_information_for:
+    :param csv_new:
+    :return:
+    """
     number_of_new_connection = 0
 
     count = 0
@@ -306,6 +306,7 @@ def main():
     global dict_connection_information, dict_connection_information_to_disease, dict_chemical_to_side_effects, dict_chemical_to_diseases
     dict_connection_information = {}
     dict_connection_information_to_disease = {}
+    dict_connection_information_to_disease = {}
     dict_chemical_to_side_effects = {}
     dict_chemical_to_diseases = {}
 
@@ -315,9 +316,8 @@ def main():
     print(datetime.datetime.now())
     print('get the aeolus information')
 
-    get_aeolus_connection_information_in_dict('SideEffect', dict_connection_information,
-                                              number_of_compounds_at_once,
-                                              'integrated', dict_chemical_to_side_effects, set_of_indication_pairs)
+    get_aeolus_connection_information_in_dict('SideEffect', dict_connection_information, dict_chemical_to_side_effects,
+                                              set_of_indication_pairs)
 
     print(
         '###########################################################################################################################')
@@ -325,7 +325,6 @@ def main():
     print(datetime.datetime.now())
 
     get_aeolus_connection_information_in_dict('Disease', dict_connection_information_to_disease,
-                                              number_of_compounds_at_once, 'integrated_disease',
                                               dict_chemical_to_diseases, set_of_indication_pairs)
 
     print(
@@ -334,17 +333,13 @@ def main():
     print(datetime.datetime.now())
     print('Integrate connection into pharmebinet')
 
-    print(
-        '###########################################################################################################################')
-
-    print(datetime.datetime.now())
-    print('integrate aeolus connection into tsv for integration into  pharmebinet')
     integrate_connection_from_aeolus_in_pharmebinet(dict_connection_information, csv_new)
 
     print(
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
+    print('integrate aeolus connection into tsv for integration into  pharmebinet')
 
     integrate_connection_from_aeolus_in_pharmebinet(dict_connection_information_to_disease, csv_new_disease)
 
