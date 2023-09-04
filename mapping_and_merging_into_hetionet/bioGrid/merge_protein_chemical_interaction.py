@@ -5,12 +5,12 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-'''
-create a connection with neo4j
-'''
-
 
 def create_connection_with_neo4j():
+    """
+    create a connection with neo4j
+    :return:
+    """
     # set up authentication parameters and connection
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
@@ -111,7 +111,6 @@ def generate_file_and_cypher():
         dict_edge_type_to_file[rela_type + 'update'] = csv_writer_merge
     cypher_file.close()
 
-    return csv_writer, csv_writer_merge
 
 
 def prepare_dictionary(dictionary):
@@ -239,7 +238,7 @@ def write_info_into_files():
     Check if a pair exist already in Pharmebinet or not and prepare the information for this.
     :return:
     """
-    csv_writer, csv_merge = generate_file_and_cypher()
+    generate_file_and_cypher()
     for (p1, p2, protein_action_type, chemical_action_type), list_of_dict in dict_pair_to_infos.items():
         rela_type = dict_chemical_type_to_rela_type[chemical_action_type]
         if (p1, p2, rela_type) in dict_pair_chemical_protein_to_resource_and_pubmed:
