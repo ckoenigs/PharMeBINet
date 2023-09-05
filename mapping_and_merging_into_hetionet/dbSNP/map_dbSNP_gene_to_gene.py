@@ -5,12 +5,12 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-'''
-create a connection with neo4j
-'''
-
 
 def create_connection_with_neo4j():
+    """
+    create a connection with neo4j
+    :return:
+    """
     # set up authentication parameters and connection
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
@@ -20,12 +20,12 @@ def create_connection_with_neo4j():
 # dictionary variant identifier to resources and xrefs
 dict_identifier_to_resource = {}
 
-'''
-Load all Genes from my database  and add them into a dictionary
-'''
-
 
 def load_gene_from_database_and_add_to_dict():
+    """
+    Load all Genes from my database and add them into a dictionary
+    :return:
+    """
     query = "MATCH (n:Gene) RETURN n.identifier, n.resource"
     results = g.run(query)
     for record in results:
@@ -59,12 +59,12 @@ def generate_files(path_of_directory):
     return csv_mapping
 
 
-'''
-Load all dbSNP gene ids  and map them. The integrate them into the right tsv, generate the queries
-'''
-
-
 def load_all_dbSnp_gene_and_finish_the_files(csv_mapping):
+    """
+    Load all dbSNP gene ids  and map them. Then, integrate them into the right tsv, generate the queries
+    :param csv_mapping:
+    :return:
+    """
     query = "MATCH (n:gene_dbSNP) RETURN n"
     results = g.run(query)
     counter_map = 0

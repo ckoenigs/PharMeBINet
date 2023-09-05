@@ -8,12 +8,12 @@ import pharmebinetutils
 sys.path.append("..")
 from change_xref_source_name_to_a_specifice_form import go_through_xrefs_and_change_if_needed_source_name
 
-'''
-create a connection with neo4j
-'''
-
 
 def create_connection_with_neo4j():
+    """
+    create a connection with neo4j
+    :return:
+    """
     # set up authentication parameters and connection
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
@@ -23,12 +23,12 @@ def create_connection_with_neo4j():
 # dictionary variant identifier to resources and xrefs
 dict_identifier_to_resource_and_xrefs = {}
 
-'''
-Load all Genes from my database  and add them into a dictionary
-'''
-
 
 def load_variant_from_database_and_add_to_dict():
+    """
+    Load all Genes from my database  and add them into a dictionary
+    :return:
+    """
     query = "MATCH (n:GeneVariant) RETURN n.identifier, n.resource, n.xrefs"
     results = g.run(query)
     for record in results:
@@ -114,12 +114,12 @@ def generate_label_tsv_and_query(variant_type):
     cypher_file.write(query)
 
 
-'''
-Load all variation sort the ids into the right tsv, generate the queries, and add rela to the rela tsv
-'''
-
-
 def load_all_variants_and_finish_the_files(csv_mapping):
+    """
+    Load all variation sort the ids into the right tsv, generate the queries, and add rela to the rela tsv
+    :param csv_mapping:
+    :return:
+    """
     query = "MATCH (n:snp_dbSNP) RETURN n"
     results = g.run(query)
     counter_map = 0

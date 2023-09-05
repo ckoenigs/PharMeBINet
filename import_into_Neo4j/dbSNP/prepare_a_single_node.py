@@ -66,6 +66,11 @@ dict_label_to_set_of_ids: Dict[str, Set[str]] = {}
 
 
 def add_label_set_of_ids_if_not_exists(label: str) -> bool:
+    """
+    check if label exists in a dictionary or not and if not add with value an empty set
+    :param label:
+    :return:
+    """
     if label not in dict_label_to_set_of_ids:
         dict_label_to_set_of_ids[label] = set()
         return True
@@ -73,6 +78,12 @@ def add_label_set_of_ids_if_not_exists(label: str) -> bool:
 
 
 def add_id_to_label_set_of_ids_if_not_exists(label: str, _id: str) -> bool:
+    """
+    check if id in set if not add
+    :param label:
+    :param _id:
+    :return:
+    """
     if _id not in dict_label_to_set_of_ids[label]:
         dict_label_to_set_of_ids[label].add(_id)
         # print(sum([len(dict_label_to_set_of_ids[x]) for x in dict_label_to_set_of_ids]))
@@ -797,6 +808,15 @@ def prepare_snp_file():
 
 
 def run_through_list_of_nodes_as_json_string(path_directory, path_data, json_file, chr):
+    """
+    if not snp in dictionary label to tsv then generate file and cypher query. Run through all lines in json file and
+    parse the data
+    :param path_directory:
+    :param path_data:
+    :param json_file:
+    :param chr:
+    :return:
+    """
     global path_to_data, path_of_directory
     path_of_directory = path_directory
     path_to_data = path_data

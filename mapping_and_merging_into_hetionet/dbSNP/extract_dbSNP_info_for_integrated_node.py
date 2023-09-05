@@ -11,12 +11,12 @@ import pharmebinetutils
 sys.path.append("../../import_into_Neo4j/dbSNP")
 import prepare_a_single_node
 
-'''
-create connection to neo4j 
-'''
-
 
 def create_connection_with_neo4j():
+    """
+    create connection to neo4j
+    :return:
+    """
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
     g = driver.session()
@@ -181,6 +181,13 @@ set_dbSnp_in_PharMeBiNEt_and_already_downloaded = set()
 
 
 def load_dbSNP_data_for_nodes_with_dbSNP_in_db():
+    """
+    First, prepare TSV and cypher query. Next, generate TSV file for connection between nodes with rs id and dbSNP.
+    Generate a further cypher file and add mapping cypher query. Next load all gene variant with rs identifier. Write
+    mappings into TSV file. the rs ids are check if they are already in the api asked information or in the not existing
+    file. Else it ask the api for information about rs ids of group size 10.
+    :return:
+    """
     # prepare cypher query and csv file for snp
     prepare_a_single_node.path_to_data = path_of_directory_dbSNP
     prepare_a_single_node.prepare_snp_file()
@@ -251,6 +258,11 @@ def load_dbSNP_data_for_nodes_with_dbSNP_in_db():
 
 
 def go_through_downloaded_json_and_add_them_to_tsv():
+    """
+    open file to  were already api information are loaded from dbSNP. Then prepare the json information and write into
+    TSV file.
+    :return:
+    """
     file_name = '/mnt/aba90170-e6a0-4d07-929e-1200a6bfc6e1/databases/dbSNP/api_infos.json'
     file_already_downloaded = open(file_name, 'r')
     counter_line = 0

@@ -5,12 +5,12 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-'''
-create a connection with neo4j
-'''
-
 
 def create_connection_with_neo4j():
+    """
+    create a connection with neo4j
+    :return:
+    """
     # set up authentication parameters and connection
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
@@ -20,12 +20,13 @@ def create_connection_with_neo4j():
 # set of rela pairs
 set_of_rela_pairs = set()
 
-'''
-Get all gene-varinat pairs and write into file
-'''
-
 
 def load_rela_from_database_and_add_to_dict(csv_writter):
+    """
+    Get all gene-varinat pairs and write into file
+    :param csv_writter:
+    :return:
+    """
     query = "MATCH (n:Gene)--(:gene_dbSNP)--(:snp_dbSNP)--(b:Variant) RETURN n.identifier, b.identifier"
     results = g.run(query)
     for record in results:
@@ -53,7 +54,7 @@ def generate_files(path_of_directory):
 
     query = '''Match (n:Gene{identifier:line.gene_id}), (v:Variant{identifier:line.variant_id}) Merge (n)-[r:HAS_GhGV]->(v)  On Match Set  r.dbsnp="yes", r.resource=r.resource+"dbSNP"  On Create Set r.dbsnp="yes", r.resource=["dbSNP"], r.url="https://www.ncbi.nlm.nih.gov/snp/"+line.variant_id , r.source="dbSNP", r.license="https://www.ncbi.nlm.nih.gov/home/about/policies/"'''
     query = pharmebinetutils.get_query_import(path_of_directory,
-                                               f'mapping_and_merging_into_hetionet/dbSNP/{file_name}.tsv',
+                                              f'mapping_and_merging_into_hetionet/dbSNP/{file_name}.tsv',
                                               query)
     cypher_file.write(query)
 

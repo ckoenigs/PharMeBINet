@@ -1,6 +1,6 @@
 https://www.ncbi.nlm.nih.gov/snp/
 
-Version: 2020-05-13
+Version: 2022-11-16
 
 The script of dbSNP is different from the other. It is because dbSNP is too big. 
 
@@ -14,16 +14,20 @@ This has two parts first get the dbSNP information from an API:
 
     All nodes and edges are written into TSV files. Additionally, a cypher file is generated to integrate the nodes of dbSNP into Neo4j with a cypher shell.
 
+The all nodes are integrated with Neo4j cypher-shell. The the edges between the dbSNP nodes and last the connection between clinvar nodes (Variant) and dbSNP (Variant) are generated.
+
 The second part:
-First map the dbSNP Variant to GenVariant:
-    First,  the GeneVariants from PharMeBINet are loaded and written into a dictionary.
+First map the dbSNP Variant to GeneVariant:
+    First, a cypher file is generated.
+    Then,  the GeneVariants from PharMeBINet are loaded and written into a dictionary.
     Next, the cypher query and the TSV file are prepared.
-    Next, the information is prepared to be written into the TSV file.
+    Next, the dbSNP snp information is prepared to be written into the TSV file.
     Additionally, files are generated for the additional labels of the nodes with the fitting cypher queries.
+    Last, a query is added to delete variant nodes with rs id but no connection to dbSNP variant nodes (only exception is from drugbank).
   
 Next, the dbSNP genes are mapped to genes:
     First, load the gene information into a dictionary.
-    Then prepare the mapping TSV and cypher query which is added to the existing cypher file.
+    Then, prepare the mapping TSV and cypher query which is added to the existing cypher file.
     The mapping us the NCBI ID of dbSNP gene to gene id. The mapping pairs are written into the TSV files.
 
 Both mappings are integrated with cypher-shell.
