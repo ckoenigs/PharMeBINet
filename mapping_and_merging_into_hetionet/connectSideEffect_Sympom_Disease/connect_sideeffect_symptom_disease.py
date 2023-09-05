@@ -32,12 +32,11 @@ class SideEffect:
         self.name = name
 
 
-'''
-create connection to neo4j and mysql
-'''
-
-
 def create_connection_with_neo4j_mysql():
+    """
+    create connection to neo4j and mysql
+    :return:
+    """
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
     g = driver.session()
@@ -122,6 +121,7 @@ def mapping(from_mapper, from_identifier, dictionary, map_file, how_mapped, set_
     return False
 
 
+# dictionary label to plural
 dict_label_to_url_label = {
     'Disease': 'diseases',
     'SideEffect': 'sideeffects',
@@ -131,6 +131,14 @@ dict_label_to_url_label = {
 
 
 def create_cypher_query(header, from_label, to_label, file_name):
+    """
+    Generate query to integrate the edges and add query to cypher file
+    :param header:
+    :param from_label:
+    :param to_label:
+    :param file_name:
+    :return:
+    """
     if to_label == 'SideEffect':
         short_second = 'SE'
     else:
@@ -167,12 +175,11 @@ def create_mapping_file(directory, file_name, header, from_label, to_label):
     return csv_writer
 
 
-'''
-function that load all side effects in a dictionary 
-'''
-
-
 def load_all_sideEffects_in_a_dict():
+    """
+    function that load all side effects in a dictionary
+    :return:
+    """
     query = '''MATCH (n:SideEffect) RETURN n.name, n.identifier, n.xrefs '''
     results = g.run(query)
     for record in results:
@@ -200,13 +207,13 @@ dict_hpo_ids_to_symptom_ids = {}
 # dictionary umls id to set of symptom ids
 dict_umls_id_to_symptom_ids = {}
 
-'''
-function that load all symptoms in a dictionary and check if it has a umls cui or not
-if not find a cui with us of umls via mysql. Take preferred the umls cui wwhere the name is the same.
-'''
-
 
 def load_all_symptoms_in_a_dict():
+    """
+    function that load all symptoms in a dictionary and check if it has a umls cui or not
+    if not find a cui with us of umls via mysql. Take preferred the umls cui where the name is the same.
+    :return:
+    """
     query = "MATCH (n:Symptom) RETURN n"
     results = g.run(query)
     counter_with_name = 0
@@ -330,6 +337,11 @@ def load_all_symptoms_in_a_dict():
 
 
 def load_and_map_disease():
+    """
+    load disease create the different tsv files and cypher queries. Map disease to SE and symptoms and write information
+    into tsv file
+    :return:
+    """
     query = "MATCH (n:Disease) RETURN n"
     results = g.run(query)
 
@@ -447,6 +459,10 @@ def load_and_map_disease():
 
 
 def load_and_map_phenotype():
+    """
+    Load all phenotypes generate TSV file and cypher query. Then map to SE.
+    :return:
+    """
     query = "MATCH (n:Phenotype) Where size(labels(n))=1 RETURN n"
     results = g.run(query)
 
