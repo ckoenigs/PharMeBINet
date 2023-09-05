@@ -6,12 +6,12 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-'''
-create a connection with neo4j
-'''
-
 
 def create_connection_with_neo4j():
+    """
+    create a connection with neo4j
+    :return:
+    """
     # set up authentication parameters and connection
     global graph_database, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
@@ -45,14 +45,17 @@ dict_disease_id_to_omim_count = {}
 dict_xref_to_xref_id_to_disease_ids = {'OMIM': {}, 'Orphanet': {}}
 
 # dictionary obsolete mondo id to replaced id
-dict_obsolete_id_to_replace_id={}
-
-'''
-load in all disease from pharmebinet in a dictionary
-'''
+dict_obsolete_id_to_replace_id = {}
 
 
 def load_pharmebinet_labels_in(label, dict_label_id_to_resource, dict_name_to_ids):
+    """
+    load in all disease from pharmebinet in a dictionary
+    :param label:
+    :param dict_label_id_to_resource:
+    :param dict_name_to_ids:
+    :return:
+    """
     query = '''MATCH (n:%s) RETURN n.identifier, n.name, n.xrefs, n.synonyms, n.resource''' % label
     results = graph_database.run(query)
 
@@ -80,14 +83,13 @@ def load_pharmebinet_labels_in(label, dict_label_id_to_resource, dict_name_to_id
     print('number of disease nodes in pharmebinet:' + str(len(dict_label_id_to_resource)))
 
     # use the obsolete mondo information for mapping
-    query='Match (n:disease) Where n.is_obsolete="true" and not n.replaced_by is null Return n.id, n.replaced_by '
+    query = 'Match (n:disease) Where n.is_obsolete="true" and not n.replaced_by is null Return n.id, n.replaced_by '
     results = graph_database.run(query)
 
     #  run through results
     for record in results:
         [identifier, replaced_by] = record.values()
-        dict_obsolete_id_to_replace_id[identifier]=replaced_by
-
+        dict_obsolete_id_to_replace_id[identifier] = replaced_by
 
 
 # file for mapped or not mapped identifier
@@ -95,12 +97,14 @@ file_not_mapped_disease = open('disease/not_mapped_disease.tsv', 'w', encoding="
 csv_not_mapped = csv.writer(file_not_mapped_disease, delimiter='\t', lineterminator='\n')
 csv_not_mapped.writerow(['id', 'name'])
 
-'''
-generate connection between mapping disease of reactome and pharmebinet and generate new pharmebinet nodes for the not existing nodes
-'''
-
 
 def create_cypher_file(label, file_name):
+    """
+    prepare cypher query for mapping the disease to gencc disease
+    :param label:
+    :param file_name:
+    :return:
+    """
     cypher_file = open('output/cypher.cypher', 'a', encoding="utf-8")
     query = ''' MATCH (d:%s{identifier:line.id_own_db}),(c:GenCC_Disease{id:line.id}) CREATE (d)-[: equal_to_gencc_disease{how_mapped:line.how_mapped}]->(c) SET d.resource = split(line.resource, '|'), d.gencc = "yes"'''
     query = query % (label)
@@ -132,7 +136,11 @@ dict_node_id_to_synonyms = {}
 dict_node_id_to_resource_to_ids = {}
 
 
-def load_extantion_information_from_gencc_edges():
+def load_extensions_information_from_gencc_edges():
+    """
+    Load all disease-gene gencc edges and qrite disease and edge information into a dictionary
+    :return:
+    """
     query = 'MATCH p=(n:GenCC_Disease)-[r]-(:GenCC_Gene)  Return ID(n), r.disease_original_curie, r.disease_original_title'
     results = graph_database.run(query)
     for record in results:
@@ -146,12 +154,11 @@ def load_extantion_information_from_gencc_edges():
         dict_node_id_to_resource_to_ids[node_id][source_id[0]].add(source_id[1])
 
 
-'''
-load all gencc disease and check if they are in pharmebinet or not
-'''
-
-
 def load_gencc_disease_and_map():
+    """
+    load all gencc disease and check if they are in pharmebinet or not
+    :return:
+    """
     query = '''MATCH (n:GenCC_Disease) RETURN n, ID(n)'''
     results = graph_database.run(query)
 
@@ -179,9 +186,8 @@ def load_gencc_disease_and_map():
         if is_mapped:
             continue
 
-
         if disease_id in dict_obsolete_id_to_replace_id:
-            replaced_id= dict_obsolete_id_to_replace_id[disease_id]
+            replaced_id = dict_obsolete_id_to_replace_id[disease_id]
             if replaced_id in dict_disease_id_to_resource:
                 is_mapped = True
                 counter_map_with_id += 1
@@ -241,7 +247,7 @@ def main():
     print(datetime.datetime.now())
     print('Load all gencc disease extansion information from the gencc edge')
 
-    load_extantion_information_from_gencc_edges()
+    load_extensions_information_from_gencc_edges()
 
     print(
         '###########################################################################################################################')

@@ -5,12 +5,12 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-'''
-create connection to neo4j and mysql
-'''
-
 
 def create_connection_with_neo4j():
+    """
+    create connection to neo4j
+    :return:
+    """
     # create connection with neo4j
     # authenticate("localhost:7474", "neo4j", "test")
     global g, driver
@@ -96,7 +96,8 @@ def generate_cypher_file_with_queries(properties, file_name, file_name_mapped):
                 mapped.append('r.' + prop + '=split(line.' + prop + ',"|")')
 
         query_new = 'MATCH (n:Gene{identifier:line.gene_id}),(m:Disease{identifier:line.disease_id}) Create (m)-[:ASSOCIATES_DaG{'
-        query_new += ', '.join(news) + ', license:"CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",  gencc:"yes" }]->(n)'
+        query_new += ', '.join(
+            news) + ', license:"CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",  gencc:"yes" }]->(n)'
         query_new = pharmebinetutils.get_query_import(path_of_directory,
                                                       f'mapping_and_merging_into_hetionet/gencc/{file_name}',
                                                       query_new)
@@ -110,6 +111,12 @@ def generate_cypher_file_with_queries(properties, file_name, file_name_mapped):
 
 
 def prepare_and_write_information_into_tsv(dictionary_pair_to_infos, csv_writer):
+    """
+    go through dictionary and prepare for each entry the properties and write information into TSV file
+    :param dictionary_pair_to_infos:
+    :param csv_writer:
+    :return:
+    """
     for (gene_id, disease_id), list_of_prop in dictionary_pair_to_infos.items():
         new_prop_list = []
         counter = 0
@@ -126,7 +133,7 @@ def prepare_and_write_information_into_tsv(dictionary_pair_to_infos, csv_writer)
 
 def prepare_tsv_file_and_cypher_file(dict_mapping_pairs_infos, dict_new_pairs_infos):
     """
-    Prpare the 2 tsv file for mapping and new edges and the fitting queries.
+    Prepare the 2 tsv file for mapping and new edges and the fitting queries.
     :param dict_mapping_pairs_infos:
     :param dict_new_pairs_infos:
     :return:

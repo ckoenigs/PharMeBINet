@@ -5,12 +5,12 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-'''
-create connection to neo4j and mysql
-'''
-
 
 def create_connection_with_neo4j():
+    """
+    create connection to neo4j
+    :return:
+    """
     # create connection with neo4j
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
@@ -55,12 +55,12 @@ dict_gencc_gene_not_in_pharmebinet = {}
 # dictionary of gencc genes which are in pharmebinet with properties: [gene_name,altGeneIDs,pharmGKBIDs,bioGRIDIDs,geneSymbol,synonyms,uniProtIDs]
 dict_gencc_gene_in_pharmebinet = {}
 
-'''
-load all gencc genes and check if they are in pharmebinet or not
-'''
-
 
 def load_gencc_genes_in():
+    """
+    load all gencc genes and check if they are in pharmebinet or not
+    :return:
+    """
     # take only human genes
     query = '''MATCH (n:GenCC_Gene) RETURN n'''
     results = g.run(query)
@@ -89,12 +89,11 @@ def load_gencc_genes_in():
     print('number of gencc genes : ' + str(counter))
 
 
-'''
-Generate cypher and tsv for generating the new nodes and the relationships
-'''
-
-
 def generate_files():
+    """
+    Generate cypher and tsv for generating the new nodes and the relationships
+    :return:
+    """
     # generate cypher file
     cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
     query = ''' Match (c:Gene{ identifier:line.GeneIDPharmebinet}), (n:GenCC_Gene{id:line.GeneIDGencc}) Create (c)-[:equal_to_GENCC_gene{how_mapped:line.how_mapped}]->(n) Set c.gencc="yes", c.resource=split(line.resource,"|")'''

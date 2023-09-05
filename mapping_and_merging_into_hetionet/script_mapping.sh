@@ -451,14 +451,14 @@ cd gencc
 
 cd ..
 
-now=$(date +"%F %T")
-echo "Current time: $now"
-echo openFDA
-cd openFDA
+# now=$(date +"%F %T")
+# echo "Current time: $now"
+# echo openFDA
+# cd openFDA
 
 #./script_map_openFDA.sh $path_neo4j $path_to_project $password > output_script.txt
 
-cd ..
+# cd ..
 
 
 now=$(date +"%F %T")
