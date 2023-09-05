@@ -6,12 +6,12 @@ sys.path.append("../..")
 import pharmebinetutils
 import create_connection_to_databases
 
-'''
-create connection to neo4j 
-'''
-
 
 def create_connection_with_neo4j():
+    """
+    create connection to neo4j
+    :return:
+    """
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
     g = driver.session()
@@ -294,15 +294,15 @@ def fill_the_rela_files(label_node):
 
 def prepare_delete_variant_annotation():
     """
-    All variant annotation are delete where the pGKB chemical/gene/ClinivalAnnotationMetadata are not mapped to my
+    All variant annotation are delete where the pGKB chemical/gene/ClinivalAnnotation are not mapped to my
     database. So add the query to check and delete to cypher file.
     :return:
     """
-    list_of_delete_label_if_not_mapped = ['ClinicalAnnotationMetadata', 'Gene']
-    query = 'MATCH p=(a:VariantAnnotation)--(n:PharmGKB_VariantAnnotation)--(b:PharmGKB_%s) Where not (b)--(:%s) Detach Delete a;\n'
-    for label in list_of_delete_label_if_not_mapped:
-        new_query = query % (label, label)
-        cypher_file.write(new_query)
+    # list_of_delete_label_if_not_mapped = ['ClinicalAnnotationMetadata', 'Gene']
+    # query = 'MATCH p=(a:VariantAnnotation)--(n:PharmGKB_VariantAnnotation)--(b:PharmGKB_%s) Where not (b)--(:%s) Detach Delete a;\n'
+    # for label in list_of_delete_label_if_not_mapped:
+    #     new_query = query % (label, label)
+    #     cypher_file.write(new_query)
     query = 'MATCH p=(a:VariantAnnotation)--(n:PharmGKB_VariantAnnotation)--(b:PharmGKB_Chemical) Where not( (b)--(:Chemical) or (b)--(:PharmacologicClass)) Detach Delete a;\n'
     cypher_file.write(query)
 

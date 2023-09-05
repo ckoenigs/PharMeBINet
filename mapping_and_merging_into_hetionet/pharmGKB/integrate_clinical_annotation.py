@@ -12,12 +12,12 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-'''
-create connection to neo4j 
-'''
-
 
 def create_connection_with_neo4j():
+    """
+    create connection to neo4j
+    :return:
+    """
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
     g = driver.session()
@@ -76,7 +76,8 @@ dict_label_to_rela_name = {
 
 def prepare_files(directory):
     """
-
+    prepare tsv file, prepare cypher query and the prepare for the different relationships tsv files and the additional
+    cypher queries are added
     :return:
     """
     file_name = directory + '/meta_node.tsv'
@@ -221,7 +222,7 @@ def get_rela_and_add_to_tsv_file(query_general, pharmGKB_label, label):
 
 def fill_the_rela_files():
     """
-    
+    Load for each label a query is prepared to get the relationship and write them in to the right TSV file.
     :return: 
     """
     query_general = 'Match (n:PharmGKB_ClinicalAnnotation)--(:%s)--(m:%s) Return Distinct n.id, m.identifier'
