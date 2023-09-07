@@ -121,7 +121,7 @@ def generate_file_and_cypher(labels):
     cypher_file.write(query_update)
     for label in labels:
         file_name_other = f'interaction/association_{label}.tsv'
-        query = '''Match (i:Interaction{identifier:line.interaction_id}), (c:%s{identifier:line.id}) Create (i)-[:ASSOCIATES_Ia%s{license:"The MIT License (MIT)", biogrid:"yes", source:"BioGRiD", url:'https://thebiogrid.org/'+line.gene_id ,resource:["BioGRiD"]}]->(c)'''
+        query = '''Match (i:Interaction{identifier:line.interaction_id}), (c:%s{identifier:line.id}) Create (i)-[:ASSOCIATES_Ia%s{license:"The MIT License (MIT)", biogrid:"yes", source:"BioGRID", url:'https://thebiogrid.org/'+line.gene_id ,resource:["BioGRID"]}]->(c)'''
         query = query % (label, label[0])
 
         query = pharmebinetutils.get_query_import(path_of_directory,
