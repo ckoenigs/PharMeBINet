@@ -59,7 +59,7 @@ def create_node_queries(tab):
                 query = "create (:" + table + "{"
                 file_name = "tsv_from_mysql/" + table + ".tsv"
                 for column in get_columns_names_from_tsv(file_name):
-                    if column == 'NAMES':
+                    if column == 'NAMES' or column == 'synonyms':
                         str_to_add = column.lower() + ':split(line.' + column + ',";"),'
                         query += str_to_add
                     else:
