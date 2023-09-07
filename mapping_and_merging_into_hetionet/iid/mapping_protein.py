@@ -5,12 +5,12 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-'''
-create a connection with neo4j
-'''
-
 
 def create_connection_with_neo4j():
+    """
+    create a connection with neo4j
+    :return:
+    """
     # set up authentication parameters and connection
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
@@ -72,12 +72,6 @@ def generate_files(path_of_directory):
     return csv_mapping
 
 
-def resource(identifier):
-    resource = set(dict_protein_id_to_resource[identifier])
-    resource.add('IID')
-    return '|'.join(resource)
-
-
 '''
 Load all variation sort the ids into the right tsv, generate the queries, and add rela to the rela tsv
 '''
@@ -94,10 +88,15 @@ def load_all_iid_protein_and_finish_the_files(csv_mapping):
         identifier = node['identifier']
 
         if identifier in dict_protein_id_to_resource:
-            csv_mapping.writerow([identifier, identifier, resource(identifier), 'id'])
+            csv_mapping.writerow(
+                [identifier, identifier,
+                 pharmebinetutils.resource_add_and_prepare(dict_protein_id_to_resource[identifier], 'IID'), 'id'])
         elif identifier in dict_alt_id_to_id:
             for protein_id in dict_alt_id_to_id[identifier]:
-                csv_mapping.writerow([identifier, protein_id, resource(protein_id), 'alternative id'])
+                csv_mapping.writerow(
+                    [identifier, protein_id,
+                     pharmebinetutils.resource_add_and_prepare(dict_protein_id_to_resource[protein_id], 'IID'),
+                     'alternative id'])
         else:
             # gene_symbols= node['symbols'] if 'symbols' in node else []
             # set_of_mapped_uniprot_ids=set()
