@@ -134,7 +134,7 @@ def load_all_drugbank_pc_and_map(csv_mapping, csv_not_mapped):
                     csv_mapping.writerow(
                         [identifier, metabolite_id,
                          pharmebinetutils.resource_add_and_prepare(dict_metabolite_id_to_resource[metabolite_id],
-                                                                   'DrugBnk'),
+                                                                   'DrugBank'),
                          'smiles'])
                 else:
                     print('multy mapping with smiles')
@@ -152,7 +152,7 @@ def load_all_drugbank_pc_and_map(csv_mapping, csv_not_mapped):
                     csv_mapping.writerow(
                         [identifier, metabolite_id,
                          pharmebinetutils.resource_add_and_prepare(dict_metabolite_id_to_resource[metabolite_id],
-                                                                   'DrugBnk'),
+                                                                   'DrugBank'),
                          'name'])
                 else:
                     print('multy mapping with name')

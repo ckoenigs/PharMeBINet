@@ -75,14 +75,14 @@ def load_gencc_genes_in():
         if gene_id in dict_hgnc_id_to_gene_ids:
             counter_mapped += 1
             for identifier in dict_hgnc_id_to_gene_ids[gene_id]:
-                resource = pharmebinetutils.resource_add_and_prepare(dict_gene_to_resource[identifier], 'GENCC')
+                resource = pharmebinetutils.resource_add_and_prepare(dict_gene_to_resource[identifier], 'GenCC')
                 writer.writerow([gene_id, identifier, resource, 'hgnc'])
 
         else:
             if gene_symbol in dict_gene_symbol_to_set_of_ids:
                 counter_mapped += 1
                 for identifier in dict_gene_symbol_to_set_of_ids[gene_symbol]:
-                    resource = pharmebinetutils.resource_add_and_prepare(dict_gene_to_resource[identifier], 'GENCC')
+                    resource = pharmebinetutils.resource_add_and_prepare(dict_gene_to_resource[identifier], 'GenCC')
                     writer.writerow([gene_id, identifier, resource, 'symbol'])
 
     print('number of gencc genes which are also in pharmebinet: ' + str(counter_mapped))

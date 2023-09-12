@@ -182,7 +182,7 @@ def load_gencc_disease_and_map():
             counter_map_with_id += 1
             csv_writer_disease.writerow([disease_id, disease_id,
                                          pharmebinetutils.resource_add_and_prepare(
-                                             dict_disease_id_to_resource[disease_id], 'GENCC'), 'id'])
+                                             dict_disease_id_to_resource[disease_id], 'GenCC'), 'id'])
         if is_mapped:
             continue
 
@@ -193,7 +193,7 @@ def load_gencc_disease_and_map():
                 counter_map_with_id += 1
                 csv_writer_disease.writerow([disease_id, replaced_id,
                                              pharmebinetutils.resource_add_and_prepare(
-                                                 dict_disease_id_to_resource[replaced_id], 'GENCC'), 'obsolete'])
+                                                 dict_disease_id_to_resource[replaced_id], 'GenCC'), 'obsolete'])
         if is_mapped:
             continue
 
@@ -207,7 +207,7 @@ def load_gencc_disease_and_map():
                 for database_identifier in dict_disease_name_to_disease_ids[disease_name]:
                     csv_writer_disease.writerow([disease_id, database_identifier,
                                                  pharmebinetutils.resource_add_and_prepare(
-                                                     dict_disease_id_to_resource[database_identifier], 'GENCC'),
+                                                     dict_disease_id_to_resource[database_identifier], 'GenCC'),
                                                  'name'])
 
         if is_mapped:
