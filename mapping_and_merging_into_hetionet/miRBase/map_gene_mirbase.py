@@ -5,10 +5,6 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-'''
-create connection to neo4j and mysql
-'''
-
 
 def create_connection_with_neo4j():
     # create connection with neo4j
@@ -58,7 +54,7 @@ def generate_files():
     writer.writerow(['entrez_gene_id', 'hgnc_id','id'])
 
     # generate cypher file
-    cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
+    cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
     query = ''' Match (c:Gene{ identifier:line.id}), (n:miRBase_Gene) Where n.entrez_gene_id=toInteger(line.entrez_gene_id) or n.hgnc_id=toInteger(line.hgnc_id)  Create (c)-[:equal_to_miRBase_gene]->(n) Set c.mirbase="yes", c.resource=c.resource+"miRBase"'''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/miRBase/{file_name}',
