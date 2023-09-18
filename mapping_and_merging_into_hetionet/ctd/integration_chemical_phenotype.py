@@ -147,7 +147,7 @@ def check_for_go_and_chemical_in_string(string, found_chemical_synonym, go_name,
     part = string.lower()
     positions_chemical_new = find_multiple_occurrences(' ' + found_chemical_synonym + ' ', part)
     if '[' in go_name:
-        go_name=go_name.replace('[','[ ').replace(']',' ]')
+        go_name = go_name.replace('[', '[ ').replace(']', ' ]')
     position_go_new = part.find(' ' + go_name + ' ')
     position_rela_new = part.find(' ' + dict_rela_name_to_text_name[rela_name] + ' ')
     length_of_phenotyp_string = len(go_name)
@@ -332,13 +332,6 @@ def generate_cypher_queries(file_name, label, rela, start_node, end_node):
 header = ['chemical_id', 'go_id', 'interaction_text', 'pubMed_ids', 'interaction_actions', 'unbiased', 'anatomy_terms',
           'co_mentioned_terms', 'ctd_chemical_id']
 
-# dictionary from go term to shor form
-dict_go_term_to_short_form = {
-    'BiologicalProcess': 'BP',
-    'CellularComponent': 'CC',
-    'MolecularFunction': 'MF'
-}
-
 
 def prepare_list_of_list(list_of_information, index, indices):
     """
@@ -366,14 +359,17 @@ but only take the shortest interaction text and the associated intereaction acti
 
 def fill_the_tsv_files():
     for (rela_full, label, from_chemical), dict_chemical_go_pair in dict_rela_to_drug_go_pair.items():
-        short_form_label = dict_go_term_to_short_form[label]
+        short_form_label = pharmebinetutils.dictionary_label_to_abbreviation[label]
         if from_chemical:
             file_name = 'chemical_phenotype/chemical_' + label + '_' + rela_full + '.tsv'
-            generate_cypher_queries(file_name, label, rela_full + '_CH' + rela_full[0].lower() + short_form_label, 'b',
+            generate_cypher_queries(file_name, label,
+                                    rela_full + '_' + pharmebinetutils.dictionary_label_to_abbreviation['Chemical'] +
+                                    rela_full[0].lower() + short_form_label, 'b',
                                     'go')
         else:
             file_name = 'chemical_phenotype/' + label + '_chemical_' + rela_full + '.tsv'
-            generate_cypher_queries(file_name, label, rela_full + '_' + short_form_label + rela_full[0].lower() + 'CH',
+            generate_cypher_queries(file_name, label, rela_full + '_' + short_form_label + rela_full[0].lower() +
+                                    pharmebinetutils.dictionary_label_to_abbreviation['Chemical'],
                                     'go', 'b')
         file = open(file_name, 'w', encoding='utf-8')
         csv_writer = csv.writer(file, delimiter='\t')

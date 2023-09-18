@@ -30,10 +30,7 @@ def write_files(label, direction_1, direction_2, rela_name):
     :return:  csv writer
     '''
     # give the rela the right abbreviation
-    if label == 'Chemical':
-        rela_name = rela_name % ('CH')
-    else:
-        rela_name = rela_name % ('PC')
+    rela_name = rela_name % (pharmebinetutils.dictionary_label_to_abbreviation[label])
 
     # file from relationship between gene and variant
     file_name = 'chemical_ingredient/rela_' + rela_name + '_' + label + '.tsv'
@@ -61,10 +58,10 @@ dict_rela_to_tsv = {}
 # dictionary rela name in ndf-rt to information needed
 # has_active_metabolites
 dict_rela_name_to_other_information = {
-    'has': ['-', '->', 'HAS_INGREDIENT_%shiCH'],
-    'CI': ['-', '->', 'CONTRAINDICATES_%scCH'],
-    'has_Chemical_Structure': ['-', '->', 'HAS_CHEMICAL_STRUCTURE_%shcsCH'],
-    'has_active_metabolites': ['-', '->', 'HAS_ACTIVE_METABOLITE_%shamCH']
+    'has': ['-', '->', 'HAS_INGREDIENT_%shi'+pharmebinetutils.dictionary_label_to_abbreviation['Chemical']],
+    'CI': ['-', '->', 'CONTRAINDICATES_%sc'+pharmebinetutils.dictionary_label_to_abbreviation['Chemical']],
+    'has_Chemical_Structure': ['-', '->', 'HAS_CHEMICAL_STRUCTURE_%shcs'+pharmebinetutils.dictionary_label_to_abbreviation['Chemical']],
+    'has_active_metabolites': ['-', '->', 'HAS_ACTIVE_METABOLITE_%sham'+pharmebinetutils.dictionary_label_to_abbreviation['Chemical']]
 }
 
 

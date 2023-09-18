@@ -60,10 +60,7 @@ def integrate_connection_into_pharmebinet(labels):
             dict_rela_to_pairs[(label, rela_type)] = {}
             file_name = 'rela_' + rela_type + '_' + label + '.tsv'
             file = open('chemical_edge/' + file_name, 'w', encoding='utf-8')
-            if label == "Chemical":
-                letter = 'CH'
-            else:
-                letter = 'PC'
+            letter = pharmebinetutils.dictionary_label_to_abbreviation[label]
             csv_writer = csv.writer(file, delimiter='\t')
             csv_writer.writerow(['chemical_id', 'disease_id', 'source'])
             dict_rela_type_to_tsv_file[(label, rela_type)] = csv_writer

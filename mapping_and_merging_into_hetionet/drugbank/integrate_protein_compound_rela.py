@@ -71,16 +71,17 @@ def load_all_protein_chemical_pairs(direction, from_chemical):
 
         if 'Protein' in labels:
             label = 'Protein'
-            short_cut = 'P'
         else:
             label = 'Chemical'
-            short_cut = 'CH'
+        short_cut = pharmebinetutils.dictionary_label_to_abbreviation[label]
         rela_name = rela_type_splitted[0].upper()
         abbreviaction_rela = ''.join([x[0].lower() for x in rela_name.split('_')])
         if from_chemical:
-            this_rela_name = rela_name + '_CH' + abbreviaction_rela + short_cut
+            this_rela_name = rela_name + '_' + pharmebinetutils.dictionary_label_to_abbreviation[
+                'Chemical'] + abbreviaction_rela + short_cut
         else:
-            this_rela_name = rela_name + '_' + short_cut + abbreviaction_rela + 'CH'
+            this_rela_name = rela_name + '_' + short_cut + abbreviaction_rela + \
+                             pharmebinetutils.dictionary_label_to_abbreviation['Chemical']
 
         # for the connection between real name to names in drugbank
         if not this_rela_name in dict_real_rela_type_to_list_of_rela_types:

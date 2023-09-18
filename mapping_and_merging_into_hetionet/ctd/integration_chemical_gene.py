@@ -131,16 +131,26 @@ dict_file_name_to_rela_name = {}
 
 
 def prepare_rela_small(rela, label1, label2):
+    """
+    Prepare rela type
+    :param rela:
+    :param label1:
+    :param label2:
+    :return:
+    """
     return rela + '_' + label1 + '_' + label2
 
 
 def prepare_rela_great(rela, label1, label2):
-    if label1 == 'chemical':
-        letter_1 = 'CH'
-        letter_2 = label2.upper()[0]
-    else:
-        letter_1 = label1.upper()[0]
-        letter_2 = 'CH'
+    """
+    prepare rela type with rigth abbreviation
+    :param rela:
+    :param label1:
+    :param label2:
+    :return:
+    """
+    letter_1 = pharmebinetutils.dictionary_label_to_abbreviation[label1.capitalize()]
+    letter_2 = pharmebinetutils.dictionary_label_to_abbreviation[label2.capitalize()]
     return rela + '_' + letter_1 + ''.join([x.lower()[0] for x in rela.split('_')]) + letter_2
 
 
@@ -213,8 +223,8 @@ def path_to_rela_and_add_to_dict(rela, first, second):
         query = query_first_part + query_middle_1 + query_middle_2 + query_last_part
 
         dict_tuples_to_pubmeds = dict_rela_name_to_tuples_to_pubmeds[rela_full]
-        query_executed=query_to_check_if_this_rela_exist_in_pharmebinet.replace('Limit 1','')
-        results=g.run(query_executed)
+        query_executed = query_to_check_if_this_rela_exist_in_pharmebinet.replace('Limit 1', '')
+        results = g.run(query_executed)
         for chemical_id, node_id, pubMed_ids, in results:
             # if pubMed_ids is None:
             #     print('huhuh')

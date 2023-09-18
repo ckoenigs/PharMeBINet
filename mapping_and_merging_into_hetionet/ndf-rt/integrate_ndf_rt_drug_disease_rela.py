@@ -24,11 +24,11 @@ dict_rela_type_to_tsv_file = {}
 
 # dictionary rela type to rela label
 dict_type_to_label = {
-    'may_treat': 'TREATS_%stD',
-    'may_prevent': 'PREVENTS_%spD',
-    'CI_with': 'CONTRAINDICATES_%scD',
-    'induces': 'INDUCES_%siD',
-    'may_diagnose': 'MAY_DIAGNOSES_%smdD'
+    'may_treat': 'TREATS_%st' + pharmebinetutils.dictionary_label_to_abbreviation['Disease'],
+    'may_prevent': 'PREVENTS_%sp' + pharmebinetutils.dictionary_label_to_abbreviation['Disease'],
+    'CI_with': 'CONTRAINDICATES_%sc' + pharmebinetutils.dictionary_label_to_abbreviation['Disease'],
+    'induces': 'INDUCES_%si' + pharmebinetutils.dictionary_label_to_abbreviation['Disease'],
+    'may_diagnose': 'MAY_DIAGNOSES_%smd' + pharmebinetutils.dictionary_label_to_abbreviation['Disease']
 }
 
 # cypher file
@@ -70,10 +70,7 @@ def integrate_connection_into_pharmebinet(label):
             csv_writer.writerow(['chemical_id', 'disease_id', 'source'])
             dict_rela_type_to_tsv_file[(rela_type, label)] = csv_writer
             query_check = 'Match p=(:%s)-[:%s]-(:Disease) Return p Limit 1' % (label, dict_type_to_label[rela_type])
-            if label == "Chemical":
-                letter = 'CH'
-            else:
-                letter = 'PC'
+            letter = pharmebinetutils.dictionary_label_to_abbreviation[label]
             query_check = query_check % (letter)
             results = g.run(query_check)
             result = results.single()

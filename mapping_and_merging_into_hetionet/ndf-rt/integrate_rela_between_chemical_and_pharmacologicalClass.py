@@ -30,10 +30,7 @@ def write_files(label, direction_1, direction_2, rela_name):
     :return:  csv writer
     '''
     # give the rela the right abbreviation
-    if label == 'Chemical':
-        rela_name = rela_name % ('CH')
-    else:
-        rela_name = rela_name % ('PC')
+    rela_name = rela_name % (pharmebinetutils.dictionary_label_to_abbreviation[label])
 
     # file from relationship between gene and variant
     file_name = 'chemical_pharmacological/rela_' + rela_name + '_' + label + '.tsv'
