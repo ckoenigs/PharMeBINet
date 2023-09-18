@@ -6,12 +6,11 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-'''
-create a connection with neo4j
-'''
-
-
 def create_connection_with_neo4j():
+    """
+    create a connection with neo4j
+    :return:
+    """
     # set up authentication parameters and connection
     global graph_database, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
@@ -21,15 +20,20 @@ def create_connection_with_neo4j():
 # dictionary with pharmebinet reactionLikeEvent with identifier as key and value the name
 dict_reactionLikeEvent_pharmebinet_node_pharmebinet = {}
 
-'''
-load in all pathways from pharmebinet in a dictionary
-'''
-
 
 def load_pharmebinet_reactionLikeEvent_pharmebinet_node_in(csv_file,
                                                            dict_reactionLikeEvent_pharmebinet_node_pharmebinet,
                                                            new_relationship, node_reactome_label,
                                                            node_pharmebinet_label):
+    """
+    load in all pathways from pharmebinet in a dictionary
+    :param csv_file:
+    :param dict_reactionLikeEvent_pharmebinet_node_pharmebinet:
+    :param new_relationship:
+    :param node_reactome_label:
+    :param node_pharmebinet_label:
+    :return:
+    """
     query = '''MATCH (p:ReactionLikeEvent)-[]-(r:ReactionLikeEvent_reactome)-[v:%s]->(n:%s)-[]-(b:%s) RETURN p.identifier, b.identifier, v.order, v.stoichiometry'''
     query = query % (new_relationship, node_reactome_label, node_pharmebinet_label)
     print(query)
@@ -52,12 +56,15 @@ def load_pharmebinet_reactionLikeEvent_pharmebinet_node_in(csv_file,
         len(dict_reactionLikeEvent_pharmebinet_node_pharmebinet)))
 
 
-'''
-generate new relationships between pathways of pharmebinet and reactionLikeEvent of pharmebinet nodes that mapped to reactome 
-'''
-
-
 def create_cypher_file(directory, file_path, node_label, rela_name):
+    """
+    generate new relationships between pathways of pharmebinet and reactionLikeEvent of pharmebinet nodes that mapped to reactome
+    :param directory:
+    :param file_path:
+    :param node_label:
+    :param rela_name:
+    :return:
+    """
     query = ''' MATCH (d:ReactionLikeEvent{identifier:line.id_pharmebinet_reactionLikeEvent}),(c:%s{identifier:line.id_pharmebinet_node}) CREATE (d)-[: %s{order:line.order, stoichiometry:line.stoichiometry, resource: ['Reactome'], reactome: "yes", license:"%s", url:"https://reactome.org/content/detail/"+line.id_pharmebinet_reactionLikeEvent, source:"Reactome"}]->(c)'''
     query = query % (node_label, rela_name, license)
     query = pharmebinetutils.get_query_import(path_of_directory,

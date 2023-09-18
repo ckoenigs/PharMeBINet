@@ -109,11 +109,11 @@ def main():
     # 0: old relationship;    1: name of node in Reactome; 2 : name of node in pharmebinet;  3: name of new relationship
     # 4: direction left; 5: direction right;
     list_of_combinations = [
-        ['regulatedBy', 'ReactionLikeEvent_reactome', 'ReactionLikeEvent', 'IS_REGULATED_BY_RGirbRLE', '<-',
+        ['regulatedBy', 'ReactionLikeEvent_reactome', 'ReactionLikeEvent', 'IS_REGULATED_BY_RLEirbRG', '<-',
          '-'],
         # ['regulator', 'PhysicalEntity_reactome)--(:ReferenceEntity_reactome', 'equal_to_reactome_drug', 'Chemical', 'HAS_REGULATOR_RGirCH', '-', '->'], do not exists anymore
         ['activeUnit', 'PhysicalEntity_reactome)--(:ReferenceEntity_reactome', 'Chemical',
-         'HAS_ACTIVE_UNIT_RGiauCH', '-', '->'],
+         'HAS_ACTIVE_UNIT_RGhauCH', '-', '->'],
         ['goBiologicalProcess', 'GO_BiologicalProcess_reactome', 'BiologicalProcess',
          'OCCURS_IN_GO_BIOLOGICAL_PROCESS_RGoigbpBP', '-', '->'],
         ['activity', 'GO_MolecularFunction_reactome', 'MolecularFunction',

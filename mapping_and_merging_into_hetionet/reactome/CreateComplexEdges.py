@@ -84,7 +84,8 @@ def create_cypher_file(file_path, node_label, rela_name, direction1, direction2)
 
 
 def check_relationships_and_generate_file(new_relationship, node_reactome_label, node_pharmebinet_label,
-                                          directory, rela_name, direction1, direction2):
+                                          directory, rela_name, direction1, direction2, direction1_integration,
+                                          direction2_integration):
     print(
         '___~(  )(°^)o_o(^°)(  )~_____~(  )(°^)o_o(^°)(  )~_____~(  )(°^)o_o(^°)(  )~_____~(  )(°^)o_o(^°)(  )~__')
 
@@ -112,7 +113,7 @@ def check_relationships_and_generate_file(new_relationship, node_reactome_label,
 
     print('Integrate new relationships and connect them ')
 
-    create_cypher_file(file_name, node_pharmebinet_label, rela_name, direction1, direction2)
+    create_cypher_file(file_name, node_pharmebinet_label, rela_name, direction1_integration, direction2_integration)
 
 
 def main():
@@ -132,34 +133,34 @@ def main():
     # 2: name of node in PharMeBINet;       3: name of new relationship  4: relationship direction left
     # 5: relationship direction right
     list_of_combinations = [
-        ['input', 'ReactionLikeEvent_reactome', 'ReactionLikeEvent', 'IS_INPUT_RLEiiMC', '<-', '-'],
+        ['input', 'ReactionLikeEvent_reactome', 'ReactionLikeEvent', 'IS_INPUT_OF_MCiioRLE', '<-', '-', '-', '->'],
 
-        ['output', 'ReactionLikeEvent_reactome', 'ReactionLikeEvent', 'IS_OUTPUT_RLEioMC', '<-', '-'],
+        ['output', 'ReactionLikeEvent_reactome', 'ReactionLikeEvent', 'IS_OUTPUT_OF_MCiooRLE', '<-', '-', '-', '->'],
 
         ['requiredInputComponent', 'ReactionLikeEvent_reactome', 'ReactionLikeEvent',
-         'IS_REQUIRED_INPUT_COMPONENT_RLEiricMC', '<-', '-'],
+         'IS_REQUIRED_INPUT_COMPONENT_RLEiricMC', '<-', '-', '<-', '-'],
 
         ['compartment', 'GO_CellularComponent_reactome', 'CellularComponent',
-         'IS_IN_COMPARTMENT_CCiicMC', '-', '->'],
+         'IS_IN_COMPARTMENT_MCiicCC', '-', '->', '-', '->'],
         ['includedLocation', 'GO_CellularComponent_reactome', 'CellularComponent',
-         'IS_INCLUDED_LOCATION_CCiilMC', '-', '->'],
+         'IS_INCLUDED_LOCATION_MCiilCC', '-', '->', '-', '->'],
         ['goCellularComponent', 'GO_CellularComponent_reactome', 'CellularComponent',
-         'IS_CELLULAR_COMPONENT_CCiccMC', '-', '->'],
+         'IS_CELLULAR_COMPONENT_MCiccCC', '-', '->', '-', '->'],
 
         ['hasComponent', 'PhysicalEntity_reactome)--(:ReferenceEntity_reactome', 'Chemical',
-         'HAS_COMPONENT_MChcCH', '-', '->'],
+         'HAS_COMPONENT_MChcCH', '-', '->', '-', '->'],
         ['hasComponent', 'PhysicalEntity_reactome)--(:ReferenceEntity_reactome', 'Protein',
-         'HAS_COMPONENT_MChcP', '-', '->'],
+         'HAS_COMPONENT_MChcP', '-', '->', '-', '->'],
         ['hasComponent', 'Complex_reactome', 'MolecularComplex',
-         'HAS_COMPONENT_MChcMC', '-', '->'],
+         'HAS_COMPONENT_MChcMC', '-', '->', '-', '->'],
 
         ['inferredTo', 'Complex_reactome', 'MolecularComplex',
-         'HAS_EFFECT_ON_MCheMC', '-', '->'],
+         'HAS_EFFECT_ON_MCheoMC', '-', '->', '-', '->'],
 
-        ['regulator', 'Regulation_reactome', 'Regulation', 'HAS_REGULATOR_RGhrMC', '<-', '-'],
-        ['activeUnit', 'Regulation_reactome', 'Regulation', 'HAS_ACTIVE_UNIT_RGhauMC', '<-', '-'],
+        ['regulator', 'Regulation_reactome', 'Regulation', 'HAS_REGULATOR_RGhrMC', '<-', '-', '<-', '-'],
+        ['activeUnit', 'Regulation_reactome', 'Regulation', 'HAS_ACTIVE_UNIT_RGhauMC', '<-', '-', '<-', '-'],
 
-        ['disease', 'Disease_reactome', 'Disease', 'LEADS_TO_MCltD', '-', '->'],
+        ['disease', 'Disease_reactome', 'Disease', 'LEADS_TO_MCltD', '-', '->', '-', '->'],
     ]
 
     directory = 'ComplexEdges'
@@ -172,9 +173,11 @@ def main():
         rela_name = list_element[3]
         direction1 = list_element[4]
         direction2 = list_element[5]
-        check_relationships_and_generate_file(new_relationship, node_reactome_label,
-                                              node_pharmebinet_label, directory,
-                                              rela_name, direction1, direction2)
+        direction1_integration = list_element[6]
+        direction2_integration = list_element[7]
+        check_relationships_and_generate_file(new_relationship, node_reactome_label, node_pharmebinet_label, directory,
+                                              rela_name, direction1, direction2, direction1_integration,
+                                              direction2_integration)
     cypher_file.close()
     driver.close()
 
