@@ -85,11 +85,11 @@ def generate_file_and_cypher(labels):
 
     cypher_file = open('output/cypher_edge.cypher', 'w', encoding='utf-8')
 
-    query = '''Match (p1:Protein{identifier:line.protein_id_1}), (p2:Protein{identifier:line.protein_id_2}), (a:bioGrid_interaction{interaction_id:line.interaction_id}) Create (p1)-[:INTERACTS_PiI{biogrid:'yes', source:'BioGRID', resource:['BioGRID'], url:"https://thebiogrid.org/"+line.gene_id ,license:"The MIT License"}]->(b:Interaction{ identifier:line.id, '''
+    query = f'''Match (p1:Protein{{identifier:line.protein_id_1}}), (p2:Protein{{identifier:line.protein_id_2}}), (a:bioGrid_interaction{{interaction_id:line.interaction_id}}) Create (p1)-[:INTERACTS_{pharmebinetutils.dictionary_label_to_abbreviation['Protein']}i{pharmebinetutils.dictionary_label_to_abbreviation['Interaction']}{{biogrid:'yes', source:'BioGRID', resource:['BioGRID'], url:"https://thebiogrid.org/"+line.gene_id ,license:"The MIT License"}}]->(b:Interaction{{ identifier:line.id, '''
 
-    query_update = '''Match (p1:Protein{identifier:line.protein_id_1})-[a:INTERACTS_PiI]->(m:Interaction{identifier:line.id})-[b:INTERACTS_IiP]->(p2:Protein{identifier:line.protein_id_2}), (z:bioGrid_interaction{interaction_id:line.interaction_id}) Set '''
+    query_update = f'''Match (p1:Protein{{identifier:line.protein_id_1}})-[a:INTERACTS_{pharmebinetutils.dictionary_label_to_abbreviation['Protein']}i{pharmebinetutils.dictionary_label_to_abbreviation['Interaction']}]->(m:Interaction{{identifier:line.id}})-[b:INTERACTS_{pharmebinetutils.dictionary_label_to_abbreviation['Interaction']}i{pharmebinetutils.dictionary_label_to_abbreviation['Protein']}]->(p2:Protein{{identifier:line.protein_id_2}}), (z:bioGrid_interaction{{interaction_id:line.interaction_id}}) Set '''
 
-    header = ['protein_id_1', 'protein_id_2', 'id', 'interaction_id' ,'dois', 'gene_id']
+    header = ['protein_id_1', 'protein_id_2', 'id', 'interaction_id', 'dois', 'gene_id']
     for record in results:
         head = record.data()['allfields']
         header.append(head)
@@ -109,7 +109,7 @@ def generate_file_and_cypher(labels):
             query += head + ':line.' + head + ', '
             query_update += 'm.' + head + '=line.' + head + ', '
 
-    query += " biogrid:'yes', dois:split(line.dois,'|'), source:'BioGRID', resource:['BioGRID'], url:'https://thebiogrid.org/'+line.gene_id ,license:'The MIT License',  node_edge:true})-[:INTERACTS_IiP{biogrid:'yes', source:'BioGRID', resource:['BioGRID'], url:'https://thebiogrid.org/'+line.gene_id ,license:'The MIT License'}]->(p2) Create (b)-[:equals_interaction_biogrid]->(a)"
+    query += f" biogrid:'yes', dois:split(line.dois,'|'), source:'BioGRID', resource:['BioGRID'], url:'https://thebiogrid.org/'+line.gene_id ,license:'The MIT License',  node_edge:true}})-[:INTERACTS_{pharmebinetutils.dictionary_label_to_abbreviation['Interaction']}i{pharmebinetutils.dictionary_label_to_abbreviation['Protein']}{{biogrid:'yes', source:'BioGRID', resource:['BioGRID'], url:'https://thebiogrid.org/'+line.gene_id ,license:'The MIT License'}}]->(p2) Create (b)-[:equals_interaction_biogrid]->(a)"
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               'mapping_and_merging_into_hetionet/bioGrid/' + file_name + '.tsv',
                                               query)
@@ -119,10 +119,11 @@ def generate_file_and_cypher(labels):
                                                      'mapping_and_merging_into_hetionet/bioGrid/' + file_name_update + '.tsv',
                                                      query_update)
     cypher_file.write(query_update)
+
     for label in labels:
         file_name_other = f'interaction/association_{label}.tsv'
-        query = '''Match (i:Interaction{identifier:line.interaction_id}), (c:%s{identifier:line.id}) Create (i)-[:ASSOCIATES_Ia%s{license:"The MIT License (MIT)", biogrid:"yes", source:"BioGRID", url:'https://thebiogrid.org/'+line.gene_id ,resource:["BioGRID"]}]->(c)'''
-        query = query % (label, label[0])
+        query = f'''Match (i:Interaction{{identifier:line.interaction_id}}), (c:%s{{identifier:line.id}}) Create (i)-[:ASSOCIATES_{pharmebinetutils.dictionary_label_to_abbreviation['Interaction']}a%s{{license:"The MIT License (MIT)", biogrid:"yes", source:"BioGRID", url:'https://thebiogrid.org/'+line.gene_id ,resource:["BioGRID"]}}]->(c)'''
+        query = query % (label, pharmebinetutils.dictionary_label_to_abbreviation[label])
 
         query = pharmebinetutils.get_query_import(path_of_directory,
                                                   'mapping_and_merging_into_hetionet/bioGrid/' + file_name_other,
