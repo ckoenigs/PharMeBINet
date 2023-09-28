@@ -21,7 +21,7 @@ python3 merge_and_save.py $path_to_project > output/output.txt
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-echo prepare TSV files
+echo prepare query files
 
 python3 prepare_queries.py $path_to_project > output/output.txt
 
@@ -29,28 +29,28 @@ python3 prepare_queries.py $path_to_project > output/output.txt
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-echo integrate adrecs target nodes into neo4j
+echo integrate bindingDB nodes into neo4j
 
 $path_neo4j/cypher-shell -u neo4j -p $password -f output/create_nodes.cypher 
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-echo integrate adrecs target nodes into neo4j
+echo integrate bindingDB index into neo4j
 
 $path_neo4j/cypher-shell -u neo4j -p $password -f output/create_index.cypher 
 
 sleep 20
 
-# $path_neo4j/neo4j restart
+$path_neo4j/neo4j restart
 
 
-# sleep 120
+sleep 60
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-echo integrate adrecs target rela into neo4j
+echo integrate binding db rela into neo4j
 
 $path_neo4j/cypher-shell -u neo4j -p $password -f output/create_edges.cypher 
 
