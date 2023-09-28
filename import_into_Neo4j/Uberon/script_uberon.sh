@@ -9,8 +9,11 @@ path_to_project=$2
 #password
 password=$3
 
-#download do
-wget  -O data/ext.obo "http://purl.obolibrary.org/obo/uberon/ext.obo"
+#download uberon
+# old used http://purl.obolibrary.org/obo/uberon/ext.obo 
+# I think this http://purl.obolibrary.org/obo/uberon/uberon-full.obo is similar but I will test
+wget  -O data/ext.obo "http://purl.obolibrary.org/obo/uberon/uberon-simple.obo"
+
 
 
 python3 ../EFO/transform_obo_to_tsv_and_cypher_file.py data/ext.obo Uberon uberon_extend $path_to_project > output/output_generate_integration_file.txt
