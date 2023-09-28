@@ -16,3 +16,8 @@ Match (a:Compound)-[r:DOWNREGULATES_CdG]->(b) Create (a)-[h:DOWNREGULATES_CHdG]-
 Match (a:Compound)-[r:UPREGULATES_CuG]->(b) Create (a)-[h:UPREGULATES_CHuG]->(b) Set h=r Delete r;
 Match (a:Compound)-[r:TREATS_CtD]->(b) Create (a)-[h:TREATS_CHtD]->(b) Set h=r Delete r;
 Match (a:Compound)-[r:PALLIATES_CpD]->(b) Create (a)-[h:PALLIATES_CHpD]->(b) Set h=r Delete r;
+Match ()-[n]->() Where n.source='Bgee' Set n.license='CC0 1.0';
+Match ()-[n]->() Where n.source='Bgee,TISSUES' Set n.license='CC BY 4.0 Deed';
+Match ()-[n]->() Where n.source='DOAF' Set n.license='CC BY 4.0 Deed';
+Match ()-[n]->() Where n.source='ERC' Set n.license='CC0 1.0';
+Match ()-[n]->() Where n.source='LINCS L1000' Set n.license='CC BY 4.0';
