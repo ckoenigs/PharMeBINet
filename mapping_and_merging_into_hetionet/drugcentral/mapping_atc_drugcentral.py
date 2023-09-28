@@ -7,12 +7,12 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-'''
-create a connection with neo4j
-'''
-
 
 def create_connection_with_neo4j():
+    """
+    create a connection with neo4j
+    :return:
+    """
     # set up authentication parameters and connection
     global graph_database, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
@@ -71,7 +71,6 @@ def load_atc_in():
     results = graph_database.run(query)
 
     mapped_pharma_atc = set()
-    mapped_compound_atc = set()
 
     for record in results:
         node_id = record.data()['id(n)']
@@ -89,16 +88,15 @@ def load_atc_in():
                 mapped_pharma_atc.add(node_id)
 
         elif name in dict_name_to_pc_ids:
-            atc_names = dict_name_to_pc_ids[name]
-            for atc_id in atc_names:
+            atc_codes = dict_name_to_pc_ids[name]
+            for atc_id in atc_codes:
                 if atc_id not in dict_atc_mapping[node_id]:
                     dict_atc_mapping[node_id][atc_id] = set()
                 dict_atc_mapping[node_id][atc_id].add('name')
                 mapped_pharma_atc.add(node_id)
 
-            if node_id not in mapped_compound_atc:
-                if node_id not in mapped_pharma_atc:
-                    csv_not_mapped.writerow([node_id, code, name])
+        if node_id not in mapped_pharma_atc:
+            csv_not_mapped.writerow([node_id, code, name])
 
     for node_id in mapped_pharma_atc:
         for atc_id in dict_atc_mapping[node_id]:
