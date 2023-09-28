@@ -6,12 +6,12 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-'''
-create a connection with neo4j
-'''
-
 
 def create_connection_with_neo4j():
+    """
+    create a connection with neo4j
+    :return:
+    """
     # set up authentication parameters and connection
     global graph_database, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
@@ -156,23 +156,23 @@ def load_target_in():
                 dict_target_mapping[node_id][accession_nr].add('accession')
                 mapped_target.add(node_id)
 
-            if swissProt in dict_protein_uniProt:
-                prot_id = dict_protein_uniProt[swissProt]
-                if prot_id not in dict_target_mapping[node_id]:
+        if swissProt in dict_protein_uniProt:
+            prot_id = dict_protein_uniProt[swissProt]
+            if prot_id not in dict_target_mapping[node_id]:
 
-                    if protein_name in dict_protein_name:
-                        if prot_id in dict_protein_name[protein_name]:
-                            dict_target_mapping[node_id][prot_id] = set()
-                        else:
-                            print('not same name', prot_id, node_id, swissProt)
-                            csv_not_mapped_target.writerow([node_id, accession_nr, protein_name, organism])
-                            continue
+                if protein_name in dict_protein_name:
+                    if prot_id in dict_protein_name[protein_name]:
+                        dict_target_mapping[node_id][prot_id] = set()
                     else:
-                        print('not an existing name', prot_id, node_id, swissProt)
+                        print('not same name', prot_id, node_id, swissProt)
                         csv_not_mapped_target.writerow([node_id, accession_nr, protein_name, organism])
                         continue
-                dict_target_mapping[node_id][prot_id].add('swissprot')
-                mapped_target.add(node_id)
+                else:
+                    print('not an existing name', prot_id, node_id, swissProt)
+                    csv_not_mapped_target.writerow([node_id, accession_nr, protein_name, organism])
+                    continue
+            dict_target_mapping[node_id][prot_id].add('swissprot')
+            mapped_target.add(node_id)
 
         if node_id not in mapped_target:
             # print(node_id, umls_cui, sct_id, disease_name)
