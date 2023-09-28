@@ -23,7 +23,7 @@ dict_mirbase_id_to_miRNA = {}
 dict_mirbase_id_to_pre_miRNA = {}
 
 
-def load_pharmebinet_nodes_in(label, dict_xref_to_ids, dict_id_to_resource):
+def load_pharmebinet_nodes_in(label, dict_xref_to_ids, dict_id_to_resource_and_xrefs):
     '''
     load in all miRNA/primary transcript from pharmebinet in a dictionary
     '''
@@ -33,28 +33,28 @@ def load_pharmebinet_nodes_in(label, dict_xref_to_ids, dict_id_to_resource):
     for record in results:
         node = record.data()['n']
         identifier = node['identifier']
-        dict_id_to_resource[identifier] = node['resource']
-        xrefs = node['xrefs'] if 'xrefs' in node else []
+        xrefs = set(node['xrefs']) if 'xrefs' in node else set()
         for xref in xrefs:
             if xref.startswith('miRBase:'):
                 mirbase_id = xref.rsplit(':', 1)[1]
                 pharmebinetutils.add_entry_to_dict_to_set(dict_xref_to_ids, mirbase_id, identifier)
+        dict_id_to_resource_and_xrefs[identifier] = [node['resource'], xrefs]
 
-    print('number of gene nodes in pharmebinet:', len(dict_id_to_resource))
+    print('number of gene nodes in pharmebinet:', len(dict_id_to_resource_and_xrefs))
 
 
-def generate_files(label):
+def generate_files(label, additional_condition=''):
     '''
     Generate cypher and tsv for generating the new nodes and the relationships
     '''
     file_name = f'output/mapping_{label}.tsv'
     csvfile = open(file_name, 'w', encoding='utf-8')
     writer = csv.writer(csvfile, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-    writer.writerow(['rna_id', 'mirbase_id', 'how_mapped', 'resource'])
+    writer.writerow(['rna_id', 'mirbase_id', 'how_mapped', 'resource', 'xrefs'])
 
     # generate cypher file
     cypher_file = open('output/cypher.cypher', 'a', encoding='utf-8')
-    query = f''' Match (c:RNA{{ identifier:line.rna_id}}), (n:{label}{{id:line.mirbase_id}})  Create (c)-[:equal_to_miRBase_rna]->(n) Set c.mirbase="yes", c.resource=split(line.resource,"|") '''
+    query = f''' Match (c:RNA{{ identifier:line.rna_id}}), (n:{label}{{id:line.mirbase_id}})  Create (c)-[:equal_to_miRBase_rna{{how_mapped:line.how_mapped}}]->(n) Set c.mirbase="yes", c.resource=split(line.resource,"|"), c.xrefs=split(line.xrefs,"|"), c.sequence=n.sequence {additional_condition} '''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/miRBase/{file_name}',
                                               query)
@@ -63,32 +63,35 @@ def generate_files(label):
     return writer
 
 
-def map_to_RNA(label, writer, dict_mirbase_id_to_mapped_node, dict_id_to_resource):
+def map_to_RNA(label, writer, dict_mirbase_id_to_mapped_node, dict_id_to_resource, condition=''):
     """
     map miRNABase to RNA and write into TSV file
     :param label:
     :param writer:
     :return:
     """
-    query = f'''MATCH (n:{label}) RETURN n.id, n.accession'''
+    query = f'''MATCH (n:{label}) Where (n){condition}--(:miRBase_Species{{ncbi_taxid:9606}}) RETURN n.id, n.accession, n.xrefs '''
     results = g.run(query)
 
     counter = 0
     mapped = 0
     for record in results:
         counter += 1
-        [identifier, mirbase_id] = record.values()
+        [identifier, mirbase_id, xrefs] = record.values()
+        xrefs=xrefs if not xrefs is None else []
         if mirbase_id:
             if mirbase_id in dict_mirbase_id_to_mapped_node:
                 for rna_id in dict_mirbase_id_to_mapped_node[mirbase_id]:
+                    own_xrefs=dict_id_to_resource[rna_id][1]
+                    own_xrefs=own_xrefs.union(xrefs)
                     writer.writerow([rna_id, identifier, 'mirBase_id',
-                                     pharmebinetutils.resource_add_and_prepare(dict_id_to_resource[rna_id],
-                                                                               'miRBase')])
+                                     pharmebinetutils.resource_add_and_prepare(dict_id_to_resource[rna_id][0],
+                                                                               'miRBase'), '|'.join(own_xrefs)])
                     mapped += 1
                     continue
 
-    print('number of existing',label, counter)
-    print('number of mapped ',label,  mapped)
+    print('number of existing', label, counter)
+    print('number of mapped ', label, mapped)
 
 
 def load_and_map_miRBase_rna():
@@ -97,9 +100,10 @@ def load_and_map_miRBase_rna():
     :return:
     """
     writer_mirna = generate_files('miRBase_miRNA')
-    writer_pre_mirna = generate_files('miRBase_pre_miRNA')
+    writer_pre_mirna = generate_files('miRBase_pre_miRNA', additional_condition=', c.strand=n.strand, c.fold=n.fold, c.contig_start=n.contig_start, c.contig_end=n.contig_end, c.xsome=n.xsome, c.alignment=n.alignment ')
 
-    map_to_RNA('miRBase_miRNA', writer_mirna, dict_mirbase_id_to_miRNA, dict_node_id_mirna_to_resource)
+    map_to_RNA('miRBase_miRNA', writer_mirna, dict_mirbase_id_to_miRNA, dict_node_id_mirna_to_resource,
+               condition='--(:miRBase_pre_miRNA)')
     map_to_RNA('miRBase_pre_miRNA', writer_pre_mirna, dict_mirbase_id_to_pre_miRNA, dict_node_id_pre_mirna_to_resource)
 
 
