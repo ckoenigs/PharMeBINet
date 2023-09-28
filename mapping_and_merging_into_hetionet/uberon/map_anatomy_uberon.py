@@ -24,6 +24,30 @@ def create_connection_with_neo4j():
 # treat-xrefs-as-reverse-genus-differentia with 9606
 set_human_xrefs = set(['DHBA', 'EHDAA2', 'FMA', 'HBA', 'HsapDv'])
 
+# treat-xrefs-as-reverse-genus-differentia:
+# AAO part_of NCBITaxon:8292
+#  EMAPA part_of NCBITaxon:10090
+#  FBbt part_of NCBITaxon:7227
+#  FBdv part_of NCBITaxon:7227
+#  HAO part_of NCBITaxon:7399
+#  MA part_of NCBITaxon:10090
+#  MFO part_of NCBITaxon:8089
+#  MmusDv part_of NCBITaxon:10090
+#  OlatDv part_of NCBITaxon:8089
+#  PBA part_of NCBITaxon:9443
+#  SPD part_of NCBITaxon:6893
+#  TADS part_of NCBITaxon:6939
+#  TAO part_of NCBITaxon:32443
+#  TGMA part_of NCBITaxon:44484
+#  WBbt part_of NCBITaxon:6237
+#  WBls part_of NCBITaxon:6237
+#  XAO part_of NCBITaxon:8353
+#  ZFA part_of NCBITaxon:7954
+#  ZFS part_of NCBITaxon:7954
+set_not_human_xrefs = set(
+    ['AAO', 'EMAPA', 'FBbt', 'FBdv', 'HAO', 'MA', 'MFO', 'MmusDv', 'OlatDv', 'PBA', 'SPD', 'TADS', 'TAO', 'TGMA',
+     'WBbt', 'WBls', 'XAO', 'ZFA', 'ZFS'])
+
 
 def get_properties_and_generate_tsv_files_and_cypher_file():
     """
@@ -92,7 +116,7 @@ def get_properties_and_generate_tsv_files_and_cypher_file():
                                                     query_match)
     cypher_file.write(query_match)
 
-    query = 'Match (n:Anatomy)--(:uberon_extend)-[:is_a]->(:uberon_extend)--(m:Anatomy) Create (n)-[:IS_A_AisA{uberon:"yes",  url:"http://purl.obolibrary.org/obo/"+ split(n.identifier,":")[0]+"_"+ split(n.identifier,":")[1], license:"CC BY 3.0", source:"UBERON", resource:["UBERON"]}]->(m)'
+    query = 'Match (n:Anatomy)--(:uberon_extend)-[:is_a]->(:uberon_extend)--(m:Anatomy) Create (n)-[:IS_A_AiaA{uberon:"yes",  url:"http://purl.obolibrary.org/obo/"+ split(n.identifier,":")[0]+"_"+ split(n.identifier,":")[1], license:"CC BY 3.0", source:"UBERON", resource:["UBERON"]}]->(m);\n'
     cypher_file.write(query)
 
     query = 'Match (n:Anatomy)--(:uberon_extend)-[:part_of]->(:uberon_extend)--(m:Anatomy) Create (n)-[:PART_OF_ApoA{uberon:"yes",  url:"http://purl.obolibrary.org/obo/"+ split(n.identifier,":")[0]+"_"+ split(n.identifier,":")[1], license:"CC BY 3.0", source:"UBERON", resource:["UBERON"]}]->(m)'
@@ -166,10 +190,15 @@ def add_nodes_to_different_files(results, set_not_considered_nodes, dict_nodes, 
 
         # xref check
         set_xrefs = {x.split(':')[0] for x in xrefs_uberon}
+        has_human_xref= bool(set_xrefs & set_human_xrefs)
         # consider no human nodes as next generation node but only add nodes to tsv if they are human or without reference
-        if (node_id in dict_anatomy_id_to_human and dict_anatomy_id_to_human[node_id] == False and not bool(
-                set_xrefs & set_human_xrefs)):
+        if (node_id in dict_anatomy_id_to_human and dict_anatomy_id_to_human[node_id] == False and not has_human_xref ):
             continue
+
+        # if not has human xref but xrefs from other taxonomies continue
+        if (not has_human_xref and bool(set_xrefs & set_not_human_xrefs)):
+            continue
+
         names = set(names)
         # print(type(synonyms), synonyms)
         synonyms = set(synonyms) if not synonyms is None else []
@@ -205,7 +234,8 @@ def load_all_uberon_anatomy_nodes():
     # UBERON:0001062 anatomical entity
     # UBERON:0000061  anatomical structure
     # UBERON:0000465 material anatomical entity
-    dict_level_to_ids = {level: set(['UBERON:0000061'])}
+    # UBERON:0034923 disconnected anatomical group
+    dict_level_to_ids = {level: set(['UBERON:0000061', 'UBERON:0034923'])}
     set_not_considered_nodes = dict_level_to_ids[level]
 
     counter = 0
