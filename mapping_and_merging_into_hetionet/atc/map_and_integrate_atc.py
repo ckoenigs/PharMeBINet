@@ -58,12 +58,6 @@ def load_compounds_from_database_and_add_to_dict():
 # open cypher file
 cypher_file = open('output/cypher.cypher', 'w', encoding='utf-8')
 
-# dictionary first letter to rela letters
-dict_first_letter_to_rela_letter = {
-    'P': 'PC',
-    'C': 'CH'
-}
-
 
 def write_files(path_of_directory):
     """
@@ -108,11 +102,11 @@ def write_files(path_of_directory):
     for [label_1, label_2] in [[x, y] for x in list_of_labels for y in list_of_labels]:
         query = '''MATCH p=(n:%s)--(:atc_kegg)-[]->(a:atc_kegg)--(b:%s) Merge (n)-[r:BELONGS_TO_%sbt%s]->(b) On Create Set r.source='ATC from KEGG', r.url="http://identifiers.org/atc:"+a.identifier , r.resource=['KEGG'], r.kegg='yes', r.license="Use of all or parts of the material requires reference to the WHO Collaborating Centre for Drug Statistics Methodology. Copying and distribution for commercial purposes is not allowed. Changing or manipulating the material is not allowed.";\n'''
         query = query % (
-            label_1, label_2, dict_first_letter_to_rela_letter[label_1[0]],
-            dict_first_letter_to_rela_letter[label_2[0]])
+            label_1, label_2, pharmebinetutils.dictionary_label_to_abbreviation[label_1],
+            pharmebinetutils.dictionary_label_to_abbreviation[label_2])
         cypher_file.write(query)
 
-    query = '''Match (n:PharmacologicClass{identifier:line.id}), (v:Compound{identifier:line.compound_id}) Create (v)-[:BELONGS_TO_CHbtPC{source:'ATC from KEGG', url:"http://identifiers.org/atc:"+n.id , resource:['KEGG'], kegg:'yes', license:"Use of all or parts of the material requires reference to the WHO Collaborating Centre for Drug Statistics Methodology. Copying and distribution for commercial purposes is not allowed. Changing or manipulating the material is not allowed."}]->(n)'''
+    query = f'''Match (n:PharmacologicClass{{identifier:line.id}}), (v:Compound{{identifier:line.compound_id}}) Create (v)-[:BELONGS_TO_{pharmebinetutils.dictionary_label_to_abbreviation['Chemical']}bt{pharmebinetutils.dictionary_label_to_abbreviation['PharmacologicClass']}{{source:'ATC from KEGG', url:"http://identifiers.org/atc:"+n.id , resource:['KEGG'], kegg:'yes', license:"Use of all or parts of the material requires reference to the WHO Collaborating Centre for Drug Statistics Methodology. Copying and distribution for commercial purposes is not allowed. Changing or manipulating the material is not allowed."}}]->(n)'''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/atc/{file_name_mapped}',
                                               query)
