@@ -11,15 +11,15 @@ password=$3
 
 now=$(date +"%F %T")
 echo "Current time: $now"
-echo add miRNA and pre-miRNA
-
-python3 perpare_integration_miRNA.py $path_to_project > output/dna_map.txt
-
-now=$(date +"%F %T")
-echo "Current time: $now"
 echo map genes
 
 python3 map_gene_mirbase.py $path_to_project > output/protein_map.txt
+
+now=$(date +"%F %T")
+echo "Current time: $now"
+echo map miRNA and pre-miRNA
+
+python3 map_rna_mirbase.py $path_to_project > output/dna_map.txt
 
 echo integrate connection with neo4j shell
 now=$(date +"%F %T")
