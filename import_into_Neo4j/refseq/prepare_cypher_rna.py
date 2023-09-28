@@ -20,7 +20,7 @@ list_of_labels = ["refSeq_PrimaryTranscript",
 file = open('cypher_add_label.cypher', 'w', encoding='utf-8')
 
 for label in list_of_labels:
-    query = f'Match (n:{label}) Set n:refseq_RNA ;\n'
+    query = f'Match (n:{label}) Set n:refSeq_RNA ;\n'
     file.write(query)
 
 file.close()
