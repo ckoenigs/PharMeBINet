@@ -7,19 +7,19 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-'''
-create a connection with neo4j
-'''
-
 
 def create_connection_with_neo4j():
+    """
+    create a connection with neo4j
+    :return:
+    """
     # set up authentication parameters and connection
     global graph_database, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
     graph_database = driver.session()
 
 
-# dictionary
+# dictionary for map to disease
 dict_disease_doid = {}
 dict_disease_umls_cui = {}
 dict_disease_set_id = {}
@@ -31,6 +31,7 @@ dict_disease_icd10_id = {}
 dict_diseaseId_to_resource = {}
 dict_disease_name = {}
 
+# dictionary to map to symptom
 dict_symptomId_to_resource = {}
 dict_symptom_umls_cui = {}
 dict_symptom_set_id = {}
@@ -44,11 +45,13 @@ dict_doi_symptom_mapping = defaultdict(dict)
 
 
 def load_disease_in():
+    """
+    Load disease nodes and write information into dictionaries
+    :return:
+    """
     # query ist ein String
     query = '''MATCH (n:Disease) RETURN n'''
-    # Where not (n:ExternalOntology)
     # graph_database.run(query) führt den Befehl aus query aus, Ergebnisse sind in results als Liste gespeichert
-    # n.synonyms als liste durchlaufen und vergleichen um letzten Hit noch zu bekommen?!
     results = graph_database.run(query)
 
     # results werden einzeln durchlaufen
@@ -62,7 +65,7 @@ def load_disease_in():
         names = node["synonyms"] if "synonyms" in node else []
 
         if not names:
-            names = dis_name
+            names = [dis_name]
         else:
             names.append(dis_name)
 
@@ -142,6 +145,10 @@ def load_disease_in():
 
 
 def load_symptom_in():
+    """
+    Load symptoms and write information into dictionaries
+    :return:
+    """
     query = '''MATCH (n:Symptom) RETURN n'''
     results = graph_database.run(query)
 
@@ -153,7 +160,7 @@ def load_symptom_in():
         names = node["synonyms"] if "synonyms" in node else []
 
         if not names:
-            names = sym_name
+            names = [sym_name]
         else:
             names.append(sym_name)
 
@@ -187,11 +194,8 @@ def load_symptom_in():
             name = name.lower()
             if name not in dict_symptom_name:
                 dict_symptom_name[name] = set()
+
             dict_symptom_name[name].add(identifier)
-
-
-omop_umls_cui = set()
-omop_snomed_id = set()
 
 
 def load_omopConcept_in():
@@ -205,16 +209,14 @@ def load_omopConcept_in():
         node = record.data()['n']
         node_id = record.data()['id(n)']
         umls_cui = node["umls_cui"] if "umls_cui" in node else ""
-        concept_id= node['concept_id']
-        is_mapped=False
+        concept_id = node['concept_id']
+        is_mapped = False
         # 40249495 got a wrong umls cui
-        if umls_cui and concept_id!='40249495':
-            omop_umls_cui.add(umls_cui)
+        if umls_cui and concept_id != '40249495':
 
             # mapping to disease
-
             if umls_cui in dict_disease_umls_cui:
-                is_mapped=True
+                is_mapped = True
                 diseases = dict_disease_umls_cui[umls_cui]
                 for disease_id in diseases:
                     if node_id not in dict_disease_mapping[node_id]:
@@ -226,7 +228,7 @@ def load_omopConcept_in():
                 continue
 
             if umls_cui in dict_symptom_umls_cui:
-                is_mapped=True
+                is_mapped = True
                 symptoms = dict_symptom_umls_cui[umls_cui]
                 for symptom_id in symptoms:
                     if node_id not in dict_symptom_mapping[node_id]:
@@ -238,10 +240,9 @@ def load_omopConcept_in():
 
         sct_id = node["snomed_concept_id"] if "snomed_concept_id" in node else ""
         if sct_id:
-            omop_snomed_id.add(sct_id)
 
             if sct_id in dict_disease_set_id:
-                is_mapped=True
+                is_mapped = True
                 diseases = dict_disease_set_id[sct_id]
                 for disease_id in diseases:
                     if node_id not in dict_disease_mapping[node_id]:
@@ -253,7 +254,7 @@ def load_omopConcept_in():
                 continue
 
             if sct_id in dict_symptom_set_id:
-                is_mapped=True
+                is_mapped = True
                 symptoms = dict_symptom_set_id[sct_id]
                 for symptom_id in symptoms:
                     if node_id not in dict_symptom_mapping[node_id]:
@@ -266,7 +267,7 @@ def load_omopConcept_in():
         disease_name = node["concept_name"].lower()
 
         if disease_name in dict_disease_name:
-            is_mapped=True
+            is_mapped = True
             diseases = dict_disease_name[disease_name]
             for disease_id in diseases:
                 if node_id not in dict_disease_mapping[node_id]:
@@ -277,19 +278,19 @@ def load_omopConcept_in():
             if is_mapped:
                 continue
 
-            # mapping to symptome
+        # mapping to symptome
 
-            if disease_name in dict_symptom_name:
-                is_mapped=True
-                symptoms = dict_symptom_name[disease_name]
-                for symptom_id in symptoms:
-                    if node_id not in dict_symptom_mapping[node_id]:
-                        dict_symptom_mapping[node_id][symptom_id] = set()
-                    dict_symptom_mapping[node_id][symptom_id].add('name')
-                    mapped_symptoms.add(node_id)
+        if disease_name in dict_symptom_name:
+            is_mapped = True
+            symptoms = dict_symptom_name[disease_name]
+            for symptom_id in symptoms:
+                if node_id not in dict_symptom_mapping[node_id]:
+                    dict_symptom_mapping[node_id][symptom_id] = set()
+                dict_symptom_mapping[node_id][symptom_id].add('name')
+                mapped_symptoms.add(node_id)
 
-            if not is_mapped:
-                csv_not_mapped.writerow([node_id, umls_cui, sct_id, disease_name])
+        if not is_mapped:
+            csv_not_mapped.writerow([node_id, umls_cui, sct_id, disease_name])
 
     for node_id in mapped_diseases:
         for disease_id in dict_disease_mapping[node_id]:
@@ -329,10 +330,6 @@ def load_DOTerm_in():
     mapped_diseases = set()
     mapped_symptoms = set()
 
-    counter_umls_yes = 0
-    counter_snomed_yes = 0
-    counter_neither = 0
-
     for record in results:
         identifier = record.data()['id(n)']
         node = record.data()['n']
@@ -355,8 +352,6 @@ def load_DOTerm_in():
             if xref == 'UMLS_CUI':
                 umls_cuis = dict_doTermID_to_xref[identifier][xref]
                 for umls_cui in umls_cuis:
-                    if umls_cui in omop_umls_cui:
-                        counter_umls_yes += 1
                     if umls_cui in dict_disease_umls_cui:
                         diseases = dict_disease_umls_cui[umls_cui]
                         for disease_id in diseases:
@@ -377,8 +372,6 @@ def load_DOTerm_in():
             if xref == 'SNOMEDCT_US_2019_09_01':
                 sct_ids = dict_doTermID_to_xref[identifier][xref]
                 for sct_id in sct_ids:
-                    if sct_id in omop_snomed_id:
-                        counter_snomed_yes += 1
                     if sct_id in dict_disease_set_id:
                         diseases = dict_disease_set_id[sct_id]
                         for disease_id in diseases:
@@ -464,9 +457,6 @@ def load_DOTerm_in():
 
         if identifier not in mapped_diseases:
             csv_not_mapped_doid.writerow([identifier, doid_id])
-
-    print("umls match: ", counter_umls_yes)
-    print("snomed match: ", counter_snomed_yes)
 
     for node_id in mapped_diseases:
         for disease_id in dict_doi_disease_mapping[node_id]:
