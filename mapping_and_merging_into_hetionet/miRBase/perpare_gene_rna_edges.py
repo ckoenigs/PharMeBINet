@@ -5,43 +5,90 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-'''
-create connection to neo4j and mysql
-'''
-
 
 def create_connection_with_neo4j():
     # create connection with neo4j
-    # authenticate("localhost:7474", "neo4j", "test")
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
     g = driver.session()
 
 
-def prepare_edge():
+def load_existing_pairs(label, rela_type, dictionary, direction_left=''):
+    """
+    Load all pairs of a specific RNA-labe-edge type into a dictionary
+    :param label:
+    :param rela_type:
+    :param dictionary:
+    :return:
+    """
+    query = f'Match (m:{label}){direction_left}-[r:{rela_type}]-(n:RNA) Return m.identifier, n.identifier, r.resource'
+    results = g.run(query)
+    for result in results:
+        [node_id, rna_id, resource] = result.values()
+        dictionary[(node_id, rna_id)] = resource
+
+
+def prepare_edge(label, mirbase_label, dict_pair_to_resource):
     """
     perpare rela tsv and cypher file and query
     :return:
     """
-    file_name = 'output/edge_rna_gene.tsv'
-    file = open(file_name, 'w', encoding='utf-8')
-    csv_writer = csv.writer(file, delimiter='\t')
-    csv_writer.writerow(['identifier', 'pre_id'])
-    query = '''MATCH (n:Gene)--(:miRBase_Gene)-[rela]-(m:miRBase_pre_miRNA) Where (m)--(:miRBase_Species{ncbi_taxid:9606}) RETURN  n.identifier,  m.id  '''
-    results = g.run(query)
+    file_name = f'output/edge_rna_{label.lower()}.tsv'
+    with open(file_name, 'w', encoding='utf-8') as file:
+        csv_writer = csv.writer(file, delimiter='\t')
+        csv_writer.writerow(['identifier', 'rna_id', 'resource', 'mirbase_id','from','to'])
+        query = f'''MATCH (n:{label})--(:{mirbase_label})-[rela]-(h:miRBase_pre_miRNA)--(m:RNA) RETURN  n.identifier,  m.identifier, h.accession , rela '''
+        print(query)
+        results = g.run(query)
 
-    counter = 0
-    for record in results:
-        [identifier, pre_id] = record.values()
-        csv_writer.writerow([identifier, pre_id])
-        counter += 1
+        counter = 0
+        for record in results:
+            [identifier, rna_id, pre_id, rela] = record.values()
+            if (identifier, rna_id) in dict_pair_to_resource:
+                csv_writer.writerow([identifier, rna_id, pharmebinetutils.resource_add_and_prepare(
+                    dict_pair_to_resource[(identifier, rna_id)], 'miRBase'), pre_id, rela['from'], rela['to']])
+            else:
+                csv_writer.writerow([identifier, rna_id, '', pre_id, rela['from'], rela['to']])
+            counter += 1
 
     print('number of edges', counter)
+    return file_name
 
-    with open('output/cypher_edge.cypher', 'a', encoding='utf-8') as cypher_file_edge:
-        query = 'MATCH (n:Gene{identifier:line.identifier}),(m:pre_miRNA{identifier:line.pre_id}) Create (n)-[:TRANSCRIBES_TO_GttR{from:line.from, to:line.to, source:"miRBase", resource:["miRBase"], license:"CC0 with attribution", url:"https://www.mirbase.org/cgi-bin/mirna_entry.pl?acc="+line.pre_id, mirbase:"yes"}]->(m)'
+
+def prepare_mapping_and_file(label, rela_type, mirbase_label, direction_left=''):
+    # dictionary pair to resource
+    dict_pair_to_resource = {}
+    print('#' * 20)
+    print(datetime.datetime.now())
+    print('load all pairs')
+
+    load_existing_pairs(label, rela_type, dict_pair_to_resource, direction_left=direction_left)
+
+    print('#' * 20)
+    print(datetime.datetime.now())
+    print('load all pairs of mirbase, map them and write into file')
+    file_name = prepare_edge(label, mirbase_label, dict_pair_to_resource)
+
+    return file_name
+
+
+def prepare_cypher_file(gene_file, rna_file):
+    """
+    Prepare cypher file with gene-rna and rna-rna queries.
+    :param gene_file:
+    :param rna_file:
+    :return:
+    """
+    with open('output/cypher_edge.cypher', 'w', encoding='utf-8') as cypher_file_edge:
+        query = 'MATCH (n:Gene{identifier:line.identifier}),(m:RNA{identifier:line.rna_id}) Merge (n)-[l:TRANSCRIBES_TO_GttR]->(m) On Create Set l.from=line.from, l.to=line.to, l.source="miRBase", l.resource=["miRBase"], l.license="CC0 with attribution", l.url="https://www.mirbase.org/hairpin/"+line.mirbase_id, l.mirbase="yes" On Match Set l.resource=split(line.resource,"|"), l.mirbase="yes" '
         query = pharmebinetutils.get_query_import(path_of_directory,
-                                                  f'mapping_and_merging_into_hetionet/miRBase/{file_name}',
+                                                  f'mapping_and_merging_into_hetionet/miRBase/{gene_file}',
+                                                  query)
+        cypher_file_edge.write(query)
+
+        query = 'MATCH (n:RNA{identifier:line.identifier}),(m:RNA{identifier:line.rna_id}) Merge (n)<-[l:CLEAVES_TO_RctR]-(m) On Create Set l.from=line.from, l.to=line.to, l.source="miRBase", l.resource=["miRBase"], l.license="CC0 with attribution", l.url="https://www.mirbase.org/hairpin/"+line.mirbase_id, l.mirbase="yes" On Match Set l.resource=split(line.resource,"|"), l.mirbase="yes" '
+        query = pharmebinetutils.get_query_import(path_of_directory,
+                                                  f'mapping_and_merging_into_hetionet/miRBase/{rna_file}',
                                                   query)
         cypher_file_edge.write(query)
 
@@ -67,9 +114,25 @@ def main():
         '###########################################################################################################################')
 
     print(datetime.datetime.now())
-    print('Map generate tsv and cypher file ')
+    print('Load pairs, generate tsv file and map gene-rna ')
 
-    prepare_edge()
+    file_name_gene = prepare_mapping_and_file('Gene', 'TRANSCRIBES_TO_GttR', 'miRBase_Gene')
+
+    print(
+        '###########################################################################################################################')
+
+    print(datetime.datetime.now())
+    print('Load pairs, generate tsv file and map rna-rna ')
+
+    file_name_RNA = prepare_mapping_and_file('RNA', 'CLEAVES_TO_RctR', 'miRBase_miRNA', direction_left='<')
+
+    print(
+        '###########################################################################################################################')
+
+    print(datetime.datetime.now())
+    print('Generate cypher file')
+
+    prepare_cypher_file(file_name_gene, file_name_RNA)
 
     driver.close()
 
