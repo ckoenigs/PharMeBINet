@@ -7,22 +7,25 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-'''
-create a connection with neo4j
-'''
-
 
 def create_connection_with_neo4j():
+    """
+    create a connection with neo4j
+    :return:
+    """
     # set up authentication parameters and connection
     global graph_database, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
     graph_database = driver.session()
 
 
+# dictionary pc id to resource
 dict_PharmaClassId_to_resource = {}
+# dictionary mesh cui to pc identifiers
 dict_pharma_mesh_cui = {}
-set_pharma_fda = set()
+# dictionary name to pc identifiers
 dict_pharma_name = {}
+# dictionary node id to dictionary pc id to set of mapping methods
 dict_pharma_mapping = defaultdict(dict)
 
 
@@ -48,7 +51,6 @@ def load_pharmacological_class_in():
             names.append(pharma_name)
 
         dict_PharmaClassId_to_resource[identifier] = resource
-        set_pharma_fda.add(identifier)
 
         for ref in xrefs:
             # Mesh
@@ -92,7 +94,7 @@ def load_pharmaClass_in():
                     dict_pharma_mapping[node_id][pharma_class_id].add('mesh')
 
         if source == "FDA":
-            if code in set_pharma_fda:
+            if code in dict_PharmaClassId_to_resource:
                 if code not in dict_pharma_mapping[node_id]:
                     dict_pharma_mapping[node_id][code] = set()
                 dict_pharma_mapping[node_id][code].add('fda')
@@ -107,7 +109,6 @@ def load_pharmaClass_in():
         for synonym in synonyms:
             synonym = synonym.lower()
             if synonym in dict_pharma_name:
-                print("!!!!!")
                 pharma_classes = dict_pharma_name[synonym]
                 for pharma_class_id in pharma_classes:
                     if pharma_class_id not in dict_pharma_mapping[node_id]:
@@ -115,16 +116,14 @@ def load_pharmaClass_in():
                     dict_pharma_mapping[node_id][pharma_class_id].add('synonym')
 
         if node_id not in dict_pharma_mapping:
-
             csv_not_mapped.writerow([node_id, code, source, name])
 
     for node_id, dict_pc_to_methods in dict_pharma_mapping.items():
         for pharma_id, methods in dict_pc_to_methods.items():
             methods = '|'.join(methods)
-            resource = set(dict_PharmaClassId_to_resource[pharma_id])
-            resource.add('DrugCentral')
-            resource = '|'.join(resource)
-            csv_mapped.writerow([node_id, pharma_id, resource, methods])
+            csv_mapped.writerow([node_id, pharma_id,
+                                 pharmebinetutils.resource_add_and_prepare(dict_PharmaClassId_to_resource[pharma_id],
+                                                                           'DrugCentral'), methods])
 
 
 # file for mapped or not mapped identifier
@@ -190,7 +189,7 @@ def main():
 
     generate_cypher_file('mapped_pharmaClass.tsv')
 
-    print(20*'##')
+    print(20 * '##')
 
     print(datetime.datetime.utcnow())
 
