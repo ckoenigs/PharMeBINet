@@ -125,7 +125,7 @@ def prepare_edge():
     file = open(file_name, 'w', encoding='utf-8')
     csv_writer = csv.writer(file, delimiter='\t')
     csv_writer.writerow(['pre_id', 'mirna_id', 'start', 'end','strand', 'source' ,'url'])
-    query = '''MATCH p=(n:refseq_RNA)-[r]->(m:refseq_RNA) RETURN  n.id, m.id,r.start, r.end, r.strand, r.source  '''
+    query = '''MATCH p=(n:refSeq_RNA)-[r]->(m:refSeq_RNA) RETURN  n.id, m.id,r.start, r.end, r.strand, r.source  '''
     results = g.run(query)
 
     counter = 0
