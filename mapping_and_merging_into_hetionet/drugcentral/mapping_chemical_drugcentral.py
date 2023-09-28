@@ -7,12 +7,12 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-'''
-create a connection with neo4j
-'''
-
 
 def create_connection_with_neo4j():
+    """
+    create a connection with neo4j
+    :return:
+    """
     # set up authentication parameters and connection
     global graph_database, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
@@ -30,6 +30,10 @@ parentMol_mapping = defaultdict(dict)
 
 
 def load_chemicals_in():
+    """
+    Load all chemicals and write information into dictionaries
+    :return:
+    """
     query = '''MATCH (n:Chemical) RETURN n.identifier, n.inchikey, n.name, n.smiles, n.resource, n.synonyms, n.inchi'''
     results = graph_database.run(query)
 
@@ -68,6 +72,10 @@ dict_structureID_to_xref = defaultdict(lambda: defaultdict(set))
 
 
 def load_structure_external_ref_in():
+    """
+    Get the DC identifiers for each structure in dictionary
+    :return:
+    """
     query = '''MATCH (n:DC_Identifier)--(m:DC_Structure) RETURN id(m), n.type, n.identifier'''
     results = graph_database.run(query)
 
@@ -78,8 +86,11 @@ def load_structure_external_ref_in():
         dict_structureID_to_xref[structure_id][xref_type].add(xref_identifier)
 
 
-# mappping of structure to chmical
 def load_structure_in():
+    """
+    mappping of structure to chemical
+    :return:
+    """
     query = '''MATCH (n:DC_Structure) RETURN id(n), n.inchikey, n.smiles, n.name'''
     results = graph_database.run(query)
 
@@ -140,15 +151,16 @@ def load_structure_in():
         for chem_id in chemical_mapping[ident]:
             methods = list(chemical_mapping[ident][chem_id])
             methods = '|'.join(methods)
-            # chemical_id = dict_nodes_to_chemical[chem_id]
-            resource = set(dict_chemical_to_resource[chem_id])
-            resource.add('DrugCentral')
-            resource = '|'.join(resource)
-            csv_mapped_chemical.writerow([ident, chem_id, resource, methods])
+            csv_mapped_chemical.writerow([ident, chem_id,
+                                          pharmebinetutils.resource_add_and_prepare(dict_chemical_to_resource[chem_id],
+                                                                                    'DrugCentral'), methods])
 
 
-# mapping of parentmol to chemical
 def load_parent_drug_molecule_in():
+    """
+    mapping of parentmol to chemical
+    :return:
+    """
     query = '''MATCH (n:DC_ParentDrugMolecule) RETURN n, id(n)'''
     results = graph_database.run(query)
 
@@ -161,14 +173,13 @@ def load_parent_drug_molecule_in():
         inchikey = node["inchikey"] if "inchikey" in node else ''
         smiles = node["smiles"] if "smiles" in node else ''
 
-
         is_mapped = False
 
         # inchi
         if inchi:
             # inchis = inchi.split('=', 1)
             if inchi in dict_chemical_inchi:
-                is_mapped=True
+                is_mapped = True
                 chemicals = dict_chemical_inchi[inchi]
                 for chemical_id in chemicals:
                     if chemical_id not in parentMol_mapping[node_id]:
@@ -193,7 +204,7 @@ def load_parent_drug_molecule_in():
         # smiles
         if smiles:
             if smiles in dict_chemical_smiles:
-                is_mapped=True
+                is_mapped = True
                 chemicals = dict_chemical_smiles[smiles]
                 for chemical_id in chemicals:
                     if chemical_id not in parentMol_mapping[node_id]:
