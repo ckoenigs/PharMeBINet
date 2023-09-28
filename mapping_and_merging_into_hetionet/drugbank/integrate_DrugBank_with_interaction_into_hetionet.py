@@ -58,6 +58,8 @@ def get_properties_and_generate_tsv_files():
     result = g.run(query)
     for record in result:
         property = record.data()['l']
+        if property=='hetionet':
+            continue
         old_properties.append(property)
 
     # fill the list with all properties in drugbank and not in pharmebinet
