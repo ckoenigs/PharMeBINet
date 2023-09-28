@@ -21,20 +21,7 @@ def create_connection_with_neo4j():
 dict_uniprot_id_to_resource = {}
 
 # dictionary alternative uniprot id to uniprot ids
-dict_alternativ_uniprot_id_to_identifiers = {}
-
-
-def add_entry_to_dictionary(dictionary, key, value):
-    """
-    prepare entry in dictionary if not exists. Then add new value.
-    :param dictionary: dictionary
-    :param key: string
-    :param value: string
-    :return:
-    """
-    if key not in dictionary:
-        dictionary[key] = set()
-    dictionary[key].add(value)
+dict_alternative_uniprot_id_to_identifiers = {}
 
 
 def generate_files(label, cypher_file):
@@ -80,7 +67,8 @@ def load_protein_and_add_to_dictionary():
         dict_uniprot_id_to_resource[identifier] = node['resource']
         alternative_ids = node['alternative_ids'] if 'alternative_ids' in node else []
         for alternative_id in alternative_ids:
-            add_entry_to_dictionary(dict_alternativ_uniprot_id_to_identifiers, alternative_id, identifier)
+            pharmebinetutils.add_entry_to_dict_to_set(dict_alternative_uniprot_id_to_identifiers, alternative_id,
+                                                      identifier)
         gene_symbols = node['gene_name'] if 'gene_name' in node else []
 
     print('number of proteins:', len(dict_uniprot_id_to_resource))
@@ -115,19 +103,13 @@ def load_gene_and_add_to_dictionary():
         pharmebinetutils.add_entry_to_dict_to_set(dict_unique_gene_symbol_to_gene_ids, gene_symbol.lower(), identifier)
         gene_symbols = node['gene_symbols'] if 'gene_symbols' in node else []
         for gene_symbol in gene_symbols:
-            add_entry_to_dictionary(dict_symbol_to_gene_ids, gene_symbol.lower(), identifier)
+            pharmebinetutils.add_entry_to_dict_to_set(dict_symbol_to_gene_ids, gene_symbol.lower(), identifier)
 
         synonyms = node['synonyms'] if 'synonyms' in node else []
         for synonym in synonyms:
-            add_entry_to_dictionary(dict_synonyms_to_gene_ids, synonym.lower(), identifier)
+            pharmebinetutils.add_entry_to_dict_to_set(dict_synonyms_to_gene_ids, synonym.lower(), identifier)
 
     print('number of gene:', len(dict_gene_id_to_resource))
-
-
-def resource(resource):
-    resource = set(resource)
-    resource.add('GO')
-    return '|'.join(resource)
 
 
 '''
@@ -152,11 +134,14 @@ def load_all_protein_form_go_and_map_and_write_to_file():
         identifier = node['identifier']
         if identifier in dict_uniprot_id_to_resource:
             tsv_writer.writerow(
-                [identifier, identifier, resource(dict_uniprot_id_to_resource[identifier]), 'id_mapped'])
-        elif identifier in dict_alternativ_uniprot_id_to_identifiers:
-            for real_id in dict_alternativ_uniprot_id_to_identifiers[identifier]:
+                [identifier, identifier,
+                 pharmebinetutils.resource_add_and_prepare(dict_uniprot_id_to_resource[identifier], 'GO'), 'id_mapped'])
+        elif identifier in dict_alternative_uniprot_id_to_identifiers:
+            for real_id in dict_alternative_uniprot_id_to_identifiers[identifier]:
                 tsv_writer.writerow(
-                    [identifier, real_id, resource(dict_uniprot_id_to_resource[real_id]), 'alt_id_mapped'])
+                    [identifier, real_id,
+                     pharmebinetutils.resource_add_and_prepare(dict_uniprot_id_to_resource[real_id], 'GO'),
+                     'alt_id_mapped'])
         else:
             counter_not_mapped += 1
             tsv_not_mapped.writerow([identifier, node['name']])
@@ -167,16 +152,23 @@ def load_all_protein_form_go_and_map_and_write_to_file():
         if symbol in dict_unique_gene_symbol_to_gene_ids:
             count_mapped_symbol += 1
             for gene_id in dict_unique_gene_symbol_to_gene_ids[symbol]:
-                tsv_writer_gene.writerow([identifier, gene_id, resource(dict_gene_id_to_resource[gene_id]), 'unique_symbol'])
+                tsv_writer_gene.writerow(
+                    [identifier, gene_id,
+                     pharmebinetutils.resource_add_and_prepare(dict_gene_id_to_resource[gene_id], 'GO'),
+                     'unique_symbol'])
         elif symbol in dict_symbol_to_gene_ids:
             count_mapped_symbol += 1
             for gene_id in dict_symbol_to_gene_ids[symbol]:
-                tsv_writer_gene.writerow([identifier, gene_id, resource(dict_gene_id_to_resource[gene_id]), 'symbol'])
+                tsv_writer_gene.writerow([identifier, gene_id,
+                                          pharmebinetutils.resource_add_and_prepare(dict_gene_id_to_resource[gene_id],
+                                                                                    'GO'), 'symbol'])
         elif symbol in dict_synonyms_to_gene_ids:
             count_mapped_symbol += 1
             for gene_id in dict_synonyms_to_gene_ids[symbol]:
                 tsv_writer_gene.writerow(
-                    [identifier, gene_id, resource(dict_gene_id_to_resource[gene_id]), 'symbol_with_synonyms'])
+                    [identifier, gene_id,
+                     pharmebinetutils.resource_add_and_prepare(dict_gene_id_to_resource[gene_id], 'GO'),
+                     'symbol_with_synonyms'])
         else:
             count_not_mapped_gene += 1
             tsv_not_mapped_gene.writerow([identifier, symbol])
