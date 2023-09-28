@@ -35,6 +35,7 @@ def load_all_proteins():
         [identifier] = record.values()
         set_protein_identifier.add(identifier)
 
+
 # dictionary label to url
 dict_label_to_url = {
     'Metabolite': 'https://go.drugbank.com/metabolites/',
@@ -52,13 +53,18 @@ def prepare_cypher_query_rela(file_name, label, direction):
     :return:
 
     """
-    query_new = f' Match (n:Reaction{{identifier:line.reaction_id}}), (m:%s{{identifier:line.other_id}}) Create (n)%s[:%s{{url:"{dict_label_to_url[label]}"+line.drugbank_id, license:"%s", source:"DrugBank", resource:["DrugBank"]}}]%s(m)'
+    query_new = f' Match (n:Reaction{{identifier:line.reaction_id}}), (m:%s{{identifier:line.other_id}}) Create (n)%s[:%s{{url:"{dict_label_to_url[label]}"+line.drugbank_id, license:"%s", source:"DrugBank", drugbank:"yes", resource:["DrugBank"]}}]%s(m)'
+    abbreviation = pharmebinetutils.dictionary_label_to_abbreviation[label] if label != 'Compound' else 'CH'
     if direction == 'right':
-        query_new = query_new % (label, '-', 'RESULTS_IN_Rri' + label[0], license, '->')
+        query_new = query_new % (label, '<-',
+                                 f'IS_OUTPUT_OF_{abbreviation}ioo' + pharmebinetutils.dictionary_label_to_abbreviation[
+                                     'ReactionLikeEvent'], license, '-')
     elif direction == 'left':
-        query_new = query_new % (label, '<-', 'INPUT_' + label[0] + 'iR', license, '-')
+        query_new = query_new % (label, '<-', 'IS_INPUT_OF_' + abbreviation + 'iio' +
+                                 pharmebinetutils.dictionary_label_to_abbreviation['ReactionLikeEvent'], license, '-')
     else:
-        query_new = query_new % (label, '<-', 'TAKES_PART_IN_' + label[0] + 'tpiR', license, '-')
+        query_new = query_new % (label, '<-', 'TAKES_PART_IN_' + abbreviation + 'tpi' +
+                                 pharmebinetutils.dictionary_label_to_abbreviation['ReactionLikeEvent'], license, '-')
     query_new = pharmebinetutils.get_query_import(path_of_directory,
                                                   f'mapping_and_merging_into_hetionet/drugbank/{file_name}',
                                                   query_new)
@@ -81,7 +87,7 @@ def create_files():
     csv_writer = csv.writer(file, delimiter='\t')
     csv_writer.writerow(['identifier'])
 
-    query = ' Match (m:Reaction_DrugBank{identifier:line.identifier})  Create (m)<-[:equal_to_reaction_drugbank]-(n:Reaction{identifier:line.identifier, license:m.license, sequence:m.sequence, node_edge:true, url:"https://go.drugbank.com/drugs/"+m.start_drugbank_id, source:"DrugBank", resource:["DrugBank"], drugbank:"yes" })'
+    query = ' Match (m:Reaction_DrugBank{identifier:line.identifier})  Create (m)<-[:equal_to_reaction_drugbank]-(n:Reaction :ReactionLikeEvent{identifier:line.identifier, license:m.license, sequence:m.sequence, node_edge:true, url:"https://go.drugbank.com/drugs/"+m.start_drugbank_id, source:"DrugBank", resource:["DrugBank"], drugbank:"yes" })'
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               f'mapping_and_merging_into_hetionet/drugbank/{file_name}',
                                               query)
