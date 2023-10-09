@@ -5,6 +5,8 @@ import csv
 sys.path.append("../..")
 import pharmebinetutils
 
+csv.field_size_limit(137261)
+
 # cypher file for all nodes
 cypher_file_nodes = open('cypher/nodes_1.cypher', 'w', encoding='utf-8')
 # cypher file for all relationships
@@ -724,9 +726,9 @@ def main():
     reduced = False
     if len(sys.argv) == 2:
         path_of_ctd_data = sys.argv[1]
-    elif len(sys.argv) > 1:
+    elif len(sys.argv) > 2:
         path_of_ctd_data = sys.argv[1]
-        reduced = True
+        reduced = bool(sys.argv[2])
     else:
         sys.exit('need a path to ctd data and maybe reduced True')
 
