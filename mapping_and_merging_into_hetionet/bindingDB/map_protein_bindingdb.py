@@ -97,7 +97,7 @@ def load_all_bindingDB_polymer_and_finish_the_files(csv_mapping):
     Load all variation sort the ids into the right tsv, generate the queries, and add rela to the rela tsv
     """
 
-    query = "MATCH (n:POLYMER_AND_NAMES) RETURN n"
+    query = "MATCH (n:POLYMER_AND_NAMES) WHERE n.scientific_name ='Homo sapiens' or (n.scientific_name is null and tolower(n.source_organism) in ['human', 'human sapiens (human)', 'homo sapiens', 'homo sapiens (human)']) RETURN n"
     results = g.run(query)
     counter_not_mapped = 0
     counter_all = 0
@@ -137,50 +137,44 @@ def load_all_bindingDB_polymer_and_finish_the_files(csv_mapping):
             continue
         if 'display_name' in node:
             name = node['display_name']
-            if 'source_organism' in node:
-                nature = node['source_organism']
-                if 'homo' in nature.lower() and name in dict_name_to_id:
-                    found_mapping = True
-                    for id in dict_name_to_id[name]:
-                        csv_mapping.writerow(
-                            [polymerid, id,
-                            pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[id],
-                                                                       "BindingDB"),
-                            'name'])
-                    print("found name mapping")
+            if name in dict_name_to_id:
+                found_mapping = True
+                for id in dict_name_to_id[name]:
+                    csv_mapping.writerow(
+                        [polymerid, id,
+                        pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[id],
+                                                                   "BindingDB"),
+                        'name'])
+                print("found name mapping")
         if found_mapping:
             continue
         # if 'sequence' in node:
         #     sequence = node['sequence']
         #     sequence = sequence.replace("\n", "").replace(" ", "")
-        #     if 'source_organism' in node:
-        #         nature = node['source_organism']
-        #         if 'homo' in nature.lower() and sequence in dict_sequence_to_id:
-        #             found_mapping = True
-        #             for id in dict_sequence_to_id[sequence]:
-        #                 csv_mapping.writerow(
-        #                     [polymerid, id,
-        #                     pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[id],
-        #                                                                "BindingDB"),
-        #                     'sequence'])
-        #             print("found sequence mapping")
+        #     if sequence in dict_sequence_to_id:
+        #         found_mapping = True
+        #         for id in dict_sequence_to_id[sequence]:
+        #             csv_mapping.writerow(
+        #                 [polymerid, id,
+        #                 pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[id],
+        #                                                            "BindingDB"),
+        #                 'sequence'])
+        #         print("found sequence mapping")
         # if found_mapping:
         #     continue
 
         synonyms = node['synonyms'] if 'synonyms' in node else []
         for synonym in synonyms:
             synonym = synonym.lower()
-            if 'source_organism' in node:
-                nature = node['source_organism']
-                if 'homo' in nature.lower() and synonym in dict_synonyms_to_id:
-                    found_mapping = True
-                    for id in dict_synonyms_to_id[synonym]:
-                        csv_mapping.writerow(
-                            [polymerid, id,
-                            pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[id],
-                                                                       "BindingDB"),
-                            'synonyms'])
-                    print("found synonym mapping")
+            if synonym in dict_synonyms_to_id:
+                found_mapping = True
+                for id in dict_synonyms_to_id[synonym]:
+                    csv_mapping.writerow(
+                        [polymerid, id,
+                        pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[id],
+                                                                   "BindingDB"),
+                        'synonyms'])
+                print("found synonym mapping")
 
         if not found_mapping:
             counter_not_mapped += 1
