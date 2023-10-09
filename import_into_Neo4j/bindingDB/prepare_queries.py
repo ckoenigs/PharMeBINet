@@ -5,6 +5,8 @@ import sys
 sys.path.append("../..")
 import pharmebinetutils
 
+additional_to_label = 'bindingDB'
+
 tables = ['ARTICLE', 'ASSAY', 'COBWEB_BDB', 'COMPLEX_COMPONENT', 'DATA_FIT_METH', 'ENTRY',
           'ENTRY_CITATION', 'ENZYME_REACTANT_SET', 'INSTRUMENT', 'ITC_RESULT_A_B_AB', 'ITC_RUN_A_B_AB',
           'KI_RESULT', 'PDB_BDB', 'COMPLEX_AND_NAMES', 'POLYMER_AND_NAMES', 'MONO_STRUCT_NAMES']
@@ -44,7 +46,7 @@ def create_node_queries(tab):
         # Generate and write the queries to the file
         for table in tab:
             if table not in ['COMPLEX_AND_NAMES', 'POLYMER_AND_NAMES', 'MONO_STRUCT_NAMES']:
-                query = "create (:" + table + "{"
+                query = "create (:" + additional_to_label + "_" + table + "{"
                 file_name = "tsv_from_mysql/" + table + ".tsv"
                 for column in get_columns_names_from_tsv(file_name):
                     str_to_add = column.lower() + ":line." + column + ","
@@ -56,11 +58,11 @@ def create_node_queries(tab):
                                                           query)
                 file.write(query)
             else:
-                query = "create (:" + table + "{"
+                query = "create (:" + additional_to_label + "_" + table + "{"
                 file_name = "tsv_from_mysql/" + table + ".tsv"
                 for column in get_columns_names_from_tsv(file_name):
                     if column == 'NAMES' or column == 'synonyms':
-                        str_to_add = column.lower() + ':split(line.' + column + ',";"),'
+                        str_to_add = column.lower() + ':split(line.' + column + ',"|"),'
                         query += str_to_add
                     else:
                         str_to_add = column.lower() + ":line." + column + ","
@@ -82,52 +84,49 @@ def create_edge_queries(simple_edges, edges):
         query = ''
         for col in special_col:
             if "POLYMER" in col:
-                query = "MATCH(n1: POLYMER_AND_NAMES {polymerid: line." + col + "}), (n2:ENZYME_REACTANT_SET{" + \
-                        col.lower() + ":line." + col + "})\n create(n1) - [:" + col + "] -> (n2)"
+                query = "MATCH (n1: " + additional_to_label + "_POLYMER_AND_NAMES {polymerid: line." + col + "}), (n2:" + additional_to_label + "_ENZYME_REACTANT_SET{reactant_set_id:line.REACTANT_SET_ID})\n create(n1) - [:" + col + "] -> (n2)"
             elif "MONOMER" in col:
-                query = "MATCH(n1: MONO_STRUCT_NAMES {monomerid: line." + col + "}), (n2:ENZYME_REACTANT_SET{" + \
-                        col.lower() + ":line." + col + "})\n create(n1) - [:" + col + "] -> (n2)"
+                query = "MATCH (n1: " + additional_to_label + "_MONO_STRUCT_NAMES {monomerid: line." + col + "}), (n2:" + additional_to_label + "_ENZYME_REACTANT_SET{reactant_set_id:line.REACTANT_SET_ID})\n create(n1) - [:" + col + "] -> (n2)"
             elif "COMPLEX" in col:
-                query = "MATCH(n1: COMPLEX_AND_NAMES {complexid: line." + col + "}), (n2:ENZYME_REACTANT_SET{" + \
-                        col.lower() + ":line." + col + "})\n create(n1) - [:" + col + "] -> (n2)"
+                query = "MATCH (n1: " + additional_to_label + "_COMPLEX_AND_NAMES {complexid: line." + col + "}), (n2:" + additional_to_label + "_ENZYME_REACTANT_SET{reactant_set_id:line.REACTANT_SET_ID})\n create(n1) - [:" + col + "] -> (n2)"
 
             query = pharmebinetutils.get_query_import(file_path,
                                                       'import_into_Neo4j/bindingDB/idx_tsv/ENZYME_REACTANT_SET-' +
-                                                      col + '.tsv', query, batch_number=1)
+                                                      col + '.tsv', query, batch_number=10000)
             file.write(query)
 
         for edge in simple_edges:
             if edge[0] == 'ASSAY' and edge[1] == 'KI_RESULT':
-                query = "MATCH (n1:ASSAY{assayid:line.ASSAYID, entryid:line.ENTRYID}), (n2:KI_RESULT" \
+                query = "MATCH (n1:" + additional_to_label + "_ASSAY{assayid:line.ASSAYID, entryid:line.ENTRYID}), (n2:" + additional_to_label + "_KI_RESULT" \
                         "{assayid:line.ASSAYID, entryid:line.ENTRYID})\n Create (n1) -[:RELATIONSHIP] -> (n2)"
                 query = pharmebinetutils.get_query_import(file_path,
                                                           'import_into_Neo4j/bindingDB/idx_tsv/ASSAY-KI_RESULT.tsv',
-                                                          query, batch_number=500)
+                                                          query, batch_number=10000)
                 file.write(query)
             else:
                 file_name = edge[0] + '-' + edge[1] + '.tsv'
                 if edge[0] == 'ENZYME_REACTANT_SET' and edge[1] == 'PDB_BDB':
-                    query = "MATCH (n1:ENZYME_REACTANT_SET), (n2:PDB_BDB{reactant_set_id_str:line.REACTANT_SET_ID_STR}) " \
+                    query = "MATCH (n1:" + additional_to_label + "_ENZYME_REACTANT_SET), (n2:" + additional_to_label + "_PDB_BDB{reactant_set_id_str:line.REACTANT_SET_ID_STR}) " \
                             "where n1.reactant_set_id in split(line.REACTANT_SET_ID_STR, ',') " \
                             "\nCreate (n1) -[:RELATIONSHIP] -> (n2)"
                     query = pharmebinetutils.get_query_import(file_path,
                                                               'import_into_Neo4j/bindingDB/idx_tsv/' + file_name, query,
-                                                              batch_number=500)
+                                                              batch_number=10000)
                     file.write(query)
                 else:
-                    query = "MATCH (n1:" + edge[0] + "{" + edge[3].lower() + ":line." + edge[2] + "}), "
-                    query = query + "(n2:" + edge[1] + "{" + edge[2].lower() + ":line." + edge[2] + "}) \n"
+                    query = "MATCH (n1:" + additional_to_label + "_" + edge[0] + "{" + edge[3].lower() + ":line." + edge[2] + "}), "
+                    query = query + "(n2:" + additional_to_label + "_" + edge[1] + "{" + edge[2].lower() + ":line." + edge[2] + "}) \n"
                     query = query + "Create (n1) -[:RELATIONSHIP] -> (n2)"
                     query = pharmebinetutils.get_query_import(file_path,
                                                               'import_into_Neo4j/bindingDB/idx_tsv/' + file_name, query,
-                                                              batch_number=500)
+                                                              batch_number=10000)
                     file.write(query)
         for edge in edges:
-            query = "MATCH (n1:" + edge[0] + "{"
+            query = "MATCH (n1:" + additional_to_label + "_" + edge[0] + "{"
             for key in tables_keys.get(edge[0]):
                 query = query + key.lower() + ": line." + key + ","
             query = query[:-1]
-            query = query + "}), (n2:" + edge[2] + "{"
+            query = query + "}), (n2:" + additional_to_label + "_" + edge[2] + "{"
             for key in tables_keys.get(edge[2]):
                 query = query + key.lower() + ":line." + key + ","
             query = query[:-1]
@@ -166,14 +165,14 @@ def create_index_queries(edges, edges_2):
     with open('output/create_index.cypher', 'w') as file:
         queries_list = []
         for edge in edges:
-            query = "CREATE INDEX index" + edge[1] + "_" + edge[2].lower() + " FOR (node:" + edge[1] + ") ON (node." + \
+            query = "CREATE INDEX index" + edge[1] + "_" + edge[2].lower() + " FOR (node:" + additional_to_label + "_" + edge[1] + ") ON (node." + \
                     edge[2].lower() + ");\n"
             queries_list.append(query)
-            query = "CREATE INDEX index" + edge[0] + "_" + edge[3].lower() + " FOR (node:" + edge[0] + ") ON (node." + \
+            query = "CREATE INDEX index" + edge[0] + "_" + edge[3].lower() + " FOR (node:" + additional_to_label + "_" + edge[0] + ") ON (node." + \
                     edge[3].lower() + ");\n"
             queries_list.append(query)
         for table in edges_2:
-            query = "CREATE INDEX index" + table + " FOR (node:" + table + ") ON ("
+            query = "CREATE INDEX index" + table + " FOR (node:" + additional_to_label + "_" + table + ") ON ("
             for key in tables_keys.get(table):
                 query = query + "node." + key.lower() + ", "
             query = query[:-2]
@@ -181,7 +180,7 @@ def create_index_queries(edges, edges_2):
             queries_list.append(query)
         for col in special_col:
             query = "CREATE INDEX indexENZYME_REACTANT_SET_" + col.lower() + \
-                    " FOR (node:ENZYME_REACTANT_SET) ON (node." + col.lower() + "); \n"
+                    " FOR (node:" + additional_to_label + "_ENZYME_REACTANT_SET) ON (node." + col.lower() + "); \n"
             queries_list.append(query)
         queries_list = list(dict.fromkeys(queries_list))
         for q in queries_list:
@@ -195,7 +194,7 @@ def create_idx_tsv(edges_id):
         tab_name = 'tsv_from_mysql/' + edges[1] + '.tsv'
         idx_column = edges[2]
 
-        batch_size = 10000
+        batch_size = 50000
 
         # Create an empty set to store unique values
         unique_values = set()
@@ -231,12 +230,14 @@ def create_idx_tsv(edges_id):
                    'ENZYME_MONOMERID']
 
     for col in special_col:
-        unique_rows = pd.DataFrame(columns=[col])
-        for chunk in pd.read_csv("tsv_from_mysql/ENZYME_REACTANT_SET.tsv", sep='\t', usecols=[col],
+        unique_rows = pd.DataFrame(columns=[col, 'REACTANT_SET_ID'])
+
+        for chunk in pd.read_csv("tsv_from_mysql/ENZYME_REACTANT_SET.tsv", sep='\t', usecols=[col, 'REACTANT_SET_ID'],
                                  chunksize=batch_size, na_values=[np.nan, '']):
-            chunk = chunk.dropna(subset=[col], how='any', inplace=False)
+            chunk = chunk.dropna(subset=[col, 'REACTANT_SET_ID'], how='any', inplace=False)
             chunk.drop_duplicates(inplace=True)
             chunk[col] = chunk[col].astype(int)
+            chunk['REACTANT_SET_ID'] = chunk['REACTANT_SET_ID'].astype(int)
             unique_rows = pd.concat([unique_rows, chunk])
             unique_rows[col].drop_duplicates(inplace=True)
 
