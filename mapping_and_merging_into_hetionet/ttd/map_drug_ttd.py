@@ -121,7 +121,7 @@ def prepare_cypher_file_and_queries(file_name, file_name_new):
             else:
                 list_of_props.append('m.' + allfields + '=line.' + allfields)
         query_start += ', '.join(
-            list_of_props) + ', m.identifier=line.new_id, m.xrefs=split(line.xrefs,"|") ,m.ttd="yes", m.source="PubChem via TTD", m.resource=["TTD"], m.url="https://db.idrblab.net/ttd/data/drug/details/"+line.id, m.license="No license" Create (p)-[:equal_to_ttd_drug]->(m)'
+            list_of_props) + ', m.identifier=line.new_id, m.xrefs=split(line.xrefs,"|") ,m.ttd="yes", m.source="PubChem via TTD", m.resource=["TTD"], m.url="https://db.idrblab.net/ttd/data/drug/details/"+line.id, m.license="https://www.nlm.nih.gov/copyright.html" Create (p)-[:equal_to_ttd_drug]->(m)'
 
         query_start = pharmebinetutils.get_query_import(path_of_directory,
                                                         f'mapping_and_merging_into_hetionet/ttd/{file_name_new}',
