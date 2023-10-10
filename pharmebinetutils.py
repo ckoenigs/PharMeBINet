@@ -8,11 +8,23 @@ import pharmebinetutils
 import os
 import datetime
 import shutil
+import csv
 import urllib.request
 from urllib.error import HTTPError
 from urllib.parse import urlparse
 
 USE_VERSION_5 = True
+
+# dictionary label to abbreviation
+dictionary_label_to_abbreviation = {
+    'Anatomy': 'A', 'BiologicalProcess': 'BP', 'BlackBoxEvent': 'B', 'CellularComponent': 'CC', 'Chemical': 'CH',
+    'ClinicalAnnotation': 'CA', 'Compound': 'C', 'Depolymerisation': 'DP', 'Disease': 'D', 'FailedReaction': 'F',
+    'Gene': 'G', 'GeneVariant': 'GV', 'Genotype': 'GT', 'Haplotype': 'H', 'Interaction': 'I', 'Metabolite': 'M',
+    'MolecularComplex': 'MC', 'MolecularFunction': 'MF', 'Pathway': 'PW', 'PharmacologicClass': 'PC', 'Phenotype': 'PT',
+    'Polymerisation': 'PO', 'Product': 'PR', 'Protein': 'P', 'Reaction': 'RN', 'ReactionLikeEvent': 'RLE',
+    'Regulation': 'RG', 'RNA': 'R', 'Salt': 'SA', 'SideEffect': 'SE', 'Symptom': 'S', 'Treatment': 'T', 'Variant': 'V',
+    'VariantAnnotation': 'VA'
+}
 
 
 def download_file(url: str, out: str = './', file_name: str or None = None, retries: int = 10, silent: bool = False,
@@ -96,14 +108,15 @@ def get_query_start(base_path: str, file_path: str) -> str:
         base_path, file_path)
 
 
-def get_query_import(base_path: str, file_path: str, query: str, delimiter:str = '\\t', batch_number:int= 10000) -> str:
+def get_query_import(base_path: str, file_path: str, query: str, delimiter: str = '\\t',
+                     batch_number: int = 10000) -> str:
     base_path = base_path.rstrip('/')
     if USE_VERSION_5:
         return """LOAD CSV WITH HEADERS FROM "file:%s/%s" AS line FIELDTERMINATOR '%s' Call { with line %s } IN TRANSACTIONS OF %s ROWS;\n""" % (
             base_path, file_path, delimiter, query, str(batch_number))
     else:
         return """USING PERIODIC COMMIT %s LOAD CSV WITH HEADERS FROM "file:%s/%s" AS line FIELDTERMINATOR '%s' %s ;\n""" % (
-            str(batch_number),base_path, file_path,delimiter, query)
+            str(batch_number), base_path, file_path, delimiter, query)
 
 
 def prepare_index_query(label: str, prop: str, additional_index: str = '') -> str:
@@ -135,3 +148,18 @@ def prepare_obo_synonyms(synonym):
     if ' [' in synonym:
         synonym = synonym.rsplit(' [', 1)[0][1:-1]
     return synonym
+
+
+# def main():
+#     with open('label_to_short.tsv', 'r', encoding='utf-8') as f:
+#         csv_reader = csv.reader(f, delimiter='\t')
+#         next(csv_reader)
+#         dict_label_to_short = {}
+#         for row in csv_reader:
+#             dict_label_to_short[row[0]] = row[1]
+#         print(dict_label_to_short)
+#
+#
+# if __name__ == "__main__":
+#     # execute only if run as a script
+#     main()
