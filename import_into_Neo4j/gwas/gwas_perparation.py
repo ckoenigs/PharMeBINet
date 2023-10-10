@@ -192,7 +192,7 @@ def load_csv_and_prepare_data():
                               ['disease_id'] + [replace_special_symbols(x) for x in list_disease], ['MAPPED_TRAIT_URI'])
     disease_id = 0
     dict_disease_trait_to_id = {}
-    csv_disease_writer.writerow(['disease_id'] + list_disease)
+    csv_disease_writer.writerow(['disease_id'] + [replace_special_symbols(x) for x in list_disease])
 
     snp_file_name = 'output/snp.tsv'
     snp_file = open(snp_file_name, 'w', encoding='utf-8')
@@ -202,7 +202,7 @@ def load_csv_and_prepare_data():
                 'SNP_GENE_IDS', 'MAPPED_GENE']
     list_snp_list_properties = ['SNP_GENE_IDS', 'MAPPED_GENE', 'SNP_GENE_IDS', 'CONTEXT', 'SNPS']
     dict_snp_id_to_infos = {}
-    csv_snp_writer.writerow(['snp_id'] + list_snp)
+    csv_snp_writer.writerow(['snp_id'] + [replace_special_symbols(x) for x in list_snp])
     prepare_node_cypher_query(snp_file_name, 'snp', ['snp_id'] + [replace_special_symbols(x) for x in list_snp],
                               list_snp_list_properties)
     # dict of ids where first merged ids are and value the information
