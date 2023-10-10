@@ -9,12 +9,12 @@ import sys
 sys.path.append("../..")
 import create_connection_to_databases
 
-BATCH_SIZE = 250000
+BATCH_SIZE = 500000
 
 
 def prepare_results(row):
     """
-    Prepare row result of mysql for empty values, nullt to empty string and replace " with '
+    Prepare row result of mysql for empty values, null to empty string and replace " with '
     :param row:
     :return:
     """
