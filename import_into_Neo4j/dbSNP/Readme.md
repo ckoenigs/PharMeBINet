@@ -1,6 +1,6 @@
-https://www.ncbi.nlm.nih.gov/snp/
+https://www.ncbi.nlm.nih/.gov/snp/
 
-Version: 2021-05-25
+Version: 2022-11-16
 
 Parse the json files to TSV files for nodes and relationships.
 
