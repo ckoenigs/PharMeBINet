@@ -46,7 +46,7 @@ def generate_files(path_of_directory, complexids):
     csv_mapping.writerow(header)
     for id in complexids:
         csv_mapping.writerow([id])
-    cypher_file = open(os.path.join(source, 'cypher.cypher'), 'w', encoding='utf-8')
+    cypher_file = open(os.path.join(source, 'cypher_node.cypher'), 'w', encoding='utf-8')
     query = f'Match (n:bindingDB_COMPLEX_AND_NAMES{{complexid:line.complexid}}) Create (m:Complex) Set m=n, m.identifier=line.complexid, m.resource=["bindingDB"], m.source="bindingDB", m.url="" Create (m)-[:equal]->(n)'
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
     query = query.replace("/", "")
@@ -68,10 +68,10 @@ def main():
     else:
         sys.exit('need a path bindingdb complex')
 
-    os.chdir(path_of_directory + 'mapping_and_merging_into_hetionet\\bindingDB\\')
+    os.chdir(path_of_directory + 'mapping_and_merging_into_hetionet/bindingDB/')
     home = os.getcwd()
     source = os.path.join(home, 'output')
-    path_of_directory = os.path.join(home, 'complex\\')
+    path_of_directory = os.path.join(home, 'complex/')
 
     print('##########################################################################')
 
