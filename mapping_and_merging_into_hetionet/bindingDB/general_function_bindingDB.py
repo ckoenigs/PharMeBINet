@@ -32,6 +32,5 @@ def generate_files(path_of_directory, file_name, source, label_bindingdb, label_
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               file_name,
                                               query)
-    query = query.replace("/", "")
     cypher_file.write(query)
     return csv_mapping
