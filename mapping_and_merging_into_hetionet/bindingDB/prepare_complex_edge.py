@@ -14,55 +14,75 @@ def create_connection_with_neo4j():
     # set up authentication parameters and connection
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
-    g = driver.session()
+    g = driver.session(database='graph')
 
 
-#todo: complexid für protein und chemical in nur eine tsv datei speichern
+# list of bindingDB labels and pharmebinet labels in a list
+list_bindingdb_pharmebinet_labels = [['bindingDB_POLYMER_AND_NAMES', 'Protein'],
+                                     ['bindingDB_MONO_STRUCT_NAMES', 'Chemical']]
+
+
+def prepare_tsv_file_and_cypher_query_for_node():
+    """
+    prepare tsv file for the new complex nodes and create the cypher query and add it to the cypher file
+    :return:
+    """
+    file_name = 'Complexid_to_mapped_polymers_and_monomers'
+    file = open(os.path.join(path_of_directory, file_name) + '.tsv', 'w', encoding='utf-8', newline="")
+    csv_mapping = csv.writer(file, delimiter='\t')
+    header = ['complexid']
+    csv_mapping.writerow(header)
+
+    query = f'Match (n:bindingDB_COMPLEX_AND_NAMES{{complexid:line.complexid}}) Create (m:Complex) Set m=n, m.identifier=line.complexid, m.resource=["bindingDB"], m.source="bindingDB", m.url="" Create (m)-[:equal]->(n)'
+    query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
+    query = query.replace("/", "")
+    cypher_file.write(query)
+
+    return csv_mapping
+
+
 def load_complex_id():
     """
       load complexids that correspond to human polymer and chemicals which were already mapped
     """
-    l = set()
-
-    query = "MATCH (n:bindingDB_COMPLEX_COMPONENT) where (n)--(:bindingDB_POLYMER_AND_NAMES)--(:Protein) RETURN n"
+    csv_writer = prepare_tsv_file_and_cypher_query_for_node()
+    query = f"MATCH (n:bindingDB_COMPLEX_COMPONENT) where (n)--(:{list_bindingdb_pharmebinet_labels[0][0]})--(:{list_bindingdb_pharmebinet_labels[0][1]}) or (n)--(:{list_bindingdb_pharmebinet_labels[1][0]})--(:{list_bindingdb_pharmebinet_labels[1][1]}) RETURN n"
     results = g.run(query)
 
     for record in results:
         node = record.data()['n']
-        if 'complexid' in node:
-            complexid = node['complexid']
-            l.add(complexid)
-    query = "MATCH (n:bindingDB_COMPLEX_COMPONENT) where (n)--(:bindingDB_MONO_STRUCT_NAMES)--(:Chemical) RETURN n"
-    results = g.run(query)
-
-    for record in results:
-        node = record.data()['n']
-        if 'complexid' in node:
-            complexid = node['complexid']
-            l.add(complexid)
-
-    return l
+        complexid = node['complexid']
+        csv_writer.writerow([complexid])
 
 
-def load_ids_complex_protein_chemical_edge(node):
+def generate_tsv_file_and_cypher_query_for_edge(label):
+    file_name = f'Complex_{label}_edge'
+    file = open(os.path.join(path_of_directory, file_name) + '.tsv', 'w', encoding='utf-8', newline="")
+    csv_mapping = csv.writer(file, delimiter='\t')
+    header2 = ['complexid', 'identifier', 'type', 'componentid']
+    csv_mapping.writerow(header2)
+
+    query = f'Match (n:Complex{{identifier:line.complexid}}), (m:{label}{{identifier:line.identifier}}) Create (n)-[:has_component{{type:line.type, componentid:line.componentid, source:"bindingDB", resource:["bindingDB"]}}] -> (m)'
+    query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
+    cypher_file.write(query)
+
+    return csv_mapping
+
+
+def load_ids_complex_protein_chemical_edge(tuple_labels):
     """
         creates a set of lists containing complexid, protein/chemical identifier, type, and componentid
     """
-    l = []
-    if node == 'protein':
-        query = "MATCH (n:bindingDB_COMPLEX_COMPONENT)--(:bindingDB_POLYMER_AND_NAMES)--(p:Protein) RETURN n, p"
-    elif node == 'chemical':
-        query = "MATCH (n:bindingDB_COMPLEX_COMPONENT)--(:bindingDB_MONO_STRUCT_NAMES)--(p:Chemical) RETURN n, p"
+    csv_edge = generate_tsv_file_and_cypher_query_for_edge(tuple_labels[1])
+    query = f"MATCH (n:bindingDB_COMPLEX_COMPONENT)--(:{tuple_labels[0]})--(p:{tuple_labels[1]}) RETURN n, p.identifier"
     results = g.run(query)
 
     for record in results:
         l_ids = []
-        node_cc = record.data()['n']
-        node_p = record.data()['p']
+        [node_cc, identifier] = record.values()
 
         complexid = node_cc['complexid']
         l_ids.append(complexid)
-        identifier = node_p['identifier']
         l_ids.append(identifier)
 
         if 'type' in node_cc:
@@ -75,54 +95,7 @@ def load_ids_complex_protein_chemical_edge(node):
             l_ids.append(componentid)
         else:
             l_ids.append('')
-        l.append(l_ids)
-    return l
-
-
-def generate_files(path_of_directory, complexids, list_ids1, list_ids2):
-    """
-    generate cypher file and tsv file
-    :return: tsv file
-    """
-    file_name = 'Complexid_to_mapped_polymers_and_monomers'
-    file_name2 = 'Complex-protein_edge'
-    file_name3 = 'Complex-chemical_edge'
-    file = open(os.path.join(path_of_directory, file_name) + '.tsv', 'w', encoding='utf-8', newline="")
-    file2 = open(os.path.join(path_of_directory, file_name2) + '.tsv', 'w', encoding='utf-8', newline="")
-    file3 = open(os.path.join(path_of_directory, file_name3) + '.tsv', 'w', encoding='utf-8', newline="")
-    csv_mapping = csv.writer(file, delimiter='\t')
-    csv_mapping2 = csv.writer(file2, delimiter='\t')
-    csv_mapping3 = csv.writer(file3, delimiter='\t')
-    header = ['complexid']
-    csv_mapping.writerow(header)
-    header2 = ['complexid', 'identifier', 'type', 'componentid']
-    csv_mapping2.writerow(header2)
-    csv_mapping3.writerow(header2)
-
-    for id in complexids:
-        csv_mapping.writerow([id])
-    for l in list_ids1:
-        csv_mapping2.writerow(l)
-    for l in list_ids2:
-        csv_mapping3.writerow(l)
-
-    cypher_file = open(os.path.join(source, 'cypher.cypher'), 'w', encoding='utf-8')
-    query = f'Match (n:bindingDB_COMPLEX_AND_NAMES{{complexid:line.complexid}}) Create (m:Complex) Set m=n, m.identifier=line.complexid, m.resource=["bindingDB"], m.source="bindingDB", m.url="" Create (m)-[:equal]->(n)'
-    query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
-    query = query.replace("/", "")
-    cypher_file.write(query)
-    query = f'Match (n:Complex{{identifier:line.complexid}}), (m:Protein{{identifier:line.identifier}}) Create (n)-[:has_component{{type:line.type, componentid:line.componentid, source:"bindingDB", resource:["bindingDB"]}}] -> (m)'
-    query = pharmebinetutils.get_query_import(path_of_directory, file_name2 + '.tsv', query)
-    query = query.replace("/", "")
-    cypher_file.write(query)
-    query = f'Match (n:Complex{{identifier:line.complexid}}), (m:Chemical{{identifier:line.identifier}}) Create (n)-[:has_component{{type:line.type, componentid:line.componentid, source:"bindingDB", resource:["bindingDB"]}}] -> (m)'
-    query = pharmebinetutils.get_query_import(path_of_directory, file_name3 + '.tsv', query)
-    query = query.replace("/", "")
-    cypher_file.write(query)
-
-
-
-
+        csv_edge.writerow(l_ids)
 
 
 def main():
@@ -130,17 +103,19 @@ def main():
 
     global home
     global path_of_directory
-    global source
+    global source, cypher_file
 
     if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]
     else:
         sys.exit('need a path bindingdb complex')
 
-    os.chdir(path_of_directory + 'mapping_and_merging_into_hetionet\\bindingDB\\')
+    os.chdir(path_of_directory + 'mapping_and_merging_into_hetionet/bindingDB/')
     home = os.getcwd()
     source = os.path.join(home, 'output')
-    path_of_directory = os.path.join(home, 'complex\\')
+    path_of_directory = os.path.join(home, 'complex/')
+
+    cypher_file = open(os.path.join(source, 'cypher_edge.cypher'), 'w', encoding='utf-8')
 
     print('##########################################################################')
 
@@ -152,13 +127,19 @@ def main():
 
     print(datetime.datetime.now())
     print('Load Complex corresponding to mapped polymers')
-    list_complexid = load_complex_id()
-    list_ids1 = load_ids_complex_protein_chemical_edge('protein')
-    list_ids2 = load_ids_complex_protein_chemical_edge('chemical')
-    print('Create tsv file and write query')
-    generate_files(path_of_directory, list_complexid, list_ids1, list_ids2)
+    load_complex_id()
 
     print('##########################################################################')
+
+    print(datetime.datetime.now())
+    print('prepare edges')
+
+    for tuple_labels in list_bindingdb_pharmebinet_labels:
+        load_ids_complex_protein_chemical_edge(tuple_labels)
+
+    print('##########################################################################')
+    print(datetime.datetime.now())
+
 
 if __name__ == "__main__":
     # execute only if run as a script
