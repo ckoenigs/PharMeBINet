@@ -12,7 +12,7 @@ def database_connection():
     # connect with the neo4j database
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
-    g = driver.session()
+    g = driver.session(database='graph')
 
 
 def go_through_a_dictionary_add_info_into_another(from_dict, to_dictionary, additional_name='', asString=False):

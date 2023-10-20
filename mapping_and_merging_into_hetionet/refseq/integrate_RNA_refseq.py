@@ -19,7 +19,7 @@ def create_connection_with_neo4j_mysql():
     # create connection with neo4j
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
-    g = driver.session()
+    g = driver.session(database='graph')
 
 
 def get_node_properties_and_prepare_query(label, additional_label, id_property_name):

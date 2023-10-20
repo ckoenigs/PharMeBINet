@@ -32,7 +32,7 @@ create connection to neo4j and mysql
 def create_connection_with_neo4j_mysql():
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
-    g = driver.session()
+    g = driver.session(database='graph')
 
     # create connection with mysql database
     global con

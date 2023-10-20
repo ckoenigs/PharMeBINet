@@ -15,7 +15,7 @@ def create_connection_with_neo4j():
     """
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
-    g = driver.session()
+    g = driver.session(database='graph')
 
 
 def integrate_information_into_dict(dict_node_id_to_resource, label, dict_alternative_id_to_identifiers):

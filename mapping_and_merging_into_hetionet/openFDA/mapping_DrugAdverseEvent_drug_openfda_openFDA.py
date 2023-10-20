@@ -15,7 +15,7 @@ print(datetime.datetime.utcnow())
 print("Connecting to database neo4j ...")
 global g, driver
 driver = create_connection_to_databases.database_connection_neo4j_driver()
-g = driver.session()
+g = driver.session(database='graph')
 #######################################################################
 # Speichert die Daten aus FDA.
 FDA2 = []

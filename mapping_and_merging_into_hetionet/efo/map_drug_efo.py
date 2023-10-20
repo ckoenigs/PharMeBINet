@@ -14,7 +14,7 @@ def database_connection():
     """
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
-    g = driver.session()
+    g = driver.session(database='graph')
 
 
 def generate_cypher_queries_and_tsv_files():

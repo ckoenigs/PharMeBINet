@@ -24,7 +24,7 @@ dict_resources = {
 def database_connection():
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
-    g = driver.session()
+    g = driver.session(database='graph')
 
 
 # dictionary with label as key and value is the constraint property

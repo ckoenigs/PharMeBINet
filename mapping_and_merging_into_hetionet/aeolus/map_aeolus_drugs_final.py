@@ -67,7 +67,7 @@ def create_connection_with_neo4j_mysql():
     """
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
-    g = driver.session()
+    g = driver.session(database='graph')
 
     # generate connection to mysql to RxNorm database
     global conRxNorm

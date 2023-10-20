@@ -14,7 +14,7 @@ def create_connection_with_neo4j_and_mysql():
     # set up authentication parameters and connection
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
-    g = driver.session()
+    g = driver.session(database='graph')
 
     # create connection with mysql database
     global con

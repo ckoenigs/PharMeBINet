@@ -14,7 +14,7 @@ def create_connection_with_neo4j():
     # set up authentication parameters and connection
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
-    g = driver.session()
+    g = driver.session(database='graph')
 
 
 def get_all_interaction_of_a_given_type(label, biogrid_label, dictionary):

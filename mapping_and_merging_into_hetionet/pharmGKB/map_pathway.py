@@ -13,7 +13,7 @@ create connection to neo4j
 def create_connection_with_neo4j():
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
-    g = driver.session()
+    g = driver.session(database='graph')
 
 
 # dictionary of all pathway ids to resource

@@ -14,7 +14,7 @@ def create_connection_with_neo4j():
     """
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
-    g = driver.session()
+    g = driver.session(database='graph')
 
 
 def prepare_edge(tuple_label_and_refseq_label):
