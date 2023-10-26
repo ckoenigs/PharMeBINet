@@ -25,8 +25,6 @@ dict_chemical_inchikey = {}
 dict_chemical_name = {}
 dict_chemical_smiles = {}
 dict_chemical_synonyms = {}
-chemical_mapping = defaultdict(dict)
-parentMol_mapping = defaultdict(dict)
 
 
 def load_chemicals_in():
@@ -93,6 +91,9 @@ def load_structure_in():
     """
     query = '''MATCH (n:DC_Structure) RETURN id(n), n.inchikey, n.smiles, n.name'''
     results = graph_database.run(query)
+
+    # dictionary of mappings
+    chemical_mapping = defaultdict(dict)
 
     for record in results:
         identifier = record.data()['id(n)']
@@ -163,6 +164,9 @@ def load_parent_drug_molecule_in():
     """
     query = '''MATCH (n:DC_ParentDrugMolecule) RETURN n, id(n)'''
     results = graph_database.run(query)
+
+    # dictionary of mappings
+    parentMol_mapping = defaultdict(dict)
 
     for record in results:
         node = record.data()['n']
@@ -235,6 +239,62 @@ def load_parent_drug_molecule_in():
         csv_mapped_parent_mol.writerow([parent_mol_id, pm_id, resource, methods])
 
 
+def load_drug_class_in():
+    """
+    mappping of structure to chemical
+    :return:
+    """
+    query = '''MATCH (n:DC_DrugClass) RETURN id(n), n.name'''
+    results = graph_database.run(query)
+
+    # dictionary of mappings
+    chemical_mapping = defaultdict(dict)
+
+    counter = 0
+    counter_not_mapped = 0
+    for record in results:
+        counter += 1
+        identifier = record.data()['id(n)']
+        name = record.data()['n.name']
+
+        is_mapped = False
+
+        name = name.lower()
+        if name in dict_chemical_name:
+            is_mapped = True
+            chemicals = dict_chemical_name[name]
+            for chemical_id in chemicals:
+                if chemical_id not in chemical_mapping[identifier]:
+                    chemical_mapping[identifier][chemical_id] = set()
+                chemical_mapping[identifier][chemical_id].add('name')
+
+        if is_mapped:
+            continue
+
+        if name in dict_chemical_synonyms:
+            is_mapped = True
+            chemicals = dict_chemical_synonyms[name]
+            for chemical_id in chemicals:
+                if chemical_id not in chemical_mapping[identifier]:
+                    chemical_mapping[identifier][chemical_id] = set()
+                chemical_mapping[identifier][chemical_id].add('synonyms')
+
+        if not is_mapped:
+            counter_not_mapped += 1
+
+    print('number of nodes', counter)
+    print('number of not mapped nodes', counter_not_mapped)
+
+    for ident in chemical_mapping:
+        for chem_id in chemical_mapping[ident]:
+            methods = list(chemical_mapping[ident][chem_id])
+            methods = '|'.join(methods)
+            csv_mapped_drug_class.writerow([ident, chem_id,
+                                            pharmebinetutils.resource_add_and_prepare(
+                                                dict_chemical_to_resource[chem_id],
+                                                'DrugCentral'), methods])
+
+
 # tsv for structure
 # file for mapped or not mapped identifier
 # erstellt neue TSV, überschreibt auch bestehende und leert sie wieder
@@ -259,8 +319,13 @@ file_mapped_parent_mol = open('chemical/mapped_parent_mol.tsv', 'w', encoding="u
 csv_mapped_parent_mol = csv.writer(file_mapped_parent_mol, delimiter='\t', lineterminator='\n')
 csv_mapped_parent_mol.writerow(['node_id', 'id_hetionet', 'resource', 'how_mapped'])
 
+# tsv for drug class
+file_mapped_drug_class = open('chemical/mapped_drug_class.tsv', 'w', encoding="utf-8")
+csv_mapped_drug_class = csv.writer(file_mapped_drug_class, delimiter='\t', lineterminator='\n')
+csv_mapped_drug_class.writerow(['node_id', 'id_hetionet', 'resource', 'how_mapped'])
 
-def generate_cypher_file(file_name_structure, file_name_parentmol):
+
+def generate_cypher_file(file_name_structure, file_name_parentmol, file_name_drug_class):
     """
     prepare cypher query and add to cypher file
     :param file_name: string
@@ -281,6 +346,13 @@ def generate_cypher_file(file_name_structure, file_name_parentmol):
     query = '''MATCH (n:DC_ParentDrugMolecule), (c:Chemical{identifier:line.id_hetionet}) Where ID(n)= ToInteger(line.node_id)  Set c.drugcentral='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_ParentDrugMolecule_drugcentral{how_mapped:line.how_mapped}]->(n)'''
     query = pharmebinetutils.get_query_import(path_of_directory,
                                               "mapping_and_merging_into_hetionet/drugcentral/chemical/" + file_name_parentmol,
+                                              query)
+    cypher_file.write(query)
+
+    # drugclass
+    query = '''MATCH (n:DC_DrugClass), (c:Chemical{identifier:line.id_hetionet}) Where ID(n)= ToInteger(line.node_id)  Set c.drugcentral='yes', c.resource=split(line.resource,'|') Create (c)-[:equal_to_DrugClass_drugcentral{how_mapped:line.how_mapped}]->(n)'''
+    query = pharmebinetutils.get_query_import(path_of_directory,
+                                              "mapping_and_merging_into_hetionet/drugcentral/chemical/" + file_name_drug_class,
                                               query)
     cypher_file.write(query)
 
@@ -309,7 +381,10 @@ def main():
     print("load parent drug molecule in")
     load_parent_drug_molecule_in()
 
-    generate_cypher_file('mapped_chemical.tsv', 'mapped_parent_mol.tsv')
+    print("load drug class in")
+    load_drug_class_in()
+
+    generate_cypher_file('mapped_chemical.tsv', 'mapped_parent_mol.tsv', 'mapped_drug_class.tsv')
 
     print(
         '###########################################################################################################################')
