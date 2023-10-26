@@ -70,10 +70,10 @@ def load_pharmacological_class_in():
 
 def load_pharmaClass_in():
     """
-    Load PharmClass and map to PC
+    Load PharmClass not the one with FDA because they are already include and map to PC
     :return:
     """
-    query = '''MATCH (n:DC_PharmaClass) RETURN n, id(n)'''
+    query = '''MATCH (n:DC_PharmaClass) where n.source<>'FDA' RETURN n, id(n)'''
     results = graph_database.run(query)
 
     for record in results:
