@@ -16,7 +16,7 @@ def create_connection_with_neo4j():
     # set up authentication parameters and connection
     global graph_database, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
-    graph_database = driver.session()
+    graph_database = driver.session(database='graph')
 
 
 # dictionary
