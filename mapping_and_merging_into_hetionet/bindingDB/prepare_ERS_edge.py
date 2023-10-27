@@ -24,34 +24,30 @@ def create_connection_with_neo4j():
     # set up authentication parameters and connection
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
-    g = driver.session()
+    g = driver.session(database='graph')
 
 
 def load_dictionaries():
     '''
     load polymer, monomer, and complex ids and store them in the above defined dictionaries
     '''
-    query = "MATCH (n:bindingDB_POLYMER_AND_NAMES)--(m:Protein) RETURN n,m"
+    query = "MATCH (n:bindingDB_POLYMER_AND_NAMES)--(m:Protein) RETURN n.polymerid,m.identifier"
     results = g.run(query)
     for record in results:
-        node_polymer = record.data()['n']
-        node_protein = record.data()['m']
-        polymer_protein_dict[node_polymer['polymerid']] = node_protein['identifier']
+        [node_ploxmer_id, node_protein_id] = record.values()
+        polymer_protein_dict[node_ploxmer_id] = node_protein_id
 
-    query = "MATCH (n:bindingDB_MONO_STRUCT_NAMES)--(m:Chemical) RETURN n,m"
+    query = "MATCH (n:bindingDB_MONO_STRUCT_NAMES)--(m:Chemical) RETURN n.monomerid,m.identifier"
     results = g.run(query)
     for record in results:
-        node_monomer = record.data()['n']
-        node_chemical = record.data()['m']
-        if('identifier' in node_chemical):
-            monomer_chemical_dict[node_monomer['monomerid']] = node_chemical['identifier']
+        [node_monomer_id, node_chemical_id] = record.values()
+        monomer_chemical_dict[node_monomer_id] = node_chemical_id
 
-    query = "MATCH (n:bindingDB_COMPLEX_AND_NAMES)--(m:Complex) RETURN n,m"
+    query = "MATCH (n:bindingDB_COMPLEX_AND_NAMES)--(m:Complex) RETURN n.complexid,m.identifier"
     results = g.run(query)
     for record in results:
-        node_BDcomplex = record.data()['n']
-        node_complex = record.data()['m']
-        complex_dict[node_BDcomplex['complexid']] = node_complex['identifier']
+        [node_BDcomplex_id, node_complex_id] = record.values()
+        complex_dict[node_BDcomplex_id] = node_complex_id
 
 
 def get_enzyme_reactant_set_properties():
@@ -209,7 +205,6 @@ def create_ers_edges(path_of_directory, cypher_file):
 
         query = f'Match (n:ERS{{identifier:line.ersid}}), (m:{node_name[i]}{{identifier:line.{header[1]}}}) Create (n)-[:{relationship_names[i]}{{ source:"bindingDB", resource:["bindingDB"]}}] -> (m)'
         query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
-        query = query.replace("/", "")
         cypher_file.write(query)
 
 
@@ -222,13 +217,13 @@ def main():
     if len(sys.argv) > 1:
         path_of_directory = sys.argv[1]
     else:
-        sys.exit('need a path bindingdb complex')
+        sys.exit('need a path bindingdb ers')
 
-    os.chdir(path_of_directory + 'mapping_and_merging_into_hetionet\\bindingDB\\')
+    os.chdir(path_of_directory + 'mapping_and_merging_into_hetionet/bindingDB/')
     home = os.getcwd()
     source = os.path.join(home, 'output')
     cypher_file = open(os.path.join(source, 'cypher.cypher'), 'w', encoding='utf-8')
-    path_of_directory = os.path.join(home, 'ERS\\')
+    path_of_directory = os.path.join(home, 'ERS/')
 
     print('##########################################################################')
 
