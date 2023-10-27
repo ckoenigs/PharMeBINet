@@ -33,9 +33,8 @@ def prepare_tsv_file_and_cypher_query_for_node():
     header = ['complexid']
     csv_mapping.writerow(header)
 
-    query = f'Match (n:bindingDB_COMPLEX_AND_NAMES{{complexid:line.complexid}}) Create (m:Complex) Set m=n, m.identifier=line.complexid, m.resource=["bindingDB"], m.source="bindingDB", m.url="" Create (m)-[:equal]->(n)'
+    query = f'Match (n:bindingDB_COMPLEX_AND_NAMES{{complexid:line.complexid}}) Create (m:Complex) Set m=n, m.identifier=line.complexid, m.name=n.display_name, m.resource=["bindingDB"], m.source="bindingDB", m.url="" Remove m.complexid, m.display_name Create (m)-[:equal]->(n)'
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
-    query = query.replace("/", "")
     cypher_file.write(query)
 
     return csv_mapping
@@ -46,12 +45,12 @@ def load_complex_id():
       load complexids that correspond to human polymer and chemicals which were already mapped
     """
     csv_writer = prepare_tsv_file_and_cypher_query_for_node()
-    query = f"MATCH (n:bindingDB_COMPLEX_COMPONENT) where (n)--(:{list_bindingdb_pharmebinet_labels[0][0]})--(:{list_bindingdb_pharmebinet_labels[0][1]}) or (n)--(:{list_bindingdb_pharmebinet_labels[1][0]})--(:{list_bindingdb_pharmebinet_labels[1][1]}) RETURN n"
+    query = f"MATCH (n:bindingDB_COMPLEX_COMPONENT) where (n)--(:{list_bindingdb_pharmebinet_labels[0][0]})--(:{list_bindingdb_pharmebinet_labels[0][1]}) or (n)--(:{list_bindingdb_pharmebinet_labels[1][0]})--(:{list_bindingdb_pharmebinet_labels[1][1]}) RETURN Distinct n.complexid"
+    print(query)
     results = g.run(query)
 
     for record in results:
-        node = record.data()['n']
-        complexid = node['complexid']
+        [complexid] = record.values()
         csv_writer.writerow([complexid])
 
 
