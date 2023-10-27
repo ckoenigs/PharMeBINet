@@ -6,6 +6,7 @@ from collections import defaultdict
 sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
+import general_function_bindingDB
 
 
 def create_connection_with_neo4j():
@@ -15,20 +16,22 @@ def create_connection_with_neo4j():
     # set up authentication parameters and connection
     global g, driver
     driver = create_connection_to_databases.database_connection_neo4j_driver()
-    g = driver.session()
+    g = driver.session(database='graph')
 
 
 # dictionary from gene symbol to protein id
 dict_gene_symbol_to_id = {}
-# dict for alternative_ids
+# dict for alternative_ids to identifier
 dict_alternativeId_to_identifiers = defaultdict(set)
 
-
+# dictionary name to identifier
 dict_name_to_id = {}
+# dictionary identifier to resource
 dict_identifier_to_resource = {}
+# dictionary sequence to identifier
 dict_sequence_to_id = {}
+# dictionary synonyms to identifier
 dict_synonyms_to_id = {}
-
 
 
 def load_protein_from_database_and_add_to_dict():
@@ -45,17 +48,13 @@ def load_protein_from_database_and_add_to_dict():
         gene_symbols = node['gene_name'] if 'gene_name' in node else []
         alternative_ids = node['alternative_ids'] if 'alternative_ids' in node else []
         for gene_symbol in gene_symbols:
-            if gene_symbol not in dict_gene_symbol_to_id:
-                dict_gene_symbol_to_id[gene_symbol] = set()
-            dict_gene_symbol_to_id[gene_symbol].add(identifier)
+            pharmebinetutils.add_entry_to_dict_to_set(dict_gene_symbol_to_id, gene_symbol, identifier)
         # create dict for alternative_ids
         for alternative_id in alternative_ids:
-            # if alternative_id not in dict_alternativeId_to_identifiers:
-            #     dict_alternativeId_to_identifiers[alternative_id] = set()
-            dict_alternativeId_to_identifiers[alternative_id].add(identifier)
+            pharmebinetutils.add_entry_to_dict_to_set(dict_alternativeId_to_identifiers, alternative_id, identifier)
 
         if 'name' in node:
-            name = node['name']
+            name = node['name'].lower()
             pharmebinetutils.add_entry_to_dict_to_set(dict_name_to_id, name, identifier)
         if 'as_sequences' in node:
             sequence = node['as_sequences'][0]
@@ -67,37 +66,13 @@ def load_protein_from_database_and_add_to_dict():
                                                       identifier)
 
 
-
-
-def generate_files(path_of_directory):
-    """
-    generate cypher file and tsv file
-    :return: tsv file
-    """
-    file_name = 'BindingDB_polymer_to_protein'
-    file = open(os.path.join(path_of_directory, file_name) + '.tsv', 'w', encoding='utf-8', newline="")
-    csv_mapping = csv.writer(file, delimiter='\t')
-    header = ['BindingDB_polymerid', 'identifier', 'resource', 'mapping_method']
-    csv_mapping.writerow(header)
-    cypher_file = open(os.path.join(source, 'cypher.cypher'), 'w', encoding='utf-8')
-
-    # mapping_and_merging_into_hetionet/DisGeNet/
-    query = f' Match (n:POLYMER_AND_NAMES{{polymerid:line.BindingDB_polymerid}}), (v:Protein{{identifier:line.identifier}}) Set v.bindingdb="yes", v.resource=split(line.resource,"|") Create (v)-[:equal_to_BindingDB_polymer{{mapped_with:line.mapping_method}}]->(n)'
-    query = pharmebinetutils.get_query_import(path_of_directory,
-                                              file_name+'.tsv',
-                                              query)
-    query = query.replace("/", "")
-    cypher_file.write(query)
-
-    return csv_mapping
-
-
 def load_all_bindingDB_polymer_and_finish_the_files(csv_mapping):
     """
     Load all variation sort the ids into the right tsv, generate the queries, and add rela to the rela tsv
     """
 
-    query = "MATCH (n:POLYMER_AND_NAMES) WHERE n.scientific_name ='Homo sapiens' or (n.scientific_name is null and tolower(n.source_organism) in ['human', 'human sapiens (human)', 'homo sapiens', 'homo sapiens (human)']) RETURN n"
+    # query = "MATCH (n:bindingDB_POLYMER_AND_NAMES) WHERE n.scientific_name ='Homo sapiens' or (n.scientific_name is null and tolower(n.source_organism) in ['human', 'human sapiens (human)', 'homo sapiens', 'homo sapiens (human)']) RETURN n"
+    query = "MATCH (n:bindingDB_POLYMER_AND_NAMES) WHERE n.taxid ='9606'  RETURN n"
     results = g.run(query)
     counter_not_mapped = 0
     counter_all = 0
@@ -111,8 +86,11 @@ def load_all_bindingDB_polymer_and_finish_the_files(csv_mapping):
             if "[" in identifier:
                 pos = identifier.find("[")
                 identifier = identifier[0:pos]
-        elif 'id' in node:
-            identifier = node['id']
+
+        if 'unpid1' in node and ',' in node['unpid1']:
+            counter_not_mapped += 1
+            continue
+
         # mapping
         found_mapping = False
         if identifier != "" and identifier in dict_identifier_to_resource:
@@ -120,7 +98,6 @@ def load_all_bindingDB_polymer_and_finish_the_files(csv_mapping):
                 [polymerid, identifier,
                  pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier], "BindingDB"),
                  'id'])
-            print("found id mapping")
             found_mapping = True
         if found_mapping:
             continue
@@ -131,21 +108,32 @@ def load_all_bindingDB_polymer_and_finish_the_files(csv_mapping):
                                       pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[uniprot_id],
                                                                                 "BindingDB"),
                                       'alternative_id'])
-            print("found alternative_id mapping")
             found_mapping = True
         if found_mapping:
             continue
+
+        if '-' in identifier:
+            identifier = identifier.split('-')[0]
+            if identifier in dict_identifier_to_resource:
+                csv_mapping.writerow(
+                    [polymerid, identifier,
+                     pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[identifier], "BindingDB"),
+                     'id-iso'])
+                found_mapping = True
+        if found_mapping:
+            continue
+
         if 'display_name' in node:
-            name = node['display_name']
+            name = node['display_name'].lower()
+
             if name in dict_name_to_id:
                 found_mapping = True
                 for id in dict_name_to_id[name]:
                     csv_mapping.writerow(
                         [polymerid, id,
-                        pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[id],
+                         pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[id],
                                                                    "BindingDB"),
-                        'name'])
-                print("found name mapping")
+                         'name'])
         if found_mapping:
             continue
         # if 'sequence' in node:
@@ -171,16 +159,14 @@ def load_all_bindingDB_polymer_and_finish_the_files(csv_mapping):
                 for id in dict_synonyms_to_id[synonym]:
                     csv_mapping.writerow(
                         [polymerid, id,
-                        pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[id],
+                         pharmebinetutils.resource_add_and_prepare(dict_identifier_to_resource[id],
                                                                    "BindingDB"),
-                        'synonyms'])
-                print("found synonym mapping")
+                         'synonyms'])
 
         if not found_mapping:
             counter_not_mapped += 1
+            print(polymerid)
             print(identifier)
-
-
 
     print('number of not-mapped proteins:', counter_not_mapped)
     print('number of all proteins:', counter_all)
@@ -198,10 +184,12 @@ def main():
     else:
         sys.exit('need a path bindingdb polymer')
 
-    os.chdir(path_of_directory + 'mapping_and_merging_into_hetionet\\bindingDB\\')
+    os.chdir(path_of_directory + 'mapping_and_merging_into_hetionet/bindingDB/')
     home = os.getcwd()
     source = os.path.join(home, 'output')
-    path_of_directory = os.path.join(home, 'protein\\')
+    cypher = open('output/cypher.cypher', 'w', encoding='utf-8')
+    cypher.close()
+    path_of_directory = os.path.join(home, 'protein/')
 
     print('##########################################################################')
 
@@ -219,12 +207,14 @@ def main():
 
     print(datetime.datetime.now())
     print('Generate cypher and tsv file')
-    csv_mapping = generate_files(path_of_directory)
+    csv_mapping = general_function_bindingDB.generate_files(path_of_directory, 'BindingDB_polymer_to_protein.tsv',
+                                                            source,
+                                                            'bindingDB_POLYMER_AND_NAMES', 'Protein', ['polymerid'])
 
     print('##########################################################################')
 
     print(datetime.datetime.now())
-    print('Load all DisGeNet proteins from database')
+    print('Load all Binding proteins from database')
     load_all_bindingDB_polymer_and_finish_the_files(csv_mapping)
 
     driver.close()
