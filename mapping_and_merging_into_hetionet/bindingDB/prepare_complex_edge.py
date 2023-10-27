@@ -17,7 +17,6 @@ def create_connection_with_neo4j():
     g = driver.session()
 
 
-#todo: complexid für protein und chemical in nur eine tsv datei speichern
 def load_complex_id():
     """
       load complexids that correspond to human polymer and chemicals which were already mapped
