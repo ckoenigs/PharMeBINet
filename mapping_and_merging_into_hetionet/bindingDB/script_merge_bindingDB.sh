@@ -28,13 +28,17 @@ $path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher.cypher
 
 sleep 30
 $path_neo4j/neo4j restart
-sleep 50
+sleep 60
+
+sleep 60
+$path_neo4j/neo4j restart
+sleep 120
 
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo complex integration
-python3 complex_node.py $path_to_project > protein/output.txt
+python3 prepare_complex_edge.py $path_to_project > protein/output.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
