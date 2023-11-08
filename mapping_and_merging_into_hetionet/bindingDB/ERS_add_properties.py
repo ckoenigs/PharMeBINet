@@ -42,18 +42,22 @@ def load_dictionaries():
 
     print("Load article dict")
     print("#########################################")
-    query = "MATCH (n:bindingDB_ARTICLE)--(m:bindingDB_ENTRY) RETURN n.pmid, n.doi, m.entryid"
+    #add info from edge to the dict (n)-[r](m) return r.art_purp
+    query = "MATCH (n:bindingDB_ARTICLE)-[r]-(m:bindingDB_ENTRY) RETURN n.pmid, n.doi, m.entryid, r.art_purp"
     results = g.run(query)
     for record in results:
-        [pmid, doi, entryid] = record.values()
+        [pmid, doi, entryid, art_purp] = record.values()
         if pmid is None and doi is None:
             continue
         if entryid not in article_dict:
-            article_dict[entryid] = [set(), set()]
+            article_dict[entryid] = [set(), set(), set()]
         if pmid is not None:
             article_dict[entryid][0].add(pmid)
         if doi is not None:
             article_dict[entryid][1].add(doi)
+        if art_purp not in ["___", "Not specified!", None]:
+            article_dict[entryid][2].add(art_purp)
+        # if art_purp is not in ["___",  "Not specified!"]: article_dict[entryid][2].add(art_purp)
     print("Article dict length: ", len(article_dict))
 
 
@@ -73,8 +77,9 @@ def add_ers_properties():
     file_name = 'ers_properties'
     file = open(os.path.join(path_of_directory, file_name) + '.tsv', 'w', encoding='utf-8', newline="")
     csv_mapping = csv.writer(file, delimiter='\t')
+    # add art_purp after doi
     csv_mapping.writerow(
-        ['reactant_set_id', 'description', 'pmid', 'doi', 'ki_result_id', 'ic50', 'k_cat', 'ec_50', 'kd', 'koff',
+        ['reactant_set_id', 'description', 'pmid', 'doi', 'art_purp', 'ki_result_id', 'ic50', 'k_cat', 'ec_50', 'kd', 'koff',
          'km', 'kon', 'temp', 'ph'])
     query = "MATCH (n:ERS) RETURN n"
     results = g.run(query)
@@ -107,13 +112,14 @@ def create_cypher_query(cypher_file):
     create cypher query to add properties to ERS node
     '''
 
-
-    properties = ['description', 'pmid', 'doi', 'ki_result_id', 'ic50', 'k_cat', 'ec_50',
+    #art purp
+    properties = ['description', 'pmid', 'doi', 'art_purp', 'ki_result_id', 'ic50', 'k_cat', 'ec_50',
                   'kd', 'koff', 'km', 'kon', 'temp', 'ph']
 
     q = ""
     for property in properties:
-        if property in ['description', 'pmid', 'doi']:
+        #art_purp
+        if property in ['description', 'pmid', 'doi', 'art_purp']:
             q += "n." + property + "=split(line." + property + ', "|"), '
         else:
             q += "n." + property +"=line." + property + ", "
