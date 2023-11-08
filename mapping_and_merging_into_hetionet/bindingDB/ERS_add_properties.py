@@ -6,9 +6,13 @@ sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-
+# dictionary containing entryid as key and relevant information from assay to be added to the ers nodes
 assay_dict = {}
+
+# dictionary containing entryid as key and relevant information from article (and edge to entry) to be added to the ers nodes
 article_dict = {}
+
+# dictionary containing reactant_set_id and entryid as key and relevant information from ki_result to be added to the ers nodes
 ki_result_dict = {}
 
 
@@ -57,8 +61,6 @@ def load_dictionaries():
             article_dict[entryid][1].add(doi)
         if art_purp not in ["___", "Not specified!", None]:
             article_dict[entryid][2].add(art_purp)
-        # if art_purp is not in ["___",  "Not specified!"]: article_dict[entryid][2].add(art_purp)
-    print("Article dict length: ", len(article_dict))
 
 
     print("Load ki_result dict")
@@ -68,7 +70,6 @@ def load_dictionaries():
     for record in results:
         [reactant_set_id, entryid, ki_result_id, ic50, k_cat, ec_50, kd, koff, km, kon, temp, ph] = record.values()
         ki_result_dict[(reactant_set_id, entryid)] = [ki_result_id, ic50, k_cat, ec_50, kd, koff, km, kon, temp, ph]
-    print("KI dict length: ", len(ki_result_dict))
 
 def add_ers_properties():
     '''
@@ -77,14 +78,12 @@ def add_ers_properties():
     file_name = 'ers_properties'
     file = open(os.path.join(path_of_directory, file_name) + '.tsv', 'w', encoding='utf-8', newline="")
     csv_mapping = csv.writer(file, delimiter='\t')
-    # add art_purp after doi
     csv_mapping.writerow(
         ['reactant_set_id', 'description', 'pmid', 'doi', 'art_purp', 'ki_result_id', 'ic50', 'k_cat', 'ec_50', 'kd', 'koff',
          'km', 'kon', 'temp', 'ph'])
     query = "MATCH (n:ERS) RETURN n"
     results = g.run(query)
     for record in results:
-        #print("I'm in")
         node = record.data()['n']
         ersid = node['identifier']
         l = []
@@ -118,7 +117,6 @@ def create_cypher_query(cypher_file):
 
     q = ""
     for property in properties:
-        #art_purp
         if property in ['description', 'pmid', 'doi', 'art_purp']:
             q += "n." + property + "=split(line." + property + ', "|"), '
         else:
