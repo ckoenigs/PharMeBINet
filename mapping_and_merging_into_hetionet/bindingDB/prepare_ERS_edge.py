@@ -31,19 +31,19 @@ def load_dictionaries():
     '''
     load polymer, monomer, and complex ids and store them in the above defined dictionaries
     '''
-    query = "MATCH (n:bindingDB_POLYMER_AND_NAMES)--(m:Protein) RETURN n.polymerid,m.identifier"
+    query = "MATCH (n:bindingDB_polymer_and_names)--(m:Protein) RETURN n.polymerid,m.identifier"
     results = g.run(query)
     for record in results:
         [node_ploxmer_id, node_protein_id] = record.values()
         polymer_protein_dict[node_ploxmer_id] = node_protein_id
 
-    query = "MATCH (n:bindingDB_MONO_STRUCT_NAMES)--(m:Chemical) RETURN n.monomerid,m.identifier"
+    query = "MATCH (n:bindingDB_mono_struct_names)--(m:Chemical) RETURN n.monomerid,m.identifier"
     results = g.run(query)
     for record in results:
         [node_monomer_id, node_chemical_id] = record.values()
         monomer_chemical_dict[node_monomer_id] = node_chemical_id
 
-    query = "MATCH (n:bindingDB_COMPLEX_AND_NAMES)--(m:Complex) RETURN n.complexid,m.identifier"
+    query = "MATCH (n:bindingDB_complex_and_names)--(m:Complex) RETURN n.complexid,m.identifier"
     results = g.run(query)
     for record in results:
         [node_BDcomplex_id, node_complex_id] = record.values()
@@ -51,10 +51,10 @@ def load_dictionaries():
 
 
 def get_enzyme_reactant_set_properties():
-    query = '''MATCH (p:bindingDB_ENZYME_REACTANT_SET) WITH DISTINCT keys(p) AS keys UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields RETURN allfields as l;'''
+    query = '''MATCH (p:bindingDB_enzyme_reactant_set) WITH DISTINCT keys(p) AS keys UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields RETURN allfields as l;'''
     result = g.run(query)
 
-    part = ''' Match (b:bindingDB_ENZYME_REACTANT_SET{reactant_set_id:line.reactant_set_id})'''
+    part = ''' Match (b:bindingDB_enzyme_reactant_set{reactant_set_id:line.reactant_set_id})'''
     query_nodes_start = part
     query_middle_new = ' Create (a:ERS{'
     for record in result:
@@ -68,7 +68,7 @@ def get_enzyme_reactant_set_properties():
             query_middle_new += property + ':b.' + property + ', '
     query_end = ''' Create (a)-[:equal]->(b)'''
     # combine the important parts of node creation
-    query_new = query_nodes_start + query_middle_new + 'resource:["bindingDB"], source:"bindingDB"})' + query_end
+    query_new = query_nodes_start + query_middle_new + 'url:"https://www.bindingdb.org/rwd/jsp/dbsearch/Summary_ki.jsp?entryid=1571&ki_result_id=22134&reactant_set_id=22135", license:"", resource:["bindingDB"], source:"bindingDB"})' + query_end
     return query_new
 
 
@@ -81,7 +81,7 @@ def create_node(path_of_directory, cypher_file):
     ers_ids = set()
     enzyme_type_list = ['enzyme_polymerid', 'enzyme_monomerid', 'enzyme_complexid']
     substrate_type_list = ['substrate_polymerid', 'substrate_monomerid', 'substrate_complexid']
-    query = "MATCH (n:bindingDB_ENZYME_REACTANT_SET) RETURN n"
+    query = "MATCH (n:bindingDB_enzyme_reactant_set) RETURN n"
     results = g.run(query)
     for record in results:
         node = record.data()['n']
@@ -168,15 +168,16 @@ def create_node(path_of_directory, cypher_file):
     for id in ers_ids:
         csv_mapping.writerow([id])
 
-    # create ERS node and match it with bindingDB_ENZYME_REACTANT_SET
+    # create ERS node and match it with bindingDB_enzyme_reactant_set
 
-    #query = f'Match (n:bindingDB_ENZYME_REACTANT_SET{{reactant_set_id:line.reactant_set_id}}) Create (m:ERS) Set m=n, m.identifier=line.reactant_set_id, m.resource=["bindingDB"], m.source="bindingDB" Create (m)-[:equal]->(n)'
+    #query = f'Match (n:bindingDB_enzyme_reactant_set{{reactant_set_id:line.reactant_set_id}}) Create (m:ERS) Set m=n, m.identifier=line.reactant_set_id, m.resource=["bindingDB"], m.source="bindingDB" Create (m)-[:equal]->(n)'
     query = get_enzyme_reactant_set_properties()
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
     cypher_file.write(query)
 
     query = pharmebinetutils.prepare_index_query('ERS', 'identifier')
     cypher_file.write(query)
+    cypher_file.write('CALL db.awaitIndex("indexERS", 300);\n')
 
 
 def create_ers_edges(path_of_directory, cypher_file):
@@ -222,7 +223,7 @@ def main():
     os.chdir(path_of_directory + 'mapping_and_merging_into_hetionet/bindingDB/')
     home = os.getcwd()
     source = os.path.join(home, 'output')
-    cypher_file = open(os.path.join(source, 'cypher.cypher'), 'w', encoding='utf-8')
+    cypher_file = open(os.path.join(source, 'cypher_edge_2.cypher'), 'w', encoding='utf-8')
     path_of_directory = os.path.join(home, 'ERS/')
 
     print('##########################################################################')
@@ -232,14 +233,15 @@ def main():
     create_connection_with_neo4j()
 
     print('##########################################################################')
-    print('Load dictionaries')
+    print('Load dictionaries', datetime.datetime.now())
     load_dictionaries()
     print('##########################################################################')
-    print('Create Enzyme_reactant_set node')
+    print('Create Enzyme_reactant_set node', datetime.datetime.now())
     create_node(path_of_directory, cypher_file)
     print('##########################################################################')
-    print('Create the edges')
+    print('Create the edges',datetime.datetime.now())
     create_ers_edges(path_of_directory, cypher_file)
+    print(datetime.datetime.now())
 
 
 if __name__ == "__main__":
