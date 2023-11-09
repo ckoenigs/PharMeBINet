@@ -1,21 +1,44 @@
 import datetime
 import os, sys
 import csv
+
 sys.path.append("../..")
 import create_connection_to_databases
 import pharmebinetutils
 
-
+# dictionary containing polymerids and the corresponding protein identifiers
 polymer_protein_dict = {}
+
+# dictionary containing monomerids and the corresponding chemical identifiers
 monomer_chemical_dict = {}
+
+# dictionary containing complexids and the corresponding complex identifiers (which are the same actually)
 complex_dict = {}
+
+# dictionary containing enzyme_reactant_set_ids and chemical identifiers corresponding to monomer_inhibitor
 ers_inhibitor_chem_dict = {}
+
+# dictionary containing enzyme_reactant_set_ids and protein identifiers corresponding to polymer_enzyme
 ers_enzyme_prot_dict = {}
+
+# dictionary containing enzyme_reactant_set_ids and chemical identifiers corresponding to monomer_enzyme
 ers_enzyme_chem_dict = {}
+
+# dictionary containing enzyme_reactant_set_ids and complex identifiers corresponding to complex_enzyme
 ers_enzyme_complex_dict = {}
+
+# dictionary containing enzyme_reactant_set_ids and protein identifiers corresponding to polymer_substrate
 ers_substrate_prot_dict = {}
+
+# dictionary containing enzyme_reactant_set_ids and chemical identifiers corresponding to monomer_substrate
 ers_substrate_chem_dict = {}
+
+# dictionary containing enzyme_reactant_set_ids and complex identifiers corresponding to complex_substrate
 ers_substrate_complex_dict = {}
+
+# dictionary containing protein identifiers and the corresponding unpid1
+polymer_edge_dict = {}
+
 
 def create_connection_with_neo4j():
     '''
@@ -31,11 +54,16 @@ def load_dictionaries():
     '''
     load polymer, monomer, and complex ids and store them in the above defined dictionaries
     '''
-    query = "MATCH (n:bindingDB_polymer_and_names)--(m:Protein) RETURN n.polymerid,m.identifier"
+    print("Load polymer-protein dict")
+    print("#########################################")
+    query = "MATCH (n:bindingDB_polymer_and_names)--(m:Protein) RETURN n.polymerid, m.identifier, n.unpid1"
     results = g.run(query)
     for record in results:
-        [node_ploxmer_id, node_protein_id] = record.values()
-        polymer_protein_dict[node_ploxmer_id] = node_protein_id
+        [node_ploymer_id, node_protein_id, node_unpid1] = record.values()
+        polymer_protein_dict[node_ploymer_id] = node_protein_id
+
+        # relevant for the edges between polymer and ers
+        polymer_edge_dict[node_protein_id] = node_unpid1
 
     query = "MATCH (n:bindingDB_mono_struct_names)--(m:Chemical) RETURN n.monomerid,m.identifier"
     results = g.run(query)
@@ -50,7 +78,15 @@ def load_dictionaries():
         complex_dict[node_BDcomplex_id] = node_complex_id
 
 
+
+
+
+
 def get_enzyme_reactant_set_properties():
+    '''
+    get enzyme_reactant_set properties that will be added to the ers node
+    '''
+
     query = '''MATCH (p:bindingDB_enzyme_reactant_set) WITH DISTINCT keys(p) AS keys UNWIND keys AS keyslisting WITH DISTINCT keyslisting AS allfields RETURN allfields as l;'''
     result = g.run(query)
 
@@ -70,8 +106,6 @@ def get_enzyme_reactant_set_properties():
     # combine the important parts of node creation
     query_new = query_nodes_start + query_middle_new + 'url:"https://www.bindingdb.org/rwd/jsp/dbsearch/Summary_ki.jsp?entryid=1571&ki_result_id=22134&reactant_set_id=22135", license:"", resource:["bindingDB"], source:"bindingDB"})' + query_end
     return query_new
-
-
 
 
 def create_node(path_of_directory, cypher_file):
@@ -146,6 +180,7 @@ def create_node(path_of_directory, cypher_file):
             continue
 
         ers_ids.add(ersid)
+
         ers_inhibitor_chem_dict[ersid] = monomer_chemical_dict[node['inhibitor_monomerid']]
 
         if 'enzyme_polymerid' in node:
@@ -161,16 +196,16 @@ def create_node(path_of_directory, cypher_file):
             ers_substrate_chem_dict[ersid] = monomer_chemical_dict[node['substrate_monomerid']]
         if 'substrate_complexid' in node:
             ers_substrate_complex_dict[ersid] = node['substrate_complexid']
+    # save the ers_ids in a tsv file
     file_name = 'ers_ids'
     file = open(os.path.join(path_of_directory, file_name) + '.tsv', 'w', encoding='utf-8', newline="")
     csv_mapping = csv.writer(file, delimiter='\t')
     csv_mapping.writerow(['reactant_set_id'])
     for id in ers_ids:
-        csv_mapping.writerow([id])
+        csv_mapping.writerow(id)
 
     # create ERS node and match it with bindingDB_enzyme_reactant_set
 
-    #query = f'Match (n:bindingDB_enzyme_reactant_set{{reactant_set_id:line.reactant_set_id}}) Create (m:ERS) Set m=n, m.identifier=line.reactant_set_id, m.resource=["bindingDB"], m.source="bindingDB" Create (m)-[:equal]->(n)'
     query = get_enzyme_reactant_set_properties()
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
     cypher_file.write(query)
@@ -184,27 +219,37 @@ def create_ers_edges(path_of_directory, cypher_file):
     '''
     create ers-enzyme(protein, complex, chemical), ers-inhibitor(chemical), and ers-substrate(protein, complex, chemical) edges
     '''
-    file_names = ['ers_inhibitor_chem', 'ers_enzyme_prot', 'ers_enzyme_chem', 'ers_enzyme_complex', 'ers_substrate_prot', 'ers_substrate_chem', 'ers_substrate_complex']
+    file_names = ['ers_inhibitor_chem', 'ers_enzyme_prot', 'ers_enzyme_chem', 'ers_enzyme_complex',
+                  'ers_substrate_prot', 'ers_substrate_chem', 'ers_substrate_complex']
     node_name = ['Chemical', 'Protein', 'Chemical', 'Complex', 'Protein', 'Chemical', 'Complex']
 
-    dictionaries = [ers_inhibitor_chem_dict, ers_enzyme_prot_dict, ers_enzyme_chem_dict, ers_enzyme_complex_dict, ers_substrate_prot_dict, ers_substrate_chem_dict, ers_substrate_complex_dict]
-    relationship_names = ['inhibitor_chemical', 'enzyme_protein', 'enzyme_chemical', 'enzyme_complex', 'substrate_protein', 'substrate_chemical', 'substrate_complex']
+    dictionaries = [ers_inhibitor_chem_dict, ers_enzyme_prot_dict, ers_enzyme_chem_dict, ers_enzyme_complex_dict,
+                    ers_substrate_prot_dict, ers_substrate_chem_dict, ers_substrate_complex_dict]
+    relationship_names = ['inhibitor_chemical', 'enzyme_protein', 'enzyme_chemical', 'enzyme_complex',
+                          'substrate_protein', 'substrate_chemical', 'substrate_complex']
     headers = [['ersid', k] for k in relationship_names]
 
     for i in range(len(dictionaries)):
         file_name = file_names[i]
         header = headers[i]
+        if "prot" in file_name:
+            header.append('unpid1')
         file = open(os.path.join(path_of_directory, file_name) + '.tsv', 'w', encoding='utf-8', newline="")
         csv_mapping = csv.writer(file, delimiter='\t')
         csv_mapping.writerow(header)
         l = []
         for d in dictionaries[i]:
             j = [d, dictionaries[i][d]]
+            if dictionaries[i] in [ers_enzyme_prot_dict, ers_substrate_prot_dict]:
+                j.append(polymer_edge_dict[dictionaries[i][d]])
             l.append(j)
         for row in l:
             csv_mapping.writerow(row)
-
-        query = f'Match (n:ERS{{identifier:line.ersid}}), (m:{node_name[i]}{{identifier:line.{header[1]}}}) Create (n)-[:{relationship_names[i]}{{ source:"bindingDB", resource:["bindingDB"]}}] -> (m)'
+        # for POLYMER: add unpid1 to edge (variant)
+        if "prot" in file_name:
+            query = f'Match (n:ERS{{identifier:line.ersid}}), (m:{node_name[i]}{{identifier:line.{header[1]}}}) Create (n)-[:{relationship_names[i]}{{ source:"bindingDB", resource:["bindingDB"], variant: line.unpid1}}] -> (m)'
+        else:
+            query = f'Match (n:ERS{{identifier:line.ersid}}), (m:{node_name[i]}{{identifier:line.{header[1]}}}) Create (n)-[:{relationship_names[i]}{{ source:"bindingDB", resource:["bindingDB"]}}] -> (m)'
         query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
         cypher_file.write(query)
 
@@ -247,9 +292,3 @@ def main():
 if __name__ == "__main__":
     # execute only if run as a script
     main()
-
-
-
-
-
-
