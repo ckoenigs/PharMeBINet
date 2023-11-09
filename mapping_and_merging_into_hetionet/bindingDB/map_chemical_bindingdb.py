@@ -50,14 +50,13 @@ def load_pubchem_inchikey_mapping():
         with gzip.open(gz_file, 'rt') as file:
             csv_reader = csv.reader(file, delimiter='\t')
             for row in csv_reader:
-                if 'GKETXHKHJGXDQB-UHFFFAOYSA-N' in row:
-                    print('blub', row)
-                if row[1]=='':
-                    continue
+                # if row[1]=='':
+                #     continue
                 if not row[0] in dict_inchikey_to_pubchem_id:
                     dict_inchikey_to_pubchem_id[row[0]] = set([row[1]]) if row[1] != '' else set()
                 else:
                     dict_inchikey_to_pubchem_id[row[0]].add(row[1])
+    print('nuber of inchikey check', len(dict_inchikey_to_pubchem_id))
 
 
 def generate_new_file_and_add_cypher_query(source):
@@ -66,12 +65,12 @@ def generate_new_file_and_add_cypher_query(source):
     :param source:
     :return:
     """
-    file_name = 'chemical/new_node.tsv'
-    file = open(file_name, 'w', encoding='utf-8')
+    file_name = 'new_node.tsv'
+    file = open('chemical/' + file_name, 'w', encoding='utf-8')
     csv_writer = csv.writer(file, delimiter='\t')
     csv_writer.writerow(['id', 'pubchem_id', 'xrefs'])
 
-    query = pharmebinetutils.get_all_properties_of_on_label % ('bindingDB_MONO_STRUCT_NAMES')
+    query = pharmebinetutils.get_all_properties_of_on_label % ('bindingDB_mono_struct_names')
     list_of_prop = []
     results = g.run(query)
     for result in results:
@@ -79,7 +78,7 @@ def generate_new_file_and_add_cypher_query(source):
         if prop not in ['monomerid']:
             list_of_prop.append(prop + ':n.' + prop)
 
-    query_cypher = 'Match (n:bindingDB_MONO_STRUCT_NAMES{monomerid:line.id}) Create (m:Chemical{identifier:line.pubchem_id, name:n.synonyms[0], xrefs:split(line.xrefs,"|"), url:"", source:"BindingDB", resource:["BindingDB"], url:"",  ' + ', '.join(
+    query_cypher = 'Match (n:bindingDB_mono_struct_names{monomerid:line.id}) Create (m:Chemical{identifier:line.pubchem_id, name:n.synonyms[0], xrefs:split(line.xrefs,"|"), url:"https://www.bindingdb.org/rwd/bind/chemsearch/marvin/MolStructure.jsp?monomerid="+line.id, source:"BindingDB", resource:["BindingDB"], license:"CC BY 3.0 US Deed ",  ' + ', '.join(
         list_of_prop) + '})-[:equal_binding{new:true}]->(n)'
     cypher_file_path = os.path.join(source, 'cypher.cypher')
     mode = 'a' if os.path.exists(cypher_file_path) else 'w'
@@ -90,7 +89,7 @@ def generate_new_file_and_add_cypher_query(source):
     cypher_file.write(query_cypher)
     query = 'Match (m:Chemical{identifier:line.pubchem_id}) Set m.name=line.name '
     query = pharmebinetutils.get_query_import(path_of_directory,
-                                                     'chemical/manual_pubchem_to_name.tsv', query)
+                                              'manual_pubchem_to_name.tsv', query)
     cypher_file.write(query)
     cypher_file.close()
 
@@ -108,7 +107,7 @@ def load_chemical_from_database_and_add_to_dict():
         node = record.data()['n']
         # print(node)
         identifier = node['identifier']
-        xrefs= set(node['xrefs']) if 'xrefs' in node else set()
+        xrefs = set(node['xrefs']) if 'xrefs' in node else set()
         dict_chemical_id_to_resource_and_xrefs[identifier] = [node['resource'], xrefs]
 
         if 'inchikey' in node:
@@ -141,7 +140,7 @@ def load_all_BioGrid_chemical_and_finish_the_files(csv_mapping, csv_new):
     Where (n)--(:bioGrid_interaction)
     """
 
-    query = "MATCH (n:bindingDB_MONO_STRUCT_NAMES) Where (n)--() RETURN n"
+    query = "MATCH (n:bindingDB_mono_struct_names) Where (n)--() RETURN n"
     results = g.run(query)
     counter_not_mapped = 0
     counter_all = 0
@@ -150,6 +149,7 @@ def load_all_BioGrid_chemical_and_finish_the_files(csv_mapping, csv_new):
 
     counter_inchikey_file = 0
     counter_inchikey = 0
+    counter_create = 0
     batch = 300000
     file = open('chemical/chemical_inchikeys' + str(counter_inchikey_file) + '.tsv', 'w', encoding='utf-8')
 
@@ -179,18 +179,6 @@ def load_all_BioGrid_chemical_and_finish_the_files(csv_mapping, csv_new):
         if found_mapping:
             continue
 
-        if identifier in dict_bindingdb_to_chemical_ids:
-            found_mapping = True
-            for chemical_id in dict_bindingdb_to_chemical_ids[identifier]:
-                xrefs = dict_chemical_id_to_resource_and_xrefs[chemical_id][1]
-                csv_mapping.writerow(
-                    [identifier, chemical_id,
-                     pharmebinetutils.resource_add_and_prepare(dict_chemical_id_to_resource_and_xrefs[chemical_id][0],
-                                                               "BindingDB"), 'xref', '|'.join(xrefs)])
-
-        if found_mapping:
-            continue
-
         synonyms = node['synonyms'] if 'synonyms' in node else []
         chembl_mapping = set()
         synonyms_mapping = set()
@@ -215,6 +203,7 @@ def load_all_BioGrid_chemical_and_finish_the_files(csv_mapping, csv_new):
                                                                "BindingDB"), 'synonym-chembl', '|'.join(xrefs)])
         elif len(synonyms_mapping) > 0:
             for chemical_id in synonyms_mapping:
+                xrefs = dict_chemical_id_to_resource_and_xrefs[chemical_id][1]
                 csv_mapping.writerow(
                     [identifier, chemical_id,
                      pharmebinetutils.resource_add_and_prepare(dict_chemical_id_to_resource_and_xrefs[chemical_id][0],
@@ -237,20 +226,35 @@ def load_all_BioGrid_chemical_and_finish_the_files(csv_mapping, csv_new):
         if found_mapping:
             continue
 
+        if identifier in dict_bindingdb_to_chemical_ids:
+            found_mapping = True
+            for chemical_id in dict_bindingdb_to_chemical_ids[identifier]:
+                xrefs = dict_chemical_id_to_resource_and_xrefs[chemical_id][1]
+                csv_mapping.writerow(
+                    [identifier, chemical_id,
+                     pharmebinetutils.resource_add_and_prepare(dict_chemical_id_to_resource_and_xrefs[chemical_id][0],
+                                                               "BindingDB"), 'xref', '|'.join(xrefs)])
+
+        if found_mapping:
+            continue
+
         if 'inchi_key' in node:
             inchi_key = node['inchi_key']
-            if inchi_key in dict_inchikey_to_pubchem_id:
+            if inchi_key in dict_inchikey_to_pubchem_id and len(synonyms) > 0:
                 if inchi_key in dict_new_inchikey_to_id and identifier != dict_new_inchikey_to_id[inchi_key]:
                     print('ohno, better combine xrefs')
 
-
                 if len(dict_inchikey_to_pubchem_id[inchi_key]) == 1:
+                    pubchem_id = dict_inchikey_to_pubchem_id[inchi_key].pop()
+                    if pubchem_id == '':
+                        continue
 
                     if not 'synonyms' in node:
-                        print(dict_inchikey_to_pubchem_id[inchi_key])
+                        print(pubchem_id)
+                    counter_create += 1
                     created_new_node = True
                     csv_new.writerow(
-                        [identifier, dict_inchikey_to_pubchem_id[inchi_key].pop(), 'bindingDB:' + identifier])
+                        [identifier, pubchem_id, 'bindingDB:' + identifier])
 
         if not created_new_node:
             counter_not_mapped += 1
@@ -265,6 +269,8 @@ def load_all_BioGrid_chemical_and_finish_the_files(csv_mapping, csv_new):
 
     print('number of not-mapped monomer:', counter_not_mapped)
     print('number of all monomer:', counter_all)
+    print('number of new:', counter_create)
+
     print('all with chembl synonym:', counter_chembl)
 
 
@@ -309,7 +315,7 @@ def main():
     print(datetime.datetime.now())
     print('Generate cypher and tsv file')
     csv_mapping = general_function_bindingDB.generate_files(path_of_directory, 'mapped_chemical.tsv', source,
-                                                            'bindingDB_MONO_STRUCT_NAMES', 'Chemical', ['monomerid'],
+                                                            'bindingDB_mono_struct_names', 'Chemical', ['monomerid'],
                                                             ', v.xrefs=split(line.xrefs,"|") ')
     csv_new = generate_new_file_and_add_cypher_query(source)
     print('##########################################################################')
