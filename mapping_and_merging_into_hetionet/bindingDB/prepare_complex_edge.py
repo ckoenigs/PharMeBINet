@@ -18,8 +18,8 @@ def create_connection_with_neo4j():
 
 
 # list of bindingDB labels and pharmebinet labels in a list
-list_bindingdb_pharmebinet_labels = [['bindingDB_POLYMER_AND_NAMES', 'Protein'],
-                                     ['bindingDB_MONO_STRUCT_NAMES', 'Chemical']]
+list_bindingdb_pharmebinet_labels = [['bindingDB_polymer_and_names', 'Protein'],
+                                     ['bindingDB_mono_struct_names', 'Chemical']]
 
 
 def prepare_tsv_file_and_cypher_query_for_node():
@@ -33,7 +33,7 @@ def prepare_tsv_file_and_cypher_query_for_node():
     header = ['complexid']
     csv_mapping.writerow(header)
 
-    query = f'Match (n:bindingDB_COMPLEX_AND_NAMES{{complexid:line.complexid}}) Create (m:Complex) Set m=n, m.identifier=line.complexid, m.name=n.display_name, m.resource=["bindingDB"], m.source="bindingDB", m.url="" Remove m.complexid, m.display_name Create (m)-[:equal]->(n)'
+    query = f'Match (n:bindingDB_complex_and_names{{complexid:line.complexid}}) Create (m:Complex) Set m=n, m.identifier=line.complexid, m.name=n.display_name, m.resource=["bindingDB"], m.source="bindingDB", m.url="" Remove m.complexid, m.display_name Create (m)-[:equal]->(n)'
     query = pharmebinetutils.get_query_import(path_of_directory, file_name + '.tsv', query)
     cypher_file.write(query)
 
@@ -45,7 +45,7 @@ def load_complex_id():
       load complexids that correspond to human polymer and chemicals which were already mapped
     """
     csv_writer = prepare_tsv_file_and_cypher_query_for_node()
-    query = f"MATCH (n:bindingDB_COMPLEX_COMPONENT) where (n)--(:{list_bindingdb_pharmebinet_labels[0][0]})--(:{list_bindingdb_pharmebinet_labels[0][1]}) or (n)--(:{list_bindingdb_pharmebinet_labels[1][0]})--(:{list_bindingdb_pharmebinet_labels[1][1]}) RETURN Distinct n.complexid"
+    query = f"MATCH (n:bindingDB_complex_component) where (n)--(:{list_bindingdb_pharmebinet_labels[0][0]})--(:{list_bindingdb_pharmebinet_labels[0][1]}) or (n)--(:{list_bindingdb_pharmebinet_labels[1][0]})--(:{list_bindingdb_pharmebinet_labels[1][1]}) RETURN Distinct n.complexid"
     print(query)
     results = g.run(query)
 
@@ -73,7 +73,7 @@ def load_ids_complex_protein_chemical_edge(tuple_labels):
         creates a set of lists containing complexid, protein/chemical identifier, type, and componentid
     """
     csv_edge = generate_tsv_file_and_cypher_query_for_edge(tuple_labels[1])
-    query = f"MATCH (n:bindingDB_COMPLEX_COMPONENT)--(:{tuple_labels[0]})--(p:{tuple_labels[1]}) RETURN n, p.identifier"
+    query = f"MATCH (n:bindingDB_complex_component)--(:{tuple_labels[0]})--(p:{tuple_labels[1]}) RETURN n, p.identifier"
     results = g.run(query)
 
     for record in results:

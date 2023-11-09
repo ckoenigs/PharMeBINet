@@ -71,8 +71,8 @@ def load_all_bindingDB_polymer_and_finish_the_files(csv_mapping):
     Load all variation sort the ids into the right tsv, generate the queries, and add rela to the rela tsv
     """
 
-    # query = "MATCH (n:bindingDB_POLYMER_AND_NAMES) WHERE n.scientific_name ='Homo sapiens' or (n.scientific_name is null and tolower(n.source_organism) in ['human', 'human sapiens (human)', 'homo sapiens', 'homo sapiens (human)']) RETURN n"
-    query = "MATCH (n:bindingDB_POLYMER_AND_NAMES) WHERE n.taxid ='9606'  RETURN n"
+    # query = "MATCH (n:bindingDB_polymer_and_names) WHERE n.scientific_name ='Homo sapiens' or (n.scientific_name is null and tolower(n.source_organism) in ['human', 'human sapiens (human)', 'homo sapiens', 'homo sapiens (human)']) RETURN n"
+    query = "MATCH (n:bindingDB_polymer_and_names) WHERE n.taxid ='9606'  RETURN n"
     results = g.run(query)
     counter_not_mapped = 0
     counter_all = 0
@@ -209,7 +209,7 @@ def main():
     print('Generate cypher and tsv file')
     csv_mapping = general_function_bindingDB.generate_files(path_of_directory, 'BindingDB_polymer_to_protein.tsv',
                                                             source,
-                                                            'bindingDB_POLYMER_AND_NAMES', 'Protein', ['polymerid'])
+                                                            'bindingDB_polymer_and_names', 'Protein', ['polymerid'])
 
     print('##########################################################################')
 
