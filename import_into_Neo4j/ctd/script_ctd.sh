@@ -41,47 +41,42 @@ echo "Current time: $now"
 
 python3 integrate_whole_CTD_into_neo4j_with_tsv.py $path_to_ctd_data True > output_integration.txt
 
-now=$(date +"%F %T")
-echo "Current time: $now"
-
-cd cypher
 
 echo nodes
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p $password -f nodes_1.cypher 
+$path_neo4j/cypher-shell -u neo4j -p $password -f cypher/nodes_1.cypher 
 
 
 sleep 60
-$path_neo4j/neo4j restart
+python ../../restart_neo4j.py $path_neo4j > neo4j.txt
 sleep 60
 now=$(date +"%F %T")
 echo "Current time: $now"
 echo edge
 
-$path_neo4j/cypher-shell -u neo4j -p $password -f edges_1.cypher 
+$path_neo4j/cypher-shell -u neo4j -p $password -f cypher/edges_1.cypher 
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 
 sleep 60
-$path_neo4j/neo4j restart
+python ../../restart_neo4j.py $path_neo4j > neo4j.txt
 sleep 60
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 
-$path_neo4j/cypher-shell -u neo4j -p $password -f nodes_delete.cypher
+$path_neo4j/cypher-shell -u neo4j -p $password -f cypher/nodes_delete.cypher
 
 now=$(date +"%F %T")
 echo "Current time: $now"
 
 sleep 60
-$path_neo4j/neo4j restart
+python ../../restart_neo4j.py $path_neo4j > neo4j.txt
 sleep 60
 
-cd ..
 
 
 

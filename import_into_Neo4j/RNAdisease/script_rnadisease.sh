@@ -18,9 +18,9 @@ echo integrate rnadisease into neo4j
 
 $path_neo4j/cypher-shell -u neo4j -p $password -f cypher.cypher
 
-sleep 60
+sleep 30
 
-$path_neo4j/neo4j restart
+python ../../restart_neo4j.py $path_neo4j > neo4.txt
 
 
-sleep 120
+sleep 30

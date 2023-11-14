@@ -17,7 +17,7 @@ $path_neo4j/cypher-shell -u neo4j -p $password -f /mnt/aba90170-e6a0-4d07-929e-1
 
 sleep 60
 
-$path_neo4j/neo4j restart
+python ../../restart_neo4j.py $path_neo4j > neo4.txt
 
 
 sleep 60

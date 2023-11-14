@@ -23,9 +23,9 @@ echo integrate DDinter into neo4j
 $path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher.cypher
 
 
+sleep 30
+
+python ../../restart_neo4j.py $path_neo4j > neo4.txt
+
+
 sleep 60
-
-$path_neo4j/neo4j restart
-
-
-sleep 120

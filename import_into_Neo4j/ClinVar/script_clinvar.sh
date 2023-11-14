@@ -16,7 +16,7 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 echo prepare clinvar data
 
-python3 transform_xml_to_nodes_and_edges.py $path_to_project $path_to_clinvar_data > output/output_generate_integration_file.txt
+python3 transform_xml_to_nodes_and_edges.py $path_to_clinvar_data > output/output_generate_integration_file.txt
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -27,8 +27,7 @@ $path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_file_node.cypher
 
 sleep 60
 
-$path_neo4j/neo4j restart
-
+python ../../restart_neo4j.py $path_neo4j > neo4.txt
 
 sleep 120
 
@@ -36,8 +35,8 @@ $path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_file_edges.cyphe
 
 sleep 60
 
-$path_neo4j/neo4j restart
+python ../../restart_neo4j.py $path_neo4j > neo4j.txt
 
+sleep 60
 
-sleep 120
 

@@ -38,7 +38,7 @@ java -jar ../$import_tool.jar -i sources/TTD/intermediate.graphml  -e bolt://loc
 
 sleep 30
 
-$path_neo4j/neo4j restart
+python ../../restart_neo4j.py $path_neo4j > neo4.txt
 
 
 sleep 30

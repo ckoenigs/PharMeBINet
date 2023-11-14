@@ -15,7 +15,7 @@ echo "Current time: $now"
 
 echo prepare TSV files
 
-python3 merge_and_save.py $path_to_project > output/output.txt
+python3 merge_and_save.py $path_to_project > output/output_tsv.txt
 
 
 now=$(date +"%F %T")
@@ -23,7 +23,7 @@ echo "Current time: $now"
 
 echo prepare query files
 
-python3 prepare_queries.py $path_to_project > output/output.txt
+python3 prepare_queries.py $path_to_project > output/output_cypher.txt
 
 
 now=$(date +"%F %T")
@@ -42,7 +42,7 @@ $path_neo4j/cypher-shell -u neo4j -p $password -f output/create_index.cypher
 
 sleep 20
 
-$path_neo4j/neo4j restart
+python ../../restart_neo4j.py $path_neo4j > neo4j.txt
 
 
 sleep 60
@@ -56,7 +56,7 @@ $path_neo4j/cypher-shell -u neo4j -p $password -f output/create_edges.cypher
 
 sleep 30
 
-$path_neo4j/neo4j restart
+python ../../restart_neo4j.py $path_neo4j > neo4j.txt
 
 
 sleep 30

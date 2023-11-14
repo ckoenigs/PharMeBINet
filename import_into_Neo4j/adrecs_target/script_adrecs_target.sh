@@ -28,7 +28,7 @@ $path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher.cypher
 
 # sleep 60
 
-# $path_neo4j/neo4j restart
+# python ../../restart_neo4j.py $path_neo4j > neo4.txt
 
 
 # sleep 120
@@ -42,7 +42,7 @@ $path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_rela.cypher
 
 sleep 30
 
-$path_neo4j/neo4j restart
+python ../../restart_neo4j.py $path_neo4j > neo4j.txt
 
 
 sleep 30

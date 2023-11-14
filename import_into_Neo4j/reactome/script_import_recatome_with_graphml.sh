@@ -59,7 +59,7 @@ java -jar ../$import_tool.jar -i $path_to_reactome"pathwaydata.graphml"  -e bolt
 
 sleep 30
 
-$path_neo4j/neo4j restart
+python ../../restart_neo4j.py $path_neo4j > neo4.txt
 
 sleep 30
 
@@ -72,13 +72,6 @@ echo "Current time: $now"
 echo 'modification as of data'
 
 $path_neo4j/cypher-shell -u neo4j -p $password -f pathway_modification.cypher
-
-sleep 20
-
-$path_neo4j/neo4j restart
-
-
-sleep 30
 
 
 now=$(date +"%F %T")
@@ -94,7 +87,7 @@ python3 merge_nodes.py 2011833 1247632 Disease_reactome dbId True > output_merge
 
 sleep 20
 
-$path_neo4j/neo4j restart
+python ../../restart_neo4j.py $path_neo4j > neo4.txt
 
 
 sleep 30
