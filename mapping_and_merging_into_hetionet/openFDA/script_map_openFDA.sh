@@ -50,7 +50,7 @@ $path_neo4j/cypher-shell -u neo4j -p $password -f FDA_mappings/cypher.cypher
 
 sleep 60
 
-$path_neo4j/neo4j restart
+python ../../restart_neo4j.py $path_neo4j > neo4.txt
 
 sleep 120
 
@@ -92,17 +92,7 @@ $path_neo4j/cypher-shell -u neo4j -p $password -f FDA_edges/edge_cypher.cypher
 
 sleep 60
 
-$path_neo4j/neo4j restart
+python ../../restart_neo4j.py $path_neo4j > neo4.txt
 
 sleep 120
-sleep 60
-
-$path_neo4j/neo4j restart
-
-sleep 120
-sleep 60
-
-$path_neo4j/neo4j restart
-
-sleep 60
 

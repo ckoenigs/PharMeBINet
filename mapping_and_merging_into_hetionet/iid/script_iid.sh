@@ -17,8 +17,8 @@ python3 mapping_protein.py $path_to_project > protein/output_mapping_and_integra
 $path_neo4j/cypher-shell -u neo4j -p $password -f protein/cypher.cypher
 
 sleep 30
-$path_neo4j/neo4j restart
-sleep 40
+python ../../restart_neo4j.py $path_neo4j > neo4.txt
+sleep 30
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -30,5 +30,5 @@ python3 integrate_interaction_rela.py $path_to_project > interaction/outputinteg
 $path_neo4j/cypher-shell -u neo4j -p $password -f interaction/cypher.cypher
 
 sleep 30
-$path_neo4j/neo4j restart
-sleep 90
+python ../../restart_neo4j.py $path_neo4j > neo4.txt
+sleep 60

@@ -29,8 +29,8 @@ echo integrate map drug and outcome
 $path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher.cypher
 
 sleep 30
-$path_neo4j/neo4j restart
-sleep 50
+python ../../restart_neo4j.py $path_neo4j > neo4.txt
+sleep 30
 
 now=$(date +"%F %T")
 echo "Current time: $now"
@@ -44,5 +44,5 @@ echo integrate edges
 $path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_edge.cypher
 
 sleep 30
-$path_neo4j/neo4j restart
+python ../../restart_neo4j.py $path_neo4j > neo4j.txt
 sleep 30

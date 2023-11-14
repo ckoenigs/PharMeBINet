@@ -54,12 +54,9 @@ echo "Current time: $now"
 
 
 sleep 30
-$path_neo4j/neo4j restart
+python ../../restart_neo4j.py $path_neo4j > neo4j.txt
 sleep 60
 
-sleep 30
-$path_neo4j/neo4j restart
-sleep 70
 
 
 #############################################################################################################################
@@ -111,13 +108,9 @@ now=$(date +"%F %T")
 echo "Current time: $now"
 
 sleep 30
-$path_neo4j/neo4j restart
+python ../../restart_neo4j.py $path_neo4j > neo4j2.txt
 sleep 60
 
-
-sleep 30 
-$path_neo4j/neo4j restart
-sleep 30
 
 # I decide against it because the connection comes from different species and this can not be checked.
 # now=$(date +"%F %T")
@@ -145,7 +138,7 @@ sleep 30
 #echo "Current time: $now"
 
 #sleep 180
-#$path_neo4j/neo4j restart
+#python ../../restart_neo4j.py $path_neo4j > neo4.txt
 #sleep 120
 
 
@@ -165,7 +158,7 @@ sleep 30
 
 
 #sleep 180
-#$path_neo4j/neo4j restart
+#python ../../restart_neo4j.py $path_neo4j > neo4.txt
 #sleep 120
 
 
@@ -185,7 +178,7 @@ sleep 30
 
 
 #sleep 180
-#$path_neo4j/neo4j restart
+#python ../../restart_neo4j.py $path_neo4j > neo4.txt
 #sleep 120
 
 
@@ -206,7 +199,7 @@ sleep 30
 
 
 #sleep 180
-#$path_neo4j/neo4j restart
+#python ../../restart_neo4j.py $path_neo4j > neo4.txt
 #sleep 120
 
 # sudo shutdown -h 60 # fährt das system in 60 min

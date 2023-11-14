@@ -24,7 +24,7 @@ echo integrate mappings into neo4j
 $path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher.cypher
 
 sleep 30
-$path_neo4j/neo4j restart
+python ../../restart_neo4j.py $path_neo4j > neo4j1.txt
 sleep 30
 
 now=$(date +"%F %T")
@@ -41,5 +41,5 @@ echo integrate mappings into neo4j
 $path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_edge.cypher
 
 sleep 30
-$path_neo4j/neo4j restart
-sleep 60
+python ../../restart_neo4j.py $path_neo4j > neo4j1.txt
+sleep 40

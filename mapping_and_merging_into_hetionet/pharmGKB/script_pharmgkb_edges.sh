@@ -37,5 +37,5 @@ echo "Current time: $now"
 $path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_edge.cypher
 
 sleep 30
-$path_neo4j/neo4j restart
+python ../../restart_neo4j.py $path_neo4j > neo4.txt
 sleep 30

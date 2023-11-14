@@ -19,7 +19,7 @@ python3 map_disease_efo.py $path_to_project > output/output_efo_disease.txt
 $path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher.cypher
 
 sleep 30
-$path_neo4j/neo4j restart
+python ../../restart_neo4j.py $path_neo4j > neo4.txt
 sleep 30
 
 now=$(date +"%F %T")
@@ -32,6 +32,6 @@ python3 merge_is_a_relationships_efo.py $path_to_project > output/output_efo_dis
 $path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_edge.cypher
 
 sleep 30
-$path_neo4j/neo4j restart
+python ../../restart_neo4j.py $path_neo4j > neo4.txt
 sleep 30
 

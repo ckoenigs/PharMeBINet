@@ -13,7 +13,7 @@ license='Attribution-NonCommercial 4.0 International'
 
 
 sleep 30
-$path_neo4j/neo4j restart
+python ../../restart_neo4j.py $path_neo4j > neo4j1.txt
 sleep 60
 
 now=$(date +"%F %T")
@@ -35,7 +35,7 @@ chmod 775 merge_nodes.sh
 
 
 sleep 30
-$path_neo4j/neo4j restart
+python ../../restart_neo4j.py $path_neo4j > neo4j1.txt
 sleep 30
 
 now=$(date +"%F %T")
@@ -75,8 +75,8 @@ echo "Current time: $now"
 $path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher.cypher
 
 sleep 30
-$path_neo4j/neo4j restart
-sleep 60
+python ../../restart_neo4j.py $path_neo4j > neo4j1.txt
+sleep 30
 
 
 now=$(date +"%F %T")
@@ -89,7 +89,7 @@ chmod 775 merge_nodes_salt.sh
 
 
 sleep 30
-$path_neo4j/neo4j restart
+python ../../restart_neo4j.py $path_neo4j > neo4j1.txt
 sleep 30
 
 
@@ -106,7 +106,7 @@ echo rela
 $path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher_rela.cypher
 
 sleep 30
-$path_neo4j/neo4j restart
+python ../../restart_neo4j.py $path_neo4j > neo4j1.txt
 sleep 60
 
 
@@ -117,7 +117,7 @@ echo delete compounds which did not mapped
 $path_neo4j/cypher-shell -u neo4j -p $password -f cypher_delete_compound.cypher > output_delete_cypher.txt
 
 sleep 30
-$path_neo4j/neo4j restart
+python ../../restart_neo4j.py $path_neo4j > neo4j1.txt
 sleep 50
 
 
@@ -135,10 +135,7 @@ echo "Current time: $now"
 $path_neo4j/cypher-shell -u neo4j -p $password -f compound_interaction/cypher_resemble.cypher
 
 sleep 30
-$path_neo4j/neo4j restart
-sleep 60
-sleep 30
-$path_neo4j/neo4j restart
+python ../../restart_neo4j.py $path_neo4j > neo4j1.txt
 sleep 60
 
 now=$(date +"%F %T")

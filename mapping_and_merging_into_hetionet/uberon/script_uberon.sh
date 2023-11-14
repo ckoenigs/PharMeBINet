@@ -18,7 +18,7 @@ python3 map_anatomy_uberon.py $path_to_project > output/output_anatomy.txt
 
 $path_neo4j/cypher-shell -u neo4j -p $password -f output/cypher.cypher
 
-sleep 30
-$path_neo4j/neo4j restart
+sleep 20
+python ../../restart_neo4j.py $path_neo4j > neo4.txt
 sleep 30
 
